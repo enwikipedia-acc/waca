@@ -873,7 +873,7 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
         fwrite($fp, "Request $_GET[id] ($gus) Marked as 'Done' ($crea) by $sid\r\n");
 	echo "Request $_GET[id] ($gus) marked as 'Done'.<br />";
 	$towhom = $row2[pend_email];
-	if($close != "0") { sendemail($gem, $towhom); }
+	if($gem != "0") { sendemail($gem, $towhom); }
 }
 if ($_GET['action'] == "zoom") {
 	if($_GET[id] == "") {
