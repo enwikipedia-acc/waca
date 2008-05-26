@@ -936,18 +936,24 @@ if ($_GET['action'] == "zoom") {
 	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid';";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
+	$numip = 0;
 	while ($row = mysql_fetch_assoc($result)) {
 		echo "<li><a href=\"acc.php?action=zoom&id=$row[pend_id]\">$row[pend_name]</a></li>";
+		$numip++;
 	}
+	if($numip == 0) { echo "<li>None.</li>\n"; }
 	echo "</ol>\n";
 	echo "<h2>Other requests from this E-Mail:</h2>\n";
 	echo "<ol>\n";
 	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid';";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
+	$numem = 0;
 	while ($row = mysql_fetch_assoc($result)) {
 		echo "<li><a href=\"acc.php?action=zoom&id=$row[pend_id]\">$row[pend_name]</a></li>";
+		$numem++;
 	}
+	if($numem == 0) { echo "<li>None.</li>\n"; }
 	echo "</ol>\n";
 	showfooter();	
 	die();
