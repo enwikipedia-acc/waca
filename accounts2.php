@@ -96,6 +96,28 @@ while (!feof($fp)) {
 				if(!$result) Die("ERROR: No result returned.");
 				$row = mysql_fetch_assoc($result);
 				$level = $row['user_level'];
+				if($level == "Admin") {
+					$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$matches[1]' AND log_action = 'Suspended';";
+	                                $result = mysql_query($query);
+        	                        if(!$result) Die("ERROR: No result returned.");
+                	                $row = mysql_fetch_assoc($result);
+					$suspended = $row['COUNT(*)'];
+
+					$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$matches[1]' AND log_action = 'Promoted';";
+	                                $result = mysql_query($query);
+        	                        if(!$result) Die("ERROR: No result returned.");
+                	                $row = mysql_fetch_assoc($result);
+					$promoted = $row['COUNT(*)'];
+
+
+					$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$matches[1]' AND log_action = 'Approved';";
+	                                $result = mysql_query($query);
+        	                        if(!$result) Die("ERROR: No result returned.");
+                	                $row = mysql_fetch_assoc($result);
+					$approved = $row['COUNT(*)'];
+					
+					$abit = "Suspended: $suspended, Promoted: $promoted, Approved: $approved";
+				}
 			}
 			$now = date("Y-m-d");
 			$topq = "select log_user,count(*) from acc_log where log_time like '$now%' and log_action = 'Closed 1' and log_user = '$matches[1]' group by log_user ORDER BY count(*) DESC limit 5;";
@@ -109,7 +131,7 @@ while (!feof($fp)) {
 			if($userexist != "1") {
 				fwrite($fp, "PRIVMSG $chan :$matches[1] is not a valid user.\r\n");
 			} else {
-				fwrite($fp, "PRIVMSG $chan :$matches[1] ($level) has closed $howmany requests as 'Done', $ttop of them today.\r\n");
+				fwrite($fp, "PRIVMSG $chan :$matches[1] ($level) has closed $howmany requests as 'Done', $ttop of them today. $abit\r\n");
 			}
 
 		}
