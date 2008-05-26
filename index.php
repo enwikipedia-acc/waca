@@ -266,7 +266,8 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	mysql_close();	
 	mysql_connect("sql",$toolserver_username,$toolserver_password);
 	@mysql_select_db("u_sql") or print mysql_error();
-	$query = "INSERT INTO u_sql.acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status ) VALUES ( NULL , '$email', '$ip', '$_POST[name]', '$_POST[comments]', 'Open' );";
+	$dnow = date("Y-m-d H-i-s");	
+	$query = "INSERT INTO u_sql.acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$_POST[name]', '$_POST[comments]', 'Open' , '$dnow' );";
 	$result = mysql_query($query);
 	$query = "SELECT pend_id FROM u_sql.acc_pend WHERE pend_name = '$_POST[name]' ORDER BY pend_id DESC LIMIT 1;";
 	$result = mysql_query($query);
