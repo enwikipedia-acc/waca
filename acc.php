@@ -679,6 +679,7 @@ if ($_GET['action'] == "usermgmt") {
 		$uname = $row[user_name];
 		$uoname = $row[user_onwikiname];
 		$userid = $row[user_id];
+		
 		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
 		echo "$out\n";
 	}
@@ -686,7 +687,7 @@ if ($_GET['action'] == "usermgmt") {
 	</ol>
 	<h2>Admins</h2>
 	<?php
-	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Promoted') WHERE user_level = 'Admin' GROUP BY log_pend ORDER BY log_pend DESC;";
+	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Promoted') WHERE user_level = 'Admin' GROUP BY log_pend ORDER BY log_pend ASC;";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	echo "<ol>\n";
@@ -694,7 +695,26 @@ if ($_GET['action'] == "usermgmt") {
 		$uname = $row[user_name];
 		$uoname = $row[user_onwikiname];
 		$userid = $row[user_id];
-		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&approve=$userid\">Demote!</a> (Promoted by $row[log_user])</small></li>";
+                $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Suspended';";
+                           $result2 = mysql_query($query);
+                                    if(!$result2) Die("ERROR: No result returned.");
+                                    $row2 = mysql_fetch_assoc($result2);
+                    $suspended = $row2['COUNT(*)'];
+
+                    $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Promoted';";
+                                    $result2 = mysql_query($query);
+                                    if(!$result2) Die("ERROR: No result returned.");
+                                    $row2 = mysql_fetch_assoc($result2);
+                    $promoted = $row2['COUNT(*)'];
+
+
+                    $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Approved';";
+                                    $result2 = mysql_query($query);
+                                    if(!$result2) Die("ERROR: No result returned.");
+                                    $row2 = mysql_fetch_assoc($result2);
+                    $approved = $row2['COUNT(*)'];
+
+		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&approve=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved])</small></li>";
 		echo "$out\n";
 	}
 	?>
