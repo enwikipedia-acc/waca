@@ -888,6 +888,9 @@ if ($_GET['action'] == "zoom") {
 	$row = mysql_fetch_assoc($result);
 	echo "<h2>Details for Request #$_GET[id]:</h2>";	
 	$uname = urlencode($row[pend_name]);
+	$thisip = $row[pend_ip];
+	$thisid = $row[pend_id];
+	$thisemail = $row[pend_email];
 	$out = '<small>[ <a href="mailto:' . $row[pend_email] . '">' . $row[pend_email] . '</a> / <a href="http://en.wikipedia.org/wiki/User_talk:' . $row[pend_ip] . '">' . $row[pend_ip] . '</a> <a href="http://en.wikipedia.org/wiki/Special:Contributions/' . $row[pend_ip] . '">c</a> <a href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:' . $row[pend_ip] . '">b</a> <a href="http://ws.arin.net/whois/?queryinput=' . $row[pend_ip] . '">w</a> ] <a href="http://en.wikipedia.org/wiki/User:' . $uname . '">' . $uname . '</a> (<a href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:' . $uname . '">Creation</a> <a href="http://en.wikipedia.org/wiki/Special:Contributions/' . $uname . '">Contribs</a>) <a href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=' . $uname . '&wpEmail=' . $row[pend_email] . '&uselang=en-acc">Create!</a> | <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=1">Done!</a> - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=2">Similar</a> - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=3">Taken</a> - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=4">UPolicy</a> - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=5">Technical</a> - <a href="acc.php?action=defer&id=' . $row[pend_id] . '&target=admin">Reset</a> - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=0">Drop</a> Ban: <a href="acc.php?action=ban&ip=' . $row[pend_id] . '">IP</a> | <a href="acc.php?action=ban&email=' . $row[pend_id] . '">E-Mail</a></small>';
 	echo "$out\n";
 	echo "<br /><strong>Comment</strong>: $row[pend_cmt]<br />\n";
@@ -924,6 +927,24 @@ if ($_GET['action'] == "zoom") {
 		if($row[log_action] == "Closed 6") { 
 			echo "<li>$row[log_user] Closed (Custom reason), <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
 		}
+	}
+	echo "</ol>\n";
+	echo "<h2>Other requests from this IP:</h2>\n";
+	echo "<ol>\n";
+	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid';";
+	$result = mysql_query($query);
+	if(!$result) Die("ERROR: No result returned.");
+	while ($row = mysql_fetch_assoc($result)) {
+		echo "<li><a href=\"acc.php?action=zoom&id=$row[pend_id]\">$row[pend_name]</a></li>";
+	}
+	echo "</ol>\n";
+	echo "<h2>Other requests from this E-Mail:</h2>\n";
+	echo "<ol>\n";
+	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid';";
+	$result = mysql_query($query);
+	if(!$result) Die("ERROR: No result returned.");
+	while ($row = mysql_fetch_assoc($result)) {
+		echo "<li><a href=\"acc.php?action=zoom&id=$row[pend_id]\">$row[pend_name]</a></li>";
 	}
 	echo "</ol>\n";
 	showfooter();	
