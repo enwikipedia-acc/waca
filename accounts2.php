@@ -44,7 +44,7 @@ function SIGTERM() {
  
 #Initialize your daemon here (i.e. make the IRC connection, DB connection, set variables, whatever)
 #we need teh sxwiki to alert me.
-require_once('../database.inc');
+require_once('../../database.inc');
 mysql_connect("sql",$toolserver_username,$toolserver_password);
 @mysql_select_db("u_sql") or print mysql_error();
 set_time_limit (0);
