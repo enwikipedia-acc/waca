@@ -1,0 +1,12 @@
+# 5/26/08
+index.php:
+1. Add api check for account existance instead of db check
+2. Add api block check instead of db check
+
+acc.php:
+1. Interface needs formatted better
+2. More of the interface should be configurable
+3. Requests with multiple tries in history should be stripped of links (forcing the user to zoom and examine the circumstances
+
+accounts2.php:
+1. Access control for !die
