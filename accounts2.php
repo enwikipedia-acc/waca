@@ -196,7 +196,7 @@ while (!feof($fp)) {
 //	echo 'Got a line ... ';
 //	print_r($line_ex);
 //	echo "\n";
-	if (strtolower($line_ex[3]) == ':!svnup') {
+	if ($line_ex[3] == ':!svnup') {
 		$nick = explode('!',$line_ex[0]);
 		$nick = substr($nick[0],1);
 
