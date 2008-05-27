@@ -191,6 +191,22 @@ while (!feof($fp)) {
 		usleep(1000000);
 		die("Killed via IRC\n");
 	}
+	$line_ex = explode(' ',$line);
+	if (substr(strtolower($line_ex[3]),1) == '!svnup') {
+		$nick = explode('!',$line_ex[0]);
+		$nick = substr($nick[0],1);
+
+		if (($nick == 'Cobi') or ($nick == 'SQLDb')) {
+			if (pcntl_fork() == 0) {
+				$svn = popen('svn up 2>&1', 'r');
+				while (!feof($svn)) {
+					fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': '.str_replace(array("\n","\r"),'',fgets($svn,512))."\n");
+				}
+				pclose($svn);
+				die();
+			}
+		}
+	}
 }
  
 #Clean up your connections, finish file writes here, or whatever you want to do as the daemon shuts down.
