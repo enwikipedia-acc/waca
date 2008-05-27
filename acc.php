@@ -73,6 +73,25 @@ function showhead() {
 <meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8">
 <meta http-equiv="content-style-type" content="text/css">
 <meta http-equiv="expires" content="0">
+<style>
+	.green {
+		color: green;
+	}
+	.blue {
+		color: blue;
+	}
+	.orange {
+		color: orange;
+	}
+	.red {
+		color: red;
+	}
+
+	.green a:visited { color: gray; }
+	.blue a:visited { color: gray; }
+	.orange a:visited { color: gray; }
+	.red a:visited { color: gray; }
+</style>
 </head>
 <body>
 <?php
@@ -1098,7 +1117,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	}
 
 	$out = '<li><small>'; //List item
-	$out.= '<font color="green" style="a:link { color: green; }">'; //First color
+	$out.= '<span class="green">'; //First color
 	$out.= $cmt; // CMT link.
 
 	// Email.
@@ -1119,9 +1138,9 @@ while ($row = mysql_fetch_assoc($result)) {
 	// IP whois
 	$out.= '<a href="http://ws.arin.net/whois/?queryinput=' . $row[pend_ip] . '">w</a> ] ';
 
-	$out.= '</font>'; // End font
+	$out.= '</span>'; // End font
 
-	$out.= '<font color="blue" style="a:link { color: blue; }">'; // Font 2
+	$out.= '<span class="blue">'; // Font 2
 
 	// Username U:
 	$out.= '<a href="http://en.wikipedia.org/wiki/User:' . $uname . '">' . $uname . '</a> ';
@@ -1138,9 +1157,9 @@ while ($row = mysql_fetch_assoc($result)) {
 	$out.= '<a href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
 	$out.= $uname . '&wpEmail=' . $row[pend_email] . '&uselang=en-acc">Create!</a> '; 
 
-	$out.= '</font>'; // End font
+	$out.= '</span>'; // End font
 
-	$out.= '<font color="orange" style="a:link { color: orange; }">'; // Font 3
+	$out.= '<span class="orange">'; // Font 3
 
 	// Done
 	$out.= '| <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=1">Done!</a>';
@@ -1163,9 +1182,9 @@ while ($row = mysql_fetch_assoc($result)) {
 	// Drop
 	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=0">Drop</a>';
 
-	$out.= '</font>'; // End font
+	$out.= '</span>'; // End font
 
-	$out.= '<font color="red" style="a:link { color: red; }">'; // Font 4
+	$out.= '<span class="red">'; // Font 4
 
 	// Ban IP
 	$out.= ' Ban: <a href="acc.php?action=ban&ip=' . $row[pend_id] . '">IP</a> ';
@@ -1173,7 +1192,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	// Ban email
 	$out.= '| <a href="acc.php?action=ban&email=' . $row[pend_id] . '">E-Mail</a>';
 
-	$out.= '</font>'; // End font
+	$out.= '</span>'; // End font
 	$out.= '</small></li>';
 
 	echo "$out\n";
