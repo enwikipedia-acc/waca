@@ -74,23 +74,20 @@ function showhead() {
 <meta http-equiv="content-style-type" content="text/css">
 <meta http-equiv="expires" content="0">
 <style>
-	span.green, span.green a:link {
-		color: green;
-	}
-	span.blue, span.blue a:link {
-		color: blue;
-	}
-	span.orange, span.orange a:link {
-		color: orange;
-	}
-	span.red, span.orange a:link {
-		color: red;
-	}
+	.green { color: green; }
+	.blue { color: blue; }
+	.orange { color: orange; }
+	.red { color: red; }
 
-	span.green a:visited { color: gray; }
-	span.blue a:visited { color: gray; }
-	span.orange a:visited { color: gray; }
-	span.red a:visited { color: gray; }
+	.green a:link { color: green; }
+	.blue a:link { color: blue; }
+	.orange a:link { color: orange; }
+	.red a:link { color: red; }
+
+	.green a:visited { color: gray; }
+	.blue a:visited { color: gray; }
+	.orange a:visited { color: gray; }
+	.red a:visited { color: gray; }
 </style>
 </head>
 <body>
