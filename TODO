@@ -10,3 +10,4 @@ acc.php:
 
 accounts2.php:
 1. Access control for !die
+2. Fix bug on !die where it repeats itself
