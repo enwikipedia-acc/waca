@@ -193,10 +193,10 @@ while (!feof($fp)) {
 		die("Killed via IRC\n");
 	}
 	$line_ex = explode(' ',$line);
-	echo 'Got a line ... ';
-	print_r($line_ex);
-	echo "\n";
-	if (substr(strtolower($line_ex[3]),1) == '!svnup') {
+//	echo 'Got a line ... ';
+//	print_r($line_ex);
+//	echo "\n";
+	if (strtolower($line_ex[3]) == ':!svnup') {
 		$nick = explode('!',$line_ex[0]);
 		$nick = substr($nick[0],1);
 
