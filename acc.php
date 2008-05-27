@@ -74,20 +74,20 @@ function showhead() {
 <meta http-equiv="content-style-type" content="text/css">
 <meta http-equiv="expires" content="0">
 <style>
-	.green { color: green; }
-	.blue { color: blue; }
-	.orange { color: orange; }
-	.red { color: red; }
+	.greentext { color: green; }
+	.bluetext { color: blue; }
+	.orangetext { color: orange; }
+	.redtext { color: red; }
 
-	.green a:link { color: green; }
-	.blue a:link { color: blue; }
-	.orange a:link { color: orange; }
-	.red a:link { color: red; }
+	.greentext a:link { color: green; }
+	.bluetext a:link { color: blue; }
+	.orangetext a:link { color: orange; }
+	.redtext a:link { color: red; }
 
-	.green a:visited { color: gray; }
-	.blue a:visited { color: gray; }
-	.orange a:visited { color: gray; }
-	.red a:visited { color: gray; }
+	.greentext a:visited { color: gray; }
+	.bluetext a:visited { color: gray; }
+	.orangetext a:visited { color: gray; }
+	.redtext a:visited { color: gray; }
 </style>
 </head>
 <body>
@@ -1114,7 +1114,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	}
 
 	$out = '<li><small>'; //List item
-	$out.= '<span class="green">'; //First color
+	$out.= '<span class="greentext">'; //First color
 	$out.= $cmt; // CMT link.
 
 	// Email.
@@ -1137,7 +1137,7 @@ while ($row = mysql_fetch_assoc($result)) {
 
 	$out.= '</span>'; // End font
 
-	$out.= '<span class="blue">'; // Font 2
+	$out.= '<span class="bluetext">'; // Font 2
 
 	// Username U:
 	$out.= '<a href="http://en.wikipedia.org/wiki/User:' . $uname . '">' . $uname . '</a> ';
@@ -1156,7 +1156,7 @@ while ($row = mysql_fetch_assoc($result)) {
 
 	$out.= '</span>'; // End font
 
-	$out.= '<span class="orange">'; // Font 3
+	$out.= '<span class="orangetext">'; // Font 3
 
 	// Done
 	$out.= '| <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=1">Done!</a>';
@@ -1181,7 +1181,7 @@ while ($row = mysql_fetch_assoc($result)) {
 
 	$out.= '</span>'; // End font
 
-	$out.= '<span class="red">'; // Font 4
+	$out.= '<span class="redtext">'; // Font 4
 
 	// Ban IP
 	$out.= ' Ban: <a href="acc.php?action=ban&ip=' . $row[pend_id] . '">IP</a> ';
