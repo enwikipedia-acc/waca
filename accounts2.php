@@ -209,6 +209,12 @@ while (!feof($fp)) {
 //			}
 		}
 	}
+	if (substr(strtolower($line_ex[3]),1) == '!restart') {
+		echo 'Restart from IRC!';
+		fclose($fp);
+		fclose($fpt);
+		pcntl_exec('php',$argv,$_ENV);
+	}
 }
  
 #Clean up your connections, finish file writes here, or whatever you want to do as the daemon shuts down.
