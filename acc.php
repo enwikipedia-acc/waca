@@ -1113,7 +1113,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		$cmt = "<a href=\"http://tools.wikimedia.de/~sql/acc/acc.php?action=zoom&id=$rid\">Zoom</a> ";
 	}
 
-	$out = '<li class="greentext"><small>'; //List item
+	$out = '<li class="greentext" style="color: black;"><small>'; //List item
 	$out.= '<span class="greentext">'; //First color
 	$out.= $cmt; // CMT link.
 
