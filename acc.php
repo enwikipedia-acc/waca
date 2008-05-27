@@ -1,4 +1,12 @@
 <?php
+/************************************************
+** English Wikipedia Account Request Interface **
+** All code is released into the public domain **
+**             Developers:                     **
+**  SQL ( http://en.wikipedia.org/User:SQL )   **
+**                                             **
+************************************************/
+
 ini_set('session.cookie_path', '/~sql/');
 ini_set('session.name', 'ACC');
 $version = "0.9.3";

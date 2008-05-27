@@ -1,4 +1,12 @@
 <?php
+/************************************************
+** English Wikipedia Account Request Interface **
+** All code is released into the public domain **
+**             Developers:                     **
+**  SQL ( http://en.wikipedia.org/User:SQL )   **
+**                                             **
+************************************************/
+
 require_once('../../database.inc');
 function displayheader() {
 	/* WAS:

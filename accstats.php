@@ -1,4 +1,12 @@
 <?php
+/************************************************
+** English Wikipedia Account Request Interface **
+** All code is released into the public domain **
+**             Developers:                     **
+**  SQL ( http://en.wikipedia.org/User:SQL )   **
+**                                             **
+************************************************/
+
 require_once('/home/sql/database.inc');
 mysql_connect("sql",$toolserver_username,$toolserver_password);
 @mysql_select_db("u_sql") or print mysql_error();

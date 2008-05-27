@@ -1,4 +1,12 @@
 <?php
+/************************************************
+** English Wikipedia Account Request Interface **
+** All code is released into the public domain **
+**             Developers:                     **
+**  SQL ( http://en.wikipedia.org/User:SQL )   **
+**                                             **
+************************************************/
+
 declare(ticks=1);
  
 $pidnum = pcntl_fork();
