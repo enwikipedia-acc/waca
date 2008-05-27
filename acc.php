@@ -74,15 +74,15 @@ function showhead() {
 <meta http-equiv="content-style-type" content="text/css">
 <meta http-equiv="expires" content="0">
 <style>
-	.greentext { color: green; }
-	.bluetext { color: blue; }
+	.greentext { color: #00FF00; }
+	.bluetext { color: #0000FF; }
 	.orangetext { color: orange; }
-	.redtext { color: red; }
+	.redtext { color: #FF0000; }
 
-	.greentext a:link { color: green; }
-	.bluetext a:link { color: blue; }
+	.greentext a:link { color: #00FF00; }
+	.bluetext a:link { color: #0000FF; }
 	.orangetext a:link { color: orange; }
-	.redtext a:link { color: red; }
+	.redtext a:link { color: #FF0000; }
 
 	.greentext a:visited { color: gray; }
 	.bluetext a:visited { color: gray; }
@@ -1151,8 +1151,8 @@ while ($row = mysql_fetch_assoc($result)) {
 	$out.= $uname . '">Contribs</a>) ';
 
 	// Create user link
-	$out.= '<a href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
-	$out.= $uname . '&wpEmail=' . $row[pend_email] . '&uselang=en-acc">Create!</a> '; 
+	$out.= '<b><a href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
+	$out.= $uname . '&wpEmail=' . $row[pend_email] . '&uselang=en-acc">Create!</a></b> '; 
 
 	$out.= '</span>'; // End font
 
