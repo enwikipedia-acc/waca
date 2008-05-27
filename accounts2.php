@@ -193,30 +193,20 @@ while (!feof($fp)) {
 		die("Killed via IRC\n");
 	}
 	$line_ex = explode(' ',str_replace(array("\r","\n"),'',$line));
-//	echo 'Got a line ... ';
-//	print_r($line_ex);
-//	echo "\n";
 	if (substr(strtolower($line_ex[3]),1) == '!svnup') {
 		$nick = explode('!',$line_ex[0]);
 		$nick = substr($nick[0],1);
 
-		echo 'Got svnup ... ';
 
 		if (($nick == 'Cobi') or ($nick == 'SQLDb')) {
-			echo 'Authorized ... ';
-			if (pcntl_fork() == 0) {
-				echo 'Forked ... ';
+//			if (pcntl_fork() == 0) {
 				$svn = popen('svn up 2>&1', 'r');
-				echo 'Reading data ';
 				while (!feof($svn)) {
-					echo '.';
 					fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': '.str_replace(array("\n","\r"),'',fgets($svn,512))."\n");
 				}
-				echo ' Done reading data ... ';
 				pclose($svn);
-				echo 'Done ... Dying.'."\n";
-				die();
-			}
+//				die();
+//			}
 		}
 	}
 }
