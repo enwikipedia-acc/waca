@@ -1098,7 +1098,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	}
 
 	$out = '<li><small>'; //List item
-	$out.= '<font color="green"><div style="A:link { color: green; }">'; //First color
+	$out.= '<font color="green" style="A:link { color: green; }">'; //First color
 	$out.= $cmt; // CMT link.
 
 	// Email.
@@ -1119,9 +1119,9 @@ while ($row = mysql_fetch_assoc($result)) {
 	// IP whois
 	$out.= '<a href="http://ws.arin.net/whois/?queryinput=' . $row[pend_ip] . '">w</a> ] ';
 
-	$out.= '</div></font>'; // End font
+	$out.= '</font>'; // End font
 
-	$out.= '<font color="blue"><div style="A:link { color: blue; }">'; // Font 2
+	$out.= '<font color="blue" style="A:link { color: blue; }">'; // Font 2
 
 	// Username U:
 	$out.= '<a href="http://en.wikipedia.org/wiki/User:' . $uname . '">' . $uname . '</a> ';
@@ -1138,9 +1138,9 @@ while ($row = mysql_fetch_assoc($result)) {
 	$out.= '<a href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
 	$out.= $uname . '&wpEmail=' . $row[pend_email] . '&uselang=en-acc">Create!</a> '; 
 
-	$out.= '</div></font>'; // End font
+	$out.= '</font>'; // End font
 
-	$out.= '<font color="orange"><div style="A:link { color: orange; }">'; // Font 3
+	$out.= '<font color="orange" style="A:link { color: orange; }">'; // Font 3
 
 	// Done
 	$out.= '| <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=1">Done!</a>';
@@ -1163,9 +1163,9 @@ while ($row = mysql_fetch_assoc($result)) {
 	// Drop
 	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=0">Drop</a>';
 
-	$out.= '</div></font>'; // End font
+	$out.= '</font>'; // End font
 
-	$out.= '<font color="red"><div style="A:link { color: red; }">'; // Font 4
+	$out.= '<font color="red" style="A:link { color: red; }">'; // Font 4
 
 	// Ban IP
 	$out.= ' Ban: <a href="acc.php?action=ban&ip=' . $row[pend_id] . '">IP</a> ';
@@ -1173,7 +1173,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	// Ban email
 	$out.= '| <a href="acc.php?action=ban&email=' . $row[pend_id] . '">E-Mail</a>';
 
-	$out.= '</div></font>'; // End font
+	$out.= '</font>'; // End font
 	$out.= '</small></li>';
 
 	echo "$out\n";
