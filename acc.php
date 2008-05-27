@@ -1098,7 +1098,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	}
 
 	$out = '<li><small>'; //List item
-	$out.= '<font color="green" style="A:link { color: green; }">'; //First color
+	$out.= '<font color="green" style="a:link { color: green; }">'; //First color
 	$out.= $cmt; // CMT link.
 
 	// Email.
@@ -1121,7 +1121,7 @@ while ($row = mysql_fetch_assoc($result)) {
 
 	$out.= '</font>'; // End font
 
-	$out.= '<font color="blue" style="A:link { color: blue; }">'; // Font 2
+	$out.= '<font color="blue" style="a:link { color: blue; }">'; // Font 2
 
 	// Username U:
 	$out.= '<a href="http://en.wikipedia.org/wiki/User:' . $uname . '">' . $uname . '</a> ';
@@ -1140,7 +1140,7 @@ while ($row = mysql_fetch_assoc($result)) {
 
 	$out.= '</font>'; // End font
 
-	$out.= '<font color="orange" style="A:link { color: orange; }">'; // Font 3
+	$out.= '<font color="orange" style="a:link { color: orange; }">'; // Font 3
 
 	// Done
 	$out.= '| <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=1">Done!</a>';
@@ -1165,7 +1165,7 @@ while ($row = mysql_fetch_assoc($result)) {
 
 	$out.= '</font>'; // End font
 
-	$out.= '<font color="red" style="A:link { color: red; }">'; // Font 4
+	$out.= '<font color="red" style="a:link { color: red; }">'; // Font 4
 
 	// Ban IP
 	$out.= ' Ban: <a href="acc.php?action=ban&ip=' . $row[pend_id] . '">IP</a> ';
