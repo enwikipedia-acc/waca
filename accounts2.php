@@ -213,7 +213,7 @@ while (!feof($fp)) {
 		echo 'Restart from IRC!';
 		fclose($fp);
 		fclose($fpt);
-		pcntl_exec('php',$argv,$_ENV);
+		pcntl_exec('/usr/bin/php',$argv,$_ENV);
 	}
 }
  
