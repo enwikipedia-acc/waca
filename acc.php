@@ -1102,7 +1102,7 @@ if ($_GET['action'] == "logs") {
 $query = "SELECT * FROM acc_pend WHERE pend_status = 'Open';";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
-echo "<ol><li>\n";
+echo "<ol>\n";
 while ($row = mysql_fetch_assoc($result)) {
 	$uname = urlencode($row[pend_name]);
 #	$uname = str_replace("+", "_", $row[pend_name]);
@@ -1113,7 +1113,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		$cmt = "<a href=\"http://tools.wikimedia.de/~sql/acc/acc.php?action=zoom&id=$rid\">Zoom</a> ";
 	}
 
-	$out = '<li><small>'; //List item
+	$out = '<li class="greentext"><small>'; //List item
 	$out.= '<span class="greentext">'; //First color
 	$out.= $cmt; // CMT link.
 
