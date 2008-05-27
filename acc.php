@@ -4,6 +4,7 @@
 ** All code is released into the public domain **
 **             Developers:                     **
 **  SQL ( http://en.wikipedia.org/User:SQL )   **
+**  Cobi ( http://en.wikipedia.org/User:Cobi ) **
 **                                             **
 ************************************************/
 
