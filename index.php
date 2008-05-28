@@ -288,7 +288,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
         $row = mysql_fetch_assoc($result);
 	$pid = $row['pend_id'];
 	$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-	fwrite($fp, "New request: $_POST[name] http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$pid\r\n");
+	fwrite($fp, "[[acc:$pid]] N http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$pid * $ip * /* $_POST[name] requested by $email ($ip) */ ".substr(str_replace(array("\n","\r"), array('\n','\r'),$_POST[comments]),0,200).((strlen($_POST[comments]) > 200) ? '...' : '')."\r\n");
 	fclose($fp);
 	if(!$result) Die("ERROR: No result returned.");
 	mysql_close();		
