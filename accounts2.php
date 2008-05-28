@@ -83,7 +83,7 @@ while (!feof($fp)) {
 		echo "Packet received!\n";
 	}
 	if(stristr($line, "!count") != FALSE) {
-		usleep(750000); 
+		sleep(.75); 
 		$cmatch = preg_match("/\:.* PRIVMSG #wikipedia-en-accounts :!count (.*)/", $line, $matches);
 		if($cmatch > 0) {
 			$matches[1] = ltrim(rtrim($matches[1]));
@@ -145,7 +145,7 @@ while (!feof($fp)) {
 		}
 	}
 	if(stristr($line, "!status") != FALSE) {
-		usleep(750000); 
+		sleep(.75); 
 		$query = "SELECT COUNT(*) FROM acc_pend WHERE pend_status = 'Open';";
 		$result = mysql_query($query);
 		if(!$result) Die("ERROR: No result returned.");
@@ -182,12 +182,12 @@ while (!feof($fp)) {
 	if(stristr($line, "ping") != FALSE) { //quiet trigger
 		echo "PRIVMSG ".$chan." :$line\n";
 	        fwrite($fp, "PONG ".$line[1]."\r\n"); 
-		usleep(500000);
+		sleep(.50);
 	}
 	if(stristr($line, "!die") != FALSE) { 
 		$out = "PRIVMSG ".$chan." :Ok, dying!\n";
                 fwrite($fp, "$out\r\n");
-		usleep(1000000);
+		sleep(1);
 		socket_close($client);
 		socket_close($sock);
 		die("Killed via IRC\n");
@@ -206,7 +206,7 @@ while (!feof($fp)) {
 					if ($svnin != "") {
 						fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': '.str_replace(array("\n","\r"),'',$svnin)."\n");
 					}
-					usleep(750000); //Slight delay so the bot does not kill itself on updating a lot of files.
+					sleep(.75); //Slight delay so the bot does not kill itself on updating a lot of files.
 				}
 				pclose($svn);
 //				die();
