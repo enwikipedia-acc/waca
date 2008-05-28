@@ -203,7 +203,10 @@ while (!feof($fp)) {
 //			if (pcntl_fork() == 0) {
 				$svn = popen('svn up 2>&1', 'r');
 				while (!feof($svn)) {
-					fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': '.str_replace(array("\n","\r"),'',fgets($svn,512))."\n");
+					$svnin = ltrim(rtrim(fgets($svn,512)));
+					if ($svnin != "") {
+						fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': '.str_replace(array("\n","\r"),'',$svnin)."\n");
+					}
 				}
 				pclose($svn);
 //				die();
