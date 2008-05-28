@@ -75,19 +75,17 @@ while (!feof($fp)) {
 
         $line =  fgets($fp, 256);
 
-        usleep(2500);
+        usleep(25000);
         $peer = fread($fpt, 256);
 	if($peer != "") {
 	        $toirc = "PRIVMSG $chan :$peer";
 		fwrite($fp, "$toirc\r\n");
 		echo "Packet received!\n";
 	}
-	if(stristr($line, "!count") != FALSE) { //quiet trigger
+	if(stristr($line, "!count") != FALSE) {
+		usleep(750000); 
 		$cmatch = preg_match("/\:.* PRIVMSG #wikipedia-en-accounts :!count (.*)/", $line, $matches);
-		#$cmatch = preg_match("/\:(.*)\~(.*)\@(.*) PRIVMSG (\#.*) :(.*)/", $line, $matches);
 		if($cmatch > 0) {
-			#echo "$line\n";
-			#print_r($matches);
 			$matches[1] = ltrim(rtrim($matches[1]));
 			$query = "SELECT COUNT(*) FROM acc_log WHERE log_action = 'Closed 1' AND log_user = '$matches[1]';";
 			$result = mysql_query($query);
@@ -146,7 +144,8 @@ while (!feof($fp)) {
 
 		}
 	}
-	if(stristr($line, "!status") != FALSE) { //quiet trigger
+	if(stristr($line, "!status") != FALSE) {
+		usleep(750000); 
 		$query = "SELECT COUNT(*) FROM acc_pend WHERE pend_status = 'Open';";
 		$result = mysql_query($query);
 		if(!$result) Die("ERROR: No result returned.");
@@ -185,7 +184,7 @@ while (!feof($fp)) {
 	        fwrite($fp, "PONG ".$line[1]."\r\n"); 
 		usleep(500000);
 	}
-	if(stristr($line, "!die") != FALSE) { //quiet trigger
+	if(stristr($line, "!die") != FALSE) { 
 		$out = "PRIVMSG ".$chan." :Ok, dying!\n";
                 fwrite($fp, "$out\r\n");
 		usleep(1000000);
@@ -207,6 +206,7 @@ while (!feof($fp)) {
 					if ($svnin != "") {
 						fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': '.str_replace(array("\n","\r"),'',$svnin)."\n");
 					}
+					usleep(750000); //Slight delay so the bot does not kill itself on updating a lot of files.
 				}
 				pclose($svn);
 //				die();
