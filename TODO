@@ -2,9 +2,7 @@ acc.php:
 1. Interface needs formatted better
 2. More of the interface should be configurable
 3. Requests with multiple tries in history should be stripped of links (forcing the user to zoom and examine the circumstances
-3. Add mcrypt message encryption for bot comms
 
 accounts2.php:
 1. Access control for !die
-2. Add mcrypt message encryption for SVN and acc comms
-3. Some sort of stats mechanism. Maybe just telling the user where they rank upon !count
+2. Some sort of stats mechanism. Maybe just telling the user where they rank upon !count
