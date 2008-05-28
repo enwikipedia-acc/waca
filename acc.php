@@ -915,7 +915,7 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
 			$crea = "Impossible";
 			break;
 	}
-        fwrite($fp, "Request $_GET[id] ($gus) Marked as 'Done' ($crea) by $sid\r\n");
+        fwrite($fp, "Request $_GET[id] ($gus) Marked as 'Done' ($crea) by $sid on $now\r\n");
 	echo "Request $_GET[id] ($gus) marked as 'Done'.<br />";
 	$towhom = $row2[pend_email];
 	if($gem != "0") { sendemail($gem, $towhom); }
