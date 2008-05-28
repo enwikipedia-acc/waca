@@ -282,7 +282,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
         $row = mysql_fetch_assoc($result);
 	$pid = $row['pend_id'];
 	$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-	fwrite($fp, "New request: $_POST[name] http://tools.wikimedia.de/~sql/acc/acc.php?action=zoom&id=$pid\r\n");
+	fwrite($fp, "New request: $_POST[name] http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$pid\r\n");
 	fclose($fp);
 	if(!$result) Die("ERROR: No result returned.");
 	mysql_close();		

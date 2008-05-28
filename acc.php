@@ -276,7 +276,7 @@ if ($_GET['action'] == "forgotpw") {
 					$query = "UPDATE acc_user SET user_pass = '$pw' WHERE user_id = '$puser';";
 					$result = mysql_query($query);
 					if(!$result) Die("ERROR: No result returned.");
-					echo "Password reset!\n<br />\nYou may now <a href=\"http://tools.wikimedia.de/~sql/acc/acc.php\">Login</a>";
+					echo "Password reset!\n<br />\nYou may now <a href=\"http://toolserver.org/~sql/acc/acc.php\">Login</a>";
 				} else {
 					echo "<h2>ERROR</h2>Passwords did not match!<br />\n";
 				}
@@ -300,7 +300,7 @@ if ($_GET['action'] == "forgotpw") {
 			New Password (confirm): <input type="password" name="pw2"><br />
 			<input type="submit"><input type="reset">
 			</form><br />
-			Return to <a href="http://tools.wikimedia.de/~sql/acc/acc.php">Login</a>
+			Return to <a href="http://toolserver.org/~sql/acc/acc.php">Login</a>
 			<?php
 		} else {
 			echo "<h2>ERROR</h2>\nInvalid request.<br />";
@@ -325,7 +325,7 @@ if ($_GET['action'] == "forgotpw") {
 		}
 		$hashme = $puser . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
 		$hash = md5($hashme);
-		$mailtxt = "Hello! You, or a user from $_SERVER[REMOTE_ADDR], has requested a password reset for your account.\n\nPlease go to http://tools.wikimedia.de/~sql/acc/acc.php?action=forgotpw&si=$hash&id=$row[user_id] to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
+		$mailtxt = "Hello! You, or a user from $_SERVER[REMOTE_ADDR], has requested a password reset for your account.\n\nPlease go to http://toolserver.org/~sql/acc/acc.php?action=forgotpw&si=$hash&id=$row[user_id] to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row['user_email'], "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
 		echo "Your password reset request has been completed. Please check your e-mail.\n<br />";
@@ -338,7 +338,7 @@ if ($_GET['action'] == "forgotpw") {
 	Your e-mail address: <input type="text" name="email"><br />
 	<input type="submit"><input type="reset">
 	</form><br />
-	Return to <a href="http://tools.wikimedia.de/~sql/acc/acc.php">Login</a>
+	Return to <a href="http://toolserver.org/~sql/acc/acc.php">Login</a>
 	<?php
 	showfootern();
 	die();
@@ -363,7 +363,7 @@ if ($_GET['action'] == "login") {
 	$calcpass = md5($_POST[password]);
 	if ($row[user_pass] == $calcpass) { 
 		$_SESSION['user'] = $row[user_name]; 
-		header("Location: http://tools.wikimedia.de/~sql/acc/acc.php"); 
+		header("Location: http://toolserver.org/~sql/acc/acc.php"); 
 	} else {
 		echo "<h2>ERROR</h2>\n";
 		echo "Username and/or password incorrect.<br />\n";
@@ -689,7 +689,7 @@ if ($_GET['action'] == "usermgmt") {
 		$uname = $row[user_name];
 		$uoname = $row[user_onwikiname];
 		$userid = $row[user_id];
-		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend</a> - <a href=\"http://tools.wikimedia.de/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
+		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
 		echo "$out\n";
 	}
 	?>
@@ -1024,9 +1024,9 @@ if ($_GET['action'] == "logs") {
 	$next = $from + 100;
 	$prev = $from - 100;
 	if($from > 0) {
-		echo "<h4><a href=\"http://tools.wikimedia.de/~sql/acc/acc.php?action=logs&from=$prev\">Previous 100</a> <a href=\"http://tools.wikimedia.de/~sql/acc/acc.php?action=logs&from=$next\">Next 100</a></h4>\n";
+		echo "<h4><a href=\"http://toolserver.org/~sql/acc/acc.php?action=logs&from=$prev\">Previous 100</a> <a href=\"http://toolserver.org/~sql/acc/acc.php?action=logs&from=$next\">Next 100</a></h4>\n";
 	} else {
-		echo "<h4><a href=\"http://tools.wikimedia.de/~sql/acc/acc.php?action=logs&from=$next\">Next 100</a></h4>\n";
+		echo "<h4><a href=\"http://toolserver.org/~sql/acc/acc.php?action=logs&from=$next\">Next 100</a></h4>\n";
 	}
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
@@ -1108,9 +1108,9 @@ while ($row = mysql_fetch_assoc($result)) {
 #	$uname = str_replace("+", "_", $row[pend_name]);
 	$rid = $row['pend_id'];
 	if($row['pend_cmt'] != "") {
-		$cmt = "<a href=\"http://tools.wikimedia.de/~sql/acc/acc.php?action=zoom&id=$rid\">Zoom (CMT)</a> ";
+		$cmt = "<a href=\"http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$rid\">Zoom (CMT)</a> ";
 	} else {
-		$cmt = "<a href=\"http://tools.wikimedia.de/~sql/acc/acc.php?action=zoom&id=$rid\">Zoom</a> ";
+		$cmt = "<a href=\"http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$rid\">Zoom</a> ";
 	}
 
 	$out = '<li class="greentext" style="color: black;"><small>'; //List item
@@ -1208,7 +1208,7 @@ while ($row = mysql_fetch_assoc($result)) {
 #	$uname = str_replace("+", "_", $row[pend_name]);
 	$rid = $row['pend_id'];
 	if($row['pend_cmt'] != "") {
-		$cmt = "<a href=\"http://tools.wikimedia.de/~sql/acc/acc.php?action=zoom&id=$rid\">CMT </a>";
+		$cmt = "<a href=\"http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$rid\">CMT </a>";
 	} else {
 		$cmt = "";
 	}
