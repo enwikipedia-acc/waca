@@ -97,7 +97,7 @@ function showfootern() {
 global $version;
 ?>
 <br /><br />
-<center><small>English Wikipedia Account Creation Manager v<?php echo $version;?> by <a href="http://en.wikipedia.org/wiki/User:SQL">SQL</a> March 2008. <a href="http://en.wikipedia.org/wiki/User:SQL/ACC">Bugs?</a></small></center>
+<center><small>English Wikipedia Account Creation Manager v<?php echo $version;?> Created March 2008. <a href="https://jira.toolserver.org/secure/IssueNavigator.jspa?reset=true&mode=hide&pid=10210&sorter/order=DESC&sorter/field=priority&resolution=-1&component=10301">Bugs?</a> <a href="http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide">Manual</a></small></center>
 </body>
 </html>
 <?php
@@ -121,7 +121,7 @@ global $version;
 <a href="acc.php?action=messagemgmt">Message management</a><br />		
 <a href="acc.php?action=logs">Logs</a>
 <br /><br />
-<center><small>English Wikipedia Account Creation Manager <?php echo $version;?> by <a href="http://en.wikipedia.org/wiki/User:SQL">SQL</a> March 2008. <a href="http://en.wikipedia.org/wiki/User:SQL/ACC">Bugs?</a></small></center>
+<center><small>English Wikipedia Account Creation Manager v<?php echo $version;?> Created March 2008. <a href="https://jira.toolserver.org/secure/IssueNavigator.jspa?reset=true&mode=hide&pid=10210&sorter/order=DESC&sorter/field=priority&resolution=-1&component=10301">Bugs?</a> <a href="http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide">Manual</a></small></center>
 </body>
 </html>
 <?php
