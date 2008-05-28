@@ -1,6 +1,5 @@
 # 5/26/08
 index.php:
-1. Add api check for account existance instead of db check
 2. Add api block check instead of db check
 
 acc.php:

@@ -132,13 +132,17 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	if(!$result) Die("ERROR: No result returned.");
 	#$ip = $_POST['ip']; //Was for debugging
 	$ip = $_SERVER['REMOTE_ADDR'];
+	$ip2 = $_SERVER['REMOTE_ADDR'];
 	#$ip = ltrim($ip);
 	#$ip = rtrim($ip);
 	$ip = mysql_real_escape_string($ip);
-	$query = "SELECT * FROM ipblocks WHERE ipb_address = '$ip';";
-	$result = mysql_query($query);
-	$row = mysql_fetch_assoc($result);
-	if ($row['ipb_id'] != "") { 
+	#$query = "SELECT * FROM ipblocks WHERE ipb_address = '$ip';";
+	#$result = mysql_query($query);
+	#$row = mysql_fetch_assoc($result);
+	#if ($row['ipb_id'] != "") { 
+	$userblocked = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$ip2&format=php");
+	$ub = unserialize($userblocked);
+	if(isset($ub[query][blocks][0][id])) {
 		/* WAS: I'm sorry, but your IP address is presently blocked. Please contact unblock-en-l to create an account. */
 		$message = showmessage(9);
 		echo "$message<br />\n"; 
@@ -154,10 +158,6 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$email = ltrim($email);
 	$email = rtrim($email);
 	$email = mysql_real_escape_string($email);	
-//	$query = "SELECT * FROM user WHERE user_name = '$user';";
-//	$result = mysql_query($query);
-//	$row = mysql_fetch_assoc($result);
-//	if ($row['user_id'] != "") { 
 	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$_POST[name]&format=php");
 	$ue = unserialize($userexist);
 	foreach ($ue[query][users] as $oneue) {
