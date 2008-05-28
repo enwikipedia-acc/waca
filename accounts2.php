@@ -66,7 +66,7 @@ if (!$fp) {
     sleep(1);
     fwrite($fp, "JOIN :".$chan."\r\n");
     echo "Joined $chan\n";
-$fpt = stream_socket_server("udp://127.0.0.1:9001", $errno, $errstr, STREAM_SERVER_BIND);
+$fpt = stream_socket_server("udp://0.0.0.0:9001", $errno, $errstr, STREAM_SERVER_BIND);
 
 while (!feof($fp)) {
 	#Here's where the meat of your daemon goes.
