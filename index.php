@@ -154,14 +154,19 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$email = ltrim($email);
 	$email = rtrim($email);
 	$email = mysql_real_escape_string($email);	
-	$query = "SELECT * FROM user WHERE user_name = '$user';";
-	$result = mysql_query($query);
-	$row = mysql_fetch_assoc($result);
-	if ($row['user_id'] != "") { 
+//	$query = "SELECT * FROM user WHERE user_name = '$user';";
+//	$result = mysql_query($query);
+//	$row = mysql_fetch_assoc($result);
+//	if ($row['user_id'] != "") { 
+	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$_POST[name]&format=php");
+	$ue = unserialize($userexist);
+	foreach ($ue[query][users] as $oneue) {
+        	if(!isset($oneue[missing])) {
 		/* WAS: I'm sorry, but that user name is taken. Please try another. */
 		$message = showmessage(10);
 		echo "$message<br />\n"; 
 		$fail = 1; 
+	        }
 	}
 	$nums = preg_match("/^[0-9]+$/", $_POST['name']);
 	if ($nums > 0) { 
