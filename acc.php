@@ -242,6 +242,7 @@ value="welcomesmall">{{WelcomeSmall|user}} ~~~~</option><option value="hopes">{{
 value="welcomeshort">{{Welcomeshort|user}} ~~~~</option>
 <option value="w-riana">{{User:Riana/Welcome|name=user|sig=~~~~}}</option>
 <option value="w-kk">{{User:KrakatoaKatie/Welcome1}} ~~~~</option>
+<option value="w-screen">{{w-screen|sig=~~~~}}</option>
 <option value="wodup">{{User:WODUP/Welcome}} ~~~~</option></select</td>
 			</tr>
 		</td>
@@ -834,6 +835,7 @@ if ($_GET['action'] == "welcomeperf") {
 	<select name="template" size="0">
 	<option value="welcome"<?php if($template == "welcone") { echo " selected"; } ?>>{{welcome|user}} ~~~~</option>
 	<option value="welcomeg"<?php if($template == "welcomeg") { echo " selected"; } ?>>{{welcomeg|user}} ~~~~</option>
+	<option value="w-screen"<?php if($template == "w-screen") { echo " selected"; } ?>>{{w-screen|sig=~~~~}}</option>
 	<option value="welcome-personal"<?php if($template == "welcome-personal") { echo " selected"; } ?>>{{welcome-personal|user}} ~~~~</option>
 	<option value="w-kk"<?php if($template == "w-kk") { echo " selected"; } ?>>{{User:KrakatoaKatie/Welcome1}} ~~~~</option>
 	<option value="werdan7"<?php if($template == "werdan7") { echo " selected"; } ?>>{{User:Werdan7/W}} ~~~~</option>
