@@ -11,6 +11,5 @@ acc.php:
 
 accounts2.php:
 1. Access control for !die
-2. Fix bug on !die where it repeats itself
-3. Add mcrypt message encryption for SVN and acc comms
-4. Some sort of stats mechanism. Maybe just telling the user where they rank upon !count
+2. Add mcrypt message encryption for SVN and acc comms
+3. Some sort of stats mechanism. Maybe just telling the user where they rank upon !count

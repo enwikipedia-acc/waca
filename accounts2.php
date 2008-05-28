@@ -187,10 +187,10 @@ while (!feof($fp)) {
 	}
 	if(stristr($line, "!die") != FALSE) { //quiet trigger
 		$out = "PRIVMSG ".$chan." :Ok, dying!\n";
-                fwrite($fp, "$toirc\r\n");
+                fwrite($fp, "$out\r\n");
+		usleep(1000000);
 		socket_close($client);
 		socket_close($sock);
-		usleep(1000000);
 		die("Killed via IRC\n");
 	}
 	$line_ex = explode(' ',str_replace(array("\r","\n"),'',$line));
