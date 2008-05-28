@@ -1,6 +1,4 @@
 # 5/26/08
-index.php:
-2. Add api block check instead of db check
 
 acc.php:
 1. Interface needs formatted better
