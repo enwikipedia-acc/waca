@@ -99,6 +99,7 @@ while (!feof($fp)) {
 			if(!$result) Die("ERROR: No result returned.");
 			$row = mysql_fetch_assoc($result);
 			$userexist = $row['COUNT(*)'];
+			$abit = "";
 			if($userexist == "1") {
 				$query = "SELECT * FROM acc_user WHERE user_name = '$matches[1]';";
 				$result = mysql_query($query);
