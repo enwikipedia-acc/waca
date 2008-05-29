@@ -793,7 +793,6 @@ if ($_GET['action'] == "usermgmt") {
 	}
 	?>
 	</ol>
-	<?php	
 	<h2>Declined accounts</h2>
 	<?php
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Declined') WHERE user_level = 'Declined' GROUP BY log_pend ORDER BY log_pend DESC;";
