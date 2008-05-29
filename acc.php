@@ -743,7 +743,7 @@ if ($_GET['action'] == "usermgmt") {
 		$uname = $row[user_name];
 		$uoname = $row[user_onwikiname];
 		$userid = $row[user_id];
-		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&decline=$userid\">Decline</a> - <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend</a> - <a href=\"http://tools.wikimedia.de/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
+		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&decline=$userid\">Decline</a> - <a href=\"http://tools.wikimedia.de/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
 		echo "$out\n";
 	}
 	?>
