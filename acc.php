@@ -10,7 +10,7 @@
 
 ini_set('session.cookie_path', '/~sql/');
 ini_set('session.name', 'ACC');
-$version = "0.9.5";
+$version = "0.9.6";
 function sanitize($what) {
 	$what = mysql_real_escape_string($what);
 	return($what);
@@ -700,7 +700,7 @@ if ($_GET['action'] == "usermgmt") {
 		$did = sanitize($_GET[decline]);
 		$siuser = sanitize($_SESSION[user]);
 		if($_POST['declinereason'] == "") {
-			echo "<h2>Decline Reason</h2><strong>I AM TESTING THIS FUNCTION AT THIS TIME. IT DOES NOT WORK. PLEASE DO NOT USE IT WITHOUT ASKING ME -- SQL</strong><br />\n<form action=\"acc.php?action=usermgmt&decline=$did\" method=\"post\"><br />\n";
+			echo "<h2>Decline Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&decline=$did\" method=\"post\"><br />\n";
 			echo "<textarea name=\"declinereason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
 			echo "<input type=\"submit\"><input type=\"reset\"><br />\n";		
 			echo "</form>";
@@ -743,7 +743,7 @@ if ($_GET['action'] == "usermgmt") {
 		$uname = $row[user_name];
 		$uoname = $row[user_onwikiname];
 		$userid = $row[user_id];
-		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&decline=$userid\">Decline (alpha!)</a> - <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend</a> - <a href=\"http://tools.wikimedia.de/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
+		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&decline=$userid\">Decline</a> - <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend</a> - <a href=\"http://tools.wikimedia.de/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
 		echo "$out\n";
 	}
 	?>
