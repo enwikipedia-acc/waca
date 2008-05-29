@@ -61,6 +61,17 @@ function checksecurity($username) {
 		if(!$result2) Die("ERROR: No result returned.");
 		$row2 = mysql_fetch_assoc($result2);
 		echo "I'm sorry, but, your account request was <strong>declined</strong> by <strong>$row2[log_user]</strong> because <strong>\"$row2[log_cmt]\"</strong> at <strong>$row2[log_time]</strong>.<br />\n";
+		echo "Related information (please include this if appealing this decision)<br />\n";
+		echo "user_id: $row[user_id]<br />\n";
+		echo "user_name: $row[user_name]<br />\n";
+		echo "user_onwikiname: $row[user_onwikiname]<br />\n";
+		echo "user_email: $row[user_email]<br />\n";
+		echo "log_id: $row2[log_id]<br />\n";
+		echo "log_pend: $row2[log_pend]<br />\n";
+		echo "log_user: $row2[log_user]<br />\n";
+		echo "log_time: $row2[log_time]<br />\n";
+		echo "log_cmt: $row2[log_cmt]<br />\n";
+		echo "<br /><big><strong>To appeal this decision, please e-mail <a href=\"mailto:accounts-enwiki-l@lists.wikimedia.org\">accounts-enwiki-l@lists.wikimedia.org</a> with the above information, and a reasoning why you believe you should be approved for this interface.</strong></big><br />\n"
 		showfootern();
 		die();
 	}
