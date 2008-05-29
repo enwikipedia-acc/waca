@@ -39,7 +39,7 @@ mysql> DESCRIBE acc_emails;
 acc_log
 This table contains logging data.
 
-DESCRIBE acc_log;
+mysql> describe acc_log;
 +------------+--------------+------+-----+---------+----------------+
 | Field      | Type         | Null | Key | Default | Extra          |
 +------------+--------------+------+-----+---------+----------------+
@@ -48,8 +48,9 @@ DESCRIBE acc_log;
 | log_user   | varchar(255) | NO   |     | NULL    |                | 
 | log_action | varchar(255) | NO   |     | NULL    |                | 
 | log_time   | datetime     | NO   |     | NULL    |                | 
+| log_cmt    | blob         | NO   |     | NULL    |                | 
 +------------+--------------+------+-----+---------+----------------+
-5 rows in set (0.00 sec)
+6 rows in set (0.00 sec)
 
 
 *log_id - Table key
@@ -57,6 +58,7 @@ DESCRIBE acc_log;
 *log_user - Username of the user performing the action
 *log_action - The action performed
 *log_time - Timestamp
+*log_cmt - Used for comments on some actions (presently only user decline)
 
 acc_pend
 This table contains pending requests.

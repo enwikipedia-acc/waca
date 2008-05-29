@@ -687,29 +687,27 @@ if ($_GET['action'] == "usermgmt") {
 			showfooter();
 			die();
 		} else {
-			echo "<pre>";
-			print_r($_REQUEST);
-			echo "<pre>";
+			$declinersn = sanitize($_POST['declinereason']);
+			$query = "UPDATE acc_user SET user_level = 'Declined' WHERE user_id = '$did';";
+			$result = mysql_query($query);
+			if(!$result) Die("ERROR: No result returned.");
+        	        $now = date("Y-m-d H-i-s");
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$did', '$siuser', 'Declined', '$now', '$declinersn');";
+			$result = mysql_query($query);
+			if(!$result) Die("ERROR: No result returned.");
+			echo "Changed User #$_GET[decline] access to 'Declined'<br />\n";
+			$uid = $did;
+			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
+			$result2 = mysql_query($query2);
+			if(!$result2) Die("ERROR: No result returned.");
+			$row2 = mysql_fetch_assoc($result2);
+			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
+			fwrite($fp, "User $aid ($row2[user_name]) declined access by $siuser because: $declinersn\r\n");
+			fclose($fp); 
 			showfooter();
 			die();
 		}
-/*		$query = "UPDATE acc_user SET user_level = 'Admin' WHERE user_id = '$aid';";
-		$result = mysql_query($query);
-		if(!$result) Die("ERROR: No result returned.");
-                $now = date("Y-m-d H-i-s");
-#		$now = date("F j, Y, g:i a");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$aid', '$siuser', 'Promoted', '$now');";
-		$result = mysql_query($query);
-		if(!$result) Die("ERROR: No result returned.");
-		echo "Changed User #$_GET[promote] access to 'Admin'<br />\n";
-		$uid = $aid;
-		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-		$result2 = mysql_query($query2);
-		if(!$result2) Die("ERROR: No result returned.");
-		$row2 = mysql_fetch_assoc($result2);
-		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-		fwrite($fp, "User $aid ($row2[user_name]) promoted to admin by $siuser\r\n");
-		fclose($fp); */
+
 	}
 	?>
 	<div align="left" style="position: absolute; top: 5px"><a href="acc.php?action=usermgmt">Refresh this page!</a></div>
