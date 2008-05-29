@@ -71,7 +71,7 @@ function checksecurity($username) {
 		echo "log_user: $row2[log_user]<br />\n";
 		echo "log_time: $row2[log_time]<br />\n";
 		echo "log_cmt: $row2[log_cmt]<br />\n";
-		echo "<br /><big><strong>To appeal this decision, please e-mail <a href=\"mailto:accounts-enwiki-l@lists.wikimedia.org\">accounts-enwiki-l@lists.wikimedia.org</a> with the above information, and a reasoning why you believe you should be approved for this interface.</strong></big><br />\n"
+		echo "<br /><big><strong>To appeal this decision, please e-mail <a href=\"mailto:accounts-enwiki-l@lists.wikimedia.org\">accounts-enwiki-l@lists.wikimedia.org</a> with the above information, and a reasoning why you believe you should be approved for this interface.</strong></big><br />\n";
 		showfootern();
 		die();
 	}
