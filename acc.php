@@ -677,9 +677,9 @@ if ($_GET['action'] == "usermgmt") {
 		fclose($fp);
 	}
 	if($_GET['decline'] != "") {
+		$did = sanitize($_GET[decline]);
+		$siuser = sanitize($_SESSION[user]);
 		if($_POST['declinereason'] == "") {
-			$did = sanitize($_GET[decline]);
-			$siuser = sanitize($_SESSION[user]);
 			echo "<h2>Decline Reason</h2><strong>I AM TESTING THIS FUNCTION AT THIS TIME. IT DOES NOT WORK. PLEASE DO NOT USE IT WITHOUT ASKING ME -- SQL</strong><br />\n<form action=\"acc.php?action=usermgmt&decline=$did\" method=\"post\"><br />\n";
 			echo "<textarea name=\"declinereason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
 			echo "<input type=\"submit\"><input type=\"reset\"><br />\n";		
@@ -702,7 +702,7 @@ if ($_GET['action'] == "usermgmt") {
 			if(!$result2) Die("ERROR: No result returned.");
 			$row2 = mysql_fetch_assoc($result2);
 			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-			fwrite($fp, "User $aid ($row2[user_name]) declined access by $siuser because: $declinersn\r\n");
+			fwrite($fp, "User $did ($row2[user_name]) declined access by $siuser because: $declinersn\r\n");
 			fclose($fp); 
 			showfooter();
 			die();
