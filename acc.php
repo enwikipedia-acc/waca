@@ -1115,13 +1115,17 @@ if ($_GET['action'] == "logs") {
 			$row3 = mysql_fetch_assoc($result3);
 			echo "<li>$row[log_user] Edited Message <a href=\"acc.php?action=messagemgmt&view=$row[log_pend]\">$row[log_pend] ($row3[mail_desc])</a>, at $row[log_time].</li>\n";
 		}
-		if($row[log_action] == "Promoted" || $row[log_action] == "Approved" || $row[log_action] == "Suspended") {
+		if($row[log_action] == "Promoted" || $row[log_action] == "Approved" || $row[log_action] == "Suspended" || $row[log_action] == "Declined") {
 			$uid = $row[log_pend];
 			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
 			$result2 = mysql_query($query2);
 			if(!$result2) Die("ERROR: No result returned.");
 			$row2 = mysql_fetch_assoc($result2);
-			echo "<li>$row[log_user] $row[log_action], User $row[log_pend] ($row2[user_name]) at $row[log_time].</li>\n";
+			$moreinfo = "";
+			if($row2[log_action] == "Declined") {
+				$moreinfo = " because \"$row2[log_cmt]\"";
+			}
+			echo "<li>$row[log_user] $row[log_action], User $row[log_pend] ($row2[user_name]) at $row[log_time]$moreinfo.</li>\n";
 		}
 	}
 	echo "</ol>\n";
