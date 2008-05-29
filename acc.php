@@ -680,7 +680,7 @@ if ($_GET['action'] == "usermgmt") {
 		if($_POST['declinereason'] == "") {
 			$did = sanitize($_GET[decline]);
 			$siuser = sanitize($_SESSION[user]);
-			echo "<h2>Decline Reason</h2><strong>I AM TESTING THIS FUNCTION AT THIS TIME. IT DOES NOT WORK. PLEASE DO NOT USE IT WITHOUT ASKING ME -- SQL</strong><br />\n<form action=\"acc.php?decline=$did\" method=\"post\"><br />\n";
+			echo "<h2>Decline Reason</h2><strong>I AM TESTING THIS FUNCTION AT THIS TIME. IT DOES NOT WORK. PLEASE DO NOT USE IT WITHOUT ASKING ME -- SQL</strong><br />\n<form action=\"acc.php?action=usermgmt&decline=$did\" method=\"post\"><br />\n";
 			echo "<textarea name=\"declinereason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
 			echo "<input type=\"submit\"><input type=\"reset\"><br />\n";		
 			echo "</form>";
