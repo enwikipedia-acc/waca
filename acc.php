@@ -794,6 +794,22 @@ if ($_GET['action'] == "usermgmt") {
 	?>
 	</ol>
 	<?php	
+	<h2>Declined accounts</h2>
+	<?php
+	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Declined') WHERE user_level = 'Declined' GROUP BY log_pend ORDER BY log_pend DESC;";
+	$result = mysql_query($query);
+	if(!$result) Die("ERROR: No result returned.");
+	echo "<ol>\n";
+	while ($row = mysql_fetch_assoc($result)) {
+		$uname = $row[user_name];
+		$uoname = $row[user_onwikiname];
+		$userid = $row[user_id];
+		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> (Declined by $row[log_user] because $row[log_cmt])</small></li>";
+		echo "$out\n";
+	}
+	?>
+	</ol>
+	<?php	
 	showfooter();
 	die();
 }
