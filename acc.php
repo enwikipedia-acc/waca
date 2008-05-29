@@ -1122,8 +1122,8 @@ if ($_GET['action'] == "logs") {
 			if(!$result2) Die("ERROR: No result returned.");
 			$row2 = mysql_fetch_assoc($result2);
 			$moreinfo = "";
-			if($row2[log_action] == "Declined") {
-				$moreinfo = " because \"$row2[log_cmt]\"";
+			if($row[log_action] == "Declined") {
+				$moreinfo = " because \"$row[log_cmt]\"";
 			}
 			echo "<li>$row[log_user] $row[log_action], User $row[log_pend] ($row2[user_name]) at $row[log_time]$moreinfo.</li>\n";
 		}
