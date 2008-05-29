@@ -640,7 +640,6 @@ if ($_GET['action'] == "usermgmt") {
 		$result = mysql_query($query);
 		if(!$result) Die("ERROR: No result returned.");
                 $now = date("Y-m-d H-i-s");
-#		$now = date("F j, Y, g:i a");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$aid', '$siuser', 'Approved', '$now');";
 		$result = mysql_query($query);
 		if(!$result) Die("ERROR: No result returned.");
@@ -655,25 +654,37 @@ if ($_GET['action'] == "usermgmt") {
 		fclose($fp);
 	}
 	if($_GET['suspend'] != "") {
-		$aid = sanitize($_GET[suspend]);
+		$did = sanitize($_GET[suspend]);
 		$siuser = sanitize($_SESSION[user]);
-		$query = "UPDATE acc_user SET user_level = 'Suspended' WHERE user_id = '$aid';";
-		$result = mysql_query($query);
-		if(!$result) Die("ERROR: No result returned.");
-                $now = date("Y-m-d H-i-s");
-#		$now = date("F j, Y, g:i a");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$aid', '$siuser', 'Suspended', '$now');";
-		$result = mysql_query($query);
-		if(!$result) Die("ERROR: No result returned.");
-		echo "Changed User #$_GET[suspend] access to 'Suspended'<br />\n";
-		$uid = $aid;
-		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-		$result2 = mysql_query($query2);
-		if(!$result2) Die("ERROR: No result returned.");
-		$row2 = mysql_fetch_assoc($result2);
-		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-		fwrite($fp, "User $aid ($row2[user_name]) suspended by $siuser\r\n");
-		fclose($fp);
+		if($_POST['suspendreason'] == "") {
+			echo "<h2>Suspend Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&suspend=$did\" method=\"post\"><br />\n";
+			echo "<textarea name=\"suspendreason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
+			echo "<input type=\"submit\"><input type=\"reset\"><br />\n";		
+			echo "</form>";
+			showfooter();
+			die();
+		} else {
+			$suspendrsn = sanitize($_POST['suspendreason']);
+			$query = "UPDATE acc_user SET user_level = 'Suspendd' WHERE user_id = '$did';";
+			$result = mysql_query($query);
+			if(!$result) Die("ERROR: No result returned.");
+        	        $now = date("Y-m-d H-i-s");
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$did', '$siuser', 'Suspendd', '$now', '$suspendrsn');";
+			$result = mysql_query($query);
+			if(!$result) Die("ERROR: No result returned.");
+			echo "Changed User #$_GET[suspend] access to 'Suspendd'<br />\n";
+			$uid = $did;
+			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
+			$result2 = mysql_query($query2);
+			if(!$result2) Die("ERROR: No result returned.");
+			$row2 = mysql_fetch_assoc($result2);
+			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
+			fwrite($fp, "User $did ($row2[user_name]) suspendd access by $siuser because: $suspendrsn\r\n");
+			fclose($fp); 
+			showfooter();
+			die();
+		}
+
 	}
 	if($_GET['promote'] != "") {
 		$aid = sanitize($_GET[promote]);
@@ -682,7 +693,6 @@ if ($_GET['action'] == "usermgmt") {
 		$result = mysql_query($query);
 		if(!$result) Die("ERROR: No result returned.");
                 $now = date("Y-m-d H-i-s");
-#		$now = date("F j, Y, g:i a");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$aid', '$siuser', 'Promoted', '$now');";
 		$result = mysql_query($query);
 		if(!$result) Die("ERROR: No result returned.");
