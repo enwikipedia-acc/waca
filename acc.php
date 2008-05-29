@@ -676,6 +676,41 @@ if ($_GET['action'] == "usermgmt") {
 		fwrite($fp, "User $aid ($row2[user_name]) promoted to admin by $siuser\r\n");
 		fclose($fp);
 	}
+	if($_GET['decline'] != "") {
+		if($_POST['declinereason'] == "") {
+			$did = sanitize($_GET[decline]);
+			$siuser = sanitize($_SESSION[user]);
+			echo "<h2>Decline Reason</h2><strong>I AM TESTING THIS FUNCTION AT THIS TIME. IT DOES NOT WORK. PLEASE DO NOT USE IT WITHOUT ASKING ME -- SQL</strong><br />\n<form action=\"acc.php?decline=$did\" method=\"post\"><br />\n";
+			echo "<textarea name=\"declinereason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
+			echo "<input type=\"submit\"><input type=\"reset\"><br />\n";		
+			echo "</form>";
+			showfooter();
+			die();
+		} else {
+			echo "<pre>";
+			print_r($_REQUEST);
+			echo "<pre>";
+			showfooter();
+			die();
+		}
+/*		$query = "UPDATE acc_user SET user_level = 'Admin' WHERE user_id = '$aid';";
+		$result = mysql_query($query);
+		if(!$result) Die("ERROR: No result returned.");
+                $now = date("Y-m-d H-i-s");
+#		$now = date("F j, Y, g:i a");
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$aid', '$siuser', 'Promoted', '$now');";
+		$result = mysql_query($query);
+		if(!$result) Die("ERROR: No result returned.");
+		echo "Changed User #$_GET[promote] access to 'Admin'<br />\n";
+		$uid = $aid;
+		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
+		$result2 = mysql_query($query2);
+		if(!$result2) Die("ERROR: No result returned.");
+		$row2 = mysql_fetch_assoc($result2);
+		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
+		fwrite($fp, "User $aid ($row2[user_name]) promoted to admin by $siuser\r\n");
+		fclose($fp); */
+	}
 	?>
 	<div align="left" style="position: absolute; top: 5px"><a href="acc.php?action=usermgmt">Refresh this page!</a></div>
 	<h1>User Management</h1>
@@ -690,7 +725,7 @@ if ($_GET['action'] == "usermgmt") {
 		$uname = $row[user_name];
 		$uoname = $row[user_onwikiname];
 		$userid = $row[user_id];
-		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
+		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&decline=$userid\">Decline (alpha!)</a> - <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend</a> - <a href=\"http://tools.wikimedia.de/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
 		echo "$out\n";
 	}
 	?>
