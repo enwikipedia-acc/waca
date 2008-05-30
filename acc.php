@@ -95,29 +95,6 @@ function showfooter() {
 		$out =preg_replace('/\<br \/\>\<br \/\>/', '<br /><a href="acc.php?action=usermgmt">User management</a><br /><br />', $out);
 	}
 	echo $out;
-/* Temp remove, let's see how this works.
-global $version; 
-?>
-<h2>Tools</h2>
-<a href="acc.php">Home</a><br />
-<?php
-	$suser = sanitize($_SESSION[user]);
-	$query = "SELECT * FROM acc_user WHERE user_name = '$suser';";
-	$result = mysql_query($query);
-	if(!$result) Die("ERROR: No result returned.");
-	$row = mysql_fetch_assoc($result);
-	if($row[user_level] == "Admin") {
-		?><a href="acc.php?action=usermgmt">User management</a><br /><?php
-	}
-?>
-<a href="acc.php?action=ban">Ban management</a><br />		
-<a href="acc.php?action=messagemgmt">Message management</a><br />		
-<a href="acc.php?action=logs">Logs</a>
-<br /><br />
-<center><small>English Wikipedia Account Creation Manager v<?php echo $version;?> Created March 2008. <a href="https://jira.toolserver.org/secure/IssueNavigator.jspa?reset=true&mode=hide&pid=10210&sorter/order=DESC&sorter/field=priority&resolution=-1&component=10301">Bugs?</a> <a href="http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide">Manual</a></small></center>
-</body>
-</html>
-<?php */
 }
 require_once('../../database.inc');
 mysql_connect("sql",$toolserver_username,$toolserver_password);
