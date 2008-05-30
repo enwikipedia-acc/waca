@@ -24,13 +24,14 @@ require_once('../../database.inc');
 mysql_connect("sql",$toolserver_username,$toolserver_password);
 @mysql_select_db("u_sql") or print mysql_error();
 if ($_GET[viewuser] != "") {
-	$query = "SELECT * FROM acc_user WHERE user_id = $_GET[viewuser]";
+	$query = "SELECT * FROM acc_user WHERE user_id = $_GET[viewuser] AND user_level != 'Suspended' AND user_level != 'Declined';";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
 	echo "<h2>Detail report for user: $row[user_name]</h2>\n";
 	echo "<ol>\n";
 	echo "<li>User ID: $row[user_id]</li>\n";
+	echo "<li>User Level: $row[user_level]</li>\n";
 	echo "<li>User On-wiki name: $row[user_onwikiname]</li>\n";
 	echo "</ol>\n";
 
