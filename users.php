@@ -32,7 +32,7 @@ if ($_GET[viewuser] != "") {
 	echo "<ol>\n";
 	echo "<li>User ID: $row[user_id]</li>\n";
 	echo "<li>User Level: $row[user_level]</li>\n";
-	echo "<li>User On-wiki name: <a href=\"http://en.wikipedia.org/wiki/User:$row[user_onwikiname]\">$row[onwikiname]</a></li>\n";
+	echo "<li>User On-wiki name: <a href=\"http://en.wikipedia.org/wiki/User:$row[user_onwikiname]\">$row[user_onwikiname]</a></li>\n";
 	echo "</ol>\n";
 
 	showfooter();
