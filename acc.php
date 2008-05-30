@@ -1054,9 +1054,11 @@ if ($_GET['action'] == "logs") {
 	$next = $from + 100;
 	$prev = $from - 100;
 	if($from > 0) {
-		echo "<h4><a href=\"http://toolserver.org/~sql/acc/acc.php?action=logs&from=$prev\">Previous 100</a> <a href=\"http://toolserver.org/~sql/acc/acc.php?action=logs&from=$next\">Next 100</a></h4>\n";
+		$n1 = "<h4><a href=\"http://toolserver.org/~sql/acc/acc.php?action=logs&from=$prev\">Previous 100</a> <a href=\"http://toolserver.org/~sql/acc/acc.php?action=logs&from=$next\">Next 100</a></h4>\n";
+		echo $n1;
 	} else {
-		echo "<h4><a href=\"http://toolserver.org/~sql/acc/acc.php?action=logs&from=$next\">Next 100</a></h4>\n";
+		$n1 = "<h4><a href=\"http://toolserver.org/~sql/acc/acc.php?action=logs&from=$next\">Next 100</a></h4>\n";
+		echo $n1;
 	}
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
@@ -1124,6 +1126,7 @@ if ($_GET['action'] == "logs") {
 		}
 	}
 	echo "</ol>\n";
+	echo $n1;
 	showfooter();
 	die();
 }
