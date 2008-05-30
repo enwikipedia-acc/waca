@@ -77,41 +77,8 @@ function checksecurity($username) {
 	}
 }
 function showhead() {
-?>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html>
-<head>
-<title>Internal Account Creation Interface</title>
-<meta name="generator" content="Bluefish 1.0.7">
-<meta name="author" content="sql">
-<meta name="date" content="2008-04-04T09:23:14-0400">
-<meta name="copyright" content="">
-<meta name="keywords" content="">
-<meta name="description" content="">
-<meta name="ROBOTS" content="NOINDEX, NOFOLLOW">
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8">
-<meta http-equiv="content-style-type" content="text/css">
-<meta http-equiv="expires" content="0">
-<style>
-	.greentext { color: green; }
-	.bluetext { color: #0000FF; }
-	.orangetext { color: orange; }
-	.redtext { color: #FF0000; }
-
-	.greentext a:link { color: green; }
-	.bluetext a:link { color: #0000FF; }
-	.orangetext a:link { color: orange; }
-	.redtext a:link { color: #FF0000; }
-
-	.greentext a:visited { color: gray; }
-	.bluetext a:visited { color: gray; }
-	.orangetext a:visited { color: gray; }
-	.redtext a:visited { color: gray; }
-</style>
-</head>
-<body>
-<?php
+	$out = showmessage('20');
+	echo $out;
 }
 function showfootern() {
 global $version;
