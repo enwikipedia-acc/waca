@@ -24,7 +24,7 @@ require_once('../../database.inc');
 mysql_connect("sql",$toolserver_username,$toolserver_password);
 @mysql_select_db("u_sql") or print mysql_error();
 if ($_GET[viewuser] != "") {
-	$query = "SELECT * FROM acc_user ORDER BY user_level";
+	$query = "SELECT * FROM acc_user WHERE user_id = $_GET[viewuser]";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
