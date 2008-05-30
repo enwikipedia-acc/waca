@@ -19,13 +19,18 @@ mysql_connect("sql",$toolserver_username,$toolserver_password);
 $query = "SELECT * FROM acc_user ORDER BY user_level";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
+if ($_GET[viewuser] != "") {
+	echo "<h2>Detail report for user: </h2>\n";
+
+	die();
+}
 echo "<h2>User List</h2>\n<ul>\n";
 while ($row = mysql_fetch_assoc($result)) {
 	if($row[user_level] != $lastlevel && $row[user_level] != "Suspended" && $row[user_level] != "Declined") { echo "<h3>$row[user_level]</h3>\n"; }
 	if($row[user_level] == "Suspended") { $row[user_name] = ""; }
 	if($row[user_level] == "Declined") { $row[user_name] = ""; }
 	if($row[user_name] != "") {
-		echo "<li>$row[user_name] - $row[user_level]</li>\n";
+		echo "<li><a href=\"users.php?viewuser=$row[user_id]\">$row[user_name]</a> - $row[user_level]</li>\n";
 	}
 	$lastlevel = $row[user_level];
 }
