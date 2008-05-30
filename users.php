@@ -21,7 +21,7 @@ $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
 echo "<h2>User List</h2>\n<ul>\n";
 while ($row = mysql_fetch_assoc($result)) {
-	echo "<li>$row[user_name]</li>\n";
+	echo "<li>$row[user_name] - $row[user_level]</li>\n";
 }
 echo "<ul>\n";
 ?>
