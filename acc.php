@@ -77,7 +77,7 @@ function checksecurity($username) {
 	}
 }
 function showhead() {
-	$out = showmessage('20');
+	$out = showmessage('21');
 	echo $out;
 }
 function showfootern() {
