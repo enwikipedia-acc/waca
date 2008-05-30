@@ -92,7 +92,7 @@ function showfooter() {
         if(!$result) Die("ERROR: No result returned.");
         $row = mysql_fetch_assoc($result);
         if($row[user_level] == "Admin") {
-		preg_replace('/\<br \/\>\<br \/\>/', '<br /><a href="acc.php?action=usermgmt">User management</a><br />\<br />', $out);
+		$out =preg_replace('/\<br \/\>\<br \/\>/', '<br /><a href="acc.php?action=usermgmt">User management</a><br />\<br />', $out);
 	}
 	echo $out;
 /* Temp remove, let's see how this works.
