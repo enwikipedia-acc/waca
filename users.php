@@ -32,7 +32,7 @@ if ($_GET[viewuser] != "") {
 	echo "<ol>\n";
 	echo "<li>User ID: $row[user_id]</li>\n";
 	echo "<li>User Level: $row[user_level]</li>\n";
-	echo "<li>User On-wiki name: <a href=\"http://en.wikipedia.org/wiki/User:$row[user_onwikiname]\">$row[user_onwikiname]</a></li>\n";
+	    echo "<li>User On-wiki name: <a href=\"http://en.wikipedia.org/wiki/User:$row[user_onwikiname]\">$row[user_onwikiname]</a>  |  <a href=\"http://en.wikipedia.org/wiki/User talk:$row[user_onwikiname]\">talk page</a> </li>\n";
 	echo "</ol>\n";
 
 	showfooter();
@@ -49,7 +49,8 @@ while ($row = mysql_fetch_assoc($result)) {
 	if($row[user_level] == "Declined") { $row[user_name] = ""; }
 	if($row[user_level] == "New") { $row[user_name] = ""; }
 	if($row[user_name] != "") {
-	    echo "<li>User On-wiki name: <a href=\"http://en.wikipedia.org/wiki/User:$row[user_onwikiname]\">$row[user_onwikiname]</a>  |  <a href=\"http://en.wikipedia.org/wiki/User talk:$row[user_onwikiname]\">talk page</a> </li>\n";	}
+		echo "<li><a href=\"users.php?viewuser=$row[user_id]\">$row[user_name]</a></li>\n";
+	}
 	$lastlevel = $row[user_level];
 }
 echo "<ul>\n";
