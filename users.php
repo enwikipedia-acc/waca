@@ -21,10 +21,12 @@ $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
 echo "<h2>User List</h2>\n<ul>\n";
 while ($row = mysql_fetch_assoc($result)) {
+	if($row[user_level] != $lastlevel) { echo "<h3>$row[user_level]</h3>\n"; }
 	if($row[user_level] == "Suspended") { $row[user_name] = ""; }
 	if($row[user_name] != "") {
 		echo "<li>$row[user_name] - $row[user_level]</li>\n";
 	}
+	$lastlevel = $row[user_level];
 }
 echo "<ul>\n";
 ?>
