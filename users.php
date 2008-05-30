@@ -7,7 +7,14 @@
 **  Cobi ( http://en.wikipedia.org/User:Cobi ) **
 **                                             **
 ************************************************/
-
+echo "<html>
+<head>
+<title>Account Creation Manager User Report</title>
+</head>
+<body>\n";
+function showfooter() {
+	echo "</body></html>\n";
+}
 function sanitize($what) {
         $what = mysql_real_escape_string($what);
         return($what);
@@ -21,7 +28,7 @@ $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
 if ($_GET[viewuser] != "") {
 	echo "<h2>Detail report for user: </h2>\n";
-
+	showfooter();
 	die();
 }
 echo "<h2>User List</h2>\n<ul>\n";
@@ -35,4 +42,5 @@ while ($row = mysql_fetch_assoc($result)) {
 	$lastlevel = $row[user_level];
 }
 echo "<ul>\n";
+showfooter();
 ?>
