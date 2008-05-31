@@ -1,8 +1,12 @@
 fastlizard4's TODO
 
-(done)	1. Figure out what the hell I am doing! - I guess {{done}}
-(done)	2. Sleep - >>WILL NOT DO<<!
-	3. Add a 'refresh this page' link
-	4. Maybe get the "DismissSiteNotice" feature to go into the programming instead of a 	   javascript flood
+Status/Prioirty |  Task and description
+--------------------------------------------------------------------------------------------
+HIGH		1. STOP TEH GRAWP!  (Create email and registeration blacklist; colaborate 		   	   with others to help create)
+(done)		2. Figure out what the hell I am doing! - I guess {{done}}
+(WONTDO)	3. Sleep - >>WILL NOT DO<<!
+NORMAL		4. Add a 'refresh this page' link
+NORMAL		5. Maybe get the "DismissSiteNotice" feature to go into the programming 			   instead of a javascript flood
+--------------------------------------------------------------------------------------------
 
 A WARNING TO VANDALS (read: SQL): TOUCHING THIS TXT FILE IS FORBIDDEN BY COMMUNIST LAW!
