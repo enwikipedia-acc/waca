@@ -37,6 +37,7 @@ if (posix_setsid() == -1) {
 #Set up signal handlers -- Linked to the functions below.
 pcntl_signal(SIGHUP, "SIGHUP");
 pcntl_signal(SIGTERM, "SIGTERM");
+pcntl_signal(SIGCHLD, "SIGCHLD");
  
 function SIGHUP() {
 	#Do what you want it to do upon receiving a SIGHUP
@@ -47,12 +48,25 @@ function SIGTERM() {
 	fclose($fp); //Goodnight!
 	die("Received SIGTERM\n");
 }
- 
+
+function SIGCHLD() {
+	while (pcntl_waitpid(0, $status) != -1) {
+		$status = pcntl_wexitstatus($status);
+	}
+}
+
 #Initialize your daemon here (i.e. make the IRC connection, DB connection, set variables, whatever)
 #we need teh sxwiki to alert me.
 require_once('../../database.inc');
-mysql_connect("sql",$toolserver_username,$toolserver_password);
-@mysql_select_db("u_sql") or print mysql_error();
+function myq($query) {
+	global $mysql, $toolserver_username, $toolserver_password;
+	if (!mysql_ping()) {
+		mysql_connect("sql",$toolserver_username,$toolserver_password);
+		@mysql_select_db("u_sql") or print mysql_error();
+	}
+
+	return mysql_query($query);
+}
 set_time_limit (0);
 set_time_limit(0);
 $host = "irc.freenode.org";
@@ -94,38 +108,38 @@ while (!feof($fp)) {
 		if($cmatch > 0) {
 			$matches[1] = ltrim(rtrim($matches[1]));
 			$query = "SELECT COUNT(*) FROM acc_log WHERE log_action = 'Closed 1' AND log_user = '$matches[1]';";
-			$result = mysql_query($query);
+			$result = myq($query);
 			if(!$result) Die("ERROR: No result returned.");
 			$row = mysql_fetch_assoc($result);
 			$howmany = $row['COUNT(*)'];
 			$query = "SELECT COUNT(*) FROM acc_user WHERE user_name = '$matches[1]';";
-			$result = mysql_query($query);
+			$result = myq($query);
 			if(!$result) Die("ERROR: No result returned.");
 			$row = mysql_fetch_assoc($result);
 			$userexist = $row['COUNT(*)'];
 			$abit = "";
 			if($userexist == "1") {
 				$query = "SELECT * FROM acc_user WHERE user_name = '$matches[1]';";
-				$result = mysql_query($query);
+				$result = myq($query);
 				if(!$result) Die("ERROR: No result returned.");
 				$row = mysql_fetch_assoc($result);
 				$level = $row['user_level'];
 				if($level == "Admin") {
 					$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$matches[1]' AND log_action = 'Suspended';";
-	                                $result = mysql_query($query);
+	                                $result = myq($query);
         	                        if(!$result) Die("ERROR: No result returned.");
                 	                $row = mysql_fetch_assoc($result);
 					$suspended = $row['COUNT(*)'];
 
 					$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$matches[1]' AND log_action = 'Promoted';";
-	                                $result = mysql_query($query);
+	                                $result = myq($query);
         	                        if(!$result) Die("ERROR: No result returned.");
                 	                $row = mysql_fetch_assoc($result);
 					$promoted = $row['COUNT(*)'];
 
 
 					$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$matches[1]' AND log_action = 'Approved';";
-	                                $result = mysql_query($query);
+	                                $result = myq($query);
         	                        if(!$result) Die("ERROR: No result returned.");
                 	                $row = mysql_fetch_assoc($result);
 					$approved = $row['COUNT(*)'];
@@ -135,7 +149,7 @@ while (!feof($fp)) {
 			}
 			$now = date("Y-m-d");
 			$topq = "select log_user,count(*) from acc_log where log_time like '$now%' and log_action = 'Closed 1' and log_user = '$matches[1]' group by log_user ORDER BY count(*) DESC limit 5;";
-			$result = mysql_query($topq);
+			$result = myq($topq);
 			if(!$result) Die("ERROR: No result returned.6");
 			$top = mysql_fetch_assoc($result);
 			$ttop = $top['count(*)'];
@@ -153,32 +167,32 @@ while (!feof($fp)) {
 	if(stristr($line, "!status") != FALSE) {
 		sleep(.75); 
 		$query = "SELECT COUNT(*) FROM acc_pend WHERE pend_status = 'Open';";
-		$result = mysql_query($query);
+		$result = myq($query);
 		if(!$result) Die("ERROR: No result returned.");
 		$row = mysql_fetch_assoc($result);
 		$pending = $row['COUNT(*)'];
 		$query = "SELECT COUNT(*) FROM acc_pend WHERE pend_status = 'Admin';";
-		$result = mysql_query($query);
+		$result = myq($query);
 		if(!$result) Die("ERROR: No result returned.");
 		$row = mysql_fetch_assoc($result);
 		$admin = $row['COUNT(*)'];
 		$query = "SELECT COUNT(*) FROM acc_ban;";
-		$result = mysql_query($query);
+		$result = myq($query);
 		if(!$result) Die("ERROR: No result returned.");
 		$row = mysql_fetch_assoc($result);
 		$bans = $row['COUNT(*)'];
 		$query = "SELECT COUNT(*) FROM acc_user WHERE user_level = 'Admin';";
-		$result = mysql_query($query);
+		$result = myq($query);
 		if(!$result) Die("ERROR: No result returned.");
 		$row = mysql_fetch_assoc($result);
 		$sadmins = $row['COUNT(*)'];
 		$query = "SELECT COUNT(*) FROM acc_user WHERE user_level = 'User';";
-		$result = mysql_query($query);
+		$result = myq($query);
 		if(!$result) Die("ERROR: No result returned.");
 		$row = mysql_fetch_assoc($result);
 		$users = $row['COUNT(*)'];
 		$query = "SELECT COUNT(*) FROM acc_user WHERE user_level = 'New';";
-		$result = mysql_query($query);
+		$result = myq($query);
 		if(!$result) Die("ERROR: No result returned.");
 		$row = mysql_fetch_assoc($result);
 		$padmins = $row['COUNT(*)'];
@@ -205,7 +219,7 @@ while (!feof($fp)) {
 
 
 		if (($nick == 'Cobi') or ($nick == 'SQLDb') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
-//			if (pcntl_fork() == 0) {
+			if (pcntl_fork() == 0) {
 				$svn = popen('svn up 2>&1', 'r');
 				while (!feof($svn)) {
 					$svnin = ltrim(rtrim(fgets($svn,512)));
@@ -215,10 +229,26 @@ while (!feof($fp)) {
 					sleep(.75); //Slight delay so the bot does not kill itself on updating a lot of files.
 				}
 				pclose($svn);
-//				die();
-//			}
+				die();
+			}
 		}
 	}
+
+	if (substr(strtolower($line_ex[3]),1) == '!svninfo') {
+		if (pcntl_fork() == 0) {
+			$svn = popen('svn info 2>&1', 'r');
+			while (!feof($svn)) {
+				$svnin = ltrim(rtrim(fgets($svn,512)));
+				if ($svnin != "") {
+					fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': '.str_replace(array("\n","\r"),'',$svnin)."\n");
+				}
+				sleep(3);
+			}
+			pclose($svn);
+			die();
+		}
+	}
+
 	if (substr(strtolower($line_ex[3]),1) == '!restart') {
 		echo 'Restart from IRC!';
 		fclose($fp);
