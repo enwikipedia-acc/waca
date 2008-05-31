@@ -204,14 +204,14 @@ while (!feof($fp)) {
 	        fwrite($fp, "PONG ".$line[1]."\r\n"); 
 		sleep(.50);
 	}
-	if(stristr($line, "!die") != FALSE) { 
+/*	if(stristr($line, "!die") != FALSE) { 
 		$out = "PRIVMSG ".$chan." :Ok, dying!\n";
                 fwrite($fp, "$out\r\n");
 		sleep(1);
 		socket_close($client);
 		socket_close($sock);
 		die("Killed via IRC\n");
-	}
+	} */
 	$line_ex = explode(' ',str_replace(array("\r","\n"),'',$line));
 	if (substr(strtolower($line_ex[3]),1) == '!svnup') {
 		$nick = explode('!',$line_ex[0]);
