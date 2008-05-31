@@ -699,7 +699,7 @@ if ($_GET['action'] == "usermgmt") {
 
 	}
 	?>
-	<div align="left" style="position: absolute; top: 5px"><a href="acc.php?action=usermgmt">Refresh this page!</a></div>
+	<!-- <div align="left" style="position: absolute; top: 5px"><a href="acc.php?action=usermgmt">Refresh this page!</a></div> --!>
 	<h1>User Management</h1>
 	<strong>This interface isn't a toy. If it says you can do it, you can do it.<br />Please use this responsibly.</strong>
 	<h2>Open requests</h2>
