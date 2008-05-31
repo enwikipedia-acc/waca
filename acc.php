@@ -367,7 +367,9 @@ if ($_SESSION['user'] == "") {
 	die();
 	} else { 
 		checksecurity($_SESSION['user']);
+		/* Remove for now, for new design	
 		echo "<div align=\"right\">Logged in as $_SESSION[user]! <a href=\"acc.php?action=welcomeperf\">Welcome preferences</a> <a href=\"acc.php?action=logout\">Logout?</a></div></p><br />\n";
+		*/
 		$out = showmessage('20');
 		echo $out;
 		$out = "";
