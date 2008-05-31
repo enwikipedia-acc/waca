@@ -1,8 +1,8 @@
 fastlizard4's TODO
 
-1. Figure out what the hell I am doing! - I guess {{done}}
-2. Sleep
-3. Maybe get the "DismissSiteNotice" feature to go into the programming instead of a javascript flood
-4. Add a 'refresh this page' link
+(done)	1. Figure out what the hell I am doing! - I guess {{done}}
+(done)	2. Sleep - >>WILL NOT DO<<!
+	3. Add a 'refresh this page' link
+	4. Maybe get the "DismissSiteNotice" feature to go into the programming instead of a 	   javascript flood
 
 A WARNING TO VANDALS (read: SQL): TOUCHING THIS TXT FILE IS FORBIDDEN BY COMMUNIST LAW!
