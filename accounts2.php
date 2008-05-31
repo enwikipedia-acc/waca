@@ -61,7 +61,7 @@ require_once('../../database.inc');
 function myq($query) {
 	global $mysql, $toolserver_username, $toolserver_password;
 	if (!mysql_ping()) {
-		mysql_connect("sql",$toolserver_username,$toolserver_password);
+		mysql_connect("sql",$toolserver_username,$toolserver_password,true);
 		@mysql_select_db("u_sql") or print mysql_error();
 	}
 
