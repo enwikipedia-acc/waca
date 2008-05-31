@@ -1139,7 +1139,8 @@ if ($_GET['action'] == "logs") {
 	die();
 }
 ?>
-<div align="left" style="position: absolute; top: 5px"><small><a href="acc.php">Refresh this page!</a> - <a href="acc.php#open">Open</a> - <a href="acc.php#admin">Admin Needed</a> - <a href="acc.php#closed">Closed</a></small></div>
+<!-- <div align="left" style="position: absolute; top: 5px"><small><a href="acc.php">Refresh this page!</a> - <a href="acc.php#open">Open</a> - <a 
+href="acc.php#admin">Admin Needed</a> - <a href="acc.php#closed">Closed</a></small></div> --!>
 <h1>Create an account!</h1>
 <h2>Open requests</h2>
 <A name="open">
