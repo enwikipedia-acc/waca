@@ -203,13 +203,13 @@ if ($_GET['action'] == "register") {
 		</td>
 		<td>
 			<tr>
-				<td>Your signature (wikicode)<br /><i>This would be the same as ~~~ on-wiki. No date, please.</i></td>
+				<td>Your signature (wikicode)<br /><i>This would be the same as ~~~ on-wiki. No date, please.  Not needed if you left the checkbox above unchecked.</i></td>
 				<td><input type="text" name="sig" size ="40"></td>
 			</tr>
 		</td>
 		<td>
 			<tr>
-				<td>Template you would like the bot to welcome with?<br /><i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a></i></td>
+				<td>Template you would like the bot to welcome with?<br /><i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>.</i>  Not needed if you left the checkbox above unchecked.</td>
 				<td><select name="template" size="0"><option value="welcome">{{welcome|user}} ~~~~</option><option 
 value="welcomeg">{{welcomeg|user}} ~~~~</option><option value="welcome-personal">{{welcome-personal|user}} ~~~~</option><option 
 value="werdan7">{{User:Werdan7/W}} ~~~~</option>	<option value="welcomemenu">{{WelcomeMenu|sig=~~~~}}</option><option 
