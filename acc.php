@@ -371,6 +371,7 @@ if ($_SESSION['user'] == "") {
 		echo "<div align=\"right\">Logged in as $_SESSION[user]! <a href=\"acc.php?action=welcomeperf\">Welcome preferences</a> <a href=\"acc.php?action=logout\">Logout?</a></div></p><br />\n";
 		*/
 		$out = showmessage('20');
+		$out .= "<div id=\"content\">";
 		echo $out;
 		$out = "";
 }
