@@ -8,3 +8,7 @@ acc.php:
 accounts2.php:
 1. Access control for !die
 2. Some sort of stats mechanism. Maybe just telling the user where they rank upon !count
+
+users.php:
+
+1. FINISH WRITING IT!
