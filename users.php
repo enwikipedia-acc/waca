@@ -1,12 +1,19 @@
 <?php
-/************************************************
-** English Wikipedia Account Request Interface **
-** All code is released into the public domain **
-**             Developers:                     **
-**  SQL ( http://en.wikipedia.org/User:SQL )   **
-**  Cobi ( http://en.wikipedia.org/User:Cobi ) **
-**                                             **
-************************************************/
+/*****************************************************
+** English Wikipedia Account Request Interface      **
+** Wikipedia Account Request Graphic Design by      **
+** Charles Melbye is licensed under a Creative      **
+** Commons Attribution-Noncommercial-Share Alike    **
+** 3.0 United States License. All other code        **
+** released under Public Domain by the ACC          **
+** Development Team.                                **
+**             Developers:                          **
+**  SQL ( http://en.wikipedia.org/User:SQL )        **
+**  Cobi ( http://en.wikipedia.org/User:Cobi )      **
+** Cmelbye ( http://en.wikipedia.org/User:cmelbye ) **
+**                                                  **
+*****************************************************/
+
 echo "<html>
 <head>
 <title>Account Creation Manager User Report</title>
