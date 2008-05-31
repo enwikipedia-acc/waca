@@ -250,10 +250,16 @@ while (!feof($fp)) {
 	}
 
 	if (substr(strtolower($line_ex[3]),1) == '!restart') {
-		echo 'Restart from IRC!';
-		fclose($fp);
-		fclose($fpt);
-		pcntl_exec('/usr/bin/php',$argv,$_ENV);
+                $nick = explode('!',$line_ex[0]);
+                $nick = substr($nick[0],1);
+
+
+                if (($nick == 'Cobi') or ($nick == 'SQLDb') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
+			echo 'Restart from IRC!';
+			fclose($fp);
+			fclose($fpt);
+			pcntl_exec('/usr/bin/php',$argv,$_ENV);
+		}
 	}
 }
  
