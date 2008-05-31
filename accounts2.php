@@ -204,7 +204,7 @@ while (!feof($fp)) {
 		$nick = substr($nick[0],1);
 
 
-		if (($nick == 'Cobi') or ($nick == 'SQLDb') or ($nick == '|Cobi|')) {
+		if (($nick == 'Cobi') or ($nick == 'SQLDb') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
 //			if (pcntl_fork() == 0) {
 				$svn = popen('svn up 2>&1', 'r');
 				while (!feof($svn)) {
