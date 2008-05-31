@@ -4,3 +4,4 @@ fastlizard4's TODO
 2. Sleep
 3. Maybe get the "DismissSiteNotice" feature to go into the programming instead of a javascript flood
 
+A WARNING TO VANDALS (read: SQL): TOUCHING THIS TXT FILE IS FORBIDDEN BY COMMUNIST LAW!
