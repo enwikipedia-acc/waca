@@ -26,7 +26,7 @@ function sanitize($what) {
 function showmessage($messageno) {
         global $toolserver_username;
         global $toolserver_password;
-        mysql_connect("sql",$toolserver_username,$toolserver_password);
+        mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
         @mysql_select_db("u_sql") or print mysql_error();
         $query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
         $result = mysql_query($query);
@@ -37,7 +37,7 @@ function showmessage($messageno) {
 function sendemail($messageno, $target) {
 	global $toolserver_username;
 	global $toolserver_password;
-	mysql_connect("sql",$toolserver_username,$toolserver_password);
+	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 	@mysql_select_db("u_sql") or print mysql_error();
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
 	$result = mysql_query($query);
@@ -111,7 +111,7 @@ function showfooter() {
 	echo $out;
 }
 require_once('../../database.inc');
-mysql_connect("sql",$toolserver_username,$toolserver_password);
+mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 @mysql_select_db("u_sql") or print mysql_error();
 session_start();
 if ($_GET['action'] == "sreg") {
