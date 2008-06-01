@@ -1201,7 +1201,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	$out.= '<span class="bluetext">'; // Font 2
 
 	// Username U:
-	$out.= '<a href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $uname . '<strong></a> ';
+	$out.= '<a href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $uname . '</strong></a> ';
 
 	// Creation log	
 	$out.= '(<a href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:';
