@@ -16,8 +16,9 @@
 **                                                           **
 **************************************************************/
 
-ini_set('session.cookie_path', '/~sql/');
-ini_set('session.name', 'ACC');
+require_once('../../database.inc');
+ini_set('session.cookie_path', '$cookiepath');
+ini_set('session.name', '$sessionname');
 $version = "0.9.6";
 function sanitize($what) {
 	$what = mysql_real_escape_string($what);
@@ -112,7 +113,6 @@ function showfooter() {
 	}
 	echo $out;
 }
-require_once('../../database.inc');
 mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 @mysql_select_db("u_sql") or print mysql_error();
 session_start();
