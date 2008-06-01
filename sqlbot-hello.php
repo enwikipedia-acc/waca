@@ -1,18 +1,23 @@
 <?php
-/*****************************************************
-** English Wikipedia Account Request Interface      **
-** Wikipedia Account Request Graphic Design by      **
-** Charles Melbye is licensed under a Creative      **
-** Commons Attribution-Noncommercial-Share Alike    **
-** 3.0 United States License. All other code        **
-** released under Public Domain by the ACC          **
-** Development Team.                                **
-**             Developers:                          **
-**  SQL ( http://en.wikipedia.org/User:SQL )        **
-**  Cobi ( http://en.wikipedia.org/User:Cobi )      **
-** Cmelbye ( http://en.wikipedia.org/User:cmelbye ) **
-**                                                  **
-*****************************************************/
+/**************************************************************
+** English Wikipedia Account Request Interface               **
+** Wikipedia Account Request Graphic Design by               **
+** Charles Melbye is licensed under a Creative               **
+** Commons Attribution-Noncommercial-Share Alike             **
+** 3.0 United States License.                                **
+**                                                           **
+** SxWiki is licensed under GPL.                             **
+**                                                           **
+** All other code released under Public Domain by the ACC    **
+** Development Team.                                         **
+**             Developers:                                   **
+**  SQL ( http://en.wikipedia.org/User:SQL )                 **
+**  Cobi ( http://en.wikipedia.org/User:Cobi )               **
+** Cmelbye ( http://en.wikipedia.org/User:cmelbye )          **
+**FastLizard4 ( http://en.wikipedia.org/User:FastLizard4 )   **
+**Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
+**                                                           **
+**************************************************************/
 
 include('../../SxWiki.php');
 include('sqlbot-hello-enwiki.php');
@@ -62,7 +67,6 @@ while ($row = mysql_fetch_assoc($result)) {
 	$user = $row[welcome_user];
 	echo "Welcoming $user\n";
 	$sig = $row[welcome_sig];
-#	$sig = str_replace('|','&#124;',$sig);
 	//Addition by Cobi
 	$d = 0; 
 	$s = ''; 
