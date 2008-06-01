@@ -1209,7 +1209,8 @@ while ($row = mysql_fetch_assoc($result)) {
 
 	// User contribs
 	$out.= '<a href="http://en.wikipedia.org/wiki/Special:Contributions/';
-	$out.= $uname . '">Contribs</a>) ';
+	$out.= $uname . '">Contribs</a> ';
+	$out.= '<a href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&username=' . $uname . '&group=&limit=50">List</a>) ';
 
 	// Create user link
 	$out.= '<b><a href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
@@ -1313,7 +1314,8 @@ while ($row = mysql_fetch_assoc($result)) {
 
 	// User contribs
 	$out.= '<a href="http://en.wikipedia.org/wiki/Special:Contributions/';
-	$out.= $uname . '">Contribs</a>) ';
+	$out.= $uname . '">Contribs</a> ';
+	$out.= '<a href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&username=' . $uname . '&group=&limit=50">List</a>) ';
 
 	// Create user link
 	$out.= '<b><a href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
