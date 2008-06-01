@@ -564,7 +564,7 @@ if ($_GET['action'] == "ban") {
 			showfooter();
 			die();
 		} else {
-			echo "<h2>Ban an IP or E-Mail</h2>\n<form action=\"acc.php?action=sban&user=$siuser&target=$target&type=$type\" method=\"post\">Ban target: $target\n<br />Banning user: $siuser\n<br />Reason: <input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Forever<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT><br /><input type=\"submit\"></form>\n";
+			echo "<h2>Ban an IP or E-Mail</h2>\n<form action=\"acc.php?action=sban&user=$siuser&target=$target&type=$type\" method=\"post\">Ban target: $target\n<br />Reason: <input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Forever<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT><br /><input type=\"submit\"></form>\n";
 		}
 	}
 	echo "<h2>Active Ban List</h2>\n<ol>\n";
