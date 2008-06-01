@@ -211,7 +211,7 @@ if ($_GET['action'] == "register") {
 		</td>
 		<td>
 			<tr>
-				<td>Template you would like the bot to welcome with?<br /><i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>.</i>  Not needed if you left the checkbox above unchecked.</td>
+				<td>Template you would like the bot to welcome with?<br /><i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>, <a href="http://en.wikipedia.org/wiki/User_talk:Cobi">Cobi</a>, or <a href="http://en.wikipedia.org/wiki/User_talk:FastLizard4">FastLizard4</a>.</i>  Not needed if you left the checkbox above unchecked.</td>
 				<td><select name="template" size="0"><option value="welcome">{{welcome|user}} ~~~~</option><option 
 value="welcomeg">{{welcomeg|user}} ~~~~</option><option value="welcome-personal">{{welcome-personal|user}} ~~~~</option><option 
 value="werdan7">{{User:Werdan7/W}} ~~~~</option>	<option value="welcomemenu">{{WelcomeMenu|sig=~~~~}}</option><option 
@@ -887,7 +887,7 @@ if ($_GET['action'] == "welcomeperf") {
 	<option value="w-riana"<?php if($template == "w-riana") { echo " selected"; } ?>>{{User:Riana/Welcome|name=user|sig=~~~~}}</option>
 	<option value="wodup"<?php if($template == "wodup") { echo " selected"; } ?>>{{User:WODUP/Welcome}} ~~~~</option>
 	</select><br />
-	<i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a></i><br />
+	<i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>, <a href="http://en.wikipedia.org/wiki/User_talk:Cobi">Cobi</a>, or <a href="http://en.wikipedia.org/wiki/User_talk:FastLizard4">FastLizard4</a>.</i><br />
 	<input type="submit"><input type="reset">
 	</form>
 	<?php
