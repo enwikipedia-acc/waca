@@ -16,11 +16,28 @@
 **                                                           **
 **************************************************************/
 
-echo "<html>
-<head>
-<title>Account Creation Manager User Report</title>
-</head>
-<body>\n";
+function displayheader() {
+        global $toolserver_username;
+        global $toolserver_password;
+        mysql_connect("sql",$toolserver_username,$toolserver_password);
+        @mysql_select_db("u_sql") or print mysql_error();
+        $query = "SELECT * FROM acc_emails WHERE mail_id = '8';";
+        $result = mysql_query($query);
+        if(!$result) Die("ERROR: No result returned.");
+        $row = mysql_fetch_assoc($result);
+        echo $row[mail_text];
+}
+function displayfooter() {
+        global $toolserver_username;
+        global $toolserver_password;
+        mysql_connect("sql",$toolserver_username,$toolserver_password);
+        @mysql_select_db("u_sql") or print mysql_error();
+        $query = "SELECT * FROM acc_emails WHERE mail_id = '7';";
+        $result = mysql_query($query);
+        if(!$result) Die("ERROR: No result returned.");
+        $row = mysql_fetch_assoc($result);
+        echo $row[mail_text];
+}
 function showfooter() {
 	echo "</body></html>\n";
 }
@@ -33,6 +50,7 @@ require_once('../../database.inc');
 mysql_connect("sql",$toolserver_username,$toolserver_password);
 @mysql_select_db("u_sql") or print mysql_error();
 if ($_GET[viewuser] != "") {
+	displayheader()
 	$query = "SELECT * FROM acc_user WHERE user_id = $_GET[viewuser] AND user_level != 'Suspended' AND user_level != 'Declined' AND user_level != 'New' ;";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
@@ -44,10 +62,10 @@ if ($_GET[viewuser] != "") {
 	    echo "<li>User On-wiki name: <a href=\"http://en.wikipedia.org/wiki/User:$row[user_onwikiname]\">$row[user_onwikiname]</a>  |  <a href=\"http://en.wikipedia.org/wiki/User talk:$row[user_onwikiname]\">talk page</a> </li>\n";
 	echo "</ol>\n";
 
-	showfooter();
+	displayfooter();
 	die();
 }
-
+displayheader();
 $query = "SELECT * FROM acc_user ORDER BY user_level";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
@@ -63,5 +81,5 @@ while ($row = mysql_fetch_assoc($result)) {
 	$lastlevel = $row[user_level];
 }
 echo "<ul>\n";
-showfooter();
+displayfooter();
 ?>
