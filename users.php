@@ -67,7 +67,7 @@ if ($_GET[viewuser] != "") {
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
 	echo "<ol>\n";
-        while($row = mysql_fetch_assoc($result)	{
+        while($row = mysql_fetch_assoc($result))	{
 		echo "<li>$row[pend_name] at $row[log_time]</li>\n";
 	}
 	displayfooter();
