@@ -68,7 +68,7 @@ if ($_GET[viewuser] != "") {
         if(!$result) Die("ERROR: No result returned.");
 	echo "<ol>\n";
         while($row = mysql_fetch_assoc($result))	{
-		echo "<li>$row[pend_name] at $row[log_time]</li>\n";
+		echo "<li><a href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">$row[pend_name]</a> <a href=\"http://en.wikipedia.org/wiki/User_talk:$row[pend_name]\">(talk)</a> at $row[log_time]</li>\n";
 	}
 	displayfooter();
 	die();
