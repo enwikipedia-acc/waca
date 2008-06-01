@@ -36,6 +36,7 @@ function displayfooter() {
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
         $row = mysql_fetch_assoc($result);
+	echo "</div>";
         echo $row[mail_text];
 }
 function showfooter() {
