@@ -51,6 +51,7 @@ mysql_connect("sql",$toolserver_username,$toolserver_password);
 @mysql_select_db("u_sql") or print mysql_error();
 if ($_GET[viewuser] != "") {
 	displayheader();
+	$gid = sanitize($_GET[viewuser]);
 	$query = "SELECT * FROM acc_user WHERE user_id = $_GET[viewuser] AND user_level != 'Suspended' AND user_level != 'Declined' AND user_level != 'New' ;";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
@@ -59,9 +60,16 @@ if ($_GET[viewuser] != "") {
 	echo "<ol>\n";
 	echo "<li>User ID: $row[user_id]</li>\n";
 	echo "<li>User Level: $row[user_level]</li>\n";
-	    echo "<li>User On-wiki name: <a href=\"http://en.wikipedia.org/wiki/User:$row[user_onwikiname]\">$row[user_onwikiname]</a>  |  <a href=\"http://en.wikipedia.org/wiki/User talk:$row[user_onwikiname]\">talk page</a> </li>\n";
+        echo "<li>User On-wiki name: <a href=\"http://en.wikipedia.org/wiki/User:$row[user_onwikiname]\">$row[user_onwikiname]</a>  |  <a href=\"http://en.wikipedia.org/wiki/User talk:$row[user_onwikiname]\">talk page</a> </li>\n";
 	echo "</ol>\n";
-
+	echo "<h2>Users created</h2>\n";
+        $query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = '$gid' AND log_action = 'Closed 1';";
+        $result = mysql_query($query);
+        if(!$result) Die("ERROR: No result returned.");
+	echo "<ol>\n";
+        while($row = mysql_fetch_assoc($result){ {
+		echo "<li>$row[pend_name] at $row[log_time]</li>\n";
+	}
 	displayfooter();
 	die();
 }
