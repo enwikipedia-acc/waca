@@ -94,7 +94,7 @@ function showhead() {
 	$_SESSION[user_id] = $row[user_id];
 	$out = showmessage('21');
 	echo $out;
-	echo "<div id = \"header-info\">Logged in as <a href=\"http://toolserver.org/~sql/acc/users.php?viewuser=$_SESSION[user_id]\"><span title=\"View your user information\">$_SESSION[user]</span></a></div>\n";
+	echo "<div id = \"header-info\">Logged in as <a href=\"users.php?viewuser=$_SESSION[user_id]\"><span title=\"View your user information\">$_SESSION[user]</span></a></div>\n";
 }
 function showfootern() {
 	$out = showmessage('22');
@@ -263,7 +263,7 @@ if ($_GET['action'] == "forgotpw") {
 					$query = "UPDATE acc_user SET user_pass = '$pw' WHERE user_id = '$puser';";
 					$result = mysql_query($query);
 					if(!$result) Die("ERROR: No result returned.");
-					echo "Password reset!\n<br />\nYou may now <a href=\"http://toolserver.org/~sql/acc/acc.php\">Login</a>";
+					echo "Password reset!\n<br />\nYou may now <a href=\"acc.php\">Login</a>";
 				} else {
 					echo "<h2>ERROR</h2>Passwords did not match!<br />\n";
 				}
@@ -287,7 +287,7 @@ if ($_GET['action'] == "forgotpw") {
 			New Password (confirm): <input type="password" name="pw2"><br />
 			<input type="submit"><input type="reset">
 			</form><br />
-			Return to <a href="http://toolserver.org/~sql/acc/acc.php">Login</a>
+			Return to <a href="acc.php">Login</a>
 			<?php
 		} else {
 			echo "<h2>ERROR</h2>\nInvalid request.<br />";
@@ -325,7 +325,7 @@ if ($_GET['action'] == "forgotpw") {
 	Your e-mail address: <input type="text" name="email"><br />
 	<input type="submit"><input type="reset">
 	</form><br />
-	Return to <a href="http://toolserver.org/~sql/acc/acc.php">Login</a>
+	Return to <a href="acc.php">Login</a>
 	<?php
 	showfootern();
 	die();
@@ -1062,10 +1062,10 @@ if ($_GET['action'] == "logs") {
 	$next = $from + 100;
 	$prev = $from - 100;
 	if($from > 0) {
-		$n1 = "<h4><a href=\"http://toolserver.org/~sql/acc/acc.php?action=logs&from=$prev\">Previous 100</a> <a href=\"http://toolserver.org/~sql/acc/acc.php?action=logs&from=$next\">Next 100</a></h4>\n";
+		$n1 = "<h4><a href=\"acc.php?action=logs&from=$prev\">Previous 100</a> <a href=\"acc.php?action=logs&from=$next\">Next 100</a></h4>\n";
 		echo $n1;
 	} else {
-		$n1 = "<h4><a href=\"http://toolserver.org/~sql/acc/acc.php?action=logs&from=$next\">Next 100</a></h4>\n";
+		$n1 = "<h4><a href=\"acc.php?action=logs&from=$next\">Next 100</a></h4>\n";
 		echo $n1;
 	}
 	$result = mysql_query($query);
@@ -1152,9 +1152,9 @@ while ($row = mysql_fetch_assoc($result)) {
 #	$uname = str_replace("+", "_", $row[pend_name]);
 	$rid = $row['pend_id'];
 	if($row['pend_cmt'] != "") {
-		$cmt = "<a href=\"http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$rid\">Zoom (CMT)</a> ";
+		$cmt = "<a href=\"acc.php?action=zoom&id=$rid\">Zoom (CMT)</a> ";
 	} else {
-		$cmt = "<a href=\"http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$rid\">Zoom</a> ";
+		$cmt = "<a href=\"acc.php?action=zoom&id=$rid\">Zoom</a> ";
 	}
 
 	$query = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \''.$row['pend_ip'].'\' AND `pend_id` != \''.$row['pend_id'].'\';';
@@ -1245,9 +1245,9 @@ while ($row = mysql_fetch_assoc($result)) {
 #	$uname = str_replace("+", "_", $row[pend_name]);
 	$rid = $row['pend_id'];
 	if($row['pend_cmt'] != "") {
-		$cmt = "<a href=\"http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$rid\">Zoom (CMT)</a> ";
+		$cmt = "<a href=\"acc.php?action=zoom&id=$rid\">Zoom (CMT)</a> ";
 	} else {
-		$cmt = "<a href=\"http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$rid\">Zoom</a> ";
+		$cmt = "<a href=\"acc.php?action=zoom&id=$rid\">Zoom</a> ";
 	}
 	$out = '<li><small>'; //List item
 	$out.= $cmt; // CMT link.
