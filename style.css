@@ -49,11 +49,11 @@ div#header #header-title {
 	right: 6px;
 	top: 3px;
 }
-div#header #header-info a {
+#header-info a {
 	color: #fff;
 	text-decoration: underline;
 }
-div#header #header-info a:hover {
+#header-info a:hover {
 	text-decoration: none;
 }
 
