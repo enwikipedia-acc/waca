@@ -1163,6 +1163,10 @@ while ($row = mysql_fetch_assoc($result)) {
 		$cmt = "<a href=\"http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$rid\">Zoom</a> ";
 	}
 
+	$query = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \''.$row['pend_ip'].'\' AND `pend_id` != \''.$row['pend_id'].'\';';
+	$otherreqs = mysql_fetch_assoc(mysql_query($query));
+
+
 	$out = '<li class="greentext" style="color: black;"><small>'; //List item
 	$out.= '<span class="greentext">'; //First color
 	$out.= $cmt; // CMT link.
@@ -1173,6 +1177,8 @@ while ($row = mysql_fetch_assoc($result)) {
 	// IP UT:
 	$out.= ' / <a href="http://en.wikipedia.org/wiki/User_talk:' . $row[pend_ip] . '">';
 	$out.= $row[pend_ip] . '</a> ';
+
+	$out.= '(<b>'.$otherreqs['count'].'</b>) ';
 
 	// IP contribs
 	$out.= '<a href="http://en.wikipedia.org/wiki/Special:Contributions/';
