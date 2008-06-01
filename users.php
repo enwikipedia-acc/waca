@@ -69,7 +69,7 @@ if ($_GET[viewuser] != "") {
 	echo "<ol>\n";
         while($row = mysql_fetch_assoc($result)) {
 		if($row[log_time] == "0000-00-00 00:00:00") { $row[log_time] = "Date unknown"; }
-		echo "<li><a href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">$row[pend_name]</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$row[pend_name]\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$row[pend_name]\">contribs</a>) at $row[log_time]</li>\n";
+		echo "<li><a href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">$row[pend_name]</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$row[pend_name]\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$row[pend_name]\">contribs</a>) at <strong>$row[log_time]</strong></li>\n";
 	}
 	displayfooter();
 	die();
