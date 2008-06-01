@@ -1246,7 +1246,7 @@ while ($row = mysql_fetch_assoc($result)) {
 ?>
 </ol>
 <h2>Admin Needed!</h2>
-<A name="admin" />
+<span id="admin"/>
 <?php
 $query = "SELECT * FROM acc_pend WHERE pend_status = 'Admin';";
 $result = mysql_query($query);
@@ -1268,7 +1268,7 @@ while ($row = mysql_fetch_assoc($result)) {
 ?>
 </ol>
 <?php
-echo "<h2>Last 5 Closed requests</h2><A name=\"closed\" />\n";
+echo "<h2>Last 5 Closed requests</h2><span id=\"closed\"/>\n";
 $query = "SELECT * FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
