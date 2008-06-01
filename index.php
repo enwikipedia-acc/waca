@@ -31,7 +31,8 @@ function checktor ($addr) {
 function displayheader() {
 	global $toolserver_username;
 	global $toolserver_password;
-	mysql_connect("sql",$toolserver_username,$toolserver_password);
+	global $toolserver_host;
+	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 	@mysql_select_db("u_sql") or print mysql_error();
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '8';";
 	$result = mysql_query($query);
@@ -42,7 +43,8 @@ function displayheader() {
 function displayfooter() {
 	global $toolserver_username;
 	global $toolserver_password;
-	mysql_connect("sql",$toolserver_username,$toolserver_password);
+	global $toolserver_host;
+	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 	@mysql_select_db("u_sql") or print mysql_error();
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '7';";
 	$result = mysql_query($query);
@@ -53,7 +55,8 @@ function displayfooter() {
 function displayform() {
 	global $toolserver_username;
 	global $toolserver_password;
-	mysql_connect("sql",$toolserver_username,$toolserver_password);
+	global $toolserver_host;
+	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 	@mysql_select_db("u_sql") or print mysql_error();
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '6';";
 	$result = mysql_query($query);
@@ -64,7 +67,8 @@ function displayform() {
 function showmessage($messageno) {
 	global $toolserver_username;
 	global $toolserver_password;
-	mysql_connect("sql",$toolserver_username,$toolserver_password);
+	global $toolserver_host;
+	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 	@mysql_select_db("u_sql") or print mysql_error();
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
 	$result = mysql_query($query);
@@ -147,7 +151,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 		$fail = 1; 
 	}
 	
-	mysql_connect("sql",$toolserver_username,$toolserver_password);
+	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 	@mysql_select_db("u_sql") or print mysql_error();
 	$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_name = '$user'";
 	$result = mysql_query($query);
@@ -214,7 +218,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	}
 	if ($fail == 1) { displayform(); displayfooter(); die();}
 	mysql_close();	
-	mysql_connect("sql",$toolserver_username,$toolserver_password);
+	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 	@mysql_select_db("u_sql") or print mysql_error();
 	$dnow = date("Y-m-d H-i-s");	
 	$query = "INSERT INTO u_sql.acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$_POST[name]', '$_POST[comments]', 'Open' , '$dnow' );";
