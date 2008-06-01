@@ -17,7 +17,7 @@
 **************************************************************/
 
 require_once('../../database.inc');
-function checktorbl ($addr) {
+function checktor ($addr) {
 	$flags = array();
 	$flags['tor'] = "no";
 	$p = explode(".", $addr);
