@@ -1,12 +1,37 @@
 fastlizard4's TODO
-
+********************************************************************************************
+=======================================TO DO================================================
 Status/Prioirty |  Task and description
 --------------------------------------------------------------------------------------------
 HIGH		1. STOP TEH GRAWP!  (Create email and registeration blacklist; colaborate with others to help create)
-(done)		2. Figure out what the hell I am doing! - I guess {{done}}
-(WONTDO)	3. Sleep - >>WILL NOT DO<<!
-(done)		4. Add a 'refresh this page' link
-NORMAL		5. Maybe get the "DismissSiteNotice" feature to go into the programming instead of a javascript flood
+Normal		2. Maybe get the "DismissSiteNotice" feature to go into the programming instead of a javascript flood
 --------------------------------------------------------------------------------------------
+============================================================================================
+
+
+========================================DONE================================================
+Status/Prioirty |  Task and description
+--------------------------------------------------------------------------------------------
+HIGH		3. Figure out what the hell I am doing! - I guess {{done}}
+Normal		4. Add a 'refresh this page' link
+--------------------------------------------------------------------------------------------
+============================================================================================
+
+
+=======================================WONT DO==============================================
+Status/Prioirty |  Task and description
+--------------------------------------------------------------------------------------------
+extremely low	5. Sleep - >>WILL NOT DO<<!
+--------------------------------------------------------------------------------------------
+============================================================================================
+
+
+==============================SUBMITTED BY OTHER USERS======================================
+Status/Prioirty |  Task and description
+--------------------------------------------------------------------------------------------
+<none>		x  <no tasks submitted by other users that have not been classified into categories above>
+--------------------------------------------------------------------------------------------
+============================================================================================
+********************************************************************************************
 
 A WARNING TO VANDALS (read: SQL): TOUCHING THIS TXT FILE IS FORBIDDEN BY COMMUNIST LAW!
