@@ -85,6 +85,7 @@ function checksecurity($username) {
 	}
 }
 function showhead() {
+	$_SESSION[user_id] = "SELECT * FROM acc_user WHERE user_name = '$_SESSION[user]' LIMIT 1;";
 	$out = showmessage('21');
 	echo $out;
 	echo "<div align=\"right\">Logged in as <a href=\"http://toolserver.org/~sql/acc/users.php?viewuser=$_SESSION[user_id]\"><span title=\"View your user information\">$_SESSION[user]</span></a></div>\n";
