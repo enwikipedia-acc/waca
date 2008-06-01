@@ -1,0 +1,6 @@
+Move IRC connection data into database.inc (Needs SQL's help to modify live copy) - accbot.php
+Get all the localistation stuff out of accbot.php, referencing database.inc
+likewise, for accstats.php
+   ... and   sqlbot-hello.php (possibly ought to be done by SQL, this is his enwiki bot - I don't want the bot to go on a tantrum because of me.)
+
+Tabelise the requests

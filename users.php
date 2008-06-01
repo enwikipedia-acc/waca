@@ -19,7 +19,8 @@
 function displayheader() {
         global $toolserver_username;
         global $toolserver_password;
-        mysql_connect("sql",$toolserver_username,$toolserver_password);
+	global $toolserver_host;
+        mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
         @mysql_select_db("u_sql") or print mysql_error();
         $query = "SELECT * FROM acc_emails WHERE mail_id = '8';";
         $result = mysql_query($query);
@@ -30,7 +31,8 @@ function displayheader() {
 function displayfooter() {
         global $toolserver_username;
         global $toolserver_password;
-        mysql_connect("sql",$toolserver_username,$toolserver_password);
+	global $toolserver_host;
+        mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
         @mysql_select_db("u_sql") or print mysql_error();
         $query = "SELECT * FROM acc_emails WHERE mail_id = '7';";
         $result = mysql_query($query);
@@ -48,7 +50,7 @@ function sanitize($what) {
 }
 
 require_once('../../database.inc');
-mysql_connect("sql",$toolserver_username,$toolserver_password);
+mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 @mysql_select_db("u_sql") or print mysql_error();
 if ($_GET[viewuser] != "") {
 	displayheader();
