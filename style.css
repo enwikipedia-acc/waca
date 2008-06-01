@@ -43,7 +43,7 @@ div#header #header-title {
 	color: #fc0;
 	font-size: 1.7em;
 }
-div#header #header-info {
+#header-info {
 	color: #fff;
 	position: absolute;
 	right: 6px;
