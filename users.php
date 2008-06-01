@@ -67,7 +67,8 @@ if ($_GET[viewuser] != "") {
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
 	echo "<ol>\n";
-        while($row = mysql_fetch_assoc($result))	{
+        while($row = mysql_fetch_assoc($result)) {
+		if($row[log_time] == "0000-00-00 00:00:00") { $row[log_time] = "Date unknown"; }
 		echo "<li><a href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">$row[pend_name]</a> <a href=\"http://en.wikipedia.org/wiki/User_talk:$row[pend_name]\">(talk)</a> at $row[log_time]</li>\n";
 	}
 	displayfooter();
