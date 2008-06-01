@@ -73,11 +73,11 @@ set_time_limit (0);
 set_time_limit(0);
 $host = "irc.freenode.org";
 $port=6667;
-$nick="SQLBot2";
-$ident="SQLBot2";
+$nick="ACCBot";
+$ident="ACCBot";
 $chan="#wikipedia-en-accounts";
 $readbuffer="";
-$realname = "SQLBot2";
+$realname = "ACC Bot";
 
 $fp = fsockopen($host, $port, $erno, $errstr, 30);
 if (!$fp) {
