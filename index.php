@@ -17,6 +17,17 @@
 **************************************************************/
 
 require_once('../../database.inc');
+function checktorbl ($addr) {
+	$flags = array();
+	$flags['tor'] = "no";
+	$p = explode(".", $addr);
+	$ahbladdr = $p[3] . "." . $p[2] . "." . $p[1] . "." . $p[0] . "." . "tor.ahbl.org";;
+	$ahbl = gethostbyname($ahbladdr);
+	if ($ahbl == "127.0.0.2") { $flags['transit'] = "yes"; "yes"; $flags['tor'] = "yes";}
+	if ($ahbl == "127.0.0.3") { $flags['exit'] = "yes"; "yes"; $flags['tor'] = "yes";}
+	return($flags);
+}
+
 function displayheader() {
 	/* WAS:
 	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
@@ -237,11 +248,13 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
 	$dbanned = $row[ban_duration];
-	if ($row[ban_id] != "") {
+	$toruser = checktor($ip2);
+	if ($row[ban_id] != "" || $toruser[tor] == "yes") {
 		if ($dbanned < 0 || $dbanned == "") {
 			$dbanned = time() + 100;
 		}
-	
+		if($toruser[tor] == "yes") { $row[ban_reason] = "<a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool."; 
+} 
 		if ($dbanned < time()) {
 			//Not banned!
 		} else { //Still banned!
