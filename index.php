@@ -190,7 +190,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 			die();
 		}
 	}
-	$query = "SELECT * FROM acc_ban WHERE ban_type = 'Name' AND ban_target = '$POST[name]'";
+	$query = "SELECT * FROM acc_ban WHERE ban_type = 'Name' AND ban_target = '$_POST[name]'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
         $dbanned = $row[ban_duration];
