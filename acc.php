@@ -87,6 +87,7 @@ function checksecurity($username) {
 function showhead() {
 	$out = showmessage('21');
 	echo $out;
+	echo "<div align=\"right\">Logged in as $_SESSION[user]</div>\n";
 }
 function showfootern() {
 	$out = showmessage('22');
