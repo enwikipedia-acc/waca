@@ -330,7 +330,6 @@ if ($_GET['action'] == "forgotpw") {
 }
 if ($_GET['action'] == "login") {
 	$puser = sanitize($_POST[username]);
-	#$puser = $_POST[username];
 	$query = "SELECT * FROM acc_user WHERE user_name = \"$puser\";";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
@@ -375,9 +374,6 @@ if ($_SESSION['user'] == "") {
 	die();
 	} else { 
 		checksecurity($_SESSION['user']);
-		/* Remove for now, for new design	
-		echo "<div align=\"right\">Logged in as $_SESSION[user]! <a href=\"acc.php?action=welcomeperf\">Welcome preferences</a> <a href=\"acc.php?action=logout\">Logout?</a></div></p><br />\n";
-		*/
 		$out = showmessage('20');
 		$out .= "<div id=\"content\">";
 		echo $out;
@@ -391,7 +387,6 @@ if ($_GET['action'] == "messagemgmt") {
 		if(!$result) Die("ERROR: No result returned.");
 		$row = mysql_fetch_assoc($result);
 		$mailtext = htmlentities($row[mail_text]);
-		#$mailtext = wordwrap($mailtext); //Not right now.
 		echo "<h2>View message</h2><br />Message ID: $row[mail_id]<br />\n";
 		echo "Message count: $row[mail_count]<br />\n";
 		echo "Message title: $row[mail_desc]<br />\n";
@@ -505,12 +500,10 @@ if ($_GET['action'] == "sban" && $_GET['user'] != "") {
 	$target = sanitize($_GET['target']);
 	$type = sanitize($_GET['type']);
         $now = date("Y-m-d H-i-s");
-#	$now = date("F j, Y, g:i a");
 	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$target', '$siuser', 'Banned', '$now');";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	$query = "INSERT INTO acc_ban (ban_type, ban_target, ban_user, ban_reason, ban_date, ban_duration) VALUES ('$type', '$target', '$siuser', '$reason', '$now', $duration);";
-	#echo "$query\n";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	echo "Banned $target for $reason<br />\n";
@@ -533,7 +526,6 @@ if ($_GET['action'] == "unban" && $_GET['id'] != "") {
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
         $now = date("Y-m-d H-i-s");
-#	$now = date("F j, Y, g:i a");
 	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$bid', '$siuser', 'Unbanned', '$now');";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
@@ -707,7 +699,6 @@ if ($_GET['action'] == "usermgmt") {
 
 	}
 	?>
-	<!-- <div align="left" style="position: absolute; top: 5px"><a href="acc.php?action=usermgmt">Refresh this page!</a></div> -->
 	<h1>User Management</h1>
 	<strong>This interface isn't a toy. If it says you can do it, you can do it.<br />Please use this responsibly.</strong>
 	<h2>Open requests</h2>
@@ -827,7 +818,6 @@ if ($_GET['action'] == "defer" && $_GET['id'] != "") {
 		} else {
 			$deto = "users";
 		}
-#		$now = date("F j, Y, g:i a");
                 $now = date("Y-m-d H-i-s");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $deto', '$now');";
 		$result = mysql_query($query);
@@ -936,7 +926,6 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
 	$query = "UPDATE acc_pend SET pend_status = 'Closed' WHERE pend_id = '$gid';";
 	$result = mysql_query($query);
 	if(!$result) Die("Query failed: $query ERROR: No result returned.");
-#	$now = date("F j, Y, g:i a");
         $now = date("Y-m-d H-i-s");
 	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Closed $gem', '$now');";
 	$result = mysql_query($query);
@@ -1148,8 +1137,6 @@ if ($_GET['action'] == "logs") {
 	die();
 }
 ?>
-<!-- <div align="left" style="position: absolute; top: 5px"><small><a href="acc.php">Refresh this page!</a> - <a href="acc.php#open">Open</a> - <a 
-href="acc.php#admin">Admin Needed</a> - <a href="acc.php#closed">Closed</a></small></div> -->
 <h1>Create an account!</h1>
 <h2>Open requests</h2>
 <A name="open" />
