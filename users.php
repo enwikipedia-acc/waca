@@ -50,7 +50,7 @@ require_once('../../database.inc');
 mysql_connect("sql",$toolserver_username,$toolserver_password);
 @mysql_select_db("u_sql") or print mysql_error();
 if ($_GET[viewuser] != "") {
-	displayheader()
+	displayheader();
 	$query = "SELECT * FROM acc_user WHERE user_id = $_GET[viewuser] AND user_level != 'Suspended' AND user_level != 'Declined' AND user_level != 'New' ;";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
