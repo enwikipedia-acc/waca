@@ -707,7 +707,7 @@ if ($_GET['action'] == "usermgmt") {
 
 	}
 	?>
-	<!-- <div align="left" style="position: absolute; top: 5px"><a href="acc.php?action=usermgmt">Refresh this page!</a></div> --!>
+	<!-- <div align="left" style="position: absolute; top: 5px"><a href="acc.php?action=usermgmt">Refresh this page!</a></div> -->
 	<h1>User Management</h1>
 	<strong>This interface isn't a toy. If it says you can do it, you can do it.<br />Please use this responsibly.</strong>
 	<h2>Open requests</h2>
@@ -1149,7 +1149,7 @@ if ($_GET['action'] == "logs") {
 }
 ?>
 <!-- <div align="left" style="position: absolute; top: 5px"><small><a href="acc.php">Refresh this page!</a> - <a href="acc.php#open">Open</a> - <a 
-href="acc.php#admin">Admin Needed</a> - <a href="acc.php#closed">Closed</a></small></div> --!>
+href="acc.php#admin">Admin Needed</a> - <a href="acc.php#closed">Closed</a></small></div> -->
 <h1>Create an account!</h1>
 <h2>Open requests</h2>
 <A name="open" />
@@ -1273,8 +1273,90 @@ while ($row = mysql_fetch_assoc($result)) {
 	} else {
 		$cmt = "<a href=\"http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$rid\">Zoom</a> ";
 	}
+	#$out.= $cmt; // CMT link.
+	/*$out = '<li><small>' . $cmt . '[ <a href="mailto:' . $row[pend_email] . '">' . $row[pend_email] . '</a> / <a href="http://en.wikipedia.org/wiki/User_talk:' . $row[pend_ip] . '">' . $row[pend_ip] . '</a> <a href="http://en.wikipedia.org/wiki/Special:Contributions/' . $row[pend_ip] . '">c</a> <a href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:' . $row[pend_ip] . '">b</a> <a href="http://ws.arin.net/whois/?queryinput=' . $row[pend_ip] . '">w</a> ] <a href="http://en.wikipedia.org/wiki/User:' . $uname . '">' . $uname . '</a> (<a href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:' . $uname . '">Creation</a> <a href="http://en.wikipedia.org/wiki/Special:Contributions/' . $uname . '">Contribs</a>) <a href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=' . $uname . '&wpEmail=' . $row[pend_email] . '&uselang=en-acc">Create!</a> | <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=1">Done!</a> - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=2">Similar</a> - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=3">Taken</a> - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=4">UPolicy</a> - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=5">Invalid</a> - <a href="acc.php?action=defer&id=' . $row[pend_id] . '&target=user">Defer to users</a> - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=0">Drop</a> Ban: <a href="acc.php?action=ban&ip=' . $row[pend_id] . '">IP</a> | <a href="acc.php?action=ban&email=' . $row[pend_id] . '">E-Mail</a></small></li>';*/
+	$out = '<li class="greentext" style="color: black;"><small>'; //List item
+	$out.= '<span class="greentext">'; //First color
 	$out.= $cmt; // CMT link.
-	$out = '<li><small>' . $cmt . '[ <a href="mailto:' . $row[pend_email] . '">' . $row[pend_email] . '</a> / <a href="http://en.wikipedia.org/wiki/User_talk:' . $row[pend_ip] . '">' . $row[pend_ip] . '</a> <a href="http://en.wikipedia.org/wiki/Special:Contributions/' . $row[pend_ip] . '">c</a> <a href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:' . $row[pend_ip] . '">b</a> <a href="http://ws.arin.net/whois/?queryinput=' . $row[pend_ip] . '">w</a> ] <a href="http://en.wikipedia.org/wiki/User:' . $uname . '">' . $uname . '</a> (<a href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:' . $uname . '">Creation</a> <a href="http://en.wikipedia.org/wiki/Special:Contributions/' . $uname . '">Contribs</a>) <a href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=' . $uname . '&wpEmail=' . $row[pend_email] . '&uselang=en-acc">Create!</a> | <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=1">Done!</a> - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=2">Similar</a> - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=3">Taken</a> - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=4">UPolicy</a> - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=5">Invalid</a> - <a href="acc.php?action=defer&id=' . $row[pend_id] . '&target=user">Defer to users</a> - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=0">Drop</a> Ban: <a href="acc.php?action=ban&ip=' . $row[pend_id] . '">IP</a> | <a href="acc.php?action=ban&email=' . $row[pend_id] . '">E-Mail</a></small></li>';
+
+	// Email.
+	$out.= '[ <a href="mailto:' . $row[pend_email] . '">' . $row[pend_email] . '</a>';
+
+	// IP UT:
+	$out.= ' / <a href="http://en.wikipedia.org/wiki/User_talk:' . $row[pend_ip] . '">';
+	$out.= $row[pend_ip] . '</a> ';
+	$query = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \''.$row['pend_ip'].'\' AND `pend_id` != \''.$row['pend_id'].'\';';
+	$otherreqs = mysql_fetch_assoc(mysql_query($query));
+	$out.= '(<b>'.$otherreqs['count'].'</b>) ';
+
+	// IP contribs
+	$out.= '<a href="http://en.wikipedia.org/wiki/Special:Contributions/';
+	$out.= $row[pend_ip] . '">c</a> ';
+
+	// IP blocks
+	$out.= '<a href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:';
+	$out.= $row[pend_ip] . '">b</a> ';
+
+	// IP whois
+	$out.= '<a href="http://ws.arin.net/whois/?queryinput=' . $row[pend_ip] . '">w</a> ] ';
+
+	$out.= '</span>'; // End font
+
+	$out.= '<span class="bluetext">'; // Font 2
+
+	// Username U:
+	$out.= '<a href="http://en.wikipedia.org/wiki/User:' . $uname . '">' . $uname . '</a> ';
+
+	// Creation log	
+	$out.= '(<a href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:';
+	$out.= $uname . '">Creation</a> ';
+
+	// User contribs
+	$out.= '<a href="http://en.wikipedia.org/wiki/Special:Contributions/';
+	$out.= $uname . '">Contribs</a>) ';
+
+	// Create user link
+	$out.= '<b><a href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
+	$out.= $uname . '&wpEmail=' . $row[pend_email] . '&uselang=en-acc">Create!</a></b> '; 
+
+	$out.= '</span>'; // End font
+
+	$out.= '<span class="orangetext">'; // Font 3
+
+	// Done
+	$out.= '| <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=1">Done!</a>';
+
+	// Similar
+	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=2">Similar</a>';
+
+	// Taken
+	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=3">Taken</a>';
+
+	// UPolicy
+	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=4">UPolicy</a>';
+
+	// Invalid
+	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=5">Invalid</a>';
+
+	// Defer to admins
+	$out.= ' - <a href="acc.php?action=defer&id=' . $row[pend_id] . '&target=user">Defer to users</a>';
+
+	// Drop
+	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=0">Drop</a>';
+
+	$out.= '</span>'; // End font
+
+	$out.= '<span class="redtext">'; // Font 4
+
+	// Ban IP
+	$out.= ' Ban: <a href="acc.php?action=ban&ip=' . $row[pend_id] . '">IP</a> ';
+
+	// Ban email
+	$out.= '| <a href="acc.php?action=ban&email=' . $row[pend_id] . '">E-Mail</a>';
+
+	$out.= '</span>'; // End font
+	$out.= '</small></li>';
+
 	echo "$out\n";
 }
 ?>
