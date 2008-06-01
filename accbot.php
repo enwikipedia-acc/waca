@@ -81,7 +81,7 @@ $realname = "ACC Bot";
 
 $fp = fsockopen($host, $port, $erno, $errstr, 30);
 if (!$fp) {
-    #echo $errstr." (".$errno.")<br />\n";
+    echo $errstr." (".$errno.")<br />\n";
 }
     fwrite($fp, "NICK ".$nick."\r\n");
     fwrite($fp, "USER ".$ident." ".$host." bla :".$realname."\r\n");

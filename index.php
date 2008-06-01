@@ -29,24 +29,6 @@ function checktor ($addr) {
 }
 
 function displayheader() {
-	/* WAS:
-	<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-	<html>
-	<head>
-	<title>Request an English Wikipedia account!</title>
-	<meta name="generator" content="Bluefish 1.0.7">
-	<meta name="author" content="sql">
-	<meta name="date" content="2008-04-04T00:41:52-0400">
-	<meta name="copyright" content="">
-	<meta name="keywords" content="">
-	<meta name="description" content="">
-	<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-	<meta http-equiv="content-type" content="application/xhtml+xml; charset=UTF-8">
-	<meta http-equiv="content-style-type" content="text/css">
-	<meta http-equiv="expires" content="0">
-	</head>
-	<body>
-	*/
 	global $toolserver_username;
 	global $toolserver_password;
 	mysql_connect("sql",$toolserver_username,$toolserver_password);
@@ -58,11 +40,6 @@ function displayheader() {
 	echo $row[mail_text];	
 }
 function displayfooter() {
-	/* WAS:
-	<center><small>Concept Mock-up by <a href="http://en.wikipedia.org/wiki/User:SQL">SQL</a> March 2008. Released into the public domain.</small></center>
-	</body>
-	</html>
-	*/
 	global $toolserver_username;
 	global $toolserver_password;
 	mysql_connect("sql",$toolserver_username,$toolserver_password);
@@ -74,46 +51,6 @@ function displayfooter() {
 	echo $row[mail_text];	
 }
 function displayform() {
-	/* WAS:
-	<h1>Welcome to the Page for Requesting an Account on the English Wikipedia</h1>
-	<br />
-	<table cellpadding="1" cellspacing="0" border="0">
-		<form action="index.php" method="post">
-		<tr>
-			<td>
-				<tr>
-					<td>Desired Username:</td>
-					<td><input type="text" name="name"></td>
-				</tr>
-			</td>
-			<td>
-				<tr>
-					<td>E-mail Address:</td>
-					<td><input type="text" name="email"></td>
-				</tr>
-			</td>
-			<td>
-				<tr>
-					<td>Requesting IP: (test only)</td>
-					<td><input type="text" name="ip" value="127.0.0.1"></td>
-				</tr>
-			</td>
-			<td>
-				<tr>
-					<td>Comments:</td>
-					<td><textarea name="comments" rows="5" cols="40"></textarea></td>
-				</tr>
-			</td>
-			<td>
-				<tr>
-					<td>Debug: <input type="checkbox" name="debug"></td>
-					<td><button name="Submit" value="submit" type="submit">Submit</button><button name="Reset" type="reset">Reset</button></td>
-				</tr>
-			</td>
-		</tr>
-		</form>
-	</table>
-	*/
 	global $toolserver_username;
 	global $toolserver_password;
 	mysql_connect("sql",$toolserver_username,$toolserver_password);
@@ -149,20 +86,12 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$query = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
-	#$ip = $_POST['ip']; //Was for debugging
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$ip2 = $_SERVER['REMOTE_ADDR'];
-	#$ip = ltrim($ip);
-	#$ip = rtrim($ip);
 	$ip = mysql_real_escape_string($ip);
-	#$query = "SELECT * FROM ipblocks WHERE ipb_address = '$ip';";
-	#$result = mysql_query($query);
-	#$row = mysql_fetch_assoc($result);
-	#if ($row['ipb_id'] != "") { 
 	$userblocked = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$ip2&format=php");
 	$ub = unserialize($userblocked);
 	if(isset($ub[query][blocks][0][id])) {
-		/* WAS: I'm sorry, but your IP address is presently blocked. Please contact unblock-en-l to create an account. */
 		$message = showmessage(9);
 		echo "$message<br />\n"; 
 		$fail = 1; 
@@ -181,7 +110,6 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$ue = unserialize($userexist);
 	foreach ($ue[query][users] as $oneue) {
         	if(!isset($oneue[missing])) {
-		/* WAS: I'm sorry, but that user name is taken. Please try another. */
 		$message = showmessage(10);
 		echo "$message<br />\n"; 
 		$fail = 1; 
@@ -189,28 +117,24 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	}
 	$nums = preg_match("/^[0-9]+$/", $_POST['name']);
 	if ($nums > 0) { 
-		/* WAS: Invalid: Entirely numbers. */
 		$message = showmessage(11);
 		echo "$message<br />\n"; 
 		$fail = 1; 
 	}
 	$unameismail = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/i', $_POST['name']);
 	if ($unameismail > 0) { 
-		/* WAS: Invalid: Your username may not be an e-mail address. */
 		$message = showmessage(12);
 		echo "$message<br />\n"; 
 		$fail = 1; 
 	}
 	$unameisinvalidchar = preg_match('/[\#\/\|\[\]\{\}\@\%\:\<\>]/', $_POST['name']);
 	if ($unameisinvalidchar > 0) { 
-		/* WAS: Invalid: Your username may not contain the charachters #/|[]{}<>@%:. */
 		$message = showmessage(13);
 		echo "$message<br />\n"; 
 		$fail = 1; 
 	}
 	$mailisvalid = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/i', $_POST['email']);
 	if ($mailisvalid == 0) { 
-		/* WAS: Invalid E-mail address supplied. */
 		$message = showmessage(14);
 		echo "$message<br />\n"; 
 		$fail = 1; 
@@ -218,7 +142,6 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	
 	$mailiswmf = preg_match('/.*wiki(media|pedia).*/i', $email);
 	if ($mailiswmf != 0) {
-		/* WAS: Invalid E-mail address supplied. */
 		$message = showmessage(14);
 		echo "$message<br />\n"; 
 		$fail = 1; 
@@ -230,7 +153,6 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
 	if ($row[pend_id] != "") {
-		/* WAS: There is already an open request for this username. Please choose another. */
 		$message = showmessage(17);
 		echo "$message<br />\n"; 
 		$fail = 1; 
@@ -239,7 +161,6 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
 	if ($row[pend_id] != "") {
-		/* WAS: I'm sorry, but you have already put in a request. Please do not submit multiple requests. */
 		$message = showmessage(18);
 		echo "$message<br />\n"; 
 		$fail = 1; 
@@ -258,7 +179,6 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 		if ($dbanned < time()) {
 			//Not banned!
 		} else { //Still banned!
-			/* WAS: I'm sorry, but you are banned for:  */
 			$message = showmessage(19);
 			echo "$message<strong>$row[ban_reason]</strong><br />\n"; 
 			$fail = 1; 
@@ -269,7 +189,6 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$query = "SELECT * FROM acc_ban WHERE ban_type = 'EMail' AND ban_target = '$email'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
-#	if ($row[ban_id] != "") {
         $dbanned = $row[ban_duration];
         if ($row[ban_id] != "") {
                 if ($dbanned < 0 || $dbanned == "") {
@@ -279,8 +198,6 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
                 if ($dbanned < time()) {
                         //Not banned!
                 } else { //Still banned!
-
-		/* WAS: I'm sorry, but you are banned for:  */
 			$message = showmessage(19);
 			echo "$message<strong>$row[ban_reason]</strong><br />\n"; 
 			$fail = 1; 
@@ -289,11 +206,9 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 		}
 	}
 	if ($fail != 1) { 
-		/* WAS: <h1>Request submitted!</h1>Your account request has been submitted. Please stand by, while your request is considered. This process may take up to 48 hours.<br /> */
 		$message = showmessage(15);
 		echo "$message<br />\n"; 
 	} else { 
-		/* WAS: The system would <strong>NOT</strong> have submitted this request. */
 		$message = showmessage(16);
 		echo "$message<br />\n"; 
 	}

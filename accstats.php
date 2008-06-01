@@ -19,6 +19,7 @@
 require_once('/home/sql/database.inc');
 mysql_connect("sql",$toolserver_username,$toolserver_password);
 @mysql_select_db("u_sql") or print mysql_error();
+
 $openq = "select COUNT(*) from acc_pend where pend_status = 'Open';";
 $result = mysql_query($openq);
 if(!$result) Die("ERROR: No result returned.1");
@@ -43,6 +44,7 @@ $snewq = "select COUNT(*) from acc_user where user_level = 'New';";
 $result = mysql_query($snewq);
 if(!$result) Die("ERROR: No result returned.6");
 $snew = mysql_fetch_assoc($result);  
+
 $now = date("Y-m-d");
 $now2 = date("Y-m-");
 $now3 = date("d");
@@ -54,7 +56,6 @@ $top5a = array();
 while ($topa = mysql_fetch_assoc($result)) {
         array_push($top5a, $topa);
 }
-#print_r($top5a);
 $top5aout .= "\nAll time top 5 account creators:\n";
 $top5aout .= "-------------------------------------------------------------\n";
 foreach ($top5a as $top1a) {
@@ -63,21 +64,18 @@ foreach ($top5a as $top1a) {
 $topa5out .= "\n";
 
 $topq = "select log_user,count(*) from acc_log where log_time like '$now2$now3%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC limit 5;";
-#echo "$topq\n";
 $result = mysql_query($topq);
 if(!$result) Die("ERROR: No result returned.6");
 $top5 = array();
 while ($top = mysql_fetch_assoc($result)) {
 	array_push($top5, $top);
 }
-#print_r($top5);
 $top5out .= "\nTodays top 5 account creators:\n";
 $top5out .= "-------------------------------------------------------------\n";
 foreach ($top5 as $top1) {
 	$top5out .= "$top1[log_user] - " . $top1['count(*)'] . "\n";
 }
 $top5out .= "\n";
-#echo $top5out;
 $now = date("Y-m-d",mktime(0,0,0,date(m),date("d")-1));
 $logq = "select * from acc_log AS A
 	JOIN acc_pend AS B ON log_pend = pend_id
@@ -119,7 +117,7 @@ while($log = mysql_fetch_assoc($result)) {
 	case "Deferred to users":
 	    $dusers++;
 	    break;
-}
+	}
 } 
 $nopen = $open['COUNT(*)'];
 $nadmin = $admin['COUNT(*)'];
