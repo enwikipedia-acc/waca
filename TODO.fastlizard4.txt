@@ -14,6 +14,8 @@ Status/Prioirty |  Task and description
 --------------------------------------------------------------------------------------------
 HIGH		3. Figure out what the hell I am doing! - I guess {{done}}
 Normal		4. Add a 'refresh this page' link
+Normal		5. Show who you are logged in as; make it link to your user info
+Normal		6. Fix the formatting in users.php
 --------------------------------------------------------------------------------------------
 ============================================================================================
 
@@ -21,7 +23,7 @@ Normal		4. Add a 'refresh this page' link
 =======================================WONT DO==============================================
 Status/Prioirty |  Task and description
 --------------------------------------------------------------------------------------------
-extremely low	5. Sleep - >>WILL NOT DO<<!
+extremely low	7. Sleep - >>WILL NOT DO<<!
 --------------------------------------------------------------------------------------------
 ============================================================================================
 
