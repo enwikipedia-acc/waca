@@ -537,7 +537,7 @@ if ($_GET['action'] == "unban" && $_GET['id'] != "") {
 }
 if ($_GET['action'] == "ban") {
 	$siuser = sanitize($_SESSION[user]);
-	if($_GET['ip'] != "" || $_GET['email'] != "") {
+	if($_GET['ip'] != "" || $_GET['email'] != "" || $_GET['name'] != "") {
 		if($_GET['ip'] != "") {
 			$ip2 = sanitize($_GET['ip']);
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$ip2';";
@@ -546,7 +546,7 @@ if ($_GET['action'] == "ban") {
 			$row = mysql_fetch_assoc($result);
 			$target = $row[pend_ip];
 			$type = "IP";
-		} else {
+		} elseif ($_GET['email'] != "") {
 			$email2 = sanitize($_GET['email']);
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$email2';";
 			$result = mysql_query($query);
@@ -554,6 +554,14 @@ if ($_GET['action'] == "ban") {
 			$row = mysql_fetch_assoc($result);
 			$target = $row[pend_email];
 			$type = "EMail";
+		} elseif ($_GET['name'] != "") {
+                       $name2 = sanitize($_GET['name']);
+                       $query = "SELECT * FROM acc_pend WHERE pend_id = '$name2';";
+                       $result = mysql_query($query);
+                       if(!$result) Die("ERROR: No result returned.");
+                       $row = mysql_fetch_assoc($result);
+                       $target = $row[pend_name];
+                       $type = "Name";
 		}
 		$query = "SELECT * FROM acc_ban WHERE ban_target = '$target';";
 		$result = mysql_query($query);
@@ -564,7 +572,7 @@ if ($_GET['action'] == "ban") {
 			showfooter();
 			die();
 		} else {
-			echo "<h2>Ban an IP or E-Mail</h2>\n<form action=\"acc.php?action=sban&user=$siuser&target=$target&type=$type\" method=\"post\">Ban target: $target\n<br />Reason: <input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Forever<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT><br /><input type=\"submit\"></form>\n";
+			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&user=$siuser&target=$target&type=$type\" method=\"post\">Ban target: $target\n<br />Reason: <input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Forever<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT><br /><input type=\"submit\"></form>\n";
 		}
 	}
 	echo "<h2>Active Ban List</h2>\n<ol>\n";
@@ -1227,6 +1235,9 @@ while ($row = mysql_fetch_assoc($result)) {
 	// Ban email
 	$out.= '| <a href="acc.php?action=ban&email=' . $row[pend_id] . '">E-Mail</a>';
 
+	//Ban name
+	$out.= '| <a href="acc.php?action=ban&name=' . $row[pend_id] . '">Name</a>';
+
 	$out.= '</small></li>';
 
 	echo "$out\n";
@@ -1315,6 +1326,9 @@ while ($row = mysql_fetch_assoc($result)) {
 
 	// Ban email
 	$out.= '| <a href="acc.php?action=ban&email=' . $row[pend_id] . '">E-Mail</a>';
+
+	//Ban name
+	$out.= '| <a href="acc.php?action=ban&name=' . $row[pend_id] . '">Name</a>';
 
 	$out.= '</small></li>';
 

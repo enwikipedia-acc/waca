@@ -190,6 +190,25 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 			die();
 		}
 	}
+	$query = "SELECT * FROM acc_ban WHERE ban_type = 'Name' AND ban_target = '$name'";
+	$result = mysql_query($query);
+	$row = mysql_fetch_assoc($result);
+        $dbanned = $row[ban_duration];
+        if ($row[ban_id] != "") {
+                if ($dbanned < 0 || $dbanned == "") {
+                        $dbanned = time() + 100;
+                }
+
+                if ($dbanned < time()) {
+                        //Not banned!
+                } else { //Still banned!
+			$message = showmessage(19);
+			echo "$message<strong>$row[ban_reason]</strong><br />\n"; 
+			$fail = 1; 
+			displayfooter();
+			die();
+		}
+	}
 	$query = "SELECT * FROM acc_ban WHERE ban_type = 'EMail' AND ban_target = '$email'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
