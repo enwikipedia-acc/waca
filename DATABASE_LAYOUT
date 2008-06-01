@@ -58,7 +58,7 @@ mysql> describe acc_log;
 *log_user - Username of the user performing the action
 *log_action - The action performed
 *log_time - Timestamp
-*log_cmt - Used for comments on some actions (presently only user decline)
+*log_cmt - Used for comments on some actions (presently only user decline and suspend)
 
 acc_pend
 This table contains pending requests.
