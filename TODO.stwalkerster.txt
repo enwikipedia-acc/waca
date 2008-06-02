@@ -4,3 +4,28 @@ likewise, for accstats.php
    ... and   sqlbot-hello.php (possibly ought to be done by SQL, this is his enwiki bot - I don't want the bot to go on a tantrum because of me.)
 
 Tabelise the requests
+
+$toolserver_database
+
+==Localisation Statistics==
+
+Options still to move: irc connection stuff
+
+acc.php 		complete:[host, database]
+accbot.php 		complete:[host, database]
+accstats.php 		complete:[host, database]
+blacklist.php 		complete:[host, database]
+index.php 		complete:[host, database]
+sqlbot-hello.php		
+users.php		complete:[host, database]
+
+
+settings to move:
+accbot.php:
+
+$host = "irc.freenode.org";
+$port=6667;
+$nick="ACCBot";
+$ident="ACCBot";
+$chan="#wikipedia-en-accounts";
+$realname = "ACC Bot";

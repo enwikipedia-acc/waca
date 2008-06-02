@@ -61,10 +61,10 @@ function SIGCHLD() {
 #we need teh sxwiki to alert me.
 require_once('../../database.inc');
 function myq($query) {
-	global $mysql, $toolserver_username, $toolserver_password;
+	global $mysql, $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
 	if (!mysql_ping()) {
-		mysql_connect("sql",$toolserver_username,$toolserver_password,true);
-		@mysql_select_db("u_sql") or print mysql_error();
+		mysql_connect($toolserver_host,$toolserver_username,$toolserver_password,true);
+		@mysql_select_db($toolserver_database) or print mysql_error();
 	}
 
 	return mysql_query($query);

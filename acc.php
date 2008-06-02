@@ -30,8 +30,9 @@ function showmessage($messageno) {
         global $toolserver_username;
         global $toolserver_password;
 	global $toolserver_host;
+	global $toolserver_database;
         mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-        @mysql_select_db("u_sql") or print mysql_error();
+        @mysql_select_db($toolserver_database) or print mysql_error();
         $query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
@@ -42,8 +43,9 @@ function sendemail($messageno, $target) {
 	global $toolserver_username;
 	global $toolserver_password;
 	global $toolserver_host;
+	global $toolserver_database;
 	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-	@mysql_select_db("u_sql") or print mysql_error();
+	@mysql_select_db($toolserver_database) or print mysql_error();
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
@@ -116,7 +118,7 @@ function showfooter() {
 	echo $out;
 }
 mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-@mysql_select_db("u_sql") or print mysql_error();
+@mysql_select_db($toolserver_database) or print mysql_error();
 session_start();
 if ($_GET['action'] == "sreg") {
 	showhead();

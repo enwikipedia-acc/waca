@@ -17,8 +17,8 @@
 **************************************************************/
 
 require_once('/home/sql/database.inc');
-mysql_connect("sql",$toolserver_username,$toolserver_password);
-@mysql_select_db("u_sql") or print mysql_error();
+mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
+@mysql_select_db($toolserver_database) or print mysql_error();
 
 $openq = "select COUNT(*) from acc_pend where pend_status = 'Open';";
 $result = mysql_query($openq);

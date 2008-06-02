@@ -20,8 +20,9 @@ function displayheader() {
         global $toolserver_username;
         global $toolserver_password;
 	global $toolserver_host;
+	global $toolserver_database;
         mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-        @mysql_select_db("u_sql") or print mysql_error();
+        @mysql_select_db($toolserver_database) or print mysql_error();
         $query = "SELECT * FROM acc_emails WHERE mail_id = '8';";
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
@@ -32,8 +33,9 @@ function displayfooter() {
         global $toolserver_username;
         global $toolserver_password;
 	global $toolserver_host;
+	global $toolserver_database;
         mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-        @mysql_select_db("u_sql") or print mysql_error();
+        @mysql_select_db($toolserver_database) or print mysql_error();
         $query = "SELECT * FROM acc_emails WHERE mail_id = '7';";
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
@@ -51,7 +53,7 @@ function sanitize($what) {
 
 require_once('../../database.inc');
 mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-@mysql_select_db("u_sql") or print mysql_error();
+@mysql_select_db($toolserver_database) or print mysql_error();
 if ($_GET[viewuser] != "") {
 	displayheader();
 	$gid = sanitize($_GET[viewuser]);
