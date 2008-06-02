@@ -235,9 +235,9 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
                 $message = showmessage(15);
                 echo "$message<br />\n";
 	        $now = date("Y-m-d H-i-s");
-		$target = "BL";
-		$siuser = "Blacklist";
-		$cmt = "$_POST[name] matched $wnbl FROM $ip";
+		$target = "$wnbl";
+		$siuser = "$_POST[name]";
+		$cmt = "$ip";
 		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
 		fwrite($fp, "[Blacklist] HIT: $wnbl - $_POST[name] $ip2 $email\r\n");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_timem log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
