@@ -235,13 +235,14 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
                 $message = showmessage(15);
                 echo "$message<br />\n";
 	        $now = date("Y-m-d H-i-s");
-		$target = "BL - $wnbl";
+		$target = "BL";
 		$siuser = "None";
 		$cmt = "$_POST[name] matched $wnbl FROM $ip and $email";
+		fwrite($fp, "[Blacklist] HIT: $wnbl - $_POST[name] $ip2 $email\r\n");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_timem log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
+		echo "<br />$query<br />";
 		$result = mysql_query($query);
 		if(!$result) Die("ERROR: No result returned.");
-		fwrite($fp, "[Blacklist] HIT: $wnbl - $_POST[name] $ip2 $email\r\n");
 		fclose($fp);
 		die();		
 		}
