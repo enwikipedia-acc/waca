@@ -10,5 +10,7 @@ accounts2.php:
 2. Some sort of stats mechanism. Maybe just telling the user where they rank upon !count
 
 users.php:
+1. Declines
 
-1. FINISH WRITING IT!
+database.inc:
+Import this file, and rename to config.inc
