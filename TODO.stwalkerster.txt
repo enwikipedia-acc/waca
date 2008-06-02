@@ -1,11 +1,7 @@
-Move IRC connection data into database.inc (Needs SQL's help to modify live copy) - accbot.php
-Get all the localistation stuff out of accbot.php, referencing database.inc
-likewise, for accstats.php
-   ... and   sqlbot-hello.php (possibly ought to be done by SQL, this is his enwiki bot - I don't want the bot to go on a tantrum because of me.)
-
+swap ../../database.inc with config.inc
 Tabelise the requests
 
-$toolserver_database
+
 
 ==Localisation Statistics==
 
@@ -16,7 +12,7 @@ accbot.php 		complete:[host, database]
 accstats.php 		complete:[host, database]
 blacklist.php 		complete:[host, database]
 index.php 		complete:[host, database]
-sqlbot-hello.php		
+sqlbot-hello.php	complete:[host, database]
 users.php		complete:[host, database]
 
 

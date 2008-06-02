@@ -16,7 +16,7 @@
 **                                                           **
 **************************************************************/
 
-require_once('/home/sql/database.inc');
+require_once('config.inc');
 mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 @mysql_select_db($toolserver_database) or print mysql_error();
 

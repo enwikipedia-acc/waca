@@ -59,7 +59,7 @@ function SIGCHLD() {
 
 #Initialize your daemon here (i.e. make the IRC connection, DB connection, set variables, whatever)
 #we need teh sxwiki to alert me.
-require_once('../../database.inc');
+require_once('config.inc');
 function myq($query) {
 	global $mysql, $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
 	if (!mysql_ping()) {
