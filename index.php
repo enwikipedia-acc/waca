@@ -240,7 +240,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 		$cmt = mysql_real_escape_string("Matched $wnbl FROM $ip $email");
 		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
 		fwrite($fp, "[Blacklist] HIT: $wnbl - $_POST[name] $ip2 $email\r\n");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
 		//echo "<br />$query<br />";
 		$result = mysql_query($query);
 		if(!$result) Die("ERROR: No result returned.");
