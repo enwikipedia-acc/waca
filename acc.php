@@ -1111,6 +1111,9 @@ if ($_GET['action'] == "logs") {
 		if($row[log_action] == "Closed 6") { 
 			echo "<li>$row[log_user] Closed (Custom reason), <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
 		}
+		if($row[log_action] == "Blacklist Hit") { 
+			echo "<li>$row[log_user] Rejected by Blacklist $row[log_pend], $row[log_cmt] at $row[log_time].</li>\n";
+		}
 		if($row[log_action] == "Unbanned") { 
 			echo "<li>$row[log_user] Unbanned $row[log_pend] at $row[log_time]</li>\n";
 		}
