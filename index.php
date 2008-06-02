@@ -235,7 +235,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
                 $message = showmessage(15);
                 echo "$message<br />\n";
 	        $now = date("Y-m-d H-i-s");
-		$target = "";
+		$target = "0";
 		$siuser = "$_POST[name]";
 		$cmt = "Matched $wnbl FROM $ip $email";
 		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
