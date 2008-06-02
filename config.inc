@@ -6,5 +6,7 @@ $toolserver_host = $toolserver_mycnf['host'];
 $toolserver_database = "u_sql";
 $cookiepath = '/~sql/';
 $sessionname = 'ACC';
+$wikiurl = "en.wikipedia.org"; //Does nothing yet, intended for further localization
+require_once('blacklist.php');
 unset($toolserver_mycnf);
 ?>

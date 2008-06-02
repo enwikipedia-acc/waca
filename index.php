@@ -16,8 +16,7 @@
 **                                                           **
 **************************************************************/
 
-require_once('../../database.inc');
-require_once('blacklist.php');
+require_once('config.inc');
 function checktor ($addr) {
 	$flags = array();
 	$flags['tor'] = "no";

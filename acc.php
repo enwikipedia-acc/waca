@@ -20,7 +20,6 @@ require_once('config.inc');
 ini_set('session.cookie_path', $cookiepath);
 ini_set('session.name', $sessionname);
 $version = "0.9.6";
-$wikiurl = "en.wikipedia.org"; //Does nothing yet, intended for further localization
 
 function sanitize($what) {
 	$what = mysql_real_escape_string($what);

@@ -15,7 +15,7 @@
 **Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
 **                                                           **
 **************************************************************/
-
+require_once('config.inc');
 function displayheader() {
         global $toolserver_username;
         global $toolserver_password;
@@ -51,7 +51,6 @@ function sanitize($what) {
         return($what);
 }
 
-require_once('../../database.inc');
 mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 @mysql_select_db($toolserver_database) or print mysql_error();
 if ($_GET[viewuser] != "") {
