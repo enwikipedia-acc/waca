@@ -17,6 +17,7 @@
 **************************************************************/
 
 require_once('../../database.inc');
+require_once('blacklist.php');
 function checktor ($addr) {
 	$flags = array();
 	$flags['tor'] = "no";
@@ -228,6 +229,22 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 			die();
 		}
 	}
+	foreach ($nameblacklist as $wnbl => $nbl) {
+		$phail_test = preg_match($nbl, $_POST[name]);
+		if($phail_test === TRUE) {
+                $message = showmessage(15);
+                echo "$message<br />\n";
+	        $now = date("Y-m-d H-i-s");
+		$target = "BL - $wnbl";
+		$siuser = "None";
+		$cmt = "$_POST[name] matched $wnbl FROM $ip and $email";
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_timem log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
+		$result = mysql_query($query);
+		if(!$result) Die("ERROR: No result returned.");
+		die();		
+		}
+	}
+
 	if ($fail != 1) { 
 		$message = showmessage(15);
 		echo "$message<br />\n"; 
