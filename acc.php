@@ -1163,198 +1163,198 @@ if ($_GET['action'] == "logs") {
 $query = "SELECT * FROM acc_pend WHERE pend_status = 'Open';";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
-echo "<ol>\n";
+echo "<table>\n";
 while ($row = mysql_fetch_assoc($result)) {
 	$uname = urlencode($row[pend_name]);
 #	$uname = str_replace("+", "_", $row[pend_name]);
 	$rid = $row['pend_id'];
 	if($row['pend_cmt'] != "") {
-		$cmt = "<a href=\"acc.php?action=zoom&id=$rid\">Zoom (CMT)</a> ";
+		$cmt = "<a style=\"color:green\" href=\"acc.php?action=zoom&id=$rid\">Zoom (CMT)</a> ";
 	} else {
-		$cmt = "<a href=\"acc.php?action=zoom&id=$rid\">Zoom</a> ";
+		$cmt = "<a style=\"color:green\" href=\"acc.php?action=zoom&id=$rid\">Zoom</a> ";
 	}
 
 	$query = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \''.$row['pend_ip'].'\' AND `pend_id` != \''.$row['pend_id'].'\';';
 	$otherreqs = mysql_fetch_assoc(mysql_query($query));
 
 
-	$out = '<li><small>'; //List item
+	$out = '<tr><td><small>'; //List item
 	$out.= $cmt; // CMT link.
 
 	// Email.
-	$out.= '[ <a href="mailto:' . $row[pend_email] . '">' . $row[pend_email] . '</a>';
+	$out.= '</small></td><td><small>[ <a style="color:green" href="mailto:' . $row[pend_email] . '">' . $row[pend_email] . '</a>';
 
 	// IP UT:
-	$out.= ' / <a href="http://en.wikipedia.org/wiki/User_talk:' . $row[pend_ip] . '">';
+	$out.= '</small></td><td><small> | <a style="color:green" href="http://en.wikipedia.org/wiki/User_talk:' . $row[pend_ip] . '">';
 	$out.= $row[pend_ip] . '</a> ';
 
-	$out.= '(<b>'.$otherreqs['count'].'</b>) ';
+	$out.= '</small></td><td><small><span style="color:green">(<b>'.$otherreqs['count'].'</b>) ';
 
 	// IP contribs
-	$out.= '<a href="http://en.wikipedia.org/wiki/Special:Contributions/';
+	$out.= '</span></small></td><td><small><a style="color:green" href="http://en.wikipedia.org/wiki/Special:Contributions/';
 	$out.= $row[pend_ip] . '">c</a> ';
 
 	// IP blocks
-	$out.= '<a href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:';
+	$out.= '<a style="color:green" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:';
 	$out.= $row[pend_ip] . '">b</a> ';
 
 	// IP whois
-	$out.= '<a href="http://ws.arin.net/whois/?queryinput=' . $row[pend_ip] . '">w</a> ] ';
+	$out.= '<a style="color:green" href="http://ws.arin.net/whois/?queryinput=' . $row[pend_ip] . '">w</a> ] ';
 
 	// Username U:
-	$out.= '<a href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $uname . '</strong></a> ';
+	$out.= '</small></td><td><small><a style="color:blue" href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $uname . '</strong></a> ';
 
 	// Creation log	
-	$out.= '(<a href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:';
+	$out.= '</small></td><td><small>(<a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:';
 	$out.= $uname . '">Creation</a> ';
 
 	// User contribs
-	$out.= '<a href="http://en.wikipedia.org/wiki/Special:Contributions/';
+	$out.= '<a style="color:blue" href="http://en.wikipedia.org/wiki/Special:Contributions/';
 	$out.= $uname . '">Contribs</a> ';
-	$out.= '<a href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&username=' . $uname . '&group=&limit=50">List</a>) ';
+	$out.= '<a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&username=' . $uname . '&group=&limit=50">List</a>) ';
 
 	// Create user link
-	$out.= '<b><a href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
+	$out.= '<b><a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
 	$out.= $uname . '&wpEmail=' . $row[pend_email] . '&uselang=en-acc">Create!</a></b> '; 
 
 	// Done
-	$out.= '| <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=1">Done!</a>';
+	$out.= '| <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=1">Done!</a>';
 
 	// Similar
-	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=2">Similar</a>';
+	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=2">Similar</a>';
 
 	// Taken
-	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=3">Taken</a>';
+	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=3">Taken</a>';
 
 	// UPolicy
-	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=4">UPolicy</a>';
+	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=4">UPolicy</a>';
 
 	// Invalid
-	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=5">Invalid</a>';
+	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=5">Invalid</a>';
 
 	// Defer to admins
-	$out.= ' - <a href="acc.php?action=defer&id=' . $row[pend_id] . '&target=admin">Defer to admins</a>';
+	$out.= ' - <a style="color:orange" href="acc.php?action=defer&id=' . $row[pend_id] . '&target=admin">Defer to admins</a>';
 
 	// Drop
-	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=0">Drop</a>';
+	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=0">Drop</a>';
 
 	// Ban IP
-	$out.= ' Ban: <a href="acc.php?action=ban&ip=' . $row[pend_id] . '">IP</a> ';
+	$out.= ' | Ban: <a style="color:red" href="acc.php?action=ban&ip=' . $row[pend_id] . '">IP</a> ';
 
 	// Ban email
-	$out.= '| <a href="acc.php?action=ban&email=' . $row[pend_id] . '">E-Mail</a>';
+	$out.= '- <a style="color:red" href="acc.php?action=ban&email=' . $row[pend_id] . '">E-Mail</a>';
 
 	//Ban name
-	$out.= '| <a href="acc.php?action=ban&name=' . $row[pend_id] . '">Name</a>';
+	$out.= '- <a style="color:red" href="acc.php?action=ban&name=' . $row[pend_id] . '">Name</a>';
 
-	$out.= '</small></li>';
+	$out.= '</small></td></tr>';
 
 	echo "$out\n";
 }
 ?>
-</ol>
+</table>
 <h2>Admin Needed!</h2>
 <span id="admin"/>
 <?php
 $query = "SELECT * FROM acc_pend WHERE pend_status = 'Admin';";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
-echo "<ol>\n";
+echo "<table>\n";
 while ($row = mysql_fetch_assoc($result)) {
 	$uname = urlencode($row[pend_name]);
 #	$uname = str_replace("+", "_", $row[pend_name]);
 	$rid = $row['pend_id'];
 	if($row['pend_cmt'] != "") {
-		$cmt = "<a href=\"acc.php?action=zoom&id=$rid\">Zoom (CMT)</a> ";
+		$cmt = "<a style=\"color:green\" href=\"acc.php?action=zoom&id=$rid\">Zoom (CMT)</a> ";
 	} else {
-		$cmt = "<a href=\"acc.php?action=zoom&id=$rid\">Zoom</a> ";
+		$cmt = "<a style=\"color:green\" href=\"acc.php?action=zoom&id=$rid\">Zoom</a> ";
 	}
-	$out = '<li><small>'; //List item
+	$out = '<tr><td><small>'; //List item
 	$out.= $cmt; // CMT link.
 
 	// Email.
-	$out.= '[ <a href="mailto:' . $row[pend_email] . '">' . $row[pend_email] . '</a>';
+	$out.= '</small></td><td><small>[ <a style="color:green" href="mailto:' . $row[pend_email] . '">' . $row[pend_email] . '</a>';
 
 	// IP UT:
-	$out.= ' / <a href="http://en.wikipedia.org/wiki/User_talk:' . $row[pend_ip] . '">';
+	$out.= '</small></td><td><small> | <a style="color:green" href="http://en.wikipedia.org/wiki/User_talk:' . $row[pend_ip] . '">';
 	$out.= $row[pend_ip] . '</a> ';
 	$query = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \''.$row['pend_ip'].'\' AND `pend_id` != \''.$row['pend_id'].'\';';
 	$otherreqs = mysql_fetch_assoc(mysql_query($query));
-	$out.= '(<b>'.$otherreqs['count'].'</b>) ';
+	$out.= '</small></td><td><small><span style="color:green">(<b>'.$otherreqs['count'].'</b>)</span> ';
 
 	// IP contribs
-	$out.= '<a href="http://en.wikipedia.org/wiki/Special:Contributions/';
+	$out.= '</small></td><td><small><a style="color:green" href="http://en.wikipedia.org/wiki/Special:Contributions/';
 	$out.= $row[pend_ip] . '">c</a> ';
 
 	// IP blocks
-	$out.= '<a href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:';
+	$out.= '<a style="color:green" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:';
 	$out.= $row[pend_ip] . '">b</a> ';
 
 	// IP whois
-	$out.= '<a href="http://ws.arin.net/whois/?queryinput=' . $row[pend_ip] . '">w</a> ] ';
+	$out.= '<a style="color:green" href="http://ws.arin.net/whois/?queryinput=' . $row[pend_ip] . '">w</a> ] ';
 
 	// Username U:
-	$out.= '<a href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $uname . '</strong></a> ';
+	$out.= '</small></td><td><small><a style="color:blue" href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $uname . '</strong></a> ';
 
 	// Creation log	
-	$out.= '(<a href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:';
+	$out.= '</small></td><td><small>(<a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:';
 	$out.= $uname . '">Creation</a> ';
 
 	// User contribs
-	$out.= '<a href="http://en.wikipedia.org/wiki/Special:Contributions/';
+	$out.= '<a style="color:blue" href="http://en.wikipedia.org/wiki/Special:Contributions/';
 	$out.= $uname . '">Contribs</a> ';
-	$out.= '<a href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&username=' . $uname . '&group=&limit=50">List</a>) ';
+	$out.= '<a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&username=' . $uname . '&group=&limit=50">List</a>) ';
 
 	// Create user link
-	$out.= '<b><a href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
+	$out.= '<b><a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
 	$out.= $uname . '&wpEmail=' . $row[pend_email] . '&uselang=en-acc">Create!</a></b> '; 
 
 	// Done
-	$out.= '| <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=1">Done!</a>';
+	$out.= '| <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=1">Done!</a>';
 
 	// Similar
-	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=2">Similar</a>';
+	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=2">Similar</a>';
 
 	// Taken
-	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=3">Taken</a>';
+	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=3">Taken</a>';
 
 	// UPolicy
-	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=4">UPolicy</a>';
+	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=4">UPolicy</a>';
 
 	// Invalid
-	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=5">Invalid</a>';
+	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=5">Invalid</a>';
 
 	// Defer to admins
-	$out.= ' - <a href="acc.php?action=defer&id=' . $row[pend_id] . '&target=user">Defer to users</a>';
+	$out.= ' - <a style="color:orange" href="acc.php?action=defer&id=' . $row[pend_id] . '&target=user">Defer to users</a>';
 
 	// Drop
-	$out.= ' - <a href="acc.php?action=done&id=' . $row[pend_id] . '&email=0">Drop</a>';
+	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=0">Drop</a>';
 
 	// Ban IP
-	$out.= ' Ban: <a href="acc.php?action=ban&ip=' . $row[pend_id] . '">IP</a> ';
+	$out.= ' | Ban: <a style="color:red" href="acc.php?action=ban&ip=' . $row[pend_id] . '">IP</a> ';
 
 	// Ban email
-	$out.= '| <a href="acc.php?action=ban&email=' . $row[pend_id] . '">E-Mail</a>';
+	$out.= '- <a style="color:red" href="acc.php?action=ban&email=' . $row[pend_id] . '">E-Mail</a>';
 
 	//Ban name
-	$out.= '| <a href="acc.php?action=ban&name=' . $row[pend_id] . '">Name</a>';
+	$out.= '- <a style="color:red" href="acc.php?action=ban&name=' . $row[pend_id] . '">Name</a>';
 
-	$out.= '</small></li>';
+	$out.= '</small></td></tr>';
 
 	echo "$out\n";
 }
 ?>
-</ol>
+</table>
 <?php
 echo "<h2>Last 5 Closed requests</h2><span id=\"closed\"/>\n";
 $query = "SELECT * FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
-echo "<ol>\n";
+echo "<table>\n";
 while ($row = mysql_fetch_assoc($result)) {
-	echo "<li><small><a href=\"acc.php?action=zoom&id=$row[pend_id]\">$row[pend_name]</a> - <a href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">w</a> - <a href=\"acc.php?action=defer&id=$row[pend_id]&target=user\">Reset</a></small></li>";
+	echo "<tr><td><small><a href=\"acc.php?action=zoom&id=$row[pend_id]\">$row[pend_name]</a></small></td><td><small>  <a href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">w</a></small></td><td><small>  <a href=\"acc.php?action=defer&id=$row[pend_id]&target=user\">Reset</a></small></td></tr>";
 }
-echo "</ol>\n";
+echo "</table>\n";
 showfooter();
 ?>
 
