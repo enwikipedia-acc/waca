@@ -231,7 +231,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	}
 	foreach ($nameblacklist as $wnbl => $nbl) {
 		$phail_test = preg_match($nbl, $_POST[name]);
-		if($phail_test === TRUE) {
+		if($phail_test == TRUE) {
                 $message = showmessage(15);
                 echo "$message<br />\n";
 	        $now = date("Y-m-d H-i-s");
@@ -241,6 +241,8 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_timem log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
 		$result = mysql_query($query);
 		if(!$result) Die("ERROR: No result returned.");
+		fwrite($fp, "[Blacklist] HIT: $wnbl - $_POST[name] $ip2 $email"\r\n");
+		fclose($fp);
 		die();		
 		}
 	}
