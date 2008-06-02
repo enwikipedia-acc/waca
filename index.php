@@ -241,7 +241,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_timem log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
 		$result = mysql_query($query);
 		if(!$result) Die("ERROR: No result returned.");
-		fwrite($fp, "[Blacklist] HIT: $wnbl - $_POST[name] $ip2"\r\n");
+		fwrite($fp, "[Blacklist] HIT: $wnbl - $_POST[name] $ip2 $email\r\n");
 		fclose($fp);
 		die();		
 		}
