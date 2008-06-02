@@ -16,7 +16,7 @@
 **                                                           **
 **************************************************************/
 
-require_once('../../database.inc');
+require_once('config.inc');
 ini_set('session.cookie_path', $cookiepath);
 ini_set('session.name', $sessionname);
 $version = "0.9.6";
