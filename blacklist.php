@@ -20,5 +20,5 @@ $nameblacklist[grawp1] = '/.*k*l[o0]?m[o0]?[i1]r*.*/i';
 $nameblacklist[grawp2] = '/.*gr*(w|vv)p.*/i';
 $nameblacklist[grawp3] = '/.*(hagg[ea]r|herme?y).*/i';
 $nameblacklist[grawp4] = '/.*secret.*combination.*/i';
-$nameblacklist[upolicy1] = '/.*(admin|wikipedia|bot|steward|jimbo).*/i';
+$nameblacklist[upolicy1] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|b[0o]t|st[3e]w[4a]rd|j[1i]mb[0o]).*/i';
 ?>
