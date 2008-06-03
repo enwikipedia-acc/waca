@@ -25,6 +25,15 @@ function sanitize($what) {
 	$what = mysql_real_escape_string($what);
 	return($what);
 }
+function showhowma() {
+	$howma = gethowma();
+	unset($howma[howmany]);
+	$out = "";
+	foreach ($howma as $oneonline) {
+		$out .= " $oneline";	
+	}
+	return($out);
+}
 function gethowma() {
         global $toolserver_username;
         global $toolserver_password;
@@ -135,6 +144,7 @@ function showfootern() {
 }
 function showfooter() {
 	$howmany = gethowma();
+	$howout = showhowma();
 	$howma = $howmany[howmany];
         $out = showmessage('23');
         $suser = sanitize($_SESSION[user]);
@@ -145,7 +155,7 @@ function showfooter() {
         if($row[user_level] == "Admin") {
 		$out = preg_replace('/\<br \/\>\<br \/\>/', '<br /><a href="acc.php?action=usermgmt">User management</a><br /><br />', $out);
 	}
-	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><small><center>$howma users active within the last 5 mins!</center></small><br /><br />", $out);
+	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><small><center>$howma users active within the last 5 mins! ($howout)</center></small><br /><br />", $out);
 	echo $out;
 }
 mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
