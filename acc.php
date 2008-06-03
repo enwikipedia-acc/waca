@@ -132,7 +132,7 @@ mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 session_start();
 if ($_GET['action'] == "sreg") {
 	showhead();
-	$last5min = 300 - time(); // Get the users active as of the last 5 mins
+	$last5min = time() - 300; // Get the users active as of the last 5 mins
 	$last5mins = date("Y-m-d H-i-s", $last5min);
 	$query = "SELECT * FROM acc_user WHERE user_lastactive > '$last5mins';";
 	$result = mysql_query($query);
