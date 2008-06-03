@@ -175,7 +175,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 		$fail = 1; 
 	}
 	
-	$mailiswmf = preg_match('/.*wiki(media|pedia).*/i', $email);
+	$mailiswmf = preg_match('/.*wiki(m*dia|p*dia).*/i', $email);
 	if ($mailiswmf != 0) {
 		$message = showmessage(14);
 		echo "$message<br />\n"; 
