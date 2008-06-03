@@ -30,7 +30,7 @@ function showhowma() {
 	unset($howma[howmany]);
 	$out = "";
 	foreach ($howma as $oneonline) {
-		$out .= " $oneline";	
+		$out .= " $oneonline";	
 	}
 	return($out);
 }
