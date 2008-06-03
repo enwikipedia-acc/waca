@@ -1214,7 +1214,9 @@ $query = "SELECT * FROM acc_pend WHERE pend_status = 'Open';";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
 echo "<table>\n";
+$currentreq = 0;
 while ($row = mysql_fetch_assoc($result)) {
+	$currentreq +=1;
 	$uname = urlencode($row[pend_name]);
 #	$uname = str_replace("+", "_", $row[pend_name]);
 	$rid = $row['pend_id'];
@@ -1227,8 +1229,16 @@ while ($row = mysql_fetch_assoc($result)) {
 	$query = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \''.$row['pend_ip'].'\' AND `pend_id` != \''.$row['pend_id'].'\';';
 	$otherreqs = mysql_fetch_assoc(mysql_query($query));
 
-
-	$out = '<tr><td><small>'; //List item
+	$out = '<tr';
+	if($currentreq % 2 == 0) 
+	{
+		$out.= ' class="even">';
+	}
+	else
+	{
+		$out.= ' class="odd">';
+	} 
+	$out.= '<td><small>'.$currentreq.'.    </small></td><td><small>'; //List item
 	$out.= $cmt; // CMT link.
 
 	// Email.
@@ -1316,7 +1326,9 @@ $query = "SELECT * FROM acc_pend WHERE pend_status = 'Admin';";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
 echo "<table>\n";
+$currentreq = 0;
 while ($row = mysql_fetch_assoc($result)) {
+	$currentreq +=1;
 	$uname = urlencode($row[pend_name]);
 #	$uname = str_replace("+", "_", $row[pend_name]);
 	$rid = $row['pend_id'];
@@ -1325,7 +1337,16 @@ while ($row = mysql_fetch_assoc($result)) {
 	} else {
 		$cmt = "<a style=\"color:green\" href=\"acc.php?action=zoom&id=$rid\">Zoom</a> ";
 	}
-	$out = '<tr><td><small>'; //List item
+	$out = '<tr';
+	if($currentreq % 2 == 0) 
+	{
+		$out.= ' class="even">';
+	}
+	else
+	{
+		$out.= ' class="odd">';
+	} 
+	$out.= '<td><small>'.$currentreq.'.    </small></td><td><small>'; //Table row and request number
 	$out.= $cmt; // CMT link.
 
 	// Email.
@@ -1413,8 +1434,20 @@ $query = "SELECT * FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_ac
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
 echo "<table>\n";
+$currentrow = 0;
 while ($row = mysql_fetch_assoc($result)) {
-	echo "<tr><td><small><a href=\"acc.php?action=zoom&id=$row[pend_id]\">$row[pend_name]</a></small></td><td><small>  <a href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">w</a></small></td><td><small>  <a href=\"acc.php?action=defer&id=$row[pend_id]&target=user\">Reset</a></small></td></tr>";
+	$currentrow +=1;
+	$out = '<tr';
+	if($currentrow % 2 == 0) 
+	{
+		$out.= ' class="even">';
+	}
+	else
+	{
+		$out.= ' class="odd">';
+	} 
+	$out.= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&id=$row[pend_id]\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">$row[pend_name]</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&target=user\">Reset</a></small></td></tr>";
+	echo $out;
 }
 echo "</table>\n";
 showfooter();

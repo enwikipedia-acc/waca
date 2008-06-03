@@ -1,7 +1,4 @@
-swap ../../database.inc with config.inc
-Tabelise the requests
-
-
+prettify the code, and interface
 
 ==Localisation Statistics==
 

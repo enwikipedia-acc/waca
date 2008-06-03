@@ -181,3 +181,15 @@ div#footer a {
 div#footer a:hover {
 	text-decoration: none;
 }
+/**
+*   Zebra Tables
+*/
+tr.even		{
+		background:#f2f4ff;
+		}
+tr.odd		{
+		background:white;
+		}
+tr:hover	{
+		background:#c4ceff;
+		}
