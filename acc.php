@@ -42,6 +42,7 @@ function showhowma() {
 		$row = mysql_fetch_assoc($result);
 		$uid = $row[user_id];
 		$out .= " <a href=\"users.php?viewuser=$uid\">$oneonline</a>";	
+	}
 	$out = ltrim(rtrim($out));
 	return($out);
 }
