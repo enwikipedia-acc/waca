@@ -78,6 +78,7 @@ function showmessage($messageno) {
 	global $toolserver_database;
         mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
         @mysql_select_db($toolserver_database) or print mysql_error();
+	$messageno = sanitize($messageno);
         $query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
@@ -91,6 +92,7 @@ function sendemail($messageno, $target) {
 	global $toolserver_database;
 	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 	@mysql_select_db($toolserver_database) or print mysql_error();
+	$messageno = sanitize($messageno);
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
@@ -137,7 +139,8 @@ function checksecurity($username) {
 	}
 }
 function showhead() {
-	$query = "SELECT * FROM acc_user WHERE user_name = '$_SESSION[user]' LIMIT 1;";
+	$suin = sanitize($_SESSION[user]);
+	$query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
@@ -1108,11 +1111,12 @@ if ($_GET['action'] == "logout") {
 if ($_GET['action'] == "logs") {
 	if($_GET['limit'] != "") {
 		$limit = $_GET['limit'];
+		$limit = sanitize($limit);
 	} else {
 		$limit = 100;
 	}
 	if($_GET['from'] != "") {
-		$from = $_GET['from'];
+		$from = sanitize($_GET['from']);
 		$query = "SELECT * FROM acc_log ORDER BY log_time DESC LIMIT $limit OFFSET $from;";
 	} else {
 		$query = "SELECT * FROM acc_log ORDER BY log_time DESC LIMIT $limit;";
