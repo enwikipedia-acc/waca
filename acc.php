@@ -1233,7 +1233,13 @@ while ($row = mysql_fetch_assoc($result)) {
 	$out.= '</small></td><td><small> | <a style="color:green" href="http://en.wikipedia.org/wiki/User_talk:' . $row[pend_ip] . '">';
 	$out.= $row[pend_ip] . '</a> ';
 
-	$out.= '</small></td><td><small><span style="color:green">(<b>'.$otherreqs['count'].'</b>) ';
+	$out.= '</small></td><td><small><span style="color:';
+	if($otherreqs['count'] == 0) {
+		$out.= 'green">('.$otherreqs['count'].')';
+	} else {		
+		$out.= 'black">(</span><b><span style="color:red">'.$otherreqs['count'].'</span></b><span style="color:black">)';
+	}
+	$out.=" <span>";
 
 	// IP contribs
 	$out.= '</span></small></td><td><small><a style="color:green" href="http://en.wikipedia.org/wiki/Special:Contributions/';
