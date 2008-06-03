@@ -89,7 +89,7 @@ mysql> DESCRIBE acc_pend;
 acc_user
 This table contains all internal user data.
 
-mysql> describe acc_user;
+mysql> DESCRIBE acc_user;
 +-----------------------+---------------+------+-----+---------+----------------+
 | Field                 | Type          | Null | Key | Default | Extra          |
 +-----------------------+---------------+------+-----+---------+----------------+
@@ -102,8 +102,9 @@ mysql> describe acc_user;
 | user_welcome          | int(11)       | NO   |     | 0       |                | 
 | user_welcome_sig      | varchar(4096) | NO   |     | NULL    |                | 
 | user_welcome_template | varchar(1024) | NO   |     | NULL    |                | 
+| user_lastactive       | datetime      | NO   |     | NULL    |                | 
 +-----------------------+---------------+------+-----+---------+----------------+
-9 rows in set (0.00 sec)
+10 rows in set (0.01 sec)
 
 
 *user_id - Table key
@@ -115,6 +116,7 @@ mysql> describe acc_user;
 *user_welcome - Set welcoming on or off. 0 for off, 1 for on. Default 0
 *user_welcome_sig - The user's preferred welcome sig
 *user_welcome_template - The user's preferred welcoming template
+*user_lastactive - Timestamp of the last time the user accessed acc.php, used for 'whos online' stats
 
 acc_ban
 This table holds e-mail addresses and IP's that are banned from the request system.
