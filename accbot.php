@@ -235,6 +235,8 @@ while (!feof($fp)) {
 
 	if (substr(strtolower($line_ex[3]),1) == '!svninfo') {
 		if (pcntl_fork() == 0) {
+			$nick = explode('!',$line_ex[0]);
+			$nick = substr($nick[0],1);
 			$svn = popen('svn info 2>&1', 'r');
 			while (!feof($svn)) {
 				$svnin = ltrim(rtrim(fgets($svn,512)));
