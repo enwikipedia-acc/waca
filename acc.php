@@ -232,7 +232,8 @@ value="welcomeshort">{{Welcomeshort|user}} ~~~~</option>
 <option value="w-riana">{{User:Riana/Welcome|name=user|sig=~~~~}}</option>
 <option value="w-kk">{{User:KrakatoaKatie/Welcome1}} ~~~~</option>
 <option value="w-screen">{{w-screen|sig=~~~~}}</option>
-<option value="wodup">{{User:WODUP/Welcome}} ~~~~</option></select</td>
+<option value="wodup">{{User:WODUP/Welcome}} ~~~~</option>
+<option value="williamh">{{User:WilliamH/Welcome|user}} ~~~~</option></select></td>
 			</tr>
 		</td>
 		<td>
@@ -895,6 +896,7 @@ if ($_GET['action'] == "welcomeperf") {
 	<option value="welcomeshort"<?php if($template == "welcomeshort") { echo " selected"; } ?>>{{Welcomeshort|user}} ~~~~</option>
 	<option value="w-riana"<?php if($template == "w-riana") { echo " selected"; } ?>>{{User:Riana/Welcome|name=user|sig=~~~~}}</option>
 	<option value="wodup"<?php if($template == "wodup") { echo " selected"; } ?>>{{User:WODUP/Welcome}} ~~~~</option>
+	<option value="williamh"<?php if($template == "williamh") { echo " selected"; } ?>>{{User:WilliamH/Welcome|user}} ~~~~</option>
 	</select><br />
 	<i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>, <a href="http://en.wikipedia.org/wiki/User_talk:Cobi">Cobi</a>, or <a href="http://en.wikipedia.org/wiki/User_talk:FastLizard4">FastLizard4</a>.</i><br />
 	<input type="submit"><input type="reset">

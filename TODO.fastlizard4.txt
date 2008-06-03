@@ -3,8 +3,7 @@ fastlizard4's TODO
 =======================================TO DO================================================
 Status/Prioirty |  Task and description
 --------------------------------------------------------------------------------------------
-HIGH		1. STOP TEH GRAWP!  (Create email and registeration blacklist; colaborate with others to help create)
-Normal		2. Maybe get the "DismissSiteNotice" feature to go into the programming instead of a javascript flood
+Normal		1. Maybe get the "DismissSiteNotice" feature to go into the programming instead of a javascript flood
 --------------------------------------------------------------------------------------------
 ============================================================================================
 
@@ -12,10 +11,11 @@ Normal		2. Maybe get the "DismissSiteNotice" feature to go into the programming 
 ========================================DONE================================================
 Status/Prioirty |  Task and description
 --------------------------------------------------------------------------------------------
-HIGH		3. Figure out what the hell I am doing! - I guess {{done}}
-Normal		4. Add a 'refresh this page' link
-Normal		5. Show who you are logged in as; make it link to your user info
-Normal		6. Fix the formatting in users.php
+HIGH		2. Figure out what the hell I am doing! - I guess {{done}}
+Normal		3. Add a 'refresh this page' link
+Normal		4. Show who you are logged in as; make it link to your user info
+Normal		5. Fix the formatting in users.php
+HIGH		6. STOP TEH GRAWP!  (Create email and registeration blacklist; colaborate with others to help create)
 --------------------------------------------------------------------------------------------
 ============================================================================================
 
