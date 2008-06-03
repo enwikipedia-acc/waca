@@ -21,6 +21,31 @@ function sanitize($what) {
 	$what = mysql_real_escape_string($what);
 	return($what);
 }
+
+function checkdnsbls ($addr) {
+	global $dnsbls;
+
+	$dnsblip = implode('.',array_reverse(explode('.',$addr)));
+	$dnsbldata = '<ul>';
+	$banned = false;
+
+	foreach ($dnsbls as $dnsblname => $dnsbl) {
+		$tmpdnsblresult = gethostbyname($dnsblip.'.'.$dnsbl['zone']);
+		if (long2ip(ip2long($tmpdnsblresult)) != $tmpdnsblresult) { $tmpdnsblresult = 'Nothing.'; continue; }
+		if (!isset($dnsbl['ret'][$lastdigit]) and ($dnsbl['bunk'] == false)) { $tmpdnsblresult = 'Nothing.'; continue; }
+		$dnsbldata .= '<li> '.$dnsblip.'.'.$dnsbl['zone'].' ('.$dnsblname.') = '.$tmpdnsblresult;
+		$lastdigit = explode('.',$tmpdnsblresult);
+		$lastdigit = $lastdigit[3];
+		if (isset($dnsbl['ret'][$lastdigit])) { $dnsbldata .= ' ('.$dnsbl['ret'][$lastdigit].')'; $banned = true; }
+		else { $dnsbldata .= ' (unknown)'; if ($dnsbl['bunk']) $banned = true; }
+		$dnsbldata .= ' &mdash;  <a href="'.str_replace('%i',$request[1],$dnsbl['url'])."\" more information</a>.\n";
+	}
+	unset($dnsblip,$dnsblname,$dnsbl,$tmpdnsblresult,$lastdigit);
+
+	$dnsbldata .= '</ul>';
+	return array($banned,$dnsbldata);
+}
+
 function checktor ($addr) {
 	$flags = array();
 	$flags['tor'] = "no";
@@ -109,21 +134,35 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	foreach ($nameblacklist as $wnbl => $nbl) {
 		$phail_test = preg_match($nbl, $_POST[name]);
 		if($phail_test == TRUE) {
-                $message = showmessage(15);
-                echo "$message<br />\n";
-	        $now = date("Y-m-d H-i-s");
-		$target = "$wnbl";
-		$siuser = mysql_real_escape_string("$_POST[name]");
-		$cmt = mysql_real_escape_string("FROM $ip $email");
-		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-		fwrite($fp, "[Blacklist] HIT: $wnbl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
-		//echo "<br />$query<br />";
-		$result = mysql_query($query);
-		if(!$result) Die("ERROR: No result returned.");
-		fclose($fp);
-		die();		
+        	        $message = showmessage(15);
+	                echo "$message<br />\n";
+	        	$now = date("Y-m-d H-i-s");
+			$target = "$wnbl";
+			$siuser = mysql_real_escape_string("$_POST[name]");
+			$cmt = mysql_real_escape_string("FROM $ip $email");
+			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
+			fwrite($fp, "[Blacklist] HIT: $wnbl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
+			//echo "<br />$query<br />";
+			$result = mysql_query($query);
+			if(!$result) Die("ERROR: No result returned.");
+			fclose($fp);
+			die();		
 		}
+	}
+
+	$dnsblcheck = checkdnsbl($ip2);
+	if ($dnsblcheck[0] == true) {
+		$now = date("Y-m-d H-i-s");
+		$siuser = mysql_real_escape_string("$_POST[name]");
+		$cmt = mysql_real_escape_string("FROM $ip $email<br />$dnsblcheck[1]");
+		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
+		fwrite($fp, "[DNSBL] HIT: $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('DNSBL', '$siuser', 'DNSBL Hit', '$now', '$cmt');";
+		mysql_query($query);
+		fclose($fp);
+		$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string('DNSBL Hit:<br />\n'.$dnsblcheck[1]).'\',\''.$now.'\',\'172800\')';
+		mysql_query($query);
 	}
 
 	if(isset($ub[query][blocks][0][id])) {

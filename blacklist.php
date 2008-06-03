@@ -26,4 +26,81 @@ $nameblacklist[upolicy1] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|b[0o]t|st[3
 
 //E-Mail Blacklist (not yet implemented in HEAD)
 $emailblacklist[example1] = '/.&.*\@fake\.email$/i';
+
+//DNSBLS
+$dnsbls = Array	(
+	'NJABL'	=> Array (
+		'zone' => 'dnsbl.njabl.org',
+		'bunk' => false,
+		'url'  => 'http://www.njabl.org/cgi-bin/lookup.cgi?query=%i',
+		'ret'  => Array (
+			10	=> 'Open proxy'
+		)
+	),
+	'IRCBL'	=> Array (
+		'zone' => 'ircbl.ahbl.org',
+		'bunk' => false,
+		'url'  => 'http://www.ahbl.org/tools/lookup.php?ip=%i',
+		'ret'  => Array (
+			3	=> 'Open proxy',
+			14	=> 'DDoS drone',
+			15	=> 'Trojan',
+			16	=> 'Virus',
+			17	=> 'Malware',
+			18	=> 'Ratware'
+		)
+	),
+	'SECTOOR' => Array (
+		'zone' => 'tor.dnsbl.sectoor.de',
+		'bunk' => true,
+		'url'  => 'http://www.sectoor.de/tor.php?ip=%i',
+		'ret'  => Array (
+			1	=> 'Tor exit server'
+		)
+	),
+	'AHBL' => Array (
+		'zone' => 'tor.ahbl.org',
+		'bunk' => true,
+		'url'  => 'http://www.ahbl.org/tools/lookup.php?ip=%i',
+		'ret'  => Array (
+			2	=> 'Tor exit server'
+		)
+	),
+	'NoMoreFunn' => Array (
+		'zone' => 'no-more-funn.moensted.dk',
+		'bunk' => false,
+		'url'  => 'http://moensted.dk/spam/no-more-funn?addr=%i',
+		'ret'  => Array (
+			10	=> 'Open proxy'
+		)
+	),
+	'SORBS' => Array (
+		'zone' => 'dnsbl.sorbs.net',
+		'bunk' => false,
+		'url'  => 'http://dnsbl.sorbs.net/cgi-bin/db?IP=%i',
+		'ret'  => Array (
+			2	=> 'Open HTTP Proxy',
+			3	=> 'Open Socks Proxy',
+			4	=> 'Other Open Proxy'
+		)
+	),
+	'DSBL' => Array (
+		'zone' => 'list.dsbl.org',
+		'bunk' => false,
+		'url'  => 'http://dsbl.org/listing?%i',
+		'ret'  => Array (
+			2	=> 'Open proxy'
+		)
+	),
+	'XBL' => Array (
+		'zone' => 'xbl.spamhaus.org',
+		'bunk' => false,
+		'url'  => 'http://www.spamhaus.org/query/bl?ip=%i',
+		'ret'  => Array (
+			4	=> 'CBL',
+			5	=> 'NJABL',
+			6	=> 'BOPM'
+		)
+	)
+);
 ?>
