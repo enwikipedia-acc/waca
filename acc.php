@@ -98,8 +98,13 @@ function showhead() {
 	$_SESSION[user_id] = $row[user_id];
 	$out = showmessage('21');
 	echo $out;
-	if(isset($_SESSION[user])) {
+	if(isset($_SESSION[user])) { //Is user logged in?
 		echo "<div id = \"header-info\">Logged in as <a href=\"users.php?viewuser=$_SESSION[user_id]\"><span title=\"View your user information\">$_SESSION[user]</span></a></div>\n";
+		//Update user_lastactive
+		$now = date("Y-m-d H-i-s");
+		$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '$_SESSION[user_id]';";
+		$result = mysql_query($query);
+		if(!$result) Die("ERROR: No result returned.");
 	} else { 
 		echo "<div id = \"header-info\">Not logged in.</div>\n"; 
 	}
