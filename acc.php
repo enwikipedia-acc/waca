@@ -1208,7 +1208,7 @@ if ($_GET['action'] == "logs") {
 ?>
 <h1>Create an account!</h1>
 <h2>Open requests</h2>
-<A name="open" />
+<!--<A name="open" />-->
 <?php
 $query = "SELECT * FROM acc_pend WHERE pend_status = 'Open';";
 $result = mysql_query($query);
