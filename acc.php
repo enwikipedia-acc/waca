@@ -1208,7 +1208,7 @@ if ($_GET['action'] == "logs") {
 ?>
 <h1>Create an account!</h1>
 <h2>Open requests</h2>
-<!--<A name="open" />-->
+<A name="open"></A>
 <?php
 $query = "SELECT * FROM acc_pend WHERE pend_status = 'Open';";
 $result = mysql_query($query);
@@ -1320,6 +1320,7 @@ while ($row = mysql_fetch_assoc($result)) {
 ?>
 </table>
 <h2>Admin Needed!</h2>
+<a name="admin"></a>
 <span id="admin"/>
 <?php
 $query = "SELECT * FROM acc_pend WHERE pend_status = 'Admin';";
@@ -1429,7 +1430,7 @@ while ($row = mysql_fetch_assoc($result)) {
 ?>
 </table>
 <?php
-echo "<h2>Last 5 Closed requests</h2><span id=\"closed\"/>\n";
+echo "<h2>Last 5 Closed requests</h2><A name='closed'></A><span id=\"closed\"/>\n";
 $query = "SELECT * FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
