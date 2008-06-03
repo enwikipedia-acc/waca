@@ -121,17 +121,18 @@ mysql> DESCRIBE acc_user;
 acc_ban
 This table holds e-mail addresses and IP's that are banned from the request system.
 mysql> DESCRIBE acc_ban;
-+------------+---------------+------+-----+---------+----------------+
-| Field      | Type          | Null | Key | Default | Extra          |
-+------------+---------------+------+-----+---------+----------------+
-| ban_id     | int(11)       | NO   | PRI | NULL    | auto_increment | 
-| ban_type   | varchar(255)  | NO   |     | NULL    |                | 
-| ban_target | varchar(1024) | NO   |     | NULL    |                | 
-| ban_user   | varchar(255)  | NO   |     | NULL    |                | 
-| ban_reason | varchar(4096) | NO   |     | NULL    |                | 
-| ban_date   | varchar(1024) | NO   |     | NULL    |                | 
-+------------+---------------+------+-----+---------+----------------+
-6 rows in set (0.00 sec)
++--------------+---------------+------+-----+---------+----------------+
+| Field        | Type          | Null | Key | Default | Extra          |
++--------------+---------------+------+-----+---------+----------------+
+| ban_id       | int(11)       | NO   | PRI | NULL    | auto_increment | 
+| ban_type     | varchar(255)  | NO   |     | NULL    |                | 
+| ban_target   | varchar(1024) | NO   |     | NULL    |                | 
+| ban_user     | varchar(255)  | NO   |     | NULL    |                | 
+| ban_reason   | varchar(4096) | NO   |     | NULL    |                | 
+| ban_date     | varchar(1024) | NO   |     | NULL    |                | 
+| ban_duration | varchar(255)  | NO   |     | NULL    |                | 
++--------------+---------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
 
 
 *ban_id - Table key
@@ -140,6 +141,7 @@ mysql> DESCRIBE acc_ban;
 *ban_user - Username of admin setting ban
 *ban_reason - Why?
 *ban_date - Time ban was set
+*ban_duration - Ban duration, in seconds
 
 acc_welcome
 This table holds pending and closed welcomes.
