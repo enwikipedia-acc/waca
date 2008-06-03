@@ -142,7 +142,7 @@ if ($_GET['action'] == "sreg") {
 		array_push($whoactive, $row[user_name]);
 	}
 	$howma = count($whoactive);
-
+	echo "<!-- $howma users active! -->\n";
 	$user = mysql_real_escape_string($_REQUEST['name']);
 	if (stristr($user, "'") !== FALSE) { die ("Username cannot contain the character '\n"); }
 	$wname = mysql_real_escape_string($_REQUEST['wname']);
