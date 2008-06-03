@@ -113,7 +113,7 @@ while (!feof($fp)) {
 		sleep(.75); 
 		$cmatch = preg_match("/\:.* PRIVMSG #wikipedia-en-accounts :!count (.*)/", $line, $matches);
 		if($cmatch > 0) {
-			$matches[1] = ltrim(rtrim(sanitize($matches[1])));
+			$matches[1] = sanitize(ltrim(rtrim($matches[1])));
 			$query = "SELECT COUNT(*) FROM acc_log WHERE log_action = 'Closed 1' AND log_user = '$matches[1]';";
 			$result = myq($query);
 			if(!$result) Die("ERROR: No result returned.");
