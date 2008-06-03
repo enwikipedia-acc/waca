@@ -114,6 +114,7 @@ function showfootern() {
 	echo $out;
 }
 function showfooter($howmany) {
+	global $howma;
         $out = showmessage('23');
         $suser = sanitize($_SESSION[user]);
         $query = "SELECT * FROM acc_user WHERE user_name = '$suser';";
@@ -123,7 +124,7 @@ function showfooter($howmany) {
         if($row[user_level] == "Admin") {
 		$out = preg_replace('/\<br \/\>\<br \/\>/', '<br /><a href="acc.php?action=usermgmt">User management</a><br /><br />', $out);
 	}
-	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><small>$howmany users active within the last 5 mins!</small><br /><br />", $out);
+	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><small>$howma users active within the last 5 mins!</small><br /><br />", $out);
 	echo $out;
 }
 mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
