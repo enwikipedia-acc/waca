@@ -1331,7 +1331,13 @@ while ($row = mysql_fetch_assoc($result)) {
 	$out.= $row[pend_ip] . '</a> ';
 	$query = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \''.$row['pend_ip'].'\' AND `pend_id` != \''.$row['pend_id'].'\';';
 	$otherreqs = mysql_fetch_assoc(mysql_query($query));
-	$out.= '</small></td><td><small><span style="color:green">(<b>'.$otherreqs['count'].'</b>)</span> ';
+	$out.= '</small></td><td><small><span style="color:';
+	if($otherreqs['count'] == 0) {
+		$out.= 'green">('.$otherreqs['count'].')';
+	} else {		
+		$out.= 'black">(</span><b><span style="color:red">'.$otherreqs['count'].'</span></b><span style="color:black">)';
+	}
+	$out.=" <span>";
 
 	// IP contribs
 	$out.= '</small></td><td><small><a style="color:green" href="http://en.wikipedia.org/wiki/Special:Contributions/';
