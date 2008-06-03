@@ -98,7 +98,7 @@ function showhead() {
 	$_SESSION[user_id] = $row[user_id];
 	$out = showmessage('21');
 	echo $out;
-	if($_SESSION[user] == "") {
+	if(isset($_SESSION[user])) {
 		echo "<div id = \"header-info\">Logged in as <a href=\"users.php?viewuser=$_SESSION[user_id]\"><span title=\"View your user information\">$_SESSION[user]</span></a></div>\n";
 	} else { 
 		echo "<div id = \"header-info\">Not logged in.</div>\n"; 
