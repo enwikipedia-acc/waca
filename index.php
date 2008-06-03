@@ -151,7 +151,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 		}
 	}
 
-	$dnsblcheck = checkdnsbl($ip2);
+	$dnsblcheck = checkdnsbls($ip2);
 	if ($dnsblcheck[0] == true) {
 		$now = date("Y-m-d H-i-s");
 		$siuser = mysql_real_escape_string("$_POST[name]");
