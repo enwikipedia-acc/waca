@@ -16,9 +16,9 @@
 **                                                           **
 **************************************************************/
 
-$nameblacklist[grawp1] = '/.*(KALOM(O|)RA|Kal(o|)m(o|)ira).*/i';
-$nameblacklist[grawp2] = '/.*GRAWP.*/i';
-$nameblacklist[grawp3] = '/.*(HAGG(E|A)R|HERM(E|)Y).*/i';
-$nameblacklist[grawp4] = '/.*(My|)( ||_)Secret( ||_)Combination(s|).*/i';
+$nameblacklist[grawp1] = '/.*kalo?mo?ira.*/i';
+$nameblacklist[grawp2] = '/.*grawp.*/i';
+$nameblacklist[grawp3] = '/.*(hagg[ea]r|herme?y).*/i';
+$nameblacklist[grawp4] = '/.*secret.*combination.*/i';
 $nameblacklist[badwords1] = '/.*(admin|wikipedia|bot).*/i';
 ?>
