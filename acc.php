@@ -133,7 +133,7 @@ function showfootern() {
 	$out = showmessage('22');
 	echo $out;
 }
-function showfooter($howmany) {
+function showfooter() {
 	$howmany = gethowma();
 	$howma = $howmany[howmany];
         $out = showmessage('23');
@@ -145,7 +145,7 @@ function showfooter($howmany) {
         if($row[user_level] == "Admin") {
 		$out = preg_replace('/\<br \/\>\<br \/\>/', '<br /><a href="acc.php?action=usermgmt">User management</a><br /><br />', $out);
 	}
-	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><small>$howma users active within the last 5 mins!</small><br /><br />", $out);
+	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><small><center>$howma users active within the last 5 mins!</center></small><br /><br />", $out);
 	echo $out;
 }
 mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
