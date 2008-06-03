@@ -103,6 +103,29 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$ip = mysql_real_escape_string($ip);
 	$userblocked = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$ip2&format=php");
 	$ub = unserialize($userblocked);
+	$email = $_POST['email'];
+	$email = ltrim($email);
+	$email = rtrim($email);
+	foreach ($nameblacklist as $wnbl => $nbl) {
+		$phail_test = preg_match($nbl, $_POST[name]);
+		if($phail_test == TRUE) {
+                $message = showmessage(15);
+                echo "$message<br />\n";
+	        $now = date("Y-m-d H-i-s");
+		$target = "$wnbl";
+		$siuser = mysql_real_escape_string("$_POST[name]");
+		$cmt = mysql_real_escape_string("FROM $ip $email");
+		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
+		fwrite($fp, "[Blacklist] HIT: $wnbl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
+		//echo "<br />$query<br />";
+		$result = mysql_query($query);
+		if(!$result) Die("ERROR: No result returned.");
+		fclose($fp);
+		die();		
+		}
+	}
+
 	if(isset($ub[query][blocks][0][id])) {
 		$message = showmessage(9);
 		echo "$message<br />\n"; 
@@ -234,25 +257,6 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 			$fail = 1; 
 			displayfooter();
 			die();
-		}
-	}
-	foreach ($nameblacklist as $wnbl => $nbl) {
-		$phail_test = preg_match($nbl, $_POST[name]);
-		if($phail_test == TRUE) {
-                $message = showmessage(15);
-                echo "$message<br />\n";
-	        $now = date("Y-m-d H-i-s");
-		$target = "$wnbl";
-		$siuser = mysql_real_escape_string("$_POST[name]");
-		$cmt = mysql_real_escape_string("FROM $ip $email");
-		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-		fwrite($fp, "[Blacklist] HIT: $wnbl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
-		//echo "<br />$query<br />";
-		$result = mysql_query($query);
-		if(!$result) Die("ERROR: No result returned.");
-		fclose($fp);
-		die();		
 		}
 	}
 
