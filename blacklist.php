@@ -34,6 +34,7 @@ $dnsbls = Array	(
 		'bunk' => false,
 		'url'  => 'http://www.njabl.org/cgi-bin/lookup.cgi?query=%i',
 		'ret'  => Array (
+			9	=> 'Open proxy',
 			10	=> 'Open proxy'
 		)
 	),
