@@ -17,6 +17,10 @@
 **************************************************************/
 
 require_once('config.inc');
+function sanitize($what) {
+	$what = mysql_real_escape_string($what);
+	return($what);
+}
 function checktor ($addr) {
 	$flags = array();
 	$flags['tor'] = "no";
@@ -194,7 +198,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 			die();
 		}
 	}
-	$query = "SELECT * FROM acc_ban WHERE ban_type = 'Name' AND ban_target = '$_POST[name]'";
+	$query = "SELECT * FROM acc_ban WHERE ban_type = 'Name' AND ban_target = '$user'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
         $dbanned = $row[ban_duration];
@@ -263,10 +267,11 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	mysql_close();	
 	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 	@mysql_select_db($toolserver_database) or print mysql_error();
+	$comments = sanitize($_POST[comments]);
 	$dnow = date("Y-m-d H-i-s");	
-	$query = "INSERT INTO u_sql.acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$_POST[name]', '$_POST[comments]', 'Open' , '$dnow' );";
+	$query = "INSERT INTO u_sql.acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', 'Open' , '$dnow' );";
 	$result = mysql_query($query);
-	$query = "SELECT pend_id FROM u_sql.acc_pend WHERE pend_name = '$_POST[name]' ORDER BY pend_id DESC LIMIT 1;";
+	$query = "SELECT pend_id FROM u_sql.acc_pend WHERE pend_name = '$user' ORDER BY pend_id DESC LIMIT 1;";
 	$result = mysql_query($query);
         $row = mysql_fetch_assoc($result);
 	$pid = $row['pend_id'];
