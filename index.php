@@ -43,6 +43,7 @@ function checkdnsbls ($addr) {
 	unset($dnsblip,$dnsblname,$dnsbl,$tmpdnsblresult,$lastdigit);
 
 	$dnsbldata .= '</ul>';
+	echo '<!-- '.$dnsbldata.' -->';
 	return array($banned,$dnsbldata);
 }
 
