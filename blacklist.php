@@ -19,6 +19,6 @@
 $nameblacklist[grawp1] = '/.*(KALOM(O|)RA|Kal(o|)m(o|)ira).*/i';
 $nameblacklist[grawp2] = '/.*GRAWP.*/i';
 $nameblacklist[grawp3] = '/.*(HAGG(E|A)R|HERM(E|)Y).*/i';
-$nameblacklist[grawp4] = '/.*(My|)( |)Secret( |)Combination(s|).*/i';
+$nameblacklist[grawp4] = '/.*(My|)( ||_)Secret( ||_)Combination(s|).*/i';
 $nameblacklist[badwords1] = '/.*(admin|wikipedia|bot).*/i';
 ?>
