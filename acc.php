@@ -25,6 +25,26 @@ function sanitize($what) {
 	$what = mysql_real_escape_string($what);
 	return($what);
 }
+function gethowma() {
+        global $toolserver_username;
+        global $toolserver_password;
+	global $toolserver_host;
+	global $toolserver_database;
+        mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
+        @mysql_select_db($toolserver_database) or print mysql_error();
+	$last5min = time() - 300; // Get the users active as of the last 5 mins
+	$last5mins = date("Y-m-d H:i:s", $last5min);
+	$query = "SELECT * FROM acc_user WHERE user_lastactive > '$last5mins';";
+	$result = mysql_query($query);
+	if(!$result) Die("ERROR: No result returned.");
+	$whoactive = array();
+	while ($row = mysql_fetch_assoc($result)) {
+		array_push($whoactive, $row[user_name]);
+	}
+	$howma = count($whoactive);
+	$whoactive[howmany] = $howma;
+	return($whoactive);
+}
 function showmessage($messageno) {
         global $toolserver_username;
         global $toolserver_password;
@@ -114,7 +134,8 @@ function showfootern() {
 	echo $out;
 }
 function showfooter($howmany) {
-	global $howma;
+	$howmany = gethowma();
+	$howma = $howmany[howmany];
         $out = showmessage('23');
         $suser = sanitize($_SESSION[user]);
         $query = "SELECT * FROM acc_user WHERE user_name = '$suser';";
@@ -132,17 +153,6 @@ mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 session_start();
 if ($_GET['action'] == "sreg") {
 	showhead();
-	$last5min = time() - 300; // Get the users active as of the last 5 mins
-	$last5mins = date("Y-m-d H:i:s", $last5min);
-	$query = "SELECT * FROM acc_user WHERE user_lastactive > '$last5mins';";
-	$result = mysql_query($query);
-	if(!$result) Die("ERROR: No result returned.");
-	$whoactive = array();
-	while ($row = mysql_fetch_assoc($result)) {
-		array_push($whoactive, $row[user_name]);
-	}
-	$howma = count($whoactive);
-	echo "<!-- $howma users active! -->\n";
 	$user = mysql_real_escape_string($_REQUEST['name']);
 	if (stristr($user, "'") !== FALSE) { die ("Username cannot contain the character '\n"); }
 	$wname = mysql_real_escape_string($_REQUEST['wname']);
@@ -154,7 +164,7 @@ if ($_GET['action'] == "sreg") {
 	$welcomeenable = mysql_real_escape_string($_REQUEST['welcomeenable']);
 	if($user == "" || $wname == "" || $pass == "" || $pass2 == "" || $email == "" || strlen($email) < 6) {
 		echo "<h2>ERROR!</h2>Form data may not be blank.<br />\n";
-		showfooter($howma);
+		showfooter();
 		die();
 	}
 	if ($_POST['debug'] == "on") {
@@ -419,7 +429,7 @@ if ($_GET['action'] == "messagemgmt") {
 		echo "Message count: $row[mail_count]<br />\n";
 		echo "Message title: $row[mail_desc]<br />\n";
 		echo "Message text: <br /><pre>$mailtext</pre><br />\n";
-		showfooter($howma);
+		showfooter();
 		die();
 	}	
 	if($_GET['edit'] != "") {
@@ -430,7 +440,7 @@ if ($_GET['action'] == "messagemgmt") {
 		$row = mysql_fetch_assoc($result);
 		if($row[user_level] != "Admin"  && $_SESSION['user'] != "SQL") {
 			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
-			showfooter($howma);
+			showfooter();
 			die();
 		}
 		$mid = sanitize($_GET['edit']);		
@@ -453,7 +463,7 @@ if ($_GET['action'] == "messagemgmt") {
 			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
 			fwrite($fp, "Message $mid edited by $siuser\r\n");
 			fclose($fp);
-			showfooter($howma);
+			showfooter();
 			die();
 		}
 		$query = "SELECT * FROM acc_emails WHERE mail_id = $mid;";
@@ -466,7 +476,7 @@ if ($_GET['action'] == "messagemgmt") {
 		echo "<textarea name=\"mailtext\" rows=\"20\" cols=\"60\">$mailtext</textarea><br />\n";
 		echo "<input type=\"submit\"><input type=\"reset\"><br />\n";		
 		echo "</form>";
-		showfooter($howma);
+		showfooter();
 		die();
 	}
 	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Message';";
@@ -508,13 +518,13 @@ if ($_GET['action'] == "messagemgmt") {
 		echo "$out\n";
 	}
 	echo "</ol><br />\n";
-	showfooter($howma);
+	showfooter();
 	die();	
 }
 if ($_GET['action'] == "sban" && $_GET['user'] != "") {
 	if ($_POST['banreason'] == "") {
 		echo "<h2>ERROR</h2>\n<br />You must specify a ban reason.\n";
-		showfooter($howma);
+		showfooter();
 		die();
 	}
 	$duration = sanitize($_POST['duration']);
@@ -543,7 +553,7 @@ if ($_GET['action'] == "sban" && $_GET['user'] != "") {
         }
         fwrite($fp, "$target banned by $siuser for $reason until $until\r\n");
         fclose($fp);
-	showfooter($howma);
+	showfooter();
 	die();
 }
 if ($_GET['action'] == "unban" && $_GET['id'] != "") {
@@ -558,7 +568,7 @@ if ($_GET['action'] == "unban" && $_GET['id'] != "") {
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	echo "Unbanned ban #$bid<br />\n";
-	showfooter($howma);
+	showfooter();
 	die();
 }
 if ($_GET['action'] == "ban") {
@@ -595,7 +605,7 @@ if ($_GET['action'] == "ban") {
 		$row = mysql_fetch_assoc($result);
 		if($row[ban_id] != "") {
 			echo "<h2>ERROR</h2>\n<br />\nCould not ban. Already banned!<br />";
-			showfooter($howma);
+			showfooter();
 			die();
 		} else {
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&user=$siuser&target=$target&type=$type\" method=\"post\">Ban target: $target\n<br />Reason: <input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Forever<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT><br /><input type=\"submit\"></form>\n";
@@ -614,7 +624,7 @@ if ($_GET['action'] == "ban") {
 		echo "<li><small><strong>$row[ban_target]</strong> - Banned by: <strong>$row[ban_user]</strong> for <strong>$row[ban_reason]</strong> at <strong>$row[ban_date]</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&id=$row[ban_id]\">UNBAN</a>)</small></li>";
 	}
 	echo "</ol>\n";
-	showfooter($howma);
+	showfooter();
 	die();
 }
 if ($_GET['action'] == "usermgmt") {
@@ -625,7 +635,7 @@ if ($_GET['action'] == "usermgmt") {
 	$row = mysql_fetch_assoc($result);
 	if($row[user_level] != "Admin" && $_SESSION['user'] != "SQL") {
 		echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
-		showfooter($howma);
+		showfooter();
 		die();
 	}
 	if($_GET['approve'] != "") {
@@ -656,7 +666,7 @@ if ($_GET['action'] == "usermgmt") {
 			echo "<textarea name=\"suspendreason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
 			echo "<input type=\"submit\"><input type=\"reset\"><br />\n";		
 			echo "</form>";
-			showfooter($howma);
+			showfooter();
 			die();
 		} else {
 			$suspendrsn = sanitize($_POST['suspendreason']);
@@ -676,7 +686,7 @@ if ($_GET['action'] == "usermgmt") {
 			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
 			fwrite($fp, "User $did ($row2[user_name]) suspended access by $siuser because: $suspendrsn\r\n");
 			fclose($fp); 
-			showfooter($howma);
+			showfooter();
 			die();
 		}
 
@@ -709,7 +719,7 @@ if ($_GET['action'] == "usermgmt") {
 			echo "<textarea name=\"declinereason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
 			echo "<input type=\"submit\"><input type=\"reset\"><br />\n";		
 			echo "</form>";
-			showfooter($howma);
+			showfooter();
 			die();
 		} else {
 			$declinersn = sanitize($_POST['declinereason']);
@@ -729,7 +739,7 @@ if ($_GET['action'] == "usermgmt") {
 			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
 			fwrite($fp, "User $did ($row2[user_name]) declined access by $siuser because: $declinersn\r\n");
 			fclose($fp); 
-			showfooter($howma);
+			showfooter();
 			die();
 		}
 
@@ -833,7 +843,7 @@ if ($_GET['action'] == "usermgmt") {
 	?>
 	</ol>
 	<?php	
-	showfooter($howma);
+	showfooter();
 	die();
 }
 
@@ -924,13 +934,13 @@ if ($_GET['action'] == "welcomeperf") {
 	<input type="submit"><input type="reset">
 	</form>
 	<?php
-	showfooter($howma);
+	showfooter();
 	die();
 }
 if ($_GET['action'] == "done" && $_GET['id'] != "") {
 	if($_GET['email'] == "" | $_GET['email'] >= 6) {
 		echo "Invalid close reason";	
-		showfooter($howma);
+		showfooter();
 		die();
 	} 
 	$gid = sanitize($_GET[id]);
@@ -943,7 +953,7 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
 	$gus = $row2[pend_name];
 	if ($row2[pend_status] == "Closed") {	
 		echo "<h2>ERROR</h2>Cannot close this request. Already closed.<br />\n";
-		showfooter($howma);
+		showfooter();
 		die();
 	}
 	$query = "SELECT * FROM acc_user WHERE user_name = '$sid';";
@@ -996,7 +1006,7 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
 if ($_GET['action'] == "zoom") {
 	if($_GET[id] == "") {
 		echo "No user specified!<br />\n";
-		showfooter($howma);
+		showfooter();
 		die();
 	}
 	$gid = sanitize($_GET[id]);
@@ -1076,7 +1086,7 @@ if ($_GET['action'] == "zoom") {
 	}
 	if($numem == 0) { echo "<li>None.</li>\n"; }
 	echo "</ol>\n";
-	showfooter($howma);	
+	showfooter();	
 	die();
 }
 if ($_GET['action'] == "logout") {
@@ -1176,7 +1186,7 @@ if ($_GET['action'] == "logs") {
 	}
 	echo "</ol>\n";
 	echo $n1;
-	showfooter($howma);
+	showfooter();
 	die();
 }
 ?>
@@ -1379,6 +1389,6 @@ while ($row = mysql_fetch_assoc($result)) {
 	echo "<tr><td><small><a href=\"acc.php?action=zoom&id=$row[pend_id]\">$row[pend_name]</a></small></td><td><small>  <a href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">w</a></small></td><td><small>  <a href=\"acc.php?action=defer&id=$row[pend_id]&target=user\">Reset</a></small></td></tr>";
 }
 echo "</table>\n";
-showfooter($howma);
+showfooter();
 ?>
 
