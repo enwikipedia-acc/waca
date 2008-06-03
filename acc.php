@@ -114,6 +114,7 @@ function showfootern() {
 	echo $out;
 }
 function showfooter() {
+	global $howmanyactive;
         $out = showmessage('23');
         $suser = sanitize($_SESSION[user]);
         $query = "SELECT * FROM acc_user WHERE user_name = '$suser';";
@@ -121,8 +122,9 @@ function showfooter() {
         if(!$result) Die("ERROR: No result returned.");
         $row = mysql_fetch_assoc($result);
         if($row[user_level] == "Admin") {
-		$out =preg_replace('/\<br \/\>\<br \/\>/', '<br /><a href="acc.php?action=usermgmt">User management</a><br /><br />', $out);
+		$out = preg_replace('/\<br \/\>\<br \/\>/', '<br /><a href="acc.php?action=usermgmt">User management</a><br /><br />', $out);
 	}
+	$out = preg_replace('/\<br \/\>\<br \/\>/', '<br /><small>$howmanyactive users active within the last 5 mins!</small><br /><br />', $out);
 	echo $out;
 }
 mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
