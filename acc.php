@@ -25,6 +25,11 @@ function sanitize($what) {
 	$what = mysql_real_escape_string($what);
 	return($what);
 }
+function sendtobot($message) {
+	$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
+	fwrite($fp, "$message\r\n");
+	fclose($fp);
+}
 function showhowma() {
         global $toolserver_username;
         global $toolserver_password;
@@ -216,8 +221,7 @@ if ($_GET['action'] == "sreg") {
 		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_welcome, user_welcome_sig, user_welcome_template) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$welcome', '$sig', '$template');";
 		$result = mysql_query($query);
 		if(!$result) Die("ERROR: No result returned.");
-		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-		fwrite($fp, "New user: $user\r\n");
+		sendtobot("New user: $user");
 		echo "Account created!<br /><br />\n";
 		showlogin();
 	}
@@ -482,9 +486,7 @@ if ($_GET['action'] == "messagemgmt") {
 			$result = mysql_query($query);
 			if(!$result) Die("ERROR: No result returned.");			
 			echo "Message $mid updated.<br />\n";
-			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-			fwrite($fp, "Message $mid edited by $siuser\r\n");
-			fclose($fp);
+			sendtobot("Message $mid edited by $siuser");
 			showfooter();
 			die();
 		}
@@ -567,14 +569,12 @@ if ($_GET['action'] == "sban" && $_GET['user'] != "") {
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	echo "Banned $target for $reason<br />\n";
-        $fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
         if($duration == "" || $duration == "-1") {
                 $until  = "Forever";
         } else {
                 $until = date("F j, Y, g:i a", $duration);
         }
-        fwrite($fp, "$target banned by $siuser for $reason until $until\r\n");
-        fclose($fp);
+	sendtobot("$target banned by $siuser for $reason until $until");
 	showfooter();
 	die();
 }
@@ -676,9 +676,7 @@ if ($_GET['action'] == "usermgmt") {
 		$result2 = mysql_query($query2);
 		if(!$result2) Die("ERROR: No result returned.");
 		$row2 = mysql_fetch_assoc($result2);
-		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-		fwrite($fp, "User $aid ($row2[user_name]) approved by $siuser\r\n");
-		fclose($fp);
+		sendtobot("User $aid ($row2[user_name]) approved by $siuser");
 	}
 	if($_GET['suspend'] != "") {
 		$did = sanitize($_GET[suspend]);
@@ -705,9 +703,7 @@ if ($_GET['action'] == "usermgmt") {
 			$result2 = mysql_query($query2);
 			if(!$result2) Die("ERROR: No result returned.");
 			$row2 = mysql_fetch_assoc($result2);
-			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-			fwrite($fp, "User $did ($row2[user_name]) suspended access by $siuser because: $suspendrsn\r\n");
-			fclose($fp); 
+			sendtobot("User $did ($row2[user_name]) suspended access by $siuser because: $suspendrsn");
 			showfooter();
 			die();
 		}
@@ -729,9 +725,7 @@ if ($_GET['action'] == "usermgmt") {
 		$result2 = mysql_query($query2);
 		if(!$result2) Die("ERROR: No result returned.");
 		$row2 = mysql_fetch_assoc($result2);
-		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-		fwrite($fp, "User $aid ($row2[user_name]) promoted to admin by $siuser\r\n");
-		fclose($fp);
+		sendtobot("User $aid ($row2[user_name]) promoted to admin by $siuser");
 	}
 	if($_GET['decline'] != "") {
 		$did = sanitize($_GET[decline]);
@@ -758,9 +752,7 @@ if ($_GET['action'] == "usermgmt") {
 			$result2 = mysql_query($query2);
 			if(!$result2) Die("ERROR: No result returned.");
 			$row2 = mysql_fetch_assoc($result2);
-			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-			fwrite($fp, "User $did ($row2[user_name]) declined access by $siuser because: $declinersn\r\n");
-			fclose($fp); 
+			sendtobot("User $did ($row2[user_name]) declined access by $siuser because: $declinersn");
 			showfooter();
 			die();
 		}
@@ -890,9 +882,7 @@ if ($_GET['action'] == "defer" && $_GET['id'] != "") {
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $deto', '$now');";
 		$result = mysql_query($query);
 		if(!$result) Die("ERROR: No result returned.");
-                $fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-                fwrite($fp, "Request $gid deferred to $deto by $sid\r\n");
-                fclose($fp);
+		sendtobot("Request $gid deferred to $deto by $sid");
 		echo "Request $_GET[id] deferred to $deto.<br />";
 	} else {
 		echo "Target not specified.<br />\n";
@@ -999,8 +989,7 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
 	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Closed $gem', '$now');";
 	$result = mysql_query($query);
 	if(!$result) Die("Query failed: $query ERROR: No result returned.");
-        $fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-	switch ($gem) {
+        switch ($gem) {
 		case 0:
 			$crea = "Dropped";
 			break;
@@ -1020,7 +1009,7 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
 			$crea = "Impossible";
 			break;
 	}
-        fwrite($fp, "Request $_GET[id] ($gus) Marked as 'Done' ($crea) by $sid on $now\r\n");
+	sendtobot("Request $_GET[id] ($gus) Marked as 'Done' ($crea) by $sid on $now");
 	echo "Request $_GET[id] ($gus) marked as 'Done'.<br />";
 	$towhom = $row2[pend_email];
 	if($gem != "0") { sendemail($gem, $towhom); }
