@@ -32,6 +32,7 @@ function showhowma() {
 	foreach ($howma as $oneonline) {
 		$out .= " $oneonline";	
 	}
+	$out = ltrim(rtrim($out));
 	return($out);
 }
 function gethowma() {
