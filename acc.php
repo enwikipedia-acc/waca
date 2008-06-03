@@ -130,6 +130,17 @@ mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 session_start();
 if ($_GET['action'] == "sreg") {
 	showhead();
+	$last5min = 300 - time(); // Get the users active as of the last 5 mins
+	$last5mins = date("Y-m-d H-i-s", $last5min);
+	$query = "SELECT * FROM acc_user WHERE user_lastactive > '$last5mins';";
+	$result = mysql_query($query);
+	if(!$result) Die("ERROR: No result returned.");
+	$whoactive = array();
+	while ($row = mysql_fetch_assoc($result)) {
+		array_push($whoactive, $row[user_name]);
+	}
+	$howmanyactive = count($whoactive);
+
 	$user = mysql_real_escape_string($_REQUEST['name']);
 	if (stristr($user, "'") !== FALSE) { die ("Username cannot contain the character '\n"); }
 	$wname = mysql_real_escape_string($_REQUEST['wname']);
