@@ -16,7 +16,7 @@
 **                                                           **
 **************************************************************/
 
-$nameblacklist[grawp1] = '/.*kalo?mo?ira.*/i';
+$nameblacklist[grawp1] = '/.*k[a4]l[o0]?m[o0]?[i1]r[a4].*/i';
 $nameblacklist[grawp2] = '/.*gra(w|vv)p.*/i';
 $nameblacklist[grawp3] = '/.*(hagg[ea]r|herme?y).*/i';
 $nameblacklist[grawp4] = '/.*secret.*combination.*/i';
