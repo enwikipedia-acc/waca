@@ -30,7 +30,9 @@ function checkdnsbls ($addr) {
 	$banned = false;
 
 	foreach ($dnsbls as $dnsblname => $dnsbl) {
+		echo '<!-- Checking '.$dnsblname.' ... ';
 		$tmpdnsblresult = gethostbyname($dnsblip.'.'.$dnsbl['zone']);
+		echo $tmpdnsblresult.' -->';
 		if (long2ip(ip2long($tmpdnsblresult)) != $tmpdnsblresult) { $tmpdnsblresult = 'Nothing.'; continue; }
 		if (!isset($dnsbl['ret'][$lastdigit]) and ($dnsbl['bunk'] == false)) { $tmpdnsblresult = 'Nothing.'; continue; }
 		$dnsbldata .= '<li> '.$dnsblip.'.'.$dnsbl['zone'].' ('.$dnsblname.') = '.$tmpdnsblresult;
