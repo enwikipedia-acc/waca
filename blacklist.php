@@ -31,7 +31,7 @@
 */    
 //$nameblacklist[upolicy1] = '/卍/';
 //$nameblacklist[upolicy2] = '/卐/';  // These screw up the preg parser.
-$nameblacklist[upolicy3] = '/[!?‽？]{3,}/';
+//$nameblacklist[upolicy3] = '/[!?‽？]{3,}/';
 $nameblacklist[nigger]   = '/(?i:ni(gg|qq)(a|er))/';
 $nameblacklist[faggot]   = '/(?i:faggot)/';
 
