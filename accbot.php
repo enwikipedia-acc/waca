@@ -262,6 +262,19 @@ while (!feof($fp)) {
 			pcntl_exec('/usr/bin/php',$argv,$_ENV);
 		}
 	}
+
+	if (substr(strtolower($line_ex[3]),1) == '!recreatesvn') {
+		$nick = explode('!',$line_ex[0]);
+		$nick = substr($nick[0],1);
+
+		 if (($nick == 'Cobi') or ($nick == 'SQLDb') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
+			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': Please wait while I try to fix the SVN.');
+			system('tar -jcvpf ~/accinterface-svn-broken.'.time().'.tbz2 .');
+			system('svn list | xargs rm -f');
+			system('svn up');
+			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': Thanks.  SVN has hopefully been fixed.');
+		}
+	}
 }
  
 #Clean up your connections, finish file writes here, or whatever you want to do as the daemon shuts down.
