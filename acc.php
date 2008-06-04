@@ -790,7 +790,7 @@ if ($_GET['action'] == "usermgmt") {
 		$uoname = $row[user_onwikiname];
 		$userid = $row[user_id];
 		
-		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
+		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
 		echo "$out\n";
 	}
 	?>
@@ -824,7 +824,7 @@ if ($_GET['action'] == "usermgmt") {
                                     $row2 = mysql_fetch_assoc($result2);
                     $approved = $row2['COUNT(*)'];
 
-		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&approve=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved])</small></li>";
+		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&approve=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved])</small></li>";
 		echo "$out\n";
 	}
 	?>
@@ -839,7 +839,7 @@ if ($_GET['action'] == "usermgmt") {
 		$uname = $row[user_name];
 		$uoname = $row[user_onwikiname];
 		$userid = $row[user_id];
-		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Unsuspend!</a> (Suspended by $row[log_user]<!-- FREAKING PIECE OF CRAP ISN'T WORKING RIGHT NOW because $row[log_cmt] --!>)</small></li>";
+		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Unsuspend!</a> (Suspended by $row[log_user]<!-- FREAKING PIECE OF CRAP ISN'T WORKING RIGHT NOW because $row[log_cmt] --!>)</small></li>";
 		echo "$out\n";
 	}
 	?>
