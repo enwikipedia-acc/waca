@@ -50,7 +50,7 @@ $nameblacklist[grawp7] = '/k.a.l.o.m.i.r.a/';
 $nameblacklist[grawp8] = '(?i:(g|9|q)r(a|4)(w|vv|?)(p|?))';
 
 $nameblacklist[grawp9] = '(?i:p(w|vv|?)(a|4)r(g|9|q))';
-$nameblacklist[upolicy1] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|b[0o]t|st[3e]w[4a]rd|j[1i]mb[0o]).*/i';
+$nameblacklist[upolicy4] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|b[0o]t|st[3e]w[4a]rd|j[1i]mb[0o]).*/i';
 
 //E-Mail Blacklist (not yet implemented in HEAD)
 $emailblacklist[example1] = '/.&.*\@fake\.email$/i';
