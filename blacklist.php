@@ -16,6 +16,29 @@
 **                                                           **
 **************************************************************/
 
+/* A few (cut down list) from the Username blacklist on enwiki [[MediaWiki:Usernameblacklist]]
+ * If anyone knows how to apply them to the blacklist below, feel free to do so - Stwalkerster 22:40 4 Jun 2008 (UTC)
+    * (?i:peni[s5])
+    * (?i:vagina)
+    * (?i:cocksucker)
+    * (?i:fu[c(k]k)
+    * (\b[oO])(?i:n wheels)
+    * (\b[sS])(?i:crotum)
+    * (\b[oO])(?i:rgasm)
+    * (?i:fellatio)
+    * (?i:cunnilingus)
+    * (?i:dildo)
+    * 卍
+    * 卐
+    * [!?‽？]{3,}
+    * (?i:ni(gg|qq)(a|er))
+    * (?i:faggot)
+*/
+
+
+
+
+
 $nameblacklist[grawp1] = '/.*k*l[o0]?m[o0]?[i1]r*.*/i';
 $nameblacklist[grawp2] = '/.*gr*(w|vv)p.*/i';
 $nameblacklist[grawp3] = '/.*(hagg[ea]r|herme?y).*/i';
@@ -26,7 +49,8 @@ $nameblacklist[grawp7] = '/k.a.l.o.m.i.r.a/';
 
 $nameblacklist[grawp8] = '(?i:(g|9|q)r(a|4)(w|vv|?)(p|?))';
 
-$nameblacklist[grawp9] = '(?i:p(w|vv|?)(a|4)r(g|9|q))';$nameblacklist[upolicy1] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|b[0o]t|st[3e]w[4a]rd|j[1i]mb[0o]).*/i';
+$nameblacklist[grawp9] = '(?i:p(w|vv|?)(a|4)r(g|9|q))';
+$nameblacklist[upolicy1] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|b[0o]t|st[3e]w[4a]rd|j[1i]mb[0o]).*/i';
 
 //E-Mail Blacklist (not yet implemented in HEAD)
 $emailblacklist[example1] = '/.&.*\@fake\.email$/i';
