@@ -135,7 +135,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$email = ltrim($email);
 	$email = rtrim($email);
 	foreach ($nameblacklist as $wnbl => $nbl) {
-		$phail_test = preg_match($nbl, $_POST[name]);
+		$phail_test = @preg_match($nbl, $_POST[name]);
 		if($phail_test == TRUE) {
         	        $message = showmessage(15);
 	                echo "$message<br />\n";
