@@ -29,7 +29,7 @@
     * (?i:cunnilingus)
     * (?i:dildo)
 */    
-$nameblacklist[upolicy1] = 卍;
+$nameblacklist[upolicy1] = '/卍/';
 $nameblacklist[upolicy2] = '/卐/';
 $nameblacklist[upolicy3] = '/[!?‽？]{3,}/';
 $nameblacklist[nigger]   = '/(?i:ni(gg|qq)(a|er))/';
