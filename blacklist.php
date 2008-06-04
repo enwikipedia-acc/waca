@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 /**************************************************************
 ** English Wikipedia Account Request Interface               **
 ** Wikipedia Account Request Graphic Design by               **
@@ -17,7 +17,7 @@
 **************************************************************/
 
 /* A few (cut down list) from the Username blacklist on enwiki [[MediaWiki:Usernameblacklist]]
- * If anyone knows how to apply them to the blacklist below, feel free to do so - Stwalkerster 22:40 4 Jun 2008 (UTC)
+ 
     * (?i:peni[s5])
     * (?i:vagina)
     * (?i:cocksucker)
@@ -28,12 +28,11 @@
     * (?i:fellatio)
     * (?i:cunnilingus)
     * (?i:dildo)
-    * 卍
-    * 卐
-    * [!?‽？]{3,}
-    * (?i:ni(gg|qq)(a|er))
-    * (?i:faggot)
-*/
+*/    $nameblacklist[upolicy1] = 卍;
+$nameblacklist[upolicy2] = 卐;$nameblacklist[upolicy3] = [!?‽？]{3,}
+;$nameblacklist[nigger](?i:ni(gg|qq)(a|er))
+;$nameblacklist[faggot] = (?i:faggot)
+;
 
 
 
