@@ -111,7 +111,7 @@ mysql> DESCRIBE acc_user;
 *user_name - The user's chosen name
 *user_email - The user's e-mail address
 *user_pass - The user's password (stored in a one-way cipher)
-*user_level - The user's access level (New, User, Admin, Suspended presently)
+*user_level - The user's access level (New, User, Admin, Suspended, Declined presently)
 *user_onwikiname - The user's on-wiki name.
 *user_welcome - Set welcoming on or off. 0 for off, 1 for on. Default 0
 *user_welcome_sig - The user's preferred welcome sig
