@@ -22,6 +22,7 @@ $nameblacklist[grawp3] = '/.*(hagg[ea]r|herme?y).*/i';
 $nameblacklist[grawp4] = '/.*secret.*combination.*/i';
 $nameblacklist[grawp5] = '/.*fuck.*/i';
 $nameblacklist[grawp6] = '/.*t[3eh][3eh]_l[uo]lz/i';
+$nameblacklist[grawp7] = '/k.a.l.o.m.i.r.a/';
 $nameblacklist[upolicy1] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|b[0o]t|st[3e]w[4a]rd|j[1i]mb[0o]).*/i';
 
 //E-Mail Blacklist (not yet implemented in HEAD)
