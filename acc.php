@@ -1213,7 +1213,7 @@ if ($_GET['action'] == "logs") {
 $query = "SELECT * FROM acc_pend WHERE pend_status = 'Open';";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
-echo "<table>\n";
+echo "<table cellspacing=\"0\">\n";
 $currentreq = 0;
 while ($row = mysql_fetch_assoc($result)) {
 	$currentreq +=1;
@@ -1326,7 +1326,7 @@ while ($row = mysql_fetch_assoc($result)) {
 $query = "SELECT * FROM acc_pend WHERE pend_status = 'Admin';";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
-echo "<table>\n";
+echo "<table cellspacing=\"0\">\n";
 $currentreq = 0;
 while ($row = mysql_fetch_assoc($result)) {
 	$currentreq +=1;
@@ -1434,7 +1434,7 @@ echo "<h2>Last 5 Closed requests</h2><A name='closed'></A><span id=\"closed\"/>\
 $query = "SELECT * FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
-echo "<table>\n";
+echo "<table cellspacing=\"0\">\n";
 $currentrow = 0;
 while ($row = mysql_fetch_assoc($result)) {
 	$currentrow +=1;
