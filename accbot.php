@@ -268,11 +268,11 @@ while (!feof($fp)) {
 		$nick = substr($nick[0],1);
 
 		 if (($nick == 'Cobi') or ($nick == 'SQLDb') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
-			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': Please wait while I try to fix the SVN.');
+			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': Please wait while I try to fix the SVN.'."\n");
 			system('tar -jcvpf ~/accinterface-svn-broken.'.time().'.tbz2 .');
 			system('svn list | xargs rm -f');
 			system('svn up');
-			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': Thanks.  SVN has hopefully been fixed.');
+			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': Thanks.  SVN has hopefully been fixed.'."\n");
 		}
 	}
 }
