@@ -77,7 +77,7 @@ if ($_GET[viewuser] != "") {
 		// Not every row $noc = count($row[pend_name]); //Define total number of users created
     // Not every row echo "<b>Number of users created: $noc</b>\n"; //Display total number of users created
 	}
-	echo "<a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
+	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 	displayfooter();
 	die();
 }
@@ -97,5 +97,6 @@ while ($row = mysql_fetch_assoc($result)) {
 	$lastlevel = $row[user_level];
 }
 echo "<ul>\n";
+echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 displayfooter();
 ?>
