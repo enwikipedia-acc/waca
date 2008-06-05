@@ -64,14 +64,17 @@ if ($_GET[viewuser] != "") {
 	echo "<ol>\n";
 	echo "<li>User ID: $row[user_id]</li>\n";
 	echo "<li>User Level: $row[user_level]</li>\n";
-  echo "<li>User On-wiki name: <a href=\"http://en.wikipedia.org/wiki/User:$row[user_onwikiname]\">$row[user_onwikiname]</a>  |  <a href=\"http://en.wikipedia.org/wiki/User talk:$row[user_onwikiname]\">talk page</a> </li>\n";
-  $query = "SELECT `user_lastactive` AS `time` FROM `acc_user` WHERE `user_id` = $_GET[viewuser] LIMIT 1;";
-  $result = mysql_query($query);
-  if(!$result) Die("ERROR: No result returned.");
-  $lastactive = $result;
-  if($lastactive == "") {
-    echo "<li>User has never used the interface</li>\n";} else {
-    echo "<li>User last active: $lastactive</li>\n"; }
+	echo "<li>User On-wiki name: <a href=\"http://en.wikipedia.org/wiki/User:$row[user_onwikiname]\">$row[user_onwikiname]</a>  |  <a href=\"http://en.wikipedia.org/wiki/User talk:$row[user_onwikiname]\">talk page</a> </li>\n";
+	$query = 'SELECT `user_lastactive` AS `time` FROM `acc_user` WHERE `user_id` = \''.mysql_real_escape_string($_GET['viewuser']).'\' LIMIT 1;';
+	$result = mysql_query($query);
+	if(!$result) Die("ERROR: No result returned.");
+	$lastactive = mysql_fetch_assoc($result);
+	$lastactive = $lastactive['time'];
+	if($lastactive == "") {
+		echo "<li>User has never used the interface</li>\n";
+	} else {
+		echo "<li>User last active: $lastactive</li>\n";
+	}
 	echo "</ol>\n";
 	echo "<h2>Users created</h2>\n";
         $query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = '$gid' AND log_action = 'Closed 1';";
