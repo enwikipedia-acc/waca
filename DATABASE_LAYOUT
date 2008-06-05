@@ -120,13 +120,13 @@ mysql> DESCRIBE acc_user;
 
 acc_ban
 This table holds e-mail addresses and IP's that are banned from the request system.
-mysql> DESCRIBE acc_ban;
+mysql> describe acc_ban;
 +--------------+---------------+------+-----+---------+----------------+
 | Field        | Type          | Null | Key | Default | Extra          |
 +--------------+---------------+------+-----+---------+----------------+
 | ban_id       | int(11)       | NO   | PRI | NULL    | auto_increment | 
 | ban_type     | varchar(255)  | NO   |     | NULL    |                | 
-| ban_target   | varchar(1024) | NO   |     | NULL    |                | 
+| ban_target   | varchar(700)  | NO   | UNI | NULL    |                | 
 | ban_user     | varchar(255)  | NO   |     | NULL    |                | 
 | ban_reason   | varchar(4096) | NO   |     | NULL    |                | 
 | ban_date     | varchar(1024) | NO   |     | NULL    |                | 
