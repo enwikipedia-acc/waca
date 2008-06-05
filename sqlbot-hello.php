@@ -22,8 +22,8 @@
 include('../../SxWiki.php');
 include('sqlbot-hello-enwiki.php');
 require_once('config.inc');
-mysql_connect(,$toolserver_host,$toolserver_username,$toolserver_password);
-@mysql_select_db(,$toolserver_database) or print mysql_error();
+mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
+@mysql_select_db($toolserver_database) or print mysql_error();
 $run = sxGetPage("User:SQLBot-Hello/welcome.run");
 
 function isnewuser($user) {
