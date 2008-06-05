@@ -162,10 +162,15 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
 		fwrite($fp, "[DNSBL] HIT: $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('DNSBL', '$siuser', 'DNSBL Hit', '$now', '$cmt');";
+		echo '<!-- Query: '.$query.' -->';
 		mysql_query($query);
 		fclose($fp);
 		$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string('DNSBL Hit:<br />\n'.$dnsblcheck[1]).'\',\''.$now.'\',\'172800\')';
+		echo '<!-- Query: '.$query.' -->';
 		mysql_query($query);
+//		$message = showmessage(15);
+//		echo "$message<br />\n";
+//		die();
 	}
 
 	if(isset($ub[query][blocks][0][id])) {
