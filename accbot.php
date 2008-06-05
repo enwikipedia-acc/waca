@@ -103,9 +103,9 @@ while (!feof($fp)) {
         $line =  fgets($fp, 256);
 
         usleep(25000);
-        $peer = fread($fpt, 256);
+        $peer = str_replace(array("\n","\r"),'',fread($fpt, 4096));
 	if($peer != "") {
-	        $toirc = "PRIVMSG $chan :$peer";
+	        $toirc = "PRIVMSG $chan :".str_replace("\n","\nPRIVMSG ".$chan.' :',$peer);
 		fwrite($fp, "$toirc\r\n");
 		echo "Packet received!\n";
 	}
