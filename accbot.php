@@ -115,15 +115,15 @@ while (!feof($fp)) {
     fwrite($fp,"PRIVMSG $nick :Available commands (all should be run in #wikipedia-en-accounts):\r\n");
     sleep(.75);
     fwrite($fp,"PRIVMSG $nick :!count <username> - Displays statistics for the targeted user\r\n");
-    sleep(3);)
+    sleep(3);
     fwrite($fp,"PRIVMSG $nick :!status - Displays interface statistics, such as number of open requests\r\n");
-    sleep(3);)
+    sleep(3);
     fwrite($fp,"PRIVMSG $nick :!svninfo - Floods you with information about the SVN repository\r\n");
-    sleep(3);)
+    sleep(3);
     fwrite($fp,"PRIVMSG $nick :!svnup - RESTRICTED - Allows those with access to synch the SVN repository with the live server copy\r\n");
-    sleep(3);)
+    sleep(3);
     fwrite($fp,"PRIVMSG $nick :!restart - RESTRICTED - Allows those with access to restart the bot immediately\r\n");
-    sleep(3);)
+    sleep(3);
     fwrite($fp,"PRIVMSG $nick :!recreatesvn - RESTRICTED - Commands the bot to attempt and recreate/repair the SVN repository\r\n");
   }
   #END HELP
