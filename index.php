@@ -40,7 +40,7 @@ function checkdnsbls ($addr) {
 		$lastdigit = $lastdigit[3];
 		if (isset($dnsbl['ret'][$lastdigit])) { $dnsbldata .= ' ('.$dnsbl['ret'][$lastdigit].')'; $banned = true; }
 		else { $dnsbldata .= ' (unknown)'; if ($dnsbl['bunk']) $banned = true; }
-		$dnsbldata .= ' &mdash;  <a href="'.str_replace('%i',$request[1],$dnsbl['url'])."\"> more information</a>.\n";
+		$dnsbldata .= ' &mdash;  <a href="'.str_replace('%i',$addr,$dnsbl['url'])."\"> more information</a>.\n";
 	}
 	unset($dnsblip,$dnsblname,$dnsbl,$tmpdnsblresult,$lastdigit);
 
@@ -168,7 +168,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 		mysql_query($query);
 		echo '<!-- Error: '.mysql_error().' -->';
 		fclose($fp);
-		$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string('DNSBL Hit:<br />\n'.$dnsblcheck[1]).'\',\''.$now.'\',\''.(time() + 172800).'\');';
+		$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string("DNSBL Hit:<br />\n".$dnsblcheck[1]).'\',\''.$now.'\',\''.(time() + 172800).'\');';
 		echo '<!-- Query: '.$query.' -->';
 		mysql_query($query);
 		echo '<!-- Error: '.mysql_error().' -->';
