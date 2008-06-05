@@ -134,6 +134,8 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$email = $_POST['email'];
 	$email = ltrim($email);
 	$email = rtrim($email);
+	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
+	@mysql_select_db($toolserver_database) or print mysql_error();
 	foreach ($nameblacklist as $wnbl => $nbl) {
 		$phail_test = @preg_match($nbl, $_POST[name]);
 		if($phail_test == TRUE) {
