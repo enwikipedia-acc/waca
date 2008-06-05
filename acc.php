@@ -234,7 +234,7 @@ function listrequests($type) {
 		$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=5">Invalid</a>';
 	
 		// Defer to admins or users
-		if($type == 'Open') { $target = 'user'; } else { $target = 'admin'; }
+		if($type == 'Open') { $target = 'admin'; } elseif ( $type == 'Admin') { $target = 'user'; }
 		$out.= " - <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&target=$target\">Defer to $target" . "s</a>";
 	
 		// Drop
