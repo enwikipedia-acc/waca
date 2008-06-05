@@ -165,8 +165,8 @@ function listrequests($type) {
 			$cmt = "<a style=\"color:green\" href=\"acc.php?action=zoom&id=$rid\">Zoom</a> ";
 		}
 	
-		$query = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \''.$row['pend_ip'].'\' AND `pend_id` != \''.$row['pend_id'].'\';';
-		$otherreqs = mysql_fetch_assoc(mysql_query($query));
+		$query2 = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \''.$row['pend_ip'].'\' AND `pend_id` != \''.$row['pend_id'].'\';';
+		$otherreqs = mysql_fetch_assoc(mysql_query($query2));
 	
 		$out = '<tr';
 		if($currentreq % 2 == 0) 
@@ -236,7 +236,7 @@ function listrequests($type) {
 		$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=3">Taken</a>';
 	
 		// UPolicy
-			$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=4">UPolicy</a>';
+		$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=4">UPolicy</a>';
 	
 		// Invalid
 		$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=5">Invalid</a>';
@@ -261,8 +261,9 @@ function listrequests($type) {
 			$out.= ' - <a style="color:red" href="acc.php?action=ban&name=' . $row[pend_id] . '">Name</a>';
 	
 		$out.= '</small></td></tr>';
+		echo "$out\n";
 	}	
-	echo "$out\n</table>\n";
+	echo "</table>\n";
 }	
 function showhead() {
 	$suin = sanitize($_SESSION[user]);
