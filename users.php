@@ -70,7 +70,7 @@ if ($_GET[viewuser] != "") {
 	if(!$result) Die("ERROR: No result returned.");
 	$lastactive = mysql_fetch_assoc($result);
 	$lastactive = $lastactive['time'];
-	if($lastactive == "") {
+	if($lastactive == "0000-00-00 00:00:00") {
 		echo "<li>User has never used the interface</li>\n";
 	} else {
 		echo "<li>User last active: $lastactive</li>\n";
