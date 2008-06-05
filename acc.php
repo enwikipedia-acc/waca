@@ -1325,7 +1325,9 @@ if ($_GET['action'] == "logs") {
 <h1>Create an account!</h1>
 <h2>Open requests</h2>
 <A name="open"></A>
+<?php
 listrequests("Open");
+?>
 <h2>Admin Needed!</h2>
 <a name="admin"></a>
 <span id="admin"/>
