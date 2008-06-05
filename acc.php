@@ -1329,6 +1329,7 @@ listrequests("Open");
 <h2>Admin Needed!</h2>
 <a name="admin"></a>
 <span id="admin"/>
+<?php
 listrequests("Admin");
 echo "<h2>Last 5 Closed requests</h2><A name='closed'></A><span id=\"closed\"/>\n";
 $query = "SELECT * FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
