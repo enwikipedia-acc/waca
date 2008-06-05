@@ -145,7 +145,11 @@ function listrequests($type) {
 	global $toolserver_database;
 	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 	@mysql_select_db($toolserver_database) or print mysql_error();
-	$query = "SELECT * FROM acc_pend WHERE pend_status = '$type';";
+	if($type == 'Admin' || $type == 'Open') {
+		$query = "SELECT * FROM acc_pend WHERE pend_status = '$type';";
+	} else {
+		$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
+	}
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	echo "<table cellspacing=\"0\">\n";
@@ -235,8 +239,11 @@ function listrequests($type) {
 	
 		// Defer to admins or users
 		if($type == 'Open') { $target = 'admin'; } elseif ( $type == 'Admin') { $target = 'user'; }
-		$out.= " - <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&target=$target\">Defer to $target" . "s</a>";
-	
+		if($target == 'admin' || $target == 'user') {
+			$out.= " - <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&target=$target\">Defer to $target" . "s</a>";
+		} else {
+			$out.= " - <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&target=user\">Reset Requests</a>";
+		}
 		// Drop
 			$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=0">Drop</a>';
 	
@@ -1150,9 +1157,9 @@ if ($_GET['action'] == "zoom") {
 	$thisid = $row[pend_id];
 	$thisemail = $row[pend_email];
 	if($row['pend_date'] == "0000-00-00 00:00:00") { $row['pend_date'] = "Date Unknown"; }
-	
-	$out = '<small>[ <a style="color:green" href="mailto:' . $thisemail . '">' . $thisemail . '</a> | <a style="color:green" href="http://en.wikipedia.org/wiki/User_talk:' . $thisip . '">' . $thisip . '</a> <a style="color:green" href="http://en.wikipedia.org/wiki/Special:Contributions/' . $thisip . '">c</a> <a style="color:green" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:' . $thisip . '">b</a> <a style="color:green" href="http://ws.arin.net/whois/?queryinput=' . $thisip . '">w</a> ] <a style="color:blue" href="http://en.wikipedia.org/wiki/User:' . $uname . '">' . $uname . '</a> (<a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:' . $uname . '">Creation</a> <a style="color:blue" href="http://en.wikipedia.org/wiki/Special:Contributions/' . $uname . '">Contribs</a>) <a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=' . $uname . '&wpEmail=' . $thisemail . '&uselang=en-acc">Create!</a> | <a style="color:orange" href="acc.php?action=done&id=' . $thisid . '&email=1">Done!</a> - <a style="color:orange" href="acc.php?action=done&id=' . $thisid . '&email=2">Similar</a> - <a style="color:orange" href="acc.php?action=done&id=' . $thisid . '&email=3">Taken</a> - <a style="color:orange" href="acc.php?action=done&id=' . $thisid . '&email=4">UPolicy</a> - <a style="color:orange" href="acc.php?action=done&id=' . $thisid . '&email=5">Invalid</a> - <a style="color:orange" href="acc.php?action=defer&id=' . $thisid . '&target=admin">Send to Admins</a> - <a style="color:orange" href="acc.php?action=done&id=' . $thisid . '&email=0">Drop</a> | Ban: <a style="color:red" href="acc.php?action=ban&ip=' . $thisid . '">IP</a> - <a style="color:red" href="acc.php?action=ban&email=' . $thisid . '">E-Mail</a>  - <a style="color:red" href="acc.php?action=ban&name=' . $thisid . '">Name</a> | Date: ' . $row[pend_date] . '</small>';
-	echo "$out\n";
+	listrequests($thisid);
+	//$out = '<small>[ <a style="color:green" href="mailto:' . $thisemail . '">' . $thisemail . '</a> | <a style="color:green" href="http://en.wikipedia.org/wiki/User_talk:' . $thisip . '">' . $thisip . '</a> <a style="color:green" href="http://en.wikipedia.org/wiki/Special:Contributions/' . $thisip . '">c</a> <a style="color:green" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:' . $thisip . '">b</a> <a style="color:green" href="http://ws.arin.net/whois/?queryinput=' . $thisip . '">w</a> ] <a style="color:blue" href="http://en.wikipedia.org/wiki/User:' . $uname . '">' . $uname . '</a> (<a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:' . $uname . '">Creation</a> <a style="color:blue" href="http://en.wikipedia.org/wiki/Special:Contributions/' . $uname . '">Contribs</a>) <a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=' . $uname . '&wpEmail=' . $thisemail . '&uselang=en-acc">Create!</a> | <a style="color:orange" href="acc.php?action=done&id=' . $thisid . '&email=1">Done!</a> - <a style="color:orange" href="acc.php?action=done&id=' . $thisid . '&email=2">Similar</a> - <a style="color:orange" href="acc.php?action=done&id=' . $thisid . '&email=3">Taken</a> - <a style="color:orange" href="acc.php?action=done&id=' . $thisid . '&email=4">UPolicy</a> - <a style="color:orange" href="acc.php?action=done&id=' . $thisid . '&email=5">Invalid</a> - <a style="color:orange" href="acc.php?action=defer&id=' . $thisid . '&target=admin">Send to Admins</a> - <a style="color:orange" href="acc.php?action=done&id=' . $thisid . '&email=0">Drop</a> | Ban: <a style="color:red" href="acc.php?action=ban&ip=' . $thisid . '">IP</a> - <a style="color:red" href="acc.php?action=ban&email=' . $thisid . '">E-Mail</a>  - <a style="color:red" href="acc.php?action=ban&name=' . $thisid . '">Name</a> | Date: ' . $row[pend_date] . '</small>';
+	//echo "$out\n";
 	echo "<br /><strong>Comment</strong>: $row[pend_cmt]<br />\n";
 	$query = "SELECT * FROM acc_log WHERE log_pend = '$gid';";
 	$result = mysql_query($query);
