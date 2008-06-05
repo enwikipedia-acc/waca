@@ -138,6 +138,122 @@ function checksecurity($username) {
 		die();
 	}
 }
+function listrequests($type) {
+	global $toolserver_username;
+	global $toolserver_password;
+	global $toolserver_host;
+	global $toolserver_database;
+	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
+	@mysql_select_db($toolserver_database) or print mysql_error();
+	$query = "SELECT * FROM acc_pend WHERE pend_status = '$type';";
+	$result = mysql_query($query);
+	if(!$result) Die("ERROR: No result returned.");
+	echo "<table cellspacing=\"0\">\n";
+	$currentreq = 0;
+	while ($row = mysql_fetch_assoc($result)) {
+		$currentreq +=1;
+		$uname = urlencode($row[pend_name]);
+	#	$uname = str_replace("+", "_", $row[pend_name]);
+		$rid = $row['pend_id'];
+		if($row['pend_cmt'] != "") {
+			$cmt = "<a style=\"color:green\" href=\"acc.php?action=zoom&id=$rid\">Zoom (CMT)</a> ";
+		} else {
+			$cmt = "<a style=\"color:green\" href=\"acc.php?action=zoom&id=$rid\">Zoom</a> ";
+		}
+	
+		$query = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \''.$row['pend_ip'].'\' AND `pend_id` != \''.$row['pend_id'].'\';';
+		$otherreqs = mysql_fetch_assoc(mysql_query($query));
+	
+		$out = '<tr';
+		if($currentreq % 2 == 0) 
+		{
+			$out.= ' class="even">';
+		}
+		else
+		{
+			$out.= ' class="odd">';
+		} 
+		$out.= '<td><small>'.$currentreq.'.    </small></td><td><small>'; //List item
+		$out.= $cmt; // CMT link.
+	
+		// Email.
+		$out.= '</small></td><td><small>[ <a style="color:green" href="mailto:' . $row[pend_email] . '">' . $row[pend_email] . '</a>';
+	
+		// IP UT:
+		$out.= '</small></td><td><small> | <a style="color:green" href="http://en.wikipedia.org/wiki/User_talk:' . $row[pend_ip] . '">';
+		$out.= $row[pend_ip] . '</a> ';
+	
+		$out.= '</small></td><td><small><span style="color:';
+		if($otherreqs['count'] == 0) {
+			$out.= 'green">('.$otherreqs['count'].')';
+		} else {		
+			$out.= 'black">(</span><b><span style="color:red">'.$otherreqs['count'].'</span></b><span style="color:black">)';
+			}
+		$out.=" <span>";
+	
+		// IP contribs
+		$out.= '</span></small></td><td><small><a style="color:green" href="http://en.wikipedia.org/wiki/Special:Contributions/';
+		$out.= $row[pend_ip] . '">c</a> ';
+	
+		// IP blocks
+		$out.= '<a style="color:green" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:';
+		$out.= $row[pend_ip] . '">b</a> ';
+	
+		// IP whois
+		$out.= '<a style="color:green" href="http://ws.arin.net/whois/?queryinput=' . $row[pend_ip] . '">w</a> ] ';
+	
+		// Username U:
+		$out.= '</small></td><td><small><a style="color:blue" href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $uname . '</ strong></a> ';
+	
+		// Creation log	
+		$out.= '</small></td><td><small>(<a style="color:blue" href="http://en.wikipedia.org/w/index.php?	title=Special:Log&type=newusers&user=&page=User:';
+		$out.= $uname . '">Creation</a> ';
+	
+		// User contribs
+		$out.= '<a style="color:blue" href="http://en.wikipedia.org/wiki/Special:Contributions/';
+		$out.= $uname . '">Contribs</a> ';
+		$out.= '<a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&username=' . $uname . '&group=&limit=50">List</	a>) ';
+
+		// Create user link
+		$out.= '<b><a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
+		$out.= $uname . '&wpEmail=' . $row[pend_email] . '&uselang=en-acc">Create!</a></b> '; 
+	
+		// Done
+		$out.= '| <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=1">Done!</a>';
+	
+		// Similar
+		$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=2">Similar</a>';
+	
+		// Taken
+		$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=3">Taken</a>';
+	
+		// UPolicy
+			$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=4">UPolicy</a>';
+	
+		// Invalid
+		$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=5">Invalid</a>';
+	
+		// Defer to admins or users
+		if($type == 'Open') { $target = 'user' } else { $target = 'admin'; }
+		$out.= " - <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&target=$target\">Defer to $target" . "s</a>";
+	
+		// Drop
+			$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=0">Drop</a>';
+	
+		// Ban IP
+		$out.= ' | Ban: <a style="color:red" href="acc.php?action=ban&ip=' . $row[pend_id] . '">IP</a> ';
+	
+		// Ban email
+		$out.= '- <a style="color:red" href="acc.php?action=ban&email=' . $row[pend_id] . '">E-Mail</a>';
+	
+		//Ban name
+			$out.= ' - <a style="color:red" href="acc.php?action=ban&name=' . $row[pend_id] . '">Name</a>';
+	
+		$out.= '</small></td></tr>';
+	
+		echo "$out\n</table>\n";
+	}
+}	
 function showhead() {
 	$suin = sanitize($_SESSION[user]);
 	$query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
@@ -1209,227 +1325,11 @@ if ($_GET['action'] == "logs") {
 <h1>Create an account!</h1>
 <h2>Open requests</h2>
 <A name="open"></A>
-<?php
-$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open';";
-$result = mysql_query($query);
-if(!$result) Die("ERROR: No result returned.");
-echo "<table cellspacing=\"0\">\n";
-$currentreq = 0;
-while ($row = mysql_fetch_assoc($result)) {
-	$currentreq +=1;
-	$uname = urlencode($row[pend_name]);
-#	$uname = str_replace("+", "_", $row[pend_name]);
-	$rid = $row['pend_id'];
-	if($row['pend_cmt'] != "") {
-		$cmt = "<a style=\"color:green\" href=\"acc.php?action=zoom&id=$rid\">Zoom (CMT)</a> ";
-	} else {
-		$cmt = "<a style=\"color:green\" href=\"acc.php?action=zoom&id=$rid\">Zoom</a> ";
-	}
-
-	$query = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \''.$row['pend_ip'].'\' AND `pend_id` != \''.$row['pend_id'].'\';';
-	$otherreqs = mysql_fetch_assoc(mysql_query($query));
-
-	$out = '<tr';
-	if($currentreq % 2 == 0) 
-	{
-		$out.= ' class="even">';
-	}
-	else
-	{
-		$out.= ' class="odd">';
-	} 
-	$out.= '<td><small>'.$currentreq.'.    </small></td><td><small>'; //List item
-	$out.= $cmt; // CMT link.
-
-	// Email.
-	$out.= '</small></td><td><small>[ <a style="color:green" href="mailto:' . $row[pend_email] . '">' . $row[pend_email] . '</a>';
-
-	// IP UT:
-	$out.= '</small></td><td><small> | <a style="color:green" href="http://en.wikipedia.org/wiki/User_talk:' . $row[pend_ip] . '">';
-	$out.= $row[pend_ip] . '</a> ';
-
-	$out.= '</small></td><td><small><span style="color:';
-	if($otherreqs['count'] == 0) {
-		$out.= 'green">('.$otherreqs['count'].')';
-	} else {		
-		$out.= 'black">(</span><b><span style="color:red">'.$otherreqs['count'].'</span></b><span style="color:black">)';
-	}
-	$out.=" <span>";
-
-	// IP contribs
-	$out.= '</span></small></td><td><small><a style="color:green" href="http://en.wikipedia.org/wiki/Special:Contributions/';
-	$out.= $row[pend_ip] . '">c</a> ';
-
-	// IP blocks
-	$out.= '<a style="color:green" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:';
-	$out.= $row[pend_ip] . '">b</a> ';
-
-	// IP whois
-	$out.= '<a style="color:green" href="http://ws.arin.net/whois/?queryinput=' . $row[pend_ip] . '">w</a> ] ';
-
-	// Username U:
-	$out.= '</small></td><td><small><a style="color:blue" href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $uname . '</strong></a> ';
-
-	// Creation log	
-	$out.= '</small></td><td><small>(<a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:';
-	$out.= $uname . '">Creation</a> ';
-
-	// User contribs
-	$out.= '<a style="color:blue" href="http://en.wikipedia.org/wiki/Special:Contributions/';
-	$out.= $uname . '">Contribs</a> ';
-	$out.= '<a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&username=' . $uname . '&group=&limit=50">List</a>) ';
-
-	// Create user link
-	$out.= '<b><a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
-	$out.= $uname . '&wpEmail=' . $row[pend_email] . '&uselang=en-acc">Create!</a></b> '; 
-
-	// Done
-	$out.= '| <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=1">Done!</a>';
-
-	// Similar
-	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=2">Similar</a>';
-
-	// Taken
-	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=3">Taken</a>';
-
-	// UPolicy
-	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=4">UPolicy</a>';
-
-	// Invalid
-	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=5">Invalid</a>';
-
-	// Defer to admins
-	$out.= ' - <a style="color:orange" href="acc.php?action=defer&id=' . $row[pend_id] . '&target=admin">Defer to admins</a>';
-
-	// Drop
-	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=0">Drop</a>';
-
-	// Ban IP
-	$out.= ' | Ban: <a style="color:red" href="acc.php?action=ban&ip=' . $row[pend_id] . '">IP</a> ';
-
-	// Ban email
-	$out.= '- <a style="color:red" href="acc.php?action=ban&email=' . $row[pend_id] . '">E-Mail</a>';
-
-	//Ban name
-	$out.= ' - <a style="color:red" href="acc.php?action=ban&name=' . $row[pend_id] . '">Name</a>';
-
-	$out.= '</small></td></tr>';
-
-	echo "$out\n";
-}
-?>
-</table>
+listrequests("Open");
 <h2>Admin Needed!</h2>
 <a name="admin"></a>
 <span id="admin"/>
-<?php
-$query = "SELECT * FROM acc_pend WHERE pend_status = 'Admin';";
-$result = mysql_query($query);
-if(!$result) Die("ERROR: No result returned.");
-echo "<table cellspacing=\"0\">\n";
-$currentreq = 0;
-while ($row = mysql_fetch_assoc($result)) {
-	$currentreq +=1;
-	$uname = urlencode($row[pend_name]);
-#	$uname = str_replace("+", "_", $row[pend_name]);
-	$rid = $row['pend_id'];
-	if($row['pend_cmt'] != "") {
-		$cmt = "<a style=\"color:green\" href=\"acc.php?action=zoom&id=$rid\">Zoom (CMT)</a> ";
-	} else {
-		$cmt = "<a style=\"color:green\" href=\"acc.php?action=zoom&id=$rid\">Zoom</a> ";
-	}
-	$out = '<tr';
-	if($currentreq % 2 == 0) 
-	{
-		$out.= ' class="even">';
-	}
-	else
-	{
-		$out.= ' class="odd">';
-	} 
-	$out.= '<td><small>'.$currentreq.'.    </small></td><td><small>'; //Table row and request number
-	$out.= $cmt; // CMT link.
-
-	// Email.
-	$out.= '</small></td><td><small>[ <a style="color:green" href="mailto:' . $row[pend_email] . '">' . $row[pend_email] . '</a>';
-
-	// IP UT:
-	$out.= '</small></td><td><small> | <a style="color:green" href="http://en.wikipedia.org/wiki/User_talk:' . $row[pend_ip] . '">';
-	$out.= $row[pend_ip] . '</a> ';
-	$query = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \''.$row['pend_ip'].'\' AND `pend_id` != \''.$row['pend_id'].'\';';
-	$otherreqs = mysql_fetch_assoc(mysql_query($query));
-	$out.= '</small></td><td><small><span style="color:';
-	if($otherreqs['count'] == 0) {
-		$out.= 'green">('.$otherreqs['count'].')';
-	} else {		
-		$out.= 'black">(</span><b><span style="color:red">'.$otherreqs['count'].'</span></b><span style="color:black">)';
-	}
-	$out.=" <span>";
-
-	// IP contribs
-	$out.= '</small></td><td><small><a style="color:green" href="http://en.wikipedia.org/wiki/Special:Contributions/';
-	$out.= $row[pend_ip] . '">c</a> ';
-
-	// IP blocks
-	$out.= '<a style="color:green" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:';
-	$out.= $row[pend_ip] . '">b</a> ';
-
-	// IP whois
-	$out.= '<a style="color:green" href="http://ws.arin.net/whois/?queryinput=' . $row[pend_ip] . '">w</a> ] ';
-
-	// Username U:
-	$out.= '</small></td><td><small><a style="color:blue" href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $uname . '</strong></a> ';
-
-	// Creation log	
-	$out.= '</small></td><td><small>(<a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:';
-	$out.= $uname . '">Creation</a> ';
-
-	// User contribs
-	$out.= '<a style="color:blue" href="http://en.wikipedia.org/wiki/Special:Contributions/';
-	$out.= $uname . '">Contribs</a> ';
-	$out.= '<a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&username=' . $uname . '&group=&limit=50">List</a>) ';
-
-	// Create user link
-	$out.= '<b><a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
-	$out.= $uname . '&wpEmail=' . $row[pend_email] . '&uselang=en-acc">Create!</a></b> '; 
-
-	// Done
-	$out.= '| <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=1">Done!</a>';
-
-	// Similar
-	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=2">Similar</a>';
-
-	// Taken
-	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=3">Taken</a>';
-
-	// UPolicy
-	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=4">UPolicy</a>';
-
-	// Invalid
-	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=5">Invalid</a>';
-
-	// Defer to admins
-	$out.= ' - <a style="color:orange" href="acc.php?action=defer&id=' . $row[pend_id] . '&target=user">Defer to users</a>';
-
-	// Drop
-	$out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=0">Drop</a>';
-
-	// Ban IP
-	$out.= ' | Ban: <a style="color:red" href="acc.php?action=ban&ip=' . $row[pend_id] . '">IP</a> ';
-
-	// Ban email
-	$out.= '- <a style="color:red" href="acc.php?action=ban&email=' . $row[pend_id] . '">E-Mail</a>';
-
-	//Ban name
-	$out.= ' - <a style="color:red" href="acc.php?action=ban&name=' . $row[pend_id] . '">Name</a>';
-
-	$out.= '</small></td></tr>';
-
-	echo "$out\n";
-}
-?>
-</table>
-<?php
+listrequests("Admin");
 echo "<h2>Last 5 Closed requests</h2><A name='closed'></A><span id=\"closed\"/>\n";
 $query = "SELECT * FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
 $result = mysql_query($query);
