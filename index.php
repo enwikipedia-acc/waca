@@ -164,10 +164,12 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('DNSBL', '$siuser', 'DNSBL Hit', '$now', '$cmt');";
 		echo '<!-- Query: '.$query.' -->';
 		mysql_query($query);
+		echo '<!-- Error: '.mysql_error().' -->';
 		fclose($fp);
-		$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string('DNSBL Hit:<br />\n'.$dnsblcheck[1]).'\',\''.$now.'\',\'172800\')';
+		$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string('DNSBL Hit:<br />\n'.$dnsblcheck[1]).'\',\''.$now.'\',\''.(time() + 172800).'\');';
 		echo '<!-- Query: '.$query.' -->';
 		mysql_query($query);
+		echo '<!-- Error: '.mysql_error().' -->';
 //		$message = showmessage(15);
 //		echo "$message<br />\n";
 //		die();
