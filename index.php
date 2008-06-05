@@ -152,6 +152,8 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 			$result = mysql_query($query);
 			if(!$result) Die("ERROR: No result returned.");
 			fclose($fp);
+			$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string('Blacklist Hit: '.$wnbl.' - '.$_POST['name'].' '.$ip2.' '.$email.' '.$_SERVER['HTTP_USER_AGENT']).'\',\''.$now.'\',\''.(time() + 172800).'\');';
+			mysql_query($query);
 			die();		
 		}
 	}
@@ -251,6 +253,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 		echo "$message<br />\n"; 
 		$fail = 1; 
 	}
+	mysql_query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP()');
 	$query = "SELECT * FROM acc_ban WHERE ban_type = 'IP' AND ban_target = '$ip'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
