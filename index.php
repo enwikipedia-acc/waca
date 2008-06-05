@@ -40,7 +40,7 @@ function checkdnsbls ($addr) {
 		$lastdigit = $lastdigit[3];
 		if (isset($dnsbl['ret'][$lastdigit])) { $dnsbldata .= ' ('.$dnsbl['ret'][$lastdigit].')'; $banned = true; }
 		else { $dnsbldata .= ' (unknown)'; if ($dnsbl['bunk']) $banned = true; }
-		$dnsbldata .= ' &mdash;  <a href="'.str_replace('%i',$request[1],$dnsbl['url'])."\" more information</a>.\n";
+		$dnsbldata .= ' &mdash;  <a href="'.str_replace('%i',$request[1],$dnsbl['url'])."\"> more information</a>.\n";
 	}
 	unset($dnsblip,$dnsblname,$dnsbl,$tmpdnsblresult,$lastdigit);
 
