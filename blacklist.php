@@ -36,13 +36,13 @@ $nameblacklist[nigger]   = '/(?i:ni(gg|qq)(a|er))/';
 $nameblacklist[faggot]   = '/(?i:faggot)/';
 
 
-$nameblacklist[grawp1] = '/.*k*[l1][o0]?m[o0]?[i1]r*.*/i';
-$nameblacklist[grawp2] = '/.*[gq]r*(w|vv|ww)p.*/i';
-$nameblacklist[grawp3] = '/.*(hagg[ea]r|herme?y).*/i';
-$nameblacklist[grawp4] = '/.*secret.*combination.*/i';
-$nameblacklist[grawp5] = '/.*(fuck|s[e3]x|shag).*/i';
-$nameblacklist[grawp6] = '/.*t[3eh][3eh]_l[uo]lz/i';
-$nameblacklist[grawp7] = '/k.a.l.o.m.i.r.a/';
+$nameblacklist[grawp1] = '/k*[l1][o0]?m[o0]?[i1]r*/i';
+$nameblacklist[grawp2] = '/[gq]r*(w|vv|ww)p/i';
+$nameblacklist[grawp3] = '/(hagg[ea]r|herme?y)/i';
+$nameblacklist[grawp4] = '/secret.*combination/i';
+$nameblacklist[grawp5] = '/(fuck|s[e3]x|shag)/i';
+$nameblacklist[grawp6] = '/t[3eh][3eh]_l[uo]lz/i';
+$nameblacklist[grawp7] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
 
 $nameblacklist[grawp8] = '(?i:(g|9|q)r(a|4)(w|vv|?)(p|?))';
 
