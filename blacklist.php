@@ -43,7 +43,7 @@ $nameblacklist[grawp1] = '/.*k*l[o0]?m[o0]?[i1]r*.*/i';
 $nameblacklist[grawp2] = '/.*gr*(w|vv)p.*/i';
 $nameblacklist[grawp3] = '/.*(hagg[ea]r|herme?y).*/i';
 $nameblacklist[grawp4] = '/.*secret.*combination.*/i';
-$nameblacklist[grawp5] = '/.*fuck|sex|shag.*/i';
+$nameblacklist[grawp5] = '/.*(fuck|s[e3]x|shag).*/i';
 $nameblacklist[grawp6] = '/.*t[3eh][3eh]_l[uo]lz/i';
 $nameblacklist[grawp7] = '/k.a.l.o.m.i.r.a/';
 
