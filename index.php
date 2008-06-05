@@ -157,7 +157,27 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 			die();		
 		}
 	}
-
+	foreach ($emailblacklist as $wnbl => $nbl) {
+		$phail_test = @preg_match($nbl, $_POST[email]);
+		if($phail_test == TRUE) {
+        	        $message = showmessage(15);
+	                echo "$message<br />\n";
+	        	$now = date("Y-m-d H-i-s");
+			$target = "$wnbl";
+			$siuser = mysql_real_escape_string("$_POST[name]");
+			$cmt = mysql_real_escape_string("FROM $ip $email");
+			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
+			fwrite($fp, "[Blacklist] HIT: $wnbl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
+			//echo "<br />$query<br />";
+			$result = mysql_query($query);
+			if(!$result) Die("ERROR: No result returned.");
+			fclose($fp);
+			$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string('Blacklist Hit: '.$wnbl.' - '.$_POST['name'].' '.$ip2.' '.$email.' '.$_SERVER['HTTP_USER_AGENT']).'\',\''.$now.'\',\''.(time() + 172800).'\');';
+			mysql_query($query);
+			die();		
+		}
+	}
 	$dnsblcheck = checkdnsbls($ip2);
 	if ($dnsblcheck[0] == true) {
 		$now = date("Y-m-d H-i-s");

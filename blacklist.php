@@ -36,9 +36,6 @@ $nameblacklist[nigger]   = '/(?i:ni(gg|qq)(a|er))/';
 $nameblacklist[faggot]   = '/(?i:faggot)/';
 
 
-
-
-
 $nameblacklist[grawp1] = '/.*k*l[o0]?m[o0]?[i1]r*.*/i';
 $nameblacklist[grawp2] = '/.*[gq]r*(w|vv|ww)p.*/i';
 $nameblacklist[grawp3] = '/.*(hagg[ea]r|herme?y).*/i';
@@ -53,7 +50,9 @@ $nameblacklist[grawp9] = '(?i:p(w|vv|?)(a|4)r(g|9|q))';
 $nameblacklist[upolicy4] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|b[0o]t|st[3e]w[4a]rd|j[1i]mb[0o]).*/i';
 
 //E-Mail Blacklist (not yet implemented in HEAD)
-$emailblacklist[example1] = '/.&.*\@fake\.email$/i';
+$emailblacklist[grawp1] = '/(shit|fuck|sex)/i';
+$emailblacklist[grawp2] = '/^poo@.*/i';
+$emailblacklist[grawp3] = '/@poo\..*/i';
 
 //DNSBLS
 $dnsbls = Array	(
