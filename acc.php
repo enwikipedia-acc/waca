@@ -177,9 +177,11 @@ function listrequests($type) {
 		{
 			$out.= ' class="odd">';
 		} 
-		$out.= '<td><small>'.$currentreq.'.    </small></td><td><small>'; //List item
 		if($type == 'Admin' || $type == 'Open') {
+			$out.= '<td><small>'.$currentreq.'.    </small></td><td><small>'; //List item
 			$out.= $cmt; // CMT link.
+		} else {
+			$out.= '<td><small>'; //List item
 		}
 	
 		// Email.
