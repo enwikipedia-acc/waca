@@ -261,9 +261,8 @@ function listrequests($type) {
 			$out.= ' - <a style="color:red" href="acc.php?action=ban&name=' . $row[pend_id] . '">Name</a>';
 	
 		$out.= '</small></td></tr>';
-	
-		echo "$out\n</table>\n";
-	}
+	}	
+	echo "$out\n</table>\n";
 }	
 function showhead() {
 	$suin = sanitize($_SESSION[user]);
