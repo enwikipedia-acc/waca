@@ -68,6 +68,21 @@ foreach ($top5a as $top1a) {
         $top5aout .= "$top1a[log_user] - " . $top1a['count(*)'] . "\n";
 }
 $topa5out .= "\n";
+$whosnewq = "select * from acc_log JOIN acc_user on log_pend = user_id where log_action = 'Approved' AND log_time LIKE '$now2$now3%';";
+$result = mysql_query($topq);
+if(!$result) Die("ERROR: No result returned.6");
+$whosnew = array();
+while ($wn = mysql_fetch_assoc($result)) {
+	$wn_one = $wn[user_name];
+	array_push($whosnew, $wn_one);
+}
+
+$wnout .= "\nNew ACC Users Approved today::\n";
+$wnout .= "-------------------------------------------------------------\n";
+foreach ($whosnew as $wn_one) {
+	$wnout .= "$wn_one\n";
+}
+$wnout .= "\n";
 
 $topq = "select log_user,count(*) from acc_log where log_time like '$now2$now3%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC limit 5;";
 $result = mysql_query($topq);
@@ -160,6 +175,7 @@ $out .= "Requests deferred to admins: $dadmins\n";
 $out .= "Requests deferred back to users or reopened: $dusers\n";
 $out .= $top5aout;
 $out .= $top5out;
+$out .= $wnout;
 echo $out;
 $to      = 'accounts-enwiki-l@lists.wikimedia.org';
 $subject = "TS ACC statistics, $now";

@@ -311,14 +311,15 @@ mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 session_start();
 if ($_GET['action'] == "sreg") {
     showhead();
-	$userblocked = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$_REQUEST[name]&format=php");
+	$cu_name = urlencode($_REQUEST[name]);
+	$userblocked = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php");
 	$ub = unserialize($userblocked);
 	if(isset($ub[query][blocks][0][id])) {
 		$message = showmessage(9);
 		echo "ERROR: You are presently blocked on the English Wikipedia<br />\n"; 
 		$fail = 1; 
 	}
-	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$_REQUEST[name]&format=php");
+	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php");
 	$ue = unserialize($userexist);
 	foreach ($ue[query][users] as $oneue) {
         	if(isset($oneue[missing])) {
