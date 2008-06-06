@@ -37,7 +37,7 @@ $nameblacklist[faggot]   = '/(?i:faggot)/';
 
 
 $nameblacklist[grawp1] = '/k*[l1][o0]?m[o0]?[i1]r*/i';
-$nameblacklist[grawp2] = '/[gq]r.(w|vv|ww)p/i';
+$nameblacklist[grawp2] = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
 $nameblacklist[grawp3] = '/(hagg[ea]r|herme?y|quarp)/i';
 $nameblacklist[grawp4] = '/secret.*combination/i';
 $nameblacklist[grawp5] = '/((ph|f)uc?k|s[e3]x|shag)/i';
