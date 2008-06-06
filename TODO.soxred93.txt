@@ -1,3 +1,1 @@
-This is an example TODO file for Soxred93 created by FastLizard4.  Simply use it like any other TODO list.
-
-For some examples, see /TODO.fastlizard4.txt /TODO.sql.txt or /TODO.stwalkerster.txt
+*Create !stats function.
