@@ -50,6 +50,11 @@ $now = date("Y-m-d");
 $now2 = date("Y-m-");
 $now3 = date("d");
 $now3 = $now3 - 1;
+$blq = "select COUNT(*) from acc_log where log_time RLIKE '^$now.*' AND log_action = 'Blacklist Hit';";
+$result = mysql_query($blq);
+if(!$result) Die("ERROR: No result returned.1");
+$blcount = mysql_fetch_assoc($result);  
+
 $topqa = "select log_user,count(*) from acc_log where log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC limit 5;";
 $result = mysql_query($topqa);
 if(!$result) Die("ERROR: No result returned.6");
@@ -81,7 +86,8 @@ $now = date("Y-m-d",mktime(0,0,0,date(m),date("d")-1));
 $logq = "select * from acc_log AS A
 	JOIN acc_pend AS B ON log_pend = pend_id
 	where log_time RLIKE '^$now.*' AND
-	log_action RLIKE '^(Closed.*|Deferred.*)';";
+	log_action RLIKE '^(Closed.*|Deferred.*|Blacklist.*)';";
+echo "\n\n$logq\n\n";
 $result = mysql_query($logq);
 if(!$result) Die("ERROR: No result returned.7");
 $dropped = 0;
@@ -129,6 +135,7 @@ $nsadmin = $sadmin['COUNT(*)'];
 $nsuser = $suser['COUNT(*)'];
 $nssusp = $ssusp['COUNT(*)'];
 $nsnew = $snew['COUNT(*)'];
+$bltd = $blcount['COUNT(*)'];
 $out = "\n";
 $out .= "Tool URL is http://tools.wikimedia.de/~sql/acc/acc.php\n";
 $out .= "PLEASE, register if you have not already!\n\n";
@@ -142,7 +149,7 @@ $out .= "Site suspended accounts: $nssusp\n";
 $out .= "Site users awaiting approval: $nsnew\n\n";
 $out .= "Todays statistics!\n";
 $out .= "-------------------------------------------------------------\n";
-$out .= "Requests dropped because of blacklisting: $blusers\n";
+$out .= "Requests dropped because of blacklisting: $bltd\n";
 $out .= "Account requests dropped: $dropped\n";
 $out .= "Accounts successfully created: $created\n";
 $out .= "Accounts not created (Too similar): $toosimilar\n";
