@@ -1,1 +1,1 @@
-*Create !stats function.
+*Create changelog
