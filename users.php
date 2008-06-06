@@ -76,6 +76,18 @@ if ($_GET[viewuser] != "") {
 	} else {
 		echo "<li>User last active: $lastactive</li>\n";
 	}
+	$query = 'SELECT * FROM `acc_user` WHERE `user_id` = \''.mysql_real_escape_string($_GET['viewuser']).'\' LIMIT 1;';
+	$result = mysql_query($query);
+	if(!$result) Die("ERROR: No result returned.");
+	$welcomee = mysql_fetch_assoc($result);
+	$welcomee = $welcomee['user_welcome'];
+	if ($welcomee == "1") {
+		$welcomee = "enabled";
+	}
+	else {
+		$welcomee = "disabled";
+	}
+	echo "<li>User has automatic welcoming $welcomee.</li>\n";
 	echo "</ol>\n";
 	echo "<h2>Users created</h2>\n";
         $query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = '$gid' AND log_action = 'Closed 1';";
