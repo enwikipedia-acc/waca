@@ -280,9 +280,10 @@ while (!feof($fp)) {
 	if (substr(strtolower($line_ex[3]),1) == '!svnup') {
 		$nick = explode('!',$line_ex[0]);
 		$nick = substr($nick[0],1);
-
-
-		if (($nick == 'Cobi') or ($nick == 'SQLDb') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
+		$hostA = explode('@',$line_ex[0]);
+		$host = $hostA[1];
+		if (($nick == 'Cobi') or ($nick == 'SQLDb') && ($host = 'wikipedia/SQL') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
+			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.": /whois $nick\n");
 			if (pcntl_fork() == 0) {
 				$svn = popen('svn up 2>&1', 'r');
 				while (!feof($svn)) {
@@ -316,11 +317,13 @@ while (!feof($fp)) {
 	}
 
 	if (substr(strtolower($line_ex[3]),1) == '!restart') {
+				$hostA = explode('@',$line_ex[0]);
+				$host = $hostA[1];
                 $nick = explode('!',$line_ex[0]);
                 $nick = substr($nick[0],1);
 
 
-                if (($nick == 'Cobi') or ($nick == 'SQLDb') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
+                if (($nick == 'Cobi') or ($nick == 'SQLDb') && ($host = 'wikipedia/SQL') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
 			echo 'Restart from IRC!';
 			fclose($fp);
 			fclose($fpt);
@@ -332,7 +335,7 @@ while (!feof($fp)) {
 		$nick = explode('!',$line_ex[0]);
 		$nick = substr($nick[0],1);
 
-		 if (($nick == 'Cobi') or ($nick == 'SQLDb') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
+		 if (($nick == 'Cobi') or ($nick == 'SQLDb') && ($host = 'wikipedia/SQL') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
 			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': Please wait while I try to fix the SVN.'."\n");
 			system('tar -jcvpf ~/accinterface-svn-broken.'.time().'.tbz2 .');
 			system('svn list | xargs rm -f');
