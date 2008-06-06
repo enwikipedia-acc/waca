@@ -572,17 +572,28 @@ if ($_GET['action'] == "login") {
 }
 function showlogin() {
     global $_SESSION;
-    echo "Not logged in. Please log in.";
     ?>
+	<div id="sitenotice">Please login first, and we'll send you on your way!</div>
+	<div id="content">
+	<h2>Login</h2>
     <form action="acc.php?action=login" method="post">
-    Username: <input type="text" name="username"><br />
-    Password: <input type="password" name="password"><br />
-    <input type="submit">
+    <div class="required">
+		<label for="password">Username:</label>
+		<input type="text" name="username">
+	</div>
+	<div class="required">
+    	<label for="password">Password:</label>
+		<input type="password" name="password">
+	</div>
+    <div class="submit">
+		<input type="submit">
+	</div>
     </form>
     <br />
     Don't have an account? 
     <br /><a href="acc.php?action=register">Register!</a> (Requires approval)<br />
     <a href="acc.php?action=forgotpw">Forgot your password?</a><br />
+	</div>
     <?php
 }
 showhead();
