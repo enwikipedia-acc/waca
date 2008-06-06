@@ -15,7 +15,10 @@
 **Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
 **                                                           **
 **************************************************************/
-if( $_SERVER['REMOTE_ADDR'] != "") { die("Not today"); }
+if( $_SERVER['REMOTE_ADDR'] != "") { 
+	header("Location: http://toolserver.org/~sql/acc/");
+	die(); 
+}
 
 function sanitize($what) {
 	$what = mysql_real_escape_string($what);
