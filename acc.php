@@ -114,7 +114,7 @@ function actionmail($to, $user, $action = "suspend", $reason = null) {
 	else {
 	}
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-	mail($target, "RE: English Wikipedia Account Request", $mailtxt, $headers);
+	mail($target, "Account ".$action."ed", $mailtxt, $headers);
 }
 function checksecurity($username) {
 	$username = sanitize($username);
