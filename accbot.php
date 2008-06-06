@@ -115,7 +115,7 @@ while (!feof($fp)) {
 		echo "Packet received!\n";
 	}
 	#BEGIN HELP
-	if(stristr($line, "!help") != FALSE) { //This will display help if succesful in PM
+/*	if(stristr($line, "!help") != FALSE) { //This will display help if succesful in PM
 	  $line_ex = explode(' ',str_replace(array("\r","\n"),'',$line));
     $nick = explode('!',$line_ex[0]);
     $nick = substr($nick[0],1);
@@ -135,7 +135,7 @@ while (!feof($fp)) {
     fwrite($fp,"PRIVMSG $nick :[!]restart - RESTRICTED - Allows those with access to restart the bot immediately\r\n");
     sleep(3);
     fwrite($fp,"PRIVMSG $nick :[!]recreatesvn - RESTRICTED - Commands the bot to attempt and recreate/repair the SVN repository\r\n");
-  }
+  } /*** Ugh - I'll fix this later. ***/
   #END HELP
 	if(stristr($line, "!count") != FALSE) {
 		sleep(.75); 
@@ -277,13 +277,13 @@ while (!feof($fp)) {
 		sleep(.50);
 	}
 	$line_ex = explode(' ',str_replace(array("\r","\n"),'',$line));
-	if (substr(strtolower($line_ex[3]),1) == '!svnup') {
+	if ((substr(strtolower($line_ex[3]),1) == '!svnup') and (strtolower($line_ex[2]) == '#wikipedia-en-accounts')) {
 		$nick = explode('!',$line_ex[0]);
 		$nick = substr($nick[0],1);
 		$hostA = explode('@',$line_ex[0]);
 		$host = $hostA[1];
-		if (($nick == 'Cobi') && ($host = 'cobi.cluenet.org') or ($nick == 'SQLDb') && ($host = 'wikipedia/SQL') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
-			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.": /whois $nick\n");
+		if (($nick == 'Cobi') && (strtolower($host) == 'cobi.cluenet.org') or ($nick == 'SQLDb') && ($host == 'wikipedia/SQL') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
+//			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.": /whois $nick\n"); // What the ... !?
 			if (pcntl_fork() == 0) {
 				$svn = popen('svn up 2>&1', 'r');
 				while (!feof($svn)) {
@@ -299,7 +299,7 @@ while (!feof($fp)) {
 		}
 	}
 
-	if (substr(strtolower($line_ex[3]),1) == '!svninfo') {
+	if ((substr(strtolower($line_ex[3]),1) == '!svninfo') and (strtolower($line_ex[2]) == '#wikipedia-en-accounts')) {
 		if (pcntl_fork() == 0) {
 			$nick = explode('!',$line_ex[0]);
 			$nick = substr($nick[0],1);
@@ -316,14 +316,14 @@ while (!feof($fp)) {
 		}
 	}
 
-	if (substr(strtolower($line_ex[3]),1) == '!restart') {
-				$hostA = explode('@',$line_ex[0]);
-				$host = $hostA[1];
+	if ((substr(strtolower($line_ex[3]),1) == '!restart') and (strtolower($line_ex[2]) == '#wikipedia-en-accounts')) {
+		$hostA = explode('@',$line_ex[0]);
+		$host = $hostA[1];
                 $nick = explode('!',$line_ex[0]);
                 $nick = substr($nick[0],1);
 
 
-                if (($nick == 'Cobi') && ($host = 'cobi.cluenet.org') or ($nick == 'SQLDb') && ($host = 'wikipedia/SQL') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
+                if (($nick == 'Cobi') && (strtolower($host) == 'cobi.cluenet.org') or ($nick == 'SQLDb') && ($host == 'wikipedia/SQL') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
 			echo 'Restart from IRC!';
 			fclose($fp);
 			fclose($fpt);
@@ -331,11 +331,11 @@ while (!feof($fp)) {
 		}
 	}
 
-	if (substr(strtolower($line_ex[3]),1) == '!recreatesvn') {
+	if ((substr(strtolower($line_ex[3]),1) == '!recreatesvn') and (strtolower($line_ex[2]) == '#wikipedia-en-accounts')) {
 		$nick = explode('!',$line_ex[0]);
 		$nick = substr($nick[0],1);
 
-		 if (($nick == 'Cobi') && ($host = 'cobi.cluenet.org') or ($nick == 'SQLDb') && ($host = 'wikipedia/SQL') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
+		 if (($nick == 'Cobi') && (strtolower($host) == 'cobi.cluenet.org') or ($nick == 'SQLDb') && ($host == 'wikipedia/SQL') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
 			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': Please wait while I try to fix the SVN.'."\n");
 			system('tar -jcvpf ~/accinterface-svn-broken.'.time().'.tbz2 .');
 			system('svn list | xargs rm -f');
