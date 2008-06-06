@@ -111,6 +111,7 @@ while (!feof($fp)) {
 	}
 	#BEGIN HELP
 	if(stristr($line, "!help") != FALSE) { //This will display help if succesful in PM
+	  $line_ex = explode(' ',str_replace(array("\r","\n"),'',$line));
     $nick = explode('!',$line_ex[0]);
     $nick = substr($nick[0],1);
     sleep(.75);
