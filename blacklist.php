@@ -32,6 +32,12 @@
 //$nameblacklist[upolicy1] = '/卍/';
 //$nameblacklist[upolicy2] = '/卐/';  // These screw up the preg parser.
 //$nameblacklist[upolicy3] = '/[!?‽？]{3,}/';
+
+if($ACC != "1") { 
+        header("Location: http://toolserver.org/~sql/acc/");
+	die();
+}
+
 $nameblacklist[nigger]   = '/(?i:ni(gg|qq)(a|er))/';
 $nameblacklist[faggot]   = '/(?i:faggot)/';
 
