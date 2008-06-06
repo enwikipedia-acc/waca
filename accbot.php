@@ -197,6 +197,40 @@ while (!feof($fp)) {
 
 		}
 	}
+	if(stristr($line, "!stats") != FALSE) {
+		sleep(.75); 
+		$cmatch = preg_match("/\:.* PRIVMSG #wikipedia-en-accounts :!stats (.*)/", $line, $matches);
+		if($cmatch > 0) {
+			$matches[1] = sanitize(ltrim(rtrim($matches[1])));
+			$query = "SELECT COUNT(*) FROM acc_user WHERE user_name = '$matches[1]';";
+			$result = myq($query);
+			if(!$result) Die("ERROR: No result returned.");
+			$row = mysql_fetch_assoc($result);
+			$userexist = $row['COUNT(*)'];
+			if($userexist == "1") {
+				$query = "SELECT * FROM acc_user WHERE user_name = '$matches[1]';";
+				$result = myq($query);
+				if(!$result) Die("ERROR: No result returned.");
+				$row = mysql_fetch_assoc($result);
+				$level = $row['user_level'];
+				$onwiki = $row['user_onwikiname'];
+				$welcomee = $row['user_welcome'];
+				$lastactive = $row['user_lastactive'];
+			}
+			if ($welcomee = 1) {
+				$welcomee = "enabled";
+			}
+			else {
+				$welcomee = "disabled";
+			}
+			if($userexist != "1") {
+				fwrite($fp, "PRIVMSG $chan :$matches[1] is not a valid user.\r\n");
+			} else {
+				fwrite($fp, "PRIVMSG $chan :$matches[1] ($level)  was last active $lastactive. He/she currently has automatic welcoming of users $welcomee. His/her onwiki username is $onwiki. \r\n");
+			}
+
+		}
+	}
 	if(stristr($line, "!status") != FALSE) {
 		sleep(.75); 
 		$query = "SELECT COUNT(*) FROM acc_pend WHERE pend_status = 'Open';";
