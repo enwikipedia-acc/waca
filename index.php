@@ -284,7 +284,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 		if ($dbanned < 0 || $dbanned == "") {
 			$dbanned = time() + 100;
 		}
-		if($toruser[tor] == "yes") { $row[ban_reason] = "<a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool."; 
+		if($toruser[tor] == "yes") { $row[ban_reason] = "<a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse."; 
 } 
 		if ($dbanned < time()) {
 			//Not banned!
