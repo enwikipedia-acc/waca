@@ -223,10 +223,13 @@ while (!feof($fp)) {
 			else {
 				$welcomee = "disabled";
 			}
+			if($lastactive == "0000-00-00 00:00:00") { 
+				$lastactive = "unknown"; 
+			}
 			if($userexist != "1") {
 				fwrite($fp, "PRIVMSG $chan :$matches[1] is not a valid user.\r\n");
 			} else {
-				fwrite($fp, "PRIVMSG $chan :$matches[1] ($level)  was last active $lastactive. He/she currently has automatic welcoming of users $welcomee. His/her onwiki username is $onwiki. \r\n");
+				fwrite($fp, "PRIVMSG $chan :$matches[1] ($level) was last active $lastactive. He/she currently has automatic welcoming of users $welcomee. His/her onwiki username is $onwiki. \r\n");
 			}
 
 		}
