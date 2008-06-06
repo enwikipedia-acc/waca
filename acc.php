@@ -106,7 +106,7 @@ function actionmail($to, $user, $action = "suspend", $reason = null) {
 	$to = sanitize($to);
 	$from = $user;
 	if ($action == "suspend") {
-		$mailtxt = "Dear Account Creation tool user, \nYour account on the tool has been suspended by $user. The reason given was: $reason\nSincerely,\nThe Acount Creation Team.";
+		$mailtxt = "Dear Account Creation tool user, \nYour account on the tool has been declined by $user. The reason given was: $reason\nSincerely,\nThe Acount Creation Team.";
 	}
 	elseif ($action == "promote") {
 		$mailtxt = "Dear Account Creation tool user, \nYour account on the tool has been promoted by $user. \nSincerely,\nThe Acount Creation Team.";
