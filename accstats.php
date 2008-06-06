@@ -18,6 +18,11 @@
 **************************************************************/
 
 require_once('config.inc');
+if( $_SERVER['REMOTE_ADDR'] != "") {
+        header("Location: http://toolserver.org/~sql/acc/");
+        die();
+}
+
 mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 @mysql_select_db($toolserver_database) or print mysql_error();
 
