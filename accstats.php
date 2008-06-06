@@ -117,6 +117,9 @@ while($log = mysql_fetch_assoc($result)) {
 	case "Deferred to users":
 	    $dusers++;
 	    break;
+	case "Blacklist Hit":
+	    $blusers++;
+	    break;
 	}
 } 
 $nopen = $open['COUNT(*)'];
@@ -138,6 +141,7 @@ $out .= "Site suspended accounts: $nssusp\n";
 $out .= "Site users awaiting approval: $nsnew\n\n";
 $out .= "Todays statistics!\n";
 $out .= "-------------------------------------------------------------\n";
+$out .= "Requests dropped because of blacklisting: $blusers\n";
 $out .= "Account requests dropped: $dropped\n";
 $out .= "Accounts successfully created: $created\n";
 $out .= "Accounts not created (Too similar): $toosimilar\n";
