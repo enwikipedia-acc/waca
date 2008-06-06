@@ -128,6 +128,8 @@ while (!feof($fp)) {
     sleep(3);
     fwrite($fp,"PRIVMSG $nick :[!]svninfo - Floods you with information about the SVN repository\r\n");
     sleep(3);
+    fwrite($fp,"PRIVMSG $nick :[!]stats <username> - Gives a readout similar to a user list user information page\r\n");
+    sleep(3);
     fwrite($fp,"PRIVMSG $nick :[!]svnup - RESTRICTED - Allows those with access to synch the SVN repository with the live server copy\r\n");
     sleep(3);
     fwrite($fp,"PRIVMSG $nick :[!]restart - RESTRICTED - Allows those with access to restart the bot immediately\r\n");
