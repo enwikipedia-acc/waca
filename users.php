@@ -82,12 +82,12 @@ if ($_GET[viewuser] != "") {
 	$welcomee = mysql_fetch_assoc($result);
 	$welcomee = $welcomee['user_welcome'];
 	if ($welcomee == "1") {
-		$welcomee = "enabled";
+		$welcomee = "Yes";
 	}
 	else {
-		$welcomee = "disabled";
+		$welcomee = "No";
 	}
-	echo "<li>User has automatic welcoming $welcomee.</li>\n";
+	echo "<li>User has <a href=\"acc.php?action=welcomeperf\"><span style=\"color: red;\" title=\"Login required to continue\">automatic welcoming</span></a> enabled: $welcomee.</li>\n";
 	echo "</ol>\n";
 	echo "<h2>Users created</h2>\n";
         $query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = '$gid' AND log_action = 'Closed 1';";
