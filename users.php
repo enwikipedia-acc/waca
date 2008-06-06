@@ -61,6 +61,11 @@ if ($_GET[viewuser] != "") {
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
+	if($row[user_id] == "") {
+		echo "Invalid user!<br />\n";
+		showfooter();
+		die();
+	}
 	echo "<h2>Detail report for user: $row[user_name]</h2>\n";
 	echo "<ol>\n";
 	echo "<li>User ID: $row[user_id]</li>\n";
