@@ -132,6 +132,11 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$ip = mysql_real_escape_string($ip);
 	$userblocked = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$ip2&format=php");
 	$ub = unserialize($userblocked);
+	if(isset($ub[query][blocks][0][id])) {
+		$message = showmessage(9);
+		echo "$message<br />\n"; 
+		$fail = 1; 
+	}
 	$email = $_POST['email'];
 	$email = ltrim($email);
 	$email = rtrim($email);
@@ -200,11 +205,6 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 //		die();
 	}
 
-	if(isset($ub[query][blocks][0][id])) {
-		$message = showmessage(9);
-		echo "$message<br />\n"; 
-		$fail = 1; 
-	}
 	mysql_connect("enwiki-p.db.ts.wikimedia.org",$toolserver_username,$toolserver_password);
 	@mysql_select_db("enwiki_p") or print mysql_error();
 	$user = $_POST['name'];
