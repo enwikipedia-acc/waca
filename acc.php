@@ -102,6 +102,20 @@ function sendemail($messageno, $target) {
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	mail($target, "RE: English Wikipedia Account Request", $mailtxt, $headers);
 }
+function actionmail($to, $user, $action = "suspend", $reason = null) {
+	$to = sanitize($to);
+	$from = $user;
+	if ($action == "suspend") {
+		$mailtxt = "Dear Account Creation tool user, \nYour account on the tool has been suspended by $user. The reason given was: $reason\nSincerely,\nThe Acount Creation Team.";
+	}
+	elseif ($action == "promote") {
+		$mailtxt = "Dear Account Creation tool user, \nYour account on the tool has been promoted by $user. \nSincerely,\nThe Acount Creation Team.";
+	}
+	else {
+	}
+	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+	mail($target, "RE: English Wikipedia Account Request", $mailtxt, $headers);
+}
 function checksecurity($username) {
 	$username = sanitize($username);
 	$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
@@ -835,6 +849,7 @@ if ($_GET['action'] == "usermgmt") {
 			if(!$result2) Die("ERROR: No result returned.");
 			$row2 = mysql_fetch_assoc($result2);
 			sendtobot("User $did ($row2[user_name]) suspended access by $siuser because: $suspendrsn");
+			actionmail($row2[user_email], $siuser, "suspend", $suspendrsn);
 			showfooter();
 			die();
 		}
@@ -857,6 +872,7 @@ if ($_GET['action'] == "usermgmt") {
 		if(!$result2) Die("ERROR: No result returned.");
 		$row2 = mysql_fetch_assoc($result2);
 		sendtobot("User $aid ($row2[user_name]) promoted to admin by $siuser");
+		actionmail($row2[user_email], $siuser, "promote", null);
 	}
 	if($_GET['decline'] != "") {
 		$did = sanitize($_GET[decline]);
