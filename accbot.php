@@ -219,7 +219,7 @@ while (!feof($fp)) {
 				$welcomee = $row['user_welcome'];
 				$lastactive = $row['user_lastactive'];
 			}
-			if ($welcomee = 1) {
+			if ($welcomee == "1") {
 				$welcomee = "enabled";
 			}
 			else {
