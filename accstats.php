@@ -73,7 +73,7 @@ foreach ($top5a as $top1a) {
         $top5aout .= "$top1a[log_user] - " . $top1a['count(*)'] . "\n";
 }
 $topa5out .= "\n";
-$whosnewq = "select * from acc_log JOIN acc_user on log_pend = user_id where log_action = 'Approved' AND log_time LIKE '$now%';";
+$whosnewq = "select * from acc_log JOIN acc_user on log_pend = user_id where log_action = 'Approved' AND log_time LIKE '$now2$now3%';";
 $result = mysql_query($whosnewq);
 if(!$result) Die("ERROR: No result returned.6.1");
 $whosnew = array();
@@ -157,7 +157,7 @@ $nssusp = $ssusp['COUNT(*)'];
 $nsnew = $snew['COUNT(*)'];
 $bltd = $blcount['COUNT(*)'];
 $out = "\n";
-$out .= "Tool URL is http://tools.wikimedia.de/~sql/acc/acc.php\n";
+$out .= "Tool URL is http://toolserver.org/~sql/acc/acc.php\n";
 $out .= "PLEASE, register if you have not already!\n\n";
 $out .= "Site Statistics!\n";
 $out .= "-------------------------------------------------------------\n";
