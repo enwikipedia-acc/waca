@@ -114,29 +114,34 @@ while (!feof($fp)) {
 		fwrite($fp, "$toirc\r\n");
 		echo "Packet received!\n";
 	}
+
 	#BEGIN HELP
-/*	if(stristr($line, "!help") != FALSE) { //This will display help if succesful in PM
-	  $line_ex = explode(' ',str_replace(array("\r","\n"),'',$line));
-    $nick = explode('!',$line_ex[0]);
-    $nick = substr($nick[0],1);
-    sleep(.75);
-    fwrite($fp,"PRIVMSG $nick :Available commands (all should be run in #wikipedia-en-accounts.  Run commands without the [brackets]):\r\n");
-    sleep(.75);
-    fwrite($fp,"PRIVMSG $nick :[!]count <username> - Displays statistics for the targeted user\r\n");
-    sleep(3);
-    fwrite($fp,"PRIVMSG $nick :[!]status - Displays interface statistics, such as number of open requests\r\n");
-    sleep(3);
-    fwrite($fp,"PRIVMSG $nick :[!]svninfo - Floods you with information about the SVN repository\r\n");
-    sleep(3);
-    fwrite($fp,"PRIVMSG $nick :[!]stats <username> - Gives a readout similar to a user list user information page\r\n");
-    sleep(3);
-    fwrite($fp,"PRIVMSG $nick :[!]svnup - RESTRICTED - Allows those with access to synch the SVN repository with the live server copy\r\n");
-    sleep(3);
-    fwrite($fp,"PRIVMSG $nick :[!]restart - RESTRICTED - Allows those with access to restart the bot immediately\r\n");
-    sleep(3);
-    fwrite($fp,"PRIVMSG $nick :[!]recreatesvn - RESTRICTED - Commands the bot to attempt and recreate/repair the SVN repository\r\n");
-  } /*** Ugh - I'll fix this later. ***/
-  #END HELP
+	if(stristr($line, "!help") !== FALSE) { //This will display help if succesful in a NOTICE
+		if (pcntl_fork() == 0) {
+			$line_ex = explode(' ',str_replace(array("\r","\n"),'',$line));
+			$nick = explode('!',$line_ex[0]);
+			$nick = substr($nick[0],1);
+			sleep(.75);
+			fwrite($fp,"NOTICE $nick :Available commands (all should be run in #wikipedia-en-accounts.  Run commands without the [brackets]):\r\n");
+			sleep(.75);
+			fwrite($fp,"NOTICE $nick :!count <username> - Displays statistics for the targeted user\r\n");
+			sleep(3);
+			fwrite($fp,"NOTICE $nick :!status - Displays interface statistics, such as number of open requests\r\n");
+			sleep(3);
+			fwrite($fp,"NOTICE $nick :!svninfo - Floods you with information about the SVN repository\r\n");
+			sleep(3);
+			fwrite($fp,"NOTICE $nick :!stats <username> - Gives a readout similar to a user list user information page\r\n");
+			sleep(3);
+			fwrite($fp,"NOTICE $nick :!svnup - RESTRICTED - Allows those with access to synch the SVN repository with the live server copy\r\n");
+			sleep(3);
+			fwrite($fp,"NOTICE $nick :!restart - RESTRICTED - Allows those with access to restart the bot immediately\r\n");
+			sleep(3);
+			fwrite($fp,"NOTICE $nick :!recreatesvn - RESTRICTED - Commands the bot to attempt and recreate/repair the SVN repository\r\n");
+			die();
+		}
+	}
+	#END HELP
+
 	if(stristr($line, "!count") != FALSE) {
 		sleep(.75); 
 		$cmatch = preg_match("/\:.* PRIVMSG #wikipedia-en-accounts :!count (.*)/", $line, $matches);
