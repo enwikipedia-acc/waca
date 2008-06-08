@@ -319,8 +319,6 @@ if ($_GET['action'] == "sreg") {
 			$target = "$wnbl";
 			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
 			fwrite($fp, "[Name-Bl-ACR] HIT: $wnbl - $_POST[name] / $_POST[wname] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
-			$result = mysql_query($query);
-			if(!$result) Die("ERROR: No result returned.");
 			fclose($fp);
 		        echo "Account created!<br /><br />\n";
 			die();		
