@@ -311,6 +311,15 @@ mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 session_start();
 if ($_GET['action'] == "sreg") {
     showhead();
+	$dnsblcheck = checkdnsbls($_SERVER['REMOTE_ADDRR']);
+	if ($dnsblcheck[0] == true) {
+		$siuser = mysql_real_escape_string("$_POST[name]");
+		$wiuser = mysql_real_escape_string("$_POST[wname]");
+		$cmt = mysql_real_escape_string("FROM $ip $dnsblcheck[1]");
+		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
+		fwrite($fp, "[DNSBL-ACR] HIT: $_POST[name] - $_POST[wname] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
+		fclose($fp);
+	}
 	$cu_name = urlencode($_REQUEST[wname]);
 	$userblocked = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php");
 	$ub = unserialize($userblocked);
