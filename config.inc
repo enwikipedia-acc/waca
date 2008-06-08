@@ -1,3 +1,4 @@
+<?php
 ///////////////////////////////////////////////////////////////
 // English Wikipedia Account Request Interface               //
 // Wikipedia Account Request Graphic Design by               //
@@ -15,7 +16,6 @@
 //Soxred93 ( http://en.wikipedia.org/User:Soxred93)          //
 //                                                           //
 ///////////////////////////////////////////////////////////////
-<?
 $ACC = 1; //Keep included files from being executed
 $toolserver_mycnf = parse_ini_file("/home/".get_current_user()."/.my.cnf");
 $toolserver_username = $toolserver_mycnf['user'];
