@@ -39,6 +39,15 @@ if($ACC != "1") {
 	die();
 }
 
+$acrnamebl[nigger]   = '/(?i:ni(gg|qq)(a|er))/';
+$acrnamebl[grawp1]   = '/k*[l1][o0]?m[o0]?[i1]r*/i';
+$acrnamebl[grawp2]   = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
+$acrnamebl[grawp3]   = '/secret.*combination/i';
+$acrnamebl[grawp4] = '/secret.*combination/i';
+$acrnamebl[grawp5] = '/((ph|f)uc?k|s[e3]x|shag)/i';
+$acrnamebl[grawp6] = '/t[3eh][3eh]_l[uo]lz/i';
+$acrnamebl[grawp7] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
+
 $nameblacklist[nigger]   = '/(?i:ni(gg|qq)(a|er))/';
 $nameblacklist[faggot]   = '/(?i:faggot)/';
 
@@ -56,7 +65,7 @@ $nameblacklist[grawp7] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
 #$nameblacklist[grawp9] = '(?i:p(w|vv|?)(a|4)r(g|9|q))';
 $nameblacklist[upolicy4] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|b[0o]t|st[3e]w[4a]rd|j[1i]mb[0o]).*/i';
 
-//E-Mail Blacklist (not yet implemented in HEAD)
+//E-Mail Blacklist
 $emailblacklist[grawp1] = '/(shit|fuck|sex|phuck)/i';
 $emailblacklist[grawp2] = '/^poo@.*/i';
 $emailblacklist[grawp3] = '/@poo\..*/i';
@@ -138,4 +147,30 @@ $dnsbls = Array	(
 		)
 	)
 );
+function checkdnsbls ($addr) {
+	global $dnsbls;
+
+	$dnsblip = implode('.',array_reverse(explode('.',$addr)));
+	$dnsbldata = '<ul>';
+	$banned = false;
+
+	foreach ($dnsbls as $dnsblname => $dnsbl) {
+		echo '<!-- Checking '.$dnsblname.' ... ';
+		$tmpdnsblresult = gethostbyname($dnsblip.'.'.$dnsbl['zone']);
+		echo $tmpdnsblresult.' -->';
+		if (long2ip(ip2long($tmpdnsblresult)) != $tmpdnsblresult) { $tmpdnsblresult = 'Nothing.'; continue; }
+//		if (!isset($dnsbl['ret'][$lastdigit]) and ($dnsbl['bunk'] == false)) { $tmpdnsblresult = 'Nothing.'; continue; }
+		$dnsbldata .= '<li> '.$dnsblip.'.'.$dnsbl['zone'].' ('.$dnsblname.') = '.$tmpdnsblresult;
+		$lastdigit = explode('.',$tmpdnsblresult);
+		$lastdigit = $lastdigit[3];
+		if (isset($dnsbl['ret'][$lastdigit])) { $dnsbldata .= ' ('.$dnsbl['ret'][$lastdigit].')'; $banned = true; }
+		else { $dnsbldata .= ' (unknown)'; if ($dnsbl['bunk']) $banned = true; }
+		$dnsbldata .= ' &mdash;  <a href="'.str_replace('%i',$addr,$dnsbl['url'])."\"> more information</a>.\n";
+	}
+	unset($dnsblip,$dnsblname,$dnsbl,$tmpdnsblresult,$lastdigit);
+
+	$dnsbldata .= '</ul>';
+	echo '<!-- '.$dnsbldata.' -->';
+	return array($banned,$dnsbldata);
+}
 ?>

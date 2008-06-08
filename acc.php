@@ -311,6 +311,21 @@ mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 session_start();
 if ($_GET['action'] == "sreg") {
     showhead();
+	foreach ($acrnamebl as $wnbl => $nbl) {
+		$phail_test = @preg_match($nbl, $_POST[name]);
+		if($phail_test == TRUE) {
+        	        #$message = showmessage(15);
+	                echo "$message<br />\n";
+			$target = "$wnbl";
+			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
+			fwrite($fp, "[Name-Bl-ACR] HIT: $wnbl - $_POST[name] / $_POST[wname] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
+			$result = mysql_query($query);
+			if(!$result) Die("ERROR: No result returned.");
+			fclose($fp);
+		        echo "Account created!<br /><br />\n";
+			die();		
+		}
+	}
 	$dnsblcheck = checkdnsbls($_SERVER['REMOTE_ADDRR']);
 	if ($dnsblcheck[0] == true) {
 		$siuser = mysql_real_escape_string("$_POST[name]");
@@ -319,6 +334,7 @@ if ($_GET['action'] == "sreg") {
 		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
 		fwrite($fp, "[DNSBL-ACR] HIT: $_POST[name] - $_POST[wname] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
 		fclose($fp);
+		die("Account not created, please see $dnsblcheck[1]");
 	}
 	$cu_name = urlencode($_REQUEST[wname]);
 	$userblocked = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php");

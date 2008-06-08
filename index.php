@@ -23,33 +23,6 @@ function sanitize($what) {
 	return($what);
 }
 
-function checkdnsbls ($addr) {
-	global $dnsbls;
-
-	$dnsblip = implode('.',array_reverse(explode('.',$addr)));
-	$dnsbldata = '<ul>';
-	$banned = false;
-
-	foreach ($dnsbls as $dnsblname => $dnsbl) {
-		echo '<!-- Checking '.$dnsblname.' ... ';
-		$tmpdnsblresult = gethostbyname($dnsblip.'.'.$dnsbl['zone']);
-		echo $tmpdnsblresult.' -->';
-		if (long2ip(ip2long($tmpdnsblresult)) != $tmpdnsblresult) { $tmpdnsblresult = 'Nothing.'; continue; }
-//		if (!isset($dnsbl['ret'][$lastdigit]) and ($dnsbl['bunk'] == false)) { $tmpdnsblresult = 'Nothing.'; continue; }
-		$dnsbldata .= '<li> '.$dnsblip.'.'.$dnsbl['zone'].' ('.$dnsblname.') = '.$tmpdnsblresult;
-		$lastdigit = explode('.',$tmpdnsblresult);
-		$lastdigit = $lastdigit[3];
-		if (isset($dnsbl['ret'][$lastdigit])) { $dnsbldata .= ' ('.$dnsbl['ret'][$lastdigit].')'; $banned = true; }
-		else { $dnsbldata .= ' (unknown)'; if ($dnsbl['bunk']) $banned = true; }
-		$dnsbldata .= ' &mdash;  <a href="'.str_replace('%i',$addr,$dnsbl['url'])."\"> more information</a>.\n";
-	}
-	unset($dnsblip,$dnsblname,$dnsbl,$tmpdnsblresult,$lastdigit);
-
-	$dnsbldata .= '</ul>';
-	echo '<!-- '.$dnsbldata.' -->';
-	return array($banned,$dnsbldata);
-}
-
 function checktor ($addr) {
 	$flags = array();
 	$flags['tor'] = "no";
