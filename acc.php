@@ -318,7 +318,7 @@ if ($_GET['action'] == "sreg") {
 	                echo "$message<br />\n";
 			$target = "$wnbl";
 			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-			fwrite($fp, "[Name-Bl-ACR] HIT: $wnbl - $_POST[name] / $_POST[wname] $_SERVER[REMOTE_ADDRR] $email $_SERVER[HTTP_USER_AGENT]\r\n");
+			fwrite($fp, "[Name-Bl-ACR] HIT: $wnbl - $_POST[name] / $_POST[wname] $_SERVER[REMOTE_ADDR] $_POST[email] $_SERVER[HTTP_USER_AGENT]\r\n");
 			fclose($fp);
 		        echo "Account created!<br /><br />\n";
 			die();		
@@ -326,11 +326,9 @@ if ($_GET['action'] == "sreg") {
 	}
 	$dnsblcheck = checkdnsbls($_SERVER['REMOTE_ADDRR']);
 	if ($dnsblcheck[0] == true) {
-		$siuser = mysql_real_escape_string("$_POST[name]");
-		$wiuser = mysql_real_escape_string("$_POST[wname]");
-		$cmt = mysql_real_escape_string("FROM $ip $dnsblcheck[1]");
+		$cmt = "FROM $ip $dnsblcheck[1]";
 		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-		fwrite($fp, "[DNSBL-ACR] HIT: $_POST[name] - $_POST[wname] $_SERVER[REMOTE_ADDRR] $email $_SERVER[HTTP_USER_AGENT]\r\n");
+		fwrite($fp, "[DNSBL-ACR] HIT: $_POST[name] - $_POST[wname] $_SERVER[REMOTE_ADDR] $_POST[email] $_SERVER[HTTP_USER_AGENT] $cmt\r\n");
 		fclose($fp);
 		die("Account not created, please see $dnsblcheck[1]");
 	}
