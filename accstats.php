@@ -50,11 +50,12 @@ $snewq = "select COUNT(*) from acc_user where user_level = 'New';";
 $result = mysql_query($snewq);
 if(!$result) Die("ERROR: No result returned.6");
 $snew = mysql_fetch_assoc($result);  
-
+$tnow = date("Y-m-d",mktime(0,0,0,date(m),date("d")-1));
+echo "$tnow\n";
 $now = date("Y-m-d");
 $now2 = date("Y-m-");
 $now3 = date("d");
-$now3 = $now3 - 1;
+$now3 = $now3 - 01;
 $blq = "select COUNT(*) from acc_log where log_time RLIKE '^$now.*' AND log_action = 'Blacklist Hit';";
 $result = mysql_query($blq);
 if(!$result) Die("ERROR: No result returned.1");
@@ -73,7 +74,8 @@ foreach ($top5a as $top1a) {
         $top5aout .= "$top1a[log_user] - " . $top1a['count(*)'] . "\n";
 }
 $topa5out .= "\n";
-$whosnewq = "select * from acc_log JOIN acc_user on log_pend = user_id where log_action = 'Approved' AND log_time LIKE '$now2$now3%';";
+$whosnewq = "select * from acc_log JOIN acc_user on log_pend = user_id where log_action = 'Approved' AND log_time LIKE '$tnow%';";
+echo "$whosnewq\n";
 $result = mysql_query($whosnewq);
 if(!$result) Die("ERROR: No result returned.6.1");
 $whosnew = array();
@@ -89,7 +91,7 @@ foreach ($whosnew as $wn_one) {
 }
 $wnout .= "\n";
 
-$topq = "select log_user,count(*) from acc_log where log_time like '$now2$now3%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC limit 5;";
+$topq = "select log_user,count(*) from acc_log where log_time like '$tnow%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC limit 5;";
 $result = mysql_query($topq);
 if(!$result) Die("ERROR: No result returned.6");
 $top5 = array();
