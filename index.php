@@ -157,11 +157,18 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	}
 	$dnsblcheck = checkdnsbls($ip2);
 	if ($dnsblcheck[0] == true) {
+		$toruser = checktor($ip2);
+		if ($toruser['tor'] == "yes") {
+			$tor = "TOR node";
+		}
+		else {
+			$tor = "Not a TOR node";
+		}
 		$now = date("Y-m-d H-i-s");
 		$siuser = mysql_real_escape_string("$_POST[name]");
 		$cmt = mysql_real_escape_string("FROM $ip $email<br />$dnsblcheck[1]");
 		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-		fwrite($fp, "[DNSBL] HIT: $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
+		fwrite($fp, "[DNSBL] $tor HIT: $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('DNSBL', '$siuser', 'DNSBL Hit', '$now', '$cmt');";
 		echo '<!-- Query: '.$query.' -->';
 		mysql_query($query);
