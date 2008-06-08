@@ -220,7 +220,7 @@ while (!feof($fp)) {
 				if(!$result) Die("ERROR: No result returned.");
 				$row = mysql_fetch_assoc($result);
 				$level = $row['user_level'];
-				$onwiki = $row['user_onwikiname'];
+				$onwiki = "[[User:$row[user_onwikiname]]]";
 				$welcomee = $row['user_welcome'];
 				$lastactive = $row['user_lastactive'];
 			}
