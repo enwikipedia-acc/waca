@@ -504,7 +504,7 @@ if ($_GET['action'] == "forgotpw") {
                     echo "<h2>ERROR</h2>Passwords did not match!<br />\n";
                 }
             } else {
-                echo "<h2>ERROR</h2>\nInvalid request.<br />";
+                echo "<h2>ERROR</h2>\nInvalid request.1<br />";
             }
             showfootern();
             die();
@@ -526,7 +526,7 @@ if ($_GET['action'] == "forgotpw") {
             Return to <a href="acc.php">Login</a>
             <?php
         } else {
-            echo "<h2>ERROR</h2>\nInvalid request.<br />";
+            echo "<h2>ERROR</h2>\nInvalid request.2<br />";
         }
         showfootern();
         die();
