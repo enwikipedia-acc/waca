@@ -1127,7 +1127,7 @@ if ($_GET['action'] == "welcomeperf") {
     <option value="wodup"<?php if($template == "wodup") { echo " selected"; } ?>>{{User:WODUP/Welcome}} ~~~~</option>
     <option value="williamh"<?php if($template == "williamh") { echo " selected"; } ?>>{{User:WilliamH/Welcome|user}} ~~~~</option>
     </select><br />
-    <i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>, <a href="http://en.wikipedia.org/wiki/User_talk:Cobi">Cobi</a>, or <a href="http://en.wikipedia.org/wiki/User_talk:FastLizard4">FastLizard4</a>.</i><br />
+    <i>If you'd like more templates added, please contact <a href="users.php?type=dev">one of the developers</a>.</i><br />
     <input type="submit"><input type="reset">
     </form>
     <?php

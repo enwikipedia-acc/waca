@@ -17,6 +17,7 @@
 **                                                           **
 **************************************************************/
 require_once('config.inc');
+$devlist = array("Cobi", "SQL", "charlie", "FastLizard4", "Stwalkerster", "Soxred93");
 function displayheader() {
         global $toolserver_username;
         global $toolserver_password;
@@ -126,14 +127,57 @@ $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
 echo "<h2>User List</h2>\n<ul>\n";
 while ($row = mysql_fetch_assoc($result)) {
+	if ($_GET[type] == "dev") {
+		echo "<h3>Developers</h3>\n";
+		if($row[user_level] == "Suspended") { $row[user_name] = ""; }
+		if($row[user_name] != "") {
+			if (in_array($row[user_name], $devlist)) {
+				echo "<li><a href=\"users.php?viewuser=$row[user_id]\">";
+			}
+		}
+	}
+	if ($_GET[type] == "new") {
+		echo "<h3>New</h3>\n";
+		if($row[user_level] == "Suspended") { $row[user_name] = ""; }
+		if($row[user_name] != "") {
+			if($row[user_level] == "New")
+				echo "<li><a href=\"users.php?viewuser=$row[user_id]\">";
+			}
+		}
+	}
+	if ($_GET[type] == "suspended") {
+		echo "<h3>Suspended</h3>\n";
+		if($row[user_name] != "") {
+			if($row[user_level] == "Suspended")
+				echo "<li><a href=\"users.php?viewuser=$row[user_id]\">";
+			}
+		}
+	}
+	if ($_GET[type] == "declined") {
+		echo "<h3>Declined</h3>\n";
+		if($row[user_name] != "") {
+			if($row[user_level] == "Declined")
+				echo "<li><a href=\"users.php?viewuser=$row[user_id]\">";
+			}
+		}
+	}
+	else {
 	if($row[user_level] != $lastlevel && $row[user_level] != "Suspended" && $row[user_level] != "Declined") { echo "<h3>$row[user_level]</h3>\n"; }
 	if($row[user_level] == "Suspended") { $row[user_name] = ""; }
 	if($row[user_level] == "Declined") { $row[user_name] = ""; }
 	if($row[user_level] == "New") { $row[user_name] = ""; }
 	if($row[user_name] != "") {
-		echo "<li><a href=\"users.php?viewuser=$row[user_id]\">$row[user_name]</a></li>\n";
+		echo "<li><a href=\"users.php?viewuser=$row[user_id]\">";
+		if (in_array($row[user_name], $devlist)) {
+			echo $row[user_name]." (Developer)";
+		}
+		else {
+			echo $row[user_name];
+		}
+		echo "</a></li>\n";
 	}
 	$lastlevel = $row[user_level];
+	}
 }
 echo "<ul>\n";
 echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
