@@ -160,7 +160,6 @@ while ($row = mysql_fetch_assoc($result)) {
 				echo "<li><a href=\"users.php?viewuser=$row[user_id]\">";
 			}
 		}
-	}
 	else {
 	if($row[user_level] != $lastlevel && $row[user_level] != "Suspended" && $row[user_level] != "Declined") { echo "<h3>$row[user_level]</h3>\n"; }
 	if($row[user_level] == "Suspended") { $row[user_name] = ""; }
