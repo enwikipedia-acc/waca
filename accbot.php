@@ -122,7 +122,7 @@ while (!feof($fp)) {
 			$nick = explode('!',$line_ex[0]);
 			$nick = substr($nick[0],1);
 			sleep(.75);
-			fwrite($fp,"NOTICE $nick :Available commands (all should be run in #wikipedia-en-accounts.  Run commands without the [brackets]):\r\n");
+			fwrite($fp,"NOTICE $nick :Available commands (all should be run in #wikipedia-en-accounts):\r\n");
 			sleep(.75);
 			fwrite($fp,"NOTICE $nick :!count <username> - Displays statistics for the targeted user\r\n");
 			sleep(3);
