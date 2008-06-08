@@ -27,7 +27,7 @@ function sanitize($what) {
     return($what);
 }
 function sendtobot($message) {
-    sleep(3)
+    sleep(3);
     $fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
     fwrite($fp, "$message\r\n");
     fclose($fp);
