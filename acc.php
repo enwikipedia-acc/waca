@@ -301,7 +301,7 @@ function showfooter() {
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
         $row = mysql_fetch_assoc($result);
-        if($row[user_level] == "Admin") {
+        if($row[user_level] == "Admin" || strstr($row[user_level], "Developer" != "") ) {
         $out = preg_replace('/\<br \/\>\<br \/\>/', '<br /><a href="acc.php?action=usermgmt">User management</a><br /><br />', $out);
     }
     $out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><small><center>$howma users active within the last 5 mins! ($howout)</center></small><br /><br />", $out);
@@ -650,7 +650,7 @@ if ($_GET['action'] == "messagemgmt") {
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
         $row = mysql_fetch_assoc($result);
-        if($row[user_level] != "Admin"  && $_SESSION['user'] != "SQL") {
+        if($row[user_level] != "Admin"  && $_SESSION['user'] != "SQL" && strstr($row[user_level], "Developer" == "")) {
             echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
             showfooter();
             die();
@@ -841,7 +841,7 @@ if ($_GET['action'] == "usermgmt") {
     $result = mysql_query($query);
     if(!$result) Die("ERROR: No result returned.");
     $row = mysql_fetch_assoc($result);
-    if($row[user_level] != "Admin" && $_SESSION['user'] != "SQL") {
+    if($row[user_level] != "Admin" && $_SESSION['user'] != "SQL" && strstr($row[user_level], "Developer" == "")) {
         echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
         showfooter();
         die();
@@ -1008,6 +1008,22 @@ if ($_GET['action'] == "usermgmt") {
                     $approved = $row2['COUNT(*)'];
 
         $out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&approve=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved])</small></li>";
+        echo "$out\n";
+    }
+    ?>
+    </ol>
+    <h2>Developers</h2>
+    <?php
+    $query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Approved') WHERE user_level LIKE 'Developer%' GROUP BY log_pend ORDER BY log_pend DESC;";
+    $result = mysql_query($query);
+    if(!$result) Die("ERROR: No result returned.");
+    echo "<ol>\n";
+    while ($row = mysql_fetch_assoc($result)) {
+        $uname = $row[user_name];
+        $uoname = $row[user_onwikiname];
+        $userid = $row[user_id];
+        
+        $out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] </small></li>";
         echo "$out\n";
     }
     ?>
