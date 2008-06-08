@@ -140,7 +140,7 @@ while ($row = mysql_fetch_assoc($result)) {
 		echo "<h3>New</h3>\n";
 		if($row[user_level] == "Suspended") { $row[user_name] = ""; }
 		if($row[user_name] != "") {
-			if($row[user_level] == "New")
+			if($row[user_level] == "New") {
 				echo "<li><a href=\"users.php?viewuser=$row[user_id]\">";
 			}
 		}
@@ -148,7 +148,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	if ($_GET[type] == "suspended") {
 		echo "<h3>Suspended</h3>\n";
 		if($row[user_name] != "") {
-			if($row[user_level] == "Suspended")
+			if($row[user_level] == "Suspended") {
 				echo "<li><a href=\"users.php?viewuser=$row[user_id]\">";
 			}
 		}
@@ -156,7 +156,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	if ($_GET[type] == "declined") {
 		echo "<h3>Declined</h3>\n";
 		if($row[user_name] != "") {
-			if($row[user_level] == "Declined")
+			if($row[user_level] == "Declined") {
 				echo "<li><a href=\"users.php?viewuser=$row[user_id]\">";
 			}
 		}
