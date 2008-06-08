@@ -159,10 +159,10 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	if ($dnsblcheck[0] == true) {
 		$toruser = checktor($ip2);
 		if ($toruser['tor'] == "yes") {
-			$tor = "TOR node";
+			$tor = "(TOR node)";
 		}
 		else {
-			$tor = "Not a TOR node";
+			$tor = "(Not a TOR node)";
 		}
 		$now = date("Y-m-d H-i-s");
 		$siuser = mysql_real_escape_string("$_POST[name]");
