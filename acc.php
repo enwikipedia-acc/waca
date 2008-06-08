@@ -301,7 +301,7 @@ function showfooter() {
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
         $row = mysql_fetch_assoc($result);
-        if($row[user_level] == "Admin" ||$row[user_level] == "Developer 1" || $row[user_level] == "Developer 2" || ) {
+        if($row[user_level] == "Admin" ||$row[user_level] == "Developer 1" || $row[user_level] == "Developer 2" ) {
         $out = preg_replace('/\<br \/\>\<br \/\>/', '<br /><a href="acc.php?action=usermgmt">User management</a><br /><br />', $out);
     }
     $out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><small><center>$howma users active within the last 5 mins! ($howout)</center></small><br /><br />", $out);
