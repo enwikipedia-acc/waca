@@ -127,7 +127,6 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
 			fwrite($fp, "[Name-Bl] HIT: $wnbl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
-			//echo "<br />$query<br />";
 			$result = mysql_query($query);
 			if(!$result) Die("ERROR: No result returned.");
 			fclose($fp);
@@ -148,7 +147,6 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
 			fwrite($fp, "[Email-Bl] HIT: $wnbl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
-			//echo "<br />$query<br />";
 			$result = mysql_query($query);
 			if(!$result) Die("ERROR: No result returned.");
 			fclose($fp);
@@ -173,9 +171,6 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 		echo '<!-- Query: '.$query.' -->';
 		mysql_query($query);
 		echo '<!-- Error: '.mysql_error().' -->';
-//		$message = showmessage(15);
-//		echo "$message<br />\n";
-//		die();
 	}
 
 	mysql_connect("enwiki-p.db.ts.wikimedia.org",$toolserver_username,$toolserver_password);
