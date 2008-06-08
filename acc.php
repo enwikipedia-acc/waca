@@ -27,7 +27,7 @@ function sanitize($what) {
     return($what);
 }
 function sendtobot($message) {
-    sleep(3);
+    sleep(3)
     $fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
     fwrite($fp, "$message\r\n");
     fclose($fp);
@@ -301,7 +301,7 @@ function showfooter() {
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
         $row = mysql_fetch_assoc($result);
-        if($row[user_level] == "Admin" ||$row[user_level] == "Developer 1" || $row[user_level] == "Developer 2" ) {
+        if($row[user_level] == "Admin") {
         $out = preg_replace('/\<br \/\>\<br \/\>/', '<br /><a href="acc.php?action=usermgmt">User management</a><br /><br />', $out);
     }
     $out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><small><center>$howma users active within the last 5 mins! ($howout)</center></small><br /><br />", $out);
@@ -312,35 +312,35 @@ mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 session_start();
 if ($_GET['action'] == "sreg") {
     showhead();
-	foreach ($acrnamebl as $wnbl => $nbl) {
-		$phail_test = @preg_match($nbl, $_POST[name]);
-		if($phail_test == TRUE) {
-        	        #$message = showmessage(15);
-	                echo "$message<br />\n";
-			$target = "$wnbl";
-			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-			fwrite($fp, "[Name-Bl-ACR] HIT: $wnbl - $_POST[name] / $_POST[wname] $_SERVER[REMOTE_ADDR] $_POST[email] $_SERVER[HTTP_USER_AGENT]\r\n");
-			fclose($fp);
-		        echo "Account created!<br /><br />\n";
-			die();		
-		}
-	}
-	$dnsblcheck = checkdnsbls($_SERVER['REMOTE_ADDRR']);
-	if ($dnsblcheck[0] == true) {
-		$cmt = "FROM $ip $dnsblcheck[1]";
-		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-		fwrite($fp, "[DNSBL-ACR] HIT: $_POST[name] - $_POST[wname] $_SERVER[REMOTE_ADDR] $_POST[email] $_SERVER[HTTP_USER_AGENT] $cmt\r\n");
-		fclose($fp);
-		die("Account not created, please see $dnsblcheck[1]");
-	}
-	$cu_name = urlencode($_REQUEST[wname]);
-	$userblocked = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php");
-	$ub = unserialize($userblocked);
-	if(isset($ub[query][blocks][0][id])) {
-		$message = showmessage(9);
-		echo "ERROR: You are presently blocked on the English Wikipedia<br />\n"; 
-		$fail = 1; 
-	}
+    foreach ($acrnamebl as $wnbl => $nbl) {
+        $phail_test = @preg_match($nbl, $_POST[name]);
+        if($phail_test == TRUE) {
+                    #$message = showmessage(15);
+                    echo "$message<br />\n";
+            $target = "$wnbl";
+            $fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
+            fwrite($fp, "[Name-Bl-ACR] HIT: $wnbl - $_POST[name] / $_POST[wname] $_SERVER[REMOTE_ADDR] $_POST[email] $_SERVER[HTTP_USER_AGENT]\r\n");
+            fclose($fp);
+                echo "Account created!<br /><br />\n";
+            die();        
+        }
+    }
+    $dnsblcheck = checkdnsbls($_SERVER['REMOTE_ADDRR']);
+    if ($dnsblcheck[0] == true) {
+        $cmt = "FROM $ip $dnsblcheck[1]";
+        $fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
+        fwrite($fp, "[DNSBL-ACR] HIT: $_POST[name] - $_POST[wname] $_SERVER[REMOTE_ADDR] $_POST[email] $_SERVER[HTTP_USER_AGENT] $cmt\r\n");
+        fclose($fp);
+        die("Account not created, please see $dnsblcheck[1]");
+    }
+    $cu_name = urlencode($_REQUEST[wname]);
+    $userblocked = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php");
+    $ub = unserialize($userblocked);
+    if(isset($ub[query][blocks][0][id])) {
+        $message = showmessage(9);
+        echo "ERROR: You are presently blocked on the English Wikipedia<br />\n"; 
+        $fail = 1; 
+    }
         $userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php");
         $ue = unserialize($userexist);
         foreach ($ue[query][users][0] as $oneue) {
@@ -369,11 +369,11 @@ if ($_GET['action'] == "sreg") {
         print_r($_REQUEST);
         echo "</pre>\n";
     }
-	$mailisvalid = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.(ac|ad|ae|aero|af|ag|ai|al|am|an|ao|aq|ar|arpa|as|asia|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|biz|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cat|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|com|coop|cr|cu|cv|cx|cy|cz|de|dj|dk|dm|do|dz|ec|edu|ee|eg|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gov|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|info|int|io|iq|ir|is|it|je|jm|jo|jobs|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mil|mk|ml|mm|mn|mo|mobi|mp|mq|mr|ms|mt|mu|museum|mv|mw|mx|my|mz|na|name|nc|ne|net|nf|ng|ni|nl|no|np|nr|nu|nz|om|org|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|pro|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sy|sz|tc|td|tel|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|travel|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)$/i', $_REQUEST['email']);
-	if ($mailisvalid == 0) { 
-		echo "ERROR: Invalid E-mail address.<br />\n"; 
-		$fail = 1; 
-	}
+    $mailisvalid = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.(ac|ad|ae|aero|af|ag|ai|al|am|an|ao|aq|ar|arpa|as|asia|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|biz|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cat|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|com|coop|cr|cu|cv|cx|cy|cz|de|dj|dk|dm|do|dz|ec|edu|ee|eg|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gov|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|info|int|io|iq|ir|is|it|je|jm|jo|jobs|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mil|mk|ml|mm|mn|mo|mobi|mp|mq|mr|ms|mt|mu|museum|mv|mw|mx|my|mz|na|name|nc|ne|net|nf|ng|ni|nl|no|np|nr|nu|nz|om|org|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|pro|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sy|sz|tc|td|tel|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|travel|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)$/i', $_REQUEST['email']);
+    if ($mailisvalid == 0) { 
+        echo "ERROR: Invalid E-mail address.<br />\n"; 
+        $fail = 1; 
+    }
     if ($pass != $pass2) { echo "Passwords did not match!<br />\n"; $fail = 1; }
     $query = "SELECT * FROM acc_user WHERE user_name = '$user' LIMIT 1;";
     $result = mysql_query($query);
@@ -595,27 +595,27 @@ if ($_GET['action'] == "login") {
 function showlogin() {
     global $_SESSION;
     ?>
-	<div id="sitenotice">Please login first, and we'll send you on your way!</div>
-	<div id="content">
-	<h2>Login</h2>
+    <div id="sitenotice">Please login first, and we'll send you on your way!</div>
+    <div id="content">
+    <h2>Login</h2>
     <form action="acc.php?action=login" method="post">
     <div class="required">
-		<label for="password">Username:</label>
-		<input type="text" name="username">
-	</div>
-	<div class="required">
-    	<label for="password">Password:</label>
-		<input type="password" name="password">
-	</div>
+        <label for="password">Username:</label>
+        <input type="text" name="username">
+    </div>
+    <div class="required">
+        <label for="password">Password:</label>
+        <input type="password" name="password">
+    </div>
     <div class="submit">
-		<input type="submit">
-	</div>
+        <input type="submit">
+    </div>
     </form>
     <br />
     Don't have an account? 
     <br /><a href="acc.php?action=register">Register!</a> (Requires approval)<br />
     <a href="acc.php?action=forgotpw">Forgot your password?</a><br />
-	</div>
+    </div>
     <?php
 }
 showhead();
@@ -650,7 +650,7 @@ if ($_GET['action'] == "messagemgmt") {
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
         $row = mysql_fetch_assoc($result);
-        if($row[user_level] != "Admin"  && $_SESSION['user'] != "SQL" && strstr($row[user_level], "Developer" == "")) {
+        if($row[user_level] != "Admin"  && $_SESSION['user'] != "SQL") {
             echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
             showfooter();
             die();
@@ -841,7 +841,7 @@ if ($_GET['action'] == "usermgmt") {
     $result = mysql_query($query);
     if(!$result) Die("ERROR: No result returned.");
     $row = mysql_fetch_assoc($result);
-    if($row[user_level] != "Admin" && $_SESSION['user'] != "SQL" && strstr($row[user_level], "Developer" == "")) {
+    if($row[user_level] != "Admin" && $_SESSION['user'] != "SQL") {
         echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
         showfooter();
         die();
@@ -1008,22 +1008,6 @@ if ($_GET['action'] == "usermgmt") {
                     $approved = $row2['COUNT(*)'];
 
         $out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&approve=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved])</small></li>";
-        echo "$out\n";
-    }
-    ?>
-    </ol>
-    <h2>Developers</h2>
-    <?php
-    $query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Approved') WHERE user_level LIKE 'Developer%' GROUP BY log_pend ORDER BY log_pend DESC;";
-    $result = mysql_query($query);
-    if(!$result) Die("ERROR: No result returned.");
-    echo "<ol>\n";
-    while ($row = mysql_fetch_assoc($result)) {
-        $uname = $row[user_name];
-        $uoname = $row[user_onwikiname];
-        $userid = $row[user_id];
-        
-        $out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] </small></li>";
         echo "$out\n";
     }
     ?>
