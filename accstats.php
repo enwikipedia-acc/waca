@@ -65,7 +65,7 @@ foreach ($top5a as $top1a) {
         $top5aout .= "$top1a[log_user] - " . $top1a['count(*)'] . "\n";
 }
 $topa5out .= "\n";
-$whosnewq = "select * from acc_log JOIN acc_user on log_pend = user_id where log_action = 'Approved' AND log_time LIKE '$tnow%';";
+$whosnewq = "select * from acc_log JOIN acc_user on log_pend = user_id where log_action = 'Approved' AND log_time LIKE '$now%';";
 echo "$whosnewq\n";
 $result = mysql_query($whosnewq);
 if(!$result) Die("ERROR: No result returned.6.1");
@@ -82,7 +82,7 @@ foreach ($whosnew as $wn_one) {
 }
 $wnout .= "\n";
 
-$topq = "select log_user,count(*) from acc_log where log_time like '$tnow%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC limit 5;";
+$topq = "select log_user,count(*) from acc_log where log_time like '$now%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC limit 5;";
 $result = mysql_query($topq);
 if(!$result) Die("ERROR: No result returned.6");
 $top5 = array();
