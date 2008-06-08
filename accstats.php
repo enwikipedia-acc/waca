@@ -30,28 +30,36 @@ $openq = "select COUNT(*) from acc_pend where pend_status = 'Open';";
 $result = mysql_query($openq);
 if(!$result) Die("ERROR: No result returned.1");
 $open = mysql_fetch_assoc($result);  
+
 $adminq = "select COUNT(*) from acc_pend where pend_status = 'Admin';";  
 $result = mysql_query($adminq);
 if(!$result) Die("ERROR: No result returned.2");
 $admin = mysql_fetch_assoc($result);  
+
 $sadminq = "select COUNT(*) from acc_user where user_level = 'Admin';";  
 $result = mysql_query($sadminq);
 if(!$result) Die("ERROR: No result returned.3");
 $sadmin = mysql_fetch_assoc($result);  
+
 $suserq = "select COUNT(*) from acc_user where user_level = 'User';";  
 $result = mysql_query($suserq);
 if(!$result) Die("ERROR: No result returned.4");
 $suser = mysql_fetch_assoc($result);  
+
 $ssuspq = "select COUNT(*) from acc_user where user_level = 'Suspended';";  
 $result = mysql_query($ssuspq);
 if(!$result) Die("ERROR: No result returned.5");
 $ssusp = mysql_fetch_assoc($result);  
+
 $snewq = "select COUNT(*) from acc_user where user_level = 'New';";  
 $result = mysql_query($snewq);
 if(!$result) Die("ERROR: No result returned.6");
 $snew = mysql_fetch_assoc($result);  
+
 $now = date("Y-m-d",mktime(0,0,0,date(m),date("d")-1));
 
+
+//Get top 5 account creators of all time
 $topqa = "select log_user,count(*) from acc_log where log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC limit 5;";
 $result = mysql_query($topqa);
 if(!$result) Die("ERROR: No result returned.6");
@@ -75,6 +83,7 @@ while ($wn = mysql_fetch_assoc($result)) {
 	array_push($whosnew, $wn_one);
 }
 
+//Get today's new users
 $wnout .= "\nNew ACC Users Approved today::\n";
 $wnout .= "-------------------------------------------------------------\n";
 foreach ($whosnew as $wn_one) {
@@ -89,17 +98,20 @@ $top5 = array();
 while ($top = mysql_fetch_assoc($result)) {
 	array_push($top5, $top);
 }
+
+//Get today's top 5
 $top5out .= "\nTodays top 5 account creators:\n";
 $top5out .= "-------------------------------------------------------------\n";
 foreach ($top5 as $top1) {
 	$top5out .= "$top1[log_user] - " . $top1['count(*)'] . "\n";
 }
 $top5out .= "\n";
+
+//Process log for stats
 $logq = "select * from acc_log AS A
 	JOIN acc_pend AS B ON log_pend = pend_id
 	where log_time RLIKE '^$now.*' AND
 	log_action RLIKE '^(Closed.*|Deferred.*|Blacklist.*)';";
-echo "\n\n$logq\n\n";
 $result = mysql_query($logq);
 if(!$result) Die("ERROR: No result returned.7");
 $dropped = 0;
@@ -112,22 +124,22 @@ $dadmins = 0;
 $dusers = 0;
 while($log = mysql_fetch_assoc($result)) {
 	switch ($log[log_action]) {
-	case "Closed 0":
+	case "Closed 0": //Dropped
 	    $dropped++;
 	    break;
-	case "Closed 1":
+	case "Closed 1": //Created
 	    $created++;
 	    break;
-	case "Closed 2":
-	    $toosimilar++;
+	case "Closed 2": //Too similar
+	    $toosimilar++; 
 	    break;
-	case "Closed 3":
+	case "Closed 3": //Taken
 	    $taken++;
 	    break;
-	case "Closed 4":
+	case "Closed 4": //Username vio
 	    $usernamevio++;
 	    break;
-	case "Closed 5":
+	case "Closed 5": //Techinically impossible
 	    $technical++;
 	    break;
 	case "Deferred to admins":
@@ -148,6 +160,8 @@ $nsuser = $suser['COUNT(*)'];
 $nssusp = $ssusp['COUNT(*)'];
 $nsnew = $snew['COUNT(*)'];
 $bltd = $blcount['COUNT(*)'];
+
+//Put mail together
 $out = "\n";
 $out .= "Tool URL is http://toolserver.org/~sql/acc/acc.php\n";
 $out .= "PLEASE, register if you have not already!\n\n";
@@ -174,6 +188,8 @@ $out .= $top5aout;
 $out .= $top5out;
 $out .= $wnout;
 echo $out;
+
+//Send actual mail
 $to      = 'accounts-enwiki-l@lists.wikimedia.org';
 $subject = "TS ACC statistics, $now";
 $message = $out;
