@@ -50,16 +50,7 @@ $snewq = "select COUNT(*) from acc_user where user_level = 'New';";
 $result = mysql_query($snewq);
 if(!$result) Die("ERROR: No result returned.6");
 $snew = mysql_fetch_assoc($result);  
-$tnow = date("Y-m-d",mktime(0,0,0,date(m),date("d")-1));
-echo "$tnow\n";
-$now = date("Y-m-d");
-$now2 = date("Y-m-");
-$now3 = date("d");
-$now3 = $now3 - 01;
-$blq = "select COUNT(*) from acc_log where log_time RLIKE '^$now.*' AND log_action = 'Blacklist Hit';";
-$result = mysql_query($blq);
-if(!$result) Die("ERROR: No result returned.1");
-$blcount = mysql_fetch_assoc($result);  
+$now = date("Y-m-d",mktime(0,0,0,date(m),date("d")-1));
 
 $topqa = "select log_user,count(*) from acc_log where log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC limit 5;";
 $result = mysql_query($topqa);
@@ -104,7 +95,6 @@ foreach ($top5 as $top1) {
 	$top5out .= "$top1[log_user] - " . $top1['count(*)'] . "\n";
 }
 $top5out .= "\n";
-$now = date("Y-m-d",mktime(0,0,0,date(m),date("d")-1));
 $logq = "select * from acc_log AS A
 	JOIN acc_pend AS B ON log_pend = pend_id
 	where log_time RLIKE '^$now.*' AND
