@@ -330,7 +330,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$pid = $row['pend_id'];
 	$pem = $row['pend_email'];
 	$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-	fwrite($fp, "[[acc:$pid]] N http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$pid * /* $_POST[name] ($pem) */ ".substr(str_replace(array("\n","\r"), array('\n','\r'),$_POST[comments]),0,200).((strlen($_POST[comments]) > 200) ? '...' : '')."\r\n");
+	fwrite($fp, "[[acc:$pid]] N http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$pid * /* $_POST[name] */ ".substr(str_replace(array("\n","\r"), array('\n','\r'),$_POST[comments]),0,200).((strlen($_POST[comments]) > 200) ? '...' : '')."\r\n");
 	fclose($fp);
 	if(!$result) Die("ERROR: No result returned.");
 	mysql_close();		
