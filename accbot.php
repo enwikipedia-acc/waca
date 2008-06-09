@@ -476,11 +476,9 @@
 	}
 
 	while( !feof( $fp ) ) {
-	        $data = fgets( $fp, 512 );
+	        $data = trim( fgets( $fp, 512 ) );
 
 		$parsed = parseIrc( $data );
-
-		print_r( $parsed );
 
 		if( $parsed['type'] == 'ping' ) {
 	        	irc( 'PONG ' . $parsed['payload'] ); 
