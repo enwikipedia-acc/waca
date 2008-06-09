@@ -98,10 +98,11 @@ if(isset($_GET[sandup])) {
 	sendtobot("[WEB]: $_SESSION[user] synchronizing ACC sandbox");
 }
 if(isset($_GET[startbot])) {
-	$output = shell_exec("/usr/bin/php accbot.php > ../accbot.log");
-	echo "<pre>\n";
-	echo $output;
-	echo "</pre>\n";
+	pcntl_exec( '/usr/bin/php', "/home/sql/public_html/acc/accbot.php", $_ENV );
+#	$output = shell_exec("/usr/bin/php accbot.php > ../accbot.log");
+#	echo "<pre>\n";
+#	echo $output;
+#	echo "</pre>\n";
 	echo "Bot started!<br />\n";
 }
 if(isset($_GET[stopbot])) {
