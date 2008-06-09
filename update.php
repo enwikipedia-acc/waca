@@ -100,7 +100,7 @@ if(isset($_GET[sandup])) {
 	sendtobot("[WEB]: $_SESSION[user] synchronizing ACC sandbox");
 }
 if(isset($_GET[startbot])) {
-	$outp = shell_exec('/bin/sh /home/sql/public_html/acc/startbot.sh');
+	$outp = shell_exec('./startbot.sh');
 	echo "$outp<br />";
 	echo "Bot started!<br />\n";
 }
