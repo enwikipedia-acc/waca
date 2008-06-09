@@ -470,15 +470,20 @@
 		while( !feof( $fp ) ) {
 			$data = fread( $fpt, 4096 );
 			if( $data != '' ) {
-				irc( 'PRIVMSG ' . $chan . ' :' . str_replace( "\n", "\nPRIVMSG " . $chan . ' : ', $data ) );
+				irc( 'PRIVMSG ' . $chan . ' :' . str_replace( "\n", "\nPRIVMSG " . $chan . ' :', $data ) );
 			}
 		}
+		die();
 	}
 
 	while( !feof( $fp ) ) {
 	        $data = trim( fgets( $fp, 512 ) );
 
+		echo 'Raw: ' . $data . "\n";
+
 		$parsed = parseIrc( $data );
+
+		print_r( $parsed );
 
 		if( $parsed['type'] == 'ping' ) {
 	        	irc( 'PONG ' . $parsed['payload'] ); 
