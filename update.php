@@ -100,9 +100,14 @@ if(isset($_GET[sandup])) {
 	sendtobot("[WEB]: $_SESSION[user] synchronizing ACC sandbox");
 }
 if(isset($_GET[startbot])) {
-	$outp = shell_exec('./startbot.sh');
-	echo "$outp<br />";
-	echo "Bot started!<br />\n";
+	echo "Starting bot...<br />\n";
+	$outp = system('./startbot.sh');
+	if($outp == FALSE) {
+		echo "Failed!<br />\n";
+		echo "$outp<br />\n";
+	} else {
+		echo "Bot started!<br />\n";
+	}
 }
 if(isset($_GET[stopbot])) {
 	sendtobot("[WEB]: $_SESSION[user] Ordered me to die!");
