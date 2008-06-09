@@ -371,7 +371,7 @@
 			sleep( 1 );
 		}
 		pclose( $svn );
-		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ':Please see the sandbox at http://toolserver.org/~sql/acc_sand/acc.php' );
+		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Please see the sandbox at http://toolserver.org/~sql/acc_sand/acc.php' );
 	}
 
 	function commandSvnUp( $parsed ) {
@@ -477,6 +477,7 @@
 	}
 
 	while( !feof( $fp ) ) {
+		echo 'Begin parsing ...' . "\n";
 	        $data = trim( fgets( $fp, 512 ) );
 
 		echo 'Raw: ' . $data . "\n";
@@ -496,8 +497,11 @@
 				}
 			}
 		}
+		echo 'Done parsing ...' . "\n";
 	}
  
+	echo 'Ugh!' . "\n";
+
 	// Ugh!  We most likely flooded off!
 
 	commandRestart( null );
