@@ -586,7 +586,7 @@ if ($_GET['action'] == "login") {
     $calcpass = md5($_POST[password]);
     if ($row[user_pass] == $calcpass) { 
         $_SESSION['user'] = $row[user_name]; 
-        header("Location: $tsurl/acc/acc.php"); 
+        header("Location: $tsurl/acc.php"); 
     } else {
         echo "<h2>ERROR</h2>\n";
         echo "Username and/or password incorrect.<br />\n";
