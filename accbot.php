@@ -16,6 +16,7 @@
 **Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
 **                                                           **
 **************************************************************/
+include('devlist.php');
 if( $_SERVER['REMOTE_ADDR'] != "") { 
 	header("Location: http://toolserver.org/~sql/acc/");
 	die(); 
