@@ -101,7 +101,7 @@ if(isset($_GET[sandup])) {
 }
 if(isset($_GET[startbot])) {
 	echo "Starting bot...<br />\n";
-	$outp = passthru("php accbot.php > /home/sql/public_html/accbot.log"); //WTF? FALSE? Grr...
+	$outp = pcntl_exec("./startbot.sh"); //WTF? FALSE? Grr...
 	if($outp == FALSE) {
 		echo "Failed!<br />\n";
 		echo "$outp<br />\n";
