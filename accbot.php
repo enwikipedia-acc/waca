@@ -119,7 +119,7 @@
 
 	function SIGCHLD() {
 		echo 'In SIGCHLD ...' . "\n";
-		while( pcntl_waitpid( 0, $status ) != -1 ) {
+		while( pcntl_waitpid( 0, $status, WNOHANG ) != -1 ) {
 			$status = pcntl_wexitstatus( $status );
 		}
 		echo 'Out SIGCHLD ...' . "\n";
@@ -461,9 +461,6 @@
 	}
  
 	set_time_limit( 0 );
-
-	declare( ticks=1 );
-	pcntl_signal( SIGCHLD, 'SIGCHLD' );
 
 	$fp = fsockopen( $host, $port, $errno, $errstr, 30 );
 	if( !$fp ) {
