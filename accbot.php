@@ -147,14 +147,17 @@
 	}
 
 	function doCommand( $command, $parsed ) {
-		global $commands;
+		global $commands, $fp;
 
 		if( isset( $commands[ strtolower( $command ) ] ) ) {
 			$info = $commands[ strtolower( $command ) ];
 			if( hasPriv( strtolower( $command ), $parsed ) ) {
 				if( $info[1] == true ) if( pcntl_fork() != 0 ) return;
 				if( function_exists( $info[0] ) ) call_user_func( $info[0], $parsed );
-				if( $info[1] == true ) die();
+				if( $info[1] == true ) {
+					fclose( $fp );
+					die();
+				}
 			} else {
 				irc( 'NOTICE ' . $parsed['nick'] . ' :Insufficient access.' );
 			}
