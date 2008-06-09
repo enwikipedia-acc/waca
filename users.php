@@ -16,7 +16,7 @@
 **Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
 **                                                           **
 **************************************************************/
-require_once('config.inc');
+require_once('config.inc.php');
 function displayheader() {
         global $toolserver_username;
         global $toolserver_password;
