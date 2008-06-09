@@ -56,7 +56,7 @@ function svnup ( ) { //Blatantly stolen from accbot.php
 	pclose( $svn );
 }
 function svnup_sand ( ) { //Blatantly stolen from accbot.php
-	$svn = popen( '/bin/sh /home/sql/public_html/acc/svn-sand.sh 2>&1', 'r' );
+	$svn = popen( 'sh svn-sand.sh 2>&1', 'r' );
 	while( !feof( $svn ) ) {
 		$svnin = trim( fgets( $svn, 512 ) );
 		if( $svnin != '' ) {
@@ -100,15 +100,16 @@ if(isset($_GET[sandup])) {
 	sendtobot("[WEB]: $_SESSION[user] synchronizing ACC sandbox");
 }
 if(isset($_GET[startbot])) {
-	$svn = popen( '/usr/bin/php /home/sql/public_html/acc/accbot.php > /home/sql/public_html/accbot.log 2>&1', 'r' );
-	while( !feof( $svn ) ) {
-		$svnin = trim( fgets( $svn, 512 ) );
-		if( $svnin != '' ) {
-			echo str_replace( array( "\n", "\r" ), '<br />', $svnin );
-			echo "<br />";
-		}
-	}
-	pclose( $svn );
+        echo "Starting bot...<br />\n";
+        $t = escapeshellcmd("sh startbot.sh");
+        echo "Command: $t<br />\n";
+        $outp = passthru($t); //WTF? FALSE? Grr...
+        if($outp == FALSE) {
+                echo "Failed!<br />\n";
+                echo "$outp<br />\n";
+        } else {
+                echo "Bot started!<br />\n";
+        }
 
 }
 if(isset($_GET[stopbot])) {
