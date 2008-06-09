@@ -135,6 +135,8 @@ while (!feof($fp)) {
 			sleep(3);
 			fwrite($fp,"NOTICE $nick :!svnup - RESTRICTED - Allows those with access to synch the SVN repository with the live server copy\r\n");
 			sleep(3);
+			fwrite($fp,"NOTICE $nick :!sand-svnup - DEVELOPERS - Allows developers to synch the SVN repository witht the sandbox server copy.  The sandbox is linked to when the command is run\r\n");
+			sleep(3);
 			fwrite($fp,"NOTICE $nick :!restart - RESTRICTED - Allows those with access to restart the bot immediately\r\n");
 			sleep(3);
 			fwrite($fp,"NOTICE $nick :!recreatesvn - RESTRICTED - Commands the bot to attempt and recreate/repair the SVN repository\r\n");
