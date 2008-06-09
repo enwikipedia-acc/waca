@@ -101,7 +101,7 @@ if(isset($_GET[sandup])) {
 }
 if(isset($_GET[startbot])) {
         echo "Starting bot...<br />\n";
-        $t = escapeshellcmd("sh startbot.sh");
+        $t = escapeshellcmd("/bin/bash /home/sql/public_html/acc/startbot.sh");
         echo "Command: $t<br />\n";
         $outp = passthru($t); //WTF? FALSE? Grr...
         if($outp == FALSE) {
