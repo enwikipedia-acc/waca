@@ -155,6 +155,8 @@
 				if( $info[1] == true ) if( pcntl_fork() != 0 ) return;
 				if( function_exists( $info[0] ) ) call_user_func( $info[0], $parsed );
 				if( $info[1] == true ) die();
+			} else {
+				irc( 'NOTICE ' . $parsed['nick'] . ' :Insufficient access.' );
 			}
 		}
 	}
