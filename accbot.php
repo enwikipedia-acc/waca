@@ -301,14 +301,14 @@ while (!feof($fp)) {
 				pclose($svn);
 				die();
 			}
-		}
+		}unaffiliated/soxred93
 	}
 	if ((substr(strtolower($line_ex[3]),1) == '!sand-svnup') and (strtolower($line_ex[2]) == '#wikipedia-en-accounts')) {
 		$nick = explode('!',$line_ex[0]);
 		$nick = substr($nick[0],1);
 		$hostA = explode('@',$line_ex[0]);
 		$host = $hostA[1];
-		if (($nick == 'Cobi') && (strtolower($host) == 'cobi.cluenet.org') or ($nick == 'SQLDb') && ($host == 'wikipedia/SQL') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop') or ($nick == 'FastLizard4') && ($host = 'wikipedia/FastLizard4')) {
+		if (($nick == 'Cobi') && (strtolower($host) == 'cobi.cluenet.org') or ($nick == 'SQLDb') && ($host == 'wikipedia/SQL') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop') or ($nick == 'FastLizard4') && ($host == 'wikipedia/FastLizard4') or ($nick == 'Soxred93') && ($host == 'unaffiliated/soxred93') or ($nick == 'Alexfusco5') && ($host =='wikimedia/Alexfusco5')) {
 //			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.": /whois $nick\n"); // What the ... !?
 			if (pcntl_fork() == 0) {
 				$svn = popen('sh svn-sand.sh 2>&1', 'r');
