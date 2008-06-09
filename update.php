@@ -13,7 +13,7 @@ function sendtobot($message) {
 }
 
 function killbot() {
-	$findbot = "/sql      ([0-9]{3,5})  [0-9]\.[0-9].*php (\.\/|)accbot\.php/i";
+	$findbot = "/sql      ([0-9]{3,5})  [0-9]\.[0-9].*php (..|)accbot\.php/i";
 	$output = shell_exec("ps aux | grep accbot.php");
 	$output = explode("\n", $output);
 	foreach ($output as $line) {
