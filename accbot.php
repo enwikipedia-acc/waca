@@ -118,9 +118,11 @@
 	}
 
 	function SIGCHLD() {
+		echo 'In SIGCHLD ...' . "\n";
 		while( pcntl_waitpid( 0, $status ) != -1 ) {
 			$status = pcntl_wexitstatus( $status );
 		}
+		echo 'Out SIGCHLD ...' . "\n";
 	}
 
 	function myq( $query ) {
@@ -413,7 +415,7 @@
 	}
 
 	function commandRestart( $parsed ) {
-		global $udpReader;
+		global $udpReader, $fp;
 
 		fclose( $fp );
 
@@ -459,6 +461,9 @@
 	}
  
 	set_time_limit( 0 );
+
+	declare( ticks=1 );
+	pcntl_signal( SIGCHLD, 'SIGCHLD' );
 
 	$fp = fsockopen( $host, $port, $errno, $errstr, 30 );
 	if( !$fp ) {
