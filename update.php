@@ -98,7 +98,7 @@ if(isset($_GET[sandup])) {
 	sendtobot("[WEB]: $_SESSION[user] synchronizing ACC sandbox");
 }
 if(isset($_GET[startbot])) {
-	pcntl_exec( '/usr/bin/php', "/home/sql/public_html/acc/accbot.php", $_ENV );
+	pcntl_exec( '/usr/bin/php', "accbot.php" );
 #	$output = shell_exec("/usr/bin/php accbot.php > ../accbot.log");
 #	echo "<pre>\n";
 #	echo $output;
