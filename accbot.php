@@ -311,7 +311,7 @@ while (!feof($fp)) {
 		if (($nick == 'Cobi') && (strtolower($host) == 'cobi.cluenet.org') or ($nick == 'SQLDb') && ($host == 'wikipedia/SQL') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
 //			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.": /whois $nick\n"); // What the ... !?
 			if (pcntl_fork() == 0) {
-				$svn = popen('cd ../acc_sand; svn up 2>&1', 'r');
+				$svn = popen('./svn-sand.sh 2>&1', 'r');
 				while (!feof($svn)) {
 					$svnin = ltrim(rtrim(fgets($svn,512)));
 					if ($svnin != "") {
