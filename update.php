@@ -13,7 +13,7 @@ function sendtobot($message) {
 }
 
 function killbot() {
-	$findbot = "/sql      ([0-9]{5})  [0-9]\.[0-9].*php accbot\.php/i";
+	$findbot = "/sql      ([0-9]{3,5})  [0-9]\.[0-9].*php accbot\.php/i";
 	$output = shell_exec("ps aux | grep accbot.php");
 	$output = explode("\n", $output);
 	foreach ($output as $line) {
@@ -98,11 +98,10 @@ if(isset($_GET[sandup])) {
 	sendtobot("[WEB]: $_SESSION[user] synchronizing ACC sandbox");
 }
 if(isset($_GET[startbot])) {
-	pcntl_exec( '/usr/bin/php', "accbot.php" );
-#	$output = shell_exec("/usr/bin/php accbot.php > ../accbot.log");
-#	echo "<pre>\n";
-#	echo $output;
-#	echo "</pre>\n";
+	$output = shell_exec("/usr/bin/php /home/sql/public_html/acc/accbot.php > /home/sql/public_html/accbot.log");
+	echo "<pre>\n";
+	echo $output;
+	echo "</pre>\n";
 	echo "Bot started!<br />\n";
 }
 if(isset($_GET[stopbot])) {
