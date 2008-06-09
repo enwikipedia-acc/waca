@@ -1,383 +1,475 @@
-<?php
-/**************************************************************
-** English Wikipedia Account Request Interface               **
-** Wikipedia Account Request Graphic Design by               **
-** Charles Melbye is licensed under a Creative               **
-** Commons Attribution-Noncommercial-Share Alike             **
-** 3.0 United States License. All other code                 **
-** released under Public Domain by the ACC                   **
-** Development Team.                                         **
-**             Developers:                                   **
-**  SQL ( http://en.wikipedia.org/User:SQL )                 **
-**  Cobi ( http://en.wikipedia.org/User:Cobi )               **
-** Cmelbye ( http://en.wikipedia.org/User:cmelbye )          **
-**FastLizard4 ( http://en.wikipedia.org/User:FastLizard4 )   **
-**Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
-**Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
-**                                                           **
-**************************************************************/
-include('devlist.php');
-if( $_SERVER['REMOTE_ADDR'] != "") { 
-	header("Location: http://toolserver.org/~sql/acc/");
-	die(); 
-}
+<?PHP
+	/**************************************************************
+	** English Wikipedia Account Request Interface               **
+	** Wikipedia Account Request Graphic Design by               **
+	** Charles Melbye is licensed under a Creative               **
+	** Commons Attribution-Noncommercial-Share Alike             **
+	** 3.0 United States License. All other code                 **
+	** released under Public Domain by the ACC                   **
+	** Development Team.                                         **
+	**             Developers:                                   **
+	**  SQL ( http://en.wikipedia.org/User:SQL )                 **
+	**  Cobi ( http://en.wikipedia.org/User:Cobi )               **
+	** Cmelbye ( http://en.wikipedia.org/User:cmelbye )          **
+	**FastLizard4 ( http://en.wikipedia.org/User:FastLizard4 )   **
+	**Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
+	**Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
+	**                                                           **
+	**************************************************************/
 
-function sanitize($what) {
-	$what = mysql_real_escape_string($what);
-	return($what);
-}
+	// Declares
+	declare( ticks=1 );
 
-declare(ticks=1);
- 
-$pidnum = pcntl_fork();
- 
-if ($pidnum == -1) {
-	#Well, we can't daemonize for some reason.
-	die("Problem - Could not fork child!\n"); 
-} else if ($pidnum) {
-	#We'll only be running a child process, so, this process need not continue.
-	#echo "Detaching from terminal.\n";	
-	exit();
-} else {
-	#We're the child. Continuing on below as the child.
-}
- 
-if (posix_setsid() == -1) {
-	#If we can't detach, we're not daemonized. No reason to go on.
-	die("Problem - I could not detach!\n");
-}
- 
-#Set up signal handlers -- Linked to the functions below.
-pcntl_signal(SIGHUP, "SIGHUP");
-pcntl_signal(SIGTERM, "SIGTERM");
-pcntl_signal(SIGCHLD, "SIGCHLD");
- 
-function SIGHUP() {
-	#Do what you want it to do upon receiving a SIGHUP
-}
- 
-function SIGTERM() {
-	#Do what you want it to do upon receiving a SIGTERM. In this case, die.
-	fclose($fp); //Goodnight!
-	die("Received SIGTERM\n");
-}
+	// Defines
 
-function SIGCHLD() {
-	while (pcntl_waitpid(0, $status) != -1) {
-		$status = pcntl_wexitstatus($status);
-	}
-}
+	// Includes
+	include 'devlist.php';
+	require 'config.inc.php';
 
-#Initialize your daemon here (i.e. make the IRC connection, DB connection, set variables, whatever)
-#we need teh sxwiki to alert me.
-require_once('config.inc');
-function myq($query) {
-	global $mysql, $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
-	if (!mysql_ping()) {
-		mysql_connect($toolserver_host,$toolserver_username,$toolserver_password,true);
-		@mysql_select_db($toolserver_database) or print mysql_error();
-	}
+	// Variable declarations
+	$pidnum = 0; // Integer
+	$host = 'irc.freenode.org';
+	$port = 6667;
+	$nick = 'ACCBot';
+	$ident = 'ACCBot';
+	$chan = '#wikipedia-en-accounts';
+	$readbuffer = '';
+	$realname = 'ACC Bot';
+	$commandTrigger = '!';
+	$fp = null;
+	$fpt = null;
+	$commands = array();
+	$help = array();
+	$users = array();
+	$privgroups = array();
 
-	return mysql_query($query);
-}
-set_time_limit (0);
-set_time_limit(0);
-$host = "irc.freenode.org";
-$port=6667;
-$nick="ACCBot";
-$ident="ACCBot";
-$chan="#wikipedia-en-accounts";
-$readbuffer="";
-$realname = "ACC Bot";
 
-$fp = fsockopen($host, $port, $erno, $errstr, 30);
-if (!$fp) {
-    echo $errstr." (".$errno.")<br />\n";
-}
-    fwrite($fp, "NICK ".$nick."\r\n");
-    fwrite($fp, "USER ".$ident." ".$host." bla :".$realname."\r\n");
-    sleep(1);
-    fwrite($fp, "JOIN :".$chan."\r\n");
-    echo "Joined $chan\n";
-$fpt = stream_socket_server("udp://0.0.0.0:9001", $errno, $errstr, STREAM_SERVER_BIND);
+	// Signal handlers
+	pcntl_signal( SIGHUP , 'SIGHUP'  );
+	pcntl_signal( SIGTERM, 'SIGTERM' );
+	pcntl_signal( SIGCHLD, 'SIGCHLD' );
 
-while (!feof($fp)) {
-	#Here's where the meat of your daemon goes.
-	stream_set_blocking($fp, 0);
-	stream_set_blocking($fpt, 0);
+	// Help
+	//       Command      , Parameters  , Description
+	addHelp( 'help'       , ''          , 'Gives help on the available commands.'                               );
+	addHelp( 'count'      , '<username>', 'Displays statistics for the targeted user.'                          );
+	addHelp( 'status'     , ''          , 'Displays interface statistics, such as the number of open requests.' );
+	addHelp( 'stats'      , '<username>', 'Gives a readout similar to the user list user information page.'     );
+	addHelp( 'svninfo'    , ''          , 'Floods you with information about the SVN repository.'               );
+	addHelp( 'sand-svnup' , ''          , 'Allows developers to sync the sandbox with the SVN repository.'      );
+	addHelp( 'svnup'      , ''          , 'Allows you to sync the live server with the SVN repository.'         );
+	addHelp( 'restart'    , ''          , 'Causes the bot to do an immediate graceful reinitialization.'        );
+	addHelp( 'recreatesvn', ''          , 'Attempts to fix the live copy of the site.'                          );
+	addHelp( 'svn'        , '<params>'  , 'Runs a SVN command.'                                                 );
 
-        $line =  fgets($fp, 256);
+	// Commands
+	//          Command      , Function            , Fork?
+	addCommand( 'help'       , 'commandHelp'       , true  );
+	addCommand( 'count'      , 'commandCount'      , false );
+	addCommand( 'status'     , 'commandStatus'     , false );
+	addCommand( 'stats'      , 'commandStats'      , false );
+	addCommand( 'svninfo'    , 'commandSvnInfo'    , true  );
+	addCommand( 'sand-svnup' , 'commandSandSvnUp'  , true  );
+	addCommand( 'svnup'      , 'commandSvnUp'      , true  );
+	addCommand( 'restart'    , 'commandRestart'    , false );
+	addCommand( 'recreatesvn', 'commandRecreateSvn', true  );
+	addCommand( 'svn'        , 'commandSvn'        , true  );
 
-        usleep(25000);
-        $peer = fread($fpt, 4096);
-	if($peer != "") {
-	        $toirc = "PRIVMSG $chan :".str_replace("\n","\nPRIVMSG ".$chan.' :',$peer);
-		fwrite($fp, "$toirc\r\n");
-		echo "Packet received!\n";
+	// Users
+	//	Nick!User@Host mask						=> group
+	$users = array(
+		'Cobi!*cobi*@cobi.cluenet.org'					=> 'root',
+		'Cobi-Laptop!*@2002:1828:8399:4000:21f:3bff:fe10:4ae3'		=> 'root',
+		'|Cobi|!*@2002:1828:8399:4000:21f:3bff:fe10:4ae3'		=> 'root',
+		'SQLDb!*@wikipedia/SQL'						=> 'root',
+		'*!*@*'								=> '*'
+		);
+
+	// Groups
+	//         [ Group       ][ Privilege     ] = 1;
+	$privgroups[ '*'         ][ 'help'        ] = 1;
+	$privgroups[ '*'         ][ 'count'       ] = 1;
+	$privgroups[ '*'         ][ 'status'      ] = 1;
+	$privgroups[ '*'         ][ 'stats'       ] = 1;
+
+	$privgroups[ 'developer' ]                  = $privgroups['*']; // 'developer' inherits '*'.
+	$privgroups[ 'developer' ][ 'svninfo'     ] = 1;
+	$privgroups[ 'developer' ][ 'sand-svnup'  ] = 1;
+
+	$privgroups[ 'root'      ]                  = $privgroups['developer']; // 'root' inherits 'developer'.
+	$privgroups[ 'root'      ][ 'svnup'       ] = 1;
+	$privgroups[ 'root'      ][ 'restart'     ] = 1;
+	$privgroups[ 'root'      ][ 'recreatesvn' ] = 1;
+	$privgroups[ 'root'      ][ 'svn'         ] = 1;
+
+	// Functions
+	function sanitize( $data ) {
+		return mysql_real_escape_string( $data );
 	}
 
-	#BEGIN HELP
-	if(stristr($line, "!help") !== FALSE) { //This will display help if succesful in a NOTICE
-		if (pcntl_fork() == 0) {
-			$line_ex = explode(' ',str_replace(array("\r","\n"),'',$line));
-			$nick = explode('!',$line_ex[0]);
-			$nick = substr($nick[0],1);
-			sleep(.75);
-			fwrite($fp,"NOTICE $nick :Available commands (all should be run in #wikipedia-en-accounts):\r\n");
-			sleep(.75);
-			fwrite($fp,"NOTICE $nick :!count <username> - Displays statistics for the targeted user\r\n");
-			sleep(3);
-			fwrite($fp,"NOTICE $nick :!status - Displays interface statistics, such as number of open requests\r\n");
-			sleep(3);
-			fwrite($fp,"NOTICE $nick :!svninfo - Floods you with information about the SVN repository\r\n");
-			sleep(3);
-			fwrite($fp,"NOTICE $nick :!stats <username> - Gives a readout similar to a user list user information page\r\n");
-			sleep(3);
-			fwrite($fp,"NOTICE $nick :!svnup - RESTRICTED - Allows those with access to synch the SVN repository with the live server copy\r\n");
-			sleep(3);
-			fwrite($fp,"NOTICE $nick :!sand-svnup - DEVELOPERS - Allows developers to synch the SVN repository witht the sandbox server copy.  The sandbox is linked to when the command is run\r\n");
-			sleep(3);
-			fwrite($fp,"NOTICE $nick :!restart - RESTRICTED - Allows those with access to restart the bot immediately\r\n");
-			sleep(3);
-			fwrite($fp,"NOTICE $nick :!recreatesvn - RESTRICTED - Commands the bot to attempt and recreate/repair the SVN repository\r\n");
-			die();
+	function SIGHUP() { /* Null signal handler */ }
+
+	function SIGTERM() {
+		global $fp, $fpt;
+
+		fclose( $fp );
+		fclose( $fpt );
+		die( "Received SIGTERM.\n" );
+	}
+
+	function SIGCHLD() {
+		while( pcntl_waitpid( 0, $status ) != -1 ) {
+			$status = pcntl_wexitstatus( $status );
 		}
 	}
-	#END HELP
 
-	if(stristr($line, "!count") != FALSE) {
-		sleep(.75); 
-		$cmatch = preg_match("/\:.* PRIVMSG #wikipedia-en-accounts :!count (.*)/", $line, $matches);
-		if($cmatch > 0) {
-			$matches[1] = sanitize(ltrim(rtrim($matches[1])));
-			$query = "SELECT COUNT(*) FROM acc_log WHERE log_action = 'Closed 1' AND log_user = '$matches[1]';";
-			$result = myq($query);
-			if(!$result) Die("ERROR: No result returned.");
-			$row = mysql_fetch_assoc($result);
-			$howmany = $row['COUNT(*)'];
-			$query = "SELECT COUNT(*) FROM acc_user WHERE user_name = '$matches[1]';";
-			$result = myq($query);
-			if(!$result) Die("ERROR: No result returned.");
-			$row = mysql_fetch_assoc($result);
-			$userexist = $row['COUNT(*)'];
-			$abit = "";
-			if($userexist == "1") {
-				$query = "SELECT * FROM acc_user WHERE user_name = '$matches[1]';";
-				$result = myq($query);
-				if(!$result) Die("ERROR: No result returned.");
-				$row = mysql_fetch_assoc($result);
-				$level = $row['user_level'];
-				if($level == "Admin") {
-					$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$matches[1]' AND log_action = 'Suspended';";
-	                                $result = myq($query);
-        	                        if(!$result) Die("ERROR: No result returned.");
-                	                $row = mysql_fetch_assoc($result);
-					$suspended = $row['COUNT(*)'];
+	function myq( $query ) {
+		global $mysql, $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
 
-					$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$matches[1]' AND log_action = 'Promoted';";
-	                                $result = myq($query);
-        	                        if(!$result) Die("ERROR: No result returned.");
-                	                $row = mysql_fetch_assoc($result);
-					$promoted = $row['COUNT(*)'];
+		if( !mysql_ping() ) {
+			mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password, true );
+			@mysql_select_db( $toolserver_database ) or print mysql_error();
+		}
 
+		return mysql_query( $query );
+	}
 
-					$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$matches[1]' AND log_action = 'Approved';";
-	                                $result = myq($query);
-        	                        if(!$result) Die("ERROR: No result returned.");
-                	                $row = mysql_fetch_assoc($result);
-					$approved = $row['COUNT(*)'];
-					
-					$abit = "Suspended: $suspended, Promoted: $promoted, Approved: $approved";
+	function irc( $data ) {
+		global $fp;
+
+		fwrite( $fp, $data . "\r\n" );
+	}
+
+	function addCommand( $command, $callback, $forked = false ) {
+		global $commands;
+
+		$commands[ strtolower( $command ) ] = array( $callback, $forked );
+	}
+
+	function doCommand( $command, $parsed ) {
+		global $commands;
+
+		if( isset( $commands[ strtolower( $command ) ] ) ) {
+			$info = $commands[ strtolower( $command ) ];
+			if( hasPriv( strtolower( $command ), $parsed ) ) {
+				if( $info[1] == true ) if( pcntl_fork() != 0 ) return;
+				if( function_exists( $info[0] ) ) call_user_func( $info[0], $parsed );
+				if( $info[1] == true ) die();
+			}
+		}
+	}
+
+	function addHelp( $command, $parameters, $description ) {
+		global $help;
+
+		$help[ strtolower( $command ) ] = array( $parameters, $description );
+	}
+
+	function getHelp( $parsed ) {
+		global $help;
+
+		$return = array();
+
+		foreach( $help as $command => $info ) {
+			if( hasPriv( $command, $parsed ) ) {
+				$return[] = array(
+					'command' => $command,
+					'params'  => $info[0],
+					'desc'    => $info[1]
+					);
+			}
+		}
+
+		return $return;
+	}
+
+	function hasPriv( $priv, $parsed ) {
+		global $privgroups, $users;
+
+		foreach( $users as $user => $group ) {
+			if( fnmatch( $user, $parsed['n!u@h'] ) ) {
+				if( isset( $privgroups[$group][$priv] ) ) {
+					return $privgroups[$group][$priv];
+				} else {
+					return 0;
 				}
 			}
-			$now = date("Y-m-d");
-			$topq = "select log_user,count(*) from acc_log where log_time like '$now%' and log_action = 'Closed 1' and log_user = '$matches[1]' group by log_user ORDER BY count(*) DESC limit 5;";
-			$result = myq($topq);
-			if(!$result) Die("ERROR: No result returned.6");
-			$top = mysql_fetch_assoc($result);
-			$ttop = $top['count(*)'];
-			if($ttop == "") {
-				$ttop = "none";
-			}
-			if($userexist != "1") {
-				fwrite($fp, "PRIVMSG $chan :$matches[1] is not a valid user.\r\n");
-			} else {
-				fwrite($fp, "PRIVMSG $chan :$matches[1] ($level) has closed $howmany requests as 'Done', $ttop of them today. $abit\r\n");
-			}
-
-		}
-	}
-	if(stristr($line, "!stats") != FALSE) {
-		sleep(.75); 
-		$cmatch = preg_match("/\:.* PRIVMSG #wikipedia-en-accounts :!stats (.*)/", $line, $matches);
-		if($cmatch > 0) {
-			$matches[1] = sanitize(ltrim(rtrim($matches[1])));
-			$query = "SELECT COUNT(*) FROM acc_user WHERE user_name = '$matches[1]';";
-			$result = myq($query);
-			if(!$result) Die("ERROR: No result returned.");
-			$row = mysql_fetch_assoc($result);
-			$userexist = $row['COUNT(*)'];
-			if($userexist == "1") {
-				$query = "SELECT * FROM acc_user WHERE user_name = '$matches[1]';";
-				$result = myq($query);
-				if(!$result) Die("ERROR: No result returned.");
-				$row = mysql_fetch_assoc($result);
-				$level = $row['user_level'];
-				$onwiki = "[[User:$row[user_onwikiname]]]";
-				$welcomee = $row['user_welcome'];
-				$lastactive = $row['user_lastactive'];
-			}
-			if ($welcomee == "1") {
-				$welcomee = "enabled";
-			}
-			else {
-				$welcomee = "disabled";
-			}
-			if($lastactive == "0000-00-00 00:00:00") { 
-				$lastactive = "unknown"; 
-			}
-			if($userexist != "1") {
-				fwrite($fp, "PRIVMSG $chan :$matches[1] is not a valid user.\r\n");
-			} else {
-				fwrite($fp, "PRIVMSG $chan :$matches[1] ($level) was last active $lastactive. He/she currently has automatic welcoming of users $welcomee. His/her onwiki username is $onwiki. \r\n");
-			}
-
-		}
-	}
-	if(stristr($line, "!status") != FALSE) {
-		sleep(.75); 
-		$query = "SELECT COUNT(*) FROM acc_pend WHERE pend_status = 'Open';";
-		$result = myq($query);
-		if(!$result) Die("ERROR: No result returned.");
-		$row = mysql_fetch_assoc($result);
-		$pending = $row['COUNT(*)'];
-		$query = "SELECT COUNT(*) FROM acc_pend WHERE pend_status = 'Admin';";
-		$result = myq($query);
-		if(!$result) Die("ERROR: No result returned.");
-		$row = mysql_fetch_assoc($result);
-		$admin = $row['COUNT(*)'];
-		$query = "SELECT COUNT(*) FROM acc_ban;";
-		$result = myq($query);
-		if(!$result) Die("ERROR: No result returned.");
-		$row = mysql_fetch_assoc($result);
-		$bans = $row['COUNT(*)'];
-		$query = "SELECT COUNT(*) FROM acc_user WHERE user_level = 'Admin';";
-		$result = myq($query);
-		if(!$result) Die("ERROR: No result returned.");
-		$row = mysql_fetch_assoc($result);
-		$sadmins = $row['COUNT(*)'];
-		$query = "SELECT COUNT(*) FROM acc_user WHERE user_level = 'User';";
-		$result = myq($query);
-		if(!$result) Die("ERROR: No result returned.");
-		$row = mysql_fetch_assoc($result);
-		$users = $row['COUNT(*)'];
-		$query = "SELECT COUNT(*) FROM acc_user WHERE user_level = 'New';";
-		$result = myq($query);
-		if(!$result) Die("ERROR: No result returned.");
-		$row = mysql_fetch_assoc($result);
-		$padmins = $row['COUNT(*)'];
-	        $toirc = "PRIVMSG $chan :Open requests: $pending, Admin requests: $admin, Banned: $bans, Site users: $users, Site admins: $sadmins, Awaiting approval: $padmins";
-		fwrite($fp, "$toirc\r\n");
-	}
-	if(stristr($line, "ping") != FALSE) { //quiet trigger
-		echo "PRIVMSG ".$chan." :$line\n";
-	        fwrite($fp, "PONG ".$line[1]."\r\n"); 
-		sleep(.50);
-	}
-	$line_ex = explode(' ',str_replace(array("\r","\n"),'',$line));
-	if ((substr(strtolower($line_ex[3]),1) == '!svnup') and (strtolower($line_ex[2]) == '#wikipedia-en-accounts')) {
-		$nick = explode('!',$line_ex[0]);
-		$nick = substr($nick[0],1);
-		$hostA = explode('@',$line_ex[0]);
-		$host = $hostA[1];
-		if (($nick == 'Cobi') && (strtolower($host) == 'cobi.cluenet.org') or ($nick == 'SQLDb') && ($host == 'wikipedia/SQL') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
-//			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.": /whois $nick\n"); // What the ... !?
-			if (pcntl_fork() == 0) {
-				$svn = popen('svn up 2>&1', 'r');
-				while (!feof($svn)) {
-					$svnin = ltrim(rtrim(fgets($svn,512)));
-					if ($svnin != "") {
-						fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': '.str_replace(array("\n","\r"),'',$svnin)."\n");
-					}
-					sleep(.75); //Slight delay so the bot does not kill itself on updating a lot of files.
-				}
-				pclose($svn);
-				die();
-			}
-		}
-	}
-	if ((substr(strtolower($line_ex[3]),1) == '!sand-svnup') and (strtolower($line_ex[2]) == '#wikipedia-en-accounts')) {
-		$nick = explode('!',$line_ex[0]);
-		$nick = substr($nick[0],1);
-		$hostA = explode('@',$line_ex[0]);
-		$host = $hostA[1];
-		if ((in_array($nick, $ircdevlist)) && (strtolower($host) == 'cobi.cluenet.org') or ($host == 'wikipedia/SQL') or ($host == 'wikipedia/FastLizard4') or ($host == 'unaffiliated/soxred93') or ($host =='wikimedia/Alexfusco5')) {
-//			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.": /whois $nick\n"); // What the ... !?
-			if (pcntl_fork() == 0) {
-				$svn = popen('sh svn-sand.sh 2>&1', 'r');
-				while (!feof($svn)) {
-					$svnin = ltrim(rtrim(fgets($svn,512)));
-					if ($svnin != "") {
-						fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': '.str_replace(array("\n","\r"),'',$svnin)."\n");
-					}
-					sleep(.75); //Slight delay so the bot does not kill itself on updating a lot of files.
-				}
-				fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': '."Please see the sandbox at http://toolserver.org/~sql/acc_sand/acc.php\n");
-
-				pclose($svn);
-				die();
-			}
 		}
 	}
 
-	if ((substr(strtolower($line_ex[3]),1) == '!svninfo') and (strtolower($line_ex[2]) == '#wikipedia-en-accounts')) {
-		if (pcntl_fork() == 0) {
-			$nick = explode('!',$line_ex[0]);
-			$nick = substr($nick[0],1);
-			$svn = popen('svn info 2>&1', 'r');
-			while (!feof($svn)) {
-				$svnin = ltrim(rtrim(fgets($svn,512)));
-				if ($svnin != "") {
-					fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': '.str_replace(array("\n","\r"),'',$svnin)."\n");
-				}
-				sleep(3);
+	function parseIrc( $line ) {
+		global $commandTrigger;
+
+		$return = array();
+
+		$return['raw'] = $line;
+
+		$explode1 = explode( ' ', $line, 4 );
+
+		if( strtolower( $explode1[0] ) == 'ping' ) {
+			$return['type'] = 'ping';
+			$return['payload'] = $explode1[1];
+		} else if( strtolower( $explode1[1] ) == 'privmsg' ) {
+			$return['type'] = 'privmsg';
+			$return['n!u@h'] = ( ( $explode1[0]{0} == ':' ) ? substr( $explode1[0], 1 ) : $explode1[0] );
+			$return['nick'] = explode( '!', $return['n!u@h'] );
+			$return['user'] = explode( '@', $return['nick'][1] );
+			$return['host'] = $return['user'][1];
+			$return['user'] = $return['user'][0];
+			$return['nick'] = $return['nick'][0];
+			$return['realto'] = $explode1[2];
+			$return['to'] = strtolower( $return['realto'] );
+			$return['message'] = ( ( $explode1[3]{0} == ':' ) ? substr( $explode1[3], 1 ) : $explode1[3] );
+			$return['words'] = explode( ' ', $return['message'] );
+			if( $return['message']{0} == $commandTrigger ) {
+				$return['trigger'] = $commandTrigger;
+				$return['command'] = explode( ' ', substr( $return['message'], 1 ), 2 );
+				$return['parameter'] = $return['command'][1];
+				$return['parameters'] = explode( ' ', $return['parameter'] );
+				$return['command'] = $return['command'][0];
 			}
-			pclose($svn);
-			die();
+		}
+
+		return $return;
+	}
+
+	// Command functions
+	function commandHelp( $parsed ) {
+		irc( 'NOTICE ' . $parsed['nick'] . ' :Available commands (all should be run in #wikipedia-en-accounts):' );
+		sleep( 1 );
+		foreach( getHelp( $parsed ) as $info ) {
+			irc( 'NOTICE ' . $parsed['nick'] . ' :' . $parsed['trigger'] . $info['command'] . ' ' . $info['params'] . ' - ' . $info['desc'] );
+			sleep( 3 );
 		}
 	}
 
-	if ((substr(strtolower($line_ex[3]),1) == '!restart') and (strtolower($line_ex[2]) == '#wikipedia-en-accounts')) {
-		$hostA = explode('@',$line_ex[0]);
-		$host = $hostA[1];
-                $nick = explode('!',$line_ex[0]);
-                $nick = substr($nick[0],1);
+	function commandCount( $parsed ) {
+		$username = $parsed['parameters'][0];
 
+		$isUser = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_user` WHERE `user_name` = \'' . sanitize( $username ) . '\'' ) )
+			or die( 'MySQL Error: ' . mysql_error() . "\n" );
 
-                if (($nick == 'Cobi') && (strtolower($host) == 'cobi.cluenet.org') or ($nick == 'SQLDb') && ($host == 'wikipedia/SQL') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
-			echo 'Restart from IRC!';
-			fclose($fp);
-			fclose($fpt);
-			pcntl_exec('/usr/bin/php',$argv,$_ENV);
-		}
-	}
+		$isUser = ( ( $isUser == 0 ) ? false : true );
 
-	if ((substr(strtolower($line_ex[3]),1) == '!recreatesvn') and (strtolower($line_ex[2]) == '#wikipedia-en-accounts')) {
-		$nick = explode('!',$line_ex[0]);
-		$nick = substr($nick[0],1);
+		if( $isUser ) {
+			$count = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_action` = \'Closed 1\' AND `log_user` = \''
+				. sanitize( $username ) . '\'' ) ) or die( 'MySQL Error: ' . mysql_error() . "\n" );
 
-		 if (($nick == 'Cobi') && (strtolower($host) == 'cobi.cluenet.org') or ($nick == 'SQLDb') && ($host == 'wikipedia/SQL') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
-			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': Please wait while I try to fix the SVN.'."\n");
-			system('tar -jcvpf ~/accinterface-svn-broken.'.time().'.tbz2 .');
-			system('svn list | xargs rm -f');
-			system('svn up');
-			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': Thanks.  SVN has hopefully been fixed.'."\n");
-		}
-	}
-}
+			$count = $count['count'];
+
+			$user = mysql_fetch_assoc( myq( 'SELECT * FROM `acc_user` WHERE `user_name` = \'' . sanitize( $username ) . '\'' ) )
+				or die( 'MySQL Error: ' . mysql_error() . "\n" );
+
+			if( $user['user_level'] == 'Admin' ) {
+				$sus = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
+					. sanitize( $username ) . '\' AND `log_action` = \'Suspended\'' ) )
+					or die( 'MySQL Error: ' . mysql_error() . "\n" );
+				$sus = $sus['count'];
  
-#Clean up your connections, finish file writes here, or whatever you want to do as the daemon shuts down.
+				$pro = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
+					. sanitize( $username ) . '\' AND `log_action` = \'Promoted\'' ) )
+					or die( 'MySQL Error: ' . mysql_error() . "\n" );
+				$pro = $pro['count'];
 
-fclose($fp); //Goodnight!
-fclose($fpt);
+				$app = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
+					. sanitize( $username ) . '\' AND `log_action` = \'Approved\'' ) )
+					or die( 'MySQL Error: ' . mysql_error() . "\n" );
+				$app = $app['count'];
+
+				$adminInfo = 'Suspended: ' . $sus . ', Promoted: ' . $pro . ', Approved: ' . $app;
+			}
+
+			$today = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_time` LIKE \'' . sanitize( date( 'Y-m-d' ) )
+				. '%\' AND `log_action` = \'Closed 1\' AND `log_user` = \'' . sanitize( $username ) . '\'' ) )
+				or die( 'MySQL Error: ' . mysql_error() . "\n" );
+			$today = $today['count'];
+
+			irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $username . ' (' . $user['user_level'] . ') has closed ' . $count
+				. ' requests as \'Done\', ' . ( ( $today == 0 ) ? 'none' : $today ) . ' of them today. ' . $adminInfo );
+		} else {
+			irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $username . ' is not a valid username.' );
+		}
+	}
+
+	function commandStatus( $parsed ) {
+		$open = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_status` = \'Open\'' ) )
+			or die( 'MySQL Error: ' . mysql_error() . "\n" );
+		$open = $open['count'];
+
+		$adminRequests = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_status` = \'Admin\'' ) )
+			or die( 'MySQL Error: ' . mysql_error() . "\n" );
+		$adminRequests = $adminRequests['count'];
+
+		$bans = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_ban`' ) )
+			or die( 'MySQL Error: ' . mysql_error() . "\n" );
+		$bans = $bans['count'];
+
+		$admins = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_user` WHERE `user_level` = \'Admin\'' ) )
+			or die( 'MySQL Error: ' . mysql_error() . "\n" );
+		$admins = $admins['count'];
+
+		$users = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_user` WHERE `user_level` = \'User\'' ) )
+			or die( 'MySQL Error: ' . mysql_error() . "\n" );
+		$users = $users['count'];
+
+		$new = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_user` WHERE `user_level` = \'New\'' ) )
+			or die( 'MySQL Error: ' . mysql_error() . "\n" );
+		$new = $new['count'];
+
+		irc( 'PRIVMSG ' . $parsed['to'] . ' :'
+			. 'Open requests: ' . $open
+			. ', Admin requests: ' . $adminRequests
+			. ', Banned: ' . $bans
+			. ', Site users: ' . $users
+			. ', Site admins: ' . $admins
+			. ', Awaiting approval: ' . $new );
+	}
+
+	function commandStats( $parsed ) {
+		$username = $parsed['parameters'][0];
+
+		$isUser = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_user` WHERE `user_name` = \'' . sanitize( $username ) . '\'' ) )
+			or die( 'MySQL Error: ' . mysql_error() . "\n" );
+
+		$isUser = ( ( $isUser == 0 ) ? false : true );
+
+		if( $isUser ) {
+			$user = mysql_fetch_assoc( myq( 'SELECT * FROM `acc_user` WHERE `user_name` = \'' . sanitize( $username ) . '\'' ) )
+				or die( 'MySQL Error: ' . mysql_error() . "\n" );
+
+			irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $username . ' (' . $user['user_level'] . ') was last active '
+				. ( ( $user['user_lastactive'] == '0000-00-00 00:00:00' ) ? 'unknown' : $user['user_lastactive'] )
+				. '. He/she currently has automatic welcoming of users ' . ( ( $user['user_welcome'] == 1 ) ? 'enabled' : 'disabled' )
+				. '. His/her onwiki username is [[User:' . $user['user_onwikiname'] . '.' );
+
+		} else {
+			irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $username . ' is not a valid username.' );
+		}
+	}
+
+	function commandSvnInfo( $parsed ) {
+		$svn = popen( 'svn info 2>&1', 'r' );
+		while( !feof( $svn ) ) {
+			$svnin = trim( fgets( $svn, 512 ) );
+			if( $svnin != '' ) {
+				irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': ' . str_replace( array( "\n", "\r" ), '', $svnin ) );
+			}
+			sleep( 3 );
+		}
+		pclose( $svn );
+	}
+
+	function commandSandSvnUp( $parsed ) {
+		$svn = popen( 'sh svn-sand.sh 2>&1', 'r' );
+		while( !feof( $svn ) ) {
+			$svnin = trim( fgets( $svn, 512 ) );
+			if( $svnin != '' ) {
+				irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': ' . str_replace( array( "\n", "\r" ), '', $svnin ) );
+			}
+			sleep( 1 );
+		}
+		pclose( $svn );
+		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ':Please see the sandbox at http://toolserver.org/~sql/acc_sand/acc.php' );
+	}
+
+	function commandSvnUp( $parsed ) {
+		$svn = popen( 'svn up 2>&1', 'r' );
+		while( !feof( $svn ) ) {
+			$svnin = trim( fgets( $svn, 512 ) );
+			if( $svnin != '' ) {
+				irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': ' . str_replace( array( "\n", "\r" ), '', $svnin ) );
+			}
+			sleep( 1 ); // Slight delay so the bot does not kill itself on updating a lot of files.
+		}
+		pclose( $svn );
+	}
+
+	function commandRestart( $parsed ) {
+		global $udpReader;
+
+		fclose( $fp );
+
+		posix_kill( $udpReader, SIGTERM );
+		sleep( 1 );
+		posix_kill( $udpReader, SIGKILL );
+
+		pcntl_exec( '/usr/bin/php', $argv, $_ENV );
+	}
+
+	function commandRecreateSvn( $parsed ) {
+		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Please wait while I try to fix the SVN.' );
+		system( 'tar -jcvpf ~/accinterface-svn-broken.' . time() . '.tbz2 .' );
+		system( 'svn list | xargs rm -f' );
+		system( 'svn up' );
+		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Thanks.  SVN has hopefully been fixed.' );
+	}
+
+
+	// Code entry point.
+
+	if ( $_SERVER['REMOTE_ADDR'] != '' ) { 
+		header( 'Location: http://toolserver.org/~sql/acc/' );
+		die(); 
+	}
+
+	$pidnum = pcntl_fork();
+ 
+	if( $pidnum == -1 ) {
+		// Well, we can't daemonize for some reason.
+		die( "Problem - Could not fork child!\n" );
+	} else if( $pidnum ) {
+		// We'll only be running a child process, so, this process need not continue.
+		// echo "Detaching from terminal.\n";	
+		exit();
+	} else {
+		// We're the child. Continuing on below as the child.
+	}
+ 
+	if( posix_setsid() == -1 ) {
+		// If we can't detach, we're not daemonized. No reason to go on.
+		die( "Problem - I could not detach!\n" );
+	}
+ 
+	set_time_limit( 0 );
+
+	$fp = fsockopen( $host, $port, $erno, $errstr, 30 );
+	if( !$fp ) {
+		echo $errstr . ' (' . $errno . ")<br />\n";
+	}
+
+	irc( 'NICK ' . $nick );
+	irc( 'USER ' . $ident . ' "' . $host . '" "localhost" :' . $realname );
+	sleep( 1 );
+	irc( 'JOIN ' . $chan );
+
+	if( ( $udpReader = pcntl_fork() ) == 0 ) {
+		$fpt = stream_socket_server( 'udp://0.0.0.0:9001', $errNo, $errStr, STREAM_SERVER_BIND );
+		
+		while( !feof( $fp ) ) {
+			$data = fread( $fpt, 4096 );
+			if( $data != '' ) {
+				irc( 'PRIVMSG ' . $chan . ' :' . str_replace( "\n", "\nPRIVMSG " . $chan . ' : ', $data ) );
+			}
+		}
+	}
+
+	while( !feof( $fp ) ) {
+	        $data = fgets( $fp, 512 );
+
+		$parsed = parseIrc( $data );
+
+		if( $parsed['type'] == 'ping' ) {
+	        	irc( 'PONG ' . $parsed['payload'] ); 
+		}
+
+		if( $parsed['type'] == 'privmsg' ) {
+			if( $parsed['to'] == strtolower( $chan ) ) {
+				doCommand( $parsed['command'], $parsed );
+			}
+		}
+	}
+ 
+	// Ugh!  We most likely flooded off!
+
+	commandRestart( null );
 ?>
