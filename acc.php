@@ -549,7 +549,7 @@ if ($_GET['action'] == "forgotpw") {
         }
         $hashme = $puser . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
         $hash = md5($hashme);
-        $mailtxt = "Hello! You, or a user from $_SERVER[REMOTE_ADDR], has requested a password reset for your account.\n\nPlease go to http://toolserver.org/~sql/acc/acc.php?action=forgotpw&si=$hash&id=$row[user_id] to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
+        $mailtxt = "Hello! You, or a user from $_SERVER[REMOTE_ADDR], has requested a password reset for your account.\n\nPlease go to $tsurl/acc.php?action=forgotpw&si=$hash&id=$row[user_id] to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
         $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
         mail($row['user_email'], "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
         echo "Your password reset request has been completed. Please check your e-mail.\n<br />";
@@ -586,7 +586,7 @@ if ($_GET['action'] == "login") {
     $calcpass = md5($_POST[password]);
     if ($row[user_pass] == $calcpass) { 
         $_SESSION['user'] = $row[user_name]; 
-        header("Location: http://toolserver.org/~sql/acc/acc.php"); 
+        header("Location: $tsurl/acc/acc.php"); 
     } else {
         echo "<h2>ERROR</h2>\n";
         echo "Username and/or password incorrect.<br />\n";
@@ -957,7 +957,7 @@ if ($_GET['action'] == "usermgmt") {
         $uname = $row[user_name];
         $uoname = $row[user_onwikiname];
         $userid = $row[user_id];
-        $out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&decline=$userid\">Decline</a> - <a href=\"http://tools.wikimedia.de/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
+        $out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&decline=$userid\">Decline</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
         echo "$out\n";
     }
     ?>

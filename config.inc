@@ -25,6 +25,7 @@ $toolserver_database = "u_sql";
 $cookiepath = '/~sql/';
 $sessionname = 'ACC';
 $wikiurl = "en.wikipedia.org"; //Does nothing yet, intended for further localization
+$tsurl = "http://toolserver.org/~sql/acc"; //Does nothing yet, intended for further localization
 unset($toolserver_mycnf);
 require_once('blacklist.php');
 ?>
