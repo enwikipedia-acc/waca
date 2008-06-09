@@ -301,7 +301,7 @@ while (!feof($fp)) {
 				pclose($svn);
 				die();
 			}
-		}unaffiliated/soxred93
+		}
 	}
 	if ((substr(strtolower($line_ex[3]),1) == '!sand-svnup') and (strtolower($line_ex[2]) == '#wikipedia-en-accounts')) {
 		$nick = explode('!',$line_ex[0]);
