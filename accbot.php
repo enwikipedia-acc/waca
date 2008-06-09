@@ -119,7 +119,7 @@
 
 	function SIGCHLD() {
 		echo 'In SIGCHLD ...' . "\n";
-		while( pcntl_waitpid( 0, $status, WNOHANG ) != -1 ) {
+		while( pcntl_waitpid( 0, $status, WNOHANG ) > 0 ) {
 			$status = pcntl_wexitstatus( $status );
 		}
 		echo 'Out SIGCHLD ...' . "\n";
