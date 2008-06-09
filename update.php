@@ -101,7 +101,7 @@ if(isset($_GET[sandup])) {
 }
 if(isset($_GET[startbot])) {
 	echo "Starting bot...<br />\n";
-	$outp = system('/bin/bash startbot.sh');
+	$outp = system("/bin/bash startbot.sh");
 	if($outp == FALSE) {
 		echo "Failed!<br />\n";
 		echo "$outp<br />\n";
