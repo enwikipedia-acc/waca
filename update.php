@@ -100,14 +100,17 @@ if(isset($_GET[sandup])) {
 	sendtobot("[WEB]: $_SESSION[user] synchronizing ACC sandbox");
 }
 if(isset($_GET[startbot])) {
-	echo "Starting bot...<br />\n";
-	$outp = pcntl_exec("./startbot.sh"); //WTF? FALSE? Grr...
-	if($outp == FALSE) {
-		echo "Failed!<br />\n";
-		echo "$outp<br />\n";
-	} else {
-		echo "Bot started!<br />\n";
-	}
+        echo "Starting bot...<br />\n";
+        $t = escapeshellcmd("./accbot.php");
+        echo "Command: $t\n";
+        $outp = exec($t); //WTF? FALSE? Grr...
+        if($outp == FALSE) {
+                echo "Failed!<br />\n";
+                echo "$outp<br />\n";
+        } else {
+                echo "Bot started!<br />\n";
+        }
+
 }
 if(isset($_GET[stopbot])) {
 	sendtobot("[WEB]: $_SESSION[user] Ordered me to die!");
