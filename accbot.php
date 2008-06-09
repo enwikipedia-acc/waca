@@ -1,3 +1,4 @@
+#!/usr/bin/php
 <?PHP
 	/**************************************************************
 	** English Wikipedia Account Request Interface               **
