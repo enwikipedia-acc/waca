@@ -319,6 +319,8 @@ while (!feof($fp)) {
 					}
 					sleep(.75); //Slight delay so the bot does not kill itself on updating a lot of files.
 				}
+				fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': '."Please see the sandbox at http://toolserver.org/~sql/acc_sand/acc.php\n");
+
 				pclose($svn);
 				die();
 			}
