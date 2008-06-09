@@ -101,7 +101,6 @@ if(isset($_GET[sandup])) {
 }
 if(isset($_GET[startbot])) {
 	echo "Starting bot...<br />\n";
-//	require_once('accbot.php'); //If it sounds like a bad idea at the time, TRY IT ANYWAYS! :)
 	$outp = popen("./accbot.php"); //WTF? FALSE? Grr...
 	if($outp == FALSE) {
 		echo "Failed!<br />\n";
