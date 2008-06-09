@@ -480,13 +480,17 @@
 
 		$parsed = parseIrc( $data );
 
+		print_r( $parsed );
+
 		if( $parsed['type'] == 'ping' ) {
 	        	irc( 'PONG ' . $parsed['payload'] ); 
 		}
 
 		if( $parsed['type'] == 'privmsg' ) {
 			if( $parsed['to'] == strtolower( $chan ) ) {
-				doCommand( $parsed['command'], $parsed );
+				if( isset( $parsed['command'] ) ) {
+					doCommand( $parsed['command'], $parsed );
+				}
 			}
 		}
 	}
