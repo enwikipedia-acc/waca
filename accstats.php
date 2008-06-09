@@ -17,7 +17,7 @@
 **                                                           **
 **************************************************************/
 
-require_once('config.inc');
+require_once('config.inc.php');
 if( $_SERVER['REMOTE_ADDR'] != "") {
         header("Location: http://toolserver.org/~sql/acc/");
         die();

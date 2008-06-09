@@ -17,7 +17,7 @@
 **                                                           **
 **************************************************************/
 
-require_once('config.inc');
+require_once('config.inc.php');
 function sanitize($what) {
 	$what = mysql_real_escape_string($what);
 	return($what);
