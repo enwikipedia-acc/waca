@@ -50,6 +50,7 @@ function svnup ( ) { //Blatantly stolen from accbot.php
 		$svnin = trim( fgets( $svn, 512 ) );
 		if( $svnin != '' ) {
 			echo str_replace( array( "\n", "\r" ), '<br />', $svnin );
+			echo "<br />";
 		}
 	}
 	pclose( $svn );
@@ -60,6 +61,7 @@ function svnup_sand ( ) { //Blatantly stolen from accbot.php
 		$svnin = trim( fgets( $svn, 512 ) );
 		if( $svnin != '' ) {
 			echo str_replace( array( "\n", "\r" ), '<br />', $svnin );
+			echo "<br />";
 		}
 	}
 	pclose( $svn );
