@@ -384,6 +384,26 @@
 		pclose( $svn );
 	}
 
+	function commandSvn( $parsed ) {
+		$tmp = array();
+
+		foreach( $parsed['parameters'] as $param ) {
+			$tmp[] = escapeshellarg( $param );
+		}
+
+		$tmp = implode( ' ', $tmp );
+
+		$svn = popen( 'svn ' . $tmp . ' 2>&1', 'r' );
+		while( !feof( $svn ) ) {
+			$svnin = trim( fgets( $svn, 512 ) );
+			if( $svnin != '' ) {
+				irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': ' . str_replace( array( "\n", "\r" ), '', $svnin ) );
+			}
+			sleep( 4 );
+		}
+		pclose( $svn );
+	}
+
 	function commandRestart( $parsed ) {
 		global $udpReader;
 
