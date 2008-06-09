@@ -147,16 +147,18 @@
 	}
 
 	function doCommand( $command, $parsed ) {
-		global $commands, $fp;
+		global $commands;
 
 		if( isset( $commands[ strtolower( $command ) ] ) ) {
 			$info = $commands[ strtolower( $command ) ];
 			if( hasPriv( strtolower( $command ), $parsed ) ) {
-				if( $info[1] == true ) if( pcntl_fork() != 0 ) return;
-				if( function_exists( $info[0] ) ) call_user_func( $info[0], $parsed );
 				if( $info[1] == true ) {
-					fclose( $fp );
-					die();
+					if( pcntl_fork() == 0 ) {
+						if( function_exists( $info[0] ) ) call_user_func( $info[0], $parsed );
+						die();
+					}
+				} else {
+					if( function_exists( $info[0] ) ) call_user_func( $info[0], $parsed );
 				}
 			} else {
 				irc( 'NOTICE ' . $parsed['nick'] . ' :Insufficient access.' );
@@ -240,7 +242,8 @@
 
 	// Command functions
 	function commandHelp( $parsed ) {
-		irc( 'NOTICE ' . $parsed['nick'] . ' :Available commands (all should be run in #wikipedia-en-accounts):' );
+		global $chan;
+		irc( 'NOTICE ' . $parsed['nick'] . ' :Available commands (all should be run in ' . $chan . '):' );
 		sleep( 1 );
 		foreach( getHelp( $parsed ) as $info ) {
 			irc( 'NOTICE ' . $parsed['nick'] . ' :' . $parsed['trigger'] . $info['command'] . ' ' . $info['params'] . ' - ' . $info['desc'] );
@@ -457,7 +460,7 @@
  
 	set_time_limit( 0 );
 
-	$fp = fsockopen( $host, $port, $erno, $errstr, 30 );
+	$fp = fsockopen( $host, $port, $errno, $errstr, 30 );
 	if( !$fp ) {
 		echo $errstr . ' (' . $errno . ")<br />\n";
 	}
