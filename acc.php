@@ -1195,6 +1195,8 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
             $crea = "Impossible";
             break;
     }
+    $now = explode("-", $now);
+    $now = $now[0]."-".$now[1]."-".$now[2].":".$now[3].":".$now[4];
     sendtobot("Request $_GET[id] ($gus) Marked as 'Done' ($crea) by $sid on $now");
     echo "Request $_GET[id] ($gus) marked as 'Done'.<br />";
     $towhom = $row2[pend_email];
