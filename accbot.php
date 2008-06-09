@@ -303,6 +303,27 @@ while (!feof($fp)) {
 			}
 		}
 	}
+	if ((substr(strtolower($line_ex[3]),1) == '!sand-svnup') and (strtolower($line_ex[2]) == '#wikipedia-en-accounts')) {
+		$nick = explode('!',$line_ex[0]);
+		$nick = substr($nick[0],1);
+		$hostA = explode('@',$line_ex[0]);
+		$host = $hostA[1];
+		if (($nick == 'Cobi') && (strtolower($host) == 'cobi.cluenet.org') or ($nick == 'SQLDb') && ($host == 'wikipedia/SQL') or ($nick == '|Cobi|') or ($nick == 'Cobi-Laptop')) {
+//			fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.": /whois $nick\n"); // What the ... !?
+			if (pcntl_fork() == 0) {
+				$svn = popen('cd ../acc_sand; svn up 2>&1', 'r');
+				while (!feof($svn)) {
+					$svnin = ltrim(rtrim(fgets($svn,512)));
+					if ($svnin != "") {
+						fwrite($fp,'PRIVMSG '.$chan.' :'.$nick.': '.str_replace(array("\n","\r"),'',$svnin)."\n");
+					}
+					sleep(.75); //Slight delay so the bot does not kill itself on updating a lot of files.
+				}
+				pclose($svn);
+				die();
+			}
+		}
+	}
 
 	if ((substr(strtolower($line_ex[3]),1) == '!svninfo') and (strtolower($line_ex[2]) == '#wikipedia-en-accounts')) {
 		if (pcntl_fork() == 0) {
