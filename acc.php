@@ -39,7 +39,6 @@ function upcsum($id) {
         $pend = mysql_fetch_assoc($result);
 	$hash = md5($pend[pend_id].$pend[pend_name].$pend[pend_email].microtime());
 	$query = "UPDATE acc_pend SET pend_checksum = '$hash' WHERE pend_id = '$id';";
-	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
         $result = mysql_query($query);
 }
 function csvalid($id, $sum) {
