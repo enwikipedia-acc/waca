@@ -33,7 +33,21 @@ function checktor ($addr) {
 	if ($ahbl == "127.0.0.3") { $flags['exit'] = "yes"; "yes"; $flags['tor'] = "yes";}
 	return($flags);
 }
-
+function upcsum($id) {
+	global $toolserver_username;
+	global $toolserver_password;
+	global $toolserver_host;
+	global $toolserver_database;
+	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
+	@mysql_select_db($toolserver_database) or print mysql_error();
+	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
+        $result = mysql_query($query);
+        if(!$result) Die("ERROR: No result returned.");
+        $pend = mysql_fetch_assoc($result);
+	$hash = md5($pend[pend_id].$pend[pend_name].$pend[pend_email].microtime());
+	$query = "UPDATE acc_pend SET pend_checksum = '$hash' WHERE pend_id = '$id';";
+        $result = mysql_query($query);
+}
 function displayheader() {
 	global $toolserver_username;
 	global $toolserver_password;
@@ -334,6 +348,9 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
 	fwrite($fp, "[[acc:$pid]] N http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$pid /* $_POST[name] */ ".substr(str_replace(array("\n","\r"), array('\n','\r'),$_POST[comments]),0,200).((strlen($_POST[comments]) > 200) ? '...' : '')."\r\n");
 	fclose($fp);
+	if($pid != 0 || $pid != "") {
+		upcsum($pid);
+	}
 	if(!$result) Die("ERROR: No result returned.");
 	mysql_close();		
 } else {
