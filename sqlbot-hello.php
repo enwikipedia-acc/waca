@@ -52,7 +52,17 @@ function tagpage($user, $template) {
 	$basepage = "User_talk:$user";
 	$oldpage = sxGetPage($basepage);
 	$newbie = isnewuser($user);
-	if ($oldpage == "" && $newbie === TRUE) { 
+	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$user&format=php");
+	$ue = unserialize($userexist);
+	foreach ($ue[query][users] as $oneue) {
+        	if(!isset($oneue[missing])) {
+		echo "$user does not exist, skipping!\n"; 
+		$exist = FALSE; 
+	} else {
+		$exist = TRUE;
+	}
+	}
+	if ($oldpage == "" && $newbie === TRUE && $exist == TRUE) { 
 		$newpage = $oldpage . "\n\n$template\n\n";
 		echo "Editing page\n";
 		sxPutPage($basepage, "BOT: Welcoming user created at [[WP:ACC]].", $newpage);
