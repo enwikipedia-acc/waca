@@ -1056,6 +1056,15 @@ if ($_GET['action'] == "defer" && $_GET['id'] != "") {
         }
         $gid = sanitize($_GET[id]);
         $sid = sanitize($_SESSION[user]);
+	$query = "SELECT pend_status FROM acc_pend WHERE pend_id = '$gid';";
+        $result = mysql_query($query);
+        if(!$result) Die("ERROR: No result returned.");
+	$row = mysql_fetch_assoc($result);
+	if ( $row[pend_status] == $target ) {
+		echo "Cannot set status, target already deferred to $target<br />\n";
+		showfooter();
+		die();
+	}
         $query = "UPDATE acc_pend SET pend_status = '$target' WHERE pend_id = '$gid';";
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
