@@ -18,6 +18,6 @@
 **************************************************************/
 
 $regdevlist = array('SQL', 'Cobi', 'Charlie', 'FastLizard4', 'Stwalkerster', 'Soxred93', 'Alexfusco5');
-$ircdevlist = array('SQLDb', 'Cobi', 'Cobi-Laptop', 'chuck', 'FastLizard4', 'stwalkerster', 'Soxred93', 'Alexfusco5');
+$ircdevlist = array('SQLDb', 'Cobi', 'Cobi-Laptop', 'chuck', 'FastLizard4', 'stwalkerster', 'Soxred93', 'Alexfusco5', 'Alexfusco5|Away');
 
 ?>
