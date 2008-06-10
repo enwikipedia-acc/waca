@@ -37,7 +37,7 @@ function upcsum($id) {
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
         $pend = mysql_fetch_assoc($result);
-	$hash = md5sum($pend[pend_id].$pend[pend_name].$pend[pend_email].microtime());
+	$hash = md5($pend[pend_id].$pend[pend_name].$pend[pend_email].microtime());
 	$query = "UPDATE acc_pend SET pend_checksum WHERE pend_id = '$id';";
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
         $result = mysql_query($query);
