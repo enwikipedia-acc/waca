@@ -265,29 +265,29 @@ function listrequests($type) {
         $out.= $uname . '&wpEmail=' . $row[pend_email] . '&uselang=en-acc">Create!</a></b> '; 
     
         // Done
-        $out.= '| <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=1">Done!</a>';
+        $out.= '| <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=1&sum=' . $row[pend_checksum] . '">Done!</a>';
     
         // Similar
-        $out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=2">Similar</a>';
+        $out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=2&sum=' . $row[pend_checksum] . '">Similar</a>';
     
         // Taken
-        $out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=3">Taken</a>';
+        $out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=3&sum=' . $row[pend_checksum] . '">Taken</a>';
     
         // UPolicy
-        $out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=4">UPolicy</a>';
+        $out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=4&sum=' . $row[pend_checksum] . '">UPolicy</a>';
     
         // Invalid
-        $out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=5">Invalid</a>';
+        $out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=5&sum=' . $row[pend_checksum] . '">Invalid</a>';
     
         // Defer to admins or users
         if($type == 'Open') { $target = 'admin'; } elseif ( $type == 'Admin') { $target = 'user'; }
         if($target == 'admin' || $target == 'user') {
-            $out.= " - <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&target=$target\">Defer to $target" . "s</a>";
+            $out.= " - <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&sum=' . $row[pend_checksum] . '&target=$target\">Defer to $target" . "s</a>";
         } else {
-            $out.= " - <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&target=user\">Reset Request</a>";
+            $out.= " - <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&sum=' . $row[pend_checksum] . '&target=user\">Reset Request</a>";
         }
         // Drop
-            $out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=0">Drop</a>';
+            $out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=0&sum=' . $row[pend_checksum] . '">Drop</a>';
     
         // Ban IP
         $out.= ' | Ban: <a style="color:red" href="acc.php?action=ban&ip=' . $row[pend_id] . '">IP</a> ';
