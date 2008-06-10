@@ -1203,7 +1203,7 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
     $result = mysql_query($query);
     if(!$result) Die("Query failed: $query ERROR: No result returned.");
     $row = mysql_fetch_assoc($result);
-    if($row[emailsent] == "1" && override != "yes") {
+    if($row[emailsent] > 0 && override != "yes") {
 	echo "<br />This request has already been closed in a manner that has generated an e-mail to the user, Proceed?<br />\n";
 	echo "<a href=\"acc.php?sum=$_GET[sum]&action=done&id=$_GET[id]&override=yes\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
 	showfooter();
