@@ -1084,7 +1084,7 @@ if ($_GET['action'] == "usermgmt") {
     die();
 }
 
-if ($_GET['action'] == "defer" && $_GET['id'] != "") {
+if ($_GET['action'] == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
     if ($_GET['target'] == "admin" || $_GET['target'] == "user") {
         if ($_GET['target'] == "admin") {
             $target = "Admin";
