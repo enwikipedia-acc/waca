@@ -1475,7 +1475,7 @@ while ($row = mysql_fetch_assoc($result)) {
     {
         $out.= ' class="odd">';
     } 
-    $out.= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&id=$row[pend_id]\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">$row[pend_name]</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&target=user\">Reset</a></small></td></tr>";
+    $out.= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&id=$row[pend_id]\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">$row[pend_name]</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&sum=$row[pend_checksum]&target=user\">Reset</a></small></td></tr>";
     echo $out;
 }
 echo "</table>\n";
