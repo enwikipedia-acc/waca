@@ -1198,7 +1198,17 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
 	echo "Invalid checksum";
 	showfooter();
 	die();
-     }
+    }
+    $query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
+    $result = mysql_query($query);
+    if(!$result) Die("Query failed: $query ERROR: No result returned.");
+    $row = mysql_fetch_assoc($result);
+    if($row[emailsent] == "1" && override != "yes") {
+	echo "<br />This request has already been closed in a manner that has generated an e-mail to the user, Proceed?<br />\n";
+	echo "<a href=\"acc.php?sum=$_GET[sum]&action=done&id=$_GET[id]&override=yes\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
+	showfooter();
+	die();
+    }
     $gem = sanitize($_GET[email]);
     $sid = sanitize($_SESSION[user]);
     $query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
@@ -1257,7 +1267,11 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
     sendtobot("Request $_GET[id] ($gus) Marked as 'Done' ($crea) by $sid on $now");
     echo "Request $_GET[id] ($gus) marked as 'Done'.<br />";
     $towhom = $row2[pend_email];
-    if($gem != "0") { sendemail($gem, $towhom); }
+    if($gem != "0") { 
+	sendemail($gem, $towhom); 
+	$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '$_GET[id]';";
+        $result = mysql_query($query);
+    }
     upcsum($_GET[id]);
 }
 if ($_GET['action'] == "zoom") {
