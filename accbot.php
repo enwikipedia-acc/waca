@@ -256,6 +256,10 @@
 
 	function commandCount( $parsed ) {
 		$username = $parsed['parameters'][0];
+		if( !isset( $username ) or ( $username == '' ) ) {
+			irc( 'NOTICE ' . $parsed['nick'] . ' :Invalid syntax.  This command requires a username as a parameter.' );
+			return;
+		}
 
 		$isUser = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_user` WHERE `user_name` = \'' . sanitize( $username ) . '\'' ) )
 			or die( 'MySQL Error: ' . mysql_error() . "\n" );
@@ -338,6 +342,10 @@
 
 	function commandStats( $parsed ) {
 		$username = $parsed['parameters'][0];
+		if( !isset( $username ) or ( $username == '' ) ) {
+			irc( 'NOTICE ' . $parsed['nick'] . ' :Invalid syntax.  This command requires a username as a parameter.' );
+			return;
+		}
 
 		$isUser = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_user` WHERE `user_name` = \'' . sanitize( $username ) . '\'' ) )
 			or die( 'MySQL Error: ' . mysql_error() . "\n" );
