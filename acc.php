@@ -1194,6 +1194,11 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
         die();
     } 
     $gid = sanitize($_GET[id]);
+    if(csvalid($gid, $_GET['sum']) != 1) {
+	echo "Invalid checksum";
+	showfooter();
+	die();
+     }
     $gem = sanitize($_GET[email]);
     $sid = sanitize($_SESSION[user]);
     $query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
