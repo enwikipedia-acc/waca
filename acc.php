@@ -26,6 +26,43 @@ function sanitize($what) {
     $what = mysql_real_escape_string($what);
     return($what);
 }
+function upcsum($id) {
+	global $toolserver_username;
+	global $toolserver_password;
+	global $toolserver_host;
+	global $toolserver_database;
+	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
+	@mysql_select_db($toolserver_database) or print mysql_error();
+	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
+        $result = mysql_query($query);
+        if(!$result) Die("ERROR: No result returned.");
+        $pend = mysql_fetch_assoc($result);
+	$hash = md5sum($pend[pend_id].$pend[pend_name].$pend[pend_email].microtime());
+	$query = "UPDATE acc_pend SET pend_checksum WHERE pend_id = '$id';";
+	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
+        $result = mysql_query($query);
+}
+function csvalid($id, $sum) {
+	global $toolserver_username;
+	global $toolserver_password;
+	global $toolserver_host;
+	global $toolserver_database;
+	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
+	@mysql_select_db($toolserver_database) or print mysql_error();
+	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
+        $result = mysql_query($query);
+        if(!$result) Die("ERROR: No result returned.");
+        $pend = mysql_fetch_assoc($result);
+	if($pend[pend_checksum] == "") {
+		upcsum($id);
+		return(1);
+	}
+	if($pend[pend_checksum] == $sum) {
+		return(1);
+	} else {
+		return(0);
+	}
+}
 function sendtobot($message) {
     sleep(3);
     $fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
@@ -747,7 +784,8 @@ if ($_GET['action'] == "sban" && $_GET['user'] != "") {
     $siuser = sanitize($_GET['user']);
     $target = sanitize($_GET['target']);
     $type = sanitize($_GET['type']);
-        $now = date("Y-m-d H-i-s");
+    $now = date("Y-m-d H-i-s");
+    upcsum($target);
     $query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$target', '$siuser', 'Banned', '$now');";
     $result = mysql_query($query);
     if(!$result) Die("ERROR: No result returned.");
@@ -1075,6 +1113,7 @@ if ($_GET['action'] == "defer" && $_GET['id'] != "") {
         }
                 $now = date("Y-m-d H-i-s");
         $query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $deto', '$now');";
+	upcsum($gid);
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
         sendtobot("Request $gid deferred to $deto by $sid");
@@ -1210,6 +1249,7 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
     echo "Request $_GET[id] ($gus) marked as 'Done'.<br />";
     $towhom = $row2[pend_email];
     if($gem != "0") { sendemail($gem, $towhom); }
+    upcsum($_GET[id]);
 }
 if ($_GET['action'] == "zoom") {
     if($_GET[id] == "") {
