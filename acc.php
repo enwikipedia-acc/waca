@@ -926,7 +926,7 @@ if ($_GET['action'] == "usermgmt") {
             $result2 = mysql_query($query2);
             if(!$result2) Die("ERROR: No result returned.");
             $row2 = mysql_fetch_assoc($result2);
-            sendtobot("User $did ($row2[user_name]) suspended access by $siuser because: $suspendrsn");
+            sendtobot("User $did ($row2[user_name]) suspended access by $siuser because: \"$suspendrsn\"");
             showfooter();
             die();
         }
@@ -975,7 +975,7 @@ if ($_GET['action'] == "usermgmt") {
             $result2 = mysql_query($query2);
             if(!$result2) Die("ERROR: No result returned.");
             $row2 = mysql_fetch_assoc($result2);
-            sendtobot("User $did ($row2[user_name]) declined access by $siuser because: $declinersn");
+            sendtobot("User $did ($row2[user_name]) declined access by $siuser because: \"$declinersn\"");
             showfooter();
             die();
         }
