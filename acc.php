@@ -1074,7 +1074,7 @@ if ($_GET['action'] == "usermgmt") {
         $uname = $row[user_name];
         $uoname = $row[user_onwikiname];
         $userid = $row[user_id];
-        $out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> (Declined by $row[log_user] because $row[log_cmt])</small></li>";
+        $out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> (Declined by $row[log_user] because \"$row[log_cmt]\")</small></li>";
         echo "$out\n";
     }
     ?>
