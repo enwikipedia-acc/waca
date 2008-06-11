@@ -432,9 +432,9 @@
 		fclose( $fp );
 
 		posix_kill( $udpReader, SIGTERM );
-		sleep( 1 );
+		sleep( 2 );
 		posix_kill( $udpReader, SIGKILL );
-
+		sleep( 5 );
 		pcntl_exec( '/usr/bin/php', $argv, $_ENV );
 	}
 
