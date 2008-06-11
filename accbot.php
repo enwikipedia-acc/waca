@@ -85,6 +85,7 @@
 		'SQLDb!*@wikipedia/SQL'						=> 'root',
 		'Stwalkerster*!*@wikipedia/Stwalkerster'			=> 'developer',
 		'Alexfusco5!*@wikimedia/Alexfusco5'				=> 'developer',
+		'*!*@wikipedia/FastLizard4'               => 'developer',
 		'*!*@*'								=> '*'
 		);
 
