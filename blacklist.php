@@ -47,6 +47,7 @@ $acrnamebl[grawp4] = '/secret.*combination/i';
 $acrnamebl[grawp5] = '/((ph|f)uc?k|s[e3]x|shag)/i';
 $acrnamebl[grawp6] = '/t[3eh][3eh]_l[uo]lz/i';
 $acrnamebl[grawp7] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
+$acrnamebl[grawp8] = '/(need.to|will).*die/i';
 
 $nameblacklist[nigger]   = '/(?i:ni(gg|qq)(a|er))/';
 $nameblacklist[faggot]   = '/(?i:faggot)/';
@@ -59,6 +60,7 @@ $nameblacklist[grawp4] = '/secret.*combination/i';
 $nameblacklist[grawp5] = '/((ph|f)uc?k|s[e3]x|shag)/i';
 $nameblacklist[grawp6] = '/t[3eh][3eh]_l[uo]lz/i';
 $nameblacklist[grawp7] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
+$nameblacklist[grawp8] = '/(need.to|will).*die/i';
 
 #$nameblacklist[grawp8] = '/(?i:(g|9|q)r(a|4)(w|vv|.)(p|.))/i';
 
