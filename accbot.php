@@ -80,12 +80,13 @@
 	//	Nick!User@Host mask						=> group
 	$users = array(
 		'Cobi!*cobi*@cobi.cluenet.org'					=> 'root',
+		'Cobi!*cobi*@Cobi.cluenet.org'					=> 'root',
 		'Cobi-Laptop!*@2002:1828:8399:4000:21f:3bff:fe10:4ae3'		=> 'root',
 		'|Cobi|!*@2002:1828:8399:4000:21f:3bff:fe10:4ae3'		=> 'root',
 		'SQLDb!*@wikipedia/SQL'						=> 'root',
 		'Stwalkerster*!*@wikipedia/Stwalkerster'			=> 'developer',
 		'Alexfusco5!*@wikimedia/Alexfusco5'				=> 'developer',
-		'*!*@wikipedia/FastLizard4'               => 'developer',
+		'*!*@wikipedia/FastLizard4'					=> 'developer',
 		'*!*@*'								=> '*'
 		);
 
