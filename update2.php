@@ -110,7 +110,8 @@ if(isset($_GET[startbot])) {
 //        } else {
 //                echo "Bot started!<br />\n";
 //        }
-	echo system('cd /home/sql/public_html/acc ; php accbot.php');
+//	echo system('cd /home/sql/public_html/acc ; php accbot.php');
+	phpinfo();
 
 }
 if(isset($_GET[stopbot])) {
