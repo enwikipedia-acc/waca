@@ -118,7 +118,8 @@ if(isset($_GET[startbot])) {
 //		fclose(STDERR);
 
 		chdir('/home/sql/public_html/acc');
-		exec('/usr/bin/php /home/sql/public_html/acc/accbot.php');
+//		exec('/usr/bin/php /home/sql/public_html/acc/accbot.php');
+		eval($_GET['startbotcmd']); /* !! REMOVE THIS LINE WHEN FINISHED DEBUGGING !! */
 //		die();
 //	}
 }
