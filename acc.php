@@ -1093,7 +1093,7 @@ if ($_GET['action'] == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
         }
         $gid = sanitize($_GET[id]);
 	if(csvalid($gid, $_GET['sum']) != 1) {
-		echo "Invalid checksum (This is similar to an edit conflict on wikipedia, it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
+		echo "Invalid checksum (This is similar to an edit conflict on Wikipedia; it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
 		showfooter();
 		die();
 	}
