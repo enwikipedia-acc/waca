@@ -118,7 +118,7 @@ if(isset($_GET[startbot])) {
 //		fclose(STDERR);
 
 		chdir('/home/sql/public_html/acc');
-		exec('/usr/bin/php',array('/home/sql/public_html/acc/accbot.php'),$_ENV);
+		exec('/usr/bin/php /home/sql/public_html/acc/accbot.php');
 //		die();
 //	}
 }
