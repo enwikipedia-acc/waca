@@ -112,15 +112,15 @@ if(isset($_GET[startbot])) {
 //        }
 //	echo system('cd /home/sql/public_html/acc ; php accbot.php');
 //	phpinfo();
-	if (pcntl_fork() == 0) {
-		fclose(STDIN);
-		fclose(STDOUT);
-		fclose(STDERR);
+//	if (pcntl_fork() == 0) {
+//		fclose(STDIN);
+//		fclose(STDOUT);
+//		fclose(STDERR);
 
 		chdir('/home/sql/public_html/acc');
-		pcntl_exec('/usr/bin/php',array('/home/sql/public_html/acc/accbot.php'),$_ENV);
-		die();
-	}
+		exec('/usr/bin/php',array('/home/sql/public_html/acc/accbot.php'),$_ENV);
+//		die();
+//	}
 }
 if(isset($_GET[stopbot])) {
 	sendtobot("[WEB]: $_SESSION[user] Ordered me to die!");
