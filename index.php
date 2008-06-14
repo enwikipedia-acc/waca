@@ -337,8 +337,8 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	mysql_close();	
 	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 	@mysql_select_db($toolserver_database) or print mysql_error();
-	$comments = str_replace("<", "&lt;", sanitize($_POST[comments]));
-	$comments = str_replace(">", "&rt;", $comments);
+	$comments = sanitize($_POST[comments]);
+	$comments = preg_replace('/\<\/?(div|span)\s?(.*)\s?\>/', '', $comments
 	$dnow = date("Y-m-d H-i-s");	
 	$query = "INSERT INTO u_sql.acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', 'Open' , '$dnow' );";
 	$result = mysql_query($query);
