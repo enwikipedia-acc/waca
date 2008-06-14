@@ -15,6 +15,7 @@
 	**FastLizard4 ( http://en.wikipedia.org/User:FastLizard4 )   **
 	**Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
 	**Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
+	**Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **	
 	**                                                           **
 	**************************************************************/
 
