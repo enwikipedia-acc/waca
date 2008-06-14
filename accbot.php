@@ -21,7 +21,9 @@
 
 	// Declares
 	declare( ticks=1 );
-
+	$lout = rand(1,30892); //seed
+	$lout2 = rand(1,30892);
+	$lout3 = rand(1,30892);
 	// Defines
 
 	// Includes
@@ -150,13 +152,13 @@
 		global $lout; // Last output. If all three of these are the same, the bot won't speak.
 		global $lout2;
 		global $lout3;
-		//if ( $lout != $lout2 && $lout != $lout3 && $lout2 != $lout3 && $data != $lout && $data != $lout2 && $data != $lout3 ) { //If ALL those are matching, we're probably being flooded, ignore it.
+		if ( $lout != $lout2 && $lout != $lout3 && $lout2 != $lout3 && $data != $lout && $data != $lout2 && $data != $lout3 ) { //If ALL those are matching, we're probably being flooded, ignore it.
 			fwrite( $fp, $data . "\r\n" ); 
 			$flooded = 0; //Future use, for 'Last message repeated X times
-		//} else {
-		//	$flooded = 1;
-		//	$rptcnt++;
-		//}
+		} else {
+			$flooded = 1;
+			$rptcnt++;
+		}
 		$lout3 = $lout2; //Move the data on down thru the variables.
 		$lout2 = $lout;
 		$lout = $data;
