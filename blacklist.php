@@ -74,6 +74,7 @@ $nameblacklist[upolicy4] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|b[0o]t|st[3
 $emailblacklist[grawp1] = '/(shit|fuck|sex|phuck)/i';
 $emailblacklist[grawp2] = '/^poo@.*/i';
 $emailblacklist[grawp3] = '/@poo\..*/i';
+$emailblacklist[webring] = '/@webring.*/i';
 
 //DNSBLS
 $dnsbls = Array	(
