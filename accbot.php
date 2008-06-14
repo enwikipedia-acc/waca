@@ -15,7 +15,7 @@
 	**FastLizard4 ( http://en.wikipedia.org/User:FastLizard4 )   **
 	**Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
 	**Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
-	**Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **	
+	**Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
 	**                                                           **
 	**************************************************************/
 
@@ -76,6 +76,20 @@
 	addCommand( 'restart'    , 'commandRestart'    , false );
 	addCommand( 'recreatesvn', 'commandRecreateSvn', true  );
 	addCommand( 'svn'        , 'commandSvn'        , true  );
+
+	// Users
+	//	Nick!User@Host mask						=> group
+	$users = array(
+		'Cobi!*cobi*@cobi.cluenet.org'					=> 'root',
+		'Cobi-Laptop!*@2002:1828:8399:4000:21f:3bff:fe10:4ae3'		=> 'root',
+		'|Cobi|!*@2002:1828:8399:4000:21f:3bff:fe10:4ae3'		=> 'root',
+		'SQLDb!*@wikipedia/SQL'						=> 'root',
+		'Stwalkerster*!*@wikipedia/Stwalkerster'			=> 'developer',
+		'Alexfusco5!*@wikimedia/Alexfusco5'				=> 'developer',
+		'Soxred93!*@unaffiliated/soxred93'				=> 'developer',
+                '*!*@wikipedia/FastLizard4'					=> 'developer',
+		'*!*@*'								=> '*'
+		);
 
 	// Groups
 	//         [ Group       ][ Privilege     ] = 1;
