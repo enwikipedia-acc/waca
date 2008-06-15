@@ -347,7 +347,7 @@ function showfooter() {
 }
 mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 @mysql_select_db($toolserver_database) or print mysql_error();
-//session_start();
+session_start();
 if ($_GET['action'] == "sreg") {
     showhead();
     foreach ($acrnamebl as $wnbl => $nbl) {
