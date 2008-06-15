@@ -21,9 +21,6 @@
 
 	// Declares
 	declare( ticks=1 );
-	$lout = 1; //seed
-	$lout2 = 2;
-	$lout3 = 3;
 	// Defines
 
 	// Includes
@@ -146,23 +143,8 @@
 
 	function irc( $data ) {
 		global $fp;
-		global $flooded;
-		global $rptcnt;
-	
-		global $lout; // Last output. If all three of these are the same, the bot won't speak.
-		global $lout2;
-		global $lout3;
-		if ( $lout != $lout2 && $lout != $lout3 && $lout2 != $lout3 && $data != $lout ) { //If ALL those are matching, we're probably being flooded, ignore it.
-			fwrite( $fp, $data . "\r\n" ); 
-			$flooded = 0; //Future use, for 'Last message repeated X times
-		} else {
-			$flooded = 1;
-			$rptcnt++;
-		}
-		echo "lout - $lout, 2 - $lout2, 3 - $lout3, data - $data\n";
-		$lout3 = $lout2; //Move the data on down thru the variables.
-		$lout2 = $lout;
-		$lout = $data;
+
+		fwrite( $fp, $data . "\r\n" ); 
 	}
 
 	function addCommand( $command, $callback, $forked = false ) {
