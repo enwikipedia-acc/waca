@@ -1090,7 +1090,7 @@ if ($_GET['action'] == "usermgmt") {
 $devs = null;
 $newdevlist = array_reverse($regdevlist);
 $temp = $newdevlist[0];
-$newdevlist[0] = null;
+unset($newdevlist[0]);
 foreach ($newdevlist as $dev) {
 	$devs .= $dev.", ";
 }
