@@ -82,6 +82,7 @@ $emailblacklist[grawp5] = '/pedo@.*/i';
 $emailblacklist[grawp6] = '/@youchans\.com/i';
 $emailblacklist[grawp7] = '/@ask\.com/i';
 $emailblacklist[grawp8] = '/@rawks\.com/i';
+$emailblacklist[grawp8] = '/(fuck|sex|damn|shit|pedo)/i';
 $emailblacklist[webring] = '/webring@.*/i';
 
 //DNSBLS
