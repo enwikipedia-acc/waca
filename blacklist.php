@@ -34,9 +34,6 @@
 //$nameblacklist[upolicy1] = '/卍/';
 //$nameblacklist[upolicy2] = '/卐/';  // These screw up the preg parser.
 //$nameblacklist[upolicy3] = '/[!?‽？]{3,}/';
-require_once('config.inc.php');
-mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-@mysql_select_db($toolserver_database) or print mysql_error();
 
 if($ACC != "1") { 
         header("Location: http://toolserver.org/~sql/acc/");
