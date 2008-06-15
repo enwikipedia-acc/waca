@@ -64,6 +64,9 @@ $nameblacklist[grawp6] = '/t[3eh][3eh]_l[uo]lz/i';
 $nameblacklist[grawp7] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
 $nameblacklist[grawp8] = '/(need.to|will).*die/i';
 $nameblacklist[grawp9] = '/4chan/i';
+$nameblacklist[grawp10] = '/wikipedos/i';
+$nameblacklist[grawp11] = '/pedophile/i';
+$nameblacklist[grawp12] = '/lolwut/i';
 
 #$nameblacklist[grawp8] = '/(?i:(g|9|q)r(a|4)(w|vv|.)(p|.))/i';
 
@@ -74,6 +77,11 @@ $nameblacklist[upolicy4] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|b[0o]t|st[3
 $emailblacklist[grawp1] = '/(shit|fuck|sex|phuck)/i';
 $emailblacklist[grawp2] = '/^poo@.*/i';
 $emailblacklist[grawp3] = '/@poo\..*/i';
+$emailblacklist[grawp4] = '/@you\.com/i';
+$emailblacklist[grawp5] = '/pedo@.*/i';
+$emailblacklist[grawp6] = '/@youchans\.com/i';
+$emailblacklist[grawp7] = '/@ask\.com/i';
+$emailblacklist[grawp8] = '/@rawks\.com/i';
 $emailblacklist[webring] = '/webring@.*/i';
 
 //DNSBLS
