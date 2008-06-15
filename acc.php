@@ -19,6 +19,7 @@
 **************************************************************/
 
 require_once('config.inc.php');
+require_once('devlist.php');
 ini_set('session.cookie_path', $cookiepath);
 ini_set('session.name', $sessionname);
 $version = "0.9.6";
@@ -1182,7 +1183,9 @@ if ($_GET['action'] == "welcomeperf") {
     <option value="wodup"<?php if($template == "wodup") { echo " selected"; } ?>>{{User:WODUP/Welcome}} ~~~~</option>
     <option value="williamh"<?php if($template == "williamh") { echo " selected"; } ?>>{{User:WilliamH/Welcome|user}} ~~~~</option>
     </select><br />
-    <i>If you'd like more templates added, please contact <a href="users.php?type=dev">one of the developers</a>.</i><br />
+    <i>If you'd like more templates added, please contact one of the developers: <?php foreach ($devlist as $dev) { 
+    	echo $dev.", ";
+    	}?>.</i><br />
     <input type="submit"><input type="reset">
     </form>
     <big><b>If you would like to change your tool password, please logout and use the Forgot Password function</b></big>
