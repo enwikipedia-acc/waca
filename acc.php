@@ -1192,7 +1192,7 @@ if ($_GET['action'] == "welcomeperf") {
     <option value="wodup"<?php if($template == "wodup") { echo " selected"; } ?>>{{User:WODUP/Welcome}} ~~~~</option>
     <option value="williamh"<?php if($template == "williamh") { echo " selected"; } ?>>{{User:WilliamH/Welcome|user}} ~~~~</option>
     </select><br />
-    <i>If you'd like more templates added, please contact one of the developers: <?php echo $devs; }?>.</i><br />
+    <i>If you'd like more templates added, please contact one of the developers: <?php echo $devs; ?>.</i><br />
     <input type="submit"><input type="reset">
     </form>
     <big><b>If you would like to change your tool password, please logout and use the Forgot Password function</b></big>
