@@ -1183,7 +1183,7 @@ if ($_GET['action'] == "welcomeperf") {
     <option value="wodup"<?php if($template == "wodup") { echo " selected"; } ?>>{{User:WODUP/Welcome}} ~~~~</option>
     <option value="williamh"<?php if($template == "williamh") { echo " selected"; } ?>>{{User:WilliamH/Welcome|user}} ~~~~</option>
     </select><br />
-    <i>If you'd like more templates added, please contact one of the developers: <?php foreach ($devlist as $dev) { 
+    <i>If you'd like more templates added, please contact one of the developers: <?php foreach ($regdevlist as $dev) { 
     	echo $dev.", ";
     	}?>.</i><br />
     <input type="submit"><input type="reset">
