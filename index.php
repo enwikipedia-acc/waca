@@ -130,6 +130,9 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$email = rtrim($email);
 	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 	@mysql_select_db($toolserver_database) or print mysql_error();
+	if ($_SERVER[HTTP_USER_AGENT] == "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; SLCC1; .NET CLR 2.0.50727; .NET CLR 3.0.04506; InfoPath.2; .NET CLR 3.5.21022)") {
+		die();
+	}
 	foreach ($nameblacklist as $wnbl => $nbl) {
 		$phail_test = @preg_match($nbl, $_POST[name]);
 		if($phail_test == TRUE) {
@@ -149,9 +152,6 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 			mysql_query($query);
 			die();		
 		}
-	}
-	if ($_SERVER[HTTP_USER_AGENT] == "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; SLCC1; .NET CLR 2.0.50727; .NET CLR 3.0.04506; InfoPath.2; .NET CLR 3.5.21022)") {
-		die();
 	}
 	foreach ($emailblacklist as $wnbl => $nbl) {
 		$phail_test = @preg_match($nbl, $_POST[email]);
