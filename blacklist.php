@@ -64,8 +64,8 @@ $nameblacklist[grawp6] = '/t[3eh][3eh]_l[uo]lz/i';
 $nameblacklist[grawp7] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
 $nameblacklist[grawp8] = '/(need.to|will).*die/i';
 $nameblacklist[grawp9] = '/4chan/i';
-$nameblacklist[grawp10] = '/wikipedos/i';
-$nameblacklist[grawp11] = '/pedophile/i';
+$nameblacklist[grawp10] = '/wikipedo/i';
+$nameblacklist[grawp11] = '/pedophil/i';
 $nameblacklist[grawp12] = '/lolwut/i';
 
 #$nameblacklist[grawp8] = '/(?i:(g|9|q)r(a|4)(w|vv|.)(p|.))/i';
