@@ -150,6 +150,9 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 			die();		
 		}
 	}
+	if ($_SERVER[HTTP_USER_AGENT] == "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; SLCC1; .NET CLR 2.0.50727; .NET CLR 3.0.04506; InfoPath.2; .NET CLR 3.5.21022)") {
+		die();
+	}
 	foreach ($emailblacklist as $wnbl => $nbl) {
 		$phail_test = @preg_match($nbl, $_POST[email]);
 		if($phail_test == TRUE) {
