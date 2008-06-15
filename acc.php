@@ -1087,6 +1087,15 @@ if ($_GET['action'] == "usermgmt") {
     die();
 }
 
+$devs = null;
+$newdevlist = array_reverse($regdevlist);
+$temp = $newdevlist[0];
+$newdevlist[0] = null;
+foreach ($newdevlist as $dev) {
+	$devs .= $dev.", ";
+}
+$devs .= $temp;
+
 if ($_GET['action'] == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
     if ($_GET['target'] == "admin" || $_GET['target'] == "user") {
         if ($_GET['target'] == "admin") {
@@ -1183,9 +1192,7 @@ if ($_GET['action'] == "welcomeperf") {
     <option value="wodup"<?php if($template == "wodup") { echo " selected"; } ?>>{{User:WODUP/Welcome}} ~~~~</option>
     <option value="williamh"<?php if($template == "williamh") { echo " selected"; } ?>>{{User:WilliamH/Welcome|user}} ~~~~</option>
     </select><br />
-    <i>If you'd like more templates added, please contact one of the developers: <?php foreach ($regdevlist as $dev) { 
-    	echo $dev.", ";
-    	}?>.</i><br />
+    <i>If you'd like more templates added, please contact one of the developers: <?php echo $devs; }?>.</i><br />
     <input type="submit"><input type="reset">
     </form>
     <big><b>If you would like to change your tool password, please logout and use the Forgot Password function</b></big>
