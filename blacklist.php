@@ -75,7 +75,6 @@ $query = "SELECT * FROM acc_user ORDER BY user_level";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
 while ($row = mysql_fetch_assoc($result)) {
-    if($row[user_level] != $lastlevel && $row[user_level] != "Suspended" && $row[user_level] != "Declined") { echo "<h3>$row[user_level]</h3>\n"; }
     if($row[user_level] == "Suspended") { $row[user_name] = ""; }
     if($row[user_level] == "Declined") { $row[user_name] = ""; }
     if($row[user_level] == "New") { $row[user_name] = ""; }
