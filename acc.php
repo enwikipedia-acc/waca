@@ -1092,7 +1092,7 @@ $newdevlist = array_reverse($regdevlist);
 $temp = $newdevlist[0];
 unset($newdevlist[0]);
 foreach ($newdevlist as $dev) {
-	$devs .= $dev.", ";
+	$devs .= "<a href=\"http://en.wikipedia.org/wiki/User talk:".$dev[1]."\">"$dev[0]."</a>, ";
 }
 $devs .= $temp;
 
