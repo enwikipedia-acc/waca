@@ -1170,7 +1170,12 @@ if ($_GET['action'] == "welcomeperf" || $_GET['action'] == "prefs") {//Welcomepe
     $sig = " value=\"" . htmlentities($row[user_welcome_sig]) . "\"";
     $template = $row[user_welcome_template];
     ?>
-    <h2>Welcome settings</h2>
+    <table>
+    <th>Table of Contents</th>
+    <tr><td><a href="#1">Welcome settings</a></td></tr>
+    <tr><td><a href="#2">Change password</a></td></tr>
+    </table>
+    <h2>Welcome settings</h2><a name="1"></a> 
     <form action="acc.php?action=welcomeperf" method="post">
     <input type="checkbox" name="welcomeenable"<?php echo $welcomeing ?>> Enable <a href="http://en.wikipedia.org/wiki/User:SQLBot-Hello">SQLBot-Hello</a> welcoming of the users I create<br />
     Your signature (wikicode) <input type="text" name="sig" size ="40"<?php echo $sig; ?>><br>
@@ -1196,7 +1201,7 @@ if ($_GET['action'] == "welcomeperf" || $_GET['action'] == "prefs") {//Welcomepe
     <input type="submit"><input type="reset">
     </form>
     
-    <h2>Change your password</h2>
+    <h2>Change your password</h2><a name="2"></a> 
     <form action="acc.php?action=forgotpw" method="post">
     Your username: <input type="text" name="username"><br />
     Your e-mail address: <input type="text" name="email"><br />
