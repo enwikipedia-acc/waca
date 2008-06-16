@@ -1305,6 +1305,7 @@ if ($_GET['action'] == "zoom") {
     $thisemail = $row[pend_email];
     if($row['pend_date'] == "0000-00-00 00:00:00") { $row['pend_date'] = "Date Unknown"; }
     listrequests($thisid);
+    $row[pend_cmt] = preg_replace('/\<\/?(div|span|script|\?php|\?|img)\s?(.*)\s?\>/', '', $row[pend_cmt]);//Escape injections.
     echo "<br /><strong>Comment</strong>: $row[pend_cmt]<br />\n";
     $query = "SELECT * FROM acc_log WHERE log_pend = '$gid';";
     $result = mysql_query($query);
