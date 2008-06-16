@@ -1138,7 +1138,7 @@ if ($_GET['action'] == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
         echo "Target not specified.<br />\n";
     }
 }
-if ($_GET['action'] == "welcomeperf") {
+if ($_GET['action'] == "welcomeperf" || $_GET['action'] == "prefs") {//Welcomeperf is deprecated, but to avoid conflicts, include it still.
     if ($_POST['sig'] != "") {
         $sig = sanitize($_POST['sig']);
         $template = sanitize($_POST['template']);
@@ -1195,7 +1195,13 @@ if ($_GET['action'] == "welcomeperf") {
     <i>If you'd like more templates added, please contact one of the developers: <?php echo $devs; ?>.</i><br />
     <input type="submit"><input type="reset">
     </form>
-    <big><b>If you would like to change your tool password, please logout and use the Forgot Password function</b></big>
+    
+    <h2>Change your password</h2>
+    <form action="acc.php?action=forgotpw" method="post">
+    Your username: <input type="text" name="username"><br />
+    Your e-mail address: <input type="text" name="email"><br />
+    <input type="submit"><input type="reset">
+    </form><br />
     <?php
     showfooter();
     die();
