@@ -35,8 +35,8 @@
 //$nameblacklist[upolicy2] = '/卐/';  // These screw up the preg parser.
 //$nameblacklist[upolicy3] = '/[!?‽？]{3,}/';
 
-mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-@mysql_select_db($toolserver_database) or print mysql_error();
+/*mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
+@mysql_select_db($toolserver_database) or print mysql_error();*/
 
 if($ACC != "1") { 
         header("Location: http://toolserver.org/~sql/acc/");
@@ -70,7 +70,7 @@ $nameblacklist[grawp9] = '/4chan/i';
 $nameblacklist[grawp10] = '/wikipedo/i';
 $nameblacklist[grawp11] = '/pedophil/i';
 $nameblacklist[grawp12] = '/lolwut/i';
-$nameblacklist[grawp13] = '/(SQLDb';
+/*$nameblacklist[grawp13] = '/(SQLDb';
 $query = "SELECT * FROM acc_user ORDER BY user_level";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
@@ -82,7 +82,7 @@ while ($row = mysql_fetch_assoc($result)) {
         $nameblacklist[grawp13] .= '|'.$row[user_name];
     }
 }
-$nameblacklist[grawp13] .= ')/i';
+$nameblacklist[grawp13] .= ')/i';*/
 
 #$nameblacklist[grawp8] = '/(?i:(g|9|q)r(a|4)(w|vv|.)(p|.))/i';
 
