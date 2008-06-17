@@ -130,8 +130,23 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$email = rtrim($email);
 	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 	@mysql_select_db($toolserver_database) or print mysql_error();
-	if ($_SERVER[HTTP_USER_AGENT] == "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.0; SLCC1; .NET CLR 2.0.50727; .NET CLR 3.0.04506; InfoPath.2; .NET CLR 3.5.21022)") {
-		die();
+	foreach ($uablacklist as $wubl => $ubl) {
+		$phail_test = @preg_match($ubl, $_SERVER[HTTP_USER_AGENT]);
+		if($phail_test == TRUE) {
+        	$now = date("Y-m-d H-i-s");
+			$target = "$wubl";
+			$siuser = mysql_real_escape_string("$_POST[name]");
+			$cmt = mysql_real_escape_string("FROM $ip $email");
+			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
+			fwrite($fp, "[Grawp-Bl] HIT: $wubl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
+			//$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
+			//$result = mysql_query($query);
+			//if(!$result) Die("ERROR: No result returned.");
+			fclose($fp);
+			//$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string('Blacklist Hit: '.$wnbl.' - '.$_POST['name'].' '.$ip2.' '.$email.' '.$_SERVER['HTTP_USER_AGENT']).'\',\''.$now.'\',\''.(time() + 172800).'\');';
+			//mysql_query($query);
+			die();		
+		}
 	}
 	foreach ($nameblacklist as $wnbl => $nbl) {
 		$phail_test = @preg_match($nbl, $_POST[name]);
