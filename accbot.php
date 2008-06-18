@@ -385,9 +385,7 @@
 		pclose( $svn );
 	}
 
-	function commandSandSvnUp( $parsed ) {mysql> UPDATE acc_emails set mail_text = 'The system would <strong>NOT</strong> have submitted this request. ', mail_count = '0', mail_desc = 'Decline - Final', mail_type = 'Interface' WHERE mail_id = '16';
-Query OK, 0 rows affected (0.01 sec)
-Rows matched: 1  Changed: 0  Warnings: 0
+	function commandSandSvnUp( $parsed ) {
 
 		$svn = popen( 'sh svn-sand.sh 2>&1', 'r' );
 		while( !feof( $svn ) ) {
