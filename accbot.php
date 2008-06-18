@@ -85,9 +85,11 @@
 		'Cobi-Laptop!*@2002:1828:8399:4000:21f:3bff:fe10:4ae3'		=> 'root',
 		'|Cobi|!*@2002:1828:8399:4000:21f:3bff:fe10:4ae3'		=> 'root',
 		'SQLDb!*@wikipedia/SQL'						=> 'root',
+		'SXT40!*@wikipedia/SQL'						=> 'root',
 		'Stwalkerster*!*@wikipedia/Stwalkerster'			=> 'developer',
 		'Alexfusco5!*@wikimedia/Alexfusco5'				=> 'developer',
 		'Soxred93*!*@unaffiliated/soxred93'				=> 'developer',
+		'Chuck!*@wikimedia/cmelbye'					=> 'developer',
 		'*!*@wikipedia/FastLizard4'					=> 'developer',
 		'*!*@*'								=> '*'
 		);
