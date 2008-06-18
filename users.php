@@ -18,6 +18,7 @@
 **                                                           **
 **************************************************************/
 require_once('config.inc.php');
+include('devlist.php');
 function displayheader() {
         global $toolserver_username;
         global $toolserver_password;
@@ -132,7 +133,11 @@ while ($row = mysql_fetch_assoc($result)) {
     if($row[user_level] == "Declined") { $row[user_name] = ""; }
     if($row[user_level] == "New") { $row[user_name] = ""; }
     if($row[user_name] != "") {
-        echo "<li><a href=\"users.php?viewuser=$row[user_id]\">$row[user_name]</a></li>\n";
+        echo "<li><a href=\"users.php?viewuser=$row[user_id]\">$row[user_name]</a>";
+        if (in_array($regdevlist, $row[user_name])) {
+        	echo " (Developer)";
+        }
+        echo "</li>\n";
     }
     $lastlevel = $row[user_level];
 }
