@@ -23,7 +23,13 @@ function sanitize($what) {
 	$what = mysql_real_escape_string($what);
 	return($what);
 }
-
+function sendtobot($message) {
+	global $whichami;
+	sleep(3);
+	$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
+	fwrite($fp, "[$whichami]: $message\r\n");
+	fclose($fp);
+}
 function checktor ($addr) {
 	$flags = array();
 	$flags['tor'] = "no";
@@ -137,12 +143,10 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 			$target = "$wubl";
 			$siuser = mysql_real_escape_string("$_POST[name]");
 			$cmt = mysql_real_escape_string("FROM $ip $email");
-			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-			fwrite($fp, "[Grawp-Bl] HIT: $wubl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
+			sendtobot("[Grawp-Bl] HIT: $wubl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]");
 			//$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
 			//$result = mysql_query($query);
 			//if(!$result) Die("ERROR: No result returned.");
-			fclose($fp);
 			//$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string('Blacklist Hit: '.$wnbl.' - '.$_POST['name'].' '.$ip2.' '.$email.' '.$_SERVER['HTTP_USER_AGENT']).'\',\''.$now.'\',\''.(time() + 172800).'\');';
 			//mysql_query($query);
 			die();		
@@ -157,12 +161,10 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 			$target = "$wnbl";
 			$siuser = mysql_real_escape_string("$_POST[name]");
 			$cmt = mysql_real_escape_string("FROM $ip $email");
-			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-			fwrite($fp, "[Name-Bl] HIT: $wnbl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
+			sendtobot("[Name-Bl] HIT: $wnbl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]");
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
 			$result = mysql_query($query);
 			if(!$result) Die("ERROR: No result returned.");
-			fclose($fp);
 			$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string('Blacklist Hit: '.$wnbl.' - '.$_POST['name'].' '.$ip2.' '.$email.' '.$_SERVER['HTTP_USER_AGENT']).'\',\''.$now.'\',\''.(time() + 172800).'\');';
 			mysql_query($query);
 			die();		
@@ -177,12 +179,10 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 			$target = "$wnbl";
 			$siuser = mysql_real_escape_string("$_POST[name]");
 			$cmt = mysql_real_escape_string("FROM $ip $email");
-			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-			fwrite($fp, "[Email-Bl] HIT: $wnbl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
+			sendtobot("[Email-Bl] HIT: $wnbl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]");
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
 			$result = mysql_query($query);
 			if(!$result) Die("ERROR: No result returned.");
-			fclose($fp);
 			$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string('Blacklist Hit: '.$wnbl.' - '.$_POST['name'].' '.$ip2.' '.$email.' '.$_SERVER['HTTP_USER_AGENT']).'\',\''.$now.'\',\''.(time() + 172800).'\');';
 			mysql_query($query);
 			die();		
@@ -200,13 +200,11 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 		$now = date("Y-m-d H-i-s");
 		$siuser = mysql_real_escape_string("$_POST[name]");
 		$cmt = mysql_real_escape_string("FROM $ip $email<br />$dnsblcheck[1]");
-		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-		fwrite($fp, "[DNSBL] $tor HIT: $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]\r\n");
+		sendtobot("[DNSBL] $tor HIT: $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('DNSBL', '$siuser', 'DNSBL Hit', '$now', '$cmt');";
 		echo '<!-- Query: '.$query.' -->';
 		mysql_query($query);
 		echo '<!-- Error: '.mysql_error().' -->';
-		fclose($fp);
 		$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string("DNSBL Hit:<br />\n".$dnsblcheck[1]).'\',\''.$now.'\',\''.(time() + 172800).'\');';
 		echo '<!-- Query: '.$query.' -->';
 		mysql_query($query);
@@ -365,9 +363,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
         $row = mysql_fetch_assoc($result);
 	$pid = $row['pend_id'];
 	$pem = $row['pend_email'];
-	$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-	fwrite($fp, "[[acc:$pid]] N http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$pid /* $_POST[name] */ ".substr(str_replace(array("\n","\r"), array('\n','\r'),$_POST[comments]),0,200).((strlen($_POST[comments]) > 200) ? '...' : '')."\r\n");
-	fclose($fp);
+	sendtobot("[[acc:$pid]] N http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$pid /* $_POST[name] */ ".substr(str_replace(array("\n","\r"), array('\n','\r'),$_POST[comments]),0,200).((strlen($_POST[comments]) > 200) ? '...' : ''));
 	if($pid != 0 || $pid != "") {
 		upcsum($pid);
 	}
