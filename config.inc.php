@@ -17,16 +17,20 @@
 //Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      //
 //                                                           //
 ///////////////////////////////////////////////////////////////
-$ACC = 1; //Keep included files from being executed
-$toolserver_mycnf = parse_ini_file("/home/".get_current_user()."/.my.cnf");
-$toolserver_username = $toolserver_mycnf['user'];
-$toolserver_password = $toolserver_mycnf['password'];
-$toolserver_host = $toolserver_mycnf['host'];
-$toolserver_database = "u_sql";
-$cookiepath = '/~sql/';
-$sessionname = 'ACC';
-$wikiurl = "en.wikipedia.org"; //Does nothing yet, intended for further localization
-$tsurl = "http://toolserver.org/~sql/acc"; //Does nothing yet, intended for further localization
-unset($toolserver_mycnf);
+if(file_exists("config.local.inc.php")) {
+	include("config.local.inc.php"); //Allow for less painful configuration.
+} else {
+	$ACC = 1; //Keep included files from being executed
+	$toolserver_mycnf = parse_ini_file("/home/".get_current_user()."/.my.cnf");
+	$toolserver_username = $toolserver_mycnf['user'];
+	$toolserver_password = $toolserver_mycnf['password'];
+	$toolserver_host = $toolserver_mycnf['host'];
+	$toolserver_database = "u_sql";
+	$cookiepath = '/~sql/';
+	$sessionname = 'ACC';
+	$wikiurl = "en.wikipedia.org"; //Does nothing yet, intended for further localization
+	$tsurl = "http://toolserver.org/~sql/acc"; //Does nothing yet, intended for further localization
+	unset($toolserver_mycnf);
+}
 require_once('blacklist.php');
 ?>
