@@ -318,9 +318,9 @@ function showhead() {
         $suser = sanitize($_SESSION[user]);
         $mquery = "SELECT * FROM acc_user WHERE user_name = '$suser';";
         $result = mysql_query($mquery);
-        if(!$mresult) Die("ERROR: No result returned.");
-        $row = mysql_fetch_assoc($mresult);
-        if($row[user_level] == "Admin") {
+        if(!$mresult) echo("<!-- ERROR: No result returned. mysql_error() --!>");
+        $mrow = mysql_fetch_assoc($mresult);
+        if($mrow[user_level] == "Admin") {
 	$out = preg_replace('/\<a href\=\"http\:\/\/en.wikipedia.org\/wiki\/Wikipedia\:Request_an_account\/Guide\" target\=\"\_blank\"\>Documentation\<\/a\>/', '\n<a href="http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide" target="_blank">Documentation</a>\n<a href="acc.php?action=usermgmt">User management</a>\n', $out);
 	}
     echo $out;
