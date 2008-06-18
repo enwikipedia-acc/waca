@@ -344,14 +344,6 @@ function showfooter() {
     $howout = showhowma();
     $howma = $howmany[howmany];
         $out = showmessage('23');
-        $suser = sanitize($_SESSION[user]);
-        $query = "SELECT * FROM acc_user WHERE user_name = '$suser';";
-        $result = mysql_query($query);
-        if(!$result) Die("ERROR: No result returned.");
-        $row = mysql_fetch_assoc($result);
-        if($row[user_level] == "Admin") {
-	$out = preg_replace('/\<br \/\>\<br \/\>/', '<br /><a href="acc.php?action=usermgmt">User management</a><br /><br />', $out);
-	}
 	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><small><center>$howma users active within the last 5 mins! ($howout)</center></small><br /><br />", $out);
 	echo $out;
 }
