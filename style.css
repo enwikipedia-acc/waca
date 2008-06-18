@@ -200,9 +200,11 @@ tr:hover	{
 .showhide {
 	text-decoration: underline;
 	color: #03c;
+	cursor: pointer;
 }
 .showhide:hover {
 	text-decoration: none;
+	cursor: pointer;
 }
 
 #nav, #nav ul {
