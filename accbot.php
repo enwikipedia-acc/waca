@@ -408,6 +408,7 @@
         	@mysql_select_db( $toolserver_database, $sand_db ) or print mysql_error();
 		$query = "SELECT * FROM acc_emails";
 		$result = mysql_query( $query, $sand_db );
+	        if(!$result) { echo "\nSQL ERROR!\n" };
 		while ( $row = mysql_fetch_assoc( $result ) ) {
 			$id = $row[mail_id];
 			$text = addslashes($row[mail_text]);
@@ -416,6 +417,8 @@
 			$type = addslashes($row[mail_type]);
 			$updateq = "UPDATE acc_emails set mail_text = '$text', mail_count = '$count', mail_desc = '$desc', mail_type = '$type' WHERE mail_id = '$id';";
 			$uq_r = mysql_query( $updateq, $live_db );
+			echo "$updateq\n";
+		        if(!$uq_r) { echo "\nSQL ERROR!\n" };
 		}
 		mysql_close( $sand_db );
 		mysql_close( $live_db );
