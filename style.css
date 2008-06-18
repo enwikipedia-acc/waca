@@ -22,7 +22,7 @@
 */
 body {
 	font-family: "frutiger linotype","lucida grande",helvetica,arial,sans-serif;
-	font-size: 90%;
+	font-size: 76%; /* 76% LOOKS BETTER! -charlie */
 	margin: 0;
 	padding: 0;
 	background-color: #e5e5e5;

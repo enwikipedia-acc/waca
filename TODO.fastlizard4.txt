@@ -37,7 +37,7 @@ Status/Prioirty |  Task and description
 ============================================================================================
 ********************************************************************************************
 
-A WARNING TO VANDALS (read: SQL): TOUCHING THIS TXT FILE IS FORBIDDEN BY COMMUNIST LAW!
+A WARNING TO VANDALS (read: SQL): TOUCHING THIS TXT FILE IS FORBIDDEN BY COMMUNIST LAW! *touch*
 
 +-------------------------------------------------------------+
 |  English Wikipedia Account Request Interface                |
