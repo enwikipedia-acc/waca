@@ -321,7 +321,7 @@ function showhead() {
         if(!$mresult) echo("<!-- ERROR: No result returned. mysql_error() --!>");
         $mrow = mysql_fetch_assoc($mresult);
         if($mrow[user_level] == "Admin") {
-	$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide\" target=\"_blank\">Documentation</a>\n<a href=\"acc.php?action=usermgmt\">User management</a>\n", $out);
+	$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"acc.php?action=usermgmt\">User Management</a>\n", $out);
 	}
     echo $out;
         echo "<div id = \"header-info\">Logged in as <a href=\"users.php?viewuser=$_SESSION[user_id]\"><span title=\"View your user information\">$_SESSION[user]</span></a>.  <a href=\"acc.php?action=logout\">Logout</a>?</div>\n";
