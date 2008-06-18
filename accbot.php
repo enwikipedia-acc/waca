@@ -385,7 +385,10 @@
 		pclose( $svn );
 	}
 
-	function commandSandSvnUp( $parsed ) {
+	function commandSandSvnUp( $parsed ) {mysql> UPDATE acc_emails set mail_text = 'The system would <strong>NOT</strong> have submitted this request. ', mail_count = '0', mail_desc = 'Decline - Final', mail_type = 'Interface' WHERE mail_id = '16';
+Query OK, 0 rows affected (0.01 sec)
+Rows matched: 1  Changed: 0  Warnings: 0
+
 		$svn = popen( 'sh svn-sand.sh 2>&1', 'r' );
 		while( !feof( $svn ) ) {
 			$svnin = trim( fgets( $svn, 512 ) );
@@ -410,11 +413,12 @@
 		$result = mysql_query( $query, $sand_db );
 	        if(!$result) { echo "\nSQL ERROR!\n"; }
 		while ( $row = mysql_fetch_assoc( $result ) ) {
-			$id = $row[mail_id];
-			$text = mysql_real_escape_string($row[mail_text]);
-			$count = mysql_real_escape_string($row[mail_count]);
-			$desc = mysql_real_escape_string($row[mail_desc]);
-			$type = mysql_real_escape_string($row[mail_type]);
+			$id = mysql_real_escape_string($row[mail_id], $live_db);
+			$text = mysql_real_escape_string($row[mail_text], $live_db);
+			$count = mysql_real_escape_string($row[mail_count], $live_db);
+			$desc = mysql_real_escape_string($row[mail_desc], $live_db);
+			$type = mysql_real_escape_string($row[mail_type], $live_db);
+			echo "Copying over $id ($desc)\n";
 			$updateq = "UPDATE acc_emails set mail_text = '$text', mail_count = '$count', mail_desc = '$desc', mail_type = '$type' WHERE mail_id = '$id';";
 			$uq_r = mysql_query( $updateq, $live_db );
 			echo "$updateq\n";
