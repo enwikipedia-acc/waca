@@ -19,7 +19,7 @@ function showhide(listid) {
 		list.style.display = "block";
 		link.innerHTML = "[hide]";
 	} else {
-		link.style.display = "none";
+		list.style.display = "none";
 		link.innerHTML = "[show]";
 	}
 	
