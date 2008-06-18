@@ -418,7 +418,7 @@
 			$updateq = "UPDATE acc_emails set mail_text = '$text', mail_count = '$count', mail_desc = '$desc', mail_type = '$type' WHERE mail_id = '$id';";
 			$uq_r = mysql_query( $updateq, $live_db );
 			echo "$updateq\n";
-		        if(!$uq_r) { echo "\nSQL ERROR!\n"; }
+		        if($uq_r != TRUE) { echo "\nSQL ERROR!" . mysql_error() . "\n"; }
 		}
 		mysql_close( $sand_db );
 		mysql_close( $live_db );
