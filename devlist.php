@@ -18,7 +18,7 @@
 **                                                           **
 **************************************************************/
 
-$regdevlist = array(array('SQL', 'SQL', '1'), array('Cobi', 'Cobi', '64'), array('Charlie', 'cmelbye', '67'), array('FastLizard4', 'FastLizard4', '18'), array('Stwalkerster', 'Stwalkerster', '7'), array('Soxred93', 'Soxred93', '4'), array('Alexfusco5', 'Alexfusco5', '34'));//Format: User on tool, user on wiki, user id
-$ircdevlist = array('SQLDb', 'Cobi', 'Cobi-Laptop', 'chuck', 'FastLizard4', 'stwalkerster', 'Soxred93', 'Alexfusco5', 'Alexfusco5|Away');
+$regdevlist = array(array('SQL', 'SQL', '1'), array('Cobi', 'Cobi', '64'), array('charlie', 'cmelbye', '67'), array('FastLizard4', 'FastLizard4', '18'), array('Stwalkerster', 'Stwalkerster', '7'), array('Soxred93', 'Soxred93', '4'), array('Alexfusco5', 'Alexfusco5', '34'));//Format: User on tool, user on wiki, user id
+$ircdevlist = array('SQLDb', 'Cobi', 'Cobi-Laptop', 'chuck', 'charlie-', 'FastLizard4', 'stwalkerster', 'Soxred93', 'Alexfusco5', 'Alexfusco5|Away');
 
 ?>
