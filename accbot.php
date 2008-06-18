@@ -61,6 +61,7 @@
 	addHelp( 'svnup'      , ''          , 'Allows you to sync the live server with the SVN repository.'         );
 	addHelp( 'restart'    , ''          , 'Causes the bot to do an immediate graceful reinitialization.'        );
 	addHelp( 'recreatesvn', ''          , 'Attempts to fix the live copy of the site.'                          );
+	addHelp( 'sync-msgs'  , ''          , 'Syncs the sandbox messages to the live copy.'                        );
 	addHelp( 'svn'        , '<params>'  , 'Runs a SVN command.'                                                 );
 
 	// Commands
@@ -71,7 +72,7 @@
 	addCommand( 'stats'      , 'commandStats'      , false );
 	addCommand( 'svninfo'    , 'commandSvnInfo'    , true  );
 	addCommand( 'sand-svnup' , 'commandSandSvnUp'  , true  );
-	addCommand( 'sync-msg'   , 'commandSyncMsg'    , false  );
+	addCommand( 'sync-msgs'   , 'commandSyncMsg'    , false  );
 	addCommand( 'svnup'      , 'commandSvnUp'      , true  );
 	addCommand( 'restart'    , 'commandRestart'    , false );
 	addCommand( 'recreatesvn', 'commandRecreateSvn', true  );
