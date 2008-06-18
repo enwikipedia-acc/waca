@@ -151,7 +151,6 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 				}
 				$lastlevel = $row[user_level];
 			} 
-			}
 		}
 		if ($_GET['list'] == "admins") {
 			while ($row = mysql_fetch_assoc($result)) {
@@ -163,7 +162,6 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 				}
 				$lastlevel = $row[user_level];
 			} 
-			}
 		}
 		if ($_GET['list'] == "suspended") {
 			while ($row = mysql_fetch_assoc($result)) {
@@ -175,7 +173,6 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 				}
 				$lastlevel = $row[user_level];
 			} 
-			}
 		}
 		if ($_GET['list'] == "declined") {
 			while ($row = mysql_fetch_assoc($result)) {
@@ -187,7 +184,6 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 				}
 				$lastlevel = $row[user_level];
 			} 
-			}
 		}
 		if ($_GET['list'] == "new") {
 			while ($row = mysql_fetch_assoc($result)) {
@@ -199,7 +195,6 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 				}
 				$lastlevel = $row[user_level];
 			} 
-			}
 		}
 	echo "<ul>\n";
 	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
