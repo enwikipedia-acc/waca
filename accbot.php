@@ -417,6 +417,8 @@
 			$updateq = "UPDATE acc_emails set mail_text = '$text', mail_count = '$count', mail_desc = '$desc', mail_type = '$type' WHERE mail_id = '$id';";
 			$uq_r = mysql_query( $updateq, $live_db );
 		}
+		mysql_close( $sand_db );
+		mysql_close( $live_db );
 		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Synchronized sandbox message db to live message db' );
 	}
 
