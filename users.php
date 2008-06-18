@@ -134,7 +134,7 @@ while ($row = mysql_fetch_assoc($result)) {
     if($row[user_level] == "New") { $row[user_name] = ""; }
     if($row[user_name] != "") {
         echo "<li><a href=\"users.php?viewuser=$row[user_id]\">$row[user_name]</a>";
-        $uid = array($row[user_name], $row[user_onwikiname], $row[user_id]);
+        $uid = array($row[user_name], $row[user_name], $row[user_id]);
         if (in_array($regdevlist, $uid)) {
         	echo " (Developer)";
         }
