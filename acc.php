@@ -1012,6 +1012,7 @@ if ($_GET['action'] == "usermgmt") {
     }
     ?>
     </ol>
+	<div id="usermgmt-users">
     <h2>Users</h2>
     <?php
     $query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Approved') WHERE user_level = 'User' GROUP BY log_pend ORDER BY log_pend DESC;";
@@ -1028,6 +1029,8 @@ if ($_GET['action'] == "usermgmt") {
     }
     ?>
     </ol>
+	</div>
+	<div id="usermgmt-admins">
     <h2>Admins</h2>
     <?php
     $query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Promoted') WHERE user_level = 'Admin' GROUP BY log_pend ORDER BY log_pend ASC;";
@@ -1062,6 +1065,7 @@ if ($_GET['action'] == "usermgmt") {
     }
     ?>
     </ol>
+	</div>
     <h2>Suspended accounts</h2>
 	<div class="showhide" id="showhide-suspended-link" onclick="showhide('showhide-suspended');">[show]</div>
 	<div id="showhide-suspended" style="display: none;">
