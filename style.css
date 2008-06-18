@@ -196,6 +196,15 @@ tr:hover	{
 		background:#c4ceff;
 		}
 
+/* collapsable lists */
+.showhide {
+	text-decoration: underline;
+	color: #03c;
+}
+.showhide:hover {
+	text-decoration: none;
+}
+
 #nav, #nav ul {
 	padding: 0;
 	margin: 0;
