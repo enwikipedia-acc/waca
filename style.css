@@ -233,3 +233,22 @@ tr:hover	{
 #nav li:hover ul {
 	left: auto;
 }
+
+/* 2 Column Layout */
+#content:after {
+    content: ".";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+#usermgmt-users {
+width: 50%;
+float: left;
+}
+
+#usermgmt-admins {
+width: 50%;
+float: right;
+}
