@@ -206,10 +206,10 @@ tr:hover	{
 	left: -999em;
 }
 
-nav li:hover ul {
+#nav li:hover ul {
 	left: auto;
 }
 
-nav li:hover ul, #nav li.sfhover ul {
+#nav li:hover ul, #nav li.sfhover ul {
 	left: auto;
 }
