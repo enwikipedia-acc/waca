@@ -314,8 +314,9 @@ function showhead() {
     $row = mysql_fetch_assoc($result);
     $_SESSION[user_id] = $row[user_id];
     $out = showmessage('21');
-        $suser = sanitize($_SESSION[user_id]);
-        $mquery = "SELECT * FROM acc_user WHERE user_id = '$suser';";
+    if(isset($_SESSION[user])) { //Is user logged in?
+        $suser = sanitize($_SESSION[user]);
+        $mquery = "SELECT * FROM acc_user WHERE user_name = '$suser';";
         $result = mysql_query($mquery);
         if(!$mresult) Die("ERROR: No result returned.");
         $row = mysql_fetch_assoc($mresult);
@@ -323,7 +324,6 @@ function showhead() {
 	$out = preg_replace('/\<a href\=\"http\:\/\/en.wikipedia.org\/wiki\/Wikipedia\:Request_an_account\/Guide\" target\=\"\_blank\"\>Documentation\<\/a\>/', '\n<a href="http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide" target="_blank">Documentation</a>\n<a href="acc.php?action=usermgmt">User management</a>\n', $out);
 	}
     echo $out;
-    if(isset($_SESSION[user])) { //Is user logged in?
         echo "<div id = \"header-info\">Logged in as <a href=\"users.php?viewuser=$_SESSION[user_id]\"><span title=\"View your user information\">$_SESSION[user]</span></a>.  <a href=\"acc.php?action=logout\">Logout</a>?</div>\n";
         //Update user_lastactive
         $now = date("Y-m-d H-i-s");
@@ -331,6 +331,7 @@ function showhead() {
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
     } else { 
+    echo $out;
         echo "<div id = \"header-info\">Not logged in.  <a href=\"acc.php\"><span title=\"Click here to return to the login form\">Log in</span></a>/<a href=\"acc.php?action=register\">Create account</a>?</div>\n"; 
     }
 }
