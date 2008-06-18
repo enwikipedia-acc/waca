@@ -126,21 +126,29 @@ displayheader();
 $query = "SELECT * FROM acc_user ORDER BY user_level";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
-echo "<h2>User List</h2>\n<ul>\n";
+echo "<h2>User List</h2>\n";
+echo "<i>Developers are bolded</i>\n<ul>\n";
 while ($row = mysql_fetch_assoc($result)) {
     if($row[user_level] != $lastlevel && $row[user_level] != "Suspended" && $row[user_level] != "Declined") { echo "<h3>$row[user_level]</h3>\n"; }
     if($row[user_level] == "Suspended") { $row[user_name] = ""; }
     if($row[user_level] == "Declined") { $row[user_name] = ""; }
     if($row[user_level] == "New") { $row[user_name] = ""; }
     if($row[user_name] != "") {
-        echo "<li><a href=\"users.php?viewuser=$row[user_id]\">$row[user_name]</a>";
+        echo "<li><a href=\"users.php?viewuser=$row[user_id]\">";
         $uid = array($row[user_name], $row[user_onwikiname], $row[user_id]);
         if (in_array($uid, $regdevlist)) {
-        	echo " (Developer)";
+        	echo "<b>$row[user_name]</b>";
         }
-        echo "</li>\n";
+        else {
+        	echo "$row[user_name]";
+        }
+        echo "</a></li>\n";
     }
     $lastlevel = $row[user_level];
+}
+echo "<h3>Developers</h3>\n";
+foreach ($regdevlist as $dev) {
+	echo "<li><a href=\"users.php?viewuser=".$dev[2]."\">".$dev[0]."</a></li>\n";
 }
 echo "<ul>\n";
 echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
