@@ -142,7 +142,7 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 	echo "<h2>User List</h2>\n";
 	if ($_GET['list'] == "users") {
 		while ($row = mysql_fetch_assoc($result)) {
-			if($row[user_level] != $lastlevel && $row[user_level] == "User") { 
+			if($row[user_level] == "User") { 
 				echo "<h3>$row[user_level]</h3>\n";
 			
 			if($row[user_name] != "") {
@@ -154,7 +154,7 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 	}
 	if ($_GET['list'] == "admins") {
 		while ($row = mysql_fetch_assoc($result)) {
-			if($row[user_level] != $lastlevel && $row[user_level] == "Admin") { 
+			if($row[user_level] == "Admin") { 
 				echo "<h3>$row[user_level]</h3>\n";
 			
 			if($row[user_name] != "") {
@@ -166,7 +166,7 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 	}
 	if ($_GET['list'] == "suspended") {
 		while ($row = mysql_fetch_assoc($result)) {
-			if($row[user_level] != $lastlevel && $row[user_level] == "Suspended") { 
+			if($row[user_level] == "Suspended") { 
 				echo "<h3>$row[user_level]</h3>\n";
 			
 			if($row[user_name] != "") {
@@ -178,7 +178,7 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 	}
 	if ($_GET['list'] == "declined") {
 		while ($row = mysql_fetch_assoc($result)) {
-			if($row[user_level] != $lastlevel && $row[user_level] == "Declined") { 
+			if($row[user_level] == "Declined") { 
 				echo "<h3>$row[user_level]</h3>\n";
 			
 			if($row[user_name] != "") {
@@ -190,7 +190,7 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 	}
 	if ($_GET['list'] == "new") {
 		while ($row = mysql_fetch_assoc($result)) {
-			if($row[user_level] != $lastlevel && $row[user_level] == "New") { 
+			if($row[user_level] == "New") { 
 				echo "<h3>$row[user_level]</h3>\n";
 			
 			if($row[user_name] != "") {
