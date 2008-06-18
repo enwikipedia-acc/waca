@@ -10,3 +10,17 @@ sfHover = function() {
 	}
 }
 if (window.attachEvent) window.attachEvent("onload", sfHover);
+
+function showhide(listid) {
+	list = document.getElementById(listid);
+	link = document.getElementById(listid + "-link");
+	
+	if(list.style.display == "none") {
+		list.style.display = "block";
+		link.innerHTML = "[hide]";
+	} else {
+		link.style.display = "none";
+		link.innerHTML = "[show]";
+	}
+	
+}
