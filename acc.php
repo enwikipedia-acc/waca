@@ -317,7 +317,7 @@ function showhead() {
     if(isset($_SESSION[user])) { //Is user logged in?
         $suser = sanitize($_SESSION[user]);
         $mquery = "SELECT * FROM acc_user WHERE user_name = '$suser';";
-        $result = mysql_query($mquery);
+        $mresult = mysql_query($mquery);
         if(!$mresult) echo("<!-- ERROR: No result returned. mysql_error() --!>");
         $mrow = mysql_fetch_assoc($mresult);
         if($mrow[user_level] == "Admin") {
