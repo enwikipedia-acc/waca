@@ -102,7 +102,7 @@ $emailblacklist[grawp8] = '/@rawks\.com/i';
 $emailblacklist[grawp9] = '/(fuck|sex|damn|shit|pedo)/i';
 $emailblacklist[webring] = '/webring@.*/i';
 
-$uablacklist[grawp1] = '/Mozilla\/4\.0 \(compatible; MSIE 7\.0; Windows NT 6\.0; SLCC1; \.NET CLR 2\.0\.50727; \.NET CLR 3\.0\.04506; InfoPath\.2; \.NET CLR 3\.5\.21022\)/'
+$uablacklist[grawp1] = '/Mozilla\/4\.0 \(compatible; MSIE 7\.0; Windows NT 6\.0; SLCC1; \.NET CLR 2\.0\.50727; \.NET CLR 3\.0\.04506; InfoPath\.2; \.NET CLR 3\.5\.21022\)/';
 
 //DNSBLS
 $dnsbls = array(
