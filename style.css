@@ -195,3 +195,21 @@ tr.odd		{
 tr:hover	{
 		background:#c4ceff;
 		}
+
+/**
+*   Drop down navigation tabs
+*/
+
+#nav li ul {
+	position: absolute;
+	width: 10em;
+	left: -999em;
+}
+
+nav li:hover ul {
+	left: auto;
+}
+
+nav li:hover ul, #nav li.sfhover ul {
+	left: auto;
+}
