@@ -21,6 +21,7 @@ if(file_exists("config.local.inc.php")) {
 	include("config.local.inc.php"); //Allow for less painful configuration.
 } else {
 	$ACC = 1; //Keep included files from being executed
+	$whichami = 'Live';
 	$toolserver_mycnf = parse_ini_file("/home/".get_current_user()."/.my.cnf");
 	$toolserver_username = $toolserver_mycnf['user'];
 	$toolserver_password = $toolserver_mycnf['password'];
