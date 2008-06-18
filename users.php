@@ -58,7 +58,7 @@ mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 if ($_GET[viewuser] != "") {
     displayheader();
     $gid = sanitize($_GET[viewuser]);
-    $query = "SELECT * FROM acc_user WHERE user_id = $_GET[viewuser] AND user_level != 'Suspended' AND user_level != 'Declined' AND user_level != 'New' ;";
+    $query = "SELECT * FROM acc_user WHERE user_id = $_GET[viewuser] AND user_level != 'Declined' AND user_level != 'New' ;";
     $result = mysql_query($query);
     if(!$result) Die("ERROR: No result returned.");
     $row = mysql_fetch_assoc($result);
