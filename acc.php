@@ -1056,7 +1056,7 @@ if ($_GET['action'] == "usermgmt") {
     </ol>
     <h2>Suspended accounts</h2>
 	<div class="showhide" id="showhide-suspended-link" onclick="showhide('showhide-suspended');">[show]</div>
-	<div id="showhide-suspended">
+	<div id="showhide-suspended" style="display: none;">
     <?php
     $query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Suspended') WHERE user_level = 'Suspended' GROUP BY log_pend ORDER BY log_id DESC;";
     $result = mysql_query($query);
@@ -1074,7 +1074,7 @@ if ($_GET['action'] == "usermgmt") {
 	</div>
     <h2>Declined accounts</h2>
 	<div class="showhide" id="showhide-declined-link" onclick="showhide('showhide-declined');">[show]</div>
-	<div id="showhide-declined">
+	<div id="showhide-declined" style="display: none;">
     <?php
     $query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Declined') WHERE user_level = 'Declined' GROUP BY log_pend ORDER BY log_id DESC;";
     $result = mysql_query($query);
