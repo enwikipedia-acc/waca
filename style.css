@@ -196,9 +196,22 @@ tr:hover	{
 		background:#c4ceff;
 		}
 
-/**
-*   Drop down navigation tabs
-*/
+#nav, #nav ul {
+	padding: 0;
+	margin: 0;
+	list-style: none;
+}
+
+#nav a {
+	display: block;
+	width: 10em;
+}
+
+#nav li {
+	float: left;
+	width: 10em;
+}
+
 
 #nav li ul {
 	position: absolute;
@@ -207,9 +220,5 @@ tr:hover	{
 }
 
 #nav li:hover ul {
-	left: auto;
-}
-
-#nav li:hover ul, #nav li.sfhover ul {
 	left: auto;
 }
