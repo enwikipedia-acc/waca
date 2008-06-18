@@ -399,6 +399,11 @@
 	}
 
 	function commandSyncMsg( $parsed ) {
+		global $toolserver_username;
+		global $toolserver_password;
+		global $toolserver_database;
+	        $live_db = mysql_connect( "sql-s1",$toolserver_username,$toolserver_password );
+        	@mysql_select_db( $toolserver_database, $sand_db ) or print mysql_error();
 	        $sand_db = mysql_connect( "sql",$toolserver_username,$toolserver_password );
         	@mysql_select_db( $toolserver_database, $sand_db ) or print mysql_error();
 		$query = "SELECT * FROM acc_emails";
@@ -410,7 +415,7 @@
 			$desc = addslashes($row[mail_desc]);
 			$type = addslashes($row[mail_type]);
 			$updateq = "UPDATE acc_emails set mail_text = '$text', mail_count = '$count', mail_desc = '$desc', mail_type = '$type' WHERE mail_id = '$id';";
-			$uq_r = mysql_query( $updateq );
+			$uq_r = mysql_query( $updateq, $live_db );
 		}
 		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Synchronized sandbox message db to live message db' );
 	}
