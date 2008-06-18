@@ -408,7 +408,7 @@
         	@mysql_select_db( $toolserver_database, $sand_db ) or print mysql_error();
 		$query = "SELECT * FROM acc_emails";
 		$result = mysql_query( $query, $sand_db );
-	        if(!$result) { echo "\nSQL ERROR!\n" };
+	        if(!$result) { echo "\nSQL ERROR!\n"; }
 		while ( $row = mysql_fetch_assoc( $result ) ) {
 			$id = $row[mail_id];
 			$text = addslashes($row[mail_text]);
