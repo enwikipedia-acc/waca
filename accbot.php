@@ -72,7 +72,7 @@
 	addCommand( 'stats'      , 'commandStats'      , false );
 	addCommand( 'svninfo'    , 'commandSvnInfo'    , true  );
 	addCommand( 'sand-svnup' , 'commandSandSvnUp'  , true  );
-	addCommand( 'sync-msgs'   , 'commandSyncMsg'    , false  );
+	addCommand( 'sync-msgs'   , 'commandSyncMsg'   , true  );
 	addCommand( 'svnup'      , 'commandSvnUp'      , true  );
 	addCommand( 'restart'    , 'commandRestart'    , false );
 	addCommand( 'recreatesvn', 'commandRecreateSvn', true  );
