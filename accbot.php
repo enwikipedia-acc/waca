@@ -71,6 +71,7 @@
 	addCommand( 'stats'      , 'commandStats'      , false );
 	addCommand( 'svninfo'    , 'commandSvnInfo'    , true  );
 	addCommand( 'sand-svnup' , 'commandSandSvnUp'  , true  );
+	addCommand( 'sync-msg'   , 'commandSyncMsg'    , false  );
 	addCommand( 'svnup'      , 'commandSvnUp'      , true  );
 	addCommand( 'restart'    , 'commandRestart'    , false );
 	addCommand( 'recreatesvn', 'commandRecreateSvn', true  );
@@ -100,6 +101,7 @@
 
 	$privgroups[ 'developer' ]                  = $privgroups['*']; // 'developer' inherits '*'.
 	$privgroups[ 'developer' ][ 'sand-svnup'  ] = 1;
+	$privgroups[ 'developer' ][ 'sync-msgs'   ] = 1;
 
 	$privgroups[ 'root'      ]                  = $privgroups['developer']; // 'root' inherits 'developer'.
 	$privgroups[ 'root'      ][ 'svnup'       ] = 1;
@@ -394,6 +396,24 @@
 		pclose( $svn );
 		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Please see the sandbox at http://toolserver.org/~sql/acc_sand/acc.php' );
 	}
+
+	function commandSyncMsg( $parsed ) {
+	        $sand_db = mysql_connect( "sql-s3",$toolserver_username,$toolserver_password );
+        	@mysql_select_db( $toolserver_database, $sand_db ) or print mysql_error();
+		$query = "SELECT * FROM acc_emails";
+		$result = mysql_query( $query, $sand_db );
+		while ( $row = mysql_fetch_assoc( $result ) ) {
+			$id = $row[mail_id];
+			$text = addslashes($row[mail_text]);
+			$count = addslashes($row[mail_count]);
+			$desc = addslashes($row[mail_desc]);
+			$type = addslashes($row[mail_type]);
+			$updateq = "UPDATE acc_emails set mail_text = '$text', mail_count = '$count', mail_desc = '$desc', mail_type = '$type' WHERE mail_id = '$id';";
+			$uq_r = mysql_query( $updateq, $sand_db );
+		}
+		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Synchronized sandbox message db to live message db' );
+	}
+
 
 	function commandSvnUp( $parsed ) {
 		$svn = popen( 'svn up 2>&1', 'r' );
