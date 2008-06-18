@@ -403,31 +403,15 @@
 	}
 
 	function commandSyncMsg( $parsed ) {
-		global $toolserver_username;
-		global $toolserver_password;
-		global $toolserver_database;
-	        $live_db = mysql_connect( "sql-s1",$toolserver_username,$toolserver_password );
-        	@mysql_select_db( $toolserver_database, $sand_db ) or print mysql_error();
-	        $sand_db = mysql_connect( "sql",$toolserver_username,$toolserver_password );
-        	@mysql_select_db( $toolserver_database, $sand_db ) or print mysql_error();
-		$query = "SELECT * FROM acc_emails";
-		$result = mysql_query( $query, $sand_db );
-	        if(!$result) { echo "\nSQL ERROR!\n"; }
-		while ( $row = mysql_fetch_assoc( $result ) ) {
-			$id = mysql_real_escape_string($row[mail_id], $live_db);
-			$text = mysql_real_escape_string($row[mail_text], $live_db);
-			$count = mysql_real_escape_string($row[mail_count], $live_db);
-			$desc = mysql_real_escape_string($row[mail_desc], $live_db);
-			$type = mysql_real_escape_string($row[mail_type], $live_db);
-			echo "Copying over $id ($desc)\n";
-			$updateq = "UPDATE acc_emails set mail_text = '$text' WHERE mail_id = '$id';";
-			$uq_r = mysql_query( $updateq, $live_db );
-			echo "$updateq\n";
-		        if($uq_r != TRUE) { echo "\nSQL ERROR!" . mysql_error() . "\n"; }
+		$msgup = popen( 'sh /home/sql/public_html/acc/bak/updem.sh 2>&1', 'r' );
+		while( !feof( $msgup ) ) {
+			$msgin = trim( fgets( $msgup, 512 ) );
+			if( $msgin != '' ) {
+				irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': ' . str_replace( array( "\n", "\r" ), '', $svnin ) );
+			}
+			sleep( 1 );
 		}
-		mysql_close( $sand_db );
-		mysql_close( $live_db );
-		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Synchronized sandbox message db to live message db' );
+		pclose( $msgup );
 	}
 
 
