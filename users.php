@@ -140,50 +140,56 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	echo "<h2>User List</h2>\n";
-	while ($row = mysql_fetch_assoc($result)) {
+	
 		if ($_GET['list'] == "users") {
-			echo "<h3>$row[user_level]</h3>\n";
+			while ($row = mysql_fetch_assoc($result)) {
 			if($row[user_level] == "User") { 
+				echo "<h3>$row[user_level]</h3>\n";
 				if($row[user_name] != "") {
 					echo "<li><a href=\"users.php?viewuser=$row[user_id]\">$row[user_name]</a></li>\n";
 				}
 			} 
+			}
 		}
 		if ($_GET['list'] == "admins") {
-			echo "<h3>$row[user_level]</h3>\n";
+			while ($row = mysql_fetch_assoc($result)) {
 			if($row[user_level] == "Admin") { 
-				
+				echo "<h3>$row[user_level]</h3>\n";
 				if($row[user_name] != "") {
 					echo "<li><a href=\"users.php?viewuser=$row[user_id]\">$row[user_name]</a></li>\n";
 				}
 			} 
+			}
 		}
 		if ($_GET['list'] == "suspended") {
-			echo "<h3>$row[user_level]</h3>\n";
+			while ($row = mysql_fetch_assoc($result)) {
 			if($row[user_level] == "Suspended") { 
-				
+				echo "<h3>$row[user_level]</h3>\n";
 				if($row[user_name] != "") {
 					echo "<li><a href=\"users.php?viewuser=$row[user_id]\">$row[user_name]</a></li>\n";
 				}
 			} 
+			}
 		}
 		if ($_GET['list'] == "declined") {
-			echo "<h3>$row[user_level]</h3>\n";
+			while ($row = mysql_fetch_assoc($result)) {
 			if($row[user_level] == "Declined") { 
-				
+				echo "<h3>$row[user_level]</h3>\n";
 				if($row[user_name] != "") {
 					echo "<li><a href=\"users.php?viewuser=$row[user_id]\">$row[user_name]</a></li>\n";
 				}
 			} 
+			}
 		}
 		if ($_GET['list'] == "new") {
-			echo "<h3>$row[user_level]</h3>\n";
+			while ($row = mysql_fetch_assoc($result)) {
 			if($row[user_level] == "New") { 
-				
+				echo "<h3>$row[user_level]</h3>\n";
 				if($row[user_name] != "") {
 					echo "<li><a href=\"users.php?viewuser=$row[user_id]\">$row[user_name]</a></li>\n";
 				}
 			} 
+			}
 		}
 	}
 	echo "<ul>\n";
