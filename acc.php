@@ -314,6 +314,14 @@ function showhead() {
     $row = mysql_fetch_assoc($result);
     $_SESSION[user_id] = $row[user_id];
     $out = showmessage('21');
+        $suser = sanitize($_SESSION[user_id]);
+        $mquery = "SELECT * FROM acc_user WHERE user_id = '$suser';";
+        $result = mysql_query($mquery);
+        if(!$mresult) Die("ERROR: No result returned.");
+        $row = mysql_fetch_assoc($mresult);
+        if($row[user_level] == "Admin") {
+	$out = preg_replace('/\<a href\=\"http\:\/\/en.wikipedia.org\/wiki\/Wikipedia\:Request_an_account\/Guide\" target\=\"\_blank\"\>Documentation\<\/a\>/', '\n<a href="http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide" target="_blank">Documentation</a>\n<a href="acc.php?action=usermgmt">User management</a>\n', $out);
+	}
     echo $out;
     if(isset($_SESSION[user])) { //Is user logged in?
         echo "<div id = \"header-info\">Logged in as <a href=\"users.php?viewuser=$_SESSION[user_id]\"><span title=\"View your user information\">$_SESSION[user]</span></a>.  <a href=\"acc.php?action=logout\">Logout</a>?</div>\n";
@@ -341,10 +349,10 @@ function showfooter() {
         if(!$result) Die("ERROR: No result returned.");
         $row = mysql_fetch_assoc($result);
         if($row[user_level] == "Admin") {
-        $out = preg_replace('/\<br \/\>\<br \/\>/', '<br /><a href="acc.php?action=usermgmt">User management</a><br /><br />', $out);
-    }
-    $out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><small><center>$howma users active within the last 5 mins! ($howout)</center></small><br /><br />", $out);
-    echo $out;
+	$out = preg_replace('/\<br \/\>\<br \/\>/', '<br /><a href="acc.php?action=usermgmt">User management</a><br /><br />', $out);
+	}
+	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><small><center>$howma users active within the last 5 mins! ($howout)</center></small><br /><br />", $out);
+	echo $out;
 }
 mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 @mysql_select_db($toolserver_database) or print mysql_error();
