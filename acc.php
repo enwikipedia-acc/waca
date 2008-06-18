@@ -505,7 +505,8 @@ value="welcomeshort">{{Welcomeshort|user}} ~~~~</option>
 <option value="w-kk">{{User:KrakatoaKatie/Welcome1}} ~~~~</option>
 <option value="w-screen">{{w-screen|sig=~~~~}}</option>
 <option value="wodup">{{User:WODUP/Welcome}} ~~~~</option>
-<option value="williamh">{{User:WilliamH/Welcome|user}} ~~~~</option></select></td>
+<option value="williamh">{{User:WilliamH/Welcome|user}} ~~~~</option></select>
+<option value="malinaccier">{{User:Malinaccier/Welcome|~~~~}}</option></select></td>
             </tr>
         </td>
         <td>
@@ -1196,6 +1197,7 @@ if ($_GET['action'] == "welcomeperf" || $_GET['action'] == "prefs") {//Welcomepe
     <option value="w-riana"<?php if($template == "w-riana") { echo " selected"; } ?>>{{User:Riana/Welcome|name=user|sig=~~~~}}</option>
     <option value="wodup"<?php if($template == "wodup") { echo " selected"; } ?>>{{User:WODUP/Welcome}} ~~~~</option>
     <option value="williamh"<?php if($template == "williamh") { echo " selected"; } ?>>{{User:WilliamH/Welcome|user}} ~~~~</option>
+    <option value="malinaccier"<?php if($template == "malinaccier") { echo " selected"; } ?>>{{User:Malinaccier/Welcome|~~~~}}</option>
     </select><br />
     <i>If you'd like more templates added, please contact one of the developers: <?php echo $devs; ?>.</i><br />
     <input type="submit"><input type="reset">
