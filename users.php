@@ -122,6 +122,17 @@ if ($_GET[viewuser] != "") {
     displayfooter();
     die();
 }
+if ($_GET['list'] = "devs") {
+    displayheader();
+    echo "<h2>Developer List</h2>\n<ul>\n";
+	foreach ($regdevlist as $dev) {
+		echo "<li><a href=\"users.php?viewuser=".$dev[2]."\">".$dev[0]."</a></li>\n";
+	}
+	echo "<ul>\n";
+	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
+    displayfooter();
+    die();
+}
 displayheader();
 $query = "SELECT * FROM acc_user ORDER BY user_level";
 $result = mysql_query($query);
@@ -145,10 +156,6 @@ while ($row = mysql_fetch_assoc($result)) {
         echo "</a></li>\n";
     }
     $lastlevel = $row[user_level];
-}
-echo "<h3>Developers</h3>\n";
-foreach ($regdevlist as $dev) {
-	echo "<li><a href=\"users.php?viewuser=".$dev[2]."\">".$dev[0]."</a></li>\n";
 }
 echo "<ul>\n";
 echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
