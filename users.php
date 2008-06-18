@@ -122,7 +122,7 @@ if ($_GET[viewuser] != "") {
     displayfooter();
     die();
 }
-if ($_GET['list'] = "devs") {
+if ($_GET['list'] == "devs") {
     displayheader();
     echo "<h2>Developer List</h2>\n<ul>\n";
 	foreach ($regdevlist as $dev) {
