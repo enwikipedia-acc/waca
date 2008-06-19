@@ -67,7 +67,7 @@ function csvalid($id, $sum) {
 function sendtobot($message) {
 	global $whichami;
 	sleep(3);
-	$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
+	$fp = fsockopen("udp://nightshade.toolserver.org", 9001, $erno, $errstr, 30);
 	fwrite($fp, "[$whichami]: $message\r\n");
 	fclose($fp);
 }
