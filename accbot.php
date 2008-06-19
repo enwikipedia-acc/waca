@@ -1,5 +1,5 @@
 #!/usr/bin/php 
-<?PHP
+<?PHP	
 	/**************************************************************
 	** English Wikipedia Account Request Interface               **
 	** Wikipedia Account Request Graphic Design by               **
