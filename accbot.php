@@ -88,6 +88,7 @@
 		'SXT40!*@wikipedia/SQL'						=> 'root',
 		'Stwalkerster*!*@wikipedia/Stwalkerster'			=> 'developer',
 		'Alexfusco5!*@wikimedia/Alexfusco5'				=> 'developer',
+		'Alexfusco5|Away!*@wikimedia/Alexfusco5'			=> 'developer',
 		'Soxred93*!*@unaffiliated/soxred93'				=> 'developer',
 		'chuck!*@wikimedia/cmelbye'					=> 'developer',
 		'charlie-!*@wikimedia/cmelbye'				=> 'developer',
