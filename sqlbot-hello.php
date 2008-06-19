@@ -52,8 +52,9 @@ if ($run != "go") {
 function tagpage($user, $template) {
 	$basepage = "User_talk:$user";
 	$oldpage = sxGetPage($basepage);
-	$newbie = isnewuser($user);
-	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$user&format=php");
+	$user2 = urlencode($user);
+	$newbie = isnewuser($user2);
+	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$user2&format=php");
 	$ue = unserialize($userexist);
 	foreach ($ue[query][users] as $oneue) {
         	if(!isset($oneue[missing])) {
