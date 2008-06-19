@@ -24,11 +24,14 @@ function sanitize($what) {
 	return($what);
 }
 function sendtobot($message) {
-	global $whichami;
-	sleep(3);
-	$fp = fsockopen("udp://nightshade.toolserver.org", 9001, $erno, $errstr, 30);
-	fwrite($fp, "[$whichami]: $message\r\n");
-	fclose($fp);
+        global $whichami;
+        sleep(3);
+        $fp = fsockopen("udp://91.198.174.201", 9001, $erno, $errstr, 30);
+        if (!$fp) {
+          echo "SOCKET ERROR: $errstr ($errno)<br />\n";
+        }
+        fwrite($fp, "[$whichami]: $message\r\n");
+        fclose($fp);
 }
 function checktor ($addr) {
 	$flags = array();
