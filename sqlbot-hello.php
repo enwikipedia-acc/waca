@@ -54,6 +54,7 @@ function tagpage($user, $template) {
 	$oldpage = sxGetPage($basepage);
 	$user2 = urlencode($user);
 	$newbie = isnewuser($user2);
+	/*
 	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$user2&format=php");
 	$ue = unserialize($userexist);
 	foreach ($ue[query][users] as $oneue) {
@@ -61,9 +62,10 @@ function tagpage($user, $template) {
 		echo "$user does not exist, skipping!\n"; 
 		$exist = FALSE; 
 	} else {
-		$exist = TRUE;
 	}
 	}
+	*/
+	$exist = TRUE;
 	if ($oldpage == "" && $newbie === TRUE && $exist == TRUE) { 
 		$newpage = $oldpage . "\n\n$template\n\n";
 		echo "Editing page\n";
