@@ -242,7 +242,7 @@ function listrequests($type) {
     
         // IP contribs
         $out.= '</span></small></td><td><small><a style="color:green" href="http://en.wikipedia.org/wiki/Special:Contributions/';
-        $out.= $row[pend_ip] . '">c</a> ';
+        $out.= $row[pend_ip] . '" target="_blank">c</a> ';
     
         // IP blocks
         $out.= '<a style="color:green" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:';
@@ -265,7 +265,7 @@ function listrequests($type) {
 
         // Create user link
         $out.= '<b><a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
-        $out.= $uname . '&wpEmail=' . $row[pend_email] . '&uselang=en-acc">Create!</a></b> '; 
+        $out.= $uname . '&wpEmail=' . $row[pend_email] . '&uselang=en-acc" target="_blank">Create!</a></b> '; 
     
         // Done
         $out.= '| <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=1&sum=' . $row[pend_checksum] . '">Done!</a>';
