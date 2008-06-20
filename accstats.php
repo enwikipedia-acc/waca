@@ -85,7 +85,7 @@ while ($wn = mysql_fetch_assoc($result)) {
 }
 
 //Get today's new users
-$wnout .= "\nNew ACC Users Approved today::\n";
+$wnout .= "\nNew ACC Users Approved today:\n";
 $wnout .= "-------------------------------------------------------------\n";
 if (count($whosnew) == 0) {
 	$wnout .= "None.\n";
