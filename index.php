@@ -409,7 +409,6 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 		upcsum($pid);
 	}
 	if(!$result) Die("ERROR: No result returned.");
-	mysql_close();		
 } else {
 	displayform();
 	displayfooter();
