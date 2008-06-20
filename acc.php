@@ -22,8 +22,7 @@ require_once('config.inc.php');
 require_once('devlist.php');
 ini_set('session.cookie_path', $cookiepath);
 ini_set('session.name', $sessionname);
-$version = "0.9.6";
-global $howma;
+$version = "0.9.7";
 
 function sanitize ( $what ) {
 	/*
