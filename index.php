@@ -19,11 +19,19 @@
 **************************************************************/
 
 require_once('config.inc.php');
-function sanitize($what) {
+
+function sanitize ( $what ) {
+	/*
+	* Shortcut to mysql_real_escape_string
+	*/
 	$what = mysql_real_escape_string($what);
 	return($what);
 }
-function sendtobot($message) {
+
+function sendtobot ( $message ) {
+	/*
+	* Send to the IRC bot via UDP
+	*/
         global $whichami;
         sleep(3);
         $fp = fsockopen("udp://91.198.174.201", 9001, $erno, $errstr, 30);
@@ -33,7 +41,11 @@ function sendtobot($message) {
         fwrite($fp, "[$whichami]: $message\r\n");
         fclose($fp);
 }
-function checktor ($addr) {
+
+function checktor ( $addr ) {
+	/*
+	* Check if the supplied host is a TOR node
+	*/
 	$flags = array();
 	$flags['tor'] = "no";
 	$p = explode(".", $addr);
@@ -43,7 +55,11 @@ function checktor ($addr) {
 	if ($ahbl == "127.0.0.3") { $flags['exit'] = "yes"; "yes"; $flags['tor'] = "yes";}
 	return($flags);
 }
-function upcsum($id) {
+
+function upcsum ( $id ) {
+	/*
+	* Update pend ticket checksum
+	*/
 	global $toolserver_username;
 	global $toolserver_password;
 	global $toolserver_host;
@@ -57,8 +73,13 @@ function upcsum($id) {
 	$hash = md5($pend[pend_id].$pend[pend_name].$pend[pend_email].microtime());
 	$query = "UPDATE acc_pend SET pend_checksum = '$hash' WHERE pend_id = '$id';";
         $result = mysql_query($query);
+	mysql_close();
 }
-function displayheader() {
+
+function displayheader ( ) {
+	/*
+	* Display page header via MySQL
+	*/
 	global $toolserver_username;
 	global $toolserver_password;
 	global $toolserver_host;
@@ -70,8 +91,13 @@ function displayheader() {
 	if(!$result) Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
 	echo $row[mail_text];	
+	mysql_close();
 }
-function displayfooter() {
+
+function displayfooter ( ) {
+	/*
+	* Display page footer via MySQL
+	*/
 	global $toolserver_username;
 	global $toolserver_password;
 	global $toolserver_host;
@@ -83,8 +109,13 @@ function displayfooter() {
 	if(!$result) Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
 	echo $row[mail_text];	
+	mysql_close();
 }
-function displayform() {
+
+function displayform ( ) {
+	/*
+	* Display Request form via MySQL
+	*/
 	global $toolserver_username;
 	global $toolserver_password;
 	global $toolserver_host;
@@ -96,8 +127,13 @@ function displayform() {
 	if(!$result) Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
 	echo $row[mail_text];	
+	mysql_close();
 }
-function showmessage($messageno) {
+
+function showmessage ( $messageno ) {
+	/*
+	* Display Interface message via MySQL
+	*/
 	global $toolserver_username;
 	global $toolserver_password;
 	global $toolserver_host;
@@ -109,7 +145,9 @@ function showmessage($messageno) {
 	if(!$result) Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
 	return($row[mail_text]);	
+	mysql_close();
 }
+
 displayheader();
 if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	if ($_POST['debug'] == "on") {
