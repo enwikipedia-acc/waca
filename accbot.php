@@ -1,5 +1,5 @@
-#!/usr/bin/php 
-<?PHP	
+#!/usr/bin/php
+<?PHP
 	/**************************************************************
 	** English Wikipedia Account Request Interface               **
 	** Wikipedia Account Request Graphic Design by               **
@@ -21,6 +21,7 @@
 
 	// Declares
 	declare( ticks=1 );
+
 	// Defines
 
 	// Includes
@@ -72,7 +73,7 @@
 	addCommand( 'stats'      , 'commandStats'      , false );
 	addCommand( 'svninfo'    , 'commandSvnInfo'    , true  );
 	addCommand( 'sand-svnup' , 'commandSandSvnUp'  , true  );
-	addCommand( 'sync-msgs'   , 'commandSyncMsg'   , true  );
+	addCommand( 'sync-msgs'  , 'commandSyncMsg'    , true  );
 	addCommand( 'svnup'      , 'commandSvnUp'      , true  );
 	addCommand( 'restart'    , 'commandRestart'    , false );
 	addCommand( 'recreatesvn', 'commandRecreateSvn', true  );
@@ -91,7 +92,7 @@
 		'Alexfusco5|Away!*@wikimedia/Alexfusco5'			=> 'developer',
 		'Soxred93*!*@unaffiliated/soxred93'				=> 'developer',
 		'chuck!*@wikimedia/cmelbye'					=> 'developer',
-		'charlie-!*@wikimedia/cmelbye'				=> 'developer',
+		'charlie-!*@wikimedia/cmelbye'					=> 'developer',
 		'*!*@wikipedia/FastLizard4'					=> 'developer',
 		'*!*@*'								=> '*'
 		);
@@ -102,9 +103,9 @@
 	$privgroups[ '*'         ][ 'count'       ] = 1;
 	$privgroups[ '*'         ][ 'status'      ] = 1;
 	$privgroups[ '*'         ][ 'stats'       ] = 1;
-	$privgroups[ '*'	 ][ 'svninfo'     ] = 1;
 
 	$privgroups[ 'developer' ]                  = $privgroups['*']; // 'developer' inherits '*'.
+	$privgroups[ 'developer' ][ 'svninfo'     ] = 1;
 	$privgroups[ 'developer' ][ 'sand-svnup'  ] = 1;
 	$privgroups[ 'developer' ][ 'sync-msgs'   ] = 1;
 
@@ -151,7 +152,7 @@
 	function irc( $data ) {
 		global $fp;
 
-		fwrite( $fp, $data . "\r\n" ); 
+		fwrite( $fp, $data . "\r\n" );
 	}
 
 	function addCommand( $command, $callback, $forked = false ) {
@@ -390,7 +391,6 @@
 	}
 
 	function commandSandSvnUp( $parsed ) {
-
 		$svn = popen( 'sh svn-sand.sh 2>&1', 'r' );
 		while( !feof( $svn ) ) {
 			$svnin = trim( fgets( $svn, 512 ) );
@@ -414,7 +414,6 @@
 		}
 		pclose( $msgup );
 	}
-
 
 	function commandSvnUp( $parsed ) {
 		$svn = popen( 'svn up 2>&1', 'r' );
@@ -508,9 +507,11 @@
 
 	if( ( $udpReader = pcntl_fork() ) == 0 ) {
 		$fpt = stream_socket_server( 'udp://0.0.0.0:9001', $errNo, $errStr, STREAM_SERVER_BIND );
+
 		if (!fpt) {
- 		 echo "SOCKET ERROR: $errstr ($errno)\n";
-		}		
+ 			echo "SOCKET ERROR: $errstr ($errno)\n";
+		}
+
 		while( !feof( $fp ) ) {
 			$data = fread( $fpt, 4096 );
 			if( $data != '' ) {
