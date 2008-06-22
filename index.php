@@ -20,7 +20,7 @@
 **************************************************************/
 
 require_once('config.inc.php');
-
+$fail = 0;
 function sanitize ( $what ) {
 	/*
 	* Shortcut to mysql_real_escape_string
@@ -169,7 +169,7 @@ function showmessage ( $messageno ) {
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	return($row[mail_text]);	
+	return($row['mail_text']);	
 	mysql_close();
 }
 
@@ -192,7 +192,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$ip = mysql_real_escape_string($ip);
 	$userblocked = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$ip2&format=php");
 	$ub = unserialize($userblocked);
-	if(isset($ub[query][blocks][0][id])) {
+	if(isset($ub['query']['blocks']['0']['id'])) {
 		$message = showmessage(9);
 		echo "$message<br />\n"; 
 		$fail = 1; 
@@ -289,8 +289,8 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$email = mysql_real_escape_string($email);	
 	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$_POST[name]&format=php");
 	$ue = unserialize($userexist);
-	foreach ($ue[query][users] as $oneue) {
-        	if(!isset($oneue[missing])) {
+	foreach ($ue['query']['users'] as $oneue) {
+        	if(!isset($oneue['missing'])) {
 		$message = showmessage(10);
 		echo "$message<br />\n"; 
 		$fail = 1; 
@@ -332,7 +332,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_name = '$user'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
-	if ($row[pend_id] != "") {
+	if ($row['pend_id'] != "") {
 		$message = showmessage(17);
 		echo "$message<br />\n"; 
 		$fail = 1; 
@@ -340,7 +340,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_email = '$email'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
-	if ($row[pend_id] != "") {
+	if ($row['pend_id'] != "") {
 		$message = showmessage(18);
 		echo "$message<br />\n"; 
 		$fail = 1; 
@@ -349,9 +349,9 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$query = "SELECT * FROM acc_ban WHERE ban_type = 'IP' AND ban_target = '$ip'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
-	$dbanned = $row[ban_duration];
+	$dbanned = $row['ban_duration'];
 	$toruser = checktor($ip2);
-	if ($row[ban_id] != "" || $toruser[tor] == "yes") {
+	if ($row['ban_id'] != "" || $toruser['tor'] == "yes") {
 		if ($dbanned < 0 || $dbanned == "") {
 			$dbanned = time() + 100;
 		}
@@ -370,8 +370,8 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$query = "SELECT * FROM acc_ban WHERE ban_type = 'Name' AND ban_target = '$user'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
-        $dbanned = $row[ban_duration];
-        if ($row[ban_id] != "") {
+        $dbanned = $row['ban_duration'];
+        if ($row['ban_id'] != "") {
                 if ($dbanned < 0 || $dbanned == "") {
                         $dbanned = time() + 100;
                 }
@@ -389,8 +389,8 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	$query = "SELECT * FROM acc_ban WHERE ban_type = 'EMail' AND ban_target = '$email'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
-        $dbanned = $row[ban_duration];
-        if ($row[ban_id] != "") {
+        $dbanned = $row['ban_duration'];
+        if ($row['ban_id'] != "") {
                 if ($dbanned < 0 || $dbanned == "") {
                         $dbanned = time() + 100;
                 }
@@ -417,7 +417,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
 	mysql_close();	
 	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 	@mysql_select_db($toolserver_database) or print mysql_error();
-	$comments = sanitize($_POST[comments]);
+	$comments = sanitize($_POST['comments']);
 	$comments = preg_replace('/\<\/?(div|span|script|\?php|\?|img)\s?(.*)\s?\>/i', '', $comments);//Escape injections.
 	$dnow = date("Y-m-d H-i-s");	
 	$query = "INSERT INTO p_acc.acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', 'Open' , '$dnow' );";
