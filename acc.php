@@ -1468,13 +1468,13 @@ if ($_GET['action'] == "logout") {
     die("Logged out!\n");
 }
 if ($_GET['action'] == "logs") {
-    if($_GET['limit'] != "") {
+    if(isset($_GET['limit'])) {
         $limit = $_GET['limit'];
         $limit = sanitize($limit);
     } else {
         $limit = 100;
     }
-    if($_GET['from'] != "") {
+    if(isset($_GET['from'])) {
         $from = sanitize($_GET['from']);
         $query = "SELECT * FROM acc_log ORDER BY log_time DESC LIMIT $limit OFFSET $from;";
     } else {
