@@ -35,14 +35,14 @@ if (!$link) {
 @mysql_select_db($toolserver_database) or print mysql_error();
 session_start();
 
-//Check user status and display sitenotice
-$suser = sanitize($_SESSION['user']);
-echo makehead($suser);
 if ($_SESSION['user'] == "" && !isset($_GET['nocheck'])) {
+	$suser = sanitize($_SESSION['user']);
+	echo makehead($suser);
 	echo showlogin();
-	echo "<!-- No Session Data -->";
 	die();
 } elseif (!isset($_GET['nocheck'])) {
+	$suser = sanitize($_SESSION['user']);
+	echo makehead($suser);
 	checksecurity($_SESSION['user']);
 	$out = showmessage('20');
 	$out .= "<div id=\"content\">";
@@ -342,7 +342,6 @@ elseif ($_GET['action'] == "forgotpw") {
 }
 elseif ($_GET['action'] == "login") {
 	$puser = sanitize($_POST['username']);
-	echo "<!-- Username: $puser -->";
 	$query = "SELECT * FROM acc_user WHERE user_name = \"$puser\";";
 	$result = mysql_query($query);
 	if (!$result)
@@ -360,7 +359,6 @@ elseif ($_GET['action'] == "login") {
 	}
 	$calcpass = md5($_POST['password']);
 	if ($row[user_pass] == $calcpass) {
-		echo "<!-- " . $_row['user_name'] . " -->";
 		$_SESSION['user'] = $row['user_name'];
 		header("Location: $tsurl/acc.php");
 	} else {
