@@ -49,41 +49,7 @@ if ($_SESSION['user'] == "") {
 }
 
 if (!isset ($_GET['action'])) {
-?>
-<h1>Create an account!</h1>
-<h2>Open requests</h2>
-<a name="open"></a>
-<?php
-	echo listrequests("Open");
-?>
-<h2>Admin Needed!</h2>
-<a name="admin"></a>
-<span id="admin"/>
-<?php
-
-
-	echo listrequests("Admin");
-
-	echo "<h2>Last 5 Closed requests</h2><A name='closed'></A><span id=\"closed\"/>\n";
-	$query = "SELECT * FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("ERROR: No result returned.");
-	echo "<table cellspacing=\"0\">\n";
-	$currentrow = 0;
-	while ($row = mysql_fetch_assoc($result)) {
-		$currentrow += 1;
-		$out = '<tr';
-		if ($currentrow % 2 == 0) {
-			$out .= ' class="even">';
-		} else {
-			$out .= ' class="odd">';
-		}
-		$out .= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&id=$row[pend_id]\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">$row[pend_name]</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&sum=$row[pend_checksum]&target=user\">Reset</a></small></td></tr>";
-		echo $out;
-	}
-	echo "</table>\n";
-	echo showfooter();
+	echo defaultpage();
 } elseif ($_GET['action'] == "sreg") {
 	$suser = sanitize($_SESSION['user']);
 	echo makehead($suser);
