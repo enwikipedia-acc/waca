@@ -224,7 +224,7 @@ while ($row = mysql_fetch_assoc($result)) {
         echo "<li><a href=\"users.php?viewuser=".$row['user_id']."\">";
         $uid = array($row['user_name'], $row['user_onwikiname'], $row['user_id']);
         if (in_array($uid, $regdevlist)) {
-        	echo "<b>$row['user_name']</b>";
+        	echo "<b>".$row['user_name']."</b>";
         }
         else {
         	echo "$row['user_name']";
