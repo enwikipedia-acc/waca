@@ -924,7 +924,7 @@ if ($_GET['action'] == "ban") {
     $result = mysql_query($query);
     if(!$result) Die("ERROR: No result returned.");
     while($row = mysql_fetch_assoc($result)) {
-        if($row[ban_duration] == "" || $row['ban_duration'] == "-1") {
+        if($row['ban_duration'] == "" || $row['ban_duration'] == "-1") {
             $until  = "Forever";
         } else {
             $until = date("F j, Y, g:i a", $row['ban_duration']);
