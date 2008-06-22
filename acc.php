@@ -38,11 +38,11 @@ session_start();
 //Check user status and display sitenotice
 $suser = sanitize($_SESSION['user']);
 echo makehead($suser);
-if ($_SESSION['user'] == "") {
+if ($_SESSION['user'] == "" && !isset($_GET['nocheck'])) {
 	echo showlogin();
 	echo "<!-- No Session Data -->";
 	die();
-} else {
+} elseif (!isset($_GET['nocheck'])) {
 	checksecurity($_SESSION['user']);
 	$out = showmessage('20');
 	$out .= "<div id=\"content\">";
