@@ -412,7 +412,7 @@ function showlogin() {
     </div>
     <div class="required">
         <label for="password">Password:</label>
-        <input type="password" name="password">' .
+        <input type="password" name="password">
     </div>
     <div class="submit">
         <input type="submit">

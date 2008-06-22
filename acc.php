@@ -35,7 +35,7 @@ if (!$link) {
 @mysql_select_db($toolserver_database) or print mysql_error();
 session_start();
 
-if ($_SESSION['user'] == "" && !isset($_GET['nocheck'])) {
+if ($_SESSION['user'] == "" && !isset($_GET['nocheck']) && !isset($_GET['action'])) {
 	$suser = sanitize($_SESSION['user']);
 	echo makehead($suser);
 	echo showlogin();
