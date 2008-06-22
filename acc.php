@@ -339,7 +339,7 @@ function listrequests ( $type ) {
         	$out.= '- <a style="color:red" href="acc.php?action=ban&email=' . $row['pend_id'] . '">E-Mail</a>';
     	
         	//Ban name
-        	$out.= ' - <a style="color:red" href="acc.php?action=ban&name=' . $row['pend_id'] . '">Name</a>';
+        	$out.= ' - <a style="color:red" href="acc.php?action=ban&name=' . $row['pend_id'	] . '">Name</a>';
     
 	        $out.= '</small></td></tr>';
         	echo "$out\n";
