@@ -356,8 +356,7 @@ function makehead($suin) {
 	$_SESSION['user_id'] = $row['user_id'];
 	$out = showmessage('21');
 	if (isset ($_SESSION['user'])) { //Is user logged in?
-		$suser = sanitize($_SESSION['user']);
-		$mquery = "SELECT * FROM acc_user WHERE user_name = '$suser';";
+		$mquery = "SELECT * FROM acc_user WHERE user_name = '$suin';";
 		$mresult = mysql_query($mquery);
 		if (!$mresult)
 			echo ("<!-- ERROR: No result returned. mysql_error() --!>");
