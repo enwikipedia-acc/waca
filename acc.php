@@ -32,7 +32,7 @@ $link = mysql_connect($toolserver_host, $toolserver_username, $toolserver_passwo
 if (!$link) {
 	die('Could not connect: ' . mysql_error());
 }
-@ mysql_select_db($toolserver_database) or print mysql_error();
+@mysql_select_db($toolserver_database) or print mysql_error();
 session_start();
 
 //Check user status and display sitenotice
@@ -40,6 +40,7 @@ $suser = sanitize($_SESSION['user']);
 echo makehead($suser);
 if ($_SESSION['user'] == "") {
 	echo showlogin();
+	echo "<!-- No Session Data -->";
 	die();
 } else {
 	checksecurity($_SESSION['user']);
@@ -335,7 +336,6 @@ elseif ($_GET['action'] == "forgotpw") {
     </form><br />
     Return to <a href="acc.php">Login</a>
     <?php
-
 
 	echo showfootern();
 	die();
