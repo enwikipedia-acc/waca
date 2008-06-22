@@ -319,7 +319,10 @@ function listrequests ( $type ) {
 	        $out.= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row[pend_id] . '&email=5&sum=' . $row[pend_checksum] . '">Invalid</a>';
     
 	        // Defer to admins or users
-	        if($type == 'Open') { $target = 'admin'; } elseif ( $type == 'Admin') { $target = 'user'; } else { $target = 'user'; }
+		if(is_numeric($type)) {
+			$type = $row[pend_status];
+		}
+	        if($type == 'Open') { $target = 'admin'; } elseif ( $type == 'Admin') { $target = 'user'; }
 	        if($target == 'admin' || $target == 'user') {
 			$out.= " - <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&sum=$row[pend_checksum]&target=$target\">Defer to $target" . "s</a>";
 	        } else {
