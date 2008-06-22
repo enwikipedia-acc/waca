@@ -56,7 +56,7 @@ function checktor ( $addr ) {
 	return($flags);
 }
 
-function checkemail ($email) {
+function emailvalid ($email) {
 	$parts = explode("@",$email);
 	if(function_exists('checkdnsrr')) {
 		if(getmxrr($parts[1],$mxhosts,$mxweight)) {
