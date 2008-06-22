@@ -950,7 +950,7 @@ if ($_GET['action'] == "usermgmt") {
         showfooter();
         die();
     }
-    if($_GET['approve'] != "") {
+    if(isset($_GET['approve'])) {
         $aid = sanitize($_GET[approve]);
         $siuser = sanitize($_SESSION[user]);
         $query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$aid';";
@@ -968,7 +968,7 @@ if ($_GET['action'] == "usermgmt") {
         $row2 = mysql_fetch_assoc($result2);
         sendtobot("User $aid ($row2[user_name]) approved by $siuser");
     }
-    if($_GET['suspend'] != "") {
+    if(isset($_GET['suspend'])) {
         $did = sanitize($_GET[suspend]);
         $siuser = sanitize($_SESSION[user]);
         if($_POST['suspendreason'] == "") {
@@ -999,7 +999,7 @@ if ($_GET['action'] == "usermgmt") {
         }
 
     }
-    if($_GET['promote'] != "") {
+    if(isset($_GET['promote'])) {
         $aid = sanitize($_GET[promote]);
         $siuser = sanitize($_SESSION[user]);
         $query = "UPDATE acc_user SET user_level = 'Admin' WHERE user_id = '$aid';";
@@ -1017,7 +1017,7 @@ if ($_GET['action'] == "usermgmt") {
         $row2 = mysql_fetch_assoc($result2);
         sendtobot("User $aid ($row2[user_name]) promoted to admin by $siuser");
     }
-    if($_GET['decline'] != "") {
+    if(isset($_GET['decline'])) {
         $did = sanitize($_GET[decline]);
         $siuser = sanitize($_SESSION[user]);
         if($_POST['declinereason'] == "") {
