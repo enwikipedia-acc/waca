@@ -39,7 +39,7 @@
 @mysql_select_db($toolserver_database) or print mysql_error();*/
 
 if($ACC != "1") { 
-        header("Location: http://toolserver.org/~sql/acc/");
+        header("Location: $tsurl/");
 	die();
 }
 

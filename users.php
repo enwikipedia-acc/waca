@@ -103,7 +103,7 @@ if ($_GET[viewuser] != "") {
     echo "<ol>\n";
         while($row = mysql_fetch_assoc($result)) {
         if($row[log_time] == "0000-00-00 00:00:00") { $row[log_time] = "Date unknown"; }
-        echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">$row[pend_name]</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$row[pend_name]\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$row[pend_name]\">contribs</a> - <a href=\"http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$row[pend_id]\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at $row[log_time]</li>\n";
+        echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">$row[pend_name]</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$row[pend_name]\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$row[pend_name]\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&id=$row[pend_id]\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at $row[log_time]</li>\n";
         // Not every row $noc = count($row[pend_name]); //Define total number of users created
     // Not every row echo "<b>Number of users created: $noc</b>\n"; //Display total number of users created
     }
@@ -115,7 +115,7 @@ if ($_GET[viewuser] != "") {
     echo "<ol>\n";
         while($row = mysql_fetch_assoc($result)) {
         if($row[log_time] == "0000-00-00 00:00:00") { $row[log_time] = "Date unknown"; }
-        echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">$row[pend_name]</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$row[pend_name]\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$row[pend_name]\">contribs</a> - <a href=\"http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$row[pend_id]\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at $row[log_time]</li>\n";
+        echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">$row[pend_name]</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$row[pend_name]\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$row[pend_name]\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&id=$row[pend_id]\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at $row[log_time]</li>\n";
     }
     echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
     echo "</ol>\n";

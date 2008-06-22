@@ -426,7 +426,7 @@ if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
         $row = mysql_fetch_assoc($result);
 	$pid = $row['pend_id'];
 	$pem = $row['pend_email'];
-	sendtobot("[[acc:$pid]] N http://toolserver.org/~sql/acc/acc.php?action=zoom&id=$pid /* $_POST[name] */ ".substr(str_replace(array("\n","\r"), array('\n','\r'),$_POST[comments]),0,200).((strlen($_POST[comments]) > 200) ? '...' : ''));
+	sendtobot("[[acc:$pid]] N $tsurl/acc.php?action=zoom&id=$pid /* $_POST[name] */ ".substr(str_replace(array("\n","\r"), array('\n','\r'),$_POST[comments]),0,200).((strlen($_POST[comments]) > 200) ? '...' : ''));
 	if($pid != 0 || $pid != "") {
 		upcsum($pid);
 	}
