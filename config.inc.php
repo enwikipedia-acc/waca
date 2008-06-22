@@ -25,7 +25,7 @@ if(file_exists("config.local.inc.php")) {
 	$toolserver_mycnf = parse_ini_file("/projects/acc/.my.cnf");
 	$toolserver_username = $toolserver_mycnf['user'];
 	$toolserver_password = $toolserver_mycnf['password'];
-	$toolserver_host = "sql-s1";
+	$toolserver_host = "sql";
 	$toolserver_database = "p_acc";
 	$cookiepath = '/~sql/';
 	$sessionname = 'ACC';
