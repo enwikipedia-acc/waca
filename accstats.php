@@ -20,7 +20,7 @@
 
 require_once('config.inc.php');
 if( $_SERVER['REMOTE_ADDR'] != "") {
-        header("Location: http://toolserver.org/~sql/acc/");
+        header("Location: $tsurl/");
         die();
 }
 
@@ -169,7 +169,7 @@ $bltd = $blcount['COUNT(*)'];
 
 //Put mail together
 $out = "\n";
-$out .= "Tool URL is http://toolserver.org/~sql/acc/acc.php\n";
+$out .= "Tool URL is $tsurl/acc.php\n";
 $out .= "PLEASE, register if you have not already!\n\n";
 $out .= "Site Statistics as of ".date('l\, F jS Y\, \a\t h:i:s A')."!\n";
 $out .= "-------------------------------------------------------------\n";
