@@ -35,11 +35,18 @@ if (!$link) {
 @mysql_select_db($toolserver_database) or print mysql_error();
 session_start();
 
-if ($_SESSION['user'] == "" && !isset($_GET['nocheck']) && !isset($_GET['action'])) {
-	$suser = sanitize($_SESSION['user']);
-	echo makehead($suser);
-	echo showlogin();
-	die();
+$action = '';
+if(isset($_GET['action'])) {
+	$action = $_GET['action'];
+}
+
+if ($_SESSION['user'] == "" && !isset($_GET['nocheck'])) {
+	if($action != 'register' && $action != 'forgotpw') {
+		$suser = sanitize($_SESSION['user']);	
+		echo makehead($suser);
+		echo showlogin();
+		die();
+	}
 } elseif (!isset($_GET['nocheck'])) {
 	$suser = sanitize($_SESSION['user']);
 	echo makehead($suser);
