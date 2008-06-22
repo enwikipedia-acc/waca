@@ -222,6 +222,7 @@ function listrequests($type) {
 	
 	$tablestart = "<table cellspacing=\"0\">\n";
 	$tableend = "</table>\n";
+	$reqlist;
 	$currentreq = 0;
 	while ($row = mysql_fetch_assoc($result)) {
 		$currentreq += 1;
@@ -336,8 +337,9 @@ function listrequests($type) {
 		$out .= ' - <a style="color:red" href="acc.php?action=ban&name=' . $row['pend_id'] . '">Name</a>';
 
 		$out .= '</small></td></tr>';
+		$reqlist .= $out;
 	}
-	return ($tablestart . $out . $tableend);
+	return ($tablestart . $reqlist . $tableend);
 	
 }
 ?>
