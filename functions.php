@@ -405,7 +405,7 @@ function showlogin() {
     <div id="sitenotice">Please login first, and we'll send you on your way!</div>
     <div id="content">
     <h2>Login</h2>
-    <form action="acc.php?action=login" method="post">
+    <form action="acc.php?action=login&nocheck=1" method="post">
     <div class="required">
         <label for="password">Username:</label>
         <input type="text" name="username">
@@ -413,7 +413,6 @@ function showlogin() {
     <div class="required">
         <label for="password">Password:</label>
         <input type="password" name="password">' .
-        <input type="hidden" name="nocheck" value="1">
     </div>
     <div class="submit">
         <input type="submit">
