@@ -667,7 +667,7 @@ if ($_GET['action'] == "forgotpw") {
     die();
 }
 if ($_GET['action'] == "login") {
-    $puser = sanitize($_POST[username]);
+    $puser = sanitize($_POST['username']);
     $query = "SELECT * FROM acc_user WHERE user_name = \"$puser\";";
     $result = mysql_query($query);
     if(!$result) Die("ERROR: No result returned.");
@@ -684,7 +684,7 @@ if ($_GET['action'] == "login") {
     }
     $calcpass = md5($_POST['password']);
     if ($row[user_pass] == $calcpass) { 
-        $_SESSION['user'] = $row[user_name]; 
+        $_SESSION['user'] = $row['user_name']; 
         header("Location: $tsurl/acc.php"); 
     } else {
         echo "<h2>ERROR</h2>\n";
