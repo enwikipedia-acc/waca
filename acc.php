@@ -779,7 +779,7 @@ if ($_GET['action'] == "messagemgmt") {
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
         $row = mysql_fetch_assoc($result);
-        $mailtext = htmlentities($row[mail_text]);
+        $mailtext = htmlentities($row['mail_text']);
         echo "<h2>Edit message</h2><strong>This is NOT a toy. If you can see this form, you can edit this message. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=messagemgmt&edit=$mid&submit=1\" method=\"post\"><br />\n";
         echo "<input type=\"text\" name=\"maildesc\" value=\"$row[mail_desc]\"><br />\n";
         echo "<textarea name=\"mailtext\" rows=\"20\" cols=\"60\">$mailtext</textarea><br />\n";
@@ -794,9 +794,9 @@ if ($_GET['action'] == "messagemgmt") {
     echo "<h2>Mail messages</h2>\n";
     echo "<ol>\n";
     while ($row = mysql_fetch_assoc($result)) {
-        $mailn = $row[mail_id];
-        $mailc = $row[mail_count];
-        $maild = $row[mail_desc];
+        $mailn = $row['mail_id'];
+        $mailc = $row['mail_count'];
+        $maild = $row['mail_desc'];
         $out = "<li><small>[ $maild - $mailc ] <a href=\"acc.php?action=messagemgmt&edit=$mailn\">Edit! (admin only)</a> - <a href=\"acc.php?action=messagemgmt&view=$mailn\">View!</a></small></li>";
         echo "$out\n";
     }
@@ -807,9 +807,9 @@ if ($_GET['action'] == "messagemgmt") {
     echo "<h2>Public Interface messages</h2>\n";
     echo "\n";
     while ($row = mysql_fetch_assoc($result)) {
-        $mailn = $row[mail_id];
-        $mailc = $row[mail_count];
-        $maild = $row[mail_desc];
+        $mailn = $row['mail_id'];
+        $mailc = $row['mail_count'];
+        $maild = $row['mail_desc'];
         $out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&edit=$mailn\">Edit! (admin only)</a> - <a href=\"acc.php?action=messagemgmt&view=$mailn\">View!</a></small></li>";
         echo "$out\n";
     }
@@ -820,9 +820,9 @@ if ($_GET['action'] == "messagemgmt") {
     echo "<h2>Internal Interface messages</h2>\n";
     echo "\n";
     while ($row = mysql_fetch_assoc($result)) {
-        $mailn = $row[mail_id];
-        $mailc = $row[mail_count];
-        $maild = $row[mail_desc];
+        $mailn = $row['mail_id'];
+        $mailc = $row['mail_count'];
+        $maild = $row['mail_desc'];
         $out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&edit=$mailn\">Edit! (admin only)</a> - <a href=\"acc.php?action=messagemgmt&view=$mailn\">View!</a></small></li>";
         echo "$out\n";
     }
