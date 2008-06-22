@@ -222,7 +222,7 @@ function listrequests($type) {
 	
 	$tablestart = "<table cellspacing=\"0\">\n";
 	$tableend = "</table>\n";
-	$reqlist;
+	$reqlist = '';
 	$currentreq = 0;
 	while ($row = mysql_fetch_assoc($result)) {
 		$currentreq += 1;
@@ -341,5 +341,42 @@ function listrequests($type) {
 	}
 	return ($tablestart . $reqlist . $tableend);
 	
+}
+
+function makehead($suin) {
+	/*
+	* Show page header (retrieved by MySQL call)
+	*/
+	$rethead = '';
+	$query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("ERROR: No result returned.");
+	$row = mysql_fetch_assoc($result);
+	$_SESSION['user_id'] = $row['user_id'];
+	$out = showmessage('21');
+	if (isset ($_SESSION['user'])) { //Is user logged in?
+		$suser = sanitize($_SESSION['user']);
+		$mquery = "SELECT * FROM acc_user WHERE user_name = '$suser';";
+		$mresult = mysql_query($mquery);
+		if (!$mresult)
+			echo ("<!-- ERROR: No result returned. mysql_error() --!>");
+		$mrow = mysql_fetch_assoc($mresult);
+		if ($mrow['user_level'] == "Admin") {
+			$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"acc.php?action=usermgmt\">User Management</a>\n", $out);
+		}
+		$rethead .= $out;
+		$rethead .= "<div id = \"header-info\">Logged in as <a href=\"users.php?viewuser=$_SESSION[user_id]\"><span title=\"View your user information\">$_SESSION[user]</span></a>.  <a href=\"acc.php?action=logout\">Logout</a>?</div>\n";
+		//Update user_lastactive
+		$now = date("Y-m-d H-i-s");
+		$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '$_SESSION[user_id]';";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("ERROR: No result returned.");
+	} else {
+		$rethead .= $out;
+		$rethead .= "<div id = \"header-info\">Not logged in.  <a href=\"acc.php\"><span title=\"Click here to return to the login form\">Log in</span></a>/<a href=\"acc.php?action=register\">Create account</a>?</div>\n";
+	}
+	return($rethead);
 }
 ?>

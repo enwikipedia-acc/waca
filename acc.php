@@ -34,42 +34,6 @@ if (!isset ($_GET['action'])) {
 	$_GET['action'] = "-1";
 }
 
-function showhead() {
-	/*
-	* Show page header (retrieved by MySQL call)
-	*/
-	$suin = sanitize($_SESSION['user']);
-	$query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("ERROR: No result returned.");
-	$row = mysql_fetch_assoc($result);
-	$_SESSION['user_id'] = $row['user_id'];
-	$out = showmessage('21');
-	if (isset ($_SESSION['user'])) { //Is user logged in?
-		$suser = sanitize($_SESSION['user']);
-		$mquery = "SELECT * FROM acc_user WHERE user_name = '$suser';";
-		$mresult = mysql_query($mquery);
-		if (!$mresult)
-			echo ("<!-- ERROR: No result returned. mysql_error() --!>");
-		$mrow = mysql_fetch_assoc($mresult);
-		if ($mrow['user_level'] == "Admin") {
-			$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"acc.php?action=usermgmt\">User Management</a>\n", $out);
-		}
-		echo $out;
-		echo "<div id = \"header-info\">Logged in as <a href=\"users.php?viewuser=$_SESSION[user_id]\"><span title=\"View your user information\">$_SESSION[user]</span></a>.  <a href=\"acc.php?action=logout\">Logout</a>?</div>\n";
-		//Update user_lastactive
-		$now = date("Y-m-d H-i-s");
-		$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '$_SESSION[user_id]';";
-		$result = mysql_query($query);
-		if (!$result)
-			Die("ERROR: No result returned.");
-	} else {
-		echo $out;
-		echo "<div id = \"header-info\">Not logged in.  <a href=\"acc.php\"><span title=\"Click here to return to the login form\">Log in</span></a>/<a href=\"acc.php?action=register\">Create account</a>?</div>\n";
-	}
-}
-
 function showfootern() {
 	/*
 	* Show footer (not logged in)
@@ -99,7 +63,9 @@ if (!$link) {
 session_start();
 
 if ($_GET['action'] == "sreg") {
-	showhead();
+	$suser = sanitize($_SESSION['user']);
+	$header = makehead($suser);
+	echo $header;
 	foreach ($acrnamebl as $wnbl => $nbl) {
 		$phail_test = @ preg_match($nbl, $_POST['name']);
 		if ($phail_test == TRUE) {
@@ -215,7 +181,9 @@ if ($_GET['action'] == "sreg") {
 	die();
 }
 if ($_GET['action'] == "register") {
-	showhead();
+	$suser = sanitize($_SESSION['user']);
+	$header = makehead($suser);
+	echo $header;
 ?>
     <h2>Register!</h2>
     <strong><strong>PLEASE DO NOT USE THE SAME PASSWORD AS ON WIKIPEDIA.</strong><br />
@@ -297,7 +265,10 @@ value="welcomeshort">{{Welcomeshort|user}} ~~~~</option>
 	die();
 }
 if ($_GET['action'] == "forgotpw") {
-	showhead();
+	$suser = sanitize($_SESSION['user']);
+	$header = makehead($suser);
+	echo $header;
+	
 	if (isset ($_GET['si']) && isset ($_GET['id'])) {
 		if (isset ($_POST['pw']) && isset ($_POST['pw2'])) {
 			$puser = sanitize($_GET['id']);
@@ -439,7 +410,9 @@ function showlogin() {
     <?php
 
 }
-showhead();
+$suser = sanitize($_SESSION['user']);
+$header = makehead($suser);
+echo $header;
 if ($_SESSION['user'] == "") {
 	showlogin();
 	die();
