@@ -894,6 +894,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 			Die("ERROR: No result returned.");
 		sendtobot("Request $gid deferred to $deto by $sid");
 		echo "Request $_GET[id] deferred to $deto.<br />";
+		echo defaultpage();
 	} else {
 		echo "Target not specified.<br />\n";
 	}
