@@ -1234,11 +1234,11 @@ if ($_GET['action'] == "welcomeperf" || $_GET['action'] == "prefs") {//Welcomepe
     $result = mysql_query($query);
     if(!$result) Die("ERROR: No result returned.");
     $row = mysql_fetch_assoc($result);
-    if ($row[user_welcome] > 0) {
+    if ($row['user_welcome'] > 0) {
         $welcomeing = " checked";
     }
-    $sig = " value=\"" . htmlentities($row[user_welcome_sig]) . "\"";
-    $template = $row[user_welcome_template];
+    $sig = " value=\"" . htmlentities($row['user_welcome_sig']) . "\"";
+    $template = $row['user_welcome_template'];
     ?>
     <table>
     <th>Table of Contents</th>
