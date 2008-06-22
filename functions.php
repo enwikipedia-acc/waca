@@ -170,12 +170,12 @@ function checksecurity($username) {
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_level'] == "New") {
 		echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
-		showfootern();
+		echo showfootern();
 		die();
 	}
 	if ($row['user_level'] == "Suspended" && $username != "SQL") {
 		echo "I'm sorry, but, your account is presently suspended.<br />\n";
-		showfootern();
+		echo showfootern();
 		die();
 	}
 	if ($row['user_level'] == "Declined" && $username != "SQL") {
@@ -196,7 +196,7 @@ function checksecurity($username) {
 		echo "log_time: $row2[log_time]<br />\n";
 		echo "log_cmt: $row2[log_cmt]<br />\n";
 		echo "<br /><big><strong>To appeal this decision, please e-mail <a href=\"mailto:accounts-enwiki-l@lists.wikimedia.org\">accounts-enwiki-l@lists.wikimedia.org</a> with the above information, and a reasoning why you believe you should be approved for this interface.</strong></big><br />\n";
-		showfootern();
+		echo showfootern();
 		die();
 	}
 }
@@ -378,4 +378,12 @@ function makehead($suin) {
 	}
 	return($rethead);
 }
+
+function showfootern() {
+	/*
+	* Show footer (not logged in)
+	*/
+	return showmessage('22');
+}
+
 ?>

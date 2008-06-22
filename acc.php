@@ -34,14 +34,6 @@ if (!isset ($_GET['action'])) {
 	$_GET['action'] = "-1";
 }
 
-function showfootern() {
-	/*
-	* Show footer (not logged in)
-	*/
-	$out = showmessage('22');
-	echo $out;
-}
-
 function showfooter() {
 	/*
 	* Show footer (logged in)
@@ -177,7 +169,7 @@ if ($_GET['action'] == "sreg") {
 		echo "Account created!<br /><br />\n";
 		showlogin();
 	}
-	showfootern();
+	echo showfootern();
 	die();
 }
 if ($_GET['action'] == "register") {
@@ -261,7 +253,7 @@ value="welcomeshort">{{Welcomeshort|user}} ~~~~</option>
     </form>
 <?php
 
-	showfootern();
+	echo showfootern();
 	die();
 }
 if ($_GET['action'] == "forgotpw") {
@@ -293,7 +285,7 @@ if ($_GET['action'] == "forgotpw") {
 			} else {
 				echo "<h2>ERROR</h2>\nInvalid request.1<br />";
 			}
-			showfootern();
+			echo showfootern();
 			die();
 		}
 		$puser = sanitize($_GET['id']);
@@ -317,7 +309,7 @@ if ($_GET['action'] == "forgotpw") {
 		} else {
 			echo "<h2>ERROR</h2>\nInvalid request.2<br />";
 		}
-		showfootern();
+		echo showfootern();
 		die();
 	}
 	if (isset ($_POST['username'])) {
@@ -333,7 +325,7 @@ if ($_GET['action'] == "forgotpw") {
 		}
 		if (strtolower($_POST['email']) != strtolower($row['user_email'])) {
 			echo "<h2>ERROR</h2>Missing or invalid information supplied (ERR 2).\n";
-			showfootern();
+			echo showfootern();
 			die();
 		}
 		$hashme = $puser . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
@@ -342,7 +334,7 @@ if ($_GET['action'] == "forgotpw") {
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row['user_email'], "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
 		echo "Your password reset request has been completed. Please check your e-mail.\n<br />";
-		showfootern();
+		echo showfootern();
 		die();
 	}
 ?>
@@ -354,7 +346,7 @@ if ($_GET['action'] == "forgotpw") {
     Return to <a href="acc.php">Login</a>
     <?php
 
-	showfootern();
+	echo showfootern();
 	die();
 }
 if ($_GET['action'] == "login") {
@@ -366,12 +358,12 @@ if ($_GET['action'] == "login") {
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_level'] == "New") {
 		echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
-		showfootern();
+		echo showfootern();
 		die();
 	}
 	if ($row['user_level'] == "Suspended" && $_SESSION['user'] != "SQL") {
 		echo "I'm sorry, but, your account is presently suspended.<br />\n";
-		showfootern();
+		echo showfootern();
 		die();
 	}
 	$calcpass = md5($_POST['password']);
