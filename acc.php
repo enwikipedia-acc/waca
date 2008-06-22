@@ -1213,7 +1213,7 @@ if ($_GET['action'] == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
     }
 }
 if ($_GET['action'] == "welcomeperf" || $_GET['action'] == "prefs") {//Welcomeperf is deprecated, but to avoid conflicts, include it still.
-    if ($_POST['sig'] != "") {
+    if (isset($_POST['sig'])) {
         $sig = sanitize($_POST['sig']);
         $template = sanitize($_POST['template']);
         $sid = $_SESSION['user'];
