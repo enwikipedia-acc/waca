@@ -227,7 +227,7 @@ while ($row = mysql_fetch_assoc($result)) {
         	echo "<b>".$row['user_name']."</b>";
         }
         else {
-        	echo "$row['user_name']";
+        	echo $row['user_name'];
         }
         echo "</a></li>\n";
     }
