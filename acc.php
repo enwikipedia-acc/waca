@@ -360,7 +360,7 @@ elseif ($_GET['action'] == "login") {
 	}
 	$calcpass = md5($_POST['password']);
 	if ($row[user_pass] == $calcpass) {
-		echo "<!-- " . "$_row['user_name']" . " -->";
+		echo "<!-- " . $_row['user_name'] . " -->";
 		$_SESSION['user'] = $row['user_name'];
 		header("Location: $tsurl/acc.php");
 	} else {
