@@ -398,4 +398,33 @@ function showfooter() {
 	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><small><center>$howma users active within the last 5 mins! ($howout)</center></small><br /><br />", $out);
 	return $out;
 }
+
+function showlogin() {
+	global $_SESSION;
+	$html = <<<HTML
+    <div id="sitenotice">Please login first, and we'll send you on your way!</div>
+    <div id="content">
+    <h2>Login</h2>
+    <form action="acc.php?action=login" method="post">
+    <div class="required">
+        <label for="password">Username:</label>
+        <input type="text" name="username">
+    </div>
+    <div class="required">
+        <label for="password">Password:</label>
+        <input type="password" name="password">
+    </div>
+    <div class="submit">
+        <input type="submit">
+    </div>
+    </form>
+    <br />
+    Don't have an account? 
+    <br /><a href="acc.php?action=register">Register!</a> (Requires approval)<br />
+    <a href="acc.php?action=forgotpw">Forgot your password?</a><br />
+    </div>
+HTML;
+
+  	return $html;
+}
 ?>

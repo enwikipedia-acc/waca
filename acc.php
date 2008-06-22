@@ -154,7 +154,7 @@ if ($_GET['action'] == "sreg") {
 			Die("ERROR: No result returned.");
 		sendtobot("New user: $user");
 		echo "Account created!<br /><br />\n";
-		showlogin();
+		echo showlogin();
 	}
 	echo showfootern();
 	die();
@@ -362,38 +362,12 @@ if ($_GET['action'] == "login") {
 		echo "Username and/or password incorrect.<br />\n";
 	}
 }
-function showlogin() {
-	global $_SESSION;
-?>
-    <div id="sitenotice">Please login first, and we'll send you on your way!</div>
-    <div id="content">
-    <h2>Login</h2>
-    <form action="acc.php?action=login" method="post">
-    <div class="required">
-        <label for="password">Username:</label>
-        <input type="text" name="username">
-    </div>
-    <div class="required">
-        <label for="password">Password:</label>
-        <input type="password" name="password">
-    </div>
-    <div class="submit">
-        <input type="submit">
-    </div>
-    </form>
-    <br />
-    Don't have an account? 
-    <br /><a href="acc.php?action=register">Register!</a> (Requires approval)<br />
-    <a href="acc.php?action=forgotpw">Forgot your password?</a><br />
-    </div>
-    <?php
 
-}
 $suser = sanitize($_SESSION['user']);
 $header = makehead($suser);
 echo $header;
 if ($_SESSION['user'] == "") {
-	showlogin();
+	echo showlogin();
 	die();
 } else {
 	checksecurity($_SESSION['user']);
@@ -1211,7 +1185,7 @@ if ($_GET['action'] == "zoom") {
 }
 if ($_GET['action'] == "logout") {
 	session_unset();
-	showlogin();
+	echo showlogin();
 	die("Logged out!\n");
 }
 if ($_GET['action'] == "logs") {
