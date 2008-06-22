@@ -56,9 +56,9 @@ if ($_SESSION['user'] == "" && !isset($_GET['nocheck'])) {
 	echo $out;
 }
 
-if (!isset ($_GET['action'])) {
+if ($action == '') {
 	echo defaultpage();
-} elseif ($_GET['action'] == "sreg") {
+} elseif ($action == "sreg") {
 	$suser = sanitize($_SESSION['user']);
 	foreach ($acrnamebl as $wnbl => $nbl) {
 		$phail_test = @ preg_match($nbl, $_POST['name']);
@@ -174,7 +174,7 @@ if (!isset ($_GET['action'])) {
 	echo showfootern();
 	die();
 }
-elseif ($_GET['action'] == "register") {
+elseif ($action == "register") {
 ?>
     <h2>Register!</h2>
     <strong><strong>PLEASE DO NOT USE THE SAME PASSWORD AS ON WIKIPEDIA.</strong><br />
@@ -256,7 +256,7 @@ value="welcomeshort">{{Welcomeshort|user}} ~~~~</option>
 	echo showfootern();
 	die();
 }
-elseif ($_GET['action'] == "forgotpw") {
+elseif ($action == "forgotpw") {
 
 	if (isset ($_GET['si']) && isset ($_GET['id'])) {
 		if (isset ($_POST['pw']) && isset ($_POST['pw2'])) {
@@ -347,7 +347,7 @@ elseif ($_GET['action'] == "forgotpw") {
 	echo showfootern();
 	die();
 }
-elseif ($_GET['action'] == "login") {
+elseif ($action == "login") {
 	$puser = sanitize($_POST['username']);
 	$query = "SELECT * FROM acc_user WHERE user_name = \"$puser\";";
 	$result = mysql_query($query);
@@ -373,7 +373,7 @@ elseif ($_GET['action'] == "login") {
 		echo "Username and/or password incorrect.<br />\n";
 	}
 }
-elseif ($_GET['action'] == "messagemgmt") {
+elseif ($action == "messagemgmt") {
 	if (isset ($_GET['view'])) {
 		$mid = sanitize($_GET['view']);
 		$query = "SELECT * FROM acc_emails WHERE mail_id = $mid;";
@@ -484,7 +484,7 @@ elseif ($_GET['action'] == "messagemgmt") {
 	echo showfooter();
 	die();
 }
-elseif ($_GET['action'] == "sban" && $_GET['user'] != "") {
+elseif ($action == "sban" && $_GET['user'] != "") {
 	if ($_POST['banreason'] == "") {
 		echo "<h2>ERROR</h2>\n<br />You must specify a ban reason.\n";
 		echo showfooter();
@@ -520,7 +520,7 @@ elseif ($_GET['action'] == "sban" && $_GET['user'] != "") {
 	echo showfooter();
 	die();
 }
-elseif ($_GET['action'] == "unban" && $_GET['id'] != "") {
+elseif ($action == "unban" && $_GET['id'] != "") {
 	$siuser = sanitize($_SESSION[user]);
 	$bid = sanitize($_GET['id']);
 	$query = "DELETE FROM acc_ban WHERE ban_id = '$bid';";
@@ -537,7 +537,7 @@ elseif ($_GET['action'] == "unban" && $_GET['id'] != "") {
 	echo showfooter();
 	die();
 }
-elseif ($_GET['action'] == "ban") {
+elseif ($action == "ban") {
 	$siuser = sanitize($_SESSION['user']);
 	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name'])) {
 		if ($_GET['ip'] != "") {
@@ -600,7 +600,7 @@ elseif ($_GET['action'] == "ban") {
 	echo showfooter();
 	die();
 }
-elseif ($_GET['action'] == "usermgmt") {
+elseif ($action == "usermgmt") {
 	$siuser = sanitize($_SESSION['user']);
 	$query = "SELECT * FROM acc_user WHERE user_name = '$siuser';";
 	$result = mysql_query($query);
@@ -853,7 +853,7 @@ elseif ($_GET['action'] == "usermgmt") {
 	echo showfooter();
 	die();
 }
-elseif ($_GET['action'] == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
+elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 	if ($_GET['target'] == "admin" || $_GET['target'] == "user") {
 		if ($_GET['target'] == "admin") {
 			$target = "Admin";
@@ -898,7 +898,7 @@ elseif ($_GET['action'] == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		echo "Target not specified.<br />\n";
 	}
 }
-elseif ($_GET['action'] == "welcomeperf" || $_GET['action'] == "prefs") { //Welcomeperf is deprecated, but to avoid conflicts, include it still.
+elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is deprecated, but to avoid conflicts, include it still.
 	if (isset ($_POST['sig'])) {
 		$sig = sanitize($_POST['sig']);
 		$template = sanitize($_POST['template']);
@@ -977,7 +977,7 @@ elseif ($_GET['action'] == "welcomeperf" || $_GET['action'] == "prefs") { //Welc
 	echo showfooter();
 	die();
 }
-elseif ($_GET['action'] == "done" && $_GET['id'] != "") {
+elseif ($action == "done" && $_GET['id'] != "") {
 	if ($_GET['email'] == "" | $_GET['email'] >= 6) {
 		echo "Invalid close reason";
 		echo showfooter();
@@ -1073,8 +1073,9 @@ elseif ($_GET['action'] == "done" && $_GET['id'] != "") {
 		$result = mysql_query($query);
 	}
 	upcsum($_GET[id]);
+	echo defaultpage();
 }
-elseif ($_GET['action'] == "zoom") {
+elseif ($action == "zoom") {
 	if ($_GET['id'] == "") {
 		echo "No user specified!<br />\n";
 		echo showfooter();
@@ -1177,12 +1178,12 @@ elseif ($_GET['action'] == "zoom") {
 	echo showfooter();
 	die();
 }
-elseif ($_GET['action'] == "logout") {
+elseif ($action == "logout") {
 	session_unset();
 	echo showlogin();
 	die("Logged out!\n");
 }
-elseif ($_GET['action'] == "logs") {
+elseif ($action == "logs") {
 	if (isset ($_GET['limit'])) {
 		$limit = $_GET['limit'];
 		$limit = sanitize($limit);
