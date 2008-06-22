@@ -384,7 +384,7 @@
 		while( !feof( $svn ) ) {
 			$svnin = trim( fgets( $svn, 512 ) );
 			if( $svnin != '' ) {
-				irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': ' . str_replace( array( "\n", "\r" ), '', $svnin ) );
+				irc( 'NOTICE ' . $parsed['nick'] . ': ' . str_replace( array( "\n", "\r" ), '', $svnin ) );
 			}
 			sleep( 3 );
 		}
