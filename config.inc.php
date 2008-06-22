@@ -27,7 +27,7 @@ if(file_exists("config.local.inc.php")) {
 	$toolserver_password = $toolserver_mycnf['password'];
 	$toolserver_host = "sql";
 	$toolserver_database = "p_acc";
-	$cookiepath = '/~sql/';
+	$cookiepath = '/acc/';
 	$sessionname = 'ACC';
 	$wikiurl = "en.wikipedia.org"; //Does nothing yet, intended for further localization
 	$tsurl = "http://stable.toolserver.org/acc"; //Does nothing yet, intended for further localization
