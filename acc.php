@@ -325,7 +325,7 @@ function listrequests ( $type ) {
 		if(is_numeric($type)) {
 			$type = $row['pend_status'];
 		}
-		if(!isset($target) { $target = "zoom"; }
+		if(!isset($target)) { $target = "zoom"; }
 	        if($type == 'Open') { $target = 'admin'; } elseif ( $type == 'Admin') { $target = 'user'; }
 	        if($target == 'admin' || $target == 'user') {
 			$out.= " - <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&sum=$row[pend_checksum]&target=$target\">Defer to $target" . "s</a>";
