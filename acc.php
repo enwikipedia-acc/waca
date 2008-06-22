@@ -34,19 +34,6 @@ if (!isset ($_GET['action'])) {
 	$_GET['action'] = "-1";
 }
 
-function showfooter() {
-	/*
-	* Show footer (logged in)
-	*/
-	$howmany = array ();
-	$howmany = gethowma();
-	$howout = showhowma();
-	$howma = $howmany['howmany'];
-	$out = showmessage('23');
-	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><small><center>$howma users active within the last 5 mins! ($howout)</center></small><br /><br />", $out);
-	echo $out;
-}
-
 $link = mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 if (!$link) {
 	die('Could not connect: ' . mysql_error());
@@ -110,7 +97,7 @@ if ($_GET['action'] == "sreg") {
 	$welcomeenable = mysql_real_escape_string($_REQUEST['welcomeenable']);
 	if ($user == "" || $wname == "" || $pass == "" || $pass2 == "" || $email == "" || strlen($email) < 6) {
 		echo "<h2>ERROR!</h2>Form data may not be blank.<br />\n";
-		showfooter();
+		echo showfooter();
 		die();
 	}
 	if ($_POST['debug'] == "on") {
@@ -428,7 +415,7 @@ if ($_GET['action'] == "messagemgmt") {
 		echo "Message count: $row[mail_count]<br />\n";
 		echo "Message title: $row[mail_desc]<br />\n";
 		echo "Message text: <br /><pre>$mailtext</pre><br />\n";
-		showfooter();
+		echo showfooter();
 		die();
 	}
 	if (isset ($_GET['edit'])) {
@@ -440,7 +427,7 @@ if ($_GET['action'] == "messagemgmt") {
 		$row = mysql_fetch_assoc($result);
 		if ($row[user_level] != "Admin" && $_SESSION['user'] != "SQL") {
 			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
-			showfooter();
+			echo showfooter();
 			die();
 		}
 		$mid = sanitize($_GET['edit']);
@@ -464,7 +451,7 @@ if ($_GET['action'] == "messagemgmt") {
 				Die("ERROR: No result returned.");
 			echo "Message $mid updated.<br />\n";
 			sendtobot("Message $mid edited by $siuser");
-			showfooter();
+			echo showfooter();
 			die();
 		}
 		$query = "SELECT * FROM acc_emails WHERE mail_id = $mid;";
@@ -478,7 +465,7 @@ if ($_GET['action'] == "messagemgmt") {
 		echo "<textarea name=\"mailtext\" rows=\"20\" cols=\"60\">$mailtext</textarea><br />\n";
 		echo "<input type=\"submit\"><input type=\"reset\"><br />\n";
 		echo "</form>";
-		showfooter();
+		echo showfooter();
 		die();
 	}
 	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Message';";
@@ -523,13 +510,13 @@ if ($_GET['action'] == "messagemgmt") {
 		echo "$out\n";
 	}
 	echo "</ol><br />\n";
-	showfooter();
+	echo showfooter();
 	die();
 }
 if ($_GET['action'] == "sban" && $_GET['user'] != "") {
 	if ($_POST['banreason'] == "") {
 		echo "<h2>ERROR</h2>\n<br />You must specify a ban reason.\n";
-		showfooter();
+		echo showfooter();
 		die();
 	}
 	$duration = sanitize($_POST['duration']);
@@ -559,7 +546,7 @@ if ($_GET['action'] == "sban" && $_GET['user'] != "") {
 		$until = date("F j, Y, g:i a", $duration);
 	}
 	sendtobot("$target banned by $siuser for $reason until $until");
-	showfooter();
+	echo showfooter();
 	die();
 }
 if ($_GET['action'] == "unban" && $_GET['id'] != "") {
@@ -576,7 +563,7 @@ if ($_GET['action'] == "unban" && $_GET['id'] != "") {
 	if (!$result)
 		Die("ERROR: No result returned.");
 	echo "Unbanned ban #$bid<br />\n";
-	showfooter();
+	echo showfooter();
 	die();
 }
 if ($_GET['action'] == "ban") {
@@ -619,7 +606,7 @@ if ($_GET['action'] == "ban") {
 		$row = mysql_fetch_assoc($result);
 		if ($row[ban_id] != "") {
 			echo "<h2>ERROR</h2>\n<br />\nCould not ban. Already banned!<br />";
-			showfooter();
+			echo showfooter();
 			die();
 		} else {
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&user=$siuser&target=$target&type=$type\" method=\"post\">Ban target: $target\n<br />Reason: <input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Forever<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT><br /><input type=\"submit\"></form>\n";
@@ -639,7 +626,7 @@ if ($_GET['action'] == "ban") {
 		echo "<li><small><strong>" . $row['ban_target'] . "</strong> - Banned by: <strong>" . $row['ban_user'] . "</strong> for <strong>" . $row['ban_reason'] . "</strong> at <strong>" . $row['ban_date'] . "</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&id=" . $row['ban_id'] . "\">UNBAN</a>)</small></li>";
 	}
 	echo "</ol>\n";
-	showfooter();
+	echo showfooter();
 	die();
 }
 if ($_GET['action'] == "usermgmt") {
@@ -651,7 +638,7 @@ if ($_GET['action'] == "usermgmt") {
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_level'] != "Admin" && $_SESSION['user'] != "SQL") {
 		echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
-		showfooter();
+		echo showfooter();
 		die();
 	}
 	if (isset ($_GET['approve'])) {
@@ -683,7 +670,7 @@ if ($_GET['action'] == "usermgmt") {
 			echo "<textarea name=\"suspendreason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
 			echo "<input type=\"submit\"><input type=\"reset\"><br />\n";
 			echo "</form>";
-			showfooter();
+			echo showfooter();
 			die();
 		} else {
 			$suspendrsn = sanitize($_POST['suspendreason']);
@@ -704,7 +691,7 @@ if ($_GET['action'] == "usermgmt") {
 				Die("ERROR: No result returned.");
 			$row2 = mysql_fetch_assoc($result2);
 			sendtobot("User $did ($row2[user_name]) suspended access by $siuser because: \"$suspendrsn\"");
-			showfooter();
+			echo showfooter();
 			die();
 		}
 
@@ -738,7 +725,7 @@ if ($_GET['action'] == "usermgmt") {
 			echo "<textarea name=\"declinereason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
 			echo "<input type=\"submit\"><input type=\"reset\"><br />\n";
 			echo "</form>";
-			showfooter();
+			echo showfooter();
 			die();
 		} else {
 			$declinersn = sanitize($_POST['declinereason']);
@@ -759,7 +746,7 @@ if ($_GET['action'] == "usermgmt") {
 				Die("ERROR: No result returned.");
 			$row2 = mysql_fetch_assoc($result2);
 			sendtobot("User $did ($row2[user_name]) declined access by $siuser because: \"$declinersn\"");
-			showfooter();
+			echo showfooter();
 			die();
 		}
 
@@ -886,7 +873,7 @@ if ($_GET['action'] == "usermgmt") {
 	</div>
     <?php
 
-	showfooter();
+	echo showfooter();
 	die();
 }
 
@@ -909,7 +896,7 @@ if ($_GET['action'] == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		$gid = sanitize($_GET[id]);
 		if (csvalid($gid, $_GET['sum']) != 1) {
 			echo "Invalid checksum (This is similar to an edit conflict on Wikipedia; it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
-			showfooter();
+			echo showfooter();
 			die();
 		}
 		$sid = sanitize($_SESSION[user]);
@@ -920,7 +907,7 @@ if ($_GET['action'] == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		$row = mysql_fetch_assoc($result);
 		if ($row[pend_status] == $target) {
 			echo "Cannot set status, target already deferred to $target<br />\n";
-			showfooter();
+			echo showfooter();
 			die();
 		}
 		$query = "UPDATE acc_pend SET pend_status = '$target' WHERE pend_id = '$gid';";
@@ -1019,19 +1006,19 @@ if ($_GET['action'] == "welcomeperf" || $_GET['action'] == "prefs") { //Welcomep
     </form><br />
     <?php
 
-	showfooter();
+	echo showfooter();
 	die();
 }
 if ($_GET['action'] == "done" && $_GET['id'] != "") {
 	if ($_GET['email'] == "" | $_GET['email'] >= 6) {
 		echo "Invalid close reason";
-		showfooter();
+		echo showfooter();
 		die();
 	}
 	$gid = sanitize($_GET[id]);
 	if (csvalid($gid, $_GET['sum']) != 1) {
 		echo "Invalid checksum (This is similar to an edit conflict on Wikipedia; it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
-		showfooter();
+		echo showfooter();
 		die();
 	}
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
@@ -1042,7 +1029,7 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
 	if ($row[pend_emailsent] == "1" && $_GET['override'] != "yes") {
 		echo "<br />This request has already been closed in a manner that has generated an e-mail to the user, Proceed?<br />\n";
 		echo "<a href=\"acc.php?sum=$_GET[sum]&action=done&id=$_GET[id]&override=yes&email=$_GET[email]\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
-		showfooter();
+		echo showfooter();
 		die();
 	}
 	$gem = sanitize($_GET[email]);
@@ -1055,7 +1042,7 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
 	$gus = $row2[pend_name];
 	if ($row2[pend_status] == "Closed") {
 		echo "<h2>ERROR</h2>Cannot close this request. Already closed.<br />\n";
-		showfooter();
+		echo showfooter();
 		die();
 	}
 	$query = "SELECT * FROM acc_user WHERE user_name = '$sid';";
@@ -1122,7 +1109,7 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
 if ($_GET['action'] == "zoom") {
 	if ($_GET['id'] == "") {
 		echo "No user specified!<br />\n";
-		showfooter();
+		echo showfooter();
 		die();
 	}
 	$gid = sanitize($_GET['id']);
@@ -1219,7 +1206,7 @@ if ($_GET['action'] == "zoom") {
 		echo "<i>None.</i>\n";
 	}
 	echo "</ol>\n";
-	showfooter();
+	echo showfooter();
 	die();
 }
 if ($_GET['action'] == "logout") {
@@ -1332,7 +1319,7 @@ if ($_GET['action'] == "logs") {
 	}
 	echo "</ol>\n";
 	echo $n1;
-	showfooter();
+	echo showfooter();
 	die();
 }
 ?>
@@ -1372,5 +1359,5 @@ while ($row = mysql_fetch_assoc($result)) {
 	echo $out;
 }
 echo "</table>\n";
-showfooter();
+echo showfooter();
 ?>

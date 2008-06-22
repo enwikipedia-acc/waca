@@ -386,4 +386,16 @@ function showfootern() {
 	return showmessage('22');
 }
 
+function showfooter() {
+	/*
+	* Show footer (logged in)
+	*/
+	$howmany = array ();
+	$howmany = gethowma();
+	$howout = showhowma();
+	$howma = $howmany['howmany'];
+	$out = showmessage('23');
+	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><small><center>$howma users active within the last 5 mins! ($howout)</center></small><br /><br />", $out);
+	return $out;
+}
 ?>
