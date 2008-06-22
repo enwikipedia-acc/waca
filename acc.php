@@ -733,7 +733,7 @@ if ($_SESSION['user'] == "") {
         $out = "";
 }
 if ($_GET['action'] == "messagemgmt") {
-    if($_GET['view'] != "") {
+    if(isset($_GET['view'])) {
         $mid = sanitize($_GET['view']);
         $query = "SELECT * FROM acc_emails WHERE mail_id = $mid;";
         $result = mysql_query($query);
@@ -747,7 +747,7 @@ if ($_GET['action'] == "messagemgmt") {
         showfooter();
         die();
     }    
-    if($_GET['edit'] != "") {
+    if(isset($_GET['edit'])) {
         $siuser = sanitize($_SESSION[user]);
         $query = "SELECT * FROM acc_user WHERE user_name = '$siuser';";
         $result = mysql_query($query);
