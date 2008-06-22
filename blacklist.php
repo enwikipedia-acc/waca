@@ -44,6 +44,13 @@ if($ACC != "1") {
 	die();
 }
 
+$acrnamebl = array();
+$nameblacklist = array();
+$emailblacklist = array();
+$uablacklist = array();
+
+
+
 $acrnamebl[nigger]   = '/(?i:ni(gg|qq)(a|er))/';
 $acrnamebl[grawp1]   = '/k*[l1][o0]?m[o0]?[i1]r*/i';
 $acrnamebl[grawp2]   = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
