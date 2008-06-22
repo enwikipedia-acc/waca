@@ -885,7 +885,7 @@ if ($_GET['action'] == "unban" && $_GET['id'] != "") {
 }
 if ($_GET['action'] == "ban") {
     $siuser = sanitize($_SESSION['user']);
-    if($_GET['ip'] != "" || $_GET['email'] != "" || $_GET['name'] != "") {
+    if(isset($_GET['ip']) || isset($_GET['email']) || isset($_GET['name']) ) {
         if($_GET['ip'] != "") {
             $ip2 = sanitize($_GET['ip']);
             $query = "SELECT * FROM acc_pend WHERE pend_id = '$ip2';";
