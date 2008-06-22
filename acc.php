@@ -102,14 +102,14 @@ function showhowma ( ) {
         mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
         @mysql_select_db($toolserver_database) or print mysql_error();
 	$howma = gethowma();
-	unset($howma[howmany]);
+	unset($howma['howmany']);
 	$out = "";
 	foreach ($howma as $oneonline) {
 	        $query = "SELECT * FROM acc_user WHERE user_name = '$oneonline';";
 	        $result = mysql_query($query);
 	        if(!$result) Die("ERROR: No result returned.");
 	        $row = mysql_fetch_assoc($result);
-	        $uid = $row[user_id];
+	        $uid = $row['user_id'];
 	        $out .= " <a href=\"users.php?viewuser=$uid\">$oneonline</a>";    
 	}
 	$out = ltrim(rtrim($out));
@@ -136,7 +136,7 @@ function gethowma ( ) {
 		array_push($whoactive, $row['user_name']);
 	}
 	$howma = count($whoactive);
-	$whoactive[howmany] = $howma;
+	$whoactive['howmany'] = $howma;
 	return($whoactive);
 }
 
@@ -155,7 +155,7 @@ function showmessage ( $messageno ) {
         $result = mysql_query($query);
         if(!$result) Die("ERROR: No result returned.");
         $row = mysql_fetch_assoc($result);
-        return($row[mail_text]);
+        return($row['mail_text']);
 }
 
 function sendemail ( $messageno, $target ) {
@@ -395,7 +395,7 @@ function showfooter ( ) {
 	$howmany = array();
 	$howmany = gethowma();
 	$howout = showhowma();
-	$howma = $howmany[howmany];
+	$howma = $howmany['howmany'];
         $out = showmessage('23');
 	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><small><center>$howma users active within the last 5 mins! ($howout)</center></small><br /><br />", $out);
 	echo $out;
