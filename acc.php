@@ -41,12 +41,12 @@ if(isset($_GET['action'])) {
 }
 
 if ($_SESSION['user'] == "" && !isset($_GET['nocheck'])) {
+	$suser = sanitize($_SESSION['user']);	
+	echo makehead($suser);
 	if($action != 'register' && $action != 'forgotpw') {
-		$suser = sanitize($_SESSION['user']);	
-		echo makehead($suser);
 		echo showlogin();
 		die();
-	}
+	} 
 } elseif (!isset($_GET['nocheck'])) {
 	$suser = sanitize($_SESSION['user']);
 	echo makehead($suser);
