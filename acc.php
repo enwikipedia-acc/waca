@@ -133,7 +133,7 @@ function gethowma ( ) {
 	if(!$result) Die("ERROR: No result returned.");
 	$whoactive = array();
 	while ($row = mysql_fetch_assoc($result)) {
-		array_push($whoactive, $row[user_name]);
+		array_push($whoactive, $row['user_name']);
 	}
 	$howma = count($whoactive);
 	$whoactive[howmany] = $howma;
