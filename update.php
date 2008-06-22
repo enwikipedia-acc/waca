@@ -15,6 +15,7 @@
 **Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
 **Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
 **Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
+**OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
 **                                                           **
 **************************************************************/
 require_once('config.inc.php');
