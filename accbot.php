@@ -472,7 +472,7 @@
 	// Code entry point.
 
 	if ( $_SERVER['REMOTE_ADDR'] != '' ) { 
-		header( 'Location: http://toolserver.org/~sql/acc/' );
+		header( 'Location: http://stable.toolserver.org/acc/' );
 		die(); 
 	}
 
