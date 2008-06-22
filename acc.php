@@ -929,7 +929,7 @@ if ($_GET['action'] == "ban") {
         } else {
             $until = date("F j, Y, g:i a", $row['ban_duration']);
         }
-        echo "<li><small><strong>".$row['ban_target']."</strong> - Banned by: <strong>".$row['ban_user']."</strong> for <strong>".$row['ban_reason']."</strong> at <strong>."$row['ban_date']."</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&id=."$row['ban_id']."\">UNBAN</a>)</small></li>";
+        echo "<li><small><strong>".$row['ban_target']."</strong> - Banned by: <strong>".$row['ban_user']."</strong> for <strong>".$row['ban_reason']."</strong> at <strong>".$row['ban_date']."</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&id=".$row['ban_id']."\">UNBAN</a>)</small></li>";
     }
     echo "</ol>\n";
     showfooter();
