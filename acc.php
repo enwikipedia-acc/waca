@@ -924,24 +924,24 @@ if ($_GET['action'] == "ban") {
     $result = mysql_query($query);
     if(!$result) Die("ERROR: No result returned.");
     while($row = mysql_fetch_assoc($result)) {
-        if($row[ban_duration] == "" || $row[ban_duration] == "-1") {
+        if($row[ban_duration] == "" || $row['ban_duration'] == "-1") {
             $until  = "Forever";
         } else {
-            $until = date("F j, Y, g:i a", $row[ban_duration]);
+            $until = date("F j, Y, g:i a", $row['ban_duration']);
         }
-        echo "<li><small><strong>$row[ban_target]</strong> - Banned by: <strong>$row[ban_user]</strong> for <strong>$row[ban_reason]</strong> at <strong>$row[ban_date]</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&id=$row[ban_id]\">UNBAN</a>)</small></li>";
+        echo "<li><small><strong>".$row['ban_target']."</strong> - Banned by: <strong>".$row['ban_user']."</strong> for <strong>".$row['ban_reason']."</strong> at <strong>."$row['ban_date']."</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&id=."$row['ban_id']."\">UNBAN</a>)</small></li>";
     }
     echo "</ol>\n";
     showfooter();
     die();
 }
 if ($_GET['action'] == "usermgmt") {
-    $siuser = sanitize($_SESSION[user]);
+    $siuser = sanitize($_SESSION['user']);
     $query = "SELECT * FROM acc_user WHERE user_name = '$siuser';";
     $result = mysql_query($query);
     if(!$result) Die("ERROR: No result returned.");
     $row = mysql_fetch_assoc($result);
-    if($row[user_level] != "Admin" && $_SESSION['user'] != "SQL") {
+    if($row['user_level'] != "Admin" && $_SESSION['user'] != "SQL") {
         echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
         showfooter();
         die();
