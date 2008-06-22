@@ -51,34 +51,34 @@ $uablacklist = array();
 
 
 
-$acrnamebl[nigger]   = '/(?i:ni(gg|qq)(a|er))/';
-$acrnamebl[grawp1]   = '/k*[l1][o0]?m[o0]?[i1]r*/i';
-$acrnamebl[grawp2]   = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
-$acrnamebl[grawp3]   = '/(hagg[ea]r|herme?y|quarp)/i';
-$acrnamebl[grawp4] = '/secret.*combination/i';
-$acrnamebl[grawp5] = '/((ph|f)uc?k|s[e3]x|shag)/i';
-$acrnamebl[grawp6] = '/t[3eh][3eh]_l[uo]lz/i';
-$acrnamebl[grawp7] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
-$acrnamebl[grawp8] = '/(need.to|will).*die/i';
-$acrnamebl[grawp9] = '/4chan/i';
+$acrnamebl['nigger']   = '/(?i:ni(gg|qq)(a|er))/';
+$acrnamebl['grawp1']   = '/k*[l1][o0]?m[o0]?[i1]r*/i';
+$acrnamebl['grawp2']   = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
+$acrnamebl['grawp3']   = '/(hagg[ea]r|herme?y|quarp)/i';
+$acrnamebl['grawp4'] = '/secret.*combination/i';
+$acrnamebl['grawp5'] = '/((ph|f)uc?k|s[e3]x|shag)/i';
+$acrnamebl['grawp6'] = '/t[3eh][3eh]_l[uo]lz/i';
+$acrnamebl['grawp7'] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
+$acrnamebl['grawp8'] = '/(need.to|will).*die/i';
+$acrnamebl['grawp9'] = '/4chan/i';
 
-$nameblacklist[nigger]   = '/(?i:ni(gg|qq)(a|er))/';
-$nameblacklist[faggot]   = '/(?i:faggot)/';
+$nameblacklist['nigger']   = '/(?i:ni(gg|qq)(a|er))/';
+$nameblacklist['faggot']   = '/(?i:faggot)/';
 
 
-$nameblacklist[grawp1] = '/k*[l1][o0]?m[o0]?[i1]r*/i';
-$nameblacklist[grawp2] = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
-$nameblacklist[grawp3] = '/(hagg[ea]r|herme?y|quarp)/i';
-$nameblacklist[grawp4] = '/secret.*combination/i';
-$nameblacklist[grawp5] = '/((ph|f)uc?k|s[e3]x|shag)/i';
-$nameblacklist[grawp6] = '/t[3eh][3eh]_l[uo]lz/i';
-$nameblacklist[grawp7] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
-$nameblacklist[grawp8] = '/(need.to|will).*die/i';
-$nameblacklist[grawp9] = '/4chan/i';
-$nameblacklist[grawp10] = '/wikipedo/i';
-$nameblacklist[grawp11] = '/pedophil/i';
-$nameblacklist[grawp12] = '/lolwut/i';
-$nameblacklist[grawp14] = '/(SteveCrossin|Mellie)/i';
+$nameblacklist['grawp1'] = '/k*[l1][o0]?m[o0]?[i1]r*/i';
+$nameblacklist['grawp2'] = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
+$nameblacklist['grawp3'] = '/(hagg[ea]r|herme?y|quarp)/i';
+$nameblacklist['grawp4'] = '/secret.*combination/i';
+$nameblacklist['grawp5'] = '/((ph|f)uc?k|s[e3]x|shag)/i';
+$nameblacklist['grawp6'] = '/t[3eh][3eh]_l[uo]lz/i';
+$nameblacklist['grawp7'] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
+$nameblacklist['grawp8'] = '/(need.to|will).*die/i';
+$nameblacklist['grawp9'] = '/4chan/i';
+$nameblacklist['grawp10'] = '/wikipedo/i';
+$nameblacklist['grawp11'] = '/pedophil/i';
+$nameblacklist['grawp12'] = '/lolwut/i';
+$nameblacklist['grawp14'] = '/(SteveCrossin|Mellie)/i';
 /*$nameblacklist[grawp14] = '/(SQLDb';
 $query = "SELECT * FROM acc_user ORDER BY user_level";
 $result = mysql_query($query);
@@ -96,19 +96,19 @@ $nameblacklist[grawp13] .= ')/i';*/
 #$nameblacklist[grawp8] = '/(?i:(g|9|q)r(a|4)(w|vv|.)(p|.))/i';
 
 #$nameblacklist[grawp9] = '(?i:p(w|vv|?)(a|4)r(g|9|q))';
-$nameblacklist[upolicy4] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|b[0o]t|st[3e]w[4a]rd|j[1i]mb[0o]).*/i';
+$nameblacklist['upolicy4'] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|b[0o]t|st[3e]w[4a]rd|j[1i]mb[0o]).*/i';
 
 //E-Mail Blacklist
-$emailblacklist[grawp1] = '/(shit|fuck|sex|phuck)/i';
-$emailblacklist[grawp2] = '/^poo@.*/i';
-$emailblacklist[grawp3] = '/@poo\..*/i';
-$emailblacklist[grawp4] = '/@you\.com/i';
-$emailblacklist[grawp5] = '/pedo@.*/i';
-$emailblacklist[grawp6] = '/@youchans\.com/i';
-$emailblacklist[grawp7] = '/@ask\.com/i';
-$emailblacklist[grawp8] = '/@rawks\.com/i';
-$emailblacklist[grawp9] = '/(fuck|sex|damn|shit|pedo)/i';
-$emailblacklist[webring] = '/webring@.*/i';
+$emailblacklist['grawp1'] = '/(shit|fuck|sex|phuck)/i';
+$emailblacklist['grawp2'] = '/^poo@.*/i';
+$emailblacklist['grawp3'] = '/@poo\..*/i';
+$emailblacklist['grawp4'] = '/@you\.com/i';
+$emailblacklist['grawp5'] = '/pedo@.*/i';
+$emailblacklist['grawp6'] = '/@youchans\.com/i';
+$emailblacklist['grawp7'] = '/@ask\.com/i';
+$emailblacklist['grawp8'] = '/@rawks\.com/i';
+$emailblacklist['grawp9'] = '/(fuck|sex|damn|shit|pedo)/i';
+$emailblacklist['webring'] = '/webring@.*/i';
 
 $uablacklist[grawp1] = '/Mozilla\/4\.0 \(compatible; MSIE 7\.0; Windows NT 6\.0; SLCC1; \.NET CLR 2\.0\.50727; \.NET CLR 3\.0\.04506; InfoPath\.2; \.NET CLR 3\.5\.21022\)/';
 
