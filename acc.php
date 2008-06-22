@@ -1070,9 +1070,9 @@ if ($_GET['action'] == "usermgmt") {
     if(!$result) Die("ERROR: No result returned.");
     echo "<ol>\n";
     while ($row = mysql_fetch_assoc($result)) {
-        $uname = $row[user_name];
-        $uoname = $row[user_onwikiname];
-        $userid = $row[user_id];
+        $uname = $row['user_name'];
+        $uoname = $row['user_onwikiname'];
+        $userid = $row['user_id'];
         
         $out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
         echo "$out\n";
@@ -1088,9 +1088,9 @@ if ($_GET['action'] == "usermgmt") {
     if(!$result) Die("ERROR: No result returned.");
     echo "<ol>\n";
     while ($row = mysql_fetch_assoc($result)) {
-        $uname = $row[user_name];
-        $uoname = $row[user_onwikiname];
-        $userid = $row[user_id];
+        $uname = $row['user_name'];
+        $uoname = $row['user_onwikiname'];
+        $userid = $row['user_id'];
                 $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Suspended';";
                            $result2 = mysql_query($query);
                                     if(!$result2) Die("ERROR: No result returned.");
@@ -1125,10 +1125,10 @@ if ($_GET['action'] == "usermgmt") {
     if(!$result) Die("ERROR: No result returned.");
     echo "<ol>\n";
     while ($row = mysql_fetch_assoc($result)) {
-        $uname = $row[user_name];
-        $uoname = $row[user_onwikiname];
-        $userid = $row[user_id];
-        $out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Unsuspend!</a> (Suspended by $row[log_user]<!-- FREAKING PIECE OF CRAP ISN'T WORKING RIGHT NOW because $row[log_cmt] --!>)</small></li>";
+        $uname = $row['user_name'];
+        $uoname = $row['user_onwikiname'];
+        $userid = $row['user_id'];
+        $out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Unsuspend!</a> (Suspended by " . $row['log_user']."<!-- FREAKING PIECE OF CRAP ISN'T WORKING RIGHT NOW because " . $row['log_cmt'] . " --!>)</small></li>";
         echo "$out\n";
     }
     ?>
@@ -1143,10 +1143,10 @@ if ($_GET['action'] == "usermgmt") {
     if(!$result) Die("ERROR: No result returned.");
     echo "<ol>\n";
     while ($row = mysql_fetch_assoc($result)) {
-        $uname = $row[user_name];
-        $uoname = $row[user_onwikiname];
-        $userid = $row[user_id];
-        $out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> (Declined by $row[log_user] because \"$row[log_cmt]\")</small></li>";
+        $uname = $row['user_name'];
+        $uoname = $row['user_onwikiname'];
+        $userid = $row['user_id'];
+        $out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> (Declined by " . $row['log_user'] . " because \"$row[log_cmt]\")</small></li>";
         echo "$out\n";
     }
     ?>
