@@ -672,17 +672,17 @@ if ($_GET['action'] == "login") {
     $result = mysql_query($query);
     if(!$result) Die("ERROR: No result returned.");
     $row = mysql_fetch_assoc($result);
-    if($row[user_level] == "New") {
+    if($row['user_level'] == "New") {
         echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
         showfootern();
         die();
     }
-    if($row[user_level] == "Suspended" && $_SESSION['user'] != "SQL") {
+    if($row['user_level'] == "Suspended" && $_SESSION['user'] != "SQL") {
         echo "I'm sorry, but, your account is presently suspended.<br />\n";
         showfootern();
         die();
     }
-    $calcpass = md5($_POST[password]);
+    $calcpass = md5($_POST['password']);
     if ($row[user_pass] == $calcpass) { 
         $_SESSION['user'] = $row[user_name]; 
         header("Location: $tsurl/acc.php"); 
@@ -880,7 +880,7 @@ if ($_GET['action'] == "unban" && $_GET['id'] != "") {
     die();
 }
 if ($_GET['action'] == "ban") {
-    $siuser = sanitize($_SESSION[user]);
+    $siuser = sanitize($_SESSION['user']);
     if($_GET['ip'] != "" || $_GET['email'] != "" || $_GET['name'] != "") {
         if($_GET['ip'] != "") {
             $ip2 = sanitize($_GET['ip']);
