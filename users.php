@@ -158,7 +158,7 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 	if ($_GET['list'] == "admins") {
 		while ($row = mysql_fetch_a'ssoc($result)) {
 			if($row[u'ser_level] == "Admin") { 
-				echo "<h3>$row".['user_level']."</h3>\n";
+				echo "<h3>".$row['user_level']."</h3>\n";
 			
 			if($row['user_name'] != "") {
 				echo "<li><a href=\"users.php?viewuser=".$row['user_id']."\">".$row['user_name']."</a></li>\n";
