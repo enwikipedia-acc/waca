@@ -24,7 +24,10 @@ require_once('devlist.php');
 ini_set('session.cookie_path', $cookiepath);
 ini_set('session.name', $sessionname);
 $version = "0.9.7";
-
+// Make the warnings stop!
+if(!isset($_GET['action'])) { $_GET['action'] == "" }
+if(!isset($_GET['limit'])) { $_GET['limit'] == "" }
+if(!isset($_GET['name'])) { $_GET['name'] == "" }
 function sanitize ( $what ) {
 	/*
 	* Shortcut to mysql_real_escape_string
@@ -407,10 +410,11 @@ if(!$link) {
 }
 @mysql_select_db($toolserver_database) or print mysql_error();
 session_start();
+
 if ($_GET['action'] == "sreg") {
     showhead();
     foreach ($acrnamebl as $wnbl => $nbl) {
-        $phail_test = @preg_match($nbl, $_POST[name]);
+        $phail_test = @preg_match($nbl, $_POST['name']);
         if($phail_test == TRUE) {
                     #$message = showmessage(15);
                     echo "$message<br />\n";
