@@ -94,6 +94,7 @@
 		'chuck!*@wikimedia/cmelbye'					=> 'developer',
 		'charlie-!*@wikimedia/cmelbye'					=> 'developer',
 		'*!*@wikipedia/FastLizard4'					=> 'developer',
+		'OverlordQ!*@wikipedia/OverlordQ'				=> 'developer',
 		'*!*@*'								=> '*'
 		);
 
