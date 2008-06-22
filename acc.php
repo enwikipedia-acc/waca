@@ -1487,67 +1487,72 @@ if ($_GET['action'] == "logs") {
     echo "<ol>\n";
     while ($row = mysql_fetch_assoc($result)) {
         if($row['log_time'] == "0000-00-00 00:00:00") { $row['log_time'] = "Date Unknown"; }
-        if($row[log_action] == "Deferred to admins" || $row[log_action] == "Deferred to users") { 
-            echo "<li>$row[log_user] $row[log_action], <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($row['log_action'] == "Deferred to admins" || $rla == "Deferred to users") { 
+	    $rlu = $row['log_user'];
+	    $rla = $row['log_action'];
+	    $rlp = $row['log_pend'];
+	    $rlt = $row['log_time'];
+	    $rlc = $row['log_cmt'];
+            echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Closed") { 
-            echo "<li>$row[log_user] $row[log_action], <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($row['log_action'] == "Closed") { 
+            echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Closed 0") { 
-            echo "<li>$row[log_user] Dropped, <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($row['log_action'] == "Closed 0") { 
+            echo "<li>$rlu Dropped, <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Closed 1") { 
-            echo "<li>$row[log_user] Closed (Account created), <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($row['log_action'] == "Closed 1") { 
+            echo "<li>$rlu Closed (Account created), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Closed 2") { 
-            echo "<li>$row[log_user] Closed (Too Similar), <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($row['log_action'] == "Closed 2") { 
+            echo "<li>$rlu Closed (Too Similar), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Closed 3") { 
-            echo "<li>$row[log_user] Closed (Taken), <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($row['log_action'] == "Closed 3") { 
+            echo "<li>$rlu Closed (Taken), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Closed 4") { 
-            echo "<li>$row[log_user] Closed (Username vio), <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($row['log_action'] == "Closed 4") { 
+            echo "<li>$rlu Closed (Username vio), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Closed 5") { 
-            echo "<li>$row[log_user] Closed (Technically impossibly), <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($row['log_action'] == "Closed 5") { 
+            echo "<li>$rlu Closed (Technically impossibly), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Closed 6") { 
-            echo "<li>$row[log_user] Closed (Custom reason), <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($row['log_action'] == "Closed 6") { 
+            echo "<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Blacklist Hit") { 
-            echo "<li>$row[log_user] <strong>Rejected by Blacklist</strong> $row[log_pend], $row[log_cmt] at $row[log_time].</li>\n";
+        if($row['log_action'] == "Blacklist Hit") { 
+            echo "<li>$rlu <strong>Rejected by Blacklist</strong> $rlp, $rlc at $rlt.</li>\n";
         }
-        if($row[log_action] == "Unbanned") { 
-            echo "<li>$row[log_user] Unbanned $row[log_pend] at $row[log_time]</li>\n";
+        if($row['log_action'] == "Unbanned") { 
+            echo "<li>$rlu Unbanned $rlp at $rlt</li>\n";
         }
-        if($row[log_action] == "Banned") { 
-            $mid = $row[log_pend];
+        if($row['log_action'] == "Banned") { 
+            $mid = $row['log_pend'];
             $query3 = "SELECT * FROM acc_ban WHERE ban_target = '$mid';";
             $result3 = mysql_query($query3);
             if(!$result3) Die("ERROR: No result returned.");
             $row3 = mysql_fetch_assoc($result3);
-            echo "<li>$row[log_user] Banned $row3[log_pend] #$row3[ban_id] ($row3[ban_target])</a>, Reason: $row3[ban_reason], at $row[log_time].</li>\n";
+            echo "<li>$rlu Banned ".$row3['log_pend']." #".$row3['ban_id']." (".$row3['ban_target'].")</a>, Reason: ".$row3['ban_reason'].", at $rlt.</li>\n";
         }
 
-        if($row[log_action] == "Edited") { 
-            $mid = $row[log_pend];
+        if($rla == "Edited") { 
+            $mid = $rlp;
             $query3 = "SELECT * FROM acc_emails WHERE mail_id = '$mid';";
             $result3 = mysql_query($query3);
             if(!$result3) Die("ERROR: No result returned.");
             $row3 = mysql_fetch_assoc($result3);
-            echo "<li>$row[log_user] Edited Message <a href=\"acc.php?action=messagemgmt&view=$row[log_pend]\">$row[log_pend] ($row3[mail_desc])</a>, at $row[log_time].</li>\n";
+            echo "<li>$rlu Edited Message <a href=\"acc.php?action=messagemgmt&view=$rlp\">$rlp (".$row3['mail_desc'].")</a>, at $rlt.</li>\n";
         }
-        if($row[log_action] == "Promoted" || $row[log_action] == "Approved" || $row[log_action] == "Suspended" || $row[log_action] == "Declined") {
-            $uid = $row[log_pend];
+        if($rla == "Promoted" || $rla == "Approved" || $rla == "Suspended" || $rla == "Declined") {
+            $uid = $rlp;
             $query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
             $result2 = mysql_query($query2);
             if(!$result2) Die("ERROR: No result returned.");
             $row2 = mysql_fetch_assoc($result2);
             $moreinfo = "";
-            if($row[log_action] == "Declined") {
-                $moreinfo = " because \"$row[log_cmt]\"";
+            if($rla == "Declined") {
+                $moreinfo = " because \"$rlc\"";
             }
-            echo "<li>$row[log_user] $row[log_action], User $row[log_pend] ($row2[user_name]) at $row[log_time]$moreinfo.</li>\n";
+            echo "<li>$rlu $rla, User $rlp (".$row2['user_name'].") at $rlt$moreinfo.</li>\n";
         }
     }
     echo "</ol>\n";
