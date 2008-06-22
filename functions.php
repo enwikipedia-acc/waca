@@ -427,4 +427,16 @@ HTML;
 
   	return $html;
 }
+
+function getdevs() {
+	global $regdevlist;
+	$newdevlist = array_reverse($regdevlist);
+	$temp = $newdevlist[0];
+	unset ($newdevlist[0]);
+	foreach ($newdevlist as $dev) {
+		$devs .= "<a href=\"http://en.wikipedia.org/wiki/User talk:" . $dev[1] . "\">" . $dev[0] . "</a>, ";
+	}
+	$devs .= "<a href=\"http://en.wikipedia.org/wiki/User talk:" . $temp[1] . "\">" . $temp[0] . "</a>";
+	return $devs;
+}
 ?>

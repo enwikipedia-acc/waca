@@ -1,5 +1,6 @@
 <?php
 
+
 /**************************************************************
 ** English Wikipedia Account Request Interface               **
 ** Wikipedia Account Request Graphic Design by               **
@@ -26,13 +27,6 @@ require_once ('functions.php');
 ini_set('session.cookie_path', $cookiepath);
 ini_set('session.name', $sessionname);
 $version = "0.9.7";
-// Make the warnings stop!
-if (!isset ($_GET)) {
-	$_GET = array ();
-}
-if (!isset ($_GET['action'])) {
-	$_GET['action'] = "-1";
-}
 
 $link = mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 if (!$link) {
@@ -41,10 +35,58 @@ if (!$link) {
 @ mysql_select_db($toolserver_database) or print mysql_error();
 session_start();
 
-if ($_GET['action'] == "sreg") {
+//Check user status and display sitenotice
+$suser = sanitize($_SESSION['user']);
+echo makehead($suser);
+if ($_SESSION['user'] == "") {
+	echo showlogin();
+	die();
+} else {
+	checksecurity($_SESSION['user']);
+	$out = showmessage('20');
+	$out .= "<div id=\"content\">";
+	echo $out;
+}
+
+if (!isset ($_GET['action'])) {
+	echo <<<HTML
+<h1> Create an account !</h1>
+<h2> Open requests </h2>
+<A name="open" />
+HTML;
+	echo listrequests("Open");
+?>
+<h2>Admin Needed!</h2>
+<a name="admin"></a>
+<span id="admin"/>
+<?php
+
+
+	echo listrequests("Admin");
+
+	echo "<h2>Last 5 Closed requests</h2><A name='closed'></A><span id=\"closed\"/>\n";
+	$query = "SELECT * FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("ERROR: No result returned.");
+	echo "<table cellspacing=\"0\">\n";
+	$currentrow = 0;
+	while ($row = mysql_fetch_assoc($result)) {
+		$currentrow += 1;
+		$out = '<tr';
+		if ($currentrow % 2 == 0) {
+			$out .= ' class="even">';
+		} else {
+			$out .= ' class="odd">';
+		}
+		$out .= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&id=$row[pend_id]\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">$row[pend_name]</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&sum=$row[pend_checksum]&target=user\">Reset</a></small></td></tr>";
+		echo $out;
+	}
+	echo "</table>\n";
+	echo showfooter();
+} elseif ($_GET['action'] == "sreg") {
 	$suser = sanitize($_SESSION['user']);
-	$header = makehead($suser);
-	echo $header;
+	echo makehead($suser);
 	foreach ($acrnamebl as $wnbl => $nbl) {
 		$phail_test = @ preg_match($nbl, $_POST['name']);
 		if ($phail_test == TRUE) {
@@ -159,7 +201,7 @@ if ($_GET['action'] == "sreg") {
 	echo showfootern();
 	die();
 }
-if ($_GET['action'] == "register") {
+elseif ($_GET['action'] == "register") {
 	$suser = sanitize($_SESSION['user']);
 	$header = makehead($suser);
 	echo $header;
@@ -240,14 +282,15 @@ value="welcomeshort">{{Welcomeshort|user}} ~~~~</option>
     </form>
 <?php
 
+
 	echo showfootern();
 	die();
 }
-if ($_GET['action'] == "forgotpw") {
+elseif ($_GET['action'] == "forgotpw") {
 	$suser = sanitize($_SESSION['user']);
 	$header = makehead($suser);
 	echo $header;
-	
+
 	if (isset ($_GET['si']) && isset ($_GET['id'])) {
 		if (isset ($_POST['pw']) && isset ($_POST['pw2'])) {
 			$puser = sanitize($_GET['id']);
@@ -293,6 +336,7 @@ if ($_GET['action'] == "forgotpw") {
             Return to <a href="acc.php">Login</a>
             <?php
 
+
 		} else {
 			echo "<h2>ERROR</h2>\nInvalid request.2<br />";
 		}
@@ -333,10 +377,11 @@ if ($_GET['action'] == "forgotpw") {
     Return to <a href="acc.php">Login</a>
     <?php
 
+
 	echo showfootern();
 	die();
 }
-if ($_GET['action'] == "login") {
+elseif ($_GET['action'] == "login") {
 	$puser = sanitize($_POST['username']);
 	$query = "SELECT * FROM acc_user WHERE user_name = \"$puser\";";
 	$result = mysql_query($query);
@@ -362,21 +407,7 @@ if ($_GET['action'] == "login") {
 		echo "Username and/or password incorrect.<br />\n";
 	}
 }
-
-$suser = sanitize($_SESSION['user']);
-$header = makehead($suser);
-echo $header;
-if ($_SESSION['user'] == "") {
-	echo showlogin();
-	die();
-} else {
-	checksecurity($_SESSION['user']);
-	$out = showmessage('20');
-	$out .= "<div id=\"content\">";
-	echo $out;
-	$out = "";
-}
-if ($_GET['action'] == "messagemgmt") {
+elseif ($_GET['action'] == "messagemgmt") {
 	if (isset ($_GET['view'])) {
 		$mid = sanitize($_GET['view']);
 		$query = "SELECT * FROM acc_emails WHERE mail_id = $mid;";
@@ -487,7 +518,7 @@ if ($_GET['action'] == "messagemgmt") {
 	echo showfooter();
 	die();
 }
-if ($_GET['action'] == "sban" && $_GET['user'] != "") {
+elseif ($_GET['action'] == "sban" && $_GET['user'] != "") {
 	if ($_POST['banreason'] == "") {
 		echo "<h2>ERROR</h2>\n<br />You must specify a ban reason.\n";
 		echo showfooter();
@@ -523,7 +554,7 @@ if ($_GET['action'] == "sban" && $_GET['user'] != "") {
 	echo showfooter();
 	die();
 }
-if ($_GET['action'] == "unban" && $_GET['id'] != "") {
+elseif ($_GET['action'] == "unban" && $_GET['id'] != "") {
 	$siuser = sanitize($_SESSION[user]);
 	$bid = sanitize($_GET['id']);
 	$query = "DELETE FROM acc_ban WHERE ban_id = '$bid';";
@@ -540,7 +571,7 @@ if ($_GET['action'] == "unban" && $_GET['id'] != "") {
 	echo showfooter();
 	die();
 }
-if ($_GET['action'] == "ban") {
+elseif ($_GET['action'] == "ban") {
 	$siuser = sanitize($_SESSION['user']);
 	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name'])) {
 		if ($_GET['ip'] != "") {
@@ -603,7 +634,7 @@ if ($_GET['action'] == "ban") {
 	echo showfooter();
 	die();
 }
-if ($_GET['action'] == "usermgmt") {
+elseif ($_GET['action'] == "usermgmt") {
 	$siuser = sanitize($_SESSION['user']);
 	$query = "SELECT * FROM acc_user WHERE user_name = '$siuser';";
 	$result = mysql_query($query);
@@ -731,6 +762,7 @@ if ($_GET['action'] == "usermgmt") {
     <h2>Open requests</h2>
     <?php
 
+
 	$query = "SELECT * FROM acc_user WHERE user_level = 'New';";
 	$result = mysql_query($query);
 	if (!$result)
@@ -748,6 +780,7 @@ if ($_GET['action'] == "usermgmt") {
 	<div id="usermgmt-users">
     <h2>Users</h2>
     <?php
+
 
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Approved') WHERE user_level = 'User' GROUP BY log_pend ORDER BY log_pend DESC;";
 	$result = mysql_query($query);
@@ -768,6 +801,7 @@ if ($_GET['action'] == "usermgmt") {
 	<div id="usermgmt-admins">
     <h2>Admins</h2>
     <?php
+
 
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Promoted') WHERE user_level = 'Admin' GROUP BY log_pend ORDER BY log_pend ASC;";
 	$result = mysql_query($query);
@@ -810,6 +844,7 @@ if ($_GET['action'] == "usermgmt") {
 	<div id="showhide-suspended" style="display: none;">
     <?php
 
+
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Suspended') WHERE user_level = 'Suspended' GROUP BY log_pend ORDER BY log_id DESC;";
 	$result = mysql_query($query);
 	if (!$result)
@@ -830,6 +865,7 @@ if ($_GET['action'] == "usermgmt") {
 	<div id="showhide-declined" style="display: none;">
     <?php
 
+
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Declined') WHERE user_level = 'Declined' GROUP BY log_pend ORDER BY log_id DESC;";
 	$result = mysql_query($query);
 	if (!$result)
@@ -847,20 +883,11 @@ if ($_GET['action'] == "usermgmt") {
 	</div>
     <?php
 
+
 	echo showfooter();
 	die();
 }
-
-$devs = null;
-$newdevlist = array_reverse($regdevlist);
-$temp = $newdevlist[0];
-unset ($newdevlist[0]);
-foreach ($newdevlist as $dev) {
-	$devs .= "<a href=\"http://en.wikipedia.org/wiki/User talk:" . $dev[1] . "\">" . $dev[0] . "</a>, ";
-}
-$devs .= "<a href=\"http://en.wikipedia.org/wiki/User talk:" . $temp[1] . "\">" . $temp[0] . "</a>";
-
-if ($_GET['action'] == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
+elseif ($_GET['action'] == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 	if ($_GET['target'] == "admin" || $_GET['target'] == "user") {
 		if ($_GET['target'] == "admin") {
 			$target = "Admin";
@@ -905,7 +932,7 @@ if ($_GET['action'] == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		echo "Target not specified.<br />\n";
 	}
 }
-if ($_GET['action'] == "welcomeperf" || $_GET['action'] == "prefs") { //Welcomeperf is deprecated, but to avoid conflicts, include it still.
+elseif ($_GET['action'] == "welcomeperf" || $_GET['action'] == "prefs") { //Welcomeperf is deprecated, but to avoid conflicts, include it still.
 	if (isset ($_POST['sig'])) {
 		$sig = sanitize($_POST['sig']);
 		$template = sanitize($_POST['template']);
@@ -980,10 +1007,11 @@ if ($_GET['action'] == "welcomeperf" || $_GET['action'] == "prefs") { //Welcomep
     </form><br />
     <?php
 
+
 	echo showfooter();
 	die();
 }
-if ($_GET['action'] == "done" && $_GET['id'] != "") {
+elseif ($_GET['action'] == "done" && $_GET['id'] != "") {
 	if ($_GET['email'] == "" | $_GET['email'] >= 6) {
 		echo "Invalid close reason";
 		echo showfooter();
@@ -1080,7 +1108,7 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
 	}
 	upcsum($_GET[id]);
 }
-if ($_GET['action'] == "zoom") {
+elseif ($_GET['action'] == "zoom") {
 	if ($_GET['id'] == "") {
 		echo "No user specified!<br />\n";
 		echo showfooter();
@@ -1100,10 +1128,10 @@ if ($_GET['action'] == "zoom") {
 	if ($row['pend_date'] == "0000-00-00 00:00:00") {
 		$row['pend_date'] = "Date Unknown";
 	}
-	
+
 	$requesttable = listrequests($thisid);
 	echo $requesttable;
-	
+
 	$row['pend_cmt'] = preg_replace('/\<\/?(div|span|script|\?php|\?|img)\s?(.*)\s?\>/i', '', $row['pend_cmt']); //Escape injections.
 	echo "<br /><strong>Comment</strong>: $row[pend_cmt]<br />\n";
 	$query = "SELECT * FROM acc_log WHERE log_pend = '$gid';";
@@ -1183,12 +1211,12 @@ if ($_GET['action'] == "zoom") {
 	echo showfooter();
 	die();
 }
-if ($_GET['action'] == "logout") {
+elseif ($_GET['action'] == "logout") {
 	session_unset();
 	echo showlogin();
 	die("Logged out!\n");
 }
-if ($_GET['action'] == "logs") {
+elseif ($_GET['action'] == "logs") {
 	if (isset ($_GET['limit'])) {
 		$limit = $_GET['limit'];
 		$limit = sanitize($limit);
@@ -1297,41 +1325,4 @@ if ($_GET['action'] == "logs") {
 	die();
 }
 ?>
-<h1>Create an account!</h1>
-<h2>Open requests</h2>
-<A name="open"></A>
-<?php
 
-$openreqs = listrequests("Open");
-echo $openreqs;
-
-?>
-<h2>Admin Needed!</h2>
-<a name="admin"></a>
-<span id="admin"/>
-<?php
-
-$adminreqs = listrequests("Admin");
-echo $adminreqs;
-
-echo "<h2>Last 5 Closed requests</h2><A name='closed'></A><span id=\"closed\"/>\n";
-$query = "SELECT * FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
-$result = mysql_query($query);
-if (!$result)
-	Die("ERROR: No result returned.");
-echo "<table cellspacing=\"0\">\n";
-$currentrow = 0;
-while ($row = mysql_fetch_assoc($result)) {
-	$currentrow += 1;
-	$out = '<tr';
-	if ($currentrow % 2 == 0) {
-		$out .= ' class="even">';
-	} else {
-		$out .= ' class="odd">';
-	}
-	$out .= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&id=$row[pend_id]\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">$row[pend_name]</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&sum=$row[pend_checksum]&target=user\">Reset</a></small></td></tr>";
-	echo $out;
-}
-echo "</table>\n";
-echo showfooter();
-?>
