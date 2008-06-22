@@ -341,7 +341,7 @@ function listrequests ( $type ) {
         	$out.= '- <a style="color:red" href="acc.php?action=ban&email=' . $row['pend_id'] . '">E-Mail</a>';
     	
         	//Ban name
-        	$out.= ' - <a style="color:red" href="acc.php?action=ban&name=' . $row['pend_id'	] . '">Name</a>';
+        	$out.= ' - <a style="color:red" href="acc.php?action=ban&name=' . $row['pend_id'] . '">Name</a>';
     
 	        $out.= '</small></td></tr>';
         	echo "$out\n";
@@ -1372,60 +1372,64 @@ if ($_GET['action'] == "done" && $_GET['id'] != "") {
     upcsum($_GET[id]);
 }
 if ($_GET['action'] == "zoom") {
-    if($_GET[id] == "") {
+    if($_GET['id'] == "") {
         echo "No user specified!<br />\n";
         showfooter();
         die();
     }
-    $gid = sanitize($_GET[id]);
+    $gid = sanitize($_GET['id']);
     $query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
     $result = mysql_query($query);
     if(!$result) Die("Query failed: $query ERROR: No result returned.");
     $row = mysql_fetch_assoc($result);
-    echo "<h2>Details for Request #$_GET[id]:</h2>";    
-    $uname = urlencode($row[pend_name]);
-    $thisip = $row[pend_ip];
-    $thisid = $row[pend_id];
-    $thisemail = $row[pend_email];
+    echo "<h2>Details for Request #".$_GET['id'].":</h2>";    
+    $uname = urlencode($row['pend_name']);
+    $thisip = $row['pend_ip'];
+    $thisid = $row['pend_id'];
+    $thisemail = $row['pend_email'];
     if($row['pend_date'] == "0000-00-00 00:00:00") { $row['pend_date'] = "Date Unknown"; }
     listrequests($thisid);
-    $row[pend_cmt] = preg_replace('/\<\/?(div|span|script|\?php|\?|img)\s?(.*)\s?\>/i', '', $row[pend_cmt]);//Escape injections.
+    $row['pend_cmt'] = preg_replace('/\<\/?(div|span|script|\?php|\?|img)\s?(.*)\s?\>/i', '', $row['pend_cmt']);//Escape injections.
     echo "<br /><strong>Comment</strong>: $row[pend_cmt]<br />\n";
     $query = "SELECT * FROM acc_log WHERE log_pend = '$gid';";
     $result = mysql_query($query);
     if(!$result) Die("ERROR: No result returned.");
-    echo "<h2>Logs for Request #$_GET[id]:</h2>";
+    echo "<h2>Logs for Request #".$_GET['id'].":</h2>";
     echo "<ol>\n";
     while ($row = mysql_fetch_assoc($result)) {
-        if($row[log_action] == "Deferred to admins" || $row[log_action] == "Deferred to users") { 
-            echo "<li>$row[log_user] $row[log_action], <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+	$rlu = $row['log_user'];
+	$rla = $row['log_action'];
+	$rlp = $row['log_pend'];
+	$rlt = $row['log_time'];
+        if($rla == "Deferred to admins" || $rla == "Deferred to users") { 
+            echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Closed") { 
-            echo "<li>$row[log_user] $row[log_action], <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($rla == "Closed") { 
+            echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Closed 0") { 
-            echo "<li>$row[log_user] Dropped, <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($rla == "Closed 0") { 
+            echo "<li>$rlu Dropped, <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Closed 1") { 
-            echo "<li>$row[log_user] Closed (Account created), <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($rla == "Closed 1") { 
+            echo "<li>$rlu Closed (Account created), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Closed 2") { 
-            echo "<li>$row[log_user] Closed (Too Similar), <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($rla == "Closed 2") { 
+            echo "<li>$rlu Closed (Too Similar), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Closed 3") { 
-            echo "<li>$row[log_user] Closed (Taken), <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($rla == "Closed 3") { 
+            echo "<li>$rlu Closed (Taken), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Closed 4") { 
-            echo "<li>$row[log_user] Closed (Username vio), <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($rla == "Closed 4") { 
+            echo "<li>$rlu Closed (Username vio), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Closed 5") { 
-            echo "<li>$row[log_user] Closed (Technically impossibly), <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($rla == "Closed 5") { 
+            echo "<li>$rlu Closed (Technically impossibly), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Closed 6") { 
-            echo "<li>$row[log_user] Closed (Custom reason), <a href=\"acc.php?action=zoom&id=$row[log_pend]\">Request $row[log_pend]</a> at $row[log_time].</li>\n";
+        if($rla == "Closed 6") { 
+            echo "<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
-        if($row[log_action] == "Blacklist Hit") { 
-            echo "<li>$row[log_user] Rejected by Blacklist $row[log_pend], $row[log_cmt] at $row[log_time].</li>\n";
+        if($rla == "Blacklist Hit") { 
+            echo "<li>$rlu Rejected by Blacklist $rlp, $row[log_cmt] at $rlt.</li>\n";
         }
     }
 
