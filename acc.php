@@ -356,7 +356,7 @@ function showhead ( ) {
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	$_SESSION[user_id] = $row['user_id'];
+	$_SESSION['user_id'] = $row['user_id'];
 	$out = showmessage('21');
 	if(isset($_SESSION['user'])) { //Is user logged in?
         	$suser = sanitize($_SESSION['user']);
