@@ -187,17 +187,17 @@ function checksecurity ( $username ) {
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	if($row[user_level] == "New") {
+	if($row['user_level'] == "New") {
 	        echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
 	        showfootern();
 	        die();
 	}
-	if($row[user_level] == "Suspended" && $username != "SQL") {
+	if($row['user_level'] == "Suspended" && $username != "SQL") {
 	        echo "I'm sorry, but, your account is presently suspended.<br />\n";
 		showfootern();
         	die();
 	}
-	if($row[user_level] == "Declined" && $username != "SQL") {
+	if($row['user_level'] == "Declined" && $username != "SQL") {
 	        $query2 = "SELECT * FROM acc_log WHERE log_pend = '$row[user_id]' AND log_action = 'Declined' ORDER BY log_id DESC LIMIT 1;";
 	        $result2 = mysql_query($query2);
 	        if(!$result2) Die("ERROR: No result returned.");
@@ -351,20 +351,20 @@ function showhead ( ) {
 	/*
 	* Show page header (retrieved by MySQL call)
 	*/
-	$suin = sanitize($_SESSION[user]);
+	$suin = sanitize($_SESSION['user']);
 	$query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	$_SESSION[user_id] = $row[user_id];
+	$_SESSION[user_id] = $row['user_id'];
 	$out = showmessage('21');
-	if(isset($_SESSION[user])) { //Is user logged in?
-        	$suser = sanitize($_SESSION[user]);
+	if(isset($_SESSION['user'])) { //Is user logged in?
+        	$suser = sanitize($_SESSION['user']);
         	$mquery = "SELECT * FROM acc_user WHERE user_name = '$suser';";
         	$mresult = mysql_query($mquery);
         	if(!$mresult) echo("<!-- ERROR: No result returned. mysql_error() --!>");
         	$mrow = mysql_fetch_assoc($mresult);
-        	if($mrow[user_level] == "Admin") {
+        	if($mrow['user_level'] == "Admin") {
 			$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"acc.php?action=usermgmt\">User Management</a>\n", $out);
 		}
 		echo $out;
