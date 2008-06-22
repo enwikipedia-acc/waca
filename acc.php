@@ -49,11 +49,11 @@ if ($_SESSION['user'] == "") {
 }
 
 if (!isset ($_GET['action'])) {
-	echo <<<HTML
-<h1> Create an account !</h1>
-<h2> Open requests </h2>
-<A name="open" />
-HTML;
+?>
+<h1>Create an account!</h1>
+<h2>Open requests</h2>
+<a name="open"></a>
+<?php
 	echo listrequests("Open");
 ?>
 <h2>Admin Needed!</h2>
