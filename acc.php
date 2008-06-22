@@ -25,7 +25,8 @@ ini_set('session.cookie_path', $cookiepath);
 ini_set('session.name', $sessionname);
 $version = "0.9.7";
 // Make the warnings stop!
-if(!isset($_GET['action'])) { $_GET['action'] == "-1"; }
+if(!isset($_GET)) { $_GET = array(); }
+if(!isset($_GET['action'])) { $_GET['action'] = "-1"; }
 function sanitize ( $what ) {
 	/*
 	* Shortcut to mysql_real_escape_string
