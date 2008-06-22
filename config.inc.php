@@ -26,11 +26,11 @@ if(file_exists("config.local.inc.php")) {
 	$toolserver_username = $toolserver_mycnf['user'];
 	$toolserver_password = $toolserver_mycnf['password'];
 	$toolserver_host = "sql-s1";
-	$toolserver_database = "u_sql";
+	$toolserver_database = "p_acc";
 	$cookiepath = '/~sql/';
 	$sessionname = 'ACC';
 	$wikiurl = "en.wikipedia.org"; //Does nothing yet, intended for further localization
-	$tsurl = "http://toolserver.org/~sql/acc"; //Does nothing yet, intended for further localization
+	$tsurl = "http://stable.toolserver.org/acc"; //Does nothing yet, intended for further localization
 	unset($toolserver_mycnf);
 }
 require_once('blacklist.php');
