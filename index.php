@@ -115,7 +115,7 @@ function displayheader ( ) {
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	echo $row[mail_text];	
+	echo $row['mail_text'];	
 	mysql_close();
 }
 
@@ -133,7 +133,7 @@ function displayfooter ( ) {
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	echo $row[mail_text];	
+	echo $row['mail_text'];	
 	mysql_close();
 }
 
@@ -151,7 +151,7 @@ function displayform ( ) {
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	echo $row[mail_text];	
+	echo $row['mail_text'];	
 	mysql_close();
 }
 
