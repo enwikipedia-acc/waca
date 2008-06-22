@@ -52,7 +52,6 @@ if (!isset ($_GET['action'])) {
 	echo defaultpage();
 } elseif ($_GET['action'] == "sreg") {
 	$suser = sanitize($_SESSION['user']);
-	echo makehead($suser);
 	foreach ($acrnamebl as $wnbl => $nbl) {
 		$phail_test = @ preg_match($nbl, $_POST['name']);
 		if ($phail_test == TRUE) {
@@ -168,9 +167,6 @@ if (!isset ($_GET['action'])) {
 	die();
 }
 elseif ($_GET['action'] == "register") {
-	$suser = sanitize($_SESSION['user']);
-	$header = makehead($suser);
-	echo $header;
 ?>
     <h2>Register!</h2>
     <strong><strong>PLEASE DO NOT USE THE SAME PASSWORD AS ON WIKIPEDIA.</strong><br />
@@ -253,9 +249,6 @@ value="welcomeshort">{{Welcomeshort|user}} ~~~~</option>
 	die();
 }
 elseif ($_GET['action'] == "forgotpw") {
-	$suser = sanitize($_SESSION['user']);
-	$header = makehead($suser);
-	echo $header;
 
 	if (isset ($_GET['si']) && isset ($_GET['id'])) {
 		if (isset ($_POST['pw']) && isset ($_POST['pw2'])) {
