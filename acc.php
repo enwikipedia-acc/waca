@@ -396,7 +396,10 @@ function showfooter ( ) {
 	echo $out;
 }
 
-mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
+$link = mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
+if(!$link) {
+	die('Could not connect: ' . mysql_error());
+}
 @mysql_select_db($toolserver_database) or print mysql_error();
 session_start();
 if ($_GET['action'] == "sreg") {
