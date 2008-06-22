@@ -1486,13 +1486,14 @@ if ($_GET['action'] == "logs") {
     if(!$result) Die("ERROR: No result returned.");
     echo "<ol>\n";
     while ($row = mysql_fetch_assoc($result)) {
-        if($row['log_time'] == "0000-00-00 00:00:00") { $row['log_time'] = "Date Unknown"; }
-        if($row['log_action'] == "Deferred to admins" || $rla == "Deferred to users") { 
 	    $rlu = $row['log_user'];
 	    $rla = $row['log_action'];
 	    $rlp = $row['log_pend'];
 	    $rlt = $row['log_time'];
 	    $rlc = $row['log_cmt'];
+        if($row['log_time'] == "0000-00-00 00:00:00") { $row['log_time'] = "Date Unknown"; }
+        if($row['log_action'] == "Deferred to admins" || $rla == "Deferred to users") { 
+
             echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
         if($row['log_action'] == "Closed") { 
