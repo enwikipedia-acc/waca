@@ -177,12 +177,7 @@ function showmessage ( $messageno ) {
 }
 
 displayheader();
-if ($_POST['name'] != NULL && $_POST['email'] != NULL) {
-	if ($_POST['debug'] == "on") {
-		echo "<pre>\n";
-		print_r($_POST);
-		echo "</pre>\n";
-	}
+if (isset($_POST['name']) && isset($_POST['email'])) {
 	$_POST['name'] = str_replace(" ", "_", $_POST['name']);
 	$_POST['name'] = ucfirst($_POST['name']);
 	mysql_connect("enwiki-p.db.ts.wikimedia.org",$toolserver_username,$toolserver_password);
