@@ -1261,7 +1261,7 @@ elseif ($action == "logs") {
 			if (!$result3)
 				Die("ERROR: No result returned.");
 			$row3 = mysql_fetch_assoc($result3);
-			echo "<li>$rlu Banned " . $row3['log_pend'] . " #" . $row3['ban_id'] . " (" . $row3['ban_target'] . ")</a>, Reason: " . $row3['ban_reason'] . ", at $rlt.</li>\n";
+			echo "<li>$rlu Banned " . $row3['log_pend'] . " #" . $row3['ban_id'] . " (" . _utf8_decode($row3['ban_target']) . ")</a>, Reason: " . $row3['ban_reason'] . ", at $rlt.</li>\n";
 		}
 
 		if ($rla == "Edited") {

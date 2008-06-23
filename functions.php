@@ -294,7 +294,8 @@ function listrequests($type) {
 		$out .= '<a style="color:green" href="http://ws.arin.net/whois/?queryinput=' . $row['pend_ip'] . '">w</a> ] ';
 
 		// Username U:
-		$out .= '</small></td><td><small><a style="color:blue" href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $uname . '</ strong></a> ';
+		$duname = _utf8_decode($row['pend_name']);
+		$out .= '</small></td><td><small><a style="color:blue" href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $duname . '</ strong></a> ';
 
 		// Creation log    
 		$out .= '</small></td><td><small>(<a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:';
@@ -488,7 +489,7 @@ HTML;
 		} else {
 			$out .= ' class="odd">';
 		}
-		$out .= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&id=$row[pend_id]\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:$row[pend_name]\">$row[pend_name]</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&sum=$row[pend_checksum]&target=user\">Reset</a></small></td></tr>";
+		$out .= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&id=".$row['pend_id']."\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:".$row['pend_name']."\">"._utf8_decode($row['pend_name'])."</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&id=".$row['pend_id']."&sum=".$row['pend_checksum']."&target=user\">Reset</a></small></td></tr>";
 		$html .= $out;
 	}
 	$html .= "</table>\n";
