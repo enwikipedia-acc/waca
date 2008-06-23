@@ -1,5 +1,23 @@
 <?php
 
+function _utf8_decode ( $string ) {
+	/*
+	* Improved utd8_decode() function
+	*/
+	$tmp = $string;
+	$count = 0;
+	while ( mb_detect_encoding ( $tmp ) == "UTF-8" ) {
+		$tmp = utf8_decode($tmp);
+		$count++;
+	}
+ 
+	for ( $i = 0; $i < $count-1 ; $i++ ) {
+		$string = utf8_decode($string);
+	}
+	return $string;
+}
+
+
 function sanitize ( $what ) {
 	/*
 	* Shortcut to mysql_real_escape_string
