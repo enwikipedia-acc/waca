@@ -40,7 +40,7 @@ function upcsum ( $id ) {
 	$result = mysql_query($query);
 	if(!$result) Die("ERROR: No result returned.");
 	$pend = mysql_fetch_assoc($result);
-	$hash = md5($pend[pend_id].$pend[pend_name].$pend[pend_email].microtime());
+	$hash = md5($pend['pend_id'].$pend['pend_name'].$pend['pend_email'].microtime());
 	$query = "UPDATE acc_pend SET pend_checksum = '$hash' WHERE pend_id = '$id';";
 	$result = mysql_query($query);
 }
@@ -60,11 +60,11 @@ function csvalid($id, $sum) {
 	if (!$result)
 		Die("ERROR: No result returned.");
 	$pend = mysql_fetch_assoc($result);
-	if ($pend[pend_checksum] == "") {
+	if ($pend['pend_checksum'] == "") {
 		upcsum($id);
 		return (1);
 	}
-	if ($pend[pend_checksum] == $sum) {
+	if ($pend['pend_checksum'] == $sum) {
 		return (1);
 	} else {
 		return (0);
@@ -171,7 +171,7 @@ function sendemail($messageno, $target) {
 	if (!$result)
 		Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	$mailtxt = $row[mail_text];
+	$mailtxt = $row['mail_text'];
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	mail($target, "RE: English Wikipedia Account Request", $mailtxt, $headers);
 }

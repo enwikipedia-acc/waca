@@ -40,7 +40,7 @@ if(isset($_GET['action'])) {
 	$action = $_GET['action'];
 }
 
-if ($_SESSION['user'] == "" && !isset($_GET['nocheck'])) {
+if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 	$suser = sanitize($_SESSION['user']);	
 	echo makehead($suser);
 	if($action != 'register' && $action != 'forgotpw') {
@@ -995,9 +995,9 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if (!$result)
 		Die("Query failed: $query ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	if ($row[pend_emailsent] == "1" && $_GET['override'] != "yes") {
+	if ($row['pend_emailsent'] == "1" && $_GET['override'] != "yes") {
 		echo "<br />This request has already been closed in a manner that has generated an e-mail to the user, Proceed?<br />\n";
-		echo "<a href=\"acc.php?sum=$_GET[sum]&action=done&id=$_GET[id]&override=yes&email=$_GET[email]\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
+		echo "<a href=\"acc.php?sum=".$_GET['sum']."&action=done&id=".$_GET['id']."&override=yes&email=".$_GET['email']."\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
 		echo showfooter();
 		die();
 	}
@@ -1019,12 +1019,12 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if (!$result)
 		Die("Query failed: $query ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	if ($row[user_welcome] > 0 && $gem == "1") {
-		$sig = $row[user_welcome_sig];
+	if ($row['user_welcome'] > 0 && $gem == "1") {
+		$sig = $row['user_welcome_sig'];
 		if ($sig == "") {
 			$sig = "[[User:$sid|$sid]] ([[User_talk:$sid|talk]])";
 		}
-		$template = $row[user_welcome_template];
+		$template = $row['user_welcome_template'];
 		$sig = sanitize($sig);
 		if ($template == "") {
 			$template = "welcome";
@@ -1065,7 +1065,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	}
 	$now = explode("-", $now);
 	$now = $now[0] . "-" . $now[1] . "-" . $now[2] . ":" . $now[3] . ":" . $now[4];
-	sendtobot("Request $_GET[id] ($gus) Marked as 'Done' ($crea) by $sid on $now");
+	sendtobot("Request ".$_GET['id']." ($gus) Marked as 'Done' ($crea) by $sid on $now");
 	echo "Request " . $_GET['id'] . " ($gus) marked as 'Done'.<br />";
 	$towhom = $row2[pend_email];
 	if ($gem != "0") {
@@ -1073,7 +1073,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '$_GET[id]';";
 		$result = mysql_query($query);
 	}
-	upcsum($_GET[id]);
+	upcsum($_GET['id']);
 	echo defaultpage();
 }
 elseif ($action == "zoom") {
