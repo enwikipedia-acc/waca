@@ -105,9 +105,9 @@
 	$privgroups[ '*'         ][ 'count'       ] = 1;
 	$privgroups[ '*'         ][ 'status'      ] = 1;
 	$privgroups[ '*'         ][ 'stats'       ] = 1;
+	$privgroups[ '*'         ][ 'svninfo'     ] = 1; //Do not change this, per consensus in the IRC channel
 
 	$privgroups[ 'developer' ]                  = $privgroups['*']; // 'developer' inherits '*'.
-	$privgroups[ 'developer' ][ 'svninfo'     ] = 1;
 	$privgroups[ 'developer' ][ 'sand-svnup'  ] = 1;
 	$privgroups[ 'developer' ][ 'sync-msgs'   ] = 1;
 
