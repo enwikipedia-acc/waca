@@ -458,7 +458,7 @@
 		sleep( 2 );
 		posix_kill( $udpReader, SIGKILL );
 		sleep( 5 );
-		pcntl_exec( '/usr/bin/php', $argv, $_ENV );
+		pcntl_exec( '/opt/php/bin/php', $argv, $_ENV );
 	}
 
 	function commandRecreateSvn( $parsed ) {
