@@ -1,4 +1,4 @@
-#!/usr/bin/php
+#!/opt/php/bin/php
 <?PHP
 	/**************************************************************
 	** English Wikipedia Account Request Interface               **
