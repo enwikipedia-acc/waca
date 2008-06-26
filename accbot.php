@@ -48,9 +48,9 @@
 
 
 	// Signal handlers
-#	pcntl_signal( SIGHUP , 'SIGHUP'  );
-#	pcntl_signal( SIGTERM, 'SIGTERM' );
-#	pcntl_signal( SIGCHLD, 'SIGCHLD' );
+	pcntl_signal( SIGHUP , 'SIGHUP'  );
+	pcntl_signal( SIGTERM, 'SIGTERM' );
+	pcntl_signal( SIGCHLD, 'SIGCHLD' );
 
 	// Help
 	//       Command      , Parameters  , Description
