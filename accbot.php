@@ -269,7 +269,7 @@
 	}
 
 	function commandCount( $parsed ) {
-		$username = $parsed['parameters'][0];
+		$username = $parsed['parameter'];
 		if( !isset( $username ) or ( $username == '' ) ) {
 			irc( 'NOTICE ' . $parsed['nick'] . ' :Invalid syntax.  This command requires a username as a parameter.' );
 			return;
@@ -355,7 +355,7 @@
 	}
 
 	function commandStats( $parsed ) {
-		$username = $parsed['parameters'][0];
+		$username = $parsed['parameter'];
 		if( !isset( $username ) or ( $username == '' ) ) {
 			irc( 'NOTICE ' . $parsed['nick'] . ' :Invalid syntax.  This command requires a username as a parameter.' );
 			return;
