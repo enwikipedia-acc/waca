@@ -524,7 +524,6 @@ elseif ($action == "unban" && $_GET['id'] != "") {
 	$siuser = sanitize($_SESSION[user]);
 	$bid = sanitize($_GET['id']);
 	$query = "DELETE FROM acc_ban WHERE ban_id = '$bid';";
-	echo "$query\n";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
