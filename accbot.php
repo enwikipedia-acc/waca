@@ -364,7 +364,7 @@
 		$isUser = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_user` WHERE `user_name` = \'' . sanitize( $username ) . '\'' ) )
 			or die( 'MySQL Error: ' . mysql_error() . "\n" );
 
-		$isUser = ( ( $isUser == 0 ) ? false : true );
+		$isUser = ( ( $isUser['count'] == 0 ) ? false : true );
 
 		if( $isUser ) {
 			$user = mysql_fetch_assoc( myq( 'SELECT * FROM `acc_user` WHERE `user_name` = \'' . sanitize( $username ) . '\'' ) )
