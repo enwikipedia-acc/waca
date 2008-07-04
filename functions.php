@@ -248,17 +248,17 @@ function listrequests($type) {
 		#    $uname = str_replace("+", "_", $row[pend_name]);
 		$rid = $row['pend_id'];
 		if ($row['pend_cmt'] != "") {
-			$cmt = "<a style=\"color:green\" href=\"acc.php?action=zoom&id=$rid\">Zoom (CMT)</a> ";
+			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&id=$rid\">Zoom (CMT)</a> ";
 		} else {
-			$cmt = "<a style=\"color:green\" href=\"acc.php?action=zoom&id=$rid\">Zoom</a> ";
+			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&id=$rid\">Zoom</a> ";
 		}
 		$query2 = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \'' . $row['pend_ip'] . '\' AND `pend_id` != \'' . $row['pend_id'] . '\';';
 		$otherreqs = mysql_fetch_assoc(mysql_query($query2));
 		$out = '<tr';
 		if ($currentreq % 2 == 0) {
-			$out .= ' class="even">';
+			$out .= ' class="alternate">';
 		} else {
-			$out .= ' class="odd">';
+			$out .= '>';
 		}
 		if ($type == 'Admin' || $type == 'Open') {
 			$out .= '<td><small>' . $currentreq . '.    </small></td><td><small>'; //List item
@@ -268,62 +268,62 @@ function listrequests($type) {
 		}
 
 		// Email.
-		$out .= '</small></td><td><small>[ <a style="color:green" href="mailto:' . $row['pend_email'] . '">' . $row['pend_email'] . '</a>';
+		$out .= '</small></td><td><small>[ <a class="request-src" href="mailto:' . $row['pend_email'] . '">' . $row['pend_email'] . '</a>';
 
 		// IP UT:
-		$out .= '</small></td><td><small> | <a style="color:green" href="http://en.wikipedia.org/wiki/User_talk:' . $row['pend_ip'] . '">';
+		$out .= '</small></td><td><small> | <a class="request-src" href="http://en.wikipedia.org/wiki/User_talk:' . $row['pend_ip'] . '">';
 		$out .= $row['pend_ip'] . '</a> ';
 
-		$out .= '</small></td><td><small><span style="color:';
+		$out .= '</small></td><td><small><span class="request-src">';
 		if ($otherreqs['count'] == 0) {
-			$out .= 'green">(' . $otherreqs['count'] . ')';
+			$out .= '(' . $otherreqs['count'] . ')';
 		} else {
-			$out .= 'black">(</span><b><span style="color:red">' . $otherreqs['count'] . '</span></b><span style="color:black">)';
+			$out .= '(</span><b><span class="request-mult">' . $otherreqs['count'] . '</span></b><span class="request-src">)';
 		}
 		$out .= " <span>";
 
 		// IP contribs
-		$out .= '</span></small></td><td><small><a style="color:green" href="http://en.wikipedia.org/wiki/Special:Contributions/';
+		$out .= '</span></small></td><td><small><a class="request-src" href="http://en.wikipedia.org/wiki/Special:Contributions/';
 		$out .= $row['pend_ip'] . '" target="_blank">c</a> ';
 
 		// IP blocks
-		$out .= '<a style="color:green" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:';
+		$out .= '<a class="request-src" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:';
 		$out .= $row['pend_ip'] . '">b</a> ';
 
 		// IP whois
-		$out .= '<a style="color:green" href="http://ws.arin.net/whois/?queryinput=' . $row['pend_ip'] . '">w</a> ] ';
+		$out .= '<a class="request-src" href="http://ws.arin.net/whois/?queryinput=' . $row['pend_ip'] . '">w</a> ] ';
 
 		// Username U:
 		$duname = _utf8_decode($row['pend_name']);
-		$out .= '</small></td><td><small><a style="color:blue" href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $duname . '</ strong></a> ';
+		$out .= '</small></td><td><small><a class="request-req" href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $duname . '</ strong></a> ';
 
 		// Creation log    
-		$out .= '</small></td><td><small>(<a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:';
+		$out .= '</small></td><td><small>(<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:';
 		$out .= $uname . '">Creation</a> ';
 
 		// User contribs
-		$out .= '<a style="color:blue" href="http://en.wikipedia.org/wiki/Special:Contributions/';
+		$out .= '<a class="request-req" href="http://en.wikipedia.org/wiki/Special:Contributions/';
 		$out .= $uname . '">Contribs</a> ';
-		$out .= '<a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&username=' . $uname . '&group=&limit=50">List</a>) ';
+		$out .= '<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&username=' . $uname . '&group=&limit=50">List</a>) ';
 
 		// Create user link
-		$out .= '<b><a style="color:blue" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
+		$out .= '<b><a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
 		$out .= $uname . '&wpEmail=' . $row['pend_email'] . '&uselang=en-acc" target="_blank">Create!</a></b> ';
 
 		// Done
-		$out .= '| <a style="color:orange" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=1&sum=' . $row['pend_checksum'] . '">Done!</a>';
+		$out .= '| <a class="request-done" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=1&sum=' . $row['pend_checksum'] . '">Done!</a>';
 
 		// Similar
-		$out .= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=2&sum=' . $row['pend_checksum'] . '">Similar</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=2&sum=' . $row['pend_checksum'] . '">Similar</a>';
 
 		// Taken
-		$out .= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=3&sum=' . $row['pend_checksum'] . '">Taken</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=3&sum=' . $row['pend_checksum'] . '">Taken</a>';
 
 		// UPolicy
-		$out .= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=4&sum=' . $row['pend_checksum'] . '">UPolicy</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=4&sum=' . $row['pend_checksum'] . '">UPolicy</a>';
 
 		// Invalid
-		$out .= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=5&sum=' . $row['pend_checksum'] . '">Invalid</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=5&sum=' . $row['pend_checksum'] . '">Invalid</a>';
 
 		// Defer to admins or users
 		if (is_numeric($type)) {
@@ -339,21 +339,21 @@ function listrequests($type) {
 			$target = 'user';
 		}
 		if ($target == 'admin' || $target == 'user') {
-			$out .= " - <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&sum=$row[pend_checksum]&target=$target\">Defer to $target" . "s</a>";
+			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&id=$row[pend_id]&sum=$row[pend_checksum]&target=$target\">Defer to $target" . "s</a>";
 		} else {
-			$out .= " - <a style=\"color:orange\" href=\"acc.php?action=defer&id=$row[pend_id]&sum=$row[pend_checksum]&target=user\">Reset Request</a>";
+			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&id=$row[pend_id]&sum=$row[pend_checksum]&target=user\">Reset Request</a>";
 		}
 		// Drop
-		$out .= ' - <a style="color:orange" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=0&sum=' . $row['pend_checksum'] . '">Drop</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=0&sum=' . $row['pend_checksum'] . '">Drop</a>';
 
 		// Ban IP
-		$out .= ' | Ban: <a style="color:red" href="acc.php?action=ban&ip=' . $row['pend_id'] . '">IP</a> ';
+		$out .= ' | Ban: <a class="request-ban" href="acc.php?action=ban&ip=' . $row['pend_id'] . '">IP</a> ';
 
 		// Ban email
-		$out .= '- <a style="color:red" href="acc.php?action=ban&email=' . $row['pend_id'] . '">E-Mail</a>';
+		$out .= '- <a class="request-ban" href="acc.php?action=ban&email=' . $row['pend_id'] . '">E-Mail</a>';
 
 		//Ban name
-		$out .= ' - <a style="color:red" href="acc.php?action=ban&name=' . $row['pend_id'] . '">Name</a>';
+		$out .= ' - <a class="request-ban" href="acc.php?action=ban&name=' . $row['pend_id'] . '">Name</a>';
 
 		$out .= '</small></td></tr>';
 		$reqlist .= $out;

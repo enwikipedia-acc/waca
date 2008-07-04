@@ -187,14 +187,18 @@ div#footer a:hover {
 /**
 *   Zebra Tables
 */
-tr.even		{
-		background:#f2f4ff;
+tr.even, tr.alternate		{			/* .alternate is a nicer method, but some instances of .even still exist (where?) */
+		background:#e9f5ff; /* #f2f4ff; */
 		}
+
+/*					IF YOU HAPPEN TO SEE THIS ANYWHERE IN THE CODE, feel free to remove it. 
 tr.odd		{
 		background:white;
 		}
+*/
+
 tr:hover	{
-		background:#c4ceff;
+		background:#c4ceff; /*  #abdbff;*/
 		}
 
 /* collapsable lists */
@@ -225,4 +229,27 @@ float: left;
 #usermgmt-admins {
 width: 50%;
 float: right;
+}
+
+/* request styles */
+.request-src {
+	/* Green */
+	color:green;
+}
+.request-mult {
+	/* Red */
+	color:red;
+	font-weight:bold;
+}
+.request-req {
+	/* Blue */
+	color:blue;
+}
+.request-done {
+	/* Orange */
+	color:orange;
+}
+.request-ban {
+	/* Red */
+	color:red;
 }
