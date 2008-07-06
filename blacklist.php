@@ -32,9 +32,6 @@
     * (?i:cunnilingus)
     * (?i:dildo)
 */    
-//$nameblacklist[upolicy1] = '/卍/';
-//$nameblacklist[upolicy2] = '/卐/';  // These screw up the preg parser.
-//$nameblacklist[upolicy3] = '/[!?‽？]{3,}/';
 
 /*mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 @mysql_select_db($toolserver_database) or print mysql_error();*/
@@ -99,7 +96,7 @@ $nameblacklist[grawp13] .= ')/i';*/
 $nameblacklist['upolicy4'] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|b[0o]t|st[3e]w[4a]rd|j[1i]mb[0o]).*/i';
 
 //E-Mail Blacklist
-$emailblacklist['grawp1'] = '/(shit|fuck|sex|phuck)/i';
+$emailblacklist['grawp1'] = '/(shit|fuck|phuck)/i';
 $emailblacklist['grawp2'] = '/^poo@.*/i';
 $emailblacklist['grawp3'] = '/@poo\..*/i';
 $emailblacklist['grawp4'] = '/@you\.com/i';
@@ -107,7 +104,7 @@ $emailblacklist['grawp5'] = '/pedo@.*/i';
 $emailblacklist['grawp6'] = '/@youchans\.com/i';
 $emailblacklist['grawp7'] = '/@ask\.com/i';
 $emailblacklist['grawp8'] = '/@rawks\.com/i';
-$emailblacklist['grawp9'] = '/(fuck|sex|damn|shit|pedo)/i';
+$emailblacklist['grawp9'] = '/(fuck|damn|shit|pedo)/i';
 $emailblacklist['webring'] = '/webring@.*/i';
 
 $uablacklist['grawp1'] = '/Mozilla\/4\.0 \(compatible; MSIE 7\.0; Windows NT 6\.0; SLCC1; \.NET CLR 2\.0\.50727; \.NET CLR 3\.0\.04506; InfoPath\.2; \.NET CLR 3\.5\.21022\)/';
