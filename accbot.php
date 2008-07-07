@@ -271,8 +271,13 @@
 	function commandCount( $parsed ) {
 		$username = $parsed['parameter'];
 		if( !isset( $username ) or ( $username == '' ) ) {
-			irc( 'NOTICE ' . $parsed['nick'] . ' :Invalid syntax.  This command requires a username as a parameter.' );
-			return;
+			//irc( 'NOTICE ' . $parsed['nick'] . ' :Invalid syntax.  This command requires a username as a parameter.' );
+			//return;
+			
+			//make the bot use the caller's nick if no username specified. 
+			$username = $parsed['nick'];
+			// note: this is a bit of a test, and hopefully won't have too much of an impact on this function. I hope I've got this right. 
+			// old code is the 2 lines above (commented out). Regards, Stwalkerster.
 		}
 
 		$isUser = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_user` WHERE `user_name` = \'' . sanitize( $username ) . '\'' ) )
