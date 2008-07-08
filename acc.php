@@ -992,7 +992,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: No result returned.");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['pend_emailsent'] == "1" && $_GET['override'] != "yes") {
 		echo "<br />This request has already been closed in a manner that has generated an e-mail to the user, Proceed?<br />\n";
@@ -1005,7 +1005,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: No result returned.");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$row2 = mysql_fetch_assoc($result);
 	$gus = $row2[pend_name];
 	if ($row2[pend_status] == "Closed") {
@@ -1016,7 +1016,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$query = "SELECT * FROM acc_user WHERE user_name = '$sid';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: No result returned.");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_welcome'] > 0 && $gem == "1") {
 		$sig = $row['user_welcome_sig'];
@@ -1031,17 +1031,17 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		$query = "INSERT INTO acc_welcome (welcome_uid, welcome_user, welcome_sig, welcome_status, welcome_pend, welcome_template) VALUES ('$sid', '$gus', '$sig', 'Open', '$gid', '$template');";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: No result returned.");
+			Die("Query failed: $query ERROR: " . mysql_error());
 	}
 	$query = "UPDATE acc_pend SET pend_status = 'Closed' WHERE pend_id = '$gid';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: No result returned.");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$now = date("Y-m-d H-i-s");
 	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Closed $gem', '$now');";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: No result returned.");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	switch ($gem) {
 		case 0 :
 			$crea = "Dropped";
@@ -1085,7 +1085,7 @@ elseif ($action == "zoom") {
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: No result returned.");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	echo "<h2>Details for Request #" . $_GET['id'] . ":</h2>";
 	$uname = urlencode($row['pend_name']);
