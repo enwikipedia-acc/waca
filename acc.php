@@ -1007,7 +1007,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row2 = mysql_fetch_assoc($result);
-	$gus = $row2[pend_name];
+	$gus = sanitize($row2[pend_name]);
 	if ($row2[pend_status] == "Closed") {
 		echo "<h2>ERROR</h2>Cannot close this request. Already closed.<br />\n";
 		echo showfooter();
