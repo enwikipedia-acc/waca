@@ -106,6 +106,7 @@ function showhowma() {
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
 		$uid = $row['user_id'];
+		$oneonline = stripslashes($oneonline);
 		$out .= " <a href=\"users.php?viewuser=$uid\">$oneonline</a>";
 	}
 	$out = ltrim(rtrim($out));
