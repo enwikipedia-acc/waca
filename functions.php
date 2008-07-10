@@ -99,6 +99,7 @@ function showhowma() {
 	unset ($howma['howmany']);
 	$out = "";
 	foreach ($howma as $oneonline) {
+		$oneonline = sanitize($oneonline);
 		$query = "SELECT * FROM acc_user WHERE user_name = '$oneonline';";
 		$result = mysql_query($query);
 		if (!$result)
