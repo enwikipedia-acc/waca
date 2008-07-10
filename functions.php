@@ -38,7 +38,7 @@ function upcsum ( $id ) {
 	@mysql_select_db($toolserver_database) or print mysql_error();
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
 	$result = mysql_query($query);
-	if(!$result) Die("ERROR: No result returned.");
+	if(!$result) Die("Query failed: $query ERROR: " . mysql_error());
 	$pend = mysql_fetch_assoc($result);
 	$hash = md5($pend['pend_id'].$pend['pend_name'].$pend['pend_email'].microtime());
 	$query = "UPDATE acc_pend SET pend_checksum = '$hash' WHERE pend_id = '$id';";
@@ -58,7 +58,7 @@ function csvalid($id, $sum) {
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("ERROR: No result returned.");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$pend = mysql_fetch_assoc($result);
 	if ($pend['pend_checksum'] == "") {
 		upcsum($id);
@@ -102,7 +102,7 @@ function showhowma() {
 		$query = "SELECT * FROM acc_user WHERE user_name = '$oneonline';";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("ERROR: No result returned.");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
 		$uid = $row['user_id'];
 		$out .= " <a href=\"users.php?viewuser=$uid\">$oneonline</a>";
@@ -126,7 +126,7 @@ function gethowma() {
 	$query = "SELECT * FROM acc_user WHERE user_lastactive > '$last5mins';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("ERROR: No result returned.");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$whoactive = array ();
 	while ($row = mysql_fetch_assoc($result)) {
 		array_push($whoactive, $row['user_name']);
@@ -150,7 +150,7 @@ function showmessage($messageno) {
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("ERROR: No result returned.");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	return ($row['mail_text']);
 }
@@ -169,7 +169,7 @@ function sendemail($messageno, $target) {
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("ERROR: No result returned.");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	$mailtxt = $row['mail_text'];
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
@@ -184,7 +184,7 @@ function checksecurity($username) {
 	$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("ERROR: No result returned.");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_level'] == "New") {
 		echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
@@ -200,7 +200,7 @@ function checksecurity($username) {
 		$query2 = "SELECT * FROM acc_log WHERE log_pend = '$row[user_id]' AND log_action = 'Declined' ORDER BY log_id DESC LIMIT 1;";
 		$result2 = mysql_query($query2);
 		if (!$result2)
-			Die("ERROR: No result returned.");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		echo "I'm sorry, but, your account request was <strong>declined</strong> by <strong>$row2[log_user]</strong> because <strong>\"$row2[log_cmt]\"</strong> at <strong>$row2[log_time]</strong>.<br />\n";
 		echo "Related information (please include this if appealing this decision)<br />\n";
@@ -236,7 +236,7 @@ function listrequests($type) {
 	}
 	$result = mysql_query($query);
 	if (!$result)
-		Die("ERROR: No result returned.");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	
 	$tablestart = "<table cellspacing=\"0\">\n";
 	$tableend = "</table>\n";
@@ -370,7 +370,7 @@ function makehead($suin) {
 	$query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("ERROR: No result returned.");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	$_SESSION['user_id'] = $row['user_id'];
 	$out = showmessage('21');
@@ -390,7 +390,7 @@ function makehead($suin) {
 		$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '$_SESSION[user_id]';";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("ERROR: No result returned.");
+			Die("Query failed: $query ERROR: " . mysql_error());
 	} else {
 		$rethead .= $out;
 		$rethead .= "<div id = \"header-info\">Not logged in.  <a href=\"acc.php\"><span title=\"Click here to return to the login form\">Log in</span></a>/<a href=\"acc.php?action=register\">Create account</a>?</div>\n";
@@ -478,7 +478,7 @@ HTML;
 	$query = "SELECT * FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("ERROR: No result returned.");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$html .= "<table cellspacing=\"0\">\n";
 	$currentrow = 0;
 	while ($row = mysql_fetch_assoc($result)) {
