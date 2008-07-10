@@ -132,7 +132,7 @@ if ($action == '') {
 	$query = "SELECT * FROM acc_user WHERE user_name = '$user' LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] != "") {
 		echo "I'm sorry, but that username is in use. Please choose another. <br />\n";
@@ -141,7 +141,7 @@ if ($action == '') {
 	$query = "SELECT * FROM acc_user WHERE user_email = '$email' LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] != "") {
 		echo "I'm sorry, but that e-mail address is in use.<br />\n";
@@ -150,7 +150,7 @@ if ($action == '') {
 	$query = "SELECT * FROM acc_user WHERE user_onwikiname = '$wname' LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] != "") {
 		echo "I'm sorry, but $wname already has an account here.<br />\n";
@@ -166,7 +166,7 @@ if ($action == '') {
 		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_welcome, user_welcome_sig, user_welcome_template) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$welcome', '$sig', '$template');";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		sendtobot("New user: $user");
 		echo "Account created!<br /><br />\n";
 		echo showlogin();
@@ -264,7 +264,7 @@ elseif ($action == "forgotpw") {
 			$query = "SELECT * FROM acc_user WHERE user_id = '$puser';";
 			$result = mysql_query($query);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error()");
+				Die("Query failed: $query ERROR: " . mysql_error());
 			$row = mysql_fetch_assoc($result);
 			$hashme = $row['user_name'] . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
 			$hash = md5($hashme);
@@ -274,7 +274,7 @@ elseif ($action == "forgotpw") {
 					$query = "UPDATE acc_user SET user_pass = '$pw' WHERE user_id = '$puser';";
 					$result = mysql_query($query);
 					if (!$result)
-						Die("Query failed: $query ERROR: " . mysql_error()");
+						Die("Query failed: $query ERROR: " . mysql_error());
 					echo "Password reset!\n<br />\nYou may now <a href=\"acc.php\">Login</a>";
 				} else {
 					echo "<h2>ERROR</h2>Passwords did not match!<br />\n";
@@ -289,7 +289,7 @@ elseif ($action == "forgotpw") {
 		$query = "SELECT * FROM acc_user WHERE user_id = '$puser';";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
 		$hashme = $row['user_name'] . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
 		$hash = md5($hashme);
@@ -315,7 +315,7 @@ elseif ($action == "forgotpw") {
 		$query = "SELECT * FROM acc_user WHERE user_name = '$puser';";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
 		if ($row['user_id'] == "") {
 			echo "<h2>ERROR</h2>Missing or invalid information supplied.\n";
@@ -352,7 +352,7 @@ elseif ($action == "login") {
 	$query = "SELECT * FROM acc_user WHERE user_name = \"$puser\";";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_level'] == "New") {
 		echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
@@ -379,7 +379,7 @@ elseif ($action == "messagemgmt") {
 		$query = "SELECT * FROM acc_emails WHERE mail_id = $mid;";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
 		$mailtext = htmlentities($row[mail_text]);
 		echo "<h2>View message</h2><br />Message ID: $row[mail_id]<br />\n";
@@ -394,7 +394,7 @@ elseif ($action == "messagemgmt") {
 		$query = "SELECT * FROM acc_user WHERE user_name = '$siuser';";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
 		if ($row[user_level] != "Admin" && $_SESSION['user'] != "SQL") {
 			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
@@ -410,16 +410,16 @@ elseif ($action == "messagemgmt") {
 			$query = "UPDATE acc_emails SET mail_desc = '$mdesc' WHERE mail_id = '$mid';";
 			$result = mysql_query($query);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error()");
+				Die("Query failed: $query ERROR: " . mysql_error());
 			$query = "UPDATE acc_emails SET mail_text = '$mtext' WHERE mail_id = '$mid';";
 			$result = mysql_query($query);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error()");
+				Die("Query failed: $query ERROR: " . mysql_error());
 			$now = date("Y-m-d H-i-s");
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$mid', '$siuser', 'Edited', '$now');";
 			$result = mysql_query($query);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error()");
+				Die("Query failed: $query ERROR: " . mysql_error());
 			echo "Message $mid updated.<br />\n";
 			sendtobot("Message $mid edited by $siuser");
 			echo showfooter();
@@ -428,7 +428,7 @@ elseif ($action == "messagemgmt") {
 		$query = "SELECT * FROM acc_emails WHERE mail_id = $mid;";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
 		$mailtext = htmlentities($row['mail_text']);
 		echo "<h2>Edit message</h2><strong>This is NOT a toy. If you can see this form, you can edit this message. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=messagemgmt&edit=$mid&submit=1\" method=\"post\"><br />\n";
@@ -442,7 +442,7 @@ elseif ($action == "messagemgmt") {
 	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Message';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<h2>Mail messages</h2>\n";
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
@@ -456,7 +456,7 @@ elseif ($action == "messagemgmt") {
 	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Interface';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<h2>Public Interface messages</h2>\n";
 	echo "\n";
 	while ($row = mysql_fetch_assoc($result)) {
@@ -470,7 +470,7 @@ elseif ($action == "messagemgmt") {
 	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Internal';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<h2>Internal Interface messages</h2>\n";
 	echo "\n";
 	while ($row = mysql_fetch_assoc($result)) {
@@ -505,11 +505,11 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$target', '$siuser', 'Banned', '$now');";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$query = "INSERT INTO acc_ban (ban_type, ban_target, ban_user, ban_reason, ban_date, ban_duration) VALUES ('$type', '$target', '$siuser', '$reason', '$now', $duration);";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "Banned $target for $reason<br />\n";
 	if ($duration == "" || $duration == "-1") {
 		$until = "Forever";
@@ -526,12 +526,12 @@ elseif ($action == "unban" && $_GET['id'] != "") {
 	$query = "DELETE FROM acc_ban WHERE ban_id = '$bid';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$now = date("Y-m-d H-i-s");
 	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$bid', '$siuser', 'Unbanned', '$now');";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "Unbanned ban #$bid<br />\n";
 	echo showfooter();
 	die();
@@ -544,7 +544,7 @@ elseif ($action == "ban") {
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$ip2';";
 			$result = mysql_query($query);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error()");
+				Die("Query failed: $query ERROR: " . mysql_error());
 			$row = mysql_fetch_assoc($result);
 			$target = $row[pend_ip];
 			$type = "IP";
@@ -554,7 +554,7 @@ elseif ($action == "ban") {
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$email2';";
 			$result = mysql_query($query);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error()");
+				Die("Query failed: $query ERROR: " . mysql_error());
 			$row = mysql_fetch_assoc($result);
 			$target = $row[pend_email];
 			$type = "EMail";
@@ -564,7 +564,7 @@ elseif ($action == "ban") {
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$name2';";
 			$result = mysql_query($query);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error()");
+				Die("Query failed: $query ERROR: " . mysql_error());
 			$row = mysql_fetch_assoc($result);
 			$target = $row[pend_name];
 			$type = "Name";
@@ -572,7 +572,7 @@ elseif ($action == "ban") {
 		$query = "SELECT * FROM acc_ban WHERE ban_target = '$target';";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
 		if ($row[ban_id] != "") {
 			echo "<h2>ERROR</h2>\n<br />\nCould not ban. Already banned!<br />";
@@ -586,7 +586,7 @@ elseif ($action == "ban") {
 	$query = "SELECT * FROM acc_ban;";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
 		if ($row['ban_duration'] == "" || $row['ban_duration'] == "-1") {
 			$until = "Forever";
@@ -604,7 +604,7 @@ elseif ($action == "usermgmt") {
 	$query = "SELECT * FROM acc_user WHERE user_name = '$siuser';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_level'] != "Admin" && $_SESSION['user'] != "SQL") {
 		echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
@@ -617,18 +617,18 @@ elseif ($action == "usermgmt") {
 		$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$aid';";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$now = date("Y-m-d H-i-s");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$aid', '$siuser', 'Approved', '$now');";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		echo "Changed User #$_GET[approve] access to 'User'<br />\n";
 		$uid = $aid;
 		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
 		$result2 = mysql_query($query2);
 		if (!$result2)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		sendtobot("User $aid ($row2[user_name]) approved by $siuser");
 	}
@@ -647,18 +647,18 @@ elseif ($action == "usermgmt") {
 			$query = "UPDATE acc_user SET user_level = 'Suspended' WHERE user_id = '$did';";
 			$result = mysql_query($query);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error()");
+				Die("Query failed: $query ERROR: " . mysql_error());
 			$now = date("Y-m-d H-i-s");
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$did', '$siuser', 'Suspended', '$now', '$suspendrsn');";
 			$result = mysql_query($query);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error()");
+				Die("Query failed: $query ERROR: " . mysql_error());
 			echo "Changed User #$_GET[suspend] access to 'Suspended'<br />\n";
 			$uid = $did;
 			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
 			$result2 = mysql_query($query2);
 			if (!$result2)
-				Die("Query failed: $query ERROR: " . mysql_error()");
+				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
 			sendtobot("User $did ($row2[user_name]) suspended access by $siuser because: \"$suspendrsn\"");
 			echo showfooter();
@@ -672,18 +672,18 @@ elseif ($action == "usermgmt") {
 		$query = "UPDATE acc_user SET user_level = 'Admin' WHERE user_id = '$aid';";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$now = date("Y-m-d H-i-s");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$aid', '$siuser', 'Promoted', '$now');";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		echo "Changed User #$_GET[promote] access to 'Admin'<br />\n";
 		$uid = $aid;
 		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
 		$result2 = mysql_query($query2);
 		if (!$result2)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		sendtobot("User $aid ($row2[user_name]) promoted to admin by $siuser");
 	}
@@ -702,18 +702,18 @@ elseif ($action == "usermgmt") {
 			$query = "UPDATE acc_user SET user_level = 'Declined' WHERE user_id = '$did';";
 			$result = mysql_query($query);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error()");
+				Die("Query failed: $query ERROR: " . mysql_error());
 			$now = date("Y-m-d H-i-s");
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$did', '$siuser', 'Declined', '$now', '$declinersn');";
 			$result = mysql_query($query);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error()");
+				Die("Query failed: $query ERROR: " . mysql_error());
 			echo "Changed User #$_GET[decline] access to 'Declined'<br />\n";
 			$uid = $did;
 			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
 			$result2 = mysql_query($query2);
 			if (!$result2)
-				Die("Query failed: $query ERROR: " . mysql_error()");
+				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
 			sendtobot("User $did ($row2[user_name]) declined access by $siuser because: \"$declinersn\"");
 			echo showfooter();
@@ -731,7 +731,7 @@ elseif ($action == "usermgmt") {
 	$query = "SELECT * FROM acc_user WHERE user_level = 'New';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$uname = $row[user_name];
@@ -750,7 +750,7 @@ elseif ($action == "usermgmt") {
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Approved') WHERE user_level = 'User' GROUP BY log_pend ORDER BY log_pend DESC;";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$uname = $row['user_name'];
@@ -771,7 +771,7 @@ elseif ($action == "usermgmt") {
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Promoted') WHERE user_level = 'Admin' GROUP BY log_pend ORDER BY log_time ASC;";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$uname = $row['user_name'];
@@ -780,21 +780,21 @@ elseif ($action == "usermgmt") {
 		$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Suspended';";
 		$result2 = mysql_query($query);
 		if (!$result2)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		$suspended = $row2['COUNT(*)'];
 
 		$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Promoted';";
 		$result2 = mysql_query($query);
 		if (!$result2)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		$promoted = $row2['COUNT(*)'];
 
 		$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Approved';";
 		$result2 = mysql_query($query);
 		if (!$result2)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		$approved = $row2['COUNT(*)'];
 
@@ -813,7 +813,7 @@ elseif ($action == "usermgmt") {
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Suspended') WHERE user_level = 'Suspended' GROUP BY log_pend ORDER BY log_id DESC;";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$uname = $row['user_name'];
@@ -834,7 +834,7 @@ elseif ($action == "usermgmt") {
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Declined') WHERE user_level = 'Declined' GROUP BY log_pend ORDER BY log_id DESC;";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$uname = $row['user_name'];
@@ -869,7 +869,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		$query = "SELECT pend_status FROM acc_pend WHERE pend_id = '$gid';";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
 		if ($row[pend_status] == $target) {
 			echo "Cannot set status, target already deferred to $target<br />\n";
@@ -879,7 +879,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		$query = "UPDATE acc_pend SET pend_status = '$target' WHERE pend_id = '$gid';";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		if ($_GET['target'] == "admin") {
 			$deto = "admins";
 		} else {
@@ -890,7 +890,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		upcsum($gid);
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		sendtobot("Request $gid deferred to $deto by $sid");
 		echo "Request $_GET[id] deferred to $deto.<br />";
 		echo defaultpage();
@@ -913,20 +913,20 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		$query3 = "UPDATE acc_user SET user_welcome_template = '$template' WHERE user_name = '$sid'";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$result = mysql_query($query2);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$result = mysql_query($query3);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error()");
+			Die("Query failed: $query ERROR: " . mysql_error());
 		echo "Preferences updated!<br />\n";
 	}
 	$sid = $_SESSION['user'];
 	$query = "SELECT * FROM acc_user WHERE user_name = '$sid'";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_welcome'] > 0) {
 		$welcomeing = " checked";
@@ -1104,7 +1104,7 @@ elseif ($action == "zoom") {
 	$query = "SELECT * FROM acc_log WHERE log_pend = '$gid';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<h2>Logs for Request #" . $_GET['id'] . ":</h2>";
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
@@ -1150,7 +1150,7 @@ elseif ($action == "zoom") {
 	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$numip = 0;
 	while ($row = mysql_fetch_assoc($result)) {
 		echo "<li><a href=\"acc.php?action=zoom&id=$row[pend_id]\">$row[pend_name]</a></li>";
@@ -1165,7 +1165,7 @@ elseif ($action == "zoom") {
 	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$numem = 0;
 	while ($row = mysql_fetch_assoc($result)) {
 		echo "<li><a href=\"acc.php?action=zoom&id=$row[pend_id]\">$row[pend_name]</a></li>";
@@ -1208,7 +1208,7 @@ elseif ($action == "logs") {
 	}
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error()");
+		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$rlu = $row['log_user'];
@@ -1258,7 +1258,7 @@ elseif ($action == "logs") {
 			$query3 = "SELECT * FROM acc_ban WHERE ban_target = '$mid';";
 			$result3 = mysql_query($query3);
 			if (!$result3)
-				Die("Query failed: $query ERROR: " . mysql_error()");
+				Die("Query failed: $query ERROR: " . mysql_error());
 			$row3 = mysql_fetch_assoc($result3);
 			echo "<li>$rlu Banned " . $row3['log_pend'] . " #" . $row3['ban_id'] . " (" . _utf8_decode($row3['ban_target']) . ")</a>, Reason: " . $row3['ban_reason'] . ", at $rlt.</li>\n";
 		}
@@ -1268,7 +1268,7 @@ elseif ($action == "logs") {
 			$query3 = "SELECT * FROM acc_emails WHERE mail_id = '$mid';";
 			$result3 = mysql_query($query3);
 			if (!$result3)
-				Die("Query failed: $query ERROR: " . mysql_error()");
+				Die("Query failed: $query ERROR: " . mysql_error());
 			$row3 = mysql_fetch_assoc($result3);
 			echo "<li>$rlu Edited Message <a href=\"acc.php?action=messagemgmt&view=$rlp\">$rlp (" . $row3['mail_desc'] . ")</a>, at $rlt.</li>\n";
 		}
@@ -1277,7 +1277,7 @@ elseif ($action == "logs") {
 			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
 			$result2 = mysql_query($query2);
 			if (!$result2)
-				Die("Query failed: $query ERROR: " . mysql_error()");
+				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
 			$moreinfo = "";
 			if ($rla == "Declined") {
