@@ -962,7 +962,8 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     <option value="williamh"<?php if($template == "williamh") { echo " selected"; } ?>>{{User:WilliamH/Welcome|user}} ~~~~</option>
     <option value="malinaccier"<?php if($template == "malinaccier") { echo " selected"; } ?>>{{User:Malinaccier/Welcome|~~~~}}</option>
     </select><br />
-    <i>If you'd like more templates added, please contact one of the developers: <?php echo $devs; ?>.</i><br />
+    <i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>.</i><br />
+<?php // ^^^ $devs did not exist, so, I'm putting myself back in there, until someone finds another way to do it. ^^^ ?>
     <input type="submit"><input type="reset">
     </form>
     <a name="2"></a><h2>Change your password</h2>
