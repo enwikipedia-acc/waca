@@ -76,7 +76,7 @@ if ($action == '') {
 	}
 	$dnsblcheck = checkdnsbls($_SERVER['REMOTE_ADDRR']);
 	if ($dnsblcheck['0'] == true) {
-		$cmt = "FROM $ip $dnsblcheck['1']";
+		$cmt = "FROM $ip ".$dnsblcheck['1'];
 		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
 		fwrite($fp, "[DNSBL-ACR] HIT: ".$_POST['name']." - ".$_POST['wname']." ".$_SERVER['REMOTE_ADDR']." ".$_POST['email']." ".$_SERVER['HTTP_USER_AGENT']." $cmt\r\n");
 		fclose($fp);
