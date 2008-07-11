@@ -199,22 +199,22 @@ function checksecurity($username) {
 		die();
 	}
 	if ($row['user_level'] == "Declined" && $username != "SQL") {
-		$query2 = "SELECT * FROM acc_log WHERE log_pend = '$row[user_id]' AND log_action = 'Declined' ORDER BY log_id DESC LIMIT 1;";
+		$query2 = "SELECT * FROM acc_log WHERE log_pend = '".$row['user_id']."' AND log_action = 'Declined' ORDER BY log_id DESC LIMIT 1;";
 		$result2 = mysql_query($query2);
 		if (!$result2)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
-		echo "I'm sorry, but, your account request was <strong>declined</strong> by <strong>$row2[log_user]</strong> because <strong>\"$row2[log_cmt]\"</strong> at <strong>$row2[log_time]</strong>.<br />\n";
+		echo "I'm sorry, but, your account request was <strong>declined</strong> by <strong>".$row2['log_user']."</strong> because <strong>\"".$row2['log_cmt']."\"</strong> at <strong>".$row2['log_time']."</strong>.<br />\n";
 		echo "Related information (please include this if appealing this decision)<br />\n";
-		echo "user_id: $row[user_id]<br />\n";
-		echo "user_name: $row[user_name]<br />\n";
-		echo "user_onwikiname: $row[user_onwikiname]<br />\n";
-		echo "user_email: $row[user_email]<br />\n";
-		echo "log_id: $row2[log_id]<br />\n";
-		echo "log_pend: $row2[log_pend]<br />\n";
-		echo "log_user: $row2[log_user]<br />\n";
-		echo "log_time: $row2[log_time]<br />\n";
-		echo "log_cmt: $row2[log_cmt]<br />\n";
+		echo "user_id: ".$row['user_id']."<br />\n";
+		echo "user_name: ".$row['user_name']<."br />\n";
+		echo "user_onwikiname: ".$row['user_onwikiname']."<br />\n";
+		echo "user_email: ".$row['user_email']."<br />\n";
+		echo "log_id: ".$row2['log_id']."<br />\n";
+		echo "log_pend: ".$row2['log_pend']."<br />\n";
+		echo "log_user: ".$row2['log_user']."<br />\n";
+		echo "log_time: ".$row2['log_time']."<br />\n";
+		echo "log_cmt: ".$row2['log_cmt']."<br />\n";
 		echo "<br /><big><strong>To appeal this decision, please e-mail <a href=\"mailto:accounts-enwiki-l@lists.wikimedia.org\">accounts-enwiki-l@lists.wikimedia.org</a> with the above information, and a reasoning why you believe you should be approved for this interface.</strong></big><br />\n";
 		echo showfootern();
 		die();
@@ -341,9 +341,9 @@ function listrequests($type) {
 			$target = 'user';
 		}
 		if ($target == 'admin' || $target == 'user') {
-			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&id=$row[pend_id]&sum=$row[pend_checksum]&target=$target\">Defer to $target" . "s</a>";
+			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&id=".$row['pend_id']."&sum=".$row['pend_checksum']."&target=$target\">Defer to $target" . "s</a>";
 		} else {
-			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&id=$row[pend_id]&sum=$row[pend_checksum]&target=user\">Reset Request</a>";
+			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&id=".$row['pend_id']."&sum=".$row['pend_checksum']."&target=user\">Reset Request</a>";
 		}
 		// Drop
 		$out .= ' - <a class="request-done" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=0&sum=' . $row['pend_checksum'] . '">Drop</a>';
@@ -386,10 +386,10 @@ function makehead($suin) {
 			$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"acc.php?action=usermgmt\">User Management</a>\n", $out);
 		}
 		$rethead .= $out;
-		$rethead .= "<div id = \"header-info\">Logged in as <a href=\"users.php?viewuser=$_SESSION[user_id]\"><span title=\"View your user information\">$_SESSION[user]</span></a>.  <a href=\"acc.php?action=logout\">Logout</a>?</div>\n";
+		$rethead .= "<div id = \"header-info\">Logged in as <a href=\"users.php?viewuser=".$_SESSION['user_id']."\"><span title=\"View your user information\">".$_SESSION['user']."</span></a>.  <a href=\"acc.php?action=logout\">Logout</a>?</div>\n";
 		//Update user_lastactive
 		$now = date("Y-m-d H-i-s");
-		$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '$_SESSION[user_id]';";
+		$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '".$_SESSION['user_id']."';";
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -452,12 +452,12 @@ HTML;
 function getdevs() {
 	global $regdevlist;
 	$newdevlist = array_reverse($regdevlist);
-	$temp = $newdevlist[0];
-	unset ($newdevlist[0]);
+	$temp = $newdevlist['0'];
+	unset ($newdevlist['0']);
 	foreach ($newdevlist as $dev) {
-		$devs .= "<a href=\"http://en.wikipedia.org/wiki/User talk:" . $dev[1] . "\">" . $dev[0] . "</a>, ";
+		$devs .= "<a href=\"http://en.wikipedia.org/wiki/User talk:" . $dev['1'] . "\">" . $dev['0'] . "</a>, ";
 	}
-	$devs .= "<a href=\"http://en.wikipedia.org/wiki/User talk:" . $temp[1] . "\">" . $temp[0] . "</a>";
+	$devs .= "<a href=\"http://en.wikipedia.org/wiki/User talk:" . $temp['1'] . "\">" . $temp['0'] . "</a>";
 	return $devs;
 }
 

@@ -201,7 +201,7 @@ function checkdnsbls ($addr) {
 //		if (!isset($dnsbl['ret'][$lastdigit]) and ($dnsbl['bunk'] == false)) { $tmpdnsblresult = 'Nothing.'; continue; }
 		$dnsbldata .= '<li> '.$dnsblip.'.'.$dnsbl['zone'].' ('.$dnsblname.') = '.$tmpdnsblresult;
 		$lastdigit = explode('.',$tmpdnsblresult);
-		$lastdigit = $lastdigit[3];
+		$lastdigit = $lastdigit['3'];
 		if (isset($dnsbl['ret'][$lastdigit])) { $dnsbldata .= ' ('.$dnsbl['ret'][$lastdigit].')'; $banned = true; }
 		else { $dnsbldata .= ' (unknown)'; if ($dnsbl['bunk']) $banned = true; }
 		$dnsbldata .= ' &mdash;  <a href="'.str_replace('%i',$addr,$dnsbl['url'])."\"> more information</a>.\n";

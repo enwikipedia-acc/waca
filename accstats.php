@@ -72,7 +72,7 @@ while ($topa = mysql_fetch_assoc($result)) {
 $top5aout .= "\nAll time top 5 account creators:\n";
 $top5aout .= "-------------------------------------------------------------\n";
 foreach ($top5a as $top1a) {
-        $top5aout .= "$top1a[log_user] - " . $top1a['count(*)'] . "\n";
+        $top5aout .= "$top1a['log_user'] - " . $top1a['count(*)'] . "\n";
 }
 $topa5out .= "\n";
 $whosnewq = "select * from acc_log JOIN acc_user on log_pend = user_id where log_action = 'Approved' AND log_time LIKE '$now%';";
@@ -81,7 +81,7 @@ $result = mysql_query($whosnewq);
 if(!$result) Die("ERROR: No result returned.6.1");
 $whosnew = array();
 while ($wn = mysql_fetch_assoc($result)) {
-	$wn_one = $wn[user_name];
+	$wn_one = $wn['user_name'];
 	array_push($whosnew, $wn_one);
 }
 
@@ -110,7 +110,7 @@ while ($top = mysql_fetch_assoc($result)) {
 $top5out .= "\nTodays top 5 account creators:\n";
 $top5out .= "-------------------------------------------------------------\n";
 foreach ($top5 as $top1) {
-	$top5out .= "$top1[log_user] - " . $top1['count(*)'] . "\n";
+	$top5out .= "$top1['log_user'] - " . $top1['count(*)'] . "\n";
 }
 $top5out .= "\n";
 
@@ -130,7 +130,7 @@ $technical = 0;
 $dadmins = 0;
 $dusers = 0;
 while($log = mysql_fetch_assoc($result)) {
-	switch ($log[log_action]) {
+	switch ($log['log_action']) {
 	case "Closed 0": //Dropped
 	    $dropped++;
 	    break;
