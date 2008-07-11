@@ -50,7 +50,7 @@ function checktor ( $addr ) {
 	$flags = array();
 	$flags['tor'] = "no";
 	$p = explode(".", $addr);
-	$ahbladdr = $p[3] . "." . $p[2] . "." . $p[1] . "." . $p[0] . "." . "tor.ahbl.org";;
+	$ahbladdr = $p['3'] . "." . $p['2'] . "." . $p['1'] . "." . $p['0'] . "." . "tor.ahbl.org";;
 	$ahbl = gethostbyname($ahbladdr);
 	if ($ahbl == "127.0.0.2") { $flags['transit'] = "yes"; "yes"; $flags['tor'] = "yes";}
 	if ($ahbl == "127.0.0.3") { $flags['exit'] = "yes"; "yes"; $flags['tor'] = "yes";}
@@ -63,14 +63,14 @@ function emailvalid ($email) {
 	}
 	$parts = explode("@",$email);
 	if(function_exists('checkdnsrr')) {
-		getmxrr($parts[1],$mxhosts,$mxweight);
+		getmxrr($parts['1'],$mxhosts,$mxweight);
 		if(count($mxhosts) > 0) {
 			for($i=0;$i<count($mxhosts);$i++) {
 				$mxs[$mxhosts[$i]] = $mxweight[$i];
 			}
 			$mailers = array_keys($mxs);
-		} elseif(checkdnsrr($parts[1],'A')) {
-			$mailers[0] = gethostbyname($domain);
+		} elseif(checkdnsrr($parts['1'],'A')) {
+			$mailers['0'] = gethostbyname($domain);
 		} else {
 			$mailers = array();
 		}
@@ -201,13 +201,13 @@ if (isset($_POST['name']) && isset($_POST['email'])) {
 	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 	@mysql_select_db($toolserver_database) or print mysql_error();
 	foreach ($uablacklist as $wubl => $ubl) {
-		$phail_test = @preg_match($ubl, $_SERVER[HTTP_USER_AGENT]);
+		$phail_test = @preg_match($ubl, $_SERVER['HTTP_USER_AGENT']);
 		if($phail_test == TRUE) {
         	$now = date("Y-m-d H-i-s");
 			$target = "$wubl";
-			$siuser = mysql_real_escape_string("$_POST[name]");
+			$siuser = mysql_real_escape_string($_POST['name']);
 			$cmt = mysql_real_escape_string("FROM $ip $email");
-			sendtobot("[Grawp-Bl] HIT: $wubl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]");
+			sendtobot("[Grawp-Bl] HIT: $wubl - ".$_POST['name']." $ip2 $email ".$_SERVER['HTTP_USER_AGENT']);
 			//$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
 			//$result = mysql_query($query);
 			//if(!$result) Die("ERROR: No result returned.");
@@ -217,15 +217,15 @@ if (isset($_POST['name']) && isset($_POST['email'])) {
 		}
 	}
 	foreach ($nameblacklist as $wnbl => $nbl) {
-		$phail_test = @preg_match($nbl, $_POST[name]);
+		$phail_test = @preg_match($nbl, $_POST['name']);
 		if($phail_test == TRUE) {
         	        $message = showmessage(15);
 	                echo "$message<br />\n";
 	        	$now = date("Y-m-d H-i-s");
 			$target = "$wnbl";
-			$siuser = mysql_real_escape_string("$_POST[name]");
+			$siuser = mysql_real_escape_string($_POST['name']);
 			$cmt = mysql_real_escape_string("FROM $ip $email");
-			sendtobot("[Name-Bl] HIT: $wnbl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]");
+			sendtobot("[Name-Bl] HIT: $wnbl - ".$_POST['name']." $ip2 $email ".$_SERVER['HTTP_USER_AGENT']);
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
 			$result = mysql_query($query);
 			if(!$result) Die("ERROR: No result returned.");
@@ -235,15 +235,15 @@ if (isset($_POST['name']) && isset($_POST['email'])) {
 		}
 	}
 	foreach ($emailblacklist as $wnbl => $nbl) {
-		$phail_test = @preg_match($nbl, $_POST[email]);
+		$phail_test = @preg_match($nbl, $_POST['email']);
 		if($phail_test == TRUE) {
         	        $message = showmessage(15);
 	                echo "$message<br />\n";
 	        	$now = date("Y-m-d H-i-s");
 			$target = "$wnbl";
-			$siuser = mysql_real_escape_string("$_POST[name]");
+			$siuser = mysql_real_escape_string($_POST['name']);
 			$cmt = mysql_real_escape_string("FROM $ip $email");
-			sendtobot("[Email-Bl] HIT: $wnbl - $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]");
+			sendtobot("[Email-Bl] HIT: $wnbl - ".$_POST['name']." $ip2 $email ".$_SERVER['HTTP_USER_AGENT']);
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
 			$result = mysql_query($query);
 			if(!$result) Die("ERROR: No result returned.");
@@ -253,7 +253,7 @@ if (isset($_POST['name']) && isset($_POST['email'])) {
 		}
 	}
 	$dnsblcheck = checkdnsbls($ip2);
-	if ($dnsblcheck[0] == true) {
+	if ($dnsblcheck['0'] == true) {
 		$toruser = checktor($ip2);
 		if ($toruser['tor'] == "yes") {
 			$tor = "(TOR node)";
@@ -262,14 +262,14 @@ if (isset($_POST['name']) && isset($_POST['email'])) {
 			$tor = "(Not a TOR node)";
 		}
 		$now = date("Y-m-d H-i-s");
-		$siuser = mysql_real_escape_string("$_POST[name]");
-		$cmt = mysql_real_escape_string("FROM $ip $email<br />$dnsblcheck[1]");
-		sendtobot("[DNSBL] $tor HIT: $_POST[name] $ip2 $email $_SERVER[HTTP_USER_AGENT]");
+		$siuser = mysql_real_escape_string($_POST['name']);
+		$cmt = mysql_real_escape_string("FROM $ip $email<br />".$dnsblcheck['1']);
+		sendtobot("[DNSBL] $tor HIT: ".$_POST['name']." $ip2 $email ".$_SERVER['HTTP_USER_AGENT']);
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('DNSBL', '$siuser', 'DNSBL Hit', '$now', '$cmt');";
 		echo '<!-- Query: '.$query.' -->';
 		mysql_query($query);
 		echo '<!-- Error: '.mysql_error().' -->';
-		$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string("DNSBL Hit:<br />\n".$dnsblcheck[1]).'\',\''.$now.'\',\''.(time() + 172800).'\');';
+		$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string("DNSBL Hit:<br />\n".$dnsblcheck['1']).'\',\''.$now.'\',\''.(time() + 172800).'\');';
 		echo '<!-- Query: '.$query.' -->';
 		mysql_query($query);
 		echo '<!-- Error: '.mysql_error().' -->';
@@ -285,7 +285,7 @@ if (isset($_POST['name']) && isset($_POST['email'])) {
 	$email = ltrim($email);
 	$email = rtrim($email);
 	$email = mysql_real_escape_string($email);	
-	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$_POST[name]&format=php");
+	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=".$_POST['name']."&format=php");
 	$ue = unserialize($userexist);
 	foreach ($ue['query']['users'] as $oneue) {
         	if(!isset($oneue['missing'])) {
@@ -353,13 +353,13 @@ if (isset($_POST['name']) && isset($_POST['email'])) {
 		if ($dbanned < 0 || $dbanned == "") {
 			$dbanned = time() + 100;
 		}
-		if($toruser[tor] == "yes") { $row[ban_reason] = "<a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse."; 
+		if($toruser['tor'] == "yes") { $row[ban_reason] = "<a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse."; 
 } 
 		if ($dbanned < time()) {
 			//Not banned!
 		} else { //Still banned!
 			$message = showmessage(19);
-			echo "$message<strong>$row[ban_reason]</strong><br />\n"; 
+			echo "$message<strong>".$row['ban_reason']."</strong><br />\n"; 
 			$fail = 1; 
 			displayfooter();
 			die();
@@ -378,7 +378,7 @@ if (isset($_POST['name']) && isset($_POST['email'])) {
                         //Not banned!
                 } else { //Still banned!
 			$message = showmessage(19);
-			echo "$message<strong>$row[ban_reason]</strong><br />\n"; 
+			echo "$message<strong>".$row['ban_reason']."</strong><br />\n"; 
 			$fail = 1; 
 			displayfooter();
 			die();
@@ -397,7 +397,7 @@ if (isset($_POST['name']) && isset($_POST['email'])) {
                         //Not banned!
                 } else { //Still banned!
 			$message = showmessage(19);
-			echo "$message<strong>$row[ban_reason]</strong><br />\n"; 
+			echo "$message<strong>".$row['ban_reason']."</strong><br />\n"; 
 			$fail = 1; 
 			displayfooter();
 			die();
