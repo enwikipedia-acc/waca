@@ -207,7 +207,7 @@ function checksecurity($username) {
 		echo "I'm sorry, but, your account request was <strong>declined</strong> by <strong>".$row2['log_user']."</strong> because <strong>\"".$row2['log_cmt']."\"</strong> at <strong>".$row2['log_time']."</strong>.<br />\n";
 		echo "Related information (please include this if appealing this decision)<br />\n";
 		echo "user_id: ".$row['user_id']."<br />\n";
-		echo "user_name: ".$row['user_name']<."br />\n";
+		echo "user_name: ".$row['user_name']."<br />\n";
 		echo "user_onwikiname: ".$row['user_onwikiname']."<br />\n";
 		echo "user_email: ".$row['user_email']."<br />\n";
 		echo "log_id: ".$row2['log_id']."<br />\n";
