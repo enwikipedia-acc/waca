@@ -230,12 +230,12 @@
 
 		$explode1 = explode( ' ', $line, 4 );
 
-		if( strtolower( $explode1[0] ) == 'ping' ) {
+		if( strtolower( $explode1['0'] ) == 'ping' ) {
 			$return['type'] = 'ping';
 			$return['payload'] = $explode1[1];
-		} else if( strtolower( $explode1[1] ) == 'privmsg' ) {
+		} else if( strtolower( $explode1['1'] ) == 'privmsg' ) {
 			$return['type'] = 'privmsg';
-			$return['n!u@h'] = ( ( $explode1[0]{0} == ':' ) ? substr( $explode1[0], 1 ) : $explode1[0] );
+			$return['n!u@h'] = ( ( $explode1['0']{0} == ':' ) ? substr( $explode1[0], 1 ) : $explode1[0] );
 			$return['nick'] = explode( '!', $return['n!u@h'] );
 			$return['user'] = explode( '@', $return['nick'][1] );
 			$return['host'] = $return['user'][1];
@@ -538,14 +538,16 @@
 
 		print_r( $parsed );
 
-		if( $parsed['type'] == 'ping' ) {
-	        	irc( 'PONG ' . $parsed['payload'] ); 
-		}
+		if( isset( $parsed['type'] ) { 
+			if( $parsed['type'] == 'ping' ) {
+		        	irc( 'PONG ' . $parsed['payload'] ); 
+			}
 
-		if( $parsed['type'] == 'privmsg' ) {
-			if( $parsed['to'] == strtolower( $chan ) ) {
-				if( isset( $parsed['command'] ) ) {
-					doCommand( $parsed['command'], $parsed );
+			if( $parsed['type'] == 'privmsg' ) {
+				if( $parsed['to'] == strtolower( $chan ) ) {
+					if( isset( $parsed['command'] ) ) {
+						doCommand( $parsed['command'], $parsed );
+					}
 				}
 			}
 		}
