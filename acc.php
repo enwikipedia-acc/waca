@@ -569,6 +569,7 @@ elseif ($action == "ban") {
 			$target = $row['pend_name'];
 			$type = "Name";
 		}
+		$target = sanitize($target);
 		$query = "SELECT * FROM acc_ban WHERE ban_target = '$target';";
 		$result = mysql_query($query);
 		if (!$result)
@@ -1255,7 +1256,7 @@ elseif ($action == "logs") {
 			echo "<li>$rlu Unbanned $rlp at $rlt</li>\n";
 		}
 		if ($row['log_action'] == "Banned") {
-			$mid = $row['log_pend'];
+			$mid = sanitize($row['log_pend']);
 			$query3 = "SELECT * FROM acc_ban WHERE ban_target = '$mid';";
 			$result3 = mysql_query($query3);
 			if (!$result3)
