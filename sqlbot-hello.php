@@ -43,8 +43,8 @@ function isnewuser($user) {
 if ($run != "go") {
 	$sqloldtalk = sxGetPage('User talk:SQL');
 	$leprop = sxLastEdited('User:SQLBot-Hello/welcome.run');
-	$whostoppedme = $leprop[user];
-	$whystopme = $leprop[editsum];
+	$whostoppedme = $leprop['user'];
+	$whystopme = $leprop['editsum'];
 	$sqlnewtalk = "\r\n==Help! I've been thwarted!==\r\nHey, as instructed, I need to tell you that [[User:$whostoppedme|$whostoppedme]] has stopped me from running, with an edit summary of $whystopme. ~~~~\r\n";
 	$sqlnewtalk = $sqloldtalk . $sqlnewtalk;
 	sxPutPage('User talk:SQL', 'Emergency! Bot stopped!', $sqlnewtalk, $null);
@@ -58,7 +58,7 @@ function tagpage($user, $template) {
 	/*
 	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$user2&format=php");
 	$ue = unserialize($userexist);
-	foreach ($ue[query][users] as $oneue) {
+	foreach ($ue[query]['users'] as $oneue) {
         	if(!isset($oneue[missing])) {
 		echo "$user does not exist, skipping!\n"; 
 		$exist = FALSE; 
@@ -80,9 +80,9 @@ $query = "SELECT * FROM acc_welcome WHERE welcome_status = 'Open';";
 $result = mysql_query($query);
 if(!$result) Die("ERROR: No result returned.");
 while ($row = mysql_fetch_assoc($result)) {
-	$user = $row[welcome_user];
+	$user = $row['welcome_user'];
 	echo "Welcoming $user\n";
-	$sig = $row[welcome_sig];
+	$sig = $row['welcome_sig'];
 	//Addition by Cobi
 	$d = 0; 
 	$s = ''; 
@@ -96,8 +96,8 @@ while ($row = mysql_fetch_assoc($result)) {
 		} 
 	}
 	$sig = $s;
-	$sid = $row[welcome_uid];
-	$template = $row[welcome_template];
+	$sid = $row['welcome_uid'];
+	$template = $row['welcome_template'];
 	if ($template == "welcomeg") {
 		tagpage($user, "{{subst:User:SQLBot-Hello/Welcomeg|sig=$sig ~~~~~}}");
 	}
@@ -146,7 +146,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	if ($template == "malinaccier") {
 		tagpage($user, "{{subst:User:Malinaccier/Welcome|$sig ~~~~~}}");
 	}
-	$query2 = "UPDATE acc_welcome SET welcome_status = 'Closed' WHERE welcome_id = '$row[welcome_id]';";
+	$query2 = "UPDATE acc_welcome SET welcome_status = 'Closed' WHERE welcome_id = '".$row['welcome_id']."';";
 	$result2 = mysql_query($query2);
 	if(!$result) Die("ERROR: No result returned.");
 }
