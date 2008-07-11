@@ -1100,7 +1100,7 @@ elseif ($action == "zoom") {
 	echo $requesttable;
 
 	$row['pend_cmt'] = preg_replace('/\<\/?(div|span|script|\?php|\?|img)\s?(.*)\s?\>/i', '', $row['pend_cmt']); //Escape injections.
-	echo "<br /><strong>Comment</strong>: $row['pend_cmt']<br />\n";
+	echo "<br /><strong>Comment</strong>: ".$row['pend_cmt']."<br />\n";
 	$query = "SELECT * FROM acc_log WHERE log_pend = '$gid';";
 	$result = mysql_query($query);
 	if (!$result)
