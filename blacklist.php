@@ -1,4 +1,5 @@
 <?PHP
+
 /**************************************************************
 ** English Wikipedia Account Request Interface               **
 ** Wikipedia Account Request Graphic Design by               **
@@ -31,27 +32,25 @@
     * (?i:fellatio)
     * (?i:cunnilingus)
     * (?i:dildo)
-*/    
+*/
 
 /*mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
 @mysql_select_db($toolserver_database) or print mysql_error();*/
 
-if($ACC != "1") { 
-        header("Location: $tsurl/");
+if ($ACC != "1") {
+	header("Location: $tsurl/");
 	die();
 }
 
-$acrnamebl = array();
-$nameblacklist = array();
-$emailblacklist = array();
-$uablacklist = array();
+$acrnamebl = array ();
+$nameblacklist = array ();
+$emailblacklist = array ();
+$uablacklist = array ();
 
-
-
-$acrnamebl['nigger']   = '/(?i:ni(gg|qq)(a|er))/';
-$acrnamebl['grawp1']   = '/k*[l1][o0]?m[o0]?[i1]r*/i';
-$acrnamebl['grawp2']   = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
-$acrnamebl['grawp3']   = '/(hagg[ea]r|herme?y|quarp)/i';
+$acrnamebl['nigger'] = '/(?i:ni(gg|qq)(a|er))/';
+$acrnamebl['grawp1'] = '/k*[l1][o0]?m[o0]?[i1]r*/i';
+$acrnamebl['grawp2'] = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
+$acrnamebl['grawp3'] = '/(hagg[ea]r|herme?y|quarp)/i';
 $acrnamebl['grawp4'] = '/secret.*combination/i';
 $acrnamebl['grawp5'] = '/((ph|f)uc?k|s[e3]x|shag)/i';
 $acrnamebl['grawp6'] = '/t[3eh][3eh]_l[uo]lz/i';
@@ -59,9 +58,8 @@ $acrnamebl['grawp7'] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
 $acrnamebl['grawp8'] = '/(need.to|will).*die/i';
 $acrnamebl['grawp9'] = '/4chan/i';
 
-$nameblacklist['nigger']   = '/(?i:ni(gg|qq)(a|er))/';
-$nameblacklist['faggot']   = '/(?i:faggot)/';
-
+$nameblacklist['nigger'] = '/(?i:ni(gg|qq)(a|er))/';
+$nameblacklist['faggot'] = '/(?i:faggot)/';
 
 $nameblacklist['grawp1'] = '/k*[l1][o0]?m[o0]?[i1]r*/i';
 $nameblacklist['grawp2'] = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
@@ -110,106 +108,118 @@ $emailblacklist['webring'] = '/webring@.*/i';
 $uablacklist['grawp1'] = '/Mozilla\/4\.0 \(compatible; MSIE 7\.0; Windows NT 6\.0; SLCC1; \.NET CLR 2\.0\.50727; \.NET CLR 3\.0\.04506; InfoPath\.2; \.NET CLR 3\.5\.21022\)/';
 
 //DNSBLS
-$dnsbls = array(
-	'NJABL'	=> array(
+$dnsbls = array (
+	'NJABL' => array (
 		'zone' => 'dnsbl.njabl.org',
 		'bunk' => false,
-		'url'  => 'http://www.njabl.org/cgi-bin/lookup.cgi?query=%i',
-		'ret'  => array(
-			9	=> 'Open proxy',
-			10	=> 'Open proxy'
+		'url' => 'http://www.njabl.org/cgi-bin/lookup.cgi?query=%i',
+		'ret' => array (
+			9 => 'Open proxy',
+			10 => 'Open proxy'
 		)
 	),
-	'IRCBL'	=> array(
+	'IRCBL' => array (
 		'zone' => 'ircbl.ahbl.org',
 		'bunk' => false,
-		'url'  => 'http://www.ahbl.org/tools/lookup.php?ip=%i',
-		'ret'  => array(
-			3	=> 'Open proxy',
-			14	=> 'DDoS drone',
-			15	=> 'Trojan',
-			16	=> 'Virus',
-			17	=> 'Malware',
-			18	=> 'Ratware'
+		'url' => 'http://www.ahbl.org/tools/lookup.php?ip=%i',
+		'ret' => array (
+			3 => 'Open proxy',
+			14 => 'DDoS drone',
+			15 => 'Trojan',
+			16 => 'Virus',
+			17 => 'Malware',
+			18 => 'Ratware'
 		)
 	),
-	'SECTOOR' => array(
+	'SECTOOR' => array (
 		'zone' => 'tor.dnsbl.sectoor.de',
 		'bunk' => true,
-		'url'  => 'http://www.sectoor.de/tor.php?ip=%i',
-		'ret'  => array(
-			1	=> 'Tor exit server'
+		'url' => 'http://www.sectoor.de/tor.php?ip=%i',
+		'ret' => array (
+			1 => 'Tor exit server'
 		)
 	),
-	'AHBL' => array(
+	'AHBL' => array (
 		'zone' => 'tor.ahbl.org',
 		'bunk' => true,
-		'url'  => 'http://www.ahbl.org/tools/lookup.php?ip=%i',
-		'ret'  => array(
-			2	=> 'Tor exit server'
+		'url' => 'http://www.ahbl.org/tools/lookup.php?ip=%i',
+		'ret' => array (
+			2 => 'Tor exit server'
 		)
 	),
-	'NoMoreFunn' => array(
+	'NoMoreFunn' => array (
 		'zone' => 'no-more-funn.moensted.dk',
 		'bunk' => false,
-		'url'  => 'http://moensted.dk/spam/no-more-funn?addr=%i',
-		'ret'  => array(
-			10	=> 'Open proxy'
+		'url' => 'http://moensted.dk/spam/no-more-funn?addr=%i',
+		'ret' => array (
+			10 => 'Open proxy'
 		)
 	),
-	'SORBS' => array(
+	'SORBS' => array (
 		'zone' => 'dnsbl.sorbs.net',
 		'bunk' => false,
-		'url'  => 'http://dnsbl.sorbs.net/cgi-bin/db?IP=%i',
-		'ret'  => array(
-			2	=> 'Open HTTP Proxy',
-			3	=> 'Open Socks Proxy',
-			4	=> 'Other Open Proxy'
+		'url' => 'http://dnsbl.sorbs.net/cgi-bin/db?IP=%i',
+		'ret' => array (
+			2 => 'Open HTTP Proxy',
+			3 => 'Open Socks Proxy',
+			4 => 'Other Open Proxy'
 		)
 	),
-	'DSBL' => array(
+	'DSBL' => array (
 		'zone' => 'list.dsbl.org',
 		'bunk' => false,
-		'url'  => 'http://dsbl.org/listing?%i',
-		'ret'  => array(
-			2	=> 'Open proxy'
+		'url' => 'http://dsbl.org/listing?%i',
+		'ret' => array (
+			2 => 'Open proxy'
 		)
 	),
-	'XBL' => array(
+	'XBL' => array (
 		'zone' => 'xbl.spamhaus.org',
 		'bunk' => false,
-		'url'  => 'http://www.spamhaus.org/query/bl?ip=%i',
-		'ret'  => array(
-			4	=> 'CBL',
-			5	=> 'NJABL',
-			6	=> 'BOPM'
+		'url' => 'http://www.spamhaus.org/query/bl?ip=%i',
+		'ret' => array (
+			4 => 'CBL',
+			5 => 'NJABL',
+			6 => 'BOPM'
 		)
 	)
 );
-function checkdnsbls ($addr) {
+function checkdnsbls($addr) {
 	global $dnsbls;
 
-	$dnsblip = implode('.',array_reverse(explode('.',$addr)));
+	$dnsblip = implode('.', array_reverse(explode('.', $addr)));
 	$dnsbldata = '<ul>';
 	$banned = false;
 
 	foreach ($dnsbls as $dnsblname => $dnsbl) {
-		echo '<!-- Checking '.$dnsblname.' ... ';
-		$tmpdnsblresult = gethostbyname($dnsblip.'.'.$dnsbl['zone']);
-		echo $tmpdnsblresult.' -->';
-		if (long2ip(ip2long($tmpdnsblresult)) != $tmpdnsblresult) { $tmpdnsblresult = 'Nothing.'; continue; }
-//		if (!isset($dnsbl['ret'][$lastdigit]) and ($dnsbl['bunk'] == false)) { $tmpdnsblresult = 'Nothing.'; continue; }
-		$dnsbldata .= '<li> '.$dnsblip.'.'.$dnsbl['zone'].' ('.$dnsblname.') = '.$tmpdnsblresult;
-		$lastdigit = explode('.',$tmpdnsblresult);
+		echo '<!-- Checking ' . $dnsblname . ' ... ';
+		$tmpdnsblresult = gethostbyname($dnsblip . '.' . $dnsbl['zone']);
+		echo $tmpdnsblresult . ' -->';
+		if (long2ip(ip2long($tmpdnsblresult)) != $tmpdnsblresult) {
+			$tmpdnsblresult = 'Nothing.';
+			continue;
+		}
+		//		if (!isset($dnsbl['ret'][$lastdigit]) and ($dnsbl['bunk'] == false)) { $tmpdnsblresult = 'Nothing.'; continue; }
+		$dnsbldata .= '<li> ' . $dnsblip . '.' . $dnsbl['zone'] . ' (' . $dnsblname . ') = ' . $tmpdnsblresult;
+		$lastdigit = explode('.', $tmpdnsblresult);
 		$lastdigit = $lastdigit['3'];
-		if (isset($dnsbl['ret'][$lastdigit])) { $dnsbldata .= ' ('.$dnsbl['ret'][$lastdigit].')'; $banned = true; }
-		else { $dnsbldata .= ' (unknown)'; if ($dnsbl['bunk']) $banned = true; }
-		$dnsbldata .= ' &mdash;  <a href="'.str_replace('%i',$addr,$dnsbl['url'])."\"> more information</a>.\n";
+		if (isset ($dnsbl['ret'][$lastdigit])) {
+			$dnsbldata .= ' (' . $dnsbl['ret'][$lastdigit] . ')';
+			$banned = true;
+		} else {
+			$dnsbldata .= ' (unknown)';
+			if ($dnsbl['bunk'])
+				$banned = true;
+		}
+		$dnsbldata .= ' &mdash;  <a href="' . str_replace('%i', $addr, $dnsbl['url']) . "\"> more information</a>.\n";
 	}
-	unset($dnsblip,$dnsblname,$dnsbl,$tmpdnsblresult,$lastdigit);
+	unset ($dnsblip, $dnsblname, $dnsbl, $tmpdnsblresult, $lastdigit);
 
 	$dnsbldata .= '</ul>';
-	echo '<!-- '.$dnsbldata.' -->';
-	return array($banned,$dnsbldata);
+	echo '<!-- ' . $dnsbldata . ' -->';
+	return array (
+		$banned,
+		$dnsbldata
+	);
 }
 ?>

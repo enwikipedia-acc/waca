@@ -1,4 +1,5 @@
 <?php
+
 /**************************************************************
 ** English Wikipedia Account Request Interface               **
 ** Wikipedia Account Request Graphic Design by               **
@@ -22,21 +23,21 @@
 **                                                           **
 **************************************************************/
 
-include('../SxWiki.php');
-include('../sqlbot-hello-enwiki.php');
-require_once('config.inc.php');
-mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-@mysql_select_db($toolserver_database) or print mysql_error();
+include ('../SxWiki.php');
+include ('../sqlbot-hello-enwiki.php');
+require_once ('config.inc.php');
+mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+@ mysql_select_db($toolserver_database) or print mysql_error();
 $run = sxGetPage("User:SQLBot-Hello/welcome.run");
 
 function isnewuser($user) {
-	$baseurl = 'http://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=User_talk:' . $user . '&rvprop=timestamp|user|comment|content&format=php' ;
+	$baseurl = 'http://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=User_talk:' . $user . '&rvprop=timestamp|user|comment|content&format=php';
 	$revisions = file_get_contents($baseurl);
 	$revisions = unserialize($revisions);
-	if(isset($revisions['query']['pages']['-1']['missing'])) {
-		return(TRUE);
+	if (isset ($revisions['query']['pages']['-1']['missing'])) {
+		return (TRUE);
 	} else {
-		return(FALSE);
+		return (FALSE);
 	}
 }
 
@@ -48,7 +49,7 @@ if ($run != "go") {
 	$sqlnewtalk = "\r\n==Help! I've been thwarted!==\r\nHey, as instructed, I need to tell you that [[User:$whostoppedme|$whostoppedme]] has stopped me from running, with an edit summary of $whystopme. ~~~~\r\n";
 	$sqlnewtalk = $sqloldtalk . $sqlnewtalk;
 	sxPutPage('User talk:SQL', 'Emergency! Bot stopped!', $sqlnewtalk, $null);
-	die("\r\nBot stopped by $whostoppedme\r\n"); 
+	die("\r\nBot stopped by $whostoppedme\r\n");
 }
 function tagpage($user, $template) {
 	$basepage = "User_talk:$user";
@@ -59,7 +60,7 @@ function tagpage($user, $template) {
 	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$user2&format=php");
 	$ue = unserialize($userexist);
 	foreach ($ue[query]['users'] as $oneue) {
-        	if(!isset($oneue[missing])) {
+	    	if(!isset($oneue[missing])) {
 		echo "$user does not exist, skipping!\n"; 
 		$exist = FALSE; 
 	} else {
@@ -67,7 +68,7 @@ function tagpage($user, $template) {
 	}
 	*/
 	$exist = TRUE;
-	if ($oldpage == "" && $newbie === TRUE && $exist == TRUE) { 
+	if ($oldpage == "" && $newbie === TRUE && $exist == TRUE) {
 		$newpage = $oldpage . "\n\n$template\n\n";
 		echo "Editing page\n";
 		sxPutPage($basepage, "BOT: Welcoming user created at [[WP:ACC]].", $newpage);
@@ -78,22 +79,34 @@ function tagpage($user, $template) {
 
 $query = "SELECT * FROM acc_welcome WHERE welcome_status = 'Open';";
 $result = mysql_query($query);
-if(!$result) Die("ERROR: No result returned.");
+if (!$result)
+	Die("ERROR: No result returned.");
 while ($row = mysql_fetch_assoc($result)) {
 	$user = $row['welcome_user'];
 	echo "Welcoming $user\n";
 	$sig = $row['welcome_sig'];
 	//Addition by Cobi
-	$d = 0; 
-	$s = ''; 
-	for ($i=0;$i<strlen($sig);$i++) { 
-		if ($sig{$i} == '[') { $d++; }
-		if ($sig{$i} == ']') { $d--; }
-		if (($sig{$i} == '|') and ($d == 0)) {
-			$s.='<nowiki>|</nowiki>'; 
-		} else { 
-			$s.=$sig{$i}; 
-		} 
+	$d = 0;
+	$s = '';
+	for ($i = 0; $i < strlen($sig); $i++) {
+		if ($sig {
+			$i }
+		== '[') {
+			$d++;
+		}
+		if ($sig {
+			$i }
+		== ']') {
+			$d--;
+		}
+		if (($sig {
+			$i }
+		== '|') and ($d == 0)) {
+			$s .= '<nowiki>|</nowiki>';
+		} else {
+			$s .= $sig {
+				$i };
+		}
 	}
 	$sig = $s;
 	$sid = $row['welcome_uid'];
@@ -146,8 +159,9 @@ while ($row = mysql_fetch_assoc($result)) {
 	if ($template == "malinaccier") {
 		tagpage($user, "{{subst:User:Malinaccier/Welcome|$sig ~~~~~}}");
 	}
-	$query2 = "UPDATE acc_welcome SET welcome_status = 'Closed' WHERE welcome_id = '".$row['welcome_id']."';";
+	$query2 = "UPDATE acc_welcome SET welcome_status = 'Closed' WHERE welcome_id = '" . $row['welcome_id'] . "';";
 	$result2 = mysql_query($query2);
-	if(!$result) Die("ERROR: No result returned.");
+	if (!$result)
+		Die("ERROR: No result returned.");
 }
 ?>

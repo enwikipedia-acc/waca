@@ -32,22 +32,23 @@ $link = mysql_connect($toolserver_host, $toolserver_username, $toolserver_passwo
 if (!$link) {
 	die('Could not connect: ' . mysql_error());
 }
-@mysql_select_db($toolserver_database) or print mysql_error();
+@ mysql_select_db($toolserver_database) or print mysql_error();
 session_start();
 
 $action = '';
-if(isset($_GET['action'])) {
+if (isset ($_GET['action'])) {
 	$action = $_GET['action'];
 }
 
-if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
-	$suser = sanitize($_SESSION['user']);	
+if (!isset ($_SESSION['user']) && !isset ($_GET['nocheck'])) {
+	$suser = sanitize($_SESSION['user']);
 	echo makehead($suser);
-	if($action != 'register' && $action != 'forgotpw' && $action != 'sreg') {
+	if ($action != 'register' && $action != 'forgotpw' && $action != 'sreg') {
 		echo showlogin();
 		die();
-	} 
-} elseif (!isset($_GET['nocheck'])) {
+	}
+}
+elseif (!isset ($_GET['nocheck'])) {
 	$suser = sanitize($_SESSION['user']);
 	echo makehead($suser);
 	checksecurity($_SESSION['user']);
@@ -58,7 +59,8 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 
 if ($action == '') {
 	echo defaultpage();
-} elseif ($action == "sreg") {
+}
+elseif ($action == "sreg") {
 	$suser = sanitize($_SESSION['user']);
 	foreach ($acrnamebl as $wnbl => $nbl) {
 		$phail_test = @ preg_match($nbl, $_POST['name']);
@@ -68,7 +70,7 @@ if ($action == '') {
 			$target = "$wnbl";
 			$host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
 			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-			fwrite($fp, "[Name-Bl-ACR] HIT: $wnbl - ".$_POST['name']." / ".$_POST['wname']." ".$_SERVER['REMOTE_ADDR']." ($host) ".$_POST['email']." ".$_SERVER['HTTP_USER_AGENT']."\r\n");
+			fwrite($fp, "[Name-Bl-ACR] HIT: $wnbl - " . $_POST['name'] . " / " . $_POST['wname'] . " " . $_SERVER['REMOTE_ADDR'] . " ($host) " . $_POST['email'] . " " . $_SERVER['HTTP_USER_AGENT'] . "\r\n");
 			fclose($fp);
 			echo "Account created!<br /><br />\n";
 			die();
@@ -76,11 +78,11 @@ if ($action == '') {
 	}
 	$dnsblcheck = checkdnsbls($_SERVER['REMOTE_ADDRR']);
 	if ($dnsblcheck['0'] == true) {
-		$cmt = "FROM $ip ".$dnsblcheck['1'];
+		$cmt = "FROM $ip " . $dnsblcheck['1'];
 		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-		fwrite($fp, "[DNSBL-ACR] HIT: ".$_POST['name']." - ".$_POST['wname']." ".$_SERVER['REMOTE_ADDR']." ".$_POST['email']." ".$_SERVER['HTTP_USER_AGENT']." $cmt\r\n");
+		fwrite($fp, "[DNSBL-ACR] HIT: " . $_POST['name'] . " - " . $_POST['wname'] . " " . $_SERVER['REMOTE_ADDR'] . " " . $_POST['email'] . " " . $_SERVER['HTTP_USER_AGENT'] . " $cmt\r\n");
 		fclose($fp);
-		die("Account not created, please see ".$dnsblcheck['1']);
+		die("Account not created, please see " . $dnsblcheck['1']);
 	}
 	$cu_name = urlencode($_REQUEST['wname']);
 	$userblocked = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php");
@@ -328,7 +330,7 @@ elseif ($action == "forgotpw") {
 		}
 		$hashme = $puser . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
 		$hash = md5($hashme);
-		$mailtxt = "Hello! You, or a user from ".$_SERVER['REMOTE_ADDR'].", has requested a password reset for your account.\n\nPlease go to $tsurl/acc.php?action=forgotpw&si=$hash&id=".$row['user_id']." to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
+		$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested a password reset for your account.\n\nPlease go to $tsurl/acc.php?action=forgotpw&si=$hash&id=" . $row['user_id'] . " to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row['user_email'], "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
 		echo "Your password reset request has been completed. Please check your e-mail.\n<br />";
@@ -343,6 +345,7 @@ elseif ($action == "forgotpw") {
     </form><br />
     Return to <a href="acc.php">Login</a>
     <?php
+
 
 	echo showfootern();
 	die();
@@ -382,9 +385,9 @@ elseif ($action == "messagemgmt") {
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
 		$mailtext = htmlentities($row['mail_text']);
-		echo "<h2>View message</h2><br />Message ID: ".$row['mail_id']."<br />\n";
-		echo "Message count: ".$row['mail_count']."<br />\n";
-		echo "Message title: ".$row['mail_desc']."<br />\n";
+		echo "<h2>View message</h2><br />Message ID: " . $row['mail_id'] . "<br />\n";
+		echo "Message count: " . $row['mail_count'] . "<br />\n";
+		echo "Message title: " . $row['mail_desc'] . "<br />\n";
 		echo "Message text: <br /><pre>$mailtext</pre><br />\n";
 		echo showfooter();
 		die();
@@ -432,7 +435,7 @@ elseif ($action == "messagemgmt") {
 		$row = mysql_fetch_assoc($result);
 		$mailtext = htmlentities($row['mail_text']);
 		echo "<h2>Edit message</h2><strong>This is NOT a toy. If you can see this form, you can edit this message. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=messagemgmt&edit=$mid&submit=1\" method=\"post\"><br />\n";
-		echo "<input type=\"text\" name=\"maildesc\" value=\"".$row['mail_desc']."\"><br />\n";
+		echo "<input type=\"text\" name=\"maildesc\" value=\"" . $row['mail_desc'] . "\"><br />\n";
 		echo "<textarea name=\"mailtext\" rows=\"20\" cols=\"60\">$mailtext</textarea><br />\n";
 		echo "<input type=\"submit\"><input type=\"reset\"><br />\n";
 		echo "</form>";
@@ -624,14 +627,14 @@ elseif ($action == "usermgmt") {
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		echo "Changed User #".$_GET['approve']." access to 'User'<br />\n";
+		echo "Changed User #" . $_GET['approve'] . " access to 'User'<br />\n";
 		$uid = $aid;
 		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
 		$result2 = mysql_query($query2);
 		if (!$result2)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
-		sendtobot("User $aid (".$row2['user_name'].") approved by $siuser");
+		sendtobot("User $aid (" . $row2['user_name'] . ") approved by $siuser");
 	}
 	if (isset ($_GET['suspend'])) {
 		$did = sanitize($_GET['suspend']);
@@ -654,14 +657,14 @@ elseif ($action == "usermgmt") {
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
-			echo "Changed User #".$_GET['suspend']." access to 'Suspended'<br />\n";
+			echo "Changed User #" . $_GET['suspend'] . " access to 'Suspended'<br />\n";
 			$uid = $did;
 			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
 			$result2 = mysql_query($query2);
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			sendtobot("User $did (".$row2['user_name'].") suspended access by $siuser because: \"$suspendrsn\"");
+			sendtobot("User $did (" . $row2['user_name'] . ") suspended access by $siuser because: \"$suspendrsn\"");
 			echo showfooter();
 			die();
 		}
@@ -679,14 +682,14 @@ elseif ($action == "usermgmt") {
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		echo "Changed User #".$_GET['promote']." access to 'Admin'<br />\n";
+		echo "Changed User #" . $_GET['promote'] . " access to 'Admin'<br />\n";
 		$uid = $aid;
 		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
 		$result2 = mysql_query($query2);
 		if (!$result2)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
-		sendtobot("User $aid (".$row2['user_name'].") promoted to admin by $siuser");
+		sendtobot("User $aid (" . $row2['user_name'] . ") promoted to admin by $siuser");
 	}
 	if (isset ($_GET['decline'])) {
 		$did = sanitize($_GET['decline']);
@@ -709,14 +712,14 @@ elseif ($action == "usermgmt") {
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
-			echo "Changed User #".$_GET['decline']." access to 'Declined'<br />\n";
+			echo "Changed User #" . $_GET['decline'] . " access to 'Declined'<br />\n";
 			$uid = $did;
 			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
 			$result2 = mysql_query($query2);
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			sendtobot("User $did (".$row2['user_name'].") declined access by $siuser because: \"$declinersn\"");
+			sendtobot("User $did (" . $row2['user_name'] . ") declined access by $siuser because: \"$declinersn\"");
 			echo showfooter();
 			die();
 		}
@@ -841,7 +844,7 @@ elseif ($action == "usermgmt") {
 		$uname = $row['user_name'];
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
-		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> (Declined by " . $row['log_user'] . " because \"".$row['log_cmt']."\")</small></li>";
+		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> (Declined by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
 		echo "$out\n";
 	}
 ?>
@@ -893,7 +896,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		sendtobot("Request $gid deferred to $deto by $sid");
-		echo "Request ".$_GET['id']." deferred to $deto.<br />";
+		echo "Request " . $_GET['id'] . " deferred to $deto.<br />";
 		echo defaultpage();
 	} else {
 		echo "Target not specified.<br />\n";
@@ -964,7 +967,11 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     <option value="malinaccier"<?php if($template == "malinaccier") { echo " selected"; } ?>>{{User:Malinaccier/Welcome|~~~~}}</option>
     </select><br />
     <i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>.</i><br />
-<?php // ^^^ $devs did not exist, so, I'm putting myself back in there, until someone finds another way to do it. ^^^ ?>
+<?php
+
+?>
+
+
     <input type="submit"><input type="reset">
     </form>
     <a name="2"></a><h2>Change your password</h2>
@@ -998,7 +1005,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$row = mysql_fetch_assoc($result);
 	if ($row['pend_emailsent'] == "1" && $_GET['override'] != "yes") {
 		echo "<br />This request has already been closed in a manner that has generated an e-mail to the user, Proceed?<br />\n";
-		echo "<a href=\"acc.php?sum=".$_GET['sum']."&action=done&id=".$_GET['id']."&override=yes&email=".$_GET['email']."\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
+		echo "<a href=\"acc.php?sum=" . $_GET['sum'] . "&action=done&id=" . $_GET['id'] . "&override=yes&email=" . $_GET['email'] . "\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
 		echo showfooter();
 		die();
 	}
@@ -1066,12 +1073,12 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	}
 	$now = explode("-", $now);
 	$now = $now['0'] . "-" . $now['1'] . "-" . $now['2'] . ":" . $now['3'] . ":" . $now['4'];
-	sendtobot("Request ".$_GET['id']." ($gus) Marked as 'Done' ($crea) by $sid on $now");
+	sendtobot("Request " . $_GET['id'] . " ($gus) Marked as 'Done' ($crea) by $sid on $now");
 	echo "Request " . $_GET['id'] . " ($gus) marked as 'Done'.<br />";
 	$towhom = $row2['pend_email'];
 	if ($gem != "0") {
 		sendemail($gem, $towhom);
-		$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '".$_GET['id']."';";
+		$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $_GET['id'] . "';";
 		$result = mysql_query($query);
 	}
 	upcsum($_GET['id']);
@@ -1102,7 +1109,7 @@ elseif ($action == "zoom") {
 	echo $requesttable;
 
 	$row['pend_cmt'] = preg_replace('/\<\/?(div|span|script|\?php|\?|img)\s?(.*)\s?\>/i', '', $row['pend_cmt']); //Escape injections.
-	echo "<br /><strong>Comment</strong>: ".$row['pend_cmt']."<br />\n";
+	echo "<br /><strong>Comment</strong>: " . $row['pend_cmt'] . "<br />\n";
 	$query = "SELECT * FROM acc_log WHERE log_pend = '$gid';";
 	$result = mysql_query($query);
 	if (!$result)
@@ -1142,7 +1149,7 @@ elseif ($action == "zoom") {
 			echo "<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($rla == "Blacklist Hit") {
-			echo "<li>$rlu Rejected by Blacklist $rlp, ".$row['log_cmt']." at $rlt.</li>\n";
+			echo "<li>$rlu Rejected by Blacklist $rlp, " . $row['log_cmt'] . " at $rlt.</li>\n";
 		}
 	}
 
@@ -1155,7 +1162,7 @@ elseif ($action == "zoom") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$numip = 0;
 	while ($row = mysql_fetch_assoc($result)) {
-		echo "<li><a href=\"acc.php?action=zoom&id=".$row['pend_id']."\">".$row['pend_name']."</a></li>";
+		echo "<li><a href=\"acc.php?action=zoom&id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></li>";
 		$numip++;
 	}
 	if ($numip == 0) {
@@ -1170,7 +1177,7 @@ elseif ($action == "zoom") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$numem = 0;
 	while ($row = mysql_fetch_assoc($result)) {
-		echo "<li><a href=\"acc.php?action=zoom&id=".$row['pend_id']."\">".$row['pend_name']."</a></li>";
+		echo "<li><a href=\"acc.php?action=zoom&id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></li>";
 		$numem++;
 	}
 	if ($numem == 0) {

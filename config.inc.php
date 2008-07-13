@@ -1,4 +1,5 @@
 <?php
+
 ///////////////////////////////////////////////////////////////
 // English Wikipedia Account Request Interface               //
 // Wikipedia Account Request Graphic Design by               //
@@ -18,8 +19,8 @@
 //OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  //
 //                                                           //
 ///////////////////////////////////////////////////////////////
-if(file_exists("config.local.inc.php")) {
-	include("config.local.inc.php"); //Allow for less painful configuration.
+if (file_exists("config.local.inc.php")) {
+	include ("config.local.inc.php"); //Allow for less painful configuration.
 } else {
 	$ACC = 1; //Keep included files from being executed
 	$whichami = 'Live';
@@ -32,7 +33,7 @@ if(file_exists("config.local.inc.php")) {
 	$sessionname = 'ACC';
 	$wikiurl = "en.wikipedia.org"; //Does nothing yet, intended for further localization
 	$tsurl = "http://stable.toolserver.org/acc"; //Does nothing yet, intended for further localization
-	unset($toolserver_mycnf);
+	unset ($toolserver_mycnf);
 }
-require_once('blacklist.php');
+require_once ('blacklist.php');
 ?>

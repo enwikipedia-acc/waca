@@ -1,4 +1,5 @@
 <?php
+
 /**************************************************************
 ** English Wikipedia Account Request Interface               **
 ** Wikipedia Account Request Graphic Design by               **
@@ -19,62 +20,72 @@
 **                                                           **
 **************************************************************/
 
-require_once('config.inc.php');
+require_once ('config.inc.php');
 $fail = 0;
-function sanitize ( $what ) {
+function sanitize($what) {
 	/*
 	* Shortcut to mysql_real_escape_string
 	*/
 	$what = mysql_real_escape_string($what);
-	return($what);
+	return ($what);
 }
 
-function sendtobot ( $message ) {
+function sendtobot($message) {
 	/*
 	* Send to the IRC bot via UDP
 	*/
-        global $whichami;
-        sleep(3);
-        $fp = fsockopen("udp://91.198.174.202", 9001, $erno, $errstr, 30);
-        if (!$fp) {
-          echo "SOCKET ERROR: $errstr ($errno)<br />\n";
-        }
-        fwrite($fp, "[$whichami]: $message\r\n");
-        fclose($fp);
+	global $whichami;
+	sleep(3);
+	$fp = fsockopen("udp://91.198.174.202", 9001, $erno, $errstr, 30);
+	if (!$fp) {
+		echo "SOCKET ERROR: $errstr ($errno)<br />\n";
+	}
+	fwrite($fp, "[$whichami]: $message\r\n");
+	fclose($fp);
 }
 
-function checktor ( $addr ) {
+function checktor($addr) {
 	/*
 	* Check if the supplied host is a TOR node
 	*/
-	$flags = array();
+	$flags = array ();
 	$flags['tor'] = "no";
 	$p = explode(".", $addr);
-	$ahbladdr = $p['3'] . "." . $p['2'] . "." . $p['1'] . "." . $p['0'] . "." . "tor.ahbl.org";;
+	$ahbladdr = $p['3'] . "." . $p['2'] . "." . $p['1'] . "." . $p['0'] . "." . "tor.ahbl.org";
+	;
 	$ahbl = gethostbyname($ahbladdr);
-	if ($ahbl == "127.0.0.2") { $flags['transit'] = "yes"; "yes"; $flags['tor'] = "yes";}
-	if ($ahbl == "127.0.0.3") { $flags['exit'] = "yes"; "yes"; $flags['tor'] = "yes";}
-	return($flags);
+	if ($ahbl == "127.0.0.2") {
+		$flags['transit'] = "yes";
+		"yes";
+		$flags['tor'] = "yes";
+	}
+	if ($ahbl == "127.0.0.3") {
+		$flags['exit'] = "yes";
+		"yes";
+		$flags['tor'] = "yes";
+	}
+	return ($flags);
 }
 
-function emailvalid ($email) {
-	if(!strpos($email,'@')) {
+function emailvalid($email) {
+	if (!strpos($email, '@')) {
 		return false;
 	}
-	$parts = explode("@",$email);
-	if(function_exists('checkdnsrr')) {
-		getmxrr($parts['1'],$mxhosts,$mxweight);
-		if(count($mxhosts) > 0) {
-			for($i=0;$i<count($mxhosts);$i++) {
+	$parts = explode("@", $email);
+	if (function_exists('checkdnsrr')) {
+		getmxrr($parts['1'], $mxhosts, $mxweight);
+		if (count($mxhosts) > 0) {
+			for ($i = 0; $i < count($mxhosts); $i++) {
 				$mxs[$mxhosts[$i]] = $mxweight[$i];
 			}
 			$mailers = array_keys($mxs);
-		} elseif(checkdnsrr($parts['1'],'A')) {
+		}
+		elseif (checkdnsrr($parts['1'], 'A')) {
 			$mailers['0'] = gethostbyname($domain);
 		} else {
-			$mailers = array();
+			$mailers = array ();
 		}
-		if(count($mailers) > 0) {
+		if (count($mailers) > 0) {
 			return true;
 		} else {
 			return false;
@@ -84,7 +95,7 @@ function emailvalid ($email) {
 	}
 }
 
-function upcsum ( $id ) {
+function upcsum($id) {
 	/*
 	* Update pend ticket checksum
 	*/
@@ -92,19 +103,20 @@ function upcsum ( $id ) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-	@mysql_select_db($toolserver_database) or print mysql_error();
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
-        $result = mysql_query($query);
-        if(!$result) Die("ERROR: No result returned.");
-        $pend = mysql_fetch_assoc($result);
-	$hash = md5($pend['pend_id'].$pend['pend_name'].$pend['pend_email'].microtime());
+	$result = mysql_query($query);
+	if (!$result)
+		Die("ERROR: No result returned.");
+	$pend = mysql_fetch_assoc($result);
+	$hash = md5($pend['pend_id'] . $pend['pend_name'] . $pend['pend_email'] . microtime());
 	$query = "UPDATE acc_pend SET pend_checksum = '$hash' WHERE pend_id = '$id';";
-        $result = mysql_query($query);
+	$result = mysql_query($query);
 	mysql_close();
 }
 
-function displayheader ( ) {
+function displayheader() {
 	/*
 	* Display page header via MySQL
 	*/
@@ -112,17 +124,18 @@ function displayheader ( ) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-	@mysql_select_db($toolserver_database) or print mysql_error();
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '8';";
 	$result = mysql_query($query);
-	if(!$result) Die("ERROR: No result returned.");
+	if (!$result)
+		Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	echo $row['mail_text'];	
+	echo $row['mail_text'];
 	mysql_close();
 }
 
-function displayfooter ( ) {
+function displayfooter() {
 	/*
 	* Display page footer via MySQL
 	*/
@@ -130,17 +143,18 @@ function displayfooter ( ) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-	@mysql_select_db($toolserver_database) or print mysql_error();
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '7';";
 	$result = mysql_query($query);
-	if(!$result) Die("ERROR: No result returned.");
+	if (!$result)
+		Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	echo $row['mail_text'];	
+	echo $row['mail_text'];
 	mysql_close();
 }
 
-function displayform ( ) {
+function displayform() {
 	/*
 	* Display Request form via MySQL
 	*/
@@ -148,17 +162,18 @@ function displayform ( ) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-	@mysql_select_db($toolserver_database) or print mysql_error();
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '6';";
 	$result = mysql_query($query);
-	if(!$result) Die("ERROR: No result returned.");
+	if (!$result)
+		Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	echo $row['mail_text'];	
+	echo $row['mail_text'];
 	mysql_close();
 }
 
-function showmessage ( $messageno ) {
+function showmessage($messageno) {
 	/*
 	* Display Interface message via MySQL
 	*/
@@ -166,90 +181,94 @@ function showmessage ( $messageno ) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-	@mysql_select_db($toolserver_database) or print mysql_error();
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
 	$result = mysql_query($query);
-	if(!$result) Die("ERROR: No result returned.");
+	if (!$result)
+		Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	return($row['mail_text']);	
+	return ($row['mail_text']);
 	mysql_close();
 }
 
 displayheader();
-if (isset($_POST['name']) && isset($_POST['email'])) {
+if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$_POST['name'] = str_replace(" ", "_", $_POST['name']);
 	$_POST['name'] = ucfirst($_POST['name']);
-	mysql_connect("enwiki-p.db.ts.wikimedia.org",$toolserver_username,$toolserver_password);
-	@mysql_select_db("enwiki_p") or print mysql_error();
+	mysql_connect("enwiki-p.db.ts.wikimedia.org", $toolserver_username, $toolserver_password);
+	@ mysql_select_db("enwiki_p") or print mysql_error();
 	$query = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
 	$result = mysql_query($query);
-	if(!$result) Die("ERROR: No result returned.");
+	if (!$result)
+		Die("ERROR: No result returned.");
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$ip2 = $_SERVER['REMOTE_ADDR'];
 	$ip = mysql_real_escape_string($ip);
 	$userblocked = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$ip2&format=php");
 	$ub = unserialize($userblocked);
-	if(isset($ub['query']['blocks']['0']['id'])) {
+	if (isset ($ub['query']['blocks']['0']['id'])) {
 		$message = showmessage(9);
-		echo "$message<br />\n"; 
-		$fail = 1; 
+		echo "$message<br />\n";
+		$fail = 1;
 	}
 	$email = $_POST['email'];
 	$email = ltrim($email);
 	$email = rtrim($email);
-	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-	@mysql_select_db($toolserver_database) or print mysql_error();
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or print mysql_error();
 	foreach ($uablacklist as $wubl => $ubl) {
-		$phail_test = @preg_match($ubl, $_SERVER['HTTP_USER_AGENT']);
-		if($phail_test == TRUE) {
-        	$now = date("Y-m-d H-i-s");
+		$phail_test = @ preg_match($ubl, $_SERVER['HTTP_USER_AGENT']);
+		if ($phail_test == TRUE) {
+			$now = date("Y-m-d H-i-s");
 			$target = "$wubl";
 			$siuser = mysql_real_escape_string($_POST['name']);
 			$cmt = mysql_real_escape_string("FROM $ip $email");
-			sendtobot("[Grawp-Bl] HIT: $wubl - ".$_POST['name']." $ip2 $email ".$_SERVER['HTTP_USER_AGENT']);
+			sendtobot("[Grawp-Bl] HIT: $wubl - " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
 			//$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
 			//$result = mysql_query($query);
 			//if(!$result) Die("ERROR: No result returned.");
 			//$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string('Blacklist Hit: '.$wnbl.' - '.$_POST['name'].' '.$ip2.' '.$email.' '.$_SERVER['HTTP_USER_AGENT']).'\',\''.$now.'\',\''.(time() + 172800).'\');';
 			//mysql_query($query);
-			die();		
+			die();
 		}
 	}
 	foreach ($nameblacklist as $wnbl => $nbl) {
-		$phail_test = @preg_match($nbl, $_POST['name']);
-		if($phail_test == TRUE) {
-        	        $message = showmessage(15);
-	                echo "$message<br />\n";
-	        	$now = date("Y-m-d H-i-s");
+		$phail_test = @ preg_match($nbl, $_POST['name']);
+		if ($phail_test == TRUE) {
+			$message = showmessage(15);
+			echo "$message<br />\n";
+			$now = date("Y-m-d H-i-s");
 			$target = "$wnbl";
 			$siuser = mysql_real_escape_string($_POST['name']);
 			$cmt = mysql_real_escape_string("FROM $ip $email");
-			sendtobot("[Name-Bl] HIT: $wnbl - ".$_POST['name']." $ip2 $email ".$_SERVER['HTTP_USER_AGENT']);
+			sendtobot("[Name-Bl] HIT: $wnbl - " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
 			$result = mysql_query($query);
-			if(!$result) Die("ERROR: No result returned.");
-			$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string('Blacklist Hit: '.$wnbl.' - '.$_POST['name'].' '.$ip2.' '.$email.' '.$_SERVER['HTTP_USER_AGENT']).'\',\''.$now.'\',\''.(time() + 172800).'\');';
+			if (!$result)
+				Die("ERROR: No result returned.");
+			$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\'' . $ip . '\',\'ClueBot\',\'' . mysql_real_escape_string('Blacklist Hit: ' . $wnbl . ' - ' . $_POST['name'] . ' ' . $ip2 . ' ' . $email . ' ' . $_SERVER['HTTP_USER_AGENT']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');';
 			mysql_query($query);
-			die();		
+			die();
 		}
 	}
 	foreach ($emailblacklist as $wnbl => $nbl) {
-		$phail_test = @preg_match($nbl, $_POST['email']);
-		if($phail_test == TRUE) {
-        	        $message = showmessage(15);
-	                echo "$message<br />\n";
-	        	$now = date("Y-m-d H-i-s");
+		$phail_test = @ preg_match($nbl, $_POST['email']);
+		if ($phail_test == TRUE) {
+			$message = showmessage(15);
+			echo "$message<br />\n";
+			$now = date("Y-m-d H-i-s");
 			$target = "$wnbl";
 			$siuser = mysql_real_escape_string($_POST['name']);
 			$cmt = mysql_real_escape_string("FROM $ip $email");
-			sendtobot("[Email-Bl] HIT: $wnbl - ".$_POST['name']." $ip2 $email ".$_SERVER['HTTP_USER_AGENT']);
+			sendtobot("[Email-Bl] HIT: $wnbl - " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
 			$result = mysql_query($query);
-			if(!$result) Die("ERROR: No result returned.");
-			$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string('Blacklist Hit: '.$wnbl.' - '.$_POST['name'].' '.$ip2.' '.$email.' '.$_SERVER['HTTP_USER_AGENT']).'\',\''.$now.'\',\''.(time() + 172800).'\');';
+			if (!$result)
+				Die("ERROR: No result returned.");
+			$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\'' . $ip . '\',\'ClueBot\',\'' . mysql_real_escape_string('Blacklist Hit: ' . $wnbl . ' - ' . $_POST['name'] . ' ' . $ip2 . ' ' . $email . ' ' . $_SERVER['HTTP_USER_AGENT']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');';
 			mysql_query($query);
-			die();		
+			die();
 		}
 	}
 	$dnsblcheck = checkdnsbls($ip2);
@@ -257,26 +276,25 @@ if (isset($_POST['name']) && isset($_POST['email'])) {
 		$toruser = checktor($ip2);
 		if ($toruser['tor'] == "yes") {
 			$tor = "(TOR node)";
-		}
-		else {
+		} else {
 			$tor = "(Not a TOR node)";
 		}
 		$now = date("Y-m-d H-i-s");
 		$siuser = mysql_real_escape_string($_POST['name']);
-		$cmt = mysql_real_escape_string("FROM $ip $email<br />".$dnsblcheck['1']);
-		sendtobot("[DNSBL] $tor HIT: ".$_POST['name']." $ip2 $email ".$_SERVER['HTTP_USER_AGENT']);
+		$cmt = mysql_real_escape_string("FROM $ip $email<br />" . $dnsblcheck['1']);
+		sendtobot("[DNSBL] $tor HIT: " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('DNSBL', '$siuser', 'DNSBL Hit', '$now', '$cmt');";
-		echo '<!-- Query: '.$query.' -->';
+		echo '<!-- Query: ' . $query . ' -->';
 		mysql_query($query);
-		echo '<!-- Error: '.mysql_error().' -->';
-		$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string("DNSBL Hit:<br />\n".$dnsblcheck['1']).'\',\''.$now.'\',\''.(time() + 172800).'\');';
-		echo '<!-- Query: '.$query.' -->';
+		echo '<!-- Error: ' . mysql_error() . ' -->';
+		$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\'' . $ip . '\',\'ClueBot\',\'' . mysql_real_escape_string("DNSBL Hit:<br />\n" . $dnsblcheck['1']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');';
+		echo '<!-- Query: ' . $query . ' -->';
 		mysql_query($query);
-		echo '<!-- Error: '.mysql_error().' -->';
+		echo '<!-- Error: ' . mysql_error() . ' -->';
 	}
 
-	mysql_connect("enwiki-p.db.ts.wikimedia.org",$toolserver_username,$toolserver_password);
-	@mysql_select_db("enwiki_p") or print mysql_error();
+	mysql_connect("enwiki-p.db.ts.wikimedia.org", $toolserver_username, $toolserver_password);
+	@ mysql_select_db("enwiki_p") or print mysql_error();
 	$user = $_POST['name'];
 	$user = ltrim($user);
 	$user = rtrim($user);
@@ -284,64 +302,64 @@ if (isset($_POST['name']) && isset($_POST['email'])) {
 	$email = $_POST['email'];
 	$email = ltrim($email);
 	$email = rtrim($email);
-	$email = mysql_real_escape_string($email);	
-	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=".$_POST['name']."&format=php");
+	$email = mysql_real_escape_string($email);
+	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . $_POST['name'] . "&format=php");
 	$ue = unserialize($userexist);
 	foreach ($ue['query']['users'] as $oneue) {
-        	if(!isset($oneue['missing'])) {
-		$message = showmessage(10);
-		echo "$message<br />\n"; 
-		$fail = 1; 
-	        }
+		if (!isset ($oneue['missing'])) {
+			$message = showmessage(10);
+			echo "$message<br />\n";
+			$fail = 1;
+		}
 	}
 	$nums = preg_match("/^[0-9]+$/", $_POST['name']);
-	if ($nums > 0) { 
+	if ($nums > 0) {
 		$message = showmessage(11);
-		echo "$message<br />\n"; 
-		$fail = 1; 
+		echo "$message<br />\n";
+		$fail = 1;
 	}
 	$unameismail = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/i', $_POST['name']);
-	if ($unameismail > 0) { 
+	if ($unameismail > 0) {
 		$message = showmessage(12);
-		echo "$message<br />\n"; 
-		$fail = 1; 
+		echo "$message<br />\n";
+		$fail = 1;
 	}
 	$unameisinvalidchar = preg_match('/[\#\/\|\[\]\{\}\@\%\:\<\>]/', $_POST['name']);
-	if ($unameisinvalidchar > 0) { 
+	if ($unameisinvalidchar > 0) {
 		$message = showmessage(13);
-		echo "$message<br />\n"; 
-		$fail = 1; 
+		echo "$message<br />\n";
+		$fail = 1;
 	}
-	if (!emailvalid($_POST['email'])) { 
+	if (!emailvalid($_POST['email'])) {
 		$message = showmessage(14);
-		echo "$message<br />\n"; 
-		$fail = 1; 
+		echo "$message<br />\n";
+		$fail = 1;
 	}
-	
+
 	$mailiswmf = preg_match('/.*wiki(m*dia|p*dia).*/i', $email);
 	if ($mailiswmf != 0) {
 		$message = showmessage(14);
-		echo "$message<br />\n"; 
-		$fail = 1; 
+		echo "$message<br />\n";
+		$fail = 1;
 	}
-	
-	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-	@mysql_select_db($toolserver_database) or print mysql_error();
+
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_name = '$user'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
 	if ($row['pend_id'] != "") {
 		$message = showmessage(17);
-		echo "$message<br />\n"; 
-		$fail = 1; 
+		echo "$message<br />\n";
+		$fail = 1;
 	}
 	$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_email = '$email'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
 	if ($row['pend_id'] != "") {
 		$message = showmessage(18);
-		echo "$message<br />\n"; 
-		$fail = 1; 
+		echo "$message<br />\n";
+		$fail = 1;
 	}
 	mysql_query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP()');
 	$query = "SELECT * FROM acc_ban WHERE ban_type = 'IP' AND ban_target = '$ip'";
@@ -353,14 +371,15 @@ if (isset($_POST['name']) && isset($_POST['email'])) {
 		if ($dbanned < 0 || $dbanned == "") {
 			$dbanned = time() + 100;
 		}
-		if($toruser['tor'] == "yes") { $row[ban_reason] = "<a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse."; 
-} 
+		if ($toruser['tor'] == "yes") {
+			$row[ban_reason] = "<a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse.";
+		}
 		if ($dbanned < time()) {
 			//Not banned!
 		} else { //Still banned!
 			$message = showmessage(19);
-			echo "$message<strong>".$row['ban_reason']."</strong><br />\n"; 
-			$fail = 1; 
+			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
+			$fail = 1;
 			displayfooter();
 			die();
 		}
@@ -368,18 +387,18 @@ if (isset($_POST['name']) && isset($_POST['email'])) {
 	$query = "SELECT * FROM acc_ban WHERE ban_type = 'Name' AND ban_target = '$user'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
-        $dbanned = $row['ban_duration'];
-        if ($row['ban_id'] != "") {
-                if ($dbanned < 0 || $dbanned == "") {
-                        $dbanned = time() + 100;
-                }
+	$dbanned = $row['ban_duration'];
+	if ($row['ban_id'] != "") {
+		if ($dbanned < 0 || $dbanned == "") {
+			$dbanned = time() + 100;
+		}
 
-                if ($dbanned < time()) {
-                        //Not banned!
-                } else { //Still banned!
+		if ($dbanned < time()) {
+			//Not banned!
+		} else { //Still banned!
 			$message = showmessage(19);
-			echo "$message<strong>".$row['ban_reason']."</strong><br />\n"; 
-			$fail = 1; 
+			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
+			$fail = 1;
 			displayfooter();
 			die();
 		}
@@ -387,54 +406,65 @@ if (isset($_POST['name']) && isset($_POST['email'])) {
 	$query = "SELECT * FROM acc_ban WHERE ban_type = 'EMail' AND ban_target = '$email'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
-        $dbanned = $row['ban_duration'];
-        if ($row['ban_id'] != "") {
-                if ($dbanned < 0 || $dbanned == "") {
-                        $dbanned = time() + 100;
-                }
+	$dbanned = $row['ban_duration'];
+	if ($row['ban_id'] != "") {
+		if ($dbanned < 0 || $dbanned == "") {
+			$dbanned = time() + 100;
+		}
 
-                if ($dbanned < time()) {
-                        //Not banned!
-                } else { //Still banned!
+		if ($dbanned < time()) {
+			//Not banned!
+		} else { //Still banned!
 			$message = showmessage(19);
-			echo "$message<strong>".$row['ban_reason']."</strong><br />\n"; 
-			$fail = 1; 
+			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
+			$fail = 1;
 			displayfooter();
 			die();
 		}
 	}
 
-	if ($fail != 1) { 
+	if ($fail != 1) {
 		$message = showmessage(15);
-		echo "$message<br />\n"; 
-	} else { 
+		echo "$message<br />\n";
+	} else {
 		$message = showmessage(16);
-		echo "$message<br />\n"; 
+		echo "$message<br />\n";
 	}
-	if ($fail == 1) { displayform(); displayfooter(); die();}
-	mysql_close();	
-	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-	@mysql_select_db($toolserver_database) or print mysql_error();
+	if ($fail == 1) {
+		displayform();
+		displayfooter();
+		die();
+	}
+	mysql_close();
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$comments = sanitize($_POST['comments']);
-	$comments = preg_replace('/\<\/?(div|span|script|\?php|\?|img)\s?(.*)\s?\>/i', '', $comments);//Escape injections.
-	$dnow = date("Y-m-d H-i-s");	
+	$comments = preg_replace('/\<\/?(div|span|script|\?php|\?|img)\s?(.*)\s?\>/i', '', $comments); //Escape injections.
+	$dnow = date("Y-m-d H-i-s");
 	$query = "INSERT INTO $toolserver_database.acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', 'Open' , '$dnow' );";
 	$result = mysql_query($query);
 	$query = "SELECT pend_id FROM $toolserver_database.acc_pend WHERE pend_name = '$user' ORDER BY pend_id DESC LIMIT 1;";
 	$result = mysql_query($query);
-        $row = mysql_fetch_assoc($result);
+	$row = mysql_fetch_assoc($result);
 	$pid = $row['pend_id'];
 	$pem = $row['pend_email'];
-	sendtobot("[[acc:$pid]] N $tsurl/acc.php?action=zoom&id=$pid /* " . $_POST['name'] . " */ ".substr(str_replace(array("\n","\r"), array('\n','\r'),$_POST['comments']),0,200).((strlen($_POST['comments']) > 200) ? '...' : ''));
-	if($pid != 0 || $pid != "") {
+	sendtobot("[[acc:$pid]] N $tsurl/acc.php?action=zoom&id=$pid /* " . $_POST['name'] . " */ " . substr(str_replace(array (
+		"\n",
+		"\r"
+	), array (
+		'\n',
+		'\r'
+	), $_POST['comments']), 0, 200) . ((strlen($_POST['comments']) > 200) ? '...' : ''));
+	if ($pid != 0 || $pid != "") {
 		upcsum($pid);
 	}
-	if(!$result) Die("ERROR: No result returned.");
+	if (!$result)
+		Die("ERROR: No result returned.");
 } else {
 	displayform();
 	displayfooter();
 	die();
-} 
+}
 ?>
 
 

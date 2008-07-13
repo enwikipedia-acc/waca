@@ -1,32 +1,30 @@
 <?php
-
-function _utf8_decode ( $string ) {
+function _utf8_decode($string) {
 	/*
 	* Improved utd8_decode() function
 	*/
 	$tmp = $string;
 	$count = 0;
-	while ( mb_detect_encoding ( $tmp ) == "UTF-8" ) {
+	while (mb_detect_encoding($tmp) == "UTF-8") {
 		$tmp = utf8_decode($tmp);
 		$count++;
 	}
- 
-	for ( $i = 0; $i < $count-1 ; $i++ ) {
+
+	for ($i = 0; $i < $count -1; $i++) {
 		$string = utf8_decode($string);
 	}
 	return $string;
 }
 
-
-function sanitize ( $what ) {
+function sanitize($what) {
 	/*
 	* Shortcut to mysql_real_escape_string
 	*/
 	$what = mysql_real_escape_string($what);
-	return($what);
+	return ($what);
 }
 
-function upcsum ( $id ) {
+function upcsum($id) {
 	/*
 	* Updates the entries checksum (on each load of that entry, to prevent dupes)
 	*/
@@ -34,13 +32,14 @@ function upcsum ( $id ) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host,$toolserver_username,$toolserver_password);
-	@mysql_select_db($toolserver_database) or print mysql_error();
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
 	$result = mysql_query($query);
-	if(!$result) Die("Query failed: $query ERROR: " . mysql_error());
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
 	$pend = mysql_fetch_assoc($result);
-	$hash = md5($pend['pend_id'].$pend['pend_name'].$pend['pend_email'].microtime());
+	$hash = md5($pend['pend_id'] . $pend['pend_name'] . $pend['pend_email'] . microtime());
 	$query = "UPDATE acc_pend SET pend_checksum = '$hash' WHERE pend_id = '$id';";
 	$result = mysql_query($query);
 }
@@ -54,7 +53,7 @@ function csvalid($id, $sum) {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
 	$result = mysql_query($query);
 	if (!$result)
@@ -94,7 +93,7 @@ function showhowma() {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$howma = gethowma();
 	unset ($howma['howmany']);
 	$out = "";
@@ -122,7 +121,7 @@ function gethowma() {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$last5min = time() - 300; // Get the users active as of the last 5 mins
 	$last5mins = date("Y-m-d H:i:s", $last5min);
 	$query = "SELECT * FROM acc_user WHERE user_lastactive > '$last5mins';";
@@ -147,7 +146,7 @@ function showmessage($messageno) {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$messageno = sanitize($messageno);
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
 	$result = mysql_query($query);
@@ -166,7 +165,7 @@ function sendemail($messageno, $target) {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$messageno = sanitize($messageno);
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
 	$result = mysql_query($query);
@@ -199,22 +198,22 @@ function checksecurity($username) {
 		die();
 	}
 	if ($row['user_level'] == "Declined" && $username != "SQL") {
-		$query2 = "SELECT * FROM acc_log WHERE log_pend = '".$row['user_id']."' AND log_action = 'Declined' ORDER BY log_id DESC LIMIT 1;";
+		$query2 = "SELECT * FROM acc_log WHERE log_pend = '" . $row['user_id'] . "' AND log_action = 'Declined' ORDER BY log_id DESC LIMIT 1;";
 		$result2 = mysql_query($query2);
 		if (!$result2)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
-		echo "I'm sorry, but, your account request was <strong>declined</strong> by <strong>".$row2['log_user']."</strong> because <strong>\"".$row2['log_cmt']."\"</strong> at <strong>".$row2['log_time']."</strong>.<br />\n";
+		echo "I'm sorry, but, your account request was <strong>declined</strong> by <strong>" . $row2['log_user'] . "</strong> because <strong>\"" . $row2['log_cmt'] . "\"</strong> at <strong>" . $row2['log_time'] . "</strong>.<br />\n";
 		echo "Related information (please include this if appealing this decision)<br />\n";
-		echo "user_id: ".$row['user_id']."<br />\n";
-		echo "user_name: ".$row['user_name']."<br />\n";
-		echo "user_onwikiname: ".$row['user_onwikiname']."<br />\n";
-		echo "user_email: ".$row['user_email']."<br />\n";
-		echo "log_id: ".$row2['log_id']."<br />\n";
-		echo "log_pend: ".$row2['log_pend']."<br />\n";
-		echo "log_user: ".$row2['log_user']."<br />\n";
-		echo "log_time: ".$row2['log_time']."<br />\n";
-		echo "log_cmt: ".$row2['log_cmt']."<br />\n";
+		echo "user_id: " . $row['user_id'] . "<br />\n";
+		echo "user_name: " . $row['user_name'] . "<br />\n";
+		echo "user_onwikiname: " . $row['user_onwikiname'] . "<br />\n";
+		echo "user_email: " . $row['user_email'] . "<br />\n";
+		echo "log_id: " . $row2['log_id'] . "<br />\n";
+		echo "log_pend: " . $row2['log_pend'] . "<br />\n";
+		echo "log_user: " . $row2['log_user'] . "<br />\n";
+		echo "log_time: " . $row2['log_time'] . "<br />\n";
+		echo "log_cmt: " . $row2['log_cmt'] . "<br />\n";
 		echo "<br /><big><strong>To appeal this decision, please e-mail <a href=\"mailto:accounts-enwiki-l@lists.wikimedia.org\">accounts-enwiki-l@lists.wikimedia.org</a> with the above information, and a reasoning why you believe you should be approved for this interface.</strong></big><br />\n";
 		echo showfootern();
 		die();
@@ -230,7 +229,7 @@ function listrequests($type) {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or print mysql_error();
 	if ($type == 'Admin' || $type == 'Open') {
 		$query = "SELECT * FROM acc_pend WHERE pend_status = '$type';";
 	} else {
@@ -239,7 +238,7 @@ function listrequests($type) {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	
+
 	$tablestart = "<table cellspacing=\"0\">\n";
 	$tableend = "</table>\n";
 	$reqlist = '';
@@ -341,9 +340,9 @@ function listrequests($type) {
 			$target = 'user';
 		}
 		if ($target == 'admin' || $target == 'user') {
-			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&id=".$row['pend_id']."&sum=".$row['pend_checksum']."&target=$target\">Defer to $target" . "s</a>";
+			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&id=" . $row['pend_id'] . "&sum=" . $row['pend_checksum'] . "&target=$target\">Defer to $target" . "s</a>";
 		} else {
-			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&id=".$row['pend_id']."&sum=".$row['pend_checksum']."&target=user\">Reset Request</a>";
+			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&id=" . $row['pend_id'] . "&sum=" . $row['pend_checksum'] . "&target=user\">Reset Request</a>";
 		}
 		// Drop
 		$out .= ' - <a class="request-done" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=0&sum=' . $row['pend_checksum'] . '">Drop</a>';
@@ -361,7 +360,7 @@ function listrequests($type) {
 		$reqlist .= $out;
 	}
 	return ($tablestart . $reqlist . $tableend);
-	
+
 }
 
 function makehead($suin) {
@@ -386,10 +385,10 @@ function makehead($suin) {
 			$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"acc.php?action=usermgmt\">User Management</a>\n", $out);
 		}
 		$rethead .= $out;
-		$rethead .= "<div id = \"header-info\">Logged in as <a href=\"users.php?viewuser=".$_SESSION['user_id']."\"><span title=\"View your user information\">".$_SESSION['user']."</span></a>.  <a href=\"acc.php?action=logout\">Logout</a>?</div>\n";
+		$rethead .= "<div id = \"header-info\">Logged in as <a href=\"users.php?viewuser=" . $_SESSION['user_id'] . "\"><span title=\"View your user information\">" . $_SESSION['user'] . "</span></a>.  <a href=\"acc.php?action=logout\">Logout</a>?</div>\n";
 		//Update user_lastactive
 		$now = date("Y-m-d H-i-s");
-		$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '".$_SESSION['user_id']."';";
+		$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '" . $_SESSION['user_id'] . "';";
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -397,7 +396,7 @@ function makehead($suin) {
 		$rethead .= $out;
 		$rethead .= "<div id = \"header-info\">Not logged in.  <a href=\"acc.php\"><span title=\"Click here to return to the login form\">Log in</span></a>/<a href=\"acc.php?action=register\">Create account</a>?</div>\n";
 	}
-	return($rethead);
+	return ($rethead);
 }
 
 function showfootern() {
@@ -422,7 +421,7 @@ function showfooter() {
 
 function showlogin() {
 	global $_SESSION;
-	$html = <<<HTML
+	$html =<<<HTML
     <div id="sitenotice">Please login first, and we'll send you on your way!</div>
     <div id="content">
     <h2>Login</h2>
@@ -446,7 +445,7 @@ function showlogin() {
     </div>
 HTML;
 
-  	return $html;
+	return $html;
 }
 
 function getdevs() {
@@ -462,14 +461,14 @@ function getdevs() {
 }
 
 function defaultpage() {
-	$html = <<<HTML
+	$html =<<<HTML
 <h1>Create an account!</h1>
 <h2>Open requests</h2>
 <a name="open"></a>
 HTML;
 
 	$html .= listrequests("Open");
-	$html .= <<<HTML
+	$html .=<<<HTML
 <h2>Admin Needed!</h2>
 <a name="admin"></a>
 <span id="admin"/>
@@ -491,7 +490,7 @@ HTML;
 		} else {
 			$out .= ' class="odd">';
 		}
-		$out .= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&id=".$row['pend_id']."\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:".$row['pend_name']."\">"._utf8_decode($row['pend_name'])."</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&id=".$row['pend_id']."&sum=".$row['pend_checksum']."&target=user\">Reset</a></small></td></tr>";
+		$out .= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&id=" . $row['pend_id'] . "\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . _utf8_decode($row['pend_name']) . "</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&id=" . $row['pend_id'] . "&sum=" . $row['pend_checksum'] . "&target=user\">Reset</a></small></td></tr>";
 		$html .= $out;
 	}
 	$html .= "</table>\n";
