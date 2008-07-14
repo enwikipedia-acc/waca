@@ -636,6 +636,27 @@ elseif ($action == "usermgmt") {
 		$row2 = mysql_fetch_assoc($result2);
 		sendtobot("User $aid (" . $row2['user_name'] . ") approved by $siuser");
 	}
+	if (isset ($_GET['demote'])) {
+		$aid = sanitize($_GET['demote']);
+		$siuser = sanitize($_SESSION['user']);
+		$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$aid';";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$now = date("Y-m-d H-i-s");
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$aid', '$siuser', 'Demoted', '$now');";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		echo "Changed User #" . $_GET['demote'] . " access to 'User'<br />\n";
+		$uid = $aid;
+		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
+		$result2 = mysql_query($query2);
+		if (!$result2)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row2 = mysql_fetch_assoc($result2);
+		sendtobot("User $aid (" . $row2['user_name'] . ") demoted by $siuser");
+	}
 	if (isset ($_GET['suspend'])) {
 		$did = sanitize($_GET['suspend']);
 		$siuser = sanitize($_SESSION['user']);
@@ -802,7 +823,7 @@ elseif ($action == "usermgmt") {
 		$row2 = mysql_fetch_assoc($result2);
 		$approved = $row2['COUNT(*)'];
 
-		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&approve=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved])</small></li>";
+		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&demote=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved])</small></li>";
 		echo "$out\n";
 	}
 ?>
