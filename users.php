@@ -135,7 +135,7 @@ if ($_GET['viewuser'] != "") {
 	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 	echo "</ol>\n";
 	echo "<h2>Rights log</h2>\n<ol>\n";
-	$query = "SELECT * FROM acc_log where log_user = '$gid' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted)';";
+	$query = "SELECT * FROM acc_log where log_pend = '$gid' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted)';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
