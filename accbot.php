@@ -252,6 +252,8 @@
 				$return['parameters'] = explode( ' ', $return['parameter'] );
 				$return['command'] = $return['command'][0];
 			}
+		} else {
+			$return['type'] = 'other'; //Because other stuff is fun
 		}
 
 		return $return;
