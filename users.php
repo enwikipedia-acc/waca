@@ -147,7 +147,7 @@ if ($_GET['viewuser'] != "") {
 		$pu = $row['log_user'];
 		$pt = $row['log_time'];
 		$pa = $row['log_action'];
-		$pas = mysql_real_escape_string($pa);
+		$pa_s = mysql_real_escape_string($pa);
 		$comments = "";
 		if( $row['log_cmt'] != "" ) {
 			$pc = $row['log_cmt'];
@@ -156,7 +156,7 @@ if ($_GET['viewuser'] != "") {
 		if( $approved == 1 && $pa == "Approved" ) { $pa = "Demoted"; }
 		$uid_query = "SELECT user_id FROM acc_user WHERE user_name = '$pa_s';";
 		$uid_result = mysql_query($uid_query);
-		if (!$result)
+		if (!$uid_result)
 			Die("ERROR: No result returned.");
 		$uid_r = mysql_fetch_assoc($uid_result);
 		$userid = $uid_r['user_id'];
