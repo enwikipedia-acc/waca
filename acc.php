@@ -41,7 +41,7 @@ if (isset ($_GET['action'])) {
 }
 
 if (!isset ($_SESSION['user']) && !isset ($_GET['nocheck'])) {
-	$suser = sanitize($_SESSION['user']);
+	$suser = '';
 	echo makehead($suser);
 	if ($action != 'register' && $action != 'forgotpw' && $action != 'sreg') {
 		echo showlogin();
