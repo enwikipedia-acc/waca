@@ -150,6 +150,7 @@ if ($_GET['viewuser'] != "") {
 		if( $row['log_cmt'] != "" ) {
 			$pc = $row['log_cmt'];
 			$comments = " ($pc)";
+		}
 		echo "<li>$pu $pa $username at $pt$comments</li>\n";
 	}
 	echo "</ol>\n";
