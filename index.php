@@ -72,9 +72,8 @@ function emailvalid($email) {
 		return false;
 	}
 	$parts = explode("@", $email);
-	$username = $parts[0] || '';
-	$domain = $parts[1] || '';
-	echo "Email: $email User: $username Domain: $domain";
+	$username = isset($parts[0]) ? $parts[0] : '';
+	$domain = isset($parts[1]) ? $parts[1] : '';
 	if (function_exists('checkdnsrr')) {
 		getmxrr($domain, $mxhosts, $mxweight);
 		if (count($mxhosts) > 0) {
