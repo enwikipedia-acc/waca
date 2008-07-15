@@ -147,14 +147,14 @@ if ($_GET['viewuser'] != "") {
 		$pu = $row['log_user'];
 		$pt = $row['log_time'];
 		$pa = $row['log_action'];
-		$pa_s = mysql_real_escape_string($pa);
+		$pu_s = mysql_real_escape_string($pu);
 		$comments = "";
 		if( $row['log_cmt'] != "" ) {
 			$pc = $row['log_cmt'];
 			$comments = " ($pc)";
 		}
 		if( $approved == 1 && $pa == "Approved" ) { $pa = "Demoted"; }
-		$uid_query = "SELECT user_id FROM acc_user WHERE user_name = '$pa_s';";
+		$uid_query = "SELECT user_id FROM acc_user WHERE user_name = '$pu_s';";
 		$uid_result = mysql_query($uid_query);
 		if (!$uid_result)
 			Die("ERROR: No result returned.");
