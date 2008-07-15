@@ -136,6 +136,7 @@ if ($_GET['viewuser'] != "") {
 	echo "</ol>\n";
 	echo "<h2>Rights log</h2>\n<ol>\n";
 	$query = "SELECT * FROM acc_log where log_pend = '$gid' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted)';";
+	echo "\n\n<!-- RQ = $query -->\n\n";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
