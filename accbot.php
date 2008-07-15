@@ -230,6 +230,11 @@
 
 		$explode1 = explode( ' ', $line, 4 );
 
+		if( count($explode1) == 0) {
+			$return['type'] = 'unknown';
+			return;
+		}
+		
 		if( strtolower( $explode1[0] ) == 'ping' ) {
 			$return['type'] = 'ping';
 			$return['payload'] = $explode1[1];
