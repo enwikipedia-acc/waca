@@ -152,6 +152,7 @@ if ($_GET['viewuser'] != "") {
 			$comments = " ($pc)";
 		}
 		echo "<li>$pu $pa $username at $pt$comments</li>\n";
+		unset($pc); //Bah, garbage.
 	}
 	echo "</ol>\n";
 	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
