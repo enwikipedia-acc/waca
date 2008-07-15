@@ -523,7 +523,7 @@
 	if( ( $udpReader = pcntl_fork() ) == 0 ) {
 		$fpt = stream_socket_server( 'udp://0.0.0.0:9001', $errNo, $errStr, STREAM_SERVER_BIND );
 
-		if (!fpt) {
+		if (!$fpt) {
  			echo "SOCKET ERROR: $errstr ($errno)\n";
 		}
 
