@@ -147,7 +147,10 @@ if ($_GET['viewuser'] != "") {
 		$pu = $row['log_user'];
 		$pt = $row['log_time'];
 		$pa = $row['log_action'];
-		echo "<li>$pu $pa $username at $pt</li>\n";
+		if( $row['log_cmt'] != "" ) {
+			$pc = $row['log_cmt'];
+			$comments = " ($pc)";
+		echo "<li>$pu $pa $username at $pt$comments</li>\n";
 	}
 	echo "</ol>\n";
 	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
