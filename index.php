@@ -72,15 +72,17 @@ function emailvalid($email) {
 		return false;
 	}
 	$parts = explode("@", $email);
+	$username = $parts[0] || '';
+	$domain = $parts[1] || '';
 	if (function_exists('checkdnsrr')) {
-		getmxrr($parts['1'], $mxhosts, $mxweight);
+		getmxrr($domain, $mxhosts, $mxweight);
 		if (count($mxhosts) > 0) {
 			for ($i = 0; $i < count($mxhosts); $i++) {
 				$mxs[$mxhosts[$i]] = $mxweight[$i];
 			}
 			$mailers = array_keys($mxs);
 		}
-		elseif (checkdnsrr($parts['1'], 'A')) {
+		elseif (checkdnsrr($domain, 'A')) {
 			$mailers['0'] = gethostbyname($domain);
 		} else {
 			$mailers = array ();
