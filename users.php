@@ -147,6 +147,7 @@ if ($_GET['viewuser'] != "") {
 		$pu = $row['log_user'];
 		$pt = $row['log_time'];
 		$pa = $row['log_action'];
+		$comments = "";
 		if( $row['log_cmt'] != "" ) {
 			$pc = $row['log_cmt'];
 			$comments = " ($pc)";
