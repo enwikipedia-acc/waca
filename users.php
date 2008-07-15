@@ -74,7 +74,8 @@ if ($_GET['viewuser'] != "") {
 		showfooter();
 		die();
 	}
-	echo "<h2>Detail report for user: " . $row['user_name'] . "</h2>\n";
+	$username = $row['user_name'];
+	echo "<h2>Detail report for user: $username</h2>\n";
 	echo "<ol>\n";
 	echo "<li>User ID: " . $row['user_id'] . "</li>\n";
 	echo "<li>User Level: " . $row['user_level'] . "</li>\n";
@@ -132,7 +133,6 @@ if ($_GET['viewuser'] != "") {
 		$pn = $row['pend_name'];
 		echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$pn\">$pn</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$pn\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$pn\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
 	}
-	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 	echo "</ol>\n";
 	echo "<h2>Rights log</h2>\n<ol>\n";
 	$query = "SELECT * FROM acc_log where log_pend = '$gid' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted)';";
@@ -147,9 +147,10 @@ if ($_GET['viewuser'] != "") {
 		$pu = $row['log_user'];
 		$pt = $row['log_time'];
 		$pa = $row['log_action'];
-		echo "<li>$pu $pa at $pt</li>\n";
+		echo "<li>$pu $pa $username at $pt</li>\n";
 	}
 	echo "</ol>\n";
+	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 	displayfooter();
 	die();
 }
