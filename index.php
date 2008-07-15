@@ -445,7 +445,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$dnow = date("Y-m-d H-i-s");
 	$query = "INSERT INTO $toolserver_database.acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', 'Open' , '$dnow' );";
 	$result = mysql_query($query);
-	$query = "SELECT pend_id FROM $toolserver_database.acc_pend WHERE pend_name = '$user' ORDER BY pend_id DESC LIMIT 1;";
+	$query = "SELECT pend_id,pend_email FROM $toolserver_database.acc_pend WHERE pend_name = '$user' ORDER BY pend_id DESC LIMIT 1;";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
 	$pid = $row['pend_id'];
