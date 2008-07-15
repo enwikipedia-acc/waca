@@ -152,7 +152,7 @@ if ($_GET['viewuser'] != "") {
 			$pc = $row['log_cmt'];
 			$comments = " ($pc)";
 		}
-		if( $approved == 1 ) { $pa = "Demoted"; }
+		if( $approved == 1 && $pa == "Approved" ) { $pa = "Demoted"; }
 		echo "<li>$pu $pa $username at $pt$comments</li>\n";
 		if( $pa == "Approved" ) { $approved = 1; }
 		$pc = "";
