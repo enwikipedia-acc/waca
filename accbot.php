@@ -248,12 +248,12 @@
 			if( $return['message']{0} == $commandTrigger ) {
 				$return['trigger'] = $commandTrigger;
 				$return['command'] = explode( ' ', substr( $return['message'], 1 ), 2 );
-				$return['parameter'] = $return['command'][1];
+				if( isset( $return['command'][1] ) ) $return['parameter'] = $return['command'][1];
 				$return['parameters'] = explode( ' ', $return['parameter'] );
 				$return['command'] = $return['command'][0];
 			}
 		} else {
-			$return['type'] = 'other'; //Because other stuff is fun
+			$return['type'] = 'unknown'; //Because other stuff is fun
 		}
 
 		return $return;
@@ -540,11 +540,11 @@
 
 		print_r( $parsed );
 
-		if( $parsed['type'] == 'ping' ) {
+		if( ( isset( $parsed['type'] ) ) and ( $parsed['type'] == 'ping' ) ) {
 	        	irc( 'PONG ' . $parsed['payload'] ); 
 		}
 
-		if( $parsed['type'] == 'privmsg' ) {
+		if( ( isset( $parsed['type'] ) ) and ( $parsed['type'] == 'privmsg' ) ) {
 			if( $parsed['to'] == strtolower( $chan ) ) {
 				if( isset( $parsed['command'] ) ) {
 					doCommand( $parsed['command'], $parsed );
