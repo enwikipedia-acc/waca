@@ -656,6 +656,7 @@ elseif ($action == "usermgmt") {
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		sendtobot("User $aid (" . $row2['user_name'] . ") demoted by $siuser");
+	}
 	if (isset ($_GET['suspend'])) {
 		$did = sanitize($_GET['suspend']);
 		$siuser = sanitize($_SESSION['user']);
