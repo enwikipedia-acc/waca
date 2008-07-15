@@ -301,6 +301,7 @@
 			$user = mysql_fetch_assoc( myq( 'SELECT * FROM `acc_user` WHERE `user_name` = \'' . sanitize( $username ) . '\'' ) )
 				or die( 'MySQL Error: ' . mysql_error() . "\n" );
 
+			$adminInfo = '';
 			if( $user['user_level'] == 'Admin' ) {
 				$sus = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
 					. sanitize( $username ) . '\' AND `log_action` = \'Suspended\'' ) )
