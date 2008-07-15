@@ -1,16 +1,17 @@
 SQL Structure
 
-mysql> SHOW TABLES;
+mysql> SHOW tables;
 +-----------------+
-| Tables_in_u_sql |
+| Tables_in_p_acc |
 +-----------------+
+| acc_ban         | 
 | acc_emails      | 
 | acc_log         | 
 | acc_pend        | 
 | acc_user        | 
+| acc_welcome     | 
 +-----------------+
-4 rows in set (0.00 sec)
-
+6 rows in set (0.00 sec)
 
 acc_emails
 This table is used to store the canned e-mail responses.
@@ -63,23 +64,22 @@ mysql> describe acc_log;
 acc_pend
 This table contains pending requests.
 
-mysql> DESCRIBE acc_pend;
-+----------------+--------------+------+-----+-------------------+----------------+
-| Field          | Type         | Null | Key | Default           | Extra          |
-+----------------+--------------+------+-----+-------------------+----------------+
-| pend_id        | int(11)      | NO   | PRI | NULL              | auto_increment | 
-| pend_email     | varchar(512) | NO   |     | NULL              |                | 
-| pend_ip        | varchar(255) | NO   |     | NULL              |                | 
-| pend_name      | varchar(512) | NO   |     | NULL              |                | 
-| pend_cmt       | mediumtext   | NO   |     | NULL              |                | 
-| pend_status    | varchar(255) | NO   |     | NULL              |                | 
-| pend_date      | timestamp    | NO   |     | CURRENT_TIMESTAMP |                | 
-| pend_checksum  | varchar(256) | NO   |     | NULL              |                | 
-| pend_emailsent | varchar(10)  | NO   |     | NULL              |                | 
-+----------------+--------------+------+-----+-------------------+----------------+
-9 rows in set (0.00 sec)
-
-
+mysql> describe acc_pend;
++------------------+--------------+------+-----+-------------------+----------------+
+| Field            | Type         | Null | Key | Default           | Extra          |
++------------------+--------------+------+-----+-------------------+----------------+
+| pend_id          | int(11)      | NO   | PRI | NULL              | auto_increment | 
+| pend_email       | varchar(512) | NO   |     | NULL              |                | 
+| pend_ip          | varchar(255) | NO   |     | NULL              |                | 
+| pend_name        | varchar(512) | NO   |     | NULL              |                | 
+| pend_cmt         | mediumtext   | NO   |     | NULL              |                | 
+| pend_status      | varchar(255) | NO   |     | NULL              |                | 
+| pend_date        | timestamp    | NO   |     | CURRENT_TIMESTAMP |                | 
+| pend_checksum    | varchar(256) | NO   |     | NULL              |                | 
+| pend_emailsent   | varchar(10)  | NO   |     | NULL              |                | 
+| pend_mailconfirm | varchar(255) | NO   |     | NULL              |                | 
++------------------+--------------+------+-----+-------------------+----------------+
+10 rows in set (0.00 sec)
 
 *pend_id - Table key
 *pend_email - E-mail supplied by requesting user
@@ -90,6 +90,7 @@ mysql> DESCRIBE acc_pend;
 *pend_date - Date of this request
 *pend_checksum - A checksum of this request
 *pend_emailsent - If the user has been sent an email
+*pend_mailconfirm - A salted, random value used in e-mail confirmation
 
 acc_user
 This table contains all internal user data.
