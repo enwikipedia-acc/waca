@@ -59,7 +59,7 @@ function showmessage($messageno) {
 	if (!$result)
 		Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	return ($row[mail_text]);
+	return ($row['mail_text']);
 }
 function sanitize($what) {
 	$what = mysql_real_escape_string($what);
@@ -94,16 +94,16 @@ function svnup_sand() { //Blatantly stolen from accbot.php
 	pclose($svn);
 }
 
-$suin = sanitize($_SESSION[user]);
+$suin = sanitize($_SESSION['user']);
 $query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
 $result = mysql_query($query);
 if (!$result)
 	Die("ERROR: No result returned.");
 $row = mysql_fetch_assoc($result);
-$_SESSION[user_id] = $row[user_id];
+$_SESSION['user_id'] = $row['user_id'];
 $out = showmessage('21');
 echo $out;
-if (isset ($_SESSION[user])) { //Is user logged in?
+if (isset ($_SESSION['user'])) { //Is user logged in?
 	echo "<div id = \"header-info\">Logged in as <a href=\"users.php?viewuser=$_SESSION[user_id]\"><span title=\"View your user information\">$_SESSION[user]</span></a>.  <a href=\"acc.php?action=logout\">Logout</a>?</div>\n";
 	//Update user_lastactive
 	$now = date("Y-m-d H-i-s");
@@ -115,7 +115,7 @@ if (isset ($_SESSION[user])) { //Is user logged in?
 	echo "<div id = \"header-info\">Not logged in.  <a href=\"acc.php\"><span title=\"Click here to return to the login form\">Log in</span></a>/<a href=\"acc.php?action=register\">Create account</a>?</div>\n";
 }
 echo "<div id=\"content\">\n";
-if ($_SESSION[user] != "Cobi" && $_SESSION[user] != "SQL") {
+if ($_SESSION['user'] != "Cobi" && $_SESSION['user'] != "SQL") {
 	echo "<br />Access Denied<br />\n";
 	die();
 }
