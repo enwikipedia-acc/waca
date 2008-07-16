@@ -11,8 +11,8 @@ $tar = "tar -cvf";
 
 $arg = $argv['1'];
 if( $arg == "--monthly" ) {
-	$dateModifier = date( "Fy" );
-	$cmdLine = "$tar $monthdir/mBackup$dateModifier.tar $dir/*.sql.gz; rm $dir/*.sql.gz";
+	$dateModifier = date( "FY" );
+	$cmdLine = "$tar $monthdir/mBackup-$dateModifier.tar $dir/*.sql.gz; rm $dir/*.sql.gz";
 	shell_exec( $cmdLine );
 	die( );
 }
