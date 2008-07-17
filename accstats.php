@@ -175,7 +175,8 @@ $nsadmin = $sadmin['COUNT(*)'];
 $nsuser = $suser['COUNT(*)'];
 $nssusp = $ssusp['COUNT(*)'];
 $nsnew = $snew['COUNT(*)'];
-$bltd = $blcount['COUNT(*)'];
+//$bltd = $blcount['COUNT(*)'];
+$bltd = 0; //Temporary fix.
 
 //Put mail together
 $out = "\n";
@@ -191,7 +192,7 @@ $out .= "Site suspended accounts: $nssusp\n";
 $out .= "Site users awaiting approval: $nsnew\n\n";
 $out .= "Todays statistics!\n";
 $out .= "-------------------------------------------------------------\n";
-$out .= "Requests dropped because of blacklisting: $bltd\n";
+//$out .= "Requests dropped because of blacklisting: $bltd\n";
 $out .= "Account requests dropped: $dropped\n";
 $out .= "Accounts successfully created: $created\n";
 $out .= "Accounts not created (Too similar): $toosimilar\n";
