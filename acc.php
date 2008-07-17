@@ -623,7 +623,7 @@ elseif ($action == "usermgmt") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
-		if ($row['user_level'] = "Admin") {
+		if ($row['user_level'] == "Admin") {
 			echo "Sorry, the user you are trying to approve has Administrator access. Please use the <a href=\"acc.php?action=usermgmt&demote=$aid\">demote function</a> instead.<br />\n";
 			echo showfooter();
 			die();
