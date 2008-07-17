@@ -21,81 +21,81 @@
 **                                                           **
 **************************************************************/
 
-require_once ('config.inc.php');
-require_once ('devlist.php');
-require_once ('functions.php');
-ini_set('session.cookie_path', $cookiepath);
-ini_set('session.name', $sessionname);
+require_once ( 'config.inc.php' );
+require_once ( 'devlist.php' );
+require_once ( 'functions.php' );
+ini_set( 'session.cookie_path', $cookiepath );
+ini_set( 'session.name', $sessionname );
 $version = "0.9.7";
 
-$link = mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-if (!$link) {
-	die('Could not connect: ' . mysql_error());
+$link = mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
+if ( !$link ) {
+	die( 'Could not connect: ' . mysql_error( ) );
 }
-@ mysql_select_db($toolserver_database) or print mysql_error();
-session_start();
+@ mysql_select_db( $toolserver_database ) or print mysql_error( );
+session_start( );
 
 $action = '';
-if (isset ($_GET['action'])) {
+if ( isset ( $_GET['action'] ) ) {
 	$action = $_GET['action'];
 }
 
-if (!isset ($_SESSION['user']) && !isset ($_GET['nocheck'])) {
+if ( !isset ( $_SESSION['user'] ) && !isset ( $_GET['nocheck'] ) ) {
 	$suser = '';
-	echo makehead($suser);
-	if ($action != 'register' && $action != 'forgotpw' && $action != 'sreg') {
-		echo showlogin();
-		die();
+	echo makehead( $suser );
+	if ( $action != 'register' && $action != 'forgotpw' && $action != 'sreg' ) {
+		echo showlogin( );
+		die( );
 	}
 }
-elseif (!isset ($_GET['nocheck'])) {
-	$suser = sanitize($_SESSION['user']);
-	echo makehead($suser);
-	checksecurity($_SESSION['user']);
-	$out = showmessage('20');
+elseif ( !isset ( $_GET['nocheck'] ) ) {
+	$suser = sanitize( $_SESSION['user'] );
+	echo makehead( $suser );
+	checksecurity( $_SESSION['user'] );
+	$out = showmessage( '20' );
 	$out .= "<div id=\"content\">";
 	echo $out;
 }
 
-if ($action == '') {
-	echo defaultpage();
+if ( $action == '' ) {
+	echo defaultpage( );
 }
-elseif ($action == "sreg") {
-	$suser = sanitize($_SESSION['user']);
-	foreach ($acrnamebl as $wnbl => $nbl) {
-		$phail_test = @ preg_match($nbl, $_POST['name']);
-		if ($phail_test == TRUE) {
+elseif ( $action == "sreg" ) {
+	$suser = sanitize( $_SESSION['user'] );
+	foreach ( $acrnamebl as $wnbl => $nbl ) {
+		$phail_test = @ preg_match( $nbl, $_POST['name'] );
+		if ( $phail_test == TRUE ) {
 			#$message = showmessage(15);
 			echo "$message<br />\n";
 			$target = "$wnbl";
-			$host = gethostbyaddr($_SERVER['REMOTE_ADDR']);
-			$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-			fwrite($fp, "[Name-Bl-ACR] HIT: $wnbl - " . $_POST['name'] . " / " . $_POST['wname'] . " " . $_SERVER['REMOTE_ADDR'] . " ($host) " . $_POST['email'] . " " . $_SERVER['HTTP_USER_AGENT'] . "\r\n");
-			fclose($fp);
+			$host = gethostbyaddr( $_SERVER['REMOTE_ADDR'] );
+			$fp = fsockopen( "udp://127.0.0.1", 9001, $erno, $errstr, 30 );
+			fwrite( $fp, "[Name-Bl-ACR] HIT: $wnbl - " . $_POST['name'] . " / " . $_POST['wname'] . " " . $_SERVER['REMOTE_ADDR'] . " ($host) " . $_POST['email'] . " " . $_SERVER['HTTP_USER_AGENT'] . "\r\n" );
+			fclose( $fp );
 			echo "Account created!<br /><br />\n";
-			die();
+			die( );
 		}
 	}
-	$dnsblcheck = checkdnsbls($_SERVER['REMOTE_ADDRR']);
-	if ($dnsblcheck['0'] == true) {
+	$dnsblcheck = checkdnsbls( $_SERVER['REMOTE_ADDRR'] );
+	if ( $dnsblcheck['0'] == true ) {
 		$cmt = "FROM $ip " . $dnsblcheck['1'];
-		$fp = fsockopen("udp://127.0.0.1", 9001, $erno, $errstr, 30);
-		fwrite($fp, "[DNSBL-ACR] HIT: " . $_POST['name'] . " - " . $_POST['wname'] . " " . $_SERVER['REMOTE_ADDR'] . " " . $_POST['email'] . " " . $_SERVER['HTTP_USER_AGENT'] . " $cmt\r\n");
-		fclose($fp);
-		die("Account not created, please see " . $dnsblcheck['1']);
+		$fp = fsockopen( "udp://127.0.0.1", 9001, $erno, $errstr, 30 );
+		fwrite( $fp, "[DNSBL-ACR] HIT: " . $_POST['name'] . " - " . $_POST['wname'] . " " . $_SERVER['REMOTE_ADDR'] . " " . $_POST['email'] . " " . $_SERVER['HTTP_USER_AGENT'] . " $cmt\r\n" );
+		fclose( $fp );
+		die( "Account not created, please see " . $dnsblcheck['1'] );
 	}
-	$cu_name = urlencode($_REQUEST['wname']);
-	$userblocked = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php");
-	$ub = unserialize($userblocked);
-	if (isset ($ub['query']['blocks']['0']['id'])) {
-		$message = showmessage(9);
+	$cu_name = urlencode( $_REQUEST['wname'] );
+	$userblocked = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
+	$ub = unserialize( $userblocked );
+	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) {
+		$message = showmessage( '9' );
 		echo "ERROR: You are presently blocked on the English Wikipedia<br />\n";
 		$fail = 1;
 	}
-	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php");
-	$ue = unserialize($userexist);
-	foreach ($ue['query']['users']['0'] as $oneue) {
-		if ($oneue['missing'] == "") {
+	$userexist = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
+	$ue = unserialize( $userexist );
+	foreach ( $ue['query']['users']['0'] as $oneue ) {
+		if ( $oneue['missing'] == "" ) {
 			echo "Invalid On-Wiki username.<br />\n";
 			$fail = 1;
 		}
