@@ -618,6 +618,16 @@ elseif ($action == "usermgmt") {
 	if (isset ($_GET['approve'])) {
 		$aid = sanitize($_GET['approve']);
 		$siuser = sanitize($_SESSION['user']);
+            $query = "SELECT * FROM acc_user WHERE user_id = '$aid';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	if ($row['user_level'] = "Admin") {
+		echo "Sorry, the user you are trying to approve has Administrator access. Please use the <a href=\"acc.php?action=usermgmt&demote=$aid\">demote function</a> instead.<br />\n";
+		echo showfooter();
+		die();
+	}
 		$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$aid';";
 		$result = mysql_query($query);
 		if (!$result)
@@ -728,6 +738,16 @@ sendtobot("User $did (" . $row2['user_name'] . ") demoted by $siuser because: \"
 	if (isset ($_GET['decline'])) {
 		$did = sanitize($_GET['decline']);
 		$siuser = sanitize($_SESSION['user']);
+	$query = "SELECT * FROM acc_user WHERE user_id = '$did';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	if ($row['user_level'] != "New") {
+		echo "You cannot decline this user because the user is not a New user.<br />\n";
+		echo showfooter();
+		die();
+	}
 		if ($_POST['declinereason'] == "") {
 			echo "<h2>Decline Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&decline=$did\" method=\"post\"><br />\n";
 			echo "<textarea name=\"declinereason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
