@@ -21,9 +21,9 @@
 **************************************************************/
 
 require_once ('config.inc.php');
-if ($_SERVER['REMOTE_ADDR'] != "") {
-	header("Location: $tsurl/");
-	die();
+if ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
+	header( "Location: $tsurl/" );
+	die( );
 }
 
 mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
