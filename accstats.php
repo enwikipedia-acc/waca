@@ -118,7 +118,7 @@ while ($top = mysql_fetch_assoc($result)) {
 $top5out .= "\nTodays top 5 account creators:\n";
 $top5out .= "-------------------------------------------------------------\n";
 foreach ($top5 as $top1) {
-	$top5out .= "$top1['log_user'] - " . $top1['count(*)'] . "\n";
+	$top5out .= $top1['log_user'] . " - " . $top1['count(*)'] . "\n";
 }
 $top5out .= "\n";
 
