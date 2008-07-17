@@ -664,7 +664,7 @@ elseif ($action == "usermgmt") {
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-sendtobot("User $aid (" . $row2['user_name'] . ") demoted by $siuser because: \"$demotersn\"");
+sendtobot("User $did (" . $row2['user_name'] . ") demoted by $siuser because: \"$demotersn\"");
 			echo showfooter();
 			die();
 		}
