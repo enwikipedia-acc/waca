@@ -637,25 +637,38 @@ elseif ($action == "usermgmt") {
 		sendtobot("User $aid (" . $row2['user_name'] . ") approved by $siuser");
 	}
 	if (isset ($_GET['demote'])) {
-		$aid = sanitize($_GET['demote']);
+		$did = sanitize($_GET['demote']);
 		$siuser = sanitize($_SESSION['user']);
-		$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$aid';";
-		$result = mysql_query($query);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$now = date("Y-m-d H-i-s");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$aid', '$siuser', 'Demoted', '$now');";
-		$result = mysql_query($query);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		echo "Changed User #" . $_GET['demote'] . " access to 'User'<br />\n";
-		$uid = $aid;
-		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-		$result2 = mysql_query($query2);
-		if (!$result2)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$row2 = mysql_fetch_assoc($result2);
-		sendtobot("User $aid (" . $row2['user_name'] . ") demoted by $siuser");
+		if ($_POST['demotereason'] == "") {
+			echo "<h2>Suspend Reason</h2><strong>The reason you enter here will be shown in the log. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&suspend=$did\" method=\"post\"><br />\n";
+			echo "<textarea name=\"suspendreason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
+			echo "<input type=\"submit\"><input type=\"reset\"><br />\n";
+			echo "</form>";
+			echo showfooter();
+			die();
+		} else {
+			$demotersn = sanitize($_POST['demotereason']);
+			$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$did';";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$now = date("Y-m-d H-i-s");
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$did', '$siuser', 'Demoted', '$now', '$demotersn');";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			echo "Changed User #" . $_GET['demote'] . " access to 'Demoted'<br />\n";
+			$uid = $did;
+			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
+			$result2 = mysql_query($query2);
+			if (!$result2)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$row2 = mysql_fetch_assoc($result2);
+sendtobot("User $aid (" . $row2['user_name'] . ") demoted by $siuser because: \"$demotersn\"");
+			echo showfooter();
+			die();
+		}
+
 	}
 	if (isset ($_GET['suspend'])) {
 		$did = sanitize($_GET['suspend']);
