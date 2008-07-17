@@ -65,7 +65,7 @@ if (!$result)
 	Die("ERROR: No result returned.6");
 $snew = mysql_fetch_assoc($result);
 
-$now = date("Y-m-d", mktime(0, 0, 0, date(m), date("d") - 1));
+$now = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 1));
 
 //Get top 5 account creators of all time
 $topqa = "select log_user,count(*) from acc_log where log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC limit 5;";
@@ -76,12 +76,12 @@ $top5a = array ();
 while ($topa = mysql_fetch_assoc($result)) {
 	array_push($top5a, $topa);
 }
-$top5aout .= "\nAll time top 5 account creators:\n";
+$top5aout = "\nAll time top 5 account creators:\n";
 $top5aout .= "-------------------------------------------------------------\n";
 foreach ($top5a as $top1a) {
 	$top5aout .= $top1a['log_user'] . " - " . $top1a['count(*)'] . "\n";
 }
-$topa5out .= "\n";
+$top5aout .= "\n";
 $whosnewq = "select * from acc_log JOIN acc_user on log_pend = user_id where log_action = 'Approved' AND log_time LIKE '$now%';";
 echo "$whosnewq\n";
 $result = mysql_query($whosnewq);
@@ -94,7 +94,7 @@ while ($wn = mysql_fetch_assoc($result)) {
 }
 
 //Get today's new users
-$wnout .= "\nNew ACC Users Approved today:\n";
+$wnout = "\nNew ACC Users Approved today:\n";
 $wnout .= "-------------------------------------------------------------\n";
 if (count($whosnew) == 0) {
 	$wnout .= "None.\n";
@@ -115,7 +115,7 @@ while ($top = mysql_fetch_assoc($result)) {
 }
 
 //Get today's top 5
-$top5out .= "\nTodays top 5 account creators:\n";
+$top5out = "\nTodays top 5 account creators:\n";
 $top5out .= "-------------------------------------------------------------\n";
 foreach ($top5 as $top1) {
 	$top5out .= $top1['log_user'] . " - " . $top1['count(*)'] . "\n";
