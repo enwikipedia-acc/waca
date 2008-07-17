@@ -603,7 +603,182 @@ elseif ($action == "ban") {
 	echo showfooter();
 	die();
 }
+elseif ($action == "usermgmt") {
+	$siuser = sanitize($_SESSION['user']);
+	$query = "SELECT * FROM acc_user WHERE user_name = '$siuser';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	if ($row['user_level'] != "Admin" && $_SESSION['user'] != "SQL") {
+		echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
+		echo showfooter();
+		die();
+	}
+	if (isset ($_GET['approve'])) {
+		$aid = sanitize($_GET['approve']);
+		$siuser = sanitize($_SESSION['user']);
+            $query = "SELECT * FROM acc_user WHERE user_id = '$aid';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	if ($row['user_level'] = "Admin") {
+		echo "Sorry, the user you are trying to approve has Administrator access. Please use the <a href=\"acc.php?action=usermgmt&demote=$aid\">demote function</a> instead.<br />\n";
+		echo showfooter();
+		die();
+	}
+		$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$aid';";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$now = date("Y-m-d H-i-s");
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$aid', '$siuser', 'Approved', '$now');";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		echo "Changed User #" . $_GET['approve'] . " access to 'User'<br />\n";
+		$uid = $aid;
+		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
+		$result2 = mysql_query($query2);
+		if (!$result2)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row2 = mysql_fetch_assoc($result2);
+		sendtobot("User $aid (" . $row2['user_name'] . ") approved by $siuser");
+	}
+	if (isset ($_GET['demote'])) {
+		$did = sanitize($_GET['demote']);
+		$siuser = sanitize($_SESSION['user']);
+		if ($_POST['demotereason'] == "") {
+			echo "<h2>Demote Reason</h2><strong>The reason you enter here will be shown in the log. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&demote=$did\" method=\"post\"><br />\n";
+			echo "<textarea name=\"demotereason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
+			echo "<input type=\"submit\"><input type=\"reset\"><br />\n";
+			echo "</form>";
+			echo showfooter();
+			die();
+		} else {
+			$demotersn = sanitize($_POST['demotereason']);
+			$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$did';";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$now = date("Y-m-d H-i-s");
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$did', '$siuser', 'Demoted', '$now', '$demotersn');";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			echo "Changed User #" . $_GET['demote'] . " access to 'Demoted'<br />\n";
+			$uid = $did;
+			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
+			$result2 = mysql_query($query2);
+			if (!$result2)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$row2 = mysql_fetch_assoc($result2);
+sendtobot("User $did (" . $row2['user_name'] . ") demoted by $siuser because: \"$demotersn\"");
+			echo showfooter();
+			die();
+		}
 
+	}
+	if (isset ($_GET['suspend'])) {
+		$did = sanitize($_GET['suspend']);
+		$siuser = sanitize($_SESSION['user']);
+		if ($_POST['suspendreason'] == "") {
+			echo "<h2>Suspend Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&suspend=$did\" method=\"post\"><br />\n";
+			echo "<textarea name=\"suspendreason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
+			echo "<input type=\"submit\"><input type=\"reset\"><br />\n";
+			echo "</form>";
+			echo showfooter();
+			die();
+		} else {
+			$suspendrsn = sanitize($_POST['suspendreason']);
+			$query = "UPDATE acc_user SET user_level = 'Suspended' WHERE user_id = '$did';";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$now = date("Y-m-d H-i-s");
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$did', '$siuser', 'Suspended', '$now', '$suspendrsn');";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			echo "Changed User #" . $_GET['suspend'] . " access to 'Suspended'<br />\n";
+			$uid = $did;
+			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
+			$result2 = mysql_query($query2);
+			if (!$result2)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$row2 = mysql_fetch_assoc($result2);
+			sendtobot("User $did (" . $row2['user_name'] . ") suspended access by $siuser because: \"$suspendrsn\"");
+			echo showfooter();
+			die();
+		}
+
+	}
+	if (isset ($_GET['promote'])) {
+		$aid = sanitize($_GET['promote']);
+		$siuser = sanitize($_SESSION['user']);
+		$query = "UPDATE acc_user SET user_level = 'Admin' WHERE user_id = '$aid';";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$now = date("Y-m-d H-i-s");
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$aid', '$siuser', 'Promoted', '$now');";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		echo "Changed User #" . $_GET['promote'] . " access to 'Admin'<br />\n";
+		$uid = $aid;
+		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
+		$result2 = mysql_query($query2);
+		if (!$result2)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row2 = mysql_fetch_assoc($result2);
+		sendtobot("User $aid (" . $row2['user_name'] . ") promoted to admin by $siuser");
+	}
+	if (isset ($_GET['decline'])) {
+		$did = sanitize($_GET['decline']);
+		$siuser = sanitize($_SESSION['user']);
+	$query = "SELECT * FROM acc_user WHERE user_id = '$did';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	if ($row['user_level'] != "New") {
+		echo "You cannot decline this user because the user is not a New user.<br />\n";
+		echo showfooter();
+		die();
+	}
+		if ($_POST['declinereason'] == "") {
+			echo "<h2>Decline Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&decline=$did\" method=\"post\"><br />\n";
+			echo "<textarea name=\"declinereason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
+			echo "<input type=\"submit\"><input type=\"reset\"><br />\n";
+			echo "</form>";
+			echo showfooter();
+			die();
+		} else {
+			$declinersn = sanitize($_POST['declinereason']);
+			$query = "UPDATE acc_user SET user_level = 'Declined' WHERE user_id = '$did';";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$now = date("Y-m-d H-i-s");
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$did', '$siuser', 'Declined', '$now', '$declinersn');";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			echo "Changed User #" . $_GET['decline'] . " access to 'Declined'<br />\n";
+			$uid = $did;
+			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
+			$result2 = mysql_query($query2);
+			if (!$result2)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$row2 = mysql_fetch_assoc($result2);
+			sendtobot("User $did (" . $row2['user_name'] . ") declined access by $siuser because: \"$declinersn\"");
+			echo showfooter();
+			die();
+		}
+
+	}
 ?>
     <h1>User Management</h1>
     <strong>This interface isn't a toy. If it says you can do it, you can do it.<br />Please use this responsibly.</strong>
