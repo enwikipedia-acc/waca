@@ -79,7 +79,7 @@ while ($topa = mysql_fetch_assoc($result)) {
 $top5aout .= "\nAll time top 5 account creators:\n";
 $top5aout .= "-------------------------------------------------------------\n";
 foreach ($top5a as $top1a) {
-	$top5aout .= "$top1a['log_user'] - " . $top1a['count(*)'] . "\n";
+	$top5aout .= $top1a['log_user'] . " - " . $top1a['count(*)'] . "\n";
 }
 $topa5out .= "\n";
 $whosnewq = "select * from acc_log JOIN acc_user on log_pend = user_id where log_action = 'Approved' AND log_time LIKE '$now%';";
