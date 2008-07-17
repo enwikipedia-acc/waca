@@ -823,6 +823,20 @@ elseif ($action == "usermgmt") {
 		$row2 = mysql_fetch_assoc($result2);
 		$approved = $row2['COUNT(*)'];
 
+$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Demoted';";
+		$result2 = mysql_query($query);
+		if (!$result2)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row2 = mysql_fetch_assoc($result2);
+		$demoted = $row2['COUNT(*)'];
+
+$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Declined';";
+		$result2 = mysql_query($query);
+		if (!$result2)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row2 = mysql_fetch_assoc($result2);
+		$declined = $row2['COUNT(*)'];
+
 		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&demote=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined])</small></li>";
 		echo "$out\n";
 	}
