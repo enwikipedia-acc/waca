@@ -153,7 +153,7 @@ if ($_GET['viewuser'] != "") {
 			$pc = $row['log_cmt'];
 			$comments = " ($pc)";
 		}
-		if( $promoted > 0 && $pa == "Approved" ) { $pa = "Demoted"; }
+		if( $promoted != 0 && $pa == "Approved" ) { $pa = "Demoted"; }
 		$uid_query = "SELECT user_id FROM acc_user WHERE user_name = '$pu_s';";
 		$uid_result = mysql_query($uid_query);
 		if (!$uid_result)
