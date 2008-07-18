@@ -135,7 +135,7 @@ if ($_GET['viewuser'] != "") {
 	}
 	echo "</ol>\n";
 	echo "<h2>Rights log</h2>\n<ol>\n";
-	$query = "SELECT * FROM acc_log where log_pend = '$gid' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted)';";
+	$query = "SELECT * FROM acc_log where log_pend = '$gid' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted|Demoted)';";
 	echo "\n\n<!-- RQ = $query -->\n\n";
 	$result = mysql_query($query);
 	if (!$result)
@@ -153,7 +153,7 @@ if ($_GET['viewuser'] != "") {
 			$pc = $row['log_cmt'];
 			$comments = " ($pc)";
 		}
-		if( $approved == 1 && $pa == "Approved" ) { $pa = "Demoted"; }
+		if( $promoted > 0 && $pa == "Approved" ) { $pa = "Demoted"; }
 		$uid_query = "SELECT user_id FROM acc_user WHERE user_name = '$pu_s';";
 		$uid_result = mysql_query($uid_query);
 		if (!$uid_result)
