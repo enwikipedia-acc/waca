@@ -314,7 +314,17 @@
 					or die( 'MySQL Error: ' . mysql_error() . "\n" );
 				$app = $app['count'];
 
-				$adminInfo = 'Suspended: ' . $sus . ', Promoted: ' . $pro . ', Approved: ' . $app;
+				$dem = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
+					. sanitize( $username ) . '\' AND `log_action` = \'Demoted\'' ) )
+					or die( 'MySQL Error: ' . mysql_error() . "\n" );
+				$dem = $dem['count'];
+
+				$dec = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
+					. sanitize( $username ) . '\' AND `log_action` = \'Declined\'' ) )
+					or die( 'MySQL Error: ' . mysql_error() . "\n" );
+				$dec = $dec['count'];
+
+				$adminInfo = 'Suspended: ' . $sus . ', Promoted: ' . $pro . ', Approved: ' . $app . ', Demoted: ' . $dem . ', Declined: ' $dec;
 			}
 
 			$today = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_time` LIKE \'' . sanitize( date( 'Y-m-d' ) )
