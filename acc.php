@@ -890,7 +890,7 @@ $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action 
 		$uname = $row['user_name'];
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
-		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Unsuspend!</a> (Suspended by " . $row['log_user'] . "<!-- FREAKING PIECE OF CRAP ISN'T WORKING RIGHT NOW because " . $row['log_cmt'] . " --!>)</small></li>";
+		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
 		echo "$out\n";
 	}
 ?>
