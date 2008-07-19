@@ -35,7 +35,7 @@ function getSpoofs( $username ) {
 	$reSpoofs = array();
 	while ($row = mysql_fetch_assoc($result)) {
 	        if( isset( $row['su_name'] ) ) { $numSpoof++; }
-		array_push( $reSpoofs, $row['su_name'];
+		array_push( $reSpoofs, $row['su_name'] );
 	}
 	if( $numSpoof == 0 ) {
 	        return( FALSE );
