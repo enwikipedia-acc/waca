@@ -36,7 +36,7 @@ function getSpoofs( $username ) {
 	$fone = mysql_real_escape_string( $fone );
 	$query = "SELECT * FROM spoofuser WHERE su_normalized = 'v2:$fone';";
 	$result = mysql_query($query);
-	if(!$result) Die("ERROR: No result returned.");
+	if(!$result) Die("ERROR: No result returned. - ".mysql_error());
 	$numSpoof = 0;
 	while ($row = mysql_fetch_assoc($result)) {
 	        if( isset( $row['su_name'] ) ) { $numSpoof++; }
