@@ -226,7 +226,7 @@
 
 		$explode1 = explode( ' ', $line, 4 );
 
-		if( count($explode1) == 0) {
+		if( strlen($line) == 0) {
 			$return['type'] = 'unknown';
 			return;
 		}
