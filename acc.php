@@ -1171,7 +1171,7 @@ elseif ($action == "zoom") {
 	if ($row['pend_date'] == "0000-00-00 00:00:00") {
 		$row['pend_date'] = "Date Unknown";
 	}
-
+	$sUser = $row['pend_name'];
 	$requesttable = listrequests($thisid);
 	echo $requesttable;
 
@@ -1181,6 +1181,17 @@ elseif ($action == "zoom") {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
+	echo "<h2>Possibly conflicting usernames<h2>\n";
+	$spoofs = getSpoofs( $sUser );
+	if( !$spoofs ) {
+		echo "<i>None detected</i><br />\n";
+	} else {
+		echo "<ul>\n";
+		foreach( $spoofs as $oSpoof ) {
+			echo "<li>$oSpoof</li>\n";
+		}
+		echo "</ul>\n";
+	}
 	echo "<h2>Logs for Request #" . $_GET['id'] . ":</h2>";
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {

@@ -22,7 +22,7 @@
 
 require_once ('config.inc.php');
 $fail = 0;
-function getSpoofs( $username ) {
+function checkSpoofs( $username ) {
 	require_once('equivset.php');
 	global $toolserver_username;
 	global $toolserver_password;
@@ -40,7 +40,6 @@ function getSpoofs( $username ) {
 	$numSpoof = 0;
 	while ($row = mysql_fetch_assoc($result)) {
 	        if( isset( $row['su_name'] ) ) { $numSpoof++; }
-	        $spoofs2 = $spoofs2 . "<li>" . $row['su_name']. "</li>\n";
 	}
 	if( $numSpoof == 0 ) {
 	        return( FALSE );
@@ -48,6 +47,7 @@ function getSpoofs( $username ) {
 		return( TRUE );
 	}
 }
+
 function sanitize( $what ) {
 	/*
 	* Shortcut to mysql_real_escape_string
@@ -469,7 +469,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$comments = sanitize($_POST['comments']);
 	$comments = preg_replace('/\<\/?(div|span|script|\?php|\?|img)\s?(.*)\s?\>/i', '', $comments); //Escape injections.
 	$dnow = date("Y-m-d H-i-s");
-	if( getSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
+	if( checkSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
 	$query = "INSERT INTO $toolserver_database.acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow' );";
 	$result = mysql_query($query);
 	$q2 = $query;
