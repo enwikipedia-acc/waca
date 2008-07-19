@@ -23,6 +23,7 @@
 require_once ('config.inc.php');
 $fail = 0;
 function getSpoofs( $username ) {
+	require_once('equivset.php');
 	global $toolserver_username;
 	global $toolserver_password;
 	mysql_connect("sql-s1", $toolserver_username, $toolserver_password);
@@ -469,7 +470,8 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$comments = sanitize($_POST['comments']);
 	$comments = preg_replace('/\<\/?(div|span|script|\?php|\?|img)\s?(.*)\s?\>/i', '', $comments); //Escape injections.
 	$dnow = date("Y-m-d H-i-s");
-	$query = "INSERT INTO $toolserver_database.acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', 'Open' , '$dnow' );";
+	if( getSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
+	$query = "INSERT INTO $toolserver_database.acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow' );";
 	$result = mysql_query($query);
 	$query = "SELECT pend_id,pend_email FROM $toolserver_database.acc_pend WHERE pend_name = '$user' ORDER BY pend_id DESC LIMIT 1;";
 	$result = mysql_query($query);
