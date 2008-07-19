@@ -42,7 +42,6 @@ function getSpoofs( $username ) {
 	        if( isset( $row['su_name'] ) ) { $numSpoof++; }
 	        $spoofs2 = $spoofs2 . "<li>" . $row['su_name']. "</li>\n";
 	}
-	mysql_close( $spooflink );
 	if( $numSpoof == 0 ) {
 	        return( FALSE );
 	} else {
