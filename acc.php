@@ -1157,9 +1157,6 @@ elseif ($action == "zoom") {
 		echo showfooter();
 		die();
 	}
-	mysql_close();
-	mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
-	@ mysql_select_db( $toolserver_database ) or print mysql_error( );
 	$gid = sanitize($_GET['id']);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
 	$result = mysql_query($query);
@@ -1195,6 +1192,9 @@ elseif ($action == "zoom") {
 		}
 		echo "</ul>\n";
 	}
+	mysql_close();
+	mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
+	@ mysql_select_db( $toolserver_database ) or print mysql_error( );
 	echo "<h2>Logs for Request #" . $_GET['id'] . ":</h2>";
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
