@@ -1158,10 +1158,7 @@ elseif ($action == "zoom") {
 		die();
 	}
 	mysql_close();
-	$link = mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
-	if ( !$link ) {
-	        die( 'Could not connect: ' . mysql_error( ) );
-	}
+	mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
 	@ mysql_select_db( $toolserver_database ) or print mysql_error( );
 	$gid = sanitize($_GET['id']);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
