@@ -324,7 +324,7 @@
 					or die( 'MySQL Error: ' . mysql_error() . "\n" );
 				$dec = $dec['count'];
 
-				$adminInfo = 'Suspended: ' . $sus . ', Promoted: ' . $pro . ', Approved: ' . $app . ', Demoted: ' . $dem . ', Declined: ' $dec;
+				$adminInfo = 'Suspended: ' . $sus . ', Promoted: ' . $pro . ', Approved: ' . $app . ', Demoted: ' . $dem . ', Declined: ' . $dec;
 			}
 
 			$today = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_time` LIKE \'' . sanitize( date( 'Y-m-d' ) )
