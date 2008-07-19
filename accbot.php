@@ -250,7 +250,7 @@
 				$return['trigger'] = $commandTrigger;
 				$return['command'] = explode( ' ', substr( $return['message'], 1 ), 2 );
 				if( isset( $return['command'][1] ) ) $return['parameter'] = $return['command'][1];
-				$return['parameters'] = explode( ' ', $return['parameter'] );
+				if( isset( $return['parameter'] ) ) $return['parameters'] = explode( ' ', $return['parameter'] );
 				$return['command'] = $return['command'][0];
 			}
 		} else {
@@ -272,8 +272,8 @@
 	}
 
 	function commandCount( $parsed ) {
-		$username = $parsed['parameter'];
-		if( !isset( $username ) or ( $username == '' ) ) {
+		$username = isset($parsed['parameter']) ? $parsed['parameter'] : '';
+		if( $username == '' ) {
 			//irc( 'NOTICE ' . $parsed['nick'] . ' :Invalid syntax.  This command requires a username as a parameter.' );
 			//return;
 			
