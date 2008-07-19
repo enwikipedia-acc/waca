@@ -22,15 +22,41 @@
 
 require_once ('config.inc.php');
 $fail = 0;
-function sanitize($what) {
+function getSpoofs( $username ) {
+	global $toolserver_username;
+	global $toolserver_password;
+	mysql_connect("sql-s1", $toolserver_username, $toolserver_password);
+	@ mysql_select_db("enwiki_p") or print mysql_error();
+	$cUser = str_split( $username, 1 );
+	$fone = "";
+	foreach ( $cUser as $one_cUser ) {
+	        $fone .= $equivset[$one_cUser];
+	}
+	$fone = mysql_real_escape_string( $fone );
+	$query = "SELECT * FROM spoofuser WHERE su_normalized = 'v2:$fone';";
+	$result = mysql_query($query);
+	if(!$result) Die("ERROR: No result returned.");
+	$numSpoof = 0;
+	while ($row = mysql_fetch_assoc($result)) {
+	        if( isset( $row['su_name'] ) ) { $numSpoof++; }
+	        $spoofs2 = $spoofs2 . "<li>" . $row['su_name']. "</li>\n";
+	}
+	mysql_close( );
+	if( $numSpoof == 0 ) {
+	        return( FALSE );
+	} else {
+		return( TRUE );
+	}
+}
+function sanitize( $what ) {
 	/*
 	* Shortcut to mysql_real_escape_string
 	*/
-	$what = mysql_real_escape_string($what);
-	return ($what);
+	$what = mysql_real_escape_string( $what );
+	return ( $what );
 }
 
-function sendtobot($message) {
+function sendtobot( $message ) {
 	/*
 	* Send to the IRC bot via UDP
 	*/
