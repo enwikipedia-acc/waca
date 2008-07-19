@@ -546,7 +546,8 @@
 		echo 'Begin parsing ...' . "\n";
 	        $data = trim( fgets( $fp, 512 ) );
 
-		echo 'Raw: ' . $data . "\n";
+		$rawLen = strlen($data);
+		echo "Raw ($rawLen): " . $data . "\n";
 
 		$parsed = parseIrc( $data );
 
