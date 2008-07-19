@@ -473,6 +473,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	if( getSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
 	$query = "INSERT INTO $toolserver_database.acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow' );";
 	$result = mysql_query($query);
+	$q2 = $query;
 	$query = "SELECT pend_id,pend_email FROM $toolserver_database.acc_pend WHERE pend_name = '$user' ORDER BY pend_id DESC LIMIT 1;";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
@@ -489,7 +490,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		upcsum($pid);
 	}
 	if (!$result)
-		Die("ERROR: No result returned. - ".mysql_error());
+		Die("ERROR: No result returned. - ".mysql_error()." - $query <br /> $q2");
 } else {
 	displayform();
 	displayfooter();
