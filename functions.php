@@ -292,7 +292,7 @@ function listrequests($type) {
 		$out .= $row['pend_ip'] . '">b</a> ';
 
 		// IP whois
-		$out .= '<a class="request-src" href="http://ws.arin.net/whois/?queryinput=' . $row['pend_ip'] . '">w</a> ] ';
+		$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '">w</a> ] ';
 
 		// Username U:
 		$duname = _utf8_decode($row['pend_name']);
