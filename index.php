@@ -489,7 +489,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		upcsum($pid);
 	}
 	if (!$result)
-		Die("ERROR: No result returned.");
+		Die("ERROR: No result returned. - ".mysql_error());
 } else {
 	displayform();
 	displayfooter();
