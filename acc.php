@@ -1181,14 +1181,15 @@ elseif ($action == "zoom") {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	echo "<h2>Possibly conflicting usernames<h2>\n";
+	echo "<h2>Possibly conflicting usernames</h2>\n";
 	$spoofs = getSpoofs( $sUser );
 	if( !$spoofs ) {
 		echo "<i>None detected</i><br />\n";
 	} else {
 		echo "<ul>\n";
 		foreach( $spoofs as $oSpoof ) {
-			echo "<li>$oSpoof</li>\n";
+			$oS = htmlentities($oSpoof);
+			echo "<li><a href=\"http://en.wikipedia.org/wiki/User:$oS\">$oSpoof</a> (<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$oS\">contribs</a> | <a href=\"http://en.wikipedia.org/w/index.php?title=Special%3ALog&type=&user=&page=User%3A$oS\">Logs</a>)</li>\n";
 		}
 		echo "</ul>\n";
 	}
