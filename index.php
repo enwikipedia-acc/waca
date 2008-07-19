@@ -26,23 +26,23 @@ function getSpoofs( $username ) {
 	require_once('equivset.php');
 	global $toolserver_username;
 	global $toolserver_password;
-	mysql_connect("sql-s1", $toolserver_username, $toolserver_password);
-	@ mysql_select_db("enwiki_p") or print mysql_error();
+	$spooflink = mysql_connect("sql-s1", $toolserver_username, $toolserver_password);
+	@ mysql_select_db("enwiki_p", $spooflink) or print mysql_error();
 	$cUser = str_split( $username, 1 );
 	$fone = "";
 	foreach ( $cUser as $one_cUser ) {
 	        $fone .= $equivset[$one_cUser];
 	}
-	$fone = mysql_real_escape_string( $fone );
+	//$fone = mysql_real_escape_string( $fone );
 	$query = "SELECT * FROM spoofuser WHERE su_normalized = 'v2:$fone';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $spooflink);
 	if(!$result) Die("ERROR: No result returned. - ".mysql_error());
 	$numSpoof = 0;
 	while ($row = mysql_fetch_assoc($result)) {
 	        if( isset( $row['su_name'] ) ) { $numSpoof++; }
 	        $spoofs2 = $spoofs2 . "<li>" . $row['su_name']. "</li>\n";
 	}
-	mysql_close( );
+	mysql_close( $spooflink );
 	if( $numSpoof == 0 ) {
 	        return( FALSE );
 	} else {
