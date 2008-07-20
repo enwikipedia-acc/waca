@@ -294,7 +294,7 @@ function listrequests($type) {
 			$out .= '<td><small>' . $currentreq . '.    </small></td><td><small>'; //List item
 			$out .= $cmt; // CMT link.
 		} else {
-			$out .= '<td><small>'; //List item
+			$out .= '<td><small>' . "\n"; //List item
 		}
 
 		// Email.
@@ -304,7 +304,7 @@ function listrequests($type) {
 		$out .= '</small></td><td><small> | <a class="request-src" href="http://en.wikipedia.org/wiki/User_talk:' . $row['pend_ip'] . '">';
 		$out .= $row['pend_ip'] . '</a> ';
 
-		$out .= '</small></td><td><small><span class="request-src">';
+		$out .= '</small></td><td><small><span class="request-src">' . "\n";
 		if ($otherreqs['count'] == 0) {
 			$out .= '(' . $otherreqs['count'] . ')';
 		} else {
@@ -333,7 +333,7 @@ function listrequests($type) {
 		// User contribs
 		$out .= '<a class="request-req" href="http://en.wikipedia.org/wiki/Special:Contributions/';
 		$out .= $uname . '">Contribs</a> ';
-		$out .= '<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=50">List</a>) ';
+		$out .= '<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=50">List</a>) ' . "\n";
 
 		// Create user link
 		$out .= '<b><a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName=';
@@ -373,7 +373,7 @@ function listrequests($type) {
 			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=user\">Reset Request</a>";
 		}
 		// Drop
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
 
 		// Ban IP
 		$out .= ' | Ban: <a class="request-ban" href="acc.php?action=ban&amp;ip=' . $row['pend_id'] . '">IP</a> ';
