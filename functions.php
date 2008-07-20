@@ -471,7 +471,6 @@ function showlogin() {
     Don't have an account? 
     <br /><a href="acc.php?action=register">Register!</a> (Requires approval)<br />
     <a href="acc.php?action=forgotpw">Forgot your password?</a><br />
-    </div>
 HTML;
 	$html .= showfootern();
 	return $html;
