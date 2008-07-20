@@ -263,7 +263,7 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 	echo "<i>Developers are bolded</i>\n<ul>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		if ($row['user_level'] != $lastlevel && $row['user_level'] != "Suspended" && $row['user_level'] != "Declined") {
-			echo "<h3>" . $row['user_level'] . "</h3>\n";
+			echo "</ul>\n<h3>" . $row['user_level'] . "</h3>\n<ul>\n";
 		}
 		if ($row['user_level'] == "Suspended") {
 			$row['user_name'] = "";
