@@ -491,7 +491,6 @@ function defaultpage() {
 	$html =<<<HTML
 <h1>Create an account!</h1>
 <h2>Open requests</h2>
-<a name="open"></a>
 HTML;
 
 	$html .= listrequests("Open");
