@@ -473,7 +473,7 @@ function showlogin() {
     <a href="acc.php?action=forgotpw">Forgot your password?</a><br />
     </div>
 HTML;
-
+	$html .= showfootern();
 	return $html;
 }
 
