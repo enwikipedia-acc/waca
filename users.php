@@ -76,7 +76,7 @@ if ($_GET['viewuser'] != "") {
 	}
 	$username = $row['user_name'];
 	echo "<h2>Detail report for user: $username</h2>\n";
-	echo "<ol>\n";
+	echo "<ul>\n";
 	echo "<li>User ID: " . $row['user_id'] . "</li>\n";
 	echo "<li>User Level: " . $row['user_level'] . "</li>\n";
 	echo "<li>User On-wiki name: <a href=\"http://en.wikipedia.org/wiki/User:" . $row['user_onwikiname'] . "\">" . $row['user_onwikiname'] . "</a>  |  <a href=\"http://en.wikipedia.org/wiki/User talk:" . $row['user_onwikiname'] . "\">talk page</a> </li>\n";
@@ -103,13 +103,13 @@ if ($_GET['viewuser'] != "") {
 		$welcomee = "No";
 	}
 	echo "<li>User has <a href=\"acc.php?action=welcomeperf\"><span style=\"color: red;\" title=\"Login required to continue\">automatic welcoming</span></a> enabled: $welcomee.</li>\n";
-	echo "</ol>\n";
+	echo "</ul>\n";
 	echo "<h2>Users created</h2>\n";
 	$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = '$gid' AND log_action = 'Closed 1';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
-	echo "<ol>\n";
+	echo "<ul>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		if ($row['log_time'] == "0000-00-00 00:00:00") {
 			$row['log_time'] = "Date unknown";
@@ -119,13 +119,13 @@ if ($_GET['viewuser'] != "") {
 		// Not every row $noc = count($row[pend_name]); //Define total number of users created
 		// Not every row echo "<b>Number of users created: $noc</b>\n"; //Display total number of users created
 	}
-	echo "</ol>\n";
+	echo "</ul>\n";
 	echo "<h2>Users not created</h2>\n";
 	$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = '$gid' AND log_action != 'Closed 1';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
-	echo "<ol>\n";
+	echo "<ul>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		if ($row['log_time'] == "0000-00-00 00:00:00") {
 			$row['log_time'] = "Date unknown";
@@ -133,8 +133,8 @@ if ($_GET['viewuser'] != "") {
 		$pn = $row['pend_name'];
 		echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$pn\">$pn</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$pn\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$pn\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
 	}
-	echo "</ol>\n";
-	echo "<h2>Rights log</h2>\n<ol>\n";
+	echo "</ul>\n";
+	echo "<h2>Rights log</h2>\n<ul>\n";
 	$query = "SELECT * FROM acc_log where log_pend = '$gid' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted|Demoted)';";
 	echo "\n\n<!-- RQ = $query -->\n\n";
 	$result = mysql_query($query);
@@ -165,7 +165,7 @@ if ($_GET['viewuser'] != "") {
 		$pc = "";
 		$row['log_cmt'] = "";
 	}
-	echo "</ol>\n";
+	echo "</ul>\n";
 	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 	displayfooter();
 	die();
@@ -192,7 +192,7 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 	if ($_GET['list'] == "users") {
 		while ($row = mysql_fetch_assoc($result)) {
 			if ($row['user_level'] == "User") {
-				echo "<h3>" . $row['user_level'] . "</h3>\n";
+				echo "<h3>" . $row['user_level'] . "</h3>\n<ul>\n";
 
 				if ($row['user_name'] != "") {
 					echo "<li><a href=\"users.php?viewuser=" . $row['user_id'] . "\">" . $row['user_name'] . "</a></li>\n";
@@ -200,11 +200,12 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 			}
 			$lastlevel = $row['user_level'];
 		}
+		echo "</ul>\n";
 	}
 	if ($_GET['list'] == "admins") {
 		while ($row = mysql_fetch_assoc($result)) {
 			if ($row['user_level'] == "Admin") {
-				echo "<h3>" . $row['user_level'] . "</h3>\n";
+				echo "<h3>" . $row['user_level'] . "</h3>\n<ul>\n";
 
 				if ($row['user_name'] != "") {
 					echo "<li><a href=\"users.php?viewuser=" . $row['user_id'] . "\">" . $row['user_name'] . "</a></li>\n";
@@ -212,11 +213,12 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 			}
 			$lastlevel = $row['user_level'];
 		}
+		echo "</ul>\n";
 	}
 	if ($_GET['list'] == "suspended") {
 		while ($row = mysql_fetch_assoc($result)) {
 			if ($row['user_level'] == "Suspended") {
-				echo "<h3>" . $row['user_level'] . "</h3>\n";
+				echo "<h3>" . $row['user_level'] . "</h3>\n<ul>\n";
 
 				if ($row['user_name'] != "") {
 					echo "<li><a href=\"users.php?viewuser=" . $row['user_id'] . "\">" . $row['user_name'] . "</a></li>\n";
@@ -224,11 +226,12 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 			}
 			$lastlevel = $row['user_level'];
 		}
+		echo "</ul>\n";
 	}
 	if ($_GET['list'] == "declined") {
 		while ($row = mysql_fetch_assoc($result)) {
 			if ($row['user_level'] == "Declined") {
-				echo "<h3>" . $row['user_level'] . "</h3>\n";
+				echo "<h3>" . $row['user_level'] . "</h3>\n<ul>\n";
 
 				if ($row['user_name'] != "") {
 					echo "<li><a href=\"users.php?viewuser=" . $row['user_id'] . "\">" . $row['user_name'] . "</a></li>\n";
@@ -236,11 +239,12 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 			}
 			$lastlevel = $row['user_level'];
 		}
+		echo "</ul>\n";
 	}
 	if ($_GET['list'] == "new") {
 		while ($row = mysql_fetch_assoc($result)) {
 			if ($row['user_level'] == "New") {
-				echo "<h3>" . $row['user_level'] . "</h3>\n";
+				echo "<h3>" . $row['user_level'] . "</h3>\n<ul>\n";
 
 				if ($row['user_name'] != "") {
 					echo "<li><a href=\"users.php?viewuser=" . $row['user_id'] . "\">" . $row['user_name'] . "</a></li>\n";
@@ -248,6 +252,7 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 			}
 			$lastlevel = $row['user_level'];
 		}
+		echo "</ul>\n";
 	}
 	echo "<ul>\n";
 	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
@@ -263,7 +268,7 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 	echo "<i>Developers are bolded</i>\n<ul>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		if ($row['user_level'] != $lastlevel && $row['user_level'] != "Suspended" && $row['user_level'] != "Declined") {
-			echo "<h3>" . $row['user_level'] . "</h3>\n";
+			echo "<h3>" . $row['user_level'] . "</h3>\n<ul>\n";
 		}
 		if ($row['user_level'] == "Suspended") {
 			$row['user_name'] = "";
@@ -290,7 +295,7 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 		}
 		$lastlevel = $row['user_level'];
 	}
-	echo "<ul>\n";
+	echo "</ul>\n";
 	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 	displayfooter();
 }
