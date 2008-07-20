@@ -278,9 +278,9 @@ function listrequests($type) {
 		#    $uname = str_replace("+", "_", $row[pend_name]);
 		$rid = $row['pend_id'];
 		if ($row['pend_cmt'] != "") {
-			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&id=$rid\">Zoom (CMT)</a> ";
+			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&amp;id=$rid\">Zoom (CMT)</a> ";
 		} else {
-			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&id=$rid\">Zoom</a> ";
+			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
 		}
 		$query2 = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \'' . $row['pend_ip'] . '\' AND `pend_id` != \'' . $row['pend_id'] . '\';';
 		$otherreqs = mysql_fetch_assoc(mysql_query($query2));
@@ -317,7 +317,7 @@ function listrequests($type) {
 		$out .= $row['pend_ip'] . '" target="_blank">c</a> ';
 
 		// IP blocks
-		$out .= '<a class="request-src" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page=User:';
+		$out .= '<a class="request-src" href="http://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
 		$out .= $row['pend_ip'] . '">b</a> ';
 
 		// IP whois
@@ -328,32 +328,32 @@ function listrequests($type) {
 		$out .= '</small></td><td><small><a class="request-req" href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $duname . '</ strong></a> ';
 
 		// Creation log    
-		$out .= '</small></td><td><small>(<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page=User:';
+		$out .= '</small></td><td><small>(<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
 		$out .= $uname . '">Creation</a> ';
 
 		// User contribs
 		$out .= '<a class="request-req" href="http://en.wikipedia.org/wiki/Special:Contributions/';
 		$out .= $uname . '">Contribs</a> ';
-		$out .= '<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&username=' . $uname . '&group=&limit=50">List</a>) ';
+		$out .= '<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=50">List</a>) ';
 
 		// Create user link
-		$out .= '<b><a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName=';
-		$out .= $uname . '&wpEmail=' . $row['pend_email'] . '&uselang=en-acc" target="_blank">Create!</a></b> ';
+		$out .= '<b><a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName=';
+		$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b> ';
 
 		// Done
-		$out .= '| <a class="request-done" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=1&sum=' . $row['pend_checksum'] . '">Done!</a>';
+		$out .= '| <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '">Done!</a>';
 
 		// Similar
-		$out .= ' - <a class="request-done" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=2&sum=' . $row['pend_checksum'] . '">Similar</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=2&amp;sum=' . $row['pend_checksum'] . '">Similar</a>';
 
 		// Taken
-		$out .= ' - <a class="request-done" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=3&sum=' . $row['pend_checksum'] . '">Taken</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=3&amp;sum=' . $row['pend_checksum'] . '">Taken</a>';
 
 		// UPolicy
-		$out .= ' - <a class="request-done" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=4&sum=' . $row['pend_checksum'] . '">UPolicy</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=4&amp;sum=' . $row['pend_checksum'] . '">UPolicy</a>';
 
 		// Invalid
-		$out .= ' - <a class="request-done" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=5&sum=' . $row['pend_checksum'] . '">Invalid</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=5&amp;sum=' . $row['pend_checksum'] . '">Invalid</a>';
 
 		// Defer to admins or users
 		if (is_numeric($type)) {
@@ -369,21 +369,21 @@ function listrequests($type) {
 			$target = 'user';
 		}
 		if ($target == 'admin' || $target == 'user') {
-			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&id=" . $row['pend_id'] . "&sum=" . $row['pend_checksum'] . "&target=$target\">Defer to $target" . "s</a>";
+			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target\">Defer to $target" . "s</a>";
 		} else {
-			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&id=" . $row['pend_id'] . "&sum=" . $row['pend_checksum'] . "&target=user\">Reset Request</a>";
+			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=user\">Reset Request</a>";
 		}
 		// Drop
-		$out .= ' - <a class="request-done" href="acc.php?action=done&id=' . $row['pend_id'] . '&email=0&sum=' . $row['pend_checksum'] . '">Drop</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>';
 
 		// Ban IP
-		$out .= ' | Ban: <a class="request-ban" href="acc.php?action=ban&ip=' . $row['pend_id'] . '">IP</a> ';
+		$out .= ' | Ban: <a class="request-ban" href="acc.php?action=ban&amp;ip=' . $row['pend_id'] . '">IP</a> ';
 
 		// Ban email
-		$out .= '- <a class="request-ban" href="acc.php?action=ban&email=' . $row['pend_id'] . '">E-Mail</a>';
+		$out .= '- <a class="request-ban" href="acc.php?action=ban&amp;email=' . $row['pend_id'] . '">E-Mail</a>';
 
 		//Ban name
-		$out .= ' - <a class="request-ban" href="acc.php?action=ban&name=' . $row['pend_id'] . '">Name</a>';
+		$out .= ' - <a class="request-ban" href="acc.php?action=ban&amp;name=' . $row['pend_id'] . '">Name</a>';
 
 		$out .= '</small></td></tr>';
 		$reqlist .= $out;
@@ -454,17 +454,17 @@ function showlogin() {
     <div id="sitenotice">Please login first, and we'll send you on your way!</div>
     <div id="content">
     <h2>Login</h2>
-    <form action="acc.php?action=login&nocheck=1" method="post">
+    <form action="acc.php?action=login&amp;nocheck=1" method="post">
     <div class="required">
         <label for="password">Username:</label>
-        <input type="text" name="username">
+        <input type="text" name="username"/>
     </div>
     <div class="required">
         <label for="password">Password:</label>
-        <input type="password" name="password">
+        <input type="password" name="password"/>
     </div>
     <div class="submit">
-        <input type="submit">
+        <input type="submit"/>
     </div>
     </form>
     <br />
@@ -519,7 +519,7 @@ HTML;
 		} else {
 			$out .= ' class="odd">';
 		}
-		$out .= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&id=" . $row['pend_id'] . "\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . _utf8_decode($row['pend_name']) . "</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&id=" . $row['pend_id'] . "&sum=" . $row['pend_checksum'] . "&target=user\">Reset</a></small></td></tr>";
+		$out .= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . _utf8_decode($row['pend_name']) . "</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=user\">Reset</a></small></td></tr>";
 		$html .= $out;
 	}
 	$html .= "</table>\n";
