@@ -288,7 +288,7 @@ function listrequests($type) {
 		if ($currentreq % 2 == 0) {
 			$out .= ' class="alternate">';
 		} else {
-			$out .= ">\n";
+			$out .= '>';
 		}
 		if ($type == 'Admin' || $type == 'Open') {
 			$out .= '<td><small>' . $currentreq . '.    </small></td><td><small>'; //List item
@@ -503,7 +503,7 @@ HTML;
 HTML;
 	$html .= listrequests("Admin");
 
-	$html .= "<h2>Last 5 Closed requests</h2><a name='closed'></A><span id=\"closed\"/>\n";
+	$html .= "<h2>Last 5 Closed requests</h2><a name='closed'></a><span id=\"closed\"/>\n";
 	$query = "SELECT * FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
 	$result = mysql_query($query);
 	if (!$result)
