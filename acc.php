@@ -85,14 +85,14 @@ elseif ( $action == "sreg" ) {
 		die( "Account not created, please see " . $dnsblcheck['1'] );
 	}
 	$cu_name = urlencode( $_REQUEST['wname'] );
-	$userblocked = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&amp;list=blocks&amp;bkusers=$cu_name&amp;format=php" );
+	$userblocked = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
 	$ub = unserialize( $userblocked );
 	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) {
 		$message = showmessage( '9' );
 		echo "ERROR: You are presently blocked on the English Wikipedia<br />\n";
 		$fail = 1;
 	}
-	$userexist = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&amp;list=users&amp;ususers=$cu_name&amp;format=php" );
+	$userexist = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
 	$ue = unserialize( $userexist );
 	foreach ( $ue['query']['users']['0'] as $oneue ) {
 		if ( $oneue['missing'] == "" ) {
