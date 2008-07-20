@@ -310,7 +310,6 @@ function listrequests($type) {
 		} else {
 			$out .= '(</span><b><span class="request-mult">' . $otherreqs['count'] . '</span></b><span class="request-src">)';
 		}
-		$out .= " <span>";
 
 		// IP contribs
 		$out .= '</span></small></td><td><small><a class="request-src" href="http://en.wikipedia.org/wiki/Special:Contributions/';
