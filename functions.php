@@ -498,7 +498,6 @@ HTML;
 	$html .=<<<HTML
 <h2>Admin Needed!</h2>
 <a name="admin"></a>
-<span id="admin"/>
 HTML;
 	$html .= listrequests("Admin");
 
