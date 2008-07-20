@@ -306,7 +306,7 @@ function listrequests($type) {
 
 		$out .= '</small></td><td><small><span class="request-src">';
 		if ($otherreqs['count'] == 0) {
-			$out .= '(' . $otherreqs['count'] . ')</span>';
+			$out .= '(' . $otherreqs['count'] . ')';
 		} else {
 			$out .= '(</span><b><span class="request-mult">' . $otherreqs['count'] . '</span></b><span class="request-src">)';
 		}
