@@ -456,12 +456,12 @@ function showlogin() {
     <h2>Login</h2>
     <form action="acc.php?action=login&amp;nocheck=1" method="post">
     <div class="required">
-        <label for="password">Username:</label>
-        <input type="text" name="username"/>
+        <label for="username">Username:</label>
+        <input id="username" type="text" name="username"/>
     </div>
     <div class="required">
         <label for="password">Password:</label>
-        <input type="password" name="password"/>
+        <input id="password" type="password" name="password"/>
     </div>
     <div class="submit">
         <input type="submit"/>
