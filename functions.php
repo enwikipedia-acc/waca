@@ -388,7 +388,7 @@ function listrequests($type) {
 		$reqlist .= $out;
 	}
 	if( $currentreq == 0 ) {
-		return( "<i>No requests at this time</i>"; );
+		return( "<i>No requests at this time</i>" );
 	} else {
 		return ($tablestart . $reqlist . $tableend);
 	}
