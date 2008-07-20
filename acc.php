@@ -85,14 +85,14 @@ elseif ( $action == "sreg" ) {
 		die( "Account not created, please see " . $dnsblcheck['1'] );
 	}
 	$cu_name = urlencode( $_REQUEST['wname'] );
-	$userblocked = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
+	$userblocked = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&amp;list=blocks&amp;bkusers=$cu_name&amp;format=php" );
 	$ub = unserialize( $userblocked );
 	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) {
 		$message = showmessage( '9' );
 		echo "ERROR: You are presently blocked on the English Wikipedia<br />\n";
 		$fail = 1;
 	}
-	$userexist = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
+	$userexist = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&amp;list=users&amp;ususers=$cu_name&amp;format=php" );
 	$ue = unserialize( $userexist );
 	foreach ( $ue['query']['users']['0'] as $oneue ) {
 		if ( $oneue['missing'] == "" ) {
@@ -297,7 +297,7 @@ elseif ($action == "forgotpw") {
 		$hash = md5($hashme);
 		if ($hash == $_GET['si']) {
 ?><h2>Reset password for <?php echo $row['user_name']." (".$row['user_email'].")";?></h2>
-            <form action="acc.php?action=forgotpw&si=<?php echo $_GET['si']; ?>&id=<?php echo $_GET['id']; ?>" method="post">
+            <form action="acc.php?action=forgotpw&amp;si=<?php echo $_GET['si']; ?>&amp;id=<?php echo $_GET['id']; ?>" method="post">
             New Password: <input type="password" name="pw"><br />
             New Password (confirm): <input type="password" name="pw2"><br />
             <input type="submit"><input type="reset">
@@ -330,7 +330,7 @@ elseif ($action == "forgotpw") {
 		}
 		$hashme = $puser . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
 		$hash = md5($hashme);
-		$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested a password reset for your account.\n\nPlease go to $tsurl/acc.php?action=forgotpw&si=$hash&id=" . $row['user_id'] . " to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
+		$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested a password reset for your account.\n\nPlease go to $tsurl/acc.php?action=forgotpw&amp;si=$hash&amp;id=" . $row['user_id'] . " to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row['user_email'], "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
 		echo "Your password reset request has been completed. Please check your e-mail.\n<br />";
@@ -434,7 +434,7 @@ elseif ($action == "messagemgmt") {
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
 		$mailtext = htmlentities($row['mail_text']);
-		echo "<h2>Edit message</h2><strong>This is NOT a toy. If you can see this form, you can edit this message. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=messagemgmt&edit=$mid&submit=1\" method=\"post\"><br />\n";
+		echo "<h2>Edit message</h2><strong>This is NOT a toy. If you can see this form, you can edit this message. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=messagemgmt&amp;edit=$mid&amp;submit=1\" method=\"post\"><br />\n";
 		echo "<input type=\"text\" name=\"maildesc\" value=\"" . $row['mail_desc'] . "\"><br />\n";
 		echo "<textarea name=\"mailtext\" rows=\"20\" cols=\"60\">$mailtext</textarea><br />\n";
 		echo "<input type=\"submit\"><input type=\"reset\"><br />\n";
@@ -452,7 +452,7 @@ elseif ($action == "messagemgmt") {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		$out = "<li><small>[ $maild - $mailc ] <a href=\"acc.php?action=messagemgmt&edit=$mailn\">Edit! (admin only)</a> - <a href=\"acc.php?action=messagemgmt&view=$mailn\">View!</a></small></li>";
+		$out = "<li><small>[ $maild - $mailc ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit! (admin only)</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		echo "$out\n";
 	}
 	echo "<br />\n";
@@ -466,7 +466,7 @@ elseif ($action == "messagemgmt") {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&edit=$mailn\">Edit! (admin only)</a> - <a href=\"acc.php?action=messagemgmt&view=$mailn\">View!</a></small></li>";
+		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit! (admin only)</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		echo "$out\n";
 	}
 	echo "<br />\n";
@@ -480,7 +480,7 @@ elseif ($action == "messagemgmt") {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&edit=$mailn\">Edit! (admin only)</a> - <a href=\"acc.php?action=messagemgmt&view=$mailn\">View!</a></small></li>";
+		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit! (admin only)</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		echo "$out\n";
 	}
 	echo "</ol><br />\n";
@@ -583,7 +583,7 @@ elseif ($action == "ban") {
 			echo showfooter();
 			die();
 		} else {
-			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&user=$siuser&target=$target&type=$type\" method=\"post\">Ban target: $target\n<br />Reason: <input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Forever<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT><br /><input type=\"submit\"></form>\n";
+			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser&amp;target=$target&amp;type=$type\" method=\"post\">Ban target: $target\n<br />Reason: <input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Forever<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT><br /><input type=\"submit\"></form>\n";
 		}
 	}
 	echo "<h2>Active Ban List</h2>\n<ol>\n";
@@ -597,7 +597,7 @@ elseif ($action == "ban") {
 		} else {
 			$until = date("F j, Y, g:i a", $row['ban_duration']);
 		}
-		echo "<li><small><strong>" . $row['ban_target'] . "</strong> - Banned by: <strong>" . $row['ban_user'] . "</strong> for <strong>" . $row['ban_reason'] . "</strong> at <strong>" . $row['ban_date'] . "</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&id=" . $row['ban_id'] . "\">UNBAN</a>)</small></li>";
+		echo "<li><small><strong>" . $row['ban_target'] . "</strong> - Banned by: <strong>" . $row['ban_user'] . "</strong> for <strong>" . $row['ban_reason'] . "</strong> at <strong>" . $row['ban_date'] . "</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">UNBAN</a>)</small></li>";
 	}
 	echo "</ol>\n";
 	echo showfooter();
@@ -624,7 +624,7 @@ elseif ($action == "usermgmt") {
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
 		if ($row['user_level'] == "Admin") {
-			echo "Sorry, the user you are trying to approve has Administrator access. Please use the <a href=\"acc.php?action=usermgmt&demote=$aid\">demote function</a> instead.<br />\n";
+			echo "Sorry, the user you are trying to approve has Administrator access. Please use the <a href=\"acc.php?action=usermgmt&amp;demote=$aid\">demote function</a> instead.<br />\n";
 			echo showfooter();
 			die();
 		}		
@@ -650,7 +650,7 @@ elseif ($action == "usermgmt") {
 		$did = sanitize($_GET['demote']);
 		$siuser = sanitize($_SESSION['user']);
 		if ($_POST['demotereason'] == "") {
-			echo "<h2>Demote Reason</h2><strong>The reason you enter here will be shown in the log. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&demote=$did\" method=\"post\"><br />\n";
+			echo "<h2>Demote Reason</h2><strong>The reason you enter here will be shown in the log. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&amp;demote=$did\" method=\"post\"><br />\n";
 			echo "<textarea name=\"demotereason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
 			echo "<input type=\"submit\"><input type=\"reset\"><br />\n";
 			echo "</form>";
@@ -684,7 +684,7 @@ elseif ($action == "usermgmt") {
 		$did = sanitize($_GET['suspend']);
 		$siuser = sanitize($_SESSION['user']);
 		if ($_POST['suspendreason'] == "") {
-			echo "<h2>Suspend Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&suspend=$did\" method=\"post\"><br />\n";
+			echo "<h2>Suspend Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&amp;suspend=$did\" method=\"post\"><br />\n";
 			echo "<textarea name=\"suspendreason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
 			echo "<input type=\"submit\"><input type=\"reset\"><br />\n";
 			echo "</form>";
@@ -749,7 +749,7 @@ elseif ($action == "usermgmt") {
 			die();
 		}
 		if ($_POST['declinereason'] == "") {
-			echo "<h2>Decline Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&decline=$did\" method=\"post\"><br />\n";
+			echo "<h2>Decline Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&amp;decline=$did\" method=\"post\"><br />\n";
 			echo "<textarea name=\"declinereason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
 			echo "<input type=\"submit\"><input type=\"reset\"><br />\n";
 			echo "</form>";
@@ -794,7 +794,7 @@ elseif ($action == "usermgmt") {
 		$uname = $row['user_name'];
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
-		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&decline=$userid\">Decline</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
+		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&amp;decline=$userid\">Decline</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
 		echo "$out\n";
 	}
 ?>
@@ -814,7 +814,7 @@ elseif ($action == "usermgmt") {
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
 
-		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
+		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
 		echo "$out\n";
 	}
 ?>
@@ -869,7 +869,7 @@ $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action 
 		$row2 = mysql_fetch_assoc($result2);
 		$declined = $row2['COUNT(*)'];
 
-		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&demote=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined])</small></li>";
+		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;demote=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined])</small></li>";
 		echo "$out\n";
 	}
 ?>
@@ -890,7 +890,7 @@ $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action 
 		$uname = $row['user_name'];
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
-		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
+		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
 		echo "$out\n";
 	}
 ?>
@@ -911,7 +911,7 @@ $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action 
 		$uname = $row['user_name'];
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
-		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&approve=$userid\">Approve!</a> (Declined by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
+		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> (Declined by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
 		echo "$out\n";
 	}
 ?>
@@ -1072,7 +1072,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$row = mysql_fetch_assoc($result);
 	if ($row['pend_emailsent'] == "1" && $_GET['override'] != "yes") {
 		echo "<br />This request has already been closed in a manner that has generated an e-mail to the user, Proceed?<br />\n";
-		echo "<a href=\"acc.php?sum=" . $_GET['sum'] . "&action=done&id=" . $_GET['id'] . "&override=yes&email=" . $_GET['email'] . "\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
+		echo "<a href=\"acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;override=yes&amp;email=" . $_GET['email'] . "\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
 		echo showfooter();
 		die();
 	}
@@ -1189,7 +1189,7 @@ elseif ($action == "zoom") {
 		echo "<ul>\n";
 		foreach( $spoofs as $oSpoof ) {
 			$oS = htmlentities($oSpoof);
-			echo "<li><a href=\"http://en.wikipedia.org/wiki/User:$oS\">$oSpoof</a> (<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$oS\">contribs</a> | <a href=\"http://en.wikipedia.org/w/index.php?title=Special%3ALog&type=&user=&page=User%3A$oS\">Logs</a>)</li>\n";
+			echo "<li><a href=\"http://en.wikipedia.org/wiki/User:$oS\">$oSpoof</a> (<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$oS\">contribs</a> | <a href=\"http://en.wikipedia.org/w/index.php?title=Special%3ALog&amp;type=&amp;user=&amp;page=User%3A$oS\">Logs</a>)</li>\n";
 		}
 		echo "</ul>\n";
 	}
@@ -1204,31 +1204,31 @@ elseif ($action == "zoom") {
 		$rlp = $row['log_pend'];
 		$rlt = $row['log_time'];
 		if ($rla == "Deferred to admins" || $rla == "Deferred to users") {
-			echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($rla == "Closed") {
-			echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($rla == "Closed 0") {
-			echo "<li>$rlu Dropped, <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Dropped, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($rla == "Closed 1") {
-			echo "<li>$rlu Closed (Account created), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Closed (Account created), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($rla == "Closed 2") {
-			echo "<li>$rlu Closed (Too Similar), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Closed (Too Similar), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($rla == "Closed 3") {
-			echo "<li>$rlu Closed (Taken), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Closed (Taken), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($rla == "Closed 4") {
-			echo "<li>$rlu Closed (Username vio), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Closed (Username vio), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($rla == "Closed 5") {
-			echo "<li>$rlu Closed (Technically impossibly), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Closed (Technically impossibly), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($rla == "Closed 6") {
-			echo "<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($rla == "Blacklist Hit") {
 			echo "<li>$rlu Rejected by Blacklist $rlp, " . $row['log_cmt'] . " at $rlt.</li>\n";
@@ -1244,7 +1244,7 @@ elseif ($action == "zoom") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$numip = 0;
 	while ($row = mysql_fetch_assoc($result)) {
-		echo "<li><a href=\"acc.php?action=zoom&id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></li>";
+		echo "<li><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></li>";
 		$numip++;
 	}
 	if ($numip == 0) {
@@ -1259,7 +1259,7 @@ elseif ($action == "zoom") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$numem = 0;
 	while ($row = mysql_fetch_assoc($result)) {
-		echo "<li><a href=\"acc.php?action=zoom&id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></li>";
+		echo "<li><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></li>";
 		$numem++;
 	}
 	if ($numem == 0) {
@@ -1291,10 +1291,10 @@ elseif ($action == "logs") {
 	$next = $from +100;
 	$prev = $from -100;
 	if ($from > 0) {
-		$n1 = "<h4><a href=\"acc.php?action=logs&from=$prev\">Previous 100</a> <a href=\"acc.php?action=logs&from=$next\">Next 100</a></h4>\n";
+		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$prev\">Previous 100</a> <a href=\"acc.php?action=logs&amp;from=$next\">Next 100</a></h4>\n";
 		echo $n1;
 	} else {
-		$n1 = "<h4><a href=\"acc.php?action=logs&from=$next\">Next 100</a></h4>\n";
+		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$next\">Next 100</a></h4>\n";
 		echo $n1;
 	}
 	$result = mysql_query($query);
@@ -1312,31 +1312,31 @@ elseif ($action == "logs") {
 		}
 		if ($row['log_action'] == "Deferred to admins" || $rla == "Deferred to users") {
 
-			echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($row['log_action'] == "Closed") {
-			echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($row['log_action'] == "Closed 0") {
-			echo "<li>$rlu Dropped, <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Dropped, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($row['log_action'] == "Closed 1") {
-			echo "<li>$rlu Closed (Account created), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Closed (Account created), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($row['log_action'] == "Closed 2") {
-			echo "<li>$rlu Closed (Too Similar), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Closed (Too Similar), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($row['log_action'] == "Closed 3") {
-			echo "<li>$rlu Closed (Taken), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Closed (Taken), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($row['log_action'] == "Closed 4") {
-			echo "<li>$rlu Closed (Username vio), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Closed (Username vio), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($row['log_action'] == "Closed 5") {
-			echo "<li>$rlu Closed (Technically impossibly), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Closed (Technically impossibly), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($row['log_action'] == "Closed 6") {
-			echo "<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($row['log_action'] == "Blacklist Hit") {
 			echo "<li>$rlu <strong>Rejected by Blacklist</strong> $rlp, $rlc at $rlt.</li>\n";
