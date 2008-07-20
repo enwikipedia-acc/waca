@@ -324,7 +324,7 @@ function listrequests($type) {
 
 		// Username U:
 		$duname = _utf8_decode($row['pend_name']);
-		$out .= '</small></td><td><small><a class="request-req" href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $duname . '</ strong></a> ';
+		$out .= '</small></td><td><small><a class="request-req" href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $duname . '</strong></a> ';
 
 		// Creation log    
 		$out .= '</small></td><td><small>(<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
