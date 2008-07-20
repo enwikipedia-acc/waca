@@ -497,7 +497,6 @@ HTML;
 	$html .= listrequests("Open");
 	$html .=<<<HTML
 <h2>Admin Needed!</h2>
-<a name="admin"></a>
 HTML;
 	$html .= listrequests("Admin");
 
