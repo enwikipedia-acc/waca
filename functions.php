@@ -387,7 +387,7 @@ function listrequests($type) {
 		$out .= '</small></td></tr>';
 		$reqlist .= $out;
 	}
-	return ($tablestart . $reqlist . $tableend);
+	if {$reqlist} return ($tablestart . $reqlist . $tableend); else return false;
 
 }
 
