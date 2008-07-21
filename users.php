@@ -116,7 +116,7 @@ if ($_GET['viewuser'] != "") {
 			$row['log_time'] = "Date unknown";
 		}
 		$pn = $row['pend_name'];
-		echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$pn\">$pn</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$pn\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$pn\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
+		echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$pn\">$pn</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$pn\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$pn\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
 		// Not every row $noc = count($row[pend_name]); //Define total number of users created
 		// Not every row echo "<b>Number of users created: $noc</b>\n"; //Display total number of users created
 	}
@@ -134,7 +134,7 @@ if ($_GET['viewuser'] != "") {
 			$row['log_time'] = "Date unknown";
 		}
 		$pn = $row['pend_name'];
-		echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$pn\">$pn</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$pn\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$pn\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
+		echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$pn\">$pn</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$pn\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$pn\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
 	}
 	echo "</ol>\n";
 	}
