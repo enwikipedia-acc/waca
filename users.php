@@ -177,12 +177,6 @@ if ($_GET['viewuser'] != "") {
 	if (!$result)
 		Die("ERROR: No result returned.");
 	echo "<h2>User List</h2>\n";
-	displayheader();
-	$query = "SELECT * FROM acc_user ORDER BY user_level";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("ERROR: No result returned.");
-	echo "<h2>User List</h2>\n";
 	echo "<i>Developers are bolded</i>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		if ($row['user_level'] != $lastlevel && $row['user_level'] != "Suspended" && $row['user_level'] != "Declined") {
