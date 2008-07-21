@@ -170,90 +170,13 @@ if ($_GET['viewuser'] != "") {
 	displayfooter();
 	die();
 }
-if ($_GET['list'] == "devs") {
-	displayheader();
-	echo "<h2>User List</h2>\n";
-	echo "<h3>Developers</h3>\n<ul>\n";
-	foreach ($regdevlist as $dev) {
-		echo "<li><a href=\"users.php?viewuser=" . $dev['2'] . "\">" . $dev['0'] . "</a></li>\n";
-	}
-	echo "<ul>\n";
-	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
-	displayfooter();
-	die();
-}
-elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
+
 	displayheader();
 	$query = "SELECT * FROM acc_user ORDER BY user_level";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
 	echo "<h2>User List</h2>\n";
-	if ($_GET['list'] == "users") {
-		while ($row = mysql_fetch_assoc($result)) {
-			if ($row['user_level'] == "User") {
-				echo "<h3>" . $row['user_level'] . "</h3>\n";
-
-				if ($row['user_name'] != "") {
-					echo "<li><a href=\"users.php?viewuser=" . $row['user_id'] . "\">" . $row['user_name'] . "</a></li>\n";
-				}
-			}
-			$lastlevel = $row['user_level'];
-		}
-	}
-	if ($_GET['list'] == "admins") {
-		while ($row = mysql_fetch_assoc($result)) {
-			if ($row['user_level'] == "Admin") {
-				echo "<h3>" . $row['user_level'] . "</h3>\n";
-
-				if ($row['user_name'] != "") {
-					echo "<li><a href=\"users.php?viewuser=" . $row['user_id'] . "\">" . $row['user_name'] . "</a></li>\n";
-				}
-			}
-			$lastlevel = $row['user_level'];
-		}
-	}
-	if ($_GET['list'] == "suspended") {
-		while ($row = mysql_fetch_assoc($result)) {
-			if ($row['user_level'] == "Suspended") {
-				echo "<h3>" . $row['user_level'] . "</h3>\n";
-
-				if ($row['user_name'] != "") {
-					echo "<li><a href=\"users.php?viewuser=" . $row['user_id'] . "\">" . $row['user_name'] . "</a></li>\n";
-				}
-			}
-			$lastlevel = $row['user_level'];
-		}
-	}
-	if ($_GET['list'] == "declined") {
-		while ($row = mysql_fetch_assoc($result)) {
-			if ($row['user_level'] == "Declined") {
-				echo "<h3>" . $row['user_level'] . "</h3>\n";
-
-				if ($row['user_name'] != "") {
-					echo "<li><a href=\"users.php?viewuser=" . $row['user_id'] . "\">" . $row['user_name'] . "</a></li>\n";
-				}
-			}
-			$lastlevel = $row['user_level'];
-		}
-	}
-	if ($_GET['list'] == "new") {
-		while ($row = mysql_fetch_assoc($result)) {
-			if ($row['user_level'] == "New") {
-				echo "<h3>" . $row['user_level'] . "</h3>\n";
-
-				if ($row['user_name'] != "") {
-					echo "<li><a href=\"users.php?viewuser=" . $row['user_id'] . "\">" . $row['user_name'] . "</a></li>\n";
-				}
-			}
-			$lastlevel = $row['user_level'];
-		}
-	}
-	echo "<ul>\n";
-	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
-	displayfooter();
-	die();
-} else {
 	displayheader();
 	$query = "SELECT * FROM acc_user ORDER BY user_level";
 	$result = mysql_query($query);
@@ -298,5 +221,4 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 	echo "</ul>\n";
 	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 	displayfooter();
-}
 ?>
