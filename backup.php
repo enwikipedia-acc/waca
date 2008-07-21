@@ -24,9 +24,9 @@
 $basefile = "backup";
 $dir = "/projects/acc/accbak";
 $monthdir = "/projects/acc/accbak/monthly";
-$dumper = "mysqldump p_acc"; //add params here if they are needed.
-$gzip = "gzip"; //add params here too if needed.
-$tar = "tar -cvf";
+$dumper = "/opt/mysql/bin/mysqldump p_acc"; //add params here if they are needed.
+$gzip = "/usr/bin/gzip"; //add params here too if needed.
+$tar = "/usr/bin/tar -cvf";
 
 
 $arg = $argv['1'];
