@@ -93,6 +93,7 @@
 		'Soxred93*!*@unaffiliated/soxred93'				=> 'developer',
 		'*!*@wikimedia/cmelbye'						=> 'developer',
 		'*!*@wikipedia/FastLizard4'					=> 'developer',
+		'*!*@wikipedia/Prodego'						=> 'developer',
 		'*!*@*'								=> '*'
 		);
 
