@@ -1006,14 +1006,14 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	$template = $row['user_welcome_template'];
 ?>
     <table>
-    <th>Table of Contents</th>
+    <tr><th>Table of Contents</th></tr>
     <tr><td><a href="#1">Welcome settings</a></td></tr>
     <tr><td><a href="#2">Change password</a></td></tr>
     </table>
     <a name="1"></a><h2>Welcome settings</h2>
     <form action="acc.php?action=welcomeperf" method="post">
-    <input type="checkbox" name="welcomeenable"<?php echo $welcomeing ?>> Enable <a href="http://en.wikipedia.org/wiki/User:SQLBot-Hello">SQLBot-Hello</a> welcoming of the users I create<br />
-    Your signature (wikicode) <input type="text" name="sig" size ="40"<?php echo $sig; ?>><br>
+    <input type="checkbox" name="welcomeenable"<?php echo $welcomeing ?>/> Enable <a href="http://en.wikipedia.org/wiki/User:SQLBot-Hello">SQLBot-Hello</a> welcoming of the users I create<br />
+    Your signature (wikicode) <input type="text" name="sig" size ="40"<?php echo $sig; ?>/><br>
     <i>This would be the same as ~~~ on-wiki. No date, please.</i><br />
     <select name="template" size="0">
     <option value="welcome"<?php if($template == "welcone") { echo " selected"; } ?>>{{welcome|user}} ~~~~</option>
@@ -1039,13 +1039,13 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 ?>
 
 
-    <input type="submit"><input type="reset">
+    <input type="submit"><input type="reset"/>
     </form>
     <a name="2"></a><h2>Change your password</h2>
     <form action="acc.php?action=forgotpw" method="post">
     Your username: <input type="text" name="username"><br />
     Your e-mail address: <input type="text" name="email"><br />
-    <input type="submit"><input type="reset">
+    <input type="submit"><input type="reset"/>
     </form><br />
     <?php
 
