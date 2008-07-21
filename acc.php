@@ -435,9 +435,9 @@ elseif ($action == "messagemgmt") {
 		$row = mysql_fetch_assoc($result);
 		$mailtext = htmlentities($row['mail_text']);
 		echo "<h2>Edit message</h2><strong>This is NOT a toy. If you can see this form, you can edit this message. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=messagemgmt&amp;edit=$mid&amp;submit=1\" method=\"post\"><br />\n";
-		echo "<input type=\"text\" name=\"maildesc\" value=\"" . $row['mail_desc'] . "\"><br />\n";
+		echo "<input type=\"text\" name=\"maildesc\" value=\"" . $row['mail_desc'] . "\"/><br />\n";
 		echo "<textarea name=\"mailtext\" rows=\"20\" cols=\"60\">$mailtext</textarea><br />\n";
-		echo "<input type=\"submit\"><input type=\"reset\"><br />\n";
+		echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
 		echo "</form>";
 		echo showfooter();
 		die();
