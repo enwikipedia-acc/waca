@@ -109,6 +109,7 @@ if ($_GET['viewuser'] != "") {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
+	if (mysql_num_rows($result) != 0) {
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		if ($row['log_time'] == "0000-00-00 00:00:00") {
@@ -120,11 +121,13 @@ if ($_GET['viewuser'] != "") {
 		// Not every row echo "<b>Number of users created: $noc</b>\n"; //Display total number of users created
 	}
 	echo "</ol>\n";
+	}
 	echo "<h2>Users not created</h2>\n";
 	$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = '$gid' AND log_action != 'Closed 1';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
+	if (mysql_num_rows($result) != 0) {	
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		if ($row['log_time'] == "0000-00-00 00:00:00") {
@@ -134,12 +137,15 @@ if ($_GET['viewuser'] != "") {
 		echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$pn\">$pn</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$pn\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$pn\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
 	}
 	echo "</ol>\n";
-	echo "<h2>Rights log</h2>\n<ol>\n";
+	}
+	echo "<h2>Rights log</h2>\n";
 	$query = "SELECT * FROM acc_log where log_pend = '$gid' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted|Demoted)';";
 	echo "\n\n<!-- RQ = $query -->\n\n";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
+	if (mysql_num_rows($result) != 0) {	
+	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		if ($row['log_time'] == "0000-00-00 00:00:00") {
 			$row['log_time'] = "Date unknown";
@@ -166,6 +172,7 @@ if ($_GET['viewuser'] != "") {
 		$row['log_cmt'] = "";
 	}
 	echo "</ol>\n";
+	}
 	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 	displayfooter();
 	die();
