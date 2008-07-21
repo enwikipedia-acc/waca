@@ -1000,7 +1000,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_welcome'] > 0) {
-		$welcomeing = " checked";
+		$welcoming = " checked=\"checked\"";
 	}
 	$sig = " value=\"" . htmlentities($row['user_welcome_sig']) . "\"";
 	$template = $row['user_welcome_template'];
@@ -1012,26 +1012,26 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     </table>
     <a name="1"></a><h2>Welcome settings</h2>
     <form action="acc.php?action=welcomeperf" method="post">
-    <input type="checkbox" name="welcomeenable"<?php echo $welcomeing ?>/> Enable <a href="http://en.wikipedia.org/wiki/User:SQLBot-Hello">SQLBot-Hello</a> welcoming of the users I create<br />
+    <input type="checkbox" name="welcomeenable"<?php echo $welcoming ?>/> Enable <a href="http://en.wikipedia.org/wiki/User:SQLBot-Hello">SQLBot-Hello</a> welcoming of the users I create<br />
     Your signature (wikicode) <input type="text" name="sig" size ="40"<?php echo $sig; ?>/><br>
     <i>This would be the same as ~~~ on-wiki. No date, please.</i><br />
     <select name="template" size="0">
-    <option value="welcome"<?php if($template == "welcone") { echo " selected"; } ?>>{{welcome|user}} ~~~~</option>
-    <option value="welcomeg"<?php if($template == "welcomeg") { echo " selected"; } ?>>{{welcomeg|user}} ~~~~</option>
-    <option value="w-screen"<?php if($template == "w-screen") { echo " selected"; } ?>>{{w-screen|sig=~~~~}}</option>
-    <option value="welcome-personal"<?php if($template == "welcome-personal") { echo " selected"; } ?>>{{welcome-personal|user}} ~~~~</option>
-    <option value="w-kk"<?php if($template == "w-kk") { echo " selected"; } ?>>{{User:KrakatoaKatie/Welcome1}} ~~~~</option>
-    <option value="werdan7"<?php if($template == "werdan7") { echo " selected"; } ?>>{{User:Werdan7/W}} ~~~~</option>
-    <option value="welcomemenu"<?php if($template == "welcomemenu") { echo " selected"; } ?>>{{WelcomeMenu|sig=~~~~}}</option>
-    <option value="welcomeicon"<?php if($template == "welcomeicon") { echo " selected"; } ?>>{{WelcomeIcon}} ~~~~</option>
-    <option value="welcomeshout"<?php if($template == "welcomeshout") { echo " selected"; } ?>>{{WelcomeShout|user}} ~~~~</option>
-    <option value="welcomesmall"<?php if($template == "welcomesmall") { echo " selected"; } ?>>{{WelcomeSmall|user}} ~~~~</option>
-    <option value="hopes"<?php if($template == "hopes") { echo " selected"; } ?>>{{Hopes Welcome}} ~~~~</option>
-    <option value="welcomeshort"<?php if($template == "welcomeshort") { echo " selected"; } ?>>{{Welcomeshort|user}} ~~~~</option>
-    <option value="w-riana"<?php if($template == "w-riana") { echo " selected"; } ?>>{{User:Riana/Welcome|name=user|sig=~~~~}}</option>
-    <option value="wodup"<?php if($template == "wodup") { echo " selected"; } ?>>{{User:WODUP/Welcome}} ~~~~</option>
-    <option value="williamh"<?php if($template == "williamh") { echo " selected"; } ?>>{{User:WilliamH/Welcome|user}} ~~~~</option>
-    <option value="malinaccier"<?php if($template == "malinaccier") { echo " selected"; } ?>>{{User:Malinaccier/Welcome|~~~~}}</option>
+    <option value="welcome"<?php if($template == "welcone") { echo " selected=\"selected\""; } ?>>{{welcome|user}} ~~~~</option>
+    <option value="welcomeg"<?php if($template == "welcomeg") { echo " selected=\"selected\""; } ?>>{{welcomeg|user}} ~~~~</option>
+    <option value="w-screen"<?php if($template == "w-screen") { echo " selected=\"selected\""; } ?>>{{w-screen|sig=~~~~}}</option>
+    <option value="welcome-personal"<?php if($template == "welcome-personal") { echo " selected=\"selected\""; } ?>>{{welcome-personal|user}} ~~~~</option>
+    <option value="w-kk"<?php if($template == "w-kk") { echo " selected=\"selected\""; } ?>>{{User:KrakatoaKatie/Welcome1}} ~~~~</option>
+    <option value="werdan7"<?php if($template == "werdan7") { echo " selected=\"selected\""; } ?>>{{User:Werdan7/W}} ~~~~</option>
+    <option value="welcomemenu"<?php if($template == "welcomemenu") { echo " selected=\"selected\""; } ?>>{{WelcomeMenu|sig=~~~~}}</option>
+    <option value="welcomeicon"<?php if($template == "welcomeicon") { echo " selected=\"selected\""; } ?>>{{WelcomeIcon}} ~~~~</option>
+    <option value="welcomeshout"<?php if($template == "welcomeshout") { echo " selected=\"selected\""; } ?>>{{WelcomeShout|user}} ~~~~</option>
+    <option value="welcomesmall"<?php if($template == "welcomesmall") { echo " selected=\"selected\""; } ?>>{{WelcomeSmall|user}} ~~~~</option>
+    <option value="hopes"<?php if($template == "hopes") { echo " selected=\"selected\""; } ?>>{{Hopes Welcome}} ~~~~</option>
+    <option value="welcomeshort"<?php if($template == "welcomeshort") { echo " selected=\"selected\""; } ?>>{{Welcomeshort|user}} ~~~~</option>
+    <option value="w-riana"<?php if($template == "w-riana") { echo " selected=\"selected\""; } ?>>{{User:Riana/Welcome|name=user|sig=~~~~}}</option>
+    <option value="wodup"<?php if($template == "wodup") { echo " selected=\"selected\""; } ?>>{{User:WODUP/Welcome}} ~~~~</option>
+    <option value="williamh"<?php if($template == "williamh") { echo " selected=\"selected\""; } ?>>{{User:WilliamH/Welcome|user}} ~~~~</option>
+    <option value="malinaccier"<?php if($template == "malinaccier") { echo " selected=\"selected\""; } ?>>{{User:Malinaccier/Welcome|~~~~}}</option>
     </select><br />
     <i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>.</i><br />
 <?php
@@ -1039,13 +1039,13 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 ?>
 
 
-    <input type="submit"><input type="reset"/>
+    <input type="submit"/><input type="reset"/>
     </form>
     <a name="2"></a><h2>Change your password</h2>
     <form action="acc.php?action=forgotpw" method="post">
-    Your username: <input type="text" name="username"><br />
-    Your e-mail address: <input type="text" name="email"><br />
-    <input type="submit"><input type="reset"/>
+    Your username: <input type="text" name="username"/><br />
+    Your e-mail address: <input type="text" name="email"/><br />
+    <input type="submit"/><input type="reset"/>
     </form><br />
     <?php
 
