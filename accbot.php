@@ -85,7 +85,7 @@
 	//	Nick!User@Host mask						=> group
 	$users = array(
 		'Cobi!*cobi*@cobi.cluenet.org'					=> 'root',
-		'*!*@2002:1828:8399:4000:21f:3bff:fe10:4ae3'		=> 'root',
+		'*!*@2002:1828:8399:4000:21f:3bff:fe10:4ae3'			=> 'root',
 		'*!*@wikipedia/SQL'						=> 'root',
 		'OverlordQ!*@wikipedia/OverlordQ'				=> 'root',
 		'Stwalkerster*!*@wikipedia/Stwalkerster'			=> 'developer',
@@ -227,11 +227,11 @@
 
 		$explode1 = explode( ' ', $line, 4 );
 
-		if( strlen($line) == 0) {
+		if( strlen( $line ) == 0 ) {
 			$return['type'] = 'unknown';
 			return;
 		}
-		
+
 		if( strtolower( $explode1[0] ) == 'ping' ) {
 			$return['type'] = 'ping';
 			$return['payload'] = $explode1[1];
@@ -273,7 +273,7 @@
 	}
 
 	function commandCount( $parsed ) {
-		$username = isset($parsed['parameter']) ? $parsed['parameter'] : '';
+		$username = isset( $parsed['parameter'] ) ? $parsed['parameter'] : '';
 		if( $username == '' ) {
 			//irc( 'NOTICE ' . $parsed['nick'] . ' :Invalid syntax.  This command requires a username as a parameter.' );
 			//return;
@@ -547,8 +547,7 @@
 		echo 'Begin parsing ...' . "\n";
 	        $data = trim( fgets( $fp, 512 ) );
 
-		$rawLen = strlen($data);
-		echo "Raw ($rawLen): " . $data . "\n";
+		echo 'Raw (' . strlen( $data ) . '): ' . $data . "\n";
 
 		$parsed = parseIrc( $data );
 
