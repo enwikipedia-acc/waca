@@ -267,7 +267,7 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 				echo "\n<h3>" . $row['user_level'] . "</h3>\n<ul>\n";
 			}
 			else {
-				echo "</ul>\n<F4h3>" . $row['user_level'] . "</h3>\n<ul>\n";
+				echo "</ul>\n<h3>" . $row['user_level'] . "</h3>\n<ul>\n";
 			}
 		}
 		if ($row['user_level'] == "Suspended") {
