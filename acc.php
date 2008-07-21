@@ -455,13 +455,13 @@ elseif ($action == "messagemgmt") {
 		$out = "<li><small>[ $maild - $mailc ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit! (admin only)</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		echo "$out\n";
 	}
-	echo "<br />\n";
+	echo "</ol><br />\n";
 	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Interface';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<h2>Public Interface messages</h2>\n";
-	echo "\n";
+	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
@@ -469,13 +469,13 @@ elseif ($action == "messagemgmt") {
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit! (admin only)</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		echo "$out\n";
 	}
-	echo "<br />\n";
+	echo "</ol><br />\n";
 	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Internal';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<h2>Internal Interface messages</h2>\n";
-	echo "\n";
+	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
