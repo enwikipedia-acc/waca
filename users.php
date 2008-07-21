@@ -260,10 +260,15 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 	if (!$result)
 		Die("ERROR: No result returned.");
 	echo "<h2>User List</h2>\n";
-	echo "<i>Developers are bolded</i>\n<ul>\n";
+	echo "<i>Developers are bolded</i>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		if ($row['user_level'] != $lastlevel && $row['user_level'] != "Suspended" && $row['user_level'] != "Declined") {
-			echo "</ul>\n<h3>" . $row['user_level'] . "</h3>\n<ul>\n";
+			if ($lastlevel == NULL) {
+				echo "\n<h3>" . $row['user_level'] . "</h3>\n<ul>\n";
+			}
+			else {
+				echo "</ul>\n<F4h3>" . $row['user_level'] . "</h3>\n<ul>\n";
+			}
 		}
 		if ($row['user_level'] == "Suspended") {
 			$row['user_name'] = "";
@@ -290,7 +295,7 @@ elseif ($_GET['list'] != "devs" && $_GET['list'] != "") {
 		}
 		$lastlevel = $row['user_level'];
 	}
-	echo "<ul>\n";
+	echo "</ul>\n";
 	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 	displayfooter();
 }
