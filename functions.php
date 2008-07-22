@@ -317,22 +317,22 @@ function listrequests($type) {
 
 		// IP blocks
 		$out .= '<a class="request-src" href="http://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
-		$out .= $row['pend_ip'] . '">b</a> ';
+		$out .= $row['pend_ip'] . '" target="_blank">b</a> ';
 
 		// IP whois
-		$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '">w</a> ] ';
+		$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">w</a> ] ';
 
 		// Username U:
 		$duname = _utf8_decode($row['pend_name']);
-		$out .= '</small></td><td><small><a class="request-req" href="http://en.wikipedia.org/wiki/User:' . $uname . '"><strong>' . $duname . '</strong></a> ';
+		$out .= '</small></td><td><small><a class="request-req" href="http://en.wikipedia.org/wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
 
 		// Creation log    
 		$out .= '</small></td><td><small>(<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
-		$out .= $uname . '">Creation</a> ';
+		$out .= $uname . '" target="_blank">Creation</a> ';
 
 		// User contribs
 		$out .= '<a class="request-req" href="http://en.wikipedia.org/wiki/Special:Contributions/';
-		$out .= $uname . '">Contribs</a> ';
+		$out .= $uname . '" target="_blank">Contribs</a> ';
 		$out .= '<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=50">List</a>) ' . "\n";
 
 		// Create user link
