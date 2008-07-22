@@ -461,7 +461,7 @@ elseif ($action == "messagemgmt") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<h2>Public Interface messages</h2>\n";
-	echo "<ol>\n";
+	echo "<ol start="6">\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
@@ -475,7 +475,7 @@ elseif ($action == "messagemgmt") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<h2>Internal Interface messages</h2>\n";
-	echo "<ol>\n";
+	echo "<ol start="20">\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
