@@ -48,7 +48,7 @@ if ($run != "go") {
 	$whystopme = $leprop['editsum'];
 	$sqlnewtalk = "\r\n==Help! I've been thwarted!==\r\nHey, as instructed, I need to tell you that [[User:$whostoppedme|$whostoppedme]] has stopped me from running, with an edit summary of $whystopme. ~~~~\r\n";
 	$sqlnewtalk = $sqloldtalk . $sqlnewtalk;
-	sxPutPage('User talk:SQL', 'Emergency! Bot stopped!', $sqlnewtalk, $null);
+#	sxPutPage('User talk:SQL', 'Emergency! Bot stopped!', $sqlnewtalk, $null);
 	die("\r\nBot stopped by $whostoppedme\r\n");
 }
 function tagpage($user, $template) {
