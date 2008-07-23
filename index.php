@@ -483,7 +483,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$pid = $row['pend_id'];
 	$pem = $row['pend_email'];
 	if( $uLevel == "Open" ) { $what = "User"; } else { $what = "Admin"; }
-	sendtobot("[[acc:$pid]] N $tsurl/acc.php?action=zoom&id=$pid /* " . $_POST['name'] . " */ $what NEEDED " . substr(str_replace(array (
+	sendtobot("[[acc:$pid]] N $tsurl/acc.php?action=zoom&id=$pid /* " . $_POST['name'] . " */ <$what Needed!> " . substr(str_replace(array (
 		"\n",
 		"\r"
 	), array (
