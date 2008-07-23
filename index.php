@@ -482,8 +482,8 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$row = mysql_fetch_assoc($result);
 	$pid = $row['pend_id'];
 	$pem = $row['pend_email'];
-	if( $uLevel == "Open" ) { $what = "User"; } else { $what = "Admin"; }
-	sendtobot("[[acc:$pid]] N $tsurl/acc.php?action=zoom&id=$pid /* " . $_POST['name'] . " */ <$what Needed!> " . substr(str_replace(array (
+	if( $uLevel == "Open" ) { $what = ""; } else { $what = "<Admin Needed!> "; }
+	sendtobot("[[acc:$pid]] N $tsurl/acc.php?action=zoom&id=$pid /* " . $_POST['name'] . " */ $what" . substr(str_replace(array (
 		"\n",
 		"\r"
 	), array (
