@@ -49,8 +49,7 @@ if ( !isset ( $_SESSION['user'] ) && !isset ( $_GET['nocheck'] ) ) {
 	}
 }
 elseif ( !isset ( $_GET['nocheck'] ) ) {
-	$suser = sanitize( $_SESSION['user'] );
-	echo makehead( $suser );
+	echo makehead( $_SESSION['user'] );
 	checksecurity( $_SESSION['user'] );
 	$out = showmessage( '20' );
 	$out .= "<div id=\"content\">";
