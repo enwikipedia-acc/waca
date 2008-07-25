@@ -402,7 +402,7 @@ function makehead($username) {
 	/*
 	* Show page header (retrieved by MySQL call)
 	*/
-	$suin = sanatize($username);
+	$suin = sanitize($username);
 	$rethead = '';
 	$query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
 	$result = mysql_query($query);
