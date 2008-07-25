@@ -211,17 +211,17 @@ function checksecurity($username) {
 	* Check the user's security level on page load, and bounce accordingly
 	*/
 	
-	if (hasright($username, "New") == TRUE) {
+	if (hasright($username, "New")) {
 		echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
 		echo showfootern();
 		die();
 	}
-	if (hasright($username, "Suspended") == TRUE) {
+	if (hasright($username, "Suspended")) {
 		echo "I'm sorry, but, your account is presently suspended.<br />\n";
 		echo showfootern();
 		die();
 	}
-	if (hasright($username, "Declined") == TRUE) {
+	if (hasright($username, "Declined")) {
 		$username = sanitize($username);
 		$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
 		$result = mysql_query($query);
@@ -412,7 +412,7 @@ function makehead($username) {
 	$_SESSION['user_id'] = $row['user_id'];
 	$out = showmessage('21');
 	if (isset ($_SESSION['user'])) { //Is user logged in?
-		if (hasright($username, "Admin") == TRUE) {
+		if (hasright($username, "Admin")) {
 			$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"acc.php?action=usermgmt\">User Management</a>\n", $out);
 		}
 		$rethead .= $out;
@@ -533,9 +533,11 @@ function hasright($username, $checkright) {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	}
 	$row = mysql_fetch_assoc($result);
-	$rights = explode(",",$row['user_level']);
-	if (array_search($checkright, $rights) != FALSE) return true;
-	else return false;
+	if($row['user_level'] == $checkright ) {
+		return true;
+	} else {
+		return false;
+	}
 }
 	
 ?>
