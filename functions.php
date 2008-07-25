@@ -533,10 +533,13 @@ function hasright($username, $checkright) {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	}
 	$row = mysql_fetch_assoc($result);
-	if($row['user_level'] == $checkright ) {
-		return true;
-	} else {
-		return false;
+	$rights = explode(':', $row['user_level']);
+	foreach( $rights as $right) {
+		if($right == $checkright ) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 	
