@@ -24,8 +24,8 @@ function getSpoofs( $username ) {
 	@ mysql_select_db("enwiki_p", $spooflink) or print mysql_error();
 	$cUser = str_split( $username, 1 );
 	$fone = "";
-	foreach ( $cUser as $one_cUser ) {
-	        $fone .= $equivset[$one_cUser];
+	foreach ( $cUser as $onecUser ) {
+	        $fone .= $equivset[$onecUser];
 	}
 	//$fone = mysql_real_escape_string( $fone );
 	$query = "SELECT * FROM spoofuser WHERE su_normalized = 'v2:$fone';";

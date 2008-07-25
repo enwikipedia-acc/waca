@@ -185,6 +185,7 @@ if ($_GET['viewuser'] != "") {
 		Die("ERROR: No result returned.");
 	echo "<h2>User List</h2>\n";
 	echo "<i>Developers are bolded</i>\n";
+	$lastlevel == NULL;
 	while ($row = mysql_fetch_assoc($result)) {
 		if ($row['user_level'] != $lastlevel && $row['user_level'] != "Suspended" && $row['user_level'] != "Declined") {
 			if ($lastlevel == NULL) {

@@ -78,6 +78,10 @@ function checktor($addr) {
 	$flags = array ();
 	$flags['tor'] = "no";
 	$p = explode(".", $addr);
+	if(strpos($addr,':') != -1 ) {
+		//IPv6 addy
+		return $flags;
+	}
 	$ahbladdr = $p['3'] . "." . $p['2'] . "." . $p['1'] . "." . $p['0'] . "." . "tor.ahbl.org";
 	;
 	$ahbl = gethostbyname($ahbladdr);
