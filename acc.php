@@ -519,7 +519,7 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	} else {
 		$until = date("F j, Y, g:i a", $duration);
 	}
-	sendtobot("$target banned by $siuser for $reason until $until");
+	sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " until $until");
 	echo showfooter();
 	die();
 }
@@ -674,7 +674,7 @@ elseif ($action == "usermgmt") {
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			sendtobot("User $did (" . $row2['user_name'] . ") demoted by $siuser because: \"$demotersn\"");
+			sendtobot("User $did (" . $row2['user_name'] . ") demoted by $siuser because: \"" . $_POST['demotereason'] . "\"");
 			echo showfooter();
 			die();
 		}
@@ -708,7 +708,7 @@ elseif ($action == "usermgmt") {
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			sendtobot("User $did (" . $row2['user_name'] . ") suspended access by $siuser because: \"$suspendrsn\"");
+			sendtobot("User $did (" . $row2['user_name'] . ") suspended access by $siuser because: \"" . $_POST['suspendreason'] . "\"");
 			echo showfooter();
 			die();
 		}
@@ -773,7 +773,7 @@ elseif ($action == "usermgmt") {
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			sendtobot("User $did (" . $row2['user_name'] . ") declined access by $siuser because: \"$declinersn\"");
+			sendtobot("User $did (" . $row2['user_name'] . ") declined access by $siuser because: \"" . $_POST['declinereason'] . "\"");
 			echo showfooter();
 			die();
 		}
