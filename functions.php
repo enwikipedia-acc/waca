@@ -210,23 +210,24 @@ function checksecurity($username) {
 	/*
 	* Check the user's security level on page load, and bounce accordingly
 	*/
-	$username = sanitize($username);
-	$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-	if ($row['user_level'] == "New") {
+	
+	if (hasright($username, "New") == TRUE) {
 		echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
 		echo showfootern();
 		die();
 	}
-	if ($row['user_level'] == "Suspended" && $username != "SQL") {
+	if (hasright($username, "Suspended") == TRUE) {
 		echo "I'm sorry, but, your account is presently suspended.<br />\n";
 		echo showfootern();
 		die();
 	}
-	if ($row['user_level'] == "Declined" && $username != "SQL") {
+	if (hasright($username, "Declined") == TRUE) {
+		$username = sanitize($username);
+		$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row = mysql_fetch_assoc($result);
 		$query2 = "SELECT * FROM acc_log WHERE log_pend = '" . $row['user_id'] . "' AND log_action = 'Declined' ORDER BY log_id DESC LIMIT 1;";
 		$result2 = mysql_query($query2);
 		if (!$result2)
@@ -395,12 +396,12 @@ function listrequests($type) {
 
 }
 
-function makehead($suin) {
+function makehead($username) {
 	/*
 	* Show page header (retrieved by MySQL call)
 	*/
 	$rethead = '';
-	$query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
+	$query = "SELECT * FROM acc_user WHERE user_name = '$username' LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
@@ -408,12 +409,7 @@ function makehead($suin) {
 	$_SESSION['user_id'] = $row['user_id'];
 	$out = showmessage('21');
 	if (isset ($_SESSION['user'])) { //Is user logged in?
-		$mquery = "SELECT * FROM acc_user WHERE user_name = '$suin';";
-		$mresult = mysql_query($mquery);
-		if (!$mresult)
-			echo ("<!-- ERROR: No result returned. mysql_error() --!>");
-		$mrow = mysql_fetch_assoc($mresult);
-		if ($mrow['user_level'] == "Admin") {
+		if (hasright($username, "Admin") == TRUE) {
 			$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"acc.php?action=usermgmt\">User Management</a>\n", $out);
 		}
 		$rethead .= $out;
@@ -525,4 +521,18 @@ HTML;
 	$html .= showfooter();
 	return $html;
 }
+
+function hasright($username, $checkright) {
+	$username = sanitize($username);
+	$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
+	$result = mysql_query($query);
+	if (!$result) {
+		Die("Query failed: $query ERROR: " . mysql_error());
+	}
+	$row = mysql_fetch_assoc($result);
+	$rights = explode(",",$row['user_level']);
+	if (array_search($checkright, $rights) != FALSE) return true;
+	else return false;
+}
+	
 ?>
