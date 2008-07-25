@@ -402,8 +402,9 @@ function makehead($username) {
 	/*
 	* Show page header (retrieved by MySQL call)
 	*/
+	$suin = sanatize($username);
 	$rethead = '';
-	$query = "SELECT * FROM acc_user WHERE user_name = '$username' LIMIT 1;";
+	$query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
