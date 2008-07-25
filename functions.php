@@ -301,7 +301,7 @@ function listrequests($type) {
 		$out .= '</small></td><td><small>[ <a class="request-src" href="mailto:' . $row['pend_email'] . '">' . $row['pend_email'] . '</a>';
 
 		// IP UT:
-		$out .= '</small></td><td><small> | <a class="request-src" href="http://en.wikipedia.org/wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
+		$out .= '</small></td><td><small> | <a class="request-src" id="ip-link" href="http://en.wikipedia.org/wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
 		$out .= $row['pend_ip'] . '</a> ';
 
 		$out .= '</small></td><td><small><span class="request-src">' . "\n";
