@@ -225,13 +225,15 @@ function checksecurity($username) {
 		$username = sanitize($username);
 		$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
 		$result = mysql_query($query);
-		if (!$result)
+		if (!$result) {
 			Die("Query failed: $query ERROR: " . mysql_error());
+		}
 		$row = mysql_fetch_assoc($result);
 		$query2 = "SELECT * FROM acc_log WHERE log_pend = '" . $row['user_id'] . "' AND log_action = 'Declined' ORDER BY log_id DESC LIMIT 1;";
 		$result2 = mysql_query($query2);
-		if (!$result2)
+		if (!$result2) {
 			Die("Query failed: $query ERROR: " . mysql_error());
+		}
 		$row2 = mysql_fetch_assoc($result2);
 		echo "I'm sorry, but, your account request was <strong>declined</strong> by <strong>" . $row2['log_user'] . "</strong> because <strong>\"" . $row2['log_cmt'] . "\"</strong> at <strong>" . $row2['log_time'] . "</strong>.<br />\n";
 		echo "Related information (please include this if appealing this decision)<br />\n";
