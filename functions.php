@@ -537,10 +537,9 @@ function hasright($username, $checkright) {
 	foreach( $rights as $right) {
 		if($right == $checkright ) {
 			return true;
-		} else {
-			return false;
 		}
 	}
+	return false;
 }
 	
 ?>
