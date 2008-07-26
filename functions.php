@@ -120,7 +120,7 @@ function showhowma() {
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$howma = gethowma();
-	$n2 = $howma;
+	$n2 = gethowma();
 	unset ($howma['howmany']);
 	unset ($n2['howmany']);
 	$out = "";
