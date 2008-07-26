@@ -122,13 +122,13 @@ function showhowma() {
 	$howma = gethowma();
 	unset ($howma['howmany']);
 	foreach ($howma as &$oluser) {
-		$oluser = stripslashes($oluser);
 		$query = "SELECT * FROM acc_user WHERE user_name = '$oluser';";
         $result = mysql_query($query);
         if (!$result)
             Die("Query failed: $query ERROR: " . mysql_error());
         $row = mysql_fetch_assoc($result);
         $uid = $row['user_id'];
+		$oluser = stripslashes($oluser);
 		$oluser = "<a href=\"users.php?viewuser=$uid\">$oluser</a>";
 	}
 	unset($oluser);
@@ -443,7 +443,10 @@ function showfooter() {
 	$howout = showhowma();
 	$howma = $howmany['howmany'];
 	$out = showmessage('23');
-	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma users active within the last 5 mins! ($howout)</small></div><br /><br />", $out);
+	if ($howma > 1)
+		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma users active within the last 5 mins! ($howout)</small></div><br /><br />", $out);
+	else
+		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma user active within the last 5 mins! ($howout)</small></div><br /><br />", $out);
 	return $out;
 }
 
