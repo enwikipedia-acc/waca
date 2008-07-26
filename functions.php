@@ -120,9 +120,10 @@ function showhowma() {
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$howma = gethowma();
-	unset ($howma['howmany']);
-	$out = "";
 	$n2 = $howma;
+	unset ($howma['howmany']);
+	unset ($n2['howmany']);
+	$out = "";
 	$n = 1;
 	foreach ($howma as $oneonline) {
 		$oneonline = sanitize($oneonline);
@@ -136,6 +137,8 @@ function showhowma() {
 		if($n < $n2) {
 			$comma = ",";
 			$n++;
+		} elseif($n2-$n1 == 1) {
+			$comma = ", and";
 		} else { 
 			$comma = NULL;
 		}
@@ -450,7 +453,7 @@ function showfooter() {
 	$howout = showhowma();
 	$howma = $howmany['howmany'];
 	$out = showmessage('23');
-	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>There Are Currently $howma Online Account Creators (past 5 minutes): $howout</small></div><br /><br />", $out);
+	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma users active within the last 5 mins! ($howout)</small></div><br /><br />", $out);
 	return $out;
 }
 
