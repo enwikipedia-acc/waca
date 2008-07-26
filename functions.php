@@ -120,9 +120,30 @@ function showhowma() {
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$howma = gethowma();
+	$n2 = gethowma();
 	unset ($howma['howmany']);
+	unset ($n2['howmany']);
 	$out = "";
-	$out .= implode(", ", "$howma");
+	$n = 1;
+	foreach ($howma as $oneonline) {
+		$oneonline = sanitize($oneonline);
+		$query = "SELECT * FROM acc_user WHERE user_name = '$oneonline';";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row = mysql_fetch_assoc($result);
+		$uid = $row['user_id'];
+		$oneonline = stripslashes($oneonline);
+		if($n < $n2) {
+			$comma = ",";
+		} elseif($n2-$n1 == 1) {
+			$comma = ", and";
+		} else {
+			$comma = "";
+		}
+		$out .= " <a href=\"users.php?viewuser=$uid\">$oneonline</a>$comma";
+		$n = $n+1;
+	}
 	$out = ltrim(rtrim($out));
 	return ($out);
 }
