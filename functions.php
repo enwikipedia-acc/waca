@@ -138,11 +138,11 @@ function showhowma() {
 			$comma = ",";
 		} elseif($n2-$n1 == 1) {
 			$comma = ", and";
-		} else { 
+		} else {
 			$comma = "";
 		}
 		$out .= " <a href=\"users.php?viewuser=$uid\">$oneonline</a>$comma";
-		$n++;
+		$n = $n+1;
 	}
 	$out = ltrim(rtrim($out));
 	return ($out);
