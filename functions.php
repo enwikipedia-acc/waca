@@ -140,7 +140,7 @@ function showhowma() {
 		} elseif($n2-$n1 == 1) {
 			$comma = ", and";
 		} else { 
-			$comma = NULL;
+			$comma = "";
 		}
 		$out .= " <a href=\"users.php?viewuser=$uid\">$oneonline</a>$comma";
 	}
