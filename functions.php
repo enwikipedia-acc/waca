@@ -122,6 +122,8 @@ function showhowma() {
 	$howma = gethowma();
 	unset ($howma['howmany']);
 	$out = "";
+	$n2 = $howma;
+	$n = 1;
 	foreach ($howma as $oneonline) {
 		$oneonline = sanitize($oneonline);
 		$query = "SELECT * FROM acc_user WHERE user_name = '$oneonline';";
@@ -131,7 +133,13 @@ function showhowma() {
 		$row = mysql_fetch_assoc($result);
 		$uid = $row['user_id'];
 		$oneonline = stripslashes($oneonline);
-		$out .= " <a href=\"users.php?viewuser=$uid\">$oneonline</a>";
+		if($n < $n2) {
+			$comma = ",";
+			$n++;
+		} else { 
+			$comma = NULL;
+		}
+		$out .= " <a href=\"users.php?viewuser=$uid\">$oneonline</a>$comma";
 	}
 	$out = ltrim(rtrim($out));
 	return ($out);
@@ -442,7 +450,7 @@ function showfooter() {
 	$howout = showhowma();
 	$howma = $howmany['howmany'];
 	$out = showmessage('23');
-	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma users active within the last 5 mins! ($howout)</small></div><br /><br />", $out);
+	$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>There Are Currently $howma Online Account Creators (past 5 minutes): $howout</small></div><br /><br />", $out);
 	return $out;
 }
 
