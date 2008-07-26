@@ -535,7 +535,7 @@ elseif ($action == "unban" && $_GET['id'] != "") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "Unbanned ban #$bid<br />\n";
-sendtobot("$target unbanned by $siuser);
+	sendtobot("$target unbanned by " . $_SESSION['user']);
 	echo showfooter();
 	die();
 }
