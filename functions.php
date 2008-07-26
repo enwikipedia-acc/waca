@@ -136,13 +136,13 @@ function showhowma() {
 		$oneonline = stripslashes($oneonline);
 		if($n < $n2) {
 			$comma = ",";
-			$n++;
 		} elseif($n2-$n1 == 1) {
 			$comma = ", and";
 		} else { 
 			$comma = "";
 		}
 		$out .= " <a href=\"users.php?viewuser=$uid\">$oneonline</a>$comma";
+		$n++;
 	}
 	$out = ltrim(rtrim($out));
 	return ($out);
