@@ -129,8 +129,9 @@ function showhowma() {
             Die("Query failed: $query ERROR: " . mysql_error());
         $row = mysql_fetch_assoc($result);
         $uid = $row['user_id'];
-		$oluser = "<a href=\"users.php?viewuser=$uid\">$oluser</a>"
+		$oluser = "<a href=\"users.php?viewuser=$uid\">$oluser</a>";
 	}
+	unset($oluser);
 	$out = "";
 	$out = implode(", ", $howma);
 	$out = ltrim(rtrim($out));
