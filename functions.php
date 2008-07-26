@@ -134,9 +134,9 @@ function showhowma() {
 		$row = mysql_fetch_assoc($result);
 		$uid = $row['user_id'];
 		$oneonline = stripslashes($oneonline);
-		if($n < $n2) {
+		if($n<$n2) {
 			$comma = ",";
-		} elseif($n2-$n1 == 1) {
+		} elseif($n2-$n == 1) {
 			$comma = ", and";
 		} else {
 			$comma = "";
