@@ -121,6 +121,16 @@ function showhowma() {
 	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$howma = gethowma();
 	unset ($howma['howmany']);
+	foreach ($howma as &$oluser) {
+		$oluser = stripslashes($oluser);
+		$query = "SELECT * FROM acc_user WHERE user_name = '$oluser';";
+        $result = mysql_query($query);
+        if (!$result)
+            Die("Query failed: $query ERROR: " . mysql_error());
+        $row = mysql_fetch_assoc($result);
+        $uid = $row['user_id'];
+		$oluser = "<a href=\"users.php?viewuser=$uid\">$oluser</a>"
+	}
 	$out = "";
 	$out = implode(", ", $howma);
 	$out = ltrim(rtrim($out));
