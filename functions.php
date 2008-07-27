@@ -333,7 +333,7 @@ function listrequests($type) {
 		// User contribs
 		$out .= '<a class="request-req" href="http://en.wikipedia.org/wiki/Special:Contributions/';
 		$out .= $uname . '" target="_blank">Contribs</a> ';
-		$out .= '<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=50" target="_blank">List</a>) ' . "\n";
+		$out .= '<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=1" target="_blank">List</a>) ' . "\n";
 
 		// Create user link
 		$out .= '<b><a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName=';
