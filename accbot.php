@@ -90,10 +90,10 @@
 		'OverlordQ!*@wikipedia/OverlordQ'				=> 'root',
 		'Stwalkerster*!*@wikipedia/Stwalkerster'			=> 'developer',
 		'*!*@wikimedia/Alexfusco5'					=> 'developer',
-		'Soxred93*!*@unaffiliated/soxred93'				=> 'developer',
+		'Soxred93*!*@wikipedia/Soxred93'				=> 'developer',
 		'*!*@wikimedia/cmelbye'						=> 'developer',
 		'*!*@wikipedia/FastLizard4'					=> 'developer',
-		'*!*@unaffiliated/prodego'					=> 'developer',
+		'*!*@wikipedia/Prodego'					=> 'developer',
 		'*!*@*'								=> '*'
 		);
 
