@@ -597,7 +597,7 @@ elseif ($action == "ban") {
 		} else {
 			$until = date("F j, Y, g:i a", $row['ban_duration']);
 		}
-		echo "<li><small><strong>" . $row['ban_target'] . "</strong> - Banned by: <strong>" . $row['ban_user'] . "</strong> for <strong>" . $row['ban_reason'] . "</strong> at <strong>" . $row['ban_date'] . "</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">UNBAN</a>)</small></li>";
+		echo "<li><small><strong>" . $row['ban_target'] . "</strong> - Banned by: <strong>" . $row['ban_user'] . "</strong> for <strong>" . htmlentities($row['ban_reason']) . "</strong> at <strong>" . $row['ban_date'] . "</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">UNBAN</a>)</small></li>";
 	}
 	echo "</ol>\n";
 	echo showfooter();
@@ -1251,20 +1251,20 @@ elseif ($action == "zoom") {
 	}
 	echo "</ol>\n";
 	echo "<h2>Other requests from $thisemail:</h2>\n";
-	echo "<ol>\n";
 	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$numem = 0;
-	while ($row = mysql_fetch_assoc($result)) {
+		while ($row = mysql_fetch_assoc($result)) {
+		if ($numem == 0) { echo "<ol>/n"; }
 		echo "<li><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></li>";
 		$numem++;
 	}
 	if ($numem == 0) {
 		echo "<i>None.</i>\n";
 	}
-	echo "</ol>\n";
+	else {echo "</ol>\n";}
 	echo showfooter();
 	die();
 }
@@ -1360,7 +1360,7 @@ elseif ($action == "logs") {
 			if (!$result3)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row3 = mysql_fetch_assoc($result3);
-			echo "<li>$rlu Edited Message <a href=\"acc.php?action=messagemgmt&view=$rlp\">$rlp (" . $row3['mail_desc'] . ")</a>, at $rlt.</li>\n";
+			echo "<li>$rlu Edited Message <a href=\"acc.php?action=messagemgmt&amp;view=$rlp\">$rlp (" . $row3['mail_desc'] . ")</a>, at $rlt.</li>\n";
 		}
 		if ($rla == "Promoted" || $rla == "Approved" || $rla == "Suspended" || $rla == "Declined") {
 			$uid = $rlp;

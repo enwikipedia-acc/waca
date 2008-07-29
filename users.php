@@ -187,7 +187,7 @@ if ($_GET['viewuser'] != "") {
 	echo "<i>Developers are bolded</i>\n";
 	$lastlevel == NULL;
 	while ($row = mysql_fetch_assoc($result)) {
-		if ($row['user_level'] != $lastlevel && $row['user_level'] != "Suspended" && $row['user_level'] != "Declined") {
+		if ($row['user_level'] != $lastlevel && $row['user_level'] != "Suspended" && $row['user_level'] != "Declined" && $row['user_level'] != "New") {
 			if ($lastlevel == NULL) {
 				echo "\n<h3>" . $row['user_level'] . "</h3>\n<ul>\n";
 			}
