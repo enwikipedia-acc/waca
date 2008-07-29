@@ -407,7 +407,7 @@ function makehead($username) {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	$_SESSION['user_id'] = $row['user_id'];
-	$out = showmessage('21');
+	$out = showmessage('20') + showmessage('21');
 	if (isset ($_SESSION['user'])) { //Is user logged in?
 		if (hasright($username, "Admin")) {
 			$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"acc.php?action=usermgmt\">User Management</a>\n", $out);
