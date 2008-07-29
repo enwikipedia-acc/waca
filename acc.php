@@ -1236,20 +1236,20 @@ elseif ($action == "zoom") {
 
 	echo "</ol>\n";
 	echo "<h2>Other requests from $thisip:</h2>\n";
-	echo "<ol>\n";
 	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$numip = 0;
-	while ($row = mysql_fetch_assoc($result)) {
+ 	while ($row = mysql_fetch_assoc($result)) {
+	if ($numip == 0) { echo "<ol>/n"; }
 		echo "<li><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></li>";
 		$numip++;
 	}
 	if ($numip == 0) {
 		echo "<i>None.</i>\n";
 	}
-	echo "</ol>\n";
+	else {echo "</ol>\n";}
 	echo "<h2>Other requests from $thisemail:</h2>\n";
 	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid';";
 	$result = mysql_query($query);
