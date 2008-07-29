@@ -407,7 +407,6 @@ function makehead($username) {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	$_SESSION['user_id'] = $row['user_id'];
-	$out = showmessage('20'); /*site notice*/
 	$out .= showmessage('21');
 	if (isset ($_SESSION['user'])) { //Is user logged in?
 		if (hasright($username, "Admin")) {
@@ -432,7 +431,9 @@ function showfootern() {
 	/*
 	* Show footer (not logged in)
 	*/
-	return showmessage('22');
+	$out = showmessage('22');
+	$out .= "<script type=\"text/javascript\" src=\"script.js\"><\/script>";
+	return $out;
 }
 
 function showfooter() {
@@ -444,6 +445,7 @@ function showfooter() {
 	$howout = showhowma();
 	$howma = $howmany['howmany'];
 	$out = showmessage('23');
+	$out .= "<script type=\"text/javascript\" src=\"script.js\"><\/script>";
 	if ($howma > 1)
 		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma users active within the last 5 mins! ($howout)</small></div><br /><br />", $out);
 	else
