@@ -789,6 +789,7 @@ elseif ($action == "usermgmt") {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
+	if (mysql_num_rows($result) != 0){
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$uname = $row['user_name'];
@@ -797,8 +798,10 @@ elseif ($action == "usermgmt") {
 		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&amp;decline=$userid\">Decline</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
 		echo "$out\n";
 	}
+	echo "</ol>\n";
+	}
+
 ?>
-    </ol>
 	<div id="usermgmt-users">
     <h2>Users</h2>
     <?php
@@ -1224,7 +1227,7 @@ elseif ($action == "zoom") {
 			echo "<li>$rlu Closed (Username vio), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($rla == "Closed 5") {
-			echo "<li>$rlu Closed (Technically impossibly), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Closed (Technical impossibly), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($rla == "Closed 6") {
 			echo "<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
@@ -1332,7 +1335,7 @@ elseif ($action == "logs") {
 			echo "<li>$rlu Closed (Username vio), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($row['log_action'] == "Closed 5") {
-			echo "<li>$rlu Closed (Technically impossibly), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Closed (Technical impossibly), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($row['log_action'] == "Closed 6") {
 			echo "<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
