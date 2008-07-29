@@ -1199,6 +1199,7 @@ elseif ($action == "zoom") {
 	mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
 	@ mysql_select_db( $toolserver_database ) or print mysql_error( );
 	echo "<h2>Logs for Request #" . $_GET['id'] . ":</h2>";
+	 if (mysql_num_rows($result) != 0){
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$rlu = $row['log_user'];
@@ -1227,7 +1228,8 @@ elseif ($action == "zoom") {
 			echo "<li>$rlu Closed (Username vio), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($rla == "Closed 5") {
-			echo "<li>$rlu Closed (Technical impossibly), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Closed (Technical Impossibility), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+
 		}
 		if ($rla == "Closed 6") {
 			echo "<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
@@ -1238,6 +1240,8 @@ elseif ($action == "zoom") {
 	}
 
 	echo "</ol>\n";
+        }
+
 	echo "<h2>Other requests from $thisip:</h2>\n";
 	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid';";
 	$result = mysql_query($query);
@@ -1245,7 +1249,7 @@ elseif ($action == "zoom") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$numip = 0;
  	while ($row = mysql_fetch_assoc($result)) {
-	if ($numip == 0) { echo "<ol>/n"; }
+	if ($numip == 0) { echo "<ol>\n"; }
 		echo "<li><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></li>";
 		$numip++;
 	}
@@ -1260,7 +1264,7 @@ elseif ($action == "zoom") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$numem = 0;
 		while ($row = mysql_fetch_assoc($result)) {
-		if ($numem == 0) { echo "<ol>/n"; }
+		if ($numem == 0) { echo "<ol>\n"; }
 		echo "<li><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></li>";
 		$numem++;
 	}
@@ -1335,7 +1339,7 @@ elseif ($action == "logs") {
 			echo "<li>$rlu Closed (Username vio), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($row['log_action'] == "Closed 5") {
-			echo "<li>$rlu Closed (Technical impossibly), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			echo "<li>$rlu Closed (Technical Impossibility), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($row['log_action'] == "Closed 6") {
 			echo "<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
@@ -1353,7 +1357,7 @@ elseif ($action == "logs") {
 			if (!$result3)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row3 = mysql_fetch_assoc($result3);
-			echo "<li>$rlu Banned " . $row3['log_pend'] . " #" . $row3['ban_id'] . " (" . _utf8_decode($row3['ban_target']) . ")</a>, Reason: " . $row3['ban_reason'] . ", at $rlt.</li>\n";
+			echo "<li>$rlu Banned " . $row3['log_pend'] . " #" . $row3['ban_id'] . " (" . _utf8_decode($row3['ban_target']) . "), Reason: " . $row3['ban_reason'] . ", at $rlt.</li>\n";
 		}
 
 		if ($rla == "Edited") {
