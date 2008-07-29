@@ -16,6 +16,8 @@ var cookieName = "dismissSiteNotice=";
 var cookiePos = document.cookie.indexOf(cookieName);
 var cookieValue = "";
 var msgClose = "Dismiss";
+var siteNoticeID = "57.0";
+var siteNoticeValue="<ul><li style=\"font-weight:bold;\">Expect vandal requests, and drop them when you see them.</li><li>Each time you close a request, an email is sent to that user (except for drop)</li><li>If you get an 'invalid checksum' error, it means you have tried to close/defer a request more than once. You can just ignore this, and proceed back to the main page.</li><li>Be sure to check the contributions of the IP making the request, to see if there is any recent vandalism!</li><li><strong>Note that similar accounts can be created by Wikipedia admins - please click defer to be sure!</strong></li><li><strong>Remember: There's no race involved with creating accounts. Ensure you assess each request carefully</strong></li></ul>";
 
 if (cookiePos > -1) {
 	cookiePos = cookiePos + cookieName.length;
