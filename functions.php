@@ -431,8 +431,8 @@ function showfootern() {
 	/*
 	* Show footer (not logged in)
 	*/
-	$out = showmessage('22');
-	$out .= "<script type=\"text/javascript\" src=\"script.js\"><\/script>";
+	$out = "<script type=\"text/javascript\" src=\"script.js\"></script>";
+	$out .= showmessage('22');
 	return $out;
 }
 
@@ -444,8 +444,8 @@ function showfooter() {
 	$howmany = gethowma();
 	$howout = showhowma();
 	$howma = $howmany['howmany'];
-	$out = showmessage('23');
-	$out .= "<script type=\"text/javascript\" src=\"script.js\"><\/script>";
+	$out = "<script type=\"text/javascript\" src=\"script.js\"></script>";
+	$out .= showmessage('23');
 	if ($howma > 1)
 		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma users active within the last 5 mins! ($howout)</small></div><br /><br />", $out);
 	else
