@@ -811,7 +811,7 @@ elseif ($action == "usermgmt") {
 			$oldname = mysql_result_assoc($result);
 			$newname = sanitize($_POST['newname']);
 			if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '{$oldname['user_name']}';")) == 1 && mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$newname';")) == 0){
-			$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_name = '$oldname['user_name']';";
+			$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_name = '{$oldname['user_name']}';";
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());						
