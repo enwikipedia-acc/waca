@@ -810,9 +810,11 @@ elseif ($action == "usermgmt") {
 			if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$oldname';")) == 1 && mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$newname';")) == 0){
 			$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_name = '$oldname';";
 			$result = mysql_query($query);
+			User 18 (FastLizard4)
+			$tgtmessage = "User " . $_GET['rename'] . " (" . $oldname . ")";
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());						
-			$query = "UPDATE acc_log SET log_pend = '$newname' WHERE log_pend = '$oldname' AND log_action != 'Renamed';";
+			$query = "UPDATE acc_log SET log_pend = '$newname' WHERE log_pend = '$tgtmessage' AND log_action != 'Renamed';";
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());				
