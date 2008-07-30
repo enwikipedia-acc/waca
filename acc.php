@@ -843,7 +843,6 @@ elseif ($action == "usermgmt") {
 			sendtobot("User $siuser changed $oldname's username to $newname");
 			echo showfooter();
 			die();
-			}
 		}
 
 	}
