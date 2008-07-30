@@ -780,7 +780,7 @@ elseif ($action == "usermgmt") {
 		}
 	}
 	
-        	if (isset ($_GET['rename'])) {
+        	if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 		$siuser = sanitize($_SESSION['user']);
 		$newname == "";
 		if ($_POST['newname'] == "") {
