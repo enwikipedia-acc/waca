@@ -844,7 +844,6 @@ elseif ($action == "usermgmt") {
 			echo showfooter();
 			die();
 			}
-			else {die("No such user, or more than one user with that name. And I am too lazy to make it fail properly");}
 		}
 
 	}
