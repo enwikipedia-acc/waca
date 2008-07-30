@@ -824,7 +824,7 @@ elseif ($action == "usermgmt") {
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			sendtobot("User $siuser changed $olduser's username to $newname\"");
+			sendtobot("User $siuser changed $oldname\'s username to $newname");
 			echo showfooter();
 			die();
 			}
