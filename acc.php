@@ -786,7 +786,7 @@ elseif ($action == "usermgmt") {
                         echo "<form action=\"acc.php?action=usermgmt&amp;rename=1\" method=\"post\">";
                         echo "<div class=\"required\">";
                         echo "<label for=\"oldname\">Old Username:</label>";
-                        echo "<textarea id=\"oldname\" name=\"oldname\" readonly>". mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$_GET['rename']';") . "</textarea>";
+                        echo "<textarea id=\"oldname\" name=\"oldname\" readonly/>" . mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$_GET['rename']';");
                         echo "</div>";
                         echo "<div class=\"required\">";
                         echo "<label for=\"newname\">New Username:</label>";
