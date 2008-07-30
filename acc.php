@@ -830,12 +830,12 @@ elseif ($action == "usermgmt") {
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			echo "Changed User " . $oldname['user_name'] . " name to ". $newname . "<br />\n";
-			$query2 = "SELECT * FROM acc_user WHERE user_id = '{$oldname['user_name']}';";
+			$query2 = "SELECT * FROM acc_user WHERE user_name = '{$oldname['user_name']}';";
 			$result2 = mysql_query($query2);
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			sendtobot("User $siuser changed $oldname['user_name']'s username to $newname");
+			sendtobot("User $siuser changed {$oldname['user_name']}'s username to $newname");
 			echo showfooter();
 			die();
 			}
