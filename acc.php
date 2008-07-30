@@ -783,7 +783,7 @@ elseif ($action == "usermgmt") {
         	if (isset ($_GET['rename'])) {
 		$siuser = sanitize($_SESSION['user']);
 		if ($_POST['newname'] == "") {
-						$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$_GET['rename']';");
+						$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '{$_GET['rename']}';");
 						if (!$result)
 							Die("Query failed: $query ERROR: " . mysql_error());
 						$oldname = mysql_result_assoc($result);
@@ -805,21 +805,21 @@ elseif ($action == "usermgmt") {
 		} else {
 			if ( hasright($_SESSION['user'], "Admin") != TRUE )
 				Die("You don't have the right, and I am too tired to make it fail properly");
-			$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$_GET['rename']';");
+			$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '{$_GET['rename']}';");
 						if (!$result)
 							Die("Query failed: $query ERROR: " . mysql_error());
 			$oldname = mysql_result_assoc($result);
 			$newname = sanitize($_POST['newname']);
-			if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$oldname['user_name']';")) == 1 && mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$newname';")) == 0){
+			if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '{$oldname['user_name']}';")) == 1 && mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$newname';")) == 0){
 			$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_name = '$oldname['user_name']';";
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());						
-			$query = "UPDATE acc_log SET user_name = '$newname' WHERE log_pend = '$oldname['user_name']' AND log_action != 'Renamed';";
+			$query = "UPDATE acc_log SET user_name = '$newname' WHERE log_pend = '{$oldname['user_name']}' AND log_action != 'Renamed';";
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());				
-            $query = "UPDATE acc_log SET log_user = '$newname' WHERE log_user = '$oldname['user_name']'";
+            $query = "UPDATE acc_log SET log_user = '$newname' WHERE log_user = '{$oldname['user_name']}'";
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
