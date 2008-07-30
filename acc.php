@@ -887,7 +887,11 @@ elseif ($action == "usermgmt") {
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
 
-		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -  <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
+		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+		if( $enableRenames == 1 ) {
+			$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a>";
+		}
+		$out .= " - <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
 		echo "$out\n";
 	}
 ?>
