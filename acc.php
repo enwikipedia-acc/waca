@@ -786,7 +786,7 @@ elseif ($action == "usermgmt") {
 						$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$_GET['rename']';");
 						if (!$result)
 							Die("Query failed: $query ERROR: " . mysql_error());
-						$oldname['user_name'] = mysql_result_assoc($result);
+						$oldname = mysql_result_assoc($result);
                         echo "<form action=\"acc.php?action=usermgmt&amp;rename=1\" method=\"post\">";
                         echo "<div class=\"required\">";
                         echo "<label for=\"oldname\">Old Username:</label>";
@@ -808,7 +808,7 @@ elseif ($action == "usermgmt") {
 			$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$_GET['rename']';");
 						if (!$result)
 							Die("Query failed: $query ERROR: " . mysql_error());
-			$oldname['user_name'] = mysql_result_assoc($result);
+			$oldname = mysql_result_assoc($result);
 			$newname = sanitize($_POST['newname']);
 			if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$oldname['user_name']';")) == 1 && mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$newname';")) == 0){
 			$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_name = '$oldname['user_name']';";
