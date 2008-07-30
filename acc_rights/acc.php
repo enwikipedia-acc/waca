@@ -611,7 +611,13 @@ elseif ($action == "usermgmt") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
-	if ($row['user_level'] != "Admin" && $_SESSION['user'] != "SQL") {
+	$suid = $row['user_id'];
+	$query2 = "SELECT * FROM acc_rights WHERE ur_user = '$suid;";
+	$result2 = mysql_query($query2);
+	if (!$result2)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$row2 = mysql_fetch_assoc($result2);
+	if ($row2['ur_right'] != "Admin" && $_SESSION['user'] != "SQL") {
 		echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
 		echo showfooter();
 		die();
@@ -628,8 +634,17 @@ elseif ($action == "usermgmt") {
 			echo "Sorry, the user you are trying to approve has Administrator access. Please use the <a href=\"acc.php?action=usermgmt&amp;demote=$aid\">demote function</a> instead.<br />\n";
 			echo showfooter();
 			die();
-		}		
-		$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$aid';";
+		}
+			$query = "DELETE FROM acc_rights WHERE ur_user = '$aid';";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());		
+		$query = "INSERT INTO acc_rights (
+	ur_user,
+	ur_rights)
+	VALUES(
+	'$aid',
+	'User');";
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -659,7 +674,13 @@ elseif ($action == "usermgmt") {
 			die();
 		} else {
 			$demotersn = sanitize($_POST['demotereason']);
-			$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$did';";
+			$query = "DELETE FROM acc_rights WHERE ur_user = '$did' AND ur_rights = 'Admin';";
+			$query = "INSERT INTO acc_rights (
+	ur_user,
+	ur_rights)
+	VALUES(
+	'$did',
+	'User');";
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
@@ -693,10 +714,16 @@ elseif ($action == "usermgmt") {
 			die();
 		} else {
 			$suspendrsn = sanitize($_POST['suspendreason']);
-			$query = "UPDATE acc_user SET user_level = 'Suspended' WHERE user_id = '$did';";
+			$query = "DELETE FROM acc_rights WHERE ur_user = '$did';";
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
+			$query = "INSERT INTO acc_rights (
+	ur_user,
+	ur_rights)
+	VALUES(
+	'$did',
+	'Suspended');";
 			$now = date("Y-m-d H-i-s");
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$did', '$siuser', 'Suspended', '$now', '$suspendrsn');";
 			$result = mysql_query($query);
@@ -718,7 +745,13 @@ elseif ($action == "usermgmt") {
 	if (isset ($_GET['promote'])) {
 		$aid = sanitize($_GET['promote']);
 		$siuser = sanitize($_SESSION['user']);
-		$query = "UPDATE acc_user SET user_level = 'Admin' WHERE user_id = '$aid';";
+			$query = "DELETE FROM acc_rights WHERE ur_user = '$aid' AND ur_rights = 'User';";
+			$query = "INSERT INTO acc_rights (
+	ur_user,
+	ur_rights)
+	VALUES(
+	'$aid',
+	'Admin');";
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -758,7 +791,13 @@ elseif ($action == "usermgmt") {
 			die();
 		} else {
 			$declinersn = sanitize($_POST['declinereason']);
-			$query = "UPDATE acc_user SET user_level = 'Declined' WHERE user_id = '$did';";
+			$query = "DELETE FROM acc_rights WHERE ur_user = '$did';";
+			$query = "INSERT INTO acc_rights (
+	ur_user,
+	ur_rights)
+	VALUES(
+	'$did',
+	'Declined');";
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
@@ -786,21 +825,29 @@ elseif ($action == "usermgmt") {
     <?php
 
 
-	$query = "SELECT * FROM acc_user WHERE user_level = 'New';";
+	$query = "SELECT * FROM acc_rights WHERE ur_rights = 'New';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	$userid = $row['ur_user'];
 	if (mysql_num_rows($result) != 0){
 	echo "<ol>\n";
-	while ($row = mysql_fetch_assoc($result)) {
-		$uname = $row['user_name'];
-		$uoname = $row['user_onwikiname'];
-		$userid = $row['user_id'];
-		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&amp;decline=$userid\">Decline</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
-		echo "$out\n";
-	}
 	echo "</ol>\n";
 	}
+	else {
+	$query2 = "SELECT * FROM acc_user WHERE user_id = '$userid';";
+	$result2 = mysql_query($query2);
+	if (!$result2)
+		Die("Query failed: $query ERROR: " . mysql_error());
+		while ($row2 = mysql_fetch_assoc($result2)){
+		$uname = $row2['user_name'];
+		$uoname = $row2['user_onwikiname'];
+		$userid = $row2['user_id'];
+		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&amp;decline=$userid\">Decline</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
+		echo "$out\n";
+		}
+		}
 
 ?>
 	<div id="usermgmt-users">
@@ -808,15 +855,21 @@ elseif ($action == "usermgmt") {
     <?php
 
 
-	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Approved') WHERE user_level = 'User' GROUP BY log_pend ORDER BY log_pend DESC;";
+	$query = "SELECT * FROM acc_rights WHERE ur_rights = 'User';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	$userid = $row['ur_user'];
 	echo "<ol>\n";
-	while ($row = mysql_fetch_assoc($result)) {
-		$uname = $row['user_name'];
-		$uoname = $row['user_onwikiname'];
-		$userid = $row['user_id'];
+	$query2 = "SELECT * FROM acc_user WHERE user_id = '$userid';";
+	$result2 = mysql_query($query2);
+	if (!$result2)
+
+	while ($row2 = mysql_fetch_assoc($result)) {
+		$uname = $row2['user_name'];
+		$uoname = $row2['user_onwikiname'];
+		$userid = $row2['user_id'];
 
 		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
 		echo "$out\n";
@@ -829,15 +882,21 @@ elseif ($action == "usermgmt") {
     <?php
 
 
-	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Promoted') WHERE user_level = 'Admin' GROUP BY log_pend ORDER BY log_time ASC;";
+	$query = "SELECT * FROM acc_rights WHERE ur_rights = 'Admin';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	$userid = $row['ur_user'];
 	echo "<ol>\n";
-	while ($row = mysql_fetch_assoc($result)) {
-		$uname = $row['user_name'];
-		$uoname = $row['user_onwikiname'];
-		$userid = $row['user_id'];
+	$query2 = "SELECT * FROM acc_user WHERE user_id = '$userid';";
+	$result2 = mysql_query($query2);
+	if (!$result2)
+
+	while ($row2 = mysql_fetch_assoc($result)) {
+		$uname = $row2['user_name'];
+		$uoname = $row2['user_onwikiname'];
+		$userid = $row2['user_id'];
 		$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Suspended';";
 		$result2 = mysql_query($query);
 		if (!$result2)
@@ -885,15 +944,21 @@ $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action 
     <?php
 
 
-	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Suspended') WHERE user_level = 'Suspended' GROUP BY log_pend ORDER BY log_id DESC;";
+	$query = "SELECT * FROM acc_rights WHERE ur_rights = 'Suspended';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	$userid = $row['ur_user'];
 	echo "<ol>\n";
-	while ($row = mysql_fetch_assoc($result)) {
-		$uname = $row['user_name'];
-		$uoname = $row['user_onwikiname'];
-		$userid = $row['user_id'];
+	$query2 = "SELECT * FROM acc_user WHERE user_id = '$userid';";
+	$result2 = mysql_query($query2);
+	if (!$result2)
+
+	while ($row2 = mysql_fetch_assoc($result)) {
+		$uname = $row2['user_name'];
+		$uoname = $row2['user_onwikiname'];
+		$userid = $row2['user_id'];
 		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
 		echo "$out\n";
 	}
@@ -906,15 +971,21 @@ $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action 
     <?php
 
 
-	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Declined') WHERE user_level = 'Declined' GROUP BY log_pend ORDER BY log_id DESC;";
+	$query = "SELECT * FROM acc_rights WHERE ur_rights = 'Declined';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	$userid = $row['ur_user'];
 	echo "<ol>\n";
-	while ($row = mysql_fetch_assoc($result)) {
-		$uname = $row['user_name'];
-		$uoname = $row['user_onwikiname'];
-		$userid = $row['user_id'];
+	$query2 = "SELECT * FROM acc_user WHERE user_id = '$userid';";
+	$result2 = mysql_query($query2);
+	if (!$result2)
+
+	while ($row2 = mysql_fetch_assoc($result)) {
+		$uname = $row2['user_name'];
+		$uoname = $row2['user_onwikiname'];
+		$userid = $row2['user_id'];
 		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> (Declined by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
 		echo "$out\n";
 	}

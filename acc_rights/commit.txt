@@ -1,1 +1,1 @@
-Add Prodego to the header in 1 more file.
+Rewrite user management to support system with multiple user rights per user.
