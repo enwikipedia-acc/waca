@@ -782,11 +782,11 @@ elseif ($action == "usermgmt") {
 	
         	if (isset ($_GET['rename'])) {
 		$siuser = sanitize($_SESSION['user']);
-		if ($_POST['oldname'] == "" || $_POST['newname'] == "") {
+		if ($_POST['newname'] == "") {
                         echo "<form action=\"acc.php?action=usermgmt&amp;rename=1\" method=\"post\">";
                         echo "<div class=\"required\">";
                         echo "<label for=\"oldname\">Old Username:</label>";
-                        echo "<input id=\"oldname\" type=\"text\" name=\"oldname\"/>";
+                        echo "<textarea id=\"oldname\" name=\"oldname\" readonly>". mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$_GET['rename']';") . "</textarea>";
                         echo "</div>";
                         echo "<div class=\"required\">";
                         echo "<label for=\"newname\">New Username:</label>";
@@ -801,7 +801,7 @@ elseif ($action == "usermgmt") {
 		} else {
 			if ( hasright($_SESSION['user'], "Admin") != TRUE )
 				Die("You don't have the right, and I am too tired to make it fail properly");
-			$oldname = sanitize($_POST['oldname']);
+			$oldname = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$_GET['rename']';");
 			$newname = sanitize($_POST['newname']);
 			if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$oldname';")) == 1 && mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$newname';")) == 0){
 			$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_name = '$oldname';";
