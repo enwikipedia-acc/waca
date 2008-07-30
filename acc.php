@@ -803,7 +803,7 @@ elseif ($action == "usermgmt") {
 				Die("You don't have the right, and I am too tired to make it fail properly");
 			$oldname = sanitize($_POST['oldname']);
 			$newname = sanitize($_POST['newname']);
-			if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$oldname';")) == 1){
+			if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$oldname';")) == 1 && mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$newname';")) == 0){
 			$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_name = '$oldname';";
 			$result = mysql_query($query);
 			if (!$result)
@@ -813,7 +813,7 @@ elseif ($action == "usermgmt") {
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$now = date("Y-m-d H-i-s");
-			$logentry = $oldname . "to" . $newname;
+			$logentry = $oldname . " to " . $newname;
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$logentry', '$siuser', 'Renamed', '$now', '');";
 			$result = mysql_query($query);
 			if (!$result)
@@ -824,7 +824,7 @@ elseif ($action == "usermgmt") {
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			sendtobot("User (" . $oldname . ") name changed by $siuser to: \"" . $newname . "\"");
+			sendtobot("User $siuser changed $olduser's username to $newname\"");
 			echo showfooter();
 			die();
 			}
