@@ -266,6 +266,8 @@ function checksecurity($username) {
 		echo "<br /><big><strong>To appeal this decision, please e-mail <a href=\"mailto:accounts-enwiki-l@lists.wikimedia.org\">accounts-enwiki-l@lists.wikimedia.org</a> with the above information, and a reasoning why you believe you should be approved for this interface.</strong></big><br />\n";
 		echo showfootern();
 		die();
+	} elseif (hasright($username, "User") || (hasright($username, "Admin") ) {
+	}
 	} else {
 		die("Not logged in!");
 	}
