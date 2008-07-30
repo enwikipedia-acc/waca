@@ -399,7 +399,13 @@ elseif ($action == "messagemgmt") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
-		if ($row['user_level'] != "Admin" && $_SESSION['user'] != "SQL") {
+		$suid = $row['user_id'];
+		$query2 = "SELECT * FROM acc_rights WHERE ur_user = $suid;";
+		$result2 = mysql_query($query2);
+		if (!$result2)
+			Die("Query failed: $query2 ERROR: " . mysql_error());
+		$row2 = mysql_fetch_assoc($result);
+		if ($row2['ur_rights'] != "Admin" && $_SESSION['user'] != "SQL") {
 			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
 			echo showfooter();
 			die();
