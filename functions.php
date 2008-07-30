@@ -229,7 +229,7 @@ function checksecurity($username) {
 	/*
 	* Check the user's security level on page load, and bounce accordingly
 	*/
-	
+	global $secure;
 	if (hasright($username, "New")) {
 		echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
 		echo showfootern();
@@ -267,7 +267,7 @@ function checksecurity($username) {
 		echo showfootern();
 		die();
 	} elseif (hasright($username, "User") || hasright($username, "Admin") ) {
-	
+		$secure = 1;
 	} else {
 		die("Not logged in!");
 	}
@@ -281,6 +281,8 @@ function listrequests($type) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
+	global $secure;
+	if($secure != 1) { die("Not logged in");
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or print mysql_error();
 	if ($type == 'Admin' || $type == 'Open') {
