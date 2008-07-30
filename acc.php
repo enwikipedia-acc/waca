@@ -797,14 +797,14 @@ elseif ($action == "usermgmt") {
                         echo "</div>";
                         echo "</form>";
 			echo showfooter();
+			print_r($_POST['oldname']);
+			print_r($_POST['newname']);
 			die();
 		} else {
 			if ( hasright($_SESSION['user'], "Admin") != TRUE )
 				Die("You don't have the right, and I am too tired to make it fail properly");
 			$oldname = sanitize($_POST['oldname']);
 			$newname = sanitize($_POST['newname']);
-			print_r($oldname);
-			print_r($newname);
 			$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_name = '$oldname';";
 			$result = mysql_query($query);
 			if (!$result)
