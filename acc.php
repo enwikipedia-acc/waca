@@ -808,7 +808,12 @@ elseif ($action == "usermgmt") {
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
-                        $query = "UPDATE acc_log SET log_user = '$newname' WHERE log_user = '$oldname'";
+						
+			$query = "UPDATE acc_user SET user_name = '$newname' WHERE log_pend = '$oldname' AND log_action != 'Renamed';";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());				
+            $query = "UPDATE acc_log SET log_user = '$newname' WHERE log_user = '$oldname'";
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
@@ -824,7 +829,7 @@ elseif ($action == "usermgmt") {
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			sendtobot("User $siuser changed $oldname\'s username to $newname");
+			sendtobot("User $siuser changed $oldname's username to $newname");
 			echo showfooter();
 			die();
 			}
