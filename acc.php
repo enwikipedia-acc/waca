@@ -946,7 +946,11 @@ $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action 
 		$row2 = mysql_fetch_assoc($result2);
 		$declined = $row2['COUNT(*)'];
 
-		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -  <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;demote=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined])</small></li>";
+		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+		if( $enableRenames == 1 ) {
+			$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a>";
+		}
+		$out .= " - <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;demote=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined])</small></li>";
 		echo "$out\n";
 	}
 ?>
