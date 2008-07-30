@@ -49,7 +49,7 @@ if ( !isset ( $_SESSION['user'] ) && !isset ( $_GET['nocheck'] ) ) {
 		die( );
 	}
 }
-elseif ( !isset ( $_GET['action'] ) || $_GET['action'] != "login" || $_GET['action'] != "register" || $_GET['action'] != "sreg" ) {
+elseif ( !isset ( $_GET['nocheck'] ) && $_GET['action'] == 'login' ) {
 	echo makehead( $_SESSION['user'] );
 	checksecurity( $_SESSION['user'] );
 	$out = showmessage( '20' );
