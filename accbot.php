@@ -17,7 +17,7 @@
 	**Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
 	**Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
 	**OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
-	**  Prodego ( http://en.wikipedia.org/wiki/User:Prodego )	 **
+	**Prodego ( http://en.wikipedia.org/wiki/User:Prodego )	 **
 	**                                                           **
 	**************************************************************/
 
@@ -335,7 +335,7 @@
 			$today = $today['count'];
 
 			irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $username . ' (' . $user['user_level'] . ') has closed ' . $count
-				. ' requests as \'Done\', ' . ( ( $today == 0 ) ? 'none' : $today ) . ' of them today. ' . $adminInfo );
+				. ' requests as \'Created\', ' . ( ( $today == 0 ) ? 'none' : $today ) . ' of them today. ' . $adminInfo );
 		} else {
 			irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $username . ' is not a valid username.' );
 		}
