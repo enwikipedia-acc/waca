@@ -267,7 +267,7 @@ function checksecurity($username) {
 		echo showfootern();
 		die();
 	} elseif (hasright($username, "User") || hasright($username, "Admin") ) {
-	}
+	
 	} else {
 		die("Not logged in!");
 	}
