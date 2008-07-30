@@ -282,7 +282,7 @@ function listrequests($type) {
 	global $toolserver_host;
 	global $toolserver_database;
 	global $secure;
-	if($secure != 1) { die("Not logged in");
+	if($secure != 1) { die("Not logged in"); }
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or print mysql_error();
 	if ($type == 'Admin' || $type == 'Open') {
