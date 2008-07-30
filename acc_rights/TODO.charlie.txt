@@ -1,0 +1,12 @@
+Charlie's Todo list
+-=-=-=-=-=-=-=-=-=-
+- Clean up the Interface design to make it look better >_>
+
+Working on
+-=-=-=-=-=
+- Rewrite the entire interface with Ruby on Rails, cleaning up the code and my interface design
+in the process. ;-)
+
+Done
+-=-=
+- Make the font size smaller

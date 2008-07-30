@@ -1,0 +1,176 @@
+SQL Structure
+
+mysql> SHOW tables;
++-----------------+
+| Tables_in_p_acc |
++-----------------+
+| acc_ban         | 
+| acc_emails      | 
+| acc_log         | 
+| acc_pend        | 
+| acc_user        | 
+| acc_welcome     | 
++-----------------+
+6 rows in set (0.00 sec)
+
+acc_emails
+This table is used to store the canned e-mail responses.
+
+
+mysql> DESCRIBE acc_emails;
++------------+--------------+------+-----+---------+----------------+
+| Field      | Type         | Null | Key | Default | Extra          |
++------------+--------------+------+-----+---------+----------------+
+| mail_id    | int(11)      | NO   | PRI | NULL    | auto_increment | 
+| mail_text  | blob         | NO   |     | NULL    |                | 
+| mail_count | int(11)      | NO   |     | NULL    |                | 
+| mail_desc  | varchar(255) | NO   |     | NULL    |                | 
+| mail_type  | varchar(255) | NO   |     | NULL    |                | 
++------------+--------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+
+
+*mail_id - Table key
+*mail_text - The text of the canned mail
+*mail_count - Per-mail usage counters
+*mail_desc - Message description
+*mail_type - Type of message. May be used to specify email or interface presently.
+
+acc_log
+This table contains logging data.
+
+mysql> describe acc_log;
++------------+--------------+------+-----+---------+----------------+
+| Field      | Type         | Null | Key | Default | Extra          |
++------------+--------------+------+-----+---------+----------------+
+| log_id     | int(11)      | NO   | PRI | NULL    | auto_increment | 
+| log_pend   | varchar(255) | NO   |     | NULL    |                | 
+| log_user   | varchar(255) | NO   |     | NULL    |                | 
+| log_action | varchar(255) | NO   |     | NULL    |                | 
+| log_time   | datetime     | NO   |     | NULL    |                | 
+| log_cmt    | blob         | NO   |     | NULL    |                | 
++------------+--------------+------+-----+---------+----------------+
+6 rows in set (0.00 sec)
+
+
+*log_id - Table key
+*log_pend - pend_id linked to the logged event, or, user_id of the affected system user
+*log_user - Username of the user performing the action
+*log_action - The action performed
+*log_time - Timestamp
+*log_cmt - Used for comments on some actions (presently only user decline and suspend)
+
+acc_pend
+This table contains pending requests.
+
+mysql> describe acc_pend;
++------------------+--------------+------+-----+-------------------+----------------+
+| Field            | Type         | Null | Key | Default           | Extra          |
++------------------+--------------+------+-----+-------------------+----------------+
+| pend_id          | int(11)      | NO   | PRI | NULL              | auto_increment | 
+| pend_email       | varchar(512) | NO   |     | NULL              |                | 
+| pend_ip          | varchar(255) | NO   |     | NULL              |                | 
+| pend_name        | varchar(512) | NO   |     | NULL              |                | 
+| pend_cmt         | mediumtext   | NO   |     | NULL              |                | 
+| pend_status      | varchar(255) | NO   |     | NULL              |                | 
+| pend_date        | timestamp    | NO   |     | CURRENT_TIMESTAMP |                | 
+| pend_checksum    | varchar(256) | NO   |     | NULL              |                | 
+| pend_emailsent   | varchar(10)  | NO   |     | NULL              |                | 
+| pend_mailconfirm | varchar(255) | NO   |     | NULL              |                | 
++------------------+--------------+------+-----+-------------------+----------------+
+10 rows in set (0.00 sec)
+
+*pend_id - Table key
+*pend_email - E-mail supplied by requesting user
+*pend_ip - IP of the requesting user
+*pend_name - Requested username
+*pend_cmt - Comments from requesting user
+*pend_status - Status of this request
+*pend_date - Date of this request
+*pend_checksum - A checksum of this request
+*pend_emailsent - If the user has been sent an email
+*pend_mailconfirm - A salted, random value used in e-mail confirmation
+
+acc_user
+This table contains all internal user data.
+
+mysql> DESCRIBE acc_user;
++-----------------------+---------------+------+-----+---------+----------------+
+| Field                 | Type          | Null | Key | Default | Extra          |
++-----------------------+---------------+------+-----+---------+----------------+
+| user_id               | int(11)       | NO   | PRI | NULL    | auto_increment | 
+| user_name             | varchar(255)  | NO   |     | NULL    |                | 
+| user_email            | varchar(255)  | NO   |     | NULL    |                | 
+| user_pass             | varchar(255)  | NO   |     | NULL    |                | 
+| user_level            | varchar(255)  | NO   |     | NULL    |                | 
+| user_onwikiname       | varchar(255)  | NO   |     | NULL    |                | 
+| user_welcome          | int(11)       | NO   |     | 0       |                | 
+| user_welcome_sig      | varchar(4096) | NO   |     | NULL    |                | 
+| user_welcome_template | varchar(1024) | NO   |     | NULL    |                | 
+| user_lastactive       | datetime      | NO   |     | NULL    |                | 
++-----------------------+---------------+------+-----+---------+----------------+
+10 rows in set (0.01 sec)
+
+
+*user_id - Table key
+*user_name - The user's chosen name
+*user_email - The user's e-mail address
+*user_pass - The user's password (stored in a one-way cipher)
+*user_level - The user's access level (New, User, Admin, Suspended, Declined presently)
+*user_onwikiname - The user's on-wiki name.
+*user_welcome - Set welcoming on or off. 0 for off, 1 for on. Default 1
+*user_welcome_sig - The user's preferred welcome sig
+*user_welcome_template - The user's preferred welcoming template
+*user_lastactive - Timestamp of the last time the user accessed acc.php, used for 'whos online' stats
+
+acc_ban
+This table holds e-mail addresses and IP's that are banned from the request system.
+mysql> describe acc_ban;
++--------------+---------------+------+-----+---------+----------------+
+| Field        | Type          | Null | Key | Default | Extra          |
++--------------+---------------+------+-----+---------+----------------+
+| ban_id       | int(11)       | NO   | PRI | NULL    | auto_increment | 
+| ban_type     | varchar(255)  | NO   |     | NULL    |                | 
+| ban_target   | varchar(700)  | NO   | UNI | NULL    |                | 
+| ban_user     | varchar(255)  | NO   |     | NULL    |                | 
+| ban_reason   | varchar(4096) | NO   |     | NULL    |                | 
+| ban_date     | varchar(1024) | NO   |     | NULL    |                | 
+| ban_duration | varchar(255)  | NO   |     | NULL    |                | 
++--------------+---------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+
+*ban_id - Table key
+*ban_type - Type of ban? E-mail or IP presently
+*ban_target - IP or E-mail addy of ban target
+*ban_user - Username of admin setting ban
+*ban_reason - Why?
+*ban_date - Time ban was set
+*ban_duration - Ban duration, in seconds
+
+acc_welcome
+This table holds pending and closed welcomes.
+mysql> describe acc_welcome;
++------------------+---------------+------+-----+---------+----------------+
+| Field            | Type          | Null | Key | Default | Extra          |
++------------------+---------------+------+-----+---------+----------------+
+| welcome_id       | int(11)       | NO   | PRI | NULL    | auto_increment | 
+| welcome_uid      | int(11)       | NO   |     | NULL    |                | 
+| welcome_user     | varchar(1024) | NO   |     | NULL    |                | 
+| welcome_sig      | varchar(4096) | NO   |     | NULL    |                | 
+| welcome_status   | varchar(96)   | NO   |     | NULL    |                | 
+| welcome_pend     | int(11)       | NO   |     | NULL    |                | 
+| welcome_template | varchar(2048) | NO   |     | NULL    |                | 
++------------------+---------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+
+*welcome_id - Table key
+*welcome_uid - acc_user / user_id of the user that requested the operation
+*welcome_user - Username of the user to be welcomed
+*welcome_sig - The welcoming user's signature
+*welcome_status - The status of this operation
+*welcome_template - The template to use
+*welcome_pend - acc_pend / pend_id of the closed request.
+

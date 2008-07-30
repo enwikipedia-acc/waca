@@ -1,0 +1,24 @@
+prettify the code, and interface
+
+==Localisation Statistics==
+
+Options still to move: irc connection stuff
+
+acc.php 		complete:[host, database]
+accbot.php 		complete:[host, database]
+accstats.php 		complete:[host, database]
+blacklist.php 		complete:[host, database]
+index.php 		complete:[host, database]
+sqlbot-hello.php	complete:[host, database]
+users.php		complete:[host, database]
+
+
+settings to move:
+accbot.php:
+
+$host = "irc.freenode.org";
+$port=6667;
+$nick="ACCBot";
+$ident="ACCBot";
+$chan="#wikipedia-en-accounts";
+$realname = "ACC Bot";
