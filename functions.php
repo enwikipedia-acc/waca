@@ -234,13 +234,11 @@ function checksecurity($username) {
 		echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
 		echo showfootern();
 		die();
-	}
-	if (hasright($username, "Suspended")) {
+	} elseif (hasright($username, "Suspended")) {
 		echo "I'm sorry, but, your account is presently suspended.<br />\n";
 		echo showfootern();
 		die();
-	}
-	if (hasright($username, "Declined")) {
+	} elseif (hasright($username, "Declined")) {
 		$username = sanitize($username);
 		$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
 		$result = mysql_query($query);
@@ -268,6 +266,8 @@ function checksecurity($username) {
 		echo "<br /><big><strong>To appeal this decision, please e-mail <a href=\"mailto:accounts-enwiki-l@lists.wikimedia.org\">accounts-enwiki-l@lists.wikimedia.org</a> with the above information, and a reasoning why you believe you should be approved for this interface.</strong></big><br />\n";
 		echo showfootern();
 		die();
+	} else {
+		die("Not logged in!");
 	}
 }
 
