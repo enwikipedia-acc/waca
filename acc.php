@@ -803,6 +803,7 @@ elseif ($action == "usermgmt") {
 				Die("You don't have the right, and I am too tired to make it fail properly");
 			$oldname = sanitize($_POST['oldname']);
 			$newname = sanitize($_POST['newname']);
+			if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$oldname';")) == 1){
 			$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_name = '$oldname';";
 			$result = mysql_query($query);
 			if (!$result)
@@ -817,7 +818,7 @@ elseif ($action == "usermgmt") {
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
-			echo "Changed User " . $oldname . " name to . $newname . '<br />\n";
+			echo "Changed User " . $oldname . " name to ". $newname . "<br />\n";
 			$query2 = "SELECT * FROM acc_user WHERE user_id = '$oldname';";
 			$result2 = mysql_query($query2);
 			if (!$result2)
@@ -826,6 +827,8 @@ elseif ($action == "usermgmt") {
 			sendtobot("User (" . $oldname . ") name changed by $siuser to: \"" . $newname . "\"");
 			echo showfooter();
 			die();
+			}
+			else {die("No such user, or more than one user with that name. And I am too lazy to make it fail properly);}
 		}
 
 	}
@@ -1289,6 +1292,9 @@ elseif ($action == "zoom") {
 		if ($rla == "Blacklist Hit") {
 			echo "<li>$rlu Rejected by Blacklist $rlp, " . $row['log_cmt'] . " at $rlt.</li>\n";
 		}
+		if ($rla == "Renamed") {
+			echo "<li>$rlu renamed user $rlp to $newname at $rlt.</li>\n";
+		}
 	}
 
 	echo "</ol>\n";
@@ -1434,11 +1440,10 @@ elseif ($action == "logs") {
 			}
 			echo "<li>$rlu $rla, User $rlp (" . $row2['user_name'] . ") at $rlt$moreinfo.</li>\n";
 		}
-	}
 		if ($rla == "Renamed") {
 			echo "<li>$rlu renamed user $rlp to $newname at $rlt.</li>\n";
-
 		}
+	}
 	echo "</ol>\n";
 	echo $n1;
 	echo showfooter();
