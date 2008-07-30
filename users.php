@@ -140,7 +140,8 @@ if ($_GET['viewuser'] != "") {
 	echo "</ol>\n";
 	}
 	echo "<h2>Account log</h2>\n";
-	$query = "SELECT * FROM acc_log where log_pend RLIKE '%$gid%' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted|Demoted|Renamed)';";
+	$regexname = "%" . $gid . "%";
+	$query = "SELECT * FROM acc_log where log_pend LIKE '$regexname' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted|Demoted|Renamed)';";
 	echo "\n\n<!-- RQ = $query -->\n\n";
 	$result = mysql_query($query);
 	if (!$result)
