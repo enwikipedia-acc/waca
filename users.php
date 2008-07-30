@@ -139,8 +139,8 @@ if ($_GET['viewuser'] != "") {
 	}
 	echo "</ol>\n";
 	}
-	echo "<h2>Rights log</h2>\n";
-	$query = "SELECT * FROM acc_log where log_pend = '$gid' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted|Demoted)';";
+	echo "<h2>Account log</h2>\n";
+	$query = "SELECT * FROM acc_log where log_pend = '$gid' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted|Demoted|Renamed)';";
 	echo "\n\n<!-- RQ = $query -->\n\n";
 	$result = mysql_query($query);
 	if (!$result)
@@ -167,10 +167,15 @@ if ($_GET['viewuser'] != "") {
 			Die("ERROR: No result returned.");
 		$uid_r = mysql_fetch_assoc($uid_result);
 		$userid = $uid_r['user_id'];
+		if ($pa == "Renamed") {
+		echo "<li><a href=\"users.php?viewuser=$userid\">$rlu</a> renamed user $rlp at $rlt.</li>\n";
+		}
+		else {
 		echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> <strong>$pa</strong> $username at $pt$comments</li>\n";
 		if( $pa == "Approved" ) { $approved = 1; }
 		$pc = "";
 		$row['log_cmt'] = "";
+		}
 	}
 	echo "</ol>\n";
 	}

@@ -1324,7 +1324,7 @@ elseif ($action == "zoom") {
 			echo "<li>$rlu Rejected by Blacklist $rlp, " . $row['log_cmt'] . " at $rlt.</li>\n";
 		}
 		if ($rla == "Renamed") {
-			echo "<li>$rlu renamed user $rlp to $newname at $rlt.</li>\n";
+			echo "<li>$rlu renamed user $rlp at $rlt.</li>\n";
 		}
 	}
 
@@ -1472,7 +1472,7 @@ elseif ($action == "logs") {
 			echo "<li>$rlu $rla, User $rlp (" . $row2['user_name'] . ") at $rlt$moreinfo.</li>\n";
 		}
 		if ($rla == "Renamed") {
-			echo "<li>$rlu renamed user $rlp to $newname at $rlt.</li>\n";
+			echo "<li>$rlu renamed user $rlp at $rlt.</li>\n";
 		}
 	}
 	echo "</ol>\n";
