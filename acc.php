@@ -56,8 +56,7 @@ elseif ( !isset ( $_GET['nocheck'] ) && $_GET['action'] == 'login' ) {
 	$out .= "<div id=\"content\">";
 	echo $out;
 } else {
-	$out = showmessage( '20' );
-	$out .= "<div id=\"content\">";
+	echo defaultpage( );
 }
 
 if ( $action == '' ) {
