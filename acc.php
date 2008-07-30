@@ -782,7 +782,7 @@ elseif ($action == "usermgmt") {
 	
         	if (isset ($_GET['rename'])) {
 		$siuser = sanitize($_SESSION['user']);
-		if ($_POST['rename'] == "") {
+		if ($_POST['oldname'] == "" || $_POST['newname'] == "") {
                         echo "<form action=\"acc.php?action=usermgmt&amp;rename=1\" method=\"post\">";
                         echo "<div class=\"required\">";
                         echo "<label for=\"oldname\">Old Username:</label>";
@@ -797,8 +797,6 @@ elseif ($action == "usermgmt") {
                         echo "</div>";
                         echo "</form>";
 			echo showfooter();
-			print_r($_POST['oldname']);
-			print_r($_POST['newname']);
 			die();
 		} else {
 			if ( hasright($_SESSION['user'], "Admin") != TRUE )
