@@ -783,10 +783,13 @@ elseif ($action == "usermgmt") {
         	if (isset ($_GET['rename'])) {
 		$siuser = sanitize($_SESSION['user']);
 		if ($_POST['newname'] == "") {
+						$oldname = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$_GET['rename']';");
+						if (!$result)
+							Die("Query failed: $query ERROR: " . mysql_error());
                         echo "<form action=\"acc.php?action=usermgmt&amp;rename=1\" method=\"post\">";
                         echo "<div class=\"required\">";
                         echo "<label for=\"oldname\">Old Username:</label>";
-                        echo "<textarea id=\"oldname\" name=\"oldname\" readonly/>" . mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$_GET['rename']';");
+                        echo "<textarea id=\"oldname\" name=\"oldname\" readonly>" . $oldname . "</textarea>";
                         echo "</div>";
                         echo "<div class=\"required\">";
                         echo "<label for=\"newname\">New Username:</label>";
