@@ -779,9 +779,58 @@ elseif ($action == "usermgmt") {
 			die();
 		}
 	}
+	
+        	if (isset ($_GET['rename'])) {
+		$siuser = sanitize($_SESSION['user']);
+		if ($_POST['rename'] == "") {
+                        echo "<form action=\"acc.php?action=usermgmt&amp;rename=1\" method=\"post\">";
+                        echo "<div class=\"required\">";
+                        echo "<label for=\"oldname\">Old Username:</label>";
+                        echo "<input id=\"oldname\" type=\"text\" name=\"oldname\"/>";
+                        echo "</div>";
+                        echo "<div class=\"required\">";
+                        echo "<label for=\"newname\">New Username:</label>";
+                        echo "<input id=\"newname\" type=\"text\" name=\"newname\"/>";
+                        echo "</div>";
+                        echo "<div class=\"submit\">";
+                        echo "<input type=\"submit\"/>";
+                        echo "</div>";
+                        echo "</form>";
+			echo showfooter();
+			die();
+		} else {
+                        $oldname = sanitize($_POST['oldname']);
+                        $newname = sanitize($_POST['newname']);
+			$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_name = '$oldname';";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+                        $query = "UPDATE acc_log SET log_user = '$newname' WHERE log_user = '$oldname'";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$now = date("Y-m-d H-i-s");
+			$logentry = $oldname . "to" . $newname;
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$logentry', '$siuser', 'Renamed', '$now', '');";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			echo "Changed User " . $oldname . " name to . $newname . '<br />\n";
+			$query2 = "SELECT * FROM acc_user WHERE user_id = '$oldname';";
+			$result2 = mysql_query($query2);
+			if (!$result2)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$row2 = mysql_fetch_assoc($result2);
+			sendtobot("User (" . $oldname . ") name changed by $siuser to: \"" . $newname . "\"");
+			echo showfooter();
+			die();
+		}
+
+	}
 ?>
     <h1>User Management</h1>
     <strong>This interface isn't a toy. If it says you can do it, you can do it.<br />Please use this responsibly.</strong>
+    <a href="acc.php?action=usermgmt&rename=1">Rename user</a>
     <h2>Open requests</h2>
     <?php
 
@@ -1384,10 +1433,13 @@ elseif ($action == "logs") {
 			echo "<li>$rlu $rla, User $rlp (" . $row2['user_name'] . ") at $rlt$moreinfo.</li>\n";
 		}
 	}
+		if ($rla == "Renamed") {
+			echo "<li>$rlu renamed user $rlp to $newname at $rlt.</li>\n";
+
+		}
 	echo "</ol>\n";
 	echo $n1;
 	echo showfooter();
 	die();
 }
 ?>
-
