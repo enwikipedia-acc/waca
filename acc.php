@@ -49,14 +49,12 @@ if ( !isset ( $_SESSION['user'] ) && !isset ( $_GET['nocheck'] ) ) {
 		die( );
 	}
 }
-elseif ( !isset ( $_GET['nocheck'] ) && $_GET['action'] == 'login' ) {
+elseif ( !isset ( $_GET['nocheck'] ) ) {
 	echo makehead( $_SESSION['user'] );
 	checksecurity( $_SESSION['user'] );
 	$out = showmessage( '20' );
 	$out .= "<div id=\"content\">";
 	echo $out;
-} else {
-	echo defaultpage( );
 }
 
 if ( $action == '' ) {
