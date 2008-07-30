@@ -168,7 +168,7 @@ if ($_GET['viewuser'] != "") {
 		$uid_r = mysql_fetch_assoc($uid_result);
 		$userid = $uid_r['user_id'];
 		if ($pa == "Renamed") {
-		echo "<li><a href=\"users.php?viewuser=$userid\">$rlu</a> renamed user $rlp at $rlt.</li>\n";
+		echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> <strong>$pa</strong> user $rlp at $rlt.</li>\n";
 		}
 		else {
 		echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> <strong>$pa</strong> $username at $pt$comments</li>\n";
