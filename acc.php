@@ -975,7 +975,7 @@ $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action 
 		if( $enableRenames == 1 ) {
 			$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
 		}
-		out .= " <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
+		$out .= " <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
 		echo "$out\n";
 	}
 ?>
