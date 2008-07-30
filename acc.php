@@ -807,9 +807,8 @@ elseif ($action == "usermgmt") {
 			$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_name = '$oldname';";
 			$result = mysql_query($query);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error());
-						
-			$query = "UPDATE acc_user SET user_name = '$newname' WHERE log_pend = '$oldname' AND log_action != 'Renamed';";
+				Die("Query failed: $query ERROR: " . mysql_error());						
+			$query = "UPDATE acc_log SET user_name = '$newname' WHERE log_pend = '$oldname' AND log_action != 'Renamed';";
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());				
