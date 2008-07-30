@@ -817,7 +817,7 @@ elseif ($action == "usermgmt") {
 					Die("Rename form corrupted");
 			if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$oldname';")) != 1 || mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$newname';")) != 0)
 				die("Target username in use, or current user does not exist.");
-			$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_name = '$oldname';";
+			$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_id = '$userid';";
 			$result = mysql_query($query);
 			$tgtmessage = "User " . $_GET['rename'] . " (" . $oldname . ")";
 			if (!$result)
