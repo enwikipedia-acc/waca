@@ -562,7 +562,7 @@ function hasright($username, $checkright) {
 		Die("Query failed: $query2 ERROR: " . mysql_error());
 	}
 	$row2 = mysql_fetch_assoc($result2);
-	$rights = explode(':', $row2['user_level']);
+	$rights = explode(':', $row2['ur_rights']);
 	foreach( $rights as $right) {
 		if($right == $checkright ) {
 			return true;
