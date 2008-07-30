@@ -788,8 +788,7 @@ elseif ($action == "usermgmt") {
 						if (!$result)
 							Die("Query failed: $query ERROR: " . mysql_error());
 						$oldname = mysql_fetch_assoc($result);
-                        echo "<form action=\"acc.php?action=usermgmt&amp;rename=1\" method=\"post\">";						
-                        echo "<input id=\"userid\" type=\"hidden\" name=\"userid\" value=\"" . $_GET['rename'] . "\" />";
+                        echo "<form action=\"acc.php?action=usermgmt&amp;rename=" . $_GET['rename'] . "\" method=\"post\">";						
                         echo "<div class=\"required\">";
                         echo "<label for=\"oldname\">Old Username:</label>";
                         echo "<input id=\"oldname\" type=\"text\" name=\"oldname\" readonly=\"readonly\" value=\"" . stripslashes($oldname['user_name']) . "\"/>";
@@ -809,6 +808,7 @@ elseif ($action == "usermgmt") {
 				Die("You don't have the right, and I am too tired to make it fail properly");
 			$oldname = sanitize($_POST['oldname']);
 			$newname = sanitize($_POST['newname']);
+			$userid = sanitize($_GET['rename']);
 			$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$userid';");
 				if (!$result)
 					Die("Query failed: $query ERROR: " . mysql_error());
