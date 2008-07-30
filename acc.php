@@ -50,7 +50,7 @@ if ( !isset ( $_SESSION['user'] ) && !isset ( $_GET['nocheck'] ) ) {
 	}
 }
 elseif ( !isset ( $_GET['nocheck'] ) ) {
-		if( $_GET['action'] != "login" || $_GET['action'] != "sreg" || ) {
+		if( $_GET['action'] != "login" || $_GET['action'] != "sreg" ) {
 			die("NO.");
 		}
 	echo makehead( $_SESSION['user'] );
