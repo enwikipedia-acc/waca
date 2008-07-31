@@ -31,8 +31,10 @@ function showfooter() {
 mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 @ mysql_select_db($toolserver_database) or print mysql_error();
 if ($_GET['edituser'] != "") {
+	displayheader();
 	$sid = sanitize($_SESSION['user']);
-	if (!hasright($sid, "Admin"))
+	if (!hasright($_SESSION['user'], "Admin"))
+		echo
 		Die("You are not authorized to edit account data");
 	if ($_POST['user_email'] == "" || $_POST['user_onwikiname'] == "")
 	{
