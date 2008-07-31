@@ -64,7 +64,6 @@
 	addHelp( 'svnup'      , ''          , 'Allows you to sync the live server with the SVN repository.'         );
 	addHelp( 'restart'    , ''          , 'Causes the bot to do an immediate graceful reinitialization.'        );
 	addHelp( 'recreatesvn', ''          , 'Attempts to fix the live copy of the site.'                          );
-	addHelp( 'sync-msgs'  , ''          , 'Syncs the sandbox messages to the live copy.'                        );
 	addHelp( 'svn'        , '<params>'  , 'Runs a SVN command.'                                                 );
 
 	// Commands
@@ -75,7 +74,6 @@
 	addCommand( 'stats'      , 'commandStats'      , false );
 	addCommand( 'svninfo'    , 'commandSvnInfo'    , true  );
 	addCommand( 'sand-svnup' , 'commandSandSvnUp'  , true  );
-	addCommand( 'sync-msgs'  , 'commandSyncMsg'    , true  );
 	addCommand( 'svnup'      , 'commandSvnUp'      , true  );
 	addCommand( 'restart'    , 'commandRestart'    , false );
 	addCommand( 'recreatesvn', 'commandRecreateSvn', true  );
@@ -108,7 +106,6 @@
 
 	$privgroups[ 'developer' ]                  = $privgroups['*']; // 'developer' inherits '*'.
 	$privgroups[ 'developer' ][ 'sand-svnup'  ] = 1;
-	$privgroups[ 'developer' ][ 'sync-msgs'   ] = 1;
 
 	$privgroups[ 'root'      ]                  = $privgroups['developer']; // 'root' inherits 'developer'.
 	$privgroups[ 'root'      ][ 'svnup'       ] = 1;
@@ -435,18 +432,6 @@
 		}
 		pclose( $svn );
 		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Please see the sandbox at http://stable.toolserver.org/acc/sand/acc.php' );
-	}
-
-	function commandSyncMsg( $parsed ) {
-		$msgup = popen( 'sh /home/sql/public_html/acc/bak/updem.sh 2>&1', 'r' );
-		while( !feof( $msgup ) ) {
-			$msgin = trim( fgets( $msgup, 512 ) );
-			if( $msgin != '' ) {
-				irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': ' . str_replace( array( "\n", "\r" ), '', $svnin ) );
-			}
-			sleep( 1 );
-		}
-		pclose( $msgup );
 	}
 
 	function commandSvnUp( $parsed ) {
