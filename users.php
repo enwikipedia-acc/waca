@@ -34,8 +34,7 @@ if ($_GET['edituser'] != "") {
 	displayheader();
 	$sid = sanitize($_SESSION['user']);
 	if (!hasright($_SESSION['user'], "Admin"))
-		echo "{$_SESSION['user']}";
-		Die("You are not authorized to edit account data");
+		Die("You are not authorized to edit account data {$_SESSION['user']}");
 	if ($_POST['user_email'] == "" || $_POST['user_onwikiname'] == "")
 	{
 	displayheader();
