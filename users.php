@@ -127,6 +127,7 @@ if ($_GET['viewuser'] != "") {
 		$pt = $row['log_time'];
 		$pa = $row['log_action'];
 		$lp = $row['log_pend'];
+		$lc = $row['log_cmt'];
 		$pu_s = mysql_real_escape_string($pu);
 		$comments = "";
 		if( $row['log_cmt'] != "" ) {
@@ -141,7 +142,7 @@ if ($_GET['viewuser'] != "") {
 		$uid_r = mysql_fetch_assoc($uid_result);
 		$userid = $uid_r['user_id'];
 		if ($pa == "Renamed") {
-		echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> <strong>$pa</strong> user $lp at $pt.</li>\n";
+		echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> <strong>$pa</strong> user $lc at $pt.</li>\n";
 		}
 		else {
 		echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> <strong>$pa</strong> $username at $pt$comments</li>\n";

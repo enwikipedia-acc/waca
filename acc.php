@@ -830,7 +830,7 @@ elseif ($action == "usermgmt") {
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$now = date("Y-m-d H-i-s");
 			$logentry = $oldname . " to " . $newname;
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$logentry', '$siuser', 'Renamed', '$now', '');";
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$userid', '$siuser', 'Renamed', '$now', '$logentry');";
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
@@ -1290,6 +1290,7 @@ elseif ($action == "zoom") {
 		$rla = $row['log_action'];
 		$rlp = $row['log_pend'];
 		$rlt = $row['log_time'];
+		$rlc = $row['log_cmt'];
 		if ($rla == "Deferred to admins" || $rla == "Deferred to users") {
 			echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
@@ -1322,7 +1323,7 @@ elseif ($action == "zoom") {
 			echo "<li>$rlu Rejected by Blacklist $rlp, " . $row['log_cmt'] . " at $rlt.</li>\n";
 		}
 		if ($rla == "Renamed") {
-			echo "<li>$rlu renamed user $rlp at $rlt.</li>\n";
+			echo "<li>$rlu renamed user $rlc at $rlt.</li>\n";
 		}
 	}
 
@@ -1470,7 +1471,7 @@ elseif ($action == "logs") {
 			echo "<li>$rlu $rla, User $rlp (" . $row2['user_name'] . ") at $rlt$moreinfo.</li>\n";
 		}
 		if ($rla == "Renamed") {
-			echo "<li>$rlu renamed user $rlp at $rlt.</li>\n";
+			echo "<li>$rlu renamed user $rlc at $rlt.</li>\n";
 		}
 	}
 	echo "</ol>\n";
