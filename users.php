@@ -27,10 +27,6 @@ require_once ( 'functions.php' );
 function showfooter() {
 	echo "</body></html>\n";
 }
-function sanitize($what) {
-	$what = mysql_real_escape_string($what);
-	return ($what);
-}
 
 mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 @ mysql_select_db($toolserver_database) or print mysql_error();
