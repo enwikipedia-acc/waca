@@ -34,6 +34,60 @@ function sanitize($what) {
 
 mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 @ mysql_select_db($toolserver_database) or print mysql_error();
+$_GET['edituser'] != "") {
+	$sid = sanitize($_SESSION['user']);
+	if (!hasright($sid, "Admin")
+		Die("You are not authorized to edit account data");
+	if ($_POST['user_email'] == "" || $_POST['user_onwikiname'] == "")
+	{
+	displayheader();
+	$gid = sanitize($_GET['edituser']);
+	$query = "SELECT * FROM acc_user WHERE user_id = $gid AND user_level != 'New' ;";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("ERROR: No result returned.");
+	$row = mysql_fetch_assoc($result);
+	if ($row['user_id'] == "") {
+		echo "Invalid user!<br />\n";
+		die();
+	}
+	echo "<h2>User Settings for $username<h2>\n";
+	echo "<ol>\n";
+	echo "<li>User ID: " . $row['user_id'] . "</li>\n";
+	echo "<li>User Level: " . $row['user_level'] . "</li>\n";
+	echo "</ol>\n";
+	echo "<form action=\"users.php&amp;edituser=" . $_GET['edituser'] . "\" method=\"post\">"	
+	echo "<div class=\"required\">";
+	echo "<label for=\"user_email\">Email Address:</label>";
+	echo "<input id=\"user_email\" type=\"text\" name=\"user_email\" value=\"" . stripslashes($row['user_email']) . "\"/>";
+	echo "</div>";
+	echo "<div class=\"required\">";
+	echo "<label for=\"user_onwikiname\">On-wiki Username:</label>";
+	echo "<input id=\"user_onwikiname\" type=\"text\" name=\"user_onwikiname\" value=\"" . stripslashes($row['user_onwikiname']) . "\"/>";
+	echo "</div>";
+	echo "<div class=\"submit\">";
+	echo "<input type=\"submit\"/>";
+	echo "</div>";
+	echo "</form>";	
+	}
+	else {
+	$gid = sanitize($_GET['edituser']);
+	$newemail = sanitize($_POST['user_email']);
+	$newwikiname = sanitize($_POST['user_onwikiname']);
+	$query = "UPDATE acc_user SET user_email = '$newemail', user_onwikiname = '$newwikiname' WHERE user_id = '$gid';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());		
+	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$gid', '$sid', 'Prefchange', '$now', '');";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	echo "Changes saved";	
+	}
+	echo showfooter();	
+	}
+
+
 if ($_GET['viewuser'] != "") {
 	displayheader();
 	$gid = sanitize($_GET['viewuser']);
