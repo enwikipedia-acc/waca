@@ -22,11 +22,12 @@
 **                                                           **
 **************************************************************/
 require_once ('config.inc.php');
-include ('devlist.php');
+require_once ('devlist.php');
 require_once ( 'functions.php' );
 
 mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 @ mysql_select_db($toolserver_database) or print mysql_error();
+session_start();
 if ($_GET['edituser'] != "") {
 	displayheader();
 	$sid = sanitize($_SESSION['user']);
