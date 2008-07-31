@@ -141,8 +141,38 @@ $developer = //Developer info / list.
 
 displayheader();
 echo "<h2>ACC Development Team</h2>\n";
-echo "<pre>\n";
-print_r($developer);
-echo "</pre>\n";
+foreach( $developer as $devName => $devInfo ) {
+	echo "<h3>$devName</h3>\n<ul>\n";
+	foreach( $devInfo as $infoName => $infoContent ) {
+		if( $infoContent != NULL ) {
+			switch( $infoName ) {
+				case "IRC":
+					echo "<li>IRC Name: $infoContent</li>\n";
+					break;
+				case "Name":
+					echo "<li>Real name: $infoContent</li>\n";
+					break;
+				case "EMail":
+					echo "<li>E-Mail Address: $infoContent</li>\n";
+					break;
+				case "wiki":
+					echo "<li>Enwiki Username: $infoContent</li>\n";
+					break;
+				case "WWW":
+					echo "<li>Homepage: $infoContent</li>\n";
+					break;
+				case "Role":
+					echo "<li>Project Role: $infoContent</li>\n";
+					break;
+				case "Access":
+					echo "<li>Access: $infoContent</li>\n";
+					break;
+				case "Other":
+					echo "<li>Other: $infoContent</li>\n";
+					break;
+			}
+		}
+	}
+}
 displayfooter();
 ?>
