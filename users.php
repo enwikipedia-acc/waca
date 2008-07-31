@@ -248,7 +248,7 @@ else if ($_GET['viewuser'] != "") {
 		$lastlevel = $row['user_level'];
 	}
 	echo "</ul>\n";
-	echo "<br /><a href=\"users.php\">User list</a>\n";
+	echo "<br /><a href=\"users.php\">User list</a><br />\n";
 	displayfooter();
 }
 ?>

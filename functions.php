@@ -584,7 +584,7 @@ function displayheader() {
 }
 
 function displayfooter() {
-        echo "<a href=\"index.php\">Return to account request interface.</a>\n";
+        echo "<a href=\"index.php\">Return to account request interface.</a><br />\n";
         echo "<a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 	global $toolserver_username;
 	global $toolserver_password;
