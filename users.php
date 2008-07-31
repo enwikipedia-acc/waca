@@ -81,9 +81,7 @@ if ($_GET['edituser'] != "") {
 	}
 	echo showfooter();	
 	}
-
-
-if ($_GET['viewuser'] != "") {
+else if ($_GET['viewuser'] != "") {
 	displayheader();
 	$gid = sanitize($_GET['viewuser']);
 	$query = "SELECT * FROM acc_user WHERE user_id = $gid AND user_level != 'Declined' AND user_level != 'New' ;";
@@ -205,7 +203,7 @@ if ($_GET['viewuser'] != "") {
 	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 	displayfooter();
 	die();
-}
+} else {
 
 	displayheader();
 	$query = "SELECT * FROM acc_user ORDER BY user_level";
@@ -252,4 +250,5 @@ if ($_GET['viewuser'] != "") {
 	echo "</ul>\n";
 	echo "<br /><a href=\"users.php\">User list</a>\n";
 	displayfooter();
+}
 ?>
