@@ -27,7 +27,8 @@ require_once ( 'functions.php' );
 
 mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 @ mysql_select_db($toolserver_database) or print mysql_error();
-session_start();
+session_start( );
+
 if ($_GET['edituser'] != "") {
 	displayheader();
 	$sid = sanitize($_SESSION['user']);
@@ -35,7 +36,6 @@ if ($_GET['edituser'] != "") {
 		Die("You are not authorized to edit account data $sid test");
 	if ($_POST['user_email'] == "" || $_POST['user_onwikiname'] == "")
 	{
-	displayheader();
 	$gid = sanitize($_GET['edituser']);
 	$query = "SELECT * FROM acc_user WHERE user_id = $gid AND user_level != 'New' ;";
 	$result = mysql_query($query);
@@ -46,7 +46,7 @@ if ($_GET['edituser'] != "") {
 		echo "Invalid user!<br />\n";
 		die();
 	}
-	echo "<h2>User Settings for $username<h2>\n";
+	echo "<h2>User Settings for $username</h2>\n";
 	echo "<ol>\n";
 	echo "<li>User ID: " . $row['user_id'] . "</li>\n";
 	echo "<li>User Level: " . $row['user_level'] . "</li>\n";
@@ -80,8 +80,9 @@ if ($_GET['edituser'] != "") {
 	echo "Changes saved";	
 	}
 	echo showfooter();	
+	die ();
 	}
-else if ($_GET['viewuser'] != "") {
+if ($_GET['viewuser'] != "") {
 	displayheader();
 	$gid = sanitize($_GET['viewuser']);
 	$query = "SELECT * FROM acc_user WHERE user_id = $gid AND user_level != 'Declined' AND user_level != 'New' ;";
