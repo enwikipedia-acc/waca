@@ -141,6 +141,7 @@ $developer = //Developer info / list.
 
 displayheader();
 echo "<h2>ACC Development Team</h2>\n";
+ksort($developer);
 foreach( $developer as $devName => $devInfo ) {
 	echo "<h3>$devName</h3>\n<ul>\n";
 	foreach( $devInfo as $infoName => $infoContent ) {
