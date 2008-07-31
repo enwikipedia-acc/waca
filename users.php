@@ -34,7 +34,7 @@ function sanitize($what) {
 
 mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 @ mysql_select_db($toolserver_database) or print mysql_error();
-$_GET['edituser'] != "") {
+if ($_GET['edituser'] != "") {
 	$sid = sanitize($_SESSION['user']);
 	if (!hasright($sid, "Admin")
 		Die("You are not authorized to edit account data");
