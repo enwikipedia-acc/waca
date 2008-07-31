@@ -174,7 +174,7 @@ foreach( $developer as $devName => $devInfo ) {
 		}
 	}
 	echo "</ul>\n";
-        echo "<a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 }
+echo "<a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 displayfooter();
 ?>
