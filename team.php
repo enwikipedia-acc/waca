@@ -172,8 +172,8 @@ foreach( $developer as $devName => $devInfo ) {
 					break;
 			}
 		}
-	echo "</ul>";
 	}
+	echo "</ul>";
 }
 displayfooter();
 ?>
