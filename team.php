@@ -153,13 +153,13 @@ foreach( $developer as $devName => $devInfo ) {
 					echo "<li>Real name: $infoContent</li>\n";
 					break;
 				case "EMail":
-					echo "<li>E-Mail Address: $infoContent</li>\n";
+					echo "<li>E-Mail Address: <a href=\"mailto:$infoContent\">$infoContent</a></li>\n";
 					break;
 				case "wiki":
-					echo "<li>Enwiki Username: $infoContent</li>\n";
+					echo "<li>Enwiki Username: <a href=\"http://en.wikipedia.org/wiki/User:$infoContent\">$infoContent</a></li>\n";
 					break;
 				case "WWW":
-					echo "<li>Homepage: $infoContent</li>\n";
+					echo "<li>Homepage: <a href=\"$infoContent\">$infoContent</a></li>\n";
 					break;
 				case "Role":
 					echo "<li>Project Role: $infoContent</li>\n";
