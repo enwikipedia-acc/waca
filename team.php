@@ -1,39 +1,27 @@
 <?php
+/**************************************************************
+** English Wikipedia Account Request Interface               **
+** Wikipedia Account Request Graphic Design by               **
+** Charles Melbye is licensed under a Creative               **
+** Commons Attribution-Noncommercial-Share Alike             **
+** 3.0 United States License. All other code                 **
+** released under Public Domain by the ACC                   **
+** Development Team.                                         **
+**             Developers:                                   **
+**  SQL ( http://en.wikipedia.org/User:SQL )                 **
+**  Cobi ( http://en.wikipedia.org/User:Cobi )               **
+** Cmelbye ( http://en.wikipedia.org/User:cmelbye )          **
+**FastLizard4 ( http://en.wikipedia.org/User:FastLizard4 )   **
+**Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
+**Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
+**Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
+**OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
+**Prodego    ( http://en.wikipedia.org/wiki/User:Prodego )   **
+**                                                           **
+**************************************************************/
 require_once ( 'config.inc.php' );
 require_once ( 'devlist.php' );
 require_once ( 'functions.php' );
-
-//FIXME: displayheader() Stolen from users.php... Maybe these need to be in functions.php?
-function displayheader() {
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or print mysql_error();
-	$query = "SELECT * FROM acc_emails WHERE mail_id = '8';";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("ERROR: No result returned.");
-	$row = mysql_fetch_assoc($result);
-	echo $row['mail_text'];
-}
-//FIXME: displayfooter() Stolen from users.php... Maybe these need to be in functions.php?
-function displayfooter() {
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or print mysql_error();
-	$query = "SELECT * FROM acc_emails WHERE mail_id = '7';";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("ERROR: No result returned.");
-	$row = mysql_fetch_assoc($result);
-	echo "</div>";
-	echo $row['mail_text'];
-}
 
 $developer = //Developer info / list.
 	array(
@@ -175,6 +163,7 @@ foreach( $developer as $devName => $devInfo ) {
 		}
 	}
 	echo "</ul>\n";
+        echo "<a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 }
 displayfooter();
 ?>
