@@ -39,101 +39,101 @@ $developer = //Developer info / list.
 	array(
 		"SQL" =>
 			array(						//Set any of these to NULL to keep them from being displayed.
-				"IRC" => "SQLDb", 			//IRC Name
+				"IRC" => "SQLDb, SXT40", 			//IRC Name
 				"EMail" => "sxwiki@gmail.com", 		//Public E-mail address
 				"wiki" => "SQL", 			//Enwiki Username
 				"WWW" => "http://toolserver.org/~sql", 	//Your website
 				"Name" => NULL,				//Real name
-				"Role" => "Project Lead",		//Project Role(s)
+				"Role" => "Developer, Project Lead",		//Project Role(s)
 				"Access" => "Shell, SQL, Commit",	//Project Access levels
 				"Other" => NULL,			//Anything else, comments, etc.
 			),
 		"Cobi" =>
 			array(
-				"IRC" => NULL,
+				"IRC" => "Cobi",
 				"EMail" => NULL,
-				"wiki" => NULL,
+				"wiki" => "Cobi",
 				"WWW" => NULL,
 				"Name" => NULL,
-				"Role" => NULL,
-				"Access" => NULL,
+				"Role" => "Developer, Subversion Administrator",
+				"Access" => "Shell, SQL, Commit, Admin",
 				"Other" => NULL,
 			),
 		"charlie" =>
 			array(
-				"IRC" => NULL,
+				"IRC" => "charlie, chuch",
 				"EMail" => NULL,
-				"wiki" => NULL,
+				"wiki" => "Cmelbye",
 				"WWW" => NULL,
 				"Name" => NULL,
-				"Role" => NULL,
-				"Access" => NULL,
+				"Role" => "Developer, Web designer",
+				"Access" => "Commit",
 				"Other" => NULL,
 			),
 		"FastLizard4" =>
 			array(
-				"IRC" => NULL,
+				"IRC" => "Fastlizard4",
 				"EMail" => NULL,
-				"wiki" => NULL,
+				"wiki" => "Fastlizard4",
 				"WWW" => NULL,
 				"Name" => NULL,
-				"Role" => NULL,
-				"Access" => NULL,
+				"Role" => "Developer",
+				"Access" => "Commit",
 				"Other" => NULL,
 			),
 		"Stwalkerster" =>
 			array(
-				"IRC" => NULL,
+				"IRC" => "Stwalkerster",
 				"EMail" => NULL,
-				"wiki" => NULL,
+				"wiki" => "Stwalkerster",
 				"WWW" => NULL,
 				"Name" => NULL,
-				"Role" => NULL,
-				"Access" => NULL,
+				"Role" => "Developer",
+				"Access" => "Commit",
 				"Other" => NULL,
 			),
 		"Soxred93" =>
 			array(
-				"IRC" => NULL,
+				"IRC" => "Soxred93",
 				"EMail" => NULL,
-				"wiki" => NULL,
+				"wiki" => "Soxred93",
 				"WWW" => NULL,
 				"Name" => NULL,
-				"Role" => NULL,
-				"Access" => NULL,
-				"Other" => NULL,
+				"Role" => "Developer",
+				"Access" => "Commit",
+				"Other" => "Wrote the original ACC Tool",
 			),
 		"Alexfusco5" =>
 			array(
-				"IRC" => NULL,
+				"IRC" => "Alexfusco5",
 				"EMail" => NULL,
-				"wiki" => NULL,
+				"wiki" => "Alexfusco5",
 				"WWW" => NULL,
 				"Name" => NULL,
-				"Role" => NULL,
-				"Access" => NULL,
+				"Role" => "Developer",
+				"Access" => "Commit",
 				"Other" => NULL,
 			),
 		"OverlordQ" =>
 			array(
-				"IRC" => NULL,
+				"IRC" => "OverlordQ",
 				"EMail" => NULL,
-				"wiki" => NULL,
+				"wiki" => "OverlordQ",
 				"WWW" => NULL,
 				"Name" => NULL,
-				"Role" => NULL,
-				"Access" => NULL,
+				"Role" => "Developer",
+				"Access" => "Commit, Shell",
 				"Other" => NULL,
 			),
 		"Prodego" =>
 			array(
-				"IRC" => NULL,
+				"IRC" => "Prodego",
 				"EMail" => NULL,
-				"wiki" => NULL,
+				"wiki" => "Prodego",
 				"WWW" => NULL,
 				"Name" => NULL,
-				"Role" => NULL,
-				"Access" => NULL,
+				"Role" => "Developer, HTML Specification compliance",
+				"Access" => "Commit",
 				"Other" => NULL,
 			),
 	);
@@ -173,7 +173,7 @@ foreach( $developer as $devName => $devInfo ) {
 			}
 		}
 	}
-	echo "</ul>";
+	echo "</ul>\n";
 }
 displayfooter();
 ?>
