@@ -60,14 +60,14 @@ $developer = //Developer info / list.
 			),
 		"FastLizard4" =>
 			array(
-				"IRC" => "Fastlizard4",
-				"EMail" => NULL,
-				"wiki" => "Fastlizard4",
-				"WWW" => NULL,
+				"IRC" => "FastLizard4",
+				"EMail" => "FastLizard4@gmail.com",
+				"wiki" => "FastLizard4",
+				"WWW" => "http://fastlizard4.10gbfreehost.com",
 				"Name" => NULL,
 				"Role" => "Developer",
 				"Access" => "Commit",
-				"Other" => NULL,
+				"Other" => "IRC Cloak: <tt>wikipedia/FastLizard4</tt>",
 			),
 		"Stwalkerster" =>
 			array(
