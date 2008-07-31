@@ -59,7 +59,7 @@ $developer = //Developer info / list.
 				"Access" => "Shell, SQL, Commit, Admin",
 				"Other" => NULL,
 			),
-		"charlie" =>
+		"Charlie" =>
 			array(
 				"IRC" => "charlie, chuch",
 				"EMail" => NULL,
