@@ -66,7 +66,7 @@ $regdevlist = array (
 		'Prodego',
 		'Prodego',
 		'14'
-	)
+	),
 	array (
 		'FunPika',
 		'FunPika',
