@@ -25,8 +25,6 @@
 require_once ( 'config.inc.php' );
 require_once ( 'devlist.php' );
 require_once ( 'functions.php' );
-ini_set( 'session.cookie_path', $cookiepath );
-ini_set( 'session.name', $sessionname );
 $version = "0.9.7";
 
 $link = mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
