@@ -804,8 +804,6 @@ elseif ($action == "usermgmt") {
 			echo showfooter();
 			die();
 		} else {
-			if ( hasright($_SESSION['user'], "Admin") != TRUE )
-				Die("You don't have the right, and I am too tired to make it fail properly");
 			$oldname = sanitize($_POST['oldname']);
 			$newname = sanitize($_POST['newname']);
 			$userid = sanitize($_GET['rename']);
