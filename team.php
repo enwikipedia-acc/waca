@@ -116,7 +116,7 @@ $developer = //Developer info / list.
 		"Prodego" =>
 			array(
 				"IRC" => "Prodego",
-				"EMail" => NULL,
+				"EMail" => "Prodego@gmail.com",
 				"wiki" => "Prodego",
 				"WWW" => NULL,
 				"Name" => NULL,
