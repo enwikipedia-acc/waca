@@ -124,6 +124,17 @@ $developer = //Developer info / list.
 				"Access" => "Commit",
 				"Other" => NULL,
 			),
+		"FunPika" =>
+			array(
+				"IRC" => "FunPika",
+				"EMail" => "funpika4@gmail.com",
+				"wiki" => "FunPika",
+				"WWW" => http://funpika.unixpod.com,
+				"Name" => NULL,
+				"Role" => "Developer, HTML Specification compliance",
+				"Access" => "Commit",
+				"Other" => NULL,
+			),
 	);
 
 

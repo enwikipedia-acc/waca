@@ -93,7 +93,8 @@
 		'Soxred93*!*@wikipedia/Soxred93'				=> 'developer',
 		'*!*@wikimedia/cmelbye'						=> 'developer',
 		'*!*@wikipedia/FastLizard4'					=> 'developer',
-		'*!*@wikipedia/Prodego'					=> 'developer',
+		'*!*@wikipedia/Prodego'					        => 'developer',
+		'*!*@wikipedia/FunPika'					        => 'developer',
 		'*!*@*'								=> '*'
 		);
 
