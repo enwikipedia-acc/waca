@@ -23,7 +23,7 @@
 **************************************************************/
 require_once ('config.inc.php');
 require_once ('devlist.php');
-require_once ( 'functions.php' );
+require_once ('functions.php');
 
 mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 @ mysql_select_db($toolserver_database) or print mysql_error();
@@ -34,56 +34,53 @@ if ($_GET['edituser'] != "") {
 	$sid = sanitize($_SESSION['user']);
 	if (!hasright($_SESSION['user'], "Admin"))
 		Die("You are not authorized to edit account data $sid test");
-	if ($_POST['user_email'] == "" || $_POST['user_onwikiname'] == "")
-	{
-	$gid = sanitize($_GET['edituser']);
-	$query = "SELECT * FROM acc_user WHERE user_id = $gid AND user_level != 'New' ;";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("ERROR: No result returned.");
-	$row = mysql_fetch_assoc($result);
-	if ($row['user_id'] == "") {
-		echo "Invalid user!<br />\n";
-		die();
-	}
-	echo "<h2>User Settings for $username</h2>\n";
-	echo "<ol>\n";
-	echo "<li>User Name: " . $row['user_name'] . "</li>\n";
-	echo "<li>User ID: " . $row['user_id'] . "</li>\n";
-	echo "<li>User Level: " . $row['user_level'] . "</li>\n";
-	echo "</ol>\n";
-	echo "<form action=\"users.php?edituser=" . $_GET['edituser'] . "\" method=\"post\">";
-	echo "<div class=\"required\">";
-	echo "<label for=\"user_email\">Email Address:</label>";
-	echo "<input id=\"user_email\" type=\"text\" name=\"user_email\" value=\"" . stripslashes($row['user_email']) . "\"/>";
-	echo "</div>";
-	echo "<div class=\"required\">";
-	echo "<label for=\"user_onwikiname\">On-wiki Username:</label>";
-	echo "<input id=\"user_onwikiname\" type=\"text\" name=\"user_onwikiname\" value=\"" . stripslashes($row['user_onwikiname']) . "\"/>";
-	echo "</div>";
-	echo "<div class=\"submit\">";
-	echo "<input type=\"submit\"/>";
-	echo "</div>";
-	echo "</form>";	
-	}
-	else {
-	$gid = sanitize($_GET['edituser']);
-	$newemail = sanitize($_POST['user_email']);
-	$newwikiname = sanitize($_POST['user_onwikiname']);
-	$query = "UPDATE acc_user SET user_email = '$newemail', user_onwikiname = '$newwikiname' WHERE user_id = '$gid';";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());		
-	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$gid', '$sid', 'Prefchange', '$now', '');";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	echo "Changes saved";	
+	if ($_POST['user_email'] == "" || $_POST['user_onwikiname'] == "") {
+		$gid = sanitize($_GET['edituser']);
+		$query = "SELECT * FROM acc_user WHERE user_id = $gid AND user_level != 'New' ;";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("ERROR: No result returned.");
+		$row = mysql_fetch_assoc($result);
+		if ($row['user_id'] == "") {
+			echo "Invalid user!<br />\n";
+			die();
+		}
+		echo "<h2>User Settings for $username</h2>\n";
+		echo "<ol>\n";
+		echo "<li>User Name: " . $row['user_name'] . "</li>\n";
+		echo "<li>User ID: " . $row['user_id'] . "</li>\n";
+		echo "<li>User Level: " . $row['user_level'] . "</li>\n";
+		echo "</ol>\n";
+		echo "<form action=\"users.php?edituser=" . $_GET['edituser'] . "\" method=\"post\">";
+		echo "<div class=\"required\">";
+		echo "<label for=\"user_email\">Email Address:</label>";
+		echo "<input id=\"user_email\" type=\"text\" name=\"user_email\" value=\"" . stripslashes($row['user_email']) . "\"/>";
+		echo "</div>";
+		echo "<div class=\"required\">";
+		echo "<label for=\"user_onwikiname\">On-wiki Username:</label>";
+		echo "<input id=\"user_onwikiname\" type=\"text\" name=\"user_onwikiname\" value=\"" . stripslashes($row['user_onwikiname']) . "\"/>";
+		echo "</div>";
+		echo "<div class=\"submit\">";
+		echo "<input type=\"submit\"/>";
+		echo "</div>";
+		echo "</form>";	
+	} else {
+		$gid = sanitize($_GET['edituser']);
+		$newemail = sanitize($_POST['user_email']);
+		$newwikiname = sanitize($_POST['user_onwikiname']);
+		$query = "UPDATE acc_user SET user_email = '$newemail', user_onwikiname = '$newwikiname' WHERE user_id = '$gid';";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());		
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$gid', '$sid', 'Prefchange', '$now', '');";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		echo "Changes saved";	
 	}
 	echo showfooter();	
-	die ();
-	}
-if ($_GET['viewuser'] != "") {
+	die();
+} else if ($_GET['viewuser'] != "") {
 	displayheader();
 	$gid = sanitize($_GET['viewuser']);
 	$query = "SELECT * FROM acc_user WHERE user_id = $gid AND user_level != 'Declined' AND user_level != 'New' ;";
@@ -132,17 +129,17 @@ if ($_GET['viewuser'] != "") {
 	if (!$result)
 		Die("ERROR: No result returned.");
 	if (mysql_num_rows($result) != 0) {
-	echo "<ol>\n";
-	while ($row = mysql_fetch_assoc($result)) {
-		if ($row['log_time'] == "0000-00-00 00:00:00") {
-			$row['log_time'] = "Date unknown";
+		echo "<ol>\n";
+		while ($row = mysql_fetch_assoc($result)) {
+			if ($row['log_time'] == "0000-00-00 00:00:00") {
+				$row['log_time'] = "Date unknown";
+			}
+			$pn = $row['pend_name'];
+			echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$pn\">$pn</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$pn\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$pn\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
+			// Not every row $noc = count($row[pend_name]); //Define total number of users created
+			// Not every row echo "<b>Number of users created: $noc</b>\n"; //Display total number of users created
 		}
-		$pn = $row['pend_name'];
-		echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$pn\">$pn</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$pn\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$pn\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
-		// Not every row $noc = count($row[pend_name]); //Define total number of users created
-		// Not every row echo "<b>Number of users created: $noc</b>\n"; //Display total number of users created
-	}
-	echo "</ol>\n";
+		echo "</ol>\n";
 	}
 	echo "<h2>Users not created</h2>\n";
 	$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = '$gid' AND log_action != 'Closed 1';";
@@ -150,15 +147,15 @@ if ($_GET['viewuser'] != "") {
 	if (!$result)
 		Die("ERROR: No result returned.");
 	if (mysql_num_rows($result) != 0) {	
-	echo "<ol>\n";
-	while ($row = mysql_fetch_assoc($result)) {
-		if ($row['log_time'] == "0000-00-00 00:00:00") {
-			$row['log_time'] = "Date unknown";
+		echo "<ol>\n";
+		while ($row = mysql_fetch_assoc($result)) {
+			if ($row['log_time'] == "0000-00-00 00:00:00") {
+				$row['log_time'] = "Date unknown";
+			}
+			$pn = $row['pend_name'];
+			echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$pn\">$pn</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$pn\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$pn\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
 		}
-		$pn = $row['pend_name'];
-		echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$pn\">$pn</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$pn\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$pn\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
-	}
-	echo "</ol>\n";
+		echo "</ol>\n";
 	}
 	echo "<h2>Account log</h2>\n";
 	$query = "SELECT * FROM acc_log where log_pend = '$gid' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted|Demoted|Renamed)';";
@@ -167,46 +164,43 @@ if ($_GET['viewuser'] != "") {
 	if (!$result)
 		Die("ERROR: No result returned.");
 	if (mysql_num_rows($result) != 0) {	
-	echo "<ol>\n";
-	while ($row = mysql_fetch_assoc($result)) {
-		if ($row['log_time'] == "0000-00-00 00:00:00") {
-			$row['log_time'] = "Date unknown";
+		echo "<ol>\n";
+		while ($row = mysql_fetch_assoc($result)) {
+			if ($row['log_time'] == "0000-00-00 00:00:00") {
+				$row['log_time'] = "Date unknown";
+			}
+			$pu = $row['log_user'];
+			$pt = $row['log_time'];
+			$pa = $row['log_action'];
+			$lp = $row['log_pend'];
+			$lc = $row['log_cmt'];
+			$pu_s = mysql_real_escape_string($pu);
+			$comments = "";
+			if( $row['log_cmt'] != "" ) {
+				$pc = $row['log_cmt'];
+				$comments = " ($pc)";
+			}
+			if( $approved == 1 && $pa == "Approved" ) { $pa = "Demoted"; }
+			$uid_query = "SELECT user_id FROM acc_user WHERE user_name = '$pu_s';";
+			$uid_result = mysql_query($uid_query);
+			if (!$uid_result)
+				Die("ERROR: No result returned.");
+			$uid_r = mysql_fetch_assoc($uid_result);
+			$userid = $uid_r['user_id'];
+			if ($pa == "Renamed") {
+				echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> <strong>$pa</strong> user $lc at $pt.</li>\n";
+			} else {
+				echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> <strong>$pa</strong> $username at $pt$comments</li>\n";
+				if( $pa == "Approved" ) { $approved = 1; }
+				$pc = "";
+				$row['log_cmt'] = "";
+			}
 		}
-		$pu = $row['log_user'];
-		$pt = $row['log_time'];
-		$pa = $row['log_action'];
-		$lp = $row['log_pend'];
-		$lc = $row['log_cmt'];
-		$pu_s = mysql_real_escape_string($pu);
-		$comments = "";
-		if( $row['log_cmt'] != "" ) {
-			$pc = $row['log_cmt'];
-			$comments = " ($pc)";
-		}
-		if( $approved == 1 && $pa == "Approved" ) { $pa = "Demoted"; }
-		$uid_query = "SELECT user_id FROM acc_user WHERE user_name = '$pu_s';";
-		$uid_result = mysql_query($uid_query);
-		if (!$uid_result)
-			Die("ERROR: No result returned.");
-		$uid_r = mysql_fetch_assoc($uid_result);
-		$userid = $uid_r['user_id'];
-		if ($pa == "Renamed") {
-		echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> <strong>$pa</strong> user $lc at $pt.</li>\n";
-		}
-		else {
-		echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> <strong>$pa</strong> $username at $pt$comments</li>\n";
-		if( $pa == "Approved" ) { $approved = 1; }
-		$pc = "";
-		$row['log_cmt'] = "";
-		}
+		echo "</ol>\n";
 	}
-	echo "</ol>\n";
-	}
-	echo "<br /><a href=\"users.php\">User list</a><br /><a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 	displayfooter();
 	die();
 } else {
-
 	displayheader();
 	$query = "SELECT * FROM acc_user ORDER BY user_level";
 	$result = mysql_query($query);
