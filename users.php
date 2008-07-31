@@ -56,7 +56,7 @@ if ($_GET['edituser'] != "") {
 	echo "<li>User ID: " . $row['user_id'] . "</li>\n";
 	echo "<li>User Level: " . $row['user_level'] . "</li>\n";
 	echo "</ol>\n";
-	echo "<form action=\"users.php&amp;edituser=" . $_GET['edituser'] . "\" method=\"post\">"	
+	echo "<form action=\"users.php&amp;edituser=" . $_GET['edituser'] . "\" method=\"post\">";
 	echo "<div class=\"required\">";
 	echo "<label for=\"user_email\">Email Address:</label>";
 	echo "<input id=\"user_email\" type=\"text\" name=\"user_email\" value=\"" . stripslashes($row['user_email']) . "\"/>";
