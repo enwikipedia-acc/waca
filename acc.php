@@ -444,7 +444,7 @@ elseif ($action == "messagemgmt") {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	$siuser = $_SESSION['user'];
+	$siuser = sanitize( $_SESSION['user'] );
 	$query2 = "SELECT * FROM acc_user WHERE user_name = '$siuser';";
 	$result2 = mysql_query($query2);
 	if (!$result2)
@@ -1108,7 +1108,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 			Die("Query failed: $query ERROR: " . mysql_error());
 		echo "Preferences updated!<br />\n";
 	}
-	$sid = $_SESSION['user'];
+	$sid = sanitize( $_SESSION['user'] );
 	$query = "SELECT * FROM acc_user WHERE user_name = '$sid'";
 	$result = mysql_query($query);
 	if (!$result)
