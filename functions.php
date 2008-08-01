@@ -312,7 +312,7 @@ function checksecurity($username) {
 	} elseif (hasright($username, "User") || hasright($username, "Admin") ) {
 		$secure = 1;
 	} else {
-		die("Not logged in!");
+		//die("Not logged in!");
 	}
 }
 
