@@ -33,7 +33,7 @@ if ( !$link ) {
 @ mysql_select_db( $toolserver_database ) or print mysql_error( );
 session_start( );
 
-if ($_GET['edituser'] != "") {
+if ($_GET['edituser'] != "" && $enableRenames == 1) {
 	displayheader();
 	$sid = sanitize($_SESSION['user']);
 	if (!hasright($_SESSION['user'], "Admin"))
@@ -49,25 +49,26 @@ if ($_GET['edituser'] != "") {
 			echo "Invalid user!<br />\n";
 			die();
 		}
-		echo "<h2>User Settings for $username</h2>\n";
+		echo "<h2>User Settings for {$row['user_name']}</h2>\n";
 		echo "<ol>\n";
 		echo "<li>User Name: " . $row['user_name'] . "</li>\n";
 		echo "<li>User ID: " . $row['user_id'] . "</li>\n";
 		echo "<li>User Level: " . $row['user_level'] . "</li>\n";
 		echo "</ol>\n";
-		echo "<form action=\"users.php?edituser=" . $_GET['edituser'] . "\" method=\"post\">";
-		echo "<div class=\"required\">";
-		echo "<label for=\"user_email\">Email Address:</label>";
-		echo "<input id=\"user_email\" type=\"text\" name=\"user_email\" value=\"" . stripslashes($row['user_email']) . "\"/>";
-		echo "</div>";
-		echo "<div class=\"required\">";
-		echo "<label for=\"user_onwikiname\">On-wiki Username:</label>";
-		echo "<input id=\"user_onwikiname\" type=\"text\" name=\"user_onwikiname\" value=\"" . stripslashes($row['user_onwikiname']) . "\"/>";
-		echo "</div>";
-		echo "<div class=\"submit\">";
-		echo "<input type=\"submit\"/>";
-		echo "</div>";
-		echo "</form>";	
+		echo "<form action=\"users.php?edituser=" . $_GET['edituser'] . "\" method=\"post\">\n";
+		echo "<div class=\"required\">\n";
+		echo "<label for=\"user_email\">Email Address:</label>\n";
+		echo "<input id=\"user_email\" type=\"text\" name=\"user_email\" value=\"" . stripslashes($row['user_email']) . "\"/>\n";
+		echo "</div>\n";
+		echo "<div class=\"required\">\n";
+		echo "<label for=\"user_onwikiname\">On-wiki Username:</label>\n";
+		echo "<input id=\"user_onwikiname\" type=\"text\" name=\"user_onwikiname\" value=\"" . stripslashes($row['user_onwikiname']) . "\"/>\n";
+		echo "</div>\n";
+		echo "<div class=\"submit\">\n";
+		echo "<input type=\"submit\"/>\n";
+		echo "</div>\n";
+		echo "</form>\n";	
+		echo "<br />\n <b>Note: misuse of this interface can cause problems, please use it wisely</b>";
 	} else {
 		$gid = sanitize($_GET['edituser']);
 		$newemail = sanitize($_POST['user_email']);
@@ -81,10 +82,11 @@ if ($_GET['edituser'] != "") {
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		echo "Changes saved";	
+		echo "Changes saved";
 	}
-	echo showfooter();	
+	displayfooter()	
 	die();
+
 } else if ($_GET['viewuser'] != "") {
 	displayheader();
 	$gid = sanitize($_GET['viewuser']);
@@ -95,12 +97,12 @@ if ($_GET['edituser'] != "") {
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] == "") {
 		echo "Invalid user!<br />\n";
-		showfooter();
+		displayfooter();
 		die();
 	}
 	$username = $row['user_name'];
 	echo "<h2>Detail report for user: $username</h2>\n";
-	echo "<ol>\n";
+	echo "<ul>\n";
 	echo "<li>User ID: " . $row['user_id'] . "</li>\n";
 	echo "<li>User Level: " . $row['user_level'] . "</li>\n";
 	echo "<li>User On-wiki name: <a href=\"http://en.wikipedia.org/wiki/User:" . $row['user_onwikiname'] . "\">" . $row['user_onwikiname'] . "</a>  |  <a href=\"http://en.wikipedia.org/wiki/User talk:" . $row['user_onwikiname'] . "\">talk page</a> </li>\n";
@@ -127,7 +129,7 @@ if ($_GET['edituser'] != "") {
 		$welcomee = "No";
 	}
 	echo "<li>User has <a href=\"acc.php?action=welcomeperf\"><span style=\"color: red;\" title=\"Login required to continue\">automatic welcoming</span></a> enabled: $welcomee.</li>\n";
-	echo "</ol>\n";
+	echo "</ul>\n";
 	echo "<h2>Users created</h2>\n";
 	$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = '$gid' AND log_action = 'Closed 1';";
 	$result = mysql_query($query);
@@ -163,7 +165,7 @@ if ($_GET['edituser'] != "") {
 		echo "</ol>\n";
 	}
 	echo "<h2>Account log</h2>\n";
-	$query = "SELECT * FROM acc_log where log_pend = '$gid' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted|Demoted|Renamed)';";
+	$query = "SELECT * FROM acc_log where log_pend = '$gid' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted|Demoted|Renamed|Prefchange)';";
 	echo "\n\n<!-- RQ = $query -->\n\n";
 	$result = mysql_query($query);
 	if (!$result)
