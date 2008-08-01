@@ -68,7 +68,7 @@ function forceLogout( $uid ) {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
-	if( $row['forcelogout'] == "1" ) {
+	if( $row['user_forcelogout'] == "1" ) {
 		session_destroy( );
 		echo "You have been forcibly logged out, probably due to being renamed. Please log back in.";
 		$query = "UPDATE acc_user SET user_forcelogout = '0' WHERE user_id = '$uid';";
