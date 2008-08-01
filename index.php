@@ -256,11 +256,11 @@ function clearOldUnconfirmed( ) {
         	date("i", $oldtime),
         	date("s", $oldtime),
         	date("m", $oldtime),
-        	date("d", $oldtime) + 2,
+        	date("d", $oldtime) - 2,
         	date("Y", $oldtime)
         );
 	$expiry =  date("Y-m-d H:i:s", $ntime);
-	$query = "DELETE FROM acc_pend WHERE pend_date > '$expiry' AND pend_mailconfirm != 'Confirmed' AND pend_mailconfirm != '';";
+	$query = "DELETE FROM acc_pend WHERE pend_date < '$expiry' AND pend_mailconfirm != 'Confirmed' AND pend_mailconfirm != '';";
 	echo "\n<!--\n$query\n-->\n";
 	$result = mysql_query($query);
 }
