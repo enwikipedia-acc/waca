@@ -458,10 +458,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if($row2['user_level'] == 'Admin'){
+		if($row2['user_level'] == 'Admin' || $_SESSION['user'] = 'SQL'){
 		echo "$out\n";
 		}
-		elseif($row2['user_level'] != 'Admin'){
+		elseif($row2['user_level'] != 'Admin' && $_SESSION['user'] != 'SQL'){
 		echo "$out2\n";
 		}
 	}
@@ -478,10 +478,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if($row2['user_level'] == 'Admin'){
+		if($row2['user_level'] == 'Admin' || $_SESSION['user'] = 'SQL'){
 		echo "$out\n";
 		}
-		elseif($row2['user_level'] != 'Admin'){
+		elseif($row2['user_level'] != 'Admin' && $_SESSION['user'] != 'SQL'){
 		echo "$out2\n";
 		}
 	}
@@ -499,10 +499,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if($row2['user_level'] == 'Admin'){
+		if($row2['user_level'] == 'Admin' || $_SESSION['user'] = 'SQL'){
 		echo "$out\n";
 		}
-		elseif($row2['user_level'] != 'Admin'){
+		elseif($row2['user_level'] != 'Admin' && $_SESSION['user'] != 'SQL'){
 		echo "$out2\n";
 		}
 	}
