@@ -68,7 +68,7 @@ if ($_GET['edituser'] != "" && $enableRenames == 1) {
 		echo "<input type=\"submit\"/>\n";
 		echo "</div>\n";
 		echo "</form>\n";	
-		echo "<br />\n <b>Note: misuse of this interface can cause problems, please use it wisely</b>";
+		echo "<br />\n <b>Note: misuse of this interface can cause problems, please use it wisely</b><br /><br />";
 	} else {
 		$gid = sanitize($_GET['edituser']);
 		$newemail = sanitize($_POST['user_email']);
@@ -165,7 +165,7 @@ if ($_GET['edituser'] != "" && $enableRenames == 1) {
 		echo "</ol>\n";
 	}
 	echo "<h2>Account log</h2>\n";
-	$query = "SELECT * FROM acc_log where log_pend = '$gid' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted|Demoted|Renamed|Prefchange)';";
+	$query = "SELECT * FROM acc_log where log_pend = '$gid' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted|Demoted|Renamed|fchange)';";
 	echo "\n\n<!-- RQ = $query -->\n\n";
 	$result = mysql_query($query);
 	if (!$result)
