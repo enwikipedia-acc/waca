@@ -33,6 +33,7 @@ function confirmEmail( $id ) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
+	global $tsurl;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$pid = sanitize($id);
