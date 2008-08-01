@@ -190,7 +190,7 @@ function showhowma() {
 		$query = "SELECT * FROM acc_user WHERE user_name = '$oluser';";
         $result = mysql_query($query);
         if (!$result)
-            Die("Query failed: $query ERROR: " . mysql_error());
+            Die("Query failed: $query ERROR: " . mysql_error() . " f190");
         $row = mysql_fetch_assoc($result);
         $uid = $row['user_id'];
 		$oluser = stripslashes($oluser);

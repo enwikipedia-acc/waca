@@ -132,7 +132,7 @@ elseif ( $action == "sreg" ) {
 	$query = "SELECT * FROM acc_user WHERE user_name = '$user' LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
+		Die("Query failed: $query ERROR: " . mysql_error() . " 132");
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] != "") {
 		echo "I'm sorry, but that username is in use. Please choose another. <br />\n";
