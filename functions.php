@@ -69,6 +69,7 @@ function forceLogout( $uid ) {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if( $row['user_forcelogout'] == "1" ) {
+		$_SESSION = array();
 		if (isset($_COOKIE[session_name()])) {
 		    setcookie(session_name(), '', time()-42000, '/');
 		}
