@@ -21,9 +21,7 @@
 **                                                           **
 **************************************************************/
 
-
-
-if ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
+if ($ACC != "1") {
 	header("Location: $tsurl/");
 	die();
 } //Re-route, if you're a web client.
