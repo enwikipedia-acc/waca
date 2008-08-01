@@ -542,7 +542,11 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	} else {
 		$until = date("F j, Y, g:i a", $duration);
 	}
-	sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " if ($until == Indefinite) { indefinitely } else {until $until}");
+        if ($until == Indefinite) {
+	sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " Indefinitely");
+        } else {
+	sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " until $until");
+        }
 	echo showfooter();
 	die();
 }
