@@ -349,9 +349,21 @@ elseif ($action == "forgotpw") {
 	die();
 }
 elseif ($action == "confirm") {
+	$pid = sanitize($_GET['id']);
+	$query = "SELECT * FROM acc_pend WHERE pend_id = '$pid';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	if( $row['pend_mailconfirm'] == $_GET['si'] ) {
+		echo "E-mail confirmed!<br />\n";
+	} else {
+		echo "E-mail failed!<br />\n";
+	}
 	echo "<pre>\n";
 	print_r($_GET);
 	echo "</pre>\n";	
+	echo showfootern();
 	die();
 }
 elseif ($action == "login") {
