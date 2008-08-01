@@ -192,7 +192,7 @@ if ($_GET['edituser'] != "") {
 			$uid_r = mysql_fetch_assoc($uid_result);
 			$userid = $uid_r['user_id'];
 			if ($pa == "Prefchange") {
-			echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> changed user prefrences at $rlt</li>\n";
+			echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> changed user prefrences for $username at $pt</li>\n";
 			}
 			if ($pa == "Renamed") {
 				echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> <strong>$pa</strong> user $lc at $pt.</li>\n";	
