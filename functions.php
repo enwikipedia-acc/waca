@@ -370,7 +370,7 @@ function listrequests($type) {
 		}
 
 		// Email.
-		$out .= '</small></td><td><small>[ <a class="request-src" href="mailto:' . $row['pend_email'] . '">' . $row['pend_email'] . '</a>';
+		$out .= '[ <a class="request-src" href="mailto:' . $row['pend_email'] . '">' . $row['pend_email'] . '</a>';
 
                 $out .= '</small></td><td><small><span class="request-src">' . "\n";
 		if ($otheremailreqs['count'] == 0) {
