@@ -457,13 +457,14 @@ elseif ($action == "messagemgmt") {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		if($level == 'Admin'){
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		$out2 = "<li><small>[ $maild ]<a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		if($level == 'Admin'){
+		echo "$out\n";
 		}
 		elseif($level != 'Admin'){
-		$out = "<li><small>[ $maild ]<a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		echo "$out2\n";
 		}
-		echo "$out\n";
 	}
 	echo "</ol><br />\n";
 	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Interface';";
@@ -476,13 +477,14 @@ elseif ($action == "messagemgmt") {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-				if($level == 'Admin'){
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		$out2 = "<li><small>[ $maild ]<a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		if($level == 'Admin'){
+		echo "$out\n";
 		}
 		elseif($level != 'Admin'){
-		$out = "<li><small>[ $maild ]<a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		echo "$out2\n";
 		}
-		echo "$out\n";
 	}
 	echo "</ol><br />\n";
 	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Internal';";
@@ -496,14 +498,14 @@ elseif ($action == "messagemgmt") {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		if($level == 'Admin'){
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		$out2 = "<li><small>[ $maild ]<a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		if($level == 'Admin'){
+		echo "$out\n";
 		}
 		elseif($level != 'Admin'){
-		$out = "<li><small>[ $maild ]<a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		echo "$out2\n";
 		}
-
-		echo "$out\n";
 	}
 	echo "</ol><br />\n";
 	echo showfooter();
