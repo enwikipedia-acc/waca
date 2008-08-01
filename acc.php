@@ -349,6 +349,7 @@ elseif ($action == "forgotpw") {
 	die();
 }
 elseif ($action == "confirm") {
+	echo makehead();
 	$pid = sanitize($_GET['id']);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$pid';";
 	$result = mysql_query($query);
