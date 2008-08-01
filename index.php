@@ -244,6 +244,25 @@ function displayform() {
 	echo $row['mail_text'];
 	mysql_close();
 }
+function clearOldUnconfirmed( ) {
+	global $toolserver_username;
+	global $toolserver_password;
+	global $toolserver_host;
+	global $toolserver_database;
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or print mysql_error();
+	$ntime = mktime(
+        	date("H", $oldtime),
+        	date("i", $oldtime),
+        	date("s", $oldtime) + 2,
+        	date("m", $oldtime),
+        	date("d", $oldtime),
+        	date("Y", $oldtime)
+        );
+	$expiry =  date("Y-m-d H:i:s", $ntime);
+	$query = "DELETE FROM acc_pend WHERE pend_date > '$expiry' AND pend_mailconfirm != 'Confirmed' AND pend_mailconfirm != "";";
+	$result = mysql_query($query);
+}
 
 function showmessage($messageno) {
 	/*
@@ -263,7 +282,7 @@ function showmessage($messageno) {
 	return ($row['mail_text']);
 	mysql_close();
 }
-
+clearOldUnconfirmed( );
 displayheader();
 if( isset( $_GET['action'] ) ) {
 	$action = $_GET['action'];
