@@ -528,7 +528,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$pid = $row['pend_id'];
 	$pem = $row['pend_email'];
 	if( $uLevel == "Open" ) { $what = ""; } else { $what = "<Admin Needed!> "; }
-	confirmEmail( "Pend", $pid );
+	confirmEmail( $pid );
 	sendtobot("[[acc:$pid]] N $tsurl/acc.php?action=zoom&id=$pid /* " . $_POST['name'] . " */ $what" . substr(str_replace(array (
 		"\n",
 		"\r"
