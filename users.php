@@ -33,7 +33,7 @@ if ( !$link ) {
 @ mysql_select_db( $toolserver_database ) or print mysql_error( );
 session_start( );
 
-if ($_GET['edituser'] != "" && $enableRenames == 1) {
+if ( isset( $_GET['edituser'] ) && $enableRenames == 1 ) {
 	displayheader();
 	$sid = sanitize($_SESSION['user']);
 	if (!hasright($_SESSION['user'], "Admin"))
@@ -89,7 +89,7 @@ if ($_GET['edituser'] != "" && $enableRenames == 1) {
 	displayfooter();
 	die();
 
-} else if ($_GET['viewuser'] != "") {
+} else if ( isset( $_GET['viewuser'] ) ) {
 	displayheader();
 	$gid = sanitize($_GET['viewuser']);
 	$query = "SELECT * FROM acc_user WHERE user_id = $gid AND user_level != 'Declined' AND user_level != 'New' ;";
