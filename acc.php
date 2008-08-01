@@ -529,6 +529,7 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	$now = date("Y-m-d H-i-s");
 	upcsum($target);
 	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$target', '$siuser', 'Banned', '$now');";
+	echo "<!-- Query: $query _->\n";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
@@ -536,17 +537,17 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	echo "Banned $target for $reason<br />\n";
+	echo "Banned " . $_GET['target'] . " for $reason<br />\n";
 	if ($duration == "" || $duration == "-1") {
 		$until = "Indefinite";
 	} else {
 		$until = date("F j, Y, g:i a", $duration);
 	}
-        if ($until == Indefinite) {
-	sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " indefinitely");
-        } else {
-	sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " until $until");
-        }
+	if ($until == 'Indefinite') {
+		sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " indefinitely");
+	} else {
+		sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " until $until");
+	}
 	echo showfooter();
 	die();
 }
