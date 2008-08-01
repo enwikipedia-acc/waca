@@ -380,7 +380,7 @@ function listrequests($type) {
 		}
 
 		// IP UT:
-		$out .= '</small></td><td><small> | <a class="request-src" name="ip-link" href="http://en.wikipedia.org/wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
+		$out .= '</span></small></td><td><small> | <a class="request-src" name="ip-link" href="http://en.wikipedia.org/wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
 		$out .= $row['pend_ip'] . '</a> ';
 
 		$out .= '</small></td><td><small><span class="request-src">' . "\n";
