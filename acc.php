@@ -348,6 +348,12 @@ elseif ($action == "forgotpw") {
 	echo showfootern();
 	die();
 }
+elseif ($action == "confirm") {
+	echo "<pre>\n";
+	print_r($_GET);
+	echo "</pre>\n";	
+	die();
+}
 elseif ($action == "login") {
 	$puser = sanitize($_POST['username']);
 	$query = "SELECT * FROM acc_user WHERE user_name = \"$puser\";";
