@@ -87,7 +87,7 @@ function getSpoofs( $username ) {
 	global $toolserver_password;
 	$spooflink = mysql_connect("sql-s1", $toolserver_username, $toolserver_password);
 	@ mysql_select_db("enwiki_p", $spooflink) or print mysql_error();
-	$fone = strtr($username,$equivset);
+	$fone = sanitize(strtr($username,$equivset));
 	//$fone = mysql_real_escape_string( $fone );
 	$query = "SELECT * FROM spoofuser WHERE su_normalized = 'v2:$fone';";
 	$result = mysql_query($query, $spooflink);
