@@ -174,6 +174,7 @@ if ( isset( $_GET['edituser'] ) && $enableRenames == 1 ) {
 		Die("ERROR: No result returned.");
 	if (mysql_num_rows($result) != 0) {	
 		echo "<ol>\n";
+		$approved = 0;
 		while ($row = mysql_fetch_assoc($result)) {
 			if ($row['log_time'] == "0000-00-00 00:00:00") {
 				$row['log_time'] = "Date unknown";
@@ -189,7 +190,7 @@ if ( isset( $_GET['edituser'] ) && $enableRenames == 1 ) {
 				$pc = $row['log_cmt'];
 				$comments = " ($pc)";
 			}
-			if( $approved == 1 && $pa == "Approved" ) { $pa = "Demoted"; } //FIXME: What the hell is $approved? It's not set anywhere? Throws a warning.
+			if( $approved == 1 && $pa == "Approved" ) { $pa = "Demoted"; } 
 			$uid_query = "SELECT user_id FROM acc_user WHERE user_name = '$pu_s';";
 			$uid_result = mysql_query($uid_query);
 			if (!$uid_result)
