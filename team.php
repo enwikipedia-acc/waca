@@ -94,10 +94,10 @@ $developer = //Developer info / list.
 		"Alexfusco5" =>
 			array(
 				"IRC" => "Alexfusco5",
-				"EMail" => alexfusco5@gmail.com,
+				"EMail" => "alexfusco5@gmail.com",
 				"wiki" => "Alexfusco5",
-				"WWW" => http://en.wikipedia.org/wiki/User:Alexfusco5
-				"Name" => Alex Fusco,
+				"WWW" => "http://en.wikipedia.org/wiki/User:Alexfusco5",
+				"Name" => Alex Fusco",
 				"Role" => "Developer",
 				"Access" => "Commit",
 				"Other" => NULL,
