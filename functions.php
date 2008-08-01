@@ -353,7 +353,9 @@ function listrequests($type) {
 			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
 		}
 		$query2 = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \'' . $row['pend_ip'] . '\' AND `pend_id` != \'' . $row['pend_id'] . '\';';
-		$otherreqs = mysql_fetch_assoc(mysql_query($query2));
+		$otheripreqs = mysql_fetch_assoc(mysql_query($query2));
+		$query3 = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = \'' . $row['pend_email'] . '\' AND `pend_id` != \'' . $row['pend_id'] . '\';';
+		$otheremailreqs = mysql_fetch_assoc(mysql_query($query3));
 		$out = '<tr';
 		if ($currentreq % 2 == 0) {
 			$out .= ' class="alternate">';
@@ -370,15 +372,22 @@ function listrequests($type) {
 		// Email.
 		$out .= '</small></td><td><small>[ <a class="request-src" href="mailto:' . $row['pend_email'] . '">' . $row['pend_email'] . '</a>';
 
+                $out .= '</small></td><td><small><span class="request-src">' . "\n";
+		if ($otheremailreqs['count'] == 0) {
+			$out .= '(' . $otheremailreqs['count'] . ')';
+		} else {
+			$out .= '(</span><b><span class="request-mult">' . $otheremailreqs['count'] . '</span></b><span class="request-src">)';
+		}
+
 		// IP UT:
 		$out .= '</small></td><td><small> | <a class="request-src" name="ip-link" href="http://en.wikipedia.org/wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
 		$out .= $row['pend_ip'] . '</a> ';
 
 		$out .= '</small></td><td><small><span class="request-src">' . "\n";
-		if ($otherreqs['count'] == 0) {
-			$out .= '(' . $otherreqs['count'] . ')';
+		if ($otheripreqs['count'] == 0) {
+			$out .= '(' . $otheripreqs['count'] . ')';
 		} else {
-			$out .= '(</span><b><span class="request-mult">' . $otherreqs['count'] . '</span></b><span class="request-src">)';
+			$out .= '(</span><b><span class="request-mult">' . $otheripreqs['count'] . '</span></b><span class="request-src">)';
 		}
 
 		// IP contribs
