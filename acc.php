@@ -549,6 +549,12 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 elseif ($action == "unban" && $_GET['id'] != "") {
 	$siuser = sanitize($_SESSION['user']);
 	$bid = sanitize($_GET['id']);
+	$query = "SELECT * FROM acc_ban WHERE ban_id = '$bid';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	$iTarget = $row['ban_target'];
 	$query = "DELETE FROM acc_ban WHERE ban_id = '$bid';";
 	$result = mysql_query($query);
 	if (!$result)
@@ -559,7 +565,7 @@ elseif ($action == "unban" && $_GET['id'] != "") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "Unbanned ban #$bid<br />\n";
-	sendtobot("$target unbanned by " . $_SESSION['user']);
+	sendtobot("Ban #$bid ($iTarget) unbanned by " . $_SESSION['user']);
 	echo showfooter();
 	die();
 }
