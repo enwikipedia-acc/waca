@@ -189,7 +189,7 @@ if ( isset( $_GET['edituser'] ) && $enableRenames == 1 ) {
 				$pc = $row['log_cmt'];
 				$comments = " ($pc)";
 			}
-			if( $approved == 1 && $pa == "Approved" ) { $pa = "Demoted"; }
+			if( $approved == 1 && $pa == "Approved" ) { $pa = "Demoted"; } //FIXME: What the hell is $approved? It's not set anywhere? Throws a warning.
 			$uid_query = "SELECT user_id FROM acc_user WHERE user_name = '$pu_s';";
 			$uid_result = mysql_query($uid_query);
 			if (!$uid_result)

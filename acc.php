@@ -404,8 +404,8 @@ elseif ($action == "messagemgmt") {
 		}
 		$mid = sanitize($_GET['edit']);
 		if ( isset( $_GET['submit'] ) ) {
-			$mtext = html_entity_decode($mtext);
 			$mtext = sanitize($_POST['mailtext']);
+			$mtext = html_entity_decode($mtext);
 			$mdesc = sanitize($_POST['maildesc']);
 			$siuser = sanitize($_SESSION['user']);
 			$query = "UPDATE acc_emails SET mail_desc = '$mdesc' WHERE mail_id = '$mid';";
