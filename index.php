@@ -56,7 +56,7 @@ function confirmEmail( $id ) {
 	mt_srand( $seed );
 	$salt = mt_rand( );
 	$hash = md5( $id . $salt );
-	$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/acc.php?action=confirm&amp;si=$hash&amp;id=" . $row['pend_id'] . "&amp;nocheck=1 in order to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
+	$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&amp;si=$hash&amp;id=" . $row['pend_id'] . "&amp;nocheck=1 in order to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	mail($row['pend_email'], "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
 	$query = "UPDATE acc_pend SET pend_mailconfirm = '$hash' WHERE pend_id = '$pid';";
@@ -265,6 +265,28 @@ function showmessage($messageno) {
 }
 
 displayheader();
+if ($action == "confirm") {
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or print mysql_error();
+	displayheader();
+	$pid = sanitize($_GET['id']);
+	$query = "SELECT * FROM acc_pend WHERE pend_id = '$pid';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	if( $row['pend_mailconfirm'] == $_GET['si'] ) {
+		echo "E-mail confirmed!<br />\n";
+	} else {
+		echo "E-mail failed!<br />\n";
+	}
+	echo "<pre>\n";
+	print_r($_GET);
+	echo "</pre>\n";	
+	displayfooter();
+	die();
+}
+
 if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$_POST['name'] = str_replace(" ", "_", $_POST['name']);
 	$_POST['name'] = ucfirst($_POST['name']);
