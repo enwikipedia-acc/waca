@@ -49,7 +49,7 @@ $developer = //Developer info / list.
 			),
 		"Charlie" =>
 			array(
-				"IRC" => "charlie, chuch",
+				"IRC" => "charlie, chuck",
 				"EMail" => NULL,
 				"wiki" => "Cmelbye",
 				"WWW" => NULL,
@@ -94,10 +94,10 @@ $developer = //Developer info / list.
 		"Alexfusco5" =>
 			array(
 				"IRC" => "Alexfusco5",
-				"EMail" => NULL,
+				"EMail" => alexfusco5@gmail.com,
 				"wiki" => "Alexfusco5",
-				"WWW" => NULL,
-				"Name" => NULL,
+				"WWW" => http://en.wikipedia.org/wiki/User:Alexfusco5
+				"Name" => Alex Fusco,
 				"Role" => "Developer",
 				"Access" => "Commit",
 				"Other" => NULL,

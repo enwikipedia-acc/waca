@@ -444,13 +444,25 @@ elseif ($action == "messagemgmt") {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
+	$suser = $_SESSION['USER'];
+	$query2 = "SELECT * FROM acc_user WHERE user_name = '$suser';";
+	$result2 = mysql_query($query);
+	if (!$result2)
+		Die("Query failed: $query2 ERROR: " . mysql_error());
+	$row2 = mysql_fetch_assoc($result2);
+	$level = $row2['user_level']
 	echo "<h2>Mail messages</h2>\n";
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		$out = "<li><small>[ $maild - $mailc ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit! (admin only)</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		if($level == 'Admin' || $_SESSION['USER'] == 'SQL'){
+		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		}
+		else{
+		$out = "<li><small>[ $maild ]<a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		}
 		echo "$out\n";
 	}
 	echo "</ol><br />\n";
@@ -464,7 +476,12 @@ elseif ($action == "messagemgmt") {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit! (admin only)</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		if($level == 'Admin' || $_SESSION['USER'] == 'SQL'){
+		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		}
+		else{
+		$out = "<li><small>[ $maild ]<a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		}
 		echo "$out\n";
 	}
 	echo "</ol><br />\n";
@@ -472,13 +489,20 @@ elseif ($action == "messagemgmt") {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
+
 	echo "<h2>Internal Interface messages</h2>\n";
 	echo "<ol start=\"20\">\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit! (admin only)</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		if($level == 'Admin' || $_SESSION['USER'] == 'SQL'){
+		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		}
+		else{
+		$out = "<li><small>[ $maild ]<a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		}
+
 		echo "$out\n";
 	}
 	echo "</ol><br />\n";
