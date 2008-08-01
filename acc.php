@@ -538,7 +538,7 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "Banned $target for $reason<br />\n";
 	if ($duration == "" || $duration == "-1") {
-		$until = "Forever";
+		$until = "Indefinite";
 	} else {
 		$until = date("F j, Y, g:i a", $duration);
 	}
@@ -613,7 +613,7 @@ elseif ($action == "ban") {
 			echo showfooter();
 			die();
 		} else {
-			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser&amp;target=$target&amp;type=$type\" method=\"post\">Ban target: $target\n<br />Reason: <input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Forever<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT><br /><input type=\"submit\"></form>\n";
+			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser&amp;target=$target&amp;type=$type\" method=\"post\">Ban target: $target\n<br />Reason: <input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT><br /><input type=\"submit\"></form>\n";
 		}
 	}
 	echo "<h2>Active Ban List</h2>\n<ol>\n";
@@ -623,7 +623,7 @@ elseif ($action == "ban") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
 		if ($row['ban_duration'] == "" || $row['ban_duration'] == "-1") {
-			$until = "Forever";
+			$until = "Indefinite";
 		} else {
 			$until = date("F j, Y, g:i a", $row['ban_duration']);
 		}
