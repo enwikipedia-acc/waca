@@ -187,6 +187,7 @@ function showhowma() {
 	$howma = gethowma();
 	unset ($howma['howmany']);
 	foreach ($howma as &$oluser) {
+		$oluser = sanitize( $oluser );
 		$query = "SELECT * FROM acc_user WHERE user_name = '$oluser';";
         $result = mysql_query($query);
         if (!$result)
