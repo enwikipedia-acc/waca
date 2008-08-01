@@ -602,8 +602,8 @@ elseif ($action == "ban") {
 			$target = $row['pend_name'];
 			$type = "Name";
 		}
-		$target = sanitize($target);
-		$query = "SELECT * FROM acc_ban WHERE ban_target = '$target';";
+		$starget = sanitize($target);
+		$query = "SELECT * FROM acc_ban WHERE ban_target = '$starget';";
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
