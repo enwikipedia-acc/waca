@@ -446,7 +446,7 @@ elseif ($action == "messagemgmt") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$siuser = $_SESSION['user'];
 	$query2 = "SELECT * FROM acc_user WHERE user_name = '$siuser';";
-	$result2 = mysql_query($query);
+	$result2 = mysql_query($query2);
 	if (!$result2)
 		Die("Query failed: $query2 ERROR: " . mysql_error());
 	$row2 = mysql_fetch_assoc($result2);
