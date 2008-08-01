@@ -25,8 +25,12 @@ require_once ('config.inc.php');
 require_once ('devlist.php');
 require_once ('functions.php');
 
-mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-@ mysql_select_db($toolserver_database) or print mysql_error();
+
+$link = mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
+if ( !$link ) {
+	die( 'Could not connect: ' . mysql_error( ) );
+}
+@ mysql_select_db( $toolserver_database ) or print mysql_error( );
 session_start( );
 
 if ($_GET['edituser'] != "") {
