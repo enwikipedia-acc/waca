@@ -70,11 +70,11 @@ function forceLogout( $uid ) {
 	$row = mysql_fetch_assoc($result);
 	if( $row['forcelogout'] == "1" ) {
 		session_destroy( );
+		echo "You have been forcibly logged out, probably due to being renamed. Please log back in.";
+		$query = "UPDATE acc_user SET user_forcelogout = '0' WHERE user_id = '$uid';";
+		$result = mysql_query($query);
+		die( showfootern( ) );
 	}
-	echo "You have been forcibly logged out, probably due to being renamed. Please log back in.";
-	$query = "UPDATE acc_user SET user_forcelogout = '0' WHERE user_id = '$uid';";
-	$result = mysql_query($query);
-	die( showfootern( ) );
 }
 
 function getSpoofs( $username ) {
