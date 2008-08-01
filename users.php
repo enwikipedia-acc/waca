@@ -82,6 +82,7 @@ if ($_GET['edituser'] != "" && $enableRenames == 1) {
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
+		sendtobot("$sid changed preferences for User $gid");
 		echo "Changes saved";
 	}
 	echo "<br /><br />";
