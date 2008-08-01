@@ -84,7 +84,7 @@ if ($_GET['edituser'] != "" && $enableRenames == 1) {
 			Die("Query failed: $query ERROR: " . mysql_error());
 		echo "Changes saved";
 	}
-	displayfooter()	
+	displayfooter();
 	die();
 
 } else if ($_GET['viewuser'] != "") {
