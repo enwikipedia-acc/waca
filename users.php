@@ -32,64 +32,8 @@ if ( !$link ) {
 }
 @ mysql_select_db( $toolserver_database ) or print mysql_error( );
 session_start( );
-
-if ( isset( $_GET['edituser'] ) && $enableRenames == 1 ) {
-	displayheader();
-	$sid = sanitize($_SESSION['user']);
-	if (!hasright($_SESSION['user'], "Admin"))
-		Die("You are not authorized to edit account data");
-	if ($_POST['user_email'] == "" || $_POST['user_onwikiname'] == "") {
-		$gid = sanitize($_GET['edituser']);
-		$query = "SELECT * FROM acc_user WHERE user_id = $gid AND user_level != 'New' ;";
-		$result = mysql_query($query);
-		if (!$result)
-			Die("ERROR: No result returned.");
-		$row = mysql_fetch_assoc($result);
-		if ($row['user_id'] == "") {
-			echo "Invalid user!";
-			die();
-		}
-		echo "<h2>User Settings for {$row['user_name']}</h2>\n";
-		echo "<ul>\n";
-		echo "<li>User Name: " . $row['user_name'] . "</li>\n";
-		echo "<li>User ID: " . $row['user_id'] . "</li>\n";
-		echo "<li>User Level: " . $row['user_level'] . "</li>\n";
-		echo "</ul>\n";
-		echo "<form action=\"users.php?edituser=" . $_GET['edituser'] . "\" method=\"post\">\n";
-		echo "<div class=\"required\">\n";
-		echo "<label for=\"user_email\">Email Address:</label>\n";
-		echo "<input id=\"user_email\" type=\"text\" name=\"user_email\" value=\"" . stripslashes($row['user_email']) . "\"/>\n";
-		echo "</div>\n";
-		echo "<div class=\"required\">\n";
-		echo "<label for=\"user_onwikiname\">On-wiki Username:</label>\n";
-		echo "<input id=\"user_onwikiname\" type=\"text\" name=\"user_onwikiname\" value=\"" . stripslashes($row['user_onwikiname']) . "\"/>\n";
-		echo "</div>\n";
-		echo "<div class=\"submit\">\n";
-		echo "<input type=\"submit\"/>\n";
-		echo "</div>\n";
-		echo "</form>\n";	
-		echo "<br />\n <b>Note: misuse of this interface can cause problems, please use it wisely</b>";
-	} else {
-		$gid = sanitize($_GET['edituser']);
-		$newemail = sanitize($_POST['user_email']);
-		$newwikiname = sanitize($_POST['user_onwikiname']);
-		$query = "UPDATE acc_user SET user_email = '$newemail', user_onwikiname = '$newwikiname' WHERE user_id = '$gid';";
-		$result = mysql_query($query);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());	
-		$now = date("Y-m-d H-i-s");			
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$gid', '$sid', 'Prefchange', '$now', '');";
-		$result = mysql_query($query);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		sendtobot("$sid changed preferences for User $gid");
-		echo "Changes saved";
-	}
-	echo "<br /><br />";
-	displayfooter();
-	die();
-
-} else if ( isset( $_GET['viewuser'] ) ) {
+	if ( isset( $_GET['viewuser'] ) ) {
+	$siuser = $_SESSION['user'];
 	displayheader();
 	$gid = sanitize($_GET['viewuser']);
 	$query = "SELECT * FROM acc_user WHERE user_id = $gid AND user_level != 'Declined' AND user_level != 'New' ;";
@@ -130,7 +74,12 @@ if ( isset( $_GET['edituser'] ) && $enableRenames == 1 ) {
 	} else {
 		$welcomee = "No";
 	}
+	if(hasright($siuser, 'User') || hasright($siuser, 'Admin')){
+	echo "<li>User has <a href=\"acc.php?action=welcomeperf\">automatic welcoming</a> enabled: $welcomee.</li>\n";
+	}
+	else{
 	echo "<li>User has <a href=\"acc.php?action=welcomeperf\"><span style=\"color: red;\" title=\"Login required to continue\">automatic welcoming</span></a> enabled: $welcomee.</li>\n";
+	}
 	echo "</ul>\n";
 	echo "<h2>Users created</h2>\n";
 	$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = '$gid' AND log_action = 'Closed 1';";
@@ -144,7 +93,12 @@ if ( isset( $_GET['edituser'] ) && $enableRenames == 1 ) {
 				$row['log_time'] = "Date unknown";
 			}
 			$pn = $row['pend_name'];
+	if(hasright($siuser, 'User') || hasright($siuser, 'Admin')){
+			echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$pn\">$pn</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$pn\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$pn\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
+	}
+	else{
 			echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$pn\">$pn</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$pn\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$pn\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
+	}
 			// Not every row $noc = count($row[pend_name]); //Define total number of users created
 			// Not every row echo "<b>Number of users created: $noc</b>\n"; //Display total number of users created
 		}
@@ -162,7 +116,12 @@ if ( isset( $_GET['edituser'] ) && $enableRenames == 1 ) {
 				$row['log_time'] = "Date unknown";
 			}
 			$pn = $row['pend_name'];
+	if(hasright($siuser, 'User') || hasright($siuser, 'Admin')){
+			echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$pn\">$pn</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$pn\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$pn\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
+	}
+	else{
 			echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:$pn\">$pn</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:$pn\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$pn\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
+	}
 		}
 		echo "</ol>\n";
 	}
