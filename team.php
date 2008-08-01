@@ -46,7 +46,7 @@ $developer = //Developer info / list.
 				"WWW" => NULL,
 				"Name" => NULL,
 				"Role" => "Developer, Subversion Administrator",
-				"Access" => "Shell, SQL, Commit, Admin",
+				"Access" => "Shell, SQL, Commit",
 				"Other" => NULL,
 			),
 		"Charlie" =>
