@@ -448,6 +448,12 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		echo "$message<br />\n";
 		$fail = 1;
 	}
+	$unameisblank = preg_match('/[\]/', $_POST['name']);
+	if ($unameisblank > 0) {
+		$message = showmessage(13);
+		echo "$message<br />\n";
+		$fail = 1;
+	}
 	if (!emailvalid($_POST['email'])) {
 		$message = showmessage(14);
 		echo "$message<br />\n";
