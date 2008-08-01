@@ -35,9 +35,6 @@ function confirmEmail( $id ) {
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or print mysql_error();
-	if( !is_int( $id ) ) {
-		die( "E-mail confirmation failed, aborting!" );
-	}
 	$pid = sanitize($id);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$pid';";
 	$result = mysql_query($query);
