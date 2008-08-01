@@ -1348,6 +1348,14 @@ elseif ($action == "zoom") {
 		if ($rla == "Renamed") {
 			echo "<li>$rlu renamed user $rlc at $rlt.</li>\n";
 		}
+		if ($rla == "Prefchange") {
+			$query2 = "SELECT user_name FROM acc_user WHERE user_id = '$rlp';";
+			$result2 = mysql_query($query2);
+			if (!$result2)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$row2 = mysql_fetch_assoc($result2);
+			echo "<li>$rlu changed user prefrences for User $rlp (" . $row2['user_name'] . ") at $rlt</li>\n";
+		}
 	}
 
 	echo "</ol>\n";
@@ -1496,6 +1504,13 @@ elseif ($action == "logs") {
 		if ($rla == "Renamed") {
 			echo "<li>$rlu renamed user $rlc at $rlt.</li>\n";
 		}
+		if ($rla == "Prefchange") {
+			$query2 = "SELECT user_name FROM acc_user WHERE user_id = '$rlp';";
+			$result2 = mysql_query($query2);
+			if (!$result2)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$row2 = mysql_fetch_assoc($result2);
+			echo "<li>$rlu changed user prefrences for $rlp (" . $row2['user_name'] . ") at $rlt</li>\n";
 	}
 	echo "</ol>\n";
 	echo $n1;
