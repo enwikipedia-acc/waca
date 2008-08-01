@@ -27,13 +27,13 @@ $developer = //Developer info / list.
 	array(
 		"SQL" =>
 			array(						//Set any of these to NULL to keep them from being displayed.
-				"IRC" => "SQLDb, SXT40", 			//IRC Name
+				"IRC" => "SQLDb, SXT40", 		//IRC Name
 				"EMail" => "sxwiki@gmail.com", 		//Public E-mail address
 				"ToolID" => "1",                        //Tool user ID for linking to page in users.php. 
                                 "wiki" => "SQL", 			//Enwiki Username
 				"WWW" => "http://toolserver.org/~sql", 	//Your website
 				"Name" => NULL,				//Real name
-				"Role" => "Developer, Project Lead",		//Project Role(s)
+				"Role" => "Developer, Project Lead",	//Project Role(s)
 				"Access" => "Shell, SQL, Commit",	//Project Access levels
 				"Other" => NULL,			//Anything else, comments, etc.
 			),
