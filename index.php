@@ -23,6 +23,50 @@
 
 require_once ('config.inc.php');
 $fail = 0;
+
+function confirmEmail( $id ) {
+	/*
+	* Confirms either a new users e-mail, or a requestor's e-mail.
+	* $id will be acc_pend.pend_id
+	*/
+	global $toolserver_username;
+	global $toolserver_password;
+	global $toolserver_host;
+	global $toolserver_database;
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or print mysql_error();
+	if( !is_int( $id ) ) {
+		die( "E-mail confirmation failed, aborting!" );
+	}
+	$pid = sanitize($id);
+	$query = "SELECT * FROM acc_pend WHERE user_pend = '$pid';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	if ($row['pend_id'] == "") {
+		echo "<h2>ERROR</h2>Missing or invalid information supplied.\n";
+		die();
+	}
+	$seed = microtime(true);
+	usleep( rand(0,3000) );
+	$seed = $seed +  microtime( true );
+	usleep( rand(0,300) );
+	$seed = $seed +  microtime( true );
+	usleep( rand(0,300) );
+	$seed = $seed -  microtime( true );
+	mt_srand( $seed );
+	$salt = mt_rand( );
+	$hash = md5( $id . $salt );
+	$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/acc.php?action=confirm&amp;si=$hash&amp;id=" . $row['pend_id'] . " in order to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
+	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+	mail($row['pend_email'], "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
+	$query = "UPDATE acc_pend SET pend_mailconfirm = '$hash' WHERE pend_id = '$pid';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+}
+
 function checkSpoofs( $username ) {
 	require_once('equivset.php');
 	global $toolserver_username;
@@ -484,7 +528,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$pid = $row['pend_id'];
 	$pem = $row['pend_email'];
 	if( $uLevel == "Open" ) { $what = ""; } else { $what = "<Admin Needed!> "; }
-	confirmEmail( $pid );
+	confirmEmail( "Pend", $pid );
 	sendtobot("[[acc:$pid]] N $tsurl/acc.php?action=zoom&id=$pid /* " . $_POST['name'] . " */ $what" . substr(str_replace(array (
 		"\n",
 		"\r"
