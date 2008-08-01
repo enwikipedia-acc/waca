@@ -23,7 +23,7 @@
 
 
 
-if ( !isset( $_SERVER['REMOTE_ADDR'] ) ) {
+if ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
 	header("Location: $tsurl/");
 	die();
 } //Re-route, if you're a web client.

@@ -27,8 +27,9 @@
 	// Defines
 
 	// Includes
-	include 'devlist.php';
 	require 'config.inc.php';
+	include 'devlist.php';
+
 
 	// Variable declarations
 	$pidnum = 0; // Integer
