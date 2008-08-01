@@ -313,7 +313,7 @@ if ( $action == "confirm" ) {
 
 if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$_POST['name'] = str_replace(" ", "_", $_POST['name']);
-	$_POST['name'] = ucfirst($_POST['name']);
+	$_POST['name'] = ltrim( rtrim ( ucfirst($_POST['name'] ) ) );
 	mysql_connect("enwiki-p.db.ts.wikimedia.org", $toolserver_username, $toolserver_password);
 	@ mysql_select_db("enwiki_p") or print mysql_error();
 	$query = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
@@ -443,7 +443,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		$fail = 1;
 	}
 	$unameisinvalidchar = preg_match('/[\#\/\|\[\]\{\}\@\%\:\<\>]/', $_POST['name']);
-	if ($unameisinvalidchar > 0) {
+	if ($unameisinvalidchar > 0 || ltrim( rtrim( $_POST['name'] == "" ) ) ) {
 		$message = showmessage(13);
 		echo "$message<br />\n";
 		$fail = 1;
