@@ -543,7 +543,7 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 		$until = date("F j, Y, g:i a", $duration);
 	}
         if ($until == Indefinite) {
-	sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " Indefinitely");
+	sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " indefinitely");
         } else {
 	sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " until $until");
         }
