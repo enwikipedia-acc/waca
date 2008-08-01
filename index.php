@@ -58,7 +58,7 @@ function confirmEmail( $id ) {
 	$hash = md5( $id . $salt );
 	$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&amp;si=$hash&amp;id=" . $row['pend_id'] . "&amp;nocheck=1 in order to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-	mail($row['pend_email'], "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
+	mail($row['pend_email'], "English Wikipedia Account Request", $mailtxt, $headers);
 	$query = "UPDATE acc_pend SET pend_mailconfirm = '$hash' WHERE pend_id = '$pid';";
 	$result = mysql_query($query);
 	if (!$result)
@@ -261,6 +261,7 @@ function clearOldUnconfirmed( ) {
         );
 	$expiry =  date("Y-m-d H:i:s", $ntime);
 	$query = "DELETE FROM acc_pend WHERE pend_date > '$expiry' AND pend_mailconfirm != 'Confirmed' AND pend_mailconfirm != '';";
+	echo "\n<!--\n$query\n-->\n";
 	$result = mysql_query($query);
 }
 
@@ -572,7 +573,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$pid = $row['pend_id'];
 	$pem = $row['pend_email'];
 	if( $uLevel == "Open" ) { $what = ""; } else { $what = "<Admin Needed!> "; }
-	sendtobot("[[acc:$pid]] N $tsurl/acc.php?action=zoom&id=$pid /* " . $_POST['name'] . " */ $what" . substr(str_replace(array (
+	sendtobot("[[acc:$pid]] N /* " . $_POST['name'] . " */ $what" . substr(str_replace(array (
 		"\n",
 		"\r"
 	), array (
