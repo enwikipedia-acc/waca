@@ -1358,7 +1358,7 @@ elseif ($action == "zoom") {
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			echo "<li>$rlu changed user prefrences for User $rlp (" . $row2['user_name'] . ") at $rlt</li>\n";
+			echo "<li>$rlu changed user preferences for User $rlp (" . $row2['user_name'] . ") at $rlt</li>\n";
 		}
 	}
 
@@ -1514,7 +1514,7 @@ elseif ($action == "logs") {
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			echo "<li>$rlu changed user prefrences for $rlp (" . $row2['user_name'] . ") at $rlt</li>\n";
+			echo "<li>$rlu changed user preferences for $rlp (" . $row2['user_name'] . ") at $rlt</li>\n";
 			}
 	}
 	echo "</ol>\n";

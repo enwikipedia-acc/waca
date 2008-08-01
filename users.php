@@ -46,7 +46,7 @@ if ($_GET['edituser'] != "" && $enableRenames == 1) {
 			Die("ERROR: No result returned.");
 		$row = mysql_fetch_assoc($result);
 		if ($row['user_id'] == "") {
-			echo "Invalid user!<br />\n";
+			echo "Invalid user!";
 			die();
 		}
 		echo "<h2>User Settings for {$row['user_name']}</h2>\n";
@@ -68,7 +68,7 @@ if ($_GET['edituser'] != "" && $enableRenames == 1) {
 		echo "<input type=\"submit\"/>\n";
 		echo "</div>\n";
 		echo "</form>\n";	
-		echo "<br />\n <b>Note: misuse of this interface can cause problems, please use it wisely</b><br /><br />";
+		echo "<br />\n <b>Note: misuse of this interface can cause problems, please use it wisely</b>";
 	} else {
 		$gid = sanitize($_GET['edituser']);
 		$newemail = sanitize($_POST['user_email']);
@@ -84,6 +84,7 @@ if ($_GET['edituser'] != "" && $enableRenames == 1) {
 			Die("Query failed: $query ERROR: " . mysql_error());
 		echo "Changes saved";
 	}
+	echo "<br /><br />";
 	displayfooter();
 	die();
 
@@ -195,11 +196,12 @@ if ($_GET['edituser'] != "" && $enableRenames == 1) {
 			$uid_r = mysql_fetch_assoc($uid_result);
 			$userid = $uid_r['user_id'];
 			if ($pa == "Prefchange") {
-			echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> changed user prefrences for $username at $pt</li>\n";
+			echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> changed user preferences for $username at $pt</li>\n";
 			}
-			if ($pa == "Renamed") {
+			else if ($pa == "Renamed") {
 				echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> <strong>$pa</strong> user $lc at $pt.</li>\n";	
-			} else {
+			} 
+			else {
 				echo "<li><a href=\"users.php?viewuser=$userid\">$pu</a> <strong>$pa</strong> $username at $pt$comments</li>\n";
 				if( $pa == "Approved" ) { $approved = 1; }
 				$pc = "";
