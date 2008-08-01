@@ -75,7 +75,8 @@ if ($_GET['edituser'] != "") {
 		$query = "UPDATE acc_user SET user_email = '$newemail', user_onwikiname = '$newwikiname' WHERE user_id = '$gid';";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());		
+			Die("Query failed: $query ERROR: " . mysql_error());	
+		$now = date("Y-m-d H-i-s");			
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$gid', '$sid', 'Prefchange', '$now', '');";
 		$result = mysql_query($query);
 		if (!$result)
