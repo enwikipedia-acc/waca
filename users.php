@@ -37,7 +37,7 @@ if ($_GET['edituser'] != "" && $enableRenames == 1) {
 	displayheader();
 	$sid = sanitize($_SESSION['user']);
 	if (!hasright($_SESSION['user'], "Admin"))
-		Die("You are not authorized to edit account data $sid test");
+		Die("You are not authorized to edit account data");
 	if ($_POST['user_email'] == "" || $_POST['user_onwikiname'] == "") {
 		$gid = sanitize($_GET['edituser']);
 		$query = "SELECT * FROM acc_user WHERE user_id = $gid AND user_level != 'New' ;";
