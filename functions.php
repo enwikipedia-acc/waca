@@ -43,6 +43,39 @@ function _utf8_decode($string) {
 	return $string;
 }
 
+function setForceLogout( $uid ) {
+	$uid = sanitize( $uid );
+	global $toolserver_username;
+	global $toolserver_password;
+	global $toolserver_host;
+	global $toolserver_database;
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or print mysql_error();
+	$query = "UPDATE acc_user SET user_forcelogout = '1' WHERE pend_id = '$uid';";
+	$result = mysql_query($query);
+}
+
+function forceLogout( $uid ) {
+	$uid = sanitize( $uid );
+	global $toolserver_username;
+	global $toolserver_password;
+	global $toolserver_host;
+	global $toolserver_database;
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or print mysql_error();
+	$query = "SELECT user_forcelogout FROM acc_user WHERE pend_id = '$uid';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	if( $row['forcelogout'] == "1" ) {
+		session_destroy( );
+	}
+	echo "You have been forcibly logged out, probably due to being renamed. Please log back in.";
+	$query = "UPDATE acc_user SET user_forcelogout = '0' WHERE pend_id = '$uid';";
+	$result = mysql_query($query);
+	die( showfootern( ) );
+}
 
 function getSpoofs( $username ) {
 	require_once('equivset.php');

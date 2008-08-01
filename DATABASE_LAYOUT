@@ -99,19 +99,19 @@ mysql> DESCRIBE acc_user;
 +-----------------------+---------------+------+-----+---------+----------------+
 | Field                 | Type          | Null | Key | Default | Extra          |
 +-----------------------+---------------+------+-----+---------+----------------+
-| user_id               | int(11)       | NO   | PRI | NULL    | auto_increment | 
-| user_name             | varchar(255)  | NO   |     | NULL    |                | 
-| user_email            | varchar(255)  | NO   |     | NULL    |                | 
-| user_pass             | varchar(255)  | NO   |     | NULL    |                | 
-| user_level            | varchar(255)  | NO   |     | NULL    |                | 
-| user_onwikiname       | varchar(255)  | NO   |     | NULL    |                | 
-| user_welcome          | int(11)       | NO   |     | 0       |                | 
-| user_welcome_sig      | varchar(4096) | NO   |     | NULL    |                | 
-| user_welcome_template | varchar(1024) | NO   |     | NULL    |                | 
-| user_lastactive       | datetime      | NO   |     | NULL    |                | 
+| user_id               | int(11)       | NO   | PRI | NULL    | auto_increment |
+| user_name             | varchar(255)  | NO   |     | NULL    |                |
+| user_email            | varchar(255)  | NO   |     | NULL    |                |
+| user_pass             | varchar(255)  | NO   |     | NULL    |                |
+| user_level            | varchar(255)  | NO   |     | NULL    |                |
+| user_onwikiname       | varchar(255)  | NO   |     | NULL    |                |
+| user_welcome          | int(11)       | NO   |     | 0       |                |
+| user_welcome_sig      | varchar(4096) | NO   |     | NULL    |                |
+| user_welcome_template | varchar(1024) | NO   |     | NULL    |                |
+| user_lastactive       | datetime      | NO   |     | NULL    |                |
+| user_forcelogout      | int(3)        | NO   |     | NULL    |                |
 +-----------------------+---------------+------+-----+---------+----------------+
-10 rows in set (0.01 sec)
-
+11 rows in set (0.01 sec)
 
 *user_id - Table key
 *user_name - The user's chosen name
@@ -123,6 +123,7 @@ mysql> DESCRIBE acc_user;
 *user_welcome_sig - The user's preferred welcome sig
 *user_welcome_template - The user's preferred welcoming template
 *user_lastactive - Timestamp of the last time the user accessed acc.php, used for 'whos online' stats
+*user_forcelogout - Force the user to log out if set to 1
 
 acc_ban
 This table holds e-mail addresses and IP's that are banned from the request system.
