@@ -292,7 +292,7 @@ function listrequests($type) {
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or print mysql_error();
 	if ($type == 'Admin' || $type == 'Open') {
-		$query = "SELECT * FROM acc_pend WHERE pend_status = '$type';";
+		$query = "SELECT * FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed';";
 	} else {
 		$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
 	}

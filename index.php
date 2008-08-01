@@ -279,12 +279,15 @@ if ( $action == "confirm" ) {
 	$row = mysql_fetch_assoc( $result );
 	if( $row['pend_mailconfirm'] == $_GET['si'] ) {
 		echo "E-mail confirmed!<br />\n";
+		$query = "UPDATE acc_pend SET pend_mailconfirm = 'Confirmed' WHERE pend_id = '$pid';";
+		$result = mysql_query($query);
+		$user = row['pend_name'];
+		sendtobot( "Mail confirmed: $user $tsurl/acc.php?action=zoom&id=$pid" );
+	} elseif( $row['pend_mailconfirm'] == "Confirmed" ) {
+		echo "Your e-mail address has already been confirmed!\n";
 	} else {
-		echo "E-mail failed!<br />\n";
+		echo "E-mail confirmation failed!<br />\n";
 	}
-	echo "<pre>\n";
-	print_r($_GET);
-	echo "</pre>\n";	
 	displayfooter();
 	die();
 }
