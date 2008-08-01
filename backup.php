@@ -21,6 +21,11 @@
 **                                                           **
 **************************************************************/
 
+if ($ACC != "1") {
+    header("Location: $tsurl/");
+    die();
+} //Re-route, if you're a web client.
+
 //Config
 $basefile = "backup";
 $dir = "/projects/acc/accbak";

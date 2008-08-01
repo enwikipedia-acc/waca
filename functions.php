@@ -21,6 +21,11 @@
 **                                                           **
 **************************************************************/
 
+if ($ACC != "1") {
+    header("Location: $tsurl/");
+    die();
+} //Re-route, if you're a web client.
+
 function _utf8_decode($string) {
 	/*
 	* Improved utd8_decode() function
