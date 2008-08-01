@@ -325,18 +325,12 @@
 					or die( 'MySQL Error: ' . mysql_error() . "\n" );
 				$dec = $dec['count'];
                                 
-                                if( $enableRenames == 1 ) {
                                 $rnc = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
 					. sanitize( $username ) . '\' AND `log_action` = \'Renamed\'' ) )
 					or die( 'MySQL Error: ' . mysql_error() . "\n" );
-				$rnc = $rnc['count'];
-                                }
-                                
+				$rnc = $rnc['count'];                               
 
-				$adminInfo = 'Suspended: ' . $sus . ', Promoted: ' . $pro . ', Approved: ' . $app . ', Demoted: ' . $dem . ', Declined: ' . $dec;
-                                if($enableRenames == 1) {
-                                     $adminInfo .= ', Renamed: ' . $rnc;
-                                }
+				$adminInfo = 'Suspended: ' . $sus . ', Promoted: ' . $pro . ', Approved: ' . $app . ', Demoted: ' . $dem . ', Declined: ' . $dec . ', Renamed: ' . $rnc;
 			}
 
 			$today = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_time` LIKE \'' . sanitize( date( 'Y-m-d' ) )
