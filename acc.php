@@ -403,7 +403,7 @@ elseif ($action == "messagemgmt") {
 			die();
 		}
 		$mid = sanitize($_GET['edit']);
-		if ($_GET['submit'] == "1") {
+		if ( isset( $_GET['submit'] ) ) {
 			$mtext = html_entity_decode($mtext);
 			$mtext = sanitize($_POST['mailtext']);
 			$mdesc = sanitize($_POST['maildesc']);
