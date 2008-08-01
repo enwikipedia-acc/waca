@@ -472,6 +472,7 @@ function makehead($username) {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	$_SESSION['user_id'] = $row['user_id'];
+	forceLogout($_SESSION['user_id'];
 	$out = showmessage('21');
 	if (isset ($_SESSION['user'])) { //Is user logged in?
 		if (hasright($username, "Admin")) {
