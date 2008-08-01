@@ -254,9 +254,9 @@ function clearOldUnconfirmed( ) {
 	$ntime = mktime(
         	date("H"),
         	date("i"),
-        	date("s"),
+        	date("s") - 2,
         	date("m"),
-        	date("d") - 2,
+        	date("d"),
         	date("Y")
         );
 	$expiry =  date("Y-m-d H:i:s", $ntime);
