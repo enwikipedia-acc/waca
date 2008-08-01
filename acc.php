@@ -444,8 +444,8 @@ elseif ($action == "messagemgmt") {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	$suser = $_SESSION['USER'];
-	$query2 = "SELECT * FROM acc_user WHERE user_name = '$suser';";
+	$siuser = $_SESSION['user'];
+	$query2 = "SELECT * FROM acc_user WHERE user_name = '$siuser';";
 	$result2 = mysql_query($query);
 	if (!$result2)
 		Die("Query failed: $query2 ERROR: " . mysql_error());
@@ -457,7 +457,7 @@ elseif ($action == "messagemgmt") {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		if($level == 'Admin' || $_SESSION['USER'] == 'SQL'){
+		if($level == 'Admin' || $_SESSION['user'] == 'SQL'){
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		}
 		else{
@@ -476,7 +476,7 @@ elseif ($action == "messagemgmt") {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		if($level == 'Admin' || $_SESSION['USER'] == 'SQL'){
+		if($level == 'Admin' || $_SESSION['user'] == 'SQL'){
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		}
 		else{
@@ -496,7 +496,7 @@ elseif ($action == "messagemgmt") {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		if($level == 'Admin' || $_SESSION['USER'] == 'SQL'){
+		if($level == 'Admin' || $_SESSION['user'] == 'SQL'){
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		}
 		else{
