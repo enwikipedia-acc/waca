@@ -252,12 +252,12 @@ function clearOldUnconfirmed( ) {
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$ntime = mktime(
-        	date("H", $oldtime),
-        	date("i", $oldtime),
-        	date("s", $oldtime),
-        	date("m", $oldtime),
-        	date("d", $oldtime) - 2,
-        	date("Y", $oldtime)
+        	date("H"),
+        	date("i"),
+        	date("s"),
+        	date("m"),
+        	date("d") - 2,
+        	date("Y")
         );
 	$expiry =  date("Y-m-d H:i:s", $ntime);
 	$query = "DELETE FROM acc_pend WHERE pend_date < '$expiry' AND pend_mailconfirm != 'Confirmed' AND pend_mailconfirm != '';";
