@@ -450,7 +450,7 @@ elseif ($action == "messagemgmt") {
 	if (!$result2)
 		Die("Query failed: $query2 ERROR: " . mysql_error());
 	$row2 = mysql_fetch_assoc($result2);
-	$level = $row2['user_level']
+	$level = $row2['user_level'];
 	echo "<h2>Mail messages</h2>\n";
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
