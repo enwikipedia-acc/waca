@@ -281,7 +281,7 @@ if ( $action == "confirm" ) {
 		echo "E-mail confirmed!<br />\n";
 		$query = "UPDATE acc_pend SET pend_mailconfirm = 'Confirmed' WHERE pend_id = '$pid';";
 		$result = mysql_query($query);
-		$user = row['pend_name'];
+		$user = $row['pend_name'];
 		sendtobot( "Mail confirmed: $user $tsurl/acc.php?action=zoom&id=$pid" );
 	} elseif( $row['pend_mailconfirm'] == "Confirmed" ) {
 		echo "Your e-mail address has already been confirmed!\n";
