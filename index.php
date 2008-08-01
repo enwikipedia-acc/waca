@@ -271,8 +271,7 @@ if( isset( $_GET['action'] ) ) {
 if ( $action == "confirm" ) {
 	mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
 	@ mysql_select_db( $toolserver_database ) or print mysql_error();
-	displayheader( );
-	$pid = sanitize( $_GET['id'] );
+	$pid = mysql_real_escape_string( $_GET['id'] );
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$pid';";
 	$result = mysql_query( $query );
 	if ( !$result )
