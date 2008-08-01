@@ -50,11 +50,11 @@ if ($_GET['edituser'] != "" && $enableRenames == 1) {
 			die();
 		}
 		echo "<h2>User Settings for {$row['user_name']}</h2>\n";
-		echo "<ol>\n";
+		echo "<ul>\n";
 		echo "<li>User Name: " . $row['user_name'] . "</li>\n";
 		echo "<li>User ID: " . $row['user_id'] . "</li>\n";
 		echo "<li>User Level: " . $row['user_level'] . "</li>\n";
-		echo "</ol>\n";
+		echo "</ul>\n";
 		echo "<form action=\"users.php?edituser=" . $_GET['edituser'] . "\" method=\"post\">\n";
 		echo "<div class=\"required\">\n";
 		echo "<label for=\"user_email\">Email Address:</label>\n";
