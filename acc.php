@@ -450,7 +450,6 @@ elseif ($action == "messagemgmt") {
 	if (!$result2)
 		Die("Query failed: $query2 ERROR: " . mysql_error());
 	$row2 = mysql_fetch_assoc($result2);
-	$level = $row2['user_level'];
 	echo "<h2>Mail messages</h2>\n";
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
@@ -459,10 +458,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li><small>[ $maild ]<a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if($level == 'Admin'){
+		if($row2['user_level'] == 'Admin'){
 		echo "$out\n";
 		}
-		elseif($level != 'Admin'){
+		elseif($row2['user_level'] != 'Admin'){
 		echo "$out2\n";
 		}
 	}
@@ -479,10 +478,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li><small>[ $maild ]<a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if($level == 'Admin'){
+		if($row2['user_level'] == 'Admin'){
 		echo "$out\n";
 		}
-		elseif($level != 'Admin'){
+		elseif($row2['user_level'] != 'Admin'){
 		echo "$out2\n";
 		}
 	}
@@ -500,10 +499,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li><small>[ $maild ]<a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if($level == 'Admin'){
+		if($row2['user_level'] == 'Admin'){
 		echo "$out\n";
 		}
-		elseif($level != 'Admin'){
+		elseif($row2['user_level'] != 'Admin'){
 		echo "$out2\n";
 		}
 	}
