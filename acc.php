@@ -799,28 +799,27 @@ elseif ($action == "usermgmt") {
 			die();
 		}
 	}
-	
-        	if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
+	if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 		$siuser = sanitize($_SESSION['user']);
 		$newname == "";
 		if ($_POST['newname'] == "") {
-						$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '{$_GET['rename']}';");
-						if (!$result)
-							Die("Query failed: $query ERROR: " . mysql_error());
-						$oldname = mysql_fetch_assoc($result);
-                        echo "<form action=\"acc.php?action=usermgmt&amp;rename=" . $_GET['rename'] . "\" method=\"post\">";						
-                        echo "<div class=\"required\">";
-                        echo "<label for=\"oldname\">Old Username:</label>";
-                        echo "<input id=\"oldname\" type=\"text\" name=\"oldname\" readonly=\"readonly\" value=\"" . stripslashes($oldname['user_name']) . "\"/>";
-                        echo "</div>";
-                        echo "<div class=\"required\">";
-                        echo "<label for=\"newname\">New Username:</label>";
-                        echo "<input id=\"newname\" type=\"text\" name=\"newname\"/>";
-                        echo "</div>";
-                        echo "<div class=\"submit\">";
-                        echo "<input type=\"submit\"/>";
-                        echo "</div>";
-                        echo "</form>";
+			$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '{$_GET['rename']}';");
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$oldname = mysql_fetch_assoc($result);
+			echo "<form action=\"acc.php?action=usermgmt&amp;rename=" . $_GET['rename'] . "\" method=\"post\">";						
+			echo "<div class=\"required\">";
+			echo "<label for=\"oldname\">Old Username:</label>";
+			echo "<input id=\"oldname\" type=\"text\" name=\"oldname\" readonly=\"readonly\" value=\"" . stripslashes($oldname['user_name']) . "\"/>";
+			echo "</div>";
+			echo "<div class=\"required\">";
+			echo "<label for=\"newname\">New Username:</label>";
+			echo "<input id=\"newname\" type=\"text\" name=\"newname\"/>";
+			echo "</div>";
+			echo "<div class=\"submit\">";
+			echo "<input type=\"submit\"/>";
+			echo "</div>";
+			echo "</form>";
 			echo showfooter();
 			die();
 		} else {
@@ -828,11 +827,11 @@ elseif ($action == "usermgmt") {
 			$newname = sanitize($_POST['newname']);
 			$userid = sanitize($_GET['rename']);
 			$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$userid';");
-				if (!$result)
-					Die("Query failed: $query ERROR: " . mysql_error());
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
 			$checkname = mysql_fetch_assoc($result);	
-				if ($checkname['user_name'] != $oldname)
-					Die("Rename form corrupted");
+			if ($checkname['user_name'] != $oldname)
+				Die("Rename form corrupted");
 			if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$oldname';")) != 1 || mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$newname';")) != 0)
 				die("Target username in use, or current user does not exist.");
 			$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_id = '$userid';";
@@ -864,63 +863,61 @@ elseif ($action == "usermgmt") {
 			sendtobot("User $siuser changed $oldname's username to $newname");
 			echo showfooter();
 			die();
-		}
+	}
 	if ( isset( $_GET['edit'] ) && $enableRenames == 1 ) {
-	$sid = sanitize($_SESSION['user']);
-	if ($_POST['user_email'] == "" || $_POST['user_onwikiname'] == "") {
-		$gid = sanitize($_GET['edit']);
-		$query = "SELECT * FROM acc_user WHERE user_id = $gid;";
-		$result = mysql_query($query);
-		if (!$result)
-			Die("ERROR: No result returned.");
-		$row = mysql_fetch_assoc($result);
-		if ($row['user_id'] == "") {
-			echo "Invalid user!";
-			die();
+		$sid = sanitize($_SESSION['user']);
+		if (!isset($_POST['user_email']) || !isset($_POST['user_onwikiname'])) {
+			$gid = sanitize($_GET['edit']);
+			$query = "SELECT * FROM acc_user WHERE user_id = $gid;";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("ERROR: No result returned.");
+			$row = mysql_fetch_assoc($result);
+			if ($row['user_id'] == "") {
+				echo "Invalid user!";
+				die();
+			}
+			echo "<h2>User Settings for {$row['user_name']}</h2>\n";
+			echo "<ul>\n";
+			echo "<li>User Name: " . $row['user_name'] . "</li>\n";
+			echo "<li>User ID: " . $row['user_id'] . "</li>\n";
+			echo "<li>User Level: " . $row['user_level'] . "</li>\n";
+			echo "</ul>\n";
+			echo "<form action=\"acc.php?action=usermgmt&edit=" . $_GET['edit'] . "\" method=\"post\">\n";
+			echo "<div class=\"required\">\n";
+			echo "<label for=\"user_email\">Email Address:</label>\n";
+			echo "<input id=\"user_email\" type=\"text\" name=\"user_email\" value=\"" . stripslashes($row['user_email']) . "\"/>\n";
+			echo "</div>\n";
+			echo "<div class=\"required\">\n";
+			echo "<label for=\"user_onwikiname\">On-wiki Username:</label>\n";
+			echo "<input id=\"user_onwikiname\" type=\"text\" name=\"user_onwikiname\" value=\"" . stripslashes($row['user_onwikiname']) . "\"/>\n";
+			echo "</div>\n";
+			echo "<div class=\"submit\">\n";
+			echo "<input type=\"submit\"/>\n";
+			echo "</div>\n";
+			echo "</form>\n";	
+			echo "<br />\n <b>Note: misuse of this interface can cause problems, please use it wisely</b>";
+		} else {
+			$gid = sanitize($_GET['edit']);
+			$newemail = sanitize($_POST['user_email']);
+			$newwikiname = sanitize($_POST['user_onwikiname']);
+			$query = "UPDATE acc_user SET user_email = '$newemail', user_onwikiname = '$newwikiname' WHERE user_id = '$gid';";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());	
+			$now = date("Y-m-d H-i-s");			
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$gid', '$sid', 'Prefchange', '$now', '');";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			sendtobot("$sid changed preferences for User $gid");
+			echo "Changes saved";
 		}
-		echo "<h2>User Settings for {$row['user_name']}</h2>\n";
-		echo "<ul>\n";
-		echo "<li>User Name: " . $row['user_name'] . "</li>\n";
-		echo "<li>User ID: " . $row['user_id'] . "</li>\n";
-		echo "<li>User Level: " . $row['user_level'] . "</li>\n";
-		echo "</ul>\n";
-		echo "<form action=\"acc.php?action=usermgmt&edit=" . $_GET['edit'] . "\" method=\"post\">\n";
-		echo "<div class=\"required\">\n";
-		echo "<label for=\"user_email\">Email Address:</label>\n";
-		echo "<input id=\"user_email\" type=\"text\" name=\"user_email\" value=\"" . stripslashes($row['user_email']) . "\"/>\n";
-		echo "</div>\n";
-		echo "<div class=\"required\">\n";
-		echo "<label for=\"user_onwikiname\">On-wiki Username:</label>\n";
-		echo "<input id=\"user_onwikiname\" type=\"text\" name=\"user_onwikiname\" value=\"" . stripslashes($row['user_onwikiname']) . "\"/>\n";
-		echo "</div>\n";
-		echo "<div class=\"submit\">\n";
-		echo "<input type=\"submit\"/>\n";
-		echo "</div>\n";
-		echo "</form>\n";	
-		echo "<br />\n <b>Note: misuse of this interface can cause problems, please use it wisely</b>";
-	} else {
-		$gid = sanitize($_GET['edit']);
-		$newemail = sanitize($_POST['user_email']);
-		$newwikiname = sanitize($_POST['user_onwikiname']);
-		$query = "UPDATE acc_user SET user_email = '$newemail', user_onwikiname = '$newwikiname' WHERE user_id = '$gid';";
-		$result = mysql_query($query);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());	
-		$now = date("Y-m-d H-i-s");			
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$gid', '$sid', 'Prefchange', '$now', '');";
-		$result = mysql_query($query);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		sendtobot("$sid changed preferences for User $gid");
-		echo "Changes saved";
+		echo "<br /><br />";
+		displayfooter();
+		die();
 	}
-	echo "<br /><br />";
-	displayfooter();
-	die();
-
 }
-
-	}
 ?>
     <h1>User Management</h1>
     <strong>This interface isn't a toy. If it says you can do it, you can do it.<br />Please use this responsibly.</strong>
@@ -933,23 +930,22 @@ elseif ($action == "usermgmt") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	if (mysql_num_rows($result) != 0){
-	echo "<ol>\n";
-	while ($row = mysql_fetch_assoc($result)) {
-		$uname = $row['user_name'];
-		$uoname = $row['user_onwikiname'];
-		$userid = $row['user_id'];
-		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+		echo "<ol>\n";
+		while ($row = mysql_fetch_assoc($result)) {
+			$uname = $row['user_name'];
+			$uoname = $row['user_onwikiname'];
+			$userid = $row['user_id'];
+			$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 
-		if( $enableRenames == 1 ) {
-			$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-			$out .= " <a href=\"acc.php?action=usermgmt&amp;edit=$userid\">Edit!</a> -";
-		}
+			if( $enableRenames == 1 ) {
+				$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
+				$out .= " <a href=\"acc.php?action=usermgmt&amp;edit=$userid\">Edit!</a> -";
+			}
 			$out .= " <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&amp;decline=$userid\">Decline</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
-		echo "$out\n";
+			echo "$out\n";
+		}
+		echo "</ol>\n";
 	}
-	echo "</ol>\n";
-	}
-
 ?>
 	<div id="usermgmt-users">
     <h2>Users</h2>
