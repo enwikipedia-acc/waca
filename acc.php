@@ -864,7 +864,7 @@ elseif ($action == "usermgmt") {
 			echo showfooter();
 			die();
 	}
-	if ( isset( $_GET['edit'] ) && $enableRenames == 1 ) {
+	if (isset ($_GET['edit'])) {
 		$sid = sanitize($_SESSION['user']);
 		if (!isset($_POST['user_email']) || !isset($_POST['user_onwikiname'])) {
 			$gid = sanitize($_GET['edit']);
