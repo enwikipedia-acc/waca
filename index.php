@@ -24,6 +24,7 @@
 require_once ('config.inc.php');
 $fail = 0;
 
+if ($enableEmailConfirm == 1) {
 function confirmEmail( $id ) {
 	/*
 	* Confirms either a new users e-mail, or a requestor's e-mail.
@@ -63,6 +64,7 @@ function confirmEmail( $id ) {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
+}
 }
 
 function checkSpoofs( $username ) {
@@ -244,6 +246,7 @@ function displayform() {
 	echo $row['mail_text'];
 	mysql_close();
 }
+if ($enableEmailConfirm == 1) {
 function clearOldUnconfirmed( ) {
 	global $toolserver_username;
 	global $toolserver_password;
@@ -262,6 +265,7 @@ function clearOldUnconfirmed( ) {
 	$expiry =  date("Y-m-d H:i:s", $ntime);
 	$query = "DELETE FROM acc_pend WHERE pend_date < '$expiry' AND pend_mailconfirm != 'Confirmed' AND pend_mailconfirm != '';";
 	$result = mysql_query($query);
+}
 }
 
 function showmessage($messageno) {
@@ -282,7 +286,9 @@ function showmessage($messageno) {
 	return ($row['mail_text']);
 	mysql_close();
 }
+if ($enableEmailConfirm == 1) {
 clearOldUnconfirmed( );
+}
 displayheader();
 if( isset( $_GET['action'] ) ) {
 	$action = $_GET['action'];
@@ -584,7 +590,10 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	}
 	if (!$result)
 		Die("ERROR: No result returned. - ".mysql_error()." - $query <br /> $q2");
-	confirmEmail( $pid );
+
+        if ($enableEmailConfirm == 1) {	
+        confirmEmail( $pid );
+        }
 } else {
 	displayform();
 	displayfooter();

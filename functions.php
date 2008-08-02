@@ -329,11 +329,21 @@ function listrequests($type) {
 	if($secure != 1) { die("Not logged in"); }
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or print mysql_error();
+        if ($enableEmailConfirm == 1) {
 	if ($type == 'Admin' || $type == 'Open') {
 		$query = "SELECT * FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed';";
 	} else {
 		$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
 	}
+        }
+          else {
+        if ($type == 'Admin' || $type == 'Open') {
+		$query = "SELECT * FROM acc_pend WHERE pend_status = '$type';";
+	} else {
+		$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
+	}
+        }
+    
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
