@@ -99,7 +99,7 @@ session_start( );
 			echo "$out";
 	}
 	else{
-			echo "$out2"
+			echo "$out2";
 	}
 			// Not every row $noc = count($row[pend_name]); //Define total number of users created
 			// Not every row echo "<b>Number of users created: $noc</b>\n"; //Display total number of users created
@@ -124,7 +124,7 @@ session_start( );
 			echo "$out";
 	}
 	else{
-			echo "$out2"
+			echo "$out2";
 	}
 		}
 		echo "</ol>\n";
