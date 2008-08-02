@@ -864,7 +864,7 @@ elseif ($action == "usermgmt") {
 			echo showfooter();
 			die();
 	}
-	if (isset ($_GET['edit'])) {
+	if (isset ($_GET['edituser'])) {
 		$sid = sanitize($_SESSION['user']);
 		if (!isset($_POST['user_email']) || !isset($_POST['user_onwikiname'])) {
 			$gid = sanitize($_GET['edit']);
@@ -883,7 +883,7 @@ elseif ($action == "usermgmt") {
 			echo "<li>User ID: " . $row['user_id'] . "</li>\n";
 			echo "<li>User Level: " . $row['user_level'] . "</li>\n";
 			echo "</ul>\n";
-			echo "<form action=\"acc.php?action=usermgmt&edit=" . $_GET['edit'] . "\" method=\"post\">\n";
+			echo "<form action=\"acc.php?action=usermgmt&edituser=" . $_GET['edit'] . "\" method=\"post\">\n";
 			echo "<div class=\"required\">\n";
 			echo "<label for=\"user_email\">Email Address:</label>\n";
 			echo "<input id=\"user_email\" type=\"text\" name=\"user_email\" value=\"" . stripslashes($row['user_email']) . "\"/>\n";
@@ -939,7 +939,7 @@ elseif ($action == "usermgmt") {
 
 			if( $enableRenames == 1 ) {
 				$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-				$out .= " <a href=\"acc.php?action=usermgmt&amp;edit=$userid\">Edit!</a> -";
+				$out .= " <a href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
 			}
 			$out .= " <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&amp;decline=$userid\">Decline</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
 			echo "$out\n";
@@ -965,7 +965,7 @@ elseif ($action == "usermgmt") {
 		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 		if( $enableRenames == 1 ) {
 			$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-			$out .= " <a href=\"acc.php?action=usermgmt&amp;edit=$userid\">Edit!</a> -";
+			$out .= " <a href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
 		}
 		$out .= " <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
 		echo "$out\n";
@@ -1025,7 +1025,7 @@ $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action 
 		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 		if( $enableRenames == 1 ) {
 			$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-			$out .= " <a href=\"acc.php?action=usermgmt&amp;edit=$userid\">Edit!</a> -";
+			$out .= " <a href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
 		}
 		$out .= " <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;demote=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined])</small></li>";
 		echo "$out\n";
