@@ -865,7 +865,7 @@ elseif ($action == "usermgmt") {
 			die();
 		}
 	}
-	if (isset ($_GET['edituser'])) {
+	if (isset ($_GET['edituser'] && $enablerenames == 1)) {
 		$sid = sanitize($_SESSION['user']);
 		if (!isset($_POST['user_email']) || !isset($_POST['user_onwikiname'])) {
 			$gid = sanitize($_GET['edituser']);
@@ -936,11 +936,6 @@ elseif ($action == "usermgmt") {
 			$uoname = $row['user_onwikiname'];
 			$userid = $row['user_id'];
 			$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
-
-			if( $enableRenames == 1 ) {
-				$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-				$out .= " <a href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
-			}
 			$out .= " <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&amp;decline=$userid\">Decline</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
 			echo "$out\n";
 		}
