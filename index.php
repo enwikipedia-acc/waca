@@ -24,7 +24,6 @@
 require_once ('config.inc.php');
 $fail = 0;
 
-if ($enableEmailConfirm == 1) {
 function confirmEmail( $id ) {
 	/*
 	* Confirms either a new users e-mail, or a requestor's e-mail.
@@ -64,7 +63,6 @@ function confirmEmail( $id ) {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-}
 }
 
 function checkSpoofs( $username ) {
@@ -246,7 +244,7 @@ function displayform() {
 	echo $row['mail_text'];
 	mysql_close();
 }
-if ($enableEmailConfirm == 1) {
+
 function clearOldUnconfirmed( ) {
 	global $toolserver_username;
 	global $toolserver_password;
@@ -265,7 +263,6 @@ function clearOldUnconfirmed( ) {
 	$expiry =  date("Y-m-d H:i:s", $ntime);
 	$query = "DELETE FROM acc_pend WHERE pend_date < '$expiry' AND pend_mailconfirm != 'Confirmed' AND pend_mailconfirm != '';";
 	$result = mysql_query($query);
-}
 }
 
 function showmessage($messageno) {
@@ -286,14 +283,20 @@ function showmessage($messageno) {
 	return ($row['mail_text']);
 	mysql_close();
 }
+
 if ($enableEmailConfirm == 1) {
-clearOldUnconfirmed( );
+	clearOldUnconfirmed( );
 }
+
+
 displayheader();
-if ($enableEmailConfirm == 1) {
+
 if( isset( $_GET['action'] ) ) {
 	$action = $_GET['action'];
 }
+
+if ($enableEmailConfirm == 1) {
+
 if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 	mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
 	@ mysql_select_db( $toolserver_database ) or print mysql_error();
@@ -316,7 +319,7 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 	}
 	displayfooter();
 	die();
-} else {
+} else if ($action == "confirm") {
 	echo "Invalid Parameters. Please be sure you copied the URL correctly<br />\n";
 	displayfooter();
 	die();
