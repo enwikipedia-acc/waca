@@ -639,7 +639,12 @@ function displayheader() {
 
 function displayfooter() {
         echo "<a href=\"index.php\">Return to account request interface.</a><br />\n";
+	if(hasright($siuser, 'User') || hasright($siuser, 'Admin')){
+        echo "<a href=\"acc.php\">Return to request management interface</a>\n";
+	}
+	else{
         echo "<a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
+	}
 	global $toolserver_username;
 	global $toolserver_password;
 	global $toolserver_host;
