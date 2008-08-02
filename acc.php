@@ -872,6 +872,7 @@ elseif ($action == "usermgmt") {
 			$query = "SELECT * FROM acc_user WHERE user_id = $gid;";
 			$result = mysql_query($query);
 			if (!$result)
+				echo "<!-- $query -->\n";
 				Die("ERROR: No result returned.");
 			$row = mysql_fetch_assoc($result);
 			if ($row['user_id'] == "") {
