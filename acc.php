@@ -939,7 +939,7 @@ elseif ($action == "usermgmt") {
 		$uname = $row['user_name'];
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
-		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]"
+		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 
 		if( $enableRenames == 1 ) {
 			$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
