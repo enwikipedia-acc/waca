@@ -391,7 +391,7 @@ elseif ($action == "messagemgmt") {
 		die();
 	}
 	if (isset ($_GET['edit'])) {
-	if(!hasright($_GET['edit'], 'Admin')) {
+	if(!hasright($_SESSION['user'], 'Admin')) {
 			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
 			echo showfooter();
 			die();
