@@ -74,6 +74,7 @@ session_start( );
 	} else {
 		$welcomee = "No";
 	}
+
 	if(hasright($siuser, 'User') || hasright($siuser, 'Admin')){
 	echo "<li>User has <a href=\"acc.php?action=welcomeperf\">automatic welcoming</a> enabled: $welcomee.</li>\n";
 	}
@@ -82,6 +83,7 @@ session_start( );
 	}
 	echo "</ul>\n";
 	echo "<h2>Users created</h2>\n";
+	$siuser = $_SESSION['user'];
 	$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = '$gid' AND log_action = 'Closed 1';";
 	$result = mysql_query($query);
 	if (!$result)
@@ -107,6 +109,7 @@ session_start( );
 		echo "</ol>\n";
 	}
 	echo "<h2>Users not created</h2>\n";
+	$siuser = $_SESSION['user'];
 	$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = '$gid' AND log_action != 'Closed 1';";
 	$result = mysql_query($query);
 	if (!$result)
