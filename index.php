@@ -57,7 +57,7 @@ function confirmEmail( $id ) {
 	mt_srand( $seed );
 	$salt = mt_rand( );
 	$hash = md5( $id . $salt );
-	$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&amp;si=$hash&amp;id=" . $row['pend_id'] . "&amp;nocheck=1 in order to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
+	$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	mail($row['pend_email'], "English Wikipedia Account Request", $mailtxt, $headers);
 	$query = "UPDATE acc_pend SET pend_mailconfirm = '$hash' WHERE pend_id = '$pid';";
@@ -294,7 +294,7 @@ if ($enableEmailConfirm == 1) {
 if( isset( $_GET['action'] ) ) {
 	$action = $_GET['action'];
 }
-if ( $action == "confirm" ) {
+if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 	mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
 	@ mysql_select_db( $toolserver_database ) or print mysql_error();
 	$pid = mysql_real_escape_string( $_GET['id'] );
@@ -314,6 +314,10 @@ if ( $action == "confirm" ) {
 	} else {
 		echo "E-mail confirmation failed!<br />\n";
 	}
+	displayfooter();
+	die();
+} else {
+	echo "Invalid Parameters. Please be sure you copied the URL correctly<br />\n";
 	displayfooter();
 	die();
 }
