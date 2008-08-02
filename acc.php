@@ -391,8 +391,7 @@ elseif ($action == "messagemgmt") {
 		die();
 	}
 	if (isset ($_GET['edit'])) {
-		$siuser = sanitize($_SESSION['user']);
-	if(!hasright($siuser, 'Admin')) {
+	if(!hasright($_GET['edit'], 'Admin')) {
 			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
 			echo showfooter();
 			die();
@@ -439,7 +438,6 @@ elseif ($action == "messagemgmt") {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	$siuser = sanitize( $_SESSION['user'] );
 	echo "<h2>Mail messages</h2>\n";
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
@@ -448,10 +446,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if(hasright($siuser, 'Admin')){
+		if(hasright($_SESSION['user'], 'Admin')){
 		echo "$out\n";
 		}
-		elseif(!hasright($siuser, 'Admin')){
+		elseif(!hasright($_SESSION['user'], 'Admin')){
 		echo "$out2\n";
 		}
 	}
@@ -468,10 +466,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if(hasright($siuser, 'Admin')){
+		if(hasright($_SESSION['user'], 'Admin')){
 		echo "$out\n";
 		}
-		elseif(!hasright($siuser, 'Admin')){
+		elseif(!hasright($_SESSION['user'], 'Admin')){
 		echo "$out2\n";
 		}
 	}
@@ -489,10 +487,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if(hasright($siuser, 'Admin')){
+		if(hasright($_SESSION['user'], 'Admin')){
 		echo "$out\n";
 		}
-		elseif(!hasright($siuser, 'Admin')){
+		elseif(!hasright($_SESSION['user'], 'Admin')){
 		echo "$out2\n";
 		}
 	}
@@ -519,7 +517,6 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	$now = date("Y-m-d H-i-s");
 	upcsum($target);
 	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$target', '$siuser', 'Banned', '$now');";
-	echo "<!-- Query: $query -->\n";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
@@ -527,7 +524,7 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	echo "Banned " . $_GET['target'] . " for $reason<br />\n";
+	echo "Banned " . htmlentities($_GET['target']) . " for $reason<br />\n";
 	if ($duration == "" || $duration == "-1") {
 		$until = "Indefinite";
 	} else {
@@ -629,8 +626,7 @@ elseif ($action == "ban") {
 	die();
 }
 elseif ($action == "usermgmt") {
-	$siuser = sanitize($_SESSION['user']);
-	if(!hasright($siuser, 'Admin'))
+	if(!hasright($_SESSION['user'], 'Admin'))
 	{
 		echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
 		echo showfooter();
@@ -918,6 +914,7 @@ elseif ($action == "usermgmt") {
 		displayfooter();
 		die();
 	}
+}
 ?>
     <h1>User Management</h1>
     <strong>This interface isn't a toy. If it says you can do it, you can do it.<br />Please use this responsibly.</strong>
