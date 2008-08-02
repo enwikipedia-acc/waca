@@ -360,7 +360,7 @@ elseif ($action == "login") {
 		echo showfootern();
 		die();
 	}
-	if ($row['user_level'] == "Suspended" && $_SESSION['user'] != "SQL") {
+	if ($row['user_level'] == "Suspended") {
 		echo "I'm sorry, but, your account is presently suspended.<br />\n";
 		echo showfootern();
 		die();
@@ -392,7 +392,7 @@ elseif ($action == "messagemgmt") {
 	}
 	if (isset ($_GET['edit'])) {
 		$siuser = sanitize($_SESSION['user']);
-	if(!hasright($siuser, 'Admin') && $_SESSION['user'] != 'SQL') {
+	if(!hasright($siuser, 'Admin')) {
 			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
 			echo showfooter();
 			die();
@@ -448,10 +448,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if(hasright($siuser, 'Admin') || $_SESSION['user'] != 'SQL'){
+		if(hasright($siuser, 'Admin')){
 		echo "$out\n";
 		}
-		elseif(!hasright($siuser, 'Admin') && $_SESSION['user'] != 'SQL'){
+		elseif(!hasright($siuser, 'Admin')){
 		echo "$out2\n";
 		}
 	}
@@ -468,10 +468,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if(hasright($siuser, 'Admin') || $_SESSION['user'] != 'SQL'){
+		if(hasright($siuser, 'Admin')){
 		echo "$out\n";
 		}
-		elseif(!hasright($siuser, 'Admin') && $_SESSION['user'] != 'SQL'){
+		elseif(!hasright($siuser, 'Admin')){
 		echo "$out2\n";
 		}
 	}
@@ -489,10 +489,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if(hasright($siuser, 'Admin') || $_SESSION['user'] == 'SQL'){
+		if(hasright($siuser, 'Admin')){
 		echo "$out\n";
 		}
-		elseif(!hasright($siuser, 'Admin') && $_SESSION['user'] != 'SQL'){
+		elseif(!hasright($siuser, 'Admin')){
 		echo "$out2\n";
 		}
 	}
@@ -630,7 +630,7 @@ elseif ($action == "ban") {
 }
 elseif ($action == "usermgmt") {
 	$siuser = sanitize($_SESSION['user']);
-	if(!hasright($siuser, 'Admin') && $_SESSION['user'] != 'SQL')
+	if(!hasright($siuser, 'Admin'))
 	{
 		echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
 		echo showfooter();
