@@ -914,7 +914,6 @@ elseif ($action == "usermgmt") {
 		displayfooter();
 		die();
 	}
-}
 ?>
     <h1>User Management</h1>
     <strong>This interface isn't a toy. If it says you can do it, you can do it.<br />Please use this responsibly.</strong>
