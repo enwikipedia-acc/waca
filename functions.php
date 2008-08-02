@@ -498,7 +498,7 @@ function makehead($username) {
 	$row = mysql_fetch_assoc($result);
 	$_SESSION['user_id'] = $row['user_id'];
 	forceLogout( $_SESSION['user_id'] );
-	$out = showmessage('21');
+	$out = showmessage('22');
 	if (isset ($_SESSION['user'])) { //Is user logged in?
 		if (hasright($username, "Admin")) {
 			$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"acc.php?action=usermgmt\">User Management</a>\n", $out);
@@ -522,7 +522,7 @@ function showfootern() {
 	/*
 	* Show footer (not logged in)
 	*/
-	return showmessage('22');
+	return showmessage('23');
 }
 
 function showfooter() {
@@ -533,7 +533,7 @@ function showfooter() {
 	$howmany = gethowma();
 	$howout = showhowma();
 	$howma = $howmany['howmany'];
-	$out = showmessage('23');
+	$out = showmessage('24');
 	if ($howma > 1)
 		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma users active within the last 5 mins! ($howout)</small></div><br /><br />", $out);
 	else
