@@ -290,6 +290,7 @@ if ($enableEmailConfirm == 1) {
 clearOldUnconfirmed( );
 }
 displayheader();
+if ($enableEmailConfirm == 1) {
 if( isset( $_GET['action'] ) ) {
 	$action = $_GET['action'];
 }
@@ -315,6 +316,7 @@ if ( $action == "confirm" ) {
 	}
 	displayfooter();
 	die();
+}
 }
 
 if (isset ($_POST['name']) && isset ($_POST['email'])) {
