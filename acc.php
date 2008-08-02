@@ -868,7 +868,7 @@ elseif ($action == "usermgmt") {
 	if (isset ($_GET['edituser'])) {
 		$sid = sanitize($_SESSION['user']);
 		if (!isset($_POST['user_email']) || !isset($_POST['user_onwikiname'])) {
-			$gid = sanitize($_GET['edit']);
+			$gid = sanitize($_GET['edituser']);
 			$query = "SELECT * FROM acc_user WHERE user_id = $gid;";
 			$result = mysql_query($query);
 			if (!$result)
@@ -885,7 +885,7 @@ elseif ($action == "usermgmt") {
 			echo "<li>User ID: " . $row['user_id'] . "</li>\n";
 			echo "<li>User Level: " . $row['user_level'] . "</li>\n";
 			echo "</ul>\n";
-			echo "<form action=\"acc.php?action=usermgmt&edituser=" . $_GET['edit'] . "\" method=\"post\">\n";
+			echo "<form action=\"acc.php?action=usermgmt&edituser=" . $_GET['edituser'] . "\" method=\"post\">\n";
 			echo "<div class=\"required\">\n";
 			echo "<label for=\"user_email\">Email Address:</label>\n";
 			echo "<input id=\"user_email\" type=\"text\" name=\"user_email\" value=\"" . stripslashes($row['user_email']) . "\"/>\n";
@@ -900,7 +900,7 @@ elseif ($action == "usermgmt") {
 			echo "</form>\n";	
 			echo "<br />\n <b>Note: misuse of this interface can cause problems, please use it wisely</b>";
 		} else {
-			$gid = sanitize($_GET['edit']);
+			$gid = sanitize($_GET['edituser']);
 			$newemail = sanitize($_POST['user_email']);
 			$newwikiname = sanitize($_POST['user_onwikiname']);
 			$query = "UPDATE acc_user SET user_email = '$newemail', user_onwikiname = '$newwikiname' WHERE user_id = '$gid';";
