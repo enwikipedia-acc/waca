@@ -1395,24 +1395,12 @@ elseif ($action == "zoom") {
 		}
 		if ($rla == "Closed 5") {
 			echo "<li>$rlu Closed (Technical Impossibility), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-
 		}
 		if ($rla == "Closed 6") {
 			echo "<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($rla == "Blacklist Hit") {
-			echo "<li>$rlu Rejected by Blacklist $rlp, " . $row['log_cmt'] . " at $rlt.</li>\n";
-		}
-		if ($rla == "Renamed") {
-			echo "<li>$rlu renamed user $rlc at $rlt.</li>\n";
-		}
-		if ($rla == "Prefchange") {
-			$query2 = "SELECT user_name FROM acc_user WHERE user_id = '$rlp';";
-			$result2 = mysql_query($query2);
-			if (!$result2)
-				Die("Query failed: $query ERROR: " . mysql_error());
-			$row2 = mysql_fetch_assoc($result2);
-			echo "<li>$rlu changed user preferences for User $rlp (" . $row2['user_name'] . ") at $rlt</li>\n";
+			echo "<li>$rlu Rejected by Blacklist $rlp, $rlc at $rlt.</li>\n";
 		}
 	}
 
