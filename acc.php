@@ -392,7 +392,12 @@ elseif ($action == "messagemgmt") {
 	}
 	if (isset ($_GET['edit'])) {
 		$siuser = sanitize($_SESSION['user']);
-	if(!hasright($siuser, 'Admin') && $_SESSION['user'] != 'SQL') {
+		$query = "SELECT * FROM acc_user WHERE user_name = '$siuser';";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row = mysql_fetch_assoc($result);
+		if ($row['user_level'] != "Admin" && $_SESSION['user'] != "SQL") {
 			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
 			echo showfooter();
 			die();
@@ -453,10 +458,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if(hasright($siuser, 'Admin') && $_SESSION['user'] != 'SQL'){
+		if($row2['user_level'] == 'Admin' || $_SESSION['user'] = 'SQL'){
 		echo "$out\n";
 		}
-		elseif(!hasright($siuser, 'Admin') && $_SESSION['user'] != 'SQL')
+		elseif($row2['user_level'] != 'Admin' && $_SESSION['user'] != 'SQL'){
 		echo "$out2\n";
 		}
 	}
@@ -473,10 +478,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if(hasright($siuser, 'Admin') && $_SESSION['user'] != 'SQL'){
+		if($row2['user_level'] == 'Admin' || $_SESSION['user'] = 'SQL'){
 		echo "$out\n";
 		}
-		elseif(!hasright($siuser, 'Admin') && $_SESSION['user'] != 'SQL')
+		elseif($row2['user_level'] != 'Admin' && $_SESSION['user'] != 'SQL'){
 		echo "$out2\n";
 		}
 	}
@@ -494,10 +499,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if(hasright($siuser, 'Admin') && $_SESSION['user'] != 'SQL'){
+		if($row2['user_level'] == 'Admin' || $_SESSION['user'] = 'SQL'){
 		echo "$out\n";
 		}
-		elseif(!hasright($siuser, 'Admin') && $_SESSION['user'] != 'SQL')
+		elseif($row2['user_level'] != 'Admin' && $_SESSION['user'] != 'SQL'){
 		echo "$out2\n";
 		}
 	}
@@ -524,6 +529,7 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	$now = date("Y-m-d H-i-s");
 	upcsum($target);
 	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$target', '$siuser', 'Banned', '$now');";
+	echo "<!-- Query: $query -->\n";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
@@ -531,13 +537,17 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	echo "Banned $target for $reason<br />\n";
+	echo "Banned " . $_GET['target'] . " for $reason<br />\n";
 	if ($duration == "" || $duration == "-1") {
-		$until = "Forever";
+		$until = "Indefinite";
 	} else {
 		$until = date("F j, Y, g:i a", $duration);
 	}
-	sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " until $until");
+	if ($until == 'Indefinite') {
+		sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " indefinitely");
+	} else {
+		sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " until $until");
+	}
 	echo showfooter();
 	die();
 }
@@ -560,7 +570,7 @@ elseif ($action == "unban" && $_GET['id'] != "") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "Unbanned ban #$bid<br />\n";
-	sendtobot("Ban #$bid ($iTarget) unbanned by " . $_SESSION['user']);
+	sendtobot("Ban #" . $bid . " ($iTarget) unbanned by " . $_SESSION['user']);
 	echo showfooter();
 	die();
 }
@@ -597,8 +607,8 @@ elseif ($action == "ban") {
 			$target = $row['pend_name'];
 			$type = "Name";
 		}
-		$target = sanitize($target);
-		$query = "SELECT * FROM acc_ban WHERE ban_target = '$target';";
+		$starget = sanitize($target);
+		$query = "SELECT * FROM acc_ban WHERE ban_target = '$starget';";
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -608,7 +618,7 @@ elseif ($action == "ban") {
 			echo showfooter();
 			die();
 		} else {
-			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser&amp;target=$target&amp;type=$type\" method=\"post\">Ban target: $target\n<br />Reason: <input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Forever<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT><br /><input type=\"submit\"></form>\n";
+			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser&amp;target=$target&amp;type=$type\" method=\"post\">Ban target: $target\n<br />Reason: <input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT><br /><input type=\"submit\"></form>\n";
 		}
 	}
 	echo "<h2>Active Ban List</h2>\n<ol>\n";
@@ -618,7 +628,7 @@ elseif ($action == "ban") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
 		if ($row['ban_duration'] == "" || $row['ban_duration'] == "-1") {
-			$until = "Forever";
+			$until = "Indefinite";
 		} else {
 			$until = date("F j, Y, g:i a", $row['ban_duration']);
 		}
@@ -630,8 +640,12 @@ elseif ($action == "ban") {
 }
 elseif ($action == "usermgmt") {
 	$siuser = sanitize($_SESSION['user']);
-	if(!hasright($siuser, 'Admin') && $_SESSION['user'] != 'SQL')
-	{
+	$query = "SELECT * FROM acc_user WHERE user_name = '$siuser';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	if ($row['user_level'] != "Admin" && $_SESSION['user'] != "SQL") {
 		echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
 		echo showfooter();
 		die();
@@ -688,7 +702,7 @@ elseif ($action == "usermgmt") {
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
-			echo "Changed User #" . $_GET['demote'] . " access to 'User'<br />\n";
+			echo "Changed User #" . $_GET['demote'] . " access to 'Demoted'<br />\n";
 			$uid = $did;
 			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
 			$result2 = mysql_query($query2);
@@ -865,61 +879,6 @@ elseif ($action == "usermgmt") {
 			echo showfooter();
 			die();
 		}
-	if ( isset( $_GET['edit'] ) && $enableRenames == 1 ) {
-	displayheader();
-	$sid = sanitize($_SESSION['user']);
-	if ($_POST['user_email'] == "" || $_POST['user_onwikiname'] == "") {
-		$gid = sanitize($_GET['edit']);
-		$query = "SELECT * FROM acc_user WHERE user_id = $gid;";
-		$result = mysql_query($query);
-		if (!$result)
-			Die("ERROR: No result returned.");
-		$row = mysql_fetch_assoc($result);
-		if ($row['user_id'] == "") {
-			echo "Invalid user!";
-			die();
-		}
-		echo "<h2>User Settings for {$row['user_name']}</h2>\n";
-		echo "<ul>\n";
-		echo "<li>User Name: " . $row['user_name'] . "</li>\n";
-		echo "<li>User ID: " . $row['user_id'] . "</li>\n";
-		echo "<li>User Level: " . $row['user_level'] . "</li>\n";
-		echo "</ul>\n";
-		echo "<form action=\"acc.php?action=usermgmt&edit=" . $_GET['edit'] . "\" method=\"post\">\n";
-		echo "<div class=\"required\">\n";
-		echo "<label for=\"user_email\">Email Address:</label>\n";
-		echo "<input id=\"user_email\" type=\"text\" name=\"user_email\" value=\"" . stripslashes($row['user_email']) . "\"/>\n";
-		echo "</div>\n";
-		echo "<div class=\"required\">\n";
-		echo "<label for=\"user_onwikiname\">On-wiki Username:</label>\n";
-		echo "<input id=\"user_onwikiname\" type=\"text\" name=\"user_onwikiname\" value=\"" . stripslashes($row['user_onwikiname']) . "\"/>\n";
-		echo "</div>\n";
-		echo "<div class=\"submit\">\n";
-		echo "<input type=\"submit\"/>\n";
-		echo "</div>\n";
-		echo "</form>\n";	
-		echo "<br />\n <b>Note: misuse of this interface can cause problems, please use it wisely</b>";
-	} else {
-		$gid = sanitize($_GET['edit']);
-		$newemail = sanitize($_POST['user_email']);
-		$newwikiname = sanitize($_POST['user_onwikiname']);
-		$query = "UPDATE acc_user SET user_email = '$newemail', user_onwikiname = '$newwikiname' WHERE user_id = '$gid';";
-		$result = mysql_query($query);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());	
-		$now = date("Y-m-d H-i-s");			
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$gid', '$sid', 'Prefchange', '$now', '');";
-		$result = mysql_query($query);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		sendtobot("$sid changed preferences for User $gid");
-		echo "Changes saved";
-	}
-	echo "<br /><br />";
-	displayfooter();
-	die();
-
-}
 
 	}
 ?>
@@ -939,13 +898,7 @@ elseif ($action == "usermgmt") {
 		$uname = $row['user_name'];
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
-		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]"
-
-		if( $enableRenames == 1 ) {
-			$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-			$out .= " <a href=\"acc.php?action=usermgmt&amp;edit=$userid\">Edit!</a> -";
-		}
-			$out .= " <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&amp;decline=$userid\">Decline</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
+		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ] <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&amp;decline=$userid\">Decline</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
 		echo "$out\n";
 	}
 	echo "</ol>\n";
@@ -970,7 +923,7 @@ elseif ($action == "usermgmt") {
 		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 		if( $enableRenames == 1 ) {
 			$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-			$out .= " <a href=\"acc.php?action=usermgmt&amp;edit=$userid\">Edit!</a> -";
+			$out .= " <a href=\"users.php?edituser=$userid\">Edit!</a> -";
 		}
 		$out .= " <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
 		echo "$out\n";
@@ -1030,7 +983,7 @@ $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action 
 		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 		if( $enableRenames == 1 ) {
 			$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-			$out .= " <a href=\"users.php?action=usermgmt&amp;edit=$userid\">Edit!</a> -";
+			$out .= " <a href=\"users.php?edituser=$userid\">Edit!</a> -";
 		}
 		$out .= " <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;demote=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined])</small></li>";
 		echo "$out\n";
