@@ -30,13 +30,13 @@ if ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
 mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 @ mysql_select_db($toolserver_database) or print mysql_error();
 
-$openq = "select COUNT(*) from acc_pend where pend_status = 'Open';";
+$openq = "select COUNT(*) from acc_pend where pend_status = 'Open' and pend_mailconfirm = 'Confirmed';";
 $result = mysql_query($openq);
 if (!$result)
 	Die("ERROR: No result returned.1");
 $open = mysql_fetch_assoc($result);
 
-$adminq = "select COUNT(*) from acc_pend where pend_status = 'Admin';";
+$adminq = "select COUNT(*) from acc_pend where pend_status = 'Admin' and pend_mailconfirm = 'Confirmed';";
 $result = mysql_query($adminq);
 if (!$result)
 	Die("ERROR: No result returned.2");
