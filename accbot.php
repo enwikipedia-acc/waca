@@ -346,11 +346,11 @@
 	}
 
 	function commandStatus( $parsed ) {
-		$open = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_status` = \'Open\'' ) )
+		$open = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_status` = \'Open\' AND `pend_mailconfirm` = \'Confirmed\'' ) )
 			or die( 'MySQL Error: ' . mysql_error() . "\n" );
 		$open = $open['count'];
 
-		$adminRequests = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_status` = \'Admin\'' ) )
+		$adminRequests = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_status` = \'Admin\' AND `pend_mailconfirm` = \'Confirmed\'' ) )
 			or die( 'MySQL Error: ' . mysql_error() . "\n" );
 		$adminRequests = $adminRequests['count'];
 
