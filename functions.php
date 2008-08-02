@@ -638,6 +638,7 @@ function displayheader() {
 }
 
 function displayfooter() {
+	$siuser = $_SESSION['user'];
         echo "<a href=\"index.php\">Return to account request interface.</a><br />\n";
 	if(hasright($siuser, 'User') || hasright($siuser, 'Admin')){
         echo "<a href=\"acc.php\">Return to request management interface</a>\n";
