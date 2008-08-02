@@ -523,6 +523,7 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$query = "INSERT INTO acc_ban (ban_type, ban_target, ban_user, ban_reason, ban_date, ban_duration) VALUES ('$type', '$target', '$siuser', '$reason', '$now', $duration);";
+        echo "<!-- Query: $query -->\n";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
@@ -554,12 +555,12 @@ elseif ($action == "unban" && $_GET['id'] != "") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$now = date("Y-m-d H-i-s");
-	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$bid', '$siuser', 'Unbanned', '$now');";
+	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$bid', '$siuser', ' echo "<!-- Query: $query -->\n";', '$now');";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "Unbanned ban #$bid<br />\n";
-	sendtobot("Ban #$bid ($iTarget) unbanned by " . $_SESSION['user']);
+	sendtobot("Ban #" . $bid . " ($iTarget) unbanned by " . $_SESSION['user']);
 	echo showfooter();
 	die();
 }
@@ -607,7 +608,7 @@ elseif ($action == "ban") {
 			echo showfooter();
 			die();
 		} else {
-			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser&amp;target=$target&amp;type=$type\" method=\"post\">Ban target: $target\n<br />Reason: <input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Forever<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT><br /><input type=\"submit\"></form>\n";
+			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser&amp;target=$target&amp;type=$type\" method=\"post\">Ban target: $target\n<br />Reason: <input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT><br /><input type=\"submit\"></form>\n";
 		}
 	}
 	echo "<h2>Active Ban List</h2>\n<ol>\n";
@@ -617,7 +618,7 @@ elseif ($action == "ban") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
 		if ($row['ban_duration'] == "" || $row['ban_duration'] == "-1") {
-			$until = "Forever";
+			$until = "Indefinite";
 		} else {
 			$until = date("F j, Y, g:i a", $row['ban_duration']);
 		}
