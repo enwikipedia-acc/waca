@@ -907,7 +907,12 @@ elseif ($action == "usermgmt") {
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
-			sendtobot("$sid changed preferences for User $gid");
+                        $query2 = "SELECT * FROM acc_user WHERE user_id = '$gid';";
+			$result2 = mysql_query($query2);
+			if (!$result2)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$row2 = mysql_fetch_assoc($result2);
+			sendtobot("$sid changed preferences for User $gid (" . $row2['user_name'] . ")");
 			echo "Changes saved";
 		}
 		echo "<br /><br />";
