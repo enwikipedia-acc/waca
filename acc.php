@@ -47,12 +47,14 @@ if ( !isset ( $_SESSION['user'] ) && !isset ( $_GET['nocheck'] ) ) {
 		die( );
 	}
 }
-elseif ( !isset ( $_GET['nocheck'] ) ) {
-	echo makehead( $_SESSION['user'] );
-	checksecurity( $_SESSION['user'] );
-	$out = showmessage( '20' );
-	$out .= "<div id=\"content\">";
-	echo $out;
+elseif (!isset($_GET['nocheck']))
+{
+        forceLogout($_SESSION['userID']);
+        echo makehead($_SESSION['user']);
+        checksecurity($_SESSION['user']);
+        $out = showmessage('20');
+        $out .= "<div id=\"content\">";
+        echo $out;
 }
 
 if ( $action == '' ) {
@@ -370,12 +372,16 @@ elseif ($action == "login") {
 		die();
 	}
 	$calcpass = md5($_POST['password']);
-	if ($row['user_pass'] == $calcpass) {
-		$_SESSION['user'] = $row['user_name'];
-		header("Location: $tsurl/acc.php");
-	} else {
-		echo "<h2>ERROR</h2>\n";
-		echo "Username and/or password incorrect.<br />\n";
+	if ($row['user_pass'] == $calcpass)
+	{
+			$_SESSION['userID'] = $row['user_id'];
+			$_SESSION['user'] = $row['user_name'];
+			header("Location: $tsurl/acc.php");
+	}
+	else
+	{
+			echo "<h2>ERROR</h2>\n";
+			echo "Username and/or password incorrect.<br />\n";
 	}
 }
 elseif ($action == "messagemgmt") {
@@ -859,8 +865,16 @@ elseif ($action == "usermgmt") {
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			setForceLogout( stripslashes( $userid ) );
-			sendtobot("User $siuser changed $oldname's username to $newname");
+			if ($siuser == $oldname)
+			{
+					$_SESSION['user'] = $newname;
+					sendtobot("User $siuser changed their username to $newname");
+			}
+			else
+			{
+					setForceLogout(stripslashes($userid));
+					sendtobot("User $siuser changed $oldname's username to $newname");
+			}
 			echo showfooter();
 			die();
 		}
