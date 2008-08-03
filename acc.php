@@ -856,7 +856,7 @@ elseif ($action == "usermgmt") {
 			$now = date("Y-m-d H-i-s");
 			if ($siuser == $oldname)
 			{
-				$logentry = "themselves to " . $newname;
+				$logentry = "themself to " . $newname;
 			}
 			else
 			{
