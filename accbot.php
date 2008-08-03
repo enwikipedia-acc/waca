@@ -354,7 +354,7 @@
 			or die( 'MySQL Error: ' . mysql_error() . "\n" );
 		$adminRequests = $adminRequests['count'];
 
-		$pendingMail = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_mailconfirm` != \'Confirmed\';' ) )
+		$pendingMail = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_mailconfirm` != \'Confirmed\' AND `pend_mailconfirm` != "";' ) )
 			or die( 'MySQL Error: ' . mysql_error() . "\n" );
 		$pendingMail = $pendingMail['count'];
 		$bans = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_ban`' ) )
