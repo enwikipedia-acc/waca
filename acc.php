@@ -355,6 +355,10 @@ elseif ($action == "login") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
+        if ($row['user_forcelogout'] == 1)
+        {
+                mysql_query("UPDATE acc_user SET user_forcelogout = 0 WHERE user_name = \"" . $puser . "\"");
+        }
 	if ($row['user_level'] == "New") {
 		echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
 		echo showfootern();
