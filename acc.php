@@ -854,7 +854,14 @@ elseif ($action == "usermgmt") {
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$now = date("Y-m-d H-i-s");
-			$logentry = $oldname . " to " . $newname;
+			if ($siuser == $oldname)
+			{
+				$logentry = "themselves to " . $newname;
+			}
+			else
+			{
+				$logentry = $oldname . " to " . $newname;
+			}
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$userid', '$siuser', 'Renamed', '$now', '$logentry');";
 			$result = mysql_query($query);
 			if (!$result)
@@ -1562,7 +1569,7 @@ elseif ($action == "logs") {
 			echo "<li>$rlu $rla, User $rlp (" . $row2['user_name'] . ") at $rlt$moreinfo.</li>\n";
 		}
 		if ($rla == "Renamed") {
-			echo "<li>$rlu renamed user $rlc at $rlt.</li>\n";
+			echo "<li>$rlu renamed $rlc at $rlt.</li>\n";
 		}
 		if ($rla == "Prefchange") {
 			$query2 = "SELECT user_name FROM acc_user WHERE user_id = '$rlp';";
