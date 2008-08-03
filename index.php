@@ -307,7 +307,8 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 		Die( "Query failed: $query ERROR: " . mysql_error( ) );
 	$row = mysql_fetch_assoc( $result );
 	if( $row['pend_mailconfirm'] == $_GET['si'] ) {
-		echo "E-mail confirmed!<br />\n";
+                $successmessage = showmessage(24);
+		echo "$successmessage <br />\n";
 		$query = "UPDATE acc_pend SET pend_mailconfirm = 'Confirmed' WHERE pend_id = '$pid';";
 		$result = mysql_query($query);
 		$user = $row['pend_name'];
@@ -609,5 +610,3 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	die();
 }
 ?>
-
-
