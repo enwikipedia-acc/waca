@@ -61,6 +61,7 @@
 	addHelp( 'status'     , ''          , 'Displays interface statistics, such as the number of open requests.' );
 	addHelp( 'stats'      , '<username>', 'Gives a readout similar to the user list user information page.'     );
 	addHelp( 'svninfo'    , ''          , 'Floods you with information about the SVN repository.'               );
+	addHelp( 'sandinfo'    , ''         , 'Floods you with information about the SVN repository sandbox.'       );
 	addHelp( 'sand-svnup' , ''          , 'Allows developers to sync the sandbox with the SVN repository.'      );
 	addHelp( 'svnup'      , ''          , 'Allows you to sync the live server with the SVN repository.'         );
 	addHelp( 'restart'    , ''          , 'Causes the bot to do an immediate graceful reinitialization.'        );
@@ -74,6 +75,7 @@
 	addCommand( 'status'     , 'commandStatus'     , false );
 	addCommand( 'stats'      , 'commandStats'      , false );
 	addCommand( 'svninfo'    , 'commandSvnInfo'    , true  );
+	addCommand( 'sandinfo'   , 'commandSandInfo'   , true  );
 	addCommand( 'sand-svnup' , 'commandSandSvnUp'  , true  );
 	addCommand( 'svnup'      , 'commandSvnUp'      , true  );
 	addCommand( 'restart'    , 'commandRestart'    , false );
@@ -104,6 +106,7 @@
 	$privgroups[ '*'         ][ 'status'      ] = 1;
 	$privgroups[ '*'         ][ 'stats'       ] = 1;
 	$privgroups[ '*'         ][ 'svninfo'     ] = 1; //Do not change this, per consensus in the IRC channel
+	$privgroups[ '*'         ][ 'sandinfo'     ] = 1; //Do not change this, per consensus in the IRC channel
 
 	$privgroups[ 'developer' ]                  = $privgroups['*']; // 'developer' inherits '*'.
 	$privgroups[ 'developer' ][ 'sand-svnup'  ] = 1;
@@ -402,6 +405,18 @@
 		} else {
 			irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $username . ' is not a valid username.' );
 		}
+	}
+
+	function commandSandInfo( $parsed ) {
+		$svn = popen( 'cd sand; svn info 2>&1', 'r' );
+		while( !feof( $svn ) ) {
+			$svnin = trim( fgets( $svn, 512 ) );
+			if( $svnin != '' ) {
+				irc( 'NOTICE ' . $parsed['nick'] . ' :' . str_replace( array( "\n", "\r" ), '', $svnin ) );
+			}
+			sleep( 3 );
+		}
+		pclose( $svn );
 	}
 
 	function commandSvnInfo( $parsed ) {
