@@ -1,5 +1,7 @@
 <?php
 
+//this is just to check something, as I can't put this in config at the moment toe to a breakage. Simon.
+error_reporting(6135);
 
 /**************************************************************
 ** English Wikipedia Account Request Interface               **
