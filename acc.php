@@ -1,7 +1,7 @@
 <?php
 
 //this is just to check something, as I can't put this in config at the moment toe to a breakage. Simon.
-error_reporting(6135);
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 /**************************************************************
 ** English Wikipedia Account Request Interface               **
