@@ -317,7 +317,7 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 		if( $uLevel == "Open" ) { $what = ""; } else { $what = "<Admin Needed!> "; }
 		$user = $row['pend_name'];
 		$comments = stripslashes($row['pend_cmt']);
-			sendtobot("[[acc:$pid]] N /* $user */ $what" . substr(str_replace(array (
+			sendtobot("[[acc:$pid]] N $tsurl/acc.php?action=zoom&id=$pid /* $user */ $what" . substr(str_replace(array (
 			"\n",
 			"\r"
 			), array (
