@@ -220,6 +220,7 @@ $to = 'accounts-enwiki-l@lists.wikimedia.org';
 $subject = "TS ACC statistics, $now";
 $message = $out;
 $headers = 'From: sxwiki@gmail.com' . "\n";
-
-mail($to, $subject, $message, $headers);
+if( $argv[1] != "-testrun" ) {
+	mail($to, $subject, $message, $headers);
+}
 ?>
