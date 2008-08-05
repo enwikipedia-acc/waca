@@ -1383,7 +1383,7 @@ elseif ($action == "zoom") {
 		}
 		echo "</ul>\n";
 	}
-	mysql_close();
+     mysql_close(); //Warning: mysql_close(): no MySQL-Link resource supplied in /home/simon/webspace/www/acc/acc.php on line 1386
 	mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
 	@ mysql_select_db( $toolserver_database ) or print mysql_error( );
 	echo "<h2>Logs for Request #" . $_GET['id'] . ":</h2>";

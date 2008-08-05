@@ -82,14 +82,18 @@ function forceLogout( $uid ) {
 }
 
 function getSpoofs( $username ) {
-	require_once('equivset.php');
+	global $antispoof_equivset;
+	require_once( $antispoof_equivset );
 	global $toolserver_username;
 	global $toolserver_password;
-	$spooflink = mysql_connect("sql-s1", $toolserver_username, $toolserver_password);
-	@ mysql_select_db("enwiki_p", $spooflink) or print mysql_error();
+	global $antispoof_host;
+	global $antispoof_db;
+	global $antispoof_table;
+	$spooflink = mysql_connect($antispoof_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($antispoof_db, $spooflink) or print mysql_error();
 	$fone = sanitize(strtr($username,$equivset));
 	//$fone = mysql_real_escape_string( $fone );
-	$query = "SELECT * FROM spoofuser WHERE su_normalized = 'v2:$fone';";
+	$query = "SELECT * FROM ".$antispoof_table." WHERE su_normalized = 'v2:$fone';";
 	$result = mysql_query($query, $spooflink);
 	if(!$result) Die("ERROR: No result returned. - ".mysql_error());
 	$numSpoof = 0;

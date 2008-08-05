@@ -1,5 +1,5 @@
 <?php
-
+ 
 ///////////////////////////////////////////////////////////////
 // English Wikipedia Account Request Interface               //
 // Wikipedia Account Request Graphic Design by               //
@@ -26,21 +26,37 @@ if (file_exists("config.local.inc.php")) {
 	include ("config.local.inc.php"); //Allow for less painful configuration.
 } else {
 	$ACC = 1; //Keep included files from being executed
+	
+	//name for the tool	
 	$whichami = 'Live';
-	$toolserver_mycnf = parse_ini_file("/projects/acc/.my.cnf");
+
+	//main database location and access details
+	$toolserver_mycnf = parse_ini_file("/projects/acc/.my.cnf"); //location of  a .my.cnf file with connection data in, if one exists
 	$toolserver_username = $toolserver_mycnf['user'];
 	$toolserver_password = $toolserver_mycnf['password'];
 	$toolserver_host = "sql";
 	$toolserver_database = "p_acc";
+	unset ($toolserver_mycnf);
+	
+	$wikiurl = "en.wikipedia.org"; //Does nothing yet, intended for further localization
+	$tsurl = "http://stable.toolserver.org/acc"; //Does nothing yet, intended for further localization	
+	
+	//set up cookies and session information
 	$cookiepath = '/acc/';
 	$sessionname = 'ACC';
-	$wikiurl = "en.wikipedia.org"; //Does nothing yet, intended for further localization
-	$tsurl = "http://stable.toolserver.org/acc"; //Does nothing yet, intended for further localization
 	ini_set( 'session.cookie_path', $cookiepath );
 	ini_set( 'session.name', $sessionname );
-	unset ($toolserver_mycnf);
+
+	//a few options
 	$enableRenames = 1;
 	$enableEmailConfirm = 1;
+	
+	//antispoof configuration
+	$antispoof_equivset = "equivset.php";
+	$antispoof_host = "sql-s1";
+	$antispoof_db = "enwiki_p";
+	$antispoof_table = "spoofuser";
+	
 }
 require_once ('blacklist.php');
 ?>
