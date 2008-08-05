@@ -311,8 +311,19 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 		echo "$successmessage <br />\n";
 		$query = "UPDATE acc_pend SET pend_mailconfirm = 'Confirmed' WHERE pend_id = '$pid';";
 		$result = mysql_query($query);
+		if ( !$result )
+			Die( "Query failed: $query ERROR: " . mysql_error( ) ); 
+		if( checkSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
+		if( $uLevel == "Open" ) { $what = ""; } else { $what = "<Admin Needed!> "; }
 		$user = $row['pend_name'];
-		sendtobot( "Mail confirmed: $user $tsurl/acc.php?action=zoom&id=$pid" );
+		$comments = stripslashes($row['pend_cmt']);
+			sendtobot("[[acc:$pid]] N /* $user */ $what" . substr(str_replace(array (
+			"\n",
+			"\r"
+			), array (
+			'\n',
+			'\r'
+			), $comments), 0, 200) . ((strlen($comments) > 200) ? '...' : ''));
 	} elseif( $row['pend_mailconfirm'] == "Confirmed" ) {
 		echo "Your e-mail address has already been confirmed!\n";
 	} else {
@@ -573,7 +584,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$comments = sanitize($_POST['comments']);
-	$comments = preg_replace('/\<\/?(div|span|script|\?php|\?|img)\s?(.*)\s?\>/i', '', $comments); //Escape injections.
+	$comments = htmlentities($comments); //Escape injections.
 	$dnow = date("Y-m-d H-i-s");
 	if( checkSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
 	mysql_close();
@@ -581,26 +592,18 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	@ mysql_select_db( $toolserver_database ) or print mysql_error( );
 	$query = "INSERT INTO $toolserver_database.acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow' );";
 	$result = mysql_query($query);
+	if (!$result)
+		Die("ERROR: No result returned. - ".mysql_error()." - $query <br /> $q2");
 	$q2 = $query;
 	$query = "SELECT pend_id,pend_email FROM $toolserver_database.acc_pend WHERE pend_name = '$user' ORDER BY pend_id DESC LIMIT 1;";
-	$result = mysql_query($query);
+	$result = mysql_query($query);	
+	if (!$result)
+		Die("ERROR: No result returned. - ".mysql_error()." - $query <br /> $q2");
 	$row = mysql_fetch_assoc($result);
 	$pid = $row['pend_id'];
-	$pem = $row['pend_email'];
-	if( $uLevel == "Open" ) { $what = ""; } else { $what = "<Admin Needed!> "; }
-	sendtobot("[[acc:$pid]] N /* " . $_POST['name'] . " */ $what" . substr(str_replace(array (
-		"\n",
-		"\r"
-	), array (
-		'\n',
-		'\r'
-	), $_POST['comments']), 0, 200) . ((strlen($_POST['comments']) > 200) ? '...' : ''));
 	if ($pid != 0 || $pid != "") {
 		upcsum($pid);
 	}
-	if (!$result)
-		Die("ERROR: No result returned. - ".mysql_error()." - $query <br /> $q2");
-
         if ($enableEmailConfirm == 1) {	
         confirmEmail( $pid );
         }
