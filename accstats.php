@@ -178,7 +178,6 @@ while ($log = mysql_fetch_assoc($result)) {
 }
 $nopen = $open['COUNT(*)'];
 $nadmin = $admin['COUNT(*)'];
-$nunconfirmed = $unconfimed['COUNT(*)'];
 $nsadmin = $sadmin['COUNT(*)'];
 $nsuser = $suser['COUNT(*)'];
 $nssusp = $ssusp['COUNT(*)'];
