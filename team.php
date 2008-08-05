@@ -76,10 +76,10 @@ $developer = //Developer info / list.
 		"Stwalkerster" =>
 			array(
 				"IRC" => "Stwalkerster",
-				"EMail" => NULL,
+				"EMail" => "stwalkerster@googlemail.com",
                                 "ToolID" => "7",
 				"wiki" => "Stwalkerster",
-				"WWW" => NULL,
+				"WWW" => "http://stwalkerster.dyndns.org",
 				"Name" => NULL,
 				"Role" => "Developer",
 				"Access" => "Commit",
