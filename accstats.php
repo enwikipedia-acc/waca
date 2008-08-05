@@ -46,7 +46,7 @@ $unconfirmedq = "select COUNT(*) from acc_pend where pend_mailconfirm != 'Confir
 $result = mysql_query($unconfirmedq);
 if (!$result)
 	Die("ERROR: No result returned.2");
-$unconfirmed = mysql_fetch_assoc($result);
+$unconfirmedr = mysql_fetch_assoc($result);
 
 $sadminq = "select COUNT(*) from acc_user where user_level = 'Admin';";
 $result = mysql_query($sadminq);
@@ -183,6 +183,7 @@ $nsadmin = $sadmin['COUNT(*)'];
 $nsuser = $suser['COUNT(*)'];
 $nssusp = $ssusp['COUNT(*)'];
 $nsnew = $snew['COUNT(*)'];
+$nunconfirmed = $unconfirmed['COUNT(*)'];
 //$bltd = $blcount['COUNT(*)'];
 $bltd = 0; //Temporary fix.
 
@@ -194,7 +195,7 @@ $out .= "Site Statistics as of " . date('l\, F jS Y\, \a\t h:i:s A') . "!\n";
 $out .= "-------------------------------------------------------------\n";
 $out .= "Open Requests: $nopen\n";
 $out .= "Open Requests (admin required): $nadmin\n";
-$out .= "Awaiting Confirmation: $unconfirmed\n";
+$out .= "Awaiting Confirmation: $nunconfirmed\n";
 $out .= "Site admins: $nsadmin\n";
 $out .= "Site users: $nsuser\n";
 $out .= "Site suspended accounts: $nssusp\n";
