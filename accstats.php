@@ -46,7 +46,7 @@ $unconfirmedq = "select COUNT(*) from acc_pend where pend_mailconfirm != 'Confir
 $result = mysql_query($unconfirmedq);
 if (!$result)
 	Die("ERROR: No result returned.2");
-$unconfirmedr = mysql_fetch_assoc($result);
+$unconfirmed = mysql_fetch_assoc($result);
 
 $sadminq = "select COUNT(*) from acc_user where user_level = 'Admin';";
 $result = mysql_query($sadminq);
