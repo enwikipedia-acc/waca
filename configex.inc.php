@@ -19,6 +19,9 @@
 //OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  //
 //                                                           //
 ///////////////////////////////////////////////////////////////
+
+#PLEASE MAKE A COPY OF THIS FILE CALLED config.inc.php AND THEN CONFIGURE THAT! 
+
 if (file_exists("config.local.inc.php")) {
 	include ("config.local.inc.php"); //Allow for less painful configuration.
 } else {
