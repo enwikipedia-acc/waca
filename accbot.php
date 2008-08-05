@@ -354,6 +354,9 @@
 			or die( 'MySQL Error: ' . mysql_error() . "\n" );
 		$adminRequests = $adminRequests['count'];
 
+		$pendingMail = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_mailconfirm` != \'Confirmed\' AND `pend_mailconfirm` != "";' ) )
+			or die( 'MySQL Error: ' . mysql_error() . "\n" );
+		$pendingMail = $pendingMail['count'];
 		$bans = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_ban`' ) )
 			or die( 'MySQL Error: ' . mysql_error() . "\n" );
 		$bans = $bans['count'];
@@ -373,6 +376,7 @@
 		irc( 'PRIVMSG ' . $parsed['to'] . ' :'
 			. 'Open requests: ' . $open
 			. ', Admin requests: ' . $adminRequests
+			. ', Awaiting Confirmation: ' . $pendingMail
 			. ', Banned: ' . $bans
 			. ', Site users: ' . $users
 			. ', Site admins: ' . $admins
