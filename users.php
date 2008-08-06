@@ -131,7 +131,7 @@ if (isset($_GET['viewuser']))
 		}
 		
 		// Build appropriate links depending on the status of the selected user
-		switch ($result['user_level'])
+		switch ($row['user_level'])
 		{
 			case "User":
 				// Build suspend and promote links
