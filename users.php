@@ -119,7 +119,7 @@ if (isset($_GET['viewuser']))
 	// If the user has admin privileges, build a string of links for the user (rename, edit, promote, suspend, etc.
 	if(hasright($_SESSION['user'], 'Admin'))
 	{
-		echo "Tools:";
+		echo "Tools:   ";
 		if( $enableRenames == 1 )
 		{
 			// If renaming is on, add links to edit and rename the user
