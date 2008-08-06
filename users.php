@@ -68,6 +68,7 @@ if (isset($_GET['viewuser']))
 		die("ERROR: No result returned.");
 	}
 	$row = mysql_fetch_assoc($result); // Return the result of the database query as an associative array
+	$username = $row['user_name'];
 	if ($row['user_id'] == "")
 	{
 		// If the query returns an empty user_id, display error and kill the script
@@ -270,7 +271,7 @@ if (isset($_GET['viewuser']))
 			{
 				case "Prefchange":
 					// Another user changed this user's preferences
-					echo "<li><a href=\"users.php?viewuser=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> changed user preferences for " . $gid . " at " . $row['log_time'] . "</li>\n";
+					echo "<li><a href=\"users.php?viewuser=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> changed user preferences for " . $username . " at " . $row['log_time'] . "</li>\n";
 					break;
 				
 				case "Renamed":
