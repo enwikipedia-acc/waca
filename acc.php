@@ -1585,5 +1585,7 @@ elseif ($action == "logs") {
 	echo $n1;
 	echo showfooter();
 	die();
+} elseif ($action == "phpinfo") {
+	phpinfo(4);
 }
 ?>
