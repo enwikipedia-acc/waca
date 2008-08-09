@@ -367,9 +367,9 @@ function listrequests($type) {
 		} else {
 			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
 		}
-		$query2 = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \'' . $row['pend_ip'] . '\' AND `pend_id` != \'' . $row['pend_id'] . '\' AND `pend_mailconfirm` = \'' confirmed '\';';
+		$query2 = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \'' . $row['pend_ip'] . '\' AND `pend_id` != \'' . $row['pend_id'] . '\';';
 		$otheripreqs = mysql_fetch_assoc(mysql_query($query2));
-		$query3 = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = \'' . $row['pend_email'] . '\' AND `pend_id` != \'' . $row['pend_id'] . '\' AND `pend_mailconfirm` = \'' confirmed '\';';
+		$query3 = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = \'' . $row['pend_email'] . '\' AND `pend_id` != \'' . $row['pend_id'] . '\';';
 		$otheremailreqs = mysql_fetch_assoc(mysql_query($query3));
 		$out = '<tr';
 		if ($currentreq % 2 == 0) {
