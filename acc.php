@@ -1430,7 +1430,7 @@ elseif ($action == "zoom") {
         }
 
 	echo "<h2>Other requests from $thisip:</h2>\n";
-	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm = 'confirmed';";
+	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
@@ -1445,7 +1445,7 @@ elseif ($action == "zoom") {
 	}
 	else {echo "</ol>\n";}
 	echo "<h2>Other requests from $thisemail:</h2>\n";
-	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid' AND pend_mailconfirm = 'confirmed';";
+	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
