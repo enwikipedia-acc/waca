@@ -156,8 +156,7 @@ $developer = //Developer info / list.
 				"Role" => "Developer, HTML Specification compliance",
 				"Access" => "Commit",
 				"Other" => NULL,
-			);
-		);
+			),
 	);
 
 
