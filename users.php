@@ -47,7 +47,7 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck']))
 elseif (!isset($_GET['nocheck']))
 {
 	echo makehead($_SESSION['user']); // Build internal page header
-	forceLogout(); // If the user needs to be logged out, log them out
+	forceLogout( $_SESSION['userID'] ); // If the user needs to be logged out, log them out
 	checksecurity($_SESSION['user']); // Determine what rights the current user has
 	$out = showmessage('20');
 	$out .= "<div id=\"content\">";
