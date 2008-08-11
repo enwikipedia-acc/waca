@@ -76,7 +76,12 @@ $regdevlist = array (
 		'FunPika',
 		'FunPika',
 		'38'
-	)
+	),
+	array (
+		'Mww113',
+		'Mww113',
+		'52'
+	),
 );
 //Format: User on tool, user on wiki, user id
 
