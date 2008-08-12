@@ -1556,7 +1556,7 @@ elseif ($action == "logs") {
 			$row3 = mysql_fetch_assoc($result3);
 			echo "<li>$rlu Edited Message <a href=\"acc.php?action=messagemgmt&amp;view=$rlp\">$rlp (" . $row3['mail_desc'] . ")</a>, at $rlt.</li>\n";
 		}
-		if ($rla == "Promoted" || $rla == "Approved" || $rla == "Suspended" || $rla == "Declined") {
+		if ($rla == "Promoted" || $rla == "Demoted" || $rla == "Approved" || $rla == "Suspended" || $rla == "Declined") {
 			$uid = $rlp;
 			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
 			$result2 = mysql_query($query2);
