@@ -1493,7 +1493,8 @@ elseif ($action == "logs") {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	echo "<ol start=\"$from\">\n";
+	$olnum = $from + 1;
+	echo "<ol start=\"$olnum\">\n";	
 	while ($row = mysql_fetch_assoc($result)) {
 		$rlu = $row['log_user'];
 		$rla = $row['log_action'];
