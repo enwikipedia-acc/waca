@@ -372,7 +372,7 @@ function listrequests($type) {
 		if (!$result2)
 			Die("Query failed: $query2 ERROR: " . mysql_error());
 		$otheripreqs = mysql_fetch_assoc($result2);
-		$query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . $row['pend_email'] . " AND `pend_id` != '" . $row['pend_id'] . "' AND `pend_mailconfirm` = 'Confirmed';";
+		$query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . $row['pend_email'] . "' AND `pend_id` != '" . $row['pend_id'] . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result3 = mysql_query($query3);
 		if (!$result3)
 			Die("Query failed: $query3 ERROR: " . mysql_error());
