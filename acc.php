@@ -1493,7 +1493,7 @@ elseif ($action == "logs") {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	echo "<ol>\n";
+	echo "<ol start=\"$from\">\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$rlu = $row['log_user'];
 		$rla = $row['log_action'];
@@ -1531,7 +1531,7 @@ elseif ($action == "logs") {
 		if ($row['log_action'] == "Closed 6") {
 			echo "<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
-		if ($row['log_action'] == "Blacklist Hit") {
+		if ($row['log_action'] == "Blacklist Hit" || $row['log_action'] == "DNSBL Hit") {
 			echo "<li>$rlu <strong>Rejected by Blacklist</strong> $rlp, $rlc at $rlt.</li>\n";
 		}
 		if ($row['log_action'] == "Unbanned") {
