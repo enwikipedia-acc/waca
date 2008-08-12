@@ -367,10 +367,16 @@ function listrequests($type) {
 		} else {
 			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
 		}
-		$query2 = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = \'' . $row['pend_ip'] . '\' AND `pend_id` != \'' . $row['pend_id'] . '\';';
-		$otheripreqs = mysql_fetch_assoc(mysql_query($query2));
-		$query3 = 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = \'' . $row['pend_email'] . '\' AND `pend_id` != \'' . $row['pend_id'] . '\';';
-		$otheremailreqs = mysql_fetch_assoc(mysql_query($query3));
+		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = '" . $row['pend_ip'] . "' AND `pend_id` != '" . $row['pend_id'] . "'AND pend_mailconfirm = 'confirmed';";
+		$result2 = mysql_query($query2);
+		if (!$result2)
+			Die("Query failed: $query2 ERROR: " . mysql_error());
+		$otheripreqs = mysql_fetch_assoc($result2);
+		$query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . $row['pend_email'] . " AND `pend_id` != '" . $row['pend_id'] . "' AND pend_mailconfirm = 'confirmed';";
+		$result3 = mysql_query($query3);
+		if (!$result3)
+			Die("Query failed: $query3 ERROR: " . mysql_error());
+		$otheremailreqs = mysql_fetch_assoc($result3);
 		$out = '<tr';
 		if ($currentreq % 2 == 0) {
 			$out .= ' class="alternate">';
