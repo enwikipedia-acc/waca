@@ -129,7 +129,7 @@ $developer = //Developer info / list.
 				"wiki" => "Prodego",
 				"WWW" => NULL,
 				"Name" => NULL,
-				"Role" => "Developer, HTML Specification compliance",
+				"Role" => "Developer, Code Review",
 				"Access" => "Commit",
 				"Other" => NULL,
 			),
