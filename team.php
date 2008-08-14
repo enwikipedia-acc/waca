@@ -145,18 +145,6 @@ $developer = //Developer info / list.
 				"Access" => "Commit",
 				"Other" => NULL,
 			),
-		"Mww113" =>
-			array(
-				"IRC" => "Mww113",
-				"EMail" => "mww113@hotmail.com",
-                                "ToolID" => "52",
-				"wiki" => "Mww113",
-				"WWW" => "http://mww113.unixpod.com",
-				"Name" => "Matt W.",
-				"Role" => "Developer, HTML Specification compliance",
-				"Access" => "Commit",
-				"Other" => NULL,
-			),
 	);
 
 

@@ -96,7 +96,6 @@
 		'*!*@wikipedia/FastLizard4'					=> 'developer',
 		'*!*@wikipedia/Prodego'					        => 'developer',
 		'*!*@wikipedia/FunPika'					        => 'developer',
-		'*!*@wikipedia/Mww113'					        => 'developer',
 		'*!*@*'								=> '*'
 		);
 

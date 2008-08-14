@@ -77,11 +77,6 @@ $regdevlist = array (
 		'FunPika',
 		'38'
 	),
-	array (
-		'Mww113',
-		'Mww113',
-		'52'
-	),
 );
 //Format: User on tool, user on wiki, user id
 
@@ -98,7 +93,6 @@ $ircdevlist = array (
 	'Alexfusco5|Away',
 	'OverlordQ',
 	'Prodego',
-	'FunPika',
-	'Mww113'
+	'FunPika'
 );
 ?>
