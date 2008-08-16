@@ -17,7 +17,7 @@
 	**Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
 	**Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
 	**OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
-	**Prodego ( http://en.wikipedia.org/wiki/User:Prodego )	 **
+	**Prodego ( http://en.wikipedia.org/wiki/User:Prodego )	     **
 	**                                                           **
 	**************************************************************/
 
@@ -106,7 +106,7 @@
 	$privgroups[ '*'         ][ 'status'      ] = 1;
 	$privgroups[ '*'         ][ 'stats'       ] = 1;
 	$privgroups[ '*'         ][ 'svninfo'     ] = 1; //Do not change this, per consensus in the IRC channel
-	$privgroups[ '*'         ][ 'sandinfo'     ] = 1; //Do not change this, per consensus in the IRC channel
+	$privgroups[ '*'         ][ 'sandinfo'    ] = 1;
 
 	$privgroups[ 'developer' ]                  = $privgroups['*']; // 'developer' inherits '*'.
 	$privgroups[ 'developer' ][ 'sand-svnup'  ] = 1;
