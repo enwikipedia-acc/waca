@@ -66,7 +66,7 @@
 	addHelp( 'svnup'      , ''          , 'Allows you to sync the live server with the SVN repository.'         );
 	addHelp( 'restart'    , ''          , 'Causes the bot to do an immediate graceful reinitialization.'        );
 	addHelp( 'recreatesvn', ''          , 'Attempts to fix the live copy of the site.'                          );
-	addHelp( 'svn'        , '<params>'  , 'Runs a SVN command.'                                                 );
+//	addHelp( 'svn'        , '<params>'  , 'Runs a SVN command.'                                                 );
 
 	// Commands
 	//          Command      , Function            , Fork?
@@ -80,7 +80,7 @@
 	addCommand( 'svnup'      , 'commandSvnUp'      , true  );
 	addCommand( 'restart'    , 'commandRestart'    , false );
 	addCommand( 'recreatesvn', 'commandRecreateSvn', true  );
-	addCommand( 'svn'        , 'commandSvn'        , true  );
+//	addCommand( 'svn'        , 'commandSvn'        , true  );
 
 	// Users
 	//	Nick!User@Host mask						=> group
