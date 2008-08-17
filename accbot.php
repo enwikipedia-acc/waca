@@ -433,7 +433,7 @@
 	}
 
 	function commandSandSvnUp( $parsed ) {
-		$svn = popen( 'svn up sand 2>&1', 'r' );
+		$svn = popen( 'sh svn-sand.sh 2>&1', 'r' );
 		while( !feof( $svn ) ) {
 			$svnin = trim( fgets( $svn, 512 ) );
 			if( $svnin != '' ) {
@@ -486,7 +486,7 @@
 		sleep( 2 );
 		posix_kill( $udpReader, SIGKILL );
 		sleep( 5 );
-		pcntl_exec( '/opt/php/bin/php', $GLOBALS['argv'], $_ENV );
+		pcntl_exec( '/opt/php/bin/php', $GLOBALS['argv'] );
 	}
 
 	function commandRecreateSvn( $parsed ) {
