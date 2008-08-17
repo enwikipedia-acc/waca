@@ -1363,7 +1363,7 @@ elseif ($action == "zoom") {
 	echo $requesttable;
 
 	//$row['pend_cmt'] = preg_replace('/\<\/?(div|span|script|\?php|\?|img)\s?(.*)\s?\>/i', '', $row['pend_cmt']);
-	$row['pend_cmt'] = htmlentities( $row['pend_cmt'], ENT_QUOTES );
+	$row['pend_cmt'] = htmlentities( $row['pend_cmt'], ENT_QUOTES,,false );
 	//Escape injections.
 	echo "<br /><strong>Comment</strong>: " . $row['pend_cmt'] . "<br />\n";
 	$query = "SELECT * FROM acc_log WHERE log_pend = '$gid';";
