@@ -111,10 +111,10 @@
 
 	$privgroups[ 'developer' ]                  = $privgroups['*']; // 'developer' inherits '*'.
 	$privgroups[ 'developer' ][ 'sand-svnup'  ] = 1;
+	$privgroups[ 'developer' ][ 'restart'     ] = 1;
 
 	$privgroups[ 'root'      ]                  = $privgroups['developer']; // 'root' inherits 'developer'.
 	$privgroups[ 'root'      ][ 'svnup'       ] = 1;
-	$privgroups[ 'root'      ][ 'restart'     ] = 1;
 	$privgroups[ 'root'      ][ 'recreatesvn' ] = 1;
 	$privgroups[ 'root'      ][ 'svn'         ] = 1;
 
