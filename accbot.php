@@ -433,7 +433,7 @@
 	}
 
 	function commandSandSvnUp( $parsed ) {
-		$svn = popen( 'sh svn-sand.sh 2>&1', 'r' );
+		$svn = popen( 'bash svn-sand.sh 2>&1', 'r' );
 		while( !feof( $svn ) ) {
 			$svnin = trim( fgets( $svn, 512 ) );
 			if( $svnin != '' ) {
