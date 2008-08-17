@@ -1,4 +1,3 @@
-
 /**************************************************************
 ** English Wikipedia Account Request Interface               **
 ** Wikipedia Account Request Graphic Design by               **
