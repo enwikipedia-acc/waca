@@ -17,6 +17,7 @@
 **Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
 **OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
 **Prodego    ( http://en.wikipedia.org/wiki/User:Prodego )   **
+**FunPika   ( http://en.wikipdia.org/wiki/User:FunPika )     **
 **Mww113  ( http://en.wikipedia.org/wiki/User:Mww113 )       **
 **************************************************************/
 
@@ -281,7 +282,7 @@ if (isset($_GET['viewuser']))
 				
 				default:
 					// Anything else			
-					echo "<li><a href=\"users.php?viewuser=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> " . $row['log_action'] . " at " . $row['log_time'] . $comments . "</li>\n";
+					echo "<li><a href=\"users.php?viewuser=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> " at " . $row['log_time'] . $comments . "</li>\n";
 					break;
 			}
 		}
