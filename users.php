@@ -282,7 +282,7 @@ if (isset($_GET['viewuser']))
 				
 				default:
 					// Anything else			
-					echo "<li><a href=\"users.php?viewuser=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> " at " . $row['log_time'] . $comments . "</li>\n";
+					echo "<li><a href=\"users.php?viewuser=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> " " at " . $row['log_time'] . $comments . "</li>\n";
 					break;
 			}
 		}
