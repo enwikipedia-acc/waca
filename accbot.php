@@ -116,7 +116,7 @@
 	$privgroups[ 'root'      ][ 'svnup'       ] = 1;
 	$privgroups[ 'root'      ][ 'recreatesvn' ] = 1;
 	$privgroups[ 'root'      ][ 'svn'         ] = 1;
-	$privgroups[ 'developer' ][ 'restart'     ] = 1;
+	$privgroups[ 'root' 	 ][ 'restart'     ] = 1;
 
 
 	// Functions
