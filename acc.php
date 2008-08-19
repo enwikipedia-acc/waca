@@ -1171,12 +1171,12 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		$sig = sanitize($_POST['sig']);
 		$template = sanitize($_POST['template']);
 		$sid = $_SESSION['user'];
-		if ($_POST['welcomeenable'] == "on") {
+		if( isset( $_POST['welcomeenable'] ) ) {
 			$welcomeon = 1;
 		} else {
 			$welcomeon = 0;
 		}
-		if ($_POST['secureenable'] == "on") {
+		if( isset( $_POST['secureenable'] ) ) {
 			$secureon = 1;
 		} else {
 			$secureon = 0;
