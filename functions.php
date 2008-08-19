@@ -366,7 +366,7 @@ function listrequests($type) {
 		} else {
 			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
 		}
-		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = '" . $pend_ip . "' AND `pend_id` != '" . $row['pend_id'] . "' AND `pend_mailconfirm` = 'Confirmed';";
+		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = '" . $pend_ip . "' AND `pend_id` != '" . $pend_id . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result2 = mysql_query($query2);
 		if (!$result2)
 			Die("Query failed: $query2 ERROR: " . mysql_error());
@@ -409,8 +409,8 @@ function listrequests($type) {
 		if ( $row4['user_secure'] > 0 ) {
 
 			// IP UT:
-			$out .= '</span></small></td><td><small> | <a class="request-src" name="ip-link" href="https://secure.wikimedia.org/wikipedia/en/wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
-			$out .= $row['pend_ip'] . '</a> ';
+			$out .= '</span></small></td><td><small> | <a class="request-src" name="ip-link" href="https://secure.wikimedia.org/wikipedia/en/wiki/User_talk:' . $pend_ip . '" target="_blank">';
+			$out .= $pend_ip . '</a> ';
 
 			$out .= '</small></td><td><small><span class="request-src">' . "\n";
 			if ($otheripreqs['count'] == 0) {
