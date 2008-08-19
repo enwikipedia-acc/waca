@@ -330,9 +330,19 @@
                                 $rnc = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
 					. sanitize( $username ) . '\' AND `log_action` = \'Renamed\'' ) )
 					or die( 'MySQL Error: ' . mysql_error() . "\n" );
-				$rnc = $rnc['count'];                               
+				$rnc = $rnc['count'];
 
-				$adminInfo = 'Suspended: ' . $sus . ', Promoted: ' . $pro . ', Approved: ' . $app . ', Demoted: ' . $dem . ', Declined: ' . $dec . ', Renamed: ' . $rnc;
+                                $mec = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
+					. sanitize( $username ) . '\' AND `log_action` = \'Edited\'' ) )
+					or die( 'MySQL Error: ' . mysql_error() . "\n" );
+				$mec = $rnc['count'];
+
+                                $pcc = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
+					. sanitize( $username ) . '\' AND `log_action` = \'Prefchange\'' ) )
+					or die( 'MySQL Error: ' . mysql_error() . "\n" );
+				$pcc = $rnc['count'];                                     
+
+				$adminInfo = 'Suspended: ' . $sus . ', Promoted: ' . $pro . ', Approved: ' . $app . ', Demoted: ' . $dem . ', Declined: ' . $dec . ', Renamed: ' . $rnc . ', Messages Edited: ' . $mec . ', Preferences Edited: ' . $pcc;
 			}
 
 			$today = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_time` LIKE \'' . sanitize( date( 'Y-m-d' ) )
