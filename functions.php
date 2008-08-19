@@ -18,7 +18,7 @@
 **Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
 **OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
 **Prodego    ( http://en.wikipedia.org/wiki/User:Prodego )   **
-**FunPika    ( http://en.wikipedia.org/wiki/User:FunPika )   **
+**                                                           **
 **************************************************************/
 
 if ($ACC != "1") {
@@ -390,13 +390,6 @@ function listrequests($type) {
 			$out .= '<td><small>' . "\n"; //List item
 		}
 
-	        $sid = sanitize($_SESSION['user']);
-	        $query4 = "SELECT * FROM acc_user WHERE user_name = '$sid';";
-	        $result4 = mysql_query($query4);
-	        if (!$result4)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	        $row4 = mysql_fetch_assoc($result4);
-
 		// Email.
 		$out .= '[ <a class="request-src" href="mailto:' . $row['pend_email'] . '">' . $row['pend_email'] . '</a>';
 
@@ -407,50 +400,7 @@ function listrequests($type) {
 			$out .= '(</span><b><span class="request-mult">' . $otheremailreqs['count'] . '</span></b><span class="request-src">)';
 		}
 
-                if ($row4['user_secure'] > 0 {
-
 		// IP UT:
-		$out .= '</span></small></td><td><small> | <a class="request-src" name="ip-link" href="https://secure.wikimedia.org/wikipedia/en/wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
-		$out .= $row['pend_ip'] . '</a> ';
-
-		$out .= '</small></td><td><small><span class="request-src">' . "\n";
-		if ($otheripreqs['count'] == 0) {
-			$out .= '(' . $otheripreqs['count'] . ')';
-		} else {
-			$out .= '(</span><b><span class="request-mult">' . $otheripreqs['count'] . '</span></b><span class="request-src">)';
-		}
-
-		// IP contribs
-		$out .= '</span></small></td><td><small><a class="request-src" href="https://secure.wikimedia.org/wikipedia/en/wiki/Special:Contributions/';
-		$out .= $row['pend_ip'] . '" target="_blank">c</a> ';
-
-		// IP blocks
-		$out .= '<a class="request-src" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
-		$out .= $row['pend_ip'] . '" target="_blank">b</a> ';
-
-		// IP whois
-		$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">w</a> ] ';
-
-		// Username U:
-		$duname = _utf8_decode($row['pend_name']);
-		$out .= '</small></td><td><small><a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
-
-		// Creation log    
-		$out .= '</small></td><td><small>(<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
-		$out .= $uname . '" target="_blank">Creation</a> ';
-
-		// User contribs
-		$out .= '<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/wiki/Special:Contributions/';
-		$out .= $uname . '" target="_blank">Contribs</a> ';
-		$out .= '<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=1" target="_blank">List</a>) ' . "\n";
-
-		// Create user link
-		$out .= '<b><a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/index.php?title=Special:UserLogin/signup&amp;wpName=';
-		$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b> ';
-                
-                } else {
-
-                // IP UT:
 		$out .= '</span></small></td><td><small> | <a class="request-src" name="ip-link" href="http://en.wikipedia.org/wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
 		$out .= $row['pend_ip'] . '</a> ';
 
@@ -488,8 +438,6 @@ function listrequests($type) {
 		// Create user link
 		$out .= '<b><a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName=';
 		$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b> ';
-
-                }
 
 		// Done
 		$out .= '| <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '">Done!</a>';

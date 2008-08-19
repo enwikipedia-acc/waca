@@ -110,9 +110,8 @@ mysql> DESCRIBE acc_user;
 | user_welcome_template | varchar(1024) | NO   |     | NULL    |                |
 | user_lastactive       | datetime      | NO   |     | NULL    |                |
 | user_forcelogout      | int(3)        | NO   |     | NULL    |                |
-| user_secure           | int(11)       | NO   |     | 0       |                |
 +-----------------------+---------------+------+-----+---------+----------------+
-12 rows in set (0.01 sec)
+11 rows in set (0.01 sec)
 
 *user_id - Table key
 *user_name - The user's chosen name
@@ -125,7 +124,6 @@ mysql> DESCRIBE acc_user;
 *user_welcome_template - The user's preferred welcoming template
 *user_lastactive - Timestamp of the last time the user accessed acc.php, used for 'whos online' stats
 *user_forcelogout - Force the user to log out if set to 1
-*user_secure - Turn on use of the  secure server. 0 for off, 1 for on. Default 1
 
 acc_ban
 This table holds e-mail addresses and IP's that are banned from the request system.
