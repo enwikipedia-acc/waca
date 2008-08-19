@@ -356,22 +356,22 @@ function listrequests($type) {
 	$tableend = "</table>\n";
 	$reqlist = '';
 	$currentreq = 0;
-	while ($row = mysql_fetch_assoc($result)) {
+	while ( list( $pend_id, $pend_email, $pend_ip, $pend_name, $pend_cmt, $pend_status, $pend_date, $pend_checksum, $pend_emailsent, $pend_mailconfirmed ) = mysql_fetch_row( $result ) ) {
 		$currentreq += 1;
-		$uname = urlencode($row['pend_name']);
+		$uname = urlencode($pend_name);
 		#$uname = str_replace("+", "_", $row[pend_name]);
-		$rid = $row['pend_id'];
-		if ($row['pend_cmt'] != "") {
+		$rid = $pend_id;
+		if ($pend_cmt != "") {
 			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&amp;id=$rid\">Zoom (CMT)</a> ";
 		} else {
 			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
 		}
-		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = '" . $row['pend_ip'] . "' AND `pend_id` != '" . $row['pend_id'] . "' AND `pend_mailconfirm` = 'Confirmed';";
+		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = '" . $pend_ip . "' AND `pend_id` != '" . $row['pend_id'] . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result2 = mysql_query($query2);
 		if (!$result2)
 			Die("Query failed: $query2 ERROR: " . mysql_error());
 		$otheripreqs = mysql_fetch_assoc($result2);
-		$query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . $row['pend_email'] . "' AND `pend_id` != '" . $row['pend_id'] . "' AND `pend_mailconfirm` = 'Confirmed';";
+		$query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . $pend_email . "' AND `pend_id` != '" . $pend_id . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result3 = mysql_query($query3);
 		if (!$result3)
 			Die("Query failed: $query3 ERROR: " . mysql_error());
@@ -397,7 +397,7 @@ function listrequests($type) {
 		$row4 = mysql_fetch_assoc($result4);
 
 		// Email.
-		$out .= '[ <a class="request-src" href="mailto:' . $row['pend_email'] . '">' . $row['pend_email'] . '</a>';
+		$out .= '[ <a class="request-src" href="mailto:' . $pend_email . '">' . $pend_email . '</a>';
 
 		$out .= '</small></td><td><small><span class="request-src">' . "\n";
 		if ($otheremailreqs['count'] == 0) {
@@ -421,17 +421,17 @@ function listrequests($type) {
 
 			//IP contribs
 			$out .= '</span></small></td><td><small><a class="request-src" href="https://secure.wikimedia.org/wikipedia/en/wiki/Special:Contributions/';
-			$out .= $row['pend_ip'] . '" target="_blank">c</a> ';
+			$out .= $pend_ip . '" target="_blank">c</a> ';
 
 			// IP blocks
 			$out .= '<a class="request-src" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
-			$out .= $row['pend_ip'] . '" target="_blank">b</a> ';
+			$out .= $pend_ip . '" target="_blank">b</a> ';
 
 			// IP whois
-			$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">w</a> ] ';
+			$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $pend_ip . '" target="_blank">w</a> ] ';
 
 			// Username U:
-			$duname = _utf8_decode($row['pend_name']);
+			$duname = _utf8_decode($pend_name);
 			$out .= '</small></td><td><small><a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
 
 			// 	Creation log
@@ -445,13 +445,13 @@ function listrequests($type) {
 
 			// Create user link
 			$out .= '<b><a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/index.php?title=Special:UserLogin/signup&amp;wpName=';
-			$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b> ';
+			$out .= $uname . '&amp;wpEmail=' . $pend_email . '&amp;uselang=en-acc" target="_blank">Create!</a></b> ';
 
 		} else {
 
 			// IP UT:
 			$out .= '</span></small></td><td><small> | <a class="request-src" name="ip-link" href="http://en.wikipedia.org/wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
-			$out .= $row['pend_ip'] . '</a> ';
+			$out .= $pend_ip . '</a> ';
 
 			$out .= '</small></td><td><small><span class="request-src">' . "\n";
 			if ($otheripreqs['count'] == 0) {
@@ -462,17 +462,17 @@ function listrequests($type) {
 
 			// IP contribs
 			$out .= '</span></small></td><td><small><a class="request-src" href="http://en.wikipedia.org/wiki/Special:Contributions/';
-			$out .= $row['pend_ip'] . '" target="_blank">c</a> ';
+			$out .= $pend_ip . '" target="_blank">c</a> ';
 
 			// IP blocks
 			$out .= '<a class="request-src" href="http://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
-			$out .= $row['pend_ip'] . '" target="_blank">b</a> ';
+			$out .= $pend_ip . '" target="_blank">b</a> ';
 
 			// IP whois
-			$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">w</a> ] ';
+			$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $pend_ip . '" target="_blank">w</a> ] ';
 
 			// Username U:
-			$duname = _utf8_decode($row['pend_name']);
+			$duname = _utf8_decode($pend_name);
 			$out .= '</small></td><td><small><a class="request-req" href="http://en.wikipedia.org/wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
 
 			// Creation log
@@ -486,28 +486,28 @@ function listrequests($type) {
 
 			// Create user link
 			$out .= '<b><a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-			$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b> ';
+			$out .= $uname . '&amp;wpEmail=' . $pend_email . '&amp;uselang=en-acc" target="_blank">Create!</a></b> ';
 
 		}
 
 		// Done
-		$out .= '| <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '">Done!</a>';
+		$out .= '| <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=1&amp;sum=' . $pend_checksum . '">Done!</a>';
 
 		// Similar
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=2&amp;sum=' . $row['pend_checksum'] . '">Similar</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=2&amp;sum=' . $pend_checksum . '">Similar</a>';
 
 		// Taken
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=3&amp;sum=' . $row['pend_checksum'] . '">Taken</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=3&amp;sum=' . $pend_checksum . '">Taken</a>';
 
 		// UPolicy
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=4&amp;sum=' . $row['pend_checksum'] . '">UPolicy</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=4&amp;sum=' . $pend_checksum . '">UPolicy</a>';
 
 		// Invalid
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=5&amp;sum=' . $row['pend_checksum'] . '">Invalid</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=5&amp;sum=' . $pend_checksum . '">Invalid</a>';
 
 		// Defer to admins or users
 		if (is_numeric($type)) {
-			$type = $row['pend_status'];
+			$type = $pend_status;
 		}
 		if (!isset ($target)) {
 			$target = "zoom";
@@ -519,21 +519,21 @@ function listrequests($type) {
 			$target = 'user';
 		}
 		if ($target == 'admin' || $target == 'user') {
-			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target\">Defer to $target" . "s</a>";
+			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=$target\">Defer to $target" . "s</a>";
 		} else {
-			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=user\">Reset Request</a>";
+			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=user\">Reset Request</a>";
 		}
 		// Drop
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=0&amp;sum=' . $pend_checksum . '">Drop</a>' . "\n";
 
 		// Ban IP
-		$out .= ' | Ban: <a class="request-ban" href="acc.php?action=ban&amp;ip=' . $row['pend_id'] . '">IP</a> ';
+		$out .= ' | Ban: <a class="request-ban" href="acc.php?action=ban&amp;ip=' . $pend_id . '">IP</a> ';
 
 		// Ban email
-		$out .= '- <a class="request-ban" href="acc.php?action=ban&amp;email=' . $row['pend_id'] . '">E-Mail</a>';
+		$out .= '- <a class="request-ban" href="acc.php?action=ban&amp;email=' . $pend_id . '">E-Mail</a>';
 
 		//Ban name
-		$out .= ' - <a class="request-ban" href="acc.php?action=ban&amp;name=' . $row['pend_id'] . '">Name</a>';
+		$out .= ' - <a class="request-ban" href="acc.php?action=ban&amp;name=' . $pend_id . '">Name</a>';
 
 		$out .= '</small></td></tr>';
 		$reqlist .= $out;
