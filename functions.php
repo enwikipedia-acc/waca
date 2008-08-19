@@ -220,13 +220,13 @@ function gethowma() {
 	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$last5min = time() - 300; // Get the users active as of the last 5 mins
 	$last5mins = date("Y-m-d H:i:s", $last5min);
-	$query = "SELECT * FROM acc_user WHERE user_lastactive > '$last5mins';";
+	$query = "SELECT user_name FROM acc_user WHERE user_lastactive > '$last5mins';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$whoactive = array ();
-	while ($row = mysql_fetch_assoc($result)) {
-		array_push($whoactive, $row['user_name']);
+	while ( list( $user_name ) = mysql_fetch_row( $result ) ) {
+		array_push( $whoactive, $user_name );
 	}
 	$howma = count($whoactive);
 	$whoactive['howmany'] = $howma;
