@@ -655,13 +655,13 @@ HTML;
 	$html .= listrequests("Admin");
 
 	$html .= "<h2>Last 5 Closed requests</h2><a name='closed'></a><span id=\"closed\"/>\n";
-	$query = "SELECT * FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
+	$query = "SELECT pend_id, pend_name, pend_checksum FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$html .= "<table cellspacing=\"0\">\n";
 	$currentrow = 0;
-	while ($row = mysql_fetch_assoc($result)) {
+	while ( list( $pend_id, $pend_name, $pend_checksum ) = mysql_fetch_row( $result ) ) {
 		$currentrow += 1;
 		$out = '<tr';
 		if ($currentrow % 2 == 0) {
@@ -669,7 +669,7 @@ HTML;
 		} else {
 			$out .= ' class="odd">';
 		}
-		$out .= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . _utf8_decode($row['pend_name']) . "</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=user\">Reset</a></small></td></tr>";
+		$out .= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=user\">Reset</a></small></td></tr>";
 		$html .= $out;
 	}
 	$html .= "</table>\n";
