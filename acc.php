@@ -164,7 +164,6 @@ elseif ( $action == "sreg" ) {
 		} else {
 			$secure = 0;
 		}
-	if ($fail != 1) {
 		if ($welcomeenable == "1") {
 			$welcome = 1;
 		} else {

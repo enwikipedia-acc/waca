@@ -71,7 +71,7 @@ function forceLogout( $uid ) {
 	if( $row['user_forcelogout'] == "1" ) {
 		$_SESSION = array();
 		if (isset($_COOKIE[session_name()])) {
-		    setcookie(session_name(), '', time()-42000, '/');
+			setcookie(session_name(), '', time()-42000, '/');
 		}
 		session_destroy( );
 		echo "You have been forcibly logged out, probably due to being renamed. Please log back in.";
@@ -99,12 +99,12 @@ function getSpoofs( $username ) {
 	$numSpoof = 0;
 	$reSpoofs = array();
 	while ($row = mysql_fetch_assoc($result)) {
-	        if( isset( $row['su_name'] ) ) { $numSpoof++; }
+		if( isset( $row['su_name'] ) ) { $numSpoof++; }
 		array_push( $reSpoofs, $row['su_name'] );
 	}
 	mysql_close( $spooflink );
 	if( $numSpoof == 0 ) {
-	        return( FALSE );
+		return( FALSE );
 	} else {
 		return( $reSpoofs );
 	}
@@ -193,11 +193,11 @@ function showhowma() {
 	foreach ($howma as &$oluser) {
 		$oluser = sanitize( $oluser );
 		$query = "SELECT * FROM acc_user WHERE user_name = '$oluser';";
-        $result = mysql_query($query);
-        if (!$result)
-            Die("Query failed: $query ERROR: " . mysql_error() . " f190");
-        $row = mysql_fetch_assoc($result);
-        $uid = $row['user_id'];
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error() . " f190");
+	$row = mysql_fetch_assoc($result);
+	$uid = $row['user_id'];
 		$oluser = stripslashes($oluser);
 		$oluser = "<a href=\"users.php?viewuser=$uid\">$oluser</a>";
 	}
@@ -334,19 +334,18 @@ function listrequests($type) {
 	if($secure != 1) { die("Not logged in"); }
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or print mysql_error();
-        if ($enableEmailConfirm == 1) {
-	if ($type == 'Admin' || $type == 'Open') {
-		$query = "SELECT * FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed';";
-	} else {
-		$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
-	}
-        }
-          else {
-        if ($type == 'Admin' || $type == 'Open') {
-		$query = "SELECT * FROM acc_pend WHERE pend_status = '$type';";
-	} else {
-		$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
-	}
+	if ($enableEmailConfirm == 1) {
+		if ($type == 'Admin' || $type == 'Open') {
+			$query = "SELECT * FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed';";
+		} else {
+			$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
+		}
+        } else {
+		if ($type == 'Admin' || $type == 'Open') {
+			$query = "SELECT * FROM acc_pend WHERE pend_status = '$type';";
+		} else {
+			$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
+		}
         }
     
 	$result = mysql_query($query);
@@ -360,7 +359,7 @@ function listrequests($type) {
 	while ($row = mysql_fetch_assoc($result)) {
 		$currentreq += 1;
 		$uname = urlencode($row['pend_name']);
-		#    $uname = str_replace("+", "_", $row[pend_name]);
+		#$uname = str_replace("+", "_", $row[pend_name]);
 		$rid = $row['pend_id'];
 		if ($row['pend_cmt'] != "") {
 			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&amp;id=$rid\">Zoom (CMT)</a> ";
@@ -390,106 +389,106 @@ function listrequests($type) {
 			$out .= '<td><small>' . "\n"; //List item
 		}
 
-	        $sid = sanitize($_SESSION['user']);
-	        $query4 = "SELECT * FROM acc_user WHERE user_name = '$sid';";
-	        $result4 = mysql_query($query4);
-	        if (!$result4)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	        $row4 = mysql_fetch_assoc($result4);
+		$sid = sanitize($_SESSION['user']);
+		$query4 = "SELECT * FROM acc_user WHERE user_name = '$sid';";
+		$result4 = mysql_query($query4);
+		if (!$result4)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row4 = mysql_fetch_assoc($result4);
 
 		// Email.
 		$out .= '[ <a class="request-src" href="mailto:' . $row['pend_email'] . '">' . $row['pend_email'] . '</a>';
 
-                $out .= '</small></td><td><small><span class="request-src">' . "\n";
+		$out .= '</small></td><td><small><span class="request-src">' . "\n";
 		if ($otheremailreqs['count'] == 0) {
 			$out .= '(' . $otheremailreqs['count'] . ')';
 		} else {
 			$out .= '(</span><b><span class="request-mult">' . $otheremailreqs['count'] . '</span></b><span class="request-src">)';
 		}
 
-                if ($row4['user_secure'] > 0 {
+		if ( $row4['user_secure'] > 0 ) {
 
-		// IP UT:
-		$out .= '</span></small></td><td><small> | <a class="request-src" name="ip-link" href="https://secure.wikimedia.org/wikipedia/en/wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
-		$out .= $row['pend_ip'] . '</a> ';
+			// IP UT:
+			$out .= '</span></small></td><td><small> | <a class="request-src" name="ip-link" href="https://secure.wikimedia.org/wikipedia/en/wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
+			$out .= $row['pend_ip'] . '</a> ';
 
-		$out .= '</small></td><td><small><span class="request-src">' . "\n";
-		if ($otheripreqs['count'] == 0) {
-			$out .= '(' . $otheripreqs['count'] . ')';
+			$out .= '</small></td><td><small><span class="request-src">' . "\n";
+			if ($otheripreqs['count'] == 0) {
+				$out .= '(' . $otheripreqs['count'] . ')';
+			} else {
+				$out .= '(</span><b><span class="request-mult">' . $otheripreqs['count'] . '</span></b><span class="request-src">)';
+			}
+
+			//IP contribs
+			$out .= '</span></small></td><td><small><a class="request-src" href="https://secure.wikimedia.org/wikipedia/en/wiki/Special:Contributions/';
+			$out .= $row['pend_ip'] . '" target="_blank">c</a> ';
+
+			// IP blocks
+			$out .= '<a class="request-src" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
+			$out .= $row['pend_ip'] . '" target="_blank">b</a> ';
+
+			// IP whois
+			$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">w</a> ] ';
+
+			// Username U:
+			$duname = _utf8_decode($row['pend_name']);
+			$out .= '</small></td><td><small><a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
+
+			// 	Creation log
+			$out .= '</small></td><td><small>(<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
+			$out .= $uname . '" target="_blank">Creation</a> ';
+
+			// 	User contribs
+			$out .= '<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/wiki/Special:Contributions/';
+			$out .= $uname . '" target="_blank">Contribs</a> ';
+			$out .= '<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=1" target="_blank">List</a>) ' . "\n";
+
+			// Create user link
+			$out .= '<b><a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/index.php?title=Special:UserLogin/signup&amp;wpName=';
+			$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b> ';
+
 		} else {
-			$out .= '(</span><b><span class="request-mult">' . $otheripreqs['count'] . '</span></b><span class="request-src">)';
+
+			// IP UT:
+			$out .= '</span></small></td><td><small> | <a class="request-src" name="ip-link" href="http://en.wikipedia.org/wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
+			$out .= $row['pend_ip'] . '</a> ';
+
+			$out .= '</small></td><td><small><span class="request-src">' . "\n";
+			if ($otheripreqs['count'] == 0) {
+				$out .= '(' . $otheripreqs['count'] . ')';
+			} else {
+				$out .= '(</span><b><span class="request-mult">' . $otheripreqs['count'] . '</span></b><span class="request-src">)';
+			}
+
+			// IP contribs
+			$out .= '</span></small></td><td><small><a class="request-src" href="http://en.wikipedia.org/wiki/Special:Contributions/';
+			$out .= $row['pend_ip'] . '" target="_blank">c</a> ';
+
+			// IP blocks
+			$out .= '<a class="request-src" href="http://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
+			$out .= $row['pend_ip'] . '" target="_blank">b</a> ';
+
+			// IP whois
+			$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">w</a> ] ';
+
+			// Username U:
+			$duname = _utf8_decode($row['pend_name']);
+			$out .= '</small></td><td><small><a class="request-req" href="http://en.wikipedia.org/wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
+
+			// Creation log
+			$out .= '</small></td><td><small>(<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
+			$out .= $uname . '" target="_blank">Creation</a> ';
+
+			// User contribs
+			$out .= '<a class="request-req" href="http://en.wikipedia.org/wiki/Special:Contributions/';
+			$out .= $uname . '" target="_blank">Contribs</a> ';
+			$out .= '<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=1" target="_blank">List</a>) ' . "\n";
+
+			// Create user link
+			$out .= '<b><a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName=';
+			$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b> ';
+
 		}
-
-		// IP contribs
-		$out .= '</span></small></td><td><small><a class="request-src" href="https://secure.wikimedia.org/wikipedia/en/wiki/Special:Contributions/';
-		$out .= $row['pend_ip'] . '" target="_blank">c</a> ';
-
-		// IP blocks
-		$out .= '<a class="request-src" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
-		$out .= $row['pend_ip'] . '" target="_blank">b</a> ';
-
-		// IP whois
-		$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">w</a> ] ';
-
-		// Username U:
-		$duname = _utf8_decode($row['pend_name']);
-		$out .= '</small></td><td><small><a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
-
-		// Creation log    
-		$out .= '</small></td><td><small>(<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
-		$out .= $uname . '" target="_blank">Creation</a> ';
-
-		// User contribs
-		$out .= '<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/wiki/Special:Contributions/';
-		$out .= $uname . '" target="_blank">Contribs</a> ';
-		$out .= '<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=1" target="_blank">List</a>) ' . "\n";
-
-		// Create user link
-		$out .= '<b><a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/index.php?title=Special:UserLogin/signup&amp;wpName=';
-		$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b> ';
-                
-                } else {
-
-                // IP UT:
-		$out .= '</span></small></td><td><small> | <a class="request-src" name="ip-link" href="http://en.wikipedia.org/wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
-		$out .= $row['pend_ip'] . '</a> ';
-
-		$out .= '</small></td><td><small><span class="request-src">' . "\n";
-		if ($otheripreqs['count'] == 0) {
-			$out .= '(' . $otheripreqs['count'] . ')';
-		} else {
-			$out .= '(</span><b><span class="request-mult">' . $otheripreqs['count'] . '</span></b><span class="request-src">)';
-		}
-
-		// IP contribs
-		$out .= '</span></small></td><td><small><a class="request-src" href="http://en.wikipedia.org/wiki/Special:Contributions/';
-		$out .= $row['pend_ip'] . '" target="_blank">c</a> ';
-
-		// IP blocks
-		$out .= '<a class="request-src" href="http://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
-		$out .= $row['pend_ip'] . '" target="_blank">b</a> ';
-
-		// IP whois
-		$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">w</a> ] ';
-
-		// Username U:
-		$duname = _utf8_decode($row['pend_name']);
-		$out .= '</small></td><td><small><a class="request-req" href="http://en.wikipedia.org/wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
-
-		// Creation log    
-		$out .= '</small></td><td><small>(<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
-		$out .= $uname . '" target="_blank">Creation</a> ';
-
-		// User contribs
-		$out .= '<a class="request-req" href="http://en.wikipedia.org/wiki/Special:Contributions/';
-		$out .= $uname . '" target="_blank">Contribs</a> ';
-		$out .= '<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=1" target="_blank">List</a>) ' . "\n";
-
-		// Create user link
-		$out .= '<b><a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-		$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b> ';
-
-                }
 
 		// Done
 		$out .= '| <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '">Done!</a>';
@@ -711,12 +710,11 @@ function displayheader() {
 }
 
 function displayfooter() {
-        echo "<a href=\"index.php\">Return to account request interface.</a><br />\n";
+	echo "<a href=\"index.php\">Return to account request interface.</a><br />\n";
 	if(hasright($_SESSION['user'], 'User') || hasright($_SESSION['user'], 'Admin')){
-        echo "<a href=\"acc.php\">Return to request management interface</a>\n";
-	}
-	else{
-        echo "<a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
+		echo "<a href=\"acc.php\">Return to request management interface</a>\n";
+	} else {
+		echo "<a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
 	}
 	global $toolserver_username;
 	global $toolserver_password;
