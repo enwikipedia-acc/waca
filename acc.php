@@ -1184,20 +1184,8 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		} else {
 			$secureon = 0;
 		}
-		$query = "UPDATE acc_user SET user_welcome = '$welcomeon' WHERE user_name = '$sid'";
-		$query2 = "UPDATE acc_user SET user_welcome_sig = '$sig' WHERE user_name = '$sid'";
-		$query3 = "UPDATE acc_user SET user_welcome_template = '$template' WHERE user_name = '$sid'";
-                $query4 = "UPDATE acc_user SET user_secure = '$secureon' WHERE user_name = '$sid'";
+		$query = "UPDATE acc_user SET user_welcome = '$welcomeon', user_welcome_sig = '$sig', user_welcome_template = '$template', user_secure = '$secureon' WHERE user_name = '$sid'";
 		$result = mysql_query($query);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$result = mysql_query($query2);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$result = mysql_query($query3);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$result = mysql_query($query4);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		echo "Preferences updated!<br />\n";
