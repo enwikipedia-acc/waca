@@ -93,14 +93,14 @@ function getSpoofs( $username ) {
 	@ mysql_select_db($antispoof_db, $spooflink) or print mysql_error();
 	$fone = sanitize(strtr($username,$equivset));
 	//$fone = mysql_real_escape_string( $fone );
-	$query = "SELECT * FROM ".$antispoof_table." WHERE su_normalized = 'v2:$fone';";
+	$query = "SELECT su_name FROM ".$antispoof_table." WHERE su_normalized = 'v2:$fone';";
 	$result = mysql_query($query, $spooflink);
 	if(!$result) Die("ERROR: No result returned. - ".mysql_error());
 	$numSpoof = 0;
 	$reSpoofs = array();
-	while ($row = mysql_fetch_assoc($result)) {
-		if( isset( $row['su_name'] ) ) { $numSpoof++; }
-		array_push( $reSpoofs, $row['su_name'] );
+	while ( list( $su_name ) = mysql_fetch_row( $result ) ) {
+		if( isset( $su_name ) ) { $numSpoof++; }
+		array_push( $reSpoofs, $su_name );
 	}
 	mysql_close( $spooflink );
 	if( $numSpoof == 0 ) {
