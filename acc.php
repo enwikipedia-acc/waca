@@ -1209,8 +1209,8 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     </table>
     <a name="1"></a><h2>General settings</h2>
     <form action="acc.php?action=welcomeperf" method="post">
-    <input type="checkbox" name="secureenable"<?php echo $securepref ?>/> Enable use of the secure server<br />
-    <input type="checkbox" name="welcomeenable"<?php echo $welcoming ?>/> Enable <a href="http://en.wikipedia.org/wiki/User:SQLBot-Hello">SQLBot-Hello</a> welcoming of the users I create<br />
+    <input type="checkbox" name="secureenable"<?php echo $securepref ?>/> Enable use of the secure server<br /><br />
+    <input type="checkbox" name="welcomeenable"<?php echo $welcoming ?>/> Enable <a href="http://en.wikipedia.org/wiki/User:SQLBot-Hello">SQLBot-Hello</a> welcoming of the users I create<br /><br />
     Your signature (wikicode) <input type="text" name="sig" size ="40"<?php echo $sig; ?>/><br />
     <i>This would be the same as ~~~ on-wiki. No date, please.</i><br />
     <select name="template" size="0">

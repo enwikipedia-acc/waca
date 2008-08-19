@@ -444,7 +444,7 @@ function listrequests($type) {
 			$out .= '<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=1" target="_blank">List</a>) ' . "\n";
 
 			// Create user link
-			$out .= '<b><a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/index.php?title=Special:UserLogin/signup&amp;wpName=';
+			$out .= '<b><a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special:UserLogin/signup&amp;wpName=';
 			$out .= $uname . '&amp;wpEmail=' . $pend_email . '&amp;uselang=en-acc" target="_blank">Create!</a></b> ';
 
 		} else {
