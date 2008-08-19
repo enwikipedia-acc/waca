@@ -455,18 +455,15 @@ elseif ($action == "messagemgmt") {
 		echo showfooter();
 		die();
 	}
-	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Message';";
+	$query = "SELECT mail_id, mail_count, mail_desc FROM acc_emails WHERE mail_type = 'Message';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<h2>Mail messages</h2>\n";
 	echo "<ol>\n";
-	while ($row = mysql_fetch_assoc($result)) {
-		$mailn = $row['mail_id'];
-		$mailc = $row['mail_count'];
-		$maild = $row['mail_desc'];
-		$out = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		$out2 = "<li><small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+	while ( list( $mail_id, $mail_count, $mail_desc ) = mysql_fetch_row( $result ) ) {
+		$out = "<li><small>[ $mail_desc ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mail_id\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
+		$out2 = "<li><small>[ $mail_desc ] <a href=\"acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
 		if(hasright($_SESSION['user'], 'Admin')){
 		echo "$out\n";
 		}
