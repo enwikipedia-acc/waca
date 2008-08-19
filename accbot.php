@@ -66,7 +66,6 @@
 	addHelp( 'svnup'      , ''          , 'Allows you to sync the live server with the SVN repository.'         );
 	addHelp( 'restart'    , ''          , 'Causes the bot to do an immediate graceful reinitialization.'        );
 	addHelp( 'recreatesvn', ''          , 'Attempts to fix the live copy of the site.'                          );
-//	addHelp( 'svn'        , '<params>'  , 'Runs a SVN command.'                                                 );
 
 	// Commands
 	//          Command      , Function            , Fork?
@@ -80,7 +79,6 @@
 	addCommand( 'svnup'      , 'commandSvnUp'      , true  );
 	addCommand( 'restart'    , 'commandRestart'    , false );
 	addCommand( 'recreatesvn', 'commandRecreateSvn', true  );
-//	addCommand( 'svn'        , 'commandSvn'        , true  );
 
 	// Users
 	//	Nick!User@Host mask						=> group
@@ -115,7 +113,6 @@
 	$privgroups[ 'root'      ]                  = $privgroups['developer']; // 'root' inherits 'developer'.
 	$privgroups[ 'root'      ][ 'svnup'       ] = 1;
 	$privgroups[ 'root'      ][ 'recreatesvn' ] = 1;
-	$privgroups[ 'root'      ][ 'svn'         ] = 1;
 	$privgroups[ 'root' 	 ][ 'restart'     ] = 1;
 
 
@@ -454,26 +451,6 @@
 				irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': ' . str_replace( array( "\n", "\r" ), '', $svnin ) );
 			}
 			sleep( 1 ); // Slight delay so the bot does not kill itself on updating a lot of files.
-		}
-		pclose( $svn );
-	}
-
-	function commandSvn( $parsed ) {
-		$tmp = array();
-
-		foreach( $parsed['parameters'] as $param ) {
-			$tmp[] = escapeshellarg( $param );
-		}
-
-		$tmp = implode( ' ', $tmp );
-
-		$svn = popen( 'svn ' . $tmp . ' 2>&1', 'r' );
-		while( !feof( $svn ) ) {
-			$svnin = trim( fgets( $svn, 512 ) );
-			if( $svnin != '' ) {
-				irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': ' . str_replace( array( "\n", "\r" ), '', $svnin ) );
-			}
-			sleep( 4 );
 		}
 		pclose( $svn );
 	}
