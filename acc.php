@@ -1478,9 +1478,9 @@ elseif ($action == "logout") {
 	die("Logged out!\n");
 }
 elseif ($action == "logs") {
-			echo "User: <form action=\"acc.php?action=logs&amp;user=$_POST['user']&amp;pend=$_POST['pend']\" method=\"post\">";
+			echo "User <form action=\"acc.php?action=logs&amp;user=$_POST['user']&amp;pend=$_POST['pend']\" method=\"post\">";
 			echo "<textarea name=\"user\" rows=\"1\" cols=\"20\"></textarea>";
-			echo "Request/User affected: <form action=\"acc.php?action=logs&amp;user=$_POST['user']&amp;pend=$_POST['pend']\" method=\"post\">";
+			echo "Request/User affected";
 			echo "<textarea name=\"pend\" rows=\"1\" cols=\"20\"></textarea>";
 			echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
 			echo "</form>";
