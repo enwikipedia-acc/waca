@@ -1478,26 +1478,44 @@ elseif ($action == "logout") {
 	die("Logged out!\n");
 }
 elseif ($action == "logs") {
+			echo "User: <form action=\"acc.php?action=logs&amp;user=$_POST['user']&amp;pend=$_POST['pend']\" method=\"post\">";
+			echo "<textarea name=\"user\" rows=\"1\" cols=\"20\"></textarea>";
+			echo "Request/User affected: <form action=\"acc.php?action=logs&amp;user=$_POST['user']&amp;pend=$_POST['pend']\" method=\"post\">";
+			echo "<textarea name=\"pend\" rows=\"1\" cols=\"20\"></textarea>";
+			echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
+			echo "</form>";
 	if (isset ($_GET['limit'])) {
 		$limit = $_GET['limit'];
 		$limit = sanitize($limit);
 	} else {
 		$limit = 100;
 	}
+	if (isset ($_GET['pend'])) {
+		$logpend = $_GET['pend'];
+		$logpend = sanitize($logpend);
+	} else {
+		$logpend = "*";
+	}
+	if (isset ($_GET['user'])) {
+		$loguser = $_GET['user'];
+		$loguser = sanitize($loguser);
+	} else {
+		$loguser = "*";
+	}
 	if (isset ($_GET['from'])) {
 		$from = sanitize($_GET['from']);
-		$query = "SELECT * FROM acc_log ORDER BY log_time DESC LIMIT $limit OFFSET $from;";
+		$query = "SELECT * FROM acc_log WHERE log_action = $logaction AND log_pend = $logpend ORDER BY log_time DESC LIMIT $limit OFFSET $from;";
 	} else {
-		$query = "SELECT * FROM acc_log ORDER BY log_time DESC LIMIT $limit;";
+		$query = "SELECT * FROM acc_log WHERE log_action = $logaction AND log_pend = $logpend ORDER BY log_time DESC LIMIT $limit;";
 		$from = 0;
 	}
-	$next = $from +100;
-	$prev = $from -100;
+	$next = $from +$limit;
+	$prev = $from -$limit;
 	if ($from > 0) {
-		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$prev\">Previous 100</a> <a href=\"acc.php?action=logs&amp;from=$next\">Next 100</a></h4>\n";
+		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$prev\">Previous $limit</a> <a href=\"acc.php?action=logs&amp;from=$next\">Next $limit</a></h4>\n";
 		echo $n1;
 	} else {
-		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$next\">Next 100</a></h4>\n";
+		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$next\">Next $limit</a></h4>\n";
 		echo $n1;
 	}
 	$result = mysql_query($query);
