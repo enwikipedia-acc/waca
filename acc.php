@@ -1502,9 +1502,9 @@ elseif ($action == "logs") {
 	}
 	if (isset ($_GET['from'])) {
 		$from = sanitize($_GET['from']);
-		$query = "SELECT * FROM acc_log WHERE log_action = $logaction AND log_pend = $logpend ORDER BY log_time DESC LIMIT $limit OFFSET $from;";
+		$query = "SELECT * FROM acc_log WHERE log_user = '$loguser' AND log_pend = '$logpend' ORDER BY log_time DESC LIMIT $limit OFFSET $from;";
 	} else {
-		$query = "SELECT * FROM acc_log WHERE log_action = $logaction AND log_pend = $logpend ORDER BY log_time DESC LIMIT $limit;";
+		$query = "SELECT * FROM acc_log WHERE log_user = '$loguser' AND log_pend = '$logpend' ORDER BY log_time DESC LIMIT $limit;";
 		$from = 0;
 	}
 	$next = $from +$limit;
