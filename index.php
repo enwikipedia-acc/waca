@@ -321,8 +321,8 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 			"\n",
 			"\r"
 			), array (
-			'\n',
-			'\r'
+			' ',
+			' '
 			), $comments), 0, 200) . ((strlen($comments) > 200) ? '...' : ''));
 	} elseif( $row['pend_mailconfirm'] == "Confirmed" ) {
 		echo "Your e-mail address has already been confirmed!\n";
