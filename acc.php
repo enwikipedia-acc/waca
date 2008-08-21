@@ -1507,13 +1507,13 @@ elseif ($action == "logs") {
 		$query = "SELECT * FROM acc_log WHERE log_user = '$loguser' AND log_pend = '$logpend' ORDER BY log_time DESC LIMIT $limit;";
 		$from = 0;
 	}
-	$next = $from +$limit;
-	$prev = $from -$limit;
+	$next = $from +100;
+	$prev = $from -100;
 	if ($from > 0) {
-		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$prev\">Previous $limit</a> <a href=\"acc.php?action=logs&amp;from=$next\">Next $limit</a></h4>\n";
+		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$prev\">Previous $limit</a> <a href=\"acc.php?action=logs&amp;from=$next\">Next 100</a></h4>\n";
 		echo $n1;
 	} else {
-		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$next\">Next $limit</a></h4>\n";
+		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$next\">Next 100</a></h4>\n";
 		echo $n1;
 	}
 	$result = mysql_query($query);
