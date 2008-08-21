@@ -596,9 +596,9 @@ function showfooter() {
 	$howma = $howmany['howmany'];
 	$out = showmessage('23');
 	if ($howma > 1)
-		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma users active within the last 5 mins! ($howout)</small></div><br /><br />", $out);
+		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creators currently online (past 5 minutes): $howout</small></div><br /><br />", $out);
 	else
-		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma user active within the last 5 mins! ($howout)</small></div><br /><br />", $out);
+		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creator currently online (past 5 minutes): $howout</small></div><br /><br />", $out);
 	return $out;
 }
 
