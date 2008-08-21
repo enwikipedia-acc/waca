@@ -18,6 +18,7 @@
 	**Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
 	**OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
 	**Prodego ( http://en.wikipedia.org/wiki/User:Prodego )	     **
+        **FunPika ( http://en.wikipedia.org/wiki/User:FunPika )      **
 	**                                                           **
 	**************************************************************/
 
@@ -61,8 +62,9 @@
 	addHelp( 'status'     , ''          , 'Displays interface statistics, such as the number of open requests.' );
 	addHelp( 'stats'      , '<username>', 'Gives a readout similar to the user list user information page.'     );
 	addHelp( 'svninfo'    , ''          , 'Floods you with information about the SVN repository.'               );
-	addHelp( 'sandinfo'    , ''         , 'Floods you with information about the SVN repository sandbox.'       );
+	addHelp( 'sandinfo'   , ''          , 'Floods you with information about the SVN repository sandbox.'       );
 	addHelp( 'sand-svnup' , ''          , 'Allows developers to sync the sandbox with the SVN repository.'      );
+	addHelp( 'php'        , ''          , 'Allows developers to check for errors in PHP files.'                 );
 	addHelp( 'svnup'      , ''          , 'Allows you to sync the live server with the SVN repository.'         );
 	addHelp( 'restart'    , ''          , 'Causes the bot to do an immediate graceful reinitialization.'        );
 	addHelp( 'recreatesvn', ''          , 'Attempts to fix the live copy of the site.'                          );
@@ -76,6 +78,7 @@
 	addCommand( 'svninfo'    , 'commandSvnInfo'    , true  );
 	addCommand( 'sandinfo'   , 'commandSandInfo'   , true  );
 	addCommand( 'sand-svnup' , 'commandSandSvnUp'  , true  );
+	addCommand( 'php'        , 'commandPhp'        , true  );
 	addCommand( 'svnup'      , 'commandSvnUp'      , true  );
 	addCommand( 'restart'    , 'commandRestart'    , false );
 	addCommand( 'recreatesvn', 'commandRecreateSvn', true  );
@@ -109,6 +112,7 @@
 
 	$privgroups[ 'developer' ]                  = $privgroups['*']; // 'developer' inherits '*'.
 	$privgroups[ 'developer' ][ 'sand-svnup'  ] = 1;
+	$privgroups[ 'developer' ][ 'php'  ]        = 1;
 
 	$privgroups[ 'root'      ]                  = $privgroups['developer']; // 'root' inherits 'developer'.
 	$privgroups[ 'root'      ][ 'svnup'       ] = 1;
@@ -452,6 +456,26 @@
 		pclose( $svn );
 		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Please see the sandbox at http://stable.toolserver.org/acc/sand/acc.php' );
 	}
+        
+        function commandPhp( $parsed ) {
+        $tmp = array();
+
+        foreach( $parsed['parameters'] as $param ) {
+            $tmp[] = escapeshellarg( $param );
+        }
+
+        $tmp = implode( ' ', $tmp );
+
+        $svn = popen( 'cd sand; php ' . $tmp . ' -l -f 2>&1', 'r' );
+        while( !feof( $svn ) ) {
+            $svnin = trim( fgets( $svn, 512 ) );
+            if( $svnin != '' ) {
+                irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': ' . str_replace( array( "\n", "\r" ), '', $svnin ) );
+            }
+            sleep( 4 );
+        }
+         pclose( $svn );
+        }
 
 	function commandSvnUp( $parsed ) {
 		$svn = popen( 'svn up 2>&1', 'r' );
