@@ -56,7 +56,7 @@ function confirmEmail( $id ) {
 	mt_srand( $seed );
 	$salt = mt_rand( );
 	$hash = md5( $id . $salt );
-	$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
+	$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nIf you did not make this request, please disregard this message.\n\n";
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	mail($row['pend_email'], "English Wikipedia Account Request", $mailtxt, $headers);
 	$query = "UPDATE acc_pend SET pend_mailconfirm = '$hash' WHERE pend_id = '$pid';";
