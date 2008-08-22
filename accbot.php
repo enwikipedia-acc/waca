@@ -64,7 +64,7 @@
 	addHelp( 'svninfo'    , ''          , 'Floods you with information about the SVN repository.'               );
 	addHelp( 'sandinfo'   , ''          , 'Floods you with information about the SVN repository sandbox.'       );
 	addHelp( 'sand-svnup' , ''          , 'Allows developers to sync the sandbox with the SVN repository.'      );
-	addHelp( 'php'        , ''          , 'Allows developers to check for errors in PHP files.'                 );
+	addHelp( 'php'        , '<file>'    , 'Allows developers to check for errors in PHP files.'                 );
 	addHelp( 'svnup'      , ''          , 'Allows you to sync the live server with the SVN repository.'         );
 	addHelp( 'restart'    , ''          , 'Causes the bot to do an immediate graceful reinitialization.'        );
 	addHelp( 'recreatesvn', ''          , 'Attempts to fix the live copy of the site.'                          );
