@@ -1479,7 +1479,7 @@ elseif ($action == "logout") {
 }
 elseif ($action == "logs") {
 			echo "User <form action=\"acc.php?action=logs&amp;user=" . $_POST['user'] . "&amp;pend=" . $_POST['pend'] . "\" method=\"post\">";
-			echo "<textarea name=\"user\" rows=\"1\" cols=\"20\"></textarea> Request <textarea name=\"pend\" rows=\"1\" cols=\"20\"></textarea>";
+			echo "<input id=\"user\" type=\"text\" name=\"user\"/> Request <input id=\"pend\" type=\"text\" name=\"pend\"/>";
 			echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
 			echo "</form>";
 	if (isset ($_GET['limit'])) {
