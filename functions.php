@@ -645,12 +645,12 @@ function getdevs() {
 function defaultpage() {
 	$html =<<<HTML
 <h1>Create an account!</h1>
-<h2>Open requests</h2>
+<a name="open"><h2>Open requests</h2>
 HTML;
 
 	$html .= listrequests("Open");
 	$html .=<<<HTML
-<h2>Admin Needed!</h2>
+<a name="admin"><h2>Admin Needed!</h2>
 HTML;
 	$html .= listrequests("Admin");
 
