@@ -1306,9 +1306,9 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	}
 
 	if ($row2['pend_status'] = Admin) {
-        http_redirect(acc.php#admin);
+        http_redirect(acc.php#admin );
         } else {
-        http_redirect(acc.php#open);
+        http_redirect(acc.php#open );
         }
 
 	$query = "UPDATE acc_pend SET pend_status = 'Closed' WHERE pend_id = '$gid';";
