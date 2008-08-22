@@ -1305,7 +1305,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			Die("Query failed: $query ERROR: " . mysql_error());
 	}
 
-	if ($row2['pend_status'] = Admin) {
+	if ($row2['pend_status'] = "Admin") {
         http_redirect("acc.php#admin");
         } else {
         http_redirect("acc.php#open");
