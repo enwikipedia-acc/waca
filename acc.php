@@ -71,7 +71,7 @@ elseif ( $action == "sreg" ) {
 			$fp = fsockopen( "udp://127.0.0.1", 9001, $erno, $errstr, 30 );
 			fwrite( $fp, "[Name-Bl-ACR] HIT: $wnbl - " . $_POST['name'] . " / " . $_POST['wname'] . " " . $_SERVER['REMOTE_ADDR'] . " ($host) " . $_POST['email'] . " " . $_SERVER['HTTP_USER_AGENT'] . "\r\n" );
 			fclose( $fp );
-			echo "Account created!<br /><br />\n";
+			echo "Account created! To confirm your identity, please make any edit to your talk page and in the edit summary, note that it is really you requesting this account. <br /><br />\n";
 			die( );
 		}
 	}
@@ -175,7 +175,7 @@ elseif ( $action == "sreg" ) {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		sendtobot("New user: $user");
-		echo "Account created!<br /><br />\n";
+		echo "Account created! To confirm your identity, please make any edit to your talk page and in the edit summary, note that it is really you requesting this account. <br /><br />\n";
 		echo showlogin();
 	}
 	echo showfootern();
