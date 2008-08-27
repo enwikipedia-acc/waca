@@ -13,7 +13,7 @@ if ( !$link ) {
 
 echo makehead($_SESSION['user']);
 echo '<div id="content">';
-
+echo '<h2>Request search tool (emails only)</h2>';
 if( isset($_GET['email']) ) {
 
 echo "<h3>Searching for: $_GET[email] ...</h3>";
@@ -21,7 +21,7 @@ echo "<h3>Searching for: $_GET[email] ...</h3>";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	$html .= "<table cellspacing=\"0\">\n";
+	$html = "<table cellspacing=\"0\">\n";
 	$currentrow = 0;
 	while ( list( $pend_id, $pend_name, $pend_email ) = mysql_fetch_row( $result ) ) {
 		$currentrow += 1;
