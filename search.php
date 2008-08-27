@@ -17,7 +17,7 @@ echo '<h2>Request search tool (emails only)</h2>';
 if( isset($_GET['email']) ) {
 
 echo "<h3>Searching for: $_GET[email] ...</h3>";
-	$query = "SELECT pend_id, pend_name, pend_email FROM acc_pend WHERE pend_email LIKE '".$_GET['email']."';";
+	$query = "SELECT pend_id, pend_name, pend_email FROM acc_pend WHERE pend_email LIKE '".sanitize($_GET['email'])."';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
