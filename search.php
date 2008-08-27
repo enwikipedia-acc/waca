@@ -3,6 +3,8 @@
 require_once( 'config.inc.php' );
 require_once ( 'functions.php' );
 
+session_start();
+
 $link = mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
 if ( !$link ) {
 	die( 'Could not connect: ' . mysql_error( ) );
@@ -11,6 +13,9 @@ if ( !$link ) {
 
 echo makehead($_SESSION['user']);
 echo '<div id="content">';
+
+if( isset($_GET['email']) ) {
+
 echo "<h3>Searching for: $_GET[email] ...</h3>";
 	$query = "SELECT pend_id, pend_name, pend_email FROM acc_pend WHERE pend_email LIKE '".$_GET['email']."';";
 	$result = mysql_query($query);
@@ -32,6 +37,17 @@ echo "<h3>Searching for: $_GET[email] ...</h3>";
 	$html .= "</table>\n";
 	$html .= "<b>Results found: </b> $currentrow.";
 echo $html;
+}
+else {
+?>
+<form action="search.php" method="get">
+Email: <input type="text" name="email" /><br />
+<input type="submit" />
+</form>
+
+<?php
+}
+
 echo "</div>";
 echo showfooter();
 ?>
