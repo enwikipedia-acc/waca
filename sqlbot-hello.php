@@ -162,9 +162,12 @@ while ($row = mysql_fetch_assoc($result)) {
 	}
 	if ($template == "malinaccier") {
 		tagpage($user, "{{subst:User:Malinaccier/Welcome|$sig ~~~~~}}");
+	}
 	if ($template == "welcome!") {
 		tagpage($user, "{{subst:Welcome!|from=$sid|ps=$sig ~~~~~}}");
 	}
+	if ($template == "laquatique") {
+		tagpage($user, "{{subst:User:L'Aquatique/welcome}} $sig ~~~~~");
 	}
 	$query2 = "UPDATE acc_welcome SET welcome_status = 'Closed' WHERE welcome_id = '" . $row['welcome_id'] . "';";
 	$result2 = mysql_query($query2);
