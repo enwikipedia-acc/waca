@@ -93,7 +93,7 @@
 		'OverlordQ!*@wikipedia/OverlordQ'				=> 'root',
 		'Stwalkerster*!*@wikipedia/Stwalkerster'			=> 'developer',
 		'*!*@wikipedia/Alexfusco5'					=> 'developer',
-		'Soxred93*!*@wikipedia/Soxred93'				=> 'developer',
+		'[X]*!*@wikipedia/Soxred93'				=> 'developer',
 		'*!*@tangocms/developer/chuck'					=> 'developer',
 		'*!*@wikipedia/FastLizard4'					=> 'developer',
 		'*!*@wikipedia/Prodego'					        => 'developer',
