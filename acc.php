@@ -1487,33 +1487,17 @@ elseif ($action == "logout") {
 	die("Logged out!\n");
 }
 elseif ($action == "logs") {
-			echo "User <form action=\"acc.php?action=logs&amp;user=" . $_POST['user'] . "&amp;pend=" . $_POST['pend'] . "\" method=\"post\">";
-			echo "<input id=\"user\" type=\"text\" name=\"user\"/> Request <input id=\"pend\" type=\"text\" name=\"pend\"/>";
-			echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
-			echo "</form>";
 	if (isset ($_GET['limit'])) {
 		$limit = $_GET['limit'];
 		$limit = sanitize($limit);
 	} else {
 		$limit = 100;
 	}
-	if (isset ($_GET['pend'])) {
-		$logpend = $_GET['pend'];
-		$logpend = sanitize($logpend);
-	} else {
-		$logpend = "*";
-	}
-	if (isset ($_GET['user'])) {
-		$loguser = $_GET['user'];
-		$loguser = sanitize($loguser);
-	} else {
-		$loguser = "*";
-	}
 	if (isset ($_GET['from'])) {
 		$from = sanitize($_GET['from']);
-		$query = "SELECT * FROM acc_log WHERE log_user = '$loguser' AND log_pend = '$logpend' ORDER BY log_time DESC LIMIT $limit OFFSET $from;";
+		$query = "SELECT * FROM acc_log ORDER BY log_time DESC LIMIT $limit OFFSET $from;";
 	} else {
-		$query = "SELECT * FROM acc_log WHERE log_user = '$loguser' AND log_pend = '$logpend' ORDER BY log_time DESC LIMIT $limit;";
+		$query = "SELECT * FROM acc_log ORDER BY log_time DESC LIMIT $limit;";
 		$from = 0;
 	}
 	$next = $from +100;
