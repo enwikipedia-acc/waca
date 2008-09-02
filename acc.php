@@ -249,8 +249,8 @@ value="welcomeshort">{{Welcomeshort|user}} ~~~~</option>
 <option value="w-kk">{{User:KrakatoaKatie/Welcome1}} ~~~~</option>
 <option value="w-screen">{{w-screen|sig=~~~~}}</option>
 <option value="wodup">{{User:WODUP/Welcome}} ~~~~</option>
-<option value="williamh">{{User:WilliamH/Welcome|user}} ~~~~</option></select>
-<option value="malinaccier">{{User:Malinaccier/Welcome|~~~~}}</option></select>
+<option value="williamh">{{User:WilliamH/Welcome|user}} ~~~~</option>
+<option value="malinaccier">{{User:Malinaccier/Welcome|~~~~}}</option>
 <option value="laquatique">{{subst:User:L'Aquatique/welcome}} ~~~~</option></select></td>
             </tr>
         </td>
