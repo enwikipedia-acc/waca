@@ -22,10 +22,10 @@
 **                                                           **
 **************************************************************/
 
-if ($ACC != "1") {
-    header("Location: $tsurl/");
-    die();
-} //Re-route, if you're a web client.
+#if ($ACC != "1") {
+#    header("Location: $tsurl/");
+#    die();
+#} //Re-route, if you're a web client.
 
 include ('../SxWiki.php');
 include ('../sqlbot-hello-enwiki.php');
