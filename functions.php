@@ -469,7 +469,7 @@ function listrequests($type) {
 			$out .= $pend_ip . '" target="_blank">b</a> ';
 
 			// IP whois
-			$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $pend_ip . '" target="_blank">w</a> ] ';
+			$out .= '<a class="request-src" href="http://samspade.org/whois?query=' . $pend_ip . '" target="_blank">w</a> ] ';
 
 			// Username U:
 			$duname = _utf8_decode($pend_name);
