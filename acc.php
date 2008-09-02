@@ -1307,13 +1307,6 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 	}
-
-	if ($row2['pend_status'] = "Admin") {
-        http_redirect("acc.php#admin");
-        } else {
-        http_redirect("acc.php#open");
-        }
-
 	$query = "UPDATE acc_pend SET pend_status = 'Closed' WHERE pend_id = '$gid';";
 	$result = mysql_query($query);
 	if (!$result)
@@ -1354,6 +1347,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		$result = mysql_query($query);
 	}
 	upcsum($_GET['id']);
+	echo defaultpage();
 }
 elseif ($action == "zoom") {
 	if ($_GET['id'] == "") {
