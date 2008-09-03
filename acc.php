@@ -164,7 +164,7 @@ elseif ( $action == "sreg" ) {
 			$welcome = 0;
 		}
 		$user_pass = md5($pass);
-		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_secure, user_welcome, user_welcome_sig, user_welcome_template) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$secure', '$welcome', '$sig', '$template');";
+		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_welcome, user_welcome_sig, user_welcome_template) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$secure', '$welcome', '$sig', '$template');";
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -1165,7 +1165,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		} else {
 			$welcomeon = 0;
 		}
-		$query = "UPDATE acc_user SET user_welcome = '$welcomeon', user_welcome_sig = '$sig', user_welcome_template = '$template', user_secure = '$secureon' WHERE user_name = '$sid'";
+		$query = "UPDATE acc_user SET user_welcome = '$welcomeon', user_welcome_sig = '$sig', user_welcome_template = '$template' WHERE user_name = '$sid'";
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -1179,9 +1179,6 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_welcome'] > 0) {
 		$welcoming = " checked=\"checked\"";
-	}
-	if ($row['user_secure'] > 0) {
-		$securepref = " checked=\"checked\"";
 	}
 	$sig = " value=\"" . htmlentities($row['user_welcome_sig']) . "\"";
 	$template = $row['user_welcome_template'];
