@@ -110,6 +110,7 @@ elseif ( $action == "sreg" ) {
 	$email = mysql_real_escape_string($_REQUEST['email']);
 	$sig = mysql_real_escape_string($_REQUEST['sig']);
 	$template = mysql_real_escape_string($_REQUEST['template']);
+	$secureenable = mysql_real_escape_string($_REQUEST['secureenable']);
 	$welcomeenable = mysql_real_escape_string($_REQUEST['welcomeenable']);
 	if ($user == "" || $wname == "" || $pass == "" || $pass2 == "" || $email == "" || strlen($email) < 6) {
 		echo "<h2>ERROR!</h2>Form data may not be blank.<br />\n";
@@ -158,13 +159,18 @@ elseif ( $action == "sreg" ) {
 		$fail = 1;
 	}
 	if ($fail != 1) {
+		if ($secureenable == "1") {
+			$secure= 1;
+		} else {
+			$secure = 0;
+		}
 		if ($welcomeenable == "1") {
 			$welcome = 1;
 		} else {
 			$welcome = 0;
 		}
 		$user_pass = md5($pass);
-		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_welcome, user_welcome_sig, user_welcome_template) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$secure', '$welcome', '$sig', '$template');";
+		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_secure, user_welcome, user_welcome_sig, user_welcome_template) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$secure', '$welcome', '$sig', '$template');";
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -210,6 +216,12 @@ elseif ($action == "register") {
             <tr>
                 <td>Desired password(again):</td>
                 <td><input type="password" name="pass2"></td>
+            </tr>
+        </td>
+        <td>
+            <tr>
+                <td>Enable use of the secure server:</td>
+                <td><input type="checkbox" name="secureenable"></td>
             </tr>
         </td>
         <td>
@@ -1165,7 +1177,12 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		} else {
 			$welcomeon = 0;
 		}
-		$query = "UPDATE acc_user SET user_welcome = '$welcomeon', user_welcome_sig = '$sig', user_welcome_template = '$template' WHERE user_name = '$sid'";
+		if( isset( $_POST['secureenable'] ) ) {
+			$secureon = 1;
+		} else {
+			$secureon = 0;
+		}
+		$query = "UPDATE acc_user SET user_welcome = '$welcomeon', user_welcome_sig = '$sig', user_welcome_template = '$template', user_secure = '$secureon' WHERE user_name = '$sid'";
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -1180,6 +1197,9 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	if ($row['user_welcome'] > 0) {
 		$welcoming = " checked=\"checked\"";
 	}
+	if ($row['user_secure'] > 0) {
+		$securepref = " checked=\"checked\"";
+	}
 	$sig = " value=\"" . htmlentities($row['user_welcome_sig']) . "\"";
 	$template = $row['user_welcome_template'];
 ?>
@@ -1190,6 +1210,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     </table>
     <a name="1"></a><h2>General settings</h2>
     <form action="acc.php?action=welcomeperf" method="post">
+    <input type="checkbox" name="secureenable"<?php echo $securepref ?>/> Enable use of the secure server<br /><br />
     <input type="checkbox" name="welcomeenable"<?php echo $welcoming ?>/> Enable <a href="http://en.wikipedia.org/wiki/User:SQLBot-Hello">SQLBot-Hello</a> welcoming of the users I create<br /><br />
     Your signature (wikicode) <input type="text" name="sig" size ="40"<?php echo $sig; ?>/><br />
     <i>This would be the same as ~~~ on-wiki. No date, please.</i><br />
