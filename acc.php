@@ -110,7 +110,6 @@ elseif ( $action == "sreg" ) {
 	$email = mysql_real_escape_string($_REQUEST['email']);
 	$sig = mysql_real_escape_string($_REQUEST['sig']);
 	$template = mysql_real_escape_string($_REQUEST['template']);
-	$secureenable = mysql_real_escape_string($_REQUEST['secureenable']);
 	$welcomeenable = mysql_real_escape_string($_REQUEST['welcomeenable']);
 	if ($user == "" || $wname == "" || $pass == "" || $pass2 == "" || $email == "" || strlen($email) < 6) {
 		echo "<h2>ERROR!</h2>Form data may not be blank.<br />\n";
@@ -159,11 +158,6 @@ elseif ( $action == "sreg" ) {
 		$fail = 1;
 	}
 	if ($fail != 1) {
-		if ($secureenable == "1") {
-			$secure= 1;
-		} else {
-			$secure = 0;
-		}
 		if ($welcomeenable == "1") {
 			$welcome = 1;
 		} else {
@@ -216,12 +210,6 @@ elseif ($action == "register") {
             <tr>
                 <td>Desired password(again):</td>
                 <td><input type="password" name="pass2"></td>
-            </tr>
-        </td>
-        <td>
-            <tr>
-                <td>Enable use of the secure server:</td>
-                <td><input type="checkbox" name="secureenable"></td>
             </tr>
         </td>
         <td>
@@ -1177,11 +1165,6 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		} else {
 			$welcomeon = 0;
 		}
-		if( isset( $_POST['secureenable'] ) ) {
-			$secureon = 1;
-		} else {
-			$secureon = 0;
-		}
 		$query = "UPDATE acc_user SET user_welcome = '$welcomeon', user_welcome_sig = '$sig', user_welcome_template = '$template', user_secure = '$secureon' WHERE user_name = '$sid'";
 		$result = mysql_query($query);
 		if (!$result)
@@ -1210,7 +1193,6 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     </table>
     <a name="1"></a><h2>General settings</h2>
     <form action="acc.php?action=welcomeperf" method="post">
-    <input type="checkbox" name="secureenable"<?php echo $securepref ?>/> Enable use of the secure server<br /><br />
     <input type="checkbox" name="welcomeenable"<?php echo $welcoming ?>/> Enable <a href="http://en.wikipedia.org/wiki/User:SQLBot-Hello">SQLBot-Hello</a> welcoming of the users I create<br /><br />
     Your signature (wikicode) <input type="text" name="sig" size ="40"<?php echo $sig; ?>/><br />
     <i>This would be the same as ~~~ on-wiki. No date, please.</i><br />
