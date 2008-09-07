@@ -41,7 +41,7 @@ if( isset( $_SESSION['user'] ) ) {
 }
 
 
-echo makehead();
+echo makehead( $sessionuser );
 echo '<div id="content">';
 
 
