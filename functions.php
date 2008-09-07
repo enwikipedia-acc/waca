@@ -595,7 +595,7 @@ function showfooter() {
 	$howout = showhowma();
 	$howma = $howmany['howmany'];
 	$out = showmessage('23');
-	if ($howma > 1)
+	if ($howma != 1) // not equal to one, as zero uses the plural form too.
 		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creators currently online (past 5 minutes): $howout</small></div><br /><br />", $out);
 	else
 		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creator currently online (past 5 minutes): $howout</small></div><br /><br />", $out);
