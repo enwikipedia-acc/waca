@@ -34,7 +34,14 @@ if ( !$link ) {
 }
 @ mysql_select_db( $toolserver_database ) or print mysql_error( );
 
-echo makehead($_SESSION['user']);
+if( isset( $_SESSION['user'] ) ) {
+	$sessionuser = $_SESSION['user'];
+} else {
+	$sessionuser = "";
+}
+
+
+echo makehead();
 echo '<div id="content">';
 
 
