@@ -21,6 +21,8 @@
 **FunPika    ( http://en.wikipedia.org/wiki/User:FunPika )   **
 **************************************************************/
 
+// includes, header stuff.
+
 require_once( 'config.inc.php' );
 require_once ( 'functions.php' );
 
@@ -34,17 +36,22 @@ if ( !$link ) {
 
 echo makehead($_SESSION['user']);
 echo '<div id="content">';
-echo '<h2>Request search tool (emails only)</h2>';
+
+
+///////////////// Page code
+
+
+echo '<h1>Request search tool</h1>';
 if( isset($_GET['email']) ) {
 
-echo "<h3>Searching for: $_GET[email] ...</h3>";
-	$query = "SELECT pend_id, pend_name, pend_email FROM acc_pend WHERE pend_email LIKE '".sanitize($_GET['email'])."';";
+	echo "<h2>Searching for email address: $_GET[email] ...</h2>";
+	$query = "SELECT pend_id FROM acc_pend WHERE pend_email LIKE '".sanitize($_GET['email'])."';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$html = "<table cellspacing=\"0\">\n";
 	$currentrow = 0;
-	while ( list( $pend_id, $pend_name, $pend_email ) = mysql_fetch_row( $result ) ) {
+	while ( list( $pend_id ) = mysql_fetch_row( $result ) ) {
 		$currentrow += 1;
 		$out = '<tr';
 		if ($currentrow % 2 == 0) {
@@ -57,16 +64,45 @@ echo "<h3>Searching for: $_GET[email] ...</h3>";
 	}
 	$html .= "</table>\n";
 	$html .= "<b>Results found: </b> $currentrow.";
-echo $html;
+	echo $html;
+}
+elseif( isset($_GET['ipaddr']) ) {
+	echo "<h2>Searching for IP address: $_GET[ipaddr] ...</h2>";
+	$query = "SELECT pend_id FROM acc_pend WHERE pend_ip LIKE '".sanitize($_GET['ipaddr'])."';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$html = "<table cellspacing=\"0\">\n";
+	$currentrow = 0;
+	while ( list( $pend_id ) = mysql_fetch_row( $result ) ) {
+		$currentrow += 1;
+		$out = '<tr';
+		if ($currentrow % 2 == 0) {
+			$out .= ' class="even">';
+		} else {
+			$out .= ' class="odd">';
+		}
+		$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Request " . $pend_id . "</a></small></tr>";
+		$html .= $out;
+	}
+	$html .= "</table>\n";
+	$html .= "<b>Results found: </b> $currentrow.";
+	echo $html;
 }
 else {
-?>
-<form action="search.php" method="get">
-Email: <input type="text" name="email" /><br />
-<input type="submit" />
-</form>
-
-<?php
+	echo '<h2>Search by e-mail address:</h2>';
+	echo '<form action="search.php" method="get">';
+	echo 'Email: <input type="text" name="email" /><br />';
+	echo '<input type="submit" />';
+	echo '</form>';
+	
+	echo '<h2>Search by IP address:</h2>';
+	echo '<form action="search.php" method="get">';
+	echo 'IP Address: <input type="text" name="ipaddr" /><br />';
+	echo '<input type="submit" />';
+	echo '</form>';
+	
+	
 }
 
 echo "</div>";
