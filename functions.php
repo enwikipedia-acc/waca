@@ -426,6 +426,10 @@ function listrequests($type) {
 			// IP blocks
 			$out .= '<a class="request-src" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
 			$out .= $pend_ip . '" target="_blank">b</a> ';
+			
+			// rangeblocks
+			$out .= '<a class="request-src" href="http://toolserver.org/~krimpet/rbhelper.php?db=enwiki_p&ip=';
+			$out .= $pend_ip . '" target="_blank">r</a> ';
 
 			// IP whois
 			$out .= '<a class="request-src" href="http://samspade.org/whois?query=' . $pend_ip . '" target="_blank">w</a> ] ';
