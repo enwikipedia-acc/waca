@@ -1081,7 +1081,7 @@ $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action 
 		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 		if( $enableRenames == 1 ) {
 			$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-			$out .= " <a href=\"users.php?edituser=$userid\">Edit!</a> -";
+			$out .= " <a href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
 		}
 		$out .= " <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
 		echo "$out\n";
@@ -1107,7 +1107,7 @@ $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action 
 		$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 		if( $enableRenames == 1 ) {
 		$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-		$out .= " <a href=\"users.php?edituser=$userid\">Edit!</a> -";
+		$out .= " <a href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
 		}
 		$out .= " <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> (Declined by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
 		echo "$out\n";
