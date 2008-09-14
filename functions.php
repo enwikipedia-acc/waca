@@ -115,6 +115,7 @@ function sanitize($what) {
 	* Shortcut to mysql_real_escape_string
 	*/
 	$what = mysql_real_escape_string($what);
+	$what = htmlentities($what);
 	return ($what);
 }
 
