@@ -1489,9 +1489,9 @@ elseif ($action == "logs") {
 	}
 	if (isset ($_GET['from'])) {
 		$from = sanitize($_GET['from']);
-		$query = "SELECT * FROM acc_log ORDER BY log_time DESC LIMIT '$limit' OFFSET '$from;'";
+		$query = "SELECT * FROM acc_log ORDER BY log_time DESC LIMIT '$limit' OFFSET '$from';";
 	} else {
-		$query = "SELECT * FROM acc_log ORDER BY log_time DESC LIMIT '$limit;'";
+		$query = "SELECT * FROM acc_log ORDER BY log_time DESC LIMIT '$limit';";
 		$from = 0;
 	}
 	$next = $from +100;
