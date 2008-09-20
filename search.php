@@ -55,7 +55,6 @@ if( isset($_GET['term'])) {
 	$term = sanitize($_GET['term']);
 	$type = sanitize($_GET['type']);
 
-<<<<<<< .mine
 	if( $type == "email") ) {
 		echo "<h2>Searching for email address: $term ...</h2>";
 		$query = "SELECT pend_id FROM acc_pend WHERE pend_email LIKE '$term';";
@@ -74,32 +73,11 @@ if( isset($_GET['term'])) {
 			}
 			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Request " . $pend_id . "</a></small></tr>";
 			$html .= $out;
-=======
-	if( $type == "email") ) {
-		echo "<h2>Searching for email address: $term ...</h2>";
-		$query = "SELECT pend_id FROM acc_pend WHERE pend_email LIKE '"$term"';";
-		$result = mysql_query($query);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$html = "<table cellspacing=\"0\">\n";
-		$currentrow = 0;
-		while ( list( $pend_id ) = mysql_fetch_row( $result ) ) {
-			$currentrow += 1;
-			$out = '<tr';
-			if ($currentrow % 2 == 0) {
-				$out .= ' class="even">';
-			} else {
-				$out .= ' class="odd">';
-			}
-			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Request " . $pend_id . "</a></small></tr>";
-			$html .= $out;
->>>>>>> .r1721
 		}
 		$html .= "</table>\n";
 		$html .= "<b>Results found: </b> $currentrow.";
 		echo $html;
 	}
-<<<<<<< .mine
 	elseif( $type == 'IP') ) {
 		echo "<h2>Searching for IP address: $term ...</h2>";
 		$query = "SELECT pend_id FROM acc_pend WHERE pend_ip LIKE '$term';";
@@ -112,20 +90,6 @@ if( isset($_GET['term'])) {
 			$currentrow += 1;
 			$out = '<tr';
 			if ($currentrow % 2 == 0) {
-=======
-	elseif( $type == 'IP') ) {
-		echo "<h2>Searching for IP address: $term ...</h2>";
-		$query = "SELECT pend_id FROM acc_pend WHERE pend_ip LIKE '".$term."';";
-		$result = mysql_query($query);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$html = "<table cellspacing=\"0\">\n";
-		$currentrow = 0;
-		while ( list( $pend_id ) = mysql_fetch_row( $result ) ) {
-			$currentrow += 1;
-			$out = '<tr';
-			if ($currentrow % 2 == 0) {
->>>>>>> .r1721
 			$out .= ' class="even">';
 			} else {
 				$out .= ' class="odd">';
