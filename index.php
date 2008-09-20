@@ -331,7 +331,7 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 	}
 	displayfooter();
 	die();
-} else if ($action == "confirm") {
+} elseif ( $action == "confirm" ) {
 	echo "Invalid Parameters. Please be sure you copied the URL correctly<br />\n";
 	displayfooter();
 	die();
