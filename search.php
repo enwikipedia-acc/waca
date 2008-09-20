@@ -105,11 +105,12 @@ if( isset($_GET['term'])) {
 else {
 	echo '<h2>Search:</h2>';
 	echo '<form action="search.php" method="get">';
-	echo 'Search for: <input type="text" name="term" />';
-	echo '<select name="type">';
+	echo 'Search for:<br />';
+	echo '<table><tr><td><input type="text" name="term" /></td>';
+	echo '<td><select name="type">';
 	echo '<option value="email">as email address</option>';
 	echo '<option value="IP">as IP address</option>';
-	echo '</select>';
+	echo '</select></td></tr></table><br />';
 	echo '<input type="submit" />';
 	echo '</form>';
 }
