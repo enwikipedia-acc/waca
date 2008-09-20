@@ -54,8 +54,8 @@ echo '<h1>Request search tool</h1>';
 if( isset($_GET['term'])) {
 	$term = $_GET['term'];
 	$type = $_GET['type'];
-	echo '$term<br />';
-	echo '$type';
+	echo $term;
+	echo $type;
 	}	
 
 elseif( isset($_GET['email']) ) {
