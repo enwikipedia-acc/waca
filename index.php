@@ -291,6 +291,7 @@ if ($enableEmailConfirm == 1) {
 
 displayheader();
 
+$action = '';
 if( isset( $_GET['action'] ) ) {
 	$action = $_GET['action'];
 }
