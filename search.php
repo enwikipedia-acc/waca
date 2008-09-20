@@ -109,7 +109,7 @@ else {
 	echo '<h2>Search:</h2>';
 	echo '<form action="search.php" method="get">';
 	echo 'Search for: <input type="text" name="term" />';
-	echo '<select name="type>';
+	echo '<select name="type">';
 	echo '<option value="email">as email address</option>';
 	echo '<option value="IP">as IP address</option>';
 	echo '</select>';
