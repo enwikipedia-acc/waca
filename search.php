@@ -51,7 +51,15 @@ echo '<div id="content">';
 
 
 echo '<h1>Request search tool</h1>';
-if( isset($_GET['email']) ) {
+if( isset($_GET['term'])) {
+	$term = $_GET['term'];
+	$type = $_GET['type'];
+	echo '$term'<br />;
+	echo '$type';
+	}
+	
+
+elseif( isset($_GET['email']) ) {
 
 	echo "<h2>Searching for email address: $_GET[email] ...</h2>";
 	$query = "SELECT pend_id FROM acc_pend WHERE pend_email LIKE '".sanitize($_GET['email'])."';";
@@ -103,8 +111,8 @@ else {
 	echo '<form action="search.php" method="get">';
 	echo 'Search for: <input type="text" name="term" />';
 	echo '<select name="type>';
-	echo '<option value="email">as email address</option><br />';
-	echo '<option value="IP">as IP address</option><br />';
+	echo '<option value="email">as email address</option>';
+	echo '<option value="IP">as IP address</option>';
 	echo '</select>';
 	echo '<input type="submit" />';
 	echo '</form>';
