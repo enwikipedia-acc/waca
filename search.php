@@ -52,58 +52,55 @@ echo '<div id="content">';
 
 echo '<h1>Request search tool</h1>';
 if( isset($_GET['term'])) {
-	$term = $_GET['term'];
-	$type = $_GET['type'];
-	echo $term;
-	echo $type;
-	}	
+	$term = sanitize($_GET['term']);
+	$type = sanitize($_GET['type']);
 
-elseif( isset($_GET['email']) ) {
-
-	echo "<h2>Searching for email address: $_GET[email] ...</h2>";
-	$query = "SELECT pend_id FROM acc_pend WHERE pend_email LIKE '".sanitize($_GET['email'])."';";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$html = "<table cellspacing=\"0\">\n";
-	$currentrow = 0;
-	while ( list( $pend_id ) = mysql_fetch_row( $result ) ) {
-		$currentrow += 1;
-		$out = '<tr';
-		if ($currentrow % 2 == 0) {
-			$out .= ' class="even">';
-		} else {
-			$out .= ' class="odd">';
+	if( $type == "email") ) {
+		echo "<h2>Searching for email address: $term ...</h2>";
+		$query = "SELECT pend_id FROM acc_pend WHERE pend_email LIKE '"$term"';";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$html = "<table cellspacing=\"0\">\n";
+		$currentrow = 0;
+		while ( list( $pend_id ) = mysql_fetch_row( $result ) ) {
+			$currentrow += 1;
+			$out = '<tr';
+			if ($currentrow % 2 == 0) {
+				$out .= ' class="even">';
+			} else {
+				$out .= ' class="odd">';
+			}
+			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Request " . $pend_id . "</a></small></tr>";
+			$html .= $out;
 		}
-		$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Request " . $pend_id . "</a></small></tr>";
-		$html .= $out;
+		$html .= "</table>\n";
+		$html .= "<b>Results found: </b> $currentrow.";
+		echo $html;
 	}
-	$html .= "</table>\n";
-	$html .= "<b>Results found: </b> $currentrow.";
-	echo $html;
-}
-elseif( isset($_GET['ipaddr']) ) {
-	echo "<h2>Searching for IP address: $_GET[ipaddr] ...</h2>";
-	$query = "SELECT pend_id FROM acc_pend WHERE pend_ip LIKE '".sanitize($_GET['ipaddr'])."';";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$html = "<table cellspacing=\"0\">\n";
-	$currentrow = 0;
-	while ( list( $pend_id ) = mysql_fetch_row( $result ) ) {
-		$currentrow += 1;
-		$out = '<tr';
-		if ($currentrow % 2 == 0) {
+	elseif( $type == 'IP') ) {
+		echo "<h2>Searching for IP address: $term ...</h2>";
+		$query = "SELECT pend_id FROM acc_pend WHERE pend_ip LIKE '".$term."';";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$html = "<table cellspacing=\"0\">\n";
+		$currentrow = 0;
+		while ( list( $pend_id ) = mysql_fetch_row( $result ) ) {
+			$currentrow += 1;
+			$out = '<tr';
+			if ($currentrow % 2 == 0) {
 			$out .= ' class="even">';
-		} else {
-			$out .= ' class="odd">';
+			} else {
+				$out .= ' class="odd">';
+			}
+			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Request " . $pend_id . "</a></small></tr>";
+			$html .= $out;
 		}
-		$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Request " . $pend_id . "</a></small></tr>";
-		$html .= $out;
+		$html .= "</table>\n";
+		$html .= "<b>Results found: </b> $currentrow.";
+		echo $html;
 	}
-	$html .= "</table>\n";
-	$html .= "<b>Results found: </b> $currentrow.";
-	echo $html;
 }
 else {
 	echo '<h2>Search:</h2>';
