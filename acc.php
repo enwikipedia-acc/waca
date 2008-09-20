@@ -1364,13 +1364,6 @@ elseif ($action == "zoom") {
 	$row = mysql_fetch_assoc($result);
 	if ($row['pend_mailconfirm'] != 'Confirmed' && $row['pend_mailconfirm'] != "")
 		Die("Email has not yet been confirmed for this request, so it can not yet be closed or viewed");
-	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm != 'Open' OR pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm != 'Admin';";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$hideip == TRUE;
-	if (mysql_num_rows($result) > 0)
-		$hideip == FALSE;
 	echo "<h2>Details for Request #" . $_GET['id'] . ":</h2>";
 	$uname = urlencode($row['pend_name']);
 	$thisip = $row['pend_ip'];
@@ -1380,6 +1373,13 @@ elseif ($action == "zoom") {
 		$row['pend_date'] = "Date Unknown";
 	}
 	$sUser = $row['pend_name'];
+	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm != 'Open' OR pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm != 'Admin';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$hideip == TRUE;
+	if (mysql_num_rows($result) > 0)
+		$hideip == FALSE;
 	$requesttable = listrequests($thisid, $hideip);
 	echo $requesttable;
 
