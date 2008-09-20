@@ -1115,10 +1115,8 @@ $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action 
 		$out .= " <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> (Declined by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
 		echo "$out\n";
 	}
-?>
-    </ol>
-	</div>
-    <?php
+
+    	echo "</ol>\n</div><br clear=\"all\" />";
 
 
 	echo showfooter();
