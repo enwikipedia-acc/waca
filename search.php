@@ -55,7 +55,7 @@ if( isset($_GET['term'])) {
 	$term = sanitize($_GET['term']);
 	$type = sanitize($_GET['type']);
 
-	if( $type == "email") ) {
+	if( $type == "email") {
 		echo "<h2>Searching for email address: $term ...</h2>";
 		$query = "SELECT pend_id FROM acc_pend WHERE pend_email LIKE '$term';";
 		$result = mysql_query($query);
@@ -78,7 +78,7 @@ if( isset($_GET['term'])) {
 		$html .= "<b>Results found: </b> $currentrow.";
 		echo $html;
 	}
-	elseif( $type == 'IP') ) {
+	elseif( $type == 'IP') {
 		echo "<h2>Searching for IP address: $term ...</h2>";
 		$query = "SELECT pend_id FROM acc_pend WHERE pend_ip LIKE '$term';";
 		$result = mysql_query($query);
