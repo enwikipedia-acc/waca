@@ -451,12 +451,12 @@ function listrequests($type, $hideip) {
 
 			// Create user link
 			$out .= '<b><a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-			$out .= $uname . '&amp;wpEmail=' . $pend_email . '&amp;uselang=en-acc" target="_blank">Create!</a></b> ';
+			$out .= $uname . '&amp;wpEmail=' . $pend_email . '&amp;uselang=en-acc" target="_blank">Create!</a></b></span></small></td> ';
 
 		} else {
 			if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin')) {
 			// IP UT:
-			$out .= '</span></small></td><td><small> | <a class="request-src" name="ip-link" href="http://en.wikipedia.org/wiki/User_talk:' . $pend_ip . '" target="_blank">';
+			$out .= '<td><small> | <a class="request-src" name="ip-link" href="http://en.wikipedia.org/wiki/User_talk:' . $pend_ip . '" target="_blank">';
 			$out .= $pend_ip . '</a> ';
 
 			$out .= '</small></td><td><small><span class="request-src">' . "\n";
@@ -479,11 +479,11 @@ function listrequests($type, $hideip) {
 			$out .= $pend_ip . '" target="_blank">r</a> ';
 
 			// IP whois
-			$out .= '<a class="request-src" href="http://samspade.org/whois?query=' . $pend_ip . '" target="_blank">w</a> ] ';
+			$out .= '<a class="request-src" href="http://samspade.org/whois?query=' . $pend_ip . '" target="_blank">w</a>';
 			}
 			// Username U:
 			$duname = _utf8_decode($pend_name);
-			$out .= '</small></td><td><small><a class="request-req" href="http://en.wikipedia.org/wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
+			$out .= ' ] </small></td><td><small><a class="request-req" href="http://en.wikipedia.org/wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
 
 			// Creation log
 			$out .= '</small></td><td><small>(<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
