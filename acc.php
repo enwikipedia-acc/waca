@@ -583,7 +583,9 @@ elseif ($action == "unban" && $_GET['id'] != "") {
 elseif ($action == "ban") {
 	$siuser = sanitize($_SESSION['user']);
 	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name'])) {
-		if (isset($_GET['ip']) {
+		if(!hasright($_SESSION['user'], "Admin");)
+			die("Only administrators may ban users");
+		if (isset($_GET['ip'])) {
 			$ip2 = sanitize($_GET['ip']);
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$ip2';";
 			$result = mysql_query($query);
