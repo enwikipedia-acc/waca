@@ -583,7 +583,7 @@ elseif ($action == "unban" && $_GET['id'] != "") {
 elseif ($action == "ban") {
 	$siuser = sanitize($_SESSION['user']);
 	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name'])) {
-		if ($_GET['ip'] != "") {
+		if (isset($_GET['ip']) {
 			$ip2 = sanitize($_GET['ip']);
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$ip2';";
 			$result = mysql_query($query);
@@ -624,9 +624,10 @@ elseif ($action == "ban") {
 			echo showfooter();
 			die();
 		} else {
-			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser&amp;target=$target&amp;type=$type\" method=\"post\">Ban target: $target\n<br />Reason: <input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT><br /><input type=\"submit\"></form>\n";
+			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser&amp;target=$target&amp;type=$type\" method=\"post\">Ban target: $target\n<br /><table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"></td><td><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr></table><br /><input type=\"submit\"></form>\n";
 		}
 	}
+	else {
 	echo "<h2>Active Ban List</h2>\n<ol>\n";
 	$query = "SELECT * FROM acc_ban;";
 	$result = mysql_query($query);
@@ -643,6 +644,7 @@ elseif ($action == "ban") {
 	echo "</ol>\n";
 	echo showfooter();
 	die();
+	}
 }
 elseif ($action == "usermgmt") {
 	if(!hasright($_SESSION['user'], 'Admin'))

@@ -335,6 +335,7 @@ function listrequests($type, $hideip) {
 	if($secure != 1) { die("Not logged in"); }
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or print mysql_error();
+
 	if ($enableEmailConfirm == 1) {
 		if ($type == 'Admin' || $type == 'Open') {
 			$query = "SELECT * FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed';";
@@ -536,6 +537,7 @@ function listrequests($type, $hideip) {
 		// Drop
 		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=0&amp;sum=' . $pend_checksum . '">Drop</a>' . "\n";
 
+		if(hasright($_SESSION['user'], "Admin") {
 		// Ban IP
 		$out .= ' | Ban: <a class="request-ban" href="acc.php?action=ban&amp;ip=' . $pend_id . '">IP</a> ';
 
@@ -544,6 +546,7 @@ function listrequests($type, $hideip) {
 
 		//Ban name
 		$out .= ' - <a class="request-ban" href="acc.php?action=ban&amp;name=' . $pend_id . '">Name</a>';
+		}
 
 		$out .= '</small></td></tr>';
 		$reqlist .= $out;
