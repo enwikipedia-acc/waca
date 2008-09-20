@@ -1373,7 +1373,7 @@ elseif ($action == "zoom") {
 		$row['pend_date'] = "Date Unknown";
 	}
 	$sUser = $row['pend_name'];
-	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' );";
+	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' );";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
