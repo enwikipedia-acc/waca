@@ -685,7 +685,7 @@ elseif ($action == "usermgmt") {
 	if (isset ($_GET['demote'])) {
 		$did = sanitize($_GET['demote']);
 		$siuser = sanitize($_SESSION['user']);
-		if ($_POST['demotereason'] == "") {
+		if (!isset($_POST['demotereason'])) {
 			echo "<h2>Demote Reason</h2><strong>The reason you enter here will be shown in the log. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&amp;demote=$did\" method=\"post\"><br />\n";
 			echo "<textarea name=\"demotereason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
 			echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
