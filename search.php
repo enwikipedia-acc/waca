@@ -51,9 +51,6 @@ echo '<div id="content">';
 
 
 echo '<h1>Request search tool</h1>';
-if( isset($_GET['term'] ))
-	echo '$_GET['type']<br /> $_GET['term']';
-	
 if( isset($_GET['email']) ) {
 
 	echo "<h2>Searching for email address: $_GET[email] ...</h2>";
