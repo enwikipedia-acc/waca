@@ -23,6 +23,9 @@ require_once ( 'config.inc.php' );
 require_once ( 'devlist.php' );
 require_once ( 'functions.php' );
 
+// Continue session
+session_start();
+
 $developer = //Developer info / list.
 	array(
 		"SQL" =>
