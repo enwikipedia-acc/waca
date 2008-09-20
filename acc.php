@@ -638,7 +638,7 @@ elseif ($action == "ban") {
 		} else {
 			$until = date("F j, Y, g:i a", $row['ban_duration']);
 		}
-		echo "<li><small><strong>" . $row['ban_target'] . "</strong> - Banned by: <strong>" . $row['ban_user'] . "</strong> for <strong>" . htmlentities($row['ban_reason']) . "</strong> at <strong>" . $row['ban_date'] . "</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">UNBAN</a>)</small></li>";
+		echo "<li><small><strong>" . $row['ban_target'] . "</strong> - Banned by: <strong>" . $row['ban_user'] . "</strong> for <strong>" . $row['ban_reason'] . "</strong> at <strong>" . $row['ban_date'] . "</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">UNBAN</a>)</small></li>"; /*security flaw: HTML INJECTION POINT*/
 	}
 	echo "</ol>\n";
 	echo showfooter();
@@ -1558,19 +1558,6 @@ elseif ($action == "logs") {
 		if ($row['log_action'] == "Blacklist Hit" || $row['log_action'] == "DNSBL Hit") {
 			echo "<li>$rlu <strong>Rejected by Blacklist</strong> $rlp, $rlc at $rlt.</li>\n";
 		}
-		if ($row['log_action'] == "Unbanned") {
-			echo "<li>$rlu Unbanned $rlp at $rlt</li>\n";
-		}
-		if ($row['log_action'] == "Banned") {
-			$mid = sanitize($row['log_pend']);
-			$query3 = "SELECT * FROM acc_ban WHERE ban_target = '$mid';";
-			$result3 = mysql_query($query3);
-			if (!$result3)
-				Die("Query failed: $query ERROR: " . mysql_error());
-			$row3 = mysql_fetch_assoc($result3);
-			echo "<li>$rlu Banned " . $row3['log_pend'] . " #" . $row3['ban_id'] . " (" . _utf8_decode($row3['ban_target']) . "), Reason: " . $row3['ban_reason'] . ", at $rlt.</li>\n";
-		}
-
 		if ($rla == "Edited") {
 			$mid = $rlp;
 			$query3 = "SELECT * FROM acc_emails WHERE mail_id = '$mid';";
