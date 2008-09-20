@@ -1269,7 +1269,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
-	if ($row['pend_emailsent'] == "1" && !isset(['override']) {
+	if ($row['pend_emailsent'] == "1" && !isset($_GET['override']) {
 		echo "<br />This request has already been closed in a manner that has generated an e-mail to the user, Proceed?<br />\n";
 		echo "<a href=\"acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;override=yes&amp;email=" . $_GET['email'] . "\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
 		echo showfooter();
@@ -1364,6 +1364,13 @@ elseif ($action == "zoom") {
 	$row = mysql_fetch_assoc($result);
 	if ($row['pend_mailconfirm'] != 'Confirmed' && $row['pend_mailconfirm'] != "")
 		Die("Email has not yet been confirmed for this request, so it can not yet be closed or viewed");
+	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm != 'Open' OR pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm != 'Admin';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$hideip == TRUE;
+	if (mysql_num_rows($result) > 0)
+		$hideip == FALSE;
 	echo "<h2>Details for Request #" . $_GET['id'] . ":</h2>";
 	$uname = urlencode($row['pend_name']);
 	$thisip = $row['pend_ip'];
@@ -1373,7 +1380,7 @@ elseif ($action == "zoom") {
 		$row['pend_date'] = "Date Unknown";
 	}
 	$sUser = $row['pend_name'];
-	$requesttable = listrequests($thisid);
+	$requesttable = listrequests($thisid, $hideip);
 	echo $requesttable;
 
 	//$row['pend_cmt'] = preg_replace('/\<\/?(div|span|script|\?php|\?|img)\s?(.*)\s?\>/i', '', $row['pend_cmt']);
@@ -1442,12 +1449,8 @@ elseif ($action == "zoom") {
 	echo "</ol>\n";
         }
 
-	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm != 'Open' OR pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm != 'Admin';";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
 	$ipmsg = 'this ip';
-	if (mysql_num_rows($result) > 0 || hasright($_SESSION['user'], 'Admin'))
+	if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin'))
 		$ipmsg = $thisip;
 	echo "<h2>Other requests from $ipmsg:</h2>\n";
 	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
