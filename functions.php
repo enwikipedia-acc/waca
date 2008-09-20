@@ -409,7 +409,7 @@ function listrequests($type, $hideip) {
 
 		if ( $row4['user_secure'] > 0 ) {
             
-			if ($hideip == FALSE) {
+			if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin')) {
 			// IP UT:
 			$out .= '</span></small></td><td><small> | <a class="request-src" name="ip-link" href="https://secure.wikimedia.org/wikipedia/en/wiki/User_talk:' . $pend_ip . '" target="_blank">';
 			$out .= $pend_ip . '</a> ';
@@ -454,7 +454,7 @@ function listrequests($type, $hideip) {
 			$out .= $uname . '&amp;wpEmail=' . $pend_email . '&amp;uselang=en-acc" target="_blank">Create!</a></b> ';
 
 		} else {
-			if ($hideip == FALSE) {
+			if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin')) {
 			// IP UT:
 			$out .= '</span></small></td><td><small> | <a class="request-src" name="ip-link" href="http://en.wikipedia.org/wiki/User_talk:' . $pend_ip . '" target="_blank">';
 			$out .= $pend_ip . '</a> ';
