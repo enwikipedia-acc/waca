@@ -94,7 +94,7 @@ elseif ( $action == "sreg" ) {
 	$userexist = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
 	$ue = unserialize( $userexist );
 	foreach ( $ue['query']['users']['0'] as $oneue ) {
-		if ( $oneue['missing'] == "" ) {
+		if ( !isset($oneue['missing'])) {
 			echo "Invalid On-Wiki username.<br />\n";
 			$fail = 1;
 		}
@@ -112,7 +112,7 @@ elseif ( $action == "sreg" ) {
 	$template = mysql_real_escape_string($_REQUEST['template']);
 	$secureenable = mysql_real_escape_string($_REQUEST['secureenable']);
 	$welcomeenable = mysql_real_escape_string($_REQUEST['welcomeenable']);
-	if ($user == "" || $wname == "" || $pass == "" || $pass2 == "" || $email == "" || strlen($email) < 6) {
+	if ( !isset($user) || !isset($wname) || !isset($pass) || !isset($pass2) || !isset($email) || strlen($email) < 6) {
 		echo "<h2>ERROR!</h2>Form data may not be blank.<br />\n";
 		echo showfooter();
 		die();
@@ -331,7 +331,7 @@ elseif ($action == "forgotpw") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
-		if ($row['user_id'] == "") {
+		if (!isset($row['user_id'])) {
 			echo "<h2>ERROR</h2>Missing or invalid information supplied.\n";
 			die();
 		}
@@ -518,7 +518,7 @@ elseif ($action == "messagemgmt") {
 	die();
 }
 elseif ($action == "sban" && $_GET['user'] != "") {
-	if ($_POST['banreason'] == "") {
+	if (!isset($_POST['banreason'])) {
 		echo "<h2>ERROR</h2>\n<br />You must specify a ban reason.\n";
 		echo showfooter();
 		die();
@@ -544,7 +544,7 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "Banned " . htmlentities($_GET['target']) . " for $reason<br />\n";
-	if ($duration == "" || $duration == "-1") {
+	if ( !isset($duration) || $duration == "-1") {
 		$until = "Indefinite";
 	} else {
 		$until = date("F j, Y, g:i a", $duration);
@@ -636,7 +636,7 @@ elseif ($action == "ban") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
-		if ($row['ban_duration'] == "" || $row['ban_duration'] == "-1") {
+		if ( !isset($row['ban_duration']) || $row['ban_duration'] == "-1") {
 			$until = "Indefinite";
 		} else {
 			$until = date("F j, Y, g:i a", $row['ban_duration']);
@@ -723,7 +723,7 @@ elseif ($action == "usermgmt") {
 	if (isset ($_GET['suspend'])) {
 		$did = sanitize($_GET['suspend']);
 		$siuser = sanitize($_SESSION['user']);
-		if ($_POST['suspendreason'] == "") {
+		if (!isset($_POST['suspendreason'])) {
 			echo "<h2>Suspend Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&amp;suspend=$did\" method=\"post\"><br />\n";
 			echo "<textarea name=\"suspendreason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
 			echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
@@ -788,7 +788,7 @@ elseif ($action == "usermgmt") {
 			echo showfooter();
 			die();
 		}
-		if ($_POST['declinereason'] == "") {
+		if (!isset($_POST['declinereason'])) {
 			echo "<h2>Decline Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&amp;decline=$did\" method=\"post\"><br />\n";
 			echo "<textarea name=\"declinereason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
 			echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
@@ -820,8 +820,7 @@ elseif ($action == "usermgmt") {
 	}
 	if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 		$siuser = sanitize($_SESSION['user']);
-		$newname == "";
-		if ($_POST['newname'] == "") {
+		if (!isset($_POST['newname'])) {
 			$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '{$_GET['rename']}';");
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
@@ -908,7 +907,7 @@ elseif ($action == "usermgmt") {
 			if (!$result)
 				Die("ERROR: No result returned.");
 			$row = mysql_fetch_assoc($result);
-			if ($row['user_id'] == "") {
+			if (!isset($row['user_id'])) {
 				echo "Invalid user!";
 				die();
 			}
@@ -1257,7 +1256,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	die();
 }
 elseif ($action == "done" && $_GET['id'] != "") {
-	if ($_GET['email'] == "" | $_GET['email'] >= 6) {
+	if (!isset($_GET['email']) | $_GET['email'] >= 6) {
 		echo "Invalid close reason";
 		echo showfooter();
 		die();
@@ -1299,12 +1298,12 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_welcome'] > 0 && $gem == "1") {
 		$sig = $row['user_welcome_sig'];
-		if ($sig == "") {
+		if (!isset($sig)) {
 			$sig = "[[User:$sid|$sid]] ([[User_talk:$sid|talk]])";
 		}
 		$template = $row['user_welcome_template'];
 		$sig = sanitize($sig);
-		if ($template == "") {
+		if (!isset($template)) {
 			$template = "welcome";
 		}
 		$query = "INSERT INTO acc_welcome (welcome_uid, welcome_user, welcome_sig, welcome_status, welcome_pend, welcome_template) VALUES ('$sid', '$gus', '$sig', 'Open', '$gid', '$template');";
@@ -1355,7 +1354,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	echo defaultpage();
 }
 elseif ($action == "zoom") {
-	if ($_GET['id'] == "") {
+	if (!isset($_GET['id'])) {
 		echo "No user specified!<br />\n";
 		echo showfooter();
 		die();

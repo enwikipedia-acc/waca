@@ -154,7 +154,7 @@ function csvalid($id, $sum) {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$pend = mysql_fetch_assoc($result);
-	if ($pend['pend_checksum'] == "") {
+	if (!isset($pend['pend_checksum'])) {
 		upcsum($id);
 		return (1);
 	}
