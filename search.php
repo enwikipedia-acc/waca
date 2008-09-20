@@ -51,7 +51,7 @@ echo '<div id="content">';
 
 
 echo '<h1>Request search tool</h1>';
-if( isset($_GET['term'] )
+if( isset($_GET['term'] ))
 	echo '$_GET['type']<br /> $_GET['term']';
 	
 if( isset($_GET['email']) ) {
@@ -108,6 +108,7 @@ else {
 	echo '<select name="type>';
 	echo '<option value="email">as email address</option><br />';
 	echo '<option value="IP">as IP address</option><br />';
+	echo '</select>';
 	echo '<input type="submit" />';
 	echo '</form>';
 }
