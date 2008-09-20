@@ -1443,7 +1443,14 @@ elseif ($action == "zoom") {
 	echo "</ol>\n";
         }
 
-	echo "<h2>Other requests from $thisip:</h2>\n";
+	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm != 'Open' OR pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm != 'Admin';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$ipmsg = 'this ip';
+	if (mysql_num_rows($query) > 0 || hasright($_SESSION['user'], 'Admin'))
+		$ipmsg = $thisip;
+	echo "<h2>Other requests from $ipmsg:</h2>\n";
 	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
 	$result = mysql_query($query);
 	if (!$result)
