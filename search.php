@@ -51,6 +51,9 @@ echo '<div id="content">';
 
 
 echo '<h1>Request search tool</h1>';
+if( isset($_GET['term'] )
+	echo '$_GET['type']<br /> $_GET['term']';
+	
 if( isset($_GET['email']) ) {
 
 	echo "<h2>Searching for email address: $_GET[email] ...</h2>";
@@ -99,19 +102,14 @@ elseif( isset($_GET['ipaddr']) ) {
 	echo $html;
 }
 else {
-	echo '<h2>Search by e-mail address:</h2>';
+	echo '<h2>Search:</h2>';
 	echo '<form action="search.php" method="get">';
-	echo 'Email: <input type="text" name="email" /><br />';
+	echo 'Search for: <input type="text" name="term" />';
+	echo '<select name="type>';
+	echo '<option value="email">as email address</option><br />';
+	echo '<option value="IP">as IP address</option><br />';
 	echo '<input type="submit" />';
 	echo '</form>';
-	
-	echo '<h2>Search by IP address:</h2>';
-	echo '<form action="search.php" method="get">';
-	echo 'IP Address: <input type="text" name="ipaddr" /><br />';
-	echo '<input type="submit" />';
-	echo '</form>';
-	
-	
 }
 
 echo "</div>";
