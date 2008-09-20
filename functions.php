@@ -537,7 +537,7 @@ function listrequests($type, $hideip) {
 		// Drop
 		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=0&amp;sum=' . $pend_checksum . '">Drop</a>' . "\n";
 
-		if(hasright($_SESSION['user'], "Admin") {
+		if(hasright($_SESSION['user'], "Admin")) {
 		// Ban IP
 		$out .= ' | Ban: <a class="request-ban" href="acc.php?action=ban&amp;ip=' . $pend_id . '">IP</a> ';
 
