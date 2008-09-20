@@ -40,7 +40,7 @@ if( isset( $_SESSION['user'] ) ) {
 	$sessionuser = "";
 }
 
-if( !hasright($sessionuser, Admin))
+if( !hasright($sessionuser, "Admin"))
 	die("You are not authorized to use this feature");
 
 echo makehead( $sessionuser );
