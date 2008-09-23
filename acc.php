@@ -1471,7 +1471,7 @@ elseif ($action == "zoom") {
 	$numip = 0;
 	$currentrow = 0;
  	while ($row = mysql_fetch_assoc($result)) {
-	if ($numip == 0) { echo "<table cellspacing=\"0\">\n"; }
+		if ($numip == 0) { echo "<table cellspacing=\"0\">\n"; }
 		$currentrow += 1;
 		echo "<tr";
 		if ($currentrow % 2 == 0) {echo ' class="alternate"';}
@@ -1490,15 +1490,19 @@ elseif ($action == "zoom") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$numem = 0;
-		while ($row = mysql_fetch_assoc($result)) {
-		if ($numem == 0) { echo "<ol>\n"; }
-		echo "<li><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></li>";
+	$currentrow = 0;
+	while ($row = mysql_fetch_assoc($result)) {
+		if ($numem == 0) { echo "<table cellspacing=\"0\">\n"; }
+		$currentrow += 1;
+		echo "<tr";
+		if ($currentrow % 2 == 0) {echo ' class="alternate"';}
+		echo "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
 		$numem++;
 	}
 	if ($numem == 0) {
 		echo "<i>None.</i>\n";
 	}
-	else {echo "</ol>\n";}
+	else {echo "</table>\n";}
 	echo showfooter();
 	die();
 }
