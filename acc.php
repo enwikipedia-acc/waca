@@ -861,7 +861,7 @@ elseif ($action == "usermgmt") {
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());				
-            $query = "UPDATE acc_log SET log_user = '$newname' WHERE log_user = '$oldname'";
+            		$query = "UPDATE acc_log SET log_user = '$newname' WHERE log_user = '$oldname'";
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
@@ -973,8 +973,8 @@ elseif ($action == "usermgmt") {
 			$uname = $row['user_name'];
 			$uoname = $row['user_onwikiname'];
 			$userid = $row['user_id'];
-			$out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
-			$out .= " <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&amp;decline=$userid\">Decline</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
+			$out = "<li><small>[ <span style=\"color:red;\">$uname</span> / <span style=\"color:green;\"><a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a></span> ]";
+			$out .= "<span style=\"color:blue;\"> <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&amp;decline=$userid\">Decline</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></span></li>";
 			echo "$out\n";
 		}
 		echo "</ol>\n";
@@ -995,12 +995,12 @@ elseif ($action == "usermgmt") {
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
 
-		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+		$out = "<li><small>[ <span style=\"color:red;\"><a href=\"users.php?viewuser=$userid\">$uname</a></span> / <span style=\"color:green;\"><a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a></span> ]";
 		if( $enableRenames == 1 ) {
-			$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-			$out .= " <a href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
+			$out .= " <span style=\"color:blue;\"><a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a></span> -";
+			$out .= " <span style=\"color:blue;\"><a href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a></span> -";
 		}
-		$out .= " <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
+		$out .= " <span style=\"color:blue;\"><a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;promote=$userid\">Promote!</a></span> (Approved by $row[log_user])</small></li>";
 		echo "$out\n";
 	}
 ?>
@@ -1041,26 +1041,26 @@ elseif ($action == "usermgmt") {
 		$row2 = mysql_fetch_assoc($result2);
 		$approved = $row2['COUNT(*)'];
 
-$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Demoted';";
+		$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Demoted';";
 		$result2 = mysql_query($query);
 		if (!$result2)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		$demoted = $row2['COUNT(*)'];
 
-$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Declined';";
+		$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Declined';";
 		$result2 = mysql_query($query);
 		if (!$result2)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		$declined = $row2['COUNT(*)'];
 
-		$out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+		$out = "<li><small>[ <span style=\"color:red;\"><a href=\"users.php?viewuser=$userid\">$uname</a></span> / <span style=\"color:green;\"><a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a></span> ]<span style=\"color:blue;\">";
 		if( $enableRenames == 1 ) {
 			$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
 			$out .= " <a href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
 		}
-		$out .= " <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;demote=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined])</small></li>";
+		$out .= " <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;demote=$userid\">Demote!</a></span> (Promoted by $row[log_user] <span style=\"color:violet;\">[P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined]</span>)</small></li>";
 		echo "$out\n";
 	}
 ?>
