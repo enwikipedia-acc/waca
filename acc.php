@@ -1469,9 +1469,13 @@ elseif ($action == "zoom") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$numip = 0;
+	$currentrow = 0;
  	while ($row = mysql_fetch_assoc($result)) {
 	if ($numip == 0) { echo "<table cellspacing=\"0\">\n"; }
-		echo "<tr><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td><td>". $row['pend_date'] . "</td></tr>";
+		$currentrow += 1;
+		echo "<tr";
+		if ($currentrow % 2 == 0) {echo ' class="alternate"';}
+		echo "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
 		$numip++;
 	}
 	if ($numip == 0) {
