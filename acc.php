@@ -1392,6 +1392,10 @@ elseif ($action == "zoom") {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
+	
+	
+	
+	
 	echo "<h2>Possibly conflicting usernames</h2>\n";
 	$spoofs = getSpoofs( $sUser );
 	if( !$spoofs ) {
@@ -1406,6 +1410,9 @@ elseif ($action == "zoom") {
 	}
 	mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
 	@ mysql_select_db( $toolserver_database ) or print mysql_error( );
+	
+	
+	
 	echo "<h2>Logs for Request #" . $_GET['id'] . ":</h2>";
 	 if (mysql_num_rows($result) != 0){
 	echo "<ol>\n";
@@ -1453,6 +1460,9 @@ elseif ($action == "zoom") {
 	$ipmsg = 'this ip';
 	if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin'))
 		$ipmsg = $thisip;
+	
+	
+
 	echo "<h2>Other requests from $ipmsg:</h2>\n";
 	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
 	$result = mysql_query($query);
@@ -1460,14 +1470,16 @@ elseif ($action == "zoom") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$numip = 0;
  	while ($row = mysql_fetch_assoc($result)) {
-	if ($numip == 0) { echo "<ol>\n"; }
-		echo "<li><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></li>";
+	if ($numip == 0) { echo "<table cellspacing=\"0\">\n"; }
+		echo "<tr><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td><td>". $row['pend_date'] . "</td></tr>";
 		$numip++;
 	}
 	if ($numip == 0) {
 		echo "<i>None.</i>\n";
 	}
-	else {echo "</ol>\n";}
+	else {echo "</table>\n";}
+	
+	
 	echo "<h2>Other requests from $thisemail:</h2>\n";
 	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
 	$result = mysql_query($query);
