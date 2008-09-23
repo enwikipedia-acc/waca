@@ -995,12 +995,12 @@ elseif ($action == "usermgmt") {
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
 
-		$out = "<li><small>[ <span style=\"color:red;\"><a href=\"users.php?viewuser=$userid\">$uname</a></span> / <span style=\"color:green;\"><a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a></span> ]";
+		$out = "<li><small>[ <a class=\"request-ban\" href=\"users.php?viewuser=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 		if( $enableRenames == 1 ) {
-			$out .= " <span style=\"color:blue;\"><a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a></span> -";
-			$out .= " <span style=\"color:blue;\"><a href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a></span> -";
+			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
+			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
 		}
-		$out .= " <span style=\"color:blue;\"><a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;promote=$userid\">Promote!</a></span> (Approved by $row[log_user])</small></li>";
+		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
 		echo "$out\n";
 	}
 ?>
