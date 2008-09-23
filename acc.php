@@ -1055,12 +1055,12 @@ elseif ($action == "usermgmt") {
 		$row2 = mysql_fetch_assoc($result2);
 		$declined = $row2['COUNT(*)'];
 
-		$out = "<li><small>[ <span style=\"color:red;\"><a href=\"users.php?viewuser=$userid\">$uname</a></span> / <span style=\"color:green;\"><a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a></span> ]<span style=\"color:blue;\">";
+		$out = "<li><small>[ <a class=\"request-ban\" href=\"users.php?viewuser=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 		if( $enableRenames == 1 ) {
-			$out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-			$out .= " <a href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
+			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
+			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
 		}
-		$out .= " <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;demote=$userid\">Demote!</a></span> (Promoted by $row[log_user] <span style=\"color:violet;\">[P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined]</span>)</small></li>";
+		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;demote=$userid\">Demote!</a> (Promoted by $row[log_user] <span style=\"color:purple;\">[P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined]</span>)</small></li>";
 		echo "$out\n";
 	}
 ?>
