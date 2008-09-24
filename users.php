@@ -61,6 +61,10 @@ Viewing a specific user's details
 if (isset($_GET['viewuser']))
 {
 	$gid = sanitize($_GET['viewuser']); // Validate the user ID for security (SQL Injection, etc)
+	if (!preg_match('/^[0-9]+$/i',$gid)) {
+		die('Invalid GET value passed.');
+	}
+
 	$query = "SELECT * FROM acc_user WHERE user_id = ". $gid . " AND user_level != 'Declined' AND user_level != 'New';"; 
 	$result = mysql_query($query); // Get information on the selected user; Must not show if the user has not been approved
 	if (!$result)
