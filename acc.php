@@ -1513,9 +1513,21 @@ elseif ($action == "logout") {
 	die("Logged out!\n");
 }
 elseif ($action == "logs") {
-	$query = "SELECT * FROM acc_log";
 	if(isset($_GET['user'])){
-		$query.= " WHERE log_user LIKE '".sanitise($_GET['user'])."'";
+		$filteruser = " value=\"".$_GET['user']."\"";
+	} else { $filteruser = "";}
+	
+	echo '<h2>Logs</h2>
+	Filter by username:
+	<form action="acc.php" method="get">
+	<input type="hidden" name="action" value="logs" /><input type="text" name="user"'.$filteruser.' /><input type="submit" />
+	</form>';
+	
+	$query = "SELECT * FROM acc_log";
+	if( isset($_GET['user']) ){
+		if($_GET['user']!="") {
+			$query.= " WHERE log_user LIKE '".sanitise($_GET['user'])."'";
+		}
 	}
 	if (isset ($_GET['limit'])) {
 		$limit = $_GET['limit'];
