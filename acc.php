@@ -1514,13 +1514,14 @@ elseif ($action == "logout") {
 }
 elseif ($action == "logs") {
 	if(isset($_GET['user'])){
-		$filteruser = " value=\"".$_GET['user']."\"";
-	} else { $filteruser = "";}
+		$filteruserl = " value=\"".$_GET['user']."\"";
+		$filteruser = $_GET['user'];
+	} else { $filteruserl = "";}
 	
 	echo '<h2>Logs</h2>
 	Filter by username:
 	<form action="acc.php" method="get">
-	<input type="hidden" name="action" value="logs" /><input type="text" name="user"'.$filteruser.' /><input type="submit" />
+	<input type="hidden" name="action" value="logs" /><input type="text" name="user"'.$filteruserl.' /><input type="submit" />
 	</form>';
 	
 	$query = "SELECT * FROM acc_log";
@@ -1531,6 +1532,10 @@ elseif ($action == "logs") {
 	}
 	if (isset ($_GET['limit'])) {
 		$limit = $_GET['limit'];
+		if (!preg_match('/^[0-9]*$/',$_GET['limit'])) {
+			die('Invaild GET value passed.');
+		}
+
 		$limit = sanitize($limit);
 	} else {
 		$limit = 100;
@@ -1538,6 +1543,10 @@ elseif ($action == "logs") {
 	$query.= " ORDER BY log_time DESC LIMIT $limit";
 	if (isset ($_GET['from'])) {
 		$from = sanitize($_GET['from']);
+		if (!preg_match('/^[0-9]*$/',$_GET['from'])) {
+			die('Invaild GET value passed.');
+		}
+
 		$query.= " OFFSET $from";
 	} else {
 		$from = 0;
@@ -1545,10 +1554,10 @@ elseif ($action == "logs") {
 	$next = $from +100;
 	$prev = $from -100;
 	if ($from > 0) {
-		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$prev\">Previous $limit</a> <a href=\"acc.php?action=logs&amp;from=$next\">Next 100</a></h4>\n";
+		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$prev&amp;user=$filteruser\">Previous $limit</a> <a href=\"acc.php?action=logs&amp;from=$next&amp;user=$filteruser\">Next 100</a></h4>\n";
 		echo $n1;
 	} else {
-		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$next\">Next 100</a></h4>\n";
+		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$next&amp;user=$filteruser\">Next 100</a></h4>\n";
 		echo $n1;
 	}
 
