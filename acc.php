@@ -1541,7 +1541,6 @@ elseif ($action == "logs") {
 	}
 
 	$query.= ";";
-	echo $query;
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
