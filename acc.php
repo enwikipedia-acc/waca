@@ -1516,7 +1516,7 @@ elseif ($action == "logs") {
 	if(isset($_GET['user'])){
 		$filteruserl = " value=\"".$_GET['user']."\"";
 		$filteruser = $_GET['user'];
-	} else { $filteruserl = "";}
+	} else { $filteruserl = ""; $filteruser = "";}
 	
 	echo '<h2>Logs</h2>
 	Filter by username:
