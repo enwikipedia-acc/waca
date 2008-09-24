@@ -1521,9 +1521,9 @@ elseif ($action == "logs") {
 	}
 	if (isset ($_GET['from'])) {
 		$from = sanitize($_GET['from']);
-		$query = "SELECT * FROM acc_log ORDER BY log_time DESC LIMIT $limit OFFSET $from;";
+		$query = "SELECT * FROM acc_log ORDER BY log_time DESC LIMIT $limit OFFSET $from";
 	} else {
-		$query = "SELECT * FROM acc_log ORDER BY log_time DESC LIMIT $limit;";
+		$query = "SELECT * FROM acc_log ORDER BY log_time DESC LIMIT $limit";
 		$from = 0;
 	}
 	$next = $from +100;
@@ -1535,6 +1535,10 @@ elseif ($action == "logs") {
 		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$next\">Next 100</a></h4>\n";
 		echo $n1;
 	}
+	if(isset($_GET['user'])){
+		$query.= " WHERE log_user LIKE '".sanitise($_GET['user'])."'"
+	}
+	$query.= ";";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
