@@ -317,7 +317,7 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 		$user = $row['pend_name'];
 		if( checkSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
 		if( $uLevel == "Open" ) { $what = ""; } else { $what = "<Admin Needed!> "; }
-		$comments = stripslashes($row['pend_cmt']);
+		$comments = html_entity_decode(stripslashes($row['pend_cmt']));
 			sendtobot("[[acc:$pid]] N $tsurl/acc.php?action=zoom&id=$pid /* $user */ $what" . substr(str_replace(array (
 			"\n",
 			"\r"
