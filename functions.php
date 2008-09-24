@@ -110,7 +110,7 @@ function getSpoofs( $username ) {
 	}
 }
 
-function sanitise($what) { return sanitize($what) }
+function sanitise($what) { return sanitize($what); }
 function sanitize($what) {
 	/*
 	* Shortcut to mysql_real_escape_string
