@@ -1536,7 +1536,7 @@ elseif ($action == "logs") {
 		echo $n1;
 	}
 	if(isset($_GET['user'])){
-		$query.= " WHERE log_user LIKE '".sanitise($_GET['user'])."'"
+		$query.= " WHERE log_user LIKE '".sanitise($_GET['user'])."'";
 	}
 	$query.= ";";
 	$result = mysql_query($query);
