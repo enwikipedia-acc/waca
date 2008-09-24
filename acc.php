@@ -342,7 +342,8 @@ elseif ($action == "forgotpw") {
 		}
 		$hashme = $puser . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
 		$hash = md5($hashme);
-		$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested a password reset for your account.\n\nPlease go to $tsurl/acc.php?action=forgotpw&amp;si=$hash&amp;id=" . $row['user_id'] . " to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
+		// re bug 29: please don't escape the url parameters here: it's a plain text email so no need to escape, or you break the link
+		$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested a password reset for your account.\n\nPlease go to $tsurl/acc.php?action=forgotpw&si=$hash&id=" . $row['user_id'] . " to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row['user_email'], "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
 		echo "Your password reset request has been completed. Please check your e-mail.\n<br />";
