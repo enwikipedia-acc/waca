@@ -664,7 +664,7 @@ HTML;
 
 	$html .= listrequests("Open", TRUE);
 	$html .=<<<HTML
-<h2>Admin Needed!</h2>
+<h2>Account Creator Needed!</h2>
 HTML;
 	$html .= listrequests("Admin", TRUE);
 
