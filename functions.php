@@ -517,7 +517,7 @@ function listrequests($type, $hideip) {
 		// Invalid
 		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=5&amp;sum=' . $pend_checksum . '">Invalid</a>';
 
-		// Defer to admins or users
+		// Defer to account creator or users
 		if (is_numeric($type)) {
 			$type = $pend_status;
 		}
@@ -525,12 +525,12 @@ function listrequests($type, $hideip) {
 			$target = "zoom";
 		}
 		if ($type == 'Open') {
-			$target = 'admin';
+			$target = 'account creator';
 		}
 		elseif ($type == 'Admin') {
 			$target = 'user';
 		}
-		if ($target == 'admin' || $target == 'user') {
+		if ($target == 'account creator' || $target == 'user') {
 			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=$target\">Defer to $target" . "s</a>";
 		} else {
 			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=user\">Reset Request</a>";

@@ -1123,7 +1123,7 @@ $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action 
 elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {//Note: Do not remove this section, as new ACC creators who do not have the rights still needs to use this.
 	if ($_GET['target'] == "admin" || $_GET['target'] == "user") {
 		if ($_GET['target'] == "admin") {
-			$target = "Admin";
+			$target = "account creator";
 		} else {
 			$target = "Open";
 		}
@@ -1411,7 +1411,7 @@ elseif ($action == "zoom") {
 		$rlp = $row['log_pend'];
 		$rlt = $row['log_time'];
 		$rlc = $row['log_cmt'];
-		if ($rla == "Deferred to admins" || $rla == "Deferred to users") {
+		if ($rla == "Deferred to admins" || $rla == "Deferred to users" || $rla == "Deferred to account creators") {
 			echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
 		if ($rla == "Closed") {
@@ -1537,7 +1537,7 @@ elseif ($action == "logs") {
 		if ($row['log_time'] == "0000-00-00 00:00:00") {
 			$row['log_time'] = "Date Unknown";
 		}
-		if ($row['log_action'] == "Deferred to admins" || $rla == "Deferred to users") {
+		if ($rla == "Deferred to admins" || $rla == "Deferred to users" || $rla == "Deferred to account creators") {
 
 			echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 		}
