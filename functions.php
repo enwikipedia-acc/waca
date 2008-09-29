@@ -530,7 +530,7 @@ function listrequests($type, $hideip) {
 		elseif ($type == 'Admin') {
 			$target = 'user';
 		}
-		if ($target == 'admin' || $target == 'user') {
+		if ($target == 'account creator' || $target == 'user') {
 			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=$target\">Defer to $target" . "s</a>";
 		} else {
 			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=user\">Reset Request</a>";
