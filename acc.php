@@ -24,7 +24,7 @@
 require_once ( 'config.inc.php' );
 require_once ( 'devlist.php' );
 require_once ( 'functions.php' );
-$version = "0.9.7";
+$version = "0.9.8";
 
 $link = mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
 if ( !$link ) {
@@ -1120,7 +1120,7 @@ $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action 
 	echo showfooter();
 	die();
 }
-elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
+elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {//Note: Do not remove this section, as new ACC creaters who do not have the rights still needs to use this.
 	if ($_GET['target'] == "admin" || $_GET['target'] == "user") {
 		if ($_GET['target'] == "admin") {
 			$target = "Admin";
