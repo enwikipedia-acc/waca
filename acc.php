@@ -1123,7 +1123,7 @@ $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action 
 elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {//Note: Do not remove this section, as new ACC creators who do not have the rights still needs to use this.
 	if ($_GET['target'] == "admin" || $_GET['target'] == "user") {
 		if ($_GET['target'] == "admin") {
-			$target = "account creator";
+			$target = "Admin";
 		} else {
 			$target = "Open";
 		}
