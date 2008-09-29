@@ -517,7 +517,7 @@ function listrequests($type, $hideip) {
 		// Invalid
 		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=5&amp;sum=' . $pend_checksum . '">Invalid</a>';
 
-		// Defer to admins or users
+		// Defer to account creators or users
 		if (is_numeric($type)) {
 			$type = $pend_status;
 		}
@@ -525,7 +525,7 @@ function listrequests($type, $hideip) {
 			$target = "zoom";
 		}
 		if ($type == 'Open') {
-			$target = 'admin';
+			$target = 'account creator';
 		}
 		elseif ($type == 'Admin') {
 			$target = 'user';
