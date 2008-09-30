@@ -1,4 +1,5 @@
 <?php
+<?php
 
 /**************************************************************
 ** English Wikipedia Account Request Interface               **
@@ -24,7 +25,7 @@
 require_once ( 'config.inc.php' );
 require_once ( 'devlist.php' );
 require_once ( 'functions.php' );
-$version = "0.9.7";
+$version = "0.9.8";
 
 $link = mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
 if ( !$link ) {
@@ -94,7 +95,7 @@ elseif ( $action == "sreg" ) {
     $userexist = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
     $ue = unserialize( $userexist );
     foreach ( $ue['query']['users']['0'] as $oneue ) {
-        if ( !isset($oneue['missing'])) {
+        if ( $oneue['missing'] == "" ) {
             echo "Invalid On-Wiki username.<br />\n";
             $fail = 1;
         }
@@ -112,7 +113,7 @@ elseif ( $action == "sreg" ) {
     $template = mysql_real_escape_string($_REQUEST['template']);
     $secureenable = mysql_real_escape_string($_REQUEST['secureenable']);
     $welcomeenable = mysql_real_escape_string($_REQUEST['welcomeenable']);
-    if ( !isset($user) || !isset($wname) || !isset($pass) || !isset($pass2) || !isset($email) || strlen($email) < 6) {
+    if ($user == "" || $wname == "" || $pass == "" || $pass2 == "" || $email == "" || strlen($email) < 6) {
         echo "<h2>ERROR!</h2>Form data may not be blank.<br />\n";
         echo showfooter();
         die();
@@ -249,9 +250,8 @@ value="welcomeshort">{{Welcomeshort|user}} ~~~~</option>
 <option value="w-kk">{{User:KrakatoaKatie/Welcome1}} ~~~~</option>
 <option value="w-screen">{{w-screen|sig=~~~~}}</option>
 <option value="wodup">{{User:WODUP/Welcome}} ~~~~</option>
-<option value="williamh">{{User:WilliamH/Welcome|user}} ~~~~</option>
-<option value="malinaccier">{{User:Malinaccier/Welcome|~~~~}}</option>
-<option value="laquatique">{{subst:User:L'Aquatique/welcome}} ~~~~</option></select></td>
+<option value="williamh">{{User:WilliamH/Welcome|user}} ~~~~</option></select>
+<option value="malinaccier">{{User:Malinaccier/Welcome|~~~~}}</option></select></td>
             </tr>
         </td>
         <td>
@@ -331,7 +331,7 @@ elseif ($action == "forgotpw") {
         if (!$result)
             Die("Query failed: $query ERROR: " . mysql_error());
         $row = mysql_fetch_assoc($result);
-        if (!isset($row['user_id'])) {
+        if ($row['user_id'] == "") {
             echo "<h2>ERROR</h2>Missing or invalid information supplied.\n";
             die();
         }
@@ -342,8 +342,7 @@ elseif ($action == "forgotpw") {
         }
         $hashme = $puser . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
         $hash = md5($hashme);
-        // re bug 29: please don't escape the url parameters here: it's a plain text email so no need to escape, or you break the link
-        $mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested a password reset for your account.\n\nPlease go to $tsurl/acc.php?action=forgotpw&si=$hash&id=" . $row['user_id'] . " to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
+        $mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested a password reset for your account.\n\nPlease go to $tsurl/acc.php?action=forgotpw&amp;si=$hash&amp;id=" . $row['user_id'] . " to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
         $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
         mail($row['user_email'], "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
         echo "Your password reset request has been completed. Please check your e-mail.\n<br />";
@@ -519,7 +518,7 @@ elseif ($action == "messagemgmt") {
     die();
 }
 elseif ($action == "sban" && $_GET['user'] != "") {
-    if (!isset($_POST['banreason'])) {
+    if ($_POST['banreason'] == "") {
         echo "<h2>ERROR</h2>\n<br />You must specify a ban reason.\n";
         echo showfooter();
         die();
@@ -545,7 +544,7 @@ elseif ($action == "sban" && $_GET['user'] != "") {
     if (!$result)
         Die("Query failed: $query ERROR: " . mysql_error());
     echo "Banned " . htmlentities($_GET['target']) . " for $reason<br />\n";
-    if ( !isset($duration) || $duration == "-1") {
+    if ($duration == "" || $duration == "-1") {
         $until = "Indefinite";
     } else {
         $until = date("F j, Y, g:i a", $duration);
@@ -584,9 +583,7 @@ elseif ($action == "unban" && $_GET['id'] != "") {
 elseif ($action == "ban") {
     $siuser = sanitize($_SESSION['user']);
     if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name'])) {
-        if(!hasright($_SESSION['user'], "Admin"))
-            die("Only administrators may ban users");
-        if (isset($_GET['ip'])) {
+        if ($_GET['ip'] != "") {
             $ip2 = sanitize($_GET['ip']);
             $query = "SELECT * FROM acc_pend WHERE pend_id = '$ip2';";
             $result = mysql_query($query);
@@ -627,27 +624,25 @@ elseif ($action == "ban") {
             echo showfooter();
             die();
         } else {
-            echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser&amp;target=$target&amp;type=$type\" method=\"post\">Ban target: $target\n<br /><table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr></table><br /><input type=\"submit\"></form>\n";
+            echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser&amp;target=$target&amp;type=$type\" method=\"post\">Ban target: $target\n<br />Reason: <input type=\"text\" name=\"banreason\">\n<br />Duration: <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT><br /><input type=\"submit\"></form>\n";
         }
     }
-    else {
     echo "<h2>Active Ban List</h2>\n<ol>\n";
     $query = "SELECT * FROM acc_ban;";
     $result = mysql_query($query);
     if (!$result)
         Die("Query failed: $query ERROR: " . mysql_error());
     while ($row = mysql_fetch_assoc($result)) {
-        if ( !isset($row['ban_duration']) || $row['ban_duration'] == "-1") {
+        if ($row['ban_duration'] == "" || $row['ban_duration'] == "-1") {
             $until = "Indefinite";
         } else {
             $until = date("F j, Y, g:i a", $row['ban_duration']);
         }
-        echo "<li><small><strong>" . $row['ban_target'] . "</strong> - Banned by: <strong>" . $row['ban_user'] . "</strong> for <strong>" . $row['ban_reason'] . "</strong> at <strong>" . $row['ban_date'] . "</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">UNBAN</a>)</small></li>"; /*security flaw: HTML INJECTION POINT*/
+        echo "<li><small><strong>" . $row['ban_target'] . "</strong> - Banned by: <strong>" . $row['ban_user'] . "</strong> for <strong>" . htmlentities($row['ban_reason']) . "</strong> at <strong>" . $row['ban_date'] . "</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">UNBAN</a>)</small></li>";
     }
     echo "</ol>\n";
     echo showfooter();
     die();
-    }
 }
 elseif ($action == "usermgmt") {
     if(!hasright($_SESSION['user'], 'Admin'))
@@ -690,7 +685,7 @@ elseif ($action == "usermgmt") {
     if (isset ($_GET['demote'])) {
         $did = sanitize($_GET['demote']);
         $siuser = sanitize($_SESSION['user']);
-        if (!isset($_POST['demotereason'])) {
+        if ($_POST['demotereason'] == "") {
             echo "<h2>Demote Reason</h2><strong>The reason you enter here will be shown in the log. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&amp;demote=$did\" method=\"post\"><br />\n";
             echo "<textarea name=\"demotereason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
             echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
@@ -724,7 +719,7 @@ elseif ($action == "usermgmt") {
     if (isset ($_GET['suspend'])) {
         $did = sanitize($_GET['suspend']);
         $siuser = sanitize($_SESSION['user']);
-        if (!isset($_POST['suspendreason'])) {
+        if ($_POST['suspendreason'] == "") {
             echo "<h2>Suspend Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&amp;suspend=$did\" method=\"post\"><br />\n";
             echo "<textarea name=\"suspendreason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
             echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
@@ -789,7 +784,7 @@ elseif ($action == "usermgmt") {
             echo showfooter();
             die();
         }
-        if (!isset($_POST['declinereason'])) {
+        if ($_POST['declinereason'] == "") {
             echo "<h2>Decline Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&amp;decline=$did\" method=\"post\"><br />\n";
             echo "<textarea name=\"declinereason\" rows=\"20\" cols=\"60\"></textarea><br />\n";
             echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
@@ -821,7 +816,8 @@ elseif ($action == "usermgmt") {
     }
     if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
         $siuser = sanitize($_SESSION['user']);
-        if (!isset($_POST['newname'])) {
+        $newname == "";
+        if ($_POST['newname'] == "") {
             $result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '{$_GET['rename']}';");
             if (!$result)
                 Die("Query failed: $query ERROR: " . mysql_error());
@@ -862,7 +858,7 @@ elseif ($action == "usermgmt") {
             $result = mysql_query($query);
             if (!$result)
                 Die("Query failed: $query ERROR: " . mysql_error());                
-                    $query = "UPDATE acc_log SET log_user = '$newname' WHERE log_user = '$oldname'";
+            $query = "UPDATE acc_log SET log_user = '$newname' WHERE log_user = '$oldname'";
             $result = mysql_query($query);
             if (!$result)
                 Die("Query failed: $query ERROR: " . mysql_error());
@@ -908,7 +904,7 @@ elseif ($action == "usermgmt") {
             if (!$result)
                 Die("ERROR: No result returned.");
             $row = mysql_fetch_assoc($result);
-            if (!isset($row['user_id'])) {
+            if ($row['user_id'] == "") {
                 echo "Invalid user!";
                 die();
             }
@@ -974,8 +970,8 @@ elseif ($action == "usermgmt") {
             $uname = $row['user_name'];
             $uoname = $row['user_onwikiname'];
             $userid = $row['user_id'];
-            $out = "<li><small>[ <span class=\"request-ban\">$uname</span> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
-            $out .= "<a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> - <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;decline=$userid\">Decline</a> - <a class=\"request-req\" href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
+            $out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+            $out .= " <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&amp;decline=$userid\">Decline</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
             echo "$out\n";
         }
         echo "</ol>\n";
@@ -996,12 +992,12 @@ elseif ($action == "usermgmt") {
         $uoname = $row['user_onwikiname'];
         $userid = $row['user_id'];
 
-        $out = "<li><small>[ <a class=\"request-ban\" href=\"users.php?viewuser=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+        $out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
         if( $enableRenames == 1 ) {
-            $out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-            $out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
+            $out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
+            $out .= " <a href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
         }
-        $out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
+        $out .= " <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
         echo "$out\n";
     }
 ?>
@@ -1042,26 +1038,26 @@ elseif ($action == "usermgmt") {
         $row2 = mysql_fetch_assoc($result2);
         $approved = $row2['COUNT(*)'];
 
-        $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Demoted';";
+$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Demoted';";
         $result2 = mysql_query($query);
         if (!$result2)
             Die("Query failed: $query ERROR: " . mysql_error());
         $row2 = mysql_fetch_assoc($result2);
         $demoted = $row2['COUNT(*)'];
 
-        $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Declined';";
+$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Declined';";
         $result2 = mysql_query($query);
         if (!$result2)
             Die("Query failed: $query ERROR: " . mysql_error());
         $row2 = mysql_fetch_assoc($result2);
         $declined = $row2['COUNT(*)'];
 
-        $out = "<li><small>[ <a class=\"request-ban\" href=\"users.php?viewuser=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+        $out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
         if( $enableRenames == 1 ) {
-            $out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-            $out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
+            $out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
+            $out .= " <a href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
         }
-        $out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;demote=$userid\">Demote!</a> (Promoted by $row[log_user] <span style=\"color:purple;\">[P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined]</span>)</small></li>";
+        $out .= " <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;demote=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined])</small></li>";
         echo "$out\n";
     }
 ?>
@@ -1082,12 +1078,12 @@ elseif ($action == "usermgmt") {
         $uname = $row['user_name'];
         $uoname = $row['user_onwikiname'];
         $userid = $row['user_id'];
-        $out = "<li><small>[ <a class=\"request-ban\" href=\"users.php?viewuser=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+        $out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
         if( $enableRenames == 1 ) {
-            $out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-            $out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
+            $out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
+            $out .= " <a href=\"users.php?edituser=$userid\">Edit!</a> -";
         }
-        $out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;approve=$userid\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
+        $out .= " <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
         echo "$out\n";
     }
 ?>
@@ -1108,16 +1104,18 @@ elseif ($action == "usermgmt") {
         $uname = $row['user_name'];
         $uoname = $row['user_onwikiname'];
         $userid = $row['user_id'];
-        $out = "<li><small>[ <span class=\"request-ban\">$uname</span> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+        $out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
         if( $enableRenames == 1 ) {
-            $out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-            $out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
+        $out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
+        $out .= " <a href=\"users.php?edituser=$userid\">Edit!</a> -";
         }
-        $out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> (Declined by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
+        $out .= " <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> (Declined by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
         echo "$out\n";
     }
-
-        echo "</ol>\n</div><br clear=\"all\" />";
+?>
+    </ol>
+    </div>
+    <?php
 
 
     echo showfooter();
@@ -1234,8 +1232,6 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     <option value="williamh"<?php if($template == "williamh") { echo " selected=\"selected\""; } ?>>{{User:WilliamH/Welcome|user}} ~~~~</option>
     <option value="malinaccier"<?php if($template == "malinaccier") { echo " selected=\"selected\""; } ?>>{{User:Malinaccier/Welcome|~~~~}}</option>
     <option value="welcome!"<?php if($template == "welcome!") { echo " selected=\"selected\""; } ?>>{{Welcome!|from=User|ps=~~~~}}</option>
-    <option value="laquatique"<?php if($template == "laquatique") { echo " selected=\"selected\""; } ?>>{{subst:User:L'Aquatique/welcome}} ~~~~</option>
-    <option value="chetblong"<?php if($template == "chetblong") { echo " selected=\"selected\""; } ?>>{{subst:User:Chet B Long/welcome|user|||~~~~}}</option>
     </select><br />
     <i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>.</i><br />
 
@@ -1255,7 +1251,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     die();
 }
 elseif ($action == "done" && $_GET['id'] != "") {
-    if (!isset($_GET['email']) | $_GET['email'] >= 6) {
+    if ($_GET['email'] == "" | $_GET['email'] >= 6) {
         echo "Invalid close reason";
         echo showfooter();
         die();
@@ -1271,7 +1267,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
     if (!$result)
         Die("Query failed: $query ERROR: " . mysql_error());
     $row = mysql_fetch_assoc($result);
-    if ($row['pend_emailsent'] == "1" && !isset($_GET['override'])) {
+    if ($row['pend_emailsent'] == "1" && $_GET['override'] != "yes") {
         echo "<br />This request has already been closed in a manner that has generated an e-mail to the user, Proceed?<br />\n";
         echo "<a href=\"acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;override=yes&amp;email=" . $_GET['email'] . "\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
         echo showfooter();
@@ -1297,12 +1293,12 @@ elseif ($action == "done" && $_GET['id'] != "") {
     $row = mysql_fetch_assoc($result);
     if ($row['user_welcome'] > 0 && $gem == "1") {
         $sig = $row['user_welcome_sig'];
-        if (!isset($sig)) {
+        if ($sig == "") {
             $sig = "[[User:$sid|$sid]] ([[User_talk:$sid|talk]])";
         }
         $template = $row['user_welcome_template'];
         $sig = sanitize($sig);
-        if (!isset($template)) {
+        if ($template == "") {
             $template = "welcome";
         }
         $query = "INSERT INTO acc_welcome (welcome_uid, welcome_user, welcome_sig, welcome_status, welcome_pend, welcome_template) VALUES ('$sid', '$gus', '$sig', 'Open', '$gid', '$template');";
@@ -1310,6 +1306,13 @@ elseif ($action == "done" && $_GET['id'] != "") {
         if (!$result)
             Die("Query failed: $query ERROR: " . mysql_error());
     }
+
+    if ($row2['pend_status'] = "Admin") {
+        http_redirect("acc.php#admin");
+        } else {
+        http_redirect("acc.php#open");
+        }
+
     $query = "UPDATE acc_pend SET pend_status = 'Closed' WHERE pend_id = '$gid';";
     $result = mysql_query($query);
     if (!$result)
@@ -1350,10 +1353,9 @@ elseif ($action == "done" && $_GET['id'] != "") {
         $result = mysql_query($query);
     }
     upcsum($_GET['id']);
-    echo defaultpage();
 }
 elseif ($action == "zoom") {
-    if (!isset($_GET['id'])) {
+    if ($_GET['id'] == "") {
         echo "No user specified!<br />\n";
         echo showfooter();
         die();
@@ -1375,14 +1377,7 @@ elseif ($action == "zoom") {
         $row['pend_date'] = "Date Unknown";
     }
     $sUser = $row['pend_name'];
-    $query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' );";
-    $result = mysql_query($query);
-    if (!$result)
-        Die("Query failed: $query ERROR: " . mysql_error());
-    $hideip = TRUE;
-    if (mysql_num_rows($result) > 0)
-        $hideip = FALSE;
-    $requesttable = listrequests($thisid, $hideip);
+    $requesttable = listrequests($thisid);
     echo $requesttable;
 
     //$row['pend_cmt'] = preg_replace('/\<\/?(div|span|script|\?php|\?|img)\s?(.*)\s?\>/i', '', $row['pend_cmt']);
@@ -1393,10 +1388,6 @@ elseif ($action == "zoom") {
     $result = mysql_query($query);
     if (!$result)
         Die("Query failed: $query ERROR: " . mysql_error());
-    
-    
-    
-    
     echo "<h2>Possibly conflicting usernames</h2>\n";
     $spoofs = getSpoofs( $sUser );
     if( !$spoofs ) {
@@ -1409,11 +1400,9 @@ elseif ($action == "zoom") {
         }
         echo "</ul>\n";
     }
+     mysql_close(); //Warning: mysql_close(): no MySQL-Link resource supplied in /home/simon/webspace/www/acc/acc.php on line 1386
     mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
     @ mysql_select_db( $toolserver_database ) or print mysql_error( );
-    
-    
-    
     echo "<h2>Logs for Request #" . $_GET['id'] . ":</h2>";
      if (mysql_num_rows($result) != 0){
     echo "<ol>\n";
@@ -1423,10 +1412,7 @@ elseif ($action == "zoom") {
         $rlp = $row['log_pend'];
         $rlt = $row['log_time'];
         $rlc = $row['log_cmt'];
-        if ($rla == "Deferred to admins"){
-		$rla == "Deferred to account creators;
-		}
-        if ($rla == $rla == "Deferred to users" || $rla == "Deferred to account creators") {
+        if ($rla == "Deferred to admins" || $rla == "Deferred to users" || $rla == "Deferred to account creators") {
             echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
         if ($rla == "Closed") {
@@ -1461,52 +1447,36 @@ elseif ($action == "zoom") {
     echo "</ol>\n";
         }
 
-    $ipmsg = 'this ip';
-    if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin'))
-        $ipmsg = $thisip;
-    
-    
-
-    echo "<h2>Other requests from $ipmsg:</h2>\n";
+    echo "<h2>Other requests from $thisip:</h2>\n";
     $query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
     $result = mysql_query($query);
     if (!$result)
         Die("Query failed: $query ERROR: " . mysql_error());
     $numip = 0;
-    $currentrow = 0;
      while ($row = mysql_fetch_assoc($result)) {
-        if ($numip == 0) { echo "<table cellspacing=\"0\">\n"; }
-        $currentrow += 1;
-        echo "<tr";
-        if ($currentrow % 2 == 0) {echo ' class="alternate"';}
-        echo "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
+    if ($numip == 0) { echo "<ol>\n"; }
+        echo "<li><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></li>";
         $numip++;
     }
     if ($numip == 0) {
         echo "<i>None.</i>\n";
     }
-    else {echo "</table>\n";}
-    
-    
+    else {echo "</ol>\n";}
     echo "<h2>Other requests from $thisemail:</h2>\n";
     $query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
     $result = mysql_query($query);
     if (!$result)
         Die("Query failed: $query ERROR: " . mysql_error());
     $numem = 0;
-    $currentrow = 0;
-    while ($row = mysql_fetch_assoc($result)) {
-        if ($numem == 0) { echo "<table cellspacing=\"0\">\n"; }
-        $currentrow += 1;
-        echo "<tr";
-        if ($currentrow % 2 == 0) {echo ' class="alternate"';}
-        echo "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
+        while ($row = mysql_fetch_assoc($result)) {
+        if ($numem == 0) { echo "<ol>\n"; }
+        echo "<li><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></li>";
         $numem++;
     }
     if ($numem == 0) {
         echo "<i>None.</i>\n";
     }
-    else {echo "</table>\n";}
+    else {echo "</ol>\n";}
     echo showfooter();
     die();
 }
