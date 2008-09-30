@@ -1411,7 +1411,10 @@ elseif ($action == "zoom") {
         $rlp = $row['log_pend'];
         $rlt = $row['log_time'];
         $rlc = $row['log_cmt'];
-        if ($rla == "Deferred to admins" || $rla == "Deferred to users" || $rla == "Deferred to account creators") {
+	if ($rla == "Deferred to admins"){
+		$rla = "Defered to account creators";
+	}
+        if ($rla == "Deferred to users" || $rla == "Deferred to account creators") {
             echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
         if ($rla == "Closed") {
