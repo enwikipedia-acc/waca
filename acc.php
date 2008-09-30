@@ -1,5 +1,4 @@
 <?php
-<?php
 
 /**************************************************************
 ** English Wikipedia Account Request Interface               **
