@@ -112,7 +112,7 @@ if (isset($_GET['viewuser']))
 	}
 
 	// State whether the user has auto welcoming enabled
-	if(hasright($_SESSION['user'], 'User') || hasright($_SESSION['user'], 'Admin'))
+	if(userexist($_SESSION['user']))
 	{
 		echo "<li>User has <a href=\"acc.php?action=welcomeperf\">automatic welcoming</a> enabled: " . $welcome . ".</li>\n";
 	}
@@ -186,7 +186,7 @@ if (isset($_GET['viewuser']))
 			}
 
 			// Display the name of the account that was created
-			if(hasright($_SESSION['user'], 'User') || hasright($_SESSION['user'], 'Admin'))
+			if(userexist($_SESSION['user']))
 			{
 					echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
 			}
@@ -221,7 +221,7 @@ if (isset($_GET['viewuser']))
 			}
 
 			// Display the name of the account that was not created
-			if(hasright($_SESSION['user'], 'User') || hasright($_SESSION['user'], 'Admin'))
+			if(userexist($_SESSION['user']))
 			{
 					echo "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
 			}

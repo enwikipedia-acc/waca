@@ -316,7 +316,7 @@ function checksecurity($username) {
 		echo "<br /><big><strong>To appeal this decision, please e-mail <a href=\"mailto:accounts-enwiki-l@lists.wikimedia.org\">accounts-enwiki-l@lists.wikimedia.org</a> with the above information, and a reasoning why you believe you should be approved for this interface.</strong></big><br />\n";
 		echo showfootern();
 		die();
-	} elseif (hasright($username, "User") || hasright($username, "Admin") ) {
+	} elseif (userexist($username)) {
 		$secure = 1;
 	} else {
 		//die("Not logged in!");
@@ -709,6 +709,22 @@ function hasright($username, $checkright) {
 	}
 	return false;
 }
+function userexist($username) {
+	$username = sanitize($username);
+	$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
+	$result = mysql_query($query);
+	if (!$result) {
+		Die("Query failed: $query ERROR: " . mysql_error());
+	}
+	$row = mysql_fetch_assoc($result);
+	$rights = explode(':', $row['user_level']);
+	foreach( $rights as $right) {
+		if($right == 'Admin' || $right == 'User') {
+			return true;
+		}
+	}
+	return false;
+}
 
 function displayheader() {
 	global $toolserver_username;
@@ -728,7 +744,7 @@ function displayheader() {
 function displayfooter() {
 	echo "<a href=\"index.php\">Return to account request interface.</a><br />\n";
 	if(isset($_SESSION['user'])) {
-		if(hasright($_SESSION['user'], 'User') || hasright($_SESSION['user'], 'Admin')){
+		if(userexist($_SESSION['user'])){
 			echo "<a href=\"acc.php\">Return to request management interface</a>\n";
 		} else {
 			echo "<a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
