@@ -1411,10 +1411,7 @@ elseif ($action == "zoom") {
         $rlp = $row['log_pend'];
         $rlt = $row['log_time'];
         $rlc = $row['log_cmt'];
-	if ($rla == "Deferred to admins"){
-		$rla = "Defered to account creators";
-	}
-        if ($rla == "Deferred to users" || $rla == "Deferred to account creators") {
+        if ($rla == "Deferred to admins" || $rla == "Deferred to users" || $rla == "Deferred to account creators") {
             echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
         if ($rla == "Closed") {
@@ -1488,55 +1485,44 @@ elseif ($action == "logout") {
     die("Logged out!\n");
 }
 elseif ($action == "logs") {
-    if(isset($_GET['user'])){
-        $filteruserl = " value=\"".$_GET['user']."\"";
-        $filteruser = $_GET['user'];
-    } else { $filteruserl = ""; $filteruser = "";}
-    
-    echo '<h2>Logs</h2>
-    Filter by username:
-    <form action="acc.php" method="get">
-    <input type="hidden" name="action" value="logs" /><input type="text" name="user"'.$filteruserl.' /><input type="submit" />
-    </form>';
-    
-    $query = "SELECT * FROM acc_log";
-    if( isset($_GET['user']) ){
-        if($_GET['user']!="") {
-            $query.= " WHERE log_user LIKE '".sanitise($_GET['user'])."'";
-        }
-    }
+            echo "User <form action=\"acc.php?action=logs&amp;user=" . $_POST['user'] . "&amp;pend=" . $_POST['pend'] . "\" method=\"post\">";
+            echo "<input id=\"user\" type=\"text\" name=\"user\"/> Request <input id=\"pend\" type=\"text\" name=\"pend\"/>";
+            echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
+            echo "</form>";
     if (isset ($_GET['limit'])) {
         $limit = $_GET['limit'];
-        if (!preg_match('/^[0-9]*$/',$_GET['limit'])) {
-            die('Invaild GET value passed.');
-        }
-
         $limit = sanitize($limit);
     } else {
         $limit = 100;
     }
-    $query.= " ORDER BY log_time DESC LIMIT $limit";
+    if (isset ($_GET['pend'])) {
+        $logpend = $_GET['pend'];
+        $logpend = sanitize($logpend);
+    } else {
+        $logpend = "*";
+    }
+    if (isset ($_GET['user'])) {
+        $loguser = $_GET['user'];
+        $loguser = sanitize($loguser);
+    } else {
+        $loguser = "*";
+    }
     if (isset ($_GET['from'])) {
         $from = sanitize($_GET['from']);
-        if (!preg_match('/^[0-9]*$/',$_GET['from'])) {
-            die('Invaild GET value passed.');
-        }
-
-        $query.= " OFFSET $from";
+        $query = "SELECT * FROM acc_log WHERE log_user = '$loguser' AND log_pend = '$logpend' ORDER BY log_time DESC LIMIT $limit OFFSET $from;";
     } else {
+        $query = "SELECT * FROM acc_log WHERE log_user = '$loguser' AND log_pend = '$logpend' ORDER BY log_time DESC LIMIT $limit;";
         $from = 0;
     }
     $next = $from +100;
     $prev = $from -100;
     if ($from > 0) {
-        $n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$prev&amp;user=$filteruser\">Previous $limit</a> <a href=\"acc.php?action=logs&amp;from=$next&amp;user=$filteruser\">Next 100</a></h4>\n";
+        $n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$prev\">Previous $limit</a> <a href=\"acc.php?action=logs&amp;from=$next\">Next 100</a></h4>\n";
         echo $n1;
     } else {
-        $n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$next&amp;user=$filteruser\">Next 100</a></h4>\n";
+        $n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$next\">Next 100</a></h4>\n";
         echo $n1;
     }
-
-    $query.= ";";
     $result = mysql_query($query);
     if (!$result)
         Die("Query failed: $query ERROR: " . mysql_error());
@@ -1551,10 +1537,7 @@ elseif ($action == "logs") {
         if ($row['log_time'] == "0000-00-00 00:00:00") {
             $row['log_time'] = "Date Unknown";
         }
-        if ($rla == "Deferred to admins"){
-		$rla == "Deferred to account creators;
-		}
-        if ($rla == "Deferred to account creators" || $rla == "Deferred to users") {
+        if ($rla == "Deferred to admins" || $rla == "Deferred to users" || $rla == "Deferred to account creators") {
 
             echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
         }
@@ -1585,6 +1568,19 @@ elseif ($action == "logs") {
         if ($row['log_action'] == "Blacklist Hit" || $row['log_action'] == "DNSBL Hit") {
             echo "<li>$rlu <strong>Rejected by Blacklist</strong> $rlp, $rlc at $rlt.</li>\n";
         }
+        if ($row['log_action'] == "Unbanned") {
+            echo "<li>$rlu Unbanned $rlp at $rlt</li>\n";
+        }
+        if ($row['log_action'] == "Banned") {
+            $mid = sanitize($row['log_pend']);
+            $query3 = "SELECT * FROM acc_ban WHERE ban_target = '$mid';";
+            $result3 = mysql_query($query3);
+            if (!$result3)
+                Die("Query failed: $query ERROR: " . mysql_error());
+            $row3 = mysql_fetch_assoc($result3);
+            echo "<li>$rlu Banned " . $row3['log_pend'] . " #" . $row3['ban_id'] . " (" . _utf8_decode($row3['ban_target']) . "), Reason: " . $row3['ban_reason'] . ", at $rlt.</li>\n";
+        }
+
         if ($rla == "Edited") {
             $mid = $rlp;
             $query3 = "SELECT * FROM acc_emails WHERE mail_id = '$mid';";
