@@ -1550,6 +1550,7 @@ elseif ($action == "logs") {
         }
 	  if ($rla == "Deferred to admins"){
 		$rla = "Deferred to account creators";
+	  }
         if ($rla == "Deferred to account creators" || $rla == "Deferred to users") {
 
             echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
