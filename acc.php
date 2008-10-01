@@ -90,6 +90,7 @@ elseif ( $action == "sreg" ) {
         $message = showmessage( '9' );
         echo "ERROR: You are presently blocked on the English Wikipedia<br />\n";
         $fail = 1;
+        echo showfootern();
     }
     $userexist = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
     $ue = unserialize( $userexist );
@@ -97,6 +98,7 @@ elseif ( $action == "sreg" ) {
         if ( $oneue['missing'] == "" ) {
             echo "Invalid On-Wiki username.<br />\n";
             $fail = 1;
+            echo showfootern();
         }
     }
 
@@ -126,10 +128,12 @@ elseif ( $action == "sreg" ) {
     if ($mailisvalid == 0) {
         echo "ERROR: Invalid E-mail address.<br />\n";
         $fail = 1;
+        echo showfootern();
     }
     if ($pass != $pass2) {
         echo "Passwords did not match!<br />\n";
         $fail = 1;
+        echo showfootern();
     }
     $query = "SELECT * FROM acc_user WHERE user_name = '$user' LIMIT 1;";
     $result = mysql_query($query);
@@ -139,6 +143,7 @@ elseif ( $action == "sreg" ) {
     if ($row['user_id'] != "") {
         echo "I'm sorry, but that username is in use. Please choose another. <br />\n";
         $fail = 1;
+        echo showfootern();
     }
     $query = "SELECT * FROM acc_user WHERE user_email = '$email' LIMIT 1;";
     $result = mysql_query($query);
@@ -148,6 +153,7 @@ elseif ( $action == "sreg" ) {
     if ($row['user_id'] != "") {
         echo "I'm sorry, but that e-mail address is in use.<br />\n";
         $fail = 1;
+       echo showfootern();
     }
     $query = "SELECT * FROM acc_user WHERE user_onwikiname = '$wname' LIMIT 1;";
     $result = mysql_query($query);
@@ -157,6 +163,7 @@ elseif ( $action == "sreg" ) {
     if ($row['user_id'] != "") {
         echo "I'm sorry, but $wname already has an account here.<br />\n";
         $fail = 1;
+        echo showfootern();
     }
     if ($fail != 1) {
         if ($secureenable == "1") {
