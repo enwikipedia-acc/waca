@@ -685,7 +685,7 @@ HTML;
 		} else {
 			$out .= ' class="odd">';
 		}
-		$out .= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=user\">Reset</a></small></td></tr>";
+		$out .= "<td><small><a class='request-src' href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a></small></td><td><small>  <a class='request-req' href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></small></td><td><small>  <a class='request-done' href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=user\">Reset</a></small></td></tr>";
 		$html .= $out;
 	}
 	$html .= "</table>\n";
