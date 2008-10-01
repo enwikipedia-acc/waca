@@ -1483,7 +1483,7 @@ elseif ($action == "zoom") {
 elseif ($action == "logout") {
     session_unset();
     echo showlogin();
-    die("Logged out!\n");
+    die();
 }
 elseif ($action == "logs") {
     if(isset($_GET['user'])){

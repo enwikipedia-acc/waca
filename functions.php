@@ -621,7 +621,7 @@ function showfooter() {
 function showlogin() {
 	global $_SESSION;
 	$html =<<<HTML
-    <div id="sitenotice">Please login first, and we'll send you on your way!</div>
+    </div><div id="sitenotice">Please login first, and we'll send you on your way!</div>
     <div id="content">
     <h2>Login</h2>
     <form action="acc.php?action=login&amp;nocheck=1" method="post">
