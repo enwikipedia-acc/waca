@@ -178,7 +178,6 @@ elseif ( $action == "sreg" ) {
         echo "Account created! To confirm your identity, please make any edit to your talk page and in the edit summary, note that it is really you requesting this account. <br /><br />\n";
         echo showlogin();
     }
-    echo showfootern();
     die();
 }
 elseif ($action == "register") {
