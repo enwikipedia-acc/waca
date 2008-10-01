@@ -249,6 +249,7 @@ value="welcomeshort">{{Welcomeshort|user}} ~~~~</option>
 <option value="w-screen">{{w-screen|sig=~~~~}}</option>
 <option value="wodup">{{User:WODUP/Welcome}} ~~~~</option>
 <option value="williamh">{{User:WilliamH/Welcome|user}} ~~~~</option></select>
+<option value="mattc">{{subst:User:Matt.T/C}} ~~~~</option></select>
 <option value="malinaccier">{{User:Malinaccier/Welcome|~~~~}}</option></select></td>
             </tr>
         </td>
@@ -1229,6 +1230,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     <option value="wodup"<?php if($template == "wodup") { echo " selected=\"selected\""; } ?>>{{User:WODUP/Welcome}} ~~~~</option>
     <option value="williamh"<?php if($template == "williamh") { echo " selected=\"selected\""; } ?>>{{User:WilliamH/Welcome|user}} ~~~~</option>
     <option value="malinaccier"<?php if($template == "malinaccier") { echo " selected=\"selected\""; } ?>>{{User:Malinaccier/Welcome|~~~~}}</option>
+    <option value="mattc"<?php if($template == "mattc") { echo " selected=\"selected\""; } ?>>{{subst:User:Matt.T/C}} ~~~~</option>
     <option value="welcome!"<?php if($template == "welcome!") { echo " selected=\"selected\""; } ?>>{{Welcome!|from=User|ps=~~~~}}</option>
     </select><br />
     <i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>.</i><br />
