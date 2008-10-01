@@ -642,7 +642,8 @@ function showlogin() {
     <br /><a href="acc.php?action=register">Register!</a> (Requires approval)<br />
     <a href="acc.php?action=forgotpw">Forgot your password?</a><br />
 HTML;
-	showfootern();
+	$html .= showfootern();
+	return $html;
 }
 
 function getdevs() {
