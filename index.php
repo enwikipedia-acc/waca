@@ -491,7 +491,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or print mysql_error();
-	$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_name = '$user'";
+	$query = "SELECT * FROM acc_pend WHERE pend_status != 'Closed' AND pend_name = '$user'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
 	if ($row['pend_id'] != "") {
