@@ -52,7 +52,7 @@ elseif (!isset($_GET['nocheck']))
         echo makehead($_SESSION['user']);
         checksecurity($_SESSION['user']);
         $out = showmessage('20');
-        $out .= "<div class=\"content\">";
+        $out .= "<div id=\"content\">";
         echo $out;
 }
 
