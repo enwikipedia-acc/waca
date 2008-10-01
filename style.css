@@ -243,20 +243,20 @@ float: right;
 	/* Red */
 	color:red;
 	font-weight:bold;
-	font-size:14pt;
+	font-size:10pt;
 }
 .request-req {
 	/* Blue */
 	color:blue;
-	font-size:14pt;
+	font-size:10pt;
 }
 .request-done {
 	/* Orange */
 	color:#6D351A;
-	font-size:14pt;
+	font-size:10pt;
 }
 .request-ban {
 	/* Red */
 	color:red;
-	font-size:14pt;
+	font-size:10pt;
 }
