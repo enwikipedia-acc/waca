@@ -569,7 +569,7 @@ function decryptData( $string, $key ) {
 	irc( 'JOIN ' . $chan );
 
 	if( ( $udpReader = pcntl_fork() ) == 0 ) {
-		$fpt = stream_socket_server( 'udp://91.198.174.202:9001', $errNo, $errStr, STREAM_SERVER_BIND );
+		$fpt = stream_socket_server( 'udp://0.0.0.0:9001', $errNo, $errStr, STREAM_SERVER_BIND );
 
 		if (!$fpt) {
  			echo "SOCKET ERROR: $errstr ($errno)\n";
