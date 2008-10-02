@@ -166,6 +166,27 @@
 		$commands[ strtolower( $command ) ] = array( $callback, $forked );
 	}
 
+function decryptData( $string, $key ) {
+	$key = md5( $key );
+	$td = mcrypt_module_open( 'des', '','cfb', '' );
+	$key = substr( $key, 0, mcrypt_enc_get_key_size( $td ) );
+	$iv_size = mcrypt_enc_get_iv_size( $td );
+	$iv = substr( $string, 0, $iv_size );
+	$string = substr( $string, $iv_size );
+
+	if ( mcrypt_generic_init( $td, $key, $iv ) != -1 ) {
+		$c_t = mdecrypt_generic( $td, $string );
+		mcrypt_generic_deinit( $td );
+		mcrypt_module_close( $td );
+        	if( !@gzinflate( $c_t ) ) {
+	                return "";
+	        }
+
+		$c_t = gzinflate( $c_t );
+		return $c_t;
+	} //end if
+}
+
 	function doCommand( $command, $parsed ) {
 		global $commands;
 
@@ -555,7 +576,7 @@
 		}
 
 		while( !feof( $fp ) ) {
-			$data = fread( $fpt, 4096 );
+			$data = decryptData( fread( $fpt, 4096 ), $key );
 			if( $data != '' ) {
 				irc( 'PRIVMSG ' . $chan . ' :' . str_replace( "\n", "\nPRIVMSG " . $chan . ' :', $data ) );
 			}
