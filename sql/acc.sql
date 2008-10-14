@@ -38,8 +38,8 @@
 `user_welcome` INT( 11 ) NOT NULL DEFAULT 0 ,
 `user_welcome_sig` VARCHAR( 4096 ) NOT NULL ,
 `user_welcome_template` VARCHAR( 1024 ) NOT NULL ,
-`user_lastactive` DATETIME NOT NULL ,
-`user_forcelogout` INT( 3 ) NOT NULL ,
+`user_lastactive` DATETIME NULL DEFAULT NULL ,
+`user_forcelogout` INT( 3 ) NULL DEFAULT NULL ,
 `user_secure` INT( 11 ) NOT NULL DEFAULT 0
 ) ENGINE = InnoDB; 
 
