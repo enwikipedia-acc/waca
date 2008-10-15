@@ -554,10 +554,10 @@ function listrequests($type, $hideip) {
 		} else {
 			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=user\">Reset Request</a>";
 		}
+		
 		// Drop
 		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=0&amp;sum=' . $pend_checksum . '">Drop</a>' . "\n";
 
-		if(hasright($_SESSION['user'], "Admin")) {
 		// Ban IP
 		$out .= ' | Ban: <a class="request-ban" href="acc.php?action=ban&amp;ip=' . $pend_id . '">IP</a> ';
 
@@ -566,7 +566,6 @@ function listrequests($type, $hideip) {
 
 		//Ban name
 		$out .= ' - <a class="request-ban" href="acc.php?action=ban&amp;name=' . $pend_id . '">Name</a>';
-		}
 
 		$out .= '</small></td></tr>';
 		$reqlist .= $out;
