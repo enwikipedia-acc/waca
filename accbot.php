@@ -166,27 +166,6 @@
 		$commands[ strtolower( $command ) ] = array( $callback, $forked );
 	}
 
-function decryptData( $string, $key ) {
-	$key = md5( $key );
-	$td = mcrypt_module_open( 'des', '','cfb', '' );
-	$key = substr( $key, 0, mcrypt_enc_get_key_size( $td ) );
-	$iv_size = mcrypt_enc_get_iv_size( $td );
-	$iv = substr( $string, 0, $iv_size );
-	$string = substr( $string, $iv_size );
-
-	if ( mcrypt_generic_init( $td, $key, $iv ) != -1 ) {
-		$c_t = mdecrypt_generic( $td, $string );
-		mcrypt_generic_deinit( $td );
-		mcrypt_module_close( $td );
-        	if( !@gzinflate( $c_t ) ) {
-	                return "";
-	        }
-
-		$c_t = gzinflate( $c_t );
-		return $c_t;
-	} //end if
-}
-
 	function doCommand( $command, $parsed ) {
 		global $commands;
 
@@ -569,14 +548,14 @@ function decryptData( $string, $key ) {
 	irc( 'JOIN ' . $chan );
 
 	if( ( $udpReader = pcntl_fork() ) == 0 ) {
-		$fpt = stream_socket_server( 'udp://0.0.0.0:9001', $errNo, $errStr, STREAM_SERVER_BIND );
+		$fpt = stream_socket_server( array( 'udp://91.198.174.202:9001' , 'udp://91.198.174.194:9001', 'udp://70.85.16.91:9001' ), $errNo, $errStr, STREAM_SERVER_BIND );
 
 		if (!$fpt) {
  			echo "SOCKET ERROR: $errstr ($errno)\n";
 		}
 
 		while( !feof( $fp ) ) {
-			$data = decryptData( fread( $fpt, 4096 ), $key );
+			$data = fread( $fpt, 4096 );
 			if( $data != '' ) {
 				irc( 'PRIVMSG ' . $chan . ' :' . str_replace( "\n", "\nPRIVMSG " . $chan . ' :', $data ) );
 			}

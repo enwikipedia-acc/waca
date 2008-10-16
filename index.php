@@ -96,34 +96,17 @@ function sanitize( $what ) {
 	return ( $what );
 }
 
-function encryptData( $string, $key ) {
-	$string = gzdeflate( $string );
-	srand( ( double ) microtime( ) * 1000000 );
-	$key = md5( $key );
-	$td = mcrypt_module_open( 'des', '', 'cfb', '' );
-	$key = substr( $key, 0, mcrypt_enc_get_key_size( $td ) );
-	$iv_size = mcrypt_enc_get_iv_size( $td );
-	$iv = mcrypt_create_iv( $iv_size, MCRYPT_RAND );
-	if ( mcrypt_generic_init( $td, $key, $iv ) != -1 ) {
-		$c_t = mcrypt_generic( $td, $string );
-		mcrypt_generic_deinit( $td );
-		mcrypt_module_close( $td );
-		$c_t = $iv.$c_t;
-		return $c_t;
-	}
-}
-
 function sendtobot( $message ) {
 	/*
 	* Send to the IRC bot via UDP
 	*/
-	global $whichami, $key;
+	global $whichami;
 	sleep(3);
 	$fp = fsockopen("udp://91.198.174.202", 9001, $erno, $errstr, 30);
 	if (!$fp) {
 		echo "SOCKET ERROR: $errstr ($errno)<br />\n";
 	}
-	fwrite($fp, encryptData( "[$whichami]: $message\r\n", $key ) );
+	fwrite($fp, "[$whichami]: $message\r\n");
 	fclose($fp);
 }
 
