@@ -962,172 +962,155 @@ elseif ($action == "usermgmt") {
         die();
     }
 ?>
-    <h1>User Management</h1>
+  <h1>User Management</h1>
     <strong>This interface isn't a toy. If it says you can do it, you can do it.<br />Please use this responsibly.</strong>
     <h2>Open requests</h2>
     <?php
-
-
-    $query = "SELECT * FROM acc_user WHERE user_level = 'New';";
-    $result = mysql_query($query);
-    if (!$result)
-        Die("Query failed: $query ERROR: " . mysql_error());
-    if (mysql_num_rows($result) != 0){
-        echo "<ol>\n";
-        while ($row = mysql_fetch_assoc($result)) {
-            $uname = $row['user_name'];
-            $uoname = $row['user_onwikiname'];
-            $userid = $row['user_id'];
-            $out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
-            $out .= " <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> - <a href=\"acc.php?action=usermgmt&amp;decline=$userid\">Decline</a> - <a href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
-            echo "$out\n";
-        }
-        echo "</ol>\n";
-    }
+	$query = "SELECT * FROM acc_user WHERE user_level = 'New';";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	if (mysql_num_rows($result) != 0){
+		echo "<ol>\n";
+		while ($row = mysql_fetch_assoc($result)) {
+			$uname = $row['user_name'];
+			$uoname = $row['user_onwikiname'];
+			$userid = $row['user_id'];
+			$out = "<li><small>[ <span class=\"request-ban\">$uname</span> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+			$out .= "<a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> - <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;decline=$userid\">Decline</a> - <a class=\"request-req\" href=\"http://toolserver.org/~sql/sqlbot.php?user=$uoname\">Count!</a></small></li>";
+			echo "$out\n";
+		}
+		echo "</ol>\n";
+	}
 ?>
-    <div id="usermgmt-users">
+	<div id="usermgmt-users">
     <h2>Users</h2>
     <?php
-
-
-    $query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Approved') WHERE user_level = 'User' GROUP BY log_pend ORDER BY log_pend DESC;";
-    $result = mysql_query($query);
-    if (!$result)
-        Die("Query failed: $query ERROR: " . mysql_error());
-    echo "<ol>\n";
-    while ($row = mysql_fetch_assoc($result)) {
-        $uname = $row['user_name'];
-        $uoname = $row['user_onwikiname'];
-        $userid = $row['user_id'];
-
-        $out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
-        if( $enableRenames == 1 ) {
-            $out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-            $out .= " <a href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
-        }
-        $out .= " <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
-        echo "$out\n";
-    }
+	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Approved') WHERE user_level = 'User' GROUP BY log_pend ORDER BY log_pend DESC;";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	echo "<ol>\n";
+	while ($row = mysql_fetch_assoc($result)) {
+		$uname = $row['user_name'];
+		$uoname = $row['user_onwikiname'];
+		$userid = $row['user_id'];
+		$out = "<li><small>[ <a class=\"request-ban\" href=\"users.php?viewuser=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+		if( $enableRenames == 1 ) {
+			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
+			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
+		}
+		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
+		echo "$out\n";
+	}
 ?>
     </ol>
-    </div>
-    <div id="usermgmt-admins">
+	</div>
+	<div id="usermgmt-admins">
     <h2>Admins</h2>
     <?php
-
-
-    $query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Promoted') WHERE user_level = 'Admin' GROUP BY log_pend ORDER BY log_time ASC;";
-    $result = mysql_query($query);
-    if (!$result)
-        Die("Query failed: $query ERROR: " . mysql_error());
-    echo "<ol>\n";
-    while ($row = mysql_fetch_assoc($result)) {
-        $uname = $row['user_name'];
-        $uoname = $row['user_onwikiname'];
-        $userid = $row['user_id'];
-        $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Suspended';";
-        $result2 = mysql_query($query);
-        if (!$result2)
-            Die("Query failed: $query ERROR: " . mysql_error());
-        $row2 = mysql_fetch_assoc($result2);
-        $suspended = $row2['COUNT(*)'];
-
-        $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Promoted';";
-        $result2 = mysql_query($query);
-        if (!$result2)
-            Die("Query failed: $query ERROR: " . mysql_error());
-        $row2 = mysql_fetch_assoc($result2);
-        $promoted = $row2['COUNT(*)'];
-
-        $query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Approved';";
-        $result2 = mysql_query($query);
-        if (!$result2)
-            Die("Query failed: $query ERROR: " . mysql_error());
-        $row2 = mysql_fetch_assoc($result2);
-        $approved = $row2['COUNT(*)'];
-
-$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Demoted';";
-        $result2 = mysql_query($query);
-        if (!$result2)
-            Die("Query failed: $query ERROR: " . mysql_error());
-        $row2 = mysql_fetch_assoc($result2);
-        $demoted = $row2['COUNT(*)'];
-
-$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Declined';";
-        $result2 = mysql_query($query);
-        if (!$result2)
-            Die("Query failed: $query ERROR: " . mysql_error());
-        $row2 = mysql_fetch_assoc($result2);
-        $declined = $row2['COUNT(*)'];
-
-        $out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
-        if( $enableRenames == 1 ) {
-            $out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-            $out .= " <a href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
-        }
-        $out .= " <a href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;demote=$userid\">Demote!</a> (Promoted by $row[log_user] [P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined])</small></li>";
-        echo "$out\n";
-    }
+	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Promoted') WHERE user_level = 'Admin' GROUP BY log_pend ORDER BY log_time ASC;";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	echo "<ol>\n";
+	while ($row = mysql_fetch_assoc($result)) {
+		$uname = $row['user_name'];
+		$uoname = $row['user_onwikiname'];
+		$userid = $row['user_id'];
+		$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Suspended';";
+		$result2 = mysql_query($query);
+		if (!$result2)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row2 = mysql_fetch_assoc($result2);
+		$suspended = $row2['COUNT(*)'];
+		$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Promoted';";
+		$result2 = mysql_query($query);
+		if (!$result2)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row2 = mysql_fetch_assoc($result2);
+		$promoted = $row2['COUNT(*)'];
+		$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Approved';";
+		$result2 = mysql_query($query);
+		if (!$result2)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row2 = mysql_fetch_assoc($result2);
+		$approved = $row2['COUNT(*)'];
+		$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Demoted';";
+		$result2 = mysql_query($query);
+		if (!$result2)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row2 = mysql_fetch_assoc($result2);
+		$demoted = $row2['COUNT(*)'];
+		$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Declined';";
+		$result2 = mysql_query($query);
+		if (!$result2)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row2 = mysql_fetch_assoc($result2);
+		$declined = $row2['COUNT(*)'];
+		$out = "<li><small>[ <a class=\"request-ban\" href=\"users.php?viewuser=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+		if( $enableRenames == 1 ) {
+			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
+			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
+		}
+		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;demote=$userid\">Demote!</a> (Promoted by $row[log_user] <span style=\"color:purple;\">[P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined]</span>)</small></li>";
+		echo "$out\n";
+	}
 ?>
     </ol>
-    </div>
+	</div>
     <h2>Suspended accounts</h2>
-    <div class="showhide" id="showhide-suspended-link" onclick="showhide('showhide-suspended');">[show]</div>
-    <div id="showhide-suspended" style="display: none;">
+	<div class="showhide" id="showhide-suspended-link" onclick="showhide('showhide-suspended');">[show]</div>
+	<div id="showhide-suspended" style="display: none;">
     <?php
-
-
-    $query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Suspended') WHERE user_level = 'Suspended' GROUP BY log_pend ORDER BY log_id DESC;";
-    $result = mysql_query($query);
-    if (!$result)
-        Die("Query failed: $query ERROR: " . mysql_error());
-    echo "<ol>\n";
-    while ($row = mysql_fetch_assoc($result)) {
-        $uname = $row['user_name'];
-        $uoname = $row['user_onwikiname'];
-        $userid = $row['user_id'];
-        $out = "<li><small>[ <a href=\"users.php?viewuser=$userid\">$uname</a> / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
-        if( $enableRenames == 1 ) {
-            $out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-            $out .= " <a href=\"users.php?edituser=$userid\">Edit!</a> -";
-        }
-        $out .= " <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
-        echo "$out\n";
-    }
+	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Suspended') WHERE user_level = 'Suspended' GROUP BY log_pend ORDER BY log_id DESC;";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	echo "<ol>\n";
+	while ($row = mysql_fetch_assoc($result)) {
+		$uname = $row['user_name'];
+		$uoname = $row['user_onwikiname'];
+		$userid = $row['user_id'];
+		$out = "<li><small>[ <a class=\"request-ban\" href=\"users.php?viewuser=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+		if( $enableRenames == 1 ) {
+			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
+			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
+		}
+		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;approve=$userid\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
+		echo "$out\n";
+	}
 ?>
     </ol>
-    </div>
+	</div>
     <h2>Declined accounts</h2>
-    <div class="showhide" id="showhide-declined-link" onclick="showhide('showhide-declined');">[show]</div>
-    <div id="showhide-declined" style="display: none;">
+	<div class="showhide" id="showhide-declined-link" onclick="showhide('showhide-declined');">[show]</div>
+	<div id="showhide-declined" style="display: none;">
     <?php
-
-
-    $query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Declined') WHERE user_level = 'Declined' GROUP BY log_pend ORDER BY log_id DESC;";
-    $result = mysql_query($query);
-    if (!$result)
-        Die("Query failed: $query ERROR: " . mysql_error());
-    echo "<ol>\n";
-    while ($row = mysql_fetch_assoc($result)) {
-        $uname = $row['user_name'];
-        $uoname = $row['user_onwikiname'];
-        $userid = $row['user_id'];
-        $out = "<li><small>[ $uname / <a href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
-        if( $enableRenames == 1 ) {
-        $out .= " <a href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-        $out .= " <a href=\"users.php?edituser=$userid\">Edit!</a> -";
-        }
-        $out .= " <a href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> (Declined by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
-        echo "$out\n";
-    }
-?>
-    </ol>
-    </div>
-    <?php
-
-
-    echo showfooter();
-    die();
+	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Declined') WHERE user_level = 'Declined' GROUP BY log_pend ORDER BY log_id DESC;";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	echo "<ol>\n";
+	while ($row = mysql_fetch_assoc($result)) {
+		$uname = $row['user_name'];
+		$uoname = $row['user_onwikiname'];
+		$userid = $row['user_id'];
+		$out = "<li><small>[ <span class=\"request-ban\">$uname</span> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+		if( $enableRenames == 1 ) {
+			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
+			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
+		}
+		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> (Declined by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
+		echo "$out\n";
+	}
+	?>
+</ol>
+</div>
+<br clear="all" />
+    	<?php
+	echo showfooter();
+	die();
 }
 elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {//Note: Do not remove this section, as new ACC creators who do not have the rights still needs to use this.
     if ($_GET['target'] == "admin" || $_GET['target'] == "user") {
