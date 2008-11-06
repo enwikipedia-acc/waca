@@ -179,14 +179,13 @@ function sendtobot($message) {
 	/*
 	* Send to the IRC bot via UDP
 	*/
-	$message = formatForBot( $message );
 	global $whichami;
 	sleep(3);
 	$fp = fsockopen("udp://91.198.174.202", 9001, $erno, $errstr, 30);
 	if (!$fp) {
 		echo "SOCKET ERROR: $errstr ($errno)<br />\n";
 	}
-	fwrite($fp, "[$whichami]: $message\r\n");
+	fwrite($fp, formatForBot( "[$whichami]: $message\r\n" ) );
 	fclose($fp);
 }
 

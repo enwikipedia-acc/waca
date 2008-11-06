@@ -115,7 +115,7 @@ function sendtobot( $message ) {
 	if (!$fp) {
 		echo "SOCKET ERROR: $errstr ($errno)<br />\n";
 	}
-	fwrite($fp, "[$whichami]: $message\r\n");
+	fwrite($fp, formatForBot( "[$whichami]: $message\r\n" ) );
 	fclose($fp);
 }
 
