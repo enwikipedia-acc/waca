@@ -30,8 +30,9 @@ function formatForBot( $data ) {
 	global $key;
 	$pData[0] = $key;
 	$pData[1] = $data;
-	$pData = serialize( $pData );
-	return $pData;
+	$sData = serialize( $pData );
+	echo "<!-- sData: $sData -->\n";
+	return $sData;
 }
 
 function _utf8_decode($string) {

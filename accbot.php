@@ -509,11 +509,12 @@
 		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Thanks.  SVN has hopefully been fixed.' );
 	}
 
-	function validateData( $data ) {
+	function validateData( $sdata ) {
 		global $key;
-		$data = unserialize( $data );
+		$data = unserialize( ltrim(rtrim( $sdata ) ) );
 		if( ltrim(rtrim( $data[0] ) ) != $key ) {
 			echo "WARNING: INVALID DATA!\n";
+			echo "$sdata\n";
 			return false;
 		} else { 
 			echo "Valid UDP packet received\n";
