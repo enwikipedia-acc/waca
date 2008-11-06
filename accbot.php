@@ -567,7 +567,7 @@
 		}
 
 		while( !feof( $fp ) ) {
-			$data = fread( $fpt, 8192 );
+			$data = ltrim( rtrim( fread( $fpt, 4096 ) ) );
 			if( $data != '' ) {
 				if( validateData( $data ) ) {
 					$uData = unserialize( $data );
