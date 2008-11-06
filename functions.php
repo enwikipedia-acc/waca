@@ -31,7 +31,6 @@ function formatForBot( $data ) {
 	$pData[0] = $key;
 	$pData[1] = $data;
 	$sData = serialize( $pData );
-	echo "<!-- sData: $sData -->\n";
 	return $sData;
 }
 
