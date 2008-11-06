@@ -24,6 +24,14 @@
 require_once ('config.inc.php');
 $fail = 0;
 
+function formatForBot( $data ) {
+	global $key;
+	$pData[0] = $key;
+	$pData[1] = $data;
+	$pData = serialize( $pData );
+	return $pData;
+}
+
 function confirmEmail( $id ) {
 	/*
 	* Confirms either a new users e-mail, or a requestor's e-mail.
@@ -100,6 +108,7 @@ function sendtobot( $message ) {
 	/*
 	* Send to the IRC bot via UDP
 	*/
+	$message = formatForBot( $message );
 	global $whichami;
 	sleep(3);
 	$fp = fsockopen("udp://91.198.174.202", 9001, $erno, $errstr, 30);

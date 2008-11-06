@@ -26,6 +26,14 @@ if ($ACC != "1") {
     die();
 } //Re-route, if you're a web client.
 
+function formatForBot( $data ) {
+	global $key;
+	$pData[0] = $key;
+	$pData[1] = $data;
+	$pData = serialize( $pData );
+	return $pData;
+}
+
 function _utf8_decode($string) {
 	/*
 	* Improved utd8_decode() function
@@ -170,6 +178,7 @@ function sendtobot($message) {
 	/*
 	* Send to the IRC bot via UDP
 	*/
+	$message = formatForBot( $message );
 	global $whichami;
 	sleep(3);
 	$fp = fsockopen("udp://91.198.174.202", 9001, $erno, $errstr, 30);

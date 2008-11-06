@@ -509,6 +509,17 @@
 		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Thanks.  SVN has hopefully been fixed.' );
 	}
 
+	function validateData( $data ) {
+		global $key;
+		$data = unserialize( $data );
+		if( ltrim(rtrim( $data[0] ) ) != $key ) {
+			echo "WARNING: INVALID DATA!\n";
+			return false;
+		} else { 
+			echo "Valid UDP packet received\n";
+			return true;
+		}
+	}	
 
 	// Code entry point.
 
@@ -548,7 +559,7 @@
 	irc( 'JOIN ' . $chan );
 
 	if( ( $udpReader = pcntl_fork() ) == 0 ) {
-		$fpt = stream_socket_server( array( 'udp://91.198.174.202:9001' , 'udp://91.198.174.194:9001', 'udp://70.85.16.91:9001' ), $errNo, $errStr, STREAM_SERVER_BIND );
+		$fpt = stream_socket_server( 'udp://0.0.0.0:9001', $errNo, $errStr, STREAM_SERVER_BIND );
 
 		if (!$fpt) {
  			echo "SOCKET ERROR: $errstr ($errno)\n";
@@ -557,7 +568,9 @@
 		while( !feof( $fp ) ) {
 			$data = fread( $fpt, 4096 );
 			if( $data != '' ) {
-				irc( 'PRIVMSG ' . $chan . ' :' . str_replace( "\n", "\nPRIVMSG " . $chan . ' :', $data ) );
+				if( validateData( $data ) ) {
+					irc( 'PRIVMSG ' . $chan . ' :' . str_replace( "\n", "\nPRIVMSG " . $chan . ' :', $data ) );
+				}
 			}
 		}
 		die();
