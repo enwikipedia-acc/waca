@@ -5,6 +5,3 @@ acc.php:
 
 users.php:
 1. Declines
-
-
-***TEST***
