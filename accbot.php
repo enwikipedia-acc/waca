@@ -566,7 +566,7 @@
 		}
 
 		while( !feof( $fp ) ) {
-			$data = fread( $fpt, 4096 );
+			$data = fread( $fpt, 8192 );
 			if( $data != '' ) {
 				if( validateData( $data ) ) {
 					irc( 'PRIVMSG ' . $chan . ' :' . str_replace( "\n", "\nPRIVMSG " . $chan . ' :', $data ) );
