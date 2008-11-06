@@ -1317,9 +1317,10 @@ elseif ($action == "done" && $_GET['id'] != "") {
     }
 
     if ($row2['pend_status'] = "Admin") {
-        http_redirect("acc.php#admin");
+	//DO NOT USE PECL PACKAGES THAT WE DO NOT HAVE INSTALLED HERE.
+        header("Location: $tsurl/acc.php#admin");
         } else {
-        http_redirect("acc.php#open");
+        header("Location: $tsurl/acc.php#open");
         }
 
     $query = "UPDATE acc_pend SET pend_status = 'Closed' WHERE pend_id = '$gid';";
