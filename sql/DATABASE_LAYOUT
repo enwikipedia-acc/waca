@@ -108,8 +108,8 @@ mysql> DESCRIBE acc_user;
 | user_welcome          | int(11)       | NO   |     | 0       |                |
 | user_welcome_sig      | varchar(4096) | NO   |     | NULL    |                |
 | user_welcome_template | varchar(1024) | NO   |     | NULL    |                |
-| user_lastactive       | datetime      | YES  |     | NULL    |                |
-| user_forcelogout      | int(3)        | YES  |     | NULL    |                |
+| user_lastactive       | datetime      | NO   |     | NULL    |                |
+| user_forcelogout      | int(3)        | NO   |     | NULL    |                |
 | user_secure           | int(11)       | NO   |     | 0       |                |
 +-----------------------+---------------+------+-----+---------+----------------+
 12 rows in set (0.01 sec)

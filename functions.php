@@ -26,14 +26,6 @@ if ($ACC != "1") {
     die();
 } //Re-route, if you're a web client.
 
-function formatForBot( $data ) {
-	global $key;
-	$pData[0] = $key;
-	$pData[1] = $data;
-	$sData = serialize( $pData );
-	return $sData;
-}
-
 function _utf8_decode($string) {
 	/*
 	* Improved utd8_decode() function
@@ -184,7 +176,7 @@ function sendtobot($message) {
 	if (!$fp) {
 		echo "SOCKET ERROR: $errstr ($errno)<br />\n";
 	}
-	fwrite($fp, formatForBot( "[$whichami]: $message\r\n" ) );
+	fwrite($fp, "[$whichami]: $message\r\n");
 	fclose($fp);
 }
 
@@ -324,7 +316,7 @@ function checksecurity($username) {
 		echo "<br /><big><strong>To appeal this decision, please e-mail <a href=\"mailto:accounts-enwiki-l@lists.wikimedia.org\">accounts-enwiki-l@lists.wikimedia.org</a> with the above information, and a reasoning why you believe you should be approved for this interface.</strong></big><br />\n";
 		echo showfootern();
 		die();
-	} elseif (userexist($username)) {
+	} elseif (hasright($username, "User") || hasright($username, "Admin") ) {
 		$secure = 1;
 	} else {
 		//die("Not logged in!");
@@ -525,7 +517,7 @@ function listrequests($type, $hideip) {
 		// Invalid
 		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=5&amp;sum=' . $pend_checksum . '">Invalid</a>';
 
-		// Defer to account creator or users
+		// Defer to admins or users
 		if (is_numeric($type)) {
 			$type = $pend_status;
 		}
@@ -534,21 +526,19 @@ function listrequests($type, $hideip) {
 		}
 		if ($type == 'Open') {
 			$target = 'admin';
-			$target2 = 'account creator';
 		}
 		elseif ($type == 'Admin') {
 			$target = 'user';
-			$target2 = 'user';
 		}
 		if ($target == 'admin' || $target == 'user') {
-			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=$target\">Defer to $target2" . "s</a>";
+			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=$target\">Defer to $target" . "s</a>";
 		} else {
 			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=user\">Reset Request</a>";
 		}
-		
 		// Drop
 		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=0&amp;sum=' . $pend_checksum . '">Drop</a>' . "\n";
 
+		if(hasright($_SESSION['user'], "Admin")) {
 		// Ban IP
 		$out .= ' | Ban: <a class="request-ban" href="acc.php?action=ban&amp;ip=' . $pend_id . '">IP</a> ';
 
@@ -557,6 +547,7 @@ function listrequests($type, $hideip) {
 
 		//Ban name
 		$out .= ' - <a class="request-ban" href="acc.php?action=ban&amp;name=' . $pend_id . '">Name</a>';
+		}
 
 		$out .= '</small></td></tr>';
 		$reqlist .= $out;
@@ -588,7 +579,7 @@ function makehead($username) {
 			$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"acc.php?action=usermgmt\">User Management</a>\n", $out);
 		}
 		$rethead .= $out;
-		$rethead .= "<div id = \"header-info\">Logged in as <a href=\"users.php?viewuser=" . $_SESSION['user_id'] . "\"><span title=\"View your user information\">" . $_SESSION['user'] . "</span></a>  |  <a href=\"acc.php?action=logout\">Logout</a></div>\n";
+		$rethead .= "<div id = \"header-info\">Logged in as <a href=\"users.php?viewuser=" . $_SESSION['user_id'] . "\"><span title=\"View your user information\">" . $_SESSION['user'] . "</span></a>.  <a href=\"acc.php?action=logout\">Logout</a>?</div>\n";
 		//Update user_lastactive
 		$now = date("Y-m-d H-i-s");
 		$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '" . $_SESSION['user_id'] . "';";
@@ -628,7 +619,7 @@ function showfooter() {
 function showlogin() {
 	global $_SESSION;
 	$html =<<<HTML
-    </div><div id="sitenotice">Please login first, and we'll send you on your way!</div>
+    <div id="sitenotice">Please login first, and we'll send you on your way!</div>
     <div id="content">
     <h2>Login</h2>
     <form action="acc.php?action=login&amp;nocheck=1" method="post">
@@ -673,7 +664,7 @@ HTML;
 
 	$html .= listrequests("Open", TRUE);
 	$html .=<<<HTML
-<h2>Account Creator Needed!</h2>
+<h2>Admin Needed!</h2>
 HTML;
 	$html .= listrequests("Admin", TRUE);
 
@@ -692,7 +683,7 @@ HTML;
 		} else {
 			$out .= ' class="odd">';
 		}
-		$out .= "<td><small><a class='request-src' href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a></small></td><td><small>  <a class='request-req' href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></small></td><td><small>  <a class='request-done' href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=user\">Reset</a></small></td></tr>";
+		$out .= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=user\">Reset</a></small></td></tr>";
 		$html .= $out;
 	}
 	$html .= "</table>\n";
@@ -711,22 +702,6 @@ function hasright($username, $checkright) {
 	$rights = explode(':', $row['user_level']);
 	foreach( $rights as $right) {
 		if($right == $checkright ) {
-			return true;
-		}
-	}
-	return false;
-}
-function userexist($username) {
-	$username = sanitize($username);
-	$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
-	$result = mysql_query($query);
-	if (!$result) {
-		Die("Query failed: $query ERROR: " . mysql_error());
-	}
-	$row = mysql_fetch_assoc($result);
-	$rights = explode(':', $row['user_level']);
-	foreach( $rights as $right) {
-		if($right == 'Admin' || $right == 'User') {
 			return true;
 		}
 	}
@@ -751,7 +726,7 @@ function displayheader() {
 function displayfooter() {
 	echo "<a href=\"index.php\">Return to account request interface.</a><br />\n";
 	if(isset($_SESSION['user'])) {
-		if(userexist($_SESSION['user'])){
+		if(hasright($_SESSION['user'], 'User') || hasright($_SESSION['user'], 'Admin')){
 			echo "<a href=\"acc.php\">Return to request management interface</a>\n";
 		} else {
 			echo "<a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";

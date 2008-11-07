@@ -24,14 +24,6 @@
 require_once ('config.inc.php');
 $fail = 0;
 
-function formatForBot( $data ) {
-	global $key;
-	$pData[0] = $key;
-	$pData[1] = $data;
-	$pData = serialize( $pData );
-	return $pData;
-}
-
 function confirmEmail( $id ) {
 	/*
 	* Confirms either a new users e-mail, or a requestor's e-mail.
@@ -108,14 +100,13 @@ function sendtobot( $message ) {
 	/*
 	* Send to the IRC bot via UDP
 	*/
-	$message = formatForBot( $message );
 	global $whichami;
 	sleep(3);
 	$fp = fsockopen("udp://91.198.174.202", 9001, $erno, $errstr, 30);
 	if (!$fp) {
 		echo "SOCKET ERROR: $errstr ($errno)<br />\n";
 	}
-	fwrite($fp, formatForBot( "[$whichami]: $message\r\n" ) );
+	fwrite($fp, "[$whichami]: $message\r\n");
 	fclose($fp);
 }
 
@@ -325,7 +316,7 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 			Die( "Query failed: $query ERROR: " . mysql_error( ) ); 
 		$user = $row['pend_name'];
 		if( checkSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
-		if( $uLevel == "Open" ) { $what = ""; } else { $what = "<Account creator Needed!> "; }
+		if( $uLevel == "Open" ) { $what = ""; } else { $what = "<Admin Needed!> "; }
 		$comments = html_entity_decode(stripslashes($row['pend_cmt']));
 			sendtobot("[[acc:$pid]] N $tsurl/acc.php?action=zoom&id=$pid /* $user */ $what" . substr(str_replace(array (
 			"\n",
@@ -500,7 +491,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or print mysql_error();
-	$query = "SELECT * FROM acc_pend WHERE pend_status != 'Closed' AND pend_name = '$user'";
+	$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_name = '$user'";
 	$result = mysql_query($query);
 	$row = mysql_fetch_assoc($result);
 	if ($row['pend_id'] != "") {
