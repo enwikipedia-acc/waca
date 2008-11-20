@@ -39,7 +39,7 @@ if (file_exists("config.local.inc.php")) {
 	unset ($toolserver_mycnf);
 	
 	$wikiurl = "en.wikipedia.org"; //Does nothing yet, intended for further localization
-	$tsurl = "http://stable.toolserver.org/acc"; //Does nothing yet, intended for further localization	
+	$tsurl = "http://stable.toolserver.org/acc"; 
 	
 	//set up cookies and session information
 	$cookiepath = '/acc/';

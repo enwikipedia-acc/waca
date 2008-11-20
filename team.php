@@ -90,7 +90,7 @@ $developer = //Developer info / list.
 			),
 		"Soxred93" =>
 			array(
-				"IRC" => "Soxred93",
+				"IRC" => "[X]",
 				"EMail" => NULL,
                                 "ToolID" => "4",
 				"wiki" => "Soxred93",
