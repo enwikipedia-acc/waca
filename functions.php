@@ -445,6 +445,10 @@ function listrequests($type, $hideip) {
 			// 	Creation log
 			$out .= '</small></td><td><small>(<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
 			$out .= $uname . '" target="_blank">Creation</a> ';
+			
+			// 	SUL link
+			$out .= '<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/w/w/index.php?title=Special%3AGlobalUsers&username=';
+			$out .= $uname . '&group=&limit=1" target="_blank">SUL</a> ';		
 
 			// 	User contribs
 			$out .= '<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/wiki/Special:Contributions/';
