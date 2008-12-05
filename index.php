@@ -353,7 +353,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$ip = mysql_real_escape_string($ip);
 	$userblocked = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$ip2&format=php");
 	$ub = unserialize($userblocked);
-	if (isset ($ub['query']['blocks']['0']['id'])) {
+	if (isset ($ub['query']['blocks']['0']['nocreate'])) {
 		$message = showmessage(9);
 		echo "$message<br />\n";
 		$fail = 1;
