@@ -1,8 +1,9 @@
-
-Tasks from prodego:
-
 fix ban expiry
 log bans somehow (they are in the log DB, but there isn't enough info there)
+log unbans
 make cluebot XHTML valid
 add search and ban management only if user is an admin
-expand the search feature
+expand the search feature to include requested username search
+hide IPs from closed requests from non-admin users.
+sort out ACC-31
+think about ACC-4
