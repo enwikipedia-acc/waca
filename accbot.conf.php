@@ -50,7 +50,7 @@
 		'*!*@2002:1828:8399:4000:21f:3bff:fe10:4ae3'			=> 'root',
 		'*!*@wikipedia/SQL'						=> 'root',
 		'OverlordQ!*@wikipedia/OverlordQ'				=> 'root',
-		'Stwalkerster*!*@wikipedia/Stwalkerster'			=> 'root',
+		'Stwalkerster*!*@wikipedia/Stwalkerster'			=> 'developer',
 		'*!*@wikipedia/Alexfusco5'					=> 'developer',
 		'[X]*!*@wikipedia/Soxred93'				=> 'developer',
 		'*!*@tangocms/developer/chuck'					=> 'developer',
