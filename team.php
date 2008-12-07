@@ -85,7 +85,7 @@ $developer = //Developer info / list.
 				"WWW" => "http://stwalkerster.dyndns.org",
 				"Name" => NULL,
 				"Role" => "Developer",
-				"Access" => "Commit",
+				"Access" => "Commit, Shell, SQL",
 				"Other" => NULL,
 			),
 		"Soxred93" =>
