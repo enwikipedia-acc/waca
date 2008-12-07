@@ -26,6 +26,14 @@ if ($ACC != "1") {
     die();
 } //Re-route, if you're a web client.
 
+function formatForBot( $data ) { 		
+	global $key; 		
+	$pData[0] = $key; 		
+	$pData[1] = $data; 		
+	$sData = serialize( $pData ); 		
+	return $sData; 		
+} 		
+
 function _utf8_decode($string) {
 	/*
 	* Improved utd8_decode() function
@@ -176,7 +184,7 @@ function sendtobot($message) {
 	if (!$fp) {
 		echo "SOCKET ERROR: $errstr ($errno)<br />\n";
 	}
-	fwrite($fp, "[$whichami]: $message\r\n");
+	fwrite($fp, formatForBot( "[$whichami]: $message\r\n" ) );
 	fclose($fp);
 }
 
