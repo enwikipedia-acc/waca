@@ -17,8 +17,8 @@
 	**Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
 	**Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
 	**OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
-	**Prodego ( http://en.wikipedia.org/wiki/User:Prodego )      **
-	**FunPika ( http://en.wikipedia.org/wiki/User:FunPika )      **
+	**Prodego ( http://en.wikipedia.org/wiki/User:Prodego )	     **
+        **FunPika ( http://en.wikipedia.org/wiki/User:FunPika )      **
 	**                                                           **
 	**************************************************************/
 
@@ -30,7 +30,6 @@
 	// Includes
 	require 'config.inc.php';
 	include 'devlist.php';
-	require 'accbot.conf.php';
 
 
 	// Variable declarations
@@ -56,7 +55,19 @@
 	pcntl_signal( SIGTERM, 'SIGTERM' );
 	pcntl_signal( SIGCHLD, 'SIGCHLD' );
 
-//Help - moved to accbot.conf.php.  See that file for details.
+	// Help
+	//       Command      , Parameters  , Description
+	addHelp( 'help'       , ''          , 'Gives help on the available commands.'                               );
+	addHelp( 'count'      , '<username>', 'Displays statistics for the targeted user.'                          );
+	addHelp( 'status'     , ''          , 'Displays interface statistics, such as the number of open requests.' );
+	addHelp( 'stats'      , '<username>', 'Gives a readout similar to the user list user information page.'     );
+	addHelp( 'svninfo'    , ''          , 'Floods you with information about the SVN repository.'               );
+	addHelp( 'sandinfo'   , ''          , 'Floods you with information about the SVN repository sandbox.'       );
+	addHelp( 'sand-svnup' , ''          , 'Allows developers to sync the sandbox with the SVN repository.'      );
+	addHelp( 'php'        , '<file>'    , 'Allows developers to check for errors in PHP files.'                 );
+	addHelp( 'svnup'      , ''          , 'Allows you to sync the live server with the SVN repository.'         );
+	addHelp( 'restart'    , ''          , 'Causes the bot to do an immediate graceful reinitialization.'        );
+	addHelp( 'recreatesvn', ''          , 'Attempts to fix the live copy of the site.'                          );
 
 	// Commands
 	//          Command      , Function            , Fork?
@@ -71,18 +82,50 @@
 	addCommand( 'svnup'      , 'commandSvnUp'      , true  );
 	addCommand( 'restart'    , 'commandRestart'    , false );
 	addCommand( 'recreatesvn', 'commandRecreateSvn', true  );
-	addCommand( 'rehash'     , 'commandRehash'     , false );
-	
-	//Groups and Users: Moved to accbot.conf.php - see that file for details.
+
+	// Users
+	//	Nick!User@Host mask						=> group
+	$users = array(
+		'Cobi!*cobi*@cobi.cluenet.org'					=> 'root',
+		'Cobi!*cobi*@Cobi.cluenet.org'					=> 'root',
+		'*!*@2002:1828:8399:4000:21f:3bff:fe10:4ae3'			=> 'root',
+		'*!*@wikipedia/SQL'						=> 'root',
+		'OverlordQ!*@wikipedia/OverlordQ'				=> 'root',
+		'Stwalkerster*!*@wikipedia/Stwalkerster'			=> 'developer',
+		'*!*@wikipedia/Alexfusco5'					=> 'developer',
+		'[X]*!*@wikipedia/Soxred93'				=> 'developer',
+		'*!*@tangocms/developer/chuck'					=> 'developer',
+		'*!*@wikipedia/FastLizard4'					=> 'developer',
+		'*!*@wikipedia/Prodego'					        => 'developer',
+		'*!*@wikipedia/FunPika'					        => 'developer',
+		'*!*@*'								=> '*'
+		);
+
+	// Groups
+	//         [ Group       ][ Privilege     ] = 1;
+	$privgroups[ '*'         ][ 'help'        ] = 1;
+	$privgroups[ '*'         ][ 'count'       ] = 1;
+	$privgroups[ '*'         ][ 'status'      ] = 1;
+	$privgroups[ '*'         ][ 'stats'       ] = 1;
+	$privgroups[ '*'         ][ 'svninfo'     ] = 1; //Do not change this, per consensus in the IRC channel
+	$privgroups[ '*'         ][ 'sandinfo'    ] = 1;
+
+	$privgroups[ 'developer' ]                  = $privgroups['*']; // 'developer' inherits '*'.
+	$privgroups[ 'developer' ][ 'sand-svnup'  ] = 1;
+	$privgroups[ 'developer' ][ 'php'  ]        = 1;
+
+	$privgroups[ 'root'      ]                  = $privgroups['developer']; // 'root' inherits 'developer'.
+	$privgroups[ 'root'      ][ 'svnup'       ] = 1;
+	$privgroups[ 'root'      ][ 'recreatesvn' ] = 1;
+	$privgroups[ 'root' 	 ][ 'restart'     ] = 1;
+
 
 	// Functions
 	function sanitize( $data ) {
 		return mysql_real_escape_string( $data );
 	}
 
-	function SIGHUP() {
-		commandRehash();
-	}
+	function SIGHUP() { /* Null signal handler */ }
 
 	function SIGTERM() {
 		global $fp, $fpt;
@@ -465,12 +508,7 @@
 		system( 'svn up' );
 		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Thanks.  SVN has hopefully been fixed.' );
 	}
-	
-	function commandRehash() {
-		unset($help);
-		include('accbot.conf.php');
-	}
-	
+
 	function validateData( $sdata ) {
 		global $key;
 		$data = unserialize( ltrim(rtrim( $sdata ) ) );
