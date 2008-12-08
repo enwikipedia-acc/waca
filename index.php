@@ -96,7 +96,15 @@ function sanitize( $what ) {
 	return ( $what );
 }
 
-function sendtobot( $message ) {
+function formatForBot( $data ) { 		
+	global $key; 		
+	$pData[0] = $key; 		
+	$pData[1] = $data; 		
+	$sData = serialize( $pData ); 		
+	return $sData; 		
+} 		
+
+function sendtobot($message) {
 	/*
 	* Send to the IRC bot via UDP
 	*/
@@ -106,7 +114,7 @@ function sendtobot( $message ) {
 	if (!$fp) {
 		echo "SOCKET ERROR: $errstr ($errno)<br />\n";
 	}
-	fwrite($fp, "[$whichami]: $message\r\n");
+	fwrite($fp, formatForBot( "[$whichami]: $message\r\n" ) );
 	fclose($fp);
 }
 
