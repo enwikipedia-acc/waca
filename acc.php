@@ -44,6 +44,9 @@ if ( !isset ( $_SESSION['user'] ) && !isset ( $_GET['nocheck'] ) ) {
 	if ( $action != 'register' && $action != 'forgotpw' && $action != 'sreg' ) {
 		echo showlogin( );
 		die( );
+	} else {
+		$out = "<div id=\"content\">";
+		echo $out;
 	}
 }
 elseif (!isset($_GET['nocheck']))
