@@ -402,7 +402,11 @@ elseif ($action == "login") {
 }
 elseif ($action == "messagemgmt") {
 	if (isset ($_GET['view'])) {
-		$mid = sanitize($_GET['view']);
+	if (!preg_match('/^[0-9]*$/',$_GET['view']))
+		die('Invaild GET value passed.');
+		
+	$mid = sanitize($_GET['view']);
+	
 		$query = "SELECT * FROM acc_emails WHERE mail_id = $mid;";
 		$result = mysql_query($query);
 		if (!$result)
@@ -422,6 +426,8 @@ elseif ($action == "messagemgmt") {
 			echo showfooter();
 			die();
 		}
+		if (!preg_match('/^[0-9]*$/',$_GET['edit']))
+			die('Invaild GET value passed.');		
 		$mid = sanitize($_GET['edit']);
 		if ( isset( $_GET['submit'] ) ) {
 			$mtext = sanitize($_POST['mailtext']);
