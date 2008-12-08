@@ -1,0 +1,4 @@
+1) fix password reset
+2) reset button does not remove requests from recently closed
+3) Ban logging?
+
