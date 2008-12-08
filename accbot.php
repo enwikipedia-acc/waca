@@ -94,7 +94,7 @@
 		'Stwalkerster*!*@wikipedia/Stwalkerster'			=> 'root',
 		'*!*@wikipedia/Alexfusco5'					=> 'developer',
 		'[X]*!*@wikipedia/Soxred93'				=> 'developer',
-		'*!*@tangocms/developer/chuck'					=> 'developer',
+		'*!*@wikimedia/cmelbye'					=> 'developer',
 		'*!*@wikipedia/FastLizard4'					=> 'developer',
 		'*!*@wikipedia/Prodego'					        => 'developer',
 		'*!*@wikipedia/FunPika'					        => 'developer',
