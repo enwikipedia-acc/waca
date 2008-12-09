@@ -324,7 +324,7 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 			Die( "Query failed: $query ERROR: " . mysql_error( ) ); 
 		$user = $row['pend_name'];
 		if( checkSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
-		if( $uLevel == "Open" ) { $what = ""; } else { $what = "<Admin Needed!> "; }
+		if( $uLevel == "Open" ) { $what = ""; } else { $what = "<Account Creator Needed!> "; }
 		$comments = html_entity_decode(stripslashes($row['pend_cmt']));
 			sendtobot("\00314[[\00303acc:$pid\00314]]\0034 N\00310 \00302$tsurl/acc.php?action=zoom&id=$pid\003 \0035/*\003 \00303$user\003 \0035/*\003 \00310$what\003" . substr(str_replace(array (
 			"\n",
