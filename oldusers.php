@@ -52,7 +52,7 @@ echo '<h2>Old user accounts</h2>This list contains the usernames of all accounts
 
 echo "<table><tr><th>User ID</th><th>Tool Username</th><th>User access level</th><th>enwiki username</th><th>Last activity</th></tr>";
 while ($r = mysql_fetch_assoc($result)) {
-	echo "<tr><th>".$r['tooluserid']."</th><td>".$r[tooluser]."</td><td>".$r['toolaccesslevel']."</td><td>".$r['enwikiuser']."</td><td>".$r['lasttoollogon']."</td></tr>";
+	echo "<tr><th>".$r['tooluserid']."</th><td>".$r['tooluser']."</td><td>".$r['toolaccesslevel']."</td><td>".$r['enwikiuser']."</td><td>".$r['lasttoollogon']."</td></tr>";
 }
 echo "</table>";
 displayfooter();
