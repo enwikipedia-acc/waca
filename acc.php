@@ -1650,7 +1650,19 @@ elseif ($action == "logs") {
 			echo "<li>$rlu changed user preferences for $rlp (" . $row2['user_name'] . ") at $rlt</li>\n";
 		}
 		if ($rla == "Unbanned") {
-			echo "<li>$rlu unbanned request for <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>\n";
+			// gonna need to think of another way to do this:
+			//    * can't look in the ban table, the ban is not there any more
+			//    * possibly look for the DNSBL or Banned entry in the log table, then parse to get type.
+		
+			//$query2 = 'SELECT * FROM `acc_ban` WHERE `ban_id` = '.$rlp.'; '; 
+			//$result2 = mysql_query($query2);
+			//if (!$result2)
+			//	Die("Query failed: $query2 ERROR: " . mysql_error());
+			//$row2 = mysql_fetch_assoc($result2);
+			//echo "<li>$rlu unbanned ban ID $rlp of type ".$row2['ban_type']." targeted at ".$row2['ban_target']." at $rlt</li>\n";
+			
+			
+			echo "<li>$rlu unbanned ban ID $rlp at $rlt</li>";
 		}
 	}
 	echo "</ol>\n";
