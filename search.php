@@ -101,6 +101,29 @@ if( isset($_GET['term'])) {
 		$html .= "<b>Results found: </b> $currentrow.";
 		echo $html;
 	}
+	elseif( $type == 'Request') {
+		echo "<h2>Searching for requested username: $term ...</h2>";
+		$query = "SELECT pend_id FROM acc_pend WHERE pend_name LIKE '$term';";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$html = "<table cellspacing=\"0\">\n";
+		$currentrow = 0;
+		while ( list( $pend_id ) = mysql_fetch_row( $result ) ) {
+			$currentrow += 1;
+			$out = '<tr';
+			if ($currentrow % 2 == 0) {
+			$out .= ' class="even">';
+			} else {
+				$out .= ' class="odd">';
+			}
+			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Request " . $pend_id . "</a></small></tr>";
+			$html .= $out;
+		}
+		$html .= "</table>\n";
+		$html .= "<b>Results found: </b> $currentrow.";
+		echo $html;
+	}
 }
 else {
 	echo '<h2>Search:</h2>';
@@ -110,6 +133,7 @@ else {
 	echo '<td><select name="type">';
 	echo '<option value="email">as email address</option>';
 	echo '<option value="IP">as IP address</option>';
+	echo '<option value="Request">as requested username</option>';
 	echo '</select></td></tr></table><br />';
 	echo '<input type="submit" />';
 	echo '</form>';
