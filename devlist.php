@@ -88,7 +88,7 @@ $ircdevlist = array (
 	'charlie-',
 	'FastLizard4',
 	'stwalkerster',
-	'[X]',
+	'|X|',
 	'Alexfusco5',
 	'Alexfusco5|Away',
 	'OverlordQ',
