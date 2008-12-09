@@ -1648,7 +1648,10 @@ elseif ($action == "logs") {
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
 			echo "<li>$rlu changed user preferences for $rlp (" . $row2['user_name'] . ") at $rlt</li>\n";
-			}
+		}
+		if ($rla == "Unbanned") {
+			echo "<li>$rlu unbanned request for <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>\n";
+		}
 	}
 	echo "</ol>\n";
 	echo $n1;
