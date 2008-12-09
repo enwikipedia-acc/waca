@@ -1,5 +1,3 @@
 TODO list for FunPika:
 
-Doomed to do this for all eternity :P :
-1. Make sure code is always HTML compliant. 
-2. Make sure there the code does not fail as far as internal documentation goes. :P 
+1. Make at the very least the suspension part of usermgmt show the latest person who modified the access level. 
