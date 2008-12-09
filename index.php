@@ -114,7 +114,7 @@ function sendtobot($message) {
 	if (!$fp) {
 		echo "SOCKET ERROR: $errstr ($errno)<br />\n";
 	}
-	fwrite($fp, formatForBot( "[$whichami]: $message\r\n" ) );
+	fwrite($fp, formatForBot( "\001[$whichami]\003: $message\r\n" ) );
 	fclose($fp);
 }
 
@@ -326,7 +326,7 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 		if( checkSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
 		if( $uLevel == "Open" ) { $what = ""; } else { $what = "<Account Creator Needed!> "; }
 		$comments = html_entity_decode(stripslashes($row['pend_cmt']));
-			sendtobot("\00314[[\00303acc:$pid\00314]]\0034 N\00310 \00302$tsurl/acc.php?action=zoom&id=$pid\003 \0035/*\003 \00303$user\003 \0035/*\003 \00310$what\003" . substr(str_replace(array (
+			sendtobot("\00314[[\00303acc:\00307$pid\00314]]\0034 N\00310 \00302$tsurl/acc.php?action=zoom&id=$pid\003 \0035*\003 \00303$user\003 \0035*\003 \00310$what\003" . substr(str_replace(array (
 			"\n",
 			"\r"
 			), array (
