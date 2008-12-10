@@ -568,6 +568,7 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	die();
 }
 elseif ($action == "unban" && $_GET['id'] != "") {
+
 	$siuser = sanitize($_SESSION['user']);
 	$bid = sanitize($_GET['id']);
 	$query = "SELECT * FROM acc_ban WHERE ban_id = '$bid';";
@@ -576,19 +577,39 @@ elseif ($action == "unban" && $_GET['id'] != "") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	$iTarget = $row['ban_target'];
-	$query = "DELETE FROM acc_ban WHERE ban_id = '$bid';";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$now = date("Y-m-d H-i-s");
-	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$bid', '$siuser', 'Unbanned', '$now');";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	echo "Unbanned ban #$bid<br />\n";
-	sendtobot("Ban #" . $bid . " ($iTarget) unbanned by " . $_SESSION['user']);
-	echo showfooter();
-	die();
+	
+	if( isset($_GET['confirmunban']) && $_GET['confirmunban']=="true")
+	{
+		$query = "DELETE FROM acc_ban WHERE ban_id = '$bid';";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$now = date("Y-m-d H-i-s");
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$bid', '$siuser', 'Unbanned', '$now');";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		echo "Unbanned ban #$bid<br />\n";
+		sendtobot("Ban #" . $bid . " ($iTarget) unbanned by " . $_SESSION['user']);
+		echo showfooter();
+		die();
+	}
+	else
+	{
+		$confOut =  "Are you sure you wish to unban #".$bid.", targeted at ".$iTarget.", ";
+		if ( !isset($row['ban_duration']) || $row['ban_duration'] == "-1") {
+			$confOut.= "not set to expire";
+		} else {
+			$confOut.= "set to expire " . date("F j, Y, g:i a", $row['ban_duration']);
+		}
+		$confOut .= ", and with the reason:<br />";
+		echo $confOut;
+		
+		echo $row['ban_reason'] . "<br />";
+		echo "<a href=\"acc.php?action=unban&id=".$_GET['id']."&confirmunban=true\">Unban</a> / <a href=\"acc.php\">Cancel</a>";
+		
+		
+	}
 }
 elseif ($action == "ban") {
 	$siuser = sanitize($_SESSION['user']);
