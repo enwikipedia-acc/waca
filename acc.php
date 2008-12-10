@@ -42,7 +42,12 @@ if ( !isset ( $_SESSION['user'] ) && !isset ( $_GET['nocheck'] ) ) {
 	$suser = '';
 	echo makehead( $suser );
 	if ( $action != 'register' && $action != 'forgotpw' && $action != 'sreg' ) {
-		echo showlogin( );
+		if ( isset( $action ) ) {
+			echo showlogin( $action, $_GET );
+		}
+		if ( isset( $action ) ) {
+			echo showlogin( );
+		}
 		die( );
 	} else {
 		$out = "<div id=\"content\">";
@@ -392,7 +397,20 @@ elseif ($action == "login") {
 	{
 			$_SESSION['userID'] = $row['user_id'];
 			$_SESSION['user'] = $row['user_name'];
-			header("Location: $tsurl/acc.php");
+			if ( isset( $_GET['newaction'] ) ) {
+				$header = "Location: $tsurl/acc.php?action=".$_GET['newaction'];
+				foreach ($_GET as $key => $get) {
+					if ($key == "newaction" || $key == "nocheck" || $get == "login" ) {
+					}
+					else {
+						$header .= "&$key=$get";
+					}
+				}
+				header($header);
+			}
+			else {
+				header("Location: $tsurl/acc.php");
+			}
 	}
 	else
 	{

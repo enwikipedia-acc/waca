@@ -628,13 +628,21 @@ function showfooter() {
 	return $out;
 }
 
-function showlogin() {
+function showlogin( $action = null, $params = null ) {
 	global $_SESSION;
-	$html =<<<HTML
-    <div id="sitenotice">Please login first, and we'll send you on your way!</div>
+	$html ='<div id="sitenotice">Please login first, and we\'ll send you on your way!</div>
     <div id="content">
     <h2>Login</h2>
-    <form action="acc.php?action=login&amp;nocheck=1" method="post">
+    <form action="acc.php?action=login&amp;nocheck=1';
+    if ( $action ) {
+    	$html .= "&amp;newaction=".$action;
+    	foreach ($params as $param => $value) { 
+    		if ($param != '') {
+    			$html .= "&amp;$param=".$value;
+    		}
+    	}
+    }
+    $html .= '" method="post">
     <div class="required">
         <label for="username">Username:</label>
         <input id="username" type="text" name="username"/>
@@ -648,10 +656,9 @@ function showlogin() {
     </div>
     </form>
     <br />
-    Don't have an account? 
+    Don\'t have an account? 
     <br /><a href="acc.php?action=register">Register!</a> (Requires approval)<br />
-    <a href="acc.php?action=forgotpw">Forgot your password?</a><br />
-HTML;
+    <a href="acc.php?action=forgotpw">Forgot your password?</a><br />';
 	$html .= showfootern();
 	return $html;
 }
