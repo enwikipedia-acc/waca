@@ -552,17 +552,15 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 		die();
 	}
 	$duration = sanitize($_POST['duration']);
-	if ($duration < "0") {
+	if ($duration == "-1") {
 		$duration = -1;
 	} else {
 		$duration = $duration +time();
 	}
-	$siuser = sanitize($_SESSION['user']);
-	$reason = sanitize(htmlentities($_POST['banreason']));
+	$reason = sanitize($_POST['banreason']);
+	$siuser = sanitize($_GET['user']);
 	$target = sanitize($_GET['target']);
 	$type = sanitize($_GET['type']);
-	if($type != "IP" || $type != "name" || $type != "EMail")
-		die("Invalid ban reason!");
 	$now = date("Y-m-d H-i-s");
 	upcsum($target);
 	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$target', '$siuser', 'Banned', '$now');";
@@ -646,7 +644,7 @@ elseif ($action == "ban") {
 			$target = $row['pend_ip'];
 			$type = "IP";
 		}
-		elseif (isset($_GET['email'])) {
+		elseif ($_GET['email'] != "") {
 			$email2 = sanitize($_GET['email']);
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$email2';";
 			$result = mysql_query($query);
@@ -656,7 +654,7 @@ elseif ($action == "ban") {
 			$target = $row['pend_email'];
 			$type = "EMail";
 		}
-		elseif (isset($_GET['name'])) {
+		elseif ($_GET['name'] != "") {
 			$name2 = sanitize($_GET['name']);
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$name2';";
 			$result = mysql_query($query);
@@ -677,48 +675,9 @@ elseif ($action == "ban") {
 			echo showfooter();
 			die();
 		} else {
-			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=ban&submit=yes\" method=\"post\">Ban target: $target\n<br /><table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr></table><br /><input type=\"submit\"></form>\n";
+			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser&amp;target=$target&amp;type=$type\" method=\"post\">Ban target: $target\n<br /><table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr></table><br /><input type=\"submit\"></form>\n";
 		}
-	if(isset($_GET['submit'])){
-		if (!isset($_POST['banreason'])) {
-			echo "<h2>ERROR</h2>\n<br />You must specify a ban reason.\n";
-			echo showfooter();
-			die();
 	}
-	$duration = sanitize($_POST['duration']);
-	if ($duration < "0") {
-		$duration = -1;
-	} else {
-		$duration = $duration +time();
-	}
-	$siuser = sanitize($_SESSION['user']);
-	$reason = sanitize(htmlentities($_POST['banreason']));
-	if($type != "IP" || $type != "name" || $type != "EMail")
-		die("Invalid ban reason!");
-	$now = date("Y-m-d H-i-s");
-	upcsum($target);
-	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$target', '$siuser', 'Banned', '$now');";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$query = "INSERT INTO acc_ban (ban_type, ban_target, ban_user, ban_reason, ban_date, ban_duration) VALUES ('$type', '$target', '$siuser', '$reason', '$now', $duration);";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	echo "Banned " . htmlentities($target) . " for $reason<br />\n";
-	if ( !isset($duration) || $duration == "-1") {
-		$until = "Indefinite";
-	} else {
-		$until = date("F j, Y, g:i a", $duration);
-	}
-	if ($until == 'Indefinite') {
-		sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " indefinitely");
-	} else {
-		sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " until $until");
-	}
-	}
-	}
-	
 	else {
 	echo "<h2>Active Ban List</h2>\n<ol>\n";
 	$query = "SELECT * FROM acc_ban;";
@@ -1212,7 +1171,7 @@ elseif ($action == "usermgmt") {
 	echo showfooter();
 	die();
 }
-elseif ($action == "defer" && isset($_GET['id']) && isset($_GET['sum'])) {
+elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 	if ($_GET['target'] == "admin" || $_GET['target'] == "user") {
 		if ($_GET['target'] == "admin") {
 			$target = "Admin";
