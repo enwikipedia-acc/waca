@@ -704,7 +704,7 @@ elseif ($action == "ban") {
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	echo "Banned " . htmlentities($_GET['target']) . " for $reason<br />\n";
+	echo "Banned " . htmlentities($target) . " for $reason<br />\n";
 	if ( !isset($duration) || $duration == "-1") {
 		$until = "Indefinite";
 	} else {
