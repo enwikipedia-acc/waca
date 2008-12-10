@@ -637,7 +637,7 @@ function showlogin( $action = null, $params = null ) {
     if ( $action ) {
     	$html .= "&amp;newaction=".$action;
     	foreach ($params as $param => $value) { 
-    		if ($param != '') {
+    		if ($param != '' && $param != "action") {
     			$html .= "&amp;$param=".$value;
     		}
     	}
