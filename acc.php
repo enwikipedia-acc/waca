@@ -45,7 +45,7 @@ if ( !isset ( $_SESSION['user'] ) && !isset ( $_GET['nocheck'] ) ) {
 		if ( isset( $action ) ) {
 			echo showlogin( $action, $_GET );
 		}
-		if ( isset( $action ) ) {
+		elseif ( isset( $action ) ) {
 			echo showlogin( );
 		}
 		die( );
