@@ -429,14 +429,14 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	if ($dnsblcheck['0'] == true) {
 		$toruser = checktor($ip2);
 		if ($toruser['tor'] == "yes") {
-			$tor = "(TOR node)";
+			$tor = " (TOR node)";
 		} else {
-			$tor = "(Not a TOR node)";
+			$tor = "";
 		}
 		$now = date("Y-m-d H-i-s");
 		$siuser = mysql_real_escape_string($_POST['name']);
 		$cmt = mysql_real_escape_string("FROM $ip $email<br />" . $dnsblcheck['1']);
-		sendtobot("[DNSBL] $tor HIT: " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
+		sendtobot("[DNSBL]$tor HIT: " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('DNSBL', '$siuser', 'DNSBL Hit', '$now', '$cmt');";
 		echo '<!-- Query: ' . $query . ' -->';
 		mysql_query($query);
