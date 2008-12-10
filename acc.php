@@ -558,10 +558,10 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 		$duration = $duration +time();
 	}
 	$siuser = sanitize($_SESSION['user']);
-	$reason = sanitize(htmlentities(($_POST['banreason']));
-	$target = sanitize(htmlentities(($_GET['target']));
+	$reason = sanitize(htmlentities($_POST['banreason']));
+	$target = sanitize(htmlentities($_GET['target']));
 	$type = sanitize($_GET['type']);
-	if($type != "IP" || $type != "name" || $type != "EMail")
+	if($type != "IP" || $type != "Name" || $type != "EMail")
 		die(Invalid ban reason!);
 	$now = date("Y-m-d H-i-s");
 	upcsum($target);
