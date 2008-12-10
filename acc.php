@@ -677,12 +677,13 @@ elseif ($action == "ban") {
 			echo showfooter();
 			die();
 		} else {
-			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=ban\" method=\"post\">Ban target: $target\n<br /><table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr></table><br /><input type=\"submit\"></form>\n";
+			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=ban&submit=yes\" method=\"post\">Ban target: $target\n<br /><table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr></table><br /><input type=\"submit\"></form>\n";
 		}
-			if (!isset($_POST['banreason'])) {
-		echo "<h2>ERROR</h2>\n<br />You must specify a ban reason.\n";
-		echo showfooter();
-		die();
+	if(isset($_GET['submit'])){
+		if (!isset($_POST['banreason'])) {
+			echo "<h2>ERROR</h2>\n<br />You must specify a ban reason.\n";
+			echo showfooter();
+			die();
 	}
 	$duration = sanitize($_POST['duration']);
 	if ($duration < "0") {
@@ -716,6 +717,8 @@ elseif ($action == "ban") {
 		sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " until $until");
 	}
 	}
+	}
+	
 	else {
 	echo "<h2>Active Ban List</h2>\n<ol>\n";
 	$query = "SELECT * FROM acc_ban;";
