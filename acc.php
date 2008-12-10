@@ -558,11 +558,11 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 		$duration = $duration +time();
 	}
 	$siuser = sanitize($_SESSION['user']);
-	$reason = sanitize($_POST['banreason']);
+	$reason = sanitize(htmlentities($_POST['banreason']));
 	$target = sanitize($_GET['target']);
 	$type = sanitize($_GET['type']);
-	if($type != "IP" || $type != "Name" || $type != "EMail")
-		die(Invalid ban reason!);
+	if($type != "IP" || $type != "name" || $type != "EMail")
+		die("Invalid ban reason!");
 	$now = date("Y-m-d H-i-s");
 	upcsum($target);
 	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$target', '$siuser', 'Banned', '$now');";
