@@ -229,7 +229,10 @@ function gethowma() {
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or print mysql_error();
 	$last5min = time() - 300; // Get the users active as of the last 5 mins
-	$last5mins = date("Y-m-d H:i:s", $last5min);
+	
+	$last5mins = date("Y-m-d H:i:s", $last5min); // TODO: This produces a PHP Strict Standards error message. See next line
+	//Strict Standards: date() [function.date]: It is not safe to rely on the system's timezone settings. Please use the date.timezone setting, the TZ environment variable or the date_default_timezone_set() function. In case you used any of those methods and you are still getting this warning, you most likely misspelled the timezone identifier.
+	
 	$query = "SELECT user_name FROM acc_user WHERE user_lastactive > '$last5mins';";
 	$result = mysql_query($query);
 	if (!$result)
@@ -593,7 +596,10 @@ function makehead($username) {
 		$rethead .= $out;
 		$rethead .= "<div id = \"header-info\">Logged in as <a href=\"users.php?viewuser=" . $_SESSION['user_id'] . "\"><span title=\"View your user information\">" . $_SESSION['user'] . "</span></a>.  <a href=\"acc.php?action=logout\">Logout</a>?</div>\n";
 		//Update user_lastactive
-		$now = date("Y-m-d H-i-s");
+		
+		$now = date("Y-m-d H-i-s"); // TODO: This produces a PHP Strict Standards error message. See next line
+		//Strict Standards: date() [function.date]: It is not safe to rely on the system's timezone settings. Please use the date.timezone setting, the TZ environment variable or the date_default_timezone_set() function. In case you used any of those methods and you are still getting this warning, you most likely misspelled the timezone identifier.
+	
 		$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '" . $_SESSION['user_id'] . "';";
 		$result = mysql_query($query);
 		if (!$result)
