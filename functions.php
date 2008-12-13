@@ -455,7 +455,7 @@ function listrequests($type, $hideip) {
 			$out .= $uname . '" target="_blank">Creation</a> ';
 			
 			// 	SUL link
-			$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user="';
+			$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user=';
 			$out .= $uname . '" target="_blank">SUL</a> ';		
 
 			// 	User list
@@ -502,7 +502,7 @@ function listrequests($type, $hideip) {
 			$out .= $uname . '" target="_blank">Creation</a> ';
 			
 			// 	SUL link
-			$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user="';
+			$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user=';
 			$out .= $uname . '" target="_blank">SUL</a> ';		
 
 			// User list
