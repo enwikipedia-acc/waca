@@ -56,3 +56,4 @@ while ($r = mysql_fetch_assoc($result)) {
 }
 echo "</table>";
 displayfooter();
+?>

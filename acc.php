@@ -190,89 +190,74 @@ elseif ( $action == "sreg" ) {
 	die();
 }
 elseif ($action == "register") {
-?>
+	echo <<<HTML
     <h2>Register!</h2>
     <strong><strong>PLEASE DO NOT USE THE SAME PASSWORD AS ON WIKIPEDIA.</strong><br />
     <form action="acc.php?action=sreg" method="post">
     <table cellpadding="1" cellspacing="0" border="0">
-    <tr>
-        <td>
             <tr>
                 <td>Desired Username:</td>
                 <td><input type="text" name="name"></td>
             </tr>
-        </td>
-        <td>
             <tr>
                 <td>E-mail Address:</td>
                 <td><input type="text" name="email"></td>
             </tr>
-        </td>
-        <td>
             <tr>
                 <td>Wikipedia username:</td>
                 <td><input type="text" name="wname"></td>
             </tr>
-        </td>
-        <td>
             <tr>
                 <td>Desired password:</td>
                 <td><input type="password" name="pass"></td>
             </tr>
-        </td>
-        <td>
             <tr>
                 <td>Desired password(again):</td>
                 <td><input type="password" name="pass2"></td>
             </tr>
-        </td>
-        <td>
             <tr>
                 <td>Enable use of the secure server:</td>
                 <td><input type="checkbox" name="secureenable"></td>
             </tr>
-        </td>
-        <td>
             <tr>
                 <td>Enable <a href="http://en.wikipedia.org/wiki/User:SQLBot-Hello">SQLBot-Hello</a> welcoming of the users I create:</td>
                 <td><input type="checkbox" name="welcomeenable"></td>
             </tr>
-        </td>
-        <td>
             <tr>
                 <td>Your signature (wikicode)<br /><i>This would be the same as ~~~ on-wiki. No date, please.  Not needed if you left the checkbox above unchecked.</i></td>
                 <td><input type="text" name="sig" size ="40"></td>
             </tr>
-        </td>
-        <td>
             <tr>
                 <td>Template you would like the bot to welcome with?<br /><i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>, <a href="http://en.wikipedia.org/wiki/User_talk:Cobi">Cobi</a>, or <a href="http://en.wikipedia.org/wiki/User_talk:FastLizard4">FastLizard4</a>.</i>  Not needed if you left the checkbox above unchecked.</td>
-                <td><select name="template" size="0"><option value="welcome">{{welcome|user}} ~~~~</option><option 
-value="welcomeg">{{welcomeg|user}} ~~~~</option><option value="welcome-personal">{{welcome-personal|user}} ~~~~</option><option 
-value="werdan7">{{User:Werdan7/W}} ~~~~</option>    <option value="welcomemenu">{{WelcomeMenu|sig=~~~~}}</option><option 
-value="welcomeicon">{{WelcomeIcon}} ~~~~</option>    <option value="welcomeshout">{{WelcomeShout|user}} ~~~~</option><option 
-value="welcomesmall">{{WelcomeSmall|user}} ~~~~</option><option value="hopes">{{Hopes Welcome}} ~~~~</option><option 
-value="welcomeshort">{{Welcomeshort|user}} ~~~~</option>
-<option value="w-riana">{{User:Riana/Welcome|name=user|sig=~~~~}}</option>
-<option value="w-kk">{{User:KrakatoaKatie/Welcome1}} ~~~~</option>
-<option value="w-screen">{{w-screen|sig=~~~~}}</option>
-<option value="wodup">{{User:WODUP/Welcome}} ~~~~</option>
-<option value="williamh">{{User:WilliamH/Welcome|user}} ~~~~</option>
-<option value="malinaccier">{{User:Malinaccier/Welcome|~~~~}}</option>
-<option value="laquatique">{{subst:User:L'Aquatique/welcome}} ~~~~</option></select></td>
+                <td>
+                	<select name="template" size="0">
+                		<option value="welcome">{{welcome|user}} ~~~~</option>
+                		<option value="welcomeg">{{welcomeg|user}} ~~~~</option>
+                		<option value="welcome-personal">{{welcome-personal|user}} ~~~~</option>
+                		<option value="werdan7">{{User:Werdan7/W}} ~~~~</option>
+                		<option value="welcomemenu">{{WelcomeMenu|sig=~~~~}}</option>
+                		<option value="welcomeicon">{{WelcomeIcon}} ~~~~</option>
+                		<option value="welcomeshout">{{WelcomeShout|user}} ~~~~</option>
+                		<option value="welcomesmall">{{WelcomeSmall|user}} ~~~~</option>
+                		<option value="hopes">{{Hopes Welcome}} ~~~~</option>
+	                	<option value="welcomeshort">{{Welcomeshort|user}} ~~~~</option>
+						<option value="w-riana">{{User:Riana/Welcome|name=user|sig=~~~~}}</option>
+						<option value="w-kk">{{User:KrakatoaKatie/Welcome1}} ~~~~</option>
+						<option value="w-screen">{{w-screen|sig=~~~~}}</option>
+						<option value="wodup">{{User:WODUP/Welcome}} ~~~~</option>
+						<option value="williamh">{{User:WilliamH/Welcome|user}} ~~~~</option>
+						<option value="malinaccier">{{User:Malinaccier/Welcome|~~~~}}</option>
+						<option value="laquatique">{{subst:User:L'Aquatique/welcome}} ~~~~</option>
+					</select>
+				</td>
             </tr>
-        </td>
-        <td>
             <tr>
                 <td></td>
                 <td><input type="submit"><input type="reset"></td>
             </tr>
-        </td>
-
-    </tr>
     </table>
     </form>
-<?php
+HTML;
 
 
 	echo showfootern();
@@ -316,16 +301,14 @@ elseif ($action == "forgotpw") {
 		$hashme = $row['user_name'] . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
 		$hash = md5($hashme);
 		if ($hash == $_GET['si']) {
-?><h2>Reset password for <?php echo $row['user_name']." (".$row['user_email'].")";?></h2>
-            <form action="acc.php?action=forgotpw&amp;si=<?php echo $_GET['si']; ?>&amp;id=<?php echo $_GET['id']; ?>" method="post">
-            New Password: <input type="password" name="pw"><br />
+			echo '<h2>Reset password for '. $row['user_name'].' ('.$row['user_email'].')</h2><form action="acc.php?action=forgotpw&amp;si='.$_GET['si'].'&amp;id='. $_GET['id'].'" method="post">';
+			echo <<<HTML
+			New Password: <input type="password" name="pw"><br />
             New Password (confirm): <input type="password" name="pw2"><br />
             <input type="submit"><input type="reset">
             </form><br />
             Return to <a href="acc.php">Login</a>
-            <?php
-
-
+HTML;
 		} else {
 			echo "<h2>ERROR</h2>\nInvalid request.2<br />";
 		}
@@ -358,14 +341,14 @@ elseif ($action == "forgotpw") {
 		echo showfootern();
 		die();
 	}
-?>
-    <form action="acc.php?action=forgotpw" method="post">
+	echo <<<HTML
+	<form action="acc.php?action=forgotpw" method="post">
     Your username: <input type="text" name="username"><br />
     Your e-mail address: <input type="text" name="email"><br />
     <input type="submit"><input type="reset">
     </form><br />
     Return to <a href="acc.php">Login</a>
-    <?php
+HTML;
 
 
 	echo showfootern();
@@ -1005,11 +988,11 @@ elseif ($action == "usermgmt") {
 		displayfooter();
 		die();
 	}
-?>
+	echo <<<HTML
     <h1>User Management</h1>
     <strong>This interface isn't a toy. If it says you can do it, you can do it.<br />Please use this responsibly.</strong>
     <h2>Open requests</h2>
-    <?php
+HTML;
 
 
 	$query = "SELECT * FROM acc_user WHERE user_level = 'New';";
@@ -1028,10 +1011,10 @@ elseif ($action == "usermgmt") {
 		}
 		echo "</ol>\n";
 	}
-?>
+	echo <<<HTML
 	<div id="usermgmt-users">
     <h2>Users</h2>
-    <?php
+HTML;
 
 
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Approved') WHERE user_level = 'User' GROUP BY log_pend ORDER BY log_pend DESC;";
@@ -1052,12 +1035,12 @@ elseif ($action == "usermgmt") {
 		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
 		echo "$out\n";
 	}
-?>
+	echo <<<HTML
     </ol>
 	</div>
 	<div id="usermgmt-admins">
     <h2>Admins</h2>
-    <?php
+HTML;
 
 
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Promoted') WHERE user_level = 'Admin' GROUP BY log_pend ORDER BY log_time ASC;";
@@ -1112,13 +1095,13 @@ elseif ($action == "usermgmt") {
 		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;demote=$userid\">Demote!</a> (Promoted by $row[log_user] <span style=\"color:purple;\">[P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined]</span>)</small></li>";
 		echo "$out\n";
 	}
-?>
+	echo <<<HTML
     </ol>
 	</div>
     <h2>Suspended accounts</h2>
 	<div class="showhide" id="showhide-suspended-link" onclick="showhide('showhide-suspended');">[show]</div>
 	<div id="showhide-suspended" style="display: none;">
-    <?php
+HTML;
 
 
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Suspended') WHERE user_level = 'Suspended' GROUP BY log_pend ORDER BY log_id DESC;";
@@ -1138,13 +1121,13 @@ elseif ($action == "usermgmt") {
 		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;approve=$userid\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
 		echo "$out\n";
 	}
-?>
+	echo <<<HTML
     </ol>
 	</div>
     <h2>Declined accounts</h2>
 	<div class="showhide" id="showhide-declined-link" onclick="showhide('showhide-declined');">[show]</div>
 	<div id="showhide-declined" style="display: none;">
-    <?php
+HTML;
 
 
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Declined') WHERE user_level = 'Declined' GROUP BY log_pend ORDER BY log_id DESC;";
@@ -1252,7 +1235,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	}
 	$sig = " value=\"" . htmlentities($row['user_welcome_sig']) . "\"";
 	$template = $row['user_welcome_template'];
-?>
+	echo <<<HTML
     <table>
     <tr><th>Table of Contents</th></tr>
     <tr><td><a href="#1">Welcome settings</a></td></tr>
@@ -1296,7 +1279,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     Your e-mail address: <input type="text" name="email"/><br />
     <input type="submit"/><input type="reset"/>
     </form><br />
-    <?php
+HTML;
 
 
 	echo showfooter();
