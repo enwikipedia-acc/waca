@@ -455,12 +455,10 @@ function listrequests($type, $hideip) {
 			$out .= $uname . '" target="_blank">Creation</a> ';
 			
 			// 	SUL link
-			$out .= '<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/w/w/index.php?title=Special%3AGlobalUsers&username=';
+			$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user="';
 			$out .= $uname . '&group=&limit=1" target="_blank">SUL</a> ';		
 
-			// 	User contribs
-			$out .= '<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/wiki/Special:Contributions/';
-			$out .= $uname . '" target="_blank">Contribs</a> ';
+			// 	User list
 			$out .= '<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=1" target="_blank">List</a>) ' . "\n";
 
 			// Create user link
@@ -502,10 +500,12 @@ function listrequests($type, $hideip) {
 			// Creation log
 			$out .= '</small></td><td><small>(<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
 			$out .= $uname . '" target="_blank">Creation</a> ';
+			
+			// 	SUL link
+			$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user="';
+			$out .= $uname . '&group=&limit=1" target="_blank">SUL</a> ';		
 
-			// User contribs
-			$out .= '<a class="request-req" href="http://en.wikipedia.org/wiki/Special:Contributions/';
-			$out .= $uname . '" target="_blank">Contribs</a> ';
+			// User list
 			$out .= '<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=1" target="_blank">List</a>) ' . "\n";
 
 			// Create user link
