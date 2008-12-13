@@ -529,6 +529,8 @@ elseif ($action == "messagemgmt") {
 	die();
 }
 elseif ($action == "sban" && $_GET['user'] != "") {
+	if(!hasright($_SESSION['user'], "Admin"))
+		die("Only administrators may ban users");
 	if (!isset($_POST['banreason'])) {
 		echo "<h2>ERROR</h2>\n<br />You must specify a ban reason.\n";
 		echo showfooter();
@@ -569,8 +571,9 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	die();
 }
 elseif ($action == "unban" && $_GET['id'] != "") {
-
 	$siuser = sanitize($_SESSION['user']);
+	if(!hasright($_SESSION['user'], "Admin"))
+			die("Only administrators may ban users");
 	$bid = sanitize($_GET['id']);
 	$query = "SELECT * FROM acc_ban WHERE ban_id = '$bid';";
 	$result = mysql_query($query);
