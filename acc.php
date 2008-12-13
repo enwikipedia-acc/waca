@@ -1232,10 +1232,10 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_welcome'] > 0) {
 		$welcoming = " checked=\"checked\"";
-	}
+	} else { $welcoming = ""; }
 	if ($row['user_secure'] > 0) {
 		$securepref = " checked=\"checked\"";
-	}
+	} else { $securepref = ""; }
 	$sig = " value=\"" . htmlentities($row['user_welcome_sig']) . "\"";
 	$template = $row['user_welcome_template'];
 	echo '<table>';
