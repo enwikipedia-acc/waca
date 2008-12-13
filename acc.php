@@ -1238,18 +1238,20 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	}
 	$sig = " value=\"" . htmlentities($row['user_welcome_sig']) . "\"";
 	$template = $row['user_welcome_template'];
-	echo <<<HTML
-    <table>
-    <tr><th>Table of Contents</th></tr>
-    <tr><td><a href="#1">Welcome settings</a></td></tr>
-    <tr><td><a href="#2">Change password</a></td></tr>
-    </table>
-    <a name="1"></a><h2>General settings</h2>
-    <form action="acc.php?action=welcomeperf" method="post">
-    <input type="checkbox" name="secureenable"<?php echo $securepref ?>/> Enable use of the secure server<br /><br />
-    <input type="checkbox" name="welcomeenable"<?php echo $welcoming ?>/> Enable <a href="http://en.wikipedia.org/wiki/User:SQLBot-Hello">SQLBot-Hello</a> welcoming of the users I create<br /><br />
-    Your signature (wikicode) <input type="text" name="sig" size ="40"<?php echo $sig; ?>/><br />
-    <i>This would be the same as ~~~ on-wiki. No date, please.</i><br />
+	echo '<table>';
+    echo '<tr><th>Table of Contents</th></tr>';
+    echo '<tr><td><a href="#1">Welcome settings</a></td></tr>';
+    echo '<tr><td><a href="#2">Change password</a></td></tr>';
+    echo '</table>';
+    echo '<a name="1"></a><h2>General settings</h2>';
+    echo '<form action="acc.php?action=welcomeperf" method="post">';
+    echo '<input type="checkbox" name="secureenable"'.$securepref.'/> Enable use of the secure server<br /><br />';
+    echo '<input type="checkbox" name="welcomeenable"'.$welcoming.'/> Enable <a href="http://en.wikipedia.org/wiki/User:SQLBot-Hello">SQLBot-Hello</a> welcoming of the users I create<br /><br />';
+    echo 'Your signature (wikicode) <input type="text" name="sig" size ="40"'. $sig.'/><br />';
+    echo '<i>This would be the same as ~~~ on-wiki. No date, please.</i><br />';
+    
+    // TODO: clean up into nicer code, rather than coming out of php
+    ?>
     <select name="template" size="0">
     <option value="welcome"<?php if($template == "welcone") { echo " selected=\"selected\""; } ?>>{{welcome|user}} ~~~~</option>
     <option value="welcomeg"<?php if($template == "welcomeg") { echo " selected=\"selected\""; } ?>>{{welcomeg|user}} ~~~~</option>
@@ -1270,10 +1272,10 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     <option value="welcome!"<?php if($template == "welcome!") { echo " selected=\"selected\""; } ?>>{{Welcome!|from=User|ps=~~~~}}</option>
     <option value="laquatique"<?php if($template == "laquatique") { echo " selected=\"selected\""; } ?>>{{subst:User:L'Aquatique/welcome}} ~~~~</option>
     <option value="chetblong"<?php if($template == "chetblong") { echo " selected=\"selected\""; } ?>>{{subst:User:Chet B Long/welcome|user|||~~~~}}</option>
-    </select><br />
-    <i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>.</i><br />
+    </select><br /><?php
+    echo '<i>If you\'d like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>.</i><br />';
 
-
+	echo <<<HTML
     <input type="submit"/><input type="reset"/>
     </form>
     <a name="2"></a><h2>Change your password</h2>
