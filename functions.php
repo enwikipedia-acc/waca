@@ -456,7 +456,7 @@ function listrequests($type, $hideip) {
 			
 			// 	SUL link
 			$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user="';
-			$out .= $uname . '&group=&limit=1" target="_blank">SUL</a> ';		
+			$out .= $uname . '" target="_blank">SUL</a> ';		
 
 			// 	User list
 			$out .= '<a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=1" target="_blank">List</a>) ' . "\n";
@@ -503,7 +503,7 @@ function listrequests($type, $hideip) {
 			
 			// 	SUL link
 			$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user="';
-			$out .= $uname . '&group=&limit=1" target="_blank">SUL</a> ';		
+			$out .= $uname . '" target="_blank">SUL</a> ';		
 
 			// User list
 			$out .= '<a class="request-req" href="http://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=1" target="_blank">List</a>) ' . "\n";
