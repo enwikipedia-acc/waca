@@ -545,6 +545,46 @@ elseif ($action == "messagemgmt") {
 	echo showfooter();
 	die();
 }
+elseif ($action == "sban" && $_GET['user'] != "") {
+	if (!isset($_POST['banreason'])) {
+		echo "<h2>ERROR</h2>\n<br />You must specify a ban reason.\n";
+		echo showfooter();
+		die();
+	}
+	$duration = sanitize($_POST['duration']);
+	if ($duration == "-1") {
+		$duration = -1;
+	} else {
+		$duration = $duration +time();
+	}
+	$reason = sanitize($_POST['banreason']);
+	$siuser = sanitize($_GET['user']);
+	$target = sanitize($_GET['target']);
+	$type = sanitize($_GET['type']);
+	$now = date("Y-m-d H-i-s");
+	upcsum($target);
+	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$target', '$siuser', 'Banned', '$now');";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$query = "INSERT INTO acc_ban (ban_type, ban_target, ban_user, ban_reason, ban_date, ban_duration) VALUES ('$type', '$target', '$siuser', '$reason', '$now', $duration);";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	echo "Banned " . htmlentities($_GET['target']) . " for $reason<br />\n";
+	if ( !isset($duration) || $duration == "-1") {
+		$until = "Indefinite";
+	} else {
+		$until = date("F j, Y, g:i a", $duration);
+	}
+	if ($until == 'Indefinite') {
+		sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " indefinitely");
+	} else {
+		sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " until $until");
+	}
+	echo showfooter();
+	die();
+}
 elseif ($action == "unban" && $_GET['id'] != "") {
 
 	$siuser = sanitize($_SESSION['user']);
@@ -635,7 +675,7 @@ elseif ($action == "ban") {
 			echo showfooter();
 			die();
 		} else {
-			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=ban&amp;user=$siuser&amp;target=$target&amp;type=$type\" method=\"post\">Ban target: $target\n<br /><table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr></table><br /><input type=\"submit\"></form>\n";
+			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser&amp;target=$target&amp;type=$type\" method=\"post\">Ban target: $target\n<br /><table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr></table><br /><input type=\"submit\"></form>\n";
 		}
 	}
 	else {
