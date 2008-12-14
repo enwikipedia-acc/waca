@@ -420,6 +420,7 @@ function listrequests($type, $hideip) {
 			$out .= '(</span><b><span class="request-mult">' . $otheremailreqs['count'] . '</span></b><span class="request-src">)';
 		}
 
+		// TODO: this would be much nicer if the if() specified the wiki url, and everything else was a sub of that - it would cut down on duplicate code significantly here.
 		if ( $row4['user_secure'] > 0 ) {
             
 			if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin')) {
@@ -466,7 +467,7 @@ function listrequests($type, $hideip) {
 
 			// Create user link
 			$out .= '<b><a class="request-req" href="https://secure.wikimedia.org/wikipedia/en/w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-			$out .= $uname . '&amp;wpEmail=' . $pend_email . '&amp;uselang=en-acc" target="_blank">Create!</a></b></span></small></td> ';
+			$out .= $uname . '&amp;wpEmail=' . $pend_email . '&amp;uselang=en-acc" target="_blank">Create!</a></b></span></small> ';
 
 		} else {
 			if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin')) {
