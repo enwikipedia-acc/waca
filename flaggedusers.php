@@ -22,7 +22,7 @@ echo "<h2>List of users on enwiki with accountcreator flag</h2><table>";
 echo "<tr><th>en.wiki User ID</th><th>en.wiki Username</th></tr>";
 while($row = mysql_fetch_assoc($results))
 {
-echo "<tr><th>".$row['g.ug_user']."</th><td>".$row['n.user_name']."</td></tr>";
+echo "<tr><th>".$row['ug_user']."</th><td>".$row['user_name']."</td></tr>";
 }
 
 
