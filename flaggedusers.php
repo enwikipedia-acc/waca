@@ -19,10 +19,13 @@ $query = 'select g.ug_user, n.user_name from user_groups g inner join user_ids n
 $results = mysql_query($query,$wikilink) or die();
 
 echo "<h2>List of users on enwiki with accountcreator flag</h2><table>";
-echo "<tr><th>en.wiki User ID</th><th>en.wiki Username</th></tr>";
+echo "<tr><th>en.wiki User ID</th><th>en.wiki Username</th><th>acc. User ID</th><th>acc. Username</th><th>acc. Access level</th></tr>";
 while($row = mysql_fetch_assoc($results))
 {
-echo "<tr><th>".$row['ug_user']."</th><td>".$row['user_name']."</td></tr>";
+	$query="SELECT user_id, user_name, user_level FROM `acc_user` WHERE user_onwikiname = '".$row['user_name']."' LIMIT 1;";
+	$accresult = mysql_query($query, $acclink);
+	$accrow = mysql_fetch_assoc($accresult);
+	echo "<tr><th>".$row['ug_user']."</th><td>".$row['user_name']."</td><td>".$accrow['user_id']."</td><td>".$accrow['user_name']."</td><td>".$accrow['user_level']."</td></tr>";
 }
 
 
