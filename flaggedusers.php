@@ -27,9 +27,9 @@ while($row = mysql_fetch_assoc($results))
 	$query="SELECT user_id, user_name, user_level FROM `acc_user` WHERE user_onwikiname = '".$row['user_name']."' LIMIT 1;";
 	$accresult = mysql_query($query, $acclink);
 	if($accresult){
-		$accrow = mysql_fetch_assoc($accresult);
+		$accrow = mysql_fetch_assoc($accresult) or array('user_name' => '--', 'user_id' => '--', 'user_level' => '--');
 	} else { $accrow = array('user_name' => '--', 'user_id' => '--', 'user_level' => '--'); }
-	echo "<tr><th>".$row['ug_user']."</th><td>".$row['user_name']."</td><td>".$accrow['user_id']."</td><td>".$accrow['user_name']."</td><td>".$accrow['user_level']."</td></tr>";
+	echo "<tr><td>".$row['ug_user']."</td><th>".$row['user_name']."</th><td>".$accrow['user_id']."</td><td>".$accrow['user_name']."</td><td>".$accrow['user_level']."</td></tr>";
 }
 
 
