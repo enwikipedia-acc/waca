@@ -22,6 +22,7 @@ $query = 'select g.ug_user, n.user_name from user_groups g inner join user_ids n
 $results = mysql_query($query,$wikilink) or die();
 echo "<h2>List of users on enwiki with accountcreator flag not on tool</h2><table cellspacing=\"0\">";
 echo "<tr><th>en.wiki User ID</th><th>en.wiki Username</th>";//<th>acc. User ID</th><th>acc. Username</th><th>acc. Access level</th></tr>";
+$currentreq = 0;
 while($row = mysql_fetch_assoc($results))
 {
 	$query='SELECT user_id, user_name, user_level FROM `acc_user` WHERE user_onwikiname = "'.$row['user_name'].'" LIMIT 1;';
@@ -34,7 +35,14 @@ while($row = mysql_fetch_assoc($results))
 		$accrow = array('user_name' => '--', 'user_id' => '--', 'user_level' => '--');
 	}
 	if( ($accrow['user_name'] == '--') ||  ($row['user_name']=='--')){
-		echo "<tr><td>".$row['ug_user']."</td><th>".$row['user_name']."</th>"; //<td>".$accrow['user_id']."</td><td>".$accrow['user_name']."</td><td>".$accrow['user_level']."</td></tr>";
+		$currentreq++;
+		echo '<tr';
+		if ($currentreq % 2 == 0) {
+			echo ' class="alternate">';
+		} else {
+			echo '>';
+		}
+		echo "<td>".$row['ug_user']."</td><th>".$row['user_name']."</th>"; //<td>".$accrow['user_id']."</td><td>".$accrow['user_name']."</td><td>".$accrow['user_level']."</td></tr>";
 	}
 }
 
