@@ -20,7 +20,7 @@ $acclink = mysql_connect($toolserver_host,$toolserver_username, $toolserver_pass
 
 $query = 'select g.ug_user, n.user_name from user_groups g inner join user_ids n on g.ug_user=n.user_id where ug_group = "accountcreator";';
 $results = mysql_query($query,$wikilink) or die();
-echo "<h2>List of users on enwiki with accountcreator flag</h2><table>";
+echo "<h2>List of users on enwiki with accountcreator flag not on tool</h2><table>";
 echo "<tr><th>en.wiki User ID</th><th>en.wiki Username</th><th>acc. User ID</th><th>acc. Username</th><th>acc. Access level</th></tr>";
 while($row = mysql_fetch_assoc($results))
 {
@@ -33,7 +33,9 @@ while($row = mysql_fetch_assoc($results))
 	{
 		$accrow = array('user_name' => '--', 'user_id' => '--', 'user_level' => '--');
 	}
-	echo "<tr><td>".$row['ug_user']."</td><th>".$row['user_name']."</th><td>".$accrow['user_id']."</td><td>".$accrow['user_name']."</td><td>".$accrow['user_level']."</td></tr>";
+	if( ($accrow['user_name'] == '') ||  ($row['user_name']=='')){
+		echo "<tr><td>".$row['ug_user']."</td><th>".$row['user_name']."</th><td>".$accrow['user_id']."</td><td>".$accrow['user_name']."</td><td>".$accrow['user_level']."</td></tr>";
+	}
 }
 
 
