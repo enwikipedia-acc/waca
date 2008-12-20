@@ -92,7 +92,7 @@ $nameblacklist[grawp13] .= ')/i';*/
 #$nameblacklist[grawp8] = '/(?i:(g|9|q)r(a|4)(w|vv|.)(p|.))/i';
 
 #$nameblacklist[grawp9] = '(?i:p(w|vv|?)(a|4)r(g|9|q))';
-$nameblacklist['upolicy4'] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|b[0o]t|st[3e]w[4a]rd|j[1i]mb[0o]).*/i';
+$nameblacklist['upolicy4'] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|st[3e]w[4a]rd|j[1i]mb[0o]).*/i';
 
 //E-Mail Blacklist
 $emailblacklist['grawp1'] = '/(shit|fuck|phuck)/i';
