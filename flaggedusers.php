@@ -33,7 +33,7 @@ while($row = mysql_fetch_assoc($results))
 	{
 		$accrow = array('user_name' => '--', 'user_id' => '--', 'user_level' => '--');
 	}
-	if( ($accrow['user_name'] == '') ||  ($row['user_name']=='')){
+	if( ($accrow['user_name'] == '--') ||  ($row['user_name']=='--')){
 		echo "<tr><td>".$row['ug_user']."</td><th>".$row['user_name']."</th><td>".$accrow['user_id']."</td><td>".$accrow['user_name']."</td><td>".$accrow['user_level']."</td></tr>";
 	}
 }
