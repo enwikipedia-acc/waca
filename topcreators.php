@@ -80,8 +80,9 @@ foreach ($top5 as $top1) {
 }
 $top5out .= "</table>";
 
+$yesterday = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 1));
 
-$topyq = "select log_user,count(*) from acc_log where log_time like '$now%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
+$topyq = "select log_user,count(*) from acc_log where log_time like '$yesterday%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
 $result = mysql_query($topyq);
 if (!$result)
 	Die("ERROR: No result returned.");
@@ -90,7 +91,7 @@ while ($topy = mysql_fetch_assoc($result)) {
 	array_push($top5y, $topy);
 }
 
-//Get today's top 5
+//Get yesterday's top 5
 $top5yout = "<h2>Yesterday's account creators</h2>";
 $top5yout .= "<table><tr><th># Created</th><th>Username</th></tr>";
 foreach ($top5y as $topy1) {
