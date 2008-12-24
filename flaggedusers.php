@@ -36,14 +36,16 @@ if( isset( $_SESSION['user'] ) ) {
 	$sessionuser = "";
 }
 
+@mysql_select_db($antispoof_db, $wikilink);
+@mysql_select_db($toolserver_database, $acclink);
+
+
 if( !(hasrightlink($sessionuser, "Admin", $acclink) || hasrightlink($sessionuser, "User", $acclink)))
 	die("You are not authorized to use this feature. Only logged in users may use this statistics page.");
 
 
 displayheader();
 	
-@mysql_select_db($antispoof_db, $wikilink);
-@mysql_select_db($toolserver_database, $acclink);
 
 $query = 'select g.ug_user, n.user_name from user_groups g inner join user_ids n on g.ug_user=n.user_id where ug_group = "accountcreator";';
 $results = mysql_query($query,$wikilink) or die();

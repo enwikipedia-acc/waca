@@ -34,7 +34,7 @@ if( isset( $_SESSION['user'] ) ) {
 }
 
 if( !(hasright($sessionuser, "Admin") || hasright($sessionuser, "User")))
-	die("You are not authorized to use this feature");
+	die("You are not authorized to use this feature. Only logged in users may use this statistics page.");
 
 
 
