@@ -80,10 +80,33 @@ foreach ($top5 as $top1) {
 }
 $top5out .= "</table>";
 
+
+$topyq = "select log_user,count(*) from acc_log where log_time like '$now%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
+$result = mysql_query($topyq);
+if (!$result)
+	Die("ERROR: No result returned.");
+$top5y = array ();
+while ($topy = mysql_fetch_assoc($result)) {
+	array_push($top5y, $topy);
+}
+
+//Get today's top 5
+$top5yout = "<h2>Yesterday's account creators</h2>";
+$top5yout .= "<table><tr><th># Created</th><th>Username</th></tr>";
+foreach ($top5y as $topy1) {
+	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$topy1['log_user']."\";";
+	$userr = mysql_query($userq);
+	$user = mysql_fetch_assoc($userr);
+	$top5yout .= "<tr><td>".$topy1['count(*)']."</td><td><a href=\"users.php?viewuser=".$user['user_id']."\">".$topy1['log_user'] . "</a></td></tr>";
+}
+$top5yout .= "</table>";
+
+
 echo makehead( $sessionuser );
 echo '<div id="content">';
 echo $top5aout;
 echo $top5out;
+echo $top5yout;
 echo "</div>";
 echo showfooter();
 ?>
