@@ -110,7 +110,9 @@ while ($topy = mysql_fetch_assoc($result)) {
 //Get yesterday's top 5
 $top5yout = "<h2>Yesterday's account creators</h2>";
 $top5yout .= "<table cellspacing=\"0\"><tr><th>Position</th><th># Created</th><th>Username</th></tr>";
+$currentreq=0;
 foreach ($top5y as $topy1) {
+	$currentreq +=1;
 	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$topy1['log_user']."\";";
 	$userr = mysql_query($userq);
 	$user = mysql_fetch_assoc($userr);
