@@ -49,13 +49,21 @@ while ($topa = mysql_fetch_assoc($result)) {
 	array_push($top5a, $topa);
 }
 $top5aout = "<h2>All time top account creators</h2>";
-$top5aout .= "<table><tr><th># Created</th><th>Username</th></tr>";
+$top5aout .= "<table><tr><th>Position</th><th># Created</th><th>Username</th></tr>";
+$currentreq = 0;
 foreach ($top5a as $top1a) {
+	$currentreq+=1;
 	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$top1a['log_user']."\";";
 	$userr = mysql_query($userq);
 	$user = mysql_fetch_assoc($userr);
 	
-	$top5aout .= "<tr><td>".$top1a['count(*)']."</td><td><a href=\"users.php?viewuser=".$user['user_id']."\">".$top1a['log_user'] . "</a></td></tr>";
+	$top5aout .= "<tr";
+	if ($currentreq % 2 == 0) {
+		$top5aout .= ' class="alternate">';
+	} else {
+		$top5aout .= '>';
+	}
+	$top5aout .= "<th>$currentreq.</th><td>".$top1a['count(*)']."</td><td><a href=\"users.php?viewuser=".$user['user_id']."\">".$top1a['log_user'] . "</a></td></tr>";
 }
 $top5aout .= "</table>";
 
@@ -71,12 +79,20 @@ while ($top = mysql_fetch_assoc($result)) {
 
 //Get today's top 5
 $top5out = "<h2>Today's account creators</h2>";
-$top5out .= "<table><tr><th># Created</th><th>Username</th></tr>";
+$top5out .= "<table><tr><th>Position</th><th># Created</th><th>Username</th></tr>";
+$currentreq=0;
 foreach ($top5 as $top1) {
+	$currentreq +=1;
 	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$top1['log_user']."\";";
 	$userr = mysql_query($userq);
 	$user = mysql_fetch_assoc($userr);
-	$top5out .= "<tr><td>".$top1['count(*)']."</td><td><a href=\"users.php?viewuser=".$user['user_id']."\">".$top1['log_user'] . "</a></td></tr>";
+		$top5out .= "<tr";
+	if ($currentreq % 2 == 0) {
+		$top5out .= ' class="alternate">';
+	} else {
+		$top5out .= '>';
+	}
+	$top5out .= "<th>$currentreq.</th><td>".$top1['count(*)']."</td><td><a href=\"users.php?viewuser=".$user['user_id']."\">".$top1['log_user'] . "</a></td></tr>";
 }
 $top5out .= "</table>";
 
@@ -93,12 +109,18 @@ while ($topy = mysql_fetch_assoc($result)) {
 
 //Get yesterday's top 5
 $top5yout = "<h2>Yesterday's account creators</h2>";
-$top5yout .= "<table><tr><th># Created</th><th>Username</th></tr>";
+$top5yout .= "<table><tr><th>Position</th><th># Created</th><th>Username</th></tr>";
 foreach ($top5y as $topy1) {
 	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$topy1['log_user']."\";";
 	$userr = mysql_query($userq);
 	$user = mysql_fetch_assoc($userr);
-	$top5yout .= "<tr><td>".$topy1['count(*)']."</td><td><a href=\"users.php?viewuser=".$user['user_id']."\">".$topy1['log_user'] . "</a></td></tr>";
+	$top5yout .= "<tr";
+	if ($currentreq % 2 == 0) {
+		$top5yout .= ' class="alternate">';
+	} else {
+		$top5yout .= '>';
+	}
+	$top5yout .= "<th>$currentreq.</th><td>".$topy1['count(*)']."</td><td><a href=\"users.php?viewuser=".$user['user_id']."\">".$topy1['log_user'] . "</a></td></tr>";
 }
 $top5yout .= "</table>";
 
