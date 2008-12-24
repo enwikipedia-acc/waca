@@ -11,41 +11,12 @@ select g.ug_user, n.user_name from user_groups g inner join user_ids n on g.ug_u
 require_once('config.inc.php');
 require_once('functions.php');
 
-function hasrightlink($username, $checkright, $databaselink) {
-	$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
-	$result = mysql_query($query, $databaselink);
-	if (!$result) {
-		Die("Query failed: $query ERROR: " . mysql_error());
-	}
-	$row = mysql_fetch_assoc($result);
-	$rights = explode(':', $row['user_level']);
-	foreach( $rights as $right) {
-		if($right == $checkright ) {
-			return true;
-		}
-	}
-	return false;
-}
+displayheader();
 
 $wikilink = mysql_connect($antispoof_host, $toolserver_username, $toolserver_password, true) or die("Can't contact MediaWiki database.");
 $acclink = mysql_connect($toolserver_host,$toolserver_username, $toolserver_password, true) or die("Can't contact ACC database.");
-
-if( isset( $_SESSION['user'] ) ) {
-	$sessionuser = $_SESSION['user'];
-} else {
-	$sessionuser = "";
-}
-
 @mysql_select_db($antispoof_db, $wikilink);
 @mysql_select_db($toolserver_database, $acclink);
-
-
-if( !(hasrightlink($sessionuser, "Admin", $acclink) || hasrightlink($sessionuser, "User", $acclink)))
-	die("You are not authorized to use this feature. Only logged in users may use this statistics page.");
-
-
-displayheader();
-	
 
 $query = 'select g.ug_user, n.user_name from user_groups g inner join user_ids n on g.ug_user=n.user_id where ug_group = "accountcreator";';
 $results = mysql_query($query,$wikilink) or die();
