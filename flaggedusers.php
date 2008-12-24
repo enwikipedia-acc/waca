@@ -21,7 +21,7 @@ $acclink = mysql_connect($toolserver_host,$toolserver_username, $toolserver_pass
 $query = 'select g.ug_user, n.user_name from user_groups g inner join user_ids n on g.ug_user=n.user_id where ug_group = "accountcreator";';
 $results = mysql_query($query,$wikilink) or die();
 echo "<h2>List of users on enwiki with accountcreator flag not on tool</h2><table cellspacing=\"0\">";
-echo "<tr><th>en.wiki User ID</th><th>en.wiki Username</th><th /><th />";//<th>acc. User ID</th><th>acc. Username</th><th>acc. Access level</th></tr>";
+echo "<tr><th>en.wiki User ID</th><th>en.wiki Username</th><th /><th /><th /></tr>";//<th>acc. User ID</th><th>acc. Username</th><th>acc. Access level</th></tr>";
 $currentreq = 0;
 while($row = mysql_fetch_assoc($results))
 {
@@ -42,7 +42,7 @@ while($row = mysql_fetch_assoc($results))
 		} else {
 			echo '>';
 		}
-		echo "<td>".$row['ug_user']."</td><td><a href=\"http://en.wikipedia.org/wiki/User:".$row['user_name']."\">".$row['user_name']."</a></td><td><a href=\"http://en.wikipedia.org/wiki/User_talk:".$row['user_name']."\">talk</a></td><td><a href=\"http://en.wikipedia.org/wiki/Special:Contributions/".$row['user_name']."\">contribs</a></td>"; //<td>".$accrow['user_id']."</td><td>".$accrow['user_name']."</td><td>".$accrow['user_level']."</td></tr>";
+		echo "<td>".$row['ug_user']."</td><td><a href=\"http://en.wikipedia.org/wiki/User:".$row['user_name']."\">".$row['user_name']."</a></td><td><a href=\"http://en.wikipedia.org/wiki/User_talk:".$row['user_name']."\">talk</a></td><td><a href=\"http://en.wikipedia.org/wiki/Special:Contributions/".$row['user_name']."\">contribs</a></td><td><a href=\"http://en.wikipedia.org/wiki/Special:UserRights/".$row['user_name']."\">rights</a></td>"; //<td>".$accrow['user_id']."</td><td>".$accrow['user_name']."</td><td>".$accrow['user_level']."</td></tr>";
 	}
 }
 
