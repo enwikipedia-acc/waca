@@ -43,7 +43,7 @@ echo '<div id="content">
 	<li><a href="users.php">User List</a></li>
 	<li><a href="oldusers.php">Inactive User Accounts</a></li>
 	<li><a href="flaggedusers.php">Flagged User Accounts</a></li>
-	<li><a href="nonexistantrequests.php">Non-existant requests</a></li>
+	<li><a href="nonexistantrequests.php">Erroneous requests</a></li>
 	<li><a href="topcreators.php">Top Account Creators</a></li>
 </ul>';
 echo showfooter();
