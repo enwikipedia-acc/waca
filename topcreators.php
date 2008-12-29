@@ -217,6 +217,5 @@ echo $top5out;
 echo $top5yout;
 echo $top5wout;
 echo $top5mout;
-echo "</div>";
 echo showfooter();
 ?>

@@ -20,4 +20,5 @@ AND ( acc_log.log_action = "Closed 1"
 api.php?action=query&list=users&ususers=Stwalkerster|Stwalkersock2&usprop=groups|editcount&format=php
 
 */
+die('not implemented yet');
 ?>
