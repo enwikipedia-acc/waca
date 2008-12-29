@@ -37,8 +37,9 @@ if( !(hasright($sessionuser, "Admin") || hasright($sessionuser, "User")))
 	die("You are not authorized to use this feature. Only logged in users may use this statistics page.");
 
 
-
-$now = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d")));
+/*
+ * Retrieve all-time stats
+ */
 
 $topqa = "select log_user,count(*) from acc_log where log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
 $result = mysql_query($topqa);
@@ -67,6 +68,10 @@ foreach ($top5a as $top1a) {
 }
 $top5aout .= "</table>";
 
+/*
+ * Retrieve today's stats (so far)
+ */
+$now = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d")));
 
 $topq = "select log_user,count(*) from acc_log where log_time like '$now%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
 $result = mysql_query($topq);
@@ -78,7 +83,7 @@ while ($top = mysql_fetch_assoc($result)) {
 }
 
 //Get today's top 5
-$top5out = "<h2>Today's account creators</h2>";
+$top5out = "<a name=\"today\"></a><h2>Today's account creators</h2>";
 $top5out .= "<table cellspacing=\"0\"><tr><th>Position</th><th># Created</th><th>Username</th></tr>";
 $currentreq=0;
 foreach ($top5 as $top1) {
@@ -96,6 +101,11 @@ foreach ($top5 as $top1) {
 }
 $top5out .= "</table>";
 
+/*
+ * Retrieve Yesterday's stats
+ */
+
+
 $yesterday = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 1));
 
 $topyq = "select log_user,count(*) from acc_log where log_time like '$yesterday%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
@@ -107,12 +117,11 @@ while ($topy = mysql_fetch_assoc($result)) {
 	array_push($top5y, $topy);
 }
 
-//Get yesterday's top 5
-$top5yout = "<h2>Yesterday's account creators</h2>";
+$top5yout = "<a name=\"yesterday\"></a><h2>Yesterday's account creators</h2>";
 $top5yout .= "<table cellspacing=\"0\"><tr><th>Position</th><th># Created</th><th>Username</th></tr>";
 $currentreq=0;
 foreach ($top5y as $topy1) {
-	$currentreq +=1;
+	$currentreq +=1; 
 	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$topy1['log_user']."\";";
 	$userr = mysql_query($userq);
 	$user = mysql_fetch_assoc($userr);
@@ -126,12 +135,88 @@ foreach ($top5y as $topy1) {
 }
 $top5yout .= "</table>";
 
+/*
+ *  Retrieve last 7 days
+ */
+
+
+$lastweek = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 7));
+
+$topwq = "select log_user,count(*) from acc_log where log_time > '$lastweek%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
+$result = mysql_query($topwq);
+if (!$result)
+	Die("ERROR: No result returned.");
+$top5w = array ();
+while ($topw = mysql_fetch_assoc($result)) {
+	array_push($top5w, $topw);
+}
+
+$top5wout = "<a name=\"lastweek\"></a><h2>Last 7 days' account creators</h2>";
+$top5wout .= "<table cellspacing=\"0\"><tr><th>Position</th><th># Created</th><th>Username</th></tr>";
+$currentreq=0;
+foreach ($top5w as $topw1) {
+	$currentreq +=1;
+	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$topw1['log_user']."\";";
+	$userr = mysql_query($userq);
+	$user = mysql_fetch_assoc($userr);
+	$top5wout .= "<tr";
+	if ($currentreq % 2 == 0) {
+		$top5wout .= ' class="alternate">';
+	} else {
+		$top5wout .= '>';
+	}
+	$top5wout .= "<th>$currentreq.</th><td>".$topw1['count(*)']."</td><td><a href=\"users.php?viewuser=".$user['user_id']."\">".$topw1['log_user'] . "</a></td></tr>";
+}
+$top5wout .= "</table>"; 
+
+/*
+ * Retrieve last month's stats
+ */
+
+$lastmonth = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 28));
+
+$topmq = "select log_user,count(*) from acc_log where log_time > '$lastmonth%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
+$result = mysql_query($topmq);
+if (!$result)
+	Die("ERROR: No result returned.");
+$top5m = array ();
+while ($topm = mysql_fetch_assoc($result)) {
+	array_push($top5m, $topm);
+}
+
+$top5mout = "<a name=\"lastmonth\" ></a><h2>Last 28 days' account creators</h2>";
+$top5mout .= "<table cellspacing=\"0\"><tr><th>Position</th><th># Created</th><th>Username</th></tr>";
+$currentreq=0;
+foreach ($top5m as $topm1) {
+	$currentreq +=1;
+	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$topm1['log_user']."\";";
+	$userr = mysql_query($userq);
+	$user = mysql_fetch_assoc($userr);
+	$top5mout .= "<tr";
+	if ($currentreq % 2 == 0) {
+		$top5mout .= ' class="alternate">';
+	} else {
+		$top5mout .= '>';
+	}
+	$top5mout .= "<th>$currentreq.</th><td>".$topm1['count(*)']."</td><td><a href=\"users.php?viewuser=".$user['user_id']."\">".$topm1['log_user'] . "</a></td></tr>";
+}
+$top5mout .= "</table>"; 
+
+
+/*
+ *  Output
+ */
 
 echo makehead( $sessionuser );
 echo '<div id="content">';
+echo "<h2>Contents</h2><ul><li><a href=\"#today\">Today's creators</a></li><li><a href=\"#yesterday\">Yesterday's creators</a></li><li><a href=\"#lastweek\">Last 7 days</a></li><li><a href=\"#lastmonth\">Last 28 days</a></li></ul>";
+
+
 echo $top5aout;
 echo $top5out;
 echo $top5yout;
+echo $top5wout;
+echo $top5mout;
 echo "</div>";
 echo showfooter();
 ?>
