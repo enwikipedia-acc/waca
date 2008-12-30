@@ -97,7 +97,7 @@
 		'*!*@wikimedia/cmelbye'						=> 'developer',
 		'*!*@wikipedia/FastLizard4'					=> 'developer',
 		'*!*@wikipedia/Prodego'					        => 'developer',
-		'*!*@wikipedia/FunPika'					        => 'developer',
+		'*!*@yourwiki/staff/funpika'					        => 'developer',
 		'*!*@*'								=> '*'
 		);
 
