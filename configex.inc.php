@@ -50,6 +50,7 @@ if (file_exists("config.local.inc.php")) {
 	//a few options
 	$enableRenames = 1;
 	$enableEmailConfirm = 1;
+	$enableSQLError = 0;
 	
 	//antispoof configuration
 	$antispoof_equivset = "equivset.php";
