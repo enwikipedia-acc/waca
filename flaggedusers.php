@@ -11,6 +11,9 @@ select g.ug_user, n.user_name from user_groups g inner join user_ids n on g.ug_u
 require_once('config.inc.php');
 require_once('functions.php');
 
+// check to see if the database is unavailable
+readOnlyMessage();
+
 displayheader();
 
 $wikilink = mysql_connect($antispoof_host, $toolserver_username, $toolserver_password, true) or die("Can't contact MediaWiki database.");

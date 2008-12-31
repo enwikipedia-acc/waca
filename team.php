@@ -23,6 +23,9 @@ require_once ( 'config.inc.php' );
 require_once ( 'devlist.php' );
 require_once ( 'functions.php' );
 
+// check to see if the database is unavailable
+readOnlyMessage();
+
 // Continue session
 session_start();
 

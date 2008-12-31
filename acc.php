@@ -26,6 +26,9 @@ require_once ( 'devlist.php' );
 require_once ( 'functions.php' );
 $version = "0.9.7";
 
+// check to see if the database is unavailable
+readOnlyMessage();
+
 $link = mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
 if ( !$link ) {
 	die( 'Could not connect: ' . mysql_error( ) );

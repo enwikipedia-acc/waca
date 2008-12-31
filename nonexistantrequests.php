@@ -20,5 +20,9 @@ AND ( acc_log.log_action = "Closed 1"
 api.php?action=query&list=users&ususers=Stwalkerster|Stwalkersock2&usprop=groups|editcount&format=php
 
 */
+
+// check to see if the database is unavailable
+readOnlyMessage();
+
 die('not implemented yet (requests marked "done" or "taken" on the tool, which actually don\'t exist on enwiki)');
 ?>

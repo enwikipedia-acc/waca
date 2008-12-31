@@ -25,6 +25,9 @@
 require_once ( 'config.inc.php' );
 require_once ( 'functions.php' );
 
+// check to see if the database is unavailable
+readOnlyMessage();
+
 mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 @ mysql_select_db($toolserver_database) or print mysql_error();
 

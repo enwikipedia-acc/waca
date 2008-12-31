@@ -53,6 +53,8 @@ if (file_exists("config.local.inc.php")) {
 	$enableReserving = 0;
 	$enableSQLError = 0;
 	
+	$dontUseDb = 0;
+	
 	//antispoof configuration
 	$antispoof_equivset = "equivset.php";
 	$antispoof_host = "sql-s1";
