@@ -58,7 +58,7 @@ function setForceLogout( $uid ) {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "UPDATE acc_user SET user_forcelogout = '1' WHERE user_id = '$uid';";
 	$result = mysql_query($query);
 }
@@ -70,11 +70,11 @@ function forceLogout( $uid ) {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "SELECT user_forcelogout FROM acc_user WHERE user_id = '$uid';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
+		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	$row = mysql_fetch_assoc($result);
 	if( $row['user_forcelogout'] == "1" ) {
 		$_SESSION = array();
@@ -98,12 +98,12 @@ function getSpoofs( $username ) {
 	global $antispoof_db;
 	global $antispoof_table;
 	$spooflink = mysql_connect($antispoof_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($antispoof_db, $spooflink) or print mysql_error();
+	@ mysql_select_db($antispoof_db, $spooflink) or sqlerror(mysql_error(),"Error selecting database.");
 	$fone = sanitize(strtr($username,$equivset));
 	//$fone = mysql_real_escape_string( $fone );
 	$query = "SELECT su_name FROM ".$antispoof_table." WHERE su_normalized = 'v2:$fone';";
 	$result = mysql_query($query, $spooflink);
-	if(!$result) Die("ERROR: No result returned. - ".mysql_error());
+	if(!$result) sqlerror("ERROR: No result returned. - ".mysql_error(),"Database error.");
 	$numSpoof = 0;
 	$reSpoofs = array();
 	while ( list( $su_name ) = mysql_fetch_row( $result ) ) {
@@ -137,11 +137,11 @@ function upcsum($id) {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
+		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	$pend = mysql_fetch_assoc($result);
 	$hash = md5($pend['pend_id'] . $pend['pend_name'] . $pend['pend_email'] . microtime());
 	$query = "UPDATE acc_pend SET pend_checksum = '$hash' WHERE pend_id = '$id';";
@@ -157,11 +157,11 @@ function csvalid($id, $sum) {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
+		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	$pend = mysql_fetch_assoc($result);
 	if (!isset($pend['pend_checksum'])) {
 		upcsum($id);
@@ -197,7 +197,7 @@ function showhowma() {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$howma = gethowma();
 	unset ($howma['howmany']);
 	foreach ($howma as &$oluser) {
@@ -205,7 +205,7 @@ function showhowma() {
 		$query = "SELECT * FROM acc_user WHERE user_name = '$oluser';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error() . " f190");
+		sqlerror("Query failed: $query ERROR: " . mysql_error() . " f190","Database query error.");
 	$row = mysql_fetch_assoc($result);
 	$uid = $row['user_id'];
 		$oluser = stripslashes($oluser);
@@ -227,7 +227,7 @@ function gethowma() {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$last5min = time() - 300; // Get the users active as of the last 5 mins
 	
 	$last5mins = date("Y-m-d H:i:s", $last5min); // TODO: This produces a PHP Strict Standards error message. See next line
@@ -236,7 +236,7 @@ function gethowma() {
 	$query = "SELECT user_name FROM acc_user WHERE user_lastactive > '$last5mins';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
+		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	$whoactive = array ();
 	while ( list( $user_name ) = mysql_fetch_row( $result ) ) {
 		array_push( $whoactive, $user_name );
@@ -255,12 +255,12 @@ function showmessage($messageno) {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$messageno = sanitize($messageno);
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
+		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	$row = mysql_fetch_assoc($result);
 	return ($row['mail_text']);
 }
@@ -274,12 +274,12 @@ function sendemail($messageno, $target) {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$messageno = sanitize($messageno);
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
+		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	$row = mysql_fetch_assoc($result);
 	$mailtxt = $row['mail_text'];
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
@@ -304,13 +304,13 @@ function checksecurity($username) {
 		$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
 		$result = mysql_query($query);
 		if (!$result) {
-			Die("Query failed: $query ERROR: " . mysql_error());
+			sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 		}
 		$row = mysql_fetch_assoc($result);
 		$query2 = "SELECT * FROM acc_log WHERE log_pend = '" . $row['user_id'] . "' AND log_action = 'Declined' ORDER BY log_id DESC LIMIT 1;";
 		$result2 = mysql_query($query2);
 		if (!$result2) {
-			Die("Query failed: $query ERROR: " . mysql_error());
+			sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 		}
 		$row2 = mysql_fetch_assoc($result2);
 		echo "I'm sorry, but, your account request was <strong>declined</strong> by <strong>" . $row2['log_user'] . "</strong> because <strong>\"" . $row2['log_cmt'] . "\"</strong> at <strong>" . $row2['log_time'] . "</strong>.<br />\n";
@@ -346,7 +346,7 @@ function listrequests($type, $hideip) {
 	global $enableEmailConfirm;
 	if($secure != 1) { die("Not logged in"); }
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 
 	if ($enableEmailConfirm == 1) {
 		if ($type == 'Admin' || $type == 'Open') {
@@ -364,7 +364,7 @@ function listrequests($type, $hideip) {
     
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
+		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 
 	$tablestart = "<table cellspacing=\"0\">\n";
 	$tableend = "</table>\n";
@@ -383,12 +383,12 @@ function listrequests($type, $hideip) {
 		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = '" . $pend_ip . "' AND `pend_id` != '" . $pend_id . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result2 = mysql_query($query2);
 		if (!$result2)
-			Die("Query failed: $query2 ERROR: " . mysql_error());
+			sqlerror("Query failed: $query2 ERROR: " . mysql_error(),"Database query error.");
 		$otheripreqs = mysql_fetch_assoc($result2);
 		$query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . $pend_email . "' AND `pend_id` != '" . $pend_id . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result3 = mysql_query($query3);
 		if (!$result3)
-			Die("Query failed: $query3 ERROR: " . mysql_error());
+			sqlerror("Query failed: $query3 ERROR: " . mysql_error(),"Database query error.");
 		$otheremailreqs = mysql_fetch_assoc($result3);
 		$out = '<tr';
 		if ($currentreq % 2 == 0) {
@@ -407,7 +407,7 @@ function listrequests($type, $hideip) {
 		$query4 = "SELECT * FROM acc_user WHERE user_name = '$sid';";
 		$result4 = mysql_query($query4);
 		if (!$result4)
-			Die("Query failed: $query ERROR: " . mysql_error());
+			sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 		$row4 = mysql_fetch_assoc($result4);
 
 		// Email.
@@ -638,7 +638,7 @@ function makehead($username) {
 	$query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
+		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	$row = mysql_fetch_assoc($result);
 	$_SESSION['user_id'] = $row['user_id'];
 	forceLogout( $_SESSION['user_id'] );
@@ -657,7 +657,7 @@ function makehead($username) {
 		$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '" . $_SESSION['user_id'] . "';";
 		$result = mysql_query($query);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
+			sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	} else {
 		$rethead .= $out;
 		$rethead .= "<div id = \"header-info\">Not logged in.  <a href=\"acc.php\"><span title=\"Click here to return to the login form\">Log in</span></a>/<a href=\"acc.php?action=register\">Create account</a>?</div>\n";
@@ -751,7 +751,7 @@ HTML;
 	$query = "SELECT pend_id, pend_name, pend_checksum FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
 	$result = mysql_query($query);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
+		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	$html .= "<table cellspacing=\"0\">\n";
 	$currentrow = 0;
 	while ( list( $pend_id, $pend_name, $pend_checksum ) = mysql_fetch_row( $result ) ) {
@@ -775,7 +775,7 @@ function hasright($username, $checkright) {
 	$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
 	$result = mysql_query($query);
 	if (!$result) {
-		Die("Query failed: $query ERROR: " . mysql_error());
+		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	}
 	$row = mysql_fetch_assoc($result);
 	$rights = explode(':', $row['user_level']);
@@ -793,7 +793,7 @@ function displayheader() {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '8';";
 	$result = mysql_query($query);
 	if (!$result)
@@ -818,7 +818,7 @@ function displayfooter() {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or print mysql_error();
+	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '7';";
 	$result = mysql_query($query);
 	if (!$result)
@@ -869,6 +869,19 @@ function readOnlyMessage() {
 </html>
 HTML;
 		die();
+	}
+}
+
+function sqlerror ($sql_error,$generic_error) {
+	/*
+	* Show the user an error 
+	* depending on $enableSQLError.
+	*/
+	global $enableSQLError;
+	if ($enableSQLError) {
+		die($sql_error);
+	} else {
+		die($generic_error);
 	}
 }
 	
