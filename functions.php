@@ -120,7 +120,6 @@ function getSpoofs( $username ) {
 		}
 	} else { return FALSE; }
 }
-}
 
 function sanitise($what) { return sanitize($what); }
 function sanitize($what) {

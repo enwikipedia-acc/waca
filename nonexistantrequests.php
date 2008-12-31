@@ -22,6 +22,9 @@ api.php?action=query&list=users&ususers=Stwalkerster|Stwalkersock2&usprop=groups
 */
 
 // check to see if the database is unavailable
+require_once('config.inc.php');
+require_once('functions.php');
+
 readOnlyMessage();
 ifWikiDbDisabledDie();
 
