@@ -90,32 +90,36 @@ function forceLogout( $uid ) {
 }
 
 function getSpoofs( $username ) {
-	global $antispoof_equivset;
-	require_once( $antispoof_equivset );
-	global $toolserver_username;
-	global $toolserver_password;
-	global $antispoof_host;
-	global $antispoof_db;
-	global $antispoof_table;
-	$spooflink = mysql_connect($antispoof_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($antispoof_db, $spooflink) or sqlerror(mysql_error(),"Error selecting database.");
-	$fone = sanitize(strtr($username,$equivset));
-	//$fone = mysql_real_escape_string( $fone );
-	$query = "SELECT su_name FROM ".$antispoof_table." WHERE su_normalized = 'v2:$fone';";
-	$result = mysql_query($query, $spooflink);
-	if(!$result) sqlerror("ERROR: No result returned. - ".mysql_error(),"Database error.");
-	$numSpoof = 0;
-	$reSpoofs = array();
-	while ( list( $su_name ) = mysql_fetch_row( $result ) ) {
-		if( isset( $su_name ) ) { $numSpoof++; }
-		array_push( $reSpoofs, $su_name );
-	}
-	mysql_close( $spooflink );
-	if( $numSpoof == 0 ) {
-		return( FALSE );
-	} else {
-		return( $reSpoofs );
-	}
+	global $dontUseWikiDb;
+	if( !$dontUseWikiDb ) {
+		global $antispoof_equivset;
+		require_once( $antispoof_equivset );
+		global $toolserver_username;
+		global $toolserver_password;
+		global $antispoof_host;
+		global $antispoof_db;
+		global $antispoof_table;
+		$spooflink = mysql_connect($antispoof_host, $toolserver_username, $toolserver_password);
+		@ mysql_select_db($antispoof_db, $spooflink) or sqlerror(mysql_error(),"Error selecting database.");
+		$fone = sanitize(strtr($username,$equivset));
+		//$fone = mysql_real_escape_string( $fone );
+		$query = "SELECT su_name FROM ".$antispoof_table." WHERE su_normalized = 'v2:$fone';";
+		$result = mysql_query($query, $spooflink);
+		if(!$result) sqlerror("ERROR: No result returned. - ".mysql_error(),"Database error.");
+		$numSpoof = 0;
+		$reSpoofs = array();
+		while ( list( $su_name ) = mysql_fetch_row( $result ) ) {
+			if( isset( $su_name ) ) { $numSpoof++; }
+			array_push( $reSpoofs, $su_name );
+		}
+		mysql_close( $spooflink );
+		if( $numSpoof == 0 ) {
+			return( FALSE );
+		} else {
+			return( $reSpoofs );
+		}
+	} else { return FALSE; }
+}
 }
 
 function sanitise($what) { return sanitize($what); }
@@ -824,6 +828,17 @@ function readOnlyMessage() {
 	</body>
 </html>
 HTML;
+		die();
+	}
+}
+
+/**
+* If the Wiki/antispoof database is marked as disabled, then die.
+*/
+function ifWikiDbDisabledDie() {
+	global $dontUseWikiDb;
+	if( $dontUseWikiDb ){
+		echo "Apologies, this command requires access to the wiki database, which is currently unavailable.";
 		die();
 	}
 }

@@ -54,6 +54,7 @@ if (file_exists("config.local.inc.php")) {
 	$enableSQLError = 0;
 	
 	$dontUseDb = 0;
+	$dontUseWikiDb = 0;
 	
 	//antispoof configuration
 	$antispoof_equivset = "equivset.php";

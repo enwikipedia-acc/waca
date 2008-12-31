@@ -128,26 +128,34 @@ function confirmEmail( $id ) {
 }
 
 function checkSpoofs( $username ) {
-	require_once('equivset.php');
-	global $toolserver_username;
-	global $toolserver_password;
-	$spooflink = mysql_connect("sql-s1", $toolserver_username, $toolserver_password);
-	@ mysql_select_db("enwiki_p", $spooflink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
-	$fone = strtr($username,$equivset);
-	//$fone = mysql_real_escape_string( $fone );
-	$query = "SELECT * FROM spoofuser WHERE su_normalized = 'v2:$fone';";
-	$result = mysql_query($query, $spooflink);
-	if(!$result) sqlerror("ERROR: No result returned. - ".mysql_error(),"ERROR: database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
-	$numSpoof = 0;
-	while ($row = mysql_fetch_assoc($result)) {
-	        if( isset( $row['su_name'] ) ) { $numSpoof++; }
+	global $dontUseWikiDb;
+	if( !$dontUseWikiDb ) {
+		global $antispoof_equivset;
+		require_once($antispoof_equivset);
+		global $toolserver_username;
+		global $toolserver_password;
+		global $antispoof_host;
+		global $antispoof_db;
+		global $antispoof_table;
+		$spooflink = mysql_connect($antispoof_host, $toolserver_username, $toolserver_password);
+		@ mysql_select_db($antispoof_db, $spooflink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
+		$fone = strtr($username,$equivset);
+		//$fone = mysql_real_escape_string( $fone );
+		$query = "SELECT * FROM $antispoof_table WHERE su_normalized = 'v2:$fone';";
+		$result = mysql_query($query, $spooflink);
+		if(!$result) sqlerror("ERROR: No result returned. - ".mysql_error(),"ERROR: database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
+		$numSpoof = 0;
+		while ($row = mysql_fetch_assoc($result)) {
+		        if( isset( $row['su_name'] ) ) { $numSpoof++; }
+		}
+		mysql_close( $spooflink );
+		if( $numSpoof == 0 ) {
+		        return( FALSE );
+		} else {
+			return( TRUE );
+		}
 	}
-	mysql_close( $spooflink );
-	if( $numSpoof == 0 ) {
-	        return( FALSE );
-	} else {
-		return( TRUE );
-	}
+	else { return FALSE; }
 }
 
 function sanitize( $what ) {
@@ -412,12 +420,17 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$_POST['name'] = str_replace(" ", "_", $_POST['name']);
 	$_POST['name'] = ltrim( rtrim ( ucfirst($_POST['name'] ) ) );
-	mysql_connect("enwiki-p.db.ts.wikimedia.org", $toolserver_username, $toolserver_password);
-	@ mysql_select_db("enwiki_p") or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
-	$query = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("ERROR: No result returned.");
+	
+	global $dontUseWikiDb;
+	if( !$dontUseWikiDb ) {
+		mysql_connect("enwiki-p.db.ts.wikimedia.org", $toolserver_username, $toolserver_password);
+		@ mysql_select_db("enwiki_p") or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
+		$query = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("ERROR: No result returned.");
+	}	
+		
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$ip2 = $_SERVER['REMOTE_ADDR'];
 	$ip = mysql_real_escape_string($ip);
@@ -512,9 +525,12 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		if ($enableSQLError)
 			echo '<!-- Error: ' . mysql_error() . ' -->';
 	}
-
-	mysql_connect("enwiki-p.db.ts.wikimedia.org", $toolserver_username, $toolserver_password);
-	@ mysql_select_db("enwiki_p") or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
+	
+	global $dontUseWikiDb;
+	if( !$dontUseWikiDb ) {
+		mysql_connect("enwiki-p.db.ts.wikimedia.org", $toolserver_username, $toolserver_password);
+		@ mysql_select_db("enwiki_p") or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
+	}
 	$user = $_POST['name'];
 	$user = ltrim($user);
 	$user = rtrim($user);

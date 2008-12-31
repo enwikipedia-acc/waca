@@ -23,6 +23,7 @@ api.php?action=query&list=users&ususers=Stwalkerster|Stwalkersock2&usprop=groups
 
 // check to see if the database is unavailable
 readOnlyMessage();
+ifWikiDbDisabledDie();
 
 die('not implemented yet (requests marked "done" or "taken" on the tool, which actually don\'t exist on enwiki)');
 ?>
