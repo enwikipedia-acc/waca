@@ -398,7 +398,7 @@ function listrequests($type, $hideip) {
 		}
 		if ($type == 'Admin' || $type == 'Open') {
 			$out .= '<td><small>' . $currentreq . '.    </small></td><td><small>'; //List item
-			$out .= $cmt; // CMT link.
+			$out .= $cmt .'</small></td><td><small>'; // CMT link.
 		} else {
 			$out .= '<td><small>' . "\n"; //List item
 		}
@@ -411,7 +411,7 @@ function listrequests($type, $hideip) {
 		$row4 = mysql_fetch_assoc($result4);
 
 		// Email.
-		$out .= '[ <a class="request-src" href="mailto:' . $pend_email . '">' . $pend_email . '</a>';
+		$out .= '[ </small></td><td><small><a class="request-src" href="mailto:' . $pend_email . '">' . $pend_email . '</a>';
 
 		$out .= '</small></td><td><small><span class="request-src">' . "\n";
 		if ($otheremailreqs['count'] == 0) {
@@ -429,7 +429,7 @@ function listrequests($type, $hideip) {
             
 		if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin')) {
 		// IP UT:
-		$out .= '</span></small></td><td><small> | <a class="request-src" name="ip-link" href="'.$wikipediaurl.'wiki/User_talk:' . $pend_ip . '" target="_blank">';
+		$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-src" name="ip-link" href="'.$wikipediaurl.'wiki/User_talk:' . $pend_ip . '" target="_blank">';
 		$out .= $pend_ip . '</a> ';
 
 		$out .= '</small></td><td><small><span class="request-src">' . "\n";
@@ -452,7 +452,7 @@ function listrequests($type, $hideip) {
 		$out .= $pend_ip . '" target="_blank">r</a> ';
 
 		// IP whois
-		$out .= '<a class="request-src" href="http://samspade.org/whois?query=' . $pend_ip . '" target="_blank">w</a> ] ';
+		$out .= '<a class="request-src" href="http://samspade.org/whois?query=' . $pend_ip . '" target="_blank">w</a></small></td><td><small> ] ';
             }
 		// Username U:
 		$duname = _utf8_decode($pend_name);
@@ -471,11 +471,11 @@ function listrequests($type, $hideip) {
 
 		// Create user link
 		$out .= '<b><a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-		$out .= $uname . '&amp;wpEmail=' . $pend_email . '&amp;uselang=en-acc" target="_blank">Create!</a></b></span></small> ';
+		$out .= $uname . '&amp;wpEmail=' . $pend_email . '&amp;uselang=en-acc" target="_blank">Create!</a></b></small></td><td><small> ';
 
 
 		// Done
-		$out .= '| <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=1&amp;sum=' . $pend_checksum . '">Done!</a>';
+		$out .= '| </small></td><td><small><a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=1&amp;sum=' . $pend_checksum . '">Done!</a>';
 
 		// Similar
 		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=2&amp;sum=' . $pend_checksum . '">Similar</a>';
@@ -512,7 +512,7 @@ function listrequests($type, $hideip) {
 
 		if(hasright($_SESSION['user'], "Admin")) {
 		// Ban IP
-		$out .= ' | Ban: <a class="request-ban" href="acc.php?action=ban&amp;ip=' . $pend_id . '">IP</a> ';
+		$out .= '</small></td><td><small> |</small></td><td><small> Ban: </small></td><td><small><a class="request-ban" href="acc.php?action=ban&amp;ip=' . $pend_id . '">IP</a> ';
 
 		// Ban email
 		$out .= '- <a class="request-ban" href="acc.php?action=ban&amp;email=' . $pend_id . '">E-Mail</a>';
@@ -531,14 +531,14 @@ function listrequests($type, $hideip) {
 			{
 				if( $reserveByUser == $_SESSION['userID'])
 				{
-					$out .= " | YOU are handling this request. <a href=\"acc.php?action=breakreserve&resrq=$pend_id\">Break reservation</a>";
+					$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"acc.php?action=breakreserve&resrq=$pend_id\">Break reservation</a>";
 				} else {
-					$out .= " | Being handled by <a href=\"users.php?viewuser=$reserveByUser\">" . getUsernameFromUid($reserveByUser) . "</a>";
+					$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"users.php?viewuser=$reserveByUser\">" . getUsernameFromUid($reserveByUser) . "</a>";
 				}
 			}
 			else // not being handled, do you want to handle this request?
 			{
-				$out .= " | <a href=\"acc.php?action=reserve&resrq=$pend_id\">Mark as being handled</a>";
+				$out .= "</small></td><td><small> | </small></td><td><small><a href=\"acc.php?action=reserve&resrq=$pend_id\">Mark as being handled</a>";
 			}
 		}
 
