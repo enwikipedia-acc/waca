@@ -5,3 +5,9 @@ add search and ban management only if user is an admin
 hide IPs from closed requests from non-admin users.
 sort out ACC-31
 think about ACC-4
+
+FIX REQUEST DISPLAY:
+	all | chars should be table cell borders
+	more cells should be added to table to fix display
+	
+add option to disable sendtobot stuff

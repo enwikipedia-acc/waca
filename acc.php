@@ -1291,28 +1291,50 @@ HTML;
 	die();
 }
 elseif ($action == "done" && $_GET['id'] != "") {
+	// check for valid close reasons
 	if (!isset($_GET['email']) | $_GET['email'] >= 6) {
 		echo "Invalid close reason";
 		echo showfooter();
 		die();
 	}
+	
+	// sanitise this input ready for inclusion in queries
 	$gid = sanitize($_GET['id']);
+	
+	// check the checksum is valid
 	if (csvalid($gid, $_GET['sum']) != 1) {
 		echo "Invalid checksum (This is similar to an edit conflict on Wikipedia; it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
 		echo showfooter();
 		die();
 	}
+	
+	
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
+	
+	// check if an email has already been sent
 	if ($row['pend_emailsent'] == "1" && !isset($_GET['override'])) {
 		echo "<br />This request has already been closed in a manner that has generated an e-mail to the user, Proceed?<br />\n";
 		echo "<a href=\"acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;override=yes&amp;email=" . $_GET['email'] . "\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
 		echo showfooter();
 		die();
 	}
+	
+	global $enableReserving;
+	if( $enableReserving ){
+		// check the request is not reserved by someone else
+		if( $row['pend_reserved'] != 0 && !isset($_GET['reserveoverride']) && $row['pend_reserved'] != $_SESSION['userID'])
+		{
+			echo "<br />This request is currently marked as being handled by ".getUsernameFromUid($row['pend_reserved']).", Proceed?<br />\n";
+			echo "<a href=\"".$_SERVER["REQUEST_URI"]."&reserveoverride=yes\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
+			echo showfooter();
+			die();
+		}
+	}
+	
 	$gem = sanitize($_GET['email']);
 	$sid = sanitize($_SESSION['user']);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
@@ -1346,7 +1368,9 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 	}
-	$query = "UPDATE acc_pend SET pend_status = 'Closed' WHERE pend_id = '$gid';";
+	$query = "UPDATE acc_pend SET pend_status = 'Closed'";
+	if( $enableReserving ){ $query .= ", `pend_reserved` = '0'"; }
+	$query .= " WHERE pend_id = '$gid';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
@@ -1425,6 +1449,18 @@ elseif ($action == "zoom") {
 	$row['pend_cmt'] = htmlentities( $row['pend_cmt'], ENT_QUOTES,false );
 	//Escape injections.
 	echo "<br /><strong>Comment</strong>: " . $row['pend_cmt'] . "<br />\n";
+	
+	global $enableReserving;
+	if( $enableReserving )
+	{
+		$reservingUser = isReserved($thisid);
+		if( $reservingUser != 0 )
+		{
+			echo "<h3>This request is currently being handled by " . getUsernameFromUid($reservingUser) ."</h3>";
+		}
+	}
+	
+	
 	$query = "SELECT * FROM acc_log WHERE log_pend = '$gid';";
 	$result = mysql_query($query);
 	if (!$result)
@@ -1696,5 +1732,38 @@ elseif ($action == "logs") {
 	echo $n1;
 	echo showfooter();
 	die();
+}
+elseif ($action == "reserve") {
+	global $enableReserving;
+	if( $enableReserving ) {
+		$request = sanitise($_GET['resrq']);
+		
+		//check request is not reserved
+		$reservedBy = isReserved($request);
+		if( $reservedBy != 0 )
+			Die("Request already reserved by ".getUsernameFromUid($reservedBy));
+		//no, lets reserve the request
+		$query = "UPDATE `acc_pend` SET `pend_reserved` = '".$_SESSION['userID']."' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Error reserving request.");
+		echo defaultpage();
+	}	
+}
+elseif ($action == "breakreserve") {
+	global $enableReserving;
+	if( $enableReserving ) {
+		$request = sanitise($_GET['resrq']);
+		
+		//check request is reserved
+		$reservedBy = isReserved($request);
+		if( $reservedBy != $_SESSION['userID'] )
+			Die("You cannot break ".getUsernameFromUid($reservedBy)."'s reservation");
+		$query = "UPDATE `acc_pend` SET `pend_reserved` = '0' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Error unreserving request.");
+		echo defaultpage();
+	}	
 }
 ?>

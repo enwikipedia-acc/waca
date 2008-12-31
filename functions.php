@@ -564,6 +564,27 @@ function listrequests($type, $hideip) {
 		//Ban name
 		$out .= ' - <a class="request-ban" href="acc.php?action=ban&amp;name=' . $pend_id . '">Name</a>';
 		}
+		
+		// Check to see if we want to have all the reserving stuff on
+		global $enableReserving;
+		if( $enableReserving )
+		{
+			$reserveByUser = isReserved($pend_id);			
+			// if request is reserved, show reserved message
+			if( $reserveByUser != 0 )
+			{
+				if( $reserveByUser == $_SESSION['userID'])
+				{
+					$out .= " | YOU are handling this request. <a href=\"acc.php?action=breakreserve&resrq=$pend_id\">Break reservation</a>";
+				} else {
+					$out .= " | Being handled by <a href=\"users.php?viewuser=$reserveByUser\">" . getUsernameFromUid($reserveByUser) . "</a>";
+				}
+			}
+			else // not being handled, do you want to handle this request?
+			{
+				$out .= " | <a href=\"acc.php?action=reserve&resrq=$pend_id\">Mark as being handled</a>";
+			}
+		}
 
 		$out .= '</small></td></tr>';
 		$reqlist .= $out;
@@ -574,6 +595,38 @@ function listrequests($type, $hideip) {
 		return ($tablestart . $reqlist . $tableend);
 	}
 
+}
+
+/**
+* Retrieves a username from a user id
+*/
+function getUsernameFromUid($userid)
+{
+	$uid = sanitize($userid);
+	$query = "SELECT user_name FROM acc_user WHERE user_id = $uid;";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Error determining user from UID.");
+	$row = mysql_fetch_assoc($result);
+	return $row['user_name'];
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Error determining user from UID.");
+}
+
+/**
+* Checks to see if a request is marked as reserved by a user
+* Returns uid if reserved, false if not
+*/
+function isReserved($requestid)
+{
+	$rqid = sanitize($requestid);
+	$query = "SELECT pend_reserved FROM acc_pend WHERE pend_id = $rqid;";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("Error determining reserved status of request.");
+	$row = mysql_fetch_assoc($result);
+	if($row['pend_reserved'] == 0) { return false;} else {return $row['pend_reserved'];}
 }
 
 function makehead($username) {
