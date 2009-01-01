@@ -1750,6 +1750,7 @@ elseif ($action == "reserve") {
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Error reserving request.");
+		sendtobot("Request $request is being handled by " getUsernameFromUid($_SESSION['userID']));
 		echo defaultpage();
 	}	
 }
@@ -1766,6 +1767,7 @@ elseif ($action == "breakreserve") {
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Error unreserving request.");
+		sendtobot("Request $request is no longer being handled.");
 		echo defaultpage();
 	}	
 }
