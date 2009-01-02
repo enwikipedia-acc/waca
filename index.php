@@ -418,6 +418,12 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 }
 
 if (isset ($_POST['name']) && isset ($_POST['email'])) {
+	global $toolserver_username;
+	global $toolserver_password;
+	global $toolserver_host;
+	global $toolserver_database;
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$_POST['name'] = str_replace(" ", "_", $_POST['name']);
 	$_POST['name'] = ltrim( rtrim ( ucfirst($_POST['name'] ) ) );
 	
