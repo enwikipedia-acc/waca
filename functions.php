@@ -854,5 +854,21 @@ function sqlerror ($sql_error,$generic_error) {
 		die($generic_error);
 	}
 }
+
+function array_search_recursive($needle, $haystack, $path=array())
+{
+    foreach($haystack as $id => $val)
+    {
+         $path2=$path;
+         $path2[] = $id;
+ 
+         if($val === $needle)
+              return $path2;
+         else if(is_array($val))
+              if($ret = array_search_recursive($needle, $val, $path2))
+                   return $ret;
+      }
+      return false;
+}
 	
 ?>

@@ -24,6 +24,7 @@
 
 require_once ( 'config.inc.php' );
 require_once ( 'functions.php' );
+require_once ( 'devlist.php' );
 
 // check to see if the database is unavailable
 readOnlyMessage();
@@ -56,26 +57,32 @@ echo '<h2>Old user accounts</h2>This list contains the usernames of all accounts
 echo "<table><tr><th>User ID</th><th>Tool Username</th><th>User access level</th><th>enwiki username</th><th>Last activity</th><th>Approval</th></th></tr>";
 $currentrow = 0;
 while ($r = mysql_fetch_assoc($result)) {
-	$userid = $r['tooluserid'];
-	$q2 = 'select log_time from acc_log where log_pend = '.$userid.' and log_action = "Approved" order by log_id desc limit 1;';
-	$res2 = mysql_query($q2);
-	if (!$res2)
-		die("ERROR: No result returned.");
-	$row2 = mysql_fetch_assoc($res2);
-	$approved = $row2['log_time'];
-	
-	$appr_array = date_parse($approved);
-	$appr_ts = mktime($appr_array['hour'], $appr_array['minute'], $appr_array['second'], $appr_array['month'], $appr_array['day'], $appr_array['year'] );
-	
-	if( $appr_ts < mktime($date->format("H"), $date->format("i"), $date->format("s"), $date->format("m"), $date->format("d"), $date->format("Y") )) {
-		$currentrow +=1;
-		echo "<tr";		
-		if ($currentrow % 2 == 0) {
-			echo ' class="even">';
-		} else {
-			echo ' class="odd">';
-		}	
-		echo "<th>$userid</th><td>".$r['tooluser']."</td><td>".$r['toolaccesslevel']."</td><td>".$r['enwikiuser']."</td><td>".$r['lasttoollogon']."</td><td>".$approved."</td></tr>";
+
+	$tooluser = $r['tooluser'];
+	global $regdevlist;
+	if(! array_search_recursive( $tooluser, $regdevlist) )
+	{
+		$userid = $r['tooluserid'];
+		$q2 = 'select log_time from acc_log where log_pend = '.$userid.' and log_action = "Approved" order by log_id desc limit 1;';
+		$res2 = mysql_query($q2);
+		if (!$res2)
+			die("ERROR: No result returned.");
+		$row2 = mysql_fetch_assoc($res2);
+		$approved = $row2['log_time'];
+		
+		$appr_array = date_parse($approved);
+		$appr_ts = mktime($appr_array['hour'], $appr_array['minute'], $appr_array['second'], $appr_array['month'], $appr_array['day'], $appr_array['year'] );
+		
+		if( $appr_ts < mktime($date->format("H"), $date->format("i"), $date->format("s"), $date->format("m"), $date->format("d"), $date->format("Y") )) {
+			$currentrow +=1;
+			echo "<tr";		
+			if ($currentrow % 2 == 0) {
+				echo ' class="even">';
+			} else {
+				echo ' class="odd">';
+			}	
+			echo "<th>$userid</th><td>$tooluser</td><td>".$r['toolaccesslevel']."</td><td>".$r['enwikiuser']."</td><td>".$r['lasttoollogon']."</td><td>".$approved."</td></tr>";
+		}
 	}
 }
 echo "</table>";
