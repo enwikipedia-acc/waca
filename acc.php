@@ -6,7 +6,7 @@
 ** Charles Melbye is licensed under a Creative               **
 ** Commons Attribution-Noncommercial-Share Alike             **
 ** 3.0 United States License. All other code                 **
-** released under Public Domain by the ACC                   **
+** released under Public Domain by the ACC                  f **
 ** Development Team.                                         **
 **             Developers:                                   **
 **  SQL ( http://en.wikipedia.org/User:SQL )                 **
@@ -86,13 +86,16 @@ elseif ( $action == "sreg" ) {
 			die( );
 		}
 	}
-	$dnsblcheck = checkdnsbls( $_SERVER['REMOTE_ADDRR'] );
-	if ( $dnsblcheck['0'] == true ) {
-		$cmt = "FROM $ip " . $dnsblcheck['1'];
-		$fp = fsockopen( "udp://127.0.0.1", 9001, $erno, $errstr, 30 );
-		fwrite( $fp, "[DNSBL-ACR] HIT: " . $_POST['name'] . " - " . $_POST['wname'] . " " . $_SERVER['REMOTE_ADDR'] . " " . $_POST['email'] . " " . $_SERVER['HTTP_USER_AGENT'] . " $cmt\r\n" );
-		fclose( $fp );
-		die( "Account not created, please see " . $dnsblcheck['1'] );
+	global $enableDnsblChecks;
+	if( $enableDnsblChecks == 1) {
+		$dnsblcheck = checkdnsbls( $_SERVER['REMOTE_ADDRR'] );
+		if ( $dnsblcheck['0'] == true ) {
+			$cmt = "FROM $ip " . $dnsblcheck['1'];
+			$fp = fsockopen( "udp://127.0.0.1", 9001, $erno, $errstr, 30 );
+			fwrite( $fp, "[DNSBL-ACR] HIT: " . $_POST['name'] . " - " . $_POST['wname'] . " " . $_SERVER['REMOTE_ADDR'] . " " . $_POST['email'] . " " . $_SERVER['HTTP_USER_AGENT'] . " $cmt\r\n" );
+			fclose( $fp );
+			die( "Account not created, please see " . $dnsblcheck['1'] );
+		}
 	}
 	$cu_name = urlencode( $_REQUEST['wname'] );
 	$userblocked = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );

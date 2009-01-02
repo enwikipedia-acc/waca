@@ -52,6 +52,7 @@ if (file_exists("config.local.inc.php")) {
 	$enableEmailConfirm = 1;
 	$enableReserving = 0;
 	$enableSQLError = 0;
+	$enableDnsblChecks = 1;
 	
 	$dontUseDb = 0;
 	$dontUseWikiDb = 0;

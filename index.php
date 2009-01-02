@@ -500,32 +500,34 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 			die();
 		}
 	}
-	$dnsblcheck = checkdnsbls($ip2);
-	if ($dnsblcheck['0'] == true) {
-		$toruser = checktor($ip2);
-		if ($toruser['tor'] == "yes") {
-			$tor = " (TOR node)";
-		} else {
-			$tor = "";
+	global $enableDnsblChecks;
+	if( $enableDnsblChecks == 1 ){
+		$dnsblcheck = checkdnsbls($ip2);
+		if ($dnsblcheck['0'] == true) {
+			$toruser = checktor($ip2);
+			if ($toruser['tor'] == "yes") {
+				$tor = " (TOR node)";
+			} else {
+				$tor = "";
+			}
+			$now = date("Y-m-d H-i-s");
+			$siuser = mysql_real_escape_string($_POST['name']);
+			$cmt = mysql_real_escape_string("FROM $ip $email<br />" . $dnsblcheck['1']);
+			sendtobot("[DNSBL]$tor HIT: " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('DNSBL', '$siuser', 'DNSBL Hit', '$now', '$cmt');";
+			if ($enableSQLError) 
+				echo '<!-- Query: ' . $query . ' -->';
+			mysql_query($query);
+			if ($enableSQLError)
+				echo '<!-- Error: ' . mysql_error() . ' -->';
+			$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\'' . $ip . '\',\'ClueBot\',\'' . mysql_real_escape_string("DNSBL Hit:<br />\n" . $dnsblcheck['1']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');';
+			if ($enableSQLError)
+				echo '<!-- Query: ' . $query . ' -->';
+			mysql_query($query);
+			if ($enableSQLError)
+				echo '<!-- Error: ' . mysql_error() . ' -->';
 		}
-		$now = date("Y-m-d H-i-s");
-		$siuser = mysql_real_escape_string($_POST['name']);
-		$cmt = mysql_real_escape_string("FROM $ip $email<br />" . $dnsblcheck['1']);
-		sendtobot("[DNSBL]$tor HIT: " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('DNSBL', '$siuser', 'DNSBL Hit', '$now', '$cmt');";
-		if ($enableSQLError) 
-			echo '<!-- Query: ' . $query . ' -->';
-		mysql_query($query);
-		if ($enableSQLError)
-			echo '<!-- Error: ' . mysql_error() . ' -->';
-		$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\'' . $ip . '\',\'ClueBot\',\'' . mysql_real_escape_string("DNSBL Hit:<br />\n" . $dnsblcheck['1']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');';
-		if ($enableSQLError)
-			echo '<!-- Query: ' . $query . ' -->';
-		mysql_query($query);
-		if ($enableSQLError)
-			echo '<!-- Error: ' . mysql_error() . ' -->';
 	}
-	
 	global $dontUseWikiDb;
 	if( !$dontUseWikiDb ) {
 		mysql_connect("enwiki-p.db.ts.wikimedia.org", $toolserver_username, $toolserver_password);
@@ -660,7 +662,8 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	}
 
 	if ($fail != 1) {
-		$message = showmessage(15);
+		if( $enableEmailConfirm == 1 )
+		{$message = showmessage(15);} else {$message = showmessage(24);}
 		echo "$message<br />\n";
 	} else {
 		$message = showmessage(16);
