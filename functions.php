@@ -451,7 +451,7 @@ function listrequests($type, $hideip) {
 		$out .= $pend_ip . '" target="_blank">b</a> ';
 		
 		// rangeblocks
-		$out .= '<a class="request-src" href="http://toolserver.org/~krimpet/rbhelper.php?db=enwiki_p&ip=';
+		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3ABlockList&ip=';
 		$out .= $pend_ip . '" target="_blank">r</a> ';
 
 		// IP whois
