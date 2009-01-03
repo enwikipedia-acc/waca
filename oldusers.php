@@ -54,7 +54,7 @@ if (!$result)
 displayheader();
 echo '<h2>Old user accounts</h2>This list contains the usernames of all accounts that have not logged in in the past 45 days.';
 
-echo "<table><tr><th>User ID</th><th>Tool Username</th><th>User access level</th><th>enwiki username</th><th>Last activity</th><th>Approval</th></th></tr>";
+echo "<table><tr><th>User ID</th><th>Tool Username</th><th>User access level</th><th>enwiki username</th><th>Last activity</th><th>Approval</th></tr>";
 $currentrow = 0;
 while ($r = mysql_fetch_assoc($result)) {
 
