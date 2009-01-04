@@ -870,5 +870,18 @@ function array_search_recursive($needle, $haystack, $path=array())
       }
       return false;
 }
+
+function insertMessage($id, $user, $text) {
+	global $toolserver_username;
+	global $toolserver_password;
+	global $toolserver_host;
+	global $toolserver_database;
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
+	$query = "INSERT INTO acc_rev VALUES ( NULL, '".mysql_real_escape_string($id)."', '".mysql_real_escape_string($user)."', '".mysql_real_escape_string($text)."', NULL);";
+	$result = mysql_query($query);
+	if (!$result)
+		Die("ERROR: No result returned.");
+}
 	
 ?>
