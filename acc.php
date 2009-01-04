@@ -453,8 +453,14 @@ elseif ($action == "messagemgmt") {
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
-			echo "Message $mid updated.<br />\n";
-			sendtobot("Message $mid edited by $siuser");
+			$query = "SELECT mail_desc FROM acc_rev JOIN acc_emails ON rev_msg = mail_id WHERE rev_msg = $mid;";
+			$result = mysql_query($query);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$row = mysql_fetch_assoc($result);
+			$mailname = $row['mail_desc'];
+			echo "Message $mailname ($mid) updated.<br />\n";
+			sendtobot("Message $mailname ($mid) edited by $siuser");
 			echo showfooter();
 			die();
 		}
