@@ -464,7 +464,7 @@ elseif ($action == "messagemgmt") {
 			echo showfooter();
 			die();
 		}
-		$query = "SELECT * FROM acc_rev JOIN acc_emails ON rev_msg = mail_id WHERE rev_msg = $mid SORT BY rev_msg DESC LIMIT 1;";
+		$query = "SELECT * FROM acc_rev JOIN acc_emails ON rev_msg = mail_id WHERE rev_msg = $mid ORDER BY rev_msg DESC LIMIT 1;";
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
