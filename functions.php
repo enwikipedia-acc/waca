@@ -260,7 +260,7 @@ function showmessage($messageno) {
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$messageno = sanitize($messageno);
-	$query = "SELECT * FROM acc_rev WHERE rev_msg = '$messageno' SORT BY rev_msg DESC LIMIT 1;";
+	$query = "SELECT * FROM acc_rev WHERE rev_msg = '$messageno' ORDER BY rev_msg DESC LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
@@ -279,7 +279,7 @@ function sendemail($messageno, $target) {
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$messageno = sanitize($messageno);
-	$query = "SELECT * FROM acc_rev WHERE rev_msg = '$messageno' SORT BY rev_msg DESC LIMIT 1;";
+	$query = "SELECT * FROM acc_rev WHERE rev_msg = '$messageno' ORDER BY rev_msg DESC LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
@@ -753,7 +753,7 @@ function displayheader() {
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
-	$query = "SELECT * FROM acc_rev WHERE rev_msg = '8' SORT BY rev_msg DESC LIMIT 1;";
+	$query = "SELECT * FROM acc_rev WHERE rev_msg = '8' ORDER BY rev_msg DESC LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
@@ -778,7 +778,7 @@ function displayfooter() {
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
-	$query = "SELECT * FROM acc_rev WHERE rev_msg = '7' SORT BY rev_msg DESC LIMIT 1;";
+	$query = "SELECT * FROM acc_rev WHERE rev_msg = '7' ORDER BY rev_msg DESC LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
