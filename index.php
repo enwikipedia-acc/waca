@@ -276,12 +276,12 @@ function displayheader() {
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
-	$query = "SELECT * FROM acc_emails WHERE mail_id = '8';";
+	$query = "SELECT * FROM acc_rev WHERE rev_msg = '8' SORT BY rev_msg DESC LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	echo $row['mail_text'];
+	echo $row['rev_text'];
 	mysql_close();
 }
 
@@ -295,12 +295,12 @@ function displayfooter() {
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
-	$query = "SELECT * FROM acc_emails WHERE mail_id = '7';";
+	$query = "SELECT * FROM acc_rev WHERE mail_id = '7' SORT BY rev_msg DESC LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	echo $row['mail_text'];
+	echo $row['rev_text'];
 	mysql_close();
 }
 
@@ -314,12 +314,12 @@ function displayform() {
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
-	$query = "SELECT * FROM acc_emails WHERE mail_id = '6';";
+	$query = "SELECT * FROM acc_rev WHERE rev_msg = '6' SORT BY rev_msg DESC LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	echo $row['mail_text'];
+	echo $row['rev_text'];
 	mysql_close();
 }
 
@@ -353,12 +353,12 @@ function showmessage($messageno) {
 	global $toolserver_database;
 	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
-	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
+	$query = "SELECT * FROM acc_rev WHERE rev_msg = '$messageno' SORT BY rev_msg DESC LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	return ($row['mail_text']);
+	return ($row['rev_text']);
 	mysql_close();
 }
 
