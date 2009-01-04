@@ -304,7 +304,7 @@ Viewing the entire user list
 */
 else
 {
-	$query = "SELECT * FROM acc_user ORDER BY user_level";
+	$query = "SELECT * FROM acc_user ORDER BY user_level, user_name;";
 	$result = mysql_query($query); // Get information on all tool users and order them by their access rights
 	if (!$result)
 	{
