@@ -176,7 +176,7 @@ function displayform() {
 
 function clearOldUnconfirmed( ) {
 	global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database, $tsSQLlink;
-	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password, $tsSQLlink);
+	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$ntime = mktime(
         	date("H"),
