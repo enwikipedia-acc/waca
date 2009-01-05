@@ -30,6 +30,9 @@ $fail = 0;
 readOnlyMessage();
 getDBconnections();
 
+global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
+global $antispoof_host, $antispoof_db, $antispoof_table;
+
 function confirmEmail( $id ) {
 	/*
 	* Confirms either a new users e-mail, or a requestor's e-mail.
