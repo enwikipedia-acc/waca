@@ -57,7 +57,7 @@ function setForceLogout( $uid ) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "UPDATE acc_user SET user_forcelogout = '1' WHERE user_id = '$uid';";
 	$result = mysql_query($query);
@@ -69,7 +69,7 @@ function forceLogout( $uid ) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "SELECT user_forcelogout FROM acc_user WHERE user_id = '$uid';";
 	$result = mysql_query($query);
@@ -99,7 +99,7 @@ function getSpoofs( $username ) {
 		global $antispoof_host;
 		global $antispoof_db;
 		global $antispoof_table;
-		$spooflink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);
+		$spooflink = mysql_connect($antispoof_host, $toolserver_username, $toolserver_password);
 		@ mysql_select_db($antispoof_db, $spooflink) or sqlerror(mysql_error(),"Error selecting database.");
 		$fone = sanitize(strtr($username,$equivset));
 		//$fone = mysql_real_escape_string( $fone );
@@ -139,7 +139,7 @@ function upcsum($id) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
 	$result = mysql_query($query);
@@ -159,7 +159,7 @@ function csvalid($id, $sum) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
 	$result = mysql_query($query);
@@ -199,7 +199,7 @@ function showhowma() {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$howma = gethowma();
 	unset ($howma['howmany']);
@@ -229,7 +229,7 @@ function gethowma() {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$last5min = time() - 300; // Get the users active as of the last 5 mins
 	
@@ -257,15 +257,15 @@ function showmessage($messageno) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$messageno = sanitize($messageno);
-	$query = "SELECT * FROM acc_rev WHERE rev_msg = '$messageno' ORDER BY rev_msg DESC LIMIT 1;";
+	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
 	$result = mysql_query($query);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	$row = mysql_fetch_assoc($result);
-	return ($row['rev_text']);
+	return ($row['mail_text']);
 }
 
 function sendemail($messageno, $target) {
@@ -276,15 +276,15 @@ function sendemail($messageno, $target) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$messageno = sanitize($messageno);
-	$query = "SELECT * FROM acc_rev WHERE rev_msg = '$messageno' ORDER BY rev_msg DESC LIMIT 1;";
+	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
 	$result = mysql_query($query);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	$row = mysql_fetch_assoc($result);
-	$mailtxt = $row['rev_text'];
+	$mailtxt = $row['mail_text'];
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	mail($target, "RE: English Wikipedia Account Request", $mailtxt, $headers);
 }
@@ -348,7 +348,7 @@ function listrequests($type, $hideip) {
 	global $secure;
 	global $enableEmailConfirm;
 	if($secure != 1) { die("Not logged in"); }
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 
 	if ($enableEmailConfirm == 1) {
@@ -747,16 +747,18 @@ function hasright($username, $checkright) {
 }
 
 function displayheader() {
-	global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database, $tsSQLlink;
-	
-	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database.");
-	$query = "SELECT * FROM acc_rev WHERE rev_msg = '8' ORDER BY rev_msg DESC LIMIT 1;";
+	global $toolserver_username;
+	global $toolserver_password;
+	global $toolserver_host;
+	global $toolserver_database;
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
+	$query = "SELECT * FROM acc_emails WHERE mail_id = '8';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	echo $row['rev_text'];
+	echo $row['mail_text'];
 }
 
 function displayfooter() {
@@ -774,15 +776,15 @@ function displayfooter() {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
-	$query = "SELECT * FROM acc_rev WHERE rev_msg = '7' ORDER BY rev_msg DESC LIMIT 1;";
+	$query = "SELECT * FROM acc_emails WHERE mail_id = '7';";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
 	echo "</div>";
-	echo $row['rev_text'];
+	echo $row['mail_text'];
 }
 
 function readOnlyMessage() {
@@ -869,28 +871,14 @@ function array_search_recursive($needle, $haystack, $path=array())
       return false;
 }
 
-function insertMessage($id, $user, $text) {
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
-	$query = "INSERT INTO acc_rev VALUES ( NULL, '".mysql_real_escape_string($id)."', '".mysql_real_escape_string($user)."', '".mysql_real_escape_string($text)."', NULL);";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("ERROR: No result returned.");
-}
-
 function getDBConnections() {
-	global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database, $antispoof_host, $antispoof_db, $dontUseWikiDb;
-	global $tsSQLlink;
-	global $asSQLlink;
-	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	if( !$dontUseWikiDb) {
-		$asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);	
-	}
-	return array( $tsSQLlink, $asSQLlink );
-}
-
+    global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database, $antispoof_host, $antispoof_db, $dontUseWikiDb;
+    global $tsSQLlink;
+    global $asSQLlink;
+    $tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+    if( !$dontUseWikiDb) {
+        $asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);
+    }
+    return array( $tsSQLlink, $asSQLlink );
+}	
 ?>
