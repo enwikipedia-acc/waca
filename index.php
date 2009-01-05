@@ -27,7 +27,12 @@ require_once ('functions.php');
 $fail = 0;
 
 // check to see if the database is unavailable
-readOnlyMessage();
+global $dontUseDb;
+if ($dontUseDb) {
+	require_once('offline-messages.php');
+	showExternalOfflineMessage();
+	die();
+}
 
 global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
 global $antispoof_host, $antispoof_db, $antispoof_table, $antispoof_password;

@@ -56,6 +56,8 @@ if (file_exists("config.local.inc.php")) {
 	
 	$dontUseDb = 0;
 	$dontUseWikiDb = 0;
+	$dontUseDbReason = ""; // if disabling the tool, please enter a reason here to be displayed internally.
+	$dontUseDbCulprit = ""; // "     "      "    "     "      "   your name, or the person who broke the tool's name.
 	
 	//antispoof configuration
 	$antispoof_equivset = "equivset.php";
