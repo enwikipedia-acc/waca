@@ -244,21 +244,19 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 }
 
 if (isset ($_POST['name']) && isset ($_POST['email'])) {
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
+	global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
+	global $antispoof_host, $tsSQLlink, $asSQLlink;
+	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$_POST['name'] = str_replace(" ", "_", $_POST['name']);
 	$_POST['name'] = ltrim( rtrim ( ucfirst($_POST['name'] ) ) );
 	
 	global $dontUseWikiDb;
 	if( !$dontUseWikiDb ) {
-		mysql_pconnect("enwiki-p.db.ts.wikimedia.org", $toolserver_username, $toolserver_password);
-		@ mysql_select_db("enwiki_p") or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
+		$asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);
+		@ mysql_select_db("enwiki_p", $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 		$query = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $asSQLlink);
 		if (!$result)
 			Die("ERROR: No result returned.");
 	}	
@@ -276,8 +274,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$email = $_POST['email'];
 	$email = ltrim($email);
 	$email = rtrim($email);
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
+	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	foreach ($uablacklist as $wubl => $ubl) {
 		$phail_test = @ preg_match($ubl, $_SERVER['HTTP_USER_AGENT']);
 		if ($phail_test == TRUE) {
@@ -305,11 +302,11 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 			$cmt = mysql_real_escape_string("FROM $ip $email");
 			sendtobot("[Name-Bl] HIT: $wnbl - " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("ERROR: No result returned.");
 			$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\'' . $ip . '\',\'ClueBot\',\'' . mysql_real_escape_string('Blacklist Hit: ' . $wnbl . ' - ' . $_POST['name'] . ' ' . $ip2 . ' ' . $email . ' ' . $_SERVER['HTTP_USER_AGENT']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');';
-			mysql_query($query);
+			mysql_query($query, $tsSQLlink);
 			die();
 		}
 	}
@@ -324,11 +321,11 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 			$cmt = mysql_real_escape_string("FROM $ip $email");
 			sendtobot("[Email-Bl] HIT: $wnbl - " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("ERROR: No result returned.");
 			$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\'' . $ip . '\',\'ClueBot\',\'' . mysql_real_escape_string('Blacklist Hit: ' . $wnbl . ' - ' . $_POST['name'] . ' ' . $ip2 . ' ' . $email . ' ' . $_SERVER['HTTP_USER_AGENT']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');';
-			mysql_query($query);
+			mysql_query($query, $tsSQLlink);
 			die();
 		}
 	}
@@ -349,21 +346,22 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('DNSBL', '$siuser', 'DNSBL Hit', '$now', '$cmt');";
 			if ($enableSQLError) 
 				echo '<!-- Query: ' . $query . ' -->';
-			mysql_query($query);
+			mysql_query($query, $tsSQLlink);
 			if ($enableSQLError)
 				echo '<!-- Error: ' . mysql_error() . ' -->';
 			$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\'' . $ip . '\',\'ClueBot\',\'' . mysql_real_escape_string("DNSBL Hit:<br />\n" . $dnsblcheck['1']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');';
 			if ($enableSQLError)
 				echo '<!-- Query: ' . $query . ' -->';
-			mysql_query($query);
+			mysql_query($query, $tsSQLlink);
 			if ($enableSQLError)
 				echo '<!-- Error: ' . mysql_error() . ' -->';
 		}
 	}
 	global $dontUseWikiDb;
 	if( !$dontUseWikiDb ) {
-		mysql_pconnect("enwiki-p.db.ts.wikimedia.org", $toolserver_username, $toolserver_password);
-		@ mysql_select_db("enwiki_p") or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
+		
+		$asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);
+		@ mysql_select_db("enwiki_p", $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	}
 	$user = $_POST['name'];
 	$user = ltrim($user);
@@ -413,10 +411,10 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		$fail = 1;
 	}
 
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
+	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_name = '$user'";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	$row = mysql_fetch_assoc($result);
 	if ($row['pend_id'] != "") {
 		$message = showmessage(17);
@@ -424,7 +422,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		$fail = 1;
 	}
 	$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_email = '$email'";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	$row = mysql_fetch_assoc($result);
 	if ($row['pend_id'] != "") {
 		$message = showmessage(18);
@@ -433,7 +431,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	}
 	mysql_query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP()');
 	$query = "SELECT * FROM acc_ban WHERE ban_type = 'IP' AND ban_target = '$ip'";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	$row = mysql_fetch_assoc($result);
 	$dbanned = $row['ban_duration'];
 	$toruser = checktor($ip2);
@@ -455,7 +453,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		}
 	}
 	$query = "SELECT * FROM acc_ban WHERE ban_type = 'Name' AND ban_target = '$user'";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	$row = mysql_fetch_assoc($result);
 	$dbanned = $row['ban_duration'];
 	if ($row['ban_id'] != "") {
@@ -474,7 +472,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		}
 	}
 	$query = "SELECT * FROM acc_ban WHERE ban_type = 'EMail' AND ban_target = '$email'";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	$row = mysql_fetch_assoc($result);
 	$dbanned = $row['ban_duration'];
 	if ($row['ban_id'] != "") {
