@@ -30,19 +30,6 @@ $fail = 0;
 readOnlyMessage();
 getDBconnections();
 
-function sqlerror ($sql_error,$generic_error) {
-	/*
-	* Show the user an error 
-	* depending on $enableSQLError.
-	*/
-	global $enableSQLError;
-	if ($enableSQLError) {
-		die($sql_error);
-	} else {
-		die($generic_error);
-	}
-}
-
 function confirmEmail( $id ) {
 	/*
 	* Confirms either a new users e-mail, or a requestor's e-mail.
