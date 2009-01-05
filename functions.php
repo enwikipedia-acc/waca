@@ -873,7 +873,7 @@ function array_search_recursive($needle, $haystack, $path=array())
 }
 
 function getDBConnections() {
-    global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database
+    global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
 	global $antispoof_host, $antispoof_db, $antispoof_password, $dontUseWikiDb;
     global $tsSQLlink;
     global $asSQLlink;
@@ -882,5 +882,4 @@ function getDBConnections() {
         $asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
     }
     return array( $tsSQLlink, $asSQLlink );
-}	
-?>
+}
