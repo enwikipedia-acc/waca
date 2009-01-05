@@ -22,12 +22,13 @@
 **************************************************************/
 
 require_once ('config.inc.php');
+require_once ('functions.inc.php');
 
 $fail = 0;
 
 // check to see if the database is unavailable
 readOnlyMessage();
-
+getDBconnections();
 function readOnlyMessage() {
 	global $dontUseDb;
 	if ($dontUseDb) {
@@ -96,7 +97,7 @@ function confirmEmail( $id ) {
 	global $toolserver_host;
 	global $toolserver_database;
 	global $tsurl;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$pid = sanitize($id);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$pid';";
@@ -137,7 +138,7 @@ function checkSpoofs( $username ) {
 		global $antispoof_host;
 		global $antispoof_db;
 		global $antispoof_table;
-		$spooflink = mysql_connect($antispoof_host, $toolserver_username, $toolserver_password);
+		$spooflink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);
 		@ mysql_select_db($antispoof_db, $spooflink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 		$fone = strtr($username,$equivset);
 		//$fone = mysql_real_escape_string( $fone );
@@ -253,7 +254,7 @@ function upcsum($id) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
 	$result = mysql_query($query);
@@ -274,7 +275,7 @@ function displayheader() {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$query = "SELECT * FROM acc_rev WHERE rev_msg = '8' SORT BY rev_msg DESC LIMIT 1;";
 	$result = mysql_query($query);
@@ -293,7 +294,7 @@ function displayfooter() {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$query = "SELECT * FROM acc_rev WHERE mail_id = '7' SORT BY rev_msg DESC LIMIT 1;";
 	$result = mysql_query($query);
@@ -312,7 +313,7 @@ function displayform() {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$query = "SELECT * FROM acc_rev WHERE rev_msg = '6' SORT BY rev_msg DESC LIMIT 1;";
 	$result = mysql_query($query);
@@ -328,7 +329,7 @@ function clearOldUnconfirmed( ) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$ntime = mktime(
         	date("H"),
@@ -351,7 +352,7 @@ function showmessage($messageno) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$query = "SELECT * FROM acc_rev WHERE rev_msg = '$messageno' SORT BY rev_msg DESC LIMIT 1;";
 	$result = mysql_query($query);
@@ -377,7 +378,7 @@ if( isset( $_GET['action'] ) ) {
 if ($enableEmailConfirm == 1) {
 
 if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
-	mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
+	mysql_pconnect( $toolserver_host, $toolserver_username, $toolserver_password );
 	@ mysql_select_db( $toolserver_database ) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$pid = mysql_real_escape_string( $_GET['id'] );
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$pid';";
@@ -422,14 +423,14 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$_POST['name'] = str_replace(" ", "_", $_POST['name']);
 	$_POST['name'] = ltrim( rtrim ( ucfirst($_POST['name'] ) ) );
 	
 	global $dontUseWikiDb;
 	if( !$dontUseWikiDb ) {
-		mysql_connect("enwiki-p.db.ts.wikimedia.org", $toolserver_username, $toolserver_password);
+		mysql_pconnect("enwiki-p.db.ts.wikimedia.org", $toolserver_username, $toolserver_password);
 		@ mysql_select_db("enwiki_p") or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 		$query = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
 		$result = mysql_query($query);
@@ -450,7 +451,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$email = $_POST['email'];
 	$email = ltrim($email);
 	$email = rtrim($email);
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	foreach ($uablacklist as $wubl => $ubl) {
 		$phail_test = @ preg_match($ubl, $_SERVER['HTTP_USER_AGENT']);
@@ -536,7 +537,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	}
 	global $dontUseWikiDb;
 	if( !$dontUseWikiDb ) {
-		mysql_connect("enwiki-p.db.ts.wikimedia.org", $toolserver_username, $toolserver_password);
+		mysql_pconnect("enwiki-p.db.ts.wikimedia.org", $toolserver_username, $toolserver_password);
 		@ mysql_select_db("enwiki_p") or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	}
 	$user = $_POST['name'];
@@ -587,7 +588,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		$fail = 1;
 	}
 
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_name = '$user'";
 	$result = mysql_query($query);
@@ -681,13 +682,13 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		die();
 	}
 	mysql_close();
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$comments = sanitize($_POST['comments']);
 	$comments = htmlentities($comments); //Escape injections.
 	$dnow = date("Y-m-d H-i-s");
 	if( checkSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
-	mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
+	mysql_pconnect( $toolserver_host, $toolserver_username, $toolserver_password );
 	@ mysql_select_db( $toolserver_database ) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$query = "INSERT INTO $toolserver_database.acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow' );";
 	$result = mysql_query($query);

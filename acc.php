@@ -29,7 +29,7 @@ $version = "0.9.7";
 // check to see if the database is unavailable
 readOnlyMessage();
 
-$link = mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
+$link = mysql_pconnect( $toolserver_host, $toolserver_username, $toolserver_password );
 if ( !$link ) {
 	die( 'Could not connect: ' . mysql_error( ) );
 }
@@ -1498,7 +1498,7 @@ elseif ($action == "zoom") {
 		}
 		echo "</ul>\n";
 	}
-	mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
+	mysql_pconnect( $toolserver_host, $toolserver_username, $toolserver_password );
 	@ mysql_select_db( $toolserver_database ) or print mysql_error( );
 	
 	
