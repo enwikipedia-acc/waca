@@ -167,14 +167,6 @@ function sanitize( $what ) {
 	return ( $what );
 }
 
-function formatForBot( $data ) { 		
-	global $key; 		
-	$pData[0] = $key; 		
-	$pData[1] = $data; 		
-	$sData = serialize( $pData ); 		
-	return $sData; 		
-} 		
-
 function sendtobot($message) {
 	/*
 	* Send to the IRC bot via UDP
