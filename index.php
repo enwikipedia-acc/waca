@@ -76,17 +76,14 @@ function checkSpoofs( $username ) {
 	if( !$dontUseWikiDb ) {
 		global $antispoof_equivset;
 		require_once($antispoof_equivset);
-		global $toolserver_username;
-		global $toolserver_password;
-		global $antispoof_host;
-		global $antispoof_db;
-		global $antispoof_table;
-		$spooflink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);
-		@ mysql_select_db($antispoof_db, $spooflink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
+		global $toolserver_username, $toolserver_password, $antispoof_host, $antispoof_db, $antispoof_table;
+		global $asSQLlink;
+		$asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);
+		@ mysql_select_db($antispoof_db, $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 		$fone = strtr($username,$equivset);
 		//$fone = mysql_real_escape_string( $fone );
 		$query = "SELECT * FROM $antispoof_table WHERE su_normalized = 'v2:$fone';";
-		$result = mysql_query($query, $spooflink);
+		$result = mysql_query($query, $asSQLlink);
 		if(!$result) sqlerror("ERROR: No result returned. - ".mysql_error(),"ERROR: database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
 		$numSpoof = 0;
 		while ($row = mysql_fetch_assoc($result)) {
