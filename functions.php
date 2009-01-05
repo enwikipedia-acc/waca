@@ -57,7 +57,7 @@ function setForceLogout( $uid ) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "UPDATE acc_user SET user_forcelogout = '1' WHERE user_id = '$uid';";
 	$result = mysql_query($query);
@@ -69,7 +69,7 @@ function forceLogout( $uid ) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "SELECT user_forcelogout FROM acc_user WHERE user_id = '$uid';";
 	$result = mysql_query($query);
@@ -99,7 +99,7 @@ function getSpoofs( $username ) {
 		global $antispoof_host;
 		global $antispoof_db;
 		global $antispoof_table;
-		$spooflink = mysql_connect($antispoof_host, $toolserver_username, $toolserver_password);
+		$spooflink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);
 		@ mysql_select_db($antispoof_db, $spooflink) or sqlerror(mysql_error(),"Error selecting database.");
 		$fone = sanitize(strtr($username,$equivset));
 		//$fone = mysql_real_escape_string( $fone );
@@ -139,7 +139,7 @@ function upcsum($id) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
 	$result = mysql_query($query);
@@ -159,7 +159,7 @@ function csvalid($id, $sum) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
 	$result = mysql_query($query);
@@ -199,7 +199,7 @@ function showhowma() {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$howma = gethowma();
 	unset ($howma['howmany']);
@@ -229,7 +229,7 @@ function gethowma() {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$last5min = time() - 300; // Get the users active as of the last 5 mins
 	
@@ -257,7 +257,7 @@ function showmessage($messageno) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$messageno = sanitize($messageno);
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
@@ -276,7 +276,7 @@ function sendemail($messageno, $target) {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$messageno = sanitize($messageno);
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
@@ -348,7 +348,7 @@ function listrequests($type, $hideip) {
 	global $secure;
 	global $enableEmailConfirm;
 	if($secure != 1) { die("Not logged in"); }
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 
 	if ($enableEmailConfirm == 1) {
@@ -751,7 +751,7 @@ function displayheader() {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '8';";
 	$result = mysql_query($query);
@@ -776,7 +776,7 @@ function displayfooter() {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '7';";
 	$result = mysql_query($query);
