@@ -41,7 +41,6 @@ function confirmEmail( $id ) {
 	*/
 	global $tsSQLlink, $asSQLlink;
 	global $tsurl;
-	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$pid = sanitize($id);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$pid';";
@@ -77,7 +76,6 @@ function checkSpoofs( $username ) {
 	if( !$dontUseWikiDb ) {
 		global $antispoof_equivset;
 		require_once($antispoof_equivset);
-		$asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
 		@ mysql_select_db($antispoof_db, $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 		$fone = strtr($username,$equivset);
 		//$fone = mysql_real_escape_string( $fone );
@@ -159,7 +157,6 @@ function displayform() {
 	/*
 	* Display Request form via MySQL
 	*/
-	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '6' ORDER BY mail_id DESC LIMIT 1;";
 	$result = mysql_query($query, $tsSQLlink);
@@ -171,7 +168,6 @@ function displayform() {
 
 function clearOldUnconfirmed( ) {
 	global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database, $tsSQLlink;
-	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$ntime = mktime(
         	date("H"),
@@ -201,7 +197,6 @@ if( isset( $_GET['action'] ) ) {
 if ($enableEmailConfirm == 1) {
 
 if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
-	mysql_pconnect( $toolserver_host, $toolserver_username, $toolserver_password );
 	@ mysql_select_db( $toolserver_database ) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$pid = mysql_real_escape_string( $_GET['id'] );
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$pid';";
@@ -242,16 +237,12 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 }
 
 if (isset ($_POST['name']) && isset ($_POST['email'])) {
-	global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
-	global $antispoof_host, $tsSQLlink, $asSQLlink;
-	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$_POST['name'] = str_replace(" ", "_", $_POST['name']);
 	$_POST['name'] = ltrim( rtrim ( ucfirst($_POST['name'] ) ) );
 	
 	global $dontUseWikiDb;
 	if( !$dontUseWikiDb ) {
-		$asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
 		@ mysql_select_db("enwiki_p", $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 		$query = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
 		$result = mysql_query($query, $asSQLlink);
@@ -358,7 +349,6 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	global $dontUseWikiDb;
 	if( !$dontUseWikiDb ) {
 		
-		$asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
 		@ mysql_select_db("enwiki_p", $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	}
 	$user = $_POST['name'];
@@ -409,7 +399,6 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		$fail = 1;
 	}
 
-	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_name = '$user'";
 	$result = mysql_query($query, $tsSQLlink);
