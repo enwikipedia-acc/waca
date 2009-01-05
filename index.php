@@ -159,20 +159,6 @@ function checkSpoofs( $username ) {
 	else { return FALSE; }
 }
 
-function sendtobot($message) {
-	/*
-	* Send to the IRC bot via UDP
-	*/
-	global $whichami;
-	sleep(3);
-	$fp = fsockopen("udp://91.198.174.202", 9001, $erno, $errstr, 30);
-	if (!$fp) {
-		echo "SOCKET ERROR: $errstr ($errno)<br />\n";
-	}
-	fwrite($fp, formatForBot( chr(2)."[$whichami]".chr(2).": $message\r\n" ) );
-	fclose($fp);
-}
-
 function checktor($addr) {
 	/*
 	* Check if the supplied host is a TOR node
