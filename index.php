@@ -159,14 +159,6 @@ function checkSpoofs( $username ) {
 	else { return FALSE; }
 }
 
-function sanitize( $what ) {
-	/*
-	* Shortcut to mysql_real_escape_string
-	*/
-	$what = mysql_real_escape_string( $what );
-	return ( $what );
-}
-
 function sendtobot($message) {
 	/*
 	* Send to the IRC bot via UDP
