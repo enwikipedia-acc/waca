@@ -747,12 +747,10 @@ function hasright($username, $checkright) {
 }
 
 function displayheader() {
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
+	global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database, $tsSQLlink;
+	
+	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database.");
 	$query = "SELECT * FROM acc_rev WHERE rev_msg = '8' ORDER BY rev_msg DESC LIMIT 1;";
 	$result = mysql_query($query);
 	if (!$result)
@@ -886,8 +884,8 @@ function insertMessage($id, $user, $text) {
 
 function getDBConnections() {
 	global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database, $antispoof_host, $antispoof_db, $dontUseWikiDb;
-	$tsSQLlink = '';
-	$asSQLlink = '';
+	global $tsSQLlink = '';
+	global $asSQLlink = '';
 	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	if( !$dontUseWikiDb) {
 		$asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);	
