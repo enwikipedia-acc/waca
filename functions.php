@@ -884,8 +884,8 @@ function insertMessage($id, $user, $text) {
 
 function getDBConnections() {
 	global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database, $antispoof_host, $antispoof_db, $dontUseWikiDb;
-	global $tsSQLlink = '';
-	global $asSQLlink = '';
+	global $tsSQLlink;
+	global $asSQLlink;
 	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	if( !$dontUseWikiDb) {
 		$asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);	
