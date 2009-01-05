@@ -230,27 +230,6 @@ function emailvalid($email) {
 	}
 }
 
-function upcsum($id) {
-	/*
-	* Update pend ticket checksum
-	*/
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
-	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("ERROR: No result returned.");
-	$pend = mysql_fetch_assoc($result);
-	$hash = md5($pend['pend_id'] . $pend['pend_name'] . $pend['pend_email'] . microtime());
-	$query = "UPDATE acc_pend SET pend_checksum = '$hash' WHERE pend_id = '$id';";
-	$result = mysql_query($query);
-	mysql_close();
-}
-
 function displayheader() {
 	/*
 	* Display page header via MySQL
