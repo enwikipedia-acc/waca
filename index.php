@@ -216,44 +216,6 @@ function emailvalid($email) {
 	}
 }
 
-function displayheader() {
-	/*
-	* Display page header via MySQL
-	*/
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
-	$query = "SELECT * FROM acc_rev WHERE rev_msg = '8' SORT BY rev_msg DESC LIMIT 1;";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("ERROR: No result returned.");
-	$row = mysql_fetch_assoc($result);
-	echo $row['rev_text'];
-	mysql_close();
-}
-
-function displayfooter() {
-	/*
-	* Display page footer via MySQL
-	*/
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
-	$query = "SELECT * FROM acc_rev WHERE mail_id = '7' SORT BY rev_msg DESC LIMIT 1;";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("ERROR: No result returned.");
-	$row = mysql_fetch_assoc($result);
-	echo $row['rev_text'];
-	mysql_close();
-}
-
 function displayform() {
 	/*
 	* Display Request form via MySQL
