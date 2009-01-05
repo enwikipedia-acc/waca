@@ -163,28 +163,21 @@ function displayform() {
 	/*
 	* Display Request form via MySQL
 	*/
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
+	global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database, $tsSQLlink;
+	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$query = "SELECT * FROM acc_rev WHERE rev_msg = '6' SORT BY rev_msg DESC LIMIT 1;";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
 	echo $row['rev_text'];
-	mysql_close();
 }
 
 function clearOldUnconfirmed( ) {
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
+	global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database, $tsSQLlink;
+	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password, $tsSQLlink);
+	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$ntime = mktime(
         	date("H"),
         	date("i"),
@@ -195,7 +188,7 @@ function clearOldUnconfirmed( ) {
         );
 	$expiry =  date("Y-m-d H:i:s", $ntime);
 	$query = "DELETE FROM acc_pend WHERE pend_date < '$expiry' AND pend_mailconfirm != 'Confirmed' AND pend_mailconfirm != '';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 }
 
 if ($enableEmailConfirm == 1) {
