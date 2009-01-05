@@ -35,16 +35,14 @@ function confirmEmail( $id ) {
 	* Confirms either a new users e-mail, or a requestor's e-mail.
 	* $id will be acc_pend.pend_id
 	*/
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
+	global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
+	global $tsSQLlink, $asSQLlink;
 	global $tsurl;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
+	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$pid = sanitize($id);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$pid';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error(),"ERROR: database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$row = mysql_fetch_assoc($result);
@@ -66,7 +64,7 @@ function confirmEmail( $id ) {
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	mail($row['pend_email'], "English Wikipedia Account Request", $mailtxt, $headers);
 	$query = "UPDATE acc_pend SET pend_mailconfirm = '$hash' WHERE pend_id = '$pid';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error(),"ERROR: database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
 }
@@ -207,7 +205,7 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 	@ mysql_select_db( $toolserver_database ) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$pid = mysql_real_escape_string( $_GET['id'] );
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$pid';";
-	$result = mysql_query( $query );
+	$result = mysql_query( $query, $tsSQLlink );
 	if ( !$result )
 		sqlerror("Query failed: $query ERROR: ".mysql_error(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$row = mysql_fetch_assoc( $result );
@@ -215,7 +213,7 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
                 $successmessage = showmessage(24);
 		echo "$successmessage <br />\n";
 		$query = "UPDATE acc_pend SET pend_mailconfirm = 'Confirmed' WHERE pend_id = '$pid';";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if ( !$result )
 			sqlerror("Query failed: $query ERROR: ".mysql_error(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>."); 
 		$user = $row['pend_name'];
@@ -429,7 +427,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		echo "$message<br />\n";
 		$fail = 1;
 	}
-	mysql_query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP()');
+	mysql_query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP()', $tsSQLlink);
 	$query = "SELECT * FROM acc_ban WHERE ban_type = 'IP' AND ban_target = '$ip'";
 	$result = mysql_query($query, $tsSQLlink);
 	$row = mysql_fetch_assoc($result);
@@ -504,22 +502,17 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		displayfooter();
 		die();
 	}
-	mysql_close();
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$comments = sanitize($_POST['comments']);
 	$comments = htmlentities($comments); //Escape injections.
 	$dnow = date("Y-m-d H-i-s");
 	if( checkSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
-	mysql_pconnect( $toolserver_host, $toolserver_username, $toolserver_password );
-	@ mysql_select_db( $toolserver_database ) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
-	$query = "INSERT INTO $toolserver_database.acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow' );";
-	$result = mysql_query($query);
+	$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow' );";
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("ERROR: No result returned.");
 	$q2 = $query;
-	$query = "SELECT pend_id,pend_email FROM $toolserver_database.acc_pend WHERE pend_name = '$user' ORDER BY pend_id DESC LIMIT 1;";
-	$result = mysql_query($query);	
+	$query = "SELECT pend_id,pend_email FROM acc_pend WHERE pend_name = '$user' ORDER BY pend_id DESC LIMIT 1;";
+	$result = mysql_query($query, $tsSQLlink);	
 	if (!$result)
 		Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
