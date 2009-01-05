@@ -39,7 +39,7 @@ function confirmEmail( $id ) {
 	* Confirms either a new users e-mail, or a requestor's e-mail.
 	* $id will be acc_pend.pend_id
 	*/
-	global $tsSQLlink, $asSQLlink;
+	global $toolserver_database, $tsSQLlink, $asSQLlink;
 	global $tsurl;
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$pid = sanitize($id);
@@ -74,7 +74,7 @@ function confirmEmail( $id ) {
 function checkSpoofs( $username ) {
 	global $dontUseWikiDb;
 	if( !$dontUseWikiDb ) {
-		global $antispoof_equivset;
+		global $antispoof_equivset, $antispoof_db, $asSQLlink;
 		require_once($antispoof_equivset);
 		@ mysql_select_db($antispoof_db, $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 		$fone = strtr($username,$equivset);
@@ -157,6 +157,7 @@ function displayform() {
 	/*
 	* Display Request form via MySQL
 	*/
+	global $toolserver_database, $tsSQLlink;
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '6' ORDER BY mail_id DESC LIMIT 1;";
 	$result = mysql_query($query, $tsSQLlink);
@@ -167,7 +168,7 @@ function displayform() {
 }
 
 function clearOldUnconfirmed( ) {
-	global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database, $tsSQLlink;
+	global $toolserver_database, $tsSQLlink;
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$ntime = mktime(
         	date("H"),
