@@ -293,25 +293,6 @@ function clearOldUnconfirmed( ) {
 	$result = mysql_query($query);
 }
 
-function showmessage($messageno) {
-	/*
-	* Display Interface message via MySQL
-	*/
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
-	$query = "SELECT * FROM acc_rev WHERE rev_msg = '$messageno' SORT BY rev_msg DESC LIMIT 1;";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("ERROR: No result returned.");
-	$row = mysql_fetch_assoc($result);
-	return ($row['rev_text']);
-	mysql_close();
-}
-
 if ($enableEmailConfirm == 1) {
 	clearOldUnconfirmed( );
 }
