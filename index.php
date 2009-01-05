@@ -28,17 +28,17 @@ $fail = 0;
 
 // check to see if the database is unavailable
 readOnlyMessage();
-getDBconnections();
 
 global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
 global $antispoof_host, $antispoof_db, $antispoof_table;
+global $tsSQLlink, $asSQLlink;
+list($tsSQLlink, $asSQLlink) = getDBconnections();
 
 function confirmEmail( $id ) {
 	/*
 	* Confirms either a new users e-mail, or a requestor's e-mail.
 	* $id will be acc_pend.pend_id
 	*/
-	global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
 	global $tsSQLlink, $asSQLlink;
 	global $tsurl;
 	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
@@ -77,8 +77,6 @@ function checkSpoofs( $username ) {
 	if( !$dontUseWikiDb ) {
 		global $antispoof_equivset;
 		require_once($antispoof_equivset);
-		global $toolserver_username, $toolserver_password, $antispoof_host, $antispoof_db, $antispoof_table;
-		global $asSQLlink;
 		$asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);
 		@ mysql_select_db($antispoof_db, $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 		$fone = strtr($username,$equivset);
@@ -161,7 +159,6 @@ function displayform() {
 	/*
 	* Display Request form via MySQL
 	*/
-	global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database, $tsSQLlink;
 	$tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$query = "SELECT * FROM acc_emails WHERE mail_id = '6' ORDER BY mail_id DESC LIMIT 1;";
