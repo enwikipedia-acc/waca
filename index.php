@@ -30,7 +30,7 @@ $fail = 0;
 readOnlyMessage();
 
 global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
-global $antispoof_host, $antispoof_db, $antispoof_table;
+global $antispoof_host, $antispoof_db, $antispoof_table, $antispoof_password;
 global $tsSQLlink, $asSQLlink;
 list($tsSQLlink, $asSQLlink) = getDBconnections();
 
@@ -77,7 +77,7 @@ function checkSpoofs( $username ) {
 	if( !$dontUseWikiDb ) {
 		global $antispoof_equivset;
 		require_once($antispoof_equivset);
-		$asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);
+		$asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
 		@ mysql_select_db($antispoof_db, $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 		$fone = strtr($username,$equivset);
 		//$fone = mysql_real_escape_string( $fone );
@@ -251,7 +251,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	
 	global $dontUseWikiDb;
 	if( !$dontUseWikiDb ) {
-		$asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);
+		$asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
 		@ mysql_select_db("enwiki_p", $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 		$query = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
 		$result = mysql_query($query, $asSQLlink);
@@ -358,7 +358,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	global $dontUseWikiDb;
 	if( !$dontUseWikiDb ) {
 		
-		$asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);
+		$asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
 		@ mysql_select_db("enwiki_p", $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	}
 	$user = $_POST['name'];

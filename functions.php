@@ -99,7 +99,8 @@ function getSpoofs( $username ) {
 		global $antispoof_host;
 		global $antispoof_db;
 		global $antispoof_table;
-		$spooflink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);
+		global $antispoof_password;
+		$spooflink = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
 		@ mysql_select_db($antispoof_db, $spooflink) or sqlerror(mysql_error(),"Error selecting database.");
 		$fone = sanitize(strtr($username,$equivset));
 		//$fone = mysql_real_escape_string( $fone );
@@ -872,12 +873,13 @@ function array_search_recursive($needle, $haystack, $path=array())
 }
 
 function getDBConnections() {
-    global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database, $antispoof_host, $antispoof_db, $dontUseWikiDb;
+    global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database
+	global $antispoof_host, $antispoof_db, $antispoof_password, $dontUseWikiDb;
     global $tsSQLlink;
     global $asSQLlink;
     $tsSQLlink = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
     if( !$dontUseWikiDb) {
-        $asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $toolserver_password);
+        $asSQLlink = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
     }
     return array( $tsSQLlink, $asSQLlink );
 }	
