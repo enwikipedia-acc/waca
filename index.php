@@ -171,7 +171,7 @@ function displayform() {
 	if (!$result)
 		Die("ERROR: No result returned.");
 	$row = mysql_fetch_assoc($result);
-	echo $row['rev_text'];
+	echo $row['mail_text'];
 }
 
 function clearOldUnconfirmed( ) {
