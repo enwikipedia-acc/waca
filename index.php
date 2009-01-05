@@ -29,50 +29,6 @@ $fail = 0;
 // check to see if the database is unavailable
 readOnlyMessage();
 getDBconnections();
-function readOnlyMessage() {
-	global $dontUseDb;
-	if ($dontUseDb) {
-	echo <<<HTML
-	<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
-	<head>
-		<meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-		<title>Account Creation Assistance for the English Wikipedia - http://en.wikipedia.org/wiki/Wikipedia:Request an account</title>
-		<style type="text/css" media="screen">
-			@import "style.css";
-		</style>
-	</head>
-
-	<body id="body">
-		<div id="header">
-			<div id="header-title">
-				Account Creation Assistance
-			</div>
-		</div>
-		<div id="navigation">
-			<a href="http://en.wikipedia.org">English Wikipedia</a> 
-		</div>
-
-		<div id="content">
-			<h1>Request an account on the English Wikipedia</h1>
-			<h2>Apologies!</h2>
-
-			<p>We are really sorry, but this tool is currently offline while critical maintenance is performed. We will attempt to restore normal operations as soon as possible.</p>
-			<p>However, you can still request an account by emailing <a href="mailto:accounts-enwiki-l@lists.wikimedia.org">accounts-enwiki-l@lists.wikimedia.org</a>, stating the username you wish to obtain.</p>
-			<p>Thanks for you interest in joining Wikipedia.</p>
-		</div>
-		<div id="footer">
-			Account Creation Assistance Manager by <a href="http://stable.toolserver.org/acc/team.php">The ACC dev team</a>. <a href="https://jira.toolserver.org/browse/ACC">Bugs?</a><br />
-
-			Designed by <a href="http://charlie.mudoo.net/">Charlie Melbye</a>
-		</div>
-	</body>
-</html>
-HTML;
-		die();
-	}
-}
-	
 
 function sqlerror ($sql_error,$generic_error) {
 	/*
