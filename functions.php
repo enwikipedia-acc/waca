@@ -342,15 +342,11 @@ function listrequests($type, $hideip) {
 	/*
 	* List requests, at Zoom, and, on the main page
 	*/
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
+	global $toolserver_database, $tsSQLlink;
 	global $secure;
 	global $enableEmailConfirm;
 	if($secure != 1) { die("Not logged in"); }
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
+	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database.");
 
 	if ($enableEmailConfirm == 1) {
 		if ($type == 'Admin' || $type == 'Open') {
@@ -409,7 +405,7 @@ function listrequests($type, $hideip) {
 
 		$sid = sanitize($_SESSION['user']);
 		$query4 = "SELECT * FROM acc_user WHERE user_name = '$sid';";
-		$result4 = mysql_query($query4);
+		$result4 = mysql_query($query4, $tsSQLlink);
 		if (!$result4)
 			sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 		$row4 = mysql_fetch_assoc($result4);
@@ -593,10 +589,12 @@ function makehead($username) {
 	/*
 	* Show page header (retrieved by MySQL call)
 	*/
+	global $tsSQLlink, $toolserver_database;
+	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$suin = sanitize($username);
 	$rethead = '';
 	$query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	$row = mysql_fetch_assoc($result);
