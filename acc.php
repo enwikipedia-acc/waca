@@ -420,17 +420,15 @@ elseif ($action == "messagemgmt") {
 		select r.rev_id, r.rev_msg, r.rev_timestamp, r.rev_userid, u.user_name, m.mail_id, m.mail_text, m.mail_count, m.mail_desc, m.mail_type from acc_rev r inner join acc_user u on r.rev_userid = u.user_id join acc_emails m on m.mail_id = r.rev_msg where m.mail_id = 1 order by r.rev_id desc limit 1;
 
 		*/
-		$query = "SELECT * FROM acc_emails JOIN acc_rev ON mail_id = rev_msg WHERE mail_id = $mid ORDER BY rev_id DESC LIMIT 1;";
+		$query = "SELECT * FROM acc_emails WHERE mail_id = $mid ORDER BY rev_id DESC LIMIT 1;";
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
-		$mailtext = htmlentities($row['rev_text']);
+		$mailtext = htmlentities($row['mail_text']);
 		echo "<h2>View message</h2><br />Message ID: " . $row['mail_id'] . "<br />\n";
 		echo "Message count: " . $row['mail_count'] . "<br />\n";
 		echo "Message title: " . $row['mail_desc'] . "<br />\n";
-		echo "Last edit: " . $row['rev_user'] . " on " . $row['rev_timestamp'] . "<br />\n";
-		echo "Current message id: " . $row['rev_id'] . "<br />\n";
 		echo "Message text: <br /><pre>$mailtext</pre><br />\n";
 		echo showfooter();
 		die();
@@ -453,13 +451,17 @@ elseif ($action == "messagemgmt") {
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
-			insertMessage($mid, $siuser, $mtext);
+			$query = "UPDATE acc_emails SET mail_text = '$mtext' WHERE mail_id = '$mid'";
+			$result = mysql_query( $query, $tsSQLlink );
+			if( !$result ) {
+				sqlerror(mysql_error(),"Could not update message");
+			}
 			$now = date("Y-m-d H-i-s");
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$mid', '$siuser', 'Edited', '$now');";
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
-			$query = "SELECT mail_desc FROM acc_rev JOIN acc_emails ON rev_msg = mail_id WHERE rev_msg = $mid;";
+			$query = "SELECT mail_desc FROM acc_emails WHERE mail_id = $mid;";
 			$result = mysql_query($query);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
@@ -470,12 +472,12 @@ elseif ($action == "messagemgmt") {
 			echo showfooter();
 			die();
 		}
-		$query = "SELECT * FROM acc_rev JOIN acc_emails ON rev_msg = mail_id WHERE rev_msg = $mid ORDER BY rev_msg DESC LIMIT 1;";
+		$query = "SELECT * FROM acc_emails WHERE mail_id = $mid;";
 		$result = mysql_query($query);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
-		$mailtext = htmlentities($row['rev_text']);
+		$mailtext = htmlentities($row['mail_text']);
 		echo "<h2>Edit message</h2><strong>This is NOT a toy. If you can see this form, you can edit this message. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=messagemgmt&amp;edit=$mid&amp;submit=1\" method=\"post\"><br />\n";
 		echo "<input type=\"text\" name=\"maildesc\" value=\"" . $row['mail_desc'] . "\"/><br />\n";
 		echo "<textarea name=\"mailtext\" rows=\"20\" cols=\"60\">$mailtext</textarea><br />\n";
