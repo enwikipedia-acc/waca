@@ -696,6 +696,8 @@ function getdevs() {
 }
 
 function defaultpage() {
+	global $tsSQLlink, $toolserver_database;
+	@mysql_select_db( $toolserver_database, $tsSQLlink) or sqlerror(mysql_error,"Could not select db");
 	$html =<<<HTML
 <h1>Create an account!</h1>
 <h2>Open requests</h2>
@@ -706,10 +708,10 @@ HTML;
 <h2>Account Creator Needed!</h2>
 HTML;
 	$html .= listrequests("Admin", TRUE);
-
 	$html .= "<h2>Last 5 Closed requests</h2><a name='closed'></a><span id=\"closed\"/>\n";
+	@mysql_select_db
 	$query = "SELECT pend_id, pend_name, pend_checksum FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	$html .= "<table cellspacing=\"0\">\n";
