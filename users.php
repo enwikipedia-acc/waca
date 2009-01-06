@@ -29,6 +29,10 @@ require_once ('functions.php');
 // check to see if the database is unavailable
 readOnlyMessage();
 
+// retrieve database connections
+$dblinks = getDBConnections();
+
+/*
 // Connect to MySQL server
 $link = mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 if (!$link)
@@ -39,6 +43,7 @@ if (!$link)
 
 // Select database
 @ mysql_select_db($toolserver_database) or print mysql_error();
+*/
 
 // Continue session
 session_start();
@@ -69,7 +74,7 @@ if (isset($_GET['viewuser']))
 	}
 
 	$query = "SELECT * FROM acc_user WHERE user_id = ". $gid . " AND user_level != 'Declined' AND user_level != 'New';"; 
-	$result = mysql_query($query); // Get information on the selected user; Must not show if the user has not been approved
+	$result = mysql_query($query, $dblinks[0]); // Get information on the selected user; Must not show if the user has not been approved
 	if (!$result)
 	{
 		// If query fails, kill script
@@ -169,7 +174,7 @@ if (isset($_GET['viewuser']))
 	// List the requests this user has marked as 'created'
 	echo "<h2>Users created</h2>\n";
 	$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = " . $gid . " AND log_action = 'Closed 1';";
-	$result = mysql_query($query); // Get all the requests this user has marked as 'created'
+	$result = mysql_query($query, $dblinks[0]); // Get all the requests this user has marked as 'created'
 	if (!$result)
 	{
 		// If query fails, kill script
@@ -204,7 +209,7 @@ if (isset($_GET['viewuser']))
 	// List the requests this user has *not* marked as 'created'
 	echo "<h2>Users not created</h2>\n";
 	$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = " . $gid . " AND log_action != 'Closed 1';";
-	$result = mysql_query($query); // Get all the requests this user has *not* marked as 'created'
+	$result = mysql_query($query, $dblinks[0]); // Get all the requests this user has *not* marked as 'created'
 	if (!$result)
 	{
 		// If query fails, kill script
@@ -239,7 +244,7 @@ if (isset($_GET['viewuser']))
 	// List actions that have been executed in relation to this account (approval, promotions, suspensions, etc)
 	echo "<h2>Account log</h2>\n";
 	$query = "SELECT * FROM acc_log where log_pend = '" . $gid . "' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted|Demoted|Renamed|fchange)';";
-	$result = mysql_query($query); // Get log entries where the user is the subject (not the executor)
+	$result = mysql_query($query, $dblinks[0]); // Get log entries where the user is the subject (not the executor)
 	if (!$result)
 	{
 		// If query fails, kill script
@@ -305,7 +310,7 @@ Viewing the entire user list
 else
 {
 	$query = "SELECT * FROM acc_user ORDER BY user_level, user_name;";
-	$result = mysql_query($query); // Get information on all tool users and order them by their access rights
+	$result = mysql_query($query, $dblinks[0]); // Get information on all tool users and order them by their access rights
 	if (!$result)
 	{
 		// If query fails, kill script
