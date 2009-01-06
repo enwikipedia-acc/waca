@@ -29,8 +29,12 @@ $version = "0.9.7";
 // check to see if the database is unavailable
 readOnlyMessage();
 
-$link = mysql_pconnect( $toolserver_host, $toolserver_username, $toolserver_password );
-if ( !$link ) {
+global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
+global $antispoof_host, $antispoof_db, $antispoof_table, $antispoof_password;
+global $tsSQLlink, $asSQLlink;
+list($tsSQLlink, $asSQLlink) = getDBconnections();
+
+if ( !$tsSQLlink ) {
 	die( 'Could not connect: ' . mysql_error( ) );
 }
 @ mysql_select_db( $toolserver_database ) or print mysql_error( );
