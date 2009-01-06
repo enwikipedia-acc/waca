@@ -37,7 +37,7 @@ list($tsSQLlink, $asSQLlink) = getDBconnections();
 if ( !$tsSQLlink ) {
 	die( 'Could not connect: ' . mysql_error( ) );
 }
-@ mysql_select_db( $toolserver_database ) or print mysql_error( );
+@ mysql_select_db( $toolserver_database, $tsSQLlink ) or print mysql_error( );
 session_start( );
 
 $action = '';
