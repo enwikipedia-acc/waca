@@ -19,6 +19,7 @@
 **Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
 **OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
 **Prodego    ( http://en.wikipedia.org/wiki/User:Prodego )   **
+**FunPika ( http://en.wikipedia.org/wiki/User:FunPika) **
 **                                                           **
 **************************************************************/
 
@@ -171,6 +172,12 @@ while ($row = mysql_fetch_assoc($result)) {
 	}
 	if ($template == "chetblong") {
 		tagpage($user, "{{subst:User:Chet B Long/welcome|$sid|||$sig ~~~~~}}");
+	}
+	if ($template == "matt-t") {
+		tagpage($user, "{{subst:User:Matt.T/C}} $sig ~~~~~");
+	}
+	if ($template == "roux") {
+		tagpage($user, "{{subst:User:Roux/W}} $sig ~~~~~");
 	}
 	$query2 = "UPDATE acc_welcome SET welcome_status = 'Closed' WHERE welcome_id = '" . $row['welcome_id'] . "';";
 	$result2 = mysql_query($query2);

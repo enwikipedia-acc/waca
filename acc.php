@@ -258,6 +258,8 @@ elseif ($action == "register") {
 						<option value="williamh">{{User:WilliamH/Welcome|user}} ~~~~</option>
 						<option value="malinaccier">{{User:Malinaccier/Welcome|~~~~}}</option>
 						<option value="laquatique">{{subst:User:L'Aquatique/welcome}} ~~~~</option>
+						<option value="matt-t">{{subst:User:Matt.T/C}} ~~~~</option>
+						<option value="roux">{{subst:User:Roux/W}} ~~~~</option>
 					</select>
 				</td>
             </tr>
@@ -1295,6 +1297,8 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     <option value="welcome!"<?php if($template == "welcome!") { echo " selected=\"selected\""; } ?>>{{Welcome!|from=User|ps=~~~~}}</option>
     <option value="laquatique"<?php if($template == "laquatique") { echo " selected=\"selected\""; } ?>>{{subst:User:L'Aquatique/welcome}} ~~~~</option>
     <option value="chetblong"<?php if($template == "chetblong") { echo " selected=\"selected\""; } ?>>{{subst:User:Chet B Long/welcome|user|||~~~~}}</option>
+	<option value="matt-t"<?php if($template == "matt-t") { echo " selected=\"selected\""; } ?>>{{subst:User:User:Matt.T/C}} ~~~~</option>
+	<option value="roux"<?php if($template == "roux") { echo " selected=\"selected\""; } ?>>{{subst:User:Roux/W}} ~~~~</option>
     </select><br /><?php
     echo '<i>If you\'d like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>.</i><br />';
 
