@@ -150,7 +150,7 @@ elseif ( $action == "sreg" ) {
 		$fail = 1;
 	}
 	$query = "SELECT * FROM acc_user WHERE user_name = '$user' LIMIT 1;";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error() . " 132");
 	$row = mysql_fetch_assoc($result);
@@ -159,7 +159,7 @@ elseif ( $action == "sreg" ) {
 		$fail = 1;
 	}
 	$query = "SELECT * FROM acc_user WHERE user_email = '$email' LIMIT 1;";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
@@ -168,7 +168,7 @@ elseif ( $action == "sreg" ) {
 		$fail = 1;
 	}
 	$query = "SELECT * FROM acc_user WHERE user_onwikiname = '$wname' LIMIT 1;";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
@@ -189,7 +189,7 @@ elseif ( $action == "sreg" ) {
 		}
 		$user_pass = md5($pass);
 		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_secure, user_welcome, user_welcome_sig, user_welcome_template) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$secure', '$welcome', '$sig', '$template');";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		sendtobot("New user: $user");
@@ -279,7 +279,7 @@ elseif ($action == "forgotpw") {
 		if (isset ($_POST['pw']) && isset ($_POST['pw2'])) {
 			$puser = sanitize($_GET['id']);
 			$query = "SELECT * FROM acc_user WHERE user_id = '$puser';";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row = mysql_fetch_assoc($result);
@@ -289,7 +289,7 @@ elseif ($action == "forgotpw") {
 				if ($_POST['pw'] == $_POST['pw2']) {
 					$pw = md5($_POST['pw2']);
 					$query = "UPDATE acc_user SET user_pass = '$pw' WHERE user_id = '$puser';";
-					$result = mysql_query($query);
+					$result = mysql_query($query, $tsSQLlink);
 					if (!$result)
 						Die("Query failed: $query ERROR: " . mysql_error());
 					echo "Password reset!\n<br />\nYou may now <a href=\"acc.php\">Login</a>";
@@ -304,7 +304,7 @@ elseif ($action == "forgotpw") {
 		}
 		$puser = sanitize($_GET['id']);
 		$query = "SELECT * FROM acc_user WHERE user_id = '$puser';";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink );
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
@@ -328,7 +328,7 @@ HTML;
 	if (isset ($_POST['username'])) {
 		$puser = sanitize($_POST['username']);
 		$query = "SELECT * FROM acc_user WHERE user_name = '$puser';";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
@@ -367,13 +367,13 @@ HTML;
 elseif ($action == "login") {
 	$puser = sanitize($_POST['username']);
 	$query = "SELECT * FROM acc_user WHERE user_name = \"$puser\";";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
         if ($row['user_forcelogout'] == 1)
         {
-                mysql_query("UPDATE acc_user SET user_forcelogout = 0 WHERE user_name = \"" . $puser . "\"");
+                mysql_query("UPDATE acc_user SET user_forcelogout = 0 WHERE user_name = \"" . $puser . "\"", $tsSQLlink);
         }
 	if ($row['user_level'] == "New") {
 		echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
@@ -425,7 +425,7 @@ elseif ($action == "messagemgmt") {
 
 		*/
 		$query = "SELECT * FROM acc_emails WHERE mail_id = $mid ORDER BY mail_id DESC LIMIT 1;";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
@@ -572,11 +572,11 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	$now = date("Y-m-d H-i-s");
 	upcsum($target);
 	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$target', '$siuser', 'Banned', '$now');";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$query = "INSERT INTO acc_ban (ban_type, ban_target, ban_user, ban_reason, ban_date, ban_duration) VALUES ('$type', '$target', '$siuser', '$reason', '$now', $duration);";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "Banned " . htmlentities($_GET['target']) . " for $reason<br />\n";
@@ -599,7 +599,7 @@ elseif ($action == "unban" && $_GET['id'] != "") {
 			die("Only administrators may unban users");
 	$bid = sanitize($_GET['id']);
 	$query = "SELECT * FROM acc_ban WHERE ban_id = '$bid';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
@@ -608,12 +608,12 @@ elseif ($action == "unban" && $_GET['id'] != "") {
 	if( isset($_GET['confirmunban']) && $_GET['confirmunban']=="true")
 	{
 		$query = "DELETE FROM acc_ban WHERE ban_id = '$bid';";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$now = date("Y-m-d H-i-s");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$bid', '$siuser', 'Unbanned', '$now');";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		echo "Unbanned ban #$bid<br />\n";
@@ -646,7 +646,7 @@ elseif ($action == "ban") {
 		if (isset($_GET['ip'])) {
 			$ip2 = sanitize($_GET['ip']);
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$ip2';";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row = mysql_fetch_assoc($result);
@@ -656,7 +656,7 @@ elseif ($action == "ban") {
 		elseif ($_GET['email'] != "") {
 			$email2 = sanitize($_GET['email']);
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$email2';";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row = mysql_fetch_assoc($result);
@@ -666,7 +666,7 @@ elseif ($action == "ban") {
 		elseif ($_GET['name'] != "") {
 			$name2 = sanitize($_GET['name']);
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$name2';";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row = mysql_fetch_assoc($result);
@@ -675,7 +675,7 @@ elseif ($action == "ban") {
 		}
 		$target = sanitize($target);
 		$query = "SELECT * FROM acc_ban WHERE ban_target = '$target';";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
@@ -690,7 +690,7 @@ elseif ($action == "ban") {
 	else {
 	echo "<h2>Active Ban List</h2>\n<ol>\n";
 	$query = "SELECT * FROM acc_ban;";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	while ($row = mysql_fetch_assoc($result)) {
@@ -717,7 +717,7 @@ elseif ($action == "usermgmt") {
 		$aid = sanitize($_GET['approve']);
 		$siuser = sanitize($_SESSION['user']);
 		$query = "SELECT * FROM acc_user WHERE user_id = '$aid';";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
@@ -727,18 +727,18 @@ elseif ($action == "usermgmt") {
 			die();
 		}		
 		$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$aid';";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$now = date("Y-m-d H-i-s");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$aid', '$siuser', 'Approved', '$now');";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		echo "Changed User #" . $_GET['approve'] . " access to 'User'<br />\n";
 		$uid = $aid;
 		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-		$result2 = mysql_query($query2);
+		$result2 = mysql_query($query2, $tsSQLlink);
 		if (!$result2)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
@@ -757,18 +757,18 @@ elseif ($action == "usermgmt") {
 		} else {
 			$demotersn = sanitize($_POST['demotereason']);
 			$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$did';";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$now = date("Y-m-d H-i-s");
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$did', '$siuser', 'Demoted', '$now', '$demotersn');";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			echo "Changed User #" . $_GET['demote'] . " access to 'User'<br />\n";
 			$uid = $did;
 			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-			$result2 = mysql_query($query2);
+			$result2 = mysql_query($query2, $tsSQLlink);
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
@@ -791,18 +791,18 @@ elseif ($action == "usermgmt") {
 		} else {
 			$suspendrsn = sanitize($_POST['suspendreason']);
 			$query = "UPDATE acc_user SET user_level = 'Suspended' WHERE user_id = '$did';";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$now = date("Y-m-d H-i-s");
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$did', '$siuser', 'Suspended', '$now', '$suspendrsn');";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			echo "Changed User #" . $_GET['suspend'] . " access to 'Suspended'<br />\n";
 			$uid = $did;
 			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-			$result2 = mysql_query($query2);
+			$result2 = mysql_query($query2, $tsSQLlink);
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
@@ -816,18 +816,18 @@ elseif ($action == "usermgmt") {
 		$aid = sanitize($_GET['promote']);
 		$siuser = sanitize($_SESSION['user']);
 		$query = "UPDATE acc_user SET user_level = 'Admin' WHERE user_id = '$aid';";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$now = date("Y-m-d H-i-s");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$aid', '$siuser', 'Promoted', '$now');";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		echo "Changed User #" . $_GET['promote'] . " access to 'Admin'<br />\n";
 		$uid = $aid;
 		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-		$result2 = mysql_query($query2);
+		$result2 = mysql_query($query2, $tsSQLlink);
 		if (!$result2)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
@@ -837,7 +837,7 @@ elseif ($action == "usermgmt") {
 		$did = sanitize($_GET['decline']);
 		$siuser = sanitize($_SESSION['user']);
 		$query = "SELECT * FROM acc_user WHERE user_id = '$did';";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
@@ -856,18 +856,18 @@ elseif ($action == "usermgmt") {
 		} else {
 			$declinersn = sanitize($_POST['declinereason']);
 			$query = "UPDATE acc_user SET user_level = 'Declined' WHERE user_id = '$did';";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$now = date("Y-m-d H-i-s");
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$did', '$siuser', 'Declined', '$now', '$declinersn');";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			echo "Changed User #" . $_GET['decline'] . " access to 'Declined'<br />\n";
 			$uid = $did;
 			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-			$result2 = mysql_query($query2);
+			$result2 = mysql_query($query2, $tsSQLlink);
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
@@ -911,16 +911,16 @@ elseif ($action == "usermgmt") {
 			if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$oldname';")) != 1 || mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$newname';")) != 0)
 				die("Target username in use, or current user does not exist.");
 			$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_id = '$userid';";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			$tgtmessage = "User " . $_GET['rename'] . " (" . $oldname . ")";
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());						
 			$query = "UPDATE acc_log SET log_pend = '$newname' WHERE log_pend = '$tgtmessage' AND log_action != 'Renamed';";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());				
             		$query = "UPDATE acc_log SET log_user = '$newname' WHERE log_user = '$oldname'";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$now = date("Y-m-d H-i-s");
@@ -933,12 +933,12 @@ elseif ($action == "usermgmt") {
 				$logentry = $oldname . " to " . $newname;
 			}
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$userid', '$siuser', 'Renamed', '$now', '$logentry');";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			echo "Changed User " . $oldname . " name to ". $newname . "<br />\n";
 			$query2 = "SELECT * FROM acc_user WHERE user_name = '$oldname';";
-			$result2 = mysql_query($query2);
+			$result2 = mysql_query($query2, $tsSQLlink);
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
@@ -961,7 +961,7 @@ elseif ($action == "usermgmt") {
 		if (!isset($_POST['user_email']) || !isset($_POST['user_onwikiname'])) {
 			$gid = sanitize($_GET['edituser']);
 			$query = "SELECT * FROM acc_user WHERE user_id = $gid;";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("ERROR: No result returned.");
 			$row = mysql_fetch_assoc($result);
@@ -994,16 +994,16 @@ elseif ($action == "usermgmt") {
 			$newemail = sanitize($_POST['user_email']);
 			$newwikiname = sanitize($_POST['user_onwikiname']);
 			$query = "UPDATE acc_user SET user_email = '$newemail', user_onwikiname = '$newwikiname' WHERE user_id = '$gid';";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());	
 			$now = date("Y-m-d H-i-s");			
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$gid', '$sid', 'Prefchange', '$now', '');";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
                         $query2 = "SELECT * FROM acc_user WHERE user_id = '$gid';";
-			$result2 = mysql_query($query2);
+			$result2 = mysql_query($query2, $tsSQLlink);
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
@@ -1022,7 +1022,7 @@ HTML;
 
 
 	$query = "SELECT * FROM acc_user WHERE user_level = 'New';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	if (mysql_num_rows($result) != 0){
@@ -1044,7 +1044,7 @@ HTML;
 
 
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Approved') WHERE user_level = 'User' GROUP BY log_pend ORDER BY log_pend DESC;";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<ol>\n";
@@ -1070,7 +1070,7 @@ HTML;
 
 
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Promoted') WHERE user_level = 'Admin' GROUP BY log_pend ORDER BY log_time ASC;";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<ol>\n";
@@ -1079,35 +1079,35 @@ HTML;
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
 		$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Suspended';";
-		$result2 = mysql_query($query);
+		$result2 = mysql_query($query, $tsSQLlink);
 		if (!$result2)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		$suspended = $row2['COUNT(*)'];
 
 		$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Promoted';";
-		$result2 = mysql_query($query);
+		$result2 = mysql_query($query, $tsSQLlink);
 		if (!$result2)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		$promoted = $row2['COUNT(*)'];
 
 		$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Approved';";
-		$result2 = mysql_query($query);
+		$result2 = mysql_query($query, $tsSQLlink);
 		if (!$result2)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		$approved = $row2['COUNT(*)'];
 
 		$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Demoted';";
-		$result2 = mysql_query($query);
+		$result2 = mysql_query($query, $tsSQLlink);
 		if (!$result2)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		$demoted = $row2['COUNT(*)'];
 
 		$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Declined';";
-		$result2 = mysql_query($query);
+		$result2 = mysql_query($query, $tsSQLlink);
 		if (!$result2)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
@@ -1131,7 +1131,7 @@ HTML;
 
 
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Suspended') WHERE user_level = 'Suspended' GROUP BY log_pend ORDER BY log_id DESC;";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<ol>\n";
@@ -1157,7 +1157,7 @@ HTML;
 
 
 	$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Declined') WHERE user_level = 'Declined' GROUP BY log_pend ORDER BY log_id DESC;";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<ol>\n";
@@ -1195,7 +1195,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		}
 		$sid = sanitize($_SESSION['user']);
 		$query = "SELECT pend_status FROM acc_pend WHERE pend_id = '$gid';";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
@@ -1205,7 +1205,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 			die();
 		}
 		$query = "UPDATE acc_pend SET pend_status = '$target' WHERE pend_id = '$gid';";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		if ($_GET['target'] == "admin") {
@@ -1216,7 +1216,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		$now = date("Y-m-d H-i-s");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $deto', '$now');";
 		upcsum($gid);
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		sendtobot("Request $gid deferred to $deto by $sid");
@@ -1242,14 +1242,14 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 			$secureon = 0;
 		}
 		$query = "UPDATE acc_user SET user_welcome = '$welcomeon', user_welcome_sig = '$sig', user_welcome_template = '$template', user_secure = '$secureon' WHERE user_name = '$sid'";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		echo "Preferences updated!<br />\n";
 	}
 	$sid = sanitize( $_SESSION['user'] );
 	$query = "SELECT * FROM acc_user WHERE user_name = '$sid'";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
@@ -1333,7 +1333,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	
 	
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
@@ -1361,7 +1361,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$gem = sanitize($_GET['email']);
 	$sid = sanitize($_SESSION['user']);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row2 = mysql_fetch_assoc($result);
@@ -1372,7 +1372,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		die();
 	}
 	$query = "SELECT * FROM acc_user WHERE user_name = '$sid';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
@@ -1387,19 +1387,19 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			$template = "welcome";
 		}
 		$query = "INSERT INTO acc_welcome (welcome_uid, welcome_user, welcome_sig, welcome_status, welcome_pend, welcome_template) VALUES ('$sid', '$gus', '$sig', 'Open', '$gid', '$template');";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 	}
 	$query = "UPDATE acc_pend SET pend_status = 'Closed'";
 	if( $enableReserving ){ $query .= ", `pend_reserved` = '0'"; }
 	$query .= " WHERE pend_id = '$gid';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$now = date("Y-m-d H-i-s");
 	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Closed $gem', '$now');";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	switch ($gem) {
@@ -1430,7 +1430,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if ($gem != "0") {
 		sendemail($gem, $towhom);
 		$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $_GET['id'] . "';";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 	}
 	upcsum($_GET['id']);
 	echo defaultpage();
@@ -1443,7 +1443,7 @@ elseif ($action == "zoom") {
 	}
 	$gid = sanitize($_GET['id']);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
@@ -1459,7 +1459,7 @@ elseif ($action == "zoom") {
 	}
 	$sUser = $row['pend_name'];
 	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' );";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$hideip = TRUE;
@@ -1485,7 +1485,7 @@ elseif ($action == "zoom") {
 	
 	
 	$query = "SELECT * FROM acc_log WHERE log_pend = '$gid';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	
@@ -1561,7 +1561,7 @@ elseif ($action == "zoom") {
 
 	echo "<h2>Other requests from $ipmsg:</h2>\n";
 	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$numip = 0;
@@ -1582,7 +1582,7 @@ elseif ($action == "zoom") {
 	
 	echo "<h2>Other requests from $thisemail:</h2>\n";
 	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$numem = 0;
@@ -1657,7 +1657,7 @@ elseif ($action == "logs") {
 	}
 
 	$query.= ";";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$olnum = $from + 1;
@@ -1714,7 +1714,7 @@ elseif ($action == "logs") {
 		if ($rla == "Promoted" || $rla == "Demoted" || $rla == "Approved" || $rla == "Suspended" || $rla == "Declined") {
 			$uid = $rlp;
 			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-			$result2 = mysql_query($query2);
+			$result2 = mysql_query($query2, $tsSQLlink);
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
@@ -1729,7 +1729,7 @@ elseif ($action == "logs") {
 		}
 		if ($rla == "Prefchange") {
 			$query2 = "SELECT user_name FROM acc_user WHERE user_id = '$rlp';";
-			$result2 = mysql_query($query2);
+			$result2 = mysql_query($query2, $tsSQLlink);
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
@@ -1767,7 +1767,7 @@ elseif ($action == "reserve") {
 			Die("Request already reserved by ".getUsernameFromUid($reservedBy));
 		//no, lets reserve the request
 		$query = "UPDATE `acc_pend` SET `pend_reserved` = '".$_SESSION['userID']."' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Error reserving request.");
 		sendtobot("Request $request is being handled by " . getUsernameFromUid($_SESSION['userID']));
@@ -1784,7 +1784,7 @@ elseif ($action == "breakreserve") {
 		if( $reservedBy != $_SESSION['userID'] )
 			Die("You cannot break ".getUsernameFromUid($reservedBy)."'s reservation");
 		$query = "UPDATE `acc_pend` SET `pend_reserved` = '0' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Error unreserving request.");
 		sendtobot("Request $request is no longer being handled.");

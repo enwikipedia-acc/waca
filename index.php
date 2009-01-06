@@ -79,7 +79,7 @@ function confirmEmail( $id ) {
 function checkSpoofs( $username ) {
 	global $dontUseWikiDb;
 	if( !$dontUseWikiDb ) {
-		global $antispoof_equivset, $antispoof_db, $asSQLlink;
+		global $antispoof_equivset, $antispoof_db, $antispoof_table, $asSQLlink;
 		require_once($antispoof_equivset);
 		@ mysql_select_db($antispoof_db, $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 		$fone = strtr($username,$equivset);
@@ -504,12 +504,12 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow' );";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
-		Die("ERROR: No result returned.");
+		Die("ERROR: No result returned. (acc_pend)");
 	$q2 = $query;
 	$query = "SELECT pend_id,pend_email FROM acc_pend WHERE pend_name = '$user' ORDER BY pend_id DESC LIMIT 1;";
 	$result = mysql_query($query, $tsSQLlink);	
 	if (!$result)
-		Die("ERROR: No result returned.");
+		Die("ERROR: No result returned. (select)");
 	$row = mysql_fetch_assoc($result);
 	$pid = $row['pend_id'];
 	if ($pid != 0 || $pid != "") {
