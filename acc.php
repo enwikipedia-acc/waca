@@ -452,7 +452,7 @@ elseif ($action == "messagemgmt") {
 			$mdesc = sanitize($_POST['maildesc']);
 			$siuser = sanitize($_SESSION['user']);
 			$query = "UPDATE acc_emails SET mail_desc = '$mdesc' WHERE mail_id = '$mid';";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$query = "UPDATE acc_emails SET mail_text = '$mtext' WHERE mail_id = '$mid'";
@@ -462,11 +462,11 @@ elseif ($action == "messagemgmt") {
 			}
 			$now = date("Y-m-d H-i-s");
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$mid', '$siuser', 'Edited', '$now');";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$query = "SELECT mail_desc FROM acc_emails WHERE mail_id = $mid;";
-			$result = mysql_query($query);
+			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row = mysql_fetch_assoc($result);
@@ -477,7 +477,7 @@ elseif ($action == "messagemgmt") {
 			die();
 		}
 		$query = "SELECT * FROM acc_emails WHERE mail_id = $mid;";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
@@ -491,7 +491,7 @@ elseif ($action == "messagemgmt") {
 		die();
 	}
 	$query = "SELECT mail_id, mail_count, mail_desc FROM acc_emails WHERE mail_type = 'Message';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<h2>Mail messages</h2>\n";
@@ -508,7 +508,7 @@ elseif ($action == "messagemgmt") {
 	}
 	echo "</ol><br />\n";
 	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Interface';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<h2>Public Interface messages</h2>\n";
@@ -528,7 +528,7 @@ elseif ($action == "messagemgmt") {
 	}
 	echo "</ol><br />\n";
 	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Internal';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 
