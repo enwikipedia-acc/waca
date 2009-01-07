@@ -1183,8 +1183,8 @@ HTML;
 	die();
 }
 elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
-	if ($_GET['target'] == "Admin" || $_GET['target'] == "Open") {
-		if ($_GET['target'] == "Admin") {
+	if ($_GET['target'] == "admins" || $_GET['target'] == "users") {
+		if ($_GET['target'] == "admins") {
 			$target = "Admin";
 		} else {
 			$target = "Open";
@@ -1210,7 +1210,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		if ($_GET['target'] == "admin") {
+		if ($_GET['target'] == "admins") {
 			$deto = "admins";
 		} else {
 			$deto = "users";
