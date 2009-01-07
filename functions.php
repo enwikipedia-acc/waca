@@ -497,12 +497,12 @@ function listrequests($type, $hideip) {
 			$target = "zoom";
 		}
 		if ($type == 'Open') {
-			$target = 'admin';
+			$target = 'Admin';
 		}
 		elseif ($type == 'Admin') {
-			$target = 'user';
+			$target = 'Open';
 		}
-		if ($target == 'admin' || $target == 'user') {
+		if ($target == 'Admin' || $target == 'Open') {
 			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=$target\">Defer to $target" . "s</a>";
 		} else {
 			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=user\">Reset Request</a>";
