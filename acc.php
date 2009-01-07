@@ -1356,7 +1356,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		if( $row['pend_reserved'] != 0 && !isset($_GET['reserveoverride']) && $row['pend_reserved'] != $_SESSION['userID'])
 		{
 			echo "<br />This request is currently marked as being handled by ".getUsernameFromUid($row['pend_reserved']).", Proceed?<br />\n";
-			echo "<a href=\"".$_SERVER["REQUEST_URL"]."&reserveoverride=yes\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
+			echo "<a href=\"acc.php?action=done&".$_GET['id']."&".$_GET['email']."&".$_GET['sum']."&reserveoverride=yes\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
 			echo showfooter();
 			die();
 		}
