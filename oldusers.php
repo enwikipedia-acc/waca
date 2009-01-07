@@ -29,9 +29,10 @@ require_once ( 'devlist.php' );
 // check to see if the database is unavailable
 readOnlyMessage();
 
-mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-@ mysql_select_db($toolserver_database) or print mysql_error();
-
+// retrieve database connections
+global $tsSQLlink, $asSQLlink, $toolserver_database;
+list($tsSQLlink, $asSQLlink) = getDBconnections();
+@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 
 $date = new DateTime();
 $date->modify("-45 days");
@@ -48,7 +49,7 @@ ORDER BY user_lastactive ASC
 ;
 ";
 
-$result = mysql_query($query);
+$result = mysql_query($query, $tsSQLlink);
 if (!$result)
 	Die("ERROR: No result returned.");
 displayheader();
@@ -64,7 +65,7 @@ while ($r = mysql_fetch_assoc($result)) {
 	{
 		$userid = $r['tooluserid'];
 		$q2 = 'select log_time from acc_log where log_pend = '.$userid.' and log_action = "Approved" order by log_id desc limit 1;';
-		$res2 = mysql_query($q2);
+		$res2 = mysql_query($q2, $tsSQLlink);
 		if (!$res2)
 			die("ERROR: No result returned.");
 		$row2 = mysql_fetch_assoc($res2);
