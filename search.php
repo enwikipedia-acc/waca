@@ -31,11 +31,9 @@ readOnlyMessage();
 
 session_start();
 
-$link = mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password );
-if ( !$link ) {
-	die( 'Could not connect: ' . mysql_error( ) );
-}
-@ mysql_select_db( $toolserver_database ) or print mysql_error( );
+// retrieve database connections
+global $tsSQLlink, $asSQLlink;
+list($tsSQLlink, $asSQLlink) = getDBconnections();
 
 if( isset( $_SESSION['user'] ) ) {
 	$sessionuser = $_SESSION['user'];
@@ -61,7 +59,7 @@ if( isset($_GET['term'])) {
 	if( $type == "email") {
 		echo "<h2>Searching for email address: $term ...</h2>";
 		$query = "SELECT pend_id FROM acc_pend WHERE pend_email LIKE '$term';";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$html = "<table cellspacing=\"0\">\n";
@@ -84,7 +82,7 @@ if( isset($_GET['term'])) {
 	elseif( $type == 'IP') {
 		echo "<h2>Searching for IP address: $term ...</h2>";
 		$query = "SELECT pend_id FROM acc_pend WHERE pend_ip LIKE '$term';";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$html = "<table cellspacing=\"0\">\n";
@@ -107,7 +105,7 @@ if( isset($_GET['term'])) {
 	elseif( $type == 'Request') {
 		echo "<h2>Searching for requested username: $term ...</h2>";
 		$query = "SELECT pend_id FROM acc_pend WHERE pend_name LIKE '$term';";
-		$result = mysql_query($query);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$html = "<table cellspacing=\"0\">\n";

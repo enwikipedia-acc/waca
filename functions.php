@@ -730,9 +730,10 @@ HTML;
 }
 
 function hasright($username, $checkright) {
+	global $tsSQLlink;
 	$username = sanitize($username);
 	$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
-	$result = mysql_query($query);
+	$result = mysql_query($query, $tsSQLlink);
 	if (!$result) {
 		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	}
