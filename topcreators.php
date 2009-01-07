@@ -27,8 +27,9 @@ readOnlyMessage();
 
 session_start();
 
-mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-@ mysql_select_db($toolserver_database) or print mysql_error();
+// retrieve database connections
+global $tsSQLlink, $asSQLlink;
+list($tsSQLlink, $asSQLlink) = getDBconnections();
 
 if( isset( $_SESSION['user'] ) ) {
 	$sessionuser = $_SESSION['user'];
@@ -45,7 +46,7 @@ if( !(hasright($sessionuser, "Admin") || hasright($sessionuser, "User")))
  */
 
 $topqa = "select log_user,count(*) from acc_log where log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
-$result = mysql_query($topqa);
+$result = mysql_query($topqa, $tsSQLlink);
 if (!$result)
 	Die("ERROR: No result returned.6");
 $top5a = array ();
@@ -58,7 +59,7 @@ $currentreq = 0;
 foreach ($top5a as $top1a) {
 	$currentreq+=1;
 	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$top1a['log_user']."\";";
-	$userr = mysql_query($userq);
+	$userr = mysql_query($userq, $tsSQLlink);
 	$user = mysql_fetch_assoc($userr);
 	
 	$top5aout .= "<tr";
@@ -77,7 +78,7 @@ $top5aout .= "</table>";
 $now = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d")));
 
 $topq = "select log_user,count(*) from acc_log where log_time like '$now%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
-$result = mysql_query($topq);
+$result = mysql_query($topq, $tsSQLlink);
 if (!$result)
 	Die("ERROR: No result returned.6");
 $top5 = array ();
@@ -92,7 +93,7 @@ $currentreq=0;
 foreach ($top5 as $top1) {
 	$currentreq +=1;
 	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$top1['log_user']."\";";
-	$userr = mysql_query($userq);
+	$userr = mysql_query($userq, $tsSQLlink);
 	$user = mysql_fetch_assoc($userr);
 		$top5out .= "<tr";
 	if ($currentreq % 2 == 0) {
@@ -112,7 +113,7 @@ $top5out .= "</table>";
 $yesterday = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 1));
 
 $topyq = "select log_user,count(*) from acc_log where log_time like '$yesterday%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
-$result = mysql_query($topyq);
+$result = mysql_query($topyq, $tsSQLlink);
 if (!$result)
 	Die("ERROR: No result returned.");
 $top5y = array ();
@@ -126,7 +127,7 @@ $currentreq=0;
 foreach ($top5y as $topy1) {
 	$currentreq +=1; 
 	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$topy1['log_user']."\";";
-	$userr = mysql_query($userq);
+	$userr = mysql_query($userq, $tsSQLlink);
 	$user = mysql_fetch_assoc($userr);
 	$top5yout .= "<tr";
 	if ($currentreq % 2 == 0) {
@@ -146,7 +147,7 @@ $top5yout .= "</table>";
 $lastweek = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 7));
 
 $topwq = "select log_user,count(*) from acc_log where log_time > '$lastweek%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
-$result = mysql_query($topwq);
+$result = mysql_query($topwq, $tsSQLlink);
 if (!$result)
 	Die("ERROR: No result returned.");
 $top5w = array ();
@@ -160,7 +161,7 @@ $currentreq=0;
 foreach ($top5w as $topw1) {
 	$currentreq +=1;
 	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$topw1['log_user']."\";";
-	$userr = mysql_query($userq);
+	$userr = mysql_query($userq, $tsSQLlink);
 	$user = mysql_fetch_assoc($userr);
 	$top5wout .= "<tr";
 	if ($currentreq % 2 == 0) {
@@ -179,7 +180,7 @@ $top5wout .= "</table>";
 $lastmonth = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 28));
 
 $topmq = "select log_user,count(*) from acc_log where log_time > '$lastmonth%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
-$result = mysql_query($topmq);
+$result = mysql_query($topmq, $tsSQLlink);
 if (!$result)
 	Die("ERROR: No result returned.");
 $top5m = array ();
@@ -193,7 +194,7 @@ $currentreq=0;
 foreach ($top5m as $topm1) {
 	$currentreq +=1;
 	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$topm1['log_user']."\";";
-	$userr = mysql_query($userq);
+	$userr = mysql_query($userq, $tsSQLlink);
 	$user = mysql_fetch_assoc($userr);
 	$top5mout .= "<tr";
 	if ($currentreq % 2 == 0) {
