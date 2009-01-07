@@ -655,7 +655,7 @@ elseif ($action == "ban") {
 			$target = $row['pend_ip'];
 			$type = "IP";
 		}
-		elseif ($_GET['email'] != "") {
+		elseif (isset($_GET['email'])) {
 			$email2 = sanitize($_GET['email']);
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$email2';";
 			$result = mysql_query($query, $tsSQLlink);
@@ -665,7 +665,7 @@ elseif ($action == "ban") {
 			$target = $row['pend_email'];
 			$type = "EMail";
 		}
-		elseif ($_GET['name'] != "") {
+		elseif (isset($_GET['name'])) {
 			$name2 = sanitize($_GET['name']);
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$name2';";
 			$result = mysql_query($query, $tsSQLlink);
