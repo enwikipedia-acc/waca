@@ -1183,8 +1183,8 @@ HTML;
 	die();
 }
 elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
-	if ($_GET['target'] == "admin" || $_GET['target'] == "user") {
-		if ($_GET['target'] == "admin") {
+	if ($_GET['target'] == "Admin" || $_GET['target'] == "Open") {
+		if ($_GET['target'] == "Admin") {
 			$target = "Admin";
 		} else {
 			$target = "Open";
