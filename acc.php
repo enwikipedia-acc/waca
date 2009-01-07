@@ -1468,11 +1468,7 @@ elseif ($action == "zoom") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$hideip = TRUE;
 	if (mysql_num_rows($result) > 0)
-	{
-		$testr = mysql_num_rows($result);
-		echo($testr);
 		$hideip = FALSE;
-	}
 	$requesttable = listrequests($thisid, $hideip);
 	echo $requesttable;
 
