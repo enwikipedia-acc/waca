@@ -1206,7 +1206,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 			echo showfooter();
 			die();
 		}
-		$query = "UPDATE acc_pend SET pend_status = '$target' WHERE pend_id = '$gid';";
+		$query = "UPDATE acc_pend SET pend_status = '$target', pend_reserved = '0' WHERE pend_id = '$gid';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
