@@ -17,20 +17,20 @@ ifWikiDbDisabledDie(); //antispoofdb
 
 displayheader();
 
-$wikilink = mysql_connect($antispoof_host, $toolserver_username, $toolserver_password, true) or die("Can't contact MediaWiki database.");
-$acclink = mysql_connect($toolserver_host,$toolserver_username, $toolserver_password, true) or die("Can't contact ACC database.");
-@mysql_select_db($antispoof_db, $wikilink);
-@mysql_select_db($toolserver_database, $acclink);
+global $tsSQLlink, $asSQLlink, $toolserver_database, $antispoof_db;
+list($tsSQLlink, $asSQLlink) = getDBconnections();
+@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting TS database.");
+@ mysql_select_db($antispoof_db, $asSQLlink) or sqlerror(mysql_error(),"Error selecting MW database.");
 
 $query = 'select g.ug_user, n.user_name from user_groups g inner join user_ids n on g.ug_user=n.user_id where ug_group = "accountcreator";';
-$results = mysql_query($query,$wikilink) or die();
+$results = mysql_query($query,$asSQLlink) or die();
 echo "<h2>List of users on enwiki with accountcreator flag not on tool</h2><table cellspacing=\"0\">";
 echo "<tr><th>en.wiki User ID</th><th>en.wiki Username</th><th /><th /><th /></tr>";//<th>acc. User ID</th><th>acc. Username</th><th>acc. Access level</th></tr>";
 $currentreq = 0;
 while($row = mysql_fetch_assoc($results))
 {
 	$query='SELECT user_id, user_name, user_level FROM `acc_user` WHERE user_onwikiname = "'.$row['user_name'].'" LIMIT 1;';
-	$accresult = mysql_query($query, $acclink);
+	$accresult = mysql_query($query, $tsSQLlink);
 	if($accresult){
 		$accrow = mysql_fetch_assoc($accresult);
 	} else { $accrow = array('user_name' => '--', 'user_id' => '--', 'user_level' => '--'); }
