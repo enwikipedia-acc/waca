@@ -32,7 +32,7 @@ readOnlyMessage();
 // retrieve database connections
 global $tsSQLlink, $asSQLlink, $toolserver_database;
 list($tsSQLlink, $asSQLlink) = getDBconnections();
-@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
+@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database.");
 
 $date = new DateTime();
 $date->modify("-45 days");
