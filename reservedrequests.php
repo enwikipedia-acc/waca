@@ -48,7 +48,7 @@ if(!$result) die();
 
 echo "<table cellspacing=\"0\"><tr><th>#</th><th>Requested name</th><th>Status of request</th><th>Reserved by</th></tr>";
 $currentreq=0;
-while($row = $mysql_fetch_assoc($result)) {
+while($row = mysql_fetch_assoc($result)) {
 	$currentreq +=1;
 
 	echo "<tr";
