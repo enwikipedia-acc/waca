@@ -49,6 +49,7 @@ echo '<div id="content">
 	<li><a href="flaggedusers.php">Flagged User Accounts</a></li>
 	<li><a href="nonexistantrequests.php">Erroneous requests</a></li>
 	<li><a href="topcreators.php">Top Account Creators</a></li>
+	<li><a href="reservedrequests.php">All currently-reserved requests</a></li>
 </ul>';
 echo showfooter();
 ?>

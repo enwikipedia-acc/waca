@@ -57,7 +57,7 @@ while($row = mysql_fetch_assoc($result)) {
 	} else {
 		echo '>';
 	}
-	echo "<th>".$row['pend_id']."</th><td>".$row['pend_name']."</td><td>".$row['pend_status']."</td><td>".$row['user_name']."</td></tr>";
+	echo "<th><a href=\"acc.php?action=zoom&id=".$row['pend_id']."\">".$row['pend_id']."</a></th><td>".$row['pend_name']."</td><td>".$row['pend_status']."</td><td>".$row['user_name']."</td></tr>";
 }
 echo "</table>"; 
 echo showfooter();
