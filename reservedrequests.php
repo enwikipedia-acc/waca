@@ -46,7 +46,7 @@ $query = "select pend_id, pend_name, pend_status, user_name from acc_pend inner 
 $result = mysql_query($query, $tsSQLlink);
 if(!$result) die();
 
-echo "<div id="content"><h2>Requests currently reserved by a user</h2><table cellspacing=\"0\"><tr><th>#</th><th>Requested name</th><th>Status of request</th><th>Reserved by</th></tr>";
+echo "<div id=\"content\"><h2>Requests currently reserved by a user</h2><table cellspacing=\"0\"><tr><th>#</th><th>Requested name</th><th>Status of request</th><th>Reserved by</th></tr>";
 $currentreq=0;
 while($row = mysql_fetch_assoc($result)) {
 	$currentreq +=1;
