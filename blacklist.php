@@ -110,15 +110,6 @@ $uablacklist['grawp1'] = '/Mozilla\/4\.0 \(compatible; MSIE 7\.0; Windows NT 6\.
 
 //DNSBLS
 $dnsbls = array (
-	'NJABL' => array (
-		'zone' => 'dnsbl.njabl.org',
-		'bunk' => false,
-		'url' => 'http://www.njabl.org/cgi-bin/lookup.cgi?query=%i',
-		'ret' => array (
-			9 => 'Open proxy',
-			10 => 'Open proxy'
-		)
-	),
 	'IRCBL' => array (
 		'zone' => 'ircbl.ahbl.org',
 		'bunk' => false,
@@ -180,7 +171,6 @@ $dnsbls = array (
 		'url' => 'http://www.spamhaus.org/query/bl?ip=%i',
 		'ret' => array (
 			4 => 'CBL',
-			5 => 'NJABL',
 			6 => 'BOPM'
 		)
 	)
