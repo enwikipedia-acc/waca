@@ -84,19 +84,19 @@
 	// Users
 	//	Nick!User@Host mask						=> group
 	$users = array(
-		'Cobi!*cobi*@cobi.cluenet.org'					=> 'root',
-		'Cobi!*cobi*@Cobi.cluenet.org'					=> 'root',
-		'*!*@2002:1828:834a:0:208:c7ff:fe29:220a'			=> 'root',
-		'*!*@wikipedia/SQL'						=> 'root',
-		'OverlordQ!*@wikipedia/OverlordQ'				=> 'root',
-		'Stwalkerster*!*@wikipedia/Stwalkerster'			=> 'root',
+		'Cobi!*cobi*@cobi.cluenet.org'				=> 'root',
+		'Cobi!*cobi*@Cobi.cluenet.org'				=> 'root',
+		'*!*@2002:1828:834a:0:208:c7ff:fe29:220a'	=> 'root',
+		'*!*@wikipedia/SQL'							=> 'root',
+		'OverlordQ!*@wikipedia/OverlordQ'			=> 'root',
+		'Stwalkerster*!*@wikipedia/Stwalkerster'	=> 'root',
 		'*!*@wikipedia/Alexfusco5'					=> 'developer',
-		'|X|*!*@wikipedia/Soxred93'					=> 'developer',
+		'*!*@wikipedia/Soxred93'					=> 'developer',
 		'*!*@wikimedia/cmelbye'						=> 'developer',
 		'*!*@wikipedia/FastLizard4'					=> 'developer',
-		'*!*@wikipedia/Prodego'					        => 'developer',
-		'*!*@yourwiki/staff/funpika'					        => 'developer',
-		'*!*@*'								=> '*'
+		'*!*@wikipedia/Prodego'					    => 'developer',
+		'*!*@yourwiki/staff/funpika'				=> 'developer',
+		'*!*@*'										=> '*'
 		);
 
 	// Groups
