@@ -259,13 +259,18 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$ip2 = $_SERVER['REMOTE_ADDR'];
 	$ip = mysql_real_escape_string($ip);
-	$userblocked = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$ip2&format=php");
-	$ub = unserialize($userblocked);
-	if (isset ($ub['query']['blocks']['0']['nocreate'])) {
-		$message = showmessage(9);
-		echo "$message<br />\n";
-		$fail = 1;
-	}
+
+	if( !$dontUseWikiDb ) {
+		@ mysql_select_db("enwiki_p", $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
+		$query = 'SELECT * FROM ipblocks WHERE ipb_user = \''.$ip.'\';';
+		$result = mysql_query($query, $asSQLlink);
+		if( !$result && !isOnWhitelist( $ip ) ) {
+			$message = showmessage(9);
+			echo "$message<br />\n";
+			$fail = 1;
+		}
+	}	
+	
 	$email = $_POST['email'];
 	$email = ltrim($email);
 	$email = rtrim($email);
