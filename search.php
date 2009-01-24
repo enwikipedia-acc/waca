@@ -41,8 +41,13 @@ if( isset( $_SESSION['user'] ) ) {
 	$sessionuser = "";
 }
 
-if( !hasright($sessionuser, "Admin"))
-	die("You are not authorized to use this feature");
+// patched by stwalkerster to re-enable non-admin searching.
+// please note (prodego esp.) non-admins cannot perform
+// IP address lookups still, but can search on email and requested name.
+
+// protect against logged out users
+if( !hasright($sessionuser, "Admin") && !hasright($sessionuser, "User"))
+	die("You are not authorized to use this feature. Please check you are logged in.");
 
 echo makehead( $sessionuser );
 echo '<div id="content">';
@@ -81,6 +86,11 @@ if( isset($_GET['term'])) {
 	}
 	elseif( $type == 'IP') {
 		echo "<h2>Searching for IP address: $term ...</h2>";
+		
+		// move this to here, so non-admins can perform searches, but not on IP addresses
+		if( !hasright($sessionuser, "Admin"))
+			die("You are not authorized to use this feature");
+		
 		$query = "SELECT pend_id FROM acc_pend WHERE pend_ip LIKE '$term';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
@@ -133,7 +143,7 @@ else {
 	echo '<table><tr><td><input type="text" name="term" /></td>';
 	echo '<td><select name="type">';
 	echo '<option value="email">as email address</option>';
-	echo '<option value="IP">as IP address</option>';
+	echo '<option value="IP">as IP address (tool admins only)</option>';
 	echo '<option value="Request">as requested username</option>';
 	echo '</select></td></tr></table><br />';
 	echo '<input type="submit" />';
