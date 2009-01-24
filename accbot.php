@@ -82,14 +82,14 @@
 	addCommand( 'recreatesvn', 'commandRecreateSvn', true  );
 
 	// Users
-	//	Nick!User@Host mask						=> group
+	//	Nick!User@Host mask							=> group
 	$users = array(
 		'Cobi!*cobi*@cobi.cluenet.org'				=> 'root',
 		'Cobi!*cobi*@Cobi.cluenet.org'				=> 'root',
 		'*!*@2002:1828:834a:0:208:c7ff:fe29:220a'	=> 'root',
 		'*!*@wikipedia/SQL'							=> 'root',
 		'OverlordQ!*@wikipedia/OverlordQ'			=> 'root',
-		'Stwalkerster*!*@wikipedia/Stwalkerster'	=> 'root',
+		'*!*@wikipedia/Stwalkerster'				=> 'root',
 		'*!*@wikipedia/Alexfusco5'					=> 'developer',
 		'*!*@wikipedia/Soxred93'					=> 'developer',
 		'*!*@wikimedia/cmelbye'						=> 'developer',
