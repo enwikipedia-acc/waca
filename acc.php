@@ -728,6 +728,11 @@ elseif ($action == "usermgmt") {
 			echo showfooter();
 			die();
 		}		
+		if ($row['user_level'] == "User") {
+			echo "Sorry, the user you are trying to approve has already been approved.<br />\n";
+			echo showfooter();
+			die();
+		}
 		$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$aid';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
