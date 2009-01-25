@@ -105,7 +105,10 @@ $emailblacklist['grawp7'] = '/@ask\.com/i';
 $emailblacklist['grawp8'] = '/@rawks\.com/i';
 $emailblacklist['grawp9'] = '/(fuck|damn|shit|pedo)/i';
 $emailblacklist['webring'] = '/webring@.*/i';
+
+
 $emailblacklist['temporary-inboxes'] = "/temporaryinbox\.com/i";
+$emailblacklist['temporary-inboxes-com'] = "/(maileater|10minutemail|2prong|4warding|6url|afrobacon|bugmenot|bumpymail|centermail|choicemail1|deadspam|despammed|discardmail|disposeamail|dodgeit|dontreg|dumpandjunk|e4ward|emailias|emailxfer|enterto|getonemail|gishpuppy|greensloth|guerrillamail|haltospam|jetable|kasmail|killmail|mail333|mailblocks|maileater|mailexpire|mailfreeonline|mailmoat|mailnull|mailshell|mailsiphon|mailzilla|mintemail|myspamless|mytrashmail|neomailbox|nobulk|noclickemail|netmails|oneoffemail|outlawspam|pancakemail|pookmail|punkass|rejectmail|sibmail|sneakemail|spamavert|spambob|spamslicer|spaml|spammotel|spamtrail|venompen|willselfdestruct|xemaps|xents|xmaily|yopmail|fakeinformation|fastacura|fastchevy|fastchrysler|fastkawasaki|fastmazda|fastmitsubishi|fastnissan|fastsubaru|fastsuzuki|fasttoyota|fastyamaha|fuckingduh|fux0ringduh|klassmaster|mailin8r|mailinator|mailinater|mailinator2|sogetthis |675hosting|amiriindustries|emailmiser|etranquil|gowikibooks|gowikicampus|gowikicars|gowikifilms|gowikigames|gowikimusic|gowikinetwork|gowikitravel|gowikitv|myspacepimpedup|ourklips|pimpedupmyspace|rklips|turual|upliftnow|uplipht|viditag|viewcastmedia|wetrainbayarea|xagloo|mailquack|mailslapping|oneoffmail|whopy|wilemail|spammotel|trashdevil|shiftmail|spambog|spamday|spamex|spamfree24|spamgourmet|spamhole|spamify|tempinbox|dotmsg|fakemailz|footard|forgetmail|lovemeleaveme|temporaryforwarding|temporaryinbox|trashmail|75hosting|myspaceinc)\.com/i";
 
 
 $uablacklist['grawp1'] = '/Mozilla\/4\.0 \(compatible; MSIE 7\.0; Windows NT 6\.0; SLCC1; \.NET CLR 2\.0\.50727; \.NET CLR 3\.0\.04506; InfoPath\.2; \.NET CLR 3\.5\.21022\)/';
