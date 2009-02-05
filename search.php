@@ -63,13 +63,13 @@ if( isset($_GET['term'])) {
 
 	if( $type == "email") {
 		echo "<h2>Searching for email address: $term ...</h2>";
-		$query = "SELECT pend_id FROM acc_pend WHERE pend_email LIKE '%$term%';";
+		$query = "SELECT pend_id,pend_email FROM acc_pend WHERE pend_email LIKE '%$term%';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$html = "<table cellspacing=\"0\">\n";
 		$currentrow = 0;
-		while ( list( $pend_id ) = mysql_fetch_row( $result ) ) {
+		while ( list( $pend_id,$pend_email ) = mysql_fetch_row( $result ) ) {
 			$currentrow += 1;
 			$out = '<tr';
 			if ($currentrow % 2 == 0) {
@@ -77,7 +77,7 @@ if( isset($_GET['term'])) {
 			} else {
 				$out .= ' class="odd">';
 			}
-			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Request " . $pend_id . "</a></small></tr>";
+			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_email (Request " . $pend_id . ")</a></small></tr>";
 			$html .= $out;
 		}
 		$html .= "</table>\n";
@@ -114,13 +114,13 @@ if( isset($_GET['term'])) {
 	}
 	elseif( $type == 'Request') {
 		echo "<h2>Searching for requested username: $term ...</h2>";
-		$query = "SELECT pend_id FROM acc_pend WHERE pend_name LIKE '%$term%';";
+		$query = "SELECT pend_id,pend_name FROM acc_pend WHERE pend_name LIKE '%$term%';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$html = "<table cellspacing=\"0\">\n";
 		$currentrow = 0;
-		while ( list( $pend_id ) = mysql_fetch_row( $result ) ) {
+		while ( list( $pend_id, $pend_name ) = mysql_fetch_row( $result ) ) {
 			$currentrow += 1;
 			$out = '<tr';
 			if ($currentrow % 2 == 0) {
@@ -128,7 +128,7 @@ if( isset($_GET['term'])) {
 			} else {
 				$out .= ' class="odd">';
 			}
-			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Request " . $pend_id . "</a></small></tr>";
+			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_name (Request " . $pend_id . ")</a></small></tr>";
 			$html .= $out;
 		}
 		$html .= "</table>\n";
