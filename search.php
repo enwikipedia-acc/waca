@@ -63,7 +63,7 @@ if( isset($_GET['term'])) {
 
 	if( $type == "email") {
 		echo "<h2>Searching for email address: $term ...</h2>";
-		$query = "SELECT pend_id FROM acc_pend WHERE pend_email LIKE '$term';";
+		$query = "SELECT pend_id FROM acc_pend WHERE pend_email LIKE '%$term%';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -91,7 +91,7 @@ if( isset($_GET['term'])) {
 		if( !hasright($sessionuser, "Admin"))
 			die("You are not authorized to use this feature");
 		
-		$query = "SELECT pend_id FROM acc_pend WHERE pend_ip LIKE '$term';";
+		$query = "SELECT pend_id FROM acc_pend WHERE pend_ip LIKE '%$term%';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -114,7 +114,7 @@ if( isset($_GET['term'])) {
 	}
 	elseif( $type == 'Request') {
 		echo "<h2>Searching for requested username: $term ...</h2>";
-		$query = "SELECT pend_id FROM acc_pend WHERE pend_name LIKE '$term';";
+		$query = "SELECT pend_id FROM acc_pend WHERE pend_name LIKE '%$term%';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
