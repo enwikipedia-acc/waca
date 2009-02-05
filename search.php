@@ -77,7 +77,7 @@ if( isset($_GET['term'])) {
 			} else {
 				$out .= ' class="odd">';
 			}
-			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_email (Request " . $pend_id . ")</a></small></tr>";
+			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_email </a></small></tr>";
 			$html .= $out;
 		}
 		$html .= "</table>\n";
@@ -91,13 +91,13 @@ if( isset($_GET['term'])) {
 		if( !hasright($sessionuser, "Admin"))
 			die("You are not authorized to use this feature");
 		
-		$query = "SELECT pend_id FROM acc_pend WHERE pend_ip LIKE '%$term%';";
+		$query = "SELECT pend_id,pend_ip FROM acc_pend WHERE pend_ip LIKE '%$term%';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$html = "<table cellspacing=\"0\">\n";
 		$currentrow = 0;
-		while ( list( $pend_id ) = mysql_fetch_row( $result ) ) {
+		while ( list( $pend_id,$pend_ip ) = mysql_fetch_row( $result ) ) {
 			$currentrow += 1;
 			$out = '<tr';
 			if ($currentrow % 2 == 0) {
@@ -105,7 +105,7 @@ if( isset($_GET['term'])) {
 			} else {
 				$out .= ' class="odd">';
 			}
-			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Request " . $pend_id . "</a></small></tr>";
+			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_ip </a></small></tr>";
 			$html .= $out;
 		}
 		$html .= "</table>\n";
@@ -128,7 +128,7 @@ if( isset($_GET['term'])) {
 			} else {
 				$out .= ' class="odd">';
 			}
-			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_name (Request " . $pend_id . ")</a></small></tr>";
+			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_name </a></small></tr>";
 			$html .= $out;
 		}
 		$html .= "</table>\n";
