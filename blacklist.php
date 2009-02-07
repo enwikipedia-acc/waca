@@ -181,7 +181,7 @@ $dnsbls = array (
 		'bunk' => false,
 		'url' => 'http://www.spamhaus.org/query/bl?ip=%i',
 		'ret' => array (
-			4 => 'CBL',
+/*			4 => 'CBL', */
 			6 => 'BOPM'
 		)
 	)
