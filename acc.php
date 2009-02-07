@@ -202,7 +202,7 @@ elseif ( $action == "sreg" ) {
 elseif ($action == "register") {
 	echo <<<HTML
     <h2>Register!</h2>
-    <strong><strong>PLEASE DO NOT USE THE SAME PASSWORD AS ON WIKIPEDIA.</strong><br />
+    <span style="font-weight:bold;color:red;font-size:20px;">This form is for requesting access to the account creation tool. If you want an account on Wikipedia, then please go to <a href="http://stable.toolserver.org/acc/">http://stable.toolserver.org/acc/</a></span>
     <form action="acc.php?action=sreg" method="post">
     <table cellpadding="1" cellspacing="0" border="0">
             <tr>
@@ -218,7 +218,7 @@ elseif ($action == "register") {
                 <td><input type="text" name="wname"></td>
             </tr>
             <tr>
-                <td>Desired password:</td>
+                <td>Desired password (<strong>PLEASE DO NOT USE THE SAME PASSWORD AS ON WIKIPEDIA.</strong>):</td>
                 <td><input type="password" name="pass"></td>
             </tr>
             <tr>
