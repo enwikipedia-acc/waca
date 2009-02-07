@@ -1456,8 +1456,11 @@ elseif ($action == "zoom") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
-	if ($row['pend_mailconfirm'] != 'Confirmed' && $row['pend_mailconfirm'] != "")
-		Die("Email has not yet been confirmed for this request, so it can not yet be closed or viewed");
+	if ($row['pend_mailconfirm'] != 'Confirmed' && $row['pend_mailconfirm'] != "") {
+		echo "Email has not yet been confirmed for this request, so it can not yet be closed or viewed";
+		echo showfooter();
+		die();
+	}
 	echo "<h2>Details for Request #" . $_GET['id'] . ":</h2>";
 	$uname = urlencode($row['pend_name']);
 	$thisip = $row['pend_ip'];
