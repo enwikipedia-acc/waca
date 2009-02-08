@@ -90,7 +90,7 @@
 		'*!*@wikipedia/SQL'							=> 'root',
 		'OverlordQ!*@wikipedia/OverlordQ'			=> 'root',
 		'*!*@wikipedia/Stwalkerster'				=> 'root',
-		'*!*@wikipedia/Alexfusco5'					=> 'developer',
+		'*!*@*Alexfusco5'		   					=> 'developer',
 		'*!*@wikipedia/Soxred93'					=> 'developer',
 		'*!*@wikimedia/cmelbye'						=> 'developer',
 		'*!*@wikipedia/FastLizard4'					=> 'developer',
