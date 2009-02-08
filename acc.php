@@ -813,7 +813,7 @@ elseif ($action == "usermgmt") {
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			sendtobot("User $did (" . $row2['user_name'] . ") suspended access by $siuser because: \"" . $_POST['suspendreason'] . "\"");
+			sendtobot("User $did (" . $row2['user_name'] . ") had tool access suspended by $siuser because: \"" . $_POST['suspendreason'] . "\"");
 			echo showfooter();
 			die();
 		}
