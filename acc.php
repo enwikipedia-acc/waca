@@ -384,6 +384,11 @@ elseif ($action == "login") {
 	}
 	if ($row['user_level'] == "Suspended") {
 		echo "I'm sorry, but, your account is presently suspended.<br />\n";
+		$reasonQuery = 'select log_cmt from acc_log where log_action = "Suspended" and log_pend = '.$row['user_id'].';';
+		$reasonResult = mysql_query($reasonQuery, $tsSQLlink);
+		$reasonRow = mysql_fetch_assoc($reasonResult);
+		echo "The reason given is shown below:<br /><pre>";
+		echo $reasonRow['log_cmt']."</pre><br />";
 		echo showfootern();
 		die();
 	}
