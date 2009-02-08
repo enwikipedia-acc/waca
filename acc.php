@@ -1405,7 +1405,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 	}
-	$query = "UPDATE acc_pend SET pend_status = 'Closed'";
+	$query = "UPDATE acc_pend SET pend_status = 'Closed' AND `pend_reserved` = '0'";
 	if( $enableReserving ){ $query .= ", `pend_reserved` = '0'"; }
 	$query .= " WHERE pend_id = '$gid';";
 	$result = mysql_query($query, $tsSQLlink);
