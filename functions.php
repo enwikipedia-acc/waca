@@ -674,7 +674,7 @@ function showlogin( $action = null, $params = null ) {
     </div>
     </form>
     <br />
-    Don\'t have an account? 
+    Need Tool access?
     <br /><a href="acc.php?action=register">Register!</a> (Requires approval)<br />
     <a href="acc.php?action=forgotpw">Forgot your password?</a><br />';
 	$html .= showfootern();
