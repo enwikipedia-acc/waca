@@ -202,7 +202,7 @@ elseif ( $action == "sreg" ) {
 elseif ($action == "register") {
 	echo <<<HTML
     <h2>Register!</h2>
-    <span style="font-weight:bold;color:red;font-size:20px;">This form is for requesting access to the account creation tool. If you want an account on Wikipedia, then please go to <a href="http://stable.toolserver.org/acc/">http://stable.toolserver.org/acc/</a></span>
+    <span style="font-weight:bold;color:red;font-size:20px;">This form is for requesting tool access. If you want to request an account for Wikipedia, then go to <a href="http://stable.toolserver.org/acc/">http://stable.toolserver.org/acc/</a></span>
     <form action="acc.php?action=sreg" method="post">
     <table cellpadding="1" cellspacing="0" border="0">
             <tr>
