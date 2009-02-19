@@ -257,7 +257,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	}	
 		
 	$ip = $_SERVER['REMOTE_ADDR'];
-	$ipxff = defined($_SERVER['X-Forwarded-For']) ? $_SERVER['X-Forwarded-For'] : '';
+	$ipxff = isset($_SERVER['X-Forwarded-For']) ? $_SERVER['X-Forwarded-For'] : '';
 	$ip2 = $_SERVER['REMOTE_ADDR'];
 	$ipxff =  mysql_real_escape_string($ipxff);
 	$ip = mysql_real_escape_string($ip);
