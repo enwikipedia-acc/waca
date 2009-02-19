@@ -3,10 +3,11 @@ require_once ('config.inc.php');
 require_once('functions.php');
 
 readOnlyMessage();
-session_start();
 
-global $tsSQLlink, $asSQLlink;
+global $tsSQLlink, $asSQLlink, $toolserver_database;
 list($tsSQLlink, $asSQLlink) = getDBconnections();
+
+mysql_select_db($toolserver_database, $tsSQLlink);
 
 $query = "SELECT COUNT(*) AS pending FROM acc_welcome WHERE welcome_status = \"Open\";";
 $result = mysql_query($query, $tsSQLlink) or print mysql_error();;
