@@ -91,7 +91,6 @@ function checkSpoofs( $username ) {
 		while ($row = mysql_fetch_assoc($result)) {
 		        if( isset( $row['su_name'] ) ) { $numSpoof++; }
 		}
-		mysql_close( $spooflink );
 		if( $numSpoof == 0 ) {
 		        return( FALSE );
 		} else {
