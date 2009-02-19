@@ -257,7 +257,9 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	}	
 		
 	$ip = $_SERVER['REMOTE_ADDR'];
+	$ipxff = defined($_SERVER['X-Forwarded-For']) ? $_SERVER['X-Forwarded-For'] : '';
 	$ip2 = $_SERVER['REMOTE_ADDR'];
+	$ipxff =  mysql_real_escape_string($ipxff);
 	$ip = mysql_real_escape_string($ip);
 
 	if( !$dontUseWikiDb ) {
@@ -282,7 +284,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 			$target = "$wubl";
 			$siuser = mysql_real_escape_string($_POST['name']);
 			$cmt = mysql_real_escape_string("FROM $ip $email");
-			sendtobot("[Grawp-Bl] HIT: $wubl - " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
+			//sendtobot("[Grawp-Bl] HIT: $wubl - " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
 			//$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
 			//$result = mysql_query($query);
 			//if(!$result) Die("ERROR: No result returned.");
@@ -506,7 +508,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$comments = htmlentities($comments); //Escape injections.
 	$dnow = date("Y-m-d H-i-s");
 	if( checkSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
-	$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow' );";
+	$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_ipxff, pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$ipxff', '$user', '$comments', '$uLevel' , '$dnow' );";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("ERROR: No result returned. (acc_pend)");
