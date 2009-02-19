@@ -9,6 +9,6 @@ global $tsSQLlink, $asSQLlink;
 list($tsSQLlink, $asSQLlink) = getDBconnections();
 
 $query = "SELECT COUNT(*) AS pending FROM acc_welcome WHERE welcome_status = \"Open\";";
-$result = mysql_query($query, $tsSQLlink);
-$row = mysql_fetch_assoc($result);
+$result = mysql_query($query, $tsSQLlink) or print mysql_error();;
+$row = mysql_fetch_assoc($result) or print mysql_error();;
 echo $row['pending'];
