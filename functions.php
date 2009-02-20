@@ -370,7 +370,7 @@ function listrequests($type, $hideip) {
 	$tableend = "</table>\n";
 	$reqlist = '';
 	$currentreq = 0;
-	while ( list( $pend_id, $pend_email, $pend_ip, $pend_ipxff $pend_name, $pend_cmt, $pend_status, $pend_date, $pend_checksum, $pend_emailsent, $pend_mailconfirmed ) = mysql_fetch_row( $result ) ) {
+	while ( list( $pend_id, $pend_email, $pend_ip, $pend_ipxff, $pend_name, $pend_cmt, $pend_status, $pend_date, $pend_checksum, $pend_emailsent, $pend_mailconfirmed ) = mysql_fetch_row( $result ) ) {
 		$currentreq += 1;
 		$uname = urlencode($pend_name);
 		#$uname = str_replace("+", "_", $row[pend_name]);
