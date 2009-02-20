@@ -30,7 +30,7 @@ if ($ACC != "1") {
 $basefile = "backup";
 $dir = "/projects/acc/accbak";
 $monthdir = "/projects/acc/accbak/monthly";
-$dumper = "/opt/mysql/bin/mysqldump p_acc"; //add params here if they are needed.
+$dumper = "/opt/mysql/bin/mysqldump --defaults-file=~/.dblocal p_acc"; //add params here if they are needed.
 $gzip = "/usr/bin/gzip"; //add params here too if needed.
 $tar = "/usr/bin/tar -cvf";
 
