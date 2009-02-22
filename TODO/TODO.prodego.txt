@@ -1,8 +1,0 @@
-ISSUES
-1) How did request 18147 get through?
-
-1) Add a an 'abuse' decline reason
-2) fix password reset
-3) reset button does not remove requests from recently closed
-4) Ban logging?
-5) Add a comment field so account creators can return comments

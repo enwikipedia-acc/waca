@@ -1,7 +1,0 @@
-Charlie's Todo list
--=-=-=-=-=-=-=-=-=-
-- Clean up the Interface design to make it look better >_>
-
-Done
--=-=
-- Make the font size smaller
