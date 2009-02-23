@@ -531,14 +531,14 @@ function listrequests($type, $hideip) {
 			{
 				if( $reserveByUser == $_SESSION['userID'])
 				{
-					$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"acc.php?action=breakreserve&resrq=$row['pend_id']\">Break reservation</a>";
+					$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"acc.php?action=breakreserve&resrq=" . $row['pend_id']. "\">Break reservation</a>";
 				} else {
 					$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"users.php?viewuser=$reserveByUser\">" . getUsernameFromUid($reserveByUser) . "</a>";
 				}
 			}
 			else // not being handled, do you want to handle this request?
 			{
-				$out .= "</small></td><td><small> | </small></td><td><small><a href=\"acc.php?action=reserve&resrq=$row['pend_id']\">Mark as being handled</a>";
+				$out .= "</small></td><td><small> | </small></td><td><small><a href=\"acc.php?action=reserve&resrq=" . $row['pend_id']. "\">Mark as being handled</a>";
 			}
 		}
 
