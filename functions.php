@@ -375,7 +375,7 @@ function listrequests($type, $hideip) {
 		$uname = urlencode($row['pend_name']);
 		#$uname = str_replace("+", "_", $row[pend_name]);
 		$rid = $row['pend_id'];
-		if ($pend_cmt != "") {
+		if ($row['pend_cmt'] != "") {
 			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&amp;id=$rid\">Zoom (CMT)</a> ";
 		} else {
 			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
