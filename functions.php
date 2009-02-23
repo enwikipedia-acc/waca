@@ -370,22 +370,22 @@ function listrequests($type, $hideip) {
 	$tableend = "</table>\n";
 	$reqlist = '';
 	$currentreq = 0;
-	while ( list( $pend_id, $pend_email, $pend_ip, $pend_ipxff, $pend_name, $pend_cmt, $pend_status, $pend_date, $pend_checksum, $pend_emailsent, $pend_mailconfirmed ) = mysql_fetch_row( $result ) ) {
+	while ( $row = mysql_fetch_assoc( $result ) ) {
 		$currentreq += 1;
-		$uname = urlencode($pend_name);
+		$uname = urlencode($row['pend_name']);
 		#$uname = str_replace("+", "_", $row[pend_name]);
-		$rid = $pend_id;
+		$rid = $row['pend_id'];
 		if ($pend_cmt != "") {
 			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&amp;id=$rid\">Zoom (CMT)</a> ";
 		} else {
 			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
 		}
-		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = '" . $pend_ip . "' AND `pend_id` != '" . $pend_id . "' AND `pend_mailconfirm` = 'Confirmed';";
+		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = '" . $row['pend_ip'] . "' AND `pend_id` != '" . $row['pend_id'] . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result2 = mysql_query($query2);
 		if (!$result2)
 			sqlerror("Query failed: $query2 ERROR: " . mysql_error(),"Database query error.");
 		$otheripreqs = mysql_fetch_assoc($result2);
-		$query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . $pend_email . "' AND `pend_id` != '" . $pend_id . "' AND `pend_mailconfirm` = 'Confirmed';";
+		$query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . $row['pend_email'] . "' AND `pend_id` != '" . $row['pend_id'] . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result3 = mysql_query($query3);
 		if (!$result3)
 			sqlerror("Query failed: $query3 ERROR: " . mysql_error(),"Database query error.");
@@ -411,7 +411,7 @@ function listrequests($type, $hideip) {
 		$row4 = mysql_fetch_assoc($result4);
 
 		// Email.
-		$out .= '[ </small></td><td><small><a class="request-src" href="mailto:' . $pend_email . '">' . $pend_email . '</a>';
+		$out .= '[ </small></td><td><small><a class="request-src" href="mailto:' . $row['pend_email'] . '">' . $row['pend_email'] . '</a>';
 
 		$out .= '</small></td><td><small><span class="request-src">' . "\n";
 		if ($otheremailreqs['count'] == 0) {
@@ -429,8 +429,8 @@ function listrequests($type, $hideip) {
             
 		if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin')) {
 		// IP UT:
-		$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-src" name="ip-link" href="'.$wikipediaurl.'wiki/User_talk:' . $pend_ip . '" target="_blank">';
-		$out .= $pend_ip . '</a> ';
+		$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-src" name="ip-link" href="'.$wikipediaurl.'wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
+		$out .= $row['pend_ip'] . '</a> ';
 
 		$out .= '</small></td><td><small><span class="request-src">' . "\n";
 		if ($otheripreqs['count'] == 0) {
@@ -441,21 +441,21 @@ function listrequests($type, $hideip) {
 
 		//IP contribs
 		$out .= '</span></small></td><td><small><a class="request-src" href="'.$wikipediaurl.'wiki/Special:Contributions/';
-		$out .= $pend_ip . '" target="_blank">c</a> ';
+		$out .= $row['pend_ip'] . '" target="_blank">c</a> ';
 
 		// IP blocks
 		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
-		$out .= $pend_ip . '" target="_blank">b</a> ';
+		$out .= $row['pend_ip'] . '" target="_blank">b</a> ';
 		
 		// rangeblocks
 		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3ABlockList&ip=';
-		$out .= $pend_ip . '" target="_blank">r</a> ';
+		$out .= $row['pend_ip'] . '" target="_blank">r</a> ';
 
 		// IP whois
-		$out .= '<a class="request-src" href="http://samspade.org/whois?query=' . $pend_ip . '" target="_blank">w</a></small></td><td><small> ] ';
+		$out .= '<a class="request-src" href="http://samspade.org/whois?query=' . $row['pend_ip'] . '" target="_blank">w</a></small></td><td><small> ] ';
             }
 		// Username U:
-		$duname = _utf8_decode($pend_name);
+		$duname = _utf8_decode($row['pend_name']);
 		$out .= '</small></td><td><small><a class="request-req" href="'.$wikipediaurl.'wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
 
 		// 	Creation log
@@ -471,27 +471,27 @@ function listrequests($type, $hideip) {
 
 		// Create user link
 		$out .= '<b><a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-		$out .= $uname . '&amp;wpEmail=' . $pend_email . '&amp;uselang=en-acc" target="_blank">Create!</a></b></small></td><td><small> ';
+		$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b></small></td><td><small> ';
 
 
 		// Done
-		$out .= '| </small></td><td><small><a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=1&amp;sum=' . $pend_checksum . '">Done!</a>';
+		$out .= '| </small></td><td><small><a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '">Done!</a>';
 
 		// Similar
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=2&amp;sum=' . $pend_checksum . '">Similar</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=2&amp;sum=' . $row['pend_checksum'] . '">Similar</a>';
 
 		// Taken
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=3&amp;sum=' . $pend_checksum . '">Taken</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=3&amp;sum=' . $row['pend_checksum'] . '">Taken</a>';
 
 		// UPolicy
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=4&amp;sum=' . $pend_checksum . '">UPolicy</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=4&amp;sum=' . $row['pend_checksum'] . '">UPolicy</a>';
 
 		// Invalid
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=5&amp;sum=' . $pend_checksum . '">Invalid</a>';
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=5&amp;sum=' . $row['pend_checksum'] . '">Invalid</a>';
 
 		// Defer to admins or users
 		if (is_numeric($type)) {
-			$type = $pend_status;
+			$type = $row['pend_status'];
 		}
 		if (!isset ($target)) {
 			$target = "zoom";
@@ -503,42 +503,42 @@ function listrequests($type, $hideip) {
 			$target = 'users';
 		}
 		if ($target == 'admins' || $target == 'users') {
-			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=$target\">Defer to $target" . "</a>";
+			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target\">Defer to $target" . "</a>";
 		} else {
-			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=users\">Reset Request</a>";
+			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=users\">Reset Request</a>";
 		}
 		// Drop
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $pend_id . '&amp;email=0&amp;sum=' . $pend_checksum . '">Drop</a>' . "\n";
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
 
 		if(hasright($_SESSION['user'], "Admin")) {
 		// Ban IP
-		$out .= '</small></td><td><small> |</small></td><td><small> Ban: </small></td><td><small><a class="request-ban" href="acc.php?action=ban&amp;ip=' . $pend_id . '">IP</a> ';
+		$out .= '</small></td><td><small> |</small></td><td><small> Ban: </small></td><td><small><a class="request-ban" href="acc.php?action=ban&amp;ip=' . $row['pend_id'] . '">IP</a> ';
 
 		// Ban email
-		$out .= '- <a class="request-ban" href="acc.php?action=ban&amp;email=' . $pend_id . '">E-Mail</a>';
+		$out .= '- <a class="request-ban" href="acc.php?action=ban&amp;email=' . $row['pend_id'] . '">E-Mail</a>';
 
 		//Ban name
-		$out .= ' - <a class="request-ban" href="acc.php?action=ban&amp;name=' . $pend_id . '">Name</a>';
+		$out .= ' - <a class="request-ban" href="acc.php?action=ban&amp;name=' . $row['pend_id'] . '">Name</a>';
 		}
 		
 		// Check to see if we want to have all the reserving stuff on
 		global $enableReserving;
 		if( $enableReserving )
 		{
-			$reserveByUser = isReserved($pend_id);			
+			$reserveByUser = isReserved($row['pend_id']);			
 			// if request is reserved, show reserved message
 			if( $reserveByUser != 0 )
 			{
 				if( $reserveByUser == $_SESSION['userID'])
 				{
-					$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"acc.php?action=breakreserve&resrq=$pend_id\">Break reservation</a>";
+					$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"acc.php?action=breakreserve&resrq=$row['pend_id']\">Break reservation</a>";
 				} else {
 					$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"users.php?viewuser=$reserveByUser\">" . getUsernameFromUid($reserveByUser) . "</a>";
 				}
 			}
 			else // not being handled, do you want to handle this request?
 			{
-				$out .= "</small></td><td><small> | </small></td><td><small><a href=\"acc.php?action=reserve&resrq=$pend_id\">Mark as being handled</a>";
+				$out .= "</small></td><td><small> | </small></td><td><small><a href=\"acc.php?action=reserve&resrq=$row['pend_id']\">Mark as being handled</a>";
 			}
 		}
 
