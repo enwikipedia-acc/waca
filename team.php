@@ -26,6 +26,8 @@ require_once ( 'functions.php' );
 // check to see if the database is unavailable
 readOnlyMessage();
 
+global $tsSQLlink, $asSQLlink;
+list($tsSQLlink, $asSQLlink) = getDBconnections();
 // Continue session
 session_start();
 
