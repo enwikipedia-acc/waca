@@ -61,7 +61,13 @@ if( isset($_GET['term'])) {
 	$term = sanitize($_GET['term']);
 	$type = sanitize($_GET['type']);
 
+	if($term == "" || $term == "%")
+		die("No search term specified.");
+
 	if( $type == "email") {
+		if($term == "@")
+			die("Invalid search term");		
+
 		echo "<h2>Searching for email address: $term ...</h2>";
 		$query = "SELECT pend_id,pend_email FROM acc_pend WHERE pend_email LIKE '%$term%';";
 		$result = mysql_query($query, $tsSQLlink);
