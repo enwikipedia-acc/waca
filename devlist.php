@@ -53,8 +53,8 @@ $regdevlist = array (
 		'7'
 	),
 	array (
-		'Soxred93',
-		'Soxred93',
+		'X!',
+		'X!',
 		'4'
 	),
 	array (
