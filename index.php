@@ -257,9 +257,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 
 	// Initialize Variables		
 	$ip = $_SERVER['REMOTE_ADDR'];
-	$ipxff = isset($_SERVER['X-Forwarded-For']) ? $_SERVER['X-Forwarded-For'] : '';
 	$ip2 = $_SERVER['REMOTE_ADDR'];
-	$ipxff =  mysql_real_escape_string($ipxff);
 	$ip = mysql_real_escape_string($ip);
 
 	$user = $_POST['name'];
@@ -513,7 +511,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$comments = htmlentities($comments); //Escape injections.
 	$dnow = date("Y-m-d H-i-s");
 	if( checkSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
-	$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_ipxff, pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$ipxff', '$user', '$comments', '$uLevel' , '$dnow' );";
+	$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow' );";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("ERROR: No result returned. (acc_pend)");
