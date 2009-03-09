@@ -254,12 +254,102 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		if (!$result)
 			Die("ERROR: No result returned.");
 	}	
-		
+
+	// Initialize Variables		
 	$ip = $_SERVER['REMOTE_ADDR'];
 	$ipxff = isset($_SERVER['X-Forwarded-For']) ? $_SERVER['X-Forwarded-For'] : '';
 	$ip2 = $_SERVER['REMOTE_ADDR'];
 	$ipxff =  mysql_real_escape_string($ipxff);
 	$ip = mysql_real_escape_string($ip);
+
+	$user = $_POST['name'];
+	$user = ltrim($user);
+	$user = rtrim($user);
+	$user = mysql_real_escape_string($user);
+
+	$email = $_POST['email'];
+	$email = ltrim($email);
+	$email = rtrim($email);
+	$email = mysql_real_escape_string($email);
+	
+	//Delete old bans
+	mysql_query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP()', $tsSQLlink);
+
+	//Check for bans
+	$query = "SELECT * FROM acc_ban WHERE ban_type = 'IP' AND ban_target = '$ip'";
+	$result = mysql_query($query, $tsSQLlink);
+	$row = mysql_fetch_assoc($result);
+	$dbanned = $row['ban_duration'];
+	$toruser = checktor($ip2);
+	if ($row['ban_id'] != "" || $toruser['tor'] == "yes") {
+		if ($dbanned < 0 || $dbanned == "") {
+			$dbanned = time() + 100;
+		}
+		if ($toruser['tor'] == "yes") {
+			$row[ban_reason] = "<a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse.";
+		}
+		if ($dbanned < time()) {
+			//Not banned!
+		} else { //Still banned!
+			$message = showmessage(19);
+			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
+			$fail = 1;
+			displayfooter();
+			die();
+		}
+	}
+	$query = "SELECT * FROM acc_ban WHERE ban_type = 'Name' AND ban_target = '$user'";
+	$result = mysql_query($query, $tsSQLlink);
+	$row = mysql_fetch_assoc($result);
+	$dbanned = $row['ban_duration'];
+	if ($row['ban_id'] != "") {
+		if ($dbanned < 0 || $dbanned == "") {
+			$dbanned = time() + 100;
+		}
+
+		if ($dbanned < time()) {
+			//Not banned!
+		} else { //Still banned!
+			$message = showmessage(19);
+			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
+			$fail = 1;
+			displayfooter();
+			die();
+		}
+	}
+	$query = "SELECT * FROM acc_ban WHERE ban_type = 'EMail' AND ban_target = '$email'";
+	$result = mysql_query($query, $tsSQLlink);
+	$row = mysql_fetch_assoc($result);
+	$dbanned = $row['ban_duration'];
+	if ($row['ban_id'] != "") {
+		if ($dbanned < 0 || $dbanned == "") {
+			$dbanned = time() + 100;
+		}
+
+		if ($dbanned < time()) {
+			//Not banned!
+		} else { //Still banned!
+			$message = showmessage(19);
+			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
+			$fail = 1;
+			displayfooter();
+			die();
+		}
+	}
+
+	if ($fail != 1) {
+		if( $enableEmailConfirm == 1 )
+		{$message = showmessage(15);} else {$message = showmessage(24);}
+		echo "$message<br />\n";
+	} else {
+		$message = showmessage(16);
+		echo "$message<br />\n";
+	}
+	if ($fail == 1) {
+		displayform();
+		displayfooter();
+		die();
+	}
 
 	if( !$dontUseWikiDb ) {
 		@ mysql_select_db("enwiki_p", $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
@@ -272,9 +362,6 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		}
 	}	
 	
-	$email = $_POST['email'];
-	$email = ltrim($email);
-	$email = rtrim($email);
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	foreach ($uablacklist as $wubl => $ubl) {
 		$phail_test = @ preg_match($ubl, $_SERVER['HTTP_USER_AGENT']);
@@ -363,14 +450,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		
 		@ mysql_select_db("enwiki_p", $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	}
-	$user = $_POST['name'];
-	$user = ltrim($user);
-	$user = rtrim($user);
-	$user = mysql_real_escape_string($user);
-	$email = $_POST['email'];
-	$email = ltrim($email);
-	$email = rtrim($email);
-	$email = mysql_real_escape_string($email);
+
 	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . $_POST['name'] . "&format=php");
 	$ue = unserialize($userexist);
 	foreach ($ue['query']['users'] as $oneue) {
@@ -428,81 +508,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		echo "$message<br />\n";
 		$fail = 1;
 	}
-	mysql_query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP()', $tsSQLlink);
-	$query = "SELECT * FROM acc_ban WHERE ban_type = 'IP' AND ban_target = '$ip'";
-	$result = mysql_query($query, $tsSQLlink);
-	$row = mysql_fetch_assoc($result);
-	$dbanned = $row['ban_duration'];
-	$toruser = checktor($ip2);
-	if ($row['ban_id'] != "" || $toruser['tor'] == "yes") {
-		if ($dbanned < 0 || $dbanned == "") {
-			$dbanned = time() + 100;
-		}
-		if ($toruser['tor'] == "yes") {
-			$row[ban_reason] = "<a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse.";
-		}
-		if ($dbanned < time()) {
-			//Not banned!
-		} else { //Still banned!
-			$message = showmessage(19);
-			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
-			$fail = 1;
-			displayfooter();
-			die();
-		}
-	}
-	$query = "SELECT * FROM acc_ban WHERE ban_type = 'Name' AND ban_target = '$user'";
-	$result = mysql_query($query, $tsSQLlink);
-	$row = mysql_fetch_assoc($result);
-	$dbanned = $row['ban_duration'];
-	if ($row['ban_id'] != "") {
-		if ($dbanned < 0 || $dbanned == "") {
-			$dbanned = time() + 100;
-		}
 
-		if ($dbanned < time()) {
-			//Not banned!
-		} else { //Still banned!
-			$message = showmessage(19);
-			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
-			$fail = 1;
-			displayfooter();
-			die();
-		}
-	}
-	$query = "SELECT * FROM acc_ban WHERE ban_type = 'EMail' AND ban_target = '$email'";
-	$result = mysql_query($query, $tsSQLlink);
-	$row = mysql_fetch_assoc($result);
-	$dbanned = $row['ban_duration'];
-	if ($row['ban_id'] != "") {
-		if ($dbanned < 0 || $dbanned == "") {
-			$dbanned = time() + 100;
-		}
-
-		if ($dbanned < time()) {
-			//Not banned!
-		} else { //Still banned!
-			$message = showmessage(19);
-			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
-			$fail = 1;
-			displayfooter();
-			die();
-		}
-	}
-
-	if ($fail != 1) {
-		if( $enableEmailConfirm == 1 )
-		{$message = showmessage(15);} else {$message = showmessage(24);}
-		echo "$message<br />\n";
-	} else {
-		$message = showmessage(16);
-		echo "$message<br />\n";
-	}
-	if ($fail == 1) {
-		displayform();
-		displayfooter();
-		die();
-	}
 	$comments = sanitize($_POST['comments']);
 	$comments = htmlentities($comments); //Escape injections.
 	$dnow = date("Y-m-d H-i-s");
