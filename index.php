@@ -335,20 +335,6 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		}
 	}
 
-	if ($fail != 1) {
-		if( $enableEmailConfirm == 1 )
-		{$message = showmessage(15);} else {$message = showmessage(24);}
-		echo "$message<br />\n";
-	} else {
-		$message = showmessage(16);
-		echo "$message<br />\n";
-	}
-	if ($fail == 1) {
-		displayform();
-		displayfooter();
-		die();
-	}
-
 	if( !$dontUseWikiDb ) {
 		@ mysql_select_db("enwiki_p", $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 		$query = 'SELECT * FROM ipblocks WHERE ipb_address = \''.$ip.'\';';
@@ -507,6 +493,20 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		$fail = 1;
 	}
 
+	if ($fail != 1) {
+		if( $enableEmailConfirm == 1 )
+		{$message = showmessage(15);} else {$message = showmessage(24);}
+		echo "$message<br />\n";
+	} else {
+		$message = showmessage(16);
+		echo "$message<br />\n";
+	}
+	if ($fail == 1) {
+		displayform();
+		displayfooter();
+		die();
+	}
+
 	$comments = sanitize($_POST['comments']);
 	$comments = htmlentities($comments); //Escape injections.
 	$dnow = date("Y-m-d H-i-s");
@@ -525,9 +525,9 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	if ($pid != 0 || $pid != "") {
 		upcsum($pid);
 	}
-        if ($enableEmailConfirm == 1) {	
-        confirmEmail( $pid );
-        }
+	if ($enableEmailConfirm == 1) {	
+		confirmEmail( $pid );
+	}
 } else {
 	displayform();
 	displayfooter();
