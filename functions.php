@@ -102,7 +102,8 @@ function getSpoofs( $username ) {
 		global $antispoof_password;
 		$spooflink = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
 		@ mysql_select_db($antispoof_db, $spooflink) or sqlerror(mysql_error(),"Error selecting database.");
-		$fone = sanitize(strtr($username,$equivset));
+		$fone = strtr($username,$equivset);
+		$fone = sanitize(strtr($fone,array("VV" => "W","RN" =>"M")));
 		//$fone = mysql_real_escape_string( $fone );
 		$query = "SELECT su_name FROM ".$antispoof_table." WHERE su_normalized = 'v2:$fone';";
 		$result = mysql_query($query, $spooflink);
