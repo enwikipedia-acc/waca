@@ -19,7 +19,6 @@
 `pend_id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
 `pend_email` VARCHAR( 512 ) NOT NULL ,
 `pend_ip` VARCHAR( 255 ) NOT NULL ,
-`pend_ipxff` VARCHAR( 255 ) NULL ,
 `pend_name` VARCHAR( 512 ) NOT NULL ,
 `pend_cmt` MEDIUMTEXT NOT NULL ,
 `pend_status` VARCHAR( 255 ) NOT NULL,
