@@ -504,8 +504,8 @@ elseif ($action == "messagemgmt") {
 	echo "<h2>Mail messages</h2>\n";
 	echo "<ul>\n";
 	while ( list( $mail_id, $mail_count, $mail_desc ) = mysql_fetch_row( $result ) ) {
-		$out = "<li><small> $mail_id ) [ $mail_desc ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mail_id\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
-		$out2 = "<li><small> $mail_id )[ $mail_desc ] <a href=\"acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
+		$out = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mail_id\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
+		$out2 = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
 		if(hasright($_SESSION['user'], 'Admin')){
 		echo "$out\n";
 		}
@@ -524,8 +524,8 @@ elseif ($action == "messagemgmt") {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		$out = "<li><small>$mailn ) [ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		$out2 = "<li><small>$mailn ) [ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		$out = "<li>$mailn) <small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		$out2 = "<li>$mailn) <small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		if(hasright($_SESSION['user'], 'Admin')){
 		echo "$out\n";
 		}
@@ -545,8 +545,8 @@ elseif ($action == "messagemgmt") {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		$out = "<li><small>$mailn ) [ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		$out2 = "<li><small>$mailn ) [ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		$out = "<li>$mailn) <small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		$out2 = "<li>$mailn) <small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		if(hasright($_SESSION['user'], 'Admin')){
 		echo "$out\n";
 		}
