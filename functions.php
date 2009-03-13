@@ -453,7 +453,7 @@ function listrequests($type, $hideip) {
 		$out .= $row['pend_ip'] . '" target="_blank">r</a> ';
 
 		// IP whois
-		$out .= '<a class="request-src" href="http://samspade.org/whois?query=' . $row['pend_ip'] . '" target="_blank">w</a></small></td><td><small> ] ';
+		$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">w</a></small></td><td><small> ] ';
             }
 		// Username U:
 		$duname = _utf8_decode($row['pend_name']);
