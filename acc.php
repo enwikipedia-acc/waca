@@ -1310,7 +1310,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	<option value="matt-t"<?php if($template == "matt-t") { echo " selected=\"selected\""; } ?>>{{subst:User:User:Matt.T/C}} ~~~~</option>
 	<option value="roux"<?php if($template == "roux") { echo " selected=\"selected\""; } ?>>{{subst:User:Roux/W}} ~~~~</option>
     </select><br /><?php
-    echo '<i>If you\'d like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>.</i><br />';
+    echo '<i>If you\'d like more templates added, please <a href="https://jira.toolserver.org/browse/ACC">open a ticket</a>.</i><br />';
 
 	echo <<<HTML
     <input type="submit"/><input type="reset"/>
