@@ -86,7 +86,7 @@ elseif ( $action == "sreg" ) {
 			$fp = fsockopen( "udp://127.0.0.1", 9001, $erno, $errstr, 30 );
 			fwrite( $fp, "[Name-Bl-ACR] HIT: $wnbl - " . $_POST['name'] . " / " . $_POST['wname'] . " " . $_SERVER['REMOTE_ADDR'] . " ($host) " . $_POST['email'] . " " . $_SERVER['HTTP_USER_AGENT'] . "\r\n" );
 			fclose( $fp );
-			echo "Account created! To confirm your identity, please make any edit to your talk page and in the edit summary, note that it is really you requesting this account. <br /><br />\n";
+			echo "Account created! In order to complete the process, please make a confirmation edit to your user talk page. In this edit, note that you requested an account on the ACC account creation interface, and use a descriptive edit summary so that we can easily find this edit.  <b>Failure to do this will result in your request being declined.</b><br /><br />\n";
 			die( );
 		}
 	}
@@ -193,7 +193,7 @@ elseif ( $action == "sreg" ) {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		sendtobot("New user: $user");
-		echo "Account created! To confirm your identity, please make any edit to your talk page and in the edit summary, note that it is really you requesting this account. <br /><br />\n";
+		echo "Account created! In order to complete the process, please make a confirmation edit to your user talk page. In this edit, note that you requested an account on the ACC account creation interface, and use a descriptive edit summary so that we can easily find this edit.  <b>Failure to do this will result in your request being declined.</b><br /><br />\n";
 		echo showlogin();
 	}
 	echo showfootern();
