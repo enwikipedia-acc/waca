@@ -92,7 +92,7 @@ elseif ( $action == "sreg" ) {
 	}
 	global $enableDnsblChecks;
 	if( $enableDnsblChecks == 1) {
-		$dnsblcheck = checkdnsbls( $_SERVER['REMOTE_ADDRR'] );
+		$dnsblcheck = checkdnsbls( $_SERVER['REMOTE_ADDR'] );
 		if ( $dnsblcheck['0'] == true ) {
 			$cmt = "FROM $ip " . $dnsblcheck['1'];
 			$fp = fsockopen( "udp://127.0.0.1", 9001, $erno, $errstr, 30 );
