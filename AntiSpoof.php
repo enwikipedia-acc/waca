@@ -31,7 +31,6 @@
 # USA
 
 require_once dirname(__FILE__).'/normal/Utf8Case.php';
-require_once dirname(__FILE__).'/normal/Utf8Test.php';
 require_once dirname(__FILE__).'/normal/UtfNormal.php';
 require_once dirname(__FILE__).'/normal/UtfNormalDefines.php';
 require_once dirname(__FILE__).'/normal/UtfNormalUtil.php';
