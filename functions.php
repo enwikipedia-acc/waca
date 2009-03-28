@@ -26,6 +26,8 @@ if ($ACC != "1") {
     die();
 } //Re-route, if you're a web client.
 
+include_once('AntiSpoof.php');
+
 function formatForBot( $data ) { 		
 	global $key; 		
 	$pData[0] = $key; 		
@@ -92,8 +94,6 @@ function forceLogout( $uid ) {
 function getSpoofs( $username ) {
 	global $dontUseWikiDb;
 	if( !$dontUseWikiDb ) {
-		global $antispoof_equivset;
-		require_once( $antispoof_equivset );
 		global $toolserver_username;
 		global $toolserver_password;
 		global $antispoof_host;
@@ -102,6 +102,7 @@ function getSpoofs( $username ) {
 		global $antispoof_password;
 		$spooflink = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
 		@ mysql_select_db($antispoof_db, $spooflink) or sqlerror(mysql_error(),"Error selecting database.");
+		my $return = AntiSpoof::checkUnicodeString( $username );		
 		$fone = strtr($username,$equivset);
 		$fone = sanitize(strtr($fone,array("VV" => "W","RN" =>"M", "_" => "", " " => "")));
 		//$fone = mysql_real_escape_string( $fone );

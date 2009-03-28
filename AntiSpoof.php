@@ -30,6 +30,15 @@
 # Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301
 # USA
 
+require_once dirname(__FILE__).'/normal/Utf8Case.php';
+require_once dirname(__FILE__).'/normal/Utf8CaseGenerate';
+require_once dirname(__FILE__).'/normal/Utf8Test.php';
+require_once dirname(__FILE__).'/normal/UtfNormal.php';
+require_once dirname(__FILE__).'/normal/UtfNormalBench.php';
+require_once dirname(__FILE__).'/normal/UtfNormalDefines.php';
+require_once dirname(__FILE__).'/normal/UtfNormalGenerate.php';
+require_once dirname(__FILE__).'/normal/UtfNormalTest.php';
+require_once dirname(__FILE__).'/normal/UtfNormalUtil.php';
 
 class AntiSpoof {
 	
@@ -268,15 +277,15 @@ class AntiSpoof {
 		wfLoadExtensionMessages( 'AntiSpoof' );
 		# Start with some sanity checking
 		if( !is_string( $testName ) ) {
-			return array( "ERROR", wfMsg('antispoof-badtype') );
+			return array( "ERROR", "Bad data type" );
 		}
 	
 		if( strlen( $testName ) == 0 ) {
-			return array("ERROR", wfMsg('antispoof-empty') );
+			return array("ERROR", "Empty string" );
 		}
 	
 		if( array_intersect( self::stringToList( $testName ), self::$character_blacklist ) ) {
-			return array( "ERROR", wfMsg('antispoof-blacklisted') );
+			return array( "ERROR", "Contains blacklisted character" );
 		}
 	
 		# Perform Unicode _compatibility_ decomposition
@@ -285,12 +294,12 @@ class AntiSpoof {
 	
 		# Be paranoid: check again, just in case Unicode normalization code changes...
 		if( array_intersect( $testChars, self::$character_blacklist ) ) {
-			return array( "ERROR", wfMsg('antispoof-blacklisted') );
+			return array( "ERROR", "Contains blacklisted character" );
 		}
 	
 		# Check for this: should not happen in any valid Unicode string
 		if( self::getScriptCode( $testChars[0] ) == "SCRIPT_COMBINING_MARKS" ) {
-			return array( "ERROR", wfMsg('antispoof-combining') );
+			return array( "ERROR", "Begins with combining mark" );
 		}
 	
 		# Strip all combining characters in order to crudely strip accents
@@ -299,7 +308,7 @@ class AntiSpoof {
 	
 		$testScripts = array_unique( array_map( array( 'AntiSpoof', 'getScriptCode' ), $testChars ) );
 		if( in_array( "SCRIPT_UNASSIGNED", $testScripts ) || in_array( "SCRIPT_DEPRECATED", $testScripts ) ) {
-			return array( "ERROR", wfMsg('antispoof-unassigned') );
+			return array( "ERROR", "Contains unassigned or deprecated character" );
 		}
 	
 		# We don't mind ASCII punctuation or digits
@@ -307,11 +316,11 @@ class AntiSpoof {
 						array( "SCRIPT_ASCII_PUNCTUATION", "SCRIPT_ASCII_DIGITS" ) );
 	
 		if( !$testScripts ) {
-			return array( "ERROR", wfMsg('antispoof-noletters') );
+			return array( "ERROR", "Does not contain any letters" );
 		}
 	
 		if( count( $testScripts ) > 1 && !self::isAllowedScriptCombination( $testScripts ) ) {
-			return array( "ERROR", wfMsg('antispoof-mixedscripts') );
+			return array( "ERROR", "Contains incompatible mixed scripts" );
 		}
 	
 		# At this point, we should probably check for BiDi violations if they aren't
@@ -343,7 +352,7 @@ class AntiSpoof {
 		# BUG: TODO: implement this
 	
 		if( strlen( $testName ) < 1 ) {
-			return array("ERROR", wfMsg('antispoof-tooshort') );
+			return array("ERROR", "Canonicalized name too short" );
 		}
 	
 		# Don't ASCIIfy: we assume we are UTF-8 capable on output
