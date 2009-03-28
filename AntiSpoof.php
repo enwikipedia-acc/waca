@@ -31,13 +31,9 @@
 # USA
 
 require_once dirname(__FILE__).'/normal/Utf8Case.php';
-require_once dirname(__FILE__).'/normal/Utf8CaseGenerate.php';
 require_once dirname(__FILE__).'/normal/Utf8Test.php';
 require_once dirname(__FILE__).'/normal/UtfNormal.php';
-require_once dirname(__FILE__).'/normal/UtfNormalBench.php';
 require_once dirname(__FILE__).'/normal/UtfNormalDefines.php';
-require_once dirname(__FILE__).'/normal/UtfNormalGenerate.php';
-require_once dirname(__FILE__).'/normal/UtfNormalTest.php';
 require_once dirname(__FILE__).'/normal/UtfNormalUtil.php';
 
 class AntiSpoof {
