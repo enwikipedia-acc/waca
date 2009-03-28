@@ -1511,8 +1511,11 @@ elseif ($action == "zoom") {
 	
 	echo "<h2>Possibly conflicting usernames</h2>\n";
 	$spoofs = getSpoofs( $sUser );
+	
 	if( !$spoofs ) {
 		echo "<i>None detected</i><br />\n";
+	} elseif ( !is_array($spoofs) ) {
+		echo "$spoofs<br />\n";
 	} else {
 		echo "<ul>\n";
 		foreach( $spoofs as $oSpoof ) {

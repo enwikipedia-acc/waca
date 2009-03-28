@@ -102,24 +102,26 @@ function getSpoofs( $username ) {
 		global $antispoof_password;
 		$spooflink = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
 		@ mysql_select_db($antispoof_db, $spooflink) or sqlerror(mysql_error(),"Error selecting database.");
-		my $return = AntiSpoof::checkUnicodeString( $username );		
-		$fone = strtr($username,$equivset);
-		$fone = sanitize(strtr($fone,array("VV" => "W","RN" =>"M", "_" => "", " " => "")));
-		//$fone = mysql_real_escape_string( $fone );
-		$query = "SELECT su_name FROM ".$antispoof_table." WHERE su_normalized = 'v2:$fone';";
-		$result = mysql_query($query, $spooflink);
-		if(!$result) sqlerror("ERROR: No result returned. - ".mysql_error(),"Database error.");
-		$numSpoof = 0;
-		$reSpoofs = array();
-		while ( list( $su_name ) = mysql_fetch_row( $result ) ) {
-			if( isset( $su_name ) ) { $numSpoof++; }
-			array_push( $reSpoofs, $su_name );
-		}
-		mysql_close( $spooflink );
-		if( $numSpoof == 0 ) {
-			return( FALSE );
+		my $return = AntiSpoof::checkUnicodeString( $username );
+		if($return[0] == 'OK' ) {		
+			$sanitized = sanitize($return[1]);
+			$query = "SELECT su_name FROM ".$antispoof_table." WHERE su_normalized = '$sanitized';";
+			$result = mysql_query($query, $spooflink);
+			if(!$result) sqlerror("ERROR: No result returned. - ".mysql_error(),"Database error.");
+			$numSpoof = 0;
+			$reSpoofs = array();
+			while ( list( $su_name ) = mysql_fetch_row( $result ) ) {
+				if( isset( $su_name ) ) { $numSpoof++; }
+				array_push( $reSpoofs, $su_name );
+			}
+			mysql_close( $spooflink );
+			if( $numSpoof == 0 ) {
+				return( FALSE );
+			} else {
+				return( $reSpoofs );
+			}
 		} else {
-			return( $reSpoofs );
+			return ( $return[1] );
 		}
 	} else { return FALSE; }
 }
