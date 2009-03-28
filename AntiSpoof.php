@@ -269,7 +269,6 @@ class AntiSpoof {
 	
 	# TODO: does too much in one routine, refactor...
 	public static function checkUnicodeString( $testName ) {
-		wfLoadExtensionMessages( 'AntiSpoof' );
 		# Start with some sanity checking
 		if( !is_string( $testName ) ) {
 			return array( "ERROR", "Bad data type" );
