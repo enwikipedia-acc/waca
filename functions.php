@@ -102,7 +102,7 @@ function getSpoofs( $username ) {
 		global $antispoof_password;
 		$spooflink = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
 		@ mysql_select_db($antispoof_db, $spooflink) or sqlerror(mysql_error(),"Error selecting database.");
-		my $return = AntiSpoof::checkUnicodeString( $username );
+		$return = AntiSpoof::checkUnicodeString( $username );
 		if($return[0] == 'OK' ) {		
 			$sanitized = sanitize($return[1]);
 			$query = "SELECT su_name FROM ".$antispoof_table." WHERE su_normalized = '$sanitized';";
