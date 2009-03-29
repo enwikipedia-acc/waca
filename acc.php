@@ -1515,7 +1515,7 @@ elseif ($action == "zoom") {
 	if( !$spoofs ) {
 		echo "<i>None detected</i><br />\n";
 	} elseif ( !is_array($spoofs) ) {
-		echo "<h3 style="color: red">$spoofs</h3>\n";
+		echo "<h3 style='color: red'>$spoofs</h3>\n";
 	} else {
 		echo "<ul>\n";
 		foreach( $spoofs as $oSpoof ) {
