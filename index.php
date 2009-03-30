@@ -76,30 +76,6 @@ function confirmEmail( $id ) {
 		sqlerror("Query failed: $query ERROR: " . mysql_error(),"ERROR: database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
 }
 
-function checkSpoofs( $username ) {
-	global $dontUseWikiDb;
-	if( !$dontUseWikiDb ) {
-		global $antispoof_equivset, $antispoof_db, $antispoof_table, $asSQLlink;
-		require_once($antispoof_equivset);
-		@ mysql_select_db($antispoof_db, $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
-		$fone = strtr($username,$equivset);
-		//$fone = mysql_real_escape_string( $fone );
-		$query = "SELECT * FROM $antispoof_table WHERE su_normalized = 'v2:$fone';";
-		$result = mysql_query($query, $asSQLlink);
-		if(!$result) sqlerror("ERROR: No result returned. - ".mysql_error(),"ERROR: database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
-		$numSpoof = 0;
-		while ($row = mysql_fetch_assoc($result)) {
-		        if( isset( $row['su_name'] ) ) { $numSpoof++; }
-		}
-		if( $numSpoof == 0 ) {
-		        return( FALSE );
-		} else {
-			return( TRUE );
-		}
-	}
-	else { return FALSE; }
-}
-
 function checktor($addr) {
 	/*
 	* Check if the supplied host is a TOR node
@@ -217,8 +193,14 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 		if ( !$result )
 			sqlerror("Query failed: $query ERROR: ".mysql_error(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>."); 
 		$user = $row['pend_name'];
-		if( checkSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
-		if( $uLevel == "Open" ) { $what = ""; } else { $what = "<Account Creator Needed!> "; }
+		$spoofs = checkSpoofs( $user );
+		if( $spoofs === FALSE ) {
+			$uLevel = "Open";
+			$what = "";
+		} else {
+			$uLevel = "Admin";
+			$what = "<Account Creator Needed!> ";
+		}
 		$comments = html_entity_decode(stripslashes($row['pend_cmt']));
 			sendtobot("\00314[[\00303acc:\00307$pid\00314]]\0034 N\00310 \00302$tsurl/acc.php?action=zoom&id=$pid\003 \0035*\003 \00303$user\003 \0035*\003 \00310$what\003" . substr(str_replace(array (
 			"\n",
