@@ -193,7 +193,7 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 		if ( !$result )
 			sqlerror("Query failed: $query ERROR: ".mysql_error(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>."); 
 		$user = $row['pend_name'];
-		$spoofs = checkSpoofs( $user );
+		$spoofs = getSpoofs( $user );
 		if( $spoofs === FALSE ) {
 			$uLevel = "Open";
 			$what = "";
@@ -492,7 +492,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$comments = sanitize($_POST['comments']);
 	$comments = htmlentities($comments); //Escape injections.
 	$dnow = date("Y-m-d H-i-s");
-	if( checkSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
+	if( getSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
 	$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow' );";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
