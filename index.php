@@ -490,7 +490,6 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	}
 
 	$comments = sanitize($_POST['comments']);
-	$comments = htmlentities($comments); //Escape injections.
 	$dnow = date("Y-m-d H-i-s");
 	if( getSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
 	$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow' );";
