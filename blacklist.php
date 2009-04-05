@@ -115,6 +115,7 @@ $emailblacklist['temporary-inboxes-org'] = "/(front14|h8s|hatespam|iheartspam|ip
 $emailblacklist['temporary-inboxes-us'] = "/(nospamfor|spambox)\.us/i";
 $emailblacklist['temporary-inboxes-dk'] = "/(anonymail|recyclemail|lortemail)\.dk/i";
 $emailblacklist['temporary-inboxes-it'] = "/despam\.it/i";
+$emailblacklist['temporary-inboxes-la'] = "/spam\.la/i";
 
 
 $uablacklist['grawp1'] = '/Mozilla\/4\.0 \(compatible; MSIE 7\.0; Windows NT 6\.0; SLCC1; \.NET CLR 2\.0\.50727; \.NET CLR 3\.0\.04506; InfoPath\.2; \.NET CLR 3\.5\.21022\)/';
