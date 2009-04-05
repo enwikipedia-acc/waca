@@ -122,6 +122,6 @@ $created = 0;
 $toosimilar = 0;
 
 
-
+echo "</table>";
 echo showfooter();
 ?>
