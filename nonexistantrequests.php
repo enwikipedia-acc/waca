@@ -16,6 +16,10 @@ AND ( acc_log.log_action = "Closed 1"
       OR acc_log.log_action = "Closed 3" )
 ;
 
+select count(*) as logs, p.pend_name 
+from acc_log l 
+inner join acc_pend p on p.pend_id = l.log_pend 
+where l.log_action = "Closed 3" or l.log_action = "Closed 1" group by l.log_pend having logs > 1 order by logs asc;
 
 api.php?action=query&list=users&ususers=Stwalkerster|Stwalkersock2&usprop=groups|editcount&format=php
 
