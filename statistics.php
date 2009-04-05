@@ -49,10 +49,11 @@ echo '<div id="content">
 	<li><a href="users.php">User List</a></li>
 	<li><a href="oldusers.php">Inactive User Accounts</a></li>
 	<li><a href="flaggedusers.php">Flagged User Accounts</a></li>
-	<li><a href="nonexistantrequests.php">Erroneous requests</a></li>
+	<!--<li><a href="nonexistantrequests.php">Erroneous requests</a></li>-->
 	<li><a href="topcreators.php">Top Account Creators</a></li>
 	<li><a href="reservedrequests.php">All currently-reserved requests</a></li>
 	<li><a href="welcome-q.php">SQLBot-Hello welcome job queue length</a></li>
+	<li><a href="monthlyStats.php">Monthly Statistics <small>inspired by Paxse</small></a></li>
 </ul><h3>Statistics</h3><table>';
 
 
