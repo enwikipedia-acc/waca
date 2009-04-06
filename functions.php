@@ -427,8 +427,10 @@ function listrequests($type, $hideip) {
 
 		if ( $row4['user_secure'] > 0 ) {
 			$wikipediaurl = "https://secure.wikimedia.org/wikipedia/en/";
+			$metaurl = "https://secure.wikimedia.org/wikipedia/meta/";
 		} else {
 			$wikipediaurl = "http://en.wikipedia.org/";
+			$metaurl = "http://meta.wikimedia.org/";
 		}
 		
             
@@ -454,6 +456,14 @@ function listrequests($type, $hideip) {
 		
 		// rangeblocks
 		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3ABlockList&ip=';
+		$out .= $row['pend_ip'] . '" target="_blank">r</a> ';
+		
+		// Global blocks
+		$out .= '<a class="request-src" href="'.$metaurl.'w/index.php?title=Special:Log&amp;type=gblblock&amp;page=User:';
+		$out .= $row['pend_ip'] . '" target="_blank">gb</a> ';
+		
+		// Global range blocks/Locally disabled Global Blocks
+		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3AGlobalBlockList&ip=';
 		$out .= $row['pend_ip'] . '" target="_blank">r</a> ';
 
 		// IP whois
