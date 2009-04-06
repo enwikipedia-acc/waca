@@ -464,7 +464,7 @@ function listrequests($type, $hideip) {
 		
 		// Global range blocks/Locally disabled Global Blocks
 		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3AGlobalBlockList&ip=';
-		$out .= $row['pend_ip'] . '" target="_blank">r</a> ';
+		$out .= $row['pend_ip'] . '" target="_blank">gr</a> ';
 
 		// IP whois
 		$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">w</a></small></td><td><small> ] ';
