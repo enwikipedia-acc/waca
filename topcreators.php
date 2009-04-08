@@ -28,8 +28,9 @@ readOnlyMessage();
 session_start();
 
 // retrieve database connections
-global $tsSQLlink, $asSQLlink;
+global $tsSQLlink, $asSQLlink, $toolserver_database;
 list($tsSQLlink, $asSQLlink) = getDBconnections();
+@ mysql_select_db($toolserver_database, $tsSQLlink);
 
 if( isset( $_SESSION['user'] ) ) {
 	$sessionuser = $_SESSION['user'];
