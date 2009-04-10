@@ -28,7 +28,5 @@ $qb = new QueryBrowser();
 
 echo $qb->executeQueryToTable("SELECT COUNT(DISTINCT log_id) AS 'Requests Closed', YEAR(log_time) AS 'Year', MONTHNAME(log_time) AS 'Month' FROM acc_log WHERE log_action LIKE 'Closed%' GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;");
 
-echo '</div>';
-
-showfooter();
+echo showfooter();
 ?>
