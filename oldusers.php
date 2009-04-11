@@ -29,6 +29,8 @@ require_once ( 'devlist.php' );
 // check to see if the database is unavailable
 readOnlyMessage();
 
+session_start();
+
 // retrieve database connections
 global $tsSQLlink, $asSQLlink, $toolserver_database;
 list($tsSQLlink, $asSQLlink) = getDBconnections();
@@ -57,7 +59,7 @@ echo '<h2>Old user accounts</h2>This list contains the usernames of all accounts
 
 echo "<table><tr><th>User ID</th><th>Tool Username</th><th>User access level</th><th>enwiki username</th><th>Last activity</th><th>Approval</th>";
 if(hasright($_SESSION['user'], "Admin")) {
-echo "<th>Suspend</th>";
+	echo "<th>Suspend</th>";
 }
 echo "</tr>";
 $currentrow = 0;
@@ -88,8 +90,8 @@ while ($r = mysql_fetch_assoc($result)) {
 			}	
 			echo "<th>$userid</th><td>$tooluser</td><td>".$r['toolaccesslevel']."</td><td>".$r['enwikiuser']."</td><td>".$r['lasttoollogon']."</td><td>".$approved."</td>";
 			if(hasright($_SESSION['user'], "Admin")) {
-			$inactivesuspend = "Inactive for 45+ days. Please contact a tool admin if you wish to come back.";
-			echo "<td><a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;suspend=$userid&amp;preload=$inactivesuspend\"></td>";
+				$inactivesuspend = "Inactive for 45+ days. Please contact a tool admin if you wish to come back.";
+				echo "<td><a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;suspend=$userid&amp;preload=$inactivesuspend\"></td>";
 			}
 			echo "</tr>";
 		}
