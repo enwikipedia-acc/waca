@@ -3,10 +3,12 @@
 class QueryBrowser
 {
 	
+	var $numberedList = false;
+	var $numberedListTitle = "#";
+	
 	public function executeQueryToTable($query)
 	{
 		$out = "";
-		
 
 		
 		global $tsSQLlink,$asSQLlink ,$toolserver_database;
@@ -18,6 +20,10 @@ class QueryBrowser
 	
 		$out.= '<table cellspacing="0"><tr>';
 
+		if($this->numberedList == true)
+		{
+			$out.="<th>" . $this->numberedListTitle . "</th>";
+		}
 
 		for ($i = 0; $i < mysql_num_fields($results) ; $i++)
 		{
@@ -41,6 +47,10 @@ class QueryBrowser
 				$out.=  '>';
 			}
 
+			if($this->numberedList == true)
+			{
+				$out.="<th>" . $currentreq . "</th>";
+			}
 			
 			
 			foreach ($row as $cell) {

@@ -41,172 +41,44 @@ if( isset( $_SESSION['user'] ) ) {
 if( !(hasright($sessionuser, "Admin") || hasright($sessionuser, "User")))
 	die("You are not authorized to use this feature. Only logged in users may use this statistics page.");
 
-
+$qb = new QueryBrowser();
+$qb->numberedList = true;
+$qb->numberedListTitle = "Postition";
+	
 /*
  * Retrieve all-time stats
  */
 
-$topqa = "select log_user,count(*) from acc_log where log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
-$result = mysql_query($topqa, $tsSQLlink);
-if (!$result)
-	Die("ERROR: No result returned.6");
-$top5a = array ();
-while ($topa = mysql_fetch_assoc($result)) {
-	array_push($top5a, $topa);
-}
-$top5aout = "<h2>All time top account creators</h2>";
-$top5aout .= "<table cellspacing=\"0\"><tr><th>Position</th><th># Created</th><th>Username</th></tr>";
-$currentreq = 0;
-foreach ($top5a as $top1a) {
-	$currentreq+=1;
-	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$top1a['log_user']."\";";
-	$userr = mysql_query($userq, $tsSQLlink);
-	$user = mysql_fetch_assoc($userr);
+$top5aout = $qb->executeQueryToTable('SELECT COUNT(*) AS "# Created", CONCAT("<a href=\"'.$tsurl.'/users.php?viewuser=" , `user_id`, "\">",`log_user`,"</a>") AS "Username" FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE `log_action` = "Closed 1" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
 	
-	$top5aout .= "<tr";
-	if ($currentreq % 2 == 0) {
-		$top5aout .= ' class="alternate">';
-	} else {
-		$top5aout .= '>';
-	}
-	$top5aout .= "<th>$currentreq.</th><td>".$top1a['count(*)']."</td><td><a href=\"users.php?viewuser=".$user['user_id']."\">".$top1a['log_user'] . "</a></td></tr>";
-}
-$top5aout .= "</table>";
-
 /*
  * Retrieve today's stats (so far)
  */
+
 $now = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d")));
-
-$topq = "select log_user,count(*) from acc_log where log_time like '$now%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
-$result = mysql_query($topq, $tsSQLlink);
-if (!$result)
-	Die("ERROR: No result returned.6");
-$top5 = array ();
-while ($top = mysql_fetch_assoc($result)) {
-	array_push($top5, $top);
-}
-
-//Get today's top 5
-$top5out = "<a name=\"today\"></a><h2>Today's account creators</h2>";
-$top5out .= "<table cellspacing=\"0\"><tr><th>Position</th><th># Created</th><th>Username</th></tr>";
-$currentreq=0;
-foreach ($top5 as $top1) {
-	$currentreq +=1;
-	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$top1['log_user']."\";";
-	$userr = mysql_query($userq, $tsSQLlink);
-	$user = mysql_fetch_assoc($userr);
-		$top5out .= "<tr";
-	if ($currentreq % 2 == 0) {
-		$top5out .= ' class="alternate">';
-	} else {
-		$top5out .= '>';
-	}
-	$top5out .= "<th>$currentreq.</th><td>".$top1['count(*)']."</td><td><a href=\"users.php?viewuser=".$user['user_id']."\">".$top1['log_user'] . "</a></td></tr>";
-}
-$top5out .= "</table>";
+$top5out = $qb->executeQueryToTable('SELECT COUNT(*) AS "# Created", CONCAT("<a href=\"/users.php?viewuser=" , `user_id`, "\">",`log_user`,"</a>") AS "Username" FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE `log_action` = "Closed 1" AND `log_time` LIKE "'.$now.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
 
 /*
  * Retrieve Yesterday's stats
  */
 
-
 $yesterday = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 1));
-
-$topyq = "select log_user,count(*) from acc_log where log_time like '$yesterday%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
-$result = mysql_query($topyq, $tsSQLlink);
-if (!$result)
-	Die("ERROR: No result returned.");
-$top5y = array ();
-while ($topy = mysql_fetch_assoc($result)) {
-	array_push($top5y, $topy);
-}
-
-$top5yout = "<a name=\"yesterday\"></a><h2>Yesterday's account creators</h2>";
-$top5yout .= "<table cellspacing=\"0\"><tr><th>Position</th><th># Created</th><th>Username</th></tr>";
-$currentreq=0;
-foreach ($top5y as $topy1) {
-	$currentreq +=1; 
-	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$topy1['log_user']."\";";
-	$userr = mysql_query($userq, $tsSQLlink);
-	$user = mysql_fetch_assoc($userr);
-	$top5yout .= "<tr";
-	if ($currentreq % 2 == 0) {
-		$top5yout .= ' class="alternate">';
-	} else {
-		$top5yout .= '>';
-	}
-	$top5yout .= "<th>$currentreq.</th><td>".$topy1['count(*)']."</td><td><a href=\"users.php?viewuser=".$user['user_id']."\">".$topy1['log_user'] . "</a></td></tr>";
-}
-$top5yout .= "</table>";
+$top5yout = $qb->executeQueryToTable('SELECT COUNT(*) AS "# Created", CONCAT("<a href=\"/users.php?viewuser=" , `user_id`, "\">",`log_user`,"</a>") AS "Username" FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE `log_action` = "Closed 1" AND `log_time` LIKE "'.$yesterday.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
 
 /*
  *  Retrieve last 7 days
  */
 
-
 $lastweek = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 7));
-
-$topwq = "select log_user,count(*) from acc_log where log_time > '$lastweek%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
-$result = mysql_query($topwq, $tsSQLlink);
-if (!$result)
-	Die("ERROR: No result returned.");
-$top5w = array ();
-while ($topw = mysql_fetch_assoc($result)) {
-	array_push($top5w, $topw);
-}
-
-$top5wout = "<a name=\"lastweek\"></a><h2>Last 7 days' account creators</h2>";
-$top5wout .= "<table cellspacing=\"0\"><tr><th>Position</th><th># Created</th><th>Username</th></tr>";
-$currentreq=0;
-foreach ($top5w as $topw1) {
-	$currentreq +=1;
-	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$topw1['log_user']."\";";
-	$userr = mysql_query($userq, $tsSQLlink);
-	$user = mysql_fetch_assoc($userr);
-	$top5wout .= "<tr";
-	if ($currentreq % 2 == 0) {
-		$top5wout .= ' class="alternate">';
-	} else {
-		$top5wout .= '>';
-	}
-	$top5wout .= "<th>$currentreq.</th><td>".$topw1['count(*)']."</td><td><a href=\"users.php?viewuser=".$user['user_id']."\">".$topw1['log_user'] . "</a></td></tr>";
-}
-$top5wout .= "</table>"; 
+$top5wout = $qb->executeQueryToTable('SELECT COUNT(*) AS "# Created", CONCAT("<a href=\"/users.php?viewuser=" , `user_id`, "\">",`log_user`,"</a>") AS "Username" FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE `log_action` = "Closed 1" AND `log_time` LIKE "'.$lastweek.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
+ 
 
 /*
  * Retrieve last month's stats
  */
 
 $lastmonth = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 28));
-
-$topmq = "select log_user,count(*) from acc_log where log_time > '$lastmonth%' and log_action = 'Closed 1' group by log_user ORDER BY count(*) DESC;";
-$result = mysql_query($topmq, $tsSQLlink);
-if (!$result)
-	Die("ERROR: No result returned.");
-$top5m = array ();
-while ($topm = mysql_fetch_assoc($result)) {
-	array_push($top5m, $topm);
-}
-
-$top5mout = "<a name=\"lastmonth\" ></a><h2>Last 28 days' account creators</h2>";
-$top5mout .= "<table cellspacing=\"0\"><tr><th>Position</th><th># Created</th><th>Username</th></tr>";
-$currentreq=0;
-foreach ($top5m as $topm1) {
-	$currentreq +=1;
-	$userq = "SELECT user_id FROM acc_user WHERE user_name = \"".$topm1['log_user']."\";";
-	$userr = mysql_query($userq, $tsSQLlink);
-	$user = mysql_fetch_assoc($userr);
-	$top5mout .= "<tr";
-	if ($currentreq % 2 == 0) {
-		$top5mout .= ' class="alternate">';
-	} else {
-		$top5mout .= '>';
-	}
-	$top5mout .= "<th>$currentreq.</th><td>".$topm1['count(*)']."</td><td><a href=\"users.php?viewuser=".$user['user_id']."\">".$topm1['log_user'] . "</a></td></tr>";
-}
-$top5mout .= "</table>"; 
-
+$top5mout = $qb->executeQueryToTable('SELECT COUNT(*) AS "# Created", CONCAT("<a href=\"/users.php?viewuser=" , `user_id`, "\">",`log_user`,"</a>") AS "Username" FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE `log_action` = "Closed 1" AND `log_time` LIKE "'.$lastmonth.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
 
 /*
  *  Output
@@ -216,11 +88,14 @@ echo makehead( $sessionuser );
 echo '<div id="content">';
 echo "<h2>Contents</h2><ul><li><a href=\"#today\">Today's creators</a></li><li><a href=\"#yesterday\">Yesterday's creators</a></li><li><a href=\"#lastweek\">Last 7 days</a></li><li><a href=\"#lastmonth\">Last 28 days</a></li></ul>";
 
-
 echo $top5aout;
+echo '<a name="today"></a><h3>Today\'s creators</h3>';
 echo $top5out;
+echo '<a name="yesterday"></a><h3>Yesterday\'s creators</h3>';
 echo $top5yout;
+echo '<a name="lastweek"></a><h3>Last 7 days</h3>';
 echo $top5wout;
+echo '<a name="lastmonth"></a><h3>Last 28 days</h3>';
 echo $top5mout;
 echo showfooter();
 ?>
