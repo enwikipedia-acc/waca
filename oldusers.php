@@ -91,7 +91,7 @@ while ($r = mysql_fetch_assoc($result)) {
 			echo "<th>$userid</th><td>$tooluser</td><td>".$r['toolaccesslevel']."</td><td>".$r['enwikiuser']."</td><td>".$r['lasttoollogon']."</td><td>".$approved."</td>";
 			if(hasright($_SESSION['user'], "Admin")) {
 				$inactivesuspend = "Inactive for 45+ days. Please contact a tool admin if you wish to come back.";
-				echo "<td><a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;suspend=$userid&amp;preload=$inactivesuspend\"></td>";
+				echo "<td><a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;suspend=$userid&amp;preload=$inactivesuspend\">Suspend!</a></td>";
 			}
 			echo "</tr>";
 		}
