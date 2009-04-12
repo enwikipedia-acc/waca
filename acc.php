@@ -1796,7 +1796,22 @@ elseif ($action == "reserve") {
 		//check request is not reserved
 		$reservedBy = isReserved($request);
 		if( $reservedBy != 0 )
+		{
 			Die("Request already reserved by ".getUsernameFromUid($reservedBy));
+		}	
+		
+		// is the request closed?
+		if(! isset($_GET['confclosed']) )
+		{
+			$query = "select pend_status from acc_pend where pend_id = '".$request."';";
+			$result = mysql_query($query,$tsSQLlink);
+			$row = mysql_fetch_assoc($result);
+			if($row['pend_status']=="Closed")
+			{
+				Die('This request is currently closed. Are you sure you wish to reserve it?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confclosed=yes">Yes, reserve this closed request</a></li><li><a href="acc.php">No, return to main request interface</a></li></ul>');			
+			}
+		}	
+		
 		//no, lets reserve the request
 		$query = "UPDATE `acc_pend` SET `pend_reserved` = '".$_SESSION['userID']."' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
 		$result = mysql_query($query, $tsSQLlink);
