@@ -260,6 +260,7 @@ elseif ($action == "register") {
 						<option value="laquatique">{{subst:User:L'Aquatique/welcome}} ~~~~</option>
 						<option value="matt-t">{{subst:User:Matt.T/C}} ~~~~</option>
 						<option value="roux">{{subst:User:Roux/W}} ~~~~</option>
+						<option value="roux">{{subst:User:Staffwaterboy/Welcome}} ~~~~</option>
 					</select>
 				</td>
             </tr>

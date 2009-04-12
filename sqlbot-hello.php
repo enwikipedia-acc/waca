@@ -179,6 +179,9 @@ while ($row = mysql_fetch_assoc($result)) {
 	if ($template == "roux") {
 		tagpage($user, "{{subst:User:Roux/W}} $sig ~~~~~");
 	}
+	if ($template == "staffwaterboy") {
+		tagpage($user, "{{subst:User:Staffwaterboy/Welcome}} $sig ~~~~~");
+	}
 	$query2 = "UPDATE acc_welcome SET welcome_status = 'Closed' WHERE welcome_id = '" . $row['welcome_id'] . "';";
 	$result2 = mysql_query($query2);
 	if (!$result)
