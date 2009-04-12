@@ -40,26 +40,11 @@ if( isset( $_SESSION['user'] ) ) {
 if( !(hasright($sessionuser, "Admin") || hasright($sessionuser, "User")))
 	die("You are not authorized to use this feature. Only logged in users may use this statistics page.");
 
-echo makehead( $sessionuser );
+echo makehead( $sessionuser ) . '<div id="content"><h2>All currently reserved requests</h2>';
 
-$query = "select pend_id, pend_name, pend_status, user_name from acc_pend inner join acc_user on user_id = pend_reserved where pend_reserved != 0;";
-$result = mysql_query($query, $tsSQLlink);
-if(!$result) die();
+$qb = new QueryBrowser();
+echo $qb->executeQueryToTable("SELECT p.`pend_id` AS '#', p.`pend_name` AS 'Requested Name', p.`pend_status` AS 'Status', u.`user_name` AS 'Reserved by' FROM `acc_pend` p INNER JOIN `acc_user` u on u.`user_id` = p.`pend_reserved` WHERE `pend_reserved` != 0;");
 
-echo "<div id=\"content\"><h2>Requests currently reserved by a user</h2><table cellspacing=\"0\"><tr><th>#</th><th>Requested name</th><th>Status of request</th><th>Reserved by</th></tr>";
-$currentreq=0;
-while($row = mysql_fetch_assoc($result)) {
-	$currentreq +=1;
-
-	echo "<tr";
-	if ($currentreq % 2 == 0) {
-		echo ' class="alternate">';
-	} else {
-		echo '>';
-	}
-	echo "<th><a href=\"acc.php?action=zoom&id=".$row['pend_id']."\">".$row['pend_id']."</a></th><td>".$row['pend_name']."</td><td>".$row['pend_status']."</td><td>".$row['user_name']."</td></tr>";
-}
-echo "</table>"; 
 echo showfooter();
 
 ?>
