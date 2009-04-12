@@ -43,7 +43,7 @@ if( !(hasright($sessionuser, "Admin") || hasright($sessionuser, "User")))
 echo makehead( $sessionuser ) . '<div id="content"><h2>All currently reserved requests</h2>';
 
 $qb = new QueryBrowser();
-echo $qb->executeQueryToTable("SELECT p.`pend_id` AS '#', p.`pend_name` AS 'Requested Name', p.`pend_status` AS 'Status', u.`user_name` AS 'Reserved by' FROM `acc_pend` p INNER JOIN `acc_user` u on u.`user_id` = p.`pend_reserved` WHERE `pend_reserved` != 0;");
+echo $qb->executeQueryToTable('SELECT CONCAT("<a href=\"'.$tsurl.'/acc.php?action=zoom&id=", p.`pend_id`, "\">",p.`pend_id`,"</a>") AS "#", p.`pend_name` AS "Requested Name", p.`pend_status` AS "Status", u.`user_name` AS "Reserved by" FROM `acc_pend` p INNER JOIN `acc_user` u on u.`user_id` = p.`pend_reserved` WHERE `pend_reserved` != 0;');
 
 echo showfooter();
 
