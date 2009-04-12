@@ -24,12 +24,12 @@ list($tsSQLlink, $asSQLlink) = getDBconnections();
 
 $query = 'select g.ug_user, n.user_name from user_groups g inner join user_ids n on g.ug_user=n.user_id where ug_group = "accountcreator";';
 $results = mysql_query($query,$asSQLlink) or die();
-echo "<h2>List of users on enwiki with accountcreator flag not on tool</h2><table cellspacing=\"0\">";
+echo "<h2>Enwiki accountcreators without tool access</h2><table cellspacing=\"0\">";
 echo "<tr><th>en.wiki User ID</th><th>en.wiki Username</th><th /><th /><th /></tr>";//<th>acc. User ID</th><th>acc. Username</th><th>acc. Access level</th></tr>";
 $currentreq = 0;
 while($row = mysql_fetch_assoc($results))
 {
-	$query='SELECT user_id, user_name, user_level FROM `acc_user` WHERE user_onwikiname = "'.$row['user_name'].'" LIMIT 1;';
+	$query='SELECT user_id, user_name, user_level FROM `acc_user` WHERE user_onwikiname = "'.$row['user_name'].'" AND (`user_level` = "Admin" OR `user_level` = "User") LIMIT 1;';
 	$accresult = mysql_query($query, $tsSQLlink);
 	if($accresult){
 		$accrow = mysql_fetch_assoc($accresult);
