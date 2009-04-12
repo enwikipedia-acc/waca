@@ -257,10 +257,10 @@ elseif ($action == "register") {
 						<option value="wodup">{{User:WODUP/Welcome}} ~~~~</option>
 						<option value="williamh">{{User:WilliamH/Welcome|user}} ~~~~</option>
 						<option value="malinaccier">{{User:Malinaccier/Welcome|~~~~}}</option>
-						<option value="laquatique">{{subst:User:L'Aquatique/welcome}} ~~~~</option>
-						<option value="matt-t">{{subst:User:Matt.T/C}} ~~~~</option>
-						<option value="roux">{{subst:User:Roux/W}} ~~~~</option>
-						<option value="staffwaterboy">{{subst:User:Staffwaterboy/Welcome}} ~~~~</option>
+						<option value="laquatique">{{User:L'Aquatique/welcome}} ~~~~</option>
+						<option value="matt-t">{{User:Matt.T/C}} ~~~~</option>
+						<option value="roux">{{User:Roux/W}} ~~~~</option>
+						<option value="staffwaterboy">{{User:Staffwaterboy/Welcome}} ~~~~</option>
 					</select>
 				</td>
             </tr>
@@ -1318,10 +1318,11 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     <option value="williamh"<?php if($template == "williamh") { echo " selected=\"selected\""; } ?>>{{User:WilliamH/Welcome|user}} ~~~~</option>
     <option value="malinaccier"<?php if($template == "malinaccier") { echo " selected=\"selected\""; } ?>>{{User:Malinaccier/Welcome|~~~~}}</option>
     <option value="welcome!"<?php if($template == "welcome!") { echo " selected=\"selected\""; } ?>>{{Welcome!|from=User|ps=~~~~}}</option>
-    <option value="laquatique"<?php if($template == "laquatique") { echo " selected=\"selected\""; } ?>>{{subst:User:L'Aquatique/welcome}} ~~~~</option>
-    <option value="chetblong"<?php if($template == "chetblong") { echo " selected=\"selected\""; } ?>>{{subst:User:Chet B Long/welcome|user|||~~~~}}</option>
-	<option value="matt-t"<?php if($template == "matt-t") { echo " selected=\"selected\""; } ?>>{{subst:User:User:Matt.T/C}} ~~~~</option>
-	<option value="roux"<?php if($template == "roux") { echo " selected=\"selected\""; } ?>>{{subst:User:Roux/W}} ~~~~</option>
+    <option value="laquatique"<?php if($template == "laquatique") { echo " selected=\"selected\""; } ?>>{{User:L'Aquatique/welcome}} ~~~~</option>
+    <option value="chetblong"<?php if($template == "chetblong") { echo " selected=\"selected\""; } ?>>{{User:Chet B Long/welcome|user|||~~~~}}</option>
+	<option value="matt-t"<?php if($template == "matt-t") { echo " selected=\"selected\""; } ?>>{{User:User:Matt.T/C}} ~~~~</option>
+	<option value="roux"<?php if($template == "roux") { echo " selected=\"selected\""; } ?>>{{User:Roux/W}} ~~~~</option>
+	<option value="staffwaterboy"<?php if($template == "staffwaterboy") { echo " selected=\"selected\""; } ?>>{{User:Staffwaterboy/Welcome}} ~~~~</option>
     </select><br /><?php
     echo '<i>If you\'d like more templates added, please <a href="https://jira.toolserver.org/browse/ACC">open a ticket</a>.</i><br />';
 
