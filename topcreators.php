@@ -89,13 +89,13 @@ echo '<div id="content">';
 echo "<h2>Contents</h2><ul><li><a href=\"#today\">Today's creators</a></li><li><a href=\"#yesterday\">Yesterday's creators</a></li><li><a href=\"#lastweek\">Last 7 days</a></li><li><a href=\"#lastmonth\">Last 28 days</a></li></ul>";
 
 echo $top5aout;
-echo '<a name="today"></a><h3>Today\'s creators</h3>';
+echo '<a name="today"></a><h2>Today\'s creators</h2>';
 echo $top5out;
-echo '<a name="yesterday"></a><h3>Yesterday\'s creators</h3>';
+echo '<a name="yesterday"></a><h2>Yesterday\'s creators</h2>';
 echo $top5yout;
-echo '<a name="lastweek"></a><h3>Last 7 days</h3>';
+echo '<a name="lastweek"></a><h2>Last 7 days</h2>';
 echo $top5wout;
-echo '<a name="lastmonth"></a><h3>Last 28 days</h3>';
+echo '<a name="lastmonth"></a><h2>Last 28 days</h2>';
 echo $top5mout;
 echo showfooter();
 ?>
