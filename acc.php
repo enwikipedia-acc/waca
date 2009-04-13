@@ -197,7 +197,7 @@ elseif ( $action == "sreg" ) {
 		echo "I'm sorry, but $wname already has an account here.<br />\n";
 		$fail = 1;
 	}
-	if ($fail != 1) {
+	if (!isset($fail) || $fail != 1) {
 		if ($secureenable == "1") {
 			$secure= 1;
 		} else {
