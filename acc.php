@@ -1410,7 +1410,6 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			$sig = "[[User:$sid|$sid]] ([[User_talk:$sid|talk]])";
 		}
 		$template = $row['user_welcome_template'];
-		$sig = sanitize($sig);
 		if (!isset($template)) {
 			$template = "welcome";
 		}
