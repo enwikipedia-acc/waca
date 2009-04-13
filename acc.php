@@ -1434,6 +1434,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		if (!isset($template)) {
 			$template = "welcome";
 		}
+		$sig = sanitize($sig);
 		$query = "INSERT INTO acc_welcome (welcome_uid, welcome_user, welcome_sig, welcome_status, welcome_pend, welcome_template) VALUES ('$sid', '$gus', '$sig', 'Open', '$gid', '$template');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
