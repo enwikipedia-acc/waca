@@ -517,9 +517,15 @@ function listrequests($type, $hideip) {
 		elseif ($type == 'Admin') {
 			$target = 'users';
 		}
-		if ($target == 'admins' || $target == 'users') {
-			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target\">Defer to $target" . "</a>";
-		} else {
+		if ($target == 'admins')
+		{
+			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target\">Defer to flagged users</a>";
+		}
+		elseif($target == 'users') {
+			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target\">Defer to users</a>";
+		} 
+		else 
+		{
 			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=users\">Reset Request</a>";
 		}
 		// Drop
