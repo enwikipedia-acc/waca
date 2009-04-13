@@ -75,7 +75,14 @@ if ( $action == '' ) {
 	echo defaultpage( );
 }
 elseif ( $action == "sreg" ) {
-	$suser = sanitize( $_SESSION['user'] );
+	if(isset($_SESSION['user']))
+	{
+		$suser = sanitize( $_SESSION['user'] );
+	}
+	else
+	{
+		$suser = '';
+	}
 	foreach ( $acrnamebl as $wnbl => $nbl ) {
 		$phail_test = @ preg_match( $nbl, $_POST['name'] );
 		if ( $phail_test == TRUE ) {
@@ -128,14 +135,28 @@ elseif ( $action == "sreg" ) {
 	$email = mysql_real_escape_string($_REQUEST['email']);
 	$sig = mysql_real_escape_string($_REQUEST['sig']);
 	$template = mysql_real_escape_string($_REQUEST['template']);
-	$secureenable = mysql_real_escape_string($_REQUEST['secureenable']);
-	$welcomeenable = mysql_real_escape_string($_REQUEST['welcomeenable']);
+	if(isset($_REQUEST['secureenable']))
+	{
+		$secureenable = mysql_real_escape_string($_REQUEST['secureenable']);
+	}
+	else
+	{
+		$secureenable = false;
+	}
+	if(isset($_REQUEST['welcomeenable']))
+	{
+		$welcomeenable = mysql_real_escape_string($_REQUEST['welcomeenable']);	
+	}
+	else
+	{
+		$welcomeenable=false;
+	}
 	if ( !isset($user) || !isset($wname) || !isset($pass) || !isset($pass2) || !isset($email) || strlen($email) < 6) {
 		echo "<h2>ERROR!</h2>Form data may not be blank.<br />\n";
 		echo showfooter();
 		die();
 	}
-	if ($_POST['debug'] == "on") {
+	if (isset($_POST['debug']) && $_POST['debug'] == "on") {
 		echo "<pre>\n";
 		print_r($_REQUEST);
 		echo "</pre>\n";
