@@ -6,16 +6,23 @@ class QueryBrowser
 	var $numberedList = false;
 	var $numberedListTitle = "#";
 	
-	public function executeQueryToTable($query)
+	public function executeQuery($query)
 	{
-		$out = "";
-
-		
 		global $tsSQLlink,$asSQLlink ,$toolserver_database;
 		list($tsSQLlink, $asSQLlink) = getDBconnections();
 		@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting TS database.");
 
 		$results = mysql_query($query,$tsSQLlink) or sqlerror(mysql_error(),"Ooops in QueryBrowser");
+	
+		return $results;
+	}
+	
+	public function executeQueryToTable($query)
+	{
+		$out = "";
+
+		
+		$results = $this->executeQuery($query);
 
 	
 		$out.= '<table cellspacing="0"><tr>';
@@ -69,6 +76,20 @@ class QueryBrowser
 		
 
 		return $out;
+	}
+	
+	public function executeQueryToArray($query)
+	{
+		$resultset = $this->executeQuery($query);
+		
+		$results = array();
+		
+		while($row = mysql_fetch_assoc($resultset))
+		{
+			$results[] = $row;
+		}
+		
+		return $results;
 	}
 	
 }

@@ -1,6 +1,7 @@
 <?php
 require_once('config.inc.php');
 require_once('functions.php');
+require_once('libchart/classes/libchart.php');
 
 readOnlyMessage();
 
@@ -26,7 +27,26 @@ echo makehead( $sessionuser ) . '<div id="content"><h2>Requests Closed per Month
 
 $qb = new QueryBrowser();
 
-echo $qb->executeQueryToTable("SELECT COUNT(DISTINCT log_id) AS 'Requests Closed', YEAR(log_time) AS 'Year', MONTHNAME(log_time) AS 'Month' FROM acc_log WHERE log_action LIKE 'Closed%' GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;");
+$query = "SELECT COUNT(DISTINCT log_id) AS 'Requests Closed', YEAR(log_time) AS 'Year', MONTHNAME(log_time) AS 'Month' FROM acc_log WHERE log_action LIKE 'Closed%' GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;";
+
+echo $qb->executeQueryToTable($query);
+
+$gquery = "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), ' ' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed%' GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;";
+
+// draw the graph
+$chart = new LineChart(500, 250);
+$series = new XYDataSet();
+foreach($qb->executeQueryToArray($gquery) as $row)
+{
+	$series->addPoint(new Point($row['x'], $row['y']));
+}
+
+$chart->setDataSet($series);
+
+$chart->setTitle("Monthly Closed Requests");
+$chart->render('render/'.$_SERVER['REQUEST_TIME']);
+
+echo '<img src="render/'.$_SERVER['REQUEST_TIME'].'" />';
 
 echo showfooter();
 ?>
