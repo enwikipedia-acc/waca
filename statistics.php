@@ -54,6 +54,7 @@ echo '<div id="content">
 	<li><a href="reservedrequests.php">All currently-reserved requests</a></li>
 	<li><a href="welcome-q.php">SQLBot-Hello welcome job queue length</a></li>
 	<li><a href="monthlyStats.php">Monthly Statistics <small>inspired by Paxse</small></a></li>
+	<li><a href="popularEmailProviders.php">Most Popular Email Providers</a></li>
 </ul><h3>Statistics</h3><table>';
 
 
