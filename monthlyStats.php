@@ -31,22 +31,29 @@ $query = "SELECT COUNT(DISTINCT log_id) AS 'Requests Closed', YEAR(log_time) AS 
 
 echo $qb->executeQueryToTable($query);
 
-$gquery = "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), ' ' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed%' GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;";
-
-// draw the graph
-$chart = new LineChart(500, 250);
-$series = new XYDataSet();
-foreach($qb->executeQueryToArray($gquery) as $row)
+global $showGraphs;
+if($showGraphs == 1)
 {
-	$series->addPoint(new Point($row['x'], $row['y']));
+	$gquery = "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), ' ' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed%' GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;";
+
+	// draw the graph
+	$chart = new LineChart(500, 250);
+	$series = new XYDataSet();
+	foreach($qb->executeQueryToArray($gquery) as $row)
+	{
+		$series->addPoint(new Point($row['x'], $row['y']));
+	}
+
+	$chart->setDataSet($series);
+
+	$chart->setTitle("Monthly Closed Requests");
+	$chart->render('render/'.$_SERVER['REQUEST_TIME']);
+
+	echo '<img src="render/'.$_SERVER['REQUEST_TIME'].'" />';
 }
-
-$chart->setDataSet($series);
-
-$chart->setTitle("Monthly Closed Requests");
-$chart->render('render/'.$_SERVER['REQUEST_TIME']);
-
-echo '<img src="render/'.$_SERVER['REQUEST_TIME'].'" />';
-
+else
+{
+	echo "Graph drawing is currently disabled.";
+}
 echo showfooter();
 ?>

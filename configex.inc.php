@@ -50,15 +50,16 @@ if (file_exists("config.local.inc.php")) {
 	//a few options
 	$enableRenames = 1;
 	$enableEmailConfirm = 1;
-	$enableReserving = 0;
+	$enableReserving = 1;
 	$enableSQLError = 0;
 	$enableDnsblChecks = 1;
+	$showGraphs = 1;
 	
 	$dontUseDb = 0;
 	$dontUseWikiDb = 0;
 	$dontUseDbReason = ""; // if disabling the tool, please enter a reason here to be displayed internally.
 	$dontUseDbCulprit = ""; // "     "      "    "     "      "   your name, or the person who broke the tool's name.
-	
+		
 	//antispoof configuration
 	$antispoof_equivset = "equivset.php";
 	$antispoof_host = "sql-s1";
