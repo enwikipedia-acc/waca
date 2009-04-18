@@ -70,7 +70,7 @@ $top5yout = $qb->executeQueryToTable('SELECT COUNT(*) AS "# Created", CONCAT("<a
  */
 
 $lastweek = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 7));
-$top5wout = $qb->executeQueryToTable('SELECT COUNT(*) AS "# Created", CONCAT("<a href=\"/users.php?viewuser=" , `user_id`, "\">",`log_user`,"</a>") AS "Username" FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE `log_action` = "Closed 1" AND `log_time` LIKE "'.$lastweek.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
+$top5wout = $qb->executeQueryToTable('SELECT COUNT(*) AS "# Created", CONCAT("<a href=\"/users.php?viewuser=" , `user_id`, "\">",`log_user`,"</a>") AS "Username" FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE `log_action` = "Closed 1" AND `log_time` > "'.$lastweek.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
  
 
 /*
@@ -78,7 +78,7 @@ $top5wout = $qb->executeQueryToTable('SELECT COUNT(*) AS "# Created", CONCAT("<a
  */
 
 $lastmonth = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 28));
-$top5mout = $qb->executeQueryToTable('SELECT COUNT(*) AS "# Created", CONCAT("<a href=\"/users.php?viewuser=" , `user_id`, "\">",`log_user`,"</a>") AS "Username" FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE `log_action` = "Closed 1" AND `log_time` LIKE "'.$lastmonth.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
+$top5mout = $qb->executeQueryToTable('SELECT COUNT(*) AS "# Created", CONCAT("<a href=\"/users.php?viewuser=" , `user_id`, "\">",`log_user`,"</a>") AS "Username" FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE `log_action` = "Closed 1" AND `log_time` > "'.$lastmonth.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
 
 /*
  *  Output
