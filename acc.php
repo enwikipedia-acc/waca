@@ -1814,7 +1814,7 @@ elseif ($action == "logs") {
 elseif ($action == "reserve") {
 	global $enableReserving;
 	if( $enableReserving ) {
-		$request = sanitise($_GET['resrq']);
+		$request = sanitise($_GET['resid']);
 		
 		//check request is not reserved
 		$reservedBy = isReserved($request);
@@ -1847,7 +1847,7 @@ elseif ($action == "reserve") {
 elseif ($action == "breakreserve") {
 	global $enableReserving;
 	if( $enableReserving ) {
-		$request = sanitise($_GET['resrq']);
+		$request = sanitise($_GET['resid']);
 		
 		//check request is reserved
 		$reservedBy = isReserved($request);
