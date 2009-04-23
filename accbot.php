@@ -531,9 +531,11 @@
 		echo $errstr . ' (' . $errno . ")<br />\n";
 	}
 
+	global $ircBotNickServPassword;
+	irc( 'PASS ' . $ircBotNickServPassword);
 	irc( 'NICK ' . $nick );
 	irc( 'USER ' . $ident . ' "' . $host . '" "localhost" :' . $realname );
-	sleep( 1 );
+	sleep( 5 );
 	irc( 'JOIN ' . $chan );
 
 	if( ( $udpReader = pcntl_fork() ) == 0 ) {
