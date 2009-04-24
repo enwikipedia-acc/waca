@@ -34,8 +34,8 @@
 
 	// Variable declarations
 	$pidnum = 0; // Integer
-	$host = 'irc.freenode.org';
-	$port = 6667;
+	$host = 'kornbluth.freenode.net';
+	$port = 8001;
 	$nick = 'ACCBot';
 	$ident = 'ACCBot';
 	$chan = '#wikipedia-en-accounts';
