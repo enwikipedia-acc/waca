@@ -595,7 +595,7 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 		$duration = $duration +time();
 	}
 	$reason = sanitize($_POST['banreason']);
-	$siuser = sanitize($_POST['user']);
+	$siuser = sanitize($_GET['user']);
 	$target = sanitize($_POST['target']);
 	$type = sanitize($_POST['type']);
 	$now = date("Y-m-d H-i-s");
