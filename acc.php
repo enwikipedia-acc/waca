@@ -715,24 +715,24 @@ elseif ($action == "ban") {
 		} else {
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser&amp;target=$target&amp;type=$type\" method=\"post\">Ban target: $target\n<br /><table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr></table><br /><input type=\"submit\"></form>\n";
 		}
-	}
-	else {
-	echo "<h2>Active Ban List</h2>\n<ol>\n";
-	$query = "SELECT * FROM acc_ban;";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	while ($row = mysql_fetch_assoc($result)) {
-		if ( !isset($row['ban_duration']) || $row['ban_duration'] == "-1") {
-			$until = "Indefinite";
-		} else {
-			$until = date("F j, Y, g:i a", $row['ban_duration']);
+	} else {
+		echo "<h2>Active Ban List</h2>\n<ol>\n";
+		$query = "SELECT * FROM acc_ban;";
+		$result = mysql_query($query, $tsSQLlink);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		while ($row = mysql_fetch_assoc($result)) {
+			if ( !isset($row['ban_duration']) || $row['ban_duration'] == "-1") {
+				$until = "Indefinite";
+			} else {
+				$until = date("F j, Y, g:i a", $row['ban_duration']);
+			}
+			echo "<li><small><strong>" . $row['ban_target'] . "</strong> - Banned by: <strong>" . $row['ban_user'] . "</strong> for <strong>" . $row['ban_reason'] . "</strong> at <strong>" . $row['ban_date'] . "</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">UNBAN</a>)</small></li>";
 		}
-		echo "<li><small><strong>" . $row['ban_target'] . "</strong> - Banned by: <strong>" . $row['ban_user'] . "</strong> for <strong>" . $row['ban_reason'] . "</strong> at <strong>" . $row['ban_date'] . "</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">UNBAN</a>)</small></li>"; /*security flaw: HTML INJECTION POINT*/
-	}
-	echo "</ol>\n";
-	echo showfooter();
-	die();
+		echo "</ol>\n";
+		echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser&amp;target=$target&amp;type=$type\" method=\"post\">Ban target: $target\n<br /><table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr></table><br /><input type=\"submit\"></form>\n";
+		echo showfooter();
+		die();
 	}
 }
 elseif ($action == "usermgmt") {
