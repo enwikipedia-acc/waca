@@ -713,7 +713,7 @@ elseif ($action == "ban") {
 			echo showfooter();
 			die();
 		} else {
-			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\">Ban target: $target\n<br /><table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr></table><br /><input type=\"submit\"><input type=\"hidden\" name=\"target\" value=\"$target\" /><input type=\"hidden\" name=\"type\" value=\"type\" /></form>\n";
+			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\">Ban target: $target\n<br /><table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr></table><br /><input type=\"submit\"><input type=\"hidden\" name=\"target\" value=\"$target\" /><input type=\"hidden\" name=\"type\" value=\"$type\" /></form>\n";
 		}
 	} else {
 		echo "<h2>Active Ban List</h2>\n<ol>\n";
