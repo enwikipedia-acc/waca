@@ -253,7 +253,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$email = mysql_real_escape_string($email);
 	
 	//Delete old bans
-	mysql_query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP()', $tsSQLlink);
+	mysql_query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP() AND ban_duration != -1', $tsSQLlink);
 
 	//Check for bans
 	$query = "SELECT * FROM acc_ban WHERE ban_type = 'IP' AND ban_target = '$ip'";
