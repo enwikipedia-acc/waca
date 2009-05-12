@@ -153,7 +153,7 @@
 
 	function irc( $data ) {
 		global $fp;
-
+		echo $data . "\n";
 		fwrite( $fp, $data . "\r\n" );
 	}
 
