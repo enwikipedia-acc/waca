@@ -118,69 +118,52 @@ while ($row = mysql_fetch_assoc($result)) {
 	$template = $row['welcome_template'];
 	if ($template == "welcomeg") {
 		tagpage($user, "{{subst:User:SQLBot-Hello/Welcomeg|sig=$sig ~~~~~}}");
-	}
-	if ($template == "welcome") {
+	} else if ($template == "welcome") {
 		tagpage($user, "{{subst:Welcome|$sid}}$sig ~~~~~");
-	}
-	if ($template == "welcome-personal") {
+	} else if ($template == "welcome-personal") {
 		tagpage($user, "{{subst:Welcome-personal|$sid}}$sig ~~~~~");
-	}
-	if ($template == "werdan7") {
+	} else if ($template == "werdan7") {
 		tagpage($user, "{{subst:User:Werdan7/Wel}}$sig ~~~~~");
-	}
-	if ($template == "welcomemenu") {
+	} else if ($template == "welcomemenu") {
 		tagpage($user, "{{subst:User:SQL/ACC/WelcomeMenu|sig=$sig ~~~~~}}");
-	}
-	if ($template == "welcomeicon") {
+	} else if ($template == "welcomeicon") {
 		tagpage($user, "{{subst:WelcomeIcon}} $sig ~~~~~");
-	}
-	if ($template == "welcomeshout") {
+	} else if ($template == "welcomeshout") {
 		tagpage($user, "{{subst:WelcomeShout|$sid}} $sig ~~~~~");
-	}
-	if ($template == "welcomeshort") {
+	} else if ($template == "welcomeshort") {
 		tagpage($user, "{{subst:Welcomeshort|$sid}} $sig ~~~~~");
-	}
-	if ($template == "welcomesmall") {
+	} else if ($template == "welcomesmall") {
 		tagpage($user, "{{subst:Welcomesmall|$sid}} $sig ~~~~~");
-	}
-	if ($template == "hopes") {
+	} else if ($template == "hopes") {
 		tagpage($user, "{{subst:Hopes Welcome}} $sig ~~~~~");
-	}
-	if ($template == "w-riana") {
+	} else if ($template == "w-riana") {
 		tagpage($user, "{{subst:User:Riana/Welcome|name=$sid|sig=$sig ~~~~~}}");
-	}
-	if ($template == "wodup") {
+	} else if ($template == "wodup") {
 		tagpage($user, "{{subst:User:WODUP/Welcome}} $sig ~~~~~");
-	}
-	if ($template == "w-kk") {
+	} else if ($template == "w-kk") {
 		tagpage($user, "{{subst:User:KrakatoaKatie/Welcome1}} $sig ~~~~~");
-	}
-	if ($template == "w-screen") {
+	} else if ($template == "w-screen") {
 		tagpage($user, "{{subst:w-screen|sig=$sig ~~~~~}}");
-	}
-	if ($template == "williamh") {
+	} else if ($template == "williamh") {
 		tagpage($user, "{{subst:User:WilliamH/Welcome|$sid}} $sig ~~~~~");
-	}
-	if ($template == "malinaccier") {
+	} else if ($template == "malinaccier") {
 		tagpage($user, "{{subst:User:Malinaccier/Welcome|$sig ~~~~~}}");
-	}
-	if ($template == "welcome!") {
+	} else if ($template == "welcome!") {
 		tagpage($user, "{{subst:Welcome!|from=$sid|ps=$sig ~~~~~}}");
-	}
-	if ($template == "laquatique") {
+	} else if ($template == "laquatique") {
 		tagpage($user, "{{subst:User:L'Aquatique/welcome}} $sig ~~~~~");
-	}
-	if ($template == "chetblong") {
+	} else if ($template == "chetblong") {
 		tagpage($user, "{{subst:User:Chet B Long/welcome|$sid|||$sig ~~~~~}}");
-	}
-	if ($template == "matt-t") {
+	} else if ($template == "matt-t") {
 		tagpage($user, "{{subst:User:Matt.T/C}} $sig ~~~~~");
-	}
-	if ($template == "roux") {
+	} else if ($template == "roux") {
 		tagpage($user, "{{subst:User:Roux/W}} $sig ~~~~~");
-	}
-	if ($template == "staffwaterboy") {
+	} else if ($template == "staffwaterboy") {
 		tagpage($user, "{{subst:User:Staffwaterboy/Welcome}} $sig ~~~~~");
+	} else if ($template == "maedin") {
+		tagpage($user, "{{subst:User:Maedin/Welcome}} $sig ~~~~~");
+	} else {
+		tagpage($user, "{{subst:Welcome|$sid}}$sig ~~~~~");
 	}
 	$query2 = "UPDATE acc_welcome SET welcome_status = 'Closed' WHERE welcome_id = '" . $row['welcome_id'] . "';";
 	$result2 = mysql_query($query2);

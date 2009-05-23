@@ -282,6 +282,7 @@ elseif ($action == "register") {
 						<option value="matt-t">{{User:Matt.T/C}} ~~~~</option>
 						<option value="roux">{{User:Roux/W}} ~~~~</option>
 						<option value="staffwaterboy">{{User:Staffwaterboy/Welcome}} ~~~~</option>
+						<option value="maedin">{{User:Maedin/Welcome}} ~~~~</option>
 					</select>
 				</td>
             </tr>
