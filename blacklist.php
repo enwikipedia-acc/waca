@@ -58,7 +58,7 @@ $acrnamebl['grawp9'] = '/4chan/i';
 $nameblacklist['nigger'] = '/(?i:ni(gg|qq)(a|er))/';
 $nameblacklist['faggot'] = '/(?i:faggot)/';
 
-$nameblacklist['grawp1'] = '/k*[l1][o0]?m[o0]?[i1]r*/i';
+//$nameblacklist['grawp1'] = '/k*[l1][o0]?m[o0]?[i1]r*/i';
 $nameblacklist['grawp2'] = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
 $nameblacklist['grawp3'] = '/(hagg[ea]r|herme?y|quarp)/i';
 $nameblacklist['grawp4'] = '/secret.*combination/i';
