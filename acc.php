@@ -727,7 +727,23 @@ elseif ($action == "ban") {
 			} else {
 				$until = date("F j, Y, g:i a", $row['ban_duration']);
 			}
-			echo "<li><small><strong>" . $row['ban_target'] . "</strong> - Banned by: <strong>" . $row['ban_user'] . "</strong> for <strong>" . $row['ban_reason'] . "</strong> at <strong>" . $row['ban_date'] . "</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">UNBAN</a>)</small></li>";
+			echo "<li><small><strong>";
+			switch($row['ban_type'])
+			{
+				case "IP":
+					echo '<a href="search.php?term='.$row['ban_target'].'&type=IP">'.$row['ban_target'].'</a>';
+					break;
+				case "EMail":
+					echo '<a href="search.php?term='.$row['ban_target'].'&type=email">'.$row['ban_target'].'</a>';
+					break;
+				case "Name";
+					echo '<a href="search.php?term='.$row['ban_target'].'&type=Request">'.$row['ban_target'].'</a>';
+					break;
+				default:
+					echo $row['ban_target'];
+					break;
+			}
+			echo "</strong> - Banned by: <strong>" . $row['ban_user'] . "</strong> for <strong>" . $row['ban_reason'] . "</strong> at <strong>" . $row['ban_date'] . "</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">UNBAN</a>)</small></li>";
 		}
 		echo "</ol>\n";
 		echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\"><table><tr><td>Ban target:</td><td><input type=\"text\" name=\"target\"></td></tr><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr><tr><td>Type:</td><td><select name=\"type\"><option value=\"IP\">IP</option><option value=\"Name\">Name</option><option value=\"EMail\">E-Mail</option></select></td></tr></table><br /><input type=\"submit\"></form>\n";
