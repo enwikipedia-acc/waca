@@ -21,10 +21,13 @@
 **                                                           **
 **************************************************************/
 
-if ($ACC != "1") {
-    header("Location: $tsurl/");
+if (isset($_SERVER['REQUEST_METHOD'])) {
     die();
-} //Re-route, if you're a web client.
+} //Web clients die.
+
+//ini_set('display_errors', '1');
+
+echo "Initialising backup script\n";
 
 //Config
 $basefile = "backup";
@@ -34,16 +37,23 @@ $dumper = "/opt/mysql/bin/mysqldump --defaults-file=~/.dblocal p_acc"; //add par
 $gzip = "/usr/bin/gzip"; //add params here too if needed.
 $tar = "/usr/bin/tar -cvf";
 
+echo "Loaded configuration\n";
 
 $arg = $argv['1'];
 if( $arg == "--monthly" ) {
+	echo "running monthly backups.\n";
 	$dateModifier = date( "FY" );
 	$cmdLine = "$tar $monthdir/mBackup-$dateModifier.tar $dir/*.sql.gz; rm $dir/*.sql.gz";
+	echo "running command $cmdLine\n";
 	shell_exec( $cmdLine );
-	die( );
+	die( "done." );
 }
+
+echo "running nightly backups\n";
 $dateModifier = date( "mdy" );
 $cmdLine = "$dumper > $dir/$basefile$dateModifier.sql; $gzip $dir/$basefile$dateModifier.sql";
+echo "running command $cmdLine\n";
 shell_exec( $cmdLine );
+echo "done.";
 ?>
 
