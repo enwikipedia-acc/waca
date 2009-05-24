@@ -885,3 +885,172 @@ function isOnWhitelist($user)
 	}
 	return false;
 }
+
+function zoomPage($id)
+{
+	$out = "";
+	$gid = sanitize($id);
+	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	if ($row['pend_mailconfirm'] != 'Confirmed' && $row['pend_mailconfirm'] != "") {
+		$out .= "Email has not yet been confirmed for this request, so it can not yet be closed or viewed";
+		$out .= showfooter();
+		die();
+	}
+	$out .= "<h2>Details for Request #" . $id . ":</h2>";
+	$uname = urlencode($row['pend_name']);
+	$thisip = $row['pend_ip'];
+	$thisid = $row['pend_id'];
+	$thisemail = $row['pend_email'];
+	if ($row['pend_date'] == "0000-00-00 00:00:00") {
+		$row['pend_date'] = "Date Unknown";
+	}
+	$sUser = $row['pend_name'];
+	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' );";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$hideip = TRUE;
+	if (mysql_num_rows($result) > 0)
+		$hideip = FALSE;
+	$requesttable = listrequests($thisid, $hideip);
+	$out .= $requesttable;
+
+	//Escape injections.
+	$out .= "<br /><strong>Comment</strong>: " . $row['pend_cmt'] . "<br />\n";
+	
+	global $enableReserving;
+	if( $enableReserving )
+	{
+		$reservingUser = isReserved($thisid);
+		if( $reservingUser != 0 )
+		{
+			$out .= "<h3>This request is currently being handled by " . getUsernameFromUid($reservingUser) ."</h3>";
+		}
+	}
+	
+	
+	$query = "SELECT * FROM acc_log WHERE log_pend = '$gid';";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	
+	
+	
+	
+	$out .= "<h2>Possibly conflicting usernames</h2>\n";
+	$spoofs = getSpoofs( $sUser );
+	
+	if( !$spoofs ) {
+		$out .= "<i>None detected</i><br />\n";
+	} elseif ( !is_array($spoofs) ) {
+		$out .= "<h3 style='color: red'>$spoofs</h3>\n";
+	} else {
+		$out .= "<ul>\n";
+		foreach( $spoofs as $oSpoof ) {
+			$oS = htmlentities($oSpoof);
+			$out .= "<li><a href=\"http://en.wikipedia.org/wiki/User:$oS\">$oSpoof</a> (<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$oS\">contribs</a> | <a href=\"http://en.wikipedia.org/w/index.php?title=Special%3ALog&amp;type=&amp;user=&amp;page=User%3A$oS\">Logs</a>)</li>\n";
+		}
+		$out .= "</ul>\n";
+	}
+	mysql_pconnect( $toolserver_host, $toolserver_username, $toolserver_password );
+	@ mysql_select_db( $toolserver_database ) or print mysql_error( );
+	
+	
+	
+	$out .= "<h2>Logs for Request #" . $id . ":</h2>";
+	 if (mysql_num_rows($result) != 0){
+	$out .= "<ol>\n";
+	while ($row = mysql_fetch_assoc($result)) {
+		$rlu = $row['log_user'];
+		$rla = $row['log_action'];
+		$rlp = $row['log_pend'];
+		$rlt = $row['log_time'];
+		$rlc = $row['log_cmt'];
+		if ($rla == "Deferred to admins" || $rla == "Deferred to users") {
+			$out .= "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+		}
+		if ($rla == "Closed") {
+			$out .= "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+		}
+		if ($rla == "Closed 0") {
+			$out .= "<li>$rlu Dropped, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+		}
+		if ($rla == "Closed 1") {
+			$out .= "<li>$rlu Closed (Account created), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+		}
+		if ($rla == "Closed 2") {
+			$out .= "<li>$rlu Closed (Too Similar), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+		}
+		if ($rla == "Closed 3") {
+			$out .= "<li>$rlu Closed (Taken), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+		}
+		if ($rla == "Closed 4") {
+			$out .= "<li>$rlu Closed (Username vio), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+		}
+		if ($rla == "Closed 5") {
+			$out .= "<li>$rlu Closed (Technical Impossibility), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+		}
+		if ($rla == "Closed 6") {
+			$out .= "<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+		}
+		if ($rla == "Blacklist Hit") {
+			$out .= "<li>$rlu Rejected by Blacklist $rlp, $rlc at $rlt.</li>\n";
+		}
+	}
+
+	$out .= "</ol>\n";
+        }
+
+	$ipmsg = 'this ip';
+	if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin'))
+		$ipmsg = $thisip;
+	
+	
+
+	$out .= "<h2>Other requests from $ipmsg:</h2>\n";
+	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$numip = 0;
+	$currentrow = 0;
+ 	while ($row = mysql_fetch_assoc($result)) {
+		if ($numip == 0) { $out .= "<table cellspacing=\"0\">\n"; }
+		$currentrow += 1;
+		$out .= "<tr";
+		if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
+		$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
+		$numip++;
+	}
+	if ($numip == 0) {
+		$out .= "<i>None.</i>\n";
+	}
+	else {$out .= "</table>\n";}
+	
+	
+	$out .= "<h2>Other requests from $thisemail:</h2>\n";
+	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$numem = 0;
+	$currentrow = 0;
+	while ($row = mysql_fetch_assoc($result)) {
+		if ($numem == 0) { $out .= "<table cellspacing=\"0\">\n"; }
+		$currentrow += 1;
+		$out .= "<tr";
+		if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
+		$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
+		$numem++;
+	}
+	if ($numem == 0) {
+		$out .= "<i>None.</i>\n";
+	}
+	else {$out .= "</table>\n";}
+
+	return $out;
+}
