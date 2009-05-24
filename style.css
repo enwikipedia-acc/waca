@@ -266,4 +266,7 @@ float: right;
 	background-color:pink;
 	color:black;
 	width:80%;
+	font-weight:bold;
+	padding:5px;
+	text-align:center;
 }
