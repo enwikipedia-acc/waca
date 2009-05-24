@@ -73,7 +73,9 @@ if (isset($_GET['viewuser']))
 		die('Invalid GET value passed.');
 	}
 
-	$query = "SELECT * FROM acc_user WHERE user_id = ". $gid . " AND user_level != 'Declined' AND user_level != 'New';"; 
+	$query = "SELECT * FROM acc_user WHERE user_id = ". $gid ;
+	if(!isset($_GET['showall'])) $query.=" AND user_level != 'Declined' AND user_level != 'New'";
+	$query.=";"; 
 	$result = mysql_query($query, $dblinks[0]); // Get information on the selected user; Must not show if the user has not been approved
 	if (!$result)
 	{
