@@ -1829,7 +1829,7 @@ elseif ($action == "logs") {
 	die();
 }
 elseif ($action == "reserve") {
-	global $enableReserving;
+	global $enableReserving, $allowDoubleReserving;
 	if( $enableReserving ) {
 		$request = sanitise($_GET['resid']);
 		
@@ -1839,6 +1839,47 @@ elseif ($action == "reserve") {
 		{
 			Die("Request already reserved by ".getUsernameFromUid($reservedBy));
 		}	
+		
+		if(isset($allowDoubleReserving)){
+			// check the number of requests a user has reserved already
+			$doubleReserveCountQuery = "SELECT COUNT(*) FROM acc_pend WHERE pend_reserved = ".$_SESSION['userID'].';';
+			$doubleReserveCountResult = mysql_query($doubleReserveCountQuery, $tsSQLlink);
+			if (!$doubleReserveCountResult)	Die("Error in determining other reserved requests.");
+			$doubleReserveCountRow = mysql_fetch_assoc($doubleReserveCountResult);
+			$doubleReserveCount = $doubleReserveCountRow['COUNT(*)'];
+			
+			if( $doubleReserveCount != 0) // user already has at least one reserved. 
+			{
+				switch($allowDoubleReserving)
+				{
+					case "warn":
+						// alert the user
+						if(isset($_GET['confdoublereserve']) && $_GET['confdoublereserve'] == "yes")
+						{
+							// the user confirms they wish to reserve another request
+						}
+						else
+						{
+							die('You already have reserved a request. Are you sure you wish to reserve another?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confdoublereserve=yes">Yes, reserve this request also</a></li><li><a href="acc.php">No, return to main request interface</a></li></ul>');
+						}
+						break;
+					case "deny":
+						// prevent the user from continuing
+						die('You already have a request reserved!<br /><a href="acc.php">Return to main request interface</a>');
+						break;
+					case "inform":
+						// tell the user that they already have requests reserved, but let them through anyway.
+						echo '<div id="doublereserve-warn">You have multiple requests reserved.</div>';
+						break;
+					case "ignore":
+						// do sod all
+						break;
+					default:
+						// do sod all
+						break;
+				}
+			}
+		}
 		
 		// is the request closed?
 		if(! isset($_GET['confclosed']) )

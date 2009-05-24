@@ -260,3 +260,10 @@ float: right;
 	color:red;
 	font-size:8pt;
 }
+
+#doublereserve-warn {
+	border:3px solid red;
+	background-color:pink;
+	color:black;
+	width:80%;
+}
