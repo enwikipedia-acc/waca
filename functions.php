@@ -888,6 +888,8 @@ function isOnWhitelist($user)
 
 function zoomPage($id)
 {
+	global $tsSQLlink;
+	
 	$out = "";
 	$gid = sanitize($id);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
