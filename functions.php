@@ -132,7 +132,8 @@ function sanitize($what) {
 	/*
 	* Shortcut to mysql_real_escape_string
 	*/
-	$what = mysql_real_escape_string($what);
+	global $tsSQLlink;
+	$what = mysql_real_escape_string($what,$tsSQLlink);
 	$what = htmlentities($what);
 	return ($what);
 }
