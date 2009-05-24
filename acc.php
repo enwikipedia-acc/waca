@@ -1736,7 +1736,7 @@ elseif ($action == "reserve") {
 		if (!$result)
 			Die("Error reserving request.");
 		sendtobot("Request $request is being handled by " . getUsernameFromUid($_SESSION['userID']));
-		echo defaultpage();
+		echo zoomPage($request);
 	}	
 }
 elseif ($action == "breakreserve") {
