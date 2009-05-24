@@ -958,8 +958,10 @@ function zoomPage($id)
 		}
 		$out .= "</ul>\n";
 	}
-	mysql_pconnect( $toolserver_host, $toolserver_username, $toolserver_password );
-	@ mysql_select_db( $toolserver_database ) or print mysql_error( );
+	
+	//// why are these here? st 24/05/09
+	//mysql_pconnect( $toolserver_host, $toolserver_username, $toolserver_password );
+	//@ mysql_select_db( $toolserver_database ) or print mysql_error( );
 	
 	
 	
