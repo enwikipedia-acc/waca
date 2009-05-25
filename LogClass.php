@@ -38,7 +38,7 @@ class LogPage
 	
 	public function showListLog($offset, $limit)
 	{
-		$result = getLog($offset, $limit);
+		$result = $this->getLog($offset, $limit);
 		$logList = "";
 		while ($row = mysql_fetch_assoc($result)) {
 			$rlu = $row['log_user'];
