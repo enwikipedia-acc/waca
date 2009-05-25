@@ -31,7 +31,7 @@ class LogPage
 		
 		
 		$logQuery = 'SELECT * FROM acc_log l WHERE log_pend LIKE "'.$filterRequest.'" AND log_user LIKE "'.$filterUser.'" AND log_action LIKE "'.$filterAction.'" LIMIT '.$limit.' OFFSET '.$offset.';';  
-		$logResult = mysql_query($logQuery, $tsSQLlink) or sqlerror(mysql_error(),"Ooops in LogPage class");
+		$logResult = mysql_query($logQuery, $tsSQLlink) or sqlerror(mysql_error() . "<i>$logQuery</i>","Ooops in LogPage class");
 		
 		return $logResult;
 	}
