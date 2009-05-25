@@ -27,6 +27,7 @@ if ($ACC != "1") {
 } //Re-route, if you're a web client.
 
 require_once('queryBrowser.php');
+require_once('LogClass.php');
 include_once('AntiSpoof.php');
 
 function formatForBot( $data ) { 		

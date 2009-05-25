@@ -1528,140 +1528,22 @@ elseif ($action == "logs") {
 	<input type="hidden" name="action" value="logs" /><input type="text" name="user"'.$filteruserl.' /><input type="submit" />
 	</form>';
 	
-	$query = "SELECT * FROM acc_log";
+	// TODO: use LogPage class
+	
+	$logPage = new LogPage();
+
 	if( isset($_GET['user']) ){
-		if($_GET['user']!="") {
-			$query.= " WHERE log_user LIKE '".sanitise($_GET['user'])."'";
-		}
+		$logPage->filterUser = sanitise($_GET['user']);
 	}
 	if (isset ($_GET['limit'])) {
-		$limit = $_GET['limit'];
-		if (!preg_match('/^[0-9]*$/',$_GET['limit'])) {
-			die('Invaild GET value passed.');
-		}
-
-		$limit = sanitize($limit);
-	} else {
-		$limit = 100;
+		$limit = sanitise($_GET['limit']);
 	}
-	$query.= " ORDER BY log_time DESC LIMIT $limit";
 	if (isset ($_GET['from'])) {
-		$from = sanitize($_GET['from']);
-		if (!preg_match('/^[0-9]*$/',$_GET['from'])) {
-			die('Invaild GET value passed.');
-		}
-
-		$query.= " OFFSET $from";
-	} else {
-		$from = 0;
+		$offset = $_GET['from'];	
 	}
-	$next = $from +100;
-	$prev = $from -100;
-	if ($from > 0) {
-		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$prev&amp;user=$filteruser\">Previous $limit</a> <a href=\"acc.php?action=logs&amp;from=$next&amp;user=$filteruser\">Next 100</a></h4>\n";
-		echo $n1;
-	} else {
-		$n1 = "<h4><a href=\"acc.php?action=logs&amp;from=$next&amp;user=$filteruser\">Next 100</a></h4>\n";
-		echo $n1;
-	}
+	
 
-	$query.= ";";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$olnum = $from + 1;
-	echo "<ol start=\"$olnum\">\n";	
-	while ($row = mysql_fetch_assoc($result)) {
-		$rlu = $row['log_user'];
-		$rla = $row['log_action'];
-		$rlp = $row['log_pend'];
-		$rlt = $row['log_time'];
-		$rlc = $row['log_cmt'];
-		if ($row['log_time'] == "0000-00-00 00:00:00") {
-			$row['log_time'] = "Date Unknown";
-		}
-		if ($row['log_action'] == "Deferred to admins" || $rla == "Deferred to users") {
-
-			echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($row['log_action'] == "Closed") {
-			echo "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($row['log_action'] == "Closed 0") {
-			echo "<li>$rlu Dropped, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($row['log_action'] == "Closed 1") {
-			echo "<li>$rlu Closed (Account created), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($row['log_action'] == "Closed 2") {
-			echo "<li>$rlu Closed (Too Similar), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($row['log_action'] == "Closed 3") {
-			echo "<li>$rlu Closed (Taken), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($row['log_action'] == "Closed 4") {
-			echo "<li>$rlu Closed (Username vio), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($row['log_action'] == "Closed 5") {
-			echo "<li>$rlu Closed (Technical Impossibility), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($row['log_action'] == "Closed 6") {
-			echo "<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($row['log_action'] == "Blacklist Hit" || $row['log_action'] == "DNSBL Hit") {
-			echo "<li>$rlu <strong>Rejected by Blacklist</strong> $rlp, $rlc at $rlt.</li>\n";
-		}
-		if ($rla == "Edited") {
-			$mid = $rlp;
-			$query3 = "SELECT * FROM acc_emails WHERE mail_id = '$mid';";
-			$result3 = mysql_query($query3);
-			if (!$result3)
-				Die("Query failed: $query ERROR: " . mysql_error());
-			$row3 = mysql_fetch_assoc($result3);
-			echo "<li>$rlu Edited Message <a href=\"acc.php?action=messagemgmt&amp;view=$rlp\">$rlp (" . $row3['mail_desc'] . ")</a>, at $rlt.</li>\n";
-		}
-		if ($rla == "Promoted" || $rla == "Demoted" || $rla == "Approved" || $rla == "Suspended" || $rla == "Declined") {
-			$uid = $rlp;
-			$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-			$result2 = mysql_query($query2, $tsSQLlink);
-			if (!$result2)
-				Die("Query failed: $query ERROR: " . mysql_error());
-			$row2 = mysql_fetch_assoc($result2);
-			$moreinfo = "";
-			if ($rla == "Declined" || $rla == "Suspended" || $rla == "Demoted") {
-				$moreinfo = " because \"$rlc\"";
-			}
-			echo "<li>$rlu $rla, User $rlp (" . $row2['user_name'] . ") at $rlt$moreinfo.</li>\n";
-		}
-		if ($rla == "Renamed") {
-			echo "<li>$rlu renamed $rlc at $rlt.</li>\n";
-		}
-		if ($rla == "Prefchange") {
-			$query2 = "SELECT user_name FROM acc_user WHERE user_id = '$rlp';";
-			$result2 = mysql_query($query2, $tsSQLlink);
-			if (!$result2)
-				Die("Query failed: $query ERROR: " . mysql_error());
-			$row2 = mysql_fetch_assoc($result2);
-			echo "<li>$rlu changed user preferences for $rlp (" . $row2['user_name'] . ") at $rlt</li>\n";
-		}
-		if ($rla == "Unbanned") {
-			// gonna need to think of another way to do this:
-			//    * can't look in the ban table, the ban is not there any more
-			//    * possibly look for the DNSBL or Banned entry in the log table, then parse to get type.
-		
-			//$query2 = 'SELECT * FROM `acc_ban` WHERE `ban_id` = '.$rlp.'; '; 
-			//$result2 = mysql_query($query2);
-			//if (!$result2)
-			//	Die("Query failed: $query2 ERROR: " . mysql_error());
-			//$row2 = mysql_fetch_assoc($result2);
-			//echo "<li>$rlu unbanned ban ID $rlp of type ".$row2['ban_type']." targeted at ".$row2['ban_target']." at $rlt</li>\n";
-			
-			
-			echo "<li>$rlu unbanned ban ID $rlp at $rlt</li>";
-		}
-	}
-	echo "</ol>\n";
-	echo $n1;
+	echo $logPage->showListLog($offset ? $offset : false ,$limit ? $limit : false);
 	echo showfooter();
 	die();
 }
