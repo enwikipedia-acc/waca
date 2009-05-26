@@ -165,7 +165,7 @@ class LogPage
 				$query2 = "SELECT user_name FROM acc_user WHERE user_id = '$rlp';";
 				$result2 = mysql_query($query2, $tsSQLlink);
 				if (!$result2)
-					Die("Query failed: $query ERROR: " . mysql_error());
+					Die("Query failed: $query2 ERROR: " . mysql_error());
 				$row2 = mysql_fetch_assoc($result2);
 				$logList .="<li>$rlu changed user preferences for $rlp (" . $row2['user_name'] . ") at $rlt</li>\n";
 			}
