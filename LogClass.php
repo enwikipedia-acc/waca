@@ -22,7 +22,7 @@ class LogPage
 		global $tsSQLlink;
 		
 		$sqlWhereAdded = 0;
-		$logQuery = 'SELECT * FROM acc_log l';
+		$logQuery = 'SELECT * FROM acc_log l ';
 		
 		if($this->filterRequest != '')
 		{
