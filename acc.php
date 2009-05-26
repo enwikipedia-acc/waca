@@ -1661,6 +1661,11 @@ elseif ($action == "reserve") {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Error reserving request.");
+		$now = date("Y-m-d H-i-s");
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$request', '".sanitise($_SESSION['user'])."', 'Reserved', '$now');";
+		$result = mysql_query($query, $tsSQLlink);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
 		sendtobot("Request $request is being handled by " . getUsernameFromUid($_SESSION['userID']));
 		echo zoomPage($request);
 	}	
@@ -1678,6 +1683,11 @@ elseif ($action == "breakreserve") {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Error unreserving request.");
+		$now = date("Y-m-d H-i-s");
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$request', '".sanitise($_SESSION['user'])."', 'Unreserved', '$now');";
+		$result = mysql_query($query, $tsSQLlink);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
 		sendtobot("Request $request is no longer being handled.");
 		echo defaultpage();
 	}	

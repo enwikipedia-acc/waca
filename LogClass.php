@@ -226,6 +226,12 @@ class LogPage
 				$logList .="<li>$rlu unbanned ban ID $rlp at $rlt</li>";
 				
 			}
+			if($rla == "Reserved") {
+				$logList .= "<li>$rlu reserved request $rlp at $rlt</li>";
+			}
+			if($rla == "Unreserved") {
+				$logList .= "<li>$rlu unreserved request $rlp at $rlt</li>";
+			}
 			$logListCount++;
 		}
 		
