@@ -133,6 +133,7 @@ class LogPage
 	public function showListLog($offset, $limit)
 	{
 		global $tsSQLlink;
+		$out="";
 		
 		$result = $this->getLog($offset, $limit);
 		$logList = "";
@@ -230,7 +231,7 @@ class LogPage
 		
 		if( $logList == "")
 		{
-			echo "<i>No results</i>";	
+			$out.= "<i>No results</i>";	
 		}
 		else
 		{
@@ -241,18 +242,18 @@ class LogPage
 
 					$urlParams = $this->swapUrlParams($limit, $backOffset);
 					
-					echo '<a href="'.$_SERVER['SCRIPT_NAME'].'?'.$urlParams.'">Previous '.$limit.'</a> - ';
+					$out.= '<a href="'.$_SERVER['SCRIPT_NAME'].'?'.$urlParams.'">Previous '.$limit.'</a> - ';
 				}
 
 				if($logListCount == $limit)
 				{
 					$forwardOffset = $offset + $limit;
 					$urlParams = $this->swapUrlParams($limit, $forwardOffset);
-					echo '<a href="'.$_SERVER['SCRIPT_NAME'].'?'.$urlParams.'">Next '.$limit.'</a>';
+					$out.= '<a href="'.$_SERVER['SCRIPT_NAME'].'?'.$urlParams.'">Next '.$limit.'</a>';
 				}
 			}
 			
-			echo "<ul>$logList</ul>";	
+			$out.= "<ul>$logList</ul>";	
 			
 			if($this->showPager == true){
 							if($offset != 0)
@@ -261,17 +262,19 @@ class LogPage
 
 					$urlParams = $this->swapUrlParams($limit, $backOffset);
 					
-					echo '<a href="'.$_ENV['SCRIPT_NAME'].'?'.$urlParams.'">Previous '.$limit.'</a> - ';
+					$out.= '<a href="'.$_SERVER['SCRIPT_NAME'].'?'.$urlParams.'">Previous '.$limit.'</a> - ';
 				}
 
 				if($logListCount == $limit)
 				{
 					$forwardOffset = $offset + $limit;
 					$urlParams = $this->swapUrlParams($limit, $forwardOffset);
-					echo '<a href="'.$_ENV['SCRIPT_NAME'].'?'.$urlParams.'">Next '.$limit.'</a>';
+					$out.= '<a href="'.$_SERVER['SCRIPT_NAME'].'?'.$urlParams.'">Next '.$limit.'</a>';
 				}
 			}
 		}
+		
+		return $out;
 		
 	}	
 	

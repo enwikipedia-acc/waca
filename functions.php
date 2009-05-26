@@ -937,13 +937,7 @@ function zoomPage($id)
 	}
 	
 	
-	$query = "SELECT * FROM acc_log WHERE log_pend = '$gid';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	
-	
-	
+
 	
 	$out .= "<h2>Possibly conflicting usernames</h2>\n";
 	$spoofs = getSpoofs( $sUser );
@@ -965,56 +959,16 @@ function zoomPage($id)
 	//mysql_pconnect( $toolserver_host, $toolserver_username, $toolserver_password );
 	//@ mysql_select_db( $toolserver_database ) or print mysql_error( );
 	
+	$out .= "<h2>Logs for this request:</h2>";
+	$logPage = new LogPage();
+	$logPage->filterRequest=$thisid;
+	$logPage->showPager=false;
+	$out .= $logPage->showListLog(0,100);
 	
-	
-	$out .= "<h2>Logs for Request #" . $id . ":</h2>";
-	 if (mysql_num_rows($result) != 0){
-	$out .= "<ol>\n";
-	while ($row = mysql_fetch_assoc($result)) {
-		$rlu = $row['log_user'];
-		$rla = $row['log_action'];
-		$rlp = $row['log_pend'];
-		$rlt = $row['log_time'];
-		$rlc = $row['log_cmt'];
-		if ($rla == "Deferred to admins" || $rla == "Deferred to users") {
-			$out .= "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($rla == "Closed") {
-			$out .= "<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($rla == "Closed 0") {
-			$out .= "<li>$rlu Dropped, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($rla == "Closed 1") {
-			$out .= "<li>$rlu Closed (Account created), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($rla == "Closed 2") {
-			$out .= "<li>$rlu Closed (Too Similar), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($rla == "Closed 3") {
-			$out .= "<li>$rlu Closed (Taken), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($rla == "Closed 4") {
-			$out .= "<li>$rlu Closed (Username vio), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($rla == "Closed 5") {
-			$out .= "<li>$rlu Closed (Technical Impossibility), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($rla == "Closed 6") {
-			$out .= "<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-		}
-		if ($rla == "Blacklist Hit") {
-			$out .= "<li>$rlu Rejected by Blacklist $rlp, $rlc at $rlt.</li>\n";
-		}
-	}
-
-	$out .= "</ol>\n";
-        }
 
 	$ipmsg = 'this ip';
 	if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin'))
 		$ipmsg = $thisip;
-	
 	
 
 	$out .= "<h2>Other requests from $ipmsg:</h2>\n";

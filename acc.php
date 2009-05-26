@@ -1559,7 +1559,7 @@ elseif ($action == "logs") {
 	foreach($logActions as $key => $value)
 	{
 		echo "<option value=\"".$key."\"";
-		if($key == $_GET['logaction']) echo " selected=\"selected\"";
+		if(isset($_GET['logaction'])) { if($key == $_GET['logaction']) echo " selected=\"selected\""; }
 		echo ">".$value."</option>";
 		
 	}
