@@ -187,7 +187,7 @@ class LogPage
 			}
 		}
 		
-		if( $logList = "")
+		if( $logList == "")
 		{
 			echo "<i>No results</i>";	
 		}
