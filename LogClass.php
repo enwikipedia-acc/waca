@@ -95,6 +95,7 @@ class LogPage
 	
 	private function swapUrlParams($limit, $offset)
 	{
+		global $enableSQLError;
 		$urlParams = array();
 		$doneFrom = false;
 		$doneLimit = false;
@@ -104,7 +105,7 @@ class LogPage
 			switch($key)
 			{
 				case "from":
-					$value = $backOffset;
+					$value = $offset;
 					$doneFrom = true;
 					break;
 				case "limit":
