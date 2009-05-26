@@ -221,8 +221,9 @@ class LogPage
 				//$logList .="<li>$rlu unbanned ban ID $rlp of type ".$row2['ban_type']." targeted at ".$row2['ban_target']." at $rlt</li>\n";
 				
 				$logList .="<li>$rlu unbanned ban ID $rlp at $rlt</li>";
-				$logListCount++;
+				
 			}
+			$logListCount++;
 		}
 		
 		if( $logList == "")
