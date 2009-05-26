@@ -96,19 +96,32 @@ class LogPage
 	private function swapUrlParams($limit, $offset)
 	{
 		$urlParams = array();
+		$doneFrom = false;
+		$doneLimit = false;
+		if($enableSQLError == 1) echo "<!--" . print_r($_GET) . "-->";
 		foreach($_GET as $key => $value)
 		{
 			switch($key)
 			{
 				case "from":
 					$value = $backOffset;
+					$doneFrom = true;
 					break;
 				case "limit":
 					$value = $limit;
+					$doneLimit=true;
 					break;
 			}
 			
 			$urlParams.= '&' . $key . '=' . $value;
+		}
+		if(!$doneFrom)
+		{
+			$urlParams.= '&from=' . $offset;
+		}
+		if(!$doneLimit)
+		{
+			$urlParams.= '&limit=' . $limit;
 		}
 		return trim($urlParams, '&');
 		
