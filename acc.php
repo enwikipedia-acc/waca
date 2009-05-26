@@ -1361,6 +1361,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	<option value="matt-t"<?php if($template == "matt-t") { echo " selected=\"selected\""; } ?>>{{User:User:Matt.T/C}} ~~~~</option>
 	<option value="roux"<?php if($template == "roux") { echo " selected=\"selected\""; } ?>>{{User:Roux/W}} ~~~~</option>
 	<option value="staffwaterboy"<?php if($template == "staffwaterboy") { echo " selected=\"selected\""; } ?>>{{User:Staffwaterboy/Welcome}} ~~~~</option>
+	<option value="maedin"<?php if($template == "maedin") { echo " selected=\"selected\""; } ?>>{{User:Maedin/Welcome}} ~~~~</option>
     </select><br /><?php
     echo '<i>If you\'d like more templates added, please <a href="https://jira.toolserver.org/browse/ACC">open a ticket</a>.</i><br />';
 
