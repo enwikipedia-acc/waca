@@ -1,9 +1,9 @@
 <?php
 class LogPage
 {
-	var $filterUser = "%";
-	var $filterAction = "%";
-	var $filterRequest = "%";
+	var $filterUser = "";
+	var $filterAction = "";
+	var $filterRequest = "";
 	
 	
 	private function getLog($offset = 0, $limit = 100)
@@ -17,20 +17,76 @@ class LogPage
 		//`log_cmt` BLOB NOT NULL
 		//) ENGINE = InnoDB; 
 		
-		if (!preg_match('/^[0-9]*$/',$limit)) {
-			die('Invaild limit value passed.');
-		}
-		$limit = sanitize($limit);
-		if (!preg_match('/^[0-9]*$/',$offset)) {
-			die('Invaild limit value passed.');
-		}
-		$offset = sanitize($offset);
-		
+
 		global $tsSQLlink;
 		
+		$sqlWhereAdded = 0;
+		$logQuery = 'SELECT * FROM acc_log l';
 		
+		if($filterRequest != '')
+		{
+			if($sqlWhereAdded == 0)
+			{
+				$logQuery.= "WHERE ";
+				$sqlWhereAdded = 1;
+			}
+			else
+			{
+				$logQuery.= "AND ";
+			}
+			$logQuery = 'log_pend LIKE "'.$filterRequest.'"';
+		}
+		if($filterUser != '')
+		{
+			if($sqlWhereAdded == 0)
+			{
+				$logQuery.= "WHERE ";
+				$sqlWhereAdded = 1;
+			}
+			else
+			{
+				$logQuery.= "AND ";
+			}
+			$logQuery = 'log_user LIKE "'.$filterUser.'"';
+		}
+		if($filterAction != '')
+		{
+			if($sqlWhereAdded == 0)
+			{
+				$logQuery.= "WHERE ";
+				$sqlWhereAdded = 1;
+			}
+			else
+			{
+				$logQuery.= "AND ";
+			}
+			$logQuery = 'log_action LIKE "'.$filterAction.'"';
+		}
 		
-		$logQuery = 'SELECT * FROM acc_log l WHERE log_pend LIKE "'.$filterRequest == '' ? '%' : $filterRequest .'" AND log_user LIKE "'.$filterUser == '' ? '%' : $filterUser.'" AND log_action LIKE "'.$filterAction == '' ? '%' : $filterAction.'" LIMIT '.$limit == '' ? 100 : $limit.' OFFSET '.$offset == '' ? 0 : $offset.';';  
+		if($limit != '')
+		{
+			if (!preg_match('/^[0-9]*$/',$limit)) {
+				die('Invaild limit value passed.');
+			}
+			$limit = sanitize($limit);
+		}
+		else
+		{
+			$limit = 100;
+		}
+		
+		$logQuery.=' LIMIT '.$limit;
+		
+		if($offset != '')
+		{
+			if (!preg_match('/^[0-9]*$/',$offset)) {
+				die('Invaild limit value passed.');
+			}
+			$offset = sanitize($offset);
+			
+			$logQuery.=' OFFSET '.$offset;
+		}
+		
 		$logResult = mysql_query($logQuery, $tsSQLlink) or sqlerror(mysql_error() . "<i>$logQuery</i>","Ooops in LogPage class");
 		
 		return $logResult;
