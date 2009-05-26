@@ -66,6 +66,15 @@ if (file_exists("config.local.inc.php")) {
 	$antispoof_db = "enwiki_p";
 	$antispoof_table = "spoofuser";
 	
+	// double reserving checks.
+	// possible values:
+	//    ignore: ignores the fact that some users have reserved two requests.
+	//    inform: reserves the second request, and alerts the user that they have s$
+	//    warn: asks the user if they are sure they wish to reserve the second requ$
+	//    deny: prevents the user from reserving a second request.
+	$allowDoubleReserving = "warn";
+	
+	
 }
 require_once ('blacklist.php');
 ?>
