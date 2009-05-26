@@ -23,7 +23,7 @@ class LogPage
 		$sqlWhereAdded = 0;
 		$logQuery = 'SELECT * FROM acc_log l';
 		
-		if($filterRequest != '')
+		if($this->filterRequest != '')
 		{
 			if($sqlWhereAdded == 0)
 			{
@@ -34,9 +34,9 @@ class LogPage
 			{
 				$logQuery.= "AND ";
 			}
-			$logQuery = 'log_pend LIKE "'.$filterRequest.'"';
+			$logQuery = 'log_pend LIKE "'.$this->filterRequest.'"';
 		}
-		if($filterUser != '')
+		if($this->filterUser != '')
 		{
 			if($sqlWhereAdded == 0)
 			{
@@ -47,9 +47,9 @@ class LogPage
 			{
 				$logQuery.= "AND ";
 			}
-			$logQuery = 'log_user LIKE "'.$filterUser.'"';
+			$logQuery = 'log_user LIKE "'.$this->filterUser.'"';
 		}
-		if($filterAction != '')
+		if($this->filterAction != '')
 		{
 			if($sqlWhereAdded == 0)
 			{
@@ -60,7 +60,7 @@ class LogPage
 			{
 				$logQuery.= "AND ";
 			}
-			$logQuery = 'log_action LIKE "'.$filterAction.'"';
+			$logQuery = 'log_action LIKE "'.$this->filterAction.'"';
 		}
 		
 		if($limit != '')
@@ -94,6 +94,8 @@ class LogPage
 	
 	public function showListLog($offset, $limit)
 	{
+		global $tsSQLlink;
+		
 		$result = $this->getLog($offset, $limit);
 		$logList = "";
 		while ($row = mysql_fetch_assoc($result)) {
