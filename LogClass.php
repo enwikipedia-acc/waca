@@ -198,11 +198,11 @@ class LogPage
 				if($offset != 0)
 				{
 					$backOffset = ($offset < $limit) ? 0 : $offset - $limit;
-					echo '<a href="'.$_SERVER['REQUEST_URI'].'&from='.$backOffset.'&limit='.$limit.'">Previous '.$limit.'</a>';
+					echo '<a href="'.$_SERVER['REQUEST_URI'].'&from='.$backOffset.'&limit='.$limit.'">Previous '.$limit.'</a> - ';
 				}
 				
 				$forwardOffset = $offset + $limit;
-				echo '<a href="'.$_SERVER['REQUEST_URI'].'&from='.$forwardOffset.'&limit='.$limit.'">Previous '.$limit.'</a>';
+				echo '<a href="'.$_SERVER['REQUEST_URI'].'&from='.$forwardOffset.'&limit='.$limit.'">Next '.$limit.'</a>';
 			}
 			
 			echo "<ul>$logList</ul>";	
@@ -211,11 +211,11 @@ class LogPage
 				if($offset != 0)
 				{
 					$backOffset = ($offset < $limit) ? 0 : $offset - $limit;
-					echo '<a href="'.$_SERVER['REQUEST_URI'].'&from='.$backOffset.'&limit='.$limit.'">Previous '.$limit.'</a>';
+					echo '<a href="'.$_SERVER['REQUEST_URI'].'&from='.$backOffset.'&limit='.$limit.'">Previous '.$limit.'</a> - ';
 				}
 				
 				$forwardOffset = $offset + $limit;
-				echo '<a href="'.$_SERVER['REQUEST_URI'].'&from='.$forwardOffset.'&limit='.$limit.'">Previous '.$limit.'</a>';
+				echo '<a href="'.$_SERVER['REQUEST_URI'].'&from='.$forwardOffset.'&limit='.$limit.'">Next '.$limit.'</a>';
 			}
 		}
 		
