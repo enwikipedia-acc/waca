@@ -1522,13 +1522,53 @@ elseif ($action == "logs") {
 		$filteruser = $_GET['user'];
 	} else { $filteruserl = ""; $filteruser = "";}
 	
-	echo '<h2>Logs</h2>
-	Filter by username:
-	<form action="acc.php" method="get">
-	<input type="hidden" name="action" value="logs" /><input type="text" name="user"'.$filteruserl.' /><input type="submit" />
-	</form>';
 	
-	// TODO: use LogPage class
+	
+	echo '<h2>Logs</h2>
+	<form action="acc.php" method="get">
+		<input type="hidden" name="action" value="logs" />
+		<table>
+			<tr><td>Filter by username:</td><td><input type="text" name="user"'.$filteruserl.' /></td></tr>
+			<tr><td>Filter by log action:</td>
+				<td>
+					<select id="logActionSelect" name="logaction">';
+	$logActions = array(
+			//  log entry type => display name
+				"" => "(All)",
+				"Deferred to users" => "Defer to users", 
+				"Deferred to admins" => "Defer to account creators", 
+				"Suspended" => "User Suspension", 
+				"Approved" => "User Approval", 
+				"Promoted" => "User Promotion", 
+				"Closed 1" => "Request creation", 
+				"Closed 3" => "Request taken", 
+				"Closed 2" => "Request similarity", 
+				"Edited" => "Preference editing", 
+				"Closed 5" => "Request marked as invalid", 
+				"Closed 4" => "Request Username policy violation", 
+				"Banned" => "Ban", 
+				"Unbanned" => "Unban", 
+				"Closed 0" => "Request Drop", 
+				"Declined" => "User Declination", 
+				"Blacklist Hit" => "Blacklist hit", 
+				"DNSBL Hit" => "DNS Blacklist hit", 
+				"Demoted" => "User Demotion", 
+				"Renamed" => "User Rename", 
+				"Prefchange" => "User Preferences change"
+	);
+	foreach($logActions as $key => $value)
+	{
+		echo "<option value=\"".$key."\"";
+		if($key == $_GET['logaction']) echo " selected=\"selected\"";
+		echo ">".$value."</option>";
+		
+	}
+	echo '			</select>
+				</td>
+			</tr>
+		</table>
+	<input type="submit" /></form>';
+	
 	
 	$logPage = new LogPage();
 
@@ -1542,6 +1582,10 @@ elseif ($action == "logs") {
 		$offset = $_GET['from'];	
 	}
 	
+	if(isset($_GET['logaction']))
+	{
+		$logPage->filterAction=sanitise($_GET['logaction']);
+	}
 
 	echo $logPage->showListLog(isset($offset) ? $offset : 0 ,isset($limit) ? $limit : 100);
 	echo showfooter();
