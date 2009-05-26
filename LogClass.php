@@ -93,6 +93,27 @@ class LogPage
 		return $logResult;
 	}
 	
+	private function swapUrlParams($limit, $offset)
+	{
+		$urlParams = array();
+		foreach($_GET as $key => $value)
+		{
+			switch($key)
+			{
+				case "from":
+					$value = $backOffset;
+					break;
+				case "limit":
+					$value = $limit;
+					break;
+			}
+			
+			$urlParams.= '&' . $key . '=' . $value;
+		}
+		return trim($urlParams, '&');
+		
+	}
+	
 	public function showListLog($offset, $limit)
 	{
 		global $tsSQLlink;
@@ -198,11 +219,15 @@ class LogPage
 				if($offset != 0)
 				{
 					$backOffset = ($offset < $limit) ? 0 : $offset - $limit;
-					echo '<a href="'.$_SERVER['REQUEST_URI'].'&from='.$backOffset.'&limit='.$limit.'">Previous '.$limit.'</a> - ';
+
+					$urlParams = $this->swapUrlParams($limit, $backOffset);
+					
+					echo '<a href="'.$_ENV['SCRIPT_NAME'].'?'.$urlParams.'">Previous '.$limit.'</a> - ';
 				}
 				
 				$forwardOffset = $offset + $limit;
-				echo '<a href="'.$_SERVER['REQUEST_URI'].'&from='.$forwardOffset.'&limit='.$limit.'">Next '.$limit.'</a>';
+				$urlParams = $this->swapUrlParams($limit, $forwardOffset);
+				echo '<a href="'.$_ENV['SCRIPT_NAME'].'?'.$urlParams.'">Next '.$limit.'</a>';
 			}
 			
 			echo "<ul>$logList</ul>";	
@@ -211,11 +236,15 @@ class LogPage
 				if($offset != 0)
 				{
 					$backOffset = ($offset < $limit) ? 0 : $offset - $limit;
-					echo '<a href="'.$_SERVER['REQUEST_URI'].'&from='.$backOffset.'&limit='.$limit.'">Previous '.$limit.'</a> - ';
+
+					$urlParams = $this->swapUrlParams($limit, $backOffset);
+					
+					echo '<a href="'.$_ENV['SCRIPT_NAME'].'?'.$urlParams.'">Previous '.$limit.'</a> - ';
 				}
 				
 				$forwardOffset = $offset + $limit;
-				echo '<a href="'.$_SERVER['REQUEST_URI'].'&from='.$forwardOffset.'&limit='.$limit.'">Next '.$limit.'</a>';
+				$urlParams = $this->swapUrlParams($limit, $forwardOffset);
+				echo '<a href="'.$_ENV['SCRIPT_NAME'].'?'.$urlParams.'">Next '.$limit.'</a>';
 			}
 		}
 		
