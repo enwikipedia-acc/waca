@@ -64,6 +64,8 @@ class LogPage
 			$logQuery .= 'log_action LIKE "'.$this->filterAction.'"';
 		}
 		
+		$logQuery.= "ORDER BY log_time DESC ";
+		
 		if($limit != '')
 		{
 			if (!preg_match('/^[0-9]*$/',$limit)) {
