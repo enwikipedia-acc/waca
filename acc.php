@@ -1543,7 +1543,7 @@ elseif ($action == "logs") {
 	}
 	
 
-	echo $logPage->showListLog($offset ? $offset : false ,$limit ? $limit : false);
+	echo $logPage->showListLog(isset($offset) ? $offset : 0 ,isset($limit) ? $limit : 100);
 	echo showfooter();
 	die();
 }
