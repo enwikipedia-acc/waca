@@ -35,7 +35,7 @@ class LogPage
 			{
 				$logQuery.= "AND ";
 			}
-			$logQuery = 'log_pend LIKE "'.$this->filterRequest.'"';
+			$logQuery .= 'log_pend LIKE "'.$this->filterRequest.'"';
 		}
 		if($this->filterUser != '')
 		{
@@ -48,7 +48,7 @@ class LogPage
 			{
 				$logQuery.= "AND ";
 			}
-			$logQuery = 'log_user LIKE "'.$this->filterUser.'"';
+			$logQuery .= 'log_user LIKE "'.$this->filterUser.'"';
 		}
 		if($this->filterAction != '')
 		{
@@ -61,7 +61,7 @@ class LogPage
 			{
 				$logQuery.= "AND ";
 			}
-			$logQuery = 'log_action LIKE "'.$this->filterAction.'"';
+			$logQuery .= 'log_action LIKE "'.$this->filterAction.'"';
 		}
 		
 		if($limit != '')
