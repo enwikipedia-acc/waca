@@ -4,6 +4,7 @@ class LogPage
 	var $filterUser = "";
 	var $filterAction = "";
 	var $filterRequest = "";
+	var $showPager = true;
 	
 	
 	private function getLog($offset = 0, $limit = 100)
@@ -193,9 +194,29 @@ class LogPage
 		}
 		else
 		{
-			// TODO: pager functions
+			if($this->showPager == true){
+				if($offset != 0)
+				{
+					$backOffset = ($offset < $limit) ? 0 : $offset - $limit;
+					echo '<a href="'.$_SERVER['REQUEST_URI'].'&from='.$backOffset.'&limit='.$limit.'">Previous '.$limit.'</a>';
+				}
+				
+				$forwardOffset = $offset + $limit;
+				echo '<a href="'.$_SERVER['REQUEST_URI'].'&from='.$forwardOffset.'&limit='.$limit.'">Previous '.$limit.'</a>';
+			}
 			
 			echo "<ul>$logList</ul>";	
+			
+			if($this->showPager == true){
+				if($offset != 0)
+				{
+					$backOffset = ($offset < $limit) ? 0 : $offset - $limit;
+					echo '<a href="'.$_SERVER['REQUEST_URI'].'&from='.$backOffset.'&limit='.$limit.'">Previous '.$limit.'</a>';
+				}
+				
+				$forwardOffset = $offset + $limit;
+				echo '<a href="'.$_SERVER['REQUEST_URI'].'&from='.$forwardOffset.'&limit='.$limit.'">Previous '.$limit.'</a>';
+			}
 		}
 		
 	}	
