@@ -99,7 +99,7 @@ class LogPage
 		$urlParams = array();
 		$doneFrom = false;
 		$doneLimit = false;
-		if($enableSQLError == 1) echo "<!--" . print_r($_GET) . "-->";
+		if($enableSQLError == 1){ echo "<!--" ; echo print_r($_GET); echo "-->";}
 		foreach($_GET as $key => $value)
 		{
 			switch($key)
@@ -134,6 +134,7 @@ class LogPage
 		
 		$result = $this->getLog($offset, $limit);
 		$logList = "";
+		$logListCount = 0;
 		while ($row = mysql_fetch_assoc($result)) {
 			$rlu = $row['log_user'];
 			$rla = $row['log_action'];
@@ -220,6 +221,7 @@ class LogPage
 				//$logList .="<li>$rlu unbanned ban ID $rlp of type ".$row2['ban_type']." targeted at ".$row2['ban_target']." at $rlt</li>\n";
 				
 				$logList .="<li>$rlu unbanned ban ID $rlp at $rlt</li>";
+				$logListCount++;
 			}
 		}
 		
@@ -238,16 +240,19 @@ class LogPage
 					
 					echo '<a href="'.$_ENV['SCRIPT_NAME'].'?'.$urlParams.'">Previous '.$limit.'</a> - ';
 				}
-				
-				$forwardOffset = $offset + $limit;
-				$urlParams = $this->swapUrlParams($limit, $forwardOffset);
-				echo '<a href="'.$_ENV['SCRIPT_NAME'].'?'.$urlParams.'">Next '.$limit.'</a>';
+
+				if($logListCount == $limit)
+				{
+					$forwardOffset = $offset + $limit;
+					$urlParams = $this->swapUrlParams($limit, $forwardOffset);
+					echo '<a href="'.$_ENV['SCRIPT_NAME'].'?'.$urlParams.'">Next '.$limit.'</a>';
+				}
 			}
 			
 			echo "<ul>$logList</ul>";	
 			
 			if($this->showPager == true){
-				if($offset != 0)
+							if($offset != 0)
 				{
 					$backOffset = ($offset < $limit) ? 0 : $offset - $limit;
 
@@ -255,10 +260,13 @@ class LogPage
 					
 					echo '<a href="'.$_ENV['SCRIPT_NAME'].'?'.$urlParams.'">Previous '.$limit.'</a> - ';
 				}
-				
-				$forwardOffset = $offset + $limit;
-				$urlParams = $this->swapUrlParams($limit, $forwardOffset);
-				echo '<a href="'.$_ENV['SCRIPT_NAME'].'?'.$urlParams.'">Next '.$limit.'</a>';
+
+				if($logListCount == $limit)
+				{
+					$forwardOffset = $offset + $limit;
+					$urlParams = $this->swapUrlParams($limit, $forwardOffset);
+					echo '<a href="'.$_ENV['SCRIPT_NAME'].'?'.$urlParams.'">Next '.$limit.'</a>';
+				}
 			}
 		}
 		
