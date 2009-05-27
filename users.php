@@ -210,7 +210,7 @@ if (isset($_GET['viewuser']))
 	
 	// List the requests this user has *not* marked as 'created'
 	echo "<h2>Users not created</h2>\n";
-	$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = " . $gid . " AND log_action != 'Closed 1' AND log_action != 'Reserved';";
+	$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = " . $gid . " AND log_action != 'Closed 1' AND log_action != 'Reserved' AND log_action != 'Unreserved';";
 	$result = mysql_query($query, $dblinks[0]); // Get all the requests this user has *not* marked as 'created'
 	if (!$result)
 	{
