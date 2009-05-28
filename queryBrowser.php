@@ -5,6 +5,8 @@ class QueryBrowser
 	
 	var $numberedList = false;
 	var $numberedListTitle = "#";
+	var $tableCallbackFunction = false;
+	var $overrideTableTitles = false;
 	
 	public function executeQuery($query)
 	{
@@ -32,11 +34,20 @@ class QueryBrowser
 			$out.="<th>" . $this->numberedListTitle . "</th>";
 		}
 
-		for ($i = 0; $i < mysql_num_fields($results) ; $i++)
+		if($this->overrideTableTitles != false)
 		{
-			$out.=  "<th>" . mysql_field_name($results,$i) . "</th>"; 
+			foreach($this->overrideTableTitles as $value)
+			{
+				$out.=  "<th>" . $value . "</th>"; 
+			}
 		}
-		
+		else
+		{
+			for ($i = 0; $i < mysql_num_fields($results) ; $i++)
+			{
+				$out.=  "<th>" . mysql_field_name($results,$i) . "</th>"; 
+			}	
+		}
 		$out.=  "</tr>";
 		
 
@@ -44,29 +55,34 @@ class QueryBrowser
 		$currentreq = 0;
 		while($row = mysql_fetch_assoc($results))
 		{
-
-			
 			$currentreq++;
-			$out.=  '<tr';
-			if ($currentreq % 2 == 0) {
-				$out.=  ' class="alternate">';
-			} else {
-				$out.=  '>';
-			}
-
-			if($this->numberedList == true)
+			if(function_exists($this->tableCallbackFunction))
 			{
-				$out.="<th>" . $currentreq . "</th>";
+				$out .= call_user_func($this->tableCallbackFunction, $row, $currentreq);	
 			}
-			
-			
-			foreach ($row as $cell) {
-
-				$out.=  "<td>" . $cell . "</td>";
+			else
+			{
+				$out.=  '<tr';
+				if ($currentreq % 2 == 0) {
+					$out.=  ' class="alternate">';
+				} else {
+					$out.=  '>';
+				}
+	
+				if($this->numberedList == true)
+				{
+					$out.="<th>" . $currentreq . "</th>";
+				}
+				
+				
+				foreach ($row as $cell) {
+	
+					$out.=  "<td>" . $cell . "</td>";
+				}
+	
+				
+				$out.="</tr>";
 			}
-
-			
-			$out.="</tr>";
 			
 		}
 		
