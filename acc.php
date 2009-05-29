@@ -6,7 +6,7 @@
 ** Charles Melbye is licensed under a Creative               **
 ** Commons Attribution-Noncommercial-Share Alike             **
 ** 3.0 United States License. All other code                 **
-** released under Public Domain by the ACC                  f **
+** released under Public Domain by the ACC                   **
 ** Development Team.                                         **
 **             Developers:                                   **
 **  SQL ( http://en.wikipedia.org/User:SQL )                 **
