@@ -487,9 +487,11 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		if( $enableEmailConfirm == 1 )
 		{$message = showmessage(15);} else {$message = showmessage(24);}
 		echo "$message<br />\n";
+        displayfooter();
 	} else {
 		$message = showmessage(16);
 		echo "$message<br />\n";
+        displayfooter();
 	}
 	if ($fail == 1) {
 		displayform();
