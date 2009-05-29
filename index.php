@@ -457,9 +457,11 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		$fail = 1;
 	}
 
+    // (JIRA) ACC-55
     $trailingspace = substr($_POST['name'], strlen($_POST['name']) - 1);
     If ($trailingspace == " " || $trailingspace == "_"  ) {
-    echo "Usernames cannot have any spaces at the end, Please choose another username <br />\n";
+        $message = showmessage(25);
+		echo "$message<br />\n";
 		$fail = 1;
     }
 
