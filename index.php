@@ -458,7 +458,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	}
 
     $trailingspace = substr($_POST['name'], strlen($_POST['name']) - 1);
-    If ($trailingspace == " ") {
+    If ($trailingspace == " " || $trailingspace == "_"  ) {
     echo "Usernames cannot have any spaces at the end, Please choose another username <br />\n";
 		$fail = 1;
     }
