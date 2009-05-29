@@ -153,6 +153,18 @@ $developer = //Developer info / list.
 				"Access" => "Commit",
 				"Other" => NULL,
 			),
+		"Prom3th3an" =>
+			array(
+				"IRC" => "Prom_cat",
+				"EMail" => "Prom3th3an@yourwiki.net",
+        "ToolID" => "91",
+				"wiki" => "Promethean",
+				"WWW" => "http://www.yourwiki.net",
+				"Name" => "Brett Hillebrand",
+				"Role" => "Developer, Misc bug fixing",
+				"Access" => "Commit",
+				"Other" => "Newie",
+			),
 	);
 
 
