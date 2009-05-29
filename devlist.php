@@ -98,8 +98,8 @@ $ircdevlist = array (
 	'Alexfusco5|Away',
 	'OverlordQ',
 	'Prodego',
-	'FunPika'
-	'Prom_cat'
+	'FunPika',
+	'Prom_cat',
 	'Prom3th3an'
 );
 ?>
