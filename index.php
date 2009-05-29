@@ -457,6 +457,12 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		$fail = 1;
 	}
 
+    $trailingspace = substr($_POST['name'], strlen($_POST['name']) - 1);
+    If ($trailingspace == " ") {
+    echo "Usernames cannot have any spaces at the end, Please choose another username <br />\n";
+		$fail = 1;
+    }
+
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_name = '$user'";
 	$result = mysql_query($query, $tsSQLlink);
@@ -474,13 +480,6 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		echo "$message<br />\n";
 		$fail = 1;
 	}
-
-$postname = $_POST['name'];
-$last = substr($postname, strlen($postname) - 1);
-If ($last == " ") {
-    echo "Usernames cannot have any spaces at the end, Please choose another username <br />\n";
-		$fail = 1;
-}
 
 	if ($fail != 1) {
 		if( $enableEmailConfirm == 1 )
