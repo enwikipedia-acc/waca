@@ -676,6 +676,9 @@ function showlogin( $action = null, $params = null ) {
     <h2>Login</h2>
     <form action="acc.php?action=login&amp;nocheck=1';
     if ( $action ) {
+        if ($action == 'logout') {
+            $action = '';
+        }
     	$html .= "&amp;newaction=".$action;
     	foreach ($params as $param => $value) { 
     		if ($param != '' && $param != "action") {
