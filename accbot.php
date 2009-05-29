@@ -96,6 +96,7 @@
 		'*!*@wikipedia/FastLizard4'					=> 'developer',
 		'*!*@wikipedia/Prodego'					    => 'developer',
 		'*!*@yourwiki/staff/funpika'				=> 'developer',
+		'*!*@yourwiki/staff/Prom3th3an'				=> 'developer',
 		'*!*@*'										=> '*'
 		);
 
