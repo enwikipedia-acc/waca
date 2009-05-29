@@ -46,10 +46,9 @@ if ( isset ( $_GET['action'] ) ) {
 	$action = $_GET['action'];
 }
 
-// Clear session before banner and logged in as message is generated on logout event, Start new session after clear - Prom3th3an
+// Clear session before banner and logged in as message is generated on logout attempt - Prom3th3an
 if ($action == "logout") {
 	session_unset();
-	session_start( );
 }
 
 if ( !isset ( $_SESSION['user'] ) && !isset ( $_GET['nocheck'] ) ) {
