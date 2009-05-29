@@ -1674,6 +1674,7 @@ elseif ($action == "reserve") {
 			Die("Query failed: $query ERROR: " . mysql_error());
 		sendtobot("Request $request is being handled by " . getUsernameFromUid($_SESSION['userID']));
 		echo zoomPage($request);
+        echo showfooter();
 	}	
 }
 elseif ($action == "breakreserve") {
