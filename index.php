@@ -491,7 +491,6 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	} else {
 		$message = showmessage(16);
 		echo "$message<br />\n";
-        displayfooter();
 	}
 	if ($fail == 1) {
 		displayform();
