@@ -1709,12 +1709,16 @@ elseif ($action == "comment") {
         $id = "";
          echo "<h2>Comment on a request</h2>";
     }
-    echo"<form action='acc.php?action=comment-add' method='post'>
+    echo "<form action='acc.php?action=comment-add' method='post'>
     Request ID: <input type='text' name='id' value='$id' /> <br />
     Comments:   <input type='text' name='comment' size='75'' /> <br />
     Visability: <select name='visability'><option>user</option><option>admin</option</select>
     <input type='submit' value='Submit' />
     </form>";
     echo showfooter();
+}
+
+elseif ($action == "comment-add") {
+echo "Comment add page";
 }
 ?>
