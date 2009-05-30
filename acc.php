@@ -1702,12 +1702,13 @@ elseif ($action == "breakreserve") {
 
 //TODO: Comment on Request Feature
 elseif ($action == "comment") {
-  if(! isset($_GET['id']) )
-    echo '<h2>Comment on a request</a2>
-    <form action="acc.php?action=comment-add" method="post">';
-  } else {
-  $request = $_GET['id'];
-  echo "<h2>Comment on request <a href='acc.php?action=zoom&id=$request'>#$request</a></a2>";
-  }
-  echo '</form>';
+    $id = $_GET['resid'];
+    echo "<h2>Comment on a request</a2>
+    <form action='acc.php?action=comment-add' method='post'>
+    Request ID: <input type='text' name='id' value='$id' /> <br />
+    Comments:   <input type='text' name='comment' /> <br />
+    Visability: <select name='visability'><option>admin</option><option>user</option</select>
+    <input type='submit' value='Submit' />
+    </form>";
+}
 ?>
