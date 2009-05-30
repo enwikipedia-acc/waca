@@ -1704,13 +1704,14 @@ elseif ($action == "breakreserve") {
 elseif ($action == "comment") {
     if( isset($_GET['id']) ) {
         $id = $_GET['id'];
+        echo "<h2>Comment on request <a href='acc.php?action=zoom&id=$id'>#$id</a></h2>";
     } else {
         $id = "";
+         echo "<h2>Comment on a request</h2>";
     }
-    echo "<h2>Comment on a request</h2>
-    <form action='acc.php?action=comment-add' method='post'>
+    echo"<form action='acc.php?action=comment-add' method='post'>
     Request ID: <input type='text' name='id' value='$id' /> <br />
-    Comments:   <input type='text' name='comment' /> <br />
+    Comments:   <input type='text' name='comment' size='75'' /> <br />
     Visability: <select name='visability'><option>user</option><option>admin</option</select>
     <input type='submit' value='Submit' />
     </form>";
