@@ -1704,13 +1704,16 @@ elseif ($action == "breakreserve") {
 elseif ($action == "comment") {
     if( isset($_GET['id']) ) {
         $id = $_GET['id'];
+    } else {
+        $id = "";
     }
     echo "<h2>Comment on a request</h2>
     <form action='acc.php?action=comment-add' method='post'>
     Request ID: <input type='text' name='id' value='$id' /> <br />
     Comments:   <input type='text' name='comment' /> <br />
-    Visability: <select name='visability'><option>admin</option><option>user</option</select>
+    Visability: <select name='visability'><option>user</option><option>admin</option</select>
     <input type='submit' value='Submit' />
     </form>";
+    echo showfooter();
 }
 ?>
