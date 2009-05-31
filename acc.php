@@ -1727,7 +1727,7 @@ elseif ($action == "comment-add") {
         $visability = sanitise($_POST['visability']);
         $now = date("Y-m-d H-i-s");
         
-		$query = "INSERT INTO acc_cmt (cmt_time, cmt_user, cmt_comment, cmt_visability, pend_id) VALUES ('$now', $user', '$comment', '$visability', '$id');";
+		$query = "INSERT INTO acc_cmt (cmt_time, cmt_user, cmt_comment, cmt_visability, pend_id) VALUES ('$now', '$user', '$comment', '$visability', '$id');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result) {
             Die("Query failed: $query ERROR: " . mysql_error()); }
