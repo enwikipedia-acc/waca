@@ -1720,7 +1720,9 @@ elseif ($action == "comment") {
 
 elseif ($action == "comment-add") {
     if( isset($_POST['id']) && (isset($_POST['comment'])) && (isset($_POST['visability'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
-        echo "All values exist, Adding comment...";
+        $id = $_POST['id'];
+        echo "All values exist, Adding comment... <br />
+        <a href='acc.php?action=zoom&id=$id'>Return to request #$id</a>";
     } else {
         echo "ERROR: A required input is missing";
     }
