@@ -967,6 +967,29 @@ function zoomPage($id)
 	
     //TODO: ACC-4 - Prom3th3an
     $out .= "<h2>ACC Comments this request:<small> (<a href='acc.php?action=comment&id=$gid'>new comment</a>)</small></h2>";
+    if (hasright($_SESSION['user'], 'Admin')) {
+    $query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid';";
+    } else {
+    $query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' AND cmt_visability = 'user';";
+    }
+    $result = mysql_query($query, $tsSQLlink);
+	if (!$result) {
+		Die("Query failed: $query ERROR: " . mysql_error()); }
+	$numip = 0;
+	$currentrow = 0;
+ 	while ($row = mysql_fetch_assoc($result)) {
+		if ($numip == 0) { $out .= "<table cellspacing=\"0\">\n"; }
+		$currentrow += 1;
+		$out .= "<tr";
+		if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
+		$out .= "><td>". $row['cmt_time'] . "</td><td>" . $row['cmt_comment'] . "<a href='acc.php?action=zoom&id=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a></td></tr>";
+		$numip++;
+	}
+	if ($numip == 0) {
+		$out .= "<i>None.</i>\n";
+	}
+	else {$out .= "</table>\n";}
+
 
 	$ipmsg = 'this ip';
 	if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin'))
