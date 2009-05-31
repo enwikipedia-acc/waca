@@ -924,7 +924,7 @@ function zoomPage($id)
 	$out .= $requesttable;
 
 	//Escape injections.
-	$out .= "<br /><strong>Comment</strong>: " . $row['pend_cmt'] . "<br />\n";
+	$out .= "<br /><strong>Requester Comment</strong>: " . $row['pend_cmt'] . "<br />\n";
 	
 	global $enableReserving;
 	if( $enableReserving )
@@ -966,7 +966,7 @@ function zoomPage($id)
 	$out .= $logPage->showListLog(0,100);
 	
     //TODO: ACC-4 - Prom3th3an
-    $out .= "<h2>ACC Comments this request:<small> (<a href='acc.php?action=comment&id=$gid'>new comment</a>)</small></h2>";
+    $out .= "<h2>Comments on this request:<small> (<a href='acc.php?action=comment&id=$gid'>new comment</a>)</small></h2>";
     if (hasright($_SESSION['user'], 'Admin')) {
     $query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' ORDER BY cmt_id ASC;";
     } else {
