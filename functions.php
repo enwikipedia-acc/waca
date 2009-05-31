@@ -958,13 +958,15 @@ function zoomPage($id)
 	//// why are these here? st 24/05/09
 	//mysql_pconnect( $toolserver_host, $toolserver_username, $toolserver_password );
 	//@ mysql_select_db( $toolserver_database ) or print mysql_error( );
-	
+
 	$out .= "<h2>Logs for this request:</h2>";
 	$logPage = new LogPage();
 	$logPage->filterRequest=$thisid;
 	$logPage->showPager=false;
 	$out .= $logPage->showListLog(0,100);
 	
+    //TODO: ACC-4 - Prom3th3an
+    $out .= "<h2>ACC Comments this request:<small> (<a href='acc.php?action=comment&id=$gid'>new comment</a>)</small></h2>";
 
 	$ipmsg = 'this ip';
 	if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin'))
