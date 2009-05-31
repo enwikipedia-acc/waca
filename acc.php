@@ -1739,21 +1739,4 @@ elseif ($action == "comment-add") {
  echo showfooter();
 }
 
-elseif ($action == "comment-quick") {
-    if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visability'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
-        $id = sanitise($_POST['id']);
-        $user = sanitise($_SESSION['user']);
-        $comment = sanitise($_POST['comment']);
-        $visability = sanitise($_POST['visability']);
-        $now = date("Y-m-d H-i-s");
-
-        $query = "INSERT INTO acc_cmt (cmt_time, cmt_user, cmt_comment, cmt_visability, pend_id) VALUES ('$now', '$user', '$comment', '$visability', '$id');";
-        $result = mysql_query($query, $tsSQLlink);
-        if (!$result) {
-            Die("Query failed: $query ERROR: " . mysql_error());
-        }
-        echo zoomPage($id);
-        echo showfooter();
-    }
-}
 ?>
