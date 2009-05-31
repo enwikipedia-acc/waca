@@ -970,7 +970,8 @@ function zoomPage($id)
     if (hasright($_SESSION['user'], 'Admin')) {
     $query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid';";
     } else {
-    $query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' AND cmt_visability = 'user';";
+    $user = sanitise($_SESSION['user']);
+    $query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' AND (cmt_visability = 'user' OR cmt_user = '$user');";
     }
     $result = mysql_query($query, $tsSQLlink);
 	if (!$result) {
