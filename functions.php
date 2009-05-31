@@ -968,10 +968,10 @@ function zoomPage($id)
     //TODO: ACC-4 - Prom3th3an
     $out .= "<h2>ACC Comments this request:<small> (<a href='acc.php?action=comment&id=$gid'>new comment</a>)</small></h2>";
     if (hasright($_SESSION['user'], 'Admin')) {
-    $query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid';";
+    $query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' ORDER BY cmt_id ASC;";
     } else {
     $user = sanitise($_SESSION['user']);
-    $query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' AND (cmt_visability = 'user' OR cmt_user = '$user');";
+    $query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' AND (cmt_visability = 'user' OR cmt_user = '$user') ORDER BY cmt_id ASC;";
     }
     $result = mysql_query($query, $tsSQLlink);
 	if (!$result) {
