@@ -1719,15 +1719,15 @@ elseif ($action == "comment") {
 }
 
 elseif ($action == "comment-add") {
-    echo "Adding comment to request " . $_POST['id'] . "...";
-    sanitize($_POST, array('id' => 'int', 'comment' => 'str', 'visability' => 'str'));
-    if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visability'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
-        $id = $_POST['id'];
+    echo "<h2>Adding comment to request " . $_POST['id'] . "...</h2><br />";
+        if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visability'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
+        $id = sanitise($_POST['id']);
         $user = sanitise($_SESSION['user']);
-        $comment = $_POST['comment'];
-        $visability = $_POST['visability'];
-
-		$query = "INSERT INTO acc_cmt (cmt_time, cmt_user, cmt_comment, cmt_visability, pend_id) VALUES ('$now', '$user', '$comment', '$visability', '$id');";
+        $comment = sanitise($_POST['comment']);
+        $visability = sanitise($_POST['visability']);
+        $now = date("Y-m-d H-i-s");
+        
+		$query = "INSERT INTO acc_cmt (cmt_time, cmt_user, cmt_comment, cmt_visability, pend_id) VALUES ('$now', $user', '$comment', '$visability', '$id');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result) {
             Die("Query failed: $query ERROR: " . mysql_error()); }
