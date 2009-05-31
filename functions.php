@@ -693,7 +693,7 @@ function showlogin( $action = null, $params = null ) {
         <input id="password" type="password" name="password"/>
     </div>
     <div class="submit">
-        <input type="submit"/>
+        <input type="submit" value="Login"/>
     </div>
     </form>
     <br />
