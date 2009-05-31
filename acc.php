@@ -1719,12 +1719,23 @@ elseif ($action == "comment") {
 }
 
 elseif ($action == "comment-add") {
-    if( isset($_POST['id']) && (isset($_POST['comment'])) && (isset($_POST['visability'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
+    echo "Adding comment to request " . $_POST['id'] . "...";
+    sanitize($_POST, array('id' => 'int', 'comment' => 'str', 'visability' => 'str'));
+    if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visability'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
         $id = $_POST['id'];
-        echo "All values exist, Adding comment... <br />
+        $user = sanitise($_SESSION['user']);
+        $comment = $_POST['comment'];
+        $visability = $_POST['visability'];
+
+		$query = "INSERT INTO acc_cmt (cmt_time, cmt_user, cmt_comment, cmt_visability, pend_id) VALUES ('$now', '$user', '$comment', '$visability', '$id');";
+		$result = mysql_query($query, $tsSQLlink);
+		if (!$result) {
+            Die("Query failed: $query ERROR: " . mysql_error()); }
+        echo " Comment added Successfully! <br />
         <a href='acc.php?action=zoom&id=$id'>Return to request #$id</a>";
     } else {
-        echo "ERROR: A required input is missing";
+        echo "ERROR: A required input is missing <br />
+        <a href='acc.php'>Return to main</a>";
     }
  echo showfooter();
 }
