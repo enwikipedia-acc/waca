@@ -978,7 +978,11 @@ function zoomPage($id)
 	$numcomment = 0;
     $out .= "<ul>";
 	while ($row = mysql_fetch_assoc($result)) {
-		$out .= "<li><a href='users.php?viewuser=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented, <i>" . $row['cmt_comment'] . "</i> at " . $row['cmt_time'] . "</li>";
+        if ($row['cmt_visability'] == "admin") {
+		$out .= "<li><a href='users.php?viewuser=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented, " . $row['cmt_comment'] . "  at " . $row['cmt_time'] . " <font color='red'>(admin only)</font></li>";
+        } else {
+        $out .= "<li><a href='users.php?viewuser=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented,  " . $row['cmt_comment'] . "  at " . $row['cmt_time'] . "</li>";
+        }
 		$numcomment++;
 	}
 	if ($numcomment == 0) {
