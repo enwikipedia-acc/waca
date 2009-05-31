@@ -975,20 +975,14 @@ function zoomPage($id)
     $result = mysql_query($query, $tsSQLlink);
 	if (!$result) {
 		Die("Query failed: $query ERROR: " . mysql_error()); }
-	$numip = 0;
-	$currentrow = 0;
- 	while ($row = mysql_fetch_assoc($result)) {
-		if ($numip == 0) { $out .= "<table cellspacing=\"0\">\n"; }
-		$currentrow += 1;
-		$out .= "<tr";
-		if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
-		$out .= "><td>". $row['cmt_time'] . "</td><td>" . $row['cmt_comment'] . "<a href='acc.php?action=zoom&id=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a></td></tr>";
-		$numip++;
+	$numcomment = 0;
+	while ($row = mysql_fetch_assoc($result)) {
+		$out .= "<ul><a href='users.php?viewuser=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented, <i>" . $row['cmt_comment'] . "</i> at" . $row['cmt_time'];
+		$numcomment++;
 	}
-	if ($numip == 0) {
+	if ($numcomment == 0) {
 		$out .= "<i>None.</i>\n";
 	}
-	else {$out .= "</table>\n";}
 
 
 	$ipmsg = 'this ip';
