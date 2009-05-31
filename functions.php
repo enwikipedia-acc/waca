@@ -976,14 +976,15 @@ function zoomPage($id)
 	if (!$result) {
 		Die("Query failed: $query ERROR: " . mysql_error()); }
 	$numcomment = 0;
+    $out .= "<ul>";
 	while ($row = mysql_fetch_assoc($result)) {
-		$out .= "<ul><a href='users.php?viewuser=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented, <i>" . $row['cmt_comment'] . "</i> at" . $row['cmt_time'];
+		$out .= "<li><a href='users.php?viewuser=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented, <i>" . $row['cmt_comment'] . "</i> at " . $row['cmt_time'] . "</li>";
 		$numcomment++;
 	}
 	if ($numcomment == 0) {
 		$out .= "<i>None.</i>\n";
 	}
-
+    $out .= "</ul>";
 
 	$ipmsg = 'this ip';
 	if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin'))
