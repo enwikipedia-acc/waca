@@ -140,8 +140,6 @@ while ($row = mysql_fetch_assoc($result)) {
 		tagpage($user, "{{subst:User:Riana/Welcome|name=$sid|sig=$sig ~~~~~}}");
 	} else if ($template == "wodup") {
 		tagpage($user, "{{subst:User:WODUP/Welcome}} $sig ~~~~~");
-	} else if ($template == "w-kk") {
-		tagpage($user, "{{subst:User:KrakatoaKatie/Welcome1}} $sig ~~~~~");
 	} else if ($template == "w-screen") {
 		tagpage($user, "{{subst:w-screen|sig=$sig ~~~~~}}");
 	} else if ($template == "williamh") {
