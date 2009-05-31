@@ -1719,7 +1719,7 @@ elseif ($action == "comment") {
 }
 
 elseif ($action == "comment-add") {
-    if( isset($_POST['id']) && (isset($_POST['comment'])) && (isset($_POST['visability'])) ) {
+    if( isset($_POST['id']) && (isset($_POST['comment'])) && (isset($_POST['visability'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
         echo "All values exist, Adding comment...";
     } else {
         echo "ERROR: A required input is missing";
