@@ -1719,6 +1719,11 @@ elseif ($action == "comment") {
 }
 
 elseif ($action == "comment-add") {
-echo "Comment add page";
+    if( isset($_POST['id']) && (isset($_POST['comment'])) && (isset($_POST['visability'])) ) {
+        echo "All values exist, Adding comment...";
+    } else {
+        echo "ERROR: A required input is missing";
+    }
+ echo showfooter();
 }
 ?>
