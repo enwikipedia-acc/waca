@@ -965,7 +965,7 @@ function zoomPage($id)
 	$logPage->showPager=false;
 	$out .= $logPage->showListLog(0,100);
 	
-    //TODO: ACC-4 - Prom3th3an
+
     $out .= "<h2>Comments on this request:<small> (<a href='acc.php?action=comment&id=$gid'>new comment</a>)</small></h2>";
     if (hasright($_SESSION['user'], 'Admin')) {
     $query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' ORDER BY cmt_id ASC;";

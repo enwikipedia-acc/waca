@@ -1698,7 +1698,6 @@ elseif ($action == "breakreserve") {
 	}	
 }
 
-//TODO: Comment on Request Feature
 elseif ($action == "comment") {
     if( isset($_GET['id']) ) {
         $id = $_GET['id'];
