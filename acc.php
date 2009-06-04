@@ -1013,12 +1013,12 @@ elseif ($action == "usermgmt") {
 			if ($siuser == $oldname)
 			{
 					$_SESSION['user'] = $newname;
-					sendtobot("User $siuser changed their username to $newname");
+					sendtobot("User $siuser changed their username to " . $_POST['newname']);
 			}
 			else
 			{
 					setForceLogout(stripslashes($userid));
-					sendtobot("User $siuser changed $oldname's username to $newname");
+					sendtobot("User $siuser changed " . $_POST['oldname'] . "'s username to " . $_POST['newname']);
 			}
 			echo showfooter();
 			die();
