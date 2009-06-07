@@ -157,6 +157,5 @@ else {
 	echo '</form>';
 }
 
-echo "</div>";
 echo showfooter();
 ?>
