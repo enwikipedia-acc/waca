@@ -457,13 +457,13 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		$fail = 1;
 	}
 
-    // (JIRA) ACC-55
-    $trailingspace = substr($_POST['name'], strlen($_POST['name']) - 1);
-    If ($trailingspace == " " || $trailingspace == "_"  ) {
-        $message = showmessage(25);
+	// (JIRA) ACC-55
+	$trailingspace = substr($_POST['name'], strlen($_POST['name']) - 1);
+	if ($trailingspace == " " || $trailingspace == "_"  ) {
+		$message = showmessage(25);
 		echo "$message<br />\n";
 		$fail = 1;
-    }
+	}
 
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_name = '$user'";
@@ -487,7 +487,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		if( $enableEmailConfirm == 1 )
 		{$message = showmessage(15);} else {$message = showmessage(24);}
 		echo "$message<br />\n";
-        displayfooter();
+		displayfooter();
 	} else {
 		$message = showmessage(16);
 		echo "$message<br />\n";
