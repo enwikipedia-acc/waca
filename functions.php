@@ -950,7 +950,7 @@ function zoomPage($id)
 		$out .= "<ul>\n";
 		foreach( $spoofs as $oSpoof ) {
 			$oS = htmlentities($oSpoof);
-			$out .= "<li><a href=\"http://en.wikipedia.org/wiki/User:$oS\">$oSpoof</a> (<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$oS\">contribs</a> | <a href=\"http://en.wikipedia.org/w/index.php?title=Special%3ALog&amp;type=&amp;user=&amp;page=User%3A$oS\">Logs</a>)</li>\n";
+			$out .= "<li><a href=\"http://en.wikipedia.org/wiki/User:$oS\">$oSpoof</a> (<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$oS\">contribs</a> | <a href=\"http://en.wikipedia.org/w/index.php?title=Special%3ALog&amp;type=&amp;user=&amp;page=User%3A$oS\">Logs</a> | <a href='http://toolserver.org/~vvv/sulutil.php?user=$oS'>SUL</a>)</li>\n";
 		}
 		$out .= "</ul>\n";
 	}
