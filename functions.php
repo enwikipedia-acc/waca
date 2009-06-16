@@ -469,7 +469,7 @@ function listrequests($type, $hideip) {
 		$out .= $row['pend_ip'] . '" target="_blank">gr</a> ';
 
 		// IP whois
-		$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">w</a>';
+		$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">w</a> ';
 		
 		// Google
 		$out .= '<a class="request-src" href="http://www.google.com.au/search?q=' . $uname .'">g</a></small></td><td><small> ] ';
