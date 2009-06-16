@@ -470,6 +470,9 @@ function listrequests($type, $hideip) {
 
 		// IP whois
 		$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">w</a></small></td><td><small> ] ';
+		
+		// Google
+		$out .= '<a class="request-src" href="http://www.google.com.au/search?q=' . $uname .'">g</a></small></td><td><small> ] ';
             }
 		// Username U:
 		$duname = _utf8_decode($row['pend_name']);
