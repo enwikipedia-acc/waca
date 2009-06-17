@@ -100,7 +100,7 @@ if (isset($_GET['viewuser']))
 	echo "<li>User ID: " . $row['user_id'] . "</li>\n";
 	echo "<li>User Level: " . $row['user_level'] . "</li>\n";
 	echo "<li>User On-wiki name: <a href=\"http://en.wikipedia.org/wiki/User:" . $row['user_onwikiname'] . "\">" . $row['user_onwikiname'] . "</a>  |  <a href=\"http://en.wikipedia.org/wiki/User talk:" . $row['user_onwikiname'] . "\">talk page</a> </li>\n";
-	if(hasright($_SESSION['user'], 'Admin') || $_SESSION['user'] == $username)
+	if(hasright($_SESSION['user'], 'Admin'))
 	{
 		echo "<li>User Last IP: <a href='search.php?term=" . $row['user_lastip'] . "&type=IP'>" . $row['user_lastip'] . "</a></li>\n";
 	}
