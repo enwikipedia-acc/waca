@@ -321,7 +321,8 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		@ mysql_select_db("enwiki_p", $asSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 		$query = 'SELECT * FROM ipblocks WHERE ipb_address = \''.$ip.'\';';
 		$result = mysql_query($query, $asSQLlink);
-		if( $result && !isOnWhitelist( $ip ) ) {
+		$rows = mysql_num_rows( $result );
+		if( ($rows > 0) && !isOnWhitelist( $ip ) ) {
 			$message = showmessage(9);
 			echo "$message<br />\n";
 			$fail = 1;
