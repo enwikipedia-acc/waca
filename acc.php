@@ -396,6 +396,7 @@ HTML;
 }
 elseif ($action == "login") {
 	$puser = sanitize($_POST['username']);
+	$ip = sanitize($_SERVER['REMOTE_ADDR']);
 	$query = "SELECT * FROM acc_user WHERE user_name = \"$puser\";";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
@@ -425,6 +426,8 @@ elseif ($action == "login") {
 	{
 			$_SESSION['userID'] = $row['user_id'];
 			$_SESSION['user'] = $row['user_name'];
+			$_SESSION['ip'] = $ip;
+			mysql_query("UPDATE acc_user SET user_lastip = $ip", $tsSQLlink);
 			if ( isset( $_GET['newaction'] ) ) {
 				$header = "Location: $tsurl/acc.php?action=".$_GET['newaction'];
 				foreach ($_GET as $key => $get) {
