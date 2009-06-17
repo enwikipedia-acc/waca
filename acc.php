@@ -427,7 +427,7 @@ elseif ($action == "login") {
 			$_SESSION['userID'] = $row['user_id'];
 			$_SESSION['user'] = $row['user_name'];
 			$_SESSION['ip'] = $ip;
-			mysql_query("UPDATE acc_user SET user_lastip = $ip", $tsSQLlink);
+			mysql_query("UPDATE acc_user SET user_lastip = $ip WHERE acc_user = " . $row['user_name'], $tsSQLlink);
 			if ( isset( $_GET['newaction'] ) ) {
 				$header = "Location: $tsurl/acc.php?action=".$_GET['newaction'];
 				foreach ($_GET as $key => $get) {
