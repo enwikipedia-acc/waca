@@ -1756,6 +1756,8 @@ elseif ($action == "comment-quick") {
         if (!$result) {
             Die("Query failed: $query ERROR: " . mysql_error());
         }
+        $botcomment = $user . " posted a comment on request " . $id;
+        sendtobot($botcomment);
         echo zoomPage($id);
         echo showfooter();
     }
