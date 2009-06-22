@@ -1733,7 +1733,9 @@ elseif ($action == "comment-add") {
             Die("Query failed: $query ERROR: " . mysql_error()); }
         echo " Comment added Successfully! <br />
         <a href='acc.php?action=zoom&id=$id'>Return to request #$id</a>";
-        sendtobot($user . " posted a " . $visability == "admin" ? "private " : "" . "comment on request " . $id);
+        $botcomment_pvt =  ($visability == "admin") ? "private " : "";
+        $botcomment = $user . " posted a " . $botcomment_pvt . "comment on request " . $id;
+        sendtobot($botcomment);
     } else {
         echo "ERROR: A required input is missing <br />
         <a href='acc.php'>Return to main</a>";
