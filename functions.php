@@ -470,6 +470,9 @@ function listrequests($type, $hideip) {
 
 		// IP whois
 		$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">w</a> ';
+
+		// Abuse Filter
+		$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&wpSearchUser=' . $row['pend_ip'] . '" target="_blank">af</a> ';
 		
 		// Google
 		$out .= '<a class="request-src" href="http://www.google.com/search?q=' . $uname .'">g</a></small></td><td><small> ] ';
