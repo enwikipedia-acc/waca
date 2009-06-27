@@ -19,6 +19,7 @@
 **OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
 **Prodego    ( http://en.wikipedia.org/wiki/User:Prodego )   **
 **FunPika    ( http://en.wikipedia.org/wiki/User:FunPika )   **
+**PRom3th3an ( http://en.wikipedia.org/wiki/User:Promethean )**
 **************************************************************/
 
 if ($ACC != "1") {
