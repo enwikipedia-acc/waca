@@ -325,7 +325,6 @@ else
 	
 	// Build list of users
 	echo "<h2>User List</h2>\n";
-	echo "<i>Developers are bolded</i>\n";
 	$lastlevel = NULL;
 	while ($row = mysql_fetch_assoc($result)) // Return the result of the database query as an associative array; then , for each row returned...
 	{
@@ -349,16 +348,8 @@ else
 		{
 			echo "<li><a href=\"users.php?viewuser=" . $row['user_id'] . "\">"; // Start list item, link to user page
 			$uid = array ($row['user_name'], $row['user_onwikiname'], $row['user_id']); // Build an array of the user's name, onwiki name, and ID to compare with users in devlist
-			if (in_array($uid, $regdevlist))
-			{
-				// If the user is a developer, write their name in bold
-				echo "<b>" . $row['user_name'] . "</b>";
-			}
-			else
-			{
-				// Write the users name
-				echo $row['user_name'];
-			}
+			// Write the users name
+			echo $row['user_name'];
 			echo "</a></li>\n"; // End the list item
 		}
 		$lastlevel = $row['user_level']; // Set lastlevel to the level of this user so we can see if we need to start a new list
