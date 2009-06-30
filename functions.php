@@ -946,21 +946,26 @@ function zoomPage($id)
 	
 
 	
-	$out .= "<h2>Possibly conflicting usernames</h2>\n";
+	$out2 = "<h2>Possibly conflicting usernames</h2>\n";
 	$spoofs = getSpoofs( $sUser );
 	
 	if( !$spoofs ) {
-		$out .= "<i>None detected</i><br />\n";
+		$out2 .= "<i>None detected</i><br />\n";
 	} elseif ( !is_array($spoofs) ) {
-		$out .= "<h3 style='color: red'>$spoofs</h3>\n";
+		$out2 .= "<h3 style='color: red'>$spoofs</h3>\n";
 	} else {
-		$out .= "<ul>\n";
+		$out2 .= "<ul>\n";
 		foreach( $spoofs as $oSpoof ) {
+			if ( $oSpoof == $sUser ) {
+				$out .= "<h3>Note: This account has already been created</h3>";
+				continue;
+			}
 			$oS = htmlentities($oSpoof);
-			$out .= "<li><a href=\"http://en.wikipedia.org/wiki/User:$oS\">$oSpoof</a> (<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$oS\">contribs</a> | <a href=\"http://en.wikipedia.org/w/index.php?title=Special%3ALog&amp;type=&amp;user=&amp;page=User%3A$oS\">Logs</a> | <a href='http://toolserver.org/~vvv/sulutil.php?user=$oS'>SUL</a>)</li>\n";
+			$out2 .= "<li><a href=\"http://en.wikipedia.org/wiki/User:$oS\">$oSpoof</a> (<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$oS\">contribs</a> | <a href=\"http://en.wikipedia.org/w/index.php?title=Special%3ALog&amp;type=&amp;user=&amp;page=User%3A$oS\">Logs</a> | <a href='http://toolserver.org/~vvv/sulutil.php?user=$oS'>SUL</a>)</li>\n";
 		}
-		$out .= "</ul>\n";
+		$out2 .= "</ul>\n";
 	}
+	$out .= $out2;
 	
 	//// why are these here? st 24/05/09
 	//mysql_pconnect( $toolserver_host, $toolserver_username, $toolserver_password );
