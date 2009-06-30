@@ -420,12 +420,10 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 
 	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . $_POST['name'] . "&format=php");
 	$ue = unserialize($userexist);
-	foreach ($ue['query']['users'] as $oneue) {
-		if (!isset ($oneue['missing'])) {
-			$message = showmessage(10);
-			echo "$message<br />\n";
-			$fail = 1;
-		}
+	if (!isset ($ue['query']['users']['0']['missing'])) {
+		$message = showmessage(10);
+		echo "$message<br />\n";
+		$fail = 1;
 	}
 	$nums = preg_match("/^[0-9]+$/", $_POST['name']);
 	if ($nums > 0) {
