@@ -124,9 +124,11 @@ elseif ( $action == "sreg" ) {
 	}
 	$userexist = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
 	$ue = unserialize( $userexist );
-	if ( !isset($oneue['query']['users']['0']['missing'])) {
-		echo "Invalid On-Wiki username.<br />\n";
-		$fail = 1;
+	foreach ( $ue['query']['users']['0'] as $oneue ) {
+		if ( !isset($oneue['missing'])) {
+			echo "Invalid On-Wiki username.<br />\n";
+			$fail = 1;
+		}
 	}
 
 	$user = mysql_real_escape_string($_REQUEST['name']);
