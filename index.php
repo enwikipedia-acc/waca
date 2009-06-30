@@ -214,11 +214,11 @@ if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 	} else {
 		echo "E-mail confirmation failed!<br />\n";
 	}
-	showfootern();
+	echo showfootern();
 	die();
 } elseif ( $action == "confirm" ) {
 	echo "Invalid Parameters. Please be sure you copied the URL correctly<br />\n";
-	showfootern();
+	echo showfootern();
 	die();
 }
 }
@@ -274,7 +274,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 			$message = showmessage(19);
 			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
 			$fail = 1;
-			showfootern();
+			echo showfootern();
 			die();
 		}
 	}
@@ -293,7 +293,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 			$message = showmessage(19);
 			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
 			$fail = 1;
-			showfootern();
+			echo showfootern();
 			die();
 		}
 	}
@@ -312,7 +312,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 			$message = showmessage(19);
 			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
 			$fail = 1;
-			showfootern();
+			echo showfootern();
 			die();
 		}
 	}
@@ -488,14 +488,14 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		if( $enableEmailConfirm == 1 )
 		{$message = showmessage(15);} else {$message = showmessage(24);}
 		echo "$message<br />\n";
-		showfootern();
+		echo showfootern();
 	} else {
 		$message = showmessage(16);
 		echo "$message<br />\n";
 	}
 	if ($fail == 1) {
 		displayform();
-		showfootern();
+		echo showfootern();
 		die();
 	}
 
@@ -521,7 +521,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	}
 } else {
 	displayform();
-	showfootern();
+	echo showfootern();
 	die();
 }
 ?>
