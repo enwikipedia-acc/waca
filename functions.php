@@ -512,7 +512,10 @@ function listrequests($type, $hideip) {
 
 		// Invalid
 		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=5&amp;sum=' . $row['pend_checksum'] . '">Invalid</a>';
-
+		
+		// Custom
+		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=custom&amp;sum=' . $row['pend_checksum'] . '">Custom</a>';
+		
 		// Defer to admins or users
 		if (is_numeric($type)) {
 			$type = $row['pend_status'];

@@ -1389,7 +1389,7 @@ HTML;
 }
 elseif ($action == "done" && $_GET['id'] != "") {
 	// check for valid close reasons
-	if (!isset($_GET['email']) | $_GET['email'] >= 6) {
+	if (!isset($_GET['email']) | $_GET['email'] >= 6 and $_GET['email'] != 'custom') {
 		echo "Invalid close reason";
 		echo showfooter();
 		die();
@@ -1445,6 +1445,22 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		echo showfooter();
 		die();
 	}
+	
+	// custom close reasons
+	if ($_GET['email'] == 'custom') {
+		if (!empty($_POST['msgbody'])) {
+			echo "<form action='".$_SERVER["PHP_SELF"]."?".$_SERVER["QUERY_STRING"]."' method='post'>\n";
+			echo "<p>Message:</p>\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
+			echo "<p><input type='submit' value='Close and send' /></p>\n";
+			echo "</form>\n";
+			echo showfooter();
+			die();
+		} else {
+			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+			mail($row2['pend_email'], "RE: English Wikipedia Account Request", $_POST['msgbody'], $headers);
+		}
+	}
+	
 	$query = "SELECT * FROM acc_user WHERE user_name = '$sid';";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
@@ -1495,13 +1511,16 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		case 5 :
 			$crea = "Impossible";
 			break;
+		case 'custom' :
+			$crea = "Custom Close";
+			break;
 	}
 	$now = explode("-", $now);
 	$now = $now['0'] . "-" . $now['1'] . "-" . $now['2'] . ":" . $now['3'] . ":" . $now['4'];
 	sendtobot("Request " . $_GET['id'] . " (" . $row2['pend_name'] . ") Marked as 'Done' ($crea) by " . $_SESSION['user'] . " on $now");
 	echo "Request " . $_GET['id'] . " ($gus) marked as 'Done'.<br />";
 	$towhom = $row2['pend_email'];
-	if ($gem != "0") {
+	if ($gem != "0" and $gem != "custom") {
 		sendemail($gem, $towhom);
 		$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $_GET['id'] . "';";
 		$result = mysql_query($query, $tsSQLlink);
