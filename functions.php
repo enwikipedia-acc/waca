@@ -680,8 +680,11 @@ function showlogin( $action = null, $params = null ) {
 	global $_SESSION;
 	$html ='<div id="sitenotice">Please login first, and we\'ll send you on your way!</div>
     <div id="content">
-    <h2>Login</h2>
-    <form action="acc.php?action=login&amp;nocheck=1';
+    <h2>Login</h2>';
+    if ($_GET['error']=='authfail') {
+    	$html .= "<p>Username and/or password incorrect. Please try again.</p>";
+    }
+    $html .='<form action="acc.php?action=login&amp;nocheck=1';
     if (( $action ) && ($action != "logout")) {
     	$html .= "&amp;newaction=".$action;
     	foreach ($params as $param => $value) { 

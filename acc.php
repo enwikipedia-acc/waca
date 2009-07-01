@@ -445,8 +445,8 @@ elseif ($action == "login") {
 	}
 	else
 	{
-			echo "<h2>ERROR</h2>\n";
-			echo "Username and/or password incorrect.<br />\n";
+		header("Location: $tsurl/acc.php?error=authfail");
+		die();
 	}
 }
 elseif ($action == "messagemgmt") {
