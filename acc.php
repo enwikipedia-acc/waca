@@ -1448,7 +1448,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	
 	// custom close reasons
 	if ($_GET['email'] == 'custom') {
-		if (!empty($_POST['msgbody'])) {
+		if (!isset($_POST['msgbody']) or empty($_POST['msgbody'])) {
 			echo "<form action='".$_SERVER["PHP_SELF"]."?".$_SERVER["QUERY_STRING"]."' method='post'>\n";
 			echo "<p>Message:</p>\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
 			echo "<p><input type='submit' value='Close and send' /></p>\n";
@@ -1511,9 +1511,9 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		case 5 :
 			$crea = "Impossible";
 			break;
-		case 'custom' :
-			$crea = "Custom Close";
-			break;
+	}
+	if ($gem == 'custom') {
+		$crea = "Custom Close";
 	}
 	$now = explode("-", $now);
 	$now = $now['0'] . "-" . $now['1'] . "-" . $now['2'] . ":" . $now['3'] . ":" . $now['4'];
