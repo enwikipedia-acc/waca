@@ -725,7 +725,13 @@ elseif ($action == "ban") {
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\">Ban target: $target\n<br /><table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr></table><br /><input type=\"submit\"><input type=\"hidden\" name=\"target\" value=\"$target\" /><input type=\"hidden\" name=\"type\" value=\"$type\" /></form>\n";
 		}
 	} else {
-		echo "<h2>Active Ban List</h2>\n<ol>\n";
+		echo "<h2>Active Ban List</h2>\n<table>\n";
+		echo "<tr><td>IP/Name/Email</td><td>Banned by</td><td>Reason</td><td>Time</td><td>Expiry</td>";
+		$isAdmin = hasright($_SESSION['user'], "Admin");
+		if ($isAdmin) {
+			echo "<td>Unban</td>";
+		}
+		echo "</tr>";
 		$query = "SELECT * FROM acc_ban;";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
@@ -736,26 +742,32 @@ elseif ($action == "ban") {
 			} else {
 				$until = date("F j, Y, g:i a", $row['ban_duration']);
 			}
-			echo "<li><small><strong>";
+			echo "<tr>";
 			switch($row['ban_type'])
 			{
 				case "IP":
-					echo '<a href="search.php?term='.$row['ban_target'].'&type=IP">'.$row['ban_target'].'</a>';
+					echo '<td><a href="search.php?term='.$row['ban_target'].'&type=IP">'.$row['ban_target'].'</a></td>';
 					break;
 				case "EMail":
-					echo '<a href="search.php?term='.$row['ban_target'].'&type=email">'.$row['ban_target'].'</a>';
+					echo '<td><a href="search.php?term='.$row['ban_target'].'&type=email">'.$row['ban_target'].'</a></td>';
 					break;
 				case "Name";
-					echo '<a href="search.php?term='.$row['ban_target'].'&type=Request">'.$row['ban_target'].'</a>';
+					echo '<td><a href="search.php?term='.$row['ban_target'].'&type=Request">'.$row['ban_target'].'</a></td>';
 					break;
 				default:
-					echo $row['ban_target'];
+					echo '<td>'.$row['ban_target'].'</td>';
 					break;
 			}
-			echo "</strong> - Banned by: <strong>" . $row['ban_user'] . "</strong> for <strong>" . $row['ban_reason'] . "</strong> at <strong>" . $row['ban_date'] . "</strong> Until <strong>$until</strong>. (<a href=\"acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">UNBAN</a>)</small></li>";
+			echo "<td>".$row['ban_user']."</td><td>".$row['ban_reason']."</td><td>".$row['ban_date']."</td><td>$until</td>";
+			if ($isAdmin) {
+				echo "<td><a href=\"acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">Unban</a></td>";
+			}
+			echo "</tr>";
 		}
-		echo "</ol>\n";
-		echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\"><table><tr><td>Ban target:</td><td><input type=\"text\" name=\"target\"></td></tr><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr><tr><td>Type:</td><td><select name=\"type\"><option value=\"IP\">IP</option><option value=\"Name\">Name</option><option value=\"EMail\">E-Mail</option></select></td></tr></table><br /><input type=\"submit\"></form>\n";
+		echo "</table>\n";
+		if($isAdmin) {
+			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\"><table><tr><td>Ban target:</td><td><input type=\"text\" name=\"target\"></td></tr><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr><tr><td>Type:</td><td><select name=\"type\"><option value=\"IP\">IP</option><option value=\"Name\">Name</option><option value=\"EMail\">E-Mail</option></select></td></tr></table><br /><input type=\"submit\"></form>\n";
+		}
 		echo showfooter();
 		die();
 	}
