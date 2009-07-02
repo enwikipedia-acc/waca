@@ -802,6 +802,8 @@ elseif ($action == "usermgmt") {
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		sendtobot("User $aid (" . $row2['user_name'] . ") approved by $siuser");
+		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+		mail($row2['user_email'], "ACC Account Approved", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been approved by $siuser. To login please go to $tsurl/acc.php.\n- The English Wikipedia Account Creation Team", $headers);
 	}
 	if (isset ($_GET['demote'])) {
 		$did = sanitize($_GET['demote']);
@@ -836,6 +838,8 @@ elseif ($action == "usermgmt") {
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
 			sendtobot("User $did (" . $row2['user_name'] . ") demoted by $siuser because: \"" . $_POST['demotereason'] . "\"");
+			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+			mail($row2['user_email'], "ACC Account Demoted", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been demoted by $siuser because ".$_POST['demotereason'].". To contest this demotion please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
 			echo showfooter();
 			die();
 		}
@@ -874,6 +878,8 @@ elseif ($action == "usermgmt") {
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
 			sendtobot("User $did (" . $row2['user_name'] . ") had tool access suspended by $siuser because: \"" . $_POST['suspendreason'] . "\"");
+			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+			mail($row2['user_email'], "ACC Account Suspended", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been suspended by $siuser because ".$_POST['suspendreason'].". To contest this suspension please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
 			echo showfooter();
 			die();
 		}
@@ -899,6 +905,8 @@ elseif ($action == "usermgmt") {
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		sendtobot("User $aid (" . $row2['user_name'] . ") promoted to admin by $siuser");
+		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+		mail($row2['user_email'], "ACC Account Promoted", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been promted to admin status by $siuser.\n- The English Wikipedia Account Creation Team", $headers);
 	}
 	if (isset ($_GET['decline'])) {
 		$did = sanitize($_GET['decline']);
@@ -943,6 +951,8 @@ elseif ($action == "usermgmt") {
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
 			sendtobot("User $did (" . $row2['user_name'] . ") declined access by $siuser because: \"" . $_POST['declinereason'] . "\"");
+			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+			mail($row2['user_email'], "ACC Account Declined", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been declined access to the account creation tool by $siuser because ".$_POST['declinereason'].". For more infomation please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
 			echo showfooter();
 			die();
 		}
