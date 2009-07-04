@@ -22,7 +22,8 @@
 **                                                           **
 **************************************************************/
 
-require_once ('config.inc.php');
+require_once 'config.inc.php';
+require_once 'AntiSpoof.php';
 
 $fail = 0;
 
@@ -763,7 +764,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		if( $enableEmailConfirm == 1 )
 		{$message = $messages->getMessage(15);} else {$message = $messages->getMessage(24);}
 		echo "$message<br />\n";
-		echo $messages->getMessage();
+		echo $messages->getMessage(22);
 	} else {
 		$message = $messages->getMessage(16);
 		echo "$message<br />\n";
