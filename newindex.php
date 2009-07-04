@@ -361,7 +361,7 @@ class accRequest {
 			if($return[0] == 'OK' ) {		
 				$sanitized = $asSQL->escape($return[1]);
 				$query = "SELECT su_name FROM ".$antispoof_table." WHERE su_normalized = '$sanitized';";
-				$result = $asSQL->query($query, $spooflink);
+				$result = $asSQL->query($query);
 				if(!$result) $asSQL->showError("Database error.");
 				$numSpoof = 0;
 				$reSpoofs = array();
@@ -793,7 +793,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		$request->upcsum($pid);
 	}
 	if ($enableEmailConfirm == 1) {	
-		$tsSQL->confirmEmail( $pid );
+		$request->confirmEmail( $pid );
 	}
 } else {
 	$request->displayform();
