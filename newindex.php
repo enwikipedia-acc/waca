@@ -33,7 +33,7 @@ $fail = 0;
 class offlineMessage {
 	private $dontUseDb;
 	
-	public __contruct() {
+	public function __construct() {
 		global $dontUseDb;
 		$this->dontUseDb = $dontUseDb;
 	}
@@ -87,7 +87,7 @@ HTML;
 HTML;
 	}
 	
-	function showInternalOfflineMessage() {
+	private function showInternalOfflineMessage() {
 		global $offlineProblem, $offlineCulprit;
 		echo <<<HTML
 		<h2>Whoops!</h2>
@@ -118,26 +118,26 @@ HTML;
 class database {
 	private $dbLink;
 	
-	public __construct($host,$username,$password) {
+	public function __construct($host,$username,$password) {
 		$this->dbLink = mysql_pconnect($host, $username, $password) or $this->showError("Error connecting to database $host: ".$this->getError(),'Error connecting to database');
 	}
 	
-	public selectDb($database) {
+	public function selectDb($database) {
 		// TODO: Improve error msg and handling
 		mysql_select_db($database,$this->dbLink) or $this->showError('Error selecting database.');
 	}
 	
-	public query($query) {
+	public function query($query) {
 		return mysql_query($query,$this->dbLink);
 	}
 	
-	public escape($string) {
+	public function escape($string) {
 		// WARNING: This does not escape against XSS, this is intentional to avoid double escape etc
 		// please escape user input seperately using htmlentities()
 		return mysql_real_escape_string($string,$this->dbLink);
 	}
 	
-	public showError($sql_error,$generic_error=null) {
+	public function showError($sql_error,$generic_error=null) {
 		global $enableSQLError;
 		if ($generic_error==null) {
 			$generic_error = $sql_error;
@@ -149,11 +149,11 @@ class database {
 		}
 	}
 	
-	public getError() {
+	public function getError() {
 		return mysql_error($this->dbLink);
 	}
 	
-	public __destruct() {
+	public function __destruct() {
 		mysql_close($this->dbLink);
 	}
 }
@@ -162,7 +162,7 @@ class database {
 class accRequest {
 	private $id;
 	
-	public __construct () {
+	public function __construct () {
 		global $enableEmailConfirm;
 		if ($enableEmailConfirm == 1) {
 			$this->clearOldUnconfirmed();
@@ -460,7 +460,7 @@ class accRequest {
 
 // the skin
 class skin {
-	public displayheader() {
+	public function displayheader() {
 		global $tsSQL;
 		$result = $tsSQL->query("SELECT * FROM acc_emails WHERE mail_id = '8';");
 		if (!$result) {
@@ -474,7 +474,7 @@ class skin {
 
 // messages class
 class messages {
-	public getMessage ($messageno) {
+	public function getMessage ($messageno) {
 		global $tsSQL;
 		$messageno = $tsSQL->escape($messageno);
 		$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
