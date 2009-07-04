@@ -234,6 +234,55 @@ class accRequest {
 		}
 	}
 	
+	public function checkConfirmEmail() {
+		global $tsSQL, $enableEmailConfirm, $messages, $action, $accbot;
+		if ($enableEmailConfirm == 1) {
+			if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
+				$pid = $tsSQL->escape($_GET['id']);
+				$query = "SELECT * FROM acc_pend WHERE pend_id = '$pid';";
+				$result = $tsSQL->query($query);
+				if ( !$result )
+					$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
+				$row = mysql_fetch_assoc( $result );
+				if( $row['pend_mailconfirm'] == $_GET['si'] ) {
+					$successmessage = $messages->getMessage(24);
+					echo "$successmessage <br />\n";
+					$query = "UPDATE acc_pend SET pend_mailconfirm = 'Confirmed' WHERE pend_id = '$pid';";
+					$result = $tsSQL->query($query);
+					if ( !$result )
+						$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>."); 
+					$user = $row['pend_name'];
+					$spoofs = $this->getSpoofs($user);
+					if( $spoofs === FALSE ) {
+						$uLevel = "Open";
+						$what = "";
+					} else {
+						$uLevel = "Admin";
+						$what = "<Account Creator Needed!> ";
+					}
+					$comments = html_entity_decode(stripslashes($row['pend_cmt']));
+						$accbot->send("\00314[[\00303acc:\00307$pid\00314]]\0034 N\00310 \00302$tsurl/acc.php?action=zoom&id=$pid\003 \0035*\003 \00303$user\003 \0035*\003 \00310$what\003" . substr(str_replace(array (
+						"\n",
+						"\r"
+						), array (
+						' ',
+						' '
+						), $comments), 0, 200) . ((strlen($comments) > 200) ? '...' : ''));
+				} elseif( $row['pend_mailconfirm'] == "Confirmed" ) {
+					echo "Your e-mail address has already been confirmed!\n";
+				} else {
+					echo "E-mail confirmation failed!<br />\n";
+				}
+				echo $messages->getMessage('22');
+				die();
+			} elseif ( $action == "confirm" ) {
+				echo "Invalid Parameters. Please be sure you copied the URL correctly<br />\n";
+				echo $messages->getMessage('22');
+				die();
+			}
+		}
+	}
+	
 	public function checktor($addr) {
 		/*
 		* Check if the supplied host is a TOR node
@@ -369,6 +418,30 @@ class accRequest {
 		);
 	}
 	
+	public function checkBlacklist($blacklist,$check,$email,$ircblname) {
+		global $tsSQL, $accbot, $messages;
+		$ip = $_SERVER['REMOTE_ADDR'];
+		foreach ($blacklist as $blname => $regex) {
+			$phail_test = @ preg_match($regex,$check);
+			if ($phail_test == TRUE) {
+				$message = $messages->getMessage(15);
+				echo "$message<br />\n";
+				$now = date("Y-m-d H-i-s");
+				$target = "$blname";
+				$siuser = $tsSQL->escape($check);
+				$cmt = $tsSQL->escape("FROM $ip $email");
+				$accbot->send("[$ircblname] HIT: $blname - " . $check . " $ip $email " . $_SERVER['HTTP_USER_AGENT']);
+				$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
+				$result = $tsSQL->query($query);
+				if (!$result)
+					die("ERROR: No result returned.");
+				$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\'' . $tsSQL->escape($ip) . '\',\'ClueBot\',\'' . $tsSQL->escape('Blacklist Hit: ' . $blname . ' - ' . $check . ' ' . $ip . ' ' . $email . ' ' . $_SERVER['HTTP_USER_AGENT']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');';
+				$tsSQL->query($query);
+				die();
+			}
+		}
+	}
+	
 	public function upcsum($id) {
 		/*
 		* Updates the entries checksum (on each load of that entry, to prevent dupes)
@@ -465,52 +538,7 @@ if( isset( $_GET['id'] ) ) {
 	$request->setID($_GET['id']);
 }
 
-if ($enableEmailConfirm == 1) {
-	// TODO: I think some of this cam be moved across to the request class
-	if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
-		$pid = $tsSQL->escape($_GET['id']);
-		$query = "SELECT * FROM acc_pend WHERE pend_id = '$pid';";
-		$result = $tsSQL->query($query);
-		if ( !$result )
-			$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
-		$row = mysql_fetch_assoc( $result );
-		if( $row['pend_mailconfirm'] == $_GET['si'] ) {
-	                $successmessage = $messages->getMessage(24);
-			echo "$successmessage <br />\n";
-			$query = "UPDATE acc_pend SET pend_mailconfirm = 'Confirmed' WHERE pend_id = '$pid';";
-			$result = $tsSQL->query($query);
-			if ( !$result )
-				$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>."); 
-			$user = $row['pend_name'];
-			$spoofs = $request->getSpoofs($user);
-			if( $spoofs === FALSE ) {
-				$uLevel = "Open";
-				$what = "";
-			} else {
-				$uLevel = "Admin";
-				$what = "<Account Creator Needed!> ";
-			}
-			$comments = html_entity_decode(stripslashes($row['pend_cmt']));
-				$accbot->send("\00314[[\00303acc:\00307$pid\00314]]\0034 N\00310 \00302$tsurl/acc.php?action=zoom&id=$pid\003 \0035*\003 \00303$user\003 \0035*\003 \00310$what\003" . substr(str_replace(array (
-				"\n",
-				"\r"
-				), array (
-				' ',
-				' '
-				), $comments), 0, 200) . ((strlen($comments) > 200) ? '...' : ''));
-		} elseif( $row['pend_mailconfirm'] == "Confirmed" ) {
-			echo "Your e-mail address has already been confirmed!\n";
-		} else {
-			echo "E-mail confirmation failed!<br />\n";
-		}
-		echo $messages->getMessage('22');
-		die();
-	} elseif ( $action == "confirm" ) {
-		echo "Invalid Parameters. Please be sure you copied the URL correctly<br />\n";
-		echo $messages->getMessage('22');
-		die();
-	}
-}
+$request->checkConfirmEmail();
 
 if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$_POST['name'] = str_replace(" ", "_", $_POST['name']);
@@ -532,14 +560,10 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$ip = $asSQL->escape($ip);
 
 	$user = $_POST['name'];
-	$user = ltrim($user);
-	$user = rtrim($user);
-	$user = $asSQL->escape($user);
+	$user = $asSQL->escape(trim($user));
 
 	$email = $_POST['email'];
-	$email = ltrim($email);
-	$email = rtrim($email);
-	$email = $asSQL->escape($email);
+	$email = $asSQL->escape(trim($email));
 	
 	//Delete old bans
 	$tsSQL->query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP() AND ban_duration != -1');
@@ -618,65 +642,31 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		}
 	}	
 	
-	foreach ($uablacklist as $wubl => $ubl) {
-		$phail_test = @ preg_match($ubl, $_SERVER['HTTP_USER_AGENT']);
-		if ($phail_test == TRUE) {
-			/*
-			Commenting this out as well, since the stuff below is commented out.
-			Shoudn't this whole block be removed now? its kinda bad, banning users
-			without logging or giving a reason -- Chris 7/3 (or 3/7 aus dating)
-			$now = date("Y-m-d H-i-s");
-			$target = "$wubl";
-			$siuser = mysql_real_escape_string($_POST['name']);
-			$cmt = mysql_real_escape_string("FROM $ip $email");
-			*/
+	// Commenting out the whole block, currently the code just dies
+	// without giving the user an error or logging it anywhere -- Chris G 7/4/09 (aus: 4/7/09)
+	//foreach ($uablacklist as $wubl => $ubl) {
+		//$phail_test = @ preg_match($ubl, $_SERVER['HTTP_USER_AGENT']);
+		//if ($phail_test == TRUE) {
+			//$now = date("Y-m-d H-i-s");
+			//$target = "$wubl";
+			//$siuser = mysql_real_escape_string($_POST['name']);
+			//$cmt = mysql_real_escape_string("FROM $ip $email");
+			
 			//sendtobot("[Grawp-Bl] HIT: $wubl - " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
 			//$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
 			//$result = mysql_query($query);
 			//if(!$result) Die("ERROR: No result returned.");
 			//$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string('Blacklist Hit: '.$wnbl.' - '.$_POST['name'].' '.$ip2.' '.$email.' '.$_SERVER['HTTP_USER_AGENT']).'\',\''.$now.'\',\''.(time() + 172800).'\');';
 			//mysql_query($query);
-			die();
-		}
-	}
-	foreach ($nameblacklist as $wnbl => $nbl) {
-		$phail_test = @ preg_match($nbl, $_POST['name']);
-		if ($phail_test == TRUE) {
-			$message = $messages->getMessage(15);
-			echo "$message<br />\n";
-			$now = date("Y-m-d H-i-s");
-			$target = "$wnbl";
-			$siuser = $tsSQL->escape($_POST['name']);
-			$cmt = $tsSQL->escape("FROM $ip $email");
-			$accbot->send("[Name-Bl] HIT: $wnbl - " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
-			$result = $tsSQL->query($query);
-			if (!$result)
-				die("ERROR: No result returned.");
-			$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\'' . $ip . '\',\'ClueBot\',\'' . $tsSQL->escape('Blacklist Hit: ' . $wnbl . ' - ' . $_POST['name'] . ' ' . $ip2 . ' ' . $email . ' ' . $_SERVER['HTTP_USER_AGENT']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');';
-			$tsSQL->query($query);
-			die();
-		}
-	}
-	foreach ($emailblacklist as $wnbl => $nbl) {
-		$phail_test = @ preg_match($nbl, $_POST['email']);
-		if ($phail_test == TRUE) {
-			$message = $messages->getMessage(15);
-			echo "$message<br />\n";
-			$now = date("Y-m-d H-i-s");
-			$target = "$wnbl";
-			$siuser = $tsSQL->escape($_POST['name']);
-			$cmt = $tsSQL->escape("FROM $ip $email");
-			$accbot->send("[Email-Bl] HIT: $wnbl - " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
-			$result = $tsSQL->query($query);
-			if (!$result)
-				die("ERROR: No result returned.");
-			$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\'' . $ip . '\',\'ClueBot\',\'' . $tsSQL->escape('Blacklist Hit: ' . $wnbl . ' - ' . $_POST['name'] . ' ' . $ip2 . ' ' . $email . ' ' . $_SERVER['HTTP_USER_AGENT']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');';
-			$tsSQL->query($query);
-			die();
-		}
-	}
+			//die();
+		//}
+	//}
+	
+	// Check the blacklists
+	$request->checkBlacklist($emailblacklist,$_POST['email'],$_POST['email'],'Email-Bl');
+	$request->checkBlacklist($nameblacklist,$_POST['name'],$_POST['email'],'Name-Bl');
+	
+		
 	global $enableDnsblChecks;
 	if( $enableDnsblChecks == 1 ){
 		$dnsblcheck = $request->checkdnsbls($ip2);
