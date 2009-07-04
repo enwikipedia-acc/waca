@@ -186,7 +186,7 @@ class accRequest {
 	}
 	
 	public function setID($id) {
-		if (preg_match('/^[0-9]$/',$id)) {
+		if (preg_match('/^[0-9]*$/',$id)) {
 			$this->id = $id;
 			return true;
 		}
