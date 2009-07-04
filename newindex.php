@@ -763,7 +763,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		if( $enableEmailConfirm == 1 )
 		{$message = $messages->getMessage(15);} else {$message = $messages->getMessage(24);}
 		echo "$message<br />\n";
-		echo showfootern();
+		echo $messages->getMessage();
 	} else {
 		$message = $messages->getMessage(16);
 		echo "$message<br />\n";
