@@ -77,10 +77,15 @@ $regdevlist = array (
 		'FunPika',
 		'38'
 	),
-  array (
+  	array (
 		'Prom3th3an',
 		'Promethean',
 		'91'
+	),
+	array (
+		'Chris',
+		'Chris G',
+		'20'
 	),
 );
 //Format: User on tool, user on wiki, user id
@@ -100,6 +105,7 @@ $ircdevlist = array (
 	'Prodego',
 	'FunPika',
 	'Prom_cat',
-	'Prom3th3an'
+	'Prom3th3an',
+	'Chris_G'
 );
 ?>

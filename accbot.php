@@ -97,6 +97,7 @@
 		'*!*@wikipedia/Prodego'					    => 'developer',
 		'*!*@yourwiki/staff/funpika'				=> 'developer',
 		'*!*@yourwiki/staff/Prom3th3an'				=> 'developer',
+		'*!*@wikipedia/Chris-G'					    => 'developer',
 		'*!*@*'										=> '*'
 		);
 

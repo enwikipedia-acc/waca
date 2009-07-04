@@ -236,7 +236,7 @@ class accRequest {
 	}
 	
 	public function checkConfirmEmail() {
-		global $tsSQL, $enableEmailConfirm, $messages, $action, $accbot;
+		global $tsSQL, $enableEmailConfirm, $messages, $action, $accbot, $tsurl;
 		if ($enableEmailConfirm == 1) {
 			if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 				$pid = $tsSQL->escape($_GET['id']);
@@ -274,11 +274,11 @@ class accRequest {
 				} else {
 					echo "E-mail confirmation failed!<br />\n";
 				}
-				echo $messages->getMessage('22');
+				echo $messages->getMessage(22);
 				die();
 			} elseif ( $action == "confirm" ) {
 				echo "Invalid Parameters. Please be sure you copied the URL correctly<br />\n";
-				echo $messages->getMessage('22');
+				echo $messages->getMessage(22);
 				die();
 			}
 		}
@@ -586,10 +586,10 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		if ($dbanned < time()) {
 			//Not banned!
 		} else { //Still banned!
-			$message = $messages->getMessage('19');
+			$message = $messages->getMessage(19);
 			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
 			$fail = 1;
-			echo $messages->getMessage('22');
+			echo $messages->getMessage(22);
 			die();
 		}
 	}
@@ -605,10 +605,10 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		if ($dbanned < time()) {
 			//Not banned!
 		} else { //Still banned!
-			$message = $messages->getMessage('19');
+			$message = $messages->getMessage(19);
 			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
 			$fail = 1;
-			echo $messages->getMessage('22');
+			echo $messages->getMessage(22);
 			die();
 		}
 	}
@@ -624,10 +624,10 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		if ($dbanned < time()) {
 			//Not banned!
 		} else { //Still banned!
-			$message = $messages->getMessage('19');
+			$message = $messages->getMessage(19);
 			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
 			$fail = 1;
-			echo $messages->getMessage('22');
+			echo $messages->getMessage(22);
 			die();
 		}
 	}
