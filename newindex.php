@@ -181,7 +181,7 @@ class accRequest {
 	        );
 		$expiry =  date("Y-m-d H:i:s", $ntime);
 		$query = "DELETE FROM acc_pend WHERE pend_date < '$expiry' AND pend_mailconfirm != 'Confirmed' AND pend_mailconfirm != '';";
-		$tsSQL->query($query, $tsSQLlink);
+		$tsSQL->query($query);
 	}
 	
 	public function setID($id) {
@@ -478,7 +478,7 @@ class messages {
 		global $tsSQL;
 		$messageno = $tsSQL->escape($messageno);
 		$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
-		$result = mysql_query($query);
+		$result = $tsSQL->query($query);
 		if (!$result)
 			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"Database query error.");
 		$row = mysql_fetch_assoc($result);
@@ -690,7 +690,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 			$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\'' . $ip . '\',\'ClueBot\',\'' . $tsSQL->escape("DNSBL Hit:<br />\n" . $dnsblcheck['1']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');';
 			if ($enableSQLError)
 				echo '<!-- Query: ' . $query . ' -->';
-			$tsSQL->query($query, $tsSQLlink);
+			$tsSQL->query($query);
 			if ($enableSQLError)
 				echo '<!-- Error: ' . $tsSQL->showError() . ' -->';
 		}
@@ -721,7 +721,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		echo "$message<br />\n";
 		$fail = 1;
 	}
-	if (!emailvalid($_POST['email'])) {
+	if (!$request->emailvalid($_POST['email'])) {
 		$message = $messages->getMessage(14);
 		echo "$message<br />\n";
 		$fail = 1;
@@ -751,7 +751,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 		$fail = 1;
 	}
 	$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_email = '$email'";
-	$result = $tsSQL->query($query, $tsSQLlink);
+	$result = $tsSQL->query($query);
 	$row = mysql_fetch_assoc($result);
 	if ($row['pend_id'] != "") {
 		$message = $messages->getMessage(18);
