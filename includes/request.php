@@ -444,7 +444,7 @@ class accRequest {
 			echo "$message<br />\n";
 			$fail = 1;
 		}
-		if (!$request->emailvalid($_POST['email'])) {
+		if (!$this->emailvalid($_POST['email'])) {
 			$message = $messages->getMessage(14);
 			echo "$message<br />\n";
 			$fail = 1;
@@ -485,7 +485,7 @@ class accRequest {
 		if ($fail == 1) {
 			$message = $messages->getMessage(16);
 			echo "$message<br />\n";
-			$request->displayform();
+			$this->displayform();
 			echo $messages->getMessage(22);
 			die();
 		}
