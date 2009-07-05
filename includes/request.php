@@ -22,144 +22,11 @@
 **                                                           **
 **************************************************************/
 
-require_once 'config.inc.php';
-require_once 'AntiSpoof.php';
+if ($ACC != "1") {
+	header("Location: $tsurl/");
+	die();
+} //Re-route, if you're a web client.
 
-$fail = 0;
-
-
-// TODO: Move all these classes into their own files
-
-// Offline messages class
-class offlineMessage {
-	private $dontUseDb;
-	
-	public function __construct() {
-		global $dontUseDb;
-		$this->dontUseDb = $dontUseDb;
-	}
-	
-	private function showOfflineMessageHeader() {
-		echo <<<HTML
-		<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
-		<head>
-			<meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-			<title>Account Creation Assistance for the English Wikipedia - http://en.wikipedia.org/wiki/Wikipedia:Request an account</title>
-			<style type="text/css" media="screen">
-				@import "style.css";
-			</style>
-		</head>
-
-		<body id="body">
-			<div id="header">
-				<div id="header-title">
-					Account Creation Assistance
-				</div>
-			</div>
-			<div id="navigation">
-				<a href="http://en.wikipedia.org">English Wikipedia</a> 
-			</div>
-
-			<div id="content">
-HTML;
-	}
-
-	private function showOfflineMessageFooter() {
-		echo <<<HTML
-			</div>
-			<div id="footer">
-				Account Creation Assistance Manager by <a href="http://stable.toolserver.org/acc/team.php">The ACC dev team</a>. <a href="https://jira.toolserver.org/browse/ACC">Bugs?</a><br />
-
-				Designed by <a href="http://charlie.mudoo.net/">Charlie Melbye</a>
-			</div>
-		</body>
-	</html>
-HTML;
-	}
-
-	private function showExternalOfflineMessage() {
-		echo <<<HTML
-		<h1>Request an account on the English Wikipedia</h1> 		
-		<h2>Our apologies!</h2>
-		<p>We’re very sorry, but the account creation request tool is currently offline while critical maintenance is performed. We will restore normal operations as soon as possible.</p>
-		<p>However, you can still request an account by emailing <a href="mailto:accounts-enwiki-l@lists.wikimedia.org">accounts-enwiki-l@lists.wikimedia.org</a>, with the username that you would like. We’ll take care of your request as soon as possible.</p>
-		<p>Thanks for your interest in joining Wikipedia.</p>
-HTML;
-	}
-	
-	private function showInternalOfflineMessage() {
-		global $offlineProblem, $offlineCulprit;
-		echo <<<HTML
-		<h2>Whoops!</h2>
-		<p>After much experimentation, someone finally managed to kill ACC. So, the tool is currently offline while our resident developers pound their skulls against the furniture.</p> 
-		<p>Apparently, this is supposed to fix it.</p>
-		<p>Once the nature of the problem is known, we will insert it here: <b>$offlineProblem</b></p>
-		<p>Once the identity of the culprit(s) is known, trout should be applied here: <b>$offlineCulprit</b></p>
-		<p>Although the tool is dead and the Bot is sleeping, email still works fine. So, we expect a swarm of irate potential editors to bury us in requests shortly. Please keep an eye on the mailing list. Remember to 'cc' or 'bcc' accounts-enwiki when you reply to let others know you have replied.</p> 
-		<p>For more information, <a href="irc://irc.freenode.net/#wikipedia-en-accounts">join IRC</a>, check the mailing list (<a href="https://lists.wikimedia.org/mailman/listinfo/accounts-enwiki-l">sign up if you need to</a>) or just light candles – they may help too.</p>
-HTML;
-}
-	
-	public function check() {
-		if ($this->dontUseDb) {
-			$this->showOfflineMessageHeader();
-			if ($this->isExternal) {
-				$this->showExternalOfflineMessage();
-			} else {
-				$this->showInternalOfflineMessage();
-			}
-			$this->showOfflineMessageFooter();
-			die();
-		}
-	}
-}
-
-// database class
-class database {
-	private $dbLink;
-	
-	public function __construct($host,$username,$password) {
-		$this->dbLink = mysql_pconnect($host, $username, $password) or $this->showError("Error connecting to database $host: ".$this->getError(),'Error connecting to database');
-	}
-	
-	public function selectDb($database) {
-		// TODO: Improve error msg and handling
-		mysql_select_db($database,$this->dbLink) or $this->showError('Error selecting database.');
-	}
-	
-	public function query($query) {
-		return mysql_query($query,$this->dbLink);
-	}
-	
-	public function escape($string) {
-		// WARNING: This does not escape against XSS, this is intentional to avoid double escape etc
-		// please escape user input seperately using htmlentities()
-		return mysql_real_escape_string($string,$this->dbLink);
-	}
-	
-	public function showError($sql_error,$generic_error=null) {
-		global $enableSQLError;
-		if ($generic_error==null) {
-			$generic_error = $sql_error;
-		}
-		if ($enableSQLError) {
-			die($sql_error);
-		} else {
-			die($generic_error);
-		}
-	}
-	
-	public function getError() {
-		return mysql_error($this->dbLink);
-	}
-	
-	public function __destruct() {
-		mysql_close($this->dbLink);
-	}
-}
-
-// request class
 class accRequest {
 	private $id;
 	
@@ -633,10 +500,13 @@ class accRequest {
 		}
 		echo "$message<br />\n";
 		echo $messages->getMessage(22);
-
-		$comments = $tsSQL->escape($_POST['comments']);
-		$ip = $tsSQL->escape($_SERVER['REMOTE_ADDR']);
+		
+		$user = htmlentities($user);
+		$email = htmlentities($email);
+		$comments = $tsSQL->escape(htmlentities($_POST['comments']));
+		$ip = $tsSQL->escape(htmlentities($_SERVER['REMOTE_ADDR']));
 		$dnow = date("Y-m-d H-i-s");
+		
 		if( $this->getSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
 		$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow' );";
 		$result = $tsSQL->query($query);
@@ -658,137 +528,4 @@ class accRequest {
 	}
 }
 
-// the skin
-class skin {
-	public function displayheader() {
-		global $tsSQL;
-		$result = $tsSQL->query("SELECT * FROM acc_emails WHERE mail_id = '8';");
-		if (!$result) {
-			// TODO: Nice error message
-			die("ERROR: No result returned.");
-		}
-		$row = mysql_fetch_assoc($result);
-		echo $row['mail_text'];
-	}
-}
-
-// messages class
-class messages {
-	public function getMessage ($messageno) {
-		global $tsSQL;
-		$messageno = $tsSQL->escape($messageno);
-		$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
-		$result = $tsSQL->query($query);
-		if (!$result)
-			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"Database query error.");
-		$row = mysql_fetch_assoc($result);
-		return $row['mail_text'];
-	}
-}
-
-// accbot class
-class accbotSend {
-	public function send($message) {
-		/*
-		* Send to the IRC bot via UDP
-		*/
-		global $whichami;
-		sleep(3);
-		$fp = fsockopen("udp://91.198.174.211", 9001, $erno, $errstr, 30);
-		if (!$fp) {
-			echo "SOCKET ERROR: $errstr ($errno)<br />\n";
-		}
-		fwrite($fp, $this->formatForBot( chr(2)."[$whichami]".chr(2).": $message" ) );
-		fclose($fp);
-	}
-	
-	private function formatForBot( $data ) { 		
-		global $key; 		
-		$pData[0] = $key; 		
-		$pData[1] = $data; 		
-		$sData = serialize( $pData ); 		
-		return $sData; 		
-	}
-}
-
-// check to see if the database is unavailable
-$offlineMessage = new offlineMessage(true);
-$offlineMessage->check();
-
-// connect to the TS database and the antispoof database
-global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
-global $antispoof_host, $antispoof_db, $antispoof_table, $antispoof_password;
-$tsSQL = new database($toolserver_host,$toolserver_username,$toolserver_password);
-$asSQL = new database($antispoof_host,$toolserver_username,$antispoof_password);
-$tsSQL->selectDb($toolserver_database);
-$asSQL->selectDb($antispoof_db); 
-
-$request = new accRequest();
-$messages = new messages();
-$accbot = new accbotSend();
-
-$skin = new skin();
-$skin->displayheader();
-
-$action = '';
-if( isset( $_GET['action'] ) ) {
-	$action = $_GET['action'];
-}
-if( isset( $_GET['id'] ) ) {
-	$request->setID($_GET['id']);
-}
-
-$request->checkConfirmEmail();
-
-if (isset ($_POST['name']) && isset ($_POST['email'])) {
-	$_POST['name'] = str_replace(" ", "_", $_POST['name']);
-	$_POST['name'] = trim(ucfirst($_POST['name']));
-	
-	global $dontUseWikiDb;
-	if( !$dontUseWikiDb ) {
-		@ $asSQL->selectDb('enwiki_p');
-		$query = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
-		$result = $asSQL->query($query);
-		if (!$result) {
-			die("ERROR: No result returned.");
-		}
-	}	
-
-	// Initialize Variables		
-	$ip = $_SERVER['REMOTE_ADDR'];
-	$ip2 = $_SERVER['REMOTE_ADDR'];
-	$ip = $asSQL->escape($ip);
-
-	$user = $_POST['name'];
-	$user = $asSQL->escape(trim($user));
-
-	$email = $_POST['email'];
-	$email = $asSQL->escape(trim($email));
-	
-	//Delete old bans
-	$tsSQL->query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP() AND ban_duration != -1');
-
-	//Check for bans
-	
-	$request->isTOR(); // is it a TOR node?
-	$request->checkBan('IP',$_SERVER['REMOTE_ADDR']);
-	$request->checkBan('Name',$_POST['name']);
-	$request->checkBan('EMail',$_POST['email']);
-	
-	$request->blockedOnEn();
-	
-	// Check the blacklists
-	$request->checkBlacklist($emailblacklist,$_POST['email'],$_POST['email'],'Email-Bl');
-	$request->checkBlacklist($nameblacklist,$_POST['name'],$_POST['email'],'Name-Bl');
-	
-	$request->doDnsBlacklistCheck();
-
-	$request->finalChecks($user,$email);
-
-	$request->insertRequest($user,$email);
-} else {
-	$request->displayform();
-	echo $messages->getMessage(22);
-	die();
-}
 ?>
