@@ -547,6 +547,115 @@ class accRequest {
 			}
 		}
 	}
+	
+	public function finalCheck($user,$email) {
+		global $messages, $tsSQL;
+		$fail = 0;
+		
+		$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . urlencode($_POST['name']) . "&format=php");
+		$ue = unserialize($userexist);
+		if (!isset ($ue['query']['users']['0']['missing'])) {
+			$message = $messages->getMessage(10);
+			echo "$message<br />\n";
+			$fail = 1;
+		}
+		$nums = preg_match("/^[0-9]+$/", $_POST['name']);
+		if ($nums > 0) {
+			$message = $messages->getMessage(11);
+			echo "$message<br />\n";
+			$fail = 1;
+		}
+		$unameismail = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/i', $_POST['name']);
+		if ($unameismail > 0) {
+			$message = $messages->getMessage(12);
+			echo "$message<br />\n";
+			$fail = 1;
+		}
+		$unameisinvalidchar = preg_match('/[\#\/\|\[\]\{\}\@\%\:\<\>]/', $_POST['name']);
+		if ($unameisinvalidchar > 0 || ltrim( rtrim( $_POST['name'] == "" ) ) ) {
+			$message = $messages->getMessage(13);
+			echo "$message<br />\n";
+			$fail = 1;
+		}
+		if (!$request->emailvalid($_POST['email'])) {
+			$message = $messages->getMessage(14);
+			echo "$message<br />\n";
+			$fail = 1;
+		}
+
+		$mailiswmf = preg_match('/.*wiki(m.dia|p.dia).*/i', $email);
+		if ($mailiswmf != 0) {
+			$message = $messages->getMessage(14);
+			echo "$message<br />\n";
+			$fail = 1;
+		}
+
+		// (JIRA) ACC-55
+		$trailingspace = substr($_POST['name'], strlen($_POST['name']) - 1);
+		if ($trailingspace == " " || $trailingspace == "_"  ) {
+			$message = $messages->getMessage(25);
+			echo "$message<br />\n";
+			$fail = 1;
+		}
+
+		$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_name = '$user'";
+		$result = $tsSQL->query($query);
+		$row = mysql_fetch_assoc($result);
+		if ($row['pend_id'] != "") {
+			$message = $messages->getMessage(17);
+			echo "$message<br />\n";
+			$fail = 1;
+		}
+		$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_email = '$email'";
+		$result = $tsSQL->query($query);
+		$row = mysql_fetch_assoc($result);
+		if ($row['pend_id'] != "") {
+			$message = $messages->getMessage(18);
+			echo "$message<br />\n";
+			$fail = 1;
+		}
+		
+		if ($fail == 1) {
+			$message = $messages->getMessage(16);
+			echo "$message<br />\n";
+			$request->displayform();
+			echo $messages->getMessage(22);
+			die();
+		}
+	}
+	
+	public function insertRequest($user,$email) {
+		global $enableEmailConfirm, $messages, $tsSQL;
+		if ($enableEmailConfirm == 1) {
+			$message = $messages->getMessage(15);
+		} else {
+			$message = $messages->getMessage(24);
+		}
+		echo "$message<br />\n";
+		echo $messages->getMessage(22);
+
+		$comments = $tsSQL->escape($_POST['comments']);
+		$ip = $tsSQL->escape($_SERVER['REMOTE_ADDR']);
+		$dnow = date("Y-m-d H-i-s");
+		if( $this->getSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
+		$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow' );";
+		$result = $tsSQL->query($query);
+		if (!$result)
+			die("ERROR: No result returned. (acc_pend)");
+		$q2 = $query;
+		$query = "SELECT pend_id,pend_email FROM acc_pend WHERE pend_name = '$user' ORDER BY pend_id DESC LIMIT 1;";
+		$result = $tsSQL->query($query);	
+		if (!$result)
+			die("ERROR: No result returned. (select)");
+		$row = mysql_fetch_assoc($result);
+		$pid = $row['pend_id'];
+		if ($pid != 0 || $pid != "") {
+			$this->upcsum($pid);
+		}
+		if ($enableEmailConfirm == 1) {	
+			$this->confirmEmail( $pid );
+		}
+	}
 }
 
 // the skin
@@ -674,104 +783,9 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	
 	$request->doDnsBlacklistCheck();
 
-	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . $_POST['name'] . "&format=php");
-	$ue = unserialize($userexist);
-	if (!isset ($ue['query']['users']['0']['missing'])) {
-		$message = $messages->getMessage(10);
-		echo "$message<br />\n";
-		$fail = 1;
-	}
-	$nums = preg_match("/^[0-9]+$/", $_POST['name']);
-	if ($nums > 0) {
-		$message = $messages->getMessage(11);
-		echo "$message<br />\n";
-		$fail = 1;
-	}
-	$unameismail = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/i', $_POST['name']);
-	if ($unameismail > 0) {
-		$message = $messages->getMessage(12);
-		echo "$message<br />\n";
-		$fail = 1;
-	}
-	$unameisinvalidchar = preg_match('/[\#\/\|\[\]\{\}\@\%\:\<\>]/', $_POST['name']);
-	if ($unameisinvalidchar > 0 || ltrim( rtrim( $_POST['name'] == "" ) ) ) {
-		$message = $messages->getMessage(13);
-		echo "$message<br />\n";
-		$fail = 1;
-	}
-	if (!$request->emailvalid($_POST['email'])) {
-		$message = $messages->getMessage(14);
-		echo "$message<br />\n";
-		$fail = 1;
-	}
+	$request->finalChecks($user,$email);
 
-	$mailiswmf = preg_match('/.*wiki(m.dia|p.dia).*/i', $email);
-	if ($mailiswmf != 0) {
-		$message = $messages->getMessage(14);
-		echo "$message<br />\n";
-		$fail = 1;
-	}
-
-	// (JIRA) ACC-55
-	$trailingspace = substr($_POST['name'], strlen($_POST['name']) - 1);
-	if ($trailingspace == " " || $trailingspace == "_"  ) {
-		$message = $messages->getMessage(25);
-		echo "$message<br />\n";
-		$fail = 1;
-	}
-
-	$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_name = '$user'";
-	$result = $tsSQL->query($query);
-	$row = mysql_fetch_assoc($result);
-	if ($row['pend_id'] != "") {
-		$message = $messages->getMessage(17);
-		echo "$message<br />\n";
-		$fail = 1;
-	}
-	$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_email = '$email'";
-	$result = $tsSQL->query($query);
-	$row = mysql_fetch_assoc($result);
-	if ($row['pend_id'] != "") {
-		$message = $messages->getMessage(18);
-		echo "$message<br />\n";
-		$fail = 1;
-	}
-
-	if ($fail != 1) {
-		if( $enableEmailConfirm == 1 )
-		{$message = $messages->getMessage(15);} else {$message = $messages->getMessage(24);}
-		echo "$message<br />\n";
-		echo $messages->getMessage(22);
-	} else {
-		$message = $messages->getMessage(16);
-		echo "$message<br />\n";
-	}
-	if ($fail == 1) {
-		$request->displayform();
-		echo $messages->getMessage(22);
-		die();
-	}
-
-	$comments = $tsSQL->escape($_POST['comments']);
-	$dnow = date("Y-m-d H-i-s");
-	if( $request->getSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
-	$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow' );";
-	$result = $tsSQL->query($query);
-	if (!$result)
-		die("ERROR: No result returned. (acc_pend)");
-	$q2 = $query;
-	$query = "SELECT pend_id,pend_email FROM acc_pend WHERE pend_name = '$user' ORDER BY pend_id DESC LIMIT 1;";
-	$result = $tsSQL->query($query);	
-	if (!$result)
-		die("ERROR: No result returned. (select)");
-	$row = mysql_fetch_assoc($result);
-	$pid = $row['pend_id'];
-	if ($pid != 0 || $pid != "") {
-		$request->upcsum($pid);
-	}
-	if ($enableEmailConfirm == 1) {	
-		$request->confirmEmail( $pid );
-	}
+	$request->insertRequest($user,$email);
 } else {
 	$request->displayform();
 	echo $messages->getMessage(22);
