@@ -415,7 +415,7 @@ class accRequest {
 		}
 	}
 	
-	public function finalCheck($user,$email) {
+	public function finalChecks($user,$email) {
 		global $messages, $tsSQL;
 		$fail = 0;
 		
