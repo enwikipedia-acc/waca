@@ -20,6 +20,7 @@
 **Prodego    ( http://en.wikipedia.org/wiki/User:Prodego )   **
 **FunPika    ( http://en.wikipedia.org/wiki/User:FunPika )   **
 **Prom3th3an ( http://en.wikipedia.org/wiki/User:Promethean )**
+**Chris_G ( http://en.wikipedia.org/wiki/User:Chris_G )      lo**
 **************************************************************/
 
 require_once ( 'config.inc.php' );
@@ -445,6 +446,8 @@ elseif ($action == "login") {
 	}
 	else
 	{
+		$now = date("Y-m-d H-i-s");
+		mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('Login', '$puser', 'badpass', '$now', '$ip');";);
 		header("Location: $tsurl/acc.php?error=authfail");
 		die();
 	}
