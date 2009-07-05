@@ -193,6 +193,39 @@ class accRequest {
 		die("Invalid request id.");
 	}
 	
+	public function isTOR() {
+		global $messages;
+		$toruser = $this->checktor($_SERVER['REMOTE_ADDR']);
+		if ($toruser['tor'] == "yes") {
+			$message = $messages->getMessage(19);
+			echo "$message<strong><a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse.</strong><br />\n";
+			echo $messages->getMessage(22);
+			die();
+		}
+	}
+	
+	public function checkBan($type,$target) {
+		global $messages, $tsSQL;
+		$query = "SELECT * FROM acc_ban WHERE ban_type = '".$tsSQL->escape($type)."' AND ban_target = '".$tsSQL->escape($target)."'";
+		$result = $tsSQL->query($query);
+		$row = mysql_fetch_assoc($result);
+		$dbanned = $row['ban_duration'];
+		if ($row['ban_id'] != "") {
+			if ($dbanned < 0 || $dbanned == "") {
+				$dbanned = time() + 100;
+			}
+
+			if ($dbanned < time()) {
+				//Not banned!
+			} else { //Still banned!
+				$message = $messages->getMessage(19);
+				echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
+				echo $messages->getMessage(22);
+				die();
+			}
+		}
+	}
+	
 	// TODO: Setting most of these functions to public to be safe,
 	// however some of them could be moved over to private
 	
@@ -457,6 +490,63 @@ class accRequest {
 		$query = "UPDATE acc_pend SET pend_checksum = '$hash' WHERE pend_id = '$id';";
 		$result = $tsSQL->query($query);
 	}
+	
+	private function isOnWhitelist($user) {
+		$apir = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=Wikipedia:Request_an_account/Whitelist&rvprop=content&format=php");
+		$apir = unserialize($apir);
+		$apir = $apir['query']['pages'];
+	
+		foreach($apir as $r) {
+			$text = $r['revisions']['0']['*'];
+		}
+	
+		if( preg_match( '/\*\[\[User:'.preg_quote($user,'/').'\]\]/', $text ) ) {
+			return true;
+		}
+		return false;
+	}
+	
+	public function blockedOnEn() {
+		global $dontUseWikiDb, $asSQL;
+		if( !$dontUseWikiDb ) {
+			$query = 'SELECT * FROM ipblocks WHERE ipb_address = \''.$asSQL->escape($_SERVER['REMOTE_ADDR']).'\';';
+			$result = $asSQL->query($query);
+			$rows = mysql_num_rows( $result );
+			if( ($rows > 0) && !isOnWhitelist( $_SERVER['REMOTE_ADDR'] ) ) {
+				$message = $messages->getMessage(9);
+				echo "$message<br />\n";
+				echo $messages->getMessage(22);
+				die();
+			}
+		}
+	}
+	
+	public function doDnsBlacklistCheck() {
+		global $enableDnsblChecks, $tsSQL, $accbot, $enableSQLError;
+		if( $enableDnsblChecks == 1 ){
+			$ip = $_SERVER['REMOTE_ADDR'];
+			$email = $_POST['email'];
+			$dnsblcheck = $this->checkdnsbls($ip);
+			if ($dnsblcheck['0'] == true) {
+				$now = date("Y-m-d H-i-s");
+				$siuser = $tsSQL->escape($_POST['name']);
+				$cmt = $tsSQL->escape("FROM $ip $email<br />" . $dnsblcheck['1']);
+				$accbot->send("[DNSBL] HIT: " . $_POST['name'] . " $ip $email " . $_SERVER['HTTP_USER_AGENT']);
+				$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('DNSBL', '$siuser', 'DNSBL Hit', '$now', '$cmt');";
+				if ($enableSQLError) 
+					echo '<!-- Query: ' . $query . ' -->';
+				$tsSQL->query($query);
+				if ($enableSQLError)
+					echo '<!-- Error: ' . $tsSQL->showError() . ' -->';
+				$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\'' . $ip . '\',\'ClueBot\',\'' . $tsSQL->escape("DNSBL Hit:<br />\n" . $dnsblcheck['1']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');';
+				if ($enableSQLError)
+					echo '<!-- Query: ' . $query . ' -->';
+				$tsSQL->query($query);
+				if ($enableSQLError)
+					echo '<!-- Error: ' . $tsSQL->showError() . ' -->';
+			}
+		}
+	}
 }
 
 // the skin
@@ -543,7 +633,7 @@ $request->checkConfirmEmail();
 
 if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$_POST['name'] = str_replace(" ", "_", $_POST['name']);
-	$_POST['name'] = ltrim( rtrim ( ucfirst($_POST['name'] ) ) );
+	$_POST['name'] = trim(ucfirst($_POST['name']));
 	
 	global $dontUseWikiDb;
 	if( !$dontUseWikiDb ) {
@@ -570,132 +660,19 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$tsSQL->query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP() AND ban_duration != -1');
 
 	//Check for bans
-	// TODO: This should be moved into its own class as well
-	$query = "SELECT * FROM acc_ban WHERE ban_type = 'IP' AND ban_target = '$ip'";
-	$result = $tsSQL->query($query);
-	$row = mysql_fetch_assoc($result);
-	$dbanned = $row['ban_duration'];
-	$toruser = $request->checktor($ip2);
-	if ($row['ban_id'] != "" || $toruser['tor'] == "yes") {
-		if ($dbanned < 0 || $dbanned == "") {
-			$dbanned = time() + 100;
-		}
-		if ($toruser['tor'] == "yes") {
-			$row[ban_reason] = "<a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse.";
-		}
-		if ($dbanned < time()) {
-			//Not banned!
-		} else { //Still banned!
-			$message = $messages->getMessage(19);
-			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
-			$fail = 1;
-			echo $messages->getMessage(22);
-			die();
-		}
-	}
-	$query = "SELECT * FROM acc_ban WHERE ban_type = 'Name' AND ban_target = '$user'";
-	$result = $tsSQL->query($query);
-	$row = mysql_fetch_assoc($result);
-	$dbanned = $row['ban_duration'];
-	if ($row['ban_id'] != "") {
-		if ($dbanned < 0 || $dbanned == "") {
-			$dbanned = time() + 100;
-		}
-
-		if ($dbanned < time()) {
-			//Not banned!
-		} else { //Still banned!
-			$message = $messages->getMessage(19);
-			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
-			$fail = 1;
-			echo $messages->getMessage(22);
-			die();
-		}
-	}
-	$query = "SELECT * FROM acc_ban WHERE ban_type = 'EMail' AND ban_target = '$email'";
-	$result = $tsSQL->query($query);
-	$row = mysql_fetch_assoc($result);
-	$dbanned = $row['ban_duration'];
-	if ($row['ban_id'] != "") {
-		if ($dbanned < 0 || $dbanned == "") {
-			$dbanned = time() + 100;
-		}
-
-		if ($dbanned < time()) {
-			//Not banned!
-		} else { //Still banned!
-			$message = $messages->getMessage(19);
-			echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
-			$fail = 1;
-			echo $messages->getMessage(22);
-			die();
-		}
-	}
-
-	if( !$dontUseWikiDb ) {
-		$query = 'SELECT * FROM ipblocks WHERE ipb_address = \''.$ip.'\';';
-		$result = $asSQL->query($query);
-		$rows = mysql_num_rows( $result );
-		if( ($rows > 0) && !isOnWhitelist( $ip ) ) {
-			$message = $messages->getMessage(9);
-			echo "$message<br />\n";
-			$fail = 1;
-		}
-	}	
 	
-	// Commenting out the whole block, currently the code just dies
-	// without giving the user an error or logging it anywhere -- Chris G 7/4/09 (aus: 4/7/09)
-	//foreach ($uablacklist as $wubl => $ubl) {
-		//$phail_test = @ preg_match($ubl, $_SERVER['HTTP_USER_AGENT']);
-		//if ($phail_test == TRUE) {
-			//$now = date("Y-m-d H-i-s");
-			//$target = "$wubl";
-			//$siuser = mysql_real_escape_string($_POST['name']);
-			//$cmt = mysql_real_escape_string("FROM $ip $email");
-			
-			//sendtobot("[Grawp-Bl] HIT: $wubl - " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
-			//$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
-			//$result = mysql_query($query);
-			//if(!$result) Die("ERROR: No result returned.");
-			//$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\''.$ip.'\',\'ClueBot\',\''.mysql_real_escape_string('Blacklist Hit: '.$wnbl.' - '.$_POST['name'].' '.$ip2.' '.$email.' '.$_SERVER['HTTP_USER_AGENT']).'\',\''.$now.'\',\''.(time() + 172800).'\');';
-			//mysql_query($query);
-			//die();
-		//}
-	//}
+	$request->isTOR(); // is it a TOR node?
+	$request->checkBan('IP',$_SERVER['REMOTE_ADDR']);
+	$request->checkBan('Name',$_POST['name']);
+	$request->checkBan('EMail',$_POST['email']);
+	
+	$request->blockedOnEn();
 	
 	// Check the blacklists
 	$request->checkBlacklist($emailblacklist,$_POST['email'],$_POST['email'],'Email-Bl');
 	$request->checkBlacklist($nameblacklist,$_POST['name'],$_POST['email'],'Name-Bl');
 	
-		
-	global $enableDnsblChecks;
-	if( $enableDnsblChecks == 1 ){
-		$dnsblcheck = $request->checkdnsbls($ip2);
-		if ($dnsblcheck['0'] == true) {
-			$toruser = $request->checktor($ip2);
-			if ($toruser['tor'] == "yes") {
-				$tor = " (TOR node)";
-			} else {
-				$tor = "";
-			}
-			$now = date("Y-m-d H-i-s");
-			$siuser = $tsSQL->escape($_POST['name']);
-			$cmt = $tsSQL->escape("FROM $ip $email<br />" . $dnsblcheck['1']);
-			$accbot->send("[DNSBL]$tor HIT: " . $_POST['name'] . " $ip2 $email " . $_SERVER['HTTP_USER_AGENT']);
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('DNSBL', '$siuser', 'DNSBL Hit', '$now', '$cmt');";
-			if ($enableSQLError) 
-				echo '<!-- Query: ' . $query . ' -->';
-			$tsSQL->query($query);
-			if ($enableSQLError)
-				echo '<!-- Error: ' . $tsSQL->showError() . ' -->';
-			$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\'' . $ip . '\',\'ClueBot\',\'' . $tsSQL->escape("DNSBL Hit:<br />\n" . $dnsblcheck['1']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');';
-			if ($enableSQLError)
-				echo '<!-- Query: ' . $query . ' -->';
-			$tsSQL->query($query);
-			if ($enableSQLError)
-				echo '<!-- Error: ' . $tsSQL->showError() . ' -->';
-		}
-	}
+	$request->doDnsBlacklistCheck();
 
 	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . $_POST['name'] . "&format=php");
 	$ue = unserialize($userexist);
