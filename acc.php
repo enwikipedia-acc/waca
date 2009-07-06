@@ -121,17 +121,26 @@ elseif ( $action == "sreg" ) {
 	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) {
 		$message = showmessage( '9' );
 		echo "ERROR: You are presently blocked on the English Wikipedia<br />\n";
-		$fail = 1;
+		echo showfootern();
+		die();
 	}
 	$userexist = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
 	$ue = unserialize( $userexist );
 	foreach ( $ue['query']['users']['0'] as $oneue ) {
 		if ( !isset($oneue['missing'])) {
 			echo "Invalid On-Wiki username.<br />\n";
-			$fail = 1;
+			echo showfootern();
+			die();
 		}
 	}
-
+	// check if the user is to new
+	$isNewbie = unserialize(file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$cu_name" );
+	if (!($x['query']['allusers'][0]['editcount'] < 20 and (time() - strtotime($x['query']['allusers'][0]['registration'])) > 60*60*24*60))) {
+		echo "I'm sorry, you are too new to request an account at the moment.<br />\n";
+		echo showfootern();
+		die();
+	}
+	
 	$user = mysql_real_escape_string($_REQUEST['name']);
 	if (stristr($user, "'") !== FALSE) {
 		die("Username cannot contain the character '\n");
@@ -171,11 +180,13 @@ elseif ( $action == "sreg" ) {
 	$mailisvalid = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.(ac|ad|ae|aero|af|ag|ai|al|am|an|ao|aq|ar|arpa|as|asia|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|biz|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cat|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|com|coop|cr|cu|cv|cx|cy|cz|de|dj|dk|dm|do|dz|ec|edu|ee|eg|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gov|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|info|int|io|iq|ir|is|it|je|jm|jo|jobs|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mil|mk|ml|mm|mn|mo|mobi|mp|mq|mr|ms|mt|mu|museum|mv|mw|mx|my|mz|na|name|nc|ne|net|nf|ng|ni|nl|no|np|nr|nu|nz|om|org|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|pro|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sy|sz|tc|td|tel|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|travel|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)$/i', $_REQUEST['email']);
 	if ($mailisvalid == 0) {
 		echo "ERROR: Invalid E-mail address.<br />\n";
-		$fail = 1;
+		echo showfootern();
+		die();
 	}
 	if ($pass != $pass2) {
 		echo "Passwords did not match!<br />\n";
-		$fail = 1;
+		echo showfootern();
+		die();
 	}
 	$query = "SELECT * FROM acc_user WHERE user_name = '$user' LIMIT 1;";
 	$result = mysql_query($query, $tsSQLlink);
@@ -184,7 +195,8 @@ elseif ( $action == "sreg" ) {
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] != "") {
 		echo "I'm sorry, but that username is in use. Please choose another. <br />\n";
-		$fail = 1;
+		echo showfootern();
+		die();
 	}
 	$query = "SELECT * FROM acc_user WHERE user_email = '$email' LIMIT 1;";
 	$result = mysql_query($query, $tsSQLlink);
@@ -193,7 +205,8 @@ elseif ( $action == "sreg" ) {
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] != "") {
 		echo "I'm sorry, but that e-mail address is in use.<br />\n";
-		$fail = 1;
+		echo showfootern();
+		die();
 	}
 	$query = "SELECT * FROM acc_user WHERE user_onwikiname = '$wname' LIMIT 1;";
 	$result = mysql_query($query, $tsSQLlink);
@@ -202,13 +215,15 @@ elseif ( $action == "sreg" ) {
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] != "") {
 		echo "I'm sorry, but $wname already has an account here.<br />\n";
-		$fail = 1;
+		echo showfootern();
+		die();
 	}
 	$query = "SELECT * FROM acc_pend WHERE pend_name = '$user' AND (pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Closed') AND DATE_SUB(CURDATE(),INTERVAL 7 DAY) <= pend_date LIMIT 1;";
 	$result = mysql_query($query, $tsSQLlink);
 	if ($result) {
 		echo "I'm sorry, you are too new to request an account at the moment.<br />\n";
-		$fail = 1;
+		echo showfootern();
+		die();
 	}
 	if (!isset($fail) || $fail != 1) {
 		if ($secureenable == "1") {
