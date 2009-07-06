@@ -234,7 +234,11 @@ class LogPage
 				$logList .= "<li>$rlu unreserved request $rlp at $rlt</li>";
 			}
 			if($rla == 'badpass') {
-				$logList .= "<li>$rlc had a failed login attempt for $rlu at $rlt</li>";
+				if ($_SESSION['user'] == $rlu or hasright($_SESSION['user'], 'Admin')) {
+					$logList .= "<li><a href=\"http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=$rlc\">$rlc</a> had a failed login attempt for $rlu at $rlt</li>";
+				} else {
+					$logList .= "<li>(IP Hidden) had a failed login attempt for $rlu at $rlt</li>";
+				}
 			}
 			$logListCount++;
 		}
