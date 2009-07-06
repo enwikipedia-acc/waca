@@ -204,8 +204,12 @@ elseif ( $action == "sreg" ) {
 		echo "I'm sorry, but $wname already has an account here.<br />\n";
 		$fail = 1;
 	}
-	$query = "SELECT * FROM acc_user WHERE user_onwikiname = '$wname' LIMIT 1;";
+	$query = "SELECT * FROM acc_pend WHERE pend_name = '$user' AND DATE_SUB(CURDATE(),INTERVAL 7 DAY) <= pend_date LIMIT 1;";
 	$result = mysql_query($query, $tsSQLlink);
+	if ($result) {
+		echo "I'm sorry, you are too new to request an account at the moment.<br />\n";
+		$fail = 1;
+	}
 	if (!isset($fail) || $fail != 1) {
 		if ($secureenable == "1") {
 			$secure= 1;
