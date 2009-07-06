@@ -232,6 +232,9 @@ class LogPage
 			if($rla == "Unreserved") {
 				$logList .= "<li>$rlu unreserved request $rlp at $rlt</li>";
 			}
+			if($rla == 'badpass') {
+				$logList .= "<li>$rlu had a failed login attempt from $rlc at $rlt</li>";
+			}
 			$logListCount++;
 		}
 		
