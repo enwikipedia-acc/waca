@@ -1607,7 +1607,8 @@ elseif ($action == "logs") {
 				"DNSBL Hit" => "DNS Blacklist hit", 
 				"Demoted" => "User Demotion", 
 				"Renamed" => "User Rename", 
-				"Prefchange" => "User Preferences change"
+				"Prefchange" => "User Preferences change",
+				"badpass" => "Failed login attempt."
 	);
 	foreach($logActions as $key => $value)
 	{

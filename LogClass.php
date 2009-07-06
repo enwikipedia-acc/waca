@@ -144,6 +144,9 @@ class LogPage
 			$rlp = $row['log_pend'];
 			$rlt = $row['log_time'];
 			$rlc = $row['log_cmt'];
+			
+			$logList .= "<!-- $rlu $rla $rlp $rlt $rlc -->"; // some debuging code - will remove soon --Chris 7/6
+			
 			if ($row['log_time'] == "0000-00-00 00:00:00") {
 				$row['log_time'] = "Date Unknown";
 			}
@@ -233,7 +236,7 @@ class LogPage
 				$logList .= "<li>$rlu unreserved request $rlp at $rlt</li>";
 			}
 			if($rla == 'badpass') {
-				$logList .= "<li>$rlu had a failed login attempt from $rlc at $rlt</li>";
+				$logList .= "<li>$rlc had a failed login attempt for $rlu at $rlt</li>";
 			}
 			$logListCount++;
 		}
