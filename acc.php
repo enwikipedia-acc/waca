@@ -204,7 +204,7 @@ elseif ( $action == "sreg" ) {
 		echo "I'm sorry, but $wname already has an account here.<br />\n";
 		$fail = 1;
 	}
-	$query = "SELECT * FROM acc_pend WHERE pend_name = '$user' AND DATE_SUB(CURDATE(),INTERVAL 7 DAY) <= pend_date LIMIT 1;";
+	$query = "SELECT * FROM acc_pend WHERE pend_name = '$user' AND (pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Closed') AND DATE_SUB(CURDATE(),INTERVAL 7 DAY) <= pend_date LIMIT 1;";
 	$result = mysql_query($query, $tsSQLlink);
 	if ($result) {
 		echo "I'm sorry, you are too new to request an account at the moment.<br />\n";
