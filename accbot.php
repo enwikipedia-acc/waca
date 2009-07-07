@@ -64,7 +64,6 @@
 	addHelp( 'svninfo'    , ''          , 'Floods you with information about the SVN repository.'               );
 	addHelp( 'sandinfo'   , ''          , 'Floods you with information about the SVN repository sandbox.'       );
 	addHelp( 'sand-svnup' , ''          , 'Allows developers to sync the sandbox with the SVN repository.'      );
-	addHelp( 'svnup'      , ''          , 'Allows you to sync the live server with the SVN repository.'         );
 	addHelp( 'restart'    , ''          , 'Causes the bot to do an immediate graceful reinitialization.'        );
 	addHelp( 'recreatesvn', ''          , 'Attempts to fix the live copy of the site.'                          );
 
@@ -77,7 +76,6 @@
 	addCommand( 'svninfo'    , 'commandSvnInfo'    , true  );
 	addCommand( 'sandinfo'   , 'commandSandInfo'   , true  );
 	addCommand( 'sand-svnup' , 'commandSandSvnUp'  , true  );
-	addCommand( 'svnup'      , 'commandSvnUp'      , true  );
 	addCommand( 'restart'    , 'commandRestart'    , false );
 	addCommand( 'recreatesvn', 'commandRecreateSvn', true  );
 
@@ -454,18 +452,6 @@
 		}
 		pclose( $svn );
 		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Please see the sandbox at http://stable.toolserver.org/acc/sand/acc.php' );
-	}
-        
-	function commandSvnUp( $parsed ) {
-		$svn = popen( 'svn up 2>&1', 'r' );
-		while( !feof( $svn ) ) {
-			$svnin = trim( fgets( $svn, 512 ) );
-			if( $svnin != '' ) {
-				irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': ' . str_replace( array( "\n", "\r" ), '', $svnin ) );
-			}
-			sleep( 1 ); // Slight delay so the bot does not kill itself on updating a lot of files.
-		}
-		pclose( $svn );
 	}
 
 	function commandRestart( $parsed ) {
