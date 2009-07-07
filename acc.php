@@ -1501,12 +1501,16 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		if (!isset($_POST['msgbody']) or empty($_POST['msgbody'])) {
 			echo "<form action='".$_SERVER["PHP_SELF"]."?".$_SERVER["QUERY_STRING"]."' method='post'>\n";
 			echo "<p>Message:</p>\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
+			echo "<p><input type='checkbox' name='ccmailist' />Cc to mailing list?</p>\n";
 			echo "<p><input type='submit' value='Close and send' /></p>\n";
 			echo "</form>\n";
 			echo showfooter();
 			die();
 		} else {
-			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
+			if ($_POST['ccmailist'] == 1;) {
+			$headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
+			}
 			mail($row2['pend_email'], "RE: English Wikipedia Account Request", $_POST['msgbody'], $headers);
 		}
 	}
