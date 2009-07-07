@@ -417,6 +417,21 @@ HTML;
 	die();
 }
 elseif ($action == "login") {
+	require_once 'includes/captcha.php';
+	$captcha = new captcha();
+	if (isset($_POST['captcha'])) {
+		if (!$captcha->verifyPasswd($_POST['captcha'])) {
+			die('Invalid captcha code'); // TODO: Make this error message better - redirect them back to the login page
+		}
+	} else {
+		// check if they were supposed to send a captcha but didn't
+		$ip = sanitize($_SERVER['REMOTE_ADDR']);
+		$result = mysql_query("SELECT * FROM acc_log WHERE log_action='badpass' AND log_cmt='$ip' AND DATE_SUB(CURDATE(),INTERVAL 5 MINUTE) <= log_time LIMIT 2;");
+    		$row = mysql_fetch_assoc($result);
+    		if (!empty($row)) {
+    			die('Missing captcha'); // TODO: rather than just dying, show them a captcha to do
+    		}
+	}
 	$puser = sanitize($_POST['username']);
 	$ip = sanitize($_SERVER['REMOTE_ADDR']);
 	$query = "SELECT * FROM acc_user WHERE user_name = \"$puser\";";
