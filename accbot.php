@@ -82,12 +82,12 @@
 	// Users
 	//	Nick!User@Host mask							=> group
 	$users = array(
-		'Cobi!*cobi*@cobi.cluenet.org'				=> 'root',
-		'Cobi!*cobi*@Cobi.cluenet.org'				=> 'root',
-		'*!*@2002:1828:834a:0:208:c7ff:fe29:220a'	=> 'root',
+		'Cobi!*cobi*@cobi.cluenet.org'				=> 'developer',
+		'Cobi!*cobi*@Cobi.cluenet.org'				=> 'developer',
+		'*!*@2002:1828:834a:0:208:c7ff:fe29:220a'	=> 'developer',
 		'*!*@wikipedia/SQL'							=> 'root',
-		'OverlordQ!*@wikipedia/OverlordQ'			=> 'root',
-		'*!*@wikipedia/Stwalkerster'				=> 'root',
+		'OverlordQ!*@wikipedia/OverlordQ'			=> 'developer',
+		'*!*@wikipedia/Stwalkerster'				=> 'developer',
 		'*!*@*Alexfusco5'		   					=> 'developer',
 		'*!*@wikipedia/Soxred93'					=> 'developer',
 		'*!*@wikimedia/cmelbye'						=> 'developer',
@@ -110,11 +110,8 @@
 
 	$privgroups[ 'developer' ]                  = $privgroups['*']; // 'developer' inherits '*'.
 	$privgroups[ 'developer' ][ 'sand-svnup'  ] = 1;
-
-	$privgroups[ 'root'      ]                  = $privgroups['developer']; // 'root' inherits 'developer'.
-	$privgroups[ 'root'      ][ 'recreatesvn' ] = 1;
-	$privgroups[ 'root' 	 ][ 'restart'     ] = 1;
-
+	$privgroups[ 'developer' ][ 'restart'     ] = 1;
+	$privgroups[ 'developer' ][ 'recreatesvn' ] = 1;
 
 	// Functions
 	function sanitize( $data ) {
