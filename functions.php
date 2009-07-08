@@ -687,7 +687,7 @@ function showlogin( $action = null, $params = null ) {
     if (isset($_GET['error']) and $_GET['error']=='authfail') {
     	$html .= "<p>Username and/or password incorrect. Please try again.</p>";
     }
-    $html .='<form action="acc.php?action=login&amp;nocheck=1';
+    $html .='<form action="acc.php?'.SID.'&action=login&amp;nocheck=1';
     if (( $action ) && ($action != "logout")) {
     	$html .= "&amp;newaction=".$action;
     	foreach ($params as $param => $value) { 
@@ -713,7 +713,7 @@ function showlogin( $action = null, $params = null ) {
 	    	$html .= '<div class="required">
 		<label for="captcha">Captcha:</label>
 		<input id="captcha" type="text" name="captcha"/>
-		<img src="captcha.php" />
+		<img src="captcha.php?'.SID.'" />
 	    </div>';
 	    }
     }
