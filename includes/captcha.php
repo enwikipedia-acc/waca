@@ -44,11 +44,11 @@ class captcha {
 	
 	private function storeData ($id,$code) {
 		$expiry = time() + 3600; // expires in an hour
-		file_put_contents('/tmp/captchas.acc.txt',"$id $code $expiry\n",FILE_APPEND);
+		file_put_contents('/projects/acc/captchas.txt',"$id $code $expiry\n",FILE_APPEND);
 	}
 	
 	private function removeExpiredData () {
-		$text = explode("\n",file_get_contents('/tmp/captchas.acc.txt'));
+		$text = explode("\n",file_get_contents('/projects/acc/captchas.txt'));
 		$newtext = '';
 		foreach ($text as $line) {
 			if (preg_match('/(\d+)$/',$line,$m)) {
@@ -57,7 +57,7 @@ class captcha {
 				}
 			}
 		}
-		file_put_contents('/tmp/captchas.acc.txt',$newtext);
+		file_put_contents('/projects/acc/captchas.txt',$newtext);
 	}
 	
 	public function verifyPasswd ($id,$passwd) {
@@ -65,12 +65,12 @@ class captcha {
 			die('Invalid captcha id.');
 		}
 		$this->removeExpiredData();
-		$text = explode("\n",file_get_contents('/tmp/captchas.acc.txt'));
+		$text = explode("\n",file_get_contents('/projects/acc/captchas.txt'));
 		foreach ($text as $line) {
 			if (preg_match('/^(.+) (.+) (\d+)$/',$line,$m)) {
 				if ($id==$m[1] and strtolower($passwd)==strtolower($m[2])) {
-					$content = str_replace("$line\n",'',file_get_contents('/tmp/captchas.acc.txt'));
-					file_put_contents('/tmp/captchas.acc.txt',$content);
+					$content = str_replace("$line\n",'',file_get_contents('/projects/acc/captchas.txt'));
+					file_put_contents('/projects/acc/captchas.txt',$content);
 					return true;
 				}
 			}
