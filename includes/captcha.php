@@ -68,11 +68,29 @@ class captcha {
 	}
 	private function showImage ($passwd,$width,$height) {
 		header ('Content-type: image/png');
-		$im = @imagecreatetruecolor(120, 20) or die('Cannot Initialize new GD image stream');
-		$text_color = imagecolorallocate($im, 233, 14, 91);
-		imagestring($im, 1, 5, 5, $passwd, $text_color);
-		imagepng($im);
-		imagedestroy($im);
+		$img = @imagecreatetruecolor($width,$height) or die('Cannot Initialize new GD image stream');
+		// draw the backgroud
+		$bg_colour = imagecolorallocate($img, rand(210,255), rand(210,255), rand(210,255));
+		imagefilledrectangle($img,0,0,$width,$height,$bg_colour);
+		// word out text spacing
+		$spacing = $width / (strlen($passwd)+2);
+		$x = $spacing;
+		// draw the text
+		for ($i=0;$i<strlen($passwd);$i++) {
+			$letter = $passwd[$i];
+			$size = rand($height/3, $height/2);
+			$rotation = rand(-30,30);
+			$y = rand($height * .90, $height-$size-4);
+			$fonts = $fonts[array_random($fonts)];
+			$r = rand(100,255); $g = rand(100,255); $b = rand(100,255);
+			$colour = imagecolorallocate($img,$r,$g,$b);
+			$shadow = imagecolorallocate($img,$r/3,$g/3,$b/3);
+			imagettftext($img,$size,$rotation,$x,$y,$shadow,$font,$letter);
+			imagettftext($img,$size,$rotation,$x-1,$y-3,$colour,$font,$letter);
+			$x += rand($spacing,$spacing*1.5);
+		}
+		imagepng($img);
+		imagedestroy($img);
 	}
 }
 
