@@ -72,7 +72,7 @@ class captcha {
 			die('No fonts loaded.');
 		}
 		
-		header("Content-Type: image/jpeg");
+		//header("Content-Type: image/jpeg");
 		$img = imagecreatetruecolor($width, $height);
   
 		/* fill background with a random colour */
