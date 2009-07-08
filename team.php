@@ -36,7 +36,7 @@ $developer = //Developer info / list.
 		"SQL" =>
 			array(						//Set any of these to NULL to keep them from being displayed.
 				"IRC" => "SQLDb, SXT40", 		//IRC Name
-				"EMail" => "sxwiki@gmail.com", 		//Public E-mail address
+				"EMail" => "sxw<a href='http://mailhide.recaptcha.net/d?k=01gigl1XlSJaNaMXKeaG5zOA==&amp;c=B0w027Zx-9XhG8tW-d8-zVQp6aMBR6EjXUOWr_ZjR4Y=' onclick='window.open('http://mailhide.recaptcha.net/d?k=01gigl1XlSJaNaMXKeaG5zOA==&amp;c=B0w027Zx-9XhG8tW-d8-zVQp6aMBR6EjXUOWr_ZjR4Y=', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;' title='Reveal this e-mail address'>...</a>@gmail.com", 		//Public E-mail address
 				"ToolID" => "1",                        //Tool user ID for linking to page in users.php. 
                 		"wiki" => "SQL", 			//Enwiki Username
 				"WWW" => "http://toolserver.org/~sql", 	//Your website
