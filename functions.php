@@ -684,8 +684,15 @@ function showlogin( $action = null, $params = null ) {
 	$html ='<div id="sitenotice">Please login first, and we\'ll send you on your way!</div>
     <div id="content">
     <h2>Login</h2>';
-    if (isset($_GET['error']) and $_GET['error']=='authfail') {
-    	$html .= "<p>Username and/or password incorrect. Please try again.</p>";
+
+    if (isset($_GET['error'])) {
+    	if ($_GET['error']=='authfail') {
+    		$html .= "<p>Username and/or password incorrect. Please try again.</p>";
+    	} elseif ($_GET['error']=='captchafail') {
+    		$html .= "<p>I'm sorry, the captcha you entered was incorrect, please try again.</p>";
+    	} elseif ($_GET['error']=='captchamissing') {
+    		$html .= "<p>Please complete the captcha.</p>";
+    	}
     }
     $html .='<form action="acc.php?action=login&amp;nocheck=1';
     if (( $action ) && ($action != "logout")) {
