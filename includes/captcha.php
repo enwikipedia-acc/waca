@@ -85,8 +85,8 @@ class captcha {
 			$r = rand(100,255); $g = rand(100,255); $b = rand(100,255);
 			$colour = imagecolorallocate($img,$r,$g,$b);
 			$shadow = imagecolorallocate($img,$r/3,$g/3,$b/3);
-			imagettftext($img,$size,$rotation,$x,$y,$shadow,$font,$letter);
-			imagettftext($img,$size,$rotation,$x-1,$y-3,$colour,$font,$letter);
+			//imagettftext($img,$size,$rotation,$x,$y,$shadow,$font,$letter);
+			//imagettftext($img,$size,$rotation,$x-1,$y-3,$colour,$font,$letter);
 			$x += rand($spacing,$spacing*1.5);
 		}
 		imagepng($img);
