@@ -23,6 +23,8 @@
 **Chris_G ( http://en.wikipedia.org/wiki/User:Chris_G )      lo**
 **************************************************************/
 
+$ACC = "1";
+echo "AAAAAAAAAAAAA - Debugging\n";
 require_once ( 'config.inc.php' );
 $useCaptcha = true; // TODO: This needs to be moved to the config file - i'd do it myself but I don't have shell - Chris
 require_once ( 'devlist.php' );
