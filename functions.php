@@ -706,9 +706,7 @@ function showlogin( $action = null, $params = null ) {
         <input id="password" type="password" name="password"/>
     </div>';
     if ($useCaptcha) {
-            if (!class_exists('captcha')) {
-            	require_once 'includes/captcha.php';
-            }
+            require_once 'includes/captcha.php';
             $captcha = new captcha;
             $captcha_id = $captcha->generateId();
 	    $ip = sanitize($_SERVER['REMOTE_ADDR']);
