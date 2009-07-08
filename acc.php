@@ -429,10 +429,7 @@ elseif ($action == "login") {
 			}
 		} else {
 			// check if they were supposed to send a captcha but didn't
-			$ip = sanitize($_SERVER['REMOTE_ADDR']);
-			$result = mysql_query("SELECT * FROM acc_log WHERE log_action='badpass' AND log_cmt='$ip' AND DATE_SUB(CURDATE(),INTERVAL 5 MINUTE) <= log_time LIMIT 2;");
-	    		$row = mysql_fetch_assoc($result);
-	    		if (!empty($row)) {
+	    		if ($captcha->showCaptcha()) {
 	    			header("Location: $tsurl/acc.php?error=captchamissing");
 				die();
 	    		}
@@ -490,6 +487,9 @@ elseif ($action == "login") {
 	{
 		$now = date("Y-m-d H-i-s");
 		if (!empty($row['user_email'])) {
+			require_once 'includes/captcha.php';
+			$captcha = new captcha();
+			$captcha->addFailedLogin();
 			mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('Login', '$puser', 'badpass', '$now', '$ip');", $tsSQLlink) or die(mysql_error());
 			mail($row['user_email'], "ACC Failed Login", "Dear ".$row['user_onwikiname'].",\nYour account ".$row['user_name']." had a failed login atempt at $now from $ip - the password used was:\n".$_POST['password']."\n(The password has not been logged) - if this is a genuine hacking attempt please contact a developer.\n- The English Wikipedia Account Creation Team",'From: accounts-enwiki-l@lists.wikimedia.org');
 			// Commented out per Prodego's request - Chris 7/8/09 (or Aus 8/7/09)

@@ -716,17 +716,14 @@ function showlogin( $action = null, $params = null ) {
             $ACC = 1;
             require_once 'includes/captcha.php';
             $captcha = new captcha;
-            $captcha_id = $captcha->generateId();
-	    $ip = sanitize($_SERVER['REMOTE_ADDR']);
-	    $result = mysql_query("SELECT * FROM acc_log WHERE log_action='badpass' AND log_cmt='$ip' AND DATE_SUB(CURDATE(),INTERVAL 5 MINUTE) <= log_time LIMIT 2;");
-	    $row = mysql_fetch_assoc($result);
-	    if (!empty($row)) {
+            if ($captcha->showCaptcha()) {
+            	$captcha_id = $captcha->generateId();
 	    	$html .= '<div class="required">
 		<label for="captcha">Captcha:</label>
 		<input id="captcha" type="text" name="captcha"/>
 		<input name="captcha_id" type="hidden" value="'.$captcha_id.'" />
 		<img src="captcha.php?id='.$captcha_id.'" />
-	    </div>';
+	    	</div>';
 	    }
     }
     $html .= '<div class="submit">

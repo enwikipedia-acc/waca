@@ -47,6 +47,26 @@ class captcha {
 		file_put_contents('/projects/acc/captchas.txt',"$id $code $expiry\n",FILE_APPEND);
 	}
 	
+	public function addFailedLogin () {
+		$expiry = time() + 60*5; // expires in 5 minutes
+		$ip = $_SERVER['REMOTE_ADDR'];
+		file_put_contents('/projects/acc/failedlogins.txt',"$ip $expiry\n",FILE_APPEND);
+	}
+	
+	public function showCaptcha () {
+		$this->removeExpiredData();
+		$ip = $_SERVER['REMOTE_ADDR'];
+		$text = explode("\n",file_get_contents('/projects/acc/failedlogins.txt'));
+		foreach ($text as $line) {
+			if (preg_match('/^([0-9.]+) (\d+)$/',$line,$m)) {
+				if ($ip==$m[1]) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	private function removeExpiredData () {
 		$text = explode("\n",file_get_contents('/projects/acc/captchas.txt'));
 		$newtext = '';
@@ -58,6 +78,16 @@ class captcha {
 			}
 		}
 		file_put_contents('/projects/acc/captchas.txt',$newtext);
+		$text = explode("\n",file_get_contents('/projects/acc/failedlogins.txt'));
+		$newtext = '';
+		foreach ($text as $line) {
+			if (preg_match('/(\d+)$/',$line,$m)) {
+				if (time()<$m[1]) {
+					$newtext .= "$line\n";
+				}
+			}
+		}
+		file_put_contents('/projects/acc/failedlogins.txt',$newtext);
 	}
 	
 	public function verifyPasswd ($id,$passwd) {
