@@ -71,7 +71,7 @@ class captcha {
 		$img = @imagecreatetruecolor($width,$height) or die('Cannot Initialize new GD image stream');
 		// draw the backgroud
 		$bg_colour = imagecolorallocate($img, rand(210,255), rand(210,255), rand(210,255));
-		imagefilledrectangle($img,0,0,$width,$height,$bg_colour);
+		//imagefilledrectangle($img,0,0,$width,$height,$bg_colour);
 		// word out text spacing
 		$spacing = $width / (strlen($passwd)+2);
 		$x = $spacing;
