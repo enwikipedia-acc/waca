@@ -68,6 +68,9 @@ class captcha {
 	}
 	private function showImage ($passwd,$width,$height) {
 		$fonts = $this->getFonts();
+		if (count($fonts) < 1) {
+			die('No fonts loaded.');
+		}
 		
 		header("Content-Type: image/jpeg");
 		$img = imagecreatetruecolor($width, $height);
