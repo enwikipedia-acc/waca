@@ -67,6 +67,11 @@ class captcha {
 		return $fonts;
 	}
 	private function showImage ($passwd,$width,$height) {
+		$fonts = $this->getFonts();
+		if (count($fonts) < 1) {
+			die('No fonts loaded.');
+		}
+
 		header ('Content-type: image/png');
 		$img = @imagecreatetruecolor($width,$height) or die('Cannot Initialize new GD image stream');
 		// draw the backgroud
