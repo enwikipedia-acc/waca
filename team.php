@@ -53,7 +53,7 @@ $developer = //Developer info / list.
 				"wiki" => "Cobi",
 				"WWW" => NULL,
 				"Name" => NULL,
-				"Role" => "Developer, Subversion Administrator",
+				"Role" => "Developer",
 				"Access" => "Commit, Repo Admin, Shell, SQL",
 				"Other" => NULL,
 			),
