@@ -53,6 +53,20 @@ class captcha {
 		file_put_contents('/projects/acc/failedlogins.txt',"$ip $expiry\n",FILE_APPEND);
 	}
 	
+	public function clearFailedLogins () {
+		$ip = $_SERVER['REMOTE_ADDR'];
+		$text = explode("\n",file_get_contents('/projects/acc/failedlogins.txt'));
+		$newtext = '';
+		foreach ($text as $line) {
+			if (preg_match('/^([0-9.]+) (\d+)$/',$line,$m)) {
+				if ($m[1]!=$ip) {
+					$newtext .= "$line\n";
+				}
+			}
+		}
+		file_put_contents('/projects/acc/failedlogins.txt',$newtext);
+	}
+	
 	public function showCaptcha () {
 		$this->removeExpiredData();
 		$ip = $_SERVER['REMOTE_ADDR'];
