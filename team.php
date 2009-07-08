@@ -34,123 +34,133 @@ session_start();
 $developer = //Developer info / list.
 	array(
 		"SQL" =>
-			array(						//Set any of these to NULL to keep them from being displayed.
-				"IRC" => "SQLDb, SXT40", 		//IRC Name
-				"EMail" => "sxwiki@gmail.com", 		//Public E-mail address
-				"ToolID" => "1",                        //Tool user ID for linking to page in users.php. 
-                		"wiki" => "SQL", 			//Enwiki Username
-				"WWW" => "http://toolserver.org/~sql", 	//Your website
-				"Name" => NULL,				//Real name
-				"Role" => "Developer, Project Lead",	//Project Role(s)
-				"Access" => "Commit, Shell, SQL",	//Project Access levels
-				"Other" => NULL,			//Anything else, comments, etc.
+			array(                                      //Set any of these to NULL to keep them from being displayed.
+				"IRC" => "SQLDb, SXT40",                  //IRC Name
+				"EMail" => "sxwiki@gmail.com",            //Public E-mail address
+				"ToolID" => "1",                          //Tool user ID for linking to page in users.php. 
+        "wiki" => "SQL",                          //Enwiki Username
+				"WWW" => "http://toolserver.org/~sql",    //Your website
+				"Name" => NULL,                           //Real name
+				"Role" => "Developer, Project Lead",      //Project Role(s)
+				"Access" => "Commit, Shell, SQL",         //Project Access levels
+				"Cloak" => "*!*@wikipedia/SQL",           //IRC Cloak
+				"Other" => NULL,                          //Anything else, comments, etc.
 			),
 		"Cobi" =>
 			array(
 				"IRC" => "Cobi",
 				"EMail" => NULL,
-                		"ToolID" => "64",
+        "ToolID" => "64",
 				"wiki" => "Cobi",
 				"WWW" => NULL,
 				"Name" => NULL,
 				"Role" => "Developer",
 				"Access" => "Commit, Repo Admin, Shell, SQL",
+				"Cloak" => "*!*@cobi.cluenet.org",
 				"Other" => NULL,
 			),
 		"Charlie" =>
 			array(
 				"IRC" => "charlie, chuck",
 				"EMail" => "charlie@yourwiki.net",
-                		"ToolID" => "67",
+        "ToolID" => "67",
 				"wiki" => "Cmelbye",
 				"WWW" => "http://charlie.yourwiki.net/",
 				"Name" => "Charles Melbye",
 				"Role" => "Developer, Web designer",
 				"Access" => "Commit",
-				"Other" => "IRC cloak: wikimedia/cmelbye",
+				"Cloak" => "*!*@yourwiki/staff/charlie",
+				"Other" => NULL,
 			),
 		"FastLizard4" =>
 			array(
 				"IRC" => "FastLizard4",
 				"EMail" => "FastLizard4@gmail.com",
-                		"ToolID" => "18",
+        "ToolID" => "18",
 				"wiki" => "FastLizard4",
 				"WWW" => "http://scalar.cluenet.org/~fastlizard4/",
 				"Name" => NULL,
 				"Role" => "Developer",
 				"Access" => "Commit",
-				"Other" => "IRC Cloak: <tt>wikipedia/FastLizard4</tt>",
+				"Cloak" => "*!*@wikipedia/FastLizard4",
+				"Other" => NULL,
 			),
 		"Stwalkerster" =>
 			array(
 				"IRC" => "Stwalkerster",
 				"EMail" => "stwalkerster@googlemail.com",
-                		"ToolID" => "7",
+        "ToolID" => "7",
 				"wiki" => "Stwalkerster",
 				"WWW" => "http://stwalkerster.dyndns.org",
 				"Name" => "Simon Walker",
 				"Role" => "Developer",
 				"Access" => "Commit, Repo Admin, Shell, SQL",
+				"Cloak" => "*!*@wikipedia/Stwalkerster",
 				"Other" => NULL,
 			),
 		"Soxred93" =>
 			array(
 				"IRC" => "|X|",
 				"EMail" => NULL,
-                		"ToolID" => "4",
+        "ToolID" => "4",
 				"wiki" => "X!",
 				"WWW" => NULL,
 				"Name" => NULL,
 				"Role" => "Developer",
 				"Access" => "Commit",
+				"Cloak" => "*!*@wikipedia/Soxred93",
 				"Other" => "Wrote the original ACC Tool",
 			),
 		"Alexfusco5" =>
 			array(
 				"IRC" => "Alexfusco5",
 				"EMail" => "alexfusco5@gmail.com",
-                		"ToolID" => "34",
+        "ToolID" => "34",
 				"wiki" => "Alexfusco5",
 				"WWW" => "http://en.wikipedia.org/wiki/User:Alexfusco5",
 				"Name" => "Alex Fusco",
 				"Role" => "Developer",
 				"Access" => "Commit",
+				"Cloak" => "*!*@*Alexfusco5",
 				"Other" => NULL,
 			),
 		"OverlordQ" =>
 			array(
 				"IRC" => "OverlordQ",
 				"EMail" => NULL,
-                		"ToolID" => "36",
+        "ToolID" => "36",
 				"wiki" => "OverlordQ",
 				"WWW" => NULL,
 				"Name" => NULL,
 				"Role" => "Developer",
 				"Access" => "Commit, Repo Admin, Shell, SQL",
+				"Cloak" => "*!*@wikipedia/OverlordQ",
 				"Other" => NULL,
 			),
 		"Prodego" =>
 			array(
 				"IRC" => "Prodego",
 				"EMail" => "Prodego@gmail.com",
-                		"ToolID" => "14",
+        "ToolID" => "14",
 				"wiki" => "Prodego",
 				"WWW" => NULL,
 				"Name" => NULL,
 				"Role" => "Developer",
 				"Access" => "Commit, Repo Admin",
+				"Cloak" => "*!*@wikipedia/Prodego",
 				"Other" => NULL,
 			),
 		"FunPika" =>
 			array(
 				"IRC" => "FunPika",
 				"EMail" => "funpika4@gmail.com",
-                		"ToolID" => "38",
+        "ToolID" => "38",
 				"wiki" => "FunPika",
 				"WWW" => "http://funpika.unixpod.com",
 				"Name" => NULL,
 				"Role" => "Developer, HTML Specification compliance",
 				"Access" => "Commit",
+				"Cloak" => "*!*@yourwiki/staff/funpika",
 				"Other" => NULL,
 			),
 		"Prom3th3an" =>
@@ -163,6 +173,7 @@ $developer = //Developer info / list.
 				"Name" => "Brett Hillebrand",
 				"Role" => "Developer",
 				"Access" => "Commit, Repo Admin",
+				"Cloak" => "*!*@yourwiki/staff/Prom3th3an",
 				"Other" => NULL,
 			),
 		"Chris" =>
@@ -170,11 +181,12 @@ $developer = //Developer info / list.
 				"IRC" => "Chris_G",
 				"EMail" => "chris@toolserver.org",
 				"ToolID" => "20",
-                		"wiki" => "Chris_G",
+        "wiki" => "Chris_G",
 				"WWW" => "http://toolserver.org/~chris/",
 				"Name" => NULL,
 				"Role" => "Developer",
 				"Access" => "Commit",
+				"Cloak" => "*!*@wikipedia/Chris-G",
 				"Other" => NULL,
 			)
 	);
@@ -211,6 +223,9 @@ foreach( $developer as $devName => $devInfo ) {
 					break;
 				case "Access":
 					echo "<li>Access: $infoContent</li>\n";
+					break;
+				case "Cloak":
+					echo "<li>IRC Cloak: $infoContent</li>\n";
 					break;
 				case "Other":
 					echo "<li>Other: $infoContent</li>\n";

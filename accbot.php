@@ -80,23 +80,22 @@
 	addCommand( 'recreatesvn', 'commandRecreateSvn', true  );
 
 	// Users
-	//	Nick!User@Host mask							=> group
+	//	Nick!User@Host mask                 => group
 	$users = array(
-		'Cobi!*cobi*@cobi.cluenet.org'				=> 'developer',
-		'Cobi!*cobi*@Cobi.cluenet.org'				=> 'developer',
-		'*!*@2002:1828:834a:0:208:c7ff:fe29:220a'	=> 'developer',
-		'*!*@wikipedia/SQL'							=> 'root',
-		'OverlordQ!*@wikipedia/OverlordQ'			=> 'developer',
-		'*!*@wikipedia/Stwalkerster'				=> 'developer',
-		'*!*@*Alexfusco5'		   					=> 'developer',
-		'*!*@wikipedia/Soxred93'					=> 'developer',
-		'*!*@wikimedia/cmelbye'						=> 'developer',
-		'*!*@wikipedia/FastLizard4'					=> 'developer',
-		'*!*@wikipedia/Prodego'					    => 'developer',
-		'*!*@yourwiki/staff/funpika'				=> 'developer',
+		'*!*@cobi.cluenet.org'		        		=> 'developer',
+		'*!*@Cobi.cluenet.org'	        			=> 'developer',
+		'*!*@wikipedia/SQL'				      			=> 'developer',
+		'*!*@wikipedia/OverlordQ'	        		=> 'developer',
+		'*!*@wikipedia/Stwalkerster'			  	=> 'developer',
+		'*!*@*Alexfusco5'		   			      		=> 'developer',
+		'*!*@wikipedia/Soxred93'				    	=> 'developer',
+		'*!*@yourwiki/staff/charlie'					=> 'developer',
+		'*!*@wikipedia/FastLizard4'				  	=> 'developer',
+		'*!*@wikipedia/Prodego'               => 'developer',
+		'*!*@yourwiki/staff/funpika'			  	=> 'developer',
 		'*!*@yourwiki/staff/Prom3th3an'				=> 'developer',
-		'*!*@wikipedia/Chris-G'					    => 'developer',
-		'*!*@*'										=> '*'
+		'*!*@wikipedia/Chris-G'               => 'developer',
+		'*!*@*'                               => '*'
 		);
 
 	// Groups
