@@ -36,13 +36,13 @@ $developer = //Developer info / list.
 		"SQL" =>
 			array(						//Set any of these to NULL to keep them from being displayed.
 				"IRC" => "SQLDb, SXT40", 		//IRC Name
-				"EMail" => "sxw<a href='http://mailhide.recaptcha.net/d?k=01gigl1XlSJaNaMXKeaG5zOA==&amp;c=B0w027Zx-9XhG8tW-d8-zVQp6aMBR6EjXUOWr_ZjR4Y=' onclick='window.open('http://mailhide.recaptcha.net/d?k=01gigl1XlSJaNaMXKeaG5zOA==&amp;c=B0w027Zx-9XhG8tW-d8-zVQp6aMBR6EjXUOWr_ZjR4Y=', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;' title='Reveal this e-mail address'>...</a>@gmail.com", 		//Public E-mail address
+				"EMail" => "sxwiki@gmail.com", 		//Public E-mail address
 				"ToolID" => "1",                        //Tool user ID for linking to page in users.php. 
                 		"wiki" => "SQL", 			//Enwiki Username
 				"WWW" => "http://toolserver.org/~sql", 	//Your website
 				"Name" => NULL,				//Real name
 				"Role" => "Developer, Project Lead",	//Project Role(s)
-				"Access" => "Shell, SQL, Commit",	//Project Access levels
+				"Access" => "Commit, Shell, SQL",	//Project Access levels
 				"Other" => NULL,			//Anything else, comments, etc.
 			),
 		"Cobi" =>
@@ -54,7 +54,7 @@ $developer = //Developer info / list.
 				"WWW" => NULL,
 				"Name" => NULL,
 				"Role" => "Developer, Subversion Administrator",
-				"Access" => "Shell, SQL, Commit",
+				"Access" => "Commit, Repo Admin, Shell, SQL",
 				"Other" => NULL,
 			),
 		"Charlie" =>
@@ -90,7 +90,7 @@ $developer = //Developer info / list.
 				"WWW" => "http://stwalkerster.dyndns.org",
 				"Name" => "Simon Walker",
 				"Role" => "Developer",
-				"Access" => "Commit, Shell, SQL",
+				"Access" => "Commit, Repo Admin, Shell, SQL",
 				"Other" => NULL,
 			),
 		"Soxred93" =>
@@ -126,7 +126,7 @@ $developer = //Developer info / list.
 				"WWW" => NULL,
 				"Name" => NULL,
 				"Role" => "Developer",
-				"Access" => "Commit, Shell",
+				"Access" => "Commit, Repo Admin, Shell, SQL",
 				"Other" => NULL,
 			),
 		"Prodego" =>
@@ -137,8 +137,8 @@ $developer = //Developer info / list.
 				"wiki" => "Prodego",
 				"WWW" => NULL,
 				"Name" => NULL,
-				"Role" => "Developer, Code Review",
-				"Access" => "Commit",
+				"Role" => "Developer",
+				"Access" => "Commit, Repo Admin",
 				"Other" => NULL,
 			),
 		"FunPika" =>
@@ -161,9 +161,9 @@ $developer = //Developer info / list.
 				"wiki" => "Promethean",
 				"WWW" => "http://www.yourwiki.net",
 				"Name" => "Brett Hillebrand",
-				"Role" => "Developer, Misc bug fixing",
-				"Access" => "Commit",
-				"Other" => "Newie",
+				"Role" => "Developer",
+				"Access" => "Commit, Repo Admin",
+				"Other" => NULL,
 			),
 		"Chris" =>
 			array(
@@ -195,7 +195,7 @@ foreach( $developer as $devName => $devInfo ) {
 					echo "<li>Real name: $infoContent</li>\n";
 					break;
 				case "EMail":
-					echo "<li>E-Mail Address: $infoContent</li>\n";
+					echo "<li>E-Mail Address: <a href=\"mailto:$infoContent\">$infoContent</a></li>\n";
 					break;
 				case "ToolID":
 					echo "<li>Userpage on tool: <a href=\"users.php?viewuser=$infoContent\">Click here</a></li>\n";
