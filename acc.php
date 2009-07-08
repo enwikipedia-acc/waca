@@ -422,7 +422,7 @@ elseif ($action == "login") {
 		require_once 'includes/captcha.php';
 		$captcha = new captcha();
 		if (isset($_POST['captcha'])) {
-			if (!$captcha->verifyPasswd($_POST['captcha'])) {
+			if (!$captcha->verifyPasswd($_POST['captcha_id'],$_POST['captcha'])) {
 				die('Invalid captcha code'); // TODO: Make this error message better - redirect them back to the login page
 			}
 		} else {

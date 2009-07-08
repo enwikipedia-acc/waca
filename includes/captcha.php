@@ -31,17 +31,51 @@ if ($ACC != "1") {
 // TODO: Add more fonts from http://openfontlibrary.org/
 
 class captcha {
-	public function doCaptcha () {
+	public function generateId () {
+		return $this->generatePasswd(10);
+	}
+	
+	public function doCaptcha ($id) {
 		$pwd = $this->generatePasswd(4);
+		$this->removeExpiredData();
+		$this->storeData($id,$pwd);
 		$this->showImage($pwd,200,60);
 	}
 	
-	public function verifyPasswd ($passwd) {
-		if ($passwd==$_SESSION['captcha']) {
-			return true;
-		} else {
-			return false;
+	private function storeData ($id,$code) {
+		$expiry = time() + 3600; // expires in an hour
+		file_put_contents('/tmp/captchas.acc.txt',"$id $code $expiry\n",FILE_APPEND);
+	}
+	
+	private function removeExpiredData () {
+		$text = explode("\n",file_get_contents('/tmp/captchas.acc.txt'));
+		$newtext = '';
+		foreach ($text as $line) {
+			if (preg_match('/(\d+)$/',$line,$m)) {
+				if (time()<$m[1]) {
+					$newtext .= "$line\n";
+				}
+			}
 		}
+		file_put_contents('/tmp/captchas.acc.txt',$newtext);
+	}
+	
+	public function verifyPasswd ($id,$passwd) {
+		if (!preg_match('/^\w+$/i',$id)) {
+			die('Invalid captcha id.');
+		}
+		$this->removeExpiredData();
+		$text = explode("\n",file_get_contents('/tmp/captchas.acc.txt'));
+		foreach ($text as $line) {
+			if (preg_match('/^(.+) (.+) (\d+)$/',$line,$m)) {
+				if ($id==$m[1] and strtolower($passwd)==strtolower($m[2])) {
+					$content = str_replace("$line\n",'',file_get_contents('/tmp/captchas.acc.txt'));
+					file_put_contents('/tmp/captchas.acc.txt',$content);
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 	
 	private function generatePasswd ($length) {
@@ -51,7 +85,6 @@ class captcha {
     			$passwd .= chr(rand(97, 122));
     			$i++;
 		}
-		$_SESSION['captcha'] = $passwd;
 		return $passwd;
 	}
 	private function getFonts () {

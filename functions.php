@@ -687,7 +687,7 @@ function showlogin( $action = null, $params = null ) {
     if (isset($_GET['error']) and $_GET['error']=='authfail') {
     	$html .= "<p>Username and/or password incorrect. Please try again.</p>";
     }
-    $html .='<form action="acc.php?PHPSESSID='.session_id().'&action=login&amp;nocheck=1';
+    $html .='<form action="acc.php?action=login&amp;nocheck=1';
     if (( $action ) && ($action != "logout")) {
     	$html .= "&amp;newaction=".$action;
     	foreach ($params as $param => $value) { 
@@ -706,6 +706,11 @@ function showlogin( $action = null, $params = null ) {
         <input id="password" type="password" name="password"/>
     </div>';
     if ($useCaptcha) {
+            if (!class_exists('captcha')) {
+            	require_once 'includes/captcha.php';
+            }
+            $captcha = new captcha;
+            $captcha_id = $captcha->generateId();
 	    $ip = sanitize($_SERVER['REMOTE_ADDR']);
 	    $result = mysql_query("SELECT * FROM acc_log WHERE log_action='badpass' AND log_cmt='$ip' AND DATE_SUB(CURDATE(),INTERVAL 5 MINUTE) <= log_time LIMIT 2;");
 	    $row = mysql_fetch_assoc($result);
@@ -713,7 +718,8 @@ function showlogin( $action = null, $params = null ) {
 	    	$html .= '<div class="required">
 		<label for="captcha">Captcha:</label>
 		<input id="captcha" type="text" name="captcha"/>
-		<img src="captcha.php?PHPSESSID='.session_id().'" />
+		<input name="captcha_id" type="hidden" value="'.$captcha_id.'" />
+		<img src="captcha.php?id='.$captcha_id.'" />
 	    </div>';
 	    }
     }
