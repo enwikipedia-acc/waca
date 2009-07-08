@@ -195,7 +195,7 @@ foreach( $developer as $devName => $devInfo ) {
 					echo "<li>Real name: $infoContent</li>\n";
 					break;
 				case "EMail":
-					echo "<li>E-Mail Address: <a href=\"mailto:$infoContent\">$infoContent</a></li>\n";
+					echo "<li>E-Mail Address: $infoContent</li>\n";
 					break;
 				case "ToolID":
 					echo "<li>Userpage on tool: <a href=\"users.php?viewuser=$infoContent\">Click here</a></li>\n";
