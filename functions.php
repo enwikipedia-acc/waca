@@ -680,7 +680,7 @@ function showfooter() {
 }
 
 function showlogin( $action = null, $params = null ) {
-	global $_SESSION, $tsSQLlink;
+	global $_SESSION, $tsSQLlink, $useCaptcha;
 	$html ='<div id="sitenotice">Please login first, and we\'ll send you on your way!</div>
     <div id="content">
     <h2>Login</h2>';
@@ -705,15 +705,17 @@ function showlogin( $action = null, $params = null ) {
         <label for="password">Password:</label>
         <input id="password" type="password" name="password"/>
     </div>';
-    $ip = sanitize($_SERVER['REMOTE_ADDR']);
-    $result = mysql_query("SELECT * FROM acc_log WHERE log_action='badpass' AND log_cmt='$ip' AND DATE_SUB(CURDATE(),INTERVAL 5 MINUTE) <= log_time LIMIT 2;");
-    $row = mysql_fetch_assoc($result);
-    if (!empty($row)) {
-    	$html .= '<div class="required">
-        <label for="captcha">Captcha:</label>
-        <input id="captcha" type="text" name="captcha"/>
-        <img src="captcha.php" />
-    </div>';
+    if ($useCaptcha) {
+	    $ip = sanitize($_SERVER['REMOTE_ADDR']);
+	    $result = mysql_query("SELECT * FROM acc_log WHERE log_action='badpass' AND log_cmt='$ip' AND DATE_SUB(CURDATE(),INTERVAL 5 MINUTE) <= log_time LIMIT 2;");
+	    $row = mysql_fetch_assoc($result);
+	    if (!empty($row)) {
+	    	$html .= '<div class="required">
+		<label for="captcha">Captcha:</label>
+		<input id="captcha" type="text" name="captcha"/>
+		<img src="captcha.php" />
+	    </div>';
+	    }
     }
     $html .= '<div class="submit">
         <input type="submit" value="Login"/>

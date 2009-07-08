@@ -24,6 +24,7 @@
 **************************************************************/
 
 require_once ( 'config.inc.php' );
+$useCaptcha = false; // TODO: This needs to be moved to the config file - i'd do it myself but I don't have shell - Chris
 require_once ( 'devlist.php' );
 require_once ( 'functions.php' );
 $version = "0.9.7";
@@ -417,20 +418,22 @@ HTML;
 	die();
 }
 elseif ($action == "login") {
-	require_once 'includes/captcha.php';
-	$captcha = new captcha();
-	if (isset($_POST['captcha'])) {
-		if (!$captcha->verifyPasswd($_POST['captcha'])) {
-			die('Invalid captcha code'); // TODO: Make this error message better - redirect them back to the login page
+	if ($useCaptcha) {
+		require_once 'includes/captcha.php';
+		$captcha = new captcha();
+		if (isset($_POST['captcha'])) {
+			if (!$captcha->verifyPasswd($_POST['captcha'])) {
+				die('Invalid captcha code'); // TODO: Make this error message better - redirect them back to the login page
+			}
+		} else {
+			// check if they were supposed to send a captcha but didn't
+			$ip = sanitize($_SERVER['REMOTE_ADDR']);
+			$result = mysql_query("SELECT * FROM acc_log WHERE log_action='badpass' AND log_cmt='$ip' AND DATE_SUB(CURDATE(),INTERVAL 5 MINUTE) <= log_time LIMIT 2;");
+	    		$row = mysql_fetch_assoc($result);
+	    		if (!empty($row)) {
+	    			die('Missing captcha'); // TODO: rather than just dying, show them a captcha to do
+	    		}
 		}
-	} else {
-		// check if they were supposed to send a captcha but didn't
-		$ip = sanitize($_SERVER['REMOTE_ADDR']);
-		$result = mysql_query("SELECT * FROM acc_log WHERE log_action='badpass' AND log_cmt='$ip' AND DATE_SUB(CURDATE(),INTERVAL 5 MINUTE) <= log_time LIMIT 2;");
-    		$row = mysql_fetch_assoc($result);
-    		if (!empty($row)) {
-    			die('Missing captcha'); // TODO: rather than just dying, show them a captcha to do
-    		}
 	}
 	$puser = sanitize($_POST['username']);
 	$ip = sanitize($_SERVER['REMOTE_ADDR']);

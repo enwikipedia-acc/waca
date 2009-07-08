@@ -74,7 +74,7 @@ if (file_exists("config.local.inc.php")) {
 	//    deny: prevents the user from reserving a second request.
 	$allowDoubleReserving = "warn";
 	
-	
+	$useCaptcha = false;
 }
 require_once ('blacklist.php');
 ?>
