@@ -121,7 +121,7 @@ class captcha {
 		$x = $spacing;
 		
 		/* draw each character */
-		for ($i = 0; $i < strlen($passwd); $i++) {
+		/*for ($i = 0; $i < strlen($passwd); $i++) {
 		    $letter = $passwd[$i];
 		    $size = rand($height/3, $height/2);
 		    $rotation = rand(-30, 30);
@@ -133,7 +133,7 @@ class captcha {
 		    imagettftext($img, $size, $rotation, $x, $y, $shadow, $font, $letter);
 		    imagettftext($img, $size, $rotation, $x-1, $y-3, $color, $font, $letter);
 		    $x += rand($spacing, $spacing * 1.5);  
-		}
+		}*/
 
 		imagejpeg($img);
 		imagedestroy($img);
