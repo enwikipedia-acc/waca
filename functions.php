@@ -709,7 +709,7 @@ function showlogin( $action = null, $params = null ) {
     $result = mysql_query("SELECT * FROM acc_log WHERE log_action='badpass' AND log_cmt='$ip' AND DATE_SUB(CURDATE(),INTERVAL 5 MINUTE) <= log_time LIMIT 2;");
     $row = mysql_fetch_assoc($result);
     if (!empty($row)) {
-    	echo '<div class="required">
+    	$html .= '<div class="required">
         <label for="captcha">Captcha:</label>
         <input id="captcha" type="text" name="captcha"/>
         <img src="captcha.php" />

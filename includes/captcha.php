@@ -66,7 +66,7 @@ class captcha {
 		}
 		return $fonts;
 	}
-	private function showImage ($text,$width,$height) {
+	private function showImage ($passwd,$width,$height) {
 		$fonts = $this->getFonts();
 		
 		header("Content-Type: image/jpeg");
