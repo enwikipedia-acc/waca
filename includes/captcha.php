@@ -72,23 +72,24 @@ class captcha {
 		// draw the backgroud
 		$bg_colour = imagecolorallocate($img, rand(210,255), rand(210,255), rand(210,255));
 		imagefilledrectangle($img,0,0,$width,$height,$bg_colour);
-		// word out text spacing
+		
 		$spacing = $width / (strlen($passwd)+2);
 		$x = $spacing;
-		// draw the text
-		for ($i=0;$i<strlen($passwd);$i++) {
-			$letter = $passwd[$i];
-			$size = rand($height/3, $height/2);
-			$rotation = rand(-30,30);
-			$y = rand($height * .90, $height-$size-4);
-			$fonts = $fonts[array_rand($fonts)];
-			$r = rand(100,255); $g = rand(100,255); $b = rand(100,255);
-			$colour = imagecolorallocate($img,$r,$g,$b);
-			$shadow = imagecolorallocate($img,$r/3,$g/3,$b/3);
-			imagettftext($img,$size,$rotation,$x,$y,$shadow,$font,$letter);
-			imagettftext($img,$size,$rotation,$x-1,$y-3,$colour,$font,$letter);
-			$x += rand($spacing,$spacing*1.5);
+		// draw each character
+		for ($i = 0; $i < strlen($passwd); $i++) {
+		    $letter = $passwd[$i];
+		    $size = rand($height/3, $height/2);
+		    $rotation = rand(-30, 30);
+		    $y = rand($height * .90, $height - $size - 4);
+		    $font = $fonts[array_rand($fonts)];
+		    $r = rand(100, 255); $g = rand(100, 255); $b = rand(100, 255);
+		    $color = imagecolorallocate($img, $r, $g, $b);
+		    $shadow = imagecolorallocate($img, $r/3, $g/3, $b/3);
+		    imagettftext($img, $size, $rotation, $x, $y, $shadow, $font, $letter);
+		    imagettftext($img, $size, $rotation, $x-1, $y-3, $color, $font, $letter);
+		    $x += rand($spacing, $spacing * 1.5);  
 		}
+
 		imagepng($img);
 		imagedestroy($img);
 	}
