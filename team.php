@@ -236,6 +236,6 @@ foreach( $developer as $devName => $devInfo ) {
 	echo "</ul>\n";
 }
 
-echo "<br><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by SourceForge</p>";
+echo "<br/><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by SourceForge</p>";
 displayfooter();
 ?>
