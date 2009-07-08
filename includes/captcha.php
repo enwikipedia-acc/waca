@@ -67,76 +67,12 @@ class captcha {
 		return $fonts;
 	}
 	private function showImage ($passwd,$width,$height) {
-		$fonts = $this->getFonts();
-		if (count($fonts) < 1) {
-			die('No fonts loaded.');
-		}
-		
-		header("Content-Type: image/jpeg");
-		$img = imagecreatetruecolor($width, $height);
-  
-		/* fill background with a random colour */
-		$bg = imagecolorallocate($img, rand(210,255), rand(210,255), rand(210,255));
-		imagefilledrectangle($img, 0,0, $width, $height, $bg);
-		
-		$c_min = rand(120, 185);
-		$c_max = rand(195, 280);
-
-		/* draw random vertical lines across the width */
-		$left = 0;
-		while ($left < $width) {
-		    $right = $left + rand(3, 7);
-		    $offset = rand(-3, 3);
-		    $line_points = array(
-			$left, 0,
-		        $right, 0,
-		        $right + $offset, $height,
-		        $left + $offset, $height);
-			
-		    $pc = imagecolorallocate($img, rand($c_min, $c_max),
-		                                   rand($c_min, $c_max),
-		                                   rand($c_min, $c_max));
-		    imagefilledpolygon($img, $line_points, 4, $pc);
-		    $left += rand(20, 60);
-		}
-		
-		/* create random horizontal lines across the height */
-		$top = 0; 
-		while ($top < $height) {
-		    $bottom = $top + rand(1, 4);
-		    $offset = rand(-6, 6);
-		    $line_points = array(
-		        0, $top,
-		        0, $bottom,
-		        $width, $bottom + $offset,
-		        $width, $top + $offset);
-		    $pc = imagecolorallocate($img, rand($c_min, $c_max),
-						   rand($c_min, $c_max),
-						   rand($c_min, $c_max));
-		    imagefilledpolygon($img, $line_points, 4, $pc);
-		    $top += rand(8, 15);
-		}
-		
-		$spacing = $width / (strlen($passwd)+2);
-		$x = $spacing;
-		
-		/* draw each character */
-		/*for ($i = 0; $i < strlen($passwd); $i++) {
-		    $letter = $passwd[$i];
-		    $size = rand($height/3, $height/2);
-		    $rotation = rand(-30, 30);
-		    $y = rand($height * .90, $height - $size - 4);
-		    $font = $fonts[array_rand($fonts)];
-		    $r = rand(100, 255); $g = rand(100, 255); $b = rand(100, 255);
-		    $color = imagecolorallocate($img, $r, $g, $b);
-		    $shadow = imagecolorallocate($img, $r/3, $g/3, $b/3);
-		    imagettftext($img, $size, $rotation, $x, $y, $shadow, $font, $letter);
-		    imagettftext($img, $size, $rotation, $x-1, $y-3, $color, $font, $letter);
-		    $x += rand($spacing, $spacing * 1.5);  
-		}*/
-
-		imagejpeg($img);
-		imagedestroy($img);
+		header ('Content-type: image/png');
+		$im = @imagecreatetruecolor(120, 20) or die('Cannot Initialize new GD image stream');
+		$text_color = imagecolorallocate($im, 233, 14, 91);
+		imagestring($im, 1, 5, 5, $passwd, $text_color);
+		imagepng($im);
+		imagedestroy($im);
 	}
 }
 
