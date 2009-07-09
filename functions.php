@@ -670,6 +670,8 @@ function showfooter() {
 	global $tsSQLlink;
 	$username = sanitize($_SESSION['user']);
 	$result = mysql_query("SELECT user_lastip FROM acc_user WHERE user_name = '$username';", $tsSQLlink);
+	if (!$result)
+		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	$row = mysql_fetch_assoc($result);
 	$ip = $row['user_lastip'];
 	if ($ip==$_SERVER['REMOTE_ADDR']) {
@@ -684,9 +686,9 @@ function showfooter() {
 	$howma = $howmany['howmany'];
 	$out = showmessage('23');
 	if ($howma != 1) // not equal to one, as zero uses the plural form too.
-		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creators currently online (past 5 minutes): $howout</small></div><br /><br />\n$out2", $out);
+		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creators currently online (past 5 minutes): $howout</small></div>\n$out2", $out);
 	else
-		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creator currently online (past 5 minutes): $howout</small></div><br /><br />\n$out2", $out);
+		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creator currently online (past 5 minutes): $howout</small></div>\n$out2", $out);
 	return $out;
 }
 
