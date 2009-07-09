@@ -672,10 +672,10 @@ function showfooter() {
 	$lastLogin = new lastLogin;
 	$data = $lastLogin->getLastLogin($_SESSION['user']);
 	$timestamp = "at ".date('H:i',$data['time']);
-	if (date('jS of F Y',$data['time'])==date('jS of F Y')) {
+	if (date('jS \of F Y',$data['time'])==date('jS \of F Y')) {
 		$timestamp .= " today";
 	} else {
-		$timestamp .= " on the ".date('jS of F, Y',$data['time']);
+		$timestamp .= " on the ".date('jS \of F, Y',$data['time']);
 	}
 	if ($data['ip']==$_SERVER['REMOTE_ADDR']) {
 		$out2 = "<br /><div align=\"center\"><small>You last logged in from this computer $timestamp.</small></div><br /><br />";

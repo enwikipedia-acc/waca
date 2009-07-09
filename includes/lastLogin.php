@@ -26,7 +26,7 @@
 class lastLogin {
 	private $filename;
 	
-	public function __contruct() {
+	public function __construct() {
 		$this->filename = '/projects/acc/lastlogin.txt';
 	}
 	
@@ -42,7 +42,7 @@ class lastLogin {
 		$data = array();
 		$text = explode("\n",file_get_contents($this->filename));
 		foreach ($text as $line) {
-			if (preg_match("/^($quser) ([0-9.]+) (\d+)$/")) {
+			if (preg_match("/^($quser) ([0-9.]+) (\d+)$/",$line)) {
 				$data[] = array(
 						'ip' => $m[2],
 						'time' => $m[3]
@@ -67,7 +67,7 @@ class lastLogin {
 		$data = array();
 		$text = explode("\n",file_get_contents($this->filename));
 		foreach ($text as $line) {
-			if (preg_match("/^($quser) ([0-9.]+) (\d+)$/")) {
+			if (preg_match("/^($quser) ([0-9.]+) (\d+)$/",$line)) {
 				$data[] = array(
 						'username' => $m[1],
 						'ip' => $m[2],
