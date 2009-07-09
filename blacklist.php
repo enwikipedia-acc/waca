@@ -72,7 +72,7 @@ $nameblacklist['grawp11'] = '/pedophil/i';
 $nameblacklist['grawp12'] = '/lolwut/i';
 $nameblacklist['grawp14'] = '/(SteveCrossin|Mellie)/i';
 
-$nameblacklist['upolicy4'] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|st[3e]w[4a]rd|j[1i]mb[0o]).*/i';
+$nameblacklist['upolicy4'] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|st[3e]w[4a]rd).*/i';
 
 //E-Mail Blacklist
 $emailblacklist['grawp1'] = '/(shit|fuck|phuck)/i';
