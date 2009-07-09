@@ -470,7 +470,9 @@ elseif ($action == "login") {
 			$_SESSION['userID'] = $row['user_id'];
 			$_SESSION['user'] = $row['user_name'];
 			$_SESSION['ip'] = $ip;
-			mysql_query("UPDATE acc_user SET user_lastip = '$ip' WHERE user_name = '" . $row['user_name']."';", $tsSQLlink);
+			require_once 'includes/lastLogin.php';
+			$lastLogin = new lastLogin;
+			$lastLogin->addEntry($row['user_name']);
 			if ( isset( $_GET['newaction'] ) ) {
 				$header = "Location: $tsurl/acc.php?action=".$_GET['newaction'];
 				foreach ($_GET as $key => $get) {

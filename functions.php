@@ -20,6 +20,7 @@
 **Prodego    ( http://en.wikipedia.org/wiki/User:Prodego )   **
 **FunPika    ( http://en.wikipedia.org/wiki/User:FunPika )   **
 **PRom3th3an ( http://en.wikipedia.org/wiki/User:Promethean )**
+**Chris_G ( http://en.wikipedia.org/wiki/User:Chris_G )      **
 **************************************************************/
 
 if ($ACC != "1") {
@@ -667,17 +668,19 @@ function showfooter() {
 	/*
 	* Show footer (logged in)
 	*/
-	global $tsSQLlink;
-	$username = sanitize($_SESSION['user']);
-	$result = mysql_query("SELECT user_lastip FROM acc_user WHERE user_name = '$username';", $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	$row = mysql_fetch_assoc($result);
-	$ip = $row['user_lastip'];
-	if ($ip==$_SERVER['REMOTE_ADDR']) {
-		$out2 = "<br /><div align=\"center\"><small>You last logged in from this computer.</small></div><br /><br />";
+	require_once 'includes/lastLogin.php';
+	$lastLogin = new lastLogin;
+	$data = $lastLogin->getLastLogin($_SESSION['user']);
+	$timestamp = "at ".date('H:i',$data['time']);
+	if (date('jS of F Y',$data['time'])==date('jS of F Y')) {
+		$timestamp .= " today";
 	} else {
-		$out2 = "<br /><div align=\"center\"><small>You last logged in from <a href=\"http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=$ip\">$ip</a>.</small></div><br /><br />";
+		$timestamp .= " on the ".date('jS of F, Y',$data['time']);
+	}
+	if ($data['ip']==$_SERVER['REMOTE_ADDR']) {
+		$out2 = "<br /><div align=\"center\"><small>You last logged in from this computer $timestamp.</small></div><br /><br />";
+	} else {
+		$out2 = "<br /><div align=\"center\"><small>You last logged in from <a href=\"http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=".$data['ip']."\">".$data['ip']."</a> $timestamp.</small></div><br /><br />";
 	}
 	
 	$howmany = array ();
