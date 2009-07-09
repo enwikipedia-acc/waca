@@ -470,7 +470,7 @@ elseif ($action == "login") {
 			$_SESSION['userID'] = $row['user_id'];
 			$_SESSION['user'] = $row['user_name'];
 			$_SESSION['ip'] = $ip;
-			$result = mysql_query("SELECT user_lastip,user_lastactive FROM acc_user WHERE user_name ='" . $row['user_name']."';", $tsSQLlink);
+			$result = mysql_query("SELECT user_lastip,user_lastactive FROM acc_user WHERE user_name ='" . $row['user_name']."';", $tsSQLlink) or sqlerror('Database error.',mysql_error());
 			$row = mysql_fetch_assoc($esult);
 			$_SESSION['lastlogin_ip'] = $row['user_lastip'];
 			$_SESSION['lastlogin_time'] = strtotime($row['user_lastactive']);
