@@ -678,7 +678,7 @@ function showfooter() {
 	else
 		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creator currently online (past 5 minutes): $howout</small></div><br /><br />", $out);
 	$username = sanitize($_SESSION['user']);
-	$result = mysql_query("SELECT user_lastip FROM acc_user WHERE user_name = $username";, $tsSQLlink);
+	$result = mysql_query("SELECT user_lastip FROM acc_user WHERE user_name = $username;", $tsSQLlink);
 	$row = mysql_fetch_assoc($result);
 	$ip = $row['user_lastip'];
 	if ($ip==$_SERVER['REMOTE_ADDR']) {
