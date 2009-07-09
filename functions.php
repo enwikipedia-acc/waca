@@ -667,6 +667,7 @@ function showfooter() {
 	/*
 	* Show footer (logged in)
 	*/
+	global $tsSQLlink;
 	$howmany = array ();
 	$howmany = gethowma();
 	$howout = showhowma();
@@ -676,6 +677,15 @@ function showfooter() {
 		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creators currently online (past 5 minutes): $howout</small></div><br /><br />", $out);
 	else
 		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creator currently online (past 5 minutes): $howout</small></div><br /><br />", $out);
+	$username = sanitize($_SESSION['user']);
+	$result = mysql_query("SELECT user_lastip FROM acc_user WHERE user_name = $username";, $tsSQLlink);
+	$row = mysql_fetch_assoc($result);
+	$ip = $row['user_lastip'];
+	if ($ip==$_SERVER['REMOTE_ADDR']) {
+		$out .= "<br /><div align=\"center\"><small>You last logged in from this computer.</small></div><br /><br />";
+	} else {
+		$out .= "<br /><div align=\"center\"><small>You last logged in from <a href=\"http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=$ip\">$ip</a>.</small></div><br /><br />";
+	}
 	return $out;
 }
 
