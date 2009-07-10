@@ -387,13 +387,10 @@ HTML;
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
 		if (!isset($row['user_id'])) {
-			echo "<h2>ERROR</h2>Missing or invalid information supplied.\n";
-			die();
+			echo "<h2>ERROR</h2>Missing or incorrect Username supplied..\n";
 		}
 		if (strtolower($_POST['email']) != strtolower($row['user_email'])) {
-			echo "<h2>ERROR</h2>Missing or invalid information supplied (ERR 2).\n";
-			echo showfootern();
-			die();
+			echo "<h2>ERROR</h2>Missing or incorrect Email address supplied.\n";
 		}
 		$hashme = $puser . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
 		$hash = md5($hashme);
@@ -402,8 +399,6 @@ HTML;
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row['user_email'], "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
 		echo "Your password reset request has been completed. Please check your e-mail.\n<br />";
-		echo showfootern();
-		die();
 	}
 	echo <<<HTML
 	<form action="acc.php?action=forgotpw" method="post">
