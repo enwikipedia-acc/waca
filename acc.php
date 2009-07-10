@@ -389,9 +389,10 @@ HTML;
 		if (!isset($row['user_id'])) {
 			echo "<h2>ERROR</h2>Missing or incorrect Username supplied..\n";
 		}
-		if (strtolower($_POST['email']) != strtolower($row['user_email'])) {
+		elseif (strtolower($_POST['email']) != strtolower($row['user_email'])) {
 			echo "<h2>ERROR</h2>Missing or incorrect Email address supplied.\n";
 		}
+		else{
 		$hashme = $puser . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
 		$hash = md5($hashme);
 		// re bug 29: please don't escape the url parameters here: it's a plain text email so no need to escape, or you break the link
@@ -399,6 +400,7 @@ HTML;
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row['user_email'], "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
 		echo "Your password reset request has been completed. Please check your e-mail.\n<br />";
+		}
 	}
 	echo <<<HTML
 	<form action="acc.php?action=forgotpw" method="post">
