@@ -137,7 +137,7 @@ elseif ( $action == "sreg" ) {
 	}
 	// check if the user is to new
 	$isNewbie = unserialize(file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$cu_name" ));
-	if (!($$isNewbie['query']['allusers'][0]['editcount'] < 20 and (time() - strtotime($isNewbie['query']['allusers'][0]['registration'])) > 60*60*24*60)) {
+	if (!($isNewbie['query']['allusers'][0]['editcount'] < 20 and (time() - strtotime($isNewbie['query']['allusers'][0]['registration'])) > 60*60*24*60)) {
 		echo "I'm sorry, you are too new to request an account at the moment.<br />\n";
 		echo showfootern();
 		die();
