@@ -142,7 +142,6 @@ elseif ( $action == "sreg" ) {
 	$editcount = $isNewbie['query']['allusers'][0]['editcount'];
 	if (!($editcount > 20 and $time2 > 5184000)) {
 		echo "I'm sorry, you are too new to request an account at the moment.<br />\n";
-		echo "<!-- editcount: $editcount time: $time time2: $time2 -->";
 		echo showfootern();
 		die();
 	}
@@ -226,7 +225,8 @@ elseif ( $action == "sreg" ) {
 	}
 	$query = "SELECT * FROM acc_pend WHERE pend_name = '$user' AND (pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Closed') AND DATE_SUB(CURDATE(),INTERVAL 7 DAY) <= pend_date LIMIT 1;";
 	$result = mysql_query($query, $tsSQLlink);
-	if ($result) {
+	$row = mysql_fetch_assoc($result);
+	if (!empty($row['pend_name'])) {
 		echo "I'm sorry, you are too new to request an account at the moment.<br />\n";
 		echo showfootern();
 		die();
