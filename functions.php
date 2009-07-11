@@ -450,10 +450,13 @@ function listrequests($type, $hideip) {
 			$out .= '(</span><b><span class="request-mult">' . $otheripreqs['count'] . '</span></b><span class="request-src">)';
 		}
 
-		//IP contribs
+		// IP contribs
 		$out .= '</span></small></td><td><small><a class="request-src" href="'.$wikipediaurl.'wiki/Special:Contributions/';
 		$out .= $row['pend_ip'] . '" target="_blank">c</a> ';
-
+		
+		// IP global contribs
+		$out .= '<a class="request-src" href="http://toolserver.org/~luxo/contributions/contributions.php?lang=en&blocks=true&user=' . $row['pend_ip'] . '" target="_blank">gc</a> ';
+		
 		// IP blocks
 		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
 		$out .= $row['pend_ip'] . '" target="_blank">b</a> ';
