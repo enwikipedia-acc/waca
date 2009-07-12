@@ -64,7 +64,10 @@ function setForceLogout( $uid ) {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
+	$link = mysql_select_db($toolserver_database);
+	if( !$link ) {
+		sqlerror(mysql_error(),"Error selecting database.");
+	}
 	$query = "UPDATE acc_user SET user_forcelogout = '1' WHERE user_id = '$uid';";
 	$result = mysql_query($query);
 }
@@ -76,7 +79,10 @@ function forceLogout( $uid ) {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
+	$link = mysql_select_db($toolserver_database);
+	if( !$link ) { 
+		sqlerror(mysql_error(),"Error selecting database.");	
+	}
 	$query = "SELECT user_forcelogout FROM acc_user WHERE user_id = '$uid';";
 	$result = mysql_query($query);
 	if (!$result)
@@ -105,7 +111,10 @@ function getSpoofs( $username ) {
 		global $antispoof_table;
 		global $antispoof_password;
 		$spooflink = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
-		@ mysql_select_db($antispoof_db, $spooflink) or sqlerror(mysql_error(),"Error selecting database.");
+		$link = mysql_select_db($antispoof_db, $spooflink);
+		if( !$link ) { 
+			sqlerror(mysql_error(),"Error selecting database.");	
+		}
 		$return = AntiSpoof::checkUnicodeString( $username );
 		if($return[0] == 'OK' ) {		
 			$sanitized = sanitize($return[1]);
@@ -150,7 +159,10 @@ function upcsum($id) {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
+	$link = mysql_select_db($toolserver_database);
+	if( !$link ) { 
+	 sqlerror(mysql_error(),"Error selecting database.");
+	}
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
 	$result = mysql_query($query);
 	if (!$result)
@@ -170,7 +182,10 @@ function csvalid($id, $sum) {
 	global $toolserver_host;
 	global $toolserver_database;
 	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
+	$link = mysql_select_db($toolserver_database);
+	if( !$link ) { 
+		sqlerror(mysql_error(),"Error selecting database.");
+	}
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
 	$result = mysql_query($query);
 	if (!$result)
