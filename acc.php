@@ -145,6 +145,12 @@ elseif ( $action == "sreg" ) {
 		echo showfootern();
 		die();
 	}
+	// check if user checked the "I have read and understand the interface guidelines" checkbox
+	if(!isset($_REQUEST['guidelines'])) {
+		echo "I'm sorry, but you must read <a href=\"http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide\">the interface guidelines</a> before your request may be submitted.<br />\n";
+		echo showfootern();
+		die();
+	}
 	
 	$user = mysql_real_escape_string($_REQUEST['name']);
 	if (stristr($user, "'") !== FALSE) {
@@ -319,6 +325,9 @@ elseif ($action == "register") {
 					</select>
 				</td>
             </tr>
+			<tr>
+				<td><b>I have read and understand the <a href="Wikipedia:Request_an_account/Guide">interface guidelines.</a><b></td>
+				<td><input type="checkbox" name="guidelines"></td>
             <tr>
                 <td></td>
                 <td><input type="submit"><input type="reset"></td>
