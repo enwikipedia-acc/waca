@@ -65,7 +65,6 @@
 	addHelp( 'sandinfo'   , ''          , 'Floods you with information about the SVN repository sandbox.'       );
 	addHelp( 'sand-svnup' , ''          , 'Allows developers to sync the sandbox with the SVN repository.'      );
 	addHelp( 'restart'    , ''          , 'Causes the bot to do an immediate graceful reinitialization.'        );
-	addHelp( 'recreatesvn', ''          , 'Attempts to fix the live copy of the site.'                          );
 
 	// Commands
 	//          Command      , Function            , Fork?
@@ -77,25 +76,24 @@
 	addCommand( 'sandinfo'   , 'commandSandInfo'   , true  );
 	addCommand( 'sand-svnup' , 'commandSandSvnUp'  , true  );
 	addCommand( 'restart'    , 'commandRestart'    , false );
-	addCommand( 'recreatesvn', 'commandRecreateSvn', true  );
 
 	// Users
 	//	Nick!User@Host mask                 => group
 	$users = array(
-		'*!*@cobi.cluenet.org'		        		=> 'developer',
-		'*!*@Cobi.cluenet.org'	        			=> 'developer',
-		'*!*@wikipedia/SQL'				      			=> 'developer',
-		'*!*@wikipedia/OverlordQ'	        		=> 'developer',
-		'*!*@wikipedia/Stwalkerster'			  	=> 'developer',
-		'*!*@*Alexfusco5'		   			      		=> 'developer',
-		'*!*@wikipedia/Soxred93'				    	=> 'developer',
-		'*!*@yourwiki/staff/charlie'					=> 'developer',
-		'*!*@wikipedia/FastLizard4'				  	=> 'developer',
-		'*!*@wikipedia/Prodego'               => 'developer',
-		'*!*@yourwiki/staff/funpika'			  	=> 'developer',
-		'*!*@yourwiki/staff/Prom3th3an'				=> 'developer',
-		'*!*@wikipedia/Chris-G'               => 'developer',
-		'*!*@*'                               => '*'
+		'*!*@cobi.cluenet.org'				=> 'developer',
+		'*!*@Cobi.cluenet.org'				=> 'developer',
+		'*!*@wikipedia/SQL'					=> 'developer',
+		'*!*@wikipedia/OverlordQ'			=> 'developer',
+		'*!*@wikipedia/Stwalkerster'		=> 'developer',
+		'*!*@*Alexfusco5'					=> 'developer',
+		'*!*@wikipedia/Soxred93'			=> 'developer',
+		'*!*@yourwiki/staff/charlie'		=> 'developer',
+		'*!*@wikipedia/FastLizard4'			=> 'developer',
+		'*!*@wikipedia/Prodego'				=> 'developer',
+		'*!*@yourwiki/staff/funpika'		=> 'developer',
+		'*!*@yourwiki/staff/Prom3th3an'		=> 'developer',
+		'*!*@wikipedia/Chris-G'				=> 'developer',
+		'*!*@*'								=> '*'
 		);
 
 	// Groups
@@ -110,7 +108,6 @@
 	$privgroups[ 'developer' ]                  = $privgroups['*']; // 'developer' inherits '*'.
 	$privgroups[ 'developer' ][ 'sand-svnup'  ] = 1;
 	$privgroups[ 'developer' ][ 'restart'     ] = 1;
-	$privgroups[ 'developer' ][ 'recreatesvn' ] = 1;
 
 	// Functions
 	function sanitize( $data ) {
@@ -461,14 +458,6 @@
 		pcntl_exec( '/opt/php/bin/php', $GLOBALS['argv'], $_ENV );
 	}
 
-	function commandRecreateSvn( $parsed ) {
-		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Please wait while I try to fix the SVN.' );
-		system( 'tar -jcvpf ~/accinterface-svn-broken.' . time() . '.tbz2 .' );
-		system( 'svn list | xargs rm -f' );
-		system( 'svn up' );
-		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Thanks.  SVN has hopefully been fixed.' );
-	}
-
 	function validateData( $sdata ) {
 		global $key;
 		$data = unserialize( ltrim(rtrim( $sdata ) ) );
@@ -536,7 +525,7 @@
 				if( validateData( $data ) ) {
 					$uData = unserialize( $data );
 					irc( 'PRIVMSG ' . $chan . ' :' . str_replace( "\n", "\nPRIVMSG " . $chan . ' :', $uData[1] ) );
-					$lastToolMsg = time():
+					$lastToolMsg = time();
 				}
 			}
 			if ((time() - $lastToolMsg) > 3600*6) {
