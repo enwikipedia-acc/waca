@@ -33,7 +33,7 @@ echo "Initialising backup script\n";
 $basefile = "backup";
 $dir = "/projects/acc/accbak";
 $monthdir = "/projects/acc/accbak/monthly";
-$dumper = "/opt/mysql/bin/mysqldump --defaults-file=~/.dblocal p_acc"; //add params here if they are needed.
+$dumper = "/opt/ts/mysql/5.1/bin/mysqldump --defaults-file=~/.dblocal p_acc"; //add params here if they are needed.
 $gzip = "/usr/bin/gzip"; //add params here too if needed.
 $tar = "/usr/bin/tar -cvf";
 
