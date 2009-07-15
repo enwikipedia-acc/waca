@@ -73,7 +73,7 @@ while ($r = mysql_fetch_assoc($result)) {
 
 	$tooluser = $r['tooluser'];
 	global $regdevlist;
-	if(! array_search_recursive( $tooluser, $regdevlist) )
+	if(! array_search_recursive( $tooluser, $regdevlist) && $r['tooluserid'] != 6 ) // hack by st - hide JR from list (converted from livehack)
 	{
 		$userid = $r['tooluserid'];
 		$q2 = 'select log_time from acc_log where log_pend = '.$userid.' and log_action = "Approved" order by log_id desc limit 1;';
