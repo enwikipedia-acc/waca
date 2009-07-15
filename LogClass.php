@@ -116,17 +116,17 @@ class LogPage
 					break;
 			}
 			
-			$urlParams.= '&' . $key . '=' . $value;
+			$urlParams.= '&amp;' . $key . '=' . $value;
 		}
 		if(!$doneFrom)
 		{
-			$urlParams.= '&from=' . $offset;
+			$urlParams.= '&amp;from=' . $offset;
 		}
 		if(!$doneLimit)
 		{
-			$urlParams.= '&limit=' . $limit;
+			$urlParams.= '&amp;limit=' . $limit;
 		}
-		return trim($urlParams, '&');
+		return trim($urlParams, '&amp;');
 		
 	}
 	
