@@ -258,7 +258,7 @@ class LogPage
 
 					$urlParams = $this->swapUrlParams($limit, $backOffset);
 					
-					$out.= '<a href="'.$_SERVER['SCRIPT_NAME'].'?'.$urlParams.'">Previous '.$limit.'</a> - ';
+					$out.= '<a href="?'.$urlParams.'">Previous '.$limit.'</a> - ';
 				}
 
 				if($logListCount == $limit)
