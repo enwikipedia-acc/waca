@@ -75,6 +75,9 @@ if (file_exists("config.local.inc.php")) {
 	$allowDoubleReserving = "warn";
 	
 	$useCaptcha = false;
+	
+	// By default, reserve to a specific user. Adapted from livehack by st - use the userid, zero for unreserved.
+	$defaultReserver = 0;
 }
 require_once ('blacklist.php');
 ?>

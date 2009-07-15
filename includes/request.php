@@ -492,7 +492,7 @@ class accRequest {
 	}
 	
 	public function insertRequest($user,$email) {
-		global $enableEmailConfirm, $messages, $tsSQL;
+		global $enableEmailConfirm, $messages, $tsSQL, $defaultReserver;
 		if ($enableEmailConfirm == 1) {
 			$message = $messages->getMessage(15);
 		} else {
@@ -508,7 +508,7 @@ class accRequest {
 		$dnow = date("Y-m-d H-i-s");
 		
 		if( $this->getSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
-		$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow' );";
+		$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date, pend_reserved ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow', '$defaultReserver' );";
 		$result = $tsSQL->query($query);
 		if (!$result)
 			die("ERROR: No result returned. (acc_pend)");
