@@ -23,7 +23,6 @@
 **Chris_G ( http://en.wikipedia.org/wiki/User:Chris_G )      **
 **************************************************************/
 
-
 require_once ( 'config.inc.php' );
 require_once ( 'devlist.php' );
 require_once ( 'functions.php' );

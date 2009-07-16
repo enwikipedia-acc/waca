@@ -36,6 +36,7 @@
 */
 
 if ($ACC != "1") {
+	global $tsurl;
 	header("Location: $tsurl/");
 	die();
 }

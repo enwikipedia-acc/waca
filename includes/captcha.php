@@ -23,6 +23,9 @@
 **Chris G ( http://en.wikipedia.org/wiki/User:Chris_G )      **
 **************************************************************/
 
+global $ACC;
+global $tsurl;
+
 if ($ACC != "1") {
     header("Location: $tsurl/");
     die();

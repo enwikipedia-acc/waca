@@ -23,6 +23,9 @@
 **Chris_G ( http://en.wikipedia.org/wiki/User:Chris_G )      **
 **************************************************************/
 
+global $ACC;
+global $tsurl;
+
 if ($ACC != "1") {
     header("Location: $tsurl/");
     die();
@@ -744,7 +747,6 @@ function showlogin( $action = null, $params = null ) {
         <input id="password" type="password" name="password"/>
     </div>';
     if ($useCaptcha) {
-            $ACC = 1;
             require_once 'includes/captcha.php';
             $captcha = new captcha;
             if ($captcha->showCaptcha()) {
