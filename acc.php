@@ -25,7 +25,6 @@
 
 
 require_once ( 'config.inc.php' );
-$useCaptcha = true; // TODO: This needs to be moved to the config file - i'd do it myself but I don't have shell - Chris
 require_once ( 'devlist.php' );
 require_once ( 'functions.php' );
 $version = "0.9.7";
