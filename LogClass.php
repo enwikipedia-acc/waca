@@ -265,7 +265,7 @@ class LogPage
 				{
 					$forwardOffset = $offset + $limit;
 					$urlParams = $this->swapUrlParams($limit, $forwardOffset);
-					$out.= '<a href="'.$_SERVER['SCRIPT_NAME'].'?'.$urlParams.'">Next '.$limit.'</a>';
+					$out.= '<a href="?'.$urlParams.'">Next '.$limit.'</a>';
 				}
 			}
 			
