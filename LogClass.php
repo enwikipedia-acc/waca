@@ -126,8 +126,7 @@ class LogPage
 		{
 			$urlParams.= '&amp;limit=' . $limit;
 		}
-		return trim($urlParams, '&amp;');
-		
+		return substr_replace($urlParams, '&amp;', 0, 5);		
 	}
 	
 	public function showListLog($offset, $limit)
