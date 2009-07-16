@@ -98,7 +98,7 @@ class LogPage
 	private function swapUrlParams($limit, $offset)
 	{
 		global $enableSQLError;
-		$urlParams = array();
+		$urlParams = '';
 		$doneFrom = false;
 		$doneLimit = false;
 		if($enableSQLError == 1){ echo "<!--" ; echo print_r($_GET); echo "-->";}
