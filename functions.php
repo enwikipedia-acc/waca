@@ -510,11 +510,13 @@ function listrequests($type, $hideip) {
 		$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user=';
 		$out .= $uname . '" target="_blank">SUL</a> ';	
 		
-		// Google
-		$out .= '<a class="request-req" href="http://www.google.com/search?q=' . $uname .'">Google</a></small></td><td><small> ] ';	
-
 		// 	User list
-		$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=1" target="_blank">List</a>) ' . "\n";
+    $out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
+    $out .= $uname . '&amp;group=&amp;limit=1" target="_blank">List</a> ';
+  
+    // Google
+    $out .= '<a class="request-req" href="http://www.google.com/search?q="';
+    $out .= $uname . '">Google</a>) ' . "\n";
 
 		// Create user link
 		$out .= '<b><a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
