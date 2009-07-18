@@ -497,8 +497,6 @@ function listrequests($type, $hideip) {
 		// Abuse Filter
 		$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&wpSearchUser=' . $row['pend_ip'] . '" target="_blank">af</a> ';
 		
-		// Google
-		$out .= '<a class="request-src" href="http://www.google.com/search?q=' . $uname .'">g</a></small></td><td><small> ] ';
             }
 		// Username U:
 		$duname = _utf8_decode($row['pend_name']);
@@ -510,7 +508,10 @@ function listrequests($type, $hideip) {
 		
 		// 	SUL link
 		$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user=';
-		$out .= $uname . '" target="_blank">SUL</a> ';		
+		$out .= $uname . '" target="_blank">SUL</a> ';	
+		
+		// Google
+		$out .= '<a class="request-src" href="http://www.google.com/search?q=' . $uname .'">Google</a></small></td><td><small> ] ';	
 
 		// 	User list
 		$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=1" target="_blank">List</a>) ' . "\n";
