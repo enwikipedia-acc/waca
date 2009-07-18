@@ -511,7 +511,7 @@ function listrequests($type, $hideip) {
 		$out .= $uname . '" target="_blank">SUL</a> ';	
 		
 		// Google
-		$out .= '<a class="request-src" href="http://www.google.com/search?q=' . $uname .'">Google</a></small></td><td><small> ] ';	
+		$out .= '<a class="request-req" href="http://www.google.com/search?q=' . $uname .'">Google</a></small></td><td><small> ] ';	
 
 		// 	User list
 		$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=' . $uname . '&amp;group=&amp;limit=1" target="_blank">List</a>) ' . "\n";
