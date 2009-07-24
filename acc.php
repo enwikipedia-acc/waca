@@ -828,9 +828,9 @@ elseif ($action == "ban") {
 					break;
 			}
 			echo "<td>".$row['ban_user']."</td><td>".$row['ban_reason']."</td><td>".$row['ban_date']."</td><td>$until</td>";
-			if ($isAdmin) {
+			
 				echo "<td><a href=\"acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">Unban</a></td>";
-			}
+			
 			echo "</tr>";
 		}
 		echo "</table>\n";
