@@ -701,8 +701,9 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 }
 elseif ($action == "unban" && $_GET['id'] != "") {
 	$siuser = sanitize($_SESSION['user']);
-	if(!hasright($_SESSION['user'], "Admin"))
-			die("Only administrators may unban users");
+	// I think users can be trusted to remove bans. this wasn't always here.
+	#if(!hasright($_SESSION['user'], "Admin"))
+	#		die("Only administrators may unban users");
 	$bid = sanitize($_GET['id']);
 	$query = "SELECT * FROM acc_ban WHERE ban_id = '$bid';";
 	$result = mysql_query($query, $tsSQLlink);
