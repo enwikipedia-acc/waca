@@ -44,7 +44,7 @@ if( !(hasright($sessionuser, "Admin") || hasright($sessionuser, "User")))
 function rowCallback($row, $rowno) 
 {   $out = "";
 	
-	$out = '<!-- vardump: $row:' . print_r($row,true) . "-->";
+	// $out = '<!-- vardump: $row:' . print_r($row,true) . "-->";
 
 	$out .= "<tr";
 	if($rowno % 2 == 0)
@@ -61,7 +61,8 @@ function rowCallback($row, $rowno)
 	
 	
 	if($row['user_level'] == "Suspended") $out .= 'class="topcreators-suspended" '; 
-		
+	if($row['user_level'] == "Admin") $out .= 'class="topcreators-admin" ';	
+	
 	$out .= 'href="'.$tsurl.'/users.php?viewuser='.$row['user_id'].'">'.$row['log_user'].'</a></td>';
 	
 	$out .= '</tr>';
@@ -118,7 +119,7 @@ $top5mout = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.
 echo makehead( $sessionuser );
 echo '<div id="content">';
 echo "<h2>Contents</h2><ul><li><a href=\"#today\">Today's creators</a></li><li><a href=\"#yesterday\">Yesterday's creators</a></li><li><a href=\"#lastweek\">Last 7 days</a></li><li><a href=\"#lastmonth\">Last 28 days</a></li></ul>";
-echo '<p><a href="#">Username</a> means an active account.<br /><a class="topcreators-suspended" href="#">Username</a> means a suspended account.</p>';
+echo '<p><a href="#">Username</a> means an active account.<br /><a class="topcreators-suspended" href="#">Username</a> means a suspended account.<br /><a class="topcreators-admin" href="#">Username</a> means a tool admin account.</p>';
 echo "<h2>All-time top creators</h2>";
 echo $top5aout;
 echo '<a name="today"></a><h2>Today\'s creators</h2>';

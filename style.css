@@ -275,3 +275,7 @@ a.topcreators-suspended{
 	font-style:italic;
 	color:grey;
 }
+
+a.topcreators-admin{
+	font-weight: bold;
+}
