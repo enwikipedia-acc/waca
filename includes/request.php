@@ -38,13 +38,13 @@ class accRequest {
 	}
 	
 	private function clearOldUnconfirmed() {
-		global $tsSQL;
+		global $tsSQL, $emailConfirmationExpiryDays;
 		$ntime = mktime(
 	        	date("H"),
 	        	date("i"),
 	        	date("s"),
 	        	date("m"),
-	        	date("d") - 2,
+	        	date("d") -  $emailConfirmationExpiryDays,
 	        	date("Y")
 	        );
 		$expiry =  date("Y-m-d H:i:s", $ntime);

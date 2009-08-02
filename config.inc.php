@@ -74,6 +74,9 @@ $ircBotNickServPassword = ""; // password for ACCBot's nickserv account
 // By default, reserve to a specific user. Adapted from livehack by st - use the userid, zero for unreserved.
 $defaultReserver = 0;
 
+// number of days that are given for a requestor to confirm their email address
+$emailConfirmationExpiryDays = 2;
+
 ////// Don't add any new config options below this line, as they will not be changable by the local config file.
 require_once('config.local.inc.php');
 	
