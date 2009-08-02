@@ -161,7 +161,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	} else if ($template == "maedin") {
 		tagpage($user, "{{subst:User:Maedin/Welcome}} $sig ~~~~~");
 	} else if ($template == "chzz") {
-		tagpage($user, "{{subst:User:Chzz/botwelcome|$sig ~~~~~}}");
+		tagpage($user, "{{subst:user:Chzz/botwelcome|name=$sid|sig=$sig ~~~~~}}");
 	} else {
 		tagpage($user, "{{subst:Welcome|$sid}}$sig ~~~~~");
 	}

@@ -323,7 +323,7 @@ elseif ($action == "register") {
 						<option value="roux">{{User:Roux/W}} ~~~~</option>
 						<option value="staffwaterboy">{{User:Staffwaterboy/Welcome}} ~~~~</option>
 						<option value="maedin">{{User:Maedin/Welcome}} ~~~~</option>
-						<option value="chzz">{{User:Chzz/botwelcome|~~~~}}</option>
+						<option value="chzz">{{User:Chzz/botwelcome|name=user|sig=~~~~}}</option>
 					</select>
 				</td>
             </tr>
@@ -1461,7 +1461,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	<option value="roux"<?php if($template == "roux") { echo " selected=\"selected\""; } ?>>{{User:Roux/W}} ~~~~</option>
 	<option value="staffwaterboy"<?php if($template == "staffwaterboy") { echo " selected=\"selected\""; } ?>>{{User:Staffwaterboy/Welcome}} ~~~~</option>
 	<option value="maedin"<?php if($template == "maedin") { echo " selected=\"selected\""; } ?>>{{User:Maedin/Welcome}} ~~~~</option>
-	<option value="chzz"<?php if($template == "chzz") { echo " selected=\"selected\""; } ?>>{{User:Chzz/botwelcome|~~~~}}</option>
+	<option value="chzz"<?php if($template == "chzz") { echo " selected=\"selected\""; } ?>>{{User:Chzz/botwelcome|name=user|sig=~~~~}}</option>
     </select><br /><?php
     echo '<i>If you\'d like more templates added, please <a href="https://jira.toolserver.org/browse/ACC">open a ticket</a>.</i><br />';
 
