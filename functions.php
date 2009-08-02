@@ -36,8 +36,8 @@ require_once('LogClass.php');
 include_once('AntiSpoof.php');
 
 function formatForBot( $data ) { 		
-	global $key; 		
-	$pData[0] = $key; 		
+	global $ircBotCommunicationKey; 		
+	$pData[0] = $ircBotCommunicationKey; 		
 	$pData[1] = $data; 		
 	$sData = serialize( $pData ); 		
 	return $sData; 		
