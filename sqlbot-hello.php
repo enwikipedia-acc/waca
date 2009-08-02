@@ -160,6 +160,8 @@ while ($row = mysql_fetch_assoc($result)) {
 		tagpage($user, "{{subst:User:Staffwaterboy/Welcome}} $sig ~~~~~");
 	} else if ($template == "maedin") {
 		tagpage($user, "{{subst:User:Maedin/Welcome}} $sig ~~~~~");
+	} else if ($template == "chzz") {
+		tagpage($user, "{{subst:User:Chzz/botwelcome|$sig ~~~~~}}");
 	} else {
 		tagpage($user, "{{subst:Welcome|$sid}}$sig ~~~~~");
 	}
