@@ -41,11 +41,16 @@ $offlineMessage->check();
 
 // connect to the TS database and the antispoof database
 global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
-global $antispoof_host, $antispoof_db, $antispoof_table, $antispoof_password;
 $tsSQL = new database($toolserver_host,$toolserver_username,$toolserver_password);
-$asSQL = new database($antispoof_host,$toolserver_username,$antispoof_password);
 $tsSQL->selectDb($toolserver_database);
-$asSQL->selectDb($antispoof_db); 
+
+global $dontUseWikiDb;
+if($dontUseWikiDb == 0)
+{
+	global $antispoof_host, $antispoof_db, $antispoof_table, $antispoof_password;
+	$asSQL = new database($antispoof_host,$toolserver_username,$antispoof_password);
+	$asSQL->selectDb($antispoof_db); 
+}
 
 $request  = new accRequest();
 $messages = new messages();
@@ -79,8 +84,8 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	}
 	
 	// Initialize Variables
-	$user = $asSQL->escape(trim($_POST['name']));
-	$email = $asSQL->escape(trim($_POST['email']));
+	$user = $tsSQL->escape(trim($_POST['name']));
+	$email = $tsSQL->escape(trim($_POST['email']));
 	
 	// Delete old bans
 	$tsSQL->query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP() AND ban_duration != -1');
