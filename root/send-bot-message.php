@@ -1,7 +1,7 @@
 <?php
 
 if (isset($_SERVER['REQUEST_METHOD'])) {
-    die();
+    die("This is not a valid entry method for this script.");
 } //Web clients die.
 
 require_once('../config.inc.php');
