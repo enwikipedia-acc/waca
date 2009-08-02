@@ -35,6 +35,8 @@ unset ($toolserver_mycnf);
 
 $wikiurl = "en.wikipedia.org"; //Does nothing yet, intended for further localization
 $tsurl = "http://stable.toolserver.org/acc"; 
+$filepath = "/projects/acc/www/"; // root pathname of the local installation of the tool.
+$varfilepath = "/projects/acc/"; // location outside web directory to place temporary files
 
 //set up cookies and session information
 $cookiepath = '/acc/';
@@ -84,7 +86,7 @@ require_once('config.local.inc.php');
 	
 $ACC = 1; //Keep included files from being executed
 
-require_once ('blacklist.php');
+require_once ($filepath.'blacklist.php');
 
 ini_set( 'session.cookie_path', $cookiepath );
 ini_set( 'session.name', $sessionname );
