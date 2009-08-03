@@ -1100,7 +1100,7 @@ elseif ($action == "usermgmt") {
 			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
-			echo "Changed User " . $oldname . " name to ". $newname . "<br />\n";
+			echo "Changed User " . htmlspecialchars($_POST['oldname']) . " name to ". htmlspecialchars($_POST['newname']) . "<br />\n";
 			$query2 = "SELECT * FROM acc_user WHERE user_name = '$oldname';";
 			$result2 = mysql_query($query2, $tsSQLlink);
 			if (!$result2)
