@@ -1069,7 +1069,9 @@ elseif ($action == "usermgmt") {
 			$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$userid';");
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
-			$checkname = mysql_fetch_assoc($result);	
+			$checkname = mysql_fetch_assoc($result);
+			echo $checkname;
+			echo $_POST['oldname'];
 			if ($checkname['user_name'] != $_POST['oldname'])
 				Die("Rename form corrupted");
 			if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$oldname';")) != 1 || mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$newname';")) != 0)
