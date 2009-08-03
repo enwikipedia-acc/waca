@@ -1394,7 +1394,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	if (isset ($_POST['sig'])) {
 		$sig = sanitize($_POST['sig']);
 		$template = sanitize($_POST['template']);
-		$sid = $_SESSION['user'];
+		$sid = sanitize($_SESSION['user']);
 		if( isset( $_POST['welcomeenable'] ) ) {
 			$welcomeon = 1;
 		} else {
@@ -1565,9 +1565,9 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_welcome'] > 0 && $gem == "1") {
-		$sig = $row['user_welcome_sig'];
+		$sig = stripslashes($row['user_welcome_sig']);
 		if (!isset($sig)) {
-			$sig = "[[User:$sid|$sid]] ([[User_talk:$sid|talk]])";
+			$sig = "[[User:" . stripslashes($sid) . "|" . stripslashes($sid) . "]] ([[User_talk:" . stripslashes($sid) . "|talk]])";
 		}
 		$template = $row['user_welcome_template'];
 		if (!isset($template)) {
