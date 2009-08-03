@@ -702,9 +702,10 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 }
 elseif ($action == "unban" && $_GET['id'] != "") {
 	$siuser = sanitize($_SESSION['user']);
-	// I think users can be trusted to remove bans. this wasn't always here.
-	#if(!hasright($_SESSION['user'], "Admin"))
-	#		die("Only administrators may unban users");
+	// I think users can be trusted to remove bans. this wasn't always here. -- promethean
+	// let's discuss this before changing user access rights. reverted in prep for scap. -- stwalkerster
+	if(!hasright($_SESSION['user'], "Admin"))
+			die("Only administrators may unban users");
 	$bid = sanitize($_GET['id']);
 	$query = "SELECT * FROM acc_ban WHERE ban_id = '$bid';";
 	$result = mysql_query($query, $tsSQLlink);
@@ -829,9 +830,9 @@ elseif ($action == "ban") {
 					break;
 			}
 			echo "<td>".$row['ban_user']."</td><td>".$row['ban_reason']."</td><td>".$row['ban_date']."</td><td>$until</td>";
-			
+			if ($isAdmin) {
 				echo "<td><a href=\"acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">Unban</a></td>";
-			
+			}
 			echo "</tr>";
 		}
 		echo "</table>\n";
