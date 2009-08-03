@@ -1050,7 +1050,7 @@ elseif ($action == "usermgmt") {
 			echo "<form action=\"acc.php?action=usermgmt&amp;rename=" . $_GET['rename'] . "\" method=\"post\">";						
 			echo "<div class=\"required\">";
 			echo "<label for=\"oldname\">Old Username:</label>";
-			echo "<input id=\"oldname\" type=\"text\" name=\"oldname\" readonly=\"readonly\" value=\"" . stripslashes($oldname['user_name']) . "\"/>";
+			echo "<input id=\"oldname\" type=\"text\" name=\"oldname\" readonly=\"readonly\" value=\"" . $oldname['user_name'] . "\"/>";
 			echo "</div>";
 			echo "<div class=\"required\">";
 			echo "<label for=\"newname\">New Username:</label>";
