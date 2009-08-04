@@ -1554,7 +1554,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			die();
 		} else {
 			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
-			if ($_POST['ccmailist'] == 1) {
+			if (isset($_POST['ccmailist']) && $_POST['ccmailist'] == 1) {
 			$headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
 			}
 			mail($row2['pend_email'], "RE: English Wikipedia Account Request", $_POST['msgbody'], $headers);
