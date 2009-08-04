@@ -831,7 +831,7 @@ function hasright($username, $checkright) {
 	$rights = explode(':', $row['user_level']);
 	foreach( $rights as $right) {
 		if($right == $checkright ) {
-			return true;
+			return false;
 		}
 	}
 	return true;
