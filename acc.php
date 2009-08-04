@@ -844,8 +844,7 @@ elseif ($action == "ban") {
 	}
 }
 elseif ($action == "usermgmt") {
-	//if(!hasright($_SESSION['user'], 'Admin'))
-	if (false)
+	if(!hasright($_SESSION['user'], 'Admin'))
 	{
 		echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
 		echo showfooter();
@@ -1103,7 +1102,7 @@ elseif ($action == "usermgmt") {
 			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
-			echo "Changed User " . htmlentities($_POST['oldname']) . " name to ". htmlentites($_POST['newname']) . "<br />\n";
+			echo "Changed User " . htmlentities($_POST['oldname']) . " name to ". htmlentities($_POST['newname']) . "<br />\n";
 			$query2 = "SELECT * FROM acc_user WHERE user_name = '$oldname';";
 			$result2 = mysql_query($query2, $tsSQLlink);
 			if (!$result2)
