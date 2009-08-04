@@ -172,7 +172,7 @@ class LogPage
 			if ($row['log_action'] == "Closed 5") {
 				$logList .="<li>$rlu Closed (Technical Impossibility), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
-			if ($row['log_action'] == "Closed 6") {
+			if ($row['log_action'] == "Closed custom") {
 				$logList .="<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 			if ($row['log_action'] == "Blacklist Hit" || $row['log_action'] == "DNSBL Hit") {
