@@ -1070,7 +1070,7 @@ elseif ($action == "usermgmt") {
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$checkname = mysql_fetch_assoc($result);
-			echo $checkname;
+			echo $checkname['user_name'];
 			echo $_POST['oldname'];
 			if ($checkname['user_name'] != $_POST['oldname'])
 				Die("Rename form corrupted");
