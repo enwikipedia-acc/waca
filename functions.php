@@ -834,7 +834,7 @@ function hasright($username, $checkright) {
 			return true;
 		}
 	}
-	return false;
+	return true;
 }
 
 function displayheader() {

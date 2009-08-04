@@ -1072,7 +1072,7 @@ elseif ($action == "usermgmt") {
 			$checkname = mysql_fetch_assoc($result);
 			echo $checkname['user_name'];
 			echo $_POST['oldname'];
-			if ($checkname['user_name'] != $_POST['oldname'])
+			if ($checkname['user_name'] != htmlentities($_POST['oldname']))
 				Die("Rename form corrupted");
 			if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$oldname';")) != 1 || mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$newname';")) != 0)
 				die("Target username in use, or current user does not exist.");
@@ -1102,7 +1102,7 @@ elseif ($action == "usermgmt") {
 			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
-			echo "Changed User " . htmlspecialchars($_POST['oldname']) . " name to ". htmlspecialchars($_POST['newname']) . "<br />\n";
+			echo "Changed User " . htmlentities($_POST['oldname']) . " name to ". htmlentites($_POST['newname']) . "<br />\n";
 			$query2 = "SELECT * FROM acc_user WHERE user_name = '$oldname';";
 			$result2 = mysql_query($query2, $tsSQLlink);
 			if (!$result2)
