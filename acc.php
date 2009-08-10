@@ -1832,7 +1832,7 @@ elseif ($action == "comment") {
     echo "<form action='acc.php?action=comment-add' method='post'>
     Request ID: <input type='text' name='id' value='$id' /> <br />
     Comments:   <input type='text' name='comment' size='75'' /> <br />
-    Visability: <select name='visability'><option>user</option><option>admin</option</select>
+    Visibility: <select name='visibility'><option>user</option><option>admin</option</select>
     <input type='submit' value='Submit' />
     </form>";
     echo showfooter();
