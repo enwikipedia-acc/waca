@@ -30,7 +30,7 @@
 	// Includes
 	require 'config.inc.php';
 	include 'devlist.php';
-	require 'accbot.php';
+	require 'functions.php';
 
 
 	// Variable declarations
