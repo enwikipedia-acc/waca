@@ -173,7 +173,7 @@ $developer = //Developer info / list.
 				"Name" => "Brett Hillebrand",
 				"Role" => "Developer",
 				"Access" => "Commit, Repo Admin",
-				"Cloak" => "*!*@yourwiki/staff/Prom3th3an",
+				"Cloak" => "*!*@wikimedia/Promethean",
 				"Other" => NULL,
 			),
 		"Chris" =>
