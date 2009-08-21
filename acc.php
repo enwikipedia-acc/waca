@@ -1839,20 +1839,21 @@ elseif ($action == "comment") {
 
 elseif ($action == "comment-add") {
     echo "<h2>Adding comment to request " . $_POST['id'] . "...</h2><br />";
-        if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visability'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
+    if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visibility'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
         $id = sanitise($_POST['id']);
         $user = sanitise($_SESSION['user']);
         $comment = sanitise($_POST['comment']);
-        $visability = sanitise($_POST['visability']);
+        $visibility = sanitise($_POST['visibility']);
         $now = date("Y-m-d H-i-s");
         
-		$query = "INSERT INTO acc_cmt (cmt_time, cmt_user, cmt_comment, cmt_visability, pend_id) VALUES ('$now', '$user', '$comment', '$visability', '$id');";
+        // the mysql field name is actually cmt_visability. yes, it's a typo, but I cba to fix it
+		$query = "INSERT INTO acc_cmt (cmt_time, cmt_user, cmt_comment, cmt_visability, pend_id) VALUES ('$now', '$user', '$comment', '$visibility', '$id');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result) {
             Die("Query failed: $query ERROR: " . mysql_error()); }
         echo " Comment added Successfully! <br />
         <a href='acc.php?action=zoom&id=$id'>Return to request #$id</a>";
-        $botcomment_pvt =  ($visability == "admin") ? "private " : "";
+        $botcomment_pvt =  ($visibility == "admin") ? "private " : "";
         $botcomment = $user . " posted a " . $botcomment_pvt . "comment on request " . $id;
         sendtobot($botcomment);
     } else {
@@ -1863,14 +1864,14 @@ elseif ($action == "comment-add") {
 }
 
 elseif ($action == "comment-quick") {
-    if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visability'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
+    if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visibility'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
         $id = sanitise($_POST['id']);
         $user = sanitise($_SESSION['user']);
         $comment = sanitise($_POST['comment']);
-        $visability = sanitise($_POST['visability']);
+        $visibility = sanitise($_POST['visibility']);
         $now = date("Y-m-d H-i-s");
 
-        $query = "INSERT INTO acc_cmt (cmt_time, cmt_user, cmt_comment, cmt_visability, pend_id) VALUES ('$now', '$user', '$comment', '$visability', '$id');";
+        $query = "INSERT INTO acc_cmt (cmt_time, cmt_user, cmt_comment, cmt_visability, pend_id) VALUES ('$now', '$user', '$comment', '$visibility', '$id');";
         $result = mysql_query($query, $tsSQLlink);
         if (!$result) {
             Die("Query failed: $query ERROR: " . mysql_error());
