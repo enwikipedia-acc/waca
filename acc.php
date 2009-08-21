@@ -702,8 +702,7 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 }
 elseif ($action == "unban" && $_GET['id'] != "") {
 	$siuser = sanitize($_SESSION['user']);
-	// I think users can be trusted to remove bans. this wasn't always here. -- promethean
-	// let's discuss this before changing user access rights. reverted in prep for scap. -- stwalkerster
+
 	if(!hasright($_SESSION['user'], "Admin"))
 			die("Only administrators may unban users");
 	$bid = sanitize($_GET['id']);

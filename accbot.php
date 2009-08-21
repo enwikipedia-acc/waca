@@ -30,7 +30,6 @@
 	// Includes
 	require 'config.inc.php';
 	include 'devlist.php';
-	require 'functions.php';
 
 
 	// Variable declarations
@@ -569,4 +568,35 @@
 	// Ugh!  We most likely flooded off!
 
 	commandRestart( null );
+	
+function encryptMessage( $text, $key ) {
+	$keylen = strlen($key);
+	
+	if( $keylen % 2 == 0 ) {
+		$power = ord( $key[$keylen / 2] ) + $keylen;
+	}
+	else {
+		$power = ord( $key[($keylen / 2) + 0.5] ) + $keylen;
+	}
+	
+	$textlen = strlen( $text );
+	while( $textlen < 64 ) {
+		$text .= $text;
+		$textlen = strlen( $text );
+	}
+	
+	$newtext = null;
+	for( $i = 0; $i < 64; $i++ ) {
+		$pow = pow( ord( $text[$i] ), $power );
+		$pow = str_replace( array( '+', '.', 'E' ), '', $pow );
+		$toadd = dechex( substr($pow, -2) );
+		while( strlen( $toadd ) < 2 ) {
+			$toadd .= 'f';
+		}
+		if( strlen( $toadd ) > 2 ) $toadd = substr($toadd, -2);
+		$newtext .= $toadd;
+	}
+	
+	return $newtext;
+}
 ?>
