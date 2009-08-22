@@ -45,10 +45,41 @@ class accbotSend {
 	
 	private function formatForBot( $data ) { 		
 		global $ircBotCommunicationKey; 		
-		$pData[0] = $ircBotCommunicationKey; 		
+		$pData[0] = $this->encryptMessage( $data, $ircBotCommunicationKey ); 		
 		$pData[1] = $data; 		
 		$sData = serialize( $pData ); 		
 		return $sData; 		
+	} 	
+	
+	private function encryptMessage( $text, $key ) {
+		$keylen = strlen($key);
+		
+		if( $keylen % 2 == 0 ) {
+			$power = ord( $key[$keylen / 2] ) + $keylen;
+		}
+		else {
+			$power = ord( $key[($keylen / 2) + 0.5] ) + $keylen;
+		}
+		
+		$textlen = strlen( $text );
+		while( $textlen < 64 ) {
+			$text .= $text;
+			$textlen = strlen( $text );
+		}
+		
+		$newtext = null;
+		for( $i = 0; $i < 64; $i++ ) {
+			$pow = pow( ord( $text[$i] ), $power );
+			$pow = str_replace( array( '+', '.', 'E' ), '', $pow );
+			$toadd = dechex( substr($pow, -2) );
+			while( strlen( $toadd ) < 2 ) {
+				$toadd .= 'f';
+			}
+			if( strlen( $toadd ) > 2 ) $toadd = substr($toadd, -2);
+			$newtext .= $toadd;
+		}
+		
+		return $newtext;
 	}
 }
 
