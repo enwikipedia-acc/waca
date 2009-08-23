@@ -722,6 +722,7 @@ function showfooter() {
 	/*
 	* Show footer (logged in)
 	*/
+	global $enableLastLogin;
 	if ($enableLastLogin) {
 		$timestamp = "at ".date('H:i',$_SESSION['lastlogin_time']);
 		if (date('jS \of F Y',$_SESSION['lastlogin_time'])==date('jS \of F Y')) {
