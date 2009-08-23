@@ -80,6 +80,9 @@ $defaultReserver = 0;
 // number of days that are given for a requestor to confirm their email address
 $emailConfirmationExpiryDays = 2;
 
+// Should we show the 'You last logged in from' line at the bottom of the page
+$enableLastLogin = false;
+
 ////// Don't add any new config options below this line, as they will not be changable by the local config file.
 require_once('config.local.inc.php');
 	
