@@ -1721,6 +1721,9 @@ elseif ($action == "logs") {
 elseif ($action == "reserve") {
 	global $enableReserving, $allowDoubleReserving;
 	if( $enableReserving ) {
+		if (!preg_match('/^[0-9]*$/',$_GET['resid'])) {
+			die('Invalid Input.'); // TODO: make this a pretty error message
+		}
 		$request = sanitise($_GET['resid']);
 		
 		//check request is not reserved
