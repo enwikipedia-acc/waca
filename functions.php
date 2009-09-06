@@ -673,7 +673,7 @@ function isReserved($requestid)
 	if (!$result)
 		Die("Error determining reserved status of request.");
 	$row = mysql_fetch_assoc($result);
-	if($row['pend_reserved'] == 0) { return false;} else {return $row['pend_reserved'];}
+	if(isset($row['pend_reserved']) && $row['pend_reserved'] != 0) { return $row['pend_reserved'];} else {return false;}
 }
 
 function makehead($username) {

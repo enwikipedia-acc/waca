@@ -1722,16 +1722,24 @@ elseif ($action == "reserve") {
 	global $enableReserving, $allowDoubleReserving;
 	if( $enableReserving ) {
 		if (!preg_match('/^[0-9]*$/',$_GET['resid'])) {
-			die('Invalid Input.'); // TODO: make this a pretty error message
+			die('Invalid Input.');
 		}
 		$request = sanitise($_GET['resid']);
 		
 		//check request is not reserved
-		$reservedBy = isReserved($request);
-		if( $reservedBy != 0 )
+		/*$reservedBy = isReserved($request);
+		if( $reservedBy != false )
 		{
 			die("Request already reserved by ".getUsernameFromUid($reservedBy));
-		}	
+		}*/
+		$query = "SELECT acc_user.user_name FROM acc_user,acc_pend WHERE acc_pend.pend_id = $rqid AND acc_user.user_id=acc_pend.pend_reserved;";
+		$result = mysql_query($query);
+		if (!$result)
+			die("Error determining reserved status of request.");
+		$row = mysql_fetch_assoc($result);
+		if(isset($row['user_name'])) {
+			die("Request already reserved by ".getUsernameFromUid($row['user_name']));
+		}
 		
 		if(isset($allowDoubleReserving)){
 			// check the number of requests a user has reserved already
