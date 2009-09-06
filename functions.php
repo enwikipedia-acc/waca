@@ -664,6 +664,9 @@ function getUsernameFromUid($userid)
 */
 function isReserved($requestid)
 {
+	if (!preg_match('/^[0-9]*$/',$requestid)) {
+		die('Invalid Input.'); // TODO: make this a pretty error message
+	}
 	$rqid = sanitize($requestid);
 	$query = "SELECT pend_reserved FROM acc_pend WHERE pend_id = $rqid;";
 	$result = mysql_query($query);

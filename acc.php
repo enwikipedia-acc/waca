@@ -1730,7 +1730,7 @@ elseif ($action == "reserve") {
 		$reservedBy = isReserved($request);
 		if( $reservedBy != 0 )
 		{
-			Die("Request already reserved by ".getUsernameFromUid($reservedBy));
+			die("Request already reserved by ".getUsernameFromUid($reservedBy));
 		}	
 		
 		if(isset($allowDoubleReserving)){
