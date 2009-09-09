@@ -107,6 +107,14 @@ if (!$result)
 $snew = mysql_fetch_assoc($result);
 echo "<tr><th>New tool users</th><td>".$snew['COUNT(*)']."</td></tr>";
 
+$mostComments = "select pend_id from acc_cmt group by pend_id order by count(*) desc limit 1;";
+$mostCommentsResult = mysql_query($mostComments, $tsSQLlink);
+if(!$mostCommentsResult) Die("ERROR: No result returned. (mc)");
+$mostCommentsRow = mysql_fetch_assoc($mostCommentsResult);
+$mostCommentsId = $mostCommentsRow[0];
+echo "<tr><th>Request with most comments</th><td><a href=\"acc.php?action=zoom&id=".$mostCommentsId."\">".$mostCommentsId."</a></td></tr>";
+
+
 $now = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 1));
 
 
