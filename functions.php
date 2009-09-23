@@ -1044,7 +1044,7 @@ function zoomPage($id)
 		}
 	}
 	
-	
+	$out2 .= '<p><b>Date request made:</b>' . $row['pend_date'] . '</p>';
 
 	
 	$out2 = "<h2>Possibly conflicting usernames</h2>\n";
