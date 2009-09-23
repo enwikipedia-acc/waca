@@ -649,7 +649,7 @@ function getUsernameFromUid($userid)
 	if (!preg_match('/^[0-9]*$/',$userid)) {
 		die('Invalid user id. <!-- in function getUsernameFromUid -->');
 	}
-	$query = "SELECT user_name FROM acc_user WHERE user_id = $uid;";
+	$query = "SELECT user_name FROM acc_user WHERE user_id = $userid;";
 	$result = mysql_query($query);
 	if (!$result)
 		Die("Error determining user from UID.");
