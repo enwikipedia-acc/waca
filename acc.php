@@ -1727,20 +1727,10 @@ elseif ($action == "reserve") {
 		$request = sanitise($_GET['resid']);
 		
 		//check request is not reserved
-		/*$reservedBy = isReserved($request);
+		$reservedBy = isReserved($request);
 		if( $reservedBy != false )
 		{
 			die("Request already reserved by ".getUsernameFromUid($reservedBy));
-		}*/
-		$query = "SELECT acc_user.user_name,acc_pend.pend_id FROM acc_user,acc_pend WHERE acc_pend.pend_id = $request AND acc_user.user_id=acc_pend.pend_reserved;";
-		$result = mysql_query($query);
-		if (!$result)
-			die("Error determining reserved status of request.");
-		$row = mysql_fetch_assoc($result);
-		if(isset($row['user_name'])) {
-			die("Request already reserved by ".$row['user_name']);
-		} elseif (!isset($row['pend_id'])) {
-			die('Invalid request id.');
 		}
 		
 		if(isset($allowDoubleReserving)){
