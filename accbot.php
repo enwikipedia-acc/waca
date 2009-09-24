@@ -31,17 +31,18 @@
 	require 'config.inc.php';
 	include 'devlist.php';
 
+	global $ircBotNetworkHost, $ircBotNetworkPort, $ircBotChannel, $ircBotCommandTrigger, $ircBotNickname;
 
 	// Variable declarations
 	$pidnum = 0; // Integer
-	$host = 'kornbluth.freenode.net';
-	$port = 8001;
-	$nick = 'ACCBot';
+	$host = $ircBotNetworkHost;
+	$port = $ircBotNetworkPort;
+	$nick = $ircBotNickname;
 	$ident = 'ACCBot';
-	$chan = '#wikipedia-en-accounts';
+	$chan = $ircBotChannel;
 	$readbuffer = '';
 	$realname = 'ACC Bot';
-	$commandTrigger = '!';
+	$commandTrigger = $ircBotCommandTrigger;
 	$fp = null;
 	$fpt = null;
 	$commands = array();

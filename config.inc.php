@@ -73,6 +73,11 @@ $useCaptcha = false;
 
 $ircBotNickServPassword = ""; // password for ACCBot's nickserv account
 $ircBotCommunicationKey = ""; // Key used to communicate with ACCBot
+$ircBotNetworkHost = "wolfe.freenode.net";
+$ircBotNetworkPort = 6667;
+$ircBotChannel = "#wikipedia-en-help";
+$ircBotNickname = "ACCBot";
+$ircBotCommandTrigger = '!';
 	
 // By default, reserve to a specific user. Adapted from livehack by st - use the userid, zero for unreserved.
 $defaultReserver = 0;
