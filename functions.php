@@ -542,11 +542,12 @@ function listrequests($type, $hideip) {
 		$out .= $uname . '" target="_blank">SUL</a> ';	
 		
 		// 	User list
-    $out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
-    $out .= $uname . '&amp;group=&amp;limit=1" target="_blank">List</a> ';
+		$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
+		$out .= $uname . '&amp;group=&amp;limit=1" target="_blank">List</a> ';
   
-    // Google
-    $out .= '<a class="request-req" href="http://www.google.com/search?q=' . $uname . '">Google</a>) ' . "\n";
+    	// Google
+		$out .= '<a class="request-req" href="http://www.google.com/search?q=';
+		$out .= $uname . '" target="_blank">Google</a> ';
 
 		// Create user link
 		$out .= '<b><a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';

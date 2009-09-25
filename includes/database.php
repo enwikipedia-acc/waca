@@ -27,17 +27,16 @@ if ($ACC != "1") {
 	die();
 } //Re-route, if you're a web client.
 
-// database class
 class database {
 	private $dbLink;
 	
 	public function __construct($host,$username,$password) {
-		$this->dbLink = mysql_pconnect($host, $username, $password) or $this->showError("Error connecting to database $host: ".$this->getError(),'Error connecting to database');
+		$this->dbLink = mysql_pconnect($host, $username, $password) or $this->showError("Error connecting to database $host: ".$this->getError(),'Error connecting to database.');
 	}
 	
 	public function selectDb($database) {
 		// TODO: Improve error msg and handling
-		mysql_select_db($database,$this->dbLink) or $this->showError('Error selecting database.');
+		mysql_select_db($database,$this->dbLink) or $this->showError("Error selecting $database on $host: ".$this->getError(),'Error selecting the database.');
 	}
 	
 	public function query($query) {

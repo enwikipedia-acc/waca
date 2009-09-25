@@ -419,6 +419,7 @@ class accRequest {
 		global $messages, $tsSQL;
 		$fail = 0;
 		
+		// Checks whether the username is already in use on Wikipedia.
 		$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . urlencode($_POST['name']) . "&format=php");
 		$ue = unserialize($userexist);
 		if (!isset ($ue['query']['users']['0']['missing'])) {
@@ -426,30 +427,39 @@ class accRequest {
 			echo "$message<br />\n";
 			$fail = 1;
 		}
+		
+		// Checks whether the username consists entirely of numbers.
 		$nums = preg_match("/^[0-9]+$/", $_POST['name']);
 		if ($nums > 0) {
 			$message = $messages->getMessage(11);
 			echo "$message<br />\n";
 			$fail = 1;
 		}
+		
+		// Checks whether the username is an email adress.
 		$unameismail = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/i', $_POST['name']);
 		if ($unameismail > 0) {
 			$message = $messages->getMessage(12);
 			echo "$message<br />\n";
 			$fail = 1;
 		}
+		
+		// Checks whether the username contains invalid characters.
 		$unameisinvalidchar = preg_match('/[\#\/\|\[\]\{\}\@\%\:\<\>]/', $_POST['name']);
 		if ($unameisinvalidchar > 0 || ltrim( rtrim( $_POST['name'] == "" ) ) ) {
 			$message = $messages->getMessage(13);
 			echo "$message<br />\n";
 			$fail = 1;
 		}
+		
+		// Checks whether the email adress is valid.
 		if (!$this->emailvalid($_POST['email'])) {
 			$message = $messages->getMessage(14);
 			echo "$message<br />\n";
 			$fail = 1;
 		}
-
+		
+		// Checks whether the email adress is valid.
 		$mailiswmf = preg_match('/.*wiki(m.dia|p.dia).*/i', $email);
 		if ($mailiswmf != 0) {
 			$message = $messages->getMessage(14);
@@ -458,6 +468,7 @@ class accRequest {
 		}
 
 		// (JIRA) ACC-55
+		// Checks whether the username has a traling space of underscore.
 		$trailingspace = substr($_POST['name'], strlen($_POST['name']) - 1);
 		if ($trailingspace == " " || $trailingspace == "_"  ) {
 			$message = $messages->getMessage(25);
@@ -465,6 +476,7 @@ class accRequest {
 			$fail = 1;
 		}
 
+		// Checks whether there arent already a request for the username.
 		$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_name = '$user'";
 		$result = $tsSQL->query($query);
 		$row = mysql_fetch_assoc($result);
@@ -473,6 +485,8 @@ class accRequest {
 			echo "$message<br />\n";
 			$fail = 1;
 		}
+		
+		// Checks whether there arent already a request for the email adress.
 		$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_email = '$email'";
 		$result = $tsSQL->query($query);
 		$row = mysql_fetch_assoc($result);
@@ -482,6 +496,9 @@ class accRequest {
 			$fail = 1;
 		}
 		
+		// Checks whether any of the automated checks were failed.
+		// Notifies the requester that the request was unsuccessfull.
+		// TODO: Improve footer method.
 		if ($fail == 1) {
 			$message = $messages->getMessage(16);
 			echo "$message<br />\n";

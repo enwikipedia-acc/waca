@@ -38,6 +38,17 @@ class skin {
 		$row = mysql_fetch_assoc($result);
 		echo $row['mail_text'];
 	}
+	
+	public function displayfooter() {
+		global $tsSQL;
+		$result = $tsSQL->query("SELECT * FROM acc_emails WHERE mail_id = '22';");
+		if (!$result) {
+			// TODO: Nice error message
+			die("ERROR: No result returned.");
+		}
+		$row = mysql_fetch_assoc($result);
+		echo $row['mail_text'];
+	}
 }
 
 ?>
