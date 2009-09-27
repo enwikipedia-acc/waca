@@ -116,7 +116,6 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	// Displayes the form if nothing has been filled in on page load.
 	// Happens as default when the page is loaded for the first time.
 	$request->displayform();
-	die();
 }
 // Display the footer of the interface.
 $skin->displayfooter();
