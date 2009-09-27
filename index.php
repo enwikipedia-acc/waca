@@ -25,9 +25,11 @@
 require_once 'config.inc.php';
 require_once 'AntiSpoof.php';
 
+// Used to check if a request complies to the automated tests.
+// See the finalChecks method in request.php for details.
 $fail = 0;
 
-// get all the classes
+// Get all the classes.
 require_once 'includes/offlineMessage.php';
 require_once 'includes/database.php';
 require_once 'includes/request.php';
@@ -35,11 +37,11 @@ require_once 'includes/skin.php';
 require_once 'includes/messages.php';
 require_once 'includes/accbotSend.php';
 
-// check to see if the database is unavailable
+// Check to see if the database is unavailable.
 $offlineMessage = new offlineMessage(true);
 $offlineMessage->check();
 
-// connect to the TS database and the antispoof database
+// Connect to the TS database and the Antispoof database.
 global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
 $tsSQL = new database($toolserver_host,$toolserver_username,$toolserver_password);
 $tsSQL->selectDb($toolserver_database);
@@ -47,16 +49,19 @@ $tsSQL->selectDb($toolserver_database);
 global $dontUseWikiDb;
 if($dontUseWikiDb == 0)
 {
+	// Connect to the Wiki database.
 	global $antispoof_host, $antispoof_db, $antispoof_table, $antispoof_password;
 	$asSQL = new database($antispoof_host,$toolserver_username,$antispoof_password);
 	$asSQL->selectDb($antispoof_db); 
 }
 
+// Initialize the class objects.
 $request  = new accRequest();
 $messages = new messages();
 $accbot   = new accbotSend();
 $skin     = new skin();
 
+// Display the header of the interface.
 $skin->displayheader();
 
 $action = '';
@@ -102,12 +107,17 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$request->checkBlacklist($nameblacklist,$_POST['name'],$_POST['email'],'Name-Bl');
 	$request->doDnsBlacklistCheck();
 
+	// Do automated checks on the username and email adress.
 	$request->finalChecks($user,$email);
 
+	// Insert the request if all the automated tests are passed.
 	$request->insertRequest($user,$email);
 } else {
+	// Displayes the form if nothing has been filled in on page load.
+	// Happens as default when the page is loaded for the first time.
 	$request->displayform();
-	echo $messages->getMessage(22);
 	die();
 }
+// Display the footer of the interface.
+$skin->displayfooter();
 ?>
