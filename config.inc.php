@@ -75,7 +75,7 @@ $ircBotNickServPassword = ""; // password for ACCBot's nickserv account
 $ircBotCommunicationKey = ""; // Key used to communicate with ACCBot
 $ircBotNetworkHost = "wolfe.freenode.net";
 $ircBotNetworkPort = 6667;
-$ircBotChannel = "#wikipedia-en-help";
+$ircBotChannel = "#wikipedia-en-accounts";
 $ircBotNickname = "ACCBot";
 $ircBotCommandTrigger = '!';
 	
