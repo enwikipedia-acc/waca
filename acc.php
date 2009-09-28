@@ -1552,10 +1552,14 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			echo showfooter();
 			die();
 		} else {
+			
 			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
 			if (isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on") {
-			$headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
+				$headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
 			}
+			$headers .= 'X-ACC-Request: ' . $gid . "\r\n";
+			$headers .= 'X-ACC-UserID: ' . $_SESSION['userID'] . "\r\n";
+			
 			mail($row2['pend_email'], "RE: English Wikipedia Account Request", $_POST['msgbody'], $headers);
 		}
 	}
