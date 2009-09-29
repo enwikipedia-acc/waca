@@ -661,7 +661,7 @@ elseif ($action == "messagemgmt") {
 elseif ($action == "sban" && $_GET['user'] != "") {
 	if(!hasright($_SESSION['user'], "Admin"))
 		die("Only administrators may ban users");
-	if (!isset($_POST['banreason'])) {
+	if (!isset($_POST['banreason']) || $_POST['banreason'] == "") {
 		echo "<h2>ERROR</h2>\n<br />You must specify a ban reason.\n";
 		echo showfooter();
 		die();
