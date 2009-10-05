@@ -515,8 +515,9 @@ class accRequest {
 		} else {
 			$message = $messages->getMessage(24);
 		}
+		
+		// Display message and leave blank line before the footer.
 		echo "$message<br />\n";
-		echo $messages->getMessage(22);
 		
 		$user = htmlentities($user);
 		$email = htmlentities($email);

@@ -1065,8 +1065,28 @@ function zoomPage($id)
 				$out .= "<h3>Note: This account has already been created</h3>";
 				continue;
 			}
-			$oS = htmlentities($oSpoof);
-			$out2 .= "<li><a href=\"http://en.wikipedia.org/wiki/User:$oS\">$oSpoof</a> (<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/$oS\">contribs</a> | <a href=\"http://en.wikipedia.org/w/index.php?title=Special%3ALog&amp;type=&amp;user=&amp;page=User%3A$oS\">Logs</a> | <a href='http://toolserver.org/~vvv/sulutil.php?user=$oS'>SUL</a>)</li>\n";
+			
+			// Convert all applicable characters to HTML entities.
+			$oS = htmlentities($oSpoof);			
+		
+			// Show the Wikipedia Userpage of the conflicting users.
+			$posc1 = '<a href="http://en.wikipedia.org/wiki/User:';
+			$posc1 .= $oS . '" target="_blank">' . $oS . '</a> ';
+			
+			// Show the contributions of the conflicting users.
+			$posc2 = '<a href="http://en.wikipedia.org/wiki/Special:Contributions/';
+			$posc2 .= $oS . '" target="_blank">contribs</a> ';
+			
+			// Show the logs of the conflicting users.
+			$posc3 = '<a href="http://en.wikipedia.org/w/index.php?title=Special%3ALog&amp;type=&amp;user=&amp;page=User%3A';
+			$posc3 .= $oS . '" target="_blank">Logs</a> ';
+			
+			// Open the SUL of the conflicting users.
+			$posc4 = '<a href="http://toolserver.org/~vvv/sulutil.php?user=';
+			$posc4 .= $oS . '" target="_blank">SUL</a> ';
+			
+			// Adds all the variables together for one line.
+			$out2 .= '<li>' . posc1 . '( ' . $posc2 . ' | ' . $posc3 . ' | ' . $posc4 . ' )</li>\n';
 		}
 		$out2 .= "</ul>\n";
 	}
