@@ -38,7 +38,7 @@ $developer = //Developer info / list.
 				"IRC" => "SQLDb, SXT40",                  //IRC Name
 				"EMail" => "sxwiki@gmail.com",            //Public E-mail address
 				"ToolID" => "1",                          //Tool user ID for linking to page in users.php. 
-        "wiki" => "SQL",                          //Enwiki Username
+				"wiki" => "SQL",                          //Enwiki Username
 				"WWW" => "http://toolserver.org/~sql",    //Your website
 				"Name" => NULL,                           //Real name
 				"Role" => "Developer, Project Lead",      //Project Role(s)
@@ -50,7 +50,7 @@ $developer = //Developer info / list.
 			array(
 				"IRC" => "Cobi",
 				"EMail" => NULL,
-        "ToolID" => "64",
+				"ToolID" => "64",
 				"wiki" => "Cobi",
 				"WWW" => NULL,
 				"Name" => NULL,
@@ -63,7 +63,7 @@ $developer = //Developer info / list.
 			array(
 				"IRC" => "charlie, chuck",
 				"EMail" => "charlie@yourwiki.net",
-        "ToolID" => "67",
+				"ToolID" => "67",
 				"wiki" => "Cmelbye",
 				"WWW" => "http://charlie.yourwiki.net/",
 				"Name" => "Charles Melbye",
@@ -76,7 +76,7 @@ $developer = //Developer info / list.
 			array(
 				"IRC" => "FastLizard4",
 				"EMail" => "FastLizard4@gmail.com",
-        "ToolID" => "18",
+				"ToolID" => "18",
 				"wiki" => "FastLizard4",
 				"WWW" => "http://scalar.cluenet.org/~fastlizard4/",
 				"Name" => NULL,
@@ -89,7 +89,7 @@ $developer = //Developer info / list.
 			array(
 				"IRC" => "Stwalkerster",
 				"EMail" => "stwalkerster@googlemail.com",
-        "ToolID" => "7",
+				"ToolID" => "7",
 				"wiki" => "Stwalkerster",
 				"WWW" => "http://stwalkerster.dyndns.org",
 				"Name" => "Simon Walker",
@@ -102,7 +102,7 @@ $developer = //Developer info / list.
 			array(
 				"IRC" => "|X|",
 				"EMail" => NULL,
-        "ToolID" => "4",
+				"ToolID" => "4",
 				"wiki" => "X!",
 				"WWW" => NULL,
 				"Name" => NULL,
@@ -115,7 +115,7 @@ $developer = //Developer info / list.
 			array(
 				"IRC" => "Alexfusco5",
 				"EMail" => "alexfusco5@gmail.com",
-        "ToolID" => "34",
+				"ToolID" => "34",
 				"wiki" => "Alexfusco5",
 				"WWW" => "http://en.wikipedia.org/wiki/User:Alexfusco5",
 				"Name" => "Alex Fusco",
@@ -128,7 +128,7 @@ $developer = //Developer info / list.
 			array(
 				"IRC" => "OverlordQ",
 				"EMail" => NULL,
-        "ToolID" => "36",
+				"ToolID" => "36",
 				"wiki" => "OverlordQ",
 				"WWW" => NULL,
 				"Name" => NULL,
@@ -141,7 +141,7 @@ $developer = //Developer info / list.
 			array(
 				"IRC" => "Prodego",
 				"EMail" => "Prodego@gmail.com",
-        "ToolID" => "14",
+				"ToolID" => "14",
 				"wiki" => "Prodego",
 				"WWW" => NULL,
 				"Name" => NULL,
@@ -154,7 +154,7 @@ $developer = //Developer info / list.
 			array(
 				"IRC" => "FunPika",
 				"EMail" => "funpika4@gmail.com",
-        "ToolID" => "38",
+				"ToolID" => "38",
 				"wiki" => "FunPika",
 				"WWW" => "http://funpika.unixpod.com",
 				"Name" => NULL,
@@ -181,16 +181,28 @@ $developer = //Developer info / list.
 				"IRC" => "Chris_G",
 				"EMail" => "chris@toolserver.org",
 				"ToolID" => "20",
-        "wiki" => "Chris_G",
+				"wiki" => "Chris_G",
 				"WWW" => "http://toolserver.org/~chris/",
 				"Name" => NULL,
 				"Role" => "Developer",
 				"Access" => "Commit",
 				"Cloak" => "*!*@wikipedia/Chris-G",
 				"Other" => NULL,
+			),
+		"LouriePieterse" =>
+			array(
+				"IRC" => "LouriePieterse",
+				"EMail" => "louriepieterse@yahoo.com",
+				"ToolID" => "556",
+				"wiki" => "LouriePieterse",
+				"WWW" => "http://en.wikipedia.org/wiki/User:LouriePieterse",
+				"Name" => "Lourie Pieterse",
+				"Role" => "Developer",
+				"Access" => "Commit",
+				"Cloak" => NULL,
+				"Other" => NULL,
 			)
 	);
-
 
 displayheader();
 echo "<h2>ACC Development Team</h2>\n";
