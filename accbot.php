@@ -94,6 +94,7 @@
 		'*!*@yourwiki/staff/funpika'	=> 'developer',
 		'*!*@wikimedia/Promethean'		=> 'developer',
 		'*!*@wikipedia/Chris-G'				=> 'developer',
+	    '*!*@unaffiliated/louriepieterse'	=> 'developer',
 		'*!*@*'								=> '*'
 		);
 
