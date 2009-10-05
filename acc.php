@@ -479,14 +479,24 @@ elseif ($action == "login") {
 			if ($useCaptcha) {
 				$captcha->clearFailedLogins();
 			}
+			
+			// Assign values to certain Session variables.
+			// The values are retrieved from the ACC database.
 			$_SESSION['userID'] = $row['user_id'];
 			$_SESSION['user'] = $row['user_name'];
 			$_SESSION['ip'] = $ip;
-			$result = mysql_query("SELECT user_lastip,user_lastactive FROM acc_user WHERE user_name ='" . $row['user_name']."';", $tsSQLlink) or sqlerror('Database error.',mysql_error());
+			
+			// Get data related to the current user.
+			$result = mysql_query("SELECT user_lastip,user_lastactive FROM acc_user WHERE user_name ='" . $_SESSION['user'] . "';", $tsSQLlink) or sqlerror('Database error.',mysql_error());
 			$row = mysql_fetch_assoc($result);
+			
+			// Assign values to the last login variables.
 			$_SESSION['lastlogin_ip'] = $row['user_lastip'];
-			$_SESSION['lastlogin_time'] = strtotime($row['user_lastactive']);
-			mysql_query("UPDATE acc_user SET user_lastip = '$ip' WHERE user_name = '" . $row['user_name']."';", $tsSQLlink);
+			$_SESSION['lastlogin_time'] = strtotime($row['user_lastactive']);		
+			
+			// Set the current IP as the last login IP.
+			mysql_query("UPDATE acc_user SET user_lastip = '" . $_SESSION['ip'] . "' WHERE user_name = '" . $_SESSION['user'] . "';", $tsSQLlink);
+			
 			if ( isset( $_GET['newaction'] ) ) {
 				$header = "Location: $tsurl/acc.php?action=".$_GET['newaction'];
 				foreach ($_GET as $key => $get) {
