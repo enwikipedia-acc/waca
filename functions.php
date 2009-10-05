@@ -1047,9 +1047,7 @@ function zoomPage($id)
 			$out .= "<h3>This request is currently being handled by " . getUsernameFromUid($reservingUser) ."</h3>";
 		}
 	}
-	
 	$out .= '<p><b>Date request made:</b> ' . $row['pend_date'] . '</p>';
-
 	
 	$out2 = "<h2>Possibly conflicting usernames</h2>\n";
 	$spoofs = getSpoofs( $sUser );
@@ -1086,7 +1084,7 @@ function zoomPage($id)
 			$posc4 .= $oS . '" target="_blank">SUL</a> ';
 			
 			// Adds all the variables together for one line.
-			$out2 .= '<li>' . posc1 . '( ' . $posc2 . ' | ' . $posc3 . ' | ' . $posc4 . ' )</li>\n';
+			$out2 .= "<li>" . posc1 . "( " . $posc2 . " | " . $posc3 . " | " . $posc4 . " )</li>\n";
 		}
 		$out2 .= "</ul>\n";
 	}
