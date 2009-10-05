@@ -1084,7 +1084,7 @@ function zoomPage($id)
 			$posc4 .= $oS . '" target="_blank">SUL</a> ';
 			
 			// Adds all the variables together for one line.
-			$out2 .= "<li>" . posc1 . "( " . $posc2 . " | " . $posc3 . " | " . $posc4 . " )</li>\n";
+			$out2 .= "<li>" . $posc1 . "( " . $posc2 . " | " . $posc3 . " | " . $posc4 . " )</li>\n";
 		}
 		$out2 .= "</ul>\n";
 	}
