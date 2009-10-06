@@ -669,13 +669,26 @@ elseif ($action == "messagemgmt") {
 	die();
 }
 elseif ($action == "sban" && $_GET['user'] != "") {
-	if(!hasright($_SESSION['user'], "Admin"))
+	
+	// Checks whether the current user is an admin.
+	if(!hasright($_SESSION['user'], "Admin")) {
 		die("Only administrators may ban users");
+	}
+	
+	// Checks whether there is a reason entered for ban.
 	if (!isset($_POST['banreason']) || $_POST['banreason'] == "") {
 		echo "<h2>ERROR</h2>\n<br />You must specify a ban reason.\n";
 		echo showfooter();
 		die();
 	}
+	
+	// Checks whether there is a target entered to ban.
+	if (!isset($_POST['target']) || $_POST['target'] == "") {
+		echo "<h2>ERROR</h2>\n<br />You must specify a target to be blocked.\n";
+		echo showfooter();
+		die();
+	}
+	
 	$duration = sanitize($_POST['duration']);
 	if ($duration == "-1") {
 		$duration = -1;
