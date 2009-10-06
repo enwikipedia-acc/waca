@@ -21,7 +21,7 @@
 **Chris G ( http://en.wikipedia.org/wiki/User:Chris_G )      **
 **                                                           **
 **************************************************************/
-
+// Get all the classes.
 require_once 'config.inc.php';
 require_once 'AntiSpoof.php';
 

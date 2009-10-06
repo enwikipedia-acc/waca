@@ -686,14 +686,21 @@ function makehead($username) {
 	*/
 	global $tsSQLlink, $toolserver_database;
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
+	
 	$suin = sanitize($username);
 	$rethead = '';
+	
 	$query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
 	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
+	
+	// Check wheter the query was succesfull.
+	if (!$result) {
 		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+	}
+	
 	$row = mysql_fetch_assoc($result);
 	$_SESSION['user_id'] = $row['user_id'];
+	
 	forceLogout( $_SESSION['user_id'] );
 	$out = showmessage('21');
 	if (isset ($_SESSION['user'])) { //Is user logged in?
@@ -758,12 +765,18 @@ function showfooter() {
 	return $out;
 }
 
-function showlogin( $action = null, $params = null ) {
+function showlogin($action=null, $params=null) {
+	/*
+	* Show the login page.
+	*/
 	global $_SESSION, $tsSQLlink, $useCaptcha;
+	
+	// Create the variable used for the coding.
 	$html ='<div id="sitenotice">Please login first, and we\'ll send you on your way!</div>
     <div id="content">
     <h2>Login</h2>';
 
+    // Check whether there are any errors.
     if (isset($_GET['error'])) {
     	if ($_GET['error']=='authfail') {
     		$html .= "<p>Username and/or password incorrect. Please try again.</p>";
@@ -773,15 +786,25 @@ function showlogin( $action = null, $params = null ) {
     		$html .= "<p>Please complete the captcha.</p>";
     	}
     }
+	
+	// Generate the login form; set the action to login and nocheck to true.
+	// By setting nocheck to true would skip the checking procedures.
     $html .='<form action="acc.php?action=login&amp;nocheck=1';
-    if (( $action ) && ($action != "logout")) {
-    	$html .= "&amp;newaction=".$action;
-    	foreach ($params as $param => $value) { 
+	
+	// Would perform clause for any action except logout.
+    if (($action) && ($action != "logout")) {    	
+		$html .= "&amp;newaction=" . $action;
+    	
+		// Create an array of all the values in the $GET variable.
+		// The variable supplied as the parameter would be used.
+		foreach ($params as $param => $value) { 
     		if ($param != '' && $param != "action") {
     			$html .= "&amp;$param=".$value;
     		}
     	}
     }
+	
+	// Adds final coding to the HTML variable, such as for the forms to be created.
     $html .= '" method="post">
     <div class="required">
         <label for="username">Username:</label>
@@ -791,6 +814,8 @@ function showlogin( $action = null, $params = null ) {
         <label for="password">Password:</label>
         <input id="password" type="password" name="password"/>
     </div>';
+	
+	// Checks where Captcha should be used.
     if ($useCaptcha) {
             require_once 'includes/captcha.php';
             $captcha = new captcha;
@@ -804,6 +829,9 @@ function showlogin( $action = null, $params = null ) {
 	    	</div>';
 	    }
     }
+	
+	// Adds a Submit button to the HTML code.
+	// Below the forms a option to register would be displayed.
     $html .= '<div class="submit">
         <input type="submit" value="Login"/>
     </div>
@@ -812,6 +840,8 @@ function showlogin( $action = null, $params = null ) {
     Need Tool access?
     <br /><a href="acc.php?action=register">Register!</a> (Requires approval)<br />
     <a href="acc.php?action=forgotpw">Forgot your password?</a><br />';
+	
+	// Finally the footer are added to the code.
 	$html .= showfootern();
 	return $html;
 }

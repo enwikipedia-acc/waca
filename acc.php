@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************
 ** English Wikipedia Account Request Interface               **
 ** Wikipedia Account Request Graphic Design by               **
@@ -9,44 +8,66 @@
 ** released under Public Domain by the ACC                   **
 ** Development Team.                                         **
 **             Developers:                                   **
-**  SQL ( http://en.wikipedia.org/User:SQL )                 **
-**  Cobi ( http://en.wikipedia.org/User:Cobi )               **
+** SQL ( http://en.wikipedia.org/User:SQL )                 **
+** Cobi ( http://en.wikipedia.org/User:Cobi )               **
 ** Cmelbye ( http://en.wikipedia.org/User:cmelbye )          **
-**FastLizard4 ( http://en.wikipedia.org/User:FastLizard4 )   **
-**Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
-**Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
-**Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
-**OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
-**Prodego    ( http://en.wikipedia.org/wiki/User:Prodego )   **
-**FunPika    ( http://en.wikipedia.org/wiki/User:FunPika )   **
-**Prom3th3an ( http://en.wikipedia.org/wiki/User:Promethean )**
-**Chris_G ( http://en.wikipedia.org/wiki/User:Chris_G )      **
+** FastLizard4 ( http://en.wikipedia.org/User:FastLizard4 )   **
+** Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
+** Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
+** Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
+** OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
+** Prodego    ( http://en.wikipedia.org/wiki/User:Prodego )   **
+** FunPika    ( http://en.wikipedia.org/wiki/User:FunPika )   **
+** Prom3th3an ( http://en.wikipedia.org/wiki/User:Promethean )**
+** Chris_G ( http://en.wikipedia.org/wiki/User:Chris_G )      **
 **************************************************************/
 
-require_once ( 'config.inc.php' );
-require_once ( 'devlist.php' );
-require_once ( 'functions.php' );
+// Get all the classes.
+require_once ('config.inc.php');
+require_once ('devlist.php');
+require_once ('functions.php');
+
+// Set the current version of the ACC.
 $version = "0.9.7";
 
-// check to see if the database is unavailable
+// Check to see if the database is unavailable.
+// TODO: Improve way the method is called.
 readOnlyMessage();
 
+// Get the required variables for the database connections.
 global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
 global $antispoof_host, $antispoof_db, $antispoof_table, $antispoof_password;
+
+// Main database variables.
 global $tsSQLlink, $asSQLlink;
+
+// Connect to the TS database and the Antispoof database.
+// Assign the TS and AS DB as if they were an array.
+// TODO: Improve way the method is called.
 list($tsSQLlink, $asSQLlink) = getDBconnections();
 
-if ( !$tsSQLlink ) {
-	die( 'Could not connect: ' . mysql_error( ) );
+// Check to see if the TS database is unavailable.
+if (!$tsSQLlink) {
+	die('Could not connect: ' . mysql_error());
 }
-$link = mysql_select_db( $toolserver_database, $tsSQLlink );
-if( !$link ) {
-	 print mysql_error( );
+
+// Assign the database to the variable for easier use.
+$link = mysql_select_db($toolserver_database, $tsSQLlink);
+
+// Display error if assignment fails.
+if(!$link) {
+	 print mysql_error();
 }
+
+// Start the current session.
 session_start( );
 
+// Clears the action variable.
 $action = '';
-if ( isset ( $_GET['action'] ) ) {
+
+// Assign the correct value to the action variable.
+// The value is retrieved from the $GET variable.
+if (isset($_GET['action'])) {
 	$action = $_GET['action'];
 }
 
@@ -55,18 +76,32 @@ if ($action == "logout") {
 	session_unset();
 }
 
-if ( !isset ( $_SESSION['user'] ) && !isset ( $_GET['nocheck'] ) ) {
+if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
+	// Sets the parameter to blank, this way the correct options would be displayed.
+	// It would tell the user now that he or she should log in or create an account.
 	$suser = '';
-	echo makehead( $suser );
-	if ( $action != 'register' && $action != 'forgotpw' && $action != 'sreg' ) {
-		if ( isset( $action ) ) {
-			echo showlogin( $action, $_GET );
+	echo makehead($suser);
+	
+	// Checks whether the user want to reset his password or register a new account.
+	// Performs the clause when the action is not one of the above options.
+	if ($action != 'register' && $action != 'forgotpw' && $action != 'sreg') {
+		if (isset($action)) {
+			// Display the login form and the rest of the page coding.
+			// The data in the current $GET varianle would be send as parameter.
+			// There it would be used to possibly fill some of the form's fields.
+			echo showlogin($action, $_GET);
 		}
-		elseif ( isset( $action ) ) {
-			echo showlogin( );
+		elseif (!isset($action)) {
+			// When the action variable isn't set to anything,
+			// the login page is displayed for the user to complete.
+			echo showlogin();
 		}
-		die( );
+		// All the needed HTML code is displayed for the user.
+		// The script is thus terminated.
+		die();
 	} else {
+	    // A content block is created if the action is none of the above.
+		// This block would later be used to keep all the HTML except the header and footer.
 		$out = "<div id=\"content\">";
 		echo $out;
 	}
