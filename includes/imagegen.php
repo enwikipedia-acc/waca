@@ -46,8 +46,8 @@ class imagegen {
 		// Put it all together in the image.
 		imagestring ($im, $font, 2, 2,  $text, $text_color);
 		
-		// Return the image.		
-		return $im;
+		// Writes the image to the system.
+		imagepng($im, './images/' . $name . '.png');
 	}
 }
 ?>

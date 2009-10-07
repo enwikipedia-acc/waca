@@ -28,10 +28,13 @@ require_once 'includes/imagegen.php';
 // Initialize the class object.
 $imagegen = new imagegen();
 
-// Generate the image and write a copy to the filesystem.
-// Temp use of the following string: SourceForge.net: Lost Password Recovery
-imagejpeg($imagegen->create("SourceForge.net: Lost Password Recovery"), 'image.jpg');
+// Set the variables of the generated image.
+$name = $_GET['name'];
+$text = $_GET['text'];
 
-// Display the generated image.
-echo '<img src="image.jpg" alt="Generated image" /> ';
+// Generate the image and write a copy to the filesystem.
+$imagegen->create($name, $text);
+
+// Display the image on the screen.
+echo '<img src="images/' . $name . '.png" alt="' . $text . '" /> ';
 ?>
