@@ -32,7 +32,7 @@ $imagegen = new imagegen();
 $text = $_GET['text'];
 
 // Generate the image and write a copy to the filesystem.
-$id = $imagegen->create($name, $text);
+$id = $imagegen->create($text);
 
 // Display the image on the screen.
 echo '<img src="images/' . substr($id,0,1) . '/'.$id.'.png" alt="' . $text . '" /> ';
