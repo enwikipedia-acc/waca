@@ -27,8 +27,30 @@ if ($ACC != "1") {
 } //Re-route, if you're a web client.
 
 class imagegen {
-	public function create($name, $text) {
+	public function create( $text) {
 	
+		// get the md5 hash of the provided text.
+		// md5 will always return the exact same value, for the exact same string.
+		$id = md5($text);
+		
+		// calculate the directory the image should be in, by taking the first letter of the hash
+		$imageDir = './images/' . substr($id,0,1) . '/';
+		
+		// if the directory doesn't exist...
+		if(! file_exists($imageDir) )
+		{
+			// ... make it
+			mkdir($imageDir);
+		}
+		
+		// if there's already a file with tha name, why create it again?
+		if( file_exists($imageDir.$id.'.png'))
+		{
+			// return the id, that's enough to tell us where the image is stored
+			return $id;	
+		}
+		
+		
 		// Font size of text.
 		$font  = 2;
 		
@@ -46,8 +68,13 @@ class imagegen {
 		// Put it all together in the image.
 		imagestring ($im, $font, 2, 2,  $text, $text_color);
 		
+
+		
 		// Writes the image to the system.
-		imagepng($im, './images/' . $name . '.png');
+		imagepng($im, $imageDir . $id . '.png');
+		
+		// return the id, so we can figure out where it's stored
+		return $id;
 	}
 }
 ?>

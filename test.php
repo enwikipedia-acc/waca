@@ -29,18 +29,11 @@ require_once 'includes/imagegen.php';
 $imagegen = new imagegen();
 
 // Set the variables of the generated image.
-$name = $_GET['name'];
 $text = $_GET['text'];
 
-$name= escapeshellcmd($name);
-
-if (!preg_match('/^[0-9A-Za-z]*$/',$name)) {
-	die('specify alphanumeric name');
-}
-
 // Generate the image and write a copy to the filesystem.
-$imagegen->create($name, $text);
+$id = $imagegen->create($name, $text);
 
 // Display the image on the screen.
-echo '<img src="images/' . $name . '.png" alt="' . $text . '" /> ';
+echo '<img src="images/' . substr($id,0,1) . '/'.$id.'.png" alt="' . $text . '" /> ';
 ?>
