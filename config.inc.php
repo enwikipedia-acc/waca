@@ -26,12 +26,10 @@
 $whichami = 'Live';
 
 //main database location and access details
-$toolserver_mycnf = parse_ini_file("/projects/acc/.my.cnf"); //location of  a .my.cnf file with connection data in, if one exists
-$toolserver_username = $toolserver_mycnf['user'];
-$toolserver_password = $toolserver_mycnf['password'];
-$toolserver_host = "sql";
-$toolserver_database = "p_acc";
-unset ($toolserver_mycnf);
+$toolserver_username = '';
+$toolserver_password = '';
+$toolserver_host = "";
+$toolserver_database = "";
 
 $wikiurl = "en.wikipedia.org"; //Does nothing yet, intended for further localization
 $tsurl = "http://stable.toolserver.org/acc"; 
