@@ -27,7 +27,7 @@ if ($ACC != "1") {
 } //Re-route, if you're a web client.
 
 class imagegen {
-	public function create($text) {
+	public function create($name, $text) {
 	
 		// Font size of text.
 		$font  = 2;
