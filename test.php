@@ -32,6 +32,12 @@ $imagegen = new imagegen();
 $name = $_GET['name'];
 $text = $_GET['text'];
 
+$name= escapeshellcmd($name);
+
+if (!preg_match('/^[0-9A-Za-z]*$/',$name)) {
+	die('specify alphanumeric name');
+}
+
 // Generate the image and write a copy to the filesystem.
 $imagegen->create($name, $text);
 
