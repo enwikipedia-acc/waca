@@ -40,7 +40,7 @@ readOnlyMessage();
 global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
 global $antispoof_host, $antispoof_db, $antispoof_table, $antispoof_password;
 
-$tsSQL = new database($toolserver_username, $toolserver_password, $toolserver_host);
+$tsSQL = new database( $toolserver_host, $toolserver_username, $toolserver_password);
 $tsSQL->selectDb($toolserver_database);
 
 // Main database variables.

@@ -33,7 +33,7 @@ list($tsSQLlink, $asSQLlink) = getDBconnections();
 @ mysql_select_db($toolserver_database, $tsSQLlink);
 require_once('includes/database.php');
 global $toolserver_username, $toolserver_password, $toolserver_host;
-$tsSQL = new database($toolserver_username, $toolserver_password, $toolserver_host);
+$tsSQL = new database( $toolserver_host,$toolserver_username, $toolserver_password);
 $tsSQL->selectDb($toolserver_database);
 if( isset( $_SESSION['user'] ) ) {
 	$sessionuser = $_SESSION['user'];

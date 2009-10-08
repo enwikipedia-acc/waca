@@ -43,7 +43,7 @@ list($tsSQLlink, $asSQLlink) = getDBconnections();
 @ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database.");
 require_once('includes/database.php');
 global $toolserver_username, $toolserver_password, $toolserver_host;
-$tsSQL = new database($toolserver_username, $toolserver_password, $toolserver_host);
+$tsSQL = new database($toolserver_host, $toolserver_username, $toolserver_password );
 $tsSQL->selectDb($toolserver_database);
 
 $date = new DateTime();
