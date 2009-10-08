@@ -8,42 +8,51 @@
 ** released under Public Domain by the ACC                   **
 ** Development Team.                                         **
 **             Developers:                                   **
-**  SQL ( http://en.wikipedia.org/User:SQL )                 **
-**  Cobi ( http://en.wikipedia.org/User:Cobi )               **
+** SQL ( http://en.wikipedia.org/User:SQL )                 **
+** Cobi ( http://en.wikipedia.org/User:Cobi )               **
 ** Cmelbye ( http://en.wikipedia.org/User:cmelbye )          **
-**FastLizard4 ( http://en.wikipedia.org/User:FastLizard4 )   **
-**Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
-**Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
-**Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
-**OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
-**Prodego    ( http://en.wikipedia.org/wiki/User:Prodego )   **
+** FastLizard4 ( http://en.wikipedia.org/User:FastLizard4 )   **
+** Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
+** Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
+** Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
+** OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
+** Prodego    ( http://en.wikipedia.org/wiki/User:Prodego )   **
 **                                                           **
 **************************************************************/
-require_once ( 'config.inc.php' );
-require_once ( 'devlist.php' );
-require_once ( 'functions.php' );
 
-// check to see if the database is unavailable
+// Get all the classes.
+require_once ('config.inc.php');
+require_once ('devlist.php');
+require_once ('functions.php');
+
+// Check to see if the database is unavailable.
+// TODO: Improve way the method is called.
 readOnlyMessage();
 
+// Main database variables.
 global $tsSQLlink, $asSQLlink;
+
+// Connect to the TS database and the Antispoof database.
+// Assign the TS and AS DB as if they were an array.
+// TODO: Improve way the method is called.
 list($tsSQLlink, $asSQLlink) = getDBconnections();
-// Continue session
+
+// Initialize the session data.
 session_start();
 
-$developer = //Developer info / list.
-	array(
+//Array of objects containing the deleveopers' information.
+$developer = array(
 		"SQL" =>
-			array(                                      //Set any of these to NULL to keep them from being displayed.
-				"IRC" => "SQLDb, SXT40",                  //IRC Name
-				"EMail" => "sxwiki@gmail.com",            //Public E-mail address
+				array(                                    //Set any of these to NULL to keep them from being displayed.
+				"IRC" => "SQLDb, SXT40",                  //IRC Name.
+				"EMail" => "sxwiki@gmail.com",            //Public E-mail address.
 				"ToolID" => "1",                          //Tool user ID for linking to page in users.php. 
-				"wiki" => "SQL",                          //Enwiki Username
-				"WWW" => "http://toolserver.org/~sql",    //Your website
-				"Name" => NULL,                           //Real name
-				"Role" => "Developer, Project Lead",      //Project Role(s)
-				"Access" => "Commit, Shell, SQL",         //Project Access levels
-				"Cloak" => "*!*@wikipedia/SQL",           //IRC Cloak
+				"wiki" => "SQL",                          //Enwiki Username.
+				"WWW" => "http://toolserver.org/~sql",    //Your website.
+				"Name" => NULL,                           //Real name.
+				"Role" => "Developer, Project Lead",      //Project Role(s).
+				"Access" => "Commit, Shell, SQL",         //Project Access levels.
+				"Cloak" => "*!*@wikipedia/SQL",           //IRC Cloak.
 				"Other" => NULL,                          //Anything else, comments, etc.
 			),
 		"Cobi" =>
@@ -202,16 +211,25 @@ $developer = //Developer info / list.
 				"Cloak" => NULL,
 				"Other" => NULL,
 			)
-	);
+);
+// End of the array of developers.
 
+// Display the header of the interface.
 displayheader();
+
+// Display the page heading.
 echo "<h2>ACC Development Team</h2>\n";
+
+// Sort the array with the developers.
 ksort($developer);
-foreach( $developer as $devName => $devInfo ) {
+
+// Print the data for each developer.
+foreach($developer as $devName => $devInfo) {
 	echo "<h3>$devName</h3>\n<ul>\n";
-	foreach( $devInfo as $infoName => $infoContent ) {
-		if( $infoContent != NULL ) {
-			switch( $infoName ) {
+	foreach($devInfo as $infoName => $infoContent) {
+		// Check whether a field has been set to NULL or not.
+		if($infoContent != NULL) {
+			switch($infoName) {
 				case "IRC":
 					echo "<li>IRC Name: $infoContent</li>\n";
 					break;
@@ -245,9 +263,13 @@ foreach( $developer as $devName => $devInfo ) {
 			}
 		}
 	}
+	// End to the bulleted list and continues on a new line.
 	echo "</ul>\n";
 }
 
+// Display details about the ACC hosting.
 echo "<br/><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by SourceForge</p>";
+
+// Display the footer of the interface.
 displayfooter();
 ?>
