@@ -21,21 +21,25 @@
 **************************************************************/
 
 // Get all the classes.
-require_once ('config.inc.php');
-require_once ('devlist.php');
-require_once ('functions.php');
+require_once 'config.inc.php';
+require_once 'devlist.php';
+require_once 'functions.php';
+
+require_once 'includes/database.php';
+require_once 'includes/offlineMessage.php';
+require_once 'includes/skin.php';
 
 // Check to see if the database is unavailable.
-// TODO: Improve way the method is called.
-readOnlyMessage();
+$offlineMessage = new offlineMessage(true);
+$offlineMessage->check();
 
-// Main database variables.
-global $tsSQLlink, $asSQLlink;
+// Connect to the TS database.
+global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
+$tsSQL = new database($toolserver_host,$toolserver_username,$toolserver_password);
+$tsSQL->selectDb($toolserver_database);
 
-// Connect to the TS database and the Antispoof database.
-// Assign the TS and AS DB as if they were an array.
-// TODO: Improve way the method is called.
-list($tsSQLlink, $asSQLlink) = getDBconnections();
+// Initialize the class objects.
+$skin     = new skin();
 
 // Initialize the session data.
 session_start();
@@ -211,11 +215,10 @@ $developer = array(
 				"Cloak" => NULL,
 				"Other" => NULL,
 			)
-);
-// End of the array of developers.
+); // End of the array of developers.
 
 // Display the header of the interface.
-displayheader();
+$skin->displayheader();
 
 // Display the page heading.
 echo "<h2>ACC Development Team</h2>\n";
@@ -263,13 +266,12 @@ foreach($developer as $devName => $devInfo) {
 			}
 		}
 	}
-	// End to the bulleted list and continues on a new line.
-	echo "</ul>\n";
+	echo "</ul>\n"; // End to the bulleted list and continues on a new line.
 }
 
 // Display details about the ACC hosting.
 echo "<br/><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by SourceForge</p>";
 
 // Display the footer of the interface.
-displayfooter();
+$skin->displayfooter();
 ?>
