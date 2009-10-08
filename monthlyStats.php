@@ -5,16 +5,19 @@ require_once('functions.php');
 require_once('graph/pChart/pChart.class');
 require_once('graph/pChart/pData.class');
 
+require_once('includes/database.php');
 
 readOnlyMessage();
 
 session_start();
 
 // retrieve database connections
-global $tsSQLlink, $asSQLlink, $toolserver_database;
+global $tsSQLlink, $asSQLlink, $toolserver_database; 
 list($tsSQLlink, $asSQLlink) = getDBconnections();
 @ mysql_select_db($toolserver_database, $tsSQLlink);
-
+global $toolserver_username, $toolserver_password, $toolserver_host;
+$tsSQL = new database($toolserver_username, $toolserver_password, $toolserver_host);
+$tsSQL->selectDb($toolserver_database);
 if( isset( $_SESSION['user'] ) ) {
 	$sessionuser = $_SESSION['user'];
 } else {

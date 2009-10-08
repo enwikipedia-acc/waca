@@ -26,6 +26,8 @@
 require_once ('config.inc.php');
 require_once ('devlist.php');
 require_once ('functions.php');
+require_once ('includes/database.php');
+
 
 // Set the current version of the ACC.
 $version = "0.9.7";
@@ -37,6 +39,9 @@ readOnlyMessage();
 // Get the required variables for the database connections.
 global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
 global $antispoof_host, $antispoof_db, $antispoof_table, $antispoof_password;
+
+$tsSQL = new database($toolserver_username, $toolserver_password, $toolserver_host);
+$tsSQL->selectDb($toolserver_database);
 
 // Main database variables.
 global $tsSQLlink, $asSQLlink;

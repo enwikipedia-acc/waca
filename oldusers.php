@@ -41,6 +41,10 @@ if( isset( $_SESSION['user'] ) ) {
 global $tsSQLlink, $asSQLlink, $toolserver_database;
 list($tsSQLlink, $asSQLlink) = getDBconnections();
 @ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database.");
+require_once('includes/database.php');
+global $toolserver_username, $toolserver_password, $toolserver_host;
+$tsSQL = new database($toolserver_username, $toolserver_password, $toolserver_host);
+$tsSQL->selectDb($toolserver_database);
 
 $date = new DateTime();
 $date->modify("-45 days");
