@@ -893,12 +893,12 @@ HTML;
 }
 
 function hasright($username, $checkright) {
-	global $tsSQLlink;
-	$username = sanitize($username);
+	global $tsSQL;
+	$username = $tsSQL->escape($username);
 	$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
-	$result = mysql_query($query, $tsSQLlink);
+	$result = $tsSQL->query($query, $tsSQLlink);
 	if (!$result) {
-		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+		$tsSQL->showError("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	}
 	$row = mysql_fetch_assoc($result);
 	$rights = explode(':', $row['user_level']);
