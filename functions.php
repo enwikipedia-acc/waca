@@ -896,7 +896,7 @@ function hasright($username, $checkright) {
 	global $tsSQL;
 	$username = $tsSQL->escape($username);
 	$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
-	$result = $tsSQL->query($query, $tsSQLlink);
+	$result = $tsSQL->query($query);
 	if (!$result) {
 		$tsSQL->showError("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	}
