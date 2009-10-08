@@ -1,7 +1,6 @@
 <?php
 require_once('config.inc.php');
 require_once('functions.php');
-//require_once('libchart/classes/libchart.php');
 require_once('graph/pChart/pChart.class');
 require_once('graph/pChart/pData.class');
 
