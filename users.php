@@ -25,12 +25,17 @@
 require_once ('config.inc.php');
 require_once ('devlist.php');
 require_once ('functions.php');
+require_once('includes/database.php');
 
 // check to see if the database is unavailable
 readOnlyMessage();
 
 // retrieve database connections
 $dblinks = getDBConnections();
+
+global $toolserver_username, $toolserver_password, $toolserver_host;
+$tsSQL = new database( $toolserver_host,$toolserver_username, $toolserver_password);
+$tsSQL->selectDb($toolserver_database);
 
 /*
 // Connect to MySQL server
