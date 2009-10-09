@@ -1082,13 +1082,21 @@ function zoomPage($id)
 	$out2 = "<h2>Possibly conflicting usernames</h2>\n";
 	$spoofs = getSpoofs( $sUser );
 	
+	// Display message if there is no conflicting usernames.
+	// This part would not be displayed as soon as an account was created.
+	// This is because then the username would have a spoof, ie himself.
 	if( !$spoofs ) {
 		$out2 .= "<i>None detected</i><br />\n";
-	} elseif ( !is_array($spoofs) ) {
+	}
+	
+	// Checks whether there is an array of spoofs.
+	elseif ( !is_array($spoofs) ) {
 		$out2 .= "<h3 style='color: red'>$spoofs</h3>\n";
-	} else {
+	}
+	
+	// Display details for the different conflicting usernames. 
+	else {
 		$out2 .= "<ul>\n";
-		
 		foreach( $spoofs as $oSpoof ) {
 			// Wouldnt work for requests where there are conflicting names.
 			// The conflicting names would be tested again the created username.
@@ -1096,9 +1104,7 @@ function zoomPage($id)
 				$out .= "<h3>Note: This account has already been created</h3>";
 				continue;
 			}
-		}
-		
-		foreach( $spoofs as $oSpoof ) {
+			
 			// Convert all applicable characters to HTML entities.
 			$oS = htmlentities($oSpoof);			
 		
