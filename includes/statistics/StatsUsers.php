@@ -280,7 +280,7 @@ class StatsUsers extends StatisticsPage
 					
 					$luser = mysql_real_escape_string($row['log_user']);  // Validate the user ID for security (SQL Injection, etc)
 					$uid_query = "SELECT user_id FROM acc_user WHERE user_name = '" . $luser . "';";
-					$uid_result = mysql_query($uid_query); // Get the details of the user who performed the action
+					$uid_result = $tsSQL->query($uid_query); // Get the details of the user who performed the action
 					if (!$uid_result)
 					{
 						// If query fails, tell us about it
