@@ -9,18 +9,18 @@
 ** released under Public Domain by the ACC                   **
 ** Development Team.                                         **
 **             Developers:                                   **
-**  SQL ( http://en.wikipedia.org/User:SQL )                 **
-**  Cobi ( http://en.wikipedia.org/User:Cobi )               **
+** SQL ( http://en.wikipedia.org/User:SQL )                 **
+** Cobi ( http://en.wikipedia.org/User:Cobi )               **
 ** Cmelbye ( http://en.wikipedia.org/User:cmelbye )          **
-**FastLizard4 ( http://en.wikipedia.org/User:FastLizard4 )   **
-**Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
-**Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
-**Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
-**OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
-**Prodego    ( http://en.wikipedia.org/wiki/User:Prodego )   **
-**FunPika    ( http://en.wikipedia.org/wiki/User:FunPika )   **
-**PRom3th3an ( http://en.wikipedia.org/wiki/User:Promethean )**
-**Chris_G ( http://en.wikipedia.org/wiki/User:Chris_G )      **
+** FastLizard4 ( http://en.wikipedia.org/User:FastLizard4 )   **
+** Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
+** Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
+** Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
+** OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
+** Prodego    ( http://en.wikipedia.org/wiki/User:Prodego )   **
+** FunPika    ( http://en.wikipedia.org/wiki/User:FunPika )   **
+** PRom3th3an ( http://en.wikipedia.org/wiki/User:Promethean )**
+** Chris_G ( http://en.wikipedia.org/wiki/User:Chris_G )      **
 **************************************************************/
 
 global $ACC;
@@ -1088,12 +1088,17 @@ function zoomPage($id)
 		$out2 .= "<h3 style='color: red'>$spoofs</h3>\n";
 	} else {
 		$out2 .= "<ul>\n";
+		
 		foreach( $spoofs as $oSpoof ) {
+			// Wouldnt work for requests where there are conflicting names.
+			// The conflicting names would be tested again the created username.
 			if ( $oSpoof == $sUser ) {
 				$out .= "<h3>Note: This account has already been created</h3>";
 				continue;
 			}
-			
+		}
+		
+		foreach( $spoofs as $oSpoof ) {
 			// Convert all applicable characters to HTML entities.
 			$oS = htmlentities($oSpoof);			
 		
