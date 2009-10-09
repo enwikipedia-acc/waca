@@ -23,11 +23,10 @@
 **************************************************************/
 
 // Get all the classes.
-require_once ('config.inc.php');
-require_once ('devlist.php');
-require_once ('functions.php');
-require_once ('includes/database.php');
-
+require_once 'config.inc.php';
+require_once 'devlist.php';
+require_once 'functions.php';
+require_once 'includes/database.php';
 
 // Set the current version of the ACC.
 $version = "0.9.7";
@@ -64,8 +63,8 @@ if(!$link) {
 	 print mysql_error();
 }
 
-// Start the current session.
-session_start( );
+// Initialize the session data.
+session_start();
 
 // Clears the action variable.
 $action = '';
@@ -81,6 +80,8 @@ if ($action == "logout") {
 	session_unset();
 }
 
+// Checks whether the user and nocheck variable is set.
+// When none of these are set, the user should first login.
 if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 	// Sets the parameter to blank, this way the correct options would be displayed.
 	// It would tell the user now that he or she should log in or create an account.
@@ -111,23 +112,34 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 		echo $out;
 	}
 }
+// Executes if the user variable is set, but not the nocheck.
+// This ussually happens when an user account has been renamed.
+// LouriePieterse: I cant figure out for what reason this is used.
 elseif (!isset($_GET['nocheck']))
 {
+		// Forces the current user to logout.
         forceLogout($_SESSION['userID']);
+		
+		// ?
         echo makehead($_SESSION['user']);
         checksecurity($_SESSION['user']);
+		
+		// ?
         $out = showmessage('20');
         $out .= "<div id=\"content\">";
         echo $out;
 }
 
-if ( $action == '' ) {
-	echo defaultpage( );
+// When no action is specified the default Internal ACC are displayed.
+// TODO: Improve way the method is called.
+if ($action == '') {
+	echo defaultpage();
 }
-elseif ( $action == "sreg" ) {
+
+elseif ($action == "sreg") {
 	if(isset($_SESSION['user']))
 	{
-		$suser = sanitize( $_SESSION['user'] );
+		$suser = sanitize($_SESSION['user']);
 	}
 	else
 	{
@@ -301,6 +313,7 @@ elseif ( $action == "sreg" ) {
 	echo showfootern();
 	die();
 }
+
 elseif ($action == "register") {
 	echo <<<HTML
     <h2>Register!</h2>
