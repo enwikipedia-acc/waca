@@ -42,6 +42,8 @@ class StatsMonthlyStats extends StatisticsPage
 	
 	function createGraph()
 	{
+		$qb = new QueryBrowser();
+		
 		$gquery = "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), ' ' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed%' GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;";
 	
 		$DataSet = new pData;
