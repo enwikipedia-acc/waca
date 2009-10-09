@@ -52,7 +52,7 @@ class StatsFlaggedUsers extends StatisticsPage
 	}
 	function getPageTitle()
 	{
-		return "Users on Wikipedia with +accountcreator, without a tool account";
+		return "Account creators without tool access";
 	}
 	function isProtected()
 	{
