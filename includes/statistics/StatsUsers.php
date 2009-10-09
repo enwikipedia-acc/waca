@@ -32,7 +32,7 @@ class StatsUsers extends StatisticsPage
 	}
 	function getUserList()
 	{
-		global $tsSQL;
+		global $tsSQL, $enableRenames, $tsurl;
 		$out = "";
 		$result = $tsSQL->query("SELECT * FROM acc_user ORDER BY user_level, user_name;");
 		if (!$result)
