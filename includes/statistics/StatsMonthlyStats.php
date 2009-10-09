@@ -16,7 +16,8 @@ class StatsMonthlyStats extends StatisticsPage
 			require_once($filepath . 'graph/pChart/pChart.class');
 			require_once($filepath . 'graph/pChart/pData.class');
 			
-			createGraph();	
+			$this->createGraph();
+
 			$out.= '<img src="render/'.$_SERVER['REQUEST_TIME'].'" />';
 		}
 		else

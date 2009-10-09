@@ -32,7 +32,7 @@ class StatsUsers extends StatisticsPage
 	}
 	function getUserList()
 	{
-		global $tsSQL, $enableRenames, $tsurl;
+		global $tsSQL;
 		$out = "";
 		$result = $tsSQL->query("SELECT * FROM acc_user ORDER BY user_level, user_name;");
 		if (!$result)
@@ -78,7 +78,7 @@ class StatsUsers extends StatisticsPage
 	function getUserDetail($userId)
 	{
 		$out="";
-		global $tsSQL;
+		global $tsSQL, $enableRenames, $tsurl;
 		$gid = $tsSQL->escape($userId); // Validate the user ID for security (SQL Injection, etc)
 		if (!preg_match('/^[0-9]+$/i',$gid)) {
 			return "User ID invalid";
