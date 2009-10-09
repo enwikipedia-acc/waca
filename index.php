@@ -38,6 +38,7 @@ require_once 'includes/messages.php';
 require_once 'includes/accbotSend.php';
 
 // Check to see if the database is unavailable.
+// Uses the true variable as the public uses this page.
 $offlineMessage = new offlineMessage(true);
 $offlineMessage->check();
 

@@ -27,13 +27,15 @@ require_once 'config.inc.php';
 require_once 'devlist.php';
 require_once 'functions.php';
 require_once 'includes/database.php';
+require_once 'includes/offlineMessage.php';
 
 // Set the current version of the ACC.
 $version = "0.9.7";
 
 // Check to see if the database is unavailable.
-// TODO: Improve way the method is called.
-readOnlyMessage();
+// Uses the false variable as its the internal interface.
+$offlineMessage = new offlineMessage(false);
+$offlineMessage->check();
 
 // Get the required variables for the database connections.
 global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
