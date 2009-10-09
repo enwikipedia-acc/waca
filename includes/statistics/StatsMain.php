@@ -12,7 +12,7 @@ class StatsMain extends StatisticsPage
 		
 		foreach ($statsPageDefinitions as $i) {
 			require_once $filepath . "/includes/statistics/" . $i;
-			$c = ereg_replace('.php','',$i);
+			$c = preg_replace('.php','',$i);
 			$o = new $c;
 			$out.='<li><a href="?page='.$o->getPageName().'">'.$o->getPageTitle().'</a></li>';
 		}
