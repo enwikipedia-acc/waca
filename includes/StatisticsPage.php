@@ -93,10 +93,15 @@ abstract class StatisticsPage
 	{
 		// resume SESSION
 		session_start();
+		if( isset( $_SESSION['user'] ) ) {
+			$sessionuser = $_SESSION['user'];
+		} else {
+			$sessionuser = "";
+		}
 		
 		// fetch and show page header
 		global $messages, $dontUseWikiDb;
-		echo $messages->getMessage(21);
+		makehead( $sessionuser );
 		
 		if($this->requiresWikiDatabase() && ($dontUseWikiDb == 1))
 		{	// wiki database unavailable, don't show stats page
