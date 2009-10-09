@@ -12,6 +12,7 @@ class StatsMonthlyStats extends StatisticsPage
 		global $showGraphs;
 		if($showGraphs == 1)
 		{
+			global $filepath;
 			require_once($filepath . 'graph/pChart/pChart.class');
 			require_once($filepath . 'graph/pChart/pData.class');
 			
