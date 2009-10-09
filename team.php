@@ -21,13 +21,15 @@
 **************************************************************/
 
 // Get all the classes.
-require_once ('config.inc.php');
-require_once ('devlist.php');
-require_once ('functions.php');
+require_once 'config.inc.php';
+require_once 'devlist.php';
+require_once 'functions.php';
+require_once 'includes/offlineMessage.php';
 
 // Check to see if the database is unavailable.
-// TODO: Improve way the method is called.
-readOnlyMessage();
+// Uses the true variable as the public uses this page.
+$offlineMessage = new offlineMessage(true);
+$offlineMessage->check();
 
 // Main database variables.
 global $tsSQLlink, $asSQLlink;
