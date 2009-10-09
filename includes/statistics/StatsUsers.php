@@ -283,8 +283,9 @@ class StatsUsers extends StatisticsPage
 					$uid_result = mysql_query($uid_query); // Get the details of the user who performed the action
 					if (!$uid_result)
 					{
-						// If query fails, kill script
-						die("ERROR: No result returned.");
+						// If query fails, tell us about it
+						$out.="<span style=\"color:red;font-weight:bold\">" . $tsSQL->getError() . "</span>";
+						break;
 					}
 					$uid_r = mysql_fetch_assoc($uid_result);  // Return the result of the database query as an associative array
 					
