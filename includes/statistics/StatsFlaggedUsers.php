@@ -3,7 +3,7 @@ class StatsFlaggedUsers extends StatisticsPage
 {
 	function execute()
 	{
-		global $asSQL;
+		global $asSQL, $tsSQL;
 		$query = 'select g.ug_user, n.user_name from user_groups g inner join user_ids n on g.ug_user=n.user_id where ug_group = "accountcreator";';
 		$results = $asSQL->query($query);
 		$out= "<table cellspacing=\"0\">";
