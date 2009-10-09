@@ -1,0 +1,5 @@
+Statistics folder:
+
+Create files in this folder to represent various statistics pages.
+
+Files in this folder are expected to be subclasses of ../StatisticsPage.php, and will be autoloaded.

@@ -527,7 +527,7 @@ elseif ($action == "login") {
 			$_SESSION['ip'] = $ip;
 			
 			// Get data related to the current user.
-			$result = mysql_query("SELECT user_lastip,user_lastactive FROM acc_user WHERE user_name ='" . $_SESSION['user'] . "';", $tsSQLlink) or sqlerror('Database error.',mysql_error());
+			$result = mysql_query("SELECT user_lastip,user_lastactive FROM acc_user WHERE user_name ='" . $_SESSION['user'] . "';", $tsSQLlink) or sqlerror(mysql_error(),'Database error.');
 			$row = mysql_fetch_assoc($result);
 			
 			// Assign values to the last login variables.

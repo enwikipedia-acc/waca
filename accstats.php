@@ -83,7 +83,7 @@ $top5a = array ();
 while ($topa = mysql_fetch_assoc($result)) {
 	array_push($top5a, $topa);
 }
-$top5aout = "\nAll time top 5 account creators: (see $tsurl/topcreators.php for more!)\n";
+$top5aout = "\nAll time top 5 account creators: (see $tsurl/statistics.php?page=TopCreators for more!)\n";
 $top5aout .= "-------------------------------------------------------------\n";
 foreach ($top5a as $top1a) {
 	$top5aout .= $top1a['log_user'] . " - " . $top1a['count(*)'] . "\n";
@@ -122,7 +122,7 @@ while ($top = mysql_fetch_assoc($result)) {
 }
 
 //Get today's top 5
-$top5out = "\nTodays top 5 account creators: (see $tsurl/topcreators.php for more!)\n";
+$top5out = "\nTodays top 5 account creators: (see $tsurl/statistics.php?page=TopCreators for more!)\n";
 $top5out .= "-------------------------------------------------------------\n";
 foreach ($top5 as $top1) {
 	$top5out .= $top1['log_user'] . " - " . $top1['count(*)'] . "\n";
