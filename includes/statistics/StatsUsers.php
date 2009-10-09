@@ -182,131 +182,136 @@ class StatsUsers extends StatisticsPage
 		$result = $tsSQL->query($query); // Get all the requests this user has marked as 'created'
 		if (!$result)
 		{
-			// If query fails, kill script
-			die("ERROR: No result returned.");
+			// If query fails, tell us about it
+			$out.="<span style=\"color:red;font-weight:bold\">" . $tsSQL->getError() . "</span>";
 		}
-		
-		// If the query returns at least one row
-		if (mysql_num_rows($result) != 0)
+		else
 		{
-			$out.= "<ol>\n"; // Start an ordered list
-			while ($row = mysql_fetch_assoc($result)) // Return the result of the database query as an associative array; then , for each row returned...
+			// If the query returns at least one row
+			if (mysql_num_rows($result) != 0)
 			{
-				if ($row['log_time'] == "0000-00-00 00:00:00")
+				$out.= "<ol>\n"; // Start an ordered list
+				while ($row = mysql_fetch_assoc($result)) // Return the result of the database query as an associative array; then , for each row returned...
 				{
-					// If the time was not set on insertion, we'll write "Date unknown" instead
-					$row['log_time'] = "Date unknown";
-				}
-	
-				// Display the name of the account that was created
-				if(hasright($_SESSION['user'], 'User') || hasright($_SESSION['user'], 'Admin')) 
-				{
-						$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
-				}
-				else
-				{
-						$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&id=" . $row['pend_id'] . "\" style=\"color: red;\" title=\"Login required to view request\">zoom</a>) at " . $row['log_time'] . "</li>\n";
-				}
-			}
-			$out.= "</ol>\n"; // End the ordered list
-		}
+					if ($row['log_time'] == "0000-00-00 00:00:00")
+					{
+						// If the time was not set on insertion, we'll write "Date unknown" instead
+						$row['log_time'] = "Date unknown";
+					}
 		
+					// Display the name of the account that was created
+					if(hasright($_SESSION['user'], 'User') || hasright($_SESSION['user'], 'Admin')) 
+					{
+							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
+					}
+					else
+					{
+							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&id=" . $row['pend_id'] . "\" style=\"color: red;\" title=\"Login required to view request\">zoom</a>) at " . $row['log_time'] . "</li>\n";
+					}
+				}
+				$out.= "</ol>\n"; // End the ordered list
+			}
+		}
 		// List the requests this user has *not* marked as 'created'
 		$out.= "<h2>Users not created</h2>\n";
 		$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = " . $gid . " AND log_action != 'Closed 1' AND log_action != 'Reserved' AND log_action != 'Unreserved';";
 		$result = $tsSQL->query($query); // Get all the requests this user has *not* marked as 'created'
 		if (!$result)
 		{
-			// If query fails, kill script
-			die("ERROR: No result returned.");
+			// If query fails, tell us about it
+			$out.="<span style=\"color:red;font-weight:bold\">" . $tsSQL->getError() . "</span>";
 		}
+		else
+		{
+			// If the query returns at least one row
+			if (mysql_num_rows($result) != 0)
+			{	
+				$out.= "<ol>\n"; // Start an ordered list
+				while ($row = mysql_fetch_assoc($result)) // Return the result of the database query as an associative array; then , for each row returned...
+				{
+					if ($row['log_time'] == "0000-00-00 00:00:00")
+					{
+						// If the time was not set on insertion, we'll write "Date unknown" instead
+						$row['log_time'] = "Date unknown";
+					}
 		
-		// If the query returns at least one row
-		if (mysql_num_rows($result) != 0)
-		{	
-			$out.= "<ol>\n"; // Start an ordered list
-			while ($row = mysql_fetch_assoc($result)) // Return the result of the database query as an associative array; then , for each row returned...
-			{
-				if ($row['log_time'] == "0000-00-00 00:00:00")
-				{
-					// If the time was not set on insertion, we'll write "Date unknown" instead
-					$row['log_time'] = "Date unknown";
+					// Display the name of the account that was not created
+					if(hasright($_SESSION['user'], 'User') || hasright($_SESSION['user'], 'Admin'))
+					{
+							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
+					}
+					else
+					{
+							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
+					}
 				}
-	
-				// Display the name of the account that was not created
-				if(hasright($_SESSION['user'], 'User') || hasright($_SESSION['user'], 'Admin'))
-				{
-						$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
-				}
-				else
-				{
-						$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
-				}
+				$out.= "</ol>\n"; // End the ordered list
 			}
-			$out.= "</ol>\n"; // End the ordered list
 		}
-		
+
 		// List actions that have been executed in relation to this account (approval, promotions, suspensions, etc)
 		$out.= "<h2>Account log</h2>\n";
 		$query = "SELECT * FROM acc_log where log_pend = '" . $gid . "' AND log_action RLIKE '(Approved|Suspended|Declined|Promoted|Demoted|Renamed|fchange)';";
 		$result = $tsSQL->query($query); // Get log entries where the user is the subject (not the executor)
 		if (!$result)
 		{
-			// If query fails, kill script
-			die("ERROR: No result returned.");
+			// If query fails, tell us about it
+			$out.="<span style=\"color:red;font-weight:bold\">" . $tsSQL->getError() . "</span>";
 		}
-		
-		// If the query returns at least one row
-		if (mysql_num_rows($result) != 0)
-		{	
-			$out.= "<ol>\n"; // Start an ordered list
-			while ($row = mysql_fetch_assoc($result)) // Return the result of the database query as an associative array; then , for each row returned...
-			{
-				if ($row['log_time'] == "0000-00-00 00:00:00")
+		else
+		{
+			// If the query returns at least one row
+			if (mysql_num_rows($result) != 0)
+			{	
+				$out.= "<ol>\n"; // Start an ordered list
+				while ($row = mysql_fetch_assoc($result)) // Return the result of the database query as an associative array; then , for each row returned...
 				{
-					// If the time was not set on insertion, we'll write "Date unknown" instead
-					$row['log_time'] = "Date unknown";
-				}
-				
-				$comments = "";
-				if ($row['log_cmt'] != "")
-				{
-					$comments = " (" . $row['log_cmt'] . ")";
-				}
-				
-				$luser = mysql_real_escape_string($row['log_user']);  // Validate the user ID for security (SQL Injection, etc)
-				$uid_query = "SELECT user_id FROM acc_user WHERE user_name = '" . $luser . "';";
-				$uid_result = mysql_query($uid_query); // Get the details of the user who performed the action
-				if (!$uid_result)
-				{
-					// If query fails, kill script
-					die("ERROR: No result returned.");
-				}
-				$uid_r = mysql_fetch_assoc($uid_result);  // Return the result of the database query as an associative array
-				
-				// Build an appropriate summary, depending on the action of the log event
-				switch ($row['log_action'])
-				{
-					case "Prefchange":
-						// Another user changed this user's preferences
-						$out.= "<li><a href=\"users.php?viewuser=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> changed user preferences for " . $username . " at " . $row['log_time'] . "</li>\n";
-						break;
+					if ($row['log_time'] == "0000-00-00 00:00:00")
+					{
+						// If the time was not set on insertion, we'll write "Date unknown" instead
+						$row['log_time'] = "Date unknown";
+					}
 					
-					case "Renamed":
-						// Another user renamed this user
-						$out.= "<li><a href=\"users.php?viewuser=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> " . $row['log_cmt'] . " at " . $row['log_time'] . ".</li>\n";	
-						break;
+					$comments = "";
+					if ($row['log_cmt'] != "")
+					{
+						$comments = " (" . $row['log_cmt'] . ")";
+					}
 					
-					default:
-						// Anything else			
-						$out.= "<li><a href=\"users.php?viewuser=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> at " . $row['log_time'] . $comments . "</li>\n";
-						break;
+					$luser = mysql_real_escape_string($row['log_user']);  // Validate the user ID for security (SQL Injection, etc)
+					$uid_query = "SELECT user_id FROM acc_user WHERE user_name = '" . $luser . "';";
+					$uid_result = mysql_query($uid_query); // Get the details of the user who performed the action
+					if (!$uid_result)
+					{
+						// If query fails, kill script
+						die("ERROR: No result returned.");
+					}
+					$uid_r = mysql_fetch_assoc($uid_result);  // Return the result of the database query as an associative array
+					
+					// Build an appropriate summary, depending on the action of the log event
+					switch ($row['log_action'])
+					{
+						case "Prefchange":
+							// Another user changed this user's preferences
+							$out.= "<li><a href=\"users.php?viewuser=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> changed user preferences for " . $username . " at " . $row['log_time'] . "</li>\n";
+							break;
+						
+						case "Renamed":
+							// Another user renamed this user
+							$out.= "<li><a href=\"users.php?viewuser=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> " . $row['log_cmt'] . " at " . $row['log_time'] . ".</li>\n";	
+							break;
+						
+						default:
+							// Anything else			
+							$out.= "<li><a href=\"users.php?viewuser=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> at " . $row['log_time'] . $comments . "</li>\n";
+							break;
+					}
 				}
+				$out.= "</ol>\n"; // End the ordered list
+				
 			}
-			$out.= "</ol>\n"; // End the ordered list
-			
-			return $out;
 		}
+		return $out;
 	}
 	
 	function requiresWikiDatabase()
