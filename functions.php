@@ -745,9 +745,9 @@ function showfooter() {
 			$timestamp .= " on the ".date('jS \of F, Y',$_SESSION['lastlogin_time']);
 		}
 		if ($_SESSION['lastlogin_ip']==$_SERVER['REMOTE_ADDR']) {
-			$out2 = "<br /><div align=\"center\"><small>You last logged in from this computer $timestamp.</small></div><br /><br />";
+			$out2 = "<div align=\"center\"><small>You last logged in from this computer $timestamp.</small></div>";
 		} else {
-			$out2 = "<br /><div align=\"center\"><small>You last logged in from <a href=\"http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=".$_SESSION['lastlogin_ip']."\">".$_SESSION['lastlogin_ip']."</a> $timestamp.</small></div><br /><br />";
+			$out2 = "<div align=\"center\"><small>You last logged in from <a href=\"http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=".$_SESSION['lastlogin_ip']."\">".$_SESSION['lastlogin_ip']."</a> $timestamp.</small></div>";
 		}
 	} else {
 		$out2 = '';
