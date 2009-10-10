@@ -8,29 +8,35 @@
 ** released under Public Domain by the ACC                   **
 ** Development Team.                                         **
 **             Developers:                                   **
-**  SQL ( http://en.wikipedia.org/User:SQL )                 **
-**  Cobi ( http://en.wikipedia.org/User:Cobi )               **
+** SQL ( http://en.wikipedia.org/User:SQL )                 **
+** Cobi ( http://en.wikipedia.org/User:Cobi )               **
 ** Cmelbye ( http://en.wikipedia.org/User:cmelbye )          **
-**FastLizard4 ( http://en.wikipedia.org/User:FastLizard4 )   **
-**Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
-**Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
-**Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
-**OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
-**Prodego    ( http://en.wikipedia.org/wiki/User:Prodego )   **
+** FastLizard4 ( http://en.wikipedia.org/User:FastLizard4 )   **
+** Stwalkerster ( http://en.wikipedia.org/User:Stwalkerster ) **
+** Soxred93 ( http://en.wikipedia.org/User:Soxred93)          **
+** Alexfusco5 ( http://en.wikipedia.org/User:Alexfusco5)      **
+** OverlordQ ( http://en.wikipedia.org/wiki/User:OverlordQ )  **
+** Prodego    ( http://en.wikipedia.org/wiki/User:Prodego )   **
 **                                                           **
 **************************************************************/
 
-require_once ( 'config.inc.php' );
-require_once ( 'functions.php' );
-require_once ( 'examination.inc' ); 
+// Get all the classes.
+require_once 'config.inc.php';
+require_once 'functions.php';
+require_once 'examination.inc';
+require_once 'includes/offlineMessage.php'; 
 
 /* ACC EXAMINATION INTERFACE
  * 
  * Examines new candidates before being allowed access to the tool, after the T3chl0v3r incident.
  */
 
-readOnlyMessage();
+// Check to see if the database is unavailable.
+// Uses the false variable as its the internal interface.
+$offlineMessage = new offlineMessage(false);
+$offlineMessage->check();
 
+// Initialize the session data.
 session_start();
 
 // retrieve database connections
