@@ -758,49 +758,73 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	echo showfooter();
 	die();
 }
-elseif ($action == "unban" && $_GET['id'] != "") {
+elseif ($action == "unban" && $_GET['id'] != "") 
+{
 	$siuser = sanitize($_SESSION['user']);
 
 	if(!hasright($_SESSION['user'], "Admin"))
-			die("Only administrators may unban users");
+	{
+		die("Only administrators may unban users");
+	}
 	$bid = sanitize($_GET['id']);
 	$query = "SELECT * FROM acc_ban WHERE ban_id = '$bid';";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
+	{
 		Die("Query failed: $query ERROR: " . mysql_error());
+	}
 	$row = mysql_fetch_assoc($result);
 	$iTarget = $row['ban_target'];
-	
-	if( isset($_GET['confirmunban']) && $_GET['confirmunban']=="true")
+
+	if( isset($_GET['confirmunban']) && $_GET['confirmunban']=="true" )
 	{
-		$query = "DELETE FROM acc_ban WHERE ban_id = '$bid';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$now = date("Y-m-d H-i-s");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$bid', '$siuser', 'Unbanned', '$now');";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		echo "Unbanned ban #$bid<br />\n";
-		sendtobot("Ban #" . $bid . " ($iTarget) unbanned by " . $_SESSION['user']);
-		echo showfooter();
-		die();
+		if (!isset($_POST['unbanreason']) || $_POST['unbanreason'] == "") 
+		{
+			echo "<h2>ERROR</h2><br />You must enter an unban reason.\n";
+			echo showfooter();
+			die;
+		}
+		else 
+		{
+			$unbanreason = sanitize($_POST['unbanreason']);
+			$query = "DELETE FROM acc_ban WHERE ban_id = '$bid';";
+			$result = $tsSQL->query($query);
+			if (!result)
+			{
+				die($tsSQL->showError(mysql_error(), "Database error"));
+			}
+			$now = date("Y-m-d H-i-s");
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$bid', '$siuser', 'Unbanned', '$now', '$unbanreason');";
+			$result = $tsSQL->query($query);
+			if (!result)
+			{
+				die($tsSQL->showError(mysql_error(), "Database error"));
+			}
+			echo "Unbanned ban #$bid<br />\n";
+			sendtobot("Ban #" . $bid . " ($iTarget) unbanned by " . $_SESSION['user']);
+			echo showfooter();
+			die();
+		}
 	}
 	else
 	{
 		$confOut =  "Are you sure you wish to unban #".$bid.", targeted at ".$iTarget.", ";
-		if ( !isset($row['ban_duration']) || $row['ban_duration'] == "-1") {
+		if ( !isset($row['ban_duration']) || $row['ban_duration'] == "-1") 
+		{
 			$confOut.= "not set to expire";
-		} else {
+		} 
+		else 
+		{
 			$confOut.= "set to expire " . date("F j, Y, g:i a", $row['ban_duration']);
 		}
 		$confOut .= ", and with the reason:<br />";
 		echo $confOut;
 		
 		echo $row['ban_reason'] . "<br />";
-		echo "<a href=\"acc.php?action=unban&id=".$_GET['id']."&confirmunban=true\">Unban</a> / <a href=\"acc.php\">Cancel</a>";
-		
+		echo "What is your reason for unbanning this person?<br />";
+		echo "<form METHOD=\"post\" ACTION=\"acc.php?action=unban&id=". $bid ."&confirmunban=true\">";
+		echo "<input type=\"text\" name=\"unbanreason\"><input type=\"submit\"/></form><br />";
+		echo "<a href=\"acc.php\">Cancel</a>";
 		
 	}
 }
