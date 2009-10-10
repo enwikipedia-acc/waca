@@ -105,7 +105,7 @@ class database {
 	public function showError($sql_error,$generic_error=null) {
 		global $enableSQLError;
 		if ($generic_error==null) {
-			$generic_error = $sql_error;
+			$generic_error = "The tool has encountered a database error, and cannot continue loading this page. Please try again later.";
 		}
 		if ($enableSQLError) {
 			die($sql_error);
