@@ -38,8 +38,8 @@ $offlineMessage = new offlineMessage(false);
 $offlineMessage->check();
 
 // Initialize the database classes.
-$tsSQL = new database("toolserver");
-$asSQL = new database("anitspoof");
+$tsSQL = new database("toolserver", true);
+$asSQL = new database("anitspoof", true);
 
 // Main database variables.
 global $tsSQLlink, $asSQLlink;

@@ -34,12 +34,12 @@ class database {
 	private $dbLink;
 	private $host;
 	
-	public function __construct($name) {
+	public function __construct($name, $link) {
 	
 		if($name==='toolserver')
 		{
 			global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
-			$this->connect($toolserver_host, $toolserver_username, $toolserver_password, $toolserver_database);
+			$this->connect($link, $toolserver_host, $toolserver_username, $toolserver_password, $toolserver_database);
 		}
 		elseif($name==='antispoof')
 		{
@@ -47,14 +47,17 @@ class database {
 			if($dontUseWikiDb == 0)
 			{
 				global $antispoof_host, $antispoof_db, $antispoof_table, $toolserver_username, $toolserver_password;
-				$this->connect($antispoof_host, $toolserver_username, $toolserver_password, $antispoof_db);
+				$this->connect($link, $antispoof_host, $toolserver_username, $toolserver_password, $antispoof_db);
 			}
 		}
 	}
 	
-	private function connect($host, $username, $password, $database) {
+	private function connect($link, $host, $username, $password, $database) {
 		$this->dbLink = mysql_pconnect($host,$username,$password) or $this->showError("Error connecting to database ($database on $host): ".$this->getError(),'Error connecting to database.');
-		$this->selectDb($database);
+		if($link)
+		{
+			$this->selectDb($database);
+		}
 		$this->host = $host;
 	}
 	
