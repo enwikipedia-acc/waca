@@ -31,37 +31,46 @@ if ($ACC != "1") {
 require_once 'config.inc.php';
 
 class database {	
-	private $dbLink;
-	private $host;
-	private $db;
+	private $dbLink, $host, $db;
 	
 	public function __construct($name) {
-	
-		if($name==='toolserver')
-		{
+
+		// Checks to which database should be connected.
+		if($name==='toolserver') {
 			global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
 			$this->connect($toolserver_host, $toolserver_username, $toolserver_password, $toolserver_database);
+			
+			// Assigns the specific databases's name to be used later.
 			$this->db = $name;
 		}
-		elseif($name==='antispoof')
-		{
-			global $dontUseWikiDb;							
-			if($dontUseWikiDb == 0)
-			{
+		elseif($name==='antispoof') {
+			// Checks whether the WikiDB may be used.
+			global $dontUseWikiDb;					
+			if($dontUseWikiDb == 0) {
 				global $antispoof_host, $antispoof_db, $antispoof_table, $toolserver_username, $toolserver_password;
 				$this->connect($antispoof_host, $toolserver_username, $toolserver_password, $antispoof_db);
+			
+				// Assigns the specific databases's name to be used later.
+				$this->db = $name;
 			}
 		}
 	}
 	
 	private function connect($host, $username, $password, $database) {
 		$this->dbLink = mysql_pconnect($host,$username,$password) or $this->showError("Error connecting to database ($database on $host): ".$this->getError(),'Error connecting to database.');
+		
+		// Connects to the required database.
 		$this->selectDb($database);
+		
+		// Assigns the specific host's name to be used later. 
 		$this->host = $host;		
 	}
 	
-	public function getLink() {				
+	// Function to only generate a link to the database.
+	public function getLink() {		
 		global $link;
+		
+		// Uses the earlier assigned database name.
 		if($this->db === "toolserver")
 		{
 			global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
@@ -73,7 +82,8 @@ class database {
 			if(!$dontUseWikiDb) {
 				$link = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
 			}
-		}		
+		}
+		// Return the link.
 		return $link;
 	}
 	
@@ -108,6 +118,8 @@ class database {
 		return mysql_error($this->dbLink);
 	}
 	
+	// The database is connected on a passive manner.
+	// Because of this we cannot call mysql_close().
 	// public function __destruct() {
 	//	  mysql_close($this->dbLink);
 	// }
