@@ -26,6 +26,7 @@ require_once 'devlist.php';
 require_once 'functions.php';
 require_once 'includes/offlineMessage.php';
 require_once 'includes/imagegen.php';
+require_once 'includes/database.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.
@@ -34,6 +35,13 @@ $offlineMessage->check();
 
 // Initialize the class object.
 $imagegen = new imagegen();
+
+// Get the required variables for the database connections.
+global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
+global $antispoof_host, $antispoof_db, $antispoof_table, $antispoof_password;
+
+$tsSQL = new database( $toolserver_host, $toolserver_username, $toolserver_password);
+$tsSQL->selectDb($toolserver_database);
 
 // Main database variables.
 global $tsSQLlink, $asSQLlink;
@@ -220,8 +228,17 @@ $developer = array(
 );
 // End of the array of developers.
 
-// Display the header of the interface.
-displayheader();
+// Checks whether it is the public or an interface user.
+if (!isset($_SESSION['user'])) {
+	// Display the header of the interface.
+	displayheader();
+}
+else {
+	// Sets the parameter to the username, as it would be displayed.
+	$suser = $_SESSION['user'];
+	echo makehead($suser);
+	echo "<div id=\"content\">";
+}
 
 // Display the page heading.
 echo "<h2>ACC Development Team</h2>\n";
