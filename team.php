@@ -246,7 +246,7 @@ foreach($developer as $devName => $devInfo) {
 					// Generate the image and write a copy to the filesystem.
 					$id = $imagegen->create($infoContent);
 					// Outputs the image to the sceen.
-					echo '<li>E-Mail Address: <img src="images/' . substr($id,0,1) . '/'.$id.'.png" alt="' . $infoContent . '" /></li>';
+					echo '<li>E-Mail Address: <img src="images/' . substr($id,0,1) . '/' . $id . '.png" /></li>';
 					break;
 				case "ToolID":
 					echo "<li>Userpage on tool: <a href=\"users.php?viewuser=$infoContent\">Click here</a></li>\n";
