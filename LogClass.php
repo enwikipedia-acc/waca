@@ -223,7 +223,7 @@ class LogPage
 				//$row2 = mysql_fetch_assoc($result2);
 				//$logList .="<li>$rlu unbanned ban ID $rlp of type ".$row2['ban_type']." targeted at ".$row2['ban_target']." at $rlt</li>\n";
 				
-				$logList .="<li>$rlu unbanned ban ID $rlp at $rlt</li>";
+				$logList .="<li>$rlu unbanned ban ID $rlp at $rlt ($rlc)</li>";
 				
 			}
 			if($rla == "Reserved") {
