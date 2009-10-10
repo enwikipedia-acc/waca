@@ -1709,11 +1709,12 @@ elseif ($action == "done" && $_GET['id'] != "") {
 }
 elseif ($action == "zoom") {
 	if (!isset($_GET['id'])) {
-		echo "No user specified!<br />\n";
+		echo "No user specified!<br />\n";		
 		echo showfooter();
 		die();
 	}
 	echo zoomPage($_GET['id']);
+	echo "</form>\n";
 	echo showfooter();
 	die();
 }

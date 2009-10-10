@@ -1182,7 +1182,7 @@ function zoomPage($id)
 	}
 	else {$out .= "</table>\n";}
 	
-	
+	// Displayes other requests from this email.
 	$out .= "<h2>Other requests from $thisemail:</h2>\n";
 	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
 	$result = mysql_query($query, $tsSQLlink);
@@ -1191,17 +1191,22 @@ function zoomPage($id)
 	$numem = 0;
 	$currentrow = 0;
 	while ($row = mysql_fetch_assoc($result)) {
-		if ($numem == 0) { $out .= "<table cellspacing=\"0\">\n"; }
+		// Creates the table for the first time.
+		if ($numem == 0) {
+		$out .= "<table cellspacing=\"0\">\n";
+		}
+		
 		$currentrow += 1;
 		$out .= "<tr";
 		if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
 		$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
 		$numem++;
 	}
+	// Checks whether there were similar requests.
 	if ($numem == 0) {
 		$out .= "<i>None.</i>\n";
 	}
-	else {$out .= "</table>\n";}
+	else {$out .= "</table>";}
 
 	return $out;
 }
