@@ -25,11 +25,15 @@ require_once 'config.inc.php';
 require_once 'devlist.php';
 require_once 'functions.php';
 require_once 'includes/offlineMessage.php';
+require_once 'includes/imagegen.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.
 $offlineMessage = new offlineMessage(true);
 $offlineMessage->check();
+
+// Initialize the class object.
+$imagegen = new imagegen();
 
 // Main database variables.
 global $tsSQLlink, $asSQLlink;
@@ -239,7 +243,10 @@ foreach($developer as $devName => $devInfo) {
 					echo "<li>Real name: $infoContent</li>\n";
 					break;
 				case "EMail":
-					echo "<li>E-Mail Address: <a href=\"mailto:$infoContent\">$infoContent</a></li>\n";
+					// Generate the image and write a copy to the filesystem.
+					$id = $imagegen->create($infoContent);
+					// Outputs the image to the sceen.
+					echo '<li>E-Mail Address: <img src="images/' . substr($id,0,1) . '/'.$id.'.png" alt="' . $infoContent . '" /></li>';
 					break;
 				case "ToolID":
 					echo "<li>Userpage on tool: <a href=\"users.php?viewuser=$infoContent\">Click here</a></li>\n";
