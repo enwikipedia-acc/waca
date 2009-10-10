@@ -42,19 +42,9 @@ require_once 'includes/accbotSend.php';
 $offlineMessage = new offlineMessage(true);
 $offlineMessage->check();
 
-// Connect to the TS database and the Antispoof database.
-global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
-$tsSQL = new database($toolserver_host,$toolserver_username,$toolserver_password);
-$tsSQL->selectDb($toolserver_database);
-
-global $dontUseWikiDb;
-if($dontUseWikiDb == 0)
-{
-	// Connect to the Wiki database.
-	global $antispoof_host, $antispoof_db, $antispoof_table, $antispoof_password;
-	$asSQL = new database($antispoof_host,$toolserver_username,$antispoof_password);
-	$asSQL->selectDb($antispoof_db); 
-}
+// Initialize the database class.
+$tsSQL = new database("toolserver");
+$asSQL = new database("anitspoof");
 
 // Initialize the class objects.
 $request  = new accRequest();
