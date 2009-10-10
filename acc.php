@@ -37,12 +37,9 @@ $version = "0.9.7";
 $offlineMessage = new offlineMessage(false);
 $offlineMessage->check();
 
-// Get the required variables for the database connections.
-global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
-global $antispoof_host, $antispoof_db, $antispoof_table, $antispoof_password;
-
-$tsSQL = new database( $toolserver_host, $toolserver_username, $toolserver_password);
-$tsSQL->selectDb($toolserver_database);
+// Initialize the database classes.
+$tsSQL = new database("toolserver");
+$asSQL = new database("anitspoof");
 
 // Main database variables.
 global $tsSQLlink, $asSQLlink;
