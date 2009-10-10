@@ -38,29 +38,12 @@ $offlineMessage = new offlineMessage(false);
 $offlineMessage->check();
 
 // Initialize the database classes.
-$tsSQL = new database("toolserver", true);
-$asSQL = new database("anitspoof", true);
+$tsSQL = new database("toolserver");
+$asSQL = new database("anitspoof");
 
-// Main database variables.
-global $tsSQLlink, $asSQLlink;
-
-// Connect to the TS database and the Antispoof database.
-// Assign the TS and AS DB as if they were an array.
-// TODO: Improve way the method is called.
-list($tsSQLlink, $asSQLlink) = getDBconnections();
-
-// Check to see if the TS database is unavailable.
-if (!$tsSQLlink) {
-	die('Could not connect: ' . mysql_error());
-}
-
-// Assign the database to the variable for easier use.
-$link = mysql_select_db($toolserver_database, $tsSQLlink);
-
-// Display error if assignment fails.
-if(!$link) {
-	 print mysql_error();
-}
+// Creates database links for later use.
+$tsSQLlink = $tsSQL->getLink();
+$asSQLlink = $asSQL->getLink();
 
 // Initialize the session data.
 session_start();
@@ -1706,12 +1689,11 @@ elseif ($action == "done" && $_GET['id'] != "") {
 }
 elseif ($action == "zoom") {
 	if (!isset($_GET['id'])) {
-		echo "No user specified!<br />\n";		
+		echo "No user specified!<br />\n";
 		echo showfooter();
 		die();
 	}
 	echo zoomPage($_GET['id']);
-	echo "</form>\n";
 	echo showfooter();
 	die();
 }

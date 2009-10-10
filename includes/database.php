@@ -33,13 +33,15 @@ require_once 'config.inc.php';
 class database {	
 	private $dbLink;
 	private $host;
+	private $db;
 	
-	public function __construct($name, $link) {
+	public function __construct($name) {
 	
 		if($name==='toolserver')
 		{
 			global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
-			$this->connect($link, $toolserver_host, $toolserver_username, $toolserver_password, $toolserver_database);
+			$this->connect($toolserver_host, $toolserver_username, $toolserver_password, $toolserver_database);
+			$this->db = $name;
 		}
 		elseif($name==='antispoof')
 		{
@@ -47,18 +49,32 @@ class database {
 			if($dontUseWikiDb == 0)
 			{
 				global $antispoof_host, $antispoof_db, $antispoof_table, $toolserver_username, $toolserver_password;
-				$this->connect($link, $antispoof_host, $toolserver_username, $toolserver_password, $antispoof_db);
+				$this->connect($antispoof_host, $toolserver_username, $toolserver_password, $antispoof_db);
 			}
 		}
 	}
 	
-	private function connect($link, $host, $username, $password, $database) {
+	private function connect($host, $username, $password, $database) {
 		$this->dbLink = mysql_pconnect($host,$username,$password) or $this->showError("Error connecting to database ($database on $host): ".$this->getError(),'Error connecting to database.');
-		if($link)
+		$this->selectDb($database);
+		$this->host = $host;		
+	}
+	
+	public function getLink() {				
+		global $link;
+		if($this->db === "toolserver")
 		{
-			$this->selectDb($database);
+			global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
+			$link = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 		}
-		$this->host = $host;
+		elseif($this->db === "antispoof")
+			{
+			global $antispoof_host, $antispoof_db, $antispoof_password, $dontUseWikiDb;
+			if(!$dontUseWikiDb) {
+				$link = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
+			}
+		}		
+		return $link;
 	}
 	
 	private function selectDb($database) {
