@@ -62,7 +62,7 @@ class imagegen {
 		$im = imagecreate ($width, $height);
 		
 		// Generate the colours to be used in the image.
-		$background_color = imagecolorallocate ($im, 255, 255, 255);
+		$background_color = imagecolorallocate ($im, 229, 229, 229);
 		$text_color = imagecolorallocate ($im, 0, 0, 0);
 		
 		// Put it all together in the image.
