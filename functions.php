@@ -951,17 +951,6 @@ function displayfooter() {
 	echo $row['mail_text'];
 }
 
-function readOnlyMessage() {
-	global $dontUseDb;
-	global $dontUseDbReason;
-	global $dontUseDbCulprit;
-	if ($dontUseDb) {
-		require_once('offline-messages.php');
-		showInternalOfflineMessage($dontUseDbReason,$dontUseDbCulprit);
-		die();
-	}
-}
-
 /**
 * If the Wiki/antispoof database is marked as disabled, then die.
 */
