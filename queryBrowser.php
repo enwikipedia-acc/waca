@@ -10,12 +10,8 @@ class QueryBrowser
 	
 	public function executeQuery($query)
 	{
-		global $tsSQLlink,$asSQLlink ,$toolserver_database;
-		list($tsSQLlink, $asSQLlink) = getDBconnections();
-		@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting TS database.");
-
-		$results = mysql_query($query,$tsSQLlink) or sqlerror(mysql_error(),"Ooops in QueryBrowser");
-	
+		global $tsSQL;
+		$results = $tsSQL->query($query);
 		return $results;
 	}
 	
