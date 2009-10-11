@@ -117,12 +117,24 @@ class database {
 	 * @param $result reference array, set to contain results of query.
 	 * @return bool: did the query succeed?
 	 */
-	/*public function queryToArray($query, &$result)
+	public function queryToArray($query, &$result)
 	{
 		$queryResult = mysql_query($query, $this->dbLink);
+		if(!$queryResult)
+		{
+			return false;
+		}
 		
-		// not fully implemented yet.
-	}*/
+		$result = array();
+		$i=0;
+		while($row = mysql_fetch_assoc($queryResult))
+		{
+			$result[$i] = $row;
+			$i++;
+		}
+		return true;
+		
+	}
 	
 	/**
 	 * Escapes a string for MySQL.
