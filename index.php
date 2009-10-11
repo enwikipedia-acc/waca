@@ -55,28 +55,38 @@ $skin     = new skin();
 // Display the header of the interface.
 $skin->displayheader();
 
+debug("displayed header");
+
 $action = '';
 if( isset( $_GET['action'] ) ) {
 	$action = $_GET['action'];
 }
 if( isset( $_GET['id'] ) ) {
 	$request->setID($_GET['id']);
+	debug("set id.");
 }
 
 $request->checkConfirmEmail();
+debug("check confirm email");
 
 if (isset ($_POST['name']) && isset ($_POST['email'])) {
+	debug("postname postemail set");
+	
 	$_POST['name'] = str_replace(" ", "_", $_POST['name']);
 	$_POST['name'] = trim(ucfirst($_POST['name']));
 	
 	global $dontUseWikiDb;
 	if( !$dontUseWikiDb ) {
+		debug("using wiki db");
 		@ $asSQL->selectDb('enwiki_p');
+		debug("selected database");
 		$query = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
 		$result = $asSQL->query($query);
+		debug("executed $query");
 		if (!$result) {
 			die("ERROR: No result returned.");
 		}
+		debug("OK: $query");
 	}
 	
 	// Initialize Variables
