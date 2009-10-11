@@ -30,6 +30,7 @@ require_once 'includes/database.php';
 require_once 'includes/offlineMessage.php';
 require_once 'includes/messages.php';
 require_once 'includes/skin.php';
+require_once 'includes/accbotSend.php';
 
 // Set the current version of the ACC.
 $version = "0.9.7";
@@ -50,6 +51,7 @@ $asSQLlink = $asSQL->getLink();
 // Initialize the class objects.
 $messages = new messages();
 $skin     = new skin();
+$accbotSend = new accbotSend();
 
 // Initialize the session data.
 session_start();
@@ -294,7 +296,7 @@ elseif ($action == "sreg") {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		sendtobot("New user: $user");
+		$accbotSend->send("New user: $user");
 		echo "Account created! In order to complete the process, please make a confirmation edit to your user talk page. In this edit, note that you requested an account on the ACC account creation interface, and use a descriptive edit summary so that we can easily find this edit.  <b>Failure to do this will result in your request being declined.</b><br /><br />\n";
 		echo showlogin();
 	}
@@ -583,7 +585,7 @@ elseif ($action == "login") {
 			mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('Login', '$puser', 'badpass', '$now', '$ip');", $tsSQLlink) or die(mysql_error());
 			mail($row['user_email'], "ACC Failed Login", "Dear ".$row['user_onwikiname'].",\nYour account ".$row['user_name']." had a failed login atempt at $now from $ip - if this is a genuine hacking attempt please contact a developer.\n- The English Wikipedia Account Creation Team",'From: accounts-enwiki-l@lists.wikimedia.org');
 			// Commented out per Prodego's request - Chris 7/8/09 (or Aus 8/7/09)
-			// sendtobot("Failed login on ".$row['user_name']." from ".substr_replace($ip,'XXX',-3));
+			// $accbotSend->send("Failed login on ".$row['user_name']." from ".substr_replace($ip,'XXX',-3));
 		}
 		header("Location: $tsurl/acc.php?error=authfail");
 		die();
@@ -650,7 +652,7 @@ elseif ($action == "messagemgmt") {
 			$row = mysql_fetch_assoc($result);
 			$mailname = $row['mail_desc'];
 			echo "Message $mailname ($mid) updated.<br />\n";
-			sendtobot("Message $mailname ($mid) edited by $siuser");
+			$accbotSend->send("Message $mailname ($mid) edited by $siuser");
 			echo showfooter();
 			die();
 		}
@@ -777,9 +779,9 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 		$until = date("F j, Y, g:i a", $duration);
 	}
 	if ($until == 'Indefinite') {
-		sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " indefinitely");
+		$accbotSend->send("$target banned by $siuser for " . $_POST['banreason'] . " indefinitely");
 	} else {
-		sendtobot("$target banned by $siuser for " . $_POST['banreason'] . " until $until");
+		$accbotSend->send("$target banned by $siuser for " . $_POST['banreason'] . " until $until");
 	}
 	echo showfooter();
 	die();
@@ -827,7 +829,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 				die($tsSQL->showError(mysql_error(), "Database error"));
 			}
 			echo "Unbanned ban #$bid<br />\n";
-			sendtobot("Ban #" . $bid . " ($iTarget) unbanned by " . $_SESSION['user']);
+			$accbotSend->send("Ban #" . $bid . " ($iTarget) unbanned by " . $_SESSION['user']);
 			echo showfooter();
 			die();
 		}
@@ -991,7 +993,7 @@ elseif ($action == "usermgmt") {
 		if (!$result2)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
-		sendtobot("User $aid (" . $row2['user_name'] . ") approved by $siuser");
+		$accbotSend->send("User $aid (" . $row2['user_name'] . ") approved by $siuser");
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row2['user_email'], "ACC Account Approved", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been approved by $siuser. To login please go to $tsurl/acc.php.\n- The English Wikipedia Account Creation Team", $headers);
 	}
@@ -1027,7 +1029,7 @@ elseif ($action == "usermgmt") {
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			sendtobot("User $did (" . $row2['user_name'] . ") demoted by $siuser because: \"" . $_POST['demotereason'] . "\"");
+			$accbotSend->send("User $did (" . $row2['user_name'] . ") demoted by $siuser because: \"" . $_POST['demotereason'] . "\"");
 			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 			mail($row2['user_email'], "ACC Account Demoted", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been demoted by $siuser because ".$_POST['demotereason'].". To contest this demotion please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
 			echo showfooter();
@@ -1067,7 +1069,7 @@ elseif ($action == "usermgmt") {
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			sendtobot("User $did (" . $row2['user_name'] . ") had tool access suspended by $siuser because: \"" . $_POST['suspendreason'] . "\"");
+			$accbotSend->send("User $did (" . $row2['user_name'] . ") had tool access suspended by $siuser because: \"" . $_POST['suspendreason'] . "\"");
 			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 			mail($row2['user_email'], "ACC Account Suspended", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been suspended by $siuser because ".$_POST['suspendreason'].". To contest this suspension please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
 			echo showfooter();
@@ -1094,7 +1096,7 @@ elseif ($action == "usermgmt") {
 		if (!$result2)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
-		sendtobot("User $aid (" . $row2['user_name'] . ") promoted to admin by $siuser");
+		$accbotSend->send("User $aid (" . $row2['user_name'] . ") promoted to admin by $siuser");
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row2['user_email'], "ACC Account Promoted", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been promted to admin status by $siuser.\n- The English Wikipedia Account Creation Team", $headers);
 	}
@@ -1140,7 +1142,7 @@ elseif ($action == "usermgmt") {
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			sendtobot("User $did (" . $row2['user_name'] . ") declined access by $siuser because: \"" . $_POST['declinereason'] . "\"");
+			$accbotSend->send("User $did (" . $row2['user_name'] . ") declined access by $siuser because: \"" . $_POST['declinereason'] . "\"");
 			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 			mail($row2['user_email'], "ACC Account Declined", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been declined access to the account creation tool by $siuser because ".$_POST['declinereason'].". For more infomation please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
 			echo showfooter();
@@ -1216,12 +1218,12 @@ elseif ($action == "usermgmt") {
 			if ($siuser == $oldname)
 			{
 					$_SESSION['user'] = $newname;
-					sendtobot("User $siuser changed their username to " . $_POST['newname']);
+					$accbotSend->send("User $siuser changed their username to " . $_POST['newname']);
 			}
 			else
 			{
 					setForceLogout(stripslashes($userid));
-					sendtobot("User $siuser changed " . $_POST['oldname'] . "'s username to " . $_POST['newname']);
+					$accbotSend->send("User $siuser changed " . $_POST['oldname'] . "'s username to " . $_POST['newname']);
 			}
 			echo showfooter();
 			die();
@@ -1278,7 +1280,7 @@ elseif ($action == "usermgmt") {
 			if (!$result2)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row2 = mysql_fetch_assoc($result2);
-			sendtobot("$sid changed preferences for User $gid (" . $row2['user_name'] . ")");
+			$accbotSend->send("$sid changed preferences for User $gid (" . $row2['user_name'] . ")");
 			echo "Changes saved";
 		}
 		echo "<br /><br />";
@@ -1490,7 +1492,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		sendtobot("Request $gid deferred to $deto by $sid");
+		$accbotSend->send("Request $gid deferred to $deto by $sid");
 		echo "Request " . $_GET['id'] . " deferred to $deto.<br />";
 		echo defaultpage();
 	} else {
@@ -1731,7 +1733,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	}
 	$now = explode("-", $now);
 	$now = $now['0'] . "-" . $now['1'] . "-" . $now['2'] . ":" . $now['3'] . ":" . $now['4'];
-	sendtobot("Request " . $_GET['id'] . " (" . $row2['pend_name'] . ") Marked as 'Done' ($crea) by " . $_SESSION['user'] . " on $now");
+	$accbotSend->send("Request " . $_GET['id'] . " (" . $row2['pend_name'] . ") Marked as 'Done' ($crea) by " . $_SESSION['user'] . " on $now");
 	echo "Request " . $_GET['id'] . " ($gus) marked as 'Done'.<br />";
 	$towhom = $row2['pend_email'];
 	if ($gem != "0" and $gem != "custom") {
@@ -1911,7 +1913,7 @@ elseif ($action == "reserve") {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		sendtobot("Request $request is being handled by " . getUsernameFromUid($_SESSION['userID']));
+		$accbotSend->send("Request $request is being handled by " . getUsernameFromUid($_SESSION['userID']));
 		echo zoomPage($request);
         echo showfooter();
 	}	
@@ -1934,7 +1936,7 @@ elseif ($action == "breakreserve") {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		sendtobot("Request $request is no longer being handled.");
+		$accbotSend->send("Request $request is no longer being handled.");
 		echo defaultpage();
 	}	
 }
@@ -1974,7 +1976,7 @@ elseif ($action == "comment-add") {
         <a href='acc.php?action=zoom&id=$id'>Return to request #$id</a>";
         $botcomment_pvt =  ($visibility == "admin") ? "private " : "";
         $botcomment = $user . " posted a " . $botcomment_pvt . "comment on request " . $id;
-        sendtobot($botcomment);
+        $accbotSend->send($botcomment);
     } else {
         echo "ERROR: A required input is missing <br />
         <a href='acc.php'>Return to main</a>";
@@ -1996,7 +1998,7 @@ elseif ($action == "comment-quick") {
             Die("Query failed: $query ERROR: " . mysql_error());
         }
         $botcomment = $user . " posted a comment on request " . $id;
-        sendtobot($botcomment);
+        $accbotSend->send($botcomment);
         echo zoomPage($id);
         echo showfooter();
     }
