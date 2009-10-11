@@ -44,24 +44,24 @@ class StatsMonthlyStats extends StatisticsPage
 	{
 		$qb = new QueryBrowser();
 		
-		$gquery = "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), ' ' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed%' GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;";
+		$gquery = "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed%' GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;";
 	
 		$DataSet = new pData;
 		foreach($qb->executeQueryToArray($gquery) as $row)
 		{
-			$DataSet->AddPoint($row['y'], "Serie1");
+			$DataSet->AddPoint($row['y'], "Serie1", $row['x']);
 		}
 		$DataSet->AddAllSeries();
 		$DataSet->SetAbsciseLabelSerie();
 		$DataSet->SetSerieName("Closed requests","Serie1");
 	
-		$Test = new pChart(700,230);
+		$Test = new pChart(700,280);
 		$Test->setFontProperties("graph/Fonts/tahoma.ttf",8);
 		$Test->setGraphArea(50,30,585,200);
-		$Test->drawFilledRoundedRectangle(7,7,693,223,5,240,240,240);
-		$Test->drawRoundedRectangle(5,5,695,225,5,230,230,230);
+		$Test->drawFilledRoundedRectangle(7,7,693,273,5,240,240,240);
+		$Test->drawRoundedRectangle(5,5,695,275,5,230,230,230);
 		$Test->drawGraphArea(255,255,255,TRUE);
-		$Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),SCALE_NORMAL,150,150,150,TRUE,0,2);
+		$Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),SCALE_NORMAL,150,150,150,TRUE,45,2);
 		$Test->drawGrid(4,TRUE,230,230,230,50);
 		
 		// Draw the 0 line
