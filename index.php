@@ -76,18 +76,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$_POST['name'] = trim(ucfirst($_POST['name']));
 	
 	global $dontUseWikiDb;
-	if( !$dontUseWikiDb ) {
-		debug("using wiki db");
-		$asSQL->selectDb('enwiki_p');
-		debug("selected database");
-		$query = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
-		$result = $asSQL->query($query);
-		debug("executed $query");
-		if (!$result) {
-			die("ERROR: No result returned.");
-		}
-		debug("OK: $query");
-	}
+
 	
 	// Initialize Variables
 	$user = $tsSQL->escape(trim($_POST['name']));

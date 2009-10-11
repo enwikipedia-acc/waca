@@ -57,6 +57,8 @@ class database {
 			
 				// Assigns the specific databases's name to be used later.
 				$this->db = $name;
+				
+				$this->query("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");
 			}
 		}
 	}
