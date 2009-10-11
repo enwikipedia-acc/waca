@@ -29,6 +29,7 @@ require_once 'functions.php';
 require_once 'includes/database.php';
 require_once 'includes/offlineMessage.php';
 require_once 'includes/messages.php';
+require_once 'includes/skin.php';
 
 // Set the current version of the ACC.
 $version = "0.9.7";
@@ -46,8 +47,9 @@ $asSQL = new database("anitspoof");
 $tsSQLlink = $tsSQL->getLink();
 $asSQLlink = $asSQL->getLink();
 
-// create an object to get the system messages from.
+// Initialize the class objects.
 $messages = new messages();
+$skin     = new skin();
 
 // Initialize the session data.
 session_start();
@@ -503,13 +505,15 @@ elseif ($action == "login") {
 		die();
 	}
 	if ($row['user_level'] == "Suspended") {
+		$skin->displayheader();
+		echo '<h2>Account Suspended</h2>';
 		echo "I'm sorry, but, your account is presently suspended.<br />\n";
 		$reasonQuery = 'select log_cmt from acc_log where log_action = "Suspended" and log_pend = '.$row['user_id'].' order by log_time desc limit 1;';
 		$reasonResult = mysql_query($reasonQuery, $tsSQLlink);
 		$reasonRow = mysql_fetch_assoc($reasonResult);
 		echo "The reason given is shown below:<br /><pre>";
-		echo $reasonRow['log_cmt']."</pre><br />";
-		echo showfootern();
+		echo '<b>' . $reasonRow['log_cmt'] . "</b></pre><br />";
+		$skin->displayfooter();
 		die();
 	}
 	$calcpass = md5($_POST['password']);
