@@ -236,20 +236,6 @@ function csvalid($id, $sum) {
 	}
 }
 
-function sendtobot($message) {
-	/*
-	* Send to the IRC bot via UDP
-	*/
-	global $whichami;
-	sleep(3);
-	$fp = fsockopen("udp://91.198.174.211", 9001, $erno, $errstr, 30);
-	if (!$fp) {
-		echo "SOCKET ERROR: $errstr ($errno)<br />\n";
-	}
-	fwrite($fp, formatForBot( chr(2)."[$whichami]".chr(2).": $message" ) );
-	fclose($fp);
-}
-
 function showhowma() {
 	/*
 	* Show how many users are logged in, in the footer
