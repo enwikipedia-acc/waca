@@ -15,7 +15,10 @@ class StatsMain extends StatisticsPage
 			$expld =  explode('.',$i);
 			$c = $expld[0];
 			$o = new $c;
-			$out.='<li><a href="?page='.$o->getPageName().'">'.$o->getPageTitle().'</a></li>';
+			if($o->hideFromMenu() == false)
+			{
+				$out.='<li><a href="?page='.$o->getPageName().'">'.$o->getPageTitle().'</a></li>';
+			}
 		}
 		$out.="</ul>";
 		$out.=$this->smallStats();
@@ -39,6 +42,10 @@ class StatsMain extends StatisticsPage
 	function requiresWikiDatabase()
 	{
 		return false;
+	}
+	function hideFromMenu()
+	{
+		return true;
 	}
 	function smallStats()
 	{
