@@ -28,6 +28,7 @@ require_once 'devlist.php';
 require_once 'functions.php';
 require_once 'includes/database.php';
 require_once 'includes/offlineMessage.php';
+require_once 'includes/messages.php';
 
 // Set the current version of the ACC.
 $version = "0.9.7";
@@ -44,6 +45,9 @@ $asSQL = new database("anitspoof");
 // Creates database links for later use.
 $tsSQLlink = $tsSQL->getLink();
 $asSQLlink = $asSQL->getLink();
+
+// create an object to get the system messages from.
+$messages = new messages();
 
 // Initialize the session data.
 session_start();
@@ -1564,7 +1568,9 @@ HTML;
 }
 elseif ($action == "done" && $_GET['id'] != "") {
 	// check for valid close reasons
-	if (!isset($_GET['email']) | $_GET['email'] >= 6 and $_GET['email'] != 'custom') {
+	global $messages;
+	
+	if (!isset($_GET['email']) | !($messages->isEmail($_GET['email'])) and $_GET['email'] != 'custom') {
 		echo "Invalid close reason";
 		echo showfooter();
 		die();

@@ -38,6 +38,22 @@ class messages {
 		$row = mysql_fetch_assoc($result);
 		return $row['mail_text'];
 	}
+	
+	public function isEmail($messageNumber)
+	{
+		global $tsSQL;
+		
+		$query = "SELECT mail_type FROM acc_email WHERE mail_id = " . $tsSQL->escape($messageNumber) . ";";
+		
+		$result = $tsSQL->query($query);
+		if(!$result)
+		{
+			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"Database query error.");
+			return false;
+		} 
+		$row = mysql_fetch_assoc($result);
+		return ($row['mail_type'] == "Message");
+	}
 }
 
 ?>
