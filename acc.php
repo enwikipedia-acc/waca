@@ -1700,6 +1700,9 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		case 5 :
 			$crea = "Impossible";
 			break;
+		case 6:
+			$crea = "SUL Taken";
+			break;
 	}
 	if ($gem == 'custom') {
 		$crea = "Custom Close";
