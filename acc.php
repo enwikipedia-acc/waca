@@ -500,8 +500,11 @@ elseif ($action == "login") {
                 mysql_query("UPDATE acc_user SET user_forcelogout = 0 WHERE user_name = \"" . $puser . "\"", $tsSQLlink);
         }
 	if ($row['user_level'] == "New") {
+		$skin->displayheader();
+		echo "<h2>Account Pending</h2>";
 		echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
-		echo showfootern();
+		echo "</pre><br />";
+		$skin->displayfooter();
 		die();
 	}
 	if ($row['user_level'] == "Suspended") {
