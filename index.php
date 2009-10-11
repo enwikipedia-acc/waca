@@ -43,8 +43,8 @@ $offlineMessage = new offlineMessage(true);
 $offlineMessage->check();
 
 // Initialize the database classes.
-$tsSQL = new database("toolserver", true);
-$asSQL = new database("anitspoof", true);
+$tsSQL = new database("toolserver");
+$asSQL = new database("antispoof");
 
 // Initialize the class objects.
 $request  = new accRequest();
