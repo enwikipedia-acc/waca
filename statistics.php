@@ -44,7 +44,14 @@ if($dontUseWikiDb == 0)
 	$asSQL = new database( "antispoof" );
 }
 
-$sp = StatisticsPage::Create(isset($_GET['page']) ? $_GET['page'] : 'Main');
+$page = isset($_GET['page']) ? $_GET['page'] : 'Main';
+
+if(isset($_SERVER['PATH_INFO']))
+{
+	$page = substr($_SERVER['PATH_INFO'],1);
+}
+
+$sp = StatisticsPage::Create($page);
 
 $sp->Show();
 ?>
