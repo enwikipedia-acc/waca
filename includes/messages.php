@@ -43,7 +43,7 @@ class messages {
 	{
 		global $tsSQL;
 		
-		$query = "SELECT mail_type FROM acc_email WHERE mail_id = " . $tsSQL->escape($messageNumber) . ";";
+		$query = "SELECT mail_type FROM acc_emails WHERE mail_id = " . $tsSQL->escape($messageNumber) . ";";
 		
 		$result = $tsSQL->query($query);
 		if(!$result)
