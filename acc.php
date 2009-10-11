@@ -115,7 +115,7 @@ elseif (!isset($_GET['nocheck']))
         checksecurity($_SESSION['user']);
 		
 		// ?
-        $out = showmessage('20');
+        $out = $messages->getMessage('20');
         $out .= "<div id=\"content\">";
         echo $out;
 }
@@ -138,7 +138,7 @@ elseif ($action == "sreg") {
 	foreach ( $acrnamebl as $wnbl => $nbl ) {
 		$phail_test = @ preg_match( $nbl, $_POST['name'] );
 		if ( $phail_test == TRUE ) {
-			#$message = showmessage(15);
+			#$message = $messages->getMessage(15);
 			echo "$message<br />\n";
 			$target = "$wnbl";
 			$host = gethostbyaddr( $_SERVER['REMOTE_ADDR'] );
@@ -164,7 +164,7 @@ elseif ($action == "sreg") {
 	$userblocked = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
 	$ub = unserialize( $userblocked );
 	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) {
-		$message = showmessage( '9' );
+		$message = $messages->getMessage( '9' );
 		echo "ERROR: You are presently blocked on the English Wikipedia<br />\n";
 		echo showfootern();
 		die();

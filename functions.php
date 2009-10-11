@@ -294,25 +294,6 @@ function gethowma() {
 	return ($whoactive);
 }
 
-function showmessage($messageno) {
-	/* 
-	* Show user-submitted messages from mySQL
-	*/
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
-	$messageno = sanitize($messageno);
-	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
-	$result = mysql_query($query);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	$row = mysql_fetch_assoc($result);
-	return ($row['mail_text']);
-}
-
 function sendemail($messageno, $target) {
 	/*
 	* Send a "close pend ticket" email to the end user. (created, taken, etc...)
