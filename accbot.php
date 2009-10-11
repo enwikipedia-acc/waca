@@ -463,7 +463,7 @@
 	function validateData( $sdata ) {
 		global $ircBotCommunicationKey;
 		$data = unserialize( ltrim(rtrim( $sdata ) ) );
-		if( $data[0] != encryptMessage( $data[1], $wgIrcBotCommunicationKey ) ) {
+		if( $data[0] != encryptMessage( $data[1], $ircBotCommunicationKey ) ) {
 			echo "WARNING: INVALID DATA!\n";
 			echo "$sdata\n";
 			return false;
