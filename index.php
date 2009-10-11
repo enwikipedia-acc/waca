@@ -78,7 +78,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	global $dontUseWikiDb;
 	if( !$dontUseWikiDb ) {
 		debug("using wiki db");
-		@ $asSQL->selectDb('enwiki_p');
+		$asSQL->selectDb('enwiki_p');
 		debug("selected database");
 		$query = "SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED";
 		$result = $asSQL->query($query);
