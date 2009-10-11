@@ -86,9 +86,6 @@ $emailConfirmationExpiryDays = 2;
 // Should we show the 'You last logged in from' line at the bottom of the page
 $enableLastLogin = false;
 
-// show debugging progress messages?
-$showDebuggingMessages = false;
-
 ////// Don't add any new config options below this line, as they will not be changable by the local config file.
 require_once('config.local.inc.php');
 	
@@ -99,12 +96,3 @@ require_once ($filepath.'blacklist.php');
 
 ini_set( 'session.cookie_path', $cookiepath );
 ini_set( 'session.name', $sessionname );
-
-function debug($message)
-{
-	global $showDebuggingMessages;
-	if($showDebuggingMessages)
-	{
-		echo $message;
-	}
-}
