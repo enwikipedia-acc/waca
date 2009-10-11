@@ -33,23 +33,16 @@ require_once 'includes/database.php';
 $offlineMessage = new offlineMessage(true);
 $offlineMessage->check();
 
+// Initialize the database classes.
+$tsSQL = new database("toolserver");
+$asSQL = new database("anitspoof");
+
+// Creates database links for later use.
+$tsSQLlink = $tsSQL->getLink();
+$asSQLlink = $asSQL->getLink();
+
 // Initialize the class object.
 $imagegen = new imagegen();
-
-// Get the required variables for the database connections.
-global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
-global $antispoof_host, $antispoof_db, $antispoof_table, $antispoof_password;
-
-$tsSQL = new database( $toolserver_host, $toolserver_username, $toolserver_password);
-$tsSQL->selectDb($toolserver_database);
-
-// Main database variables.
-global $tsSQLlink, $asSQLlink;
-
-// Connect to the TS database and the Antispoof database.
-// Assign the TS and AS DB as if they were an array.
-// TODO: Improve way the method is called.
-list($tsSQLlink, $asSQLlink) = getDBconnections();
 
 // Initialize the session data.
 session_start();

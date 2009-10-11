@@ -24,23 +24,24 @@
 require_once 'config.inc.php';
 require_once 'functions.php';
 require_once 'includes/offlineMessage.php';
+require_once 'includes/database.php';
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
 $offlineMessage = new offlineMessage(false);
 $offlineMessage->check();
 
+// Initialize the database classes.
+$tsSQL = new database("toolserver");
+$asSQL = new database("anitspoof");
+
+// Creates database links for later use.
+$tsSQLlink = $tsSQL->getLink();
+$asSQLlink = $asSQL->getLink();
+
 // Initialize the session data.
 session_start();
 
-// retrieve database connections
-global $tsSQLlink, $asSQLlink, $toolserver_database;
-list($tsSQLlink, $asSQLlink) = getDBconnections();
-@ mysql_select_db($toolserver_database, $tsSQLlink);
-require_once('includes/database.php');
-global $toolserver_username, $toolserver_password, $toolserver_host;
-$tsSQL = new database( $toolserver_host,$toolserver_username, $toolserver_password);
-$tsSQL->selectDb($toolserver_database);
 if( isset( $_SESSION['user'] ) ) {
 	$sessionuser = $_SESSION['user'];
 } else {
