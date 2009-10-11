@@ -499,23 +499,38 @@ elseif ($action == "login") {
         {
                 mysql_query("UPDATE acc_user SET user_forcelogout = 0 WHERE user_name = \"" . $puser . "\"", $tsSQLlink);
         }
+	
+	// Checks whether the user is new to ACC with a pending account.
 	if ($row['user_level'] == "New") {
+		
+		// Display the header of the interface.
 		$skin->displayheader();
+		
 		echo "<h2>Account Pending</h2>";
 		echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
 		echo "</pre><br />";
+		
+		// Display the footer of the interface.
 		$skin->displayfooter();
 		die();
 	}
+	// Checks whether the user's account has been suspended.
 	if ($row['user_level'] == "Suspended") {
+		
+		// Display the header of the interface.
 		$skin->displayheader();
+		
 		echo '<h2>Account Suspended</h2>';
 		echo "I'm sorry, but, your account is presently suspended.<br />\n";
+		
+		// Checks whether there was a reason for the suspension.
 		$reasonQuery = 'select log_cmt from acc_log where log_action = "Suspended" and log_pend = '.$row['user_id'].' order by log_time desc limit 1;';
 		$reasonResult = mysql_query($reasonQuery, $tsSQLlink);
 		$reasonRow = mysql_fetch_assoc($reasonResult);
 		echo "The reason given is shown below:<br /><pre>";
 		echo '<b>' . $reasonRow['log_cmt'] . "</b></pre><br />";
+		
+		// Display the footer of the interface.
 		$skin->displayfooter();
 		die();
 	}
