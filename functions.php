@@ -31,9 +31,13 @@ if ($ACC != "1") {
     die();
 } //Re-route, if you're a web client.
 
-require_once('queryBrowser.php');
-require_once('LogClass.php');
-include_once('AntiSpoof.php');
+require_once 'queryBrowser.php';
+require_once 'LogClass.php';
+require_once 'includes/messages.php';
+include_once 'AntiSpoof.php';
+
+// Initialize the class objects.
+$messages = new messages();
 
 function formatForBot( $data ) { 		
 	global $ircBotCommunicationKey; 		
@@ -234,6 +238,20 @@ function csvalid($id, $sum) {
 	} else {
 		return (0);
 	}
+}
+
+function sendtobot($message) {
+	/*
+	* Send to the IRC bot via UDP
+	*/
+	global $whichami;
+	sleep(3);
+	$fp = fsockopen("udp://91.198.174.211", 9001, $erno, $errstr, 30);
+	if (!$fp) {
+		echo "SOCKET ERROR: $errstr ($errno)<br />\n";
+	}
+	fwrite($fp, formatForBot( chr(2)."[$whichami]".chr(2).": $message" ) );
+	fclose($fp);
 }
 
 function showhowma() {
@@ -654,7 +672,7 @@ function makehead($username) {
 	/*
 	* Show page header (retrieved by MySQL call)
 	*/
-	global $tsSQLlink, $toolserver_database;
+	global $tsSQLlink, $toolserver_database, $messages;
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	
 	$suin = sanitize($username);
@@ -672,7 +690,7 @@ function makehead($username) {
 	$_SESSION['user_id'] = $row['user_id'];
 	
 	forceLogout( $_SESSION['user_id'] );
-	$out = showmessage('21');
+	$out = $messages->getMessage('21');
 	if (isset ($_SESSION['user'])) { //Is user logged in?
 		if (hasright($username, "Admin")) {
 			$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"acc.php?action=usermgmt\">User Management</a>\n", $out);
@@ -699,14 +717,15 @@ function showfootern() {
 	/*
 	* Show footer (not logged in)
 	*/
-	return showmessage('22');
+	global $messages;
+	return $messages->getMessage('22');
 }
 
 function showfooter() {
 	/*
 	* Show footer (logged in)
 	*/
-	global $enableLastLogin;
+	global $enableLastLogin, $messages;
 	if ($enableLastLogin) {
 		$timestamp = "at ".date('H:i',$_SESSION['lastlogin_time']);
 		if (date('jS \of F Y',$_SESSION['lastlogin_time'])==date('jS \of F Y')) {
@@ -727,7 +746,7 @@ function showfooter() {
 	$howmany = gethowma();
 	$howout = showhowma();
 	$howma = $howmany['howmany'];
-	$out = showmessage('23');
+	$out = $messages->getMessage('23');
 	if ($howma != 1) // not equal to one, as zero uses the plural form too.
 		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creators currently online (past 5 minutes): $howout</small></div>\n$out2", $out);
 	else
