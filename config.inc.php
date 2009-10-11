@@ -102,6 +102,7 @@ ini_set( 'session.name', $sessionname );
 
 function debug($message)
 {
+	global $showDebuggingMessages;
 	if($showDebuggingMessages)
 	{
 		echo $message;
