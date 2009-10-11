@@ -789,14 +789,14 @@ elseif ($action == "unban" && $_GET['id'] != "")
 			$unbanreason = sanitize($_POST['unbanreason']);
 			$query = "DELETE FROM acc_ban WHERE ban_id = '$bid';";
 			$result = $tsSQL->query($query);
-			if (!result)
+			if (!$result)
 			{
 				die($tsSQL->showError(mysql_error(), "Database error"));
 			}
 			$now = date("Y-m-d H-i-s");
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$bid', '$siuser', 'Unbanned', '$now', '$unbanreason');";
 			$result = $tsSQL->query($query);
-			if (!result)
+			if (!$result)
 			{
 				die($tsSQL->showError(mysql_error(), "Database error"));
 			}
