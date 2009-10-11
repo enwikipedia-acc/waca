@@ -34,15 +34,12 @@ require_once 'includes/offlineMessage.php';
 $offlineMessage = new offlineMessage(false);
 $offlineMessage->check();
 
+// Initialize the class objects.
 $messages = new messages();
-global $toolserver_host, $toolserver_username, $toolserver_password,$toolserver_database;
-$tsSQL = new database( "toolserver");
 
-global $dontUseWikiDb;
-if($dontUseWikiDb == 0)
-{
-	$asSQL = new database( "antispoof" );
-}
+// Initialize the database classes.
+$tsSQL = new database("toolserver");
+$asSQL = new database("antispoof");
 
 $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
 
