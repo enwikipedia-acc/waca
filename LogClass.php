@@ -181,6 +181,9 @@ class LogPage
 			if ($row['log_action'] == "Blacklist Hit" || $row['log_action'] == "DNSBL Hit") {
 				$logList .="<li>$rlu <strong>Rejected by Blacklist</strong> $rlp, $rlc at $rlt.</li>\n";
 			}
+			if ($rla == 'Email Confirmed') {
+				$logList .="<li>$rlu email-confirmed request $rlp ($rlt)</li>\n";
+			}
 			if ($rla == "Edited") {
 				$mid = $rlp;
 				$query3 = "SELECT * FROM acc_emails WHERE mail_id = '$mid';";
