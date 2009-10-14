@@ -41,6 +41,9 @@ class messages {
 	
 	public function isEmail($messageNumber)
 	{
+		// override for drop
+		if( $messageNumber == 0 ) return true;
+		
 		global $tsSQL;
 		
 		$query = "SELECT mail_type FROM acc_emails WHERE mail_id = " . $tsSQL->escape($messageNumber) . ";";
