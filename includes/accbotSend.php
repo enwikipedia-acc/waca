@@ -33,9 +33,9 @@ class accbotSend {
 		/*
 		* Send to the IRC bot via UDP
 		*/
-		global $whichami;
+		global $whichami, $ircBotUdpServer, $ircBotUdpPort;
 		sleep(3);
-		$fp = fsockopen("udp://91.198.174.211", 9001, $erno, $errstr, 30);
+		$fp = fsockopen("udp://" . $ircBotUdpServer, $ircBotUdpPort, $erno, $errstr, 30);
 		if (!$fp) {
 			echo "SOCKET ERROR: $errstr ($errno)<br />\n";
 		}

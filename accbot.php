@@ -530,7 +530,8 @@
 	if( ( $udpReader = pcntl_fork() ) == 0 ) {
 		$lastToolMsg = time();
 		$lastToolMsgAlert = time();
-		$fpt = stream_socket_server( 'udp://0.0.0.0:9001', $errNo, $errStr, STREAM_SERVER_BIND );
+		global $ircBotUdpPort;
+		$fpt = stream_socket_server( 'udp://0.0.0.0:'.$ircBotUdpPort, $errNo, $errStr, STREAM_SERVER_BIND );
 
 		if (!$fpt) {
  			echo "SOCKET ERROR: $errstr ($errno)\n";

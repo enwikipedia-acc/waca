@@ -76,6 +76,8 @@ $ircBotNetworkPort = 6667;
 $ircBotChannel = "#wikipedia-en-accounts";
 $ircBotNickname = "ACCBot";
 $ircBotCommandTrigger = '!';
+$ircBotUdpServer = '';
+$ircBotUdpPort = '';
 	
 // By default, reserve to a specific user. Adapted from livehack by st - use the userid, zero for unreserved.
 $defaultReserver = 0;
