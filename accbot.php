@@ -1,4 +1,3 @@
-#!/opt/php/bin/php
 <?PHP
 	/**************************************************************
 	** English Wikipedia Account Request Interface               **
@@ -75,6 +74,7 @@
 	addCommand( 'stats'      , 'commandStats'      , false );
 	addCommand( 'svninfo'    , 'commandSvnInfo'    , true  );
 	addCommand( 'sandinfo'   , 'commandSandInfo'   , true  );
+	addCommand('rewrite-svnup','commandRewriteSvnUp',true  );
 	addCommand( 'sand-svnup' , 'commandSandSvnUp'  , true  );
 	addCommand( 'restart'    , 'commandRestart'    , false );
 
@@ -109,6 +109,7 @@
 
 	$privgroups[ 'developer' ]                  = $privgroups['*']; // 'developer' inherits '*'.
 	$privgroups[ 'developer' ][ 'sand-svnup'  ] = 1;
+	$privgroups[ 'developer' ]['rewrite-svnup'] = 1;
 	$privgroups[ 'developer' ][ 'restart'     ] = 1;
 
 	// Functions
@@ -448,6 +449,20 @@
 		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Please see the sandbox at http://stable.toolserver.org/acc/sand/acc.php' );
 	}
 
+	function commandRewriteSvnUp( $parsed ) {
+        $svn = popen( 'sh svn-rewrite.sh 2>&1', 'r' );
+        while( !feof( $svn ) ) {
+            $svnin = trim( fgets( $svn, 512 ) );
+        	if( $svnin != '' ) {
+            	irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': ' . str_replace( array( "\n", "\r" ), '', $svnin ) );
+            }
+        	sleep( 1 );
+        }
+        pclose( $svn );
+    	irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Please see the acc.php rewrite sandbox at http://stable.toolserver.org/acc/rewrite/acc.php' );
+	}             
+
+	
 	function commandRestart( $parsed ) {
 		global $udpReader, $fp;
 
