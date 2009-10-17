@@ -36,9 +36,11 @@ require_once 'queryBrowser.php';
 require_once 'LogClass.php';
 require_once 'includes/messages.php';
 include_once 'AntiSpoof.php';
+require_once 'includes/internalInterface.php';
 
 // Initialize the class objects.
 $messages = new messages();
+$internalInterface = new internalInterface();
 
 function formatForBot( $data ) { 		
 	global $ircBotCommunicationKey; 		
@@ -731,7 +733,7 @@ function showfooter() {
 	/*
 	* Show footer (logged in)
 	*/
-	global $enableLastLogin, $messages;
+	global $enableLastLogin, $messages, $internalInterface;
 	if ($enableLastLogin) {
 		$timestamp = "at ".date('H:i',$_SESSION['lastlogin_time']);
 		if (date('jS \of F Y',$_SESSION['lastlogin_time'])==date('jS \of F Y')) {
@@ -749,8 +751,8 @@ function showfooter() {
 	}
 	
 	$howmany = array ();
-	$howmany = gethowma();
-	$howout = showhowma();
+	$howmany = $internalInterface->gethowma();
+	$howout = $internalInterface->showhowma();
 	$howma = $howmany['howmany'];
 	$out = $messages->getMessage('23');
 	if ($howma != 1) // not equal to one, as zero uses the plural form too.
