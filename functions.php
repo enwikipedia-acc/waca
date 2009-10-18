@@ -37,10 +37,12 @@ require_once 'LogClass.php';
 require_once 'includes/messages.php';
 include_once 'AntiSpoof.php';
 require_once 'includes/internalInterface.php';
+require_once 'includes/session.php';
 
 // Initialize the class objects.
 $messages = new messages();
 $internalInterface = new internalInterface();
+$session = new session();
 
 function formatForBot( $data ) { 		
 	global $ircBotCommunicationKey; 		
@@ -96,35 +98,6 @@ function _utf8_decode($string) {
 		$string = utf8_decode($string);
 	}
 	return $string;
-}
-
-function forceLogout( $uid ) {
-	$uid = sanitize( $uid );
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	$link = mysql_select_db($toolserver_database);
-	if( !$link ) { 
-		sqlerror(mysql_error(),"Error selecting database.");	
-	}
-	$query = "SELECT user_forcelogout FROM acc_user WHERE user_id = '$uid';";
-	$result = mysql_query($query);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	$row = mysql_fetch_assoc($result);
-	if( $row['user_forcelogout'] == "1" ) {
-		$_SESSION = array();
-		if (isset($_COOKIE[session_name()])) {
-			setcookie(session_name(), '', time()-42000, '/');
-		}
-		session_destroy( );
-		echo "You have been forcibly logged out, probably due to being renamed. Please log back in.";
-		$query = "UPDATE acc_user SET user_forcelogout = '0' WHERE user_id = '$uid';";
-		$result = mysql_query($query);
-		die( showfootern( ) );
-	}
 }
 
 function getSpoofs( $username ) {
@@ -607,7 +580,7 @@ function makehead($username) {
 	/*
 	* Show page header (retrieved by MySQL call)
 	*/
-	global $tsSQLlink, $toolserver_database, $messages;
+	global $tsSQLlink, $toolserver_database, $messages, $session;
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	
 	$suin = sanitize($username);
@@ -624,7 +597,7 @@ function makehead($username) {
 	$row = mysql_fetch_assoc($result);
 	$_SESSION['user_id'] = $row['user_id'];
 	
-	forceLogout( $_SESSION['user_id'] );
+	$session->forceLogout( $_SESSION['user_id'] );
 	$out = $messages->getMessage('21');
 	if (isset ($_SESSION['user'])) { //Is user logged in?
 		if (hasright($username, "Admin")) {

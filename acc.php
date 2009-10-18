@@ -110,7 +110,7 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 elseif (!isset($_GET['nocheck']))
 {
 		// Forces the current user to logout.
-        forceLogout($_SESSION['userID']);
+        $session->forceLogout($_SESSION['userID']);
 		
 		// ?
         echo makehead($_SESSION['user']);
