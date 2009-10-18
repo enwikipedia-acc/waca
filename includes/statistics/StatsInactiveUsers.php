@@ -3,7 +3,7 @@ class StatsInactiveUsers extends StatisticsPage
 {
 	function execute()
 	{
-		global $tsSQL;
+		global $tsSQL, $session;
 		
 		if( isset( $_SESSION['user'] ) ) {
 			$sessionuser = $_SESSION['user'];
@@ -32,7 +32,7 @@ class StatsInactiveUsers extends StatisticsPage
 		$out= 'This list contains the usernames of all accounts that have not logged in in the past 45 days.';
 
 		$out.= "<table><tr><th>User ID</th><th>Tool Username</th><th>User access level</th><th>enwiki username</th><th>Last activity</th><th>Approval</th>";
-		if(hasright($sessionuser, "Admin")) {
+		if($session->hasright($sessionuser, "Admin")) {
 			$out.= "<th>Suspend</th>";
 		}
 		$out.= "</tr>";
@@ -65,7 +65,7 @@ class StatsInactiveUsers extends StatisticsPage
 						$out.= ' >';
 					}	
 					$out.= "<th>$userid</th><td>$tooluser</td><td>".$r['toolaccesslevel']."</td><td>".$r['enwikiuser']."</td><td>".$r['lasttoollogon']."</td><td>".$approved."</td>";
-					if(hasright($sessionuser, "Admin")) {
+					if($session->hasright($sessionuser, "Admin")) {
 						$inactivesuspend = "Inactive for 45 or more days. Please contact a tool admin if you wish to come back.";
 						$out.= "<td><a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;suspend=$userid&amp;preload=$inactivesuspend\">Suspend!</a></td>";
 					}

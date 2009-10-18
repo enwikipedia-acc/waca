@@ -105,7 +105,7 @@ abstract class StatisticsPage
 		session_start();
 		
 		// fetch and show page header
-		global $messages, $dontUseWikiDb;
+		global $messages, $dontUseWikiDb, $session;
 		echo $messages->getMessage(21);
 		
 		if($this->requiresWikiDatabase() && ($dontUseWikiDb == 1))
@@ -119,7 +119,7 @@ abstract class StatisticsPage
 			{
 				// protected, check accesslevel.
 				$sessionuser = ( isset($_SESSION['user']) ? $_SESSION['user'] : "");
-				if( !(hasright($sessionuser, "Admin") || hasright($sessionuser, "User")))
+				if( !($session->hasright($sessionuser, "Admin") || $session->hasright($sessionuser, "User")))
 				{ // not authed
 			
 					echo "<div id=\"content\"><h1>Error</h1><span style=\"color:red;font-weight:bold\">You are not authorized to use this feature. Only logged in users may use this statistics page.</span>";

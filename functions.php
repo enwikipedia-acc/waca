@@ -226,16 +226,16 @@ function checksecurity($username) {
 	/*
 	* Check the user's security level on page load, and bounce accordingly
 	*/
-	global $secure;
-	if (hasright($username, "New")) {
+	global $secure, $session;
+	if ($session->hasright($username, "New")) {
 		echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
 		echo showfootern();
 		die();
-	} elseif (hasright($username, "Suspended")) {
+	} elseif ($session->hasright($username, "Suspended")) {
 		echo "I'm sorry, but, your account is presently suspended.<br />\n";
 		echo showfootern();
 		die();
-	} elseif (hasright($username, "Declined")) {
+	} elseif ($session->hasright($username, "Declined")) {
 		$username = sanitize($username);
 		$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
 		$result = mysql_query($query);
@@ -263,7 +263,7 @@ function checksecurity($username) {
 		echo "<br /><big><strong>To appeal this decision, please e-mail <a href=\"mailto:accounts-enwiki-l@lists.wikimedia.org\">accounts-enwiki-l@lists.wikimedia.org</a> with the above information, and a reasoning why you believe you should be approved for this interface.</strong></big><br />\n";
 		echo showfootern();
 		die();
-	} elseif (hasright($username, "User") || hasright($username, "Admin") ) {
+	} elseif ($session->hasright($username, "User") || $session->hasright($username, "Admin") ) {
 		$secure = 1;
 	} else {
 		//die("Not logged in!");
@@ -278,6 +278,7 @@ function listrequests($type, $hideip) {
 	global $secure;
 	global $enableEmailConfirm;
 	global $dontUseWikiDb;
+	global $session;
 	if($secure != 1) { die("Not logged in"); }
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database.");
 
@@ -362,7 +363,7 @@ function listrequests($type, $hideip) {
 		}
 		
             
-		if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin')) {
+		if ($hideip == FALSE || $session->hasright($_SESSION['user'], 'Admin')) {
 		// IP UT:
 		$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-src" name="ip-link" href="'.$wikipediaurl.'wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
 		$out .= $row['pend_ip'] . '</a> ';
@@ -495,7 +496,7 @@ function listrequests($type, $hideip) {
 		// Drop
 		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
 
-		if(hasright($_SESSION['user'], "Admin")) {
+		if($session->hasright($_SESSION['user'], "Admin")) {
 		// Ban IP
 		$out .= '</small></td><td><small> |</small></td><td><small> Ban: </small></td><td><small><a class="request-ban" href="acc.php?action=ban&amp;ip=' . $row['pend_id'] . '">IP</a> ';
 
@@ -600,7 +601,7 @@ function makehead($username) {
 	$session->forceLogout( $_SESSION['user_id'] );
 	$out = $messages->getMessage('21');
 	if (isset ($_SESSION['user'])) { //Is user logged in?
-		if (hasright($username, "Admin")) {
+		if ($session->hasright($username, "Admin")) {
 			$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"acc.php?action=usermgmt\">User Management</a>\n", $out);
 		}
 		$rethead .= $out;
@@ -789,24 +790,6 @@ HTML;
 	return $html;
 }
 
-function hasright($username, $checkright) {
-	global $tsSQL;
-	$username = $tsSQL->escape($username);
-	$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
-	$result = $tsSQL->query($query);
-	if (!$result) {
-		$tsSQL->showError("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	}
-	$row = mysql_fetch_assoc($result);
-	$rights = explode(':', $row['user_level']);
-	foreach( $rights as $right) {
-		if($right == $checkright ) {
-			return true;
-		}
-	}
-	return false;
-}
-
 function displayheader() {
 	global $toolserver_username;
 	global $toolserver_password;
@@ -825,7 +808,7 @@ function displayheader() {
 function displayfooter() {
 	echo "<a href=\"index.php\">Return to account request interface.</a><br />\n";
 	if(isset($_SESSION['user'])) {
-		if(hasright($_SESSION['user'], 'User') || hasright($_SESSION['user'], 'Admin')){
+		if($session->hasright($_SESSION['user'], 'User') || $session->hasright($_SESSION['user'], 'Admin')){
 			echo "<a href=\"acc.php\">Return to request management interface</a>\n";
 		} else {
 			echo "<a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
@@ -1017,7 +1000,7 @@ function zoomPage($id)
 	
 
     $out .= "<h2>Comments on this request:<small> (<a href='acc.php?action=comment&id=$gid'>new comment</a>)</small></h2>";
-    if (hasright($_SESSION['user'], 'Admin')) {
+    if ($session->hasright($_SESSION['user'], 'Admin')) {
     $query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' ORDER BY cmt_id ASC;";
     } else {
     $user = sanitise($_SESSION['user']);
@@ -1043,7 +1026,7 @@ function zoomPage($id)
     $out .= "<form action='acc.php?action=comment-quick' method='post'><input type='hidden' name='id' value='$gid'><input type='text' name='comment' size='75'' /><input type='hidden' name='visibility' value='user'$gid'><input type='submit' value='Quick Reply' />";
 
 	$ipmsg = 'this ip';
-	if ($hideip == FALSE || hasright($_SESSION['user'], 'Admin'))
+	if ($hideip == FALSE || $session->hasright($_SESSION['user'], 'Admin'))
 		$ipmsg = $thisip;
 	
 

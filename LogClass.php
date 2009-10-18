@@ -131,7 +131,7 @@ class LogPage
 	
 	public function showListLog($offset, $limit)
 	{
-		global $tsSQLlink;
+		global $tsSQLlink, $session;
 		$out="";
 		
 		$result = $this->getLog($offset, $limit);
@@ -239,7 +239,7 @@ class LogPage
 				$logList .= "<li>$rlu unreserved request $rlp at $rlt</li>";
 			}
 			if($rla == 'badpass') {
-				if (hasright($_SESSION['user'], 'Admin')) {
+				if ($session->hasright($_SESSION['user'], 'Admin')) {
 					$logList .= "<li><a href=\"http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=$rlc\">$rlc</a> had a failed login attempt for $rlu at $rlt</li>";
 				} elseif ($_SESSION['user'] == $rlu) {
 					$logList .= "<li>".substr_replace($rlc,'XXX',-3)." had a failed login attempt for $rlu at $rlt</li>";

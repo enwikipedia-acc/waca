@@ -20,6 +20,8 @@
 ** FunPika    ( http://en.wikipedia.org/wiki/User:FunPika )   **
 **************************************************************/
 
+global $session;
+
 // Get all the classes.
 require_once 'config.inc.php';
 require_once 'functions.php';
@@ -53,7 +55,7 @@ if( isset( $_SESSION['user'] ) ) {
 // IP address lookups still, but can search on email and requested name.
 
 // protect against logged out users
-if( !hasright($sessionuser, "Admin") && !hasright($sessionuser, "User"))
+if( !$session->hasright($sessionuser, "Admin") && !$session->hasright($sessionuser, "User"))
 	die("You are not authorized to use this feature. Please check you are logged in.");
 
 echo makehead( $sessionuser );
@@ -101,7 +103,7 @@ if( isset($_GET['term'])) {
 		echo "<h2>Searching for IP address: $term ...</h2>";
 		
 		// move this to here, so non-admins can perform searches, but not on IP addresses
-		if( !hasright($sessionuser, "Admin"))
+		if( !$session->hasright($sessionuser, "Admin"))
 			die("You are not authorized to use this feature");
 		
 		$query = "SELECT pend_id,pend_ip,pend_name,pend_date,pend_status FROM acc_pend WHERE pend_ip LIKE '%$term%';";

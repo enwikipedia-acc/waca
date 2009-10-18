@@ -71,5 +71,23 @@ class session {
 			die( showfootern( ) );
 		}
 	}
+	
+	public function hasright($username, $checkright) {
+		global $tsSQL;
+		$username = $tsSQL->escape($username);
+		$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
+		$result = $tsSQL->query($query);
+		if (!$result) {
+			$tsSQL->showError("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+		}
+		$row = mysql_fetch_assoc($result);
+		$rights = explode(':', $row['user_level']);
+		foreach( $rights as $right) {
+			if($right == $checkright ) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
 ?>

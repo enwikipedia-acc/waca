@@ -78,7 +78,7 @@ class StatsUsers extends StatisticsPage
 	function getUserDetail($userId)
 	{
 		$out="";
-		global $tsSQL, $enableRenames, $tsurl;
+		global $tsSQL, $enableRenames, $tsurl, $session;
 		$gid = $tsSQL->escape($userId); // Validate the user ID for security (SQL Injection, etc)
 		if (!preg_match('/^[0-9]+$/i',$gid)) {
 			return "User ID invalid";
@@ -125,7 +125,7 @@ class StatsUsers extends StatisticsPage
 		}
 	
 		// State whether the user has auto welcoming enabled
-		if(hasright($_SESSION['user'], 'User') || hasright($_SESSION['user'], 'Admin'))
+		if($session->hasright($_SESSION['user'], 'User') || $session->hasright($_SESSION['user'], 'Admin'))
 		{
 			$out.= "<li>User has <a href=\"acc.php?action=welcomeperf\">automatic welcoming</a> enabled: " . $welcome . ".</li>\n";
 		}
@@ -136,7 +136,7 @@ class StatsUsers extends StatisticsPage
 		$out.= "</ul>\n<br/>";
 		
 		// If the user has admin privileges, build a string of links for the user (rename, edit, promote, suspend, etc.
-		if(hasright($_SESSION['user'], 'Admin'))
+		if($session->hasright($_SESSION['user'], 'Admin'))
 		{
 			$out.= "Tools:   ";
 			if( $enableRenames == 1 )
@@ -200,7 +200,7 @@ class StatsUsers extends StatisticsPage
 					}
 		
 					// Display the name of the account that was created
-					if(hasright($_SESSION['user'], 'User') || hasright($_SESSION['user'], 'Admin')) 
+					if($session->hasright($_SESSION['user'], 'User') || $session->hasright($_SESSION['user'], 'Admin')) 
 					{
 							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
 					}
@@ -236,7 +236,7 @@ class StatsUsers extends StatisticsPage
 					}
 		
 					// Display the name of the account that was not created
-					if(hasright($_SESSION['user'], 'User') || hasright($_SESSION['user'], 'Admin'))
+					if($session->hasright($_SESSION['user'], 'User') || $session->hasright($_SESSION['user'], 'Admin'))
 					{
 							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
 					}

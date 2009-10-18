@@ -620,7 +620,7 @@ elseif ($action == "messagemgmt") {
 		die();
 	}
 	if (isset ($_GET['edit'])) {
-	if(!hasright($_SESSION['user'], 'Admin')) {
+	if(!$session->hasright($_SESSION['user'], 'Admin')) {
 			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
 			echo showfooter();
 			die();
@@ -681,10 +681,10 @@ elseif ($action == "messagemgmt") {
 	while ( list( $mail_id, $mail_count, $mail_desc ) = mysql_fetch_row( $result ) ) {
 		$out = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mail_id\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
 		$out2 = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
-		if(hasright($_SESSION['user'], 'Admin')){
+		if($session->hasright($_SESSION['user'], 'Admin')){
 		echo "$out\n";
 		}
-		elseif(!hasright($_SESSION['user'], 'Admin')){
+		elseif(!$session->hasright($_SESSION['user'], 'Admin')){
 		echo "$out2\n";
 		}
 	}
@@ -701,10 +701,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li>$mailn) <small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li>$mailn) <small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if(hasright($_SESSION['user'], 'Admin')){
+		if($session->hasright($_SESSION['user'], 'Admin')){
 		echo "$out\n";
 		}
-		elseif(!hasright($_SESSION['user'], 'Admin')){
+		elseif(!$session->hasright($_SESSION['user'], 'Admin')){
 		echo "$out2\n";
 		}
 	}
@@ -722,10 +722,10 @@ elseif ($action == "messagemgmt") {
 		$maild = $row['mail_desc'];
 		$out = "<li>$mailn) <small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li>$mailn) <small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if(hasright($_SESSION['user'], 'Admin')){
+		if($session->hasright($_SESSION['user'], 'Admin')){
 		echo "$out\n";
 		}
-		elseif(!hasright($_SESSION['user'], 'Admin')){
+		elseif(!$session->hasright($_SESSION['user'], 'Admin')){
 		echo "$out2\n";
 		}
 	}
@@ -736,7 +736,7 @@ elseif ($action == "messagemgmt") {
 elseif ($action == "sban" && $_GET['user'] != "") {
 	
 	// Checks whether the current user is an admin.
-	if(!hasright($_SESSION['user'], "Admin")) {
+	if(!$session->hasright($_SESSION['user'], "Admin")) {
 		die("Only administrators may ban users");
 	}
 	
@@ -792,7 +792,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 {
 	$siuser = sanitize($_SESSION['user']);
 
-	if(!hasright($_SESSION['user'], "Admin"))
+	if(!$session->hasright($_SESSION['user'], "Admin"))
 	{
 		die("Only administrators may unban users");
 	}
@@ -861,7 +861,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 elseif ($action == "ban") {
 	$siuser = sanitize($_SESSION['user']);
 	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name'])) {
-		if(!hasright($_SESSION['user'], "Admin"))
+		if(!$session->hasright($_SESSION['user'], "Admin"))
 			die("Only administrators may ban users");
 		if (isset($_GET['ip'])) {
 			$ip2 = sanitize($_GET['ip']);
@@ -909,7 +909,7 @@ elseif ($action == "ban") {
 	} else {
 		echo "<h2>Active Ban List</h2>\n<table border='1'>\n";
 		echo "<tr><td>IP/Name/Email</td><td>Banned by</td><td>Reason</td><td>Time</td><td>Expiry</td>";
-		$isAdmin = hasright($_SESSION['user'], "Admin");
+		$isAdmin = $session->hasright($_SESSION['user'], "Admin");
 		if ($isAdmin) {
 			echo "<td>Unban</td>";
 		}
@@ -955,7 +955,7 @@ elseif ($action == "ban") {
 	}
 }
 elseif ($action == "usermgmt") {
-	if(!hasright($_SESSION['user'], 'Admin'))
+	if(!$session->hasright($_SESSION['user'], 'Admin'))
 	{
 		echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
 		echo showfooter();
