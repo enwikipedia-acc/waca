@@ -31,6 +31,7 @@ require_once 'includes/offlineMessage.php';
 require_once 'includes/messages.php';
 require_once 'includes/skin.php';
 require_once 'includes/accbotSend.php';
+require_once 'includes/session.php';
 
 // Set the current version of the ACC.
 $version = "0.9.7";
@@ -52,6 +53,7 @@ $asSQLlink = $asSQL->getLink();
 $messages = new messages();
 $skin     = new skin();
 $accbotSend = new accbotSend();
+$session = new session();
 
 // Initialize the session data.
 session_start();
@@ -1222,7 +1224,7 @@ elseif ($action == "usermgmt") {
 			}
 			else
 			{
-					setForceLogout(stripslashes($userid));
+					$session->setForceLogout(stripslashes($userid));
 					$accbotSend->send("User $siuser changed " . $_POST['oldname'] . "'s username to " . $_POST['newname']);
 			}
 			echo showfooter();

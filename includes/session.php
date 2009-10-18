@@ -27,6 +27,21 @@ if ($ACC != "1") {
 } //Re-route, if you're a web client.
 
 class session {
-	
+
+	public function setForceLogout( $uid ) {
+		$uid = sanitize( $uid );
+		global $toolserver_username;
+		global $toolserver_password;
+		global $toolserver_host;
+		global $toolserver_database;
+		mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+		$link = mysql_select_db($toolserver_database);
+		if( !$link ) {
+			sqlerror(mysql_error(),"Error selecting database.");
+		}
+		$query = "UPDATE acc_user SET user_forcelogout = '1' WHERE user_id = '$uid';";
+		$result = mysql_query($query);
+	}
+
 }
 ?>
