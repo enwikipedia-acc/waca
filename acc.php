@@ -199,7 +199,7 @@ elseif ($action == "sreg") {
 		die();
 	}
 	
-	$user = sanitize($_REQUEST['name']);
+	$user = mysql_real_escape_string($_REQUEST['name']);
 	if (stristr($user, "'") !== FALSE) {
 		die("Username cannot contain the character '\n");
 	}
@@ -442,7 +442,7 @@ HTML;
 		die();
 	}
 	if (isset ($_POST['username'])) {
-		$puser = sanitize($_POST['username']);
+		$puser = mysql_real_escape_string($_POST['username']);
 		$query = "SELECT * FROM acc_user WHERE user_name = '$puser';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
@@ -494,7 +494,7 @@ elseif ($action == "login") {
 	    		}
 		}
 	}
-	$puser = sanitize($_POST['username']);
+	$puser = mysql_real_escape_string($_POST['username']);
 	$ip = sanitize($_SERVER['REMOTE_ADDR']);
 	$query = "SELECT * FROM acc_user WHERE user_name = \"$puser\";";
 	$result = mysql_query($query, $tsSQLlink);
@@ -1176,14 +1176,14 @@ elseif ($action == "usermgmt") {
 			echo showfooter();
 			die();
 		} else {
-			$oldname = sanitize($_POST['oldname']);
-			$newname = sanitize($_POST['newname']);
+			$oldname = mysql_real_escape_string($_POST['oldname']);
+			$newname = mysql_real_escape_string($_POST['newname']);
 			$userid = sanitize($_GET['rename']);
 			$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$userid';");
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$checkname = mysql_fetch_assoc($result);
-			if ($checkname['user_name'] != htmlentities($_POST['oldname']))
+			if ($checkname['user_name'] != ($_POST['oldname']))
 				Die("Rename form corrupted");
 			if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$oldname';")) != 1 || mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$newname';")) != 0)
 				die("Target username in use, or current user does not exist.");
