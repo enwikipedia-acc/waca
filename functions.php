@@ -584,7 +584,7 @@ function makehead($username) {
 	global $tsSQLlink, $toolserver_database, $messages, $session;
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	
-	$suin = sanitize($username);
+	$suin = mysql_real_escape_string($username);
 	$rethead = '';
 	
 	$query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
