@@ -199,7 +199,7 @@ elseif ($action == "sreg") {
 		die();
 	}
 	
-	$user = mysql_real_escape_string($_REQUEST['name']);
+	$user = sanitize($_REQUEST['name']);
 	if (stristr($user, "'") !== FALSE) {
 		die("Username cannot contain the character '\n");
 	}
@@ -301,7 +301,7 @@ elseif ($action == "sreg") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$accbotSend->send("New user: $user");
-		echo "Account created! In order to complete the process, please make a confirmation edit to your user talk page. In this edit, note that you requested an account on the ACC account creation interface, and use a descriptive edit summary so that we can easily find this edit.  <b>Failure to do this will result in your request being declined.</b><br /><br />\n";
+		echo "Account created! Your username is $user! In order to complete the process, please make a confirmation edit to your user talk page. In this edit, note that you requested an account on the ACC account creation interface, and use a descriptive edit summary so that we can easily find this edit.  <b>Failure to do this will result in your request being declined.</b><br /><br />\n";
 		echo showlogin();
 	}
 	echo showfootern();
