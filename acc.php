@@ -181,8 +181,7 @@ elseif ($action == "sreg") {
 		}
 	}
 	// check if the user is to new
-	echo $whichami;
-	if( $whichami != "Sand" ) { //Hack to allow me to be able to make new accounts for testing stuff on sand. --FunPika
+	if( $whichami != "Sand(mmp)" ) { //Hack to allow me to be able to make new accounts for testing stuff on sand. --FunPika
 	$isNewbie = unserialize(file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$cu_name" ));
 	$time = $isNewbie['query']['allusers'][0]['registration'];
 	$time2 = time() - strtotime($time);
