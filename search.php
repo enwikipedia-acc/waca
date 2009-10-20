@@ -35,7 +35,7 @@ $offlineMessage->check();
 
 // Initialize the database classes.
 $tsSQL = new database("toolserver");
-$asSQL = new database("anitspoof");
+$asSQL = new database("antispoof");
 
 // Creates database links for later use.
 $tsSQLlink = $tsSQL->getLink();
