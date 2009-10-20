@@ -1628,7 +1628,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		// check the request is not reserved by someone else
 		if( $row['pend_reserved'] != 0 && !isset($_GET['reserveoverride']) && $row['pend_reserved'] != $_SESSION['userID'])
 		{
-			echo "<br />This request is currently marked as being handled by ".getUsernameFromUid($row['pend_reserved']).", Proceed?<br />\n";
+			echo "<br />This request is currently marked as being handled by ".$session->getUsernameFromUid($row['pend_reserved']).", Proceed?<br />\n";
 			echo "<a href=\"acc.php?".$_SERVER["QUERY_STRING"]."&reserveoverride=yes\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
 			echo showfooter();
 			die();
@@ -1846,7 +1846,7 @@ elseif ($action == "reserve") {
 		$reservedBy = isReserved($request);
 		if( $reservedBy != false )
 		{
-			die("Request already reserved by ".getUsernameFromUid($reservedBy));
+			die("Request already reserved by ".$session->getUsernameFromUid($reservedBy));
 		}
 		
 		if(isset($allowDoubleReserving)){
@@ -1912,7 +1912,7 @@ elseif ($action == "reserve") {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		$accbotSend->send("Request $request is being handled by " . getUsernameFromUid($_SESSION['userID']));
+		$accbotSend->send("Request $request is being handled by " . $session->getUsernameFromUid($_SESSION['userID']));
 		echo zoomPage($request);
         echo showfooter();
 	}	
@@ -1925,7 +1925,7 @@ elseif ($action == "breakreserve") {
 		//check request is reserved
 		$reservedBy = isReserved($request);
 		if( $reservedBy != $_SESSION['userID'] )
-			Die("You cannot break ".getUsernameFromUid($reservedBy)."'s reservation");
+			Die("You cannot break ".$session->getUsernameFromUid($reservedBy)."'s reservation");
 		$query = "UPDATE `acc_pend` SET `pend_reserved` = '0' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)

@@ -128,5 +128,24 @@ class session {
 			//die("Not logged in!");
 		}
 	}
+	
+	public function getUsernameFromUid($userid)
+	{
+		/**
+		* Retrieves a username from a user id
+		*/
+		if (!preg_match('/^[0-9]*$/',$userid)) {
+			die('Invalid user id. <!-- in function getUsernameFromUid -->');
+		}
+		$query = "SELECT user_name FROM acc_user WHERE user_id = $userid;";
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Error determining user from UID.");
+		$row = mysql_fetch_assoc($result);
+		return $row['user_name'];
+		$result = mysql_query($query);
+		if (!$result)
+			Die("Error determining user from UID.");
+	}
 }
 ?>
