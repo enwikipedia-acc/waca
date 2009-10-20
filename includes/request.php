@@ -154,7 +154,7 @@ class accRequest {
 						$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>."); 
 					$user = $row['pend_name'];
 					$now = date("Y-m-d H-i-s");
-					$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ($pid, $user, 'Email Confirmed', $now)";
+					$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ($pid, $user, 'Email Confirmed', '$now')";
 					$result = $tsSQL->query($query);
 					if ( !$result )
 						$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
