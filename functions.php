@@ -1035,6 +1035,7 @@ function zoomPage($id)
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
+	// TODO: why??? what's wrong with just using $currentrow?
 	$numip = 0;
 	$currentrow = 0;
  	while ($row = mysql_fetch_assoc($result)) {
@@ -1056,6 +1057,7 @@ function zoomPage($id)
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
+	// TODO: why??? what's wrong with just using $currentrow?
 	$numem = 0;
 	$currentrow = 0;
 	while ($row = mysql_fetch_assoc($result)) {
