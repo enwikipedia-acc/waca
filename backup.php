@@ -50,7 +50,7 @@ if( $arg == "--monthly" ) {
 }
 
 echo "running nightly backups\n";
-$dateModifier = date( "mdy" );
+$dateModifier = date( "y-m-d" );
 $cmdLine = "$dumper > $dir/$basefile$dateModifier.sql; $gzip $dir/$basefile$dateModifier.sql";
 echo "running command $cmdLine\n";
 shell_exec( $cmdLine );
