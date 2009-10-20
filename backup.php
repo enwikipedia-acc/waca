@@ -31,11 +31,11 @@ echo "Initialising backup script\n";
 
 //Config
 $basefile = "backup";
-$dir = "/projects/acc/accbak";
-$monthdir = "/projects/acc/accbak/monthly";
-$dumper = "/opt/ts/mysql/5.1/bin/mysqldump --defaults-file=~/.dblocal p_acc"; //add params here if they are needed.
-$gzip = "/usr/bin/gzip"; //add params here too if needed.
-$tar = "/usr/bin/tar -cvf";
+$dir = "/home/project/a/c/c/acc/backups";
+$monthdir = $dir . "/monthly";
+$dumper = "/usr/bin/mysqldump --defaults-file=~/.my.cnf p_acc_live"; //add params here if they are needed.
+$gzip = "/bin/gzip"; //add params here too if needed.
+$tar = "/bin/tar -cvf";
 
 echo "Loaded configuration\n";
 
