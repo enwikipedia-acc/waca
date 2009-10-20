@@ -460,7 +460,7 @@ function listrequests($type, $hideip) {
 				{
 					$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"acc.php?action=breakreserve&resid=" . $row['pend_id']. "\">Break reservation</a>";
 				} else {
-					$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"users.php?viewuser=$reserveByUser\">" . getUsernameFromUid($reserveByUser) . "</a>";
+					$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"users.php?viewuser=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
 				}
 			}
 			else // not being handled, do you want to handle this request?
@@ -478,25 +478,6 @@ function listrequests($type, $hideip) {
 		return ($tablestart . $reqlist . $tableend);
 	}
 
-}
-
-/**
-* Retrieves a username from a user id
-*/
-function getUsernameFromUid($userid)
-{
-	if (!preg_match('/^[0-9]*$/',$userid)) {
-		die('Invalid user id. <!-- in function getUsernameFromUid -->');
-	}
-	$query = "SELECT user_name FROM acc_user WHERE user_id = $userid;";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("Error determining user from UID.");
-	$row = mysql_fetch_assoc($result);
-	return $row['user_name'];
-	$result = mysql_query($query);
-	if (!$result)
-		Die("Error determining user from UID.");
 }
 
 /**
@@ -872,7 +853,7 @@ function zoomPage($id)
 		$reservingUser = isReserved($thisid);
 		if( $reservingUser != 0 )
 		{
-			$out .= "<h3>This request is currently being handled by " . getUsernameFromUid($reservingUser) ."</h3>";
+			$out .= "<h3>This request is currently being handled by " . $session->getUsernameFromUid($reservingUser) ."</h3>";
 		}
 	}
 	$out .= '<p><b>Date request made:</b> ' . $row['pend_date'] . '</p>';
