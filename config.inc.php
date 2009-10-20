@@ -88,6 +88,11 @@ $emailConfirmationExpiryDays = 2;
 // Should we show the 'You last logged in from' line at the bottom of the page
 $enableLastLogin = false;
 
+// perform a newbie check on tool registration
+$onRegistrationNewbieCheck = true;
+$onRegistrationNewbieCheckEditCount = 20;
+$onRegistrationNewbieCheckAge = 5184000;
+
 ////// Don't add any new config options below this line, as they will not be changable by the local config file.
 require_once('config.local.inc.php');
 	

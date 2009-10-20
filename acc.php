@@ -180,17 +180,21 @@ elseif ($action == "sreg") {
 			die();
 		}
 	}
+	
 	// check if the user is to new
-	if( $whichami != "Sand(mmp)" ) { //Hack to allow me to be able to make new accounts for testing stuff on sand. --FunPika
-	$isNewbie = unserialize(file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$cu_name" ));
-	$time = $isNewbie['query']['allusers'][0]['registration'];
-	$time2 = time() - strtotime($time);
-	$editcount = $isNewbie['query']['allusers'][0]['editcount'];
-	if (!($editcount > 20 and $time2 > 5184000)) {
-		echo "I'm sorry, you are too new to request an account at the moment.<br />\n";
-		echo showfootern();
-		die();
-	}
+	global $onRegistrationNewbieCheck;
+	if( $onRegistrationNewbieCheck ) 
+	{
+		global $onRegistrationNewbieCheckEditCount, $onRegistrationNewbieCheckAge;
+		$isNewbie = unserialize(file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$cu_name" ));
+		$time = $isNewbie['query']['allusers'][0]['registration'];
+		$time2 = time() - strtotime($time);
+		$editcount = $isNewbie['query']['allusers'][0]['editcount'];
+		if (!($editcount > $onRegistrationNewbieCheckEditCount and $time2 > $onRegistrationNewbieCheckAge)) {
+			echo "I'm sorry, you are too new to request an account at the moment.<br />\n";
+			echo showfootern();
+			die();
+		}
 	}
 	// check if user checked the "I have read and understand the interface guidelines" checkbox
 	if(!isset($_REQUEST['guidelines'])) {
