@@ -80,5 +80,53 @@ class session {
 		}
 		return false;
 	}
+	
+	public function checksecurity($username) {
+		/*
+		* Check the user's security level on page load, and bounce accordingly
+		*/
+		global $secure, $session;
+		if ($session->hasright($username, "New")) {
+			echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
+			echo showfootern();
+			die();
+		} elseif ($session->hasright($username, "Suspended")) {
+			echo "I'm sorry, but, your account is presently suspended.<br />\n";
+			echo showfootern();
+			die();
+		} elseif ($session->hasright($username, "Declined")) {
+			$username = sanitize($username);
+			$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
+			$result = mysql_query($query);
+			if (!$result) {
+				sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+			}
+			$row = mysql_fetch_assoc($result);
+			$query2 = "SELECT * FROM acc_log WHERE log_pend = '" . $row['user_id'] . "' AND log_action = 'Declined' ORDER BY log_id DESC LIMIT 1;";
+			$result2 = mysql_query($query2);
+			if (!$result2) {
+				sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+			}
+			$row2 = mysql_fetch_assoc($result2);
+			echo "I'm sorry, but, your account request was <strong>declined</strong> by <strong>" . $row2['log_user'] . "</strong> because <strong>\"" . $row2['log_cmt'] . "\"</strong> at <strong>" . $row2['log_time'] . "</strong>.<br />\n";
+			echo "Related information (please include this if appealing this decision)<br />\n";
+			echo "user_id: " . $row['user_id'] . "<br />\n";
+			echo "user_name: " . $row['user_name'] . "<br />\n";
+			echo "user_onwikiname: " . $row['user_onwikiname'] . "<br />\n";
+			echo "user_email: " . $row['user_email'] . "<br />\n";
+			echo "log_id: " . $row2['log_id'] . "<br />\n";
+			echo "log_pend: " . $row2['log_pend'] . "<br />\n";
+			echo "log_user: " . $row2['log_user'] . "<br />\n";
+			echo "log_time: " . $row2['log_time'] . "<br />\n";
+			echo "log_cmt: " . $row2['log_cmt'] . "<br />\n";
+			echo "<br /><big><strong>To appeal this decision, please e-mail <a href=\"mailto:accounts-enwiki-l@lists.wikimedia.org\">accounts-enwiki-l@lists.wikimedia.org</a> with the above information, and a reasoning why you believe you should be approved for this interface.</strong></big><br />\n";
+			echo showfootern();
+			die();
+		} elseif ($session->hasright($username, "User") || $session->hasright($username, "Admin") ) {
+			$secure = 1;
+		} else {
+			//die("Not logged in!");
+		}
+	}
 }
 ?>

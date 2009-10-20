@@ -104,7 +104,7 @@ elseif (!isset($_GET['nocheck']))
 		
 		// ?
         echo makehead($_SESSION['user']);
-        checksecurity($_SESSION['user']);
+        $session->checksecurity($_SESSION['user']);
 		
 		// ?
         $out = $messages->getMessage('20');
