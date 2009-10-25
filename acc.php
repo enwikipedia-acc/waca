@@ -1324,7 +1324,7 @@ HTML;
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
 
-		$out = "<li><small>[ <a class=\"request-ban\" href=\"users.php?viewuser=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+		$out = "<li><small>[ <a class=\"request-ban\" href=\"statistics.php?page=Users&user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 		if( $enableRenames == 1 ) {
 			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
 			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
@@ -1384,7 +1384,7 @@ HTML;
 		$row2 = mysql_fetch_assoc($result2);
 		$declined = $row2['COUNT(*)'];
 
-		$out = "<li><small>[ <a class=\"request-ban\" href=\"users.php?viewuser=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+		$out = "<li><small>[ <a class=\"request-ban\" href=\"statistics.php?page=Users&user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 		if( $enableRenames == 1 ) {
 			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
 			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
@@ -1410,7 +1410,7 @@ HTML;
 		$uname = $row['user_name'];
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
-		$out = "<li><small>[ <a class=\"request-ban\" href=\"users.php?viewuser=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+		$out = "<li><small>[ <a class=\"request-ban\" href=\"statistics.php?page=Users&user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 		if( $enableRenames == 1 ) {
 			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
 			$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
