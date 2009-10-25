@@ -227,7 +227,7 @@ class StatsUsers extends StatisticsPage
 		}
 		// List the requests this user has *not* marked as 'created'
 		$out.= "<h2>Users not created</h2>\n";
-		$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = " . $gid . " AND log_action != 'Closed 1' AND log_action != 'Reserved' AND log_action != 'Unreserved';";
+		$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = " . $gid . " AND log_action != 'Closed 1' AND log_action LIKE 'Closed %' AND log_action != 'Closed custom';";
 		$result = $tsSQL->query($query); // Get all the requests this user has *not* marked as 'created'
 		if (!$result)
 		{
