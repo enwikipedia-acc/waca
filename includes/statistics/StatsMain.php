@@ -17,10 +17,12 @@ class StatsMain extends StatisticsPage
 	function execute()
 	{
 		$out = "<h2>Menu</h2><ul>";
-		global $filepath;
+		global $filepath, $usePathInfo;
 		$files = scandir($filepath . "/includes/statistics/");
 
 		$statsPageDefinitions = preg_grep("/php$/",$files);
+		
+		$urlFragment = $usePathInfo ? "/" : "?page=";
 		
 		foreach ($statsPageDefinitions as $i) {
 			require_once $filepath . "/includes/statistics/" . $i;
@@ -29,7 +31,7 @@ class StatsMain extends StatisticsPage
 			$o = new $c;
 			if($o->hideFromMenu() == false)
 			{
-				$out.='<li><a href="?page='.$o->getPageName().'">'.$o->getPageTitle().'</a></li>';
+				$out.='<li><a href="'.$urlFragment.$o->getPageName().'">'.$o->getPageTitle().'</a></li>';
 			}
 		}
 		$out.="</ul>";

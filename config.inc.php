@@ -85,6 +85,9 @@ $onRegistrationNewbieCheck = true;
 $onRegistrationNewbieCheckEditCount = 20;
 $onRegistrationNewbieCheckAge = 5184000;
 
+// should we use PATH_INFO for request parameters to prettify urls?
+$usePathInfo = false;
+
 ////// Don't add any new config options below this line, as they will not be changable by the local config file.
 require_once('config.local.inc.php');
 	
