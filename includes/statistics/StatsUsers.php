@@ -74,7 +74,7 @@ class StatsUsers extends StatisticsPage
 			// We only want to list the user if they were approved and are not currently on suspension
 			if ($row['user_level'] != "Suspended" && $row['user_level'] != "Declined" && $row['user_level'] != "New")
 			{
-				$out.= "<li><a href=\"?page=Users&user=" . $row['user_id'] . "\">"; // Start list item, link to user page
+				$out.= "<li><a href=\"?page=Users&amp;user=" . $row['user_id'] . "\">"; // Start list item, link to user page
 				$uid = array ($row['user_name'], $row['user_onwikiname'], $row['user_id']); // Build an array of the user's name, onwiki name, and ID to compare with users in devlist
 				// Write the users name
 				$out.= $row['user_name'];
@@ -155,7 +155,7 @@ class StatsUsers extends StatisticsPage
 			if( $enableRenames == 1 )
 			{
 				// If renaming is on, add links to edit and rename the user
-				$tools = "[ <a href=\"acc.php?action=usermgmt&rename=" . $row['user_id'] . "\">Rename!</a> - <a href=\"acc.php?action=usermgmt&edituser=" . $row['user_id'] . "\">Edit!</a> -";
+				$tools = "[ <a href=\"acc.php?action=usermgmt&amp;rename=" . $row['user_id'] . "\">Rename!</a> - <a href=\"acc.php?action=usermgmt&amp;edituser=" . $row['user_id'] . "\">Edit!</a> -";
 			}
 			else
 			{
@@ -167,19 +167,19 @@ class StatsUsers extends StatisticsPage
 			{
 				case "User":
 					// Build suspend and promote links
-					$tools .= " <a href=\"acc.php?action=usermgmt&suspend=" . $row['user_id'] . "\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&promote=" . $row['user_id'] . "\">Promote!</a> ]";
+					$tools .= " <a href=\"acc.php?action=usermgmt&amp;suspend=" . $row['user_id'] . "\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;promote=" . $row['user_id'] . "\">Promote!</a> ]";
 					$out.= $tools;
 					break;
 					
 				case "Admin":
 					// Build suspend and demote links
-					$tools .= " <a href=\"acc.php?action=usermgmt&suspend=" . $row['user_id'] . "\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&demote=" . $row['user_id'] . "\">Demote!</a> ]";
+					$tools .= " <a href=\"acc.php?action=usermgmt&amp;suspend=" . $row['user_id'] . "\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;demote=" . $row['user_id'] . "\">Demote!</a> ]";
 					$out.= $tools;
 					break;
 					
 				case "Suspended":
 					// Build unsuspend link
-					$tools .= " <a href=\"acc.php?action=usermgmt&approve=" . $row['user_id'] . "\">Unsuspend!</a> ]";
+					$tools .= " <a href=\"acc.php?action=usermgmt&amp;approve=" . $row['user_id'] . "\">Unsuspend!</a> ]";
 					$out.= $tools;
 					break;
 					
@@ -307,17 +307,17 @@ class StatsUsers extends StatisticsPage
 					{
 						case "Prefchange":
 							// Another user changed this user's preferences
-							$out.= "<li><a href=\"users.php?viewuser=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> changed user preferences for " . $username . " at " . $row['log_time'] . "</li>\n";
+							$out.= "<li><a href=\"statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> changed user preferences for " . $username . " at " . $row['log_time'] . "</li>\n";
 							break;
 						
 						case "Renamed":
 							// Another user renamed this user
-							$out.= "<li><a href=\"users.php?viewuser=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> " . $row['log_cmt'] . " at " . $row['log_time'] . ".</li>\n";	
+							$out.= "<li><a href=\"statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> " . $row['log_cmt'] . " at " . $row['log_time'] . ".</li>\n";	
 							break;
 						
 						default:
 							// Anything else			
-							$out.= "<li><a href=\"users.php?viewuser=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> at " . $row['log_time'] . $comments . "</li>\n";
+							$out.= "<li><a href=\"statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> at " . $row['log_time'] . $comments . "</li>\n";
 							break;
 					}
 				}
