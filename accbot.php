@@ -437,7 +437,7 @@
 			sleep( 1 );
 		}
 		pclose( $svn );
-		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Please see the sandbox at http://stable.toolserver.org/acc/sand/acc.php' );
+		irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Please see the sandbox at http://toolserver.org/~acc/sand/acc.php' );
 	}
 
 	function commandRewriteSvnUp( $parsed ) {
@@ -450,7 +450,7 @@
         	sleep( 1 );
         }
         pclose( $svn );
-    	irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Please see the acc.php rewrite sandbox at http://stable.toolserver.org/acc/rewrite/acc.php' );
+    	irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $parsed['nick'] . ': Please see the acc.php rewrite sandbox at http://toolserver.org/~acc/rewrite/acc.php' );
 	}             
 
 	
