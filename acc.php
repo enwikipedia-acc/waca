@@ -725,7 +725,7 @@ elseif ($action == "messagemgmt") {
 		echo "$out2\n";
 		}
 	}
-	echo "</ol><br />\n";
+	echo "</ul><br />\n";
 	echo showfooter();
 	die();
 }
