@@ -945,7 +945,7 @@ elseif ($action == "ban") {
 		echo "</table>\n";
 		if($isAdmin) {
 			echo "<h2>Ban an IP, Name or E-Mail</h2>";
-			echo "<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\"><table><tr><td>Ban target:</td><td><input type=\"text\" name=\"target\" /></td></tr><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite</option><OPTION VALUE=\"86400\">24 Hours</option><OPTION VALUE=\"604800\">One Week</option><OPTION VALUE=\"2629743\">One Month</option></SELECT></td></tr><tr><td>Type:</td><td><select name=\"type\"><option value=\"IP\">IP</option><option value=\"Name\">Name</option><option value=\"EMail\">E-Mail</option></select></td></tr></table><br /><input type=\"submit\" /></form>\n";
+			echo "<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\"><table><tr><td>Ban target:</td><td><input type=\"text\" name=\"target\" /></td></tr><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td><tr><td>Duration:</td><td> <select name=\"duration\"><option value=\"-1\">Indefinite</option><option value=\"86400\">24 Hours</option><option value=\"604800\">One Week</option><option value=\"2629743\">One Month</option></select></td></tr><tr><td>Type:</td><td><select name=\"type\"><option value=\"IP\">IP</option><option value=\"Name\">Name</option><option value=\"EMail\">E-Mail</option></select></td></tr></table><br /><input type=\"submit\" /></form>\n";
 		}
 		echo showfooter();
 		die();
