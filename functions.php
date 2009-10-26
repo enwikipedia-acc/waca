@@ -729,6 +729,7 @@ function displayheader() {
 
 function displayfooter() {
 	echo "<a href=\"index.php\">Return to account request interface.</a><br />\n";
+	global $session;
 	if(isset($_SESSION['user'])) {
 		if($session->hasright($_SESSION['user'], 'User') || $session->hasright($_SESSION['user'], 'Admin')){
 			echo "<a href=\"acc.php\">Return to request management interface</a>\n";
