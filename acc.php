@@ -1056,7 +1056,7 @@ elseif ($action == "usermgmt") {
 				echo $_GET['preload'];
 			}
 			echo "</textarea><br />\n";
-			echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
+			echo "<input type=\"submit\" /><input type=\"reset\"/><br />\n";
 			echo "</form>";
 			echo showfooter();
 			die();
@@ -1257,7 +1257,7 @@ elseif ($action == "usermgmt") {
 			echo "<li>User ID: " . $row['user_id'] . "</li>\n";
 			echo "<li>User Level: " . $row['user_level'] . "</li>\n";
 			echo "</ul>\n";
-			echo "<form action=\"acc.php?action=usermgmt&edituser=" . $_GET['edituser'] . "\" method=\"post\">\n";
+			echo "<form action=\"acc.php?action=usermgmt&amp;edituser=" . $_GET['edituser'] . "\" method=\"post\">\n";
 			echo "<div class=\"required\">\n";
 			echo "<label for=\"user_email\">Email Address:</label>\n";
 			echo "<input id=\"user_email\" type=\"text\" name=\"user_email\" value=\"" . stripslashes($row['user_email']) . "\"/>\n";
