@@ -69,7 +69,7 @@ class StatsMonthlyStats extends StatisticsPage
 			);
 
 			foreach ($this->createClosuresGraph($queries) as $i) {
-				$out.= '<img src="render/' . $i . '" />';
+				$out.= '<img src="render/' . $i[0] . '" alt="'.$i[1].'"/>';
 			}
 
 		}
@@ -121,7 +121,7 @@ class StatsMonthlyStats extends StatisticsPage
 				$DataSet->SetAbsciseLabelSerie();
 				
 				$chartname = md5(serialize($DataSet));
-				$imagehashes[] = $chartname;
+				$imagehashes[] = array($chartname, $q['series']);
 				
 				if(!file_exists($chartname))
 				{
