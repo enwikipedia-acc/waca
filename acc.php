@@ -924,13 +924,13 @@ elseif ($action == "ban") {
 			switch($row['ban_type'])
 			{
 				case "IP":
-					echo '<td><a href="search.php?term='.$row['ban_target'].'&type=IP">'.$row['ban_target'].'</a></td>';
+					echo '<td><a href="search.php?term='.$row['ban_target'].'&amp;type=IP">'.$row['ban_target'].'</a></td>';
 					break;
 				case "EMail":
-					echo '<td><a href="search.php?term='.$row['ban_target'].'&type=email">'.$row['ban_target'].'</a></td>';
+					echo '<td><a href="search.php?term='.$row['ban_target'].'&amp;type=email">'.$row['ban_target'].'</a></td>';
 					break;
 				case "Name";
-					echo '<td><a href="search.php?term='.$row['ban_target'].'&type=Request">'.$row['ban_target'].'</a></td>';
+					echo '<td><a href="search.php?term='.$row['ban_target'].'&amp;type=Request">'.$row['ban_target'].'</a></td>';
 					break;
 				default:
 					echo '<td>'.$row['ban_target'].'</td>';
@@ -944,7 +944,8 @@ elseif ($action == "ban") {
 		}
 		echo "</table>\n";
 		if($isAdmin) {
-			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\"><table><tr><td>Ban target:</td><td><input type=\"text\" name=\"target\"></td></tr><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr><tr><td>Type:</td><td><select name=\"type\"><option value=\"IP\">IP</option><option value=\"Name\">Name</option><option value=\"EMail\">E-Mail</option></select></td></tr></table><br /><input type=\"submit\"></form>\n";
+			echo "<h2>Ban an IP, Name or E-Mail</h2>";
+			echo "<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\"><table><tr><td>Ban target:</td><td><input type=\"text\" name=\"target\" /></td></tr><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite</option><OPTION VALUE=\"86400\">24 Hours</option><OPTION VALUE=\"604800\">One Week</option><OPTION VALUE=\"2629743\">One Month</option></SELECT></td></tr><tr><td>Type:</td><td><select name=\"type\"><option value=\"IP\">IP</option><option value=\"Name\">Name</option><option value=\"EMail\">E-Mail</option></select></td></tr></table><br /><input type=\"submit\" /></form>\n";
 		}
 		echo showfooter();
 		die();
