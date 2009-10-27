@@ -322,7 +322,7 @@ function listrequests($type, $hideip) {
 		
 		// IP global contribs
 		if ($dontUseWikiDb == 0) {
-			$out .= '<a class="request-src" href="http://toolserver.org/~luxo/contributions/contributions.php?lang=en&blocks=true&user=' . $row['pend_ip'] . '" target="_blank">gc</a> ';
+			$out .= '<a class="request-src" href="http://toolserver.org/~luxo/contributions/contributions.php?lang=en&amp;blocks=true&amp;user=' . $row['pend_ip'] . '" target="_blank">gc</a> ';
 		}
 		elseif ($dontUseWikiDb == 1) {
 			$out .= '';
@@ -332,7 +332,7 @@ function listrequests($type, $hideip) {
 		$out .= $row['pend_ip'] . '" target="_blank">b</a> ';
 		
 		// rangeblocks
-		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3ABlockList&ip=';
+		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3ABlockList&amp;ip=';
 		$out .= $row['pend_ip'] . '" target="_blank">r</a> ';
 		
 		// Global blocks
@@ -340,7 +340,7 @@ function listrequests($type, $hideip) {
 		$out .= $row['pend_ip'] . '" target="_blank">gb</a> ';
 		
 		// Global range blocks/Locally disabled Global Blocks
-		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3AGlobalBlockList&ip=';
+		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3AGlobalBlockList&amp;ip=';
 		$out .= $row['pend_ip'] . '" target="_blank">gr</a> ';
 
 		// IP whois
@@ -351,7 +351,7 @@ function listrequests($type, $hideip) {
 			$out .= '';
 		}
 		// Abuse Filter
-		$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&wpSearchUser=' . $row['pend_ip'] . '" target="_blank">af</a> ';
+		$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $row['pend_ip'] . '" target="_blank">af</a> ';
 		
             }
 		// Username U:
@@ -458,14 +458,14 @@ function listrequests($type, $hideip) {
 			{
 				if( $reserveByUser == $_SESSION['userID'])
 				{
-					$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"acc.php?action=breakreserve&resid=" . $row['pend_id']. "\">Break reservation</a>";
+					$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Break reservation</a>";
 				} else {
 					$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"users.php?viewuser=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
 				}
 			}
 			else // not being handled, do you want to handle this request?
 			{
-				$out .= "</small></td><td><small> | </small></td><td><small><a href=\"acc.php?action=reserve&resid=" . $row['pend_id']. "\">Mark as being handled</a>";
+				$out .= "</small></td><td><small> | </small></td><td><small><a href=\"acc.php?action=reserve&amp;resid=" . $row['pend_id']. "\">Mark as being handled</a>";
 			}
 		}
 
