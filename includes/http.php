@@ -64,6 +64,7 @@ class http {
 		curl_setopt($this->curl,CURLOPT_CONNECTTIMEOUT,15);
 		curl_setopt($this->curl,CURLOPT_TIMEOUT,40);
 		curl_setopt($this->curl,CURLOPT_USERAGENT,$this->useragent);
+		curl_setopt($this->curl,CURLOPT_HTTPHEADER,array('Expect:'));
 		return curl_exec($this->curl);
 	}
 	
