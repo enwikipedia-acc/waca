@@ -19,36 +19,47 @@ if ($ACC != "1") {
 
 class session {
 
-	public function setForceLogout($uid) {
-		$uid = sanitize($uid);
-		global $tsSQLlink;
-
+	public function setForceLogout( $uid ) {
+		$uid = sanitize( $uid );
+		global $toolserver_username;
+		global $toolserver_password;
+		global $toolserver_host;
+		global $toolserver_database;
+		mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+		$link = mysql_select_db($toolserver_database);
+		if( !$link ) {
+			sqlerror(mysql_error(),"Error selecting database.");
+		}
 		$query = "UPDATE acc_user SET user_forcelogout = '1' WHERE user_id = '$uid';";
-		$result = mysql_query($query, $tsSQLlink);
+		$result = mysql_query($query);
 	}
 	
-	public function forceLogout($uid) {
-		$uid = sanitize($uid);
-		global $tsSQLlink;
-		
-		$query = "SELECT user_forcelogout FROM acc_user WHERE user_id = '$uid';";
-		$result = mysql_query($query, $tsSQLlink);
-		
-		if (!$result) {
-			sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+	public function forceLogout( $uid ) {
+		$uid = sanitize( $uid );
+		global $toolserver_username;
+		global $toolserver_password;
+		global $toolserver_host;
+		global $toolserver_database;
+		mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
+		$link = mysql_select_db($toolserver_database);
+		if( !$link ) { 
+			sqlerror(mysql_error(),"Error selecting database.");	
 		}
-		
+		$query = "SELECT user_forcelogout FROM acc_user WHERE user_id = '$uid';";
+		$result = mysql_query($query);
+		if (!$result)
+			sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 		$row = mysql_fetch_assoc($result);
-		if($row['user_forcelogout'] == "1") {
+		if( $row['user_forcelogout'] == "1" ) {
 			$_SESSION = array();
 			if (isset($_COOKIE[session_name()])) {
 				setcookie(session_name(), '', time()-42000, '/');
 			}
-			session_destroy();
+			session_destroy( );
 			echo "You have been forcibly logged out, probably due to being renamed. Please log back in.";
 			$query = "UPDATE acc_user SET user_forcelogout = '0' WHERE user_id = '$uid';";
 			$result = mysql_query($query);
-			die(showfootern());
+			die( showfootern( ) );
 		}
 	}
 	
