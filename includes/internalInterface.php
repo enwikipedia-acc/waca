@@ -49,7 +49,7 @@ class internalInterface {
 			// Generates a link containing the username and the user ID.
 			// Adds this link to the original array.
 			$oluser = stripslashes($oluser);
-			$oluser = "<a href=\"users.php?viewuser=$uid\">$oluser</a>";
+			$oluser = "<a href=\"statistics.php?page=Users&user=$uid\">$oluser</a>";
 		}
 		
 		// Destroys the oluser variable.
