@@ -33,7 +33,7 @@ class internalInterface {
 		// Get the user id for each of the users in the array.
 		foreach ($howma as &$oluser) {
 			// Sanitizes the username and get their record.
-			$oluser = mysql_real_escape_string($oluser);
+			$oluser = mysql_real_escape_string($oluser, $tsSQLlink);
 			$query = "SELECT * FROM acc_user WHERE user_name = '$oluser';";
 			$result = mysql_query($query, $tsSQLlink);
 			
