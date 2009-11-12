@@ -1852,6 +1852,9 @@ elseif ($action == "reserve") {
 			die('Invalid Input.');
 		}
 		$request = sanitise($_GET['resid']);
+		sleep(60); // this is just for testing, will remove in a mo
+		// lock the tables to avoid a possible conflict (see bug #101)
+		mysql_query('LOCK TABLES pend_reserved,acc_pend WRITE;',$tsSQLlink);
 		
 		//check request is not reserved
 		$reservedBy = isReserved($request);
@@ -1924,8 +1927,9 @@ elseif ($action == "reserve") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$accbotSend->send("Request $request is being handled by " . $session->getUsernameFromUid($_SESSION['userID']));
+		mysql_query('UNLOCK TABLES;',$tsSQLlink); // release the lock on the table
 		echo zoomPage($request);
-        echo showfooter();
+        	echo showfooter();
 	}	
 }
 elseif ($action == "breakreserve") {
