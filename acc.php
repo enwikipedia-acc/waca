@@ -1855,7 +1855,8 @@ elseif ($action == "reserve") {
 		
 		// lock the tables to avoid a possible conflict (see bug #101)
 		mysql_query('LOCK TABLES pend_reserved,acc_pend WRITE;',$tsSQLlink);
-		$tsSQL->tableslocked();
+		
+		sleep(10); // this is just for testing, will remove in a mo
 		
 		//check request is not reserved
 		$reservedBy = isReserved($request);

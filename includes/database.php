@@ -21,7 +21,7 @@ if ($ACC != "1") {
 require_once 'config.inc.php';
 
 class database {	
-	private $dbLink, $host, $db, $locktables;
+	private $dbLink, $host, $db;
 	
 	/**
 	 * Creates a new instance of the database class.
@@ -162,19 +162,10 @@ class database {
 		return mysql_error($this->dbLink);
 	}
 	
-	/**
-	 * This is a tempory hack until we move over to using the database->query() method instead of mysql_query(),
-	 * when that happens the class should be able to detect when a table is being locked and update $locktables
-	 * by its self.
-	 */
-	public function tableslocked () {
-		$this->locktables = true;
-	}
-	
-	public function __destruct() {
-		  if ($this->locktables)) {
-		  	$this->query('UNLOCK TABLES;');
-		  }
-	}
+	// The database is connected on a passive manner.
+	// Because of this we cannot call mysql_close().
+	// public function __destruct() {
+	//	  mysql_close($this->dbLink);
+	// }
 }
 ?>
