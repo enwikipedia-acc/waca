@@ -267,8 +267,12 @@
 			//irc( 'NOTICE ' . $parsed['nick'] . ' :Invalid syntax.  This command requires a username as a parameter.' );
 			//return;
 			
-			//make the bot use the caller's nick if no username specified. 
-			$username = $parsed['nick'];
+			//make the bot use the caller's nick if no username specified.
+			if (preg_match('/^wiki[mp]edia\/(.+)$/',$parsed['host'],$m)) { /* Try to parse the name from a cloak */
+				$username = $m[1];
+			} else { 
+				$username = $parsed['nick'];
+			}
 			// note: this is a bit of a test, and hopefully won't have too much of an impact on this function. I hope I've got this right. 
 			// old code is the 2 lines above (commented out). Regards, Stwalkerster.
 		}
