@@ -305,10 +305,10 @@ elseif ($action == "sreg") {
 }
 
 elseif ($action == "register") {
+	echo "<h2>Register!</h2>";
+    echo "<span style=\"font-weight:bold;color:red;font-size:20px;\">This form is for requesting tool access. If you want to request an account for Wikipedia, then go to <a href=\"".$tsurl."\">".$tsurl."</a></span>";
 	echo <<<HTML
-    <h2>Register!</h2>
-    <span style="font-weight:bold;color:red;font-size:20px;">This form is for requesting tool access. If you want to request an account for Wikipedia, then go to <a href="http://stable.toolserver.org/acc/">http://stable.toolserver.org/acc/</a></span>
-    <form action="acc.php?action=sreg" method="post">
+	<form action="acc.php?action=sreg" method="post">
     <table cellpadding="1" cellspacing="0" border="0">
             <tr>
                 <td>Desired Username:</td>
@@ -380,7 +380,6 @@ elseif ($action == "register") {
     </table>
     </form>
 HTML;
-
 
 	echo showfootern();
 	die();
