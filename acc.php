@@ -16,6 +16,7 @@
 require_once 'config.inc.php';
 require_once 'devlist.php';
 require_once 'functions.php';
+require_once 'includes/captcha.php';
 require_once 'includes/database.php';
 require_once 'includes/offlineMessage.php';
 require_once 'includes/messages.php';
@@ -40,6 +41,7 @@ $tsSQLlink = $tsSQL->getLink();
 $asSQLlink = $asSQL->getLink();
 
 // Initialize the class objects.
+$captcha = new captcha();
 $messages = new messages();
 $skin     = new skin();
 $accbotSend = new accbotSend();
@@ -472,9 +474,7 @@ HTML;
 	die();
 }
 elseif ($action == "login") {
-	if ($useCaptcha) {
-		require_once 'includes/captcha.php';
-		$captcha = new captcha();
+	if ($useCaptcha) {		
 		if (isset($_POST['captcha'])) {
 			if (!$captcha->verifyPasswd($_POST['captcha_id'],$_POST['captcha'])) {
 				header("Location: $tsurl/acc.php?error=captchafail");

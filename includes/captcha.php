@@ -12,9 +12,6 @@
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
 
-global $ACC;
-global $tsurl;
-
 if ($ACC != "1") {
     header("Location: $tsurl/");
     die();
@@ -79,7 +76,7 @@ class captcha {
 	
 	private function removeExpiredData () {
 		global $varfilepath;
-		$text = explode("\n",file_get_contents($varfilepath.'captchas.txt'));
+		$text = explode("\n",file_get_contents($varfilepath.'captchas.txt'));	
 		$newtext = '';
 		foreach ($text as $line) {
 			if (preg_match('/(\d+)$/',$line,$m)) {
@@ -129,6 +126,7 @@ class captcha {
 		}
 		return $passwd;
 	}
+	
 	private function getFonts () {
 		$font_path = dirname(__FILE__).'/fonts';
 		$fonts = array();
@@ -141,6 +139,7 @@ class captcha {
 		}
 		return $fonts;
 	}
+	
 	private function showImage ($passwd,$width,$height) {
 		$fonts = $this->getFonts();
 		if (count($fonts) < 1) {
@@ -174,5 +173,4 @@ class captcha {
 		imagedestroy($img);
 	}
 }
-
 ?>
