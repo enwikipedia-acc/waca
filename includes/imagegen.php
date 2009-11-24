@@ -34,7 +34,7 @@ class imagegen {
 			mkdir($imageDir);
 		}
 		
-		// If there's already a file with tha name, why create it again?
+		// If there's already a file with that name, why create it again?
 		if( file_exists($imageDir.$id.'.png'))
 		{
 			// Return the id, that's enough to tell us where the image is stored.
