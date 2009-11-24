@@ -23,7 +23,7 @@ class internalInterface {
 		* Show how many users are logged in, in the footer
 		*/
 		
-		$users = $this->getloggedin();
+		$users = $this->gethowma();
 		$out = array();
 		
 		foreach ($users as $user) {
@@ -37,7 +37,7 @@ class internalInterface {
 		return $out;
 	}
 	
-	protected function getloggedin() {
+	public function gethowma($count=false) {
 		/*
 		* Return the users that are currently logged in.
 		*/
@@ -53,12 +53,21 @@ class internalInterface {
 		$last5mins = date("Y-m-d H:i:s", $last5min); 		
 		
 		// Runs a query to get all the users that was active the last 5 minutes.
-		$query = "SELECT user_name,user_id FROM acc_user WHERE user_lastactive > '$last5mins';";
+		if ($count) {
+			$query = "SELECT count(user_id) FROM acc_user WHERE user_lastactive > '$last5mins';";
+		} else {
+			$query = "SELECT user_name,user_id FROM acc_user WHERE user_lastactive > '$last5mins';";
+		}
 		$result = mysql_query($query, $tsSQLlink);
 		
 		// Display an error message if the query didnt work.
 		if (!$result) {
 			sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+		}
+		
+		if ($count) {
+			$row = mysql_fetch_assoc($result);
+			return $row['user_id'];
 		}
 		
 		// Creates new array.

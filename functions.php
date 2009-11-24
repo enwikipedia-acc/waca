@@ -574,7 +574,7 @@ function showfooter() {
 	}
 	
 	$howmany = array ();
-	$howmany = $internalInterface->gethowma();
+	$howmany = $internalInterface->gethowma(true);
 	$howout = $internalInterface->showhowma();
 	$howma = $howmany['howmany'];
 	$out = $messages->getMessage('23');
