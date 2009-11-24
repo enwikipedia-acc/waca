@@ -22,52 +22,24 @@ class internalInterface {
 		/*
 		* Show how many users are logged in, in the footer
 		*/
-		global $tsSQLlink;
 		
-		// Assigns the calculated amount of users to the new array.
-		$howma = $this->gethowma();
+		$users = $this->getloggedin();
+		$out = array();
 		
-		// Removes the howmany variable, as we only want the users online.
-		unset ($howma['howmany']);
-		
-		// Get the user id for each of the users in the array.
-		foreach ($howma as &$oluser) {
-			// Sanitizes the username and get their record.
-			$oluser = mysql_real_escape_string($oluser, $tsSQLlink);
-			$query = "SELECT * FROM acc_user WHERE user_name = '$oluser';";
-			$result = mysql_query($query, $tsSQLlink);
-			
-			// Display an error message if the query didnt work.
-			if (!$result) {
-				sqlerror("Query failed: $query ERROR: " . mysql_error() . " f190","Database query error.");
-			}
-			
-			// Uses the users row to gets its ID.
-			$row = mysql_fetch_assoc($result);
-			$uid = $row['user_id'];
-			
-			// Generates a link containing the username and the user ID.
-			// Adds this link to the original array.
-			$oluser = stripslashes($oluser);
-			$oluser = "<a href=\"statistics.php?page=Users&user=$uid\">$oluser</a>";
+		foreach ($users as $user) {
+			array_push($out,"<a href=\"statistics.php?page=Users&user=".$user['user_id']."\">".$user['user_name']."</a>");
 		}
 		
-		// Destroys the oluser variable.
-		// unset($oluser);
-		
-		// Adds all the items of the array into a string.
-		// The string would contain links, as the link where added by the for loop.
-		$out = "";
-		$out = implode(", ", $howma);
+		$out = implode(", ", $out);
 
 		// Strips all the whitespaces from the string.
-		$out = ltrim(rtrim($out));
-		return ($out);
+		$out = trim($out);
+		return $out;
 	}
 	
-	public function gethowma() {
+	protected function getloggedin() {
 		/*
-		* Get how many people are logged in
+		* Return the users that are currently logged in.
 		*/
 		global $tsSQLlink;
 		
@@ -81,7 +53,7 @@ class internalInterface {
 		$last5mins = date("Y-m-d H:i:s", $last5min); 		
 		
 		// Runs a query to get all the users that was active the last 5 minutes.
-		$query = "SELECT user_name FROM acc_user WHERE user_lastactive > '$last5mins';";
+		$query = "SELECT user_name,user_id FROM acc_user WHERE user_lastactive > '$last5mins';";
 		$result = mysql_query($query, $tsSQLlink);
 		
 		// Display an error message if the query didnt work.
@@ -93,16 +65,11 @@ class internalInterface {
 		$whoactive = array ();
 		
 		// Add each item from the SQL query into the array.
-		while (list($user_name) = mysql_fetch_row($result)) {
-			array_push($whoactive, $user_name);
+		while ($row = mysql_fetch_assoc($result)) {
+			array_push($whoactive, $row);
 		}
 		
-		// Counts the amount of elements in the array.
-		$howma = count($whoactive);
-		
-		// Adds the amount of elements to the array.
-		$whoactive['howmany'] = $howma;
-		return ($whoactive);
+		return $whoactive;
 	}
 }
 ?>
