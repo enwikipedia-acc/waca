@@ -66,7 +66,7 @@ class accRequest {
 	
 	public function isTOR() {
 		// Get messages object from index file.
-		global $messages;
+		global $messages, $skin;
 		
 		// Checks whether the IP is of the TOR network.
 		$toruser = $this->checktor($_SERVER['REMOTE_ADDR']);
@@ -95,7 +95,7 @@ class accRequest {
 	 */
 	public function checkBan($type,$target) {
 		// Get requered objects from index file.
-		global $messages, $tsSQL;
+		global $messages, $tsSQL, $skin;
 		
 		// Formulates and executes the SQL query to check for the ban.
 		$query = "SELECT * FROM acc_ban WHERE ban_type = '".$tsSQL->escape($type)."' AND ban_target = '".$tsSQL->escape($target)."'";
@@ -184,7 +184,7 @@ class accRequest {
 		global $enableEmailConfirm, $tsurl;
 		
 		// Get variables and objects from index file.
-		global $tsSQL, $messages, $action, $accbot;
+		global $tsSQL, $messages, $action, $accbot, $skin;
 		
 		// Checks whether email confirmation is activated.
 		if ($enableEmailConfirm == 1) {
@@ -491,7 +491,7 @@ class accRequest {
 	
 	public function blockedOnEn() {
 		// Get global variable from configuration file and an object from the index file.
-		global $dontUseWikiDb, $asSQL;
+		global $dontUseWikiDb, $asSQL, $skin;
 		
 		if(!$dontUseWikiDb) {
 			// Formulates and executes the SQL query to check if the IP is blocked on the Eng Wiki. 
@@ -548,7 +548,7 @@ class accRequest {
 	}
 	
 	public function finalChecks($user,$email) {
-		global $messages, $tsSQL;
+		global $messages, $tsSQL, $skin;
 		$fail = 0;
 		
 		// Checks whether the username is already in use on Wikipedia.
