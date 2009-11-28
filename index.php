@@ -61,24 +61,28 @@ if(isset($_GET['id'])) {
 	$request->setID($_GET['id']);
 }
 
+// Method executed when user confirms the requested account.
 $request->checkConfirmEmail();
 
+// Checks whether both the name and email are set.
 if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	
+	// Replaces the spaces in the username with underscores.
 	$_POST['name'] = str_replace(" ", "_", $_POST['name']);
-	$_POST['name'] = trim(ucfirst($_POST['name']));
 	
-	global $dontUseWikiDb;
+	// Trims the whitespace from the username.
+	$_POST['name'] = trim(ucfirst($_POST['name']));
 
-	// Initialize Variables
+	// Initialize the variables and escapes them for MySQL.
 	$user = $tsSQL->escape(trim($_POST['name']));
 	$email = $tsSQL->escape(trim($_POST['email']));
 	
 	// Delete old bans
 	$tsSQL->query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP() AND ban_duration != -1');
 
-	// Check for bans
-	$request->isTOR(); // is it a TOR node?
+	// Check for various types of bans.
+	// See the request class for details on each one.
+	$request->isTOR();
 	$request->checkBan('IP',$_SERVER['REMOTE_ADDR']);
 	$request->checkBan('Name',$_POST['name']);
 	$request->checkBan('EMail',$_POST['email']);

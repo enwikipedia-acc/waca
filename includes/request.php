@@ -65,12 +65,22 @@ class accRequest {
 	}
 	
 	public function isTOR() {
+		// Get messages object from index file.
 		global $messages;
+		
+		// Checks whether the IP is of the TOR network.
 		$toruser = $this->checktor($_SERVER['REMOTE_ADDR']);
+		
+		// Checks whether the tor field in the array is said to yes.
 		if ($toruser['tor'] == "yes") {
+			// Gets message to display to the user.
 			$message = $messages->getMessage(19);
+			
+			// Displays the appropiate messages to the user.
 			echo "$message<strong><a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse.</strong><br />\n";
 			echo $messages->getMessage(22);
+			
+			// Terminates the current script. 
 			die();
 		}
 	}
@@ -140,7 +150,13 @@ class accRequest {
 	}
 	
 	public function checkConfirmEmail() {
-		global $tsSQL, $enableEmailConfirm, $messages, $action, $accbot, $tsurl;
+		// Get global variables from configuration file.
+		global $enableEmailConfirm, $tsurl;
+		
+		// Get variables and objects from index file.
+		global $tsSQL, $messages, $action, $accbot;
+		
+		// Checks whether email confirmation is activated.
 		if ($enableEmailConfirm == 1) {
 			if ( $action == "confirm" && isset($_GET['id']) && isset($_GET['si']) ) {
 				$pid = $tsSQL->escape($_GET['id']);
@@ -193,20 +209,33 @@ class accRequest {
 		}
 	}
 	
+	/*
+	* Check if the supplied host is a TOR node.
+	*/
 	public function checktor($addr) {
-		/*
-		* Check if the supplied host is a TOR node
-		*/
+		// Creates empty array.
 		$flags = array ();
+		
+		// Sets tor variable to no.
 		$flags['tor'] = "no";
+		
+		// Breaks the IP string up into an array.
 		$p = explode(".", $addr);
+		
+		// Checks whether the user uses the IPv6 addy.
+		// Returns the flags array with the false variable.
 		if(strpos($addr,':') != -1 ) {
-			//IPv6 addy
 			return $flags;
 		}
+		
+		// Generates a new host name by means of the IP array and TOR string.
 		$ahbladdr = $p['3'] . "." . $p['2'] . "." . $p['1'] . "." . $p['0'] . "." . "tor.ahbl.org";
 
+		// Get the IP address corresponding to a given host name.
 		$ahbl = gethostbyname($ahbladdr);
+		
+		// In the returned IP adress is one of the following, it is from the TOR network.
+		// There is then a yes flag assigned to the flag array.
 		if ($ahbl == "127.0.0.2") {
 			$flags['transit'] = "yes";
 			"yes";
@@ -217,6 +246,8 @@ class accRequest {
 			"yes";
 			$flags['tor'] = "yes";
 		}
+		
+		// The flags array are returned to the isTor method.
 		return ($flags);
 	}
 	
@@ -554,5 +585,4 @@ class accRequest {
 		}
 	}
 }
-
 ?>
