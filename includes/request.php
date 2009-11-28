@@ -76,11 +76,14 @@ class accRequest {
 			// Gets message to display to the user.
 			$message = $messages->getMessage(19);
 			
-			// Displays the appropiate messages to the user.
+			// Displays the appropiate message to the user.
 			echo "$message<strong><a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse.</strong><br />\n";
-			echo $messages->getMessage(22);
 			
-			// Terminates the current script. 
+			// Display the footer of the interface.
+			$skin->displayfooter();
+			
+			// Terminates the current script, as the user is banned.
+			// This is done because the requesting process should be stopped. 
 			die();
 		}
 	}
@@ -98,10 +101,18 @@ class accRequest {
 
 			if ($dbanned < time()) {
 				//Not banned!
-			} else { //Still banned!
+			} else { //Still banned!			
+				// Gets message to display to the user.
 				$message = $messages->getMessage(19);
+				
+				// Displays the appropiate message to the user and the retrieved reason.
 				echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
-				echo $messages->getMessage(22);
+				
+				// Display the footer of the interface.
+				$skin->displayfooter();
+			
+				// Terminates the current script, as the user is banned.
+				// This is done because the requesting process should be stopped. 
 				die();
 			}
 		}
@@ -203,7 +214,11 @@ class accRequest {
 				die();
 			} elseif ( $action == "confirm" ) {
 				echo "Invalid Parameters. Please be sure you copied the URL correctly<br />\n";
-				echo $messages->getMessage(22);
+				
+				// Display the footer of the interface.
+				$skin->displayfooter();
+			
+				// Terminates the current script, as the parameters are incorrect.
 				die();
 			}
 		}
@@ -419,10 +434,18 @@ class accRequest {
 			$query = 'SELECT * FROM ipblocks WHERE ipb_address = \''.$asSQL->escape($_SERVER['REMOTE_ADDR']).'\';';
 			$result = $asSQL->query($query);
 			$rows = mysql_num_rows( $result );
-			if( ($rows > 0) && !isOnWhitelist( $_SERVER['REMOTE_ADDR'] ) ) {
+			if( ($rows > 0) && !isOnWhitelist( $_SERVER['REMOTE_ADDR'] ) ) {												
+				// Gets message to display to the user.
 				$message = $messages->getMessage(9);
+			
+				// Displays the appropiate message to the user.
 				echo "$message<br />\n";
-				echo $messages->getMessage(22);
+				
+				// Display the footer of the interface.
+				$skin->displayfooter();
+			
+				// Terminates the current script, as the user is banned.
+				// This is done because the requesting process should be stopped. 
 				die();
 			}
 		}
@@ -538,12 +561,18 @@ class accRequest {
 		
 		// Checks whether any of the automated checks were failed.
 		// Notifies the requester that the request was unsuccessfull.
-		// TODO: Improve footer method.
 		if ($fail == 1) {
+			// Gets message to display to the user.
 			$message = $messages->getMessage(16);
+			
+			// Displays the appropiate message to the user.
 			echo "$message<br />\n";
+			
+			// Display the request form and footer of the interface.
 			$this->displayform();
-			echo $messages->getMessage(22);
+			$skin->displayfooter();
+			
+			// Terminates the current script, as automated checks are failed.
 			die();
 		}
 	}
