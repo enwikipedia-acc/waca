@@ -21,23 +21,34 @@ class accRequest {
 	private $id;
 	
 	public function __construct () {
+		// Get global variable from configuration file.
 		global $enableEmailConfirm;
+		
+		// Checks whether email confirmation is activated.
+		// Clears the old unconfirmed requests if so.
 		if ($enableEmailConfirm == 1) {
 			$this->clearOldUnconfirmed();
 		}
 	}
 	
 	private function clearOldUnconfirmed() {
+		// Get global variables from configuration file.
 		global $tsSQL, $emailConfirmationExpiryDays;
+		
+		// Determine which requests are old enough to be cleared.
+		// The amount of expiry days are subtracted from the current date and time.
 		$ntime = mktime(
 	        	date("H"),
 	        	date("i"),
 	        	date("s"),
 	        	date("m"),
 	        	date("d") -  $emailConfirmationExpiryDays,
-	        	date("Y")
-	        );
+	        	date("Y"));
+		
+		// Converts the UNIX timestamp into a usuable date format.
 		$expiry =  date("Y-m-d H:i:s", $ntime);
+		
+		// Formulates and executes the SQL query to delete requests that are older than the determined date.
 		$query = "DELETE FROM acc_pend WHERE pend_date < '$expiry' AND pend_mailconfirm != 'Confirmed' AND pend_mailconfirm != '';";
 		$tsSQL->query($query);
 	}
