@@ -139,41 +139,83 @@ class accRequest {
 	}
 	
 	// TODO: Setting most of these functions to public to be safe,
-	// however some of them could be moved over to private
+	// however some of them could be moved over to private.
+	/*
+	* Confirms either a new users e-mail, or a requestor's e-mail.
+	* @param $id The ID of the request.
+	*/
 	public function confirmEmail($id=null) {
-		/*
-		* Confirms either a new users e-mail, or a requestor's e-mail.
-		* $id will be acc_pend.pend_id
-		*/
+		// Get requered objects from index file.
 		global $tsSQL, $tsurl;
+		
+		// Assigns the ID if the param ID is null.
 		if ($id==null) {
 			$id = $this->id;
 		}
+		
+		// Assigns the ID and escapes for MySQL.
 		$pid = $tsSQL->escape($id);
+		
+		// Formulates and executes SQL query to return the request.
 		$query = "SELECT * FROM acc_pend WHERE pend_id = '$pid';";
 		$result = $tsSQL->query($query);
+		
+		// Display error upon failure.
 		if (!$result)
 			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"ERROR: database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
+		
+		// Assigns the row to the varibale.
 		$row = mysql_fetch_assoc($result);
+		
+		// Checks whether the ID is not empty.
 		if ($row['pend_id'] == "") {
 			echo "<h2>ERROR</h2>Missing or invalid information supplied.\n";
+			// Sends kill to script as the ID is empty.
 			die();
 		}
+		
+		// Sets the seed variable as the current Unix timestamp with microseconds.
+		// The following lines of code ensure that the HASH is unique.
 		$seed = microtime(true);
-		usleep( rand(0,3000) );
-		$seed = $seed +  microtime( true );
-		usleep( rand(0,300) );
-		$seed = $seed +  microtime( true );
-		usleep( rand(0,300) );
-		$seed = $seed -  microtime( true );
-		mt_srand( $seed );
-		$salt = mt_rand( );
-		$hash = md5( $id . $salt );
+		
+		// Delay execution for a random number of miliseconds.
+		// Adds the current Unix timestamp to the seed variable.
+		usleep(rand(0,3000));
+		$seed = $seed +  microtime(true);
+		
+		// Delay execution for a random number of miliseconds.
+		// Adds the current Unix timestamp to the seed variable.
+		usleep(rand(0,300));
+		$seed = $seed +  microtime(true);
+		
+		// Delay execution for a random number of miliseconds.
+		// Subtracts the current Unix timestamp to the seed variable.
+		usleep(rand(0,300));
+		$seed = $seed -  microtime(true);
+		
+		// Seed the better random number generator.
+		mt_srand($seed);
+		
+		// Generates the salt which would be used to generate the HASH.
+		$salt = mt_rand();
+		
+		// Generates the HASH.
+		$hash = md5($id . $salt);
+		
+		// Formulates the email message that should be send to the user.
 		$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nIf you did not make this request, please disregard this message.\n\n";
+		
+		// Creates the needed headers.
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+		
+		// Sends the confirmation email to the user.
 		mail($row['pend_email'], "English Wikipedia Account Request", $mailtxt, $headers);
+		
+		// Formulates and executes SQL query to update the request and add the HASH.
 		$query = "UPDATE acc_pend SET pend_mailconfirm = '$hash' WHERE pend_id = '$pid';";
 		$result = $tsSQL->query($query);
+		
+		// Display error upon failure.
 		if (!$result) {
 			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"ERROR: database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
 		}
@@ -328,30 +370,57 @@ class accRequest {
 		echo $row['mail_text'];
 	}
 	
-	public function getSpoofs( $username ) {
+	/**
+	 * Checks whether there any conflicts are.
+	 * @param $username The username to check for spoofs.
+	 */
+	public function getSpoofs($username) {
+		// Get global variables from configuration file and index objects.
 		global $dontUseWikiDb, $asSQL, $antispoof_table;
-		if( !$dontUseWikiDb ) {
-			$return = AntiSpoof::checkUnicodeString( $username );
-			if($return[0] == 'OK' ) {		
+		
+		if(!$dontUseWikiDb) {
+			// Checks the username using the AntiSpoof class.
+			$return = AntiSpoof::checkUnicodeString($username);
+			
+			// Checks whether the results were positive.
+			if($return[0] == 'OK' ) {
+				// Assigns the username and escapes it for MySQL.
 				$sanitized = $asSQL->escape($return[1]);
-				$query = "SELECT su_name FROM ".$antispoof_table." WHERE su_normalized = '$sanitized';";
+				
+				// Formulates and executes SQL query to check for usernames.
+				$query = "SELECT su_name FROM " . $antispoof_table . " WHERE su_normalized = '$sanitized';";
 				$result = $asSQL->query($query);
-				if(!$result) $asSQL->showError("Database error.");
+				
+				// Creates empty variables.
 				$numSpoof = 0;
 				$reSpoofs = array();
-				while ( list( $su_name ) = mysql_fetch_row( $result ) ) {
-					if( isset( $su_name ) ) { $numSpoof++; }
-					array_push( $reSpoofs, $su_name );
+				
+				// Assigns the current row of the SQL query to a list.
+				// Each row of the SQL query is an conflict,
+				while (list($su_name) = mysql_fetch_row($result)) {
+					// When the variable is set, it indicates a conflict.
+					if(isset($su_name)) {
+						$numSpoof++;
+					}
+					// Adds to conflicting username to the array.
+					array_push($reSpoofs, $su_name);
 				}
-				if( $numSpoof == 0 ) {
-					return( FALSE );
+				
+				// When there was no conflicts FALSE are returned.
+				if($numSpoof == 0) {
+					return(FALSE);
 				} else {
-					return( $reSpoofs );
+					// If there were conflicts, the conflicts are returned.
+					return($reSpoofs);
 				}
 			} else {
-				return ( $return[1] );
+				// If the first variable wasnt OK, the variable are returned.
+				return ($return[1]);
 			}
-		} else { return FALSE; }
+		} else {
+			// When spoof checking is disabled, FALSE is automatically returned.
+			return FALSE;
+			}
 	}
 	
 	/**
@@ -505,17 +574,30 @@ class accRequest {
 		}
 	}
 	
+	/*
+	* Updates the entries checksum (on each load of that entry, to prevent dupes).
+	* @param $id The ID to use.
+	*/
 	public function upcsum($id) {
-		/*
-		* Updates the entries checksum (on each load of that entry, to prevent dupes)
-		*/
+		// Get the needed objects from index file.
 		global $tsSQL;
+		
+		// Formulates and executes SQL query to return the request.
 		$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
 		$result = $tsSQL->query($query);
-		if (!$result)
+		
+		// Display error upon failure.
+		if (!$result) {
 			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"Database query error.");
+		}
+		
+		// Assigns the row to the varibale.
 		$pend = mysql_fetch_assoc($result);
+		
+		// Generates the required HASH.
 		$hash = md5($pend['pend_id'] . $pend['pend_name'] . $pend['pend_email'] . microtime());
+		
+		// Formulates and executes SQL query to update the request HASH.
 		$query = "UPDATE acc_pend SET pend_checksum = '$hash' WHERE pend_id = '$id';";
 		$result = $tsSQL->query($query);
 	}
@@ -624,8 +706,16 @@ class accRequest {
 		}
 	}
 	
+	/**
+	 * Do some automated checks on the username and email adress.
+	 * @param $user The username to check.
+	 * @param $email The email adress to check.
+	 */
 	public function finalChecks($user,$email) {
+		// Get objects from the index file.
 		global $messages, $tsSQL, $skin;
+		
+		// Used to check if a request complies to the automated tests.
 		$fail = 0;
 		
 		// Checks whether the username is already in use on Wikipedia.
@@ -723,8 +813,16 @@ class accRequest {
 		}
 	}
 	
+	/**
+	 * Inserts the account request into the system database.
+	 * @param $user The username to add.
+	 * @param $email The email adress to add.
+	 */
 	public function insertRequest($user,$email) {
+		// Get objects from the index file and globals from configuration.
 		global $enableEmailConfirm, $messages, $tsSQL, $defaultReserver;
+		
+		// Checks whether email confirmation is enabled.
 		if ($enableEmailConfirm == 1) {
 			$message = $messages->getMessage(15);
 		} else {
@@ -734,29 +832,61 @@ class accRequest {
 		// Display message and leave blank line before the footer.
 		echo "$message<br />\n";
 		
+		// Convert all applicable characters to HTML entities.
 		$user = htmlentities($user);
 		$email = htmlentities($email);
+		
+		// Assigns the comment and IP to variables and escapes for MySQL.
 		$comments = $tsSQL->escape(htmlentities($_POST['comments']));
 		$ip = $tsSQL->escape(htmlentities($_SERVER['REMOTE_ADDR']));
+		
+		// Gets the current date and time.
 		$dnow = date("Y-m-d H-i-s");
 		
-		if( $this->getSpoofs( $user ) ) { $uLevel = "Admin"; } else { $uLevel = "Open"; }
+		if($this->getSpoofs($user)) {
+			// If there were spoofs an Admin should handle the request.
+			$uLevel = "Admin";
+		} else {
+			// Otherwise anyone could handle the request.
+			$uLevel = "Open";
+		}
+		
+		// Formulates and executes SQL query to insert the new request.
 		$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date, pend_reserved ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow', '$defaultReserver' );";
 		$result = $tsSQL->query($query);
-		if (!$result)
+		
+		// Display error message upon failure.
+		if (!$result) {
 			die("ERROR: No result returned. (acc_pend)");
+		}
+		
 		$q2 = $query;
+		
+		// Formulates and executes SQL query to return data regarding the request. 
 		$query = "SELECT pend_id,pend_email FROM acc_pend WHERE pend_name = '$user' ORDER BY pend_id DESC LIMIT 1;";
-		$result = $tsSQL->query($query);	
-		if (!$result)
+		$result = $tsSQL->query($query);
+		
+		// Display error message upon failure.
+		if (!$result) {
 			die("ERROR: No result returned. (select)");
+		}
+		
+		// Gets the current row from the SQL query.
 		$row = mysql_fetch_assoc($result);
+		
+		// Gets the ID of the request.
 		$pid = $row['pend_id'];
+		
+		// Checks whether the ID is not zero nor empty.
 		if ($pid != 0 || $pid != "") {
+			// Updates the entries checksum.
 			$this->upcsum($pid);
 		}
-		if ($enableEmailConfirm == 1) {	
-			$this->confirmEmail( $pid );
+		
+		// Checks whether email confirmation is activated.
+		if ($enableEmailConfirm == 1) {
+			// Confirms either a new users e-mail.
+			$this->confirmEmail($pid);
 		}
 	}
 }
