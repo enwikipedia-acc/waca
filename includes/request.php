@@ -88,20 +88,40 @@ class accRequest {
 		}
 	}
 	
+	/**
+	 * Checks for various types of bans.
+	 * @param $type Which type of ban to check for. { "IP" | "Name" | "EMail" }
+ 	 * @param $target The data to validate.
+	 */
 	public function checkBan($type,$target) {
+		// Get requered objects from index file.
 		global $messages, $tsSQL;
+		
+		// Formulates and executes the SQL query to check for the ban.
 		$query = "SELECT * FROM acc_ban WHERE ban_type = '".$tsSQL->escape($type)."' AND ban_target = '".$tsSQL->escape($target)."'";
 		$result = $tsSQL->query($query);
+		
+		// Fetch the result row as an array.
 		$row = mysql_fetch_assoc($result);
+		
+		// Gets the ban duration.
 		$dbanned = $row['ban_duration'];
+		
+		// When there is no ban_id it means there is no ban, so the checks are skipped.
 		if ($row['ban_id'] != "") {
+			// TO-DO: Is the needed? Why would the duration be less than 0 or empty?
+			// Wouldnt these records be deleted by the index file?
+			// Checks whether the ban duration is less than zero or if it has an empty value.
 			if ($dbanned < 0 || $dbanned == "") {
+				// Adds to the current Unix timestamp and assigns it to the variable.
 				$dbanned = time() + 100;
 			}
-
+			
+			// Checks whether the ban duration is less than the current timestamp.
 			if ($dbanned < time()) {
-				//Not banned!
-			} else { //Still banned!			
+				// User not banned anymore.
+			} else {
+				// User is still banned.
 				// Gets message to display to the user.
 				$message = $messages->getMessage(19);
 				
@@ -111,7 +131,7 @@ class accRequest {
 				// Display the footer of the interface.
 				$skin->displayfooter();
 			
-				// Terminates the current script, as the user is banned.
+				// Terminates the current script, as the user is still banned.
 				// This is done because the requesting process should be stopped. 
 				die();
 			}
@@ -120,7 +140,6 @@ class accRequest {
 	
 	// TODO: Setting most of these functions to public to be safe,
 	// however some of them could be moved over to private
-	
 	public function confirmEmail($id=null) {
 		/*
 		* Confirms either a new users e-mail, or a requestor's e-mail.
@@ -374,25 +393,63 @@ class accRequest {
 		);
 	}
 	
+	/**
+	 * Checks the various blacklists, notifies the IRC channels and bans user.
+	 * @param $blacklist Which type of blacklist to check for. { "emailblacklist" | "nameblacklist" }
+ 	 * @param $check The data to validate.
+	 * @param $email The email adress to validate.
+	 * @param $ircblname The IRC Blacklist name.
+	 */
 	public function checkBlacklist($blacklist,$check,$email,$ircblname) {
+		// Get the needed objects from index file.
 		global $tsSQL, $accbot, $messages;
+		
+		// Creates an IP variable.
 		$ip = $_SERVER['REMOTE_ADDR'];
+		
+		// For loop to check whether the input data matches anything on the blacklist.
 		foreach ($blacklist as $blname => $regex) {
+			// Test variable to see if the data mathes something on the blacklist.
 			$phail_test = @ preg_match($regex,$check);
+			
+			// When there is no match the operations are skipped.
 			if ($phail_test == TRUE) {
+				// Gets message to display to the user.
 				$message = $messages->getMessage(15);
+				
+				// Displays the appropiate message to the user.
+				// The message is displayed now, as the script would die.
 				echo "$message<br />\n";
+				
+				// Gets the current date.
 				$now = date("Y-m-d H-i-s");
+				
+				// Assigns the current blacklist item to a new variable.
+				// The variable would be used as the reason in the ACC Log.
 				$target = "$blname";
+				
+				// The data that was checked, either an username or email adress.
 				$siuser = $tsSQL->escape($check);
+				
+				// ???
 				$cmt = $tsSQL->escape("FROM $ip $email");
+				
+				// Sends a message to the ACC Bot which states that there was a hit on one of the blacklists.
 				$accbot->send("[$ircblname] HIT: $blname - " . $check . " $ip $email " . $_SERVER['HTTP_USER_AGENT']);
+				
+				// Formulates and executes the SQL query to add the match to the ACC Log.
+				// ???
 				$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Blacklist Hit', '$now', '$cmt');";
-				$result = $tsSQL->query($query);
-				if (!$result)
-					die("ERROR: No result returned.");
-				$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\'' . $tsSQL->escape($ip) . '\',\'ClueBot\',\'' . $tsSQL->escape('Blacklist Hit: ' . $blname . ' - ' . $check . ' ' . $ip . ' ' . $email . ' ' . $_SERVER['HTTP_USER_AGENT']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');';
 				$tsSQL->query($query);
+				
+				// Formulates and executes the SQL query to add the match to the ACC Ban list.
+				// Cluebot is used as the ban user, as this was done by a script.
+				// The IP is banned for 172800 seconds, or 2 days.
+				$query = "INSERT INTO acc_ban (ban_type, ban_target, ban_user, ban_reason, ban_date, ban_duration) VALUES (\'IP\',\'' . $tsSQL->escape($ip) . '\',\'ClueBot\',\'' . $tsSQL->escape('Blacklist Hit: ' . $blname . ' - ' . $check . ' ' . $ip . ' ' . $email . ' ' . $_SERVER['HTTP_USER_AGENT']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');";
+				$tsSQL->query($query);
+				
+				// Terminates the current script, as the data mathed the blacklist.
+				// This is done because the requesting process should be stopped.
 				die();
 			}
 		}
@@ -414,8 +471,12 @@ class accRequest {
 	}
 	
 	private function isOnWhitelist($user) {
+		// Reads the entire Whitelist file into a string.
 		$apir = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=Wikipedia:Request_an_account/Whitelist&rvprop=content&format=php");
+		
+		// Takes the variable and converts it back into a PHP value.
 		$apir = unserialize($apir);
+		
 		$apir = $apir['query']['pages'];
 	
 		foreach($apir as $r) {
@@ -429,12 +490,20 @@ class accRequest {
 	}
 	
 	public function blockedOnEn() {
+		// Get global variable from configuration file and an object from the index file.
 		global $dontUseWikiDb, $asSQL;
-		if( !$dontUseWikiDb ) {
+		
+		if(!$dontUseWikiDb) {
+			// Formulates and executes the SQL query to check if the IP is blocked on the Eng Wiki. 
 			$query = 'SELECT * FROM ipblocks WHERE ipb_address = \''.$asSQL->escape($_SERVER['REMOTE_ADDR']).'\';';
 			$result = $asSQL->query($query);
-			$rows = mysql_num_rows( $result );
-			if( ($rows > 0) && !isOnWhitelist( $_SERVER['REMOTE_ADDR'] ) ) {												
+			
+			// Get number of rows in the result.
+			$rows = mysql_num_rows($result);
+			
+			// When there where rows preset it means that there is a block on the IP.
+			// There is also checked if the IP is not on the Eng Wiki Whitelist.
+			if(($rows > 0) && !isOnWhitelist($_SERVER['REMOTE_ADDR'])) {												
 				// Gets message to display to the user.
 				$message = $messages->getMessage(9);
 			
