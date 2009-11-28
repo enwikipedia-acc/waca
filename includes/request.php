@@ -396,7 +396,7 @@ class accRequest {
 				$reSpoofs = array();
 				
 				// Assigns the current row of the SQL query to a list.
-				// Each row of the SQL query is an conflict,
+				// Each row of the SQL query is a conflict.
 				while (list($su_name) = mysql_fetch_row($result)) {
 					// When the variable is set, it indicates a conflict.
 					if(isset($su_name)) {
@@ -716,6 +716,7 @@ class accRequest {
 		global $messages, $tsSQL, $skin;
 		
 		// Used to check if a request complies to the automated tests.
+		// The value is reseted, as the user has another chance to complete the form.
 		$fail = 0;
 		
 		// Checks whether the username is already in use on Wikipedia.
@@ -859,8 +860,6 @@ class accRequest {
 		if (!$result) {
 			die("ERROR: No result returned. (acc_pend)");
 		}
-		
-		$q2 = $query;
 		
 		// Formulates and executes SQL query to return data regarding the request. 
 		$query = "SELECT pend_id,pend_email FROM acc_pend WHERE pend_name = '$user' ORDER BY pend_id DESC LIMIT 1;";
