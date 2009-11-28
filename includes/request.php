@@ -54,10 +54,13 @@ class accRequest {
 	}
 	
 	public function setID($id) {
+		// Checks whether the ID complies to the guidelines.
 		if (preg_match('/^[0-9]*$/',$id)) {
+			// Assigns the ID to this class' private ID variable.
 			$this->id = $id;
 			return true;
 		}
+		// If the ID doesnt comply the the current script are terminated.
 		die("Invalid request id.");
 	}
 	

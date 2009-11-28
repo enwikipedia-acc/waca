@@ -46,11 +46,18 @@ $skin     = new skin();
 // Display the header of the interface.
 $skin->displayheader();
 
-$action = '';
-if( isset( $_GET['action'] ) ) {
+// Clears the action variable.
+unset($action);
+
+// Checks whether the $_GET['action'] is set.
+// Assigns it to the action variable if so.
+if(isset($_GET['action'])) {
 	$action = $_GET['action'];
 }
-if( isset( $_GET['id'] ) ) {
+
+// Checks whether the $_GET['id'] is set.
+// Uses the setID method to assign it to the request.
+if(isset($_GET['id'])) {
 	$request->setID($_GET['id']);
 }
 
