@@ -15,12 +15,6 @@
 // Get all the classes.
 require_once 'config.inc.php';
 require_once 'AntiSpoof.php';
-
-// Used to check if a request complies to the automated tests.
-// See the finalChecks method in request.php for details.
-$fail = 0;
-
-// Get all the classes.
 require_once 'includes/offlineMessage.php';
 require_once 'includes/database.php';
 require_once 'includes/request.php';
@@ -77,7 +71,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$user = $tsSQL->escape(trim($_POST['name']));
 	$email = $tsSQL->escape(trim($_POST['email']));
 	
-	// Delete old bans
+	// Delete the bans where the ban_duration is smaller than the current Unix timestamp.
 	$tsSQL->query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP() AND ban_duration != -1');
 
 	// Check for various types of bans.
@@ -88,7 +82,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$request->checkBan('EMail',$_POST['email']);
 	$request->blockedOnEn();
 	
-	// Check the blacklists
+	// Check the blacklists.
 	$request->checkBlacklist($emailblacklist,$_POST['email'],$_POST['email'],'Email-Bl');
 	$request->checkBlacklist($nameblacklist,$_POST['name'],$_POST['email'],'Name-Bl');
 	$request->doDnsBlacklistCheck();
