@@ -445,7 +445,7 @@ class accRequest {
 				// Formulates and executes the SQL query to add the match to the ACC Ban list.
 				// Cluebot is used as the ban user, as this was done by a script.
 				// The IP is banned for 172800 seconds, or 2 days.
-				$query = "INSERT INTO acc_ban (ban_type, ban_target, ban_user, ban_reason, ban_date, ban_duration) VALUES (\'IP\',\'' . $tsSQL->escape($ip) . '\',\'ClueBot\',\'' . $tsSQL->escape('Blacklist Hit: ' . $blname . ' - ' . $check . ' ' . $ip . ' ' . $email . ' ' . $_SERVER['HTTP_USER_AGENT']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');";
+				$query = 'INSERT INTO `acc_ban` (`ban_type`,`ban_target`,`ban_user`,`ban_reason`,`ban_date`,`ban_duration`) VALUES (\'IP\',\'' . $tsSQL->escape($ip) . '\',\'ClueBot\',\'' . $tsSQL->escape('Blacklist Hit: ' . $blname . ' - ' . $check . ' ' . $ip . ' ' . $email . ' ' . $_SERVER['HTTP_USER_AGENT']) . '\',\'' . $now . '\',\'' . (time() + 172800) . '\');';
 				$tsSQL->query($query);
 				
 				// Terminates the current script, as the data mathed the blacklist.
