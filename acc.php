@@ -159,7 +159,7 @@ elseif ($action == "sreg") {
 	$ub = unserialize( $userblocked );
 	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) {
 		$message = $messages->getMessage( '9' );
-		echo "ERROR: You are presently blocked on the English Wikipedia<br />\n";
+		$skin->displayRequestMsg("ERROR: You are presently blocked on the English Wikipedia<br />");
 		echo showfootern();
 		die();
 	}
@@ -167,7 +167,7 @@ elseif ($action == "sreg") {
 	$ue = unserialize( $userexist );
 	foreach ( $ue['query']['users']['0'] as $oneue ) {
 		if ( !isset($oneue['missing'])) {
-			echo "Invalid On-Wiki username.<br />\n";
+			$skin->displayRequestMsg("Invalid On-Wiki username.<br />");
 			echo showfootern();
 			die();
 		}
@@ -183,14 +183,14 @@ elseif ($action == "sreg") {
 		$time2 = time() - strtotime($time);
 		$editcount = $isNewbie['query']['allusers'][0]['editcount'];
 		if (!($editcount > $onRegistrationNewbieCheckEditCount and $time2 > $onRegistrationNewbieCheckAge)) {
-			echo "I'm sorry, you are too new to request an account at the moment.<br />\n";
+			$skin->displayRequestMsg("I'm sorry, you are too new to request an account at the moment.<br />");
 			echo showfootern();
 			die();
 		}
 	}
 	// check if user checked the "I have read and understand the interface guidelines" checkbox
 	if(!isset($_REQUEST['guidelines'])) {
-		echo "I'm sorry, but you must read <a href=\"http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide\">the interface guidelines</a> before your request may be submitted.<br />\n";
+		$skin->displayRequestMsg("I'm sorry, but you must read <a href=\"http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide\">the interface guidelines</a> before your request may be submitted.<br />");
 		echo showfootern();
 		die();
 	}
@@ -233,12 +233,12 @@ elseif ($action == "sreg") {
 	}
 	$mailisvalid = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.(ac|ad|ae|aero|af|ag|ai|al|am|an|ao|aq|ar|arpa|as|asia|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|biz|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cat|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|com|coop|cr|cu|cv|cx|cy|cz|de|dj|dk|dm|do|dz|ec|edu|ee|eg|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gov|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|info|int|io|iq|ir|is|it|je|jm|jo|jobs|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mil|mk|ml|mm|mn|mo|mobi|mp|mq|mr|ms|mt|mu|museum|mv|mw|mx|my|mz|na|name|nc|ne|net|nf|ng|ni|nl|no|np|nr|nu|nz|om|org|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|pro|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sy|sz|tc|td|tel|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|travel|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)$/i', $_REQUEST['email']);
 	if ($mailisvalid == 0) {
-		echo "ERROR: Invalid E-mail address.<br />\n";
+		$skin->displayRequestMsg("ERROR: Invalid E-mail address.<br />");
 		echo showfootern();
 		die();
 	}
 	if ($pass != $pass2) {
-		echo "Passwords did not match!<br />\n";
+		$skin->displayRequestMsg("Passwords did not match!<br />");
 		echo showfootern();
 		die();
 	}
@@ -248,7 +248,7 @@ elseif ($action == "sreg") {
 		Die("Query failed: $query ERROR: " . mysql_error() . " 132");
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] != "") {
-		echo "I'm sorry, but that username is in use. Please choose another. <br />\n";
+		$skin->displayRequestMsg("I'm sorry, but that username is in use. Please choose another. <br />");
 		echo showfootern();
 		die();
 	}
@@ -258,7 +258,7 @@ elseif ($action == "sreg") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] != "") {
-		echo "I'm sorry, but that e-mail address is in use.<br />\n";
+		$skin->displayRequestMsg( "I'm sorry, but that e-mail address is in use.<br />");
 		echo showfootern();
 		die();
 	}
@@ -268,7 +268,7 @@ elseif ($action == "sreg") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] != "") {
-		echo "I'm sorry, but $wname already has an account here.<br />\n";
+		$skin->displayRequestMsg("I'm sorry, but $wname already has an account here.<br />");
 		echo showfootern();
 		die();
 	}
@@ -276,7 +276,7 @@ elseif ($action == "sreg") {
 	$result = mysql_query($query, $tsSQLlink);
 	$row = mysql_fetch_assoc($result);
 	if (!empty($row['pend_name'])) {
-		echo "I'm sorry, you are too new to request an account at the moment.<br />\n";
+		$skin->displayRequestMsg("I'm sorry, you are too new to request an account at the moment.<br />");
 		echo showfootern();
 		die();
 	}
@@ -297,7 +297,7 @@ elseif ($action == "sreg") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$accbotSend->send("New user: $user");
-		echo "Account created! Your username is $user! In order to complete the process, please make a confirmation edit to your user talk page. In this edit, note that you requested an account on the ACC account creation interface, and use a descriptive edit summary so that we can easily find this edit.  <b>Failure to do this will result in your request being declined.</b><br /><br />\n";
+		$skin->displayRequestMsg("Account created! Your username is $user! In order to complete the process, please make a confirmation edit to your user talk page. In this edit, note that you requested an account on the ACC account creation interface, and use a descriptive edit summary so that we can easily find this edit.  <b>Failure to do this will result in your request being declined.</b><br /><br />");
 		echo showlogin();
 	}
 	echo showfootern();
@@ -1297,7 +1297,7 @@ elseif ($action == "usermgmt") {
 	}
 	echo <<<HTML
     <h1>User Management</h1>
-    <strong>This interface isn't a toy. If it says you can do it, you can do it.<br />Please use this responsibly.</strong>
+    <strong>This interface is NOT a toy. If it says you can do it, you can do it.<br />Please use this responsibly.</strong>
     <h2>Open requests</h2>
 HTML;
 
