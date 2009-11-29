@@ -1600,7 +1600,7 @@ HTML;
 }
 elseif ($action == "done" && $_GET['id'] != "") {
 	// check for valid close reasons
-	global $messages;
+	global $messages, $skin;
 	
 	if (!isset($_GET['email']) | !($messages->isEmail($_GET['email'])) and $_GET['email'] != 'custom') {
 		echo "Invalid close reason";
@@ -1742,7 +1742,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$now = explode("-", $now);
 	$now = $now['0'] . "-" . $now['1'] . "-" . $now['2'] . ":" . $now['3'] . ":" . $now['4'];
 	$accbotSend->send("Request " . $_GET['id'] . " (" . $row2['pend_name'] . ") Marked as 'Done' ($crea) by " . $_SESSION['user'] . " on $now");
-	echo "<div class=\"request-message\">Request " . $_GET['id'] . " ($gus) marked as 'Done'.<br /></div>";
+	$skin->displayRequestMsg("Request " . $_GET['id'] . " ($gus) marked as 'Done'.<br />");
 	$towhom = $row2['pend_email'];
 	if ($gem != "0" and $gem != "custom") {
 		sendemail($gem, $towhom);

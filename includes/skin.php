@@ -39,5 +39,9 @@ class skin {
 		$row = mysql_fetch_assoc($result);
 		echo $row['mail_text'];
 	}
+	
+	public function displayRequestMsg($message) {
+		echo "<div class=\"request-message\">" . $message . "</div>";
+	}
 }
 ?>
