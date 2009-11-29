@@ -18,29 +18,55 @@ if ($ACC != "1") {
 } //Re-route, if you're a web client.
 
 class skin {
+
+	/**
+	 * Prints the interface header to the screen.
+	 */
 	public function displayheader() {
+		// Get DB object from index file.
 		global $tsSQL;
+		
+		// Formulates and executes SQL query to return the required message.
 		$result = $tsSQL->query("SELECT * FROM acc_emails WHERE mail_id = '8';");
+		
+		// Display an error message if the query fails.
 		if (!$result) {
 			// TODO: Nice error message
 			die("ERROR: No result returned.");
 		}
+		
+		// Assigns the required row to a variable and print it to the screen.
 		$row = mysql_fetch_assoc($result);
 		echo $row['mail_text'];
 	}
 	
+	/**
+	 * Prints the interface footer to the screen.
+	 */
 	public function displayfooter() {
+		// Get DB object from index file.
 		global $tsSQL;
+		
+		// Formulates and executes SQL query to return the required message.
 		$result = $tsSQL->query("SELECT * FROM acc_emails WHERE mail_id = '22';");
+		
+		// Display an error message if the query fails.
 		if (!$result) {
 			// TODO: Nice error message
 			die("ERROR: No result returned.");
 		}
+		
+		// Assigns the required row to a variable and print it to the screen.
 		$row = mysql_fetch_assoc($result);
 		echo $row['mail_text'];
 	}
 	
+	/**
+	 * Prints a request message to the screen.
+	 * @param $message The message to print to the screen.
+	 */
 	public function displayRequestMsg($message) {
+		// Prints a request message to the screen using the message variable.
 		echo "<div class=\"request-message\">" . $message . "</div>";
 	}
 }
