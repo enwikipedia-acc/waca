@@ -633,7 +633,7 @@ class accRequest {
 			
 			// When there where rows preset it means that there is a block on the IP.
 			// There is also checked if the IP is not on the Eng Wiki Whitelist.
-			if(($rows > 0) && !isOnWhitelist($_SERVER['REMOTE_ADDR'])) {												
+			if(($rows > 0) && !$this->isOnWhitelist($_SERVER['REMOTE_ADDR'])) {												
 				// Gets message to display to the user.
 				$message = $messages->getMessage(9);
 			
