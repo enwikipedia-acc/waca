@@ -621,7 +621,7 @@ class accRequest {
 	
 	public function blockedOnEn() {
 		// Get global variable from configuration file and an object from the index file.
-		global $dontUseWikiDb, $asSQL, $skin, $message;
+		global $dontUseWikiDb, $asSQL, $skin, $messages;
 		
 		if(!$dontUseWikiDb) {
 			// Formulates and executes the SQL query to check if the IP is blocked on the Eng Wiki. 
@@ -652,7 +652,7 @@ class accRequest {
 	
 	public function doDnsBlacklistCheck() {
 		// Get global variable from configuration file and an object from the index file.
-		global $enableDnsblChecks, $tsSQL, $accbot, $enableSQLError;
+		global $enableDnsblChecks, $tsSQL, $accbot, $enableSQLError, $messages;
 		
 		if($enableDnsblChecks == 1){
 			// Assings IP and email variables.
