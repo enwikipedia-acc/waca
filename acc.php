@@ -1845,42 +1845,52 @@ elseif ($action == "logs") {
 	die();
 }
 elseif ($action == "reserve") {
+	// Gets the global variables.
 	global $enableReserving, $allowDoubleReserving;
-	if( $enableReserving ) {
+	
+	// Check whether reserving is allowed.
+	if( $enableReserving ) {	
+		// Make sure there is no invlalid characters.
 		if (!preg_match('/^[0-9]*$/',$_GET['resid'])) {
 			die('Invalid Input.');
 		}
+		
+		// // See the following bug: https://jira.toolserver.org/browse/ACC-105
+		// Sanitises the resid for use.
 		$request = sanitise($_GET['resid']);
 		
-		// lock the tables to avoid a possible conflict (see bug #101)
+		// Lock the tables to avoid a possible conflict.
+		// See the following bug: https://jira.toolserver.org/browse/ACC-101
 		mysql_query('LOCK TABLES pend_reserved,acc_pend WRITE;',$tsSQLlink);
 		
-		sleep(10); // this is just for testing, will remove in a mo
+		sleep(10); // This is just for testing, will remove in a moment.
 		
-		//check request is not reserved
+		// Check if the request is not reserved.
 		$reservedBy = isReserved($request);
-		if( $reservedBy != false )
+		if($reservedBy != false)
 		{
+			// Notify the user that the request is already reserved.
 			die("Request already reserved by ".$session->getUsernameFromUid($reservedBy));
 		}
 		
 		if(isset($allowDoubleReserving)){
-			// check the number of requests a user has reserved already
+			// Check the number of requests a user has reserved already
 			$doubleReserveCountQuery = "SELECT COUNT(*) FROM acc_pend WHERE pend_reserved = ".$_SESSION['userID'].';';
 			$doubleReserveCountResult = mysql_query($doubleReserveCountQuery, $tsSQLlink);
 			if (!$doubleReserveCountResult)	Die("Error in determining other reserved requests.");
 			$doubleReserveCountRow = mysql_fetch_assoc($doubleReserveCountResult);
 			$doubleReserveCount = $doubleReserveCountRow['COUNT(*)'];
 			
-			if( $doubleReserveCount != 0) // user already has at least one reserved. 
+			// User already has at least one reserved. 
+			if( $doubleReserveCount != 0) 
 			{
 				switch($allowDoubleReserving)
 				{
 					case "warn":
-						// alert the user
+						// Alert the user.
 						if(isset($_GET['confdoublereserve']) && $_GET['confdoublereserve'] == "yes")
 						{
-							// the user confirms they wish to reserve another request
+							// The user confirms they wish to reserve another request.
 						}
 						else
 						{
@@ -1888,24 +1898,24 @@ elseif ($action == "reserve") {
 						}
 						break;
 					case "deny":
-						// prevent the user from continuing
+						// Prevent the user from continuing.
 						die('You already have a request reserved!<br /><a href="acc.php">Return to main request interface</a>');
 						break;
 					case "inform":
-						// tell the user that they already have requests reserved, but let them through anyway.
+						// Tell the user that they already have requests reserved, but let them through anyway..
 						echo '<div id="doublereserve-warn">You have multiple requests reserved.</div>';
 						break;
 					case "ignore":
-						// do sod all
+						// Do sod all.
 						break;
 					default:
-						// do sod all
+						// Do sod all.
 						break;
 				}
 			}
 		}
 		
-		// is the request closed?
+		// Is the request closed?
 		if(! isset($_GET['confclosed']) )
 		{
 			$query = "select pend_status from acc_pend where pend_id = '".$request."';";
@@ -1917,7 +1927,7 @@ elseif ($action == "reserve") {
 			}
 		}	
 		
-		//no, lets reserve the request
+		// No, lets reserve the request.
 		$query = "UPDATE `acc_pend` SET `pend_reserved` = '".$_SESSION['userID']."' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
@@ -1928,7 +1938,9 @@ elseif ($action == "reserve") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$accbotSend->send("Request $request is being handled by " . $session->getUsernameFromUid($_SESSION['userID']));
-		mysql_query('UNLOCK TABLES;',$tsSQLlink); // release the lock on the table
+
+		// Release the lock on the table.
+		mysql_query('UNLOCK TABLES;',$tsSQLlink);
 		echo zoomPage($request);
         	echo showfooter();
 	}	
