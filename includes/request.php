@@ -621,7 +621,7 @@ class accRequest {
 	
 	public function blockedOnEn() {
 		// Get global variable from configuration file and an object from the index file.
-		global $dontUseWikiDb, $asSQL, $skin;
+		global $dontUseWikiDb, $asSQL, $skin, $message;
 		
 		if(!$dontUseWikiDb) {
 			// Formulates and executes the SQL query to check if the IP is blocked on the Eng Wiki. 
