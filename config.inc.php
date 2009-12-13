@@ -12,7 +12,12 @@
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
 
-# YOU *MUST* OVERRIDE THE CONFIGURATION IN THIS FILE IN A FILE CALLED config.local.inc.php 
+/**************************************************************************
+**********                   IMPORTANT NOTICE                    **********
+***************************************************************************
+** YOU MUST OVERRIDE THE CONFIGURATION IN THIS FILE WITH A LOCAL COPY!!! **
+** IT IS VERY IMPORTANT THAT THAT FILE IS CALLED config.local.inc.php    **
+***************************************************************************/
 
 //name for the tool	
 $whichami = 'Live';
