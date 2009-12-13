@@ -57,7 +57,10 @@ $antispoof_table = "spoofuser";
 //    inform: reserves the second request, and alerts the user that they have several requests reserved
 //    warn: asks the user if they are sure they wish to reserve the second request
 //    deny: prevents the user from reserving a second request.
-$allowDoubleReserving = "inform";
+
+// There are many valid reasons to double reserve.
+
+$allowDoubleReserving = "warn";
 
 $useCaptcha = false;
 
