@@ -1939,7 +1939,7 @@ elseif ($action == "reserve") {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		if (!$nosend){
+		if ($nosend == true) {
 		$accbotSend->send("Request $request is being handled by " . $session->getUsernameFromUid($_SESSION['userID']));
 }
 		// Release the lock on the table.
