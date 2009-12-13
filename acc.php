@@ -362,6 +362,7 @@ elseif ($action == "register") {
 						<option value="williamh">{{User:WilliamH/Welcome|user}} ~~~~</option>
 						<option value="malinaccier">{{User:Malinaccier/Welcome|~~~~}}</option>
 						<option value="laquatique">{{User:L'Aquatique/welcome}} ~~~~</option>
+						<option value="coffee">{{User:Coffee/welcome}} ~~~~</option>
 						<option value="matt-t">{{User:Matt.T/C}} ~~~~</option>
 						<option value="roux">{{User:Roux/W}} ~~~~</option>
 						<option value="staffwaterboy">{{User:Staffwaterboy/Welcome}} ~~~~</option>
@@ -1555,6 +1556,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     echo '<i>This would be the same as ~~~ on-wiki. No date, please.</i><br />';
     
     // TODO: clean up into nicer code, rather than coming out of php
+    // TODO: Make the register and pref form use same welcome list
     ?>
     <select name="template" size="0">
     <option value="welcome"<?php if($template == "welcone") { echo " selected=\"selected\""; } ?>>{{welcome|user}} ~~~~</option>
@@ -1574,7 +1576,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     <option value="malinaccier"<?php if($template == "malinaccier") { echo " selected=\"selected\""; } ?>>{{User:Malinaccier/Welcome|~~~~}}</option>
     <option value="welcome!"<?php if($template == "welcome!") { echo " selected=\"selected\""; } ?>>{{Welcome!|from=User|ps=~~~~}}</option>
     <option value="laquatique"<?php if($template == "laquatique") { echo " selected=\"selected\""; } ?>>{{User:L'Aquatique/welcome}} ~~~~</option>
-    <option value="chetblong"<?php if($template == "chetblong") { echo " selected=\"selected\""; } ?>>{{User:Chet B Long/welcome|user|||~~~~}}</option>
+    <option value="coffee"<?php if($template == "coffee") { echo " selected=\"selected\""; } ?>>{{User:Coffee/welcome|user|||~~~~}}</option>
 	<option value="matt-t"<?php if($template == "matt-t") { echo " selected=\"selected\""; } ?>>{{User:Matt.T/C}} ~~~~</option>
 	<option value="roux"<?php if($template == "roux") { echo " selected=\"selected\""; } ?>>{{User:Roux/W}} ~~~~</option>
 	<option value="staffwaterboy"<?php if($template == "staffwaterboy") { echo " selected=\"selected\""; } ?>>{{User:Staffwaterboy/Welcome}} ~~~~</option>

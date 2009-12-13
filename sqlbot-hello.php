@@ -139,8 +139,8 @@ while ($row = mysql_fetch_assoc($result)) {
 		tagpage($user, "{{subst:Welcome!|from=$sid|ps=$sig ~~~~~}}");
 	} else if ($template == "laquatique") {
 		tagpage($user, "{{subst:User:L'Aquatique/welcome}} $sig ~~~~~");
-	} else if ($template == "chetblong") {
-		tagpage($user, "{{subst:User:Chet B Long/welcome|$sid|||$sig ~~~~~}}");
+	} else if ($template == "coffee") {
+		tagpage($user, "{{subst:User:Coffee/welcome|$sid|||$sig ~~~~~}}");
 	} else if ($template == "matt-t") {
 		tagpage($user, "{{subst:User:Matt.T/C}} $sig ~~~~~");
 	} else if ($template == "roux") {
