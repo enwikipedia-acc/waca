@@ -362,7 +362,7 @@ elseif ($action == "register") {
 						<option value="williamh">{{User:WilliamH/Welcome|user}} ~~~~</option>
 						<option value="malinaccier">{{User:Malinaccier/Welcome|~~~~}}</option>
 						<option value="laquatique">{{User:L'Aquatique/welcome}} ~~~~</option>
-						<option value="coffee">{{User:Coffee/welcome}} ~~~~</option>
+						<option value="coffee">{{User:Coffee/welcome|user|||~~~~}}</option>
 						<option value="matt-t">{{User:Matt.T/C}} ~~~~</option>
 						<option value="roux">{{User:Roux/W}} ~~~~</option>
 						<option value="staffwaterboy">{{User:Staffwaterboy/Welcome}} ~~~~</option>
