@@ -684,7 +684,7 @@ elseif ($action == "messagemgmt") {
 		echo "$out2\n";
 		}
 	}
-	echo "</ul><br />\n";
+	echo "</ul>";
 	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Interface';";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
@@ -704,7 +704,7 @@ elseif ($action == "messagemgmt") {
 		echo "$out2\n";
 		}
 	}
-	echo "</ul><br />\n";
+	echo "</ul>";
 	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Internal';";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
@@ -725,7 +725,7 @@ elseif ($action == "messagemgmt") {
 		echo "$out2\n";
 		}
 	}
-	echo "</ul><br />\n";
+	echo "</ul>";
 	echo showfooter();
 	die();
 }
