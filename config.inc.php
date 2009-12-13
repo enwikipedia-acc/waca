@@ -78,7 +78,7 @@ $defaultReserver = 0;
 $emailConfirmationExpiryDays = 2;
 
 // Should we show the 'You last logged in from' line at the bottom of the page
-$enableLastLogin = false;
+$enableLastLogin = true;
 
 // perform a newbie check on tool registration
 $onRegistrationNewbieCheck = true;
