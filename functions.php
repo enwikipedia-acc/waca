@@ -493,11 +493,8 @@ function isReserved($requestid)
 	$rqid = sanitize($requestid);
 	$query = "SELECT pend_reserved FROM acc_pend WHERE pend_id = $rqid;";
 	$result = mysql_query($query);
-	$nosend = false;
-	if (!$result) {
+	if (!$result)
 		Die("Error determining reserved status of request. Check the request id.");
-		$nosend = true;
-	}
 	$row = mysql_fetch_assoc($result);
 	if(isset($row['pend_reserved']) && $row['pend_reserved'] != 0) { return $row['pend_reserved'];} else {return false;}
 }
