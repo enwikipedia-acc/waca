@@ -174,10 +174,10 @@ $developer = array(
 		"Prom3th3an" =>
 			array(
 				"IRC" => "Prom_cat",
-				"EMail" => "Prom3th3an@yourwiki.net",
+				"EMail" => "bretthillebrand@internode.on.net",
 				"ToolID" => "91",
 				"wiki" => "Promethean",
-				"WWW" => "http://www.yourwiki.net",
+				"WWW" => "",
 				"Name" => "Brett Hillebrand",
 				"Role" => "Developer",
 				"Access" => "Commit, Repo Admin",
