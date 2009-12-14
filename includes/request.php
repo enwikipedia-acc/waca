@@ -735,6 +735,14 @@ class accRequest {
 			$fail = 1;
 		}
 		
+		// Checks whether the email adresses matches.
+		if($_POST['email'] != $_POST['emailconfirm']) {
+			// TODO: Need the correct message for this.
+			$message = $messages->getMessage(14);
+			echo "$message<br />\n";
+			$fail = 1;
+		}
+		
 		// Checks whether the email adress is valid.
 		if (!$this->emailvalid($_POST['email'])) {
 			$message = $messages->getMessage(14);
