@@ -1848,18 +1848,29 @@ elseif ($action == "logs") {
 }
 elseif ($action == "reserve") {
 	// Gets the global variables.
-	global $enableReserving, $allowDoubleReserving;
+	global $enableReserving, $allowDoubleReserving, $skin;
 	
 	// Check whether reserving is allowed.
 	if( $enableReserving ) {	
 		// Make sure there is no invlalid characters.
 		if (!preg_match('/^[0-9]*$/',$_GET['resid'])) {
-			die('Invalid Input.');
+			$skin->displayRequestMsg("The request ID supplied is invalid!");
+			$skin->displayfooter();
+			die();
 		}
 		
-		// // See the following bug: https://jira.toolserver.org/browse/ACC-105
 		// Sanitises the resid for use.
 		$request = sanitise($_GET['resid']);
+		
+		$query = "SELECT Count(*) FROM acc_pend WHERE pend_id = '$request';";
+		$result = mysql_query($query, $tsSQLlink);
+		$row = mysql_fetch_row($result);
+
+		if($row[0]==="0") {
+			$skin->displayRequestMsg("The request ID supplied is invalid!");
+			$skin->displayfooter();
+			die();
+		}
 		
 		// Lock the tables to avoid a possible conflict.
 		// See the following bug: https://jira.toolserver.org/browse/ACC-101
