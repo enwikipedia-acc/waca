@@ -794,7 +794,7 @@ class accRequest {
 			$message = $messages->getMessage(16);
 			
 			// Displays the appropiate message to the user.
-			echo "$message<br />\n";
+			$skin->displayRequestMsg("$message<br />\n");
 			
 			// Display the request form and footer of the interface.
 			$skin->displayRequest();
