@@ -735,7 +735,7 @@ class accRequest {
 			$fail = 1;
 		}
 		
-		// Checks whether the email adresses matches.
+		// Checks whether the email adresses match.
 		if($_POST['email'] != $_POST['emailconfirm']) {
 			// TODO: Need the correct message for this.
 			$message = $messages->getMessage(14);
@@ -797,7 +797,7 @@ class accRequest {
 			echo "$message<br />\n";
 			
 			// Display the request form and footer of the interface.
-			$this->displayform();
+			$skin->displayRequest();
 			$skin->displayfooter();
 			
 			// Terminates the current script, as automated checks are failed.
