@@ -357,19 +357,6 @@ class accRequest {
 		}
 	}
 	
-	public function displayform() {
-		/*
-		* Display Request form via MySQL
-		*/
-		global $tsSQL;
-		$query = "SELECT * FROM acc_emails WHERE mail_id = '6' ORDER BY mail_id DESC LIMIT 1;";
-		$result = $tsSQL->query($query);
-		if (!$result)
-			Die("ERROR: No result returned.");
-		$row = mysql_fetch_assoc($result);
-		echo $row['mail_text'];
-	}
-	
 	/**
 	 * Checks whether there any conflicts are.
 	 * @param $username The username to check for spoofs.
