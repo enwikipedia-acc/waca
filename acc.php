@@ -1854,6 +1854,7 @@ elseif ($action == "reserve") {
 	if( $enableReserving ) {	
 		// Make sure there is no invlalid characters.
 		if (!preg_match('/^[0-9]*$/',$_GET['resid'])) {
+			// Notifies the user and stops the script.
 			$skin->displayRequestMsg("The request ID supplied is invalid!");
 			$skin->displayfooter();
 			die();
@@ -1862,11 +1863,15 @@ elseif ($action == "reserve") {
 		// Sanitises the resid for use.
 		$request = sanitise($_GET['resid']);
 		
+		// Formulates and executes SQL query to check if the request exists.
 		$query = "SELECT Count(*) FROM acc_pend WHERE pend_id = '$request';";
 		$result = mysql_query($query, $tsSQLlink);
 		$row = mysql_fetch_row($result);
-
+		
+		// The query counted the amount of records with the particular request ID.
+		// When the value is zero it is an idication that that request doesnt exist.
 		if($row[0]==="0") {
+			// Notifies the user and stops the script.
 			$skin->displayRequestMsg("The request ID supplied is invalid!");
 			$skin->displayfooter();
 			die();
