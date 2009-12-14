@@ -65,5 +65,13 @@ class skin {
 		// Prints a request message to the screen using the message variable.
 		echo "<div class=\"request-message\">" . $message . "</div>";
 	}
+	
+	/**
+	 * Prints the account request form to the screen.
+	 */
+	public function displayRequest() {
+		// Displayes the account request form.
+		$this->displayMessage(6);
+	}
 }
 ?>
