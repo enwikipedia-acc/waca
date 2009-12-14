@@ -707,7 +707,7 @@ class accRequest {
 		$ue = unserialize($userexist);
 		if (!isset ($ue['query']['users']['0']['missing'])) {
 			$message = $messages->getMessage(10);
-			echo "$message<br />\n";
+			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -715,7 +715,7 @@ class accRequest {
 		$nums = preg_match("/^[0-9]+$/", $_POST['name']);
 		if ($nums > 0) {
 			$message = $messages->getMessage(11);
-			echo "$message<br />\n";
+			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -723,7 +723,7 @@ class accRequest {
 		$unameismail = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/i', $_POST['name']);
 		if ($unameismail > 0) {
 			$message = $messages->getMessage(12);
-			echo "$message<br />\n";
+			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -731,7 +731,7 @@ class accRequest {
 		$unameisinvalidchar = preg_match('/[\#\/\|\[\]\{\}\@\%\:\<\>]/', $_POST['name']);
 		if ($unameisinvalidchar > 0 || ltrim( rtrim( $_POST['name'] == "" ) ) ) {
 			$message = $messages->getMessage(13);
-			echo "$message<br />\n";
+			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -739,14 +739,14 @@ class accRequest {
 		if($_POST['email'] != $_POST['emailconfirm']) {
 			// TODO: Need the correct message for this.
 			$message = $messages->getMessage(14);
-			echo "$message<br />\n";
+			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
 		}
 		
 		// Checks whether the email adress is valid.
 		if (!$this->emailvalid($_POST['email'])) {
 			$message = $messages->getMessage(14);
-			echo "$message<br />\n";
+			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -754,7 +754,7 @@ class accRequest {
 		$mailiswmf = preg_match('/.*wiki(m.dia|p.dia).*/i', $email);
 		if ($mailiswmf != 0) {
 			$message = $messages->getMessage(14);
-			echo "$message<br />\n";
+			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
 		}
 
@@ -763,7 +763,7 @@ class accRequest {
 		$trailingspace = substr($_POST['name'], strlen($_POST['name']) - 1);
 		if ($trailingspace == " " || $trailingspace == "_"  ) {
 			$message = $messages->getMessage(25);
-			echo "$message<br />\n";
+			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
 		}
 
@@ -773,7 +773,7 @@ class accRequest {
 		$row = mysql_fetch_assoc($result);
 		if ($row['pend_id'] != "") {
 			$message = $messages->getMessage(17);
-			echo "$message<br />\n";
+			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -783,7 +783,7 @@ class accRequest {
 		$row = mysql_fetch_assoc($result);
 		if ($row['pend_id'] != "") {
 			$message = $messages->getMessage(18);
-			echo "$message<br />\n";
+			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
 		}
 		
