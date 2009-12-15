@@ -753,6 +753,17 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	$duration = sanitize($_POST['duration']);
 	if ($duration == "-1") {
 		$duration = -1;
+	} elseif ($duration == "other") {
+		$duration = strtotime($_POST['otherduration']);
+		if (!$duration) {
+			echo "<h2>ERROR</h2>\n<br />Invalid ban time specified.\n";
+			echo showfooter();
+			die();
+		} elseif (time() > $duration) {
+			echo "<h2>ERROR</h2>\n<br />Invalid ban time specified (the ban would have already expired).\n";
+			echo showfooter();
+			die();
+		}
 	} else {
 		$duration = $duration +time();
 	}
@@ -900,7 +911,22 @@ elseif ($action == "ban") {
 			echo showfooter();
 			die();
 		} else {
-			echo "<h2>Ban an IP, Name or E-Mail</h2>\n<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\">Ban target: $target\n<br /><table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td><tr><td>Duration:</td><td> <SELECT NAME=\"duration\"><OPTION VALUE=\"-1\">Indefinite<OPTION VALUE=\"86400\">24 Hours<OPTION VALUE=\"604800\">One Week<OPTION VALUE=\"2629743\">One Month</SELECT></td></tr></table><br /><input type=\"submit\"><input type=\"hidden\" name=\"target\" value=\"$target\" /><input type=\"hidden\" name=\"type\" value=\"$type\" /></form>\n";
+			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
+			echo "<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\">";
+			echo "Ban target: $target\n<br />\n";
+			echo "<table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td></tr>\n";
+			echo "<tr><td>Duration:</td><td>\n";
+			echo "<SELECT NAME=\"duration\">\n";
+			echo "<OPTION VALUE=\"-1\">Indefinite</OPTION>\n";
+			echo "<OPTION VALUE=\"86400\">24 Hours</OPTION>\n";
+			echo "<OPTION VALUE=\"604800\">One Week</OPTION>\n";
+			echo "<OPTION VALUE=\"2629743\">One Month</OPTION>\n";
+			echo "<OPTION VALUE=\"other\">Other</OPTION>\n";
+			echo "</SELECT></td></tr>\n";
+			/* TODO: Add some fancy javascript that hides this until the user selects other from the menu above */
+			echo "<tr><td>Other:</td><td><input type=\"text\" name=\"otherduration\"></td></tr>";
+			echo "</table><br />\n";
+			echo "<input type=\"submit\"><input type=\"hidden\" name=\"target\" value=\"$target\" /><input type=\"hidden\" name=\"type\" value=\"$type\" /></form>\n";
 		}
 	} else {
 		echo "<h2>Active Ban List</h2>\n<table border='1'>\n";
