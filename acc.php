@@ -911,7 +911,6 @@ elseif ($action == "ban") {
 			echo showfooter();
 			die();
 		} else {
-			/* FIXME: Why is this code repeated in two places? (see below) */
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
 			echo "<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\">";
 			echo "Ban target: $target\n<br />\n";
@@ -971,11 +970,11 @@ elseif ($action == "ban") {
 		}
 		echo "</table>\n";
 		if($isAdmin) {
-			/* FIXME: Why is this code repeated in two places? (see below) */
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
 			echo "<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\">";
-			echo "Ban target: $target\n<br />\n";
-			echo "<table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td></tr>\n";
+			echo "<table>";
+			echo "<tr><td>Ban target:</td><td><input type=\"text\" name=\"target\" /></td></tr>\n";
+			echo "<tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td></tr>\n";
 			echo "<tr><td>Duration:</td><td>\n";
 			echo "<SELECT NAME=\"duration\">\n";
 			echo "<OPTION VALUE=\"-1\">Indefinite</OPTION>\n";
@@ -986,8 +985,11 @@ elseif ($action == "ban") {
 			echo "</SELECT></td></tr>\n";
 			/* TODO: Add some fancy javascript that hides this until the user selects other from the menu above */
 			echo "<tr><td>Other:</td><td><input type=\"text\" name=\"otherduration\"></td></tr>";
+			echo "<tr><td>Type:</td><td>\n";
+ 			echo "<select name=\"type\"><option value=\"IP\">IP</option><option value=\"Name\">Name</option><option value=\"EMail\">E-Mail</option></select>\n";
+ 			echo "</td></tr>\n";
 			echo "</table><br />\n";
-			echo "<input type=\"submit\"><input type=\"hidden\" name=\"target\" value=\"$target\" /><input type=\"hidden\" name=\"type\" value=\"$type\" /></form>\n";
+			echo "<input type=\"submit\"></form>\n";
 		}
 		echo showfooter();
 		die();
