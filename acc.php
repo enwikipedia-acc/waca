@@ -911,6 +911,7 @@ elseif ($action == "ban") {
 			echo showfooter();
 			die();
 		} else {
+			/* FIXME: Why is this code repeated in two places? (see below) */
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
 			echo "<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\">";
 			echo "Ban target: $target\n<br />\n";
@@ -970,18 +971,23 @@ elseif ($action == "ban") {
 		}
 		echo "</table>\n";
 		if($isAdmin) {
-			echo "<h2>Ban an IP, Name or E-Mail</h2>";
-			echo "<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\">" .
-			"<table>".
-			"<tr><td>Ban target:</td><td><input type=\"text\" name=\"target\" /></td></tr>".
-			"<tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td></tr>".
-			"<tr><td>Duration:</td><td>".
-			"<select name=\"duration\"><option value=\"-1\">Indefinite</option><option value=\"86400\">24 Hours</option><option value=\"604800\">One Week</option><option value=\"2629743\">One Month</option></select>".
-			"</td></tr>".
-			"<tr><td>Type:</td><td>".
-			"<select name=\"type\"><option value=\"IP\">IP</option><option value=\"Name\">Name</option><option value=\"EMail\">E-Mail</option></select>".
-			"</td></tr>".
-			"</table><input type=\"submit\" /></form>\n";
+			/* FIXME: Why is this code repeated in two places? (see below) */
+			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
+			echo "<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\">";
+			echo "Ban target: $target\n<br />\n";
+			echo "<table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td></tr>\n";
+			echo "<tr><td>Duration:</td><td>\n";
+			echo "<SELECT NAME=\"duration\">\n";
+			echo "<OPTION VALUE=\"-1\">Indefinite</OPTION>\n";
+			echo "<OPTION VALUE=\"86400\">24 Hours</OPTION>\n";
+			echo "<OPTION VALUE=\"604800\">One Week</OPTION>\n";
+			echo "<OPTION VALUE=\"2629743\">One Month</OPTION>\n";
+			echo "<OPTION VALUE=\"other\">Other</OPTION>\n";
+			echo "</SELECT></td></tr>\n";
+			/* TODO: Add some fancy javascript that hides this until the user selects other from the menu above */
+			echo "<tr><td>Other:</td><td><input type=\"text\" name=\"otherduration\"></td></tr>";
+			echo "</table><br />\n";
+			echo "<input type=\"submit\"><input type=\"hidden\" name=\"target\" value=\"$target\" /><input type=\"hidden\" name=\"type\" value=\"$type\" /></form>\n";
 		}
 		echo showfooter();
 		die();
