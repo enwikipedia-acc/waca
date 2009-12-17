@@ -460,7 +460,7 @@ function listrequests($type, $hideip) {
 				{
 					$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Break reservation</a>";
 				} else {
-					$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"users.php?viewuser=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
+					$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"statistics.php?page=Users&user=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
 				}
 			}
 			else // not being handled, do you want to handle this request?
@@ -936,9 +936,9 @@ function zoomPage($id)
     $out .= "<ul>";
 	while ($row = mysql_fetch_assoc($result)) {
         if ($row['cmt_visability'] == "admin") {
-		$out .= "<li><a href='users.php?viewuser=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented, " . $row['cmt_comment'] . "  at " . $row['cmt_time'] . " <font color='red'>(admin only)</font></li>";
+		$out .= "<li><a href='statistics.php?page=Users&user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented, " . $row['cmt_comment'] . "  at " . $row['cmt_time'] . " <font color='red'>(admin only)</font></li>";
         } else {
-        $out .= "<li><a href='users.php?viewuser=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented,  " . $row['cmt_comment'] . "  at " . $row['cmt_time'] . "</li>";
+        $out .= "<li><a href='statistics.php?page=Users&user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented,  " . $row['cmt_comment'] . "  at " . $row['cmt_time'] . "</li>";
         }
 		$numcomment++;
 	}
