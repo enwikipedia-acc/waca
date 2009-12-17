@@ -69,8 +69,33 @@ class skin {
 	 * Prints the internal interface footer to the screen.
 	 */
 	public function displayIfooter() {
-		// Displayes the interface header.
-		$this->displayMessage(23);
+	global $enableLastLogin, $messages, $internalInterface;
+	if ($enableLastLogin) {
+		$timestamp = "at ".date('H:i',$_SESSION['lastlogin_time']);
+		if (date('jS \of F Y',$_SESSION['lastlogin_time'])==date('jS \of F Y')) {
+			$timestamp .= " today";
+		} else {
+			$timestamp .= " on the ".date('jS \of F, Y',$_SESSION['lastlogin_time']);
+		}
+		if ($_SESSION['lastlogin_ip']==$_SERVER['REMOTE_ADDR']) {
+			$out2 = "<div align=\"center\"><small>You last logged in from this computer $timestamp.</small></div>";
+		} else {
+			$out2 = "<div align=\"center\"><small>You last logged in from <a href=\"http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=".$_SESSION['lastlogin_ip']."\">".$_SESSION['lastlogin_ip']."</a> $timestamp.</small></div>";
+		}
+	} else {
+		$out2 = '';
+	}
+	
+	$howmany = array ();
+	$howmany = $internalInterface->gethowma(true);
+	$howout = $internalInterface->showhowma();
+	$howma = $howmany['howmany'];
+	$out = $messages->getMessage('23');
+	if ($howma != 1) // not equal to one, as zero uses the plural form too.
+		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creators currently online (past 5 minutes): $howout</small></div>\n$out2", $out);
+	else
+		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creator currently online (past 5 minutes): $howout</small></div>\n$out2", $out);
+	return $out;
 	}
 	
 	/**
