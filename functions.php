@@ -667,7 +667,6 @@ HTML;
 		$html .= $out;
 	}
 	$html .= "</table>\n";
-	$html .= $skin->displayIfooter();
 	return $html;
 }
 

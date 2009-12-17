@@ -118,6 +118,8 @@ elseif (!isset($_GET['nocheck']))
 // TODO: Improve way the method is called.
 if ($action == '') {
 	echo defaultpage();
+	$skin->displayIfooter();
+	die();
 }
 
 elseif ($action == "sreg") {
@@ -1038,6 +1040,8 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		$accbotSend->send("Request $gid deferred to $deto by $sid");
 		echo "Request " . $_GET['id'] . " deferred to $deto.<br />";
 		echo defaultpage();
+		$skin->displayIfooter();
+		die();
 	} else {
 		echo "Target not specified.<br />\n";
 	}
@@ -1287,6 +1291,8 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	}
 	upcsum($_GET['id']);
 	echo defaultpage();
+	$skin->displayIfooter();
+	die();
 }
 elseif ($action == "zoom") {
 	if (!isset($_GET['id'])) {
@@ -1521,6 +1527,8 @@ elseif ($action == "breakreserve") {
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$accbotSend->send("Request $request is no longer being handled.");
 		echo defaultpage();
+		$skin->displayIfooter();
+		die();
 	}	
 }
 
@@ -1539,6 +1547,7 @@ elseif ($action == "comment") {
     <input type='submit' value='Submit' />
     </form>";
     $skin->displayIfooter();
+	die();
 }
 
 elseif ($action == "comment-add") {
@@ -1565,6 +1574,7 @@ elseif ($action == "comment-add") {
         <a href='acc.php'>Return to main</a>";
     }
  $skin->displayIfooter();
+ die();
 }
 
 elseif ($action == "comment-quick") {
@@ -1584,6 +1594,7 @@ elseif ($action == "comment-quick") {
         $accbotSend->send($botcomment);
         echo zoomPage($id);
         $skin->displayIfooter();
+		die();
     }
 }
 ?>
