@@ -54,7 +54,7 @@ if( isset( $_SESSION['user'] ) ) {
 if( !$session->hasright($sessionuser, "Admin") && !$session->hasright($sessionuser, "User"))
 	die("You are not authorized to use this feature. Please check you are logged in.");
 
-echo makehead( $sessionuser );
+$skin->displayIheader($sessionuser);
 echo '<div id="content">';
 
 
