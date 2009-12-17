@@ -544,52 +544,11 @@ function makehead($username) {
 	return ($rethead);
 }
 
-function showfootern() {
-	/*
-	* Show footer (not logged in)
-	*/
-	global $messages;
-	return $messages->getMessage('22');
-}
-
-function showfooter() {
-	/*
-	* Show footer (logged in)
-	*/
-	global $enableLastLogin, $messages, $internalInterface;
-	if ($enableLastLogin) {
-		$timestamp = "at ".date('H:i',$_SESSION['lastlogin_time']);
-		if (date('jS \of F Y',$_SESSION['lastlogin_time'])==date('jS \of F Y')) {
-			$timestamp .= " today";
-		} else {
-			$timestamp .= " on the ".date('jS \of F, Y',$_SESSION['lastlogin_time']);
-		}
-		if ($_SESSION['lastlogin_ip']==$_SERVER['REMOTE_ADDR']) {
-			$out2 = "<div align=\"center\"><small>You last logged in from this computer $timestamp.</small></div>";
-		} else {
-			$out2 = "<div align=\"center\"><small>You last logged in from <a href=\"http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=".$_SESSION['lastlogin_ip']."\">".$_SESSION['lastlogin_ip']."</a> $timestamp.</small></div>";
-		}
-	} else {
-		$out2 = '';
-	}
-	
-	$howmany = array ();
-	$howmany = $internalInterface->gethowma(true);
-	$howout = $internalInterface->showhowma();
-	$howma = $howmany['howmany'];
-	$out = $messages->getMessage('23');
-	if ($howma != 1) // not equal to one, as zero uses the plural form too.
-		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creators currently online (past 5 minutes): $howout</small></div>\n$out2", $out);
-	else
-		$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creator currently online (past 5 minutes): $howout</small></div>\n$out2", $out);
-	return $out;
-}
-
 function showlogin($action=null, $params=null) {
 	/*
 	* Show the login page.
 	*/
-	global $_SESSION, $tsSQLlink, $useCaptcha;
+	global $_SESSION, $tsSQLlink, $useCaptcha, $skin;
 	
 	// Create the variable used for the coding.
 	$html ='<div id="sitenotice">Please login first, and we\'ll send you on your way!</div>
@@ -662,7 +621,7 @@ function showlogin($action=null, $params=null) {
     <a href="acc.php?action=forgotpw">Forgot your password?</a><br />';
 	
 	// Finally the footer are added to the code.
-	$html .= showfootern();
+	$html .= $skin->displayPfooter();;
 	return $html;
 }
 
@@ -679,7 +638,7 @@ function getdevs() {
 }
 
 function defaultpage() {
-	global $tsSQLlink, $toolserver_database;
+	global $tsSQLlink, $toolserver_database, $skin;
 	@mysql_select_db( $toolserver_database, $tsSQLlink) or sqlerror(mysql_error,"Could not select db");
 	$html =<<<HTML
 <h1>Create an account!</h1>
@@ -708,50 +667,8 @@ HTML;
 		$html .= $out;
 	}
 	$html .= "</table>\n";
-	$html .= showfooter();
+	$html .= $skin->displayIfooter();
 	return $html;
-}
-
-function displayheader() {
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
-	$query = "SELECT * FROM acc_emails WHERE mail_id = '8';";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("ERROR: No result returned.");
-	$row = mysql_fetch_assoc($result);
-	echo $row['mail_text'];
-}
-
-function displayfooter() {
-	echo "<a href=\"index.php\">Return to account request interface.</a><br />\n";
-	global $session;
-	if(isset($_SESSION['user'])) {
-		if($session->hasright($_SESSION['user'], 'User') || $session->hasright($_SESSION['user'], 'Admin')){
-			echo "<a href=\"acc.php\">Return to request management interface</a>\n";
-		} else {
-			echo "<a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
-		}
-	} else {
-		echo "<a href=\"acc.php\"><span style=\"color: red;\" title=\"Login required to continue\">Return to request management interface</span></a>\n";
-	}
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
-	$query = "SELECT * FROM acc_emails WHERE mail_id = '7';";
-	$result = mysql_query($query);
-	if (!$result)
-		Die("ERROR: No result returned.");
-	$row = mysql_fetch_assoc($result);
-	echo "</div>";
-	echo $row['mail_text'];
 }
 
 /**
@@ -812,7 +729,7 @@ function isOnWhitelist($user)
 
 function zoomPage($id)
 {
-	global $tsSQLlink, $session;
+	global $tsSQLlink, $session, $skin;
 	
 	$out = "";
 	$gid = sanitize($id);
@@ -823,7 +740,7 @@ function zoomPage($id)
 	$row = mysql_fetch_assoc($result);
 	if ($row['pend_mailconfirm'] != 'Confirmed' && $row['pend_mailconfirm'] != "") {
 		$out .= "Email has not yet been confirmed for this request, so it can not yet be closed or viewed";
-		$out .= showfooter();
+		$out .= $skin->displayIfooter();
 		die();
 	}
 	$out .= "<h2>Details for Request #" . $id . ":</h2>";
