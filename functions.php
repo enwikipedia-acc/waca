@@ -499,51 +499,6 @@ function isReserved($requestid)
 	if(isset($row['pend_reserved']) && $row['pend_reserved'] != 0) { return $row['pend_reserved'];} else {return false;}
 }
 
-function makehead($username) {
-	/*
-	* Show page header (retrieved by MySQL call)
-	*/
-	global $tsSQLlink, $toolserver_database, $messages, $session;
-	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
-	
-	$suin = mysql_real_escape_string($username);
-	$rethead = '';
-	
-	$query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
-	$result = mysql_query($query, $tsSQLlink);
-	
-	// Check wheter the query was succesfull.
-	if (!$result) {
-		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	}
-	
-	$row = mysql_fetch_assoc($result);
-	$_SESSION['user_id'] = $row['user_id'];
-	
-	$session->forceLogout( $_SESSION['user_id'] );
-	$out = $messages->getMessage('21');
-	if (isset ($_SESSION['user'])) { //Is user logged in?
-		if ($session->hasright($username, "Admin")) {
-			$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"acc.php?action=usermgmt\">User Management</a>\n", $out);
-		}
-		$rethead .= $out;
-		$rethead .= "<div id = \"header-info\">Logged in as <a href=\"statistics.php?page=Users&user=" . $_SESSION['user_id'] . "\"><span title=\"View your user information\">" . $_SESSION['user'] . "</span></a>.  <a href=\"acc.php?action=logout\">Logout</a>?</div>\n";
-		//Update user_lastactive
-		
-		$now = date("Y-m-d H-i-s"); // TODO: This produces a PHP Strict Standards error message. See next line
-		//Strict Standards: date() [function.date]: It is not safe to rely on the system's timezone settings. Please use the date.timezone setting, the TZ environment variable or the date_default_timezone_set() function. In case you used any of those methods and you are still getting this warning, you most likely misspelled the timezone identifier.
-	
-		$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '" . $_SESSION['user_id'] . "';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	} else {
-		$rethead .= $out;
-		$rethead .= "<div id = \"header-info\">Not logged in.  <a href=\"acc.php\"><span title=\"Click here to return to the login form\">Log in</span></a>/<a href=\"acc.php?action=register\">Create account</a>?</div>\n";
-	}
-	return ($rethead);
-}
-
 function showlogin($action=null, $params=null) {
 	/*
 	* Show the login page.
