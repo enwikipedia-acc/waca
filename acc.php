@@ -223,7 +223,7 @@ elseif ($action == "sreg") {
 	}
 	if ( !isset($user) || !isset($wname) || !isset($pass) || !isset($pass2) || !isset($email) || strlen($email) < 6) {
 		echo "<h2>ERROR!</h2>Form data may not be blank.<br />\n";
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 	if (isset($_POST['debug']) && $_POST['debug'] == "on") {
@@ -613,13 +613,13 @@ elseif ($action == "messagemgmt") {
 		echo "Message count: " . $row['mail_count'] . "<br />\n";
 		echo "Message title: " . $row['mail_desc'] . "<br />\n";
 		echo "Message text: <br /><pre>$mailtext</pre><br />\n";
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 	if (isset ($_GET['edit'])) {
 	if(!$session->hasright($_SESSION['user'], 'Admin')) {
 			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
-			echo showfooter();
+			$skin->displayIfooter();
 			die();
 		}
 		if (!preg_match('/^[0-9]*$/',$_GET['edit']))
@@ -652,7 +652,7 @@ elseif ($action == "messagemgmt") {
 			$mailname = $row['mail_desc'];
 			echo "Message $mailname ($mid) updated.<br />\n";
 			$accbotSend->send("Message $mailname ($mid) edited by $siuser");
-			echo showfooter();
+			$skin->displayIfooter();
 			die();
 		}
 		$query = "SELECT * FROM acc_emails WHERE mail_id = $mid;";
@@ -666,7 +666,7 @@ elseif ($action == "messagemgmt") {
 		echo "<textarea name=\"mailtext\" rows=\"20\" cols=\"60\">$mailtext</textarea><br />\n";
 		echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
 		echo "</form>";
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 	$query = "SELECT mail_id, mail_count, mail_desc FROM acc_emails WHERE mail_type = 'Message';";
@@ -727,7 +727,7 @@ elseif ($action == "messagemgmt") {
 		}
 	}
 	echo "</ul>";
-	echo showfooter();
+	$skin->displayIfooter();
 	die();
 }
 elseif ($action == "sban" && $_GET['user'] != "") {
@@ -740,14 +740,14 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	// Checks whether there is a reason entered for ban.
 	if (!isset($_POST['banreason']) || $_POST['banreason'] == "") {
 		echo "<h2>ERROR</h2>\n<br />You must specify a ban reason.\n";
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 	
 	// Checks whether there is a target entered to ban.
 	if (!isset($_POST['target']) || $_POST['target'] == "") {
 		echo "<h2>ERROR</h2>\n<br />You must specify a target to be blocked.\n";
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 	
@@ -758,11 +758,11 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 		$duration = strtotime($_POST['otherduration']);
 		if (!$duration) {
 			echo "<h2>ERROR</h2>\n<br />Invalid ban time specified.\n";
-			echo showfooter();
+			$skin->displayIfooter();
 			die();
 		} elseif (time() > $duration) {
 			echo "<h2>ERROR</h2>\n<br />Invalid ban time specified (the ban would have already expired).\n";
-			echo showfooter();
+			$skin->displayIfooter();
 			die();
 		}
 	} else {
@@ -793,7 +793,7 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	} else {
 		$accbotSend->send("$target banned by $siuser for " . $_POST['banreason'] . " until $until");
 	}
-	echo showfooter();
+	$skin->displayIfooter();
 	die();
 }
 elseif ($action == "unban" && $_GET['id'] != "") 
@@ -819,7 +819,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 		if (!isset($_POST['unbanreason']) || $_POST['unbanreason'] == "") 
 		{
 			echo "<h2>ERROR</h2><br />You must enter an unban reason.\n";
-			echo showfooter();
+			$skin->displayIfooter();
 			die;
 		}
 		else 
@@ -840,7 +840,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 			}
 			echo "Unbanned ban #$bid<br />\n";
 			$accbotSend->send("Ban #" . $bid . " ($iTarget) unbanned by " . $_SESSION['user']);
-			echo showfooter();
+			$skin->displayIfooter();
 			die();
 		}
 	}
@@ -909,7 +909,7 @@ elseif ($action == "ban") {
 		$row = mysql_fetch_assoc($result);
 		if ($row['ban_id'] != "") {
 			echo "<h2>ERROR</h2>\n<br />\nCould not ban. Already banned!<br />";
-			echo showfooter();
+			$skin->displayIfooter();
 			die();
 		} else {
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
@@ -992,7 +992,7 @@ elseif ($action == "ban") {
 			echo "</table><br />\n";
 			echo "<input type=\"submit\"></form>\n";
 		}
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 }
@@ -1006,7 +1006,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		$gid = sanitize($_GET['id']);
 		if (csvalid($gid, $_GET['sum']) != 1) {
 			echo "Invalid checksum (This is similar to an edit conflict on Wikipedia; it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
-			echo showfooter();
+			$skin->displayIfooter();
 			die();
 		}
 		$sid = sanitize($_SESSION['user']);
@@ -1017,7 +1017,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		$row = mysql_fetch_assoc($result);
 		if ($row['pend_status'] == $target) {
 			echo "Cannot set status, target already deferred to $target<br />\n";
-			echo showfooter();
+			$skin->displayIfooter();
 			die();
 		}
 		$query = "UPDATE acc_pend SET pend_status = '$target', pend_reserved = '0' WHERE pend_id = '$gid';";
@@ -1131,7 +1131,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 HTML;
 
 
-	echo showfooter();
+	$skin->displayIfooter();
 	die();
 }
 elseif ($action == "done" && $_GET['id'] != "") {
@@ -1140,7 +1140,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	
 	if (!isset($_GET['email']) | !($messages->isEmail($_GET['email'])) and $_GET['email'] != 'custom') {
 		echo "Invalid close reason";
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 	
@@ -1150,7 +1150,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	// check the checksum is valid
 	if (csvalid($gid, $_GET['sum']) != 1) {
 		echo "Invalid checksum (This is similar to an edit conflict on Wikipedia; it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 	
@@ -1165,7 +1165,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if ($row['pend_emailsent'] == "1" && !isset($_GET['override'])) {
 		echo "<br />This request has already been closed in a manner that has generated an e-mail to the user, Proceed?<br />\n";
 		echo "<a href=\"acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;override=yes&amp;email=" . $_GET['email'] . "\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 	
@@ -1176,7 +1176,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		{
 			echo "<br />This request is currently marked as being handled by ".$session->getUsernameFromUid($row['pend_reserved']).", Proceed?<br />\n";
 			echo "<a href=\"acc.php?".$_SERVER["QUERY_STRING"]."&reserveoverride=yes\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
-			echo showfooter();
+			$skin->displayIfooter();
 			die();
 		}
 	}
@@ -1191,7 +1191,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$gus = sanitize($row2['pend_name']);
 	if ($row2['pend_status'] == "Closed") {
 		echo "<h2>ERROR</h2>Cannot close this request. Already closed.<br />\n";
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 	
@@ -1203,7 +1203,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			echo "<p><input type='checkbox' name='ccmailist' />Cc to mailing list</p>\n";
 			echo "<p><input type='submit' value='Close and send' /></p>\n";
 			echo "</form>\n";
-			echo showfooter();
+			$skin->displayIfooter();
 			die();
 		} else {
 			
@@ -1291,12 +1291,12 @@ elseif ($action == "done" && $_GET['id'] != "") {
 elseif ($action == "zoom") {
 	if (!isset($_GET['id'])) {
 		echo "No user specified!<br />\n";		
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 	echo zoomPage($_GET['id']);
 	echo "</form>\n";
-	echo showfooter();
+	$skin->displayIfooter();
 	die();
 }
 elseif ($action == "logout") {
@@ -1377,7 +1377,7 @@ elseif ($action == "logs") {
 	}
 
 	echo $logPage->showListLog(isset($offset) ? $offset : 0 ,isset($limit) ? $limit : 100);
-	echo showfooter();
+	$skin->displayIfooter();
 	die();
 }
 elseif ($action == "reserve") {
@@ -1538,7 +1538,7 @@ elseif ($action == "comment") {
     Visibility: <select name='visibility'><option>user</option><option>admin</option</select>
     <input type='submit' value='Submit' />
     </form>";
-    echo showfooter();
+    $skin->displayIfooter();
 }
 
 elseif ($action == "comment-add") {
@@ -1564,7 +1564,7 @@ elseif ($action == "comment-add") {
         echo "ERROR: A required input is missing <br />
         <a href='acc.php'>Return to main</a>";
     }
- echo showfooter();
+ $skin->displayIfooter();
 }
 
 elseif ($action == "comment-quick") {
@@ -1583,7 +1583,7 @@ elseif ($action == "comment-quick") {
         $botcomment = $user . " posted a comment on request " . $id;
         $accbotSend->send($botcomment);
         echo zoomPage($id);
-        echo showfooter();
+        $skin->displayIfooter();
     }
 }
 ?>
