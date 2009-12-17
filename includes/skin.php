@@ -54,44 +54,74 @@ class skin {
 	 * @param $username The username of the curretly logged in user.
 	 */
 	public function displayIheader($username) {
-		global $tsSQLlink, $toolserver_database, $messages, $session;
-		@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database. If the problem persists please contact a <a href='team.php'>developer</a>.");
+		// Gets the needed objects.
+		global $tsSQL, $messages, $session;
 		
-		$suin = mysql_real_escape_string($username);
-		$rethead = '';
+		// Escapes the username for MySQL.
+		$suin = $tsSQL->escape($username);
 		
+		// Formulates and executes the SQL query to get details regarding the user.
 		$query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
-		$result = mysql_query($query, $tsSQLlink);
+		$result = $tsSQL->query($query);
 		
-		// Check wheter the query was succesfull.
+		// Display error upon failure.
 		if (!$result) {
-			sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"ERROR: database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
 		}
 		
+		// Fetch the result row as an array.
 		$row = mysql_fetch_assoc($result);
+		
+		// Sets the user_id according to the returned data.
 		$_SESSION['user_id'] = $row['user_id'];
 		
-		$session->forceLogout( $_SESSION['user_id'] );
-		$out = $messages->getMessage('21');
-		if (isset ($_SESSION['user'])) { //Is user logged in?
-			if ($session->hasright($username, "Admin")) {
-				$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"acc.php?action=usermgmt\">User Management</a>\n", $out);
-			}
-			$rethead .= $out;
-			$rethead .= "<div id = \"header-info\">Logged in as <a href=\"statistics.php?page=Users&user=" . $_SESSION['user_id'] . "\"><span title=\"View your user information\">" . $_SESSION['user'] . "</span></a>.  <a href=\"acc.php?action=logout\">Logout</a>?</div>\n";
-			//Update user_lastactive
-			
-			$now = date("Y-m-d H-i-s"); // TODO: This produces a PHP Strict Standards error message. See next line
-			//Strict Standards: date() [function.date]: It is not safe to rely on the system's timezone settings. Please use the date.timezone setting, the TZ environment variable or the date_default_timezone_set() function. In case you used any of those methods and you are still getting this warning, you most likely misspelled the timezone identifier.
+		// Checks whether the user must be forced to logout.
+		$session->forceLogout($_SESSION['user_id']);
 		
-			$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '" . $_SESSION['user_id'] . "';";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-		} else {
+		// Gets the internal interface header.
+		$out = $messages->getMessage('21');
+		
+		// Creates a blank varible for future use.
+		$rethead = '';
+		
+		// Checks whether the user is logged in.
+		if (isset ($_SESSION['user'])) {
+			// Checks if the particular user has Admin rigths.
+			if ($session->hasright($username, "Admin")) {
+				// There are additional links added to the orginal header if so.
+				$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"acc.php?action=usermgmt\">User Management</a>\n", $out);				
+			}
+			
+			// The header is assigned to this variable, no matter Admin or not.
 			$rethead .= $out;
+			
+			// Generates the code for the header-info section. This includes a link to the user information and to log out.
+			$rethead .= "<div id = \"header-info\">Logged in as <a href=\"statistics.php?page=Users&user=" . $_SESSION['user_id'] . "\"><span title=\"View your user information\">" . $_SESSION['user'] . "</span></a>.  <a href=\"acc.php?action=logout\">Logout</a>?</div>\n";
+			
+			// Assigns the current date and time to a variable.
+			// TODO: This produces a PHP Strict Standards error message. See next line.
+			// Strict Standards: date() [function.date]: It is not safe to rely on the system's timezone settings.
+			// Please use the date.timezone setting, the TZ environment variable or the date_default_timezone_set() function.
+			// In case you used any of those methods and you are still getting this warning, you most likely misspelled the timezone identifier.
+			$now = date("Y-m-d H-i-s"); 
+			
+			// Formulates and executes a SQL query to update the last time the user logged in, namely now.
+			$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '" . $_SESSION['user_id'] . "';";
+			$result = $tsSQL->query($query);
+		
+			// Display error upon failure.
+			if (!$result) {
+				$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"ERROR: database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
+			}
+		// This section is executed when the user is not logged in.
+		} else {
+			// The header is assigned to this variable.
+			$rethead .= $out;
+			
+			// Generates the code for the header-info section. This states that the user is not logged in, or the option to create an account.
 			$rethead .= "<div id = \"header-info\">Not logged in.  <a href=\"acc.php\"><span title=\"Click here to return to the login form\">Log in</span></a>/<a href=\"acc.php?action=register\">Create account</a>?</div>\n";
 		}
+		// Prints the specific header-info section to the screen.
 		echo $rethead;
 	}
 	
