@@ -1993,8 +1993,12 @@ elseif ($action == "reserve") {
 
 		// Release the lock on the table.
 		mysql_query('UNLOCK TABLES;',$tsSQLlink);
-		echo zoomPage($request);
-        	echo showfooter();
+		
+		// Decided to use the HTML redirect, because the PHP code results in an error.
+		// I know that this breaks the Back button, but current I dont have another solution.
+		// As an alternative one could implementate output buffering to solve this problem.
+		echo "<meta http-equiv=\"Refresh\" Content=\"0; URL=$tsurl/acc.php?action=zoom&id=$request\">";
+		die();
 	}	
 }
 elseif ($action == "breakreserve") {
