@@ -160,7 +160,7 @@ elseif ($action == "sreg") {
 	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) {
 		$message = $messages->getMessage( '9' );
 		$skin->displayRequestMsg("ERROR: You are presently blocked on the English Wikipedia<br />");
-		echo showfootern();
+		$skin->displayPfooter();
 		die();
 	}
 	$userexist = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
@@ -168,7 +168,7 @@ elseif ($action == "sreg") {
 	foreach ( $ue['query']['users']['0'] as $oneue ) {
 		if ( !isset($oneue['missing'])) {
 			$skin->displayRequestMsg("Invalid On-Wiki username.<br />");
-			echo showfootern();
+			$skin->displayPfooter();
 			die();
 		}
 	}
@@ -184,14 +184,14 @@ elseif ($action == "sreg") {
 		$editcount = $isNewbie['query']['allusers'][0]['editcount'];
 		if (!($editcount > $onRegistrationNewbieCheckEditCount and $time2 > $onRegistrationNewbieCheckAge)) {
 			$skin->displayRequestMsg("I'm sorry, you are too new to request an account at the moment.<br />");
-			echo showfootern();
+			$skin->displayPfooter();
 			die();
 		}
 	}
 	// check if user checked the "I have read and understand the interface guidelines" checkbox
 	if(!isset($_REQUEST['guidelines'])) {
 		$skin->displayRequestMsg("I'm sorry, but you must read <a href=\"http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide\">the interface guidelines</a> before your request may be submitted.<br />");
-		echo showfootern();
+		$skin->displayPfooter();
 		die();
 	}
 	
@@ -234,12 +234,12 @@ elseif ($action == "sreg") {
 	$mailisvalid = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.(ac|ad|ae|aero|af|ag|ai|al|am|an|ao|aq|ar|arpa|as|asia|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|biz|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cat|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|com|coop|cr|cu|cv|cx|cy|cz|de|dj|dk|dm|do|dz|ec|edu|ee|eg|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gov|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|info|int|io|iq|ir|is|it|je|jm|jo|jobs|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mil|mk|ml|mm|mn|mo|mobi|mp|mq|mr|ms|mt|mu|museum|mv|mw|mx|my|mz|na|name|nc|ne|net|nf|ng|ni|nl|no|np|nr|nu|nz|om|org|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|pro|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sy|sz|tc|td|tel|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|travel|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)$/i', $_REQUEST['email']);
 	if ($mailisvalid == 0) {
 		$skin->displayRequestMsg("ERROR: Invalid E-mail address.<br />");
-		echo showfootern();
+		$skin->displayPfooter();
 		die();
 	}
 	if ($pass != $pass2) {
 		$skin->displayRequestMsg("Passwords did not match!<br />");
-		echo showfootern();
+		$skin->displayPfooter();
 		die();
 	}
 	$query = "SELECT * FROM acc_user WHERE user_name = '$user' LIMIT 1;";
@@ -249,7 +249,7 @@ elseif ($action == "sreg") {
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] != "") {
 		$skin->displayRequestMsg("I'm sorry, but that username is in use. Please choose another. <br />");
-		echo showfootern();
+		$skin->displayPfooter();
 		die();
 	}
 	$query = "SELECT * FROM acc_user WHERE user_email = '$email' LIMIT 1;";
@@ -259,7 +259,7 @@ elseif ($action == "sreg") {
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] != "") {
 		$skin->displayRequestMsg( "I'm sorry, but that e-mail address is in use.<br />");
-		echo showfootern();
+		$skin->displayPfooter();
 		die();
 	}
 	$query = "SELECT * FROM acc_user WHERE user_onwikiname = '$wname' LIMIT 1;";
@@ -269,7 +269,7 @@ elseif ($action == "sreg") {
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] != "") {
 		$skin->displayRequestMsg("I'm sorry, but $wname already has an account here.<br />");
-		echo showfootern();
+		$skin->displayPfooter();
 		die();
 	}
 	$query = "SELECT * FROM acc_pend WHERE pend_name = '$user' AND (pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Closed') AND DATE_SUB(CURDATE(),INTERVAL 7 DAY) <= pend_date LIMIT 1;";
@@ -277,7 +277,7 @@ elseif ($action == "sreg") {
 	$row = mysql_fetch_assoc($result);
 	if (!empty($row['pend_name'])) {
 		$skin->displayRequestMsg("I'm sorry, you are too new to request an account at the moment.<br />");
-		echo showfootern();
+		$skin->displayPfooter();
 		die();
 	}
 	if (!isset($fail) || $fail != 1) {
@@ -300,7 +300,7 @@ elseif ($action == "sreg") {
 		$skin->displayRequestMsg("Account created! Your username is $user! In order to complete the process, please make a confirmation edit to your user talk page. In this edit, note that you requested an account on the ACC account creation interface, and use a descriptive edit summary so that we can easily find this edit.  <b>Failure to do this will result in your request being declined.</b><br /><br />");
 		echo showlogin();
 	}
-	echo showfootern();
+	$skin->displayPfooter();
 	die();
 }
 
@@ -382,7 +382,7 @@ elseif ($action == "register") {
     </form>
 HTML;
 
-	echo showfootern();
+	$skin->displayPfooter();
 	die();
 }
 elseif ($action == "forgotpw") {
@@ -412,7 +412,7 @@ elseif ($action == "forgotpw") {
 			} else {
 				echo "<h2>ERROR</h2>\nInvalid request.1<br />";
 			}
-			echo showfootern();
+			$skin->displayPfooter();
 			die();
 		}
 		$puser = sanitize($_GET['id']);
@@ -435,7 +435,7 @@ HTML;
 		} else {
 			echo "<h2>ERROR</h2>\nInvalid request. The HASH supplied in the link did not match the HASH in the database!<br />";
 		}
-		echo showfootern();
+		$skin->displayPfooter();
 		die();
 	}
 	if (isset ($_POST['username'])) {
@@ -471,7 +471,7 @@ HTML;
 HTML;
 
 
-	echo showfootern();
+	$skin->displayPfooter();
 	die();
 }
 elseif ($action == "login") {
@@ -505,21 +505,21 @@ elseif ($action == "login") {
 	if ($row['user_level'] == "New") {
 		
 		// Display the header of the interface.
-		$skin->displayheader();
+		$skin->displayPheader();
 		
 		echo "<h2>Account Pending</h2>";
 		echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
 		echo "</pre><br />";
 		
 		// Display the footer of the interface.
-		$skin->displayfooter();
+		$skin->displayPfooter();
 		die();
 	}
 	// Checks whether the user's account has been suspended.
 	if ($row['user_level'] == "Suspended") {
 		
 		// Display the header of the interface.
-		$skin->displayheader();
+		$skin->displayPheader();
 		
 		echo '<h2>Account Suspended</h2>';
 		echo "I'm sorry, but, your account is presently suspended.<br />\n";
@@ -532,7 +532,7 @@ elseif ($action == "login") {
 		echo '<b>' . $reasonRow['log_cmt'] . "</b></pre><br />";
 		
 		// Display the footer of the interface.
-		$skin->displayfooter();
+		$skin->displayPfooter();
 		die();
 	}
 	$calcpass = md5($_POST['password']);
@@ -1390,7 +1390,7 @@ elseif ($action == "reserve") {
 		if (!preg_match('/^[0-9]*$/',$_GET['resid'])) {
 			// Notifies the user and stops the script.
 			$skin->displayRequestMsg("The request ID supplied is invalid!");
-			$skin->displayfooter();
+			$skin->displayIfooter();
 			die();
 		}
 		
@@ -1407,7 +1407,7 @@ elseif ($action == "reserve") {
 		if($row[0]==="0") {
 			// Notifies the user and stops the script.
 			$skin->displayRequestMsg("The request ID supplied is invalid!");
-			$skin->displayfooter();
+			$skin->displayIfooter();
 			die();
 		}
 		
