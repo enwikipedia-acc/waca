@@ -19,18 +19,37 @@ require_once 'includes/messages.php';
 require_once 'includes/skin.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
+require_once 'includes/offlineMessage.php';
+
+// Check to see if the database is unavailable.
+// Uses the false variable as its the internal interface.
+$offlineMessage = new offlineMessage(false);
+$offlineMessage->check();
 
 // Initialize the database classes.
 $tsSQL = new database("toolserver");
 $asSQL = new database("antispoof");
 
+// Creates database links for later use.
+$tsSQLlink = $tsSQL->getLink();
+$asSQLlink = $asSQL->getLink();
+
 // Initialize the class objects.
 $messages = new messages();
 $accbot   = new accbotSend();
 $skin     = new skin();
+$session  = new session();
+
+// Initialize the session data.
+session_start();
 
 // Display the header of the interface.
-$skin->displayIheader();
+$skin->displayIheader($_SESSION['user']);
+
+// A content block is created if the action is none of the above.
+// This block would later be used to keep all the HTML except the header and footer.
+$out = "<div id=\"content\">";
+echo $out;
 
 // Checks if the current user has admin rigths.
 if(!$session->hasright($_SESSION['user'], 'Admin'))
@@ -528,9 +547,8 @@ while ($row = mysql_fetch_assoc($result)) {
 	$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> (Declined by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
 	echo "$out\n";
 }
+echo "</ol>\n</div><br clear=\"all\" />";
 
-	echo "</ol>\n</div><br clear=\"all\" />";
-
-echo showfooter();
+$skin->displayIfooter();
 die();
 ?>
