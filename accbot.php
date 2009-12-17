@@ -56,34 +56,35 @@
 	addHelp( 'sandinfo'   , ''          , 'Floods you with information about the SVN repository sandbox.'       );
 	addHelp( 'sand-svnup' , ''          , 'Allows developers to sync the sandbox with the SVN repository.'      );
 	addHelp( 'restart'    , ''          , 'Causes the bot to do an immediate graceful reinitialization.'        );
-
+	// TODO: Add help information for the rewrite-svnup command.
+	
 	// Commands
-	//          Command      , Function            , Fork?
-	addCommand( 'help'       , 'commandHelp'       , true  );
-	addCommand( 'count'      , 'commandCount'      , false );
-	addCommand( 'status'     , 'commandStatus'     , false );
-	addCommand( 'stats'      , 'commandStats'      , false );
-	addCommand( 'svninfo'    , 'commandSvnInfo'    , true  );
-	addCommand( 'sandinfo'   , 'commandSandInfo'   , true  );
-	addCommand('rewrite-svnup','commandRewriteSvnUp',true  );
-	addCommand( 'sand-svnup' , 'commandSandSvnUp'  , true  );
-	addCommand( 'restart'    , 'commandRestart'    , false );
+	//          Command      	, Function            	, Fork?
+	addCommand( 'help'       	, 'commandHelp'       	, true  );
+	addCommand( 'count'      	, 'commandCount'      	, false );
+	addCommand( 'status'     	, 'commandStatus'     	, false );
+	addCommand( 'stats'      	, 'commandStats'      	, false );
+	addCommand( 'svninfo'    	, 'commandSvnInfo'    	, true  );
+	addCommand( 'sandinfo'   	, 'commandSandInfo'   	, true  );
+	addCommand( 'rewrite-svnup'	, 'commandRewriteSvnUp'	, true  );
+	addCommand( 'sand-svnup' 	, 'commandSandSvnUp'  	, true  );
+	addCommand( 'restart'    	, 'commandRestart'    	, false );
 
 	// Users
-	//	Nick!User@Host mask                 => group
+	// Nick!User@Host mask                 	=> Group
 	$users = array(
 		'*!*@cobi.cluenet.org'				=> 'developer',
 		'*!*@Cobi.cluenet.org'				=> 'developer',
-		'*!*@wikipedia/SQL'					  => 'developer',
-		'*!*@wikipedia/OverlordQ'	  	=> 'developer',
-		'*!*@wikipedia/Stwalkerster'	=> 'developer',
-		'*!*@*Alexfusco5'				    	=> 'developer',
+		'*!*@wikipedia/SQL'					=> 'developer',
+		'*!*@wikipedia/OverlordQ'	  		=> 'developer',
+		'*!*@wikipedia/Stwalkerster'		=> 'developer',
+		'*!*@*Alexfusco5'				   	=> 'developer',
 		'*!*@wikipedia/Soxred93'			=> 'developer',
-		'*!*@yourwiki/staff/charlie'	=> 'developer',
-		'*!*@wikipedia/FastLizard4'		=> 'developer',
+		'*!*@yourwiki/staff/charlie'		=> 'developer',
+		'*!*@wikipedia/FastLizard4'			=> 'developer',
 		'*!*@wikipedia/Prodego'				=> 'developer',
-		'*!*@yourwiki/staff/funpika'	=> 'developer',
-		'*!*@wikimedia/Promethean'		=> 'developer',
+		'*!*@yourwiki/staff/funpika'		=> 'developer',
+		'*!*@wikimedia/Promethean'			=> 'developer',
 		'*!*@wikipedia/Chris-G'				=> 'developer',
 	    '*!*@unaffiliated/louriepieterse'	=> 'developer',
 		'*!*@*'								=> '*'
@@ -95,13 +96,13 @@
 	$privgroups[ '*'         ][ 'count'       ] = 1;
 	$privgroups[ '*'         ][ 'status'      ] = 1;
 	$privgroups[ '*'         ][ 'stats'       ] = 1;
-	$privgroups[ '*'         ][ 'svninfo'     ] = 1; //Do not change this, per consensus in the IRC channel
+	$privgroups[ '*'         ][ 'svninfo'     ] = 1; //Do not change this, per consensus in the IRC channel.
 	$privgroups[ '*'         ][ 'sandinfo'    ] = 1;
 
-	$privgroups[ 'developer' ]                  = $privgroups['*']; // 'developer' inherits '*'.
-	$privgroups[ 'developer' ][ 'sand-svnup'  ] = 1;
-	$privgroups[ 'developer' ]['rewrite-svnup'] = 1;
-	$privgroups[ 'developer' ][ 'restart'     ] = 1;
+	$privgroups[ 'developer' ] = $privgroups['*']; // Developer group inherits '*'.
+	$privgroups[ 'developer' ][ 'sand-svnup'  	] = 1;
+	$privgroups[ 'developer' ][ 'rewrite-svnup' ] = 1;
+	$privgroups[ 'developer' ][ 'restart'     	] = 1;
 
 	// Functions
 	function sanitize( $data ) {
@@ -486,7 +487,7 @@
 	// Code entry point.
 
 	if ( $_SERVER['REMOTE_ADDR'] != '' ) { 
-		header( 'Location: http://stable.toolserver.org/acc/' );
+		header( 'Location: http://toolserver.org/~acc/' );
 		die(); 
 	}
 
