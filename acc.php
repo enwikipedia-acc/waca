@@ -70,7 +70,7 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 	// Sets the parameter to blank, this way the correct options would be displayed.
 	// It would tell the user now that he or she should log in or create an account.
 	$suser = '';
-	echo makehead($suser);
+	$skin->displayIheader($suser);
 	
 	// Checks whether the user want to reset his password or register a new account.
 	// Performs the clause when the action is not one of the above options.
@@ -105,7 +105,7 @@ elseif (!isset($_GET['nocheck']))
         $session->forceLogout($_SESSION['userID']);
 		
 		// ?
-        echo makehead($_SESSION['user']);
+        $skin->displayIheader($_SESSION['user']);
         $session->checksecurity($_SESSION['user']);
 		
 		// ?
