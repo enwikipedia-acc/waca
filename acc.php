@@ -80,11 +80,13 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 			// The data in the current $GET varianle would be send as parameter.
 			// There it would be used to possibly fill some of the form's fields.
 			echo showlogin($action, $_GET);
+			$skin->displayPfooter();
 		}
 		elseif (!isset($action)) {
 			// When the action variable isn't set to anything,
 			// the login page is displayed for the user to complete.
 			echo showlogin();
+			$skin->displayPfooter();
 		}
 		// All the needed HTML code is displayed for the user.
 		// The script is thus terminated.

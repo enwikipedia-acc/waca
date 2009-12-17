@@ -576,7 +576,6 @@ function showlogin($action=null, $params=null) {
     <a href="acc.php?action=forgotpw">Forgot your password?</a><br />';
 	
 	// Finally the footer are added to the code.
-	$html .= $skin->displayPfooter();;
 	return $html;
 }
 
