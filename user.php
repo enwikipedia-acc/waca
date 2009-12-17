@@ -11,12 +11,36 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
+// Get all the classes.
+require_once 'config.inc.php';
+require_once 'functions.php';
+require_once 'includes/database.php';
+require_once 'includes/messages.php';
+require_once 'includes/skin.php';
+require_once 'includes/accbotSend.php';
+require_once 'includes/session.php';
+
+// Initialize the database classes.
+$tsSQL = new database("toolserver");
+$asSQL = new database("antispoof");
+
+// Initialize the class objects.
+$messages = new messages();
+$accbot   = new accbotSend();
+$skin     = new skin();
+
+// Display the header of the interface.
+$skin->displayheader();
+
+// Checks if the current user has admin rigths.
 if(!$session->hasright($_SESSION['user'], 'Admin'))
 {
 	echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
-	echo showfooter();
+	// Display the footer of the interface.
+	$skin->displayfooter();
 	die();
 }
+
 if (isset ($_GET['approve'])) {
 	$aid = sanitize($_GET['approve']);
 	$siuser = sanitize($_SESSION['user']);
@@ -506,7 +530,6 @@ while ($row = mysql_fetch_assoc($result)) {
 }
 
 	echo "</ol>\n</div><br clear=\"all\" />";
-
 
 echo showfooter();
 die();
