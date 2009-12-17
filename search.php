@@ -19,6 +19,7 @@ require_once 'config.inc.php';
 require_once 'functions.php';
 require_once 'includes/offlineMessage.php';
 require_once 'includes/database.php';
+require_once 'includes/skin.php';
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
@@ -32,6 +33,9 @@ $asSQL = new database("antispoof");
 // Creates database links for later use.
 $tsSQLlink = $tsSQL->getLink();
 $asSQLlink = $asSQL->getLink();
+
+// Initialize the class objects.
+$skin     = new skin();
 
 // Initialize the session data.
 session_start();
@@ -156,6 +160,5 @@ else {
 	echo '<input type="submit" />';
 	echo '</form>';
 }
-
-echo showfooter();
+$skin->displayIfooter();
 ?>
