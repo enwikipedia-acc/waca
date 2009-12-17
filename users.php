@@ -30,14 +30,14 @@ $accbot   = new accbotSend();
 $skin     = new skin();
 
 // Display the header of the interface.
-$skin->displayheader();
+$skin->displayIheader();
 
 // Checks if the current user has admin rigths.
 if(!$session->hasright($_SESSION['user'], 'Admin'))
 {
-	echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
-	// Display the footer of the interface.
-	$skin->displayfooter();
+	// Displays both the error message and the footer of the interface.
+	$skin->displayRequestMsg("I'm sorry, but, this page is restricted to administrators only.<br />\n");	
+	$skin->displayIfooter();
 	die();
 }
 
