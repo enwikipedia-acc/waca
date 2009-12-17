@@ -42,19 +42,35 @@ class skin {
 	}
 	
 	/**
-	 * Prints the interface header to the screen.
+	 * Prints the public interface header to the screen.
 	 */
-	public function displayheader() {
+	public function displayPheader() {
 		// Displayes the interface header.
 		$this->displayMessage(8);
 	}
 	
 	/**
-	 * Prints the interface footer to the screen.
+	 * Prints the internal interface header to the screen.
 	 */
-	public function displayfooter() {
+	public function displayIheader() {
+		// Displayes the interface header.
+		$this->displayMessage(21);
+	}
+	
+	/**
+	 * Prints the public interface footer to the screen.
+	 */
+	public function displayPfooter() {
 		// Displayes the interface header.
 		$this->displayMessage(22);
+	}
+	
+	/**
+	 * Prints the internal interface footer to the screen.
+	 */
+	public function displayIfooter() {
+		// Displayes the interface header.
+		$this->displayMessage(23);
 	}
 	
 	/**

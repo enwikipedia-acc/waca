@@ -38,7 +38,7 @@ $accbot   = new accbotSend();
 $skin     = new skin();
 
 // Display the header of the interface.
-$skin->displayheader();
+$skin->displayPheader();
 
 // Clears the action variable.
 unset($action);
@@ -98,5 +98,5 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$skin->displayRequest();
 }
 // Display the footer of the interface.
-$skin->displayfooter();
+$skin->displayPfooter();
 ?>
