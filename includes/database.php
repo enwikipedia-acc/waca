@@ -20,13 +20,16 @@ if ($ACC != "1") {
 // Get all the classes.
 require_once 'config.inc.php';
 
+/**
+ * This class is used to comunicate with the Toolserver and Antispoof databases.
+ */
 class database {	
 	private $dbLink, $host, $db;
 	
 	/**
 	 * Creates a new instance of the database class.
 	 * @param $name Which database to connect to. { "toolserver" | "antispoof" }
-	 * @return new instance of database class.
+	 * @return New instance of the particular database class.
 	 */
 	public function __construct($name) {
 
@@ -53,6 +56,13 @@ class database {
 		}
 	}
 	
+	/**
+	 * Connects completely to the particular database.
+	 * @param $host The MySQL server.
+	 * @param $username The username.
+	 * @param $password The password.
+	 * @param $database The name of the database that is to be selected.
+	 */
 	private function connect($host, $username, $password, $database) {
 		$this->dbLink = mysql_pconnect($host,$username,$password) or $this->showError("Error connecting to database ($database on $host): ".$this->getError(),'Error connecting to database.');
 		
@@ -64,8 +74,8 @@ class database {
 	}
 	
 	/**
-	 * Function to only generate a link to the database.
-	 * @return mysql link resource.
+	 * Only generate a link to the database.
+	 * @return A MySQL persistent link identifier.
 	 */
 	public function getLink() {		
 		global $link;
@@ -87,25 +97,29 @@ class database {
 		return $link;
 	}
 	
+	/**
+	 * Select a MySQL database.
+	 * @param $database The name of the database that is to be selected.
+	 */
 	private function selectDb($database) {
 		// TODO: Improve error msg and handling
 		mysql_select_db($database,$this->dbLink) or $this->showError("Error selecting $database on ".$this->host.": ".$this->getError(),'Error selecting the database.');
 	}
 	
 	/**
-	 * run a query on the database.
-	 * @param $query the query to run on the database
-	 * @return mysql query result.
+	 * Run a MySQL query on the database.
+	 * @param $query The SQL query to execute. The query string should not end with a semicolon. Data inside the query should be properly escaped.
+	 * @return MySQL query result.
 	 */
 	public function query($query) {
 		return mysql_query($query,$this->dbLink);
 	}
 	
 	/**
-	 * run a query on the database, pushing the results into an array.
-	 * @param $query query to run
-	 * @param $result reference array, set to contain results of query.
-	 * @return bool: did the query succeed?
+	 * Run a query on the database, pushing the results into an array.
+	 * @param $query The SQL query to execute.
+	 * @param $result Reference array, set to contain results of query.
+	 * @return bool: Whether the query succeded.
 	 */
 	public function queryToArray($query, &$result)
 	{
@@ -123,7 +137,6 @@ class database {
 			$i++;
 		}
 		return true;
-		
 	}
 	
 	/**
@@ -132,8 +145,8 @@ class database {
 	 * @return The escaped string.
 	 */
 	public function escape($string) {
-		// WARNING: This does not escape against XSS, this is intentional to avoid double escape etc
-		// please escape user input seperately using htmlentities()
+		// WARNING: This does not escape against XSS, this is intentional to avoid double escape etc.
+		// Please escape user input seperately using htmlentities().
 		return mysql_real_escape_string($string,$this->dbLink);
 	}
 	
@@ -155,8 +168,8 @@ class database {
 	}
 	
 	/**
-	 * returns the last error
-	 * @return unknown_type
+	 * Returns the text of the error message from previous MySQL function.
+	 * @return The error text from the last MySQL function.
 	 */
 	public function getError() {
 		return mysql_error($this->dbLink);
