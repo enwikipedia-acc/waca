@@ -70,12 +70,12 @@ if (isset ($_GET['approve'])) {
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_level'] == "Admin") {
 		echo "Sorry, the user you are trying to approve has Administrator access. Please use the <a href=\"users.php?demote=$aid\">demote function</a> instead.<br />\n";
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}		
 	if ($row['user_level'] == "User") {
 		echo "Sorry, the user you are trying to approve has already been approved.<br />\n";
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 	$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$aid';";
@@ -110,7 +110,7 @@ if (isset ($_GET['demote'])) {
 		echo "</textarea><br />\n";
 		echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
 		echo "</form>";
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	} else {
 		$demotersn = sanitize($_POST['demotereason']);
@@ -133,7 +133,7 @@ if (isset ($_GET['demote'])) {
 		$accbotSend->send("User $did (" . $row2['user_name'] . ") demoted by $siuser because: \"" . $_POST['demotereason'] . "\"");
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row2['user_email'], "ACC Account Demoted", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been demoted by $siuser because ".$_POST['demotereason'].". To contest this demotion please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 
@@ -150,7 +150,7 @@ if (isset ($_GET['suspend'])) {
 		echo "</textarea><br />\n";
 		echo "<input type=\"submit\" /><input type=\"reset\"/><br />\n";
 		echo "</form>";
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	} else {
 		$suspendrsn = sanitize($_POST['suspendreason']);
@@ -173,7 +173,7 @@ if (isset ($_GET['suspend'])) {
 		$accbotSend->send("User $did (" . $row2['user_name'] . ") had tool access suspended by $siuser because: \"" . $_POST['suspendreason'] . "\"");
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row2['user_email'], "ACC Account Suspended", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been suspended by $siuser because ".$_POST['suspendreason'].". To contest this suspension please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 
@@ -211,7 +211,7 @@ if (isset ($_GET['decline'])) {
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_level'] != "New") {
 		echo "You cannot decline this user because the user is not a New user.<br />\n";
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 	if (!isset($_POST['declinereason'])) {
@@ -223,7 +223,7 @@ if (isset ($_GET['decline'])) {
 		echo "</textarea><br />\n";
 		echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
 		echo "</form>";
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	} else {
 		$declinersn = sanitize($_POST['declinereason']);
@@ -246,7 +246,7 @@ if (isset ($_GET['decline'])) {
 		$accbotSend->send("User $did (" . $row2['user_name'] . ") declined access by $siuser because: \"" . $_POST['declinereason'] . "\"");
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row2['user_email'], "ACC Account Declined", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been declined access to the account creation tool by $siuser because ".$_POST['declinereason'].". For more infomation please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 }
@@ -270,7 +270,7 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 		echo "<input type=\"submit\"/>";
 		echo "</div>";
 		echo "</form>";
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	} else {
 		$oldname = mysql_real_escape_string($_POST['oldname']);
@@ -326,7 +326,7 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 				$session->setForceLogout(stripslashes($userid));
 				$accbotSend->send("User $siuser changed " . $_POST['oldname'] . "'s username to " . $_POST['newname']);
 		}
-		echo showfooter();
+		$skin->displayIfooter();
 		die();
 	}
 }
@@ -385,7 +385,7 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {
 		echo "Changes saved";
 	}
 	echo "<br /><br />";
-	displayfooter();
+	$skin->displayIfooter();
 	die();
 }
 echo <<<HTML
