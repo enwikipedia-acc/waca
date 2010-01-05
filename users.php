@@ -505,7 +505,7 @@ HTML;
 
 
 //$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id) WHERE user_level = 'Suspended' AND  log_action = 'Suspended' AND log_id = ANY ( SELECT MAX(log_id) FROM acc_log WHERE log_action = 'Suspended' GROUP BY log_pend ) ORDER BY log_id DESC;";
-$query = "SELECT * FROM acc_user JOIN (SELECT * FROM (SELECT * FROM acc_log WHERE log_action = 'Suspended' ORDER BY log_id DESC) AS l GROUP BY log_pend) AS log ON acc_user.user_id = log.log_pend WHERE user_level = 'Suspended';SELECT * FROM acc_user JOIN (SELECT * FROM (SELECT * FROM acc_log WHERE log_action = 'Suspended' ORDER BY log_id DESC) AS l GROUP BY log_pend) AS log ON acc_user.user_id = log.log_pend WHERE user_level = 'Suspended';";
+$query = "SELECT * FROM acc_user JOIN (SELECT * FROM (SELECT * FROM acc_log WHERE log_action = 'Suspended' ORDER BY log_id DESC) AS l GROUP BY log_pend) AS log ON acc_user.user_id = log.log_pend WHERE user_level = 'Suspended';";
 $result = mysql_query($query, $tsSQLlink);
 if (!$result)
 	Die("Query failed: $query ERROR: " . mysql_error());
