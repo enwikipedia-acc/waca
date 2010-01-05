@@ -155,7 +155,7 @@ class StatsUsers extends StatisticsPage
 			if( $enableRenames == 1 )
 			{
 				// If renaming is on, add links to edit and rename the user
-				$tools = "[ <a href=\"acc.php?action=usermgmt&amp;rename=" . $row['user_id'] . "\">Rename!</a> - <a href=\"acc.php?action=usermgmt&amp;edituser=" . $row['user_id'] . "\">Edit!</a> -";
+				$tools = "[ <a href=\"users.php?rename=" . $row['user_id'] . "\">Rename!</a> - <a href=\"users.php?edituser=" . $row['user_id'] . "\">Edit!</a> -";
 			}
 			else
 			{
@@ -167,19 +167,19 @@ class StatsUsers extends StatisticsPage
 			{
 				case "User":
 					// Build suspend and promote links
-					$tools .= " <a href=\"acc.php?action=usermgmt&amp;suspend=" . $row['user_id'] . "\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;promote=" . $row['user_id'] . "\">Promote!</a> ]";
+					$tools .= " <a href=\"users.php?suspend=" . $row['user_id'] . "\">Suspend!</a> - <a href=\"users.php?promote=" . $row['user_id'] . "\">Promote!</a> ]";
 					$out.= $tools;
 					break;
 					
 				case "Admin":
 					// Build suspend and demote links
-					$tools .= " <a href=\"acc.php?action=usermgmt&amp;suspend=" . $row['user_id'] . "\">Suspend!</a> - <a href=\"acc.php?action=usermgmt&amp;demote=" . $row['user_id'] . "\">Demote!</a> ]";
+					$tools .= " <a href=\"users.php?suspend=" . $row['user_id'] . "\">Suspend!</a> - <a href=\"users.php?demote=" . $row['user_id'] . "\">Demote!</a> ]";
 					$out.= $tools;
 					break;
 					
 				case "Suspended":
 					// Build unsuspend link
-					$tools .= " <a href=\"acc.php?action=usermgmt&amp;approve=" . $row['user_id'] . "\">Unsuspend!</a> ]";
+					$tools .= " <a href=\"users.php?approve=" . $row['user_id'] . "\">Unsuspend!</a> ]";
 					$out.= $tools;
 					break;
 					

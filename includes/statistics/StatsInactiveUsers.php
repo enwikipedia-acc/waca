@@ -80,7 +80,7 @@ class StatsInactiveUsers extends StatisticsPage
 					$out.= "<th>$userid</th><td>$tooluser</td><td>".$r['toolaccesslevel']."</td><td>".$r['enwikiuser']."</td><td>".$r['lasttoollogon']."</td><td>".$approved."</td>";
 					if($session->hasright($sessionuser, "Admin")) {
 						$inactivesuspend = "Inactive for 45 or more days. Please contact a tool admin if you wish to come back.";
-						$out.= "<td><a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;suspend=$userid&amp;preload=$inactivesuspend\">Suspend!</a></td>";
+						$out.= "<td><a class=\"request-req\" href=\"users.php?suspend=$userid&amp;preload=$inactivesuspend\">Suspend!</a></td>";
 					}
 					$out.= "</tr>";
 				}
