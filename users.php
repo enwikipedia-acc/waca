@@ -69,7 +69,7 @@ if (isset ($_GET['approve'])) {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_level'] == "Admin") {
-		echo "Sorry, the user you are trying to approve has Administrator access. Please use the <a href=\"acc.php?action=usermgmt&amp;demote=$aid\">demote function</a> instead.<br />\n";
+		echo "Sorry, the user you are trying to approve has Administrator access. Please use the <a href=\"users.php?demote=$aid\">demote function</a> instead.<br />\n";
 		echo showfooter();
 		die();
 	}		
@@ -102,7 +102,7 @@ if (isset ($_GET['demote'])) {
 	$did = sanitize($_GET['demote']);
 	$siuser = sanitize($_SESSION['user']);
 	if (!isset($_POST['demotereason'])) {
-		echo "<h2>Demote Reason</h2><strong>The reason you enter here will be shown in the log. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&amp;demote=$did\" method=\"post\"><br />\n";
+		echo "<h2>Demote Reason</h2><strong>The reason you enter here will be shown in the log. Please keep this in mind.</strong><br />\n<form action=\"users.php?demote=$did\" method=\"post\"><br />\n";
 		echo "<textarea name=\"demotereason\" rows=\"20\" cols=\"60\">";
 		if (isset($_GET['preload'])) {
 			echo $_GET['preload'];
@@ -142,7 +142,7 @@ if (isset ($_GET['suspend'])) {
 	$did = sanitize($_GET['suspend']);
 	$siuser = sanitize($_SESSION['user']);
 	if (!isset($_POST['suspendreason'])) {
-		echo "<h2>Suspend Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&amp;suspend=$did\" method=\"post\"><br />\n";
+		echo "<h2>Suspend Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"users.php?suspend=$did\" method=\"post\"><br />\n";
 		echo "<textarea name=\"suspendreason\" rows=\"20\" cols=\"60\">";
 		if (isset($_GET['preload'])) {
 			echo $_GET['preload'];
@@ -215,7 +215,7 @@ if (isset ($_GET['decline'])) {
 		die();
 	}
 	if (!isset($_POST['declinereason'])) {
-		echo "<h2>Decline Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"acc.php?action=usermgmt&amp;decline=$did\" method=\"post\"><br />\n";
+		echo "<h2>Decline Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"users.php?decline=$did\" method=\"post\"><br />\n";
 		echo "<textarea name=\"declinereason\" rows=\"20\" cols=\"60\">";
 		if (isset($_GET['preload'])) {
 			echo $_GET['preload'];
@@ -257,7 +257,7 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$oldname = mysql_fetch_assoc($result);
-		echo "<form action=\"acc.php?action=usermgmt&amp;rename=" . $_GET['rename'] . "\" method=\"post\">";						
+		echo "<form action=\"users.php?rename=" . $_GET['rename'] . "\" method=\"post\">";						
 		echo "<div class=\"required\">";
 		echo "<label for=\"oldname\">Old Username:</label>";
 		echo "<input id=\"oldname\" type=\"text\" name=\"oldname\" readonly=\"readonly\" value=\"" . $oldname['user_name'] . "\"/>";
@@ -349,7 +349,7 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {
 		echo "<li>User ID: " . $row['user_id'] . "</li>\n";
 		echo "<li>User Level: " . $row['user_level'] . "</li>\n";
 		echo "</ul>\n";
-		echo "<form action=\"acc.php?action=usermgmt&amp;edituser=" . $_GET['edituser'] . "\" method=\"post\">\n";
+		echo "<form action=\"users.php?edituser=" . $_GET['edituser'] . "\" method=\"post\">\n";
 		echo "<div class=\"required\">\n";
 		echo "<label for=\"user_email\">Email Address:</label>\n";
 		echo "<input id=\"user_email\" type=\"text\" name=\"user_email\" value=\"" . stripslashes($row['user_email']) . "\"/>\n";
@@ -406,7 +406,7 @@ if (mysql_num_rows($result) != 0){
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
 		$out = "<li><small>[ <span class=\"request-ban\">$uname</span> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
-		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> - <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;decline=$userid\">Decline</a> - <a class=\"request-req\" href=\"http://toolserver.org/~interiot/cgi-bin/count_edits?dbname=enwiki_p&amp;user=$uoname\">Count!</a></small></li>";
+		$out .= " <a class=\"request-req\" href=\"users.php?approve=$userid\">Approve!</a> - <a class=\"request-req\" href=\"users.php?decline=$userid\">Decline</a> - <a class=\"request-req\" href=\"http://toolserver.org/~interiot/cgi-bin/count_edits?dbname=enwiki_p&amp;user=$uoname\">Count!</a></small></li>";
 		echo "$out\n";
 	}
 	echo "</ol>\n";
@@ -429,10 +429,10 @@ while ($row = mysql_fetch_assoc($result)) {
 
 	$out = "<li><small>[ <a class=\"request-ban\" href=\"statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 	if( $enableRenames == 1 ) {
-		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
+		$out .= " <a class=\"request-req\" href=\"users.php?rename=$userid\">Rename!</a> -";
+		$out .= " <a class=\"request-req\" href=\"users.php?edituser=$userid\">Edit!</a> -";
 	}
-	$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
+	$out .= " <a class=\"request-req\" href=\"users.php?suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"users.php?promote=$userid\">Promote!</a> (Approved by $row[log_user])</small></li>";
 	echo "$out\n";
 }
 echo <<<HTML
@@ -489,10 +489,10 @@ while ($row = mysql_fetch_assoc($result)) {
 
 	$out = "<li><small>[ <a class=\"request-ban\" href=\"statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 	if( $enableRenames == 1 ) {
-		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
+		$out .= " <a class=\"request-req\" href=\"users.php?rename=$userid\">Rename!</a> -";
+		$out .= " <a class=\"request-req\" href=\"users.php?edituser=$userid\">Edit!</a> -";
 	}
-	$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;demote=$userid\">Demote!</a> (Promoted by $row[log_user] <span style=\"color:purple;\">[P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined]</span>)</small></li>";
+	$out .= " <a class=\"request-req\" href=\"users.php?suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"users.php?demote=$userid\">Demote!</a> (Promoted by $row[log_user] <span style=\"color:purple;\">[P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined]</span>)</small></li>";
 	echo "$out\n";
 }
 echo <<<HTML
@@ -515,10 +515,10 @@ while ($row = mysql_fetch_assoc($result)) {
 	$userid = $row['user_id'];
 	$out = "<li><small>[ <a class=\"request-ban\" href=\"statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 	if( $enableRenames == 1 ) {
-		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
+		$out .= " <a class=\"request-req\" href=\"users.php?rename=$userid\">Rename!</a> -";
+		$out .= " <a class=\"request-req\" href=\"users.php?edituser=$userid\">Edit!</a> -";
 	}
-	$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;approve=$userid\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
+	$out .= " <a class=\"request-req\" href=\"users.php?approve=$userid\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
 	echo "$out\n";
 }
 echo <<<HTML
@@ -541,10 +541,10 @@ while ($row = mysql_fetch_assoc($result)) {
 	$userid = $row['user_id'];
 	$out = "<li><small>[ <span class=\"request-ban\">$uname</span> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 	if( $enableRenames == 1 ) {
-		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;rename=$userid\">Rename!</a> -";
-		$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;edituser=$userid\">Edit!</a> -";
+		$out .= " <a class=\"request-req\" href=\"users.php?rename=$userid\">Rename!</a> -";
+		$out .= " <a class=\"request-req\" href=\"users.php?edituser=$userid\">Edit!</a> -";
 	}
-	$out .= " <a class=\"request-req\" href=\"acc.php?action=usermgmt&amp;approve=$userid\">Approve!</a> (Declined by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
+	$out .= " <a class=\"request-req\" href=\"users.php?approve=$userid\">Approve!</a> (Declined by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
 	echo "$out\n";
 }
 echo "</ol>\n</div><br clear=\"all\" />";
