@@ -76,7 +76,7 @@
 		'*!*@cobi.cluenet.org'				=> 'developer',
 		'*!*@Cobi.cluenet.org'				=> 'developer',
 		'*!*@wikipedia/SQL'					=> 'developer',
-		'*!*@wikipedia/OverlordQ'	  		=> 'developer',
+		'*!*@mediawiki/OverlordQ'	  		=> 'developer',
 		'*!*@wikipedia/Stwalkerster'		=> 'developer',
 		'*!*@*Alexfusco5'				   	=> 'developer',
 		'*!*@wikipedia/Soxred93'			=> 'developer',
