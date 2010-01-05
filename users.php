@@ -36,7 +36,7 @@ $asSQLlink = $asSQL->getLink();
 
 // Initialize the class objects.
 $messages = new messages();
-$accbot   = new accbotSend();
+$accbotSend   = new accbotSend();
 $skin     = new skin();
 $session  = new session();
 
