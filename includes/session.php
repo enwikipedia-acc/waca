@@ -81,6 +81,19 @@ class session {
 		return false;
 	}
 	
+	public function isCheckuser($username) {
+		global $tsSQL;
+		$username = $tsSQL->escape($username);
+		$query = "SELECT user_checkuser FROM acc_user WHERE user_name = '$username';";
+		$result = $tsSQL->query($query);
+		if (!$result) {
+			$tsSQL->showError("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+			return false;
+		}
+		$row = mysql_fetch_assoc($result);
+		return $row['user_checkuser'];
+	}
+	
 	public function checksecurity($username) {
 		/*
 		* Check the user's security level on page load, and bounce accordingly

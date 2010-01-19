@@ -831,6 +831,7 @@ class accRequest {
 		// Assigns the comment and IP to variables and escapes for MySQL.
 		$comments = $tsSQL->escape(htmlentities($_POST['comments']));
 		$ip = $tsSQL->escape(htmlentities($_SERVER['REMOTE_ADDR']));
+		$useragent = $tsSQL->escape(htmlentities($_ENV["HTTP_USER_AGENT"]));
 		
 		// Gets the current date and time.
 		$dnow = date("Y-m-d H-i-s");
@@ -844,7 +845,7 @@ class accRequest {
 		}
 		
 		// Formulates and executes SQL query to insert the new request.
-		$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date, pend_reserved ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow', '$defaultReserver' );";
+		$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date, pend_reserved, pend_useragent ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow', '$defaultReserver', '$useragent' );";
 		$result = $tsSQL->query($query);
 		
 		// Display error message upon failure.

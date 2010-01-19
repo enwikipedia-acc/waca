@@ -727,6 +727,16 @@ function zoomPage($id)
 			$out .= "<h3>This request is currently being handled by " . $session->getUsernameFromUid($reservingUser) ."</h3>";
 		}
 	}
+	
+	global $allowViewingOfUseragent;
+	if($allowViewingOfUseragent)
+	{
+		global $session, $suser;
+		if($session->isCheckuser($suser))
+		{
+			$out .= "<h3>User agent: \"" . $row['pend_useragent'] . "\"</h3>";
+		}
+	}
 	$out .= '<p><b>Date request made:</b> ' . $row['pend_date'] . '</p>';
 	
 	$out2 = "<h2>Possibly conflicting usernames</h2>\n";
