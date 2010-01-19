@@ -732,7 +732,7 @@ function zoomPage($id)
 	if($allowViewingOfUseragent)
 	{
 		global $session, $suser;
-		if($session->isCheckuser($suser))
+		if($session->isCheckuser($_SESSION['user']))
 		{
 			$out .= "<h3>User agent: \"" . $row['pend_useragent'] . "\"</h3>";
 		}
