@@ -119,6 +119,9 @@ abstract class StatisticsPage
 	 */
 	public function Show()
 	{
+		// Get the needed objects.
+		global $skin;
+		
 		// resume SESSION
 		session_start();
 		
