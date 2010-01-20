@@ -130,7 +130,7 @@ class skin {
 	 */
 	public function displayPfooter() {
 		// Displayes the interface header.
-		$this->displayMessage(22);
+		$this->displayMessage(23);
 	}
 	
 	/**
