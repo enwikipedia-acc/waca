@@ -335,9 +335,6 @@ class accRequest {
 		$username = isset($parts[0]) ? $parts[0] : '';
 		$domain = isset($parts[1]) ? $parts[1] : '';
 		if (function_exists('checkdnsrr')) {
-			return true;
-			/*
-			TODO: fix this plz
 			getmxrr($domain, $mxhosts, $mxweight);
 			if (count($mxhosts) > 0) {
 				for ($i = 0; $i < count($mxhosts); $i++) {
@@ -354,7 +351,7 @@ class accRequest {
 				return true;
 			} else {
 				return false;
-			}*/
+			}
 		} else {
 			return true;
 		}
@@ -740,7 +737,7 @@ class accRequest {
 		
 		// Checks whether the email adresses match.
 		if($_POST['email'] != $_POST['emailconfirm']) {
-			// TODO: Need the correct message for this.
+			// TODO: Need the correct message for this. !important, someone please fix this, it confuses people and makes bug tracking harder - Chris
 			$message = $messages->getMessage(14);
 			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
