@@ -161,6 +161,6 @@ abstract class StatisticsPage
 		}
 		
 		// Display the footer of the interface.
-		$skin->displayPfooter();
+		$skin->displayIfooter();
 	}
 }
