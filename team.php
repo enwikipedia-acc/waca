@@ -19,6 +19,7 @@ require_once 'functions.php';
 require_once 'includes/offlineMessage.php';
 require_once 'includes/imagegen.php';
 require_once 'includes/database.php';
+require_once 'includes/skin.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.
@@ -35,6 +36,7 @@ $asSQLlink = $asSQL->getLink();
 
 // Initialize the class object.
 $imagegen = new imagegen();
+$skin     = new skin();
 
 // Initialize the session data.
 session_start();
