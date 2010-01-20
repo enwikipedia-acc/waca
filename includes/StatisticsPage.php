@@ -12,6 +12,12 @@
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
 
+// Get all the classes.
+require_once 'includes/skin.php';
+
+// Initialize the class object.
+$skin     = new skin();
+
 abstract class StatisticsPage
 {
 	
@@ -151,9 +157,7 @@ abstract class StatisticsPage
 			}
 		}
 		
-		// show footer
-		echo $messages->getMessage(22);
-		
+		// Display the footer of the interface.
+		$skin->displayPfooter();
 	}
-	
 }
