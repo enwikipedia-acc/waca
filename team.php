@@ -216,12 +216,12 @@ $developer = array(
 // Checks whether it is the public or an interface user.
 if (!isset($_SESSION['user'])) {
 	// Display the header of the interface.
-	displayheader();
+	$skin->displayPheader();
 }
 else {
 	// Sets the parameter to the username, as it would be displayed.
 	$suser = $_SESSION['user'];
-	echo makehead($suser);
+	$skin->displayIheader($suser);
 	echo "<div id=\"content\">";
 }
 
@@ -282,5 +282,5 @@ foreach($developer as $devName => $devInfo) {
 echo "<br/><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by SourceForge</p>";
 
 // Display the footer of the interface.
-displayfooter();
+$skin->displayPfooter();
 ?>
