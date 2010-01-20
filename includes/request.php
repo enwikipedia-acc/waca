@@ -335,6 +335,9 @@ class accRequest {
 		$username = isset($parts[0]) ? $parts[0] : '';
 		$domain = isset($parts[1]) ? $parts[1] : '';
 		if (function_exists('checkdnsrr')) {
+			return true;
+			/*
+			TODO: fix this plz
 			getmxrr($domain, $mxhosts, $mxweight);
 			if (count($mxhosts) > 0) {
 				for ($i = 0; $i < count($mxhosts); $i++) {
@@ -351,7 +354,7 @@ class accRequest {
 				return true;
 			} else {
 				return false;
-			}
+			}*/
 		} else {
 			return true;
 		}
