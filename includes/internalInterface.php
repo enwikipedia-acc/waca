@@ -41,7 +41,7 @@ class internalInterface {
 		/*
 		* Return the users that are currently logged in.
 		*/
-		global $tsSQLlink;
+		global $tsSQL;
 		
 		// Get the users active as of the last 5 mins, or 300 seconds.
 		$last5min = time() - 300;
@@ -58,7 +58,7 @@ class internalInterface {
 		} else {
 			$query = "SELECT user_name,user_id FROM acc_user WHERE user_lastactive > '$last5mins';";
 		}
-		$result = mysql_query($query, $tsSQLlink);
+		$result = $tsSQL->query($query);
 		
 		// Display an error message if the query didnt work.
 		if (!$result) {
