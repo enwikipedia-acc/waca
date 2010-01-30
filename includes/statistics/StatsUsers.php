@@ -25,8 +25,6 @@ class StatsUsers extends StatisticsPage
 		{
 			return $this->getUserDetail($_GET['user']);
 		}
-		
-
 	}
 	
 	function getPageTitle()
@@ -43,6 +41,7 @@ class StatsUsers extends StatisticsPage
 	{
 		return false;
 	}
+	
 	function getUserList()
 	{
 		global $tsSQL;
@@ -87,7 +86,6 @@ class StatsUsers extends StatisticsPage
 		return $out;
 	}
 	
-
 	function getUserDetail($userId)
 	{
 		$out="";
@@ -98,7 +96,7 @@ class StatsUsers extends StatisticsPage
 		}
 	
 		$query = "SELECT * FROM acc_user WHERE user_id = ". $gid ;
-		if(!isset($_GET['showall'])) $query.=" AND user_level != 'Declined' AND user_level != 'New'";
+		//if(!isset($_GET['showall'])) $query.=" AND user_level != 'Declined' AND user_level != 'New'";
 		$query.=";"; 
 		$result = $tsSQL->query($query); // Get information on the selected user; Must not show if the user has not been approved
 		if (!$result)
