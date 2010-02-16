@@ -387,6 +387,12 @@ function listrequests($type, $hideip) {
 			$out .= '<b><a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
 			$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b>';
 		}
+		else if(!$protectReservedRequests || !$enableReserving )
+		{
+			// Create user link
+			$out .= '<b><a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
+			$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b>';
+		}
 		
 		$out .= '</small></td><td><small> ';
 
@@ -394,7 +400,7 @@ function listrequests($type, $hideip) {
 		
 		$out .= '| </small></td><td><small>';
 		
-		if($enableReserving && $protectReservedRequests && isReserved($row['pend_id']) != $_SESSION['userID'])
+		if(($enableReserving && $protectReservedRequests && isReserved($row['pend_id']) != $_SESSION['userID']) || (!$protectReservedRequests || !$enableReserving ))
 		{
 			// Done
 			$out .= '<a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '">Done!</a>';
