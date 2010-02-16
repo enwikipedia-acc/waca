@@ -381,13 +381,7 @@ function listrequests($type, $hideip) {
 
 		global $protectReservedRequests, $enableReserving;
 		
-		if($enableReserving && $protectReservedRequests && isReserved($row['pend_id']) == $_SESSION['userID'])
-		{
-			// Create user link
-			$out .= '<b><a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-			$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b>';
-		}
-		else if(!$protectReservedRequests || !$enableReserving )
+		if(! isProtected($row['pend_id']))
 		{
 			// Create user link
 			$out .= '<b><a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
@@ -400,7 +394,7 @@ function listrequests($type, $hideip) {
 		
 		$out .= '| </small></td><td><small>';
 		
-		if(($enableReserving && $protectReservedRequests && isReserved($row['pend_id']) != $_SESSION['userID']) || (!$protectReservedRequests || !$enableReserving ))
+		if(! isProtected($row['pend_id']))
 		{
 			// Done
 			$out .= '<a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '">Done!</a>';
@@ -457,7 +451,7 @@ function listrequests($type, $hideip) {
 		}
 		else
 		{
-			$out .= 'This request is reserved, and cannot be edited';
+			$out .= 'This request is reserved, and cannot be edited by you.';
 		}
 		if($session->hasright($_SESSION['user'], "Admin")) {
 		// Ban IP
@@ -499,6 +493,31 @@ function listrequests($type, $hideip) {
 		return ($tablestart . $reqlist . $tableend);
 	}
 
+}
+
+function isProtected($requestid)
+{
+	global $enableReserving, $protectReservedRequests;
+	
+	if(! $enableReserving)
+		return false;
+		
+	if(! $protectReservedRequests)
+		return false;
+		
+	$reservedTo = isReserved($requestid);
+		
+	if($reservedTo)
+	{
+		if($reservedTo == $_SESSION['userID'])
+			return false;
+		else
+			return true;	
+	}
+	else
+		return false;
+	
+	return false;
 }
 
 /**
