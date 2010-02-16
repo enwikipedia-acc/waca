@@ -379,64 +379,80 @@ function listrequests($type, $hideip) {
 		$out .= '<a class="request-req" href="http://www.google.com/search?q=';
 		$out .= $uname . '" target="_blank">Google</a> ';
 
-		// Create user link
-		$out .= '<b><a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-		$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b></small></td><td><small> ';
-
-
-		// Done
-		$out .= '| </small></td><td><small><a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '">Done!</a>';
-
-		// Similar
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=2&amp;sum=' . $row['pend_checksum'] . '">Similar</a>';
-
-		// Taken
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=3&amp;sum=' . $row['pend_checksum'] . '">Taken</a>';
-
-		// SUL Taken
-		if ($dontUseWikiDb == 0) {
-			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=26&amp;sum=' . $row['pend_checksum'] . '">SUL Taken</a>';
-		}
-		elseif ($dontUseWikiDb == 1){
-			$out .= '';
-		}
-
-		// UPolicy
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=4&amp;sum=' . $row['pend_checksum'] . '">UPolicy</a>';
-
-		// Invalid
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=5&amp;sum=' . $row['pend_checksum'] . '">Invalid</a>';
+		global $protectReservedRequests, $enableReserving;
 		
-		// Custom
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=custom&amp;sum=' . $row['pend_checksum'] . '">Custom</a>';
+		if($enableReserving && $protectReservedRequests && isReserved($row['pend_id']) != $_SESSION['userID'])
+		{
+			// Create user link
+			$out .= '<b><a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
+			$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b>';
+		}
 		
-		// Defer to admins or users
-		if (is_numeric($type)) {
-			$type = $row['pend_status'];
-		}
-		if (!isset ($target)) {
-			$target = "zoom";
-		}
-		if ($type == 'Open') {
-			$target = 'admins';
-		}
-		elseif ($type == 'Admin') {
-			$target = 'users';
-		}
-		if ($target == 'admins')
-		{
-			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target\">Defer to flagged users</a>";
-		}
-		elseif($target == 'users') {
-			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target\">Defer to users</a>";
-		} 
-		else 
-		{
-			$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=users\">Reset Request</a>";
-		}
-		// Drop
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
+		$out .= '</small></td><td><small> ';
 
+
+		
+		$out .= '| </small></td><td><small>';
+		
+		if($enableReserving && $protectReservedRequests && isReserved($row['pend_id']) != $_SESSION['userID'])
+		{
+			// Done
+			$out .= '<a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '">Done!</a>';
+
+			// Similar
+			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=2&amp;sum=' . $row['pend_checksum'] . '">Similar</a>';
+
+			// Taken
+			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=3&amp;sum=' . $row['pend_checksum'] . '">Taken</a>';
+
+			// SUL Taken
+			if ($dontUseWikiDb == 0) {
+				$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=26&amp;sum=' . $row['pend_checksum'] . '">SUL Taken</a>';
+			}
+			elseif ($dontUseWikiDb == 1){
+				$out .= '';
+			}
+
+			// UPolicy
+			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=4&amp;sum=' . $row['pend_checksum'] . '">UPolicy</a>';
+
+			// Invalid
+			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=5&amp;sum=' . $row['pend_checksum'] . '">Invalid</a>';
+		
+			// Custom
+			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=custom&amp;sum=' . $row['pend_checksum'] . '">Custom</a>';
+		
+			// Defer to admins or users
+			if (is_numeric($type)) {
+				$type = $row['pend_status'];
+			}
+			if (!isset ($target)) {
+				$target = "zoom";
+			}
+			if ($type == 'Open') {
+				$target = 'admins';
+			}
+			elseif ($type == 'Admin') {
+				$target = 'users';
+			}
+			if ($target == 'admins')
+			{
+				$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target\">Defer to flagged users</a>";
+			}
+			elseif($target == 'users') {
+				$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target\">Defer to users</a>";
+			} 	
+			else 
+			{
+				$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=users\">Reset Request</a>";
+			}
+			// Drop
+			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
+		}
+		else
+		{
+			$out .= 'This request is reserved, and cannot be edited';
+		}
 		if($session->hasright($_SESSION['user'], "Admin")) {
 		// Ban IP
 		$out .= '</small></td><td><small> |</small></td><td><small> Ban: </small></td><td><small><a class="request-ban" href="acc.php?action=ban&amp;ip=' . $row['pend_id'] . '">IP</a> ';
@@ -449,7 +465,6 @@ function listrequests($type, $hideip) {
 		}
 		
 		// Check to see if we want to have all the reserving stuff on
-		global $enableReserving;
 		if( $enableReserving )
 		{
 			$reserveByUser = isReserved($row['pend_id']);			

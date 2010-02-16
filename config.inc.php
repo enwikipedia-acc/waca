@@ -71,6 +71,9 @@ $antispoof_table = "spoofuser";
 //    deny: Prevents the user from reserving a second request.
 $allowDoubleReserving = "warn";
 
+// protect reserved requests to prevent all but the reserving user from handling the request.
+$protectReservedRequests = false;
+
 // Enable the use of Captcha for interface registration.
 $useCaptcha = false;
 
