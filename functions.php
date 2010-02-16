@@ -381,7 +381,7 @@ function listrequests($type, $hideip) {
 
 		global $protectReservedRequests, $enableReserving;
 		
-		if($enableReserving && $protectReservedRequests && isReserved($row['pend_id']) != $_SESSION['userID'])
+		if($enableReserving && $protectReservedRequests && isReserved($row['pend_id']) == $_SESSION['userID'])
 		{
 			// Create user link
 			$out .= '<b><a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
