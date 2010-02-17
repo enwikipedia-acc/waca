@@ -388,11 +388,7 @@ function listrequests($type, $hideip) {
 			$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b>';
 		}
 		
-		$out .= '</small></td><td><small> ';
-
-
-		
-		$out .= '| </small></td><td><small>';
+		$out .= '</small>)</td> |<td><small> ';
 		
 		if(! isProtected($row['pend_id']))
 		{
@@ -449,12 +445,12 @@ function listrequests($type, $hideip) {
 		}
 		else
 		{
-			$out .= 'This request is reserved, and cannot be edited by you.';
+			$out .= 'This request is reserved.';
 		}
 		
 		// Drop
 		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
-		
+
 		if($session->hasright($_SESSION['user'], "Admin")) {
 		// Ban IP
 		$out .= '</small></td><td><small> |</small></td><td><small> Ban: </small></td><td><small><a class="request-ban" href="acc.php?action=ban&amp;ip=' . $row['pend_id'] . '">IP</a> ';
