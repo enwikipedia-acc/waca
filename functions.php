@@ -388,7 +388,7 @@ function listrequests($type, $hideip) {
 			$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b>';
 		}
 		
-		$out .= ')</small></td><td><small> |</small></td><td><small> ';
+		$out .= '<span class="request-src">)</span></small></small></td><td><small> |</small></td><td><small> ';
 		
 		if(! isProtected($row['pend_id']))
 		{
@@ -445,7 +445,7 @@ function listrequests($type, $hideip) {
 		}
 		else
 		{
-			$out .= 'This request is reserved.';
+			$out .= 'This request is reserved';
 		}
 		
 		// Drop
