@@ -1,4 +1,4 @@
-<?php
+<?php
 /**************************************************************************
 **********      English Wikipedia Account Request Interface      **********
 ***************************************************************************
@@ -441,15 +441,14 @@ function listrequests($type, $hideip) {
 			else 
 			{
 				$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=users\">Reset Request</a>";
-			}			
+			}
+			// Drop
+			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
 		}
 		else
 		{
 			$out .= 'This request is reserved';
 		}
-		
-		// Drop
-		$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
 
 		if($session->hasright($_SESSION['user'], "Admin")) {
 		// Ban IP
