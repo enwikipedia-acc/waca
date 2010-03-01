@@ -584,10 +584,6 @@ elseif ($action == "login") {
 			if ($useCaptcha) {
 				$captcha->addFailedLogin();
 			}
-			mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('Login', '$puser', 'badpass', '$now', '$ip');", $tsSQLlink) or die(mysql_error());
-			mail($row['user_email'], "ACC Failed Login", "Dear ".$row['user_onwikiname'].",\nYour account ".$row['user_name']." had a failed login atempt at $now from $ip - if this is a genuine hacking attempt please contact a developer.\n- The English Wikipedia Account Creation Team",'From: accounts-enwiki-l@lists.wikimedia.org');
-			// Commented out per Prodego's request - Chris 7/8/09 (or Aus 8/7/09)
-			// $accbotSend->send("Failed login on ".$row['user_name']." from ".substr_replace($ip,'XXX',-3));
 		}
 		header("Location: $tsurl/acc.php?error=authfail");
 		die();
@@ -1350,7 +1346,6 @@ elseif ($action == "logs") {
 				"Demoted" => "User Demotion", 
 				"Renamed" => "User Rename", 
 				"Prefchange" => "User Preferences change",
-				"badpass" => "Failed login attempt."
 	);
 	foreach($logActions as $key => $value)
 	{
