@@ -1413,6 +1413,18 @@ elseif ($action == "reserve") {
 			die();
 		}
 		
+		global $enableEmailConfirm;
+		if($enableEmailConfirm == 1){
+			// check the request is email-confirmed to prevent jumping the gun (ACC-122)
+			$mcresult = mysql_query('SELECT pend_mailconfim FROM acc_pend WHERE pend_id = ' . $request . ';', $tsSQLlink);
+			$mcrow = mysql_fetch_row($mcresult);
+			if($mcrow[0] != "Confirmed")
+			{
+				$skin->displayRequestMsg("This request is not yet email-confirmed!");
+				die();
+			}
+		}
+		
 		// Lock the tables to avoid a possible conflict.
 		// See the following bug: https://jira.toolserver.org/browse/ACC-101
 		mysql_query('LOCK TABLES pend_reserved,acc_pend WRITE;',$tsSQLlink);
