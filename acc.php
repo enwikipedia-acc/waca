@@ -1035,7 +1035,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$accbotSend->send("Request $gid deferred to $deto by $sid");
-		echo "Request " . $_GET['id'] . " deferred to $deto.<br />";
+		$skin->displayRequestMsg("Request " . $_GET['id'] . " deferred to $deto.");
 		echo defaultpage();
 		$skin->displayIfooter();
 		die();
