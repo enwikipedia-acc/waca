@@ -1576,6 +1576,10 @@ elseif ($action == "comment-add") {
         <a href='acc.php?action=zoom&id=$id'>Return to request #$id</a>";
         $botcomment_pvt =  ($visibility == "admin") ? "private " : "";
         $botcomment = $user . " posted a " . $botcomment_pvt . "comment on request " . $id;
+        if($visibility != 'admin')
+        {
+        	$botcomment .= ': ' . $comment;
+        }
         $accbotSend->send($botcomment);
     } else {
         echo "ERROR: A required input is missing <br />
@@ -1598,7 +1602,7 @@ elseif ($action == "comment-quick") {
         if (!$result) {
             Die("Query failed: $query ERROR: " . mysql_error());
         }
-        $botcomment = $user . " posted a comment on request " . $id;
+        $botcomment = $user . " posted a comment on request " . $id . ': ' . $comment;
         $accbotSend->send($botcomment);
         echo zoomPage($id);
         $skin->displayIfooter();
