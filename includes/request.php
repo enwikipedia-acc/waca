@@ -271,7 +271,7 @@ class accRequest {
 				} else {
 					echo "E-mail confirmation failed!<br />\n";
 				}
-				echo $messages->getMessage(22);
+				echo $messages->getMessage(23);
 				die();
 			} elseif ( $action == "confirm" ) {
 				echo "Invalid Parameters. Please be sure you copied the URL correctly<br />\n";
@@ -762,6 +762,7 @@ class accRequest {
 		// Checks whether the username has a traling space of underscore.
 		$trailingspace = substr($_POST['name'], strlen($_POST['name']) - 1);
 		if ($trailingspace == " " || $trailingspace == "_"  ) {
+			// TODO: WTF?!? Message 25 does not exist in the database. 2010-03-06 stw.
 			$message = $messages->getMessage(25);
 			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
