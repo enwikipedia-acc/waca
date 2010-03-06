@@ -25,21 +25,8 @@ class skin {
 	 * @deprecated Use messages->getMessage() instead. 2010-03-06 stw
 	 */
 	public function displayMessage($msgID) {
-		// Get DB object from index file.
-		global $tsSQL;
-		
-		// Formulates and executes SQL query to return the required message.
-		$result = $tsSQL->query("SELECT * FROM acc_emails WHERE mail_id = '$msgID';");
-		
-		// Display an error message if the query fails.
-		if (!$result) {
-			// TODO: Nice error message
-			die("ERROR: No result returned.");
-		}
-		
-		// Assigns the required row to a variable and print it to the screen.
-		$row = mysql_fetch_assoc($result);
-		echo $row['mail_text'];
+		global $messages;
+		echo $messages->getMessage($msgID);
 	}
 	
 	/**
