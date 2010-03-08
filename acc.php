@@ -1429,8 +1429,6 @@ elseif ($action == "reserve") {
 		// See the following bug: https://jira.toolserver.org/browse/ACC-101
 		mysql_query('LOCK TABLES pend_reserved,acc_pend WRITE;',$tsSQLlink);
 		
-		sleep(10); // This is just for testing, will remove in a moment.
-		
 		// Check if the request is not reserved.
 		$reservedBy = isReserved($request);
 		if($reservedBy != false)
