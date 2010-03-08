@@ -737,8 +737,7 @@ class accRequest {
 		
 		// Checks whether the email adresses match.
 		if($_POST['email'] != $_POST['emailconfirm']) {
-			// TODO: Need the correct message for this. !important, someone please fix this, it confuses people and makes bug tracking harder - Chris
-			$message = $messages->getMessage(14);
+			$message = $messages->getMessage(27);
 			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
 		}
