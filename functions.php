@@ -875,18 +875,16 @@ function zoomPage($id)
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	// TODO: why??? what's wrong with just using $currentrow?
-	$numip = 0;
+		
 	$currentrow = 0;
  	while ($row = mysql_fetch_assoc($result)) {
-		if ($numip == 0) { $out .= "<table cellspacing=\"0\">\n"; }
+		if ($currentrow == 0) { $out .= "<table cellspacing=\"0\">\n"; }
 		$currentrow += 1;
 		$out .= "<tr";
 		if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
 		$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
-		$numip++;
 	}
-	if ($numip == 0) {
+	if ($currentrow == 0) {
 		$out .= "<i>None.</i>\n";
 	}
 	else {$out .= "</table>\n";}
@@ -897,12 +895,11 @@ function zoomPage($id)
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	// TODO: why??? what's wrong with just using $currentrow?
-	$numem = 0;
+
 	$currentrow = 0;
 	while ($row = mysql_fetch_assoc($result)) {
 		// Creates the table for the first time.
-		if ($numem == 0) {
+		if ($currentrow == 0) {
 		$out .= "<table cellspacing=\"0\">\n";
 		}
 		
@@ -910,10 +907,9 @@ function zoomPage($id)
 		$out .= "<tr";
 		if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
 		$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
-		$numem++;
 	}
 	// Checks whether there were similar requests.
-	if ($numem == 0) {
+	if ($currentrow == 0) {
 		$out .= "<i>None.</i>\n";
 	}
 	else {$out .= "</table>";}
