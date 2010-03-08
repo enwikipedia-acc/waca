@@ -151,6 +151,8 @@ while ($row = mysql_fetch_assoc($result)) {
 		tagpage($user, "{{subst:User:Maedin/Welcome}} $sig ~~~~~");
 	} else if ($template == "chzz") {
 		tagpage($user, "{{subst:user:Chzz/botwelcome|name=$sid|sig=$sig ~~~~~}}");
+	} else if ($template == 'phantomsteve') {
+		tagpage($user, "{{subst:User:Phantomsteve/bot welcome}} $sig ~~~~~");
 	} else {
 		tagpage($user, "{{subst:Welcome|$sid}}$sig ~~~~~");
 	}
