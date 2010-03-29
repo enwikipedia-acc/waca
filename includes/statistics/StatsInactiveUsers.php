@@ -55,35 +55,51 @@ class StatsInactiveUsers extends StatisticsPage
 			$tooluser = $r['tooluser'];
 			global $regdevlist;
 
+			$allowSuspend = false;
 			
 			if(! array_search_recursive( $tooluser, $regdevlist) && $r['tooluserid'] != 6 ) // hack by st - hide JR from list (converted from livehack)
 			{
-				$userid = $r['tooluserid'];
-				$q2 = 'select log_time from acc_log where log_pend = '.$userid.' and log_action = "Approved" order by log_id desc limit 1;';
-				$res2 = $tsSQL->query($q2);
-				if (!$res2)
-					die("ERROR: No result returned.");
-				$row2 = mysql_fetch_assoc($res2);
-				$approved = $row2['log_time'];
+				$allowSuspend = true;
+			}
+
+			$userid = $r['tooluserid'];
+			$q2 = 'select log_time from acc_log where log_pend = '.$userid.' and log_action = "Approved" order by log_id desc limit 1;';
+			$res2 = $tsSQL->query($q2);
+			if (!$res2)
+				die("ERROR: No result returned.");
+			$row2 = mysql_fetch_assoc($res2);
+			$approved = $row2['log_time'];
+
+			$appr_array = date_parse($approved);
+			$appr_ts = mktime($appr_array['hour'], $appr_array['minute'], $appr_array['second'], $appr_array['month'], $appr_array['day'], $appr_array['year'] );
 		
-				$appr_array = date_parse($approved);
-				$appr_ts = mktime($appr_array['hour'], $appr_array['minute'], $appr_array['second'], $appr_array['month'], $appr_array['day'], $appr_array['year'] );
-		
-				if( $appr_ts < mktime($date->format("H"), $date->format("i"), $date->format("s"), $date->format("m"), $date->format("d"), $date->format("Y") )) {
-					$currentrow +=1;
-					$out.= "<tr";		
-					if ($currentrow % 2 == 0) {
-						$out.= ' class="alternate">';
-					} else {
-						$out.= ' >';
-					}	
+			if( $appr_ts < mktime($date->format("H"), $date->format("i"), $date->format("s"), $date->format("m"), $date->format("d"), $date->format("Y") )) {
+				$currentrow +=1;
+				$out.= "<tr";		
+				if ($currentrow % 2 == 0) {
+					$out.= ' class="alternate">';
+				} else {
+					$out.= ' >';
+				}	
+				
+				if(!$allowSuspend)
+				{
+					$out.= "<th style=\"text-decoration: line-through\">$userid</th><td style=\"text-decoration: line-through\">$tooluser</td><td style=\"text-decoration: line-through\">".$r['toolaccesslevel']."</td><td style=\"text-decoration: line-through\">".$r['enwikiuser']."</td><td style=\"text-decoration: line-through\">".$r['lasttoollogon']."</td><td style=\"text-decoration: line-through\">".$approved."</td>";
+				}
+				else
+				{
 					$out.= "<th>$userid</th><td>$tooluser</td><td>".$r['toolaccesslevel']."</td><td>".$r['enwikiuser']."</td><td>".$r['lasttoollogon']."</td><td>".$approved."</td>";
-					if($session->hasright($sessionuser, "Admin")) {
+				}
+				if($session->hasright($sessionuser, "Admin")) {
+					if($allowSuspend)
+					{
 						$inactivesuspend = "Inactive for 45 or more days. Please contact a tool admin if you wish to come back.";
 						$out.= "<td><a class=\"request-req\" href=\"users.php?suspend=$userid&amp;preload=$inactivesuspend\">Suspend!</a></td>";
+					} else {
+						$out.= "<td>Immune from inactivity</td>";
 					}
-					$out.= "</tr>";
 				}
+				$out.= "</tr>";
 			}
 		}
 		$out.= "</table>";
