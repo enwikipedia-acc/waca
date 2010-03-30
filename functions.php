@@ -377,7 +377,7 @@ function listrequests($type, $hideip) {
   
     	// Google
 		$out .= '<a class="request-req" href="http://www.google.com/search?q=';
-		$out .= $uname . '" target="_blank">Google</a> ';
+		$out .= preg_replace("/_/","+",$uname) . '" target="_blank">Google</a> ';
 
 		global $protectReservedRequests, $enableReserving;
 		
