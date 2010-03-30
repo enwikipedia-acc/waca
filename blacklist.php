@@ -64,7 +64,10 @@ $nameblacklist['grawp11'] = '/pedophil/i';
 $nameblacklist['grawp12'] = '/lolwut/i';
 $nameblacklist['grawp14'] = '/(SteveCrossin|Mellie)/i';
 
-$nameblacklist['upolicy4'] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|st[3e]w[4a]rd).*/i';
+/// this shouldn't be blacklisted. the blacklists make the requester assume the request
+/// has succeeded, then dropped silently. we need to tell the user about the upolicy violation.
+/// -- stw 2010-03-30
+//$nameblacklist['upolicy4'] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|st[3e]w[4a]rd).*/i';
 
 //E-Mail Blacklist
 $emailblacklist['grawp1'] = '/(shit|fuck|phuck)/i';
@@ -90,8 +93,9 @@ $emailblacklist['temporary-inboxes-it'] = "/despam\.it/i";
 $emailblacklist['temporary-inboxes-la'] = "/spam\.la/i";
 $emailblacklist['whitehouse'] = "/whitehouse\.gov/i";
 
-
-$uablacklist['grawp1'] = '/Mozilla\/4\.0 \(compatible; MSIE 7\.0; Windows NT 6\.0; SLCC1; \.NET CLR 2\.0\.50727; \.NET CLR 3\.0\.04506; InfoPath\.2; \.NET CLR 3\.5\.21022\)/';
+/// this is a pretty standard useragent for anyone using IE7 on windows vista. probably a pretty common scenario.
+/// also, we're not having much grawp trouble any more. 
+// $uablacklist['grawp1'] = '/Mozilla\/4\.0 \(compatible; MSIE 7\.0; Windows NT 6\.0; SLCC1; \.NET CLR 2\.0\.50727; \.NET CLR 3\.0\.04506; InfoPath\.2; \.NET CLR 3\.5\.21022\)/';
 
 //DNSBLS
 $dnsbls = array (
