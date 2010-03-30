@@ -28,7 +28,7 @@ class StatsInactiveUsers extends StatisticsPage
 		$date->modify("-45 days");
 
 
-		$query = "SELECT `user_id` as 'tooluserid', `user_name` as 'tooluser', `user_level` AS 'toolaccesslevel', CONCAT('User:', `user_onwikiname`) AS 'enwikiuser', `user_lastactive` as 'lasttoollogon'
+		$query = "SELECT `user_id` as 'tooluserid', `user_name` as 'tooluser', `user_level` AS 'toolaccesslevel', CONCAT('User:', `user_onwikiname`) AS 'enwikiuser', `user_lastactive` as 'lasttoollogon', 'user_checkuser'
 		FROM `acc_user` 
 		WHERE 
 		     user_lastactive < '".$date->format("Y-m-d H:i:s")."' 
@@ -57,8 +57,15 @@ class StatsInactiveUsers extends StatisticsPage
 
 			$allowSuspend = false;
 			
-			if(! array_search_recursive( $tooluser, $regdevlist) && $r['tooluserid'] != 6 ) // hack by st - hide JR from list (converted from livehack)
+			if(!(
+					$r['user_checkuser'] == 1 || // checkusers
+					$r['tooluserid'] == 1     || // SQL
+					$r['tooluserid'] == 7     || // Stwalkerster
+					$r['tooluserid'] == 36    || // OverlordQ
+					$r['tooluserid'] == 64       // Cobi
+				) )
 			{
+				// 1, 7, 36, 64
 				$allowSuspend = true;
 			}
 
