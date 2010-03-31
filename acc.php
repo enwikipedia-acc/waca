@@ -1034,13 +1034,13 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 
 		// TODO: tidy up. hack in for ACC-136. stw -- 2010-03-31
 		if ($_GET['target'] == "admins") {
-			$target = "admins";
+			$deto = "admins";
 		} else if ($_GET['target'] == "users") {
-			$target = "users";
+			$deto = "users";
 		} else if ($_GET['target'] == "cu") {
-			$target = "checkusers";
+			$deto = "checkusers";
 		}  else {
-			$target = "users";
+			$deto = "users";
 		}	
 	
 			
