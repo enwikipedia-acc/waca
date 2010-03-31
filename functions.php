@@ -659,6 +659,8 @@ HTML;
 	$html .= listrequests("Open", FALSE);
 	$html .= "<h2>Flagged user needed</h2>";
 	$html .= listrequests("Admin", FALSE);
+	$html .= "<h2>Checkuser needed</h2>";
+	$html .= listrequests("Checkuser", FALSE);
 	$html .= "<h2>Last 5 Closed requests</h2><a name='closed'></a><span id=\"closed\"/>\n";
 	$query = "SELECT pend_id, pend_name, pend_checksum FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
 	$result = mysql_query($query, $tsSQLlink);
