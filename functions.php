@@ -224,13 +224,13 @@ function listrequests($type, $hideip) {
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database.");
 
 	if ($enableEmailConfirm == 1) {
-		if ($type == 'Admin' || $type == 'Open') {
+		if ($type == 'Admin' || $type == 'Open' || $type == 'Checkuser') {
 			$query = "SELECT * FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed';";
 		} else {
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
 		}
         } else {
-		if ($type == 'Admin' || $type == 'Open') {
+		if ($type == 'Admin' || $type == 'Open' || $type == 'Checkuser') {
 			$query = "SELECT * FROM acc_pend WHERE pend_status = '$type';";
 		} else {
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
@@ -418,6 +418,12 @@ function listrequests($type, $hideip) {
 			// Custom
 			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=custom&amp;sum=' . $row['pend_checksum'] . '">Custom</a>';
 		
+			
+			// Drop
+			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
+			
+			
+			
 			// Defer to admins or users
 			if (is_numeric($type)) {
 				$type = $row['pend_status'];
@@ -425,25 +431,39 @@ function listrequests($type, $hideip) {
 			if (!isset ($target)) {
 				$target = "zoom";
 			}
+			
+			
 			if ($type == 'Open') {
-				$target = 'admins';
+				$target1 = 'admins';
+				$message1 = "Flagged Users";
+				$target2 = 'cu';
+				$message2 = "Checkusers";
 			}
 			elseif ($type == 'Admin') {
-				$target = 'users';
+				$target1 = 'users';
+				$message1 = "Users";
+				$target2 = 'cu';
+				$message2 = "Checkusers";
 			}
-			if ($target == 'admins')
+			elseif ($type == 'Checkuser') {
+				$target1 = 'users';
+				$message1 = "Users";
+				$target2 = 'admins';
+				$message2 = "Flagged Users";
+			}
+			
+			if($row['pend_status'] == "Admin" || $row['pend_status'] == "Open" || $row['pend_status'] == "Checkuser")
 			{
-				$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target\">Defer to flagged users</a>";
+				$out.= " - Defer to: ";
+				$out .= "<a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target1\">$message1</a>";
+				$out .= " / ";
+				$out .= "<a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target2\">$message2</a>";
+				
 			}
-			elseif($target == 'users') {
-				$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target\">Defer to users</a>";
-			} 	
 			else 
 			{
 				$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=users\">Reset Request</a>";
 			}
-			// Drop
-			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
 		}
 		else
 		{

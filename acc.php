@@ -997,12 +997,19 @@ elseif ($action == "ban") {
 	}
 }
 elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
-	if ($_GET['target'] == "admins" || $_GET['target'] == "users") {
+	if ($_GET['target'] == "admins" || $_GET['target'] == "users" || $_GET['target'] == "cu") {
+		
+		// TODO: tidy up. hack in for ACC-136. stw -- 2010-03-31
 		if ($_GET['target'] == "admins") {
 			$target = "Admin";
-		} else {
+		} else if ($_GET['target'] == "users") {
+			$target = "Open";
+		} else if ($_GET['target'] == "cu") {
+			$target = "Checkuser";
+		}  else {
 			$target = "Open";
 		}
+		
 		$gid = sanitize($_GET['id']);
 		if (csvalid($gid, $_GET['sum']) != 1) {
 			echo "Invalid checksum (This is similar to an edit conflict on Wikipedia; it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
@@ -1024,11 +1031,19 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
+
+		// TODO: tidy up. hack in for ACC-136. stw -- 2010-03-31
 		if ($_GET['target'] == "admins") {
-			$deto = "admins";
-		} else {
-			$deto = "users";
-		}
+			$target = "admins";
+		} else if ($_GET['target'] == "users") {
+			$target = "users";
+		} else if ($_GET['target'] == "cu") {
+			$target = "checkusers";
+		}  else {
+			$target = "users";
+		}	
+	
+			
 		$now = date("Y-m-d H-i-s");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $deto', '$now');";
 		upcsum($gid);
