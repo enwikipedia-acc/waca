@@ -271,7 +271,7 @@ function listrequests($type, $hideip) {
 		} else {
 			$out .= '>';
 		}
-		if ($type == 'Admin' || $type == 'Open') {
+		if ($type == 'Admin' || $type == 'Open' || $type == 'Checkuser') {
 			$out .= '<td><small>' . $currentreq . '.    </small></td><td><small>'; //List item
 			$out .= $cmt .'</small></td><td><small>'; // CMT link.
 		} else {
