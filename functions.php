@@ -138,6 +138,10 @@ function sanitize($what) {
 	return ($what);
 }
 
+function xss ($string) {
+	return htmlentities($string,ENT_QUOTES);
+}
+
 function upcsum($id) {
 	/*
 	* Updates the entries checksum (on each load of that entry, to prevent dupes)
@@ -584,13 +588,13 @@ function showlogin($action=null, $params=null) {
 	
 	// Would perform clause for any action except logout.
     if (($action) && ($action != "logout")) {    	
-		$html .= "&amp;newaction=" . $action;
+		$html .= "&amp;newaction=" . xss($action);
     	
 		// Create an array of all the values in the $GET variable.
 		// The variable supplied as the parameter would be used.
 		foreach ($params as $param => $value) { 
     		if ($param != '' && $param != "action") {
-    			$html .= "&amp;$param=".$value;
+    			$html .= "&amp;".xss($param)."=".xss($value);
     		}
     	}
     }

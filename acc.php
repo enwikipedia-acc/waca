@@ -1302,7 +1302,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$towhom = $row2['pend_email'];
 	if ($gem != "0" and $gem != "custom") {
 		sendemail($gem, $towhom);
-		$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $_GET['id'] . "';";
+		$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $gid . "';";
 		$result = mysql_query($query, $tsSQLlink);
 	}
 	upcsum($_GET['id']);
@@ -1330,7 +1330,7 @@ elseif ($action == "logs") {
 		$filteruserl = " value=\"".$_GET['user']."\"";
 		$filteruser = $_GET['user'];
 	} else { $filteruserl = ""; $filteruser = "";}
-	
+	$filteruserl = xss($filteruserl);
 	
 	
 	echo '<h2>Logs</h2>
