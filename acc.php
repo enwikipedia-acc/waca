@@ -66,8 +66,8 @@ if ($action == "logout") {
 
 // Checks whether the user and nocheck variable is set.
 // When none of these are set, the user should first login.
-//if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
-if (!isset($_SESSION['user']) && !($action=='login' && isset($_POST['username']))) {
+if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
+//if (!isset($_SESSION['user']) && !($action=='login' && isset($_POST['username']))) {
 	// Sets the parameter to blank, this way the correct options would be displayed.
 	// It would tell the user now that he or she should log in or create an account.
 	$suser = '';
@@ -102,7 +102,7 @@ if (!isset($_SESSION['user']) && !($action=='login' && isset($_POST['username'])
 // Executes if the user variable is set, but not the nocheck.
 // This ussually happens when an user account has been renamed.
 // LouriePieterse: I cant figure out for what reason this is used.
-/*elseif (!isset($_GET['nocheck']))
+elseif (!isset($_GET['nocheck']))
 {
 		// Forces the current user to logout.
         $session->forceLogout($_SESSION['userID']);
@@ -115,7 +115,7 @@ if (!isset($_SESSION['user']) && !($action=='login' && isset($_POST['username'])
         $out = $messages->getMessage('20');
         $out .= "<div id=\"content\">";
         echo $out;
-}*/
+}
 
 // When no action is specified the default Internal ACC are displayed.
 // TODO: Improve way the method is called.
