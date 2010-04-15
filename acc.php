@@ -101,7 +101,7 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 // Executes if the user variable is set, but not the nocheck.
 // This ussually happens when an user account has been renamed.
 // LouriePieterse: I cant figure out for what reason this is used.
-elseif (!isset($_GET['nocheck']))
+/*elseif (!isset($_GET['nocheck']))
 {
 		// Forces the current user to logout.
         $session->forceLogout($_SESSION['userID']);
@@ -114,7 +114,7 @@ elseif (!isset($_GET['nocheck']))
         $out = $messages->getMessage('20');
         $out .= "<div id=\"content\">";
         echo $out;
-}
+}*/
 
 // When no action is specified the default Internal ACC are displayed.
 // TODO: Improve way the method is called.
