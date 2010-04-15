@@ -66,7 +66,8 @@ if ($action == "logout") {
 
 // Checks whether the user and nocheck variable is set.
 // When none of these are set, the user should first login.
-if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
+//if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
+if (!isset($_SESSION['user'])) {
 	// Sets the parameter to blank, this way the correct options would be displayed.
 	// It would tell the user now that he or she should log in or create an account.
 	$suser = '';
