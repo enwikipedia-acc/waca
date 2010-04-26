@@ -244,6 +244,14 @@
 				if( isset( $return['parameter'] ) ) $return['parameters'] = explode( ' ', $return['parameter'] );
 				$return['command'] = $return['command'][0];
 			}
+			
+			
+			global $ircBotNickname;
+			if($return['to'] == $ircBotNickname)
+			{
+				$return['to'] == $return['nick'];
+			}
+			
 		} else {
 			$return['type'] = 'unknown'; //Because other stuff is fun
 		}
