@@ -308,7 +308,7 @@ function listrequests($type, $hideip) {
 		}
 		
             
-		if ($hideip == FALSE || $session->hasright($_SESSION['user'], 'Admin')) {
+		if ($hideip == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 		// IP UT:
 		$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-src" name="ip-link" href="'.$wikipediaurl.'wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
 		$out .= $row['pend_ip'] . '</a> ';
