@@ -406,7 +406,7 @@ if (mysql_num_rows($result) != 0){
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
 		$out = "<li><small>[ <span class=\"request-ban\">$uname</span> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
-		$out .= " <a class=\"request-req\" href=\"users.php?approve=$userid\">Approve!</a> - <a class=\"request-req\" href=\"users.php?decline=$userid\">Decline</a> - <a class=\"request-req\" href=\"http://toolserver.org/~interiot/cgi-bin/count_edits?dbname=enwiki_p&amp;user=$uoname\">Count!</a></small></li>";
+		$out .= " <a class=\"request-req\" href=\"users.php?approve=$userid\">Approve!</a> - <a class=\"request-req\" href=\"users.php?decline=$userid\">Decline</a> - <a class=\"request-req\" href=\"http://toolserver.org/~soxred93/pcount/index.php?name=$uoname&lang=en&wiki=wikipedia\">Count!</a></small></li>";
 		echo "$out\n";
 	}
 	echo "</ol>\n";
