@@ -252,7 +252,7 @@ class LogPage
 				$logList .= "<li>$rlu unreserved request $rlp at $rlt</li>";
 			}
 			if($rla == "BreakReserve") {
-				$logList .= "<li>$rlu broke the reservation on <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a>, originally reserved by " . $session->getUsernameFromUid($rlc) . ", at $rlt</li>";
+				$logList .= "<li>$rlu broke the reservation on <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a>, originally reserved by $rlc, at $rlt</li>";
 			}
 			$logListCount++;
 		}

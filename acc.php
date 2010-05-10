@@ -1555,7 +1555,7 @@ elseif ($action == "breakreserve") {
 					$result = mysql_query($query, $tsSQLlink);
 					if (!$result)
 						Die("Query failed: $query ERROR: " . mysql_error());
-					$accbotSend->send("Request $request is no longer being handled.");
+					$accbotSend->send("Reservation on Request $request broken.");
 					echo defaultpage();
 				}
 				else
