@@ -92,7 +92,7 @@ $developer = array(
 				"Name" => NULL,
 				"Role" => "Developer",
 				"Access" => "SVN, SF.net access",
-				"Cloak" => "*!*@wikipedia/FastLizard4",
+				"Cloak" => "*!*@wikipedia/pdpc.active.FastLizard4",
 				"Other" => NULL,
 			),
 		"Stwalkerster" =>
