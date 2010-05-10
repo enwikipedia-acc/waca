@@ -182,7 +182,6 @@ elseif ($action == "sreg") {
 	
 	// check if the user is to new
 	global $onRegistrationNewbieCheck;
-	$onRegistrationNewbieCheck = false;
 	if( $onRegistrationNewbieCheck ) 
 	{
 		global $onRegistrationNewbieCheckEditCount, $onRegistrationNewbieCheckAge;
