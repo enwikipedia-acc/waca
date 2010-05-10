@@ -497,6 +497,13 @@ function listrequests($type, $hideip) {
 					$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Break reservation</a>";
 				} else {
 					$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"statistics.php?page=Users&user=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
+					
+					// force break?
+					global $enableAdminBreakReserve;
+					if( $enableAdminBreakReserve && $session->hasright($_SESSION['user'], "Admin"))
+					{
+						$out .= " - <a href=\"acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Force break</a>";
+					}
 				}
 			}
 			else // not being handled, do you want to handle this request?

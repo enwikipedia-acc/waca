@@ -1541,18 +1541,50 @@ elseif ($action == "breakreserve") {
 		//check request is reserved
 		$reservedBy = isReserved($request);
 		if( $reservedBy != $_SESSION['userID'] )
-			Die("You cannot break ".$session->getUsernameFromUid($reservedBy)."'s reservation");
-		$query = "UPDATE `acc_pend` SET `pend_reserved` = '0' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Error unreserving request.");
-		$now = date("Y-m-d H-i-s");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$request', '".sanitise($_SESSION['user'])."', 'Unreserved', '$now');";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$accbotSend->send("Request $request is no longer being handled.");
-		echo defaultpage();
+		{
+			global $enableAdminBreakReserve;
+			if($enableAdminBreakReserve && $session->hasright($_SESSION['user'], "Admin")) {
+				if(isset($_GET['confirm']) && $_GET['confirm'] == 1)	
+				{
+					$query = "UPDATE `acc_pend` SET `pend_reserved` = '0' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
+					$result = mysql_query($query, $tsSQLlink);
+					if (!$result)
+						Die("Error unreserving request.");
+					$now = date("Y-m-d H-i-s");
+					$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_cmt, log_time) VALUES ('$request', '".sanitise($_SESSION['user'])."', 'BreakReserve', $session->getUsernameFromUid($reservedBy), '$now');";
+					$result = mysql_query($query, $tsSQLlink);
+					if (!$result)
+						Die("Query failed: $query ERROR: " . mysql_error());
+					$accbotSend->send("Request $request is no longer being handled.");
+					echo defaultpage();
+				}
+				else
+				{
+					global $tsurl;
+					echo "Are you sure you wish to break " . $session->getUsernameFromUid($reservedBy) .
+							"'s reservation?<br />" . 
+							"<a href=\"$tsurl/acc.php?action=breakreserve&resid=$request&confirm=1\">Yes</a> / " . 
+							"<a href=\"$tsurl/acc.php?action=zoom&id=$request\">No</a>";
+				}
+			}
+			else {
+				echo "You cannot break ".$session->getUsernameFromUid($reservedBy)."'s reservation";
+			}
+		}
+		else
+		{
+			$query = "UPDATE `acc_pend` SET `pend_reserved` = '0' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
+			$result = mysql_query($query, $tsSQLlink);
+			if (!$result)
+				Die("Error unreserving request.");
+			$now = date("Y-m-d H-i-s");
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$request', '".sanitise($_SESSION['user'])."', 'Unreserved', '$now');";
+			$result = mysql_query($query, $tsSQLlink);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$accbotSend->send("Request $request is no longer being handled.");
+			echo defaultpage();
+		}
 		$skin->displayIfooter();
 		die();
 	}	

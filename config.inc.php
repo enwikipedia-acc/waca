@@ -106,6 +106,9 @@ $onRegistrationNewbieCheckAge = 5184000;	// Account age on Wikipedia in seconds.
 // Enable the use of PATH_INFO for request parameters to prettify URLs.
 $usePathInfo = false;
 
+// Allow admins to break any reservation.
+$enableAdminBreakReserve = false;
+
 // The backup configuration.
 $BUbasefile = "backup";							// The basefile's name.
 $BUdir = "/home/project/a/c/c/acc/backups";		// The directory where backups should be stored.
