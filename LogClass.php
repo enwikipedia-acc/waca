@@ -251,6 +251,9 @@ class LogPage
 			if($rla == "Unreserved") {
 				$logList .= "<li>$rlu unreserved request $rlp at $rlt</li>";
 			}
+			if($rla == "BreakReserve") {
+				$logList .= "<li>$rlu broke the reservation on request $rlp, originally reserved by $rlc, at $rlt</li>";
+			}
 			$logListCount++;
 		}
 		
