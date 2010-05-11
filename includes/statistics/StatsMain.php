@@ -79,6 +79,13 @@ class StatsMain extends StatisticsPage
 		$admin = mysql_fetch_assoc($result);
 		$out.= "<tr><th>Requests needing an account creator</th><td>".$admin['COUNT(*)']."</td></tr>";
 		
+		$checkuserq = "SELECT COUNT(*) FROM acc_pend WHERE pend_status = 'Checkuser' AND pend_mailconfirm = 'Confirmed';";
+		$result = $tsSQL->query($checkuserq);
+		if (!$result)
+			Die("ERROR: No result returned.2");
+		$checkuser = mysql_fetch_assoc($result);
+		$out.= "<tr><th>Requests needing an checkuser</th><td>".$checkuser['COUNT(*)']."</td></tr>";
+		
 		$unconfirmedq = "SELECT COUNT(*) FROM acc_pend WHERE pend_mailconfirm != 'Confirmed' AND pend_mailconfirm != '';";
 		$result = $tsSQL->query($unconfirmedq);
 		if (!$result)
