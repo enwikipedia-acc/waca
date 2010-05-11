@@ -1347,6 +1347,7 @@ elseif ($action == "logs") {
 				"" => "(All)",
 				"Deferred to users" => "Defer to users", 
 				"Deferred to admins" => "Defer to account creators", 
+				"Deferred to checkusers" => "Defer to checkusers",
 				"Suspended" => "User Suspension", 
 				"Approved" => "User Approval", 
 				"Promoted" => "User Promotion", 
