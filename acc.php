@@ -1328,11 +1328,10 @@ elseif ($action == "logout") {
 }
 elseif ($action == "logs") {
 	if(isset($_GET['user'])){
-		$filteruserl = " value=\"".$_GET['user']."\"";
 		$filteruser = $_GET['user'];
+		$filteruserl = xss($filteruser); 
+		$filteruserl = " value=\"".$filteruserl."\"";
 	} else { $filteruserl = ""; $filteruser = "";}
-	$filteruserl = xss($filteruserl);
-	
 	
 	echo '<h2>Logs</h2>
 	<form action="acc.php" method="get">
