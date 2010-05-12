@@ -1628,7 +1628,7 @@ elseif ($action == "comment-add") {
         $botcomment = $user . " posted a " . $botcomment_pvt . "comment on request " . $id;
         if($visibility != 'admin')
         {
-        	$botcomment .= ': ' . $comment;
+        	$botcomment .= ': ' . $_POST['comment'];
         }
         $accbotSend->send($botcomment);
     } else {
