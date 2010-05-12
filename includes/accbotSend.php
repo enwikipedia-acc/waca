@@ -25,7 +25,8 @@ class accbotSend {
 		*/
 		global $whichami, $ircBotUdpServer, $ircBotUdpPort;
 		sleep(3);
-		$message = html_entity_decode($message);
+		$message = html_entity_decode($message); // If a message going to the bot was for whatever reason sent through sanitze() earlier, reverse it. 
+		$message = stripslashes($message);
 		$fp = fsockopen("udp://" . $ircBotUdpServer, $ircBotUdpPort, $erno, $errstr, 30);
 		if (!$fp) {
 			echo "SOCKET ERROR: $errstr ($errno)<br />\n";
