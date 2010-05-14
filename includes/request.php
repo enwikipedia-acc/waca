@@ -523,7 +523,7 @@ class accRequest {
 				
 				// Displays the appropiate message to the user.
 				// The requester is fooled that the request was successful.
-				echo "$message<br />\n";
+				echo "$message\n";
 				
 				// Gets the current date.
 				$now = date("Y-m-d H-i-s");
@@ -657,7 +657,7 @@ class accRequest {
 				
 				// Displays the appropiate message to the user.
 				// The requester is fooled that the request was successful.
-				echo "$message<br />\n";
+				echo "$message\n";
 				
 				// Gets the current date.
 				$now = date("Y-m-d H-i-s");
