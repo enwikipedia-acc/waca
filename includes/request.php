@@ -277,7 +277,7 @@ class accRequest {
 				echo "Invalid Parameters. Please be sure you copied the URL correctly<br />\n";
 				
 				// Display the footer of the interface.
-				$skin->displayfooter();
+				$skin->displayPfooter();
 			
 				// Terminates the current script, as the parameters are incorrect.
 				die();
@@ -628,7 +628,7 @@ class accRequest {
 				echo "$message<br />\n";
 				
 				// Display the footer of the interface.
-				$skin->displayfooter();
+				$skin->displayPfooter();
 			
 				// Terminates the current script, as the user is banned.
 				// This is done because the requesting process should be stopped. 
@@ -798,7 +798,7 @@ class accRequest {
 			
 			// Display the request form and footer of the interface.
 			$skin->displayRequest();
-			$skin->displayfooter();
+			$skin->displayPfooter();
 			
 			// Terminates the current script, as automated checks are failed.
 			die();
