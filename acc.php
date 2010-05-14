@@ -1592,15 +1592,15 @@ elseif ($action == "breakreserve") {
 elseif ($action == "comment") {
     if( isset($_GET['id']) ) {
         $id = $_GET['id'];
-        echo "<h2>Comment on request <a href='acc.php?action=zoom&id=$id'>#$id</a></h2>";
+        echo "<h2>Comment on request <a href='acc.php?action=zoom&amp;id=$id'>#$id</a></h2>";
     } else {
         $id = "";
          echo "<h2>Comment on a request</h2>";
     }
     echo "<form action='acc.php?action=comment-add' method='post'>
     Request ID: <input type='text' name='id' value='$id' /> <br />
-    Comments:   <input type='text' name='comment' size='75'' /> <br />
-    Visibility: <select name='visibility'><option>user</option><option>admin</option</select>
+    Comments:   <input type='text' name='comment' size='75' /> <br />
+    Visibility: <select name='visibility'><option>user</option><option>admin</option></select>
     <input type='submit' value='Submit' />
     </form>";
     $skin->displayIfooter();
