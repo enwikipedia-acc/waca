@@ -116,7 +116,7 @@ function statsTopCreatorsRowCallback($row, $rowno)
 	if($row['user_level'] == "Suspended") $out .= 'class="topcreators-suspended" '; 
 	if($row['user_level'] == "Admin") $out .= 'class="topcreators-admin" ';	
 	
-	$out .= 'href="'.$tsurl.'/statistics.php?page=Users&user='.$row['user_id'].'">'.$row['log_user'].'</a></td>';
+	$out .= 'href="'.$tsurl.'/statistics.php?page=Users&amp;user='.$row['user_id'].'">'.$row['log_user'].'</a></td>';
 	
 	$out .= '</tr>';
 	
