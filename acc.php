@@ -1318,7 +1318,6 @@ elseif ($action == "zoom") {
 		die();
 	}
 	echo zoomPage($_GET['id']);
-	echo "</form>\n";
 	$skin->displayIfooter();
 	die();
 }
