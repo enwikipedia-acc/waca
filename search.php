@@ -139,7 +139,7 @@ if( isset($_GET['term'])) {
 			} else {
 				$out .= ' class="odd">';
 			}
-			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_name </a></small></tr>";
+			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_name </a></small></td></tr>";
 			$html .= $out;
 		}
 		$html .= "</table>\n";
