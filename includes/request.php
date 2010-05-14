@@ -226,7 +226,7 @@ class accRequest {
 		global $enableEmailConfirm, $tsurl;
 		
 		// Get variables and objects from index file.
-		global $tsSQL, $messages, $action, $accbot, $skin;
+		global $tsSQL, $tsSQLlink, $messages, $action, $accbot, $skin;
 		
 		// Checks whether email confirmation is activated.
 		if ($enableEmailConfirm == 1) {
@@ -244,7 +244,7 @@ class accRequest {
 					$result = $tsSQL->query($query);
 					if ( !$result )
 						$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>."); 
-					$user = $row['pend_name'];
+					$user = mysql_real_escape_string($row['pend_name'],$tsSQLlink);
 					$now = date("Y-m-d H-i-s");
 					$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ($pid, '$user', 'Email Confirmed', '$now')";
 					$result = $tsSQL->query($query);
