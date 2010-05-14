@@ -931,6 +931,8 @@ elseif ($action == "ban") {
 			echo "<tr><td>Other:</td><td><input type=\"text\" name=\"otherduration\" /></td></tr>";
 			echo "</table><br />\n";
 			echo "<input type=\"submit\" /><input type=\"hidden\" name=\"target\" value=\"$target\" /><input type=\"hidden\" name=\"type\" value=\"$type\" /></form>\n";
+			$skin->displayIfooter();
+			die();
 		}
 	} else {
 		echo "<h2>Active Ban List</h2>\n<table border='1'>\n";
