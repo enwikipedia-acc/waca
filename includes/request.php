@@ -80,7 +80,7 @@ class accRequest {
 			echo "$message<strong><a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse.</strong><br />\n";
 			
 			// Display the footer of the interface.
-			$skin->displayfooter();
+			$skin->displayPfooter();
 			
 			// Terminates the current script, as the user is banned.
 			// This is done because the requesting process should be stopped. 
