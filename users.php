@@ -108,7 +108,7 @@ if (isset ($_GET['demote'])) {
 			echo $_GET['preload'];
 		}
 		echo "</textarea><br />\n";
-		echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
+		echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
 		echo "</form>";
 		$skin->displayIfooter();
 		die();
