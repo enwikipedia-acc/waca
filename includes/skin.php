@@ -146,6 +146,7 @@ class skin {
 		$howmany = $internalInterface->gethowma(true);
 		$howout = $internalInterface->showhowma();
 		$howma = $howmany['howmany'];
+		echo "</div>"; //Add this right before the footer message since a div close tag inside the message itself will cause HTML validation errors in the public interface. 
 		$out = $messages->getMessage('23');
 		if ($howma != 1) // not equal to one, as zero uses the plural form too.
 			$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creators currently online (past 5 minutes): $howout</small></div>\n$out2", $out);
