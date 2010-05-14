@@ -77,7 +77,7 @@ class accRequest {
 			$message = $messages->getMessage(19);
 			
 			// Displays the appropiate message to the user.
-			echo "$message<strong><a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse.</strong><br />\n";
+			echo "$message<strong><a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse.</strong><br /></div>\n";
 			
 			// Display the footer of the interface.
 			$skin->displayPfooter();
@@ -126,7 +126,7 @@ class accRequest {
 				$message = $messages->getMessage(19);
 				
 				// Displays the appropiate message to the user and the retrieved reason.
-				echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
+				echo "$message<strong>" . $row['ban_reason'] . "</strong><br /></div>\n";
 				
 				// Display the footer of the interface.
 				$skin->displayPfooter();
