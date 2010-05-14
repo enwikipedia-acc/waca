@@ -872,7 +872,7 @@ function zoomPage($id)
 	$out .= $logPage->showListLog(0,100);
 	
 
-    $out .= "<h2>Comments on this request:<small> (<a href='acc.php?action=comment&id=$gid'>new comment</a>)</small></h2>";
+    $out .= "<h2>Comments on this request:<small> (<a href='acc.php?action=comment&amp;id=$gid'>new comment</a>)</small></h2>";
     if ($session->hasright($_SESSION['user'], 'Admin')) {
     $query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' ORDER BY cmt_id ASC;";
     } else {
@@ -886,9 +886,9 @@ function zoomPage($id)
     $out .= "<ul>";
 	while ($row = mysql_fetch_assoc($result)) {
         if ($row['cmt_visability'] == "admin") {
-		$out .= "<li><a href='statistics.php?page=Users&user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented, " . $row['cmt_comment'] . "  at " . $row['cmt_time'] . " <font color='red'>(admin only)</font></li>";
+		$out .= "<li><a href='statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented, " . $row['cmt_comment'] . "  at " . $row['cmt_time'] . " <font color='red'>(admin only)</font></li>";
         } else {
-        $out .= "<li><a href='statistics.php?page=Users&user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented,  " . $row['cmt_comment'] . "  at " . $row['cmt_time'] . "</li>";
+        $out .= "<li><a href='statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented,  " . $row['cmt_comment'] . "  at " . $row['cmt_time'] . "</li>";
         }
 		$numcomment++;
 	}

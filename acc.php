@@ -918,7 +918,7 @@ elseif ($action == "ban") {
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
 			echo "<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\">";
 			echo "Ban target: $target\n<br />\n";
-			echo "<table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td></tr>\n";
+			echo "<table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td></tr>\n";
 			echo "<tr><td>Duration:</td><td>\n";
 			echo "<SELECT NAME=\"duration\">\n";
 			echo "<OPTION VALUE=\"-1\">Indefinite</OPTION>\n";
@@ -928,9 +928,9 @@ elseif ($action == "ban") {
 			echo "<OPTION VALUE=\"other\">Other</OPTION>\n";
 			echo "</SELECT></td></tr>\n";
 			/* TODO: Add some fancy javascript that hides this until the user selects other from the menu above */
-			echo "<tr><td>Other:</td><td><input type=\"text\" name=\"otherduration\"></td></tr>";
+			echo "<tr><td>Other:</td><td><input type=\"text\" name=\"otherduration\" /></td></tr>";
 			echo "</table><br />\n";
-			echo "<input type=\"submit\"><input type=\"hidden\" name=\"target\" value=\"$target\" /><input type=\"hidden\" name=\"type\" value=\"$type\" /></form>\n";
+			echo "<input type=\"submit\" /><input type=\"hidden\" name=\"target\" value=\"$target\" /><input type=\"hidden\" name=\"type\" value=\"$type\" /></form>\n";
 		}
 	} else {
 		echo "<h2>Active Ban List</h2>\n<table border='1'>\n";
