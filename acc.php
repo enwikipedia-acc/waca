@@ -988,12 +988,12 @@ elseif ($action == "ban") {
 			echo "<OPTION VALUE=\"other\">Other</OPTION>\n";
 			echo "</SELECT></td></tr>\n";
 			/* TODO: Add some fancy javascript that hides this until the user selects other from the menu above */
-			echo "<tr><td>Other:</td><td><input type=\"text\" name=\"otherduration\"></td></tr>";
+			echo "<tr><td>Other:</td><td><input type=\"text\" name=\"otherduration\"/></td></tr>";
 			echo "<tr><td>Type:</td><td>\n";
  			echo "<select name=\"type\"><option value=\"IP\">IP</option><option value=\"Name\">Name</option><option value=\"EMail\">E-Mail</option></select>\n";
  			echo "</td></tr>\n";
 			echo "</table><br />\n";
-			echo "<input type=\"submit\"></form>\n";
+			echo "<input type=\"submit\"/></form>\n";
 		}
 		$skin->displayIfooter();
 		die();
