@@ -821,8 +821,8 @@ class accRequest {
 			$message = $messages->getMessage(24);
 		}
 		
-		// Display message and leave blank line before the footer.
-		echo "$message<br />\n";
+		// Display message
+		echo "$message\n";
 		
 		// Convert all applicable characters to HTML entities.
 		$user = htmlentities($user);
