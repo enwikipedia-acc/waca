@@ -864,7 +864,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 		echo $row['ban_reason'] . "<br />";
 		echo "What is your reason for unbanning this person?<br />";
 		echo "<form METHOD=\"post\" ACTION=\"acc.php?action=unban&id=". $bid ."&confirmunban=true\">";
-		echo "<input type=\"text\" name=\"unbanreason\"><input type=\"submit\"/></form><br />";
+		echo "<input type=\"text\" name=\"unbanreason\"/><input type=\"submit\"/></form><br />";
 		echo "<a href=\"acc.php\">Cancel</a>";
 		
 	}
@@ -978,7 +978,7 @@ elseif ($action == "ban") {
 			echo "<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\">";
 			echo "<table>";
 			echo "<tr><td>Ban target:</td><td><input type=\"text\" name=\"target\" /></td></tr>\n";
-			echo "<tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\"></td></tr>\n";
+			echo "<tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td></tr>\n";
 			echo "<tr><td>Duration:</td><td>\n";
 			echo "<SELECT NAME=\"duration\">\n";
 			echo "<OPTION VALUE=\"-1\">Indefinite</OPTION>\n";
@@ -1219,7 +1219,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	// custom close reasons
 	if ($_GET['email'] == 'custom') {
 		if (!isset($_POST['msgbody']) or empty($_POST['msgbody'])) {
-			$querystring = htmlspecialchars($SERVER["QUERY_STRING"]);
+			$querystring = htmlspecialchars($SERVER["QUERY_STRING"]); //Send it through htmlspecialchars so HTML validators don't complain. 
 			echo "<form action='?".$querystring."' method='post'>\n";
 			echo "<p>Message:</p>\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
 			echo "<p><input type='checkbox' name='ccmailist' />Cc to mailing list</p>\n";
