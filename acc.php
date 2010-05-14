@@ -920,13 +920,13 @@ elseif ($action == "ban") {
 			echo "Ban target: $target\n<br />\n";
 			echo "<table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td></tr>\n";
 			echo "<tr><td>Duration:</td><td>\n";
-			echo "<SELECT NAME=\"duration\">\n";
-			echo "<OPTION VALUE=\"-1\">Indefinite</OPTION>\n";
-			echo "<OPTION VALUE=\"86400\">24 Hours</OPTION>\n";
-			echo "<OPTION VALUE=\"604800\">One Week</OPTION>\n";
-			echo "<OPTION VALUE=\"2629743\">One Month</OPTION>\n";
-			echo "<OPTION VALUE=\"other\">Other</OPTION>\n";
-			echo "</SELECT></td></tr>\n";
+			echo "<select name=\"duration\">\n";
+			echo "<option value=\"-1\">Indefinite</option>\n";
+			echo "<option value=\"86400\">24 Hours</option>\n";
+			echo "<option value=\"604800\">One Week</option>\n";
+			echo "<option value=\"2629743\">One Month</option>\n";
+			echo "<option value=\"other\">Other</option>\n";
+			echo "</select></td></tr>\n";
 			/* TODO: Add some fancy javascript that hides this until the user selects other from the menu above */
 			echo "<tr><td>Other:</td><td><input type=\"text\" name=\"otherduration\" /></td></tr>";
 			echo "</table><br />\n";
@@ -980,13 +980,13 @@ elseif ($action == "ban") {
 			echo "<tr><td>Ban target:</td><td><input type=\"text\" name=\"target\" /></td></tr>\n";
 			echo "<tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td></tr>\n";
 			echo "<tr><td>Duration:</td><td>\n";
-			echo "<SELECT NAME=\"duration\">\n";
-			echo "<OPTION VALUE=\"-1\">Indefinite</OPTION>\n";
-			echo "<OPTION VALUE=\"86400\">24 Hours</OPTION>\n";
-			echo "<OPTION VALUE=\"604800\">One Week</OPTION>\n";
-			echo "<OPTION VALUE=\"2629743\">One Month</OPTION>\n";
-			echo "<OPTION VALUE=\"other\">Other</OPTION>\n";
-			echo "</SELECT></td></tr>\n";
+			echo "<select name=\"duration\">\n";
+			echo "<option value=\"-1\">Indefinite</option>\n";
+			echo "<option value=\"86400\">24 Hours</option>\n";
+			echo "<option value=\"604800\">One Week</option>\n";
+			echo "<option value=\"2629743\">One Month</option>\n";
+			echo "<option value=\"other\">Other</option>\n";
+			echo "</select></td></tr>\n";
 			/* TODO: Add some fancy javascript that hides this until the user selects other from the menu above */
 			echo "<tr><td>Other:</td><td><input type=\"text\" name=\"otherduration\"/></td></tr>";
 			echo "<tr><td>Type:</td><td>\n";
