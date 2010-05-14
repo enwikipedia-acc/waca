@@ -129,7 +129,7 @@ class accRequest {
 				echo "$message<strong>" . $row['ban_reason'] . "</strong><br />\n";
 				
 				// Display the footer of the interface.
-				$skin->displayfooter();
+				$skin->displayPfooter();
 			
 				// Terminates the current script, as the user is still banned.
 				// This is done because the requesting process should be stopped. 
