@@ -27,7 +27,7 @@ class internalInterface {
 		$out = array();
 		
 		foreach ($users as $user) {
-			array_push($out,"<a href=\"statistics.php?page=Users&user=".$user['user_id']."\">".$user['user_name']."</a>");
+			array_push($out,"<a href=\"statistics.php?page=Users&amp;user=".$user['user_id']."\">".$user['user_name']."</a>");
 		}
 		
 		$out = implode(", ", $out);
