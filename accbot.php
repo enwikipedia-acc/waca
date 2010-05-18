@@ -83,7 +83,7 @@
 		'*!*@yourwiki/staff/charlie'		=> 'developer',
 		'*!*@wikipedia/FastLizard4'			=> 'developer',
 		'*!*@wikipedia/Prodego'				=> 'developer',
-		'*!*@yourwiki/staff/funpika'		=> 'developer',
+		'*!*@wikipedia/FunPika'				=> 'developer',
 		'*!*@wikimedia/Promethean'			=> 'developer',
 		'*!*@wikipedia/Chris-G'				=> 'developer',
 	    '*!*@unaffiliated/louriepieterse'	=> 'developer',
