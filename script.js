@@ -47,7 +47,7 @@ function checkComment(){
 }
 
 //Implement only on zoom pages:
-var cmtLoadedTimer= setInterval("cmtBlockHook",1000);
+var cmtLoadedTimer= setInterval(cmtBlockHook,1000);
 function cmtBlockHook(){
 	if(document.readyState=="complete"){
 		clearInterval(cmtLoadedTimer);
@@ -65,4 +65,3 @@ function cmtBlockHook(){
 		}
 	}
 }
-var cmtLoadedTimer = setInterval(cmtBlockHook,1000);
