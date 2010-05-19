@@ -47,12 +47,22 @@ function checkComment(){
 }
 
 //Implement only on zoom pages:
-if(document.getElementById("content")){
-	if(document.getElementById("content").childNodes[0]){
-		var heading=document.getElementById("content").childNodes[0].innerHTML;
-		if(heading.indexOf("Details for Request #")!=-1){
-			document.forms[0].onsubmit=bypassCommentBlock;
-			window.onbeforeunload = checkComment;
+var cmtLoadedTimer= setInterval("cmtBlockHook",1000);
+function cmtBlockHook(){
+	if(document.readyState=="complete"){
+		clearInterval(cmtLoadedTimer);
+	}
+	else{
+		return;
+	}
+	if(document.getElementById("content")){
+		if(document.getElementById("content").childNodes[0]){
+			var heading=document.getElementById("content").childNodes[0].innerHTML;
+			if(heading.indexOf("Details for Request #")!=-1){
+				document.forms[0].onsubmit=bypassCommentBlock;
+				window.onbeforeunload = checkComment;
+			}
 		}
 	}
 }
+var cmtLoadedTimer = setInterval(cmtBlockHook,1000);
