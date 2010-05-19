@@ -24,3 +24,35 @@ function showhide(listid) {
 	}
 	
 }
+
+/*
+ * Comment submission check by Manish
+ */
+var isCommenting=false;  //flag to see if the 'leave pg' action was a commenting action or not
+
+function bypassCommentBlock(){
+	isCommenting=true; // set flag true if leave pg was a commenting action
+}
+
+function checkComment(){
+	if(isCommenting){
+		return; //If commenting, bypass the dialog
+	}
+  	if(document.forms[0].elements[1].value==""){
+		return; //If nothing in comment box, bypass dialog
+  	}else{
+		return "There is an unsubmitted comment, do you still want to leave?";
+		//If there's something in the box, give a dialog
+	}
+}
+
+//Implement only on zoom pages:
+if(document.getElementById("content")){
+	if(document.getElementById("content").childNodes[0]){
+		var heading=document.getElementById("content").childNodes[0].innerHTML;
+		if(heading.indexOf("Details for Request #")!=-1){
+			document.forms[0].onsubmit=bypassCommentBlock;
+			window.onbeforeunload = checkComment;
+		}
+	}
+}
