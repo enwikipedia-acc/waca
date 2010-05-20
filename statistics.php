@@ -33,6 +33,10 @@ $messages = new messages();
 $tsSQL = new database("toolserver");
 $asSQL = new database("antispoof");
 
+// Creates database links for use by functions.php. 
+$tsSQLlink = $tsSQL->getLink();
+$asSQLlink = $asSQL->getLink();
+
 $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
 
 if(isset($_SERVER['PATH_INFO']))
