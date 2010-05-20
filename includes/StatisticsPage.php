@@ -127,7 +127,7 @@ abstract class StatisticsPage
 		
 		// fetch and show page header
 		global $messages, $dontUseWikiDb, $session;
-		echo $messages->getMessage(21);
+		echo $skin->displayIheader();
 		
 		if($this->requiresWikiDatabase() && ($dontUseWikiDb == 1))
 		{	// wiki database unavailable, don't show stats page
