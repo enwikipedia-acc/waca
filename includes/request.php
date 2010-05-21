@@ -714,7 +714,7 @@ class accRequest {
 		// Checks whether the username is already part of a SUL account. 
 		$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&meta=globaluserinfo&guiuser=" . urlencode($_POST['name']) . "&format=php");
 		$ue = unserialize($userexist);
-		if (isset ($ue['query']['0']['id'])) {
+		if (isset ($ue['query']['globaluserinfo']['id'])) {
 			$message = $messages->getMessage(26);
 			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
