@@ -1361,6 +1361,7 @@ elseif ($action == "logs") {
 				"Banned" => "Ban", 
 				"Unbanned" => "Unban", 
 				"Closed 0" => "Request Drop", 
+				"Closed 26" => "Request taken in SUL",
 				"Closed custom" => "Request Custom close",
 				"Declined" => "User Declination", 
 				"Blacklist Hit" => "Blacklist hit", 
