@@ -711,6 +711,15 @@ class accRequest {
 			$fail = 1;
 		}
 		
+		// Checks whether the username is already part of a SUL account. 
+		$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&meta=globaluserinfo&guiuser=" . urlencode($_POST['name']) . "&format=php");
+		$ue = unserialize($userexist);
+		if (isset ($ue['query']['0']['id'])) {
+			$message = $messages->getMessage(26);
+			$skin->displayRequestMsg("$message<br />\n");
+			$fail = 1;
+		}
+		
 		// Checks whether the username consists entirely of numbers.
 		$nums = preg_match("/^[0-9]+$/", $_POST['name']);
 		if ($nums > 0) {
