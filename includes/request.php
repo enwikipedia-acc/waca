@@ -715,7 +715,7 @@ class accRequest {
 		$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&meta=globaluserinfo&guiuser=" . urlencode($_POST['name']) . "&format=php");
 		$ue = unserialize($userexist);
 		if (isset ($ue['query']['globaluserinfo']['id'])) {
-			$message = $messages->getMessage(26);
+			$message = $messages->getMessage(28);
 			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
 		}
