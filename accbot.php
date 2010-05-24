@@ -249,7 +249,7 @@
 			global $ircBotNickname;
 			if($return['to'] == $ircBotNickname)
 			{
-				$return['to'] == $return['nick'];
+				$return['to'] = $return['nick'];
 			}
 			
 		} else {
