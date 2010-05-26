@@ -38,21 +38,22 @@ $emailblacklist = array ();
 $uablacklist = array ();
 
 $acrnamebl['nigger'] = '/(?i:ni(gg|qq)(a|er))/';
-$acrnamebl['grawp1'] = '/k*[l1][o0]?m[o0]?[i1]r*/i';
+//$acrnamebl['grawp1'] = '/k*[l1][o0]?m[o0]?[i1]r*/i';
 $acrnamebl['grawp2'] = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
-$acrnamebl['grawp3'] = '/(hagg[ea]r|herme?y|quarp)/i';
+//$acrnamebl['grawp3'] = '/hagg[ea]r/i';
 $acrnamebl['grawp4'] = '/secret.*combination/i';
 $acrnamebl['grawp6'] = '/t[3eh][3eh]_l[uo]lz/i';
 $acrnamebl['grawp7'] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
 $acrnamebl['grawp8'] = '/(need.to|will).*die/i';
 $acrnamebl['grawp9'] = '/4chan/i';
+$acrnamebl['grawp10'] = '/(herme?y|quarp)/i';
 
 $nameblacklist['nigger'] = '/(?i:ni(gg|qq)(a|er))/';
 $nameblacklist['faggot'] = '/(?i:faggot)/';
 
 //$nameblacklist['grawp1'] = '/k*[l1][o0]?m[o0]?[i1]r*/i';
 $nameblacklist['grawp2'] = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
-$nameblacklist['grawp3'] = '/(hagg[ea]r|herme?y|quarp)/i';
+//$nameblacklist['grawp3'] = '/hagg[ea]r/i';
 $nameblacklist['grawp4'] = '/secret.*combination/i';
 // $nameblacklist['grawp5'] = '/((ph|f)uc?k|shag)/i';
 $nameblacklist['grawp6'] = '/t[3eh][3eh]_l[uo]lz/i';
@@ -63,6 +64,7 @@ $nameblacklist['grawp10'] = '/wikipedo/i';
 $nameblacklist['grawp11'] = '/pedophil/i';
 $nameblacklist['grawp12'] = '/lolwut/i';
 $nameblacklist['grawp14'] = '/(SteveCrossin|Mellie)/i';
+$nameblacklist['grawp15'] = '/(herme?y|quarp)/i';
 
 /// this shouldn't be blacklisted. the blacklists make the requester assume the request
 /// has succeeded, then dropped silently. we need to tell the user about the upolicy violation.
