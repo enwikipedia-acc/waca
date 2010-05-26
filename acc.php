@@ -1221,11 +1221,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	// custom close reasons
 	if ($_GET['email'] == 'custom') {
 		if (!isset($_POST['msgbody']) or empty($_POST['msgbody'])) {
-			$querystring = $SERVER["QUERY_STRING"];
-			echo $querystring;
-			$querystring = htmlspecialchars($querystring); //Send it through htmlspecialchars so HTML validators don't complain.
-			echo $querystring;
-			echo "<form action='?".$querystring."' method='post'>\n";
+			echo "<form action='?".htmlspecialchars($SERVER["QUERY_STRING"])."' method='post'>\n";
 			echo "<p>Message:</p>\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
 			echo "<p><input type='checkbox' name='ccmailist' />Cc to mailing list</p>\n";
 			echo "<p><input type='submit' value='Close and send' /></p>\n";
