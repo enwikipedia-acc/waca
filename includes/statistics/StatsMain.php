@@ -22,7 +22,7 @@ class StatsMain extends StatisticsPage
 
 		$statsPageDefinitions = preg_grep("/php$/",$files);
 		
-		$urlFragment = $usePathInfo ? "/" : "?page=";
+		$urlFragment = $usePathInfo ? $_SERVER["SCRIPT_NAME"] . "/" : "?page=";
 		
 		foreach ($statsPageDefinitions as $i) {
 			require_once $filepath . "/includes/statistics/" . $i;
