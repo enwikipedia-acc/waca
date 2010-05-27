@@ -295,7 +295,7 @@ function listrequests($type,$hideip) {
 		else {
 			$reserveByUser = "";
 		}
-		if ($session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) || $reserveByUser == $_SESSION['userID'] && $hideip = FALSE || $enableReserving = false && $hideip = FALSE) {
+		if ($session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) || $reserveByUser == $_SESSION['userID'] && $hideip = FALSE || $enableReserving == false && $hideip == FALSE) {
 			// Email.
 			$out .= '[ </small></td>';
 			$out .= '<td><small><a class="request-src" href="mailto:' . $row['pend_email'] . '">' . $row['pend_email'] . '</a>';
@@ -317,7 +317,7 @@ function listrequests($type,$hideip) {
 		}
 
 
-		if ($session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) || $reserveByUser == $_SESSION['userID'] && $hideip = FALSE || $enableReserving = false && $hideip = FALSE) {
+		if ($session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) || $reserveByUser == $_SESSION['userID'] && $hideip = FALSE || $enableReserving == false && $hideip == FALSE) {
 			// IP UT:
 			$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-src" name="ip-link" href="'.$wikipediaurl.'wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
 			$out .= $row['pend_ip'] . '</a> ';
