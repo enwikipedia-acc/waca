@@ -51,8 +51,11 @@ if( isset( $_SESSION['user'] ) ) {
 // IP address lookups still, but can search on email and requested name.
 
 // protect against logged out users
-if( !$session->hasright($sessionuser, "Admin") && !$session->hasright($sessionuser, "User"))
-	die("You are not authorized to use this feature. Please check you are logged in.");
+if( !$session->hasright($sessionuser, "Admin") && !$session->hasright($sessionuser, "User")) {
+		$skin->displayRequestMsg("You must log in to use the search form.<br />\n");	
+		$skin->displayIfooter();
+		die();
+	}
 
 $skin->displayIheader($sessionuser);
 echo '<div id="content">';
@@ -66,12 +69,25 @@ if( isset($_GET['term'])) {
 	$term = sanitize($_GET['term']);
 	$type = sanitize($_GET['type']);
 
-	if($term == "" || $term == "%")
-		die("No search term specified.");
+	if($term == "" || $term == "%") {
+		$skin->displayRequestMsg("No search term entered.<br />\n");	
+		$skin->displayIfooter();
+		die();
+	}
 
 	if( $type == "email") {
-		if($term == "@")
-			die("Invalid search term");		
+		// move this to here, so non-admins can perform searches, but not on IP addresses
+		if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) {
+				// Displays both the error message and the footer of the interface.
+				$skin->displayRequestMsg("I'm sorry, but only administrators can search for Email Addresses.<br />\n");	
+				$skin->displayIfooter();
+				die();
+		}
+		if($term == "@") {
+			$skin->displayRequestMsg("Invalid search term entered.<br />\n");	
+			$skin->displayIfooter();
+			die();
+		}			
 
 		echo "<h2>Searching for email address: $term ...</h2>";
 		$query = "SELECT pend_id,pend_email FROM acc_pend WHERE pend_email LIKE '%$term%';";
@@ -96,11 +112,14 @@ if( isset($_GET['term'])) {
 		echo $html;
 	}
 	elseif( $type == 'IP') {
-		echo "<h2>Searching for IP address: $term ...</h2>";
-		
 		// move this to here, so non-admins can perform searches, but not on IP addresses
-		if( !$session->hasright($sessionuser, "Admin"))
-			die("You are not authorized to use this feature");
+		if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) {
+				// Displays both the error message and the footer of the interface.
+				$skin->displayRequestMsg("I'm sorry, but only administrators can search for IP Addresses.<br />\n");	
+				$skin->displayIfooter();
+				die();
+		}
+		echo "<h2>Searching for IP address: $term ...</h2>";
 		
 		$query = "SELECT pend_id,pend_ip,pend_name,pend_date,pend_status FROM acc_pend WHERE pend_ip LIKE '%$term%';";
 		$result = mysql_query($query, $tsSQLlink);
@@ -152,10 +171,14 @@ else {
 	echo '<form action="search.php" method="get">';
 	echo 'Search for:<br />';
 	echo '<table><tr><td><input type="text" name="term" /></td>';
-	echo '<td><select name="type">';
-	echo '<option value="email">as email address</option>';
-	echo '<option value="IP">as IP address (tool admins only)</option>';
+	echo '<td><select name="type"'
+	if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) { //Disable the drop-down menu for non-admins/checkusers
+	echo ' disabled="disabled"';
+	}
+	echo'>';
 	echo '<option value="Request">as requested username</option>';
+	echo '<option value="email">as email address</option>';
+	echo '<option value="IP">as IP address</option>';
 	echo '</select></td></tr></table><br />';
 	echo '<input type="submit" />';
 	echo '</form>';
