@@ -172,7 +172,7 @@ else {
 	echo 'Search for:<br />';
 	echo '<table><tr><td><input type="text" name="term" /></td>';
 	if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) { //Disable the drop-down menu for non-admins/checkusers
-	echo '<input name="type" type="hidden" value="Request">';
+	echo '<input name="type" type="hidden" value="Request" />';
 	}
 	echo '<td><select name="type"';
 	if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) { //Disable the drop-down menu for non-admins/checkusers
