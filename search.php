@@ -50,15 +50,14 @@ if( isset( $_SESSION['user'] ) ) {
 // please note (prodego esp.) non-admins cannot perform
 // IP address lookups still, but can search on email and requested name.
 
+$skin->displayIheader($sessionuser);
+echo '<div id="content">';
 // protect against logged out users
 if( !$session->hasright($sessionuser, "Admin") && !$session->hasright($sessionuser, "User")) {
 		$skin->displayRequestMsg("You must log in to use the search form.<br />\n");	
 		$skin->displayIfooter();
 		die();
 	}
-
-$skin->displayIheader($sessionuser);
-echo '<div id="content">';
 
 
 ///////////////// Page code
@@ -79,7 +78,7 @@ if( isset($_GET['term'])) {
 		// move this to here, so non-admins can perform searches, but not on IP addresses
 		if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) {
 				// Displays both the error message and the footer of the interface.
-				$skin->displayRequestMsg("I'm sorry, but only administrators can search for Email Addresses.<br />\n");	
+				$skin->displayRequestMsg("I'm sorry, but only administrators and checkusers can search for Email Addresses.<br />\n");	
 				$skin->displayIfooter();
 				die();
 		}
@@ -115,7 +114,7 @@ if( isset($_GET['term'])) {
 		// move this to here, so non-admins can perform searches, but not on IP addresses
 		if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) {
 				// Displays both the error message and the footer of the interface.
-				$skin->displayRequestMsg("I'm sorry, but only administrators can search for IP Addresses.<br />\n");	
+				$skin->displayRequestMsg("I'm sorry, but only administrators and checkusers can search for IP Addresses.<br />\n");	
 				$skin->displayIfooter();
 				die();
 		}
