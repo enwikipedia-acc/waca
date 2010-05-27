@@ -215,7 +215,7 @@ function sendemail($messageno, $target) {
 	mail($target, "RE: English Wikipedia Account Request", $mailtxt, $headers);
 }
 
-function listrequests($type, $hideip) {
+function listrequests($type,$hideip) {
 	/*
 	 * List requests, at Zoom, and, on the main page
 	 */
@@ -288,8 +288,14 @@ function listrequests($type, $hideip) {
 		if (!$result4)
 		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 		$row4 = mysql_fetch_assoc($result4);
-
-		if ($hideip == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
+		global $enableReserving;
+		if( $enableReserving ) {
+			$reserveByUser = isReserved($row['pend_id']);
+		}
+		else {
+			$reserveByUser = "";
+		}
+		if ($session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) || $reserveByUser == $_SESSION['userID'] && $hideip = FALSE || $enableReserving = false && $hideip = FALSE) {
 			// Email.
 			$out .= '[ </small></td>';
 			$out .= '<td><small><a class="request-src" href="mailto:' . $row['pend_email'] . '">' . $row['pend_email'] . '</a>';
@@ -311,7 +317,7 @@ function listrequests($type, $hideip) {
 		}
 
 
-		if ($hideip == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
+		if ($session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) || $reserveByUser == $_SESSION['userID'] && $hideip = FALSE || $enableReserving = false && $hideip = FALSE) {
 			// IP UT:
 			$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-src" name="ip-link" href="'.$wikipediaurl.'wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
 			$out .= $row['pend_ip'] . '</a> ';
