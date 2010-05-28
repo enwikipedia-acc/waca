@@ -924,7 +924,7 @@ function zoomPage($id)
 			$out .= "<i>None.</i>\n";
 		}
 		$out .= "</ul>";
-		$out .= "<form action='acc.php?action=comment-quick' method='post' /><input type='hidden' name='id' value='$gid' /><input type='text' name='comment' size='75' /><input type='hidden' name='visibility' value='$gid' /><input type='submit' value='Quick Reply' />";
+		$out .= "<form action='acc.php?action=comment-quick' method='post' /><input type='hidden' name='id' value='$gid' /><input type='text' name='comment' size='75' /><input type='hidden' name='visibility' value='user' /><input type='submit' value='Quick Reply' />";
 
 		$ipmsg = 'this ip';
 		if ($hideinfo == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']))
