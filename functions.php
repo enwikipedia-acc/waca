@@ -215,7 +215,7 @@ function sendemail($messageno, $target) {
 	mail($target, "RE: English Wikipedia Account Request", $mailtxt, $headers);
 }
 
-function listrequests($type,$hideip) {
+function listrequests($type, $hideip) {
 	/*
 	 * List requests, at Zoom, and, on the main page
 	 */
@@ -288,14 +288,8 @@ function listrequests($type,$hideip) {
 		if (!$result4)
 		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 		$row4 = mysql_fetch_assoc($result4);
-		global $enableReserving;
-		if( $enableReserving ) {
-			$reserveByUser = isReserved($row['pend_id']);
-		}
-		else {
-			$reserveByUser = "";
-		}
-		if ($session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) || $reserveByUser == $_SESSION['userID'] && $hideip == FALSE || $enableReserving == false && $hideip == FALSE) {
+
+		if ($hideip == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 			// Email.
 			$out .= '[ </small></td>';
 			$out .= '<td><small><a class="request-src" href="mailto:' . $row['pend_email'] . '">' . $row['pend_email'] . '</a>';
@@ -317,7 +311,7 @@ function listrequests($type,$hideip) {
 		}
 
 
-		if ($session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) || $reserveByUser == $_SESSION['userID'] && $hideip == FALSE || $enableReserving == false && $hideip == FALSE) {
+		if ($hideip == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 			// IP UT:
 			$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-src" name="ip-link" href="'.$wikipediaurl.'wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
 			$out .= $row['pend_ip'] . '</a> ';
@@ -761,7 +755,7 @@ function isOnWhitelist($user)
 
 function zoomPage($id)
 {
-	global $tsSQLlink, $session, $skin;
+	global $tsSQLlink, $session, $skin, $enableReserving;
 
 	$out = "";
 	$gid = sanitize($id);
@@ -784,14 +778,39 @@ function zoomPage($id)
 		$row['pend_date'] = "Date Unknown";
 	}
 	$sUser = $row['pend_name'];
-	$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
+	if ($enableReserving == false) {
+	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
+	}
+	else {
+	$sessionuser = $_SESSION['userID'];
+	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_reserved = '$sessionuser' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
+	}
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 	Die("Query failed: $query ERROR: " . mysql_error());
+	$hideemail = TRUE;
+	if (mysql_num_rows($result) > 0) {
+	$hideemail = FALSE;
+	}
+	if ($enableReserving == false) {
+	$query2 = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
+	}
+	else {
+	$sessionuser = $_SESSION['userID'];
+	$query2 = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_reserved = '$sessionuser' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
+	}
+	$result2 = mysql_query($query2, $tsSQLlink);
+	if (!$result2)
+	Die("Query failed: $query2 ERROR: " . mysql_error());
 	$hideip = TRUE;
-	if (mysql_num_rows($result) > 0)
+	if (mysql_num_rows($result2) > 0)
 	$hideip = FALSE;
-	$requesttable = listrequests($thisid, $hideip);
+	if( $hideip == FALSE || $hideemail == FALSE ) {
+		$hideinfo = FALSE;
+	} else {
+		$hideinfo = TRUE;
+	}
+	$requesttable = listrequests($thisid, $hideinfo);
 	$out .= $requesttable;
 
 	//Escape injections.
@@ -908,7 +927,7 @@ function zoomPage($id)
 		$out .= "<form action='acc.php?action=comment-quick' method='post' /><input type='hidden' name='id' value='$gid' /><input type='text' name='comment' size='75' /><input type='hidden' name='visibility' value='$gid' /><input type='submit' value='Quick Reply' />";
 
 		$ipmsg = 'this ip';
-		if ($hideip == FALSE || $session->hasright($_SESSION['user'], 'Admin'))
+		if ($hideinfo == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']))
 		$ipmsg = $thisip;
 
 
@@ -932,7 +951,11 @@ function zoomPage($id)
 		else {$out .= "</table>\n";}
 
 		// Displayes other requests from this email.
-		$out .= "<h2>Other requests from $thisemail:</h2>\n";
+		$emailmsg = 'this email';
+		if ($hideinfo == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user'])) {
+		$emailmsg = $thisemail;
+		}
+		$out .= "<h2>Other requests from $emailmsg:</h2>\n";
 		$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
