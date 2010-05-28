@@ -387,6 +387,7 @@ elseif ($action == "register") {
             </tr>
     </table>
     </form>
+	</div>
 HTML;
 
 	$skin->displayPfooter();
