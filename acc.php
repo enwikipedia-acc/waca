@@ -380,7 +380,7 @@ elseif ($action == "register") {
             </tr>
 			<tr>
 				<td><b>I have read and understand the <a href="http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide">interface guidelines.</a></b></td>
-				<td><input type="checkbox" name="guidelines" /></td>
+				<td><input type="checkbox" name="guidelines" /></td></tr>
             <tr>
                 <td></td>
                 <td><input type="submit" /><input type="reset" /></td>
