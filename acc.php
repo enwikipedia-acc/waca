@@ -318,35 +318,35 @@ elseif ($action == "register") {
     <table cellpadding="1" cellspacing="0" border="0">
             <tr>
                 <td>Desired Username:</td>
-                <td><input type="text" name="name"></td>
+                <td><input type="text" name="name" /></td>
             </tr>
             <tr>
                 <td>E-mail Address:</td>
-                <td><input type="text" name="email"></td>
+                <td><input type="text" name="email" /></td>
             </tr>
             <tr>
                 <td>Wikipedia username:</td>
-                <td><input type="text" name="wname"></td>
+                <td><input type="text" name="wname" /></td>
             </tr>
             <tr>
                 <td>Desired password (<strong>PLEASE DO NOT USE THE SAME PASSWORD AS ON WIKIPEDIA.</strong>):</td>
-                <td><input type="password" name="pass"></td>
+                <td><input type="password" name="pass" /></td>
             </tr>
             <tr>
                 <td>Desired password(again):</td>
-                <td><input type="password" name="pass2"></td>
+                <td><input type="password" name="pass2" /></td>
             </tr>
             <tr>
                 <td>Enable use of the secure server:</td>
-                <td><input type="checkbox" name="secureenable"></td>
+                <td><input type="checkbox" name="secureenable" /></td>
             </tr>
             <tr>
                 <td>Enable <a href="http://en.wikipedia.org/wiki/User:SQLBot-Hello">SQLBot-Hello</a> welcoming of the users I create:</td>
-                <td><input type="checkbox" name="welcomeenable"></td>
+                <td><input type="checkbox" name="welcomeenable" /></td>
             </tr>
             <tr>
                 <td>Your signature (wikicode)<br /><i>This would be the same as ~~~ on-wiki. No date, please.  Not needed if you left the checkbox above unchecked.</i></td>
-                <td><input type="text" name="sig" size ="40"></td>
+                <td><input type="text" name="sig" size ="40" /></td>
             </tr>
             <tr>
                 <td>Template you would like the bot to welcome with?<br /><i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>, <a href="http://en.wikipedia.org/wiki/User_talk:Cobi">Cobi</a>, or <a href="http://en.wikipedia.org/wiki/User_talk:FastLizard4">FastLizard4</a>.</i>  Not needed if you left the checkbox above unchecked.</td>
@@ -380,10 +380,10 @@ elseif ($action == "register") {
             </tr>
 			<tr>
 				<td><b>I have read and understand the <a href="http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide">interface guidelines.</a><b></td>
-				<td><input type="checkbox" name="guidelines"></td>
+				<td><input type="checkbox" name="guidelines" /></td>
             <tr>
                 <td></td>
-                <td><input type="submit"><input type="reset"></td>
+                <td><input type="submit" /><input type="reset" /></td>
             </tr>
     </table>
     </form>
