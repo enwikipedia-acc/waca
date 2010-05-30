@@ -1669,4 +1669,10 @@ elseif ($action == "comment-quick") {
 		die();
     }
 }
+//Silence the bot when it gets annoying
+elseif ($action == "silence") { 
+	$accbotSend->send("Bot inactivity warning silenced by " . $session->getUsernameFromUid($_SESSION['userID']));
+	$skin->displayIfooter();
+	die();
+}
 ?>
