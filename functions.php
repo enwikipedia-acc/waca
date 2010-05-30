@@ -194,7 +194,7 @@ function csvalid($id, $sum) {
 	}
 }
 
-function sendemail($messageno, $target) {
+function sendemail($messageno, $target, $id) {
 	/*
 	 * Send a "close pend ticket" email to the end user. (created, taken, etc...)
 	 */
@@ -212,7 +212,7 @@ function sendemail($messageno, $target) {
 	$row = mysql_fetch_assoc($result);
 	$mailtxt = $row['mail_text'];
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-	mail($target, "RE: English Wikipedia Account Request", $mailtxt, $headers);
+	mail($target, "RE: [ACC #$id] English Wikipedia Account Request", $mailtxt, $headers);
 }
 
 function listrequests($type, $hideip) {

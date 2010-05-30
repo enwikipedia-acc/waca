@@ -1306,7 +1306,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$skin->displayRequestMsg("Request " . $_GET['id'] . " ($gus) marked as 'Done'.<br />");
 	$towhom = $row2['pend_email'];
 	if ($gem != "0" and $gem != "custom") {
-		sendemail($gem, $towhom);
+		sendemail($gem, $towhom, $_GET['id']);
 		$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $gid . "';";
 		$result = mysql_query($query, $tsSQLlink);
 	}
