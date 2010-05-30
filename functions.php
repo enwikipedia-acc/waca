@@ -215,7 +215,7 @@ function sendemail($messageno, $target, $id) {
 	mail($target, "RE: [ACC #$id] English Wikipedia Account Request", $mailtxt, $headers);
 }
 
-function listrequests($type, $hideip) {
+function listrequests($type, $hideip, $correcthash) {
 	/*
 	 * List requests, at Zoom, and, on the main page
 	 */
@@ -289,7 +289,7 @@ function listrequests($type, $hideip) {
 		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 		$row4 = mysql_fetch_assoc($result4);
 
-		if ($hideip == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
+		if ($hideip == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 			// Email.
 			$out .= '[ </small></td>';
 			$out .= '<td><small><a class="request-src" href="mailto:' . $row['pend_email'] . '">' . $row['pend_email'] . '</a>';
@@ -311,7 +311,7 @@ function listrequests($type, $hideip) {
 		}
 
 
-		if ($hideip == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
+		if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 			// IP UT:
 			$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-src" name="ip-link" href="'.$wikipediaurl.'wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
 			$out .= $row['pend_ip'] . '</a> ';
@@ -753,7 +753,7 @@ function isOnWhitelist($user)
 	return false;
 }
 
-function zoomPage($id)
+function zoomPage($id,$urlhash)
 {
 	global $tsSQLlink, $session, $skin, $enableReserving;
 
@@ -810,19 +810,33 @@ function zoomPage($id)
 	} else {
 		$hideinfo = TRUE;
 	}
-	$requesttable = listrequests($thisid, $hideinfo);
+	if ($row['pend_status'] == "Closed") {
+		$hash = md5($thisid. $thisemail . $thisip . microtime()); //If the request is closed, change the hash based on microseconds similar to the checksums. 
+	} else {
+		$hash = md5($thisid . $thisemail . $thisip);
+	}
+	if ($hash == $urlhash) {
+		$correcthash = TRUE;
+	}
+	else {
+		$correcthash = FALSE;
+	}
+	$requesttable = listrequests($thisid, $hideinfo, $correcthash);
 	$out .= $requesttable;
 
 	//Escape injections.
 	$out .= "<br /><strong>Requester Comment</strong>: " . $row['pend_cmt'] . "<br />\n";
 
-	global $enableReserving;
+	global $enableReserving, $tsurl;
 	if( $enableReserving )
 	{
 		$reservingUser = isReserved($thisid);
 		if( $reservingUser != 0 )
 		{
 			$out .= "<h3>This request is currently being handled by " . $session->getUsernameFromUid($reservingUser) ."</h3>";
+		}
+		if ( $reservingUser == $_SESSION['userID']) {
+			$out .= '<p><b>URL to allow other users to see IP/Email:</b> <a href="acc.php?action=zoom&amp;id=' . $thisid . '&amp;hash=' . $hash . '">' . $tsurl . '/acc.php?action=zoom&id=' . $thisid . '&hash=' . $hash . '</a></p>';
 		}
 	}
 

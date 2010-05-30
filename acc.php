@@ -1321,7 +1321,13 @@ elseif ($action == "zoom") {
 		$skin->displayIfooter();
 		die();
 	}
-	echo zoomPage($_GET['id']);
+	if (isset($_GET['hash'])) {
+		$urlhash = $_GET['hash'];
+	}
+	else {
+		$urlhash = "";
+	}
+	echo zoomPage($_GET['id'],$urlhash);
 	$skin->displayIfooter();
 	die();
 }
