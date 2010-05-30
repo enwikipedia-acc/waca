@@ -1239,7 +1239,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			$headers .= 'X-ACC-Request: ' . $gid . "\r\n";
 			$headers .= 'X-ACC-UserID: ' . $_SESSION['userID'] . "\r\n";
 			
-			mail($row2['pend_email'], "RE: English Wikipedia Account Request", $_POST['msgbody'], $headers);
+			mail($row2['pend_email'], "RE: [ACC #$gid] English Wikipedia Account Request", $_POST['msgbody'], $headers);
 		}
 	}
 	
