@@ -939,6 +939,7 @@ elseif ($action == "ban") {
 		echo "<h2>Active Ban List</h2>\n<table border='1'>\n";
 		echo "<tr><td>IP/Name/Email</td><td>Banned by</td><td>Reason</td><td>Time</td><td>Expiry</td>";
 		$isAdmin = $session->hasright($_SESSION['user'], "Admin");
+		$isCheckuser = $session->isCheckuser($_SESSION['user']);
 		if ($isAdmin) {
 			echo "<td>Unban</td>";
 		}
@@ -957,10 +958,26 @@ elseif ($action == "ban") {
 			switch($row['ban_type'])
 			{
 				case "IP":
-					echo '<td><a href="search.php?term='.$row['ban_target'].'&amp;type=IP">'.$row['ban_target'].'</a></td>';
+					echo '<td>';
+					if ($isAdmin || $isCheckuser) { 
+						echo '<a href="search.php?term='.$row['ban_target'].'&amp;type=IP">';
+					}
+					echo $row['ban_target'];
+					if ($isAdmin || $isCheckuser) { 
+						echo '</a>';
+					}
+					echo '</td>';
 					break;
 				case "EMail":
-					echo '<td><a href="search.php?term='.$row['ban_target'].'&amp;type=email">'.$row['ban_target'].'</a></td>';
+					echo '<td>';
+					if ($isAdmin || $isCheckuser) {
+						echo '<a href="search.php?term='.$row['ban_target'].'&amp;type=email">';
+					}
+					echo $row['ban_target'];
+					if ($isAdmin || $isCheckuser) {
+						echo '</a>';
+					}
+					echo '</td>';
 					break;
 				case "Name";
 					echo '<td><a href="search.php?term='.$row['ban_target'].'&amp;type=Request">'.$row['ban_target'].'</a></td>';
