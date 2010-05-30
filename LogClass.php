@@ -246,10 +246,10 @@ class LogPage
 				
 			}
 			if($rla == "Reserved") {
-				$logList .= "<li>$rlu reserved request $rlp at $rlt</li>";
+				$logList .= "<li>$rlu reserved request <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
 			}
 			if($rla == "Unreserved") {
-				$logList .= "<li>$rlu unreserved request $rlp at $rlt</li>";
+				$logList .= "<li>$rlu unreserved request <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
 			}
 			if($rla == "BreakReserve") {
 				$logList .= "<li>$rlu broke the reservation on <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a>, at $rlt</li>";
