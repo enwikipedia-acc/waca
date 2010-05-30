@@ -1672,6 +1672,7 @@ elseif ($action == "comment-quick") {
 //Silence the bot when it gets annoying
 elseif ($action == "silence") { 
 	$accbotSend->send("Bot inactivity warning silenced by " . $session->getUsernameFromUid($_SESSION['userID']));
+	echo '<p>The bot has been sent a message that will silence it for one hour.</p>';
 	$skin->displayIfooter();
 	die();
 }
