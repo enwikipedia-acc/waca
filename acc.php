@@ -1601,14 +1601,22 @@ elseif ($action == "breakreserve") {
 }
 
 elseif ($action == "comment") {
+	if (isset($_GET['hash'])) {
+		$urlhash = sanitise($_GET['hash']);
+	} else {
+	    $urlhash = "";
+	}
+       
     if( isset($_GET['id']) ) {
         $id = $_GET['id'];
-        echo "<h2>Comment on request <a href='acc.php?action=zoom&amp;id=$id'>#$id</a></h2>";
+        echo "<h2>Comment on request <a href='acc.php?action=zoom&amp;id=$id&amp;hash=$urlhash'>#$id</a></h2>
+              <form action='acc.php?action=comment-add&amp;hash=$urlhash' method='post'>";
     } else {
         $id = "";
-         echo "<h2>Comment on a request</h2>";
+        echo "<h2>Comment on a request</h2>
+              <form action='acc.php?action=comment-add' method='post'>";
     }
-    echo "<form action='acc.php?action=comment-add' method='post'>
+    echo "
     Request ID: <input type='text' name='id' value='$id' /> <br />
     Comments:   <input type='text' name='comment' size='75' /> <br />
     Visibility: <select name='visibility'><option>user</option><option>admin</option></select>
@@ -1627,13 +1635,20 @@ elseif ($action == "comment-add") {
         $visibility = sanitise($_POST['visibility']);
         $now = date("Y-m-d H-i-s");
         
+        if (isset($_GET['hash'])) {
+		$urlhash = sanitise($_GET['hash']);
+	    }
+	    else {
+		$urlhash = "";
+	    }
+        
         // the mysql field name is actually cmt_visability. yes, it's a typo, but I cba to fix it
 		$query = "INSERT INTO acc_cmt (cmt_time, cmt_user, cmt_comment, cmt_visability, pend_id) VALUES ('$now', '$user', '$comment', '$visibility', '$id');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result) {
             Die("Query failed: $query ERROR: " . mysql_error()); }
         echo " Comment added Successfully! <br />
-        <a href='acc.php?action=zoom&id=$id'>Return to request #$id</a>";
+        <a href='acc.php?action=zoom&amp;id=$id&amp;hash=$urlhash'>Return to request #$id</a>";
         $botcomment_pvt =  ($visibility == "admin") ? "private " : "";
         $botcomment = $user . " posted a " . $botcomment_pvt . "comment on request " . $id;
         if($visibility != 'admin')
@@ -1664,7 +1679,13 @@ elseif ($action == "comment-quick") {
         }
         $botcomment = $user . " posted a comment on request " . $id . ': ' . $comment;
         $accbotSend->send($botcomment);
-        echo zoomPage($id);
+        if (isset($_GET['hash'])) {
+		$urlhash = $_GET['hash'];
+	    }
+	    else {
+		$urlhash = "";
+	    }
+        echo zoomPage($id,$urlhash);
         $skin->displayIfooter();
 		die();
     }
