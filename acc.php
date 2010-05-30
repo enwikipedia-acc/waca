@@ -1578,8 +1578,7 @@ elseif ($action == "breakreserve") {
 					if (!$result)
 						Die("Error unreserving request.");
 					$now = date("Y-m-d H-i-s");
-					$reservename = "$session->getUsernameFromUid($reservedBy)";
-					$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_cmt, log_time) VALUES ('$request', '".sanitise($_SESSION['user'])."', 'BreakReserve', '$reservename', '$now');";
+					$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$request', '".sanitise($_SESSION['user'])."', 'BreakReserve', '$now');";
 					$result = mysql_query($query, $tsSQLlink);
 					if (!$result)
 						Die("Query failed: $query ERROR: " . mysql_error());
