@@ -759,6 +759,7 @@ function zoomPage($id,$urlhash)
 
 	$out = "";
 	$gid = sanitize($id);
+	$urlhash = sanitize($urlhash);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
@@ -913,8 +914,12 @@ function zoomPage($id,$urlhash)
 	$logPage->showPager=false;
 	$out .= $logPage->showListLog(0,100);
 
-
-	$out .= "<h2>Comments on this request:<small> (<a href='acc.php?action=comment&amp;id=$gid'>new comment</a>)</small></h2>";
+    if ($urlhash != "") {
+		$out .= "<h2>Comments on this request:<small> (<a href='acc.php?action=comment&amp;id=$gid&amp;hash=$urlhash'>new comment</a>)</small></h2>";
+	} else {
+		$out .= "<h2>Comments on this request:<small> (<a href='acc.php?action=comment&amp;id=$gid'>new comment</a>)</small></h2>";
+	}
+	
 	if ($session->hasright($_SESSION['user'], 'Admin')) {
 		$query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' ORDER BY cmt_id ASC;";
 	} else {
@@ -938,7 +943,13 @@ function zoomPage($id,$urlhash)
 			$out .= "<i>None.</i>\n";
 		}
 		$out .= "</ul>";
-		$out .= "<form action='acc.php?action=comment-quick' method='post' /><input type='hidden' name='id' value='$gid' /><input type='text' name='comment' size='75' /><input type='hidden' name='visibility' value='user' /><input type='submit' value='Quick Reply' />";
+		
+    	if ($urlhash != "") {
+			$out .= "<form action='acc.php?action=comment-quick&amp;hash=$urlhash' method='post' />";
+		} else {
+			$out .= "<form action='acc.php?action=comment-quick' method='post' />";
+		}
+		$out .= "<input type='hidden' name='id' value='$gid' /><input type='text' name='comment' size='75' /><input type='hidden' name='visibility' value='user' /><input type='submit' value='Quick Reply' />";
 
 		$ipmsg = 'this ip';
 		if ($hideinfo == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']))
