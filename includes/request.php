@@ -209,7 +209,7 @@ class accRequest {
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		
 		// Sends the confirmation email to the user.
-		mail($row['pend_email'], "English Wikipedia Account Request", $mailtxt, $headers);
+		mail($row['pend_email'], "[ACC #$id] English Wikipedia Account Request", $mailtxt, $headers);
 		
 		// Formulates and executes SQL query to update the request and add the HASH.
 		$query = "UPDATE acc_pend SET pend_mailconfirm = '$hash' WHERE pend_id = '$pid';";
