@@ -88,7 +88,7 @@ $developer = array(
 				"EMail" => "FastLizard4@gmail.com",
 				"ToolID" => "18",
 				"wiki" => "FastLizard4",
-				"WWW" => "http://scalar.cluenet.org/~fastlizard4/",
+				"WWW" => "http://lizardwiki.dyndns.org/",
 				"Name" => NULL,
 				"Role" => "Developer",
 				"Access" => "SVN, SF.net access",
@@ -279,7 +279,7 @@ foreach($developer as $devName => $devInfo) {
 					echo '<li>E-Mail Address: <img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" /></li>';
 					break;
 				case "ToolID":
-					echo "<li>Userpage on tool: <a href=\"users.php?viewuser=$infoContent\">Click here</a></li>\n";
+					echo "<li>Userpage on tool: <a href=\"statistics.php?page=Users&user=$infoContent\">Click here</a></li>\n";
 					break;
 				case "wiki":
 					echo "<li>Enwiki Username: <a href=\"http://en.wikipedia.org/wiki/User:$infoContent\">$infoContent</a></li>\n";
