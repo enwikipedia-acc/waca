@@ -835,7 +835,7 @@ function zoomPage($id,$urlhash)
 		{
 			$out .= "<h3>This request is currently being handled by " . $session->getUsernameFromUid($reservingUser) ."</h3>";
 		}
-		if ( $reservingUser == $_SESSION['userID']) {
+		if ($reservingUser == $_SESSION['userID'] && $row['pendstatus'] != "Closed") {
 			$out .= '<p><b>URL to allow other users to see IP/Email:</b> <a href="acc.php?action=zoom&amp;id=' . $thisid . '&amp;hash=' . $hash . '">' . $tsurl . '/acc.php?action=zoom&id=' . $thisid . '&hash=' . $hash . '</a></p>';
 		}
 	}
