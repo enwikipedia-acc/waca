@@ -1237,11 +1237,12 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	}
 	
 	// custom close reasons
-	if ($_GET['email'] == 'custom') {
+	if ($gem  == 'custom') {
 		if (!isset($_POST['msgbody']) or empty($_POST['msgbody'])) {
 			$querystring = htmlspecialchars($_SERVER["QUERY_STRING"]); //Send it through htmlspecialchars so HTML validators don't complain. 
 			echo "<form action='?".$querystring."' method='post'>\n";
 			echo "<p>Message:</p>\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
+			echo "<p><input type='checkbox' name='created' />Account created</p>\n";
 			echo "<p><input type='checkbox' name='ccmailist' />Cc to mailing list</p>\n";
 			echo "<p><input type='submit' value='Close and send' /></p>\n";
 			echo "</form>\n";
@@ -1257,6 +1258,12 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			$headers .= 'X-ACC-UserID: ' . $_SESSION['userID'] . "\r\n";
 			
 			mail($row2['pend_email'], "RE: [ACC #$gid] English Wikipedia Account Request", $_POST['msgbody'], $headers);
+			
+			if (isset($_POST['created']) && $_POST['created'] == "on") {
+				$gem  == 'custom-y';
+			} else {
+				$gem  == 'custom-n';
+			}
 		}
 	}
 	
@@ -1315,7 +1322,11 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			break;
 	}
 	if ($gem == 'custom') {
-		$crea = "Custom Close";
+		$crea = "Custom";
+	} else if ($gem == 'custom-y') {
+		$crea = "Custom, Created";
+	} else if ($gem == 'custom-n') {
+		$crea = "Custom, Not Created";
 	}
 	$now = explode("-", $now);
 	$now = $now['0'] . "-" . $now['1'] . "-" . $now['2'] . ":" . $now['3'] . ":" . $now['4'];

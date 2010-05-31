@@ -189,7 +189,7 @@ class StatsUsers extends StatisticsPage
 		
 		// List the requests this user has marked as 'created'
 		$out.= "<h2>Users created</h2>\n";
-		$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = " . $gid . " AND log_action = 'Closed 1';";
+		$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = " . $gid . " AND (log_action = 'Closed 1' OR log_action = 'Closed custom-y');";
 		$result = $tsSQL->query($query); // Get all the requests this user has marked as 'created'
 		if (!$result)
 		{
@@ -225,7 +225,7 @@ class StatsUsers extends StatisticsPage
 		}
 		// List the requests this user has *not* marked as 'created'
 		$out.= "<h2>Users not created</h2>\n";
-		$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = " . $gid . " AND log_action != 'Closed 1' AND log_action LIKE 'Closed %' AND log_action != 'Closed custom';";
+		$query = "SELECT * FROM acc_log JOIN acc_user ON user_name = log_user JOIN acc_pend ON pend_id = log_pend WHERE user_id = " . $gid . " AND (log_action != 'Closed 1' OR log_action != 'Closed custom-y') AND log_action LIKE 'Closed %' AND log_action != 'Closed custom';";
 		$result = $tsSQL->query($query); // Get all the requests this user has *not* marked as 'created'
 		if (!$result)
 		{

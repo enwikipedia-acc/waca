@@ -189,7 +189,13 @@ class LogPage
 				$logList .="<li>$rlu Closed (Taken in SUL), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 			if ($row['log_action'] == "Closed custom") {
-				$logList .="<li>$rlu Closed (Custom reason), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				$logList .="<li>$rlu Closed (Custom), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			}
+		    if ($row['log_action'] == "Closed custom-y") {
+				$logList .="<li>$rlu Closed (Custom, Created), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			}
+			if ($row['log_action'] == "Closed custom-n") {
+				$logList .="<li>$rlu Closed (Custom, Not Created), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 			if ($row['log_action'] == "Blacklist Hit" || $row['log_action'] == "DNSBL Hit") {
 				$logList .="<li>$rlu <strong>Rejected by Blacklist</strong> $rlp, $rlc at $rlt.</li>\n";
