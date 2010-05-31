@@ -1260,9 +1260,9 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			mail($row2['pend_email'], "RE: [ACC #$gid] English Wikipedia Account Request", $_POST['msgbody'], $headers);
 			
 			if (isset($_POST['created']) && $_POST['created'] == "on") {
-				$gem  == 'custom-y';
+				$gem  = 'custom-y';
 			} else {
-				$gem  == 'custom-n';
+				$gem  = 'custom-n';
 			}
 		}
 	}
