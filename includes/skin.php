@@ -77,7 +77,7 @@ class skin {
 			// Checks if the particular user has Admin rigths.
 			if ($session->hasright($username, "Admin")) {
 				// There are additional links added to the orginal header if so.
-				$tsurlescaped = $tsSql->escape($tsurl);
+				$tsurlescaped = $tsSQL->escape($tsurl);
 				$out = preg_replace('/\<a href\=\"' . $tsurlescaped . '\/acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"$tsurl/acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"$tsurl/users.php\">User Management</a>\n", $out);				
 			}
 			
