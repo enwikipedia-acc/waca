@@ -164,7 +164,7 @@ div.submit {
 	margin-top: 20px;
 	margin-left: 80px;
 }
-div#declined {
+div.declined {
 	color: #FF0000;
 	font-size: large;
 }
