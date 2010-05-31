@@ -1379,7 +1379,7 @@ elseif ($action == "logs") {
 				"Closed 1" => "Request creation", 
 				"Closed 3" => "Request taken", 
 				"Closed 2" => "Request similarity", 
-				"Edited" => "Preference editing", 
+				"Edited" => "Message editing", 
 				"Closed 5" => "Request marked as invalid", 
 				"Closed 4" => "Request Username policy violation", 
 				"Banned" => "Ban", 
