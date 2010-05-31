@@ -43,7 +43,7 @@ class skin {
 	 */
 	public function displayIheader($username) {
 		// Gets the needed objects.
-		global $tsSQL, $messages, $session, $tsurl;
+		global $tsSQL, $messages, $session;
 		
 		// Escapes the username for MySQL.
 		$suin = $tsSQL->escape($username);
@@ -77,8 +77,7 @@ class skin {
 			// Checks if the particular user has Admin rigths.
 			if ($session->hasright($username, "Admin")) {
 				// There are additional links added to the orginal header if so.
-				$tsurlescaped = $tsSQL->escape($tsurl);
-				$out = preg_replace('/\<a href\=\"http:\/\/toolserver.org\/~acc\/sand\/acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"$tsurl/acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"$tsurl/users.php\">User Management</a>\n", $out);				
+				$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"users.php\">User Management</a>\n", $out);				
 			}
 			
 			// The header is assigned to this variable, no matter Admin or not.
