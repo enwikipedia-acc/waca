@@ -75,19 +75,20 @@
 	$users = array(
 		'*!*@cobi.cluenet.org'				=> 'developer',
 		'*!*@Cobi.cluenet.org'				=> 'developer',
-		'*!*@wikipedia/SQL'					=> 'developer',
+		'*!*@2002:1828:88fb:0:aede:48ff:febe:ef03'	=> 'developer', //Cobi.
+		'*!*@wikipedia/SQL'				=> 'developer',
 		'*!*@mediawiki/OverlordQ'	  		=> 'developer',
-		'*!*@wikipedia/Stwalkerster'		=> 'developer',
-		'*!*@*Alexfusco5'				   	=> 'developer',
+		'*!*@wikipedia/Stwalkerster'			=> 'developer',
+		'*!*@*Alexfusco5'			   	=> 'developer',
 		'*!*@wikipedia/Soxred93'			=> 'developer',
-		'*!*@yourwiki/staff/charlie'		=> 'developer',
+		'*!*@yourwiki/staff/charlie'			=> 'developer',
 		'*!*@wikipedia/FastLizard4'			=> 'developer',
 		'*!*@wikipedia/Prodego'				=> 'developer',
 		'*!*@wikipedia/FunPika'				=> 'developer',
 		'*!*@wikimedia/Promethean'			=> 'developer',
 		'*!*@wikipedia/Chris-G'				=> 'developer',
-	    '*!*@unaffiliated/louriepieterse'	=> 'developer',
-		'*!*@*'								=> '*'
+		'*!*@unaffiliated/louriepieterse'		=> 'developer',
+		'*!*@*'						=> '*'
 		);
 
 	// Groups
