@@ -772,8 +772,38 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	} else {
 		$duration = $duration +time();
 	}
+	switch( $_POST[ 'type' ] ) {
+		case 'IP':
+			if( ip2long( $_POST[ 'target' ] ) === false ) {
+				echo '<h2>ERROR</h2><br />Invalid target specified.  Expecting IP address.';
+				$skin->displayIfooter();
+				die();
+			}
+			break;
+
+		case 'Name':
+			if( preg_match( '/[\#\/\|\[\]\{\}\@\%\:\<\>]/', $_POST[ 'target' ] ) ) {
+				echo '<h2>ERROR</h2><br />Invalid target specified.  Expecting user name.';
+				$skin->displayIfooter();
+				die();
+			}
+			break;
+
+		case 'EMail':
+			if( !preg_match( 'Y^(?:[a-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$Y' ) ) {
+				echo '<h2>ERROR</h2><br />Invalid target specified.  Expecting E-mail address.';
+				$skin->displayIfooter();
+				die();
+			}
+			break;
+
+		default:
+			echo '<h2>ERROR</h2><br />Invalid type specified.  Expecting IP, Name, or EMail.';
+			$skin->displayIfooter();
+			die();
+	}
 	$reason = sanitize($_POST['banreason']);
-	$siuser = sanitize($_GET['user']);
+	$siuser = sanitize($_GET['user']); // Why do we pass this via GET?  This should be passed by $_SESSION ...
 	$target = sanitize($_POST['target']);
 	$type = sanitize($_POST['type']);
 	$now = date("Y-m-d H-i-s");
@@ -937,7 +967,7 @@ elseif ($action == "ban") {
 		}
 	} else {
 		echo "<h2>Active Ban List</h2>\n<table border='1'>\n";
-		echo "<tr><td>IP/Name/Email</td><td>Banned by</td><td>Reason</td><td>Time</td><td>Expiry</td>";
+		echo "<tr><th>Type</th><th>IP/Name/Email</th><th>Banned by</th><th>Reason</th><th>Time</th><th>Expiry</th>";
 		$isAdmin = $session->hasright($_SESSION['user'], "Admin");
 		$isCheckuser = $session->isCheckuser($_SESSION['user']);
 		if ($isAdmin) {
@@ -954,7 +984,7 @@ elseif ($action == "ban") {
 			} else {
 				$until = date("F j, Y, g:i a", $row['ban_duration']);
 			}
-			echo "<tr>";
+			echo "<tr><td>" . htmlentities( $row[ 'ban_type' ] ) . '</td>';
 			switch($row['ban_type'])
 			{
 				case "IP":
