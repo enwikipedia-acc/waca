@@ -75,7 +75,7 @@ if( isset($_GET['term'])) {
 	}
 
 	if( $type == "email") {
-		// move this to here, so non-admins can perform searches, but not on IP addresses
+		// move this to here, so non-admins can perform searches, but not on IP addresses or emails
 		if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) {
 				// Displays both the error message and the footer of the interface.
 				$skin->displayRequestMsg("I'm sorry, but only administrators and checkusers can search for Email Addresses.<br />\n");	
@@ -111,7 +111,7 @@ if( isset($_GET['term'])) {
 		echo $html;
 	}
 	elseif( $type == 'IP') {
-		// move this to here, so non-admins can perform searches, but not on IP addresses
+		// move this to here, so non-admins can perform searches, but not on IP addresses or emails
 		if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) {
 				// Displays both the error message and the footer of the interface.
 				$skin->displayRequestMsg("I'm sorry, but only administrators and checkusers can search for IP Addresses.<br />\n");	
@@ -164,6 +164,12 @@ if( isset($_GET['term'])) {
 		$html .= "<b>Results found: </b> $currentrow.";
 		echo $html;
 	}
+	else
+	{
+		$skin->displayRequestMsg("Unknown search type.<br />\n");	
+		$skin->displayIfooter();
+		die();
+	}
 }
 else {
 	echo '<h2>Search:</h2>';
@@ -172,11 +178,11 @@ else {
 	echo '<table><tr><td><input type="text" name="term" /></td>';
 	echo '<td>';
 	if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) { //Disable the drop-down menu for non-admins/checkusers
-	echo '<input name="type" type="hidden" value="Request" />';
+		echo '<input name="type" type="hidden" value="Request" />';
 	}
 	echo '<select name="type"';
 	if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) { //Disable the drop-down menu for non-admins/checkusers
-	echo ' disabled="disabled"';
+		echo ' disabled="disabled"';
 	}
 	echo'>';
 	echo '<option value="Request">as requested username</option>';

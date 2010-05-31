@@ -551,8 +551,8 @@
 				}
 			}
 			if ((time() - $lastToolMsg) > 3600*6) {
-				// only send alerts every five minutes so we don't piss people off too much
-				if ((time() - $lastToolMsgAlert) > 60*5) {
+				// only send alerts every fifteen minutes so we don't piss people off too much
+				if ((time() - $lastToolMsgAlert) > 60*15) {
 					$lastToolMsgAlert = time();
 					irc('PRIVMSG '.$chan.' :Alert, I haven\'t received any data from the acc tool in over six hours, please check that everything is ok and nothing is broken.');
 				}

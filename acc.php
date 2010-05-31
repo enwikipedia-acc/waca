@@ -1323,7 +1323,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$skin->displayRequestMsg("Request " . $_GET['id'] . " ($gus) marked as 'Done'.<br />");
 	$towhom = $row2['pend_email'];
 	if ($gem != "0" and $gem != "custom") {
-		sendemail($gem, $towhom, $_GET['id']);
+		sendemail($gem, $towhom, $gid);
 		$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $gid . "';";
 		$result = mysql_query($query, $tsSQLlink);
 	}
@@ -1707,11 +1707,19 @@ elseif ($action == "comment-quick") {
 		die();
     }
 }
-//Silence the bot when it gets annoying
-elseif ($action == "silence") { 
-	$accbotSend->send("Bot inactivity warning silenced by " . $session->getUsernameFromUid($_SESSION['userID']));
-	echo '<p>The bot has been sent a message that will silence it for one hour.</p>';
-	$skin->displayIfooter();
-	die();
-}
+/*
+ * Commented out by stw:
+ *  a) wrong. Check the code in the bot to figure out what will actually happen.
+ *  b) this will likely increase the amount of time taken for decent investigation to start.
+ *  
+ *  Please see note on JIRA: ACC-161
+ * ******************************************
+ * //Silence the bot when it gets annoying
+ * elseif ($action == "silence") { 
+ *	$accbotSend->send("Bot inactivity warning silenced by " . $session->getUsernameFromUid($_SESSION['userID']));
+ *	echo '<p>The bot has been sent a message that will silence it for one hour.</p>';
+ *	$skin->displayIfooter();
+ *	die();
+ *}
+ */
 ?>
