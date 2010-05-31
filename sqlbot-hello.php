@@ -18,7 +18,7 @@
 #} //Re-route, if you're a web client.
 
 include ('../SxWiki.php');
-include ('../sqlbot-hello-enwiki.php');
+include ('../config/sqlbot-hello');
 require_once ('config.inc.php');
 mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 @ mysql_select_db($toolserver_database) or print mysql_error();
