@@ -1273,7 +1273,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			echo "<form action='?".$querystring."' method='post'>\n";
 			echo "<p>Message:</p>\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
 			echo "<p><input type='checkbox' name='created' />Account created</p>\n";
-			echo "<p><input type='checkbox' name='ccmailist' />Cc to mailing list</p>\n";
+			echo "<p><input type='checkbox' name='ccmailist' checked/>Cc to mailing list</p>\n";
 			echo "<p><input type='submit' value='Close and send' /></p>\n";
 			echo "</form>\n";
 			$skin->displayIfooter();
