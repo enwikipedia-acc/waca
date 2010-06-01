@@ -76,12 +76,12 @@ if( isset($_GET['term'])) {
 
 	if( $type == "email") {
 		// move this to here, so non-admins can perform searches, but not on IP addresses or emails
-		if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) {
-				// Displays both the error message and the footer of the interface.
-				$skin->displayRequestMsg("I'm sorry, but only administrators and checkusers can search for Email Addresses.<br />\n");	
-				$skin->displayIfooter();
-				die();
-		}
+//		if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) {
+//				// Displays both the error message and the footer of the interface.
+//				$skin->displayRequestMsg("I'm sorry, but only administrators and checkusers can search for Email Addresses.<br />\n");	
+//				$skin->displayIfooter();
+//				die();
+//		}
 		if($term == "@") {
 			$skin->displayRequestMsg("Invalid search term entered.<br />\n");	
 			$skin->displayIfooter();
@@ -177,17 +177,12 @@ else {
 	echo 'Search for:<br />';
 	echo '<table><tr><td><input type="text" name="term" /></td>';
 	echo '<td>';
-	if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) { //Disable the drop-down menu for non-admins/checkusers
-		echo '<input name="type" type="hidden" value="Request" />';
-	}
-	echo '<select name="type"';
-	if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) { //Disable the drop-down menu for non-admins/checkusers
-		echo ' disabled="disabled"';
-	}
-	echo'>';
+	echo '<select name="type">';
 	echo '<option value="Request">as requested username</option>';
 	echo '<option value="email">as email address</option>';
-	echo '<option value="IP">as IP address</option>';
+	if( $session->hasright($sessionuser, "Admin") || $session->isCheckuser($sessionuser)) { //Enable the IP search for admins and CU's
+		echo '<option value="IP">as IP address</option>';
+	}
 	echo '</select></td></tr></table><br />';
 	echo '<input type="submit" />';
 	echo '</form>';
