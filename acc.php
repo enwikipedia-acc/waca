@@ -1000,13 +1000,9 @@ elseif ($action == "ban") {
 					break;
 				case "EMail":
 					echo '<td>';
-					if ($isAdmin || $isCheckuser) {
-						echo '<a href="search.php?term='.$row['ban_target'].'&amp;type=email">';
-					}
+					echo '<a href="search.php?term='.$row['ban_target'].'&amp;type=email">';
 					echo $row['ban_target'];
-					if ($isAdmin || $isCheckuser) {
-						echo '</a>';
-					}
+					echo '</a>';
 					echo '</td>';
 					break;
 				case "Name";
@@ -1273,7 +1269,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			echo "<form action='?".$querystring."' method='post'>\n";
 			echo "<p>Message:</p>\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
 			echo "<p><input type='checkbox' name='created' />Account created</p>\n";
-			echo "<p><input type='checkbox' name='ccmailist' checked/>Cc to mailing list</p>\n";
+			echo "<p><input type='checkbox' name='ccmailist' checked='checked'/>Cc to mailing list</p>\n";
 			echo "<p><input type='submit' value='Close and send' /></p>\n";
 			echo "</form>\n";
 			$skin->displayIfooter();
