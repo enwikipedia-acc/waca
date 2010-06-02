@@ -46,6 +46,7 @@ $messages = new messages();
 $skin     = new skin();
 $accbotSend = new accbotSend();
 $session = new session();
+$date = new DateTime();
 
 // Initialize the session data.
 session_start();
@@ -1071,6 +1072,18 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
+		$query2 = "SELECT log_time FROM acc_log WHERE log_pend = '$gid' ORDER BY log_time DESC LIMIT 1;";
+		$result2 = mysql_query($query2, $tsSQLlink);
+		if (!$result2)
+			Die("Query failed: $query2 ERROR: " . mysql_error());
+		$row2 = mysql_fetch_assoc($result2);
+		$date->modify("-7 days");
+		$oneweek = $date->format("Y-m-d H:i:s");
+		if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && !$session->hasright($_SESSION['user'], "Admin")) {
+			$skin->displayRequestMsg("Only administrators can reopen a request that has been closed for over a week.");	
+			$skin->displayIfooter();
+			die();
+		}
 		if ($row['pend_status'] == $target) {
 			echo "Cannot set status, target already deferred to $target<br />\n";
 			$skin->displayIfooter();
@@ -1509,6 +1522,24 @@ elseif ($action == "reserve") {
 				$skin->displayRequestMsg("This request is not yet email-confirmed!");
 				die();
 			}
+		}
+		
+		$query = "SELECT pend_status FROM acc_pend WHERE pend_id = '$request';";
+		$result = mysql_query($query, $tsSQLlink);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row = mysql_fetch_assoc($result);
+		$query2 = "SELECT log_time FROM acc_log WHERE log_pend = '$request' ORDER BY log_time DESC LIMIT 1;";
+		$result2 = mysql_query($query2, $tsSQLlink);
+		if (!$result2)
+			Die("Query failed: $query2 ERROR: " . mysql_error());
+		$row2 = mysql_fetch_assoc($result2);
+		$date->modify("-7 days");
+		$oneweek = $date->format("Y-m-d H:i:s");
+		if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && !$session->hasright($_SESSION['user'], "Admin")) {
+			$skin->displayRequestMsg("Only administrators can reserve a request that has been closed for over a week.");	
+			$skin->displayIfooter();
+			die();
 		}
 		
 		// Lock the tables to avoid a possible conflict.
