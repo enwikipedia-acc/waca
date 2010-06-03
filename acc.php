@@ -1700,7 +1700,7 @@ elseif ($action == "comment") {
 	}
        
     if( isset($_GET['id']) ) {
-        $id = $_GET['id'];
+        $id = sanitize($_GET['id']);
         echo "<h2>Comment on request <a href='acc.php?action=zoom&amp;id=$id&amp;hash=$urlhash'>#$id</a></h2>
               <form action='acc.php?action=comment-add&amp;hash=$urlhash' method='post'>";
     } else {
