@@ -1638,7 +1638,7 @@ elseif ($action == "breakreserve") {
 		//check request is reserved
 		$reservedBy = isReserved($request);
 		if( $reservedBy == "" ) {
-			$skin->displayRequestMsg("Only administrators can reopen a request that has been closed for over a week.");
+			$skin->displayRequestMsg("Request is not reserved, or request ID is invalid.");
 			$skin->displayIfooter();
 			die();
 		}
