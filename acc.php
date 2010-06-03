@@ -1638,7 +1638,6 @@ elseif ($action == "breakreserve") {
 		//check request is reserved
 		$reservedBy = isReserved($request);
 		if( $reservedBy != "" ) {
-			echo 'ID:"'  . $reservedBy . '"';
 			if( $reservedBy != $_SESSION['userID'] )
 			{
 				global $enableAdminBreakReserve;
