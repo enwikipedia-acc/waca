@@ -1637,8 +1637,11 @@ elseif ($action == "breakreserve") {
 		
 		//check request is reserved
 		$reservedBy = isReserved($request);
-		if( $reservedBy == "" )
-			Die("Request is not reserved, or request ID is invalid.");
+		if( $reservedBy == "" ) {
+			$skin->displayRequestMsg("Only administrators can reopen a request that has been closed for over a week.");
+			$skin->displayIfooter();
+			die();
+		}
 		if( $reservedBy != $_SESSION['userID'] )
 		{
 			global $enableAdminBreakReserve;
