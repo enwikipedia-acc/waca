@@ -268,7 +268,7 @@ float: right;
 
 #doublereserve-warn {
 	border:3px solid red;
-	background-color:pink;
+	background-color: #FF00FF;
 	color:black;
 	width:80%;
 	font-weight:bold;
@@ -278,7 +278,7 @@ float: right;
 
 a.topcreators-suspended{
 	font-style:italic;
-	color:grey;
+	color: #808080;
 }
 
 a.topcreators-admin{
