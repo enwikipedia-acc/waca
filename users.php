@@ -311,7 +311,7 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		echo "Changed User " . htmlentities($_POST['oldname']) . " name to ". htmlentities($_POST['newname']) . "<br />\n";
+		echo "Changed User " . htmlentities($_POST['oldname'],ENT_COMPAT,'UTF-8') . " name to ". htmlentities($_POST['newname'],ENT_COMPAT,'UTF-8') . "<br />\n";
 		$query2 = "SELECT * FROM acc_user WHERE user_name = '$oldname';";
 		$result2 = mysql_query($query2, $tsSQLlink);
 		if (!$result2)

@@ -834,13 +834,13 @@ class accRequest {
 		echo "$message\n";
 		
 		// Convert all applicable characters to HTML entities.
-		$user = htmlentities($user);
-		$email = htmlentities($email);
+		$user = htmlentities($user,ENT_COMPAT,'UTF-8');
+		$email = htmlentities($email,ENT_COMPAT,'UTF-8');
 		
 		// Assigns the comment and IP to variables and escapes for MySQL.
-		$comments = $tsSQL->escape(htmlentities($_POST['comments']));
-		$ip = $tsSQL->escape(htmlentities($_SERVER['REMOTE_ADDR']));
-		$useragent = $tsSQL->escape(htmlentities($_ENV["HTTP_USER_AGENT"]));
+		$comments = $tsSQL->escape(htmlentities($_POST['comments'],ENT_COMPAT,'UTF-8'));
+		$ip = $tsSQL->escape(htmlentities($_SERVER['REMOTE_ADDR'],ENT_COMPAT,'UTF-8'));
+		$useragent = $tsSQL->escape(htmlentities($_ENV["HTTP_USER_AGENT"],ENT_COMPAT,'UTF-8'));
 		
 		// Gets the current date and time.
 		$dnow = date("Y-m-d H-i-s");

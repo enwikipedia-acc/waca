@@ -25,7 +25,7 @@ class accbotSend {
 		*/
 		global $whichami, $ircBotUdpServer, $ircBotUdpPort;
 		sleep(3);
-		$message = html_entity_decode($message); // If a message going to the bot was for whatever reason sent through sanitze() earlier, reverse it. 
+		$message = html_entity_decode($message,ENT_COMPAT,'UTF-8'); // If a message going to the bot was for whatever reason sent through sanitze() earlier, reverse it. 
 		$message = stripslashes($message);
 		$blacklist = array("DCC", "CCTP", "PRIVMSG");
 		$message = str_replace($blacklist, "(IRC Blacklist)", $message); //Lets stop DCC etc

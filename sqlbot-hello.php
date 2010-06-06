@@ -102,7 +102,7 @@ while ($row = mysql_fetch_assoc($result)) {
 				$i };
 		}
 	}
-	$sig = html_entity_decode($s);
+	$sig = html_entity_decode($s,ENT_COMPAT,'UTF-8');
 	$sid = $row['welcome_uid'];
 	$template = $row['welcome_template'];
 	if ($template == "welcomeg") {

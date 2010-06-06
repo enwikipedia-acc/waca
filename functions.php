@@ -134,12 +134,12 @@ function sanitize($what) {
 	 */
 	global $tsSQLlink;
 	$what = mysql_real_escape_string($what,$tsSQLlink);
-	$what = htmlentities($what);
+	$what = htmlentities($what,ENT_COMPAT,'UTF-8');
 	return ($what);
 }
 
 function xss ($string) {
-	return htmlentities($string,ENT_QUOTES);
+	return htmlentities($string,ENT_QUOTES,'UTF-8');
 }
 
 function upcsum($id) {
@@ -881,7 +881,7 @@ function zoomPage($id,$urlhash)
 			}
 
 			// Convert all applicable characters to HTML entities.
-			$oS = htmlentities($oSpoof);
+			$oS = htmlentities($oSpoof,ENT_COMPAT,'UTF-8');
 
 			// Show the Wikipedia Userpage of the conflicting users.
 			$posc1 = '<a href="http://en.wikipedia.org/wiki/User:';

@@ -613,7 +613,7 @@ elseif ($action == "messagemgmt") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
-		$mailtext = htmlentities($row['mail_text']);
+		$mailtext = htmlentities($row['mail_text'],ENT_COMPAT,'UTF-8');
 		echo "<h2>View message</h2><br />Message ID: " . $row['mail_id'] . "<br />\n";
 		echo "Message count: " . $row['mail_count'] . "<br />\n";
 		echo "Message title: " . $row['mail_desc'] . "<br />\n";
@@ -665,7 +665,7 @@ elseif ($action == "messagemgmt") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
-		$mailtext = htmlentities($row['mail_text']);
+		$mailtext = htmlentities($row['mail_text'],ENT_COMPAT,'UTF-8');
 		echo "<h2>Edit message</h2><strong>This is NOT a toy. If you can see this form, you can edit this message. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=messagemgmt&amp;edit=$mid&amp;submit=1\" method=\"post\"><br />\n";
 		echo "<input type=\"text\" name=\"maildesc\" value=\"" . $row['mail_desc'] . "\"/><br />\n";
 		echo "<textarea name=\"mailtext\" rows=\"20\" cols=\"60\">$mailtext</textarea><br />\n";
@@ -817,7 +817,7 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	echo "Banned " . htmlentities($_POST['target']) . " for $reason<br />\n";
+	echo "Banned " . htmlentities($_POST['target'],ENT_COMPAT,'UTF-8') . " for $reason<br />\n";
 	if ( !isset($duration) || $duration == "-1") {
 		$until = "Indefinite";
 	} else {
@@ -985,7 +985,7 @@ elseif ($action == "ban") {
 			} else {
 				$until = date("F j, Y, g:i a", $row['ban_duration']);
 			}
-			echo "<tr><td>" . htmlentities( $row[ 'ban_type' ] ) . '</td>';
+			echo "<tr><td>" . htmlentities($row['ban_type'],ENT_COMPAT,'UTF-8') . '</td>';
 			switch($row['ban_type'])
 			{
 				case "IP":
@@ -1278,7 +1278,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	// custom close reasons
 	if ($gem  == 'custom') {
 		if (!isset($_POST['msgbody']) or empty($_POST['msgbody'])) {
-			$querystring = htmlspecialchars($_SERVER["QUERY_STRING"]); //Send it through htmlspecialchars so HTML validators don't complain. 
+			$querystring = htmlspecialchars($_SERVER["QUERY_STRING"],ENT_COMPAT,'UTF-8'); //Send it through htmlspecialchars so HTML validators don't complain. 
 			echo "<form action='?".$querystring."' method='post'>\n";
 			echo "<p>Message:</p>\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
 			echo "<p><input type='checkbox' name='created' />Account created</p>\n";
