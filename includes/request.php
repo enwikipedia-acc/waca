@@ -839,7 +839,7 @@ class accRequest {
 		
 		// Assigns the comment and IP to variables and escapes for MySQL.
 		$comments = $tsSQL->escape(htmlentities($_POST['comments'],ENT_COMPAT,'UTF-8'));
-		$ip = $tsSQL->escape(htmlentities($_SERVER['REMOTE_ADDR']));
+		$ip = $tsSQL->escape(htmlentities($_SERVER['REMOTE_ADDR']),ENT_COMPAT,'UTF-8');
 		$useragent = $tsSQL->escape(htmlentities($_ENV["HTTP_USER_AGENT"],ENT_COMPAT,'UTF-8'));
 		
 		// Gets the current date and time.
