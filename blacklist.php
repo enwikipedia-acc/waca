@@ -37,34 +37,34 @@ $nameblacklist = array ();
 $emailblacklist = array ();
 $uablacklist = array ();
 
-$acrnamebl['nigger'] = '/(?i:ni(gg|qq)(a|er))/';
+//$acrnamebl['nigger'] = '/(?i:ni(gg|qq)(a|er))/';
 //$acrnamebl['grawp1'] = '/k*[l1][o0]?m[o0]?[i1]r*/i';
-$acrnamebl['grawp2'] = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
+//$acrnamebl['grawp2'] = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
 //$acrnamebl['grawp3'] = '/hagg[ea]r/i';
-$acrnamebl['grawp4'] = '/secret.*combination/i';
-$acrnamebl['grawp6'] = '/t[3eh][3eh]_l[uo]lz/i';
-$acrnamebl['grawp7'] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
-$acrnamebl['grawp8'] = '/(need.to|will).*die/i';
-$acrnamebl['grawp9'] = '/4chan/i';
-$acrnamebl['grawp10'] = '/(herme?y|quarp)/i';
+//$acrnamebl['grawp4'] = '/secret.*combination/i';
+//$acrnamebl['grawp6'] = '/t[3eh][3eh]_l[uo]lz/i';
+//$acrnamebl['grawp7'] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
+//$acrnamebl['grawp8'] = '/(need.to|will).*die/i';
+//$acrnamebl['grawp9'] = '/4chan/i';
+//$acrnamebl['grawp10'] = '/(herme?y|quarp)/i';
 
-$nameblacklist['nigger'] = '/(?i:ni(gg|qq)(a|er))/';
-$nameblacklist['faggot'] = '/(?i:faggot)/';
+//$nameblacklist['nigger'] = '/(?i:ni(gg|qq)(a|er))/';
+//$nameblacklist['faggot'] = '/(?i:faggot)/';
 
 //$nameblacklist['grawp1'] = '/k*[l1][o0]?m[o0]?[i1]r*/i';
-$nameblacklist['grawp2'] = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
+//$nameblacklist['grawp2'] = '/[gq](r|rr)(aa|.)(w|v|vv|ww)p/i';
 //$nameblacklist['grawp3'] = '/hagg[ea]r/i';
-$nameblacklist['grawp4'] = '/secret.*combination/i';
+//$nameblacklist['grawp4'] = '/secret.*combination/i';
 // $nameblacklist['grawp5'] = '/((ph|f)uc?k|shag)/i';
-$nameblacklist['grawp6'] = '/t[3eh][3eh]_l[uo]lz/i';
-$nameblacklist['grawp7'] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
-$nameblacklist['grawp8'] = '/(need.to|will).*die/i';
-$nameblacklist['grawp9'] = '/4chan/i';
-$nameblacklist['grawp10'] = '/wikipedo/i';
-$nameblacklist['grawp11'] = '/pedophil/i';
-$nameblacklist['grawp12'] = '/lolwut/i';
-$nameblacklist['grawp14'] = '/(SteveCrossin|Mellie)/i';
-$nameblacklist['grawp15'] = '/(herme?y|quarp)/i';
+//$nameblacklist['grawp6'] = '/t[3eh][3eh]_l[uo]lz/i';
+//$nameblacklist['grawp7'] = '/k.[4a].[1l].[0o].m.[1i].r.[4a]/i';
+//$nameblacklist['grawp8'] = '/(need.to|will).*die/i';
+//$nameblacklist['grawp9'] = '/4chan/i';
+//$nameblacklist['grawp10'] = '/wikipedo/i';
+//$nameblacklist['grawp11'] = '/pedophil/i';
+//$nameblacklist['grawp12'] = '/lolwut/i';
+//$nameblacklist['grawp14'] = '/(SteveCrossin|Mellie)/i';
+//$nameblacklist['grawp15'] = '/(herme?y|quarp)/i';
 
 /// this shouldn't be blacklisted. the blacklists make the requester assume the request
 /// has succeeded, then dropped silently. we need to tell the user about the upolicy violation.
@@ -72,28 +72,28 @@ $nameblacklist['grawp15'] = '/(herme?y|quarp)/i';
 //$nameblacklist['upolicy4'] = '/.*([4a]dm[1i]n|w[i1]k[1i]p[3e]d[1i][4a]|st[3e]w[4a]rd).*/i';
 
 //E-Mail Blacklist
-$emailblacklist['grawp1'] = '/(shit|fuck|phuck)/i';
-$emailblacklist['grawp2'] = '/^poo@.*/i';
-$emailblacklist['grawp3'] = '/@poo\..*/i';
-$emailblacklist['grawp4'] = '/@you\.com/i';
-$emailblacklist['grawp5'] = '/pedo@.*/i';
-$emailblacklist['grawp6'] = '/@youchans\.com/i';
-$emailblacklist['grawp7'] = '/@ask\.com/i';
-$emailblacklist['grawp8'] = '/@rawks\.com/i';
-$emailblacklist['grawp9'] = '/(fuck|shit|pedo)/i';
-$emailblacklist['webring'] = '/webring@.*/i';
+//$emailblacklist['grawp1'] = '/(shit|fuck|phuck)/i';
+//$emailblacklist['grawp2'] = '/^poo@.*/i';
+//$emailblacklist['grawp3'] = '/@poo\..*/i';
+//$emailblacklist['grawp4'] = '/@you\.com/i';
+//$emailblacklist['grawp5'] = '/pedo@.*/i';
+//$emailblacklist['grawp6'] = '/@youchans\.com/i';
+//$emailblacklist['grawp7'] = '/@ask\.com/i';
+//$emailblacklist['grawp8'] = '/@rawks\.com/i';
+//$emailblacklist['grawp9'] = '/(fuck|shit|pedo)/i';
+//$emailblacklist['webring'] = '/webring@.*/i';
 
 
-$emailblacklist['temporary-inboxes'] = "/temporaryinbox\.com/i";
-$emailblacklist['temporary-inboxes-com'] = "/(maileater|10minutemail|2prong|4warding|6url|afrobacon|bugmenot|bumpymail|centermail|choicemail1|deadspam|despammed|discardmail|disposeamail|dodgeit|dontreg|dumpandjunk|e4ward|emailias|emailxfer|enterto|getonemail|gishpuppy|greensloth|guerrillamail|haltospam|jetable|kasmail|killmail|mail333|mailblocks|maileater|mailexpire|mailfreeonline|mailmoat|mailnull|mailshell|mailsiphon|mailzilla|mintemail|myspamless|mytrashmail|neomailbox|nobulk|noclickemail|netmails|oneoffemail|outlawspam|pancakemail|pookmail|punkass|rejectmail|sibmail|sneakemail|spamavert|spambob|spamslicer|spaml|spammotel|spamtrail|venompen|willselfdestruct|xemaps|xents|xmaily|yopmail|fakeinformation|fastacura|fastchevy|fastchrysler|fastkawasaki|fastmazda|fastmitsubishi|fastnissan|fastsubaru|fastsuzuki|fasttoyota|fastyamaha|fuckingduh|fux0ringduh|klassmaster|mailin8r|mailinator|mailinater|mailinator2|sogetthis |675hosting|amiriindustries|emailmiser|etranquil|gowikibooks|gowikicampus|gowikicars|gowikifilms|gowikigames|gowikimusic|gowikinetwork|gowikitravel|gowikitv|myspacepimpedup|ourklips|pimpedupmyspace|rklips|turual|upliftnow|uplipht|viditag|viewcastmedia|wetrainbayarea|xagloo|mailquack|mailslapping|oneoffmail|whopy|wilemail|spammotel|trashdevil|shiftmail|spambog|spamday|spamex|spamfree24|spamgourmet|spamhole|spamify|tempinbox|dotmsg|fakemailz|footard|forgetmail|lovemeleaveme|temporaryforwarding|temporaryinbox|trashmail|75hosting|myspaceinc)\.com/i";
-$emailblacklist['temporary-inboxes-net'] = "/(centermail|emz|guerrillamail|jetable|killmail|klassmaster|wuzup|link2mail|nervmich|nervtmichmails|privacy|shortmail|spambob|spamfree24|tempemail|trashmail|675hosting|75hosting|ajaxapp|amiri|etranquil|iwi|myspaceinc|viewcastmedia)\.net/i";
-$emailblacklist['temporary-inboxes-de'] = "/(discardmail|dontsendmespam|dumpmail|emaildienst|emailto|ghosttexter|hidemail|spambog|trashdevil|trashmail|trash-mail|twinmail|wegwerfadresse|spaminator|spamoff|temporarily|sofort-mail|safersignup|nurfuerspam|meinspamschutz|messagebeamer|netzidiot)\.de/i";
-$emailblacklist['temporary-inboxes-org'] = "/(front14|h8s|hatespam|iheartspam|ipoo|jetable|mail2rss|spambob|oopi|poofy|spamcon|spamfree24|trashmail|wh4f|zoemail|675hosting|75hosting|etranquil|myspaceinc|viewcastmedia|wetrainbayarea|blogmyway|buyusedlibrarybooks)\.org/i";
-$emailblacklist['temporary-inboxes-us'] = "/(nospamfor|spambox)\.us/i";
-$emailblacklist['temporary-inboxes-dk'] = "/(anonymail|recyclemail|lortemail)\.dk/i";
-$emailblacklist['temporary-inboxes-it'] = "/despam\.it/i";
-$emailblacklist['temporary-inboxes-la'] = "/spam\.la/i";
-$emailblacklist['whitehouse'] = "/whitehouse\.gov/i";
+//$emailblacklist['temporary-inboxes'] = "/temporaryinbox\.com/i";
+//$emailblacklist['temporary-inboxes-com'] = "/(maileater|10minutemail|2prong|4warding|6url|afrobacon|bugmenot|bumpymail|centermail|choicemail1|deadspam|despammed|discardmail|disposeamail|dodgeit|dontreg|dumpandjunk|e4ward|emailias|emailxfer|enterto|getonemail|gishpuppy|greensloth|guerrillamail|haltospam|jetable|kasmail|killmail|mail333|mailblocks|maileater|mailexpire|mailfreeonline|mailmoat|mailnull|mailshell|mailsiphon|mailzilla|mintemail|myspamless|mytrashmail|neomailbox|nobulk|noclickemail|netmails|oneoffemail|outlawspam|pancakemail|pookmail|punkass|rejectmail|sibmail|sneakemail|spamavert|spambob|spamslicer|spaml|spammotel|spamtrail|venompen|willselfdestruct|xemaps|xents|xmaily|yopmail|fakeinformation|fastacura|fastchevy|fastchrysler|fastkawasaki|fastmazda|fastmitsubishi|fastnissan|fastsubaru|fastsuzuki|fasttoyota|fastyamaha|fuckingduh|fux0ringduh|klassmaster|mailin8r|mailinator|mailinater|mailinator2|sogetthis |675hosting|amiriindustries|emailmiser|etranquil|gowikibooks|gowikicampus|gowikicars|gowikifilms|gowikigames|gowikimusic|gowikinetwork|gowikitravel|gowikitv|myspacepimpedup|ourklips|pimpedupmyspace|rklips|turual|upliftnow|uplipht|viditag|viewcastmedia|wetrainbayarea|xagloo|mailquack|mailslapping|oneoffmail|whopy|wilemail|spammotel|trashdevil|shiftmail|spambog|spamday|spamex|spamfree24|spamgourmet|spamhole|spamify|tempinbox|dotmsg|fakemailz|footard|forgetmail|lovemeleaveme|temporaryforwarding|temporaryinbox|trashmail|75hosting|myspaceinc)\.com/i";
+//$emailblacklist['temporary-inboxes-net'] = "/(centermail|emz|guerrillamail|jetable|killmail|klassmaster|wuzup|link2mail|nervmich|nervtmichmails|privacy|shortmail|spambob|spamfree24|tempemail|trashmail|675hosting|75hosting|ajaxapp|amiri|etranquil|iwi|myspaceinc|viewcastmedia)\.net/i";
+//$emailblacklist['temporary-inboxes-de'] = "/(discardmail|dontsendmespam|dumpmail|emaildienst|emailto|ghosttexter|hidemail|spambog|trashdevil|trashmail|trash-mail|twinmail|wegwerfadresse|spaminator|spamoff|temporarily|sofort-mail|safersignup|nurfuerspam|meinspamschutz|messagebeamer|netzidiot)\.de/i";
+//$emailblacklist['temporary-inboxes-org'] = "/(front14|h8s|hatespam|iheartspam|ipoo|jetable|mail2rss|spambob|oopi|poofy|spamcon|spamfree24|trashmail|wh4f|zoemail|675hosting|75hosting|etranquil|myspaceinc|viewcastmedia|wetrainbayarea|blogmyway|buyusedlibrarybooks)\.org/i";
+//$emailblacklist['temporary-inboxes-us'] = "/(nospamfor|spambox)\.us/i";
+//$emailblacklist['temporary-inboxes-dk'] = "/(anonymail|recyclemail|lortemail)\.dk/i";
+//$emailblacklist['temporary-inboxes-it'] = "/despam\.it/i";
+//$emailblacklist['temporary-inboxes-la'] = "/spam\.la/i";
+//$emailblacklist['whitehouse'] = "/whitehouse\.gov/i";
 
 /// this is a pretty standard useragent for anyone using IE7 on windows vista. probably a pretty common scenario.
 /// also, we're not having much grawp trouble any more. 
@@ -101,70 +101,70 @@ $emailblacklist['whitehouse'] = "/whitehouse\.gov/i";
 
 //DNSBLS
 $dnsbls = array (
-	'IRCBL' => array (
-		'zone' => 'ircbl.ahbl.org',
-		'bunk' => false,
-		'url' => 'http://www.ahbl.org/tools/lookup.php?ip=%i',
-		'ret' => array (
-			3 => 'Open proxy',
-			14 => 'DDoS drone',
-			15 => 'Trojan',
-			16 => 'Virus',
-			17 => 'Malware',
-			18 => 'Ratware'
-		)
-	),
-	'SECTOOR' => array (
-		'zone' => 'tor.dnsbl.sectoor.de',
-		'bunk' => true,
-		'url' => 'http://www.sectoor.de/tor.php?ip=%i',
-		'ret' => array (
-			1 => 'Tor exit server'
-		)
-	),
-	'AHBL' => array (
-		'zone' => 'tor.ahbl.org',
-		'bunk' => true,
-		'url' => 'http://www.ahbl.org/tools/lookup.php?ip=%i',
-		'ret' => array (
-			2 => 'Tor exit server'
-		)
-	),
-	'NoMoreFunn' => array (
-		'zone' => 'no-more-funn.moensted.dk',
-		'bunk' => false,
-		'url' => 'http://moensted.dk/spam/no-more-funn?addr=%i',
-		'ret' => array (
-			10 => 'Open proxy'
-		)
-	),
-	'SORBS' => array (
-		'zone' => 'dnsbl.sorbs.net',
-		'bunk' => false,
-		'url' => 'http://dnsbl.sorbs.net/cgi-bin/db?IP=%i',
-		'ret' => array (
-			2 => 'Open HTTP Proxy',
-			3 => 'Open Socks Proxy',
-			4 => 'Other Open Proxy'
-		)
-	),
-	'DSBL' => array (
-		'zone' => 'list.dsbl.org',
-		'bunk' => false,
-		'url' => 'http://dsbl.org/listing?%i',
-		'ret' => array (
-			2 => 'Open proxy'
-		)
-	),
-	'XBL' => array (
-		'zone' => 'xbl.spamhaus.org',
-		'bunk' => false,
-		'url' => 'http://www.spamhaus.org/query/bl?ip=%i',
-		'ret' => array (
+//	'IRCBL' => array (
+//		'zone' => 'ircbl.ahbl.org',
+//		'bunk' => false,
+//		'url' => 'http://www.ahbl.org/tools/lookup.php?ip=%i',
+//		'ret' => array (
+//			3 => 'Open proxy',
+//			14 => 'DDoS drone',
+//			15 => 'Trojan',
+//			16 => 'Virus',
+//			17 => 'Malware',
+//			18 => 'Ratware'
+//		)
+//	),
+//	'SECTOOR' => array (
+//		'zone' => 'tor.dnsbl.sectoor.de',
+//		'bunk' => true,
+//		'url' => 'http://www.sectoor.de/tor.php?ip=%i',
+//		'ret' => array (
+//			1 => 'Tor exit server'
+//		)
+//	),
+//	'AHBL' => array (
+//		'zone' => 'tor.ahbl.org',
+//		'bunk' => true,
+//		'url' => 'http://www.ahbl.org/tools/lookup.php?ip=%i',
+//		'ret' => array (
+//			2 => 'Tor exit server'
+//		)
+//	),
+//	'NoMoreFunn' => array (
+//		'zone' => 'no-more-funn.moensted.dk',
+//		'bunk' => false,
+//		'url' => 'http://moensted.dk/spam/no-more-funn?addr=%i',
+//		'ret' => array (
+//			10 => 'Open proxy'
+//		)
+//	),
+//	'SORBS' => array (
+//		'zone' => 'dnsbl.sorbs.net',
+//		'bunk' => false,
+//		'url' => 'http://dnsbl.sorbs.net/cgi-bin/db?IP=%i',
+//		'ret' => array (
+//			2 => 'Open HTTP Proxy',
+//			3 => 'Open Socks Proxy',
+//			4 => 'Other Open Proxy'
+//		)
+//	),
+//	'DSBL' => array (
+//		'zone' => 'list.dsbl.org',
+//		'bunk' => false,
+//		'url' => 'http://dsbl.org/listing?%i',
+//		'ret' => array (
+//			2 => 'Open proxy'
+//		)
+//	),
+//	'XBL' => array (
+//		'zone' => 'xbl.spamhaus.org',
+//		'bunk' => false,
+//		'url' => 'http://www.spamhaus.org/query/bl?ip=%i',
+//		'ret' => array (
 /*			4 => 'CBL', */
-			6 => 'BOPM'
-		)
-	)
+//			6 => 'BOPM'
+//		)
+//	)
 );
 function checkdnsbls($addr) {
 	global $dnsbls;

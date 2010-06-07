@@ -70,7 +70,7 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	// Initialize the variables and escapes them for MySQL.
 	$user = $tsSQL->escape(trim($_POST['name']));
 	$email = $tsSQL->escape(trim($_POST['email']));
-	
+
 	// Delete the bans where the ban_duration is smaller than the current Unix timestamp.
 	$tsSQL->query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP() AND ban_duration != -1');
 
