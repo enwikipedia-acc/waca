@@ -286,6 +286,7 @@
 			// note: this is a bit of a test, and hopefully won't have too much of an impact on this function. I hope I've got this right. 
 			// old code is the 2 lines above (commented out). Regards, Stwalkerster.
 		}
+		$username = trim($username); //Strip any whitespace from the username.  
 
 		$isUser = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_user` WHERE `user_name` = \'' . sanitize( $username ) . '\'' ) )
 			or die( 'MySQL Error: ' . mysql_error() . "\n" );
@@ -397,6 +398,7 @@
 		if( !isset( $username ) or ( $username == '' ) ) {
 			$username = $parsed['nick'];
 		}
+		$username = trim($username); //Strip any whitespace from the username.
 
 		$isUser = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_user` WHERE `user_name` = \'' . sanitize( $username ) . '\'' ) )
 			or die( 'MySQL Error: ' . mysql_error() . "\n" );
