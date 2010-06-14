@@ -253,7 +253,7 @@ if (isset ($_GET['decline'])) {
 if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 	$siuser = sanitize($_SESSION['user']);
 	if (!isset($_POST['newname'])) {
-		$rid = sanitize($GET['rename']);
+		$rid = sanitize($_GET['rename']);
 		$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '{$rid}';");
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
