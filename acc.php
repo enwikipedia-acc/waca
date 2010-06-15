@@ -1226,6 +1226,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	
 	// sanitise this input ready for inclusion in queries
 	$gid = sanitize($_GET['id']);
+	$gem = sanitize($_GET['email']);
 	
 	// check the checksum is valid
 	if (csvalid($gid, $_GET['sum']) != 1) {
@@ -1233,7 +1234,6 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		$skin->displayIfooter();
 		die();
 	}
-	
 	
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
 	$result = mysql_query($query, $tsSQLlink);
@@ -1261,7 +1261,6 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		}
 	}
 	
-	$gem = sanitize($_GET['email']);
 	$sid = sanitize($_SESSION['user']);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
 	$result = mysql_query($query, $tsSQLlink);
@@ -1271,6 +1270,24 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$gus = sanitize($row2['pend_name']);
 	if ($row2['pend_status'] == "Closed") {
 		echo "<h2>ERROR</h2>Cannot close this request. Already closed.<br />\n";
+		$skin->displayIfooter();
+		die();
+	}
+	
+	// Checks whether the username is already in use on Wikipedia.
+	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . urlencode($gus) . "&format=php");
+	$ue = unserialize($userexist);
+	if (!isset ($ue['query']['users']['0']['missing'])) {
+		$exists = 1;
+	}
+	else {
+		$exists = 0;
+	}
+	
+	// check if a request being created does not already exist. 
+	if ($gem == 1 && $exists == 0 && !isset($_GET['createoverride'])) {
+		echo "<br />You have chosen to mark this request as \"created\", but the account does not exist on the English Wikipedia, proceed?  <br />\n";
+		echo "<a href=\"acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;createoverride=yes&amp;email=" . $_GET['email'] . "\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
 		$skin->displayIfooter();
 		die();
 	}
