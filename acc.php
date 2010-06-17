@@ -1736,9 +1736,9 @@ elseif ($action == "comment") {
 }
 
 elseif ($action == "comment-add") {
-    echo "<h2>Adding comment to request " . $_POST['id'] . "...</h2><br />";
+	$id = sanitise($_POST['id']); //TODO: We need to do better than just sanitise it, we also need to check that the request id is actually valid. 
+    echo "<h2>Adding comment to request " . $id . "...</h2><br />";
     if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visibility'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
-        $id = sanitise($_POST['id']);
         $user = sanitise($_SESSION['user']);
         $comment = sanitise($_POST['comment']);
         $visibility = sanitise($_POST['visibility']);
