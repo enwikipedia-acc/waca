@@ -1203,9 +1203,10 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     <input type="submit"/><input type="reset"/>
     </form>
     <a name="2"></a><h2>Change your password</h2>
-    <form action="acc.php?action=forgotpw" method="post">
-    Your username: <input type="text" name="username"/><br />
-    Your e-mail address: <input type="text" name="email"/><br />
+    <form action="acc.php?action=changepassword" method="post">
+    Your old password: <input type="password" name="oldpassword"/><br />
+    Your new password: <input type="password" name="newpassword"/><br />
+    Confirm new password: <input type="password" name="newpasswordconfirm"/<br />
     <input type="submit"/><input type="reset"/>
     </form><br />
 HTML;
@@ -1798,6 +1799,56 @@ elseif ($action == "comment-quick") {
         $skin->displayIfooter();
 		die();
     }
+}
+
+elseif ($action == "changepassword") {
+	$oldpassword = sanitize($_POST['oldpassword']); //Sanitize the values for SQL queries. 
+	$newpassword = sanitize($_POST['newpassword']);
+	$newpasswordconfirm = sanitize($_POST['newpasswordconfirm']);
+	$sessionuser = sanitize($_SESSION['user']);
+	
+	if ((!isset($oldpassword))) { //Throw an error if old password is not specified.
+		$skin->displayRequestMsg("You did not enter your old password.<br />\n");	
+		$skin->displayIfooter();
+		die();
+	}
+	if ((!isset($newpassword))) { //Throw an error if new password is not specified.
+		$skin->displayRequestMsg("You did not enter your new password.<br />\n");	
+		$skin->displayIfooter();
+		die();
+	}
+	if ($newpassword != $newpasswordconfirm) { //Throw an error if new password does not match what is in the confirmation box.
+		$skin->displayRequestMsg("The 2 new passwords you entered do not match.<br />\n");	
+		$skin->displayIfooter();
+		die();
+	}
+	
+	$query = "SELECT * FROM acc_user WHERE user_name = '$sessionuser';"; //Run a query to get information about the logged in user.
+	$result = mysql_query($query, $tsSQLlink);
+    if (!$result) {
+    	Die("Query failed: $query ERROR: " . mysql_error());
+    }
+    $row = mysql_fetch_assoc($result);
+    
+    $calcpass = md5($oldpassword); //Encrypt the old password so we can confirm its accuracy.
+    
+    if ($calcpass != $row['user_pass']) { //Throw an error if the old password field's value does not match the user's current password.
+    	$skin->displayRequestMsg("The old password you entered is not correct.<br />\n");	
+		$skin->displayIfooter();
+		die();
+    }
+    
+    $user_pass = md5($newpassword); //Encrypt the new password before entering it into the database.
+    
+    $query2 = "UPDATE acc_user SET user_pass = '$user_pass' WHERE user_name = '$sessionuser';"; //Update the password in the database.
+    $result2 = mysql_query($query2, $tsSQLlink);
+    if (!$result2) {
+    	Die("Query failed: $query2 ERROR: " . mysql_error());
+    }
+    
+    $skin->displayRequestMsg("Password successfully changed!<br />\n");	//Output a success message if we got this far.
+	$skin->displayIfooter();
+	die();
 }
 /*
  * Commented out by stw:
