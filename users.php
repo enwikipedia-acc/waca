@@ -115,6 +115,17 @@ if (isset ($_GET['demote'])) {
 		die();
 	} else {
 		$demotersn = sanitize($_POST['demotereason']);
+		$uid = $did;
+		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
+		$result2 = mysql_query($query2, $tsSQLlink);
+		if (!$result2)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row2 = mysql_fetch_assoc($result2);
+		if ($row2['user_level'] != "Admin") {
+			echo "Sorry, the user you are trying to demote is not an administrator.<br />\n";
+			$skin->displayIfooter();
+			die();
+		}		
 		$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$did';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
@@ -125,12 +136,6 @@ if (isset ($_GET['demote'])) {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		echo "Changed User #" . $_GET['demote'] . " access to 'User'<br />\n";
-		$uid = $did;
-		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-		$result2 = mysql_query($query2, $tsSQLlink);
-		if (!$result2)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$row2 = mysql_fetch_assoc($result2);
 		$accbotSend->send("User $did (" . $row2['user_name'] . ") demoted by $siuser because: \"" . $_POST['demotereason'] . "\"");
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row2['user_email'], "ACC Account Demoted", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been demoted by $siuser because ".$_POST['demotereason'].". To contest this demotion please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
@@ -156,6 +161,17 @@ if (isset ($_GET['suspend'])) {
 		die();
 	} else {
 		$suspendrsn = sanitize($_POST['suspendreason']);
+		$uid = $did;
+		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
+		$result2 = mysql_query($query2, $tsSQLlink);
+		if (!$result2)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row2 = mysql_fetch_assoc($result2);
+		if ($row2['user_level'] == "Suspended") {
+			echo "Sorry, the user you are trying to suspend is already suspended.<br />\n";
+			$skin->displayIfooter();
+			die();
+		}		
 		$query = "UPDATE acc_user SET user_level = 'Suspended' WHERE user_id = '$did';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
@@ -166,12 +182,6 @@ if (isset ($_GET['suspend'])) {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		echo "Changed User #" . $_GET['suspend'] . " access to 'Suspended'<br />\n";
-		$uid = $did;
-		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-		$result2 = mysql_query($query2, $tsSQLlink);
-		if (!$result2)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$row2 = mysql_fetch_assoc($result2);
 		$accbotSend->send("User $did (" . $row2['user_name'] . ") had tool access suspended by $siuser because: \"" . $_POST['suspendreason'] . "\"");
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row2['user_email'], "ACC Account Suspended", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been suspended by $siuser because ".$_POST['suspendreason'].". To contest this suspension please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
@@ -183,6 +193,17 @@ if (isset ($_GET['suspend'])) {
 if (isset ($_GET['promote'])) {
 	$aid = sanitize($_GET['promote']);
 	$siuser = sanitize($_SESSION['user']);
+	$uid = $aid;
+	$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
+	$result2 = mysql_query($query2, $tsSQLlink);
+	if (!$result2)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$row2 = mysql_fetch_assoc($result2);
+	if ($row2['user_level'] == "Admin") {
+		echo "Sorry, the user you are trying to promote has Administrator access.<br />\n";
+		$skin->displayIfooter();
+		die();
+	}		
 	$query = "UPDATE acc_user SET user_level = 'Admin' WHERE user_id = '$aid';";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
@@ -193,12 +214,6 @@ if (isset ($_GET['promote'])) {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "Changed User #" . $aid . " access to 'Admin'<br />\n";
-	$uid = $aid;
-	$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-	$result2 = mysql_query($query2, $tsSQLlink);
-	if (!$result2)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$row2 = mysql_fetch_assoc($result2);
 	$accbotSend->send("User $aid (" . $row2['user_name'] . ") promoted to admin by $siuser");
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	mail($row2['user_email'], "ACC Account Promoted", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been promted to admin status by $siuser.\n- The English Wikipedia Account Creation Team", $headers);
