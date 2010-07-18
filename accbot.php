@@ -78,7 +78,7 @@
 		'*!*@2002:1828:88fb:0:aede:48ff:febe:ef03'	=> 'developer', //Cobi.
 		'*!*@wikipedia/SQL'				=> 'developer',
 		'*!*@mediawiki/OverlordQ'	  		=> 'developer',
-		'*!*@wikipedia/Stwalkerster'			=> 'developer',
+		'*!*@pdpc/supporter/student/stwalkerster'			=> 'developer',
 		'*!*@*Alexfusco5'			   	=> 'developer',
 		'*!*@wikipedia/Soxred93'			=> 'developer',
 		'*!*@yourwiki/staff/charlie'			=> 'developer',

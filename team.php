@@ -105,7 +105,7 @@ $developer = array(
 				"Name" => "Simon Walker",
 				"Role" => "Developer",
 				"Access" => "Git, SVN, SF.net shell, SF.net admin, Database, Live shell, SF.net access",
-				"Cloak" => "*!*@wikipedia/Stwalkerster",
+				"Cloak" => "*!*@pdpc/supporter/student/stwalkerster",
 				"Other" => NULL,
 			),
 		"Soxred93" =>
@@ -163,7 +163,7 @@ $developer = array(
 		"FunPika" =>
 			array(
 				"IRC" => "FunPika",
-				"EMail" => "funpika4@gmail.com",
+				"EMail" => "funpikawiki@gmail.com",
 				"ToolID" => "38",
 				"wiki" => "FunPika",
 				"WWW" => "http://en.wikipedia.org/wiki/User:FunPika",
