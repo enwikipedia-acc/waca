@@ -696,7 +696,7 @@ class accRequest {
 	 */
 	public function finalChecks($user,$email) {
 		// Get objects from the index file.
-		global $messages, $tsSQL, $skin, $asSQL, $dontUseWikiDb;
+		global $messages, $tsSQL, $skin, $caSQL, $dontUseWikiDb;
 		
 		// Used to check if a request complies to the automated tests.
 		// The value is reseted, as the user has another chance to complete the form.
@@ -714,10 +714,9 @@ class accRequest {
 		// Checks whether the username is already part of a SUL account.
 		// Will normally query centralauth_p to determine this, but will
 		// instead use an API query if $dontusewikidb is set. 
-		if(!$dontUseWikiDb) {
-			// Formulates and executes the SQL query to check if the IP is blocked on the Eng Wiki. 
-			$query = 'SELECT * FROM centralauth_p.globaluser WHERE gu_name = \''.$asSQL->escape($_POST['name']).'\';';
-			$result = $asSQL->query($query);
+		if(!$dontUseWikiDb) { 
+			$query = 'SELECT * FROM globaluser WHERE gu_name = \''.$caSQL->escape($_POST['name']).'\';';
+			$result = $caSQL->query($query);
 			
 			// Get number of rows in the result.
 			$rows = mysql_num_rows($result);

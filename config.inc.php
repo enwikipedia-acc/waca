@@ -64,6 +64,9 @@ $antispoof_host = "sql-s1";
 $antispoof_db = "enwiki_p";
 $antispoof_table = "spoofuser";
 
+//Database for centralauth. 
+$centralauth_db = "centralauth_p";
+
 // Double reserving configuration.
 //    ignore: Ignores the fact that some users have reserved two requests.
 //    inform: Reserves the second request, but alerts the user.
