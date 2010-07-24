@@ -702,6 +702,8 @@ class accRequest {
 		// The value is reseted, as the user has another chance to complete the form.
 		$fail = 0;
 		
+		echo "Submitted name:" . $_POST['name'];
+		
 		// Checks whether the username is already in use on Wikipedia.
 		$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . urlencode($_POST['name']) . "&format=php");
 		$ue = unserialize($userexist);
@@ -716,10 +718,12 @@ class accRequest {
 		// instead use an API query if $dontusewikidb is set. 
 		if(!$dontUseWikiDb) { 
 			$query = 'SELECT * FROM globaluser WHERE gu_name = \''.$caSQL->escape($_POST['name']).'\';';
+			echo "SQL query:" . $query;
 			$result = $caSQL->query($query);
 			
 			// Get number of rows in the result.
 			$rows = mysql_num_rows($result);
+			echo "Number of Rows:" . $rows;
 			
 			if($rows > 0) {
 				$message = $messages->getMessage(28);
