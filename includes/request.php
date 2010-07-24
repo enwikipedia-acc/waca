@@ -715,12 +715,11 @@ class accRequest {
 		// Will normally query centralauth_p to determine this, but will
 		// instead use an API query if $dontusewikidb is set. 
 		if(!$dontUseWikiDb) {
-			//Escape username to prevent SQL injection.
-			$name = $asSQL->escape($_POST['name']);
-			
-			$query = "SELECT * FROM centralauth_p.globaluser WHERE gu_name = '$name';";
+			// Formulates and executes the SQL query to check if the IP is blocked on the Eng Wiki. 
+			$query = 'SELECT * FROM centralauth_p.globaluser WHERE gu_name = \''.$asSQL->escape($_POST['name']).'\';';
 			$result = $asSQL->query($query);
 			
+			// Get number of rows in the result.
 			$rows = mysql_num_rows($result);
 			
 			if($rows > 0) {
