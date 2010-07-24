@@ -718,7 +718,7 @@ class accRequest {
 			//Escape username to prevent SQL injection.
 			$name = $asSQL->escape($_POST['name']);
 			
-			$query = "SELECT * FROM centralauth_p.globaluser WHERE gu_name = '$name'";
+			$query = "SELECT * FROM centralauth_p.globaluser WHERE gu_name = '$name';";
 			$result = $asSQL->query($query);
 			
 			$rows = mysql_num_rows($result);
