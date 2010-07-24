@@ -65,6 +65,7 @@ $antispoof_db = "enwiki_p";
 $antispoof_table = "spoofuser";
 
 //Database for centralauth. 
+$centralauth_host = "centralauth-p.db.toolserver.org";
 $centralauth_db = "centralauth_p";
 
 // Double reserving configuration.
