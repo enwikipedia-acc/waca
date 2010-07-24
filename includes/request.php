@@ -717,13 +717,15 @@ class accRequest {
 		// Will normally query centralauth_p to determine this, but will
 		// instead use an API query if $dontusewikidb is set. 
 		if(!$dontUseWikiDb) { 
-			$query = 'SELECT * FROM globaluser WHERE gu_name = \''.$caSQL->escape($_POST['name']).'\';';
-			echo "SQL query:" . $query;
+			$reqname = str_replace("_", " ", $_POST['name']);
+			echo "<br/>Reqname variable:" . $reqname;
+			$query = 'SELECT * FROM globaluser WHERE gu_name = \''.$caSQL->escape($reqname).'\';';
+			echo "<br/>SQL query:" . $query;
 			$result = $caSQL->query($query);
 			
 			// Get number of rows in the result.
 			$rows = mysql_num_rows($result);
-			echo "Number of Rows:" . $rows;
+			echo "<br/>Number of Rows:" . $rows;
 			
 			if($rows > 0) {
 				$message = $messages->getMessage(28);
