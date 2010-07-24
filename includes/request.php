@@ -696,7 +696,7 @@ class accRequest {
 	 */
 	public function finalChecks($user,$email) {
 		// Get objects from the index file.
-		global $messages, $tsSQL, $skin;
+		global $messages, $tsSQL, $skin, $asSQL, $dontUseWikiDb;
 		
 		// Used to check if a request complies to the automated tests.
 		// The value is reseted, as the user has another chance to complete the form.
@@ -711,13 +711,32 @@ class accRequest {
 			$fail = 1;
 		}
 		
-		// Checks whether the username is already part of a SUL account. 
+		// Checks whether the username is already part of a SUL account.
+		// Will normally query centralauth_p to determine this, but will
+		// instead use an API query if $dontusewikidb is set. 
+		if(!$dontUseWikiDb) {
+			//Escape username to prevent SQL injection.
+			$name = $asSQL->escape($_POST['name']);
+			
+			$query = "SELECT * FROM centralauth_p.globaluser WHERE gu_name = '$name'";
+			$result = $asSQL->query($query);
+			
+			$rows = mysql_num_rows($result);
+			
+			if($rows > 0) {
+				$message = $messages->getMessage(28);
+				$skin->displayRequestMsg("$message<br />\n");
+				$fail = 1;
+			}
+		}
+		else {
 		$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&meta=globaluserinfo&guiuser=" . urlencode($_POST['name']) . "&format=php");
 		$ue = unserialize($userexist);
 		if (isset ($ue['query']['globaluserinfo']['id'])) {
 			$message = $messages->getMessage(28);
 			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
+		}
 		}
 		
 		// Checks whether the username consists entirely of numbers.
