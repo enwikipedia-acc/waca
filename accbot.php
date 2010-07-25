@@ -82,7 +82,7 @@
 		'*!*@*Alexfusco5'			   	=> 'developer',
 		'*!*@wikipedia/Soxred93'			=> 'developer',
 		'*!*@yourwiki/staff/charlie'			=> 'developer',
-		'*!*@wikipedia/FastLizard4'			=> 'developer',
+		'*!*@wikipedia/pdpc.active.FastLizard4'			=> 'developer',
 		'*!*@wikipedia/Prodego'				=> 'developer',
 		'*!*@wikipedia/FunPika'				=> 'developer',
 		'*!*@wikimedia/Promethean'			=> 'developer',
