@@ -702,8 +702,6 @@ class accRequest {
 		// The value is reseted, as the user has another chance to complete the form.
 		$fail = 0;
 		
-		echo "Submitted name:" . $_POST['name'];
-		
 		// Checks whether the username is already in use on Wikipedia.
 		$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . urlencode($_POST['name']) . "&format=php");
 		$ue = unserialize($userexist);
@@ -715,17 +713,14 @@ class accRequest {
 		
 		// Checks whether the username is already part of a SUL account.
 		// Will normally query centralauth_p to determine this, but will
-		// instead use an API query if $dontusewikidb is set. 
-		if(!$dontUseWikiDb) { 
-			$reqname = str_replace("_", " ", $_POST['name']);
-			echo "<br/>Reqname variable:" . $reqname;
+		// instead use an API query if $dontUseGlobalDb is set. 
+		$reqname = str_replace("_", " ", $_POST['name']);
+		if(!$dontUseGlobalDb) { 
 			$query = 'SELECT * FROM globaluser WHERE gu_name = \''.$caSQL->escape($reqname).'\';';
-			echo "<br/>SQL query:" . $query;
 			$result = $caSQL->query($query);
 			
 			// Get number of rows in the result.
 			$rows = mysql_num_rows($result);
-			echo "<br/>Number of Rows:" . $rows;
 			
 			if($rows > 0) {
 				$message = $messages->getMessage(28);
@@ -734,7 +729,7 @@ class accRequest {
 			}
 		}
 		else {
-		$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&meta=globaluserinfo&guiuser=" . urlencode($_POST['name']) . "&format=php");
+		$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&meta=globaluserinfo&guiuser=" . urlencode($reqname) . "&format=php");
 		$ue = unserialize($userexist);
 		if (isset ($ue['query']['globaluserinfo']['id'])) {
 			$message = $messages->getMessage(28);
