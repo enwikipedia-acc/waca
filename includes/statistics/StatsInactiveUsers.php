@@ -58,14 +58,18 @@ class StatsInactiveUsers extends StatisticsPage
 			$allowSuspend = false;
 			
 			if(!(
+					/*Checkusers*/
 					$r['user_checkuser'] == 1 || // checkusers
 					
+					/*Tool Roots*/
 					$r['tooluserid'] == 1     || // SQL
 					$r['tooluserid'] == 7     || // Stwalkerster
 					$r['tooluserid'] == 36    || // OverlordQ
 					$r['tooluserid'] == 64    || // Cobi
 					
-					$r['tooluserid'] == 6		 // John Reaves
+					/*Mailing List Admins*/
+					$r['tooluserid'] == 6	  || // John Reaves
+					$r['tooluserid'] == 14       // Prodego
 				) )
 			{
 				
