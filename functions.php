@@ -256,7 +256,7 @@ function listrequests($type, $hideip, $correcthash) {
 	while ( $row = mysql_fetch_assoc( $result ) ) {
 		$currentreq += 1;
 		$uname = urlencode($row['pend_name']);
-		#$uname = str_replace("+", "_", $row[pend_name]);
+		$uname = str_replace("&amp;", "%26", $uname);
 		$rid = $row['pend_id'];
 		if ($row['pend_cmt'] != "") {
 			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&amp;id=$rid\">Zoom (CMT)</a> ";
@@ -777,7 +777,6 @@ function zoomPage($id,$urlhash)
 		die();
 	}
 	$out .= "<h2>Details for Request #" . $id . ":</h2>";
-	$uname = urlencode($row['pend_name']);
 	$thisip = $row['pend_ip'];
 	$thisid = $row['pend_id'];
 	$thisemail = $row['pend_email'];
