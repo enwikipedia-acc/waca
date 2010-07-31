@@ -30,7 +30,6 @@ $offlineMessage->check();
 // Initialize the database classes.
 $tsSQL = new database("toolserver");
 $asSQL = new database("antispoof");
-$caSQL = new database("centralauth");
 
 // Initialize the class objects.
 $request  = new accRequest();

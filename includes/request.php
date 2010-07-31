@@ -712,30 +712,14 @@ class accRequest {
 		}
 		
 		// Checks whether the username is already part of a SUL account.
-		// Will normally query centralauth_p to determine this, but will
-		// instead use an API query if $dontUseGlobalDb is set. 
+
 		$reqname = str_replace("_", " ", $_POST['name']);
-		if(!$dontUseGlobalDb) { 
-			$query = 'SELECT * FROM globaluser WHERE gu_name = \''.$caSQL->escape($reqname).'\';';
-			$result = $caSQL->query($query);
-			
-			// Get number of rows in the result.
-			$rows = mysql_num_rows($result);
-			
-			if($rows > 0) {
-				$message = $messages->getMessage(28);
-				$skin->displayRequestMsg("$message<br />\n");
-				$fail = 1;
-			}
-		}
-		else {
 		$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&meta=globaluserinfo&guiuser=" . urlencode($reqname) . "&format=php");
 		$ue = unserialize($userexist);
 		if (isset ($ue['query']['globaluserinfo']['id'])) {
 			$message = $messages->getMessage(28);
 			$skin->displayRequestMsg("$message<br />\n");
 			$fail = 1;
-		}
 		}
 		
 		// Checks whether the username consists entirely of numbers.
