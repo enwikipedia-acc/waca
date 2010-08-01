@@ -104,13 +104,9 @@ function getSpoofs( $username ) {
 			sqlerror(mysql_error(),"Error selecting database.");
 		}
 		$return = AntiSpoof::checkUnicodeString( $username );
-		echo "\n<!-- UserName: $username -->\n";
-		echo "\n<!-- Return: $return[0] - $return[1] -->\n";
 		if($return[0] == 'OK' ) {
 			$sanitized = sanitize($return[1]);
-			echo "\n<!-- Sanitized: $sanitized -->\n";
 			$query = "SELECT su_name FROM ".$antispoof_table." WHERE su_normalized = '$sanitized';";
-			echo "\n<!-- Query: $query -->\n";
 			$result = mysql_query($query, $spooflink);
 			if(!$result) sqlerror("ERROR: No result returned. - ".mysql_error(),"Database error.");
 			$numSpoof = 0;
