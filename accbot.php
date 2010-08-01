@@ -534,6 +534,7 @@
 	sleep( 5 );
 	irc( 'JOIN ' . $chan );
 
+	myq('SELECT 1');
 	if( ( $udpReader = pcntl_fork() ) == 0 ) {
 		$lastToolMsg = time();
 		$lastToolMsgAlert = time();
