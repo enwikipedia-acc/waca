@@ -55,7 +55,6 @@ $showGraphs = 1; 			// Show graphs on statistics pages.
 
 $dontUseDb = 0; 			// Disable the tool completely.
 $dontUseWikiDb = 0; 		// Disable access to the Wiki database.
-$dontUseGlobalDb = 0; 		// Disable access to the CentralAuth database.
 $dontUseDbReason = ""; 		// Reason for disabeling the tool.
 $dontUseDbCulprit = ""; 	// Your name, or the person who broke the tool.
 	
