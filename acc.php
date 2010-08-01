@@ -1073,14 +1073,14 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
-		$query2 = "SELECT log_time FROM acc_log WHERE log_pend = '$gid' ORDER BY log_time DESC LIMIT 1;";
+		$query2 = "SELECT log_time FROM acc_log WHERE log_pend = '$gid' AND log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 1;";
 		$result2 = mysql_query($query2, $tsSQLlink);
 		if (!$result2)
 			Die("Query failed: $query2 ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		$date->modify("-7 days");
 		$oneweek = $date->format("Y-m-d H:i:s");
-		if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && !$session->hasright($_SESSION['user'], "Admin")) {
+		if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && ! ($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))) {
 			$skin->displayRequestMsg("Only administrators can reopen a request that has been closed for over a week.");	
 			$skin->displayIfooter();
 			die();
