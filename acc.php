@@ -1556,7 +1556,7 @@ elseif ($action == "reserve") {
 		$row2 = mysql_fetch_assoc($result2);
 		$date->modify("-7 days");
 		$oneweek = $date->format("Y-m-d H:i:s");
-		if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && !$session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user'])) {
+		if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && !($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))) {
 			$skin->displayRequestMsg("Only administrators and checkusers can reserve a request that has been closed for over a week.");	
 			$skin->displayIfooter();
 			die();
