@@ -1809,6 +1809,18 @@ elseif ($action == "changepassword") {
 	$newpasswordconfirm = sanitize($_POST['newpasswordconfirm']);
 	$sessionuser = sanitize($_SESSION['user']);
 	
+	if ((!isset($_POST['oldpassword'])) || $_POST['oldpassword'] == "" ) { //Throw an error if old password is not specified.
+		$skin->displayRequestMsg("You did not enter your old password.<br />\n");	
+		$skin->displayIfooter();
+		die();
+	}
+	
+	if ((!isset($_POST['newpassword'])) || $_POST['newpassword'] == "" ) { //Throw an error if new password is not specified.
+		$skin->displayRequestMsg("You did not enter your new password.<br />\n");	
+		$skin->displayIfooter();
+		die();
+	}
+	
 	if ($newpassword != $newpasswordconfirm) { //Throw an error if new password does not match what is in the confirmation box.
 		$skin->displayRequestMsg("The 2 new passwords you entered do not match.<br />\n");	
 		$skin->displayIfooter();
