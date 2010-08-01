@@ -54,19 +54,6 @@ class database {
 				$this->query("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");
 			}
 		}
-		elseif($name==='centralauth') {
-			// Checks whether the WikiDB may be used.
-			global $dontUseWikiDb;					
-			if($dontUseWikiDb == 0) {
-				global $centralauth_host, $centralauth_db, $toolserver_username, $toolserver_password;
-				$this->connect($centralauth_host, $toolserver_username, $toolserver_password, $centralauth_db);
-			
-				// Assigns the specific databases's name to be used later.
-				$this->db = $name;
-				
-				$this->query("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");
-			}
-		}
 	}
 	
 	/**

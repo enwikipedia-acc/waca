@@ -1243,6 +1243,13 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
+	$rows = mysql_num_rows($result);
+	
+	if ($rows < 1) {
+		$skin->displayRequestMsg("Invalid Request ID.");
+		$skin->displayIfooter();
+		die();
+	}
 	
 	// check if an email has already been sent
 	if ($row['pend_emailsent'] == "1" && !isset($_GET['override'])) {
