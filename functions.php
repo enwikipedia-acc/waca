@@ -397,12 +397,13 @@ function listrequests($type, $hideip, $correcthash) {
 			}
 		}
 
-		$out .= ')</small></td><td><small> |</small></td><td><small> ';
+		$out .= ')</small></td><td>';
 		
 		if ($type == 'Admin' || $type == 'Open' || $type == 'Checkuser') {
 			
 		}
 		else {
+			$out .='<small> |</small></td><td><small> ';
 		if(! isProtected($row['pend_id']))
 		{
 			// Done
