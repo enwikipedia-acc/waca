@@ -481,7 +481,12 @@ function listrequests($type, $hideip, $correcthash) {
 		}
 		else
 		{
-			$out .= 'This request is reserved';
+			if(isProtected($row['pend_id'])) {
+				$out .= 'This request is reserved';
+			}
+			else {
+				$out .= 'This request is not reserved';
+			}
 		}
 		}
 
