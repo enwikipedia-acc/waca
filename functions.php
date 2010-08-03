@@ -398,7 +398,11 @@ function listrequests($type, $hideip, $correcthash) {
 		}
 
 		$out .= ')</small></td><td><small> |</small></td><td><small> ';
-
+		
+		if ($type == 'Admin' || $type == 'Open' || $type == 'Checkuser') {
+			
+		}
+		else {
 		if(! isProtected($row['pend_id']))
 		{
 			// Done
@@ -477,6 +481,7 @@ function listrequests($type, $hideip, $correcthash) {
 		else
 		{
 			$out .= 'This request is reserved';
+		}
 		}
 
 		if($session->hasright($_SESSION['user'], "Admin")) {
