@@ -322,44 +322,6 @@ function listrequests($type, $hideip, $correcthash) {
 			} else {
 				$out .= '(</span><b><span class="request-mult">' . $otheripreqs['count'] . '</span></b><span class="request-src">)';
 			}
-
-			// IP contribs
-			$out .= '</span></small></td><td><small><a class="request-src" href="'.$wikipediaurl.'wiki/Special:Contributions/';
-			$out .= $row['pend_ip'] . '" target="_blank">c</a> ';
-
-			// IP global contribs
-			if ($dontUseWikiDb == 0) {
-				$out .= '<a class="request-src" href="http://toolserver.org/~luxo/contributions/contributions.php?lang=en&amp;blocks=true&amp;user=' . $row['pend_ip'] . '" target="_blank">gc</a> ';
-			}
-			elseif ($dontUseWikiDb == 1) {
-				$out .= '';
-			}
-			// IP blocks
-			$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
-			$out .= $row['pend_ip'] . '" target="_blank">b</a> ';
-
-			// rangeblocks
-			$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3ABlockList&amp;ip=';
-			$out .= $row['pend_ip'] . '" target="_blank">r</a> ';
-
-			// Global blocks
-			$out .= '<a class="request-src" href="'.$metaurl.'w/index.php?title=Special:Log&amp;type=gblblock&amp;page=User:';
-			$out .= $row['pend_ip'] . '" target="_blank">gb</a> ';
-
-			// Global range blocks/Locally disabled Global Blocks
-			$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3AGlobalBlockList&amp;ip=';
-			$out .= $row['pend_ip'] . '" target="_blank">gr</a> ';
-
-			// IP whois
-			if ($dontUseWikiDb == 0) {
-				$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">w</a> ';
-			}
-			elseif ($dontUseWikiDb == 1) {
-				$out .= '';
-			}
-			// Abuse Filter
-			$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $row['pend_ip'] . '" target="_blank">af</a> ';
-
 		}
 		// Username U:
 		$duname = _utf8_decode($row['pend_name']);
@@ -768,7 +730,7 @@ function isOnWhitelist($user)
 
 function zoomPage($id,$urlhash)
 {
-	global $tsSQLlink, $session, $skin, $enableReserving;
+	global $tsSQLlink, $session, $skin, $enableReserving, $dontUseWikiDb;
 
 	$out = "";
 	$gid = sanitize($id);
@@ -851,6 +813,67 @@ function zoomPage($id,$urlhash)
 		if ($reservingUser == $_SESSION['userID'] && $row['pend_status'] != "Closed") {
 			$out .= '<p><b>URL to allow other users to see IP/Email:</b> <a href="acc.php?action=zoom&amp;id=' . $thisid . '&amp;hash=' . $hash . '">' . $tsurl . '/acc.php?action=zoom&id=' . $thisid . '&hash=' . $hash . '</a></p>';
 		}
+	}
+	//Show the links for things like IP contributions/blocks. 
+	$sid = sanitize($_SESSION['user']);
+	$query3 = "SELECT * FROM acc_user WHERE user_name = '$sid';";
+	$result3 = mysql_query($query3, $tsSQLlink);
+	if (!$result3)
+		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+	$row3 = mysql_fetch_assoc($result3);
+	if ( $row3['user_secure'] > 0 ) {
+			$wikipediaurl = "https://secure.wikimedia.org/wikipedia/en/";
+			$metaurl = "https://secure.wikimedia.org/wikipedia/meta/";
+	} else {
+			$wikipediaurl = "http://en.wikipedia.org/";
+			$metaurl = "http://meta.wikimedia.org/";
+	}
+	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
+		    $out .= '<p><b>IP Address links:</b> ';		
+			// IP contribs
+			$out .= '</span></small></td><td><small><a href="'.$wikipediaurl.'wiki/Special:Contributions/';
+			$out .= $row['pend_ip'] . '" target="_blank">Local Contributions</a> ';
+
+			// IP global contribs
+			if ($dontUseWikiDb == 0) {
+				$out .= '| ';
+				$out .= '<a href="http://toolserver.org/~luxo/contributions/contributions.php?lang=en&amp;blocks=true&amp;user=' . $row['pend_ip'] . '" target="_blank">Global Contributions</a> ';
+			}
+			elseif ($dontUseWikiDb == 1) {
+				$out .= '';
+			}
+			// IP blocks
+			$out .= '| ';
+			$out .= '<a href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
+			$out .= $row['pend_ip'] . '" target="_blank">Local Blocks</a> ';
+
+			// rangeblocks
+			$out .= '| ';
+			$out .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3ABlockList&amp;ip=';
+			$out .= $row['pend_ip'] . '" target="_blank">Local Range Blocks</a> ';
+
+			// Global blocks
+			$out .= '| ';
+			$out .= '<a href="'.$metaurl.'w/index.php?title=Special:Log&amp;type=gblblock&amp;page=User:';
+			$out .= $row['pend_ip'] . '" target="_blank">Global Blocks</a> ';
+
+			// Global range blocks/Locally disabled Global Blocks
+			$out .= '| ';
+			$out .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3AGlobalBlockList&amp;ip=';
+			$out .= $row['pend_ip'] . '" target="_blank">Global Range Blocks</a> ';
+
+			// IP whois
+			if ($dontUseWikiDb == 0) {
+				$out .= '| ';
+				$out .= '<a href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">Whois</a> ';
+			}
+			elseif ($dontUseWikiDb == 1) {
+				$out .= '';
+			}
+			// Abuse Filter
+			$out .= '| ';
+			$out .= '<a href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $row['pend_ip'] . '" target="_blank">Abuse Filter Log</a> ';
+			$out .= '</p>';
 	}
 
 	global $allowViewingOfUseragent;
