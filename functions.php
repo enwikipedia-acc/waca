@@ -404,7 +404,7 @@ function listrequests($type, $hideip, $correcthash) {
 		}
 		else {
 			$out .='<small> |</small></td><td><small> ';
-		if(! isProtected($row['pend_id']))
+		if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
 		{
 			// Done
 			$out .= '<a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '"><strong>Created!</strong></a>';
