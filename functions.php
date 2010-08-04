@@ -343,8 +343,11 @@ function listrequests($type, $hideip, $correcthash) {
 		$out .= preg_replace("/_/","+",$uname) . '" target="_blank">Google</a> ';
 
 		global $protectReservedRequests;
-
-		if(! isProtected($row['pend_id']))
+		if ($type == 'Admin' || $type == 'Open' || $type == 'Checkuser') {
+			
+		}
+		else {
+		if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
 		{
 			if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address. 
 				// Create user link
@@ -352,7 +355,8 @@ function listrequests($type, $hideip, $correcthash) {
 				$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b>';
 			}
 		}
-
+		}
+		
 		$out .= ')</small></td><td>';
 		
 		if ($type == 'Admin' || $type == 'Open' || $type == 'Checkuser') {
