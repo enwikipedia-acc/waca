@@ -324,7 +324,7 @@ function listrequests($type, $hideip, $correcthash) {
 		}
 		// Username U:
 		$duname = _utf8_decode($row['pend_name']);
-		$out .= '</small></td><td><small><a class="request-req" href="'.$wikipediaurl.'wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
+		$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-req" href="'.$wikipediaurl.'wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
 
 		// 	Creation log
 		$out .= '</small></td><td><small>(<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
@@ -820,7 +820,7 @@ function zoomPage($id,$urlhash)
 	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 		    $out .= '<p><b>IP Address links:</b> ';		
 			// IP contribs
-			$out .= '</span></small></td><td><small><a href="'.$wikipediaurl.'wiki/Special:Contributions/';
+			$out .= '<td><small><a href="'.$wikipediaurl.'wiki/Special:Contributions/';
 			$out .= $row['pend_ip'] . '" target="_blank">Local Contributions</a> ';
 
 			// IP global contribs
@@ -852,7 +852,7 @@ function zoomPage($id,$urlhash)
 			// Abuse Filter
 			$out .= '| ';
 			$out .= '<a href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $row['pend_ip'] . '" target="_blank">Abuse Filter Log</a> ';
-			$out .= '</p>';
+			$out .= '</small></td></p>';
 	}
 
 	global $allowViewingOfUseragent;
