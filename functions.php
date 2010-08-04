@@ -849,6 +849,11 @@ function zoomPage($id,$urlhash)
 			// IP whois
 			$out .= '| ';
 			$out .= '<a href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">Whois</a> ';
+			
+			// IP geolocate
+			$out .= '| ';
+			$out .= '<a href="http://ipinfodb.com/ip_locator.php?ip=' . $row['pend_ip'] . '" target="_blank">Geolocate</a> ';
+			
 			// Abuse Filter
 			$out .= '| ';
 			$out .= '<a href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $row['pend_ip'] . '" target="_blank">Abuse Filter Log</a> ';
