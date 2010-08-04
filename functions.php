@@ -342,7 +342,7 @@ function listrequests($type, $hideip, $correcthash) {
 		$out .= '<a class="request-req" href="http://www.google.com/search?q=';
 		$out .= preg_replace("/_/","+",$uname) . '" target="_blank">Google</a> ';
 
-		global $protectReservedRequests, $enableReserving;
+		global $protectReservedRequests;
 
 		if(! isProtected($row['pend_id']))
 		{
@@ -451,33 +451,30 @@ function listrequests($type, $hideip, $correcthash) {
 			//Ban name
 			$out .= ' - <a class="request-ban" href="acc.php?action=ban&amp;name=' . $row['pend_id'] . '">Name</a>';
 		}
-
-		// Check to see if we want to have all the reserving stuff on
-		if( $enableReserving )
+	
+		$reserveByUser = isReserved($row['pend_id']);
+		// if request is reserved, show reserved message
+		if( $reserveByUser != 0 )
 		{
-			$reserveByUser = isReserved($row['pend_id']);
-			// if request is reserved, show reserved message
-			if( $reserveByUser != 0 )
+			if( $reserveByUser == $_SESSION['userID'])
 			{
-				if( $reserveByUser == $_SESSION['userID'])
-				{
-					$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Break reservation</a>";
-				} else {
-					$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"statistics.php?page=Users&user=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
+				$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Break reservation</a>";
+			} else {
+				$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"statistics.php?page=Users&user=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
 
-					// force break?
-					global $enableAdminBreakReserve;
-					if( $enableAdminBreakReserve && $session->hasright($_SESSION['user'], "Admin"))
-					{
-						$out .= " - <a href=\"acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Force break</a>";
-					}
+				// force break?
+				global $enableAdminBreakReserve;
+				if( $enableAdminBreakReserve && $session->hasright($_SESSION['user'], "Admin"))
+				{
+					$out .= " - <a href=\"acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Force break</a>";
 				}
 			}
-			else // not being handled, do you want to handle this request?
-			{
-				$out .= "</small></td><td><small> | </small></td><td><small><a href=\"acc.php?action=reserve&amp;resid=" . $row['pend_id']. "\">Mark as being handled</a>";
-			}
 		}
+		else // not being handled, do you want to handle this request?
+		{
+			$out .= "</small></td><td><small> | </small></td><td><small><a href=\"acc.php?action=reserve&amp;resid=" . $row['pend_id']. "\">Mark as being handled</a>";
+		}
+		
 
 		$out .= '</small></td></tr>';
 		$reqlist .= $out;
@@ -492,10 +489,7 @@ function listrequests($type, $hideip, $correcthash) {
 
 function isProtected($requestid)
 {
-	global $enableReserving, $protectReservedRequests;
-
-	if(! $enableReserving)
-	return false;
+	global $protectReservedRequests;
 
 	if(! $protectReservedRequests)
 	return false;
@@ -719,7 +713,7 @@ function isOnWhitelist($user)
 
 function zoomPage($id,$urlhash)
 {
-	global $tsSQLlink, $session, $skin, $enableReserving;
+	global $tsSQLlink, $session, $skin;
 
 	$out = "";
 	$gid = sanitize($id);
@@ -742,13 +736,10 @@ function zoomPage($id,$urlhash)
 		$row['pend_date'] = "Date Unknown";
 	}
 	$sUser = $row['pend_name'];
-	if ($enableReserving == false) {
-	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
-	}
-	else {
+
 	$sessionuser = $_SESSION['userID'];
 	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_reserved = '$sessionuser' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
-	}
+
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 	Die("Query failed: $query ERROR: " . mysql_error());
@@ -756,13 +747,10 @@ function zoomPage($id,$urlhash)
 	if (mysql_num_rows($result) > 0) {
 	$hideemail = FALSE;
 	}
-	if ($enableReserving == false) {
-	$query2 = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
-	}
-	else {
+
 	$sessionuser = $_SESSION['userID'];
 	$query2 = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_reserved = '$sessionuser' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
-	}
+
 	$result2 = mysql_query($query2, $tsSQLlink);
 	if (!$result2)
 	Die("Query failed: $query2 ERROR: " . mysql_error());
@@ -791,18 +779,17 @@ function zoomPage($id,$urlhash)
 	//Escape injections.
 	$out .= "<br /><strong>Requester Comment</strong>: " . $row['pend_cmt'] . "<br />\n";
 
-	global $enableReserving, $tsurl;
-	if( $enableReserving )
+	global $tsurl;
+
+	$reservingUser = isReserved($thisid);
+	if( $reservingUser != 0 )
 	{
-		$reservingUser = isReserved($thisid);
-		if( $reservingUser != 0 )
-		{
-			$out .= "<h3>This request is currently being handled by " . $session->getUsernameFromUid($reservingUser) ."</h3>";
-		}
-		if ($reservingUser == $_SESSION['userID'] && $row['pend_status'] != "Closed") {
-			$out .= '<p><b>URL to allow other users to see IP/Email:</b> <a href="acc.php?action=zoom&amp;id=' . $thisid . '&amp;hash=' . $hash . '">' . $tsurl . '/acc.php?action=zoom&id=' . $thisid . '&hash=' . $hash . '</a></p>';
-		}
+		$out .= "<h3>This request is currently being handled by " . $session->getUsernameFromUid($reservingUser) ."</h3>";
 	}
+	if ($reservingUser == $_SESSION['userID'] && $row['pend_status'] != "Closed") {
+		$out .= '<p><b>URL to allow other users to see IP/Email:</b> <a href="acc.php?action=zoom&amp;id=' . $thisid . '&amp;hash=' . $hash . '">' . $tsurl . '/acc.php?action=zoom&id=' . $thisid . '&hash=' . $hash . '</a></p>';
+	}
+	
 	//Show the links for things like IP contributions/blocks. 
 	$sid = sanitize($_SESSION['user']);
 	$query3 = "SELECT * FROM acc_user WHERE user_name = '$sid';";

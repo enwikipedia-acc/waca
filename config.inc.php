@@ -48,7 +48,6 @@ $sessionname = 'ACC';
 // The general interface configuration.
 $enableRenames = 1; 		// Enable interface account renaming.
 $enableEmailConfirm = 1; 	// Enable request email confirmation.
-$enableReserving = 1; 		// Enable request reservations.
 $enableSQLError = 0; 		// Enable the display of SQL errors.
 $enableDnsblChecks = 1; 	// Enable DNS blacklist checks.
 $showGraphs = 1; 			// Show graphs on statistics pages.
