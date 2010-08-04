@@ -222,7 +222,6 @@ function listrequests($type, $hideip, $correcthash) {
 	global $toolserver_database, $tsSQLlink;
 	global $secure;
 	global $enableEmailConfirm;
-	global $dontUseWikiDb;
 	global $session;
 	if($secure != 1) { die("Not logged in"); }
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database.");
@@ -332,13 +331,8 @@ function listrequests($type, $hideip, $correcthash) {
 		$out .= $uname . '" target="_blank">Creation</a> ';
 
 		// 	SUL link
-		if ($dontUseWikiDb == 0) {
 			$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user=';
 			$out .= $uname . '" target="_blank">SUL</a> ';
-		}
-		elseif ($dontUseWikiDb == 1) {
-			$out .= '';
-		}
 
 		// 	User list
 		$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
@@ -378,12 +372,7 @@ function listrequests($type, $hideip, $correcthash) {
 			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=3&amp;sum=' . $row['pend_checksum'] . '">Taken</a>';
 
 			// SUL Taken
-			if ($dontUseWikiDb == 0) {
-				$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=26&amp;sum=' . $row['pend_checksum'] . '">SUL Taken</a>';
-			}
-			elseif ($dontUseWikiDb == 1){
-				$out .= '';
-			}
+			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=26&amp;sum=' . $row['pend_checksum'] . '">SUL Taken</a>';
 
 			// UPolicy
 			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=4&amp;sum=' . $row['pend_checksum'] . '">UPolicy</a>';
@@ -730,7 +719,7 @@ function isOnWhitelist($user)
 
 function zoomPage($id,$urlhash)
 {
-	global $tsSQLlink, $session, $skin, $enableReserving, $dontUseWikiDb;
+	global $tsSQLlink, $session, $skin, $enableReserving;
 
 	$out = "";
 	$gid = sanitize($id);
@@ -835,13 +824,8 @@ function zoomPage($id,$urlhash)
 			$out .= $row['pend_ip'] . '" target="_blank">Local Contributions</a> ';
 
 			// IP global contribs
-			if ($dontUseWikiDb == 0) {
-				$out .= '| ';
-				$out .= '<a href="http://toolserver.org/~luxo/contributions/contributions.php?lang=en&amp;blocks=true&amp;user=' . $row['pend_ip'] . '" target="_blank">Global Contributions</a> ';
-			}
-			elseif ($dontUseWikiDb == 1) {
-				$out .= '';
-			}
+			$out .= '| ';
+			$out .= '<a href="http://toolserver.org/~luxo/contributions/contributions.php?lang=en&amp;blocks=true&amp;user=' . $row['pend_ip'] . '" target="_blank">Global Contributions</a> ';
 			// IP blocks
 			$out .= '| ';
 			$out .= '<a href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
@@ -863,13 +847,8 @@ function zoomPage($id,$urlhash)
 			$out .= $row['pend_ip'] . '" target="_blank">Global Range Blocks</a> ';
 
 			// IP whois
-			if ($dontUseWikiDb == 0) {
-				$out .= '| ';
-				$out .= '<a href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">Whois</a> ';
-			}
-			elseif ($dontUseWikiDb == 1) {
-				$out .= '';
-			}
+			$out .= '| ';
+			$out .= '<a href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">Whois</a> ';
 			// Abuse Filter
 			$out .= '| ';
 			$out .= '<a href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $row['pend_ip'] . '" target="_blank">Abuse Filter Log</a> ';
