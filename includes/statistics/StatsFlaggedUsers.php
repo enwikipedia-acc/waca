@@ -76,7 +76,7 @@ class StatsFlaggedUsers extends StatisticsPage
 	}
 	function isProtected()
 	{
-		return true;
+		return false;
 	}
 	
 	function requiresWikiDatabase()
