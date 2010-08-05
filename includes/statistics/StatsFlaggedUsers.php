@@ -24,7 +24,7 @@ class StatsFlaggedUsers extends StatisticsPage
 		$currentreq = 0;
 		while($row = mysql_fetch_assoc($results))
 		{
-			$query='SELECT user_id, user_name, user_level FROM `acc_user` WHERE user_onwikiname = "'.$row['user_name'].'" AND (`user_level` = "Admin" OR `user_level` = "User") LIMIT 1;'; 
+			$query='SELECT user_id, user_name, user_level FROM `acc_user` WHERE user_onwikiname = "'.$row['user_name'].'" LIMIT 1;'; //  AND (`user_level` = "Admin" OR `user_level` = "User")
 			$accresult = $tsSQL->query($query);
 			if($accresult)
 			{
@@ -38,8 +38,8 @@ class StatsFlaggedUsers extends StatisticsPage
 			{
 				$accrow = array('user_name' => '--', 'user_id' => '--', 'user_level' => '--');
 			}
-			//if( ($accrow['user_name'] == '--') ||  ($row['user_name']=='--'))
-			//{
+			if( ($accrow['user_level'] != 'User') && ($accrow['user_level'] != 'Admin'))
+			{
 				$currentreq++;
 				$out.= '<tr';
 				if ($currentreq % 2 == 0) 
@@ -58,7 +58,7 @@ class StatsFlaggedUsers extends StatisticsPage
 					"<td>".$accrow['user_name']."</td>" . 
 					"<td>".$accrow['user_level']."</td>" . 
 					"</tr>";
-			//}	
+			}	
 	
 		}
 		$out.="</table>";
