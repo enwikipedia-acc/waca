@@ -124,7 +124,7 @@ function getSpoofs( $username ) {
 		} else {
 			return ( $return[1] );
 		}
-	} else { return FALSE; }
+	} else { return "This function is currently disabled."; }
 }
 
 function sanitise($what) { return sanitize($what); }
@@ -755,6 +755,18 @@ function zoomPage($id,$urlhash)
 	$out .= '<a class="request-req" href="http://www.google.com/search?q=';
 	$out .= preg_replace("/_/","+",$uname) . '" target="_blank">Google search</a></p>';
 	
+	
+		global $protectReservedRequests;
+		if (!($type == 'Admin' || $type == 'Open' || $type == 'Checkuser')) {
+			if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
+			{
+				if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address.
+					// Create user link
+					$out .= '<p><b>Create account link:</b> <a class="request-req-create" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
+					$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></p>';
+				}
+			}
+		}
 	$out.="<p><b>Actions:</b> ";
 	
 		if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
@@ -837,21 +849,11 @@ function zoomPage($id,$urlhash)
 			}
 		}
 	
-		global $protectReservedRequests;
-		if (!($type == 'Admin' || $type == 'Open' || $type == 'Checkuser')) {
-			if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
-			{
-				if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address.
-					// Create user link
-					$out .= '<p><b>Create account link:</b> <a class="request-req-create" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-					$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></p>';
-				}
-			}
-		}
+	$out.="</p>";
 	
 	
 	//Escape injections.
-	$out .= "<br /><strong>Requester Comment</strong>: " . $row['pend_cmt'] . "<br />\n";
+	$out .= "<p><strong>Requester Comment</strong>: " . $row['pend_cmt'] . "</p>\n";
 
 	global $tsurl;
 
