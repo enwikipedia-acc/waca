@@ -335,85 +335,7 @@ function listrequests($type, $hideip, $correcthash) {
 		if (!($type == 'Admin' || $type == 'Open' || $type == 'Checkuser'))
 		$out .='<small> |</small></td><td><small> ';
 			
-		if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
-		{
-			// Done
-			$out .= '<a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '"><strong>Created!</strong></a>';
 
-			// Similar
-			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=2&amp;sum=' . $row['pend_checksum'] . '">Similar</a>';
-
-			// Taken
-			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=3&amp;sum=' . $row['pend_checksum'] . '">Taken</a>';
-
-			// SUL Taken
-			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=26&amp;sum=' . $row['pend_checksum'] . '">SUL Taken</a>';
-
-			// UPolicy
-			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=4&amp;sum=' . $row['pend_checksum'] . '">UPolicy</a>';
-
-			// Invalid
-			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=5&amp;sum=' . $row['pend_checksum'] . '">Invalid</a>';
-
-			// Custom
-			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=custom&amp;sum=' . $row['pend_checksum'] . '">Custom</a>';
-
-
-			// Drop
-			$out .= ' - <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
-
-
-
-			// Defer to admins or users
-			if (is_numeric($type)) {
-				$type = $row['pend_status'];
-			}
-			if (!isset ($target)) {
-				$target = "zoom";
-			}
-
-
-			if ($type == 'Open') {
-				$target1 = 'admins';
-				$message1 = "Flagged Users";
-				$target2 = 'cu';
-				$message2 = "Checkusers";
-			}
-			elseif ($type == 'Admin') {
-				$target1 = 'users';
-				$message1 = "Users";
-				$target2 = 'cu';
-				$message2 = "Checkusers";
-			}
-			elseif ($type == 'Checkuser') {
-				$target1 = 'users';
-				$message1 = "Users";
-				$target2 = 'admins';
-				$message2 = "Flagged Users";
-			}
-
-			if($row['pend_status'] == "Admin" || $row['pend_status'] == "Open" || $row['pend_status'] == "Checkuser")
-			{
-				$out.= " - Defer to: ";
-				$out .= "<a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target1\">$message1</a>";
-				$out .= " / ";
-				$out .= "<a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target2\">$message2</a>";
-
-			}
-			else
-			{
-				$out .= " - <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=users\">Reset Request</a>";
-			}
-		}
-		else
-		{
-			if(isProtected($row['pend_id'])) {
-				$out .= 'This request is reserved';
-			}
-			else {
-				$out .= 'This request is not reserved';
-			}
-		}
 	
 
 	if($session->hasright($_SESSION['user'], "Admin")) {
@@ -768,47 +690,48 @@ function zoomPage($id,$urlhash)
 	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 		$out .= '<p><b>IP Address links:</b> ';
 		
-		$out .= '<small><a href="'.$wikipediaurl.'wiki/User_talk:';
+		$out .= '<small><a class="request-src" href="'.$wikipediaurl.'wiki/User_talk:';
 		$out .= $row['pend_ip'] . '" target="_blank">Talk page</a> ';
 		
 		// IP contribs
-		$out .= '<a href="'.$wikipediaurl.'wiki/Special:Contributions/';
+		$out .= '| ';
+		$out .= '<a class="request-src" href="'.$wikipediaurl.'wiki/Special:Contributions/';
 		$out .= $row['pend_ip'] . '" target="_blank">Local Contributions</a> ';
 
 		// IP global contribs
 		$out .= '| ';
-		$out .= '<a href="http://toolserver.org/~luxo/contributions/contributions.php?lang=en&amp;blocks=true&amp;user=' . $row['pend_ip'] . '" target="_blank">Global Contributions</a> ';
+		$out .= '<a class="request-src" href="http://toolserver.org/~luxo/contributions/contributions.php?lang=en&amp;blocks=true&amp;user=' . $row['pend_ip'] . '" target="_blank">Global Contributions</a> ';
 		// IP blocks
 		$out .= '| ';
-		$out .= '<a href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
+		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
 		$out .= $row['pend_ip'] . '" target="_blank">Local Blocks</a> ';
 
 		// rangeblocks
 		$out .= '| ';
-		$out .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3ABlockList&amp;ip=';
+		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3ABlockList&amp;ip=';
 		$out .= $row['pend_ip'] . '" target="_blank">Local Range Blocks</a> ';
 
 		// Global blocks
 		$out .= '| ';
-		$out .= '<a href="'.$metaurl.'w/index.php?title=Special:Log&amp;type=gblblock&amp;page=User:';
+		$out .= '<a class="request-src" href="'.$metaurl.'w/index.php?title=Special:Log&amp;type=gblblock&amp;page=User:';
 		$out .= $row['pend_ip'] . '" target="_blank">Global Blocks</a> ';
 
 		// Global range blocks/Locally disabled Global Blocks
 		$out .= '| ';
-		$out .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3AGlobalBlockList&amp;ip=';
+		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3AGlobalBlockList&amp;ip=';
 		$out .= $row['pend_ip'] . '" target="_blank">Global Range Blocks</a> ';
 
 		// IP whois
 		$out .= '| ';
-		$out .= '<a href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">Whois</a> ';
+		$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">Whois</a> ';
 			
 		// IP geolocate
 		$out .= '| ';
-		$out .= '<a href="http://ipinfodb.com/ip_locator.php?ip=' . $row['pend_ip'] . '" target="_blank">Geolocate</a> ';
+		$out .= '<a class="request-src" href="http://ipinfodb.com/ip_locator.php?ip=' . $row['pend_ip'] . '" target="_blank">Geolocate</a> ';
 			
 		// Abuse Filter
 		$out .= '| ';
-		$out .= '<a href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $row['pend_ip'] . '" target="_blank">Abuse Filter Log</a> ';
+		$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $row['pend_ip'] . '" target="_blank">Abuse Filter Log</a> ';
 		$out .= '</small></p>';
 	}
 
@@ -832,7 +755,87 @@ function zoomPage($id,$urlhash)
 	$out .= '<a class="request-req" href="http://www.google.com/search?q=';
 	$out .= preg_replace("/_/","+",$uname) . '" target="_blank">Google search</a></p>';
 	
+	$out.="<p><b>Actions:</b> ";
 	
+		if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
+		{
+			// Done
+			$out .= '<a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '"><strong>Created!</strong></a>';
+
+			// Similar
+			$out .= ' | <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=2&amp;sum=' . $row['pend_checksum'] . '">Similar</a>';
+
+			// Taken
+			$out .= ' | <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=3&amp;sum=' . $row['pend_checksum'] . '">Taken</a>';
+
+			// SUL Taken
+			$out .= ' | <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=26&amp;sum=' . $row['pend_checksum'] . '">SUL Taken</a>';
+
+			// UPolicy
+			$out .= ' | <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=4&amp;sum=' . $row['pend_checksum'] . '">UPolicy</a>';
+
+			// Invalid
+			$out .= ' | <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=5&amp;sum=' . $row['pend_checksum'] . '">Invalid</a>';
+
+			// Custom
+			$out .= ' | <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=custom&amp;sum=' . $row['pend_checksum'] . '">Custom</a>';
+
+
+			// Drop
+			$out .= ' | <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
+
+
+
+			// Defer to admins or users
+			if (is_numeric($type)) {
+				$type = $row['pend_status'];
+			}
+			if (!isset ($target)) {
+				$target = "zoom";
+			}
+
+
+			if ($type == 'Open') {
+				$target1 = 'admins';
+				$message1 = "Flagged Users";
+				$target2 = 'cu';
+				$message2 = "Checkusers";
+			}
+			elseif ($type == 'Admin') {
+				$target1 = 'users';
+				$message1 = "Users";
+				$target2 = 'cu';
+				$message2 = "Checkusers";
+			}
+			elseif ($type == 'Checkuser') {
+				$target1 = 'users';
+				$message1 = "Users";
+				$target2 = 'admins';
+				$message2 = "Flagged Users";
+			}
+
+			if($row['pend_status'] == "Admin" || $row['pend_status'] == "Open" || $row['pend_status'] == "Checkuser")
+			{
+				$out.= " | Defer to: ";
+				$out .= "<a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target1\">$message1</a>";
+				$out .= " - ";
+				$out .= "<a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=$target2\">$message2</a>";
+
+			}
+			else
+			{
+				$out .= " | <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=users\">Reset Request</a>";
+			}
+		}
+		else
+		{
+			if(isProtected($row['pend_id'])) {
+				$out .= 'This request is reserved';
+			}
+			else {
+				$out .= 'This request is not reserved';
+			}
+		}
 	
 		global $protectReservedRequests;
 		if (!($type == 'Admin' || $type == 'Open' || $type == 'Checkuser')) {
@@ -840,8 +843,8 @@ function zoomPage($id,$urlhash)
 			{
 				if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address.
 					// Create user link
-					$out .= '<p><b>Create account link: <a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-					$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b></p>';
+					$out .= '<p><b>Create account link:</b> <a class="request-req-create" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
+					$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></p>';
 				}
 			}
 		}
