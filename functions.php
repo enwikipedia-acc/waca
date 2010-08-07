@@ -326,44 +326,28 @@ function listrequests($type, $hideip, $correcthash) {
 		$duname = _utf8_decode($row['pend_name']);
 		$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-req" href="'.$wikipediaurl.'wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
 
-		// 	Creation log
-		$out .= '</small></td><td><small>(<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
-		$out .= $uname . '" target="_blank">Creation</a> ';
 
-		// 	SUL link
-			$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user=';
-			$out .= $uname . '" target="_blank">SUL</a> ';
-
-		// 	User list
-		$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
-		$out .= $uname . '&amp;group=&amp;limit=1" target="_blank">List</a> ';
-
-		// Google
-		$out .= '<a class="request-req" href="http://www.google.com/search?q=';
-		$out .= preg_replace("/_/","+",$uname) . '" target="_blank">Google</a> ';
 
 		global $protectReservedRequests;
 		if ($type == 'Admin' || $type == 'Open' || $type == 'Checkuser') {
-			
+				
 		}
 		else {
-		if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
-		{
-			if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address. 
-				// Create user link
-				$out .= '<b><a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-				$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b>';
+			if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
+			{
+				if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address.
+					// Create user link
+					$out .= '<b><a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
+					$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b>';
+				}
 			}
 		}
-		}
-		
-		$out .= ')</small></td><td>';
-		
-		if ($type == 'Admin' || $type == 'Open' || $type == 'Checkuser') {
+
+		$out .= '</td><td>';
+
+		if (!($type == 'Admin' || $type == 'Open' || $type == 'Checkuser'))
+		$out .='<small> |</small></td><td><small> ';
 			
-		}
-		else {
-			$out .='<small> |</small></td><td><small> ';
 		if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
 		{
 			// Done
@@ -443,51 +427,51 @@ function listrequests($type, $hideip, $correcthash) {
 				$out .= 'This request is not reserved';
 			}
 		}
-		}
-
-		if($session->hasright($_SESSION['user'], "Admin")) {
-			// Ban IP
-			$out .= '</small></td><td><small> |</small></td><td><small> Ban: </small></td><td><small><a class="request-ban" href="acc.php?action=ban&amp;ip=' . $row['pend_id'] . '">IP</a> ';
-
-			// Ban email
-			$out .= '- <a class="request-ban" href="acc.php?action=ban&amp;email=' . $row['pend_id'] . '">E-Mail</a>';
-
-			//Ban name
-			$out .= ' - <a class="request-ban" href="acc.php?action=ban&amp;name=' . $row['pend_id'] . '">Name</a>';
-		}
 	
-		$reserveByUser = isReserved($row['pend_id']);
-		// if request is reserved, show reserved message
-		if( $reserveByUser != 0 )
-		{
-			if( $reserveByUser == $_SESSION['userID'])
-			{
-				$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Break reservation</a>";
-			} else {
-				$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"statistics.php?page=Users&user=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
 
-				// force break?
-				global $enableAdminBreakReserve;
-				if( $enableAdminBreakReserve && $session->hasright($_SESSION['user'], "Admin"))
-				{
-					$out .= " - <a href=\"acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Force break</a>";
-				}
+	if($session->hasright($_SESSION['user'], "Admin")) {
+		// Ban IP
+		$out .= '</small></td><td><small> |</small></td><td><small> Ban: </small></td><td><small><a class="request-ban" href="acc.php?action=ban&amp;ip=' . $row['pend_id'] . '">IP</a> ';
+
+		// Ban email
+		$out .= '- <a class="request-ban" href="acc.php?action=ban&amp;email=' . $row['pend_id'] . '">E-Mail</a>';
+
+		//Ban name
+		$out .= ' - <a class="request-ban" href="acc.php?action=ban&amp;name=' . $row['pend_id'] . '">Name</a>';
+	}
+
+	$reserveByUser = isReserved($row['pend_id']);
+	// if request is reserved, show reserved message
+	if( $reserveByUser != 0 )
+	{
+		if( $reserveByUser == $_SESSION['userID'])
+		{
+			$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Break reservation</a>";
+		} else {
+			$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"statistics.php?page=Users&user=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
+
+			// force break?
+			global $enableAdminBreakReserve;
+			if( $enableAdminBreakReserve && $session->hasright($_SESSION['user'], "Admin"))
+			{
+				$out .= " - <a href=\"acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Force break</a>";
 			}
 		}
-		else // not being handled, do you want to handle this request?
-		{
-			$out .= "</small></td><td><small> | </small></td><td><small><a href=\"acc.php?action=reserve&amp;resid=" . $row['pend_id']. "\">Mark as being handled</a>";
-		}
-		
+	}
+	else // not being handled, do you want to handle this request?
+	{
+		$out .= "</small></td><td><small> | </small></td><td><small><a href=\"acc.php?action=reserve&amp;resid=" . $row['pend_id']. "\">Mark as being handled</a>";
+	}
 
-		$out .= '</small></td></tr>';
-		$reqlist .= $out;
-	}
-	if( $currentreq == 0 ) {
-		return( "<i>No requests at this time</i>" );
-	} else {
-		return ($tablestart . $reqlist . $tableend);
-	}
+
+	$out .= '</small></td></tr>';
+	$reqlist .= $out;
+}
+if( $currentreq == 0 ) {
+	return( "<i>No requests at this time</i>" );
+} else {
+	return ($tablestart . $reqlist . $tableend);
+}
 
 }
 
@@ -749,7 +733,7 @@ function zoomPage($id,$urlhash)
 	Die("Query failed: $query ERROR: " . mysql_error());
 	$hideemail = TRUE;
 	if (mysql_num_rows($result) > 0) {
-	$hideemail = FALSE;
+		$hideemail = FALSE;
 	}
 
 	$sessionuser = $_SESSION['userID'];
@@ -767,7 +751,7 @@ function zoomPage($id,$urlhash)
 		$hideinfo = TRUE;
 	}
 	if ($row['pend_status'] == "Closed") {
-		$hash = md5($thisid. $thisemail . $thisip . microtime()); //If the request is closed, change the hash based on microseconds similar to the checksums. 
+		$hash = md5($thisid. $thisemail . $thisip . microtime()); //If the request is closed, change the hash based on microseconds similar to the checksums.
 	} else {
 		$hash = md5($thisid . $thisemail . $thisip);
 	}
@@ -780,6 +764,79 @@ function zoomPage($id,$urlhash)
 	$requesttable = listrequests($thisid, $hideinfo, $correcthash);
 	$out .= $requesttable;
 
+		//Show the links for things like IP contributions/blocks.
+	$sid = sanitize($_SESSION['user']);
+	$query3 = "SELECT * FROM acc_user WHERE user_name = '$sid';";
+	$result3 = mysql_query($query3, $tsSQLlink);
+	if (!$result3)
+	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+	$row3 = mysql_fetch_assoc($result3);
+	if ( $row3['user_secure'] > 0 ) {
+		$wikipediaurl = "https://secure.wikimedia.org/wikipedia/en/";
+		$metaurl = "https://secure.wikimedia.org/wikipedia/meta/";
+	} else {
+		$wikipediaurl = "http://en.wikipedia.org/";
+		$metaurl = "http://meta.wikimedia.org/";
+	}
+	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
+		$out .= '<p><b>IP Address links:</b> ';
+		// IP contribs
+		$out .= '<small><a href="'.$wikipediaurl.'wiki/Special:Contributions/';
+		$out .= $row['pend_ip'] . '" target="_blank">Local Contributions</a> ';
+
+		// IP global contribs
+		$out .= '| ';
+		$out .= '<a href="http://toolserver.org/~luxo/contributions/contributions.php?lang=en&amp;blocks=true&amp;user=' . $row['pend_ip'] . '" target="_blank">Global Contributions</a> ';
+		// IP blocks
+		$out .= '| ';
+		$out .= '<a href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
+		$out .= $row['pend_ip'] . '" target="_blank">Local Blocks</a> ';
+
+		// rangeblocks
+		$out .= '| ';
+		$out .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3ABlockList&amp;ip=';
+		$out .= $row['pend_ip'] . '" target="_blank">Local Range Blocks</a> ';
+
+		// Global blocks
+		$out .= '| ';
+		$out .= '<a href="'.$metaurl.'w/index.php?title=Special:Log&amp;type=gblblock&amp;page=User:';
+		$out .= $row['pend_ip'] . '" target="_blank">Global Blocks</a> ';
+
+		// Global range blocks/Locally disabled Global Blocks
+		$out .= '| ';
+		$out .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3AGlobalBlockList&amp;ip=';
+		$out .= $row['pend_ip'] . '" target="_blank">Global Range Blocks</a> ';
+
+		// IP whois
+		$out .= '| ';
+		$out .= '<a href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">Whois</a> ';
+			
+		// IP geolocate
+		$out .= '| ';
+		$out .= '<a href="http://ipinfodb.com/ip_locator.php?ip=' . $row['pend_ip'] . '" target="_blank">Geolocate</a> ';
+			
+		// Abuse Filter
+		$out .= '| ';
+		$out .= '<a href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $row['pend_ip'] . '" target="_blank">Abuse Filter Log</a> ';
+		$out .= '</small></p>';
+	}
+
+	// 	Creation log
+	$out .= '<p><b>Username links:</b><a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
+	$out .= $uname . '" target="_blank">Creation log</a> - ';
+
+	// 	SUL link
+	$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user=';
+	$out .= $uname . '" target="_blank">SUL util</a> - ';
+
+	// 	User list
+	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
+	$out .= $uname . '&amp;group=&amp;limit=1" target="_blank">Username list</a> - ';
+
+	// Google
+	$out .= '<a class="request-req" href="http://www.google.com/search?q=';
+	$out .= preg_replace("/_/","+",$uname) . '" target="_blank">Google search</a></p>';
+	
 	//Escape injections.
 	$out .= "<br /><strong>Requester Comment</strong>: " . $row['pend_cmt'] . "<br />\n";
 
@@ -792,63 +849,6 @@ function zoomPage($id,$urlhash)
 	}
 	if ($reservingUser == $_SESSION['userID'] && $row['pend_status'] != "Closed") {
 		$out .= '<p><b>URL to allow other users to see IP/Email:</b> <a href="acc.php?action=zoom&amp;id=' . $thisid . '&amp;hash=' . $hash . '">' . $tsurl . '/acc.php?action=zoom&id=' . $thisid . '&hash=' . $hash . '</a></p>';
-	}
-	
-	//Show the links for things like IP contributions/blocks. 
-	$sid = sanitize($_SESSION['user']);
-	$query3 = "SELECT * FROM acc_user WHERE user_name = '$sid';";
-	$result3 = mysql_query($query3, $tsSQLlink);
-	if (!$result3)
-		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	$row3 = mysql_fetch_assoc($result3);
-	if ( $row3['user_secure'] > 0 ) {
-			$wikipediaurl = "https://secure.wikimedia.org/wikipedia/en/";
-			$metaurl = "https://secure.wikimedia.org/wikipedia/meta/";
-	} else {
-			$wikipediaurl = "http://en.wikipedia.org/";
-			$metaurl = "http://meta.wikimedia.org/";
-	}
-	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
-		    $out .= '<p><b>IP Address links:</b> ';		
-			// IP contribs
-			$out .= '<td><small><a href="'.$wikipediaurl.'wiki/Special:Contributions/';
-			$out .= $row['pend_ip'] . '" target="_blank">Local Contributions</a> ';
-
-			// IP global contribs
-			$out .= '| ';
-			$out .= '<a href="http://toolserver.org/~luxo/contributions/contributions.php?lang=en&amp;blocks=true&amp;user=' . $row['pend_ip'] . '" target="_blank">Global Contributions</a> ';
-			// IP blocks
-			$out .= '| ';
-			$out .= '<a href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
-			$out .= $row['pend_ip'] . '" target="_blank">Local Blocks</a> ';
-
-			// rangeblocks
-			$out .= '| ';
-			$out .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3ABlockList&amp;ip=';
-			$out .= $row['pend_ip'] . '" target="_blank">Local Range Blocks</a> ';
-
-			// Global blocks
-			$out .= '| ';
-			$out .= '<a href="'.$metaurl.'w/index.php?title=Special:Log&amp;type=gblblock&amp;page=User:';
-			$out .= $row['pend_ip'] . '" target="_blank">Global Blocks</a> ';
-
-			// Global range blocks/Locally disabled Global Blocks
-			$out .= '| ';
-			$out .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3AGlobalBlockList&amp;ip=';
-			$out .= $row['pend_ip'] . '" target="_blank">Global Range Blocks</a> ';
-
-			// IP whois
-			$out .= '| ';
-			$out .= '<a href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">Whois</a> ';
-			
-			// IP geolocate
-			$out .= '| ';
-			$out .= '<a href="http://ipinfodb.com/ip_locator.php?ip=' . $row['pend_ip'] . '" target="_blank">Geolocate</a> ';
-			
-			// Abuse Filter
-			$out .= '| ';
-			$out .= '<a href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $row['pend_ip'] . '" target="_blank">Abuse Filter Log</a> ';
-			$out .= '</small></td></p>';
 	}
 
 	global $allowViewingOfUseragent;
@@ -924,12 +924,12 @@ function zoomPage($id,$urlhash)
 	$logPage->showPager=false;
 	$out .= $logPage->showListLog(0,100);
 
-    if ($urlhash != "") {
+	if ($urlhash != "") {
 		$out .= "<h2>Comments on this request:<small> (<a href='acc.php?action=comment&amp;id=$gid&amp;hash=$urlhash'>new comment</a>)</small></h2>";
 	} else {
 		$out .= "<h2>Comments on this request:<small> (<a href='acc.php?action=comment&amp;id=$gid'>new comment</a>)</small></h2>";
 	}
-	
+
 	if ($session->hasright($_SESSION['user'], 'Admin')) {
 		$query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' ORDER BY cmt_id ASC;";
 	} else {
@@ -953,8 +953,8 @@ function zoomPage($id,$urlhash)
 			$out .= "<i>None.</i>\n";
 		}
 		$out .= "</ul>";
-		
-    	if ($urlhash != "") {
+
+		if ($urlhash != "") {
 			$out .= "<form action='acc.php?action=comment-quick&amp;hash=$urlhash' method='post' />";
 		} else {
 			$out .= "<form action='acc.php?action=comment-quick' method='post' />";
@@ -988,7 +988,7 @@ function zoomPage($id,$urlhash)
 		// Displayes other requests from this email.
 		$emailmsg = 'this email';
 		if ($hideinfo == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user'])) {
-		$emailmsg = $thisemail;
+			$emailmsg = $thisemail;
 		}
 		$out .= "<h2>Other requests from $emailmsg:</h2>\n";
 		$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
