@@ -829,6 +829,11 @@ function zoomPage($id,$urlhash)
 				$message2 = "Flagged Users";
 			}
 
+			echo "<!-- debug: \n";
+			echo "target1 = $target1\n";
+			echo "target2 = $target2\n";
+			echo "-->";
+			
 			if($row['pend_status'] == "Admin" || $row['pend_status'] == "Open" || $row['pend_status'] == "Checkuser")
 			{
 				$out.= " | Defer to: ";
