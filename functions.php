@@ -328,20 +328,7 @@ function listrequests($type, $hideip, $correcthash) {
 
 
 
-		global $protectReservedRequests;
-		if ($type == 'Admin' || $type == 'Open' || $type == 'Checkuser') {
-				
-		}
-		else {
-			if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
-			{
-				if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address.
-					// Create user link
-					$out .= '<b><a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-					$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b>';
-				}
-			}
-		}
+
 
 		$out .= '</td><td>';
 
@@ -780,6 +767,10 @@ function zoomPage($id,$urlhash)
 	}
 	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 		$out .= '<p><b>IP Address links:</b> ';
+		
+		$out .= '<small><a href="'.$wikipediaurl.'wiki/User_talk:';
+		$out .= $row['pend_ip'] . '" target="_blank">Talk page</a> ';
+		
 		// IP contribs
 		$out .= '<small><a href="'.$wikipediaurl.'wiki/Special:Contributions/';
 		$out .= $row['pend_ip'] . '" target="_blank">Local Contributions</a> ';
@@ -821,21 +812,40 @@ function zoomPage($id,$urlhash)
 		$out .= '</small></p>';
 	}
 
-	// 	Creation log
-	$out .= '<p><b>Username links:</b><a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
-	$out .= $uname . '" target="_blank">Creation log</a> - ';
+	
+	$out .= '<p><b>Username links:</b> <a class="request-req" href="'.$wikipediaurl.'w/index.php?title=User:';
+	$out .= $uname . '" target="_blank">User page</a> | ';
 
+	// 	Creation log
+	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
+	$out .= $uname . '" target="_blank">Creation log</a> | ';
+	
 	// 	SUL link
 	$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user=';
-	$out .= $uname . '" target="_blank">SUL util</a> - ';
+	$out .= $uname . '" target="_blank">SUL util</a> | ';
 
 	// 	User list
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
-	$out .= $uname . '&amp;group=&amp;limit=1" target="_blank">Username list</a> - ';
+	$out .= $uname . '&amp;group=&amp;limit=1" target="_blank">Username list</a> | ';
 
 	// Google
 	$out .= '<a class="request-req" href="http://www.google.com/search?q=';
 	$out .= preg_replace("/_/","+",$uname) . '" target="_blank">Google search</a></p>';
+	
+	
+	
+		global $protectReservedRequests;
+		if (!($type == 'Admin' || $type == 'Open' || $type == 'Checkuser')) {
+			if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
+			{
+				if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address.
+					// Create user link
+					$out .= '<p><b>Create account link: <a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
+					$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></b></p>';
+				}
+			}
+		}
+	
 	
 	//Escape injections.
 	$out .= "<br /><strong>Requester Comment</strong>: " . $row['pend_cmt'] . "<br />\n";
