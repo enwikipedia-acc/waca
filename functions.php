@@ -772,7 +772,7 @@ function zoomPage($id,$urlhash)
 		$out .= $row['pend_ip'] . '" target="_blank">Talk page</a> ';
 		
 		// IP contribs
-		$out .= '<small><a href="'.$wikipediaurl.'wiki/Special:Contributions/';
+		$out .= '<a href="'.$wikipediaurl.'wiki/Special:Contributions/';
 		$out .= $row['pend_ip'] . '" target="_blank">Local Contributions</a> ';
 
 		// IP global contribs
