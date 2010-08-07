@@ -726,23 +726,23 @@ function zoomPage($id,$urlhash)
 
 	
 	$out .= '<p><b>Username links:</b> <a class="request-req" href="'.$wikipediaurl.'w/index.php?title=User:';
-	$out .= $uname . '" target="_blank">User page</a> | ';
+	$out .= $sUser . '" target="_blank">User page</a> | ';
 
 	// 	Creation log
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
-	$out .= $uname . '" target="_blank">Creation log</a> | ';
+	$out .= $sUser . '" target="_blank">Creation log</a> | ';
 	
 	// 	SUL link
 	$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user=';
-	$out .= $uname . '" target="_blank">SUL util</a> | ';
+	$out .= $sUser . '" target="_blank">SUL util</a> | ';
 
 	// 	User list
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
-	$out .= $uname . '&amp;group=&amp;limit=1" target="_blank">Username list</a> | ';
+	$out .= $sUser . '&amp;group=&amp;limit=1" target="_blank">Username list</a> | ';
 
 	// Google
 	$out .= '<a class="request-req" href="http://www.google.com/search?q=';
-	$out .= preg_replace("/_/","+",$uname) . '" target="_blank">Google search</a></p>';
+	$out .= preg_replace("/_/","+",$sUser) . '" target="_blank">Google search</a></p>';
 	
 	
 		global $protectReservedRequests;
@@ -752,7 +752,7 @@ function zoomPage($id,$urlhash)
 				if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address.
 					// Create user link
 					$out .= '<p><b>Create account link:</b> <a class="request-req-create" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-					$out .= $uname . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></p>';
+					$out .= $sUser . '&amp;wpEmail=' . $row['pend_email'] . '&amp;uselang=en-acc" target="_blank">Create!</a></p>';
 				}
 			}
 		}
