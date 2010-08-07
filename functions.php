@@ -796,8 +796,11 @@ function zoomPage($id,$urlhash)
 			// Drop
 			$out .= ' | <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
 
-
-
+			$out.="<!-- DEBUG:" + $type + " -->";
+			echo "<!-- debug \n";
+			print_r($row);
+			echo "\n-->";
+			
 			// Defer to admins or users
 			if (is_numeric($type)) {
 				$type = $row['pend_status'];
