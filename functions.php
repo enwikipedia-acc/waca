@@ -796,15 +796,8 @@ function zoomPage($id,$urlhash)
 			// Drop
 			$out .= ' | <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
 
-			$out.="<!-- DEBUG:" + $type + " -->";
-			echo "<!-- debug \n";
-			print_r($row);
-			echo "\n-->";
-			
-			// Defer to admins or users
-			if (is_numeric($type)) {
-				$type = $row['pend_status'];
-			}
+
+			$type = $row['pend_status'];
 			if (!isset ($target)) {
 				$target = "zoom";
 			}
@@ -828,11 +821,6 @@ function zoomPage($id,$urlhash)
 				$target2 = 'admins';
 				$message2 = "Flagged Users";
 			}
-
-			echo "<!-- debug: \n";
-			echo "target1 = $target1\n";
-			echo "target2 = $target2\n";
-			echo "-->";
 			
 			if($row['pend_status'] == "Admin" || $row['pend_status'] == "Open" || $row['pend_status'] == "Checkuser")
 			{
