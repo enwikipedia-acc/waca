@@ -327,17 +327,6 @@ function listrequests($type, $hideip, $correcthash) {
 		$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-req" href="'.$wikipediaurl.'wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
 
 
-
-
-
-		$out .= '</td><td>';
-
-		if (!($type == 'Admin' || $type == 'Open' || $type == 'Checkuser'))
-		$out .='<small> |</small></td><td><small> ';
-			
-
-	
-
 	if($session->hasright($_SESSION['user'], "Admin")) {
 		// Ban IP
 		$out .= '</small></td><td><small> |</small></td><td><small> Ban: </small></td><td><small><a class="request-ban" href="acc.php?action=ban&amp;ip=' . $row['pend_id'] . '">IP</a> ';
@@ -690,7 +679,7 @@ function zoomPage($id,$urlhash)
 	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 		$out .= '<p><b>IP Address links:</b> ';
 		
-		$out .= '<small><a class="request-src" href="'.$wikipediaurl.'wiki/User_talk:';
+		$out .= '<a class="request-src" href="'.$wikipediaurl.'wiki/User_talk:';
 		$out .= $row['pend_ip'] . '" target="_blank">Talk page</a> ';
 		
 		// IP contribs
@@ -732,7 +721,7 @@ function zoomPage($id,$urlhash)
 		// Abuse Filter
 		$out .= '| ';
 		$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $row['pend_ip'] . '" target="_blank">Abuse Filter Log</a> ';
-		$out .= '</small></p>';
+		$out .= '</p>';
 	}
 
 	
