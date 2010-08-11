@@ -831,6 +831,9 @@ function zoomPage($id,$urlhash)
 			}
 			else {
 				$out .= 'This request is not reserved';
+				if($row['pend_status'] == "Closed") {
+					$out .= " | <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=" . $row['pend_id'] . "&amp;sum=" . $row['pend_checksum'] . "&amp;target=users\">Reset Request</a>";
+				}
 			}
 		}
 	
