@@ -88,6 +88,7 @@
 		'*!*@wikimedia/Promethean'			=> 'developer',
 		'*!*@wikipedia/Chris-G'				=> 'developer',
 		'*!*@unaffiliated/louriepieterse'		=> 'developer',
+		'*!*@wikipedia/EdoDodo'		=> 'developer',
 		'*!*@*'						=> '*'
 		);
 

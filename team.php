@@ -238,6 +238,19 @@ $developer = array(
 				"Cloak" => NULL,
 				"Other" => NULL,
 			)
+			"EdoDodo" =>
+				array(
+					"IRC" => "EdoDodo",
+					"EMail" => NULL,
+					"ToolID" => "660",
+					"wiki" => "EdoDodo",
+					"WWW" => "http://toolserver.org/dodo/",
+					"Name" => "Edoardo",
+					"Role" => "Bot Developer",
+					"Access" => "SVN",
+					"Cloak" => "*!*@wikipedia/EdoDodo",
+					"Other" => NULL,
+				)
 );
 // End of the array of developers.
 
