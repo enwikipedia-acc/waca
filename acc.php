@@ -342,7 +342,7 @@ elseif ($action == "register") {
                 <td><input type="checkbox" name="secureenable" /></td>
             </tr>
             <tr>
-                <td>Enable <a href="http://en.wikipedia.org/wiki/User:SQLBot-Hello">SQLBot-Hello</a> welcoming of the users I create:</td>
+                <td>Enable <a href="http://en.wikipedia.org/wiki/User:WelcomerBot">WelcomerBot</a> welcoming of the users I create:</td>
                 <td><input type="checkbox" name="welcomeenable" /></td>
             </tr>
             <tr>
@@ -1165,7 +1165,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     echo '<a name="1"></a><h2>General settings</h2>';
     echo '<form action="acc.php?action=welcomeperf" method="post">';
     echo '<input type="checkbox" name="secureenable"'.$securepref.'/> Enable use of the secure server<br /><br />';
-    echo '<input type="checkbox" name="welcomeenable"'.$welcoming.'/> Enable <a href="http://en.wikipedia.org/wiki/User:SQLBot-Hello">SQLBot-Hello</a> welcoming of the users I create<br /><br />';
+    echo '<input type="checkbox" name="welcomeenable"'.$welcoming.'/> Enable <a href="http://en.wikipedia.org/wiki/User:WelcomerBot">WelcomerBot</a> welcoming of the users I create<br /><br />';
     echo 'Your signature (wikicode) <input type="text" name="sig" size ="40"'. $sig.'/><br />';
     echo '<i>This would be the same as ~~~ on-wiki. No date, please.</i><br />';
     
