@@ -48,6 +48,9 @@ $tsurl = "http://stable.toolserver.org/acc";
 // Root pathname of the local installation of the tool.
 $filepath = "/projects/acc/www/"; 
 
+// Pathname to the local installation of Peachy.
+$peachyPath = ""; 
+
 // Location outside web directory to place temporary files.
 $varfilepath = "/projects/acc/"; 
 
