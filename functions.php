@@ -791,7 +791,7 @@ function zoomPage($id,$urlhash)
 			if (!isset ($target)) {
 				$target = "zoom";
 			}
-			deferlinks($type,$checksum,$pendid);
+			$out .= deferlinks($type,$checksum,$pendid);
 		}
 		else
 		{
@@ -800,7 +800,7 @@ function zoomPage($id,$urlhash)
 			}
 			else {
 				$out .= 'This request is not reserved';
-				deferlinks($type,$checksum,$pendid);
+				$out .= deferlinks($type,$checksum,$pendid);
 			}
 		}
 	
@@ -1009,7 +1009,7 @@ function deferlinks($type, $checksum, $pendid) {
 			
 		if($type == "Admin" || $type == "Open" || $type == "Checkuser")
 		{
-			$out.= " | Defer to: ";
+			$out .= " | Defer to: ";
 			$out .= "<a class=\"request-done\" href=\"acc.php?action=defer&amp;id=$pendid&amp;sum=$pendid&amp;target=$target1\">$message1</a>";
 			$out .= " - ";
 			$out .= "<a class=\"request-done\" href=\"acc.php?action=defer&amp;id=$pendid&amp;sum=$pendid&amp;target=$target2\">$message2</a>";
@@ -1018,5 +1018,6 @@ function deferlinks($type, $checksum, $pendid) {
 		{
 			$out .= " | <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=users\">Reset Request</a>";
 		}
+		return $out;
 }
 ?>
