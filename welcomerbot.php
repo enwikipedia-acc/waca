@@ -13,14 +13,21 @@ function WelcomeUser($theUser, $theMessage) {
 	global $wiki;
 	$talkPage = $wiki->initPage("User talk:$theUser");
 	$user = $wiki->initUser($theUser);
+	echo "Delivering welcome message to $theUser.\n\n";
 	if ($talkPage->exists()) {
 		echo "User talk page already exists, stopping message delivery.\n\n";
 	} elseif (!$user->exists()) {
 		echo "User does not exist, stopping message delivery.\n\n";
 	} else {
-		echo "Delivering welcome message to $theUser.\n\n";
 		$summary = "([[User:MessageDeliveryBot/2|Bot]]) Welcoming user created at [[WP:ACC]].";
-		$talkPage->edit($theMessage, $summary);
+		try {
+			$talkPage->edit($theMessage, $summary);
+		} catch (EditError $e) {
+			$errorMessage = $e->getMessage();
+			echo "Editing error - $errorMessage";
+		} catch (CURLError $e) {
+			echo "Connection error.";
+		}
 	}
 }
 
@@ -37,7 +44,7 @@ if (mysql_num_rows($result) != 0) {
 	while($row = mysql_fetch_row($result)) {
 		$theid = $row[0];
 		$user = $row[1];
-		$signature = $row[2];
+		$signature = html_entity_decode($row[2]);
 		$template = $row[3];
 		$username = $row[4];
 		
