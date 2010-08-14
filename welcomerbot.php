@@ -1,5 +1,9 @@
 <?
 
+if (isset($_SERVER['REQUEST_METHOD'])) {
+    die();
+} //Web clients die.
+
 // This task is intended to clone [[User:SQLBot-Hello]],
 // and while the code has been completely rewritten, the
 // design and functionality of this bot is very similar
@@ -20,8 +24,10 @@ function WelcomeUser($theUser, $theMessage) {
 	}
 }
 
-require("$peachyPath/Init.php");
+
 require('config.inc.php');
+require("$peachyPath/Init.php");
+
 $acc = mysql_connect($toolserver_hostname, $toolserver_username, $toolserver_password) or trigger_error(mysql_error(),E_USER_ERROR); 
 mysql_select_db($toolserver_database, $acc);
 $result = mysql_query("SELECT welcome_id, welcome_user, welcome_sig, welcome_template, welcome_uid FROM acc_welcome WHERE welcome_status = 'Open';");
