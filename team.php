@@ -237,7 +237,7 @@ $developer = array(
 				"Access" => "SF.net access",
 				"Cloak" => NULL,
 				"Other" => NULL,
-			)
+			),
 			"EdoDodo" =>
 				array(
 					"IRC" => "EdoDodo",
