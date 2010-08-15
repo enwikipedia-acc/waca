@@ -53,7 +53,8 @@ if (mysql_num_rows($result) != 0) {
 		
 			mysql_query("UPDATE acc_welcome SET welcome_status = 'Closed' WHERE welcome_id = '" . $theid . "';");
 			
-			$templateCode = eval($templates[$template][1]);
+			$templateCode = $templates[$template][1];
+			eval("\$templateCode = \"$templateCode\";");
 			if ($templateCode == NULL) {
 				$templateCode = "== Welcome! ==\n\n{{subst:Welcome|$username}}$signature ~~~~~";
 			}
