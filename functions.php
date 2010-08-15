@@ -878,9 +878,33 @@ function zoomPage($id,$urlhash)
 			// Open the SUL of the conflicting users.
 			$posc4 = '<a href="http://toolserver.org/~vvv/sulutil.php?user=';
 			$posc4 .= $oS . '" target="_blank">SUL</a> ';
+			
+			// Run an API query to get editcount and registration date of user
+			$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$oS"));
+			
+			// Get the edit count from the query and create a string with it
+			$editcount = $apiquery['query']['allusers'][0]['editcount'];
+			if ($editcount != 0) {
+				$posc5 = "$editcount edits";
+				//User has edited, so display date of last edit
+				$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&format=php&list=usercontribs&uclimit=1&ucuser=$oS"));
+				$lastEdit = strtotime($apiquery['query']['usercontribs'][0]['timestamp']);
+				$posc6 = 'Last edit ' . date('F j, Y', $lastEdit);
+			} else {
+				$posc5 = "No edits";
+				// User has not edited, so display registration date
+				if ($apiquery['query']['allusers'][0]['registration'] != '') {
+					$regDate = strtotime($apiquery['query']['allusers'][0]['registration']);
+					$posc6 = 'Registered ' . date('F j, Y', $regDate);
+				} else {
+					// Registration date is not set, so user registered before registration dates were logged
+					$posc6 = 'Registered before September 2005';
+				}
+			}
 
 			// Adds all the variables together for one line.
-			$out2 .= "<li>" . $posc1 . "( " . $posc2 . " | " . $posc3 . " | " . $posc4 . " )</li>\n";
+			$out2 .= "<li>" . $posc1 . "( " . $posc2 . " | " . $posc3 . " | " . $posc4 . " ) " . $posc5 . " (" . $posc6 . ")" . "</li>\n";
+			
 		}
 		$out2 .= "</ul>\n";
 	}
