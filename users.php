@@ -147,7 +147,21 @@ if (isset ($_GET['demote'])) {
 if (isset ($_GET['suspend'])) {
 	$did = sanitize($_GET['suspend']);
 	$siuser = sanitize($_SESSION['user']);
-	if (!isset($_POST['suspendreason'])) {
+	
+	//Check if the user is already suspended, and quit if he is.
+	$uid = $did;
+	$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
+	$result2 = mysql_query($query2, $tsSQLlink);
+	if (!$result2)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$row2 = mysql_fetch_assoc($result2);
+	if ($row2['user_level'] == "Suspended") {
+		echo "Sorry, the user you are trying to suspend is already suspended.<br />\n";
+		$skin->displayIfooter();
+		die();
+	}
+	
+	elseif (!isset($_POST['suspendreason'])) {
 		echo "<h2>Suspend Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"users.php?suspend=$did\" method=\"post\"><br />\n";
 		echo "<textarea name=\"suspendreason\" rows=\"20\" cols=\"60\">";
 		if (isset($_GET['preload'])) {
@@ -160,18 +174,7 @@ if (isset ($_GET['suspend'])) {
 		$skin->displayIfooter();
 		die();
 	} else {
-		$suspendrsn = sanitize($_POST['suspendreason']);
-		$uid = $did;
-		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-		$result2 = mysql_query($query2, $tsSQLlink);
-		if (!$result2)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$row2 = mysql_fetch_assoc($result2);
-		if ($row2['user_level'] == "Suspended") {
-			echo "Sorry, the user you are trying to suspend is already suspended.<br />\n";
-			$skin->displayIfooter();
-			die();
-		}		
+		$suspendrsn = sanitize($_POST['suspendreason']);		
 		$query = "UPDATE acc_user SET user_level = 'Suspended' WHERE user_id = '$did';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
