@@ -1023,7 +1023,7 @@ function deferlinks($type, $checksum, $pendid) {
 
 function templatesarray($database) {
 	$templates = array();
-	$result = mysql_query("SELECT * FROM acc_templates", $database);
+	$result = mysql_query("SELECT * FROM acc_template", $database);
 	while ($row = mysql_fetch_row($result)) {
 		$templates[$row[0]] = array($row[1], $row[2]);
 	}
