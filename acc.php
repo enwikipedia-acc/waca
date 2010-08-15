@@ -359,7 +359,7 @@ elseif ($action == "register") {
 HTML;
 foreach ($templates as $templateID => $templateDetails) {
 	$templateUserCode = $templateDetails[0];
-	echo "<option value\"$templateID\">$templateUserCode</option>";
+	echo "<option value=\"$templateID\">$templateUserCode</option>";
 }
 echo <<<HTML
 					</select>
@@ -1155,13 +1155,12 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     echo '<i>This would be the same as ~~~ on-wiki. No date, please.</i><br />';
     
     // TODO: clean up into nicer code, rather than coming out of php
-    // TODO: Make the register and pref form use same welcome list
     ?>
     <select name="template" size="0">
 <?
 foreach ($templates as $templateID => $templateDetails) {
 	$templateUserCode = $templateDetails[0];
-	echo "<option value\"$templateID\"";
+	echo "<option value=\"$templateID\"";
 	if($template == $templateID) {
 		echo " selected=\"selected\"";
 	}
