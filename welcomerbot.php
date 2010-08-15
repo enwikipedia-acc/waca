@@ -31,8 +31,8 @@ function WelcomeUser($theUser, $theMessage) {
 	}
 }
 
-
 require('config.inc.php');
+require('functions.php');
 require("$peachyPath/Init.php");
 
 $acc = mysql_connect($toolserver_hostname, $toolserver_username, $toolserver_password) or trigger_error(mysql_error(),E_USER_ERROR); 
@@ -42,6 +42,7 @@ $result = mysql_query("SELECT welcome_id, welcome_user, welcome_sig, welcome_tem
 if (mysql_num_rows($result) != 0) {
 	$wiki = Peachy::newWiki("WelcomerBot");
 	$runPage = $wiki->initPage("User:WelcomerBot/Run");
+	$templates = templatesarray($acc);
 	while($row = mysql_fetch_row($result)) {
 		if ($runPage->get_text() == 'go') {
 			$theid = $row[0];
@@ -51,58 +52,13 @@ if (mysql_num_rows($result) != 0) {
 			$username = $row[4];
 		
 			mysql_query("UPDATE acc_welcome SET welcome_status = 'Closed' WHERE welcome_id = '" . $theid . "';");
-		
-			if ($template == "welcomeg") {
-			        WelcomeUser($user, "== Welcome! ==\n\n{{subst:User:SQLBot-Hello/Welcomeg|$username|sig=$signature ~~~~~}}");
-			} else if ($template == "welcome") {
-			        WelcomeUser($user, "{{subst:Welcome|$username}}$signature ~~~~~");
-			} else if ($template == "welcome-personal") {
-			        WelcomeUser($user, "{{subst:Welcome-personal|$username}}$signature ~~~~~");
-			} else if ($template == "werdan7") {
-			        WelcomeUser($user, "{{subst:User:Werdan7/Wel}}$signature ~~~~~");
-			} else if ($template == "welcomemenu") {
-			        WelcomeUser($user, "== Welcome! ==\n\n{{subst:WelcomeMenu|sig=$signature ~~~~~}}");
-			} else if ($template == "welcomeicon") {
-			        WelcomeUser($user, "== Welcome! ==\n\n{{subst:WelcomeIcon}} $signature ~~~~~");
-			} else if ($template == "welcomeshout") {
-			        WelcomeUser($user, "{{subst:WelcomeShout|$username}} $signature ~~~~~");
-			} else if ($template == "welcomeshort") {
-			        WelcomeUser($user, "{{subst:Welcomeshort|$username}} $signature ~~~~~");
-			} else if ($template == "welcomesmall") {
-			        WelcomeUser($user, "{{subst:Welcomesmall|$username}} $signature ~~~~~");
-			} else if ($template == "hopes") {
-			        WelcomeUser($user, "{{subst:Hopes Welcome}} $signature ~~~~~");
-			} else if ($template == "w-riana") {
-			        WelcomeUser($user, "== Welcome! ==\n\n{{subst:User:Riana/Welcome|name=$username|sig=$signature ~~~~~}}");
-			} else if ($template == "wodup") {
-			        WelcomeUser($user, "{{subst:User:WODUP/Welcome}} $signature ~~~~~");
-			} else if ($template == "w-screen") {
-			        WelcomeUser($user, "== Welcome! ==\n\n{{subst:w-screen|sig=$signature ~~~~~}}");
-			} else if ($template == "williamh") {
-			        WelcomeUser($user, "{{subst:User:WilliamH/Welcome|$username}} $signature ~~~~~");
-			} else if ($template == "malinaccier") {
-			        WelcomeUser($user, "{{subst:User:Malinaccier/Welcome|$signature ~~~~~}}");
-			} else if ($template == "welcome!") {
-			        WelcomeUser($user, "== Welcome! ==\n\n{{subst:Welcome!|from=$username|ps=$signature ~~~~~}}");
-			} else if ($template == "laquatique") {
-			        WelcomeUser($user, "{{subst:User:L'Aquatique/welcome}} $signature ~~~~~");
-			} else if ($template == "coffee") {
-			        WelcomeUser($user, "{{subst:User:Coffee/welcome|$username|||$signature ~~~~~}}");
-			} else if ($template == "matt-t") {
-			        WelcomeUser($user, "{{subst:User:Matt.T/C}} $signature ~~~~~");
-			} else if ($template == "staffwaterboy") {
-			        WelcomeUser($user, "{{subst:User:Staffwaterboy/Welcome}} $signature ~~~~~");
-			} else if ($template == "maedin") {
-			        WelcomeUser($user, "{{subst:User:Maedin/Welcome}} $signature ~~~~~");
-			} else if ($template == "chzz") {
-			        WelcomeUser($user, "{{subst:User:Chzz/botwelcome|name=$username|sig=$signature ~~~~~}}");
-			} else if ($template == 'phantomsteve') {
-			        WelcomeUser($user, "{{subst:User:Phantomsteve/bot welcome}} $signature ~~~~~");
-			} else if ($template == "hi878") {
-			        WelcomeUser($user, "{{subst:User:Hi878/Welcome|$username|$signature ~~~~~}}");
-			} else {
-			        WelcomeUser($user, "== Welcome! ==\n\n{{subst:Welcome|$username}}$signature ~~~~~");
+			
+			$templateCode = eval($templates[$template][1]);
+			if ($templateCode == NULL) {
+				$templateCode = "== Welcome! ==\n\n{{subst:Welcome|$username}}$signature ~~~~~";
 			}
+			WelcomerUser($user, $templateCode);
+			
 		} else {
 			echo "Run page doesn't say go, stopping bot.\n\n";
 			break;

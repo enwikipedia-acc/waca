@@ -40,6 +40,9 @@ $asSQL = new database("antispoof");
 $tsSQLlink = $tsSQL->getLink();
 $asSQLlink = $asSQL->getLink();
 
+//Create an array containing welcome templates
+$templates = templatesarray($tsSQLlink);
+
 // Initialize the class objects.
 $captcha = new captcha();
 $messages = new messages();
@@ -353,29 +356,12 @@ elseif ($action == "register") {
                 <td>Template you would like the bot to welcome with?<br /><i>If you'd like more templates added, please contact <a href="http://en.wikipedia.org/wiki/User_talk:SQL">SQL</a>, <a href="http://en.wikipedia.org/wiki/User_talk:Cobi">Cobi</a>, or <a href="http://en.wikipedia.org/wiki/User_talk:FastLizard4">FastLizard4</a>.</i>  Not needed if you left the checkbox above unchecked.</td>
                 <td>
                 	<select name="template" size="0">
-                		<option value="welcome">{{welcome|user}} ~~~~</option>
-                		<option value="welcomeg">{{welcomeg|user}} ~~~~</option>
-                		<option value="welcome-personal">{{welcome-personal|user}} ~~~~</option>
-                		<option value="werdan7">{{User:Werdan7/W}} ~~~~</option>
-                		<option value="welcomemenu">{{WelcomeMenu|sig=~~~~}}</option>
-                		<option value="welcomeicon">{{WelcomeIcon}} ~~~~</option>
-                		<option value="welcomeshout">{{WelcomeShout|user}} ~~~~</option>
-                		<option value="welcomesmall">{{WelcomeSmall|user}} ~~~~</option>
-                		<option value="hopes">{{Hopes Welcome}} ~~~~</option>
-	                	<option value="welcomeshort">{{Welcomeshort|user}} ~~~~</option>
-						<option value="w-riana">{{User:Riana/Welcome|name=user|sig=~~~~}}</option>
-						<option value="w-screen">{{w-screen|sig=~~~~}}</option>
-						<option value="wodup">{{User:WODUP/Welcome}} ~~~~</option>
-						<option value="williamh">{{User:WilliamH/Welcome|user}} ~~~~</option>
-						<option value="malinaccier">{{User:Malinaccier/Welcome|~~~~}}</option>
-						<option value="laquatique">{{User:L'Aquatique/welcome}} ~~~~</option>
-						<option value="coffee">{{User:Coffee/welcome|user|||~~~~}}</option>
-						<option value="matt-t">{{User:Matt.T/C}} ~~~~</option>
-						<option value="staffwaterboy">{{User:Staffwaterboy/Welcome}} ~~~~</option>
-						<option value="maedin">{{User:Maedin/Welcome}} ~~~~</option>
-						<option value="chzz">{{User:Chzz/botwelcome|name=user|sig=~~~~}}</option>
-						<option value="phantomsteve">{{User:Phantomsteve/bot welcome}} ~~~~</option>
-						<option value="hi878">{{User:Hi878/Welcome|user|~~~~}}</option>
+HTML;
+foreach ($templates as $templateID => $templateDetails) {
+	$templateUserCode = $templateDetails[0];
+	echo "<option value\"$templateID\">$templateUserCode</option>";
+}
+echo <<<HTML
 					</select>
 				</td>
             </tr>
@@ -1172,30 +1158,16 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     // TODO: Make the register and pref form use same welcome list
     ?>
     <select name="template" size="0">
-    <option value="welcome"<?php if($template == "welcone") { echo " selected=\"selected\""; } ?>>{{welcome|user}} ~~~~</option>
-    <option value="welcomeg"<?php if($template == "welcomeg") { echo " selected=\"selected\""; } ?>>{{welcomeg|user}} ~~~~</option>
-    <option value="w-screen"<?php if($template == "w-screen") { echo " selected=\"selected\""; } ?>>{{w-screen|sig=~~~~}}</option>
-    <option value="welcome-personal"<?php if($template == "welcome-personal") { echo " selected=\"selected\""; } ?>>{{welcome-personal|user}} ~~~~</option>
-    <option value="werdan7"<?php if($template == "werdan7") { echo " selected=\"selected\""; } ?>>{{User:Werdan7/W}} ~~~~</option>
-    <option value="welcomemenu"<?php if($template == "welcomemenu") { echo " selected=\"selected\""; } ?>>{{WelcomeMenu|sig=~~~~}}</option>
-    <option value="welcomeicon"<?php if($template == "welcomeicon") { echo " selected=\"selected\""; } ?>>{{WelcomeIcon}} ~~~~</option>
-    <option value="welcomeshout"<?php if($template == "welcomeshout") { echo " selected=\"selected\""; } ?>>{{WelcomeShout|user}} ~~~~</option>
-    <option value="welcomesmall"<?php if($template == "welcomesmall") { echo " selected=\"selected\""; } ?>>{{WelcomeSmall|user}} ~~~~</option>
-    <option value="hopes"<?php if($template == "hopes") { echo " selected=\"selected\""; } ?>>{{Hopes Welcome}} ~~~~</option>
-    <option value="welcomeshort"<?php if($template == "welcomeshort") { echo " selected=\"selected\""; } ?>>{{Welcomeshort|user}} ~~~~</option>
-    <option value="w-riana"<?php if($template == "w-riana") { echo " selected=\"selected\""; } ?>>{{User:Riana/Welcome|name=user|sig=~~~~}}</option>
-    <option value="wodup"<?php if($template == "wodup") { echo " selected=\"selected\""; } ?>>{{User:WODUP/Welcome}} ~~~~</option>
-    <option value="williamh"<?php if($template == "williamh") { echo " selected=\"selected\""; } ?>>{{User:WilliamH/Welcome|user}} ~~~~</option>
-    <option value="malinaccier"<?php if($template == "malinaccier") { echo " selected=\"selected\""; } ?>>{{User:Malinaccier/Welcome|~~~~}}</option>
-    <option value="welcome!"<?php if($template == "welcome!") { echo " selected=\"selected\""; } ?>>{{Welcome!|from=User|ps=~~~~}}</option>
-    <option value="laquatique"<?php if($template == "laquatique") { echo " selected=\"selected\""; } ?>>{{User:L'Aquatique/welcome}} ~~~~</option>
-    <option value="coffee"<?php if($template == "coffee") { echo " selected=\"selected\""; } ?>>{{User:Coffee/welcome|user|||~~~~}}</option>
-	<option value="matt-t"<?php if($template == "matt-t") { echo " selected=\"selected\""; } ?>>{{User:Matt.T/C}} ~~~~</option>
-	<option value="staffwaterboy"<?php if($template == "staffwaterboy") { echo " selected=\"selected\""; } ?>>{{User:Staffwaterboy/Welcome}} ~~~~</option>
-	<option value="maedin"<?php if($template == "maedin") { echo " selected=\"selected\""; } ?>>{{User:Maedin/Welcome}} ~~~~</option>
-	<option value="chzz"<?php if($template == "chzz") { echo " selected=\"selected\""; } ?>>{{User:Chzz/botwelcome|name=user|sig=~~~~}}</option>
-	<option value="phantomsteve"<?php if($template == "phantomsteve") { echo " selected=\"selected\""; } ?>>{{User:Phantomsteve/bot welcome}} ~~~~</option>
-	<option value="hi878"<?php if($template == "hi878") { echo " selected=\"selected\""; } ?>>{{User:Hi878/Welcome|user|~~~~}}</option>
+<?
+foreach ($templates as $templateID => $templateDetails) {
+	$templateUserCode = $templateDetails[0];
+	echo "<option value\"$templateID\"";
+	if($template == $templateID) {
+		echo " selected=\"selected\"";
+	}
+	echo ">$templateUserCode</option>";
+}
+?>
     </select><br /><?php
     echo '<i>If you\'d like more templates added, please <a href="https://jira.toolserver.org/browse/ACC">open a ticket</a>.</i><br />';
 

@@ -1020,4 +1020,14 @@ function deferlinks($type, $checksum, $pendid) {
 		}
 		return $out;
 }
+
+function templatesarray($database) {
+	$templates = array();
+	$result = mysql_query("SELECT * FROM acc_templates", $database);
+	while ($row = mysql_get_row($result)) {
+		$templates[$row[0]] = array($row[1], $row[2]);
+	}
+	return $templates;
+}
+
 ?>
