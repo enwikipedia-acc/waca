@@ -724,25 +724,27 @@ function zoomPage($id,$urlhash)
 		$out .= '</p>';
 	}
 
+	$userurl = urlencode($sUser);
+	$userurl = str_replace("%26amp%3B", "%26", $userurl);
 	
 	$out .= '<p><b>Username links:</b> <a class="request-req" href="'.$wikipediaurl.'w/index.php?title=User:';
-	$out .= rawurlencode($sUser) . '" target="_blank">User page</a> | ';
+	$out .= $userurl . '" target="_blank">User page</a> | ';
 
 	// 	Creation log
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
-	$out .= rawurlencode($sUser) . '" target="_blank">Creation log</a> | ';
+	$out .= $userurl . '" target="_blank">Creation log</a> | ';
 	
 	// 	SUL link
 	$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user=';
-	$out .= rawurlencode($sUser). '" target="_blank">SUL util</a> | ';
+	$out .= $userurl. '" target="_blank">SUL util</a> | ';
 
 	// 	User list
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
-	$out .= rawurlencode($sUser) . '&amp;group=&amp;limit=1" target="_blank">Username list</a> | ';
+	$out .= $userurl . '&amp;group=&amp;limit=1" target="_blank">Username list</a> | ';
 
 	// Google
 	$out .= '<a class="request-req" href="http://www.google.com/search?q=';
-	$out .= preg_replace("/_/","+",rawurlencode($sUser)) . '" target="_blank">Google search</a></p>';
+	$out .= preg_replace("/_/","+",$userurl) . '" target="_blank">Google search</a></p>';
 	
 	
 		global $protectReservedRequests;
