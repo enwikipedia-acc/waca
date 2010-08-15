@@ -447,7 +447,7 @@ HTML;
 			echo "<h2>ERROR</h2>Missing or incorrect Email address supplied.\n";
 		}
 		else{
-		$hashme = $puser . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
+		$hashme = $row['user_name'] . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
 		$hash = md5($hashme);
 		// re bug 29: please don't escape the url parameters here: it's a plain text email so no need to escape, or you break the link
 		$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested a password reset for your account.\n\nPlease go to $tsurl/acc.php?action=forgotpw&si=$hash&id=" . $row['user_id'] . " to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
