@@ -861,8 +861,9 @@ function zoomPage($id,$urlhash)
 			}
 
 			// Convert all applicable characters to HTML entities.
-			$oS = htmlentities($oSpoof,ENT_COMPAT,'UTF-8');
+			$oS = urlencode($oSpoof);
 			$oS = str_replace(" ", "_", $oS);
+			$oS = str_replace("%26amp%3B", "%26", $oS);
 
 			// Show the Wikipedia Userpage of the conflicting users.
 			$posc1 = '<a href="http://en.wikipedia.org/wiki/User:';
@@ -971,7 +972,9 @@ function zoomPage($id,$urlhash)
 
 		$currentrow = 0;
 		while ($row = mysql_fetch_assoc($result)) {
-			$createdUser = $row['pend_name'];
+			$createdUser = urlencode($row['pend_name']);
+			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
+			$createdUser = str_replace(" ", "_", $createdUser);
 			
 			// Run an API query to get editcount and registration date of user
 			$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&format=php&usprop=editcount|registration&ususers=$createdUser"));
@@ -1024,8 +1027,9 @@ function zoomPage($id,$urlhash)
 
 		$currentrow = 0;
 		while ($row = mysql_fetch_assoc($result)) {
-			
-			$createdUser = $row['pend_name'];
+			$createdUser = urlencode($row['pend_name']);
+			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
+			$createdUser = str_replace(" ", "_", $createdUser);
 			
 			// Run an API query to get editcount and registration date of user
 			$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&format=php&usprop=editcount|registration&ususers=$createdUser"));
