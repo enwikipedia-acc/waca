@@ -127,8 +127,9 @@ if( isset($_GET['term'])) {
 		}
 		
 		if ($cidr != '32') {
-			$endrange = $term + pow(2, (32-$cidr));
-			$query = "SELECT pend_id,pend_ip,pend_name,pend_date,pend_status FROM acc_pend WHERE inet_atom('pend_ip') between inet_atom('$term') and inet_atom('$endrange');";
+			$termlong = iptolong($term);
+			$endrange = $termlong + pow(2, (32-$cidr));
+			$query = "SELECT pend_id,pend_ip,pend_name,pend_date,pend_status FROM acc_pend WHERE inet_aton('pend_ip') between '$termlong' and '$endrange';";
 		}
 		else {
 		$query = "SELECT pend_id,pend_ip,pend_name,pend_date,pend_status FROM acc_pend WHERE pend_ip LIKE '%$term%';";
