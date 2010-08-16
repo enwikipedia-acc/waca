@@ -130,7 +130,7 @@ if( isset($_GET['term'])) {
 			$termlong = ip2long($term);
 			$termlong = sprintf("%u\n", $termlong);
 			$endrange = $termlong + pow(2, (32-$cidr)) - 1;
-			$query = "SELECT pend_id,pend_ip,pend_name,pend_date,pend_status FROM acc_pend WHERE inet_aton('pend_ip') between '$termlong' and '$endrange';";
+			$query = "SELECT pend_id,pend_ip,pend_name,pend_date,pend_status FROM acc_pend WHERE inet_aton('pend_ip') between $termlong and $endrange;";
 			echo $query;
 		}
 		else {
