@@ -1007,7 +1007,7 @@ function zoomPage($id,$urlhash)
 			$currentrow += 1;
 			$out .= "<tr";
 			if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
-			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $createdUser . "</a></td><td>$editcount</td><td>$date</td></tr>";
+			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td><td>$editcount</td><td>$date</td></tr>";
 		}
 		if ($currentrow == 0) {
 			$out .= "<i>None.</i>\n";
@@ -1067,7 +1067,7 @@ function zoomPage($id,$urlhash)
 			$currentrow += 1;
 			$out .= "<tr";
 			if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
-			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $createdUser . "</a></td><td>$editcount</td><td>$date</td></tr>";
+			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td><td>$editcount</td><td>$date</td></tr>";
 		}
 		// Checks whether there were similar requests.
 		if ($currentrow == 0) {
