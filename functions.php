@@ -862,6 +862,7 @@ function zoomPage($id,$urlhash)
 
 			// Convert all applicable characters to HTML entities.
 			$oS = htmlentities($oSpoof,ENT_COMPAT,'UTF-8');
+			$oS = str_replace(" ", "_", $oS);
 
 			// Show the Wikipedia Userpage of the conflicting users.
 			$posc1 = '<a href="http://en.wikipedia.org/wiki/User:';
