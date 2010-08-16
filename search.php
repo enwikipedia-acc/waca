@@ -119,6 +119,11 @@ if( isset($_GET['term'])) {
 				$skin->displayIfooter();
 				die();
 		}
+		if ($cidr < '16' || $cidr > '32') {
+				$skin->displayRequestMsg("The CIDR must be between /16 and /32!<br />\n");	
+				$skin->displayIfooter();
+				die();
+		}
 		if ($cidr == '32') {
 			echo "<h2>Searching for IP address: $term ...</h2>";
 		}
@@ -131,7 +136,6 @@ if( isset($_GET['term'])) {
 			$termlong = sprintf("%u\n", $termlong);
 			$endrange = $termlong + pow(2, (32-$cidr)) - 1;
 			$query = "SELECT pend_id,pend_ip,pend_name,pend_date,pend_status FROM acc_pend WHERE inet_aton(pend_ip) between $termlong and $endrange;";
-			echo $query;
 		}
 		else {
 		$query = "SELECT pend_id,pend_ip,pend_name,pend_date,pend_status FROM acc_pend WHERE pend_ip LIKE '%$term%';";
