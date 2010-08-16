@@ -69,7 +69,7 @@ if (isset ($_GET['approve'])) {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_level'] == "Admin") {
-		echo "Sorry, the user you are trying to approve has Administrator access. Please use the <a href=\"users.php?demote=$aid\">demote function</a> instead.<br />\n";
+		echo "Sorry, the user you are trying to approve has Administrator access. Please use the <a href=\"$tsurl/users.php?demote=$aid\">demote function</a> instead.<br />\n";
 		$skin->displayIfooter();
 		die();
 	}		
@@ -428,7 +428,7 @@ if (mysql_num_rows($result) != 0){
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
 		$out = "<li><small>[ <span class=\"request-ban\">$uname</span> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
-		$out .= " <a class=\"request-req\" href=\"users.php?approve=$userid\" onclick=\"return confirm('Are you sure you wish to approve $uname?')\">Approve!</a> - <a class=\"request-req\" href=\"users.php?decline=$userid\">Decline</a> - <a class=\"request-req\" href=\"http://toolserver.org/~soxred93/pcount/index.php?name=$uoname&amp;lang=en&amp;wiki=wikipedia\">Count!</a></small></li>";
+		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?approve=$userid\" onclick=\"return confirm('Are you sure you wish to approve $uname?')\">Approve!</a> - <a class=\"request-req\" href=\"$tsurl/users.php?decline=$userid\">Decline</a> - <a class=\"request-req\" href=\"http://toolserver.org/~soxred93/pcount/index.php?name=$uoname&amp;lang=en&amp;wiki=wikipedia\">Count!</a></small></li>";
 		echo "$out\n";
 	}
 	echo "</ol>\n";
@@ -449,12 +449,12 @@ while ($row = mysql_fetch_assoc($result)) {
 	$uoname = $row['user_onwikiname'];
 	$userid = $row['user_id'];
 
-	$out = "<li><small>[ <a class=\"request-ban\" href=\"statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 	if( $enableRenames == 1 ) {
-		$out .= " <a class=\"request-req\" href=\"users.php?rename=$userid\">Rename!</a> -";
-		$out .= " <a class=\"request-req\" href=\"users.php?edituser=$userid\">Edit!</a> -";
+		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?rename=$userid\">Rename!</a> -";
+		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?edituser=$userid\">Edit!</a> -";
 	}
-	$out .= " <a class=\"request-req\" href=\"users.php?suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"users.php?promote=$userid\" onclick=\"return confirm('Are you sure you wish to promote $uname?')\">Promote!</a> (Approved by $row[log_user])</small></li>";
+	$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"$tsurl/users.php?promote=$userid\" onclick=\"return confirm('Are you sure you wish to promote $uname?')\">Promote!</a> (Approved by $row[log_user])</small></li>";
 	echo "$out\n";
 }
 echo <<<HTML
@@ -509,12 +509,12 @@ while ($row = mysql_fetch_assoc($result)) {
 	$row2 = mysql_fetch_assoc($result2);
 	$declined = $row2['COUNT(*)'];
 
-	$out = "<li><small>[ <a class=\"request-ban\" href=\"statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 	if( $enableRenames == 1 ) {
-		$out .= " <a class=\"request-req\" href=\"users.php?rename=$userid\">Rename!</a> -";
-		$out .= " <a class=\"request-req\" href=\"users.php?edituser=$userid\">Edit!</a> -";
+		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?rename=$userid\">Rename!</a> -";
+		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?edituser=$userid\">Edit!</a> -";
 	}
-	$out .= " <a class=\"request-req\" href=\"users.php?suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"users.php?demote=$userid\">Demote!</a> (Promoted by $row[log_user] <span style=\"color:purple;\">[P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined]</span>)</small></li>";
+	$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"users.php?demote=$userid\">Demote!</a> (Promoted by $row[log_user] <span style=\"color:purple;\">[P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined]</span>)</small></li>";
 	echo "$out\n";
 }
 echo <<<HTML
@@ -536,12 +536,12 @@ while ($row = mysql_fetch_assoc($result)) {
 	$uname = $row['user_name'];
 	$uoname = $row['user_onwikiname'];
 	$userid = $row['user_id'];
-	$out = "<li><small>[ <a class=\"request-ban\" href=\"statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 	if( $enableRenames == 1 ) {
-		$out .= " <a class=\"request-req\" href=\"users.php?rename=$userid\">Rename!</a> -";
-		$out .= " <a class=\"request-req\" href=\"users.php?edituser=$userid\">Edit!</a> -";
+		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?rename=$userid\">Rename!</a> -";
+		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?edituser=$userid\">Edit!</a> -";
 	}
-	$out .= " <a class=\"request-req\" href=\"users.php?approve=$userid\" onclick=\"return confirm('Are you sure you wish to unsuspend $uname?')\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
+	$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?approve=$userid\" onclick=\"return confirm('Are you sure you wish to unsuspend $uname?')\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
 	echo "$out\n";
 }
 echo <<<HTML

@@ -126,7 +126,7 @@ class StatsMain extends StatisticsPage
 		if(!$mostCommentsResult) Die("ERROR: No result returned. (mc)");
 		$mostCommentsRow = mysql_fetch_assoc($mostCommentsResult);
 		$mostCommentsId = $mostCommentsRow['pend_id'];
-		$out.="<tr><th>Request with most comments</th><td><a href=\"acc.php?action=zoom&amp;id=".$mostCommentsId."\">".$mostCommentsId."</a></td></tr>";
+		$out.="<tr><th>Request with most comments</th><td><a href=\"$tsurl/acc.php?action=zoom&amp;id=".$mostCommentsId."\">".$mostCommentsId."</a></td></tr>";
 	
 		$now = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 1));
 		

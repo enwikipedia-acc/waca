@@ -103,7 +103,7 @@ if( isset($_GET['term'])) {
 			} else {
 				$out .= ' class="odd">';
 			}
-			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_email </a></small></td></tr>";
+			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_email </a></small></td></tr>";
 			$html .= $out;
 		}
 		$html .= "</table>\n";
@@ -134,7 +134,7 @@ if( isset($_GET['term'])) {
 			} else {
 				$out .= ' class="odd">';
 			}
-			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_name</a> ($pend_status) - ($pend_ip @ $pend_date ) </small></td></tr>";
+			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_name</a> ($pend_status) - ($pend_ip @ $pend_date ) </small></td></tr>";
 			$html .= $out;
 		}
 		$html .= "</table>\n";
@@ -157,7 +157,7 @@ if( isset($_GET['term'])) {
 			} else {
 				$out .= ' class="odd">';
 			}
-			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_name </a></small></td></tr>";
+			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_name </a></small></td></tr>";
 			$html .= $out;
 		}
 		$html .= "</table>\n";

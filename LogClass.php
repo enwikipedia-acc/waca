@@ -162,40 +162,40 @@ class LogPage
 			}
 			if ($row['log_action'] == "Deferred to admins" || $rla == "Deferred to users" || $rla == "Deferred to checkusers") {
 	
-				$logList .="<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				$logList .="<li>$rlu $rla, <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 			if ($row['log_action'] == "Closed") {
-				$logList .="<li>$rlu $rla, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				$logList .="<li>$rlu $rla, <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 			if ($row['log_action'] == "Closed 0") {
-				$logList .="<li>$rlu Dropped, <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				$logList .="<li>$rlu Dropped, <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 			if ($row['log_action'] == "Closed 1") {
-				$logList .="<li>$rlu Closed (Account created), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				$logList .="<li>$rlu Closed (Account created), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 			if ($row['log_action'] == "Closed 2") {
-				$logList .="<li>$rlu Closed (Too Similar), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				$logList .="<li>$rlu Closed (Too Similar), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 			if ($row['log_action'] == "Closed 3") {
-				$logList .="<li>$rlu Closed (Taken), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				$logList .="<li>$rlu Closed (Taken), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 			if ($row['log_action'] == "Closed 4") {
-				$logList .="<li>$rlu Closed (Username vio), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				$logList .="<li>$rlu Closed (Username vio), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 			if ($row['log_action'] == "Closed 5") {
-				$logList .="<li>$rlu Closed (Technical Impossibility), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				$logList .="<li>$rlu Closed (Technical Impossibility), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 			if ($row['log_action'] == "Closed 26") {
-				$logList .="<li>$rlu Closed (Taken in SUL), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				$logList .="<li>$rlu Closed (Taken in SUL), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 			if ($row['log_action'] == "Closed custom") {
-				$logList .="<li>$rlu Closed (Custom), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				$logList .="<li>$rlu Closed (Custom), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 		    if ($row['log_action'] == "Closed custom-y") {
-				$logList .="<li>$rlu Closed (Custom, Created), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				$logList .="<li>$rlu Closed (Custom, Created), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 			if ($row['log_action'] == "Closed custom-n") {
-				$logList .="<li>$rlu Closed (Custom, Not Created), <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				$logList .="<li>$rlu Closed (Custom, Not Created), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 			if ($row['log_action'] == "Blacklist Hit" || $row['log_action'] == "DNSBL Hit") {
 				$logList .="<li>$rlu <strong>Rejected by Blacklist</strong> $rlp, $rlc at $rlt.</li>\n";
@@ -210,7 +210,7 @@ class LogPage
 				if (!$result3)
 					Die("Query failed: $query ERROR: " . mysql_error());
 				$row3 = mysql_fetch_assoc($result3);
-				$logList .="<li>$rlu Edited Message <a href=\"acc.php?action=messagemgmt&amp;view=$rlp\">$rlp (" . $row3['mail_desc'] . ")</a>, at $rlt.</li>\n";
+				$logList .="<li>$rlu Edited Message <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$rlp\">$rlp (" . $row3['mail_desc'] . ")</a>, at $rlt.</li>\n";
 			}
 			if ($rla == "Promoted" || $rla == "Demoted" || $rla == "Approved" || $rla == "Suspended" || $rla == "Declined") {
 				$uid = $rlp;
@@ -252,13 +252,13 @@ class LogPage
 				
 			}
 			if($rla == "Reserved") {
-				$logList .= "<li>$rlu reserved request <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
+				$logList .= "<li>$rlu reserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
 			}
 			if($rla == "Unreserved") {
-				$logList .= "<li>$rlu unreserved request <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
+				$logList .= "<li>$rlu unreserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
 			}
 			if($rla == "BreakReserve") {
-				$logList .= "<li>$rlu broke the reservation on <a href=\"acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a>, at $rlt</li>";
+				$logList .= "<li>$rlu broke the reservation on <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a>, at $rlt</li>";
 			}
 			$logListCount++;
 		}

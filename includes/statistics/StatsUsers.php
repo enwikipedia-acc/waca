@@ -138,11 +138,11 @@ class StatsUsers extends StatisticsPage
 		// State whether the user has auto welcoming enabled
 		if($session->hasright($_SESSION['user'], 'User') || $session->hasright($_SESSION['user'], 'Admin'))
 		{
-			$out.= "<li>User has <a href=\"acc.php?action=welcomeperf\">automatic welcoming</a> enabled: " . $welcome . ".</li>\n";
+			$out.= "<li>User has <a href=\"$tsurl/acc.php?action=welcomeperf\">automatic welcoming</a> enabled: " . $welcome . ".</li>\n";
 		}
 		else
 		{
-			$out.= "<li>User has <a href=\"acc.php?action=welcomeperf\" style=\"color: red;\" title=\"Login required to continue\">automatic welcoming</a> enabled: " . $welcome . ".</li>\n";
+			$out.= "<li>User has <a href=\"$tsurl/acc.php?action=welcomeperf\" style=\"color: red;\" title=\"Login required to continue\">automatic welcoming</a> enabled: " . $welcome . ".</li>\n";
 		}
 		$out.= "</ul>\n<br/>";
 		
@@ -165,19 +165,19 @@ class StatsUsers extends StatisticsPage
 			{
 				case "User":
 					// Build suspend and promote links
-					$tools .= " <a href=\"users.php?suspend=" . $row['user_id'] . "\">Suspend!</a> - <a href=\"users.php?promote=" . $row['user_id'] . "\">Promote!</a> ]";
+					$tools .= " <a href=\"$tsurl/users.php?suspend=" . $row['user_id'] . "\">Suspend!</a> - <a href=\"users.php?promote=" . $row['user_id'] . "\">Promote!</a> ]";
 					$out.= $tools;
 					break;
 					
 				case "Admin":
 					// Build suspend and demote links
-					$tools .= " <a href=\"users.php?suspend=" . $row['user_id'] . "\">Suspend!</a> - <a href=\"users.php?demote=" . $row['user_id'] . "\">Demote!</a> ]";
+					$tools .= " <a href=\"$tsurl/users.php?suspend=" . $row['user_id'] . "\">Suspend!</a> - <a href=\"users.php?demote=" . $row['user_id'] . "\">Demote!</a> ]";
 					$out.= $tools;
 					break;
 					
 				case "Suspended":
 					// Build unsuspend link
-					$tools .= " <a href=\"users.php?approve=" . $row['user_id'] . "\">Unsuspend!</a> ]";
+					$tools .= " <a href=\"$tsurl/users.php?approve=" . $row['user_id'] . "\">Unsuspend!</a> ]";
 					$out.= $tools;
 					break;
 					
@@ -305,17 +305,17 @@ class StatsUsers extends StatisticsPage
 					{
 						case "Prefchange":
 							// Another user changed this user's preferences
-							$out.= "<li><a href=\"statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> changed user preferences for " . $username . " at " . $row['log_time'] . "</li>\n";
+							$out.= "<li><a href=\"$tsurl/statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> changed user preferences for " . $username . " at " . $row['log_time'] . "</li>\n";
 							break;
 						
 						case "Renamed":
 							// Another user renamed this user
-							$out.= "<li><a href=\"statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> " . $row['log_cmt'] . " at " . $row['log_time'] . ".</li>\n";	
+							$out.= "<li><a href=\"$tsurl/statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> " . $row['log_cmt'] . " at " . $row['log_time'] . ".</li>\n";	
 							break;
 						
 						default:
 							// Anything else			
-							$out.= "<li><a href=\"statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> at " . $row['log_time'] . $comments . "</li>\n";
+							$out.= "<li><a href=\"$tsurl/statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> at " . $row['log_time'] . $comments . "</li>\n";
 							break;
 					}
 				}

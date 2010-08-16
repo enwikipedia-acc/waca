@@ -400,7 +400,7 @@ elseif ($action == "forgotpw") {
 					if (!$result) {
 						Die("Query failed: $query ERROR: " . mysql_error());
 					}
-					echo "Password reset!\n<br />\nYou may now <a href=\"acc.php\">Login</a>";
+					echo "Password reset!\n<br />\nYou may now <a href=\"$tsurl/acc.php\">Login</a>";
 					} else {
 						echo "<h2>ERROR</h2>Passwords did not match!<br />\n";
 					}
@@ -667,8 +667,8 @@ elseif ($action == "messagemgmt") {
 	echo "<h2>Mail messages</h2>\n";
 	echo "<ul>\n";
 	while ( list( $mail_id, $mail_count, $mail_desc ) = mysql_fetch_row( $result ) ) {
-		$out = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mail_id\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
-		$out2 = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
+		$out = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mail_id\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
+		$out2 = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
 		if($session->hasright($_SESSION['user'], 'Admin')){
 		echo "$out\n";
 		}
@@ -687,8 +687,8 @@ elseif ($action == "messagemgmt") {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		$out = "<li>$mailn) <small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		$out2 = "<li>$mailn) <small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		$out = "<li>$mailn) <small>[ $maild ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		$out2 = "<li>$mailn) <small>[ $maild ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		if($session->hasright($_SESSION['user'], 'Admin')){
 		echo "$out\n";
 		}
@@ -708,8 +708,8 @@ elseif ($action == "messagemgmt") {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		$out = "<li>$mailn) <small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		$out2 = "<li>$mailn) <small>[ $maild ] <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		$out = "<li>$mailn) <small>[ $maild ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		$out2 = "<li>$mailn) <small>[ $maild ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		if($session->hasright($_SESSION['user'], 'Admin')){
 		echo "$out\n";
 		}
@@ -883,7 +883,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 		echo "What is your reason for unbanning this person?<br />";
 		echo "<form METHOD=\"post\" ACTION=\"acc.php?action=unban&id=". $bid ."&confirmunban=true\">";
 		echo "<input type=\"text\" name=\"unbanreason\"/><input type=\"submit\"/></form><br />";
-		echo "<a href=\"acc.php\">Cancel</a>";
+		echo "<a href=\"$tsurl/acc.php\">Cancel</a>";
 		
 	}
 }
@@ -977,7 +977,7 @@ elseif ($action == "ban") {
 				case "IP":
 					echo '<td>';
 					if ($isAdmin || $isCheckuser) { 
-						echo '<a href="search.php?term='.$row['ban_target'].'&amp;type=IP">';
+						echo '<a href="' . $tsurl . '/search.php?term='.$row['ban_target'].'&amp;type=IP">';
 					}
 					echo $row['ban_target'];
 					if ($isAdmin || $isCheckuser) { 
@@ -987,13 +987,13 @@ elseif ($action == "ban") {
 					break;
 				case "EMail":
 					echo '<td>';
-					echo '<a href="search.php?term='.$row['ban_target'].'&amp;type=email">';
+					echo '<a href="' . $tsurl . '/search.php?term='.$row['ban_target'].'&amp;type=email">';
 					echo $row['ban_target'];
 					echo '</a>';
 					echo '</td>';
 					break;
 				case "Name";
-					echo '<td><a href="search.php?term='.$row['ban_target'].'&amp;type=Request">'.$row['ban_target'].'</a></td>';
+					echo '<td><a href="' . $tsurl . '/search.php?term='.$row['ban_target'].'&amp;type=Request">'.$row['ban_target'].'</a></td>';
 					break;
 				default:
 					echo '<td>'.$row['ban_target'].'</td>';
@@ -1001,7 +1001,7 @@ elseif ($action == "ban") {
 			}
 			echo "<td>".$row['ban_user']."</td><td>".$row['ban_reason']."</td><td>".$row['ban_date']."</td><td>$until</td>";
 			if ($isAdmin) {
-				echo "<td><a href=\"acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">Unban</a></td>";
+				echo "<td><a href=\"$tsurl/acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">Unban</a></td>";
 			}
 			echo "</tr>";
 		}
@@ -1223,7 +1223,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	// check if an email has already been sent
 	if ($row['pend_emailsent'] == "1" && !isset($_GET['override'])) {
 		echo "<br />This request has already been closed in a manner that has generated an e-mail to the user, Proceed?<br />\n";
-		echo "<a href=\"acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;override=yes&amp;email=" . $_GET['email'] . "\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
+		echo "<a href=\"$tsurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;override=yes&amp;email=" . $_GET['email'] . "\">Yes</a> / <a href=\"$tsurl/acc.php\">No</a><br />\n";
 		$skin->displayIfooter();
 		die();
 	}
@@ -1234,7 +1234,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if( $row['pend_reserved'] != 0 && !isset($_GET['reserveoverride']) && $row['pend_reserved'] != $_SESSION['userID'])
 	{
 		echo "<br />This request is currently marked as being handled by ".$session->getUsernameFromUid($row['pend_reserved']).", Proceed?<br />\n";
-		echo "<a href=\"acc.php?".$_SERVER["QUERY_STRING"]."&reserveoverride=yes\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
+		echo "<a href=\"$tsurl/acc.php?".$_SERVER["QUERY_STRING"]."&reserveoverride=yes\">Yes</a> / <a href=\"$tsurl/acc.php\">No</a><br />\n";
 		$skin->displayIfooter();
 		die();
 	}
@@ -1266,7 +1266,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	// check if a request being created does not already exist. 
 	if ($gem == 1 && $exists == 0 && !isset($_GET['createoverride'])) {
 		echo "<br />You have chosen to mark this request as \"created\", but the account does not exist on the English Wikipedia, proceed?  <br />\n";
-		echo "<a href=\"acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;createoverride=yes&amp;email=" . $_GET['email'] . "\">Yes</a> / <a href=\"acc.php\">No</a><br />\n";
+		echo "<a href=\"$tsurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;createoverride=yes&amp;email=" . $_GET['email'] . "\">Yes</a> / <a href=\"$tsurl/acc.php\">No</a><br />\n";
 		$skin->displayIfooter();
 		die();
 	}
@@ -1570,12 +1570,12 @@ elseif ($action == "reserve") {
 					}
 					else
 					{
-						die('You already have reserved a request. Are you sure you wish to reserve another?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confdoublereserve=yes">Yes, reserve this request also</a></li><li><a href="acc.php">No, return to main request interface</a></li></ul>');
+						die('You already have reserved a request. Are you sure you wish to reserve another?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confdoublereserve=yes">Yes, reserve this request also</a></li><li><a href="' . $tsurl . '/acc.php">No, return to main request interface</a></li></ul>');
 					}
 					break;
 				case "deny":
 					// Prevent the user from continuing.
-					die('You already have a request reserved!<br /><a href="acc.php">Return to main request interface</a>');
+					die('You already have a request reserved!<br /><a href="' . $tsurl . '/acc.php">Return to main request interface</a>');
 					break;
 				case "inform":
 					// Tell the user that they already have requests reserved, but let them through anyway..
@@ -1599,7 +1599,7 @@ elseif ($action == "reserve") {
 		$row = mysql_fetch_assoc($result);
 		if($row['pend_status']=="Closed")
 		{
-			Die('This request is currently closed. Are you sure you wish to reserve it?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confclosed=yes">Yes, reserve this closed request</a></li><li><a href="acc.php">No, return to main request interface</a></li></ul>');			
+			Die('This request is currently closed. Are you sure you wish to reserve it?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confclosed=yes">Yes, reserve this closed request</a></li><li><a href="' . $tsurl . '/acc.php">No, return to main request interface</a></li></ul>');			
 		}
 	}	
 	
@@ -1694,7 +1694,7 @@ elseif ($action == "comment") {
        
     if( isset($_GET['id']) ) {
         $id = sanitize($_GET['id']);
-        echo "<h2>Comment on request <a href='acc.php?action=zoom&amp;id=$id&amp;hash=$urlhash'>#$id</a></h2>
+        echo "<h2>Comment on request <a href='$tsurl/acc.php?action=zoom&amp;id=$id&amp;hash=$urlhash'>#$id</a></h2>
               <form action='acc.php?action=comment-add&amp;hash=$urlhash' method='post'>";
     } else {
         $id = "";
@@ -1733,7 +1733,7 @@ elseif ($action == "comment-add") {
 		if (!$result) {
             Die("Query failed: $query ERROR: " . mysql_error()); }
         echo " Comment added Successfully! <br />
-        <a href='acc.php?action=zoom&amp;id=$id&amp;hash=$urlhash'>Return to request #$id</a>";
+        <a href='$tsurl/acc.php?action=zoom&amp;id=$id&amp;hash=$urlhash'>Return to request #$id</a>";
         $botcomment_pvt =  ($visibility == "admin") ? "private " : "";
         $botcomment = $user . " posted a " . $botcomment_pvt . "comment on request " . $id;
         if($visibility != 'admin')
@@ -1743,7 +1743,7 @@ elseif ($action == "comment-add") {
         $accbotSend->send($botcomment);
     } else {
         echo "ERROR: A required input is missing <br />
-        <a href='acc.php'>Return to main</a>";
+        <a href='$tsurl/acc.php'>Return to main</a>";
     }
  $skin->displayIfooter();
  die();

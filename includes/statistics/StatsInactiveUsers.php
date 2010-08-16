@@ -108,7 +108,7 @@ class StatsInactiveUsers extends StatisticsPage
 					if($allowSuspend)
 					{
 						$inactivesuspend = "Inactive for 45 or more days. Please contact a tool admin if you wish to come back.";
-						$out.= "<td><a class=\"request-req\" href=\"users.php?suspend=$userid&amp;preload=$inactivesuspend\">Suspend!</a></td>";
+						$out.= "<td><a class=\"request-req\" href=\"$tsurl/users.php?suspend=$userid&amp;preload=$inactivesuspend\">Suspend!</a></td>";
 					} else {
 						$out.= "<td>Immune from inactivity</td>";
 					}

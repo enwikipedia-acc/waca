@@ -254,9 +254,9 @@ function listrequests($type, $hideip, $correcthash) {
 		$uname = str_replace("%26amp%3B", "%26", $uname);
 		$rid = $row['pend_id'];
 		if ($row['pend_cmt'] != "") {
-			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&amp;id=$rid\">Zoom (CMT)</a> ";
+			$cmt = "<a class=\"request-src\" href=\"$tsurl/acc.php?action=zoom&amp;id=$rid\">Zoom (CMT)</a> ";
 		} else {
-			$cmt = "<a class=\"request-src\" href=\"acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
+			$cmt = "<a class=\"request-src\" href=\"$tsurl/acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
 		}
 		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = '" . $row['pend_ip'] . "' AND `pend_id` != '" . $row['pend_id'] . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result2 = mysql_query($query2);
@@ -329,13 +329,13 @@ function listrequests($type, $hideip, $correcthash) {
 
 	if($session->hasright($_SESSION['user'], "Admin")) {
 		// Ban IP
-		$out .= '</small></td><td><small> |</small></td><td><small> Ban: </small></td><td><small><a class="request-ban" href="acc.php?action=ban&amp;ip=' . $row['pend_id'] . '">IP</a> ';
+		$out .= "</small></td><td><small> |</small></td><td><small> Ban: </small></td><td><small><a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;ip=" . $row['pend_id'] . '">IP</a> ';
 
 		// Ban email
-		$out .= '- <a class="request-ban" href="acc.php?action=ban&amp;email=' . $row['pend_id'] . '">E-Mail</a>';
+		$out .= "- <a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;email=" . $row['pend_id'] . '">E-Mail</a>';
 
 		//Ban name
-		$out .= ' - <a class="request-ban" href="acc.php?action=ban&amp;name=' . $row['pend_id'] . '">Name</a>';
+		$out .= " - <a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;name=" . $row['pend_id'] . '">Name</a>';
 	}
 
 	$reserveByUser = isReserved($row['pend_id']);
@@ -344,21 +344,21 @@ function listrequests($type, $hideip, $correcthash) {
 	{
 		if( $reserveByUser == $_SESSION['userID'])
 		{
-			$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Break reservation</a>";
+			$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"$tsurl/acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Break reservation</a>";
 		} else {
-			$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"statistics.php?page=Users&user=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
+			$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"$tsurl/statistics.php?page=Users&user=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
 
 			// force break?
 			global $enableAdminBreakReserve;
 			if( $enableAdminBreakReserve && $session->hasright($_SESSION['user'], "Admin"))
 			{
-				$out .= " - <a href=\"acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Force break</a>";
+				$out .= " - <a href=\"$tsurl/acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Force break</a>";
 			}
 		}
 	}
 	else // not being handled, do you want to handle this request?
 	{
-		$out .= "</small></td><td><small> | </small></td><td><small><a href=\"acc.php?action=reserve&amp;resid=" . $row['pend_id']. "\">Mark as being handled</a>";
+		$out .= "</small></td><td><small> | </small></td><td><small><a href=\"$tsurl/acc.php?action=reserve&amp;resid=" . $row['pend_id']. "\">Mark as being handled</a>";
 	}
 
 
@@ -487,8 +487,8 @@ function showlogin($action=null, $params=null) {
     </form>
     <br />
     Need Tool access?
-    <br /><a href="acc.php?action=register">Register!</a> (Requires approval)<br />
-    <a href="acc.php?action=forgotpw">Forgot your password?</a><br />';
+    <br /><a href="' . $tsurl . '/acc.php?action=register">Register!</a> (Requires approval)<br />
+    <a href="'. $tsurl . '/acc.php?action=forgotpw">Forgot your password?</a><br />';
 
 	// Finally the footer are added to the code.
 	return $html;
@@ -534,7 +534,7 @@ HTML;
 		} else {
 			$out .= ' class="odd">';
 		}
-		$out .= "<td><small><a style=\"color:green\" href=\"acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></small></td><td><small>  <a style=\"color:orange\" href=\"acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=users\">Reset</a></small></td></tr>";
+		$out .= "<td><small><a style=\"color:green\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></small></td><td><small>  <a style=\"color:orange\" href=\"$tsurl/acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=users\">Reset</a></small></td></tr>";
 		$html .= $out;
 	}
 	$html .= "</table>\n";
@@ -766,29 +766,29 @@ function zoomPage($id,$urlhash)
 		if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
 		{
 			// Done
-			$out .= '<a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '"><strong>Created!</strong></a>';
+			$out .= '<a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '"><strong>Created!</strong></a>';
 
 			// Similar
-			$out .= ' | <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=2&amp;sum=' . $row['pend_checksum'] . '">Similar</a>';
+			$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=2&amp;sum=' . $row['pend_checksum'] . '">Similar</a>';
 
 			// Taken
-			$out .= ' | <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=3&amp;sum=' . $row['pend_checksum'] . '">Taken</a>';
+			$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=3&amp;sum=' . $row['pend_checksum'] . '">Taken</a>';
 
 			// SUL Taken
-			$out .= ' | <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=26&amp;sum=' . $row['pend_checksum'] . '">SUL Taken</a>';
+			$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=26&amp;sum=' . $row['pend_checksum'] . '">SUL Taken</a>';
 
 			// UPolicy
-			$out .= ' | <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=4&amp;sum=' . $row['pend_checksum'] . '">UPolicy</a>';
+			$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=4&amp;sum=' . $row['pend_checksum'] . '">UPolicy</a>';
 
 			// Invalid
-			$out .= ' | <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=5&amp;sum=' . $row['pend_checksum'] . '">Invalid</a>';
+			$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=5&amp;sum=' . $row['pend_checksum'] . '">Invalid</a>';
 
 			// Custom
-			$out .= ' | <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=custom&amp;sum=' . $row['pend_checksum'] . '">Custom</a>';
+			$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=custom&amp;sum=' . $row['pend_checksum'] . '">Custom</a>';
 
 
 			// Drop
-			$out .= ' | <a class="request-done" href="acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
+			$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
 			
 			if (!isset ($target)) {
 				$target = "zoom";
@@ -820,7 +820,7 @@ function zoomPage($id,$urlhash)
 		$out .= "<h3>This request is currently being handled by " . $session->getUsernameFromUid($reservingUser) ."</h3>";
 	}
 	if ($reservingUser == $_SESSION['userID'] && $row['pend_status'] != "Closed") {
-		$out .= '<p><b>URL to allow other users to see IP/Email:</b> <a href="acc.php?action=zoom&amp;id=' . $thisid . '&amp;hash=' . $hash . '">' . $tsurl . '/acc.php?action=zoom&id=' . $thisid . '&hash=' . $hash . '</a></p>';
+		$out .= '<p><b>URL to allow other users to see IP/Email:</b> <a href="' . $tsurl . '/acc.php?action=zoom&amp;id=' . $thisid . '&amp;hash=' . $hash . '">' . $tsurl . '/acc.php?action=zoom&id=' . $thisid . '&hash=' . $hash . '</a></p>';
 	}
 
 	global $allowViewingOfUseragent;
@@ -923,9 +923,9 @@ function zoomPage($id,$urlhash)
 	$out .= $logPage->showListLog(0,100);
 
 	if ($urlhash != "") {
-		$out .= "<h2>Comments on this request:<small> (<a href='acc.php?action=comment&amp;id=$gid&amp;hash=$urlhash'>new comment</a>)</small></h2>";
+		$out .= "<h2>Comments on this request:<small> (<a href='$tsurl/acc.php?action=comment&amp;id=$gid&amp;hash=$urlhash'>new comment</a>)</small></h2>";
 	} else {
-		$out .= "<h2>Comments on this request:<small> (<a href='acc.php?action=comment&amp;id=$gid'>new comment</a>)</small></h2>";
+		$out .= "<h2>Comments on this request:<small> (<a href='$tsurl/acc.php?action=comment&amp;id=$gid'>new comment</a>)</small></h2>";
 	}
 
 	if ($session->hasright($_SESSION['user'], 'Admin')) {
@@ -941,9 +941,9 @@ function zoomPage($id,$urlhash)
 		$out .= "<ul>";
 		while ($row = mysql_fetch_assoc($result)) {
 			if ($row['cmt_visability'] == "admin") {
-				$out .= "<li><a href='statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented, " . $row['cmt_comment'] . "  at " . $row['cmt_time'] . " <font color='red'>(admin only)</font></li>";
+				$out .= "<li><a href='$tsurl/statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented, " . $row['cmt_comment'] . "  at " . $row['cmt_time'] . " <font color='red'>(admin only)</font></li>";
 			} else {
-				$out .= "<li><a href='statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented,  " . $row['cmt_comment'] . "  at " . $row['cmt_time'] . "</li>";
+				$out .= "<li><a href='$tsurl/statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented,  " . $row['cmt_comment'] . "  at " . $row['cmt_time'] . "</li>";
 			}
 			$numcomment++;
 		}
@@ -1007,7 +1007,7 @@ function zoomPage($id,$urlhash)
 			$currentrow += 1;
 			$out .= "<tr";
 			if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
-			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td><td>$editcount</td><td>$date</td></tr>";
+			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td><td>$editcount</td><td>$date</td></tr>";
 		}
 		if ($currentrow == 0) {
 			$out .= "<i>None.</i>\n";
@@ -1067,7 +1067,7 @@ function zoomPage($id,$urlhash)
 			$currentrow += 1;
 			$out .= "<tr";
 			if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
-			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td><td>$editcount</td><td>$date</td></tr>";
+			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td><td>$editcount</td><td>$date</td></tr>";
 		}
 		// Checks whether there were similar requests.
 		if ($currentrow == 0) {
@@ -1101,13 +1101,13 @@ function deferlinks($type, $checksum, $pendid) {
 		if($type == "Admin" || $type == "Open" || $type == "Checkuser")
 		{
 			$out .= " | Defer to: ";
-			$out .= "<a class=\"request-done\" href=\"acc.php?action=defer&amp;id=$pendid&amp;sum=$pendid&amp;target=$target1\">$message1</a>";
+			$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$pendid&amp;target=$target1\">$message1</a>";
 			$out .= " - ";
-			$out .= "<a class=\"request-done\" href=\"acc.php?action=defer&amp;id=$pendid&amp;sum=$pendid&amp;target=$target2\">$message2</a>";
+			$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$pendid&amp;target=$target2\">$message2</a>";
 		}
 		else
 		{
-			$out .= " | <a class=\"request-done\" href=\"acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=users\">Reset Request</a>";
+			$out .= " | <a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=users\">Reset Request</a>";
 		}
 		return $out;
 }
