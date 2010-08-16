@@ -67,6 +67,7 @@ echo '<h1>Request search tool</h1>';
 if( isset($_GET['term'])) {
 	$term = sanitize($_GET['term']);
 	$type = sanitize($_GET['type']);
+	$cidr = sanitize($_GET['cidr']);
 
 	if($term == "" || $term == "%") {
 		$skin->displayRequestMsg("No search term entered.<br />\n");	
@@ -118,9 +119,20 @@ if( isset($_GET['term'])) {
 				$skin->displayIfooter();
 				die();
 		}
-		echo "<h2>Searching for IP address: $term ...</h2>";
+		if ($cidr = '32') {
+			echo "<h2>Searching for IP address: $term ...</h2>";
+		}
+		else { 
+			echo '<h2>Searching for IP range: ' . $term . '/' . $cidr . '...</h2>';
+		}
 		
+		if ($cidr != '32') {
+			$endrange = $term + pow(2, (32-$cidr));
+			$query = "SELECT pend_id,pend_ip,pend_name,pend_date,pend_status FROM acc_pend WHERE inet_atom('pend_ip') between inet_atom('$term') and inet_atom('$endrange');";
+		}
+		else {
 		$query = "SELECT pend_id,pend_ip,pend_name,pend_date,pend_status FROM acc_pend WHERE pend_ip LIKE '%$term%';";
+		}
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -183,7 +195,17 @@ else {
 	if( $session->hasright($sessionuser, "Admin") || $session->isCheckuser($sessionuser)) { //Enable the IP search for admins and CU's
 		echo '<option value="IP">as IP address</option>';
 	}
-	echo '</select></td></tr></table><br />';
+	echo '</select></td>';
+	if( $session->hasright($sessionuser, "Admin") || $session->isCheckuser($sessionuser)) {
+		//TODO: Find some way to make this not show up when requested username/email address is selected (probably with Javascript). 
+		echo '<td><select name="cidr">';
+		echo '<option value = "32">IP CIDR (optional)</option>'; //Default to /32 (1 IP Address).
+		for($i = "32"; $i >= 16; $i--) { //Use for to show options for /32 (yes I know its redundant) through /16
+			echo '<option value = "' . $i . '">/' . $i . '</option>'; 
+		}
+		echo '</select></td>';
+	}
+	echo '</tr></table><br />';
 	echo '<input type="submit" />';
 	echo '</form>';
 }
