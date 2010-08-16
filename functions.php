@@ -219,7 +219,7 @@ function listrequests($type, $hideip, $correcthash) {
 	/*
 	 * List requests, at Zoom, and, on the main page
 	 */
-	global $toolserver_database, $tsSQLlink;
+	global $toolserver_database, $tsSQLlink, $tsurl;
 	global $secure;
 	global $enableEmailConfirm;
 	global $session;
@@ -418,7 +418,7 @@ function showlogin($action=null, $params=null) {
 	/*
 	 * Show the login page.
 	 */
-	global $_SESSION, $tsSQLlink, $useCaptcha, $skin;
+	global $_SESSION, $tsSQLlink, $useCaptcha, $skin, $tsurl;
 
 	// Create the variable used for the coding.
 	$html ='<div id="sitenotice">Please login first, and we\'ll send you on your way!</div>
@@ -507,7 +507,7 @@ function getdevs() {
 }
 
 function defaultpage() {
-	global $tsSQLlink, $toolserver_database, $skin;
+	global $tsSQLlink, $toolserver_database, $skin, $tsurl;
 	@mysql_select_db( $toolserver_database, $tsSQLlink) or sqlerror(mysql_error,"Could not select db");
 	$html =<<<HTML
 <h1>Create an account!</h1>
@@ -599,7 +599,7 @@ function isOnWhitelist($user)
 
 function zoomPage($id,$urlhash)
 {
-	global $tsSQLlink, $session, $skin;
+	global $tsSQLlink, $session, $skin, $tsurl;
 
 	$out = "";
 	$gid = sanitize($id);
@@ -1079,6 +1079,7 @@ function zoomPage($id,$urlhash)
 }
 
 function deferlinks($type, $checksum, $pendid) {
+	global $tsurl;
 		if ($type == 'Open') {
 			$target1 = 'admins';
 			$message1 = "Flagged Users";
