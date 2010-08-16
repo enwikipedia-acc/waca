@@ -119,15 +119,15 @@ if( isset($_GET['term'])) {
 				$skin->displayIfooter();
 				die();
 		}
-		if ($cidr = '32') {
+		if ($_GET['cidr'] = '32') {
 			echo "<h2>Searching for IP address: $term ...</h2>";
 		}
 		else { 
 			echo '<h2>Searching for IP range: ' . $term . '/' . $cidr . '...</h2>';
 		}
 		
-		if ($cidr != '32') {
-			$endrange = $term + pow(2, (32-$cidr));
+		if ($_GET['cidr'] != '32') {
+			$endrange = $term + pow(2, (32-$_GET['cidr']));
 			$query = "SELECT pend_id,pend_ip,pend_name,pend_date,pend_status FROM acc_pend WHERE inet_atom('pend_ip') between inet_atom('$term') and inet_atom('$endrange');";
 		}
 		else {
