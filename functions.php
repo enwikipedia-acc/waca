@@ -971,11 +971,36 @@ function zoomPage($id,$urlhash)
 
 		$currentrow = 0;
 		while ($row = mysql_fetch_assoc($result)) {
+			$createdUser = $row['pend_name'];
+			
+			// Run an API query to get editcount and registration date of user
+			$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$createdUser"));
+
+			// Get the edit count from the query and create a string with it
+			$editcount = $apiquery['query']['allusers'][0]['editcount'];
+			if ($editcount != 0) {
+				$editcount = "$editcount edits";
+				//User has edited, so display date of last edit
+				$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&format=php&list=usercontribs&uclimit=1&ucuser=$createdUser"));
+				$lastEdit = strtotime($apiquery['query']['usercontribs'][0]['timestamp']);
+				$date = 'Last edit ' . date('F j, Y', $lastEdit);
+			} else {
+				$editcount = "No edits";
+				// User has not edited, so display registration date
+				if ($apiquery['query']['allusers'][0]['registration'] != '') {
+					$regDate = strtotime($apiquery['query']['allusers'][0]['registration']);
+					$date = 'Registered ' . date('F j, Y', $regDate);
+				} else {
+					// Registration date is not set, so user registered before registration dates were logged
+					$date = 'Registered before September 2005';
+				}
+			}
+			
 			if ($currentrow == 0) { $out .= "<table cellspacing=\"0\">\n"; }
 			$currentrow += 1;
 			$out .= "<tr";
 			if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
-			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
+			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $createdUser . "</a></td><td>$editcount</td><td>$date</td></tr>";
 		}
 		if ($currentrow == 0) {
 			$out .= "<i>None.</i>\n";
@@ -995,6 +1020,32 @@ function zoomPage($id,$urlhash)
 
 		$currentrow = 0;
 		while ($row = mysql_fetch_assoc($result)) {
+			
+			$createdUser = $row['pend_name'];
+			
+			// Run an API query to get editcount and registration date of user
+			$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$createdUser"));
+
+			// Get the edit count from the query and create a string with it
+			$editcount = $apiquery['query']['allusers'][0]['editcount'];
+			if ($editcount != 0) {
+				$editcount = "$editcount edits";
+				//User has edited, so display date of last edit
+				$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&format=php&list=usercontribs&uclimit=1&ucuser=$createdUser"));
+				$lastEdit = strtotime($apiquery['query']['usercontribs'][0]['timestamp']);
+				$date = 'Last edit ' . date('F j, Y', $lastEdit);
+			} else {
+				$editcount = "No edits";
+				// User has not edited, so display registration date
+				if ($apiquery['query']['allusers'][0]['registration'] != '') {
+					$regDate = strtotime($apiquery['query']['allusers'][0]['registration']);
+					$date = 'Registered ' . date('F j, Y', $regDate);
+				} else {
+					// Registration date is not set, so user registered before registration dates were logged
+					$date = 'Registered before September 2005';
+				}
+			}
+			
 			// Creates the table for the first time.
 			if ($currentrow == 0) {
 				$out .= "<table cellspacing=\"0\">\n";
@@ -1003,7 +1054,7 @@ function zoomPage($id,$urlhash)
 			$currentrow += 1;
 			$out .= "<tr";
 			if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
-			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
+			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $createdUser . "</a></td><td>$editcount</td><td>$date</td></tr>";
 		}
 		// Checks whether there were similar requests.
 		if ($currentrow == 0) {
