@@ -895,8 +895,11 @@ function zoomPage($id,$urlhash)
 			$editcount = $apiquery['query']['users'][$userNumber]['editcount'];
 			if ($editcount != 0) {
 				$posc5 = "$editcount edits";
+				$oSurl = urlencode($oSpoof);
+				$oSurl = str_replace(" ", "_", $oSurl);
+				$oSurl = str_replace("%26amp%3B", "%26", $oSurl);
 				//User has edited, so display date of last edit
-				$apiquery2 = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&format=php&list=usercontribs&uclimit=1&ucuser=$oS"));
+				$apiquery2 = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&format=php&list=usercontribs&uclimit=1&ucuser=$oSurl"));
 				$lastEdit = strtotime($apiquery2['query']['users'][0]['registration']);
 				$posc6 = 'Last edit ' . date('F j, Y', $lastEdit);
 			} else {
