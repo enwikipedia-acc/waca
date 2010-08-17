@@ -990,7 +990,9 @@ function zoomPage($id,$urlhash)
 		$queryString = substr_replace($queryString, "", -1);
 		
 		$currentrow = 0;
-		mysql_data_seek($result);
+		if (mysql_num_rows($result) != 0) {
+			mysql_data_seek($result, 0);
+		}
 		while ($row = mysql_fetch_assoc($result)) {
 			$createdUser = urlencode($row['pend_name']);
 			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
@@ -1054,7 +1056,9 @@ function zoomPage($id,$urlhash)
 		$queryString = substr_replace($queryString, "", -1);
 	
 		$currentrow = 0;
-		mysql_data_seek($result);
+		if (mysql_num_rows($result) != 0) {
+			mysql_data_seek($result, 0);
+		}
 		while ($row = mysql_fetch_assoc($result)) {
 			$createdUser = urlencode($row['pend_name']);
 			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
