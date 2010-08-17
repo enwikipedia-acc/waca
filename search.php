@@ -127,7 +127,7 @@ if( isset($_GET['term'])) {
 			$cidr = '32';
 		}
 		
-		if ($cidr < '0' || $cidr > '32') {
+		if ($cidr < '16' || $cidr > '32') {
 				$skin->displayRequestMsg("The CIDR must be between /16 and /32!<br />\n");	
 				$skin->displayIfooter();
 				die();
