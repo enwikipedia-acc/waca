@@ -856,7 +856,7 @@ function zoomPage($id,$urlhash)
 			$createdUser = urlencode($oSpoof);
 			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
 			$createdUser = str_replace(" ", "_", $createdUser);
-			$queryString = $queryString . '|';
+			$queryString .= $createdUser . '|';
 		}
 		$queryString = substr_replace($queryString, "", -1);
 		
@@ -985,7 +985,7 @@ function zoomPage($id,$urlhash)
 			$createdUser = urlencode($row['pend_name']);
 			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
 			$createdUser = str_replace(" ", "_", $createdUser);
-			$queryString = $createdUser . '|';
+			$queryString .= $createdUser . '|';
 		}
 		$queryString = substr_replace($queryString, "", -1);
 		
@@ -1051,7 +1051,7 @@ function zoomPage($id,$urlhash)
 			$createdUser = urlencode($row['pend_name']);
 			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
 			$createdUser = str_replace(" ", "_", $createdUser);
-			$queryString = $createdUser . '|';
+			$queryString .= $createdUser . '|';
 		}
 		$queryString = substr_replace($queryString, "", -1);
 		
