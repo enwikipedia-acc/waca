@@ -67,7 +67,6 @@ echo '<h1>Request search tool</h1>';
 if( isset($_GET['term'])) {
 	$term = sanitize($_GET['term']);
 	$type = sanitize($_GET['type']);
-	$cidr = sanitize($_GET['cidr']);
 
 	if($term == "" || $term == "%") {
 		$skin->displayRequestMsg("No search term entered.<br />\n");	
@@ -119,7 +118,16 @@ if( isset($_GET['term'])) {
 				$skin->displayIfooter();
 				die();
 		}
-		if ($cidr < '16' || $cidr > '32') {
+		
+		$termexp = explode("/", $term, 2);
+		$term = $termexp[0];
+		$cidr = $termexp[1];
+		
+		if( !isset($cidr)) {
+			$cidr = '32';
+		}
+		
+		if ($cidr < '0' || $cidr > '32') {
 				$skin->displayRequestMsg("The CIDR must be between /16 and /32!<br />\n");	
 				$skin->displayIfooter();
 				die();
@@ -200,18 +208,9 @@ else {
 	echo '<option value="Request">as requested username</option>';
 	echo '<option value="email">as email address</option>';
 	if( $session->hasright($sessionuser, "Admin") || $session->isCheckuser($sessionuser)) { //Enable the IP search for admins and CU's
-		echo '<option value="IP">as IP address</option>';
+		echo '<option value="IP">as IP address/range</option>';
 	}
 	echo '</select></td>';
-	if( $session->hasright($sessionuser, "Admin") || $session->isCheckuser($sessionuser)) {
-		//TODO: Find some way to make this not show up when requested username/email address is selected (probably with Javascript). 
-		echo '<td><select name="cidr">';
-		echo '<option value = "32">IP CIDR (optional)</option>'; //Default to /32 (1 IP Address).
-		for($i = "32"; $i >= 16; $i--) { //Use for to show options for /32 (yes I know its redundant) through /16
-			echo '<option value = "' . $i . '">/' . $i . '</option>'; 
-		}
-		echo '</select></td>';
-	}
 	echo '</tr></table><br />';
 	echo '<input type="submit" />';
 	echo '</form>';
