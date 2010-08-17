@@ -1014,7 +1014,7 @@ function zoomPage($id,$urlhash)
 				} else {
 					$editcount = "No edits";
 					// User has not edited, so display registration date
-					if ($apiquery['query']['users'][0]['registration'] != '') {
+					if ($apiquery['query']['users'][$currentrow]['registration'] != '') {
 						$regDate = strtotime($apiquery['query']['users'][$currentrow]['registration']);
 						$date = 'Registered ' . date('F j, Y', $regDate);
 					} else {
@@ -1080,7 +1080,7 @@ function zoomPage($id,$urlhash)
 				} else {
 					$editcount = "No edits";
 					// User has not edited, so display registration date
-					if ($apiquery['query']['users'][0]['registration'] != '') {
+					if ($apiquery['query']['users'][$currentrow]['registration'] != '') {
 						$regDate = strtotime($apiquery['query']['users'][$currentrow]['registration']);
 						$date = 'Registered ' . date('F j, Y', $regDate);
 					} else {
