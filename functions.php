@@ -1003,7 +1003,7 @@ function zoomPage($id,$urlhash)
 
 			// Get the edit count from the query and create a string with it
 			$editcount = $apiquery['query']['users'][$currentrow]['editcount'];
-			if(!isset($apiquery['query']['users'][$currentrow]['missing'])) {
+			if(!isset($apiquery['query']['users'][$currentrow]['missing']) && !isset($apiquery['query']['users'][$currentrow]['invalid'])) {
 				if ($editcount != 0) {
 					$editcount = "$editcount edits";
 					$createdUser = urlencode($row['pend_name']);
@@ -1071,7 +1071,7 @@ function zoomPage($id,$urlhash)
 			
 			// Get the edit count from the query and create a string with it
 			$editcount = $apiquery['query']['users'][$currentrow]['editcount'];
-			if(!isset($apiquery['query']['users'][$currentrow]['missing'])) {
+			if(!isset($apiquery['query']['users'][$currentrow]['missing']) && !isset($apiquery['query']['users'][$currentrow]['invalid'])) {
 				if ($editcount != 0) {
 					$editcount = "$editcount edits";
 					$createdUser = urlencode($row['pend_name']);
