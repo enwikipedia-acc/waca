@@ -899,7 +899,7 @@ function zoomPage($id,$urlhash)
 				$posc5 = "$editcount edits";
 				//User has edited, so display date of last edit
 				$apiquery2 = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&format=php&list=usercontribs&uclimit=1&ucuser=$oS"));
-				$lastEdit = strtotime($apiquery['query']['users'][0]['registration']);
+				$lastEdit = strtotime($apiquery2['query']['users'][0]['registration']);
 				$posc6 = 'Last edit ' . date('F j, Y', $lastEdit);
 			} else {
 				$posc5 = "No edits";
@@ -989,6 +989,9 @@ function zoomPage($id,$urlhash)
 		}
 		$queryString = substr_replace($queryString, "", -1);
 		
+		// Run an API query to get editcount and registration date of user
+		$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&format=php&usprop=editcount|registration&ususers=$queryString"));
+		
 		$currentrow = 0;
 		if (mysql_num_rows($result) != 0) {
 			mysql_data_seek($result, 0);
@@ -997,9 +1000,6 @@ function zoomPage($id,$urlhash)
 			$createdUser = urlencode($row['pend_name']);
 			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
 			$createdUser = str_replace(" ", "_", $createdUser);
-			
-			// Run an API query to get editcount and registration date of user
-			$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&format=php&usprop=editcount|registration&ususers=$createdUser"));
 
 			// Get the edit count from the query and create a string with it
 			$editcount = $apiquery['query']['users'][$currentrow]['editcount'];
@@ -1007,8 +1007,8 @@ function zoomPage($id,$urlhash)
 				if ($editcount != 0) {
 					$editcount = "$editcount edits";
 					//User has edited, so display date of last edit
-					$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&format=php&list=usercontribs&uclimit=1&ucuser=$createdUser"));
-					$lastEdit = strtotime($apiquery['query']['usercontribs'][0]['timestamp']);
+					$apiquery2 = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&format=php&list=usercontribs&uclimit=1&ucuser=$createdUser"));
+					$lastEdit = strtotime($apiquery2['query']['usercontribs'][0]['timestamp']);
 					$date = 'Last edit ' . date('F j, Y', $lastEdit);
 				} else {
 					$editcount = "No edits";
@@ -1054,6 +1054,9 @@ function zoomPage($id,$urlhash)
 			$queryString = $createdUser . '|';
 		}
 		$queryString = substr_replace($queryString, "", -1);
+		
+		// Run an API query to get editcount and registration date of user
+		$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&format=php&usprop=editcount|registration&ususers=$queryString"));
 	
 		$currentrow = 0;
 		if (mysql_num_rows($result) != 0) {
@@ -1064,17 +1067,14 @@ function zoomPage($id,$urlhash)
 			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
 			$createdUser = str_replace(" ", "_", $createdUser);
 			
-			// Run an API query to get editcount and registration date of user
-			$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&format=php&usprop=editcount|registration&ususers=$createdUser"));
-
 			// Get the edit count from the query and create a string with it
 			$editcount = $apiquery['query']['users'][$currentrow]['editcount'];
 			if(!isset($apiquery['query']['users'][$currentrow]['missing'])) {
 				if ($editcount != 0) {
 					$editcount = "$editcount edits";
 					//User has edited, so display date of last edit
-					$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&format=php&list=usercontribs&uclimit=1&ucuser=$createdUser"));
-					$lastEdit = strtotime($apiquery['query']['usercontribs'][0]['timestamp']);
+					$apiquery2 = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&format=php&list=usercontribs&uclimit=1&ucuser=$createdUser"));
+					$lastEdit = strtotime($apiquery2['query']['usercontribs'][0]['timestamp']);
 					$date = 'Last edit ' . date('F j, Y', $lastEdit);
 				} else {
 					$editcount = "No edits";
