@@ -900,7 +900,7 @@ function zoomPage($id,$urlhash)
 				$oSurl = str_replace("%26amp%3B", "%26", $oSurl);
 				//User has edited, so display date of last edit
 				$apiquery2 = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&format=php&list=usercontribs&uclimit=1&ucuser=$oSurl"));
-				$lastEdit = strtotime($apiquery2['query']['users'][0]['registration']);
+				$lastEdit = strtotime($apiquery2['query']['usercontribs'][0]['timestamp']);
 				$posc6 = 'Last edit ' . date('F j, Y', $lastEdit);
 			} else {
 				$posc5 = "No edits";
