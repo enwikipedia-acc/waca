@@ -853,6 +853,18 @@ function zoomPage($id,$urlhash)
 	else {
 		$out2 .= "<ul>\n";
 		foreach( $spoofs as $oSpoof ) {
+			$createdUser = urlencode($oSpoof);
+			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
+			$createdUser = str_replace(" ", "_", $createdUser);
+			$queryString = $queryString . '|';
+		}
+		$queryString = substr_replace($queryString, "", -1);
+		
+		// Run an API query to get editcount and registration date of user
+		$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&format=php&usprop=editcount|registration&ususers=$queryString"));
+		
+		$userNumber = 0;
+		foreach( $spoofs as $oSpoof ) {
 			// Wouldnt work for requests where there are conflicting names.
 			// The conflicting names would be tested again the created username.
 			if ( $oSpoof == $sUser ) {
@@ -881,22 +893,19 @@ function zoomPage($id,$urlhash)
 			$posc4 = '<a href="http://toolserver.org/~vvv/sulutil.php?user=';
 			$posc4 .= $oS . '" target="_blank">SUL</a> ';
 			
-			// Run an API query to get editcount and registration date of user
-			$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$oS"));
-			
 			// Get the edit count from the query and create a string with it
-			$editcount = $apiquery['query']['allusers'][0]['editcount'];
+			$editcount = $apiquery['query']['users'][$userNumber]['editcount'];
 			if ($editcount != 0) {
 				$posc5 = "$editcount edits";
 				//User has edited, so display date of last edit
-				$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&format=php&list=usercontribs&uclimit=1&ucuser=$oS"));
-				$lastEdit = strtotime($apiquery['query']['usercontribs'][0]['timestamp']);
+				$apiquery2 = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&format=php&list=usercontribs&uclimit=1&ucuser=$oS"));
+				$lastEdit = strtotime($apiquery['query']['users'][0]['registration']);
 				$posc6 = 'Last edit ' . date('F j, Y', $lastEdit);
 			} else {
 				$posc5 = "No edits";
 				// User has not edited, so display registration date
-				if ($apiquery['query']['allusers'][0]['registration'] != '') {
-					$regDate = strtotime($apiquery['query']['allusers'][0]['registration']);
+				if ($apiquery['query']['allusers'][$userNumber]['registration'] != '') {
+					$regDate = strtotime($apiquery['query']['users'][$userNumber]['registration']);
 					$posc6 = 'Registered ' . date('F j, Y', $regDate);
 				} else {
 					// Registration date is not set, so user registered before registration dates were logged
@@ -906,6 +915,8 @@ function zoomPage($id,$urlhash)
 
 			// Adds all the variables together for one line.
 			$out2 .= "<li>" . $posc1 . "( " . $posc2 . " | " . $posc3 . " | " . $posc4 . " ) " . $posc5 . " (" . $posc6 . ")" . "</li>\n";
+			
+			$userNumber += 1;
 			
 		}
 		$out2 .= "</ul>\n";
@@ -969,8 +980,17 @@ function zoomPage($id,$urlhash)
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-
+		
+		while ($row = mysql_fetch_assoc($result)) {
+			$createdUser = urlencode($row['pend_name']);
+			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
+			$createdUser = str_replace(" ", "_", $createdUser);
+			$queryString = $createdUser . '|';
+		}
+		$queryString = substr_replace($queryString, "", -1);
+		
 		$currentrow = 0;
+		mysql_data_seek($result);
 		while ($row = mysql_fetch_assoc($result)) {
 			$createdUser = urlencode($row['pend_name']);
 			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
@@ -980,8 +1000,8 @@ function zoomPage($id,$urlhash)
 			$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&format=php&usprop=editcount|registration&ususers=$createdUser"));
 
 			// Get the edit count from the query and create a string with it
-			$editcount = $apiquery['query']['users'][0]['editcount'];
-			if(!isset($apiquery['query']['users'][0]['missing'])) {
+			$editcount = $apiquery['query']['users'][$currentrow]['editcount'];
+			if(!isset($apiquery['query']['users'][$currentrow]['missing'])) {
 				if ($editcount != 0) {
 					$editcount = "$editcount edits";
 					//User has edited, so display date of last edit
@@ -992,7 +1012,7 @@ function zoomPage($id,$urlhash)
 					$editcount = "No edits";
 					// User has not edited, so display registration date
 					if ($apiquery['query']['users'][0]['registration'] != '') {
-						$regDate = strtotime($apiquery['query']['users'][0]['registration']);
+						$regDate = strtotime($apiquery['query']['users'][$currentrow]['registration']);
 						$date = 'Registered ' . date('F j, Y', $regDate);
 					} else {
 						// Registration date is not set, so user registered before registration dates were logged
@@ -1025,7 +1045,16 @@ function zoomPage($id,$urlhash)
 		if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 
+		while ($row = mysql_fetch_assoc($result)) {
+			$createdUser = urlencode($row['pend_name']);
+			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
+			$createdUser = str_replace(" ", "_", $createdUser);
+			$queryString = $createdUser . '|';
+		}
+		$queryString = substr_replace($queryString, "", -1);
+	
 		$currentrow = 0;
+		mysql_data_seek($result);
 		while ($row = mysql_fetch_assoc($result)) {
 			$createdUser = urlencode($row['pend_name']);
 			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
@@ -1035,8 +1064,8 @@ function zoomPage($id,$urlhash)
 			$apiquery = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&format=php&usprop=editcount|registration&ususers=$createdUser"));
 
 			// Get the edit count from the query and create a string with it
-			$editcount = $apiquery['query']['users'][0]['editcount'];
-			if(!isset($apiquery['query']['users'][0]['missing'])) {
+			$editcount = $apiquery['query']['users'][$currentrow]['editcount'];
+			if(!isset($apiquery['query']['users'][$currentrow]['missing'])) {
 				if ($editcount != 0) {
 					$editcount = "$editcount edits";
 					//User has edited, so display date of last edit
@@ -1047,7 +1076,7 @@ function zoomPage($id,$urlhash)
 					$editcount = "No edits";
 					// User has not edited, so display registration date
 					if ($apiquery['query']['users'][0]['registration'] != '') {
-						$regDate = strtotime($apiquery['query']['users'][0]['registration']);
+						$regDate = strtotime($apiquery['query']['users'][$currentrow]['registration']);
 						$date = 'Registered ' . date('F j, Y', $regDate);
 					} else {
 						// Registration date is not set, so user registered before registration dates were logged
