@@ -905,7 +905,7 @@ function zoomPage($id,$urlhash)
 			} else {
 				$posc5 = "No edits";
 				// User has not edited, so display registration date
-				if ($apiquery['query']['allusers'][$userNumber]['registration'] != '') {
+				if ($apiquery['query']['users'][$userNumber]['registration'] != '') {
 					$regDate = strtotime($apiquery['query']['users'][$userNumber]['registration']);
 					$posc6 = 'Registered ' . date('F j, Y', $regDate);
 				} else {
