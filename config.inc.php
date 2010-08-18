@@ -144,8 +144,8 @@ $protectReservedRequests = true;
 $BUbasefile = "backup";							// The basefile's name.
 $BUdir = "/home/project/a/c/c/acc/backups";		// The directory where backups should be stored.
 $BUmonthdir = $BUdir . "/monthly";				// The directory where monthly backups should be stored.
-$BUdumper = "/usr/bin/mysqldump --defaults-file=~/.my.cnf " . $toolserver_database; // Add parameters here if they are needed.
-$BUgzip = "/bin/gzip"; 							// Add the gzip parameters here if needed.
+$BUdumper = "/opt/ts/mysql/5.1/bin/mysqldump --defaults-file=~/.my.cnf " . $toolserver_database; // Add parameters here if they are needed.
+$BUgzip = "/usr/bin/gzip"; 							// Add the gzip parameters here if needed.
 $BUtar = "/bin/tar -cvf";						// Add the tar parameters here if needed.
 
 
