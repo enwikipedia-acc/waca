@@ -1,8 +1,10 @@
-<?
+<?php
 
 if (isset($_SERVER['REQUEST_METHOD'])) {
     die();
 } //Web clients die.
+
+ini_set('display_errors',1);
 
 // This task is intended to clone [[User:SQLBot-Hello]],
 // and while the code has been completely rewritten, the
@@ -13,29 +15,31 @@ function WelcomeUser($theUser, $theMessage) {
 	global $wiki;
 	$talkPage = $wiki->initPage("User talk:$theUser");
 	$user = $wiki->initUser($theUser);
-	echo "Delivering welcome message to $theUser.\n\n";
+	echo "Delivering welcome message to $theUser.\n";
 	if ($talkPage->exists()) {
-		echo "User talk page already exists, stopping message delivery.\n\n";
+		echo "User talk page already exists, stopping message delivery.\n";
 	} elseif (!$user->exists()) {
-		echo "User does not exist, stopping message delivery.\n\n";
+		echo "User does not exist, stopping message delivery.\n";
 	} else {
-		$summary = "([[User:MessageDeliveryBot/2|Bot]]) Welcoming user created at [[WP:ACC]].";
+		$summary = "([[User:WelcomerBot|Bot]]) Welcoming user created at [[WP:ACC]].";
 		try {
 			$talkPage->edit($theMessage, $summary);
 		} catch (EditError $e) {
 			$errorMessage = $e->getMessage();
-			echo "Editing error - $errorMessage\n\n";
+			echo "Editing error - $errorMessage\n";
 		} catch (CURLError $e) {
-			echo "Connection error.\n\n";
+			echo "Connection error.\n";
 		}
 	}
 }
 
-require('config.inc.php');
-require('functions.php');
-require("$peachyPath/Init.php");
+require_once('config.inc.php');
+require_once('functions.php');
+require_once("$peachyPath/Init.php");
 
-$acc = mysql_connect($toolserver_hostname, $toolserver_username, $toolserver_password) or trigger_error(mysql_error(),E_USER_ERROR); 
+echo "Connecting to mysql://$toolserver_username:$toolserver_password@$toolserver_host/$toolserver_database\n";
+
+$acc = mysql_connect($toolserver_host, $toolserver_username, $toolserver_password) or trigger_error(mysql_error(),E_USER_ERROR); 
 mysql_select_db($toolserver_database, $acc);
 $result = mysql_query("SELECT welcome_id, welcome_user, welcome_sig, welcome_template, welcome_uid FROM acc_welcome WHERE welcome_status = 'Open';");
 
@@ -58,15 +62,15 @@ if (mysql_num_rows($result) != 0) {
 			if ($templateCode == NULL) {
 				$templateCode = "== Welcome! ==\n\n{{subst:Welcome|$username}}$signature ~~~~~";
 			}
-			WelcomerUser($user, $templateCode);
+			WelcomeUser($user, $templateCode);
 			
 		} else {
-			echo "Run page doesn't say go, stopping bot.\n\n";
+			echo "Run page doesn't say go, stopping bot.\n";
 			break;
 		}
 	}
 } else {
-	echo "No requests need processing.\n\n";
+	echo "No requests need processing.\n";
 }
-echo "Run complete, exiting.\n\n";
+echo "Run complete, exiting.\n";
 ?>
