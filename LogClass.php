@@ -144,7 +144,7 @@ class LogPage
 	
 	public function showListLog($offset, $limit)
 	{
-		global $tsSQLlink, $session;
+		global $tsSQLlink, $session, $tsurl;
 		$out="";
 		
 		$result = $this->getLog($offset, $limit);
