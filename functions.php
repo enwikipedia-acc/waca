@@ -855,7 +855,6 @@ function zoomPage($id,$urlhash)
 		foreach( $spoofs as $oSpoof ) {
 			$createdUser = urlencode($oSpoof);
 			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
-			$createdUser = str_replace("&", "%26", $createdUser);
 			$createdUser = str_replace(" ", "_", $createdUser);
 			$queryString .= $createdUser . '|';
 		}
@@ -986,7 +985,6 @@ function zoomPage($id,$urlhash)
 		while ($row = mysql_fetch_assoc($result)) {
 			$createdUser = urlencode($row['pend_name']);
 			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
-			$createdUser = str_replace("&", "%26", $createdUser);
 			$createdUser = str_replace(" ", "_", $createdUser);
 			$queryString .= $createdUser . '|';
 		}
@@ -1008,7 +1006,6 @@ function zoomPage($id,$urlhash)
 					$editcount = "$editcount edits";
 					$createdUser = urlencode($row['pend_name']);
 					$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
-					$createdUser = str_replace("&", "%26", $createdUser);
 					$createdUser = str_replace(" ", "_", $createdUser);
 					//User has edited, so display date of last edit
 					$apiquery2 = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&format=php&list=usercontribs&uclimit=1&ucuser=$createdUser"));
@@ -1054,7 +1051,6 @@ function zoomPage($id,$urlhash)
 		while ($row = mysql_fetch_assoc($result)) {
 			$createdUser = urlencode($row['pend_name']);
 			$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
-			$createdUser = str_replace("&", "%26", $createdUser);
 			$createdUser = str_replace(" ", "_", $createdUser);
 			$queryString .= $createdUser . '|';
 		}
@@ -1076,7 +1072,6 @@ function zoomPage($id,$urlhash)
 					$editcount = "$editcount edits";
 					$createdUser = urlencode($row['pend_name']);
 					$createdUser = str_replace("%26amp%3B", "%26", $createdUser);
-					$createdUser = str_replace("&", "%26", $createdUser);
 					$createdUser = str_replace(" ", "_", $createdUser);
 					//User has edited, so display date of last edit
 					$apiquery2 = unserialize(file_get_contents("http://en.wikipedia.org/w/api.php?action=query&format=php&list=usercontribs&uclimit=1&ucuser=$createdUser"));
