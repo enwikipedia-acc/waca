@@ -1141,9 +1141,9 @@ function deferlinks($type, $checksum, $pendid) {
 		if($type == "Admin" || $type == "Open" || $type == "Checkuser")
 		{
 			$out .= " | Defer to: ";
-			$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$pendid&amp;target=$target1\">$message1</a>";
+			$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=$target1\">$message1</a>";
 			$out .= " - ";
-			$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$pendid&amp;target=$target2\">$message2</a>";
+			$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=$target2\">$message2</a>";
 		}
 		else
 		{
