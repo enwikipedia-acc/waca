@@ -1316,7 +1316,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		if (!isset($template)) {
 			$template = "welcome";
 		}
-		$sig = sanitize($sig);
+		$sig = mysql_real_escape_string($sig); // Using just a normal escape instead of sanitize, because sanitize will do htmlentities, and this is already stored with htmlentities.
 		$query = "INSERT INTO acc_welcome (welcome_uid, welcome_user, welcome_sig, welcome_status, welcome_pend, welcome_template) VALUES ('$sid', '$gus', '$sig', 'Open', '$gid', '$template');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)

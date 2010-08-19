@@ -21,7 +21,7 @@ function WelcomeUser($theUser, $theMessage) {
 	} elseif (!$user->exists()) {
 		echo "User does not exist, stopping message delivery.\n";
 	} else {
-		$summary = "([[User:WelcomerBot|Bot]]) Welcoming user created at [[WP:ACC]].";
+		$summary = "[[User:WelcomerBot/1|Bot]]: Welcoming user created at [[WP:ACC]].";
 		try {
 			$talkPage->edit($theMessage, $summary);
 		} catch (EditError $e) {
@@ -41,23 +41,23 @@ echo "Connecting to mysql://$toolserver_username:$toolserver_password@$toolserve
 
 $acc = mysql_connect($toolserver_host, $toolserver_username, $toolserver_password) or trigger_error(mysql_error(),E_USER_ERROR); 
 mysql_select_db($toolserver_database, $acc);
-$result = mysql_query("SELECT welcome_id, welcome_user, welcome_sig, welcome_template, welcome_uid FROM acc_welcome WHERE welcome_status = 'Open';");
+$result = mysql_query("SELECT * FROM acc_welcome WHERE welcome_status = 'Open';");
 
 if (mysql_num_rows($result) != 0) {
 	$wiki = Peachy::newWiki("WelcomerBot");
 	$runPage = $wiki->initPage("User:WelcomerBot/Run");
 	$templates = templatesarray($acc);
-	while($row = mysql_fetch_row($result)) {
+	while($row = mysql_fetch_assoc($result)) {
 		if ($runPage->get_text() == 'go') {
-			$theid = $row[0];
-			$user = $row[1];
-			$signature = html_entity_decode($row[2]);
-			$template = $row[3];
-			$username = $row[4];
+			$theid = $row['welcome_id'];
+			$user = $row['welcome_user'];
+			$signature = html_entity_decode($row['welcome_sig']);
+			$templateID = $row['welcome_template'];
+			$username = $row['welcome_uid'];
 		
 			mysql_query("UPDATE acc_welcome SET welcome_status = 'Closed' WHERE welcome_id = '" . $theid . "';");
 			
-			$templateCode = $templates[$template][1];
+			$templateCode = $templates[$templateID][1];
 			eval("\$templateCode = \"$templateCode\";");
 			if ($templateCode == NULL) {
 				$templateCode = "== Welcome! ==\n\n{{subst:Welcome|$username}}$signature ~~~~~";
