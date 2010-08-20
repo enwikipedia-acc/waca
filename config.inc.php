@@ -71,6 +71,8 @@ $dontUseDbCulprit = ""; 	// Your name, or the person who broke the tool.
  * ACCBot IRC bot
  */
 
+$ircBotDaemonise = true;					// Run the IRC bot as a daemon, detached from the terminal.
+
 $ircBotNickServPassword = ""; 				// Password for ACCBot's Nickserv account.
 $ircBotCommunicationKey = ""; 				// Key used to communicate with the ACCBot.
 $ircBotNetworkHost = "chat.freenode.net"; 	// The host to use for connecting.

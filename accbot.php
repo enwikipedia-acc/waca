@@ -503,24 +503,28 @@
 		die(); 
 	}
 
-	$pidnum = pcntl_fork();
- 
-	if( $pidnum == -1 ) {
-		// Well, we can't daemonize for some reason.
-		die( "Problem - Could not fork child!\n" );
-	} else if( $pidnum ) {
-		// We'll only be running a child process, so, this process need not continue.
-		// echo "Detaching from terminal.\n";	
-		exit();
-	} else {
-		// We're the child. Continuing on below as the child.
+	global $ircBotDaemonise;
+	if($ircBotDaemonise)
+	{
+		$pidnum = pcntl_fork();
+	 
+		if( $pidnum == -1 ) {
+			// Well, we can't daemonize for some reason.
+			die( "Problem - Could not fork child!\n" );
+		} else if( $pidnum ) {
+			// We'll only be running a child process, so, this process need not continue.
+			// echo "Detaching from terminal.\n";	
+			exit();
+		} else {
+			// We're the child. Continuing on below as the child.
+		}
+	 
+		if( posix_setsid() == -1 ) {
+			// If we can't detach, we're not daemonized. No reason to go on.
+			die( "Problem - I could not detach!\n" );
+		}
 	}
- 
-	if( posix_setsid() == -1 ) {
-		// If we can't detach, we're not daemonized. No reason to go on.
-		die( "Problem - I could not detach!\n" );
-	}
- 
+	
 	set_time_limit( 0 );
 
 	$fp = fsockopen( $host, $port, $errno, $errstr, 30 );
