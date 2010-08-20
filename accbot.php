@@ -295,7 +295,7 @@
 		$isUser = ( ( $isUser['count'] == 0 ) ? false : true );
 
 		if( $isUser ) {
-			$count = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_action` = \'Closed 1\' AND `log_user` = \''
+			$count = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE (`log_action` = \'Closed 1\' OR `log_action` = \'Closed custom-y\') AND `log_user` = \''
 				. sanitize( $username ) . '\'' ) ) or die( 'MySQL Error: ' . mysql_error() . "\n" );
 
 			$count = $count['count'];
@@ -349,7 +349,7 @@
 			}
 
 			$today = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_time` LIKE \'' . sanitize( date( 'Y-m-d' ) )
-				. '%\' AND `log_action` = \'Closed 1\' AND `log_user` = \'' . sanitize( $username ) . '\'' ) )
+				. '%\' AND (`log_action` = \'Closed 1\' OR `log_action` = \'Closed custom-y\') AND `log_user` = \'' . sanitize( $username ) . '\'' ) )
 				or die( 'MySQL Error: ' . mysql_error() . "\n" );
 			$today = $today['count'];
 
