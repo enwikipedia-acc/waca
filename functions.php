@@ -611,8 +611,7 @@ function zoomPage($id,$urlhash)
 	$row = mysql_fetch_assoc($result);
 	if ($row['pend_mailconfirm'] != 'Confirmed' && $row['pend_mailconfirm'] != "") {
 		$out .= "Email has not yet been confirmed for this request, so it can not yet be closed or viewed";
-		$out .= $skin->displayIfooter();
-		die();
+		return $out; 
 	}
 	$out .= "<h2>Details for Request #" . $id . ":</h2>";
 	$thisip = $row['pend_ip'];
