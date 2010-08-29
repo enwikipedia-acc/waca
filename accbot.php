@@ -368,6 +368,10 @@
 		$adminRequests = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_status` = \'Admin\' AND `pend_mailconfirm` = \'Confirmed\'' ) )
 			or die( 'MySQL Error: ' . mysql_error() . "\n" );
 		$adminRequests = $adminRequests['count'];
+		
+		$cuRequests = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_status` = \'Checkuser\' AND `pend_mailconfirm` = \'Confirmed\'' ) )
+			or die( 'MySQL Error: ' . mysql_error() . "\n" );
+		$cuRequests = $cuRequests['count'];
 
 		$bans = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_ban`' ) )
 			or die( 'MySQL Error: ' . mysql_error() . "\n" );
@@ -388,6 +392,7 @@
 		irc( 'PRIVMSG ' . $parsed['to'] . ' :'
 			. 'Open requests: ' . $open
 			. ', Account creator requests: ' . $adminRequests
+			. ', Checkuser requests: ' . $cuRequests
 			. ', Banned: ' . $bans
 			. ', Site users: ' . $users
 			. ', Site admins: ' . $admins
