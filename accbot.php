@@ -391,7 +391,7 @@
 
 		irc( 'PRIVMSG ' . $parsed['to'] . ' :'
 			. 'Open requests: ' . $open
-			. ', Account creator requests: ' . $adminRequests
+			. ', Flagged user needed requests: ' . $adminRequests
 			. ', Checkuser requests: ' . $cuRequests
 			. ', Banned: ' . $bans
 			. ', Site users: ' . $users
