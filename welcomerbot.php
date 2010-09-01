@@ -4,7 +4,7 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
     die();
 } //Web clients die.
 
-ini_set('display_errors',1);
+ini_set('display_errors', 1);
 
 // This task is intended to clone [[User:SQLBot-Hello]],
 // and while the code has been completely rewritten, the
@@ -39,39 +39,29 @@ require_once("$peachyPath/Init.php");
 
 echo "Connecting to mysql://$toolserver_username:$toolserver_password@$toolserver_host/$toolserver_database\n";
 
-//$acc = mysql_connect($toolserver_host, $toolserver_username, $toolserver_password) or trigger_error(mysql_error(),E_USER_ERROR); 
-//mysql_select_db($toolserver_database, $acc);
+$db = new Database($toolserver_host, $toolserver_username, $toolserver_password, $toolserver_database);
+if(!$db) trigger_error($db->lastError(), E_USER_ERROR);
 
-$db = new Database( $toolserver_host, $toolserver_username, $toolserver_password, $toolserver_database );
-if( !$db ) trigger_error($db->lastError(),E_USER_ERROR);
-
-//$result = mysql_query("SELECT * FROM acc_welcome WHERE welcome_status = 'Open';");
 $res = $db->select(
 	'acc_welcome',
 	'*',
-	array( 'welcome_status' => 'Open' )
+	array('welcome_status' => 'Open')
 );
 
-//if (mysql_num_rows($result) != 0) {
-if( count( $res ) ) {
+if(count($res)) {
 	$wiki = Peachy::newWiki("WelcomerBot");
-	//$runPage = $wiki->initPage("User:WelcomerBot/Run");
 	$templates = templatesarray($acc);
-
-	//while($row = mysql_fetch_assoc($result)) {
 	foreach( $res as $row ) {
 		$theid = $row['welcome_id'];
 		$user = $row['welcome_user'];
 		$signature = html_entity_decode($row['welcome_sig']);
 		$templateID = $row['welcome_template'];
 		$username = $row['welcome_uid'];
-		
-		//mysql_query("UPDATE acc_welcome SET welcome_status = 'Closed' WHERE welcome_id = '" . $theid . "';");
-			
+
 		$db->update(
 			'acc_welcome',
-			array( 'welcome_status' => 'Closed' ),
-			array( 'welcome_id' => $theid )
+			array('welcome_status' => 'Closed'),
+			array('welcome_id' => $theid)
 		);
 
 		$templateCode = $templates[$templateID][1];
@@ -80,9 +70,10 @@ if( count( $res ) ) {
 			$templateCode = "== Welcome! ==\n\n{{subst:Welcome|$username}}$signature ~~~~~";
 		}
 		WelcomeUser($user, $templateCode);
-		
 	}
 } else {
 	echo "No requests need processing.\n";
 }
 echo "Run complete, exiting.\n";
+
+?>
