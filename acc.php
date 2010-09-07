@@ -1247,16 +1247,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_welcome'] > 0 && $gem == "1") {
-		$sig = stripslashes($row['user_welcome_sig']);
-		if (!isset($sig)) {
-			$sig = "[[User:" . stripslashes($sid) . "|" . stripslashes($sid) . "]] ([[User_talk:" . stripslashes($sid) . "|talk]])";
-		}
-		$template = $row['user_welcome_template'];
-		if (!isset($template)) {
-			$template = "welcome";
-		}
-		$sig = mysql_real_escape_string($sig); // Using just a normal escape instead of sanitize, because sanitize will do htmlentities, and this is already stored with htmlentities.
-		$query = "INSERT INTO acc_welcome (welcome_uid, welcome_user, welcome_sig, welcome_status, welcome_pend, welcome_template) VALUES ('$sid', '$gus', '$sig', 'Open', '$gid', '$template');";
+		$query = "INSERT INTO acc_welcome (welcome_user, welcome_status) VALUES ('$gus', 'Open');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());

@@ -228,12 +228,8 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `acc_welcome` (
   `welcome_id` int(11) NOT NULL AUTO_INCREMENT,
-  `welcome_uid` varchar(1024) NOT NULL,
   `welcome_user` varchar(1024) NOT NULL,
-  `welcome_sig` varchar(4096) NOT NULL,
   `welcome_status` varchar(96) NOT NULL,
-  `welcome_pend` int(11) NOT NULL,
-  `welcome_template` varchar(2048) NOT NULL,
   PRIMARY KEY (`welcome_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 SET character_set_client = @saved_cs_client;

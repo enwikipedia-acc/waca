@@ -1,4 +1,4 @@
-<?php
+<?
 
 if (isset($_SERVER['REQUEST_METHOD'])) {
     die();
@@ -12,7 +12,7 @@ ini_set('display_errors', 1);
 // to that of the original bot created by [[User:SQL]].
 
 function WelcomeUser($theUser, $theMessage) {
-	global $wiki;
+	global $wiki, $username;
 	$talkPage = $wiki->initPage("User talk:$theUser");
 	$user = $wiki->initUser($theUser);
 	echo "Delivering welcome message to $theUser.\n";
@@ -21,7 +21,7 @@ function WelcomeUser($theUser, $theMessage) {
 	} elseif (!$user->exists()) {
 		echo "User does not exist, stopping message delivery.\n";
 	} else {
-		$summary = "[[User:WelcomerBot/1|Bot]]: Welcoming user created at [[WP:ACC]].";
+		$summary = "[[User:WelcomerBot/1|Bot]]: Welcoming user created at [[WP:ACC]] by [[User:$username|.";
 		try {
 			$talkPage->edit($theMessage, $summary);
 		} catch (EditError $e) {
@@ -44,31 +44,41 @@ if(!$db) trigger_error($db->lastError(), E_USER_ERROR);
 
 $res = $db->select(
 	'acc_welcome',
-	'*',
+	array('welcome_id', 'welcome_user'),
 	array('welcome_status' => 'Open')
 );
 
 if(count($res)) {
 	$wiki = Peachy::newWiki("WelcomerBot");
 	$templates = templatesarray($acc);
-	foreach( $res as $row ) {
+	foreach($res as $row) {
 		$theid = $row['welcome_id'];
-		$user = $row['welcome_user'];
-		$signature = html_entity_decode($row['welcome_sig']);
-		$templateID = $row['welcome_template'];
-		$username = $row['welcome_uid'];
-
 		$db->update(
 			'acc_welcome',
 			array('welcome_status' => 'Closed'),
 			array('welcome_id' => $theid)
 		);
-
+		
+		$username = $row['welcome_user'];
+		$result = $db->select(
+			'acc_user',
+			array('user_welcome_sig', 'user_welcome_template'),
+			array('user_name' => $username)
+		);
+		
+		$userInfo = mysql_fetch_assoc($result);
+		$signature = html_entity_decode($userInfo['user_welcome_sig']);
+		if (!isset($signature)) {
+			$signature = " – [[User:$username|]] ([[User_talk:$username|talk]])";
+		}
+		$templateID = $userInfo['user_welcome_template'];
+		
 		$templateCode = $templates[$templateID][1];
 		eval("\$templateCode = \"$templateCode\";");
-		if ($templateCode == NULL) {
+		if (!$templateCode) {
 			$templateCode = "== Welcome! ==\n\n{{subst:Welcome|$username}}$signature ~~~~~";
 		}
+		
 		WelcomeUser($user, $templateCode);
 	}
 } else {
