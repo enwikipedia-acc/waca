@@ -41,7 +41,7 @@ $tsSQLlink = $tsSQL->getLink();
 $asSQLlink = $asSQL->getLink();
 
 //Create an array containing welcome templates
-$templates = templatesarray($tsSQLlink);
+$templates = templatesarray();
 
 // Initialize the class objects.
 $captcha = new captcha();

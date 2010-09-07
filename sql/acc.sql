@@ -228,6 +228,7 @@ SET @saved_cs_client     = @@character_set_client;
 SET character_set_client = utf8;
 CREATE TABLE `acc_welcome` (
   `welcome_id` int(11) NOT NULL AUTO_INCREMENT,
+  `welcome_uid` varchar(1024) NOT NULL,
   `welcome_user` varchar(1024) NOT NULL,
   `welcome_status` varchar(96) NOT NULL,
   PRIMARY KEY (`welcome_id`)

@@ -21,7 +21,7 @@ function WelcomeUser($theUser, $theMessage) {
 	} elseif (!$user->exists()) {
 		echo "User does not exist, stopping message delivery.\n";
 	} else {
-		$summary = "[[User:WelcomerBot/1|Bot]]: Welcoming user created at [[WP:ACC]] by [[User:$username|.";
+		$summary = "[[User:WelcomerBot/1|Bot]]: Welcoming user created at [[WP:ACC]] by [[User:$username|]].";
 		try {
 			$talkPage->edit($theMessage, $summary);
 		} catch (EditError $e) {
@@ -43,35 +43,31 @@ $db = new Database($toolserver_host, $toolserver_username, $toolserver_password,
 if(!$db) trigger_error($db->lastError(), E_USER_ERROR);
 
 $res = $db->select(
-	'acc_welcome',
-	array('welcome_id', 'welcome_user'),
-	array('welcome_status' => 'Open')
+	array('acc_welcome', 'acc_user'),
+	array('welcome_id', 'welcome_uid', 'welcome_user', 'user_welcome_sig', 'user_welcome_template'),
+	array('welcome_status' => 'Open'),
+	array(),
+	array('welcome_uid' => 'user_name')
 );
 
 if(count($res)) {
 	$wiki = Peachy::newWiki("WelcomerBot");
-	$templates = templatesarray($acc);
+	$templates = templatesarray();
 	foreach($res as $row) {
 		$theid = $row['welcome_id'];
 		$db->update(
 			'acc_welcome',
 			array('welcome_status' => 'Closed'),
-			array('welcome_id' => $theid)
+			array('welcome_id' => $theid),
 		);
 		
-		$username = $row['welcome_user'];
-		$result = $db->select(
-			'acc_user',
-			array('user_welcome_sig', 'user_welcome_template'),
-			array('user_name' => $username)
-		);
-		
-		$userInfo = mysql_fetch_assoc($result);
-		$signature = html_entity_decode($userInfo['user_welcome_sig']);
+		$user = $row['welcome_user'];
+		$username = $row['welcome_uid'];
+		$signature = html_entity_decode($row['user_welcome_sig']);
 		if (!isset($signature)) {
 			$signature = " – [[User:$username|]] ([[User_talk:$username|talk]])";
 		}
-		$templateID = $userInfo['user_welcome_template'];
+		$templateID = $row['user_welcome_template'];
 		
 		$templateCode = $templates[$templateID][1];
 		eval("\$templateCode = \"$templateCode\";");

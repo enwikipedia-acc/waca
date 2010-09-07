@@ -1146,9 +1146,15 @@ function deferlinks($type, $checksum, $pendid) {
 		return $out;
 }
 
-function templatesarray($database) {
+function templatesarray() {
+	global $toolserver_username;
+	global $toolserver_password;
+	global $toolserver_host;
+	global $toolserver_database;
+	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$templates = array();
-	$result = mysql_query("SELECT * FROM acc_template", $database);
+	$result = mysql_query("SELECT * FROM acc_template");
 	while ($row = mysql_fetch_row($result)) {
 		$templates[$row[0]] = array($row[1], $row[2]);
 	}
