@@ -58,7 +58,7 @@ if(count($res)) {
 		$db->update(
 			'acc_welcome',
 			array('welcome_status' => 'Closed'),
-			array('welcome_id' => $theid),
+			array('welcome_id' => $theid)
 		);
 		
 		$user = $row['welcome_user'];
