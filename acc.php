@@ -729,7 +729,7 @@ elseif ($action == "sban" && $_GET['user'] != "") {
 			die();
 	}
 	$reason = sanitize($_POST['banreason']);
-	$siuser = sanitize($_GET['user']); // Why do we pass this via GET?  This should be passed by $_SESSION ...
+	$siuser = sanitize($_SESSION['user']); 
 	$target = sanitize($_POST['target']);
 	$type = sanitize($_POST['type']);
 	$now = date("Y-m-d H-i-s");
@@ -947,7 +947,7 @@ elseif ($action == "ban") {
 		echo "</table>\n";
 		if($isAdmin) {
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
-			echo "<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\">";
+			echo "<form action=\"acc.php?action=sban\" method=\"post\">";
 			echo "<table>";
 			echo "<tr><td>Ban target:</td><td><input type=\"text\" name=\"target\" /></td></tr>\n";
 			echo "<tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td></tr>\n";
