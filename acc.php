@@ -660,7 +660,7 @@ elseif ($action == "messagemgmt") {
 	$skin->displayIfooter();
 	die();
 }
-elseif ($action == "sban" && $_GET['user'] != "") {
+elseif ($action == "sban") {
 	
 	// Checks whether the current user is an admin.
 	if(!$session->hasright($_SESSION['user'], "Admin")) {
