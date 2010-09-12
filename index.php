@@ -71,9 +71,6 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$user = $tsSQL->escape(trim($_POST['name']));
 	$email = $tsSQL->escape(trim($_POST['email']));
 
-	// Delete the bans where the ban_duration is smaller than the current Unix timestamp.
-	$tsSQL->query('DELETE FROM `acc_ban` WHERE `ban_duration` < UNIX_TIMESTAMP() AND ban_duration != -1');
-
 	// Check for various types of bans.
 	// See the request class for details on each one.
 	$request->isTOR();

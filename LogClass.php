@@ -236,20 +236,28 @@ class LogPage
 				$row2 = mysql_fetch_assoc($result2);
 				$logList .="<li>$rlu changed user preferences for $rlp (" . $row2['user_name'] . ") at $rlt</li>\n";
 			}
+			if ($rla == "Banned") {
+				$query2 = 'SELECT ban_target, ban_duration FROM `acc_ban` WHERE `ban_target` = \'' .$rlp. '\'; '; 
+				$result2 = mysql_query($query2);
+				if (!$result2)
+					Die("Query failed: $query2 ERROR: " . mysql_error());
+				$row2 = mysql_fetch_assoc($result2);
+				if ($row2['ban_duration'] == "-1") {
+					$until = "indefinitely";
+				}
+				else {
+					$durationtime = date("F j, Y, g:i a", $row2['ban_duration']);
+				    $until = "until $durationtime";
+				}
+				$logList .="<li>$rlu banned ". $row2['ban_target'] ." $until at $rlt ($rlc)</li>";
+			}
 			if ($rla == "Unbanned") {
-				// gonna need to think of another way to do this:
-				//    * can't look in the ban table, the ban is not there any more
-				//    * possibly look for the DNSBL or Banned entry in the log table, then parse to get type.
-			
-				//$query2 = 'SELECT * FROM `acc_ban` WHERE `ban_id` = '.$rlp.'; '; 
-				//$result2 = mysql_query($query2);
-				//if (!$result2)
-				//	Die("Query failed: $query2 ERROR: " . mysql_error());
-				//$row2 = mysql_fetch_assoc($result2);
-				//$logList .="<li>$rlu unbanned ban ID $rlp of type ".$row2['ban_type']." targeted at ".$row2['ban_target']." at $rlt</li>\n";
-				
-				$logList .="<li>$rlu unbanned ban ID $rlp at $rlt ($rlc)</li>";
-				
+				$query2 = 'SELECT ban_target FROM `acc_ban` WHERE `ban_id` = '.$rlp.'; '; 
+				$result2 = mysql_query($query2);
+				if (!$result2)
+					Die("Query failed: $query2 ERROR: " . mysql_error());
+				$row2 = mysql_fetch_assoc($result2);
+				$logList .="<li>$rlu unbanned ban ID $rlp (". $row2['ban_target'] .") at $rlt ($rlc)</li>";
 			}
 			if($rla == "Reserved") {
 				$logList .= "<li>$rlu reserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";

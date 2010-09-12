@@ -98,29 +98,14 @@ class accRequest {
 		global $messages, $tsSQL, $skin;
 		
 		// Formulates and executes the SQL query to check for the ban.
-		$query = "SELECT * FROM acc_ban WHERE ban_type = '".$tsSQL->escape($type)."' AND ban_target = '".$tsSQL->escape($target)."'";
+		$query = "SELECT * FROM acc_ban WHERE ban_type = '".$tsSQL->escape($type)."' AND ban_target = '".$tsSQL->escape($target)."' AND (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1";
 		$result = $tsSQL->query($query);
 		
 		// Fetch the result row as an array.
 		$row = mysql_fetch_assoc($result);
 		
-		// Gets the ban duration.
-		$dbanned = $row['ban_duration'];
-		
 		// When there is no ban_id it means there is no ban, so the checks are skipped.
-		if ($row['ban_id'] != "") {
-			// TO-DO: Is the needed? Why would the duration be less than 0 or empty?
-			// Wouldnt these records be deleted by the index file? LouriePieterse
-			// Checks whether the ban duration is less than zero or if it has an empty value.
-			if ($dbanned < 0 || $dbanned == "") {
-				// Adds to the current Unix timestamp and assigns it to the variable.
-				$dbanned = time() + 100;
-			}
-			
-			// Checks whether the ban duration is less than the current timestamp.
-			if ($dbanned < time()) {
-				// User not banned anymore.
-			} else {
+		if ($row['ban_id'] != "") {	
 				// User is still banned.
 				// Gets message to display to the user.
 				$message = $messages->getMessage(19);
@@ -134,7 +119,6 @@ class accRequest {
 				// Terminates the current script, as the user is still banned.
 				// This is done because the requesting process should be stopped. 
 				die();
-			}
 		}
 	}
 	

@@ -734,7 +734,17 @@ elseif ($action == "sban") {
 	$type = sanitize($_POST['type']);
 	$now = date("Y-m-d H-i-s");
 	upcsum($target);
-	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$target', '$siuser', 'Banned', '$now');";
+	$query = "SELECT * FROM acc_ban WHERE ban_type = '$type' AND ban_target = '$target' AND (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	if($row['ban_id'] != "") {
+		$skin->displayRequestMsg("The specified target is already banned!");
+		$skin->displayIfooter();
+		die();
+	}
+	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Banned', '$now', '$reason');";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
@@ -765,13 +775,18 @@ elseif ($action == "unban" && $_GET['id'] != "")
 		die("Only administrators may unban users");
 	}
 	$bid = sanitize($_GET['id']);
-	$query = "SELECT * FROM acc_ban WHERE ban_id = '$bid';";
+	$query = "SELECT * FROM acc_ban WHERE ban_id = '$bid' AND (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1;";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 	{
 		Die("Query failed: $query ERROR: " . mysql_error());
 	}
 	$row = mysql_fetch_assoc($result);
+	if( $row['ban_id'] == "") {
+		$skin->displayRequestMsg("The specified target is not banned!");
+		$skin->displayIfooter();
+		die();
+	}
 	$iTarget = $row['ban_target'];
 
 	if( isset($_GET['confirmunban']) && $_GET['confirmunban']=="true" )
@@ -785,7 +800,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 		else 
 		{
 			$unbanreason = sanitize($_POST['unbanreason']);
-			$query = "DELETE FROM acc_ban WHERE ban_id = '$bid';";
+			$query = "UPDATE acc_ban SET ban_active = 0 WHERE ban_id = '$bid'";
 			$result = $tsSQL->query($query);
 			if (!$result)
 			{
@@ -799,7 +814,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 				die($tsSQL->showError(mysql_error(), "Database error"));
 			}
 			echo "Unbanned ban #$bid<br />\n";
-			$accbotSend->send("Ban #" . $bid . " ($iTarget) unbanned by " . $_SESSION['user']);
+			$accbotSend->send("Ban #" . $bid . " ($iTarget) unbanned by " . $_SESSION['user']. " ($unbanreason)");
 			$skin->displayIfooter();
 			die();
 		}
@@ -862,7 +877,7 @@ elseif ($action == "ban") {
 			$type = "Name";
 		}
 		$target = sanitize($target);
-		$query = "SELECT * FROM acc_ban WHERE ban_target = '$target';";
+		$query = "SELECT * FROM acc_ban WHERE ban_target = '$target' AND (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1;";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -900,7 +915,7 @@ elseif ($action == "ban") {
 			echo "<td>Unban</td>";
 		}
 		echo "</tr>";
-		$query = "SELECT * FROM acc_ban;";
+		$query = "SELECT * FROM acc_ban WHERE (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1;";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
