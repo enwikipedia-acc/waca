@@ -319,12 +319,12 @@ function listrequests($type, $hideip, $correcthash) {
 			if ($otheripreqs['count'] == 0) {
 				$out .= '(' . $otheripreqs['count'] . ')';
 			} else {
-				$out .= '(</span><b><span class="request-mult">' . $otheripreqs['count'] . '</span></b><span class="request-src">)';
+				$out .= '(</span><b><span class="request-mult">' . $otheripreqs['count'] . '</span></b><span class="request-src">)<td><small> | </small></td>';
 			}
 		}
 		// Username U:
 		$duname = _utf8_decode($row['pend_name']);
-		$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-req" href="'.$wikipediaurl.'wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
+		$out .= '</span></small></td><td><small><a class="request-req" href="'.$wikipediaurl.'wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
 
 
 	if($session->hasright($_SESSION['user'], "Admin")) {
