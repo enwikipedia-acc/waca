@@ -21,7 +21,7 @@ function WelcomeUser($theUser, $theMessage) {
 	} elseif (!$user->exists()) {
 		echo "User does not exist, stopping message delivery.\n";
 	} else {
-		$summary = "[[User:WelcomerBot/1|Bot]]: Welcoming user created at [[WP:ACC]] by [[User:$username|]].";
+		$summary = "[[User:WelcomerBot/1|Bot]]: Welcoming user created at [[WP:ACC]] by [[User:$username|$username]].";
 		try {
 			$talkPage->edit($theMessage, $summary);
 		} catch (EditError $e) {
@@ -64,8 +64,8 @@ if(count($res)) {
 		$user = $row['welcome_user'];
 		$username = $row['welcome_uid'];
 		$signature = html_entity_decode($row['user_welcome_sig']);
-		if (!isset($signature)) {
-			$signature = " – [[User:$username|]] ([[User_talk:$username|talk]])";
+		if (!preg_match("/\[\[[ ]*User:[ ]*".$username."[ ]*(\||\]\])/i", $signature)) {
+			$signature = " – [[User:$username|$username]] ([[User talk:$username|talk]])";
 		}
 		$templateID = $row['user_welcome_template'];
 		
