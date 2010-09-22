@@ -16,7 +16,7 @@ class StatsInactiveUsers extends StatisticsPage
 {
 	function execute()
 	{
-		global $tsSQL, $session;
+		global $tsSQL, $tsurl, $session;
 		
 		if( isset( $_SESSION['user'] ) ) {
 			$sessionuser = $_SESSION['user'];
