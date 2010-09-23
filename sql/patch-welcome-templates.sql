@@ -8,7 +8,7 @@ CREATE TABLE `acc_template` (
 INSERT INTO `acc_template` (`template_id`, `template_usercode`, `template_botcode`) VALUES
 ('welcome', '{{welcome|user}} ~~~~', '{{subst:Welcome|$username}}$signature ~~~~~'),
 ('welcomeg', '{{welcomeg|user}} ~~~~', '== Welcome! ==\n\n{{subst:Welcomeg|$username|sig=$signature ~~~~~}}'),
-('welcome-personal', '{{welcome-personal|user}} ~~~~', '{{subst:Welcome-personal|$username}}$signature ~~~~~'),
+('welcome-personal', '{{welcome-personal|user}} ~~~~', '{{subst:Welcome-personal|$username||$signature ~~~~~}}'),
 ('werdan7', '{{User:Werdan7/W}} ~~~~', '{{subst:User:Werdan7/Wel}}$signature ~~~~~'),
 ('welcomemenu', '{{WelcomeMenu|sig=~~~~}}', '== Welcome! ==\n\n{{subst:WelcomeMenu|sig=$signature ~~~~~}}'),
 ('welcomeicon', '{{WelcomeIcon}} ~~~~', '== Welcome! ==\n\n{{subst:WelcomeIcon}} $signature ~~~~~'),
