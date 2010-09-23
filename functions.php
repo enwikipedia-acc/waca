@@ -721,6 +721,11 @@ function zoomPage($id,$urlhash)
 		$out .= '| ';
 		$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $row['pend_ip'] . '" target="_blank">Abuse Filter Log</a> ';
 		$out .= '</p>';
+		
+		/* Betacommand's checks
+		$out .= '| ';
+		$out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $row['pend_ip'] . '" target="_blank">Betacommand</a> ';
+		$out .= '</p>'; */
 	}
 
 	$userurl = urlencode($sUser);
@@ -951,10 +956,11 @@ function zoomPage($id,$urlhash)
 		$numcomment = 0;
 		$out .= "<ul>";
 		while ($row = mysql_fetch_assoc($result)) {
+			$comment = preg_replace('/(https?://([-\w\.]+)+(:\d+)?(/([\w/_\.]*(\?\S+)?)?)?)/', '<a href="$1">$1</a>', $row['cmt_comment']);
 			if ($row['cmt_visability'] == "admin") {
-				$out .= "<li><a href='$tsurl/statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented, " . $row['cmt_comment'] . "  at " . $row['cmt_time'] . " <font color='red'>(admin only)</font></li>";
+				$out .= "<li><a href='$tsurl/statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented, " . $comment . "  at " . $row['cmt_time'] . " <font color='red'>(admin only)</font></li>";
 			} else {
-				$out .= "<li><a href='$tsurl/statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented,  " . $row['cmt_comment'] . "  at " . $row['cmt_time'] . "</li>";
+				$out .= "<li><a href='$tsurl/statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented,  " . $comment . "  at " . $row['cmt_time'] . "</li>";
 			}
 			$numcomment++;
 		}
