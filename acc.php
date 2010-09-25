@@ -1261,7 +1261,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
-	if ($row['user_welcome'] > 0 && $gem == "1") {
+	if ($row['user_welcome'] > 0 && ($gem == "1" || $gem == "custom-y")) {
 		$query = "INSERT INTO acc_welcome (welcome_uid, welcome_user, welcome_status) VALUES ('$sid', '$gus', 'Open');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
