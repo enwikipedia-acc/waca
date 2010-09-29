@@ -1208,10 +1208,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	}
 	
 	// Checks whether the username is already in use on Wikipedia.
-	echo $row2['pend_name'] . "<br />";
-	echo $gus . "<br />";
-	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . urlencode($gus) . "&format=php");
-	echo "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . urlencode($gus) . "&format=php";
+	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . urlencode($pend2['user_name']) . "&format=php");
 	$ue = unserialize($userexist);
 	if (!isset ($ue['query']['users']['0']['missing'])) {
 		$exists = 1;
