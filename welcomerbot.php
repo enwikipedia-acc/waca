@@ -64,7 +64,7 @@ if(count($res)) {
 		$user = $row['welcome_user'];
 		$username = $row['welcome_uid'];
 		$signature = html_entity_decode($row['user_welcome_sig']);
-		if (!preg_match("\[\[[ ]*(w:)?[ ]*(en:)?[ ]*User[ ]*:[ ]*".$username."[ ]*(\||\]\])/i", $signature)) {
+		if (!preg_match("/\[\[[ ]*(w:)?[ ]*(en:)?[ ]*User[ ]*:[ ]*".$username."[ ]*(\||\]\])/i", $signature)) {
 			$signature = " – [[User:$username|$username]] ([[User talk:$username|talk]])";
 		}
 		$templateID = $row['user_welcome_template'];
