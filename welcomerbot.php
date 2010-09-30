@@ -44,7 +44,7 @@ if(!$db) trigger_error($db->lastError(), E_USER_ERROR);
 
 $res = $db->select(
 	array('acc_welcome', 'acc_user'),
-	array('welcome_id', 'welcome_uid', 'welcome_user', 'user_welcome_sig', 'user_welcome_template'),
+	array('welcome_id', 'welcome_user', 'user_onwikiname', 'user_welcome_sig', 'user_welcome_template'),
 	array('welcome_status' => 'Open'),
 	array(),
 	array('welcome_uid' => 'user_name')
@@ -62,7 +62,7 @@ if(count($res)) {
 		);
 		
 		$user = $row['welcome_user'];
-		$username = $row['welcome_uid'];
+		$username = $row['user_onwikiname'];
 		$signature = html_entity_decode($row['user_welcome_sig']);
 		if (!preg_match("/\[\[[ ]*(w:)?[ ]*(en:)?[ ]*User[ ]*:[ ]*".$username."[ ]*(\||\]\])/i", $signature)) {
 			$signature = " – [[User:$username|$username]] ([[User talk:$username|talk]])";
