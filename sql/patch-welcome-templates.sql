@@ -29,4 +29,5 @@ INSERT INTO `acc_template` (`template_id`, `template_usercode`, `template_botcod
 ('maedin', '{{User:Maedin/Welcome}} ~~~~', '{{subst:User:Maedin/Welcome}} $signature ~~~~~'),
 ('chzz', '{{User:Chzz/botwelcome|name=user|sig=~~~~}}', '{{subst:User:Chzz/botwelcome|name=$username|sig=$signature ~~~~~}}'),
 ('phantomsteve', '{{User:Phantomsteve/bot welcome}} ~~~~', '{{subst:User:Phantomsteve/bot welcome}} $signature ~~~~~'),
-('hi878', '{{User:Hi878/Welcome|user|~~~~}}', '{{subst:User:Hi878/Welcome|$username|$signature ~~~~~}}');
+('hi878', '{{User:Hi878/Welcome|user|~~~~}}', '{{subst:User:Hi878/Welcome|$username|$signature ~~~~~}}'),
+('fridaesdoom', '{{User:Fridae\'sDoom/Welcome-message}}', '{{subst:User:Fridae\'sDoom/Welcome-message|user=$username|sig=$signature ~~~~~}}');
