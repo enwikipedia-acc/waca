@@ -238,19 +238,19 @@ $developer = array(
 				"Cloak" => "*!*@wikimedia/Thehelpfulone",
 				"Other" => NULL,
 			),
-			"EdoDodo" =>
-				array(
-					"IRC" => "EdoDodo",
-					"EMail" => NULL,
-					"ToolID" => "660",
-					"wiki" => "EdoDodo",
-					"WWW" => "http://toolserver.org/dodo/",
-					"Name" => "Edoardo",
-					"Role" => "Bot Developer",
-					"Access" => "SVN, SF.net access",
-					"Cloak" => "*!*@wikipedia/EdoDodo",
-					"Other" => NULL,
-				)
+		"EdoDodo" =>
+			array(
+				"IRC" => "EdoDodo",
+				"EMail" => "dodo@toolserver.org",
+				"ToolID" => "660",
+				"wiki" => "EdoDodo",
+				"WWW" => "http://toolserver.org/~dodo/",
+				"Name" => "Edoardo",
+				"Role" => "Bot Developer",
+				"Access" => "SVN, SF.net access",
+				"Cloak" => "*!*@wikipedia/EdoDodo",
+				"Other" => NULL,
+			)
 );
 // End of the array of developers.
 
