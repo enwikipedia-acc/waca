@@ -1041,7 +1041,7 @@ function templatesarray() {
 	global $toolserver_password;
 	global $toolserver_host;
 	global $toolserver_database;
-	mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$templates = array();
 	$result = mysql_query("SELECT * FROM acc_template");
