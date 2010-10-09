@@ -1232,7 +1232,10 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			echo "<form action='?".$querystring."' method='post'>\n";
 			echo "<p>Message:</p>\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
 			echo "<p><input type='checkbox' name='created' />Account created</p>\n";
-			echo "<p><input type='checkbox' name='ccmailist' checked='checked'/>Cc to mailing list</p>\n";
+			echo "<p><input type='checkbox' name='ccmailist' checked='checked'";
+			if (!($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user'])))
+				echo " DISABLED";
+			echo "/>Cc to mailing list</p>\n";
 			echo "<p><input type='submit' value='Close and send' /></p>\n";
 			echo "</form>\n";
 			$skin->displayIfooter();
@@ -1240,9 +1243,8 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		} else {
 			
 			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
-			if (isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on") {
+			if (!($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user'])) || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on")
 				$headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
-			}
 			$headers .= 'X-ACC-Request: ' . $gid . "\r\n";
 			$headers .= 'X-ACC-UserID: ' . $_SESSION['userID'] . "\r\n";
 			
