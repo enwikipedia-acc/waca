@@ -68,8 +68,9 @@ class StatsInactiveUsers extends StatisticsPage
 					$r['tooluserid'] == 64    || // Cobi
 					
 					/*Mailing List Admins*/
-					$r['tooluserid'] == 6	  || // John Reaves
 					$r['tooluserid'] == 14       // Prodego
+												 // Stwalkerster
+												 
 				) )
 			{
 				
