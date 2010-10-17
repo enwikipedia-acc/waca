@@ -203,14 +203,11 @@ class LogPage
 			if ($rla == 'Email Confirmed') {
 				$logList .="<li>$rlu email-confirmed request $rlp ($rlt)</li>\n";
 			}
+			if ($rla == "DeletedTemplate") {
+				$logList .="<li>$rlu Deleted template $rlp, at $rlt.</li>\n";
+			}
 			if ($rla == "EditedTemplate") {
-				$tid = $rlp;
-				$query4 = "SELECT * FROM acc_template WHERE template_id = '$tid';";
-				$result4 = mysql_query($query3, $tsSQLlink);
-				if (!$result4)
-					Die("Query failed: $query ERROR: " . mysql_error());
-				$row4 = mysql_fetch_assoc($result4);
-				$logList .="<li>$rlu Edited template <a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$rlp\">$rlp (" . $row4['mail_desc'] . ")</a>, at $rlt.</li>\n";
+				$logList .="<li>$rlu Edited template <a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$rlp\">$rlp</a>, at $rlt.</li>\n";
 			}
 			if ($rla == "EditedMessage") {
 				$mid = $rlp;

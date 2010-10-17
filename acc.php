@@ -661,7 +661,7 @@ elseif ($action == "messagemgmt") {
 	die();
 }
 elseif ($action == "templatemgmt") {
-	if (isset ($_GET['view'])) {
+	if (isset($_GET['view'])) {
 		if (!preg_match('/^[0-9]*$/',$_GET['view']))
 			die('Invaild GET value passed.');
 	
@@ -677,13 +677,36 @@ elseif ($action == "templatemgmt") {
 		$skin->displayIfooter();
 		die();
 	}
-	if (isset ($_GET['edit'])) {
+	if (isset($_GET['del'])) {
 		if(!$session->hasright($_SESSION['user'], 'Admin')) {
 			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
 			$skin->displayIfooter();
 			die();
 		}
-		if (!preg_match('/^[0-9]*$/',$_GET['edit']))
+		if (!preg_match('/^[0-9]*$/', $_GET['del']))
+			die('Invaild GET value passed.');
+		$tid = sanitize($_GET['edit']);
+		$query = "DELETE FROM acc_template WHERE template_id = '$tid';";
+		$result = mysql_query($query, $tsSQLlink);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$now = date("Y-m-d H-i-s");
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$tid', '$siuser', 'DeletedTemplate', '$now');";
+		$result = mysql_query($query, $tsSQLlink);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		echo "Template $tid deleted.";
+		$accbotSend->send("Template $tid deleted by $siuser."
+		$skin->displayIfooter();
+		die();
+	}
+	if (isset($_GET['edit'])) {
+		if(!$session->hasright($_SESSION['user'], 'Admin')) {
+			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
+			$skin->displayIfooter();
+			die();
+		}
+		if (!preg_match('/^[0-9]*$/', $_GET['edit']))
 			die('Invaild GET value passed.');
 		$tid = sanitize($_GET['edit']);
 		if ( isset( $_GET['submit'] ) ) {
@@ -705,7 +728,7 @@ elseif ($action == "templatemgmt") {
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			echo "Template $tid ($usercode) updated.<br />\n";
-			$accbotSend->send("Template $tid ($usercode) edited by $siuser");
+			$accbotSend->send("Template $tid ($usercode) edited by $siuser.");
 			$skin->displayIfooter();
 			die();
 		}
@@ -737,9 +760,8 @@ elseif ($action == "templatemgmt") {
 		echo '>';
 		echo "<td>$template_id&nbsp;</td><td><small>$usercode</small>&nbsp;</td>";
 		if($session->hasright($_SESSION['user'], 'Admin'))
-			echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;</td><td><a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td>";
-		else
-			echo "<td><a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td>";
+			echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;<a href=\"$tsurl/acc.php?action=templatemgmt&amp;del=$template_id\" onclick=\"javascript:return confirm('Are you sure you wish to delete template $template_id?')\">Delete!</a>&nbsp;</td>";
+		echo "<td><a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td>";
 	}
 	echo "</table>";
 	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Interface';";
