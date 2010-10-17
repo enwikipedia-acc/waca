@@ -696,7 +696,7 @@ elseif ($action == "templatemgmt") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		echo "Template $tid deleted.";
-		$accbotSend->send("Template $tid deleted by $siuser."
+		$accbotSend->send("Template $tid deleted by $siuser.");
 		$skin->displayIfooter();
 		die();
 	}
