@@ -736,7 +736,7 @@ elseif ($action == "templatemgmt") {
 			echo ' class="alternate"';
 		echo '>';
 		echo "<td>$template_id&nbsp;</td><td><small>$usercode</small>&nbsp;</td>";
-		if($session->hasright($_SESSION['user'], 'Admin')){
+		if($session->hasright($_SESSION['user'], 'Admin'))
 			echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;</td><td><a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td>";
 		else
 			echo "<td><a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td>";
