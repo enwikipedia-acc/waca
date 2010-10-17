@@ -741,12 +741,11 @@ elseif ($action == "templatemgmt") {
 		else
 			echo "<td><a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td>";
 	}
-	echo "</ul>";
+	echo "</table>";
 	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Interface';";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	echo "</ul>";
 	$skin->displayIfooter();
 	die();
 }
