@@ -203,6 +203,9 @@ class LogPage
 			if ($rla == 'Email Confirmed') {
 				$logList .="<li>$rlu email-confirmed request $rlp ($rlt)</li>\n";
 			}
+			if ($rla == "CreatedTemplate") {
+				$logList .="<li>$rlu Created template <a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$rlp\">$rlp</a>, at $rlt.</li>\n";
+			}
 			if ($rla == "DeletedTemplate") {
 				$logList .="<li>$rlu Deleted template $rlp, at $rlt.</li>\n";
 			}

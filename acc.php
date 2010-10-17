@@ -677,9 +677,42 @@ elseif ($action == "templatemgmt") {
 		$skin->displayIfooter();
 		die();
 	}
-	if (isset($_GET['del'])) {
+	if (isset($_GET['add'])) {
 		if(!$session->hasright($_SESSION['user'], 'Admin')) {
-			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
+			echo "I'm sorry, but you do not have permission to access this page.<br />\n";
+			$skin->displayIfooter();
+			die();
+		}
+		if ( isset( $_GET['submit'] ) ) {
+			$usercode = sanitize($_POST['usercode']);
+			$botcode = sanitize($_POST['botcode']);
+			$siuser = sanitize($_SESSION['user']);
+			$query = "INSERT INTO acc_template (template_usercode, template_botcode) VALUES ('$usercode', '$botcode');";
+			$result = mysql_query($query, $tsSQLlink);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$now = date("Y-m-d H-i-s");
+			$tid = mysql_insert_id();
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$tid', '$siuser', 'CreatedTemplate', '$now');";
+			$result = mysql_query($query, $tsSQLlink);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			echo "Template $tid created.";
+			$accbotSend->send("New template $tid ($usercode) created by $siuser.");
+			$skin->displayIfooter();
+			die();
+		}
+		echo "<h2>Create template</h2><strong>This is NOT a toy. If you can see this form, you can create this template. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=templatemgmt&amp;add=yes&amp;submit=1\" method=\"post\"><br />\n";
+		echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\"/><br />\n";
+		echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\"/><br />\n";
+		echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
+		echo "</form>";
+		$skin->displayIfooter();
+		die();
+	}
+	if (isset($_GET['del'])) {
+		if(!$session->hasright($_SESSION['user'], 'Admin') || $_GET['del'] == '1') {
+			echo "I'm sorry, but you do not have permission to access this page.<br />\n";
 			$skin->displayIfooter();
 			die();
 		}
@@ -702,8 +735,8 @@ elseif ($action == "templatemgmt") {
 		die();
 	}
 	if (isset($_GET['edit'])) {
-		if(!$session->hasright($_SESSION['user'], 'Admin')) {
-			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
+		if(!$session->hasright($_SESSION['user'], 'Admin') || $_GET['edit'] == '1') {
+			echo "I'm sorry, but you do not have permission to access this page.<br />\n";
 			$skin->displayIfooter();
 			die();
 		}
@@ -712,7 +745,6 @@ elseif ($action == "templatemgmt") {
 		$tid = sanitize($_GET['edit']);
 		if ( isset( $_GET['submit'] ) ) {
 			$usercode = sanitize($_POST['usercode']);
-			$usercode = html_entity_decode($usercode);
 			$botcode = sanitize($_POST['botcode']);
 			$siuser = sanitize($_SESSION['user']);
 			$query = "UPDATE acc_template SET template_usercode = '$usercode' WHERE template_id = '$tid';";
@@ -760,15 +792,14 @@ elseif ($action == "templatemgmt") {
 			echo ' class="alternate"';
 		echo '>';
 		echo "<td>$template_id&nbsp;</td><td><small>$usercode</small>&nbsp;</td>";
-		if($session->hasright($_SESSION['user'], 'Admin'))
+		if($session->hasright($_SESSION['user'], 'Admin') && $template_id != 1)
 			echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;<a href=\"$tsurl/acc.php?action=templatemgmt&amp;del=$template_id\" onclick=\"javascript:return confirm('Are you sure you wish to delete template $template_id?')\">Delete!</a>&nbsp;</td>";
 		echo "<td><a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td>";
 	}
-	echo "</table>";
-	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Interface';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
+	echo "</table><br />";
+	echo "<form action=\"acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">";
+	echo "<input type=\"submit\" value=\"Add new\">";
+	echo "</form>";
 	$skin->displayIfooter();
 	die();
 }
