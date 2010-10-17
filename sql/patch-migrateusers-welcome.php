@@ -9,6 +9,10 @@ $result = mysql_query("SELECT `user_id`, `user_welcome_template` FROM `acc_user`
 while ($row = mysql_fetch_row($result)) {	
 	$userid = $row[0];
 	$oldfield = $row[1];
+
+	// initialise this to 1, so one user's change doesn't go to the next user who doesn't have it set
+	$newfield='1';
+
 	if($oldfield == 'welcome') {
 		$newfield = '1';
 	} elseif($oldfield == 'welcomeg') {
