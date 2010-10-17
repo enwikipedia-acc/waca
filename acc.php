@@ -303,7 +303,7 @@ elseif ($action == "sreg") {
 			$welcome = 0;
 		}
 		$user_pass = md5($pass);
-		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_secure, user_welcome, user_welcome_sig, user_welcome_template) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$secure', '$welcome', '$sig', '$template');";
+		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_secure, user_welcome, user_welcome_sig, user_welcome_templateid) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$secure', '$welcome', '$sig', '$template');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -329,7 +329,7 @@ elseif ($action == "forgotpw") {
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$row = mysql_fetch_assoc($result);
-			$hashme = $row['user_name'] . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
+			$hashme = $row['user_name'] . $row['user_email'] . $row['user_welcome_templateid'] . $row['user_id'] . $row['user_pass'];
 			$hash = md5($hashme);
 			if ($hash == $_GET['si']) {
 				if ($_POST['pw'] == $_POST['pw2']) {
@@ -355,7 +355,7 @@ elseif ($action == "forgotpw") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
-		$hashme = $row['user_name'] . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
+		$hashme = $row['user_name'] . $row['user_email'] . $row['user_welcome_templateid'] . $row['user_id'] . $row['user_pass'];
 		$hash = md5($hashme);
 		if ($hash == $_GET['si']) {
 			echo '<h2>Reset password for '. $row['user_name'].' ('.$row['user_email'].')</h2><form action="acc.php?action=forgotpw&amp;si='.$_GET['si'].'&amp;id='. $_GET['id'].'" method="post">';
@@ -386,7 +386,7 @@ HTML;
 			echo "<h2>ERROR</h2>Missing or incorrect Email address supplied.\n";
 		}
 		else{
-		$hashme = $row['user_name'] . $row['user_email'] . $row['user_welcome_template'] . $row['user_id'] . $row['user_pass'];
+		$hashme = $row['user_name'] . $row['user_email'] . $row['user_welcome_templateid'] . $row['user_id'] . $row['user_pass'];
 		$hash = md5($hashme);
 		// re bug 29: please don't escape the url parameters here: it's a plain text email so no need to escape, or you break the link
 		$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested a password reset for your account.\n\nPlease go to $tsurl/acc.php?action=forgotpw&si=$hash&id=" . $row['user_id'] . " to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
@@ -1076,7 +1076,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		} else {
 			$secureon = 0;
 		}
-		$query = "UPDATE acc_user SET user_welcome = '$welcomeon', user_welcome_sig = '$sig', user_welcome_template = '$template', user_secure = '$secureon' WHERE user_name = '$sid'";
+		$query = "UPDATE acc_user SET user_welcome = '$welcomeon', user_welcome_sig = '$sig', user_welcome_templateid = '$template', user_secure = '$secureon' WHERE user_name = '$sid'";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -1095,7 +1095,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		$securepref = " checked=\"checked\"";
 	} else { $securepref = ""; }
 	$sig = " value=\"" . html_entity_decode($row['user_welcome_sig'],ENT_NOQUOTES) . "\"";
-	$template = $row['user_welcome_template'];
+	$template = $row['user_welcome_templateid'];
 	echo '<table>';
     echo '<tr><th>Table of Contents</th></tr>';
     echo '<tr><td><a href="#1">Welcome settings</a></td></tr>';

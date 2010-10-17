@@ -43,7 +43,7 @@ $db = new Database($toolserver_host, $toolserver_username, $toolserver_password,
 if(!$db) trigger_error($db->lastError(), E_USER_ERROR);
 $res = $db->select(
 	array('acc_welcome', 'acc_user'),
-	array('welcome_id', 'welcome_user', 'user_onwikiname', 'user_welcome_sig', 'user_welcome_template'),
+	array('welcome_id', 'welcome_user', 'user_onwikiname', 'user_welcome_sig', 'user_welcome_templateid'),
 	array('welcome_status' => 'Open'),
 	array(),
 	array('welcome_uid' => 'user_name')
@@ -65,7 +65,7 @@ if(count($res)) {
 		$signature = html_entity_decode($row['user_welcome_sig']) + ' ~~~~~';
 		if (!preg_match("/\[\[[ ]*(w:)?[ ]*(en:)?[ ]*User[ ]*:[ ]*".$username."[ ]*(\||\]\])/i", $signature))
 			$signature = " – [[User:$username|$username]] ([[User talk:$username|talk]])";
-		$templateID = $row['user_welcome_template'];
+		$templateID = $row['user_welcome_templateid'];
 		
 		$templateCode = $templates[$templateID][1];
 		$templateCode = str_replace('$signature', $signature, $templateCode);

@@ -201,7 +201,7 @@ CREATE TABLE `acc_user` (
   `user_onwikiname` varchar(255) NOT NULL,
   `user_welcome` int(11) NOT NULL DEFAULT '0',
   `user_welcome_sig` varchar(4096) NOT NULL,
-  `user_welcome_template` varchar(1024) NOT NULL,
+  `user_welcome_templateid` int(11) NOT NULL DEFAULT '1',
   `user_lastactive` datetime NOT NULL,
   `user_lastip` varchar(40) CHARACTER SET utf8 NOT NULL,
   `user_forcelogout` int(3) NOT NULL,
