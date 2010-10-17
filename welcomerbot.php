@@ -70,7 +70,6 @@ if(count($res)) {
 		$templateCode = $templates[$templateID][1];
 		$templateCode = str_replace('$signature', $signature, $templateCode);
 		$templateCode = str_replace('$username', $username, $templateCode);
-		$templateCode = str_replace('\n', "\n", $templateCode);
 		if (!$templateCode)
 			$templateCode = "== Welcome! ==\n\n{{subst:Welcome|$username}}$signature ~~~~~";
 		

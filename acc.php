@@ -685,7 +685,9 @@ elseif ($action == "templatemgmt") {
 		}
 		if ( isset( $_GET['submit'] ) ) {
 			$usercode = sanitize($_POST['usercode']);
+			$usercode = str_replace('\n', "\n", $usercode);
 			$botcode = sanitize($_POST['botcode']);
+			$botcode = str_replace('\n', "\n", $botcode);
 			$siuser = sanitize($_SESSION['user']);
 			$query = "INSERT INTO acc_template (template_usercode, template_botcode) VALUES ('$usercode', '$botcode');";
 			$result = mysql_query($query, $tsSQLlink);
@@ -745,7 +747,9 @@ elseif ($action == "templatemgmt") {
 		$tid = sanitize($_GET['edit']);
 		if ( isset( $_GET['submit'] ) ) {
 			$usercode = sanitize($_POST['usercode']);
+			$usercode = str_replace('\n', "\n", $usercode);
 			$botcode = sanitize($_POST['botcode']);
+			$botcode = str_replace('\n', "\n", $botcode);
 			$siuser = sanitize($_SESSION['user']);
 			$query = "UPDATE acc_template SET template_usercode = '$usercode' WHERE template_id = '$tid';";
 			$result = mysql_query($query, $tsSQLlink);
