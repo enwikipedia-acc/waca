@@ -704,8 +704,8 @@ elseif ($action == "templatemgmt") {
 			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
-			echo "Template $mid ($usercode) updated.<br />\n";
-			$accbotSend->send("Template $mid ($usercode) edited by $siuser");
+			echo "Template $tid ($usercode) updated.<br />\n";
+			$accbotSend->send("Template $tid ($usercode) edited by $siuser");
 			$skin->displayIfooter();
 			die();
 		}
@@ -714,9 +714,9 @@ elseif ($action == "templatemgmt") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
-		echo "<h2>Edit template</h2><strong>This is NOT a toy. If you can see this form, you can edit this template. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=templatemgmt&amp;edit=$mid&amp;submit=1\" method=\"post\"><br />\n";
-		echo "Display code: <input type=\"text\" name=\"usercode\" value=\"" . $row['template_usercode'] . "\"/><br />\n";
-		echo "Bot code: <input type=\"text\" name=\"botcode\" value=\"" . $row['template_botcode'] . "\"/><br />\n";
+		echo "<h2>Edit template</h2><strong>This is NOT a toy. If you can see this form, you can edit this template. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=templatemgmt&amp;edit=$tid&amp;submit=1\" method=\"post\"><br />\n";
+		echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\" value=\"" . $row['template_usercode'] . "\"/><br />\n";
+		echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\" value=\"" . $row['template_botcode'] . "\"/><br />\n";
 		echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
 		echo "</form>";
 		$skin->displayIfooter();
