@@ -770,9 +770,11 @@ elseif ($action == "templatemgmt") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
+		$usercode = str_replace("\n", '\n', $row['template_usercode']);
+		$botcode = str_replace("\n", '\n', $row['template_botcode']);
 		echo "<h2>Edit template</h2><strong>This is NOT a toy. If you can see this form, you can edit this template. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=templatemgmt&amp;edit=$tid&amp;submit=1\" method=\"post\"><br />\n";
-		echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\" value=\"" . $row['template_usercode'] . "\"/><br />\n";
-		echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\" value=\"" . $row['template_botcode'] . "\"/><br />\n";
+		echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\" value=\"$usercode\"/><br />\n";
+		echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\" value=\"$botcode\"/><br />\n";
 		echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
 		echo "</form>";
 		$skin->displayIfooter();
