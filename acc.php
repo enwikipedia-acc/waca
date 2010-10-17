@@ -570,7 +570,7 @@ elseif ($action == "messagemgmt") {
 				sqlerror(mysql_error(),"Could not update message");
 			}
 			$now = date("Y-m-d H-i-s");
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$mid', '$siuser', 'Edited', '$now');";
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$mid', '$siuser', 'EditedMessage', '$now');";
 			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
@@ -656,6 +656,93 @@ elseif ($action == "messagemgmt") {
 		echo "$out2\n";
 		}
 	}
+	echo "</ul>";
+	$skin->displayIfooter();
+	die();
+}
+elseif ($action == "templatemgmt") {
+	if (isset ($_GET['view'])) {
+		if (!preg_match('/^[0-9]*$/',$_GET['view']))
+			die('Invaild GET value passed.');
+	
+		$tid = sanitize($_GET['view']);
+		$query = "SELECT * FROM acc_template WHERE template_id = $tid LIMIT 1;";
+		$result = mysql_query($query, $tsSQLlink);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row = mysql_fetch_assoc($result);
+		echo "<h2>View template</h2><br />Template ID: ".$row['template_id']."<br />\n";
+		echo "Display code: ".$row['template_usercode']."<br />\n";
+		echo "Bot code: <br /><pre>".$row['template_botcode']."</pre><br />\n";
+		$skin->displayIfooter();
+		die();
+	}
+	if (isset ($_GET['edit'])) {
+		if(!$session->hasright($_SESSION['user'], 'Admin')) {
+			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
+			$skin->displayIfooter();
+			die();
+		}
+		if (!preg_match('/^[0-9]*$/',$_GET['edit']))
+			die('Invaild GET value passed.');		
+		$tid = sanitize($_GET['edit']);
+		if ( isset( $_GET['submit'] ) ) {
+			$usercode = sanitize($_POST['usercode']);
+			$usercode = html_entity_decode($usercode);
+			$botcode = sanitize($_POST['botcode']);
+			$siuser = sanitize($_SESSION['user']);
+			$query = "UPDATE acc_template SET template_usercode = '$usercode' WHERE template_id = '$tid';";
+			$result = mysql_query($query, $tsSQLlink);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$query = "UPDATE acc_template SET template_botcode = '$botcode' WHERE template_id = '$tid';";
+			$result = mysql_query( $query, $tsSQLlink );
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$now = date("Y-m-d H-i-s");
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$tid', '$siuser', 'EditedTemplate', '$now');";
+			$result = mysql_query($query, $tsSQLlink);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			echo "Template $mid ($usercode) updated.<br />\n";
+			$accbotSend->send("Template $mid ($usercode) edited by $siuser");
+			$skin->displayIfooter();
+			die();
+		}
+		$query = "SELECT * FROM acc_template WHERE template_id = $mid;";
+		$result = mysql_query($query, $tsSQLlink);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$row = mysql_fetch_assoc($result);
+		echo "<h2>Edit template</h2><strong>This is NOT a toy. If you can see this form, you can edit this template. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=templatemgmt&amp;edit=$mid&amp;submit=1\" method=\"post\"><br />\n";
+		echo "Display code: <input type=\"text\" name=\"usercode\" value=\"" . $row['template_usercode'] . "\"/><br />\n";
+		echo "Bot code: <input type=\"text\" name=\"botcode\" value=\"" . $row['template_botcode'] . "\"/><br />\n";
+		echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
+		echo "</form>";
+		$skin->displayIfooter();
+		die();
+	}
+	$query = "SELECT template_id, template_usercode FROM acc_template;";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	echo "<h2>Welcome templates</h2>\n";
+	echo "<ul>\n";
+	while ( list($template_id, $usercode) = mysql_fetch_row($result) ) {
+		$out = "<li>$template_id) <small>[ $usercode ] <a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a> - <a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></small></li>";
+		$out2 = "<li>$mail_id) <small>[ $user_code ] <a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></small></li>";
+		if($session->hasright($_SESSION['user'], 'Admin')){
+			echo "$out\n";
+		}
+		elseif(!$session->hasright($_SESSION['user'], 'Admin')){
+			echo "$out2\n";
+		}
+	}
+	echo "</ul>";
+	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Interface';";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "</ul>";
 	$skin->displayIfooter();
 	die();

@@ -203,14 +203,23 @@ class LogPage
 			if ($rla == 'Email Confirmed') {
 				$logList .="<li>$rlu email-confirmed request $rlp ($rlt)</li>\n";
 			}
-			if ($rla == "Edited") {
+			if ($rla == "EditedTemplate") {
+				$tid = $rlp;
+				$query4 = "SELECT * FROM acc_template WHERE template_id = '$tid';";
+				$result4 = mysql_query($query3, $tsSQLlink);
+				if (!$result4)
+					Die("Query failed: $query ERROR: " . mysql_error());
+				$row4 = mysql_fetch_assoc($result4);
+				$logList .="<li>$rlu Edited template <a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$rlp\">$rlp (" . $row4['mail_desc'] . ")</a>, at $rlt.</li>\n";
+			}
+			if ($rla == "EditedMessage") {
 				$mid = $rlp;
 				$query3 = "SELECT * FROM acc_emails WHERE mail_id = '$mid';";
 				$result3 = mysql_query($query3, $tsSQLlink);
 				if (!$result3)
 					Die("Query failed: $query ERROR: " . mysql_error());
 				$row3 = mysql_fetch_assoc($result3);
-				$logList .="<li>$rlu Edited Message <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$rlp\">$rlp (" . $row3['mail_desc'] . ")</a>, at $rlt.</li>\n";
+				$logList .="<li>$rlu Edited message <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$rlp\">$rlp (" . $row3['mail_desc'] . ")</a>, at $rlt.</li>\n";
 			}
 			if ($rla == "Promoted" || $rla == "Demoted" || $rla == "Approved" || $rla == "Suspended" || $rla == "Declined") {
 				$uid = $rlp;
