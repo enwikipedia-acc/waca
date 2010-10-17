@@ -62,7 +62,7 @@ while ($row = mysql_fetch_row($result)) {
 	} elseif($oldfield == 'rockdrum') {
 		$newfield = '26';
 	}
-	mysql_query("UPDATE `acc_user` SET `user_wecome_templateid` = $newfield WHERE `user_id` = $userid;");
+	mysql_query("UPDATE `acc_user` SET `user_welcome_templateid` = $newfield WHERE `user_id` = $userid;");
 }
 mysql_close();
 
