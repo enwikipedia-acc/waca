@@ -1053,7 +1053,7 @@ function templatesarray() {
 
 function getToolVersion() {
 	preg_match_all('/([\d]+)/', exec("svnversion"), $match);
-	echo $match[0][0];
+	return $match[0][0];
 }
 
 ?>
