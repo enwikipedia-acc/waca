@@ -521,7 +521,7 @@ echo <<<HTML
 </ol>
 </div>
 <h2>Tool Checkuser access</h2>
-<div class="showhide" id="showhide-checkuser-link" onclick="showhide('showhide-suspended');">[show]</div>
+<div class="showhide" id="showhide-checkuser-link" onclick="showhide('showhide-checkuser-link');">[show]</div>
 <div id="showhide-checkuser" style="display: none;">
 HTML;
 
