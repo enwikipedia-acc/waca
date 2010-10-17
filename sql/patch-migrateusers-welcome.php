@@ -5,8 +5,8 @@ require_once '../config.inc.php';
 mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 @ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 mysql_query("ALTER TABLE `acc_user` ADD COLUMN `user_welcome_templateid` int(11) NOT NULL DEFAULT '1';");
-$result = mysql_query("SELECT `user_id`, `user_welcome_template` FROM `acc_users`");
-while ($row = mysql_fetch_row($result)) {
+$result = mysql_query("SELECT `user_id`, `user_welcome_template` FROM `acc_user`;");
+while ($row = mysql_fetch_row($result)) {	
 	$userid = $row[0];
 	$oldfield = $row[1];
 	if($oldfield == 'welcome') {
