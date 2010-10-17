@@ -479,7 +479,7 @@ elseif ($action == "login") {
 			// Assign values to certain Session variables.
 			// The values are retrieved from the ACC database.
 			$_SESSION['userID'] = $row['user_id'];
-			$_SESSION['user'] = mysql_real_escape_string($row['user_name']); // While yes, the data from this has come DIRECTLY from the database, if it contains a " or a ', then it'll make the SQL query break, and that's a bad thing for MOST of the code.
+			$_SESSION['user'] = $row['user_name']; // While yes, the data from this has come DIRECTLY from the database, if it contains a " or a ', then it'll make the SQL query break, and that's a bad thing for MOST of the code.
 			$_SESSION['ip'] = $ip;
 			
 			// Get data related to the current user.
