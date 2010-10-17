@@ -685,7 +685,8 @@ elseif ($action == "templatemgmt") {
 		}
 		if (!preg_match('/^[0-9]*$/', $_GET['del']))
 			die('Invaild GET value passed.');
-		$tid = sanitize($_GET['edit']);
+		$tid = sanitize($_GET['del']);
+		$siuser = sanitize($_SESSION['user']);
 		$query = "DELETE FROM acc_template WHERE template_id = '$tid';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
