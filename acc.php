@@ -666,7 +666,7 @@ elseif ($action == "templatemgmt") {
 			die('Invaild GET value passed.');
 	
 		$tid = sanitize($_GET['view']);
-		$query = "SELECT * FROM acc_template WHERE template_id = $tid LIMIT 1;";
+		$query = "SELECT * FROM acc_template WHERE template_id = '$tid' LIMIT 1;";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -684,7 +684,7 @@ elseif ($action == "templatemgmt") {
 			die();
 		}
 		if (!preg_match('/^[0-9]*$/',$_GET['edit']))
-			die('Invaild GET value passed.');		
+			die('Invaild GET value passed.');
 		$tid = sanitize($_GET['edit']);
 		if ( isset( $_GET['submit'] ) ) {
 			$usercode = sanitize($_POST['usercode']);
@@ -709,7 +709,7 @@ elseif ($action == "templatemgmt") {
 			$skin->displayIfooter();
 			die();
 		}
-		$query = "SELECT * FROM acc_template WHERE template_id = $mid;";
+		$query = "SELECT * FROM acc_template WHERE template_id = '$tid';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
