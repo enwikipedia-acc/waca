@@ -26,7 +26,7 @@ class messages {
 		if (!$result)
 			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"Database query error.");
 		$row = mysql_fetch_assoc($result);
-		preg_match_all('/([\d]+)/', exec("svnversion"), $versionnumber)
+		preg_match_all('/([\d]+)/', exec("svnversion"), $versionnumber);
 		$message = row['mail_text'];
 		$message = str_replace('%VERSION%', $versionnumber[0][0], $message);
 		return $message;
