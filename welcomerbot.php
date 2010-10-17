@@ -2,7 +2,7 @@
 
 if (isset($_SERVER['REQUEST_METHOD'])) {
     die();
-} //Web clients die.
+} // Web clients die.
 
 ini_set('display_errors', 1);
 
@@ -41,7 +41,6 @@ echo "Connecting to mysql://$toolserver_username:$toolserver_password@$toolserve
 
 $db = new Database($toolserver_host, $toolserver_username, $toolserver_password, $toolserver_database);
 if(!$db) trigger_error($db->lastError(), E_USER_ERROR);
-
 $res = $db->select(
 	array('acc_welcome', 'acc_user'),
 	array('welcome_id', 'welcome_user', 'user_onwikiname', 'user_welcome_sig', 'user_welcome_template'),
@@ -63,23 +62,24 @@ if(count($res)) {
 		
 		$user = $row['welcome_user'];
 		$username = $row['user_onwikiname'];
-		$signature = html_entity_decode($row['user_welcome_sig']);
-		if (!preg_match("/\[\[[ ]*(w:)?[ ]*(en:)?[ ]*User[ ]*:[ ]*".$username."[ ]*(\||\]\])/i", $signature)) {
+		$signature = html_entity_decode($row['user_welcome_sig']) + ' ~~~~~';
+		if (!preg_match("/\[\[[ ]*(w:)?[ ]*(en:)?[ ]*User[ ]*:[ ]*".$username."[ ]*(\||\]\])/i", $signature))
 			$signature = " – [[User:$username|$username]] ([[User talk:$username|talk]])";
-		}
 		$templateID = $row['user_welcome_template'];
 		
 		$templateCode = $templates[$templateID][1];
-		eval("\$templateCode = \"$templateCode\";");
-		if (!$templateCode) {
+		$templateCode = str_replace('$signature', $signature, $templateCode);
+		$templateCode = str_replace('$username', $username, $templateCode);
+		if (!$templateCode)
 			$templateCode = "== Welcome! ==\n\n{{subst:Welcome|$username}}$signature ~~~~~";
-		}
 		
 		WelcomeUser($user, $templateCode);
 	}
 } else {
 	echo "No requests need processing.\n";
 }
+
+$db->close();
 echo "Run complete, exiting.\n";
 
 ?>
