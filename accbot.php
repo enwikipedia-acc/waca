@@ -89,6 +89,7 @@
 		'*!*@wikipedia/Chris-G'				=> 'developer',
 		'*!*@unaffiliated/louriepieterse'		=> 'developer',
 		'*!*@wikipedia/EdoDodo'		=> 'developer',
+        '*!*@1234r00t@wikipedia/Mr-R00t'    => 'developer',
 		'*!*@*'						=> '*'
 		);
 
