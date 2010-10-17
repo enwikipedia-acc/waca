@@ -673,7 +673,7 @@ elseif ($action == "templatemgmt") {
 		$row = mysql_fetch_assoc($result);
 		echo "<h2>View template</h2><br />Template ID: ".$row['template_id']."<br />\n";
 		echo "Display code: ".$row['template_usercode']."<br />\n";
-		echo "Bot code: <br /><pre>".$row['template_botcode']."</pre><br />\n";
+		echo "Bot code: ".$row['template_botcode']."<br />\n";
 		$skin->displayIfooter();
 		die();
 	}
@@ -727,16 +727,19 @@ elseif ($action == "templatemgmt") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<h2>Welcome templates</h2>\n";
-	echo "<ul>\n";
+	echo "<table cellspacing=\"0\">\n";
+	$current = 0;
 	while ( list($template_id, $usercode) = mysql_fetch_row($result) ) {
-		$out = "<li>$template_id) <small>[ $usercode ] <a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a> - <a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></small></li>";
-		$out2 = "<li>$mail_id) <small>[ $user_code ] <a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></small></li>";
+		$current += 1;
+		echo "<tr";
+		if ($current % 2 == 0)
+			echo ' class="alternate"';
+		echo '>';
+		echo "<td>$template_id&nbsp;</td><td><small>$usercode</small>&nbsp;</td>";
 		if($session->hasright($_SESSION['user'], 'Admin')){
-			echo "$out\n";
-		}
-		elseif(!$session->hasright($_SESSION['user'], 'Admin')){
-			echo "$out2\n";
-		}
+			echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;</td><td><a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td>";
+		else
+			echo "<td><a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td>";
 	}
 	echo "</ul>";
 	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Interface';";
