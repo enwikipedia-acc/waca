@@ -520,6 +520,27 @@ while ($row = mysql_fetch_assoc($result)) {
 echo <<<HTML
 </ol>
 </div>
+<h2>Tool Checkuser access</h2>
+<div class="showhide" id="showhide-checkuser-link" onclick="showhide('showhide-suspended');">[show]</div>
+<div id="showhide-checkuser" style="display: none;">
+HTML;
+
+$query = "SELECT * FROM acc_user WHERE user_checkuser = '1';";
+$result = mysql_query($query, $tsSQLlink);
+if (!$result)
+	Die("Query failed: $query ERROR: " . mysql_error());
+echo "<ol>\n";
+while ($row = mysql_fetch_assoc($result)) {
+	$uname = $row['user_name'];
+	$uoname = $row['user_onwikiname'];
+	$userid = $row['user_id'];
+	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]</small></li>";
+	echo "$out\n";
+}
+
+echo <<<HTML
+</ol>
+</div>
 <h2>Suspended accounts</h2>
 <div class="showhide" id="showhide-suspended-link" onclick="showhide('showhide-suspended');">[show]</div>
 <div id="showhide-suspended" style="display: none;">
