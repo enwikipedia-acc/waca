@@ -483,7 +483,7 @@ elseif ($action == "login") {
 			$_SESSION['ip'] = $ip;
 			
 			// Get data related to the current user.
-			$result = mysql_query("SELECT user_lastip,user_lastactive FROM acc_user WHERE user_name ='" . $_SESSION['user'] . "';", $tsSQLlink) or sqlerror(mysql_error(),'Database error.');
+			$result = mysql_query("SELECT user_lastip,user_lastactive FROM acc_user WHERE user_name ='" . mysql_real_escape_string($_SESSION['user']) . "';", $tsSQLlink) or sqlerror(mysql_error(),'Database error.');
 			$row = mysql_fetch_assoc($result);
 			
 			// Assign values to the last login variables.
@@ -491,7 +491,7 @@ elseif ($action == "login") {
 			$_SESSION['lastlogin_time'] = strtotime($row['user_lastactive']);		
 			
 			// Set the current IP as the last login IP.
-			mysql_query("UPDATE acc_user SET user_lastip = '" . $_SESSION['ip'] . "' WHERE user_name = '" . $_SESSION['user'] . "';", $tsSQLlink);
+			mysql_query("UPDATE acc_user SET user_lastip = '" . $_SESSION['ip'] . "' WHERE user_name = '" . mysql_real_escape_string($_SESSION['user']) . "';", $tsSQLlink);
 			
 			if ( isset( $_GET['newaction'] ) ) {
 				$header = "Location: $tsurl/acc.php?action=".$_GET['newaction'];
