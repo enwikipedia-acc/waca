@@ -1,9 +1,8 @@
 DROP TABLE IF EXISTS `acc_template`;
 CREATE TABLE `acc_template` (
-  `template_id` int(11) NOT NULL AUTO_INCREMENT,
+  `template_id` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   `template_usercode` tinytext NOT NULL,
-  `template_botcode` tinytext NOT NULL,
-  PRIMARY KEY (`template_id`(255))
+  `template_botcode` tinytext NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 INSERT INTO `acc_template` (`template_usercode`, `template_botcode`) VALUES
 ('{{welcome|user}} ~~~~', '{{subst:Welcome|$username}}$signature'),
