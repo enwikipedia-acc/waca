@@ -274,7 +274,7 @@ $developer = array(
 				"Name" => "DeltaQuad",
 				"Role" => "Developer",
 				"Access" => "SVN, SF.net access",
-				"Cloak" => "*!~@wikipedia/DeltaQuad",
+				"Cloak" => "*!*@wikipedia/DeltaQuad",//I change nicks alot
 				"Other" => NULL,
 			),
 );
