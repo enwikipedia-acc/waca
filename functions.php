@@ -898,7 +898,7 @@ function zoomPage($id,$urlhash)
 	$out .= "<h2>Logs for this request:</h2>";
 	$logPage = new LogPage();
 	$logPage->filterRequest=$thisid;
-	$logPage->filterAction='(Deferred to users|Deferred to admins|Deferred to checkusers|Suspended|Approved|Promoted|Closed 1|Closed 3|Closed 2|Edited|Closed 5|Closed 4|Banned|Unbanned|Closed 0|Closed 26|Closed custom|Closed custom-y|Closed custom-n|Declined|Blacklist Hit|DNSBL Hit|Demoted|Renamed|Prefchange)';
+	$logPage->filterAction='(Deferred to users|Deferred to admins|Deferred to checkusers|Closed 1|Closed 3|Closed 2|Closed 5|Closed 4|Banned|Unbanned|Closed 0|Closed 26|Closed custom|Closed custom-y|Closed custom-n|Blacklist Hit|DNSBL Hit)';
 	$logPage->showPager=false;
 	$out .= $logPage->showListLog(0,100);
 
