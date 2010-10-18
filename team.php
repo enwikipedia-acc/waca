@@ -251,18 +251,18 @@ $developer = array(
 				"Cloak" => "*!*@wikipedia/EdoDodo",
 				"Other" => NULL,
 			),
-    "1234r00t" =>
-      array(
-        "IRC" => "Mr_R00t"
-        "EMail" => "sauronthefish@gmail.com"
-        "ToolID" => NULL
-        "wiki" => "1234r00t"
-        "WWW" => "en.wikipedia.org/wiki/User:1234r00t"
-        "Name" => "Max Meisler"
-        "Role" => NULL
-        "Access" => NULL // For now
-        "Cloak" => "*!*@wikipedia/Mr-R00t"
-        "Other" => NULL
+        "1234r00t" =>
+           array(
+                "IRC" => "Mr_R00t",
+                "EMail" => "sauronthefish@gmail.com",
+                "ToolID" => "718",
+                "wiki" => "1234r00t",
+                "WWW" => "en.wikipedia.org/wiki/User:1234r00t",
+                "Name" => "Max Meisler",
+                "Role" => "Developer",
+                "Access" => "SVN, SF.net access", // For now
+                "Cloak" => "*!*@wikipedia/Mr-R00t",
+                "Other" => NULL
       ),
     "DeltaQuad" =>
 			array(
@@ -276,7 +276,7 @@ $developer = array(
 				"Access" => "SVN, SF.net access",
 				"Cloak" => "*!*@wikipedia/DeltaQuad",//I change nicks alot
 				"Other" => NULL,
-			),
+			)
 );
 // End of the array of developers.
 

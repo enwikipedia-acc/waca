@@ -77,12 +77,12 @@ $regdevlist = array (
 		'LouriePieterse',
 		'LouriePieterse',
 		'556'
-	)
+	),
 	array(
-    'DeltaQuad'
-    'DeltaQuad'
-    '662'
-  )
+    	'DeltaQuad',
+    	'DeltaQuad',
+    	'662'
+   	)
 );
 //Format: User on tool, user on wiki, user id
 
@@ -103,7 +103,7 @@ $ircdevlist = array (
 	'Prom_cat',
 	'Prom3th3an',
 	'Chris_G',
-	'LouriePieterse'
+	'LouriePieterse',
+	'Mr_R00t',
 	'DeltaQuad'
 );
-?>

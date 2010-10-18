@@ -71,26 +71,27 @@
 	addCommand( 'restart'    	, 'commandRestart'    	, false );
 
 	// Users
-	// Nick!User@Host mask                 	=> Group
+	// Nick!User@Host mask                 			=> Group
 	$users = array(
-		'*!*@cobi.cluenet.org'				=> 'developer',
-		'*!*@Cobi.cluenet.org'				=> 'developer',
+		'*!*@cobi.cluenet.org'						=> 'developer',
+		'*!*@Cobi.cluenet.org'						=> 'developer',
 		'*!*@2002:1828:88fb:0:aede:48ff:febe:ef03'	=> 'developer', //Cobi.
-		'*!*@wikipedia/SQL'				=> 'developer',
-		'*!*@mediawiki/OverlordQ'	  		=> 'developer',
-		'*!*@pdpc/supporter/student/stwalkerster'			=> 'developer',
-		'*!*@*Alexfusco5'			   	=> 'developer',
-		'*!*@wikipedia/Soxred93'			=> 'developer',
-		'*!*@yourwiki/staff/charlie'			=> 'developer',
-		'*!*@wikipedia/pdpc.active.FastLizard4'			=> 'developer',
-		'*!*@wikipedia/Prodego'				=> 'developer',
-		'*!*@wikipedia/FunPika'				=> 'developer',
-		'*!*@wikimedia/Promethean'			=> 'developer',
-		'*!*@wikipedia/Chris-G'				=> 'developer',
-		'*!*@unaffiliated/louriepieterse'		=> 'developer',
-		'*!*@wikipedia/EdoDodo'		=> 'developer',
-        '*!*@1234r00t@wikipedia/Mr-R00t'    => 'developer',
-		'*!*@*'						=> '*'
+		'*!*@wikipedia/SQL'							=> 'developer', 
+		'*!*@mediawiki/OverlordQ'	  				=> 'developer',
+		'*!*@pdpc/supporter/student/stwalkerster'	=> 'developer',
+		'*!*@*Alexfusco5'			   				=> 'developer',
+		'*!*@wikipedia/Soxred93'					=> 'developer',
+		'*!*@yourwiki/staff/charlie'				=> 'developer',
+		'*!*@wikipedia/pdpc.active.FastLizard4'		=> 'developer',
+		'*!*@wikipedia/Prodego'						=> 'developer',
+		'*!*@wikipedia/FunPika'						=> 'developer',
+		'*!*@wikimedia/Promethean'					=> 'developer',
+		'*!*@wikipedia/Chris-G'						=> 'developer',
+		'*!*@unaffiliated/louriepieterse'			=> 'developer',
+		'*!*@wikipedia/EdoDodo'						=> 'developer',
+        '*!*@wikipedia/Mr-R00t'    					=> 'developer',
+		'*!*@wikipedia/DeltaQuad' 					=> 'developer',
+		'*!*@*'										=> '*'
 		);
 
 	// Groups
