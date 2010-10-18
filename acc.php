@@ -701,16 +701,15 @@ elseif ($action == "templatemgmt") {
 				Die("Query failed: $query ERROR: " . mysql_error());
 			echo "Template $tid created.";
 			$accbotSend->send("New template $tid ($usercode) created by $siuser.");
+		} else {
+			echo "<h2>Create template</h2><strong>This is NOT a toy. If you can see this form, you can create this template. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=templatemgmt&amp;add=yes&amp;submit=1\" method=\"post\"><br />\n";
+			echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\"/><br />\n";
+			echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\"/><br />\n";
+			echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
+			echo "</form>";
 			$skin->displayIfooter();
 			die();
 		}
-		echo "<h2>Create template</h2><strong>This is NOT a toy. If you can see this form, you can create this template. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=templatemgmt&amp;add=yes&amp;submit=1\" method=\"post\"><br />\n";
-		echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\"/><br />\n";
-		echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\"/><br />\n";
-		echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
-		echo "</form>";
-		$skin->displayIfooter();
-		die();
 	}
 	if (isset($_GET['del'])) {
 		if(!$session->hasright($_SESSION['user'], 'Admin') || $_GET['del'] == '1') {
@@ -766,23 +765,22 @@ elseif ($action == "templatemgmt") {
 				Die("Query failed: $query ERROR: " . mysql_error());
 			echo "Template $tid ($usercode) updated.<br />\n";
 			$accbotSend->send("Template $tid ($usercode) edited by $siuser.");
+		} else {
+			$query = "SELECT * FROM acc_template WHERE template_id = '$tid';";
+			$result = mysql_query($query, $tsSQLlink);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			$row = mysql_fetch_assoc($result);
+			$usercode = str_replace("\n", '\n', $row['template_usercode']);
+			$botcode = str_replace("\n", '\n', $row['template_botcode']);
+			echo "<h2>Edit template</h2><strong>This is NOT a toy. If you can see this form, you can edit this template. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=templatemgmt&amp;edit=$tid&amp;submit=1\" method=\"post\"><br />\n";
+			echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\" value=\"$usercode\"/><br />\n";
+			echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\" value=\"$botcode\"/><br />\n";
+			echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
+			echo "</form>";
 			$skin->displayIfooter();
 			die();
 		}
-		$query = "SELECT * FROM acc_template WHERE template_id = '$tid';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$row = mysql_fetch_assoc($result);
-		$usercode = str_replace("\n", '\n', $row['template_usercode']);
-		$botcode = str_replace("\n", '\n', $row['template_botcode']);
-		echo "<h2>Edit template</h2><strong>This is NOT a toy. If you can see this form, you can edit this template. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=templatemgmt&amp;edit=$tid&amp;submit=1\" method=\"post\"><br />\n";
-		echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\" value=\"$usercode\"/><br />\n";
-		echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\" value=\"$botcode\"/><br />\n";
-		echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
-		echo "</form>";
-		$skin->displayIfooter();
-		die();
 	}
 	$query = "SELECT template_id, template_usercode FROM acc_template;";
 	$result = mysql_query($query, $tsSQLlink);
