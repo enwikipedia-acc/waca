@@ -732,8 +732,6 @@ elseif ($action == "templatemgmt") {
 			Die("Query failed: $query ERROR: " . mysql_error());
 		echo "Template $tid deleted.";
 		$accbotSend->send("Template $tid deleted by $siuser.");
-		$skin->displayIfooter();
-		die();
 	}
 	if (isset($_GET['edit'])) {
 		if(!$session->hasright($_SESSION['user'], 'Admin') || $_GET['edit'] == '1') {
