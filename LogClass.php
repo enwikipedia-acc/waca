@@ -74,7 +74,7 @@ class LogPage
 			{
 				$logQuery.= "AND ";
 			}
-			$logQuery .= 'log_action LIKE "'.$this->filterAction.'"';
+			$logQuery .= 'log_action RLIKE "'.$this->filterAction.'"';
 		}
 		
 		$logQuery.= "ORDER BY log_time DESC ";
@@ -204,13 +204,13 @@ class LogPage
 				$logList .="<li>$rlu email-confirmed request $rlp ($rlt)</li>\n";
 			}
 			if ($rla == "CreatedTemplate") {
-				$logList .="<li>$rlu Created template <a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$rlp\">$rlp</a>, at $rlt.</li>\n";
+				$logList .="<li>$rlu created <a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$rlp\">template $rlp</a>, at $rlt.</li>\n";
 			}
 			if ($rla == "DeletedTemplate") {
-				$logList .="<li>$rlu Deleted template $rlp, at $rlt.</li>\n";
+				$logList .="<li>$rlu deleted template $rlp, at $rlt.</li>\n";
 			}
 			if ($rla == "EditedTemplate") {
-				$logList .="<li>$rlu Edited template <a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$rlp\">$rlp</a>, at $rlt.</li>\n";
+				$logList .="<li>$rlu edited <a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$rlp\">template $rlp</a>, at $rlt.</li>\n";
 			}
 			if ($rla == "EditedMessage") {
 				$mid = $rlp;
