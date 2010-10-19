@@ -380,7 +380,7 @@ HTML;
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
 		if (!isset($row['user_id'])) {
-			echo "<h2>ERROR</h2>Missing or incorrect Username supplied..\n";
+			echo "<h2>ERROR</h2>Missing or incorrect Username supplied.\n";
 		}
 		elseif (strtolower($_POST['email']) != strtolower($row['user_email'])) {
 			echo "<h2>ERROR</h2>Missing or incorrect Email address supplied.\n";
