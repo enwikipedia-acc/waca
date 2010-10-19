@@ -212,7 +212,7 @@ class LogPage
 			if ($rla == "EditedTemplate") {
 				$logList .="<li>$rlu edited <a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$rlp\">template $rlp</a>, at $rlt.</li>\n";
 			}
-			if ($rla == "EditedMessage") {
+			if ($rla == "Edited") {
 				$mid = $rlp;
 				$query3 = "SELECT * FROM acc_emails WHERE mail_id = '$mid';";
 				$result3 = mysql_query($query3, $tsSQLlink);

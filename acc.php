@@ -570,7 +570,7 @@ elseif ($action == "messagemgmt") {
 				sqlerror(mysql_error(),"Could not update message");
 			}
 			$now = date("Y-m-d H-i-s");
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$mid', '$siuser', 'EditedMessage', '$now');";
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$mid', '$siuser', 'Edited', '$now');";
 			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
@@ -1528,7 +1528,7 @@ elseif ($action == "logs") {
 				"DNSBL Hit" => "DNS Blacklist hit",
 				"Banned" => "Ban",
 				"Unbanned" => "Unban",
-				"EditedMessage" => "Message editing",
+				"Edited" => "Message editing",
 				"CreatedTemplate" => "Template creation",
 				"EditedTemplate" => "Template editing",
 				"DeletedTemplate" => "Template deletion",
