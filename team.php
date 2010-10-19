@@ -260,7 +260,7 @@ $developer = array(
                 "WWW" => "en.wikipedia.org/wiki/User:1234r00t",
                 "Name" => "Max Meisler",
                 "Role" => "Developer",
-                "Access" => "SVN, SF.net access", // For now
+                "Access" => "SVN, SF.net access",
                 "Cloak" => "*!*@wikipedia/Mr-R00t",
                 "Other" => NULL
       ),
