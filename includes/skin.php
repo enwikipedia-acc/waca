@@ -77,7 +77,9 @@ class skin {
 			// Checks if the particular user has Admin rigths.
 			if ($session->hasright($username, "Admin")) {
 				// There are additional links added to the orginal header if so.
-				$out = preg_replace('/\<a href\=\"acc\.php\?action\=messagemgmt\"\>Message Management\<\/a\>/', "\n<a href=\"acc.php?action=messagemgmt\">Message Management</a>\n<a href=\"users.php\">User Management</a>\n<a href=\"acc.php?action=templatemgmt\">Template Management</a>\n", $out);				
+				$out = str_replace('%ADMINLINKSHERE%', "<a href=\"users.php\">User Management</a>\n<a href=\"acc.php?action=templatemgmt\">Template Management</a>", $out);				
+			} else {
+				$out = str_replace('%ADMINLINKSHERE%', '', $out);
 			}
 			
 			// The header is assigned to this variable, no matter Admin or not.
