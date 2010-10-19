@@ -19,7 +19,7 @@ if ($ACC != "1") {
 
 class messages {
 	public function getMessage ($messageno) {
-		global $tsSQL;
+		global $tsSQL, $tsurl;
 		$messageno = $tsSQL->escape($messageno);
 		$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
 		$result = $tsSQL->query($query);
