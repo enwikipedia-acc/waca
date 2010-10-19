@@ -28,6 +28,7 @@ class messages {
 		$row = mysql_fetch_assoc($result);
 		$message = $row['mail_text'];
 		$message = str_replace('%VERSION%', getToolVersion(), $message);
+		$message = str_replace('%TSURL%', $tsurl, $message);
 		return $message;
 	}
 	
