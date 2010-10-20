@@ -673,9 +673,11 @@ elseif ($action == "templatemgmt") {
 		$row = mysql_fetch_assoc($result);
 		echo "<h2>View template</h2><br />Template ID: ".$row['template_id']."<br />\n";
 		echo "Display code: ".$row['template_usercode']."<br />\n";
-		echo "Bot code: ".$row['template_botcode']."<br />\n";
+		echo "Bot code: ".str_replace("\n", '\n', $row['template_botcode'])."<br />\n";
+		echo "<br />\n<h3>Preview</h3>\n<div style=\"border: 2px dashed rgb(26, 79, 133);\">\n<div style=\"margin: 20px;\">;
 		$parseresult = unserialize(file_get_contents('http://en.wikipedia.org/w/api.php?action=parse&format=php&text='.urlencode($row['template_usercode'])));
 		echo $parseresult['parse']['text']['*'];
+		echo '</div></div>';
 		$skin->displayIfooter();
 		die();
 	}
