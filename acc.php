@@ -793,6 +793,7 @@ elseif ($action == "templatemgmt") {
 			Die("Query failed: $query ERROR: " . mysql_error());
 		if (mysql_num_rows($result) || $selected == '0') {
 			mysql_query("UPDATE acc_user SET user_welcome_templateid = $selected WHERE user_name = '$sid'", $tsSQLlink);
+			echo "Template choice saved.";
 		} else {
 			echo "Invalid selection.";
 		}
@@ -838,7 +839,7 @@ elseif ($action == "templatemgmt") {
 		echo "<td></td>";
 	echo "</tr>";
 	echo "</table><br />";
-	echo "<input type=\"submit\" value=\"Update preferences\">";
+	echo "<input type=\"submit\" value=\"Update template choice\">";
 	echo "</form>";
 	if ($session->hasright($_SESSION['user'], 'Admin')) {
 		echo "<form action=\"acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">";
