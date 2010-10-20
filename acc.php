@@ -725,6 +725,10 @@ elseif ($action == "templatemgmt") {
 			die('Invaild GET value passed.');
 		$tid = sanitize($_GET['del']);
 		$siuser = sanitize($_SESSION['user']);
+		$query = "UPDATE acc_user SET user_welcome_templateid == '1' WHERE user_welcome_templateid = '$tid';";
+		$result = mysql_query($query, $tsSQLlink);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
 		$query = "DELETE FROM acc_template WHERE template_id = '$tid';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
@@ -752,12 +756,8 @@ elseif ($action == "templatemgmt") {
 			$botcode = sanitize($_POST['botcode']);
 			$botcode = str_replace('\n', "\n", $botcode);
 			$siuser = sanitize($_SESSION['user']);
-			$query = "UPDATE acc_template SET template_usercode = '$usercode' WHERE template_id = '$tid';";
+			$query = "UPDATE acc_template SET template_usercode = '$usercode', template_botcode = '$botcode' WHERE template_id = '$tid';";
 			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error());
-			$query = "UPDATE acc_template SET template_botcode = '$botcode' WHERE template_id = '$tid';";
-			$result = mysql_query( $query, $tsSQLlink );
 			if (!$result)
 				Die("Query failed: $query ERROR: " . mysql_error());
 			$now = date("Y-m-d H-i-s");
@@ -792,7 +792,10 @@ elseif ($action == "templatemgmt") {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		if (mysql_num_rows($result) || $selected == '0') {
-			mysql_query("UPDATE acc_user SET user_welcome_templateid = $selected WHERE user_name = '$sid'", $tsSQLlink);
+			$query = "UPDATE acc_user SET user_welcome_templateid = $selected WHERE user_name = '$sid';";
+			$result = mysql_query($query, $tsSQLlink);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
 			echo "Template choice saved.";
 		} else {
 			echo "Invalid selection.";
