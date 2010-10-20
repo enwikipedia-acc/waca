@@ -807,7 +807,7 @@ elseif ($action == "templatemgmt") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<h2>Welcome templates</h2>\n";
-	echo "<form action=\"acc.php?action=templatemgmt&amp;set=yes method=\"post\">";
+	echo "<form action=\"acc.php?action=templatemgmt&amp;set=yes\" method=\"post\">";
 	echo "<table cellspacing=\"0\">\n";
 	$current = 0;
 	while ( list($template_id, $usercode) = mysql_fetch_row($result) ) {
