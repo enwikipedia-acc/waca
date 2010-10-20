@@ -791,7 +791,7 @@ elseif ($action == "templatemgmt") {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		if (mysql_num_rows() || $selected == '0') {
+		if (mysql_num_rows($result) || $selected == '0') {
 			mysql_query("UPDATE acc_user SET user_welcome_templateid = $selected WHERE user_name = '$sid'", $tsSQLlink);
 		} else {
 			echo "Invalid selection.";
