@@ -819,11 +819,11 @@ elseif ($action == "templatemgmt") {
 		echo "<td><input type=\"radio\" name=\"selectedtemplate\" value=\"$template_id\"";
 		if ($userinfo['user_welcome_templateid'] == $template_id)
 			echo " CHECKED";
-		echo "</td>";
+		echo "></td>";
 		echo "<td>$template_id&nbsp;</td><td><small>$usercode</small>&nbsp;</td>";
 		if($session->hasright($_SESSION['user'], 'Admin') && $template_id != 1)
-			echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;<a href=\"$tsurl/acc.php?action=templatemgmt&amp;del=$template_id\" onclick=\"javascript:return confirm('Are you sure you wish to delete template $template_id?')\">Delete!</a>&nbsp;</td>";
-		echo "<td><a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td>";
+			echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;<a href=\"$tsurl/acc.php?action=templatemgmt&amp;del=$template_id\" onclick=\"javascript:return confirm('Are you sure you wish to delete template $template_id?')\">Delete!</a>&nbsp;";
+		echo "<a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td>";
 	}
 	echo "<tr><td><input type=\"radio\" name=\"selectedtemplate\" value=\"0\"";
 	if ($userinfo['user_welcome_templateid'] == 0)
