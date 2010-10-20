@@ -784,11 +784,30 @@ elseif ($action == "templatemgmt") {
 			die();
 		}
 	}
+	$sid = sanitize( $_SESSION['user'] );
+	if (isset($_GET['set'])) {
+		$selected = sanitize($_POST['selectedtemplate']);
+		$query = "SELECT * WHERE template_id = $selected FROM acc_template;";
+		$result = mysql_query($query, $tsSQLlink);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		if (mysql_num_rows() || $selected == '0') {
+			mysql_query("UPDATE acc_user SET user_welcome_templateid = $selected WHERE user_name = '$sid'", $tsSQLlink);
+		} else {
+			echo "Invalid selection.";
+		}
+	}
+	$query = "SELECT user_welcome_templateid FROM acc_user WHERE user_name = '$sid'";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$userinfo = mysql_fetch_assoc($result);
 	$query = "SELECT template_id, template_usercode FROM acc_template;";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	echo "<h2>Welcome templates</h2>\n";
+	echo "<form action=\"acc.php?action=templatemgmt&amp;set=yes method=\"post\">";
 	echo "<table cellspacing=\"0\">\n";
 	$current = 0;
 	while ( list($template_id, $usercode) = mysql_fetch_row($result) ) {
@@ -797,15 +816,27 @@ elseif ($action == "templatemgmt") {
 		if ($current % 2 == 0)
 			echo ' class="alternate"';
 		echo '>';
+		echo "<td><input type\"radio\" name=\"selectedtemplate\" value=\"$template_id\"";
+		if ($userinfo['user_welcome_templateid'] == $template_id)
+			echo " CHECKED";
+		echo "</td>";
 		echo "<td>$template_id&nbsp;</td><td><small>$usercode</small>&nbsp;</td>";
 		if($session->hasright($_SESSION['user'], 'Admin') && $template_id != 1)
 			echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;<a href=\"$tsurl/acc.php?action=templatemgmt&amp;del=$template_id\" onclick=\"javascript:return confirm('Are you sure you wish to delete template $template_id?')\">Delete!</a>&nbsp;</td>";
 		echo "<td><a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td>";
 	}
+	echo "<td><input type\"radio\" name=\"selectedtemplate\" value=\"0\""
+	if ($userinfo['user_welcome_templateid'] == 0)
+		echo " CHECKED";
+	echo "></td><td></td><td>Disable automatic welcoming.</td>";
 	echo "</table><br />";
-	echo "<form action=\"acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">";
-	echo "<input type=\"submit\" value=\"Add new\">";
+	echo "<input type=\"submit\" value=\"Update preferences\">";
 	echo "</form>";
+	if ($session->hasright($_SESSION['user'], 'Admin')) {
+		echo "<form action=\"acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">";
+		echo "<input type=\"submit\" value=\"Add new\">";
+		echo "</form>";
+	}
 	$skin->displayIfooter();
 	die();
 }
@@ -1215,17 +1246,12 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		$sig = sanitize($_POST['sig']);
 		$template = sanitize($_POST['template']);
 		$sid = sanitize($_SESSION['user']);
-		if( isset( $_POST['welcomeenable'] ) ) {
-			$welcomeon = 1;
-		} else {
-			$welcomeon = 0;
-		}
 		if( isset( $_POST['secureenable'] ) ) {
 			$secureon = 1;
 		} else {
 			$secureon = 0;
 		}
-		$query = "UPDATE acc_user SET user_welcome = '$welcomeon', user_welcome_sig = '$sig', user_welcome_templateid = '$template', user_secure = '$secureon' WHERE user_name = '$sid'";
+		$query = "UPDATE acc_user SET user_welcome = '$welcomeon', user_welcome_sig = '$sig', user_secure = '$secureon' WHERE user_name = '$sid'";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -1237,42 +1263,22 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
-	if ($row['user_welcome'] > 0) {
-		$welcoming = " checked=\"checked\"";
-	} else { $welcoming = ""; }
 	if ($row['user_secure'] > 0) {
 		$securepref = " checked=\"checked\"";
 	} else { $securepref = ""; }
 	$sig = " value=\"" . html_entity_decode($row['user_welcome_sig'],ENT_NOQUOTES) . "\"";
-	$template = $row['user_welcome_templateid'];
 	echo '<table>';
     echo '<tr><th>Table of Contents</th></tr>';
-    echo '<tr><td><a href="#1">Welcome settings</a></td></tr>';
+    echo '<tr><td><a href="#1">General settings</a></td></tr>';
     echo '<tr><td><a href="#2">Change password</a></td></tr>';
     echo '</table>';
     echo '<a name="1"></a><h2>General settings</h2>';
     echo '<form action="acc.php?action=welcomeperf" method="post">';
     echo '<input type="checkbox" name="secureenable"'.$securepref.'/> Enable use of the secure server<br /><br />';
-    echo '<input type="checkbox" name="welcomeenable"'.$welcoming.'/> Enable <a href="http://en.wikipedia.org/wiki/User:WelcomerBot">WelcomerBot</a> welcoming of the users I create<br /><br />';
     echo 'Your signature (wikicode) <input type="text" name="sig" size ="40"'. $sig.'/><br />';
     echo '<i>This would be the same as ~~~ on-wiki. No date, please.</i><br />';
     
     // TODO: clean up into nicer code, rather than coming out of php
-    ?>
-    <select name="template" size="0">
-<?
-foreach ($templates as $templateID => $templateDetails) {
-	$templateUserCode = $templateDetails[0];
-	echo "<option value=\"$templateID\"";
-	if($template == $templateID) {
-		echo " selected=\"selected\"";
-	}
-	echo ">$templateUserCode</option>";
-}
-?>
-    </select><br /><?php
-    echo '<i>If you\'d like more templates added, please ask an admin.</i><br />';
-
 	echo <<<HTML
     <input type="submit"/><input type="reset"/>
     </form>
@@ -1412,7 +1418,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
-	if ($row['user_welcome'] > 0 && ($gem == "1" || $gem == "custom-y")) {
+	if ($row['user_welcome_templateid'] > 0 && ($gem == "1" || $gem == "custom-y")) {
 		$query = "INSERT INTO acc_welcome (welcome_uid, welcome_user, welcome_status) VALUES ('$sid', '$gus', 'Open');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
