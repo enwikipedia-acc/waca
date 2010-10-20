@@ -105,6 +105,8 @@ class skin {
 			}
 		// This section is executed when the user is not logged in.
 		} else {
+			$out = str_replace('%ADMINLINKSHERE%', '', $out);
+			
 			// The header is assigned to this variable.
 			$rethead .= $out;
 			
