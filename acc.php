@@ -825,7 +825,7 @@ elseif ($action == "templatemgmt") {
 			echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;<a href=\"$tsurl/acc.php?action=templatemgmt&amp;del=$template_id\" onclick=\"javascript:return confirm('Are you sure you wish to delete template $template_id?')\">Delete!</a>&nbsp;</td>";
 		echo "<td><a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td>";
 	}
-	echo "<td><input type\"radio\" name=\"selectedtemplate\" value=\"0\""
+	echo "<td><input type\"radio\" name=\"selectedtemplate\" value=\"0\"";
 	if ($userinfo['user_welcome_templateid'] == 0)
 		echo " CHECKED";
 	echo "></td><td></td><td>Disable automatic welcoming.</td>";
