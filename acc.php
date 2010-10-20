@@ -215,7 +215,6 @@ elseif ($action == "sreg") {
 	$pass2 = mysql_real_escape_string($_REQUEST['pass2']);
 	$email = mysql_real_escape_string($_REQUEST['email']);
 	$sig = mysql_real_escape_string($_REQUEST['sig']);
-	$template = mysql_real_escape_string($_REQUEST['template']);
 	if(isset($_REQUEST['secureenable']))
 	{
 		$secureenable = mysql_real_escape_string($_REQUEST['secureenable']);
@@ -297,13 +296,8 @@ elseif ($action == "sreg") {
 		} else {
 			$secure = 0;
 		}
-		if ($welcomeenable == "1") {
-			$welcome = 1;
-		} else {
-			$welcome = 0;
-		}
 		$user_pass = md5($pass);
-		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_secure, user_welcome, user_welcome_sig, user_welcome_templateid) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$secure', '$welcome', '$sig', '$template');";
+		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_secure) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$secure');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -1263,7 +1257,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		} else {
 			$secureon = 0;
 		}
-		$query = "UPDATE acc_user SET user_welcome = '$welcomeon', user_welcome_sig = '$sig', user_secure = '$secureon' WHERE user_name = '$sid'";
+		$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon' WHERE user_name = '$sid'";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
