@@ -674,6 +674,8 @@ elseif ($action == "templatemgmt") {
 		echo "<h2>View template</h2><br />Template ID: ".$row['template_id']."<br />\n";
 		echo "Display code: ".$row['template_usercode']."<br />\n";
 		echo "Bot code: ".$row['template_botcode']."<br />\n";
+		$parseresult = unserialize(file_get_contents('http://en.wikipedia.org/w/api.php?action=parse&format=php&text='.$row['template_usercode']));
+		echo $parseresult['parse']['text']['*'];
 		$skin->displayIfooter();
 		die();
 	}
