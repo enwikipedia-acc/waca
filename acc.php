@@ -787,14 +787,23 @@ elseif ($action == "templatemgmt") {
 	$sid = sanitize( $_SESSION['user'] );
 	if (isset($_GET['set'])) {
 		$selected = sanitize($_POST['selectedtemplate']);
-		$query = "SELECT * WHERE template_id = $selected FROM acc_template;";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		if (mysql_num_rows() || $selected == '0') {
-			mysql_query("UPDATE acc_user SET user_welcome_templateid = $selected WHERE user_name = '$sid'", $tsSQLlink);
+		if ($selected == '0') {
+			$validtemplate = true;
 		} else {
-			echo "Invalid selection.";
+			$query = "SELECT * WHERE template_id = $selected FROM acc_template;";
+			$result = mysql_query($query, $tsSQLlink);
+			if (!$result)
+				Die("Query failed: $query ERROR: " . mysql_error());
+			if (mysql_num_rows()) {
+				$validtemplate = true;
+			} else {
+				$validtemplate = false;
+			}
+			if ($validtemplate) {
+				mysql_query("UPDATE acc_user SET user_welcome_templateid = $selected WHERE user_name = '$sid'", $tsSQLlink);
+			} else {
+				echo "Invalid selection.";
+			}
 		}
 	}
 	$query = "SELECT user_welcome_templateid FROM acc_user WHERE user_name = '$sid'";
