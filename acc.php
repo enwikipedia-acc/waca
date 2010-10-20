@@ -833,7 +833,7 @@ elseif ($action == "templatemgmt") {
 	if ($userinfo['user_welcome_templateid'] == 0)
 		echo " CHECKED";
 	echo "></td><td></td><td>Disable automatic welcoming.</td><td></td>";
-	if($session->hasright($_SESSION['user'], 'Admin')
+	if($session->hasright($_SESSION['user'], 'Admin'))
 		echo "<td></td>";
 	echo "</tr>";
 	echo "</table><br />";
