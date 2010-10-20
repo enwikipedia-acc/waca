@@ -725,7 +725,7 @@ elseif ($action == "templatemgmt") {
 			die('Invaild GET value passed.');
 		$tid = sanitize($_GET['del']);
 		$siuser = sanitize($_SESSION['user']);
-		$query = "UPDATE acc_user SET user_welcome_templateid == '1' WHERE user_welcome_templateid = '$tid';";
+		$query = "UPDATE acc_user SET user_welcome_templateid = '1' WHERE user_welcome_templateid = '$tid';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
