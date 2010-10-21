@@ -702,11 +702,14 @@ elseif ($action == "templatemgmt") {
 				$usercode = $_POST['usercode'];
 				$botcode = $_POST['botcode'];
 				echo displayPreview($usercode);
+			} else {
+				$usercode = '';
+				$botcode = '';
 			}
 			echo "<form action=\"acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">";
-			echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\"/><br />\n";
-			echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\"/><br />\n";
-			echo "<input type=\"submit\" name=\"submit\"/><input type=\"submit\" name=\"preview\" value=\"Preview\"/><br />\n";
+			echo "Display code: <input type=\"text\" name=\"usercode\" value=\"$usercode\" size=\"40\"/><br />\n";
+			echo "Bot code: <input type=\"text\" name=\"botcode\" value=\"$botcode\" size=\"40\"/><br />\n";
+			echo "<input type=\"submit\" name=\"submit\" value=\"Create!\"/><input type=\"submit\" name=\"preview\" value=\"Preview\"/><br />\n";
 			echo "</form>";
 			$skin->displayIfooter();
 			die();
@@ -782,7 +785,7 @@ elseif ($action == "templatemgmt") {
 			echo "<form action=\"acc.php?action=templatemgmt&amp;edit=$tid\" method=\"post\">\n";
 			echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\" value=\"$usercode\"/><br />\n";
 			echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\" value=\"$botcode\"/><br />\n";
-			echo "<input type=\"submit\" name=\"submit\"/><input type=\"submit\" name=\"preview\" value=\"Preview\"/><br />\n";
+			echo "<input type=\"submit\" name=\"submit\" value=\"Edit!\"/><input type=\"submit\" name=\"preview\" value=\"Preview\"/><br />\n";
 			echo "</form>";
 			$skin->displayIfooter();
 			die();
