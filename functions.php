@@ -1057,4 +1057,12 @@ function getToolVersion() {
 	return $match[0][0];
 }
 
+function displayPreview($wikicode) {
+	$parseresult = unserialize(file_get_contents('http://en.wikipedia.org/w/api.php?action=parse&format=php&text='.urlencode($wikicode)));
+	$out = "<br />\n<h3>Preview</h3>\n<div style=\"border: 2px dashed rgb(26, 79, 133);\">\n<div style=\"margin: 20px;\">";
+	$out .= $parseresult['parse']['text']['*'];
+	$out .= '</div></div>';
+	return $out;
+}
+
 ?>

@@ -668,10 +668,7 @@ elseif ($action == "templatemgmt") {
 		echo "<h2>View template</h2><br />Template ID: ".$row['template_id']."<br />\n";
 		echo "Display code: ".$row['template_usercode']."<br />\n";
 		echo "Bot code: ".str_replace("\n", '\n', $row['template_botcode'])."<br />\n";
-		echo "<br />\n<h3>Preview</h3>\n<div style=\"border: 2px dashed rgb(26, 79, 133);\">\n<div style=\"margin: 20px;\">";
-		$parseresult = unserialize(file_get_contents('http://en.wikipedia.org/w/api.php?action=parse&format=php&text='.urlencode($row['template_usercode'])));
-		echo $parseresult['parse']['text']['*'];
-		echo '</div></div>';
+		echo displayPreview($row['template_usercode']);
 		$skin->displayIfooter();
 		die();
 	}
@@ -744,7 +741,7 @@ elseif ($action == "templatemgmt") {
 		if (!preg_match('/^[0-9]*$/', $_GET['edit']))
 			die('Invaild GET value passed.');
 		$tid = sanitize($_GET['edit']);
-		if ( isset( $_GET['submit'] ) ) {
+		if (isset($_POST['submit'])) {
 			$usercode = sanitize($_POST['usercode']);
 			$usercode = str_replace('\n', "\n", $usercode);
 			$botcode = sanitize($_POST['botcode']);
@@ -762,17 +759,23 @@ elseif ($action == "templatemgmt") {
 			echo "Template $tid ($usercode) updated.<br />\n";
 			$accbotSend->send("Template $tid ($usercode) edited by $siuser.");
 		} else {
-			$query = "SELECT * FROM acc_template WHERE template_id = '$tid';";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error());
-			$row = mysql_fetch_assoc($result);
-			$usercode = str_replace("\n", '\n', $row['template_usercode']);
-			$botcode = str_replace("\n", '\n', $row['template_botcode']);
-			echo "<h2>Edit template</h2><strong>This is NOT a toy. If you can see this form, you can edit this template.</strong><br />The display code will be displayed as it is to users when choosing template.<br />In the bot code, \$username will be replaced with the account creator's username, and \$signature with his signature, including a timestamp.<br />Please remember that these two variables should be used, and not ~~~~ as this will use the bot's signature.\n<form action=\"acc.php?action=templatemgmt&amp;edit=$tid&amp;submit=1\" method=\"post\"><br />\n";
+			echo "<h2>Edit template</h2><strong>This is NOT a toy. If you can see this form, you can edit this template.</strong><br />The display code will be displayed as it is to users when choosing template.<br />In the bot code, \$username will be replaced with the account creator's username, and \$signature with his signature, including a timestamp.<br />Please remember that these two variables should be used, and not ~~~~ as this will use the bot's signature.\n<form action=\"acc.php?action=templatemgmt&amp;edit=$tid\" method=\"post\"><br />\n";
+			if (isset($_POST['preview'])) {
+				$usercode = $_POST['usercode'];
+				$botcode = $_POST['botcode'];
+				echo displayPreview($usercode);
+			} else {
+				$query = "SELECT * FROM acc_template WHERE template_id = '$tid';";
+				$result = mysql_query($query, $tsSQLlink);
+				if (!$result)
+					Die("Query failed: $query ERROR: " . mysql_error());
+				$row = mysql_fetch_assoc($result);
+				$usercode = str_replace("\n", '\n', $row['template_usercode']);
+				$botcode = str_replace("\n", '\n', $row['template_botcode']);
+			}
 			echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\" value=\"$usercode\"/><br />\n";
 			echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\" value=\"$botcode\"/><br />\n";
-			echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
+			echo "<input type=\"submit\" name=\"submit\"/><input type=\"submit\" name=\"preview\" value=\"Preview\"/><br />\n";
 			echo "</form>";
 			$skin->displayIfooter();
 			die();
@@ -818,7 +821,7 @@ elseif ($action == "templatemgmt") {
 		if ($userinfo['user_welcome_templateid'] == $template_id)
 			echo " CHECKED";
 		echo "></td>";
-		echo "<td><small>$usercode</small>&nbsp;</td>";
+		echo "<td>&nbsp;<small>$usercode</small>&nbsp;</td>";
 		if($session->hasright($_SESSION['user'], 'Admin')) {
 			if ($template_id != 1) {
 				echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;<a href=\"$tsurl/acc.php?action=templatemgmt&amp;del=$template_id\" onclick=\"javascript:return confirm('Are you sure you wish to delete template $template_id?')\">Delete!</a>&nbsp;";
@@ -831,7 +834,7 @@ elseif ($action == "templatemgmt") {
 	echo "<tr><td><input type=\"radio\" name=\"selectedtemplate\" value=\"0\"";
 	if ($userinfo['user_welcome_templateid'] == 0)
 		echo " CHECKED";
-	echo "></td><td>Disable automatic welcoming.</td><td></td>";
+	echo "></td><td>&nbsp;&nbsp;Disable automatic welcoming.</td><td></td>";
 	if ($session->hasright($_SESSION['user'], 'Admin'))
 		echo "<td></td>";
 	echo "</tr>";
