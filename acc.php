@@ -705,7 +705,7 @@ elseif ($action == "templatemgmt") {
 			}
 			echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\"/><br />\n";
 			echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\"/><br />\n";
-			echo "<input type=\"submit\" name=\"submit\"/><input type=\"submit\" name=\"preview\" value\"Preview\"/><br />\n";
+			echo "<input type=\"submit\" name=\"submit\"/><input type=\"submit\" name=\"preview\" value=\"Preview\"/><br />\n";
 			echo "</form>";
 			$skin->displayIfooter();
 			die();
