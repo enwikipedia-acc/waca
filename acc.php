@@ -678,7 +678,7 @@ elseif ($action == "templatemgmt") {
 			$skin->displayIfooter();
 			die();
 		}
-		if ( isset( $_GET['submit'] ) ) {
+		if (isset($_POST['submit'])) {
 			$usercode = sanitize($_POST['usercode']);
 			$usercode = str_replace('\n', "\n", $usercode);
 			$botcode = sanitize($_POST['botcode']);
@@ -697,10 +697,15 @@ elseif ($action == "templatemgmt") {
 			echo "Template $tid created.";
 			$accbotSend->send("New template $tid ($usercode) created by $siuser.");
 		} else {
-			echo "<h2>Create template</h2><h2>Edit template</h2><strong>This is NOT a toy. If you can see this form, you can create a new template.</strong><br />The display code will be displayed as it is to users when choosing template.<br />In the bot code, \$username will be replaced with the account creator's username, and \$signature with his signature, including a timestamp.<br />Please remember that these two variables should be used, and not ~~~~ as this will use the bot's signature.\n<form action=\"acc.php?action=templatemgmt&amp;add=yes&amp;submit=1\" method=\"post\"><br />\n";
+			echo "<h2>Create template</h2><h2>Edit template</h2><strong>This is NOT a toy. If you can see this form, you can create a new template.</strong><br />The display code will be displayed as it is to users when choosing template.<br />In the bot code, \$username will be replaced with the account creator's username, and \$signature with his signature, including a timestamp.<br />Please remember that these two variables should be used, and not ~~~~ as this will use the bot's signature.\n<form action=\"acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">\n";
+			if (isset($_POST['preview'])) {
+				$usercode = $_POST['usercode'];
+				$botcode = $_POST['botcode'];
+				echo displayPreview($usercode);
+			}
 			echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\"/><br />\n";
 			echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\"/><br />\n";
-			echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
+			echo "<input type=\"submit\" name=\"submit\"/><input type=\"submit\" name=\"preview\" value\"Preview\"/><br />\n";
 			echo "</form>";
 			$skin->displayIfooter();
 			die();
@@ -759,7 +764,7 @@ elseif ($action == "templatemgmt") {
 			echo "Template $tid ($usercode) updated.<br />\n";
 			$accbotSend->send("Template $tid ($usercode) edited by $siuser.");
 		} else {
-			echo "<h2>Edit template</h2><strong>This is NOT a toy. If you can see this form, you can edit this template.</strong><br />The display code will be displayed as it is to users when choosing template.<br />In the bot code, \$username will be replaced with the account creator's username, and \$signature with his signature, including a timestamp.<br />Please remember that these two variables should be used, and not ~~~~ as this will use the bot's signature.\n<form action=\"acc.php?action=templatemgmt&amp;edit=$tid\" method=\"post\"><br />\n";
+			echo "<h2>Edit template</h2><strong>This is NOT a toy. If you can see this form, you can edit this template.</strong><br />The display code will be displayed as it is to users when choosing template.<br />In the bot code, \$username will be replaced with the account creator's username, and \$signature with his signature, including a timestamp.<br />Please remember that these two variables should be used, and not ~~~~ as this will use the bot's signature.\n<form action=\"acc.php?action=templatemgmt&amp;edit=$tid\" method=\"post\">\n";
 			if (isset($_POST['preview'])) {
 				$usercode = $_POST['usercode'];
 				$botcode = $_POST['botcode'];
