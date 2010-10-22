@@ -11,8 +11,8 @@ ini_set('display_errors', 1);
 // design and functionality of this bot is very similar
 // to that of the original bot created by [[User:SQL]].
 
-function WelcomeUser($theUser, $theMessage) {
-	global $wiki, $username;
+function WelcomeUser($theUser, $theCreator, $theMessage) {
+	global $wiki;
 	$talkPage = $wiki->initPage("User talk:$theUser");
 	$user = $wiki->initUser($theUser);
 	echo "Delivering welcome message to $theUser.\n";
@@ -21,7 +21,7 @@ function WelcomeUser($theUser, $theMessage) {
 	} elseif (!$user->exists()) {
 		echo "User does not exist, stopping message delivery.\n";
 	} else {
-		$summary = "[[User:WelcomerBot/1|Bot]]: Welcoming user created at [[WP:ACC]] by [[User:$username|$username]].";
+		$summary = "[[User:WelcomerBot/1|Bot]]: Welcoming user created at [[WP:ACC]] by [[User:$theCreator|$theCreator]].";
 		try {
 			$talkPage->edit($theMessage, $summary);
 		} catch (EditError $e) {
@@ -43,15 +43,14 @@ $db = new Database($toolserver_host, $toolserver_username, $toolserver_password,
 if(!$db) trigger_error($db->lastError(), E_USER_ERROR);
 $res = $db->select(
 	array('acc_welcome', 'acc_user'),
-	array('welcome_id', 'welcome_user', 'user_onwikiname', 'user_welcome_sig', 'user_welcome_templateid'),
+	array('welcome_id', 'welcome_user', 'user_onwikiname', 'user_welcome_sig', 'template_botcode'),
 	array('welcome_status' => 'Open'),
 	array(),
-	array('welcome_uid' => 'user_name')
+	array('welcome_uid' => 'user_name', 'user_welcome_templateid' => 'template_id')
 );
 
 if(count($res)) {
 	$wiki = Peachy::newWiki("WelcomerBot");
-	$templates = templatesarray();
 	foreach($res as $row) {
 		$theid = $row['welcome_id'];
 		$db->update(
@@ -61,19 +60,19 @@ if(count($res)) {
 		);
 		
 		$user = $row['welcome_user'];
-		$username = $row['user_onwikiname'];
+		$creator = $row['user_onwikiname'];
 		$signature = html_entity_decode($row['user_welcome_sig']) + ' ~~~~~';
-		if (!preg_match("/\[\[[ ]*(w:)?[ ]*(en:)?[ ]*User[ ]*:[ ]*".$username."[ ]*(\||\]\])/i", $signature))
-			$signature = " – [[User:$username|$username]] ([[User talk:$username|talk]])";
+		if (!preg_match("/\[\[[ ]*(w:)?[ ]*(en:)?[ ]*User[ ]*:[ ]*".$creator."[ ]*(\||\]\])/i", $signature))
+			$signature = " – [[User:$creator|$creator]] ([[User talk:$creator|talk]])";
 		$templateID = $row['user_welcome_templateid'];
 		
-		$templateCode = $templates[$templateID][1];
+		$templateCode = $row['template_botcode'];
 		$templateCode = str_replace('$signature', $signature, $templateCode);
-		$templateCode = str_replace('$username', $username, $templateCode);
+		$templateCode = str_replace('$username', $creator, $templateCode);
 		if (!$templateCode)
-			$templateCode = "== Welcome! ==\n\n{{subst:Welcome|$username}}$signature ~~~~~";
+			$templateCode = "== Welcome! ==\n\n{{subst:Welcome|$creator}}$signature ~~~~~";
 		
-		WelcomeUser($user, $templateCode);
+		WelcomeUser($user, $creator, $templateCode);
 	}
 } else {
 	echo "No requests need processing.\n";
