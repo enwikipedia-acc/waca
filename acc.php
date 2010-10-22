@@ -40,9 +40,6 @@ $asSQL = new database("antispoof");
 $tsSQLlink = $tsSQL->getLink();
 $asSQLlink = $asSQL->getLink();
 
-//Create an array containing welcome templates
-$templates = templatesarray();
-
 // Initialize the class objects.
 $captcha = new captcha();
 $messages = new messages();
@@ -663,7 +660,7 @@ elseif ($action == "templatemgmt") {
 		$query = "SELECT * FROM acc_template WHERE template_id = '$tid' LIMIT 1;";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
+			sqlerror(mysql_error());
 		$row = mysql_fetch_assoc($result);
 		echo "<h2>View template</h2><br />Template ID: ".$row['template_id']."<br />\n";
 		echo "Display code: ".$row['template_usercode']."<br />\n";
@@ -687,13 +684,13 @@ elseif ($action == "templatemgmt") {
 			$query = "INSERT INTO acc_template (template_usercode, template_botcode) VALUES ('$usercode', '$botcode');";
 			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error());
+				sqlerror(mysql_error());
 			$now = date("Y-m-d H-i-s");
 			$tid = mysql_insert_id();
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$tid', '$siuser', 'CreatedTemplate', '$now');";
 			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error());
+				sqlerror(mysql_error());
 			echo "Template $tid created.";
 			$accbotSend->send("New template $tid ($usercode) created by $siuser.");
 		} else {
@@ -706,7 +703,7 @@ elseif ($action == "templatemgmt") {
 				$usercode = '';
 				$botcode = '';
 			}
-			echo "<form action=\"acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">";
+			echo "<form action=\"acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">\n";
 			echo "Display code: <input type=\"text\" name=\"usercode\" value=\"$usercode\" size=\"40\"/><br />\n";
 			echo "Bot code: <input type=\"text\" name=\"botcode\" value=\"$botcode\" size=\"40\"/><br />\n";
 			echo "<input type=\"submit\" name=\"submit\" value=\"Create!\"/><input type=\"submit\" name=\"preview\" value=\"Preview\"/><br />\n";
@@ -725,20 +722,34 @@ elseif ($action == "templatemgmt") {
 			die('Invaild GET value passed.');
 		$tid = sanitize($_GET['del']);
 		$siuser = sanitize($_SESSION['user']);
+		$query = "SELECT user_id, user_name FROM acc_user WHERE user_welcome_templateid = '$tid';";
+		$usersaffected = mysql_query($query, $tsSQLlink);
+		if (!$usersaffected)
+			sqlerror(mysql_error());
 		$query = "UPDATE acc_user SET user_welcome_templateid = '1' WHERE user_welcome_templateid = '$tid';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
+			sqlerror(mysql_error());
 		$query = "DELETE FROM acc_template WHERE template_id = '$tid';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
+			sqlerror(mysql_error());
 		$now = date("Y-m-d H-i-s");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$tid', '$siuser', 'DeletedTemplate', '$now');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		echo "Template $tid deleted.";
+			sqlerror(mysql_error());
+		echo "Template $tid deleted.<br />";
+		if (mysql_num_rows($usersaffected)) {
+			echo "<ul>\n";
+			while (list($affected_id, $affected_name) = mysql_fetch_row($usersaffected)) {
+				echo "<li><a href=$tsurl/statistics.php?page=Users&user=$affected_id>$affected_name</a></li>\n";
+			}
+			echo "</ul>";
+		} else {
+			echo "No users were using the template.";
+		}
+			
 		$accbotSend->send("Template $tid deleted by $siuser.");
 	}
 	if (isset($_GET['edit'])) {
@@ -759,12 +770,12 @@ elseif ($action == "templatemgmt") {
 			$query = "UPDATE acc_template SET template_usercode = '$usercode', template_botcode = '$botcode' WHERE template_id = '$tid';";
 			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error());
+				sqlerror(mysql_error());
 			$now = date("Y-m-d H-i-s");
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$tid', '$siuser', 'EditedTemplate', '$now');";
 			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error());
+				sqlerror(mysql_error());
 			echo "Template $tid ($usercode) updated.<br />\n";
 			$accbotSend->send("Template $tid ($usercode) edited by $siuser.");
 		} else {
@@ -777,7 +788,7 @@ elseif ($action == "templatemgmt") {
 				$query = "SELECT * FROM acc_template WHERE template_id = '$tid';";
 				$result = mysql_query($query, $tsSQLlink);
 				if (!$result)
-					Die("Query failed: $query ERROR: " . mysql_error());
+					sqlerror(mysql_error());
 				$row = mysql_fetch_assoc($result);
 				$usercode = str_replace("\n", '\n', $row['template_usercode']);
 				$botcode = str_replace("\n", '\n', $row['template_botcode']);
@@ -797,12 +808,12 @@ elseif ($action == "templatemgmt") {
 		$query = "SELECT * FROM acc_template WHERE template_id = $selected;";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
+			sqlerror(mysql_error());
 		if (mysql_num_rows($result) || $selected == '0') {
 			$query = "UPDATE acc_user SET user_welcome_templateid = $selected WHERE user_name = '$sid';";
 			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
-				Die("Query failed: $query ERROR: " . mysql_error());
+				sqlerror(mysql_error());
 			echo "Template choice saved.";
 		} else {
 			echo "Invalid selection.";
@@ -811,12 +822,12 @@ elseif ($action == "templatemgmt") {
 	$query = "SELECT user_welcome_templateid FROM acc_user WHERE user_name = '$sid'";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
+		sqlerror(mysql_error());
 	$userinfo = mysql_fetch_assoc($result);
 	$query = "SELECT template_id, template_usercode FROM acc_template;";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
+		sqlerror(mysql_error());
 	echo "<h2>Welcome templates</h2>\n";
 	echo "<form action=\"acc.php?action=templatemgmt&amp;set=yes\" method=\"post\">";
 	echo "<table cellspacing=\"0\">\n";

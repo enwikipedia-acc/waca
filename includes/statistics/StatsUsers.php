@@ -126,23 +126,23 @@ class StatsUsers extends StatisticsPage
 			$out.= "<li>User last active: " . $row['user_lastactive'] . "</li>\n";
 		}
 	
-		if ($row['user_welcome'] == "1")
+		if ($row['user_welcome_templateid'] == "0")
 		{
-			$welcome = "Yes";
+			$welcome = "No";
 		}
 		else 
 		{
-			$welcome = "No";
+			$welcome = "Yes";
 		}
 	
 		// State whether the user has auto welcoming enabled
 		if($session->hasright($_SESSION['user'], 'User') || $session->hasright($_SESSION['user'], 'Admin'))
 		{
-			$out.= "<li>User has <a href=\"$tsurl/acc.php?action=welcomeperf\">automatic welcoming</a> enabled: " . $welcome . ".</li>\n";
+			$out.= "<li>User has <a href=\"$tsurl/acc.php?action=templatemgmt\">automatic welcoming</a> enabled: " . $welcome . ".</li>\n";
 		}
 		else
 		{
-			$out.= "<li>User has <a href=\"$tsurl/acc.php?action=welcomeperf\" style=\"color: red;\" title=\"Login required to continue\">automatic welcoming</a> enabled: " . $welcome . ".</li>\n";
+			$out.= "<li>User has <a href=\"$tsurl/acc.php?action=templatemgmt\" style=\"color: red;\" title=\"Login required to continue\">automatic welcoming</a> enabled: " . $welcome . ".</li>\n";
 		}
 		$out.= "</ul>\n<br/>";
 		

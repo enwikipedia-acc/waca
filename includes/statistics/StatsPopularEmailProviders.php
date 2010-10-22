@@ -19,7 +19,7 @@ class StatsPopularEmailProviders extends StatisticsPage
 		$qb = new QueryBrowser();
 		$qb->numberedList = true;
 		$qb->numberedListTitle = "Rank";
-		$out=  $qb->executeQueryToTable("SELECT LOWER(SUBSTR(p.`pend_email`,INSTR(p.`pend_email`,'@')+1)) AS 'Domain', COUNT(*) AS 'Frequency' FROM acc_pend p GROUP BY LOWER(SUBSTR(p.`pend_email`,INSTR(p.`pend_email`,'@')+1)) ORDER BY COUNT(*) DESC LIMIT 100;");
+		$out=  $qb->executeQueryToTable("SELECT LOWER(SUBSTR(p.`pend_email`,INSTR(p.`pend_email`,'@')+1)) AS 'Domain', COUNT(*) AS 'Frequency' FROM acc_pend p WHERE `pend_email` != 'acc@toolserver.org' GROUP BY LOWER(SUBSTR(p.`pend_email`,INSTR(p.`pend_email`,'@')+1)) ORDER BY COUNT(*) DESC LIMIT 100;");
 		
 		$out.= "<a name=\"tld\" ></a><h2>Top level domain frequency</h2>";
 		

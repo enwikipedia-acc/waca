@@ -553,7 +553,7 @@ function ifWikiDbDisabledDie() {
 	}
 }
 
-function sqlerror ($sql_error,$generic_error) {
+function sqlerror ($sql_error, $generic_error="Query failed.") {
 	/*
 	 * Show the user an error
 	 * depending on $enableSQLError.
