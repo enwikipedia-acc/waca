@@ -921,7 +921,7 @@ function zoomPage($id,$urlhash)
 		$numcomment = 0;
 		$out .= "<ul>";
 		while ($row = mysql_fetch_assoc($result)) {
-			$comment = autolink($comment);
+			$comment = autolink($row['cmt_comment']);
 			if ($row['cmt_visability'] == "admin") {
 				$out .= "<li><a href='$tsurl/statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a> commented, " . $comment . "  at " . $row['cmt_time'] . " <font color='red'>(admin only)</font></li>";
 			} else {

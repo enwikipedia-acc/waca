@@ -1,4 +1,5 @@
 <?php
+
 #
 #
 # A PHP auto-linking library
@@ -15,18 +16,18 @@
 
 ####################################################################
 
-function autolink($text, $limit=30, $tagfill='') {
+function autolink ($text, $limit=30, $tagfill='') {
 
-	$text = autolink_do($text, 'https://',	$limit, $tagfill);
-	$text = autolink_do($text, 'http://',	$limit, $tagfill);
-	$text = autolink_do($text, 'ftp://',	$limit, $tagfill);
-	$text = autolink_do($text, 'www.',	$limit, $tagfill);
+	$text = autolink_do($text, 'https://', $limit, $tagfill);
+	$text = autolink_do($text, 'http://', $limit, $tagfill);
+	$text = autolink_do($text, 'ftp://', $limit, $tagfill);
+	$text = autolink_do($text, 'www.', $limit, $tagfill);
 	return $text;
 }
 
 ####################################################################
 
-function autolink_do($text, $sub, $limit, $tagfill) {
+function autolink_do ($text, $sub, $limit, $tagfill) {
 
 	$sub_len = strlen($sub);
 
@@ -35,17 +36,17 @@ function autolink_do($text, $sub, $limit, $tagfill) {
 	$loop = 1;
 	$buffer = '';
 
-	while (($cursor < strlen($text)) && $loop){
+	while (($cursor < strlen($text)) && $loop) {
 
 		$ok = 1;
 		$pos = strpos($text_l, $sub, $cursor);
 
-		if ($pos === false){
+		if ($pos === false) {
 
 			$loop = 0;
 			$ok = 0;
 
-		}else{
+		} else {
 
 			$pre_hit = substr($text, $cursor, $pos-$cursor);
 			$hit = substr($text, $pos, $sub_len);
@@ -76,9 +77,9 @@ function autolink_do($text, $sub, $limit, $tagfill) {
 		# to see if there was whitespace before this match
 		#
 
-		if ($ok){
+		if ($ok) {
 
-			if ($pre){
+			if ($pre) {
 				if (!preg_match('![\s\(\[\{]$!s', $pre)) {
 
 					#echo "fail 2 at $cursor ($pre)<br />\n";
@@ -94,7 +95,7 @@ function autolink_do($text, $sub, $limit, $tagfill) {
 		# we want to autolink here - find the extent of the url
 		#
 
-		if ($ok){
+		if ($ok) {
 			if (preg_match('/^([a-z0-9\-\.\/\-_%~!?=,:;&+*#@\(\)\$]+)/i', $post, $matches)) {
 
 				$url = $hit.$matches[1];
@@ -103,13 +104,13 @@ function autolink_do($text, $sub, $limit, $tagfill) {
 				# remove trailing punctuation from url
 				#
 
-				if (preg_match('|[.,!;:?]$|', $url)){
+				if (preg_match('|[.,!;:?]$|', $url)) {
 					$url = substr($url, 0, strlen($url)-1);
 				}
-				foreach (array('()', '[]', '{}') as $pair){
+				foreach (array('()', '[]', '{}') as $pair) {
 					$o = substr($pair, 0, 1);
 					$c = substr($pair, 1, 1);
-					if (preg_match("!^(\\$c|^)[^\\$o]+\\$c$!", $url)){
+					if (preg_match("!^(\\$c|^)[^\\$o]+\\$c$!", $url)) {
 						$url = substr($url, 0, strlen($url)-1);
 					}
 				}
@@ -142,7 +143,7 @@ function autolink_do($text, $sub, $limit, $tagfill) {
 
 				$buffer .= "<a href=\"$link_url\"$tagfill>$display_url</a>";
 			
-			}else{
+			} else {
 				#echo "fail 3 at $cursor<br />\n";
 
 				$ok = 0;
@@ -164,11 +165,11 @@ function autolink_do($text, $sub, $limit, $tagfill) {
 
 ####################################################################
 
-function autolink_label($text, $limit) {
+function autolink_label ($text, $limit) {
 
-	if (!$limit){ return $text; }
+	if (!$limit) { return $text; }
 
-	if (strlen($text) > $limit){
+	if (strlen($text) > $limit) {
 		return substr($text, 0, $limit-3).'...';
 	}
 
@@ -177,7 +178,7 @@ function autolink_label($text, $limit) {
 
 ####################################################################
 
-function autolink_email($text, $tagfill='') {
+function autolink_email ($text, $tagfill='') {
 
 	$atom = '[^()<>@,;:\\\\".\\[\\]\\x00-\\x20\\x7f]+'; # from RFC822
 
@@ -197,7 +198,7 @@ function autolink_email($text, $tagfill='') {
 		$ok = 1;
 		$pos = strpos($text_l, '@', $cursor);
 
-		if ($pos === false){
+		if ($pos === false) {
 
 			$loop = 0;
 			$ok = 0;
@@ -219,7 +220,7 @@ function autolink_email($text, $tagfill='') {
 
 			$bits = preg_split("!</a>!i", $pre);
 			$last_bit = array_pop($bits);
-			if (preg_match("!<a\s!i", $last_bit)){
+			if (preg_match("!<a\s!i", $last_bit)) {
 
 				#echo "fail 1 at $cursor<br />\n";
 
@@ -233,7 +234,7 @@ function autolink_email($text, $tagfill='') {
 		# check backwards
 		#
 
-		if ($ok){
+		if ($ok) {
 			if (preg_match("!($atom(\.$atom)*)\$!", $pre, $matches)) {
 
 				# move matched part of address into $hit
@@ -259,7 +260,7 @@ function autolink_email($text, $tagfill='') {
 		#
 
 		if ($ok) {
-			if (preg_match("!^($atom(\.$atom)*)!", $post, $matches)){
+			if (preg_match("!^($atom(\.$atom)*)!", $post, $matches)) {
 
 				# move matched part of address into $hit
 
