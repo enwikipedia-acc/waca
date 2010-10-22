@@ -741,6 +741,7 @@ elseif ($action == "templatemgmt") {
 			sqlerror(mysql_error());
 		echo "Template $tid deleted.<br />";
 		if (mysql_num_rows($usersaffected)) {
+			echo "The following users were using the template, and have been switched to the default one:\n";
 			echo "<ul>\n";
 			while (list($affected_id, $affected_name) = mysql_fetch_row($usersaffected)) {
 				echo "<li><a href=$tsurl/statistics.php?page=Users&user=$affected_id>$affected_name</a></li>\n";
