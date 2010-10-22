@@ -746,7 +746,7 @@ elseif ($action == "templatemgmt") {
 			while (list($affected_id, $affected_name) = mysql_fetch_row($usersaffected)) {
 				echo "<li><a href=$tsurl/statistics.php?page=Users&user=$affected_id>$affected_name</a></li>\n";
 			}
-			echo "</ul>";
+			echo "</ul>\nPlease try inform these users that their template has been changed.";
 		} else {
 			echo "No users were using the template.";
 		}

@@ -23,7 +23,7 @@ class StatsPopularEmailProviders extends StatisticsPage
 		
 		$out.= "<a name=\"tld\" ></a><h2>Top level domain frequency</h2>";
 		
-		$out.= $qb->executeQueryToTable("select lower(reverse( substring( reverse(pend_email), 1, instr( reverse(pend_email), '.' )-1 ) ) ) as 'Top-level domain', count(*) as 'frequency' from acc_pend group by lower(reverse( substring( reverse(pend_email), 1, instr( reverse(pend_email), '.' )-1 ) )) order by count(*) desc;");
+		$out.= $qb->executeQueryToTable("select lower(reverse( substring( reverse(pend_email), 1, instr( reverse(pend_email), '.' )-1 ) ) ) as 'Top-level domain', count(*) as 'frequency' from acc_pend where pend_email != 'acc@toolserver.org' group by lower(reverse( substring( reverse(pend_email), 1, instr( reverse(pend_email), '.' )-1 ) )) order by count(*) desc;");
 		return $out;
 	}
 function getPageTitle(){return "Most Popular Email Providers";}
