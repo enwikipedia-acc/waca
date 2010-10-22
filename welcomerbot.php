@@ -42,7 +42,7 @@ echo "Connecting to mysql://$toolserver_username:$toolserver_password@$toolserve
 $db = new Database($toolserver_host, $toolserver_username, $toolserver_password, $toolserver_database);
 if(!$db) trigger_error($db->lastError(), E_USER_ERROR);
 $res = $db->select(
-	array('acc_welcome', 'acc_user'),
+	array('acc_welcome', 'acc_user', 'acc_template'),
 	array('welcome_id', 'welcome_user', 'user_onwikiname', 'user_welcome_sig', 'template_botcode'),
 	array('welcome_status' => 'Open'),
 	array(),
