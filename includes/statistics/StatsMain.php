@@ -63,7 +63,7 @@ class StatsMain extends StatisticsPage
 	}
 	function smallStats()
 	{
-		global $tsSQL;
+		global $tsSQL, $tsurl;
 		$out= '<h2>Statistics</h2><table>';
 		$openq = "SELECT COUNT(*) FROM acc_pend WHERE pend_status = 'Open' AND pend_mailconfirm = 'Confirmed';";
 		$result = $tsSQL->query($openq);
