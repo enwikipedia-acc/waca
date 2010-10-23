@@ -947,26 +947,30 @@ function zoomPage($id,$urlhash)
 
 
 		$out .= "<h2>Other requests from $ipmsg:</h2>\n";
-		$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
+		if ($thisip != '127.0.0.1') {
+			$query = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
+			$result = mysql_query($query, $tsSQLlink);
+			if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
 
-		$currentrow = 0;
-		if (mysql_num_rows($result) != 0) {
-			mysql_data_seek($result, 0);
+			$currentrow = 0;
+			if (mysql_num_rows($result) != 0) {
+				mysql_data_seek($result, 0);
+			}
+			while ($row = mysql_fetch_assoc($result)) {
+				if ($currentrow == 0) { $out .= "<table cellspacing=\"0\">\n"; }
+				$currentrow += 1;
+				$out .= "<tr";
+				if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
+				$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
+			}
+			if ($currentrow == 0) {
+				$out .= "<i>None.</i>\n";
+			}
+			else {$out .= "</table>\n";}
+		} else {
+			$out .= "<i>IP information cleared.</i>\n";
 		}
-		while ($row = mysql_fetch_assoc($result)) {
-			if ($currentrow == 0) { $out .= "<table cellspacing=\"0\">\n"; }
-			$currentrow += 1;
-			$out .= "<tr";
-			if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
-			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
-		}
-		if ($currentrow == 0) {
-			$out .= "<i>None.</i>\n";
-		}
-		else {$out .= "</table>\n";}
 
 		// Displayes other requests from this email.
 		$emailmsg = 'this email';
@@ -974,31 +978,35 @@ function zoomPage($id,$urlhash)
 			$emailmsg = $thisemail;
 		}
 		$out .= "<h2>Other requests from $emailmsg:</h2>\n";
-		$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
+		if ($thisemail != 'acc@toolserver.org') {
+			$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
+			$result = mysql_query($query, $tsSQLlink);
+			if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
 
-		$currentrow = 0;
-		if (mysql_num_rows($result) != 0) {
-			mysql_data_seek($result, 0);
-		}
-		while ($row = mysql_fetch_assoc($result)) {
-			// Creates the table for the first time.
-			if ($currentrow == 0) {
-				$out .= "<table cellspacing=\"0\">\n";
+			$currentrow = 0;
+			if (mysql_num_rows($result) != 0) {
+				mysql_data_seek($result, 0);
 			}
+			while ($row = mysql_fetch_assoc($result)) {
+				// Creates the table for the first time.
+				if ($currentrow == 0) {
+					$out .= "<table cellspacing=\"0\">\n";
+				}
 
-			$currentrow += 1;
-			$out .= "<tr";
-			if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
-			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
+				$currentrow += 1;
+				$out .= "<tr";
+				if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
+				$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
+			}
+			// Checks whether there were similar requests.
+			if ($currentrow == 0) {
+				$out .= "<i>None.</i>\n";
+			}
+			else {$out .= "</table>";}
+		} else {
+			$out .= "<i>Email information cleared.</i>\n";
 		}
-		// Checks whether there were similar requests.
-		if ($currentrow == 0) {
-			$out .= "<i>None.</i>\n";
-		}
-		else {$out .= "</table>";}
 
 		return $out;
 }

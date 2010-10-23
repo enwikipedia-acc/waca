@@ -1,4 +1,7 @@
 <?php
+if (isset($_SERVER['REQUEST_METHOD'])) {
+    die();
+} // Web clients die.
 ini_set('display_errors',1);
 
 require_once '../config.inc.php';
