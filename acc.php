@@ -857,7 +857,7 @@ elseif ($action == "templatemgmt") {
 	echo "<tr><td><input type=\"radio\" name=\"selectedtemplate\" value=\"0\"";
 	if ($userinfo['user_welcome_templateid'] == 0)
 		echo " CHECKED";
-	echo "></td><td>&nbsp;&nbsp;Disable automatic welcoming.</td><td></td>";
+	echo "></td><td onclick=\"document.templateselection.selectedtemplate[$current].checked = true;\">&nbsp;&nbsp;Disable automatic welcoming.</td><td></td>";
 	if ($session->hasright($_SESSION['user'], 'Admin'))
 		echo "<td></td>";
 	echo "</tr>";
