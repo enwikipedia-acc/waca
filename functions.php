@@ -1095,7 +1095,7 @@ function doSort(array $items)
 			}
 		}
 	}
-	while(flag);
+	while($flag);
 	
 	// return the array back to the caller
 	return $items;
