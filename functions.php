@@ -328,49 +328,49 @@ function listrequests($type, $hideip, $correcthash) {
 		$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-req" href="'.$wikipediaurl.'wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
 
 
-	if($session->hasright($_SESSION['user'], "Admin")) {
-		// Ban IP
-		$out .= "</small></td><td><small> |</small></td><td><small> Ban: </small></td><td><small><a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;ip=" . $row['pend_id'] . '">IP</a> ';
+		if($session->hasright($_SESSION['user'], "Admin")) {
+			// Ban IP
+			$out .= "</small></td><td><small> |</small></td><td><small> Ban: </small></td><td><small><a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;ip=" . $row['pend_id'] . '">IP</a> ';
 
-		// Ban email
-		$out .= "- <a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;email=" . $row['pend_id'] . '">E-Mail</a>';
+			// Ban email
+			$out .= "- <a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;email=" . $row['pend_id'] . '">E-Mail</a>';
 
-		//Ban name
-		$out .= " - <a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;name=" . $row['pend_id'] . '">Name</a>';
-	}
+			//Ban name
+			$out .= " - <a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;name=" . $row['pend_id'] . '">Name</a>';
+		}
 
-	$reserveByUser = isReserved($row['pend_id']);
-	// if request is reserved, show reserved message
-	if( $reserveByUser != 0 )
-	{
-		if( $reserveByUser == $_SESSION['userID'])
+		$reserveByUser = isReserved($row['pend_id']);
+		// if request is reserved, show reserved message
+		if( $reserveByUser != 0 )
 		{
-			$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"$tsurl/acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Break reservation</a>";
-		} else {
-			$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"$tsurl/statistics.php?page=Users&user=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
-
-			// force break?
-			global $enableAdminBreakReserve;
-			if( $enableAdminBreakReserve && $session->hasright($_SESSION['user'], "Admin"))
+			if( $reserveByUser == $_SESSION['userID'])
 			{
-				$out .= " - <a href=\"$tsurl/acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Force break</a>";
+				$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"$tsurl/acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Break reservation</a>";
+			} else {
+				$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"$tsurl/statistics.php?page=Users&user=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
+
+				// force break?
+				global $enableAdminBreakReserve;
+				if( $enableAdminBreakReserve && $session->hasright($_SESSION['user'], "Admin"))
+				{
+					$out .= " - <a href=\"$tsurl/acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Force break</a>";
+				}
 			}
 		}
-	}
-	else // not being handled, do you want to handle this request?
-	{
-		$out .= "</small></td><td><small> | </small></td><td><small><a href=\"$tsurl/acc.php?action=reserve&amp;resid=" . $row['pend_id']. "\">Mark as being handled</a>";
-	}
+		else // not being handled, do you want to handle this request?
+		{
+			$out .= "</small></td><td><small> | </small></td><td><small><a href=\"$tsurl/acc.php?action=reserve&amp;resid=" . $row['pend_id']. "\">Mark as being handled</a>";
+		}
 
 
-	$out .= '</small></td></tr>';
-	$reqlist .= $out;
-}
-if( $currentreq == 0 ) {
-	return( "<i>No requests at this time</i>" );
-} else {
-	return ($tablestart . $reqlist . $tableend);
-}
+		$out .= '</small></td></tr>';
+		$reqlist .= $out;
+	}
+	if( $currentreq == 0 ) {
+		return( "<i>No requests at this time</i>" );
+	} else {
+		return ($tablestart . $reqlist . $tableend);
+	}
 
 }
 
@@ -613,7 +613,7 @@ function zoomPage($id,$urlhash)
 	if ($row['pend_mailconfirm'] != 'Confirmed' && $row['pend_mailconfirm'] != "") {
 		$out .= "Email has not yet been confirmed for this request, so it can not yet be closed or viewed";
 		$out .= $skin->displayIfooter();
-		return $out; 
+		return $out;
 	}
 	$out .= "<h2>Details for Request #" . $id . ":</h2>";
 	$thisip = $row['pend_ip'];
@@ -663,7 +663,7 @@ function zoomPage($id,$urlhash)
 	$requesttable = listrequests($thisid, $hideinfo, $correcthash);
 	$out .= $requesttable;
 
-		//Show the links for things like IP contributions/blocks.
+	//Show the links for things like IP contributions/blocks.
 	$sid = sanitize($_SESSION['user']);
 	$query3 = "SELECT * FROM acc_user WHERE user_name = '$sid';";
 	$result3 = mysql_query($query3, $tsSQLlink);
@@ -679,10 +679,10 @@ function zoomPage($id,$urlhash)
 	}
 	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 		$out .= '<p><b>IP Address links:</b> ';
-		
+
 		$out .= '<a class="request-src" href="'.$wikipediaurl.'wiki/User_talk:';
 		$out .= $row['pend_ip'] . '" target="_blank">Talk page</a> ';
-		
+
 		// IP contribs
 		$out .= '| ';
 		$out .= '<a class="request-src" href="'.$wikipediaurl.'wiki/Special:Contributions/';
@@ -723,23 +723,23 @@ function zoomPage($id,$urlhash)
 		$out .= '| ';
 		$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $row['pend_ip'] . '" target="_blank">Abuse Filter Log</a> ';
 		$out .= '</p>';
-		
+
 		/* Betacommand's checks
-		$out .= '| ';
-		$out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $row['pend_ip'] . '" target="_blank">Betacommand</a> ';
-		$out .= '</p>'; */
+		 $out .= '| ';
+		 $out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $row['pend_ip'] . '" target="_blank">Betacommand</a> ';
+		 $out .= '</p>'; */
 	}
 
 	$userurl = urlencode($sUser);
 	$userurl = str_replace("%26amp%3B", "%26", $userurl);
-	
+
 	$out .= '<p><b>Username links:</b> <a class="request-req" href="'.$wikipediaurl.'w/index.php?title=User:';
 	$out .= $userurl . '" target="_blank">User page</a> | ';
 
 	// 	Creation log
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
 	$out .= $userurl . '" target="_blank">Creation log</a> | ';
-	
+
 	// 	SUL link
 	$out .= '<a class="request-req" href="http://toolserver.org/~vvv/sulutil.php?user=';
 	$out .= $userurl. '" target="_blank">SUL util</a> | ';
@@ -751,70 +751,70 @@ function zoomPage($id,$urlhash)
 	// Google
 	$out .= '<a class="request-req" href="http://www.google.com/search?q=';
 	$out .= preg_replace("/_/","+",$userurl) . '" target="_blank">Google search</a></p>';
-	
-	
-		global $protectReservedRequests;
-		if (!($type == 'Admin' || $type == 'Open' || $type == 'Checkuser')) {
-			if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
-			{
-				if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address.
-					// Create user link
-					$out .= '<p><b>Create account link:</b> <a class="request-req-create" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-					$out .= $sUser . '&amp;wpEmail=' . urlencode($row['pend_email']) . '&amp;uselang=en-acc" target="_blank">Create!</a></p>';
-				}
+
+
+	global $protectReservedRequests;
+	if (!($type == 'Admin' || $type == 'Open' || $type == 'Checkuser')) {
+		if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
+		{
+			if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address.
+				// Create user link
+				$out .= '<p><b>Create account link:</b> <a class="request-req-create" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
+				$out .= $sUser . '&amp;wpEmail=' . urlencode($row['pend_email']) . '&amp;uselang=en-acc" target="_blank">Create!</a></p>';
 			}
 		}
+	}
 	$out.="<p><b>Actions:</b> ";
 	$type = $row['pend_status'];
 	$checksum = $row['pend_checksum'];
 	$pendid = $row['pend_id'];
-	
-		if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
-		{
-			// Done
-			$out .= '<a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '"><strong>Created!</strong></a>';
 
-			// Similar
-			$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=2&amp;sum=' . $row['pend_checksum'] . '">Similar</a>';
+	if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
+	{
+		// Done
+		$out .= '<a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '"><strong>Created!</strong></a>';
 
-			// Taken
-			$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=3&amp;sum=' . $row['pend_checksum'] . '">Taken</a>';
+		// Similar
+		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=2&amp;sum=' . $row['pend_checksum'] . '">Similar</a>';
 
-			// SUL Taken
-			$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=26&amp;sum=' . $row['pend_checksum'] . '">SUL Taken</a>';
+		// Taken
+		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=3&amp;sum=' . $row['pend_checksum'] . '">Taken</a>';
 
-			// UPolicy
-			$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=4&amp;sum=' . $row['pend_checksum'] . '">UPolicy</a>';
+		// SUL Taken
+		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=26&amp;sum=' . $row['pend_checksum'] . '">SUL Taken</a>';
 
-			// Invalid
-			$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=5&amp;sum=' . $row['pend_checksum'] . '">Invalid</a>';
+		// UPolicy
+		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=4&amp;sum=' . $row['pend_checksum'] . '">UPolicy</a>';
 
-			// Custom
-			$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=custom&amp;sum=' . $row['pend_checksum'] . '">Custom</a>';
+		// Invalid
+		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=5&amp;sum=' . $row['pend_checksum'] . '">Invalid</a>';
+
+		// Custom
+		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=custom&amp;sum=' . $row['pend_checksum'] . '">Custom</a>';
 
 
-			// Drop
-			$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
+		// Drop
+		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
 			
-			if (!isset ($target)) {
-				$target = "zoom";
-			}
+		if (!isset ($target)) {
+			$target = "zoom";
+		}
+		$out .= deferlinks($type,$checksum,$pendid);
+	}
+	else
+	{
+		if(isProtected($row['pend_id'])) {
+			$out .= 'This request is reserved';
+		}
+		else {
+			$out .= 'This request is not reserved';
 			$out .= deferlinks($type,$checksum,$pendid);
 		}
-		else
-		{
-			if(isProtected($row['pend_id'])) {
-				$out .= 'This request is reserved';
-			}
-			else {
-				$out .= 'This request is not reserved';
-				$out .= deferlinks($type,$checksum,$pendid);
-			}
-		}
-	
+	}
+
 	$out.="</p>";
-	
-	
+
+
 	//Escape injections.
 	$out .= "<p><strong>Requester Comment</strong>: " . $row['pend_cmt'] . "</p>\n";
 
@@ -1018,37 +1018,37 @@ function zoomPage($id,$urlhash)
 
 function deferlinks($type, $checksum, $pendid) {
 	global $tsurl;
-		if ($type == 'Open') {
-			$target1 = 'admins';
-			$message1 = "Flagged Users";
-			$target2 = 'cu';
-			$message2 = "Checkusers";
-		}
-		elseif ($type == 'Admin') {
-			$target1 = 'users';
-			$message1 = "Users";
-			$target2 = 'cu';
-			$message2 = "Checkusers";
-		}
-		elseif ($type == 'Checkuser') {
-			$target1 = 'users';
-			$message1 = "Users";
-			$target2 = 'admins';
-			$message2 = "Flagged Users";
-		}
-			
-		if($type == "Admin" || $type == "Open" || $type == "Checkuser")
-		{
-			$out .= " | Defer to: ";
-			$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=$target1\">$message1</a>";
-			$out .= " - ";
-			$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=$target2\">$message2</a>";
-		}
-		else
-		{
-			$out .= " | <a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=users\">Reset Request</a>";
-		}
-		return $out;
+	if ($type == 'Open') {
+		$target1 = 'admins';
+		$message1 = "Flagged Users";
+		$target2 = 'cu';
+		$message2 = "Checkusers";
+	}
+	elseif ($type == 'Admin') {
+		$target1 = 'users';
+		$message1 = "Users";
+		$target2 = 'cu';
+		$message2 = "Checkusers";
+	}
+	elseif ($type == 'Checkuser') {
+		$target1 = 'users';
+		$message1 = "Users";
+		$target2 = 'admins';
+		$message2 = "Flagged Users";
+	}
+		
+	if($type == "Admin" || $type == "Open" || $type == "Checkuser")
+	{
+		$out .= " | Defer to: ";
+		$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=$target1\">$message1</a>";
+		$out .= " - ";
+		$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=$target2\">$message2</a>";
+	}
+	else
+	{
+		$out .= " | <a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=users\">Reset Request</a>";
+	}
+	return $out;
 }
 
 function getToolVersion() {
@@ -1064,4 +1064,40 @@ function displayPreview($wikicode) {
 	return $out;
 }
 
+/**
+ * A simple implementation of a bubble sort
+ *
+ * @param array $items An array of integers to be sorted using a bubble sort
+ * @return array sorted array.
+ */
+function doSort(array $items)
+{
+	// did we make a change during this pass?
+	$flag = false;
+
+	// Loop through until it's sorted
+	do{
+		// reset flag to false, we've not made any changes in this iteration yet
+		$flag = false;
+		
+		// loop through the array
+		for ($i = 0; $i < (count($items) -1); $i++) {
+			// are these two items out of order?
+			if($items[$i] > $items[$i + 1])
+			{
+				// swap them
+				$swap = $items[$i];
+				$items[$i] = $items[$i + 1];
+				$items[$i + 1] = $swap;
+				
+				// set a flag to say we've modified the array this time around
+				$flag = true;
+			}
+		}
+	}
+	while(flag);
+	
+	// return the array back to the caller
+	return $items;
+}
 ?>
