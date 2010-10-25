@@ -927,11 +927,11 @@ function zoomPage($id,$urlhash)
 			$out .= "<tr";
 			if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
 			$out .= ">";
-			$out .= "<td><a href='$tsurl/statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a></td><td>&nbsp;" . $comment . "&nbsp;</td><td>&nbsp;" . $row['cmt_time'] . "&nbsp;</td>";
+			$out .= "<td><a href='$tsurl/statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a>&nbsp;</td><td>&nbsp;" . $comment . "&nbsp;</td><td>&nbsp;" . $row['cmt_time'] . "&nbsp;</td>";
 			if ($row['cmt_visability'] == "admin") {
-				$out .= "<td><font color='red'>(admin only)</font></td>";
+				$out .= "<td>&nbsp;<font color='red'>(admin only)</font></td>";
 			} else {
-				$out .= "<td></td>";
+				$out .= "";
 			}
 			$out .= "</tr>";
 		}
