@@ -919,17 +919,17 @@ function zoomPage($id,$urlhash)
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	if (mysql_num_rows($result)) {
-		$rownumber = 1;
+		$rownumber = 0;
 		$out .= "<table>";
 		while ($row = mysql_fetch_assoc($result)) {
 			$rownumber += 1;
 			$comment = autolink($row['cmt_comment']);
 			$out .= "<tr";
-			if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
+			if ($rownumber % 2 == 0) {$out .= ' class="alternate"';}
 			$out .= ">";
-			$out .= "<td><a href='$tsurl/statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a>&nbsp;</td><td>&nbsp;" . $comment . "&nbsp;</td><td>&nbsp;" . $row['cmt_time'] . "&nbsp;</td>";
+			$out .= "<td>&nbsp;<a href='$tsurl/statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a>&nbsp;</td><td>&nbsp;" . $comment . "&nbsp;</td><td>&nbsp;" . $row['cmt_time'] . "&nbsp;</td>";
 			if ($row['cmt_visability'] == "admin") {
-				$out .= "<td>&nbsp;<font color='red'>(admin only)</font></td>";
+				$out .= "<td>&nbsp;<font color='red'>(admin only)</font>&nbsp;</td>";
 			} else {
 				$out .= "";
 			}
