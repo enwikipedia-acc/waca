@@ -927,9 +927,9 @@ function zoomPage($id,$urlhash)
 			$out .= "<tr";
 			if ($rownumber % 2 == 0) {$out .= ' class="alternate"';}
 			$out .= ">";
-			$out .= "<td>&nbsp;<a href='$tsurl/statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a>&nbsp;</td><td>&nbsp;" . $comment . "&nbsp;</td><td>&nbsp;" . $row['cmt_time'] . "&nbsp;</td>";
+			$out .= "<td NOWRAP>&nbsp;<a href='$tsurl/statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a>&nbsp;</td><td>&nbsp;" . $comment . "&nbsp;</td><td NOWRAP>&nbsp;" . $row['cmt_time'] . "&nbsp;</td>";
 			if ($row['cmt_visability'] == "admin") {
-				$out .= "<td>&nbsp;<font color='red'>(admin only)</font>&nbsp;</td>";
+				$out .= "<td NOWRAP>&nbsp;<font color='red'>(admin only)</font>&nbsp;</td>";
 			} else {
 				$out .= "";
 			}
