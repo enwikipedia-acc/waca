@@ -419,7 +419,7 @@
 
 			irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $username . ' (' . $user['user_level'] . ') was last active '
 				. ( ( $user['user_lastactive'] == '0000-00-00 00:00:00' ) ? 'unknown' : $user['user_lastactive'] )
-				. '. He/she currently has automatic welcoming of users ' . ( ( $user['user_welcome'] == 1 ) ? 'enabled' : 'disabled' )
+				. '. He/she currently has automatic welcoming of users ' . ( ( $user['user_welcome_templateid'] == 0 ) ? 'disabled' : 'enabled' )
 				. '. His/her onwiki username is [[User:' . $user['user_onwikiname'] . ']].' );
 
 		} else {
