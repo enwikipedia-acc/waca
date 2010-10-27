@@ -43,7 +43,7 @@ class skin {
 	 */
 	public function displayIheader($username) {
 		// Gets the needed objects.
-		global $tsSQL, $messages, $session;
+		global $tsSQL, $messages, $session, $tsurl;
 		
 		// Escapes the username for MySQL.
 		$suin = $tsSQL->escape($username);
@@ -77,7 +77,7 @@ class skin {
 			// Checks if the particular user has Admin rigths.
 			if ($session->hasright($username, "Admin")) {
 				// There are additional links added to the orginal header if so.
-				$out = str_replace('%ADMINLINKSHERE%', "<a href=\"users.php\">User Management</a>", $out);				
+				$out = str_replace('%ADMINLINKSHERE%', "<a href=\"$tsurl/users.php\">User Management</a>", $out);				
 			} else {
 				$out = str_replace('%ADMINLINKSHERE%', '', $out);
 			}
