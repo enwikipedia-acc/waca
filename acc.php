@@ -834,7 +834,7 @@ elseif ($action == "templatemgmt") {
 	echo "<table cellspacing=\"0\">\n";
 	$current = 0;
 	while ( list($template_id, $usercode) = mysql_fetch_row($result) ) {
-		$currentcell = $current;
+		$currentrow = $current;
 		$current += 1;
 		echo "<tr";
 		if ($current % 2 == 0)
@@ -844,7 +844,7 @@ elseif ($action == "templatemgmt") {
 		if ($userinfo['user_welcome_templateid'] == $template_id)
 			echo " CHECKED";
 		echo "></td>";
-		echo "<td onclick=\"document.templateselection.selectedtemplate[$currentcell].checked = true;\">&nbsp;<small>$usercode</small>&nbsp;</td>";
+		echo "<td onclick=\"document.templateselection.selectedtemplate[$currentrow].checked = true;\">&nbsp;<small>$usercode</small>&nbsp;</td>";
 		if($session->hasright($_SESSION['user'], 'Admin')) {
 			if ($template_id != 1) {
 				echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;<a href=\"$tsurl/acc.php?action=templatemgmt&amp;del=$template_id\" onclick=\"javascript:return confirm('Are you sure you wish to delete template $template_id?')\">Delete!</a>&nbsp;";
