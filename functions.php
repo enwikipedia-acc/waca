@@ -679,55 +679,11 @@ function zoomPage($id,$urlhash)
 	}
 	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 		$out .= '<p><b>IP Address links:</b> ';
-
-		$out .= '<a class="request-src" href="'.$wikipediaurl.'wiki/User_talk:';
-		$out .= $row['pend_ip'] . '" target="_blank">Talk page</a> ';
-
-		// IP contribs
-		$out .= '| ';
-		$out .= '<a class="request-src" href="'.$wikipediaurl.'wiki/Special:Contributions/';
-		$out .= $row['pend_ip'] . '" target="_blank">Local Contributions</a> ';
-
-		// IP global contribs
-		$out .= '| ';
-		$out .= '<a class="request-src" href="http://toolserver.org/~luxo/contributions/contributions.php?lang=en&amp;blocks=true&amp;user=' . $row['pend_ip'] . '" target="_blank">Global Contributions</a> ';
-		// IP blocks
-		$out .= '| ';
-		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
-		$out .= $row['pend_ip'] . '" target="_blank">Local Blocks</a> ';
-
-		// rangeblocks
-		$out .= '| ';
-		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3ABlockList&amp;ip=';
-		$out .= $row['pend_ip'] . '" target="_blank">Local Range Blocks</a> ';
-
-		// Global blocks
-		$out .= '| ';
-		$out .= '<a class="request-src" href="'.$metaurl.'w/index.php?title=Special:Log&amp;type=gblblock&amp;page=User:';
-		$out .= $row['pend_ip'] . '" target="_blank">Global Blocks</a> ';
-
-		// Global range blocks/Locally disabled Global Blocks
-		$out .= '| ';
-		$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3AGlobalBlockList&amp;ip=';
-		$out .= $row['pend_ip'] . '" target="_blank">Global Range Blocks</a> ';
-
-		// IP whois
-		$out .= '| ';
-		$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $row['pend_ip'] . '" target="_blank">Whois</a> ';
-			
-		// IP geolocate
-		$out .= '| ';
-		$out .= '<a class="request-src" href="http://ipinfodb.com/ip_locator.php?ip=' . $row['pend_ip'] . '" target="_blank">Geolocate</a> ';
-			
-		// Abuse Filter
-		$out .= '| ';
-		$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $row['pend_ip'] . '" target="_blank">Abuse Filter Log</a> ';
-		$out .= '</p>';
-
-		/* Betacommand's checks
-		 $out .= '| ';
-		 $out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $row['pend_ip'] . '" target="_blank">Betacommand</a> ';
-		 $out .= '</p>'; */
+		$out .= showIPlinks($row['pend_ip'], $wikipediaurl);
+		if ($row['pend_proxyip']) {
+			$out .= '<p><b>Proxy links:</b> ';
+			$out .= showIPlinks($row['pend_proxyip'], $wikipediaurl);
+		}
 	}
 
 	$userurl = urlencode($sUser);
@@ -1099,5 +1055,61 @@ function doSort(array $items)
 	
 	// return the array back to the caller
 	return $items;
+}
+
+function showIPlinks($ip, $wikipediaurl) {
+	
+	$out = '<a class="request-src" href="'.$wikipediaurl.'wiki/User_talk:';
+	$out .= $ip . '" target="_blank">Talk page</a> ';
+
+	// IP contribs
+	$out .= '| ';
+	$out .= '<a class="request-src" href="'.$wikipediaurl.'wiki/Special:Contributions/';
+	$out .= $ip . '" target="_blank">Local Contributions</a> ';
+
+	// IP global contribs
+	$out .= '| ';
+	$out .= '<a class="request-src" href="http://toolserver.org/~luxo/contributions/contributions.php?lang=en&amp;blocks=true&amp;user=' . $ip . '" target="_blank">Global Contributions</a> ';
+	
+	// IP blocks
+	$out .= '| ';
+	$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
+	$out .= $ip . '" target="_blank">Local Blocks</a> ';
+
+	// rangeblocks
+	$out .= '| ';
+	$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3ABlockList&amp;ip=';
+	$out .= $ip . '" target="_blank">Local Range Blocks</a> ';
+
+	// Global blocks
+	$out .= '| ';
+	$out .= '<a class="request-src" href="'.$metaurl.'w/index.php?title=Special:Log&amp;type=gblblock&amp;page=User:';
+	$out .= $ip . '" target="_blank">Global Blocks</a> ';
+
+	// Global range blocks/Locally disabled Global Blocks
+	$out .= '| ';
+	$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3AGlobalBlockList&amp;ip=';
+	$out .= $ip . '" target="_blank">Global Range Blocks</a> ';
+
+	// IP whois
+	$out .= '| ';
+	$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $ip . '" target="_blank">Whois</a> ';
+
+	// IP geolocate
+	$out .= '| ';
+	$out .= '<a class="request-src" href="http://ipinfodb.com/ip_locator.php?ip=' . $ip . '" target="_blank">Geolocate</a> ';
+
+	// Abuse Filter
+	$out .= '| ';
+	$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $ip . '" target="_blank">Abuse Filter Log</a> ';
+	$out .= '</p>';
+
+	/* Betacommand's checks
+	 $out .= '| ';
+	 $out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $ip . '" target="_blank">Betacommand</a> ';
+	 $out .= '</p>'; */
+
+	return $out;
+	
 }
 ?>

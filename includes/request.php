@@ -311,6 +311,19 @@ class accRequest {
 		return ($flags);
 	}
 	
+	public function istrusted($ip) {
+		global $tsSQL;
+		$query = "SELECT * FROM `acc_trustedips`;"
+		$result = $tsSQL->query($query);
+		if ( !$result )
+			$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
+		while ($row = mysql_fetch_assoc($result)) {
+			if ($ip == $row['trustedips_ipaddr'])
+				return True;
+		}
+		return False;
+	}
+	
 	public function emailvalid($email) {
 		if (!strpos($email, '@')) {
 			return false;
@@ -826,6 +839,16 @@ class accRequest {
 		// Assigns the comment and IP to variables and escapes for MySQL.
 		$comments = $tsSQL->escape(htmlentities($_POST['comments'],ENT_COMPAT,'UTF-8'));
 		$ip = $tsSQL->escape(htmlentities($_SERVER['REMOTE_ADDR']),ENT_COMPAT,'UTF-8');
+		$proxystring = 'NULL';
+		if ($this->istrusted($ip)) {
+			$xffheader = explode(",", getenv("HTTP_X_FORWARDED_FOR"));
+			$sourceip = trim($xffheader[sizeof($xffheader)-1]);
+			if (preg_match('/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/', $sourceip)) {
+				$proxyip = $ip;
+				$ip = $sourceip;
+			}
+			$proxystring = "'" . $proxyip . "'";
+		}
 		$useragent = $tsSQL->escape(htmlentities($_ENV["HTTP_USER_AGENT"],ENT_COMPAT,'UTF-8'));
 		
 		// Gets the current date and time.
@@ -840,7 +863,7 @@ class accRequest {
 		}
 		
 		// Formulates and executes SQL query to insert the new request.
-		$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_name , pend_cmt , pend_status , pend_date, pend_reserved, pend_useragent ) VALUES ( NULL , '$email', '$ip', '$user', '$comments', '$uLevel' , '$dnow', '$defaultReserver', '$useragent' );";
+		$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_proxyip , pend_name , pend_cmt , pend_status , pend_date, pend_reserved, pend_useragent) VALUES ( NULL , '$email', '$ip', $proxystring, '$user', '$comments', '$uLevel' , '$dnow', '$defaultReserver', '$useragent' );";
 		$result = $tsSQL->query($query);
 		
 		// Display error message upon failure.

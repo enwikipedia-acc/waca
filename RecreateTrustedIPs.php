@@ -7,7 +7,7 @@ require_once 'config.inc.php';
 
 $htmlfile = file_get_contents('http://www.wikimedia.org/trusted-xff.html');
 $matches = array();
-$machfound = preg_match_all('(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)', $htmlfile, $matches);
+$machfound = preg_match_all('/(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/', $htmlfile, $matches);
 $sqlquery = 'SET TRANSACTION ISOLATION LEVEL SERIALIZABLE; START TRANSACTION; TRUNCATE TABLE `acc_trustedips`; INSERT INTO `acc_trustedips` (`trustedips_ipaddr`) VALUES ';
 if ($matchfound) {
 	foreach ($matches as $match) {
