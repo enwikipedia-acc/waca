@@ -414,7 +414,7 @@ elseif ($action == "login") {
 	    		}
 		}
 	}
-	$puser = mysql_real_escape_string($_POST['username']);
+	$puser = sanitize($_POST['username']);
 	$ip = sanitize($_SERVER['REMOTE_ADDR']);
 	$query = "SELECT * FROM acc_user WHERE user_name = \"$puser\";";
 	$result = mysql_query($query, $tsSQLlink);
