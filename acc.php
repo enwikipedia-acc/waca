@@ -203,7 +203,7 @@ elseif ($action == "sreg") {
 		die();
 	}
 	
-	$user = mysql_real_escape_string($_REQUEST['name']);
+	$user = sanitize($_REQUEST['name']);
 	if (stristr($user, "'") !== FALSE) {
 		die("Username cannot contain the character '\n");
 	}
