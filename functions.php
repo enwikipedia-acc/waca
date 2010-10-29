@@ -347,7 +347,7 @@ function listrequests($type, $hideip, $correcthash) {
 			{
 				$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"$tsurl/acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Break reservation</a>";
 			} else {
-				$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"$tsurl/statistics.php?page=Users&user=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
+				$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"$tsurl/statistics.php?page=Users&amp;user=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
 
 				// force break?
 				global $enableAdminBreakReserve;

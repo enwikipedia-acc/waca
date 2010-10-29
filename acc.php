@@ -842,8 +842,8 @@ elseif ($action == "templatemgmt") {
 		echo '>';
 		echo "<td><input type=\"radio\" name=\"selectedtemplate\" value=\"$template_id\"";
 		if ($userinfo['user_welcome_templateid'] == $template_id)
-			echo " CHECKED";
-		echo "></td>";
+			echo " checked=\"checked\"";
+		echo " /></td>";
 		echo "<td onclick=\"document.templateselection.selectedtemplate[$currentrow].checked = true;\">&nbsp;<small>$usercode</small>&nbsp;</td>";
 		if($session->hasright($_SESSION['user'], 'Admin')) {
 			if ($template_id != 1) {
@@ -852,21 +852,21 @@ elseif ($action == "templatemgmt") {
 				echo "<td></td>";
 			}
 		}
-		echo "<td><a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td>";
+		echo "<td><a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td></tr>";
 	}
 	echo "<tr><td><input type=\"radio\" name=\"selectedtemplate\" value=\"0\"";
 	if ($userinfo['user_welcome_templateid'] == 0)
-		echo " CHECKED";
-	echo "></td><td onclick=\"document.templateselection.selectedtemplate[$current].checked = true;\">&nbsp;&nbsp;Disable automatic welcoming.</td><td></td>";
+		echo " checked=\"checked\"";
+	echo " /></td><td onclick=\"document.templateselection.selectedtemplate[$current].checked = true;\">&nbsp;&nbsp;Disable automatic welcoming.</td><td></td>";
 	if ($session->hasright($_SESSION['user'], 'Admin'))
 		echo "<td></td>";
 	echo "</tr>";
 	echo "</table><br />";
-	echo "<input type=\"submit\" value=\"Update template choice\">";
+	echo "<input type=\"submit\" value=\"Update template choice\" />";
 	echo "</form>";
 	if ($session->hasright($_SESSION['user'], 'Admin')) {
 		echo "<form action=\"acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">";
-		echo "<input type=\"submit\" value=\"Add new\">";
+		echo "<input type=\"submit\" value=\"Add new\" />";
 		echo "</form>";
 	}
 	$skin->displayIfooter();
