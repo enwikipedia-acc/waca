@@ -148,6 +148,8 @@ elseif ($action == "sreg") {
 			#echo "Account created! In order to complete the process, please make a confirmation edit to your user talk page. In this edit, note that you requested an account on the ACC account creation interface, and use a descriptive edit summary so that we can easily find this edit.  <b>Failure to do this will result in your request being declined.</b><br /><br />\n";
 			## TODO: get this to show a proper error message
 			echo "Unable to create account. Your request has triggered our spam blacklists, please email the mailing list instead.";
+			echo "</div>";
+			$skin->displayPfooter();
 			die( );
 		}
 	}
@@ -159,7 +161,10 @@ elseif ($action == "sreg") {
 			$fp = fsockopen( "udp://127.0.0.1", 9001, $erno, $errstr, 30 );
 			fwrite( $fp, "[DNSBL-ACR] HIT: " . $_POST['name'] . " - " . $_POST['wname'] . " " . $_SERVER['REMOTE_ADDR'] . " " . $_POST['email'] . " " . $_SERVER['HTTP_USER_AGENT'] . " $cmt\r\n" );
 			fclose( $fp );
-			die( "Account not created, please see " . $dnsblcheck['1'] );
+			echo "Account not created, please see " . $dnsblcheck['1'];
+			echo "</div>";
+			$skin->displayPfooter();
+			die(  );
 		}
 	}
 	$cu_name = urlencode( $_REQUEST['wname'] );
@@ -168,6 +173,7 @@ elseif ($action == "sreg") {
 	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) {
 		$message = $messages->getMessage( '9' );
 		$skin->displayRequestMsg("ERROR: You are presently blocked on the English Wikipedia<br />");
+		echo "</div>";
 		$skin->displayPfooter();
 		die();
 	}
@@ -176,6 +182,7 @@ elseif ($action == "sreg") {
 	foreach ( $ue['query']['users']['0'] as $oneue ) {
 		if ( !isset($oneue['missing'])) {
 			$skin->displayRequestMsg("Invalid On-Wiki username.<br />");
+			echo "</div>";
 			$skin->displayPfooter();
 			die();
 		}
@@ -192,6 +199,7 @@ elseif ($action == "sreg") {
 		$editcount = $isNewbie['query']['allusers'][0]['editcount'];
 		if (!($editcount > $onRegistrationNewbieCheckEditCount and $time2 > $onRegistrationNewbieCheckAge)) {
 			$skin->displayRequestMsg("I'm sorry, you are too new to request an account at the moment.<br />");
+			echo "</div>";
 			$skin->displayPfooter();
 			die();
 		}
@@ -199,6 +207,7 @@ elseif ($action == "sreg") {
 	// check if user checked the "I have read and understand the interface guidelines" checkbox
 	if(!isset($_REQUEST['guidelines'])) {
 		$skin->displayRequestMsg("I'm sorry, but you must read <a href=\"http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide\">the interface guidelines</a> before your request may be submitted.<br />");
+		echo "</div>";
 		$skin->displayPfooter();
 		die();
 	}
@@ -230,7 +239,8 @@ elseif ($action == "sreg") {
 	}
 	if ( !isset($user) || !isset($wname) || !isset($pass) || !isset($pass2) || !isset($email) || strlen($email) < 6) {
 		echo "<h2>ERROR!</h2>Form data may not be blank.<br />\n";
-		$skin->displayIfooter();
+		echo "</div>";
+		$skin->displayPfooter();
 		die();
 	}
 	if (isset($_POST['debug']) && $_POST['debug'] == "on") {
@@ -241,11 +251,13 @@ elseif ($action == "sreg") {
 	$mailisvalid = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.(ac|ad|ae|aero|af|ag|ai|al|am|an|ao|aq|ar|arpa|as|asia|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|biz|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cat|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|com|coop|cr|cu|cv|cx|cy|cz|de|dj|dk|dm|do|dz|ec|edu|ee|eg|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gov|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|info|int|io|iq|ir|is|it|je|jm|jo|jobs|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mil|mk|ml|mm|mn|mo|mobi|mp|mq|mr|ms|mt|mu|museum|mv|mw|mx|my|mz|na|name|nc|ne|net|nf|ng|ni|nl|no|np|nr|nu|nz|om|org|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|pro|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sy|sz|tc|td|tel|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|travel|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)$/i', $_REQUEST['email']);
 	if ($mailisvalid == 0) {
 		$skin->displayRequestMsg("ERROR: Invalid E-mail address.<br />");
+		echo "</div>";
 		$skin->displayPfooter();
 		die();
 	}
 	if ($pass != $pass2) {
 		$skin->displayRequestMsg("Passwords did not match!<br />");
+		echo "</div>";
 		$skin->displayPfooter();
 		die();
 	}
@@ -266,6 +278,7 @@ elseif ($action == "sreg") {
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] != "") {
 		$skin->displayRequestMsg( "I'm sorry, but that e-mail address is in use.<br />");
+		echo "</div>";
 		$skin->displayPfooter();
 		die();
 	}
@@ -276,6 +289,7 @@ elseif ($action == "sreg") {
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] != "") {
 		$skin->displayRequestMsg("I'm sorry, but $wname already has an account here.<br />");
+		echo "</div>";
 		$skin->displayPfooter();
 		die();
 	}
@@ -284,6 +298,7 @@ elseif ($action == "sreg") {
 	$row = mysql_fetch_assoc($result);
 	if (!empty($row['pend_name'])) {
 		$skin->displayRequestMsg("I'm sorry, you are too new to request an account at the moment.<br />");
+		echo "</div>";
 		$skin->displayPfooter();
 		die();
 	}
@@ -301,6 +316,7 @@ elseif ($action == "sreg") {
 		$accbotSend->send("New user: $user");
 		$skin->displayRequestMsg("Account created! Your username is $user! In order to complete the process, please make a confirmation edit to your user talk page. In this edit, note that you requested an account on the ACC account creation interface, and use a descriptive edit summary so that we can easily find this edit.  <b>Failure to do this will result in your request being declined.</b><br /><br />");
 	}
+	echo "</div>";
 	$skin->displayPfooter();
 	die();
 }
