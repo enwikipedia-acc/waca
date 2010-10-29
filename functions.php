@@ -489,7 +489,7 @@ function showlogin($action=null, $params=null) {
     <br />
     Need Tool access?
     <br /><a href="' . $tsurl . '/acc.php?action=register">Register!</a> (Requires approval)<br />
-    <a href="'. $tsurl . '/acc.php?action=forgotpw">Forgot your password?</a><br />';
+    <a href="'. $tsurl . '/acc.php?action=forgotpw">Forgot your password?</a><br /></div>';
 
 	// Finally the footer are added to the code.
 	return $html;
