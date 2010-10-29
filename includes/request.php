@@ -313,7 +313,7 @@ class accRequest {
 	
 	public function istrusted($ip) {
 		global $tsSQL;
-		$query = "SELECT * FROM `acc_trustedips`;"
+		$query = "SELECT * FROM `acc_trustedips`;";
 		$result = $tsSQL->query($query);
 		if ( !$result )
 			$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
