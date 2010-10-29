@@ -388,11 +388,12 @@ HTML;
 	}
 	echo <<<HTML
 	<form action="acc.php?action=forgotpw" method="post">
-    Your username: <input type="text" name="username"><br />
-    Your e-mail address: <input type="text" name="email"><br />
-    <input type="submit"><input type="reset">
+    Your username: <input type="text" name="username" /><br />
+    Your e-mail address: <input type="text" name="email" /><br />
+    <input type="submit" /><input type="reset" />
     </form><br />
     Return to <a href="acc.php">Login</a>
+	</div>
 HTML;
 
 
