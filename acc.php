@@ -1315,7 +1315,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	if ($row['user_secure'] > 0) {
 		$securepref = " checked=\"checked\"";
 	} else { $securepref = ""; }
-	$sig = " value=\"" . html_entity_decode($row['user_welcome_sig'],ENT_NOQUOTES) . "\"";
+	$sig = " value=\"" . $row['user_welcome_sig'] . "\"";
 	echo '<table>';
     echo '<tr><th>Table of Contents</th></tr>';
     echo '<tr><td><a href="#1">General settings</a></td></tr>';
