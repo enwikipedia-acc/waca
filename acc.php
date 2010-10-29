@@ -831,7 +831,7 @@ elseif ($action == "templatemgmt") {
 		sqlerror(mysql_error());
 	echo "<h2>Welcome templates</h2>\n";
 	echo "<form action=\"acc.php?action=templatemgmt&amp;set=yes\" method=\"post\" name=\"templateselection\">";
-	echo "<table cellspacing=\"0\">\n";
+	echo "<table><tbody>\n";
 	$current = 0;
 	while ( list($template_id, $usercode) = mysql_fetch_row($result) ) {
 		$currentrow = $current;
@@ -847,7 +847,7 @@ elseif ($action == "templatemgmt") {
 		echo "<td onclick=\"document.templateselection.selectedtemplate[$currentrow].checked = true;\">&nbsp;<small>$usercode</small>&nbsp;</td>";
 		if($session->hasright($_SESSION['user'], 'Admin')) {
 			if ($template_id != 1) {
-				echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;<a href=\"$tsurl/acc.php?action=templatemgmt&amp;del=$template_id\" onclick=\"javascript:return confirm('Are you sure you wish to delete template $template_id?')\">Delete!</a>&nbsp;";
+				echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;<a href=\"$tsurl/acc.php?action=templatemgmt&amp;del=$template_id\" onclick=\"javascript:return confirm('Are you sure you wish to delete template $template_id?')\">Delete!</a>&nbsp;</td>";
 			} else {
 				echo "<td></td>";
 			}
@@ -861,7 +861,7 @@ elseif ($action == "templatemgmt") {
 	if ($session->hasright($_SESSION['user'], 'Admin'))
 		echo "<td></td>";
 	echo "</tr>";
-	echo "</table><br />";
+	echo "</tbody></table><br />";
 	echo "<input type=\"submit\" value=\"Update template choice\" />";
 	echo "</form>";
 	if ($session->hasright($_SESSION['user'], 'Admin')) {
@@ -1318,7 +1318,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     <form action="acc.php?action=changepassword" method="post">
     Your old password: <input type="password" name="oldpassword"/><br />
     Your new password: <input type="password" name="newpassword"/><br />
-    Confirm new password: <input type="password" name="newpasswordconfirm"/<br />
+    Confirm new password: <input type="password" name="newpasswordconfirm"/><br />
     <input type="submit"/><input type="reset"/>
     </form><br />
 HTML;
