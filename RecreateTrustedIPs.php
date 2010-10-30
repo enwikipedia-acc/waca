@@ -24,11 +24,15 @@ mysql_query("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;");
 
 if(mysql_query("START TRANSACTION;"))
 {
-	$success = true;
-	$success = mysql_query("TRUNCATE TABLE `acc_trustedips`;") && $success;
-	$success = mysql_query($sqlquery) && $success;
+	$success1 = mysql_query("TRUNCATE TABLE `acc_trustedips`;");
+	if(!$success1)
+		echo mysql_error()."\n";
 
-	if($success)
+	$success2 = mysql_query($sqlquery);
+	if(!$success2)
+		echo mysql_error()."\n";
+
+	if($success1 && $success2)
 	{
 		mysql_query("COMMIT;");
 		echo "The trusted IPs table has been recreated.\n";
