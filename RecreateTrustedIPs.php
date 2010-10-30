@@ -7,7 +7,7 @@ require_once 'config.inc.php';
 
 $htmlfile = file_get_contents('http://www.wikimedia.org/trusted-xff.html');
 $matches = array();
-$machfound = preg_match_all('/(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/', $htmlfile, $matches);
+$matchfound = preg_match_all('/(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/', $htmlfile, $matches);
 if (!$matchfound)
 	die('ERROR: No IPs found on trusted XFF page.');
 $sqlquery = 'INSERT INTO `acc_trustedips` (`trustedips_ipaddr`) VALUES ';
