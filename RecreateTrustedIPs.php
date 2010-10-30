@@ -19,14 +19,9 @@ foreach ($matches as $match) {
 
 $ip=array_unique($ip);
 
-foreach ($ip as $i) {
-	$sqlquery .= "('$ip'), ";
-}
-	
 $sqlquery = 'INSERT INTO `acc_trustedips` (`trustedips_ipaddr`) VALUES ';
-foreach ($matches as $match) {
-	$ip = $match[0];
-	$sqlquery .= "('$ip'), ";
+foreach ($ip as $i) {
+	$sqlquery .= "('$i'), ";
 }
 $sqlquery = substr($sqlquery, 0, -2) . ';';
 
