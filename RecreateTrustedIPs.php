@@ -8,14 +8,12 @@ require_once 'config.inc.php';
 $htmlfile = file_get_contents('http://www.wikimedia.org/trusted-xff.html');
 $matches = array();
 $machfound = preg_match_all('/(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/', $htmlfile, $matches);
-$sqlquery = 'INSERT INTO `acc_trustedips` (`trustedips_ipaddr`) VALUES ';
-if ($matchfound) {
-	foreach ($matches as $match) {
-		$ip = $match[0];
-		$sqlquery .= "('$ip'), ";
-	}
-} else {
+if (!$matchfound)
 	die('ERROR: No IPs found on trusted XFF page.');
+$sqlquery = 'INSERT INTO `acc_trustedips` (`trustedips_ipaddr`) VALUES ';
+foreach ($matches as $match) {
+	$ip = $match[0];
+	$sqlquery .= "('$ip'), ";
 }
 $sqlquery = substr($sqlquery, 0, -2) . ';';
 
@@ -29,7 +27,6 @@ if(mysql_query("START TRANSACTION;"))
 	$success = true;
 	$success = mysql_query("TRUNCATE TABLE `acc_trustedips`;") && $success;
 	$success = mysql_query($sqlquery) && $success;
-
 
 	if($success)
 	{
