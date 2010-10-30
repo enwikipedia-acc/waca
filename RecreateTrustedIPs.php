@@ -4,12 +4,25 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
 } // Web clients die.
 ini_set('display_errors', 1);
 require_once 'config.inc.php';
+require_once 'functions.php';
 
 $htmlfile = file_get_contents('http://www.wikimedia.org/trusted-xff.html');
 $matchfound = preg_match_all('/(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)/', $htmlfile, $matches, PREG_SET_ORDER);
 if (!$matchfound)
 	die('ERROR: No IPs found on trusted XFF page.');
 
+$ip=array();
+	
+foreach ($matches as $match) {
+	$ip[] = $match[0];
+}
+
+$ip=array_unique($ip);
+
+foreach ($ip as $i) {
+	$sqlquery .= "('$ip'), ";
+}
+	
 $sqlquery = 'INSERT INTO `acc_trustedips` (`trustedips_ipaddr`) VALUES ';
 foreach ($matches as $match) {
 	$ip = $match[0];
