@@ -32,7 +32,7 @@ mysql_query("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;");
 
 if(mysql_query("START TRANSACTION;"))
 {
-	$success1 = mysql_query("TRUNCATE TABLE `acc_trustedips`;");
+	$success1 = mysql_query("DELETE FROM `acc_trustedips`;");
 	if(!$success1)
 		echo mysql_error()."\n";
 
