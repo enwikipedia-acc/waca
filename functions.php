@@ -678,6 +678,8 @@ function zoomPage($id,$urlhash)
 		$metaurl = "http://meta.wikimedia.org/";
 	}
 	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
+		if ($row['pend_proxyip'])
+			$out .= '<br /><i>This request came from '.$row['pend_ip'].' via proxy '.$row['pend_proxyip'].'. Links for both are shown.</i>';
 		$out .= '<p><b>IP Address links:</b> ';
 		$out .= showIPlinks($row['pend_ip'], $wikipediaurl);
 		if ($row['pend_proxyip']) {
