@@ -923,8 +923,9 @@ function zoomPage($id,$urlhash)
 				break;
 			case 'Email Confirmed':
 				$action = '<i>Email confirmed the request.</i>';
+				break;
 		}
-		if ($action == 'Email Confirmed' || $action == 'DNSBL Hit' || $action == 'Blacklist Hit')
+		if ($row['log_action'] == 'Email Confirmed' || $row['log_action'] == 'DNSBL Hit' || $row['log_action'] == 'Blacklist Hit')
 			$userid = null;
 		else
 			$userid = $row['user_id'];
