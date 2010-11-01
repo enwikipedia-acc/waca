@@ -36,6 +36,7 @@ class session {
 	
 	public function forceLogout( $uid ) {
 		$uid = sanitize( $uid );
+		global $skin;
 		global $toolserver_username;
 		global $toolserver_password;
 		global $toolserver_host;
@@ -98,7 +99,7 @@ class session {
 		/*
 		* Check the user's security level on page load, and bounce accordingly
 		*/
-		global $secure, $session;
+		global $secure, $session, $skin;
 		if ($session->hasright($username, "New")) {
 			echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
 			echo $skin->displayIfooter();
