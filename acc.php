@@ -451,6 +451,7 @@ elseif ($action == "login") {
 		echo "</pre><br />";
 		
 		// Display the footer of the interface.
+		echo "</div>";
 		$skin->displayPfooter();
 		die();
 	}
@@ -471,6 +472,7 @@ elseif ($action == "login") {
 		echo '<b>' . $reasonRow['log_cmt'] . "</b></pre><br />";
 		
 		// Display the footer of the interface.
+		echo "</div>";
 		$skin->displayPfooter();
 		die();
 	}
