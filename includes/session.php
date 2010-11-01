@@ -59,7 +59,7 @@ class session {
 			echo "You have been forcibly logged out, probably due to being renamed. Please log back in.";
 			$query = "UPDATE acc_user SET user_forcelogout = '0' WHERE user_id = '$uid';";
 			$result = mysql_query($query);
-			die( showfootern( ) );
+			die( displayIfooter() );
 		}
 	}
 	
@@ -101,11 +101,11 @@ class session {
 		global $secure, $session;
 		if ($session->hasright($username, "New")) {
 			echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
-			echo showfootern();
+			echo displayIfooter();
 			die();
 		} elseif ($session->hasright($username, "Suspended")) {
 			echo "I'm sorry, but, your account is presently suspended.<br />\n";
-			echo showfootern();
+			echo displayIfooter();
 			die();
 		} elseif ($session->hasright($username, "Declined")) {
 			$username = sanitize($username);
@@ -133,7 +133,7 @@ class session {
 			echo "log_time: " . $row2['log_time'] . "<br />\n";
 			echo "log_cmt: " . $row2['log_cmt'] . "<br />\n";
 			echo "<br /><big><strong>To appeal this decision, please e-mail <a href=\"mailto:accounts-enwiki-l@lists.wikimedia.org\">accounts-enwiki-l@lists.wikimedia.org</a> with the above information, and a reasoning why you believe you should be approved for this interface.</strong></big><br />\n";
-			echo showfootern();
+			echo displayIfooter();
 			die();
 		} elseif ($session->hasright($username, "User") || $session->hasright($username, "Admin") ) {
 			$secure = 1;
