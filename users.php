@@ -471,7 +471,7 @@ if (!$result)
 	Die("Query failed: $query ERROR: " . mysql_error());
 echo "<ol>\n";
 while ($row = mysql_fetch_assoc($result)) {
-	$uname = $row['user_name'];
+	$uname = sanitize($row['user_name']);
 	$uoname = $row['user_onwikiname'];
 	$userid = $row['user_id'];
 	$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Suspended';";
