@@ -509,7 +509,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	$row2 = mysql_fetch_assoc($result2);
 	$declined = $row2['COUNT(*)'];
 
-	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">".$row['user_name']."</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 	if( $enableRenames == 1 ) {
 		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?rename=$userid\">Rename!</a> -";
 		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?edituser=$userid\">Edit!</a> -";
@@ -580,10 +580,10 @@ if (!$result)
 	Die("Query failed: $query ERROR: " . mysql_error());
 echo "<ol>\n";
 while ($row = mysql_fetch_assoc($result)) {
-	$uname = $row['user_name'];
+	$uname = sanitize($row['user_name']);
 	$uoname = $row['user_onwikiname'];
 	$userid = $row['user_id'];
-	$out = "<li><small>[ <span class=\"request-ban\">$uname</span> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+	$out = "<li><small>[ <span class=\"request-ban\">".$row['user_name']."</span> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 	if( $enableRenames == 1 ) {
 		$out .= " <a class=\"request-req\" href=\"users.php?rename=$userid\">Rename!</a> -";
 		$out .= " <a class=\"request-req\" href=\"users.php?edituser=$userid\">Edit!</a> -";
