@@ -167,7 +167,7 @@ elseif ($action == "sreg") {
 			die(  );
 		}
 	}
-	$cu_name = urlencode( $_REQUEST['wname'] );
+	$cu_name = rawurlencode( $_REQUEST['wname'] );
 	$userblocked = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
 	$ub = unserialize( $userblocked );
 	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) {
