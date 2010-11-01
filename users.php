@@ -295,8 +295,8 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 		$skin->displayIfooter();
 		die();
 	} else {
-		$oldname = mysql_real_escape_string($_POST['oldname']);
-		$newname = mysql_real_escape_string($_POST['newname']);
+		$oldname = sanitize($_POST['oldname']);
+		$newname = sanitize($_POST['newname']);
 		$userid = sanitize($_GET['rename']);
 		$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$userid';");
 		if (!$result)
