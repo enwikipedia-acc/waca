@@ -854,19 +854,79 @@ function zoomPage($id,$urlhash)
 	//mysql_pconnect( $toolserver_host, $toolserver_username, $toolserver_password );
 	//@ mysql_select_db( $toolserver_database ) or print mysql_error( );
 
-	$out .= "<h2>Logs for this request:</h2>";
-	$logPage = new LogPage();
-	$logPage->filterRequest=$thisid;
-	$logPage->filterAction='(Deferred to users|Deferred to admins|Deferred to checkusers|Closed 1|Closed 3|Closed 2|Closed 4|Closed 5|Closed 0|Closed 26|Closed custom|Closed custom-y|Closed custom-n|Blacklist Hit|DNSBL Hit|Reserved|Unreserved|BreakReserved|Email Confirmed)';
-	$logPage->showPager=false;
-	$out .= $logPage->showListLog(0,100);
-
 	if ($urlhash != "") {
-		$out .= "<h2>Comments on this request:<small> (<a href='$tsurl/acc.php?action=comment&amp;id=$gid&amp;hash=$urlhash'>new comment</a>)</small></h2>";
+		$out .= "<h2>Logs for this request:<small> (<a href='$tsurl/acc.php?action=comment&amp;id=$gid&amp;hash=$urlhash'>new comment</a>)</small></h2>";
 	} else {
-		$out .= "<h2>Comments on this request:<small> (<a href='$tsurl/acc.php?action=comment&amp;id=$gid'>new comment</a>)</small></h2>";
+		$out .= "<h2>Logs for this request:<small> (<a href='$tsurl/acc.php?action=comment&amp;id=$gid'>new comment</a>)</small></h2>";
 	}
-
+	
+	$query = "SELECT * FROM acc_log JOIN acc_user ON (user_name = log_user) WHERE log_pend='$thisid' AND log_action RLIKE '(Deferred to users|Deferred to admins|Deferred to checkusers|Closed 1|Closed 3|Closed 2|Closed 4|Closed 5|Closed 0|Closed 26|Closed custom|Closed custom-y|Closed custom-n|Blacklist Hit|DNSBL Hit|Reserved|Unreserved|BreakReserved|Email Confirmed)';";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result)
+		Die("Query failed: $query ERROR: " . mysql_error());
+	$logs = array();
+	while ($row = mysql_fetch_assoc($result)) {
+		switch ($row['log_action']) {
+			case 'Deferred to users':
+				$action = '<i>Deferred the request to users.</i>';
+				break;
+			case 'Deferred to admins':
+				$action = '<i>Deferred the request to admins.</i>';
+				break;
+			case 'Deferred to checkusers':
+				$action = '<i>Deferred the request to checkusers.</i>';
+				break;
+			case 'Closed 1':
+				$action = '<i>Closed the request as account created.</i>';
+				break;
+			case 'Closed 3':
+				$action = '<i>Closed the request as taken.</i>';
+				break;
+			case 'Closed 2':
+				$action = '<i>Closed the request as too similar.</i>';
+				break;
+			case 'Closed 4':
+				$action = '<i>Closed the request as a username policy violation.</i>';
+				break;
+			case 'Closed 5':
+				$action = '<i>Closed the request as technically impossible.</i>';
+				break;
+			case 'Closed 0':
+				$action = '<i>Dropped the request.</i>';
+				break;
+			case 'Closed 26':
+				$action = '<i>Closed the request as taken in SUL.</i>';
+				break;
+			case 'Closed custom':
+				$action = '<i>Custom closed the request.</i>';
+				break;
+			case 'Closed custom-y':
+				$action = '<i>Custom closed the request, creating the account.</i>';
+				break;
+			case 'Closed custom-n':
+				$action = '<i>Custom closed the request, without creating the account.</i>';
+				break;
+			case 'Blacklist Hit':
+				$action = '<i>The request was rejected by the blacklist.</i>';
+				break;
+			case 'DNSBL Hit':
+				$action = '<i>The request was rejected by the blacklist.</i>';
+				break;
+			case 'Reserved':
+				$action = '<i>Reserved the request.</i>';
+				break;
+			case 'Unreserved':
+				$action = '<i>Unreserved the request.</i>';
+				break;
+			case 'BreakReserved':
+				$action = '<i>Broke the request reservation.</i>';
+				break;
+			case 'Email Confirmed':
+				$action = '<i>Email confirmed the request.</i>';
+		}
+		$logs[] = array($row['log_date'], $row['user_id'], $row['log_user'], $action, 'user');
+	}
+	
 	if ($session->hasright($_SESSION['user'], 'Admin')) {
 		$query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' ORDER BY cmt_id ASC;";
 	} else {
@@ -876,17 +936,28 @@ function zoomPage($id,$urlhash)
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	if (mysql_num_rows($result)) {
+	while ($row = mysql_fetch_assoc($result))
+		$logs[] = array($row['cmt_time'], $row['user_id'], $row['cmt_user'], autolink($row['cmt_comment']), $row['cmt_visability']);
+	
+	if ($logs) {
+		$logs = doSort($logs);
 		$rownumber = 0;
 		$out .= "<table>";
-		while ($row = mysql_fetch_assoc($result)) {
+		foreach ($logs as $row) {
 			$rownumber += 1;
-			$comment = autolink($row['cmt_comment']);
+			$date = $row[0];
+			$userid = $row[1];
+			$username = $row[2];
+			$action = $row[3];
 			$out .= "<tr";
 			if ($rownumber % 2 == 0) {$out .= ' class="alternate"';}
-			$out .= ">";
-			$out .= "<td style=\"white-space: nowrap\">&nbsp;<a href='$tsurl/statistics.php?page=Users&amp;user=" . $row['user_id'] . "'>" .  $row['cmt_user'] ."</a>&nbsp;</td><td>&nbsp;" . $comment . "&nbsp;</td><td style=\"white-space: nowrap\">&nbsp;" . $row['cmt_time'] . "&nbsp;</td>";
-			if ($row['cmt_visability'] == "admin") {
+			$out .= "><td style=\"white-space: nowrap\">&nbsp;";
+			if ($userid)
+				$out .= "<a href='$tsurl/statistics.php?page=Users&amp;user=$userid'>$username</a>";
+			else
+				$out .= $username;
+			$out .= "&nbsp;</td><td>&nbsp;$action&nbsp;</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
+			if ($row[4] == "admin") {
 				$out .= "<td style=\"white-space: nowrap\">&nbsp;<font color='red'>(admin only)</font>&nbsp;</td>";
 			} else {
 				$out .= "";
@@ -1023,25 +1094,23 @@ function displayPreview($wikicode) {
 }
 
 /**
- * A simple implementation of a bubble sort
+ * A simple implementation of a bubble sort on a multidimensional array.
  *
- * @param array $items An array of integers to be sorted using a bubble sort
+ * @param array $items A two-dimensional array, to be sorted by a date variable
+ * in the first field of the arrays inside the array passed.
  * @return array sorted array.
  */
 function doSort(array $items)
 {
-	// did we make a change during this pass?
-	$flag = false;
-
 	// Loop through until it's sorted
 	do{
 		// reset flag to false, we've not made any changes in this iteration yet
 		$flag = false;
 		
 		// loop through the array
-		for ($i = 0; $i < (count($items) -1); $i++) {
+		for ($i = 0; $i < (count($items) - 1); $i++) {
 			// are these two items out of order?
-			if($items[$i] > $items[$i + 1])
+			if(strtotime($items[$i][0]) > strtotime($items[$i + 1][0]))
 			{
 				// swap them
 				$swap = $items[$i];
