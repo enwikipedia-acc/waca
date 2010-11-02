@@ -253,7 +253,7 @@ elseif ($action == "sreg") {
 		die();
 	}
 	if ($pass != $pass2) {
-		$skin->displayRequestMsg("Passwords did not match!<br />");
+		$skin->displayRequestMsg("Please re-enter passwords. Passwords did not match!<br />");
 		echo "</div>";
 		$skin->displayPfooter();
 		die();
