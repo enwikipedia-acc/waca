@@ -315,7 +315,11 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());				
-				$query = "UPDATE acc_log SET log_user = '$newname' WHERE log_user = '$oldname'";
+		$query = "UPDATE acc_log SET log_user = '$newname' WHERE log_user = '$oldname'";
+		$result = mysql_query($query, $tsSQLlink);
+		if (!$result)
+			Die("Query failed: $query ERROR: " . mysql_error());
+		$query = "UPDATE acc_cmt SET cmt_user = '$newname' WHERE cmt_user = '$oldname'";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
