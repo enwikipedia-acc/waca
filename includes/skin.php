@@ -86,7 +86,7 @@ class skin {
 			$rethead .= $out;
 			
 			// Generates the code for the header-info section. This includes a link to the user information and to log out.
-			$rethead .= "<div id = \"header-info\">Logged in as <a href=\"statistics.php?page=Users&amp;user=" . $_SESSION['user_id'] . "\"><span title=\"View your user information\">" . $_SESSION['user'] . "</span></a>.  <a href=\"acc.php?action=logout\">Logout</a>?</div>\n";
+			$rethead .= "<div id = \"header-info\">Logged in as <a href=\"$tsurl/statistics.php?page=Users&amp;user=" . $_SESSION['user_id'] . "\"><span title=\"View your user information\">" . $_SESSION['user'] . "</span></a>.  <a href=\"$tsurl/acc.php?action=logout\">Logout</a>?</div>\n";
 			
 			// Assigns the current date and time to a variable.
 			// TODO: This produces a PHP Strict Standards error message. See next line.
@@ -111,7 +111,7 @@ class skin {
 			$rethead .= $out;
 			
 			// Generates the code for the header-info section. This states that the user is not logged in, or the option to create an account.
-			$rethead .= "<div id = \"header-info\">Not logged in.  <a href=\"acc.php\"><span title=\"Click here to return to the login form\">Log in</span></a>/<a href=\"acc.php?action=register\">Create account</a>?</div>\n";
+			$rethead .= "<div id = \"header-info\">Not logged in.  <a href=\"$tsurl/acc.php\"><span title=\"Click here to return to the login form\">Log in</span></a>/<a href=\"$tsurl/acc.php?action=register\">Create account</a>?</div>\n";
 		}
 		// Prints the specific header-info section to the screen.
 		echo $rethead;
