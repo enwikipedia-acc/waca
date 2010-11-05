@@ -751,7 +751,7 @@ function zoomPage($id,$urlhash)
 		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=custom&amp;sum=' . $row['pend_checksum'] . '">Custom</a>';
 		
 		// Email reset notification
-		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=custom&amp;sum=' . $row['pend_checksum'] . '">Password Reset Email</a>';
+		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=30&amp;sum=' . $row['pend_checksum'] . '">Password Reset Email</a>';
 		
 		// Drop
 		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
@@ -846,7 +846,7 @@ function zoomPage($id,$urlhash)
 			$posc4 .= $oS . '" target="_blank">SUL</a> ';
 			
 			// Password reset links
-			$posc5 = '<a href="http://en.wikipedia.org/w/index.php?title=Special%3AUserLogin&type=login&wpName=User%3A';
+			$posc5 = '<a href="http://en.wikipedia.org/w/index.php?title=Special%3AUserLogin&type=login&wpName=';
 			$posc5 .= $oS . '" target="_blank">Send Password reset</a> ';
 
 			// Adds all the variables together for one line.
