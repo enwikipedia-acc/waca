@@ -749,8 +749,10 @@ function zoomPage($id,$urlhash)
 
 		// Custom
 		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=custom&amp;sum=' . $row['pend_checksum'] . '">Custom</a>';
-
-
+		
+		// Email reset notification
+		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=custom&amp;sum=' . $row['pend_checksum'] . '">Password Reset Email</a>';
+		
 		// Drop
 		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
 			
@@ -842,9 +844,13 @@ function zoomPage($id,$urlhash)
 			// Open the SUL of the conflicting users.
 			$posc4 = '<a href="http://toolserver.org/~vvv/sulutil.php?user=';
 			$posc4 .= $oS . '" target="_blank">SUL</a> ';
+			
+			// Password reset links
+			$posc5 = '<a href="http://en.wikipedia.org/w/index.php?title=Special%3AUserLogin&type=login&wpName=User%3A';
+			$posc5 .= $oS . '" target="_blank">Send Password reset</a> ';
 
 			// Adds all the variables together for one line.
-			$out2 .= "<li>" . $posc1 . "( " . $posc2 . " | " . $posc3 . " | " . $posc4 . " )</li>\n";
+			$out2 .= "<li>" . $posc1 . "( " . $posc2 . " | " . $posc3 . " | " . $posc4 . " | " . $posc5 . " )</li>\n";
 		}
 		$out2 .= "</ul>\n";
 	}
