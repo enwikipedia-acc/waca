@@ -362,14 +362,14 @@ elseif ($action == "forgotpw") {
 		$hashme = $row['user_name'] . $row['user_email'] . $row['user_welcome_templateid'] . $row['user_id'] . $row['user_pass'];
 		$hash = md5($hashme);
 		if ($hash == $_GET['si']) {
-			echo '<h2>Reset password for '. $row['user_name'].' ('.$row['user_email'].')</h2><form action="acc.php?action=forgotpw&amp;si='.$_GET['si'].'&amp;id='. $_GET['id'].'" method="post">';
+			echo '<h2>Reset password for '. $row['user_name'].' ('.$row['user_email'].')</h2><form action="'.$tsurl.'acc.php?action=forgotpw&amp;si='.$_GET['si'].'&amp;id='. $_GET['id'].'" method="post">';
 			echo <<<HTML
 			New Password: <input type="password" name="pw"><br />
             New Password (confirm): <input type="password" name="pw2"><br />
             <input type="submit"><input type="reset">
             </form><br />
-            Return to <a href="acc.php">Login</a>
 HTML;
+            echo "Return to <a href=\"$tsurl/acc.php\">Login</a>";
 		} else {
 			echo "<h2>ERROR</h2>\nInvalid request. The HASH supplied in the link did not match the HASH in the database!<br />";
 		}
@@ -399,16 +399,14 @@ HTML;
 		echo "Your password reset request has been completed. Please check your e-mail.\n<br />";
 		}
 	}
+	echo '<form action="'.$tsurl.'acc.php?action=forgotpw" method="post">';
 	echo <<<HTML
-	<form action="acc.php?action=forgotpw" method="post">
     Your username: <input type="text" name="username" /><br />
     Your e-mail address: <input type="text" name="email" /><br />
     <input type="submit" /><input type="reset" />
     </form><br />
-    Return to <a href="acc.php">Login</a>
-	</div>
 HTML;
-
+    echo 'Return to <a href="'.$tsurl.'acc.php">Login</a></div>';
 
 	$skin->displayPfooter();
 	die();
@@ -598,7 +596,7 @@ elseif ($action == "messagemgmt") {
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row = mysql_fetch_assoc($result);
 		$mailtext = htmlentities($row['mail_text'],ENT_COMPAT,'UTF-8');
-		echo "<h2>Edit message</h2><strong>This is NOT a toy. If you can see this form, you can edit this message. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"acc.php?action=messagemgmt&amp;edit=$mid&amp;submit=1\" method=\"post\"><br />\n";
+		echo "<h2>Edit message</h2><strong>This is NOT a toy. If you can see this form, you can edit this message. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mid&amp;submit=1\" method=\"post\"><br />\n";
 		echo "<input type=\"text\" name=\"maildesc\" value=\"" . $row['mail_desc'] . "\"/><br />\n";
 		echo "<textarea name=\"mailtext\" rows=\"20\" cols=\"60\">$mailtext</textarea><br />\n";
 		echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
@@ -613,7 +611,7 @@ elseif ($action == "messagemgmt") {
 	echo "<h2>Mail messages</h2>\n";
 	echo "<ul>\n";
 	while ( list( $mail_id, $mail_count, $mail_desc ) = mysql_fetch_row( $result ) ) {
-		$out = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mail_id\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
+		$out = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mail_id\">Edit!</a> - <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
 		$out2 = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
 		if($session->hasright($_SESSION['user'], 'Admin')){
 		echo "$out\n";
@@ -633,7 +631,7 @@ elseif ($action == "messagemgmt") {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		$out = "<li>$mailn) <small>[ $maild ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		$out = "<li>$mailn) <small>[ $maild ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li>$mailn) <small>[ $maild ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		if($session->hasright($_SESSION['user'], 'Admin')){
 		echo "$out\n";
@@ -654,7 +652,7 @@ elseif ($action == "messagemgmt") {
 		$mailn = $row['mail_id'];
 		$mailc = $row['mail_count'];
 		$maild = $row['mail_desc'];
-		$out = "<li>$mailn) <small>[ $maild ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
+		$out = "<li>$mailn) <small>[ $maild ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		$out2 = "<li>$mailn) <small>[ $maild ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
 		if($session->hasright($_SESSION['user'], 'Admin')){
 		echo "$out\n";
@@ -719,7 +717,7 @@ elseif ($action == "templatemgmt") {
 				$usercode = '';
 				$botcode = '';
 			}
-			echo "<form action=\"acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">\n";
+			echo "<form action=\"$tsurl/acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">\n";
 			echo "Display code: <input type=\"text\" name=\"usercode\" value=\"$usercode\" size=\"40\"/><br />\n";
 			echo "Bot code: <input type=\"text\" name=\"botcode\" value=\"$botcode\" size=\"40\"/><br />\n";
 			echo "<input type=\"submit\" name=\"submit\" value=\"Create!\"/><input type=\"submit\" name=\"preview\" value=\"Preview\"/><br />\n";
@@ -810,7 +808,7 @@ elseif ($action == "templatemgmt") {
 				$usercode = str_replace("\n", '\n', $row['template_usercode']);
 				$botcode = str_replace("\n", '\n', $row['template_botcode']);
 			}
-			echo "<form action=\"acc.php?action=templatemgmt&amp;edit=$tid\" method=\"post\">\n";
+			echo "<form action=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$tid\" method=\"post\">\n";
 			echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\" value=\"$usercode\"/><br />\n";
 			echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\" value=\"$botcode\"/><br />\n";
 			echo "<input type=\"submit\" name=\"submit\" value=\"Edit!\"/><input type=\"submit\" name=\"preview\" value=\"Preview\"/><br />\n";
@@ -846,7 +844,7 @@ elseif ($action == "templatemgmt") {
 	if (!$result)
 		sqlerror(mysql_error());
 	echo "<h2>Welcome templates</h2>\n";
-	echo "<form action=\"acc.php?action=templatemgmt&amp;set=yes\" method=\"post\" name=\"templateselection\">";
+	echo "<form action=\"$tsurl/acc.php?action=templatemgmt&amp;set=yes\" method=\"post\" name=\"templateselection\">";
 	echo "<table><tbody>\n";
 	$current = 0;
 	while ( list($template_id, $usercode) = mysql_fetch_row($result) ) {
@@ -868,7 +866,7 @@ elseif ($action == "templatemgmt") {
 				echo "<td></td>";
 			}
 		}
-		echo "<td><a href=\"acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td></tr>";
+		echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td></tr>";
 	}
 	echo "<tr><td><input type=\"radio\" name=\"selectedtemplate\" value=\"0\"";
 	if ($userinfo['user_welcome_templateid'] == 0)
@@ -881,7 +879,7 @@ elseif ($action == "templatemgmt") {
 	echo "<input type=\"submit\" value=\"Update template choice\" />";
 	echo "</form>";
 	if ($session->hasright($_SESSION['user'], 'Admin')) {
-		echo "<form action=\"acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">";
+		echo "<form action=\"$tsurl/acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">";
 		echo "<input type=\"submit\" value=\"Add new\" />";
 		echo "</form>";
 	}
@@ -1063,7 +1061,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 		
 		echo $row['ban_reason'] . "<br />";
 		echo "What is your reason for unbanning this person?<br />";
-		echo "<form METHOD=\"post\" ACTION=\"acc.php?action=unban&id=". $bid ."&confirmunban=true\">";
+		echo "<form METHOD=\"post\" ACTION=\"$tsurl/acc.php?action=unban&id=". $bid ."&confirmunban=true\">";
 		echo "<input type=\"text\" name=\"unbanreason\"/><input type=\"submit\"/></form><br />";
 		echo "<a href=\"$tsurl/acc.php\">Cancel</a>";
 		
@@ -1116,7 +1114,7 @@ elseif ($action == "ban") {
 			die();
 		} else {
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
-			echo "<form action=\"acc.php?action=sban&amp;user=$siuser\" method=\"post\">";
+			echo "<form action=\"$tsurl/acc.php?action=sban&amp;user=$siuser\" method=\"post\">";
 			echo "Ban target: $target\n<br />\n";
 			echo "<table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td></tr>\n";
 			echo "<tr><td>Duration:</td><td>\n";
@@ -1190,7 +1188,7 @@ elseif ($action == "ban") {
 		echo "</table>\n";
 		if($isAdmin) {
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
-			echo "<form action=\"acc.php?action=sban\" method=\"post\">";
+			echo "<form action=\"$tsurl/acc.php?action=sban\" method=\"post\">";
 			echo "<table>";
 			echo "<tr><td>Ban target:</td><td><input type=\"text\" name=\"target\" /></td></tr>\n";
 			echo "<tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td></tr>\n";
@@ -1321,7 +1319,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     echo '<tr><td><a href="#2">Change password</a></td></tr>';
     echo '</table>';
     echo '<a name="1"></a><h2>General settings</h2>';
-    echo '<form action="acc.php?action=welcomeperf" method="post">';
+    echo '<form action="'.$tsurl.'/acc.php?action=welcomeperf" method="post">';
     echo '<input type="checkbox" name="secureenable"'.$securepref.'/> Enable use of the secure server<br /><br />';
     echo 'Your signature (wikicode).<input type="text" name="sig" size ="40"'. $sig.'/>';
     echo '<i>This would be the same as ~~~ on-wiki. No date, please.</i><br /><br />';
@@ -1331,7 +1329,9 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     <input type="submit"/><input type="reset"/>
     </form>
     <a name="2"></a><h2>Change your password</h2>
-    <form action="acc.php?action=changepassword" method="post">
+HTML;
+    echo '<form action="'.$tsurl.'acc.php?action=changepassword" method="post">';
+	echo <<<HTML
     Your old password: <input type="password" name="oldpassword"/><br />
     Your new password: <input type="password" name="newpassword"/><br />
     Confirm new password: <input type="password" name="newpasswordconfirm"/><br />
@@ -1556,7 +1556,7 @@ elseif ($action == "logs") {
 	} else { $filteruserl = ""; $filteruser = "";}
 	
 	echo '<h2>Logs</h2>
-	<form action="acc.php" method="get">
+	<form action="'.$tsurl.'/acc.php" method="get">
 		<input type="hidden" name="action" value="logs" />
 		<table>
 			<tr><td>Filter by username:</td><td><input type="text" name="user"'.$filteruserl.' /></td></tr>
@@ -1851,11 +1851,11 @@ elseif ($action == "comment") {
     if( isset($_GET['id']) ) {
         $id = sanitize($_GET['id']);
         echo "<h2>Comment on request <a href='$tsurl/acc.php?action=zoom&amp;id=$id&amp;hash=$urlhash'>#$id</a></h2>
-              <form action='acc.php?action=comment-add&amp;hash=$urlhash' method='post'>";
+              <form action='$tsurl/acc.php?action=comment-add&amp;hash=$urlhash' method='post'>";
     } else {
         $id = "";
         echo "<h2>Comment on a request</h2>
-              <form action='acc.php?action=comment-add' method='post'>";
+              <form action='$tsurl/acc.php?action=comment-add' method='post'>";
     }
     echo "
     Request ID: <input type='text' name='id' value='$id' /> <br />

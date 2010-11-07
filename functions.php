@@ -439,7 +439,7 @@ function showlogin($action=null, $params=null) {
 
 	// Generate the login form; set the action to login and nocheck to true.
 	// By setting nocheck to true would skip the checking procedures.
-	$html .='<form action="acc.php?action=login&amp;nocheck=1';
+	$html .='<form action="'.$tsurl.'acc.php?action=login&amp;nocheck=1';
 
 	// Would perform clause for any action except logout.
 	if (($action) && ($action != "logout")) {
@@ -776,7 +776,7 @@ function zoomPage($id,$urlhash)
 
 
 	//Escape injections.
-	$out .= "<p><strong>Requester Comment</strong>: " . $row['pend_cmt'] . "</p>\n";
+	$out .= "<p><strong>Requester Comment</strong>: " . autolink($row['pend_cmt']) . "</p>\n";
 
 	global $tsurl;
 
@@ -980,9 +980,9 @@ function zoomPage($id,$urlhash)
 		$out .= "<i>None.</i>\n";
 	}
 	if ($urlhash != "") {
-		$out .= "<form action='acc.php?action=comment-quick&amp;hash=$urlhash' method='post' />";
+		$out .= "<form action='$tsurl/acc.php?action=comment-quick&amp;hash=$urlhash' method='post' />";
 	} else {
-		$out .= "<form action='acc.php?action=comment-quick' method='post' />";
+		$out .= "<form action='$tsurl/acc.php?action=comment-quick' method='post' />";
 	}
 	$out .= "<input type='hidden' name='id' value='$gid' /><input type='text' name='comment' size='75' /><input type='hidden' name='visibility' value='user' /><input type='submit' value='Quick Reply' />";
 
@@ -1007,7 +1007,7 @@ function zoomPage($id,$urlhash)
 			$currentrow += 1;
 			$out .= "<tr";
 			if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
-			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
+			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
 		}
 		if ($currentrow == 0) {
 			$out .= "<i>None.</i>\n";
@@ -1042,7 +1042,7 @@ function zoomPage($id,$urlhash)
 			$currentrow += 1;
 			$out .= "<tr";
 			if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
-			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
+			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
 		}
 		// Checks whether there were similar requests.
 		if ($currentrow == 0) {
