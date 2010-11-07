@@ -439,7 +439,7 @@ function showlogin($action=null, $params=null) {
 
 	// Generate the login form; set the action to login and nocheck to true.
 	// By setting nocheck to true would skip the checking procedures.
-	$html .='<form action="'.$tsurl.'acc.php?action=login&amp;nocheck=1';
+	$html .='<form action="'.$tsurl.'/acc.php?action=login&amp;nocheck=1';
 
 	// Would perform clause for any action except logout.
 	if (($action) && ($action != "logout")) {
