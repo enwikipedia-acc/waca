@@ -362,7 +362,7 @@ elseif ($action == "forgotpw") {
 		$hashme = $row['user_name'] . $row['user_email'] . $row['user_welcome_templateid'] . $row['user_id'] . $row['user_pass'];
 		$hash = md5($hashme);
 		if ($hash == $_GET['si']) {
-			echo '<h2>Reset password for '. $row['user_name'].' ('.$row['user_email'].')</h2><form action="'.$tsurl.'acc.php?action=forgotpw&amp;si='.$_GET['si'].'&amp;id='. $_GET['id'].'" method="post">';
+			echo '<h2>Reset password for '. $row['user_name'].' ('.$row['user_email'].')</h2><form action="'.$tsurl.'/acc.php?action=forgotpw&amp;si='.$_GET['si'].'&amp;id='. $_GET['id'].'" method="post">';
 			echo <<<HTML
 			New Password: <input type="password" name="pw"><br />
             New Password (confirm): <input type="password" name="pw2"><br />
