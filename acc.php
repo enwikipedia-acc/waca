@@ -399,14 +399,14 @@ HTML;
 		echo "Your password reset request has been completed. Please check your e-mail.\n<br />";
 		}
 	}
-	echo '<form action="'.$tsurl.'acc.php?action=forgotpw" method="post">';
+	echo '<form action="'.$tsurl.'/acc.php?action=forgotpw" method="post">';
 	echo <<<HTML
     Your username: <input type="text" name="username" /><br />
     Your e-mail address: <input type="text" name="email" /><br />
     <input type="submit" /><input type="reset" />
     </form><br />
 HTML;
-    echo 'Return to <a href="'.$tsurl.'acc.php">Login</a></div>';
+    echo 'Return to <a href="'.$tsurl.'/acc.php">Login</a></div>';
 
 	$skin->displayPfooter();
 	die();
@@ -1330,7 +1330,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     </form>
     <a name="2"></a><h2>Change your password</h2>
 HTML;
-    echo '<form action="'.$tsurl.'acc.php?action=changepassword" method="post">';
+    echo '<form action="'.$tsurl.'/acc.php?action=changepassword" method="post">';
 	echo <<<HTML
     Your old password: <input type="password" name="oldpassword"/><br />
     Your new password: <input type="password" name="newpassword"/><br />
