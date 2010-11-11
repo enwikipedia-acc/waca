@@ -315,11 +315,11 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());				
-		$query = "UPDATE acc_log SET log_user = '$newname' WHERE log_user = '$oldname'";
+		$query = "UPDATE acc_log SET log_user = '$newname' WHERE log_user = '$oldname';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		$query = "UPDATE acc_cmt SET cmt_user = '$newname' WHERE cmt_user = '$oldname'";
+		$query = "UPDATE acc_cmt SET cmt_user = '$newname' WHERE cmt_user = '$oldname';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
@@ -513,7 +513,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	$row2 = mysql_fetch_assoc($result2);
 	$declined = $row2['COUNT(*)'];
 
-	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">".$row['user_name']."</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">".htmlentities($row['user_name'])."</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 	if( $enableRenames == 1 ) {
 		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?rename=$userid\">Rename!</a> -";
 		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?edituser=$userid\">Edit!</a> -";
@@ -587,7 +587,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	$uname = sanitize($row['user_name']);
 	$uoname = $row['user_onwikiname'];
 	$userid = $row['user_id'];
-	$out = "<li><small>[ <span class=\"request-ban\">".$row['user_name']."</span> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+	$out = "<li><small>[ <span class=\"request-ban\">".htmlentities($row['user_name'])."</span> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 	if( $enableRenames == 1 ) {
 		$out .= " <a class=\"request-req\" href=\"users.php?rename=$userid\">Rename!</a> -";
 		$out .= " <a class=\"request-req\" href=\"users.php?edituser=$userid\">Edit!</a> -";
