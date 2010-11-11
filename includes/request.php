@@ -313,15 +313,14 @@ class accRequest {
 	
 	public function istrusted($ip) {
 		global $tsSQL;
-		$query = "SELECT * FROM `acc_trustedips`;";
+		$query = "SELECT * FROM `acc_trustedips` WHERE `trustedips_ipaddr` = '$ip';";
 		$result = $tsSQL->query($query);
-		if ( !$result )
+		if (!$result)
 			$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
-		while ($row = mysql_fetch_assoc($result)) {
-			if ($ip == $row['trustedips_ipaddr'])
-				return True;
-		}
-		return False;
+		if (mysql_num_rows($result))
+			return True;
+		else
+			return False;
 	}
 	
 	public function emailvalid($email) {
