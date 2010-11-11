@@ -786,7 +786,7 @@ function zoomPage($id,$urlhash)
 		$out .= "<h3>This request is currently being handled by " . $session->getUsernameFromUid($reservingUser) ."</h3>";
 	}
 	if ($reservingUser == $_SESSION['userID'] && $row['pend_status'] != "Closed") {
-		$out .= '<p><b>URL to allow other users to see IP/Email:</b> <a href="' . $tsurl . '/acc.php?action=zoom&amp;id=' . $thisid . '&amp;hash=' . $hash . '">' . $tsurl . '/acc.php?action=zoom&id=' . $thisid . '&hash=' . $hash . '</a></p>';
+		$out .= '<p><b>URL to allow other users to see IP/Email:</b> <a href="' . $tsurl . '/acc.php?action=zoom&amp;id=' . $thisid . '&amp;hash=' . $hash . '">' . $tsurl . '/acc.php?action=zoom&amp;id=' . $thisid . '&amp;hash=' . $hash . '</a></p>';
 	}
 
 	global $allowViewingOfUseragent;
@@ -846,7 +846,7 @@ function zoomPage($id,$urlhash)
 			$posc4 .= $oS . '" target="_blank">SUL</a> ';
 			
 			// Password reset links
-			$posc5 = '<a href="http://en.wikipedia.org/w/index.php?title=Special%3AUserLogin&type=login&wpName=';
+			$posc5 = '<a href="http://en.wikipedia.org/w/index.php?title=Special%3AUserLogin&amp;type=login&amp;wpName=';
 			$posc5 .= $oS . '" target="_blank">Send Password reset</a> ';
 
 			// Adds all the variables together for one line.
