@@ -188,6 +188,9 @@ class LogPage
 			if ($row['log_action'] == "Closed 26") {
 				$logList .="<li>$rlu Closed (Taken in SUL), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
+			if ($row['log_action'] == "Closed 30") {
+				$logList .="<li>$rlu Closed (Password Reset), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			}
 			if ($row['log_action'] == "Closed custom") {
 				$logList .="<li>$rlu Closed (Custom), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}

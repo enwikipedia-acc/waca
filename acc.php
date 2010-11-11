@@ -1505,6 +1505,9 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		case 26:
 			$crea = "SUL Taken";
 			break;
+		case 30:
+			$crea = "Password Reset";
+			break;
 	}
 	if ($gem == 'custom') {
 		$crea = "Custom";
@@ -1579,6 +1582,7 @@ elseif ($action == "logs") {
 				"Closed 4" => "Request Username policy violation",
 				"Closed 0" => "Request drop",
 				"Closed 26" => "Request taken in SUL",
+				"Closed 30" => "Request closed, password reset",
 				"Closed custom" => "Request custom close",
 				"Closed custom-y" => "Request custom close, created",
 				"Closed custom-n" => "Request custom close, not created",

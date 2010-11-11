@@ -51,8 +51,8 @@ $developer = array(
 				"wiki" => "SQL",                          //Enwiki Username.
 				"WWW" => "http://toolserver.org/~sql",    //Your website.
 				"Name" => NULL,                           //Real name.
-				"Role" => "Developer, Project Lead",      //Project Role(s).
-				"Access" => "Database, Live shell",         //Project Access levels.
+				"Role" => "Developer",     				  //Project Role(s).
+				"Access" => "Database, Live shell",       //Project Access levels.
 				"Cloak" => "*!*@wikipedia/SQL",           //IRC Cloak.
 				"Other" => NULL,                          //Anything else, comments, etc.
 			),
@@ -103,7 +103,7 @@ $developer = array(
 				"wiki" => "Stwalkerster",
 				"WWW" => "http://helpmebot.org.uk/",
 				"Name" => "Simon Walker",
-				"Role" => "Developer",
+				"Role" => "Developer, Project Lead",
 				"Access" => "Git, SVN, SF.net shell, SF.net admin, Database, Live shell, SF.net access, Mailing list admin",
 				"Cloak" => "*!*@pdpc/supporter/student/stwalkerster",
 				"Other" => NULL,
@@ -247,7 +247,7 @@ $developer = array(
 				"WWW" => "http://toolserver.org/~dodo/",
 				"Name" => "Edoardo",
 				"Role" => "Developer",
-				"Access" => "SVN, SF.net access",
+				"Access" => "SVN, SF.net access, Mailing list moderator",
 				"Cloak" => "*!*@wikipedia/EdoDodo",
 				"Other" => NULL,
 			),
@@ -315,10 +315,10 @@ foreach($developer as $devName => $devInfo) {
 					// Generate the image and write a copy to the filesystem.
 					$id = $imagegen->create($infoContent);
 					// Outputs the image to the sceen.
-					echo '<li>E-Mail Address: <img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" /></li>';
+					echo '<li>E-Mail Address: <img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" /></li>';
 					break;
 				case "ToolID":
-					echo "<li>Userpage on tool: <a href=\"$tsurl/statistics.php?page=Users&user=$infoContent\">Click here</a></li>\n";
+					echo "<li>Userpage on tool: <a href=\"$tsurl/statistics.php?page=Users&amp;user=$infoContent\">Click here</a></li>\n";
 					break;
 				case "wiki":
 					echo "<li>Enwiki Username: <a href=\"http://en.wikipedia.org/wiki/User:$infoContent\">$infoContent</a></li>\n";
@@ -346,7 +346,7 @@ foreach($developer as $devName => $devInfo) {
 }
 
 // Display details about the ACC hosting.
-echo "<br/><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by SourceForge</p>";
+echo "<br/><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by SourceForge</p></div>";
 
 // Display the footer of the interface.
 $skin->displayPfooter();
