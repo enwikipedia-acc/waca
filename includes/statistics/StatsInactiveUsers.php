@@ -28,13 +28,14 @@ class StatsInactiveUsers extends StatisticsPage
 		$date->modify("-45 days");
 
 
-		$query = "SELECT `user_id` as 'tooluserid', `user_name` as 'tooluser', `user_level` AS 'toolaccesslevel', CONCAT('User:', `user_onwikiname`) AS 'enwikiuser', `user_lastactive` as 'lasttoollogon', 'user_checkuser'
+		$query = "SELECT `user_id` as 'tooluserid', `user_name` as 'tooluser', `user_level` AS 'toolaccesslevel', CONCAT('User:', `user_onwikiname`) AS 'enwikiuser', `user_lastactive` as 'lasttoollogon'
 		FROM `acc_user` 
 		WHERE 
 		     user_lastactive < '".$date->format("Y-m-d H:i:s")."' 
 		 and user_level != 'Suspended'
 		 and user_level != 'Declined'
 		 and user_level != 'New'
+		 and user_checkuser = '0'
 		ORDER BY user_lastactive ASC
 		;
 		";
@@ -58,8 +59,6 @@ class StatsInactiveUsers extends StatisticsPage
 			$allowSuspend = false;
 			
 			if(!(
-					/*Checkusers*/
-					$r['user_checkuser'] == 1 || // checkusers
 					
 					/*Tool Roots*/
 					$r['tooluserid'] == 1     || // SQL
