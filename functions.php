@@ -1168,7 +1168,7 @@ function showIPlinks($ip, $wikipediaurl) {
 
 	// Global blocks
 	$out .= '| ';
-	$out .= '<a class="request-src" href="'.$metaurl.'w/index.php?title=Special:Log&amp;type=gblblock&amp;page=User:';
+	$out .= '<a class="request-src" href="http://meta.wikimedia.org/w/index.php?title=Special:Log&amp;type=gblblock&amp;page=User:';
 	$out .= $ip . '" target="_blank">Global Blocks</a> ';
 
 	// Global range blocks/Locally disabled Global Blocks
