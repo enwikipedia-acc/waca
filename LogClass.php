@@ -74,7 +74,7 @@ class LogPage
 			{
 				$logQuery.= "AND ";
 			}
-			$logQuery .= 'log_action RLIKE "'.$this->filterAction.'"';
+			$logQuery .= 'log_action = "'.$this->filterAction.'"';
 		}
 		
 		$logQuery.= "ORDER BY log_time DESC ";
