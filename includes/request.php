@@ -322,6 +322,22 @@ class accRequest {
 		else
 			return False;
 	}
+
+	public function isblacklisted($user) {
+		global $tsSQL;
+		$query = "SELECT * FROM `acc_titleblacklist`;";
+		$result = $tsSQL->query($query);
+		if (!$result)
+			$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
+		while (list($regex, $casesensitive) = mysql_fetch_row($result)) {
+			$regex = '/'.$regex.'/';
+			if (!$casesensitive)
+				$regex .= 'i';
+			if (preg_match($regex, $user))
+				return true;
+		}
+		return false;
+	}
 	
 	public function emailvalid($email) {
 		if (!strpos($email, '@')) {
@@ -861,6 +877,9 @@ class accRequest {
 			$uLevel = "Open";
 		}
 		
+		if ($uLevel != "Admin" && $this->isblacklisted($user))
+			$uLevel = "Admin";
+			
 		// Formulates and executes SQL query to insert the new request.
 		$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_proxyip , pend_name , pend_cmt , pend_status , pend_date, pend_reserved, pend_useragent) VALUES ( NULL , '$email', '$ip', $proxystring, '$user', '$comments', '$uLevel' , '$dnow', '$defaultReserver', '$useragent' );";
 		$result = $tsSQL->query($query);
