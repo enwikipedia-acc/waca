@@ -681,7 +681,7 @@ function zoomPage($id,$urlhash)
 		if ($row['pend_proxyip'])
 			$out .= '<br /><i>This request came from '.$row['pend_ip'].' via proxy '.$row['pend_proxyip'].'. Links for both are shown.</i>';
 		$out .= '<p><b>IP Address links:</b> ';
-		$out .= showIPlinks($row['pend_ip'], $wikipediaurl);
+		$out .= showIPlinks($row['pend_ip'], $wikipediaurl, $metaurl);
 		if ($row['pend_proxyip']) {
 			$out .= '<p><b>Proxy links:</b> ';
 			$out .= showIPlinks($row['pend_proxyip'], $wikipediaurl);
@@ -1142,7 +1142,7 @@ function doSort(array $items)
 	return $items;
 }
 
-function showIPlinks($ip, $wikipediaurl) {
+function showIPlinks($ip, $wikipediaurl, $metaurl) {
 	
 	$out = '<a class="request-src" href="'.$wikipediaurl.'wiki/User_talk:';
 	$out .= $ip . '" target="_blank">Talk page</a> ';
@@ -1168,7 +1168,7 @@ function showIPlinks($ip, $wikipediaurl) {
 
 	// Global blocks
 	$out .= '| ';
-	$out .= '<a class="request-src" href="http://meta.wikimedia.org/w/index.php?title=Special:Log&amp;type=gblblock&amp;page=User:';
+	$out .= '<a class="request-src" href="'.$metaurl.'w/index.php?title=Special:Log&amp;type=gblblock&amp;page=User:';
 	$out .= $ip . '" target="_blank">Global Blocks</a> ';
 
 	// Global range blocks/Locally disabled Global Blocks
