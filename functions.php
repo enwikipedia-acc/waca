@@ -866,7 +866,7 @@ function zoomPage($id,$urlhash)
 		$out .= "<h2>Logs for this request:<small> (<a href='$tsurl/acc.php?action=comment&amp;id=$gid'>new comment</a>)</small></h2>";
 	}
 	
-	$query = "SELECT * FROM acc_log JOIN acc_user ON (user_name = log_user) WHERE log_pend='$thisid' AND log_action RLIKE '(Deferred to users|Deferred to admins|Deferred to checkusers|Closed 1|Closed 3|Closed 2|Closed 4|Closed 5|Closed 0|Closed 26|Closed 30|Closed custom|Closed custom-y|Closed custom-n|Blacklist Hit|DNSBL Hit|Reserved|Unreserved|BreakReserved|Email Confirmed)';";
+	$query = "SELECT * FROM acc_log LEFT JOIN acc_user ON (user_name = log_user) WHERE log_pend='$thisid' AND log_action RLIKE '(Deferred to users|Deferred to admins|Deferred to checkusers|Closed 1|Closed 3|Closed 2|Closed 4|Closed 5|Closed 0|Closed 26|Closed 30|Closed custom|Closed custom-y|Closed custom-n|Blacklist Hit|DNSBL Hit|Reserved|Unreserved|BreakReserved|Email Confirmed)';";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());

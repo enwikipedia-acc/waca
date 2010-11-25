@@ -1586,6 +1586,7 @@ elseif ($action == "logs") {
 				"Closed custom" => "Request custom close",
 				"Closed custom-y" => "Request custom close, created",
 				"Closed custom-n" => "Request custom close, not created",
+				"Email Confirmed" => "Email confirmed reservation",
 				"Blacklist Hit" => "Blacklist hit", 
 				"DNSBL Hit" => "DNS Blacklist hit",
 				"Banned" => "Ban",
