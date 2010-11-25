@@ -16,7 +16,7 @@ function WelcomeUser($theUser, $theCreator, $theMessage) {
 	$talkPage = $wiki->initPage("User talk:$theUser");
 	$user = $wiki->initUser($theUser);
 	echo "Delivering welcome message to $theUser.\n";
-	if ($talkPage->exists()) {
+	if ($talkPage->get_exists()) {
 		echo "User talk page already exists, stopping message delivery.\n";
 	} elseif (!$user->exists()) {
 		echo "User does not exist, stopping message delivery.\n";
