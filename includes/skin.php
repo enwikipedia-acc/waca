@@ -60,11 +60,8 @@ class skin {
 		// Fetch the result row as an array.
 		$row = mysql_fetch_assoc($result);
 		
-		// Sets the user_id according to the returned data.
-		$_SESSION['user_id'] = $row['user_id'];
-		
 		// Checks whether the user must be forced to logout.
-		$session->forceLogout($_SESSION['user_id']);
+		$session->forceLogout($row['user_id']);
 		
 		// Gets the internal interface header.
 		$out = $messages->getMessage('21');
@@ -86,7 +83,7 @@ class skin {
 			$rethead .= $out;
 			
 			// Generates the code for the header-info section. This includes a link to the user information and to log out.
-			$rethead .= "<div id = \"header-info\">Logged in as <a href=\"$tsurl/statistics.php?page=Users&amp;user=" . $_SESSION['user_id'] . "\"><span title=\"View your user information\">" . $_SESSION['user'] . "</span></a>.  <a href=\"$tsurl/acc.php?action=logout\">Logout</a>?</div>\n";
+			$rethead .= "<div id = \"header-info\">Logged in as <a href=\"$tsurl/statistics.php?page=Users&amp;user=" . $row['user_id'] . "\"><span title=\"View your user information\">" . $_SESSION['user'] . "</span></a>.  <a href=\"$tsurl/acc.php?action=logout\">Logout</a>?</div>\n";
 			
 			// Assigns the current date and time to a variable.
 			// TODO: This produces a PHP Strict Standards error message. See next line.
@@ -96,7 +93,7 @@ class skin {
 			$now = date("Y-m-d H-i-s"); 
 			
 			// Formulates and executes a SQL query to update the last time the user logged in, namely now.
-			$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '" . $_SESSION['user_id'] . "';";
+			$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '" . $row['user_id'] . "';";
 			$result = $tsSQL->query($query);
 		
 			// Display error upon failure.
@@ -131,16 +128,21 @@ class skin {
 	public function displayIfooter() {
 		global $enableLastLogin, $messages, $internalInterface;
 		if ($enableLastLogin) {
-			$timestamp = "at ".date('H:i',$_SESSION['lastlogin_time']);
-			if (date('jS \of F Y',$_SESSION['lastlogin_time'])==date('jS \of F Y')) {
+			
+			// Get data related to the current user.
+			$result = mysql_query("SELECT user_lastip, user_lastactive FROM acc_user WHERE user_name ='" . mysql_real_escape_string($_SESSION['user']) . "';", $tsSQLlink) or sqlerror(mysql_error());
+			list($lastloginip, $lastlogintime) = mysql_fetch_array($result);
+			
+			$timestamp = "at ".date('H:i', $lastlogintime);
+			if (date('jS \of F Y', $lastlogintime)==date('jS \of F Y')) {
 				$timestamp .= " today";
 			} else {
-				$timestamp .= " on the ".date('jS \of F, Y',$_SESSION['lastlogin_time']);
+				$timestamp .= " on the ".date('jS \of F, Y', $lastlogintime);
 			}
-			if ($_SESSION['lastlogin_ip']==$_SERVER['REMOTE_ADDR']) {
+			if ($lastloginip==$_SERVER['REMOTE_ADDR']) {
 				$out2 = "<div align=\"center\"><small>You last logged in from this computer $timestamp.</small></div>";
 			} else {
-				$out2 = "<div align=\"center\"><small>You last logged in from <a href=\"http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=".$_SESSION['lastlogin_ip']."\">".$_SESSION['lastlogin_ip']."</a> $timestamp.</small></div>";
+				$out2 = "<div align=\"center\"><small>You last logged in from <a href=\"http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=$lastloginip\">$lastloginip</a> $timestamp.</small></div>";
 			}
 		} else {
 			$out2 = '';
