@@ -51,6 +51,7 @@ $entries = array_unique($entries);
 $query = "INSERT INTO `acc_titleblacklist` (`titleblacklist_regex`, `titleblacklist_casesensitive`) VALUES ";
 foreach ($entries as $entry) {
 	list($regex, $casesensitive) = $entry;
+	$regex = mysql_real_escape_string($regex);
 	$query .= "('$regex', ";
 	if ($casesensitive)
 		$query .= 'TRUE';
