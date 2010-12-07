@@ -511,6 +511,10 @@
 		die(); 
 	}
 
+	$file = fopen("/home/project/a/c/c/acc/ircbot.run", "w");
+	fwrite($file, php_uname('n'));
+	fclose($file);
+	
 	global $ircBotDaemonise;
 	if($ircBotDaemonise)
 	{

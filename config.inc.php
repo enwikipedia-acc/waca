@@ -80,7 +80,7 @@ $ircBotNetworkPort = 6667;					// The port on the particular host.
 $ircBotChannel = "#wikipedia-en-accounts";	// The channel in which the discussions are.
 $ircBotNickname = "ACCBot";					// The nickname of the ACCBot.
 $ircBotCommandTrigger = '!';				// The ACCBot's command trigger.
-$ircBotUdpServer = '';						// The UDP server for connecting.
+$ircBotUdpServer = file_get_contents("/home/project/a/c/c/acc/ircbot.run");						// The UDP server for connecting.
 $ircBotUdpPort = '';						// The port on the particular server.
 	
 // Name of this instance of the tool.
