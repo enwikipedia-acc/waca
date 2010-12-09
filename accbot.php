@@ -1,4 +1,7 @@
 <?PHP
+
+ini_set('display_errors',1);
+
 /**************************************************************************
 **********      English Wikipedia Account Request Interface      **********
 ***************************************************************************
@@ -39,6 +42,7 @@
 	$help = array();
 	$users = array();
 	$privgroups = array();
+        $sqlResource = null;
 
 
 	// Signal handlers
@@ -134,8 +138,8 @@
 	function myq( $query ) {
 		global $mysql, $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
 
-		if( !mysql_ping() ) {
-			mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password, true );
+		if( !$sqlResource || !mysql_ping($sqlResource) ) {
+			$sqlResource = mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password, true );
 			@mysql_select_db( $toolserver_database ) or print mysql_error();
 		}
 
@@ -493,7 +497,12 @@
 
 	function validateData( $sdata ) {
 		global $ircBotCommunicationKey;
+		echo "Data Recieved! $sdata\n";
 		$data = unserialize( ltrim(rtrim( $sdata ) ) );
+		if( $data === false ) {
+			echo "WARNING: Invalid data - could not unserialize.\n";
+			return false;
+		}
 		if( $data[0] != encryptMessage( $data[1], $ircBotCommunicationKey ) ) {
 			echo "WARNING: INVALID DATA!\n";
 			echo "$sdata\n";
