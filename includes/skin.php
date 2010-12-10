@@ -131,6 +131,7 @@ class skin {
 			// Get data related to the current user.
 			$result = $tsSQL->query("SELECT user_lastip, user_lastactive FROM acc_user WHERE user_name ='" . $tsSQL->escape($_SESSION['user']) . "';");
 			list($lastloginip, $lastlogintime) = mysql_fetch_array($result);
+			$lastlogintime = strtotime($lastlogintime);
 			
 			$timestamp = "at ".date('H:i', $lastlogintime);
 			if (date('jS \of F Y', $lastlogintime)==date('jS \of F Y')) {
