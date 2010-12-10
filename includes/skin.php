@@ -129,7 +129,7 @@ class skin {
 		global $enableLastLogin, $messages, $internalInterface, $tsSQL;
 		if ($enableLastLogin) {
 			// Get data related to the current user.
-			$result = $tsSQL->query("SELECT user_lastip, user_lastactive FROM acc_user WHERE user_name ='" . mysql_real_escape_string($_SESSION['user']) . "';");
+			$result = $tsSQL->query("SELECT user_lastip, user_lastactive FROM acc_user WHERE user_name ='" . $tsSQL->escape($_SESSION['user']) . "';");
 			list($lastloginip, $lastlogintime) = mysql_fetch_array($result);
 			
 			$timestamp = "at ".date('H:i', $lastlogintime);
