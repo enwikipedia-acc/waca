@@ -37,7 +37,7 @@ require_once('config.inc.php');
 require_once('functions.php');
 require_once("$peachyPath/Init.php");
 
-echo "Connecting to mysql://$toolserver_username:$toolserver_password@$toolserver_host/$toolserver_database\n";
+echo "Connecting to mysql://$toolserver_username@$toolserver_host/$toolserver_database\n"; // :$toolserver_password
 
 $db = new Database($toolserver_host, $toolserver_username, $toolserver_password, $toolserver_database);
 if(!$db) trigger_error($db->lastError(), E_USER_ERROR);
