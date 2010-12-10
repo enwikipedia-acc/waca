@@ -126,11 +126,10 @@ class skin {
 	 * Prints the internal interface footer to the screen.
 	 */
 	public function displayIfooter() {
-		global $enableLastLogin, $messages, $internalInterface;
+		global $enableLastLogin, $messages, $internalInterface, $tsSQL;
 		if ($enableLastLogin) {
-			
 			// Get data related to the current user.
-			$result = mysql_query("SELECT user_lastip, user_lastactive FROM acc_user WHERE user_name ='" . mysql_real_escape_string($_SESSION['user']) . "';", $tsSQLlink) or sqlerror(mysql_error());
+			$result = $tsSQL->query("SELECT user_lastip, user_lastactive FROM acc_user WHERE user_name ='" . mysql_real_escape_string($_SESSION['user']) . "';");
 			list($lastloginip, $lastlogintime) = mysql_fetch_array($result);
 			
 			$timestamp = "at ".date('H:i', $lastlogintime);
