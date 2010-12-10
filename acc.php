@@ -1369,7 +1369,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	}
 	
 	// check if an email has already been sent
-	if ($row['pend_emailsent'] == "1" && !isset($_GET['override'])) {
+	if ($row['pend_emailsent'] == "1" && !isset($_GET['override']) && $gem != 0) {
 		echo "<br />This request has already been closed in a manner that has generated an e-mail to the user, Proceed?<br />\n";
 		echo "<a href=\"$tsurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;override=yes&amp;email=" . $_GET['email'] . "\">Yes</a> / <a href=\"$tsurl/acc.php\">No</a><br />\n";
 		$skin->displayIfooter();
@@ -1512,7 +1512,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$accbotSend->send("Request " . $_GET['id'] . " (" . $row2['pend_name'] . ") Marked as 'Done' ($crea) by " . $_SESSION['user'] . " on $now");
 	$skin->displayRequestMsg("Request " . $_GET['id'] . " (" . htmlentities($row2['pend_name'],ENT_COMPAT,'UTF-8') . ") marked as 'Done'.<br />");
 	$towhom = $row2['pend_email'];
-	if ($gem != "0" and $gem != "custom") {
+	if ($gem != "0") {
 		sendemail($gem, $towhom, $gid);
 		$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $gid . "';";
 		$result = mysql_query($query, $tsSQLlink);

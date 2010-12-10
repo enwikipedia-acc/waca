@@ -768,6 +768,8 @@ function zoomPage($id,$urlhash)
 		}
 		else {
 			$out .= 'This request is not reserved';
+			if ($type != "Closed")
+				$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";				
 			$out .= deferlinks($type,$checksum,$pendid);
 		}
 	}
