@@ -324,7 +324,8 @@ class accRequest {
 	}
 
 	public function isblacklisted($user) {
-		global $tsSQL;
+		global $tsSQL, $EnableTitleblacklist;
+		if ($EnableTitleblacklist == 1) { 
 		$query = "SELECT * FROM `acc_titleblacklist`;";
 		$result = $tsSQL->query($query);
 		if (!$result)
@@ -335,6 +336,7 @@ class accRequest {
 				$regex .= 'i';
 			if (preg_match($regex, $user))
 				return true;
+		}
 		}
 		return false;
 	}
