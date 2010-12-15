@@ -1562,7 +1562,7 @@ elseif ($action == "logs") {
 				"" => "(All)",
 				"Reserved" => "Request reservation",
 				"Unreserved" => "Request unreservation",
-				"BreakReserved" => "Break reservation",
+				"BreakReserve" => "Break reservation",
 				"Deferred to users" => "Defer to users",
 				"Deferred to admins" => "Defer to account creators",
 				"Deferred to checkusers" => "Defer to checkusers",
