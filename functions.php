@@ -611,8 +611,7 @@ function zoomPage($id,$urlhash)
 	Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['pend_mailconfirm'] != 'Confirmed' && $row['pend_mailconfirm'] != "") {
-		$out .= "Email has not yet been confirmed for this request, so it can not yet be closed or viewed";
-		$out .= $skin->displayIfooter();
+		$out .= $skin->displayRequestMsg("Email has not yet been confirmed for this request, so it can not yet be closed or viewed.");
 		return $out;
 	}
 	$out .= "<h2>Details for Request #" . $id . ":</h2>";
