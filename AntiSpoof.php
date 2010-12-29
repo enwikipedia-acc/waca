@@ -134,7 +134,7 @@ class AntiSpoof {
 		array( 0x2F800, 0x2FA1F, "SCRIPT_DEPRECATED" )  # CJK Compatibility Ideographs Supplement 
 	);
 	
-	# Specially naughty characters we don't ever want to see...
+	# Specially characters that mess up the site or are forbidden for various reasons...
 	private static $character_blacklist = array(
 		0x0337,
 		0x0338,
