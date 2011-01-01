@@ -39,8 +39,11 @@ class messages {
 		
 		global $tsSQL;
 		
+		if (!preg_match('/^[0-9]*$/',$messageNumber)) {
+			die('Invalid Input.');
+		}
+		
 		$query = "SELECT mail_type FROM acc_emails WHERE mail_id = " . $tsSQL->escape($messageNumber) . ";";
-		echo "<!-- $query -->\n";
 		
 		$result = $tsSQL->query($query);
 		if(!$result)
