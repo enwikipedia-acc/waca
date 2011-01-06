@@ -4,4 +4,4 @@
 #$ -o $HOME/sge.iptable.out
 #$ -m bae
 
-php /home/project/a/c/c/acc/public_html/backup.php
+/usr/bin/phpphp /home/project/a/c/c/acc/public_html/backup.php
