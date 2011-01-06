@@ -1,0 +1,12 @@
+Scheduling for SGE:
+
+
+job name		queue		m			h	dom	mon	dow
+=======================================================
+ircbot	 		longrun
+welcomerbot 	all.q		0,15,30,45 	* 	* 	* 	*
+iptable 		all.q		0 			0 	* 	* 	*
+statsemail		all.q		0 			0 	* 	* 	*
+dataclear		all.q		0 			0 	* 	* 	*
+backup			all.q		0			0 	* 	* 	*
+
