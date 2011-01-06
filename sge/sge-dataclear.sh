@@ -4,4 +4,4 @@
 #$ -o $HOME/sge.iptable.out
 #$ -m bae
 
-/usr/bin/phpphp /home/project/a/c/c/acc/public_html/ClearOldData.php
+/usr/bin/php /home/project/a/c/c/acc/public_html/ClearOldData.php
