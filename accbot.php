@@ -114,7 +114,8 @@ ini_set('display_errors',1);
 
 	// Functions
 	function sanitize( $data ) {
-		return mysql_real_escape_string( $data );
+		$data = mysql_real_escape_string( $data );
+		return htmlentities( $data, ENT_COMPAT, 'UTF-8' );
 	}
 
 	function SIGHUP() { /* Null signal handler */ }
@@ -359,10 +360,10 @@ ini_set('display_errors',1);
 				or die( 'MySQL Error: ' . mysql_error() . "\n" );
 			$today = $today['count'];
 
-			irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $username . ' (' . $user['user_level'] . ') has closed ' . $count
+			irc( 'PRIVMSG ' . $parsed['to'] . ' :' . html_entity_decode($username) . ' (' . $user['user_level'] . ') has closed ' . $count
 				. ' requests as \'Created\', ' . ( ( $today == 0 ) ? 'none' : $today ) . ' of them today. ' . $adminInfo );
 		} else {
-			irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $username . ' is not a valid username.' );
+			irc( 'PRIVMSG ' . $parsed['to'] . ' :' . html_entity_decode($username) . ' is not a valid username.' );
 		}
 	}
 
@@ -421,13 +422,13 @@ ini_set('display_errors',1);
 			$user = mysql_fetch_assoc( myq( 'SELECT * FROM `acc_user` WHERE `user_name` = \'' . sanitize( $username ) . '\'' ) )
 				or die( 'MySQL Error: ' . mysql_error() . "\n" );
 
-			irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $username . ' (' . $user['user_level'] . ') was last active '
+			irc( 'PRIVMSG ' . $parsed['to'] . ' :' . html_entity_decode($username) . ' (' . $user['user_level'] . ') was last active '
 				. ( ( $user['user_lastactive'] == '0000-00-00 00:00:00' ) ? 'unknown' : $user['user_lastactive'] )
 				. '. He/she currently has automatic welcoming of users ' . ( ( $user['user_welcome_templateid'] == 0 ) ? 'disabled' : 'enabled' )
 				. '. His/her onwiki username is [[User:' . $user['user_onwikiname'] . ']].' );
 
 		} else {
-			irc( 'PRIVMSG ' . $parsed['to'] . ' :' . $username . ' is not a valid username.' );
+			irc( 'PRIVMSG ' . $parsed['to'] . ' :' . html_entity_decode($username) . ' is not a valid username.' );
 		}
 	}
 
