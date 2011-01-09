@@ -1,7 +1,8 @@
 #!/bin/bash
 #$ -j y
-#$ -o $HOME/sge.ircbot.log
+#$ -o $HOME/sge.ircbot.out
 #$ -r y
 
-php /home/project/a/c/c/acc/public_html/accbot.php
+cd /home/project/a/c/c/acc/public_html/
+php accbot.php
 
