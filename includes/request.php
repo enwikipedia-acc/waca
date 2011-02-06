@@ -324,19 +324,19 @@ class accRequest {
 	}
 
 	public function isblacklisted($user) {
-		global $tsSQL, $EnableTitleblacklist;
-		if ($EnableTitleblacklist == 1) { 
-		$query = "SELECT * FROM `acc_titleblacklist`;";
-		$result = $tsSQL->query($query);
-		if (!$result)
-			$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
-		while (list($regex, $casesensitive) = mysql_fetch_row($result)) {
-			$regex = '/'.$regex.'/';
-			if (!$casesensitive)
-				$regex .= 'i';
-			if (preg_match($regex, $user))
-				return true;
-		}
+		global $tsSQL, $enableTitleblacklist;
+		if ($enableTitleblacklist == 1) { 
+			$query = "SELECT * FROM `acc_titleblacklist`;";
+			$result = $tsSQL->query($query);
+			if (!$result)
+				$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
+			while (list($regex, $casesensitive) = mysql_fetch_row($result)) {
+				$regex = '/'.$regex.'/';
+				if (!$casesensitive)
+					$regex .= 'i';
+				if (preg_match($regex, $user))
+					return true;
+			}
 		}
 		return false;
 	}
