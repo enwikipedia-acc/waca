@@ -51,9 +51,6 @@ $filepath = "/projects/acc/www/";
 // Pathname to the local installation of Peachy.
 $peachyPath = ""; 
 
-// Command to run in order to run the welcoming bot
-$welcomecommand = "cronsub -s welcomerbot /home/project/a/c/c/acc/public_html/sge/sge-welcomerbot.sh";
-
 // Location outside web directory to place temporary files.
 $varfilepath = "/projects/acc/"; 
 

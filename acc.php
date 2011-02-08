@@ -1462,8 +1462,6 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		if ($whichami == 'Live')
-			exec($welcomecommand);
 	}
 	$query = "UPDATE acc_pend SET pend_status = 'Closed'";
 	$query .= ", `pend_reserved` = '0'";
