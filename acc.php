@@ -1691,7 +1691,7 @@ elseif ($action == "reserve") {
 	
 	// Lock the tables to avoid a possible conflict.
 	// See the following bug: https://jira.toolserver.org/browse/ACC-101
-	mysql_query('LOCK TABLES acc_pend WRITE;',$tsSQLlink);
+	mysql_query('LOCK TABLES acc_pend,acc_log WRITE;',$tsSQLlink);
 	
 	// Check if the request is not reserved.
 	$reservedBy = isReserved($request);
@@ -1722,10 +1722,14 @@ elseif ($action == "reserve") {
 					}
 					else
 					{
+						//Unlock tables first!
+						mysql_query("UNLOCK TABLES;", $tsSQLlink);
 						die('You already have reserved a request. Are you sure you wish to reserve another?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confdoublereserve=yes">Yes, reserve this request also</a></li><li><a href="' . $tsurl . '/acc.php">No, return to main request interface</a></li></ul>');
 					}
 					break;
 				case "deny":
+					//Unlock tables first!
+					mysql_query("UNLOCK TABLES;", $tsSQLlink);
 					// Prevent the user from continuing.
 					die('You already have a request reserved!<br /><a href="' . $tsurl . '/acc.php">Return to main request interface</a>');
 					break;
@@ -1750,7 +1754,9 @@ elseif ($action == "reserve") {
 		$result = mysql_query($query,$tsSQLlink);
 		$row = mysql_fetch_assoc($result);
 		if($row['pend_status']=="Closed")
-		{
+		{		
+			//Unlock tables first!
+			mysql_query("UNLOCK TABLES;", $tsSQLlink);
 			Die('This request is currently closed. Are you sure you wish to reserve it?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confclosed=yes">Yes, reserve this closed request</a></li><li><a href="' . $tsurl . '/acc.php">No, return to main request interface</a></li></ul>');			
 		}
 	}	
@@ -1758,8 +1764,10 @@ elseif ($action == "reserve") {
 	// No, lets reserve the request.
 	$query = "UPDATE `acc_pend` SET `pend_reserved` = '".$_SESSION['userID']."' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
 	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
+	if (!$result){		//Unlock tables first!
+		mysql_query("UNLOCK TABLES;", $tsSQLlink);
 		Die("Error reserving request.");
+	}
 	$now = date("Y-m-d H-i-s");
 	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$request', '".sanitise($_SESSION['user'])."', 'Reserved', '$now');";
 	$result = mysql_query($query, $tsSQLlink);
