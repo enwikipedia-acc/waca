@@ -123,7 +123,7 @@ class database {
 	 */
 	public function queryToArray($query, &$result)
 	{
-		$queryResult = mysql_query($query, $this->dbLink);
+		$queryResult = $this->query($query);
 		if(!$queryResult)
 		{
 			return false;
