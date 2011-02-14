@@ -20,21 +20,12 @@ if ($ACC != "1") {
 class skin {
 	
 	/**
-	 * Prints a specific interface message to the screen.
-	 * @param $msgID The ID of the message to print to the screen.
-	 * @deprecated Use messages->getMessage() instead. 2010-03-06 stw
-	 */
-	public function displayMessage($msgID) {
-		global $messages;
-		echo $messages->getMessage($msgID);
-	}
-	
-	/**
 	 * Prints the public interface header to the screen.
 	 */
 	public function displayPheader() {
 		// Displayes the interface header.
-		$this->displayMessage(8);
+		global $messages;
+		echo $messages->getMessage(8);
 	}
 	
 	/**
@@ -119,7 +110,8 @@ class skin {
 	 */
 	public function displayPfooter() {
 		// Displayes the interface header.
-		$this->displayMessage(23);
+		global $messages;
+		echo $messages->getMessage(23);
 	}
 	
 	/**
@@ -175,7 +167,8 @@ class skin {
 	 */
 	public function displayRequest() {
 		// Displayes the account request form.
-		$this->displayMessage(6);
+		global $messages;
+		echo $messages->getMessage(6);
 	}
 }
 ?>
