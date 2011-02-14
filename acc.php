@@ -557,11 +557,7 @@ elseif ($action == "messagemgmt") {
 			$mtext = html_entity_decode($mtext);
 			$mdesc = sanitize($_POST['maildesc']);
 			$siuser = sanitize($_SESSION['user']);
-			$query = "UPDATE acc_emails SET mail_desc = '$mdesc' WHERE mail_id = '$mid';";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			$query = "UPDATE acc_emails SET mail_text = '$mtext' WHERE mail_id = '$mid'";
+			$query = "UPDATE acc_emails SET mail_text = '$mtext', mail_desc = '$mdesc', mail_count = mail_count + 1 WHERE mail_id = '$mid';";
 			$result = mysql_query( $query, $tsSQLlink );
 			if( !$result ) {
 				sqlerror(mysql_error(),"Could not update message");
