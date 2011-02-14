@@ -13,7 +13,7 @@ class User
 	 */
 	public static function getCurrentUser()
 	{
-
+		return User::getByName($_SESSION['user']);
 	}
 
 	/**
@@ -33,7 +33,7 @@ class User
 	 */
 	public static function getByName($name)
 	{
-
+		
 	}
 
 

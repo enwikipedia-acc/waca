@@ -17,8 +17,19 @@ if ($ACC != "1") {
 	die();
 } //Re-route, if you're a web client.
 
+/**
+ * Enter description here ...
+ * @author stwalkerster
+ *
+ */
 class session {
 
+	
+	/**
+	 * Enter description here ...
+	 * @param unknown_type $uid
+	 * @deprecated
+	 */
 	public function setForceLogout( $uid ) {
 		$uid = sanitize( $uid );
 		global $toolserver_username;
@@ -82,6 +93,14 @@ class session {
 		return false;
 	}
 	
+	
+	/**
+	 * Enter description here ...
+	 * @param unknown_type $username
+	 * @return boolean|Ambigous <>
+	 * 
+	 * @deprecated
+	 */
 	public function isCheckuser($username) {
 		global $tsSQL;
 		$username = $tsSQL->escape($username);
