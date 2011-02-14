@@ -276,6 +276,19 @@ $developer = array(
 				"Access" => "SVN, SF.net access",
 				"Cloak" => "*!*@wikipedia/DeltaQuad",//I change nicks alot
 				"Other" => NULL,
+			),
+    "Manishearth" =>
+			array(
+				"IRC" => "Manishearth",
+				"EMail" => "manishsmail@gmail.com",
+				"ToolID" => "607",
+				"wiki" => "Manishearth",
+				"WWW" => "http://enwp.org/User:Manishearth",
+				"Name" => "Manish Goregaokar",
+				"Role" => "Developer",
+				"Access" => "SVN",
+				"Cloak" => "*!*@wikipedia/Manishearth",
+				"Other" => NULL,
 			)
 );
 // End of the array of developers.
