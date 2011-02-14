@@ -95,6 +95,7 @@ ini_set('display_errors',1);
 		'*!*@wikipedia/EdoDodo'						=> 'developer',
         '*!*@wikipedia/Mr-R00t'    					=> 'developer',
 		'*!*@wikipedia/DeltaQuad' 					=> 'developer',
+		'*!*@wikipedia/Manishearth' 				=> 'developer',
 		'*!*@*'										=> '*'
 		);
 
