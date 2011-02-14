@@ -112,8 +112,9 @@ elseif (!isset($_GET['nocheck']))
         $skin->displayIheader($_SESSION['user']);
         $session->checksecurity($_SESSION['user']);
 		
-		// ?
-        $out = $messages->getMessage('20');
+		// show the sitenotice
+        $out = $messages->getSitenotice();
+        
         $out .= "<div id=\"content\">";
         echo $out;
 }

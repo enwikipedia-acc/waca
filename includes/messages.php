@@ -32,6 +32,18 @@ class messages {
 		return $message;
 	}
 	
+	public function getMessageCount ($messageno) {
+		global $tsSQL, $tsurl;
+		$messageno = $tsSQL->escape($messageno);
+		$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
+		$result = $tsSQL->query($query);
+		if (!$result)
+			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"Database query error.");
+		$row = mysql_fetch_assoc($result);
+		$message = $row['mail_count'];
+		return $message;
+	}
+	
 	public function isEmail($messageNumber)
 	{
 		// override for drop
@@ -53,6 +65,13 @@ class messages {
 		} 
 		$row = mysql_fetch_assoc($result);
 		return ($row['mail_type'] == "Message");
+	}
+
+	public function getSitenotice()
+	{
+		$message = str_replace('%SITENOTICECOUNT%', $this->getMessageCount(31), $this->getMessage(20));
+		$message = str_replace('%SITENOTICETEXT%', $this->getMessage(31), $message);
+		return $message;
 	}
 }
 
