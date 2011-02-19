@@ -41,6 +41,22 @@ $skin     = new skin();
 // Initialize the session data.
 session_start();
 
+
+// Checks whether it is the public or an interface user.
+if (!isset($_SESSION['user'])) {
+	// Display the header of the interface.
+	$skin->displayPheader();
+}
+else {
+	// Sets the parameter to the username, as it would be displayed.
+	$suser = $_SESSION['user'];
+	$skin->displayIheader($suser);
+	echo "<div id=\"content\">";
+}
+
+// Display the page heading.
+echo "<h2>IP and User checker (In development)</h2>\n";
+
 // Display details about the ACC hosting.
 echo "<br/><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by SourceForge</p></div>";
 
