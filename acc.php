@@ -1327,7 +1327,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     echo '<form action="'.$tsurl.'/acc.php?action=welcomeperf" method="post">';
     echo '<input type="checkbox" name="secureenable"'.$securepref.'/> Enable use of the secure server<br /><br />';
     echo 'Your signature (wikicode).<input type="text" name="sig" size ="40"'. $sig.'/>';
-    echo '<input type="checkbox" name="abortpref"'.$abortpref.'/> Double chek before aborting request<br /><br />';	
+    echo '<input type="checkbox" name="abortpref"'.$abortpref.'/> Double check before aborting request<br /><br />';	
     echo '<i>This would be the same as ~~~ on-wiki. No date, please.</i><br /><br />';
     
     // TODO: clean up into nicer code, rather than coming out of php
