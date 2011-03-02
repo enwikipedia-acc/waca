@@ -1314,9 +1314,9 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	}else{
 	$query = "alter table acc_user add column abortpref tinyint";
 		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
+		if (!$result){
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
-	}
+		}
 	} 
 	echo '<table>';
     echo '<tr><th>Table of Contents</th></tr>';
