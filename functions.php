@@ -1057,6 +1057,26 @@ function zoomPage($id,$urlhash)
 		$out .= "<i>Email information cleared.</i>\n";
 	}
 
+//Script connect for request closure abort
+
+    
+    $sid = sanitize( $_SESSION['user'] );
+	$query = "SELECT * FROM acc_user WHERE user_name = '$sid'";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result)
+		sqlerror("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+		if(array_key_exists('abortpref',$row)){
+		$out.= '<script language=javascript>';
+		if($row['abortpref']==0){
+			$out.= 'var abortpref=false;';
+		}else{
+			$out.= 'var abortpref=true;';
+		}else{
+			$out.= 'var abortpref=false;';		
+		}
+		$out.= '</script>';
+		
 	return $out;
 }
 
