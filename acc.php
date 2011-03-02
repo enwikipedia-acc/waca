@@ -1308,6 +1308,8 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	$sig = " value=\"" . $row['user_welcome_sig'] . "\"";
 	$abortpref= " checked=\"checked\"";
 	if(array_key_exists('abortpref',$row)){
+		echo 'Value:';
+		echo $row['abortpref'];
 		if($row['abortpref']=0){
 			$abortpref= "";
 		}
