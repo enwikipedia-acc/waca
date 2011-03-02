@@ -1072,6 +1072,7 @@ function zoomPage($id,$urlhash)
 			$out.= 'var abortpref=false;';
 		}else{
 			$out.= 'var abortpref=true;';
+		}
 		}else{
 			$out.= 'var abortpref=false;';		
 		}
