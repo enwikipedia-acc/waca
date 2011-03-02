@@ -1317,7 +1317,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 	}
-	}
+	} 
 	echo '<table>';
     echo '<tr><th>Table of Contents</th></tr>';
     echo '<tr><td><a href="#1">General settings</a></td></tr>';
