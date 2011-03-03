@@ -103,4 +103,3 @@ if(confirm(confirmReqCloseQuestions[this.innerHTML])){ document.location=this.to
 }else{ document.location=this.token; }	}
 }
 }
-}
