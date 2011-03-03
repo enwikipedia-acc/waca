@@ -84,3 +84,23 @@ function getElementsByClass(searchClass,node,tag) {
 	}
 	return classElements;
 }
+
+
+//Replace with msgmgmt functionality later:
+var confirmReqCloseQuestions={ "<strong>Created!</strong>" : "sure you created?", "Similar" : "blah email", "Taken" : "blah email blah", "SUL Taken" : "email email blah", "UPolicy" : "Read UPOL completely, blah blah policy blah", "Invalid" : "invalid blah", "Password reset": "", "Custom" : "", "Reset Request":"" }
+
+function abortChecker(){
+var reqCloseActions=getElementsByClass("request-done")
+for(var k in reqCloseActions){
+var token=reqCloseActions[k].href;
+
+reqCloseActions[k].href="#";
+reqCloseActions[k].token=token+"";
+reqCloseActions[k].onclick=function(evt){
+if(confirmReqCloseQuestions[this.innerHTML]&&(confirmReqCloseQuestions[this.innerHTML]!="")){
+if(confirm(confirmReqCloseQuestions[this.innerHTML])){ document.location=this.token; }
+
+}else{ document.location=this.token; }	}
+}
+}
+}
