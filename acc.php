@@ -191,7 +191,7 @@ elseif ($action == "sreg") {
 	
 	// check if the user is to new
 	global $onRegistrationNewbieCheck;
-	if( $onRegistrationNewbieCheck ) 
+	/*if( $onRegistrationNewbieCheck ) 
 	{
 		global $onRegistrationNewbieCheckEditCount, $onRegistrationNewbieCheckAge;
 		$isNewbie = unserialize(file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$cu_name" ));
@@ -204,7 +204,7 @@ elseif ($action == "sreg") {
 			$skin->displayPfooter();
 			die();
 		}
-	}
+	}*/
 	// check if user checked the "I have read and understand the interface guidelines" checkbox
 	if(!isset($_REQUEST['guidelines'])) {
 		$skin->displayRequestMsg("I'm sorry, but you must read <a href=\"http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide\">the interface guidelines</a> before your request may be submitted.<br />");
