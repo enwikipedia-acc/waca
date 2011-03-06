@@ -1329,7 +1329,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     echo 'Your signature (wikicode).<input type="text" name="sig" size ="40"'. $sig.'/>';
     echo '<i>This would be the same as ~~~ on-wiki. No date, please.</i><br /><br />';
 //TODO: Make availible ONLY to acctcreators/sysops and tooladmins (after consensus)
-    echo '<input type="checkbox" name="abortpref"'.$abortpref.'/> Ask to double check before closing request<br /><br />';	    
+    echo '<input type="checkbox" name="abortpref"'.$abortpref.'/> Don\'t ask to double check before closing requests<br /><br />';	    
     // TODO: clean up into nicer code, rather than coming out of php
 	echo <<<HTML
     <input type="submit"/><input type="reset"/>
