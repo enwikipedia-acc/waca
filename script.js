@@ -86,7 +86,8 @@ function getElementsByClass(searchClass,node,tag) {
 }
 
 
-//Replace with msgmgmt functionality later:
+//Replace with msgmgmt functionality later: (REPLACED, remove after testing)
+/*
 var confirmReqCloseQuestions={ 
 "<strong>Created!</strong>" : "Are you sure that you want to create? Pleace check that:\n *The username is valid \n *There are no rangeblocks \n *All conflicting account are inactive",
 "Similar" : "This action will send an email to the user. Are you sure that there is a conflict?",
@@ -97,7 +98,7 @@ var confirmReqCloseQuestions={
 "Password reset": "",
 "Custom" : "",
 "Reset Request":"" }
-
+*/
 function abortChecker(){
 var reqCloseActions=getElementsByClass("request-done")
 for(var k in reqCloseActions){

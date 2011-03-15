@@ -1066,6 +1066,7 @@ function zoomPage($id,$urlhash)
 	$row = mysql_fetch_assoc($result);
 		if(array_key_exists('abortpref',$row)){
 		$out.= '<script language=javascript>';
+		$out.= $messages->getMessage(32);
 		if($row['abortpref']==0){
 			$out.= 'abortChecker()';
 		}
