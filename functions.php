@@ -600,7 +600,7 @@ function isOnWhitelist($user)
 
 function zoomPage($id,$urlhash)
 {
-	global $tsSQLlink, $session, $skin, $tsurl;
+	global $tsSQLlink, $session, $skin, $tsurl, $messages;
 
 	$out = "";
 	$gid = sanitize($id);
