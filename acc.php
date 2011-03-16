@@ -180,8 +180,8 @@ elseif ($action == "sreg") {
 	}
 	$userexist = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
 	$ue = unserialize( $userexist );
-	foreach ( $ue['query']['users']['0'] as $oneue ) {
-		if ( !isset($oneue['missing'])) {
+	foreach ( $ue['query']['users'] as $oneue ) {
+		if ( isset($oneue['missing'])) {
 			$skin->displayRequestMsg("Invalid On-Wiki username.<br />");
 			echo "</div>";
 			$skin->displayPfooter();
