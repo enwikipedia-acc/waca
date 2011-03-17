@@ -683,7 +683,7 @@ function zoomPage($id,$urlhash)
 		$out .= showIPlinks($row['pend_ip'], $wikipediaurl, $metaurl);
 		if ($row['pend_proxyip']) {
 			$out .= '<p><b>Proxy links:</b> ';
-			$out .= showIPlinks($row['pend_proxyip'], $wikipediaurl);
+			$out .= showIPlinks($row['pend_proxyip'], $wikipediaurl, $metaurl);
 		}
 	}
 
