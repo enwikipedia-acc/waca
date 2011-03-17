@@ -86,19 +86,8 @@ function getElementsByClass(searchClass,node,tag) {
 }
 
 
-//Replace with msgmgmt functionality later: (REPLACED, remove after testing)
-/*
-var confirmReqCloseQuestions={ 
-"<strong>Created!</strong>" : "Are you sure that you want to create? Pleace check that:\n *The username is valid \n *There are no rangeblocks \n *All conflicting account are inactive",
-"Similar" : "This action will send an email to the user. Are you sure that there is a conflict?",
-"Taken" : "This action will send an email to the user. Have you checked that the account is already taken?",
-"SUL Taken" : "This action will send an email to the user. Have you checked that the account is already taken?",
-"UPolicy" : "This action will send an email to the user. Are you sure that this request is a violation? Please read [[WP:UPOL]] completely before deciding.",
-"Invalid" : "This action will send an email to the user. Are you sure that the requested username is invalid?",
-"Password reset": "",
-"Custom" : "",
-"Reset Request":"" }
-*/
+//Script portion of abort action capability
+//confirmReqCloseQuestions is set through messagemanagement (message 32)
 function abortChecker(){
 var reqCloseActions=getElementsByClass("request-done")
 for(var k in reqCloseActions){

@@ -1068,9 +1068,11 @@ function zoomPage($id,$urlhash)
 		$out.= '<script language=javascript>';
 		$out.= $messages->getMessage('32');
 		if($row['abortpref']==0){
+			//Checks user preferences and accordingly runs script (see script.js)
 			$out.= 'abortChecker()';
 		}
 		}else{
+			//Run script anyways if preference does not exist
 			$out.= 'abortChecker()';		
 		}
 		$out.= '</script>';

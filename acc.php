@@ -1311,13 +1311,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		if($row['abortpref']==0){
 			$abortpref= "";
 		}
-	}/*else{
-	$query = "alter table acc_user add column abortpref tinyint";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result){
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		}
-	}*/ 
+	}
 	echo '<table>';
     echo '<tr><th>Table of Contents</th></tr>';
     echo '<tr><td><a href="#1">General settings</a></td></tr>';
@@ -1328,7 +1322,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     echo '<input type="checkbox" name="secureenable"'.$securepref.'/> Enable use of the secure server<br /><br />';
     echo 'Your signature (wikicode).<input type="text" name="sig" size ="40"'. $sig.'/>';
     echo '<i>This would be the same as ~~~ on-wiki. No date, please.</i><br /><br />';
-//TODO: Make availible ONLY to acctcreators/sysops and tooladmins (after consensus)
+	//Preference used in functions.php:
     echo '<input type="checkbox" name="abortpref"'.$abortpref.'/> Don\'t ask to double check before closing requests<br /><br />';	    
     // TODO: clean up into nicer code, rather than coming out of php
 	echo <<<HTML
