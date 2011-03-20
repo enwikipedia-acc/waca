@@ -1290,7 +1290,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		} else {
 			$abortprefOld= 0;
 		}
-		$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', abortpref = '$abortprefOld' WHERE user_name = '$sid'";
+		$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld' WHERE user_name = '$sid'";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
@@ -1307,8 +1307,8 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	} else { $securepref = ""; }
 	$sig = " value=\"" . $row['user_welcome_sig'] . "\"";
 	$abortpref= " checked=\"checked\"";
-	if(array_key_exists('abortpref',$row)){
-		if($row['abortpref']==0){
+	if(array_key_exists('user_abortpref',$row)){
+		if($row['user_abortpref']==0){
 			$abortpref= "";
 		}
 	}

@@ -1064,10 +1064,10 @@ function zoomPage($id,$urlhash)
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
-		if(array_key_exists('abortpref',$row)){
+		if(array_key_exists('user_abortpref',$row)){
 		$out.= '<script language=javascript>';
-		$out.= $messages->getMessage('32');
-		if($row['abortpref']==0){
+		$out.= $messages->getMessage(32);
+		if($row['user_abortpref']==0){
 			//Checks user preferences and accordingly runs script (see script.js)
 			$out.= 'abortChecker()';
 		}
