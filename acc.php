@@ -260,9 +260,8 @@ elseif ($action == "sreg") {
 		$skin->displayPfooter();
 		die();
 	}
-	if(!((string)(int)$conf_revid === (string)$conf_revid)){
-		//^Later make sure that the revid is of the correct size, and, write a better error message.
-		$skin->displayRequestMsg("Revid is a number! Not a link to diff!<br />");
+	if(!((string)(int)$conf_revid === (string)$conf_revid)||$conf_revid==""){
+		$skin->displayRequestMsg("Please enter the revision id of your confirmation edit in the \"Confirmation diff\" field. The revid is the number after the &diff= part of the URL of a diff. <br />");
 		echo "</div>";
 		$skin->displayPfooter();
 		die();		
