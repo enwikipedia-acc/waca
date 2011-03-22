@@ -260,7 +260,7 @@ elseif ($action == "sreg") {
 		$skin->displayPfooter();
 		die();
 	}
-	if(is_int($conf_revid)){
+	if(!((string)(int)$conf_revid === (string)$conf_revid)){
 		//^Later make sure that the revid is of the correct size, and, write a better error message.
 		$skin->displayRequestMsg("Revid is a number! Not a link to diff!<br />");
 		echo "</div>";
