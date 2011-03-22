@@ -219,6 +219,7 @@ elseif ($action == "sreg") {
 	$pass2 = mysql_real_escape_string($_REQUEST['pass2']);
 	$email = mysql_real_escape_string($_REQUEST['email']);
 	$sig = mysql_real_escape_string($_REQUEST['sig']);
+	$conf_revid=mysql_real_escape_string($_REQUEST['conf_revid']);
 	if(isset($_REQUEST['secureenable']))
 	{
 		$secureenable = mysql_real_escape_string($_REQUEST['secureenable']);
@@ -235,7 +236,7 @@ elseif ($action == "sreg") {
 	{
 		$welcomeenable=false;
 	}
-	if ( !isset($user) || !isset($wname) || !isset($pass) || !isset($pass2) || !isset($email) || strlen($email) < 6) {
+	if ( !isset($user) || !isset($wname) || !isset($pass) || !isset($pass2) || !isset($email) || !isset($conf_revid)|| strlen($email) < 6) {
 		echo "<h2>ERROR!</h2>Form data may not be blank.<br />\n";
 		echo "</div>";
 		$skin->displayPfooter();
@@ -258,6 +259,14 @@ elseif ($action == "sreg") {
 		echo "</div>";
 		$skin->displayPfooter();
 		die();
+	}
+	if(is_int($conf_revid)){
+		//^Later make sure that the revid is of the correct size, and, write a better error message.
+		$skin->displayRequestMsg("Revid is a number! Not a link to diff!<br />");
+		echo "</div>";
+		$skin->displayPfooter();
+		die();		
+	
 	}
 	$query = "SELECT * FROM acc_user WHERE user_name = '$user' LIMIT 1;";
 	$result = mysql_query($query, $tsSQLlink);
@@ -307,7 +316,7 @@ elseif ($action == "sreg") {
 			$secure = 0;
 		}
 		$user_pass = md5($pass);
-		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_secure) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$secure');";
+		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_secure,user_confirmationdiff) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$secure','$conf_revid');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());

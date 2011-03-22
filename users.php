@@ -431,8 +431,10 @@ if (mysql_num_rows($result) != 0){
 		$uname = $row['user_name'];
 		$uoname = $row['user_onwikiname'];
 		$userid = $row['user_id'];
+		$conf_revid = $row['user_confirmationdiff'];
 		$out = "<li><small>[ <span class=\"request-ban\">$uname</span> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?approve=$userid\" onclick=\"return confirm('Are you sure you wish to approve $uname?')\">Approve!</a> - <a class=\"request-req\" href=\"$tsurl/users.php?decline=$userid\">Decline</a> - <a class=\"request-req\" href=\"http://toolserver.org/~soxred93/pcount/index.php?name=$uoname&amp;lang=en&amp;wiki=wikipedia\">Count!</a></small></li>";
+		$out .="<a href=\"http://en.wikipedia.org/w/index.php?oldid=$conf_revid\">Confirmation diff</a>";
 		echo "$out\n";
 	}
 	echo "</ol>\n";
