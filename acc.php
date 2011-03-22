@@ -320,7 +320,7 @@ elseif ($action == "sreg") {
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 		$accbotSend->send("New user: $user");
-		$skin->displayRequestMsg("Account created! Your username is $user! In order to complete the process, please make a confirmation edit to your user talk page. In this edit, note that you requested an account on the ACC account creation interface, and use a descriptive edit summary so that we can easily find this edit.  <b>Failure to do this will result in your request being declined.</b><br /><br />");
+		$skin->displayRequestMsg("Account requested! Your username is $user! Your request will be reviewed soon.</b><br /><br />");
 	}
 	echo "</div>";
 	$skin->displayPfooter();
