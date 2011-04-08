@@ -289,6 +289,19 @@ $developer = array(
 				"Access" => "SVN, Git, SF.net access",
 				"Cloak" => "*!*@wikipedia/Manishearth",
 				"Other" => NULL,
+			),
+    "MacMed" =>
+			array(
+				"IRC" => "MacMed",
+				"EMail" => "",
+				"ToolID" => "537",
+				"wiki" => "MacMed",
+				"WWW" => "",
+				"Name" => "",
+				"Role" => "Developer",
+				"Access" => "SVN, Git, SF.net access",
+				"Cloak" => "*!*@Wikipedia/MacMed",
+				"Other" => NULL,
 			)
 );
 // End of the array of developers.

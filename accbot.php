@@ -96,6 +96,7 @@ ini_set('display_errors',1);
         '*!*@wikipedia/Mr-R00t'    					=> 'developer',
 		'*!*@wikipedia/DeltaQuad' 					=> 'developer',
 		'*!*@wikipedia/Manishearth' 				=> 'developer',
+		'*!*@Wikipedia/MacMed'						=> 'developer',
 		'*!*@*'										=> '*'
 		);
 
