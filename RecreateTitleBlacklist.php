@@ -50,9 +50,16 @@ foreach ($lines as $line) {
 mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 @ mysql_select_db($toolserver_database) or die(mysql_error());
 
+$sanitycheck=array();
+
 $query = "INSERT INTO `acc_titleblacklist` (`titleblacklist_regex`, `titleblacklist_casesensitive`) VALUES ";
 foreach ($entries as $entry) {
 	list($regex, $casesensitive) = $entry;
+	if(array_key_exists($regex, $sanitycheck))
+		continue;
+		
+	$sanitycheck[$regex]=1;
+	
 	$regex = mysql_real_escape_string($regex);
 	$query .= "('$regex', ";
 	if ($casesensitive)
