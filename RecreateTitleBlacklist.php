@@ -48,6 +48,9 @@ foreach ($lines as $line) {
 }
 $entries = array_unique($entries);
 
+mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
+@ mysql_select_db($toolserver_database) or die(mysql_error());
+
 $query = "INSERT INTO `acc_titleblacklist` (`titleblacklist_regex`, `titleblacklist_casesensitive`) VALUES ";
 foreach ($entries as $entry) {
 	list($regex, $casesensitive) = $entry;
@@ -60,9 +63,6 @@ foreach ($entries as $entry) {
 	$query .= "), ";
 }
 $query = substr($query, 0, -2) . ';';
-
-mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-@ mysql_select_db($toolserver_database) or die(mysql_error());
 
 mysql_query("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;");
 
