@@ -55,12 +55,12 @@ $sanitycheck=array();
 $query = "INSERT INTO `acc_titleblacklist` (`titleblacklist_regex`, `titleblacklist_casesensitive`) VALUES ";
 foreach ($entries as $entry) {
 	list($regex, $casesensitive) = $entry;
-	if(array_key_exists($regex, $sanitycheck))
-		continue;
+        $regex = mysql_real_escape_string($regex);
 		
+        if(array_key_exists($regex, $sanitycheck))
+                continue;
+
 	$sanitycheck[$regex]=1;
-	
-	$regex = mysql_real_escape_string($regex);
 	$query .= "('$regex', ";
 	if ($casesensitive)
 		$query .= 'TRUE';
