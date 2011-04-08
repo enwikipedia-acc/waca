@@ -5,6 +5,8 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
 ini_set('display_errors', 1);
 require_once 'config.inc.php';
 
+$strictMode = 0;
+
 function entryFromString($line) {
 	// Function adapted from MediaWiki's source code. Original function can be found at:
 	// http://svn.wikimedia.org/svnroot/mediawiki/trunk/extensions/TitleBlacklist/TitleBlacklist.list.php
@@ -52,46 +54,51 @@ mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 
 $sanitycheck=array();
 
-$query = "INSERT INTO `acc_titleblacklist` (`titleblacklist_regex`, `titleblacklist_casesensitive`) VALUES ";
-foreach ($entries as $entry) {
-	list($regex, $casesensitive) = $entry;
-        $regex = mysql_real_escape_string($regex);
-		
-        if(array_key_exists($regex, $sanitycheck))
-                continue;
-
-	$sanitycheck[$regex]=1;
-	$query .= "('$regex', ";
-	if ($casesensitive)
-		$query .= 'TRUE';
-	else
-		$query .= 'FALSE';
-	$query .= "), ";
-}
-$query = substr($query, 0, -2) . ';';
-
 mysql_query("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;");
 
 if(mysql_query("START TRANSACTION;"))
 {
 	$success1 = mysql_query("DELETE FROM `acc_titleblacklist`;");
 	if(!$success1)
-		echo mysql_error()."\n";
-
-	$success2 = mysql_query($query);
-	if(!$success2)
-		echo mysql_error()."\n";
-
-	if($success1 && $success2)
 	{
-		mysql_query("COMMIT;");
-		echo "The title blacklist table has been recreated.\n";
-	}
-	else
-	{
+		echo mysql_error()."\n";
 		mysql_query("ROLLBACK;");
 		echo "Error in transaction.\n";
+	}	
+		
+	$query = "INSERT INTO `acc_titleblacklist` (`titleblacklist_regex`, `titleblacklist_casesensitive`) VALUES ";
+	foreach ($entries as $entry) {
+		list($regex, $casesensitive) = $entry;
+		
+		$regex = mysql_real_escape_string($regex);
+		
+		if(array_key_exists($regex, $sanitycheck))
+			continue;
+			
+		$sanitycheck[$regex]=1;
+		
+		$rquery = $query . "('$regex', ";
+		if ($casesensitive)
+			$rquery .= 'TRUE';
+		else
+			$rquery .= 'FALSE';
+		$rquery .= ");";
+		
+		$success2 = mysql_query($rquery);
+		if(!$success2)
+		{
+			echo mysql_error()."\n";
+			if($strictMode == 1)
+			{
+				mysql_query("ROLLBACK;");
+				echo "Error in transaction.\n";
+				break;
+			}
+		}
 	}
+	
+	mysql_query("COMMIT;");
+	echo "The title blacklist table has been recreated.\n";
 }
 else
 	echo "Error starting transaction.\n";
