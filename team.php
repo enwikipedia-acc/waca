@@ -51,7 +51,7 @@ $developer = array(
 				"wiki" => "SQL",                          //Enwiki Username.
 				"WWW" => "http://toolserver.org/~sql",    //Your website.
 				"Name" => NULL,                           //Real name.
-				"Role" => "Developer",     				  //Project Role(s).
+				"Role" => "Developer (Retired)",     				  //Project Role(s).
 				"Access" => "Database, Live shell",       //Project Access levels.
 				"Cloak" => "*!*@wikipedia/SQL",           //IRC Cloak.
 				"Other" => NULL,                          //Anything else, comments, etc.
@@ -104,7 +104,7 @@ $developer = array(
 				"WWW" => "http://helpmebot.org.uk/",
 				"Name" => "Simon Walker",
 				"Role" => "Developer, Project Lead",
-				"Access" => "Git, SVN, SF.net shell, SF.net admin, Database, Live shell, SF.net access, Mailing list admin",
+				"Access" => "Git, SVN, SF.net admin, Database, Live shell, SF.net access, Mailing list admin",
 				"Cloak" => "*!*@pdpc/supporter/student/stwalkerster",
 				"Other" => NULL,
 			),
@@ -143,7 +143,7 @@ $developer = array(
 				"WWW" => NULL,
 				"Name" => NULL,
 				"Role" => "Developer",
-				"Access" => "Git, SVN, SF.net shell, SF.net admin, Database, Live shell, SF.net access",
+				"Access" => "SF.net admin, Database, Live shell, SF.net access",
 				"Cloak" => "*!*@wikipedia/OverlordQ",
 				"Other" => NULL,
 			),
@@ -181,8 +181,8 @@ $developer = array(
 				"wiki" => "Promethean",
 				"WWW" => "",
 				"Name" => "Brett Hillebrand",
-				"Role" => "Developer",
-				"Access" => "Git, SVN, SF.net shell, SF.net admin, SF.net access",
+				"Role" => "Developer (Retired)",
+				"Access" => "SF.net access",
 				"Cloak" => "*!*@wikimedia/Promethean",
 				"Other" => NULL,
 			),
@@ -286,7 +286,7 @@ $developer = array(
 				"WWW" => "http://enwp.org/User:Manishearth",
 				"Name" => "Manish Goregaokar",
 				"Role" => "Developer",
-				"Access" => "SVN",
+				"Access" => "SVN, Git, SF.net access",
 				"Cloak" => "*!*@wikipedia/Manishearth",
 				"Other" => NULL,
 			)
