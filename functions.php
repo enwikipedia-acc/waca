@@ -27,6 +27,7 @@ require_once 'includes/messages.php';
 include_once 'AntiSpoof.php';
 require_once 'includes/internalInterface.php';
 require_once 'includes/session.php';
+require_once 'includes/request.php';
 require_once 'autolink.php';
 
 // Initialize the class objects.
@@ -801,6 +802,10 @@ function zoomPage($id,$urlhash)
 	}
 	$out .= '<p><b>Date request made:</b> ' . $row['pend_date'] . '</p>';
 
+	$request = new accRequest();
+	if($request->isblacklisted($sUser))
+		$out .= '<p><b>Requested username is blacklisted.</b></p>';
+	
 	$out2 = "<h2>Possibly conflicting usernames</h2>\n";
 	$spoofs = getSpoofs( $sUser );
 
