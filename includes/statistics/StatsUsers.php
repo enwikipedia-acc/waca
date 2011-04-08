@@ -115,7 +115,7 @@ class StatsUsers extends StatisticsPage
 		$out.= "<li>User Level: " . $row['user_level'] . "</li>\n";
 		$out.= "<li>User On-wiki name: <a href=\"http://$wikiurl/wiki/User:" . $row['user_onwikiname'] . "\">" . $row['user_onwikiname'] . "</a>  |  <a href=\"http://$wikiurl/wiki/User talk:" . $row['user_onwikiname'] . "\">talk page</a> </li>\n";
 		if($row['user_confirmationdiff']!=0){
-		$out .= "<li><a href=\"http://$wikiurl/w/index.php?oldid=".$row['user_confirmationdiff']."\">Confirmation diff</a></li>";
+		$out .= "<li><a href=\"http://$wikiurl/w/index.php?diff=".$row['user_confirmationdiff']."\">Confirmation diff</a></li>";
 		}
 		// Display the date and time of the user's last activity on the interface;
 		// If the user has not used the interface, display message
