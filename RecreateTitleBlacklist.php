@@ -46,7 +46,6 @@ foreach ($lines as $line) {
 		$entries[] = $line;
 	}
 }
-$entries = array_unique($entries);
 
 mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 @ mysql_select_db($toolserver_database) or die(mysql_error());
