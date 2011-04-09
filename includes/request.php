@@ -193,7 +193,7 @@ class accRequest {
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		
 		// Sends the confirmation email to the user.
-		$mailsuccess = imap_mail($row['pend_email'], "[ACC #$id] English Wikipedia Account Request", $mailtxt, $headers);
+		$mailsuccess = mail($row['pend_email'], "[ACC #$id] English Wikipedia Account Request", $mailtxt, $headers);
 		// Confirms mail went through (JIRA ACC-44)
 		if ($mailsuccess == false) {
 			$skin->displayRequestMsg("Sorry, it appears we were unable to send an email to the email address you specified. Please check the spelling and try again.");
