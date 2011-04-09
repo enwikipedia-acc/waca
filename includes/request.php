@@ -11,7 +11,6 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
-require_once 'Mail.php';
 
 if ($ACC != "1") {
 	header("Location: $tsurl/");
