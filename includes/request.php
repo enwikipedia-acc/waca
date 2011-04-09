@@ -199,7 +199,7 @@ class accRequest {
 		
 		// Sends the confirmation email to the user.
 		$mailobject =& Mail::factory('sendmail');
-		$mailsuccess = $mailobject->send($recipient, $headers, $mailtxt)
+		$mailsuccess = $mailobject->send($recipient, $headers, $mailtxt);
 		// Confirms mail went through (JIRA ACC-44)
 		if ($mailsuccess == false) {
 			$skin->displayRequestMsg("Sorry, it appears we were unable to send an email to the email address you specified. Please check the spelling and try again.");
