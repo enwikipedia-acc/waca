@@ -298,59 +298,59 @@ ini_set('display_errors',1);
 		}
 		$username = trim($username); //Strip any whitespace from the username.  
 
-		$isUser = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_user` WHERE `user_name` = \'' . sanitize( $username ) . '\'' ) )
+		$isUser = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_user` WHERE `user_name` = \'' . mysql_real_escape_string( $username ) . '\'' ) )
 			or die( 'MySQL Error: ' . mysql_error() . "\n" );
 
 		$isUser = ( ( $isUser['count'] == 0 ) ? false : true );
 
 		if( $isUser ) {
 			$count = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE (`log_action` = \'Closed 1\' OR `log_action` = \'Closed custom-y\') AND `log_user` = \''
-				. sanitize( $username ) . '\'' ) ) or die( 'MySQL Error: ' . mysql_error() . "\n" );
+				. mysql_real_escape_string( $username ) . '\'' ) ) or die( 'MySQL Error: ' . mysql_error() . "\n" );
 
 			$count = $count['count'];
 
-			$user = mysql_fetch_assoc( myq( 'SELECT * FROM `acc_user` WHERE `user_name` = \'' . sanitize( $username ) . '\'' ) )
+			$user = mysql_fetch_assoc( myq( 'SELECT * FROM `acc_user` WHERE `user_name` = \'' . mysql_real_escape_string( $username ) . '\'' ) )
 				or die( 'MySQL Error: ' . mysql_error() . "\n" );
 
 			$adminInfo = '';
 			if( $user['user_level'] == 'Admin' ) {
 				$sus = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
-					. sanitize( $username ) . '\' AND `log_action` = \'Suspended\'' ) )
+					. mysql_real_escape_string( $username ) . '\' AND `log_action` = \'Suspended\'' ) )
 					or die( 'MySQL Error: ' . mysql_error() . "\n" );
 				$sus = $sus['count'];
  
 				$pro = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
-					. sanitize( $username ) . '\' AND `log_action` = \'Promoted\'' ) )
+					. mysql_real_escape_string( $username ) . '\' AND `log_action` = \'Promoted\'' ) )
 					or die( 'MySQL Error: ' . mysql_error() . "\n" );
 				$pro = $pro['count'];
 
 				$app = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
-					. sanitize( $username ) . '\' AND `log_action` = \'Approved\'' ) )
+					. mysql_real_escape_string( $username ) . '\' AND `log_action` = \'Approved\'' ) )
 					or die( 'MySQL Error: ' . mysql_error() . "\n" );
 				$app = $app['count'];
 
 				$dem = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
-					. sanitize( $username ) . '\' AND `log_action` = \'Demoted\'' ) )
+					. mysql_real_escape_string( $username ) . '\' AND `log_action` = \'Demoted\'' ) )
 					or die( 'MySQL Error: ' . mysql_error() . "\n" );
 				$dem = $dem['count'];
 
 				$dec = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
-					. sanitize( $username ) . '\' AND `log_action` = \'Declined\'' ) )
+					. mysql_real_escape_string( $username ) . '\' AND `log_action` = \'Declined\'' ) )
 					or die( 'MySQL Error: ' . mysql_error() . "\n" );
 				$dec = $dec['count'];
                                 
                                 $rnc = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
-					. sanitize( $username ) . '\' AND `log_action` = \'Renamed\'' ) )
+					. mysql_real_escape_string( $username ) . '\' AND `log_action` = \'Renamed\'' ) )
 					or die( 'MySQL Error: ' . mysql_error() . "\n" );
 				$rnc = $rnc['count'];
 
                                 $mec = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
-					. sanitize( $username ) . '\' AND `log_action` = \'Edited\'' ) )
+					. mysql_real_escape_string( $username ) . '\' AND `log_action` = \'Edited\'' ) )
 					or die( 'MySQL Error: ' . mysql_error() . "\n" );
 				$mec = $mec['count'];
 
                                 $pcc = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_user` = \''
-					. sanitize( $username ) . '\' AND `log_action` = \'Prefchange\'' ) )
+					. mysql_real_escape_string( $username ) . '\' AND `log_action` = \'Prefchange\'' ) )
 					or die( 'MySQL Error: ' . mysql_error() . "\n" );
 				$pcc = $pcc['count'];                                     
 
@@ -358,7 +358,7 @@ ini_set('display_errors',1);
 			}
 
 			$today = mysql_fetch_assoc( myq( 'SELECT COUNT(*) AS `count` FROM `acc_log` WHERE `log_time` LIKE \'' . sanitize( date( 'Y-m-d' ) )
-				. '%\' AND (`log_action` = \'Closed 1\' OR `log_action` = \'Closed custom-y\') AND `log_user` = \'' . sanitize( $username ) . '\'' ) )
+				. '%\' AND (`log_action` = \'Closed 1\' OR `log_action` = \'Closed custom-y\') AND `log_user` = \'' . mysql_real_escape_string( $username ) . '\'' ) )
 				or die( 'MySQL Error: ' . mysql_error() . "\n" );
 			$today = $today['count'];
 
