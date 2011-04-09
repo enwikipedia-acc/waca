@@ -11,6 +11,7 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
+require_once 'Mail.php';
 
 if ($ACC != "1") {
 	header("Location: $tsurl/");
@@ -190,10 +191,16 @@ class accRequest {
 		$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nIf you did not make this request, please disregard this message.\n\n";
 		
 		// Creates the needed headers.
-		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+		$headers['From'] = "accounts-enwiki-l@lists.wikimedia.org";
+		$headers['To'] = $row['pend_email'];
+		$headers['Subject'] = "[ACC #$id] English Wikipedia Account Request";
+		
+		//Creates recipient
+		$recipient = $row['pend_email'];
 		
 		// Sends the confirmation email to the user.
-		$mailsuccess = mail($row['pend_email'], "[ACC #$id] English Wikipedia Account Request", $mailtxt, $headers);
+		$mailobject =& Mail::factory('sendmail');
+		$mailsuccess = $mailobject->send($recipient, $headers, $mailtxt)
 		// Confirms mail went through (JIRA ACC-44)
 		if ($mailsuccess == false) {
 			$skin->displayRequestMsg("Sorry, it appears we were unable to send an email to the email address you specified. Please check the spelling and try again.");
