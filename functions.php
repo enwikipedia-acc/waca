@@ -707,8 +707,9 @@ function zoomPage($id,$urlhash)
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
 	$out .= $userurl . '&amp;group=&amp;limit=1" target="_blank">Username list</a> | ';
 	}
+	//TODO: add an api query to display editcount and blocks if we can't access the s1 cluster -- MM 09/04/11
 	else {
-		$usrinfo = api.php?action=query & meta=userinfo & uiprop=editcount|blockinfo;
+	//	$usrinfo = api.php?action=query & meta=userinfo & uiprop=editcount|blockinfo;
 	}
 
 	// Google
