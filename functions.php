@@ -690,7 +690,8 @@ function zoomPage($id,$urlhash)
 
 	$userurl = urlencode($sUser);
 	$userurl = str_replace("%26amp%3B", "%26", $userurl);
-
+	
+	if($dontUseWikiDb == 0) {
 	$out .= '<p><b>Username links:</b> <a class="request-req" href="'.$wikipediaurl.'w/index.php?title=User:';
 	$out .= $userurl . '" target="_blank">User page</a> | ';
 
@@ -705,6 +706,10 @@ function zoomPage($id,$urlhash)
 	// 	User list
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
 	$out .= $userurl . '&amp;group=&amp;limit=1" target="_blank">Username list</a> | ';
+	}
+	else {
+		$usrinfo = api.php?action=query & meta=userinfo & uiprop=editcount|blockinfo;
+	}
 
 	// Google
 	$out .= '<a class="request-req" href="http://www.google.com/search?q=';

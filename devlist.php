@@ -82,6 +82,11 @@ $regdevlist = array (
     	'DeltaQuad',
     	'DeltaQuad',
     	'662'
+   	),
+   	array(
+   		'MacMed',
+   		'MacMed',
+   		'537'
    	)
 );
 //Format: User on tool, user on wiki, user id
@@ -105,5 +110,6 @@ $ircdevlist = array (
 	'Chris_G',
 	'LouriePieterse',
 	'Mr_R00t',
-	'DeltaQuad'
+	'DeltaQuad',
+	'MacMed'
 );

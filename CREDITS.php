@@ -24,6 +24,7 @@
 ** PRom3th3an     ( http://en.wikipedia.org/wiki/User:Promethean )       **
 ** Chris_G        ( http://en.wikipedia.org/wiki/User:Chris_G )          **
 ** LouriePieterse ( http://en.wikipedia.org/wiki/User:LouriePieterse )   **
+** MacMed		  ( http://en.wikipedia.org/wiki/User:MacMed )   		 **
 ***************************************************************************/
 
 // Redirect user away from the current directory.
