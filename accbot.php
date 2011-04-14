@@ -115,8 +115,10 @@ ini_set('display_errors',1);
 
 	$privgroups[ 'developer' ] = $privgroups['*']; // Developer group inherits '*'.
 	$privgroups[ 'developer' ][ 'sand-svnup'  	] = 1;
-	$privgroups[ 'developer' ][ 'rewrite-svnup' ] = 1;
-	$privgroups[ 'developer' ][ 'restart'     	] = 1;
+	$privgroups[ 'developer' ][ 'rewrite-svnup' 	] = 1;
+	$privgroups[ 'developer' ][ 'sand-pull' 	] = 1;
+	$privgroups[ 'developer' ][ 'rewrite-pull' 	] = 1;
+	$privgroups[ 'developer' ][ 'restart'		] = 1;
 
 	// Functions
 	function sanitize( $data ) {
