@@ -58,7 +58,9 @@ ini_set('display_errors',1);
 	addHelp( 'stats'      , '<username>', 'Gives a readout similar to the user list user information page.'     );
 	addHelp( 'svninfo'    , ''          , 'Floods you with information about the SVN repository.'               );
 	addHelp( 'sandinfo'   , ''          , 'Floods you with information about the SVN repository sandbox.'       );
-	addHelp( 'rewrite-svnup' , ''		, 'Allows developers to sync the rewrite sandbox with the appropriate branch of the SVN repository.');
+	addHelp( 'rewrite-pull' , ''		, 'Allows developers to sync the rewrite sandbox with the master branch.');
+	addHelp( 'rewrite-svnup' , ''		, 'Alias of rewrite-pull'												);
+	addHelp( 'sand-pull'  , ''			, 'Alias of sand-svnup'													);
 	addHelp( 'sand-svnup' , ''          , 'Allows developers to sync the sandbox with the SVN repository.'      );
 	addHelp( 'restart'    , ''          , 'Causes the bot to do an immediate graceful reinitialization.'        );
 	
@@ -71,6 +73,8 @@ ini_set('display_errors',1);
 	addCommand( 'svninfo'    	, 'commandSvnInfo'    	, true  );
 	addCommand( 'sandinfo'   	, 'commandSandInfo'   	, true  );
 	addCommand( 'rewrite-svnup'	, 'commandRewriteSvnUp'	, true  );
+	addCommand( 'rewrite-pull'	, 'commandRewriteSvnUp'	, true  );
+	addCommand( 'sand-pull'		, 'commandSandSvnUp'	, true  );
 	addCommand( 'sand-svnup' 	, 'commandSandSvnUp'  	, true  );
 	addCommand( 'restart'    	, 'commandRestart'    	, false );
 
