@@ -709,7 +709,8 @@ function zoomPage($id,$urlhash)
 	}
 	//TODO: add an api query to display editcount and blocks if we can't access the s1 cluster -- MM 09/04/11
 	else {
-	//	$usrinfo = api.php?action=query & meta=userinfo & uiprop=editcount|blockinfo;
+		$out .= '<a class="request-req" href=http://toolserver.org/~betacommand/cgi-bin/SIL?ip=';
+		$out .= $thisip. '" target="_blank">Single User Lookup</a> | ';
 	}
 
 	// Google
