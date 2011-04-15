@@ -90,6 +90,7 @@ function getElementsByClass(searchClass,node,tag) {
 //confirmReqCloseQuestions is set through messagemanagement (message 32)
 function abortChecker(){
 var reqCloseActions=getElementsByClass("request-done")
+reqCloseActions[reqCloseActions.length]=getElementsByClass('request-req-create')[0]
 for(var k in reqCloseActions){
 var token=reqCloseActions[k].href;
 
