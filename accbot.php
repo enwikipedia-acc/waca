@@ -101,6 +101,8 @@ ini_set('display_errors',1);
 		'*!*@wikipedia/DeltaQuad' 					=> 'developer',
 		'*!*@wikipedia/Manishearth' 				=> 'developer',
 		'*!*@Wikipedia/MacMed'						=> 'developer',
+		
+		'Helpmebot!~hmb6@wikimedia/bot/helpmebot'	=> 'bot',
 		'*!*@*'										=> '*'
 		);
 
@@ -115,10 +117,13 @@ ini_set('display_errors',1);
 
 	$privgroups[ 'developer' ] = $privgroups['*']; // Developer group inherits '*'.
 	$privgroups[ 'developer' ][ 'sand-svnup'  	] = 1;
-	$privgroups[ 'developer' ][ 'rewrite-svnup' 	] = 1;
+	$privgroups[ 'developer' ][ 'rewrite-svnup' ] = 1;
 	$privgroups[ 'developer' ][ 'sand-pull' 	] = 1;
 	$privgroups[ 'developer' ][ 'rewrite-pull' 	] = 1;
 	$privgroups[ 'developer' ][ 'restart'		] = 1;
+	
+	$privgroups[ 'bot'		 ][ 'sand-svnup'  	] = 1;
+	$privgroups[ 'bot'		 ][ 'rewrite-pull' 	] = 1;
 
 	// Functions
 	function sanitize( $data ) {
