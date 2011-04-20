@@ -24,6 +24,10 @@
 ** PRom3th3an     ( http://en.wikipedia.org/wiki/User:Promethean )       **
 ** Chris_G        ( http://en.wikipedia.org/wiki/User:Chris_G )          **
 ** LouriePieterse ( http://en.wikipedia.org/wiki/User:LouriePieterse )   **
+** EdoDodo        ( http://en.wikipedia.org/wiki/User:EdoDodo )          **
+** DeltaQuad      ( http://en.wikipedia.org/wiki/User:DeltaQuad )        **
+** 1234r00t       ( http://en.wikipedia.org/wiki/User:1234r00t )         **
+** Manishearth	  ( http://en.wikipedia.org/wiki/User:Manishearth )      **
 ** MacMed		  ( http://en.wikipedia.org/wiki/User:MacMed )   		 **
 ***************************************************************************/
 
