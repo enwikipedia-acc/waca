@@ -106,7 +106,7 @@ if(confirmReqCloseQuestions[this.innerHTML]&&(confirmReqCloseQuestions[this.inne
 		if(this.target=="_blank"){
 			window.open(this.token); //Might anger popup blockers, but otherwise clicking on the create! link navigates away from the ts page, and it's rather annoying to get back. Right-clicking is better, but if you have just commented or something you get stuck again.
 		}else{
-			document.location=this.token; 
+			document.location=this.token;
 		}
 
 	}
