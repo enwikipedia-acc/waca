@@ -92,14 +92,14 @@ function abortChecker(){
 var reqCloseActions=getElementsByClass("request-done")
 var abcdefg; //dummy to check undefined... JS is wierd in this manner
 if(getElementsByClass('request-req-create')[0]!==abcdefg){
-	//tag on the Create! link 
+	//tag on the Create! link into the array if it exists
 	reqCloseActions[reqCloseActions.length]=getElementsByClass('request-req-create')[0]
 }
 for(var k in reqCloseActions){
 var token=reqCloseActions[k].href;
 
 reqCloseActions[k].href="javascript:return false;"; //So as to avoid icky situations with Javascript event bubbling
-reqCloseActions[k].token=token+"";
+reqCloseActions[k].token=token+""; //Store the link in a hidden attribute
 reqCloseActions[k].onclick=function(evt){
 if(confirmReqCloseQuestions[this.innerHTML]&&(confirmReqCloseQuestions[this.innerHTML]!="")){
 	if(confirm(confirmReqCloseQuestions[this.innerHTML])){ 
