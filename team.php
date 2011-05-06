@@ -302,7 +302,9 @@ $developer = array(
 				"Access" => "SVN, Git, SF.net access",
 				"Cloak" => "*!*@Wikipedia/MacMed",
 				"Other" => NULL,
-			),
+			)
+			//I have commented this out, please try to fix it...
+			/*,
     "Helpmebot" =>
 			array(
 				"IRC" => "Helpmebot",
@@ -315,7 +317,7 @@ $developer = array(
 				"Access" => "IRC !svnup only",
 				"Cloak" => "*!*@wikimedia/bot/helpmebot",
 				"Other" => NULL,
-			)
+			)*/
 );
 // End of the array of developers.
 
