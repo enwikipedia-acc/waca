@@ -90,7 +90,11 @@ function getElementsByClass(searchClass,node,tag) {
 //confirmReqCloseQuestions is set through messagemanagement (message 32)
 function abortChecker(){
 var reqCloseActions=getElementsByClass("request-done")
-reqCloseActions[reqCloseActions.length]=getElementsByClass('request-req-create')[0]
+var abcdefg; //dummy to check undefined... JS is wierd in this manner
+if(getElementsByClass('request-req-create')[0]!==abcdefg){
+	//tag on the Create! link 
+	reqCloseActions[reqCloseActions.length]=getElementsByClass('request-req-create')[0]
+}
 for(var k in reqCloseActions){
 var token=reqCloseActions[k].href;
 
@@ -98,7 +102,13 @@ reqCloseActions[k].href="#";
 reqCloseActions[k].token=token+"";
 reqCloseActions[k].onclick=function(evt){
 if(confirmReqCloseQuestions[this.innerHTML]&&(confirmReqCloseQuestions[this.innerHTML]!="")){
-if(confirm(confirmReqCloseQuestions[this.innerHTML])){ document.location=this.token; }
+if(confirm(confirmReqCloseQuestions[this.innerHTML])){ 
+if(this.target=="_blank"){
+	window.open(this.token); //Might anger popup blockers, but otherwise clicking on the create! link navigates away from the ts page, and it's rather annoying to get back. Right-clicking is better, but if you have just commented or something you get stuck again.
+}else{
+	document.location=this.token; 
+}
+}
 
 }else{ document.location=this.token; }	}
 }
