@@ -299,6 +299,8 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 		$newname = sanitize($_POST['newname']);
 		$userid = sanitize($_GET['rename']);
 		$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$userid';");
+		if($newname=="")
+			Die("New username cannot be blank");
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$checkname = mysql_fetch_assoc($result);
