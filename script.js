@@ -92,7 +92,7 @@ function abortChecker(){
 var reqCloseActions=getElementsByClass("request-done")
 var abcdefg; //dummy to check undefined... JS is wierd in this manner
 if(getElementsByClass('request-req-create')[0]!==abcdefg){
-	//tag on the Create! link into the array if it exists
+	//Tag on the Create! link into the array if it exists
 	reqCloseActions[reqCloseActions.length]=getElementsByClass('request-req-create')[0]
 }
 for(var k in reqCloseActions){
