@@ -305,7 +305,7 @@ $developer = array(
 			)
     "Helpmebot" =>
 			array(
-				"IRC" => "Helpmebot",
+				"IRC" => "helpmebot",
 				"EMail" => "",
 				"ToolID" => "none",
 				"wiki" => "User:Stwalkerster/Helpmebot",
