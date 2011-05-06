@@ -302,7 +302,7 @@ $developer = array(
 				"Access" => "SVN, Git, SF.net access",
 				"Cloak" => "*!*@Wikipedia/MacMed",
 				"Other" => NULL,
-			)
+			),
     "Helpmebot" =>
 			array(
 				"IRC" => "helpmebot",
