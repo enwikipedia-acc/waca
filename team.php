@@ -286,7 +286,7 @@ $developer = array(
 				"WWW" => "http://enwp.org/User:Manishearth",
 				"Name" => "Manish Goregaokar",
 				"Role" => "Developer",
-				"Access" => "SVN, Git, SF.net access",
+				"Access" => "SVN, SF.net access",
 				"Cloak" => "*!*@wikipedia/Manishearth",
 				"Other" => NULL,
 			),
@@ -301,6 +301,19 @@ $developer = array(
 				"Role" => "Developer",
 				"Access" => "SVN, Git, SF.net access",
 				"Cloak" => "*!*@Wikipedia/MacMed",
+				"Other" => NULL,
+			)
+    "Helpmebot" =>
+			array(
+				"IRC" => "Helpmebot",
+				"EMail" => "",
+				"ToolID" => "none",
+				"wiki" => "User:Stwalkerster/Helpmebot",
+				"WWW" => "http://helpmebot.org.uk/",
+				"Name" => "",
+				"Role" => "Developer",
+				"Access" => "IRC !svnup only",
+				"Cloak" => "*!*@wikimedia/bot/helpmebot",
 				"Other" => NULL,
 			)
 );
