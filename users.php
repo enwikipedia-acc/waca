@@ -282,7 +282,7 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 		echo "<form action=\"users.php?rename=" . $rid . "\" method=\"post\">";						
 		echo "<div class=\"required\">";
 		echo "<label for=\"oldname\">Old Username:</label>";
-		echo "<input id=\"oldname\" type=\"text\" name=\"oldname\" "/*readonly=\"readonly\" */"value=\"" . $oldname['user_name'] . "\"/>";
+		echo "<input id=\"oldname\" type=\"text\" name=\"oldname\" readonly=\"readonly\" value=\"" . $oldname['user_name'] . "\"/>";
 		echo "</div>";
 		echo "<div class=\"required\">";
 		echo "<label for=\"newname\">New Username:</label>";
