@@ -103,6 +103,7 @@ ini_set('display_errors',1);
 		'*!*@Wikipedia/MacMed'						=> 'developer',
 		
 		'Helpmebot!~hmb6@wikimedia/bot/helpmebot'	=> 'bot',
+                'Helpmebot!helpmebot@wikimedia/bot/helpmebot'       => 'bot',
 		'*!*@*'										=> '*'
 		);
 
