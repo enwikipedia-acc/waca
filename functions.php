@@ -1184,6 +1184,11 @@ function showIPlinks($ip, $wikipediaurl, $metaurl) {
 	$out .= '| ';
 	$out .= '<a class="request-src" href="'.$wikipediaurl.'wiki/Special:Contributions/';
 	$out .= $ip . '" target="_blank">Local Contributions</a> ';
+	
+	//X's edit counter
+	$out .= '|';
+	$out .= '<a class-"request-src" href="http://toolserver.org/~soxred93/pcount/index.php?name='.$ip.'&lang=en&wiki=wikipedia"';
+	$out .= ' target="_blank">Deleted Edits</a> ';
 
 	// IP global contribs
 	$out .= '| ';
