@@ -611,7 +611,7 @@ function zoomPage($id,$urlhash)
 	if (!$result)
 	Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
-	if ($row['pend_mailconfirm'] != 'Confirmed' && $row['pend_mailconfirm'] != "") {
+	if ($row['pend_mailconfirm'] != 'Confirmed' && $row['pend_mailconfirm'] != "" && !isset($_GET['ecoverride'])) {
 		$out .= $skin->displayRequestMsg("Email has not yet been confirmed for this request, so it can not yet be closed or viewed.");
 		return $out;
 	}
@@ -839,12 +839,11 @@ function zoomPage($id,$urlhash)
 				continue;
 			}
 
-			// Convert all applicable characters to HTML entities.
-			$oS = htmlentities($oSpoof,ENT_COMPAT,'UTF-8');
+			$oS = urlencode($oSpoof);
 
 			// Show the Wikipedia Userpage of the conflicting users.
 			$posc1 = '<a href="http://en.wikipedia.org/wiki/User:';
-			$posc1 .= $oS . '" target="_blank">' . $oS . '</a> ';
+			$posc1 .= $oS . '" target="_blank">' . $oSpoof . '</a> ';
 
 			// Show the contributions of the conflicting users.
 			$posc2 = '<a href="http://en.wikipedia.org/wiki/Special:Contributions/';
