@@ -286,7 +286,7 @@ $developer = array(
 				"WWW" => "http://enwp.org/User:Manishearth",
 				"Name" => "Manish Goregaokar",
 				"Role" => "Developer",
-				"Access" => "SVN, SF.net access",
+				"Access" => "SVN, Git, SF.net access",
 				"Cloak" => "*!*@wikipedia/Manishearth",
 				"Other" => NULL,
 			),
@@ -303,21 +303,6 @@ $developer = array(
 				"Cloak" => "*!*@Wikipedia/MacMed",
 				"Other" => NULL,
 			)
-			//I have commented this out, please try to fix it...
-			/*,
-    "Helpmebot" =>
-			array(
-				"IRC" => "Helpmebot",
-				"EMail" => "",
-				"ToolID" => "none",
-				"wiki" => "User:Stwalkerster/Helpmebot",
-				"WWW" => "http://helpmebot.org.uk/",
-				"Name" => "",
-				"Role" => "Developer",
-				"Access" => "IRC !svnup only",
-				"Cloak" => "*!*@wikimedia/bot/helpmebot",
-				"Other" => NULL,
-			)*/
 );
 // End of the array of developers.
 
