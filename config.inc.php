@@ -80,8 +80,7 @@ $ircBotNetworkPort = 6667;					// The port on the particular host.
 $ircBotChannel = "#wikipedia-en-accounts";	// The channel in which the discussions are.
 $ircBotNickname = "ACCBot";					// The nickname of the ACCBot.
 $ircBotCommandTrigger = '!';				// The ACCBot's command trigger.
-$ircBotUdpServer = '';						// The UDP server for connecting.
-$ircBotUdpPort = '';						// The port on the particular server.
+$ircBotSnsArn = "";							// SNS topic ARN 
 	
 // Name of this instance of the tool.
 // This name would be used by the bot as reference point.	
@@ -165,6 +164,11 @@ $usePathInfo = false;
 
 // user agent of the tool.
 $toolUserAgent = "Wikipedia-ACC Tool/0.1 (+http://toolserver.org/~acc/team.php)";
+
+// AWS - ask stwalkerster BEFORE adding new usages, or 
+// they'll be unilaterally reverted. You have been warned.
+require_once("/home/project/a/c/c/acc/AWSSDKforPHP/sdk.class.php");
+
 
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********

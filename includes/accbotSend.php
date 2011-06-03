@@ -21,19 +21,20 @@ if ($ACC != "1") {
 class accbotSend {
 	public function send($message) {
 		/*
-		* Send to the IRC bot via UDP
+		* Send to the IRC bot via SNS
 		*/
-		global $whichami, $ircBotUdpServer, $ircBotUdpPort;
+		global $whichami, $ircBotSnsArn;
 		$message = html_entity_decode($message,ENT_COMPAT,'UTF-8'); // If a message going to the bot was for whatever reason sent through sanitze() earlier, reverse it. 
 		$message = stripslashes($message);
 		$blacklist = array("DCC", "CCTP", "PRIVMSG");
 		$message = str_replace($blacklist, "(IRC Blacklist)", $message); //Lets stop DCC etc
-		$fp = fsockopen("udp://" . $ircBotUdpServer, $ircBotUdpPort, $erno, $errstr, 30);
-		if (!$fp) {
-			echo "SOCKET ERROR: $errstr ($errno)<br />\n";
-		}
-		fwrite($fp, $this->formatForBot( chr(2)."[$whichami]".chr(2).": $message" ) );
-		fclose($fp);
+
+		$sns = new AmazonSNS();
+        $sns->publish(
+        	$ircBotSnsArn,
+        	$this->formatForBot( chr(2)."[$whichami]".chr(2).": $message")
+        );
+		
 	}
 	
 	private function formatForBot( $data ) { 		
