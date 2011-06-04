@@ -577,18 +577,24 @@ ini_set('display_errors',1);
 	irc( 'JOIN #wikipedia-en-accounts-devs');
 
 	myq('SELECT 1');
+	
+	// NOTIICATIONS START
+	
 	if( ( $udpReader = pcntl_fork() ) == 0 ) {
 		$lastToolMsg = time();
 		$lastToolMsgAlert = time();
-		global $ircBotUdpPort;
-		$fpt = stream_socket_server( 'udp://0.0.0.0:'.$ircBotUdpPort, $errNo, $errStr, STREAM_SERVER_BIND );
+		global $ircBotSnsArn;
 
-		if (!$fpt) {
- 			echo "SOCKET ERROR: $errstr ($errno)\n";
-		}
-
-		while( !feof( $fp ) ) {
-			$data = ltrim( rtrim( fread( $fpt, 4096 ) ) );
+		while( true ) {
+			
+			$rawdata = getNotificationFromSQS();
+			if($rawdata == null)
+			{
+				sleep(5); // give AWS a chance! :P
+				continue;
+			}
+			$data = $rawdata["Message"];
+			
 			if( $data != '' ) {
 				if( validateData( $data ) ) {
 					$uData = unserialize( $data );
@@ -606,7 +612,9 @@ ini_set('display_errors',1);
 		}
 		die();
 	}
-
+	// NOTIFICATIONS END
+	
+	// IRC START
 	while( !feof( $fp ) ) {
 		echo 'Begin parsing ...' . "\n";
 	        $data = trim( fgets( $fp, 512 ) );
@@ -630,7 +638,8 @@ ini_set('display_errors',1);
 		}
 		echo 'Done parsing ...' . "\n";
 	}
- 
+ 	//IRC END
+ 	
 	echo 'Ugh!' . "\n";
 
 	// Ugh!  We most likely flooded off!
@@ -667,4 +676,21 @@ function encryptMessage( $text, $key ) {
 	
 	return $newtext;
 }
-?>
+
+function getNotificationFromSQS()
+{
+	$sqs = new AmazonSQS();
+	$response = $sqs->get_queue_list("/accbot-alert-queue/");
+	$getresponse = $sqs->receive_message($response[0], array("MaxNumberOfMessages" => 1));
+	if(!$getresponse->isOk())
+	{
+		var_dump($getresponse);
+	    return NULL;
+	}
+	
+	$jsonmessage=($getresponse->body->Body(0));
+	$receipthandle = $getresponse->body->ReceiptHandle(0);
+	$sqs->delete_message($response[0], $receipthandle);
+	
+	return json_decode($jsonmessage,true);
+}
