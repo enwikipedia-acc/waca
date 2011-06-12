@@ -101,6 +101,7 @@ ini_set('display_errors',1);
 		'*!*@wikipedia/DeltaQuad' 					=> 'developer',
 		'*!*@wikipedia/Manishearth' 				=> 'developer',
 		'*!*@Wikipedia/MacMed'						=> 'developer',
+		'*!*@Wikipedia/Logan'						=> 'developer',
 		
 		'Helpmebot!~hmb6@wikimedia/bot/helpmebot'	=> 'bot',
                 'Helpmebot!helpmebot@wikimedia/bot/helpmebot'       => 'bot',
