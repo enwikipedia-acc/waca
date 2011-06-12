@@ -87,7 +87,6 @@ ini_set('display_errors',1);
 		'*!*@wikipedia/SQL'							=> 'developer', 
 		'*!*@mediawiki/OverlordQ'	  				=> 'developer',
 		'*!*@pdpc/supporter/student/stwalkerster'	=> 'developer',
-		'*!*@*Alexfusco5'			   				=> 'developer',
 		'*!*@wikipedia/Soxred93'					=> 'developer',
 		'*!*@yourwiki/staff/charlie'				=> 'developer',
 		'*!*@wikipedia/pdpc.active.FastLizard4'		=> 'developer',
