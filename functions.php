@@ -842,11 +842,11 @@ function zoomPage($id,$urlhash)
 			$oS = urlencode($oSpoof);
 
 			// Show the Wikipedia Userpage of the conflicting users.
-			$posc1 = '<a href="http://en.wikipedia.org/wiki/User:';
+			$posc1 = '<a href="http://en.wikipedia.org/w/index.php?title=User:';
 			$posc1 .= $oS . '" target="_blank">' . $oSpoof . '</a> ';
 
 			// Show the contributions of the conflicting users.
-			$posc2 = '<a href="http://en.wikipedia.org/wiki/Special:Contributions/';
+			$posc2 = '<a href="http://en.wikipedia.org/w/index.php?title=Special:Contributions/';
 			$posc2 .= $oS . '" target="_blank">contribs</a> ';
 
 			// Show the logs of the conflicting users.
