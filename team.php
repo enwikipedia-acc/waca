@@ -131,7 +131,7 @@ $developer = array(
 				"Name" => "Alex Fusco",
 				"Role" => "Developer (Retired)",
 				"Access" => "",
-				"Cloak" => "*!*@Alexfusco5",
+				"Cloak" => NULL,
 				"Other" => NULL,
 			),
 		"OverlordQ" =>
