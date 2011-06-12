@@ -228,7 +228,7 @@ $developer = array(
 		"Thehelpfulone" => // added by stwalkerster because you have access on sourceforge.net.
 			array(
 				"IRC" => "Thehelpfulone",
-				"EMail" => "thehelpfulonewiki@googlemail.com",,
+				"EMail" => "thehelpfulonewiki@gmail.com",
 				"ToolID" => 8,
 				"wiki" => "Thehelpfulone",
 				"WWW" => NULL,
