@@ -251,8 +251,8 @@ $developer = array(
 				"Cloak" => "*!*@wikipedia/EdoDodo",
 				"Other" => NULL,
 			),
-        "1234r00t" =>
-           array(
+		"1234r00t" =>
+            array(
                 "IRC" => "Mr_R00t",
                 "EMail" => "sauronthefish@gmail.com",
                 "ToolID" => "718",
@@ -263,8 +263,8 @@ $developer = array(
                 "Access" => "SVN, SF.net access",
                 "Cloak" => "*!*@wikipedia/Mr-R00t",
                 "Other" => NULL
-      ),
-    "DeltaQuad" =>
+			),
+		"DeltaQuad" =>
 			array(
 				"IRC" => "DeltaQuad",
 				"EMail" => "deltaquad@live.ca",
@@ -277,7 +277,7 @@ $developer = array(
 				"Cloak" => "*!*@wikipedia/DeltaQuad",//I change nicks alot
 				"Other" => NULL,
 			),
-    "Manishearth" =>
+		"Manishearth" =>
 			array(
 				"IRC" => "Manishearth",
 				"EMail" => "manishsmail@gmail.com",
@@ -290,7 +290,7 @@ $developer = array(
 				"Cloak" => "*!*@wikipedia/Manishearth",
 				"Other" => NULL,
 			),
-    "MacMed" =>
+		"MacMed" =>
 			array(
 				"IRC" => "MacMed",
 				"EMail" => "",
@@ -301,6 +301,19 @@ $developer = array(
 				"Role" => "Developer",
 				"Access" => "SVN, Git, SF.net access",
 				"Cloak" => "*!*@Wikipedia/MacMed",
+				"Other" => NULL,
+			)
+		"Logan" =>
+			array(
+				"IRC" => "Logan_",
+				"EMail" => "",
+				"ToolID" => "783",
+				"wiki" => "Logan",
+				"WWW" => "",
+				"Name" => "",
+				"Role" => "Developer",
+				"Access" => "SVN, SF.net access",
+				"Cloak" => "*!*@Wikipedia/Logan",
 				"Other" => NULL,
 			)
 );
