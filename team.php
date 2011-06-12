@@ -234,7 +234,7 @@ $developer = array(
 				"WWW" => NULL,
 				"Name" => NULL,
 				"Role" => NULL,
-				"Access" => "SF.net access, Mailing list moderator",
+				"Access" => "SVN, SF.net access, Mailing list moderator",
 				"Cloak" => "*!*@wikimedia/Thehelpfulone",
 				"Other" => NULL,
 			),
