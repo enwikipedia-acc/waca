@@ -229,7 +229,7 @@ $developer = array(
 			array(
 				"IRC" => "Thehelpfulone",
 				"EMail" => "thehelpfulonewiki@gmail.com",
-				"ToolID" => 8,
+				"ToolID" => "8",
 				"wiki" => "Thehelpfulone",
 				"WWW" => NULL,
 				"Name" => NULL,
