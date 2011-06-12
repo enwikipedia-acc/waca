@@ -131,7 +131,7 @@ $developer = array(
 				"Name" => "Alex Fusco",
 				"Role" => "Developer (Retired)",
 				"Access" => "",
-				"Cloak" => "*!*@*Alexfusco5",
+				"Cloak" => "*!*@Alexfusco5",
 				"Other" => NULL,
 			),
 		"OverlordQ" =>
@@ -231,7 +231,7 @@ $developer = array(
 				"EMail" => "thehelpfulonewiki@gmail.com",
 				"ToolID" => "8",
 				"wiki" => "Thehelpfulone",
-				"WWW" => NULL,
+				"WWW" => "http://en.wikipedia.org/wiki/User:Thehelpfuone",
 				"Name" => NULL,
 				"Role" => NULL,
 				"Access" => "SVN, SF.net access, Mailing list moderator",
