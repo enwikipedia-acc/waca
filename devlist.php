@@ -87,11 +87,11 @@ $regdevlist = array (
    		'MacMed',
    		'MacMed',
    		'537'
-   	)
-	   	array(
-   		'Thehelpfulone',
-   		'Thehelpfulone',
-   		'8'
+   	),
+   	array(
+  		'Thehelpfulone',
+  		'Thehelpfulone',
+  		'8'
    	)
 );
 //Format: User on tool, user on wiki, user id
