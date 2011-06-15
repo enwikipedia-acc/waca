@@ -35,7 +35,7 @@ class QueryBrowser
 		$results = $this->executeQuery($query);
 
 	
-		$out.= '<table cellspacing="0"><tr>';
+		$out.= '<table class="sortable" cellspacing="0"><tr>';
 
 		if($this->numberedList == true)
 		{
