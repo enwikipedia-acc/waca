@@ -52,6 +52,7 @@ class LogPage
 			$pager .= " | ";
 		}
 		$pager = substr($pager, 0, -3);
+		return $pager;
 	}
 	
 	private function getLog($offset = 0, $limit = 100)
