@@ -26,7 +26,7 @@ class LogPage
 			$backOffset = ($offset < $limit) ? 0 : $offset - $limit;
 			$latestLink = $this->swapUrlParams($limit, 0);
 			$urlParams = $this->swapUrlParams($limit, $backOffset);
-			$pager.= '<a href="?'.$earliestLink.'">Latest</a> | <a href="?'.$urlParams.'">Previous '.$limit.'</a> | ';
+			$pager.= '<a href="?'.$latestLink.'">Latest</a> | <a href="?'.$urlParams.'">Previous '.$limit.'</a> | ';
 		}
 
 		if(($offset + $limit) < $count)
