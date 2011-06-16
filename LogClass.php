@@ -19,21 +19,22 @@ class LogPage
 	var $filterRequest = "";
 	var $showPager = true;
 	
-	private function createPager($offset, $limit, $logListCount) {
+	private function createPager($offset, $limit, $logListCount, $count) {
 		$pager = '';
 		if($offset != 0)
 		{
 			$backOffset = ($offset < $limit) ? 0 : $offset - $limit;
-			$earliestLink = $this->swapUrlParams($limit, 0);
+			$latestLink = $this->swapUrlParams($limit, 0);
 			$urlParams = $this->swapUrlParams($limit, $backOffset);
-			$pager.= '<a href="?'.$earliestLink.'">Earliest</a> | <a href="?'.$urlParams.'">Previous '.$limit.'</a> | ';
+			$pager.= '<a href="?'.$earliestLink.'">Latest</a> | <a href="?'.$urlParams.'">Previous '.$limit.'</a> | ';
 		}
 
 		if($logListCount == $limit)
 		{
 			$forwardOffset = $offset + $limit;
+			$earliestLink = $this->swapUrlParams($limit, $count - $limit);
 			$urlParams = $this->swapUrlParams($limit, $forwardOffset);
-			$pager.= '<a href="?'.$urlParams.'">Next '.$limit.'</a>';
+			$pager.= '<a href="?'.$urlParams.'">Next '.$limit.'</a> | <a href="?'.$earliestLink.'">Earliest</a>';
 		}
 		elseif ($offset != 0) {
 			$pager = substr($pager, 0, -3);
@@ -42,7 +43,7 @@ class LogPage
 		$pager .= "<br /> Set limit: ";
 		$potentialLimits = array(20, 50, 100, 250, 500);
 		foreach ($potentialLimits as $potentialLimit) {
-			if ($potentialLimit != $limit && ($logListCount == $limit || $potentialLimit < $limit)) {
+			if ($potentialLimit != $limit && $potentialLimit < ($count - $offset)) {
 				$urlParams = $this->swapUrlParams($potentialLimit, $offset);
 				$pager .= "<a href='?$urlParams'>$potentialLimit</a>";
 			} else {
@@ -54,7 +55,7 @@ class LogPage
 		return $pager;
 	}
 	
-	private function getLog($offset = 0, $limit = 100)
+	private function getLog($offset = 0, $limit = 100, $count = false)
 	{
 		//CREATE TABLE `acc_log` (
 		//`log_id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
@@ -69,7 +70,10 @@ class LogPage
 		global $tsSQLlink;
 		
 		$sqlWhereAdded = 0;
-		$logQuery = 'SELECT * FROM acc_log l ';
+		if (!$count)
+			$logQuery = 'SELECT * FROM acc_log l ';
+		else
+			$logQuery = 'SELECT COUNT(*) AS `count` FROM acc_log l ';
 		
 		if($this->filterRequest != '')
 		{
@@ -111,30 +115,32 @@ class LogPage
 			$logQuery .= 'log_action = "'.$this->filterAction.'"';
 		}
 		
-		$logQuery.= "ORDER BY log_time DESC ";
-		
-		if($limit != '')
-		{
-			if (!preg_match('/^[0-9]*$/',$limit)) {
-				die('Invaild limit value passed.');
+		if (!$count) {
+			$logQuery.= "ORDER BY log_time DESC ";
+			if($limit != '')
+			{
+				if (!preg_match('/^[0-9]*$/',$limit)) {
+					die('Invaild limit value passed.');
+				}
+				$limit = sanitize($limit);
 			}
-			$limit = sanitize($limit);
-		}
-		else
-		{
-			$limit = 100;
-		}
-		
-		$logQuery.=' LIMIT '.$limit;
-		
-		if($offset != '')
-		{
-			if (!preg_match('/^[0-9]*$/',$offset)) {
-				die('Invaild limit value passed.');
+			else
+			{
+				$limit = 100;
 			}
-			$offset = sanitize($offset);
+		
+			$logQuery.=' LIMIT '.$limit;
 			
-			$logQuery.=' OFFSET '.$offset;
+			if($offset != '')
+			{
+				if (!preg_match('/^[0-9]*$/',$offset)) {
+					die('Invaild limit value passed.');
+				}
+				$offset = sanitize($offset);
+
+				$logQuery.=' OFFSET '.$offset;
+			}
+			
 		}
 		
 		$logResult = mysql_query($logQuery, $tsSQLlink) or sqlerror(mysql_error() . "<i>$logQuery</i>","Ooops in LogPage class");
@@ -182,6 +188,7 @@ class LogPage
 		$out="";
 		
 		$result = $this->getLog($offset, $limit);
+		$count = current(mysql_fetch_array($this->getLog($offset, null, true)));
 		$logList = "";
 		$logListCount = 0;
 		while ($row = mysql_fetch_assoc($result)) {
@@ -324,7 +331,7 @@ class LogPage
 		else
 		{
 			if($this->showPager == true)
-				$pager = $this->createPager($offset, $limit, $logListCount);
+				$pager = $this->createPager($offset, $limit, $logListCount, $count);
 			else
 				$pager = '';
 			$out.= "$pager<ul>$logList</ul>$pager";	
