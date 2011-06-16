@@ -676,7 +676,7 @@ elseif ($action == "templatemgmt") {
 		echo "Display code: ".$row['template_usercode']."<br />\n";
 		echo "Bot code: ".str_replace("\n", '\n', $row['template_botcode'])."<br />\n";
 		echo displayPreview($row['template_usercode']);
-		echo "<a href='$tsurl/acc.php?action=templatemgmt'>Back</a>";
+		echo "<br /><a href='$tsurl/acc.php?action=templatemgmt'>Back</a>";
 		$skin->displayIfooter();
 		die();
 	}
