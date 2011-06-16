@@ -26,15 +26,14 @@ class LogPage
 			$backOffset = ($offset < $limit) ? 0 : $offset - $limit;
 			$earliestLink = $this->swapUrlParams($limit, 0);
 			$urlParams = $this->swapUrlParams($limit, $backOffset);
-			$pager.= '<a href="?'.$earliestLink.'>Earliest</a> | <a href="?'.$urlParams.'">Previous '.$limit.'</a> | ';
+			$pager.= '<a href="?'.$earliestLink.'">Earliest</a> | <a href="?'.$urlParams.'">Previous '.$limit.'</a> | ';
 		}
 
 		if($logListCount == $limit)
 		{
 			$forwardOffset = $offset + $limit;
-			$earliestLink = $this->swapUrlParams($limit, $forwardOffest - $limit);
 			$urlParams = $this->swapUrlParams($limit, $forwardOffset);
-			$pager.= '<a href="?'.$urlParams.'">Next '.$limit.'</a> | <a href="?'.$earliestLink.'>Latest</a>';
+			$pager.= '<a href="?'.$urlParams.'">Next '.$limit.'</a>';
 		}
 		elseif ($offset != 0) {
 			$pager = substr($pager, 0, -3);
