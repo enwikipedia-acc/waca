@@ -29,7 +29,7 @@ class LogPage
 			$pager.= '<a href="?'.$earliestLink.'">Latest</a> | <a href="?'.$urlParams.'">Previous '.$limit.'</a> | ';
 		}
 
-		if($logListCount == $limit)
+		if(($offset + $limit) < $count)
 		{
 			$forwardOffset = $offset + $limit;
 			$earliestLink = $this->swapUrlParams($limit, $count - $limit);
