@@ -293,18 +293,34 @@ class LogPage
 				if($offset != 0)
 				{
 					$backOffset = ($offset < $limit) ? 0 : $offset - $limit;
-
+					$earliestLink = $this->swapUrlParams($limit, 0);
 					$urlParams = $this->swapUrlParams($limit, $backOffset);
-					
-					$out.= '<a href="?'.$urlParams.'">Previous '.$limit.'</a> - ';
+					$out.= '<a href="?'.$earliestLink.'>Earliest</a> | <a href="?'.$urlParams.'">Previous '.$limit.'</a> | ';
 				}
 
 				if($logListCount == $limit)
 				{
 					$forwardOffset = $offset + $limit;
+					$earliestLink = $this->swapUrlParams($limit, $forwardOffest - $limit);
 					$urlParams = $this->swapUrlParams($limit, $forwardOffset);
-					$out.= '<a href="?'.$urlParams.'">Next '.$limit.'</a>';
+					$out.= '<a href="?'.$urlParams.'">Next '.$limit.'</a> | <a href="?'.$earliestLink.'>Latest</a>';
 				}
+				elseif ($offset != 0) {
+					$out = substr($out, 0, -3);
+				}
+				
+				$out .= "<br /> Set limit: ";
+				$potentialLimits = array(20, 50, 100, 250, 500);
+				foreach ($potentialLimits as $potentialLimit) {
+					if ($potentialLimit != $limit && ($logListCount == $limit || $potentialLimit < $limit)) {
+						$urlParams = $this->swapUrlParams($potentialLimit, $offset);
+						$out .= "<a href='?$urlParams'>$potentialLimit</a>";
+					} else {
+						$out .= $potentialLimit
+					}
+					$out .= " | ";
+				}
+				$out = substr($out, 0, -3);
 			}
 			
 			$out.= "<ul>$logList</ul>";	
