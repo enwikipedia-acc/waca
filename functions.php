@@ -781,12 +781,11 @@ function zoomPage($id,$urlhash)
 		}
 	}
 
-	$out.="</p>";
-
-	if (strlen($row['pend_cmt']) < 500) {
-		$out .= "<p><strong>Requester Comment</strong>: <span id='reqcomment-link' onclick='showhide(\"reqcomment\")'>[hide]</span><br /><span id='reqcomment'>" . autolink($row['pend_cmt']) . "</span></p>\n";
-	} else {
+	$cmtlen = strlen(trim($row['pend_cmt']));
+	if ($cmtlen > 500) {
 		$out .= "<p><strong>Requester Comment</strong>: <span id='reqcomment-link' onclick='showhide(\"reqcomment\")'>[show]</span><br /><span id='reqcomment' style='display:none'>" . autolink($row['pend_cmt']) . "</span></p>\n";
+	} elseif ($cmtlen != 0) {
+		$out .= "<p><strong>Requester Comment</strong>: <span id='reqcomment-link' onclick='showhide(\"reqcomment\")'>[hide]</span><br /><span id='reqcomment'>" . autolink($row['pend_cmt']) . "</span></p>\n";
 	}
 
 	global $tsurl;
