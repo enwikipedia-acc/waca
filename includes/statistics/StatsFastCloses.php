@@ -42,13 +42,18 @@ WHERE
   Closed.log_user = Reserved.log_user
   AND
   TIMEDIFF(Closed.log_time, Reserved.log_time) > "00:00:00"
+  AND
+  DATE(Closed.log_time) > DATE(NOW()-INTERVAL 3 MONTH)
 ORDER BY 
   TIMEDIFF(Closed.log_time, Reserved.log_time) ASC
 ;
 QUERY;
 		global $tsurl;
 		$qb = new QueryBrowser();
-		return $qb->executeQueryToTable($query); 
+		$r = $qb->executeQueryToTable($query); 
+		echo mysql_error();
+
+		return $r;
 	}
 	function getPageName()
 	{
@@ -56,7 +61,7 @@ QUERY;
 	}
 	function getPageTitle()
 	{
-		return "Requests closed less than 30 seconds after reservation";
+		return "Requests closed less than 30 seconds after reservation in the past 3 months";
 	}
 	function isProtected()
 	{
