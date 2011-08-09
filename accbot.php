@@ -591,7 +591,9 @@ ini_set('display_errors',1);
 			$rawdata = getNotificationFromSQS();
 			if($rawdata == null)
 			{
-				sleep(5); // give AWS a chance! :P
+				// DO NOT SET THIS VALUE LOWER THAN 26.784
+				// (unless, ofc, you want to incurr Simon's wrath.)
+				sleep(30);
 				continue;
 			}
 			$data = $rawdata["Message"];
