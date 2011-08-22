@@ -30,7 +30,9 @@ class accbotSend {
 		
 		$database = new database("toolserver");
 		
-		$database->query("call " . $toolserver_notification_database . ".bot_notify('".$database->escape($message)."');");
+		
+		
+		$database->query("insert into p_acc_notifications.notification('".$database->escape($message)."');");
 		
 		return;
 	}

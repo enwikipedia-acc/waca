@@ -572,8 +572,7 @@ ini_set('display_errors',1);
 			$rawdata = NULL;
 			
 			$sql = "SELECT notif_id, notif_text FROM p_acc_notifications.notification WHERE notif_type = 1 ORDER BY notif_date ASC LIMIT 1;";
-			$qb = new QueryBrowser();
-			$result = $qb->executeQueryToArray($sql);
+			$result = mysql_fetch_assoc(myq($sql));
 			if(count($result)==1)
 			{
 				$rawdata = $result["notif_text"];
