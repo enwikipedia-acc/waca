@@ -29,10 +29,8 @@ class accbotSend {
 		$msg = chr(2)."[$whichami]".chr(2).": $message";
 		
 		$database = new database("toolserver");
-		
-		
-		
-		$database->query("insert into p_acc_notifications.notification(null,null,null,'".$database->escape($message)."');");
+
+		$database->query("insert into p_acc_notifications.notification values (null,null,1,'".$database->escape($message)."');");
 		
 		return;
 	}
