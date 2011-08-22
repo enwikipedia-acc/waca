@@ -20,60 +20,19 @@ if ($ACC != "1") {
 // accbot class
 class accbotSend {
 	public function send($message) {
-		/*
-		* Send to the IRC bot via SNS
-		*/
-		global $whichami, $ircBotSnsArn;
+		global $whichami,$toolserver_notification_database;
 		$message = html_entity_decode($message,ENT_COMPAT,'UTF-8'); // If a message going to the bot was for whatever reason sent through sanitze() earlier, reverse it. 
 		$message = stripslashes($message);
 		$blacklist = array("DCC", "CCTP", "PRIVMSG");
 		$message = str_replace($blacklist, "(IRC Blacklist)", $message); //Lets stop DCC etc
 
-		$sns = new AmazonSNS();
-        $sns->publish(
-        	$ircBotSnsArn,
-        	$this->formatForBot( chr(2)."[$whichami]".chr(2).": $message")
-        );
+		$msg = chr(2)."[$whichami]".chr(2).": $message";
 		
-	}
-	
-	private function formatForBot( $data ) { 		
-		global $ircBotCommunicationKey; 		
-		$pData[0] = $this->encryptMessage( $data, $ircBotCommunicationKey ); 		
-		$pData[1] = $data; 		
-		$sData = serialize( $pData ); 		
-		return $sData; 		
-	} 	
-	
-	private function encryptMessage( $text, $key ) {
-		$keylen = strlen($key);
+		$database = new database("toolserver");
 		
-		if( $keylen % 2 == 0 ) {
-			$power = ord( $key[$keylen / 2] ) + $keylen;
-		}
-		else {
-			$power = ord( $key[($keylen / 2) + 0.5] ) + $keylen;
-		}
+		$database->query("call " . $toolserver_notification_database . ".bot_notify('".$database->escape($message)."');");
 		
-		$textlen = strlen( $text );
-		while( $textlen < 64 ) {
-			$text .= $text;
-			$textlen = strlen( $text );
-		}
-		
-		$newtext = null;
-		for( $i = 0; $i < 64; $i++ ) {
-			$pow = pow( ord( $text[$i] ), $power );
-			$pow = str_replace( array( '+', '.', 'E' ), '', $pow );
-			$toadd = dechex( substr($pow, -2) );
-			while( strlen( $toadd ) < 2 ) {
-				$toadd .= 'f';
-			}
-			if( strlen( $toadd ) > 2 ) $toadd = substr($toadd, -2);
-			$newtext .= $toadd;
-		}
-		
-		return $newtext;
+		return;
 	}
 }
 

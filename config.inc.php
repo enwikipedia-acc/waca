@@ -29,6 +29,8 @@ $toolserver_password = "";
 $toolserver_host = "";
 $toolserver_database = "";
 
+$toolserver_notification_database = "p_acc_notifications";
+
 // The antispoof configuration.
 $antispoof_equivset = "equivset.php";
 $antispoof_host = "sql-s1";

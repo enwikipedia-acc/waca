@@ -511,24 +511,6 @@ ini_set('display_errors',1);
 		exit(0); // we let the jobserver reboot the bot.
 	}
 
-	function validateData( $sdata ) {
-		global $ircBotCommunicationKey;
-		echo "Data Recieved! $sdata\n";
-		$data = unserialize( ltrim(rtrim( $sdata ) ) );
-		if( $data === false ) {
-			echo "WARNING: Invalid data - could not unserialize.\n";
-			return false;
-		}
-		if( $data[0] != encryptMessage( $data[1], $ircBotCommunicationKey ) ) {
-			echo "WARNING: INVALID DATA!\n";
-			echo "$sdata\n";
-			return false;
-		} else { 
-			echo "Valid UDP packet received\n";
-			return true;
-		}
-	}	
-
 	// Code entry point.
 
 	if ( $_SERVER['REMOTE_ADDR'] != '' ) { 
@@ -584,34 +566,36 @@ ini_set('display_errors',1);
 	if( ( $udpReader = pcntl_fork() ) == 0 ) {
 		$lastToolMsg = time();
 		$lastToolMsgAlert = time();
-		global $ircBotSnsArn;
 
 		while( true ) {
 			
-			$rawdata = getNotificationFromSQS();
+			$rawdata = NULL;
+			
+			$sql = "SELECT notif_id, notif_text FROM p_acc_notifications.notification WHERE notif_type = 1 ORDER BY notif_date ASC LIMIT 1;";
+			$qb = new QueryBrowser();
+			$result = $qb->executeQueryToArray($sql);
+			if(count($result)==1)
+			{
+				$rawdata = $result["notif_text"];
+				myq("DELETE FROM p_acc_notifications.notification WHERE notif_id = " . $result["notif_id"] . " LIMIT 1;");			
+			}
+			
 			if($rawdata == null)
 			{
-				// DO NOT SET THIS VALUE LOWER THAN 26.784
-				// (unless, ofc, you want to incurr Simon's wrath.)
-				sleep(30);
+				if ((time() - $lastToolMsg) > 3600*6) {
+					// only send alerts every fifteen minutes so we don't piss people off too much
+					if ((time() - $lastToolMsgAlert) > 60*15) {
+						$lastToolMsgAlert = time();
+						irc('PRIVMSG '.$chan.' :Alert, I haven\'t received any data from the acc tool in over six hours, please check that everything is ok and nothing is broken.');
+					}
+				}
+				
+				sleep(5);
 				continue;
 			}
-			$data = $rawdata["Message"];
 			
-			if( $data != '' ) {
-				if( validateData( $data ) ) {
-					$uData = unserialize( $data );
-					irc( 'PRIVMSG ' . $chan . ' :' . str_replace( "\n", "\nPRIVMSG " . $chan . ' :', $uData[1] ) );
-					$lastToolMsg = time();
-				}
-			}
-			if ((time() - $lastToolMsg) > 3600*6) {
-				// only send alerts every fifteen minutes so we don't piss people off too much
-				if ((time() - $lastToolMsgAlert) > 60*15) {
-					$lastToolMsgAlert = time();
-					irc('PRIVMSG '.$chan.' :Alert, I haven\'t received any data from the acc tool in over six hours, please check that everything is ok and nothing is broken.');
-				}
-			}
+			irc( 'PRIVMSG ' . $chan . ' :' . str_replace( "\n", "\nPRIVMSG " . $chan . ' :', $rawdata ) );
+			$lastToolMsg = time();
 		}
 		die();
 	}
@@ -648,52 +632,3 @@ ini_set('display_errors',1);
 	// Ugh!  We most likely flooded off!
 
 	commandRestart( null );
-	
-function encryptMessage( $text, $key ) {
-	$keylen = strlen($key);
-	
-	if( $keylen % 2 == 0 ) {
-		$power = ord( $key[$keylen / 2] ) + $keylen;
-	}
-	else {
-		$power = ord( $key[($keylen / 2) + 0.5] ) + $keylen;
-	}
-	
-	$textlen = strlen( $text );
-	while( $textlen < 64 ) {
-		$text .= $text;
-		$textlen = strlen( $text );
-	}
-	
-	$newtext = null;
-	for( $i = 0; $i < 64; $i++ ) {
-		$pow = pow( ord( $text[$i] ), $power );
-		$pow = str_replace( array( '+', '.', 'E' ), '', $pow );
-		$toadd = dechex( substr($pow, -2) );
-		while( strlen( $toadd ) < 2 ) {
-			$toadd .= 'f';
-		}
-		if( strlen( $toadd ) > 2 ) $toadd = substr($toadd, -2);
-		$newtext .= $toadd;
-	}
-	
-	return $newtext;
-}
-
-function getNotificationFromSQS()
-{
-	$sqs = new AmazonSQS();
-	$response = $sqs->get_queue_list("/accbot-alert-queue/");
-	$getresponse = $sqs->receive_message($response[0], array("MaxNumberOfMessages" => 1));
-	if(!$getresponse->isOk())
-	{
-		var_dump($getresponse);
-	    return NULL;
-	}
-	
-	$jsonmessage=($getresponse->body->Body(0));
-	$receipthandle = $getresponse->body->ReceiptHandle(0);
-	$sqs->delete_message($response[0], $receipthandle);
-	
-	return json_decode($jsonmessage,true);
-}
