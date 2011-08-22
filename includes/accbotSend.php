@@ -32,7 +32,7 @@ class accbotSend {
 		
 		
 		
-		$database->query("insert into p_acc_notifications.notification('".$database->escape($message)."');");
+		$database->query("insert into p_acc_notifications.notification(null,null,null,'".$database->escape($message)."');");
 		
 		return;
 	}
