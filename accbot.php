@@ -573,12 +573,18 @@ ini_set('display_errors',1);
 			
 			$sql = "SELECT notif_id, notif_text FROM p_acc_notifications.notification WHERE notif_type = 1 ORDER BY notif_date ASC LIMIT 1;";
 			$result = mysql_fetch_assoc(myq($sql));
-			if(count($result)==1)
+
+//			print_r($result);
+
+			if(isset($result))
 			{
+
 				$rawdata = $result["notif_text"];
-				myq("DELETE FROM p_acc_notifications.notification WHERE notif_id = " . $result["notif_id"] . " LIMIT 1;");			
+//				var_dump($rawdata);
+
+				myq("DELETE FROM p_acc_notifications.notification WHERE notif_id = " . $result["notif_id"] . " LIMIT 1;");
 			}
-			
+//			echo "after delete";
 			if($rawdata == null)
 			{
 				if ((time() - $lastToolMsg) > 3600*6) {

@@ -30,7 +30,7 @@ class accbotSend {
 		
 		$database = new database("toolserver");
 
-		$database->query("insert into p_acc_notifications.notification values (null,null,1,'".$database->escape($message)."');");
+		$database->query("insert into p_acc_notifications.notification values (null,null,1,'".$database->escape($msg)."');");
 		
 		return;
 	}
