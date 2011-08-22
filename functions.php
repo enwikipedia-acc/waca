@@ -126,7 +126,7 @@ function getSpoofs( $username ) {
 		} else {
 			return ( $return[1] );
 		}
-	} else { return "This function is currently disabled."; }
+	} else { return "Thi function is currently disabled."; }
 }
 
 function sanitise($what) { return sanitize($what); }
@@ -703,6 +703,9 @@ function zoomPage($id,$urlhash)
 	$out .= '<a class="request-req" href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
 	$out .= $userurl. '" target="_blank">SUL util</a> | ';
 
+        $out .= '<a class="request-req" href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
+        $out .= $userurl. '" target="_blank">Hersfold\'s Fake SUL</a> | ';
+
 	// 	User list
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
 	$out .= $userurl . '&amp;group=&amp;limit=1" target="_blank">Username list</a> | ';
@@ -857,6 +860,10 @@ function zoomPage($id,$urlhash)
 			// Open the SUL of the conflicting users.
 			$posc4 = '<a href="http://toolserver.org/~vvv/sulutil.php?user=';
 			$posc4 .= $oS . '" target="_blank">SUL</a> ';
+
+			 $posc4 .= ' | <a href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
+                        $posc4 .= $oS . '" target="_blank">Hersfold\'s Fake SUL</a> ';
+
 			
 			// Password reset links
 			$posc5 = '<a href="http://en.wikipedia.org/w/index.php?title=Special%3AUserLogin&amp;type=login&amp;wpName=';
