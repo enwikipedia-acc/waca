@@ -629,6 +629,9 @@ ini_set('display_errors',1);
 			}
 		}
 		echo 'Done parsing ...' . "\n";
+		
+		//INSERT BY ROOT!!! --DaB.
+		sleep(1);
 	}
  	//IRC END
  	
