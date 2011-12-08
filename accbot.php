@@ -1,5 +1,5 @@
 <?PHP
-
+die();
 ini_set('display_errors',1);
 
 /**************************************************************************
@@ -568,6 +568,8 @@ ini_set('display_errors',1);
 		$lastToolMsgAlert = time();
 
 		while( true ) {
+
+			sleep(5);
 			
 			$rawdata = NULL;
 			
@@ -595,7 +597,6 @@ ini_set('display_errors',1);
 					}
 				}
 				
-				sleep(5);
 				continue;
 			}
 			
@@ -631,7 +632,8 @@ ini_set('display_errors',1);
 		echo 'Done parsing ...' . "\n";
 		
 		//INSERT BY ROOT!!! --DaB.
-		sleep(1);
+		// Tweaked up to 2 --stw
+		sleep(2);
 	}
  	//IRC END
  	
