@@ -98,7 +98,7 @@ if(getElementsByClass('request-req-create')[0]!==abcdefg){
 for(var k in reqCloseActions){
 var token=reqCloseActions[k].href;
 
-reqCloseActions[k].href="javascript:return false;"; //So as to avoid icky situations with Javascript event bubbling
+reqCloseActions[k].href="javascript:void(0);"; //So as to avoid icky situations with Javascript event bubbling
 reqCloseActions[k].token=token+""; //Store the link in a hidden attribute
 reqCloseActions[k].onclick=function(evt){
 if(confirmReqCloseQuestions[this.innerHTML]&&(confirmReqCloseQuestions[this.innerHTML]!="")){
