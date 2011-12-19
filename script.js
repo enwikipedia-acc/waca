@@ -116,25 +116,21 @@ if(confirmReqCloseQuestions[this.innerHTML]&&(confirmReqCloseQuestions[this.inne
 
 //Special Handling for Create! link (As it needs to open the page in a new window)
 if(getElementsByClass('request-req-create')[0]!==abcdefg){
-	//Tag on the Create! link into the array if it exists
 	var createlink=getElementsByClass('request-req-create')[0];
-	clink=createlink.href;
 	ctxt=createlink.innerHTML;
-	createlink.onclick=createLinkHref;
-	createlink.target="_blank";
+	createlink.onclick=createLinkHref; //The onclick will be executed _before_ the href attribute is opened, giving us a chance to intercept it
 	
 }
 }
 
-var clink="#";
 var ctxt="";
 
 function createLinkHref(){
 	if(confirmReqCloseQuestions[ctxt]&&(confirmReqCloseQuestions[ctxt]!="")){
 		if(confirm(confirmReqCloseQuestions[ctxt])){ 
-			return true;	
+			return true;	//Return true means that the link will continue its function
 		}
-		return false;
+		return false; //Return false stops the event bubble and the link won't work (Which is what we want)
 	}
 	return true;
 }
