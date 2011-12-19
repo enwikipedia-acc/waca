@@ -113,25 +113,25 @@ if(confirmReqCloseQuestions[this.innerHTML]&&(confirmReqCloseQuestions[this.inne
 }
 }
 
-
+var clink="#";
+var ctxt="";
 //Special Handling for Create! link (As it needs to open the page in a new window)
 if(getElementsByClass('request-req-create')[0]!==abcdefg){
 	//Tag on the Create! link into the array if it exists
 	var createlink=getElementsByClass('request-req-create')[0];
-	var token=createlink.href;
-	createlink.token=token+"";
-	createlink.href="javascript:createLinkHref(this.token,this.innerHTML)";
+	clink=createlink.href;
+	ctext=createlink.innerHTML;
+	createlink.href="javascript:createLinkHref()";
 	createlink.target="_blank";
 	
 }
 }
 
-function createLinkHref(clink,text){
-	if(confirmReqCloseQuestions[text]&&(confirmReqCloseQuestions[text]!="")){
-		if(confirm(confirmReqCloseQuestions[text])){ 
+function createLinkHref(){
+	if(confirmReqCloseQuestions[ctxt]&&(confirmReqCloseQuestions[ctxt]!="")){
+		if(confirm(confirmReqCloseQuestions[ctxt])){ 
 			return clink;	
 		}
-		return "#";
-		
 	}
+	return "#";
 }
