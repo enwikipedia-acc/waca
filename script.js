@@ -86,12 +86,15 @@ function getElementsByClass(searchClass,node,tag) {
 }
 
 
-//Script portion of abort action capability. The function is called by a PHP echo, depending on user prefs.
+//Script portion of abort action capability
 //confirmReqCloseQuestions is set through messagemanagement (message 32)
 function abortChecker(){
 var reqCloseActions=getElementsByClass("request-done")
 var abcdefg; //Dummy to check undefined... JS is wierd in this manner
-
+if(getElementsByClass('request-req-create')[0]!==abcdefg){
+	//Tag on the Create! link into the array if it exists
+	reqCloseActions[reqCloseActions.length]=getElementsByClass('request-req-create')[0]
+}
 for(var k in reqCloseActions){
 var token=reqCloseActions[k].href;
 
@@ -112,28 +115,4 @@ if(confirmReqCloseQuestions[this.innerHTML]&&(confirmReqCloseQuestions[this.inne
 
 }
 }
-
-
-//Special Handling for Create! link (As it needs to open the page in a new window)
-if(getElementsByClass('request-req-create')[0]!==abcdefg){
-	//Tag on the Create! link into the array if it exists
-	var createlink=getElementsByClass('request-req-create')[0];
-	clink=createlink.href;
-	ctxt=createlink.innerHTML;
-	createlink.href="javascript:createLinkHref()";
-	createlink.target="_blank";
-	
-}
-}
-
-var clink="#";
-var ctxt="";
-
-function createLinkHref(){
-	if(confirmReqCloseQuestions[ctxt]&&(confirmReqCloseQuestions[ctxt]!="")){
-		if(confirm(confirmReqCloseQuestions[ctxt])){ 
-			return clink;	
-		}
-	}
-	return "#";
 }
