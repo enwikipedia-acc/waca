@@ -1928,13 +1928,18 @@ elseif ($action == "comment-add") {
 }
 
 elseif ($action == "comment-quick") {
-    if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visibility'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
+    if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visibility'])) && ($_POST['id'] != "")) {
+
         $id = sanitise($_POST['id']);
         $user = sanitise($_SESSION['user']);
         $comment = sanitise($_POST['comment']);
         $visibility = sanitise($_POST['visibility']);
         $now = date("Y-m-d H-i-s");
-
+		if($_POST['comment'] == ""){
+        	echo zoomPage($id,$urlhash);
+        	$skin->displayIfooter();
+			die();		
+		}
         $query = "INSERT INTO acc_cmt (cmt_time, cmt_user, cmt_comment, cmt_visability, pend_id) VALUES ('$now', '$user', '$comment', '$visibility', '$id');";
         $result = mysql_query($query, $tsSQLlink);
         if (!$result) {
