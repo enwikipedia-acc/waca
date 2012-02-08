@@ -1227,7 +1227,7 @@ function showIPlinks($ip, $wikipediaurl, $metaurl) {
 
 	// IP geolocate
 	$out .= '| ';
-	$out .= '<a class="request-src" href="http://ipinfodb.com/ip_locator.php?ip=' . $ip . '" target="_blank">Geolocate</a> ';
+	$out .= '<a class="request-src" href="http://www.ipinfodb.com/ip_locator.php?ip=' . $ip . '" target="_blank">Geolocate</a> ';
 
 	// Abuse Filter
 	$out .= '| ';
