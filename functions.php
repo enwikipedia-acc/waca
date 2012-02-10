@@ -304,8 +304,8 @@ function listrequests($type, $hideip, $correcthash) {
 		}
 
 		if ( $row4['user_secure'] > 0 ) {
-			$wikipediaurl = "https://secure.wikimedia.org/wikipedia/en/";
-			$metaurl = "https://secure.wikimedia.org/wikipedia/meta/";
+			$wikipediaurl = "https://en.wikipedia.org/";
+			$metaurl = "https://meta.wikimedia.org";
 		} else {
 			$wikipediaurl = "http://en.wikipedia.org/";
 			$metaurl = "http://meta.wikimedia.org/";
@@ -671,8 +671,8 @@ function zoomPage($id,$urlhash)
 	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 	$row3 = mysql_fetch_assoc($result3);
 	if ( $row3['user_secure'] > 0 ) {
-		$wikipediaurl = "https://secure.wikimedia.org/wikipedia/en/";
-		$metaurl = "https://secure.wikimedia.org/wikipedia/meta/";
+		$wikipediaurl = "https://en.wikipedia.org/";
+		$metaurl = "https://meta.wikimedia.org/";
 	} else {
 		$wikipediaurl = "http://en.wikipedia.org/";
 		$metaurl = "http://meta.wikimedia.org/";
