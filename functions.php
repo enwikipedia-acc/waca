@@ -1135,8 +1135,7 @@ function deferlinks($type, $checksum, $pendid) {
 }
 
 function getToolVersion() {
-	preg_match_all('/([\d]+)/', exec("svnversion"), $match);
-	return $match[0][0];
+	return exec("git describe --always --dirty");
 }
 
 function displayPreview($wikicode) {
