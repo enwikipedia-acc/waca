@@ -435,6 +435,8 @@ function showlogin($action=null, $params=null) {
 			$html .= "<p>I'm sorry, the captcha you entered was incorrect, please try again.</p>";
 		} elseif ($_GET['error']=='captchamissing') {
 			$html .= "<p>Please complete the captcha.</p>";
+		} elseif ($_GET['error']=='noid') {
+			$html .= "<p>User account is not identified.</p>";
 		}
 	}
 

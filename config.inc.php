@@ -118,6 +118,9 @@ $enableRenames = 1;
 // Allow checkusers to see the useragent
 $allowViewingOfUseragent = true;
 
+// Force identification to the foundation
+$forceIdentification = false;
+
 
 /***********************************
  * Reservations

@@ -486,6 +486,13 @@ elseif ($action == "login") {
 	$calcpass = md5($_POST['password']);
 	if ($row['user_pass'] == $calcpass)
 	{
+			global $forceIdentification;
+			if($row['user_identified'] == 0 $forceIdentification ==1)
+			{
+				header("Location: $tsurl/acc.php?error=noid");
+				die();
+			}
+	
 			if ($useCaptcha) {
 				$captcha->clearFailedLogins();
 			}
