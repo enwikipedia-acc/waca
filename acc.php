@@ -487,7 +487,7 @@ elseif ($action == "login") {
 	if ($row['user_pass'] == $calcpass)
 	{
 			global $forceIdentification;
-			if($row['user_identified'] == 0 $forceIdentification ==1)
+			if($row['user_identified'] == 0 && $forceIdentification ==1)
 			{
 				header("Location: $tsurl/acc.php?error=noid");
 				die();
