@@ -1,0 +1,9 @@
+config.local.inc.php
+equivset.php
+equivset.ser
+other/
+rewrite/
+sand/
+svn-rewrite.sh
+svn-sand.sh
+
