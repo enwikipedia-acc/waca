@@ -863,14 +863,17 @@ class accRequest {
 		$comments = $tsSQL->escape(htmlentities($_POST['comments'],ENT_COMPAT,'UTF-8'));
 		$ip = $tsSQL->escape(htmlentities($_SERVER['REMOTE_ADDR']),ENT_COMPAT,'UTF-8');
 		$proxystring = 'NULL';
-		if ($this->istrusted($ip)) {
+		if ($this->istrusted($ip)|| array_search($ip, $squidIpList)) {
 			$xffheader = explode(",", getenv("HTTP_X_FORWARDED_FOR"));
 			$sourceip = trim($xffheader[sizeof($xffheader)-1]);
 			if (preg_match('/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/', $sourceip)) {
 				$proxyip = $ip;
 				$ip = $sourceip;
 			}
-			$proxystring = "'" . $proxyip . "'";
+			
+			if(!array_search($ip, $squidIpList)){
+				$proxystring = "'" . $proxyip . "'";
+			}
 		}
 		$useragent = $tsSQL->escape(htmlentities($_ENV["HTTP_USER_AGENT"],ENT_COMPAT,'UTF-8'));
 		
