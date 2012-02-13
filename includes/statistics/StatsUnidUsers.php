@@ -41,7 +41,7 @@ class StatsUnidUsers extends StatisticsPage
 	{
 		global $tsSQL;
 		$out = "";
-		$result = $tsSQL->query("SELECT * FROM acc_user ORDER BY user_level, user_name WHERE user_identified=0;");
+		$result = $tsSQL->query("SELECT * FROM acc_user WHERE user_identified=0 ORDER BY user_level, user_name;");
 		if (!$result)
 		{
 			return "No users found.";
