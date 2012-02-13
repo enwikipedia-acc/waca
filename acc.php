@@ -501,10 +501,7 @@ elseif ($action == "login") {
 			// The values are retrieved from the ACC database.
 			$_SESSION['userID'] = $row['user_id'];
 			$_SESSION['user'] = $row['user_name']; // While yes, the data from this has come DIRECTLY from the database, if it contains a " or a ', then it'll make the SQL query break, and that's a bad thing for MOST of the code.		
-			
-			// Set the current IP as the last login IP.
-			mysql_query("UPDATE acc_user SET user_lastip = '" . $ip . "' WHERE user_name = '" . mysql_real_escape_string($_SESSION['user']) . "';", $tsSQLlink);
-			
+	
 			if ( isset( $_GET['newaction'] ) ) {
 				$header = "Location: $tsurl/acc.php?action=".$_GET['newaction'];
 				foreach ($_GET as $key => $get) {
