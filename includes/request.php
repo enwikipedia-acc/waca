@@ -843,7 +843,7 @@ class accRequest {
 	 */
 	public function insertRequest($user,$email) {
 		// Get objects from the index file and globals from configuration.
-		global $enableEmailConfirm, $messages, $tsSQL, $defaultReserver;
+		global $enableEmailConfirm, $messages, $tsSQL, $defaultReserver, $squidIpList;
 		
 		// Checks whether email confirmation is enabled.
 		if ($enableEmailConfirm == 1) {
