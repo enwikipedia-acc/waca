@@ -1235,10 +1235,10 @@ function showIPlinks($ip, $wikipediaurl, $metaurl) {
 	$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $ip . '" target="_blank">Abuse Filter Log</a> ';
 	$out .= '</p>';
 
-	/* Betacommand's checks
+	// Betacommand's checks
 	 $out .= '| ';
-	 $out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $ip . '" target="_blank">Betacommand</a> ';
-	 $out .= '</p>'; */
+	 $out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $ip . '" target="_blank">SIL</a> ';
+	 $out .= '</p>';
 
 	return $out;
 	
