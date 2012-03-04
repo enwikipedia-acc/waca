@@ -436,7 +436,8 @@ function showlogin($action=null, $params=null) {
 		} elseif ($_GET['error']=='captchamissing') {
 			$html .= "<p>Please complete the captcha.</p>";
 		} elseif ($_GET['error']=='noid') {
-			$html .= "<p>User account is not identified.</p>";
+			$html .= "<p>User account is not identified. Please email accounts-enwiki-l@lists.wikimedia.org if you believe this is 
+in error.</p>";
 		}
 	}
 
