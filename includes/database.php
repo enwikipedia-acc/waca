@@ -37,22 +37,29 @@ class database {
 		if($name==='toolserver') {
 			global $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
 			$this->connect($toolserver_host, $toolserver_username, $toolserver_password, $toolserver_database);
-			
+
 			// Assigns the specific databases's name to be used later.
 			$this->db = $name;
 		}
 		elseif($name==='antispoof') {
 			// Checks whether the WikiDB may be used.
-			global $dontUseWikiDb;					
+			global $dontUseWikiDb;
 			if($dontUseWikiDb == 0) {
 				global $antispoof_host, $antispoof_db, $antispoof_table, $toolserver_username, $toolserver_password;
 				$this->connect($antispoof_host, $toolserver_username, $toolserver_password, $antispoof_db);
-			
+
 				// Assigns the specific databases's name to be used later.
 				$this->db = $name;
-				
+
 				$this->query("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");
 			}
+		}
+		elseif($name==='notif') {
+				global $toolserver_username, $toolserver_password;
+				$this->connect("dbmaster.helpmebot.org.uk", $toolserver_username, $toolserver_password, "acc_notifications");
+
+				// Assigns the specific databases's name to be used later.
+				$this->db = $name;
 		}
 	}
 	
@@ -70,14 +77,14 @@ class database {
 		$this->selectDb($database);
 		
 		// Assigns the specific host's name to be used later. 
-		$this->host = $host;		
+		$this->host = $host;
 	}
 	
 	/**
 	 * Only generate a link to the database.
 	 * @return A MySQL persistent link identifier.
 	 */
-	public function getLink() {		
+	public function getLink() {
 		global $link;
 		
 		// Uses the earlier assigned database name.
@@ -87,11 +94,17 @@ class database {
 			$link = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 		}
 		elseif($this->db === "antispoof")
-			{
+		{
 			global $antispoof_host, $antispoof_db, $antispoof_password, $dontUseWikiDb;
 			if(!$dontUseWikiDb) {
 				$link = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
 			}
+		}
+		elseif($this->db === "notif")
+		{
+			global $toolserver_username, $toolserver_password;
+
+			$link = mysql_pconnect("dbmaster.helpmebot.org.uk", $toolserver_username, $toolserver_password);
 		}
 		// Return the link.
 		return $link;
