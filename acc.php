@@ -1838,7 +1838,8 @@ elseif ($action == "breakreserve") {
 				if (!$result)
 					sqlerror("Query failed: $query ERROR: " . mysql_error());
 				$accbotSend->send("Reservation on Request $request broken by " . $session->getUsernameFromUid($_SESSION['userID']));
-				echo defaultpage();
+				header("Location: acc.php");
+				die();
 			}
 			else
 			{
@@ -1858,14 +1859,17 @@ elseif ($action == "breakreserve") {
 		$query = "UPDATE `acc_pend` SET `pend_reserved` = '0' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
-		Die("Error unreserving request.");
+		{
+			die("Error unreserving request.");
+		}
 		$now = date("Y-m-d H-i-s");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$request', '".sanitise($_SESSION['user'])."', 'Unreserved', '$now');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 		$accbotSend->send("Request $request is no longer being handled.");
-		echo defaultpage();
+		header("Location: acc.php");
+		die();
 	}
 	$skin->displayIfooter();
 	die();		
