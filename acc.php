@@ -12,6 +12,10 @@
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
 
+// stop all output until we want it
+ob_start();
+
+
 // Get all the classes.
 require_once 'config.inc.php';
 require_once 'devlist.php';

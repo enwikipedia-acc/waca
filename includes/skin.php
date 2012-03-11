@@ -112,6 +112,9 @@ class skin {
 		// Displayes the interface header.
 		global $messages;
 		echo $messages->getMessage(23);
+
+		// we probably want to output
+		ob_end_flush();
 	}
 	
 	/**
@@ -151,6 +154,10 @@ class skin {
 		else
 			$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creator currently online (past 5 minutes): $howout</small></div>\n$out2", $out);
 		echo $out;
+
+		// we probably want to output
+		ob_end_flush();
+
 	}
 	
 	/**
