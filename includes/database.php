@@ -23,7 +23,7 @@ require_once 'config.inc.php';
 /**
  * This class is used to comunicate with the Toolserver and Antispoof databases.
  */
-class database {	
+class database {
 	private $dbLink, $host, $db;
 	
 	/**
@@ -174,7 +174,7 @@ class database {
 			$generic_error = "The tool has encountered a database error, and cannot continue loading this page. Please try again later.";
 		}
 		if ($enableSQLError) {
-			die($sql_error);
+			die("(db ".$this->db.")" . $sql_error);
 		} else {
 			die($generic_error);
 		}
