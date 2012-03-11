@@ -161,9 +161,9 @@ elseif ($action == "sreg") {
 		$dnsblcheck = checkdnsbls( $_SERVER['REMOTE_ADDR'] );
 		if ( $dnsblcheck['0'] == true ) {
 			$cmt = "FROM $ip " . $dnsblcheck['1'];
-			$fp = fsockopen( "udp://127.0.0.1", 9001, $erno, $errstr, 30 );
-			fwrite( $fp, "[DNSBL-ACR] HIT: " . $_POST['name'] . " - " . $_POST['wname'] . " " . $_SERVER['REMOTE_ADDR'] . " " . $_POST['email'] . " " . $_SERVER['HTTP_USER_AGENT'] . " $cmt\r\n" );
-			fclose( $fp );
+			// get this to be a proper bot notification
+			// I've not done it now cos everything will need sanitising properly, and I'm too busy fixing other stuff
+			//"[DNSBL-ACR] HIT: " . sanitize($_POST['name']) . " - " . sanitize($_POST['wname']) . " " . sanitize($_SERVER['REMOTE_ADDR']) . " " . sanitize($_POST['email']) . " " . $_SERVER['HTTP_USER_AGENT'] . " $cmt"
 			echo "Account not created, please see " . $dnsblcheck['1'];
 			echo "</div>";
 			$skin->displayPfooter();
@@ -190,7 +190,7 @@ elseif ($action == "sreg") {
 			die();
 		}
 	}
-	
+
 	// check if the user is to new
 	global $onRegistrationNewbieCheck;
 	if( $onRegistrationNewbieCheck ) 
