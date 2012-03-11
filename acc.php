@@ -77,7 +77,7 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 	// It would tell the user now that he or she should log in or create an account.
 	$suser = '';
 	$skin->displayIheader($suser);
-	
+
 	// Checks whether the user want to reset his password or register a new account.
 	// Performs the clause when the action is not one of the above options.
 	if ($action != 'register' && $action != 'forgotpw' && $action != 'sreg') {
@@ -111,14 +111,14 @@ elseif (!isset($_GET['nocheck']))
 {
 		// Forces the current user to logout.
         $session->forceLogout($_SESSION['userID']);
-		
+
 		// ?
         $skin->displayIheader($_SESSION['user']);
         $session->checksecurity($_SESSION['user']);
-		
+
 		// show the sitenotice
         $out = $messages->getSitenotice();
-        
+
         $out .= "<div id=\"content\">";
         echo $out;
 }
@@ -146,12 +146,10 @@ elseif ($action == "sreg") {
 			#$message = $messages->getMessage(15);
 			echo "$message<br />\n";
 			$target = "$wnbl";
-			$host = gethostbyaddr( $_SERVER['REMOTE_ADDR'] );
-			$fp = fsockopen( "udp://127.0.0.1", 9001, $erno, $errstr, 30 );
-			fwrite( $fp, "[Name-Bl-ACR] HIT: $wnbl - " . $_POST['name'] . " / " . $_POST['wname'] . " " . $_SERVER['REMOTE_ADDR'] . " ($host) " . $_POST['email'] . " " . $_SERVER['HTTP_USER_AGENT'] . "\r\n" );
-			fclose( $fp );
-			#echo "Account created! In order to complete the process, please make a confirmation edit to your user talk page. In this edit, note that you requested an account on the ACC account creation interface, and use a descriptive edit summary so that we can easily find this edit.  <b>Failure to do this will result in your request being declined.</b><br /><br />\n";
-			## TODO: get this to show a proper error message
+			// get this to be a proper bot notification
+			// I've not done it now cos everything will need sanitising properly, and I'm too busy fixing other stuff
+			// "[Name-Bl-ACR] HIT: $wnbl - " . $_POST['name'] . " / " . $_POST['wname'] . " " . $_SERVER['REMOTE_ADDR'] . " ($host) " . $_POST['email'] . " " . $_SERVER['HTTP_USER_AGENT'] . "\r\n"
+
 			echo "Unable to create account. Your request has triggered our spam blacklists, please email the mailing list instead.";
 			echo "</div>";
 			$skin->displayPfooter();
