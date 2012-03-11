@@ -1272,9 +1272,9 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 			$deto = "checkusers";
 		}  else {
 			$deto = "users";
-		}	
-	
-			
+		}
+
+
 		$now = date("Y-m-d H-i-s");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $deto', '$now');";
 		upcsum($gid);
@@ -1283,8 +1283,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 		$accbotSend->send("Request $gid deferred to $deto by $sid");
 		$skin->displayRequestMsg("Request " . $_GET['id'] . " deferred to $deto.");
-		echo defaultpage();
-		$skin->displayIfooter();
+		header("Location: acc.php");
 		die();
 	} else {
 		echo "Target not specified.<br />\n";
