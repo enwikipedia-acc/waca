@@ -27,6 +27,7 @@ require_once 'includes/messages.php';
 require_once 'includes/skin.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
+require_once 'includes/http.php';
 
 // Set the current version of the ACC.
 $version = "0.9.7";
@@ -165,8 +166,9 @@ elseif ($action == "sreg") {
 			die(  );
 		}
 	}
+	$sregHttpClient = new http();
 	$cu_name = rawurlencode( $_REQUEST['wname'] );
-	$userblocked = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
+	$userblocked = $sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
 	$ub = unserialize( $userblocked );
 	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) {
 		$message = $messages->getMessage( '9' );
@@ -175,7 +177,7 @@ elseif ($action == "sreg") {
 		$skin->displayPfooter();
 		die();
 	}
-	$userexist = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
+	$userexist = $sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
 	$ue = unserialize( $userexist );
 	foreach ( $ue['query']['users'] as $oneue ) {
 		if ( isset($oneue['missing'])) {
@@ -191,7 +193,7 @@ elseif ($action == "sreg") {
 	if( $onRegistrationNewbieCheck ) 
 	{
 		global $onRegistrationNewbieCheckEditCount, $onRegistrationNewbieCheckAge;
-		$isNewbie = unserialize(file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$cu_name" ));
+		$isNewbie = unserialize($sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$cu_name" ));
 		$time = $isNewbie['query']['allusers'][0]['registration'];
 		$time2 = time() - strtotime($time);
 		$editcount = $isNewbie['query']['allusers'][0]['editcount'];
@@ -418,7 +420,7 @@ HTML;
 	die();
 }
 elseif ($action == "login") {
-	if ($useCaptcha) {		
+	if ($useCaptcha) {
 		if (isset($_POST['captcha'])) {
 			if (!$captcha->verifyPasswd($_POST['captcha_id'],$_POST['captcha'])) {
 				header("Location: $tsurl/acc.php?error=captchafail");
