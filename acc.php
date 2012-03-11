@@ -1939,11 +1939,10 @@ elseif ($action == "comment-quick") {
         $comment = sanitise($_POST['comment']);
         $visibility = sanitise($_POST['visibility']);
         $now = date("Y-m-d H-i-s");
-		if($_POST['comment'] == ""){
-        	echo zoomPage($id,$urlhash);
-        	$skin->displayIfooter();
-			die();		
-		}
+	if($_POST['comment'] == ""){
+		header("Location: acc.php?action=zoom&id=".$id);
+		die();
+	}
         $query = "INSERT INTO acc_cmt (cmt_time, cmt_user, cmt_comment, cmt_visability, pend_id) VALUES ('$now', '$user', '$comment', '$visibility', '$id');";
         $result = mysql_query($query, $tsSQLlink);
         if (!$result) {
@@ -1951,15 +1950,10 @@ elseif ($action == "comment-quick") {
         }
         $botcomment = $user . " posted a comment on request " . $id . ': ' . $comment;
         $accbotSend->send($botcomment);
-        if (isset($_GET['hash'])) {
-		$urlhash = $_GET['hash'];
-	    }
-	    else {
-		$urlhash = "";
-	    }
-        echo zoomPage($id,$urlhash);
-        $skin->displayIfooter();
-		die();
+
+	header("Location: acc.php?action=zoom&id=".$id);
+
+	die();
     }
 }
 
