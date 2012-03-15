@@ -187,7 +187,7 @@ class accRequest {
 		$hash = md5($id . $salt);
 		
 		// Formulates the email message that should be send to the user.
-		$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nIf you did not make this request, please disregard this message.\n\n";
+		$mailtxt = "Hello! You, or a user from " . (isset($_SERVER['X_FORWARDED_FOR']) ? $_SERVER['X_FORWARDED_FOR'] . " (via " . $_SERVER['REMOTE_ADDR'] . ")" : $_SERVER['REMOTE_ADDR']) . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nIf you did not make this request, please disregard this message.\n\n";
 		
 		// Creates the needed headers.
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
