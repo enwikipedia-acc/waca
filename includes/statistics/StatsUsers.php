@@ -210,6 +210,13 @@ class StatsUsers extends StatisticsPage
 			if (mysql_num_rows($result) != 0)
 			{
 				$out.= "<ol>\n"; // Start an ordered list
+				
+				//Connect to the English Wikipedia database on Toolserver
+				$enwiki_pw = posix_getpwuid(posix_getuid());
+				$enwiki_mycnf = parse_ini_file($ts_pw['dir'] . "/.my.cnf");
+				$enwiki_db = mysql_connect('enwiki-p.rrdb.toolserver.org', $enwiki_mycnf['user'], $enwiki_mycnf['password']);
+				unset($enwiki_mycnf, $enwiki_pw);				
+				
 				while ($row = mysql_fetch_assoc($result)) // Return the result of the database query as an associative array; then , for each row returned...
 				{
 					if ($row['log_time'] == "0000-00-00 00:00:00")
@@ -217,17 +224,25 @@ class StatsUsers extends StatisticsPage
 						// If the time was not set on insertion, we'll write "Date unknown" instead
 						$row['log_time'] = "Date unknown";
 					}
-		
+					
+					// Check if the user has contribs.  If not, their contribs link will be red.
+					$contrib_query = "SELECT `user_editcount` from `user` where `user_name`='".$row['pend_name']."' LIMIT 1;";
+					$contrib_result = mysql_query($contrib_query, $enwiki_db);
+					$contrib_count = mysql_fetch_assc[$contrib_result];
+					if ($contrib_count['user_editcount']=='0') { $contrib_link="<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\"  class=\"nocontribs\">contribs</a>"; }
+					else { $contrib_link="<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a>"; }
+					
 					// Display the name of the account that was created
 					if($session->hasright($_SESSION['user'], 'User') || $session->hasright($_SESSION['user'], 'Admin')) 
 					{
-							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
+							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - $contrib_link - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
 					}
 					else
 					{
-							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\" style=\"color: red;\" title=\"Login required to view request\">zoom</a>) at " . $row['log_time'] . "</li>\n";
+							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - $contrib_link - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\" style=\"color: red;\" title=\"Login required to view request\">zoom</a>) at " . $row['log_time'] . "</li>\n";
 					}
 				}
+				mysql_close($enwiki_db);
 				$out.= "</ol>\n"; // End the ordered list
 			}
 		}
