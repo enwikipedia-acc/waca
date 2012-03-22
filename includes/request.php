@@ -187,11 +187,7 @@ class accRequest {
 		$hash = md5($id . $salt);
 		
 		// Formulates the email message that should be send to the user.
-<<<<<<< HEAD
-		$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nOnce your click this link, your request will be reviewed, and you will shortly receive a seperate email with more information.  Your password\nis not yet available.\n\nIf you did not make this request, please disregard this message.\n\n";
-=======
-		$mailtxt = "Hello! You, or a user from " . (isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] . " (via " . $_SERVER['REMOTE_ADDR'] . ")" : $_SERVER['REMOTE_ADDR']) . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nIf you did not make this request, please disregard this message.\n\n";
->>>>>>> 7bb18fba3e0a6803fcc3c40bd722df429063dee9
+		$mailtxt = "Hello! You, or a user from " . (isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] . " (via " . $_SERVER['REMOTE_ADDR'] . ")" : $_SERVER['REMOTE_ADDR']) . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nOnce your click this link, your request will be reviewed, and you will shortly receive a seperate email with more information.  Your password\nis not yet available.\n\nIf you did not make this request, please disregard this message.\n\n";
 		
 		// Creates the needed headers.
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
