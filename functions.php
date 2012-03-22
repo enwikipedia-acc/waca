@@ -435,6 +435,9 @@ function showlogin($action=null, $params=null) {
 			$html .= "<p>I'm sorry, the captcha you entered was incorrect, please try again.</p>";
 		} elseif ($_GET['error']=='captchamissing') {
 			$html .= "<p>Please complete the captcha.</p>";
+		} elseif ($_GET['error']=='noid') {
+			$html .= "<p>User account is not identified. Please email accounts-enwiki-l@lists.wikimedia.org if you believe this is 
+in error.</p>";
 		}
 	}
 
@@ -1233,10 +1236,10 @@ function showIPlinks($ip, $wikipediaurl, $metaurl) {
 	$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $ip . '" target="_blank">Abuse Filter Log</a> ';
 	$out .= '</p>';
 
-	/* Betacommand's checks
+	// Betacommand's checks
 	 $out .= '| ';
-	 $out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $ip . '" target="_blank">Betacommand</a> ';
-	 $out .= '</p>'; */
+	 $out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $ip . '" target="_blank">SIL</a> ';
+	 $out .= '</p>';
 
 	return $out;
 	

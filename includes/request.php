@@ -187,7 +187,11 @@ class accRequest {
 		$hash = md5($id . $salt);
 		
 		// Formulates the email message that should be send to the user.
+<<<<<<< HEAD
 		$mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nOnce your click this link, your request will be reviewed, and you will shortly receive a seperate email with more information.  Your password\nis not yet available.\n\nIf you did not make this request, please disregard this message.\n\n";
+=======
+		$mailtxt = "Hello! You, or a user from " . (isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] . " (via " . $_SERVER['REMOTE_ADDR'] . ")" : $_SERVER['REMOTE_ADDR']) . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nIf you did not make this request, please disregard this message.\n\n";
+>>>>>>> 7bb18fba3e0a6803fcc3c40bd722df429063dee9
 		
 		// Creates the needed headers.
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
@@ -843,7 +847,7 @@ class accRequest {
 	 */
 	public function insertRequest($user,$email) {
 		// Get objects from the index file and globals from configuration.
-		global $enableEmailConfirm, $messages, $tsSQL, $defaultReserver;
+		global $enableEmailConfirm, $messages, $tsSQL, $defaultReserver, $squidIpList;
 		
 		// Checks whether email confirmation is enabled.
 		if ($enableEmailConfirm == 1) {
@@ -863,14 +867,17 @@ class accRequest {
 		$comments = $tsSQL->escape(htmlentities($_POST['comments'],ENT_COMPAT,'UTF-8'));
 		$ip = $tsSQL->escape(htmlentities($_SERVER['REMOTE_ADDR']),ENT_COMPAT,'UTF-8');
 		$proxystring = 'NULL';
-		if ($this->istrusted($ip)) {
+		if ($this->istrusted($ip)|| array_search($ip, $squidIpList)) {
 			$xffheader = explode(",", getenv("HTTP_X_FORWARDED_FOR"));
 			$sourceip = trim($xffheader[sizeof($xffheader)-1]);
 			if (preg_match('/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/', $sourceip)) {
 				$proxyip = $ip;
 				$ip = $sourceip;
 			}
-			$proxystring = "'" . $proxyip . "'";
+			
+			if(!array_search($ip, $squidIpList)){
+				$proxystring = "'" . $proxyip . "'";
+			}
 		}
 		$useragent = $tsSQL->escape(htmlentities($_ENV["HTTP_USER_AGENT"],ENT_COMPAT,'UTF-8'));
 		

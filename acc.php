@@ -12,6 +12,10 @@
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
 
+// stop all output until we want it
+ob_start();
+
+
 // Get all the classes.
 require_once 'config.inc.php';
 require_once 'devlist.php';
@@ -23,6 +27,7 @@ require_once 'includes/messages.php';
 require_once 'includes/skin.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
+require_once 'includes/http.php';
 
 // Set the current version of the ACC.
 $version = "0.9.7";
@@ -73,7 +78,7 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 	// It would tell the user now that he or she should log in or create an account.
 	$suser = '';
 	$skin->displayIheader($suser);
-	
+
 	// Checks whether the user want to reset his password or register a new account.
 	// Performs the clause when the action is not one of the above options.
 	if ($action != 'register' && $action != 'forgotpw' && $action != 'sreg') {
@@ -107,14 +112,14 @@ elseif (!isset($_GET['nocheck']))
 {
 		// Forces the current user to logout.
         $session->forceLogout($_SESSION['userID']);
-		
+
 		// ?
         $skin->displayIheader($_SESSION['user']);
         $session->checksecurity($_SESSION['user']);
-		
+
 		// show the sitenotice
         $out = $messages->getSitenotice();
-        
+
         $out .= "<div id=\"content\">";
         echo $out;
 }
@@ -142,12 +147,7 @@ elseif ($action == "sreg") {
 			#$message = $messages->getMessage(15);
 			echo "$message<br />\n";
 			$target = "$wnbl";
-			$host = gethostbyaddr( $_SERVER['REMOTE_ADDR'] );
-			$fp = fsockopen( "udp://127.0.0.1", 9001, $erno, $errstr, 30 );
-			fwrite( $fp, "[Name-Bl-ACR] HIT: $wnbl - " . $_POST['name'] . " / " . $_POST['wname'] . " " . $_SERVER['REMOTE_ADDR'] . " ($host) " . $_POST['email'] . " " . $_SERVER['HTTP_USER_AGENT'] . "\r\n" );
-			fclose( $fp );
-			#echo "Account created! In order to complete the process, please make a confirmation edit to your user talk page. In this edit, note that you requested an account on the ACC account creation interface, and use a descriptive edit summary so that we can easily find this edit.  <b>Failure to do this will result in your request being declined.</b><br /><br />\n";
-			## TODO: get this to show a proper error message
+			$accbotSend->send( "[Name-Bl-ACR] HIT: $wnbl - " . sanitize($_POST['name']) . " / " . sanitize($_POST['wname']) . " " . sanitize($_SERVER['REMOTE_ADDR']) . " ($host) " . sanitize($_POST['email']) . " " . sanitize($_SERVER['HTTP_USER_AGENT']));
 			echo "Unable to create account. Your request has triggered our spam blacklists, please email the mailing list instead.";
 			echo "</div>";
 			$skin->displayPfooter();
@@ -159,17 +159,16 @@ elseif ($action == "sreg") {
 		$dnsblcheck = checkdnsbls( $_SERVER['REMOTE_ADDR'] );
 		if ( $dnsblcheck['0'] == true ) {
 			$cmt = "FROM $ip " . $dnsblcheck['1'];
-			$fp = fsockopen( "udp://127.0.0.1", 9001, $erno, $errstr, 30 );
-			fwrite( $fp, "[DNSBL-ACR] HIT: " . $_POST['name'] . " - " . $_POST['wname'] . " " . $_SERVER['REMOTE_ADDR'] . " " . $_POST['email'] . " " . $_SERVER['HTTP_USER_AGENT'] . " $cmt\r\n" );
-			fclose( $fp );
+			$accbotSend->send("[DNSBL-ACR] HIT: " . sanitize($_POST['name']) . " - " . sanitize($_POST['wname']) . " " . sanitize($_SERVER['REMOTE_ADDR']) . " " . sanitize($_POST['email']) . " " . $_SERVER['HTTP_USER_AGENT'] . " $cmt");
 			echo "Account not created, please see " . $dnsblcheck['1'];
 			echo "</div>";
 			$skin->displayPfooter();
 			die(  );
 		}
 	}
+	$sregHttpClient = new http();
 	$cu_name = rawurlencode( $_REQUEST['wname'] );
-	$userblocked = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
+	$userblocked = $sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
 	$ub = unserialize( $userblocked );
 	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) {
 		$message = $messages->getMessage( '9' );
@@ -178,7 +177,7 @@ elseif ($action == "sreg") {
 		$skin->displayPfooter();
 		die();
 	}
-	$userexist = file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
+	$userexist = $sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
 	$ue = unserialize( $userexist );
 	foreach ( $ue['query']['users'] as $oneue ) {
 		if ( isset($oneue['missing'])) {
@@ -188,13 +187,13 @@ elseif ($action == "sreg") {
 			die();
 		}
 	}
-	
+
 	// check if the user is to new
 	global $onRegistrationNewbieCheck;
 	if( $onRegistrationNewbieCheck ) 
 	{
 		global $onRegistrationNewbieCheckEditCount, $onRegistrationNewbieCheckAge;
-		$isNewbie = unserialize(file_get_contents( "http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$cu_name" ));
+		$isNewbie = unserialize($sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$cu_name" ));
 		$time = $isNewbie['query']['allusers'][0]['registration'];
 		$time2 = time() - strtotime($time);
 		$editcount = $isNewbie['query']['allusers'][0]['editcount'];
@@ -421,7 +420,7 @@ HTML;
 	die();
 }
 elseif ($action == "login") {
-	if ($useCaptcha) {		
+	if ($useCaptcha) {
 		if (isset($_POST['captcha'])) {
 			if (!$captcha->verifyPasswd($_POST['captcha_id'],$_POST['captcha'])) {
 				header("Location: $tsurl/acc.php?error=captchafail");
@@ -486,6 +485,13 @@ elseif ($action == "login") {
 	$calcpass = md5($_POST['password']);
 	if ($row['user_pass'] == $calcpass)
 	{
+			global $forceIdentification;
+			if($row['user_identified'] == 0 && $forceIdentification ==1)
+			{
+				header("Location: $tsurl/acc.php?error=noid");
+				die();
+			}
+	
 			if ($useCaptcha) {
 				$captcha->clearFailedLogins();
 			}
@@ -494,10 +500,7 @@ elseif ($action == "login") {
 			// The values are retrieved from the ACC database.
 			$_SESSION['userID'] = $row['user_id'];
 			$_SESSION['user'] = $row['user_name']; // While yes, the data from this has come DIRECTLY from the database, if it contains a " or a ', then it'll make the SQL query break, and that's a bad thing for MOST of the code.		
-			
-			// Set the current IP as the last login IP.
-			mysql_query("UPDATE acc_user SET user_lastip = '" . $ip . "' WHERE user_name = '" . mysql_real_escape_string($_SESSION['user']) . "';", $tsSQLlink);
-			
+	
 			if ( isset( $_GET['newaction'] ) ) {
 				$header = "Location: $tsurl/acc.php?action=".$_GET['newaction'];
 				foreach ($_GET as $key => $get) {
@@ -1266,9 +1269,9 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 			$deto = "checkusers";
 		}  else {
 			$deto = "users";
-		}	
-	
-			
+		}
+
+
 		$now = date("Y-m-d H-i-s");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $deto', '$now');";
 		upcsum($gid);
@@ -1277,8 +1280,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 		$accbotSend->send("Request $gid deferred to $deto by $sid");
 		$skin->displayRequestMsg("Request " . $_GET['id'] . " deferred to $deto.");
-		echo defaultpage();
-		$skin->displayIfooter();
+		header("Location: acc.php");
 		die();
 	} else {
 		echo "Target not specified.<br />\n";
@@ -1830,7 +1832,8 @@ elseif ($action == "breakreserve") {
 				if (!$result)
 					sqlerror("Query failed: $query ERROR: " . mysql_error());
 				$accbotSend->send("Reservation on Request $request broken by " . $session->getUsernameFromUid($_SESSION['userID']));
-				echo defaultpage();
+				header("Location: acc.php");
+				die();
 			}
 			else
 			{
@@ -1850,14 +1853,17 @@ elseif ($action == "breakreserve") {
 		$query = "UPDATE `acc_pend` SET `pend_reserved` = '0' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
-		Die("Error unreserving request.");
+		{
+			die("Error unreserving request.");
+		}
 		$now = date("Y-m-d H-i-s");
 		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$request', '".sanitise($_SESSION['user'])."', 'Unreserved', '$now');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 		$accbotSend->send("Request $request is no longer being handled.");
-		echo defaultpage();
+		header("Location: acc.php");
+		die();
 	}
 	$skin->displayIfooter();
 	die();		
@@ -1935,11 +1941,10 @@ elseif ($action == "comment-quick") {
         $comment = sanitise($_POST['comment']);
         $visibility = sanitise($_POST['visibility']);
         $now = date("Y-m-d H-i-s");
-		if($_POST['comment'] == ""){
-        	echo zoomPage($id,$urlhash);
-        	$skin->displayIfooter();
-			die();		
-		}
+	if($_POST['comment'] == ""){
+		header("Location: acc.php?action=zoom&id=".$id);
+		die();
+	}
         $query = "INSERT INTO acc_cmt (cmt_time, cmt_user, cmt_comment, cmt_visability, pend_id) VALUES ('$now', '$user', '$comment', '$visibility', '$id');";
         $result = mysql_query($query, $tsSQLlink);
         if (!$result) {
@@ -1947,15 +1952,10 @@ elseif ($action == "comment-quick") {
         }
         $botcomment = $user . " posted a comment on request " . $id . ': ' . $comment;
         $accbotSend->send($botcomment);
-        if (isset($_GET['hash'])) {
-		$urlhash = $_GET['hash'];
-	    }
-	    else {
-		$urlhash = "";
-	    }
-        echo zoomPage($id,$urlhash);
-        $skin->displayIfooter();
-		die();
+
+	header("Location: acc.php?action=zoom&id=".$id);
+
+	die();
     }
 }
 

@@ -110,13 +110,16 @@ $onRegistrationNewbieCheckAge = 5184000;	// Account age on Wikipedia in seconds.
 $useCaptcha = false;
 
 // Enable last login statistics.
-$enableLastLogin = true;
+$enableLastLogin = false;
 
 // Enable interface account renaming.
 $enableRenames = 1; 		
 
 // Allow checkusers to see the useragent
 $allowViewingOfUseragent = true;
+
+// Force identification to the foundation
+$forceIdentification = false;
 
 
 /***********************************
@@ -171,6 +174,8 @@ $toolUserAgent = "Wikipedia-ACC Tool/0.1 (+http://toolserver.org/~acc/team.php)"
 // they'll be unilaterally reverted. You have been warned.
 require_once("/home/project/a/c/c/acc/AWSSDKforPHP/sdk.class.php");
 
+// list of squid proxies requests go through.
+$squidIpList = array();
 
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********
