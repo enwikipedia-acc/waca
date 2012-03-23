@@ -23,15 +23,18 @@ $document->appendChild($doc_api);
 
 switch($_GET['action'])
 {
+	case "count":
+		actionCount();
+		break;
 	default:
-		$doc_api->setAttribute("actions", "");
+		$doc_api->setAttribute("actions", "count");
 		break;
 }
 
 echo $document->saveXml();
 
 
-function commandCount( ) {
+function actionCount( ) {
 	global $document, $doc_api;;
 
 	$username = isset( $_GET['user'] ) ? $_GET['user'] : '';
@@ -41,6 +44,9 @@ function commandCount( ) {
 
 	$username = trim($username); //Strip any whitespace from the username.  
 
+	$docUser = $document->createElement("user");
+	$doc_api->appendChild($docUser);
+	$docUser->setAttribute("name", $username);
 	// verify is a user
 	
 	$isUserQuery = $database->prepare("SELECT COUNT(*) AS count FROM acc_user WHERE user_name = :username;");
@@ -69,6 +75,7 @@ function commandCount( ) {
 
 			
 		$adminInfo = '';
+		$docUser->setAttribute("level",$user['user_level']);
 		if( $user['user_level'] == 'Admin' ) {
 			$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log WHERE log_user = :username AND log_action = :action");
 			$query->bindParam(":username", $username);
@@ -76,44 +83,42 @@ function commandCount( ) {
 			$query->bindParam(":action", "Suspended");
 			$query->execute();
 			$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
-			$sus = $sus['count'];
+			$docUser->setAttribute("suspended", $sus['count']);
 
 			$query->bindParam(":action", "Promoted");
 			$query->execute();
 			$pro = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
-			$pro = $pro['count'];
+			$docUser->setAttribute("promoted",$pro['count']);
 
 			$query->bindParam(":action", "Approved");
 			$query->execute();
 			$app = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
-			$app = $app['count'];
+			$docUser->setAttribute("approved",$app['count']);
 
 			$query->bindParam(":action", "Demoted");
 			$query->execute();
 			$dem = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
-			$dem = $dem['count'];
+			$docUser->setAttribute("demoted",$dem['count']);
 
 			$query->bindParam(":action", "Declined");
 			$query->execute();
 			$dec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
-			$dec = $dec['count'];
+			$docUser->setAttribute("declined",$dec['count']);
 
 			$query->bindParam(":action", "Renamed");
 			$query->execute();
 			$rnc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
-			$rnc = $rnc['count'];
+			$docUser->setAttribute("renamed",$rnc['count']);
 			
 			$query->bindParam(":action", "Edited");
 			$query->execute();
 			$mec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
-			$mec = $mec['count'];
+			$docUser->setAttribute("edited",$mec['count']);
 			
 			$query->bindParam(":action", "Prefchange");
 			$query->execute();
 			$pcc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
-			$pcc = $pcc['count'];
-
-			$adminInfo = 'Suspended: ' . $sus . ', Promoted: ' . $pro . ', Approved: ' . $app . ', Demoted: ' . $dem . ', Declined: ' . $dec . ', Renamed: ' . $rnc . ', Messages Edited: ' . $mec . ', Preferences Edited: ' . $pcc;
+			$docUser->setAttribute("prefchange",$pcc['count']);
 		}
 
 		$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log WHERE log_time LIKE :date  AND (log_action = 'Closed 1' OR log_action = 'Closed custom-y') AND log_user = :username");
@@ -121,11 +126,8 @@ function commandCount( ) {
 		$query->bindParam(":date", date( 'Y-m-d' ) . "%" );
 		$query->execute();
 		$today = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
-		$today = $today['count'];
-
-	echo( 'PRIVMSG ' . $parsed['to'] . ' :' . html_entity_decode($username) . ' (' . $user['user_level'] . ') has closed ' . $count
-			. ' requests as \'Created\', ' . ( ( $today == 0 ) ? 'none' : $today ) . ' of them today. ' . $adminInfo );
+		$docUser->setAttribute("today",$today['count']);
 	} else {
-		echo( 'PRIVMSG ' . $parsed['to'] . ' :' . html_entity_decode($username) . ' is not a valid username.' );
+		$docUser->setAttribute("missing","true");
 	}
 }
