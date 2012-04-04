@@ -16,6 +16,8 @@ $database = new PdoDatabase("mysql:host=".$toolserver_host.";dbname=".$toolserve
 // use exceptions on failed database queries
 $database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+header("Content-Type: text/xml");
+
 $document = new DomDocument('1.0');
 $doc_api = $document->createElement("api");
 $document->appendChild($doc_api);
@@ -39,7 +41,10 @@ function actionCount( ) {
 
 	$username = isset( $_GET['user'] ) ? $_GET['user'] : '';
 	if( $username == '' ) {
-		die("please specify a username");
+		$err = $document->createElement("error");
+		$doc_api->appendChild($err);
+		$docUser->setAttribute("error", "Please specify a username");
+		return;
 	}
 
 	$username = trim($username); //Strip any whitespace from the username.  
