@@ -43,7 +43,7 @@ function actionStatus()
 	global $database, $document, $doc_api;
 	
 	$docUser = $document->createElement("status");
-	$doc_api->appendChild($d);
+	$doc_api->appendChild($docUser);
 	
 	$status = "Open";			
 	$mailconfirm = "Confirmed";			
