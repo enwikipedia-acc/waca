@@ -63,7 +63,6 @@ function actionStats()
 
 	$docUser = $document->createElement("user");
 	$doc_api->appendChild($docUser);
-	$docUser->setAttribute("name", $username);
 	// verify is a user
 	
 	$isUserQuery = $database->prepare("SELECT COUNT(*) AS count FROM acc_user WHERE user_name = :username;");
@@ -75,7 +74,15 @@ function actionStats()
 	$isUser = ( ( $isUser['count'] == 0 ) ? false : true );
 
 	if( $isUser ) {
-	
+		$userQuery = $database->prepare("SELECT user_name, user_level, user_lastactive, user_welcome_templateid, user_onwikiname FROM acc_user WHERE user_name = :username;");
+		$userQuery->bindParam(":username", $username);
+		$userQuery->execute();
+		
+		$user = $userQuery->fetch(PDO::FETCH_ASSOC) or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+		
+		foreach($user as $key => $value)
+			$docUser->setAttribute($key, $value);
+			
 	} else {
 		$docUser->setAttribute("missing","true");
 	}
