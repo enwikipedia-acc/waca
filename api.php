@@ -46,8 +46,8 @@ function actionStatus()
 {
 	global $database, $document, $doc_api;
 	
-	$docUser = $document->createElement("status");
-	$doc_api->appendChild($docUser);
+	$docStatus = $document->createElement("status");
+	$doc_api->appendChild($docStatus);
 	
 	$status = "Open";			
 	$mailconfirm = "Confirmed";			
@@ -56,39 +56,39 @@ function actionStatus()
 	$query->bindParam(":pmailconfirm", $mailconfirm);
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-	$docUser->setAttribute("open", $sus['count']);
+	$docStatus->setAttribute("open", $sus['count']);
 
 	$status = "Admin";			
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-	$docUser->setAttribute("admin", $sus['count']);
+	$docStatus->setAttribute("admin", $sus['count']);
 
 	$status = "Checkuser";			
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-	$docUser->setAttribute("checkuser", $sus['count']);
+	$docStatus->setAttribute("checkuser", $sus['count']);
 
 	$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_ban");
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-	$docUser->setAttribute("bans", $sus['count']);
+	$docStatus->setAttribute("bans", $sus['count']);
 
 	$level = "Admin";
 	$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_user WHERE user_level = :ulevel;");
 	$query->bindParam(":ulevel",$level);
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-	$docUser->setAttribute("useradmin", $sus['count']);
+	$docStatus->setAttribute("useradmin", $sus['count']);
 	
 	$level = "User";
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-	$docUser->setAttribute("user", $sus['count']);
+	$docStatus->setAttribute("user", $sus['count']);
 	
 	$level = "New";
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-	$docUser->setAttribute("usernew", $sus['count']);
+	$docStatus->setAttribute("usernew", $sus['count']);
 
 }
 
