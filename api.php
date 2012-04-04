@@ -84,8 +84,7 @@ function actionStatus()
 	$level = "New";
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-	$docUser->setAttribute("new", $sus['count']);
-	$docUser->setAttribute("new", $sus['count']);
+	$docUser->setAttribute("usernew", $sus['count']);
 
 }
 
