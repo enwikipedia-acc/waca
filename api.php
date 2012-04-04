@@ -82,45 +82,45 @@ function actionCount( ) {
 		$adminInfo = '';
 		$docUser->setAttribute("level",$user['user_level']);
 		if( $user['user_level'] == 'Admin' ) {
+			$action = "Suspended";			
 			$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log WHERE log_user = :username AND log_action = :action");
 			$query->bindParam(":username", $username);
-			
-			$query->bindParam(":action", "Suspended");
+			$query->bindParam(":action", $action);
 			$query->execute();
 			$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("suspended", $sus['count']);
 
-			$query->bindParam(":action", "Promoted");
+			$action = "Promoted";	
 			$query->execute();
 			$pro = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("promoted",$pro['count']);
 
-			$query->bindParam(":action", "Approved");
+			$action = "Approved";	
 			$query->execute(); 
 			$app = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("approved",$app['count']);
 
-			$query->bindParam(":action", "Demoted");
+			$action = "Demoted";	
 			$query->execute();
 			$dem = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("demoted",$dem['count']);
 
-			$query->bindParam(":action", "Declined");
+			$action = "Declined";	
 			$query->execute();
 			$dec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("declined",$dec['count']);
 
-			$query->bindParam(":action", "Renamed");
+			$action = "Renamed";	
 			$query->execute();
 			$rnc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("renamed",$rnc['count']);
 			
-			$query->bindParam(":action", "Edited");
+			$action = "Edited";	
 			$query->execute();
 			$mec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("edited",$mec['count']);
 			
-			$query->bindParam(":action", "Prefchange");
+			$action = "Prefchange";
 			$query->execute();
 			$pcc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("prefchange",$pcc['count']);
@@ -128,7 +128,8 @@ function actionCount( ) {
 
 		$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log WHERE log_time LIKE :date  AND (log_action = 'Closed 1' OR log_action = 'Closed custom-y') AND log_user = :username");
 		$query->bindParam(":username", $username);
-		$query->bindParam(":date", date( 'Y-m-d' ) . "%" );
+		$date = date( 'Y-m-d' ) . "%";
+		$query->bindParam(":date", $date );
 		$query->execute();
 		$today = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 		$docUser->setAttribute("today",$today['count']);
