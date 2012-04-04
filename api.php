@@ -37,7 +37,7 @@ echo $document->saveXml();
 
 
 function actionCount( ) {
-	global $document, $doc_api;;
+	global $document, $doc_api, $database;
 
 	$username = isset( $_GET['user'] ) ? $_GET['user'] : '';
 	if( $username == '' ) {
