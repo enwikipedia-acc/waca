@@ -28,13 +28,20 @@ switch($_GET['action'])
 	case "count":
 		actionCount();
 		break;
+	case "status":
+		actionStatus();
+		break;
 	default:
-		$doc_api->setAttribute("actions", "count");
+		$doc_api->setAttribute("actions", "count, status");
 		break;
 }
 
 echo $document->saveXml();
 
+function actionStatus()
+{
+
+}
 
 function actionCount( ) {
 	global $document, $doc_api, $database;
