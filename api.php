@@ -43,7 +43,7 @@ function actionCount( ) {
 	if( $username == '' ) {
 		$err = $document->createElement("error");
 		$doc_api->appendChild($err);
-		$docUser->setAttribute("error", "Please specify a username");
+		$err->setAttribute("error", "Please specify a username");
 		return;
 	}
 
