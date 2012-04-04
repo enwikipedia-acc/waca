@@ -53,7 +53,7 @@ function actionCount( ) {
 	$isUserQuery->bindParam(":username", $username);
 	$isUserQuery->execute();
 	
-	$isUser = $isUserQuery->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
+	$isUser = $isUserQuery->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 
 	$isUser = ( ( $isUser['count'] == 0 ) ? false : true );
 
