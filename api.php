@@ -40,6 +40,52 @@ echo $document->saveXml();
 
 function actionStatus()
 {
+	global $database, $document, $doc_api;
+	
+	$docUser = $document->createElement("status");
+	$doc_api->appendChild($d);
+	
+	$status = "Open";			
+	$mailconfirm = "Confirmed";			
+	$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_pend WHERE pend_status = :pstatus AND pend_mailconfirm = :pmailconfirm;");
+	$query->bindParam(":pstatus", $status);
+	$query->bindParam(":pmailconfirm", $mailconfirm);
+	$query->execute();
+	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+	$docUser->setAttribute("open", $sus['count']);
+
+	$status = "Admin";			
+	$query->execute();
+	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+	$docUser->setAttribute("admin", $sus['count']);
+
+	$status = "Checkuser";			
+	$query->execute();
+	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+	$docUser->setAttribute("checkuser", $sus['count']);
+
+	$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_ban");
+	$query->execute();
+	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+	$docUser->setAttribute("bans", $sus['count']);
+
+	$level = "Admin";
+	$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_user WHERE user_level = :ulevel;");
+	$query->bindParam(":ulevel",$level);
+	$query->execute();
+	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+	$docUser->setAttribute("useradmin", $sus['count']);
+	
+	$level = "User";
+	$query->execute();
+	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+	$docUser->setAttribute("user", $sus['count']);
+	
+	$level = "New";
+	$query->execute();
+	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+	$docUser->setAttribute("new", $sus['count']);
+	$docUser->setAttribute("new", $sus['count']);
 
 }
 
