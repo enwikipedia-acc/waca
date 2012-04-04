@@ -31,12 +31,16 @@ switch($_GET['action'])
 	case "status":
 		actionStatus();
 		break;
+	case "stats":
+		actionStats();
+		break;
 	default:
-		$doc_api->setAttribute("actions", "count, status");
+		$doc_api->setAttribute("actions", "count, status, stats");
 		break;
 }
 
 echo $document->saveXml();
+
 
 function actionStatus()
 {
@@ -86,6 +90,47 @@ function actionStatus()
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 	$docUser->setAttribute("usernew", $sus['count']);
 
+}
+
+function actionStats()
+{
+	global $document, $doc_api, $database;
+
+	$username = isset( $_GET['user'] ) ? $_GET['user'] : '';
+	if( $username == '' ) {
+		$err = $document->createElement("error");
+		$doc_api->appendChild($err);
+		$err->setAttribute("error", "Please specify a username");
+		return;
+	}
+
+	$username = trim($username); //Strip any whitespace from the username.  
+
+	$docUser = $document->createElement("user");
+	$doc_api->appendChild($docUser);
+	// verify is a user
+	
+	$isUserQuery = $database->prepare("SELECT COUNT(*) AS count FROM acc_user WHERE user_name = :username;");
+	$isUserQuery->bindParam(":username", $username);
+	$isUserQuery->execute();
+	
+	$isUser = $isUserQuery->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+
+	$isUser = ( ( $isUser['count'] == 0 ) ? false : true );
+
+	if( $isUser ) {
+		$userQuery = $database->prepare("SELECT user_name, user_level, user_lastactive, user_welcome_templateid, user_onwikiname FROM acc_user WHERE user_name = :username;");
+		$userQuery->bindParam(":username", $username);
+		$userQuery->execute();
+		
+		$user = $userQuery->fetch(PDO::FETCH_ASSOC) or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+		
+		foreach($user as $key => $value)
+			$docUser->setAttribute($key, $value);
+			
+	} else {
+		$docUser->setAttribute("missing","true");
+	}
 }
 
 function actionCount( ) {
