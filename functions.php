@@ -706,8 +706,8 @@ function zoomPage($id,$urlhash)
 	$out .= '<a class="request-req" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?username=';
 	$out .= $userurl. '" target="_blank">SUL util</a> | ';
 
-//        $out .= '<a class="request-req" href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
-//        $out .= $userurl. '" target="_blank">Hersfold\'s Fake SUL</a> | ';
+    $out .= '<a class="request-req" href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
+    $out .= $userurl. '" target="_blank">Hersfold\'s Fake SUL</a> | ';
 
 	// 	User list
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
