@@ -63,7 +63,7 @@ function actionCount( ) {
 		$query->bindParam(":username", $username);
 		$query->execute();
 
-		$count = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
+		$count = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 	
 		$count = $count['count'];
 
@@ -71,7 +71,7 @@ function actionCount( ) {
 		$query->bindParam(":username", $username);
 		$query->execute();
 		
-		$user = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
+		$user = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 
 			
 		$adminInfo = '';
@@ -82,42 +82,42 @@ function actionCount( ) {
 			
 			$query->bindParam(":action", "Suspended");
 			$query->execute();
-			$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
+			$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("suspended", $sus['count']);
 
 			$query->bindParam(":action", "Promoted");
 			$query->execute();
-			$pro = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
+			$pro = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("promoted",$pro['count']);
 
 			$query->bindParam(":action", "Approved");
-			$query->execute();
-			$app = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
+			$query->execute(); 
+			$app = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("approved",$app['count']);
 
 			$query->bindParam(":action", "Demoted");
 			$query->execute();
-			$dem = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
+			$dem = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("demoted",$dem['count']);
 
 			$query->bindParam(":action", "Declined");
 			$query->execute();
-			$dec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
+			$dec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("declined",$dec['count']);
 
 			$query->bindParam(":action", "Renamed");
 			$query->execute();
-			$rnc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
+			$rnc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("renamed",$rnc['count']);
 			
 			$query->bindParam(":action", "Edited");
 			$query->execute();
-			$mec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
+			$mec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("edited",$mec['count']);
 			
 			$query->bindParam(":action", "Prefchange");
 			$query->execute();
-			$pcc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
+			$pcc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("prefchange",$pcc['count']);
 		}
 
@@ -125,7 +125,7 @@ function actionCount( ) {
 		$query->bindParam(":username", $username);
 		$query->bindParam(":date", date( 'Y-m-d' ) . "%" );
 		$query->execute();
-		$today = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo()[2] . "\n" );
+		$today = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 		$docUser->setAttribute("today",$today['count']);
 	} else {
 		$docUser->setAttribute("missing","true");
