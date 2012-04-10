@@ -1234,7 +1234,6 @@ function showIPlinks($ip, $wikipediaurl, $metaurl) {
 	// Abuse Filter
 	$out .= '| ';
 	$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $ip . '" target="_blank">Abuse Filter Log</a> ';
-	$out .= '</p>';
 
 	// Betacommand's checks
 	 $out .= '| ';
