@@ -87,7 +87,7 @@ function getElementsByClass(searchClass,node,tag) {
 
 
 //Script portion of abort action capability. The function is called by a PHP echo, depending on user prefs.
-//confirmReqCloseQuestions is set through messagemanagement (message 32)
+//confirmReqCloseQuestions is a JS on-the-fly object set through messagemanagement (message 32)
 function abortChecker(){
 var reqCloseActions=getElementsByClass("request-done")
 var abcdefg; //Dummy to check undefined... JS is wierd in this manner
