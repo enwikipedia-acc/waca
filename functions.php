@@ -869,7 +869,7 @@ function zoomPage($id,$urlhash)
 
 			
 			// Password reset links
-			$posc5 = '<a href="http://en.wikipedia.org/w/index.php?title=Special%3AUserLogin&amp;type=login&amp;wpName=';
+			$posc5 = '<a href="http://en.wikipedia.org/wiki/Special:PasswordReset?wpUsername=';
 			$posc5 .= $oS . '" target="_blank">Send Password reset</a> ';
 
 			// Adds all the variables together for one line.
