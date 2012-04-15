@@ -781,7 +781,7 @@ class accRequest {
 		}
 		
 		// Checks whether the email adress is valid.
-		$mailiswmf = preg_match('/.*wiki(m.dia|p.dia).*/i', $email);
+		$mailiswmf = preg_match('/.*@.*wiki(m.dia|p.dia).(org|com)/i', $email);
 		if ($mailiswmf != 0) {
 			$message = $messages->getMessage(14);
 			$skin->displayRequestMsg("$message<br />\n");
