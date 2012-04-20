@@ -1046,7 +1046,7 @@ function zoomPage($id,$urlhash)
 	}
 	$out .= "<h2>Other requests from $emailmsg:</h2>\n";
 	if ($thisemail != 'acc@toolserver.org') {
-		$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
+		$query = "SELECT * FROM acc_pend WHERE pend_email = '" . mysql_real_escape_string($thisemail, $tsSQLlink) . "' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
