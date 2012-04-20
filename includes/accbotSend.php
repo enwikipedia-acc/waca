@@ -20,7 +20,7 @@ if ($ACC != "1") {
 // accbot class
 class accbotSend {
 	public function send($message) {
-		global $whichami,$toolserver_notification_database;
+		global $whichami;
 		$message = html_entity_decode($message,ENT_COMPAT,'UTF-8'); // If a message going to the bot was for whatever reason sent through sanitze() earlier, reverse it. 
 		$message = stripslashes($message);
 		$blacklist = array("DCC", "CCTP", "PRIVMSG");
@@ -28,9 +28,15 @@ class accbotSend {
 
 		$msg = chr(2)."[$whichami]".chr(2).": $message";
 		
-		$database = new database("toolserver");
-
-		$database->query("insert into p_acc_notifications.notification values (null,null,1,'".$database->escape($msg)."');");
+		$db = new PdoDatabase(
+			"mysql:host=dbmaster.helpmebot.org.uk;dbname=acc_notifications",
+			$toolserver_username, 
+			$toolserver_password
+		);
+		
+		$q = $db->prepare( "INSERT INTO notification values (null,null,1,:message);" );
+		$q->bindParam(":message", $msg);
+		$q->execute();
 		
 		return;
 	}
