@@ -166,8 +166,7 @@ function actionCount( ) {
 		$query->execute();
 
 		$count = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-	
-		$count = $count['count'];
+		$docUser->setAttribute("created",$count['count']);
 
 		$query = $database->prepare("SELECT * FROM acc_user WHERE user_name = :username");
 		$query->bindParam(":username", $username);

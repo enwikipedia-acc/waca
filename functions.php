@@ -260,12 +260,12 @@ function listrequests($type, $hideip, $correcthash) {
 		} else {
 			$cmt = "<a class=\"request-src\" href=\"$tsurl/acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
 		}
-		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = '" . $row['pend_ip'] . "' AND `pend_id` != '" . $row['pend_id'] . "' AND `pend_mailconfirm` = 'Confirmed';";
+		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = '" . mysql_real_escape_string($row['pend_ip'],$tsSQLlink) . "' AND `pend_id` != '" . mysql_real_escape_string($row['pend_id'],$tsSQLlink) . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result2 = mysql_query($query2);
 		if (!$result2)
 		sqlerror("Query failed: $query2 ERROR: " . mysql_error(),"Database query error.");
 		$otheripreqs = mysql_fetch_assoc($result2);
-		$query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . $row['pend_email'] . "' AND `pend_id` != '" . $row['pend_id'] . "' AND `pend_mailconfirm` = 'Confirmed';";
+		$query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . mysql_real_escape_string($row['pend_email'],$tsSQLlink) . "' AND `pend_id` != '" . mysql_real_escape_string($row['pend_id'],$tsSQLlink) . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result3 = mysql_query($query3);
 		if (!$result3)
 		sqlerror("Query failed: $query3 ERROR: " . mysql_error(),"Database query error.");
@@ -628,7 +628,7 @@ function zoomPage($id,$urlhash)
 	$sUser = $row['pend_name'];
 
 	$sessionuser = $_SESSION['userID'];
-	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_reserved = '$sessionuser' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
+	$query = "SELECT * FROM acc_pend WHERE pend_email = '" . mysql_real_escape_string($thisemail, $tsSQLlink) . "' AND pend_reserved = '" . mysql_real_escape_string($sessionuser, $tsSQLlink) . "' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
 
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
@@ -639,7 +639,7 @@ function zoomPage($id,$urlhash)
 	}
 
 	$sessionuser = $_SESSION['userID'];
-	$query2 = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_reserved = '$sessionuser' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
+	$query2 = "SELECT * FROM acc_pend WHERE pend_ip = '" . mysql_real_escape_string($thisip, $tsSQLlink) . "' AND pend_reserved = '" . mysql_real_escape_string($sessionuser, $tsSQLlink) . "' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
 
 	$result2 = mysql_query($query2, $tsSQLlink);
 	if (!$result2)
@@ -706,8 +706,8 @@ function zoomPage($id,$urlhash)
 	$out .= '<a class="request-req" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?username=';
 	$out .= $userurl. '" target="_blank">SUL util</a> | ';
 
-//        $out .= '<a class="request-req" href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
-//        $out .= $userurl. '" target="_blank">Hersfold\'s Fake SUL</a> | ';
+    $out .= '<a class="request-req" href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
+    $out .= $userurl. '" target="_blank">Hersfold\'s Fake SUL</a> | ';
 
 	// 	User list
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
@@ -869,7 +869,7 @@ function zoomPage($id,$urlhash)
 
 			
 			// Password reset links
-			$posc5 = '<a href="http://en.wikipedia.org/w/index.php?title=Special%3AUserLogin&amp;type=login&amp;wpName=';
+			$posc5 = '<a href="http://en.wikipedia.org/wiki/Special:PasswordReset?wpUsername=';
 			$posc5 .= $oS . '" target="_blank">Send Password reset</a> ';
 
 			// Adds all the variables together for one line.
@@ -878,10 +878,6 @@ function zoomPage($id,$urlhash)
 		$out2 .= "</ul>\n";
 	}
 	$out .= $out2;
-
-	//// why are these here? st 24/05/09
-	//mysql_pconnect( $toolserver_host, $toolserver_username, $toolserver_password );
-	//@ mysql_select_db( $toolserver_database ) or print mysql_error( );
 
 	if ($urlhash != "") {
 		$out .= "<h2>Logs for this request:<small> (<a href='$tsurl/acc.php?action=comment&amp;id=$gid&amp;hash=$urlhash'>new comment</a>)</small></h2>";
@@ -1050,7 +1046,7 @@ function zoomPage($id,$urlhash)
 	}
 	$out .= "<h2>Other requests from $emailmsg:</h2>\n";
 	if ($thisemail != 'acc@toolserver.org') {
-		$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
+		$query = "SELECT * FROM acc_pend WHERE pend_email = '" . mysql_real_escape_string($thisemail, $tsSQLlink) . "' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
@@ -1234,7 +1230,6 @@ function showIPlinks($ip, $wikipediaurl, $metaurl) {
 	// Abuse Filter
 	$out .= '| ';
 	$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $ip . '" target="_blank">Abuse Filter Log</a> ';
-	$out .= '</p>';
 
 	// Betacommand's checks
 	 $out .= '| ';
