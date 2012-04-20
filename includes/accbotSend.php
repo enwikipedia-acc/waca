@@ -28,16 +28,11 @@ class accbotSend {
 
 		$msg = chr(2)."[$whichami]".chr(2).": $message";
 
-$database = new database("notif"); 
-$database->query("insert into acc_notifications.notification values (null,null,1,'".$database->escape($msg)."');");
- 
-/*
-
 		$dblink = mysql_connect("dbmaster.helpmebot.org.uk", $toolserver_username, $toolserver_password);
 		mysql_select_db("acc_notifications", $dblink);
 		mysql_query("insert into notification values (null,null,1,'".mysql_real_escape_string($msg,$dblink)."');", $dblink);
 		mysql_close($dblink);
-*/		
+		
 		return;
 	}
 }
