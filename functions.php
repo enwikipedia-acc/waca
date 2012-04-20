@@ -628,7 +628,7 @@ function zoomPage($id,$urlhash)
 	$sUser = $row['pend_name'];
 
 	$sessionuser = $_SESSION['userID'];
-	$query = "SELECT * FROM acc_pend WHERE pend_email = '$thisemail' AND pend_reserved = '$sessionuser' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
+	$query = "SELECT * FROM acc_pend WHERE pend_email = '" . mysql_real_escape_string($thisemail, $tsSQLlink) . "' AND pend_reserved = '" . mysql_real_escape_string($sessionuser, $tsSQLlink) . "' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
 
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
@@ -639,7 +639,7 @@ function zoomPage($id,$urlhash)
 	}
 
 	$sessionuser = $_SESSION['userID'];
-	$query2 = "SELECT * FROM acc_pend WHERE pend_ip = '$thisip' AND pend_reserved = '$sessionuser' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
+	$query2 = "SELECT * FROM acc_pend WHERE pend_ip = '" . mysql_real_escape_string($thisip, $tsSQLlink) . "' AND pend_reserved = '" . mysql_real_escape_string($sessionuser, $tsSQLlink) . "' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
 
 	$result2 = mysql_query($query2, $tsSQLlink);
 	if (!$result2)
@@ -878,10 +878,6 @@ function zoomPage($id,$urlhash)
 		$out2 .= "</ul>\n";
 	}
 	$out .= $out2;
-
-	//// why are these here? st 24/05/09
-	//mysql_pconnect( $toolserver_host, $toolserver_username, $toolserver_password );
-	//@ mysql_select_db( $toolserver_database ) or print mysql_error( );
 
 	if ($urlhash != "") {
 		$out .= "<h2>Logs for this request:<small> (<a href='$tsurl/acc.php?action=comment&amp;id=$gid&amp;hash=$urlhash'>new comment</a>)</small></h2>";
