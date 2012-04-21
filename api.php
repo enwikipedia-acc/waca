@@ -34,6 +34,9 @@ switch($_GET['action'])
 	case "stats":
 		actionStats();
 		break;
+	case "deploy":
+		actionDeploy();
+		break;
 	default:
 		$doc_api->setAttribute("actions", "count, status, stats");
 		break;
@@ -41,6 +44,38 @@ switch($_GET['action'])
 
 echo $document->saveXml();
 
+function actionDeploy()
+{
+	$revision = isset( $_GET['r'] ) ? $_GET['r'] : '';
+	if( $revision == '' ) {
+		$err = $document->createElement("error");
+		$doc_api->appendChild($err);
+		$err->setAttribute("error", "Please specify a revision");
+		return;
+	}
+	
+	$key = isset( $_GET['k'] ) ? $_GET['k'] : '';
+	if( $key == '' ) {
+		$err = $document->createElement("error");
+		$doc_api->appendChild($err);
+		$err->setAttribute("error", "Please specify a key");
+		return;
+	}
+	
+	global $apiDeployPassword;
+	
+	if( md5( md5($revision) . $apiDeployPassword ) != $key )
+		$err = $document->createElement("error");
+		$doc_api->appendChild($err);
+		$err->setAttribute("error", "Invalid key.");
+		return;
+	}
+	
+	ob_start();
+	passthru('deploy.sh')
+	//$content_grabbed=ob_get_contents();
+	ob_end_clean();
+}
 
 function actionStatus()
 {

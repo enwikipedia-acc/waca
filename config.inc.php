@@ -177,6 +177,8 @@ require_once("/home/project/a/c/c/acc/AWSSDKforPHP/sdk.class.php");
 // list of squid proxies requests go through.
 $squidIpList = array();
 
+$apiDeployPassword = "super secret update password";
+
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********
 ***************************************************************************
