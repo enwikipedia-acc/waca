@@ -89,7 +89,7 @@ class StatsUsers extends StatisticsPage
 	function getUserDetail($userId)
 	{
 		$out="";
-		global $tsSQL, $enableRenames, $tsurl, $session, $wikiurl;
+		global $tsSQL, $asSQL, $enableRenames, $tsurl, $session, $wikiurl;
 		$gid = $tsSQL->escape($userId); // Validate the user ID for security (SQL Injection, etc)
 		if (!preg_match('/^[0-9]+$/i',$gid)) {
 			return "User ID invalid";
@@ -209,13 +209,7 @@ class StatsUsers extends StatisticsPage
 			// If the query returns at least one row
 			if (mysql_num_rows($result) != 0)
 			{
-				$out.= "<ol>\n"; // Start an ordered list
-				
-				//Connect to the English Wikipedia database on Toolserver
-				$enwiki_pw = posix_getpwuid(posix_getuid());
-				$enwiki_mycnf = parse_ini_file($ts_pw['dir'] . "/.my.cnf");
-				$enwiki_db = mysql_connect('enwiki-p.rrdb.toolserver.org', $enwiki_mycnf['user'], $enwiki_mycnf['password']);
-				unset($enwiki_mycnf, $enwiki_pw);				
+				$out.= "<ol>\n"; // Start an ordered list				
 				
 				while ($row = mysql_fetch_assoc($result)) // Return the result of the database query as an associative array; then , for each row returned...
 				{
@@ -227,7 +221,8 @@ class StatsUsers extends StatisticsPage
 					
 					// Check if the user has contribs.  If not, their contribs link will be red.
 					$contrib_query = "SELECT `user_editcount` from `user` where `user_name`='".$row['pend_name']."' LIMIT 1;";
-					$contrib_result = mysql_query($contrib_query, $enwiki_db);
+					$contrib_query = sanatize($contrib_query);
+					$contrib_result = $asSQL->query($contrib_query);
 					$contrib_count = mysql_fetch_assc[$contrib_result];
 					if ($contrib_count['user_editcount']=='0') { $contrib_link="<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\"  class=\"nocontribs\">contribs</a>"; }
 					else { $contrib_link="<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a>"; }
