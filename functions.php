@@ -866,14 +866,17 @@ function zoomPage($id,$urlhash)
 
 //			 $posc4 .= ' | <a href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
 //                        $posc4 .= $oS . '" target="_blank">Hersfold\'s Fake SUL</a> ';
-
 			
 			// Password reset links
 			$posc5 = '<a href="http://en.wikipedia.org/wiki/Special:PasswordReset?wpUsername=';
 			$posc5 .= $oS . '" target="_blank">Send Password reset</a> ';
+			
+			// tp counter
+			$posc6 = '<a href="http://toolserver.org/~tparis/pcount/index.php?lang=en&wiki=wikipedia&name=';
+			$posc6 .= $oS . '" target="_blank">Count</a> ';
 
 			// Adds all the variables together for one line.
-			$out2 .= "<li>" . $posc1 . "( " . $posc2 . " | " . $posc3 . " | " . $posc4 . " | " . $posc5 . " )</li>\n";
+			$out2 .= "<li>" . $posc1 . "( " . $posc2 . " | " . $posc3 . " | " . $posc4 . " | " . $posc5 . " | " . $posc6 . " )</li>\n";
 		}
 		$out2 .= "</ul>\n";
 	}
