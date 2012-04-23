@@ -223,7 +223,7 @@ class StatsUsers extends StatisticsPage
 					$contrib_query = "SELECT `user_editcount` from `user` where `user_name`='".$row['pend_name']."' LIMIT 1;";
 					$contrib_query = sanitize($contrib_query);
 					$contrib_result = $asSQL->query($contrib_query);
-					$contrib_count = mysql_fetch_assc[$contrib_result];
+					$contrib_count = mysql_fetch_assoc($contrib_result);
 					if ($contrib_count['user_editcount']=='0') { $contrib_link="<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\"  class=\"nocontribs\">contribs</a>"; }
 					else { $contrib_link="<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a>"; }
 					
