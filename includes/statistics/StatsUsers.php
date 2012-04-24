@@ -218,14 +218,20 @@ class StatsUsers extends StatisticsPage
 						// If the time was not set on insertion, we'll write "Date unknown" instead
 						$row['log_time'] = "Date unknown";
 					}
-					
+										
 					// Check if the user has contribs.  If not, their contribs link will be red.
 					$pendname = sanitize($row['pend_name']);
+					$contrib_css_class = "";
 					$contrib_query = "SELECT `user_editcount` from `user` where `user_name`='" . $pendname . "' LIMIT 1;";
 					$contrib_result = $asSQL->query($contrib_query);
-					$contrib_count = mysql_fetch_assoc($contrib_result);
-					if ($contrib_count['user_editcount']=='0') { $contrib_link="<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\"  class=\"nocontribs\">contribs</a>"; }
-					else { $contrib_link="<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a>"; }
+					if($result) {
+						$contrib_count = mysql_fetch_assoc($contrib_result);
+						if ((!isset($contrib_count['user_editcount'])) || $contrib_count['user_editcount']=='0') { 
+							$contrib_css_class = "class=\"nocontribs\"";
+						} 
+					}
+					
+					$contrib_link="<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\" $contrib_css_class>contribs</a>"; 
 					
 					// Display the name of the account that was created
 					if($session->hasright($_SESSION['user'], 'User') || $session->hasright($_SESSION['user'], 'Admin')) 
