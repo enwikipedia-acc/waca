@@ -29,6 +29,13 @@ a {
 a:hover {
 	text-decoration: none;
 }
+a.nocontribs { /* If the user has no contributions, they should have a red "contribs" link */
+	color: red;
+	text-decoration: underline;
+}
+a.nocontribs:hover {
+	text-decoration: none;
+}
 /**
 * HEADER STYLES
 */
