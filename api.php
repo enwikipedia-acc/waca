@@ -46,35 +46,29 @@ echo $document->saveXml();
 
 function actionDeploy()
 {
+	global $apiDeployPassword;
+	
 	$revision = isset( $_GET['r'] ) ? $_GET['r'] : '';
 	if( $revision == '' ) {
-		$err = $document->createElement("error");
-		$doc_api->appendChild($err);
-		$err->setAttribute("error", "Please specify a revision");
-		return;
+		echo("Please specify a revision");
+		die;
 	}
 	
 	$key = isset( $_GET['k'] ) ? $_GET['k'] : '';
 	if( $key == '' ) {
-		$err = $document->createElement("error");
-		$doc_api->appendChild($err);
-		$err->setAttribute("error", "Please specify a key");
-		return;
+		echo("Please specify a key");
+		die;		
 	}
 	
-	global $apiDeployPassword;
+	
 	
 	if( md5( md5($revision) . $apiDeployPassword ) != $key ) {
-		$err = $document->createElement("error");
-		$doc_api->appendChild($err);
-		$err->setAttribute("error", "Invalid key.");
-		return;
+		echo("Invalid key.");
+		die;
 	}
 	
-	ob_start();
-	passthru( './deploy.sh ' . escapeshellarg( $revision ) );
-	//$content_grabbed=ob_get_contents();
-	ob_end_clean();
+	passthru( './deploy.sh ' . $revision  );
+	die;
 }
 
 function actionStatus()
