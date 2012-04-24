@@ -109,9 +109,6 @@ $onRegistrationNewbieCheckAge = 5184000;	// Account age on Wikipedia in seconds.
 // Enable the use of Captcha for interface registration.
 $useCaptcha = false;
 
-// Enable last login statistics.
-$enableLastLogin = false;
-
 // Enable interface account renaming.
 $enableRenames = 1; 		
 
