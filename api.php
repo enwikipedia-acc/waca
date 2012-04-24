@@ -64,7 +64,7 @@ function actionDeploy()
 	
 	global $apiDeployPassword;
 	
-	if( md5( md5($revision) . $apiDeployPassword ) != $key )
+	if( md5( md5($revision) . $apiDeployPassword ) != $key ) {
 		$err = $document->createElement("error");
 		$doc_api->appendChild($err);
 		$err->setAttribute("error", "Invalid key.");
