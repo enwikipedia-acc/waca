@@ -121,28 +121,8 @@ class skin {
 	 * Prints the internal interface footer to the screen.
 	 */
 	public function displayIfooter() {
-		global $enableLastLogin, $messages, $internalInterface, $tsSQL;
-		if ($enableLastLogin) {
-			// Get data related to the current user.
-			$result = $tsSQL->query("SELECT user_lastip, user_lastactive FROM acc_user WHERE user_name ='" . $tsSQL->escape($_SESSION['user']) . "';");
-			list($lastloginip, $lastlogintime) = mysql_fetch_array($result);
-			$lastlogintime = strtotime($lastlogintime);
-			
-			$timestamp = "at ".date('H:i', $lastlogintime);
-			if (date('jS \of F Y', $lastlogintime)==date('jS \of F Y')) {
-				$timestamp .= " today";
-			} else {
-				$timestamp .= " on the ".date('jS \of F, Y', $lastlogintime);
-			}
-			if ($lastloginip==$_SERVER['REMOTE_ADDR']) {
-				$out2 = "<div align=\"center\"><small>You last logged in from this computer $timestamp.</small></div>";
-			} else {
-				$out2 = "<div align=\"center\"><small>You last logged in from <a href=\"http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=$lastloginip\">$lastloginip</a> $timestamp.</small></div>";
-			}
-		} else {
-			$out2 = '';
-		}
-		
+		global $messages, $internalInterface, $tsSQL;
+	
 		$howmany = array ();
 		$howmany = $internalInterface->gethowma(true);
 		$howout = $internalInterface->showhowma();
@@ -150,9 +130,9 @@ class skin {
 		echo "</div>"; //Add this right before the footer message since a div close tag inside the message itself will cause HTML validation errors in the public interface. 
 		$out = $messages->getMessage('23');
 		if ($howma != 1) // not equal to one, as zero uses the plural form too.
-			$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creators currently online (past 5 minutes): $howout</small></div>\n$out2", $out);
+			$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creators currently online (past 5 minutes): $howout</small></div>", $out);
 		else
-			$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creator currently online (past 5 minutes): $howout</small></div>\n$out2", $out);
+			$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creator currently online (past 5 minutes): $howout</small></div>", $out);
 		echo $out;
 
 		// we probably want to output
