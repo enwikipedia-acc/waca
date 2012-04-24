@@ -864,8 +864,8 @@ function zoomPage($id,$urlhash)
 			$posc4 = '<a href="http://toolserver.org/~vvv/sulutil.php?user=';
 			$posc4 .= $oS . '" target="_blank">SUL</a> ';
 
-//			 $posc4 .= ' | <a href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
-//                        $posc4 .= $oS . '" target="_blank">Hersfold\'s Fake SUL</a> ';
+			$posc4 .= '(<a href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
+			$posc4 .= $oS . '" target="_blank">alt</a>) ';
 			
 			// Password reset links
 			$posc5 = '<a href="http://en.wikipedia.org/wiki/Special:PasswordReset?wpUsername=';
