@@ -72,7 +72,7 @@ function actionDeploy()
 	}
 	
 	ob_start();
-	passthru( 'deploy.sh ' . escapeshellarg( $revision ) )
+	passthru( 'deploy.sh ' . escapeshellarg( $revision ) );
 	//$content_grabbed=ob_get_contents();
 	ob_end_clean();
 }
