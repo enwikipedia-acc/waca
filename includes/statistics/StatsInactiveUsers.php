@@ -24,6 +24,12 @@ class StatsInactiveUsers extends StatisticsPage
 			$sessionuser = "";
 		}
 		
+		$showImmune=false;
+		if(isset($_GET['showimmune']))
+		{
+			$showImmune=true;
+		}
+		
 		$date = new DateTime();
 		$date->modify("-45 days");
 
@@ -62,21 +68,15 @@ class StatsInactiveUsers extends StatisticsPage
 					$r['user_checkuser'] == 1 || // checkusers
 					
 					/*Tool Roots*/
-					$r['tooluserid'] == 1     || // SQL
 					$r['tooluserid'] == 7     || // Stwalkerster
-					$r['tooluserid'] == 36    || // OverlordQ
 					$r['tooluserid'] == 64    || // Cobi
-					
-					/*Mailing List Admins*/
-					$r['tooluserid'] == 14       // Prodego
-												 // Stwalkerster
-												 
 				) )
 			{
-				
 				$allowSuspend = true;
 			}
 
+			if($showImmune && !$allowSuspend) continue;
+			
 			$userid = $r['tooluserid'];
 			$q2 = 'select log_time from acc_log where log_pend = '.$userid.' and log_action = "Approved" order by log_id desc limit 1;';
 			$res2 = $tsSQL->query($q2);
