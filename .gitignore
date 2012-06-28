@@ -7,3 +7,5 @@ sand/
 svn-rewrite.sh
 svn-sand.sh
 images/
+graph
+render/
