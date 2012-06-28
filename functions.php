@@ -708,6 +708,10 @@ function zoomPage($id,$urlhash)
 
     $out .= '<a class="request-req" href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
     $out .= $userurl. '" target="_blank">Hersfold\'s Fake SUL</a> | ';
+    
+  //Show Special:CentralAuth link due to bug 35792 <https://bugzilla.wikimedia.org/show_bug.cgi?id=35792>
+  $out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
+  $out .= $userurl.'" target="_blank">Special:CentralAuth</a> | ';
 
 	// 	User list
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
@@ -865,7 +869,11 @@ function zoomPage($id,$urlhash)
 			$posc4 .= $oS . '" target="_blank">SUL</a> ';
 
 			$posc4 .= '(<a href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
-			$posc4 .= $oS . '" target="_blank">alt</a>) ';
+			$posc4 .= $oS . '" target="_blank">alt</a> | ';
+			
+			//Show Special:CentralAuth link due to bug 35792 <https://bugzilla.wikimedia.org/show_bug.cgi?id=35792>
+      $posc4 .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
+      $posc4 .= $oS.'" target="_blank">Special:CentralAuth</a>)';
 			
 			// Password reset links
 			$posc5 = '<a href="http://en.wikipedia.org/wiki/Special:PasswordReset?wpUsername=';
