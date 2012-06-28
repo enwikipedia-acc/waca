@@ -853,15 +853,15 @@ function zoomPage($id,$urlhash)
 			$oS = urlencode($oSpoof);
 
 			// Show the Wikipedia Userpage of the conflicting users.
-			$posc1 = '<a href="http://en.wikipedia.org/w/index.php?title=User:';
+			$posc1 = '<a href="'.$wikipediaurl.'w/index.php?title=User:';
 			$posc1 .= $oS . '" target="_blank">' . $oSpoof . '</a> ';
 
 			// Show the contributions of the conflicting users.
-			$posc2 = '<a href="http://en.wikipedia.org/w/index.php?title=Special:Contributions/';
+			$posc2 = '<a href="'.$wikipediaurl.'w/index.php?title=Special:Contributions/';
 			$posc2 .= $oS . '" target="_blank">contribs</a> ';
 
 			// Show the logs of the conflicting users.
-			$posc3 = '<a href="http://en.wikipedia.org/w/index.php?title=Special%3ALog&amp;type=&amp;user=&amp;page=User%3A';
+			$posc3 = '<a href="'.$wikipediaurl.'w/index.php?title=Special%3ALog&amp;type=&amp;user=&amp;page=User%3A';
 			$posc3 .= $oS . '" target="_blank">Logs</a> ';
 
 			// Open the SUL of the conflicting users.
@@ -876,7 +876,7 @@ function zoomPage($id,$urlhash)
       $posc4 .= $oS.'" target="_blank">Special:CentralAuth</a>)';
 			
 			// Password reset links
-			$posc5 = '<a href="http://en.wikipedia.org/wiki/Special:PasswordReset?wpUsername=';
+			$posc5 = '<a href="'.$wikipediaurl.'wiki/Special:PasswordReset?wpUsername=';
 			$posc5 .= $oS . '" target="_blank">Send Password reset</a> ';
 			
 			// tp counter
