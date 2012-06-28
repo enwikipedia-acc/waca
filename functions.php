@@ -704,14 +704,14 @@ function zoomPage($id,$urlhash)
 
 	// 	SUL link
 	$out .= '<a class="request-req" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?username=';
-	$out .= $userurl. '" target="_blank">SUL util</a> | ';
+	$out .= $userurl. '" target="_blank">SUL</a> ( ';
 
     $out .= '<a class="request-req" href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
-    $out .= $userurl. '" target="_blank">Hersfold\'s Fake SUL</a> | ';
+    $out .= $userurl. '" target="_blank">alt</a> | ';
     
   //Show Special:CentralAuth link due to bug 35792 <https://bugzilla.wikimedia.org/show_bug.cgi?id=35792>
   $out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
-  $out .= $userurl.'" target="_blank">Special:CentralAuth</a> | ';
+  $out .= $userurl.'" target="_blank">Special:CentralAuth</a> ) | ';
 
 	// 	User list
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
