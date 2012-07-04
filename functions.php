@@ -603,7 +603,7 @@ function isOnWhitelist($user)
 
 function zoomPage($id,$urlhash)
 {
-	global $tsSQLlink, $session, $skin, $tsurl, $messages;
+	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates;
 
 	$out = "";
 	$gid = sanitize($id);
@@ -626,31 +626,58 @@ function zoomPage($id,$urlhash)
 	}
 	$sUser = $row['pend_name'];
 
+	//#region setup whether data is viewable or not
+	
+	// build the sql fragment of possible open states
+	$statesSqlFragment = " ";
+	foreach($availableRequestStates as $k => $v){
+		$statesSqlFragment .= "pend_status = '".sanitize($k)."' OR ";
+	}
+	$statesSqlFragment = rtrim($statesSqlFragment, " OR");
+	
 	$sessionuser = $_SESSION['userID'];
-	$query = "SELECT * FROM acc_pend WHERE pend_email = '" . mysql_real_escape_string($thisemail, $tsSQLlink) . "' AND pend_reserved = '" . mysql_real_escape_string($sessionuser, $tsSQLlink) . "' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
+	$query = "SELECT * FROM acc_pend WHERE pend_email = '" . 
+				mysql_real_escape_string($thisemail, $tsSQLlink) . 
+				"' AND pend_reserved = '" . 
+				mysql_real_escape_string($sessionuser, $tsSQLlink) . 
+				"' AND pend_mailconfirm = 'Confirmed' AND ( ".$statesSqlFragment." );";
 
 	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-	Die("Query failed: $query ERROR: " . mysql_error());
+	if (!$result) {
+		Die("Query failed: $query ERROR: " . mysql_error());
+	}
 	$hideemail = TRUE;
 	if (mysql_num_rows($result) > 0) {
 		$hideemail = FALSE;
 	}
 
 	$sessionuser = $_SESSION['userID'];
-	$query2 = "SELECT * FROM acc_pend WHERE pend_ip = '" . mysql_real_escape_string($thisip, $tsSQLlink) . "' AND pend_reserved = '" . mysql_real_escape_string($sessionuser, $tsSQLlink) . "' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
+	$query2 = "SELECT * FROM acc_pend WHERE pend_ip = '" . 
+			mysql_real_escape_string($thisip, $tsSQLlink) . 
+			"' AND pend_reserved = '" .
+			mysql_real_escape_string($sessionuser, $tsSQLlink) . 
+			"' AND pend_mailconfirm = 'Confirmed' AND ( ".$statesSqlFragment." );";
 
 	$result2 = mysql_query($query2, $tsSQLlink);
-	if (!$result2)
-	Die("Query failed: $query2 ERROR: " . mysql_error());
+	
+	if (!$result2) {
+		Die("Query failed: $query2 ERROR: " . mysql_error());
+	}
+	
 	$hideip = TRUE;
-	if (mysql_num_rows($result2) > 0)
-	$hideip = FALSE;
+	
+	if (mysql_num_rows($result2) > 0) {
+		$hideip = FALSE;
+	}
+	
 	if( $hideip == FALSE || $hideemail == FALSE ) {
 		$hideinfo = FALSE;
 	} else {
 		$hideinfo = TRUE;
 	}
+	
+	//#endregion
+	
 	if ($row['pend_status'] == "Closed") {
 		$hash = md5($thisid. $thisemail . $thisip . microtime()); //If the request is closed, change the hash based on microseconds similar to the checksums.
 	} else {
@@ -728,7 +755,7 @@ function zoomPage($id,$urlhash)
 
 
 	global $protectReservedRequests;
-	if (!($type == 'Admin' || $type == 'Open' || $type == 'Checkuser')) {
+	if (!(array_key_exists($type, $availableRequestStates))) {
 		if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
 		{
 			if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address.
