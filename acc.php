@@ -1213,6 +1213,7 @@ elseif ($action == "ban") {
 	}
 }
 elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
+	global $availableRequestStates;
 	if (array_key_exists($_GET['target'], $availableRequestStates)) {
 			
 		$target = sanitize($_GET['target']);

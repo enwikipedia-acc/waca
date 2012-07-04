@@ -225,17 +225,18 @@ function listrequests($type, $hideip, $correcthash) {
 	global $secure;
 	global $enableEmailConfirm;
 	global $session;
+	global $availableRequestStates;
 	if($secure != 1) { die("Not logged in"); }
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database.");
 
 	if ($enableEmailConfirm == 1) {
-		if ($type == 'Admin' || $type == 'Open' || $type == 'Checkuser') {
+		if (array_key_exists($type, $availableRequestStates)) {
 			$query = "SELECT * FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed';";
 		} else {
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
 		}
 	} else {
-		if ($type == 'Admin' || $type == 'Open' || $type == 'Checkuser') {
+		if (array_key_exists($type, $availableRequestStates)) {
 			$query = "SELECT * FROM acc_pend WHERE pend_status = '$type';";
 		} else {
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
@@ -276,9 +277,9 @@ function listrequests($type, $hideip, $correcthash) {
 		} else {
 			$out .= '>';
 		}
-		if ($type == 'Admin' || $type == 'Open' || $type == 'Checkuser') {
+		if (array_key_exists($type, $availableRequestStates)) {
 			$out .= '<td><small>' . $currentreq . '.    </small></td><td><small>'; //List item
-			$out .= $cmt .'</small></td><td><small>'; // CMT link.
+			$out .= $cmt .'</small></td><td><small>'; // zoom link.
 		} else {
 			$out .= '<td><small>' . "\n"; //List item
 		}
@@ -512,18 +513,16 @@ function getdevs() {
 }
 
 function defaultpage() {
-	global $tsSQLlink, $toolserver_database, $skin, $tsurl;
+	global $tsSQLlink, $toolserver_database, $skin, $tsurl, $availableRequestStates;
 	@mysql_select_db( $toolserver_database, $tsSQLlink) or sqlerror(mysql_error,"Could not select db");
-	$html =<<<HTML
-<h1>Create an account!</h1>
-<h2>Open requests</h2>
-HTML;
+	$html = '<h1>Create an account!</h1>';
 
-	$html .= listrequests("Open", TRUE, FALSE);
-	$html .= "<h2>Flagged user needed</h2>";
-	$html .= listrequests("Admin", TRUE, FALSE);
-	$html .= "<h2>Checkuser needed</h2>";
-	$html .= listrequests("Checkuser", TRUE, FALSE);
+	// list requests in each section
+	foreach($availableRequestStates as $k => $v) {
+		$html .= "<h2>".$v['header']."</h2>";
+		$html .= listrequests($k, TRUE, FALSE);
+	}	
+	
 	$html .= "<h2>Last 5 Closed requests</h2><a name='closed'></a><span id=\"closed\"/>\n";
 	$query = "SELECT pend_id, pend_name, pend_checksum FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
 	$result = mysql_query($query, $tsSQLlink);
@@ -1110,38 +1109,26 @@ function zoomPage($id,$urlhash)
 }
 
 function deferlinks($type, $checksum, $pendid) {
-	global $tsurl;
-	if ($type == 'Open') {
-		$target1 = 'admins';
-		$message1 = "Flagged Users";
-		$target2 = 'cu';
-		$message2 = "Checkusers";
-	}
-	elseif ($type == 'Admin') {
-		$target1 = 'users';
-		$message1 = "Users";
-		$target2 = 'cu';
-		$message2 = "Checkusers";
-	}
-	elseif ($type == 'Checkuser') {
-		$target1 = 'users';
-		$message1 = "Users";
-		$target2 = 'admins';
-		$message2 = "Flagged Users";
-	}
-		
-	if($type == "Admin" || $type == "Open" || $type == "Checkuser")
+	global $tsurl, $availableRequestStates, $defaultRequestStateKey;
+	
+	$out = " | Defer to: ";
+	
+	foreach(array_diff_key($availableRequestStates, array($availableRequestStates[$type])) as $k => $v)
 	{
-		$out .= " | Defer to: ";
-		$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=$target1\">$message1</a>";
-		$out .= " - ";
-		$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=$target2\">$message2</a>";
+		$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=".$k."\">".$v['deferto']."</a> - ";
+	}
+
+	$out = rtrim($out, '- ');
+
+	if(array_key_exists($type, $availableRequestStates))
+	{
+		return $out;
 	}
 	else
 	{
-		$out .= " | <a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=users\">Reset Request</a>";
+		return " | <a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=".$defaultRequestStateKey."\">Reset Request</a>";
 	}
-	return $out;
+	
 }
 
 function getToolVersion() {
