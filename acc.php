@@ -1213,19 +1213,10 @@ elseif ($action == "ban") {
 	}
 }
 elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
-	if ($_GET['target'] == "admins" || $_GET['target'] == "users" || $_GET['target'] == "cu") {
-		
-		// TODO: tidy up. hack in for ACC-136. stw -- 2010-03-31
-		if ($_GET['target'] == "admins") {
-			$target = "Admin";
-		} else if ($_GET['target'] == "users") {
-			$target = "Open";
-		} else if ($_GET['target'] == "cu") {
-			$target = "Checkuser";
-		}  else {
-			$target = "Open";
-		}
-		
+	if (array_key_exists($_GET['target'], $availableRequestStates)) {
+			
+		$target = sanitize($_GET['target']);
+			
 		$gid = sanitize($_GET['id']);
 		if (csvalid($gid, $_GET['sum']) != 1) {
 			echo "Invalid checksum (This is similar to an edit conflict on Wikipedia; it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
@@ -1260,16 +1251,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 
-		// TODO: tidy up. hack in for ACC-136. stw -- 2010-03-31
-		if ($_GET['target'] == "admins") {
-			$deto = "flagged users";
-		} else if ($_GET['target'] == "users") {
-			$deto = "users";
-		} else if ($_GET['target'] == "cu") {
-			$deto = "checkusers";
-		}  else {
-			$deto = "users";
-		}
+		$deto = $availableRequestStates[$_GET['target']]['deto'];
 
 
 		$now = date("Y-m-d H-i-s");
@@ -1283,7 +1265,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		header("Location: acc.php");
 		die();
 	} else {
-		echo "Target not specified.<br />\n";
+		echo "Defer target not valid.<br />\n";
 	}
 }
 elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is deprecated, but to avoid conflicts, include it still.
