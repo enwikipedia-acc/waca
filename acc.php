@@ -1464,6 +1464,9 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			
 			mail($row2['pend_email'], "RE: [ACC #$gid] English Wikipedia Account Request", $_POST['msgbody'], $headers);
 			
+			$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $gid . "';";
+			$result = mysql_query($query, $tsSQLlink);
+		
 			if (isset($_POST['created']) && $_POST['created'] == "on") {
 				$gem  = 'custom-y';
 			} else {
@@ -1532,7 +1535,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$accbotSend->send("Request " . $_GET['id'] . " (" . $row2['pend_name'] . ") Marked as 'Done' ($crea) by " . $_SESSION['user'] . " on $now");
 	$skin->displayRequestMsg("Request " . $_GET['id'] . " (" . htmlentities($row2['pend_name'],ENT_COMPAT,'UTF-8') . ") marked as 'Done'.<br />");
 	$towhom = $row2['pend_email'];
-	if ($gem != "0") {
+	if ($gem != "0" && $gem != 'custom' && $gem != 'custom-y' && $gem != 'custom-n') {
 		sendemail($gem, $towhom, $gid);
 		$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $gid . "';";
 		$result = mysql_query($query, $tsSQLlink);
