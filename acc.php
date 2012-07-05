@@ -1279,7 +1279,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 		$accbotSend->send("Request $gid deferred to $deto by $sid");
-		$skin->displayRequestMsg("Request " . $_GET['id'] . " deferred to $deto.");
+		$skin->displayRequestMsg("Request " . sanitize($_GET['id']) . " deferred to $deto.");
 		header("Location: acc.php");
 		die();
 	} else {
