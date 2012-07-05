@@ -940,10 +940,10 @@ function zoomPage($id,$urlhash)
 				$action = '<i>Custom closed the request.</i>';
 				break;
 			case 'Closed custom-y':
-				$action = '<i>Custom closed the request, creating the account.</i>';
+				$action = '<i>Custom closed the request, creating the account:</i> ' . $row['log_cmt'];
 				break;
 			case 'Closed custom-n':
-				$action = '<i>Custom closed the request, without creating the account.</i>';
+				$action = '<i>Custom closed the request, without creating the account:</i> ' . $row['log_cmt'];
 				break;
 			case 'Blacklist Hit':
 				$action = '<i>The request was rejected by the blacklist.</i>';
