@@ -1140,7 +1140,7 @@ function deferlinks($type, $checksum, $pendid) {
 	
 	$out = " | Defer to: ";
 	
-	foreach(array_diff_key($availableRequestStates, array($availableRequestStates[$type])) as $k => $v)
+	foreach(array_diff_key($availableRequestStates, array($type=>$availableRequestStates[$type])) as $k => $v)
 	{
 		$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=".$k."\">".$v['deferto']."</a> - ";
 	}
