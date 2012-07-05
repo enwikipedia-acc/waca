@@ -1444,7 +1444,9 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		if (!isset($_POST['msgbody']) or empty($_POST['msgbody'])) {
 			$querystring = htmlspecialchars($_SERVER["QUERY_STRING"],ENT_COMPAT,'UTF-8'); //Send it through htmlspecialchars so HTML validators don't complain. 
 			echo "<form action='?".$querystring."' method='post'>\n";
-			echo "<p>Message:</p>\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
+			echo "<p>Please enter your message to the user below.</p>";
+			echo "<p><strong>Please note that this content will be sent as the entire body of an email to the user, so remember to close the email properly with a signature (not ~~~~ either).</strong></p>";
+			echo "\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
 			echo "<p><input type='checkbox' name='created' />Account created</p>\n";
 			echo "<p><input type='checkbox' name='ccmailist' checked='checked'";
 			if (!($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user'])))
