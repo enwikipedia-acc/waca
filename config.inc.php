@@ -179,15 +179,18 @@ $apiDeployPassword = "super secret update password";
 // request states
 $availableRequestStates = array(
 	'open' =>array(
-		'deferto' => 'users', // don't change or you'll break old logs
+		'defertolog' => 'users', // don't change or you'll break old logs
+		'deferto' => 'users', 
 		'header' => 'Open requests',
 		),
 	'admin'=>array(
-		'deferto' => 'flagged users', // don't change or you'll break old logs
+		'defertolog' => 'admins', // don't change or you'll break old logs
+		'deferto' => 'flagged users',
 		'header' => 'Flagged user needed',
 		),
 	'checkuser'=>array(
-		'deferto' => 'checkusers', // don't change or you'll break old logs
+		'defertolog' => 'checkusers', // don't change or you'll break old logs
+		'deferto' => 'checkusers', 
 		'header' => 'Checkuser needed',
 		),
 	);

@@ -1255,10 +1255,11 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 
 		$deto = $availableRequestStates[$target]['deferto'];
+		$detolog = $availableRequestStates[$target]['defertolog'];
 
 
 		$now = date("Y-m-d H-i-s");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $deto', '$now');";
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $detolog', '$now');";
 		upcsum($gid);
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
