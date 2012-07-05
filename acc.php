@@ -1214,9 +1214,11 @@ elseif ($action == "ban") {
 }
 elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 	global $availableRequestStates;
-	if (array_key_exists($_GET['target'], $availableRequestStates)) {
+	$target = sanitize($_GET['target']);
+	
+	if (array_key_exists($target, $availableRequestStates)) {
 			
-		$target = sanitize($_GET['target']);
+		
 			
 		$gid = sanitize($_GET['id']);
 		if (csvalid($gid, $_GET['sum']) != 1) {
@@ -1252,7 +1254,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 
-		$deto = $availableRequestStates[$_GET['target']]['deto'];
+		$deto = $availableRequestStates[$target]['deto'];
 
 
 		$now = date("Y-m-d H-i-s");
