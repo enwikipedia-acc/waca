@@ -1254,7 +1254,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 
-		$deto = $availableRequestStates[$target]['deto'];
+		$deto = $availableRequestStates[$target]['deferto'];
 
 
 		$now = date("Y-m-d H-i-s");
