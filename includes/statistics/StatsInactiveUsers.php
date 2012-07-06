@@ -76,7 +76,7 @@ class StatsInactiveUsers extends StatisticsPage
 					
 					/*Tool Roots*/
 					$r['tooluserid'] == 7     || // Stwalkerster
-					$r['tooluserid'] == 64    || // Cobi
+					$r['tooluserid'] == 64       // Cobi
 				) )
 			{
 				$allowSuspend = true;
