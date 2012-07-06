@@ -195,7 +195,7 @@ $availableRequestStates = array(
 		),
 	);
 	
-$defaultRequestStateKey = 'open';
+$defaultRequestStateKey = 'Open';
 
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********
