@@ -53,7 +53,7 @@ class StatsInactiveUsers extends StatisticsPage
 		$out= '<p>This list contains the usernames of all accounts that have not logged in in the past 45 days.</p>';
 		
 		if(!$showImmune) {
-			$out.='<p>Tool root and checkuser accounts are hidden from this list.</p>';
+			$out.='<p>Tool root and checkuser-flagged accounts are hidden from this list.</p>';
 		}
 
 		$out.= "<table><tr><th>User ID</th><th>Tool Username</th><th>User access level</th><th>enwiki username</th><th>Last activity</th><th>Approval</th>";
@@ -82,7 +82,7 @@ class StatsInactiveUsers extends StatisticsPage
 				$allowSuspend = true;
 			}
 
-			if($showImmune && !$allowSuspend) continue;
+			if(!$showImmune && !$allowSuspend) continue;
 			
 			$userid = $r['tooluserid'];
 			$q2 = 'select log_time from acc_log where log_pend = '.$userid.' and log_action = "Approved" order by log_id desc limit 1;';
