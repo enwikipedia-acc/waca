@@ -46,11 +46,18 @@ class StatsInactiveUsers extends StatisticsPage
 		";
 
 		$result = $tsSQL->query($query);
-		if (!$result)
+		if (!$result) {
 			Die("ERROR: No result returned.");
-		$out= 'This list contains the usernames of all accounts that have not logged in in the past 45 days.';
+		}
+		
+		$out= '<p>This list contains the usernames of all accounts that have not logged in in the past 45 days.</p>';
+		
+		if(!$showImmune) {
+			$out.='<p>Tool root and checkuser accounts are hidden from this list.</p>';
+		}
 
 		$out.= "<table><tr><th>User ID</th><th>Tool Username</th><th>User access level</th><th>enwiki username</th><th>Last activity</th><th>Approval</th>";
+		
 		if($session->hasright($sessionuser, "Admin")) {
 			$out.= "<th>Suspend</th>";
 		}
