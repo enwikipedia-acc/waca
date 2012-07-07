@@ -755,7 +755,7 @@ function zoomPage($id,$urlhash)
 
 
 	global $protectReservedRequests;
-	if (!(array_key_exists($type, $availableRequestStates))) {
+	if (!(array_key_exists($row['pend_status'], $availableRequestStates))) {
 		if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
 		{
 			if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address.
@@ -937,7 +937,7 @@ function zoomPage($id,$urlhash)
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	while ($row = mysql_fetch_assoc($result))
-		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => $rlp, 'comment' => html_entity_decode($row['cmt_comment']), 'action' => "comment", 'security' => $row['cmt_visability']);
+		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => 0, 'comment' => html_entity_decode($row['cmt_comment']), 'action' => "comment", 'security' => $row['cmt_visability']);
 	
 	$namecache = array();
 	
@@ -967,7 +967,7 @@ function zoomPage($id,$urlhash)
 			} else {
 				$out .= "&nbsp;</td><td><em>&nbsp;$action&nbsp;</em></td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
 			}
-			if ($row['security'] == "admin") {
+			if (isset($row['security']) && $row['security'] == "admin") {
 				$out .= "<td style=\"white-space: nowrap\">&nbsp;<font color='red'>(admin only)</font>&nbsp;</td>";
 			} else {
 				$out .= "";
@@ -1208,7 +1208,7 @@ function showIPlinks($ip, $wikipediaurl, $metaurl) {
 function getUserIdFromName($name) {
 	global $tsSQLlink;
 	$res = mysql_query("SELECT user_id FROM acc_user WHERE user_name = '" . mysql_real_escape_string($name, $tsSQLlink) . "';", $tsSQLlink);
-	if (!$result) {
+	if (!$res) {
 		return null;
 	}
 	
