@@ -603,7 +603,7 @@ function isOnWhitelist($user)
 
 function zoomPage($id,$urlhash)
 {
-	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates;
+	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates, $dontUseWikiDb;
 
 	$out = "";
 	$gid = sanitize($id);

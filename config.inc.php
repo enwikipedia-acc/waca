@@ -167,10 +167,6 @@ $usePathInfo = false;
 // user agent of the tool.
 $toolUserAgent = "Wikipedia-ACC Tool/0.1 (+http://toolserver.org/~acc/team.php)";
 
-// AWS - ask stwalkerster BEFORE adding new usages, or 
-// they'll be unilaterally reverted. You have been warned.
-require_once("/home/project/a/c/c/acc/AWSSDKforPHP/sdk.class.php");
-
 // list of squid proxies requests go through.
 $squidIpList = array();
 
