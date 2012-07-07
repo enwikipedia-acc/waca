@@ -400,7 +400,7 @@ class LogPage
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason - account created)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($row['log_action'] == "Closed custom-n") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason - account not created", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason - account not created)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($row['log_action'] == "Blacklist Hit" || $row['log_action'] == "DNSBL Hit") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"rejected by blacklist", 'target' => $rlp, 'comment' => $rlc, 'action' => "Blacklist");
