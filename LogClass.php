@@ -502,7 +502,7 @@ class LogPage
 				case "Closed 26":
 				case "Closed 30":
 				case "Closed custom":
-				case "Closed customn-n":
+				case "Closed custom-n":
 				case "Closed custom-y":
 				case "Email Confirmed":
 				case "Reserved":
