@@ -20,7 +20,7 @@ if ($ACC != "1") {
 // accbot class
 class accbotSend {
 	public function send($message) {
-		global $whichami,$toolserver_username, $toolserver_password;
+		global $whichami,$toolserver_username, $toolserver_password, $ircBotNotificationType;
 		$message = html_entity_decode($message,ENT_COMPAT,'UTF-8'); // If a message going to the bot was for whatever reason sent through sanitze() earlier, reverse it. 
 		$message = stripslashes($message);
 		$blacklist = array("DCC", "CCTP", "PRIVMSG");
