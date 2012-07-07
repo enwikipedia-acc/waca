@@ -363,7 +363,7 @@ class LogPage
 			if ($rlt == "0000-00-00 00:00:00") {
 				$rlt = "Date Unknown";
 			}
-			if (substr($rla,0,strlen("Deferred") == "Deferred")) {
+			if (substr($rla,0,strlen("Deferred")) == "Deferred") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>strtolower($rla), 'target' => $rlp, 'comment' => $rlc, 'action' => "Deferred");
 			}
 			if ($row['log_action'] == "Closed") {
