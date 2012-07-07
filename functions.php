@@ -922,7 +922,7 @@ function zoomPage($id,$urlhash)
 		$out .= "<h2>Logs for this request:<small> (<a href='$tsurl/acc.php?action=comment&amp;id=$gid'>new comment</a>)</small></h2>";
 	}
 	
-	$loggerclass = new LogClass();
+	$loggerclass = new LogPage();
 	$loggerclass->$filterRequest=$gid;
 	$logs = $loggerclass->getRequestLogs();
 
