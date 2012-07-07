@@ -1108,7 +1108,7 @@ function displayPreview($wikicode) {
  * A simple implementation of a bubble sort on a multidimensional array.
  *
  * @param array $items A two-dimensional array, to be sorted by a date variable
- * in the first field of the arrays inside the array passed.
+ * in the 'time' field of the arrays inside the array passed.
  * @return array sorted array.
  */
 function doSort(array $items)
@@ -1121,7 +1121,7 @@ function doSort(array $items)
 		// loop through the array
 		for ($i = 0; $i < (count($items) - 1); $i++) {
 			// are these two items out of order?
-			if(strtotime($items[$i][0]) > strtotime($items[$i + 1][0]))
+			if(strtotime($items[$i]['time']) > strtotime($items[$i + 1]['time']))
 			{
 				// swap them
 				$swap = $items[$i];
