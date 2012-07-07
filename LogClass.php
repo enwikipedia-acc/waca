@@ -118,20 +118,22 @@ class LogPage
 		
 		if (!$count) {
 			$logQuery.= "ORDER BY log_time DESC ";
-			if($limit != '')
-			{
-				if (!preg_match('/^[0-9]*$/',$limit)) {
-					die('Invaild limit value passed.');
-				}
-				$limit = sanitize($limit);
-			}
-			else
-			{
-				$limit = 100;
-			}
+			
 		
 			if($limit != "infinity")
 			{
+				if($limit != '')
+				{
+					if (!preg_match('/^[0-9]*$/',$limit)) {
+						die('Invalid limit value passed.');
+					}
+					$limit = sanitize($limit);
+				}
+				else
+				{
+					$limit = 100;
+				}
+				
 				$logQuery.=' LIMIT '.$limit;
 				
 				if($offset != '')
