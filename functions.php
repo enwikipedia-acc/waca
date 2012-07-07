@@ -939,6 +939,8 @@ function zoomPage($id,$urlhash)
 	while ($row = mysql_fetch_assoc($result))
 		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => $rlp, 'comment' => html_entity_decode($row['cmt_comment']), 'action' => "comment", 'security' => $row['cmt_visability']);
 	
+	$namecache = array();
+	
 	if ($logs) {
 		$logs = doSort($logs);
 		$rownumber = 0;
@@ -946,13 +948,17 @@ function zoomPage($id,$urlhash)
 		foreach ($logs as $row) {
 			$rownumber += 1;
 			$date = $row['time'];
-			$userid = 0;
 			$username = $row['user'];
+			if(!isset($namecache[$username])) {
+				$id = getUserIdFromName($username);
+				$namecache['$username'] = $id;
+			}
+			$userid = $namecache['$username'] ;
 			$action = $row['description'];
 			$out .= "<tr";
 			if ($rownumber % 2 == 0) {$out .= ' class="alternate"';}
 			$out .= "><td style=\"white-space: nowrap\">&nbsp;";
-			if ($userid)
+			if ($userid !== null)
 				$out .= "<a href='$tsurl/statistics.php?page=Users&amp;user=$userid'>$username</a>";
 			else
 				$out .= $username;
@@ -1198,4 +1204,16 @@ function showIPlinks($ip, $wikipediaurl, $metaurl) {
 	return $out;
 	
 }
+
+function getUserIdFromName($name) {
+	global $tsSQLlink;
+	$res = mysql_query("SELECT user_id FROM acc_user WHERE user_name = '" . mysql_real_escape_string($name, $tsSQLlink) . "';", $tsSQLlink);
+	if (!$result) {
+		return null;
+	}
+	
+	$r = mysql_fetch_assoc($res);
+	return $r['user_id'];
+}
+
 ?>
