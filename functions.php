@@ -755,16 +755,15 @@ function zoomPage($id,$urlhash)
 
 
 	global $protectReservedRequests;
-	if (!(array_key_exists($row['pend_status'], $availableRequestStates))) {
-		if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
-		{
-			if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address.
-				// Create user link
-				$out .= '<p><b>Create account link:</b> <a class="request-req-create" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-				$out .= $userurl . '&amp;wpEmail=' . urlencode($row['pend_email']) . '&amp;uselang=en-acc&amp;wpReason='.urlencode("Requested account at [[WP:ACC]], request #" . $row['pend_id']).'" target="_blank">Create!</a></p>';
-			}
+	if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
+	{
+		if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address.
+			// Create user link
+			$out .= '<p><b>Create account link:</b> <a class="request-req-create" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
+			$out .= $userurl . '&amp;wpEmail=' . urlencode($row['pend_email']) . '&amp;uselang=en-acc&amp;wpReason='.urlencode("Requested account at [[WP:ACC]], request #" . $row['pend_id']).'" target="_blank">Create!</a></p>';
 		}
 	}
+		
 	$out.="<p><b>Actions:</b> ";
 	$type = $row['pend_status'];
 	$checksum = $row['pend_checksum'];
