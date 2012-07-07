@@ -113,7 +113,7 @@ class LogPage
 			{
 				$logQuery.= "AND ";
 			}
-			$logQuery .= 'log_action = "'.$this->filterAction.'"';
+			$logQuery .= 'log_action LIKE "'.$this->filterAction.'"';
 		}
 		
 		if (!$count) {
