@@ -82,8 +82,8 @@ $ircBotNetworkPort = 6667;					// The port on the particular host.
 $ircBotChannel = "#wikipedia-en-accounts";	// The channel in which the discussions are.
 $ircBotNickname = "ACCBot";					// The nickname of the ACCBot.
 $ircBotCommandTrigger = '!';				// The ACCBot's command trigger.
-$ircBotSnsArn = "";							// SNS topic ARN 
-	
+
+$ircBotNotificationType = 1;				// Helpmebot's notification type ID.
 // Name of this instance of the tool.
 // This name would be used by the bot as reference point.	
 $whichami = 'Live';
