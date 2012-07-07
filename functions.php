@@ -923,7 +923,7 @@ function zoomPage($id,$urlhash)
 	}
 	
 	$loggerclass = new LogPage();
-	$loggerclass->$filterRequest=$gid;
+	$loggerclass->filterRequest=$gid;
 	$logs = $loggerclass->getRequestLogs();
 
 	
