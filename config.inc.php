@@ -176,6 +176,27 @@ $squidIpList = array();
 
 $apiDeployPassword = "super secret update password";
 
+// request states
+$availableRequestStates = array(
+	'Open' =>array(
+		'defertolog' => 'users', // don't change or you'll break old logs
+		'deferto' => 'users', 
+		'header' => 'Open requests',
+		),
+	'Admin'=>array(
+		'defertolog' => 'admins', // don't change or you'll break old logs
+		'deferto' => 'flagged users',
+		'header' => 'Flagged user needed',
+		),
+	'Checkuser'=>array(
+		'defertolog' => 'checkusers', // don't change or you'll break old logs
+		'deferto' => 'checkusers', 
+		'header' => 'Checkuser needed',
+		),
+	);
+	
+$defaultRequestStateKey = 'Open';
+
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********
 ***************************************************************************

@@ -225,17 +225,18 @@ function listrequests($type, $hideip, $correcthash) {
 	global $secure;
 	global $enableEmailConfirm;
 	global $session;
+	global $availableRequestStates;
 	if($secure != 1) { die("Not logged in"); }
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database.");
 
 	if ($enableEmailConfirm == 1) {
-		if ($type == 'Admin' || $type == 'Open' || $type == 'Checkuser') {
+		if (array_key_exists($type, $availableRequestStates)) {
 			$query = "SELECT * FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed';";
 		} else {
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
 		}
 	} else {
-		if ($type == 'Admin' || $type == 'Open' || $type == 'Checkuser') {
+		if (array_key_exists($type, $availableRequestStates)) {
 			$query = "SELECT * FROM acc_pend WHERE pend_status = '$type';";
 		} else {
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
@@ -276,9 +277,9 @@ function listrequests($type, $hideip, $correcthash) {
 		} else {
 			$out .= '>';
 		}
-		if ($type == 'Admin' || $type == 'Open' || $type == 'Checkuser') {
+		if (array_key_exists($type, $availableRequestStates)) {
 			$out .= '<td><small>' . $currentreq . '.    </small></td><td><small>'; //List item
-			$out .= $cmt .'</small></td><td><small>'; // CMT link.
+			$out .= $cmt .'</small></td><td><small>'; // zoom link.
 		} else {
 			$out .= '<td><small>' . "\n"; //List item
 		}
@@ -512,18 +513,16 @@ function getdevs() {
 }
 
 function defaultpage() {
-	global $tsSQLlink, $toolserver_database, $skin, $tsurl;
+	global $tsSQLlink, $toolserver_database, $skin, $tsurl, $availableRequestStates;
 	@mysql_select_db( $toolserver_database, $tsSQLlink) or sqlerror(mysql_error,"Could not select db");
-	$html =<<<HTML
-<h1>Create an account!</h1>
-<h2>Open requests</h2>
-HTML;
+	$html = '<h1>Create an account!</h1>';
 
-	$html .= listrequests("Open", TRUE, FALSE);
-	$html .= "<h2>Flagged user needed</h2>";
-	$html .= listrequests("Admin", TRUE, FALSE);
-	$html .= "<h2>Checkuser needed</h2>";
-	$html .= listrequests("Checkuser", TRUE, FALSE);
+	// list requests in each section
+	foreach($availableRequestStates as $k => $v) {
+		$html .= "<h2>".$v['header']."</h2>";
+		$html .= listrequests($k, TRUE, FALSE);
+	}	
+	
 	$html .= "<h2>Last 5 Closed requests</h2><a name='closed'></a><span id=\"closed\"/>\n";
 	$query = "SELECT pend_id, pend_name, pend_checksum FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
 	$result = mysql_query($query, $tsSQLlink);
@@ -604,7 +603,7 @@ function isOnWhitelist($user)
 
 function zoomPage($id,$urlhash)
 {
-	global $tsSQLlink, $session, $skin, $tsurl, $messages;
+	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates;
 
 	$out = "";
 	$gid = sanitize($id);
@@ -627,31 +626,58 @@ function zoomPage($id,$urlhash)
 	}
 	$sUser = $row['pend_name'];
 
+	//#region setup whether data is viewable or not
+	
+	// build the sql fragment of possible open states
+	$statesSqlFragment = " ";
+	foreach($availableRequestStates as $k => $v){
+		$statesSqlFragment .= "pend_status = '".sanitize($k)."' OR ";
+	}
+	$statesSqlFragment = rtrim($statesSqlFragment, " OR");
+	
 	$sessionuser = $_SESSION['userID'];
-	$query = "SELECT * FROM acc_pend WHERE pend_email = '" . mysql_real_escape_string($thisemail, $tsSQLlink) . "' AND pend_reserved = '" . mysql_real_escape_string($sessionuser, $tsSQLlink) . "' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
+	$query = "SELECT * FROM acc_pend WHERE pend_email = '" . 
+				mysql_real_escape_string($thisemail, $tsSQLlink) . 
+				"' AND pend_reserved = '" . 
+				mysql_real_escape_string($sessionuser, $tsSQLlink) . 
+				"' AND pend_mailconfirm = 'Confirmed' AND ( ".$statesSqlFragment." );";
 
 	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-	Die("Query failed: $query ERROR: " . mysql_error());
+	if (!$result) {
+		Die("Query failed: $query ERROR: " . mysql_error());
+	}
 	$hideemail = TRUE;
 	if (mysql_num_rows($result) > 0) {
 		$hideemail = FALSE;
 	}
 
 	$sessionuser = $_SESSION['userID'];
-	$query2 = "SELECT * FROM acc_pend WHERE pend_ip = '" . mysql_real_escape_string($thisip, $tsSQLlink) . "' AND pend_reserved = '" . mysql_real_escape_string($sessionuser, $tsSQLlink) . "' AND pend_mailconfirm = 'Confirmed' AND ( pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Checkuser' );";
+	$query2 = "SELECT * FROM acc_pend WHERE pend_ip = '" . 
+			mysql_real_escape_string($thisip, $tsSQLlink) . 
+			"' AND pend_reserved = '" .
+			mysql_real_escape_string($sessionuser, $tsSQLlink) . 
+			"' AND pend_mailconfirm = 'Confirmed' AND ( ".$statesSqlFragment." );";
 
 	$result2 = mysql_query($query2, $tsSQLlink);
-	if (!$result2)
-	Die("Query failed: $query2 ERROR: " . mysql_error());
+	
+	if (!$result2) {
+		Die("Query failed: $query2 ERROR: " . mysql_error());
+	}
+	
 	$hideip = TRUE;
-	if (mysql_num_rows($result2) > 0)
-	$hideip = FALSE;
+	
+	if (mysql_num_rows($result2) > 0) {
+		$hideip = FALSE;
+	}
+	
 	if( $hideip == FALSE || $hideemail == FALSE ) {
 		$hideinfo = FALSE;
 	} else {
 		$hideinfo = TRUE;
 	}
+	
+	//#endregion
+	
 	if ($row['pend_status'] == "Closed") {
 		$hash = md5($thisid. $thisemail . $thisip . microtime()); //If the request is closed, change the hash based on microseconds similar to the checksums.
 	} else {
@@ -729,7 +755,7 @@ function zoomPage($id,$urlhash)
 
 
 	global $protectReservedRequests;
-	if (!($type == 'Admin' || $type == 'Open' || $type == 'Checkuser')) {
+	if (!(array_key_exists($row['pend_status'], $availableRequestStates))) {
 		if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
 		{
 			if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address.
@@ -896,80 +922,10 @@ function zoomPage($id,$urlhash)
 		$out .= "<h2>Logs for this request:<small> (<a href='$tsurl/acc.php?action=comment&amp;id=$gid'>new comment</a>)</small></h2>";
 	}
 	
-	$query = "SELECT * FROM acc_log LEFT JOIN acc_user ON (user_name = log_user) WHERE log_pend='$thisid' AND log_action RLIKE '(Deferred to users|Deferred to admins|Deferred to checkusers|Closed 1|Closed 3|Closed 2|Closed 4|Closed 5|Closed 0|Closed 26|Closed 30|Closed custom|Closed custom-y|Closed custom-n|Blacklist Hit|DNSBL Hit|Reserved|Unreserved|BreakReserve|Email Confirmed)';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$logs = array();
-	while ($row = mysql_fetch_assoc($result)) {
-		switch ($row['log_action']) {
-			case 'Deferred to users':
-				$action = '<i>Deferred the request to users.</i>';
-				break;
-			case 'Deferred to admins':
-				$action = '<i>Deferred the request to admins.</i>';
-				break;
-			case 'Deferred to checkusers':
-				$action = '<i>Deferred the request to checkusers.</i>';
-				break;
-			case 'Closed 1':
-				$action = '<i>Closed the request as account created.</i>';
-				break;
-			case 'Closed 3':
-				$action = '<i>Closed the request as taken.</i>';
-				break;
-			case 'Closed 2':
-				$action = '<i>Closed the request as too similar.</i>';
-				break;
-			case 'Closed 4':
-				$action = '<i>Closed the request as a username policy violation.</i>';
-				break;
-			case 'Closed 5':
-				$action = '<i>Closed the request as technically impossible.</i>';
-				break;
-			case 'Closed 0':
-				$action = '<i>Dropped the request.</i>';
-				break;
-			case 'Closed 26':
-				$action = '<i>Closed the request as taken in SUL.</i>';
-				break;
-			case 'Closed 30':
-				$action = '<i>Closed the request as password reset.</i>';
-				break;
-			case 'Closed custom':
-				$action = '<i>Custom closed the request.</i>';
-				break;
-			case 'Closed custom-y':
-				$action = '<i>Custom closed the request, creating the account:</i> ' . str_replace("\n", '<br />', xss($row['log_cmt']));
-				break;
-			case 'Closed custom-n':
-				$action = '<i>Custom closed the request, without creating the account:</i> ' . str_replace("\n", '<br />', xss($row['log_cmt']));
-				break;
-			case 'Blacklist Hit':
-				$action = '<i>The request was rejected by the blacklist.</i>';
-				break;
-			case 'DNSBL Hit':
-				$action = '<i>The request was rejected by the blacklist.</i>';
-				break;
-			case 'Reserved':
-				$action = '<i>Reserved the request.</i>';
-				break;
-			case 'Unreserved':
-				$action = '<i>Unreserved the request.</i>';
-				break;
-			case 'BreakReserve':
-				$action = '<i>Broke the request reservation.</i>';
-				break;
-			case 'Email Confirmed':
-				$action = '<i>Email confirmed the request.</i>';
-				break;
-		}
-		if ($row['log_action'] == 'Email Confirmed' || $row['log_action'] == 'DNSBL Hit' || $row['log_action'] == 'Blacklist Hit')
-			$userid = null;
-		else
-			$userid = $row['user_id'];
-		$logs[] = array($row['log_time'], $userid, html_entity_decode($row['log_user']), $action, 'user');
-	}
+	$loggerclass = new LogPage();
+	$loggerclass->filterRequest=$gid;
+	$logs = $loggerclass->getRequestLogs();
+
 	
 	if ($session->hasright($_SESSION['user'], 'Admin')) {
 		$query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' ORDER BY cmt_id ASC;";
@@ -981,7 +937,9 @@ function zoomPage($id,$urlhash)
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	while ($row = mysql_fetch_assoc($result))
-		$logs[] = array($row['cmt_time'], $row['user_id'], html_entity_decode($row['cmt_user']), autolink($row['cmt_comment']), $row['cmt_visability']);
+		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => 0, 'comment' => html_entity_decode($row['cmt_comment']), 'action' => "comment", 'security' => $row['cmt_visability']);
+	
+	$namecache = array();
 	
 	if ($logs) {
 		$logs = doSort($logs);
@@ -989,19 +947,29 @@ function zoomPage($id,$urlhash)
 		$out .= "<table>";
 		foreach ($logs as $row) {
 			$rownumber += 1;
-			$date = $row[0];
-			$userid = $row[1];
-			$username = $row[2];
-			$action = $row[3];
+			$date = $row['time'];
+			$username = $row['user'];
+			if(!isset($namecache[$username])) {
+				$id = getUserIdFromName($username);
+				$namecache['$username'] = $id;
+			}
+			$userid = $namecache['$username'] ;
+			$action = $row['description'];
 			$out .= "<tr";
 			if ($rownumber % 2 == 0) {$out .= ' class="alternate"';}
 			$out .= "><td style=\"white-space: nowrap\">&nbsp;";
-			if ($userid)
+			if ($userid !== null)
 				$out .= "<a href='$tsurl/statistics.php?page=Users&amp;user=$userid'>$username</a>";
 			else
 				$out .= $username;
-			$out .= "&nbsp;</td><td>&nbsp;$action&nbsp;</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
-			if ($row[4] == "admin") {
+			if($row['action'] == "comment"){
+				$out .= "&nbsp;</td><td>&nbsp;".$row['comment']."&nbsp;</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
+			} elseif($row['action'] == "Closed custom-n" ||$row['action'] == "Closed custom-y"  ) {
+				$out .= "&nbsp;</td><td><em>&nbsp;$action&nbsp;:</em>".str_replace("\n", '<br />', xss($row['description']))."</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
+			} else {
+				$out .= "&nbsp;</td><td><em>&nbsp;$action&nbsp;</em></td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
+			}
+			if (isset($row['security']) && $row['security'] == "admin") {
 				$out .= "<td style=\"white-space: nowrap\">&nbsp;<font color='red'>(admin only)</font>&nbsp;</td>";
 			} else {
 				$out .= "";
@@ -1110,38 +1078,26 @@ function zoomPage($id,$urlhash)
 }
 
 function deferlinks($type, $checksum, $pendid) {
-	global $tsurl;
-	if ($type == 'Open') {
-		$target1 = 'admins';
-		$message1 = "Flagged Users";
-		$target2 = 'cu';
-		$message2 = "Checkusers";
-	}
-	elseif ($type == 'Admin') {
-		$target1 = 'users';
-		$message1 = "Users";
-		$target2 = 'cu';
-		$message2 = "Checkusers";
-	}
-	elseif ($type == 'Checkuser') {
-		$target1 = 'users';
-		$message1 = "Users";
-		$target2 = 'admins';
-		$message2 = "Flagged Users";
-	}
-		
-	if($type == "Admin" || $type == "Open" || $type == "Checkuser")
+	global $tsurl, $availableRequestStates, $defaultRequestStateKey;
+	
+	$out = " | Defer to: ";
+	
+	foreach(array_diff_key($availableRequestStates, array($type=>$availableRequestStates[$type])) as $k => $v)
 	{
-		$out .= " | Defer to: ";
-		$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=$target1\">$message1</a>";
-		$out .= " - ";
-		$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=$target2\">$message2</a>";
+		$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=".$k."\">".$v['deferto']."</a> - ";
+	}
+
+	$out = rtrim($out, '- ');
+
+	if(array_key_exists($type, $availableRequestStates))
+	{
+		return $out;
 	}
 	else
 	{
-		$out .= " | <a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=users\">Reset Request</a>";
+		return " | <a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=".$defaultRequestStateKey."\">Reset Request</a>";
 	}
-	return $out;
+	
 }
 
 function getToolVersion() {
@@ -1160,7 +1116,7 @@ function displayPreview($wikicode) {
  * A simple implementation of a bubble sort on a multidimensional array.
  *
  * @param array $items A two-dimensional array, to be sorted by a date variable
- * in the first field of the arrays inside the array passed.
+ * in the 'time' field of the arrays inside the array passed.
  * @return array sorted array.
  */
 function doSort(array $items)
@@ -1173,7 +1129,7 @@ function doSort(array $items)
 		// loop through the array
 		for ($i = 0; $i < (count($items) - 1); $i++) {
 			// are these two items out of order?
-			if(strtotime($items[$i][0]) > strtotime($items[$i + 1][0]))
+			if(strtotime($items[$i]['time']) > strtotime($items[$i + 1]['time']))
 			{
 				// swap them
 				$swap = $items[$i];
@@ -1250,4 +1206,16 @@ function showIPlinks($ip, $wikipediaurl, $metaurl) {
 	return $out;
 	
 }
+
+function getUserIdFromName($name) {
+	global $tsSQLlink;
+	$res = mysql_query("SELECT user_id FROM acc_user WHERE user_name = '" . mysql_real_escape_string($name, $tsSQLlink) . "';", $tsSQLlink);
+	if (!$res) {
+		return null;
+	}
+	
+	$r = mysql_fetch_assoc($res);
+	return $r['user_id'];
+}
+
 ?>

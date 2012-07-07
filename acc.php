@@ -19,6 +19,7 @@ ob_start();
 // Get all the classes.
 require_once 'config.inc.php';
 require_once 'devlist.php';
+require_once 'LogClass.php';
 require_once 'functions.php';
 require_once 'includes/captcha.php';
 require_once 'includes/database.php';
@@ -1213,19 +1214,13 @@ elseif ($action == "ban") {
 	}
 }
 elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
-	if ($_GET['target'] == "admins" || $_GET['target'] == "users" || $_GET['target'] == "cu") {
+	global $availableRequestStates;
+	$target = sanitize($_GET['target']);
+	
+	if (array_key_exists($target, $availableRequestStates)) {
+			
 		
-		// TODO: tidy up. hack in for ACC-136. stw -- 2010-03-31
-		if ($_GET['target'] == "admins") {
-			$target = "Admin";
-		} else if ($_GET['target'] == "users") {
-			$target = "Open";
-		} else if ($_GET['target'] == "cu") {
-			$target = "Checkuser";
-		}  else {
-			$target = "Open";
-		}
-		
+			
 		$gid = sanitize($_GET['id']);
 		if (csvalid($gid, $_GET['sum']) != 1) {
 			echo "Invalid checksum (This is similar to an edit conflict on Wikipedia; it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
@@ -1260,20 +1255,12 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 
-		// TODO: tidy up. hack in for ACC-136. stw -- 2010-03-31
-		if ($_GET['target'] == "admins") {
-			$deto = "flagged users";
-		} else if ($_GET['target'] == "users") {
-			$deto = "users";
-		} else if ($_GET['target'] == "cu") {
-			$deto = "checkusers";
-		}  else {
-			$deto = "users";
-		}
+		$deto = $availableRequestStates[$target]['deferto'];
+		$detolog = $availableRequestStates[$target]['defertolog'];
 
 
 		$now = date("Y-m-d H-i-s");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $deto', '$now');";
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $detolog', '$now');";
 		upcsum($gid);
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
@@ -1283,7 +1270,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		header("Location: acc.php");
 		die();
 	} else {
-		echo "Target not specified.<br />\n";
+		echo "Defer target not valid.<br />\n";
 	}
 }
 elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is deprecated, but to avoid conflicts, include it still.
@@ -1588,9 +1575,7 @@ elseif ($action == "logs") {
 				"Reserved" => "Request reservation",
 				"Unreserved" => "Request unreservation",
 				"BreakReserve" => "Break reservation",
-				"Deferred to users" => "Defer to users",
-				"Deferred to admins" => "Defer to account creators",
-				"Deferred to checkusers" => "Defer to checkusers",
+				"Deferred%" => "Deferred request",
 				"Closed 1" => "Request creation",
 				"Closed 3" => "Request taken",
 				"Closed 2" => "Request similarity",
