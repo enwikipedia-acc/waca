@@ -937,7 +937,7 @@ function zoomPage($id,$urlhash)
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	while ($row = mysql_fetch_assoc($result))
-		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => $rlp, 'comment' => html_entity_decode($row['cmt_comment']), 'action' => "comment", 'security' => $row['cmt_visability'])
+		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => $rlp, 'comment' => html_entity_decode($row['cmt_comment']), 'action' => "comment", 'security' => $row['cmt_visability']);
 	
 	if ($logs) {
 		$logs = doSort($logs);
