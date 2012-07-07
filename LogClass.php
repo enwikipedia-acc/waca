@@ -511,6 +511,7 @@ class LogPage
 					$requestlog[] = $entry;
 					break;
 				default:
+				$requestlog[] = $entry;
 					break;
 			}
 		}
