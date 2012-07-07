@@ -922,80 +922,10 @@ function zoomPage($id,$urlhash)
 		$out .= "<h2>Logs for this request:<small> (<a href='$tsurl/acc.php?action=comment&amp;id=$gid'>new comment</a>)</small></h2>";
 	}
 	
-	$query = "SELECT * FROM acc_log LEFT JOIN acc_user ON (user_name = log_user) WHERE log_pend='$thisid' AND log_action RLIKE '(Deferred to users|Deferred to admins|Deferred to checkusers|Closed 1|Closed 3|Closed 2|Closed 4|Closed 5|Closed 0|Closed 26|Closed 30|Closed custom|Closed custom-y|Closed custom-n|Blacklist Hit|DNSBL Hit|Reserved|Unreserved|BreakReserve|Email Confirmed)';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$logs = array();
-	while ($row = mysql_fetch_assoc($result)) {
-		switch ($row['log_action']) {
-			case 'Deferred to users':
-				$action = '<i>Deferred the request to users.</i>';
-				break;
-			case 'Deferred to admins':
-				$action = '<i>Deferred the request to admins.</i>';
-				break;
-			case 'Deferred to checkusers':
-				$action = '<i>Deferred the request to checkusers.</i>';
-				break;
-			case 'Closed 1':
-				$action = '<i>Closed the request as account created.</i>';
-				break;
-			case 'Closed 3':
-				$action = '<i>Closed the request as taken.</i>';
-				break;
-			case 'Closed 2':
-				$action = '<i>Closed the request as too similar.</i>';
-				break;
-			case 'Closed 4':
-				$action = '<i>Closed the request as a username policy violation.</i>';
-				break;
-			case 'Closed 5':
-				$action = '<i>Closed the request as technically impossible.</i>';
-				break;
-			case 'Closed 0':
-				$action = '<i>Dropped the request.</i>';
-				break;
-			case 'Closed 26':
-				$action = '<i>Closed the request as taken in SUL.</i>';
-				break;
-			case 'Closed 30':
-				$action = '<i>Closed the request as password reset.</i>';
-				break;
-			case 'Closed custom':
-				$action = '<i>Custom closed the request.</i>';
-				break;
-			case 'Closed custom-y':
-				$action = '<i>Custom closed the request, creating the account.</i>';
-				break;
-			case 'Closed custom-n':
-				$action = '<i>Custom closed the request, without creating the account.</i>';
-				break;
-			case 'Blacklist Hit':
-				$action = '<i>The request was rejected by the blacklist.</i>';
-				break;
-			case 'DNSBL Hit':
-				$action = '<i>The request was rejected by the blacklist.</i>';
-				break;
-			case 'Reserved':
-				$action = '<i>Reserved the request.</i>';
-				break;
-			case 'Unreserved':
-				$action = '<i>Unreserved the request.</i>';
-				break;
-			case 'BreakReserve':
-				$action = '<i>Broke the request reservation.</i>';
-				break;
-			case 'Email Confirmed':
-				$action = '<i>Email confirmed the request.</i>';
-				break;
-		}
-		if ($row['log_action'] == 'Email Confirmed' || $row['log_action'] == 'DNSBL Hit' || $row['log_action'] == 'Blacklist Hit')
-			$userid = null;
-		else
-			$userid = $row['user_id'];
-		$logs[] = array($row['log_time'], $userid, html_entity_decode($row['log_user']), $action, 'user');
-	}
+	$loggerclass = new LogClass();
+	$loggerclass->$filterRequest=$gid;
+	$logs = $loggerclass->getRequestLogs();
+
 	
 	if ($session->hasright($_SESSION['user'], 'Admin')) {
 		$query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' ORDER BY cmt_id ASC;";
@@ -1007,7 +937,7 @@ function zoomPage($id,$urlhash)
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	while ($row = mysql_fetch_assoc($result))
-		$logs[] = array($row['cmt_time'], $row['user_id'], html_entity_decode($row['cmt_user']), autolink($row['cmt_comment']), $row['cmt_visability']);
+		$logs[] array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => $rlp, 'comment' => html_entity_decode($row['cmt_comment']), 'action' => "comment", 'security' => $row['cmt_visability'])
 	
 	if ($logs) {
 		$logs = doSort($logs);
@@ -1015,10 +945,10 @@ function zoomPage($id,$urlhash)
 		$out .= "<table>";
 		foreach ($logs as $row) {
 			$rownumber += 1;
-			$date = $row[0];
-			$userid = $row[1];
-			$username = $row[2];
-			$action = $row[3];
+			$date = $row['time'];
+			$userid = 0;
+			$username = $row['user'];
+			$action = $row['description'];
 			$out .= "<tr";
 			if ($rownumber % 2 == 0) {$out .= ' class="alternate"';}
 			$out .= "><td style=\"white-space: nowrap\">&nbsp;";
@@ -1026,8 +956,12 @@ function zoomPage($id,$urlhash)
 				$out .= "<a href='$tsurl/statistics.php?page=Users&amp;user=$userid'>$username</a>";
 			else
 				$out .= $username;
-			$out .= "&nbsp;</td><td>&nbsp;$action&nbsp;</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
-			if ($row[4] == "admin") {
+			if($row['action'] == "comment"){
+				$out .= "&nbsp;</td><td>&nbsp;".$row['comment']."&nbsp;</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
+			} else {
+				$out .= "&nbsp;</td><td><em>&nbsp;$action&nbsp;</em></td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
+			}
+			if ($row['security'] == "admin") {
 				$out .= "<td style=\"white-space: nowrap\">&nbsp;<font color='red'>(admin only)</font>&nbsp;</td>";
 			} else {
 				$out .= "";
