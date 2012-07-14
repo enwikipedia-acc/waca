@@ -4,7 +4,7 @@
 #$ -l virtual_free=50M
 #$ -l user_slot=10
 #$ -j y
-#$ -o $HOME/sge.iptable.out
+#$ -o $HOME/sge/iptable.out
 #$ -m a
 
 ### Resource limits:

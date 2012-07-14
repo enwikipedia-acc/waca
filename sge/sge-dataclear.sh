@@ -4,7 +4,7 @@
 #$ -l virtual_free=50M
 #$ -l user_slot=1
 #$ -j y
-#$ -o $HOME/sge.dataclear.out
+#$ -o $HOME/sge/dataclear.out
 #$ -m a
 
 ### Resource limits:

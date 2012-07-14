@@ -4,7 +4,7 @@
 #$ -l virtual_free=500M
 #$ -l user_slot=10
 #$ -j y
-#$ -o $HOME/sge.backup.out
+#$ -o $HOME/sge/backup.out
 #$ -m a
 
 

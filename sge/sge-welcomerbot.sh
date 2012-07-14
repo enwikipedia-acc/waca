@@ -4,7 +4,7 @@
 #$ -l sql=1
 #$ -l user_slot=1
 #$ -j y
-#$ -o $HOME/sge.welcomerbot.out
+#$ -o $HOME/sge/welcomerbot.out
 #$ -m a
 
 ### Resource limits:

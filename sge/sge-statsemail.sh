@@ -4,7 +4,7 @@
 #$ -l user_slot=1
 #$ -l sql=1
 #$ -j y
-#$ -o $HOME/sge.statsemail.out
+#$ -o $HOME/sge/statsemail.out
 #$ -m a
 
 
