@@ -627,34 +627,8 @@ class accRequest {
 	}
 	
 	public function blockedOnEn() {
-		// Get global variable from configuration file and an object from the index file.
-		global $dontUseWikiDb, $asSQL, $skin, $messages;
-		
-		if(!$dontUseWikiDb) {
-			// Formulates and executes the SQL query to check if the IP is blocked on the Eng Wiki. 
-			$query = 'SELECT * FROM ipblocks WHERE ipb_address = \''.$asSQL->escape($_SERVER['REMOTE_ADDR']).'\';';
-			$result = $asSQL->query($query);
-			
-			// Get number of rows in the result.
-			$rows = mysql_num_rows($result);
-			
-			// When there where rows preset it means that there is a block on the IP.
-			// There is also checked if the IP is not on the Eng Wiki Whitelist.
-			if(($rows > 0) && !$this->isOnWhitelist($_SERVER['REMOTE_ADDR'])) {												
-				// Gets message to display to the user.
-				$message = $messages->getMessage(9);
-			
-				// Displays the appropiate message to the user.
-				echo "$message<br />\n";
-				
-				// Display the footer of the interface.
-				$skin->displayPfooter();
-			
-				// Terminates the current script, as the user is banned.
-				// This is done because the requesting process should be stopped. 
-				die();
-			}
-		}
+		// not working, and not needed. Also causing problems with other things
+		// TODO: remove all calls to this function.
 	}
 	
 	public function doDnsBlacklistCheck() {
