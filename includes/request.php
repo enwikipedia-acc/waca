@@ -354,6 +354,11 @@ class accRequest {
 		$parts = explode("@", $email);
 		$username = isset($parts[0]) ? $parts[0] : '';
 		$domain = isset($parts[1]) ? $parts[1] : '';
+		
+		if(strpos($username, ",") !== false) {
+			return false;
+		}
+		
 		if (function_exists('checkdnsrr')) {
 			getmxrr($domain, $mxhosts, $mxweight);
 			if (count($mxhosts) > 0) {
