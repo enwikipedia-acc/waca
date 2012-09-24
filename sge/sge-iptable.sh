@@ -6,6 +6,7 @@
 #$ -j y
 #$ -o $HOME/sge/iptable.out
 #$ -m a
+#$ -l arch=sol
 
 ### Resource limits:
 ###  30 minute hard runtime (est)

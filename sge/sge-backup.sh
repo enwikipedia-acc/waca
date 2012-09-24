@@ -6,7 +6,7 @@
 #$ -j y
 #$ -o $HOME/sge/backup.out
 #$ -m a
-
+#$ -l arch=sol
 
 ### Resource limits:
 ###  60 minute hard runtime (est)

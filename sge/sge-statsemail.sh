@@ -6,7 +6,7 @@
 #$ -j y
 #$ -o $HOME/sge/statsemail.out
 #$ -m a
-
+#$ -l arch=sol
 
 ### Resource limits:
 ###  10 minute hard runtime (est)
