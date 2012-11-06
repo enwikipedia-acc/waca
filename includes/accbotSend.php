@@ -28,7 +28,7 @@ class accbotSend {
 
 		$msg = chr(2)."[$whichami]".chr(2).": $message";
 
-		$database = new database("notif"); 
+		$database = new database("toolserver"); 
 		$database->query("insert into acc_notifications.notification values (null,null,".$ircBotNotificationType.",'".$database->escape($msg)."');");
  
 		return;
