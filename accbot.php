@@ -37,7 +37,7 @@ ini_set('display_errors',1);
 	$realname = 'ACC Bot';
 	$fp = null;
 	$fpt = null;
-        $sqlResource = null;
+    $sqlResource = false;
 
 
 	// Signal handlers
@@ -71,7 +71,7 @@ ini_set('display_errors',1);
 	}
 
 	function myq( $query ) {
-		global $mysql, $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database;
+		global $mysql, $toolserver_username, $toolserver_password, $toolserver_host, $toolserver_database, $sqlResource;
 
 		if( !$sqlResource || !mysql_ping($sqlResource) ) {
 			$sqlResource = mysql_connect( $toolserver_host, $toolserver_username, $toolserver_password, true );
@@ -114,7 +114,7 @@ ini_set('display_errors',1);
 
 	// Code entry point.
 
-	if ( $_SERVER['REMOTE_ADDR'] != '' ) { 
+	if ( isset($_SERVER['REMOTE_ADDR']) && $_SERVER['REMOTE_ADDR'] != '' ) { 
 		header( 'Location: http://localhost:8080/' );
 		die(); 
 	}
