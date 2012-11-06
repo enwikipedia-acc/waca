@@ -55,11 +55,11 @@ class database {
 			}
 		}
 		elseif($name==='notif') {
-				global $toolserver_username, $toolserver_password;
-				$this->connect("dbmaster.helpmebot.org.uk", $toolserver_username, $toolserver_password, "acc_notifications");
+			global $toolserver_username, $toolserver_password, $toolserver_host;
+			$this->connect($toolserver_host, $toolserver_username, $toolserver_password, "acc_notif");
 
-				// Assigns the specific databases's name to be used later.
-				$this->db = $name;
+			// Assigns the specific databases's name to be used later.
+			$this->db = $name;
 		}
 	}
 	
