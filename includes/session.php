@@ -88,7 +88,7 @@ class session {
 	}
 	public function hasright($username, $checkright) {
 		global $tsSQL;
-    if(isCheckuser($username) && $checkright == "Admin") {
+    if($this->isCheckuser($username) && $checkright == "Admin") {
       return true;
     }
 		$username = $tsSQL->escape($username);
