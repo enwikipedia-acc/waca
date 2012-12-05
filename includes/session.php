@@ -77,6 +77,9 @@ class session {
 	
 	public function hasright($username, $checkright) {
 		global $tsSQL;
+    if(isCheckuser($username) && $checkright == "Admin") {
+      return true;
+    }
 		$username = $tsSQL->escape($username);
 		$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
 		$result = $tsSQL->query($query);
@@ -88,7 +91,7 @@ class session {
 		foreach( $rights as $right) {
 			if($right == $checkright ) {
 				return true;
-			}
+      }
 		}
 		return false;
 	}
