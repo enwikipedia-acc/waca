@@ -19,7 +19,6 @@ ob_start();
 // Get all the classes.
 require_once 'config.inc.php';
 require_once 'devlist.php';
-require_once 'LogClass.php';
 require_once 'functions.php';
 require_once 'includes/captcha.php';
 require_once 'includes/database.php';
@@ -890,8 +889,8 @@ elseif ($action == "templatemgmt") {
 elseif ($action == "sban") {
 	
 	// Checks whether the current user is an admin.
-	if(!$session->hasright($_SESSION['user'], "Admin")) {
-		die("Only administrators may ban users");
+	if(!$session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user'])) {
+		die("Only administrators or checkusers may ban users");
 	}
 	
 	// Checks whether there is a reason entered for ban.
@@ -997,9 +996,9 @@ elseif ($action == "unban" && $_GET['id'] != "")
 {
 	$siuser = sanitize($_SESSION['user']);
 
-	if(!$session->hasright($_SESSION['user'], "Admin"))
+	if($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))
 	{
-		die("Only administrators may unban users");
+		die("Only administrators or checkusers may unban users");
 	}
 	$bid = sanitize($_GET['id']);
 	$query = "SELECT * FROM acc_ban WHERE ban_id = '$bid' AND (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1;";
@@ -1071,8 +1070,8 @@ elseif ($action == "unban" && $_GET['id'] != "")
 elseif ($action == "ban") {
 	$siuser = sanitize($_SESSION['user']);
 	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name'])) {
-		if(!$session->hasright($_SESSION['user'], "Admin"))
-			die("Only administrators may ban users");
+		if(!$session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))
+			die("Only administrators or checkusers may ban users");
 		if (isset($_GET['ip'])) {
 			$ip2 = sanitize($_GET['ip']);
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$ip2';";
@@ -1214,13 +1213,19 @@ elseif ($action == "ban") {
 	}
 }
 elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
-	global $availableRequestStates;
-	$target = sanitize($_GET['target']);
-	
-	if (array_key_exists($target, $availableRequestStates)) {
-			
+	if ($_GET['target'] == "admins" || $_GET['target'] == "users" || $_GET['target'] == "cu") {
 		
-			
+		// TODO: tidy up. hack in for ACC-136. stw -- 2010-03-31
+		if ($_GET['target'] == "admins") {
+			$target = "Admin";
+		} else if ($_GET['target'] == "users") {
+			$target = "Open";
+		} else if ($_GET['target'] == "cu") {
+			$target = "Checkuser";
+		}  else {
+			$target = "Open";
+		}
+		
 		$gid = sanitize($_GET['id']);
 		if (csvalid($gid, $_GET['sum']) != 1) {
 			echo "Invalid checksum (This is similar to an edit conflict on Wikipedia; it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
@@ -1255,22 +1260,30 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 
-		$deto = $availableRequestStates[$target]['deferto'];
-		$detolog = $availableRequestStates[$target]['defertolog'];
+		// TODO: tidy up. hack in for ACC-136. stw -- 2010-03-31
+		if ($_GET['target'] == "admins") {
+			$deto = "flagged users";
+		} else if ($_GET['target'] == "users") {
+			$deto = "users";
+		} else if ($_GET['target'] == "cu") {
+			$deto = "checkusers";
+		}  else {
+			$deto = "users";
+		}
 
 
 		$now = date("Y-m-d H-i-s");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $detolog', '$now');";
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $deto', '$now');";
 		upcsum($gid);
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 		$accbotSend->send("Request $gid deferred to $deto by $sid");
-		$skin->displayRequestMsg("Request " . sanitize($_GET['id']) . " deferred to $deto.");
+		$skin->displayRequestMsg("Request " . $_GET['id'] . " deferred to $deto.");
 		header("Location: acc.php");
 		die();
 	} else {
-		echo "Defer target not valid.<br />\n";
+		echo "Target not specified.<br />\n";
 	}
 }
 elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is deprecated, but to avoid conflicts, include it still.
@@ -1431,9 +1444,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		if (!isset($_POST['msgbody']) or empty($_POST['msgbody'])) {
 			$querystring = htmlspecialchars($_SERVER["QUERY_STRING"],ENT_COMPAT,'UTF-8'); //Send it through htmlspecialchars so HTML validators don't complain. 
 			echo "<form action='?".$querystring."' method='post'>\n";
-			echo "<p>Please enter your message to the user below.</p>";
-			echo "<p><strong>Please note that this content will be sent as the entire body of an email to the user, so remember to close the email properly with a signature (not ~~~~ either).</strong></p>";
-			echo "\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
+			echo "<p>Message:</p>\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
 			echo "<p><input type='checkbox' name='created' />Account created</p>\n";
 			echo "<p><input type='checkbox' name='ccmailist' checked='checked'";
 			if (!($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user'])))
@@ -1453,9 +1464,6 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			
 			mail($row2['pend_email'], "RE: [ACC #$gid] English Wikipedia Account Request", $_POST['msgbody'], $headers);
 			
-			$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $gid . "';";
-			$result = mysql_query($query, $tsSQLlink);
-		
 			if (isset($_POST['created']) && $_POST['created'] == "on") {
 				$gem  = 'custom-y';
 			} else {
@@ -1482,7 +1490,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
 	$now = date("Y-m-d H-i-s");
-	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$gid', '$sid', 'Closed $gem', '$now', " . (isset($_POST['msgbody']) ? ("'" . sanitize($_POST['msgbody']) . "'") : "''") . ");";
+	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Closed $gem', '$now');";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
@@ -1524,7 +1532,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$accbotSend->send("Request " . $_GET['id'] . " (" . $row2['pend_name'] . ") Marked as 'Done' ($crea) by " . $_SESSION['user'] . " on $now");
 	$skin->displayRequestMsg("Request " . $_GET['id'] . " (" . htmlentities($row2['pend_name'],ENT_COMPAT,'UTF-8') . ") marked as 'Done'.<br />");
 	$towhom = $row2['pend_email'];
-	if ($gem != "0" && $gem != 'custom' && $gem != 'custom-y' && $gem != 'custom-n') {
+	if ($gem != "0") {
 		sendemail($gem, $towhom, $gid);
 		$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $gid . "';";
 		$result = mysql_query($query, $tsSQLlink);
@@ -1575,7 +1583,9 @@ elseif ($action == "logs") {
 				"Reserved" => "Request reservation",
 				"Unreserved" => "Request unreservation",
 				"BreakReserve" => "Break reservation",
-				"Deferred%" => "Deferred request",
+				"Deferred to users" => "Defer to users",
+				"Deferred to admins" => "Defer to account creators",
+				"Deferred to checkusers" => "Defer to checkusers",
 				"Closed 1" => "Request creation",
 				"Closed 3" => "Request taken",
 				"Closed 2" => "Request similarity",
@@ -1809,7 +1819,7 @@ elseif ($action == "breakreserve") {
 	if( $reservedBy != $_SESSION['userID'] )
 	{
 		global $enableAdminBreakReserve;
-		if($enableAdminBreakReserve && $session->hasright($_SESSION['user'], "Admin")) {
+		if($enableAdminBreakReserve && ($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))) {
 			if(isset($_GET['confirm']) && $_GET['confirm'] == 1)	
 			{
 				$query = "UPDATE `acc_pend` SET `pend_reserved` = '0' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
