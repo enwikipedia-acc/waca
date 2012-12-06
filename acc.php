@@ -1137,7 +1137,6 @@ elseif ($action == "ban") {
 		echo "<h2>Active Ban List</h2>\n<table border='1'>\n";
 		echo "<tr><th>Type</th><th>IP/Name/Email</th><th>Banned by</th><th>Reason</th><th>Time</th><th>Expiry</th>";
 		$isAdmin = $session->hasright($_SESSION['user'], "Admin");
-		$isCheckuser = $session->isCheckuser($_SESSION['user']);
 		if ($isAdmin) {
 			echo "<td>Unban</td>";
 		}
