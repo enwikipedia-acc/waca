@@ -997,7 +997,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 {
 	$siuser = sanitize($_SESSION['user']);
 
-	if($session->hasright($_SESSION['user'], "Admin") || !$session->isCheckuser($_SESSION['user']))
+	if($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))
 	{
 		die("Only administrators or checkusers may unban users");
 	}
