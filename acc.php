@@ -891,7 +891,7 @@ elseif ($action == "sban") {
 	
 	// Checks whether the current user is an admin.
 	if(!$session->hasright($_SESSION['user'], "Admin")) {
-		die("Only administrators may ban users");
+		die("Only administrators or checkusers may ban users");
 	}
 	
 	// Checks whether there is a reason entered for ban.
@@ -999,7 +999,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 
 	if(!$session->hasright($_SESSION['user'], "Admin"))
 	{
-		die("Only administrators may unban users");
+		die("Only administrators or checkusers may unban users");
 	}
 	$bid = sanitize($_GET['id']);
 	$query = "SELECT * FROM acc_ban WHERE ban_id = '$bid' AND (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1;";
@@ -1072,7 +1072,7 @@ elseif ($action == "ban") {
 	$siuser = sanitize($_SESSION['user']);
 	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name'])) {
 		if(!$session->hasright($_SESSION['user'], "Admin"))
-			die("Only administrators may ban users");
+			die("Only administrators or checkusers may ban users");
 		if (isset($_GET['ip'])) {
 			$ip2 = sanitize($_GET['ip']);
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$ip2';";
@@ -1137,7 +1137,6 @@ elseif ($action == "ban") {
 		echo "<h2>Active Ban List</h2>\n<table border='1'>\n";
 		echo "<tr><th>Type</th><th>IP/Name/Email</th><th>Banned by</th><th>Reason</th><th>Time</th><th>Expiry</th>";
 		$isAdmin = $session->hasright($_SESSION['user'], "Admin");
-		$isCheckuser = $session->isCheckuser($_SESSION['user']);
 		if ($isAdmin) {
 			echo "<td>Unban</td>";
 		}
@@ -1157,11 +1156,11 @@ elseif ($action == "ban") {
 			{
 				case "IP":
 					echo '<td>';
-					if ($isAdmin || $isCheckuser) { 
+					if ($isAdmin) { 
 						echo '<a href="' . $tsurl . '/search.php?term='.$row['ban_target'].'&amp;type=IP">';
 					}
 					echo $row['ban_target'];
-					if ($isAdmin || $isCheckuser) { 
+					if ($isAdmin) { 
 						echo '</a>';
 					}
 					echo '</td>';
@@ -1187,7 +1186,7 @@ elseif ($action == "ban") {
 			echo "</tr>";
 		}
 		echo "</table>\n";
-		if($isAdmin) {
+		if ($isAdmin) {
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
 			echo "<form action=\"$tsurl/acc.php?action=sban\" method=\"post\">";
 			echo "<table>";
@@ -1240,7 +1239,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		$row2 = mysql_fetch_assoc($result2);
 		$date->modify("-7 days");
 		$oneweek = $date->format("Y-m-d H:i:s");
-		if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && ! ($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))) {
+		if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && ! ($session->hasright($_SESSION['user'], "Admin"))) {
 			$skin->displayRequestMsg("Only administrators and checkusers can reopen a request that has been closed for over a week.");	
 			$skin->displayIfooter();
 			die();
@@ -1436,7 +1435,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			echo "\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
 			echo "<p><input type='checkbox' name='created' />Account created</p>\n";
 			echo "<p><input type='checkbox' name='ccmailist' checked='checked'";
-			if (!($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user'])))
+			if (!($session->hasright($_SESSION['user'], "Admin")))
 				echo " DISABLED";
 			echo "/>Cc to mailing list</p>\n";
 			echo "<p><input type='submit' value='Close and send' /></p>\n";
@@ -1446,7 +1445,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		} else {
 			
 			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
-			if (!($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user'])) || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on")
+			if (!($session->hasright($_SESSION['user'], "Admin")) || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on")
 				$headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
 			$headers .= 'X-ACC-Request: ' . $gid . "\r\n";
 			$headers .= 'X-ACC-UserID: ' . $_SESSION['userID'] . "\r\n";
@@ -1693,7 +1692,7 @@ elseif ($action == "reserve") {
 	$row2 = mysql_fetch_assoc($result2);
 	$date->modify("-7 days");
 	$oneweek = $date->format("Y-m-d H:i:s");
-	if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && !($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))) {
+	if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && !($session->hasright($_SESSION['user'], "Admin"))) {
 		$skin->displayRequestMsg("Only administrators and checkusers can reserve a request that has been closed for over a week.");	
 		$skin->displayIfooter();
 		die();
@@ -1809,7 +1808,7 @@ elseif ($action == "breakreserve") {
 	if( $reservedBy != $_SESSION['userID'] )
 	{
 		global $enableAdminBreakReserve;
-		if($enableAdminBreakReserve && $session->hasright($_SESSION['user'], "Admin")) {
+		if($enableAdminBreakReserve && ($session->hasright($_SESSION['user'], "Admin"))) {
 			if(isset($_GET['confirm']) && $_GET['confirm'] == 1)	
 			{
 				$query = "UPDATE `acc_pend` SET `pend_reserved` = '0' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";

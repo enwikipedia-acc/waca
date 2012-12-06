@@ -444,6 +444,10 @@ if (mysql_num_rows($result) != 0){
 echo <<<HTML
 <div id="usermgmt-users">
 <h2>Users</h2>
+<p style="
+    font-size: x-small;
+    color: gray;
+">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
 HTML;
 
 
@@ -470,6 +474,10 @@ echo <<<HTML
 </div>
 <div id="usermgmt-admins">
 <h2>Admins</h2>
+<p style="
+    font-size: x-small;
+    color: gray;
+">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
 HTML;
 
 
@@ -531,6 +539,10 @@ echo <<<HTML
 <h2>Tool Checkuser access</h2>
 <div class="showhide" id="showhide-checkuser-link" onclick="showhide('showhide-checkuser');">[show]</div>
 <div id="showhide-checkuser" style="display: none;">
+<p style="
+    font-size: x-small;
+    color: gray;
+">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
 HTML;
 
 $query = "SELECT * FROM acc_user WHERE user_checkuser = '1';";
