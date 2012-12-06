@@ -74,33 +74,6 @@ class session {
 			die( $skin->displayIfooter() );
 		}
 	}
-	
-	public function hasright($username, $checkright) {
-		global $tsSQL;
-		$username = $tsSQL->escape($username);
-		$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
-		$result = $tsSQL->query($query);
-		if (!$result) {
-			$tsSQL->showError("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-		}
-		$row = mysql_fetch_assoc($result);
-		$rights = explode(':', $row['user_level']);
-		foreach( $rights as $right) {
-			if($right == $checkright ) {
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	
-	/**
-	 * Enter description here ...
-	 * @param unknown_type $username
-	 * @return boolean|Ambigous <>
-	 * 
-	 * @deprecated
-	 */
 	public function isCheckuser($username) {
 		global $tsSQL;
 		$username = $tsSQL->escape($username);
@@ -113,6 +86,36 @@ class session {
 		$row = mysql_fetch_assoc($result);
 		return $row['user_checkuser'];
 	}
+	public function hasright($username, $checkright) {
+		global $tsSQL;
+    if($this->isCheckuser($username) && $checkright == "Admin") {
+      return true;
+    }
+		$username = $tsSQL->escape($username);
+		$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
+		$result = $tsSQL->query($query);
+		if (!$result) {
+			$tsSQL->showError("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+		}
+		$row = mysql_fetch_assoc($result);
+		$rights = explode(':', $row['user_level']);
+		foreach( $rights as $right) {
+			if($right == $checkright ) {
+				return true;
+      }
+		}
+		return false;
+	}
+	
+	
+	/**
+	 * Enter description here ...
+	 * @param unknown_type $username
+	 * @return boolean|Ambigous <>
+	 * 
+	 * @deprecated
+	 */
+
 	
 	public function checksecurity($username) {
 		/*
