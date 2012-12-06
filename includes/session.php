@@ -74,23 +74,9 @@ class session {
 			die( $skin->displayIfooter() );
 		}
 	}
-	public function isCheckuser($username) {
-		global $tsSQL;
-		$username = $tsSQL->escape($username);
-		$query = "SELECT user_checkuser FROM acc_user WHERE user_name = '$username';";
-		$result = $tsSQL->query($query);
-		if (!$result) {
-			$tsSQL->showError("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-			return false;
-		}
-		$row = mysql_fetch_assoc($result);
-		return $row['user_checkuser'];
-	}
+	
 	public function hasright($username, $checkright) {
 		global $tsSQL;
-    if($this->isCheckuser($username) && $checkright == "Admin") {
-      return true;
-    }
 		$username = $tsSQL->escape($username);
 		$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
 		$result = $tsSQL->query($query);
@@ -102,7 +88,7 @@ class session {
 		foreach( $rights as $right) {
 			if($right == $checkright ) {
 				return true;
-      }
+			}
 		}
 		return false;
 	}
@@ -115,7 +101,18 @@ class session {
 	 * 
 	 * @deprecated
 	 */
-
+	public function isCheckuser($username) {
+		global $tsSQL;
+		$username = $tsSQL->escape($username);
+		$query = "SELECT user_checkuser FROM acc_user WHERE user_name = '$username';";
+		$result = $tsSQL->query($query);
+		if (!$result) {
+			$tsSQL->showError("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+			return false;
+		}
+		$row = mysql_fetch_assoc($result);
+		return $row['user_checkuser'];
+	}
 	
 	public function checksecurity($username) {
 		/*
