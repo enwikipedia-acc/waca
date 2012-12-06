@@ -19,6 +19,7 @@ ob_start();
 // Get all the classes.
 require_once 'config.inc.php';
 require_once 'devlist.php';
+require_once 'LogClass.php';
 require_once 'functions.php';
 require_once 'includes/captcha.php';
 require_once 'includes/database.php';
@@ -889,7 +890,7 @@ elseif ($action == "templatemgmt") {
 elseif ($action == "sban") {
 	
 	// Checks whether the current user is an admin.
-	if(!$session->hasright($_SESSION['user'], "Admin")) {
+	if(!$session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user'])) {
 		die("Only administrators or checkusers may ban users");
 	}
 	
@@ -996,7 +997,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 {
 	$siuser = sanitize($_SESSION['user']);
 
-	if($session->hasright($_SESSION['user'], "Admin"))
+	if($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))
 	{
 		die("Only administrators or checkusers may unban users");
 	}
@@ -1070,7 +1071,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 elseif ($action == "ban") {
 	$siuser = sanitize($_SESSION['user']);
 	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name'])) {
-		if(!$session->hasright($_SESSION['user'], "Admin"))
+		if(!$session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))
 			die("Only administrators or checkusers may ban users");
 		if (isset($_GET['ip'])) {
 			$ip2 = sanitize($_GET['ip']);
@@ -1213,19 +1214,13 @@ elseif ($action == "ban") {
 	}
 }
 elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
-	if ($_GET['target'] == "admins" || $_GET['target'] == "users" || $_GET['target'] == "cu") {
+	global $availableRequestStates;
+	$target = sanitize($_GET['target']);
+	
+	if (array_key_exists($target, $availableRequestStates)) {
+			
 		
-		// TODO: tidy up. hack in for ACC-136. stw -- 2010-03-31
-		if ($_GET['target'] == "admins") {
-			$target = "Admin";
-		} else if ($_GET['target'] == "users") {
-			$target = "Open";
-		} else if ($_GET['target'] == "cu") {
-			$target = "Checkuser";
-		}  else {
-			$target = "Open";
-		}
-		
+			
 		$gid = sanitize($_GET['id']);
 		if (csvalid($gid, $_GET['sum']) != 1) {
 			echo "Invalid checksum (This is similar to an edit conflict on Wikipedia; it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
@@ -1245,7 +1240,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		$row2 = mysql_fetch_assoc($result2);
 		$date->modify("-7 days");
 		$oneweek = $date->format("Y-m-d H:i:s");
-		if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && ! ($session->hasright($_SESSION['user'], "Admin"))) {
+		if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && ! ($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))) {
 			$skin->displayRequestMsg("Only administrators and checkusers can reopen a request that has been closed for over a week.");	
 			$skin->displayIfooter();
 			die();
@@ -1260,30 +1255,22 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 
-		// TODO: tidy up. hack in for ACC-136. stw -- 2010-03-31
-		if ($_GET['target'] == "admins") {
-			$deto = "flagged users";
-		} else if ($_GET['target'] == "users") {
-			$deto = "users";
-		} else if ($_GET['target'] == "cu") {
-			$deto = "checkusers";
-		}  else {
-			$deto = "users";
-		}
+		$deto = $availableRequestStates[$target]['deferto'];
+		$detolog = $availableRequestStates[$target]['defertolog'];
 
 
 		$now = date("Y-m-d H-i-s");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $deto', '$now');";
+		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $detolog', '$now');";
 		upcsum($gid);
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 		$accbotSend->send("Request $gid deferred to $deto by $sid");
-		$skin->displayRequestMsg("Request " . $_GET['id'] . " deferred to $deto.");
+		$skin->displayRequestMsg("Request " . sanitize($_GET['id']) . " deferred to $deto.");
 		header("Location: acc.php");
 		die();
 	} else {
-		echo "Target not specified.<br />\n";
+		echo "Defer target not valid.<br />\n";
 	}
 }
 elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is deprecated, but to avoid conflicts, include it still.
@@ -1444,10 +1431,12 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		if (!isset($_POST['msgbody']) or empty($_POST['msgbody'])) {
 			$querystring = htmlspecialchars($_SERVER["QUERY_STRING"],ENT_COMPAT,'UTF-8'); //Send it through htmlspecialchars so HTML validators don't complain. 
 			echo "<form action='?".$querystring."' method='post'>\n";
-			echo "<p>Message:</p>\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
+			echo "<p>Please enter your message to the user below.</p>";
+			echo "<p><strong>Please note that this content will be sent as the entire body of an email to the user, so remember to close the email properly with a signature (not ~~~~ either).</strong></p>";
+			echo "\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
 			echo "<p><input type='checkbox' name='created' />Account created</p>\n";
 			echo "<p><input type='checkbox' name='ccmailist' checked='checked'";
-			if (!($session->hasright($_SESSION['user'], "Admin")))
+			if (!($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user'])))
 				echo " DISABLED";
 			echo "/>Cc to mailing list</p>\n";
 			echo "<p><input type='submit' value='Close and send' /></p>\n";
@@ -1457,13 +1446,16 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		} else {
 			
 			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
-			if (!($session->hasright($_SESSION['user'], "Admin")) || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on")
+			if (!($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user'])) || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on")
 				$headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
 			$headers .= 'X-ACC-Request: ' . $gid . "\r\n";
 			$headers .= 'X-ACC-UserID: ' . $_SESSION['userID'] . "\r\n";
 			
 			mail($row2['pend_email'], "RE: [ACC #$gid] English Wikipedia Account Request", $_POST['msgbody'], $headers);
 			
+			$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $gid . "';";
+			$result = mysql_query($query, $tsSQLlink);
+		
 			if (isset($_POST['created']) && $_POST['created'] == "on") {
 				$gem  = 'custom-y';
 			} else {
@@ -1490,7 +1482,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
 	$now = date("Y-m-d H-i-s");
-	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Closed $gem', '$now');";
+	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$gid', '$sid', 'Closed $gem', '$now', " . (isset($_POST['msgbody']) ? ("'" . sanitize($_POST['msgbody']) . "'") : "''") . ");";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
@@ -1532,7 +1524,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$accbotSend->send("Request " . $_GET['id'] . " (" . $row2['pend_name'] . ") Marked as 'Done' ($crea) by " . $_SESSION['user'] . " on $now");
 	$skin->displayRequestMsg("Request " . $_GET['id'] . " (" . htmlentities($row2['pend_name'],ENT_COMPAT,'UTF-8') . ") marked as 'Done'.<br />");
 	$towhom = $row2['pend_email'];
-	if ($gem != "0") {
+	if ($gem != "0" && $gem != 'custom' && $gem != 'custom-y' && $gem != 'custom-n') {
 		sendemail($gem, $towhom, $gid);
 		$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $gid . "';";
 		$result = mysql_query($query, $tsSQLlink);
@@ -1583,9 +1575,7 @@ elseif ($action == "logs") {
 				"Reserved" => "Request reservation",
 				"Unreserved" => "Request unreservation",
 				"BreakReserve" => "Break reservation",
-				"Deferred to users" => "Defer to users",
-				"Deferred to admins" => "Defer to account creators",
-				"Deferred to checkusers" => "Defer to checkusers",
+				"Deferred%" => "Deferred request",
 				"Closed 1" => "Request creation",
 				"Closed 3" => "Request taken",
 				"Closed 2" => "Request similarity",
@@ -1703,7 +1693,7 @@ elseif ($action == "reserve") {
 	$row2 = mysql_fetch_assoc($result2);
 	$date->modify("-7 days");
 	$oneweek = $date->format("Y-m-d H:i:s");
-	if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && !($session->hasright($_SESSION['user'], "Admin"))) {
+	if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && !($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))) {
 		$skin->displayRequestMsg("Only administrators and checkusers can reserve a request that has been closed for over a week.");	
 		$skin->displayIfooter();
 		die();
@@ -1819,7 +1809,7 @@ elseif ($action == "breakreserve") {
 	if( $reservedBy != $_SESSION['userID'] )
 	{
 		global $enableAdminBreakReserve;
-		if($enableAdminBreakReserve && ($session->hasright($_SESSION['user'], "Admin"))) {
+		if($enableAdminBreakReserve && ($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))) {
 			if(isset($_GET['confirm']) && $_GET['confirm'] == 1)	
 			{
 				$query = "UPDATE `acc_pend` SET `pend_reserved` = '0' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
