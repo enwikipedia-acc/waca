@@ -890,7 +890,7 @@ elseif ($action == "templatemgmt") {
 elseif ($action == "sban") {
 	
 	// Checks whether the current user is an admin.
-	if(!$session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user'])) {
+	if(!$session->hasright($_SESSION['user'], "Admin") || !$session->isCheckuser($_SESSION['user'])) {
 		die("Only administrators or checkusers may ban users");
 	}
 	
@@ -997,7 +997,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 {
 	$siuser = sanitize($_SESSION['user']);
 
-	if($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))
+	if($session->hasright($_SESSION['user'], "Admin") || !$session->isCheckuser($_SESSION['user']))
 	{
 		die("Only administrators or checkusers may unban users");
 	}
@@ -1071,7 +1071,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 elseif ($action == "ban") {
 	$siuser = sanitize($_SESSION['user']);
 	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name'])) {
-		if(!$session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))
+		if(!$session->hasright($_SESSION['user'], "Admin") || !$session->isCheckuser($_SESSION['user']))
 			die("Only administrators or checkusers may ban users");
 		if (isset($_GET['ip'])) {
 			$ip2 = sanitize($_GET['ip']);
@@ -1436,7 +1436,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			echo "\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
 			echo "<p><input type='checkbox' name='created' />Account created</p>\n";
 			echo "<p><input type='checkbox' name='ccmailist' checked='checked'";
-			if (!($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user'])))
+			if (!($session->hasright($_SESSION['user'], "Admin") || !$session->isCheckuser($_SESSION['user'])))
 				echo " DISABLED";
 			echo "/>Cc to mailing list</p>\n";
 			echo "<p><input type='submit' value='Close and send' /></p>\n";
@@ -1446,7 +1446,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		} else {
 			
 			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
-			if (!($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user'])) || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on")
+			if (!($session->hasright($_SESSION['user'], "Admin") || !$session->isCheckuser($_SESSION['user'])) || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on")
 				$headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
 			$headers .= 'X-ACC-Request: ' . $gid . "\r\n";
 			$headers .= 'X-ACC-UserID: ' . $_SESSION['userID'] . "\r\n";
