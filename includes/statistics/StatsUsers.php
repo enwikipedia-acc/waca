@@ -83,7 +83,7 @@ class StatsUsers extends StatisticsPage
 		}
 		$out.= "</ul>\n<br /><h3>Checkusers</h3>\n";
 		
-		$result = $tsSQL->query("SELECT * FROM acc_user ORDER BY user_name WHERE user_checkuser = 1;");
+		$result = $tsSQL->query("SELECT * FROM acc_user WHERE user_checkuser = 1 ORDER BY user_name;");
 		if (!$result)
 		{
 			return $out."<p>No checkusers found.</p>";
