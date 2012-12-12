@@ -81,7 +81,7 @@ class StatsUsers extends StatisticsPage
 			}
 			$lastlevel = $row['user_level']; // Set lastlevel to the level of this user so we can see if we need to start a new list
 		}
-		$out.= "</ul>\n<br /><h3>Checkusers</h3>\n";
+		$out.= "</ul><h3>Checkusers</h3>\n";
 		
 		$result = $tsSQL->query("SELECT * FROM acc_user WHERE user_checkuser = 1 ORDER BY user_name;");
 		if (!$result)
