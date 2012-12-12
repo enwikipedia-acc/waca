@@ -537,8 +537,8 @@ echo <<<HTML
 </ol>
 </div>
 <h2>Tool Checkuser access</h2>
-//<div class="showhide" id="showhide-checkuser-link" onclick="showhide('showhide-checkuser');">[show]</div>
-//<div id="showhide-checkuser" style="display: none;">  Display Automatically instead
+<!--<div class="showhide" id="showhide-checkuser-link" onclick="showhide('showhide-checkuser');">[show]</div>
+<div id="showhide-checkuser" style="display: none;">  Display Automatically instead -->
 <p style="
     font-size: x-small;
     color: gray;
@@ -560,7 +560,7 @@ while ($row = mysql_fetch_assoc($result)) {
 
 echo <<<HTML
 </ol>
-//</div>
+<!--</div>-->
 <h2>Suspended accounts</h2>
 <div class="showhide" id="showhide-suspended-link" onclick="showhide('showhide-suspended');">[show]</div>
 <div id="showhide-suspended" style="display: none;">
