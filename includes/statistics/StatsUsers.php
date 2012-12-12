@@ -81,9 +81,29 @@ class StatsUsers extends StatisticsPage
 			}
 			$lastlevel = $row['user_level']; // Set lastlevel to the level of this user so we can see if we need to start a new list
 		}
-		$out.= "</ul>\n<br />\n";
+		$out.= "</ul>\n<br /><h3>Checkusers</h3>\n";
 		
-		return $out;
+		$result = $tsSQL->query("SELECT * FROM acc_user ORDER BY user_name WHERE user_checkuser = 1;");
+		if (!$result)
+		{
+			return $out."<p>No checkusers found.</p>";
+		}
+		$out .="<ul>";
+		
+		while ($row = mysql_fetch_assoc($result)) // Return the result of the database query as an associative array; then , for each row returned...
+		{
+			// We only want to list the user if they were approved and are not currently on suspension
+			if ($row['user_level'] != "Suspended" && $row['user_level'] != "Declined" && $row['user_level'] != "New")
+			{
+				$out.= "<li><a href=\"?page=Users&amp;user=" . $row['user_id'] . "\">"; // Start list item, link to user page
+				$uid = array ($row['user_name'], $row['user_onwikiname'], $row['user_id']); // Build an array of the user's name, onwiki name, and ID to compare with users in devlist
+				// Write the users name
+				$out.= $row['user_name'];
+				$out.= "</a></li>\n"; // End the list item
+			}
+		}
+		
+		return $out . "</ul>";
 	}
 	
 	function getUserDetail($userId)
