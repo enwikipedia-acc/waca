@@ -55,7 +55,7 @@ class StatsUsers extends StatisticsPage
 		$lastlevel = NULL;
 		while ($row = mysql_fetch_assoc($result)) // Return the result of the database query as an associative array; then , for each row returned...
 		{
-			if ($row['user_level'] != $lastlevel && $row['user_level'] != "Suspended" && $row['user_level'] != "Declined" && $row['user_level'] != "New")
+			if ($row['user_level'] != $lastlevel && $row['user_level'] != "Suspended" && $row['user_level'] != "Declined" && $row['user_level'] != "New" && $row['user_checkuser'] != 1)
 			{
 				// If the user level has changed, we are on the next group of users (ie, if it was admin and is now user, then we must start a new ordered list for users
 				if ($lastlevel == NULL)
@@ -81,12 +81,12 @@ class StatsUsers extends StatisticsPage
 			}
 			$lastlevel = $row['user_level']; // Set lastlevel to the level of this user so we can see if we need to start a new list
 		}
-		$out.= "</ul><h3>Checkusers</h3>\n";
+		$out.= "</ul><h3>CheckUsers</h3>\n";
 		
 		$result = $tsSQL->query("SELECT * FROM acc_user WHERE user_checkuser = 1 ORDER BY user_name;");
 		if (!$result)
 		{
-			return $out."<p>No checkusers found.</p>";
+			return $out."<p>No CheckUsers found.</p>";
 		}
 		$out .="<ul>";
 		
