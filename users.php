@@ -444,10 +444,10 @@ if (mysql_num_rows($result) != 0){
 echo <<<HTML
 <div id="usermgmt-users">
 <h2>Users</h2>
-<p style="
+<!--<p style="
     font-size: x-small;
     color: gray;
-">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
+">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p> Supressing as CUs should not show here-->
 HTML;
 
 
