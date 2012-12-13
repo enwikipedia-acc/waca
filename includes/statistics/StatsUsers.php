@@ -46,7 +46,7 @@ class StatsUsers extends StatisticsPage
 	{
 		global $tsSQL;
 		$out = "";
-		$result = $tsSQL->query("SELECT * FROM acc_user ORDER BY user_level, user_name WHERE user_checkuser != 1 OR user_level = 'Admin';");
+		$result = $tsSQL->query("SELECT * FROM acc_user WHERE user_checkuser != 1 OR user_level = 'Admin' ORDER BY user_level, user_name;");
 		if (!$result)
 		{
 			return "No users found.";
