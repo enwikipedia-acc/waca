@@ -304,8 +304,9 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$checkname = mysql_fetch_assoc($result);
-		if ($checkname['user_name'] != htmlentities($_POST['oldname']))
-			Die("Rename form corrupted");
+		if ($checkname['user_name'] != htmlentities($_POST['oldname'],ENT_COMPAT,'UTF-8'))
+			Die("Rename form corrupted: " . $checkname['user_name'] . " != " . 
+htmlentities($_POST['oldname'],ENT_COMPAT,'UTF-8'));
 		if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$oldname';")) != 1 || mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$newname';")) != 0)
 			die("Target username in use, or current user does not exist.");
 		$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_id = '$userid';";
