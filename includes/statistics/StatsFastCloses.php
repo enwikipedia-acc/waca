@@ -50,7 +50,7 @@ ORDER BY
 QUERY;
 		global $tsurl;
 		$qb = new QueryBrowser();
-		$qb->tableCallbackFunction = "rowCallback";
+		$qb->tableCallbackFunction = "statsFastClosesRowCallback";
 		$r = $qb->executeQueryToTable($query); 
 		echo mysql_error();
 
@@ -73,30 +73,31 @@ QUERY;
 	{
 		return false;		
 	}
-	
-	function rowCallback($row, $currentreq)
-	{
-		$out.=  '<tr';
-		if ($currentreq % 2 == 0) {
-			$out.=  ' class="alternate">';
-		} else {
-			$out.=  '>';
-		}
-		
-		$colid = 0;
-		foreach ($row as $cell) {
-			$out .= "<td>" ;
-			
-			if($colid == 0) $out .= "<a href=\"" . $tsurl . "/acc.php?action=zoom&id=" . $cell . "\">";
-			
-			$out .= $cell;
-			
-			if($colid == 0) $out .= "</a>";
-			
-			$out .= "</td>";
-			$colid++;
-		}
-
-		$out.="</tr>";
-	}
 }
+
+function statsFastClosesRowCallback($row, $currentreq)
+{
+	$out.=  '<tr';
+	if ($currentreq % 2 == 0) {
+		$out.=  ' class="alternate">';
+	} else {
+		$out.=  '>';
+	}
+	
+	$colid = 0;
+	foreach ($row as $cell) {
+		$out .= "<td>" ;
+		
+		if($colid == 0) $out .= "<a href=\"" . $tsurl . "/acc.php?action=zoom&id=" . $cell . "\">";
+		
+		$out .= $cell;
+		
+		if($colid == 0) $out .= "</a>";
+		
+		$out .= "</td>";
+		$colid++;
+	}
+
+	$out.="</tr>";
+}
+
