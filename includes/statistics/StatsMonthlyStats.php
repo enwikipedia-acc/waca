@@ -64,16 +64,29 @@ class StatsMonthlyStats extends StatisticsPage
 				),
 				
 				// Disabled by stw 11/nov/2010 - somehow broken. Let's allow the new log entry to settle before we put this live. :)
+				// Re-enabled by stw 18/dec/2012 - I think that's enough settle time.
 				array(
 					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed 30' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
 					'series' => "Password Reset requests by month"
 				),
 				array(
-					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed custom' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
-					'series' => "Custom requests by month"
-				)
+					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed custom-y' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
+					'series' => "Custom created requests by month"
+				),
+				array(
+					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed custom-n' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
+					'series' => "Custom not created requests by month"
+				),
 			);
 
+			global $availableRequestStates;
+			foreach ($availableRequestStates as $state)
+			{
+				$queries[] = array(
+					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Deferred to ".$state['defertolog']."' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
+					'series' => "Requests deferred to ".$state['deferto']." by month"
+				);
+			}
 			
 			global $tsurl;
 			foreach ($this->createClosuresGraph($queries) as $i) {
