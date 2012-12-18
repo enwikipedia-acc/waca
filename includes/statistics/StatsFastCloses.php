@@ -50,6 +50,7 @@ ORDER BY
 QUERY;
 		global $tsurl;
 		$qb = new QueryBrowser();
+		$qb->tableCallbackFunction = "rowCallback";
 		$r = $qb->executeQueryToTable($query); 
 		echo mysql_error();
 
@@ -86,11 +87,11 @@ QUERY;
 		foreach ($row as $cell) {
 			$out .= "<td>" ;
 			
-			if($colid = 0) $out .= "<a href=\"" . $tsurl . "/acc.php?action=zoom&id=" . $cell . "\">";
+			if($colid == 0) $out .= "<a href=\"" . $tsurl . "/acc.php?action=zoom&id=" . $cell . "\">";
 			
 			$out .= $cell;
 			
-			if($colid = 0) $out .= "</a>";
+			if($colid == 0) $out .= "</a>";
 			
 			$out .= "</td>";
 			$colid++;
