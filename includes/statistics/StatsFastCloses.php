@@ -21,8 +21,8 @@ class StatsFastCloses extends StatisticsPage
 		$query = <<<QUERY
 SELECT
   Closed.log_pend AS Request,
-  u.user_id AS UserID,
   Closed.log_user AS User,
+  u.user_id AS UserID,
   TIMEDIFF(Closed.log_time, Reserved.log_time) AS "Time Taken",
   mail_desc AS "Close Type",
   Closed.log_time AS "Date"
