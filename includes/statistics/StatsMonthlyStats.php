@@ -64,10 +64,10 @@ class StatsMonthlyStats extends StatisticsPage
 				),
 				
 				// Disabled by stw 11/nov/2010 - somehow broken. Let's allow the new log entry to settle before we put this live. :)
-				/*array(
+				array(
 					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed 30' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
 					'series' => "Password Reset requests by month"
-				),*/ 
+				),
 				array(
 					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed custom' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
 					'series' => "Custom requests by month"
