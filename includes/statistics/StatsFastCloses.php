@@ -85,6 +85,9 @@ function statsFastClosesRowCallback($row, $currentreq)
 	}
 	
 	$colid = 0;
+	
+	global $tsurl;
+	
 	foreach ($row as $cell) {
 		$out .= "<td>" ;
 		
