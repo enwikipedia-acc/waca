@@ -56,6 +56,7 @@ QUERY;
 		$qb->tableCallbackFunction = "statsFastClosesRowCallback";
 		$qb->overrideTableTitles = 
 			array( "Request", "User", "Time Taken", "Close Type", "Date" );
+		$qb->rowFetchMode = MYSQL_NUM;
 		$r = $qb->executeQueryToTable($query); 
 		echo mysql_error();
 
