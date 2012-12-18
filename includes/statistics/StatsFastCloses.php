@@ -96,12 +96,18 @@ function statsFastClosesRowCallback($row, $currentreq)
 		
 		$out .= "<td>" ;
 		
-		if($colid == 0) $out .= "<a href=\"" . $tsurl . "/acc.php?action=zoom&id=" . $cell . "\">";
-		if($colid == 1) $out .= "<a href=\"" . $tsurl . "/statistics.php/Users?user=" . $row[++$colid] . "\">";
+		if($colid == 0) {
+			$out .= "<a href=\"" . $tsurl . "/acc.php?action=zoom&id=" . $cell . "\">";
+		}
+		if($colid == 1) {
+			$out .= "<a href=\"" . $tsurl . "/statistics.php/Users?user=" . $row[++$colid] . "\">";
+		}
 		
 		$out .= $cell;
 		
-		if($colid == 0 | $colid == 2 ) $out .= "</a>"; // colid is now 2 if triggered from above due to postinc
+		if($colid == 0 || $colid == 2 ) {
+			$out .= "</a>"; // colid is now 2 if triggered from above due to postinc
+		}
 		
 		$out .= "</td>";
 	}
