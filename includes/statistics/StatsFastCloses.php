@@ -99,5 +99,7 @@ function statsFastClosesRowCallback($row, $currentreq)
 	}
 
 	$out.="</tr>";
+	
+	return $out;
 }
 
