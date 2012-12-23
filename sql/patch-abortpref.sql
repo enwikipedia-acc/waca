@@ -1,1 +1,0 @@
-ALTER TABLE .`acc_user` ADD COLUMN `user_abortpref` TINYINT NOT NULL DEFAULT 0;
