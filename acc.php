@@ -1909,10 +1909,7 @@ elseif ($action == "comment-add") {
         <a href='$tsurl/acc.php?action=zoom&amp;id=$id&amp;hash=$urlhash'>Return to request #$id</a>";
         $botcomment_pvt =  ($visibility == "admin") ? "private " : "";
         $botcomment = $user . " posted a " . $botcomment_pvt . "comment on request " . $id;
-        if($visibility != 'admin')
-        {
-        	$botcomment .= ': ' . $_POST['comment'];
-        }
+
         $accbotSend->send($botcomment);
     } else {
         echo "ERROR: A required input is missing <br />
@@ -1939,7 +1936,7 @@ elseif ($action == "comment-quick") {
         if (!$result) {
             sqlerror("Query failed: $query ERROR: " . mysql_error());
         }
-        $botcomment = $user . " posted a comment on request " . $id . ': ' . $comment;
+        $botcomment = $user . " posted a comment on request " . $id;
         $accbotSend->send($botcomment);
 
 	header("Location: acc.php?action=zoom&id=".$id);
