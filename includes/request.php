@@ -706,7 +706,7 @@ class accRequest {
 		$ue = unserialize($userexist);
 		if (!isset ($ue['query']['users']['0']['missing'])) {
 			$message = $messages->getMessage(10);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:10 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -717,7 +717,7 @@ class accRequest {
 		$ue = unserialize($userexist);
 		if (isset ($ue['query']['globaluserinfo']['id'])) {
 			$message = $messages->getMessage(28);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:28 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -725,7 +725,7 @@ class accRequest {
 		$nums = preg_match("/^[0-9]+$/", $_POST['name']);
 		if ($nums > 0) {
 			$message = $messages->getMessage(11);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:11 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -733,7 +733,7 @@ class accRequest {
 		$unameismail = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/i', $_POST['name']);
 		if ($unameismail > 0) {
 			$message = $messages->getMessage(12);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:12 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -741,21 +741,21 @@ class accRequest {
 		$unameisinvalidchar = preg_match('/[\#\/\|\[\]\{\}\@\%\:\~\<\>]/', $_POST['name']);
 		if ($unameisinvalidchar > 0 || ltrim( rtrim( $_POST['name'] == "" ) ) ) {
 			$message = $messages->getMessage(13);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:13 -->$message<br />\n");
 			$fail = 1;
 		}
 		
 		// Checks whether the email adresses match.
 		if($_POST['email'] != $_POST['emailconfirm']) {
 			$message = $messages->getMessage(27);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:27 -->$message<br />\n");
 			$fail = 1;
 		}
 		
 		// Checks whether the email adress is valid.
 		if (!$this->emailvalid($_POST['email'])) {
 			$message = $messages->getMessage(14);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:14a -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -763,7 +763,7 @@ class accRequest {
 		$mailiswmf = preg_match('/.*@.*wiki(m.dia|p.dia)\.(org|com)/i', $email);
 		if ($mailiswmf != 0) {
 			$message = $messages->getMessage(14);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:14b -->$message<br />\n");
 			$fail = 1;
 		}
 
@@ -773,7 +773,7 @@ class accRequest {
 		if ($trailingspace == " " || $trailingspace == "_"  ) {
 			// TODO: WTF?!? Message 25 does not exist in the database. 2010-03-06 stw.
 			$message = $messages->getMessage(25);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:25 -->$message<br />\n");
 			$fail = 1;
 		}
 
@@ -783,7 +783,7 @@ class accRequest {
 		$row = mysql_fetch_assoc($result);
 		if ($row['pend_id'] != "") {
 			$message = $messages->getMessage(17);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:17 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -793,7 +793,7 @@ class accRequest {
 		$row = mysql_fetch_assoc($result);
 		if ($row['pend_id'] != "") {
 			$message = $messages->getMessage(18);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:18 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -804,7 +804,7 @@ class accRequest {
 			$message = $messages->getMessage(16);
 			
 			// Displays the appropiate message to the user.
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:16 -->$message<br />\n");
 			
 			// Display the request form and footer of the interface.
 			$skin->displayRequest();
