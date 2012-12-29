@@ -2009,7 +2009,9 @@ elseif ($action == "ec") { // edit comment
 	
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 		mysql_query("UPDATE acc_cmt SET cmt_comment = \"".mysql_real_escape_string($_POST['newcomment'],$tsSQLlink)."\" WHERE cmt_id = \"".sanitize($_GET['id'])."\" LIMIT 1;");
-		
+		$now = date("Y-m-d H-i-s");
+		mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('".sanitize($_GET['id'])."', '".sanitize($_SESSION['user'])."', 'EditComment-c', '$now');");
+		mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('".sanitize($row["pend_id"])."', '".sanitize($_SESSION['user'])."', 'EditComment-r', '$now');");
 		
 		header("Location: " . $_SERVER['REQUEST_URI']);
 	}
