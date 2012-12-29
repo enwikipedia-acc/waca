@@ -54,7 +54,7 @@ class internalInterface {
 		
 		// Runs a query to get all the users that was active the last 5 minutes.
 		if ($count) {
-			$query = "SELECT count(user_id) FROM acc_user WHERE user_lastactive > '$last5mins';";
+			$query = "SELECT count(user_id) as num FROM acc_user WHERE user_lastactive > '$last5mins';";
 		} else {
 			$query = "SELECT user_name,user_id FROM acc_user WHERE user_lastactive > '$last5mins';";
 		}
@@ -67,7 +67,7 @@ class internalInterface {
 		
 		if ($count) {
 			$row = mysql_fetch_assoc($result);
-			return $row['user_id'];
+			return $row['num'];
 		}
 		
 		// Creates new array.
