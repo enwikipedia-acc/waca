@@ -491,6 +491,20 @@ class LogPage
 		foreach($entirelog as $entry)
 		{
 			switch($entry['action']){
+				case "Approved":
+				case "badpass":
+				case "Banned":
+				case "CreatedTemplate":
+				case "Declined":
+				case "DeletedTemplate":
+				case "Edited":
+				case "EditedTemplate":
+				case "Prefchange":
+				case "Promoted":
+				case "Renamed":
+				case "Suspended":
+				case "Unbanned":
+					break;
 				case "Deferred":
 				case "Closed":
 				case "Closed 0":
