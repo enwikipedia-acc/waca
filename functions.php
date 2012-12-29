@@ -126,7 +126,7 @@ function getSpoofs( $username ) {
 		} else {
 			return ( $return[1] );
 		}
-	} else { return "Thi function is currently disabled."; }
+	} else { return "This function is currently disabled."; }
 }
 
 function sanitise($what) { return sanitize($what); }
