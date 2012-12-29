@@ -1996,6 +1996,30 @@ elseif ($action == "changepassword") {
 	$skin->displayIfooter();
 	die();
 }
+elseif ($action == "ec") { // edit comment
+	if(!$session->hasright($_SESSION['user'], "Admin")) { die("Unauthorised.");}
+	if(!isset($_GET['id']) || !( !is_int($_GET['id']) ? (ctype_digit($_GET['id'])) : true ) ) {die("No comment found.");}
+	
+	$result = mysql_query("SELECT * FROM acc_cmt WHERE cmt_id = '" . sanitize($_GET['id']) . "';");
+	$row = mysql_fetch_assoc($result);
+	
+	if($row==false) {die("No comment found.");}
+	
+	// get[id] is safe by this point.
+	
+	echo "<h2>Edit comment #".$_GET['id']."</h2>"; 
+	global $tsurl;
+	echo "<strong>Time:</strong>&nbsp;" . $row['cmt_time'] . "<br />";
+	echo "<strong>Author:</strong>&nbsp;" . $row['cmt_user'] . "<br />";
+	echo "<strong>Security:</strong>&nbsp;" . $row['cmt_visability'] . "<br />";
+	echo "<strong>Request:</strong>&nbsp;<a href=\"".$tsurl."/acc.php?action=zoom&id=".$row['pend_id']."\">#" . $row['pend_id'] . "</a><br />";
+	
+	echo "<pre>".$row['cmt_comment']."</pre>";
+		
+	$skin->displayIfooter();
+	die();
+}
+
 /*
  * Commented out by stw:
  *  a) wrong. Check the code in the bot to figure out what will actually happen.

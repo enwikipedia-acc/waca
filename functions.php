@@ -937,10 +937,14 @@ function zoomPage($id,$urlhash)
 		$query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' AND (cmt_visability = 'user' OR cmt_user = '$user') ORDER BY cmt_id ASC;";
 	}
 	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
+	
+	if (!$result) {
 		Die("Query failed: $query ERROR: " . mysql_error());
-	while ($row = mysql_fetch_assoc($result))
-		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => 0, 'comment' => html_entity_decode($row['cmt_comment']), 'action' => "comment", 'security' => $row['cmt_visability']);
+	}
+	
+	while ($row = mysql_fetch_assoc($result)) {
+		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => 0, 'comment' => html_entity_decode($row['cmt_comment']), 'action' => "comment", 'security' => $row['cmt_visability'], 'id' => $row['cmt_id']);
+	}
 	
 	if($request_comment !== ""){
 		$logs[] = array(
@@ -980,6 +984,11 @@ function zoomPage($id,$urlhash)
 				$out .= $username;
 			if($row['action'] == "comment"){
 				$out .= "&nbsp;</td><td>&nbsp;".$row['comment']."&nbsp;</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
+			
+				global $enableCommentEditing;
+				if($enableCommentEditing && $session->hasright($_SESSION['user'], 'Admin') && isset($row['id'])) {
+					$out .= "<td><a href=\"$tsurl/acc.php?action=ec&amp;id=".$row['id']."\">Edit</a></td>";
+				}
 			} elseif($row['action'] == "Closed custom-n" ||$row['action'] == "Closed custom-y"  ) {
 				$out .= "&nbsp;</td><td><em>&nbsp;$action:&nbsp;</em><br />".str_replace("\n", '<br />', xss($row['comment']))."</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
 			} else {
