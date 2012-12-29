@@ -2007,17 +2007,30 @@ elseif ($action == "ec") { // edit comment
 	
 	// get[id] is safe by this point.
 	
-	echo "<h2>Edit comment #".$_GET['id']."</h2>"; 
-	global $tsurl;
-	echo "<strong>Time:</strong>&nbsp;" . $row['cmt_time'] . "<br />";
-	echo "<strong>Author:</strong>&nbsp;" . $row['cmt_user'] . "<br />";
-	echo "<strong>Security:</strong>&nbsp;" . $row['cmt_visability'] . "<br />";
-	echo "<strong>Request:</strong>&nbsp;<a href=\"".$tsurl."/acc.php?action=zoom&id=".$row['pend_id']."\">#" . $row['pend_id'] . "</a><br />";
-	
-	echo "<pre>".$row['cmt_comment']."</pre>";
+	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+		mysql_query("UPDATE acc_cmt SET cmt_comment = \"".mysql_real_escape_string($_POST['newcomment'],$tsSQLlink)."\" WHERE cmt_id = \"".sanitize($_GET['id'])."\" LIMIT 1;");
 		
-	$skin->displayIfooter();
-	die();
+		
+		header("Location: " . $_SERVER['REQUEST_URI']);
+	}
+	else {	
+		echo "<h2>Edit comment #".$_GET['id']."</h2>"; 
+		global $tsurl;
+		echo "<strong>Time:</strong>&nbsp;" . $row['cmt_time'] . "<br />";
+		echo "<strong>Author:</strong>&nbsp;" . $row['cmt_user'] . "<br />";
+		echo "<strong>Security:</strong>&nbsp;" . $row['cmt_visability'] . "<br />";
+		echo "<strong>Request:</strong>&nbsp;<a href=\"".$tsurl."/acc.php?action=zoom&id=".$row['pend_id']."\">#" . $row['pend_id'] . "</a><br />";
+		
+		echo "<strong>Old text:</strong><pre>".$row['cmt_comment']."</pre>";
+		
+		echo "<form method=\"post\">";
+		echo "<input type=\"text\" size=\"100\" name=\"newcomment\" value=\"".htmlentities($row['cmt_comment'],ENT_COMPAT,'UTF-8')."\" />";
+		echo "<input type=\"submit\" />";
+		echo "</form>";
+			
+		$skin->displayIfooter();
+		die();
+	}
 }
 
 /*
