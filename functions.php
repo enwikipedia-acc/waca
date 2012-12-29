@@ -256,7 +256,12 @@ function listrequests($type, $hideip, $correcthash) {
 		$uname = urlencode($row['pend_name']);
 		$uname = str_replace("%26amp%3B", "%26", $uname);
 		$rid = $row['pend_id'];
-		if ($row['pend_cmt'] != "") {
+		
+		$data = mysql_query("SELECT COUNT(*) as num FROM acc_cmt where pend_id = '" . $rid . "';");
+		$commentcountrow = mysql_fetch_assoc($data);
+		$commentcount=$commentcountrow['num'];
+		
+		if ($row['pend_cmt'] != ""  || $commentcount != 0) {
 			$cmt = "<a class=\"request-src\" href=\"$tsurl/acc.php?action=zoom&amp;id=$rid\">Zoom (CMT)</a> ";
 		} else {
 			$cmt = "<a class=\"request-src\" href=\"$tsurl/acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
