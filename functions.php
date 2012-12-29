@@ -720,7 +720,7 @@ function zoomPage($id,$urlhash)
 	$userurl = urlencode($sUser);
 	$userurl = str_replace("%26amp%3B", "%26", $userurl);
 	
-	if($dontUseWikiDb == 0) {
+	
 	$out .= '<p><b>Username links:</b> <a class="request-req" href="'.$wikipediaurl.'w/index.php?title=User:';
 	$out .= $userurl . '" target="_blank">User page</a> | ';
 
@@ -735,19 +735,18 @@ function zoomPage($id,$urlhash)
     $out .= '<a class="request-req" href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
     $out .= $userurl. '" target="_blank">alt</a> | ';
     
-  //Show Special:CentralAuth link due to bug 35792 <https://bugzilla.wikimedia.org/show_bug.cgi?id=35792>
-  $out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
-  $out .= $userurl.'" target="_blank">Special:CentralAuth</a> ) | ';
+    //Show Special:CentralAuth link due to bug 35792 <https://bugzilla.wikimedia.org/show_bug.cgi?id=35792>
+    $out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
+    $out .= $userurl.'" target="_blank">Special:CentralAuth</a> ) | ';
 
 	// 	User list
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
 	$out .= $userurl . '&amp;group=&amp;limit=1" target="_blank">Username list</a> | ';
-	}
+	
 	//TODO: add an api query to display editcount and blocks if we can't access the s1 cluster -- MM 09/04/11
-	else {
-		$out .= '<a class="request-req" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=';
-		$out .= $thisip. '" target="_blank">Single User Lookup</a> | ';
-	}
+	
+	$out .= '<a class="request-req" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=';
+	$out .= $thisip. '" target="_blank">Single User Lookup</a> | ';
 
 	// Google
 	$out .= '<a class="request-req" href="http://www.google.com/search?q=';
