@@ -126,7 +126,7 @@ function getSpoofs( $username ) {
 		} else {
 			return ( $return[1] );
 		}
-	} else { return "Thi function is currently disabled."; }
+	} else { return "This function is currently disabled."; }
 }
 
 function sanitise($what) { return sanitize($what); }
@@ -256,7 +256,12 @@ function listrequests($type, $hideip, $correcthash) {
 		$uname = urlencode($row['pend_name']);
 		$uname = str_replace("%26amp%3B", "%26", $uname);
 		$rid = $row['pend_id'];
-		if ($row['pend_cmt'] != "") {
+		
+		$data = mysql_query("SELECT COUNT(*) as num FROM acc_cmt where pend_id = '" . $rid . "';");
+		$commentcountrow = mysql_fetch_assoc($data);
+		$commentcount=$commentcountrow['num'];
+		
+		if ($row['pend_cmt'] != ""  || $commentcount != 0) {
 			$cmt = "<a class=\"request-src\" href=\"$tsurl/acc.php?action=zoom&amp;id=$rid\">Zoom (CMT)</a> ";
 		} else {
 			$cmt = "<a class=\"request-src\" href=\"$tsurl/acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
@@ -720,7 +725,7 @@ function zoomPage($id,$urlhash)
 	$userurl = urlencode($sUser);
 	$userurl = str_replace("%26amp%3B", "%26", $userurl);
 	
-	if($dontUseWikiDb == 0) {
+	
 	$out .= '<p><b>Username links:</b> <a class="request-req" href="'.$wikipediaurl.'w/index.php?title=User:';
 	$out .= $userurl . '" target="_blank">User page</a> | ';
 
@@ -735,19 +740,18 @@ function zoomPage($id,$urlhash)
     $out .= '<a class="request-req" href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
     $out .= $userurl. '" target="_blank">alt</a> | ';
     
-  //Show Special:CentralAuth link due to bug 35792 <https://bugzilla.wikimedia.org/show_bug.cgi?id=35792>
-  $out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
-  $out .= $userurl.'" target="_blank">Special:CentralAuth</a> ) | ';
+    //Show Special:CentralAuth link due to bug 35792 <https://bugzilla.wikimedia.org/show_bug.cgi?id=35792>
+    $out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
+    $out .= $userurl.'" target="_blank">Special:CentralAuth</a> ) | ';
 
 	// 	User list
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
 	$out .= $userurl . '&amp;group=&amp;limit=1" target="_blank">Username list</a> | ';
-	}
+	
 	//TODO: add an api query to display editcount and blocks if we can't access the s1 cluster -- MM 09/04/11
-	else {
-		$out .= '<a class="request-req" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=';
-		$out .= $thisip. '" target="_blank">Single User Lookup</a> | ';
-	}
+	
+	$out .= '<a class="request-req" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=';
+	$out .= $thisip. '" target="_blank">Single User Lookup</a> | ';
 
 	// Google
 	$out .= '<a class="request-req" href="http://www.google.com/search?q=';
@@ -815,12 +819,11 @@ function zoomPage($id,$urlhash)
 			$out .= deferlinks($type,$checksum,$pendid);
 		}
 	}
-
+	
 	$cmtlen = strlen(trim($row['pend_cmt']));
-	if ($cmtlen > 500) {
-		$out .= "<p><strong>Requester Comment</strong>: <span id='reqcomment-link' onclick='showhide(\"reqcomment\")'>[show]</span><br /><span id='reqcomment' style='display:none'>" . autolink($row['pend_cmt']) . "</span></p>\n";
-	} elseif ($cmtlen != 0) {
-		$out .= "<p><strong>Requester Comment</strong>: <span id='reqcomment-link' onclick='showhide(\"reqcomment\")'>[hide]</span><br /><span id='reqcomment'>" . autolink($row['pend_cmt']) . "</span></p>\n";
+	$request_comment = "";
+	if ($cmtlen != 0) {
+		$request_comment = autolink($row['pend_cmt']);
 	}
 
 	global $tsurl;
@@ -844,7 +847,8 @@ function zoomPage($id,$urlhash)
 		}
 	}
 	$out .= '<p><b>Date request made:</b> ' . $row['pend_date'] . '</p>';
-
+	$request_date = $row['pend_date'];
+	
 	$request = new accRequest();
 	if($request->isblacklisted($sUser))
 		$out .= '<p><b>Requested username is blacklisted.</b></p>';
@@ -937,6 +941,19 @@ function zoomPage($id,$urlhash)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	while ($row = mysql_fetch_assoc($result))
 		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => 0, 'comment' => html_entity_decode($row['cmt_comment']), 'action' => "comment", 'security' => $row['cmt_visability']);
+	
+	if($request_comment !== ""){
+		$logs[] = array(
+			'time'=> $request_date, 
+			'user'=>$sUser, 
+			'description' => '',
+			'target' => 0, 
+			'comment' => $request_comment, 
+			'action' => "comment", 
+			'security' => ''
+			);
+	}
+	
 	
 	$namecache = array();
 	
