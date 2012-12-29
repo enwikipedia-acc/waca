@@ -1096,6 +1096,11 @@ function zoomPage($id,$urlhash)
 function deferlinks($type, $checksum, $pendid) {
 	global $tsurl, $availableRequestStates, $defaultRequestStateKey;
 	
+	if(!array_key_exists($type, $availableRequestStates))
+	{
+		return " | <a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=".$defaultRequestStateKey."\">Reset Request</a>";
+	}
+	
 	$out = " | Defer to: ";
 	
 	foreach(array_diff_key($availableRequestStates, array($type=>$availableRequestStates[$type])) as $k => $v)
@@ -1105,14 +1110,7 @@ function deferlinks($type, $checksum, $pendid) {
 
 	$out = rtrim($out, '- ');
 
-	if(array_key_exists($type, $availableRequestStates))
-	{
-		return $out;
-	}
-	else
-	{
-		return " | <a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=".$defaultRequestStateKey."\">Reset Request</a>";
-	}
+	return $out;
 	
 }
 
