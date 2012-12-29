@@ -814,12 +814,11 @@ function zoomPage($id,$urlhash)
 			$out .= deferlinks($type,$checksum,$pendid);
 		}
 	}
-
+	
 	$cmtlen = strlen(trim($row['pend_cmt']));
-	if ($cmtlen > 500) {
-		$out .= "<p><strong>Requester Comment</strong>: <span id='reqcomment-link' onclick='showhide(\"reqcomment\")'>[show]</span><br /><span id='reqcomment' style='display:none'>" . autolink($row['pend_cmt']) . "</span></p>\n";
-	} elseif ($cmtlen != 0) {
-		$out .= "<p><strong>Requester Comment</strong>: <span id='reqcomment-link' onclick='showhide(\"reqcomment\")'>[hide]</span><br /><span id='reqcomment'>" . autolink($row['pend_cmt']) . "</span></p>\n";
+	$request_comment = "";
+	if ($cmtlen != 0) {
+		$request_comment = autolink($row['pend_cmt']);
 	}
 
 	global $tsurl;
@@ -843,7 +842,8 @@ function zoomPage($id,$urlhash)
 		}
 	}
 	$out .= '<p><b>Date request made:</b> ' . $row['pend_date'] . '</p>';
-
+	$request_date = $row['pend_date'];
+	
 	$request = new accRequest();
 	if($request->isblacklisted($sUser))
 		$out .= '<p><b>Requested username is blacklisted.</b></p>';
@@ -936,6 +936,19 @@ function zoomPage($id,$urlhash)
 		Die("Query failed: $query ERROR: " . mysql_error());
 	while ($row = mysql_fetch_assoc($result))
 		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => 0, 'comment' => html_entity_decode($row['cmt_comment']), 'action' => "comment", 'security' => $row['cmt_visability']);
+	
+	if($request_comment !== ""){
+		$logs[] = array(
+			'time'=> $request_date, 
+			'user'=>$sUser, 
+			'description' => '',
+			'target' => 0, 
+			'comment' => $request_comment, 
+			'action' => "comment", 
+			'security' => ''
+			);
+	}
+	
 	
 	$namecache = array();
 	
