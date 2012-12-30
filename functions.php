@@ -722,54 +722,31 @@ function zoomPage($id,$urlhash)
 			
 			$origin = 0;
 			
-			$iplist = array();
+			$proxies = array_reverse($proxies);
+			$trust = true;
 			
 			foreach($proxies as $p) {
 				$p2 = trim($p);
-				$entry = "<tr %%TRUSTSTYLE%%>";
-				$entry .= ($origin ? "%%TRUST%%" : "<td>(origin)</td>" );
+				$trusted = isXffTrusted($p2);
+				
+				$trust = $trust & $trusted;
+				
+				$entry = "<tr>";
+				$entry .= ($origin ? 
+					(	$trust ? "<td style=\"color:grey;\">(trusted)</td>"
+						: ($trusted ? "<td style=\"color:orange;\">(via untrusted)</td>" : "<td style=\"color:red;\">(untrusted)</td>" )
+					)
+					: "<td>(origin)</td>" );
 				$entry .= "<td style=\"padding:3px\">$p2</td>";
-				$entry .= "<td>" . showIPlinks($p2, $wikipediaurl, $metaurl) . "</td>";
+				$entry .= "<td>" . ($trust ? "" : showIPlinks($p2, $wikipediaurl, $metaurl)) . "</td>";
 				$entry .= "</tr>";
 				
 				$origin = 1;
 				
-				$iplist[$entry] = (isXffTrusted($p2) ? true : false );
+				$out .= $entry;
 			}
 			
-			$iplist = array_reverse($iplist);
-			$trust = true;
-			
-			foreach($iplist as $entry => $trusted)
-			{
-				$entryoutput = "";
-				
-				if(($trusted) && ($trust)) {
-					$entryoutput = str_replace("%%TRUST%%", "<td style=\"color:grey;\">(trusted)</td>", 
-									str_replace("%%TRUSTSTYLE%%", "style=\"color:grey !important;\"",$entry)
-									);
-				}
-				if((!$trusted) && ($trust)) {
-					$entryoutput = str_replace("%%TRUST%%", "<td style=\"color:red;\"><big>(untrusted)</big></td>", 
-									str_replace("%%TRUSTSTYLE%%", "",$entry)
-									);
-					$trust = false;
-				}
-				if(($trusted) && (!$trust)) {
-					$entryoutput = str_replace("%%TRUST%%", "<td style=\"color:orange;\"><big>(via untrusted)</big></td>", 
-									str_replace("%%TRUSTSTYLE%%", "",$entry)
-									);
-				}
-				if((!$trusted) && (!$trust)) {
-					$entryoutput = str_replace("%%TRUST%%", "<td style=\"color:red;\"><big>(untrusted)</big></td>", 
-									str_replace("%%TRUSTSTYLE%%", "",$entry)
-									);
-					$trust = false;
-				}
-				
-				
-				$out .= $entryoutput;
-			}
+
 			
 			$out .= "</table>";
 		}
