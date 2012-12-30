@@ -715,16 +715,18 @@ function zoomPage($id,$urlhash)
 		if ($row['pend_proxyip']) {
 			$out .= '<br /><i>This request came from '.$row['pend_ip'].', stating it was forwarded for '.$row['pend_proxyip'].'. Links for all are shown, with the closest proxy at the bottom.</i>';
 
-			$out .= '<p><strong>Forwarded addresses:</strong><table>';
+			$out .= '<p><strong>Forwarded IP addresses:</strong><table>';
 			
 			$proxies = explode(",", $row['pend_proxyip']);
 			$proxies[] = $row['pend_ip'];
 			
 			foreach($proxies as $p) {
 				$p2 = trim($p);
-				$out .= "<tr><td>$p2</td><td>";
-				$out .= showIPlinks($p2, $wikipediaurl, $metaurl);
-				$out .= "</td></tr>";
+				$out .= "<tr>";
+				$out .= "<td>(trust)</td>";
+				$out .= "<td style=\"padding:3px\">$p2</td>";
+				$out .= "<td>" . showIPlinks($p2, $wikipediaurl, $metaurl) . "</td>";
+				$out .= "</tr>";
 				
 			}
 			
