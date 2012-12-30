@@ -267,20 +267,7 @@ function listrequests($type, $hideip, $correcthash) {
 			$cmt = "<a class=\"request-src\" href=\"$tsurl/acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
 		}
 		
-		$clientIpAddr = $row['pend_ip'];
-		if($row['pend_proxyip'])
-		{
-			$ipList = explode(",", $row['pend_proxyip']);
-			$ipList[] = $clientIpAddr;
-			$ipList = array_reverse($ipList);
-			
-			foreach($ipList as $ip){
-				if(isXffTrusted(trim($ip))) continue;
-				
-				$clientIpAddr = $ip;
-				break;
-			}
-		}
+		$clientIpAddr = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
 		
 		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE (`pend_ip` = '" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "' OR `pend_proxyip` LIKE '%" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "%') AND `pend_mailconfirm` = 'Confirmed';";
 		$result2 = mysql_query($query2);
@@ -644,7 +631,7 @@ function zoomPage($id,$urlhash)
 		return $out;
 	}
 	$out .= "<h2>Details for Request #" . $id . ":</h2>";
-	$thisip = $row['pend_ip'];
+	$thisip = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
 	$thisid = $row['pend_id'];
 	$thisemail = $row['pend_email'];
 	if ($row['pend_date'] == "0000-00-00 00:00:00") {
@@ -1305,5 +1292,25 @@ function isXffTrusted($ip) {
 	else {
 		return false;
 	}
+}
+
+function getTrustedClientIP($dbip, $dbproxyip)
+{
+	$clientIpAddr = $dbip;
+	if($dbproxyip)
+	{
+		$ipList = explode(",", $dbproxyip);
+		$ipList[] = $clientIpAddr;
+		$ipList = array_reverse($ipList);
+		
+		foreach($ipList as $ip){
+			if(isXffTrusted(trim($ip))) continue;
+			
+			$clientIpAddr = $ip;
+			break;
+		}
+	}
+	
+	return $clientIpAddr;
 }
 ?>
