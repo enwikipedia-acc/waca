@@ -726,7 +726,7 @@ function zoomPage($id,$urlhash)
 			
 			foreach($proxies as $p) {
 				$p2 = trim($p);
-				$entry = "<tr>";
+				$entry = "<tr %%TRUSTSTYLE%%>";
 				$entry .= ($origin ? "%%TRUST%%" : "<td>(origin)</td>" );
 				$entry .= "<td style=\"padding:3px\">$p2</td>";
 				$entry .= "<td>" . showIPlinks($p2, $wikipediaurl, $metaurl) . "</td>";
@@ -745,19 +745,28 @@ function zoomPage($id,$urlhash)
 				$entryoutput = "";
 				
 				if(($trusted) && ($trust)) {
-					$entryoutput = str_replace("%%TRUST%%", "<td style=\"color:grey;\">(trusted)</td>", $entry);
+					$entryoutput = str_replace("%%TRUST%%", "<td style=\"color:grey;\">(trusted)</td>", 
+									str_replace("%%TRUSTSTYLE%%", "style=\"color:grey !important;\"",$entry)
+									);
 				}
 				if((!$trusted) && ($trust)) {
-					$entryoutput = str_replace("%%TRUST%%", "<td style=\"color:red;\"><big>(untrusted)</big></td>", $entry);
+					$entryoutput = str_replace("%%TRUST%%", "<td style=\"color:red;\"><big>(untrusted)</big></td>", 
+									str_replace("%%TRUSTSTYLE%%", "",$entry)
+									);
 					$trust = false;
 				}
 				if(($trusted) && (!$trust)) {
-					$entryoutput = str_replace("%%TRUST%%", "<td style=\"color:orange;\"><big>(via untrusted)</big></td>", $entry);
+					$entryoutput = str_replace("%%TRUST%%", "<td style=\"color:orange;\"><big>(via untrusted)</big></td>", 
+									str_replace("%%TRUSTSTYLE%%", "",$entry)
+									);
 				}
 				if((!$trusted) && (!$trust)) {
-					$entryoutput = str_replace("%%TRUST%%", "<td style=\"color:red;\"><big>(untrusted)</big></td>", $entry);
+					$entryoutput = str_replace("%%TRUST%%", "<td style=\"color:red;\"><big>(untrusted)</big></td>", 
+									str_replace("%%TRUSTSTYLE%%", "",$entry)
+									);
 					$trust = false;
 				}
+				
 				
 				$out .= $entryoutput;
 			}
