@@ -745,17 +745,17 @@ function zoomPage($id,$urlhash)
 				$entryoutput = "";
 				
 				if(($trusted) && ($trust)) {
-					$entryoutput = str_replace("%%TRUST%%", "<td>(trusted)</td>", $entry)
+					$entryoutput = str_replace("%%TRUST%%", "<td>(trusted)</td>", $entry);
 				}
 				if((!$trusted) && ($trust)) {
-					$entryoutput = str_replace("%%TRUST%%", "<td>(untrusted)</td>", $entry)
+					$entryoutput = str_replace("%%TRUST%%", "<td>(untrusted)</td>", $entry);
 					$trust = false;
 				}
 				if(($trusted) && (!$trust)) {
-					$entryoutput = str_replace("%%TRUST%%", "<td>(via untrusted)</td>", $entry)
+					$entryoutput = str_replace("%%TRUST%%", "<td>(via untrusted)</td>", $entry);
 				}
 				if((!$trusted) && (!$trust)) {
-					$entryoutput = str_replace("%%TRUST%%", "<td>(untrusted)</td>", $entry)
+					$entryoutput = str_replace("%%TRUST%%", "<td>(untrusted)</td>", $entry);
 					$trust = false;
 				}
 				
