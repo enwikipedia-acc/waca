@@ -718,12 +718,12 @@ function zoomPage($id,$urlhash)
 		$out .= '<p><b>IP Address links:</b> ';
 		$out .= showIPlinks($row['pend_ip'], $wikipediaurl, $metaurl);
 		if ($row['pend_proxyip']) {
-			$out .= '<p><b>Proxy links:</b><ul>';
+			$out .= '<p><strong>Forwarded for addresses:</strong><ul>';
 			
 			$proxies = explode(",", $row['pend_proxyip']);
 			foreach($proxies as $p) {
-				$out .= "<li><strong>$p</strong>:";
-				$out .= showIPlinks($row['pend_proxyip'], $wikipediaurl, $metaurl);
+				$out .= "<li>$p: ";
+				$out .= showIPlinks($p, $wikipediaurl, $metaurl);
 				$out .= "</li>";
 				
 			}
