@@ -713,23 +713,26 @@ function zoomPage($id,$urlhash)
 	}
 	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 		if ($row['pend_proxyip']) {
-			$out .= '<br /><i>This request came from '.$row['pend_ip'].', stating it was forwarded for '.$row['pend_proxyip'].'. Links for all are shown.</i>';
-		}
-		$out .= '<p><b>IP Address links:</b> ';
-		$out .= showIPlinks($row['pend_ip'], $wikipediaurl, $metaurl);
-		if ($row['pend_proxyip']) {
-			$out .= '<p><strong>Forwarded for addresses:</strong><ul>';
+			$out .= '<br /><i>This request came from '.$row['pend_ip'].', stating it was forwarded for '.$row['pend_proxyip'].'. Links for all are shown, with the closest proxy at the bottom.</i>';
+
+			$out .= '<p><strong>Forwarded addresses:</strong><table>';
 			
 			$proxies = explode(",", $row['pend_proxyip']);
+			$proxies[] = $row['pend_ip'];
+			
 			foreach($proxies as $p) {
 				$p2 = trim($p);
-				$out .= "<li>$p2: ";
+				$out .= "<tr><td>$p2</td><td>";
 				$out .= showIPlinks($p2, $wikipediaurl, $metaurl);
-				$out .= "</li>";
+				$out .= "</td></tr>";
 				
 			}
 			
-			$out .= "</ul>";
+			$out .= "</table>";
+		}
+		else {
+			$out .= '<p><b>IP Address links:</b> ';
+			$out .= showIPlinks($row['pend_ip'], $wikipediaurl, $metaurl);
 		}
 	}
 
