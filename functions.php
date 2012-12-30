@@ -1280,7 +1280,10 @@ function getUserIdFromName($name) {
 }
 
 function isXffTrusted($ip) {
-	global $tsSQL;
+	global $tsSQL, $squidIpList;
+	
+	if(in_array($ip, $squidIpList)) return true;
+	
 	$query = "SELECT * FROM `acc_trustedips` WHERE `trustedips_ipaddr` = '$ip';";
 	$result = $tsSQL->query($query);
 	if (!$result) {
