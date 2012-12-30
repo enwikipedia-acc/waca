@@ -732,6 +732,8 @@ function zoomPage($id,$urlhash)
 				$entry .= "<td>" . showIPlinks($p2, $wikipediaurl, $metaurl) . "</td>";
 				$entry .= "</tr>";
 				
+				$origin = 1;
+				
 				$iplist[$entry] = "untrusted";
 			}
 			
