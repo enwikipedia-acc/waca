@@ -186,7 +186,8 @@ class accRequest {
 		// Generates the HASH.
 		$hash = md5($id . $salt);
 		
-		$ip = $_SERVER['REMOTE_ADDR']
+		$ip = $_SERVER['REMOTE_ADDR'];
+		
 		if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 			$ip = getTrustedClientIP($ip, $_SERVER['HTTP_X_FORWARDED_FOR']);
 		}
