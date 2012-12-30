@@ -738,7 +738,7 @@ function zoomPage($id,$urlhash)
 					)
 					: "<td>(origin)</td>" );
 				$entry .= "<td style=\"padding:3px\">$p2</td>";
-				$entry .= "<td>" . ($trust ? "" : showIPlinks($p2, $wikipediaurl, $metaurl)) . "</td>";
+				$entry .= ($trust ? "<td style=\"color:grey;\">" . gethostbyaddr($p2) : "<td>" . showIPlinks($p2, $wikipediaurl, $metaurl)) . "</td>";
 				$entry .= "</tr>";
 				
 				
