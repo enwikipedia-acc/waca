@@ -712,13 +712,23 @@ function zoomPage($id,$urlhash)
 		$metaurl = "http://meta.wikimedia.org/";
 	}
 	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
-		if ($row['pend_proxyip'])
-			$out .= '<br /><i>This request came from '.$row['pend_ip'].' via proxy '.$row['pend_proxyip'].'. Links for both are shown.</i>';
+		if ($row['pend_proxyip']) {
+			$out .= '<br /><i>This request came from '.$row['pend_ip'].', stating it was forwarded for '.$row['pend_proxyip'].'. Links for all are shown.</i>';
+		}
 		$out .= '<p><b>IP Address links:</b> ';
 		$out .= showIPlinks($row['pend_ip'], $wikipediaurl, $metaurl);
 		if ($row['pend_proxyip']) {
-			$out .= '<p><b>Proxy links:</b> ';
-			$out .= showIPlinks($row['pend_proxyip'], $wikipediaurl, $metaurl);
+			$out .= '<p><b>Proxy links:</b><ul>';
+			
+			$proxies = explode(",", $row['pend_proxyip']);
+			foreach($proxies as $p) {
+				$out .= "<li><strong>$p</strong>:"
+				$out .= showIPlinks($row['pend_proxyip'], $wikipediaurl, $metaurl);
+				$out .= "</li>"
+				
+			}
+			
+			$out .= "</ul>";
 		}
 	}
 
