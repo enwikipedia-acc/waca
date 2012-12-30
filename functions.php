@@ -750,9 +750,6 @@ function zoomPage($id,$urlhash)
 	
 	//TODO: add an api query to display editcount and blocks if we can't access the s1 cluster -- MM 09/04/11
 	
-	$out .= '<a class="request-req" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=';
-	$out .= $thisip. '" target="_blank">Single User Lookup</a> | ';
-
 	// Google
 	$out .= '<a class="request-req" href="http://www.google.com/search?q=';
 	$out .= preg_replace("/_/","+",$userurl) . '" target="_blank">Google search</a></p>';
