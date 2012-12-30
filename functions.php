@@ -728,10 +728,8 @@ function zoomPage($id,$urlhash)
 			foreach($proxies as $p) {
 				$p2 = trim($p);
 
-				if($p2 != $origin) {
-					$trusted = isXffTrusted($p2);				
-					$trust = $trust & $trusted;
-				}
+				$trusted = isXffTrusted($p2);				
+				$trust = $trust & $trusted;
 				
 				$entry = "<tr>";
 				$entry .= ( ( $origin != $p2 ) ? 
