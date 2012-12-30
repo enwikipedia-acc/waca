@@ -734,7 +734,7 @@ function zoomPage($id,$urlhash)
 				}
 				
 				$entry = "<tr>";
-				$entry .= ( ( $origin == $p2 )? 
+				$entry .= ( ( $origin != $p2 ) ? 
 					(	$trust ? "<td style=\"color:grey;\">(trusted)</td>"
 						: ($trusted ? "<td style=\"color:orange;\">(via untrusted)</td>" : "<td style=\"color:red;\">(untrusted)</td>" )
 					)
