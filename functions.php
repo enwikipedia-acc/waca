@@ -266,16 +266,37 @@ function listrequests($type, $hideip, $correcthash) {
 		} else {
 			$cmt = "<a class=\"request-src\" href=\"$tsurl/acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
 		}
-		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_ip` = '" . mysql_real_escape_string($row['pend_ip'],$tsSQLlink) . "' AND `pend_id` != '" . mysql_real_escape_string($row['pend_id'],$tsSQLlink) . "' AND `pend_mailconfirm` = 'Confirmed';";
+		
+		$clientIpAddr = $row['pend_ip'];
+		if($row['pend_proxyip'])
+		{
+			$ipList = explode(",", $row['pend_proxyip']);
+			$ipList[] = $clientIpAddr;
+			$ipList = array_reverse($ipList);
+			
+			foreach($ipList as $ip){
+				if(isXffTrusted(trim($ip))) continue;
+				
+				$clientIpAddr = $ip;
+				break;
+			}
+		}
+		
+		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE (`pend_ip` = '" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "' OR `pend_proxyip` LIKE '%" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "%') AND `pend_mailconfirm` = 'Confirmed';";
 		$result2 = mysql_query($query2);
-		if (!$result2)
-		sqlerror("Query failed: $query2 ERROR: " . mysql_error(),"Database query error.");
+		if (!$result2) {
+			sqlerror("Query failed: $query2 ERROR: " . mysql_error(),"Database query error.");
+		}
 		$otheripreqs = mysql_fetch_assoc($result2);
+		$otheripreqs--;
+		
 		$query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . mysql_real_escape_string($row['pend_email'],$tsSQLlink) . "' AND `pend_id` != '" . mysql_real_escape_string($row['pend_id'],$tsSQLlink) . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result3 = mysql_query($query3);
-		if (!$result3)
-		sqlerror("Query failed: $query3 ERROR: " . mysql_error(),"Database query error.");
+		if (!$result3) {
+			sqlerror("Query failed: $query3 ERROR: " . mysql_error(),"Database query error.");
+		}
 		$otheremailreqs = mysql_fetch_assoc($result3);
+		
 		$out = '<tr';
 		if ($currentreq % 2 == 0) {
 			$out .= ' class="alternate">';
@@ -320,8 +341,8 @@ function listrequests($type, $hideip, $correcthash) {
 
 		if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 			// IP UT:
-			$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-src" name="ip-link" href="'.$wikipediaurl.'wiki/User_talk:' . $row['pend_ip'] . '" target="_blank">';
-			$out .= $row['pend_ip'] . '</a> ';
+			$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-src" name="ip-link" href="'.$wikipediaurl.'wiki/User_talk:' . $clientIpAddr . '" target="_blank">';
+			$out .= $clientIpAddr . '</a> ';
 
 			$out .= '</small></td><td><small><span class="request-src">' . "\n";
 			if ($otheripreqs['count'] == 0) {
