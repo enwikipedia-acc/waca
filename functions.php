@@ -720,14 +720,24 @@ function zoomPage($id,$urlhash)
 			$proxies = explode(",", $row['pend_proxyip']);
 			$proxies[] = $row['pend_ip'];
 			
+			$origin = 0;
+			
+			$iplist = array();
+			
 			foreach($proxies as $p) {
 				$p2 = trim($p);
-				$out .= "<tr>";
-				$out .= "<td>(trust)</td>";
-				$out .= "<td style=\"padding:3px\">$p2</td>";
-				$out .= "<td>" . showIPlinks($p2, $wikipediaurl, $metaurl) . "</td>";
-				$out .= "</tr>";
+				$entry = "<tr>";
+				$entry .= "<td>".($origin ? "%%TRUST%%" : "(origin)" )."</td>";
+				$entry .= "<td style=\"padding:3px\">$p2</td>";
+				$entry .= "<td>" . showIPlinks($p2, $wikipediaurl, $metaurl) . "</td>";
+				$entry .= "</tr>";
 				
+				$iplist[$entry] = "untrusted";
+			}
+			
+			foreach($iplist as $entry => $trust)
+			{
+				$out .= $entry;
 			}
 			
 			$out .= "</table>";
