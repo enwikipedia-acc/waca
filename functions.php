@@ -727,19 +727,39 @@ function zoomPage($id,$urlhash)
 			foreach($proxies as $p) {
 				$p2 = trim($p);
 				$entry = "<tr>";
-				$entry .= "<td>".($origin ? "%%TRUST%%" : "(origin)" )."</td>";
+				$entry .= ($origin ? "%%TRUST%%" : "<td>(origin)</td>" );
 				$entry .= "<td style=\"padding:3px\">$p2</td>";
 				$entry .= "<td>" . showIPlinks($p2, $wikipediaurl, $metaurl) . "</td>";
 				$entry .= "</tr>";
 				
 				$origin = 1;
 				
-				$iplist[$entry] = "untrusted";
+				$iplist[$entry] = (isXffTrusted($p2) ? true : false );
 			}
 			
-			foreach($iplist as $entry => $trust)
+			$iplist = array_reverse($iplist);
+			$trust = true;
+			
+			foreach($iplist as $entry => $trusted)
 			{
-				$out .= $entry;
+				$entryoutput = "";
+				
+				if(($trusted) && ($trust)) {
+					$entryoutput = str_replace("%%TRUST%%", "<td>(trusted)</td>", $entry)
+				}
+				if((!$trusted) && ($trust)) {
+					$entryoutput = str_replace("%%TRUST%%", "<td>(untrusted)</td>", $entry)
+					$trust = false;
+				}
+				if(($trusted) && (!$trust)) {
+					$entryoutput = str_replace("%%TRUST%%", "<td>(via untrusted)</td>", $entry)
+				}
+				if((!$trusted) && (!$trust)) {
+					$entryoutput = str_replace("%%TRUST%%", "<td>(untrusted)</td>", $entry)
+					$trust = false;
+				}
+				
+				$out .= $entryoutput;
 			}
 			
 			$out .= "</table>";
@@ -1266,4 +1286,18 @@ function getUserIdFromName($name) {
 	return $r['user_id'];
 }
 
+function isXffTrusted($ip) {
+	global $tsSQL;
+	$query = "SELECT * FROM `acc_trustedips` WHERE `trustedips_ipaddr` = '$ip';";
+	$result = $tsSQL->query($query);
+	if (!$result) {
+		$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
+	}
+	if (mysql_num_rows($result)) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 ?>
