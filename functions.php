@@ -720,7 +720,7 @@ function zoomPage($id,$urlhash)
 			$proxies = explode(",", $row['pend_proxyip']);
 			$proxies[] = $row['pend_ip'];
 			
-			$origin = $row['pend_ip'];
+			$origin = $proxies[0];
 			
 			$proxies = array_reverse($proxies);
 			$trust = true;
