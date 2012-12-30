@@ -722,8 +722,9 @@ function zoomPage($id,$urlhash)
 			
 			$proxies = explode(",", $row['pend_proxyip']);
 			foreach($proxies as $p) {
-				$out .= "<li>$p: ";
-				$out .= showIPlinks($p, $wikipediaurl, $metaurl);
+				$p2 = trim($p);
+				$out .= "<li>$p2: ";
+				$out .= showIPlinks($p2, $wikipediaurl, $metaurl);
 				$out .= "</li>";
 				
 			}
