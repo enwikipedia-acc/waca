@@ -182,7 +182,7 @@ class StatsMonthlyStats extends StatisticsPage
 		$imgpath .= array_shift($imghashparts) . "/" ;
 		$imgpath .= array_shift($imghashparts) . "/" ;
 		
-		mkdir($basedirectory . $imgpath, 0777, true);
+		is_dir($basedirectory . $imgpath) || mkdir($basedirectory . $imgpath, 0777, true);
 		
 		$imgpath .= implode($imghashparts) ;
 		return $imgpath;
