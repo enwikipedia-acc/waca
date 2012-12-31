@@ -91,7 +91,7 @@ class StatsMonthlyStats extends StatisticsPage
 			global $tsurl;
 			foreach ($this->createClosuresGraph($queries) as $i) {
 			
-				$out.= '<img src="'.$tsurl.'/render/' . $this->createPathFromHash($i[0]) . '" alt="'.$i[1].'"/>';
+				$out.= '<img src="'.$tsurl.'/render/' . $i[0] . '" alt="'.$i[1].'"/>';
 			}
 
 		}
