@@ -253,7 +253,7 @@ function listrequests($type, $hideip, $correcthash) {
 	$currentreq = 0;
 	while ( $row = mysql_fetch_assoc( $result ) ) {
 		$currentreq += 1;
-		$uname = urlencode($row['pend_name']);
+		$uname = urlencode(html_entity_decode($row['pend_name']));
 		$uname = str_replace("%26amp%3B", "%26", $uname);
 		$rid = $row['pend_id'];
 		
