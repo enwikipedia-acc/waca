@@ -722,7 +722,7 @@ function zoomPage($id,$urlhash)
 		}
 	}
 
-	$userurl = urlencode($sUser);
+	$userurl = urlencode(html_entity_decode($sUser));
 	$userurl = str_replace("%26amp%3B", "%26", $userurl);
 	
 	
