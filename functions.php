@@ -734,7 +734,7 @@ function zoomPage($id,$urlhash)
 	$out .= $userurl . '" target="_blank">Creation log</a> | ';
 
 	// 	SUL link
-	$out .= '<a class="request-req" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?username=';
+	$out .= '<a class="request-req" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&showblocks=1&username=';
 	$out .= $userurl. '" target="_blank">SUL</a> ( ';
 
     $out .= '<a class="request-req" href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
