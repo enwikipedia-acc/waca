@@ -250,7 +250,7 @@ class accRequest {
 					}
 					$comments = html_entity_decode(stripslashes($row['pend_cmt']));
 					
-					$ircmessage = "\00314[[\00303acc:\00307$pid\00314]]\0034 N\00310 \00302$tsurl/acc.php?action=zoom&id=$pid\003 \0035*\003 \00303$user\003 \0035*\00310 $what\003"
+					$ircmessage = "\00314[[\00303acc:\00307$pid\00314]]\0034 N\00310 \00302$tsurl/acc.php?action=zoom&id=$pid\003 \0035*\003 \00303$user\003 \0035*\00310 $what\003";
 					
 					if(mb_strlen($comments) > 0)
 					{
