@@ -715,10 +715,10 @@ function zoomPage($id,$urlhash)
 		if ($row['pend_proxyip'])
 			$out .= '<br /><i>This request came from '.$row['pend_ip'].' via proxy '.$row['pend_proxyip'].'. Links for both are shown.</i>';
 		$out .= '<p><b>IP Address links:</b> ';
-		$out .= showIPlinks($row['pend_ip'], $wikipediaurl, $metaurl, $row['pend_id']);
+		$out .= showIPlinks($row['pend_ip'], $wikipediaurl, $metaurl, $row['pend_id'], $session);
 		if ($row['pend_proxyip']) {
 			$out .= '<p><b>Proxy links:</b> ';
-			$out .= showIPlinks($row['pend_proxyip'], $wikipediaurl, $metaurl, $row['pend_id']);
+			$out .= showIPlinks($row['pend_proxyip'], $wikipediaurl, $metaurl, $row['pend_id'], $session);
 		}
 	}
 
@@ -1167,7 +1167,7 @@ function doSort(array $items)
 	return $items;
 }
 
-function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid) {
+function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid, &$session) {
 	
 	$out = '<a class="request-src" href="'.$wikipediaurl.'wiki/User_talk:';
 	$out .= $ip . '" target="_blank">Talk page</a> ';
