@@ -1222,9 +1222,11 @@ function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid) {
 	 $out .= '| ';
 	 $out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $ip . '" target="_blank">SIL</a> ';
 	 
-	// CheckUser links
-	 $out .= '| ';
-	 $out .= '<a class="request-src" href="https://fastlizard4.org/w/index.php?title=Special:CheckUser&ip=' . $ip . '&reason=%5B%5BWP:ACC%5D%5D%20request%20%23' . $rqid . '" target="_blank">CheckUser</a> ';
+	 if( $session->isCheckuser($_SESSION['user']) ) {
+		// CheckUser links
+	 	 $out .= '| ';
+	 	 $out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:CheckUser&ip=' . $ip . '&reason=%5B%5BWP:ACC%5D%5D%20request%20%23' . $rqid . '" target="_blank">CheckUser</a> ';
+	 }
 	 $out .= '</p>';
 	 
 
