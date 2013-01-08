@@ -715,10 +715,10 @@ function zoomPage($id,$urlhash)
 		if ($row['pend_proxyip'])
 			$out .= '<br /><i>This request came from '.$row['pend_ip'].' via proxy '.$row['pend_proxyip'].'. Links for both are shown.</i>';
 		$out .= '<p><b>IP Address links:</b> ';
-		$out .= showIPlinks($row['pend_ip'], $wikipediaurl, $metaurl);
+		$out .= showIPlinks($row['pend_ip'], $wikipediaurl, $metaurl, $row['pend_id']);
 		if ($row['pend_proxyip']) {
 			$out .= '<p><b>Proxy links:</b> ';
-			$out .= showIPlinks($row['pend_proxyip'], $wikipediaurl, $metaurl);
+			$out .= showIPlinks($row['pend_proxyip'], $wikipediaurl, $metaurl, $row['pend_id']);
 		}
 	}
 
@@ -1167,7 +1167,7 @@ function doSort(array $items)
 	return $items;
 }
 
-function showIPlinks($ip, $wikipediaurl, $metaurl) {
+function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid) {
 	
 	$out = '<a class="request-src" href="'.$wikipediaurl.'wiki/User_talk:';
 	$out .= $ip . '" target="_blank">Talk page</a> ';
@@ -1221,7 +1221,12 @@ function showIPlinks($ip, $wikipediaurl, $metaurl) {
 	// Betacommand's checks
 	 $out .= '| ';
 	 $out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $ip . '" target="_blank">SIL</a> ';
+	 
+	// CheckUser links
+	 $out .= '| ';
+	 $out .= '<a class="request-src" href="https://fastlizard4.org/w/index.php?title=Special:CheckUser&ip=' . $ip . '&reason=%5B%5BWP:ACC%5D%5D request #' . $rqid'" target="_blank">CheckUser</a> ';
 	 $out .= '</p>';
+	 
 
 	return $out;
 	
