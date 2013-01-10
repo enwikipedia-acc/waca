@@ -891,11 +891,11 @@ function zoomPage($id,$urlhash)
 			$posc3 .= $oS . '" target="_blank">Logs</a> ';
 
 			// Open the SUL of the conflicting users.
-			$posc4 = '<a href="http://toolserver.org/~quentinv57/tools/sulinfo.php?username=Stwa1kerster';
+			$posc4 = '<a href="http://toolserver.org/~quentinv57/tools/sulinfo.php?username=';
 			$posc4 .= $oS . '" target="_blank">SUL</a> ';
 			
 			// Open the SUL of the conflicting users.
-			$posc4 .= '(<a href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&showblocks=1&username=Stwa1kerster';
+			$posc4 .= '(<a href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&showblocks=1&username=';
 			$posc4 .= $oS . '" target="_blank">SUL-ib</a> | ';
 
 			$posc4 .= '<a href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
