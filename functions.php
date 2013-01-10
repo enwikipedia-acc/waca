@@ -891,15 +891,19 @@ function zoomPage($id,$urlhash)
 			$posc3 .= $oS . '" target="_blank">Logs</a> ';
 
 			// Open the SUL of the conflicting users.
-			$posc4 = '<a href="http://toolserver.org/~vvv/sulutil.php?user=';
+			$posc4 = '<a href="http://toolserver.org/~quentinv57/tools/sulinfo.php?username=Stwa1kerster';
 			$posc4 .= $oS . '" target="_blank">SUL</a> ';
+			
+			// Open the SUL of the conflicting users.
+			$posc4 = '(<a href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&showblocks=1&username=Stwa1kerster';
+			$posc4 .= $oS . '" target="_blank">SUL-ib</a> | ';
 
-			$posc4 .= '(<a href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
+			$posc4 .= '<a href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
 			$posc4 .= $oS . '" target="_blank">alt</a> | ';
 			
 			//Show Special:CentralAuth link due to bug 35792 <https://bugzilla.wikimedia.org/show_bug.cgi?id=35792>
-      $posc4 .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
-      $posc4 .= $oS.'" target="_blank">Special:CentralAuth</a>)';
+			$posc4 .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
+			$posc4 .= $oS.'" target="_blank">Special:CentralAuth</a>)';
 			
 			// Password reset links
 			$posc5 = '<a href="'.$wikipediaurl.'wiki/Special:PasswordReset?wpUsername=';
