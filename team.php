@@ -89,7 +89,7 @@ $developer = array(
 				"ToolID" => "18",
 				"wiki" => "FastLizard4",
 				"WWW" => "http://fastlizard4.org/",
-				"Name" => NULL,
+				"Name" => "Andrew Adams",
 				"Role" => "Developer",
 				"Access" => "Git, Mailing list moderator",
 				"Cloak" => "*!*@wikipedia/pdpc.active.FastLizard4",
@@ -398,7 +398,7 @@ foreach($developer as $devName => $devInfo) {
 }
 
 // Display details about the ACC hosting.
-echo "<br/><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by SourceForge</p></div>";
+echo "<br/><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by GitHub and can be found <a href="https://github.com/enwikipedia-acc/waca/">here</a>.</p></div>";
 
 // Display the footer of the interface.
 $skin->displayPfooter();
