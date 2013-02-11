@@ -218,7 +218,8 @@ ini_set('display_errors',1);
 		
 		//INSERT BY ROOT!!! --DaB.
 		// Tweaked up to 2 --stw
-		sleep(2);
+		//I hereby declare that this is unnecessary on labs.  --FL4
+		//sleep(2);
 	}
  	//IRC END
  	
