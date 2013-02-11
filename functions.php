@@ -126,7 +126,7 @@ function getSpoofs( $username ) {
 		} else {
 			return ( $return[1] );
 		}
-	} else { return "Thi function is currently disabled."; }
+	} else { return "This function is currently disabled."; }
 }
 
 function sanitise($what) { return sanitize($what); }
@@ -253,10 +253,15 @@ function listrequests($type, $hideip, $correcthash) {
 	$currentreq = 0;
 	while ( $row = mysql_fetch_assoc( $result ) ) {
 		$currentreq += 1;
-		$uname = urlencode($row['pend_name']);
+		$uname = urlencode(html_entity_decode($row['pend_name']));
 		$uname = str_replace("%26amp%3B", "%26", $uname);
 		$rid = $row['pend_id'];
-		if ($row['pend_cmt'] != "") {
+		
+		$data = mysql_query("SELECT COUNT(*) as num FROM acc_cmt where pend_id = '" . $rid . "';");
+		$commentcountrow = mysql_fetch_assoc($data);
+		$commentcount=$commentcountrow['num'];
+		
+		if ($row['pend_cmt'] != ""  || $commentcount != 0) {
 			$cmt = "<a class=\"request-src\" href=\"$tsurl/acc.php?action=zoom&amp;id=$rid\">Zoom (CMT)</a> ";
 		} else {
 			$cmt = "<a class=\"request-src\" href=\"$tsurl/acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
@@ -710,17 +715,17 @@ function zoomPage($id,$urlhash)
 		if ($row['pend_proxyip'])
 			$out .= '<br /><i>This request came from '.$row['pend_ip'].' via proxy '.$row['pend_proxyip'].'. Links for both are shown.</i>';
 		$out .= '<p><b>IP Address links:</b> ';
-		$out .= showIPlinks($row['pend_ip'], $wikipediaurl, $metaurl);
+		$out .= showIPlinks($row['pend_ip'], $wikipediaurl, $metaurl, $row['pend_id'], $session);
 		if ($row['pend_proxyip']) {
 			$out .= '<p><b>Proxy links:</b> ';
-			$out .= showIPlinks($row['pend_proxyip'], $wikipediaurl, $metaurl);
+			$out .= showIPlinks($row['pend_proxyip'], $wikipediaurl, $metaurl, $row['pend_id'], $session);
 		}
 	}
 
-	$userurl = urlencode($sUser);
+	$userurl = urlencode(html_entity_decode($sUser));
 	$userurl = str_replace("%26amp%3B", "%26", $userurl);
 	
-	if($dontUseWikiDb == 0) {
+	
 	$out .= '<p><b>Username links:</b> <a class="request-req" href="'.$wikipediaurl.'w/index.php?title=User:';
 	$out .= $userurl . '" target="_blank">User page</a> | ';
 
@@ -729,26 +734,26 @@ function zoomPage($id,$urlhash)
 	$out .= $userurl . '" target="_blank">Creation log</a> | ';
 
 	// 	SUL link
-	$out .= '<a class="request-req" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?username=';
+	$out .= '<a class="request-req" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&showblocks=1&username=';
 	$out .= $userurl. '" target="_blank">SUL</a> ( ';
 
     $out .= '<a class="request-req" href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
     $out .= $userurl. '" target="_blank">alt</a> | ';
     
-  //Show Special:CentralAuth link due to bug 35792 <https://bugzilla.wikimedia.org/show_bug.cgi?id=35792>
-  $out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
-  $out .= $userurl.'" target="_blank">Special:CentralAuth</a> ) | ';
+    //Show Special:CentralAuth link due to bug 35792 <https://bugzilla.wikimedia.org/show_bug.cgi?id=35792>
+    $out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
+    $out .= $userurl.'" target="_blank">Special:CentralAuth</a> ) | ';
 
 	// 	User list
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
 	$out .= $userurl . '&amp;group=&amp;limit=1" target="_blank">Username list</a> | ';
-	}
+	
+	//Search Wikipedia mainspace for the username.  See bug ACC-253 on Toolserver JIRA at https://jira.toolserver.org/browse/ACC-253
+	$out .= '<a class="request=req" href="'.$wikipediaurl.'w/index.php?title=Special%3ASearch&profile=advanced&search=';
+	$out .= $userurl . '&fulltext=Search&ns0=1&redirs=1&profile=advanced" target="_blank">Wikipedia mainspace search</a> | ';
+	
 	//TODO: add an api query to display editcount and blocks if we can't access the s1 cluster -- MM 09/04/11
-	else {
-		$out .= '<a class="request-req" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=';
-		$out .= $thisip. '" target="_blank">Single User Lookup</a> | ';
-	}
-
+	
 	// Google
 	$out .= '<a class="request-req" href="http://www.google.com/search?q=';
 	$out .= preg_replace("/_/","+",$userurl) . '" target="_blank">Google search</a></p>';
@@ -815,12 +820,11 @@ function zoomPage($id,$urlhash)
 			$out .= deferlinks($type,$checksum,$pendid);
 		}
 	}
-
+	
 	$cmtlen = strlen(trim($row['pend_cmt']));
-	if ($cmtlen > 500) {
-		$out .= "<p><strong>Requester Comment</strong>: <span id='reqcomment-link' onclick='showhide(\"reqcomment\")'>[show]</span><br /><span id='reqcomment' style='display:none'>" . autolink($row['pend_cmt']) . "</span></p>\n";
-	} elseif ($cmtlen != 0) {
-		$out .= "<p><strong>Requester Comment</strong>: <span id='reqcomment-link' onclick='showhide(\"reqcomment\")'>[hide]</span><br /><span id='reqcomment'>" . autolink($row['pend_cmt']) . "</span></p>\n";
+	$request_comment = "";
+	if ($cmtlen != 0) {
+		$request_comment = autolink($row['pend_cmt']);
 	}
 
 	global $tsurl;
@@ -844,7 +848,8 @@ function zoomPage($id,$urlhash)
 		}
 	}
 	$out .= '<p><b>Date request made:</b> ' . $row['pend_date'] . '</p>';
-
+	$request_date = $row['pend_date'];
+	
 	$request = new accRequest();
 	if($request->isblacklisted($sUser))
 		$out .= '<p><b>Requested username is blacklisted.</b></p>';
@@ -890,15 +895,19 @@ function zoomPage($id,$urlhash)
 			$posc3 .= $oS . '" target="_blank">Logs</a> ';
 
 			// Open the SUL of the conflicting users.
-			$posc4 = '<a href="http://toolserver.org/~vvv/sulutil.php?user=';
+			$posc4 = '<a href="http://toolserver.org/~quentinv57/tools/sulinfo.php?username=';
 			$posc4 .= $oS . '" target="_blank">SUL</a> ';
+			
+			// Open the SUL of the conflicting users.
+			$posc4 .= '(<a href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&showblocks=1&username=';
+			$posc4 .= $oS . '" target="_blank">SUL-ib</a> | ';
 
-			$posc4 .= '(<a href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
+			$posc4 .= '<a href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
 			$posc4 .= $oS . '" target="_blank">alt</a> | ';
 			
 			//Show Special:CentralAuth link due to bug 35792 <https://bugzilla.wikimedia.org/show_bug.cgi?id=35792>
-      $posc4 .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
-      $posc4 .= $oS.'" target="_blank">Special:CentralAuth</a>)';
+			$posc4 .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
+			$posc4 .= $oS.'" target="_blank">Special:CentralAuth</a>)';
 			
 			// Password reset links
 			$posc5 = '<a href="'.$wikipediaurl.'wiki/Special:PasswordReset?wpUsername=';
@@ -933,10 +942,27 @@ function zoomPage($id,$urlhash)
 		$query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' AND (cmt_visability = 'user' OR cmt_user = '$user') ORDER BY cmt_id ASC;";
 	}
 	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
+	
+	if (!$result) {
 		Die("Query failed: $query ERROR: " . mysql_error());
-	while ($row = mysql_fetch_assoc($result))
-		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => 0, 'comment' => html_entity_decode($row['cmt_comment']), 'action' => "comment", 'security' => $row['cmt_visability']);
+	}
+	
+	while ($row = mysql_fetch_assoc($result)) {
+		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => 0, 'comment' => html_entity_decode($row['cmt_comment']), 'action' => "comment", 'security' => $row['cmt_visability'], 'id' => $row['cmt_id']);
+	}
+	
+	if($request_comment !== ""){
+		$logs[] = array(
+			'time'=> $request_date, 
+			'user'=>$sUser, 
+			'description' => '',
+			'target' => 0, 
+			'comment' => $request_comment, 
+			'action' => "comment", 
+			'security' => ''
+			);
+	}
+	
 	
 	$namecache = array();
 	
@@ -963,6 +989,11 @@ function zoomPage($id,$urlhash)
 				$out .= $username;
 			if($row['action'] == "comment"){
 				$out .= "&nbsp;</td><td>&nbsp;".$row['comment']."&nbsp;</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
+			
+				global $enableCommentEditing;
+				if($enableCommentEditing && $session->hasright($_SESSION['user'], 'Admin') && isset($row['id'])) {
+					$out .= "<td><a href=\"$tsurl/acc.php?action=ec&amp;id=".$row['id']."\">Edit</a></td>";
+				}
 			} elseif($row['action'] == "Closed custom-n" ||$row['action'] == "Closed custom-y"  ) {
 				$out .= "&nbsp;</td><td><em>&nbsp;$action:&nbsp;</em><br />".str_replace("\n", '<br />', xss($row['comment']))."</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
 			} else {
@@ -1079,6 +1110,11 @@ function zoomPage($id,$urlhash)
 function deferlinks($type, $checksum, $pendid) {
 	global $tsurl, $availableRequestStates, $defaultRequestStateKey;
 	
+	if(!array_key_exists($type, $availableRequestStates))
+	{
+		return " | <a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=".$defaultRequestStateKey."\">Reset Request</a>";
+	}
+	
 	$out = " | Defer to: ";
 	
 	foreach(array_diff_key($availableRequestStates, array($type=>$availableRequestStates[$type])) as $k => $v)
@@ -1088,14 +1124,7 @@ function deferlinks($type, $checksum, $pendid) {
 
 	$out = rtrim($out, '- ');
 
-	if(array_key_exists($type, $availableRequestStates))
-	{
-		return $out;
-	}
-	else
-	{
-		return " | <a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=".$defaultRequestStateKey."\">Reset Request</a>";
-	}
+	return $out;
 	
 }
 
@@ -1146,7 +1175,7 @@ function doSort(array $items)
 	return $items;
 }
 
-function showIPlinks($ip, $wikipediaurl, $metaurl) {
+function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid, &$session) {
 	
 	$out = '<a class="request-src" href="'.$wikipediaurl.'wiki/User_talk:';
 	$out .= $ip . '" target="_blank">Talk page</a> ';
@@ -1200,7 +1229,14 @@ function showIPlinks($ip, $wikipediaurl, $metaurl) {
 	// Betacommand's checks
 	 $out .= '| ';
 	 $out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $ip . '" target="_blank">SIL</a> ';
+	 
+	 if( $session->isCheckuser($_SESSION['user']) ) {
+		// CheckUser links
+	 	 $out .= '| ';
+	 	 $out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:CheckUser&ip=' . $ip . '&reason=%5B%5BWP:ACC%5D%5D%20request%20%23' . $rqid . '" target="_blank">CheckUser</a> ';
+	 }
 	 $out .= '</p>';
+	 
 
 	return $out;
 	

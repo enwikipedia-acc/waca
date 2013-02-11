@@ -160,6 +160,7 @@ $enableSQLError = 0; 		// Enable the display of SQL errors.
 $enableDnsblChecks = 1; 	// Enable DNS blacklist checks.
 $showGraphs = 1; 			// Show graphs on statistics pages.
 $enableTitleblacklist = 0;  // Enable Title Blacklist checks.
+$enableCommentEditing = 1;	// Enable admin editing of comments
 
 // Enable the use of PATH_INFO for request parameters to prettify URLs.
 $usePathInfo = false;
@@ -213,3 +214,5 @@ require_once ($filepath.'blacklist.php');
 ini_set('session.cookie_path', $cookiepath);
 ini_set('session.name', $sessionname);
 ini_set('user_agent', $toolUserAgent);
+
+foreach(array( "mbstring", "mysql" ) as $x) {if(!extension_loaded($x)) {die("extension $x is required.");}}

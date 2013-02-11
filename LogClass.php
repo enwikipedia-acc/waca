@@ -325,6 +325,9 @@ class LogPage
 			}
 			if($rla == "BreakReserve") {
 				$logList .= "<li>$rlu broke the reservation on <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a>, at $rlt</li>";
+			}			
+			if($rla == "EditComment-c") {
+				$logList .= "<li>$rlu edited <a href=\"$tsurl/acc.php?action=ec&amp;id=$rlp\">comment $rlp</a>, at $rlt</li>";
 			}
 			$logListCount++;
 		}
@@ -478,6 +481,9 @@ class LogPage
 			if($rla == "BreakReserve") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"broke the reservation", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
+			if($rla == "EditComment-r") {
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"edited a comment", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+			}
 		}
 		
 		return $out;
@@ -491,6 +497,20 @@ class LogPage
 		foreach($entirelog as $entry)
 		{
 			switch($entry['action']){
+				case "Approved":
+				case "badpass":
+				case "Banned":
+				case "CreatedTemplate":
+				case "Declined":
+				case "DeletedTemplate":
+				case "Edited":
+				case "EditedTemplate":
+				case "Prefchange":
+				case "Promoted":
+				case "Renamed":
+				case "Suspended":
+				case "Unbanned":
+					break;
 				case "Deferred":
 				case "Closed":
 				case "Closed 0":
@@ -508,6 +528,7 @@ class LogPage
 				case "Reserved":
 				case "Unreserved":
 				case "BreakReserve":
+				case "EditComment-r":
 					$requestlog[] = $entry;
 					break;
 				default:

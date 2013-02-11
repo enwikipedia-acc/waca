@@ -891,7 +891,7 @@ elseif ($action == "sban") {
 	
 	// Checks whether the current user is an admin.
 	if(!$session->hasright($_SESSION['user'], "Admin")) {
-		die("Only administrators may ban users");
+		die("Only administrators or checkusers may ban users");
 	}
 	
 	// Checks whether there is a reason entered for ban.
@@ -999,7 +999,7 @@ elseif ($action == "unban" && $_GET['id'] != "")
 
 	if(!$session->hasright($_SESSION['user'], "Admin"))
 	{
-		die("Only administrators may unban users");
+		die("Only administrators or checkusers may unban users");
 	}
 	$bid = sanitize($_GET['id']);
 	$query = "SELECT * FROM acc_ban WHERE ban_id = '$bid' AND (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1;";
@@ -1072,7 +1072,7 @@ elseif ($action == "ban") {
 	$siuser = sanitize($_SESSION['user']);
 	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name'])) {
 		if(!$session->hasright($_SESSION['user'], "Admin"))
-			die("Only administrators may ban users");
+			die("Only administrators or checkusers may ban users");
 		if (isset($_GET['ip'])) {
 			$ip2 = sanitize($_GET['ip']);
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$ip2';";
@@ -1137,7 +1137,6 @@ elseif ($action == "ban") {
 		echo "<h2>Active Ban List</h2>\n<table border='1'>\n";
 		echo "<tr><th>Type</th><th>IP/Name/Email</th><th>Banned by</th><th>Reason</th><th>Time</th><th>Expiry</th>";
 		$isAdmin = $session->hasright($_SESSION['user'], "Admin");
-		$isCheckuser = $session->isCheckuser($_SESSION['user']);
 		if ($isAdmin) {
 			echo "<td>Unban</td>";
 		}
@@ -1157,11 +1156,11 @@ elseif ($action == "ban") {
 			{
 				case "IP":
 					echo '<td>';
-					if ($isAdmin || $isCheckuser) { 
+					if ($isAdmin) { 
 						echo '<a href="' . $tsurl . '/search.php?term='.$row['ban_target'].'&amp;type=IP">';
 					}
 					echo $row['ban_target'];
-					if ($isAdmin || $isCheckuser) { 
+					if ($isAdmin) { 
 						echo '</a>';
 					}
 					echo '</td>';
@@ -1187,7 +1186,7 @@ elseif ($action == "ban") {
 			echo "</tr>";
 		}
 		echo "</table>\n";
-		if($isAdmin) {
+		if ($isAdmin) {
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
 			echo "<form action=\"$tsurl/acc.php?action=sban\" method=\"post\">";
 			echo "<table>";
@@ -1240,7 +1239,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		$row2 = mysql_fetch_assoc($result2);
 		$date->modify("-7 days");
 		$oneweek = $date->format("Y-m-d H:i:s");
-		if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && ! ($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))) {
+		if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && ! ($session->hasright($_SESSION['user'], "Admin"))) {
 			$skin->displayRequestMsg("Only administrators and checkusers can reopen a request that has been closed for over a week.");	
 			$skin->displayIfooter();
 			die();
@@ -1436,7 +1435,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			echo "\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
 			echo "<p><input type='checkbox' name='created' />Account created</p>\n";
 			echo "<p><input type='checkbox' name='ccmailist' checked='checked'";
-			if (!($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user'])))
+			if (!($session->hasright($_SESSION['user'], "Admin")))
 				echo " DISABLED";
 			echo "/>Cc to mailing list</p>\n";
 			echo "<p><input type='submit' value='Close and send' /></p>\n";
@@ -1446,7 +1445,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		} else {
 			
 			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
-			if (!($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user'])) || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on")
+			if (!($session->hasright($_SESSION['user'], "Admin")) || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on")
 				$headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
 			$headers .= 'X-ACC-Request: ' . $gid . "\r\n";
 			$headers .= 'X-ACC-UserID: ' . $_SESSION['userID'] . "\r\n";
@@ -1693,7 +1692,7 @@ elseif ($action == "reserve") {
 	$row2 = mysql_fetch_assoc($result2);
 	$date->modify("-7 days");
 	$oneweek = $date->format("Y-m-d H:i:s");
-	if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && !($session->hasright($_SESSION['user'], "Admin") || $session->isCheckuser($_SESSION['user']))) {
+	if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && !($session->hasright($_SESSION['user'], "Admin"))) {
 		$skin->displayRequestMsg("Only administrators and checkusers can reserve a request that has been closed for over a week.");	
 		$skin->displayIfooter();
 		die();
@@ -1809,7 +1808,7 @@ elseif ($action == "breakreserve") {
 	if( $reservedBy != $_SESSION['userID'] )
 	{
 		global $enableAdminBreakReserve;
-		if($enableAdminBreakReserve && $session->hasright($_SESSION['user'], "Admin")) {
+		if($enableAdminBreakReserve && ($session->hasright($_SESSION['user'], "Admin"))) {
 			if(isset($_GET['confirm']) && $_GET['confirm'] == 1)	
 			{
 				$query = "UPDATE `acc_pend` SET `pend_reserved` = '0' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
@@ -1910,10 +1909,7 @@ elseif ($action == "comment-add") {
         <a href='$tsurl/acc.php?action=zoom&amp;id=$id&amp;hash=$urlhash'>Return to request #$id</a>";
         $botcomment_pvt =  ($visibility == "admin") ? "private " : "";
         $botcomment = $user . " posted a " . $botcomment_pvt . "comment on request " . $id;
-        if($visibility != 'admin')
-        {
-        	$botcomment .= ': ' . $_POST['comment'];
-        }
+
         $accbotSend->send($botcomment);
     } else {
         echo "ERROR: A required input is missing <br />
@@ -1940,7 +1936,7 @@ elseif ($action == "comment-quick") {
         if (!$result) {
             sqlerror("Query failed: $query ERROR: " . mysql_error());
         }
-        $botcomment = $user . " posted a comment on request " . $id . ': ' . $comment;
+        $botcomment = $user . " posted a comment on request " . $id;
         $accbotSend->send($botcomment);
 
 	header("Location: acc.php?action=zoom&id=".$id);
@@ -2000,6 +1996,45 @@ elseif ($action == "changepassword") {
 	$skin->displayIfooter();
 	die();
 }
+elseif ($action == "ec") { // edit comment
+	if(!$session->hasright($_SESSION['user'], "Admin")) { die("Unauthorised.");}
+	if(!isset($_GET['id']) || !( !is_int($_GET['id']) ? (ctype_digit($_GET['id'])) : true ) ) {die("No comment found.");}
+	
+	$result = mysql_query("SELECT * FROM acc_cmt WHERE cmt_id = '" . sanitize($_GET['id']) . "';");
+	$row = mysql_fetch_assoc($result);
+	
+	if($row==false) {die("No comment found.");}
+	
+	// get[id] is safe by this point.
+	
+	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+		mysql_query("UPDATE acc_cmt SET cmt_comment = \"".mysql_real_escape_string($_POST['newcomment'],$tsSQLlink)."\" WHERE cmt_id = \"".sanitize($_GET['id'])."\" LIMIT 1;");
+		$now = date("Y-m-d H-i-s");
+		mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('".sanitize($_GET['id'])."', '".sanitize($_SESSION['user'])."', 'EditComment-c', '$now');");
+		mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('".sanitize($row["pend_id"])."', '".sanitize($_SESSION['user'])."', 'EditComment-r', '$now');");
+		
+		header("Location: " . $_SERVER['REQUEST_URI']);
+	}
+	else {	
+		echo "<h2>Edit comment #".$_GET['id']."</h2>"; 
+		global $tsurl;
+		echo "<strong>Time:</strong>&nbsp;" . $row['cmt_time'] . "<br />";
+		echo "<strong>Author:</strong>&nbsp;" . $row['cmt_user'] . "<br />";
+		echo "<strong>Security:</strong>&nbsp;" . $row['cmt_visability'] . "<br />";
+		echo "<strong>Request:</strong>&nbsp;<a href=\"".$tsurl."/acc.php?action=zoom&id=".$row['pend_id']."\">#" . $row['pend_id'] . "</a><br />";
+		
+		echo "<strong>Old text:</strong><pre>".$row['cmt_comment']."</pre>";
+		
+		echo "<form method=\"post\">";
+		echo "<input type=\"text\" size=\"100\" name=\"newcomment\" value=\"".htmlentities($row['cmt_comment'],ENT_COMPAT,'UTF-8')."\" />";
+		echo "<input type=\"submit\" />";
+		echo "</form>";
+			
+		$skin->displayIfooter();
+		die();
+	}
+}
+
 /*
  * Commented out by stw:
  *  a) wrong. Check the code in the bot to figure out what will actually happen.

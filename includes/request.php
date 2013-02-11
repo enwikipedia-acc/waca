@@ -187,7 +187,7 @@ class accRequest {
 		$hash = md5($id . $salt);
 		
 		// Formulates the email message that should be send to the user.
-		$mailtxt = "Hello! You, or a user from " . (isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] . " (via " . $_SERVER['REMOTE_ADDR'] . ")" : $_SERVER['REMOTE_ADDR']) . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nOnce your click this link, your request will be reviewed, and you will shortly receive a seperate email with more information.  Your password\nis not yet available.\n\nIf you did not make this request, please disregard this message.\n\n";
+		$mailtxt = "Hello! You, or a user from " . (isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] . " (via " . $_SERVER['REMOTE_ADDR'] . ")" : $_SERVER['REMOTE_ADDR']) . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nOnce your click this link, your request will be reviewed, and you will shortly receive a separate email with more information.  Your password\nis not yet available.\n\nIf you did not make this request, please disregard this message.\n\n";
 		
 		// Creates the needed headers.
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
@@ -246,16 +246,18 @@ class accRequest {
 						$what = "";
 					} else {
 						$uLevel = "Admin";
-						$what = "<Account Creator Needed!> ";
+						$what = "<Account Creator Needed!>";
 					}
 					$comments = html_entity_decode(stripslashes($row['pend_cmt']));
-						$accbot->send("\00314[[\00303acc:\00307$pid\00314]]\0034 N\00310 \00302$tsurl/acc.php?action=zoom&id=$pid\003 \0035*\003 \00303$user\003 \0035*\003 \00310$what\003" . substr(str_replace(array (
-						"\n",
-						"\r"
-						), array (
-						' ',
-						' '
-						), $comments), 0, 200) . ((strlen($comments) > 200) ? '...' : ''));
+					
+					$ircmessage = "\00314[[\00303acc:\00307$pid\00314]]\0034 N\00310 \00302$tsurl/acc.php?action=zoom&id=$pid\003 \0035*\003 \00303$user\003 \0035*\00310 $what\003";
+					
+					if(mb_strlen($comments) > 0)
+					{
+						$ircmessage .= " <Requestor Left Comment>";
+					}
+					$accbot->send($ircmessage);
+					
 				} elseif( $row['pend_mailconfirm'] == "Confirmed" ) {
 					echo "Your e-mail address has already been confirmed!\n";
 				} else {
@@ -706,7 +708,7 @@ class accRequest {
 		$ue = unserialize($userexist);
 		if (!isset ($ue['query']['users']['0']['missing'])) {
 			$message = $messages->getMessage(10);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:10 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -717,7 +719,7 @@ class accRequest {
 		$ue = unserialize($userexist);
 		if (isset ($ue['query']['globaluserinfo']['id'])) {
 			$message = $messages->getMessage(28);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:28 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -725,7 +727,7 @@ class accRequest {
 		$nums = preg_match("/^[0-9]+$/", $_POST['name']);
 		if ($nums > 0) {
 			$message = $messages->getMessage(11);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:11 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -733,7 +735,7 @@ class accRequest {
 		$unameismail = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/i', $_POST['name']);
 		if ($unameismail > 0) {
 			$message = $messages->getMessage(12);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:12 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -741,21 +743,21 @@ class accRequest {
 		$unameisinvalidchar = preg_match('/[\#\/\|\[\]\{\}\@\%\:\~\<\>]/', $_POST['name']);
 		if ($unameisinvalidchar > 0 || ltrim( rtrim( $_POST['name'] == "" ) ) ) {
 			$message = $messages->getMessage(13);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:13 -->$message<br />\n");
 			$fail = 1;
 		}
 		
 		// Checks whether the email adresses match.
 		if($_POST['email'] != $_POST['emailconfirm']) {
 			$message = $messages->getMessage(27);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:27 -->$message<br />\n");
 			$fail = 1;
 		}
 		
 		// Checks whether the email adress is valid.
 		if (!$this->emailvalid($_POST['email'])) {
 			$message = $messages->getMessage(14);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:14a -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -763,7 +765,7 @@ class accRequest {
 		$mailiswmf = preg_match('/.*@.*wiki(m.dia|p.dia)\.(org|com)/i', $email);
 		if ($mailiswmf != 0) {
 			$message = $messages->getMessage(14);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:14b -->$message<br />\n");
 			$fail = 1;
 		}
 
@@ -773,7 +775,7 @@ class accRequest {
 		if ($trailingspace == " " || $trailingspace == "_"  ) {
 			// TODO: WTF?!? Message 25 does not exist in the database. 2010-03-06 stw.
 			$message = $messages->getMessage(25);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:25 -->$message<br />\n");
 			$fail = 1;
 		}
 
@@ -783,7 +785,7 @@ class accRequest {
 		$row = mysql_fetch_assoc($result);
 		if ($row['pend_id'] != "") {
 			$message = $messages->getMessage(17);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:17 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -793,7 +795,7 @@ class accRequest {
 		$row = mysql_fetch_assoc($result);
 		if ($row['pend_id'] != "") {
 			$message = $messages->getMessage(18);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:18 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -804,7 +806,7 @@ class accRequest {
 			$message = $messages->getMessage(16);
 			
 			// Displays the appropiate message to the user.
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:16 -->$message<br />\n");
 			
 			// Display the request form and footer of the interface.
 			$skin->displayRequest();

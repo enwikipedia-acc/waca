@@ -304,8 +304,9 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$checkname = mysql_fetch_assoc($result);
-		if ($checkname['user_name'] != ($_POST['oldname']))
-			Die("Rename form corrupted");
+		if ($checkname['user_name'] != htmlentities($_POST['oldname'],ENT_COMPAT,'UTF-8'))
+			Die("Rename form corrupted: " . $checkname['user_name'] . " != " . 
+htmlentities($_POST['oldname'],ENT_COMPAT,'UTF-8'));
 		if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$oldname';")) != 1 || mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$newname';")) != 0)
 			die("Target username in use, or current user does not exist.");
 		$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_id = '$userid';";
@@ -444,6 +445,10 @@ if (mysql_num_rows($result) != 0){
 echo <<<HTML
 <div id="usermgmt-users">
 <h2>Users</h2>
+<!--<p style="
+    font-size: x-small;
+    color: gray;
+">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p> Supressing as CUs should not show here-->
 HTML;
 
 
@@ -470,6 +475,10 @@ echo <<<HTML
 </div>
 <div id="usermgmt-admins">
 <h2>Admins</h2>
+<p style="
+    font-size: x-small;
+    color: gray;
+">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
 HTML;
 
 
@@ -529,8 +538,12 @@ echo <<<HTML
 </ol>
 </div>
 <h2>Tool Checkuser access</h2>
-<div class="showhide" id="showhide-checkuser-link" onclick="showhide('showhide-checkuser');">[show]</div>
-<div id="showhide-checkuser" style="display: none;">
+<!--<div class="showhide" id="showhide-checkuser-link" onclick="showhide('showhide-checkuser');">[show]</div>
+<div id="showhide-checkuser" style="display: none;">  Display Automatically instead -->
+<p style="
+    font-size: x-small;
+    color: gray;
+">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
 HTML;
 
 $query = "SELECT * FROM acc_user WHERE user_checkuser = '1';";
@@ -548,7 +561,7 @@ while ($row = mysql_fetch_assoc($result)) {
 
 echo <<<HTML
 </ol>
-</div>
+<!--</div>-->
 <h2>Suspended accounts</h2>
 <div class="showhide" id="showhide-suspended-link" onclick="showhide('showhide-suspended');">[show]</div>
 <div id="showhide-suspended" style="display: none;">

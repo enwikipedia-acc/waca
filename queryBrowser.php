@@ -19,6 +19,7 @@ class QueryBrowser
 	var $numberedListTitle = "#";
 	var $tableCallbackFunction = false;
 	var $overrideTableTitles = false;
+	var $rowFetchMode = MYSQL_ASSOC;
 	
 	public function executeQuery($query)
 	{
@@ -61,7 +62,12 @@ class QueryBrowser
 
 		
 		$currentreq = 0;
-		while($row = mysql_fetch_assoc($results))
+		while($row = 
+			(function_exists($this->tableCallbackFunction) 
+				? mysql_fetch_array($results, $this->rowFetchMode)
+				: mysql_fetch_assoc($results)
+				)
+		)
 		{
 			$currentreq++;
 			if(function_exists($this->tableCallbackFunction))
@@ -108,7 +114,12 @@ class QueryBrowser
 		
 		$results = array();
 		
-		while($row = mysql_fetch_assoc($resultset))
+		while($row = 
+			(function_exists($this->tableCallbackFunction) 
+				? mysql_fetch_array($resultset, $this->rowFetchMode)
+				: mysql_fetch_assoc($resultset)
+				)
+		)
 		{
 			$results[] = $row;
 		}

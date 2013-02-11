@@ -1,5 +1,8 @@
 SQL Structure
 
+* This file is out of date, but still contains some useful information. *
+
+
 mysql> SHOW tables;
 +-----------------+
 | Tables_in_p_acc |
