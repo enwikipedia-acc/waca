@@ -672,7 +672,7 @@ function zoomPage($id,$urlhash)
 			mysql_real_escape_string($thisip, $tsSQLlink) . 
 			"' OR pend_proxyip LIKE '%" .
 			mysql_real_escape_string($thisip, $tsSQLlink) . 
-			"%')' AND pend_reserved = '" .
+			"%') AND pend_reserved = '" .
 			mysql_real_escape_string($sessionuser, $tsSQLlink) . 
 			"' AND pend_mailconfirm = 'Confirmed' AND ( ".$statesSqlFragment." );";
 
