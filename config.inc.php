@@ -194,6 +194,9 @@ $availableRequestStates = array(
 	
 $defaultRequestStateKey = 'Open';
 
+// time delay in mysql interval form for clearing the private data from the tool.
+$dataclear_interval = '15 DAY';
+
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********
 ***************************************************************************
