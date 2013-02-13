@@ -732,11 +732,12 @@ function zoomPage($id,$urlhash)
 			
 			$proxies = array_reverse($proxies);
 			$trust = true;
-			
+			$lasttrust = true;
 			foreach($proxies as $p) {
 				$p2 = trim($p);
 
 				$trusted = isXffTrusted($p2);				
+				$lasttrust = $trust;p
 				$trust = $trust & $trusted;
 				
 				$entry = "<tr>";
@@ -744,7 +745,7 @@ function zoomPage($id,$urlhash)
 					(	$trust ? "<td style=\"color:grey;\">(trusted)</td>"
 						: ($trusted ? "<td style=\"color:orange;\">(via untrusted)</td>" : "<td style=\"color:red;\">(untrusted)</td>" )
 					)
-					: (	$trust ? "<td>(origin)</td>"
+					: (	$lasttrust ? "<td>(origin)</td>"
 						: ("<td style=\"color:red;\">(origin untrusted)</td>" ) )
 					);
 				$entry .= "<td style=\"padding:3px\">$p2</td>";
