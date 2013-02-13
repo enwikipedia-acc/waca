@@ -186,8 +186,14 @@ class accRequest {
 		// Generates the HASH.
 		$hash = md5($id . $salt);
 		
+		$ip = $_SERVER['REMOTE_ADDR'];
+		
+		if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			$ip = getTrustedClientIP($ip, $_SERVER['HTTP_X_FORWARDED_FOR']);
+		}
+		
 		// Formulates the email message that should be send to the user.
-		$mailtxt = "Hello! You, or a user from " . (isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] . " (via " . $_SERVER['REMOTE_ADDR'] . ")" : $_SERVER['REMOTE_ADDR']) . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nOnce your click this link, your request will be reviewed, and you will shortly receive a separate email with more information.  Your password\nis not yet available.\n\nIf you did not make this request, please disregard this message.\n\n";
+		$mailtxt = "Hello! You, or a user from " . trim($ip) . " has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nOnce your click this link, your request will be reviewed, and you will shortly receive a separate email with more information.  Your password\nis not yet available.\n\nIf you did not make this request, please disregard this message.\n\n";
 		
 		// Creates the needed headers.
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
@@ -844,18 +850,9 @@ class accRequest {
 		$comments = $tsSQL->escape(htmlentities($_POST['comments'],ENT_COMPAT,'UTF-8'));
 		$ip = $tsSQL->escape(htmlentities($_SERVER['REMOTE_ADDR']),ENT_COMPAT,'UTF-8');
 		$proxystring = 'NULL';
-		if ($this->istrusted($ip)|| array_search($ip, $squidIpList)) {
-			$xffheader = explode(",", getenv("HTTP_X_FORWARDED_FOR"));
-			$sourceip = trim($xffheader[sizeof($xffheader)-1]);
-			if (preg_match('/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/', $sourceip)) {
-				$proxyip = $ip;
-				$ip = $sourceip;
-			}
-			
-			if(!array_search($ip, $squidIpList)){
-				$proxystring = "'" . $proxyip . "'";
-			}
-		}
+		$xffheader = getenv("HTTP_X_FORWARDED_FOR");
+		if($xffheader != "") $proxystring = "'" . $tsSQL->escape($xffheader) . "'";
+		
 		$useragent = $tsSQL->escape(htmlentities($_ENV["HTTP_USER_AGENT"],ENT_COMPAT,'UTF-8'));
 		
 		// Gets the current date and time.
