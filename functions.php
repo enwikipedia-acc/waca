@@ -737,7 +737,7 @@ function zoomPage($id,$urlhash)
 				$p2 = trim($p);
 
 				$trusted = isXffTrusted($p2);				
-				$lasttrust = $trust;p
+				$lasttrust = $trust;
 				$trust = $trust & $trusted;
 				
 				$entry = "<tr>";
