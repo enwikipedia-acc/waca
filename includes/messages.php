@@ -19,9 +19,9 @@ if ($ACC != "1") {
 
 class messages {
 	public function getMessage ($messageno) {
-		global $tsSQL, $tsurl;
+		global $tsSQL, $tsurl, $toolserver_database;
 		$messageno = $tsSQL->escape($messageno);
-		$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
+		$query = "SELECT * FROM {$toolserver_database}.acc_emails WHERE mail_id = '$messageno';";
 		$result = $tsSQL->query($query);
 		if (!$result)
 			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"Database query error.");
