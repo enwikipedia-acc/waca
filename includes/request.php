@@ -853,7 +853,7 @@ class accRequest {
 		$xffheader = getenv("HTTP_X_FORWARDED_FOR");
 		if($xffheader != "") $proxystring = "'" . $tsSQL->escape($xffheader) . "'";
 		
-		$useragent = $tsSQL->escape(htmlentities($_ENV["HTTP_USER_AGENT"],ENT_COMPAT,'UTF-8'));
+		$useragent = $tsSQL->escape(htmlentities($_SERVER["HTTP_USER_AGENT"],ENT_COMPAT,'UTF-8'));
 		
 		// Gets the current date and time.
 		$dnow = date("Y-m-d H-i-s");
