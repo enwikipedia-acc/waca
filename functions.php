@@ -275,7 +275,7 @@ function listrequests($type, $hideip, $correcthash) {
 			sqlerror("Query failed: $query2 ERROR: " . mysql_error(),"Database query error.");
 		}
 		$otheripreqs = mysql_fetch_assoc($result2);
-		$otheripreqs--;
+		$otheripreqs["count"]--;
 		
 		$query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . mysql_real_escape_string($row['pend_email'],$tsSQLlink) . "' AND `pend_id` != '" . mysql_real_escape_string($row['pend_id'],$tsSQLlink) . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result3 = mysql_query($query3);
