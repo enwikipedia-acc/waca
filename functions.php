@@ -746,7 +746,7 @@ function zoomPage($id,$urlhash)
 					)
 					: "<td>(origin)</td>" );
 				$entry .= "<td style=\"padding:3px\">$p2</td>";
-				$entry .= ($trust ? "<td style=\"color:grey;\">" . gethostbyaddr($p2) : "<td>" . showIPlinks($p2, $wikipediaurl, $metaurl)) . "</td>";
+				$entry .= ($trust ? "<td style=\"color:grey;\">" . gethostbyaddr($p2) : "<td>" . showIPlinks($p2, $wikipediaurl, $metaurl, $row['pend_id'], $session)) . "</td>";
 				$entry .= "</tr>";
 				
 				
@@ -759,7 +759,7 @@ function zoomPage($id,$urlhash)
 		}
 		else {
 			$out .= '<p><b>IP Address links:</b> ';
-			$out .= showIPlinks($row['pend_ip'], $wikipediaurl, $metaurl);
+			$out .= showIPlinks($row['pend_ip'], $wikipediaurl, $metaurl, $row['pend_id'], $session);
 		}
 	}
 
