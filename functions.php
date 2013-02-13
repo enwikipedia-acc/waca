@@ -393,21 +393,21 @@ function isProtected($requestid)
 {
 	global $protectReservedRequests;
 
-	if(! $protectReservedRequests)
-	return false;
+	if(! $protectReservedRequests ) return false;
 
 	$reservedTo = isReserved($requestid);
 
 	if($reservedTo)
 	{
-		if($reservedTo == $_SESSION['userID'])
+		if($reservedTo == $_SESSION['userID']) {
+			return false;
+		} else {
+			return true;
+		}
+	} else {
 		return false;
-		else
-		return true;
 	}
-	else
-	return false;
-
+	
 	return false;
 }
 
@@ -424,10 +424,13 @@ function isReserved($requestid)
 	$rqid = sanitize($requestid);
 	$query = "SELECT pend_reserved FROM acc_pend WHERE pend_id = $rqid;";
 	$result = mysql_query($query);
-	if (!$result)
-	Die("Error determining reserved status of request. Check the request id.");
+	if (!$result) {
+		die("Error determining reserved status of request. Check the request id.");
+	}
 	$row = mysql_fetch_assoc($result);
-	if(isset($row['pend_reserved']) && $row['pend_reserved'] != 0) { return $row['pend_reserved'];} else {return false;}
+	if(isset($row['pend_reserved']) && $row['pend_reserved'] != 0) { 
+		return $row['pend_reserved'];
+	} else {return false;}
 }
 
 function showlogin($action=null, $params=null) {
@@ -665,9 +668,11 @@ function zoomPage($id,$urlhash)
 	}
 
 	$sessionuser = $_SESSION['userID'];
-	$query2 = "SELECT * FROM acc_pend WHERE pend_ip = '" . 
+	$query2 = "SELECT * FROM acc_pend WHERE (pend_ip = '" . 
 			mysql_real_escape_string($thisip, $tsSQLlink) . 
-			"' AND pend_reserved = '" .
+			"' OR pend_proxyip LIKE '%" .
+			mysql_real_escape_string($thisip, $tsSQLlink) . 
+			"%')' AND pend_reserved = '" .
 			mysql_real_escape_string($sessionuser, $tsSQLlink) . 
 			"' AND pend_mailconfirm = 'Confirmed' AND ( ".$statesSqlFragment." );";
 
@@ -806,7 +811,8 @@ function zoomPage($id,$urlhash)
 	global $protectReservedRequests;
 	if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
 	{
-		if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { //Hide create user link because it contains the E-Mail address.
+		//Hide create user link because it contains the E-Mail address.
+		if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { 
 			// Create user link
 			$out .= '<p><b>Create account link:</b> <a class="request-req-create" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
 			$out .= $userurl . '&amp;wpEmail=' . urlencode($row['pend_email']) . '&amp;uselang=en-acc&amp;wpReason='.urlencode("Requested account at [[WP:ACC]], request #" . $row['pend_id']).'&amp;wpCreateaccountMail=true" target="_blank">Create!</a></p>';
