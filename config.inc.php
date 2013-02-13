@@ -29,7 +29,7 @@ $toolserver_password = "";
 $toolserver_host = "";
 $toolserver_database = "";
 
-$toolserver_notification_database = "p_acc_notifications";
+$toolserver_notification_database = "acc_notifications";
 $toolserver_notification_dbhost = "dbmaster.srv.stwalkerster.net";
 
 // The antispoof configuration.
