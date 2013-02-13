@@ -30,6 +30,7 @@ $toolserver_host = "";
 $toolserver_database = "";
 
 $toolserver_notification_database = "p_acc_notifications";
+$toolserver_notification_dbhost = "dbmaster.srv.stwalkerster.net";
 
 // The antispoof configuration.
 $antispoof_equivset = "equivset.php";
@@ -116,7 +117,7 @@ $enableRenames = 1;
 $allowViewingOfUseragent = true;
 
 // Force identification to the foundation
-$forceIdentification = false;
+$forceIdentification = true;
 
 
 /***********************************
@@ -163,7 +164,7 @@ $enableTitleblacklist = 0;  // Enable Title Blacklist checks.
 $enableCommentEditing = 1;	// Enable admin editing of comments
 
 // Enable the use of PATH_INFO for request parameters to prettify URLs.
-$usePathInfo = false;
+$usePathInfo = true;
 
 // user agent of the tool.
 $toolUserAgent = "Wikipedia-ACC Tool/0.1 (+http://toolserver.org/~acc/team.php)";
@@ -193,6 +194,9 @@ $availableRequestStates = array(
 	);
 	
 $defaultRequestStateKey = 'Open';
+
+// time delay in mysql interval form for clearing the private data from the tool.
+$dataclear_interval = '15 DAY';
 
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********
