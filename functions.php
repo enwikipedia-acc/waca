@@ -744,7 +744,9 @@ function zoomPage($id,$urlhash)
 					(	$trust ? "<td style=\"color:grey;\">(trusted)</td>"
 						: ($trusted ? "<td style=\"color:orange;\">(via untrusted)</td>" : "<td style=\"color:red;\">(untrusted)</td>" )
 					)
-					: "<td>(origin)</td>" );
+					: (	$trust ? "<td>(origin)</td>"
+						: ("<td style=\"color:red;\">(origin untrusted)</td>" ) )
+					);
 				$entry .= "<td style=\"padding:3px\">$p2</td>";
 				$entry .= ($trust ? "<td style=\"color:grey;\">" . gethostbyaddr($p2) : "<td>" . showIPlinks($p2, $wikipediaurl, $metaurl, $row['pend_id'], $session)) . "</td>";
 				$entry .= "</tr>";
