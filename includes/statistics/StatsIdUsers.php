@@ -12,27 +12,43 @@
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
 
-if ($ACC != "1") {
-	header("Location: $tsurl/");
-	die();
-} //Re-route, if you're a web client.
+class StatsIdUsers extends StatisticsPage
+{
+	function execute()
+	{
+		return $this->getUserList();
+	}
+	
+	function getPageTitle()
+	{
+		return "All identified users";
+	}
+	
+	function getPageName()
+	{
+		return "IdUsers";
+	}
+	
+	function isProtected()
+	{
+		return true;
+	}
+	
+	function getUserList()
+	{
+		$query = "select user_name, user_level, user_checkuser from acc_user where user_identified = 1 order by user_name;";
+	
+		global $tsurl;
+		$qb = new QueryBrowser();
+		$qb->rowFetchMode = MYSQL_NUM;
+		$r = $qb->executeQueryToTable($query); 
+		echo mysql_error();
 
-// accbot class
-class accbotSend {
-	public function send($message) {
-		global $whichami, $ircBotNotificationType, $toolserver_notification_database;
-		$message = html_entity_decode($message,ENT_COMPAT,'UTF-8'); // If a message going to the bot was for whatever reason sent through sanitze() earlier, reverse it. 
-		$message = stripslashes($message);
-		$blacklist = array("DCC", "CCTP", "PRIVMSG");
-		$message = str_replace($blacklist, "(IRC Blacklist)", $message); //Lets stop DCC etc
-
-		$msg = chr(2)."[$whichami]".chr(2).": $message";
-
-		$database = new database("notif"); 
-		$database->query("insert into {$toolserver_notification_database}.notification values (null,null,".$ircBotNotificationType.",'".$database->escape($msg)."');");
- 
-		return;
+		return $r;
+	}
+	
+	function requiresWikiDatabase()
+	{
+		return false;
 	}
 }
-
-?>

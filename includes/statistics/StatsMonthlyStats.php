@@ -90,6 +90,7 @@ class StatsMonthlyStats extends StatisticsPage
 			
 			global $tsurl;
 			foreach ($this->createClosuresGraph($queries) as $i) {
+			
 				$out.= '<img src="'.$tsurl.'/render/' . $i[0] . '" alt="'.$i[1].'"/>';
 			}
 
@@ -141,7 +142,8 @@ class StatsMonthlyStats extends StatisticsPage
 				$DataSet->AddAllSeries();
 				$DataSet->SetAbsciseLabelSerie();
 				
-				$chartname = md5(serialize($DataSet));
+				$chartname = $this->createPathFromHash(md5(serialize($DataSet)));
+				
 				$imagehashes[] = array($chartname, $q['series']);
 				
 				if(!file_exists($chartname))
@@ -174,4 +176,15 @@ class StatsMonthlyStats extends StatisticsPage
 		
 	}
 	
+	private function createPathFromHash($imghash, $basedirectory = "render/") {
+		$imghashparts = str_split($imghash);
+		$imgpath = array_shift($imghashparts) . "/" ;
+		$imgpath .= array_shift($imghashparts) . "/" ;
+		$imgpath .= array_shift($imghashparts) . "/" ;
+		
+		is_dir($basedirectory . $imgpath) || mkdir($basedirectory . $imgpath, 0777, true);
+		
+		$imgpath .= implode($imghashparts) ;
+		return $imgpath;
+	}
 }

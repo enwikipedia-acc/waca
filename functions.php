@@ -253,7 +253,7 @@ function listrequests($type, $hideip, $correcthash) {
 	$currentreq = 0;
 	while ( $row = mysql_fetch_assoc( $result ) ) {
 		$currentreq += 1;
-		$uname = urlencode($row['pend_name']);
+		$uname = urlencode(html_entity_decode($row['pend_name']));
 		$uname = str_replace("%26amp%3B", "%26", $uname);
 		$rid = $row['pend_id'];
 		
@@ -763,7 +763,7 @@ function zoomPage($id,$urlhash)
 		}
 	}
 
-	$userurl = urlencode($sUser);
+	$userurl = urlencode(html_entity_decode($sUser));
 	$userurl = str_replace("%26amp%3B", "%26", $userurl);
 	
 	
@@ -775,7 +775,7 @@ function zoomPage($id,$urlhash)
 	$out .= $userurl . '" target="_blank">Creation log</a> | ';
 
 	// 	SUL link
-	$out .= '<a class="request-req" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?username=';
+	$out .= '<a class="request-req" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&showblocks=1&username=';
 	$out .= $userurl. '" target="_blank">SUL</a> ( ';
 
     $out .= '<a class="request-req" href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
@@ -788,6 +788,10 @@ function zoomPage($id,$urlhash)
 	// 	User list
 	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
 	$out .= $userurl . '&amp;group=&amp;limit=1" target="_blank">Username list</a> | ';
+	
+	//Search Wikipedia mainspace for the username.  See bug ACC-253 on Toolserver JIRA at https://jira.toolserver.org/browse/ACC-253
+	$out .= '<a class="request=req" href="'.$wikipediaurl.'w/index.php?title=Special%3ASearch&profile=advanced&search=';
+	$out .= $userurl . '&fulltext=Search&ns0=1&redirs=1&profile=advanced" target="_blank">Wikipedia mainspace search</a> | ';
 	
 	//TODO: add an api query to display editcount and blocks if we can't access the s1 cluster -- MM 09/04/11
 	
@@ -932,15 +936,19 @@ function zoomPage($id,$urlhash)
 			$posc3 .= $oS . '" target="_blank">Logs</a> ';
 
 			// Open the SUL of the conflicting users.
-			$posc4 = '<a href="http://toolserver.org/~vvv/sulutil.php?user=';
+			$posc4 = '<a href="http://toolserver.org/~quentinv57/tools/sulinfo.php?username=';
 			$posc4 .= $oS . '" target="_blank">SUL</a> ';
+			
+			// Open the SUL of the conflicting users.
+			$posc4 .= '(<a href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&showblocks=1&username=';
+			$posc4 .= $oS . '" target="_blank">SUL-ib</a> | ';
 
-			$posc4 .= '(<a href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
+			$posc4 .= '<a href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
 			$posc4 .= $oS . '" target="_blank">alt</a> | ';
 			
 			//Show Special:CentralAuth link due to bug 35792 <https://bugzilla.wikimedia.org/show_bug.cgi?id=35792>
-      $posc4 .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
-      $posc4 .= $oS.'" target="_blank">Special:CentralAuth</a>)';
+			$posc4 .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
+			$posc4 .= $oS.'" target="_blank">Special:CentralAuth</a>)';
 			
 			// Password reset links
 			$posc5 = '<a href="'.$wikipediaurl.'wiki/Special:PasswordReset?wpUsername=';
@@ -1208,7 +1216,7 @@ function doSort(array $items)
 	return $items;
 }
 
-function showIPlinks($ip, $wikipediaurl, $metaurl) {
+function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid, &$session) {
 	
 	$out = '<a class="request-src" href="'.$wikipediaurl.'wiki/User_talk:';
 	$out .= $ip . '" target="_blank">Talk page</a> ';
@@ -1262,7 +1270,14 @@ function showIPlinks($ip, $wikipediaurl, $metaurl) {
 	// Betacommand's checks
 	 $out .= '| ';
 	 $out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $ip . '" target="_blank">SIL</a> ';
+	 
+	 if( $session->isCheckuser($_SESSION['user']) ) {
+		// CheckUser links
+	 	 $out .= '| ';
+	 	 $out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:CheckUser&ip=' . $ip . '&reason=%5B%5BWP:ACC%5D%5D%20request%20%23' . $rqid . '" target="_blank">CheckUser</a> ';
+	 }
 	 $out .= '</p>';
+	 
 
 	return $out;
 	
