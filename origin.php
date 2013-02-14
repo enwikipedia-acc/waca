@@ -1,3 +1,3 @@
 <a href="target.php">go to target</a>
 <br />
-<a href="redir.php?url=target.php">go to target</a>
+<a href="redir.php?tool=tgt&data=foo">go to target via redir</a>
