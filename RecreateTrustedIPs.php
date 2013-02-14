@@ -7,12 +7,15 @@ ini_set('memory_limit', '256M');
 require_once 'config.inc.php';
 require_once 'functions.php';
 
+echo "Fetching file...\n";
+
 $htmlfile = file( $xff_trusted_hosts_file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES );
 
 $ip = array();
 $iprange = array();
 $dnsdomain = array();
 
+echo "Sorting file...\n";
 foreach ( $htmlfile as $line_num => $line ) {
 	// skip the comments
 	if( substr( $line, 0, 1 ) === "#" ) continue;
@@ -34,16 +37,16 @@ foreach ( $htmlfile as $line_num => $line ) {
 	$dnsdomain[] = $line;
 }
 	
+echo "Exploding CIDRs...\n";
 foreach ( $iprange as $r ) {
 	$ips = explodeCidr($r);
 	
 	foreach ( $ips as $i ) {
 		$ip[] = $i;
 	}
-	
-	$ip=array_unique($ip);
 }
 
+echo "Resolving DNS...\n";
 foreach ( $dnsdomain as $d ) {
 	$ips = gethostbynamel( $r );
 	
@@ -56,13 +59,18 @@ foreach ( $dnsdomain as $d ) {
 		$ip[] = $i;
 	}
 	
-	$ip=array_unique($ip);
 	
 	// don't DoS
 	usleep( 10000 );
 }
-	
+
+echo "Uniq-ing array...\n";
+
 $ip=array_unique($ip);
+$count = count($ip);
+
+echo "Prepping query for $count addresses...";
+
 
 $sqlquery = 'INSERT INTO `acc_trustedips` (`trustedips_ipaddr`) VALUES ';
 foreach ($ip as $i) {
@@ -72,6 +80,8 @@ $sqlquery = substr($sqlquery, 0, -2) . ';';
 
 mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
 @ mysql_select_db($toolserver_database) or die(mysql_error());
+
+echo "Executing transaction...\n";
 
 mysql_query("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;");
 
