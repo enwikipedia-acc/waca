@@ -738,12 +738,12 @@ function zoomPage($id,$urlhash)
 			$proxies = array_reverse($proxies);
 			$trust = true;
 			$lasttrust = true;
-			foreach($proxies as $p) {
+			foreach($proxies as $proxynum => $p) {
 				$p2 = trim($p);
 
 				$trusted = isXffTrusted($p2);				
 				$lasttrust = $trust;
-				$trust = $trust & $trusted;
+				$trust = $trust & $trusted & ($proxynum < count($proxies) - 1);
 				
 				$entry = "<tr>";
 				$entry .= ( ( $origin != $p2 ) ? 
@@ -1334,8 +1334,8 @@ function getTrustedClientIP($dbip, $dbproxyip)
 		$ipList[] = $clientIpAddr;
 		$ipList = array_reverse($ipList);
 		
-		foreach($ipList as $ip){
-			if(isXffTrusted(trim($ip))) continue;
+		foreach($ipList as $ipnumber => $ip){
+			if(isXffTrusted(trim($ip)) && $ipnumber < (count($ipList) - 1)) continue;
 			
 			$clientIpAddr = $ip;
 			break;
