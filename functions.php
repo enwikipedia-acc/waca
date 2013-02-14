@@ -1344,6 +1344,10 @@ function getTrustedClientIP($dbip, $dbproxyip)
 function explodeCidr( $range ) {
 	$ip_arr = explode( '/' , $range );
 
+	if( ! isset( $ip_arr[1] ) ) {
+		return array( $range );
+	}
+	
 	$blow = ( 
 		str_pad( decbin( ip2long( $ip_arr[0] ) ), 32, "0", STR_PAD_LEFT) &
 		str_pad( str_pad( "", $ip_arr[1], "1" ), 32, "0" ) 
