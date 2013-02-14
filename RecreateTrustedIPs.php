@@ -40,6 +40,8 @@ foreach ( $iprange as $r ) {
 	foreach ( $ips as $i ) {
 		$ip[] = $i;
 	}
+	
+	$ip=array_unique($ip);
 }
 
 foreach ( $dnsdomain as $d ) {
@@ -53,6 +55,8 @@ foreach ( $dnsdomain as $d ) {
 	foreach ( $ips as $i ) {
 		$ip[] = $i;
 	}
+	
+	$ip=array_unique($ip);
 	
 	// don't DoS
 	usleep( 10000 );
