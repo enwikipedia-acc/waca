@@ -1340,4 +1340,26 @@ function getTrustedClientIP($dbip, $dbproxyip)
 	
 	return $clientIpAddr;
 }
+
+function explodeCidr( $range ) {
+	$ip_arr = explode( '/' , $range );
+
+	if( ! isset( $ip_arr[1] ) ) {
+		return array( $range );
+	}
+	
+	$blow = ( 
+		str_pad( decbin( ip2long( $ip_arr[0] ) ), 32, "0", STR_PAD_LEFT) &
+		str_pad( str_pad( "", $ip_arr[1], "1" ), 32, "0" ) 
+		);
+	$bhigh = ($blow | str_pad( str_pad( "", $ip_arr[1], "0" ), 32, "1" ) );
+
+	$list = array();
+
+	for( $x = bindec( $blow ); $x <= bindec( $bhigh ); $x++ ) {
+		$list[] = long2ip( $x );
+	}
+
+	return $list;
+}
 ?>
