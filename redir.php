@@ -2,7 +2,6 @@
 
 $toolList = array(
 	'tgt' => '//toolserver.org/~stwalkerster/referrer/target.php?ip=%DATA%',
-
 );
 
 if(isset($_GET['round2']))
