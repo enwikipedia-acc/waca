@@ -2,4 +2,4 @@
 
 echo "<pre>" . "referrer: " . $_SERVER["HTTP_REFERER"];
 echo "\n";
-echo           "    data: " . $_GET['data'];
+echo           "    data: " . $_GET['ip'];
