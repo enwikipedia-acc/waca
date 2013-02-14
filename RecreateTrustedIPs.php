@@ -12,7 +12,7 @@ $ip = array();
 $iprange = array();
 $dnsdomain = array();
 
-foreach ( $lines as $line_num => $line ) {
+foreach ( $htmlfile as $line_num => $line ) {
 	// skip the comments
 	if( substr( $line, 0, 1 ) === "#" ) continue;
 	
