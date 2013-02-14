@@ -1280,9 +1280,9 @@ function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid, &$session) {
 	$out .= '| ';
 	$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $ip . '" target="_blank">Abuse Filter Log</a> ';
 
-	// Betacommand's checks
+/* 	// Betacommand's checks
 	 $out .= '| ';
-	 $out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $ip . '" target="_blank">SIL</a> ';
+	 $out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $ip . '" target="_blank">SIL</a> '; */
 	 
 	 if( $session->isCheckuser($_SESSION['user']) ) {
 		// CheckUser links
