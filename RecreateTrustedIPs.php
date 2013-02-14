@@ -3,6 +3,7 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
 	die();
 } // Web clients die.
 ini_set('display_errors', 1);
+ini_set('memory_limit', '256M');
 require_once 'config.inc.php';
 require_once 'functions.php';
 
