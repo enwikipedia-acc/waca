@@ -1230,6 +1230,7 @@ function doSort(array $items)
 }
 
 function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid, &$session) {
+	global $tsurl;
 	
 	$out = '<a class="request-src" href="'.$wikipediaurl.'wiki/User_talk:';
 	$out .= $ip . '" target="_blank">Talk page</a> ';
@@ -1239,14 +1240,16 @@ function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid, &$session) {
 	$out .= '<a class="request-src" href="'.$wikipediaurl.'wiki/Special:Contributions/';
 	$out .= $ip . '" target="_blank">Local Contributions</a> ';
 	
+	
+	
 	//X's edit counter
 	$out .= '| ';
-	$out .= '<a class="request-src" href="http://toolserver.org/~tparis/pcount/index.php?name='.$ip.'&lang=en&wiki=wikipedia"';
+	$out .= '<a class="request-src" href="'.$tsurl . "/redir.php?tool=tparis-pcount&data=" . $ip. '"';
 	$out .= ' target="_blank">Deleted Edits</a> ';
 
 	// IP global contribs
 	$out .= '| ';
-	$out .= '<a class="request-src" href="http://toolserver.org/~luxo/contributions/contributions.php?lang=en&amp;blocks=true&amp;user=' . $ip . '" target="_blank">Global Contributions</a> ';
+	$out .= '<a class="request-src" href="'. $tsurl . "/redir.php?tool=luxo-contributions&data=" . $ip. '" target="_blank">Global Contributions</a> ';
 	
 	// IP blocks
 	$out .= '| ';
@@ -1270,26 +1273,22 @@ function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid, &$session) {
 
 	// IP whois
 	$out .= '| ';
-	$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $ip . '" target="_blank">Whois</a> ';
+	$out .= '<a class="request-src" href="' . $tsurl . "/redir.php?tool=oq-whois&data=" . $ip . '" target="_blank">Whois</a> ';
 
 	// IP geolocate
 	$out .= '| ';
-	$out .= '<a class="request-src" href="http://www.ipinfodb.com/ip_locator.php?ip=' . $ip . '" target="_blank">Geolocate</a> ';
+	$out .= '<a class="request-src" href="' . $tsurl . "/redir.php?tool=ipinfodb-locator&data=" . $ip . '" target="_blank">Geolocate</a> ';
 
 	// Abuse Filter
 	$out .= '| ';
 	$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $ip . '" target="_blank">Abuse Filter Log</a> ';
-
-/* 	// Betacommand's checks
-	 $out .= '| ';
-	 $out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $ip . '" target="_blank">SIL</a> '; */
 	 
-	 if( $session->isCheckuser($_SESSION['user']) ) {
-		// CheckUser links
-	 	 $out .= '| ';
-	 	 $out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:CheckUser&ip=' . $ip . '&reason=%5B%5BWP:ACC%5D%5D%20request%20%23' . $rqid . '" target="_blank">CheckUser</a> ';
-	 }
-	 $out .= '</p>';
+	if( $session->isCheckuser($_SESSION['user']) ) {
+	// CheckUser links
+	 $out .= '| ';
+	 $out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:CheckUser&ip=' . $ip . '&reason=%5B%5BWP:ACC%5D%5D%20request%20%23' . $rqid . '" target="_blank">CheckUser</a> ';
+	}
+	$out .= '</p>';
 	 
 
 	return $out;
