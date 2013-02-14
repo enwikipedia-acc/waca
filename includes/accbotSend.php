@@ -30,7 +30,7 @@ class accbotSend {
 		
 		$db = new PdoDatabase(
 			"mysql:host=".$toolserver_notification_dbhost.";dbname=" . $toolserver_notification_database,
-			$toolserver_username
+			$toolserver_username,
 			$toolserver_password
 		);
 		
