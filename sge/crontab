@@ -1,0 +1,30 @@
+#
+# Sun Grid Engine Job Scheduling
+#
+
+#
+#      welcomerbot
+0,15,30,45 * * * * qcronsub -N welcomerbot /home/project/a/c/c/acc/public_html/sge/sge-welcomerbot.sh
+#
+#      iptable
+#0 0 * * * qcronsub -N iptable /home/project/a/c/c/acc/public_html/sge/sge-iptable.sh
+# ^ DO NOT RE-ENABLE without modifications to add the toolserver to the trusted IP list, or rehashing the code entirely. --stw
+#
+#      statsemail
+0 0 * * * qcronsub -N statsemail /home/project/a/c/c/acc/public_html/sge/sge-statsemail.sh
+#
+#      dataclear
+0 0 * * * qcronsub -N dataclear /home/project/a/c/c/acc/public_html/sge/sge-dataclear.sh
+#
+#      backup
+0 0 * * * qcronsub -N backup /home/project/a/c/c/acc/public_html/sge/sge-backup.sh
+#
+#      backup-monthly
+0 0 1 * * qcronsub -N backup-monthly /home/project/a/c/c/acc/public_html/sge/sge-backup-monthly.sh
+
+
+
+
+
+
+#EOF

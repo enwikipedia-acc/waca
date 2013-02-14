@@ -41,7 +41,6 @@ switch($_GET['action'])
 
 echo $document->saveXml();
 
-
 function actionStatus()
 {
 	global $database, $document, $doc_api;

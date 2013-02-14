@@ -46,7 +46,7 @@ class StatsUsers extends StatisticsPage
 	{
 		global $tsSQL;
 		$out = "";
-		$result = $tsSQL->query("SELECT * FROM acc_user ORDER BY user_level, user_name;");
+		$result = $tsSQL->query("SELECT * FROM acc_user WHERE user_checkuser != 1 OR user_level = 'Admin' ORDER BY user_level, user_name;");
 		if (!$result)
 		{
 			return "No users found.";
@@ -81,15 +81,35 @@ class StatsUsers extends StatisticsPage
 			}
 			$lastlevel = $row['user_level']; // Set lastlevel to the level of this user so we can see if we need to start a new list
 		}
-		$out.= "</ul>\n<br />\n";
+		$out.= "</ul><h3>CheckUsers</h3>\n";
 		
-		return $out;
+		$result = $tsSQL->query("SELECT * FROM acc_user WHERE user_checkuser = 1 ORDER BY user_name;");
+		if (!$result)
+		{
+			return $out."<p>No CheckUsers found.</p>";
+		}
+		$out .="<ul>";
+		
+		while ($row = mysql_fetch_assoc($result)) // Return the result of the database query as an associative array; then , for each row returned...
+		{
+			// We only want to list the user if they were approved and are not currently on suspension
+			if ($row['user_level'] != "Suspended" && $row['user_level'] != "Declined" && $row['user_level'] != "New")
+			{
+				$out.= "<li><a href=\"?page=Users&amp;user=" . $row['user_id'] . "\">"; // Start list item, link to user page
+				$uid = array ($row['user_name'], $row['user_onwikiname'], $row['user_id']); // Build an array of the user's name, onwiki name, and ID to compare with users in devlist
+				// Write the users name
+				$out.= $row['user_name'];
+				$out.= "</a></li>\n"; // End the list item
+			}
+		}
+		
+		return $out . "</ul>";
 	}
 	
 	function getUserDetail($userId)
 	{
 		$out="";
-		global $tsSQL, $enableRenames, $tsurl, $session, $wikiurl;
+		global $tsSQL, $asSQL, $enableRenames, $tsurl, $session, $wikiurl;
 		$gid = $tsSQL->escape($userId); // Validate the user ID for security (SQL Injection, etc)
 		if (!preg_match('/^[0-9]+$/i',$gid)) {
 			return "User ID invalid";
@@ -209,7 +229,8 @@ class StatsUsers extends StatisticsPage
 			// If the query returns at least one row
 			if (mysql_num_rows($result) != 0)
 			{
-				$out.= "<ol>\n"; // Start an ordered list
+				$out.= "<ol>\n"; // Start an ordered list				
+				
 				while ($row = mysql_fetch_assoc($result)) // Return the result of the database query as an associative array; then , for each row returned...
 				{
 					if ($row['log_time'] == "0000-00-00 00:00:00")
@@ -217,17 +238,32 @@ class StatsUsers extends StatisticsPage
 						// If the time was not set on insertion, we'll write "Date unknown" instead
 						$row['log_time'] = "Date unknown";
 					}
-		
+										
+					// Check if the user has contribs.  If not, their contribs link will be red.
+					$pendname = sanitize($row['pend_name']);
+					$contrib_css_class = "";
+					$contrib_query = "SELECT `user_editcount` from `user` where `user_name`='" . $pendname . "' LIMIT 1;";
+					$contrib_result = $asSQL->query($contrib_query);
+					if($result) {
+						$contrib_count = mysql_fetch_assoc($contrib_result);
+						if ((!isset($contrib_count['user_editcount'])) || $contrib_count['user_editcount']=='0') { 
+							$contrib_css_class = "class=\"nocontribs\"";
+						} 
+					}
+					
+					$contrib_link="<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\" $contrib_css_class>contribs</a>"; 
+					
 					// Display the name of the account that was created
 					if($session->hasright($_SESSION['user'], 'User') || $session->hasright($_SESSION['user'], 'Admin')) 
 					{
-							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
+							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - $contrib_link - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
 					}
 					else
 					{
-							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\" style=\"color: red;\" title=\"Login required to view request\">zoom</a>) at " . $row['log_time'] . "</li>\n";
+							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - $contrib_link - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\" style=\"color: red;\" title=\"Login required to view request\">zoom</a>) at " . $row['log_time'] . "</li>\n";
 					}
 				}
+				
 				$out.= "</ol>\n"; // End the ordered list
 			}
 		}

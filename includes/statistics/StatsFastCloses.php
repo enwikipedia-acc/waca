@@ -22,6 +22,7 @@ class StatsFastCloses extends StatisticsPage
 SELECT
   Closed.log_pend AS Request,
   Closed.log_user AS User,
+  u.user_id AS UserID,
   TIMEDIFF(Closed.log_time, Reserved.log_time) AS "Time Taken",
   mail_desc AS "Close Type",
   Closed.log_time AS "Date"
@@ -30,6 +31,8 @@ INNER JOIN acc_log Reserved
   ON Closed.log_pend = Reserved.log_pend
 INNER JOIN closes c
   ON c.`CONCAT("Closed ",mail_id)` = Closed.log_action
+LEFT JOIN acc_user u
+  ON Closed.log_user = u.user_name
 WHERE
   Closed.log_action != "Closed 4"
   AND
@@ -50,6 +53,10 @@ ORDER BY
 QUERY;
 		global $tsurl;
 		$qb = new QueryBrowser();
+		$qb->tableCallbackFunction = "statsFastClosesRowCallback";
+		$qb->overrideTableTitles = 
+			array( "Request", "User", "Time Taken", "Close Type", "Date" );
+		$qb->rowFetchMode = MYSQL_NUM;
 		$r = $qb->executeQueryToTable($query); 
 		echo mysql_error();
 
@@ -73,3 +80,41 @@ QUERY;
 		return false;		
 	}
 }
+
+function statsFastClosesRowCallback($row, $currentreq)
+{
+	$out.=  '<tr';
+	if ($currentreq % 2 == 0) {
+		$out.=  ' class="alternate">';
+	} else {
+		$out.=  '>';
+	}
+	
+	global $tsurl;
+	
+	for($colid = 0; $colid < count($row); $colid++) {
+		$cell = $row[$colid];
+		
+		$out .= "<td>" ;
+		
+		if($colid == 0) {
+			$out .= "<a href=\"" . $tsurl . "/acc.php?action=zoom&id=" . $cell . "\">";
+		}
+		if($colid == 1) {
+			$out .= "<a href=\"" . $tsurl . "/statistics.php/Users?user=" . $row[++$colid] . "\">";
+		}
+		
+		$out .= $cell;
+		
+		if($colid == 0 || $colid == 2 ) {
+			$out .= "</a>"; // colid is now 2 if triggered from above due to postinc
+		}
+		
+		$out .= "</td>";
+	}
+
+	$out.="</tr>";
+	
+	return $out;
+}
+

@@ -29,7 +29,8 @@ $toolserver_password = "";
 $toolserver_host = "";
 $toolserver_database = "";
 
-$toolserver_notification_database = "p_acc_notifications";
+$toolserver_notification_database = "acc_notifications";
+$toolserver_notification_dbhost = "dbmaster.srv.stwalkerster.net";
 
 // The antispoof configuration.
 $antispoof_equivset = "equivset.php";
@@ -60,6 +61,7 @@ $varfilepath = "/projects/acc/";
 $cookiepath = '/acc/';
 $sessionname = 'ACC';
 
+$xff_trusted_hosts_file = '../TrustedXFF/trusted-hosts.txt';
 /************************************
  * Tool downtime
  */
@@ -82,8 +84,8 @@ $ircBotNetworkPort = 6667;					// The port on the particular host.
 $ircBotChannel = "#wikipedia-en-accounts";	// The channel in which the discussions are.
 $ircBotNickname = "ACCBot";					// The nickname of the ACCBot.
 $ircBotCommandTrigger = '!';				// The ACCBot's command trigger.
-$ircBotSnsArn = "";							// SNS topic ARN 
-	
+
+$ircBotNotificationType = 1;				// Helpmebot's notification type ID.
 // Name of this instance of the tool.
 // This name would be used by the bot as reference point.	
 $whichami = 'Live';
@@ -109,9 +111,6 @@ $onRegistrationNewbieCheckAge = 5184000;	// Account age on Wikipedia in seconds.
 // Enable the use of Captcha for interface registration.
 $useCaptcha = false;
 
-// Enable last login statistics.
-$enableLastLogin = false;
-
 // Enable interface account renaming.
 $enableRenames = 1; 		
 
@@ -119,7 +118,7 @@ $enableRenames = 1;
 $allowViewingOfUseragent = true;
 
 // Force identification to the foundation
-$forceIdentification = false;
+$forceIdentification = true;
 
 
 /***********************************
@@ -163,19 +162,42 @@ $enableSQLError = 0; 		// Enable the display of SQL errors.
 $enableDnsblChecks = 1; 	// Enable DNS blacklist checks.
 $showGraphs = 1; 			// Show graphs on statistics pages.
 $enableTitleblacklist = 0;  // Enable Title Blacklist checks.
+$enableCommentEditing = 1;	// Enable admin editing of comments
 
 // Enable the use of PATH_INFO for request parameters to prettify URLs.
-$usePathInfo = false;
+$usePathInfo = true;
 
 // user agent of the tool.
 $toolUserAgent = "Wikipedia-ACC Tool/0.1 (+http://toolserver.org/~acc/team.php)";
 
-// AWS - ask stwalkerster BEFORE adding new usages, or 
-// they'll be unilaterally reverted. You have been warned.
-require_once("/home/project/a/c/c/acc/AWSSDKforPHP/sdk.class.php");
-
 // list of squid proxies requests go through.
 $squidIpList = array();
+
+$apiDeployPassword = "super secret update password";
+
+// request states
+$availableRequestStates = array(
+	'Open' =>array(
+		'defertolog' => 'users', // don't change or you'll break old logs
+		'deferto' => 'users', 
+		'header' => 'Open requests',
+		),
+	'Admin'=>array(
+		'defertolog' => 'admins', // don't change or you'll break old logs
+		'deferto' => 'flagged users',
+		'header' => 'Flagged user needed',
+		),
+	'Checkuser'=>array(
+		'defertolog' => 'checkusers', // don't change or you'll break old logs
+		'deferto' => 'checkusers', 
+		'header' => 'Checkuser needed',
+		),
+	);
+	
+$defaultRequestStateKey = 'Open';
+
+// time delay in mysql interval form for clearing the private data from the tool.
+$dataclear_interval = '15 DAY';
 
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********
@@ -197,3 +219,5 @@ require_once ($filepath.'blacklist.php');
 ini_set('session.cookie_path', $cookiepath);
 ini_set('session.name', $sessionname);
 ini_set('user_agent', $toolUserAgent);
+
+foreach(array( "mbstring", "mysql" ) as $x) {if(!extension_loaded($x)) {die("extension $x is required.");}}

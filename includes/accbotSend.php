@@ -20,7 +20,7 @@ if ($ACC != "1") {
 // accbot class
 class accbotSend {
 	public function send($message) {
-		global $whichami;
+		global $whichami, $ircBotNotificationType, $toolserver_notification_database, $toolserver_notification_dbhost, $toolserver_username, $toolserver_password;
 		$message = html_entity_decode($message,ENT_COMPAT,'UTF-8'); // If a message going to the bot was for whatever reason sent through sanitze() earlier, reverse it. 
 		$message = stripslashes($message);
 		$blacklist = array("DCC", "CCTP", "PRIVMSG");
@@ -29,8 +29,8 @@ class accbotSend {
 		$msg = chr(2)."[$whichami]".chr(2).": $message";
 		
 		$db = new PdoDatabase(
-			"mysql:host=dbmaster.helpmebot.org.uk;dbname=acc_notifications",
-			$toolserver_username, 
+			"mysql:host=".$toolserver_notification_dbhost.";dbname=" . $toolserver_notification_database,
+			$toolserver_username
 			$toolserver_password
 		);
 		

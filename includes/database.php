@@ -54,6 +54,13 @@ class database {
 				$this->query("SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED");
 			}
 		}
+		elseif($name==='notif') {
+				global $toolserver_username, $toolserver_password, $toolserver_notification_database, $toolserver_notification_dbhost;
+				$this->connect($toolserver_notification_dbhost, $toolserver_username, $toolserver_password, $toolserver_notification_database);
+
+				// Assigns the specific databases's name to be used later.
+				$this->db = $name;
+		}
 	}
 	
 	/**

@@ -1,1 +1,0 @@
-ALTER TABLE `acc_pend` ADD COLUMN `pend_proxyip` varchar(255) DEFAULT NULL;

@@ -186,8 +186,14 @@ class accRequest {
 		// Generates the HASH.
 		$hash = md5($id . $salt);
 		
+		$ip = $_SERVER['REMOTE_ADDR'];
+		
+		if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			$ip = getTrustedClientIP($ip, $_SERVER['HTTP_X_FORWARDED_FOR']);
+		}
+		
 		// Formulates the email message that should be send to the user.
-		$mailtxt = "Hello! You, or a user from " . (isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] . " (via " . $_SERVER['REMOTE_ADDR'] . ")" : $_SERVER['REMOTE_ADDR']) . ", has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nOnce your click this link, your request will be reviewed, and you will shortly receive a seperate email with more information.  Your password\nis not yet available.\n\nIf you did not make this request, please disregard this message.\n\n";
+		$mailtxt = "Hello! You, or a user from " . trim($ip) . " has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nOnce your click this link, your request will be reviewed, and you will shortly receive a separate email with more information.  Your password\nis not yet available.\n\nIf you did not make this request, please disregard this message.\n\n";
 		
 		// Creates the needed headers.
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
@@ -246,16 +252,18 @@ class accRequest {
 						$what = "";
 					} else {
 						$uLevel = "Admin";
-						$what = "<Account Creator Needed!> ";
+						$what = "<Account Creator Needed!>";
 					}
 					$comments = html_entity_decode(stripslashes($row['pend_cmt']));
-						$accbot->send("\00314[[\00303acc:\00307$pid\00314]]\0034 N\00310 \00302$tsurl/acc.php?action=zoom&id=$pid\003 \0035*\003 \00303$user\003 \0035*\003 \00310$what\003" . substr(str_replace(array (
-						"\n",
-						"\r"
-						), array (
-						' ',
-						' '
-						), $comments), 0, 200) . ((strlen($comments) > 200) ? '...' : ''));
+					
+					$ircmessage = "\00314[[\00303acc:\00307$pid\00314]]\0034 N\00310 \00302$tsurl/acc.php?action=zoom&id=$pid\003 \0035*\003 \00303$user\003 \0035*\00310 $what\003";
+					
+					if(mb_strlen($comments) > 0)
+					{
+						$ircmessage .= " <Requestor Left Comment>";
+					}
+					$accbot->send($ircmessage);
+					
 				} elseif( $row['pend_mailconfirm'] == "Confirmed" ) {
 					echo "Your e-mail address has already been confirmed!\n";
 				} else {
@@ -354,6 +362,11 @@ class accRequest {
 		$parts = explode("@", $email);
 		$username = isset($parts[0]) ? $parts[0] : '';
 		$domain = isset($parts[1]) ? $parts[1] : '';
+		
+		if(strpos($username, ",") !== false) {
+			return false;
+		}
+		
 		if (function_exists('checkdnsrr')) {
 			getmxrr($domain, $mxhosts, $mxweight);
 			if (count($mxhosts) > 0) {
@@ -627,34 +640,8 @@ class accRequest {
 	}
 	
 	public function blockedOnEn() {
-		// Get global variable from configuration file and an object from the index file.
-		global $dontUseWikiDb, $asSQL, $skin, $messages;
-		
-		if(!$dontUseWikiDb) {
-			// Formulates and executes the SQL query to check if the IP is blocked on the Eng Wiki. 
-			$query = 'SELECT * FROM ipblocks WHERE ipb_address = \''.$asSQL->escape($_SERVER['REMOTE_ADDR']).'\';';
-			$result = $asSQL->query($query);
-			
-			// Get number of rows in the result.
-			$rows = mysql_num_rows($result);
-			
-			// When there where rows preset it means that there is a block on the IP.
-			// There is also checked if the IP is not on the Eng Wiki Whitelist.
-			if(($rows > 0) && !$this->isOnWhitelist($_SERVER['REMOTE_ADDR'])) {												
-				// Gets message to display to the user.
-				$message = $messages->getMessage(9);
-			
-				// Displays the appropiate message to the user.
-				echo "$message<br />\n";
-				
-				// Display the footer of the interface.
-				$skin->displayPfooter();
-			
-				// Terminates the current script, as the user is banned.
-				// This is done because the requesting process should be stopped. 
-				die();
-			}
-		}
+		// not working, and not needed. Also causing problems with other things
+		// TODO: remove all calls to this function.
 	}
 	
 	public function doDnsBlacklistCheck() {
@@ -727,7 +714,7 @@ class accRequest {
 		$ue = unserialize($userexist);
 		if (!isset ($ue['query']['users']['0']['missing'])) {
 			$message = $messages->getMessage(10);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:10 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -738,7 +725,7 @@ class accRequest {
 		$ue = unserialize($userexist);
 		if (isset ($ue['query']['globaluserinfo']['id'])) {
 			$message = $messages->getMessage(28);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:28 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -746,7 +733,7 @@ class accRequest {
 		$nums = preg_match("/^[0-9]+$/", $_POST['name']);
 		if ($nums > 0) {
 			$message = $messages->getMessage(11);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:11 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -754,7 +741,7 @@ class accRequest {
 		$unameismail = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/i', $_POST['name']);
 		if ($unameismail > 0) {
 			$message = $messages->getMessage(12);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:12 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -762,21 +749,21 @@ class accRequest {
 		$unameisinvalidchar = preg_match('/[\#\/\|\[\]\{\}\@\%\:\~\<\>]/', $_POST['name']);
 		if ($unameisinvalidchar > 0 || ltrim( rtrim( $_POST['name'] == "" ) ) ) {
 			$message = $messages->getMessage(13);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:13 -->$message<br />\n");
 			$fail = 1;
 		}
 		
 		// Checks whether the email adresses match.
 		if($_POST['email'] != $_POST['emailconfirm']) {
 			$message = $messages->getMessage(27);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:27 -->$message<br />\n");
 			$fail = 1;
 		}
 		
 		// Checks whether the email adress is valid.
 		if (!$this->emailvalid($_POST['email'])) {
 			$message = $messages->getMessage(14);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:14a -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -784,7 +771,7 @@ class accRequest {
 		$mailiswmf = preg_match('/.*@.*wiki(m.dia|p.dia)\.(org|com)/i', $email);
 		if ($mailiswmf != 0) {
 			$message = $messages->getMessage(14);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:14b -->$message<br />\n");
 			$fail = 1;
 		}
 
@@ -794,7 +781,7 @@ class accRequest {
 		if ($trailingspace == " " || $trailingspace == "_"  ) {
 			// TODO: WTF?!? Message 25 does not exist in the database. 2010-03-06 stw.
 			$message = $messages->getMessage(25);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:25 -->$message<br />\n");
 			$fail = 1;
 		}
 
@@ -804,7 +791,7 @@ class accRequest {
 		$row = mysql_fetch_assoc($result);
 		if ($row['pend_id'] != "") {
 			$message = $messages->getMessage(17);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:17 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -814,7 +801,7 @@ class accRequest {
 		$row = mysql_fetch_assoc($result);
 		if ($row['pend_id'] != "") {
 			$message = $messages->getMessage(18);
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:18 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -825,7 +812,7 @@ class accRequest {
 			$message = $messages->getMessage(16);
 			
 			// Displays the appropiate message to the user.
-			$skin->displayRequestMsg("$message<br />\n");
+			$skin->displayRequestMsg("<!-- m:16 -->$message<br />\n");
 			
 			// Display the request form and footer of the interface.
 			$skin->displayRequest();
@@ -863,19 +850,10 @@ class accRequest {
 		$comments = $tsSQL->escape(htmlentities($_POST['comments'],ENT_COMPAT,'UTF-8'));
 		$ip = $tsSQL->escape(htmlentities($_SERVER['REMOTE_ADDR']),ENT_COMPAT,'UTF-8');
 		$proxystring = 'NULL';
-		if ($this->istrusted($ip)|| array_search($ip, $squidIpList)) {
-			$xffheader = explode(",", getenv("HTTP_X_FORWARDED_FOR"));
-			$sourceip = trim($xffheader[sizeof($xffheader)-1]);
-			if (preg_match('/^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/', $sourceip)) {
-				$proxyip = $ip;
-				$ip = $sourceip;
-			}
-			
-			if(!array_search($ip, $squidIpList)){
-				$proxystring = "'" . $proxyip . "'";
-			}
-		}
-		$useragent = $tsSQL->escape(htmlentities($_ENV["HTTP_USER_AGENT"],ENT_COMPAT,'UTF-8'));
+		$xffheader = getenv("HTTP_X_FORWARDED_FOR");
+		if($xffheader != "") $proxystring = "'" . $tsSQL->escape($xffheader) . "'";
+		
+		$useragent = $tsSQL->escape(htmlentities($_SERVER["HTTP_USER_AGENT"],ENT_COMPAT,'UTF-8'));
 		
 		// Gets the current date and time.
 		$dnow = date("Y-m-d H-i-s");

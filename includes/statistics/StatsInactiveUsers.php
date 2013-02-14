@@ -24,6 +24,12 @@ class StatsInactiveUsers extends StatisticsPage
 			$sessionuser = "";
 		}
 		
+		$showImmune=false;
+		if(isset($_GET['showimmune']))
+		{
+			$showImmune=true;
+		}
+		
 		$date = new DateTime();
 		$date->modify("-45 days");
 
@@ -40,11 +46,18 @@ class StatsInactiveUsers extends StatisticsPage
 		";
 
 		$result = $tsSQL->query($query);
-		if (!$result)
+		if (!$result) {
 			Die("ERROR: No result returned.");
-		$out= 'This list contains the usernames of all accounts that have not logged in in the past 45 days.';
+		}
+		
+		$out= '<p>This list contains the usernames of all accounts that have not logged in in the past 45 days.</p>';
+		
+		if(!$showImmune) {
+			$out.='<p>Tool root and checkuser-flagged accounts are hidden from this list.</p>';
+		}
 
 		$out.= "<table><tr><th>User ID</th><th>Tool Username</th><th>User access level</th><th>enwiki username</th><th>Last activity</th><th>Approval</th>";
+		
 		if($session->hasright($sessionuser, "Admin")) {
 			$out.= "<th>Suspend</th>";
 		}
@@ -62,21 +75,15 @@ class StatsInactiveUsers extends StatisticsPage
 					$r['user_checkuser'] == 1 || // checkusers
 					
 					/*Tool Roots*/
-					$r['tooluserid'] == 1     || // SQL
 					$r['tooluserid'] == 7     || // Stwalkerster
-					$r['tooluserid'] == 36    || // OverlordQ
-					$r['tooluserid'] == 64    || // Cobi
-					
-					/*Mailing List Admins*/
-					$r['tooluserid'] == 14       // Prodego
-												 // Stwalkerster
-												 
+					$r['tooluserid'] == 64       // Cobi
 				) )
 			{
-				
 				$allowSuspend = true;
 			}
 
+			if(!$showImmune && !$allowSuspend) continue;
+			
 			$userid = $r['tooluserid'];
 			$q2 = 'select log_time from acc_log where log_pend = '.$userid.' and log_action = "Approved" order by log_id desc limit 1;';
 			$res2 = $tsSQL->query($q2);
