@@ -61,6 +61,7 @@ $varfilepath = "/projects/acc/";
 $cookiepath = '/acc/';
 $sessionname = 'ACC';
 
+$xff_trusted_hosts_file = '../TrustedXFF/trusted-hosts.txt';
 /************************************
  * Tool downtime
  */
