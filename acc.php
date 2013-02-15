@@ -1787,12 +1787,15 @@ elseif ($action == "reserve") {
 	// Release the lock on the table.
 	mysql_query('UNLOCK TABLES;',$tsSQLlink);
 	
-	// Decided to use the HTML redirect, because the PHP code results in an error.
-	// I know that this breaks the Back button, but currently I dont have another solution.
-	// As an alternative one could implement output buffering to solve this problem.
-	//echo "<meta http-equiv=\"Refresh\" Content=\"0; URL=$tsurl/acc.php?action=zoom&id=$request\">";
-	//Autorefresh is probably not a good idea, as there is no guarantee that the user has acknowledged the warning.  Disabling.  This also resolves Issue #3 on GitHub.  --FastLizard4
-	echo "<p><a href=\"{$tsurl}/acc.php?action=zoom&id={$request}\">Acknowledge, return to request page</a></p>\n";
+	if($doubleReserveCount) {
+		//Autorefresh is probably not a good idea when warnings are displayed, as there is no guarantee that the user has acknowledged the warning.  Disabling.  This also resolves Issue #3 on GitHub.  --FastLizard4
+		echo "<p><a href=\"{$tsurl}/acc.php?action=zoom&id={$request}\">Acknowledge, return to request page</a></p>\n";
+	} else {
+		// Decided to use the HTML redirect, because the PHP code results in an error.
+		// I know that this breaks the Back button, but currently I dont have another solution.
+		// As an alternative one could implement output buffering to solve this problem.
+		echo "<meta http-equiv=\"Refresh\" Content=\"0; URL=$tsurl/acc.php?action=zoom&id=$request\">";
+}
 	die();
 		
 }
