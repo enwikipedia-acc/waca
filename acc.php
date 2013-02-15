@@ -1740,11 +1740,11 @@ elseif ($action == "reserve") {
 					//Unlock tables first!
 					mysql_query("UNLOCK TABLES;", $tsSQLlink);
 					// Prevent the user from continuing.
-					die('You already have a request reserved!<br /><a href="' . $tsurl . '/acc.php">Return to main request interface</a>');
+					die('You already have a request reserved!<br />Your request to reserve an additional request has been denied.<br /><a href="' . $tsurl . '/acc.php">Return to main request interface</a>');
 					break;
 				case "inform":
 					// Tell the user that they already have requests reserved, but let them through anyway..
-					echo '<div id="doublereserve-warn">You have multiple requests reserved.</div>';
+					echo '<div id="doublereserve-warn">WARNING: You have multiple requests reserved.</div>';
 					break;
 				case "ignore":
 					// Do sod all.
@@ -1790,7 +1790,9 @@ elseif ($action == "reserve") {
 	// Decided to use the HTML redirect, because the PHP code results in an error.
 	// I know that this breaks the Back button, but currently I dont have another solution.
 	// As an alternative one could implement output buffering to solve this problem.
-	echo "<meta http-equiv=\"Refresh\" Content=\"0; URL=$tsurl/acc.php?action=zoom&id=$request\">";
+	//echo "<meta http-equiv=\"Refresh\" Content=\"0; URL=$tsurl/acc.php?action=zoom&id=$request\">";
+	//Autorefresh is probably not a good idea, as there is no guarantee that the user has acknowledged the warning.  Disabling.  This also resolves Issue #3 on GitHub.  --FastLizard4
+	echo "<p><a href=\"{$tsurl}/acc.php?action=zoom&id={$request}\">Acknowledge, return to request page</a></p>\n";
 	die();
 		
 }
