@@ -209,6 +209,24 @@ $dataclear_interval = '15 DAY';
 // Retriving the local configuration file.
 require_once('config.local.inc.php');
 
+$cDatabaseConfig = array(
+	"acc" => array (
+		"dsrcname" => "mysql:host=".$toolserver_host.";dbname=".$toolserver_database,
+		"username" => $toolserver_username,
+		"password" => $toolserver_password
+	),
+	"wikipedia" => array (
+		"dsrcname" => "mysql:host=".$antispoof_host.";dbname=".$antispoof_db,
+		"username" => $toolserver_username,
+		"password" => $toolserver_password
+	),
+	"notifications" => array (
+		"dsrcname" => "mysql:host=".$toolserver_notification_dbhost.";dbname=".$toolserver_notification_database,
+		"username" => $toolserver_username,
+		"password" => $toolserver_password
+	),
+);
+
 // //Keep the included files from being executed.
 $ACC = 1;
 

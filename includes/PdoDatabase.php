@@ -1,24 +1,25 @@
 <?php
 
-function gGetDb() {
-	if( $accdbobject === null ) {
-		global 
-			$toolserver_host, 
-			$toolserver_database, 
-			$toolserver_username, 
-			$toolserver_password;
+function gGetDb($db = "acc") {
+	if( ! isset( $accdbobjects[ $db ] ) ) {
+		global $cDatabaseConfig;
+	
+		if(! array_key_exists( $db, $cDatabaseConfig ) ) {
+			trigger_error( "Database configuration not found for alias $db" );
+			die();
+		}
 	
 		$accdbobject = new PdoDatabase(
-			"mysql:host=".$toolserver_host.";dbname=".$toolserver_database,
-			$toolserver_username,
-			$toolserver_password
+			$cDatabaseConfig[ $db ][ "dsrcname" ],
+			$cDatabaseConfig[ $db ][ "username" ],
+			$cDatabaseConfig[ $db ][ "password" ]
 		);
 	}
 	
 	return $accdbobject;
 }
 
-$accdbobject = null;
+$accdbobjects = array();
 
 class PdoDatabase extends PDO {
 	protected $hasActiveTransaction = false;
