@@ -119,6 +119,7 @@ class database {
 	 * @return MySQL query result.
 	 */
 	public function query($query) {
+		trigger_error("Use of old functions", E_USER_WARNING);
 		return mysql_query($query,$this->dbLink);
 	}
 	
