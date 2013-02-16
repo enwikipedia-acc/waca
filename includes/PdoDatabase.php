@@ -15,7 +15,6 @@ function gGetDb($db = "acc") {
 			$cDatabaseConfig[ $db ][ "password" ]
 		);
 	}
-	
 	return $accdbobject;
 }
 
@@ -33,10 +32,18 @@ class PdoDatabase extends PDO {
 	}
 
 	public function beginTransaction() {
+		// Override the pre-existing method, which doesn't stop you from 
+		// starting transactions within transactions - which doesn't work and 
+		// will throw an exception. This elimiates the need to catch exeptions
+		// all over the rest of the code
 		if ( $this->hasActiveTransaction ) {
 			return false;
 		} else {
+			// set the transaction isolation level for every transaction.
 			$this->exec( "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;" );
+			
+			// start a new transaction, and return whether or not the start was
+			// successful
 			$this->hasActiveTransaction = parent::beginTransaction();
 			return $this->hasActiveTransaction;
 		}
