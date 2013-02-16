@@ -438,7 +438,7 @@ if (mysql_num_rows($result) != 0){
 		$out = "<li><small>[ <span class=\"request-ban\">$uname</span> / <a class=\"request-src\" href=\"http://$wikiurl/wiki/User:$uoname\">$uoname</a> ]";
 		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?approve=$userid\" onclick=\"return confirm('Are you sure you wish to approve $uname?')\">Approve!</a> - <a class=\"request-req\" href=\"$tsurl/users.php?decline=$userid\">Decline</a> - <a class=\"request-req\" href=\"http://toolserver.org/~tparis/pcount/index.php?name=$uoname&amp;lang=en&amp;wiki=wikipedia\">Count!</a>";
 		$out .=" - <a class=\"request-req\" href=\"http://$wikiurl/w/index.php?diff=$conf_revid\">Confirmation diff</a></small></li>";
-		$out .=" - <a class=\"request-req\" href=\"http://meta.wikimedia.org/wiki/Identification_noticeboard">Identification</a></small></li>";
+		$out .=" - <a class=\"request-req\" href=\"http://meta.wikimedia.org/wiki/Identification_noticeboard\">Identification</a></small></li>";
 		echo "$out\n";
 	}
 	echo "</ol>\n";
