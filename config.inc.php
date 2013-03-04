@@ -181,16 +181,19 @@ $availableRequestStates = array(
 		'defertolog' => 'users', // don't change or you'll break old logs
 		'deferto' => 'users', 
 		'header' => 'Open requests',
+		'api' => "open",
 		),
 	'Admin'=>array(
 		'defertolog' => 'admins', // don't change or you'll break old logs
 		'deferto' => 'flagged users',
 		'header' => 'Flagged user needed',
+		'api' => "admin",
 		),
 	'Checkuser'=>array(
 		'defertolog' => 'checkusers', // don't change or you'll break old logs
 		'deferto' => 'checkusers', 
 		'header' => 'Checkuser needed',
+		'api' => "checkuser",
 		),
 	);
 	
