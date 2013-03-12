@@ -1250,22 +1250,22 @@ function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid, &$session) {
 	// IP blocks
 	$out .= '| ';
 	$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
-	$out .= $ip . '" target="_blank">Local Blocks</a> ';
+	$out .= $ip . '" target="_blank">Local Block Log</a> ';
 
 	// rangeblocks
 	$out .= '| ';
 	$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3ABlockList&amp;ip=';
-	$out .= $ip . '" target="_blank">Local Range Blocks</a> ';
+	$out .= $ip . '" target="_blank">Active Local Blocks</a> ';
 
 	// Global blocks
 	$out .= '| ';
 	$out .= '<a class="request-src" href="'.$metaurl.'w/index.php?title=Special:Log&amp;type=gblblock&amp;page=User:';
-	$out .= $ip . '" target="_blank">Global Blocks</a> ';
+	$out .= $ip . '" target="_blank">Global Block Log</a> ';
 
 	// Global range blocks/Locally disabled Global Blocks
 	$out .= '| ';
 	$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3AGlobalBlockList&amp;ip=';
-	$out .= $ip . '" target="_blank">Global Range Blocks</a> ';
+	$out .= $ip . '" target="_blank">Active Global Blocks</a> ';
 
 	// IP whois
 	$out .= '| ';
