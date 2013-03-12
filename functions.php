@@ -1284,7 +1284,6 @@ function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid, &$session) {
 	 $out .= '| ';
 	 $out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:CheckUser&ip=' . $ip . '&reason=%5B%5BWP:ACC%5D%5D%20request%20%23' . $rqid . '" target="_blank">CheckUser</a> ';
 	}
-	$out .= '</p>';
 	 
 
 	return $out;
