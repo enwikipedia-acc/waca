@@ -756,8 +756,10 @@ function zoomPage($id,$urlhash)
 				$iprdns = gethostbyaddr($p2);
 				if( $iprdns == $p2 ) {
 					$iprdns = "<i>(no rdns available)</i>";
+				} else {
+					$iprdns = "RDNS: $iprdns";
 				}
-				$entry .= "<td style=\"padding:3px\">$p2<br /><span style=\"color:grey;\">RDNS: " . $iprdns . "</span></td><td>";
+				$entry .= "<td style=\"padding:3px\">$p2<br /><span style=\"color:grey;\">" . $iprdns . "</span></td><td>";
 				if( ! $trust ) {
 					$entry .= showIPlinks($p2, $wikipediaurl, $metaurl, $row['pend_id'], $session);
 				}
