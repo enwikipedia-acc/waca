@@ -226,12 +226,25 @@ function listrequests($type, $hideip, $correcthash) {
 	global $enableEmailConfirm;
 	global $session;
 	global $availableRequestStates;
+	
+	global $requestLimitThreshold, $requestLimitShowOnly;
+	$totalRequests = 0
+	
 	if($secure != 1) { die("Not logged in"); }
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database.");
 
 	if ($enableEmailConfirm == 1) {
 		if (array_key_exists($type, $availableRequestStates)) {
-			$query = "SELECT * FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed';";
+			
+			$totalRequestsQ = mysql_query("SELECT COUNT(*) FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed';");
+			$totalRequestsR = mysql_fetch_assoc( $totalRequestsQ );
+			$totalRequests = $totalRequestsR["COUNT(*)"];
+			
+			if( $totalRequests > $requestLimitThreshold ) {
+				$query = "SELECT * FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed' LIMIT $requestLimitShowOnly;";
+			} else {
+				$query = "SELECT * FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed';";
+			}
 		} else {
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
 		}
@@ -247,7 +260,11 @@ function listrequests($type, $hideip, $correcthash) {
 	if (!$result)
 	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 
-	$tablestart = "<table cellspacing=\"0\">\n";
+	if( $totalRequests > $requestLimitThreshold ) {
+		$tablestart = "<p><span class=\"warning\">Miser mode: not all requests are shown for speed. </span>Only $requestLimitShowOnly of $totalRequests are shown here.</p><table cellspacing=\"0\">\n";
+	} else {
+		$tablestart = "<table cellspacing=\"0\">\n";
+	}
 	$tableend = "</table>\n";
 	$reqlist = '';
 	$currentreq = 0;
