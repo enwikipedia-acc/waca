@@ -228,7 +228,7 @@ function listrequests($type, $hideip, $correcthash) {
 	global $availableRequestStates;
 	
 	global $requestLimitThreshold, $requestLimitShowOnly;
-	$totalRequests = 0
+	$totalRequests = 0;
 	
 	if($secure != 1) { die("Not logged in"); }
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database.");
