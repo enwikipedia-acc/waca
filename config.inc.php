@@ -202,8 +202,8 @@ $defaultRequestStateKey = 'Open';
 // time delay in mysql interval form for clearing the private data from the tool.
 $dataclear_interval = '15 DAY';
 
-$requestLimitThreshold = 5;
-$requestLimitShowOnly = 3;
+$requestLimitThreshold = 50;
+$requestLimitShowOnly = 25;
 
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********
