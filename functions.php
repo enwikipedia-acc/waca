@@ -268,6 +268,15 @@ function listrequests($type, $hideip, $correcthash) {
 	$tableend = "</table>\n";
 	$reqlist = '';
 	$currentreq = 0;
+	
+	$sid = sanitize($_SESSION['user']);
+	$query4 = "SELECT * FROM acc_user WHERE user_name = '$sid';";
+	$result4 = mysql_query($query4, $tsSQLlink);
+	if (!$result4) {
+		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+	}
+	$row4 = mysql_fetch_assoc($result4);
+	
 	while ( $row = mysql_fetch_assoc( $result ) ) {
 		$currentreq += 1;
 		$uname = urlencode(html_entity_decode($row['pend_name']));
@@ -313,13 +322,6 @@ function listrequests($type, $hideip, $correcthash) {
 		} else {
 			$out .= '<td><small>' . "\n"; //List item
 		}
-
-		$sid = sanitize($_SESSION['user']);
-		$query4 = "SELECT * FROM acc_user WHERE user_name = '$sid';";
-		$result4 = mysql_query($query4, $tsSQLlink);
-		if (!$result4)
-		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-		$row4 = mysql_fetch_assoc($result4);
 
 		if ($hideip == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 			// Email.
