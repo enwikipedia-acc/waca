@@ -295,14 +295,14 @@ function listrequests($type, $hideip, $correcthash) {
 		
 		$clientIpAddr = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
 		
-		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE (`pend_ip` = '" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "' OR `pend_proxyip` LIKE '%" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "%') AND `pend_mailconfirm` = 'Confirmed';";
-		$result2 = mysql_query($query2); // TODO: OPTIMISE ME! I TAKE 20s TO EXECUTE!
-		if (!$result2) {
-			sqlerror("Query failed: $query2 ERROR: " . mysql_error(),"Database query error.");
-		}
-		$otheripreqs = mysql_fetch_assoc($result2);
-		$otheripreqs["count"]--;
-		
+//		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE (`pend_ip` = '" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "' OR `pend_proxyip` LIKE '%" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "%') AND `pend_mailconfirm` = 'Confirmed';";
+//		$result2 = mysql_query($query2); // TODO: OPTIMISE ME! I TAKE 20s TO EXECUTE!
+//		if (!$result2) {
+//			sqlerror("Query failed: $query2 ERROR: " . mysql_error(),"Database query error.");
+//		}
+//		$otheripreqs = mysql_fetch_assoc($result2);
+//		$otheripreqs["count"]--;
+$otheripreqs = array("count" => "-1");		
 		$query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . mysql_real_escape_string($row['pend_email'],$tsSQLlink) . "' AND `pend_id` != '" . mysql_real_escape_string($row['pend_id'],$tsSQLlink) . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result3 = mysql_query($query3);
 		if (!$result3) {
