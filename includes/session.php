@@ -96,23 +96,32 @@ class session {
 		$this->checkusers[$username] = $row['user_checkuser'];
 		return $row['user_checkuser'];
 	}
+	
+	var $rights = array();
+	
 	public function hasright($username, $checkright) {
 		global $tsSQL;
 		if($this->isCheckuser($username) && $checkright == "Admin") {
 		  return true;
 		}
-		$username = $tsSQL->escape($username);
-		$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
-		$result = $tsSQL->query($query);
-		if (!$result) {
-			$tsSQL->showError("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+		
+		if( array_key_exists( $username, $this->rights ) ) {
+			$rights = $this->rights[$username];
+		} else {
+			$username = $tsSQL->escape($username);
+			$query = "SELECT user_level FROM acc_user WHERE user_name = '$username';";
+			$result = $tsSQL->query($query);
+			if (!$result) {
+				$tsSQL->showError("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+			}
+			$row = mysql_fetch_assoc($result);
+			$rights = $row['user_level'];
+			$this->rights[$username] = $rights;
 		}
-		$row = mysql_fetch_assoc($result);
-		$rights = explode(':', $row['user_level']);
-		foreach( $rights as $right) {
-			if($right == $checkright ) {
-				return true;
-      }
+		
+		
+		if($rights == $checkright ) {
+			return true;
 		}
 		return false;
 	}
