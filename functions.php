@@ -1332,10 +1332,12 @@ function getUserIdFromName($name) {
 	return $r['user_id'];
 }
 
+$trustedipcache = array();
 function isXffTrusted($ip) {
-	global $tsSQL, $squidIpList;
+	global $tsSQL, $squidIpList, $trustedipcache;
 	
 	if(in_array($ip, $squidIpList)) return true;
+	if(array_key_exists($ip, $trustedipcache)) return $trustedipcache[$ip];
 	
 	$query = "SELECT * FROM `acc_trustedips` WHERE `trustedips_ipaddr` = '$ip';";
 	$result = $tsSQL->query($query);
@@ -1343,9 +1345,11 @@ function isXffTrusted($ip) {
 		$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	}
 	if (mysql_num_rows($result)) {
+		$trustedipcache[$ip] = true;
 		return true;
 	}
 	else {
+		$trustedipcache[$ip] = false;
 		return false;
 	}
 }
