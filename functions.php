@@ -373,7 +373,7 @@ function listrequests($type, $hideip, $correcthash) {
 			$out .= " - <a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;name=" . $row['pend_id'] . '">Name</a>';
 		}
 
-		$reserveByUser = isReserved($row['pend_id']);
+		$reserveByUser = isReservedWithRow($row);
 		// if request is reserved, show reserved message
 		if( $reserveByUser != 0 )
 		{
@@ -447,6 +447,10 @@ function isReserved($requestid)
 		die("Error determining reserved status of request. Check the request id.");
 	}
 	$row = mysql_fetch_assoc($result);
+	return isReservedWithRow($row);
+}
+
+function isReservedWithRow($row) {
 	if(isset($row['pend_reserved']) && $row['pend_reserved'] != 0) { 
 		return $row['pend_reserved'];
 	} else {return false;}
