@@ -95,7 +95,7 @@ class database {
 		}
 		elseif($this->db === "antispoof")
 		{
-			global $antispoof_host, $antispoof_db, $antispoof_password, $dontUseWikiDb;
+			global $antispoof_host, $antispoof_db, $antispoof_password, $toolserver_username, $dontUseWikiDb;
 			if(!$dontUseWikiDb) {
 				$link = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
 			}
