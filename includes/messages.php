@@ -27,7 +27,11 @@ class messages {
 			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"Database query error.");
 		$row = mysql_fetch_assoc($result);
 		$message = $row['mail_text'];
-		$message = str_replace('%VERSION%', getToolVersion(), $message);
+		
+		if( strpos($message, "%VERSION%") !== false ) {
+			$message = str_replace('%VERSION%', getToolVersion(), $message);
+		}
+		
 		$message = str_replace('%TSURL%', $tsurl, $message);
 		return $message;
 	}
