@@ -74,7 +74,15 @@ class session {
 			die( $skin->displayIfooter() );
 		}
 	}
+	
+	var $checkusers = array();
+	
 	public function isCheckuser($username) {
+		if( array_key_exists( $username, $this->checkusers ) )
+		{
+			return $this->checkusers[$username];
+		}
+	
 		global $tsSQL;
 		$username = $tsSQL->escape($username);
 		$query = "SELECT user_checkuser FROM acc_user WHERE user_name = '$username';";
@@ -84,13 +92,15 @@ class session {
 			return false;
 		}
 		$row = mysql_fetch_assoc($result);
+		
+		$this->checkusers[$username] = $row['user_checkuser'];
 		return $row['user_checkuser'];
 	}
 	public function hasright($username, $checkright) {
 		global $tsSQL;
-    if($this->isCheckuser($username) && $checkright == "Admin") {
-      return true;
-    }
+		if($this->isCheckuser($username) && $checkright == "Admin") {
+		  return true;
+		}
 		$username = $tsSQL->escape($username);
 		$query = "SELECT * FROM acc_user WHERE user_name = '$username';";
 		$result = $tsSQL->query($query);
