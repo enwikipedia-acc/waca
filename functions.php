@@ -283,7 +283,7 @@ function listrequests($type, $hideip, $correcthash) {
 		$uname = str_replace("%26amp%3B", "%26", $uname);
 		$rid = $row['pend_id'];
 		
-		$data = mysql_query("SELECT COUNT(*) as num FROM acc_cmt where pend_id = '" . $rid . "';");
+		$data = mysql_query("SELECT COUNT(*) as num FROM acc_cmt where pend_id = '" . $rid . "';"); // indexed
 		$commentcountrow = mysql_fetch_assoc($data);
 		$commentcount=$commentcountrow['num'];
 		
@@ -296,7 +296,7 @@ function listrequests($type, $hideip, $correcthash) {
 		$clientIpAddr = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
 		
 		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE (`pend_ip` = '" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "' OR `pend_proxyip` LIKE '%" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "%') AND `pend_mailconfirm` = 'Confirmed';";
-		$result2 = mysql_query($query2);
+		$result2 = mysql_query($query2); // TODO: OPTIMISE ME! I TAKE 20s TO EXECUTE!
 		if (!$result2) {
 			sqlerror("Query failed: $query2 ERROR: " . mysql_error(),"Database query error.");
 		}
