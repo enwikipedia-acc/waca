@@ -787,7 +787,7 @@ function zoomPage($id,$urlhash)
 				
 				if( $iprdns == $p2 ) {
 					if( $ipisprivate ) {
-						$iprdns = "<i>RFC1918 Private Address</i>";
+						$iprdns = "<i><a href=\"http://en.wikipedia.org/wiki/Private_network\">Non-routable address</a></i>";
 					} else {
 						$iprdns = "<i>(no rdns available)</i>";
 					}
