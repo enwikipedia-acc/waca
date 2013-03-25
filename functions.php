@@ -753,6 +753,8 @@ function zoomPage($id,$urlhash)
 
 			$out .= '<p><strong>Forwarded IP addresses:</strong><table>';
 			
+			$tablerownum = 0;
+			
 			$proxies = explode(",", $row['pend_proxyip']);
 			$proxies[] = $row['pend_ip'];
 			
@@ -768,7 +770,8 @@ function zoomPage($id,$urlhash)
 				$lasttrust = $trust;
 				$trust = $trust & $trusted & ($proxynum < count($proxies) - 1);
 				
-				$entry = "<tr>";
+				$entry = "<tr ". ( $tablerownum == 1 ? 'class="alternate"' : "" ).">";
+				$tablerownum = ++$tablerownum % 2;
 				$entry .= ( ( $origin != $p2 ) ? 
 					(	$trust ? "<td style=\"color:grey;\">(trusted)</td>"
 						: ($trusted ? "<td style=\"color:orange;\">(via untrusted)</td>" : "<td style=\"color:red;\">(untrusted)</td>" )
@@ -1412,7 +1415,9 @@ function explodeCidr( $range ) {
 /**
  * Takes an array( "low" => "high ) values, and returns true if $needle is in at least one of them.
  */
-function ipInRange( $haystack, $needle ) {
+function ipInRange( $haystack, $ip ) {
+	$needle = ip2long($ip);
+
 	foreach( $haystack as $low => $high ) {
 		if( ip2long($low) <= $needle && ip2long($high) >= $needle ) {
 			return true;
