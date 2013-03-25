@@ -776,14 +776,27 @@ function zoomPage($id,$urlhash)
 					: (	$lasttrust ? "<td>(origin)</td>"
 						: ("<td style=\"color:red;\">(origin untrusted)</td>" ) )
 					);
+					
+				global $rfc1918ips;
+					
 				$iprdns = gethostbyaddr($p2);
+				$ipisprivate = ipInRange($rfc1918ips, $p2);
+				
 				if( $iprdns == $p2 ) {
-					$iprdns = "<i>(no rdns available)</i>";
+					if( $ipisprivate ) {
+						$iprdns = "<i>RFC1918 Private Address</i>";
+					} else {
+						$iprdns = "<i>(no rdns available)</i>";
+					}
 				} else {
-					$iprdns = "RDNS: $iprdns";
+					if( $ipisprivate ) {
+						$iprdns = "<i>RFC1918 Private Address</i>";
+					} else {
+						$iprdns = "RDNS: $iprdns";
+					}
 				}
 				$entry .= "<td style=\"padding:3px\">$p2<br /><span style=\"color:grey;\">" . $iprdns . "</span></td><td>";
-				if( ! $trust ) {
+				if( ( ! $trust ) && ( ! $ipisprivate ) ) {
 					$entry .= showIPlinks($p2, $wikipediaurl, $metaurl, $row['pend_id'], $session);
 				}
 				$entry .= "</td></tr>";
@@ -1394,5 +1407,17 @@ function explodeCidr( $range ) {
 	}
 
 	return $list;
+}
+
+/**
+ * Takes an array( "low" => "high ) values, and returns true if $needle is in at least one of them.
+ */
+function ipInRange( $haystack, $needle ) {
+	foreach( $haystack as $low => $high ) {
+		if( ip2long($low) <= $needle $$ ip2long($high) >= $needle ) {
+			return true;
+		}
+	}
+	return false;
 }
 ?>

@@ -202,8 +202,18 @@ $defaultRequestStateKey = 'Open';
 // time delay in mysql interval form for clearing the private data from the tool.
 $dataclear_interval = '15 DAY';
 
+// miser mode
 $requestLimitThreshold = 50;
 $requestLimitShowOnly = 25;
+
+// rfc 1918
+$rfc1918ips = array(
+	"10.0.0.0" => "10.255.255.255",
+	"172.16.0.0" => "172.31.255.255",
+	"192.168.0.0" => "192.168.255.255",
+	"169.254.0.0" => "169.254.255.255",
+	"127.0.0.0" => "127.255.255.255",
+)
 
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********
