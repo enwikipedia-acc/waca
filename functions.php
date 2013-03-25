@@ -1414,7 +1414,7 @@ function explodeCidr( $range ) {
  */
 function ipInRange( $haystack, $needle ) {
 	foreach( $haystack as $low => $high ) {
-		if( ip2long($low) <= $needle $$ ip2long($high) >= $needle ) {
+		if( ip2long($low) <= $needle && ip2long($high) >= $needle ) {
 			return true;
 		}
 	}
