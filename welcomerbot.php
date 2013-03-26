@@ -61,9 +61,9 @@ if(count($res)) {
 		
 		$user = $row['welcome_user'];
 		$creator = $row['user_onwikiname'];
-		$signature = html_entity_decode($row['user_welcome_sig']) . ' ~~~~~';
-		if (!preg_match("/\[\[[ ]*(w:)?[ ]*(en:)?[ ]*User[ ]*:[ ]*".$creator."[ ]*(\||\]\])/i", $signature))
-			$signature = " – [[User:$creator|$creator]] ([[User talk:$creator|talk]]) ~~~~~";
+		
+		$signature = welcomerbotRenderSig($creator, $row['user_welcome_sig']);
+		
 		$templateID = $row['user_welcome_templateid'];
 		
 		$templateCode = $row['template_botcode'];
