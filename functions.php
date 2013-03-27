@@ -1429,7 +1429,7 @@ function ipInRange( $haystack, $ip ) {
 function welcomerbotRenderSig($creator, $sig) {
 	$signature = html_entity_decode($sig) . ' ~~~~~';
 	if (!preg_match("/\[\[[ ]*(w:)?[ ]*(en:)?[ ]*User[ ]*:[ ]*".$creator."[ ]*(\||\]\])/i", $signature)) {
-		$signature = " – [[User:$creator|$creator]] ([[User talk:$creator|talk]]) ~~~~~";
+		$signature = "--[[User:$creator|$creator]] ([[User talk:$creator|talk]]) ~~~~~";
 	}
 	return $signature;
 }
