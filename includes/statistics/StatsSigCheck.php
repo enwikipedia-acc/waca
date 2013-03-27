@@ -26,11 +26,13 @@ QUERY;
                 $qb = new QueryBrowser();
                 $qb->rowFetchMode = MYSQL_ASSOC;
                 $qb->tableCallbackFunction = "statsSigCheckRowCallback";
-                $qb->overrideTableTitles = array("User name", "enwiki name", "signature code", "rendered signature");
+                $qb->overrideTableTitles = array("Username (ACC)", "Username (enwiki)", "Defined signature", "Signature the bot will use", "Rendered signature");
                 $r = $qb->executeQueryToTable($query);
                 echo mysql_error();
 
-                return $r;
+				$header = "<p>Your name and signature will only appear here if you have automatic welcoming enabled. You can see the code defined for your signature, the code the bot will use, and what this renders as.</p><p>If your signature doesn't get recognised by the bot, it's probably cos you don't have a link to your userpage in it.</p>";
+				
+                return $header . "<hr />". $r;
         }
         function getPageName()
         {
@@ -62,7 +64,7 @@ function statsSigCheckRowCallback($row, $currentreq)
 
         $botsig = welcomerbotRenderSig( $row["user_onwikiname"], $row["user_welcome_sig"] );
 
-        $out .= "<td>" . $row["user_name"] . "</td><td>" . $row["user_onwikiname"] . "</td><td>" . htmlentities($botsig,ENT_COMPAT,'UTF-8') . "</td><td>";
+        $out .= "<td>" . $row["user_name"] . "</td><td>" . $row["user_onwikiname"] . "</td><td>" . htmlentities($row["user_welcome_sig"],ENT_COMPAT,'UTF-8') . "</td><td>" . htmlentities($botsig,ENT_COMPAT,'UTF-8') . "</td><td>";
 		
         $apiresult = file_get_contents("http://en.wikipedia.org/w/api.php?action=parse&disablepp&prop=text&format=php&text=" . urlencode(trim($botsig)));
         $renderedraw = unserialize($apiresult);
