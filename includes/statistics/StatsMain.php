@@ -157,7 +157,7 @@ class StatsMain extends StatisticsPage
 	{
 		$out = "<h2>Graphs (<a href=\"http://acc.stwalkerster.info/acc-new/\">see more!</a>)</h2>";
 		$pathbase = "http://acc.stwalkerster.info/acc-new/";
-		$pathsuffix = "/acc.png";
+		$pathsuffix = "/acc.svg";
 		$time = array("day", "2day", "4day", "week", "2week", "month", "3month");
 		
 		foreach($time as $t){
