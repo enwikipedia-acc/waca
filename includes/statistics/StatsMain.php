@@ -36,6 +36,7 @@ class StatsMain extends StatisticsPage
 		}
 		$out.="</ul>";
 		$out.=$this->smallStats();
+		$out.=$this->rrdtoolGraphs();
 		return $out;
 	}
 	
@@ -149,6 +150,20 @@ class StatsMain extends StatisticsPage
 		$out.="<tr><th>Welcome queue length</th><td>". $WQrow['pending']."</td></tr>";
 		
 		$out.="</table>";
+		return $out;
+	}
+
+	function rrdtoolGraphs()
+	{
+		$out = "<h2>Graphs</h2>";
+		$pathbase = "http://acc.stwalkerster.info/acc-new/";
+		$pathsuffix = "/acc.png";
+		$time = array("day", "2day", "4day", "week", "2week", "month", "3month");
+		
+		foreach($time as $t){
+			$out.= "<img src=\"$pathbase$t$pathsuffix\"/><br />";
+		}
+		
 		return $out;
 	}
 }
