@@ -155,7 +155,7 @@ class StatsMain extends StatisticsPage
 
 	function rrdtoolGraphs()
 	{
-		$out = "<h2>Graphs</h2>";
+		$out = "<h2>Graphs (<a href=\"http://acc.stwalkerster.info/acc-new/\">see more!</a>)</h2>";
 		$pathbase = "http://acc.stwalkerster.info/acc-new/";
 		$pathsuffix = "/acc.png";
 		$time = array("day", "2day", "4day", "week", "2week", "month", "3month");
