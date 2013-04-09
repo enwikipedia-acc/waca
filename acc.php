@@ -932,6 +932,12 @@ elseif ($action == "sban") {
 				$skin->displayIfooter();
 				die();
 			}
+			global $squidIpList;
+			if( in_array( $_POST[ 'target' ], $squidIpList ) ) {
+				echo '<h2>ERROR</h2><br />Invalid target specified. You\'re trying to block the toolserver!';
+				$skin->displayIfooter();
+				die();
+			}
 			break;
 
 		case 'Name':
