@@ -68,7 +68,7 @@ $xff_trusted_hosts_file = '../TrustedXFF/trusted-hosts.txt';
 
 $dontUseDb = 0; 			// Disable the tool completely.
 $dontUseWikiDb = 0; 		// Disable access to the Wiki database.
-$dontUseDbReason = ""; 		// Reason for disabeling the tool.
+$dontUseDbReason = ""; 		// Reason for disabling the tool.
 $dontUseDbCulprit = ""; 	// Your name, or the person who broke the tool.
 	
 /**************************************
