@@ -27,7 +27,11 @@ class messages {
 			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"Database query error.");
 		$row = mysql_fetch_assoc($result);
 		$message = $row['mail_text'];
-		$message = str_replace('%VERSION%', getToolVersion(), $message);
+		
+		if( strpos($message, "%VERSION%") !== false ) {
+			$message = str_replace('%VERSION%', getToolVersion(), $message);
+		}
+		
 		$message = str_replace('%TSURL%', $tsurl, $message);
 		return $message;
 	}
@@ -72,6 +76,11 @@ class messages {
 		$message = str_replace('%SITENOTICECOUNT%', $this->getMessageCount(31), $this->getMessage(20));
 		$message = str_replace('%SITENOTICETEXT%', $this->getMessage(31), $message);
 		return $message;
+	}
+	
+	public function getDiskMessage($messagename) {
+		global $filepath;
+		return file_get_contents( $filepath . "/text/" . $messagename . ".txt" );
 	}
 }
 

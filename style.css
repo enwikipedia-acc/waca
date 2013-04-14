@@ -295,3 +295,9 @@ a.topcreators-suspended{
 a.topcreators-admin{
 	font-weight: bold;
 }
+
+.warning {
+	font-weight: bold;
+	color:red;
+	font-size:larger;
+}

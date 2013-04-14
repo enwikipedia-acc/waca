@@ -226,12 +226,25 @@ function listrequests($type, $hideip, $correcthash) {
 	global $enableEmailConfirm;
 	global $session;
 	global $availableRequestStates;
+	
+	global $requestLimitThreshold, $requestLimitShowOnly;
+	$totalRequests = 0;
+	
 	if($secure != 1) { die("Not logged in"); }
 	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database.");
 
 	if ($enableEmailConfirm == 1) {
 		if (array_key_exists($type, $availableRequestStates)) {
-			$query = "SELECT * FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed';";
+			
+			$totalRequestsQ = mysql_query("SELECT COUNT(*) FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed';");
+			$totalRequestsR = mysql_fetch_assoc( $totalRequestsQ );
+			$totalRequests = $totalRequestsR["COUNT(*)"];
+			
+			if( $totalRequests > $requestLimitThreshold ) {
+				$query = "SELECT * FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed' LIMIT $requestLimitShowOnly;";
+			} else {
+				$query = "SELECT * FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed';";
+			}
 		} else {
 			$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
 		}
@@ -247,17 +260,30 @@ function listrequests($type, $hideip, $correcthash) {
 	if (!$result)
 	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 
-	$tablestart = "<table cellspacing=\"0\">\n";
+	if( $totalRequests > $requestLimitThreshold ) {
+		$tablestart = "<p><span class=\"warning\">Miser mode: not all requests are shown for speed. </span>Only $requestLimitShowOnly of $totalRequests are shown here.</p><table cellspacing=\"0\">\n";
+	} else {
+		$tablestart = "<table cellspacing=\"0\">\n";
+	}
 	$tableend = "</table>\n";
 	$reqlist = '';
 	$currentreq = 0;
+	
+	$sid = sanitize($_SESSION['user']);
+	$query4 = "SELECT * FROM acc_user WHERE user_name = '$sid';";
+	$result4 = mysql_query($query4, $tsSQLlink);
+	if (!$result4) {
+		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+	}
+	$row4 = mysql_fetch_assoc($result4);
+	
 	while ( $row = mysql_fetch_assoc( $result ) ) {
 		$currentreq += 1;
 		$uname = urlencode(html_entity_decode($row['pend_name']));
 		$uname = str_replace("%26amp%3B", "%26", $uname);
 		$rid = $row['pend_id'];
 		
-		$data = mysql_query("SELECT COUNT(*) as num FROM acc_cmt where pend_id = '" . $rid . "';");
+		$data = mysql_query("SELECT COUNT(*) as num FROM acc_cmt where pend_id = '" . $rid . "';"); // indexed
 		$commentcountrow = mysql_fetch_assoc($data);
 		$commentcount=$commentcountrow['num'];
 		
@@ -269,14 +295,14 @@ function listrequests($type, $hideip, $correcthash) {
 		
 		$clientIpAddr = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
 		
-		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE (`pend_ip` = '" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "' OR `pend_proxyip` LIKE '%" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "%') AND `pend_mailconfirm` = 'Confirmed';";
-		$result2 = mysql_query($query2);
-		if (!$result2) {
-			sqlerror("Query failed: $query2 ERROR: " . mysql_error(),"Database query error.");
-		}
-		$otheripreqs = mysql_fetch_assoc($result2);
-		$otheripreqs["count"]--;
-		
+//		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE (`pend_ip` = '" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "' OR `pend_proxyip` LIKE '%" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "%') AND `pend_mailconfirm` = 'Confirmed';";
+//		$result2 = mysql_query($query2); // TODO: OPTIMISE ME! I TAKE 20s TO EXECUTE!
+//		if (!$result2) {
+//			sqlerror("Query failed: $query2 ERROR: " . mysql_error(),"Database query error.");
+//		}
+//		$otheripreqs = mysql_fetch_assoc($result2);
+//		$otheripreqs["count"]--;
+$otheripreqs = array("count" => "-1");		
 		$query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . mysql_real_escape_string($row['pend_email'],$tsSQLlink) . "' AND `pend_id` != '" . mysql_real_escape_string($row['pend_id'],$tsSQLlink) . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result3 = mysql_query($query3);
 		if (!$result3) {
@@ -296,13 +322,6 @@ function listrequests($type, $hideip, $correcthash) {
 		} else {
 			$out .= '<td><small>' . "\n"; //List item
 		}
-
-		$sid = sanitize($_SESSION['user']);
-		$query4 = "SELECT * FROM acc_user WHERE user_name = '$sid';";
-		$result4 = mysql_query($query4, $tsSQLlink);
-		if (!$result4)
-		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-		$row4 = mysql_fetch_assoc($result4);
 
 		if ($hideip == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 			// Email.
@@ -354,7 +373,7 @@ function listrequests($type, $hideip, $correcthash) {
 			$out .= " - <a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;name=" . $row['pend_id'] . '">Name</a>';
 		}
 
-		$reserveByUser = isReserved($row['pend_id']);
+		$reserveByUser = isReservedWithRow($row);
 		// if request is reserved, show reserved message
 		if( $reserveByUser != 0 )
 		{
@@ -428,6 +447,10 @@ function isReserved($requestid)
 		die("Error determining reserved status of request. Check the request id.");
 	}
 	$row = mysql_fetch_assoc($result);
+	return isReservedWithRow($row);
+}
+
+function isReservedWithRow($row) {
 	if(isset($row['pend_reserved']) && $row['pend_reserved'] != 0) { 
 		return $row['pend_reserved'];
 	} else {return false;}
@@ -501,6 +524,9 @@ in error.</p>";
 		}
 	}
 
+	global $messages;
+	$html .= "<p>" . $messages->getDiskMessage("labs-disclosure-agreement") . "</p>";
+	
 	// Adds a Submit button to the HTML code.
 	// Below the forms a option to register would be displayed.
 	$html .= '<div class="submit">
@@ -730,6 +756,8 @@ function zoomPage($id,$urlhash)
 
 			$out .= '<p><strong>Forwarded IP addresses:</strong><table>';
 			
+			$tablerownum = 0;
+			
 			$proxies = explode(",", $row['pend_proxyip']);
 			$proxies[] = $row['pend_ip'];
 			
@@ -745,7 +773,8 @@ function zoomPage($id,$urlhash)
 				$lasttrust = $trust;
 				$trust = $trust & $trusted & ($proxynum < count($proxies) - 1);
 				
-				$entry = "<tr>";
+				$entry = "<tr ". ( $tablerownum == 1 ? 'class="alternate"' : "" ).">";
+				$tablerownum = ++$tablerownum % 2;
 				$entry .= ( ( $origin != $p2 ) ? 
 					(	$trust ? "<td style=\"color:grey;\">(trusted)</td>"
 						: ($trusted ? "<td style=\"color:orange;\">(via untrusted)</td>" : "<td style=\"color:red;\">(untrusted)</td>" )
@@ -753,9 +782,30 @@ function zoomPage($id,$urlhash)
 					: (	$lasttrust ? "<td>(origin)</td>"
 						: ("<td style=\"color:red;\">(origin untrusted)</td>" ) )
 					);
-				$entry .= "<td style=\"padding:3px\">$p2</td>";
-				$entry .= ($trust ? "<td style=\"color:grey;\">" . gethostbyaddr($p2) : "<td>" . showIPlinks($p2, $wikipediaurl, $metaurl, $row['pend_id'], $session)) . "</td>";
-				$entry .= "</tr>";
+					
+				global $rfc1918ips;
+					
+				$iprdns = gethostbyaddr($p2);
+				$ipisprivate = ipInRange($rfc1918ips, $p2);
+				
+				if( $iprdns == $p2 ) {
+					if( $ipisprivate ) {
+						$iprdns = "<i><a style=\"color:grey;\" href=\"http://en.wikipedia.org/wiki/Private_network\">Non-routable address</a></i>";
+					} else {
+						$iprdns = "<i>(no rdns available)</i>";
+					}
+				} else {
+					if( $ipisprivate ) {
+						$iprdns = "<i><a style=\"color:grey;\" href=\"http://en.wikipedia.org/wiki/Private_network\">Non-routable address</a></i>";
+					} else {
+						$iprdns = "RDNS: $iprdns";
+					}
+				}
+				$entry .= "<td style=\"padding:3px\">$p2<br /><span style=\"color:grey;\">" . $iprdns . "</span></td><td>";
+				if( ( ! $trust ) && ( ! $ipisprivate ) ) {
+					$entry .= showIPlinks($p2, $wikipediaurl, $metaurl, $row['pend_id'], $session);
+				}
+				$entry .= "</td></tr>";
 				
 				
 				$out .= $entry;
@@ -1074,11 +1124,7 @@ function zoomPage($id,$urlhash)
 
 	$out .= "<h2>Other requests from $ipmsg:</h2>\n";
 	if ($thisip != '127.0.0.1') {
-		if($proxies)
-			$whereClause = "pend_proxyip LIKE '%{$thisip}%'";
-		else
-			$whereClause = "pend_ip = '$thisip'";
-		$query = "SELECT * FROM acc_pend WHERE {$whereClause} AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
+		$query = "SELECT * FROM acc_pend WHERE (pend_proxyip LIKE '%{$thisip}%' OR pend_ip = '$thisip') AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
@@ -1230,6 +1276,7 @@ function doSort(array $items)
 }
 
 function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid, &$session) {
+	global $tsurl;
 	
 	$out = '<a class="request-src" href="'.$wikipediaurl.'wiki/User_talk:';
 	$out .= $ip . '" target="_blank">Talk page</a> ';
@@ -1239,57 +1286,54 @@ function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid, &$session) {
 	$out .= '<a class="request-src" href="'.$wikipediaurl.'wiki/Special:Contributions/';
 	$out .= $ip . '" target="_blank">Local Contributions</a> ';
 	
+	
+	
 	//X's edit counter
 	$out .= '| ';
-	$out .= '<a class="request-src" href="http://toolserver.org/~tparis/pcount/index.php?name='.$ip.'&lang=en&wiki=wikipedia"';
+	$out .= '<a class="request-src" href="'.$tsurl . "/redir.php?tool=tparis-pcount&data=" . $ip. '"';
 	$out .= ' target="_blank">Deleted Edits</a> ';
 
 	// IP global contribs
 	$out .= '| ';
-	$out .= '<a class="request-src" href="http://toolserver.org/~luxo/contributions/contributions.php?lang=en&amp;blocks=true&amp;user=' . $ip . '" target="_blank">Global Contributions</a> ';
+	$out .= '<a class="request-src" href="'. $tsurl . "/redir.php?tool=luxo-contributions&data=" . $ip. '" target="_blank">Global Contributions</a> ';
 	
 	// IP blocks
 	$out .= '| ';
 	$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
-	$out .= $ip . '" target="_blank">Local Blocks</a> ';
+	$out .= $ip . '" target="_blank">Local Block Log</a> ';
 
 	// rangeblocks
 	$out .= '| ';
 	$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3ABlockList&amp;ip=';
-	$out .= $ip . '" target="_blank">Local Range Blocks</a> ';
+	$out .= $ip . '" target="_blank">Active Local Blocks</a> ';
 
 	// Global blocks
 	$out .= '| ';
 	$out .= '<a class="request-src" href="'.$metaurl.'w/index.php?title=Special:Log&amp;type=gblblock&amp;page=User:';
-	$out .= $ip . '" target="_blank">Global Blocks</a> ';
+	$out .= $ip . '" target="_blank">Global Block Log</a> ';
 
 	// Global range blocks/Locally disabled Global Blocks
 	$out .= '| ';
 	$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3AGlobalBlockList&amp;ip=';
-	$out .= $ip . '" target="_blank">Global Range Blocks</a> ';
+	$out .= $ip . '" target="_blank">Active Global Blocks</a> ';
 
 	// IP whois
 	$out .= '| ';
-	$out .= '<a class="request-src" href="http://toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=' . $ip . '" target="_blank">Whois</a> ';
+	$out .= '<a class="request-src" href="' . $tsurl . "/redir.php?tool=oq-whois&data=" . $ip . '" target="_blank">Whois</a> ';
 
 	// IP geolocate
 	$out .= '| ';
-	$out .= '<a class="request-src" href="http://www.ipinfodb.com/ip_locator.php?ip=' . $ip . '" target="_blank">Geolocate</a> ';
+	$out .= '<a class="request-src" href="' . $tsurl . "/redir.php?tool=ipinfodb-locator&data=" . $ip . '" target="_blank">Geolocate</a> ';
 
 	// Abuse Filter
 	$out .= '| ';
 	$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $ip . '" target="_blank">Abuse Filter Log</a> ';
-
-/* 	// Betacommand's checks
-	 $out .= '| ';
-	 $out .= '<a class="request-src" href="http://toolserver.org/~betacommand/cgi-bin/SIL?ip=' . $ip . '" target="_blank">SIL</a> '; */
 	 
-	 if( $session->isCheckuser($_SESSION['user']) ) {
-		// CheckUser links
-	 	 $out .= '| ';
-	 	 $out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:CheckUser&ip=' . $ip . '&reason=%5B%5BWP:ACC%5D%5D%20request%20%23' . $rqid . '" target="_blank">CheckUser</a> ';
-	 }
-	 $out .= '</p>';
+	if( $session->isCheckuser($_SESSION['user']) ) {
+	// CheckUser links
+	 $out .= '| ';
+	 $out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:CheckUser&ip=' . $ip . '&reason=%5B%5BWP:ACC%5D%5D%20request%20%23' . $rqid . '" target="_blank">CheckUser</a> ';
+	}
 	 
 
 	return $out;
@@ -1307,10 +1351,12 @@ function getUserIdFromName($name) {
 	return $r['user_id'];
 }
 
+$trustedipcache = array();
 function isXffTrusted($ip) {
-	global $tsSQL, $squidIpList;
+	global $tsSQL, $squidIpList, $trustedipcache;
 	
 	if(in_array($ip, $squidIpList)) return true;
+	if(array_key_exists($ip, $trustedipcache)) return $trustedipcache[$ip];
 	
 	$query = "SELECT * FROM `acc_trustedips` WHERE `trustedips_ipaddr` = '$ip';";
 	$result = $tsSQL->query($query);
@@ -1318,9 +1364,11 @@ function isXffTrusted($ip) {
 		$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
 	}
 	if (mysql_num_rows($result)) {
+		$trustedipcache[$ip] = true;
 		return true;
 	}
 	else {
+		$trustedipcache[$ip] = false;
 		return false;
 	}
 }
@@ -1365,5 +1413,27 @@ function explodeCidr( $range ) {
 	}
 
 	return $list;
+}
+
+/**
+ * Takes an array( "low" => "high ) values, and returns true if $needle is in at least one of them.
+ */
+function ipInRange( $haystack, $ip ) {
+	$needle = ip2long($ip);
+
+	foreach( $haystack as $low => $high ) {
+		if( ip2long($low) <= $needle && ip2long($high) >= $needle ) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function welcomerbotRenderSig($creator, $sig) {
+	$signature = html_entity_decode($sig) . ' ~~~~~';
+	if (!preg_match("/((\[\[[ ]*(w:)?[ ]*(en:)?)|(\{\{subst:))[ ]*User[ ]*:[ ]*".$creator."[ ]*(\]\]|\||\}\}|\/)/i", $signature)) {
+		$signature = "--[[User:$creator|$creator]] ([[User talk:$creator|talk]]) ~~~~~";
+	}
+	return $signature;
 }
 ?>

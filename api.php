@@ -53,19 +53,14 @@ function actionStatus()
 	$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_pend WHERE pend_status = :pstatus AND pend_mailconfirm = :pmailconfirm;");
 	$query->bindParam(":pstatus", $status);
 	$query->bindParam(":pmailconfirm", $mailconfirm);
-	$query->execute();
-	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-	$docStatus->setAttribute("open", $sus['count']);
-
-	$status = "Admin";			
-	$query->execute();
-	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-	$docStatus->setAttribute("admin", $sus['count']);
-
-	$status = "Checkuser";			
-	$query->execute();
-	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-	$docStatus->setAttribute("checkuser", $sus['count']);
+	
+	global $availableRequestStates;
+	foreach( $availableRequestStates as $key => $value ) {
+		$status = $key;
+		$query->execute();
+		$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+		$docStatus->setAttribute($value['api'], $sus['count']);
+	}
 
 	$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_ban");
 	$query->execute();

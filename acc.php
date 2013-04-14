@@ -329,6 +329,8 @@ elseif ($action == "sreg") {
 
 elseif ($action == "register") {
 	echo $messages->getMessage(29);
+	echo $messages->getDiskMessage("labs-disclosure-agreement");
+	echo "</div>";
 	$skin->displayPfooter();
 	die();
 }
@@ -929,6 +931,12 @@ elseif ($action == "sban") {
 		case 'IP':
 			if( ip2long( $_POST[ 'target' ] ) === false ) {
 				echo '<h2>ERROR</h2><br />Invalid target specified.  Expecting IP address.';
+				$skin->displayIfooter();
+				die();
+			}
+			global $squidIpList;
+			if( in_array( $_POST[ 'target' ], $squidIpList ) ) {
+				echo '<h2>ERROR</h2><br />Invalid target specified. You\'re trying to block the toolserver!';
 				$skin->displayIfooter();
 				die();
 			}
@@ -1740,11 +1748,11 @@ elseif ($action == "reserve") {
 					//Unlock tables first!
 					mysql_query("UNLOCK TABLES;", $tsSQLlink);
 					// Prevent the user from continuing.
-					die('You already have a request reserved!<br /><a href="' . $tsurl . '/acc.php">Return to main request interface</a>');
+					die('You already have a request reserved!<br />Your request to reserve an additional request has been denied.<br /><a href="' . $tsurl . '/acc.php">Return to main request interface</a>');
 					break;
 				case "inform":
 					// Tell the user that they already have requests reserved, but let them through anyway..
-					echo '<div id="doublereserve-warn">You have multiple requests reserved.</div>';
+					echo '<div id="doublereserve-warn">WARNING: You have multiple requests reserved.</div>';
 					break;
 				case "ignore":
 					// Do sod all.
@@ -1787,10 +1795,15 @@ elseif ($action == "reserve") {
 	// Release the lock on the table.
 	mysql_query('UNLOCK TABLES;',$tsSQLlink);
 	
-	// Decided to use the HTML redirect, because the PHP code results in an error.
-	// I know that this breaks the Back button, but currently I dont have another solution.
-	// As an alternative one could implement output buffering to solve this problem.
-	echo "<meta http-equiv=\"Refresh\" Content=\"0; URL=$tsurl/acc.php?action=zoom&id=$request\">";
+	if($doubleReserveCount) {
+		//Autorefresh is probably not a good idea when warnings are displayed, as there is no guarantee that the user has acknowledged the warning.  Disabling.  This also resolves Issue #3 on GitHub.  --FastLizard4
+		echo "<p><a href=\"{$tsurl}/acc.php?action=zoom&id={$request}\">Acknowledge, return to request page</a></p>\n";
+	} else {
+		// Decided to use the HTML redirect, because the PHP code results in an error.
+		// I know that this breaks the Back button, but currently I dont have another solution.
+		// As an alternative one could implement output buffering to solve this problem.
+		echo "<meta http-equiv=\"Refresh\" Content=\"0; URL=$tsurl/acc.php?action=zoom&id=$request\">";
+}
 	die();
 		
 }

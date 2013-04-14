@@ -68,7 +68,7 @@ $xff_trusted_hosts_file = '../TrustedXFF/trusted-hosts.txt';
 
 $dontUseDb = 0; 			// Disable the tool completely.
 $dontUseWikiDb = 0; 		// Disable access to the Wiki database.
-$dontUseDbReason = ""; 		// Reason for disabeling the tool.
+$dontUseDbReason = ""; 		// Reason for disabling the tool.
 $dontUseDbCulprit = ""; 	// Your name, or the person who broke the tool.
 	
 /**************************************
@@ -181,16 +181,19 @@ $availableRequestStates = array(
 		'defertolog' => 'users', // don't change or you'll break old logs
 		'deferto' => 'users', 
 		'header' => 'Open requests',
+		'api' => "open",
 		),
 	'Admin'=>array(
 		'defertolog' => 'admins', // don't change or you'll break old logs
 		'deferto' => 'flagged users',
 		'header' => 'Flagged user needed',
+		'api' => "admin",
 		),
 	'Checkuser'=>array(
 		'defertolog' => 'checkusers', // don't change or you'll break old logs
 		'deferto' => 'checkusers', 
 		'header' => 'Checkuser needed',
+		'api' => "checkuser",
 		),
 	);
 	
@@ -198,6 +201,19 @@ $defaultRequestStateKey = 'Open';
 
 // time delay in mysql interval form for clearing the private data from the tool.
 $dataclear_interval = '15 DAY';
+
+// miser mode
+$requestLimitThreshold = 50;
+$requestLimitShowOnly = 25;
+
+// rfc 1918
+$rfc1918ips = array(
+	"10.0.0.0" => "10.255.255.255",
+	"172.16.0.0" => "172.31.255.255",
+	"192.168.0.0" => "192.168.255.255",
+	"169.254.0.0" => "169.254.255.255",
+	"127.0.0.0" => "127.255.255.255",
+);
 
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********
