@@ -77,6 +77,11 @@ class messages {
 		$message = str_replace('%SITENOTICETEXT%', $this->getMessage(31), $message);
 		return $message;
 	}
+	
+	public function getDiskMessage($messagename) {
+		global $filepath;
+		return file_get_contents( $filepath . "/text/" . $messagename . ".txt" );
+	}
 }
 
 ?>
