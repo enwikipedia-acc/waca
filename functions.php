@@ -460,7 +460,7 @@ function showlogin($action=null, $params=null) {
 	/*
 	 * Show the login page.
 	 */
-	global $_SESSION, $tsSQLlink, $useCaptcha, $skin, $tsurl;
+	global $_SESSION, $tsSQLlink, $skin, $tsurl;
 
 	// Create the variable used for the coding.
 	$html ='<div id="sitenotice">Please login first, and we\'ll send you on your way!</div>
@@ -471,10 +471,6 @@ function showlogin($action=null, $params=null) {
 	if (isset($_GET['error'])) {
 		if ($_GET['error']=='authfail') {
 			$html .= "<p>Username and/or password incorrect. Please try again.</p>";
-		} elseif ($_GET['error']=='captchafail') {
-			$html .= "<p>I'm sorry, the captcha you entered was incorrect, please try again.</p>";
-		} elseif ($_GET['error']=='captchamissing') {
-			$html .= "<p>Please complete the captcha.</p>";
 		} elseif ($_GET['error']=='noid') {
 			$html .= "<p>User account is not identified. Please email accounts-enwiki-l@lists.wikimedia.org if you believe this is 
 in error.</p>";
@@ -508,21 +504,6 @@ in error.</p>";
         <label for="password">Password:</label>
         <input id="password" type="password" name="password"/>
     </div>';
-
-	// Checks where Captcha should be used.
-	if ($useCaptcha) {
-		require_once 'includes/captcha.php';
-		$captcha = new captcha;
-		if ($captcha->showCaptcha()) {
-			$captcha_id = $captcha->generateId();
-			$html .= '<div class="required">
-		<label for="captcha">Captcha:</label>
-		<input id="captcha" type="text" name="captcha"/>
-		<input name="captcha_id" type="hidden" value="'.$captcha_id.'" />
-		<img src="captcha.php?id='.$captcha_id.'" />
-	    	</div>';
-		}
-	}
 
 	global $messages;
 	$html .= "<p>" . $messages->getDiskMessage("labs-disclosure-agreement") . "</p>";
