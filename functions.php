@@ -524,6 +524,9 @@ in error.</p>";
 		}
 	}
 
+	global $messages;
+	$html .= "<p>" . $messages->getDiskMessage("labs-disclosure-agreement") . "</p>";
+	
 	// Adds a Submit button to the HTML code.
 	// Below the forms a option to register would be displayed.
 	$html .= '<div class="submit">
