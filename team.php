@@ -92,7 +92,7 @@ $developer = array(
 				"wiki" => "DeltaQuad",
 				"WWW" => "http://enwp.org/DeltaQuad",
 				"Name" => "DeltaQuad",
-				"Role" => "Liason to WMF, Developer",
+				"Role" => "Liaison to WMF, Developer",
 				"Access" => "Git, Database, Toolserver shell, Mailing list admin",
 				"Cloak" => "*!*@wikipedia/DeltaQuad",//I change nicks alot
 				"Other" => NULL,
@@ -103,7 +103,7 @@ $developer = array(
 // Inactive developers
 $inactiveDeveloper = array(
 
-"SQL" =>
+		"SQL" =>
 				array(                                    //Set any of these to NULL to keep them from being displayed.
 				"IRC" => "SQLDb, SXT40",                  //IRC Name.
 				"EMail" => "sxwiki@gmail.com",            //Public E-mail address.
@@ -344,6 +344,7 @@ echo "<h1>ACC Development Team</h1>\n";
 
 // Sort the array with the developers.
 ksort($developer);
+ksort($inactiveDeveloper);
 
 // Print the data for each developer.
 echo "<h2>Active Developers</h2>\n";
