@@ -238,7 +238,7 @@ $inactiveDeveloper = array(
 				"IRC" => NULL,
 				"EMail" => NULL,
 				"ToolID" => NULL,
-				"wiki" => NULL,
+				"wiki" => "Chenzw",
 				"WWW" => NULL,
 				"Name" => NULL,
 				"Role" => NULL,
@@ -389,6 +389,9 @@ foreach($developer as $devName => $devInfo) {
 			}
 		}
 	}
+	// End to the bulleted list and continues on a new line.
+	echo "</ul>\n";
+}
 echo <<<HTML
 <h2>Inactive Developers</h2>
 <div class="showhide" id="showhide-inactive-link" onclick="showhide('showhide-inactive');">[show]</div>
@@ -437,11 +440,11 @@ foreach($inactiveDeveloper as $devName => $devInfo) {
 		}
 	}
 	// End to the bulleted list and continues on a new line.
-	echo "</div></ul>\n";
+	echo "</ul>\n";
 }
 
 // Display details about the ACC hosting.
-echo "<br/><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by GitHub and can be found <a href=\"https://github.com/enwikipedia-acc/waca/\">here</a>.</p></div>";
+echo "</div><br/><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by GitHub and can be found <a href=\"https://github.com/enwikipedia-acc/waca/\">here</a>.</p></div>";
 
 // Display the footer of the interface.
 $skin->displayPfooter();
