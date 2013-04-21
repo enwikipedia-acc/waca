@@ -100,11 +100,11 @@ $developer = array(
 		"John" =>
 			array(
 					"IRC" => "JohnLewis",
-					"EMail" => NULL,
+					"EMail" => "johnflewis93@gmail.com",
 					"ToolID" => "889",
 					"wiki" => "John F. Lewis",
 					"WWW" => NULL,
-					"Name" => NULL,
+					"Name" => "John Lewis",
 					"Role" => "Developer",
 					"Access" => "Git",
 					"Cloak" => "*!*@wikimedia/John-F-Lewis",
