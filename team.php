@@ -109,6 +109,19 @@ $developer = array(
 					"Access" => "Git",
 					"Cloak" => "*!*@wikimedia/John-F-Lewis",
 					"Other" => NULL,
+			),
+		"Manishearth" =>
+			array(
+					"IRC" => "Manishearth",
+					"EMail" => "manishsmail@gmail.com",
+					"ToolID" => "607",
+					"wiki" => "Manishearth",
+					"WWW" => "http://enwp.org/User:Manishearth",
+					"Name" => "Manish Goregaokar",
+					"Role" => "Developer",
+					"Access" => "Git",
+					"Cloak" => "*!*@wikipedia/Manishearth",
+					"Other" => NULL,
 			)
 );
 // End of the array of developers.
@@ -297,19 +310,6 @@ $inactiveDeveloper = array(
 				"Access" => "",
 				"Cloak" => "*!*@wikipedia/Mr-R00t",
 				"Other" => NULL
-			),
-      "Manishearth" =>
-			array(
-				"IRC" => "Manishearth",
-				"EMail" => "manishsmail@gmail.com",
-				"ToolID" => "607",
-				"wiki" => "Manishearth",
-				"WWW" => "http://enwp.org/User:Manishearth",
-				"Name" => "Manish Goregaokar",
-				"Role" => "Developer",
-				"Access" => "Git",
-				"Cloak" => "*!*@wikipedia/Manishearth",
-				"Other" => NULL,
 			),
 		"MacMed" =>
 			array(
