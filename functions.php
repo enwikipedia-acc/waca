@@ -1094,6 +1094,10 @@ function zoomPage($id,$urlhash)
 			} elseif($row['action'] == "Closed custom-n" ||$row['action'] == "Closed custom-y"  ) {
 				$out .= "&nbsp;</td><td><em>&nbsp;$action:&nbsp;</em><br />".str_replace("\n", '<br />', xss($row['comment']))."</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
 			} else {
+				
+				foreach($availableRequestStates as $deferState){
+					$action=str_replace("deferred to "+$deferState['defertolog'],"deferred to "+$deferState['deferto'],$action)	//#35: The log text(defertolog) should not be displayed to the user, deferto is what should be displayed
+				}
 				$out .= "&nbsp;</td><td><em>&nbsp;$action&nbsp;</em></td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
 			}
 			if (isset($row['security']) && $row['security'] == "admin") {
