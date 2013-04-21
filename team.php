@@ -406,10 +406,11 @@ foreach($developer as $devName => $devInfo) {
 	// End to the bulleted list and continues on a new line.
 	echo "</ul>\n";
 }
-echo
+echo <<<HTML
 <h2>Inactive Developers</h2>
 <div class="showhide" id="showhide-inactive-link" onclick="showhide('showhide-inactive');">[show]</div>
 <div id="showhide-inactive" style="display: none;">
+HTML;
 foreach($inactiveDeveloper as $devName => $devInfo) {
 	echo "<h3>$devName</h3>\n<ul>\n";
 	foreach($devInfo as $infoName => $infoContent) {
