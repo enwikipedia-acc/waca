@@ -1096,7 +1096,7 @@ function zoomPage($id,$urlhash)
 			} else {
 				
 				foreach($availableRequestStates as $deferState){
-					$action=str_replace("deferred to "+$deferState['defertolog'],"deferred to "+$deferState['deferto'],$action)	//#35: The log text(defertolog) should not be displayed to the user, deferto is what should be displayed
+					$action=str_replace("deferred to "+$deferState['defertolog'],"deferred to "+$deferState['deferto'],$action);	//#35: The log text(defertolog) should not be displayed to the user, deferto is what should be displayed
 				}
 				$out .= "&nbsp;</td><td><em>&nbsp;$action&nbsp;</em></td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
 			}
