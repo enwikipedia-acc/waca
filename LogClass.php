@@ -367,7 +367,8 @@ class LogPage
 				$rlt = "Date Unknown";
 			}
 			if (substr($rla,0,strlen("Deferred")) == "Deferred") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>str_replace("deferred to admins","deferred to flagged users",strtolower($rla)), 'target' => $rlp, 'comment' => $rlc, 'action' => "Deferred");
+
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>strtolower($rla), 'target' => $rlp, 'comment' => $rlc, 'action' => "Deferred");
 			}
 			if ($row['log_action'] == "Closed") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>$rla, 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
