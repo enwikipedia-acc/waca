@@ -74,14 +74,14 @@ $developer = array(
 		"FunPika" =>
 			array(
 				"IRC" => "FunPika",
-				"EMail" => "funpikawiki@gmail.com",
+				"EMail" => "stevend811@comcast.net",
 				"ToolID" => "38",
 				"wiki" => "FunPika",
-				"WWW" => "http://en.wikipedia.org/wiki/User:FunPika",
+				"WWW" => "https://github.com/FunPika",
 				"Name" => NULL,
 				"Role" => "Developer",
 				"Access" => "Git",
-				"Cloak" => "*!*@wikipedia/FunPika",
+				"Cloak" => "*!~FunPika@wikipedia/FunPika",
 				"Other" => NULL,
 			),
 		"DeltaQuad" =>
@@ -96,6 +96,19 @@ $developer = array(
 				"Access" => "Git, Database, Toolserver shell, Mailing list admin",
 				"Cloak" => "*!*@wikipedia/DeltaQuad",//I change nicks alot
 				"Other" => NULL,
+			),
+		"John" =>
+			array(
+					"IRC" => "JohnLewis",
+					"EMail" => NULL,
+					"ToolID" => "889",
+					"wiki" => "John F. Lewis",
+					"WWW" => NULL,
+					"Name" => NULL,
+					"Role" => "Developer",
+					"Access" => "Git",
+					"Cloak" => "*!*@wikimedia/John-F-Lewis",
+					"Other" => NULL,
 			)
 );
 // End of the array of developers.
