@@ -329,8 +329,6 @@ elseif ($action == "sreg") {
 
 elseif ($action == "register") {
 	echo $messages->getMessage(29);
-	echo $messages->getDiskMessage("labs-disclosure-agreement");
-	echo "</div>";
 	$skin->displayPfooter();
 	die();
 }
