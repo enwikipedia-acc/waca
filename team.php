@@ -43,6 +43,79 @@ session_start();
 
 //Array of objects containing the deleveopers' information.
 $developer = array(
+		
+		"FastLizard4" =>
+			array(
+				"IRC" => "FastLizard4",
+				"EMail" => "FastLizard4@gmail.com",
+				"ToolID" => "18",
+				"wiki" => "FastLizard4",
+				"WWW" => "http://fastlizard4.org/",
+				"Name" => "Andrew Adams",
+				"Role" => "Developer",
+				"Access" => "Git, Mailing list moderator",
+				"Cloak" => "*!*@wikipedia/pdpc.active.FastLizard4",
+				"Other" => NULL,
+			),
+		"Stwalkerster" =>
+			array(
+				"IRC" => "Stwalkerster",
+				"EMail" => "stwalkerster@googlemail.com",
+				"ToolID" => "7",
+				"wiki" => "Stwalkerster",
+				"WWW" => "http://helpmebot.org.uk/",
+				"Name" => "Simon Walker",
+				"Role" => "Project Lead, Developer",
+				"Access" => "Git, Database, Toolserver shell, Mailing list admin",
+				"Cloak" => "*!*@pdpc/supporter/student/stwalkerster",
+				"Other" => NULL,
+			),
+		
+		"FunPika" =>
+			array(
+				"IRC" => "FunPika",
+				"EMail" => "stevend811@comcast.net",
+				"ToolID" => "38",
+				"wiki" => "FunPika",
+				"WWW" => "https://github.com/FunPika",
+				"Name" => NULL,
+				"Role" => "Developer",
+				"Access" => "Git",
+				"Cloak" => "*!~FunPika@wikipedia/FunPika",
+				"Other" => NULL,
+			),
+		"DeltaQuad" =>
+			array(
+				"IRC" => "DeltaQuad",
+				"EMail" => "deltaquad@live.ca",
+				"ToolID" => "662",
+				"wiki" => "DeltaQuad",
+				"WWW" => "http://enwp.org/DeltaQuad",
+				"Name" => "DeltaQuad",
+				"Role" => "Liaison to WMF, Developer",
+				"Access" => "Git, Database, Toolserver shell, Mailing list admin",
+				"Cloak" => "*!*@wikipedia/DeltaQuad",//I change nicks alot
+				"Other" => NULL,
+			),
+		"John" =>
+			array(
+					"IRC" => "JohnLewis",
+					"EMail" => "johnflewis93@gmail.com",
+					"ToolID" => "889",
+					"wiki" => "John F. Lewis",
+					"WWW" => NULL,
+					"Name" => "John Lewis",
+					"Role" => "Developer",
+					"Access" => "Git",
+					"Cloak" => "*!*@wikimedia/John-F-Lewis",
+					"Other" => NULL,
+			)
+);
+// End of the array of developers.
+
+// Inactive developers
+$inactiveDeveloper = array(
+
 		"SQL" =>
 				array(                                    //Set any of these to NULL to keep them from being displayed.
 				"IRC" => "SQLDb, SXT40",                  //IRC Name.
@@ -82,33 +155,7 @@ $developer = array(
 				"Cloak" => "*!*@yourwiki/staff/charlie",
 				"Other" => NULL,
 			),
-		"FastLizard4" =>
-			array(
-				"IRC" => "FastLizard4",
-				"EMail" => "FastLizard4@gmail.com",
-				"ToolID" => "18",
-				"wiki" => "FastLizard4",
-				"WWW" => "http://fastlizard4.org/",
-				"Name" => "Andrew Adams",
-				"Role" => "Developer",
-				"Access" => "Git, Mailing list moderator",
-				"Cloak" => "*!*@wikipedia/pdpc.active.FastLizard4",
-				"Other" => NULL,
-			),
-		"Stwalkerster" =>
-			array(
-				"IRC" => "Stwalkerster",
-				"EMail" => "stwalkerster@googlemail.com",
-				"ToolID" => "7",
-				"wiki" => "Stwalkerster",
-				"WWW" => "http://helpmebot.org.uk/",
-				"Name" => "Simon Walker",
-				"Role" => "Developer, Project Lead",
-				"Access" => "Git, Database, Toolserver shell, Mailing list admin",
-				"Cloak" => "*!*@pdpc/supporter/student/stwalkerster",
-				"Other" => NULL,
-			),
-		"Soxred93" =>
+      "Soxred93" =>
 			array(
 				"IRC" => "|X|",
 				"EMail" => NULL,
@@ -160,20 +207,7 @@ $developer = array(
 				"Cloak" => "*!*@wikipedia/Prodego",
 				"Other" => NULL,
 			),
-		"FunPika" =>
-			array(
-				"IRC" => "FunPika",
-				"EMail" => "funpikawiki@gmail.com",
-				"ToolID" => "38",
-				"wiki" => "FunPika",
-				"WWW" => "http://en.wikipedia.org/wiki/User:FunPika",
-				"Name" => NULL,
-				"Role" => "Developer, HTML Specification compliance",
-				"Access" => "Git",
-				"Cloak" => "*!*@wikipedia/FunPika",
-				"Other" => NULL,
-			),
-		"Prom3th3an" =>
+      "Prom3th3an" =>
 			array(
 				"IRC" => "Prom_cat",
 				"EMail" => "bretthillebrand@internode.on.net",
@@ -217,7 +251,7 @@ $developer = array(
 				"IRC" => NULL,
 				"EMail" => NULL,
 				"ToolID" => NULL,
-				"wiki" => NULL,
+				"wiki" => "Chenzw",
 				"WWW" => NULL,
 				"Name" => NULL,
 				"Role" => NULL,
@@ -264,20 +298,7 @@ $developer = array(
 				"Cloak" => "*!*@wikipedia/Mr-R00t",
 				"Other" => NULL
 			),
-		"DeltaQuad" =>
-			array(
-				"IRC" => "DeltaQuad",
-				"EMail" => "deltaquad@live.ca",
-				"ToolID" => "662",
-				"wiki" => "DeltaQuad",
-				"WWW" => "http://enwp.org/DeltaQuad",
-				"Name" => "DeltaQuad",
-				"Role" => "Developer",
-				"Access" => "Git, Database, Toolserver shell, Mailing list admin",
-				"Cloak" => "*!*@wikipedia/DeltaQuad",//I change nicks alot
-				"Other" => NULL,
-			),
-		"Manishearth" =>
+      "Manishearth" =>
 			array(
 				"IRC" => "Manishearth",
 				"EMail" => "manishsmail@gmail.com",
@@ -315,22 +336,9 @@ $developer = array(
 				"Access" => "Git",
 				"Cloak" => "*!*@Wikipedia/Logan",
 				"Other" => NULL,
-			),
-		"Mlpearc" =>
-			array(
-				"IRC" => "Mlpearc",
-				"EMail" => "",
-				"ToolID" => "699",
-				"wiki" => "Mlpearc",
-				"WWW" => "",
-				"Name" => "",
-				"Role" => "Mailing list admin",
-				"Access" => "Mailing list admin",
-				"Cloak" => NULL,
-				"Other" => NULL,
 			)
 );
-// End of the array of developers.
+
 
 // Checks whether it is the public or an interface user.
 if (!isset($_SESSION['user'])) {
@@ -345,13 +353,65 @@ else {
 }
 
 // Display the page heading.
-echo "<h2>ACC Development Team</h2>\n";
+echo "<h1>ACC Development Team</h1>\n";
 
 // Sort the array with the developers.
 ksort($developer);
+ksort($inactiveDeveloper);
 
 // Print the data for each developer.
+echo "<h2>Active Developers</h2>\n";
 foreach($developer as $devName => $devInfo) {
+	echo "<h3>$devName</h3>\n<ul>\n";
+	foreach($devInfo as $infoName => $infoContent) {
+		// Check whether a field has been set to NULL or not.
+		if($infoContent != NULL) {
+			switch($infoName) {
+				case "IRC":
+					echo "<li>IRC Name: $infoContent</li>\n";
+					break;
+				case "Name":
+					echo "<li>Real name: $infoContent</li>\n";
+					break;
+				case "EMail":
+					// Generate the image and write a copy to the filesystem.
+					$id = $imagegen->create($infoContent);
+					// Outputs the image to the sceen.
+					echo '<li>E-Mail Address: <img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" /></li>';
+					break;
+				case "ToolID":
+					echo "<li>Userpage on tool: <a href=\"$tsurl/statistics.php?page=Users&amp;user=$infoContent\">Click here</a></li>\n";
+					break;
+				case "wiki":
+					echo "<li>Enwiki Username: <a href=\"http://en.wikipedia.org/wiki/User:$infoContent\">$infoContent</a></li>\n";
+					break;
+				case "WWW":
+					echo "<li>Homepage: <a href=\"$infoContent\">$infoContent</a></li>\n";
+					break;
+				case "Role":
+					echo "<li>Project Role: $infoContent</li>\n";
+					break;
+				case "Access":
+					echo "<li>Access: $infoContent</li>\n";
+					break;
+				case "Cloak":
+					echo "<li>IRC Cloak: $infoContent</li>\n";
+					break;
+				case "Other":
+					echo "<li>Other: $infoContent</li>\n";
+					break;
+			}
+		}
+	}
+	// End to the bulleted list and continues on a new line.
+	echo "</ul>\n";
+}
+echo <<<HTML
+<h2>Inactive Developers</h2>
+<div class="showhide" id="showhide-inactive-link" onclick="showhide('showhide-inactive');">[show]</div>
+<div id="showhide-inactive" style="display: none;">
+HTML;
+foreach($inactiveDeveloper as $devName => $devInfo) {
 	echo "<h3>$devName</h3>\n<ul>\n";
 	foreach($devInfo as $infoName => $infoContent) {
 		// Check whether a field has been set to NULL or not.
@@ -398,7 +458,7 @@ foreach($developer as $devName => $devInfo) {
 }
 
 // Display details about the ACC hosting.
-echo "<br/><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by GitHub and can be found <a href=\"https://github.com/enwikipedia-acc/waca/\">here</a>.</p></div>";
+echo "</div><br/><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by GitHub and can be found <a href=\"https://github.com/enwikipedia-acc/waca/\">here</a>.</p></div>";
 
 // Display the footer of the interface.
 $skin->displayPfooter();

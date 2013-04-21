@@ -10,3 +10,9 @@ images/
 graph
 render/
 deploy/
+*.suo
+*.sln
+*.phpproj
+.settings/
+.buildpath
+.project
