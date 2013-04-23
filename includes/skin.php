@@ -123,10 +123,8 @@ class skin {
 	public function displayIfooter() {
 		global $messages, $internalInterface, $tsSQL;
 	
-		$howmany = array ();
-		$howmany = $internalInterface->gethowma(true);
+		$howma = $internalInterface->gethowma(true);
 		$howout = $internalInterface->showhowma();
-		$howma = $howmany['howmany'];
 		echo "</div>"; //Add this right before the footer message since a div close tag inside the message itself will cause HTML validation errors in the public interface. 
 		$out = $messages->getMessage('23');
 		if ($howma != 1) // not equal to one, as zero uses the plural form too.
