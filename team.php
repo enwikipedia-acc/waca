@@ -87,7 +87,7 @@ $developer = array(
 		"DeltaQuad" =>
 			array(
 				"IRC" => "DeltaQuad",
-				"EMail" => "deltaquad@live.ca",
+				"EMail" => "deltaquadwiki@gmail.com",
 				"ToolID" => "662",
 				"wiki" => "DeltaQuad",
 				"WWW" => "http://enwp.org/DeltaQuad",
