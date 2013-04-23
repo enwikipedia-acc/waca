@@ -421,94 +421,9 @@ HTML;
 elseif ($action == "login") {
 	$puser = sanitize($_POST['username']);
 	$ip = sanitize($_SERVER['REMOTE_ADDR']);
-	$query = "SELECT * FROM acc_user WHERE user_name = \"$puser\";";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-        if ($row['user_forcelogout'] == 1)
-        {
-                mysql_query("UPDATE acc_user SET user_forcelogout = 0 WHERE user_name = \"" . $puser . "\"", $tsSQLlink);
-        }
-	
-	// Checks whether the user is new to ACC with a pending account.
-	if ($row['user_level'] == "New") {
-		
-		// Display the header of the interface.
-		$skin->displayPheader();
-		
-		echo "<h2>Account Pending</h2>";
-		echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
-		echo "</pre><br />";
-		
-		// Display the footer of the interface.
-		echo "</div>";
-		$skin->displayPfooter();
-		die();
-	}
-	// Checks whether the user's account has been suspended.
-	if ($row['user_level'] == "Suspended") {
-		
-		// Display the header of the interface.
-		$skin->displayPheader();
-		
-		echo '<h2>Account Suspended</h2>';
-		echo "I'm sorry, but, your account is presently suspended.<br />\n";
-		
-		// Checks whether there was a reason for the suspension.
-		$reasonQuery = 'select log_cmt from acc_log where log_action = "Suspended" and log_pend = '.$row['user_id'].' order by log_time desc limit 1;';
-		$reasonResult = mysql_query($reasonQuery, $tsSQLlink);
-		$reasonRow = mysql_fetch_assoc($reasonResult);
-		echo "The reason given is shown below:<br /><pre>";
-		echo '<b>' . $reasonRow['log_cmt'] . "</b></pre><br />";
-		
-		// Display the footer of the interface.
-		echo "</div>";
-		$skin->displayPfooter();
-		die();
-	}
-	if ( authutils::testCredentials( $_POST['password'], $row['user_pass'] ) )
-	{
-            if( ! authutils::isCredentialVersionLatest( $row['user_pass'] ) ) {
-                $newCrypt = authutils::encryptPassword( $_POST['password'] );
-                $upgradeQuery = "UPDATE acc_user SET user_pass = '" . $newCrypt /* trusted */  . "' WHERE user_id = '" . $row['user_id'] /* trusted ID number */ . "' LIMIT 1;";
-                mysql_query($upgradeQuery, $tsSQLlink);
-            }
-    
-			global $forceIdentification; 
-			if($row['user_identified'] == 0 && $forceIdentification ==1)
-			{
-				header("Location: $tsurl/acc.php?error=noid");
-				die();
-			}
-	
-			// Assign values to certain Session variables.
-			// The values are retrieved from the ACC database.
-			$_SESSION['userID'] = $row['user_id'];
-			$_SESSION['user'] = $row['user_name']; // While yes, the data from this has come DIRECTLY from the database, if it contains a " or a ', then it'll make the SQL query break, and that's a bad thing for MOST of the code.		
-	
-			if ( isset( $_GET['newaction'] ) ) {
-				$header = "Location: $tsurl/acc.php?action=".$_GET['newaction'];
-				foreach ($_GET as $key => $get) {
-					if ($key == "newaction" || $key == "nocheck" || $get == "login" ) {
-					}
-					else {
-						$header .= "&$key=$get";
-					}
-				}
-				header($header);
-			}
-			else {
-				header("Location: $tsurl/acc.php");
-			}
-	}
-	else
-	{
-		$now = date("Y-m-d H-i-s");
-		
-		header("Location: $tsurl/acc.php?error=authfail");
-		die();
-	}
+	$password = $_POST['password'];
+	$newaction = $_GET['newaction'];
+	$internalInterface -> login($puser, $ip, $password, $newaction);
 }
 elseif ($action == "messagemgmt") {
 	if (isset ($_GET['view'])) {
