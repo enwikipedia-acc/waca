@@ -254,7 +254,7 @@ elseif ($action == "sreg") {
 		$skin->displayPfooter();
 		die();
 	}
-	if ($pass != $pass2) {
+	if ($_REQUEST['pass'] !== $_REQUEST['pass2']) { // comparing pre-filtered values here, secure as it's just a comparison.
 		$skin->displayRequestMsg("Please re-enter passwords. Passwords did not match!<br />");
 		echo "</div>";
 		$skin->displayPfooter();
@@ -314,7 +314,7 @@ elseif ($action == "sreg") {
 		} else {
 			$secure = 0;
 		}
-		$user_pass = md5($pass);
+		$user_pass = authutils::encryptPassword($_REQUEST['pass']); // again, using unfiltered as data processing is done here.
 		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_secure,user_confirmationdiff) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$secure','$conf_revid');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
@@ -346,7 +346,7 @@ elseif ($action == "forgotpw") {
 			$hash = md5($hashme);
 			if ($hash == $_GET['si']) {
 				if ($_POST['pw'] == $_POST['pw2']) {
-					$pw = md5($_POST['pw2']);
+					$pw = authutils::encryptPassword($_POST['pw2']);
 					$query = "UPDATE acc_user SET user_pass = '$pw' WHERE user_id = '$puser';";
 					$result = mysql_query($query, $tsSQLlink);
 					if (!$result) {
@@ -483,10 +483,15 @@ elseif ($action == "login") {
 		$skin->displayPfooter();
 		die();
 	}
-	$calcpass = md5($_POST['password']);
-	if ($row['user_pass'] == $calcpass)
+	if ( authutils::testCredentials( $_POST['password'], $row['user_pass'] ) )
 	{
-			global $forceIdentification;
+            if( ! authutils::isCredentialVersionLatest( $row['user_pass'] ) ) {
+                $newCrypt = authutils::encryptPassword( $_POST['password'] );
+                $upgradeQuery = "UPDATE acc_user SET user_pass = '" . $newCrypt /* trusted */  . "' WHERE user_id = '" . $row['user_id'] /* trusted ID number */ . "' LIMIT 1;";
+                mysql_query($upgradeQuery, $tsSQLlink);
+            }
+    
+			global $forceIdentification; 
 			if($row['user_identified'] == 0 && $forceIdentification ==1)
 			{
 				header("Location: $tsurl/acc.php?error=noid");
@@ -1974,7 +1979,7 @@ elseif ($action == "changepassword") {
 		die();
 	}
 	
-	if ($newpassword != $newpasswordconfirm) { //Throw an error if new password does not match what is in the confirmation box.
+	if ($_POST['newpassword'] != $_POST['newpasswordconfirm']) { //Throw an error if new password does not match what is in the confirmation box.
 		$skin->displayRequestMsg("The 2 new passwords you entered do not match.<br />\n");	
 		$skin->displayIfooter();
 		die();
@@ -1987,15 +1992,14 @@ elseif ($action == "changepassword") {
     }
     $row = mysql_fetch_assoc($result);
     
-    $calcpass = md5($oldpassword); //Encrypt the old password so we can confirm its accuracy.
-    
-    if ($calcpass != $row['user_pass']) { //Throw an error if the old password field's value does not match the user's current password.
+   
+    if ( ! authutils::testCredentials( $_POST['oldpassword'], $row['user_pass'] ) ) { //Throw an error if the old password field's value does not match the user's current password.
     	$skin->displayRequestMsg("The old password you entered is not correct.<br />\n");	
 		$skin->displayIfooter();
 		die();
     }
     
-    $user_pass = md5($newpassword); //Encrypt the new password before entering it into the database.
+    $user_pass = authutils::encryptPassword($newpassword); //Encrypt the new password before entering it into the database.
     
     $query2 = "UPDATE acc_user SET user_pass = '$user_pass' WHERE user_name = '$sessionuser';"; //Update the password in the database.
     $result2 = mysql_query($query2, $tsSQLlink);

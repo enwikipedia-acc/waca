@@ -120,6 +120,10 @@ $allowViewingOfUseragent = true;
 // Force identification to the foundation
 $forceIdentification = true;
 
+// minimum password version
+//   0 = hashed
+//   1 = hashed, salted
+$minimumPasswordVersion = 0;
 
 /***********************************
  * Reservations
