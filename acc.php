@@ -485,9 +485,13 @@ elseif ($action == "login") {
 	}
 	if ( authutils::testCredentials( $_POST['password'], $row['user_pass'] ) )
 	{
-            // TODO: Password upgrades 
+            if( ! authutils::isCredentialVersionLatest( $row['user_pass'] ) ) {
+                $newCrypt = authutils::encryptPassword( $_POST['password'] );
+                $upgradeQuery = "UPDATE acc_user SET user_pass = '" . $newCrypt /* trusted */  . "' WHERE user_id = '" . $row['user_id'] /* trusted ID number */ . "' LIMIT 1;";
+                mysql_query($upgradeQuery, $tsSQLlink);
+            }
     
-			global $forceIdentification;
+			global $forceIdentification; 
 			if($row['user_identified'] == 0 && $forceIdentification ==1)
 			{
 				header("Location: $tsurl/acc.php?error=noid");
