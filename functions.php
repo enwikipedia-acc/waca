@@ -28,6 +28,7 @@ include_once 'AntiSpoof.php';
 require_once 'includes/internalInterface.php';
 require_once 'includes/session.php';
 require_once 'includes/request.php';
+require_once 'includes/authutils.php';
 require_once 'autolink.php';
 
 // Initialize the class objects.
