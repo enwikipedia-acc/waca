@@ -29,6 +29,7 @@
 ** 1234r00t       ( http://en.wikipedia.org/wiki/User:1234r00t )         **
 ** Manishearth	  ( http://en.wikipedia.org/wiki/User:Manishearth )      **
 ** MacMed		  ( http://en.wikipedia.org/wiki/User:MacMed )   		 **
+** John F. Lewis  ( http://en.wikipedia.org/wiki/User:John_F._Lewis)     **
 ***************************************************************************/
 
 // Redirect user away from the current directory.

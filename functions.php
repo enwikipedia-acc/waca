@@ -28,6 +28,7 @@ include_once 'AntiSpoof.php';
 require_once 'includes/internalInterface.php';
 require_once 'includes/session.php';
 require_once 'includes/request.php';
+require_once 'includes/authutils.php';
 require_once 'autolink.php';
 
 // Initialize the class objects.
@@ -505,9 +506,6 @@ in error.</p>";
         <input id="password" type="password" name="password"/>
     </div>';
 
-	global $messages;
-	$html .= "<p>" . $messages->getDiskMessage("labs-disclosure-agreement") . "</p>";
-	
 	// Adds a Submit button to the HTML code.
 	// Below the forms a option to register would be displayed.
 	$html .= '<div class="submit">
@@ -1078,6 +1076,10 @@ function zoomPage($id,$urlhash)
 			} elseif($row['action'] == "Closed custom-n" ||$row['action'] == "Closed custom-y"  ) {
 				$out .= "&nbsp;</td><td><em>&nbsp;$action:&nbsp;</em><br />".str_replace("\n", '<br />', xss($row['comment']))."</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
 			} else {
+				
+				foreach($availableRequestStates as $deferState){
+					$action=str_replace("deferred to ".$deferState['defertolog'],"deferred to ".$deferState['deferto'],$action);	//#35: The log text(defertolog) should not be displayed to the user, deferto is what should be displayed
+				}
 				$out .= "&nbsp;</td><td><em>&nbsp;$action&nbsp;</em></td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
 			}
 			if (isset($row['security']) && $row['security'] == "admin") {
