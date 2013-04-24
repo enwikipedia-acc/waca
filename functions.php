@@ -764,7 +764,7 @@ function zoomPage($id,$urlhash)
 					
 				global $rfc1918ips;
 					
-				$iprdns = gethostbyaddr($p2);
+				$iprdns = @ gethostbyaddr($p2);
 				$ipisprivate = ipInRange($rfc1918ips, $p2);
 				
 				if( $iprdns == $p2 ) {
@@ -773,6 +773,9 @@ function zoomPage($id,$urlhash)
 					} else {
 						$iprdns = "<i>(no rdns available)</i>";
 					}
+				} else if( $iprdns === false ) {
+                    $iprdnsfailed = true;
+					$iprdns = "<i>(unable to determine address)</i>";
 				} else {
 					if( $ipisprivate ) {
 						$iprdns = "<i><a style=\"color:grey;\" href=\"http://en.wikipedia.org/wiki/Private_network\">Non-routable address</a></i>";
@@ -781,8 +784,8 @@ function zoomPage($id,$urlhash)
 					}
 				}
 				$entry .= "<td style=\"padding:3px\">$p2<br /><span style=\"color:grey;\">" . $iprdns . "</span></td><td>";
-				if( ( ! $trust ) && ( ! $ipisprivate ) ) {
-					$entry .= showIPlinks($p2, $wikipediaurl, $metaurl, $row['pend_id'], $session);
+				if( ( ! $trust ) && ( ! $ipisprivate ) && ( $iprdns!=="<i>(unable to determine address)</i>" ) ) {
+                    $entry .= showIPlinks($p2, $wikipediaurl, $metaurl, $row['pend_id'], $session);
 				}
 				$entry .= "</td></tr>";
 				
