@@ -1,3 +1,89 @@
+<?php
+
+$data = array( 
+	array(
+		'comment' => false,
+		'email' => 'test@stwalkerster.co.uk',
+		'ec' => 0,
+		'ip' => '10.4.0.54',
+		'ic' => 4,
+		'name' => 'Stwalkerster-sdfsdfsdf',
+		'reserved' => false,
+	),
+	array(
+		'comment' => true,
+		'email' => 'FastLizard4@fastlizard4.org',
+		'ec' => 0,
+		'ip' => '10.4.0.54',
+		'ic' => 4,
+		'name' => 'AaaaahUsernameTaken',
+		'reserved' => "Fastlizard4",
+	),
+	array(
+		'comment' => true,
+		'email' => 'root@fastlizard4.org',
+		'ec' => 0,
+		'ip' => '10.4.0.54',
+		'ic' => 4,
+		'name' => 'FastLizard4e44',
+		'reserved' => true,
+	),
+	array(
+		'comment' => false,
+		'email' => 'postmaster@fastlizard4.org',
+		'ec' => 3,
+		'ip' => '10.4.0.54',
+		'ic' => 4,
+		'name' => 'WeNeedMoretests!',
+		'reserved' => false,
+	),
+	array(
+		'comment' => false,
+		'email' => 'abuse@fastlizard4.org',
+		'ec' => 0,
+		'ip' => '96.126.96.9',
+		'ic' => 2,
+		'name' => 'AnotherXFFTest',
+		'reserved' => false,
+	),
+	array(
+		'comment' => false,
+		'email' => 'webmaster@fastlizard4.org',
+		'ec' => 2,
+		'ip' => '2.5.6.8',
+		'ic' => 3,
+		'name' => 'NeedsMoarXFF',
+		'reserved' => false,
+	),
+	array(
+		'comment' => false,
+		'email' => 'webmaster@fastlizard4.org',
+		'ec' => 2,
+		'ip' => '96.126.96.9',
+		'ic' => 2,
+		'name' => 'NeedsMoarXFF',
+		'reserved' => false,
+	),
+	array(
+		'comment' => false,
+		'email' => 'lizardirc@fastlizard4.org',
+		'ec' => 2,
+		'ip' => '2.5.6.8',
+		'ic' => 3,
+		'name' => 'XFF2',
+		'reserved' => false,
+	),
+	array(
+		'comment' => true,
+		'email' => 'fl4-bugzilla@fastlizard4.org',
+		'ec' => 2,
+		'ip' => '2.5.6.8',
+		'ic' => 3,
+		'name' => 'XFF3',
+		'reserved' => false,
+	),
+	);
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -138,97 +224,41 @@
 					<th><!-- reserve status --></th>
 					<th><!--reserve button--></th>
 				</tr></thead>
-				<tbody>
-					<tr>
-						<td>1</td>
-						<td><a class="btn btn-small" href="#">Zoom</a></td><td></td>
-						<td><a href="#">test@stwalkerster.co.uk</a>&nbsp;<span class="badge">0</span></td>
-						<td><a href="#" target="_blank">10.4.0.54</a>&nbsp;<span class="badge badge-important">4</span></td>
-						<td><a href="#" target="_blank">Stwalkerster-sdfsdfsdf</a></td>
-						<td><div class="btn-group"><a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">Ban<span class="caret"></span></a><ul class="dropdown-menu"><li><a href="#">IP</a></li><li><a href="#">Email</a></li><li><a href="#">Name</a></li></ul></div></td>
-						<td></td>
-						<td><a class="btn btn-small btn-success" href="#">Reserve</a></td>
-					</tr>
-					<tr>
-						<td>2</td>
-						<td><a class="btn btn-small btn-info hidden-desktop" href="#">Zoom</a><a class="btn btn-small visible-desktop" href="#">Zoom</a></td><td><span class="label label-info visible-desktop">Comment</span></td>
-						<td><a href="#">FastLizard4@fastlizard4.org</a>&nbsp;<span class="badge">0</span></td>
-						<td><a href="#" target="_blank">10.4.0.54</a>&nbsp;<span class="badge badge-important">4</span></td>
-						<td><a href="#" target="_blank">AaaaahUsernameTaken</a></td>
-						<td><div class="btn-group"><a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">Ban<span class="caret"></span></a><ul class="dropdown-menu"><li><a href="#">IP</a></li><li><a href="#">Email</a></li><li><a href="#">Name</a></li></ul></div></td>
-						<td>Being handled by FastLizard4</td>
-						<td> <a class="btn btn-small btn-warning" href="#">Force break</a></td>
-					</tr>
-					<tr>
-						<td>3</td>
-						<td><a class="btn btn-small btn-info hidden-desktop" href="#">Zoom</a><a class="btn btn-small visible-desktop" href="#">Zoom</a></td><td><span class="label label-info visible-desktop">Comment</span></td>
-						<td><a href="#">root@fastlizard4.org</a>&nbsp;<span class="badge">0</span></td>
-						<td><a href="#" target="_blank">10.4.0.54</a>&nbsp;<span class="badge badge-important">4</span></td>
-						<td><a href="#" target="_blank">FastLizard4e44</a></td>
-						<td><div class="btn-group"><a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">Ban<span class="caret"></span></a><ul class="dropdown-menu"><li><a href="#">IP</a></li><li><a href="#">Email</a></li><li><a href="#">Name</a></li></ul></div></td>
-						<td>Being handled by you</td>
-						<td> <a class="btn btn-small btn-warning" href="#">Break reservation</a></td>
-					</tr>
-					<tr>
-						<td>4</td>
-						<td><a class="btn btn-small" href="#">Zoom</a></td><td></td>
-						<td><a href="#">postmaster@fastlizard4.org</a>&nbsp;<span class="badge badge-important">3</span></td>
-						<td><a href="#" target="_blank">10.4.0.54</a>&nbsp;<span class="badge badge-important">4</span></td>
-						<td><a href="#" target="_blank">WeNeedMoretests!</a></td>
-						<td><div class="btn-group"><a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">Ban<span class="caret"></span></a><ul class="dropdown-menu"><li><a href="#">IP</a></li><li><a href="#">Email</a></li><li><a href="#">Name</a></li></ul></div></td>
-						<td></td>
-						<td><a class="btn btn-small btn-success" href="#">Reserve</a></td>
-					</tr>
-					<tr>
-						<td>5</td>
-						<td><a class="btn btn-small" href="#">Zoom</a></td><td></td>
-						<td><a href="#">abuse@fastlizard4.org</a>&nbsp;<span class="badge">0</span></td>
-						<td><a href="#" target="_blank">96.126.96.9</a>&nbsp;<span class="badge badge-important">2</span></td>
-						<td><a href="#" target="_blank">AnotherXFFTest</a></td>
-						<td><div class="btn-group"><a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">Ban<span class="caret"></span></a><ul class="dropdown-menu"><li><a href="#">IP</a></li><li><a href="#">Email</a></li><li><a href="#">Name</a></li></ul></div></td>
-						<td></td>
-						<td><a class="btn btn-small btn-success" href="#">Reserve</a></td>
-					</tr>
-					<tr>
-						<td>6</td>
-						<td><a class="btn btn-small" href="#">Zoom</a></td><td></td>
-						<td><a href="#">webmaster@fastlizard4.org</a>&nbsp;<span class="badge badge-important">2</span></td>
-						<td><a href="#" target="_blank">2.5.6.8</a>&nbsp;<span class="badge badge-important">3</span></td>
-						<td><a href="#" target="_blank">NeedsMoarXFF</a></td>
-						<td><div class="btn-group"><a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">Ban<span class="caret"></span></a><ul class="dropdown-menu"><li><a href="#">IP</a></li><li><a href="#">Email</a></li><li><a href="#">Name</a></li></ul></div></td>
-						<td></td>
-						<td><a class="btn btn-small btn-success" href="#">Reserve</a></td>
-					</tr>
-					<tr>
-						<td>7</td>
-						<td><a class="btn btn-small" href="#">Zoom</a></td><td></td>
-						<td><a href="#">webmaster@fastlizard4.org</a>&nbsp;<span class="badge badge-important">2</span></td>
-						<td><a href="#" target="_blank">96.126.96.9</a>&nbsp;<span class="badge badge-important">2</span></td>
-						<td><a href="#" target="_blank">NeedsMoarXFF</a></td>
-						<td><div class="btn-group"><a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">Ban<span class="caret"></span></a><ul class="dropdown-menu"><li><a href="#">IP</a></li><li><a href="#">Email</a></li><li><a href="#">Name</a></li></ul></div></td>
-						<td></td>
-						<td><a class="btn btn-small btn-success" href="#">Reserve</a></td>
-					</tr>
-					<tr>
-						<td>8</td>
-						<td><a class="btn btn-small" href="#">Zoom</a></td><td></td>
-						<td><a href="#">lizardirc@fastlizard4.org</a>&nbsp;<span class="badge">0</span></td>
-						<td><a href="#" target="_blank">2.5.6.8</a>&nbsp;<span class="badge badge-important">3</span></td>
-						<td><a href="#" target="_blank">XFF2</a></td>
-						<td><div class="btn-group"><a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">Ban<span class="caret"></span></a><ul class="dropdown-menu"><li><a href="#">IP</a></li><li><a href="#">Email</a></li><li><a href="#">Name</a></li></ul></div></td>
-						<td></td>
-						<td><a class="btn btn-small btn-success" href="#">Reserve</a></td>
-					</tr>
-					<tr>
-						<td>9</td>
-						<td><a class="btn btn-small btn-info hidden-desktop" href="#">Zoom</a><a class="btn btn-small visible-desktop" href="#">Zoom</a></td><td><span class="label label-info visible-desktop">Comment</span></td>
-						<td><a href="#">fl4-bugzilla@fastlizard4.org</a>&nbsp;<span class="badge">0</span></td>
-						<td><a href="#" target="_blank">2.5.6.8</a>&nbsp;<span class="badge badge-important">3</span></td>
-						<td><a href="#" target="_blank">XFF3</a></td>
-						<td><div class="btn-group"><a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">Ban<span class="caret"></span></a><ul class="dropdown-menu"><li><a href="#">IP</a></li><li><a href="#">Email</a></li><li><a href="#">Name</a></li></ul></div></td>
-						<td></td>
-						<td><a class="btn btn-small btn-success" href="#">Reserve</a></td>
-					</tr>
+				<tbody><?php
+				$i=0;
+				foreach($data as $d){
+					$i++;
+					echo "<tr>\n";
+					echo "<td>$i</td>\n";
+					if($d["comment"]) {
+						echo '<td><a class="btn btn-small btn-info hidden-desktop" href="#">Zoom</a><a class="btn btn-small visible-desktop" href="#">Zoom</a></td><td><span class="label label-info visible-desktop">Comment</span></td>' . "\n";
+					} else {
+						echo '<td><a class="btn btn-small" href="#">Zoom</a></td><td></td>' . "\n";
+					}
+					echo '<td><a href="#" target="_blank">'.$d['email'].'</a>&nbsp;';
+					if($d["ec"] != 0) {
+						echo '<span class="badge badge-important">'.$d["ec"].'</span></td>' . "\n";
+					} else {
+						echo '<span class="badge">0</span></td>' . "\n";
+					}
+					echo '<td><a href="#" target="_blank">'.$d['ip'].'</a>&nbsp;';
+					if($d["ic"] != 0) {
+						echo '<span class="badge badge-important">'.$d["ic"].'</span></td>' . "\n";
+					} else {
+						echo '<span class="badge">0</span></td>' . "\n";
+					}
+					echo '<td><a href="#" target="_blank">'.$d["name"].'</a></td>' . "\n";
+					echo '<td><div class="btn-group"><a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">Ban<span class="caret"></span></a><ul class="dropdown-menu"><li><a href="#">IP</a></li><li><a href="#">Email</a></li><li><a href="#">Name</a></li></ul></div></td>' . "\n";
+					if($d["reserved"] === false ) {
+						echo '<td></td><td><a class="btn btn-small btn-success" href="#">Reserve</a></td>'  . "\n";
+					} else if($d["reserved"] === true ) {
+						echo '<td>Being handled by you</td><td><a class="btn btn-small btn-warning" href="#">Break reservation</a></td>'  . "\n";
+					} else {
+						echo '<td>Being handled by '.$d["reserved"].'</td><td><a class="btn btn-small btn-warning" href="#">Force break</a></td>'  . "\n";
+					}
+					echo "</tr>\n";
+				}
+				?>
 				</tbody>
 			</table>
 		</div>
