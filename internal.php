@@ -142,8 +142,14 @@ $data = array(
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li class="active"><a href="#">Requests</a></li>
-              <li><a href="#">Logs</a></li>
-              <li><a href="#">Users</a></li>
+			  <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Meta<b class="caret"></b></a>
+				  <ul class="dropdown-menu">
+					<li><a href="#">Logs</a></li>
+					<li><a href="#">Users</a></li>
+					<li><a href="#">Search</a></li>
+					<li><a href="#">Statistics</a></li>
+				  </ul>
+			  </li>
               <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Management<b class="caret"></b></a>
 				  <ul class="dropdown-menu">
 					<li><a href="#">Ban Management</a></li>
@@ -152,8 +158,6 @@ $data = array(
 					<li><a href="#">User Management</a></li>
 				  </ul>
 			  </li>
-              <li><a href="#">Search</a></li>
-              <li><a href="#">Statistics</a></li>
               <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Help<b class="caret"></b></a>
 				  <ul class="dropdown-menu">
 					<li><a href="#">Guide</a></li>
@@ -214,12 +218,12 @@ $data = array(
 			<!-- request-section -->
 			<table class="table table-striped">
 				<thead><tr>
-					<th>#</th>
+					<th><span class="hidden-phone">#</span></th>
 					<th><!-- zoom --></th>
 					<th><!-- comment --></th>
-					<th>Email address</th>
-					<th>IP address</th>
-					<th>Username</th>
+					<th><span class="visible-desktop">Email address</span><span class="visible-tablet">Email and IP</span><span class="visible-phone">Request details</span></th>
+					<th><span class="visible-desktop">IP address</span></th>
+					<th><span class="hidden-phone">Username</span></th>
 					<th><!-- ban --></th>
 					<th><!-- reserve status --></th>
 					<th><!--reserve button--></th>
@@ -229,32 +233,43 @@ $data = array(
 				foreach($data as $d){
 					$i++;
 					echo "<tr>\n";
-					echo "<td>$i</td>\n";
+					echo '<td><span class="hidden-phone">'.$i.'</span></td>' . "\n";
 					if($d["comment"]) {
 						echo '<td><a class="btn btn-small btn-info hidden-desktop" href="#">Zoom</a><a class="btn btn-small visible-desktop" href="#">Zoom</a></td><td><span class="label label-info visible-desktop">Comment</span></td>' . "\n";
 					} else {
 						echo '<td><a class="btn btn-small" href="#">Zoom</a></td><td></td>' . "\n";
 					}
+					
 					echo '<td><a href="#" target="_blank">'.$d['email'].'</a>&nbsp;';
 					if($d["ec"] != 0) {
-						echo '<span class="badge badge-important">'.$d["ec"].'</span></td>' . "\n";
+						echo '<span class="badge badge-important">'.$d["ec"].'</span>';
 					} else {
-						echo '<span class="badge">0</span></td>' . "\n";
+						echo '<span class="badge">0</span>';
 					}
-					echo '<td><a href="#" target="_blank">'.$d['ip'].'</a>&nbsp;';
+					echo '<span class="hidden-desktop"><br /><a href="#" target="_blank">'.$d['ip'].'</a>&nbsp;';
 					if($d["ic"] != 0) {
-						echo '<span class="badge badge-important">'.$d["ic"].'</span></td>' . "\n";
+						echo '<span class="badge badge-important">'.$d["ic"].'</span>' . "\n";
 					} else {
-						echo '<span class="badge">0</span></td>' . "\n";
+						echo '<span class="badge">0</span>' . "\n";
 					}
-					echo '<td><a href="#" target="_blank">'.$d["name"].'</a></td>' . "\n";
-					echo '<td><div class="btn-group"><a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">Ban<span class="caret"></span></a><ul class="dropdown-menu"><li><a href="#">IP</a></li><li><a href="#">Email</a></li><li><a href="#">Name</a></li></ul></div></td>' . "\n";
+					echo '<span class="visible-phone"><br /><a href="#" target="_blank">'.$d["name"].'</a></span>';
+					echo '</span></td>' . "\n";
+					
+					echo '<td><span class="visible-desktop"><a href="#" target="_blank">'.$d['ip'].'</a>&nbsp;';
+					if($d["ic"] != 0) {
+						echo '<span class="badge badge-important">'.$d["ic"].'</span></span></td>' . "\n";
+					} else {
+						echo '<span class="badge">0</span></span></td>' . "\n";
+					}
+					
+					echo '<td><span class="hidden-phone"><a href="#" target="_blank">'.$d["name"].'</a></span></td>' . "\n";
+					echo '<td><div class="btn-group hidden-phone"><a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">Ban<span class="caret"></span></a><ul class="dropdown-menu"><li><a href="#">IP</a></li><li><a href="#">Email</a></li><li><a href="#">Name</a></li></ul></div></td>' . "\n";
 					if($d["reserved"] === false ) {
 						echo '<td></td><td><a class="btn btn-small btn-success" href="#">Reserve</a></td>'  . "\n";
 					} else if($d["reserved"] === true ) {
-						echo '<td>Being handled by you</td><td><a class="btn btn-small btn-warning" href="#">Break reservation</a></td>'  . "\n";
+						echo '<td><span class="visible-desktop">Being handled by you</span></td><td><a class="btn btn-small btn-inverse" href="#">Break your reservation</a></td>'  . "\n";
 					} else {
-						echo '<td>Being handled by '.$d["reserved"].'</td><td><a class="btn btn-small btn-warning" href="#">Force break</a></td>'  . "\n";
+						echo '<td><span class="visible-desktop">Being handled by '.$d["reserved"].'</span></td><td><a class="btn btn-small btn-warning visible-desktop" href="#">Force break</a><a class="btn btn-small btn-warning hidden-desktop" href="#">Break '.$d["reserved"].'\'s reservation</a></td>'  . "\n";
 					}
 					echo "</tr>\n";
 				}
@@ -273,32 +288,10 @@ $data = array(
 	  </div>
 	  <div class="row-fluid">
 		<div class="span12">
-			<!-- request-section -->
-			<table class="table table-striped">
-				<thead><tr>
-					<th>#</th>
-					<th><!-- zoom --></th>
-					<th><!-- comment --></th>
-					<th>Email address</th>
-					<th>IP address</th>
-					<th>Username</th>
-					<th><!-- ban --></th>
-					<th><!-- reserve status --></th>
-					<th><!--reserve button--></th>
-				</tr></thead>
-				<tbody>
-					<tr>
-						<td>1</td>
-						<td><a class="btn btn-small btn-info hidden-desktop" href="#">Zoom</a><a class="btn btn-small visible-desktop" href="#">Zoom</a></td><td><span class="label label-info visible-desktop">Comment</span></td>
-						<td><a href="#">simon@stwalkerster.co.uk</a>&nbsp;<span class="badge">0</span></td>
-						<td><a href="#" target="_blank">127.0.0.1</a>&nbsp;<span class="badge">0</span></td>
-						<td><a href="#" target="_blank">Retsreklawts</a></td>
-						<td><div class="btn-group"><a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">Ban<span class="caret"></span></a><ul class="dropdown-menu"><li><a href="#">IP</a></li><li><a href="#">Email</a></li><li><a href="#">Name</a></li></ul></div></td>
-						<td></td>
-						<td><a class="btn btn-small btn-success" href="#">Reserve</a></td>
-					</tr>
-				</tbody>
-			</table>
+			<div class="alert alert-info">
+				No requests at this time.
+			</div>
+			
 		</div>
 	  </div><!--/row-->
       <hr>
