@@ -30,7 +30,7 @@ class accbotSend {
 
 		$database = new database("notif"); 
 		$database->query("insert into {$toolserver_notification_database}.notification values (null,null,".$ircBotNotificationType.",'".$database->escape($msg)."');");
- 		echo "insert into {$toolserver_notification_database}.notification values (null,null,".$ircBotNotificationType.",'".$database->escape($msg)."');";
+ 
 		return;
 	}
 }
