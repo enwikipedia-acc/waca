@@ -559,7 +559,7 @@ function defaultpage() {
 		} else {
 			$out .= ' class="odd">';
 		}
-		$out .= "<td><small><a style=\"color:green\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></small></td><td><small>  <a style=\"color:orange\" href=\"$tsurl/acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=Open\">Reset</a></small></td></tr>";
+		$out .= "<td><small><a style=\"color:green\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></small></td><td><small>  <a style=\"color:orange\" href=\"$tsurl/acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=$defaultRequestStateKey\">Reset</a></small></td></tr>";
 		$html .= $out;
 	}
 	$html .= "</table>\n";
