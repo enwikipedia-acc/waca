@@ -177,7 +177,7 @@ $inactiveDeveloper = array(
 				"Cloak" => "*!*@yourwiki/staff/charlie",
 				"Other" => NULL,
 			),
-      "Soxred93" =>
+      		"Soxred93" =>
 			array(
 				"IRC" => "|X|",
 				"EMail" => NULL,
@@ -233,7 +233,7 @@ $inactiveDeveloper = array(
 				"Cloak" => "*!*@wikipedia/Prodego",
 				"Other" => NULL,
 			),
-      "Prom3th3an" =>
+      		"Prom3th3an" =>
 			array(
 				"IRC" => "Prom_cat",
 				"EMail" => "bretthillebrand@internode.on.net",
@@ -295,7 +295,7 @@ $inactiveDeveloper = array(
 				"EMail" => "thehelpfulonewiki@gmail.com",
 				"ToolID" => "8",
 				"wiki" => "Thehelpfulone",
-				"WWW" => "http://en.wikipedia.org/wiki/User:Thehelpfuone",
+				"WWW" => "http://en.wikipedia.org/wiki/User:Thehelpfulone",
 				"Name" => NULL,
 				"Role" => NULL,
 				"Retired" => NULL,
