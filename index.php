@@ -65,8 +65,8 @@ $request->checkConfirmEmail();
 if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	
 	// Trim whitespace and make the first character uppercase.
-	$_POST['name'] = $strings->struname($_POST['NAME']);
-
+	$_POST['name'] = $strings->struname($_POST['name']);
+	
 	// Initialize the variables and escapes them for MySQL.
 	$user = $tsSQL->escape($_POST['name']);
 	$email = $tsSQL->escape(trim($_POST['email']));
