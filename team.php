@@ -391,6 +391,9 @@ foreach($developer as $devName => $devInfo) {
 				case "Role":
 					echo "<li>Project Role: $infoContent</li>\n";
 					break;
+				case "Retired":
+					echo "<li>Retired Role: $infoContent</li>\n";
+					break;
 				case "Access":
 					echo "<li>Access: $infoContent</li>\n";
 					break;
@@ -440,6 +443,9 @@ foreach($inactiveDeveloper as $devName => $devInfo) {
 					break;
 				case "Role":
 					echo "<li>Project Role: $infoContent</li>\n";
+					break;
+				case "Retired":
+					echo "<li>Retired Role: $infoContent</li>\n";
 					break;
 				case "Access":
 					echo "<li>Access: $infoContent</li>\n";
