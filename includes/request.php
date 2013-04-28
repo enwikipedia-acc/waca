@@ -712,7 +712,7 @@ class accRequest {
 		// Checks whether the username is already in use on Wikipedia.
 		$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . urlencode($_POST['name']) . "&format=php");
 		$ue = unserialize($userexist);
-		if (!isset ($ue['query']['users']['0']['missing'])) {
+		if (!isset ($ue['query']['users']['0']['missing'])&&isset ($ue['query']['users']['0']['userid'])) {
 			$message = $messages->getMessage(10);
 			$skin->displayRequestMsg("<!-- m:10 -->$message<br />\n");
 			$fail = 1;
@@ -747,7 +747,7 @@ class accRequest {
 		
 		// Checks whether the username contains invalid characters.
 		$unameisinvalidchar = preg_match('/[\#\/\|\[\]\{\}\@\%\:\~\<\>]/', $_POST['name']);
-		if ($unameisinvalidchar > 0 || ltrim( rtrim( $_POST['name'] == "" ) ) ) {
+		if ($unameisinvalidchar > 0 || ltrim( rtrim( $_POST['name'])) == "" ||htmlentities($user,ENT_COMPAT,'UTF-8')=="" ||htmlentities(ltrim(rtrim($user)),ENT_COMPAT,'UTF-8')=="" ) {
 			$message = $messages->getMessage(13);
 			$skin->displayRequestMsg("<!-- m:13 -->$message<br />\n");
 			$fail = 1;
