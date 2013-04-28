@@ -1232,7 +1232,8 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
     echo '<i>This would be the same as ~~~ on-wiki. No date, please.</i><br /><br />';
 	//Preference used in functions.php:
     echo '<input type="checkbox" name="abortpref"'.$abortpref.'/> Don\'t ask to double check before closing requests (requires Javascript)<br /><br />';
-    echo 'Your Email address.<input type="text" name="email" size ="40"'. $useremail .'/>';
+    echo 'Your Email address: <input type="text" name="email" size ="40"'. $useremail .'/><br />';
+    echo 'Your on-wiki username: ' . htmlentities($row['user_onwikiname']) . '<br />' ;
     // TODO: clean up into nicer code, rather than coming out of php
 	echo <<<HTML
     <input type="submit"/><input type="reset"/>
