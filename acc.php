@@ -1225,12 +1225,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		}
 	}
 	$useremail = " value=\"" . htmlentities($row['user_email']) . "\"";
-	echo '<table>';
-    echo '<tr><th>Table of Contents</th></tr>';
-    echo '<tr><td><a href="#1">General settings</a></td></tr>';
-    echo '<tr><td><a href="#2">Change password</a></td></tr>';
-    echo '</table>';
-    echo '<a name="1"></a><h2>General settings</h2>';
+    echo '<h2>General settings</h2>';
     echo '<form action="'.$tsurl.'/acc.php?action=welcomeperf" method="post">';
     echo '<input type="checkbox" name="secureenable"'.$securepref.'/> Enable use of the secure server<br /><br />';
     echo 'Your signature (wikicode).<input type="text" name="sig" size ="40"'. $sig.'/>';
@@ -1242,7 +1237,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	echo <<<HTML
     <input type="submit"/><input type="reset"/>
     </form>
-    <a name="2"></a><h2>Change your password</h2>
+    <h2>Change your password</h2>
 HTML;
     echo '<form action="'.$tsurl.'/acc.php?action=changepassword" method="post">';
 	echo <<<HTML
