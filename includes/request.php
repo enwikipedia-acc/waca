@@ -747,7 +747,7 @@ class accRequest {
 		
 		// Checks whether the username contains invalid characters.
 		$unameisinvalidchar = preg_match('/[\#\/\|\[\]\{\}\@\%\:\~\<\>]/', $_POST['name']);
-		if ($unameisinvalidchar > 0 || ltrim( rtrim( $_POST['name'] == "" ) ) ) {
+		if ($unameisinvalidchar > 0 || ltrim( rtrim( $_POST['name'])) == "" ) {
 			$message = $messages->getMessage(13);
 			$skin->displayRequestMsg("<!-- m:13 -->$message<br />\n");
 			$fail = 1;
