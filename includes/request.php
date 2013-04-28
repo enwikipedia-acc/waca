@@ -775,16 +775,6 @@ class accRequest {
 			$fail = 1;
 		}
 
-		// (JIRA) ACC-55
-		// Checks whether the username has a traling space of underscore.
-		$trailingspace = substr($_POST['name'], strlen($_POST['name']) - 1);
-		if ($trailingspace == " " || $trailingspace == "_"  ) {
-			// TODO: WTF?!? Message 25 does not exist in the database. 2010-03-06 stw.
-			$message = $messages->getMessage(25);
-			$skin->displayRequestMsg("<!-- m:25 -->$message<br />\n");
-			$fail = 1;
-		}
-
 		// Checks whether there arent already a request for the username.
 		$query = "SELECT * FROM acc_pend WHERE pend_status = 'Open' AND pend_name = '$user'";
 		$result = $tsSQL->query($query);

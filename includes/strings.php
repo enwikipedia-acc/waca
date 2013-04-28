@@ -36,6 +36,7 @@ class strings {
 		$uname = mb_ereg_replace("^[ \t]+|[ \t]+$","",$username);
 		$uname = $this->mb_ucfirst($uname);
 		$uname = mb_ereg_replace("[ ]+","_",$uname);
+		$uname = mb_ereg_replace("[_]+$","",$uname);
 		return $uname;
 	}
 }
