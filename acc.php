@@ -1224,7 +1224,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 			$abortpref= "";
 		}
 	}
-	$useremail = " value=\"" . $row['user_email'] . "\"";
+	$useremail = " value=\"" . htmlentities($row['user_email']) . "\"";
 	echo '<table>';
     echo '<tr><th>Table of Contents</th></tr>';
     echo '<tr><td><a href="#1">General settings</a></td></tr>';
