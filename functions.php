@@ -1073,7 +1073,7 @@ function zoomPage($id,$urlhash)
 				$out .= "&nbsp;</td><td>&nbsp;".$row['comment']."&nbsp;</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
 			
 				global $enableCommentEditing;
-				if($enableCommentEditing && $session->hasright($_SESSION['user'], 'Admin') && isset($row['id'])) {
+				if($enableCommentEditing && ($session->hasright($_SESSION['user'], 'Admin') || $_SESSION['user'] == $row['user']) && isset($row['id'])) {
 					$out .= "<td><a href=\"$tsurl/acc.php?action=ec&amp;id=".$row['id']."\">Edit</a></td>";
 				}
 			} elseif($row['action'] == "Closed custom-n" ||$row['action'] == "Closed custom-y"  ) {

@@ -1914,35 +1914,62 @@ elseif ($action == "changepassword") {
 	die();
 }
 elseif ($action == "ec") { // edit comment
-	if(!$session->hasright($_SESSION['user'], "Admin")) { die("Unauthorised.");}
-	if(!isset($_GET['id']) || !( !is_int($_GET['id']) ? (ctype_digit($_GET['id'])) : true ) ) {die("No comment found.");}
+	if(!isset($_GET['id']) || !( !is_int($_GET['id']) ? (ctype_digit($_GET['id'])) : true ) ) {
+		// Only using die("Message"); for errors looks ugly.
+		$skin->displayRequestMsg("No comment found.");
+		$skin->displayIfooter();
+		die();
+	}
 	
 	$result = mysql_query("SELECT * FROM acc_cmt WHERE cmt_id = '" . sanitize($_GET['id']) . "';");
 	$row = mysql_fetch_assoc($result);
 	
-	if($row==false) {die("No comment found.");}
+	if($row==false) {
+		$skin->displayRequestMsg("No comment found.");
+		$skin->displayIfooter();
+		die();
+	}
+	
+	// Unauthorized if user is not an admin or the user who made the comment being edited.
+	if(!$session->hasright($_SESSION['user'], "Admin") && $row['cmt_user'] != $_SESSION['user']) { 
+		$skin->displayRequestMsg("Unauthorized.");
+		$skin->displayIfooter();
+		die();
+	}
 	
 	// get[id] is safe by this point.
 	
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-		mysql_query("UPDATE acc_cmt SET cmt_comment = \"".mysql_real_escape_string($_POST['newcomment'],$tsSQLlink)."\" WHERE cmt_id = \"".sanitize($_GET['id'])."\" LIMIT 1;");
+		mysql_query("UPDATE acc_cmt SET cmt_comment = \"".mysql_real_escape_string($_POST['newcomment'],$tsSQLlink)."\", cmt_visability = \"".mysql_real_escape_string($_POST['visability'],$tsSQLlink)."\" WHERE cmt_id = \"".sanitize($_GET['id'])."\" LIMIT 1;");
 		$now = date("Y-m-d H-i-s");
 		mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('".sanitize($_GET['id'])."', '".sanitize($_SESSION['user'])."', 'EditComment-c', '$now');");
 		mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('".sanitize($row["pend_id"])."', '".sanitize($_SESSION['user'])."', 'EditComment-r', '$now');");
-		
-		header("Location: " . $_SERVER['REQUEST_URI']);
+		$accbotSend->send("Comment " . $_GET['id'] . " edited by " . sanitize($_SESSION['user']));
+		$skin->displayRequestMsg("Comment has been saved successfully.");
+		echo zoomPage($row['pend_id'],"");
+		$skin->displayIfooter();
+		die();
 	}
 	else {	
 		echo "<h2>Edit comment #".$_GET['id']."</h2>"; 
 		global $tsurl;
-		echo "<strong>Time:</strong>&nbsp;" . $row['cmt_time'] . "<br />";
-		echo "<strong>Author:</strong>&nbsp;" . $row['cmt_user'] . "<br />";
-		echo "<strong>Security:</strong>&nbsp;" . $row['cmt_visability'] . "<br />";
+		echo "<form method=\"post\">\n";
+		echo "<strong>Time:</strong>&nbsp;" . $row['cmt_time'] . "<br />\n";
+		echo "<strong>Author:</strong>&nbsp;" . $row['cmt_user'] . "<br />\n";
+		echo "<strong>Security:</strong>&nbsp;<select name = \"visability\">\n";
+	    if ( $row['cmt_visability'] == "user") {
+	    	echo "<option value=\"user\" selected>User</option>\n";
+	    	echo "<option value = \"admin\">Admin</option>\n";
+	    }
+	    else {
+	    	echo "<option value = \"user\">User</option>\n";
+	    	echo "<option value = \"admin\" selected>Admin</option>\n";
+	    }
+	    echo "</select><br />\n";
 		echo "<strong>Request:</strong>&nbsp;<a href=\"".$tsurl."/acc.php?action=zoom&id=".$row['pend_id']."\">#" . $row['pend_id'] . "</a><br />";
 		
 		echo "<strong>Old text:</strong><pre>".$row['cmt_comment']."</pre>";
 		
-		echo "<form method=\"post\">";
 		echo "<input type=\"text\" size=\"100\" name=\"newcomment\" value=\"".htmlentities($row['cmt_comment'],ENT_COMPAT,'UTF-8')."\" />";
 		echo "<input type=\"submit\" />";
 		echo "</form>";
