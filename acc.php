@@ -1945,8 +1945,10 @@ elseif ($action == "ec") { // edit comment
 		mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('".sanitize($_GET['id'])."', '".sanitize($_SESSION['user'])."', 'EditComment-c', '$now');");
 		mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('".sanitize($row["pend_id"])."', '".sanitize($_SESSION['user'])."', 'EditComment-r', '$now');");
 		$accbotSend->send("Comment " . $_GET['id'] . " edited by " . sanitize($_SESSION['user']));
-		$skin->displayRequestMsg("Comment has been saved successfully.");
-		echo zoomPage($row['pend_id'],"");
+		//Show user confirmation that the edit has been saved, and redirect them to the request after 5 seconds.
+		header("Refresh:5;URL=$tsurl/acc.php?action=zoom&id=".$row['pend_id']);
+		$skin->displayRequestMsg("Comment has been saved successfully. You will be redirected to the request in 5 seconds.<br /><br />\n
+		Click <a href=\"".$tsurl."/acc.php?action=zoom&id=".$row['pend_id']."\">here</a> if you are not redirected.");
 		$skin->displayIfooter();
 		die();
 	}
