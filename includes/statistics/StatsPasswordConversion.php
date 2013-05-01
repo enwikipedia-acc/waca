@@ -21,10 +21,10 @@ SELECT "0" AS "Version", "Active" AS "Type", COUNT(*) AS "Count" FROM acc_user W
 UNION
 SELECT "0", "Inactive", COUNT(*) FROM acc_user WHERE user_pass NOT LIKE ":%" AND NOT (user_level = "User" OR user_level = "Admin")
 UNION
-SELECT SUBSTRING(user_pass FROM 2 FOR 1), "Active", COUNT(*) FROM acc_user WHERE user_pass LIKE ":%" AND (user_level = "User" OR user_level = "Admin") GROUP BY Version
+SELECT SUBSTRING(user_pass FROM 2 FOR 1), "Active", COUNT(*) FROM acc_user WHERE user_pass LIKE ":%" AND (user_level = "User" OR user_level = "Admin") GROUP BY "Version"
 UNION
-SELECT SUBSTRING(user_pass FROM 2 FOR 1), "Inactive", COUNT(*) FROM acc_user WHERE user_pass LIKE ":%" AND NOT (user_level = "User" OR user_level = "Admin") GROUP BY Version
-ORDER BY Version ASC, Type ASC
+SELECT SUBSTRING(user_pass FROM 2 FOR 1), "Inactive", COUNT(*) FROM acc_user WHERE user_pass LIKE ":%" AND NOT (user_level = "User" OR user_level = "Admin") GROUP BY "Version"
+ORDER BY "Version" ASC, "Type" ASC
 ;
 sql;
         
