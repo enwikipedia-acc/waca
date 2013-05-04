@@ -4,7 +4,7 @@ This is enwiki's ACC tool.
 
 ### Usage
 
-See WP:ACC/G
+See [http://enwp.org/WP:ACC/G](WP:ACC/G)
 
 ### Installation
 
