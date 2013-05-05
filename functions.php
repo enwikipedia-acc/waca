@@ -534,7 +534,7 @@ function getdevs() {
 }
 
 function defaultpage() {
-	global $tsSQLlink, $toolserver_database, $skin, $tsurl, $availableRequestStates;
+	global $tsSQLlink, $toolserver_database, $skin, $tsurl, $availableRequestStates, $defaultRequestStateKey;
 	@mysql_select_db( $toolserver_database, $tsSQLlink) or sqlerror(mysql_error,"Could not select db");
 	$html = '<h1>Create an account!</h1>';
 
@@ -559,7 +559,7 @@ function defaultpage() {
 		} else {
 			$out .= ' class="odd">';
 		}
-		$out .= "<td><small><a style=\"color:green\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></small></td><td><small>  <a style=\"color:orange\" href=\"$tsurl/acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=users\">Reset</a></small></td></tr>";
+		$out .= "<td><small><a style=\"color:green\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></small></td><td><small>  <a style=\"color:orange\" href=\"$tsurl/acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=$defaultRequestStateKey\">Reset</a></small></td></tr>";
 		$html .= $out;
 	}
 	$html .= "</table>\n";
@@ -764,7 +764,7 @@ function zoomPage($id,$urlhash)
 					
 				global $rfc1918ips;
 					
-				$iprdns = gethostbyaddr($p2);
+				$iprdns = @ gethostbyaddr($p2);
 				$ipisprivate = ipInRange($rfc1918ips, $p2);
 				
 				if( $iprdns == $p2 ) {
@@ -773,6 +773,9 @@ function zoomPage($id,$urlhash)
 					} else {
 						$iprdns = "<i>(no rdns available)</i>";
 					}
+				} else if( $iprdns === false ) {
+                    $iprdnsfailed = true;
+					$iprdns = "<i>(unable to determine address)</i>";
 				} else {
 					if( $ipisprivate ) {
 						$iprdns = "<i><a style=\"color:grey;\" href=\"http://en.wikipedia.org/wiki/Private_network\">Non-routable address</a></i>";
@@ -781,8 +784,8 @@ function zoomPage($id,$urlhash)
 					}
 				}
 				$entry .= "<td style=\"padding:3px\">$p2<br /><span style=\"color:grey;\">" . $iprdns . "</span></td><td>";
-				if( ( ! $trust ) && ( ! $ipisprivate ) ) {
-					$entry .= showIPlinks($p2, $wikipediaurl, $metaurl, $row['pend_id'], $session);
+				if( ( ! $trust ) && ( ! $ipisprivate ) && ( $iprdns!=="<i>(unable to determine address)</i>" ) ) {
+                    $entry .= showIPlinks($p2, $wikipediaurl, $metaurl, $row['pend_id'], $session);
 				}
 				$entry .= "</td></tr>";
 				
@@ -1070,7 +1073,7 @@ function zoomPage($id,$urlhash)
 				$out .= "&nbsp;</td><td>&nbsp;".$row['comment']."&nbsp;</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
 			
 				global $enableCommentEditing;
-				if($enableCommentEditing && $session->hasright($_SESSION['user'], 'Admin') && isset($row['id'])) {
+				if($enableCommentEditing && ($session->hasright($_SESSION['user'], 'Admin') || $_SESSION['user'] == $row['user']) && isset($row['id'])) {
 					$out .= "<td><a href=\"$tsurl/acc.php?action=ec&amp;id=".$row['id']."\">Edit</a></td>";
 				}
 			} elseif($row['action'] == "Closed custom-n" ||$row['action'] == "Closed custom-y"  ) {

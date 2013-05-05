@@ -80,5 +80,73 @@ class internalInterface {
 		
 		return $whoactive;
 	}
+	public function login($user, $ip, $password, $newaction) {
+		global $tsSQL, $forceIdentification, $tsurl, $skin;
+		$result = $tsSQL->query("SELECT * FROM acc_user WHERE user_name = \"$user\";");
+		// Display error upon failure.
+		if (!$result) 
+			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"ERROR: database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
+		$row = mysql_fetch_assoc($result);
+		// The password should always be the FIRST thing to be checked!
+		if ( ! authutils::testCredentials( $password, $row['user_pass'] ) ) {
+			$now = date("Y-m-d H-i-s");
+			header("Location: $tsurl/acc.php?error=authfail");
+			die();
+		}
+		if($row['user_identified'] == 0 && $forceIdentification == 1) {
+			header("Location: $tsurl/acc.php?error=noid");
+			die();
+		}
+		// Checks whether the user is new to ACC with a pending account.
+		if ($row['user_level'] == "New") {
+			// Display the header of the interface.
+			$skin->displayPheader();
+			echo "<h2>Account Pending</h2>";
+			echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
+			echo "</pre><br />";
+			// Display the footer of the interface.
+			echo "</div>";
+			$skin->displayPfooter();
+			die();
+		}
+		// Checks whether the user's account has been suspended.
+		if ($row['user_level'] == "Suspended") {
+			// Display the header of the interface.
+			$skin->displayPheader();
+			echo '<h2>Account Suspended</h2>';
+			echo "I'm sorry, but, your account is presently suspended.<br />\n";
+			// Checks whether there was a reason for the suspension.
+			$reasonResult = $tsSQL->query('select log_cmt from acc_log where log_action = "Suspended" and log_pend = '.$row['user_id'].' order by log_time desc limit 1;');
+			$reasonRow = mysql_fetch_assoc($reasonResult);
+			echo "The reason given is shown below:<br /><pre>";
+			echo '<b>' . $reasonRow['log_cmt'] . "</b></pre><br />";
+			// Display the footer of the interface.
+			echo "</div>";
+			$skin->displayPfooter();
+			die();
+		}
+		// If any of the above checks failed, the script should have terminated by now.
+		if( ! authutils::isCredentialVersionLatest( $row['user_pass'] ) ) {
+			$newCrypt = authutils::encryptPassword( $_POST['password'] );
+			$tsSQL->query("UPDATE acc_user SET user_pass = '" . $newCrypt /* trusted */  . "' WHERE user_id = '" . $row['user_id'] /* trusted ID number */ . "' LIMIT 1;");
+		}
+		if ($row['user_forcelogout'] == 1)
+			$tsSQL->query("UPDATE acc_user SET user_forcelogout = 0 WHERE user_name = \"" . $puser . "\"");
+		// Assign values to certain Session variables.
+		// The values are retrieved from the ACC database.
+		$_SESSION['userID'] = $row['user_id'];
+		$_SESSION['user'] = $row['user_name']; // While yes, the data from this has come DIRECTLY from the database, if it contains a " or a ', then it'll make the SQL query break, and that's a bad thing for MOST of the code.
+		if ( isset( $_GET['newaction'] ) ) {
+			$header = "Location: $tsurl/acc.php?action=".$_GET['newaction'];
+			foreach ($_GET as $key => $get) {
+				if ($key != "newaction" && $key != "nocheck" && $get != "login" )
+					$header .= "&$key=$get";
+			}
+			header($header);
+		}
+		else {
+				header("Location: $tsurl/acc.php");
+		}
+	}
 }
 ?>

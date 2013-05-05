@@ -421,94 +421,9 @@ HTML;
 elseif ($action == "login") {
 	$puser = sanitize($_POST['username']);
 	$ip = sanitize($_SERVER['REMOTE_ADDR']);
-	$query = "SELECT * FROM acc_user WHERE user_name = \"$puser\";";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-        if ($row['user_forcelogout'] == 1)
-        {
-                mysql_query("UPDATE acc_user SET user_forcelogout = 0 WHERE user_name = \"" . $puser . "\"", $tsSQLlink);
-        }
-	
-	// Checks whether the user is new to ACC with a pending account.
-	if ($row['user_level'] == "New") {
-		
-		// Display the header of the interface.
-		$skin->displayPheader();
-		
-		echo "<h2>Account Pending</h2>";
-		echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
-		echo "</pre><br />";
-		
-		// Display the footer of the interface.
-		echo "</div>";
-		$skin->displayPfooter();
-		die();
-	}
-	// Checks whether the user's account has been suspended.
-	if ($row['user_level'] == "Suspended") {
-		
-		// Display the header of the interface.
-		$skin->displayPheader();
-		
-		echo '<h2>Account Suspended</h2>';
-		echo "I'm sorry, but, your account is presently suspended.<br />\n";
-		
-		// Checks whether there was a reason for the suspension.
-		$reasonQuery = 'select log_cmt from acc_log where log_action = "Suspended" and log_pend = '.$row['user_id'].' order by log_time desc limit 1;';
-		$reasonResult = mysql_query($reasonQuery, $tsSQLlink);
-		$reasonRow = mysql_fetch_assoc($reasonResult);
-		echo "The reason given is shown below:<br /><pre>";
-		echo '<b>' . $reasonRow['log_cmt'] . "</b></pre><br />";
-		
-		// Display the footer of the interface.
-		echo "</div>";
-		$skin->displayPfooter();
-		die();
-	}
-	if ( authutils::testCredentials( $_POST['password'], $row['user_pass'] ) )
-	{
-            if( ! authutils::isCredentialVersionLatest( $row['user_pass'] ) ) {
-                $newCrypt = authutils::encryptPassword( $_POST['password'] );
-                $upgradeQuery = "UPDATE acc_user SET user_pass = '" . $newCrypt /* trusted */  . "' WHERE user_id = '" . $row['user_id'] /* trusted ID number */ . "' LIMIT 1;";
-                mysql_query($upgradeQuery, $tsSQLlink);
-            }
-    
-			global $forceIdentification; 
-			if($row['user_identified'] == 0 && $forceIdentification ==1)
-			{
-				header("Location: $tsurl/acc.php?error=noid");
-				die();
-			}
-	
-			// Assign values to certain Session variables.
-			// The values are retrieved from the ACC database.
-			$_SESSION['userID'] = $row['user_id'];
-			$_SESSION['user'] = $row['user_name']; // While yes, the data from this has come DIRECTLY from the database, if it contains a " or a ', then it'll make the SQL query break, and that's a bad thing for MOST of the code.		
-	
-			if ( isset( $_GET['newaction'] ) ) {
-				$header = "Location: $tsurl/acc.php?action=".$_GET['newaction'];
-				foreach ($_GET as $key => $get) {
-					if ($key == "newaction" || $key == "nocheck" || $get == "login" ) {
-					}
-					else {
-						$header .= "&$key=$get";
-					}
-				}
-				header($header);
-			}
-			else {
-				header("Location: $tsurl/acc.php");
-			}
-	}
-	else
-	{
-		$now = date("Y-m-d H-i-s");
-		
-		header("Location: $tsurl/acc.php?error=authfail");
-		die();
-	}
+	$password = $_POST['password'];
+	$newaction = $_GET['newaction'];
+	$internalInterface -> login($puser, $ip, $password, $newaction);
 }
 elseif ($action == "messagemgmt") {
 	if (isset ($_GET['view'])) {
@@ -1262,7 +1177,6 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is deprecated, but to avoid conflicts, include it still.
 	if (isset ($_POST['sig'])) {
 		$sig = sanitize($_POST['sig']);
-		$template = sanitize($_POST['template']);
 		$sid = sanitize($_SESSION['user']);
 		if( isset( $_POST['secureenable'] ) ) {
 			$secureon = 1;
@@ -1274,7 +1188,21 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		} else {
 			$abortprefOld= 0;
 		}
-		$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld' WHERE user_name = '$sid'";
+		if( isset( $_POST['email'] ) ) {
+			$mailisvalid = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.(ac|ad|ae|aero|af|ag|ai|al|am|an|ao|aq|ar|arpa|as|asia|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|biz|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cat|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|com|coop|cr|cu|cv|cx|cy|cz|de|dj|dk|dm|do|dz|ec|edu|ee|eg|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gov|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|info|int|io|iq|ir|is|it|je|jm|jo|jobs|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mil|mk|ml|mm|mn|mo|mobi|mp|mq|mr|ms|mt|mu|museum|mv|mw|mx|my|mz|na|name|nc|ne|net|nf|ng|ni|nl|no|np|nr|nu|nz|om|org|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|pro|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sy|sz|tc|td|tel|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|travel|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)$/i', $_POST['email']);
+			if ($mailisvalid == 0) {
+				$skin->displayRequestMsg("ERROR: Invalid E-mail address.<br />");
+			}
+			else {
+				$newemail = sanitize($_POST['email']);
+			}
+		}
+		if (isset($newemail)) {
+		$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld', user_email = '$newemail' WHERE user_name = '$sid'";
+		}
+		else {
+			$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld' WHERE user_name = '$sid'";
+		}
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
@@ -1296,23 +1224,21 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 			$abortpref= "";
 		}
 	}
-	echo '<table>';
-    echo '<tr><th>Table of Contents</th></tr>';
-    echo '<tr><td><a href="#1">General settings</a></td></tr>';
-    echo '<tr><td><a href="#2">Change password</a></td></tr>';
-    echo '</table>';
-    echo '<a name="1"></a><h2>General settings</h2>';
+	$useremail = " value=\"" . htmlentities($row['user_email']) . "\"";
+    echo '<h2>General settings</h2>';
     echo '<form action="'.$tsurl.'/acc.php?action=welcomeperf" method="post">';
     echo '<input type="checkbox" name="secureenable"'.$securepref.'/> Enable use of the secure server<br /><br />';
     echo 'Your signature (wikicode).<input type="text" name="sig" size ="40"'. $sig.'/>';
     echo '<i>This would be the same as ~~~ on-wiki. No date, please.</i><br /><br />';
 	//Preference used in functions.php:
-    echo '<input type="checkbox" name="abortpref"'.$abortpref.'/> Don\'t ask to double check before closing requests (requires Javascript)<br /><br />';	    
+    echo '<input type="checkbox" name="abortpref"'.$abortpref.'/> Don\'t ask to double check before closing requests (requires Javascript)<br /><br />';
+    echo 'Your Email address: <input type="text" name="email" size ="40"'. $useremail .'/><br />';
+    echo 'Your on-wiki username: ' . htmlentities($row['user_onwikiname']) . '<br />' ;
     // TODO: clean up into nicer code, rather than coming out of php
 	echo <<<HTML
     <input type="submit"/><input type="reset"/>
     </form>
-    <a name="2"></a><h2>Change your password</h2>
+    <h2>Change your password</h2>
 HTML;
     echo '<form action="'.$tsurl.'/acc.php?action=changepassword" method="post">';
 	echo <<<HTML
@@ -1988,35 +1914,64 @@ elseif ($action == "changepassword") {
 	die();
 }
 elseif ($action == "ec") { // edit comment
-	if(!$session->hasright($_SESSION['user'], "Admin")) { die("Unauthorised.");}
-	if(!isset($_GET['id']) || !( !is_int($_GET['id']) ? (ctype_digit($_GET['id'])) : true ) ) {die("No comment found.");}
+	if(!isset($_GET['id']) || !( !is_int($_GET['id']) ? (ctype_digit($_GET['id'])) : true ) ) {
+		// Only using die("Message"); for errors looks ugly.
+		$skin->displayRequestMsg("No comment found.");
+		$skin->displayIfooter();
+		die();
+	}
 	
 	$result = mysql_query("SELECT * FROM acc_cmt WHERE cmt_id = '" . sanitize($_GET['id']) . "';");
 	$row = mysql_fetch_assoc($result);
 	
-	if($row==false) {die("No comment found.");}
+	if($row==false) {
+		$skin->displayRequestMsg("No comment found.");
+		$skin->displayIfooter();
+		die();
+	}
+	
+	// Unauthorized if user is not an admin or the user who made the comment being edited.
+	if(!$session->hasright($_SESSION['user'], "Admin") && $row['cmt_user'] != $_SESSION['user']) { 
+		$skin->displayRequestMsg("Unauthorized.");
+		$skin->displayIfooter();
+		die();
+	}
 	
 	// get[id] is safe by this point.
 	
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-		mysql_query("UPDATE acc_cmt SET cmt_comment = \"".mysql_real_escape_string($_POST['newcomment'],$tsSQLlink)."\" WHERE cmt_id = \"".sanitize($_GET['id'])."\" LIMIT 1;");
+		mysql_query("UPDATE acc_cmt SET cmt_comment = \"".mysql_real_escape_string($_POST['newcomment'],$tsSQLlink)."\", cmt_visability = \"".mysql_real_escape_string($_POST['visability'],$tsSQLlink)."\" WHERE cmt_id = \"".sanitize($_GET['id'])."\" LIMIT 1;");
 		$now = date("Y-m-d H-i-s");
 		mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('".sanitize($_GET['id'])."', '".sanitize($_SESSION['user'])."', 'EditComment-c', '$now');");
 		mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('".sanitize($row["pend_id"])."', '".sanitize($_SESSION['user'])."', 'EditComment-r', '$now');");
-		
-		header("Location: " . $_SERVER['REQUEST_URI']);
+		$accbotSend->send("Comment " . $_GET['id'] . " edited by " . sanitize($_SESSION['user']));
+		//Show user confirmation that the edit has been saved, and redirect them to the request after 5 seconds.
+		header("Refresh:5;URL=$tsurl/acc.php?action=zoom&id=".$row['pend_id']);
+		$skin->displayRequestMsg("Comment has been saved successfully. You will be redirected to the request in 5 seconds.<br /><br />\n
+		Click <a href=\"".$tsurl."/acc.php?action=zoom&id=".$row['pend_id']."\">here</a> if you are not redirected.");
+		$skin->displayIfooter();
+		die();
 	}
 	else {	
 		echo "<h2>Edit comment #".$_GET['id']."</h2>"; 
 		global $tsurl;
-		echo "<strong>Time:</strong>&nbsp;" . $row['cmt_time'] . "<br />";
-		echo "<strong>Author:</strong>&nbsp;" . $row['cmt_user'] . "<br />";
-		echo "<strong>Security:</strong>&nbsp;" . $row['cmt_visability'] . "<br />";
+		echo "<form method=\"post\">\n";
+		echo "<strong>Time:</strong>&nbsp;" . $row['cmt_time'] . "<br />\n";
+		echo "<strong>Author:</strong>&nbsp;" . $row['cmt_user'] . "<br />\n";
+		echo "<strong>Security:</strong>&nbsp;<select name = \"visability\">\n";
+	    if ( $row['cmt_visability'] == "user") {
+	    	echo "<option value=\"user\" selected>User</option>\n";
+	    	echo "<option value = \"admin\">Admin</option>\n";
+	    }
+	    else {
+	    	echo "<option value = \"user\">User</option>\n";
+	    	echo "<option value = \"admin\" selected>Admin</option>\n";
+	    }
+	    echo "</select><br />\n";
 		echo "<strong>Request:</strong>&nbsp;<a href=\"".$tsurl."/acc.php?action=zoom&id=".$row['pend_id']."\">#" . $row['pend_id'] . "</a><br />";
 		
 		echo "<strong>Old text:</strong><pre>".$row['cmt_comment']."</pre>";
 		
-		echo "<form method=\"post\">";
 		echo "<input type=\"text\" size=\"100\" name=\"newcomment\" value=\"".htmlentities($row['cmt_comment'],ENT_COMPAT,'UTF-8')."\" />";
 		echo "<input type=\"submit\" />";
 		echo "</form>";

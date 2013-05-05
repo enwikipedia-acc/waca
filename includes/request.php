@@ -712,7 +712,7 @@ class accRequest {
 		// Checks whether the username is already in use on Wikipedia.
 		$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . urlencode($_POST['name']) . "&format=php");
 		$ue = unserialize($userexist);
-		if (!isset ($ue['query']['users']['0']['missing'])) {
+		if (!isset ($ue['query']['users']['0']['missing'])&&isset ($ue['query']['users']['0']['userid'])) {
 			$message = $messages->getMessage(10);
 			$skin->displayRequestMsg("<!-- m:10 -->$message<br />\n");
 			$fail = 1;
@@ -747,7 +747,7 @@ class accRequest {
 		
 		// Checks whether the username contains invalid characters.
 		$unameisinvalidchar = preg_match('/[\#\/\|\[\]\{\}\@\%\:\~\<\>]/', $_POST['name']);
-		if ($unameisinvalidchar > 0 || ltrim( rtrim( $_POST['name'] == "" ) ) ) {
+		if ($unameisinvalidchar > 0 || ltrim( rtrim( $_POST['name'])) == "" ||htmlentities($user,ENT_COMPAT,'UTF-8')=="" ||htmlentities(ltrim(rtrim($user)),ENT_COMPAT,'UTF-8')=="" ) {
 			$message = $messages->getMessage(13);
 			$skin->displayRequestMsg("<!-- m:13 -->$message<br />\n");
 			$fail = 1;
@@ -772,16 +772,6 @@ class accRequest {
 		if ($mailiswmf != 0) {
 			$message = $messages->getMessage(14);
 			$skin->displayRequestMsg("<!-- m:14b -->$message<br />\n");
-			$fail = 1;
-		}
-
-		// (JIRA) ACC-55
-		// Checks whether the username has a traling space of underscore.
-		$trailingspace = substr($_POST['name'], strlen($_POST['name']) - 1);
-		if ($trailingspace == " " || $trailingspace == "_"  ) {
-			// TODO: WTF?!? Message 25 does not exist in the database. 2010-03-06 stw.
-			$message = $messages->getMessage(25);
-			$skin->displayRequestMsg("<!-- m:25 -->$message<br />\n");
 			$fail = 1;
 		}
 
