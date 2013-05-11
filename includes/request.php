@@ -236,8 +236,8 @@ class accRequest {
 					$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
 				$row = mysql_fetch_assoc( $result );
 				if( $row['pend_mailconfirm'] == $_GET['si'] ) {
-					$successmessage = $messages->getMessage(24);
-					echo "$successmessage <br />\n";
+					global $smarty;
+                    $smarty->display("email-confirmed.tpl");
 					$query = "UPDATE acc_pend SET pend_mailconfirm = 'Confirmed' WHERE pend_id = '$pid';";
 					$result = $tsSQL->query($query);
 					if ( !$result )
@@ -554,7 +554,7 @@ class accRequest {
 			// When there is no match the operations are skipped.
 			if ($phail_test == TRUE) {
 				// Gets message to display to the user.
-				$message = $messages->getMessage(15);
+				$message = $messages->getMessage(15); //TODO: BOOTSTRAP
 				
 				// Displays the appropiate message to the user.
 				// The requester is fooled that the request was successful.
@@ -662,7 +662,7 @@ class accRequest {
 			// The first variable if the array only states whether there were matchcs.
 			if ($dnsblcheck['0'] == true) {
 				// Gets message to display to the user.
-				$message = $messages->getMessage(15);
+				$message = $messages->getMessage(15); //TODO: BOOTSTRAP
 				
 				// Displays the appropiate message to the user.
 				// The requester is fooled that the request was successful.
@@ -824,16 +824,14 @@ class accRequest {
 		// Get objects from the index file and globals from configuration.
 		global $enableEmailConfirm, $messages, $tsSQL, $defaultReserver, $squidIpList;
 		
+        global $smarty;
 		// Checks whether email confirmation is enabled.
 		if ($enableEmailConfirm == 1) {
-			$message = $messages->getMessage(15);
+            $smarty->display("email-confirmation.tpl");
 		} else {
-			$message = $messages->getMessage(24);
+			$smarty->display("email-confirmed.tpl");
 		}
-		
-		// Display message
-		echo "$message\n";
-		
+				
 		// Convert all applicable characters to HTML entities.
 		$user = htmlentities($user,ENT_COMPAT,'UTF-8');
 		$email = htmlentities($email,ENT_COMPAT,'UTF-8');
