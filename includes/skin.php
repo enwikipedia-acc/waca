@@ -20,6 +20,7 @@ if ($ACC != "1") {
 class BootstrapSkin {
     public static function displayPublicHeader() {
         global $smarty;
+        $smarty->display("header-external.tpl");
     }
     
     public static function displayInternalHeader() {
@@ -65,6 +66,10 @@ class BootstrapSkin {
         global $smarty;
     }
     
+	/**
+     * Prints the account request form to the screen.
+     * @deprecated
+     */
     public static function displayRequestForm( ) {
         global $smarty;
         $smarty->display("request-form.tpl");
@@ -77,9 +82,7 @@ class skin {
 	 * Prints the public interface header to the screen.
 	 */
 	public function displayPheader() {
-		// Displayes the interface header.
-		global $messages;
-		echo $messages->getMessage(8);
+		BootstrapSkin::displayPublicHeader();
 	}
 	
 	/**
@@ -191,7 +194,8 @@ class skin {
 	}
 	
 	/**
-	 * Prints the account request form to the screen.
+     * Prints the account request form to the screen.
+     * @deprecated
 	 */
 	public function displayRequest() {
         BootstrapSkin::displayRequestForm();
