@@ -1,7 +1,7 @@
 <div class="row-fluid">
   <div class="span12">
 	  <h2>Request an account!</h2>
-	  <p>We need a few bits of information to create your account. However, you do not need an account to read the encyclopedia or look up information - that can be done by anyone with or without an account. The first is a username, and secondly, a <strong>valid email address that we can send your password to</strong> (please don't use temporary inboxes, or email aliasing, as this may cause your request to be rejected). If you want to leave any comments, feel free to do so. Note that if you use this form, your IP address will be recorded, and displayed to <a href="http://toolserver.org/~acc/statistics.php?page=Users">those who review account requests</a>. When you are done, click the "Submit" button. If you have difficulty using this tool, send an email containing your account request (but not password) to <a href="mailto:accounts-enwiki-l@lists.wikimedia.org">accounts-enwiki-l@lists.wikimedia.org</a>, and we will try to deal with your requests that way.</p>
+	  <p>We need a few bits of information to create your account. However, you do not need an account to read the encyclopedia or look up information - that can be done by anyone with or without an account. The first is a username, and secondly, a <strong>valid email address that we can send your password to</strong> (please don't use temporary inboxes, or email aliasing, as this may cause your request to be rejected). If you want to leave any comments, feel free to do so. Note that if you use this form, your IP address will be recorded, and displayed to <a href="{$tsurl}/statistics.php?page=Users">those who review account requests</a>. When you are done, click the "Submit" button. If you have difficulty using this tool, send an email containing your account request (but not password) to <a href="mailto:accounts-enwiki-l@lists.wikimedia.org">accounts-enwiki-l@lists.wikimedia.org</a>, and we will try to deal with your requests that way.</p>
 
 	  <div class="alert alert-block">
 		  <h4>Please note!</h4>
@@ -12,7 +12,7 @@
 
 <div class="row-fluid">
   <div class="span12">
-	  <form class="form-horizontal">
+	  <form class="form-horizontal" method="post">
 		  <div class="control-group">
 			  <label class="control-label" for="inputUsername">Username</label>
 			  <div class="controls">
