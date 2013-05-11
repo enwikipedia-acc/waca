@@ -202,6 +202,8 @@ class accRequest {
 		$mailsuccess = mail($row['pend_email'], "[ACC #$id] English Wikipedia Account Request", $mailtxt, $headers);
 		// Confirms mail went through (JIRA ACC-44)
 		if ($mailsuccess == false) {
+            global $skin;
+            $result = $tsSQL->query("DELETE FROM `acc_pend` WHERE `pend_id`= $id;");
 			$skin->displayRequestMsg("Sorry, it appears we were unable to send an email to the email address you specified. Please check the spelling and try again.");
 			$skin->displayPfooter();
 			die();			
