@@ -271,7 +271,7 @@ class accRequest {
 				} else {
 					echo "E-mail confirmation failed!<br />\n";
 				}
-				echo $messages->getMessage(23);
+				$skin->displayPfooter();
 				die();
 			} elseif ( $action == "confirm" ) {
 				echo "Invalid Parameters. Please be sure you copied the URL correctly<br />\n";
