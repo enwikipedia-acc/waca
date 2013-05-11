@@ -67,6 +67,7 @@ class BootstrapSkin {
     
     public static function displayRequestForm( ) {
         global $smarty;
+        $smarty->display("request-form.tpl");
     }
 }
 
@@ -193,9 +194,7 @@ class skin {
 	 * Prints the account request form to the screen.
 	 */
 	public function displayRequest() {
-		// Displayes the account request form.
-		global $messages;
-		echo $messages->getMessage(6);
+        BootstrapSkin::displayRequestForm();
 	}
 }
 ?>
