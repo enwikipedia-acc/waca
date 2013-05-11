@@ -16,6 +16,7 @@
 require_once 'config.inc.php';
 require_once 'devlist.php';
 require_once 'functions.php';
+require_once 'includes/SmartyInit.php';
 require_once 'includes/offlineMessage.php';
 require_once 'includes/imagegen.php';
 require_once 'includes/database.php';
@@ -488,6 +489,12 @@ foreach($inactiveDeveloper as $devName => $devInfo) {
 // Display details about the ACC hosting.
 echo "</div><br/><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by GitHub and can be found <a href=\"https://github.com/enwikipedia-acc/waca/\">here</a>.</p></div>";
 
-// Display the footer of the interface.
-$skin->displayPfooter();
+// Checks whether it is the public or an interface user.
+if (!isset($_SESSION['user'])) {
+	// Display the header of the interface.
+	$skin->displayPfooter();
+}
+else {
+	$skin->displayIfooter();
+}
 ?>

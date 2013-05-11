@@ -17,6 +17,59 @@ if ($ACC != "1") {
 	die();
 } //Re-route, if you're a web client.
 
+class BootstrapSkin {
+    public static function displayPublicHeader() {
+        global $smarty;
+    }
+    
+    public static function displayInternalHeader() {
+        // userid
+        // username
+        // sitenotice
+        global $smarty;
+    }
+    
+    /**
+     * Prints the public interface footer to the screen.
+     */
+    public static function displayPublicFooter() {
+        global $smarty;
+        
+        $online = '';
+        $smarty->assign("onlineusers", $online);
+        
+        $smarty->display("footer.tpl");
+    }
+    
+	/**
+     * Prints the internal interface footer to the screen.
+     */
+    public static function displayInternalFooter() {
+        global $smarty, $internalInterface;
+        
+		$howma = $internalInterface->gethowma(true);
+		$howout = $internalInterface->showhowma();
+		if ($howma != 1) { // not equal to one, as zero uses the plural form too.
+			$onlinemessage = "$howma Account Creators currently online (past 5 minutes): $howout";
+        } else {
+			$onlinemessage = "$howma Account Creator currently online (past 5 minutes): $howout";
+        }
+        
+        $online = '<p class="span6 text-right"><small>' . $onlinemessage . '</small></p>';
+        $smarty->assign("onlineusers", $online);
+        
+        $smarty->display("footer.tpl");
+    }
+    
+    public static function displayAlertBox( $message, $type, $header ) {
+        global $smarty;
+    }
+    
+    public static function displayRequestForm( ) {
+        global $smarty;
+    }
+}
+
 class skin {
 	
 	/**
@@ -107,11 +160,11 @@ class skin {
 	
 	/**
 	 * Prints the public interface footer to the screen.
+     * @deprecated
 	 */
 	public function displayPfooter() {
 		// Displayes the interface header.
-		global $messages;
-		echo $messages->getMessage(23);
+		BootstrapSkin::displayPublicFooter();
 
 		// we probably want to output
 		ob_end_flush();
@@ -119,23 +172,12 @@ class skin {
 	
 	/**
 	 * Prints the internal interface footer to the screen.
+     * @deprecated
 	 */
 	public function displayIfooter() {
-		global $messages, $internalInterface, $tsSQL;
-	
-		$howma = $internalInterface->gethowma(true);
-		$howout = $internalInterface->showhowma();
-		echo "</div>"; //Add this right before the footer message since a div close tag inside the message itself will cause HTML validation errors in the public interface. 
-		$out = $messages->getMessage('23');
-		if ($howma != 1) // not equal to one, as zero uses the plural form too.
-			$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creators currently online (past 5 minutes): $howout</small></div>", $out);
-		else
-			$out = preg_replace('/\<br \/\>\<br \/\>/', "<br /><div align=\"center\"><small>$howma Account Creator currently online (past 5 minutes): $howout</small></div>", $out);
-		echo $out;
-
+        BootstrapSkin::displayInternalFooter();
 		// we probably want to output
 		ob_end_flush();
-
 	}
 	
 	/**

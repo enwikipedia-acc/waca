@@ -16,3 +16,4 @@ deploy/
 .settings/
 .buildpath
 .project
+templates_c/*
