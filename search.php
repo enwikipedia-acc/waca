@@ -37,6 +37,7 @@ $asSQLlink = $asSQL->getLink();
 
 // Initialize the class objects.
 $skin     = new skin();
+$bskin     = new BootstrapSkin();
 
 // Initialize the session data.
 session_start();
@@ -51,20 +52,32 @@ if( isset( $_SESSION['user'] ) ) {
 // please note (prodego esp.) non-admins cannot perform
 // IP address lookups still, but can search on email and requested name.
 
-$skin->displayIheader($sessionuser);
-echo '<div id="content">';
+
+BootstrapSkin::displayInternalHeader();
+
 // protect against logged out users
 if( !$session->hasright($sessionuser, "Admin") && !$session->hasright($sessionuser, "User")) {
-		$skin->displayRequestMsg("You must log in to use the search form.<br />\n");	
-		$skin->displayIfooter();
-		die();
-	}
+    BootstrapSkin::displayAlertBox("You must log in to use the search form.","alert-error","Error!", true, false);
+    BootstrapSkin::displayInternalFooter();
+	die();
+}
 
 
 ///////////////// Page code
 
+echo <<<HTML
+<div class="page-header">
+  <h1>Search<small> for a request</small></h1>
+</div>
 
-echo '<h1>Request search tool</h1>';
+<div class="row">
+    <div class="span12">
+HTML;
+
+BootstrapSkin::pushTagStack("</div>"); // span12
+BootstrapSkin::pushTagStack("</div>"); // row
+    
+    
 if( isset($_GET['term'])) {
 	$term = sanitize($_GET['term']);
 	$type = sanitize($_GET['type']);
@@ -200,21 +213,33 @@ if( isset($_GET['term'])) {
 	}
 }
 else {
-	echo '<h2>Search:</h2>';
-	echo '<form action="search.php" method="get">';
-	echo 'Search for:<br />';
-	echo '<table><tr><td><input type="text" name="term" /></td>';
-	echo '<td>';
-	echo '<select name="type">';
-	echo '<option value="Request">as requested username</option>';
-	echo '<option value="email">as email address</option>';
-	if( $session->hasright($sessionuser, "Admin") || $session->isCheckuser($sessionuser)) { //Enable the IP search for admins and CU's
-		echo '<option value="IP">as IP address/range</option>';
-	}
-	echo '</select></td>';
-	echo '</tr></table><br />';
-	echo '<input type="submit" />';
-	echo '</form>';
+	echo <<<HTML
+<form action="search.php" method="get" class="form-horizontal">
+    <div class="control-group">
+        <label class="control-label" for="term">Search term</label>
+        <div class="controls">
+            <input type="text" id="term" name="term" placeholder="Search for...">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="term">Search as ...</label>
+        <div class="controls">
+            <select name="type">
+                <option value="Request">... requested username</option>
+                <option value="email">... email address</option>
+HTML;
+    if( $session->hasright($sessionuser, "Admin") || $session->isCheckuser($sessionuser)) { //Enable the IP search for admins and CUs
+        echo '                <option value="IP">... IP address/range</option>';
+    }
+    echo <<<HTML
+            </select>
+        </div>
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><i class="icon-search icon-white"></i>&nbsp;Search</button>
+    </div>
+</form>    
+HTML;
 }
-$skin->displayIfooter();
+BootstrapSkin::displayInternalFooter();
 ?>

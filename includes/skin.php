@@ -17,6 +17,8 @@ if ($ACC != "1") {
 	die();
 } //Re-route, if you're a web client.
 
+$tagstack = array();
+
 class BootstrapSkin {
     public static function displayPublicHeader() {
         global $smarty;
@@ -28,13 +30,26 @@ class BootstrapSkin {
         // username
         // sitenotice
         global $smarty;
+        
+        $userid = isset($_SESSION['userID']) ? $_SESSION['userID'] : 0;
+        $user = isset($_SESSION['user']) ? $_SESSION['user'] : "";
+        $msg = new messages();
+        $sitenotice = $msg->getSitenotice();
+        $smarty->assign("userid", $userid);
+        $smarty->assign("username", $user);
+        $smarty->assign("sitenotice", $sitenotice);
+        $smarty->display("header-internal.tpl");
+        //print_r($_SESSION);
     }
     
     /**
      * Prints the public interface footer to the screen.
      */
     public static function displayPublicFooter() {
-        global $smarty;
+        global $smarty, $tagstack;
+        
+        // close all declared open tags
+        while(count($tagstack) != 0) { echo array_pop($tagstack); }
         
         $online = '';
         $smarty->assign("onlineusers", $online);
@@ -46,7 +61,10 @@ class BootstrapSkin {
      * Prints the internal interface footer to the screen.
      */
     public static function displayInternalFooter() {
-        global $smarty, $internalInterface;
+        global $smarty, $internalInterface, $tagstack;
+        
+        // close all declared open tags
+        while(count($tagstack) != 0) { echo array_pop($tagstack); }
         
 		$howma = $internalInterface->gethowma(true);
 		$howout = $internalInterface->showhowma();
@@ -62,8 +80,20 @@ class BootstrapSkin {
         $smarty->display("footer.tpl");
     }
     
-    public static function displayAlertBox( $message, $type, $header ) {
+    /**
+     * Summary of displayAlertBox
+     * @param $message
+     * @param $type Alert type - use bootstrap css class
+     * @param $header
+     */
+    public static function displayAlertBox( $message, $type = "", $header = "Warning!", $block = true, $closeable = true ) {
         global $smarty;
+        $smarty->assign("alertmessage", $message);
+        $smarty->assign("alerttype", $type);
+        $smarty->assign("alertheader", $header);
+        $smarty->assign("alertblock", $block);
+        $smarty->assign("alertclosable", $closeable);
+        $smarty->display("alert.tpl");
     }
     
 	/**
@@ -74,6 +104,17 @@ class BootstrapSkin {
         global $smarty;
         $smarty->display("request-form.tpl");
     }
+
+    public static function pushTagStack($tag) {
+        global $tagstack;    
+        array_push($tagstack, $tag);
+    }
+    
+    public static function popTagStack() {
+        global $tagstack;    
+        return array_pop($tagstack);
+    }
+    
 }
 
 class skin {
@@ -190,7 +231,7 @@ class skin {
 	 */
 	public function displayRequestMsg($message) {
 		// Prints a request message to the screen using the message variable.
-		echo "<div class=\"request-message\">" . $message . "</div>";
+		BootstrapSkin::displayAlertBox($message);
 	}
 	
 	/**
