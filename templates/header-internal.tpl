@@ -48,41 +48,41 @@
           <a class="brand" href="{$tsurl}/acc.php">Account Creation Interface</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="{$tsurl}/acc.php">Requests</a></li>
+              <li class="active"><a href="{$tsurl}/acc.php"><i class="icon-home icon-white"></i> Requests</a></li>
 			  <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Meta<b class="caret"></b></a>
 				  <ul class="dropdown-menu">
-					<li><a href="{$tsurl}/acc.php?action=logs">Logs</a></li>
-					<li><a href="{$tsurl}/statistics.php?page=Users">Users</a></li>
-					<li><a href="{$tsurl}/search.php">Search</a></li>
-					<li><a href="{$tsurl}/statistics.php">Statistics</a></li>
+					<li><a href="{$tsurl}/acc.php?action=logs"><i class="icon-list"></i> Logs</a></li>
+					<li><a href="{$tsurl}/statistics.php?page=Users"><i class="icon-user"></i> Users</a></li>
+					<li><a href="{$tsurl}/search.php"><i class="icon-search"></i> Search</a></li>
+					<li><a href="{$tsurl}/statistics.php"><i class="icon-tasks"></i> Statistics</a></li>
 				  </ul>
 			  </li>
               <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Management<b class="caret"></b></a>
 				  <ul class="dropdown-menu">
-					<li><a href="{$tsurl}/acc.php?action=ban">Ban Management</a></li>
-					<li><a href="{$tsurl}/acc.php?action=messagemgmt">Message Management</a></li>
-					<li><a href="{$tsurl}/acc.php?action=templatemgmt">Template Management</a></li>
-					<li><a href="{$tsurl}/users.php">User Management</a></li>
+					<li><a href="{$tsurl}/acc.php?action=ban"><i class="icon-ban-circle"></i> Ban Management</a></li>
+					<li><a href="{$tsurl}/acc.php?action=messagemgmt"><i class="icon-print"></i> Message Management</a></li>
+					<li><a href="{$tsurl}/acc.php?action=templatemgmt"><i class="icon-file"></i> Template Management</a></li>
+					<li><a href="{$tsurl}/users.php"><i class="icon-user"></i> User Management</a></li>
 				  </ul>
 			  </li>
               <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Help<b class="caret"></b></a>
 				  <ul class="dropdown-menu">
-					<li><a href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide">Guide</a></li>
-					<li><a href="//en.wikipedia.org/wiki/Wikipedia:Username_policy">Username Policy</a></li>
-					<li><a href="http://webchat.freenode.net/?channels=wikipedia-en-accounts">Chat</a></li>
+					<li><a href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide"><i class="icon-question-sign"></i> Guide</a></li>
+					<li><a href="//en.wikipedia.org/wiki/Wikipedia:Username_policy"><i class="icon-warning-sign"></i> Username Policy</a></li>
+					<li><a href="http://webchat.freenode.net/?channels=wikipedia-en-accounts"><i class="icon-comment"></i> Chat</a></li>
 				  </ul>
 			  </li>
             </ul>
 			{if $userid != 0}
 			<ul class="nav pull-right">
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown">{$username} <b class="caret"></b></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> {$username} <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li class="nav-header">Account</li>
-						<li><a href="{$tsurl}/statistics.php?page=Users&amp;user={$userid}">My statistics</a></li>
-						<li><a href="{$tsurl}/acc.php?action=prefs">Edit Preferences</a></li>
+						<li><a href="{$tsurl}/statistics.php?page=Users&amp;user={$userid}"><i class="icon-tasks"></i> My statistics</a></li>
+						<li><a href="{$tsurl}/acc.php?action=prefs"><i class="icon-edit"></i> Edit Preferences</a></li>
 						<li class="divider"></li>						
-						<li><a href="{$tsurl}/acc.php?action=logout">Logout</a></li>
+						<li><a href="{$tsurl}/acc.php?action=logout"><i class="icon-lock"></i> Logout</a></li>
 					</ul>
 				</li>
 			</ul>
