@@ -86,14 +86,18 @@ class BootstrapSkin {
      * @param $type Alert type - use bootstrap css class
      * @param $header
      */
-    public static function displayAlertBox( $message, $type = "", $header = "Warning!", $block = true, $closeable = true ) {
+    public static function displayAlertBox( $message, $type = "", $header = "Warning!", $block = true, $closeable = true, $return = false ) {
         global $smarty;
         $smarty->assign("alertmessage", $message);
         $smarty->assign("alerttype", $type);
         $smarty->assign("alertheader", $header);
         $smarty->assign("alertblock", $block);
         $smarty->assign("alertclosable", $closeable);
-        $smarty->display("alert.tpl");
+        if($return) {
+            return $smarty->fetch("alert.tpl");
+        } else {
+            $smarty->display("alert.tpl");
+        }
     }
     
 	/**

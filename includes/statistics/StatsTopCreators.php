@@ -59,7 +59,7 @@ class StatsTopCreators extends StatisticsPage
 		$top5mout = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.`user_level` FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE (`log_action` = "Closed 1" OR `log_action` = "Closed custom-y") AND `log_time` > "'.$lastmonth.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
 
 		$out = "<h2>Contents</h2><ul><li><a href=\"#today\">Today's creators</a></li><li><a href=\"#yesterday\">Yesterday's creators</a></li><li><a href=\"#lastweek\">Last 7 days</a></li><li><a href=\"#lastmonth\">Last 28 days</a></li></ul>";
-		$out.= '<p><a href="#">Username</a> means an active account.<br /><a class="topcreators-suspended" href="#">Username</a> means a suspended account.<br /><a class="topcreators-admin" href="#">Username</a> means a tool admin account.</p>';
+		$out.= '<p><a href="#">Username</a> means an active account.<br /><a class="muted" href="#">Username</a> means a suspended account.<br /><a class="text-success" href="#">Username</a> means a tool admin account.</p>';
 		$out.= "<h2>All-time top creators</h2>";
 		$out.= $top5aout;
 		$out.= '<a name="today"></a><h2>Today\'s creators</h2>';
@@ -113,8 +113,8 @@ function statsTopCreatorsRowCallback($row, $rowno)
 	$out .= '<td><a ';
 	
 	
-	if($row['user_level'] == "Suspended") $out .= 'class="topcreators-suspended" '; 
-	if($row['user_level'] == "Admin") $out .= 'class="topcreators-admin" ';	
+	if($row['user_level'] == "Suspended") $out .= 'class="muted" '; 
+	if($row['user_level'] == "Admin") $out .= 'class="text-success" ';	
 	
 	$out .= 'href="'.$tsurl.'/statistics.php?page=Users&amp;user='.$row['user_id'].'">'.$row['log_user'].'</a></td>';
 	

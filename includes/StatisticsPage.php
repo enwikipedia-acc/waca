@@ -101,6 +101,15 @@ abstract class StatisticsPage
 	public function requiresWikiDatabase()
 	{
 		return true;
+	}	
+    
+	/**
+	 * Determines if the statistics page requires a simple HTML environment. Defaults to true
+	 * @return bool. 
+	 */
+	public function requiresSimpleHtmlEnvironment()
+	{
+		return true;
 	}
 	
 
@@ -127,40 +136,43 @@ abstract class StatisticsPage
 		
 		// fetch and show page header
 		global $messages, $dontUseWikiDb, $session;
-		$skin->displayIheader($_SESSION['user']);
+		
+        BootstrapSkin::displayInternalHeader();
 		
 		if($this->requiresWikiDatabase() && ($dontUseWikiDb == 1))
 		{	// wiki database unavailable, don't show stats page
-			echo "<div id=\"content\"><h1>Error</h1><span style=\"color:red;font-weight:bold\">This statistics page is currently unavailable.</span>";
-		}
-		else
-		{	// wiki database available OR stats page doesn't need wiki database
-			// check protection level
-			if($this->isProtected())
-			{
-				// protected, check accesslevel.
-				$sessionuser = ( isset($_SESSION['user']) ? $_SESSION['user'] : "");
-				if( !($session->hasright($sessionuser, "Admin") || $session->hasright($sessionuser, "User")))
-				{ // not authed
-			
-					echo "<div id=\"content\"><h1>Error</h1><span style=\"color:red;font-weight:bold\">You are not authorized to use this feature. Only logged in users may use this statistics page.</span>";
-				}
-				else
-				{ // ok
-			
-					echo '<div id="content"><h1>' . $this->getPageTitle() . '</h1>';
-					echo $this->execute();
-				}
-			}
-			else
-			{
-				// not protected
-				echo '<div id="content"><h1>' . $this->getPageTitle() . '</h1>';
-				echo $this->execute();
-			}
+			BootstrapSkin::displayAlertBox("This statistics page is currently unavailable.", "alert-error", "Database unavailable", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
 		}
 		
+        // wiki database available OR stats page doesn't need wiki database
+		
+        // check protection level
+		if($this->isProtected())
+		{
+			// protected, check accesslevel.
+			$sessionuser = ( isset($_SESSION['user']) ? $_SESSION['user'] : "");
+			if( !($session->hasright($sessionuser, "Admin") || $session->hasright($sessionuser, "User")))
+			{ // not authed
+			    BootstrapSkin::displayAlertBox("You are not authorized to use this feature. Only logged in users may use this statistics page.", "alert-error", "Access Denied", true, false);
+                BootstrapSkin::displayInternalFooter();
+                die();
+			}
+		}
+        
+		// not protected or access allowed
+		echo '<div class="page-header"><h1>' . $this->getPageTitle() . '</h1></div>';
+        
+        if( $this->requiresSimpleHtmlEnvironment() ) {
+            echo '<div class="row-fluid"><div class="span12">';
+            BootstrapSkin::pushTagStack("</div>");
+            BootstrapSkin::pushTagStack("</div>");
+        }
+        
+		echo $this->execute();
+		
 		// Display the footer of the interface.
-		$skin->displayIfooter();
+		BootstrapSkin::displayInternalFooter();
 	}
 }

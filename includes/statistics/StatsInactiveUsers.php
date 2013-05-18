@@ -56,7 +56,7 @@ class StatsInactiveUsers extends StatisticsPage
 			$out.='<p>Tool root and checkuser-flagged accounts are hidden from this list.</p>';
 		}
 
-		$out.= "<table><tr><th>User ID</th><th>Tool Username</th><th>User access level</th><th>enwiki username</th><th>Last activity</th><th>Approval</th>";
+		$out.= "<table class=\"table table-striped table-hover table-condensed\"><tr><th>User ID</th><th>Tool Username</th><th>User access level</th><th>enwiki username</th><th>Last activity</th><th>Approval</th>";
 		
 		if($session->hasright($sessionuser, "Admin")) {
 			$out.= "<th>Suspend</th>";
@@ -97,12 +97,7 @@ class StatsInactiveUsers extends StatisticsPage
 		
 			if( $appr_ts < mktime($date->format("H"), $date->format("i"), $date->format("s"), $date->format("m"), $date->format("d"), $date->format("Y") )) {
 				$currentrow +=1;
-				$out.= "<tr";		
-				if ($currentrow % 2 == 0) {
-					$out.= ' class="alternate">';
-				} else {
-					$out.= ' >';
-				}	
+				$out.= "<tr>";	
 				
 				if(!$allowSuspend)
 				{
@@ -116,7 +111,7 @@ class StatsInactiveUsers extends StatisticsPage
 					if($allowSuspend)
 					{
 						$inactivesuspend = "Inactive for 45 or more days. Please contact a tool admin if you wish to come back.";
-						$out.= "<td><a class=\"request-req\" href=\"$tsurl/users.php?suspend=$userid&amp;preload=$inactivesuspend\">Suspend!</a></td>";
+						$out.= "<td><a class=\"btn btn-danger btn-small\" href=\"$tsurl/users.php?suspend=$userid&amp;preload=$inactivesuspend\"><i class=\"icon-ban-circle icon-white\"></i> Suspend!</a></td>";
 					} else {
 						$out.= "<td>Immune from inactivity</td>";
 					}
