@@ -70,7 +70,7 @@ $developer = array(
 				"Role" => "Project Lead, Developer",
 				"Retired" => NULL,
 				"Access" => "Git, Database, Toolserver shell, Mailing list admin, Labs project",
-				"Cloak" => "*!*@pdpc/supporter/student/stwalkerster",
+				"Cloak" => "*!*@wikimedia/stwalkerster",
 				"Other" => NULL,
 			),
 		
@@ -85,7 +85,7 @@ $developer = array(
 				"Role" => "Developer",
 				"Retired" => NULL,
 				"Access" => "Git",
-				"Cloak" => "*!~FunPika@wikipedia/FunPika",
+				"Cloak" => "*!*@wikipedia/FunPika",
 				"Other" => NULL,
 			),
 		"DeltaQuad" =>
@@ -357,7 +357,7 @@ $inactiveDeveloper = array(
 				"Role" => NULL,
 				"Retired" => "Developer",
 				"Access" => "Git",
-				"Cloak" => "*!*@Wikipedia/Logan",
+				"Cloak" => "*!*@ubuntu/member/logan",
 				"Other" => NULL,
 			)
 );
