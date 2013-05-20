@@ -48,7 +48,7 @@
           <a class="brand" href="{$tsurl}/acc.php">Account Creation Interface</a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class="active"><a href="{$tsurl}/acc.php"><i class="icon-home icon-white"></i> Requests</a></li>
+              <li{* class="active"*}><a href="{$tsurl}/acc.php"><i class="icon-home icon-white"></i> Requests</a></li>
 			  <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Meta<b class="caret"></b></a>
 				  <ul class="dropdown-menu">
 					<li><a href="{$tsurl}/acc.php?action=logs"><i class="icon-list"></i> Logs</a></li>
