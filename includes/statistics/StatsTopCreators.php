@@ -29,6 +29,8 @@ class StatsTopCreators extends StatisticsPage
 		
 		$top5aout = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.`user_level` FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE (`log_action` = "Closed 1" OR `log_action` = "Closed custom-y") GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
 		
+        $top5activeout = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.`user_level` FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE (`log_action` = "Closed 1" OR `log_action` = "Closed custom-y") AND u.`user_level` != "Suspended" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
+
 		/*
 		 * Retrieve today's stats (so far)
 		 */
@@ -58,10 +60,12 @@ class StatsTopCreators extends StatisticsPage
 		$lastmonth = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 28));
 		$top5mout = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.`user_level` FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE (`log_action` = "Closed 1" OR `log_action` = "Closed custom-y") AND `log_time` > "'.$lastmonth.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
 
-		$out = "<h2>Contents</h2><ul><li><a href=\"#today\">Today's creators</a></li><li><a href=\"#yesterday\">Yesterday's creators</a></li><li><a href=\"#lastweek\">Last 7 days</a></li><li><a href=\"#lastmonth\">Last 28 days</a></li></ul>";
+		$out = "<h2>Contents</h2><ul><li><a href=\"#alltimeactive\">All-time active top creators</a></li><li><a href=\"#today\">Today's creators</a></li><li><a href=\"#yesterday\">Yesterday's creators</a></li><li><a href=\"#lastweek\">Last 7 days</a></li><li><a href=\"#lastmonth\">Last 28 days</a></li></ul>";
 		$out.= '<p><a href="#">Username</a> means an active account.<br /><a class="muted" href="#">Username</a> means a suspended account.<br /><a class="text-success" href="#">Username</a> means a tool admin account.</p>';
 		$out.= "<h2>All-time top creators</h2>";
 		$out.= $top5aout;
+        $out.= "<a name=\"alltimeactive\"></a><h2>All-time active top creators</h2>";
+		$out.= $top5activeout;
 		$out.= '<a name="today"></a><h2>Today\'s creators</h2>';
 		$out.= $top5out;
 		$out.= '<a name="yesterday"></a><h2>Yesterday\'s creators</h2>';
