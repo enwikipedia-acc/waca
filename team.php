@@ -112,7 +112,7 @@ $developer = array(
 					"Name" => "John Lewis",
 					"Role" => "Developer",
 					"Retired" => NULL,
-					"Access" => "Git, Maling list moderator",
+					"Access" => "Git, Mailing list moderator",
 					"Cloak" => "*!*@wikimedia/John-F-Lewis",
 					"Other" => NULL,
 			),
