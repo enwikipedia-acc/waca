@@ -457,68 +457,28 @@ function isReservedWithRow($row) {
 	} else {return false;}
 }
 
+/**
+ * Show the login page
+ * @param (ignored)
+ * @param (ignored)
+ * @todo re-implement parameters
+ */
 function showlogin($action=null, $params=null) {
-	/*
-	 * Show the login page.
-	 */
-	global $_SESSION, $tsSQLlink, $skin, $tsurl;
-
-	// Create the variable used for the coding.
-	$html ='<div id="sitenotice">Please login first, and we\'ll send you on your way!</div>
-    <div id="content">
-    <h2>Login</h2>';
-
+    global $smarty;
+    
+    
 	// Check whether there are any errors.
+    $errorbartext = "";
 	if (isset($_GET['error'])) {
 		if ($_GET['error']=='authfail') {
-			$html .= "<p>Username and/or password incorrect. Please try again.</p>";
+            $errorbartext = BootstrapSkin::displayAlertBox("Username and/or password incorrect. Please try again.", "alert-error","Auth failure",true,false,true);
 		} elseif ($_GET['error']=='noid') {
-			$html .= "<p>User account is not identified. Please email accounts-enwiki-l@lists.wikimedia.org if you believe this is 
-in error.</p>";
+            $errorbartext = BootstrapSkin::displayAlertBox("User account is not identified. Please email accounts-enwiki-l@lists.wikimedia.org if you believe this is in error.", "alert-error","Auth failure",true,false,true);
 		}
 	}
-
-	// Generate the login form; set the action to login and nocheck to true.
-	// By setting nocheck to true would skip the checking procedures.
-	$html .='<form action="'.$tsurl.'/acc.php?action=login&amp;nocheck=1';
-
-	// Would perform clause for any action except logout.
-	if (($action) && ($action != "logout")) {
-		$html .= "&amp;newaction=" . xss($action);
-			
-		// Create an array of all the values in the $GET variable.
-		// The variable supplied as the parameter would be used.
-		foreach ($params as $param => $value) {
-			if ($param != '' && $param != "action") {
-				$html .= "&amp;".xss($param)."=".xss($value);
-			}
-		}
-	}
-
-	// Adds final coding to the HTML variable, such as for the forms to be created.
-	$html .= '" method="post">
-    <div class="required">
-        <label for="username">Username:</label>
-        <input id="username" type="text" name="username"/>
-    </div>
-    <div class="required">
-        <label for="password">Password:</label>
-        <input id="password" type="password" name="password"/>
-    </div>';
-
-	// Adds a Submit button to the HTML code.
-	// Below the forms a option to register would be displayed.
-	$html .= '<div class="submit">
-        <input type="submit" value="Login"/>
-    </div>
-    </form>
-    <br />
-    Need Tool access?
-    <br /><a href="' . $tsurl . '/acc.php?action=register">Register!</a> (Requires approval)<br />
-    <a href="'. $tsurl . '/acc.php?action=forgotpw">Forgot your password?</a><br /></div>';
-
-	// Finally the footer are added to the code.
-	return $html;
+    $smarty->assign("errorbar", $errorbartext);   
+    
+    $smarty->display("login.tpl");
 }
 
 function getdevs() {
