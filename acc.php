@@ -114,13 +114,12 @@ elseif (!isset($_GET['nocheck']))
         $session->forceLogout($_SESSION['userID']);
 
 		// ?
-        $skin->displayIheader($_SESSION['user']);
+        BootstrapSkin::displayInternalHeader();
         $session->checksecurity($_SESSION['user']);
 
-		// show the sitenotice
-        $out = $messages->getSitenotice();
 
-        $out .= "<div id=\"content\">";
+
+        $out = "<div id=\"content\">";
         echo $out;
 }
 
