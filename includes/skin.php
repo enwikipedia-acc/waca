@@ -87,6 +87,10 @@ class BootstrapSkin {
         if( isset( $_SESSION['user'] ) ) {
             $smarty->assign("onlineusers", $online);
         }
+        else {
+            $emptystring="";
+            $smarty->assign("onlineusers", $emptystring);   
+        }
         $smarty->display("footer.tpl");
     }
     
