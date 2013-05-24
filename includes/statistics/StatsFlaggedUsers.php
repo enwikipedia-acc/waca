@@ -41,15 +41,7 @@ class StatsFlaggedUsers extends StatisticsPage
 			if( ($accrow['user_level'] != 'User') && ($accrow['user_level'] != 'Admin'))
 			{
 				$currentreq++;
-				$out.= '<tr';
-				if ($currentreq % 2 == 0) 
-				{
-					$out.=' class="alternate">';
-				}
-				else 
-				{
-					$out.='>';
-				}
+				$out.= '<tr>';
 				$out.="<td>".$row['ug_user']."</td>" . 
 					"<td><a href=\"http://en.wikipedia.org/wiki/User:".$row['user_name']."\">".$row['user_name']."</a></td>" . 
 					"<td><a href=\"http://en.wikipedia.org/wiki/User_talk:".$row['user_name']."\">talk</a></td>" . 

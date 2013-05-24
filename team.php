@@ -16,6 +16,7 @@
 require_once 'config.inc.php';
 require_once 'devlist.php';
 require_once 'functions.php';
+require_once 'includes/SmartyInit.php';
 require_once 'includes/offlineMessage.php';
 require_once 'includes/imagegen.php';
 require_once 'includes/database.php';
@@ -28,7 +29,7 @@ $offlineMessage->check();
 
 // Initialize the database classes.
 $tsSQL = new database("toolserver");
-$asSQL = new database("anitspoof");
+$asSQL = new database("antispoof");
 
 // Creates database links for later use.
 $tsSQLlink = $tsSQL->getLink();
@@ -362,29 +363,31 @@ $inactiveDeveloper = array(
 );
 
 
-// Checks whether it is the public or an interface user.
-if (!isset($_SESSION['user'])) {
-	// Display the header of the interface.
-	$skin->displayPheader();
-}
-else {
-	// Sets the parameter to the username, as it would be displayed.
-	$suser = $_SESSION['user'];
-	$skin->displayIheader($suser);
-	echo "<div id=\"content\">";
-}
 
-// Display the page heading.
-echo "<h1>ACC Development Team</h1>\n";
+BootstrapSkin::displayInternalHeader();
+
+// Display the page heading, and start the accordian
+echo <<<HTML
+<div class="page-header">
+  <h1>Development Team<small> We're not all geeks!</small></h1>
+</div>
+<div class="row-fluid"><div class="span12"><div class="accordion" id="accordion2">
+HTML;
+
+BootstrapSkin::pushTagStack("</div>"); // accordian
+BootstrapSkin::pushTagStack("</div>"); // span12
+BootstrapSkin::pushTagStack("</div>"); // row-fluid
+
+
 
 // Sort the array with the developers.
 ksort($developer);
 ksort($inactiveDeveloper);
 
 // Print the data for each developer.
-echo "<h2>Active Developers</h2>\n";
+echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Active Developers</a></div><div id="collapseOne" class="accordion-body collapse in"><div class="accordion-inner">';
 foreach($developer as $devName => $devInfo) {
-	echo "<h3>$devName</h3>\n<ul>\n";
+	echo "<h4>$devName</h4>\n<ul>\n";
 	foreach($devInfo as $infoName => $infoContent) {
 		// Check whether a field has been set to NULL or not.
 		if($infoContent != NULL) {
@@ -432,12 +435,15 @@ foreach($developer as $devName => $devInfo) {
 	echo "</ul>\n";
 }
 echo <<<HTML
-<h2>Inactive Developers</h2>
-<div class="showhide" id="showhide-inactive-link" onclick="showhide('showhide-inactive');">[show]</div>
-<div id="showhide-inactive" style="display: none;">
+</div></div>
+</div>
+
+<div class="accordion-group">
+<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">Inactive Developers</a></div>
+<div id="collapseTwo" class="accordion-body collapse"><div class="accordion-inner">
 HTML;
 foreach($inactiveDeveloper as $devName => $devInfo) {
-	echo "<h3>$devName</h3>\n<ul>\n";
+	echo "<h4>$devName</h4>\n<ul>\n";
 	foreach($devInfo as $infoName => $infoContent) {
 		// Check whether a field has been set to NULL or not.
 		if($infoContent != NULL) {
@@ -486,8 +492,11 @@ foreach($inactiveDeveloper as $devName => $devInfo) {
 }
 
 // Display details about the ACC hosting.
-echo "</div><br/><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by GitHub and can be found <a href=\"https://github.com/enwikipedia-acc/waca/\">here</a>.</p></div>";
+echo "</div></div>
+</div>
 
-// Display the footer of the interface.
-$skin->displayPfooter();
+<hr /><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by GitHub and can be found <a href=\"https://github.com/enwikipedia-acc/waca/\">here</a>.</p>";
+
+
+BootstrapSkin::displayInternalFooter();
 ?>

@@ -83,12 +83,8 @@ QUERY;
 
 function statsFastClosesRowCallback($row, $currentreq)
 {
-	$out.=  '<tr';
-	if ($currentreq % 2 == 0) {
-		$out.=  ' class="alternate">';
-	} else {
-		$out.=  '>';
-	}
+	$out =  '<tr>';
+	
 	
 	global $tsurl;
 	
