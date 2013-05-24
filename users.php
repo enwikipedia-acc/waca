@@ -55,7 +55,7 @@ BootstrapSkin::pushTagStack("</div>");
 echo $out;
 
 // Checks if the current user has admin rigths.
-if(!$session->hasright($_SESSION['user'], 'Admin'))
+if( ! ( isset($_SESSION['user']) && $session->hasright($_SESSION['user'], 'Admin') ) )
 {
 	// Displays both the error message and the footer of the interface.
     BootstrapSkin::displayAlertBox("I'm sorry, but, this page is restricted to administrators only.", "alert-error", "Access Denied",true,false);
