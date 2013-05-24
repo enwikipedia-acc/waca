@@ -469,13 +469,14 @@ BootstrapSkin::pushTagStack("</div>");
 BootstrapSkin::pushTagStack("</div>");
 BootstrapSkin::pushTagStack("</div>");
 
-echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Open requests</a></div><div id="collapseOne" class="accordion-body collapse"><div class="accordion-inner">';
+
 
 $query = "SELECT * FROM acc_user WHERE user_level = 'New';";
 $result = mysql_query($query, $tsSQLlink);
 if (!$result)
 	Die("Query failed: $query ERROR: " . mysql_error());
 if (mysql_num_rows($result) != 0){
+    echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Open requests</a></div><div id="collapseOne" class="accordion-body collapse in"><div class="accordion-inner">';
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$uname = $row['user_name'];
@@ -488,14 +489,9 @@ if (mysql_num_rows($result) != 0){
 		$out .=" - <a class=\"request-req\" href=\"http://meta.wikimedia.org/wiki/Identification_noticeboard\">ID board</a></small></li>";
 		echo "$out\n";
 	}
-	echo "</ol>\n";
+	echo "</ol></div></div></div>\n";
 }
-echo <<<HTML
-</div>
-</div></div>
-
-<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">Users</a></div><div id="collapseTwo" class="accordion-body collapse"><div class="accordion-inner">
-HTML;
+echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">Users</a></div><div id="collapseTwo" class="accordion-body collapse"><div class="accordion-inner">';
 
 
 $query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Approved') WHERE user_level = 'User' GROUP BY log_pend ORDER BY log_pend DESC;";
