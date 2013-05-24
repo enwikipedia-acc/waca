@@ -41,12 +41,14 @@ class BootstrapSkin {
         $smarty->display("header-internal.tpl");
         //print_r($_SESSION);
         
-        // Formulates and executes a SQL query to update the last time the user logged in, namely now.
-        $now = date("Y-m-d H-i-s"); 
-        $query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '" . sanitize($_SESSION['userID']) . "';";
-        $result = $tsSQL->query($query);
+        if( $userid != 0 ) {
+                // Formulates and executes a SQL query to update the last time the user logged in, namely now.
+                $now = date("Y-m-d H-i-s"); 
+                $query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '" . sanitize($_SESSION['userID']) . "';";
+                $result = $tsSQL->query($query);
         
-        $session->forceLogout($_SESSION['userID']);
+                $session->forceLogout($_SESSION['userID']);
+        }
     }
     
     /**
