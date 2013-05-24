@@ -55,12 +55,7 @@ QUERY;
 
 function statsSigCheckRowCallback($row, $currentreq)
 {
-        $out.=  '<tr';
-        if ($currentreq % 2 == 0) {
-                $out.=  ' class="alternate">';
-        } else {
-                $out.=  '>';
-        }
+        $out = "<tr>";
 
         $botsig = welcomerbotRenderSig( $row["user_onwikiname"], $row["user_welcome_sig"] );
 
