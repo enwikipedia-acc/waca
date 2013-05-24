@@ -1,5 +1,5 @@
 <tr>
-	<td><span class="hidden-phone">{$rownum} / {$rid}</span></td>
+	<td><span class="hidden-phone">{$rownum}</span></td>
 	<td><a class="btn btn-small{if $hascmt == true} btn-info{/if} hidden-desktop" href="{$tsurl}/acc.php?action=zoom&amp;id={$rid}">Zoom</a><a class="btn btn-small visible-desktop" href="{$tsurl}/acc.php?action=zoom&amp;id={$rid}">Zoom</a></td><td>{if $hascmt == true}<span class="label label-info visible-desktop">Comment</span>{/if}</td>
 	<td>{if $showdata == true}<a href="mailto:{$mail}" target="_blank">{$mail}</a>&nbsp;<span class="badge{if $nummail > 0} badge-important{/if}">{$nummail}</span><span class="hidden-desktop"><br><a href="https://en.wikipedia.org/wiki/User_talk:{$ip}" target="_blank">{$ip}</a>&nbsp;<span class="badge {if $numip > 0} badge-important{/if}">{$numip}</span>{/if}
 		<span class="visible-phone"><br><a href="https://en.wikipedia.org/wiki/User:{$name}" target="_blank">{$name}</a></span></span></td>
