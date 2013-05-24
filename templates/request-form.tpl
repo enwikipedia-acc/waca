@@ -22,13 +22,13 @@
 		  <div class="control-group">
 			  <label class="control-label" for="inputEmail">Email</label>
 			  <div class="controls">
-				  <input type="text" id="inputEmail" placeholder="Email" name="email">
+				  <input type="email" id="inputEmail" placeholder="Email" name="email">
 			  </div>
 		  </div>
 		  <div class="control-group">
 			  <label class="control-label" for="inputEmailConfirm">Confirm Email</label>
 			  <div class="controls">
-				  <input type="text" id="inputEmailConfirm" placeholder="Confirm Email" name="emailconfirm"><span class="help-block">We need this to send you your password. Without it, you will not receive your password, and will be unable to log in to your account.</span>
+				  <input type="email" id="inputEmailConfirm" placeholder="Confirm Email" name="emailconfirm"><span class="help-block">We need this to send you your password. Without it, you will not receive your password, and will be unable to log in to your account.</span>
 			  </div>
 		  </div>
 		  <div class="control-group">
