@@ -463,20 +463,14 @@ function defaultpage() {
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	$html .= "<table cellspacing=\"0\">\n";
+	$html .= "<ol>\n";
 	$currentrow = 0;
 	while ( list( $pend_id, $pend_name, $pend_checksum ) = mysql_fetch_row( $result ) ) {
-		$currentrow += 1;
-		$out = '<tr';
-		if ($currentrow % 2 == 0) {
-			$out .= ' class="even">';
-		} else {
-			$out .= ' class="odd">';
-		}
-		$out .= "<td><small><a style=\"color:green\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></small></td><td><small>  <a style=\"color:orange\" href=\"$tsurl/acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=$defaultRequestStateKey\">Reset</a></small></td></tr>";
+		$out = '<li>';
+		$out .= "<a class=\"btn btn-small btn-info\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a><a class=\"btn btn-warning btn-small\" href=\"$tsurl/acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=$defaultRequestStateKey\">Reset</a> <a href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></li>";
 		$html .= $out;
 	}
-	$html .= "</table>\n";
+	$html .= "</ol>\n";
 	return $html;
 }
 
