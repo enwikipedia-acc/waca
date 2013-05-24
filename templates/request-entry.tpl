@@ -1,0 +1,11 @@
+<tr>
+	<td><span class="hidden-phone">{$rownum} / {$rid}</span></td>
+	<td><a class="btn btn-small{if $hascmt == true} btn-info{/if} hidden-desktop" href="{$tsurl}/acc.php?action=zoom&amp;id={$rid}">Zoom</a><a class="btn btn-small visible-desktop" href="{$tsurl}/acc.php?action=zoom&amp;id={$rid}">Zoom</a></td><td>{if $hascmt == true}<span class="label label-info visible-desktop">Comment</span>{/if}</td>
+	<td>{if $showdata == true}<a href="mailto:{$mail}" target="_blank">{$mail}</a>&nbsp;<span class="badge{if $nummail > 0} badge-important{/if}">{$nummail}</span><span class="hidden-desktop"><br><a href="https://en.wikipedia.org/wiki/User_talk:{$ip}" target="_blank">{$ip}</a>&nbsp;<span class="badge {if $numip > 0} badge-important{/if}">{$numip}</span>{/if}
+		<span class="visible-phone"><br><a href="https://en.wikipedia.org/wiki/User:{$name}" target="_blank">{$name}</a></span></span></td>
+	<td>{if $showdata == true}<span class="visible-desktop"><a href="https://en.wikipedia.org/wiki/User_talk:{$ip}" target="_blank">{$ip}</a>&nbsp;<span class="badge {if $numip > 0} badge-important{/if}">{$numip}</span></span>{/if}</td>
+	<td><span class="hidden-phone"><a href="https://en.wikipedia.org/wiki/User:{$name}" target="_blank">{$name}</a></span></td>
+	<td>{if $canban == true}<div class="btn-group hidden-phone"><a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">Ban<span class="caret"></span></a><ul class="dropdown-menu"><li><a href="{$tsurl}/acc.php?action=ban&amp;ip={$rid}">IP</a></li><li><a href="{$tsurl}/acc.php?action=ban&amp;email={$rid}">Email</a></li><li><a href="{$tsurl}/acc.php?action=ban&amp;name={$rid}">Name</a></li></ul></div>{/if}</td>
+	<td>{if $reserved != ""}{if $youreserved}</td><td><a class="btn btn-small btn-inverse" href="{$tsurl}/acc.php?action=breakreserve&resid={$rid}">Break your reservation</a>{else}<span class="visible-desktop">Being handled by {$reserved}</span></td><td><a class="btn btn-small btn-warning visible-desktop" href="{$tsurl}/acc.php?action=breakreserve&resid={$rid}">Force break</a><a class="btn btn-small btn-warning hidden-desktop" href="{$tsurl}/acc.php?action=breakreserve&resid={$rid}">Break {$reserved}'s reservation</a>{/if}{else}</td><td><a class="btn btn-small btn-success" href="{$tsurl}/acc.php?action=reserve&resid={$rid}">Reserve</a>{/if}</td>
+</tr>
+

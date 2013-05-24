@@ -261,12 +261,14 @@ function listrequests($type, $hideip, $correcthash) {
 	if (!$result)
 	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 
+    $tablestart = "";
 	if( $totalRequests > $requestLimitThreshold ) {
-		$tablestart = "<p><span class=\"warning\">Miser mode: not all requests are shown for speed. </span>Only $requestLimitShowOnly of $totalRequests are shown here.</p><table cellspacing=\"0\">\n";
-	} else {
-		$tablestart = "<table cellspacing=\"0\">\n";
-	}
-	$tableend = "</table>\n";
+		$tablestart .= "<p><span class=\"warning\">Miser mode: not all requests are shown for speed. </span>Only $requestLimitShowOnly of $totalRequests are shown here.</p>";
+    }
+ 
+    $tablestart .= '<table class="table table-striped"><thead><tr><th><span class="hidden-phone">#</span></th><th><!-- zoom --></th><th><!-- comment --></th><th><span class="visible-desktop">Email address</span><span class="visible-tablet">Email and IP</span><span class="visible-phone">Request details</span></th><th><span class="visible-desktop">IP address</span></th><th><span class="hidden-phone">Username</span></th><th><!-- ban --></th><th><!-- reserve status --></th><th><!--reserve button--></th></tr></thead><tbody>';
+
+	$tableend = "</tbody></table>\n";
 	$reqlist = '';
 	$currentreq = 0;
 	
@@ -278,24 +280,33 @@ function listrequests($type, $hideip, $correcthash) {
 	}
 	$row4 = mysql_fetch_assoc($result4);
 	
+    global $smarty;
+    
 	while ( $row = mysql_fetch_assoc( $result ) ) {
 		$currentreq += 1;
-		$uname = urlencode(html_entity_decode($row['pend_name']));
-		$uname = str_replace("%26amp%3B", "%26", $uname);
+		$smarty->assign( "rownum" , $currentreq );
+        
+        
+        $uname = $row['pend_name'];
 		$rid = $row['pend_id'];
+        
+        $smarty->assign( "rid", $rid );
+        $smarty->assign("name", $uname);
 		
 		$data = mysql_query("SELECT COUNT(*) as num FROM acc_cmt where pend_id = '" . $rid . "';"); // indexed
 		$commentcountrow = mysql_fetch_assoc($data);
 		$commentcount=$commentcountrow['num'];
 		
-		if ($row['pend_cmt'] != ""  || $commentcount != 0) {
-			$cmt = "<a class=\"request-src\" href=\"$tsurl/acc.php?action=zoom&amp;id=$rid\">Zoom (CMT)</a> ";
-		} else {
-			$cmt = "<a class=\"request-src\" href=\"$tsurl/acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
-		}
+        $hascomments = ($row['pend_cmt'] != ""  || $commentcount != 0);
+        $smarty->assign("hascmt", $hascomments);
+        
 		
 		$clientIpAddr = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
-		
+        
+        $smarty->assign("ip", $clientIpAddr);
+        
+        /// disabled for performance
+        
 //		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE (`pend_ip` = '" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "' OR `pend_proxyip` LIKE '%" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "%') AND `pend_mailconfirm` = 'Confirmed';";
 //		$result2 = mysql_query($query2); // TODO: OPTIMISE ME! I TAKE 20s TO EXECUTE!
 //		if (!$result2) {
@@ -303,103 +314,46 @@ function listrequests($type, $hideip, $correcthash) {
 //		}
 //		$otheripreqs = mysql_fetch_assoc($result2);
 //		$otheripreqs["count"]--;
-$otheripreqs = array("count" => "-1");		
-		$query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . mysql_real_escape_string($row['pend_email'],$tsSQLlink) . "' AND `pend_id` != '" . mysql_real_escape_string($row['pend_id'],$tsSQLlink) . "' AND `pend_mailconfirm` = 'Confirmed';";
+        $otheripreqs = array("count" => "-1");		
+        
+        //////////////////////////////////
+
+        $numOtherIpRequests = $otheripreqs["count"];
+        $smarty->assign("numip" , $numOtherIpRequests);
+        
+        $query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . mysql_real_escape_string($row['pend_email'],$tsSQLlink) . "' AND `pend_id` != '" . mysql_real_escape_string($row['pend_id'],$tsSQLlink) . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result3 = mysql_query($query3);
 		if (!$result3) {
 			sqlerror("Query failed: $query3 ERROR: " . mysql_error(),"Database query error.");
 		}
 		$otheremailreqs = mysql_fetch_assoc($result3);
-		
-		$out = '<tr';
-		if ($currentreq % 2 == 0) {
-			$out .= ' class="alternate">';
-		} else {
-			$out .= '>';
-		}
-		if (array_key_exists($type, $availableRequestStates)) {
-			$out .= '<td><small>' . $currentreq . '.    </small></td><td><small>'; //List item
-			$out .= $cmt .'</small></td><td><small>'; // zoom link.
-		} else {
-			$out .= '<td><small>' . "\n"; //List item
-		}
-
-		if ($hideip == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
-			// Email.
-			$out .= '[ </small></td>';
-			$out .= '<td><small><a class="request-src" href="mailto:' . $row['pend_email'] . '">' . $row['pend_email'] . '</a>';
-
-			$out .= '</small></td><td><small><span class="request-src">' . "\n";
-			if ($otheremailreqs['count'] == 0) {
-				$out .= '(' . $otheremailreqs['count'] . ')';
-			} else {
-				$out .= '(</span><b><span class="request-mult">' . $otheremailreqs['count'] . '</span></b><span class="request-src">)';
-			}
-		}
-
-		if ( $row4['user_secure'] > 0 ) {
-			$wikipediaurl = "https://en.wikipedia.org/";
-			$metaurl = "https://meta.wikimedia.org";
-		} else {
-			$wikipediaurl = "http://en.wikipedia.org/";
-			$metaurl = "http://meta.wikimedia.org/";
-		}
-
-
-		if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
-			// IP UT:
-			$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-src" name="ip-link" href="'.$wikipediaurl.'wiki/User_talk:' . $clientIpAddr . '" target="_blank">';
-			$out .= $clientIpAddr . '</a> ';
-
-			$out .= '</small></td><td><small><span class="request-src">' . "\n";
-			if ($otheripreqs['count'] == 0) {
-				$out .= '(' . $otheripreqs['count'] . ')';
-			} else {
-				$out .= '(</span><b><span class="request-mult">' . $otheripreqs['count'] . '</span></b><span class="request-src">)';
-			}
-		}
-		// Username U:
-		$duname = _utf8_decode($row['pend_name']);
-		$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-req" href="'.$wikipediaurl.'wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
-
-
-		if($session->hasright($_SESSION['user'], "Admin")) {
-			// Ban IP
-			$out .= "</small></td><td><small> |</small></td><td><small> Ban: </small></td><td><small><a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;ip=" . $row['pend_id'] . '">IP</a> ';
-
-			// Ban email
-			$out .= "- <a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;email=" . $row['pend_id'] . '">E-Mail</a>';
-
-			//Ban name
-			$out .= " - <a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;name=" . $row['pend_id'] . '">Name</a>';
-		}
-
+		$numOtherEmailRequests = $otheremailreqs['count'];
+        $smarty->assign("nummail", $numOtherEmailRequests);
+        $mailaddr = $row['pend_email'];
+        $smarty->assign("mail", $mailaddr);
+        
+		$showdata = ($hideip == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) );
+        $smarty->assign("showdata", $showdata);
+        $canban = ( $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) );
+        $smarty->assign("canban", $canban);
+	
 		$reserveByUser = isReservedWithRow($row);
-		// if request is reserved, show reserved message
-		if( $reserveByUser != 0 )
-		{
-			if( $reserveByUser == $_SESSION['userID'])
-			{
-				$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"$tsurl/acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Break reservation</a>";
-			} else {
-				$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"$tsurl/statistics.php?page=Users&amp;user=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
 
-				// force break?
-				global $enableAdminBreakReserve;
-				if( $enableAdminBreakReserve && $session->hasright($_SESSION['user'], "Admin"))
-				{
-					$out .= " - <a href=\"$tsurl/acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Force break</a>";
-				}
-			}
-		}
-		else // not being handled, do you want to handle this request?
-		{
-			$out .= "</small></td><td><small> | </small></td><td><small><a href=\"$tsurl/acc.php?action=reserve&amp;resid=" . $row['pend_id']. "\">Mark as being handled</a>";
-		}
-
-
-		$out .= '</small></td></tr>';
-		$reqlist .= $out;
+        $smartyreserved = false;
+        $smartyyoureserved = false;
+        if($reserveByUser != 0)
+        {
+            $smartyreserved = $session->getUsernameFromUid($reserveByUser);
+            if( $reserveByUser == $_SESSION['userID'] ){
+               $smartyyoureserved = true;
+            }
+        }
+        
+        $smarty->assign("reserved", $smartyreserved);  
+        $smarty->assign("youreserved", $smartyyoureserved);
+        
+        
+		$reqlist .= $smarty->fetch("request-entry.tpl");
 	}
 	if( $currentreq == 0 ) {
 		return( "<i>No requests at this time</i>" );
