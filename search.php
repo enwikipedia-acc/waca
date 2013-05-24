@@ -59,7 +59,7 @@ BootstrapSkin::displayInternalHeader();
 
 // protect against logged out users
 if( !$session->hasright($sessionuser, "Admin") && !$session->hasright($sessionuser, "User")) {
-    BootstrapSkin::displayAlertBox("You must log in to use the search form.","alert-error","Error!", true, false);
+    showlogin();
     BootstrapSkin::displayInternalFooter();
 	die();
 }

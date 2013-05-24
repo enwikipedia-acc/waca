@@ -155,7 +155,7 @@ abstract class StatisticsPage
 			$sessionuser = ( isset($_SESSION['user']) ? $_SESSION['user'] : "");
 			if( !($session->hasright($sessionuser, "Admin") || $session->hasright($sessionuser, "User")))
 			{ // not authed
-			    BootstrapSkin::displayAlertBox("You are not authorized to use this feature. Only logged in users may use this statistics page.", "alert-error", "Access Denied", true, false);
+			    showlogin();
                 BootstrapSkin::displayInternalFooter();
                 die();
 			}
