@@ -172,7 +172,7 @@ elseif ($action == "sreg") {
 	$ub = unserialize( $userblocked );
 	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) {
 		$message = $messages->getMessage( '9' );
-		$skin->displayRequestMsg("ERROR: You are presently blocked on the English Wikipedia<br />");
+		BootstrapSkin::displayAlertBox("You are presently blocked on the English Wikipedia", "alert-error", "Error");
 		echo "</div>";
 		$skin->displayPfooter();
 		die();
@@ -181,7 +181,7 @@ elseif ($action == "sreg") {
 	$ue = unserialize( $userexist );
 	foreach ( $ue['query']['users'] as $oneue ) {
 		if ( isset($oneue['missing'])) {
-			$skin->displayRequestMsg("Invalid On-Wiki username.<br />");
+			BootstrapSkin::displayAlertBox("Invalid on-wiki username", "alert-error", "Error");
 			echo "</div>";
 			$skin->displayPfooter();
 			die();
@@ -198,7 +198,7 @@ elseif ($action == "sreg") {
 		$time2 = time() - strtotime($time);
 		$editcount = $isNewbie['query']['allusers'][0]['editcount'];
 		if (!($editcount > $onRegistrationNewbieCheckEditCount and $time2 > $onRegistrationNewbieCheckAge)) {
-			$skin->displayRequestMsg("I'm sorry, you are too new to request an account at the moment.<br />");
+            BootstrapSkin::displayAlertBox("You are too new to request an account at the moment.", "alert-info", "Sorry!", false);
 			echo "</div>";
 			$skin->displayPfooter();
 			die();
@@ -206,7 +206,7 @@ elseif ($action == "sreg") {
 	}
 	// check if user checked the "I have read and understand the interface guidelines" checkbox
 	if(!isset($_REQUEST['guidelines'])) {
-		$skin->displayRequestMsg("I'm sorry, but you must read <a href=\"http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide\">the interface guidelines</a> before your request may be submitted.<br />");
+        BootstrapSkin::displayAlertBox("You must read <a href=\"http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide\">the interface guidelines</a> before your request may be submitted.", "alert-info", "Sorry!", false);
 		echo "</div>";
 		$skin->displayPfooter();
 		die();
@@ -236,7 +236,8 @@ elseif ($action == "sreg") {
 		$welcomeenable=false;
 	}
 	if ( !isset($user) || !isset($wname) || !isset($pass) || !isset($pass2) || !isset($email) || !isset($conf_revid)|| strlen($email) < 6) {
-		echo "<h2>ERROR!</h2>Form data may not be blank.<br />\n";
+        BootstrapSkin::displayAlertBox("Form data may not be blank.", "alert-error", "Error!", false);
+		
 		echo "</div>";
 		$skin->displayPfooter();
 		die();
@@ -248,19 +249,19 @@ elseif ($action == "sreg") {
 	}
 	$mailisvalid = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.(ac|ad|ae|aero|af|ag|ai|al|am|an|ao|aq|ar|arpa|as|asia|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|biz|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cat|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|com|coop|cr|cu|cv|cx|cy|cz|de|dj|dk|dm|do|dz|ec|edu|ee|eg|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gov|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|info|int|io|iq|ir|is|it|je|jm|jo|jobs|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mil|mk|ml|mm|mn|mo|mobi|mp|mq|mr|ms|mt|mu|museum|mv|mw|mx|my|mz|na|name|nc|ne|net|nf|ng|ni|nl|no|np|nr|nu|nz|om|org|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|pro|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sy|sz|tc|td|tel|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|travel|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)$/i', $_REQUEST['email']);
 	if ($mailisvalid == 0) {
-		$skin->displayRequestMsg("ERROR: Invalid E-mail address.<br />");
+		BootstrapSkin::displayAlertBox("Invalid email address", "alert-error", "Error!", false);
 		echo "</div>";
 		$skin->displayPfooter();
 		die();
 	}
 	if ($_REQUEST['pass'] !== $_REQUEST['pass2']) { // comparing pre-filtered values here, secure as it's just a comparison.
-		$skin->displayRequestMsg("Please re-enter passwords. Passwords did not match!<br />");
+        BootstrapSkin::displayAlertBox("Your passwords did not match, please try again.", "alert-error", "Error!", false);
 		echo "</div>";
 		$skin->displayPfooter();
 		die();
 	}
 	if(!((string)(int)$conf_revid === (string)$conf_revid)||$conf_revid==""){
-		$skin->displayRequestMsg("Please enter the revision id of your confirmation edit in the \"Confirmation diff\" field. The revid is the number after the &diff= part of the URL of a diff. <br />");
+		BootstrapSkin::displayAlertBox("Please enter the revision id of your confirmation edit in the \"Confirmation diff\" field. The revid is the number after the &diff= part of the URL of a diff.", "alert-error", "Error!", false);
 		echo "</div>";
 		$skin->displayPfooter();
 		die();		
@@ -272,7 +273,7 @@ elseif ($action == "sreg") {
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_id'] != "") {
-		$skin->displayRequestMsg("I'm sorry, but that username is in use. Please choose another. <br />");
+        BootstrapSkin::displayAlertBox("Sorry, but that username is in use. Please choose another.", "alert-error", "Error!", false);
 		$skin->displayPfooter();
 		die();
 	}
