@@ -84,8 +84,9 @@ class BootstrapSkin {
         }
         
         $online = '<p class="span6 text-right"><small>' . $onlinemessage . '</small></p>';
-        $smarty->assign("onlineusers", $online);
-        
+        if( isset( $_SESSION['user'] ) ) {
+            $smarty->assign("onlineusers", $online);
+        }
         $smarty->display("footer.tpl");
     }
     
