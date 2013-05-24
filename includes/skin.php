@@ -130,10 +130,15 @@ class BootstrapSkin {
     
 }
 
+/**
+ * Old skin stuff, just aliases for BootstrapSkin now
+ * @deprecated
+ */
 class skin {
 	
 	/**
 	 * Prints the public interface header to the screen.
+     * @deprecated
 	 */
 	public function displayPheader() {
 		BootstrapSkin::displayPublicHeader();
@@ -142,6 +147,7 @@ class skin {
 	/**
 	 * Prints the internal interface header to the screen.
 	 * @param $username The username of the curretly logged in user.
+     * @deprecated
 	 */
 	public function displayIheader($username) {
         BootstrapSkin::displayInternalHeader();
@@ -172,6 +178,7 @@ class skin {
 	/**
 	 * Prints a request message to the screen.
 	 * @param $message The message to print to the screen.
+     * @deprecated
 	 */
 	public function displayRequestMsg($message) {
 		// Prints a request message to the screen using the message variable.
