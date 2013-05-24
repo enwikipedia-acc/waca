@@ -29,7 +29,7 @@ class BootstrapSkin {
         // userid
         // username
         // sitenotice
-        global $smarty;
+        global $smarty, $session, $tsSQL;
         
         $userid = isset($_SESSION['userID']) ? $_SESSION['userID'] : 0;
         $user = isset($_SESSION['user']) ? $_SESSION['user'] : "";
@@ -40,6 +40,13 @@ class BootstrapSkin {
         $smarty->assign("sitenotice", $sitenotice);
         $smarty->display("header-internal.tpl");
         //print_r($_SESSION);
+        
+        // Formulates and executes a SQL query to update the last time the user logged in, namely now.
+        $now = date("Y-m-d H-i-s"); 
+        $query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '" . sanitize($_SESSION['userID']) . "';";
+        $result = $tsSQL->query($query);
+        
+        $session->forceLogout($_SESSION['userID']);
     }
     
     /**
@@ -135,76 +142,7 @@ class skin {
 	 * @param $username The username of the curretly logged in user.
 	 */
 	public function displayIheader($username) {
-		// Gets the needed objects.
-		global $tsSQL, $messages, $session, $tsurl;
-		
-		// Escapes the username for MySQL.
-		$suin = $tsSQL->escape($username);
-		
-		// Formulates and executes the SQL query to get details regarding the user.
-		$query = "SELECT * FROM acc_user WHERE user_name = '$suin' LIMIT 1;";
-		$result = $tsSQL->query($query);
-		
-		// Display error upon failure.
-		if (!$result) {
-			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"ERROR: database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
-		}
-		
-		// Fetch the result row as an array.
-		$row = mysql_fetch_assoc($result);
-		
-		// Checks whether the user must be forced to logout.
-		$session->forceLogout($row['user_id']);
-		
-		// Gets the internal interface header.
-		$out = $messages->getMessage('21');
-		
-		// Creates a blank varible for future use.
-		$rethead = '';
-		
-		// Checks whether the user is logged in.
-		if (isset ($_SESSION['user'])) {
-			// Checks if the particular user has Admin rigths.
-			if ($session->hasright($username, "Admin")) {
-				// There are additional links added to the orginal header if so.
-				$out = str_replace('%ADMINLINKSHERE%', "<a href=\"$tsurl/users.php\">User Management</a>", $out);				
-			} else {
-				$out = str_replace('%ADMINLINKSHERE%', '', $out);
-			}
-			
-			// The header is assigned to this variable, no matter Admin or not.
-			$rethead .= $out;
-			
-			// Generates the code for the header-info section. This includes a link to the user information and to log out.
-			$rethead .= "<div id = \"header-info\">Logged in as <a href=\"$tsurl/statistics.php?page=Users&amp;user=" . $row['user_id'] . "\"><span title=\"View your user information\">" . $_SESSION['user'] . "</span></a>.  <a href=\"$tsurl/acc.php?action=logout\">Logout</a>?</div>\n";
-			
-			// Assigns the current date and time to a variable.
-			// TODO: This produces a PHP Strict Standards error message. See next line.
-			// Strict Standards: date() [function.date]: It is not safe to rely on the system's timezone settings.
-			// Please use the date.timezone setting, the TZ environment variable or the date_default_timezone_set() function.
-			// In case you used any of those methods and you are still getting this warning, you most likely misspelled the timezone identifier.
-			$now = date("Y-m-d H-i-s"); 
-			
-			// Formulates and executes a SQL query to update the last time the user logged in, namely now.
-			$query = "UPDATE acc_user SET user_lastactive = '$now' WHERE user_id = '" . $row['user_id'] . "';";
-			$result = $tsSQL->query($query);
-		
-			// Display error upon failure.
-			if (!$result) {
-				$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"ERROR: database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
-			}
-		// This section is executed when the user is not logged in.
-		} else {
-			$out = str_replace('%ADMINLINKSHERE%', '', $out);
-			
-			// The header is assigned to this variable.
-			$rethead .= $out;
-			
-			// Generates the code for the header-info section. This states that the user is not logged in, or the option to create an account.
-			$rethead .= "<div id = \"header-info\">Not logged in.  <a href=\"$tsurl/acc.php\"><span title=\"Click here to return to the login form\">Log in</span></a>/<a href=\"$tsurl/acc.php?action=register\">Create account</a>?</div>\n";
-		}
-		// Prints the specific header-info section to the screen.
-		echo $rethead;
+        BootstrapSkin::displayInternalHeader();
 	}
 	
 	/**
