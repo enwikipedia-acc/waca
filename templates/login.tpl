@@ -17,8 +17,8 @@
 			<div class="control-group container-fluid">
 				<div class="row-fluid">
 					<div class="span12">
-						<a class="btn">Forgot password?</a>
-						<a class="btn">Register</a>
+						<a class="btn" href="{$tsurl}/acc.php?action=forgotpw">Forgot password?</a>
+						<a class="btn" href="{$tsurl}/acc.php?action=register">Register</a>
 						<button type="submit" class="btn btn-primary">Sign in</button>
 					</div>
 				</div>
