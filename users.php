@@ -105,6 +105,8 @@ if (isset ($_GET['approve'])) {
 	$accbotSend->send("User $aid (" . $row2['user_name'] . ") approved by $siuser");
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	mail($row2['user_email'], "ACC Account Approved", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been approved by $siuser. To login please go to $tsurl/acc.php.\n- The English Wikipedia Account Creation Team", $headers);
+    BootstrapSkin::displayInternalFooter();
+    die();
 }
 if (isset ($_GET['demote'])) {
 	$did = sanitize($_GET['demote']);
