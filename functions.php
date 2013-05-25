@@ -351,6 +351,8 @@ function listrequests($type, $hideip, $correcthash) {
         
         $smarty->assign("reserved", $smartyreserved);  
         $smarty->assign("youreserved", $smartyyoureserved);
+        $canbreak = ( $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) );
+        $smarty->assign("canbreak", $canbreak);
         
         
 		$reqlist .= $smarty->fetch("request-entry.tpl");
