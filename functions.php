@@ -532,10 +532,10 @@ function isOnWhitelist($user)
 
 function zoomPage($id,$urlhash)
 {
-	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates, $dontUseWikiDb;
+	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates, $dontUseWikiDb, $internalInterface;
 
 	$out = "";
-	$gid = sanitize($id);
+	$gid = $internalInterface->checkreqid($id);
 	$urlhash = sanitize($urlhash);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
 	$result = mysql_query($query, $tsSQLlink);
