@@ -100,19 +100,19 @@ class internalInterface {
 		// Checks whether the user is new to ACC with a pending account.
 		if ($row['user_level'] == "New") {
 			// Display the header of the interface.
-			$skin->displayPheader();
+			BootstrapSkin::displayInternalHeader();
 			echo "<h2>Account Pending</h2>";
 			echo "I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.<br />\n";
 			echo "</pre><br />";
 			// Display the footer of the interface.
 			echo "</div>";
-			$skin->displayPfooter();
+			BootstrapSkin::displayInternalFooter();
 			die();
 		}
 		// Checks whether the user's account has been suspended.
 		if ($row['user_level'] == "Suspended") {
 			// Display the header of the interface.
-			$skin->displayPheader();
+			BootstrapSkin::displayInternalHeader();
 			echo '<h2>Account Suspended</h2>';
 			echo "I'm sorry, but, your account is presently suspended.<br />\n";
 			// Checks whether there was a reason for the suspension.
@@ -122,7 +122,7 @@ class internalInterface {
 			echo '<b>' . $reasonRow['log_cmt'] . "</b></pre><br />";
 			// Display the footer of the interface.
 			echo "</div>";
-			$skin->displayPfooter();
+			BootstrapSkin::displayInternalFooter();
 			die();
 		}
 		// If any of the above checks failed, the script should have terminated by now.
@@ -157,8 +157,8 @@ class internalInterface {
 		// Make sure there are no invalid characters.
 		if (!preg_match('/^[0-9]*$/',$id)) {
 			// Notifies the user and stops the script.
-			$skin->displayRequestMsg("The request ID supplied is invalid!");
-			$skin->displayIfooter();
+            BootstrapSkin::displayAlertBox("The request ID supplied is invalid!", "alert-error","Error",true,false);
+			BootstrapSkin::displayInternalFooter();
 			die();
 		}
 		
@@ -175,8 +175,8 @@ class internalInterface {
 		// When the value is zero it is an indication that that request doesnt exist.
 		if($row[0]==="0") {
 			// Notifies the user and stops the script.
-			$skin->displayRequestMsg("The request ID supplied is invalid!");
-			$skin->displayIfooter();
+            BootstrapSkin::displayAlertBox("The request ID supplied is invalid!", "alert-error","Error",true,false);
+			BootstrapSkin::displayInternalFooter();
 			die();
 		}
 		return $sid;
