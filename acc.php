@@ -428,10 +428,10 @@ elseif ($action == "login") {
 }
 elseif ($action == "messagemgmt") {
 	if (isset ($_GET['view'])) {
-	if (!preg_match('/^[0-9]*$/',$_GET['view']))
-		die('Invaild GET value passed.');
+	    if (!preg_match('/^[0-9]*$/',$_GET['view']))
+		    die('Invaild GET value passed.');
 		
-	$mid = sanitize($_GET['view']);
+	    $mid = sanitize($_GET['view']);
 		/*
 		OK, let's try and use acc_user for storing usernames. I've added a new column, rev_userid. Let's try and use that.
 		
@@ -453,7 +453,7 @@ elseif ($action == "messagemgmt") {
 		die();
 	}
 	if (isset ($_GET['edit'])) {
-	if(!$session->hasright($_SESSION['user'], 'Admin')) {
+	    if(!$session->hasright($_SESSION['user'], 'Admin')) {
 			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
 			$skin->displayIfooter();
 			die();
@@ -511,10 +511,10 @@ elseif ($action == "messagemgmt") {
 		$out = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mail_id\">Edit!</a> - <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
 		$out2 = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
 		if($session->hasright($_SESSION['user'], 'Admin')){
-		echo "$out\n";
+		    echo "$out\n";
 		}
 		elseif(!$session->hasright($_SESSION['user'], 'Admin')){
-		echo "$out2\n";
+		    echo "$out2\n";
 		}
 	}
 	echo "</ul>";
