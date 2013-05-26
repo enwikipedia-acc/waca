@@ -505,7 +505,8 @@ elseif ($action == "messagemgmt") {
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	echo "<h2>Mail messages</h2>\n";
+	echo "<div class=\"page-header\"><h1>Message Management<small> View and edit the email and interface messages</small></h1></div>";
+	echo "<h2>Email messages</h2>";
 	echo "<ul>\n";
 	while ( list( $mail_id, $mail_count, $mail_desc ) = mysql_fetch_row( $result ) ) {
 		$out = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mail_id\">Edit!</a> - <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
