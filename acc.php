@@ -1124,7 +1124,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 			
 		
 			
-		$gid = sanitize($_GET['id']);
+		$gid = $internalInterface->checkreqid($_GET['id']);
 		if (csvalid($gid, $_GET['sum']) != 1) {
 			echo "Invalid checksum (This is similar to an edit conflict on Wikipedia; it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
 			$skin->displayIfooter();
@@ -1266,7 +1266,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	}
 	
 	// sanitise this input ready for inclusion in queries
-	$gid = sanitize($_GET['id']);
+	$gid = $internalInterface->checkreqid($_GET['id']);
 	$gem = sanitize($_GET['email']);
 	
 	// check the checksum is valid
@@ -1281,13 +1281,6 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
-	$rows = mysql_num_rows($result);
-	
-	if ($rows < 1) {
-		$skin->displayRequestMsg("Invalid Request ID.");
-		$skin->displayIfooter();
-		die();
-	}
 	
 	// check if an email has already been sent
 	if ($row['pend_emailsent'] == "1" && !isset($_GET['override']) && $gem != 0) {
@@ -1557,32 +1550,9 @@ elseif ($action == "reserve") {
 	// Gets the global variables.
 	global $allowDoubleReserving, $skin;
 	
-	
-	// Make sure there is no invlalid characters.
-	if (!preg_match('/^[0-9]*$/',$_GET['resid'])) {
-		// Notifies the user and stops the script.
-		$skin->displayRequestMsg("The request ID supplied is invalid!");
-		$skin->displayIfooter();
-		die();
-	}
-	
-	// Sanitises the resid for use.
-	$request = sanitise($_GET['resid']);
-	
-	// Formulates and executes SQL query to check if the request exists.
-	$query = "SELECT Count(*) FROM acc_pend WHERE pend_id = '$request';";
-	$result = mysql_query($query, $tsSQLlink);
-	$row = mysql_fetch_row($result);
-	
-	// The query counted the amount of records with the particular request ID.
-	// When the value is zero it is an idication that that request doesnt exist.
-	if($row[0]==="0") {
-		// Notifies the user and stops the script.
-		$skin->displayRequestMsg("The request ID supplied is invalid!");
-		$skin->displayIfooter();
-		die();
-	}
-	
+	// Sanitises the resid for use and checks its validity.
+	$request = $internalInterface->checkreqid($_GET['resid']);
+
 	global $enableEmailConfirm;
 	if($enableEmailConfirm == 1){
 		// check the request is email-confirmed to prevent jumping the gun (ACC-122)
@@ -1716,12 +1686,12 @@ elseif ($action == "reserve") {
 }
 elseif ($action == "breakreserve") {
 
-	$request = sanitise($_GET['resid']);
+	$request = $internalInterface->checkreqid($_GET['resid']);
 	
 	//check request is reserved
 	$reservedBy = isReserved($request);
 	if( $reservedBy == "" ) {
-		$skin->displayRequestMsg("Request is not reserved, or request ID is invalid.");
+		$skin->displayRequestMsg("Request is not reserved.");
 		$skin->displayIfooter();
 		die();
 	}
@@ -1786,7 +1756,7 @@ elseif ($action == "comment") {
 	}
        
     if( isset($_GET['id']) ) {
-        $id = sanitize($_GET['id']);
+        $id = $internalInterface->checkreqid($_GET['id']);
         echo "<h2>Comment on request <a href='$tsurl/acc.php?action=zoom&amp;id=$id&amp;hash=$urlhash'>#$id</a></h2>
               <form action='$tsurl/acc.php?action=comment-add&amp;hash=$urlhash' method='post'>";
     } else {
@@ -1805,7 +1775,7 @@ elseif ($action == "comment") {
 }
 
 elseif ($action == "comment-add") {
-	$id = sanitise($_POST['id']); //TODO: We need to do better than just sanitise it, we also need to check that the request id is actually valid. 
+	$id = $internalInterface->checkreqid($_POST['id']);
     echo "<h2>Adding comment to request " . $id . "...</h2><br />";
     if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visibility'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
         $user = sanitise($_SESSION['user']);
@@ -1842,7 +1812,7 @@ elseif ($action == "comment-add") {
 elseif ($action == "comment-quick") {
     if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visibility'])) && ($_POST['id'] != "")) {
 
-        $id = sanitise($_POST['id']);
+        $id = $internalInterface->checkreqid($_POST['id']);
         $user = sanitise($_SESSION['user']);
         $comment = sanitise($_POST['comment']);
         $visibility = sanitise($_POST['visibility']);
@@ -1982,20 +1952,4 @@ elseif ($action == "ec") { // edit comment
 		die();
 	}
 }
-
-/*
- * Commented out by stw:
- *  a) wrong. Check the code in the bot to figure out what will actually happen.
- *  b) this will likely increase the amount of time taken for decent investigation to start.
- *  
- *  Please see note on JIRA: ACC-161
- * ******************************************
- * //Silence the bot when it gets annoying
- * elseif ($action == "silence") { 
- *	$accbotSend->send("Bot inactivity warning silenced by " . $session->getUsernameFromUid($_SESSION['userID']));
- *	echo '<p>The bot has been sent a message that will silence it for one hour.</p>';
- *	$skin->displayIfooter();
- *	die();
- *}
- */
 ?>

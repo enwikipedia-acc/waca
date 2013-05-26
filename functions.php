@@ -351,6 +351,8 @@ function listrequests($type, $hideip, $correcthash) {
         
         $smarty->assign("reserved", $smartyreserved);  
         $smarty->assign("youreserved", $smartyyoureserved);
+        $canbreak = ( $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) );
+        $smarty->assign("canbreak", $canbreak);
         
         
 		$reqlist .= $smarty->fetch("request-entry.tpl");
@@ -532,10 +534,10 @@ function isOnWhitelist($user)
 
 function zoomPage($id,$urlhash)
 {
-	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates, $dontUseWikiDb;
+	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates, $dontUseWikiDb, $internalInterface;
 
 	$out = "";
-	$gid = sanitize($id);
+	$gid = $internalInterface->checkreqid($id);
 	$urlhash = sanitize($urlhash);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
 	$result = mysql_query($query, $tsSQLlink);
