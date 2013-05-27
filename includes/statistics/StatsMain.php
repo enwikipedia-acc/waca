@@ -169,7 +169,7 @@ class StatsMain extends StatisticsPage
 		$time = array("day", "2day", "4day", "week", "2week", "month", "3month");
 		
 		foreach($time as $t){
-			$out.= "<img src=\"$pathbase$t$pathsuffix\"/><br />";
+			$out.= "<img src=\"$pathbase$t$pathsuffix\" alt=\"graph\"/><br />";
 		}
 		
 		return $out;
