@@ -8,7 +8,7 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="{$tsurl}/lib/bootstrap-2.3.1/css/bootstrap.css" rel="stylesheet">
+    <link href="{$tsurl}/lib/bootstrap/css/bootstrap.css" rel="stylesheet">
     <style type="text/css">
       body {
         padding-top: 60px;
@@ -27,11 +27,11 @@
         }
       }
     </style>
-    <link href="{$tsurl}/lib/bootstrap-2.3.1/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="{$tsurl}/lib/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-      <script src="{$tsurl}/lib/bootstrap-2.3.1/js/html5shiv.js"></script>
+      <script src="{$tsurl}/lib/bootstrap/js/html5shiv.js"></script>
     <![endif]-->
   </head>
 
