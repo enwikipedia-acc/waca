@@ -23,23 +23,23 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `acc_clr`
+-- Table structure for table `acc_newmail`
 --
 
-DROP TABLE IF EXISTS `acc_clr`;
-CREATE TABLE IF NOT EXISTS `acc_clr` (
-  `clr_id` int(11) NOT NULL AUTO_INCREMENT,
-  `clr_desc` varchar(255) NOT NULL,
-  `clr_text` blob NOT NULL,
-  `clr_question` mediumtext NOT NULL,
-  `clr_decline` tinyint(1) NOT NULL DEFAULT '1',
-  `clr_active` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`clr_id`)
+DROP TABLE IF EXISTS `acc_newmail`;
+CREATE TABLE IF NOT EXISTS `acc_newmail` (
+  `newmail_id` int(11) NOT NULL AUTO_INCREMENT,
+  `newmail_desc` varchar(255) NOT NULL,
+  `newmail_text` blob NOT NULL,
+  `newmail_question` mediumtext NOT NULL,
+  `newmail_decline` tinyint(1) NOT NULL DEFAULT '1',
+  `newmail_active` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`newmail_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Close reasons' AUTO_INCREMENT=8 ;
 
 -- Add new columns to the `closes` table
-ALTER TABLE `closes` ADD COLUMN `CONCAT("ClosedNew ",clr_id)` varbinary(45) DEFAULT NULL;
-ALTER TABLE `closes` ADD COLUMN `clr_desc` varchar(255) DEFAULT NULL;
+ALTER TABLE `closes` ADD COLUMN `CONCAT("ClosedNew ",newmail_id)` varbinary(45) DEFAULT NULL;
+ALTER TABLE `closes` ADD COLUMN `newmail_desc` varchar(255) DEFAULT NULL;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

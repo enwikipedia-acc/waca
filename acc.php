@@ -1953,4 +1953,10 @@ elseif ($action == "ec") { // edit comment
 		die();
 	}
 }
+elseif ($action="emailmgmt") { 
+	// New page for managing Emails, since I would rather not be handling editing
+	// interface messages (such as the Sitenotice) and the new Emails in the same place.
+	$smarty->display("emailmgmt.tpl");
+	BootstrapSkin::displayInternalFooter();
+}
 ?>
