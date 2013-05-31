@@ -216,6 +216,10 @@ $rfc1918ips = array(
 	"127.0.0.0" => "127.255.255.255",
 );
 
+// Enables the Smarty debugging console. This should only be used for development and even then
+// be left false when you don't need it, since this will open a popup window on every page load.
+$smartydebug = false;
+
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********
 ***************************************************************************
