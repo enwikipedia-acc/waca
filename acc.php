@@ -119,7 +119,7 @@ elseif (!isset($_GET['nocheck']))
 
 
 
-        $out = "<div id=\"content\">";
+        $out = "<div id=\"row-fluid\">";
         echo $out;
 }
 
@@ -1337,17 +1337,18 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if ($gem  == 'custom') {
 		if (!isset($_POST['msgbody']) or empty($_POST['msgbody'])) {
 			$querystring = htmlspecialchars($_SERVER["QUERY_STRING"],ENT_COMPAT,'UTF-8'); //Send it through htmlspecialchars so HTML validators don't complain. 
-			echo "<form action='?".$querystring."' method='post'>\n";
-			echo "<p>Please enter your message to the user below.</p>";
-			echo "<p><strong>Please note that this content will be sent as the entire body of an email to the user, so remember to close the email properly with a signature (not ~~~~ either).</strong></p>";
-			echo "\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
-			echo "<p><input type='checkbox' name='created' />Account created</p>\n";
-			echo "<p><input type='checkbox' name='ccmailist' checked='checked'";
+			echo "<form action='?".$querystring."' method='post'><fieldset>";
+            echo "<legend>Custom close</legend>";
+			echo "<label for=\"\">Please enter your message to the user below.</label>";
+            BootstrapSkin::displayAlertBox("The contents of this box (and only the contents of this box) will be sent as an email to the user, so remember to close the email properly with a signature (not ~~~~ either)","alert-error","Caution!",true,false);
+			echo "<textarea id=\"msgbody\" name=\"msgbody\" rows=\"15\" class=\"input-block-level\"></textarea>";
+			echo "<label class=\"checkbox\"><input type=\"checkbox\" name=\"created\" />Account created</label>";
+			echo "<label class=\"checkbox\"><input type=\"checkbox\" name=\"ccmailist\" checked=\"checked\"";   
 			if (!($session->hasright($_SESSION['user'], "Admin")))
-				echo " DISABLED";
-			echo "/>Cc to mailing list</p>\n";
-			echo "<p><input type='submit' value='Close and send' /></p>\n";
-			echo "</form>\n";
+				echo " disabled";
+			echo "/>CC to mailing list</label>";
+            echo '<div class="form-actions"><button type="submit" class="btn btn-primary">Close and send</button><a href="?action=zoom&amp;id=' . $gid . '" class="btn">Cancel</a></div>';
+			echo "</fieldset></form>\n";
 			$skin->displayIfooter();
 			die();
 		} else {
