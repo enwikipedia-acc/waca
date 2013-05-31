@@ -1,0 +1,3 @@
+[submodule "lib/bootstrap-sortable"]
+	path = lib/bootstrap-sortable
+	url = git@github.com:enwikipedia-acc/bootstrap-sortable.git
