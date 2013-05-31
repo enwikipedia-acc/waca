@@ -266,7 +266,7 @@ function listrequests($type, $hideip, $correcthash) {
 		$tablestart .= "<p><span class=\"warning\">Miser mode: not all requests are shown for speed. </span>Only $requestLimitShowOnly of $totalRequests are shown here.</p>";
     }
  
-    $tablestart .= '<table class="table table-striped sortable"><thead><tr><th data-defaultsort="asc"><span class="hidden-phone">#</span></th><th><!-- zoom --></th><th><!-- comment --></th><th><span class="visible-desktop">Email address</span><span class="visible-tablet">Email and IP</span><span class="visible-phone">Request details</span></th><th><span class="visible-desktop">IP address</span></th><th><span class="hidden-phone">Username</span></th><th><!-- ban --></th><th><!-- reserve status --></th><th><!--reserve button--></th></tr></thead><tbody>';
+    $tablestart .= '<table class="table table-striped sortable"><thead><tr><th data-defaultsort="asc"><span class="hidden-phone">#</span></th><td><!-- zoom --></td><td><!-- comment --></td><th><span class="visible-desktop">Email address</span><span class="visible-tablet">Email and IP</span><span class="visible-phone">Request details</span></th><th><span class="visible-desktop">IP address</span></th><th><span class="hidden-phone">Username</span></th><td><!-- ban --></td><td><!-- reserve status --></td><td><!--reserve button--></td></tr></thead><tbody>';
 
 	$tableend = "</tbody></table>\n";
 	$reqlist = '';
