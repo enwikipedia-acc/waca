@@ -70,6 +70,7 @@
 				  <ul class="dropdown-menu">
 					<li><a href="{$tsurl}/acc.php?action=ban"><i class="icon-ban-circle"></i> Ban Management</a></li>
 					<li><a href="{$tsurl}/acc.php?action=messagemgmt"><i class="icon-print"></i> Message Management</a></li>
+					<li><a href="{$tsurl}/acc.php?action=emailmgmt"><i class="icon-envelope"></i> Email Management</a></li>
 					<li><a href="{$tsurl}/acc.php?action=templatemgmt"><i class="icon-file"></i> Template Management</a></li>
 					<li><a href="{$tsurl}/users.php"><i class="icon-user"></i> User Management</a></li>
 				  </ul>

@@ -334,6 +334,22 @@ class LogPage
 				$row4 = mysql_fetch_assoc($result4);
 				$logList .= "<li>$rlu edited <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row4['pend_id'] ."\">comment $rlp</a>, at $rlt</li>";
 			}
+			if ($rla == "CreatedEmail") {
+				$query2 = "SELECT * FROM acc_newmail WHERE newmail_id = '$rlp';";
+				$result2 = mysql_query($query2, $tsSQLlink);
+				if (!$result2)
+					Die("Query failed: $query2 ERROR: " . mysql_error());
+				$row2 = mysql_fetch_assoc($result2);
+				$logList .="<li>$rlu created email <a href=\"$tsurl/acc.php?action=emailmgmt&amp;edit=$rlp\">$rlp (" . $row2['newmail_name'] . ")</a>, at $rlt.</li>\n";
+			}
+			if ($rla == "EditedEmail") {
+				$query2 = "SELECT * FROM acc_newmail WHERE newmail_id = '$rlp';";
+				$result2 = mysql_query($query2, $tsSQLlink);
+				if (!$result2)
+					Die("Query failed: $query2 ERROR: " . mysql_error());
+				$row2 = mysql_fetch_assoc($result2);
+				$logList .="<li>$rlu edited email <a href=\"$tsurl/acc.php?action=emailmgmt&amp;edit=$rlp\">$rlp (" . $row2['newmail_name'] . ")</a>, at $rlt.</li>\n";
+			}
 			$logListCount++;
 		}
 		
@@ -421,7 +437,7 @@ class LogPage
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"created template", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "DeletedTemplate") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"deletd template", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"deleted template", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "EditedTemplate") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"edited template", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
