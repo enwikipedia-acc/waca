@@ -70,7 +70,7 @@
 				  <ul class="dropdown-menu">
 					<li><a href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide"><i class="icon-question-sign"></i> Guide</a></li>
 					<li><a href="//en.wikipedia.org/wiki/Wikipedia:Username_policy"><i class="icon-warning-sign"></i> Username Policy</a></li>
-					<li><a href="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/ACC-similar-flowchart.svg/500px-ACC-similar-flowchart.svg.png"><i class="icon-check"></i> Similar account flowchart</a></li>
+					<li><a href="#modalFlowchart" role="button" data-toggle="modal"><i class="icon-check"></i> Similar account flowchart</a></li>
 					<li><a href="http://webchat.freenode.net/?channels=wikipedia-en-accounts"><i class="icon-comment"></i> Chat</a></li>
 				  </ul>
 			  </li>
@@ -98,6 +98,8 @@
       </div>
     </div>
 
+	{include file="modal-flowchart.tpl"}
+	
     <div class="container-fluid">
 	{if $userid != 0}
 		<div class="row-fluid">
