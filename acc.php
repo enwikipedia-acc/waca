@@ -1390,39 +1390,24 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	switch ($gem) {
-		case 0 :
-			$crea = "Dropped";
-			break;
-		case 1 :
-			$crea = "Created";
-			break;
-		case 2 :
-			$crea = "Too Similar";
-			break;
-		case 3 :
-			$crea = "Taken";
-			break;
-		case 4 :
-			$crea = "Username vio";
-			break;
-		case 5 :
-			$crea = "Impossible";
-			break;
-		case 26:
-			$crea = "SUL Taken";
-			break;
-		case 30:
-			$crea = "Password Reset";
-			break;
-	}
-	if ($gem == 'custom') {
+
+	if ($gem = '0') {
+		$crea = "Dropped";
+	} else if ($gem == 'custom') {
 		$crea = "Custom";
 	} else if ($gem == 'custom-y') {
 		$crea = "Custom, Created";
 	} else if ($gem == 'custom-n') {
 		$crea = "Custom, Not Created";
+	} else {
+		$query = "SELECT newmail_name FROM acc_newmail WHERE newmail_id = '$gem'";
+		$result = $tsSQL->query($query);
+		if (!result)
+			sqlerror("Query failed: $query ERROR: " . mysql_error());
+		$row = mysql_fetch_assoc($result);
+		$crea = $row['newmail_name'];
 	}
+
 	$now = explode("-", $now);
 	$now = $now['0'] . "-" . $now['1'] . "-" . $now['2'] . ":" . $now['3'] . ":" . $now['4'];
 	$accbotSend->send("Request " . $_GET['id'] . " (" . $row2['pend_name'] . ") Marked as 'Done' ($crea) by " . $_SESSION['user'] . " on $now");
@@ -1480,14 +1465,7 @@ elseif ($action == "logs") {
 				"Unreserved" => "Request unreservation",
 				"BreakReserve" => "Break reservation",
 				"Deferred%" => "Deferred request",
-				"Closed 1" => "Request creation",
-				"Closed 3" => "Request taken",
-				"Closed 2" => "Request similarity",
-				"Closed 5" => "Request marked as invalid",
-				"Closed 4" => "Request Username policy violation",
 				"Closed 0" => "Request drop",
-				"Closed 26" => "Request taken in SUL",
-				"Closed 30" => "Request closed, password reset",
 				"Closed custom" => "Request custom close",
 				"Closed custom-y" => "Request custom close, created",
 				"Closed custom-n" => "Request custom close, not created",
@@ -1508,6 +1486,11 @@ elseif ($action == "logs") {
 				"Promoted" => "User promotion",
 				"Prefchange" => "User preferences change"
 	);
+	$query = "SELECT newmail_id, newmail_name FROM acc_newmail";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result)
+		sqlerror("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
 	foreach($logActions as $key => $value)
 	{
 		echo "<option value=\"".$key."\"";
@@ -1988,7 +1971,7 @@ elseif ($action == "emailmgmt") {
 			$siuser = sanitize($_SESSION['user']);
 			
 			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
-			$query = "SELECT newmail_id FROM acc_newmail WHERE newmail_name = '$ename';";
+			$query = "SELECT newmail_id FROM acc_newmail WHERE newmail_name = '$ename'";
 			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				sqlerror("Query failed: $query ERROR: " . mysql_error());
@@ -2056,7 +2039,7 @@ elseif ($action == "emailmgmt") {
 			$siuser = sanitize($_SESSION['user']);
 				
 			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
-			$query = "SELECT newmail_id FROM acc_newmail WHERE newmail_name = '$ename' && newmail_id != '$gid';";
+			$query = "SELECT newmail_id FROM acc_newmail WHERE newmail_name = '$ename' && newmail_id != '$gid'";
 			$result = mysql_query($query, $tsSQLlink);
 			if (!$result)
 				sqlerror("Query failed: $query ERROR: " . mysql_error());
@@ -2066,12 +2049,12 @@ elseif ($action == "emailmgmt") {
 				die();
 			}
 				
-			$query = "UPDATE acc_newmail SET newmail_name = '$ename', newmail_text = '$etext', newmail_question = '$equestion', newmail_created = '$ecreated', newmail_active = '$eactive' WHERE newmail_id = '$gid';";
+			$query = "UPDATE acc_newmail SET newmail_name = '$ename', newmail_text = '$etext', newmail_question = '$equestion', newmail_created = '$ecreated', newmail_active = '$eactive' WHERE newmail_id = '$gid'";
 			$result = $tsSQL->query($query);
 			if (!$result)
 				sqlerror("Query failed: $query ERROR: " . mysql_error());
 			$now = date("Y-m-d H-i-s");
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$siuser', 'EditedEmail', '$now');";
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$siuser', 'EditedEmail', '$now')";
 			$result = $tsSQL->query($query);
 			if (!$result)
 				sqlerror("Query failed: $query ERROR: " . mysql_error());
@@ -2082,7 +2065,7 @@ elseif ($action == "emailmgmt") {
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
-		$query = "SELECT * FROM acc_newmail WHERE newmail_id = $gid;";
+		$query = "SELECT * FROM acc_newmail WHERE newmail_id = $gid";
 		$result = $tsSQL->query($query);
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
@@ -2097,7 +2080,7 @@ elseif ($action == "emailmgmt") {
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	$query = "SELECT newmail_id, newmail_name FROM acc_newmail WHERE newmail_active = 1;";
+	$query = "SELECT newmail_id, newmail_name FROM acc_newmail WHERE newmail_active = 1";
 	$result = $tsSQL->query($query);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
@@ -2113,7 +2096,7 @@ elseif ($action == "emailmgmt") {
 	else {
 		$smarty->assign('displayactive', false);
 	}
-	$query = "SELECT newmail_id, newmail_name FROM acc_newmail WHERE newmail_active = 0;";
+	$query = "SELECT newmail_id, newmail_name FROM acc_newmail WHERE newmail_active = 0";
 	$result = $tsSQL->query($query);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());

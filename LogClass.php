@@ -213,38 +213,29 @@ class LogPage
 			if ($row['log_action'] == "Closed") {
 				$logList .="<li>$rlu $rla, <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
-			if ($row['log_action'] == "Closed 0") {
-				$logList .="<li>$rlu Dropped, <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed 1") {
-				$logList .="<li>$rlu Closed (Account created), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed 2") {
-				$logList .="<li>$rlu Closed (Too Similar), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed 3") {
-				$logList .="<li>$rlu Closed (Taken), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed 4") {
-				$logList .="<li>$rlu Closed (Username vio), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed 5") {
-				$logList .="<li>$rlu Closed (Technical Impossibility), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed 26") {
-				$logList .="<li>$rlu Closed (Taken in SUL), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed 30") {
-				$logList .="<li>$rlu Closed (Password Reset), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed custom") {
-				$logList .="<li>$rlu Closed (Custom), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-		    if ($row['log_action'] == "Closed custom-y") {
-				$logList .="<li>$rlu Closed (Custom, Created), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed custom-n") {
-				$logList .="<li>$rlu Closed (Custom, Not Created), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			if (substr($row['log_action'],0,7) == "Closed ") {
+				if ($row['log_action'] == "Closed 0") {
+					$logList .="<li>$rlu Dropped, <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				} 
+				else if ($row['log_action'] == "Closed custom") {
+					$logList .="<li>$rlu Closed (Custom), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				}
+		   		else if ($row['log_action'] == "Closed custom-y") {
+					$logList .="<li>$rlu Closed (Custom, Created), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				}
+				else if ($row['log_action'] == "Closed custom-n") {
+					$logList .="<li>$rlu Closed (Custom, Not Created), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				}
+				else {
+					$eid = mysql_real_escape_string(substr($row['log_action'],7));
+					$query2 = "SELECT newmail_name FROM acc_newmail WHERE newmail_id = $eid";
+					$result2 = mysql_query($query2, $tsSQLlink);
+					if (!$result2)
+						Die("Query failed: $query2 ERROR: " . mysql_error());
+					$row2 = mysql_fetch_assoc($result2);
+					$ename = htmlentities($row2['newmail_name'],ENT_QUOTES,'UTF-8');
+					$logList .="<li>$rlu Closed ($ename), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				}
 			}
 			if ($row['log_action'] == "Blacklist Hit" || $row['log_action'] == "DNSBL Hit") {
 				$logList .="<li>$rlu <strong>Rejected by Blacklist</strong> $rlp, $rlc at $rlt.</li>\n";
@@ -393,30 +384,6 @@ class LogPage
 			}
 			if ($row['log_action'] == "Closed") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>$rla, 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed 0") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"dropped", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed 1") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (created)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed 2") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (too similar)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed 3") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (taken)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed 4") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (policy)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed 5") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (technical)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed 26") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (SUL)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed 30") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (password reset)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($row['log_action'] == "Closed custom") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
