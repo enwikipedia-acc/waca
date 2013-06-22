@@ -1020,7 +1020,7 @@ elseif ($action == "ban") {
 		} else {
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
 			echo "<form action=\"$tsurl/acc.php?action=sban&amp;user=$siuser\" method=\"post\">";
-			echo "Ban target: $target\n<br />\n";
+			echo "<tr><td>Ban target:</td><td><input type=\"text\" name=\"target\" /></td></tr>\n";
 			echo "<table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td></tr>\n";
 			echo "<tr><td>Duration:</td><td>\n";
 			echo "<select name=\"duration\">\n";
