@@ -385,14 +385,29 @@ class LogPage
 			if ($row['log_action'] == "Closed") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>$rla, 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
-			if ($row['log_action'] == "Closed custom") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-		    if ($row['log_action'] == "Closed custom-y") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason - account created)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed custom-n") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason - account not created)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+			if (substr($row['log_action'],0,7) == "Closed ") {
+				if ($row['log_action'] == "Closed 0") {
+					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"dropped", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+				}
+				else if ($row['log_action'] == "Closed custom") {
+					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+				}
+				else if ($row['log_action'] == "Closed custom-y") {
+					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason - account created)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+				}
+				else if ($row['log_action'] == "Closed custom-n") {
+					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason - account not created)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+				}
+				else {
+					$eid = mysql_real_escape_string(substr($row['log_action'],7));
+					$query2 = "SELECT newmail_name FROM acc_newmail WHERE newmail_id = $eid";
+					$result2 = mysql_query($query2, $tsSQLlink);
+					if (!$result2)
+						Die("Query failed: $query2 ERROR: " . mysql_error());
+					$row2 = mysql_fetch_assoc($result2);
+					$ename = htmlentities($row2['newmail_name'],ENT_QUOTES,'UTF-8');
+					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed ($ename)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+				}
 			}
 			if ($row['log_action'] == "Blacklist Hit" || $row['log_action'] == "DNSBL Hit") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"rejected by blacklist", 'target' => $rlp, 'comment' => $rlc, 'action' => "Blacklist");
@@ -400,11 +415,17 @@ class LogPage
 			if ($rla == 'Email Confirmed') {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"email-confirmed", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
+			if ($rla == "CreatedEmail") {
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"created email", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+			}
 			if ($rla == "CreatedTemplate") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"created template", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "DeletedTemplate") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"deleted template", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+			}
+			if ($rla == "EditedEmail") {
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"edited email", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "EditedTemplate") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"edited template", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
@@ -489,10 +510,12 @@ class LogPage
 				case "Approved":
 				case "badpass":
 				case "Banned":
+				case "CreatedEmail":
 				case "CreatedTemplate":
 				case "Declined":
 				case "DeletedTemplate":
 				case "Edited":
+				case "EditedEmail":
 				case "EditedTemplate":
 				case "Prefchange":
 				case "Promoted":
@@ -503,13 +526,6 @@ class LogPage
 				case "Deferred":
 				case "Closed":
 				case "Closed 0":
-				case "Closed 1":
-				case "Closed 2":
-				case "Closed 3":
-				case "Closed 4":
-				case "Closed 5":
-				case "Closed 26":
-				case "Closed 30":
 				case "Closed custom":
 				case "Closed custom-n":
 				case "Closed custom-y":

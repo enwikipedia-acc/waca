@@ -1,4 +1,5 @@
 <h2>Email Management</h2>
+{if $userisadmin == true}<a class="btn btn-primary" href="{$tsurl}/acc.php?action=emailmgmt&amp;create=1">Create!</a>{/if}
 {if $displayactive == true}
 	<h3>Active Emails</h3>
 	<table>

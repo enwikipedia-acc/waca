@@ -207,7 +207,7 @@ function sendemail($messageno, $target, $id) {
 	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
 	$messageno = sanitize($messageno);
-	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
+	$query = "SELECT * FROM acc_newmail WHERE newmail_id = '$messageno';";
 	$result = mysql_query($query);
 	if (!$result)
 	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
