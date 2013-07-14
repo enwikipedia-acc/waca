@@ -641,7 +641,7 @@ function zoomPage($id,$urlhash)
 	}
 	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 		if ($row['pend_proxyip']) {
-			$out .= '<br /><i>This request came from '.$row['pend_ip'].', stating it was forwarded for '.$row['pend_proxyip'].'. The IP address which Wikipedia will see is the first "untrusted" IP address in the list below. Links are shown for all addresses starting from where the chain becomes untrusted. IPs past the first untrusted address are not trusted to be correct. Please see the Guide for more details.</i>';
+			$out .= '<br /><p><i>This request came from '.$row['pend_ip'].', stating it was forwarded for '.$row['pend_proxyip'].'. The IP address which Wikipedia will see is the first "untrusted" IP address in the list below. Links are shown for all addresses starting from where the chain becomes untrusted. IPs past the first untrusted address are not trusted to be correct. Please see the <a href=\"https://toolserver.org/~acc/other/xff.html\">XFF demo</a> for more details.</i></p>';
 
 			$out .= '<p><strong>Forwarded IP addresses:</strong><table>';
 			
