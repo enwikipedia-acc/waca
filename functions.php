@@ -215,7 +215,21 @@ function sendemail($messageno, $target, $id) {
 	$row = mysql_fetch_assoc($result);
 	$mailtxt = $row['mail_text'];
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-	mail($target, "RE: [ACC #$id] English Wikipedia Account Request", $mailtxt, $headers);
+	
+	// Get the closing user's Email signature and append it to the Email.
+	$sid = sanitize($_SESSION['user']);
+	$query = "SELECT user_emailsig FROM acc_user WHERE user_name = '$sid'";
+	$result = mysql_query($query);
+	if (!$result)
+		sqlerror("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	if($row['user_emailsig'] != "") {
+		$emailsig = html_entity_decode($row['user_emailsig'], ENT_QUOTES, "UTF-8");
+		mail($target, "RE: [ACC #$id] English Wikipedia Account Request", $mailtxt . "\n\n" . $emailsig, $headers);
+	}
+	else {
+		mail($target, "RE: [ACC #$id] English Wikipedia Account Request", $mailtxt, $headers);
+	}
 }
 
 function listrequests($type, $hideip, $correcthash) {

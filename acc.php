@@ -1180,6 +1180,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	if (isset ($_POST['sig'])) {
 		$sig = sanitize($_POST['sig']);
 		$sid = sanitize($_SESSION['user']);
+		$emailsig = sanitize($_POST['emailsig']);
 		if( isset( $_POST['secureenable'] ) ) {
 			$secureon = 1;
 		} else {
@@ -1200,10 +1201,10 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 			}
 		}
 		if (isset($newemail)) {
-		$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld', user_email = '$newemail' WHERE user_name = '$sid'";
+		$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld', user_email = '$newemail', user_emailsig = '$emailsig' WHERE user_name = '$sid'";
 		}
 		else {
-			$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld' WHERE user_name = '$sid'";
+			$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld', user_emailsig = '$emailsig' WHERE user_name = '$sid'";
 		}
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
@@ -1216,43 +1217,21 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
-	if ($row['user_secure'] > 0) {
-		$securepref = " checked=\"checked\"";
-	} else { $securepref = ""; }
-	$sig = " value=\"" . $row['user_welcome_sig'] . "\"";
-	$abortpref= " checked=\"checked\"";
+	
+	$smarty->assign("securepref", $row['user_secure']);
+	$sig = htmlentities($row['user_welcome_sig'], ENT_QUOTES, 'UTF-8');
+	$smarty->assign("sig", $sig);
 	if(array_key_exists('user_abortpref',$row)){
-		if($row['user_abortpref']==0){
-			$abortpref= "";
-		}
+		$smarty->assign("abortpref", $row['user_abortpref']);
 	}
-	$useremail = " value=\"" . htmlentities($row['user_email']) . "\"";
-    echo '<h2>General settings</h2>';
-    echo '<form action="'.$tsurl.'/acc.php?action=welcomeperf" method="post">';
-    echo '<input type="checkbox" name="secureenable"'.$securepref.'/> Enable use of the secure server<br /><br />';
-    echo 'Your signature (wikicode).<input type="text" name="sig" size ="40"'. $sig.'/>';
-    echo '<i>This would be the same as ~~~ on-wiki. No date, please.</i><br /><br />';
-	//Preference used in functions.php:
-    echo '<input type="checkbox" name="abortpref"'.$abortpref.'/> Don\'t ask to double check before closing requests (requires Javascript)<br /><br />';
-    echo 'Your Email address: <input type="text" name="email" size ="40"'. $useremail .'/><br />';
-    echo 'Your on-wiki username: ' . htmlentities($row['user_onwikiname']) . '<br />' ;
-    // TODO: clean up into nicer code, rather than coming out of php
-	echo <<<HTML
-    <input type="submit"/><input type="reset"/>
-    </form>
-    <h2>Change your password</h2>
-HTML;
-    echo '<form action="'.$tsurl.'/acc.php?action=changepassword" method="post">';
-	echo <<<HTML
-    Your old password: <input type="password" name="oldpassword"/><br />
-    Your new password: <input type="password" name="newpassword"/><br />
-    Confirm new password: <input type="password" name="newpasswordconfirm"/><br />
-    <input type="submit"/><input type="reset"/>
-    </form><br />
-HTML;
-
-
-	$skin->displayIfooter();
+	$smarty->assign("email", $row['user_email']);
+	$onwikiname = htmlentities($row['user_onwikiname'], ENT_QUOTES, 'UTF-8');
+	$smarty->assign("onwikiname", $onwikiname);
+	$emailsig = htmlentities($row['user_emailsig'], ENT_QUOTES, 'UTF-8');
+	$smarty->assign("emailsig", $emailsig);
+	
+	$smarty->display("prefs.tpl");
+	BootstrapSkin::displayInternalFooter();
 	die();
 }
 elseif ($action == "done" && $_GET['id'] != "") {
@@ -1340,7 +1319,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			echo "<form action='?".$querystring."' method='post'><fieldset>";
             echo "<legend>Custom close</legend>";
 			echo "<label for=\"\">Please enter your message to the user below.</label>";
-            BootstrapSkin::displayAlertBox("The contents of this box (and only the contents of this box) will be sent as an email to the user, so remember to close the email properly with a signature (not ~~~~ either)","alert-error","Caution!",true,false);
+            BootstrapSkin::displayAlertBox("The contents of this box will be sent as an email to the user with the signature set in <a href=\"http://localhost/acc/acc.php?action=prefs\">your preferences</a> appended to it. <b>If you do not set a signature in your preferences, please manually enter one at the end of your message</b>.","alert-error","Caution!",true,false);
 			echo "<textarea id=\"msgbody\" name=\"msgbody\" rows=\"15\" class=\"input-block-level\"></textarea>";
 			echo "<label class=\"checkbox\"><input type=\"checkbox\" name=\"created\" />Account created</label>";
 			echo "<label class=\"checkbox\"><input type=\"checkbox\" name=\"ccmailist\" checked=\"checked\"";   
@@ -1351,15 +1330,27 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			echo "</fieldset></form>\n";
 			$skin->displayIfooter();
 			die();
-		} else {
-			
+		} else {			
 			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
 			if (!($session->hasright($_SESSION['user'], "Admin")) || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on")
 				$headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
 			$headers .= 'X-ACC-Request: ' . $gid . "\r\n";
 			$headers .= 'X-ACC-UserID: ' . $_SESSION['userID'] . "\r\n";
 			
-			mail($row2['pend_email'], "RE: [ACC #$gid] English Wikipedia Account Request", $_POST['msgbody'], $headers);
+			// Get the closing user's Email signature and append it to the Email.
+			$sid = sanitize($_SESSION['user']);
+			$query = "SELECT user_emailsig FROM acc_user WHERE user_name = '$sid'";
+			$result = mysql_query($query, $tsSQLlink);
+			if (!$result)
+				sqlerror("Query failed: $query ERROR: " . mysql_error());
+			$row = mysql_fetch_assoc($result);
+			if($row['user_emailsig'] != "") {
+				$emailsig = html_entity_decode($row['user_emailsig'], ENT_QUOTES, "UTF-8");
+				mail($row2['pend_email'], "RE: [ACC #$gid] English Wikipedia Account Request", $_POST['msgbody'] . "\n\n". $emailsig, $headers);
+			}
+			else {
+				mail($row2['pend_email'], "RE: [ACC #$gid] English Wikipedia Account Request", $_POST['msgbody'], $headers);
+			}
 			
 			$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $gid . "';";
 			$result = mysql_query($query, $tsSQLlink);
