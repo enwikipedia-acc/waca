@@ -1219,15 +1219,16 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	$row = mysql_fetch_assoc($result);
 	
 	$smarty->assign("securepref", $row['user_secure']);
-	$sig = htmlentities($row['user_welcome_sig'], ENT_QUOTES, 'UTF-8');
+	$sig = xss($row['user_welcome_sig']);
 	$smarty->assign("sig", $sig);
 	if(array_key_exists('user_abortpref',$row)){
 		$smarty->assign("abortpref", $row['user_abortpref']);
 	}
-	$smarty->assign("email", $row['user_email']);
-	$onwikiname = htmlentities($row['user_onwikiname'], ENT_QUOTES, 'UTF-8');
+	$useremail = xss($row['user_email']);
+	$smarty->assign("email", $useremail);
+	$onwikiname = xss($row['user_onwikiname']);
 	$smarty->assign("onwikiname", $onwikiname);
-	$emailsig = htmlentities($row['user_emailsig'], ENT_QUOTES, 'UTF-8');
+	$emailsig = xss($row['user_emailsig']);
 	$smarty->assign("emailsig", $emailsig);
 	
 	$smarty->display("prefs.tpl");
