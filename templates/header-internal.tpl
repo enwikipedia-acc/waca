@@ -34,6 +34,14 @@
     <!--[if lt IE 9]>
       <script src="{$tsurl}/lib/bootstrap/js/html5shiv.js"></script>
     <![endif]-->
+    
+    <!--  Temporary fix to deal with https://github.com/twbs/bootstrap/issues/7968
+	until a newer Bootstrap version with this fixed is released and we upgrade to it -->
+	<style>
+	.dropdown-backdrop {
+		position: static;
+	}
+	</style>
   </head>
 
   <body>

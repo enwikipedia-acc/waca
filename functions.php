@@ -742,8 +742,11 @@ function zoomPage($id,$urlhash)
 	$out .= '<a class="request-req" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&showblocks=1&username=';
 	$out .= $userurl. '" target="_blank">SUL</a> ( ';
 
+	// The hersfold SUL tool is currently expired, commenting out the link to it for now.
+	/*
     $out .= '<a class="request-req" href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
     $out .= $userurl. '" target="_blank">alt</a> | ';
+    */
     
     //Show Special:CentralAuth link due to bug 35792 <https://bugzilla.wikimedia.org/show_bug.cgi?id=35792>
     $out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
@@ -771,7 +774,7 @@ function zoomPage($id,$urlhash)
 		if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { 
 			// Create user link
 			$out .= '<p><b>Create account link:</b> <a class="request-req-create" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-			$out .= $userurl . '&amp;wpEmail=' . urlencode($row['pend_email']) . '&amp;uselang=en-acc&amp;wpReason='.urlencode("Requested account at [[WP:ACC]], request #" . $row['pend_id']).'&amp;wpCreateaccountMail=true" target="_blank">Create!</a></p>';
+			$out .= $userurl . '&amp;wpEmail=' . urlencode($row['pend_email']) . '&amp;wpReason='.urlencode("Requested account at [[WP:ACC]], request #" . $row['pend_id']).'&amp;wpCreateaccountMail=true" target="_blank">Create!</a></p>';
 		}
 	}
 		
@@ -908,8 +911,11 @@ function zoomPage($id,$urlhash)
 			$posc4 .= '(<a href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&showblocks=1&username=';
 			$posc4 .= $oS . '" target="_blank">SUL-ib</a> | ';
 
+			// The hersfold SUL tool is currently expired, commenting out the link to it for now.
+			/*
 			$posc4 .= '<a href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
 			$posc4 .= $oS . '" target="_blank">alt</a> | ';
+			*/
 			
 			//Show Special:CentralAuth link due to bug 35792 <https://bugzilla.wikimedia.org/show_bug.cgi?id=35792>
 			$posc4 .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
