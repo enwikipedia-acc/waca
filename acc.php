@@ -984,7 +984,7 @@ elseif ($action == "ban") {
 			if (!$result)
 				sqlerror("Query failed: $query ERROR: " . mysql_error());
 			$row = mysql_fetch_assoc($result);
-			$target = $row['pend_ip'];
+			$target = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
 			$type = "IP";
 		}
 		elseif (isset($_GET['email'])) {
@@ -1020,7 +1020,7 @@ elseif ($action == "ban") {
 		} else {
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
 			echo "<form action=\"$tsurl/acc.php?action=sban&amp;user=$siuser\" method=\"post\">";
-			echo "<tr><td>Ban target:</td><td><input type=\"text\" name=\"target\" /></td></tr>\n";
+			echo "Ban target: $target\n<br \>\n";
 			echo "<table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td></tr>\n";
 			echo "<tr><td>Duration:</td><td>\n";
 			echo "<select name=\"duration\">\n";
