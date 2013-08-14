@@ -1510,7 +1510,9 @@ elseif ($action == "logs") {
 				"Renamed" => "User rename",
 				"Approved" => "User approval",
 				"Promoted" => "User promotion",
-				"Prefchange" => "User preferences change"
+				"Prefchange" => "User preferences change",
+                "SendReserved" => "Reservation sending",
+                "ReceiveReserved" => "Reservation recieving",
 	);
 	foreach($logActions as $key => $value)
 	{
@@ -1952,5 +1954,48 @@ elseif ($action == "ec") { // edit comment
 		$skin->displayIfooter();
 		die();
 	}
+}
+elseif ($action == "sendtouser") { 
+    
+    // Sanitises the resid for use and checks its validity.
+    print_r($_POST);
+    
+	$request = $internalInterface->checkreqid($_POST['id']);
+	$userid = $session->getUidFromUsername($_POST['user']);
+	
+	mysql_query('SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;',$tsSQLlink);
+	mysql_query('BEGIN TRANSACTION;',$tsSQLlink);
+    
+	$query = "UPDATE `acc_pend` SET `pend_reserved` = '".$userid."' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result){		//Unlock tables first!
+		mysql_query("ROLLBACK;", $tsSQLlink);
+		Die("Error reserving request.");
+	}
+	$now = date("Y-m-d H-i-s");
+	
+	// old user sends
+	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$request', '".sanitise($_SESSION['user'])."', 'SendReserved', '$now', '');";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result) {
+		sqlerror("Query failed: $query ERROR: " . mysql_error());
+		mysql_query("ROLLBACK;", $tsSQLlink);
+	}
+	
+	// new user reserves...
+	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$request', '".mysql_real_escape_string($_POST['user'], $tsSQLlink)."', 'ReceiveReserved', '$now', '');";
+	$result = mysql_query($query, $tsSQLlink);
+	
+	if (!$result) {
+		sqlerror("Query failed: $query ERROR: " . mysql_error());
+		mysql_query("ROLLBACK;", $tsSQLlink);
+	}
+	//$accbotSend->send("Request $request is being handled by " . $_POST['user']);
+
+	// Release the lock on the table.
+	mysql_query('COMMIT;',$tsSQLlink);
+    
+    // redirect to zoom page
+    echo "<meta http-equiv=\"Refresh\" Content=\"0; URL=$tsurl/acc.php?action=zoom&id=$request\">";
 }
 ?>

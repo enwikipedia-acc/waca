@@ -320,6 +320,12 @@ class LogPage
 			if($rla == "Reserved") {
 				$logList .= "<li>$rlu reserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
 			}
+			if($rla == "SendReserved") {
+				$logList .= "<li>$rlu sent reserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
+			}			
+            if($rla == "ReceiveReserved") {
+				$logList .= "<li>$rlu received a reserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
+			}
 			if($rla == "Unreserved") {
 				$logList .= "<li>$rlu unreserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
 			}
@@ -480,6 +486,12 @@ class LogPage
 			}
 			if($rla == "Reserved") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"reserved", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+			}			
+            if($rla == "SendReserved") {
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"sent reservation", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+			}
+            if($rla == "ReceiveReserved") {
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"received reservation", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if($rla == "Unreserved") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"unreserved", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
@@ -532,6 +544,8 @@ class LogPage
 				case "Closed custom-y":
 				case "Email Confirmed":
 				case "Reserved":
+				case "SendReserved":
+				case "ReceiveReserved":
 				case "Unreserved":
 				case "BreakReserve":
 				case "EditComment-r":

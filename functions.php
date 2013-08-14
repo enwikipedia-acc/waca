@@ -1013,6 +1013,26 @@ function zoomPage($id,$urlhash)
 	}
 	$out .= "<input type='hidden' name='id' value='$gid' /><input type='text' name='comment' size='75' /><input type='hidden' name='visibility' value='user' /><input type='submit' value='Quick Reply' /></form>";
 
+    // assign to user
+    if (! isProtected(0)) {
+		$userListQuery = "SELECT user_name FROM acc_user;";
+		$userListResult = mysql_query($userListQuery, $tsSQLlink);
+		if (!$userListResult)
+			sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
+		$userListData = array();
+		while( $u = mysql_fetch_assoc( $userListResult ) ) {
+			$userListData[] = '"' . $u['user_name'] . '"';
+		}
+		$userList = '[' . implode(",", $userListData) . ']';	
+        
+		$out .= "<form action='$tsurl/acc.php?action=sendtouser&amp;hash=$urlhash' method='post'>";
+		$out .= "<input type='hidden' name='id' value='$gid' />";
+		$out .= "<input type='text' required placeholder='Assign to user...' name='user' class='span3' data-provide='typeahead' data-items='4' data-source='" . $userList . "'>";
+		$out .= "<input class='btn' type='submit' value='Assign to user' />";
+		$out .= "</form>";
+	}
+    // end: assign to user
+    
 	$ipmsg = 'this ip';
 	if ($hideinfo == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']))
 	$ipmsg = $thisip;
