@@ -1007,11 +1007,11 @@ function zoomPage($id,$urlhash)
 		$out .= "<i>None.</i>\n";
 	}
 	if ($urlhash != "") {
-		$out .= "<form action='$tsurl/acc.php?action=comment-quick&amp;hash=$urlhash' method='post' />";
+		$out .= "<form action='$tsurl/acc.php?action=comment-quick&amp;hash=$urlhash' method='post'>";
 	} else {
-		$out .= "<form action='$tsurl/acc.php?action=comment-quick' method='post' />";
+		$out .= "<form action='$tsurl/acc.php?action=comment-quick' method='post'>";
 	}
-	$out .= "<input type='hidden' name='id' value='$gid' /><input type='text' name='comment' size='75' /><input type='hidden' name='visibility' value='user' /><input type='submit' value='Quick Reply' />";
+	$out .= "<input type='hidden' name='id' value='$gid' /><input type='text' name='comment' size='75' /><input type='hidden' name='visibility' value='user' /><input type='submit' value='Quick Reply' /></form>";
 
 	$ipmsg = 'this ip';
 	if ($hideinfo == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']))
