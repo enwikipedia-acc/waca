@@ -1320,7 +1320,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			echo "<form action='?".$querystring."' method='post'><fieldset>";
             echo "<legend>Custom close</legend>";
 			echo "<label for=\"\">Please enter your message to the user below.</label>";
-            BootstrapSkin::displayAlertBox("The contents of this box will be sent as an email to the user with the signature set in <a href=\"http://localhost/acc/acc.php?action=prefs\">your preferences</a> appended to it. <b>If you do not set a signature in your preferences, please manually enter one at the end of your message</b>.","alert-error","Caution!",true,false);
+            BootstrapSkin::displayAlertBox("The contents of this box will be sent as an email to the user with the signature set in <a href=\"$tsurl/acc.php?action=prefs\">your preferences</a> appended to it. <b>If you do not set a signature in your preferences, please manually enter one at the end of your message</b>.","alert-error","Caution!",true,false);
 			echo "<textarea id=\"msgbody\" name=\"msgbody\" rows=\"15\" class=\"input-block-level\"></textarea>";
 			echo "<label class=\"checkbox\"><input type=\"checkbox\" name=\"created\" />Account created</label>";
 			echo "<label class=\"checkbox\"><input type=\"checkbox\" name=\"ccmailist\" checked=\"checked\"";   
