@@ -4,7 +4,7 @@
     <h3 id="modalFlowchartLabel">Similar account flowchart</h3>
   </div>
   <div class="modal-body">
-    <p><img class="img-polaroid" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/ACC-similar-flowchart.svg/500px-ACC-similar-flowchart.svg.png"/></p>
+    <p><img class="img-polaroid" src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3e/ACC-similar-flowchart.svg/500px-ACC-similar-flowchart.svg.png" alt="Similar account flowchart"/></p>
   </div>
   <div class="modal-footer">
     <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true">Close</button>

@@ -116,11 +116,6 @@ elseif (!isset($_GET['nocheck']))
 		// ?
         BootstrapSkin::displayInternalHeader();
         $session->checksecurity($_SESSION['user']);
-
-
-
-        $out = "<div id=\"row-fluid\">";
-        echo $out;
 }
 
 // When no action is specified the default Internal ACC are displayed.
