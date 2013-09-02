@@ -1,5 +1,5 @@
 <?php
-require_once 'lib/smarty-3.1.13/Smarty.class.php';
+require_once 'lib/smarty/Smarty.class.php';
 
 global $smarty, $smartydebug;
 $smarty = new Smarty();
