@@ -67,8 +67,8 @@
                   <div class="span6">{if $youreserved}<a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Break reservation</a>
 				  {elseif $isadmin == true}<a class="btn span6 btn-warning" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$rid}">Force break</a>{/if}</div>
               </div>
-              <hr />
               {if $isprotected == false}
+			  <hr />
               <div class="row-fluid">
                   {if !array_key_exists($type, $requeststates)}
                   <a class="btn span 3" href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$defaultstate}">Reset request</a>
@@ -76,11 +76,10 @@
                   <a class="btn span3" href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$state@key}">{$state.deferto}</a>
                   {/foreach}{/if}
               </div>
-              <hr/>    
               {/if}
-                 
+              {if $isprotected == false}
+              <hr/>    
               <div class="row-fluid">
-                  {if $isprotected == false}
                   {if $isreserved == true}
                   <a class="btn btn-success" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=1&amp;sum={$checksum}">Created</a>
                   <a class="btn btn-warning" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=2&amp;sum={$checksum}">Similar</a>
@@ -92,8 +91,8 @@
                   <a class="btn btn-info" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=custom&amp;sum={$checksum}">Custom</a>
                   {/if}
                   <a class="btn btn-inverse" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=0&amp;sum={$checksum}">Drop</a>
-                  {/if}
               </div>
+              {/if}
               {if $isadmin}
               <hr />
               <div class="row-fluid">
@@ -199,6 +198,7 @@
             	<a class="btn btn-small" href="https://en.wikipedia.org/wiki/Special:PasswordReset?wpUsername={$spoof|escape:'url'}">Send Password reset</a>
             	<a class="btn btn-small" href="https://tools.wmflabs.org/xtools/pcount/index.php?lang=en&amp;wiki=wikipedia&amp;name={$spoof|escape:'url'}">Count</a></td></tr>
             	{/foreach}
+            	</table>
             {/if}
         </div>
         
