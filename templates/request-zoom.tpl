@@ -205,9 +205,9 @@
         <div class="row-fluid container-fluid">
             <div class="row-fluid">
                 <div class="span6">
-                    <h4>Other requests from {if $showinfo == true}{$ip}{else}this email address{/if}</h4>
+                    <h4>Other requests from {if $showinfo == true}{$email}{else}this email address{/if}</h4>
                     {if $email == "acc@toolserver.org"}<p class="muted">Email information cleared</p>
-                    {elseif $otheremail == false}<p class="muted">None detected</p>
+                    {elseif $numemail == 0}<p class="muted">None detected</p>
                     {else}<table class="table table-condensed table-striped">
                     {foreach $otheremail as $others}
                     <tr><td>{$others.date}</td><td><a href="{$tsurl}/acc.php?action=zoom&amp;id={$others.id}">{$others.name}</a></td></tr>
@@ -218,7 +218,7 @@
                 <div class="span6">
                     <h4>Other requests from {if $showinfo == true}{$ip}{else}this IP address{/if}</h4>
                     {if $ip == "127.0.0.1"}<p class="muted">IP information cleared</p>
-                    {elseif $otherip == false}<p class="muted">None detected</p>
+                    {elseif $numip == 0}<p class="muted">None detected</p>
                     {else}<table class="table table-condensed table-striped">
                     {foreach $otherip as $others}
                     <tr><td>{$others.date}</td><td><a href="{$tsurl}/acc.php?action=zoom&amp;id={$others.id}">{$others.name}</a></td></tr>

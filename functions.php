@@ -821,7 +821,6 @@ function zoomPage($id,$urlhash)
 	}
 
 	// START OTHER REQUESTS BY IP AND EMAIL STUFF
-	$smarty->assign("otherip", false);
 
 	if ($thisip != '127.0.0.1') {
 		$query = "SELECT pend_date, pend_id, pend_name FROM acc_pend WHERE (pend_proxyip LIKE '%{$thisip}%' OR pend_ip = '$thisip') AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
@@ -841,12 +840,7 @@ function zoomPage($id,$urlhash)
 			$otherip[$i]['name'] == $row['pend_name'];
 			$i++;
 		}
-		if ($i == 0) {
-			$smarty->assign("otherip", false);
-		}
-		else {
-			$smarty->assign("otherip", $otherip);
-		}
+		$smarty->assign("otherip", $otherip);
 	}
 
 	// Displays other requests from this email.
@@ -870,13 +864,7 @@ function zoomPage($id,$urlhash)
 			$otheremail[$i]['name'] == $row['pend_name'];
 			$i++;
 		}
-		// Checks whether there were similar requests.
-		if ($i == 0) {
-			$smarty->assign("otheremail", false);
-		}
-		else {
-			$smarty->assign("otheremail", $otheremail);
-		}
+		$smarty->assign("otheremail", $otheremail);
 	}
 
     $sid = sanitize( $_SESSION['user'] );
