@@ -61,10 +61,10 @@
               <div class="row-fluid">
               {if $showinfo == true && $isprotected == false && $isreserved == true}
                   <div class="span6">
-                      <a class="btn btn-primary span6 offset3" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&wpName={$username}&wpEmail={$email}&wpReason=Requested+account+at+%5B%5BWP%3AACC%5D%5D%2C+request+%23111&wpCreateaccountMail=true">Create account</a>
+                      <a class="btn btn-primary span6 offset3" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$username}&amp;wpEmail={$email}&amp;wpReason=Requested+account+at+%5B%5BWP%3AACC%5D%5D%2C+request+%23111&amp;wpCreateaccountMail=true">Create account</a>
                   </div>
                   {/if}
-                  <div class="span6">{if $youreserved}<a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=breakreserve&resid={$id}">Break reservation</a>
+                  <div class="span6">{if $youreserved}<a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Break reservation</a>
 				  {elseif $isadmin == true}<a class="btn span6 btn-warning" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$rid}">Force break</a>{/if}</div>
               </div>
               <hr />
@@ -73,7 +73,7 @@
                   {if !array_key_exists($type, $requeststates)}
                   <a class="btn span 3" href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$defaultstate}">Reset request</a>
                   {else}{foreach $requeststates as $state}
-                  <a class="btn span3" href="{$tsurl}/acc.php?action=defer&id={$id}&sum={$checksum}&target={$state@key}">{$state.deferto}</a>
+                  <a class="btn span3" href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$state@key}">{$state.deferto}</a>
                   {/foreach}{/if}
               </div>
               <hr/>    
@@ -112,7 +112,7 @@
                       <table class="table table-condensed table-striped">
                           <tbody>
 							{if $zoomlogs}{foreach $zoomlogs as $zoomrow}
-                          	  <tr><td>{if $zoomrow.userid != NULL}<a href='{$tsurl}/statistics.php?page=Users&amp;user={$zoomrow.userid}'>{$zoomrow.user}</a>{else}{$zoomrow.user}{/if}{if $zoomrow.security == "admin"}<br /><span style="color:red">(admin only)</span>{/if}</td><td><em>{$zoomrow.entry}</td><td>{$zoomrow.time}</td><td>{if $zoomrow.canedit == true}<a class="btn btn-small" href="{$tsurl}/acc.php?action=ec&amp;id={$zoomrow.id}">Edit</a></td></tr>{/if}
+                          	  <tr><td>{if $zoomrow.userid != NULL}<a href='{$tsurl}/statistics.php?page=Users&amp;user={$zoomrow.userid}'>{$zoomrow.user}</a>{else}{$zoomrow.user}{/if}{if $zoomrow.security == "admin"}<br /><span style="color:red">(admin only)</span>{/if}</td><td><em>{$zoomrow.entry nofilter}</em></td><td>{$zoomrow.time}</td><td>{if $zoomrow.canedit == true}<a class="btn btn-small" href="{$tsurl}/acc.php?action=ec&amp;id={$zoomrow.id}">Edit</a></td></tr>{/if}
                           	{/foreach}
                           	{else}
                           	  <tr><td></td><td><em>None.</em></td><td></td><td></td>
@@ -138,16 +138,16 @@
                     <td>{$proxy.ip}<br /><span class="muted">{if $proxy.rdns != NULL}RDNS: {$proxy.rdns}{elseif $proxy.routable == false}<em><a style="color:grey;" href="http://en.wikipedia.org/wiki/Private_network">Non-routable address</a></em>{elseif $proxy.rdnsfailed == true}<em>(unable to determine address)</em>{else}<em>(no rdns available)</em>{/if}</span></td>
                     <td>{if $proxy.trust == false && $proxy.routable == true && $proxy.rdnsfailed == false}<a class="btn btn-small" href="https://en.wikipedia.org/wiki/User talk:{$proxy.ip}">Talk page</a>
 						<a class="btn btn-small" href="https://en.wikipedia.org/wiki/Special:Contributions/{$proxy.ip}">Local Contributions</a>
-						<a class="btn btn-small" href="{$tsurl}/redir.php?tool=tparis-pcount&data={$proxy.ip}">Deleted Edits</a>
-						<a class="btn btn-small" href="{$tsurl}/redir.php?tool=luxo-contributions&data={$proxy.ip}">Global Contributions</a>
-						<a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page={$proxy.ip}">Local Block Log</a>
+						<a class="btn btn-small" href="{$tsurl}/redir.php?tool=tparis-pcount&amp;data={$proxy.ip}">Deleted Edits</a>
+						<a class="btn btn-small" href="{$tsurl}/redir.php?tool=luxo-contributions&amp;data={$proxy.ip}">Global Contributions</a>
+						<a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=block&amp;page={$proxy.ip}">Local Block Log</a>
 						<a class="btn btn-small" href="https://en.wikipedia.org/wiki/Special:BlockList/{$proxy.ip}">Active Local Blocks</a>
-						<a class="btn btn-small" href="https://meta.wikimedia.org/w/index.php?title=Special:Log&type=gblblock&page={$proxy.ip}">Global Block Log</a>
+						<a class="btn btn-small" href="https://meta.wikimedia.org/w/index.php?title=Special:Log&amp;type=gblblock&amp;page={$proxy.ip}">Global Block Log</a>
 						<a class="btn btn-small" href="https://en.wikipedia.org/wiki/Special:GlobalBlockList/{$proxy.ip}">Active Global Blocks</a>
-						<a class="btn btn-small" href="{$tsurl}/redir.php?tool=oq-whois&data={$proxy.ip}">Whois</a>
-						<a class="btn btn-small" href="{$tsurl}/redir.php?tool=ipinfodb-locator&data={$proxy.ip}">Geolocate</a>
-						<a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:AbuseLog&wpSearchUser={$proxy.ip}">Abuse Filter Log</a>
-						{if $ischeckuser == true}<a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:CheckUser&ip={$proxy.ip}&reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$id}">CheckUser</a>{/if}
+						<a class="btn btn-small" href="{$tsurl}/redir.php?tool=oq-whois&amp;data={$proxy.ip}">Whois</a>
+						<a class="btn btn-small" href="{$tsurl}/redir.php?tool=ipinfodb-locator&amp;data={$proxy.ip}">Geolocate</a>
+						<a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:AbuseLog&amp;wpSearchUser={$proxy.ip}">Abuse Filter Log</a>
+						{if $ischeckuser == true}<a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:CheckUser&amp;ip={$proxy.ip}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$id}">CheckUser</a>{/if}
 					{/if}</td></tr>
             {/foreach}
             </table>
@@ -157,15 +157,15 @@
         		<h4>IP Address links:</h4>
         		<a class="btn btn-small" href="https://en.wikipedia.org/wiki/Special:Contributions/{$ip}">Local Contributions</a>
 				<a class="btn btn-small" href="{$tsurl}/redir.php?tool=tparis-pcount&data={$ip}">Deleted Edits</a>
-				<a class="btn btn-small" href="{$tsurl}/redir.php?tool=luxo-contributions&data={$ip}">Global Contributions</a>
-				<a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:Log&type=block&page={$ip}">Local Block Log</a>
+				<a class="btn btn-small" href="{$tsurl}/redir.php?tool=luxo-contributions&amp;data={$ip}">Global Contributions</a>
+				<a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=block&amp;page={$ip}">Local Block Log</a>
 				<a class="btn btn-small" href="https://en.wikipedia.org/wiki/Special:BlockList/{$ip}">Active Local Blocks</a>
-				<a class="btn btn-small" href="https://meta.wikimedia.org/w/index.php?title=Special:Log&type=gblblock&page={$ip}">Global Block Log</a>
+				<a class="btn btn-small" href="https://meta.wikimedia.org/w/index.php?title=Special:Log&amp;type=gblblock&amp;page={$ip}">Global Block Log</a>
 				<a class="btn btn-small" href="https://en.wikipedia.org/wiki/Special:GlobalBlockList/{$ip}">Active Global Blocks</a>
-				<a class="btn btn-small" href="{$tsurl}/redir.php?tool=oq-whois&data={$ip}">Whois</a>
-				<a class="btn btn-small" href="{$tsurl}/redir.php?tool=ipinfodb-locator&data={$ip}">Geolocate</a>
-				<a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:AbuseLog&wpSearchUser={$ip}">Abuse Filter Log</a>
-				{if $ischeckuser == true}<a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:CheckUser&ip={$ip}&reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$id}">CheckUser</a>{/if}
+				<a class="btn btn-small" href="{$tsurl}/redir.php?tool=oq-whois&amp;data={$ip}">Whois</a>
+				<a class="btn btn-small" href="{$tsurl}/redir.php?tool=ipinfodb-locator&amp;data={$ip}">Geolocate</a>
+				<a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:AbuseLog&amp;wpSearchUser={$ip}">Abuse Filter Log</a>
+				{if $ischeckuser == true}<a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:CheckUser&amp;ip={$ip}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$id}">CheckUser</a>{/if}
 			</div>{/if}
         <hr />{/if}
         <div class="row-fluid">
@@ -173,11 +173,11 @@
            
             <div class="btn-group">
                 <a class="btn btn-small" href="https://en.wikipedia.org/wiki/User:{$username}">User page</a>
-                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:Log&type=newusers&user=&page={$username}">Creation log</a>
-                <a class="btn btn-small" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&showblocks=1&username={$username}">SUL</a>
+                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page={$username}">Creation log</a>
+                <a class="btn btn-small" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&amp;showblocks=1&amp;username={$username}">SUL</a>
                 <a class="btn btn-small" href="https://en.wikipedia.org/wiki/Special:CentralAuth/{$username}">Special:CentralAuth</a>
-                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special%3AListUsers&username={$username}&group=&limit=1">Username list</a>
-                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special%3ASearch&profile=advanced&search={$username}&fulltext=Search&ns0=1&redirs=1&profile=advanced">Wikipedia mainspace search</a>
+                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username={$username}&amp;group=&amp;limit=1">Username list</a>
+                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special%3ASearch&amp;profile=advanced&amp;search={$username}&amp;fulltext=Search&amp;ns0=1&amp;redirs=1&amp;profile=advanced">Wikipedia mainspace search</a>
                 <a class="btn btn-small" href="https://www.google.com/search?q={$username}">Google search</a>
             </div>
             
@@ -193,11 +193,11 @@
             	{if $spoof == $username}<tr><td></td><td><h3>Note: This account has already been created</h3></td>{continue}{/if}
             	<tr><td><a href="https://en.wikipedia.org/wiki/User:{$spoof|escape:'url'}">{$spoof}</a></td>
             	<td><a class="btn btn-small" href="https://en.wikipedia.org/wiki/Special:Contributions/{$spoof|escape:'url'}">User page</a>
-            	<a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special%3ALog&type=&user=&page={$spoof|escape:'url'}">Logs</a>
-            	<a class="btn btn-small" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&showblocks=1&username={$spoof|escape:'url'}">SUL</a>
+            	<a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special%3ALog&amp;type=&amp;user=&amp;page={$spoof|escape:'url'}">Logs</a>
+            	<a class="btn btn-small" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&amp;showblocks=1&amp;username={$spoof|escape:'url'}">SUL</a>
             	<a class="btn btn-small" href="https://en.wikipedia.org/wiki/Special:CentralAuth/{$spoof|escape:'url'}">Special:CentralAuth</a>
             	<a class="btn btn-small" href="https://en.wikipedia.org/wiki/Special:PasswordReset?wpUsername={$spoof|escape:'url'}">Send Password reset</a>
-            	<a class="btn btn-small" href="https://tools.wmflabs.org/xtools/pcount/index.php?lang=en&wiki=wikipedia&name={$spoof|escape:'url'}">Count</a></td></tr>
+            	<a class="btn btn-small" href="https://tools.wmflabs.org/xtools/pcount/index.php?lang=en&amp;wiki=wikipedia&amp;name={$spoof|escape:'url'}">Count</a></td></tr>
             	{/foreach}
             {/if}
         </div>
