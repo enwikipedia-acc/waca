@@ -97,7 +97,7 @@ class StatsMonthlyStats extends StatisticsPage
 		}
 		else
 		{
-			$out.= "<br />Graph drawing is currently disabled.";
+			$out.= BootstrapSkin::displayAlertBox("Graph drawing is currently disabled.","alert-info","",false,false,true);
 		}
 		
 		return $out;

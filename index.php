@@ -16,12 +16,14 @@
 require_once 'config.inc.php';
 require_once 'AntiSpoof.php';
 require_once 'functions.php';
+require_once 'includes/SmartyInit.php';
 require_once 'includes/offlineMessage.php';
 require_once 'includes/database.php';
 require_once 'includes/request.php';
 require_once 'includes/skin.php';
 require_once 'includes/messages.php';
 require_once 'includes/accbotSend.php';
+require_once 'includes/strings.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.
@@ -37,6 +39,7 @@ $request  = new accRequest();
 $messages = new messages();
 $accbot   = new accbotSend();
 $skin     = new skin();
+$strings  = new strings();
 
 // Display the header of the interface.
 $skin->displayPheader();
@@ -62,14 +65,11 @@ $request->checkConfirmEmail();
 // Checks whether both the name and email are set.
 if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	
-	// Replaces the spaces in the username with underscores.
-	$_POST['name'] = str_replace(" ", "_", $_POST['name']);
+	// Trim whitespace and make the first character uppercase.
+	$_POST['name'] = $strings->struname($_POST['name']);
 	
-	// Trims the whitespace from the username.
-	$_POST['name'] = trim(ucfirst($_POST['name']));
-
 	// Initialize the variables and escapes them for MySQL.
-	$user = $tsSQL->escape(trim($_POST['name']));
+	$user = $tsSQL->escape($_POST['name']);
 	$email = $tsSQL->escape(trim($_POST['email']));
 
 	// Check for various types of bans.

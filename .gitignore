@@ -13,3 +13,7 @@ deploy/
 *.suo
 *.sln
 *.phpproj
+.settings/
+.buildpath
+.project
+templates_c/*

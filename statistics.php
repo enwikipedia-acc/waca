@@ -14,10 +14,11 @@
 
 // Get all the classes.
 require_once 'config.inc.php';
+require_once 'functions.php';
+require_once 'includes/SmartyInit.php';
 require_once 'includes/StatisticsPage.php';
 require_once 'includes/messages.php';
 require_once 'includes/database.php';
-require_once 'functions.php';
 require_once 'devlist.php';
 require_once 'includes/offlineMessage.php';
 

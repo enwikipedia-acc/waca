@@ -17,6 +17,7 @@ global $session;
 // Get all the classes.
 require_once 'config.inc.php';
 require_once 'functions.php';
+require_once 'includes/SmartyInit.php';
 require_once 'includes/offlineMessage.php';
 require_once 'includes/database.php';
 require_once 'includes/skin.php';
@@ -36,6 +37,7 @@ $asSQLlink = $asSQL->getLink();
 
 // Initialize the class objects.
 $skin     = new skin();
+$bskin     = new BootstrapSkin();
 
 // Initialize the session data.
 session_start();
@@ -50,93 +52,123 @@ if( isset( $_SESSION['user'] ) ) {
 // please note (prodego esp.) non-admins cannot perform
 // IP address lookups still, but can search on email and requested name.
 
-$skin->displayIheader($sessionuser);
-echo '<div id="content">';
+$showIpSearch =  ( $session->hasright($sessionuser, "Admin") || $session->isCheckuser($sessionuser) ) ;
+
+
+BootstrapSkin::displayInternalHeader();
+
 // protect against logged out users
 if( !$session->hasright($sessionuser, "Admin") && !$session->hasright($sessionuser, "User")) {
-		$skin->displayRequestMsg("You must log in to use the search form.<br />\n");	
-		$skin->displayIfooter();
-		die();
-	}
+    showlogin();
+    BootstrapSkin::displayInternalFooter();
+	die();
+}
 
-
+///////////////// Page functions
+function showSearchForm($showIpSearch = false) {
+    //global $session;
+	echo <<<HTML
+<form action="search.php" method="get" class="form-horizontal">
+    <div class="control-group">
+        <label class="control-label" for="term">Search term</label>
+        <div class="controls">
+            <input type="text" id="term" name="term" placeholder="Search for...">
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="term">Search as ...</label>
+        <div class="controls">
+            <select name="type">
+                <option value="Request">... requested username</option>
+                <option value="email">... email address</option>
+HTML;
+    if( $showIpSearch ) { //Enable the IP search for admins and CUs
+        echo '                <option value="IP">... IP address/range</option>';
+    }
+    echo <<<HTML
+            </select>
+        </div>
+    </div>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><i class="icon-search icon-white"></i>&nbsp;Search</button>
+    </div>
+</form>    
+HTML;
+}
 ///////////////// Page code
 
+echo <<<HTML
+<div class="page-header">
+  <h1>Search<small> for a request</small></h1>
+</div>
 
-echo '<h1>Request search tool</h1>';
-if( isset($_GET['term'])) {
+<div class="row-fluid">
+    <div class="span12">
+HTML;
+
+BootstrapSkin::pushTagStack("</div>"); // span12
+BootstrapSkin::pushTagStack("</div>"); // row
+    
+    
+if( isset($_GET['term']) && isset($_GET['type']) ) {
 	$term = sanitize($_GET['term']);
 	$type = sanitize($_GET['type']);
 
 	if($term == "" || $term == "%") {
-		$skin->displayRequestMsg("No search term entered.<br />\n");	
-		$skin->displayIfooter();
+        BootstrapSkin::displayAlertBox( "No search term entered.","alert-error","",false );
+        showSearchForm($showIpSearch);
+        BootstrapSkin::displayInternalFooter();
 		die();
 	}
 
 	if( $type == "email") {
-		// move this to here, so non-admins can perform searches, but not on IP addresses or emails
-//		if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) {
-//				// Displays both the error message and the footer of the interface.
-//				$skin->displayRequestMsg("I'm sorry, but only administrators and checkusers can search for Email Addresses.<br />\n");	
-//				$skin->displayIfooter();
-//				die();
-//		}
 		if($term == "@") {
-			$skin->displayRequestMsg("Invalid search term entered.<br />\n");	
-			$skin->displayIfooter();
+            BootstrapSkin::displayAlertBox("The search term '@' is not valid for email address searches!");
+            showSearchForm($showIpSearch);
+            BootstrapSkin::displayInternalFooter();
 			die();
 		}			
 
-		echo "<h2>Searching for email address: $term ...</h2>";
+		echo "<h4>Searching for email address: $term ...</h4>";
 		$query = "SELECT pend_id,pend_email FROM acc_pend WHERE pend_email LIKE '%$term%';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$html = "<table cellspacing=\"0\">\n";
-		$currentrow = 0;
+			Die("Query failed: $query ERROR: " . mysql_error()); //TODO: fix sql error display
+		$html = "<ol>";
 		while ( list( $pend_id,$pend_email ) = mysql_fetch_row( $result ) ) {
-			$currentrow += 1;
-			$out = '<tr';
-			if ($currentrow % 2 == 0) {
-				$out .= ' class="even">';
-			} else {
-				$out .= ' class="odd">';
-			}
-			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_email </a></small></td></tr>";
+			$out = '<li>';
+			$out .= "<a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_email </a>";
 			$html .= $out;
 		}
-		$html .= "</table>\n";
-		$html .= "<b>Results found: </b> $currentrow.";
+		$html .= "</ol>\n";
+		$html .= "<p>Results found: " . mysql_num_rows( $result ) . ". </p>";
 		echo $html;
 	}
 	elseif( $type == 'IP') {
 		// move this to here, so non-admins can perform searches, but not on IP addresses or emails
-		if( !$session->hasright($sessionuser, "Admin") && !$session->isCheckuser($sessionuser)) {
-				// Displays both the error message and the footer of the interface.
-				$skin->displayRequestMsg("I'm sorry, but only administrators and checkusers can search for IP Addresses.<br />\n");	
-				$skin->displayIfooter();
-				die();
+		if( ! $showIpSearch ) {
+			// Displays both the error message and the footer of the interface.
+            BootstrapSkin::displayAlertBox("IP address search is only available to tool admins and checkusers.", "alert-error", "Access Denied");
+            showSearchForm($showIpSearch);
+            BootstrapSkin::displayInternalFooter();
+			die();
 		}
 		
 		$termexp = explode("/", $term, 2);
 		$term = $termexp[0];
-		$cidr = $termexp[1];
-		
-		if( !isset($cidr)) {
-			$cidr = '32';
-		}
-		
+        
+		$cidr = isset($termexp[1]) ? $termexp[1] : "32" ;
+				
 		if ($cidr < '16' || $cidr > '32') {
 				$skin->displayRequestMsg("The CIDR must be between /16 and /32!<br />\n");	
 				$skin->displayIfooter();
 				die();
 		}
 		if ($cidr == '32') {
-			echo "<h2>Searching for IP address: $term ...</h2>";
+			echo "<h4>Searching for IP address: $term ...</h4>";
 		}
 		else { 
-			echo '<h2>Searching for IP range: ' . $term . '/' . $cidr . '...</h2>';
+			echo '<h4>Searching for IP range: ' . $term . '/' . $cidr . '...</h4>';
 		}
 		
 		if ($cidr != '32') {
@@ -146,74 +178,49 @@ if( isset($_GET['term'])) {
 			$query = "SELECT pend_id,pend_ip,pend_name,pend_date,pend_status FROM acc_pend WHERE inet_aton(pend_ip) between $termlong and $endrange;";
 		}
 		else {
-		$query = "SELECT pend_id,pend_ip,pend_name,pend_date,pend_status FROM acc_pend WHERE pend_ip LIKE '%$term%';";
+		    $query = "SELECT pend_id,pend_ip,pend_name,pend_date,pend_status FROM acc_pend WHERE pend_ip LIKE '%$term%';";
 		}
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		$html = "<table cellspacing=\"0\">\n";
-		$currentrow = 0;
+        
+        $html = "<ol>";
 		while ( list( $pend_id,$pend_ip,$pend_name,$pend_date,$pend_status ) = mysql_fetch_row( $result ) ) {
-			$currentrow += 1;
-			$out = '<tr';
-			if ($currentrow % 2 == 0) {
-			$out .= ' class="even">';
-			} else {
-				$out .= ' class="odd">';
-			}
-			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_name</a> ($pend_status) - ($pend_ip @ $pend_date ) </small></td></tr>";
+			$out = '<li>';
+			$out .= "<a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_name</a> ($pend_status) - ($pend_ip @ $pend_date ) ";
 			$html .= $out;
 		}
-		$html .= "</table>\n";
-		$html .= "<b>Results found: </b> $currentrow.";
+		$html .= "</ol>\n";
+		$html .= "<p>Results found: " . mysql_num_rows( $result ) . ". </p>";
 		echo $html;
 	}
 	elseif( $type == 'Request') {
-		echo "<h2>Searching for requested username: $term ...</h2>";
+		echo "<h4>Searching for requested username: $term ...</h4>";
 		$query = "SELECT pend_id,pend_name FROM acc_pend WHERE pend_name LIKE '%$term%';";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		$html = "<table cellspacing=\"0\">\n";
-		$currentrow = 0;
+		
+        $html = "<ol>";
 		while ( list( $pend_id, $pend_name ) = mysql_fetch_row( $result ) ) {
-			$currentrow += 1;
-			$out = '<tr';
-			if ($currentrow % 2 == 0) {
-			$out .= ' class="even">';
-			} else {
-				$out .= ' class="odd">';
-			}
-			$out .= "<td><b>$currentrow.</b></td><td><small><a style=\"color:blue\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_name </a></small></td></tr>";
+			$out = '<li>';
+			$out .= "<a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\"> $pend_name </a>";
 			$html .= $out;
 		}
-		$html .= "</table>\n";
-		$html .= "<b>Results found: </b> $currentrow.";
+		$html .= "</ol>\n";
+		$html .= "<p>Results found: " . mysql_num_rows( $result ) . ". </p>";
 		echo $html;
 	}
 	else
 	{
-		$skin->displayRequestMsg("Unknown search type.<br />\n");	
-		$skin->displayIfooter();
+        BootstrapSkin::displayAlertBox("Unknown search type", "alert-error", "Error");
+		showSearchForm( $showIpSearch );
+        BootstrapSkin::displayInternalFooter();
 		die();
 	}
 }
 else {
-	echo '<h2>Search:</h2>';
-	echo '<form action="search.php" method="get">';
-	echo 'Search for:<br />';
-	echo '<table><tr><td><input type="text" name="term" /></td>';
-	echo '<td>';
-	echo '<select name="type">';
-	echo '<option value="Request">as requested username</option>';
-	echo '<option value="email">as email address</option>';
-	if( $session->hasright($sessionuser, "Admin") || $session->isCheckuser($sessionuser)) { //Enable the IP search for admins and CU's
-		echo '<option value="IP">as IP address/range</option>';
-	}
-	echo '</select></td>';
-	echo '</tr></table><br />';
-	echo '<input type="submit" />';
-	echo '</form>';
+    showSearchForm( $showIpSearch );
 }
-$skin->displayIfooter();
+BootstrapSkin::displayInternalFooter();
 ?>

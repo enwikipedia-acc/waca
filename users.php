@@ -14,6 +14,7 @@
 // Get all the classes.
 require_once 'config.inc.php';
 require_once 'functions.php';
+require_once 'includes/SmartyInit.php';
 require_once 'includes/database.php';
 require_once 'includes/messages.php';
 require_once 'includes/skin.php';
@@ -44,19 +45,26 @@ $session  = new session();
 session_start();
 
 // Display the header of the interface.
-$skin->displayIheader($_SESSION['user']);
+BootstrapSkin::displayInternalHeader();
 
 // A content block is created if the action is none of the above.
 // This block would later be used to keep all the HTML except the header and footer.
-$out = "<div id=\"content\">";
+$out = "<div class=\"row-fluid\"><div id=\"span12\">";
+BootstrapSkin::pushTagStack("</div>");
+BootstrapSkin::pushTagStack("</div>");
 echo $out;
 
 // Checks if the current user has admin rigths.
-if(!$session->hasright($_SESSION['user'], 'Admin'))
+if( ! isset( $_SESSION['user'] ) ) {
+    showlogin();
+    BootstrapSkin::displayInternalFooter();
+	die();
+}
+if( !  $session->hasright($_SESSION['user'], 'Admin') )
 {
 	// Displays both the error message and the footer of the interface.
-	$skin->displayRequestMsg("I'm sorry, but, this page is restricted to administrators only.<br />\n");	
-	$skin->displayIfooter();
+    BootstrapSkin::displayAlertBox("I'm sorry, but, this page is restricted to administrators only.", "alert-error", "Access Denied",true,false);
+    BootstrapSkin::displayInternalFooter();
 	die();
 }
 
@@ -69,14 +77,14 @@ if (isset ($_GET['approve'])) {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_level'] == "Admin") {
-		echo "Sorry, the user you are trying to approve has Administrator access. Please use the <a href=\"$tsurl/users.php?demote=$aid\">demote function</a> instead.<br />\n";
-		$skin->displayIfooter();
-		die();
+        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to approve has Administrator access. Please use the <a href=\"$tsurl/users.php?demote=$aid\">demote function</a> instead.", "alert-error", "Error",true,false);
+        BootstrapSkin::displayInternalFooter();
+        die();
 	}		
 	if ($row['user_level'] == "User") {
-		echo "Sorry, the user you are trying to approve has already been approved.<br />\n";
-		$skin->displayIfooter();
-		die();
+        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to approve has already been approved.", "alert-error", "Error",true,false);
+        BootstrapSkin::displayInternalFooter();
+        die();
 	}
 	$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$aid';";
 	$result = mysql_query($query, $tsSQLlink);
@@ -87,7 +95,7 @@ if (isset ($_GET['approve'])) {
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	echo "Changed User #" . $aid . " access to 'User'<br />\n";
+	BootstrapSkin::displayAlertBox("Changed User #" . $aid . " access to 'User'","alert-info","",false);
 	$uid = $aid;
 	$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
 	$result2 = mysql_query($query2, $tsSQLlink);
@@ -97,6 +105,8 @@ if (isset ($_GET['approve'])) {
 	$accbotSend->send("User $aid (" . $row2['user_name'] . ") approved by $siuser");
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	mail($row2['user_email'], "ACC Account Approved", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been approved by $siuser. To login please go to $tsurl/acc.php.\n- The English Wikipedia Account Creation Team", $headers);
+    BootstrapSkin::displayInternalFooter();
+    die();
 }
 if (isset ($_GET['demote'])) {
 	$did = sanitize($_GET['demote']);
@@ -111,7 +121,7 @@ if (isset ($_GET['demote'])) {
 		echo "</textarea><br />\n";
 		echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
 		echo "</form>";
-		$skin->displayIfooter();
+		BootstrapSkin::displayInternalFooter();
 		die();
 	} else {
 		$demotersn = sanitize($_POST['demotereason']);
@@ -122,9 +132,9 @@ if (isset ($_GET['demote'])) {
 			Die("Query failed: $query ERROR: " . mysql_error());
 		$row2 = mysql_fetch_assoc($result2);
 		if ($row2['user_level'] != "Admin") {
-			echo "Sorry, the user you are trying to demote is not an administrator.<br />\n";
-			$skin->displayIfooter();
-			die();
+			BootstrapSkin::displayAlertBox("Sorry, the user you are trying to demote is not an administrator.", "alert-error", "Error",true,false);
+            BootstrapSkin::displayInternalFooter();
+            die();
 		}		
 		$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$did';";
 		$result = mysql_query($query, $tsSQLlink);
@@ -135,11 +145,11 @@ if (isset ($_GET['demote'])) {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		echo "Changed User #" . $_GET['demote'] . " access to 'User'<br />\n";
+		BootstrapSkin::displayAlertBox( "Changed User #" . $_GET['demote'] . " access to 'User'", "alert-info","",false);
 		$accbotSend->send("User $did (" . $row2['user_name'] . ") demoted by $siuser because: \"" . $_POST['demotereason'] . "\"");
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row2['user_email'], "ACC Account Demoted", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been demoted by $siuser because ".$_POST['demotereason'].". To contest this demotion please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
-		$skin->displayIfooter();
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
 
@@ -156,9 +166,9 @@ if (isset ($_GET['suspend'])) {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row2 = mysql_fetch_assoc($result2);
 	if ($row2['user_level'] == "Suspended") {
-		echo "Sorry, the user you are trying to suspend is already suspended.<br />\n";
-		$skin->displayIfooter();
-		die();
+        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to suspend is already suspended.", "alert-error", "Error",true,false);
+        BootstrapSkin::displayInternalFooter();
+        die();
 	}
 	
 	elseif (!isset($_POST['suspendreason'])) {
@@ -184,11 +194,11 @@ if (isset ($_GET['suspend'])) {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		echo "Changed User #" . $_GET['suspend'] . " access to 'Suspended'<br />\n";
+		BootstrapSkin::displayAlertBox("Changed User #" . $_GET['suspend'] . " access to 'Suspended'", "alert-info", "", false);
 		$accbotSend->send("User $did (" . $row2['user_name'] . ") had tool access suspended by $siuser because: \"" . $_POST['suspendreason'] . "\"");
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row2['user_email'], "ACC Account Suspended", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been suspended by $siuser because ".$_POST['suspendreason'].". To contest this suspension please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
-		$skin->displayIfooter();
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
 
@@ -203,8 +213,8 @@ if (isset ($_GET['promote'])) {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row2 = mysql_fetch_assoc($result2);
 	if ($row2['user_level'] == "Admin") {
-		echo "Sorry, the user you are trying to promote has Administrator access.<br />\n";
-		$skin->displayIfooter();
+        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to promote has Administrator access.", "alert-error", "Error",true,false);
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}		
 	$query = "UPDATE acc_user SET user_level = 'Admin' WHERE user_id = '$aid';";
@@ -216,7 +226,7 @@ if (isset ($_GET['promote'])) {
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
-	echo "Changed User #" . $aid . " access to 'Admin'<br />\n";
+	BootstrapSkin::displayAlertBox("Changed User #" . $aid . " access to 'Admin'","alert-info","",false);
 	$accbotSend->send("User $aid (" . $row2['user_name'] . ") promoted to admin by $siuser");
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	mail($row2['user_email'], "ACC Account Promoted", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been promted to admin status by $siuser.\n- The English Wikipedia Account Creation Team", $headers);
@@ -230,8 +240,8 @@ if (isset ($_GET['decline'])) {
 		Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['user_level'] != "New") {
-		echo "You cannot decline this user because the user is not a New user.<br />\n";
-		$skin->displayIfooter();
+        BootstrapSkin::displayAlertBox("You cannot decline this user because the user is not a New user.", "alert-error", "Error",true,false);
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
 	if (!isset($_POST['declinereason'])) {
@@ -257,7 +267,7 @@ if (isset ($_GET['decline'])) {
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		echo "Changed User #" . $_GET['decline'] . " access to 'Declined'<br />\n";
+		BootstrapSkin::displayAlertBox("Changed User #" . $_GET['decline'] . " access to 'Declined'", "alert-info","",false);
 		$uid = $did;
 		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
 		$result2 = mysql_query($query2, $tsSQLlink);
@@ -339,7 +349,7 @@ htmlentities($_POST['oldname'],ENT_COMPAT,'UTF-8'));
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			Die("Query failed: $query ERROR: " . mysql_error());
-		echo "Changed User " . htmlentities($_POST['oldname'],ENT_COMPAT,'UTF-8') . " name to ". htmlentities($_POST['newname'],ENT_COMPAT,'UTF-8') . "<br />\n";
+		BootstrapSkin::displayAlertBox("Changed User " . htmlentities($_POST['oldname'],ENT_COMPAT,'UTF-8') . " name to ". htmlentities($_POST['newname'],ENT_COMPAT,'UTF-8') , "alert-info","",false);
 		$query2 = "SELECT * FROM acc_user WHERE user_name = '$oldname';";
 		$result2 = mysql_query($query2, $tsSQLlink);
 		if (!$result2)
@@ -359,7 +369,7 @@ htmlentities($_POST['oldname'],ENT_COMPAT,'UTF-8'));
 		die();
 	}
 }
-if (isset ($_GET['edituser']) && $enableRenames == 1) {
+if (isset ($_GET['edituser']) && $enableRenames == 1) {  // ----------------------------- EDIT USER -----------------------------------------
 	$sid = sanitize($_SESSION['user']);
 	if (!isset($_POST['user_email']) || !isset($_POST['user_onwikiname'])) {
 		$gid = sanitize($_GET['edituser']);
@@ -417,11 +427,48 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {
 	$skin->displayIfooter();
 	die();
 }
+
+// ---------------------   USER MANAGEMENT MAIN PAGE -----------------------------------------
+
 echo <<<HTML
-<h1>User Management</h1>
-<strong>This interface is NOT a toy. If it says you can do it, you can do it.<br />Please use this responsibly.</strong>
-<h2>Open requests</h2>
+<div class="page-header">
+  <h1>User Management<small> Approve, suspend, promote, demote, etc.</small></h1>
+</div>
 HTML;
+
+BootstrapSkin::displayAlertBox("If it says you can do it, you can do it. Please use this responsibly.", "alert-warning","This interface is NOT a toy.",true,false);
+
+/**
+ * CURRENTLY UNUSED!!
+ * 
+ * Shows A list of users in a table with the relevant buttons for that access level.
+ * 
+ * Uses smarty
+ * 
+ * Different levels may require the use of different data attributes.
+ * 
+ * @param $data An array of arrays (see example)
+ * @param $level The user access level
+ * @example showUserList( array(
+ *          1 => array(
+ *              "username" => "foo",
+ *              "onwikiname" => "foo",
+ *              ),
+ *          )
+ *          
+ */
+function showUserList($data, $level) {
+       global $smarty;
+       $smarty->assign("listuserlevel", $level);
+       $smarty->assign("listuserdata", $data);
+       $smarty->display("usermanagement-userlist.tpl");
+}
+
+echo '<div class="row-fluid"><div class="span12"><div class="accordion" id="accordion2">';
+BootstrapSkin::pushTagStack("</div>");
+BootstrapSkin::pushTagStack("</div>");
+BootstrapSkin::pushTagStack("</div>");
+
 
 
 $query = "SELECT * FROM acc_user WHERE user_level = 'New';";
@@ -429,6 +476,7 @@ $result = mysql_query($query, $tsSQLlink);
 if (!$result)
 	Die("Query failed: $query ERROR: " . mysql_error());
 if (mysql_num_rows($result) != 0){
+    echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Open requests</a></div><div id="collapseOne" class="accordion-body collapse in"><div class="accordion-inner">';
 	echo "<ol>\n";
 	while ($row = mysql_fetch_assoc($result)) {
 		$uname = $row['user_name'];
@@ -441,16 +489,9 @@ if (mysql_num_rows($result) != 0){
 		$out .=" - <a class=\"request-req\" href=\"http://meta.wikimedia.org/wiki/Identification_noticeboard\">ID board</a></small></li>";
 		echo "$out\n";
 	}
-	echo "</ol>\n";
+	echo "</ol></div></div></div>\n";
 }
-echo <<<HTML
-<div id="usermgmt-users">
-<h2>Users</h2>
-<!--<p style="
-    font-size: x-small;
-    color: gray;
-">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p> Supressing as CUs should not show here-->
-HTML;
+echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">Users</a></div><div id="collapseTwo" class="accordion-body collapse"><div class="accordion-inner">';
 
 
 $query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Approved') WHERE user_level = 'User' GROUP BY log_pend ORDER BY log_pend DESC;";
@@ -474,12 +515,10 @@ while ($row = mysql_fetch_assoc($result)) {
 echo <<<HTML
 </ol>
 </div>
-<div id="usermgmt-admins">
-<h2>Admins</h2>
-<p style="
-    font-size: x-small;
-    color: gray;
-">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
+</div></div>
+
+<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">Admins</a></div><div id="collapseThree" class="accordion-body collapse"><div class="accordion-inner">
+<p class="muted">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
 HTML;
 
 
@@ -538,13 +577,10 @@ while ($row = mysql_fetch_assoc($result)) {
 echo <<<HTML
 </ol>
 </div>
-<h2>Tool Checkuser access</h2>
-<!--<div class="showhide" id="showhide-checkuser-link" onclick="showhide('showhide-checkuser');">[show]</div>
-<div id="showhide-checkuser" style="display: none;">  Display Automatically instead -->
-<p style="
-    font-size: x-small;
-    color: gray;
-">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
+</div></div>
+
+<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFour">Tool Checkuser access</a></div><div id="collapseFour" class="accordion-body collapse"><div class="accordion-inner">
+<p class="muted">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
 HTML;
 
 $query = "SELECT * FROM acc_user WHERE user_checkuser = '1';";
@@ -562,10 +598,10 @@ while ($row = mysql_fetch_assoc($result)) {
 
 echo <<<HTML
 </ol>
-<!--</div>-->
-<h2>Suspended accounts</h2>
-<div class="showhide" id="showhide-suspended-link" onclick="showhide('showhide-suspended');">[show]</div>
-<div id="showhide-suspended" style="display: none;">
+</div>
+</div></div>
+
+<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFive">Suspended accounts</a></div><div id="collapseFive" class="accordion-body collapse"><div class="accordion-inner">
 HTML;
 
 
@@ -590,9 +626,9 @@ while ($row = mysql_fetch_assoc($result)) {
 echo <<<HTML
 </ol>
 </div>
-<h2>Declined accounts</h2>
-<div class="showhide" id="showhide-declined-link" onclick="showhide('showhide-declined');">[show]</div>
-<div id="showhide-declined" style="display: none;">
+</div></div>
+
+<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseSix">Declined accounts</a></div><div id="collapseSix" class="accordion-body collapse"><div class="accordion-inner">
 HTML;
 
 
@@ -613,7 +649,7 @@ while ($row = mysql_fetch_assoc($result)) {
 	$out .= " <a class=\"request-req\" href=\"users.php?approve=$userid\" onclick=\"return confirm('Are you sure you wish to approve $uname?')\">Approve!</a> (Declined by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
 	echo "$out\n";
 }
-echo "</ol>\n</div><br clear=\"all\" />";
+echo "</ol></div></div></div>";
 
 $skin->displayIfooter();
 die();

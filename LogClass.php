@@ -327,7 +327,12 @@ class LogPage
 				$logList .= "<li>$rlu broke the reservation on <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a>, at $rlt</li>";
 			}			
 			if($rla == "EditComment-c") {
-				$logList .= "<li>$rlu edited <a href=\"$tsurl/acc.php?action=ec&amp;id=$rlp\">comment $rlp</a>, at $rlt</li>";
+				$query4 = "SELECT pend_id FROM acc_cmt WHERE cmt_id = $rlp;";
+				$result4 = mysql_query($query4);
+				if (!$result4)
+					Die("Query failed: $query4 ERROR: " . mysql_error());
+				$row4 = mysql_fetch_assoc($result4);
+				$logList .= "<li>$rlu edited <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row4['pend_id'] ."\">comment $rlp</a>, at $rlt</li>";
 			}
 			$logListCount++;
 		}
@@ -367,6 +372,7 @@ class LogPage
 				$rlt = "Date Unknown";
 			}
 			if (substr($rla,0,strlen("Deferred")) == "Deferred") {
+
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>strtolower($rla), 'target' => $rlp, 'comment' => $rlc, 'action' => "Deferred");
 			}
 			if ($row['log_action'] == "Closed") {

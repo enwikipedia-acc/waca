@@ -16,7 +16,9 @@ class StatsMain extends StatisticsPage
 {
 	function execute()
 	{
-		$out = "<h2>Menu</h2><ul>";
+        $out = '<div class="row-fluid"><div class="span6">';
+        
+		$out .= "<h4>Menu</h4><ul>";
 		global $filepath, $usePathInfo;
 		$files = scandir($filepath . "/includes/statistics/");
 
@@ -34,9 +36,11 @@ class StatsMain extends StatisticsPage
 				$out.='<li><a href="'.$urlFragment.$o->getPageName().'">'.$o->getPageTitle().'</a></li>';
 			}
 		}
-		$out.="</ul>";
+		$out.='</ul></div><div class="span6">';
 		$out.=$this->smallStats();
+        $out .= '</div></div><div class="row-fluid"><div class="span12">';
 		$out.=$this->rrdtoolGraphs();
+        $out .= "</div></div>";
 		return $out;
 	}
 	
@@ -58,6 +62,10 @@ class StatsMain extends StatisticsPage
 	{
 		return false;
 	}
+    function requiresSimpleHtmlEnvironment()
+    {
+        return false;   
+    }
 	function hideFromMenu()
 	{
 		return true;
@@ -65,7 +73,7 @@ class StatsMain extends StatisticsPage
 	function smallStats()
 	{
 		global $tsSQL, $tsurl;
-		$out= '<h2>Statistics</h2><table>';
+		$out= '<h4>Statistics</h4><table class="table table-striped table-condensed">';
 		$openq = "SELECT COUNT(*) FROM acc_pend WHERE pend_status = 'Open' AND pend_mailconfirm = 'Confirmed';";
 		$result = $tsSQL->query($openq);
 		if (!$result)
@@ -155,7 +163,7 @@ class StatsMain extends StatisticsPage
 
 	function rrdtoolGraphs()
 	{
-		$out = "<h2>Graphs (<a href=\"http://acc.stwalkerster.info/acc-new/\">see more!</a>)</h2>";
+		$out = "<h4>Graphs (<a href=\"http://acc.stwalkerster.info/acc-new/\">see more!</a>)</h4>";
 		$pathbase = "http://acc.stwalkerster.info/acc-new/";
 		$pathsuffix = "/acc.svg";
 		$time = array("day", "2day", "4day", "week", "2week", "month", "3month");

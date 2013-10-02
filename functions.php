@@ -28,6 +28,7 @@ include_once 'AntiSpoof.php';
 require_once 'includes/internalInterface.php';
 require_once 'includes/session.php';
 require_once 'includes/request.php';
+require_once 'includes/authutils.php';
 require_once 'autolink.php';
 
 // Initialize the class objects.
@@ -260,12 +261,14 @@ function listrequests($type, $hideip, $correcthash) {
 	if (!$result)
 	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
 
+    $tablestart = "";
 	if( $totalRequests > $requestLimitThreshold ) {
-		$tablestart = "<p><span class=\"warning\">Miser mode: not all requests are shown for speed. </span>Only $requestLimitShowOnly of $totalRequests are shown here.</p><table cellspacing=\"0\">\n";
-	} else {
-		$tablestart = "<table cellspacing=\"0\">\n";
-	}
-	$tableend = "</table>\n";
+		$tablestart .= "<p><span class=\"warning\">Miser mode: not all requests are shown for speed. </span>Only $requestLimitShowOnly of $totalRequests are shown here.</p>";
+    }
+ 
+    $tablestart .= '<table class="table table-striped"><thead><tr><th><span class="hidden-phone">#</span></th><th><!-- zoom --></th><th><!-- comment --></th><th><span class="visible-desktop">Email address</span><span class="visible-tablet">Email and IP</span><span class="visible-phone">Request details</span></th><th><span class="visible-desktop">IP address</span></th><th><span class="hidden-phone">Username</span></th><th><!-- ban --></th><th><!-- reserve status --></th><th><!--reserve button--></th></tr></thead><tbody>';
+
+	$tableend = "</tbody></table>\n";
 	$reqlist = '';
 	$currentreq = 0;
 	
@@ -277,24 +280,33 @@ function listrequests($type, $hideip, $correcthash) {
 	}
 	$row4 = mysql_fetch_assoc($result4);
 	
+    global $smarty;
+    
 	while ( $row = mysql_fetch_assoc( $result ) ) {
 		$currentreq += 1;
-		$uname = urlencode(html_entity_decode($row['pend_name']));
-		$uname = str_replace("%26amp%3B", "%26", $uname);
+		$smarty->assign( "rownum" , $currentreq );
+        
+        
+        $uname = $row['pend_name'];
 		$rid = $row['pend_id'];
+        
+        $smarty->assign( "rid", $rid );
+        $smarty->assign("name", $uname);
 		
 		$data = mysql_query("SELECT COUNT(*) as num FROM acc_cmt where pend_id = '" . $rid . "';"); // indexed
 		$commentcountrow = mysql_fetch_assoc($data);
 		$commentcount=$commentcountrow['num'];
 		
-		if ($row['pend_cmt'] != ""  || $commentcount != 0) {
-			$cmt = "<a class=\"request-src\" href=\"$tsurl/acc.php?action=zoom&amp;id=$rid\">Zoom (CMT)</a> ";
-		} else {
-			$cmt = "<a class=\"request-src\" href=\"$tsurl/acc.php?action=zoom&amp;id=$rid\">Zoom</a> ";
-		}
+        $hascomments = ($row['pend_cmt'] != ""  || $commentcount != 0);
+        $smarty->assign("hascmt", $hascomments);
+        
 		
 		$clientIpAddr = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
-		
+        
+        $smarty->assign("ip", $clientIpAddr);
+        
+        /// disabled for performance
+        
 //		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE (`pend_ip` = '" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "' OR `pend_proxyip` LIKE '%" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "%') AND `pend_mailconfirm` = 'Confirmed';";
 //		$result2 = mysql_query($query2); // TODO: OPTIMISE ME! I TAKE 20s TO EXECUTE!
 //		if (!$result2) {
@@ -302,103 +314,46 @@ function listrequests($type, $hideip, $correcthash) {
 //		}
 //		$otheripreqs = mysql_fetch_assoc($result2);
 //		$otheripreqs["count"]--;
-$otheripreqs = array("count" => "-1");		
-		$query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . mysql_real_escape_string($row['pend_email'],$tsSQLlink) . "' AND `pend_id` != '" . mysql_real_escape_string($row['pend_id'],$tsSQLlink) . "' AND `pend_mailconfirm` = 'Confirmed';";
+        $otheripreqs = array("count" => "-1");		
+        
+        //////////////////////////////////
+
+        $numOtherIpRequests = $otheripreqs["count"];
+        $smarty->assign("numip" , $numOtherIpRequests);
+        
+        $query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . mysql_real_escape_string($row['pend_email'],$tsSQLlink) . "' AND `pend_id` != '" . mysql_real_escape_string($row['pend_id'],$tsSQLlink) . "' AND `pend_mailconfirm` = 'Confirmed';";
 		$result3 = mysql_query($query3);
 		if (!$result3) {
 			sqlerror("Query failed: $query3 ERROR: " . mysql_error(),"Database query error.");
 		}
 		$otheremailreqs = mysql_fetch_assoc($result3);
-		
-		$out = '<tr';
-		if ($currentreq % 2 == 0) {
-			$out .= ' class="alternate">';
-		} else {
-			$out .= '>';
-		}
-		if (array_key_exists($type, $availableRequestStates)) {
-			$out .= '<td><small>' . $currentreq . '.    </small></td><td><small>'; //List item
-			$out .= $cmt .'</small></td><td><small>'; // zoom link.
-		} else {
-			$out .= '<td><small>' . "\n"; //List item
-		}
-
-		if ($hideip == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
-			// Email.
-			$out .= '[ </small></td>';
-			$out .= '<td><small><a class="request-src" href="mailto:' . $row['pend_email'] . '">' . $row['pend_email'] . '</a>';
-
-			$out .= '</small></td><td><small><span class="request-src">' . "\n";
-			if ($otheremailreqs['count'] == 0) {
-				$out .= '(' . $otheremailreqs['count'] . ')';
-			} else {
-				$out .= '(</span><b><span class="request-mult">' . $otheremailreqs['count'] . '</span></b><span class="request-src">)';
-			}
-		}
-
-		if ( $row4['user_secure'] > 0 ) {
-			$wikipediaurl = "https://en.wikipedia.org/";
-			$metaurl = "https://meta.wikimedia.org";
-		} else {
-			$wikipediaurl = "http://en.wikipedia.org/";
-			$metaurl = "http://meta.wikimedia.org/";
-		}
-
-
-		if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
-			// IP UT:
-			$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-src" name="ip-link" href="'.$wikipediaurl.'wiki/User_talk:' . $clientIpAddr . '" target="_blank">';
-			$out .= $clientIpAddr . '</a> ';
-
-			$out .= '</small></td><td><small><span class="request-src">' . "\n";
-			if ($otheripreqs['count'] == 0) {
-				$out .= '(' . $otheripreqs['count'] . ')';
-			} else {
-				$out .= '(</span><b><span class="request-mult">' . $otheripreqs['count'] . '</span></b><span class="request-src">)';
-			}
-		}
-		// Username U:
-		$duname = _utf8_decode($row['pend_name']);
-		$out .= '</span></small></td><td><small> | </small></td><td><small><a class="request-req" href="'.$wikipediaurl.'wiki/User:' . $uname . '" target="_blank"><strong>' . $duname . '</strong></a> ';
-
-
-		if($session->hasright($_SESSION['user'], "Admin")) {
-			// Ban IP
-			$out .= "</small></td><td><small> |</small></td><td><small> Ban: </small></td><td><small><a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;ip=" . $row['pend_id'] . '">IP</a> ';
-
-			// Ban email
-			$out .= "- <a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;email=" . $row['pend_id'] . '">E-Mail</a>';
-
-			//Ban name
-			$out .= " - <a class=\"request-ban\" href=\"$tsurl/acc.php?action=ban&amp;name=" . $row['pend_id'] . '">Name</a>';
-		}
-
+		$numOtherEmailRequests = $otheremailreqs['count'];
+        $smarty->assign("nummail", $numOtherEmailRequests);
+        $mailaddr = $row['pend_email'];
+        $smarty->assign("mail", $mailaddr);
+        
+		$showdata = ($hideip == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) );
+        $smarty->assign("showdata", $showdata);
+        $canban = ( $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) );
+        $smarty->assign("canban", $canban);
+	
 		$reserveByUser = isReservedWithRow($row);
-		// if request is reserved, show reserved message
-		if( $reserveByUser != 0 )
-		{
-			if( $reserveByUser == $_SESSION['userID'])
-			{
-				$out .= "</small></td><td><small> | </small></td><td><small>YOU are handling this request. <a href=\"$tsurl/acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Break reservation</a>";
-			} else {
-				$out .= "</small></td><td><small> | </small></td><td><small>Being handled by <a href=\"$tsurl/statistics.php?page=Users&amp;user=$reserveByUser\">" . $session->getUsernameFromUid($reserveByUser) . "</a>";
 
-				// force break?
-				global $enableAdminBreakReserve;
-				if( $enableAdminBreakReserve && $session->hasright($_SESSION['user'], "Admin"))
-				{
-					$out .= " - <a href=\"$tsurl/acc.php?action=breakreserve&amp;resid=" . $row['pend_id']. "\">Force break</a>";
-				}
-			}
-		}
-		else // not being handled, do you want to handle this request?
-		{
-			$out .= "</small></td><td><small> | </small></td><td><small><a href=\"$tsurl/acc.php?action=reserve&amp;resid=" . $row['pend_id']. "\">Mark as being handled</a>";
-		}
-
-
-		$out .= '</small></td></tr>';
-		$reqlist .= $out;
+        $smartyreserved = false;
+        $smartyyoureserved = false;
+        if($reserveByUser != 0)
+        {
+            $smartyreserved = $session->getUsernameFromUid($reserveByUser);
+            if( $reserveByUser == $_SESSION['userID'] ){
+               $smartyyoureserved = true;
+            }
+        }
+        
+        $smarty->assign("reserved", $smartyreserved);  
+        $smarty->assign("youreserved", $smartyyoureserved);
+        
+        
+		$reqlist .= $smarty->fetch("request-entry.tpl");
 	}
 	if( $currentreq == 0 ) {
 		return( "<i>No requests at this time</i>" );
@@ -456,90 +411,28 @@ function isReservedWithRow($row) {
 	} else {return false;}
 }
 
+/**
+ * Show the login page
+ * @param (ignored)
+ * @param (ignored)
+ * @todo re-implement parameters
+ */
 function showlogin($action=null, $params=null) {
-	/*
-	 * Show the login page.
-	 */
-	global $_SESSION, $tsSQLlink, $useCaptcha, $skin, $tsurl;
-
-	// Create the variable used for the coding.
-	$html ='<div id="sitenotice">Please login first, and we\'ll send you on your way!</div>
-    <div id="content">
-    <h2>Login</h2>';
-
+    global $smarty;
+    
+    
 	// Check whether there are any errors.
+    $errorbartext = "";
 	if (isset($_GET['error'])) {
 		if ($_GET['error']=='authfail') {
-			$html .= "<p>Username and/or password incorrect. Please try again.</p>";
-		} elseif ($_GET['error']=='captchafail') {
-			$html .= "<p>I'm sorry, the captcha you entered was incorrect, please try again.</p>";
-		} elseif ($_GET['error']=='captchamissing') {
-			$html .= "<p>Please complete the captcha.</p>";
+            $errorbartext = BootstrapSkin::displayAlertBox("Username and/or password incorrect. Please try again.", "alert-error","Auth failure",true,false,true);
 		} elseif ($_GET['error']=='noid') {
-			$html .= "<p>User account is not identified. Please email accounts-enwiki-l@lists.wikimedia.org if you believe this is 
-in error.</p>";
+            $errorbartext = BootstrapSkin::displayAlertBox("User account is not identified. Please email accounts-enwiki-l@lists.wikimedia.org if you believe this is in error.", "alert-error","Auth failure",true,false,true);
 		}
 	}
-
-	// Generate the login form; set the action to login and nocheck to true.
-	// By setting nocheck to true would skip the checking procedures.
-	$html .='<form action="'.$tsurl.'/acc.php?action=login&amp;nocheck=1';
-
-	// Would perform clause for any action except logout.
-	if (($action) && ($action != "logout")) {
-		$html .= "&amp;newaction=" . xss($action);
-			
-		// Create an array of all the values in the $GET variable.
-		// The variable supplied as the parameter would be used.
-		foreach ($params as $param => $value) {
-			if ($param != '' && $param != "action") {
-				$html .= "&amp;".xss($param)."=".xss($value);
-			}
-		}
-	}
-
-	// Adds final coding to the HTML variable, such as for the forms to be created.
-	$html .= '" method="post">
-    <div class="required">
-        <label for="username">Username:</label>
-        <input id="username" type="text" name="username"/>
-    </div>
-    <div class="required">
-        <label for="password">Password:</label>
-        <input id="password" type="password" name="password"/>
-    </div>';
-
-	// Checks where Captcha should be used.
-	if ($useCaptcha) {
-		require_once 'includes/captcha.php';
-		$captcha = new captcha;
-		if ($captcha->showCaptcha()) {
-			$captcha_id = $captcha->generateId();
-			$html .= '<div class="required">
-		<label for="captcha">Captcha:</label>
-		<input id="captcha" type="text" name="captcha"/>
-		<input name="captcha_id" type="hidden" value="'.$captcha_id.'" />
-		<img src="captcha.php?id='.$captcha_id.'" />
-	    	</div>';
-		}
-	}
-
-	global $messages;
-	$html .= "<p>" . $messages->getDiskMessage("labs-disclosure-agreement") . "</p>";
-	
-	// Adds a Submit button to the HTML code.
-	// Below the forms a option to register would be displayed.
-	$html .= '<div class="submit">
-        <input type="submit" value="Login"/>
-    </div>
-    </form>
-    <br />
-    Need Tool access?
-    <br /><a href="' . $tsurl . '/acc.php?action=register">Register!</a> (Requires approval)<br />
-    <a href="'. $tsurl . '/acc.php?action=forgotpw">Forgot your password?</a><br /></div>';
-
-	// Finally the footer are added to the code.
-	return $html;
+    $smarty->assign("errorbar", $errorbartext);   
+    
+    $smarty->display("login.tpl");
 }
 
 function getdevs() {
@@ -555,7 +448,7 @@ function getdevs() {
 }
 
 function defaultpage() {
-	global $tsSQLlink, $toolserver_database, $skin, $tsurl, $availableRequestStates;
+	global $tsSQLlink, $toolserver_database, $skin, $tsurl, $availableRequestStates, $defaultRequestStateKey;
 	@mysql_select_db( $toolserver_database, $tsSQLlink) or sqlerror(mysql_error,"Could not select db");
 	$html = '<h1>Create an account!</h1>';
 
@@ -570,20 +463,14 @@ function defaultpage() {
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	$html .= "<table cellspacing=\"0\">\n";
+	$html .= "<ol>\n";
 	$currentrow = 0;
 	while ( list( $pend_id, $pend_name, $pend_checksum ) = mysql_fetch_row( $result ) ) {
-		$currentrow += 1;
-		$out = '<tr';
-		if ($currentrow % 2 == 0) {
-			$out .= ' class="even">';
-		} else {
-			$out .= ' class="odd">';
-		}
-		$out .= "<td><small><a style=\"color:green\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a></small></td><td><small>  <a style=\"color:blue\" href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></small></td><td><small>  <a style=\"color:orange\" href=\"$tsurl/acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=users\">Reset</a></small></td></tr>";
+		$out = '<li>';
+		$out .= "<a class=\"btn btn-small btn-info\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a><a class=\"btn btn-warning btn-small\" href=\"$tsurl/acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=$defaultRequestStateKey\">Reset</a> <a href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></li>";
 		$html .= $out;
 	}
-	$html .= "</table>\n";
+	$html .= "</ol>\n";
 	return $html;
 }
 
@@ -785,7 +672,7 @@ function zoomPage($id,$urlhash)
 					
 				global $rfc1918ips;
 					
-				$iprdns = gethostbyaddr($p2);
+				$iprdns = @ gethostbyaddr($p2);
 				$ipisprivate = ipInRange($rfc1918ips, $p2);
 				
 				if( $iprdns == $p2 ) {
@@ -794,6 +681,9 @@ function zoomPage($id,$urlhash)
 					} else {
 						$iprdns = "<i>(no rdns available)</i>";
 					}
+				} else if( $iprdns === false ) {
+                    $iprdnsfailed = true;
+					$iprdns = "<i>(unable to determine address)</i>";
 				} else {
 					if( $ipisprivate ) {
 						$iprdns = "<i><a style=\"color:grey;\" href=\"http://en.wikipedia.org/wiki/Private_network\">Non-routable address</a></i>";
@@ -802,8 +692,8 @@ function zoomPage($id,$urlhash)
 					}
 				}
 				$entry .= "<td style=\"padding:3px\">$p2<br /><span style=\"color:grey;\">" . $iprdns . "</span></td><td>";
-				if( ( ! $trust ) && ( ! $ipisprivate ) ) {
-					$entry .= showIPlinks($p2, $wikipediaurl, $metaurl, $row['pend_id'], $session);
+				if( ( ! $trust ) && ( ! $ipisprivate ) && ( $iprdns!=="<i>(unable to determine address)</i>" ) ) {
+                    $entry .= showIPlinks($p2, $wikipediaurl, $metaurl, $row['pend_id'], $session);
 				}
 				$entry .= "</td></tr>";
 				
@@ -1091,12 +981,16 @@ function zoomPage($id,$urlhash)
 				$out .= "&nbsp;</td><td>&nbsp;".$row['comment']."&nbsp;</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
 			
 				global $enableCommentEditing;
-				if($enableCommentEditing && $session->hasright($_SESSION['user'], 'Admin') && isset($row['id'])) {
+				if($enableCommentEditing && ($session->hasright($_SESSION['user'], 'Admin') || $_SESSION['user'] == $row['user']) && isset($row['id'])) {
 					$out .= "<td><a href=\"$tsurl/acc.php?action=ec&amp;id=".$row['id']."\">Edit</a></td>";
 				}
 			} elseif($row['action'] == "Closed custom-n" ||$row['action'] == "Closed custom-y"  ) {
 				$out .= "&nbsp;</td><td><em>&nbsp;$action:&nbsp;</em><br />".str_replace("\n", '<br />', xss($row['comment']))."</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
 			} else {
+				
+				foreach($availableRequestStates as $deferState){
+					$action=str_replace("deferred to ".$deferState['defertolog'],"deferred to ".$deferState['deferto'],$action);	//#35: The log text(defertolog) should not be displayed to the user, deferto is what should be displayed
+				}
 				$out .= "&nbsp;</td><td><em>&nbsp;$action&nbsp;</em></td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
 			}
 			if (isset($row['security']) && $row['security'] == "admin") {
