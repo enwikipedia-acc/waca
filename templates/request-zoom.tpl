@@ -65,7 +65,7 @@
                   </div>
                   {/if}
                   <div class="span6">{if $youreserved}<a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Break reservation</a>
-				  {elseif $isadmin == true}<a class="btn span6 btn-warning" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Force break</a>{/if}</div>
+				  {elseif $isadmin && $isreserved}<a class="btn span6 btn-warning" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Force break</a>{/if}</div>
               </div>
               {if $isprotected == false}
 			  <hr />
