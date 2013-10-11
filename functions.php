@@ -739,11 +739,10 @@ function zoomPage($id,$urlhash)
 	if($reserveByUser != 0) {
 		$smartyreserved = $session->getUsernameFromUid($reserveByUser);
 		if( $reserveByUser == $_SESSION['userID'] )
-               $smartyyoureserved = true;
-        
-        $smarty->assign("reserved", $smartyreserved);  
-        $smarty->assign("youreserved", $smartyyoureserved);
+			$smartyyoureserved = true;
 	}
+	$smarty->assign("reserved", $smartyreserved);
+	$smarty->assign("youreserved", $smartyyoureserved);
 	
 	$request = new accRequest();
 	$smarty->assign("isblacklisted", false);
@@ -817,13 +816,13 @@ function zoomPage($id,$urlhash)
 			}
 		}
 		unset($row);
-		$smarty->assign("zoomlogs", $logs);
 	}
+	$smarty->assign("zoomlogs", $logs);
 
 	// START OTHER REQUESTS BY IP AND EMAIL STUFF
 
 	if ($thisip != '127.0.0.1') {
-		$query = "SELECT pend_date, pend_id, pend_name FROM acc_pend WHERE (pend_proxyip LIKE '%{$thisip}%' OR pend_ip = '$thisip') AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
+		$query = "SELECT pend_date, pend_id, pend_name FROM acc_pend WHERE (pend_proxyip LIKE '%{$thisip}%' OR pend_ip = '$thisip') AND pend_id != '$thisid' AND (pend_mailconfirm = 'Confirmed' OR pend_mailconfirm = '');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
@@ -835,9 +834,9 @@ function zoomPage($id,$urlhash)
 		$otherip = array();
 		$i = 0;
 		while ($row = mysql_fetch_assoc($result)) {
-			$otherip[$i]['date'] == $row['pend_date'];
-			$otherip[$i]['id'] == $row['pend_id'];
-			$otherip[$i]['name'] == $row['pend_name'];
+			$otherip[$i]['date'] = $row['pend_date'];
+			$otherip[$i]['id'] = $row['pend_id'];
+			$otherip[$i]['name'] = $row['pend_name'];
 			$i++;
 		}
 		$smarty->assign("otherip", $otherip);
@@ -847,7 +846,7 @@ function zoomPage($id,$urlhash)
 	$smarty->assign("otheremail", false);
 	
 	if ($thisemail != 'acc@toolserver.org') {
-		$query = "SELECT pend_date, pend_id, pend_name FROM acc_pend WHERE pend_email = '" . mysql_real_escape_string($thisemail, $tsSQLlink) . "' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
+		$query = "SELECT pend_date, pend_id, pend_name FROM acc_pend WHERE pend_email = '" . mysql_real_escape_string($thisemail, $tsSQLlink) . "' AND pend_id != '$thisid' AND pend_id != '$thisid' AND (pend_mailconfirm = 'Confirmed' OR pend_mailconfirm = '');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
@@ -859,9 +858,9 @@ function zoomPage($id,$urlhash)
 		$otheremail = array();
 		$i = 0;
 		while ($row = mysql_fetch_assoc($result)) {
-			$otheremail[$i]['date'] == $row['pend_date'];
-			$otheremail[$i]['id'] == $row['pend_id'];
-			$otheremail[$i]['name'] == $row['pend_name'];
+			$otheremail[$i]['date'] = $row['pend_date'];
+			$otheremail[$i]['id'] = $row['pend_id'];
+			$otheremail[$i]['name'] = $row['pend_name'];
 			$i++;
 		}
 		$smarty->assign("otheremail", $otheremail);

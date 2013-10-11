@@ -1767,7 +1767,7 @@ elseif ($action == "comment-add") {
     echo "<h2>Adding comment to request " . $id . "...</h2><br />";
     if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visibility'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
         $user = sanitise($_SESSION['user']);
-        $comment = sanitise($_POST['comment']);
+        $comment = mysql_real_escape_string($_POST['comment']);
         $visibility = sanitise($_POST['visibility']);
         $now = date("Y-m-d H-i-s");
         
@@ -1798,11 +1798,10 @@ elseif ($action == "comment-add") {
 }
 
 elseif ($action == "comment-quick") {
-    if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visibility'])) && ($_POST['id'] != "")) {
-
+    if ((isset($_POST['id'])) && (isset($_POST['visibility'])) && ($_POST['id'] != "")) {
         $id = $internalInterface->checkreqid($_POST['id']);
         $user = sanitise($_SESSION['user']);
-        $comment = sanitise($_POST['comment']);
+        $comment = mysql_real_escape_string($_POST['comment']);
         $visibility = sanitise($_POST['visibility']);
         $now = date("Y-m-d H-i-s");
 	if($_POST['comment'] == ""){
@@ -1900,7 +1899,7 @@ elseif ($action == "ec") { // edit comment
 	// get[id] is safe by this point.
 	
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-		mysql_query("UPDATE acc_cmt SET cmt_comment = \"".sanitize($_POST['newcomment'],$tsSQLlink)."\", cmt_visability = \"".mysql_real_escape_string($_POST['visability'],$tsSQLlink)."\" WHERE cmt_id = \"".sanitize($_GET['id'])."\" LIMIT 1;");
+		mysql_query("UPDATE acc_cmt SET cmt_comment = \"".mysql_real_escape_string($_POST['newcomment'],$tsSQLlink)."\", cmt_visability = \"".mysql_real_escape_string($_POST['visability'],$tsSQLlink)."\" WHERE cmt_id = \"".sanitize($_GET['id'])."\" LIMIT 1;");
 		$now = date("Y-m-d H-i-s");
 		mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('".sanitize($_GET['id'])."', '".sanitize($_SESSION['user'])."', 'EditComment-c', '$now');");
 		mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('".sanitize($row["pend_id"])."', '".sanitize($_SESSION['user'])."', 'EditComment-r', '$now');");
@@ -1930,7 +1929,7 @@ elseif ($action == "ec") { // edit comment
 	    echo "</select><br />\n";
 		echo "<strong>Request:</strong>&nbsp;<a href=\"".$tsurl."/acc.php?action=zoom&id=".$row['pend_id']."\">#" . $row['pend_id'] . "</a><br />";
 		
-		echo "<strong>Old text:</strong><pre>".$row['cmt_comment']."</pre>";
+		echo "<strong>Old text:</strong><pre>".htmlentities($row['cmt_comment'],ENT_COMPAT,'UTF-8')."</pre>";
 		
 		echo "<input type=\"text\" size=\"100\" name=\"newcomment\" value=\"".htmlentities($row['cmt_comment'],ENT_COMPAT,'UTF-8')."\" />";
 		echo "<input type=\"submit\" />";
