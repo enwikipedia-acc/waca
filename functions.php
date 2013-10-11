@@ -825,7 +825,7 @@ function zoomPage($id,$urlhash)
 
 	if ($thisip != '127.0.0.1') {
 		$query = "SELECT pend_date, pend_id, pend_name FROM acc_pend WHERE (pend_proxyip LIKE '%{$thisip}%' OR pend_ip = '$thisip') AND pend_id != '$thisid' AND (pend_mailconfirm = 'Confirmed' OR pend_mailconfirm = '');";
-		$result = mysql_qucery($query, $tsSQLlink);
+		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 
