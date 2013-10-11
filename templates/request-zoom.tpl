@@ -61,11 +61,11 @@
               <div class="row-fluid">
               {if $showinfo == true && $isprotected == false && $isreserved == true}
                   <div class="span6">
-                      <a class="btn btn-primary span6 offset3" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$username}&amp;wpEmail={$email}&amp;wpReason=Requested+account+at+%5B%5BWP%3AACC%5D%5D%2C+request+%23111&amp;wpCreateaccountMail=true">Create account</a>
+                      <a class="btn btn-primary span6 offset3" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$username|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true">Create account</a>
                   </div>
                   {/if}
                   <div class="span6">{if $youreserved}<a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Break reservation</a>
-				  {elseif $isadmin == true}<a class="btn span6 btn-warning" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$rid}">Force break</a>{/if}</div>
+				  {elseif $isadmin == true}<a class="btn span6 btn-warning" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Force break</a>{/if}</div>
               </div>
               {if $isprotected == false}
 			  <hr />
@@ -171,13 +171,13 @@
             <h4>Username data:</h4>
            
             <div class="btn-group">
-                <a class="btn btn-small" href="https://en.wikipedia.org/wiki/User:{$username}">User page</a>
-                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page={$username}">Creation log</a>
-                <a class="btn btn-small" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&amp;showblocks=1&amp;username={$username}">SUL</a>
-                <a class="btn btn-small" href="https://en.wikipedia.org/wiki/Special:CentralAuth/{$username}">Special:CentralAuth</a>
-                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username={$username}&amp;group=&amp;limit=1">Username list</a>
-                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special%3ASearch&amp;profile=advanced&amp;search={$username}&amp;fulltext=Search&amp;ns0=1&amp;redirs=1&amp;profile=advanced">Wikipedia mainspace search</a>
-                <a class="btn btn-small" href="https://www.google.com/search?q={$username}">Google search</a>
+                <a class="btn btn-small" href="https://en.wikipedia.org/wiki/User:{$username|escape:'url'}">User page</a>
+                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page={$username|escape:'url'}">Creation log</a>
+                <a class="btn btn-small" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&amp;showblocks=1&amp;username={$username|escape:'url'}">SUL</a>
+                <a class="btn btn-small" href="https://en.wikipedia.org/wiki/Special:CentralAuth/{$username|escape:'url'}">Special:CentralAuth</a>
+                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username={$username|escape:'url'}&amp;group=&amp;limit=1">Username list</a>
+                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special%3ASearch&amp;profile=advanced&amp;search={$username|escape:'url'}&amp;fulltext=Search&amp;ns0=1&amp;redirs=1&amp;profile=advanced">Wikipedia mainspace search</a>
+                <a class="btn btn-small" href="https://www.google.com/search?q={$username|escape:'url'}">Google search</a>
             </div>
             
             {if $isblacklisted}<p><b>Requested username is blacklisted.</b></p>{/if}
