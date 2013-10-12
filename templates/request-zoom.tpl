@@ -13,12 +13,34 @@
                            <h4>Request data:</h4>
                            <table class="table table-condensed table-striped">
                           <tbody>
-                              {if $showinfo}<tr><th>Email address:</th><td><a href="mailto:{$email}">{$email}</a></td><td><span class="badge{if $numemail > 0} badge-important{/if}">{$numemail}</span></td></tr>
-                              <tr><th>IP address:</th><td>{$ip}</td><td>{if $proxyip != NULL}<span class="label label-info">XFF</span>{/if}<span class="badge{if $numip > 0} badge-important{/if}">{$numip}</span></td></tr>{/if}
+                              {if $showinfo}
+                                <tr>
+                                    <th>Email address:</th>
+                                    <td><a href="mailto:{$email}">{$email}</a></td>
+                                    <td><span class="badge{if $numemail > 0} badge-important{/if}">{$numemail}</span></td>
+                                </tr>
+                                <tr>
+                                    <th>IP address:</th>
+                                    <td>{$ip}</td>
+                                    <td>
+                                        {if $proxyip != NULL}<span class="label label-info">XFF</span>{/if}
+                                        <span class="badge{if $numip > 0} badge-important{/if}">{$numip}</span>
+                                    </td>
+                                </tr>
+                              {/if}
                               <tr><th>Requested name:</th><td>{$username}</td><td></td></tr>
                               <tr><th>Date:</th><td>{$date}</td><td></td></tr>
                               {if $viewuseragent}<tr><th>User Agent:</th><td>{$useragent}</td><td></td></tr>{/if}
-                              {if $youreserved && $isclosed}<tr><th>Reveal link:</th><td><a href="{$tsurl}/acc.php?action=zoom&amp;id={$id}&amp;hash={$hash}">{$tsurl}/acc.php?action=zoom&amp;id={$id}&amp;hash={$hash}</a></td><td></td></tr>{/if}
+                              {if $youreserved && $isclosed}
+                                <tr>
+                                  <th>Reveal link:</th>
+                                  <td>
+                                    <a href="{$tsurl}/acc.php?action=zoom&amp;id={$id}&amp;hash={$hash}">
+                                      {$tsurl}/acc.php?action=zoom&amp;id={$id}&amp;hash={$hash}
+                                    </a></td>
+                                  <td></td>
+                                </tr>
+                              {/if}
                               <tr><th>Reserved by:</th><td>{if $reserved}{$reserved}{else}None{/if}</td>
                               <td></td></tr>
                           </tbody>
