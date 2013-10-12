@@ -133,7 +133,7 @@
                       <table class="table table-condensed table-striped">
                           <tbody>
 							{if $zoomlogs}{foreach $zoomlogs as $zoomrow}
-                          	  <tr><td>{if $zoomrow.userid != NULL}<a href='{$tsurl}/statistics.php?page=Users&amp;user={$zoomrow.userid}'>{$zoomrow.user}</a>{else}{$zoomrow.user}{/if}{if $zoomrow.security == "admin"}<br /><span style="color:red">(admin only)</span>{/if}</td><td><em>{$zoomrow.entry}</em></td><td>{$zoomrow.time}</td><td>{if $zoomrow.canedit == true}<a class="btn btn-small" href="{$tsurl}/acc.php?action=ec&amp;id={$zoomrow.id}">Edit</a></td></tr>{/if}
+                          	  <tr><td>{if $zoomrow.userid != NULL}<a href='{$tsurl}/statistics.php?page=Users&amp;user={$zoomrow.userid}'>{$zoomrow.user}</a>{else}{$zoomrow.user}{/if}{if $zoomrow.security == "admin"}<br /><span style="color:red">(admin only)</span>{/if}</td><td>{$zoomrow.entry}</td><td>{$zoomrow.time}</td><td>{if $zoomrow.canedit == true}<a class="btn btn-small" href="{$tsurl}/acc.php?action=ec&amp;id={$zoomrow.id}">Edit</a></td></tr>{/if}
                           	{/foreach}
                           	{else}
                           	  <tr><td></td><td><em>None.</em></td><td></td><td></td>
@@ -191,6 +191,8 @@
         <hr />{/if}
         <div class="row-fluid">
             <h4>Username data:</h4>
+            
+            {if $isblacklisted}<div class="alert">Requested username is blacklisted.</div>{/if}
            
             <div class="btn-group">
                 <a class="btn btn-small" href="https://en.wikipedia.org/wiki/User:{$username|escape:'url'}">User page</a>
@@ -202,7 +204,6 @@
                 <a class="btn btn-small" href="https://www.google.com/search?q={$username|escape:'url'}">Google search</a>
             </div>
             
-            {if $isblacklisted}<p><b>Requested username is blacklisted.</b></p>{/if}
             <h5>AntiSpoof results:</h5>
             {if !$spoofs}
             <p class="muted">None detected</p>

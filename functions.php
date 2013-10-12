@@ -874,7 +874,13 @@ function zoomPage($id,$urlhash)
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
+	$smarty->assign("abortmsg", $messages->getMessage(32));
+	if ($row['user_abortpref'] == 0 || !array_key_exists('user_abortpref', $row))
+		$smarty->assign("jsabort", true);
+	else
+		$smarty->assign("jsabort", false);
 		// Comment out for now, will do something with this soon.
+		// "Soon" will probably be with issue #11.
 		/*if(array_key_exists('user_abortpref',$row)){
 		$out.= '<script language=javascript>';
 		$out.= $messages->getMessage(32);
@@ -884,7 +890,7 @@ function zoomPage($id,$urlhash)
 		}
 		}else{
 			//Run script anyways if preference does not exist
-			$out.= 'abortChecker()';		
+			$out.= 'abortChecker()';
 		}
 		$out.= '</script>';*/
 		
@@ -892,27 +898,6 @@ function zoomPage($id,$urlhash)
 	$smarty->assign("tooluser", $_SESSION['user']);
 	
 	return $smarty->fetch("request-zoom.tpl");
-}
-
-function deferlinks($type, $checksum, $pendid) {
-	global $tsurl, $availableRequestStates, $defaultRequestStateKey;
-	
-	if(!array_key_exists($type, $availableRequestStates))
-	{
-		return " | <a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=".$defaultRequestStateKey."\">Reset Request</a>";
-	}
-	
-	$out = " | Defer to: ";
-	
-	foreach(array_diff_key($availableRequestStates, array($type=>$availableRequestStates[$type])) as $k => $v)
-	{
-		$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=".$k."\">".$v['deferto']."</a> - ";
-	}
-
-	$out = rtrim($out, '- ');
-
-	return $out;
-	
 }
 
 function getToolVersion() {
