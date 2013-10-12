@@ -874,11 +874,6 @@ function zoomPage($id,$urlhash)
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
-	$smarty->assign("abortmsg", $messages->getMessage(32));
-	if ($row['user_abortpref'] == 0 || !array_key_exists('user_abortpref', $row))
-		$smarty->assign("jsabort", true);
-	else
-		$smarty->assign("jsabort", false);
 		// Comment out for now, will do something with this soon.
 		// "Soon" will probably be with issue #11.
 		/*if(array_key_exists('user_abortpref',$row)){
