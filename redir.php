@@ -2,7 +2,7 @@
 
 $toolList = array(
 	'tparis-pcount' => 'http://tools.wmflabs.org/xtools/pcount/index.php?lang=en&wiki=wikipedia&name=%DATA%',
-	'luxo-contributions' => '//toolserver.org/~luxo/contributions/contributions.php?lang=en&blocks=true&user=%DATA%',
+	'luxo-contributions' => 'http://tools.wmflabs.org/guc/?user=%DATA%',
 	'oq-whois' => '//toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=%DATA%',
 	'ipinfodb-locator' => 'http://www.ipinfodb.com/ip_locator.php?ip=%DATA%',
 );
