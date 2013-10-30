@@ -138,7 +138,7 @@
                           	{else}
                           	  <tr><td></td><td><em>None.</em></td><td></td><td></td>
                           	{/if}
-                              <tr><td><a href="{$tsurl}/statistics.php?page=Users&amp;user={$userid}">{$tooluser}</a></td><td><form action='{$tsurl}/acc.php?action=comment-quick&amp;hash={$hash}' method='post'><input type='hidden' name='id' value='{$id}'/><input type='hidden' name='visibility' value='user' /><input class="span12" placeholder="Quick comment" name = "comment"/></td><td><button class="btn btn-primary" type="submit">Save</button><a class="btn" href="{$tsurl}/acc.php?action=comment&id={$id}">Go to full comment form</a></form></td><td></td></tr>
+                              <tr><td><a href="{$tsurl}/statistics.php?page=Users&amp;user={$userid}">{$tooluser}</a></td><td><form action='{$tsurl}/acc.php?action=comment-quick&amp;hash={$hash}' method='post'><input type='hidden' name='id' value='{$id}'/><input type='hidden' name='visibility' value='user' /><input class="span12" placeholder="Quick comment" name = "comment"/></td><td><div class="btn-group"><button class="btn btn-primary" type="submit">Save</button><a class="btn" href="{$tsurl}/acc.php?action=comment&id={$id}">Go to full comment form</a></div></form></td><td></td></tr>
                           </tbody>
                       </table>
                   </div>
