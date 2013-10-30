@@ -197,7 +197,7 @@
             <div class="btn-group">
                 <a class="btn btn-small" href="https://en.wikipedia.org/wiki/User:{$username|escape:'url'}">User page</a>
                 <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page={$username|escape:'url'}">Creation log</a>
-                <a class="btn btn-small" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&amp;showblocks=1&amp;username={$username|escape:'url'}">SUL</a>
+                <a class="btn btn-small" href="{$tsurl}/redir.php?tool=sulutil&amp;data={$username|escape:'url'}">SUL</a>
                 <a class="btn btn-small" href="https://en.wikipedia.org/wiki/Special:CentralAuth/{$username|escape:'url'}">Special:CentralAuth</a>
                 <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username={$username|escape:'url'}&amp;group=&amp;limit=1">Username list</a>
                 <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special%3ASearch&amp;profile=advanced&amp;search={$username|escape:'url'}&amp;fulltext=Search&amp;ns0=1&amp;redirs=1&amp;profile=advanced">Wikipedia mainspace search</a>

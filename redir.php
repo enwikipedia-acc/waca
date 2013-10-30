@@ -5,6 +5,7 @@ $toolList = array(
 	'luxo-contributions' => 'http://tools.wmflabs.org/guc/?user=%DATA%',
 	'oq-whois' => '//toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=%DATA%',
 	'ipinfodb-locator' => 'http://www.ipinfodb.com/ip_locator.php?ip=%DATA%',
+	'sulutil' => 'http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&showblocks=1&username=%DATA%',
 );
 
 if(isset($_GET['round2']))
