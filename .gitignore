@@ -18,3 +18,4 @@ deploy/
 .project
 templates_c/*
 *.phpproj.user
+temp/*
