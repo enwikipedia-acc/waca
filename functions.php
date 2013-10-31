@@ -573,7 +573,7 @@ function zoomPage($id,$urlhash)
 	$smarty->assign("date", $row['pend_date']);
 	$sUser = $row['pend_name'];
 	$smarty->assign("username", $sUser);
-	$smarty->assign("username-rawunicode", html_entity_decode($sUser));
+	$smarty->assign("usernamerawunicode", html_entity_decode($sUser));
 	$smarty->assign("useragent", $row['pend_useragent']);
 	$createreason = "Requested account at [[WP:ACC]], request #" . $row['pend_id'];
 	$smarty->assign("createreason", $createreason);

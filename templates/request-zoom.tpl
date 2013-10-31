@@ -83,7 +83,7 @@
               <div class="row-fluid">
               {if $showinfo == true && $isprotected == false && $isreserved == true}
                   <div class="span6">
-                      <a class="btn btn-primary span6 offset3" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$username-rawunicode|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true">Create account</a>
+                      <a class="btn btn-primary span6 offset3" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true">Create account</a>
                   </div>
                   {/if}
                   <div class="span6">{if $youreserved}<a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Break reservation</a>
@@ -195,13 +195,13 @@
             {if $isblacklisted}<div class="alert">Requested username is blacklisted.</div>{/if}
            
             <div class="btn-group">
-                <a class="btn btn-small" href="https://en.wikipedia.org/wiki/User:{$username-rawunicode|escape:'url'}">User page</a>
-                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page={$username-rawunicode|escape:'url'}">Creation log</a>
-                <a class="btn btn-small" href="{$tsurl}/redir.php?tool=sulutil&amp;data={$username-rawunicode|escape:'url'}">SUL</a>
-                <a class="btn btn-small" href="https://en.wikipedia.org/wiki/Special:CentralAuth/{$username-rawunicode|escape:'url'}">Special:CentralAuth</a>
-                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username={$username-rawunicode|escape:'url'}&amp;group=&amp;limit=1">Username list</a>
-                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special%3ASearch&amp;profile=advanced&amp;search={$username-rawunicode|escape:'url'}&amp;fulltext=Search&amp;ns0=1&amp;redirs=1&amp;profile=advanced">Wikipedia mainspace search</a>
-                <a class="btn btn-small" href="https://www.google.com/search?q={$username-rawunicode|escape:'url'}">Google search</a>
+                <a class="btn btn-small" href="https://en.wikipedia.org/wiki/User:{$usernamerawunicode|escape:'url'}">User page</a>
+                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page={$usernamerawunicode|escape:'url'}">Creation log</a>
+                <a class="btn btn-small" href="{$tsurl}/redir.php?tool=sulutil&amp;data={$usernamerawunicode|escape:'url'}">SUL</a>
+                <a class="btn btn-small" href="https://en.wikipedia.org/wiki/Special:CentralAuth/{$usernamerawunicode|escape:'url'}">Special:CentralAuth</a>
+                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username={$usernamerawunicode|escape:'url'}&amp;group=&amp;limit=1">Username list</a>
+                <a class="btn btn-small" href="https://en.wikipedia.org/w/index.php?title=Special%3ASearch&amp;profile=advanced&amp;search={$usernamerawunicode|escape:'url'}&amp;fulltext=Search&amp;ns0=1&amp;redirs=1&amp;profile=advanced">Wikipedia mainspace search</a>
+                <a class="btn btn-small" href="https://www.google.com/search?q={$usernamerawunicode|escape:'url'}">Google search</a>
             </div>
             
             <h5>AntiSpoof results:</h5>
