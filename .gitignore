@@ -19,3 +19,4 @@ deploy/
 templates_c/*
 *.phpproj.user
 temp/*
+core
