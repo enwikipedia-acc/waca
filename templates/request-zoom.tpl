@@ -83,7 +83,7 @@
               <div class="row-fluid">
               {if $showinfo == true && $isprotected == false && $isreserved == true}
                   <div class="span6">
-                      <a class="btn btn-primary span6 offset3" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true">Create account</a>
+                      <a class="btn btn-primary span6 offset3" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true">Create account</a>
                   </div>
                   {/if}
                   <div class="span6">{if $youreserved}<a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Break reservation</a>
@@ -138,7 +138,8 @@
                           	{else}
                           	  <tr><td></td><td><em>None.</em></td><td></td><td></td>
                           	{/if}
-                              <tr><td><a href="{$tsurl}/statistics.php?page=Users&amp;user={$userid}">{$tooluser}</a></td><td><form action='{$tsurl}/acc.php?action=comment-quick&amp;hash={$hash}' method='post'><input type='hidden' name='id' value='{$id}'/><input type='hidden' name='visibility' value='user' /><input class="span12" placeholder="Quick comment" name = "comment"/></td><td><div class="btn-group"><button class="btn btn-primary" type="submit">Save</button><a class="btn" href="{$tsurl}/acc.php?action=comment&id={$id}">Go to full comment form</a></div></form></td><td></td></tr>
+                          	{* TODO: HTML validator complains about placement of </form>. *}
+                              <tr><td><a href="{$tsurl}/statistics.php?page=Users&amp;user={$userid}">{$tooluser}</a></td><td><form action='{$tsurl}/acc.php?action=comment-quick&amp;hash={$hash}' method='post'><input type='hidden' name='id' value='{$id}'/><input type='hidden' name='visibility' value='user' /><input class="span12" placeholder="Quick comment" name = "comment"/></td><td><div class="btn-group"><button class="btn btn-primary" type="submit">Save</button></form><a class="btn" href="{$tsurl}/acc.php?action=comment&amp;id={$id}">Go to full comment form</a</div></td><td></td></tr>
                           </tbody>
                       </table>
                   </div>
@@ -157,7 +158,7 @@
             	 <tr>
                     <td><span class="label {if $proxy.trust == false}label-important{/if}">{if $proxy.trust == false}un{/if}trusted</span>{if $origin == $proxy.ip}<span class="label label-inverse">origin</span>{/if}</td>
                     <td>{$proxy.ip}<br /><span class="muted">{if $proxy.rdns != NULL}RDNS: {$proxy.rdns}{elseif $proxy.routable == false}<em><a style="color:grey;" href="http://en.wikipedia.org/wiki/Private_network">Non-routable address</a></em>{elseif $proxy.rdnsfailed == true}<em>(unable to determine address)</em>{else}<em>(no rdns available)</em>{/if}</span></td>
-                    <td>{if $proxy.trust == false && $proxy.routable == true && $proxy.rdnsfailed == false}<a class="btn btn-small" href="https://en.wikipedia.org/wiki/User talk:{$proxy.ip}">Talk page</a>
+                    <td>{if $proxy.trust == false && $proxy.routable == true && $proxy.rdnsfailed == false}<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/User_talk:{$proxy.ip}">Talk page</a>
 						<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:Contributions/{$proxy.ip}">Local Contributions</a>
 						<a class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=tparis-pcount&amp;data={$proxy.ip}">Deleted Edits</a>
 						<a class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=luxo-contributions&amp;data={$proxy.ip}">Global Contributions</a>
@@ -177,7 +178,7 @@
         	<div class="row-fluid">
         		<h4>IP Address links:</h4>
         		<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:Contributions/{$ip}">Local Contributions</a>
-				<a class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=tparis-pcount&data={$ip}">Deleted Edits</a>
+				<a class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=tparis-pcount&amp;data={$ip}">Deleted Edits</a>
 				<a class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=luxo-contributions&amp;data={$ip}">Global Contributions</a>
 				<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=block&amp;page={$ip}">Local Block Log</a>
 				<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:BlockList/{$ip}">Active Local Blocks</a>
