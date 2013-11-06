@@ -1,10 +1,11 @@
 <?php
 
 $toolList = array(
-	'tparis-pcount' => 'http://toolserver.org/~tparis/pcount/index.php?lang=en&wiki=wikipedia&name=%DATA%',
-	'luxo-contributions' => '//toolserver.org/~luxo/contributions/contributions.php?lang=en&blocks=true&user=%DATA%',
+	'tparis-pcount' => 'http://tools.wmflabs.org/xtools/pcount/index.php?lang=en&wiki=wikipedia&name=%DATA%',
+	'luxo-contributions' => 'http://tools.wmflabs.org/guc/?user=%DATA%',
 	'oq-whois' => '//toolserver.org/~overlordq/cgi-bin/whois.cgi?lookup=%DATA%',
 	'ipinfodb-locator' => 'http://www.ipinfodb.com/ip_locator.php?ip=%DATA%',
+	'sulutil' => 'http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&showblocks=1&username=%DATA%',
 );
 
 if(isset($_GET['round2']))

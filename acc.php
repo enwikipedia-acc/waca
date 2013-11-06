@@ -116,11 +116,6 @@ elseif (!isset($_GET['nocheck']))
 		// ?
         BootstrapSkin::displayInternalHeader();
         $session->checksecurity($_SESSION['user']);
-
-
-
-        $out = "<div id=\"content\">";
-        echo $out;
 }
 
 // When no action is specified the default Internal ACC are displayed.
@@ -428,10 +423,10 @@ elseif ($action == "login") {
 }
 elseif ($action == "messagemgmt") {
 	if (isset ($_GET['view'])) {
-	if (!preg_match('/^[0-9]*$/',$_GET['view']))
-		die('Invaild GET value passed.');
+	    if (!preg_match('/^[0-9]*$/',$_GET['view']))
+		    die('Invaild GET value passed.');
 		
-	$mid = sanitize($_GET['view']);
+	    $mid = sanitize($_GET['view']);
 		/*
 		OK, let's try and use acc_user for storing usernames. I've added a new column, rev_userid. Let's try and use that.
 		
@@ -453,7 +448,7 @@ elseif ($action == "messagemgmt") {
 		die();
 	}
 	if (isset ($_GET['edit'])) {
-	if(!$session->hasright($_SESSION['user'], 'Admin')) {
+	    if(!$session->hasright($_SESSION['user'], 'Admin')) {
 			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
 			$skin->displayIfooter();
 			die();
@@ -505,16 +500,17 @@ elseif ($action == "messagemgmt") {
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	echo "<h2>Mail messages</h2>\n";
+	echo "<div class=\"page-header\"><h1>Message Management<small> View and edit the email and interface messages</small></h1></div>";
+	echo "<h2>Email messages</h2>";
 	echo "<ul>\n";
 	while ( list( $mail_id, $mail_count, $mail_desc ) = mysql_fetch_row( $result ) ) {
 		$out = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mail_id\">Edit!</a> - <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
 		$out2 = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
 		if($session->hasright($_SESSION['user'], 'Admin')){
-		echo "$out\n";
+		    echo "$out\n";
 		}
 		elseif(!$session->hasright($_SESSION['user'], 'Admin')){
-		echo "$out2\n";
+		    echo "$out2\n";
 		}
 	}
 	echo "</ul>";
@@ -983,7 +979,7 @@ elseif ($action == "ban") {
 			if (!$result)
 				sqlerror("Query failed: $query ERROR: " . mysql_error());
 			$row = mysql_fetch_assoc($result);
-			$target = $row['pend_ip'];
+			$target = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
 			$type = "IP";
 		}
 		elseif (isset($_GET['email'])) {
@@ -1019,7 +1015,7 @@ elseif ($action == "ban") {
 		} else {
 			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
 			echo "<form action=\"$tsurl/acc.php?action=sban&amp;user=$siuser\" method=\"post\">";
-			echo "Ban target: $target\n<br />\n";
+			echo "Ban target: $target\n<br \>\n";
 			echo "<table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td></tr>\n";
 			echo "<tr><td>Duration:</td><td>\n";
 			echo "<select name=\"duration\">\n";
@@ -1123,7 +1119,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 			
 		
 			
-		$gid = sanitize($_GET['id']);
+		$gid = $internalInterface->checkreqid($_GET['id']);
 		if (csvalid($gid, $_GET['sum']) != 1) {
 			echo "Invalid checksum (This is similar to an edit conflict on Wikipedia; it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
 			$skin->displayIfooter();
@@ -1179,6 +1175,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	if (isset ($_POST['sig'])) {
 		$sig = sanitize($_POST['sig']);
 		$sid = sanitize($_SESSION['user']);
+		$emailsig = sanitize($_POST['emailsig']);
 		if( isset( $_POST['secureenable'] ) ) {
 			$secureon = 1;
 		} else {
@@ -1199,10 +1196,10 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 			}
 		}
 		if (isset($newemail)) {
-		$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld', user_email = '$newemail' WHERE user_name = '$sid'";
+		$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld', user_email = '$newemail', user_emailsig = '$emailsig' WHERE user_name = '$sid'";
 		}
 		else {
-			$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld' WHERE user_name = '$sid'";
+			$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld', user_emailsig = '$emailsig' WHERE user_name = '$sid'";
 		}
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
@@ -1215,43 +1212,22 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
-	if ($row['user_secure'] > 0) {
-		$securepref = " checked=\"checked\"";
-	} else { $securepref = ""; }
-	$sig = " value=\"" . $row['user_welcome_sig'] . "\"";
-	$abortpref= " checked=\"checked\"";
+	
+	$smarty->assign("securepref", $row['user_secure']);
+	$sig = xss($row['user_welcome_sig']);
+	$smarty->assign("sig", $sig);
 	if(array_key_exists('user_abortpref',$row)){
-		if($row['user_abortpref']==0){
-			$abortpref= "";
-		}
+		$smarty->assign("abortpref", $row['user_abortpref']);
 	}
-	$useremail = " value=\"" . htmlentities($row['user_email']) . "\"";
-    echo '<h2>General settings</h2>';
-    echo '<form action="'.$tsurl.'/acc.php?action=welcomeperf" method="post">';
-    echo '<input type="checkbox" name="secureenable"'.$securepref.'/> Enable use of the secure server<br /><br />';
-    echo 'Your signature (wikicode).<input type="text" name="sig" size ="40"'. $sig.'/>';
-    echo '<i>This would be the same as ~~~ on-wiki. No date, please.</i><br /><br />';
-	//Preference used in functions.php:
-    echo '<input type="checkbox" name="abortpref"'.$abortpref.'/> Don\'t ask to double check before closing requests (requires Javascript)<br /><br />';
-    echo 'Your Email address: <input type="text" name="email" size ="40"'. $useremail .'/><br />';
-    echo 'Your on-wiki username: ' . htmlentities($row['user_onwikiname']) . '<br />' ;
-    // TODO: clean up into nicer code, rather than coming out of php
-	echo <<<HTML
-    <input type="submit"/><input type="reset"/>
-    </form>
-    <h2>Change your password</h2>
-HTML;
-    echo '<form action="'.$tsurl.'/acc.php?action=changepassword" method="post">';
-	echo <<<HTML
-    Your old password: <input type="password" name="oldpassword"/><br />
-    Your new password: <input type="password" name="newpassword"/><br />
-    Confirm new password: <input type="password" name="newpasswordconfirm"/><br />
-    <input type="submit"/><input type="reset"/>
-    </form><br />
-HTML;
-
-
-	$skin->displayIfooter();
+	$useremail = xss($row['user_email']);
+	$smarty->assign("email", $useremail);
+	$onwikiname = xss($row['user_onwikiname']);
+	$smarty->assign("onwikiname", $onwikiname);
+	$emailsig = xss($row['user_emailsig']);
+	$smarty->assign("emailsig", $emailsig);
+	
+	$smarty->display("prefs.tpl");
+	BootstrapSkin::displayInternalFooter();
 	die();
 }
 elseif ($action == "done" && $_GET['id'] != "") {
@@ -1265,7 +1241,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	}
 	
 	// sanitise this input ready for inclusion in queries
-	$gid = sanitize($_GET['id']);
+	$gid = $internalInterface->checkreqid($_GET['id']);
 	$gem = sanitize($_GET['email']);
 	
 	// check the checksum is valid
@@ -1280,13 +1256,6 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
-	$rows = mysql_num_rows($result);
-	
-	if ($rows < 1) {
-		$skin->displayRequestMsg("Invalid Request ID.");
-		$skin->displayIfooter();
-		die();
-	}
 	
 	// check if an email has already been sent
 	if ($row['pend_emailsent'] == "1" && !isset($_GET['override']) && $gem != 0) {
@@ -1322,7 +1291,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	}
 	
 	// Checks whether the username is already in use on Wikipedia.
-	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . urlencode($pend2['user_name']) . "&format=php");
+	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . urlencode($row2['pend_name']) . "&format=php");
 	$ue = unserialize($userexist);
 	if (!isset ($ue['query']['users']['0']['missing'])) {
 		$exists = 1;
@@ -1343,28 +1312,41 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if ($gem  == 'custom') {
 		if (!isset($_POST['msgbody']) or empty($_POST['msgbody'])) {
 			$querystring = htmlspecialchars($_SERVER["QUERY_STRING"],ENT_COMPAT,'UTF-8'); //Send it through htmlspecialchars so HTML validators don't complain. 
-			echo "<form action='?".$querystring."' method='post'>\n";
-			echo "<p>Please enter your message to the user below.</p>";
-			echo "<p><strong>Please note that this content will be sent as the entire body of an email to the user, so remember to close the email properly with a signature (not ~~~~ either).</strong></p>";
-			echo "\n<textarea name='msgbody' cols='80' rows='25'></textarea>\n";
-			echo "<p><input type='checkbox' name='created' />Account created</p>\n";
-			echo "<p><input type='checkbox' name='ccmailist' checked='checked'";
+			echo "<form action='?".$querystring."' method='post'><fieldset>";
+            echo "<legend>Custom close</legend>";
+			echo "<label for=\"\">Please enter your message to the user below.</label>";
+            BootstrapSkin::displayAlertBox("The contents of this box will be sent as an email to the user with the signature set in <a href=\"$tsurl/acc.php?action=prefs\">your preferences</a> appended to it. <b>If you do not set a signature in your preferences, please manually enter one at the end of your message</b>.","alert-error","Caution!",true,false);
+			echo "<textarea id=\"msgbody\" name=\"msgbody\" rows=\"15\" class=\"input-block-level\"></textarea>";
+			echo "<label class=\"checkbox\"><input type=\"checkbox\" name=\"created\" />Account created</label>";
+			echo "<label class=\"checkbox\"><input type=\"checkbox\" name=\"ccmailist\" checked=\"checked\"";   
 			if (!($session->hasright($_SESSION['user'], "Admin")))
-				echo " DISABLED";
-			echo "/>Cc to mailing list</p>\n";
-			echo "<p><input type='submit' value='Close and send' /></p>\n";
-			echo "</form>\n";
+				echo " disabled";
+			echo "/>CC to mailing list</label>";
+            echo '<div class="form-actions"><button type="submit" class="btn btn-primary">Close and send</button><a href="?action=zoom&amp;id=' . $gid . '" class="btn">Cancel</a></div>';
+			echo "</fieldset></form>\n";
 			$skin->displayIfooter();
 			die();
-		} else {
-			
+		} else {			
 			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
 			if (!($session->hasright($_SESSION['user'], "Admin")) || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on")
 				$headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
 			$headers .= 'X-ACC-Request: ' . $gid . "\r\n";
 			$headers .= 'X-ACC-UserID: ' . $_SESSION['userID'] . "\r\n";
 			
-			mail($row2['pend_email'], "RE: [ACC #$gid] English Wikipedia Account Request", $_POST['msgbody'], $headers);
+			// Get the closing user's Email signature and append it to the Email.
+			$sid = sanitize($_SESSION['user']);
+			$query = "SELECT user_emailsig FROM acc_user WHERE user_name = '$sid'";
+			$result = mysql_query($query, $tsSQLlink);
+			if (!$result)
+				sqlerror("Query failed: $query ERROR: " . mysql_error());
+			$row = mysql_fetch_assoc($result);
+			if($row['user_emailsig'] != "") {
+				$emailsig = html_entity_decode($row['user_emailsig'], ENT_QUOTES, "UTF-8");
+				mail($row2['pend_email'], "RE: [ACC #$gid] English Wikipedia Account Request", $_POST['msgbody'] . "\n\n". $emailsig, $headers);
+			}
+			else {
+				mail($row2['pend_email'], "RE: [ACC #$gid] English Wikipedia Account Request", $_POST['msgbody'], $headers);
+			}
 			
 			$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $gid . "';";
 			$result = mysql_query($query, $tsSQLlink);
@@ -1556,32 +1538,9 @@ elseif ($action == "reserve") {
 	// Gets the global variables.
 	global $allowDoubleReserving, $skin;
 	
-	
-	// Make sure there is no invlalid characters.
-	if (!preg_match('/^[0-9]*$/',$_GET['resid'])) {
-		// Notifies the user and stops the script.
-		$skin->displayRequestMsg("The request ID supplied is invalid!");
-		$skin->displayIfooter();
-		die();
-	}
-	
-	// Sanitises the resid for use.
-	$request = sanitise($_GET['resid']);
-	
-	// Formulates and executes SQL query to check if the request exists.
-	$query = "SELECT Count(*) FROM acc_pend WHERE pend_id = '$request';";
-	$result = mysql_query($query, $tsSQLlink);
-	$row = mysql_fetch_row($result);
-	
-	// The query counted the amount of records with the particular request ID.
-	// When the value is zero it is an idication that that request doesnt exist.
-	if($row[0]==="0") {
-		// Notifies the user and stops the script.
-		$skin->displayRequestMsg("The request ID supplied is invalid!");
-		$skin->displayIfooter();
-		die();
-	}
-	
+	// Sanitises the resid for use and checks its validity.
+	$request = $internalInterface->checkreqid($_GET['resid']);
+
 	global $enableEmailConfirm;
 	if($enableEmailConfirm == 1){
 		// check the request is email-confirmed to prevent jumping the gun (ACC-122)
@@ -1715,12 +1674,12 @@ elseif ($action == "reserve") {
 }
 elseif ($action == "breakreserve") {
 
-	$request = sanitise($_GET['resid']);
+	$request = $internalInterface->checkreqid($_GET['resid']);
 	
 	//check request is reserved
 	$reservedBy = isReserved($request);
 	if( $reservedBy == "" ) {
-		$skin->displayRequestMsg("Request is not reserved, or request ID is invalid.");
+		$skin->displayRequestMsg("Request is not reserved.");
 		$skin->displayIfooter();
 		die();
 	}
@@ -1785,7 +1744,7 @@ elseif ($action == "comment") {
 	}
        
     if( isset($_GET['id']) ) {
-        $id = sanitize($_GET['id']);
+        $id = $internalInterface->checkreqid($_GET['id']);
         echo "<h2>Comment on request <a href='$tsurl/acc.php?action=zoom&amp;id=$id&amp;hash=$urlhash'>#$id</a></h2>
               <form action='$tsurl/acc.php?action=comment-add&amp;hash=$urlhash' method='post'>";
     } else {
@@ -1804,11 +1763,11 @@ elseif ($action == "comment") {
 }
 
 elseif ($action == "comment-add") {
-	$id = sanitise($_POST['id']); //TODO: We need to do better than just sanitise it, we also need to check that the request id is actually valid. 
+	$id = $internalInterface->checkreqid($_POST['id']);
     echo "<h2>Adding comment to request " . $id . "...</h2><br />";
     if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visibility'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
         $user = sanitise($_SESSION['user']);
-        $comment = sanitise($_POST['comment']);
+        $comment = mysql_real_escape_string($_POST['comment']);
         $visibility = sanitise($_POST['visibility']);
         $now = date("Y-m-d H-i-s");
         
@@ -1839,11 +1798,10 @@ elseif ($action == "comment-add") {
 }
 
 elseif ($action == "comment-quick") {
-    if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visibility'])) && ($_POST['id'] != "")) {
-
-        $id = sanitise($_POST['id']);
+    if ((isset($_POST['id'])) && (isset($_POST['visibility'])) && ($_POST['id'] != "")) {
+        $id = $internalInterface->checkreqid($_POST['id']);
         $user = sanitise($_SESSION['user']);
-        $comment = sanitise($_POST['comment']);
+        $comment = mysql_real_escape_string($_POST['comment']);
         $visibility = sanitise($_POST['visibility']);
         $now = date("Y-m-d H-i-s");
 	if($_POST['comment'] == ""){
@@ -1971,7 +1929,7 @@ elseif ($action == "ec") { // edit comment
 	    echo "</select><br />\n";
 		echo "<strong>Request:</strong>&nbsp;<a href=\"".$tsurl."/acc.php?action=zoom&id=".$row['pend_id']."\">#" . $row['pend_id'] . "</a><br />";
 		
-		echo "<strong>Old text:</strong><pre>".$row['cmt_comment']."</pre>";
+		echo "<strong>Old text:</strong><pre>".htmlentities($row['cmt_comment'],ENT_COMPAT,'UTF-8')."</pre>";
 		
 		echo "<input type=\"text\" size=\"100\" name=\"newcomment\" value=\"".htmlentities($row['cmt_comment'],ENT_COMPAT,'UTF-8')."\" />";
 		echo "<input type=\"submit\" />";
@@ -1981,20 +1939,4 @@ elseif ($action == "ec") { // edit comment
 		die();
 	}
 }
-
-/*
- * Commented out by stw:
- *  a) wrong. Check the code in the bot to figure out what will actually happen.
- *  b) this will likely increase the amount of time taken for decent investigation to start.
- *  
- *  Please see note on JIRA: ACC-161
- * ******************************************
- * //Silence the bot when it gets annoying
- * elseif ($action == "silence") { 
- *	$accbotSend->send("Bot inactivity warning silenced by " . $session->getUsernameFromUid($_SESSION['userID']));
- *	echo '<p>The bot has been sent a message that will silence it for one hour.</p>';
- *	$skin->displayIfooter();
- *	die();
- *}
- */
 ?>

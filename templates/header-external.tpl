@@ -8,19 +8,27 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="{$tsurl}/lib/bootstrap-2.3.1/css/bootstrap.css" rel="stylesheet">
+    <link href="{$tsurl}/lib/bootstrap/css/bootstrap.css" rel="stylesheet">
     <style type="text/css">
       body {
         padding-top: 20px;
         padding-bottom: 40px;
       }
     </style>
-    <link href="{$tsurl}/lib/bootstrap-2.3.1/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="{$tsurl}/lib/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-      <script src="{$tsurl}/lib/bootstrap-2.3.1/js/html5shiv.js"></script>
+      <script src="{$tsurl}/lib/bootstrap/js/html5shiv.js"></script>
     <![endif]-->
+    
+	<!--  Temporary fix to deal with https://github.com/twbs/bootstrap/issues/7968
+	until a newer Bootstrap version with this fixed is released and we upgrade to it -->
+	<style>
+	.dropdown-backdrop {
+		position: static;
+	}
+	</style>
   </head>
 
   <body>

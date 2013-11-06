@@ -8,7 +8,7 @@
     <meta name="author" content="">
 
     <!-- Le styles -->
-    <link href="{$tsurl}/lib/bootstrap-2.3.1/css/bootstrap.css" rel="stylesheet">
+    <link href="{$tsurl}/lib/bootstrap/css/bootstrap.css" rel="stylesheet">
     <style type="text/css">
       body {
         padding-top: 60px;
@@ -27,12 +27,21 @@
         }
       }
     </style>
-    <link href="{$tsurl}/lib/bootstrap-2.3.1/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="{$tsurl}/lib/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="{$tsurl}/lib/bootstrap-sortable/css/bootstrap-sortable.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>
-      <script src="{$tsurl}/lib/bootstrap-2.3.1/js/html5shiv.js"></script>
+      <script src="{$tsurl}/lib/bootstrap/js/html5shiv.js"></script>
     <![endif]-->
+    
+    <!--  Temporary fix to deal with https://github.com/twbs/bootstrap/issues/7968
+	until a newer Bootstrap version with this fixed is released and we upgrade to it -->
+	<style>
+	.dropdown-backdrop {
+		position: static;
+	}
+	</style>
   </head>
 
   <body>
@@ -69,6 +78,7 @@
 				  <ul class="dropdown-menu">
 					<li><a href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide"><i class="icon-question-sign"></i> Guide</a></li>
 					<li><a href="//en.wikipedia.org/wiki/Wikipedia:Username_policy"><i class="icon-warning-sign"></i> Username Policy</a></li>
+					<li><a href="#modalFlowchart" role="button" data-toggle="modal"><i class="icon-check"></i> Similar account flowchart</a></li>
 					<li><a href="http://webchat.freenode.net/?channels=wikipedia-en-accounts"><i class="icon-comment"></i> Chat</a></li>
 				  </ul>
 			  </li>
@@ -96,6 +106,8 @@
       </div>
     </div>
 
+	{include file="modal-flowchart.tpl"}
+	
     <div class="container-fluid">
 	{if $userid != 0}
 		<div class="row-fluid">

@@ -17,3 +17,6 @@ deploy/
 .buildpath
 .project
 templates_c/*
+*.phpproj.user
+temp/*
+core
