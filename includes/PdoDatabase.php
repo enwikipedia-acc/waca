@@ -1,6 +1,11 @@
 <?php
 
 function gGetDb($db = "acc") {
+    global $accdbobjects;
+    if( ! is_array( $accdbobjects ) ) {
+        $accdbobjects = array();   
+    }
+    
 	if( ! isset( $accdbobjects[ $db ] ) ) {
 		global $cDatabaseConfig;
 	
@@ -14,6 +19,10 @@ function gGetDb($db = "acc") {
 			$cDatabaseConfig[ $db ][ "username" ],
 			$cDatabaseConfig[ $db ][ "password" ]
 		);
+        
+        $accdbobject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        $accdbobjects[ $db ] = $accdbobject;
 	}
 	return $accdbobject;
 }
