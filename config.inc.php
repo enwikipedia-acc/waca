@@ -260,3 +260,7 @@ ini_set('session.name', $sessionname);
 ini_set('user_agent', $toolUserAgent);
 
 foreach(array( "mbstring", "mysql" ) as $x) {if(!extension_loaded($x)) {die("extension $x is required.");}}
+
+require_once($filepath . "includes/AutoLoader.php");
+
+spl_autoload_register( "AutoLoader::load" );
