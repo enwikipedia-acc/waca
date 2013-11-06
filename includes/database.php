@@ -125,8 +125,6 @@ class database {
 	 * @return MySQL query result.
 	 */
 	public function query($query) {
-		$bt = debug_backtrace();
-		trigger_error("Use of old functions - " . $bt[0]["file"] .":". $bt[0]["line"], E_USER_WARNING);
 		return mysql_query($query,$this->dbLink);
 	}
 	

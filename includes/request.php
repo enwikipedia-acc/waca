@@ -46,7 +46,7 @@ class accRequest {
 	        	date("Y"));
 		
 		// Converts the UNIX timestamp into a usuable date format.
-		$expiry =  date("Y-m-d H:i:s", $ntime);
+		$expiry = date("Y-m-d H:i:s", $ntime);
 		
 		// Formulates and executes the SQL query to delete requests that are older than the determined date.
 		$query = "DELETE FROM acc_pend WHERE pend_date < '$expiry' AND pend_mailconfirm != 'Confirmed' AND pend_mailconfirm != '';";
