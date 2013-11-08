@@ -43,7 +43,7 @@
 	</div>
 	<div class="control-group">
 		<div class="controls">
-			<button type="submit" class="btn">Submit query</button>
+			<button type="submit" class="btn">Save preferences</button>
 		</div>
 	</div>
 </form>
@@ -69,7 +69,7 @@
 	</div>
 	<div class="control-group">
 		<div class="controls">
-			<button type="submit" class="btn">Submit query</button>
+			<button type="submit" class="btn">Update password</button>
 		</div>
 	</div>
 </form>
