@@ -1747,17 +1747,30 @@ elseif ($action == "comment") {
     if( isset($_GET['id']) ) {
         $id = $internalInterface->checkreqid($_GET['id']);
         echo "<h2>Comment on request <a href='$tsurl/acc.php?action=zoom&amp;id=$id&amp;hash=$urlhash'>#$id</a></h2>
-              <form action='$tsurl/acc.php?action=comment-add&amp;hash=$urlhash' method='post'>";
+              <form action='$tsurl/acc.php?action=comment-add&amp;hash=$urlhash' method='post' class='form-horizontal span8'>";
     } else {
         $id = "";
         echo "<h2>Comment on a request</h2>
-              <form action='$tsurl/acc.php?action=comment-add' method='post'>";
+              <form action='$tsurl/acc.php?action=comment-add' method='post' class='form-horizontal span8'>";
     }
     echo "
-    Request ID: <input type='text' name='id' value='$id' /> <br />
-    Comments:   <input type='text' name='comment' size='75' /> <br />
-    Visibility: <select name='visibility'><option>user</option><option>admin</option></select>
-    <input type='submit' value='Submit' />
+	<div class='control-group'>
+		<label for='id' class='control-label'>Request ID:</label> 
+		<div class='controls'><input type='text' name='id' value='$id'></div>
+	</div>
+	<div class='control-group'>
+		<label for='visibility' class='control-label'>Visibility:</label> 
+		<div class='controls'>
+			<select name='visibility'><option>user</option><option>admin</option></select>
+		</div>
+	</div>
+	<div class='control-group'>
+		<label for='comment' class='control-label'>Comments:</label> 
+		<div class='controls'><textarea name='comment' class='input-xxlarge' rows='6'></textarea></div>
+	</div>
+	<div class='control-group'>
+		<div class='controls'><button type='submit' class='btn btn-default'>Submit</button></div>
+	</div>  
     </form>";
     $skin->displayIfooter();
 	die();
