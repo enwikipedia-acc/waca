@@ -86,8 +86,9 @@
                       <a class="btn btn-primary span6 offset3" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true">Create account</a>
                   </div>
                   {/if}
-                  <div class="span6">{if $youreserved}<a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Break reservation</a>
-				  {elseif $isadmin && $isreserved}<a class="btn span6 btn-warning" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Force break</a>{/if}</div>
+                  {if $youreserved}<div class="span6"><a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Break reservation</a></div>
+				  {elseif $isadmin && $isreserved}<div class="span4 offset4"><a class="btn span12 btn-warning" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Force break</a></div>
+				  {elseif !$isreserved}<div class="span4 offset4"><a class="btn span12 btn-success" href="{$tsurl}/acc.php?action=reserve&amp;resid={$id}">Reserve</a></div>{/if}
               </div>
               {if $isprotected == false}
 			  <hr />
