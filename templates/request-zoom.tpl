@@ -94,9 +94,17 @@
               <div class="row-fluid">
                   {if !array_key_exists($type, $requeststates)}
                   <a class="btn span 3" href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$defaultstate}">Reset request</a>
-                  {else}{foreach $requeststates as $state}
-                  <a class="btn span3" href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$state@key}">{$state.deferto}</a>
-                  {/foreach}{/if}
+                  {else}
+                  <div class="btn-group">
+    			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Defer<span class="caret"></span></button>
+    			<ul class="dropdown-menu">
+    				{foreach $requeststates as $state}
+                  		<li><a href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$state@key}">{$state.deferto}</a></li>
+                		{/foreach}
+    			</ul>
+  		  </div>
+
+                  {/if}
               </div>
               {/if}
               {if $isprotected == false}
