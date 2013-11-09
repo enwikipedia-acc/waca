@@ -114,7 +114,7 @@
                   
                   <div class = "span4{if !$isreserved} offset4{/if}">
 					{if !array_key_exists($type, $requeststates)}
-					<a class="btn span6" href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$defaultstate}">Reset request</a>
+					<a class="btn span12" href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$defaultstate}">Reset request</a>
 					{else}
 					<div class="btn-group span6">
 					<button type="button" class="btn btn-default dropdown-toggle span12" data-toggle="dropdown">Defer<span class="caret"></span></button>
@@ -126,7 +126,7 @@
 					</div>
 					{/if}
                   
-                  <a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=0&amp;sum={$checksum}">Drop</a>
+                  {if !$isclosed}<a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=0&amp;sum={$checksum}">Drop</a>{/if}
                  </div>
               </div>
               {/if}
