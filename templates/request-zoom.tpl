@@ -92,35 +92,42 @@
               {if $isprotected == false}
 			  <hr />
               <div class="row-fluid">
-                  {if !array_key_exists($type, $requeststates)}
-                  <a class="btn span 3" href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$defaultstate}">Reset request</a>
-                  {else}
-                  <div class="btn-group">
-    			<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">Defer<span class="caret"></span></button>
-    			<ul class="dropdown-menu">
-    				{foreach $requeststates as $state}
-                  		<li><a href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$state@key}">{$state.deferto|capitalize}</a></li>
-                		{/foreach}
-    			</ul>
-  		  </div>
-
-                  {/if}
-              </div>
-              {/if}
-              {if $isprotected == false}
-              <hr/>    
-              <div class="row-fluid">
                   {if $isreserved == true}
-                  <a class="btn btn-success" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=1&amp;sum={$checksum}">Created</a>
-                  <a class="btn btn-warning" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=2&amp;sum={$checksum}">Similar</a>
-                  <a class="btn btn-warning" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=3&amp;sum={$checksum}">Taken</a>
-                  <a class="btn btn-warning" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=26&amp;sum={$checksum}">SUL Taken</a>
-                  <a class="btn btn-warning" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=4&amp;sum={$checksum}">UPolicy</a>
-                  <a class="btn btn-warning" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=5&amp;sum={$checksum}">Invalid</a>
-                  <a class="btn btn-warning" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=30&amp;sum={$checksum}">Password reset</a>
-                  <a class="btn btn-info" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=custom&amp;sum={$checksum}">Custom</a>
+                  <div class = "span4">
+                  	<a class="btn btn-success span12" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=1&amp;sum={$checksum}">Created</a>
+                  </div>
+                  <div class = "span4">
+                  <div class="btn-group span6">
+                  <button type="button" class="btn btn-warning dropdown-toggle span12" data-toggle="dropdown">Decline<span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=2&amp;sum={$checksum}">Similar</a></li>
+                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=3&amp;sum={$checksum}">Taken</a></li>
+                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=26&amp;sum={$checksum}">SUL Taken</a></li>
+                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=4&amp;sum={$checksum}">UPolicy</a></li>
+                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=5&amp;sum={$checksum}">Invalid</a></li>
+                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=30&amp;sum={$checksum}">Password reset</a></li>
+                  </ul>
+                  </div>
+                  <a class="btn btn-info span6" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=custom&amp;sum={$checksum}">Custom</a>
+                  </div>
                   {/if}
-                  <a class="btn btn-inverse" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=0&amp;sum={$checksum}">Drop</a>
+                  
+                  <div class = "span4{if !$isreserved} offset4{/if}">
+					{if !array_key_exists($type, $requeststates)}
+					<a class="btn span6" href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$defaultstate}">Reset request</a>
+					{else}
+					<div class="btn-group span6">
+					<button type="button" class="btn btn-default dropdown-toggle span12" data-toggle="dropdown">Defer<span class="caret"></span></button>
+					<ul class="dropdown-menu">
+					{foreach $requeststates as $state}
+					<li><a href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$state@key}">{$state.deferto|capitalize}</a></li>
+					{/foreach}
+					</ul>
+					</div>
+					{/if}
+                  
+                  <a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=0&amp;sum={$checksum}">Drop</a>
+                 </div>
               </div>
               {/if}
               {if $isadmin}
@@ -147,7 +154,7 @@
                           	  <tr><td></td><td><em>None.</em></td><td></td><td></td>
                           	{/if}
                           	{* TODO: HTML validator complains about placement of </form>. *}
-                              <tr><td><a href="{$tsurl}/statistics.php?page=Users&amp;user={$userid}">{$tooluser}</a></td><td><form action='{$tsurl}/acc.php?action=comment-quick&amp;hash={$hash}' method='post'><input type='hidden' name='id' value='{$id}'/><input type='hidden' name='visibility' value='user' /><input class="span12" placeholder="Quick comment" name = "comment"/></td><td><div class="btn-group"><button class="btn btn-primary" type="submit">Save</button></form><a class="btn" href="{$tsurl}/acc.php?action=comment&amp;id={$id}">Go to full comment form</a</div></td><td></td></tr>
+                              <tr><td><a href="{$tsurl}/statistics.php?page=Users&amp;user={$userid}">{$tooluser}</a></td><td><form action='{$tsurl}/acc.php?action=comment-quick&amp;hash={$hash}' method='post'><input type='hidden' name='id' value='{$id}'/><input type='hidden' name='visibility' value='user' /><input class="span12" placeholder="Quick comment" name = "comment"/></td><td><div class="btn-group"><button class="btn btn-primary" type="submit">Save</button></form><a class="btn" href="{$tsurl}/acc.php?action=comment&amp;id={$id}">Go to full comment form</a></div></td><td></td></tr>
                           </tbody>
                       </table>
                   </div>
