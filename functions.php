@@ -577,6 +577,7 @@ function zoomPage($id,$urlhash)
 	$smarty->assign("useragent", $row['pend_useragent']);
 	$createreason = "Requested account at [[WP:ACC]], request #" . $row['pend_id'];
 	$smarty->assign("createreason", $createreason);
+	$smarty->assign("isclosed", $row['pend_status'] == "Closed");
 
 	//#region setup whether data is viewable or not
 	

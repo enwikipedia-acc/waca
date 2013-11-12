@@ -92,27 +92,42 @@
               {if $isprotected == false}
 			  <hr />
               <div class="row-fluid">
-                  {if !array_key_exists($type, $requeststates)}
-                  <a class="btn span 3" href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$defaultstate}">Reset request</a>
-                  {else}{foreach $requeststates as $state}
-                  <a class="btn span3" href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$state@key}">{$state.deferto}</a>
-                  {/foreach}{/if}
-              </div>
-              {/if}
-              {if $isprotected == false}
-              <hr/>    
-              <div class="row-fluid">
                   {if $isreserved == true}
-                  <a class="btn btn-success" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=1&amp;sum={$checksum}">Created</a>
-                  <a class="btn btn-warning" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=2&amp;sum={$checksum}">Similar</a>
-                  <a class="btn btn-warning" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=3&amp;sum={$checksum}">Taken</a>
-                  <a class="btn btn-warning" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=26&amp;sum={$checksum}">SUL Taken</a>
-                  <a class="btn btn-warning" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=4&amp;sum={$checksum}">UPolicy</a>
-                  <a class="btn btn-warning" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=5&amp;sum={$checksum}">Invalid</a>
-                  <a class="btn btn-warning" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=30&amp;sum={$checksum}">Password reset</a>
-                  <a class="btn btn-info" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=custom&amp;sum={$checksum}">Custom</a>
+                  <div class = "span4">
+                  	<a class="btn btn-success span12" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=1&amp;sum={$checksum}">Created</a>
+                  </div>
+                  <div class = "span4">
+                  <div class="btn-group span6">
+                  <button type="button" class="btn btn-warning dropdown-toggle span12" data-toggle="dropdown">Decline<span class="caret"></span></button>
+                  <ul class="dropdown-menu">
+                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=2&amp;sum={$checksum}">Similar</a></li>
+                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=3&amp;sum={$checksum}">Taken</a></li>
+                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=26&amp;sum={$checksum}">SUL Taken</a></li>
+                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=4&amp;sum={$checksum}">UPolicy</a></li>
+                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=5&amp;sum={$checksum}">Invalid</a></li>
+                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=30&amp;sum={$checksum}">Password reset</a></li>
+                  </ul>
+                  </div>
+                  <a class="btn btn-info span6" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=custom&amp;sum={$checksum}">Custom</a>
+                  </div>
                   {/if}
-                  <a class="btn btn-inverse" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=0&amp;sum={$checksum}">Drop</a>
+                  
+                  <div class = "span4{if !$isreserved} offset4{/if}">
+					{if !array_key_exists($type, $requeststates)}
+					<a class="btn span12" href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$defaultstate}">Reset request</a>
+					{else}
+					<div class="btn-group span6">
+					<button type="button" class="btn btn-default dropdown-toggle span12" data-toggle="dropdown">Defer<span class="caret"></span></button>
+					<ul class="dropdown-menu">
+					{foreach $requeststates as $state}
+					<li><a href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$state@key}">{$state.deferto|capitalize}</a></li>
+					{/foreach}
+					</ul>
+					</div>
+					{/if}
+                  
+                  {if !$isclosed}<a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=0&amp;sum={$checksum}">Drop</a>{/if}
+                 </div>
               </div>
               {/if}
               {if $isadmin}
@@ -211,7 +226,7 @@
             	{if $spoof == $username}<tr><td></td><td><h3>Note: This account has already been created</h3></td>{continue}{/if}
             	<tr><td><a target="_blank" href="https://en.wikipedia.org/wiki/User:{$spoof|escape:'url'}">{$spoof}</a></td>
             	<td><a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:Contributions/{$spoof|escape:'url'}">User page</a>
-            	<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special%3ALog&amp;type=&amp;user=&amp;page={$spoof|escape:'url'}">Logs</a>
+            	<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special%3ALog&amp;type=&amp;user=&amp;page=User%3A{$spoof|escape:'url'}&amp;year=&amp;month=-1&amp;tagfilter=&amp;hide_patrol_log=1&amp;hide_review_log=1&amp;hide_thanks_log=1">Logs</a>
             	<a class="btn btn-small" target="_blank" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&amp;showblocks=1&amp;username={$spoof|escape:'url'}">SUL</a>
             	<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:CentralAuth/{$spoof|escape:'url'}">Special:CentralAuth</a>
             	<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:PasswordReset?wpUsername={$spoof|escape:'url'}">Send Password reset</a>
