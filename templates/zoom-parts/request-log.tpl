@@ -2,7 +2,7 @@
 <form action="{$tsurl}/acc.php?action=comment-quick&amp;hash={$hash}" method="post">
     <table class="table table-condensed table-striped">
         <tbody>
-			    {if $zoomlogs}
+          {if $zoomlogs}
             {foreach $zoomlogs as $zoomrow}
             <tr><td>{if $zoomrow.userid != NULL}<a href='{$tsurl}/statistics.php?page=Users&amp;user={$zoomrow.userid}'>{$zoomrow.user}</a>{else}{$zoomrow.user}{/if}{if $zoomrow.security == "admin"}<br /><span style="color:red">(admin only)</span>{/if}</td><td>{$zoomrow.entry}</td><td>{$zoomrow.time}</td><td>{if $zoomrow.canedit == true}<a class="btn btn-small" href="{$tsurl}/acc.php?action=ec&amp;id={$zoomrow.id}">Edit</a></td></tr>{/if}
             {/foreach}

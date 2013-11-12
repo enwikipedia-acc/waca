@@ -35,7 +35,7 @@
             <td></td></tr>
         </tbody>
     </table>
-	</div>
+  </div>
 </div>
 {if $showinfo}
 <div class="row-fluid hidden-phone">

@@ -7,14 +7,14 @@
   <div class="span6">
     {if $youreserved}
       <a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Break reservation</a>
-		{elseif $isadmin && $isreserved}
+    {elseif $isadmin && $isreserved}
       <a class="btn span6 btn-warning" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Force break</a>
     {/if}
   </div> <!-- /span6 -->
 </div> <!-- /row-fluid -->
 
 {if $isprotected == false}
-	<hr />
+  <hr />
   <div class="row-fluid">
     {if $isreserved == true}
       <div class = "span4">
@@ -37,18 +37,18 @@
     {/if}
                   
     <div class="span4{if !$isreserved} offset4{/if}">
-			{if !array_key_exists($type, $requeststates)}
-				<a class="btn span12" href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$defaultstate}">Reset request</a>
-			{else}
-				<div class="btn-group span6">
-					<button type="button" class="btn btn-default dropdown-toggle span12" data-toggle="dropdown">Defer&nbsp;<span class="caret"></span></button>
-					<ul class="dropdown-menu">
-					  {foreach $requeststates as $state}
-					    <li><a href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$state@key}">{$state.deferto|capitalize}</a></li>
-					  {/foreach}
-					</ul>
-				</div>
-			{/if}
+      {if !array_key_exists($type, $requeststates)}
+        <a class="btn span12" href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$defaultstate}">Reset request</a>
+      {else}
+        <div class="btn-group span6">
+          <button type="button" class="btn btn-default dropdown-toggle span12" data-toggle="dropdown">Defer&nbsp;<span class="caret"></span></button>
+          <ul class="dropdown-menu">
+            {foreach $requeststates as $state}
+              <li><a href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$state@key}">{$state.deferto|capitalize}</a></li>
+            {/foreach}
+          </ul>
+        </div>
+      {/if}
                   
       {if !$isclosed}
         <a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=0&amp;sum={$checksum}">Drop</a>

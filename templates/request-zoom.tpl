@@ -1,12 +1,12 @@
 <div class="row-fluid">
-	<!-- page header -->
-	<div class="span12">
-		<h3>Details for Request #{$id}:</h3>
-	</div>
-</div><!--/row-->	 
+  <!-- page header -->
+  <div class="span12">
+    <h3>Details for Request #{$id}:</h3>
+  </div>
+</div><!--/row-->   
         
 <div class="row-fluid">
-	<!-- request details -->
+  <!-- request details -->
   <div class="span6 container-fluid">
     {include file="zoom-parts/request-info.tpl"}
     <hr />
@@ -15,7 +15,7 @@
   <div class="span6 container-fluid">
     {include file="zoom-parts/request-log.tpl"}
   </div>
-</div><!--/row-->	  
+</div><!--/row-->    
 
 <hr />
 {if $showinfo == true}
