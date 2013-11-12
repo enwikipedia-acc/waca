@@ -4,7 +4,7 @@
     <h3>Details for Request #{$id}:</h3>
   </div>
 </div><!--/row-->   
-        
+
 <div class="row-fluid">
   <!-- request details -->
   <div class="span6 container-fluid">
@@ -23,7 +23,7 @@
 {/if}
 
 {include file="zoom-parts/username-section.tpl"}
-        
+
 <div class="row-fluid">
   <div class="span6">
     <h4>Other requests from {if $showinfo == true}{$email}{else}this email address{/if}</h4>
