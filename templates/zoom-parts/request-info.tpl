@@ -1,4 +1,5 @@
-﻿<div class="row-fluid visible-phone">
+﻿<!-- tpl:zoom-parts/request-info.tpl -->
+<div class="row-fluid visible-phone">
     <div class="span12">
         <h4>Request data:</h4>
         <table class="table table-condensed table-striped">
@@ -73,3 +74,4 @@
     <div class="span4"><strong>Reserved by:</strong></div>
     <div class="span8">{if $reserved}{$reserved}{else}None{/if}</div>
 </div>
+<!-- /tpl:zoom-parts/request-info.tpl -->

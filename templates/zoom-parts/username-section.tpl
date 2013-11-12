@@ -1,4 +1,5 @@
-﻿<div class="row-fluid">
+﻿<!-- tpl:zoom-parts/username-section.tpl -->
+<div class="row-fluid">
   <h4>Username data:</h4>        
   {if $isblacklisted}
     <div class="alert alert-warning">Requested username is blacklisted.</div>
@@ -44,3 +45,4 @@
     </table>
   {/if}
 </div>
+<!-- /tpl:zoom-parts/username-section.tpl -->

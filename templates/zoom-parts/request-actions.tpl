@@ -1,4 +1,5 @@
-﻿<div class="row-fluid">
+﻿<!-- tpl:zoom-parts/request-actions.tpl -->
+<div class="row-fluid">
   {if $showinfo == true && $isprotected == false && $isreserved == true}
     <div class="span6">
         <a class="btn btn-primary span6 offset3" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true">Create account</a>
@@ -65,3 +66,4 @@
     <a class="btn btn-danger span4" href="{$tsurl}/acc.php?action=ban&amp;ip={$id}">Ban IP</a>
   </div>
 {/if}
+<!-- /tpl:zoom-parts/request-actions.tpl -->

@@ -1,3 +1,4 @@
+<!-- tpl:request-zoom.tpl -->
 <div class="row-fluid">
   <!-- page header -->
   <div class="span12">
@@ -60,4 +61,4 @@
     {/if}
   </div>
 </div>
-        
+<!-- /tpl:request-zoom.tpl -->

@@ -1,4 +1,5 @@
-﻿{if $proxyip != NULL}
+﻿<!-- tpl:zoom-parts/ip-section.tpl -->
+{if $proxyip != NULL}
   <div class="row-fluid">
     <h4>IP Address data:</h4>
     <p class="muted">
@@ -46,3 +47,4 @@
   </div>
 {/if}
 <hr />
+<!-- /tpl:zoom-parts/ip-section.tpl -->

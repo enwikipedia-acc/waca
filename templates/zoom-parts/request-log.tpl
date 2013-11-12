@@ -1,4 +1,5 @@
-﻿<h4>Log:</h4>
+﻿<!-- tpl:zoom-parts/request-log.tpl -->
+<h4>Log:</h4>
 <form action="{$tsurl}/acc.php?action=comment-quick&amp;hash={$hash}" method="post">
     <table class="table table-condensed table-striped">
         <tbody>
@@ -33,3 +34,4 @@
         </tbody>
     </table>
 </form>
+<!-- /tpl:zoom-parts/request-log.tpl -->
