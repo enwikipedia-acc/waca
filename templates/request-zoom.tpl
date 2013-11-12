@@ -5,145 +5,6 @@
 	</div>
 </div><!--/row-->	 
         
-      <div class="row-fluid">
-		<!-- request details -->
-          <div class="span6 container-fluid">
-               <div class="row-fluid visible-phone">
-                       <div class="span12">
-                           <h4>Request data:</h4>
-                           <table class="table table-condensed table-striped">
-                          <tbody>
-                              {if $showinfo}
-                                <tr>
-                                    <th>Email address:</th>
-                                    <td><a href="mailto:{$email}">{$email}</a></td>
-                                    <td><span class="badge{if $numemail > 0} badge-important{/if}">{$numemail}</span></td>
-                                </tr>
-                                <tr>
-                                    <th>IP address:</th>
-                                    <td>{$ip}</td>
-                                    <td>
-                                        {if $proxyip != NULL}<span class="label label-info">XFF</span>{/if}
-                                        <span class="badge{if $numip > 0} badge-important{/if}">{$numip}</span>
-                                    </td>
-                                </tr>
-                              {/if}
-                              <tr><th>Requested name:</th><td>{$username}</td><td></td></tr>
-                              <tr><th>Date:</th><td>{$date}</td><td></td></tr>
-                              {if $viewuseragent}<tr><th>User Agent:</th><td>{$useragent}</td><td></td></tr>{/if}
-                              {if $youreserved && $isclosed}
-                                <tr>
-                                  <th>Reveal link:</th>
-                                  <td>
-                                    <a href="{$tsurl}/acc.php?action=zoom&amp;id={$id}&amp;hash={$hash}">
-                                      {$tsurl}/acc.php?action=zoom&amp;id={$id}&amp;hash={$hash}
-                                    </a></td>
-                                  <td></td>
-                                </tr>
-                              {/if}
-                              <tr><th>Reserved by:</th><td>{if $reserved}{$reserved}{else}None{/if}</td>
-                              <td></td></tr>
-                          </tbody>
-                      </table>
-                  </div>
-              </div>
-              {if $showinfo}<div class="row-fluid hidden-phone">
-                  <div class="span4"><strong>Email address:</strong></div>
-                  <div class="span7"><a href="mailto:{$email}">{$email}</a></div>
-                  <div class="span1"><span class="badge{if $numemail > 0} badge-important{/if}">{$numemail}</span></div>
-              </div>
-              <div class="row-fluid hidden-phone">
-                  <div class="span4"><strong>IP address:</strong></div>
-                  <div class="span7">{$ip}</div>
-                  <div class="span1"><span class="label label-info">XFF</span><span class="badge{if $numip > 0} badge-important{/if}">{$numip}</span></div>
-              </div>{/if}
-              <div class="row-fluid hidden-phone">
-                  <div class="span4"><strong>Requested name:</strong></div>
-                  <div class="span8">{$username}</div>
-              </div>
-              <div class="row-fluid hidden-phone">
-                  <div class="span4"><strong>Date:</strong></div>
-                  <div class="span8">{$date}</div>
-              </div>
-              {if $viewuseragent}<div class="row-fluid hidden-phone">
-                  <div class="span4"><strong>User Agent:</strong></div>
-                  <div class="span8">{$useragent}</div>
-              </div>{/if}
-              {if $youreserved == $tooluser && $isclosed}<div class="row-fluid hidden-phone">
-                  <div class="span4"><strong>Reveal link:</strong></div>
-                  <div class="span8"><a href="{$tsurl}/acc.php?action=zoom&amp;id={$id}&amp;hash={$hash}">{$tsurl}/acc.php?action=zoom&amp;id={$id}&amp;hash={$hash}</a></div>
-              </div>{/if}
-              <div class="row-fluid hidden-phone">
-                  <div class="span4"><strong>Reserved by:</strong></div>
-                  <div class="span8">{if $reserved}{$reserved}{else}None{/if}</div>
-              </div>
-              
-              <hr />
-              
-              <div class="row-fluid">
-              {if $showinfo == true && $isprotected == false && $isreserved == true}
-                  <div class="span6">
-                      <a class="btn btn-primary span6 offset3" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true">Create account</a>
-                  </div>
-                  {/if}
-                  <div class="span6">{if $youreserved}<a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Break reservation</a>
-				  {elseif $isadmin && $isreserved}<a class="btn span6 btn-warning" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Force break</a>{/if}</div>
-              </div>
-              {if $isprotected == false}
-			  <hr />
-              <div class="row-fluid">
-                  {if $isreserved == true}
-                  <div class = "span4">
-                  	<a class="btn btn-success span12" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=1&amp;sum={$checksum}">Created</a>
-                  </div>
-                  <div class = "span4">
-                  <div class="btn-group span6">
-                  <button type="button" class="btn btn-warning dropdown-toggle span12" data-toggle="dropdown">Decline<span class="caret"></span></button>
-                  <ul class="dropdown-menu">
-                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=2&amp;sum={$checksum}">Similar</a></li>
-                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=3&amp;sum={$checksum}">Taken</a></li>
-                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=26&amp;sum={$checksum}">SUL Taken</a></li>
-                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=4&amp;sum={$checksum}">UPolicy</a></li>
-                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=5&amp;sum={$checksum}">Invalid</a></li>
-                  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=30&amp;sum={$checksum}">Password reset</a></li>
-                  </ul>
-                  </div>
-                  <a class="btn btn-info span6" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=custom&amp;sum={$checksum}">Custom</a>
-                  </div>
-                  {/if}
-                  
-                  <div class = "span4{if !$isreserved} offset4{/if}">
-					{if !array_key_exists($type, $requeststates)}
-					<a class="btn span12" href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$defaultstate}">Reset request</a>
-					{else}
-					<div class="btn-group span6">
-					<button type="button" class="btn btn-default dropdown-toggle span12" data-toggle="dropdown">Defer<span class="caret"></span></button>
-					<ul class="dropdown-menu">
-					{foreach $requeststates as $state}
-					<li><a href="{$tsurl}/acc.php?action=defer&amp;id={$id}&amp;sum={$checksum}&amp;target={$state@key}">{$state.deferto|capitalize}</a></li>
-					{/foreach}
-					</ul>
-					</div>
-					{/if}
-                  
-                  {if !$isclosed}<a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=0&amp;sum={$checksum}">Drop</a>{/if}
-                 </div>
-              </div>
-              {/if}
-              {if $isadmin}
-              <hr />
-              <div class="row-fluid">
-                  <a class="btn btn-danger span4" href="{$tsurl}/acc.php?action=ban&amp;name={$id}">Ban Username</a>
-                  <a class="btn btn-danger span4" href="{$tsurl}/acc.php?action=ban&amp;email={$id}">Ban Email</a>
-                  <a class="btn btn-danger span4" href="{$tsurl}/acc.php?action=ban&amp;ip={$id}">Ban IP</a>
-              </div>
-              {/if}
-                  
-          </div>
-          <div class="span6 container-fluid">
-              {include file="zoom-parts/request-log.tpl"}
-          </div>
-	  </div><!--/row-->	  
 	  <hr />
      {if $showinfo == true}
      {if $proxyip != NULL}
@@ -153,6 +14,18 @@
             <h5>Forwarded IP addresses:</h5>    
             <table class="table table-condensed table-striped">
             {foreach $proxies as $proxy}
+<div class="row-fluid">
+	<!-- request details -->
+  <div class="span6 container-fluid">
+    {include file="zoom-parts/request-info.tpl"}
+    <hr />
+    {include file="zoom-parts/request-actions.tpl"}
+  </div>
+  <div class="span6 container-fluid">
+    {include file="zoom-parts/request-log.tpl"}
+  </div>
+</div><!--/row-->	  
+
             	 <tr>
                     <td><span class="label {if $proxy.trust == false}label-important{/if}">{if $proxy.trust == false}un{/if}trusted</span>{if $origin == $proxy.ip}<span class="label label-inverse">origin</span>{/if}</td>
                     <td>{$proxy.ip}<br /><span class="muted">{if $proxy.rdns != NULL}RDNS: {$proxy.rdns}{elseif $proxy.routable == false}<em><a style="color:grey;" href="http://en.wikipedia.org/wiki/Private_network">Non-routable address</a></em>{elseif $proxy.rdnsfailed == true}<em>(unable to determine address)</em>{else}<em>(no rdns available)</em>{/if}</span></td>
