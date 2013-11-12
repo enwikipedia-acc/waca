@@ -1751,6 +1751,7 @@ elseif ($action == "comment") {
     } else {
         $id = "";
         echo "<h2>Comment on a request</h2>
+              <div class='row-fluid'>
               <form action='$tsurl/acc.php?action=comment-add' method='post' class='form-horizontal span8'>";
     }
     echo "
@@ -1770,7 +1771,8 @@ elseif ($action == "comment") {
 	</div>
 	<div class='control-group'>
 		<div class='controls'><button type='submit' class='btn btn-default'>Submit</button></div>
-	</div>  
+	</div>
+    </div>
     </form>";
     $skin->displayIfooter();
 	die();
