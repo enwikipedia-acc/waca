@@ -1,9 +1,9 @@
-	  <div class="row-fluid">
-		<!-- page header -->
-		<div class="span12">
-			<h3>Details for Request #{$id}:</h3>
-		</div>
-	  </div><!--/row-->	 
+<div class="row-fluid">
+	<!-- page header -->
+	<div class="span12">
+		<h3>Details for Request #{$id}:</h3>
+	</div>
+</div><!--/row-->	 
         
       <div class="row-fluid">
 		<!-- request details -->
