@@ -32,21 +32,8 @@
           </td>
           <td>
             {if $proxy.trust == false && $proxy.routable == true && $proxy.rdnsfailed == false}
-              <a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/User_talk:{$proxy.ip}">Talk page</a>
-						  <a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:Contributions/{$proxy.ip}">Local Contributions</a>
-						  <a class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=tparis-pcount&amp;data={$proxy.ip}">Deleted Edits</a>
-						  <a class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=luxo-contributions&amp;data={$proxy.ip}">Global Contributions</a>
-						  <a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=block&amp;page={$proxy.ip}">Local Block Log</a>
-						  <a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:BlockList/{$proxy.ip}">Active Local Blocks</a>
-						  <a class="btn btn-small" target="_blank" href="https://meta.wikimedia.org/w/index.php?title=Special:Log&amp;type=gblblock&amp;page={$proxy.ip}">Global Block Log</a>
-						  <a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:GlobalBlockList/{$proxy.ip}">Active Global Blocks</a>
-						  <a class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=oq-whois&amp;data={$proxy.ip}">Whois</a>
-						  <a class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=ipinfodb-locator&amp;data={$proxy.ip}">Geolocate</a>
-						  <a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:AbuseLog&amp;wpSearchUser={$proxy.ip}">Abuse Filter Log</a>
-						  {if $ischeckuser == true}
-                <a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:CheckUser&amp;ip={$proxy.ip}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$id}">CheckUser</a>
-              {/if}
-					  {/if}
+        {include file="zoom-parts/ip-links.tpl" ipaddress="{$proxy.ip}"}
+      {/if}
           </td>
         </tr>
       {/foreach}
@@ -55,19 +42,7 @@
 {else}
   <div class="row-fluid">
     <h4>IP Address links:</h4>
-    <a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:Contributions/{$ip}">Local Contributions</a>
-		<a class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=tparis-pcount&amp;data={$ip}">Deleted Edits</a>
-		<a class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=luxo-contributions&amp;data={$ip}">Global Contributions</a>
-		<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=block&amp;page={$ip}">Local Block Log</a>
-		<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:BlockList/{$ip}">Active Local Blocks</a>
-		<a class="btn btn-small" target="_blank" href="https://meta.wikimedia.org/w/index.php?title=Special:Log&amp;type=gblblock&amp;page={$ip}">Global Block Log</a>
-		<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:GlobalBlockList/{$ip}">Active Global Blocks</a>
-		<a class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=oq-whois&amp;data={$ip}">Whois</a>
-		<a class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=ipinfodb-locator&amp;data={$ip}">Geolocate</a>
-		<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:AbuseLog&amp;wpSearchUser={$ip}">Abuse Filter Log</a>
-		{if $ischeckuser == true}
-      <a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:CheckUser&amp;ip={$ip}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$id}">CheckUser</a>
-    {/if}
-	</div>
+    {include file="zoom-parts/ip-links.tpl" ipaddress="{$ip}"}
+  </div>
 {/if}
 <hr />
