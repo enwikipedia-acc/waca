@@ -3,12 +3,7 @@ if (!defined("ACC")) {
 	die();
 } // Invalid entry point
 
-interface IIpLocationProvider
-{
-    public function getIpLocation($address);   
-}
-
-class IpLocationProvider implements IIpLocationProvider
+class IpLocationProvider implements ILocationProvider
 {
     private $apikey;
     private $database;

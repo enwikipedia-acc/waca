@@ -22,6 +22,7 @@ class AutoLoader
             $filepath . 'includes/' . $class . ".php",
             $filepath . 'includes/DataObjects/' . $class . ".php",
             $filepath . 'includes/Providers/' . $class . ".php",
+            $filepath . 'includes/Providers/Interfaces/' . $class . ".php",
         );
         
         foreach($paths as $file)
