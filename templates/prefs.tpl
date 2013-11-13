@@ -6,25 +6,25 @@
 	<div class="control-group">
 		<label class="control-label" for="inputSig">Your signature (wikicode)</label>
 		<div class="controls">
-			<input class="input-xlarge" type="text" id="inputSig" name="sig" value="{$sig}"><span class="help-block">This would be the same as ~~~ on-wiki. No date, please.</span>
+			<input class="input-xlarge" type="text" id="inputSig" name="sig" value="{$sig|escape}"><span class="help-block">This would be the same as ~~~ on-wiki. No date, please.</span>
 		</div>
 	</div>
 	<div class="control-group">
 		<label class="control-label" for="inputEmail">Your Email address</label>
 		<div class="controls">
-			<input class="input-xlarge" type="email" id="inputEmail" name="email" value="{$email}">
+			<input class="input-xlarge" type="email" id="inputEmail" name="email" value="{$email|escape}">
 		</div>
 	</div>
 	<div class="control-group">
 		<label class="control-label">Your on-wiki username</label>
 		<div class="controls">
-			<span class="input-xlarge uneditable-input">{$onwikiname}</span>
+			<span class="input-xlarge uneditable-input">{$onwikiname|escape}</span>
 		</div>
 	</div>
 	<div class="control-group">
 		<label class="control-label" for="inputEmailsig">Email signature</label>
 		<div class="controls">
-			<textarea class="field span11" id="inputEmailsig" rows="4" name="emailsig">{$emailsig}</textarea><span class="help-block">This will show up at the end of any Email you send through the interface.</span>
+			<textarea class="field span11" id="inputEmailsig" rows="4" name="emailsig">{$emailsig|escape}</textarea><span class="help-block">This will show up at the end of any Email you send through the interface.</span>
 		</div>
 	</div>
 	<div class="control-group">
@@ -43,7 +43,7 @@
 	</div>
 	<div class="control-group">
 		<div class="controls">
-			<button type="submit" class="btn">Submit query</button>
+			<button type="submit" class="btn">Save preferences</button>
 		</div>
 	</div>
 </form>
@@ -69,7 +69,7 @@
 	</div>
 	<div class="control-group">
 		<div class="controls">
-			<button type="submit" class="btn">Submit query</button>
+			<button type="submit" class="btn">Update password</button>
 		</div>
 	</div>
 </form>

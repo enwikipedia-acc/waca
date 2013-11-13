@@ -1173,9 +1173,10 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 }
 elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is deprecated, but to avoid conflicts, include it still.
 	if (isset ($_POST['sig'])) {
-		$sig = sanitize($_POST['sig']);
-		$sid = sanitize($_SESSION['user']);
-		$emailsig = sanitize($_POST['emailsig']);
+		// HTML escaping is now done in Smarty, only need to escape SQL here.
+		$sig = $tsSQL->escape($_POST['sig']);
+		$sid = $tsSQL->escape($_SESSION['user']);
+		$emailsig = $tsSQL->escape($_POST['emailsig']);
 		if( isset( $_POST['secureenable'] ) ) {
 			$secureon = 1;
 		} else {
@@ -1192,7 +1193,7 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 				$skin->displayRequestMsg("ERROR: Invalid E-mail address.<br />");
 			}
 			else {
-				$newemail = sanitize($_POST['email']);
+				$newemail = $tsSQL->escape($_POST['email']);
 			}
 		}
 		if (isset($newemail)) {
@@ -1201,29 +1202,29 @@ elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is depre
 		else {
 			$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld', user_emailsig = '$emailsig' WHERE user_name = '$sid'";
 		}
-		$result = mysql_query($query, $tsSQLlink);
+		$result = $tsSQL->query($query);
 		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		echo "Preferences updated!<br />\n";
+			$tsSQL->showError($tsSQL->getError());
+		$skin->displayRequestMsg("Preferences updated!<br />\n");
 	}
-	$sid = sanitize( $_SESSION['user'] );
+	$sid = $tsSQL->escape( $_SESSION['user'] );
 	$query = "SELECT * FROM acc_user WHERE user_name = '$sid'";
-	$result = mysql_query($query, $tsSQLlink);
+	$result = $tsSQL->query($query);
 	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
+		$tsSQL->showError($tsSQL->getError());
 	$row = mysql_fetch_assoc($result);
 	
 	$smarty->assign("securepref", $row['user_secure']);
-	$sig = xss($row['user_welcome_sig']);
+	$sig = $row['user_welcome_sig'];
 	$smarty->assign("sig", $sig);
 	if(array_key_exists('user_abortpref',$row)){
 		$smarty->assign("abortpref", $row['user_abortpref']);
 	}
-	$useremail = xss($row['user_email']);
+	$useremail = $row['user_email'];
 	$smarty->assign("email", $useremail);
-	$onwikiname = xss($row['user_onwikiname']);
+	$onwikiname = $row['user_onwikiname'];
 	$smarty->assign("onwikiname", $onwikiname);
-	$emailsig = xss($row['user_emailsig']);
+	$emailsig = $row['user_emailsig'];
 	$smarty->assign("emailsig", $emailsig);
 	
 	$smarty->display("prefs.tpl");
@@ -1746,17 +1747,32 @@ elseif ($action == "comment") {
     if( isset($_GET['id']) ) {
         $id = $internalInterface->checkreqid($_GET['id']);
         echo "<h2>Comment on request <a href='$tsurl/acc.php?action=zoom&amp;id=$id&amp;hash=$urlhash'>#$id</a></h2>
-              <form action='$tsurl/acc.php?action=comment-add&amp;hash=$urlhash' method='post'>";
+              <form action='$tsurl/acc.php?action=comment-add&amp;hash=$urlhash' method='post' class='form-horizontal span8'>";
     } else {
         $id = "";
         echo "<h2>Comment on a request</h2>
-              <form action='$tsurl/acc.php?action=comment-add' method='post'>";
+              <div class='row-fluid'>
+              <form action='$tsurl/acc.php?action=comment-add' method='post' class='form-horizontal span8'>";
     }
     echo "
-    Request ID: <input type='text' name='id' value='$id' /> <br />
-    Comments:   <input type='text' name='comment' size='75' /> <br />
-    Visibility: <select name='visibility'><option>user</option><option>admin</option></select>
-    <input type='submit' value='Submit' />
+	<div class='control-group'>
+		<label for='id' class='control-label'>Request ID:</label> 
+		<div class='controls'><input type='text' name='id' value='$id'></div>
+	</div>
+	<div class='control-group'>
+		<label for='visibility' class='control-label'>Visibility:</label> 
+		<div class='controls'>
+			<select name='visibility'><option>user</option><option>admin</option></select>
+		</div>
+	</div>
+	<div class='control-group'>
+		<label for='comment' class='control-label'>Comments:</label> 
+		<div class='controls'><textarea name='comment' class='input-xxlarge' rows='6'></textarea></div>
+	</div>
+	<div class='control-group'>
+		<div class='controls'><button type='submit' class='btn btn-default'>Submit</button></div>
+	</div>
+    </div>
     </form>";
     $skin->displayIfooter();
 	die();
