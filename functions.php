@@ -276,7 +276,7 @@ function listrequests($type, $hideip, $correcthash) {
 
     $tablestart = "";
 	if( $totalRequests > $requestLimitThreshold ) {
-		$tablestart .= "<p><span class=\"warning\">Miser mode: not all requests are shown for speed. </span>Only $requestLimitShowOnly of $totalRequests are shown here.</p>";
+		$tablestart .= BootstrapSkin::displayAlertBox("<strong>Miser mode:</strong> Not all requests are shown for speed. Only $requestLimitShowOnly of $totalRequests are shown here.", "alert-error", "", false, false, true);
     }
  
     $tablestart .= '<table class="table table-striped sortable"><thead><tr><th data-defaultsort="asc"><span class="hidden-phone">#</span></th><td><!-- zoom --></td><td><!-- comment --></td><th><span class="visible-desktop">Email address</span><span class="visible-tablet">Email and IP</span><span class="visible-phone">Request details</span></th><th><span class="visible-desktop">IP address</span></th><th><span class="hidden-phone">Username</span></th><td><!-- ban --></td><td><!-- reserve status --></td><td><!--reserve button--></td></tr></thead><tbody>';

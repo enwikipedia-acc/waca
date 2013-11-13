@@ -3,7 +3,7 @@
   <div class="row-fluid">
     <h4>IP Address data:</h4>
     <p class="muted">
-        This request came from {$ip}, stating it was forwarded for {$proxyip} via the X-Forwared-For HTTP header. 
+        This request came from {$ip}, stating it was forwarded for {$proxyip} via the X-Forwarded-For HTTP header. 
         The IP address which Wikipedia will see is the first "untrusted" IP address in the list below. 
         Links are shown for all addresses starting from where the chain becomes untrusted. 
         IPs past the first untrusted address are not trusted to be correct. 
