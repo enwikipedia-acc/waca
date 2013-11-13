@@ -1,9 +1,7 @@
 <?php
-
-if ($ACC != "1") {
-	header("Location: $tsurl/");
+if (!defined("ACC")) {
 	die();
-} //Re-route, if you're a web client.
+} // Invalid entry point
 
 /**
  * DataObject is the base class for all the database access classes. Each "DataObject" holds one record from the database, and

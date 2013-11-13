@@ -1,9 +1,7 @@
 <?php
-
-if ($ACC != "1") {
-	header("Location: $tsurl/");
+if (!defined("ACC")) {
 	die();
-} //Re-route, if you're a web client.
+} // Invalid entry point
 
 interface IIpLocationProvider
 {
