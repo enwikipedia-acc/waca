@@ -13,28 +13,45 @@
     <table class="table table-condensed table-striped">
       {foreach $proxies as $proxy}
         <tr>
-          <td><span class="label {if $proxy.trust == false}label-important{/if}">{if $proxy.trust == false}un{/if}trusted</span>{if $origin == $proxy.ip}<span class="label label-inverse">origin</span>{/if}</td>
+          <td>
+
+            {if ! $proxy.trust}
+            <span class="label label-important">untrusted</span>
+            {/if}
+
+            {if $origin == $proxy.ip}
+              <span class="label label-inverse">origin</span>
+            {else}
+              {if $proxy.trust}
+              <span class="label">trusted</span>
+              {/if}
+            {/if}
+
+            {if $proxy.trustedlink & ! $proxy.trust}
+            <span class="label label-warning">trusted link</span>
+            {/if}
+          </td>
           <td>
             {$proxy.ip}
             <br />
             <span class="muted">
-              {if $proxy.rdns != NULL}
-                RDNS: {$proxy.rdns}
-              {elseif $proxy.routable == false}
+              {if $proxy.routable == false}
                 <em>
                   <a style="color:grey;" href="https://en.wikipedia.org/wiki/Private_network">Non-routable address</a>
                 </em>
               {elseif $proxy.rdnsfailed == true}
                 <em>(unable to determine address)</em>
+              {elseif $proxy.rdns != NULL}
+                RDNS: {$proxy.rdns}
               {else}
-                <em>(no rdns available)</em>
+              <em>(no rdns available)</em>
               {/if}
             </span>
           </td>
           <td>
-            {if $proxy.trust == false && $proxy.routable == true && $proxy.rdnsfailed == false}
-        {include file="zoom-parts/ip-links.tpl" ipaddress="{$proxy.ip}"}
-      {/if}
+            {if $proxy.showlinks}
+              {include file="zoom-parts/ip-links.tpl" ipaddress="{$proxy.ip}"}
+            {/if}
           </td>
         </tr>
       {/foreach}

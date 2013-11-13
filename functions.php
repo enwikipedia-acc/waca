@@ -669,34 +669,50 @@ function zoomPage($id,$urlhash)
 			
 			$proxies = array_reverse($proxies);
 			$trust = true;
-			foreach($proxies as $proxynum => $p) {
-				$p2 = trim($p);
+            global $rfc1918ips;
+
+            foreach($proxies as $proxynum => $p) {
+                $p2 = trim($p);
 				$smartyproxies[$smartyproxiesindex]['ip'] = $p2;
 
-				$trusted = isXffTrusted($p2);				
-				$trust = $trust & $trusted & ($proxynum < count($proxies) - 1);
-				$smartyproxies[$smartyproxiesindex]['trust'] = $trust;
-					
-				global $rfc1918ips;
-					
-				$iprdns = @ gethostbyaddr($p2);
+                // get data on this IP.
+				$trusted = isXffTrusted($p2);
 				$ipisprivate = ipInRange($rfc1918ips, $p2);
+                
+                if( !$ipisprivate) 
+                {
+				    $iprdns = @ gethostbyaddr($p2);
+                }
+                else
+                {
+                    // this is going to fail, so why bother trying?
+                    $iprdns == false;   
+                }
+                
+                // current trust chain status BEFORE this link
+				$pretrust = $trust;
 				
-				$smartyproxies[$smartyproxiesindex]['rdnsfailed'] = false;
+                // is *this* link trusted?
+				$smartyproxies[$smartyproxiesindex]['trustedlink'] = $trusted;
+                
+                // current trust chain status AFTER this link
+                $trust = $trust & $trusted;
+                if($pretrust && $p2 == $origin)
+                {
+                    $trust = true;   
+                }
+				$smartyproxies[$smartyproxiesindex]['trust'] = $trust;
+				
+				$smartyproxies[$smartyproxiesindex]['rdnsfailed'] = $iprdns === false;
 				$smartyproxies[$smartyproxiesindex]['rdns'] = $iprdns;
-				$smartyproxies[$smartyproxiesindex]['routable'] = true;
+				$smartyproxies[$smartyproxiesindex]['routable'] = ! $ipisprivate;
 				
 				if( $iprdns == $p2 && $ipisprivate == false) {
 					$smartyproxies[$smartyproxiesindex]['rdns'] = NULL;
 				}
-				if( $iprdns === false ) {
-                    $iprdnsfailed = true;
-					$smartyproxies[$smartyproxiesindex]['rdnsfailed'] = true;
-				}
-				if( $ipisprivate ) {
-					$smartyproxies[$smartyproxiesindex]['routable'] = false;
-				}
-				
+                
+				$smartyproxies[$smartyproxiesindex]['showlinks'] = (!$trust || $p2 == $origin) && !$ipisprivate;
+                				
 				$smartyproxiesindex++;
 			}
 			
