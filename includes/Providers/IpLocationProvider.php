@@ -8,7 +8,7 @@ class IpLocationProvider implements ILocationProvider
     private $apikey;
     private $database;
     
-    public function __construct(PdoDatabase $database, string $apikey)
+    public function __construct(PdoDatabase $database, $apikey)
     {
         $this->database = $database;
         $this->apikey = $apikey;
@@ -17,7 +17,7 @@ class IpLocationProvider implements ILocationProvider
     public function getIpLocation($address)
     {
         // lets look in our database first.
-        $location = GeoLocation::getByAddress($address);
+        $location = GeoLocation::getByAddress($address, $this->database);
         
         if($location != null)
         {
@@ -40,12 +40,14 @@ class IpLocationProvider implements ILocationProvider
             
             return $result;
         }
+        
+        return null;
     }
     
     // adapted from http://www.ipinfodb.com/ip_location_api.php
 	private function getResult($ip)
     {
-		if(filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+		if(filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ))
         {
 			$xml = @file_get_contents('http://api.ipinfodb.com/v3/ip-city/?key=' . $this->apikey . '&ip=' . $ip . '&format=xml');
 

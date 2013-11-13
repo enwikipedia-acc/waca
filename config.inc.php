@@ -220,6 +220,14 @@ $rfc1918ips = array(
 // be left false when you don't need it, since this will open a popup window on every page load.
 $smartydebug = false;
 
+// IP GeoLocation
+// ------------------------
+// To set this up, change the class to "IpLocationProvider", and put *your* ipinfodb API key in.
+// You'll need to sign up at IpInfoDb.com to get an API key - it's free.
+$locationProviderClass = "FakeLocationProvider";
+$locationProviderApiKey = "super secret"; // ipinfodb api key
+$locationProviderCacheExpiry = $dataclear_interval;
+
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********
 ***************************************************************************
