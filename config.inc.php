@@ -231,7 +231,7 @@ $smartydebug = false;
 require_once('config.local.inc.php');
 
 // //Keep the included files from being executed.
-$ACC = 1;
+define("ACC", 1);
 
 // Retrieving the blacklists.
 require_once ($filepath.'blacklist.php');
