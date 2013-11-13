@@ -38,10 +38,9 @@ abstract class DataObject
 		if($resultObject != false)
 		{
 			$resultObject->isNew = false;
+            $resultObject->setDatabase($database); 
 		}
 
-        $resultObject->setDatabase($database); 
-       
 		return $resultObject;
 	}
 
