@@ -53,7 +53,7 @@ $accbotSend = new accbotSend();
 $session = new session();
 $date = new DateTime();
 
-$locationProvider = new IpLocationProvider(gGetDb('acc'), $locationProviderApiKey);
+$locationProvider = new $locationProviderClass(gGetDb('acc'), $locationProviderApiKey);
 
 // Initialize the session data.
 session_start();
