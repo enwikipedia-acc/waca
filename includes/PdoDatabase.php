@@ -1,4 +1,7 @@
 <?php
+if (!defined("ACC")) {
+	die();
+} // Invalid entry point
 
 function gGetDb($db = "acc") {
     global $accdbobjects;
