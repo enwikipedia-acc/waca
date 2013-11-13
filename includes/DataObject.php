@@ -18,7 +18,7 @@ abstract class DataObject
     
     protected $dbObject;
     
-    public function setDatabase($db)
+    public function setDatabase(PdoDatabase $db)
     {
         $this->dbObject = $db;
     }
@@ -27,7 +27,7 @@ abstract class DataObject
      * Retrieves a data object by it's row ID.
      * @param $id
      */
-	public static function getById($id, $database) {
+	public static function getById($id, PdoDatabase $database) {
 		$statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE id = :id LIMIT 1;");
 		$statement->bindParam(":id", $id);
 
