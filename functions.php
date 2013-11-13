@@ -276,7 +276,7 @@ function listrequests($type, $hideip, $correcthash) {
 
     $tablestart = "";
 	if( $totalRequests > $requestLimitThreshold ) {
-		$tablestart .= "<p><span class=\"warning\">Miser mode: not all requests are shown for speed. </span>Only $requestLimitShowOnly of $totalRequests are shown here.</p>";
+		$tablestart .= BootstrapSkin::displayAlertBox("<strong>Miser mode:</strong> Not all requests are shown for speed. Only $requestLimitShowOnly of $totalRequests are shown here.", "alert-error", "", false, false, true);
     }
  
     $tablestart .= '<table class="table table-striped sortable"><thead><tr><th data-defaultsort="asc"><span class="hidden-phone">#</span></th><td><!-- zoom --></td><td><!-- comment --></td><th><span class="visible-desktop">Email address</span><span class="visible-tablet">Email and IP</span><span class="visible-phone">Request details</span></th><th><span class="visible-desktop">IP address</span></th><th><span class="hidden-phone">Username</span></th><td><!-- ban --></td><td><!-- reserve status --></td><td><!--reserve button--></td></tr></thead><tbody>';
@@ -577,6 +577,7 @@ function zoomPage($id,$urlhash)
 	$smarty->assign("useragent", $row['pend_useragent']);
 	$createreason = "Requested account at [[WP:ACC]], request #" . $row['pend_id'];
 	$smarty->assign("createreason", $createreason);
+	$smarty->assign("isclosed", $row['pend_status'] == "Closed");
 
 	//#region setup whether data is viewable or not
 	
@@ -668,34 +669,50 @@ function zoomPage($id,$urlhash)
 			
 			$proxies = array_reverse($proxies);
 			$trust = true;
-			foreach($proxies as $proxynum => $p) {
-				$p2 = trim($p);
+            global $rfc1918ips;
+
+            foreach($proxies as $proxynum => $p) {
+                $p2 = trim($p);
 				$smartyproxies[$smartyproxiesindex]['ip'] = $p2;
 
-				$trusted = isXffTrusted($p2);				
-				$trust = $trust & $trusted & ($proxynum < count($proxies) - 1);
-				$smartyproxies[$smartyproxiesindex]['trust'] = $trust;
-					
-				global $rfc1918ips;
-					
-				$iprdns = @ gethostbyaddr($p2);
+                // get data on this IP.
+				$trusted = isXffTrusted($p2);
 				$ipisprivate = ipInRange($rfc1918ips, $p2);
+                
+                if( !$ipisprivate) 
+                {
+				    $iprdns = @ gethostbyaddr($p2);
+                }
+                else
+                {
+                    // this is going to fail, so why bother trying?
+                    $iprdns == false;   
+                }
+                
+                // current trust chain status BEFORE this link
+				$pretrust = $trust;
 				
-				$smartyproxies[$smartyproxiesindex]['rdnsfailed'] = false;
+                // is *this* link trusted?
+				$smartyproxies[$smartyproxiesindex]['trustedlink'] = $trusted;
+                
+                // current trust chain status AFTER this link
+                $trust = $trust & $trusted;
+                if($pretrust && $p2 == $origin)
+                {
+                    $trust = true;   
+                }
+				$smartyproxies[$smartyproxiesindex]['trust'] = $trust;
+				
+				$smartyproxies[$smartyproxiesindex]['rdnsfailed'] = $iprdns === false;
 				$smartyproxies[$smartyproxiesindex]['rdns'] = $iprdns;
-				$smartyproxies[$smartyproxiesindex]['routable'] = true;
+				$smartyproxies[$smartyproxiesindex]['routable'] = ! $ipisprivate;
 				
 				if( $iprdns == $p2 && $ipisprivate == false) {
 					$smartyproxies[$smartyproxiesindex]['rdns'] = NULL;
 				}
-				if( $iprdns === false ) {
-                    $iprdnsfailed = true;
-					$smartyproxies[$smartyproxiesindex]['rdnsfailed'] = true;
-				}
-				if( $ipisprivate ) {
-					$smartyproxies[$smartyproxiesindex]['routable'] = false;
-				}
-				
+                
+				$smartyproxies[$smartyproxiesindex]['showlinks'] = (!$trust || $p2 == $origin) && !$ipisprivate;
+                				
 				$smartyproxiesindex++;
 			}
 			
