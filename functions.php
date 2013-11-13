@@ -547,8 +547,8 @@ function isOnWhitelist($user)
 function zoomPage($id,$urlhash)
 {
 	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates, $dontUseWikiDb, $internalInterface;
-	global $smarty;
-	
+	global $smarty, $locationProvider;
+	    
 	$gid = $internalInterface->checkreqid($id);
 	$smarty->assign("id", $gid);
 	$urlhash = sanitize($urlhash);
@@ -563,6 +563,7 @@ function zoomPage($id,$urlhash)
 	}
 	$thisip = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
 	$smarty->assign("ip", $thisip);
+    $smarty->assign("iplocation", $locationProvider->getIpLocation($thisip));
 	$thisid = $row['pend_id'];
 	$thisemail = $row['pend_email'];
 	$smarty->assign("email", $thisemail);
@@ -681,11 +682,13 @@ function zoomPage($id,$urlhash)
                 if( !$ipisprivate) 
                 {
 				    $iprdns = @ gethostbyaddr($p2);
+                    $iplocation = $locationProvider->getIpLocation($p2);
                 }
                 else
                 {
                     // this is going to fail, so why bother trying?
-                    $iprdns == false;   
+                    $iprdns = false;
+                    $iplocation = false;
                 }
                 
                 // current trust chain status BEFORE this link
@@ -706,7 +709,9 @@ function zoomPage($id,$urlhash)
 				$smartyproxies[$smartyproxiesindex]['rdns'] = $iprdns;
 				$smartyproxies[$smartyproxiesindex]['routable'] = ! $ipisprivate;
 				
-				if( $iprdns == $p2 && $ipisprivate == false) {
+				$smartyproxies[$smartyproxiesindex]['location'] = $iplocation;
+				
+                if( $iprdns == $p2 && $ipisprivate == false) {
 					$smartyproxies[$smartyproxiesindex]['rdns'] = NULL;
 				}
                 

@@ -12,7 +12,17 @@
             </tr>
             <tr>
                 <th>IP address:</th>
-                <td>{$ip}</td>
+                <td>
+                  {$ip}
+                  <br />
+                  <span class="muted">
+                    {if $iplocation != null}
+                      Location: {$iplocation.cityName}, {$iplocation.regionName}, {$iplocation.countryName}
+                    {else}
+                      <em>Location unavailable</em>
+                    {/if}
+                  </span>
+                </td>
                 <td>
                     {if $proxyip != NULL}<span class="label label-info">XFF</span>{/if}
                     <span class="badge{if $numip > 0} badge-important{/if}">{$numip}</span>
@@ -46,7 +56,17 @@
 </div>
 <div class="row-fluid hidden-phone">
     <div class="span4"><strong>IP address:</strong></div>
-    <div class="span7">{$ip}</div>
+    <div class="span7">
+      {$ip}
+      <br />
+      <span class="muted">
+        {if $iplocation != null}
+        Location: {$iplocation.cityName}, {$iplocation.regionName}, {$iplocation.countryName}
+        {else}
+        <em>Location unavailable</em>
+        {/if}
+      </span>
+    </div>
     <div class="span1"><span class="label label-info">XFF</span><span class="badge{if $numip > 0} badge-important{/if}">{$numip}</span></div>
 </div>
 {/if}
