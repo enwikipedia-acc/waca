@@ -17,19 +17,29 @@
   <hr />
   <div class="row-fluid">
     {if $isreserved == true}
-      <div class = "span4">
-        <a class="btn btn-success span12" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=1&amp;sum={$checksum}">Created</a>
+    {* If custom create reasons are active, then make the Created button a split button dropdown. *}
+      {if !empty($createreasons)}
+      <div class = "btn-group span4">
+        <a class="btn btn-success span10" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=1&amp;sum={$checksum}">Created</a>
+        <button type="button" class="btn btn-success dropdown-toggle span2" data-toggle="dropdown"><span class="caret"></span></button>
+        <ul class="dropdown-menu" role="menu">
+        {foreach $createreasons as $reason}
+        	<li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$reason@key}&amp;sum={$checksum}">{$reason.name}</a></li>
+        {/foreach}
+        </ul>
       </div>
-      <div class="span4">
+      {else}
+      <div class = "span4">
+      <a class="btn btn-success span12" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=1&amp;sum={$checksum}">Created</a>
+      </div>
+      {/if}
+      <div class = "span4">
         <div class="btn-group span6">
           <button type="button" class="btn btn-warning dropdown-toggle span12" data-toggle="dropdown">Decline<span class="caret"></span></button>
           <ul class="dropdown-menu">
-            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=2&amp;sum={$checksum}">Similar</a></li>
-            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=3&amp;sum={$checksum}">Taken</a></li>
-            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=26&amp;sum={$checksum}">SUL Taken</a></li>
-            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=4&amp;sum={$checksum}">UPolicy</a></li>
-            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=5&amp;sum={$checksum}">Invalid</a></li>
-            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=30&amp;sum={$checksum}">Password reset</a></li>
+          {foreach $declinereasons as $reason}
+            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$reason@key}&amp;sum={$checksum}">{$reason.name}</a></li>
+          {/foreach}
           </ul>
         </div>
         <a class="btn btn-info span6" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=custom&amp;sum={$checksum}">Custom</a>

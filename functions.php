@@ -885,6 +885,31 @@ function zoomPage($id,$urlhash)
 		}
 		$smarty->assign("otheremail", $otheremail);
 	}
+	
+	// Exclude the "Created" reason from this since it should be outside the dropdown.
+    $query = "SELECT newmail_id, newmail_name, newmail_question FROM acc_newmail ";
+	$query .= "WHERE newmail_created = '1' AND newmail_active = '1' AND newmail_id != '1'";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result)
+		sqlerror("Query failed: $query ERROR: " . mysql_error());
+	$createreasons = array();
+	while ($row = mysql_fetch_assoc($result)) {
+		$createreasons[$row['newmail_id']]['name'] = $row['newmail_name'];
+		$createreasons[$row['newmail_id']]['question'] = $row['newmail_question'];
+	}
+	$smarty->assign("createreasons", $createreasons);
+	
+	$query = "SELECT newmail_id, newmail_name, newmail_question FROM acc_newmail ";
+	$query .= "WHERE newmail_created = '0' AND newmail_active = '1'";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result)
+		sqlerror("Query failed: $query ERROR: " . mysql_error());
+	$declinereasons = array();
+	while ($row = mysql_fetch_assoc($result)) {
+		$declinereasons[$row['newmail_id']]['name'] = $row['newmail_name'];
+		$declinereasons[$row['newmail_id']]['question'] = $row['newmail_question'];
+	}
+	$smarty->assign("declinereasons", $declinereasons);
 
     $sid = sanitize( $_SESSION['user'] );
 	$query = "SELECT user_abortpref, user_id FROM acc_user WHERE user_name = '$sid'";

@@ -32,7 +32,7 @@ CREATE TABLE IF NOT EXISTS `acc_newmail` (
   `newmail_name` varchar(255) NOT NULL,
   `newmail_text` blob NOT NULL,
   `newmail_question` mediumtext NOT NULL,
-  `newmail_decline` tinyint(1) NOT NULL DEFAULT '1',
+  `newmail_created` tinyint(1) NOT NULL DEFAULT '1',
   `newmail_active` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`newmail_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Email templates';
