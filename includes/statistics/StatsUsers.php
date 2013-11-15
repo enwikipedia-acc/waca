@@ -112,7 +112,7 @@ class StatsUsers extends StatisticsPage
 	function getUserDetail($userId)
 	{
 		$out="";
-		global $tsSQL, $asSQL, $enableRenames, $tsurl, $session, $wikiurl;
+		global $tsSQL, $asSQL, $enableRenames, $tsurl, $session, $wikiurl, $dontUseWikiDb;
 		$gid = $tsSQL->escape($userId); // Validate the user ID for security (SQL Injection, etc)
 		if (!preg_match('/^[0-9]+$/i',$gid)) {
 			return "User ID invalid";
@@ -241,17 +241,18 @@ class StatsUsers extends StatisticsPage
 						// If the time was not set on insertion, we'll write "Date unknown" instead
 						$row['log_time'] = "Date unknown";
 					}
-										
-					// Check if the user has contribs.  If not, their contribs link will be red.
-					$pendname = sanitize($row['pend_name']);
+
 					$contrib_css_class = "";
-					$contrib_query = "SELECT `user_editcount` from `user` where `user_name`='" . $pendname . "' LIMIT 1;";
-					$contrib_result = $asSQL->query($contrib_query);
-					if($result) {
-						$contrib_count = mysql_fetch_assoc($contrib_result);
-						if ((!isset($contrib_count['user_editcount'])) || $contrib_count['user_editcount']=='0') { 
-							$contrib_css_class = "class=\"nocontribs\"";
-						} 
+					if (!$dontUseWikiDb) {
+						// Check if the user has contribs.  If not, their contribs link will be red.
+						$pendname = sanitize($row['pend_name']);
+						$contrib_query = "SELECT `user_editcount` from `user` where `user_name`='" . $pendname . "' LIMIT 1;";
+						$contrib_result = $asSQL->query($contrib_query);
+						if($result) {
+							$contrib_count = mysql_fetch_assoc($contrib_result);
+							if ((!isset($contrib_count['user_editcount'])) || $contrib_count['user_editcount']=='0') 
+								$contrib_css_class = "class=\"nocontribs\"";
+						}
 					}
 					
 					$contrib_link="<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\" $contrib_css_class>contribs</a>"; 
