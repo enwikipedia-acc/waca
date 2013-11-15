@@ -155,6 +155,22 @@ $BUgzip = "/usr/bin/gzip"; 							// Add the gzip parameters here if needed.
 $BUtar = "/bin/tar -cvf";						// Add the tar parameters here if needed.
 
 
+/************************************
+ * Providers Configuration
+ */
+
+$providerCacheExpiry = $dataclear_interval;
+
+// IP GeoLocation
+// ------------------------
+// To set this up, change the class to "IpLocationProvider", and put *your* ipinfodb API key in.
+// You'll need to sign up at IpInfoDb.com to get an API key - it's free.
+$locationProviderClass = "FakeLocationProvider";
+$locationProviderApiKey = "super secret"; // ipinfodb api key
+
+// RDNS Provider ( RDnsLookupProvider / CachedRDnsLookupProvider / FakeRDnsLookupProvider)
+$rdnsProviderClass = "CachedRDnsLookupProvider";
+
 /***********************************
  * Other stuff that doesn't fit in.
  */
@@ -219,14 +235,6 @@ $rfc1918ips = array(
 // Enables the Smarty debugging console. This should only be used for development and even then
 // be left false when you don't need it, since this will open a popup window on every page load.
 $smartydebug = false;
-
-// IP GeoLocation
-// ------------------------
-// To set this up, change the class to "IpLocationProvider", and put *your* ipinfodb API key in.
-// You'll need to sign up at IpInfoDb.com to get an API key - it's free.
-$locationProviderClass = "FakeLocationProvider";
-$locationProviderApiKey = "super secret"; // ipinfodb api key
-$locationProviderCacheExpiry = $dataclear_interval;
 
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********

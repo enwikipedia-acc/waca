@@ -547,7 +547,7 @@ function isOnWhitelist($user)
 function zoomPage($id,$urlhash)
 {
 	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates, $dontUseWikiDb, $internalInterface;
-	global $smarty, $locationProvider;
+	global $smarty, $locationProvider, $rdnsProvider;
 	    
 	$gid = $internalInterface->checkreqid($id);
 	$smarty->assign("id", $gid);
@@ -681,7 +681,7 @@ function zoomPage($id,$urlhash)
                 
                 if( !$ipisprivate) 
                 {
-				    $iprdns = @ gethostbyaddr($p2);
+				    $iprdns = $rdnsProvider->getRdns($p2);
                     $iplocation = $locationProvider->getIpLocation($p2);
                 }
                 else

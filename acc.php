@@ -54,6 +54,7 @@ $session = new session();
 $date = new DateTime();
 
 $locationProvider = new $locationProviderClass(gGetDb('acc'), $locationProviderApiKey);
+$rdnsProvider = new $rdnsProviderClass(gGetDb('acc'));
 
 // Initialize the session data.
 session_start();
