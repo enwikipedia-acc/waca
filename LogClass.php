@@ -11,6 +11,9 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
+if (!defined("ACC")) {
+	die();
+} // Invalid entry point
 
 class LogPage
 {
@@ -228,12 +231,8 @@ class LogPage
 				}
 				else {
 					$eid = mysql_real_escape_string(substr($row['log_action'],7));
-					$query2 = "SELECT newmail_name FROM acc_newmail WHERE newmail_id = $eid";
-					$result2 = mysql_query($query2, $tsSQLlink);
-					if (!$result2)
-						Die("Query failed: $query2 ERROR: " . mysql_error());
-					$row2 = mysql_fetch_assoc($result2);
-					$ename = htmlentities($row2['newmail_name'],ENT_QUOTES,'UTF-8');
+                    $template = EmailTemplate::getById($eid, gGetDb());
+					$ename = htmlentities($template->getName();,ENT_QUOTES,'UTF-8');
 					$logList .="<li>$rlu Closed ($ename), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 				}
 			}
@@ -326,20 +325,12 @@ class LogPage
 				$logList .= "<li>$rlu edited <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row4['pend_id'] ."\">comment $rlp</a>, at $rlt</li>";
 			}
 			if ($rla == "CreatedEmail") {
-				$query2 = "SELECT * FROM acc_newmail WHERE newmail_id = '$rlp';";
-				$result2 = mysql_query($query2, $tsSQLlink);
-				if (!$result2)
-					Die("Query failed: $query2 ERROR: " . mysql_error());
-				$row2 = mysql_fetch_assoc($result2);
-				$logList .="<li>$rlu created email <a href=\"$tsurl/acc.php?action=emailmgmt&amp;edit=$rlp\">$rlp (" . $row2['newmail_name'] . ")</a>, at $rlt.</li>\n";
+                $template = EmailTemplate::getById($rlp, gGetDb());
+				$logList .="<li>$rlu created email <a href=\"$tsurl/acc.php?action=emailmgmt&amp;edit=$rlp\">$rlp (" . $template->getName() . ")</a>, at $rlt.</li>\n";
 			}
 			if ($rla == "EditedEmail") {
-				$query2 = "SELECT * FROM acc_newmail WHERE newmail_id = '$rlp';";
-				$result2 = mysql_query($query2, $tsSQLlink);
-				if (!$result2)
-					Die("Query failed: $query2 ERROR: " . mysql_error());
-				$row2 = mysql_fetch_assoc($result2);
-				$logList .="<li>$rlu edited email <a href=\"$tsurl/acc.php?action=emailmgmt&amp;edit=$rlp\">$rlp (" . $row2['newmail_name'] . ")</a>, at $rlt.</li>\n";
+                $template = EmailTemplate::getById($rlp, gGetDb())
+				$logList .="<li>$rlu edited email <a href=\"$tsurl/acc.php?action=emailmgmt&amp;edit=$rlp\">$rlp (" . $template->getName() . ")</a>, at $rlt.</li>\n";
 			}
 			$logListCount++;
 		}
@@ -399,13 +390,8 @@ class LogPage
 					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason - account not created)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 				}
 				else {
-					$eid = mysql_real_escape_string(substr($row['log_action'],7));
-					$query2 = "SELECT newmail_name FROM acc_newmail WHERE newmail_id = $eid";
-					$result2 = mysql_query($query2, $tsSQLlink);
-					if (!$result2)
-						Die("Query failed: $query2 ERROR: " . mysql_error());
-					$row2 = mysql_fetch_assoc($result2);
-					$ename = htmlentities($row2['newmail_name'],ENT_QUOTES,'UTF-8');
+                    $template = EmailTemplate::getById(substr($row['log_action'],7), gGetDb());
+					$ename = htmlentities($template->getName(),ENT_QUOTES,'UTF-8');
 					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed ($ename)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 				}
 			}

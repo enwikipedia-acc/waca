@@ -26,11 +26,9 @@
     * (?i:dildo)
 */
 
-if ($ACC != "1") {
-	global $tsurl;
-	header("Location: $tsurl/");
+if (!defined("ACC")) {
 	die();
-}
+} // Invalid entry point
 
 $acrnamebl = array ();
 $nameblacklist = array ();

@@ -155,6 +155,22 @@ $BUgzip = "/usr/bin/gzip"; 							// Add the gzip parameters here if needed.
 $BUtar = "/bin/tar -cvf";						// Add the tar parameters here if needed.
 
 
+/************************************
+ * Providers Configuration
+ */
+
+$providerCacheExpiry = $dataclear_interval;
+
+// IP GeoLocation
+// ------------------------
+// To set this up, change the class to "IpLocationProvider", and put *your* ipinfodb API key in.
+// You'll need to sign up at IpInfoDb.com to get an API key - it's free.
+$locationProviderClass = "FakeLocationProvider";
+$locationProviderApiKey = "super secret"; // ipinfodb api key
+
+// RDNS Provider ( RDnsLookupProvider / CachedRDnsLookupProvider / FakeRDnsLookupProvider)
+$rdnsProviderClass = "CachedRDnsLookupProvider";
+
 /***********************************
  * Other stuff that doesn't fit in.
  */
@@ -230,8 +246,26 @@ $smartydebug = false;
 // Retriving the local configuration file.
 require_once('config.local.inc.php');
 
+$cDatabaseConfig = array(
+	"acc" => array (
+		"dsrcname" => "mysql:host=".$toolserver_host.";dbname=".$toolserver_database,
+		"username" => $toolserver_username,
+		"password" => $toolserver_password
+	),
+	"wikipedia" => array (
+		"dsrcname" => "mysql:host=".$antispoof_host.";dbname=".$antispoof_db,
+		"username" => $toolserver_username,
+		"password" => $toolserver_password
+	),
+	"notifications" => array (
+		"dsrcname" => "mysql:host=".$toolserver_notification_dbhost.";dbname=".$toolserver_notification_database,
+		"username" => $toolserver_username,
+		"password" => $toolserver_password
+	),
+);
+
 // //Keep the included files from being executed.
-$ACC = 1;
+define("ACC", 1);
 
 // Retrieving the blacklists.
 require_once ($filepath.'blacklist.php');
@@ -242,3 +276,7 @@ ini_set('session.name', $sessionname);
 ini_set('user_agent', $toolUserAgent);
 
 foreach(array( "mbstring", "mysql" ) as $x) {if(!extension_loaded($x)) {die("extension $x is required.");}}
+
+require_once($filepath . "includes/AutoLoader.php");
+
+spl_autoload_register( "AutoLoader::load" );

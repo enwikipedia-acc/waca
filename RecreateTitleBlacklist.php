@@ -4,8 +4,7 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
 } // Web clients die.
 ini_set('display_errors', 1);
 require_once 'config.inc.php';
-
-$strictMode = 0;
+require_once 'includes/PdoDatabase.php';
 
 function entryFromString($line) {
 	// Function adapted from MediaWiki's source code. Original function can be found at:
@@ -49,59 +48,49 @@ foreach ($lines as $line) {
 	}
 }
 
-mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-@ mysql_select_db($toolserver_database) or die(mysql_error());
+$db = gGetDb( );
 
 $sanitycheck=array();
 
-mysql_query("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;");
-
-if(mysql_query("START TRANSACTION;"))
+if( $db->beginTransaction() )
 {
-	$success1 = mysql_query("DELETE FROM `acc_titleblacklist`;");
-	if(!$success1)
+	$deleteQuery = $db->exec("DELETE FROM `acc_titleblacklist`;");
+	if( $deleteQuery === false )
 	{
-		echo mysql_error()."\n";
-		mysql_query("ROLLBACK;");
+		$db->rollback();
+		print_r( $db->errorInfo() );
 		echo "Error in transaction.\n";
+		exit( 1 );
 	}	
-		
-	$query = "INSERT INTO `acc_titleblacklist` (`titleblacklist_regex`, `titleblacklist_casesensitive`) VALUES ";
+	
+	$insertQuery = $db->prepare( "INSERT INTO acc_titleblacklist (titleblacklist_regex, titleblacklist_casesensitive) VALUES (:regex, :case);" );
 	foreach ($entries as $entry) {
 		list($regex, $casesensitive) = $entry;
-		
-		$regex = mysql_real_escape_string($regex);
 		
 		if(array_key_exists($regex, $sanitycheck))
 			continue;
 			
 		$sanitycheck[$regex]=1;
 		
-		$rquery = $query . "('$regex', ";
-		if ($casesensitive)
-			$rquery .= 'TRUE';
-		else
-			$rquery .= 'FALSE';
-		$rquery .= ");";
+		$params = array(
+			":regex" => $regex,
+			":case" => $casesensitive
+		);
 		
-		$success2 = mysql_query($rquery);
+		$success2 = $insertQuery->execute( $params );
+		
 		if(!$success2)
 		{
-			echo mysql_error()."\n";
-			if($strictMode == 1)
-			{
-				mysql_query("ROLLBACK;");
-				echo "Error in transaction.\n";
-				break;
-			}
+			$db->rollback();
+			print_r( $db->errorInfo() );
+			echo "Error in transaction.\n";
+			exit( 1 );
 		}
 	}
 	
-	mysql_query("COMMIT;");
+	$db->commit();
 	echo "The title blacklist table has been recreated.\n";
 }
 else
 	echo "Error starting transaction.\n";
-
-mysql_close();
 ?>

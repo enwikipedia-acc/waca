@@ -11,11 +11,9 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
-
-if ($ACC != "1") {
-	header("Location: $tsurl/");
+if (!defined("ACC")) {
 	die();
-} //Re-route, if you're a web client.
+} // Invalid entry point
 
 // Get all the classes.
 require_once 'config.inc.php';
@@ -94,7 +92,7 @@ class database {
 			$link = mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 		}
 		elseif($this->db === "antispoof")
-		{
+			{
 			global $antispoof_host, $antispoof_db, $antispoof_password, $toolserver_username, $dontUseWikiDb;
 			if(!$dontUseWikiDb) {
 				$link = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);

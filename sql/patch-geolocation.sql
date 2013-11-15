@@ -1,0 +1,9 @@
+﻿CREATE TABLE `geolocation` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `address` VARCHAR(45) NOT NULL,
+  `data` BLOB NOT NULL,
+  `creation` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE INDEX `address_UNIQUE` (`address` ASC))
+ENGINE = InnoDB
+COMMENT = 'Geolocation cache table';
