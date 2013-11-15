@@ -11,11 +11,9 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
-
-if ($ACC != "1") {
-	header("Location: $tsurl/");
+if (!defined("ACC")) {
 	die();
-} //Re-route, if you're a web client.
+} // Invalid entry point
 
 class offlineMessage {
 	private $dontUseDb;
