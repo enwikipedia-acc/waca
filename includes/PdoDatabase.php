@@ -16,12 +16,20 @@ function gGetDb($db = "acc") {
 			trigger_error( "Database configuration not found for alias $db" );
 			die();
 		}
-	
-		$accdbobject = new PdoDatabase(
-			$cDatabaseConfig[ $db ][ "dsrcname" ],
-			$cDatabaseConfig[ $db ][ "username" ],
-			$cDatabaseConfig[ $db ][ "password" ]
-		);
+	    
+        try
+        {
+		    $accdbobject = new PdoDatabase(
+			    $cDatabaseConfig[ $db ][ "dsrcname" ],
+			    $cDatabaseConfig[ $db ][ "username" ],
+			    $cDatabaseConfig[ $db ][ "password" ]
+		    );
+        }
+        catch (PDOException $ex)
+        {
+            // wrap around any potential stack traces which may include passwords
+            throw new Exception("Error connectiong to database: " . $ex->getMessage());
+        }
         
         $accdbobject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
