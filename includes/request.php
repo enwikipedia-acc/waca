@@ -11,11 +11,9 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
-
-if ($ACC != "1") {
-	header("Location: $tsurl/");
+if (!defined("ACC")) {
 	die();
-} //Re-route, if you're a web client.
+} // Invalid entry point
 
 class accRequest {
 	private $id;
@@ -46,7 +44,7 @@ class accRequest {
 	        	date("Y"));
 		
 		// Converts the UNIX timestamp into a usuable date format.
-		$expiry =  date("Y-m-d H:i:s", $ntime);
+		$expiry = date("Y-m-d H:i:s", $ntime);
 		
 		// Formulates and executes the SQL query to delete requests that are older than the determined date.
 		$query = "DELETE FROM acc_pend WHERE pend_date < '$expiry' AND pend_mailconfirm != 'Confirmed' AND pend_mailconfirm != '';";
