@@ -232,7 +232,7 @@ class LogPage
 				else {
 					$eid = mysql_real_escape_string(substr($row['log_action'],7));
                     $template = EmailTemplate::getById($eid, gGetDb());
-					$ename = htmlentities($template->getName();,ENT_QUOTES,'UTF-8');
+					$ename = htmlentities($template->getName(),ENT_QUOTES,'UTF-8');
 					$logList .="<li>$rlu Closed ($ename), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 				}
 			}
@@ -329,7 +329,7 @@ class LogPage
 				$logList .="<li>$rlu created email <a href=\"$tsurl/acc.php?action=emailmgmt&amp;edit=$rlp\">$rlp (" . $template->getName() . ")</a>, at $rlt.</li>\n";
 			}
 			if ($rla == "EditedEmail") {
-                $template = EmailTemplate::getById($rlp, gGetDb())
+                $template = EmailTemplate::getById($rlp, gGetDb());
 				$logList .="<li>$rlu edited email <a href=\"$tsurl/acc.php?action=emailmgmt&amp;edit=$rlp\">$rlp (" . $template->getName() . ")</a>, at $rlt.</li>\n";
 			}
 			$logListCount++;
