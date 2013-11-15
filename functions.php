@@ -561,7 +561,7 @@ function zoomPage($id,$urlhash)
 		$out .= $skin->displayRequestMsg("Email has not yet been confirmed for this request, so it can not yet be closed or viewed.");
 		return $out;
 	}
-	$thisip = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
+	$thisip = trim(getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']));
 	$smarty->assign("ip", $thisip);
     $smarty->assign("iplocation", $locationProvider->getIpLocation($thisip));
 	$thisid = $row['pend_id'];

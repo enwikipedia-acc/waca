@@ -16,6 +16,8 @@ class IpLocationProvider implements ILocationProvider
     
     public function getIpLocation($address)
     {
+        $address = trim($address);
+        
         // lets look in our database first.
         $location = GeoLocation::getByAddress($address, $this->database);
         
