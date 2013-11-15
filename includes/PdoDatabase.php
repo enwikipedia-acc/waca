@@ -35,7 +35,7 @@ function gGetDb($db = "acc") {
         
         $accdbobjects[ $db ] = $accdbobject;
 	}
-	return $accdbobject;
+	return $accdbobjects[ $db ];
 }
 
 $accdbobjects = array();
