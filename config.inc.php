@@ -155,12 +155,6 @@ $BUgzip = "/usr/bin/gzip"; 							// Add the gzip parameters here if needed.
 $BUtar = "/bin/tar -cvf";						// Add the tar parameters here if needed.
 
 
-/************************************
- * Providers Configuration
- */
-
-$providerCacheExpiry = $dataclear_interval;
-
 // IP GeoLocation
 // ------------------------
 // To set this up, change the class to "IpLocationProvider", and put *your* ipinfodb API key in.
@@ -218,6 +212,13 @@ $defaultRequestStateKey = 'Open';
 
 // time delay in mysql interval form for clearing the private data from the tool.
 $dataclear_interval = '15 DAY';
+
+
+/************************************
+ * Providers Configuration
+*/
+
+$providerCacheExpiry = $dataclear_interval;
 
 // miser mode
 $requestLimitThreshold = 50;

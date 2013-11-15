@@ -1,4 +1,4 @@
-﻿CREATE TABLE `geolocation` (
+CREATE TABLE `geolocation` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `address` VARCHAR(45) NOT NULL,
   `data` BLOB NOT NULL,

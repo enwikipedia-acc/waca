@@ -1,4 +1,4 @@
-﻿CREATE TABLE `rdnscache` (
+CREATE TABLE `rdnscache` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `address` VARCHAR(45) NOT NULL,
   `data` BLOB NOT NULL,
