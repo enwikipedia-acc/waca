@@ -14,6 +14,8 @@ if (!defined("ACC")) {
  */
 abstract class DataObject
 {
+    protected $id = 0;
+    
     protected $isNew = true;
     
     protected $dbObject;
