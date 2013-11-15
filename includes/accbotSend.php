@@ -11,26 +11,27 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
-
-if ($ACC != "1") {
-	header("Location: $tsurl/");
+if (!defined("ACC")) {
 	die();
-} //Re-route, if you're a web client.
+} // Invalid entry point
 
 // accbot class
 class accbotSend {
 	public function send($message) {
-		global $whichami, $ircBotNotificationType, $toolserver_notification_database;
+		global $whichami, $ircBotNotificationType;
 		$message = html_entity_decode($message,ENT_COMPAT,'UTF-8'); // If a message going to the bot was for whatever reason sent through sanitze() earlier, reverse it. 
 		$message = stripslashes($message);
 		$blacklist = array("DCC", "CCTP", "PRIVMSG");
 		$message = str_replace($blacklist, "(IRC Blacklist)", $message); //Lets stop DCC etc
 
 		$msg = chr(2)."[$whichami]".chr(2).": $message";
-
-		$database = new database("notif"); 
-		$database->query("insert into {$toolserver_notification_database}.notification values (null,null,".$ircBotNotificationType.",'".$database->escape($msg)."');");
- 
+		
+		$db = gGetDb('notifications');
+		
+		$q = $db->prepare( "INSERT INTO notification values (null,null,1,:message);" );
+		$q->bindParam(":message", $msg);
+		$q->execute();
+		
 		return;
 	}
 }

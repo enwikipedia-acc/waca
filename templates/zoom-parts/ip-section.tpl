@@ -47,6 +47,14 @@
               <em>(no rdns available)</em>
               {/if}
             </span>
+			<br />
+			<span class="muted">
+			{if $proxy.location != null}
+				{$proxy.location.cityName}, {$proxy.location.regionName}, {$proxy.location.countryName}
+			{else}
+				<em>Location unavailable</em>
+			{/if}
+			</span>
           </td>
           <td>
             {if $proxy.showlinks}

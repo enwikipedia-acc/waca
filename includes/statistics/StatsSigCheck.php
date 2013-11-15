@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************
 **********      English Wikipedia Account Request Interface      **********
 ***************************************************************************
@@ -12,6 +11,9 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
+if (!defined("ACC")) {
+	die();
+} // Invalid entry point
 
 class StatsSigCheck extends StatisticsPage
 {
