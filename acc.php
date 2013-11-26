@@ -1403,12 +1403,8 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	} else if ($gem == 'custom-n') {
 		$crea = "Custom, Not Created";
 	} else {
-		$query = "SELECT newmail_name FROM acc_newmail WHERE newmail_id = '$gem'";
-		$result = $tsSQL->query($query);
-		if (!result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		$row = mysql_fetch_assoc($result);
-		$crea = $row['newmail_name'];
+		$template = EmailTemplate::getById($gem, gGetDb());
+		$crea = $template->getName();
 	}
 
 	$now = explode("-", $now);
@@ -1489,7 +1485,7 @@ elseif ($action == "logs") {
 				"Promoted" => "User promotion",
 				"Prefchange" => "User preferences change"
 	);
-	$query = "SELECT newmail_id, newmail_name FROM acc_newmail";
+	$query = "SELECT id, name FROM emailtemplate";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
@@ -1950,54 +1946,34 @@ elseif ($action == "ec") { // edit comment
 	}
 }
 elseif ($action == "emailmgmt") { 
-	// New page for managing Emails, since I would rather not be handling editing
-	// interface messages (such as the Sitenotice) and the new Emails in the same place.
+	/* New page for managing Emails, since I would rather not be handling editing
+	interface messages (such as the Sitenotice) and the new Emails in the same place. */
 	if(isset($_GET['create'])) {
 		if(!$session->hasright($_SESSION['user'], 'Admin')) {
 			BootstrapSkin::displayAlertBox("I'm sorry, but you must be an administrator to access this page.");
 			die();
 		}
 		if(isset($_POST['submit'])) {
-			$ename = sanitize($_POST['ename']);
-			$etext = sanitize($_POST['etext']);
-			$equestion = sanitize($_POST['equestion']);
-			if (isset($_POST['ecreated'])) {
-				$ecreated = 1;
-			}
-			else {
-				$ecreated = 0;
-			}
-			if (isset($_POST['eactive'])) {
-				$eactive = 1;
-			}
-			else {
-				$eactive = 0;
-			}
+			$emailTemplate = new EmailTemplate();
+			$name = $_POST['ename'];
+			$emailTemplate->setName($name);
+			$emailTemplate->setText($_POST['etext']);
+			$emailTemplate->setJsquestion($_POST['equestion']);
+			$emailTemplate->setOncreated(isset($_POST['ecreated']));
+			$emailTemplate->setActive(isset($_POST['eactive']));
 			$siuser = sanitize($_SESSION['user']);
 			
 			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
-			$query = "SELECT newmail_id FROM acc_newmail WHERE newmail_name = '$ename'";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			$row = mysql_fetch_assoc($result);
-			if ($row['newmail_id'] != "") {
+			$nameCheck = EmailTemplate::gGetName($_POST['ename'], gGetDb());
+			if ($nameCheck['id'] != "") {
 				BootStrap::displayAlertBox("That Email template name is already being used. Please choose another.");
 				die();
 			}
 			
-			$query = "INSERT INTO acc_newmail (newmail_name, newmail_text, newmail_question, newmail_created, newmail_active) VALUES('$ename', '$etext', '$equestion', '$ecreated', '$eactive');";
-			$result = $tsSQL->query($query);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			$query = "SELECT newmail_id FROM acc_newmail WHERE newmail_name = '$ename';";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			$row = mysql_fetch_assoc($result);
-			$eid = $row['newmail_id'];
+			$emailTemplate->save();
+			$id = $emailTemplate->getId();
 			$now = date("Y-m-d H-i-s");
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$eid', '$siuser', 'CreatedEmail', '$now');";
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$id', '$siuser', 'CreatedEmail', '$now');";
 			$result = $tsSQL->query($query);
 			if (!$result)
 				sqlerror("Query failed: $query ERROR: " . mysql_error());
@@ -2021,43 +1997,27 @@ elseif ($action == "emailmgmt") {
 	if(isset($_GET['edit'])) {
 		$gid = sanitize($_GET['edit']);
 		if(isset($_POST['submit'])) {
+			$emailTemplate = new EmailTemplate();
 			// Allow the user to see the edit form (with read only fields) but not POST anything.
 			if(!$session->hasright($_SESSION['user'], 'Admin')) {
 				BootstrapSkin::displayAlertBox("I'm sorry, but you must be an administrator to access this page.");
 				die();
 			}
-			$ename = sanitize($_POST['ename']);
-			$etext = sanitize($_POST['etext']);
-			$equestion = sanitize($_POST['equestion']);
-			if (isset($_POST['ecreated'])) {
-				$ecreated = 1;
-			}
-			else {
-				$ecreated = 0;
-			}
-			if (isset($_POST['eactive'])) {
-				$eactive = 1;
-			}
-			else {
-				$eactive = 0;
-			}
+			$emailTemplate->setName($_POST['ename']);
+			$emailTemplate->setText($_POST['etext']);
+			$emailTemplate->setJsquestion($_POST['equestion']);
+			$emailTemplate->setOncreated(isset($_POST['ecreated']));
+			$emailTemplate->setActive(isset($_POST['eactive']));
 			$siuser = sanitize($_SESSION['user']);
 				
 			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
-			$query = "SELECT newmail_id FROM acc_newmail WHERE newmail_name = '$ename' && newmail_id != '$gid'";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			$row = mysql_fetch_assoc($result);
-			if ($row['newmail_id'] != "") {
+			$nameCheck = EmailTemplate::gGetName($_POST['ename'], gGetDb());
+			if ($nameCheck['id'] != "" && $nameCheck['id'] != $gid) {
 				BootstrapSkin::displayAlertBox("That Email template name is already being used. Please choose another.");
 				die();
 			}
-				
-			$query = "UPDATE acc_newmail SET newmail_name = '$ename', newmail_text = '$etext', newmail_question = '$equestion', newmail_created = '$ecreated', newmail_active = '$eactive' WHERE newmail_id = '$gid'";
-			$result = $tsSQL->query($query);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
+
+			$emailTemplate->save();
 			$now = date("Y-m-d H-i-s");
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$siuser', 'EditedEmail', '$now')";
 			$result = $tsSQL->query($query);
@@ -2070,22 +2030,18 @@ elseif ($action == "emailmgmt") {
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
-		$query = "SELECT * FROM acc_newmail WHERE newmail_id = $gid";
-		$result = $tsSQL->query($query);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		$row = mysql_fetch_assoc($result);
-		$smarty->assign('ename', $row['newmail_name']);
-		$smarty->assign('etext', $row['newmail_text']);
-		$smarty->assign('equestion', $row['newmail_question']);
-		$smarty->assign('ecreated', $row['newmail_created']);
-		$smarty->assign('eactive', $row['newmail_active']);
-		$smarty->assign('emailmgmtpage', 'Edit'); //Use a variable so we don't need two Smarty templates for creating and editing.
+		$emailTemplate = EmailTemplate::getById($_GET['edit'], gGetDb());
+		$smarty->assign('ename', $emailTemplate->getName());
+		$smarty->assign('etext', $emailTemplate->getText());
+		$smarty->assign('equestion', $emailTemplate->getJsquestion());
+		$smarty->assign('ecreated', $emailTemplate->getOncreated());
+		$smarty->assign('eactive', $emailTemplate->getActive());
+		$smarty->assign('emailmgmtpage', 'Edit'); // Use a variable so we don't need two Smarty templates for creating and editing.
 		$smarty->display("emailmgmt-edit.tpl");
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	$query = "SELECT newmail_id, newmail_name FROM acc_newmail WHERE newmail_active = 1";
+	$query = "SELECT id, name FROM emailtemplate WHERE active = 1";
 	$result = $tsSQL->query($query);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
@@ -2101,7 +2057,7 @@ elseif ($action == "emailmgmt") {
 	else {
 		$smarty->assign('displayactive', false);
 	}
-	$query = "SELECT newmail_id, newmail_name FROM acc_newmail WHERE newmail_active = 0";
+	$query = "SELECT id, name FROM emailtemplate WHERE active = 0";
 	$result = $tsSQL->query($query);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());

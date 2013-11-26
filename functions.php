@@ -205,13 +205,8 @@ function sendemail($messageno, $target, $id) {
 	global $toolserver_database;
 	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
-	$messageno = sanitize($messageno);
-	$query = "SELECT * FROM acc_newmail WHERE newmail_id = '$messageno';";
-	$result = mysql_query($query);
-	if (!$result)
-	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	$row = mysql_fetch_assoc($result);
-	$mailtxt = $row['mail_text'];
+	$template = EmailTemplate::getById($messageno, gGetDb());
+	$mailtxt = $template->getText();
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	
 	// Get the closing user's Email signature and append it to the Email.
@@ -891,27 +886,27 @@ function zoomPage($id,$urlhash)
 	}
 	
 	// Exclude the "Created" reason from this since it should be outside the dropdown.
-    $query = "SELECT newmail_id, newmail_name, newmail_question FROM acc_newmail ";
-	$query .= "WHERE newmail_created = '1' AND newmail_active = '1' AND newmail_id != '1'";
+    $query = "SELECT id, name, jsquestion FROM emailtemplate ";
+	$query .= "WHERE oncreated = '1' AND active = '1' AND id != '1'";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
 	$createreasons = array();
 	while ($row = mysql_fetch_assoc($result)) {
-		$createreasons[$row['newmail_id']]['name'] = $row['newmail_name'];
-		$createreasons[$row['newmail_id']]['question'] = $row['newmail_question'];
+		$createreasons[$row['id']]['name'] = $row['name'];
+		$createreasons[$row['id']]['question'] = $row['jsquestion'];
 	}
 	$smarty->assign("createreasons", $createreasons);
 	
-	$query = "SELECT newmail_id, newmail_name, newmail_question FROM acc_newmail ";
-	$query .= "WHERE newmail_created = '0' AND newmail_active = '1'";
+	$query = "SELECT id, name, jsquestion FROM emailtemplate ";
+	$query .= "WHERE oncreated = '0' AND active = '1'";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
 	$declinereasons = array();
 	while ($row = mysql_fetch_assoc($result)) {
-		$declinereasons[$row['newmail_id']]['name'] = $row['newmail_name'];
-		$declinereasons[$row['newmail_id']]['question'] = $row['newmail_question'];
+		$declinereasons[$row['id']]['name'] = $row['name'];
+		$declinereasons[$row['id']]['question'] = $row['jsquestion'];
 	}
 	$smarty->assign("declinereasons", $declinereasons);
 
