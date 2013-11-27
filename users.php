@@ -21,6 +21,7 @@ require_once 'includes/skin.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
 require_once 'includes/offlineMessage.php';
+require_once 'includes/PdoDatabase.php';
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.

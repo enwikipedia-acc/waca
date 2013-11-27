@@ -24,6 +24,7 @@ require_once 'includes/skin.php';
 require_once 'includes/messages.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/strings.php';
+require_once 'includes/PdoDatabase.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.
