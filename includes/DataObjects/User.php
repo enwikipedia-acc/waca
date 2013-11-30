@@ -23,9 +23,14 @@ class User extends DataObject
     
     // cache variable of the current user - it's never going to change in the middle of a request.
     private static $currentUser;
-
-    public static function getCurrent(PdoDatabase $database)
+    
+    public static function getCurrent(PdoDatabase $database = null)
     {
+        if($database === null)
+        {
+            $database = gGetDb();   
+        }
+        
         if(User::$currentUser === null)
         {
             User::$currentUser = User::getById($_SESSION['userID'], $database);
@@ -326,5 +331,10 @@ class User extends DataObject
     public function isIdentified()
     {
         return $this->identified == 1;   
+    }
+    
+    public function isSuspended()
+    {
+        return $this->status == "Suspended";
     }
 }
