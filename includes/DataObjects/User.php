@@ -20,10 +20,18 @@ class User extends DataObject
     private $abortpref;
     private $confirmationdiff;
     private $emailsig;
+    
+    // cache variable of the current user - it's never going to change in the middle of a request.
+    private static $currentUser;
 
     public static function getCurrent(PdoDatabase $database)
     {
-        return User::getById($_SESSION['userID'], $database);
+        if(User::$currentUser === null)
+        {
+            User::$currentUser = User::getById($_SESSION['userID'], $database);
+        }
+        
+        return User::$currentUser;
     }
     
     public static function getByUsername($username, PdoDatabase $database)
