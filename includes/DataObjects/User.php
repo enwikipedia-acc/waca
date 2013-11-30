@@ -21,6 +21,11 @@ class User extends DataObject
     private $confirmationdiff;
     private $emailsig;
 
+    public static function getCurrent(PdoDatabase $database)
+    {
+        return User::getById($_SESSION['userID'], $database);
+    }
+    
     public static function getByUsername($username, PdoDatabase $database)
     {
         $statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE username = :id LIMIT 1;");
@@ -148,10 +153,6 @@ class User extends DataObject
         return $this->status;
     }
 
-    public function setStatus($status){
-        $this->status = $status;
-    }
-
     public function getOnWikiName(){
         return $this->onwikiname;
     }
@@ -238,5 +239,69 @@ class User extends DataObject
 
     public function setEmailSig($emailsig){
         $this->emailsig = $emailsig;
+    }
+
+    private function updateStatus($status, $logaction, $comment)
+    {
+        $oldstatus = $this->status;
+        
+        if(!$this->dbObject->beginTransaction())
+        {
+            throw new Exception("Could not begin database transaction");
+        }
+        
+        try
+        {
+            $this->status = $status;            
+            $statusquery = $this->dbObject->prepare("UPDATE user SET status = :status WHERE id = :id;");
+            $statusquery->bindParam(":status", $status);
+            $statusquery->bindParam(":id", $this->id);
+            
+            // TODO: update me to use new logging systems.
+            $logquery = $this->dbObject->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:id, :user, :action, CURRENT_TIMESTAMP(), :cmt);");
+            $logquery->bindParam(":user", User::getCurrent($this->dbObject)->getUsername());
+            $logquery->bindParam(":id", $this->id);
+            $logquery->bindParam(":action", $logaction);
+            $logquery->bindParam(":cmt", $comment);
+            
+            $statusquery->execute();
+            $logquery->execute();
+        }
+        catch( Exception $ex )
+        {
+            // something went wrong, so rollback and rethrow for someone else to handle the error.
+            $this->dbObject->rollBack();
+            $this->status = $oldstatus;
+            
+            throw $ex;
+        }
+        
+        $this->dbObject->commit();
+        
+    }
+    
+    public function approve()
+    {
+        $this->updateStatus("User", "Approved", "");
+    }
+    
+    public function suspend()
+    {
+        $this->updateStatus("Suspended", "Suspended", "");
+    }
+    
+    public function decline()
+    {
+        $this->updateStatus("Declined", "Declined", "");
+    }
+    
+    public function promote()
+    {
+        $this->updateStatus("Admin", "Promoted", "");
+    }
+    
+    public function demote()
+    {
+        $this->updateStatus("User", "Demoted", "");
     }
 }
