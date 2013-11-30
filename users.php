@@ -55,13 +55,15 @@ BootstrapSkin::pushTagStack("</div>");
 BootstrapSkin::pushTagStack("</div>");
 echo $out;
 
-// Checks if the current user has admin rigths.
-if( ! isset( $_SESSION['user'] ) ) {
+// Checks if the current user has admin rights.
+if( User::getCurrent() == false ) 
+{
     showlogin();
     BootstrapSkin::displayInternalFooter();
 	die();
 }
-if( !  $session->hasright($_SESSION['user'], 'Admin') )
+
+if( ! User::getCurrent()->isAdmin() )
 {
 	// Displays both the error message and the footer of the interface.
     BootstrapSkin::displayAlertBox("I'm sorry, but, this page is restricted to administrators only.", "alert-error", "Access Denied",true,false);
@@ -69,54 +71,57 @@ if( !  $session->hasright($_SESSION['user'], 'Admin') )
 	die();
 }
 
-if (isset ($_GET['approve'])) {
-	$aid = sanitize($_GET['approve']);
-	$siuser = sanitize($_SESSION['user']);
-	$query = "SELECT * FROM acc_user WHERE user_id = '$aid';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-	if ($row['user_level'] == "Admin") {
-        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to approve has Administrator access. Please use the <a href=\"$tsurl/users.php?demote=$aid\">demote function</a> instead.", "alert-error", "Error",true,false);
+if (isset ($_GET['approve'])) 
+{
+    $user = User::getById($_GET['approve'], gGetDb());
+    
+    if($user == false)
+    {
+        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to approve could not be found.", "alert-error", "Error",true,false);
         BootstrapSkin::displayInternalFooter();
         die();
-	}		
-	if ($row['user_level'] == "User") {
+    }
+    
+    if($user->isUser() || $user->isAdmin())
+    {
         BootstrapSkin::displayAlertBox("Sorry, the user you are trying to approve has already been approved.", "alert-error", "Error",true,false);
         BootstrapSkin::displayInternalFooter();
         die();
-	}
-	$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$aid';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$now = date("Y-m-d H-i-s");
-	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$aid', '$siuser', 'Approved', '$now');";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	BootstrapSkin::displayAlertBox("Changed User #" . $aid . " access to 'User'","alert-info","",false);
-	$uid = $aid;
-	$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-	$result2 = mysql_query($query2, $tsSQLlink);
-	if (!$result2)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$row2 = mysql_fetch_assoc($result2);
-	$accbotSend->send("User $aid (" . $row2['user_name'] . ") approved by $siuser");
+    }
+    
+    $user->approve();
+    
+    $accbotSend->send($user->getUsername() . " approved by " . User::getCurrent()->getUsername());
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-	mail($row2['user_email'], "ACC Account Approved", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been approved by $siuser. To login please go to $tsurl/acc.php.\n- The English Wikipedia Account Creation Team", $headers);
+	mail($user->getEmail(), "ACC Account Approved", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been approved by " . User::getCurrent()->getUsername() . ". To login please go to $tsurl/acc.php.\n- The English Wikipedia Account Creation Team", $headers);
     BootstrapSkin::displayInternalFooter();
     die();
 }
-if (isset ($_GET['demote'])) {
-	$did = sanitize($_GET['demote']);
-	$siuser = sanitize($_SESSION['user']);
+
+if (isset ($_GET['demote'])) 
+{
+    $user = User::getById($_GET['demote'], gGetDb());
+    
+    if( $user == false)
+    {
+        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to demote could not be found.", "alert-error", "Error",true,false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+    if(!$user->isAdmin())
+    {
+        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to demote is not an admin.", "alert-error", "Error",true,false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+	$did = $_GET['demote']; // clean because we've already pulled back a user from the database.
 	if (!isset($_POST['demotereason'])) {
 		echo "<h2>Demote Reason</h2><strong>The reason you enter here will be shown in the log. Please keep this in mind.</strong><br />\n<form action=\"users.php?demote=$did\" method=\"post\"><br />\n";
 		echo "<textarea name=\"demotereason\" rows=\"20\" cols=\"60\">";
 		if (isset($_GET['preload'])) {
-			$preload = sanitize($_GET['preload']);
+			$preload = htmlentities($_GET['preload']);
 			echo $preload;
 		}
 		echo "</textarea><br />\n";
@@ -125,85 +130,63 @@ if (isset ($_GET['demote'])) {
 		BootstrapSkin::displayInternalFooter();
 		die();
 	} else {
-		$demotersn = sanitize($_POST['demotereason']);
-		$uid = $did;
-		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-		$result2 = mysql_query($query2, $tsSQLlink);
-		if (!$result2)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$row2 = mysql_fetch_assoc($result2);
-		if ($row2['user_level'] != "Admin") {
-			BootstrapSkin::displayAlertBox("Sorry, the user you are trying to demote is not an administrator.", "alert-error", "Error",true,false);
-            BootstrapSkin::displayInternalFooter();
-            die();
-		}		
-		$query = "UPDATE acc_user SET user_level = 'User' WHERE user_id = '$did';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$now = date("Y-m-d H-i-s");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$did', '$siuser', 'Demoted', '$now', '$demotersn');";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		BootstrapSkin::displayAlertBox( "Changed User #" . $_GET['demote'] . " access to 'User'", "alert-info","",false);
-		$accbotSend->send("User $did (" . $row2['user_name'] . ") demoted by $siuser because: \"" . $_POST['demotereason'] . "\"");
-		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-		mail($row2['user_email'], "ACC Account Demoted", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been demoted by $siuser because ".$_POST['demotereason'].". To contest this demotion please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
+        $user->demote($_POST['demotereason']);
+
+		BootstrapSkin::displayAlertBox( "Changed " . $user->getUsername() . "'s access to 'User'", "alert-info", "", false);
+		
+        $accbotSend->send($user->getUsername() . " demoted by " . User::getCurrent()->getUsername() . " because: \"" . $_POST['demotereason'] . "\"");
+		
+        $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+		mail($user->getEmail(), "ACC Account Demoted", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been demoted by $siuser because " . User::getCurrent()->getUsername() . ". To contest this demotion please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
-
 }
+
 if (isset ($_GET['suspend'])) {
 	$did = sanitize($_GET['suspend']);
 	$siuser = sanitize($_SESSION['user']);
 	
-	//Check if the user is already suspended, and quit if he is.
-	$uid = $did;
-	$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-	$result2 = mysql_query($query2, $tsSQLlink);
-	if (!$result2)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$row2 = mysql_fetch_assoc($result2);
-	if ($row2['user_level'] == "Suspended") {
+    $user = User::getById($_GET['suspend']);
+    
+    if($user == false)
+    {
+        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to suspend could not be found.", "alert-error", "Error",true,false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+    if($user->isSuspended())
+    {
         BootstrapSkin::displayAlertBox("Sorry, the user you are trying to suspend is already suspended.", "alert-error", "Error",true,false);
         BootstrapSkin::displayInternalFooter();
         die();
-	}
-	
+    }
+    
 	elseif (!isset($_POST['suspendreason'])) {
 		echo "<h2>Suspend Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"users.php?suspend=$did\" method=\"post\"><br />\n";
 		echo "<textarea name=\"suspendreason\" rows=\"20\" cols=\"60\">";
 		if (isset($_GET['preload'])) {
-			$preload = sanitize($_GET['preload']);
+			$preload = htmlentities($_GET['preload']);
 			echo $preload;
 		}
 		echo "</textarea><br />\n";
 		echo "<input type=\"submit\" /><input type=\"reset\"/><br />\n";
 		echo "</form>";
-		$skin->displayIfooter();
+		BootstrapSkin::displayInternalFooter();
 		die();
 	} else {
-		$suspendrsn = sanitize($_POST['suspendreason']);		
-		$query = "UPDATE acc_user SET user_level = 'Suspended' WHERE user_id = '$did';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$now = date("Y-m-d H-i-s");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$did', '$siuser', 'Suspended', '$now', '$suspendrsn');";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		BootstrapSkin::displayAlertBox("Changed User #" . $_GET['suspend'] . " access to 'Suspended'", "alert-info", "", false);
-		$accbotSend->send("User $did (" . $row2['user_name'] . ") had tool access suspended by $siuser because: \"" . $_POST['suspendreason'] . "\"");
+		$user->suspend($_POST['suspendreason']);
+
+		BootstrapSkin::displayAlertBox("Suspended user " . $user->getUsername(), "alert-info", "", false);
+		$accbotSend->send($user->getUsername() . " had tool access suspended by " . User::getCurrent()->getUsername() . " because: \"" . $_POST['suspendreason'] . "\"");
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-		mail($row2['user_email'], "ACC Account Suspended", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been suspended by $siuser because ".$_POST['suspendreason'].". To contest this suspension please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
+		mail($user->getEmail(), "ACC Account Suspended", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been suspended by " . User::getCurrent()->getUsername() . " because ".$_POST['suspendreason'].". To contest this suspension please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
-
 }
+
 if (isset ($_GET['promote'])) {
 	$aid = sanitize($_GET['promote']);
 	$siuser = sanitize($_SESSION['user']);
@@ -232,6 +215,7 @@ if (isset ($_GET['promote'])) {
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	mail($row2['user_email'], "ACC Account Promoted", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been promted to admin status by $siuser.\n- The English Wikipedia Account Creation Team", $headers);
 }
+
 if (isset ($_GET['decline'])) {
 	$did = sanitize($_GET['decline']);
 	$siuser = sanitize($_SESSION['user']);
@@ -282,6 +266,7 @@ if (isset ($_GET['decline'])) {
 		die();
 	}
 }
+
 if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 	$siuser = sanitize($_SESSION['user']);
 	if (!isset($_POST['newname'])) {
