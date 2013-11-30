@@ -290,26 +290,41 @@ class User extends DataObject
     
     public function approve()
     {
-        $this->updateStatus("User", "Approved", "");
+        $this->updateStatus("User", "Approved", null);
     }
     
-    public function suspend()
+    public function suspend($comment)
     {
-        $this->updateStatus("Suspended", "Suspended", "");
+        $this->updateStatus("Suspended", "Suspended", $comment);
     }
     
-    public function decline()
+    public function decline($comment)
     {
-        $this->updateStatus("Declined", "Declined", "");
+        $this->updateStatus("Declined", "Declined", $comment);
     }
     
     public function promote()
     {
-        $this->updateStatus("Admin", "Promoted", "");
+        $this->updateStatus("Admin", "Promoted", null);
     }
     
-    public function demote()
+    public function demote($comment)
     {
-        $this->updateStatus("User", "Demoted", "");
+        $this->updateStatus("User", "Demoted", $comment);
+    }
+
+    public function isAdmin()
+    {
+        return $this->status == "Admin";
+    }
+    
+    public function isCheckuser()
+    {
+        return $this->checkuser == 1;
+    }
+    
+    public function isIdentified()
+    {
+        return $this->identified == 1;   
     }
 }
