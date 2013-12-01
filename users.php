@@ -392,60 +392,53 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
 #region edit user
 
 if (isset ($_GET['edituser']) && $enableRenames == 1) {
-	$sid = sanitize($_SESSION['user']);
-	if (!isset($_POST['user_email']) || !isset($_POST['user_onwikiname'])) {
-		$gid = sanitize($_GET['edituser']);
-		$query = "SELECT * FROM acc_user WHERE user_id = $gid;";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("ERROR: No result returned.");
-		$row = mysql_fetch_assoc($result);
-		if (!isset($row['user_id'])) {
-			echo "Invalid user!";
-			die();
-		}
-		echo "<h2>User Settings for {$row['user_name']}</h2>\n";
-		echo "<ul>\n";
-		echo "<li>User Name: " . $row['user_name'] . "</li>\n";
-		echo "<li>User ID: " . $row['user_id'] . "</li>\n";
-		echo "<li>User Level: " . $row['user_level'] . "</li>\n";
-		echo "</ul>\n";
-		echo "<form action=\"users.php?edituser=" . $_GET['edituser'] . "\" method=\"post\">\n";
-		echo "<div class=\"required\">\n";
-		echo "<label for=\"user_email\">Email Address:</label>\n";
-		echo "<input id=\"user_email\" type=\"text\" name=\"user_email\" value=\"" . stripslashes($row['user_email']) . "\"/>\n";
-		echo "</div>\n";
-		echo "<div class=\"required\">\n";
-		echo "<label for=\"user_onwikiname\">On-wiki Username:</label>\n";
-		echo "<input id=\"user_onwikiname\" type=\"text\" name=\"user_onwikiname\" value=\"" . stripslashes($row['user_onwikiname']) . "\"/>\n";
-		echo "</div>\n";
-		echo "<div class=\"submit\">\n";
-		echo "<input type=\"submit\"/>\n";
-		echo "</div>\n";
-		echo "</form>\n";	
-		echo "<br />\n <b>Note: misuse of this interface can cause problems, please use it wisely</b>";
+    $user = User::getById($_GET['edituser'], gGetDb());
+    
+    if($user == false)
+    {
+        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to rename could not be found.", "alert-error", "Error", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+	if ($_SERVER['REQUEST_METHOD'] != "POST") {
+        global $smarty;
+        $smarty->assign("user", $user);
+        $smarty->display("usermanagement/edituser.tpl");
 	} else {
-		$gid = sanitize($_GET['edituser']);
-		$newemail = sanitize($_POST['user_email']);
-		$newwikiname = sanitize($_POST['user_onwikiname']);
-		$query = "UPDATE acc_user SET user_email = '$newemail', user_onwikiname = '$newwikiname' WHERE user_id = '$gid';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());	
-		$now = date("Y-m-d H-i-s");			
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$gid', '$sid', 'Prefchange', '$now', '');";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-					$query2 = "SELECT * FROM acc_user WHERE user_id = '$gid';";
-		$result2 = mysql_query($query2, $tsSQLlink);
-		if (!$result2)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$row2 = mysql_fetch_assoc($result2);
-		$accbotSend->send("$sid changed preferences for User $gid (" . $row2['user_name'] . ")");
-		echo "Changes saved";
+        $database = gGetDb();
+        if(!$database->beginTransaction())
+        {
+            BootstrapSkin::displayAlertBox("Database transaction could not be started.", "alert-error", "Error", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
+        }
+        
+        try
+        {
+            $user->setEmail($_POST['user_email']);
+            $user->setOnWikiName($_POST['user_onwikiname']);
+            $user->save();
+       
+            $siuser = User::getCurrent()->getUsername();
+            $logquery = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:gid, :sid, 'Prefchange', CURRENT_TIMESTAMP(), '');");
+            $logquery->bindParam(":gid", $_GET['edituser']);
+            $logquery->bindParam(":sid", $siuser);
+            if(!$logquery->execute()) throw new Exception("Logging failed.");
+        
+		    $accbotSend->send($siuser . " changed preferences for " . $user->getUsername());
+		    BootstrapSkin::displayAlertBox("Changes saved.", "alert-info");
+        }
+        catch (Exception $ex)
+        {
+            $database->rollBack();
+            BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Error", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
+        }
+        
+        $database->commit();
 	}
-	echo "<br /><br />";
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
