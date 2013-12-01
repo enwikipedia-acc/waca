@@ -141,6 +141,8 @@ class User extends DataObject
         return $result;
     }
     
+    #region properties
+    
     public function getUsername(){
         return $this->username;
     }
@@ -254,6 +256,10 @@ class User extends DataObject
         $this->emailsig = $emailsig;
     }
 
+    #endregion
+    
+    #region changing access level
+    
     private function updateStatus($status, $logaction, $comment)
     {
         $oldstatus = $this->status;
@@ -290,7 +296,6 @@ class User extends DataObject
         }
         
         $this->dbObject->commit();
-        
     }
     
     public function approve()
@@ -318,6 +323,10 @@ class User extends DataObject
         $this->updateStatus("User", "Demoted", $comment);
     }
 
+    #endregion
+    
+    #region user access checks
+    
     public function isAdmin()
     {
         return $this->status == "Admin";
@@ -337,4 +346,6 @@ class User extends DataObject
     {
         return $this->status == "Suspended";
     }
+    
+    #endregion 
 }
