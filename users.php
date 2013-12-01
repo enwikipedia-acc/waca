@@ -50,7 +50,8 @@ BootstrapSkin::pushTagStack("</div>");
 BootstrapSkin::pushTagStack("</div>");
 echo $out;
 
-// Checks if the current user has admin rights.
+#region Checks if the current user has admin rights.
+
 if( User::getCurrent() == false ) 
 {
     showlogin();
@@ -65,6 +66,7 @@ if( ! User::getCurrent()->isAdmin() )
     BootstrapSkin::displayInternalFooter();
 	die();
 }
+#endregion
 
 #region user access actions
 
@@ -251,6 +253,8 @@ if (isset ($_GET['decline'])) {
 
 #endregion
 
+#region renaming
+
 if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 	$siuser = sanitize($_SESSION['user']);
 	if (!isset($_POST['newname'])) {
@@ -339,7 +343,12 @@ htmlentities($_POST['oldname'],ENT_COMPAT,'UTF-8'));
 		die();
 	}
 }
-if (isset ($_GET['edituser']) && $enableRenames == 1) {  // ----------------------------- EDIT USER -----------------------------------------
+
+#endregion
+
+#region edit user
+
+if (isset ($_GET['edituser']) && $enableRenames == 1) {
 	$sid = sanitize($_SESSION['user']);
 	if (!isset($_POST['user_email']) || !isset($_POST['user_onwikiname'])) {
 		$gid = sanitize($_GET['edituser']);
@@ -397,6 +406,8 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {  // --------------------
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
+
+#endregion
 
 // ---------------------   USER MANAGEMENT MAIN PAGE -----------------------------------------
 
