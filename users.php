@@ -118,23 +118,21 @@ if (isset ($_GET['demote']))
     }
     
 	$did = $_GET['demote']; // clean because we've already pulled back a user from the database.
-	if (!isset($_POST['demotereason'])) {
-		echo "<h2>Demote Reason</h2><strong>The reason you enter here will be shown in the log. Please keep this in mind.</strong><br />\n<form action=\"users.php?demote=$did\" method=\"post\"><br />\n";
-		echo "<textarea name=\"demotereason\" rows=\"20\" cols=\"60\">";
-		if (isset($_GET['preload'])) {
-			echo htmlentities($_GET['preload']);
-		}
-		echo "</textarea><br />\n";
-		echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
-		echo "</form>";
+	if (!isset($_POST['reason'])) {
+
+        global $smarty;
+        $smarty->assign("user", $user);
+        $smarty->assign("status", "User");
+        $smarty->assign("action", "demote");
+        $smarty->display("usermanagement/changelevel-reason.tpl");
 		BootstrapSkin::displayInternalFooter();
 		die();
 	} else {
-        $user->demote($_POST['demotereason']);
+        $user->demote($_POST['reason']);
 
 		BootstrapSkin::displayAlertBox( "Changed " . $user->getUsername() . "'s access to 'User'", "alert-info", "", false);
 		
-        $accbotSend->send($user->getUsername() . " demoted by " . User::getCurrent()->getUsername() . " because: \"" . $_POST['demotereason'] . "\"");
+        $accbotSend->send($user->getUsername() . " demoted by " . User::getCurrent()->getUsername() . " because: \"" . $_POST['reason'] . "\"");
 		
         $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($user->getEmail(), "ACC Account Demoted", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been demoted by " . User::getCurrent()->getUsername() . " because " . User::getCurrent()->getUsername() . ". To contest this demotion please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
@@ -161,24 +159,21 @@ if (isset ($_GET['suspend'])) {
         die();
     }
     
-	elseif (!isset($_POST['suspendreason'])) {
-		echo "<h2>Suspend Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"users.php?suspend=$did\" method=\"post\"><br />\n";
-		echo "<textarea name=\"suspendreason\" rows=\"20\" cols=\"60\">";
-		if (isset($_GET['preload'])) {
-			echo htmlentities($_GET['preload']);
-		}
-		echo "</textarea><br />\n";
-		echo "<input type=\"submit\" /><input type=\"reset\"/><br />\n";
-		echo "</form>";
+	elseif (!isset($_POST['reason'])) {
+        global $smarty;
+        $smarty->assign("user", $user);
+        $smarty->assign("status", "Suspended");
+        $smarty->assign("action", "suspend");
+        $smarty->display("usermanagement/changelevel-reason.tpl");
 		BootstrapSkin::displayInternalFooter();
 		die();
 	} else {
-		$user->suspend($_POST['suspendreason']);
+		$user->suspend($_POST['reason']);
 
 		BootstrapSkin::displayAlertBox("Suspended user " . $user->getUsername(), "alert-info", "", false);
-		$accbotSend->send($user->getUsername() . " had tool access suspended by " . User::getCurrent()->getUsername() . " because: \"" . $_POST['suspendreason'] . "\"");
+		$accbotSend->send($user->getUsername() . " had tool access suspended by " . User::getCurrent()->getUsername() . " because: \"" . $_POST['reason'] . "\"");
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-		mail($user->getEmail(), "ACC Account Suspended", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been suspended by " . User::getCurrent()->getUsername() . " because ".$_POST['suspendreason'].". To contest this suspension please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
+		mail($user->getEmail(), "ACC Account Suspended", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been suspended by " . User::getCurrent()->getUsername() . " because ".$_POST['reason'].". To contest this suspension please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
@@ -225,27 +220,22 @@ if (isset ($_GET['decline'])) {
 		die();
 	}		
     
-	if (!isset($_POST['declinereason'])) {
-		echo "<h2>Decline Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"users.php?decline=" . $_GET['decline'] . "\" method=\"post\"><br />\n";
-		echo "<textarea name=\"declinereason\" rows=\"20\" cols=\"60\">";
-		if (isset($_GET['preload'])) {
-			echo htmlentities($_GET['preload']);
-		}
-		echo "</textarea><br />\n";
-		echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
-		echo "</form>";
+	if (!isset($_POST['reason'])) {
+        global $smarty;
+        $smarty->assign("user", $user);
+        $smarty->assign("status", "Declined");
+        $smarty->assign("action", "decline");
+        $smarty->display("usermanagement/changelevel-reason.tpl");
 		BootstrapSkin::displayInternalFooter();
 		die();
 	} else {
-		$declinersn = sanitize();
-
-        $user->decline($_POST['declinereason']);
+        $user->decline($_POST['reason']);
         
         BootstrapSkin::displayAlertBox("Declined user " . $user->getUsername(), "alert-info", "", false);
 
-        $accbotSend->send($user->getUsername() . " was declined access by " . User::getCurrent()->getUsername() . " because: \"" . $_POST['declinereason'] . "\"");
+        $accbotSend->send($user->getUsername() . " was declined access by " . User::getCurrent()->getUsername() . " because: \"" . $_POST['reason'] . "\"");
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-		mail($user->getEmail(), "ACC Account Declined", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been declined access to the account creation tool by " . User::getCurrent()->getUsername() . " because " . $_POST['declinereason'] . ". For more infomation please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
+		mail($user->getEmail(), "ACC Account Declined", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been declined access to the account creation tool by " . User::getCurrent()->getUsername() . " because " . $_POST['reason'] . ". For more infomation please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
