@@ -255,18 +255,23 @@ if (isset ($_GET['decline'])) {
 
 #region renaming
 
-if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
-	$siuser = sanitize($_SESSION['user']);
-	if (!isset($_POST['newname'])) {
-		$rid = sanitize($_GET['rename']);
-		$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '{$rid}';");
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$oldname = mysql_fetch_assoc($result);
-		echo "<form action=\"users.php?rename=" . $rid . "\" method=\"post\">";						
+if ( isset ($_GET['rename']) && $enableRenames == 1 ) 
+{
+    $user = User::getById($_GET['rename'], gGetDb());
+    
+    if($user == false)
+    {
+        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to rename could not be found.", "alert-error", "Error", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+	if (!isset($_POST['newname'])) 
+    {
+		echo "<form action=\"users.php?rename=" . $_GET['rename'] . "\" method=\"post\">";						
 		echo "<div class=\"required\">";
 		echo "<label for=\"oldname\">Old Username:</label>";
-		echo "<input id=\"oldname\" type=\"text\" name=\"oldname\" readonly=\"readonly\" value=\"" . $oldname['user_name'] . "\"/>";
+		echo "<input id=\"oldname\" type=\"text\" readonly=\"readonly\" value=\"" . $user->getUsername() . "\"/>";
 		echo "</div>";
 		echo "<div class=\"required\">";
 		echo "<label for=\"newname\">New Username:</label>";
@@ -278,67 +283,105 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 		echo "</form>";
 		BootstrapSkin::displayInternalFooter();
 		die();
-	} else {
-		$oldname = sanitize($_POST['oldname']);
-		$newname = sanitize($_POST['newname']);
-		$userid = sanitize($_GET['rename']);
-		$result = mysql_query("SELECT user_name FROM acc_user WHERE user_id = '$userid';");
-		if($newname=="")
-			Die("New username cannot be blank");
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$checkname = mysql_fetch_assoc($result);
-		if ($checkname['user_name'] != htmlentities($_POST['oldname'],ENT_COMPAT,'UTF-8'))
-			Die("Rename form corrupted: " . $checkname['user_name'] . " != " . 
-htmlentities($_POST['oldname'],ENT_COMPAT,'UTF-8'));
-		if(mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$oldname';")) != 1 || mysql_num_rows(mysql_query("SELECT * FROM acc_user WHERE user_name = '$newname';")) != 0)
-			die("Target username in use, or current user does not exist.");
-		$query = "UPDATE acc_user SET user_name = '$newname' WHERE user_id = '$userid';";
-		$result = mysql_query($query, $tsSQLlink);
-		$tgtmessage = "User " . $_GET['rename'] . " (" . $oldname . ")";
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());						
-		$query = "UPDATE acc_log SET log_pend = '$newname' WHERE log_pend = '$tgtmessage' AND log_action != 'Renamed';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());				
-		$query = "UPDATE acc_log SET log_user = '$newname' WHERE log_user = '$oldname';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$query = "UPDATE acc_cmt SET cmt_user = '$newname' WHERE cmt_user = '$oldname';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$now = date("Y-m-d H-i-s");
-		if ($siuser == $oldname)
+	}
+    else 
+    {
+        if(!isset($_POST['newname']) || trim($_POST['newname']) == "")
+        {
+            BootstrapSkin::displayAlertBox("The new username cannot be empty.", "alert-error", "Error", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
+        }
+        
+        if(User::getByUsername($_POST['newname'], gGetDb()) != false)
+        {
+            BootstrapSkin::displayAlertBox("Username already exists.", "alert-error", "Error", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
+        }
+        
+        $database = gGetDb();
+        
+        if(!$database->beginTransaction())
+        {
+            BootstrapSkin::displayAlertBox("Database transaction could not be started.", "alert-error", "Error", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
+        }
+        
+        try
+        {
+            $oldname = $user->getUsername();
+            
+            $user->setUsername($_POST['newname']);
+            $user->save();
+            
+            $tgtmessage = "User " . $_GET['rename'] . " (" . $oldname . ")";
+            $logpendupdate = $database->prepare("UPDATE acc_log SET log_pend = :newname WHERE log_pend = :tgtmessage AND log_action != 'Renamed'");
+            $logpendupdate->bindParam(":newname", $_POST['newname']);
+            $logpendupdate->bindParam(":tgtmessage", $tgtmessage);
+            if(!$logpendupdate->execute())
+            {
+                throw new Exception("log_pend update failed.");   
+            }
+        
+            $logupdate = $database->prepare("UPDATE acc_log SET log_user = :newname WHERE log_user = :oldname;");
+            $logupdate->bindParam(":newname", $_POST['newname']);
+            $logupdate->bindParam(":oldname", $oldname);
+            if(!$logupdate->execute())
+            {
+                throw new Exception("log_user update failed.");   
+            }
+            
+            $commentupdate = $database->prepare("UPDATE acc_cmt SET cmt_user = :newname WHERE cmt_user = :oldname;");
+            $commentupdate->bindParam(":newname", $_POST['newname']);
+            $commentupdate->bindParam(":oldname", $oldname);
+            if(!$commentupdate->execute())
+            {
+                throw new Exception("comment update failed.");   
+            }
+		    
+		    if (User::getCurrent()->getUsername() == $oldname)
+		    {
+			    $logentry = "themself to " . $_POST['newname'];
+		    }
+		    else
+		    {
+			    $logentry = $oldname . " to " . $_POST['newname'];
+		    }
+            
+            $userid = $user->getId();
+            $currentUser = User::getCurrent()->getUsername();
+            $logentryquery = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:userid, :siuser, 'Renamed', CURRENT_TIMESTAMP(), :logentry);");
+            $logentryquery->bindParam(":logentry", $logentry);
+            $logentryquery->bindParam(":userid", $userid);
+            $logentryquery->bindParam(":siuser", $currentUser);
+            if(!$logentryquery->execute())
+            {
+                throw new Exception("logging failed.");   
+            }
+            
+		    BootstrapSkin::displayAlertBox("Changed User " . htmlentities($oldname,ENT_COMPAT,'UTF-8') . " name to ". htmlentities($_POST['newname'],ENT_COMPAT,'UTF-8') , "alert-info","",false);        
+        }
+        catch (Exception $ex)
+        {
+            $database->rollBack();
+            BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Error", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
+        }
+        
+        $database->commit();
+        
+		if (User::getCurrent()->getId() == $user->getId())
 		{
-			$logentry = "themself to " . $newname;
+			$accbotSend->send(User::getCurrent()->getUsername() . " changed their username to " . $_POST['newname']);
 		}
 		else
 		{
-			$logentry = $oldname . " to " . $newname;
+			$accbotSend->send(User::getCurrent()->getUsername() . " changed " . $oldname . "'s username to " . $_POST['newname']);
 		}
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$userid', '$siuser', 'Renamed', '$now', '$logentry');";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		BootstrapSkin::displayAlertBox("Changed User " . htmlentities($_POST['oldname'],ENT_COMPAT,'UTF-8') . " name to ". htmlentities($_POST['newname'],ENT_COMPAT,'UTF-8') , "alert-info","",false);
-		$query2 = "SELECT * FROM acc_user WHERE user_name = '$oldname';";
-		$result2 = mysql_query($query2, $tsSQLlink);
-		if (!$result2)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$row2 = mysql_fetch_assoc($result2);
-		if ($siuser == $oldname)
-		{
-				$_SESSION['user'] = $newname;
-				$accbotSend->send("User $siuser changed their username to " . $_POST['newname']);
-		}
-		else
-		{
-				$session->setForceLogout(stripslashes($userid));
-				$accbotSend->send("User $siuser changed " . $_POST['oldname'] . "'s username to " . $_POST['newname']);
-		}
+        
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
