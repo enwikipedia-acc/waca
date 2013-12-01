@@ -365,5 +365,10 @@ class User extends DataObject
         return $this->status == "User";   
     }
     
+    public function isDeclined()
+    {
+        return $this->status == "Declined";
+    }
+    
     #endregion 
 }

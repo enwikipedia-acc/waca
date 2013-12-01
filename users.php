@@ -461,6 +461,7 @@ function showUserList($data, $level) {
        $smarty->display("usermanagement-userlist.tpl");
 }
 
+global $smarty;
 echo '<div class="row-fluid"><div class="span12"><div class="accordion" id="accordion2">';
 BootstrapSkin::pushTagStack("</div>");
 BootstrapSkin::pushTagStack("</div>");
@@ -470,6 +471,7 @@ $database = gGetDb();
 
 $statement = $database->prepare("SELECT * FROM user WHERE status = :level;");
 
+$level = "New";
 $statement->bindParam(":level", $level);
 $statement->execute();
 $result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
@@ -477,40 +479,19 @@ $result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
 if($result != false && count($result) != 0)
 {
     echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Open requests</a></div><div id="collapseOne" class="accordion-body collapse in"><div class="accordion-inner">';
-	echo "<ol>\n";
-	foreach ($result as $user) {
-		$uname = $user->getUsername();
-		$uoname = $user->getOnWikiName();
-		$userid = $user->getId();
-		$conf_revid = $user->getConfirmationDiff();
-		$out = "<li><small>[ <span class=\"request-ban\">$uname</span> / <a class=\"request-src\" href=\"http://$wikiurl/wiki/User:$uoname\">$uoname</a> ]";
-		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?approve=$userid\" onclick=\"return confirm('Are you sure you wish to approve $uname?')\">Approve!</a> - <a class=\"request-req\" href=\"$tsurl/users.php?decline=$userid\">Decline</a> - <a class=\"request-req\" href=\"http://toolserver.org/~tparis/pcount/index.php?name=$uoname&amp;lang=en&amp;wiki=wikipedia\">Count!</a>";
-		$out .=" - <a class=\"request-req\" href=\"http://$wikiurl/w/index.php?diff=$conf_revid\">Confirmation diff</a>";
-		$out .=" - <a class=\"request-req\" href=\"http://meta.wikimedia.org/wiki/Identification_noticeboard\">ID board</a></small></li>";
-		echo "$out\n";
-	}
-	echo "</ol></div></div></div>\n";
+    
+    $smarty->assign("userlist", $result);
+    $smarty->display("usermanagement/userlist.tpl");
+	echo "</div></div></div>\n";
 }
 echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">Users</a></div><div id="collapseTwo" class="accordion-body collapse"><div class="accordion-inner">';
 
 $level = "User";
 $statement->execute();
 $result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
-foreach ($result as $user) {
-	$uname = $user->getUsername();
-	$uoname = $user->getOnWikiName();
-	$userid = $user->getId();
-
-	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
-	if( $enableRenames == 1 ) {
-		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?rename=$userid\">Rename!</a> -";
-		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?edituser=$userid\">Edit!</a> -";
-	}
-	$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"$tsurl/users.php?promote=$userid\" onclick=\"return confirm('Are you sure you wish to promote $uname?')\">Promote!</a></small></li>";
-	echo "$out\n";
-}
+$smarty->assign("userlist", $result);
+$smarty->display("usermanagement/userlist.tpl");
 echo <<<HTML
-</ol>
 </div>
 </div></div>
 
@@ -522,23 +503,9 @@ HTML;
 $level = "Admin";
 $statement->execute();
 $result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
-echo "<ol>\n";
-foreach ($result as $user) {
-	$uname = $user->getUsername();
-	$uoname = $user->getOnWikiName();
-	$userid = $user->getId();
-	
-
-	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
-	if( $enableRenames == 1 ) {
-		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?rename=$userid\">Rename!</a> -";
-		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?edituser=$userid\">Edit!</a> -";
-	}
-	$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"users.php?demote=$userid\">Demote!</a></small></li>";
-	echo "$out\n";
-}
+$smarty->assign("userlist", $result);
+$smarty->display("usermanagement/userlist.tpl");
 echo <<<HTML
-</ol>
 </div>
 </div></div>
 
@@ -549,18 +516,9 @@ HTML;
 $statement2 = $database->prepare("SELECT * FROM user WHERE checkuser = 1;");
 $statement2->execute();
 $result = $statement2->fetchAll(PDO::FETCH_CLASS, "User");
-
-echo "<ol>\n";
-foreach ($result as $user) {
-	$uname = $user->getUsername();
-	$uoname = $user->getOnWikiName();
-	$userid = $user->getId();
-	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]</small></li>";
-	echo "$out\n";
-}
-
+$smarty->assign("userlist", $result);
+$smarty->display("usermanagement/userlist.tpl");
 echo <<<HTML
-</ol>
 </div>
 </div></div>
 
@@ -571,21 +529,9 @@ HTML;
 $level = "Suspended";
 $statement->execute();
 $result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
-echo "<ol>\n";
-foreach ($result as $user) {
-	$uname = $user->getUsername();
-	$uoname = $user->getOnWikiName();
-	$userid = $user->getId();
-	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
-	if( $enableRenames == 1 ) {
-		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?rename=$userid\">Rename!</a> -";
-		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?edituser=$userid\">Edit!</a> -";
-	}
-	$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?approve=$userid\" onclick=\"return confirm('Are you sure you wish to unsuspend $uname?')\">Unsuspend!</a></small></li>";
-	echo "$out\n";
-}
+$smarty->assign("userlist", $result);
+$smarty->display("usermanagement/userlist.tpl");
 echo <<<HTML
-</ol>
 </div>
 </div></div>
 
@@ -596,20 +542,9 @@ HTML;
 $level = "Declined";
 $statement->execute();
 $result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
-echo "<ol>\n";
-foreach ($result as $user) {
-	$uname = $user->getUsername();
-	$uoname = $user->getOnWikiName();
-	$userid = $user->getId();
-	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
-	if( $enableRenames == 1 ) {
-		$out .= " <a class=\"request-req\" href=\"users.php?rename=$userid\">Rename!</a> -";
-		$out .= " <a class=\"request-req\" href=\"users.php?edituser=$userid\">Edit!</a> -";
-	}
-	$out .= " <a class=\"request-req\" href=\"users.php?approve=$userid\" onclick=\"return confirm('Are you sure you wish to approve $uname?')\">Approve!</a></small></li>";
-	echo "$out\n";
-}
-echo "</ol></div></div></div>";
+$smarty->assign("userlist", $result);
+$smarty->display("usermanagement/userlist.tpl");
+echo "</div></div></div>";
 
 BootstrapSkin::displayInternalFooter();
 die();
