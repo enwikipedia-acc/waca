@@ -39,7 +39,6 @@ $asSQLlink = $asSQL->getLink();
 // Initialize the class objects.
 $messages = new messages();
 $accbotSend   = new accbotSend();
-$skin     = new skin();
 $session  = new session();
 
 // Initialize the session data.
@@ -239,7 +238,7 @@ if (isset ($_GET['decline'])) {
 		echo "</textarea><br />\n";
 		echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
 		echo "</form>";
-		$skin->displayIfooter();
+		BootstrapSkin::displayInternalFooter();
 		die();
 	} else {
 		$declinersn = sanitize($_POST['declinereason']);
@@ -262,7 +261,7 @@ if (isset ($_GET['decline'])) {
 		$accbotSend->send("User $did (" . $row2['user_name'] . ") declined access by $siuser because: \"" . $_POST['declinereason'] . "\"");
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($row2['user_email'], "ACC Account Declined", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been declined access to the account creation tool by $siuser because ".$_POST['declinereason'].". For more infomation please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
-		$skin->displayIfooter();
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
 }
@@ -288,7 +287,7 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 		echo "<input type=\"submit\"/>";
 		echo "</div>";
 		echo "</form>";
-		$skin->displayIfooter();
+		BootstrapSkin::displayInternalFooter();
 		die();
 	} else {
 		$oldname = sanitize($_POST['oldname']);
@@ -351,7 +350,7 @@ htmlentities($_POST['oldname'],ENT_COMPAT,'UTF-8'));
 				$session->setForceLogout(stripslashes($userid));
 				$accbotSend->send("User $siuser changed " . $_POST['oldname'] . "'s username to " . $_POST['newname']);
 		}
-		$skin->displayIfooter();
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
 }
@@ -410,7 +409,7 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {  // --------------------
 		echo "Changes saved";
 	}
 	echo "<br /><br />";
-	$skin->displayIfooter();
+	BootstrapSkin::displayInternalFooter();
 	die();
 }
 
@@ -637,5 +636,5 @@ while ($row = mysql_fetch_assoc($result)) {
 }
 echo "</ol></div></div></div>";
 
-$skin->displayIfooter();
+BootstrapSkin::displayInternalFooter();
 die();
