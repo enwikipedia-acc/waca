@@ -31,7 +31,7 @@
 
   <div class="control-group">
     <div class="controls">
-      <button type="submit" class="btn btn-primary">Rename User</button>
+      <button type="submit" class="btn btn-primary">Change access level</button>
     </div>
   </div>
 </form>
