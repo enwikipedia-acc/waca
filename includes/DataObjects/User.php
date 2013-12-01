@@ -347,5 +347,10 @@ class User extends DataObject
         return $this->status == "Suspended";
     }
     
+    public function isNew()
+    {
+        return $this->status == "New";
+    }
+    
     #endregion 
 }

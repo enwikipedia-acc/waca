@@ -209,24 +209,26 @@ if (isset ($_GET['promote'])) {
 }
 
 if (isset ($_GET['decline'])) {
-	$did = sanitize($_GET['decline']);
-	$siuser = sanitize($_SESSION['user']);
-	$query = "SELECT * FROM acc_user WHERE user_id = '$did';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-	if ($row['user_level'] != "New") {
-        BootstrapSkin::displayAlertBox("You cannot decline this user because the user is not a New user.", "alert-error", "Error",true,false);
+    $user = User::getById($_GET['decline']);
+    
+    if($user == false)
+    {
+        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to decline could not be found.", "alert-error", "Error",true,false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+	if ($user->isAdmin()) {
+        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to decline is not new.", "alert-error", "Error", true, false);
 		BootstrapSkin::displayInternalFooter();
 		die();
-	}
+	}		
+    
 	if (!isset($_POST['declinereason'])) {
-		echo "<h2>Decline Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"users.php?decline=$did\" method=\"post\"><br />\n";
+		echo "<h2>Decline Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"users.php?decline=" . $_GET['decline'] . "\" method=\"post\"><br />\n";
 		echo "<textarea name=\"declinereason\" rows=\"20\" cols=\"60\">";
 		if (isset($_GET['preload'])) {
-			$preload = sanitize($_GET['preload']);
-			echo $preload;
+			echo htmlentities($_GET['preload']);
 		}
 		echo "</textarea><br />\n";
 		echo "<input type=\"submit\"><input type=\"reset\"/><br />\n";
@@ -234,26 +236,15 @@ if (isset ($_GET['decline'])) {
 		BootstrapSkin::displayInternalFooter();
 		die();
 	} else {
-		$declinersn = sanitize($_POST['declinereason']);
-		$query = "UPDATE acc_user SET user_level = 'Declined' WHERE user_id = '$did';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$now = date("Y-m-d H-i-s");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$did', '$siuser', 'Declined', '$now', '$declinersn');";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		BootstrapSkin::displayAlertBox("Changed User #" . $_GET['decline'] . " access to 'Declined'", "alert-info","",false);
-		$uid = $did;
-		$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-		$result2 = mysql_query($query2, $tsSQLlink);
-		if (!$result2)
-			Die("Query failed: $query ERROR: " . mysql_error());
-		$row2 = mysql_fetch_assoc($result2);
-		$accbotSend->send("User $did (" . $row2['user_name'] . ") declined access by $siuser because: \"" . $_POST['declinereason'] . "\"");
+		$declinersn = sanitize();
+
+        $user->decline($_POST['declinereason']);
+        
+        BootstrapSkin::displayAlertBox("Declined user " . $user->getUsername(), "alert-info", "", false);
+
+        $accbotSend->send($user->getUsername() . " was declined access by " . User::getCurrent()->getUsername() . " because: \"" . $_POST['declinereason'] . "\"");
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-		mail($row2['user_email'], "ACC Account Declined", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been declined access to the account creation tool by $siuser because ".$_POST['declinereason'].". For more infomation please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
+		mail($user->getEmail(), "ACC Account Declined", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been declined access to the account creation tool by " . User::getCurrent()->getUsername() . " because " . $_POST['declinereason'] . ". For more infomation please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
