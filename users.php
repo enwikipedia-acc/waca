@@ -70,6 +70,8 @@ if( ! User::getCurrent()->isAdmin() )
 	die();
 }
 
+#region user access actions
+
 if (isset ($_GET['approve'])) 
 {
     $user = User::getById($_GET['approve'], gGetDb());
@@ -249,6 +251,8 @@ if (isset ($_GET['decline'])) {
 		die();
 	}
 }
+
+#endregion
 
 if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
 	$siuser = sanitize($_SESSION['user']);
