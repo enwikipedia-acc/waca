@@ -120,8 +120,7 @@ if (isset ($_GET['demote']))
 		echo "<h2>Demote Reason</h2><strong>The reason you enter here will be shown in the log. Please keep this in mind.</strong><br />\n<form action=\"users.php?demote=$did\" method=\"post\"><br />\n";
 		echo "<textarea name=\"demotereason\" rows=\"20\" cols=\"60\">";
 		if (isset($_GET['preload'])) {
-			$preload = htmlentities($_GET['preload']);
-			echo $preload;
+			echo htmlentities($_GET['preload']);
 		}
 		echo "</textarea><br />\n";
 		echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
@@ -166,8 +165,7 @@ if (isset ($_GET['suspend'])) {
 		echo "<h2>Suspend Reason</h2><strong>The user will be shown the reason you enter here. Please keep this in mind.</strong><br />\n<form action=\"users.php?suspend=$did\" method=\"post\"><br />\n";
 		echo "<textarea name=\"suspendreason\" rows=\"20\" cols=\"60\">";
 		if (isset($_GET['preload'])) {
-			$preload = htmlentities($_GET['preload']);
-			echo $preload;
+			echo htmlentities($_GET['preload']);
 		}
 		echo "</textarea><br />\n";
 		echo "<input type=\"submit\" /><input type=\"reset\"/><br />\n";
