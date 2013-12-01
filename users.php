@@ -189,7 +189,7 @@ if (isset ($_GET['promote'])) {
     
     if($user == false)
     {
-        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to suspend could not be found.", "alert-error", "Error",true,false);
+        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to promote could not be found.", "alert-error", "Error",true,false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
