@@ -92,6 +92,8 @@ if (isset ($_GET['approve']))
     
     $user->approve();
     
+    BootstrapSkin::displayAlertBox("Approved user " . $user->getUsername(), "alert-info", "", false);
+
     $accbotSend->send($user->getUsername() . " approved by " . User::getCurrent()->getUsername());
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	mail($user->getEmail(), "ACC Account Approved", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been approved by " . User::getCurrent()->getUsername() . ". To login please go to $tsurl/acc.php.\n- The English Wikipedia Account Creation Team", $headers);
@@ -137,7 +139,7 @@ if (isset ($_GET['demote']))
         $accbotSend->send($user->getUsername() . " demoted by " . User::getCurrent()->getUsername() . " because: \"" . $_POST['demotereason'] . "\"");
 		
         $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-		mail($user->getEmail(), "ACC Account Demoted", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been demoted by $siuser because " . User::getCurrent()->getUsername() . ". To contest this demotion please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
+		mail($user->getEmail(), "ACC Account Demoted", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been demoted by " . User::getCurrent()->getUsername() . " because " . User::getCurrent()->getUsername() . ". To contest this demotion please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
@@ -145,9 +147,7 @@ if (isset ($_GET['demote']))
 
 if (isset ($_GET['suspend'])) {
 	$did = sanitize($_GET['suspend']);
-	$siuser = sanitize($_SESSION['user']);
-	
-    $user = User::getById($_GET['suspend']);
+    $user = User::getById($_GET['suspend'], gGetDb());
     
     if($user == false)
     {
@@ -187,7 +187,7 @@ if (isset ($_GET['suspend'])) {
 }
 
 if (isset ($_GET['promote'])) {
-    $user = User::getById($_GET['promote']);
+    $user = User::getById($_GET['promote'], gGetDb());
     
     if($user == false)
     {
@@ -204,14 +204,15 @@ if (isset ($_GET['promote'])) {
     
     $user->promote();
     
-	BootstrapSkin::displayAlertBox($user->getUsername() . "promoted to 'Admin'", "alert-info", "", false);
+	BootstrapSkin::displayAlertBox($user->getUsername() . " promoted to 'Admin'", "alert-info", "", false);
 	$accbotSend->send($user->getUsername() . " promoted to admin by " . User::getCurrent()->getUsername());
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	mail($user->getEmail(), "ACC Account Promoted", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been promted to admin status by " . User::getCurrent()->getUsername() . ".\n- The English Wikipedia Account Creation Team", $headers);
+    die();
 }
 
 if (isset ($_GET['decline'])) {
-    $user = User::getById($_GET['decline']);
+    $user = User::getById($_GET['decline'], gGetDb());
     
     if($user == false)
     {

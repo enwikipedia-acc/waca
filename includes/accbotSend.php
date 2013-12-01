@@ -25,13 +25,18 @@ class accbotSend {
 		$message = str_replace($blacklist, "(IRC Blacklist)", $message); //Lets stop DCC etc
 
 		$msg = chr(2)."[$whichami]".chr(2).": $message";
+        
+		try {
+		    $db = gGetDb('notifications');
 		
-		$db = gGetDb('notifications');
-		
-		$q = $db->prepare( "INSERT INTO notification values (null,null,1,:message);" );
-		$q->bindParam(":message", $msg);
-		$q->execute();
-		
+		    $q = $db->prepare( "INSERT INTO notification values (null,null,1,:message);" );
+		    $q->bindParam(":message", $msg);
+		    $q->execute();
+        }
+        catch(Exception $ex)
+        {
+            // blat any errors.
+        }
 		return;
 	}
 }

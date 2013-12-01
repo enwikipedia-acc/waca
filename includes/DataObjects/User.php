@@ -264,6 +264,11 @@ class User extends DataObject
     {
         $oldstatus = $this->status;
         
+        if($comment == null)
+        {
+            $comment = "Changing user access from $oldstatus to $status";
+        }
+        
         if(!$this->dbObject->beginTransaction())
         {
             throw new Exception("Could not begin database transaction");
@@ -276,9 +281,11 @@ class User extends DataObject
             $statusquery->bindParam(":status", $status);
             $statusquery->bindParam(":id", $this->id);
             
+            $username = User::getCurrent($this->dbObject)->getUsername();
+            
             // TODO: update me to use new logging systems.
             $logquery = $this->dbObject->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:id, :user, :action, CURRENT_TIMESTAMP(), :cmt);");
-            $logquery->bindParam(":user", User::getCurrent($this->dbObject)->getUsername());
+            $logquery->bindParam(":user", $username);
             $logquery->bindParam(":id", $this->id);
             $logquery->bindParam(":action", $logaction);
             $logquery->bindParam(":cmt", $comment);
@@ -350,6 +357,11 @@ class User extends DataObject
     public function isNew()
     {
         return $this->status == "New";
+    }
+    
+    public function isUser()
+    {
+        return $this->status == "User";   
     }
     
     #endregion 
