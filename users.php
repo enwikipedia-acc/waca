@@ -185,32 +185,27 @@ if (isset ($_GET['suspend'])) {
 }
 
 if (isset ($_GET['promote'])) {
-	$aid = sanitize($_GET['promote']);
-	$siuser = sanitize($_SESSION['user']);
-	$uid = $aid;
-	$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-	$result2 = mysql_query($query2, $tsSQLlink);
-	if (!$result2)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$row2 = mysql_fetch_assoc($result2);
-	if ($row2['user_level'] == "Admin") {
-        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to promote has Administrator access.", "alert-error", "Error",true,false);
+    $user = User::getById($_GET['promote']);
+    
+    if($user == false)
+    {
+        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to suspend could not be found.", "alert-error", "Error",true,false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+	if ($user->isAdmin()) {
+        BootstrapSkin::displayAlertBox("Sorry, the user you are trying to promote has Administrator access.", "alert-error", "Error", true, false);
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}		
-	$query = "UPDATE acc_user SET user_level = 'Admin' WHERE user_id = '$aid';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$now = date("Y-m-d H-i-s");
-	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$aid', '$siuser', 'Promoted', '$now');";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	BootstrapSkin::displayAlertBox("Changed User #" . $aid . " access to 'Admin'","alert-info","",false);
-	$accbotSend->send("User $aid (" . $row2['user_name'] . ") promoted to admin by $siuser");
+    
+    $user->promote();
+    
+	BootstrapSkin::displayAlertBox($user->getUsername() . "promoted to 'Admin'", "alert-info", "", false);
+	$accbotSend->send($user->getUsername() . " promoted to admin by " . User::getCurrent()->getUsername());
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-	mail($row2['user_email'], "ACC Account Promoted", "Dear ".$row2['user_onwikiname'].",\nYour account ".$row2['user_name']." has been promted to admin status by $siuser.\n- The English Wikipedia Account Creation Team", $headers);
+	mail($user->getEmail(), "ACC Account Promoted", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been promted to admin status by " . User::getCurrent()->getUsername() . ".\n- The English Wikipedia Account Creation Team", $headers);
 }
 
 if (isset ($_GET['decline'])) {
