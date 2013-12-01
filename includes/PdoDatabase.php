@@ -28,7 +28,7 @@ function gGetDb($db = "acc") {
         catch (PDOException $ex)
         {
             // wrap around any potential stack traces which may include passwords
-            throw new Exception("Error connectiong to database: " . $ex->getMessage());
+            throw new Exception("Error connectiong to database '$db': " . $ex->getMessage());
         }
         
         $accdbobject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
