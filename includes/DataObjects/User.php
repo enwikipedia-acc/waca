@@ -96,16 +96,17 @@ class User extends DataObject
 		else
 		{ // update
 			$statement = $this->dbObject->prepare("UPDATE `user` SET " . 
-                "id = :id, username = :username, email = :email, password = :password, status = :status, " .
+                "username = :username, email = :email, password = :password, status = :status, " .
                 "onwikiname = :onwikiname, welcome_sig = :welcome_sig, lastactive = :lastactive, " .
                 "forcelogout = :forcelogout, secure = :secure, checkuser = :checkuser, identified = :identified, " .
                 "welcome_template = :welcome_template, abortpref = :abortpref, confirmationdiff = :confirmationdiff, " .
-                "emailsig = :emailsig," .
+                "emailsig = :emailsig " .
                 "WHERE id = :id LIMIT 1;");
 			$statement->bindParam(":id", $this->id);
 			$statement->bindParam(":username", $this->username);
 			$statement->bindParam(":email", $this->email);
 			$statement->bindParam(":password", $this->password);
+			$statement->bindParam(":status", $this->status);
 			$statement->bindParam(":onwikiname", $this->onwikiname);
 			$statement->bindParam(":welcome_sig", $this->welcome_sig);
 			$statement->bindParam(":lastactive", $this->lastactive);
