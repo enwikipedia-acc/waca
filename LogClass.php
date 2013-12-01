@@ -460,7 +460,7 @@ class LogPage
 			}
 			if ($rla == "Banned") {
 				$query2 = 'SELECT ban_target, ban_duration FROM `acc_ban` WHERE `ban_target` = \'' .$rlp. '\'; '; 
-				$result2 = mysql_query($query2);
+				$result2 = mysql_query($query2, $tsSQLlink);
 				if (!$result2)
 					Die("Query failed: $query2 ERROR: " . mysql_error());
 				$row2 = mysql_fetch_assoc($result2);
@@ -475,7 +475,7 @@ class LogPage
 			}
 			if ($rla == "Unbanned") {
 				$query2 = 'SELECT ban_target FROM `acc_ban` WHERE `ban_id` = '.$rlp.'; '; 
-				$result2 = mysql_query($query2);
+				$result2 = mysql_query($query2, $tsSQLlink);
 				if (!$result2)
 					Die("Query failed: $query2 ERROR: " . mysql_error());
 				$row2 = mysql_fetch_assoc($result2);
