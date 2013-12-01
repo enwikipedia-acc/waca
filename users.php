@@ -34,8 +34,8 @@ $tsSQLlink = $tsSQL->getLink();
 
 // Initialize the class objects.
 $messages = new messages();
-$accbotSend   = new accbotSend();
-$session  = new session();
+$accbotSend = new accbotSend();
+$session = new session();
 
 // Initialize the session data.
 session_start();
@@ -268,19 +268,9 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
     
 	if (!isset($_POST['newname'])) 
     {
-		echo "<form action=\"users.php?rename=" . $_GET['rename'] . "\" method=\"post\">";						
-		echo "<div class=\"required\">";
-		echo "<label for=\"oldname\">Old Username:</label>";
-		echo "<input id=\"oldname\" type=\"text\" readonly=\"readonly\" value=\"" . $user->getUsername() . "\"/>";
-		echo "</div>";
-		echo "<div class=\"required\">";
-		echo "<label for=\"newname\">New Username:</label>";
-		echo "<input id=\"newname\" type=\"text\" name=\"newname\"/>";
-		echo "</div>";
-		echo "<div class=\"submit\">";
-		echo "<input type=\"submit\"/>";
-		echo "</div>";
-		echo "</form>";
+		global $smarty;
+        $smarty->assign("user", $user);
+        $smarty->display("usermanagement/renameuser.tpl");
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
