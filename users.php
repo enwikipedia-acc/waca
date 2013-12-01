@@ -486,20 +486,23 @@ BootstrapSkin::pushTagStack("</div>");
 BootstrapSkin::pushTagStack("</div>");
 BootstrapSkin::pushTagStack("</div>");
 
+$database = gGetDb();
 
+$statement = $database->prepare("SELECT * FROM user WHERE status = :level;");
 
-$query = "SELECT * FROM acc_user WHERE user_level = 'New';";
-$result = mysql_query($query, $tsSQLlink);
-if (!$result)
-	Die("Query failed: $query ERROR: " . mysql_error());
-if (mysql_num_rows($result) != 0){
+$statement->bindParam(":level", $level);
+$statement->execute();
+$result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
+
+if($result != false && count($result) != 0)
+{
     echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Open requests</a></div><div id="collapseOne" class="accordion-body collapse in"><div class="accordion-inner">';
 	echo "<ol>\n";
-	while ($row = mysql_fetch_assoc($result)) {
-		$uname = $row['user_name'];
-		$uoname = $row['user_onwikiname'];
-		$userid = $row['user_id'];
-		$conf_revid = $row['user_confirmationdiff'];
+	foreach ($result as $user) {
+		$uname = $user->getUsername();
+		$uoname = $user->getOnWikiName();
+		$userid = $user->getId();
+		$conf_revid = $user->getConfirmationDiff();
 		$out = "<li><small>[ <span class=\"request-ban\">$uname</span> / <a class=\"request-src\" href=\"http://$wikiurl/wiki/User:$uoname\">$uoname</a> ]";
 		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?approve=$userid\" onclick=\"return confirm('Are you sure you wish to approve $uname?')\">Approve!</a> - <a class=\"request-req\" href=\"$tsurl/users.php?decline=$userid\">Decline</a> - <a class=\"request-req\" href=\"http://toolserver.org/~tparis/pcount/index.php?name=$uoname&amp;lang=en&amp;wiki=wikipedia\">Count!</a>";
 		$out .=" - <a class=\"request-req\" href=\"http://$wikiurl/w/index.php?diff=$conf_revid\">Confirmation diff</a>";
@@ -510,23 +513,20 @@ if (mysql_num_rows($result) != 0){
 }
 echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">Users</a></div><div id="collapseTwo" class="accordion-body collapse"><div class="accordion-inner">';
 
-
-$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Approved') WHERE user_level = 'User' GROUP BY log_pend ORDER BY log_pend DESC;";
-$result = mysql_query($query, $tsSQLlink);
-if (!$result)
-	Die("Query failed: $query ERROR: " . mysql_error());
-echo "<ol>\n";
-while ($row = mysql_fetch_assoc($result)) {
-	$uname = $row['user_name'];
-	$uoname = $row['user_onwikiname'];
-	$userid = $row['user_id'];
+$level = "User";
+$statement->execute();
+$result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
+foreach ($result as $user) {
+	$uname = $user->getUsername();
+	$uoname = $user->getOnWikiName();
+	$userid = $user->getId();
 
 	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 	if( $enableRenames == 1 ) {
 		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?rename=$userid\">Rename!</a> -";
 		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?edituser=$userid\">Edit!</a> -";
 	}
-	$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"$tsurl/users.php?promote=$userid\" onclick=\"return confirm('Are you sure you wish to promote $uname?')\">Promote!</a> (Approved by $row[log_user])</small></li>";
+	$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"$tsurl/users.php?promote=$userid\" onclick=\"return confirm('Are you sure you wish to promote $uname?')\">Promote!</a></small></li>";
 	echo "$out\n";
 }
 echo <<<HTML
@@ -539,56 +539,22 @@ echo <<<HTML
 HTML;
 
 
-$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Promoted') WHERE user_level = 'Admin' GROUP BY log_pend ORDER BY log_time ASC;";
-$result = mysql_query($query, $tsSQLlink);
-if (!$result)
-	Die("Query failed: $query ERROR: " . mysql_error());
+$level = "Admin";
+$statement->execute();
+$result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
 echo "<ol>\n";
-while ($row = mysql_fetch_assoc($result)) {
-	$uname = sanitize($row['user_name']);
-	$uoname = $row['user_onwikiname'];
-	$userid = $row['user_id'];
-	$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Suspended';";
-	$result2 = mysql_query($query, $tsSQLlink);
-	if (!$result2)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$row2 = mysql_fetch_assoc($result2);
-	$suspended = $row2['COUNT(*)'];
+foreach ($result as $user) {
+	$uname = $user->getUsername();
+	$uoname = $user->getOnWikiName();
+	$userid = $user->getId();
+	
 
-	$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Promoted';";
-	$result2 = mysql_query($query, $tsSQLlink);
-	if (!$result2)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$row2 = mysql_fetch_assoc($result2);
-	$promoted = $row2['COUNT(*)'];
-
-	$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Approved';";
-	$result2 = mysql_query($query, $tsSQLlink);
-	if (!$result2)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$row2 = mysql_fetch_assoc($result2);
-	$approved = $row2['COUNT(*)'];
-
-	$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Demoted';";
-	$result2 = mysql_query($query, $tsSQLlink);
-	if (!$result2)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$row2 = mysql_fetch_assoc($result2);
-	$demoted = $row2['COUNT(*)'];
-
-	$query = "SELECT COUNT(*) FROM acc_log WHERE log_user = '$uname' AND log_action = 'Declined';";
-	$result2 = mysql_query($query, $tsSQLlink);
-	if (!$result2)
-		Die("Query failed: $query ERROR: " . mysql_error());
-	$row2 = mysql_fetch_assoc($result2);
-	$declined = $row2['COUNT(*)'];
-
-	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">".htmlentities($row['user_name'])."</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 	if( $enableRenames == 1 ) {
 		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?rename=$userid\">Rename!</a> -";
 		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?edituser=$userid\">Edit!</a> -";
 	}
-	$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"users.php?demote=$userid\">Demote!</a> (Promoted by $row[log_user] <span style=\"color:purple;\">[P:$promoted|S:$suspended|A:$approved|Dm:$demoted|D:$declined]</span>)</small></li>";
+	$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?suspend=$userid\">Suspend!</a> - <a class=\"request-req\" href=\"users.php?demote=$userid\">Demote!</a></small></li>";
 	echo "$out\n";
 }
 echo <<<HTML
@@ -600,15 +566,15 @@ echo <<<HTML
 <p class="muted">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
 HTML;
 
-$query = "SELECT * FROM acc_user WHERE user_checkuser = '1';";
-$result = mysql_query($query, $tsSQLlink);
-if (!$result)
-	Die("Query failed: $query ERROR: " . mysql_error());
+$statement2 = $database->prepare("SELECT * FROM user WHERE checkuser = 1;");
+$statement2->execute();
+$result = $statement2->fetchAll(PDO::FETCH_CLASS, "User");
+
 echo "<ol>\n";
-while ($row = mysql_fetch_assoc($result)) {
-	$uname = $row['user_name'];
-	$uoname = $row['user_onwikiname'];
-	$userid = $row['user_id'];
+foreach ($result as $user) {
+	$uname = $user->getUsername();
+	$uoname = $user->getOnWikiName();
+	$userid = $user->getId();
 	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]</small></li>";
 	echo "$out\n";
 }
@@ -622,22 +588,20 @@ echo <<<HTML
 HTML;
 
 
-//$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id) WHERE user_level = 'Suspended' AND  log_action = 'Suspended' AND log_id = ANY ( SELECT MAX(log_id) FROM acc_log WHERE log_action = 'Suspended' GROUP BY log_pend ) ORDER BY log_id DESC;";
-$query = "SELECT * FROM acc_user JOIN (SELECT * FROM (SELECT * FROM acc_log WHERE log_action = 'Suspended' ORDER BY log_id DESC) AS l GROUP BY log_pend) AS log ON acc_user.user_id = log.log_pend WHERE user_level = 'Suspended';";
-$result = mysql_query($query, $tsSQLlink);
-if (!$result)
-	Die("Query failed: $query ERROR: " . mysql_error());
+$level = "Suspended";
+$statement->execute();
+$result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
 echo "<ol>\n";
-while ($row = mysql_fetch_assoc($result)) {
-	$uname = $row['user_name'];
-	$uoname = $row['user_onwikiname'];
-	$userid = $row['user_id'];
+foreach ($result as $user) {
+	$uname = $user->getUsername();
+	$uoname = $user->getOnWikiName();
+	$userid = $user->getId();
 	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 	if( $enableRenames == 1 ) {
 		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?rename=$userid\">Rename!</a> -";
 		$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?edituser=$userid\">Edit!</a> -";
 	}
-	$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?approve=$userid\" onclick=\"return confirm('Are you sure you wish to unsuspend $uname?')\">Unsuspend!</a> (Suspended by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
+	$out .= " <a class=\"request-req\" href=\"$tsurl/users.php?approve=$userid\" onclick=\"return confirm('Are you sure you wish to unsuspend $uname?')\">Unsuspend!</a></small></li>";
 	echo "$out\n";
 }
 echo <<<HTML
@@ -649,21 +613,20 @@ echo <<<HTML
 HTML;
 
 
-$query = "SELECT * FROM acc_user JOIN acc_log ON (log_pend = user_id AND log_action = 'Declined') WHERE user_level = 'Declined' GROUP BY log_pend ORDER BY log_id DESC;";
-$result = mysql_query($query, $tsSQLlink);
-if (!$result)
-	Die("Query failed: $query ERROR: " . mysql_error());
+$level = "Declined";
+$statement->execute();
+$result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
 echo "<ol>\n";
-while ($row = mysql_fetch_assoc($result)) {
-	$uname = sanitize($row['user_name']);
-	$uoname = $row['user_onwikiname'];
-	$userid = $row['user_id'];
-	$out = "<li><small>[ <span class=\"request-ban\">".htmlentities($row['user_name'])."</span> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
+foreach ($result as $user) {
+	$uname = $user->getUsername();
+	$uoname = $user->getOnWikiName();
+	$userid = $user->getId();
+	$out = "<li><small>[ <a class=\"request-ban\" href=\"$tsurl/statistics.php?page=Users&amp;user=$userid\">$uname</a> / <a class=\"request-src\" href=\"http://en.wikipedia.org/wiki/User:$uoname\">$uoname</a> ]";
 	if( $enableRenames == 1 ) {
 		$out .= " <a class=\"request-req\" href=\"users.php?rename=$userid\">Rename!</a> -";
 		$out .= " <a class=\"request-req\" href=\"users.php?edituser=$userid\">Edit!</a> -";
 	}
-	$out .= " <a class=\"request-req\" href=\"users.php?approve=$userid\" onclick=\"return confirm('Are you sure you wish to approve $uname?')\">Approve!</a> (Declined by " . $row['log_user'] . " because \"" . $row['log_cmt'] . "\")</small></li>";
+	$out .= " <a class=\"request-req\" href=\"users.php?approve=$userid\" onclick=\"return confirm('Are you sure you wish to approve $uname?')\">Approve!</a></small></li>";
 	echo "$out\n";
 }
 echo "</ol></div></div></div>";
