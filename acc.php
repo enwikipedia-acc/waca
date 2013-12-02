@@ -325,7 +325,8 @@ elseif ($action == "sreg") {
 }
 
 elseif ($action == "register") {
-	echo $messages->getMessage(29);
+	global $smarty;
+    $smarty->display("register.tpl");
 	$skin->displayPfooter();
 	die();
 }
