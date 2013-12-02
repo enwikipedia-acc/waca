@@ -2,7 +2,7 @@
 <div class="row-fluid">
   <!-- page header -->
   <div class="span12">
-    <h3>Details for Request #{$id}:</h3>
+    <h2>Details for Request #{$id}:</h2>
   </div>
 </div><!--/row-->   
 
@@ -27,7 +27,7 @@
 
 <div class="row-fluid">
   <div class="span6">
-    <h4>Other requests from {if $showinfo == true}{$email}{else}this email address{/if}</h4>
+    <h3>Other requests from {if $showinfo == true}{$email}{else}this email address{/if}</h3>
     {if $email == "acc@toolserver.org"}
       <p class="muted">Email information cleared</p>
     {elseif $numemail == 0}
@@ -44,7 +44,7 @@
     {/if}
   </div>
   <div class="span6">
-    <h4>Other requests from {if $showinfo == true}{$ip}{else}this IP address{/if}</h4>
+    <h3>Other requests from {if $showinfo == true}{$ip}{else}this IP address{/if}</h3>
     {if $ip == "127.0.0.1"}
       <p class="muted">IP information cleared</p>
     {elseif $numip == 0}
