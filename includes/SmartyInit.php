@@ -11,6 +11,7 @@ $smarty = new Smarty();
 $toolVersion = getToolVersion();
 
 $smarty->assign("tsurl", $tsurl);
+$smarty->assign("wikiurl", $wikiurl);
 $smarty->assign("toolversion", $toolVersion);
 $smarty->debugging = $smartydebug;
 ?>

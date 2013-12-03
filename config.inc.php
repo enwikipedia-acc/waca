@@ -276,7 +276,14 @@ ini_set('session.cookie_path', $cookiepath);
 ini_set('session.name', $sessionname);
 ini_set('user_agent', $toolUserAgent);
 
-foreach(array( "mbstring", "mysql" ) as $x) {if(!extension_loaded($x)) {die("extension $x is required.");}}
+foreach(array( 
+    "mbstring",  // unicode and stuff
+    "mysql",  // legacy database
+    "pdo", "pdo_mysql",  // new database module
+    "session", "date", "pcre", // core stuff
+    "curl", // mediawiki api access etc
+    "mcrypt", "openssl", // password encryption etc
+    ) as $x) {if(!extension_loaded($x)) {die("extension $x is required.");}}
 
 require_once($filepath . "includes/AutoLoader.php");
 
