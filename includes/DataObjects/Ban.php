@@ -37,6 +37,30 @@ class Ban extends DataObject
         return $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
     }
     
+    public static function getActiveId($id, PdoDatabase $database = null)
+    {
+        if($database == null)
+        {
+            $database = gGetDb();   
+        }
+
+        $statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE id = :id  AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;");
+		$statement->bindParam(":id", $id);
+
+		$statement->execute();
+
+		$resultObject = $statement->fetchObject( get_called_class() );
+
+		if($resultObject != false)
+		{
+			$resultObject->isNew = false;
+            $resultObject->setDatabase($database); 
+		}
+
+		return $resultObject;
+
+    }
+    
     public function save()
     {
         if($this->isNew)

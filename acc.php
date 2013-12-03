@@ -897,79 +897,91 @@ elseif ($action == "sban") {
 	$skin->displayIfooter();
 	die();
 }
-elseif ($action == "unban" && $_GET['id'] != "") 
+elseif ($action == "unban") 
 {
-	$siuser = sanitize($_SESSION['user']);
+    if(!isset($_GET['id']) || $_GET['id'] == "")
+    {
+        BootstrapSkin::displayAlertBox("The ID parameter appears to be missing! This is probably a bug.", "alert-error", "Ahoy There! Something's not right...", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+    if(!User::getCurrent()->isAdmin())
+    {
+        BootstrapSkin::displayAlertBox("Only administrators or checkusers may unban users", "alert-error", "", false, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+    $ban = Ban::getActiveId($_GET['id']);
+        
+    if($ban == false)
+    {
+        BootstrapSkin::displayAlertBox("The specified ban ID is not currently active!", "alert-error", "", false, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
 
-	if(!$session->hasright($_SESSION['user'], "Admin"))
-	{
-		die("Only administrators or checkusers may unban users");
-	}
-	$bid = sanitize($_GET['id']);
-	$query = "SELECT * FROM acc_ban WHERE ban_id = '$bid' AND (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1;";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-	{
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	}
-	$row = mysql_fetch_assoc($result);
-	if( $row['ban_id'] == "") {
-		$skin->displayRequestMsg("The specified target is not banned!");
-		$skin->displayIfooter();
-		die();
-	}
-	$iTarget = $row['ban_target'];
-
-	if( isset($_GET['confirmunban']) && $_GET['confirmunban']=="true" )
+	if( isset($_GET['confirmunban']) && $_GET['confirmunban'] == "true" )
 	{
 		if (!isset($_POST['unbanreason']) || $_POST['unbanreason'] == "") 
 		{
-			echo "<h2>ERROR</h2><br />You must enter an unban reason.\n";
-			$skin->displayIfooter();
-			die;
+            BootstrapSkin::displayAlertBox("You must enter an unban reason!", "alert-error", "", false, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
 		}
 		else 
 		{
-			$unbanreason = sanitize($_POST['unbanreason']);
-			$query = "UPDATE acc_ban SET ban_active = 0 WHERE ban_id = '$bid'";
-			$result = $tsSQL->query($query);
-			if (!$result)
-			{
-				die($tsSQL->showError(mysql_error(), "Database error"));
-			}
-			$now = date("Y-m-d H-i-s");
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$bid', '$siuser', 'Unbanned', '$now', '$unbanreason');";
-			$result = $tsSQL->query($query);
-			if (!$result)
-			{
-				die($tsSQL->showError(mysql_error(), "Database error"));
-			}
-			echo "Unbanned ban #$bid<br />\n";
-			$accbotSend->send("Ban #" . $bid . " ($iTarget) unbanned by " . $_SESSION['user']. " ($unbanreason)");
-			$skin->displayIfooter();
+            $database = gGetDb();
+            
+            if(!$database->beginTransaction())
+            {
+                BootstrapSkin::displayAlertBox("Error initiating database transaction", "alert-error", "", false, false);
+                BootstrapSkin::displayInternalFooter();
+                die();
+            }
+            
+            try
+            {
+                $ban->setActive(0);
+                $ban->save();
+                
+                $banId = $ban->getId();
+                $currentUser = User::getCurrent()->getUsername();
+                
+                $query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:id, :user, 'Unbanned', CURRENT_TIMESTAMP(), :reason);";
+                $statement = $database->prepare($query);
+                $statement->bindParam(":id", $banId);
+                $statement->bindParam(":user", $currentUser);
+                $statement->bindParam(":reason", $_POST['unbanreason']);
+                
+                if(!$statement->execute())
+                {
+                    throw new Exception("Error saving log entry.");   
+                }
+            }
+            catch(Exception $ex)
+            {
+                $database->rollBack();
+                BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Error in transaction", false, false);
+                BootstrapSkin::displayInternalFooter();
+                die();
+            }
+            
+            $database->commit();
+		
+            BootstrapSkin::displayAlertBox("Unbanned " . $ban->getTarget(), "alert-info", "", false, false);
+            BootstrapSkin::displayInternalFooter();
+			$accbotSend->send($ban->getTarget() . " unbanned by " . User::getCurrent()->getUsername() . " ({$_POST['unbanreason']}))");
 			die();
 		}
 	}
 	else
 	{
-		$confOut =  "Are you sure you wish to unban #".$bid.", targeted at ".$iTarget.", ";
-		if ( !isset($row['ban_duration']) || $row['ban_duration'] == "-1") 
-		{
-			$confOut.= "not set to expire";
-		} 
-		else 
-		{
-			$confOut.= "set to expire " . date("F j, Y, g:i a", $row['ban_duration']);
-		}
-		$confOut .= ", and with the reason:<br />";
-		echo $confOut;
-		
-		echo $row['ban_reason'] . "<br />";
-		echo "What is your reason for unbanning this person?<br />";
-		echo "<form METHOD=\"post\" ACTION=\"$tsurl/acc.php?action=unban&id=". $bid ."&confirmunban=true\">";
-		echo "<input type=\"text\" name=\"unbanreason\"/><input type=\"submit\"/></form><br />";
-		echo "<a href=\"$tsurl/acc.php\">Cancel</a>";
-		
+        $smarty->assign("ban", $ban);
+        $smarty->display("bans/unban.tpl");
+        
+		BootstrapSkin::displayInternalFooter();
 	}
 }
 elseif ($action == "ban") {    
