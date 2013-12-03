@@ -22,13 +22,13 @@ class Ban extends DataObject
         
         if($target != null)
         {
-            $query = "SELECT * FROM acc_ban WHERE ban_target = :target AND (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1;";
+            $query = "SELECT * FROM ban WHERE target = :target AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;";
             $statement = $database->prepare($query);
-            $statment->bindParam(":target", $target);
+            $statement->bindParam(":target", $target);
         }
         else
         {    
-            $query = "SELECT * FROM acc_ban WHERE (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1;";
+            $query = "SELECT * FROM ban WHERE (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;";
             $statement = $database->prepare($query);
         }
         
