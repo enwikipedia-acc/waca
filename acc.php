@@ -139,32 +139,8 @@ elseif ($action == "sreg") {
 	{
 		$suser = '';
 	}
-	foreach ( $acrnamebl as $wnbl => $nbl ) {
-		$phail_test = @ preg_match( $nbl, $_POST['name'] );
-		if ( $phail_test == TRUE ) {
-			#$message = $messages->getMessage(15);
-			echo "$message<br />\n";
-			$target = "$wnbl";
-			$accbotSend->send( "[Name-Bl-ACR] HIT: $wnbl - " . sanitize($_POST['name']) . " / " . sanitize($_POST['wname']) . " " . sanitize($_SERVER['REMOTE_ADDR']) . " ($host) " . sanitize($_POST['email']) . " " . sanitize($_SERVER['HTTP_USER_AGENT']));
-			echo "Unable to create account. Your request has triggered our spam blacklists, please email the mailing list instead.";
-			echo "</div>";
-			$skin->displayPfooter();
-			die( );
-		}
-	}
-	global $enableDnsblChecks;
-	if( $enableDnsblChecks == 1) {
-		$dnsblcheck = checkdnsbls( $_SERVER['REMOTE_ADDR'] );
-		if ( $dnsblcheck['0'] == true ) {
-			$cmt = "FROM $ip " . $dnsblcheck['1'];
-			$accbotSend->send("[DNSBL-ACR] HIT: " . sanitize($_POST['name']) . " - " . sanitize($_POST['wname']) . " " . sanitize($_SERVER['REMOTE_ADDR']) . " " . sanitize($_POST['email']) . " " . $_SERVER['HTTP_USER_AGENT'] . " $cmt");
-			echo "Account not created, please see " . $dnsblcheck['1'];
-			echo "</div>";
-			$skin->displayPfooter();
-			die(  );
-		}
-	}
-	$sregHttpClient = new http();
+
+    $sregHttpClient = new http();
 	$cu_name = rawurlencode( $_REQUEST['wname'] );
 	$userblocked = $sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
 	$ub = unserialize( $userblocked );

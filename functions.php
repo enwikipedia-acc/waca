@@ -770,9 +770,13 @@ function zoomPage($id,$urlhash)
 	
 	$request = new accRequest();
 	$smarty->assign("isblacklisted", false);
-	if($request->isblacklisted($sUser))
+    $blacklistresult = $request->isblacklisted($sUser);
+	if($blacklistresult)
+    {
 		$smarty->assign("isblacklisted", true);
+		$smarty->assign("blacklistregex", $blacklistresult);
 	
+    }
 	$out2 = "<h2>Possibly conflicting usernames</h2>\n";
 	$spoofs = getSpoofs( $sUser );
 	

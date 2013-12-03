@@ -2,7 +2,8 @@
 <div class="row-fluid">
   <h3>Username data:</h3>
   {if $isblacklisted}
-    <div class="alert alert-warning">Requested username is blacklisted.</div>
+    {include file="alert.tpl" alertblock="1" alerttype="alert-error" alertclosable="0" alertheader="Requested Username is Blacklisted"
+      alertmessage="The requested username is currently blacklisted by the regular expression <code>{$blacklistregex|escape}</code>."}
   {/if}
            
   <div class="btn-group">
