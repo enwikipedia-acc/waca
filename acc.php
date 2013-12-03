@@ -972,149 +972,69 @@ elseif ($action == "unban" && $_GET['id'] != "")
 		
 	}
 }
-elseif ($action == "ban") {
-	$siuser = sanitize($_SESSION['user']);
-	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name'])) {
+elseif ($action == "ban") {    
+    global $smarty;
+    
+	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name']))
+    {
 		if(!$session->hasright($_SESSION['user'], "Admin"))
-			die("Only administrators or checkusers may ban users");
+        {
+		    BootstrapSkin::displayAlertBox("Only administrators or checkusers may ban users", "alert-error");
+            BootstrapSkin::displayInternalFooter();
+            die();
+        }
+        
+        $database = gGetDb();
+        // TODO: rewrite me!
 		if (isset($_GET['ip'])) {
-			$ip2 = sanitize($_GET['ip']);
-			$query = "SELECT * FROM acc_pend WHERE pend_id = '$ip2';";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			$row = mysql_fetch_assoc($result);
+			$query = "SELECT pend_ip, pend_proxyip FROM acc_pend WHERE pend_id = :ip;";
+            $statement = $database->prepare($query);
+            $statement->bindParam(":ip", $_GET['ip']);
+            $statement->execute();
+			$row = $statement->fetch(PDO::FETCH_ASSOC);
 			$target = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
 			$type = "IP";
 		}
 		elseif (isset($_GET['email'])) {
-			$email2 = sanitize($_GET['email']);
-			$query = "SELECT * FROM acc_pend WHERE pend_id = '$email2';";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			$row = mysql_fetch_assoc($result);
+            $query = "SELECT pend_email FROM acc_pend WHERE pend_id = :ip;";
+            $statement = $database->prepare($query);
+            $statement->bindParam(":ip", $_GET['email']);
+            $statement->execute();
+			$row = $statement->fetch(PDO::FETCH_ASSOC);
 			$target = $row['pend_email'];
 			$type = "EMail";
 		}
 		elseif (isset($_GET['name'])) {
-			$name2 = sanitize($_GET['name']);
-			$query = "SELECT * FROM acc_pend WHERE pend_id = '$name2';";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			$row = mysql_fetch_assoc($result);
+            $query = "SELECT pend_name FROM acc_pend WHERE pend_id = :ip;";
+            $statement = $database->prepare($query);
+            $statement->bindParam(":ip", $_GET['name']);
+            $statement->execute();
+			$row = $statement->fetch(PDO::FETCH_ASSOC);
 			$target = $row['pend_name'];
 			$type = "Name";
 		}
-		$target = sanitize($target);
-		$query = "SELECT * FROM acc_ban WHERE ban_target = '$target' AND (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1;";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		$row = mysql_fetch_assoc($result);
-		if ($row['ban_id'] != "") {
-			echo "<h2>ERROR</h2>\n<br />\nCould not ban. Already banned!<br />";
-			$skin->displayIfooter();
+               
+		if (count(Ban::getActiveBans($target))) 
+        {
+			BootstrapSkin::displayAlertBox("This target is already banned!", "alert-error");
+            BootstrapSkin::displayInternalFooter();
 			die();
-		} else {
-			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
-			echo "<form action=\"$tsurl/acc.php?action=sban&amp;user=$siuser\" method=\"post\">";
-			echo "Ban target: $target\n<br \>\n";
-			echo "<table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td></tr>\n";
-			echo "<tr><td>Duration:</td><td>\n";
-			echo "<select name=\"duration\">\n";
-			echo "<option value=\"-1\">Indefinite</option>\n";
-			echo "<option value=\"86400\">24 Hours</option>\n";
-			echo "<option value=\"604800\">One Week</option>\n";
-			echo "<option value=\"2629743\">One Month</option>\n";
-			echo "<option value=\"other\">Other</option>\n";
-			echo "</select></td></tr>\n";
-			/* TODO: Add some fancy javascript that hides this until the user selects other from the menu above */
-			echo "<tr><td>Other:</td><td><input type=\"text\" name=\"otherduration\" /></td></tr>";
-			echo "</table><br />\n";
-			echo "<input type=\"submit\" /><input type=\"hidden\" name=\"target\" value=\"$target\" /><input type=\"hidden\" name=\"type\" value=\"$type\" /></form>\n";
-			$skin->displayIfooter();
-			die();
-		}
-	} else {
-		echo "<h2>Active Ban List</h2>\n<table border='1'>\n";
-		echo "<tr><th>Type</th><th>IP/Name/Email</th><th>Banned by</th><th>Reason</th><th>Time</th><th>Expiry</th>";
-		$isAdmin = $session->hasright($_SESSION['user'], "Admin");
-		if ($isAdmin) {
-			echo "<td>Unban</td>";
-		}
-		echo "</tr>";
-		$query = "SELECT * FROM acc_ban WHERE (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1;";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		while ($row = mysql_fetch_assoc($result)) {
-			if ( !isset($row['ban_duration']) || $row['ban_duration'] == "-1") {
-				$until = "Indefinite";
-			} else {
-				$until = date("F j, Y, g:i a", $row['ban_duration']);
-			}
-			echo "<tr><td>" . htmlentities($row['ban_type'],ENT_COMPAT,'UTF-8') . '</td>';
-			switch($row['ban_type'])
-			{
-				case "IP":
-					echo '<td>';
-					if ($isAdmin) { 
-						echo '<a href="' . $tsurl . '/search.php?term='.$row['ban_target'].'&amp;type=IP">';
-					}
-					echo $row['ban_target'];
-					if ($isAdmin) { 
-						echo '</a>';
-					}
-					echo '</td>';
-					break;
-				case "EMail":
-					echo '<td>';
-					echo '<a href="' . $tsurl . '/search.php?term='.$row['ban_target'].'&amp;type=email">';
-					echo $row['ban_target'];
-					echo '</a>';
-					echo '</td>';
-					break;
-				case "Name";
-					echo '<td><a href="' . $tsurl . '/search.php?term='.$row['ban_target'].'&amp;type=Request">'.$row['ban_target'].'</a></td>';
-					break;
-				default:
-					echo '<td>'.$row['ban_target'].'</td>';
-					break;
-			}
-			echo "<td>".$row['ban_user']."</td><td>".$row['ban_reason']."</td><td>".$row['ban_date']."</td><td>$until</td>";
-			if ($isAdmin) {
-				echo "<td><a href=\"$tsurl/acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">Unban</a></td>";
-			}
-			echo "</tr>";
-		}
-		echo "</table>\n";
-		if ($isAdmin) {
-			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
-			echo "<form action=\"$tsurl/acc.php?action=sban\" method=\"post\">";
-			echo "<table>";
-			echo "<tr><td>Ban target:</td><td><input type=\"text\" name=\"target\" /></td></tr>\n";
-			echo "<tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td></tr>\n";
-			echo "<tr><td>Duration:</td><td>\n";
-			echo "<select name=\"duration\">\n";
-			echo "<option value=\"-1\">Indefinite</option>\n";
-			echo "<option value=\"86400\">24 Hours</option>\n";
-			echo "<option value=\"604800\">One Week</option>\n";
-			echo "<option value=\"2629743\">One Month</option>\n";
-			echo "<option value=\"other\">Other</option>\n";
-			echo "</select></td></tr>\n";
-			/* TODO: Add some fancy javascript that hides this until the user selects other from the menu above */
-			echo "<tr><td>Other:</td><td><input type=\"text\" name=\"otherduration\"/></td></tr>";
-			echo "<tr><td>Type:</td><td>\n";
- 			echo "<select name=\"type\"><option value=\"IP\">IP</option><option value=\"Name\">Name</option><option value=\"EMail\">E-Mail</option></select>\n";
- 			echo "</td></tr>\n";
-			echo "</table><br />\n";
-			echo "<input type=\"submit\"/></form>\n";
-		}
-		$skin->displayIfooter();
-		die();
+		} 
+        
+        $smarty->assign("bantype", $type);
+        $smarty->assign("bantarget", $target);
+        $smarty->display("bans/banform.tpl");
+	} 
+    else 
+    {
+        $bans = Ban::getActiveBans();
+  
+        $smarty->assign("activebans", $bans);
+        $smarty->display("bans/banlist.tpl");
 	}
+    
+    BootstrapSkin::displayInternalFooter();
+    die();
 }
 elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 	global $availableRequestStates;
