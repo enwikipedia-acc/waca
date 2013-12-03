@@ -24,6 +24,11 @@ class User extends DataObject
     // cache variable of the current user - it's never going to change in the middle of a request.
     private static $currentUser;
     
+    /**
+     * Summary of getCurrent
+     * @param PdoDatabase $database
+     * @return User The currently logged in user, or an anonymous coward with userid -1.
+     */
     public static function getCurrent(PdoDatabase $database = null)
     {
         if($database === null)
@@ -33,7 +38,23 @@ class User extends DataObject
         
         if(User::$currentUser === null)
         {
-            User::$currentUser = User::getById($_SESSION['userID'], $database);
+            if(isset($_SESSION['userID']))
+            {
+                User::$currentUser = User::getById($_SESSION['userID'], $database);
+            }
+            else
+            {
+                $anonymousCoward = new User();
+                $anonymousCoward->username = "Anonymous Coward";
+                $anonymousCoward->email = "anonymous-coward@nonexistent.local";
+                $anonymousCoward->password = ":0:x"; // encrypted version0 password is never equal to "x"
+                $anonymousCoward->status = "Anonymous"; // Not a user...
+                $anonymousCoward->onwikiname = "127.0.0.1";
+                $anonymousCoward->id = -1;
+                $anonymousCoward->identified = 0; // use the identification lockout too.
+                
+                User::$currentUser = $anonymousCoward;
+            }
         }
         
         return User::$currentUser;

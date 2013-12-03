@@ -11,9 +11,14 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
+
+// Initialize the session data.
+session_start();
+
 // Get all the classes.
 require_once 'config.inc.php';
 require_once 'functions.php';
+require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
 require_once 'includes/database.php';
 require_once 'includes/messages.php';
@@ -21,7 +26,6 @@ require_once 'includes/skin.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
 require_once 'includes/offlineMessage.php';
-require_once 'includes/PdoDatabase.php';
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
@@ -36,9 +40,6 @@ $tsSQLlink = $tsSQL->getLink();
 $messages = new messages();
 $accbotSend = new accbotSend();
 $session = new session();
-
-// Initialize the session data.
-session_start();
 
 // Display the header of the interface.
 BootstrapSkin::displayInternalHeader();

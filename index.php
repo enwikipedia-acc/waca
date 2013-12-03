@@ -16,6 +16,8 @@
 require_once 'config.inc.php';
 require_once 'AntiSpoof.php';
 require_once 'functions.php';
+
+require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
 require_once 'includes/offlineMessage.php';
 require_once 'includes/database.php';
@@ -24,7 +26,6 @@ require_once 'includes/skin.php';
 require_once 'includes/messages.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/strings.php';
-require_once 'includes/PdoDatabase.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.

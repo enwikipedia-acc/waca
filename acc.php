@@ -15,12 +15,16 @@
 // stop all output until we want it
 ob_start();
 
+// Initialize the session data.
+session_start();
+
 // Get all the classes.
 require_once 'config.inc.php';
 require_once 'devlist.php';
 require_once 'LogClass.php';
 require_once 'functions.php';
-require_once 'includes/SmartyInit.php'; // this needs to be high up, but below config and functions
+require_once 'includes/PdoDatabase.php';
+require_once 'includes/SmartyInit.php'; // this needs to be high up, but below config, functions, and database
 require_once 'includes/database.php';
 require_once 'includes/offlineMessage.php';
 require_once 'includes/messages.php';
@@ -28,7 +32,6 @@ require_once 'includes/skin.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
 require_once 'includes/http.php';
-require_once 'includes/PdoDatabase.php';
 
 // Set the current version of the ACC.
 $version = "0.9.7";
@@ -56,8 +59,6 @@ $date = new DateTime();
 $locationProvider = new $locationProviderClass(gGetDb('acc'), $locationProviderApiKey);
 $rdnsProvider = new $rdnsProviderClass(gGetDb('acc'));
 
-// Initialize the session data.
-session_start();
 
 // Clears the action variable.
 $action = '';
