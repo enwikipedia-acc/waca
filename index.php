@@ -85,11 +85,6 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$request->checkBan('EMail',$_POST['email']);
 	$request->blockedOnEn();
 	
-	// Check the blacklists.
-	$request->checkBlacklist($emailblacklist,$_POST['email'],$_POST['email'],'Email-Bl');
-	$request->checkBlacklist($nameblacklist,$_POST['name'],$_POST['email'],'Name-Bl');
-	$request->doDnsBlacklistCheck();
-
 	// Do automated checks on the username and email adress.
 	$request->finalChecks($user,$email);
 
