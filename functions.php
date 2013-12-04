@@ -357,8 +357,7 @@ function listrequests($type, $hideip, $correcthash) {
             $smartyreserved = $session->getUsernameFromUid($reserveByUser);
         }
         
-        $smarty->assign("reserved", $smartyreserved);  
-        $smarty->assign("youreserved", $smartyyoureserved);
+        $smarty->assign("reserved", $smartyreserved);
         $canbreak = ( $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) );
         $smarty->assign("canbreak", $canbreak);
         

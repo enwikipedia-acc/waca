@@ -13,7 +13,7 @@
     <i class="icon-white icon-ban-circle"></i>&nbsp;Ban&nbsp;<span class="caret"></span></a><ul class="dropdown-menu"><li><a href="{$tsurl}/acc.php?action=ban&amp;ip={$rid}">IP</a></li><li><a href="{$tsurl}/acc.php?action=ban&amp;email={$rid}">Email</a></li><li><a href="{$tsurl}/acc.php?action=ban&amp;name={$rid}">Name</a></li></ul></div>{/if}</td>
 	<td>
 {if $reserved != ""}
-  {if $youreserved}
+  {if $reserved == $currentUser->getUsername()}
   </td>
   <td>
     <a class="btn btn-small btn-inverse" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$rid}">
