@@ -65,12 +65,11 @@ class Ban extends DataObject
     {
         if($this->isNew)
 		{ // insert
-			$statement = $this->dbObject->prepare("INSERT INTO `ban` (type, target, user, reason, date, duration, active) VALUES (:address, :data, :user, :reason, :date, :duration, :active);");
+			$statement = $this->dbObject->prepare("INSERT INTO `ban` (type, target, user, reason, date, duration, active) VALUES (:type, :target, :user, :reason, CURRENT_TIMESTAMP(), :duration, :active);");
 			$statement->bindParam(":type", $this->type);
 			$statement->bindParam(":target", $this->target);
 			$statement->bindParam(":user", $this->user);
 			$statement->bindParam(":reason", $this->reason);
-			$statement->bindParam(":date", $this->date);
 			$statement->bindParam(":duration", $this->duration);
 			$statement->bindParam(":active", $this->active);
 			if($statement->execute())
@@ -85,13 +84,8 @@ class Ban extends DataObject
 		}
 		else
 		{ // update
-			$statement = $this->dbObject->prepare("UPDATE `ban` SET type = :type, target = :target, user = :user, reason = :reason, date = :date, duration = :duration, active = :active WHERE id = :id LIMIT 1;");
+			$statement = $this->dbObject->prepare("UPDATE `ban` SET duration = :duration, active = :active WHERE id = :id LIMIT 1;");
 			$statement->bindParam(":id", $this->id);
-			$statement->bindParam(":type", $this->type);
-			$statement->bindParam(":target", $this->target);
-			$statement->bindParam(":user", $this->user);
-			$statement->bindParam(":reason", $this->reason);
-			$statement->bindParam(":date", $this->date);
 			$statement->bindParam(":duration", $this->duration);
 			$statement->bindParam(":active", $this->active);
             
@@ -146,12 +140,7 @@ class Ban extends DataObject
     {
         return $this->date;
     }
-    
-    public function setDate($date)
-    {
-        $this->date = $date;
-    }
-    
+        
     public function getDuration()
     {
         return $this->duration;
