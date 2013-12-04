@@ -1,7 +1,7 @@
 ﻿<!-- tpl:zoom-parts/request-info.tpl -->
 <div class="row-fluid visible-phone">
     <div class="span12">
-        <h4>Request data:</h4>
+        <h3>Request data:</h3>
         <table class="table table-condensed table-striped">
         <tbody>
             {if $showinfo}

@@ -1,6 +1,6 @@
 ﻿<!-- tpl:zoom-parts/username-section.tpl -->
 <div class="row-fluid">
-  <h4>Username data:</h4>        
+  <h3>Username data:</h3>
   {if $isblacklisted}
     {include file="alert.tpl" alertblock="1" alerttype="alert-error" alertclosable="0" alertheader="Requested Username is Blacklisted"
       alertmessage="The requested username is currently blacklisted by the regular expression <code>{$blacklistregex|escape}</code>."}
@@ -16,7 +16,7 @@
     <a class="btn btn-small" target="_blank" href="https://www.google.com/search?q={$usernamerawunicode|escape:'url'}">Google search</a>
   </div>
             
-  <h5>AntiSpoof results:</h5>
+  <h4>AntiSpoof results:</h4>
   {if !$spoofs}
     <p class="muted">None detected</p>
   {elseif !is_array($spoofs)}

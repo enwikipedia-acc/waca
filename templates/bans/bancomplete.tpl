@@ -1,0 +1,1 @@
+﻿Banned {$ban->getTarget()|escape} for {$ban->getReason()|escape}

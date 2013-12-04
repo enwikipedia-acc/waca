@@ -1,5 +1,5 @@
 ﻿<!-- tpl:zoom-parts/request-log.tpl -->
-<h4>Log:</h4>
+<h3>Log:</h3>
 <form action="{$tsurl}/acc.php?action=comment-quick&amp;hash={$hash}" method="post">
     <table class="table table-condensed table-striped">
         <tbody>
