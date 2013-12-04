@@ -352,13 +352,9 @@ function listrequests($type, $hideip, $correcthash) {
 		$reserveByUser = isReservedWithRow($row);
 
         $smartyreserved = false;
-        $smartyyoureserved = false;
         if($reserveByUser != 0)
         {
             $smartyreserved = $session->getUsernameFromUid($reserveByUser);
-            if( $reserveByUser == $_SESSION['userID'] ){
-               $smartyyoureserved = true;
-            }
         }
         
         $smarty->assign("reserved", $smartyreserved);  
@@ -758,14 +754,11 @@ function zoomPage($id,$urlhash)
 	$reserveByUser = isReservedWithRow($row);
 
 	$smartyreserved = "";
-	$smartyyoureserved = false;
 	if($reserveByUser != 0) {
 		$smartyreserved = $session->getUsernameFromUid($reserveByUser);
-		if( $reserveByUser == $_SESSION['userID'] )
-			$smartyyoureserved = true;
 	}
+    
 	$smarty->assign("reserved", $smartyreserved);
-	$smarty->assign("youreserved", $smartyyoureserved);
 	
 	$request = new accRequest();
 	$smarty->assign("isblacklisted", false);

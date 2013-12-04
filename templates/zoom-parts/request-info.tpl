@@ -32,12 +32,12 @@
             <tr><th>Requested name:</th><td>{$username}</td><td></td></tr>
             <tr><th>Date:</th><td>{$date}</td><td></td></tr>
             {if $viewuseragent}<tr><th>User Agent:</th><td>{$useragent}</td><td></td></tr>{/if}
-            {if $youreserved && $isclosed}
+            {if $currentUser->getUsername() == $reserved}
             <tr>
                 <th>Reveal link:</th>
                 <td>
                 <a href="{$tsurl}/acc.php?action=zoom&amp;id={$id}&amp;hash={$hash}">
-                    {$tsurl}/acc.php?action=zoom&amp;id={$id}&amp;hash={$hash}
+                  Reveal link
                 </a></td>
                 <td></td>
             </tr>
@@ -84,14 +84,17 @@
     <div class="span8">{$useragent}</div>
   </div>
 {/if}
-{if $youreserved == $tooluser && $isclosed}
-  <div class="row-fluid hidden-phone">
-    <div class="span4"><strong>Reveal link:</strong></div>
-    <div class="span8"><a href="{$tsurl}/acc.php?action=zoom&amp;id={$id}&amp;hash={$hash}">{$tsurl}/acc.php?action=zoom&amp;id={$id}&amp;hash={$hash}</a></div>
-  </div>
-{/if}
 <div class="row-fluid hidden-phone">
   <div class="span4"><strong>Reserved by:</strong></div>
-  <div class="span8">{if $reserved}{$reserved}{else}None{/if}</div>
+  <div class="span8">
+     {if $reserved}
+      {$reserved}
+      {if $reserved == $currentUser->getUsername()}
+        <a href="{$tsurl}/acc.php?action=zoom&amp;id={$id}&amp;hash={$hash}">(reveal to others)</a>
+      {/if}
+     {else}
+      None
+     {/if}
+   </div>
 </div>
 <!-- /tpl:zoom-parts/request-info.tpl -->

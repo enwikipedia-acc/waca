@@ -3,7 +3,7 @@
   {if $showinfo == true && $isprotected == false && $isreserved == true}
     <a class="btn btn-primary span6" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true">Create account</a>
   {/if}
-  {if $youreserved}
+  {if $reserved == $currentUser->getUsername()}
     <a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Break reservation</a>
   {elseif $isadmin && $isreserved}
     <a class="btn span6 offset6 btn-warning" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Force break</a>
