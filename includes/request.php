@@ -97,7 +97,7 @@ class accRequest {
 		
         $ban = Ban::getBanByTarget($target, $type);
         
-		if ($ban != false) 
+		if ($ban != false && count($ban) > 0) 
         {	
 				// User is still banned.
 				// Gets message to display to the user.

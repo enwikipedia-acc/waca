@@ -13,6 +13,42 @@ class Ban extends DataObject
     private $duration;
     private $active;
     
+    /**
+     * Gets all bans, expired and active filtered by the optional target.
+     * @param $target string The email, IP, or name of the target of the ban
+     * @param PdoDatabase $database gGetDb()
+     * @return
+     */
+    public static function getAllBans($target = null, PdoDatabase $database = null)
+    {
+        if($database == null)
+        {
+            $database = gGetDb();   
+        }
+        
+        if($target != null)
+        {
+            $query = "SELECT * FROM ban WHERE target = :target;";
+            $statement = $database->prepare($query);
+            $statement->bindParam(":target", $target);
+        }
+        else
+        {    
+            $query = "SELECT * FROM ban;";
+            $statement = $database->prepare($query);
+        }
+        
+        $statement->execute();
+        
+        return $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
+    }
+    
+    /**
+     * Gets all active bans, filtered by the optional target.
+     * @param $target
+     * @param PdoDatabase $database
+     * @return
+     */
     public static function getActiveBans($target = null, PdoDatabase $database = null)
     {
         if($database == null)
@@ -37,6 +73,12 @@ class Ban extends DataObject
         return $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
     }
     
+    /**
+     * Gets a ban by it's ID if it's currently active.
+     * @param $id
+     * @param PdoDatabase $database
+     * @return
+     */
     public static function getActiveId($id, PdoDatabase $database = null)
     {
         if($database == null)
@@ -61,6 +103,13 @@ class Ban extends DataObject
 
     }
     
+    /**
+     * Get all active bans for a target and type.
+     * @param $target
+     * @param $type
+     * @param PdoDatabase $database
+     * @return
+     */
     public static function getBanByTarget($target, $type, PdoDatabase $database = null)
     {
         if($database == null)
