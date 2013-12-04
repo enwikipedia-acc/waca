@@ -462,29 +462,28 @@ function getdevs() {
 }
 
 function defaultpage() {
-	global $tsSQLlink, $toolserver_database, $skin, $tsurl, $availableRequestStates, $defaultRequestStateKey;
-	@mysql_select_db( $toolserver_database, $tsSQLlink) or sqlerror(mysql_error,"Could not select db");
-	$html = '<h1>Create an account!</h1>';
-
+	global $availableRequestStates, $defaultRequestStateKey;
+    
+    $requestSectionData = array();
 	// list requests in each section
-	foreach($availableRequestStates as $k => $v) {
-		$html .= "<h2>".$v['header']."</h2>";
-		$html .= listrequests($k, TRUE, FALSE);
-	}	
+	foreach($availableRequestStates as $k => $v) 
+    {
+        $requestSectionData[$v['header']] = listrequests($k, TRUE, FALSE);
+    }
+    
+    global $smarty;
 	
-	$html .= "<h2>Last 5 Closed requests</h2><span id=\"closed\"></span>\n";
-	$query = "SELECT pend_id, pend_name, pend_checksum FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	$html .= "<ol>\n";
-	$currentrow = 0;
-	while ( list( $pend_id, $pend_name, $pend_checksum ) = mysql_fetch_row( $result ) ) {
-		$out = '<li>';
-		$out .= "<a class=\"btn btn-small btn-info\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a><a class=\"btn btn-warning btn-small\" href=\"$tsurl/acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=$defaultRequestStateKey\">Reset</a> <a href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></li>";
-		$html .= $out;
-	}
-	$html .= "</ol>\n";
+    $query = "SELECT pend_id, pend_name, pend_checksum, log_time FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
+    $database = gGetDb();
+    $statement = $database->prepare($query);
+    $statement->execute();
+    
+    $last5result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    
+    $smarty->assign("lastFive", $last5result);
+    $smarty->assign("requestSectionData", $requestSectionData);
+    $html = $smarty->fetch("mainpage/mainpage.tpl");
+    
 	return $html;
 }
 
