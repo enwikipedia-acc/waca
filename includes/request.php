@@ -93,26 +93,21 @@ class accRequest {
 	 */
 	public function checkBan($type,$target) {
 		// Get requered objects from index file.
-		global $messages, $tsSQL, $skin;
+		global $messages;
 		
-		// Formulates and executes the SQL query to check for the ban.
-		$query = "SELECT * FROM acc_ban WHERE ban_type = '".$tsSQL->escape($type)."' AND ban_target = '".$tsSQL->escape($target)."' AND (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1";
-		$result = $tsSQL->query($query);
-		
-		// Fetch the result row as an array.
-		$row = mysql_fetch_assoc($result);
-		
-		// When there is no ban_id it means there is no ban, so the checks are skipped.
-		if ($row['ban_id'] != "") {	
+        $ban = Ban::getBanByTarget($target, $type);
+        
+		if ($ban != false) 
+        {	
 				// User is still banned.
 				// Gets message to display to the user.
 				$message = $messages->getMessage(19);
 				
 				// Displays the appropiate message to the user and the retrieved reason.
-				echo "$message<strong>" . $row['ban_reason'] . "</strong><br /></div>\n";
+				echo "$message<strong>" . htmlentities($ban->getReason()) . "</strong><br /></div>\n";
 				
 				// Display the footer of the interface.
-				$skin->displayPfooter();
+				BootstrapSkin::displayPublicFooter();
 			
 				// Terminates the current script, as the user is still banned.
 				// This is done because the requesting process should be stopped. 

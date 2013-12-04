@@ -61,6 +61,23 @@ class Ban extends DataObject
 
     }
     
+    public static function getBanByTarget($target, $type, PdoDatabase $database = null)
+    {
+        if($database == null)
+        {
+            $database = gGetDb();   
+        }
+        
+        $query = "SELECT * FROM ban WHERE type = :type AND target = :target AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;";
+        $statement = $database->prepare($query);
+        $statement->bindParam(":target", $target);
+        $statement->bindParam(":type", $type);
+        
+        $statement->execute();
+        
+        return $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
+    }
+    
     public function save()
     {
         if($this->isNew)
