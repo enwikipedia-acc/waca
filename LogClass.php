@@ -313,12 +313,8 @@ class LogPage
 				$logList .="<li>$rlu banned ". $row2['ban_target'] ." $until at $rlt ($rlc)</li>";
 			}
 			if ($rla == "Unbanned") {
-				$query2 = 'SELECT ban_target FROM `acc_ban` WHERE `ban_id` = '.$rlp.'; '; 
-				$result2 = mysql_query($query2);
-				if (!$result2)
-					Die("Query failed: $query2 ERROR: " . mysql_error());
-				$row2 = mysql_fetch_assoc($result2);
-				$logList .="<li>$rlu unbanned ban ID $rlp (". $row2['ban_target'] .") at $rlt ($rlc)</li>";
+                $ban = Ban::getById($rlp);
+				$logList .="<li>$rlu unbanned ban ID $rlp (". $ban->getTarget() .") at $rlt ($rlc)</li>";
 			}
 			if($rla == "Reserved") {
 				$logList .= "<li>$rlu reserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
@@ -474,12 +470,8 @@ class LogPage
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"banned ". $row2['ban_target'] ." $until", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "Unbanned") {
-				$query2 = 'SELECT ban_target FROM `acc_ban` WHERE `ban_id` = '.$rlp.'; '; 
-				$result2 = mysql_query($query2, $tsSQLlink);
-				if (!$result2)
-					Die("Query failed: $query2 ERROR: " . mysql_error());
-				$row2 = mysql_fetch_assoc($result2);
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"unbanned (". $row2['ban_target'] .")", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+                $ban = Ban::getById($rlp);
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"unbanned (". $ban->getTarget() .")", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if($rla == "Reserved") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"reserved", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
