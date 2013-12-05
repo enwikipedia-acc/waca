@@ -13,4 +13,6 @@
 ###  1 DB slot for sql
 ###  50M virtual memory (est)
 ###  10 user slots (does a locking DB operation)
-/usr/bin/php /home/project/a/c/c/acc/public_html/RecreateTitleBlacklist.php
+
+
+# do nothing.
