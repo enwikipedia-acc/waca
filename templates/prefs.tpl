@@ -7,14 +7,14 @@
   <div class="control-group">
     <label class="control-label" for="inputSig">Your signature (wikicode)</label>
     <div class="controls">
-      <input class="input-xxlarge" type="text" id="inputSig" name="sig" value="{$currentUser->getWelcomeSig()|escape}">
+      <input class="input-xxlarge" type="text" id="inputSig" name="sig" value="{$currentUser->getWelcomeSig()|escape}" />
         <span class="help-block">This would be the same as ~~~ on-wiki. No date, please.</span>
       </div>
   </div>
 	<div class="control-group">
 		<label class="control-label" for="inputEmail">Your Email address</label>
 		<div class="controls">
-			<input class="input-xlarge" type="email" id="inputEmail" name="email" value="{$currentUser->getEmail()|escape}">
+			<input class="input-xlarge" type="email" id="inputEmail" name="email" value="{$currentUser->getEmail()|escape}" />
 		</div>
 	</div>
 	<div class="control-group">
@@ -32,8 +32,9 @@
 	<div class="control-group">
 		<div class="controls">
 			<label class="checkbox">
-				<input type="checkbox" id="inputSecureenable" name="secureenable" checked disabled> Enable use of the secure server
+				<input type="checkbox" id="inputSecureenable" name="secureenable" checked disabled /> Enable use of the secure server
 			</label>
+      <span class="help-block muted">This setting is deprecated and will be removed at a later date.</span>
 		</div>
 	</div>
 	<div class="control-group">

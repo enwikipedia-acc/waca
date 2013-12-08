@@ -193,14 +193,7 @@ elseif ($action == "sreg") {
 	$email = mysql_real_escape_string($_REQUEST['email']);
 	$sig = mysql_real_escape_string($_REQUEST['sig']);
 	$conf_revid=mysql_real_escape_string($_REQUEST['conf_revid']);
-	if(isset($_REQUEST['secureenable']))
-	{
-		$secureenable = mysql_real_escape_string($_REQUEST['secureenable']);
-	}
-	else
-	{
-		$secureenable = false;
-	}
+    
 	if(isset($_REQUEST['welcomeenable']))
 	{
 		$welcomeenable = mysql_real_escape_string($_REQUEST['welcomeenable']);	
@@ -283,13 +276,8 @@ elseif ($action == "sreg") {
 		die();
 	}
 	if (!isset($fail) || $fail != 1) {
-		if ($secureenable == "1") {
-			$secure= 1;
-		} else {
-			$secure = 0;
-		}
 		$user_pass = authutils::encryptPassword($_REQUEST['pass']); // again, using unfiltered as data processing is done here.
-		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_secure,user_confirmationdiff) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$secure','$conf_revid');";
+		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_secure,user_confirmationdiff) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', 1,'$conf_revid');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
@@ -1137,7 +1125,7 @@ elseif ($action == "prefs") {
         $user = User::getCurrent();
         $user->setWelcomeSig($_POST['sig']);
         $user->setEmailSig($_POST['emailsig']);
-        $user->setSecure(isset( $_POST['secureenable'] ) ? 1 : 0);
+        $user->setSecure(1); // issue #65
         $user->setAbortPref(isset( $_POST['abortpref'] ) ? 1 : 0);
         
 		if( isset( $_POST['email'] ) ) {
