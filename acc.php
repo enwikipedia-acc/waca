@@ -1133,39 +1133,35 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 }
 elseif ($action == "prefs") {
 	if (isset ($_POST['sig'])) {
-		// HTML escaping is now done in Smarty, only need to escape SQL here.
-		$sig = $tsSQL->escape($_POST['sig']);
-		$sid = $tsSQL->escape($_SESSION['user']);
-		$emailsig = $tsSQL->escape($_POST['emailsig']);
-		if( isset( $_POST['secureenable'] ) ) {
-			$secureon = 1;
-		} else {
-			$secureon = 0;
-		}
-		if( isset( $_POST['abortpref'] ) ) {
-			$abortprefOld = 1;
-		} else {
-			$abortprefOld= 0;
-		}
+        
+        $user = User::getCurrent();
+        $user->setWelcomeSig($_POST['sig']);
+        $user->setEmailSig($_POST['emailsig']);
+        $user->setSecure(isset( $_POST['secureenable'] ) ? 1 : 0);
+        $user->setAbortPref(isset( $_POST['abortpref'] ) ? 1 : 0);
+        
 		if( isset( $_POST['email'] ) ) {
-			$mailisvalid = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.(ac|ad|ae|aero|af|ag|ai|al|am|an|ao|aq|ar|arpa|as|asia|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|biz|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cat|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|com|coop|cr|cu|cv|cx|cy|cz|de|dj|dk|dm|do|dz|ec|edu|ee|eg|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gov|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|info|int|io|iq|ir|is|it|je|jm|jo|jobs|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mil|mk|ml|mm|mn|mo|mobi|mp|mq|mr|ms|mt|mu|museum|mv|mw|mx|my|mz|na|name|nc|ne|net|nf|ng|ni|nl|no|np|nr|nu|nz|om|org|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|pro|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sy|sz|tc|td|tel|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|travel|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)$/i', $_POST['email']);
+			$mailisvalid = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+$/i', trim($_POST['email']));
 			if ($mailisvalid == 0) {
-				$skin->displayRequestMsg("ERROR: Invalid E-mail address.<br />");
+                BootstrapSkin::displayAlertBox("Invalid email address", "alert-error", "Error!");
 			}
 			else {
-				$newemail = $tsSQL->escape($_POST['email']);
+                $user->setEmail(trim($_POST['email']));
 			}
 		}
-		if (isset($newemail)) {
-		$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld', user_email = '$newemail', user_emailsig = '$emailsig' WHERE user_name = '$sid'";
-		}
-		else {
-			$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld', user_emailsig = '$emailsig' WHERE user_name = '$sid'";
-		}
-		$result = $tsSQL->query($query);
-		if (!$result)
-			$tsSQL->showError($tsSQL->getError());
-		$skin->displayRequestMsg("Preferences updated!<br />\n");
+
+        try 
+        {
+            $user->save();
+        }
+        catch(PDOException $ex)
+        {
+            BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Error saving Preferences", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
+        }
+        
+        BootstrapSkin::displayAlertBox("Preferences updated!", "alert-info");
 	}
     
 	$smarty->display("prefs.tpl");
