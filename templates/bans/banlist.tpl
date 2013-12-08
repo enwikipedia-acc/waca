@@ -32,7 +32,7 @@
                 <i class="icon-white icon-search"></i>
                 <span class="visible-desktop">&nbsp;Search</span>
               </a>
-            {elseif $ban->getType() == "Email"}
+            {elseif $ban->getType() == "EMail"}
               <a class="btn btn-small btn-info" href="{$tsurl}/search.php?type=email&amp;term={$ban->getTarget()|escape:'url'}">
                 <i class="icon-white icon-search"></i>
                 <span class="visible-desktop">&nbsp;Search</span>
