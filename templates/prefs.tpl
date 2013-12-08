@@ -7,39 +7,39 @@
   <div class="control-group">
     <label class="control-label" for="inputSig">Your signature (wikicode)</label>
     <div class="controls">
-      <input class="input-xxlarge" type="text" id="inputSig" name="sig" value="{$sig|escape}">
+      <input class="input-xxlarge" type="text" id="inputSig" name="sig" value="{$currentUser->getWelcomeSig()|escape}">
         <span class="help-block">This would be the same as ~~~ on-wiki. No date, please.</span>
       </div>
   </div>
 	<div class="control-group">
 		<label class="control-label" for="inputEmail">Your Email address</label>
 		<div class="controls">
-			<input class="input-xlarge" type="email" id="inputEmail" name="email" value="{$email|escape}">
+			<input class="input-xlarge" type="email" id="inputEmail" name="email" value="{$currentUser->getEmail()|escape}">
 		</div>
 	</div>
 	<div class="control-group">
 		<label class="control-label">Your on-wiki username</label>
 		<div class="controls">
-			<span class="input-xlarge uneditable-input">{$onwikiname|escape}</span>
+			<span class="input-xlarge uneditable-input">{$currentUser->getOnWikiName()|escape}</span>
 		</div>
 	</div>
 	<div class="control-group">
 		<label class="control-label" for="inputEmailsig">Email signature</label>
 		<div class="controls">
-			<textarea class="field span11" id="inputEmailsig" rows="4" name="emailsig">{$emailsig|escape}</textarea><span class="help-block">This will show up at the end of any Email you send through the interface.</span>
+			<textarea class="field span11" id="inputEmailsig" rows="4" name="emailsig">{$currentUser->getEmailSig()|escape}</textarea><span class="help-block">This will show up at the end of any Email you send through the interface.</span>
 		</div>
 	</div>
 	<div class="control-group">
 		<div class="controls">
 			<label class="checkbox">
-				<input type="checkbox" id="inputSecureenable" name="secureenable"{if $securepref == 1} checked{/if}> Enable use of the secure server
+				<input type="checkbox" id="inputSecureenable" name="secureenable"{if $currentUser->getSecure()} checked{/if}> Enable use of the secure server
 			</label>
 		</div>
 	</div>
 	<div class="control-group">
 		<div class="controls">
 			<label class="checkbox">
-				<input type="checkbox" id="inputAbortpref" name="abortpref"{if $abortpref == 1} checked{/if}> Don't ask to double check before closing requests (requires Javascript)
+				<input type="checkbox" id="inputAbortpref" name="abortpref"{if $currentUser->getAbortPref()} checked{/if}> Don't ask to double check before closing requests (requires Javascript)
 			</label>
 		</div>
 	</div>

@@ -1167,26 +1167,7 @@ elseif ($action == "prefs") {
 			$tsSQL->showError($tsSQL->getError());
 		$skin->displayRequestMsg("Preferences updated!<br />\n");
 	}
-	$sid = $tsSQL->escape( $_SESSION['user'] );
-	$query = "SELECT * FROM acc_user WHERE user_name = '$sid'";
-	$result = $tsSQL->query($query);
-	if (!$result)
-		$tsSQL->showError($tsSQL->getError());
-	$row = mysql_fetch_assoc($result);
-	
-	$smarty->assign("securepref", $row['user_secure']);
-	$sig = $row['user_welcome_sig'];
-	$smarty->assign("sig", $sig);
-	if(array_key_exists('user_abortpref',$row)){
-		$smarty->assign("abortpref", $row['user_abortpref']);
-	}
-	$useremail = $row['user_email'];
-	$smarty->assign("email", $useremail);
-	$onwikiname = $row['user_onwikiname'];
-	$smarty->assign("onwikiname", $onwikiname);
-	$emailsig = $row['user_emailsig'];
-	$smarty->assign("emailsig", $emailsig);
-	
+    
 	$smarty->display("prefs.tpl");
 	BootstrapSkin::displayInternalFooter();
 	die();
