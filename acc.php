@@ -1131,7 +1131,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		echo "Defer target not valid.<br />\n";
 	}
 }
-elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is deprecated, but to avoid conflicts, include it still.
+elseif ($action == "prefs") {
 	if (isset ($_POST['sig'])) {
 		// HTML escaping is now done in Smarty, only need to escape SQL here.
 		$sig = $tsSQL->escape($_POST['sig']);
