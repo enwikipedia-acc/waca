@@ -1,14 +1,16 @@
 <div class="page-header">
 	<h1>User preferences<small> Change your preferences.</small></h1>
 </div>
-<h2>General settings</h2>
+<fieldset>
+  <legend>General settings</legend>
 <form class="form-horizontal" method="post">
-	<div class="control-group">
-		<label class="control-label" for="inputSig">Your signature (wikicode)</label>
-		<div class="controls">
-			<input class="input-xlarge" type="text" id="inputSig" name="sig" value="{$sig|escape}"><span class="help-block">This would be the same as ~~~ on-wiki. No date, please.</span>
-		</div>
-	</div>
+  <div class="control-group">
+    <label class="control-label" for="inputSig">Your signature (wikicode)</label>
+    <div class="controls">
+      <input class="input-xxlarge" type="text" id="inputSig" name="sig" value="{$sig|escape}">
+        <span class="help-block">This would be the same as ~~~ on-wiki. No date, please.</span>
+      </div>
+  </div>
 	<div class="control-group">
 		<label class="control-label" for="inputEmail">Your Email address</label>
 		<div class="controls">
@@ -43,11 +45,13 @@
 	</div>
 	<div class="control-group">
 		<div class="controls">
-			<button type="submit" class="btn">Save preferences</button>
+			<button type="submit" class="btn btn-primary">Save preferences</button>
 		</div>
 	</div>
 </form>
-<h2>Change your password</h2>
+</fieldset>
+<fieldset>
+<legend>Change your password</legend>
 <form class="form-horizontal" method="post" action="{$tsurl}/acc.php?action=changepassword">
 	<div class="control-group">
 		<label class="control-label" for="inputOldpassword">Your old password</label>
@@ -69,7 +73,8 @@
 	</div>
 	<div class="control-group">
 		<div class="controls">
-			<button type="submit" class="btn">Update password</button>
+			<button type="submit" class="btn btn-primary">Update password</button>
 		</div>
 	</div>
 </form>
+</fieldset>
