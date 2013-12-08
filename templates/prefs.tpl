@@ -32,7 +32,7 @@
 	<div class="control-group">
 		<div class="controls">
 			<label class="checkbox">
-				<input type="checkbox" id="inputSecureenable" name="secureenable"{if $currentUser->getSecure()} checked{/if}> Enable use of the secure server
+				<input type="checkbox" id="inputSecureenable" name="secureenable" checked disabled> Enable use of the secure server
 			</label>
 		</div>
 	</div>

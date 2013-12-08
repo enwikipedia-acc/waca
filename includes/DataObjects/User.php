@@ -13,7 +13,6 @@ class User extends DataObject
     private $welcome_sig;
     private $lastactive;
     private $forcelogout;
-    private $secure;
     private $checkuser;
     private $identified;
     private $welcome_template;
@@ -97,7 +96,7 @@ class User extends DataObject
 			$statement->bindParam(":welcome_sig", $this->welcome_sig);
 			$statement->bindParam(":lastactive", $this->lastactive);
 			$statement->bindParam(":forcelogout", $this->forcelogout);
-			$statement->bindParam(":secure", $this->secure);
+			$statement->bindParam(":secure", 1);
 			$statement->bindParam(":checkuser", $this->checkuser);
 			$statement->bindParam(":identified", $this->identified);
 			$statement->bindParam(":welcome_template", $this->welcome_template);
@@ -119,7 +118,7 @@ class User extends DataObject
 			$statement = $this->dbObject->prepare("UPDATE `user` SET " . 
                 "username = :username, email = :email, password = :password, status = :status, " .
                 "onwikiname = :onwikiname, welcome_sig = :welcome_sig, lastactive = :lastactive, " .
-                "forcelogout = :forcelogout, secure = :secure, checkuser = :checkuser, identified = :identified, " .
+                "forcelogout = :forcelogout, checkuser = :checkuser, identified = :identified, " .
                 "welcome_template = :welcome_template, abortpref = :abortpref, confirmationdiff = :confirmationdiff, " .
                 "emailsig = :emailsig " .
                 "WHERE id = :id LIMIT 1;");
@@ -132,7 +131,6 @@ class User extends DataObject
 			$statement->bindParam(":welcome_sig", $this->welcome_sig);
 			$statement->bindParam(":lastactive", $this->lastactive);
 			$statement->bindParam(":forcelogout", $this->forcelogout);
-			$statement->bindParam(":secure", $this->secure);
 			$statement->bindParam(":checkuser", $this->checkuser);
 			$statement->bindParam(":identified", $this->identified);
 			$statement->bindParam(":welcome_template", $this->welcome_template);
@@ -223,11 +221,7 @@ class User extends DataObject
     }
     
     public function getSecure(){
-        return $this->secure;
-    }
-
-    public function setSecure($secure){
-        $this->secure = $secure;
+        return true;
     }
 
     public function getCheckuser(){
