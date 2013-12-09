@@ -40,7 +40,15 @@ class Ban extends DataObject
         
         $statement->execute();
         
-        return $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
+        $result = array();
+        foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v)
+        {
+            $v->isNew = false;
+            $v->setDatabase($database);
+            $result[] = $v;
+        }
+        
+        return $result;
     }
     
     /**
@@ -70,7 +78,15 @@ class Ban extends DataObject
         
         $statement->execute();
         
-        return $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
+        $result = array();
+        foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v)
+        {
+            $v->isNew = false;
+            $v->setDatabase($database);
+            $result[] = $v;
+        }
+        
+        return $result;
     }
     
     /**
@@ -99,8 +115,7 @@ class Ban extends DataObject
             $resultObject->setDatabase($database); 
 		}
 
-		return $resultObject;
-
+        return $resultObject;
     }
     
     /**
@@ -124,11 +139,19 @@ class Ban extends DataObject
         
         $statement->execute();
         
-        return $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
+        $result = array();
+        foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v)
+        {
+            $v->isNew = false;
+            $v->setDatabase($database);
+            $result[] = $v;
+        }
+        
+        return $result;
     }
     
     public function save()
-    {
+    {        
         if($this->isNew)
 		{ // insert
 			$statement = $this->dbObject->prepare("INSERT INTO `ban` (type, target, user, reason, date, duration, active) VALUES (:type, :target, :user, :reason, CURRENT_TIMESTAMP(), :duration, :active);");
@@ -150,10 +173,11 @@ class Ban extends DataObject
 		}
 		else
 		{ // update
-			$statement = $this->dbObject->prepare("UPDATE `ban` SET duration = :duration, active = :active WHERE id = :id LIMIT 1;");
+			$statement = $this->dbObject->prepare("UPDATE `ban` SET duration = :duration, active = :active, user = :user WHERE id = :id LIMIT 1;");
 			$statement->bindParam(":id", $this->id);
 			$statement->bindParam(":duration", $this->duration);
 			$statement->bindParam(":active", $this->active);
+			$statement->bindParam(":user", $this->user);
             
 			if(!$statement->execute())
 			{
@@ -184,12 +208,37 @@ class Ban extends DataObject
     
     public function getUser()
     {
-        return $this->user;
+        $user = User::getById($this->user, gGetDb());
+        if($user == false)   
+        {
+            $user = User::getByUsername($this->user, gGetDb());
+            if($user != false)
+            {
+                $this->user = $user->getId();
+                $this->save();
+            }
+        }
+        
+        return $user;
     }
     
     public function setUser($user)
     {
-        $this->user = $user;
+        if(User::getById($user, gGetDb()) == false)
+        {
+            $u = User::getByUsername($user, gGetDb());
+            if($u == false)
+            {
+                throw new Exception("Unknown user trying to create ban!");   
+            }
+            
+            $this->user = $u->getId();
+        }
+        else
+        {
+            $this->user = $user;
+        }
+        
     }
     
     public function getReason()
