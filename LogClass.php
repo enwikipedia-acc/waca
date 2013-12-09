@@ -313,7 +313,7 @@ class LogPage
 				$logList .="<li>$rlu banned ". $row2['ban_target'] ." $until at $rlt ($rlc)</li>";
 			}
 			if ($rla == "Unbanned") {
-                $ban = Ban::getById($rlp);
+                $ban = Ban::getById($rlp, gGetDb());
 				$logList .="<li>$rlu unbanned ban ID $rlp (". $ban->getTarget() .") at $rlt ($rlc)</li>";
 			}
 			if($rla == "Reserved") {
@@ -470,7 +470,7 @@ class LogPage
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"banned ". $row2['ban_target'] ." $until", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "Unbanned") {
-                $ban = Ban::getById($rlp);
+                $ban = Ban::getById($rlp, gGetDb());
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"unbanned (". $ban->getTarget() .")", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if($rla == "Reserved") {
