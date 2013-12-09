@@ -209,15 +209,6 @@ class Ban extends DataObject
     public function getUser()
     {
         $user = User::getById($this->user, gGetDb());
-        if($user == false)   
-        {
-            $user = User::getByUsername($this->user, gGetDb());
-            if($user != false)
-            {
-                $this->user = $user->getId();
-                $this->save();
-            }
-        }
         
         return $user;
     }
@@ -238,7 +229,6 @@ class Ban extends DataObject
         {
             $this->user = $user;
         }
-        
     }
     
     public function getReason()
