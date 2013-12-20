@@ -16,7 +16,7 @@ class Request extends DataObject
     private $emailconfirm;
     private $reserved;
     private $useragent;
-    private $proxyip;
+    private $forwardedip;
     
     public function save()
     {
@@ -24,10 +24,10 @@ class Request extends DataObject
 		{ // insert
 			$statement = $this->dbObject->prepare(
                 "INSERT INTO `request` (" . 
-                "email, ip, name, comment, status, date, checksum, emailsent, emailconfirm, reserved, useragent, proxyip" . 
+                "email, ip, name, comment, status, date, checksum, emailsent, emailconfirm, reserved, useragent, forwardedip" . 
                 ") VALUES (" . 
                 ":email, :ip, :name, :comment, :status, CURRENT_TIMESTAMP(), :checksum, :emailsent," . 
-                ":emailconfirm, :reserved, :useragent, :proxyip" . 
+                ":emailconfirm, :reserved, :useragent, :forwardedip" . 
                 ");");
 			$statement->bindParam(":email", $this->email);
 			$statement->bindParam(":ip", $this->ip);
@@ -39,7 +39,7 @@ class Request extends DataObject
 			$statement->bindParam(":emailconfirm", $this->emailconfirm);
 			$statement->bindParam(":reserved", $this->reserved);
 			$statement->bindParam(":useragent", $this->useragent);
-			$statement->bindParam(":proxyip", $this->proxyip);
+			$statement->bindParam(":forwardedip", $this->forwardedip);
 			if($statement->execute())
 			{
 				$this->isNew = false;
@@ -180,13 +180,13 @@ class Request extends DataObject
         $this->useragent = $useragent;
     }
 
-    public function getProxyIp()
+    public function getForwardedIp()
     {
-        return $this->proxyip;
+        return $this->forwardedip;
     }
 
-    public function setProxyIp($proxyip)
+    public function setForwardedIp($forwardedip)
     {
-        $this->proxyip = $proxyip;
+        $this->forwardedip = $forwardedip;
     }
 }
