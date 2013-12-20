@@ -14,13 +14,13 @@
 
 global $session;
 
+// load the configuration
+require_once 'config.inc.php';
 
 // Initialize the session data.
 session_start();
 
-
 // Get all the classes.
-require_once 'config.inc.php';
 require_once 'functions.php';
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';

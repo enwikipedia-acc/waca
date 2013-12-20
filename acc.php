@@ -15,11 +15,13 @@
 // stop all output until we want it
 ob_start();
 
+// load the configuration
+require_once 'config.inc.php';
+
 // Initialize the session data.
 session_start();
 
 // Get all the classes.
-require_once 'config.inc.php';
 require_once 'devlist.php';
 require_once 'LogClass.php';
 require_once 'functions.php';
