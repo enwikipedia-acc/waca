@@ -24,9 +24,7 @@ select template_id as "Template ID", template_usercode as "Template Code", count
 QUERY;
 		global $tsurl;
 		$qb = new QueryBrowser();
-		$qb->rowFetchMode = MYSQL_NUM;
 		$r = $qb->executeQueryToTable($query); 
-		echo mysql_error();
 
 		return $r;
 	}
