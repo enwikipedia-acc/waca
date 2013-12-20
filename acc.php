@@ -1127,7 +1127,6 @@ elseif ($action == "prefs") {
         $user = User::getCurrent();
         $user->setWelcomeSig($_POST['sig']);
         $user->setEmailSig($_POST['emailsig']);
-        $user->setSecure(1); // issue #65
         $user->setAbortPref(isset( $_POST['abortpref'] ) ? 1 : 0);
         
 		if( isset( $_POST['email'] ) ) {
