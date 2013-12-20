@@ -31,10 +31,7 @@ class offlineMessage {
 	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" dir="ltr">
 		<head>
 			<meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
-			<title>Account Creation Assistance for the English Wikipedia - http://en.wikipedia.org/wiki/Wikipedia:Request an account</title>
-			<style type="text/css" media="screen">
-				@import "style.css";
-			</style>
+			<title>Account Creation Assistance for the English Wikipedia</title>
 		</head>
 
 		<body id="body">
@@ -44,7 +41,7 @@ class offlineMessage {
 				</div>
 			</div>
 			<div id="navigation">
-				<a href="http://en.wikipedia.org">English Wikipedia</a> 
+				<a href="https://en.wikipedia.org">English Wikipedia</a> 
 			</div>
 
 			<div id="content">
@@ -55,9 +52,7 @@ HTML;
 		echo <<<HTML
 			</div>
 			<div id="footer">
-				Account Creation Assistance Manager by <a href="http://stable.toolserver.org/acc/team.php">The ACC dev team</a>. <a href="https://jira.toolserver.org/browse/ACC">Bugs?</a><br />
-
-				Designed by <a href="http://charlie.mudoo.net/">Charlie Melbye</a>
+				Account Creation Assistance Manager
 			</div>
 		</body>
 	</html>

@@ -75,7 +75,7 @@ class accRequest {
 			$message = $messages->getMessage(19);
 			
 			// Displays the appropiate message to the user.
-			echo "$message<strong><a href=\"http://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse.</strong><br /></div>\n";
+			echo "$message<strong><a href=\"https://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse.</strong><br /></div>\n";
 			
 			// Display the footer of the interface.
 			$skin->displayPfooter();
@@ -186,7 +186,7 @@ class accRequest {
 		}
 		
 		// Formulates the email message that should be send to the user.
-		$mailtxt = "Hello! You, or a user from " . trim($ip) . " has requested an account on the English Wikipedia ( http://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nOnce your click this link, your request will be reviewed, and you will shortly receive a separate email with more information.  Your password\nis not yet available.\n\nIf you did not make this request, please disregard this message.\n\n";
+		$mailtxt = "Hello! You, or a user from " . trim($ip) . " has requested an account on the English Wikipedia ( https://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nOnce your click this link, your request will be reviewed, and you will shortly receive a separate email with more information.  Your password\nis not yet available.\n\nIf you did not make this request, please disregard this message.\n\n";
 		
 		// Creates the needed headers.
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
@@ -464,7 +464,7 @@ class accRequest {
 	
 	private function isOnWhitelist($user) {
 		// Reads the entire Whitelist file into a string.
-		$apir = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=Wikipedia:Request_an_account/Whitelist&rvprop=content&format=php");
+		$apir = file_get_contents("https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=Wikipedia:Request_an_account/Whitelist&rvprop=content&format=php");
 		
 		// Takes the variable and converts it back into a PHP value.
 		$apir = unserialize($apir);
@@ -493,14 +493,14 @@ class accRequest {
 	 */
 	public function finalChecks($user,$email) {
 		// Get objects from the index file.
-		global $messages, $tsSQL, $skin, $caSQL, $dontUseWikiDb;
+		global $messages, $tsSQL, $skin, $caSQL, $dontUseWikiDb, $wikiurl;
 		
 		// Used to check if a request complies to the automated tests.
 		// The value is reseted, as the user has another chance to complete the form.
 		$fail = 0;
 		
 		// Checks whether the username is already in use on Wikipedia.
-		$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . urlencode($_POST['name']) . "&format=php");
+		$userexist = file_get_contents("https://" . $wikiurl . "/w/api.php?action=query&list=users&ususers=" . urlencode($_POST['name']) . "&format=php");
 		$ue = unserialize($userexist);
 		if (!isset ($ue['query']['users']['0']['missing'])&&isset ($ue['query']['users']['0']['userid'])) {
 			$message = $messages->getMessage(10);
@@ -511,7 +511,7 @@ class accRequest {
 		// Checks whether the username is already part of a SUL account.
 
 		$reqname = str_replace("_", " ", $_POST['name']);
-		$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&meta=globaluserinfo&guiuser=" . urlencode($reqname) . "&format=php");
+		$userexist = file_get_contents("https://" . $wikiurl . "/w/api.php?action=query&meta=globaluserinfo&guiuser=" . urlencode($reqname) . "&format=php");
 		$ue = unserialize($userexist);
 		if (isset ($ue['query']['globaluserinfo']['id'])) {
 			$message = $messages->getMessage(28);

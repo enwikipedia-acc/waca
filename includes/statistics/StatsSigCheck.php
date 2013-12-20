@@ -56,14 +56,16 @@ QUERY;
 }
 
 function statsSigCheckRowCallback($row, $currentreq)
-{
+{  
+    global $wikiurl;
+    
         $out = "<tr>";
 
         $botsig = welcomerbotRenderSig( $row["user_onwikiname"], $row["user_welcome_sig"] );
 
         $out .= "<td>" . $row["user_name"] . "</td><td>" . $row["user_onwikiname"] . "</td><td>" . htmlentities($row["user_welcome_sig"],ENT_COMPAT,'UTF-8') . "</td><td>" . htmlentities($botsig,ENT_COMPAT,'UTF-8') . "</td><td>";
 		
-        $apiresult = file_get_contents("http://en.wikipedia.org/w/api.php?action=parse&disablepp&pst&prop=text&format=php&text=" . urlencode(trim($botsig)));
+        $apiresult = file_get_contents("https://" . $wikiurl . "/w/api.php?action=parse&disablepp&pst&prop=text&format=php&text=" . urlencode(trim($botsig)));
         $renderedraw = unserialize($apiresult);
 
         $out .= $renderedraw["parse"]["text"]["*"];
