@@ -9,7 +9,7 @@
 		<h3 class="text-center">Account Creation Interface - Login</h3>
 		<form class="container-fluid" action="{$tsurl}/acc.php?action=login&amp;nocheck=1" method="post">
 			<div class="control-group row">
-				<input type="text" id="username" name="username" {if(!isset{$smarty.get.username})} placeholder="Username" {else} value="{$smarty.get.username}" {/if} class="offset2 span8" required>
+				<input type="text" id="username" name="username" {if(!isset{$smarty.get.username} && !empty{$smarty.get.username})} placeholder="Username" {else} value="{$smarty.get.username}" {/if} class="offset2 span8" required>
 			</div>
 			<div class="control-group row">
 				<input type="password" id="password" name="password" placeholder="Password" class="offset2 span8" required>
