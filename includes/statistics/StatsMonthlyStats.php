@@ -32,55 +32,38 @@ class StatsMonthlyStats extends StatisticsPage
 			require_once($filepath . 'graph/pChart/pChart.class');
 			require_once($filepath . 'graph/pChart/pData.class');
 			
-			$queries = array(
-				array(
+			$queries = array();
+				
+			$queries[] = array(
 					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed%' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
 					'series' => "All closed requests by month"
-				),
-				array(
+				);
+			$queries[] = array(
 					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed 0' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
 					'series' => "Dropped requests by month"
-				),
-				/*array(
-					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed 1' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
-					'series' => "Created"
-				),*/
-				array(
-					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed 2' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
-					'series' => "Similar requests by month"
-				),
-				array(
-					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed 3' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
-					'series' => "Taken requests by month"
-				),
-				array(
-					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed 4' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
-					'series' => "UVio requests by month"
-				),
-				array(
-					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed 5' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
-					'series' => "Technical requests by month"
-				),
-				array(
-					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed 26' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
-					'series' => "SUL Taken requests by month"
-				),
-				
-				// Disabled by stw 11/nov/2010 - somehow broken. Let's allow the new log entry to settle before we put this live. :)
-				// Re-enabled by stw 18/dec/2012 - I think that's enough settle time.
-				array(
-					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed 30' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
-					'series' => "Password Reset requests by month"
-				),
-				array(
+				);
+			
+			$query = "SELECT id, name FROM emailtemplate WHERE active = '1';";
+			$result = $tsSQL->query($query);
+			if (!$result)
+				sqlerror("Query failed: $query ERROR: " . mysql_error());
+			while ($row = mysql_fetch_assoc($result)) {
+				$id = $row['id'];
+				$name = $row['name'];
+				$queries[] = array(
+					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed $id' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
+					'series' => "$name requests by month"
+				);
+			}
+			
+			$queries[] = array(
 					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed custom-y' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
 					'series' => "Custom created requests by month"
-				),
-				array(
+				);
+			$queries[] = array(
 					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed custom-n' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
 					'series' => "Custom not created requests by month"
-				),
-			);
+				);
 
 			global $availableRequestStates;
 			foreach ($availableRequestStates as $state)
