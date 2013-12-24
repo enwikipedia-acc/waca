@@ -1954,7 +1954,7 @@ elseif ($action == "emailmgmt") {
 			die();
 		}
 		if(isset($_POST['submit'])) {
-			$emailTemplate = new EmailTemplate();
+			$emailTemplate = new EmailTemplate(gGetDb());
 			$name = $_POST['ename'];
 			$emailTemplate->setName($name);
 			$emailTemplate->setText($_POST['etext']);
@@ -1964,8 +1964,8 @@ elseif ($action == "emailmgmt") {
 			$siuser = sanitize($_SESSION['user']);
 			
 			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
-			$nameCheck = EmailTemplate::gGetName($_POST['ename'], gGetDb());
-			if ($nameCheck['id'] != "") {
+			$nameCheck = EmailTemplate::getByName($_POST['ename'], gGetDb());
+			if ($nameCheck) {
 				BootStrap::displayAlertBox("That Email template name is already being used. Please choose another.");
 				die();
 			}
@@ -1980,7 +1980,7 @@ elseif ($action == "emailmgmt") {
 		    header("Refresh:5;URL=$tsurl/acc.php?action=emailmgmt");
 			BootstrapSkin::displayAlertBox("Email template has been saved successfully. You will be returned to Email Management in 5 seconds.<br /><br />\n
 			Click <a href=\"".$tsurl."/acc.php?action=emailmgmt\">here</a> if you are not redirected.");
-			$accbotSend->send("Email $ename ($eid) created by $siuser");
+			$accbotSend->send("Email $name ($id) created by $siuser");
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
@@ -1997,7 +1997,7 @@ elseif ($action == "emailmgmt") {
 	if(isset($_GET['edit'])) {
 		$gid = sanitize($_GET['edit']);
 		if(isset($_POST['submit'])) {
-			$emailTemplate = new EmailTemplate();
+			$emailTemplate = EmailTemplate::getById($gid, gGetDb());
 			// Allow the user to see the edit form (with read only fields) but not POST anything.
 			if(!$session->hasright($_SESSION['user'], 'Admin')) {
 				BootstrapSkin::displayAlertBox("I'm sorry, but you must be an administrator to access this page.");
@@ -2011,8 +2011,8 @@ elseif ($action == "emailmgmt") {
 			$siuser = sanitize($_SESSION['user']);
 				
 			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
-			$nameCheck = EmailTemplate::gGetName($_POST['ename'], gGetDb());
-			if ($nameCheck['id'] != "" && $nameCheck['id'] != $gid) {
+			$nameCheck = EmailTemplate::getByName($_POST['ename'], gGetDb());
+			if ($nameCheck->getId() != "" && $nameCheck->getId() != $gid) {
 				BootstrapSkin::displayAlertBox("That Email template name is already being used. Please choose another.");
 				die();
 			}
@@ -2026,6 +2026,7 @@ elseif ($action == "emailmgmt") {
 			header("Refresh:5;URL=$tsurl/acc.php?action=emailmgmt");
 			BootstrapSkin::displayAlertBox("Email template has been saved successfully. You will be returned to Email Management in 5 seconds.<br /><br />\n
 			Click <a href=\"".$tsurl."/acc.php?action=emailmgmt\">here</a> if you are not redirected.");
+			$ename = $_POST['ename'];
 			$accbotSend->send("Email $ename ($gid) edited by $siuser");
 			BootstrapSkin::displayInternalFooter();
 			die();

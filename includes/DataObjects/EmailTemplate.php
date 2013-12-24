@@ -11,9 +11,18 @@ class EmailTemplate extends DataObject
     private $oncreated;
     private $active;
     
+    /* Hack to let me actually let me create a new object for now */
+    function __construct($database = NULL)
+    {
+    	if ($database) {
+    		$this->isNew = true;
+    		$this->setDatabase($database);
+    	}
+    }
+    
     public static function getByName($name, PdoDatabase $database)
     {
-    	$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE address = :name LIMIT 1;");
+    	$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE name = :name LIMIT 1;");
     	$statement->bindParam(":name", $name);
     
     	$statement->execute();
