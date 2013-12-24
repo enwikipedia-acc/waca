@@ -1,7 +1,7 @@
 ﻿<!-- tpl:zoom-parts/ip-section.tpl -->
 {if $proxyip != NULL}
   <div class="row-fluid">
-    <h4>IP Address data:</h4>
+    <h3>IP Address data:</h3>
     <p class="muted">
         This request came from {$ip}, stating it was forwarded for {$proxyip} via the X-Forwarded-For HTTP header. 
         The IP address which Wikipedia will see is the first "untrusted" IP address in the list below. 
@@ -9,7 +9,7 @@
         IPs past the first untrusted address are not trusted to be correct. 
         Please see the <a href="https://toolserver.org/~acc/other/xff.html">XFF demo</a> for more details.
     </p>
-    <h5>Forwarded IP addresses:</h5>    
+    <h4>Forwarded IP addresses:</h4>    
     <table class="table table-condensed table-striped">
       {foreach $proxies as $proxy}
         <tr>
@@ -67,7 +67,7 @@
   </div>
 {else}
   <div class="row-fluid">
-    <h4>IP Address links:</h4>
+    <h3>IP Address links:</h3>
     {include file="zoom-parts/ip-links.tpl" ipaddress="{$ip}"}
   </div>
 {/if}

@@ -16,6 +16,8 @@
 require_once 'config.inc.php';
 require_once 'AntiSpoof.php';
 require_once 'functions.php';
+
+require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
 require_once 'includes/offlineMessage.php';
 require_once 'includes/database.php';
@@ -84,11 +86,6 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$request->checkBan('EMail',$_POST['email']);
 	$request->blockedOnEn();
 	
-	// Check the blacklists.
-	$request->checkBlacklist($emailblacklist,$_POST['email'],$_POST['email'],'Email-Bl');
-	$request->checkBlacklist($nameblacklist,$_POST['name'],$_POST['email'],'Name-Bl');
-	$request->doDnsBlacklistCheck();
-
 	// Do automated checks on the username and email adress.
 	$request->finalChecks($user,$email);
 

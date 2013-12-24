@@ -133,10 +133,7 @@ abstract class StatisticsPage
 	{
 		// Get the needed objects.
 		global $skin;
-		
-		// resume SESSION
-		session_start();
-		
+				
 		// fetch and show page header
 		global $messages, $dontUseWikiDb, $session;
 		

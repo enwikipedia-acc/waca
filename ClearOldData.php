@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 require_once 'config.inc.php';
 require_once 'includes/PdoDatabase.php';
 
-$db = gGetDb( )
+$db = gGetDb( );
 
 if( $db->beginTransaction() ) {
 	$query = $db->prepare( "UPDATE acc_pend SET pend_ip = :ip, pend_proxyip = :proxy, pend_email = :mail, pend_useragent = :agent WHERE pend_date < DATE_SUB(curdate(), INTERVAL :intvl);" );

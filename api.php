@@ -62,14 +62,14 @@ function actionStatus()
 		$docStatus->setAttribute($value['api'], $sus['count']);
 	}
 
-	$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_ban");
+	$query = $database->prepare("SELECT COUNT(*) AS count FROM ban");
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 	$docStatus->setAttribute("bans", $sus['count']);
 
 	$level = "Admin";
-	$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_user WHERE user_level = :ulevel;");
-	$query->bindParam(":ulevel",$level);
+	$query = $database->prepare("SELECT COUNT(*) AS count FROM user WHERE status = :ulevel;");
+	$query->bindParam(":ulevel", $level);
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 	$docStatus->setAttribute("useradmin", $sus['count']);
@@ -104,7 +104,7 @@ function actionStats()
 	$doc_api->appendChild($docUser);
 	// verify is a user
 	
-	$isUserQuery = $database->prepare("SELECT COUNT(*) AS count FROM acc_user WHERE user_name = :username;");
+	$isUserQuery = $database->prepare("SELECT COUNT(*) AS count FROM user WHERE username = :username;");
 	$isUserQuery->bindParam(":username", $username);
 	$isUserQuery->execute();
 	
@@ -113,7 +113,7 @@ function actionStats()
 	$isUser = ( ( $isUser['count'] == 0 ) ? false : true );
 
 	if( $isUser ) {
-		$userQuery = $database->prepare("SELECT user_name, user_level, user_lastactive, user_welcome_templateid, user_onwikiname FROM acc_user WHERE user_name = :username;");
+		$userQuery = $database->prepare("SELECT  username, status, lastactive, welcome_template, onwikiname FROM user WHERE username = :username;");
 		$userQuery->bindParam(":username", $username);
 		$userQuery->execute();
 		
@@ -145,7 +145,7 @@ function actionCount( ) {
 	$docUser->setAttribute("name", $username);
 	// verify is a user
 	
-	$isUserQuery = $database->prepare("SELECT COUNT(*) AS count FROM acc_user WHERE user_name = :username;");
+	$isUserQuery = $database->prepare("SELECT COUNT(*) AS count FROM user WHERE username = :username;");
 	$isUserQuery->bindParam(":username", $username);
 	$isUserQuery->execute();
 	
@@ -162,7 +162,7 @@ function actionCount( ) {
 		$count = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 		$docUser->setAttribute("created",$count['count']);
 
-		$query = $database->prepare("SELECT * FROM acc_user WHERE user_name = :username");
+		$query = $database->prepare("SELECT * FROM user WHERE username = :username");
 		$query->bindParam(":username", $username);
 		$query->execute();
 		
@@ -170,8 +170,8 @@ function actionCount( ) {
 
 			
 		$adminInfo = '';
-		$docUser->setAttribute("level",$user['user_level']);
-		if( $user['user_level'] == 'Admin' ) {
+		$docUser->setAttribute("level",$user['status']);
+		if( $user['status'] == 'Admin' ) {
 			$action = "Suspended";			
 			$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log WHERE log_user = :username AND log_action = :action");
 			$query->bindParam(":username", $username);

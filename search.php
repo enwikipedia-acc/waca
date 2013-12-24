@@ -14,9 +14,15 @@
 
 global $session;
 
-// Get all the classes.
+// load the configuration
 require_once 'config.inc.php';
+
+// Initialize the session data.
+session_start();
+
+// Get all the classes.
 require_once 'functions.php';
+require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
 require_once 'includes/offlineMessage.php';
 require_once 'includes/database.php';
@@ -38,9 +44,6 @@ $asSQLlink = $asSQL->getLink();
 // Initialize the class objects.
 $skin     = new skin();
 $bskin     = new BootstrapSkin();
-
-// Initialize the session data.
-session_start();
 
 if( isset( $_SESSION['user'] ) ) {
 	$sessionuser = $_SESSION['user'];

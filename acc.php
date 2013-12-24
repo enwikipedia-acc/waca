@@ -15,12 +15,18 @@
 // stop all output until we want it
 ob_start();
 
-// Get all the classes.
+// load the configuration
 require_once 'config.inc.php';
+
+// Initialize the session data.
+session_start();
+
+// Get all the classes.
 require_once 'devlist.php';
 require_once 'LogClass.php';
 require_once 'functions.php';
-require_once 'includes/SmartyInit.php'; // this needs to be high up, but below config and functions
+require_once 'includes/PdoDatabase.php';
+require_once 'includes/SmartyInit.php'; // this needs to be high up, but below config, functions, and database
 require_once 'includes/database.php';
 require_once 'includes/offlineMessage.php';
 require_once 'includes/messages.php';
@@ -28,7 +34,6 @@ require_once 'includes/skin.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
 require_once 'includes/http.php';
-require_once 'includes/PdoDatabase.php';
 
 // Set the current version of the ACC.
 $version = "0.9.7";
@@ -56,8 +61,6 @@ $date = new DateTime();
 $locationProvider = new $locationProviderClass(gGetDb('acc'), $locationProviderApiKey);
 $rdnsProvider = new $rdnsProviderClass(gGetDb('acc'));
 
-// Initialize the session data.
-session_start();
 
 // Clears the action variable.
 $action = '';
@@ -146,32 +149,8 @@ elseif ($action == "sreg") {
 	{
 		$suser = '';
 	}
-	foreach ( $acrnamebl as $wnbl => $nbl ) {
-		$phail_test = @ preg_match( $nbl, $_POST['name'] );
-		if ( $phail_test == TRUE ) {
-			#$message = $messages->getMessage(15);
-			echo "$message<br />\n";
-			$target = "$wnbl";
-			$accbotSend->send( "[Name-Bl-ACR] HIT: $wnbl - " . sanitize($_POST['name']) . " / " . sanitize($_POST['wname']) . " " . sanitize($_SERVER['REMOTE_ADDR']) . " ($host) " . sanitize($_POST['email']) . " " . sanitize($_SERVER['HTTP_USER_AGENT']));
-			echo "Unable to create account. Your request has triggered our spam blacklists, please email the mailing list instead.";
-			echo "</div>";
-			$skin->displayPfooter();
-			die( );
-		}
-	}
-	global $enableDnsblChecks;
-	if( $enableDnsblChecks == 1) {
-		$dnsblcheck = checkdnsbls( $_SERVER['REMOTE_ADDR'] );
-		if ( $dnsblcheck['0'] == true ) {
-			$cmt = "FROM $ip " . $dnsblcheck['1'];
-			$accbotSend->send("[DNSBL-ACR] HIT: " . sanitize($_POST['name']) . " - " . sanitize($_POST['wname']) . " " . sanitize($_SERVER['REMOTE_ADDR']) . " " . sanitize($_POST['email']) . " " . $_SERVER['HTTP_USER_AGENT'] . " $cmt");
-			echo "Account not created, please see " . $dnsblcheck['1'];
-			echo "</div>";
-			$skin->displayPfooter();
-			die(  );
-		}
-	}
-	$sregHttpClient = new http();
+
+    $sregHttpClient = new http();
 	$cu_name = rawurlencode( $_REQUEST['wname'] );
 	$userblocked = $sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
 	$ub = unserialize( $userblocked );
@@ -224,14 +203,7 @@ elseif ($action == "sreg") {
 	$email = mysql_real_escape_string($_REQUEST['email']);
 	$sig = mysql_real_escape_string($_REQUEST['sig']);
 	$conf_revid=mysql_real_escape_string($_REQUEST['conf_revid']);
-	if(isset($_REQUEST['secureenable']))
-	{
-		$secureenable = mysql_real_escape_string($_REQUEST['secureenable']);
-	}
-	else
-	{
-		$secureenable = false;
-	}
+    
 	if(isset($_REQUEST['welcomeenable']))
 	{
 		$welcomeenable = mysql_real_escape_string($_REQUEST['welcomeenable']);	
@@ -314,13 +286,8 @@ elseif ($action == "sreg") {
 		die();
 	}
 	if (!isset($fail) || $fail != 1) {
-		if ($secureenable == "1") {
-			$secure= 1;
-		} else {
-			$secure = 0;
-		}
 		$user_pass = authutils::encryptPassword($_REQUEST['pass']); // again, using unfiltered as data processing is done here.
-		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_secure,user_confirmationdiff) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$secure','$conf_revid');";
+		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_secure,user_confirmationdiff) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', 1,'$conf_revid');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
@@ -333,7 +300,8 @@ elseif ($action == "sreg") {
 }
 
 elseif ($action == "register") {
-	echo $messages->getMessage(29);
+	global $smarty;
+    $smarty->display("register.tpl");
 	$skin->displayPfooter();
 	die();
 }
@@ -791,336 +759,315 @@ elseif ($action == "templatemgmt") {
 	$skin->displayIfooter();
 	die();
 }
-elseif ($action == "sban") {
-	
+elseif ($action == "sban") 
+{	
 	// Checks whether the current user is an admin.
-	if(!$session->hasright($_SESSION['user'], "Admin")) {
-		die("Only administrators or checkusers may ban users");
+	if(!User::getCurrent()->isAdmin()) 
+    {
+        BootstrapSkin::displayAlertBox("Only administrators or checkusers may unban users", "alert-error", "", false, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
 	}
 	
 	// Checks whether there is a reason entered for ban.
 	if (!isset($_POST['banreason']) || $_POST['banreason'] == "") {
-		echo "<h2>ERROR</h2>\n<br />You must specify a ban reason.\n";
-		$skin->displayIfooter();
-		die();
+        BootstrapSkin::displayAlertBox("You must specify a ban reason", "alert-error", "", false, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
 	}
 	
 	// Checks whether there is a target entered to ban.
 	if (!isset($_POST['target']) || $_POST['target'] == "") {
-		echo "<h2>ERROR</h2>\n<br />You must specify a target to be blocked.\n";
-		$skin->displayIfooter();
-		die();
+        BootstrapSkin::displayAlertBox("You must specify a target to be banned", "alert-error", "", false, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
 	}
 	
-	$duration = sanitize($_POST['duration']);
-	if ($duration == "-1") {
+	$duration = $_POST['duration'];
+    
+	if ($duration == "-1")
+    {
 		$duration = -1;
-	} elseif ($duration == "other") {
+	}
+    elseif ($duration == "other") 
+    {
 		$duration = strtotime($_POST['otherduration']);
-		if (!$duration) {
-			echo "<h2>ERROR</h2>\n<br />Invalid ban time specified.\n";
-			$skin->displayIfooter();
+		if (!$duration) 
+        {
+            BootstrapSkin::displayAlertBox("Invalid ban time", "alert-error", "", false, false);
+            BootstrapSkin::displayInternalFooter();
 			die();
-		} elseif (time() > $duration) {
-			echo "<h2>ERROR</h2>\n<br />Invalid ban time specified (the ban would have already expired).\n";
-			$skin->displayIfooter();
+		} 
+        elseif (time() > $duration) 
+        {
+            BootstrapSkin::displayAlertBox("Invalid ban time - it would have already expired!", "alert-error", "", false, false);
+            BootstrapSkin::displayInternalFooter();
 			die();
 		}
-	} else {
+	} 
+    else 
+    {
 		$duration = $duration +time();
 	}
-	switch( $_POST[ 'type' ] ) {
+    
+	switch( $_POST[ 'type' ] ) 
+    {
 		case 'IP':
 			if( ip2long( $_POST[ 'target' ] ) === false ) {
-				echo '<h2>ERROR</h2><br />Invalid target specified.  Expecting IP address.';
-				$skin->displayIfooter();
+                BootstrapSkin::displayAlertBox("Invalid target - I'm expecting an IP address.", "alert-error", "", false, false);
+                BootstrapSkin::displayInternalFooter();
 				die();
 			}
+            
 			global $squidIpList;
 			if( in_array( $_POST[ 'target' ], $squidIpList ) ) {
-				echo '<h2>ERROR</h2><br />Invalid target specified. You\'re trying to block the toolserver!';
-				$skin->displayIfooter();
+                BootstrapSkin::displayAlertBox("This IP address is on the protected list of proxies, and cannot be banned.", "alert-error", "", false, false);
+                BootstrapSkin::displayInternalFooter();
 				die();
 			}
 			break;
-
 		case 'Name':
-			if( preg_match( '/[\#\/\|\[\]\{\}\@\%\:\<\>]/', $_POST[ 'target' ] ) ) {
-				echo '<h2>ERROR</h2><br />Invalid target specified.  Expecting user name.';
-				$skin->displayIfooter();
-				die();
-			}
 			break;
-
 		case 'EMail':
+            // TODO: cut this down to a bare-bones implementation so we don't accidentally reject a valid address.
 			if( !preg_match( ';^(?:[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[A-Za-z0-9-]*[A-Za-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$;', $_POST['target'] ) ) {
-				echo '<h2>ERROR</h2><br />Invalid target specified.  Expecting E-mail address.';
-				$skin->displayIfooter();
+                BootstrapSkin::displayAlertBox("Invalid target - I'm expecting an email address.", "alert-error", "", false, false);
+                BootstrapSkin::displayInternalFooter();
 				die();
 			}
 			break;
-
 		default:
-			echo '<h2>ERROR</h2><br />Invalid type specified.  Expecting IP, Name, or EMail.';
-			$skin->displayIfooter();
+            BootstrapSkin::displayAlertBox("I don't know what type of target you want me to ban! You'll need to choose from email address, IP, or requested name.", "alert-error", "", false, false);
+            BootstrapSkin::displayInternalFooter();
 			die();
 	}
-	$reason = sanitize($_POST['banreason']);
-	$siuser = sanitize($_SESSION['user']); 
-	$target = sanitize($_POST['target']);
-	$type = sanitize($_POST['type']);
-	$now = date("Y-m-d H-i-s");
-	upcsum($target);
-	$query = "SELECT * FROM acc_ban WHERE ban_type = '$type' AND ban_target = '$target' AND (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-	if($row['ban_id'] != "") {
-		$skin->displayRequestMsg("The specified target is already banned!");
-		$skin->displayIfooter();
-		die();
-	}
-	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$target', '$siuser', 'Banned', '$now', '$reason');";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$query = "INSERT INTO acc_ban (ban_type, ban_target, ban_user, ban_reason, ban_date, ban_duration) VALUES ('$type', '$target', '$siuser', '$reason', '$now', $duration);";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	echo "Banned " . htmlentities($_POST['target'],ENT_COMPAT,'UTF-8') . " for $reason<br />\n";
-	if ( !isset($duration) || $duration == "-1") {
+        
+    if(count(Ban::getActiveBans($_POST['target'])) > 0)
+    {
+        BootstrapSkin::displayAlertBox("This target is already banned!", "alert-error", "", false, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+    $database = gGetDb();
+    
+    if(!$database->beginTransaction())
+    {
+        BootstrapSkin::displayAlertBox("Error initiating database transaction", "alert-error", "", false, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+    $currentUsername = User::getCurrent()->getUsername();
+    $ban = new Ban();
+            
+    $ban->setDatabase($database);
+    $ban->setActive(1);
+    $ban->setType($_POST['type']);
+    $ban->setTarget($_POST['target']);
+    $ban->setUser($currentUsername);
+    $ban->setReason($_POST['banreason']);
+    $ban->setDuration($duration);
+    
+    try
+    {
+        $ban->save();
+        
+        $logQuery = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:banid, :siuser, 'Banned', CURRENT_TIMESTAMP(), :reason);";
+        $logStatement = $database->prepare($logQuery);
+        $banid = $ban->getId();
+        $logStatement->bindParam(":banid", $banid);
+        $logStatement->bindParam(":siuser", $currentUsername);
+        $logStatement->bindParam(":reason", $_POST['banreason']);
+        if(!$logStatement->execute())
+        {
+            throw new Exception("Error saving log entry.");   
+        }
+    }
+    catch(Exception $ex)
+    {
+        $database->rollBack();
+        BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Error in transaction", false, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+    $database->commit();
+    
+    $smarty->assign("ban", $ban);
+    BootstrapSkin::displayAlertBox($smarty->fetch("bans/bancomplete.tpl"), "alert-info","", false, false);
+    
+	if ( !isset($duration) || $duration == "-1") 
+    {
 		$until = "Indefinite";
-	} else {
+	} 
+    else 
+    {
 		$until = date("F j, Y, g:i a", $duration);
 	}
-	if ($until == 'Indefinite') {
-		$accbotSend->send("$target banned by $siuser for " . $_POST['banreason'] . " indefinitely");
-	} else {
-		$accbotSend->send("$target banned by $siuser for " . $_POST['banreason'] . " until $until");
+    
+	if ($until == 'Indefinite') 
+    {
+		$accbotSend->send($ban->getTarget() . " banned by $currentUsername for " . $ban->getReason() . " indefinitely");
+	} 
+    else 
+    {
+		$accbotSend->send($ban->getTarget() . " banned by $currentUsername for " . $ban->getReason() . " until $until");
 	}
-	$skin->displayIfooter();
+    
+    BootstrapSkin::displayInternalFooter();
 	die();
 }
-elseif ($action == "unban" && $_GET['id'] != "") 
+elseif ($action == "unban") 
 {
-	$siuser = sanitize($_SESSION['user']);
+    if(!isset($_GET['id']) || $_GET['id'] == "")
+    {
+        BootstrapSkin::displayAlertBox("The ID parameter appears to be missing! This is probably a bug.", "alert-error", "Ahoy There! Something's not right...", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+    if(!User::getCurrent()->isAdmin())
+    {
+        BootstrapSkin::displayAlertBox("Only administrators or checkusers may unban users", "alert-error", "", false, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+    $ban = Ban::getActiveId($_GET['id']);
+        
+    if($ban == false)
+    {
+        BootstrapSkin::displayAlertBox("The specified ban ID is not currently active!", "alert-error", "", false, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
 
-	if(!$session->hasright($_SESSION['user'], "Admin"))
-	{
-		die("Only administrators or checkusers may unban users");
-	}
-	$bid = sanitize($_GET['id']);
-	$query = "SELECT * FROM acc_ban WHERE ban_id = '$bid' AND (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1;";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-	{
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	}
-	$row = mysql_fetch_assoc($result);
-	if( $row['ban_id'] == "") {
-		$skin->displayRequestMsg("The specified target is not banned!");
-		$skin->displayIfooter();
-		die();
-	}
-	$iTarget = $row['ban_target'];
-
-	if( isset($_GET['confirmunban']) && $_GET['confirmunban']=="true" )
+	if( isset($_GET['confirmunban']) && $_GET['confirmunban'] == "true" )
 	{
 		if (!isset($_POST['unbanreason']) || $_POST['unbanreason'] == "") 
 		{
-			echo "<h2>ERROR</h2><br />You must enter an unban reason.\n";
-			$skin->displayIfooter();
-			die;
+            BootstrapSkin::displayAlertBox("You must enter an unban reason!", "alert-error", "", false, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
 		}
 		else 
 		{
-			$unbanreason = sanitize($_POST['unbanreason']);
-			$query = "UPDATE acc_ban SET ban_active = 0 WHERE ban_id = '$bid'";
-			$result = $tsSQL->query($query);
-			if (!$result)
-			{
-				die($tsSQL->showError(mysql_error(), "Database error"));
-			}
-			$now = date("Y-m-d H-i-s");
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$bid', '$siuser', 'Unbanned', '$now', '$unbanreason');";
-			$result = $tsSQL->query($query);
-			if (!$result)
-			{
-				die($tsSQL->showError(mysql_error(), "Database error"));
-			}
-			echo "Unbanned ban #$bid<br />\n";
-			$accbotSend->send("Ban #" . $bid . " ($iTarget) unbanned by " . $_SESSION['user']. " ($unbanreason)");
-			$skin->displayIfooter();
+            $database = gGetDb();
+            
+            if(!$database->beginTransaction())
+            {
+                BootstrapSkin::displayAlertBox("Error initiating database transaction", "alert-error", "", false, false);
+                BootstrapSkin::displayInternalFooter();
+                die();
+            }
+            
+            try
+            {
+                $ban->setActive(0);
+                $ban->save();
+                
+                $banId = $ban->getId();
+                $currentUser = User::getCurrent()->getUsername();
+                
+                $query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:id, :user, 'Unbanned', CURRENT_TIMESTAMP(), :reason);";
+                $statement = $database->prepare($query);
+                $statement->bindParam(":id", $banId);
+                $statement->bindParam(":user", $currentUser);
+                $statement->bindParam(":reason", $_POST['unbanreason']);
+                
+                if(!$statement->execute())
+                {
+                    throw new Exception("Error saving log entry.");   
+                }
+            }
+            catch(Exception $ex)
+            {
+                $database->rollBack();
+                BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Error in transaction", false, false);
+                BootstrapSkin::displayInternalFooter();
+                die();
+            }
+            
+            $database->commit();
+		
+            BootstrapSkin::displayAlertBox("Unbanned " . $ban->getTarget(), "alert-info", "", false, false);
+            BootstrapSkin::displayInternalFooter();
+			$accbotSend->send($ban->getTarget() . " unbanned by " . User::getCurrent()->getUsername() . " ({$_POST['unbanreason']}))");
 			die();
 		}
 	}
 	else
 	{
-		$confOut =  "Are you sure you wish to unban #".$bid.", targeted at ".$iTarget.", ";
-		if ( !isset($row['ban_duration']) || $row['ban_duration'] == "-1") 
-		{
-			$confOut.= "not set to expire";
-		} 
-		else 
-		{
-			$confOut.= "set to expire " . date("F j, Y, g:i a", $row['ban_duration']);
-		}
-		$confOut .= ", and with the reason:<br />";
-		echo $confOut;
-		
-		echo $row['ban_reason'] . "<br />";
-		echo "What is your reason for unbanning this person?<br />";
-		echo "<form METHOD=\"post\" ACTION=\"$tsurl/acc.php?action=unban&id=". $bid ."&confirmunban=true\">";
-		echo "<input type=\"text\" name=\"unbanreason\"/><input type=\"submit\"/></form><br />";
-		echo "<a href=\"$tsurl/acc.php\">Cancel</a>";
-		
+        $smarty->assign("ban", $ban);
+        $smarty->display("bans/unban.tpl");
+        
+		BootstrapSkin::displayInternalFooter();
 	}
 }
-elseif ($action == "ban") {
-	$siuser = sanitize($_SESSION['user']);
-	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name'])) {
+elseif ($action == "ban") {    
+    global $smarty;
+    
+	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name']))
+    {
 		if(!$session->hasright($_SESSION['user'], "Admin"))
-			die("Only administrators or checkusers may ban users");
+        {
+		    BootstrapSkin::displayAlertBox("Only administrators or checkusers may ban users", "alert-error");
+            BootstrapSkin::displayInternalFooter();
+            die();
+        }
+        
+        $database = gGetDb();
+        // TODO: rewrite me!
 		if (isset($_GET['ip'])) {
-			$ip2 = sanitize($_GET['ip']);
-			$query = "SELECT * FROM acc_pend WHERE pend_id = '$ip2';";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			$row = mysql_fetch_assoc($result);
+			$query = "SELECT pend_ip, pend_proxyip FROM acc_pend WHERE pend_id = :ip;";
+            $statement = $database->prepare($query);
+            $statement->bindParam(":ip", $_GET['ip']);
+            $statement->execute();
+			$row = $statement->fetch(PDO::FETCH_ASSOC);
 			$target = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
 			$type = "IP";
 		}
 		elseif (isset($_GET['email'])) {
-			$email2 = sanitize($_GET['email']);
-			$query = "SELECT * FROM acc_pend WHERE pend_id = '$email2';";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			$row = mysql_fetch_assoc($result);
+            $query = "SELECT pend_email FROM acc_pend WHERE pend_id = :ip;";
+            $statement = $database->prepare($query);
+            $statement->bindParam(":ip", $_GET['email']);
+            $statement->execute();
+			$row = $statement->fetch(PDO::FETCH_ASSOC);
 			$target = $row['pend_email'];
 			$type = "EMail";
 		}
 		elseif (isset($_GET['name'])) {
-			$name2 = sanitize($_GET['name']);
-			$query = "SELECT * FROM acc_pend WHERE pend_id = '$name2';";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			$row = mysql_fetch_assoc($result);
+            $query = "SELECT pend_name FROM acc_pend WHERE pend_id = :ip;";
+            $statement = $database->prepare($query);
+            $statement->bindParam(":ip", $_GET['name']);
+            $statement->execute();
+			$row = $statement->fetch(PDO::FETCH_ASSOC);
 			$target = $row['pend_name'];
 			$type = "Name";
 		}
-		$target = sanitize($target);
-		$query = "SELECT * FROM acc_ban WHERE ban_target = '$target' AND (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1;";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		$row = mysql_fetch_assoc($result);
-		if ($row['ban_id'] != "") {
-			echo "<h2>ERROR</h2>\n<br />\nCould not ban. Already banned!<br />";
-			$skin->displayIfooter();
+               
+		if (count(Ban::getActiveBans($target))) 
+        {
+			BootstrapSkin::displayAlertBox("This target is already banned!", "alert-error");
+            BootstrapSkin::displayInternalFooter();
 			die();
-		} else {
-			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
-			echo "<form action=\"$tsurl/acc.php?action=sban&amp;user=$siuser\" method=\"post\">";
-			echo "Ban target: $target\n<br \>\n";
-			echo "<table><tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td></tr>\n";
-			echo "<tr><td>Duration:</td><td>\n";
-			echo "<select name=\"duration\">\n";
-			echo "<option value=\"-1\">Indefinite</option>\n";
-			echo "<option value=\"86400\">24 Hours</option>\n";
-			echo "<option value=\"604800\">One Week</option>\n";
-			echo "<option value=\"2629743\">One Month</option>\n";
-			echo "<option value=\"other\">Other</option>\n";
-			echo "</select></td></tr>\n";
-			/* TODO: Add some fancy javascript that hides this until the user selects other from the menu above */
-			echo "<tr><td>Other:</td><td><input type=\"text\" name=\"otherduration\" /></td></tr>";
-			echo "</table><br />\n";
-			echo "<input type=\"submit\" /><input type=\"hidden\" name=\"target\" value=\"$target\" /><input type=\"hidden\" name=\"type\" value=\"$type\" /></form>\n";
-			$skin->displayIfooter();
-			die();
-		}
-	} else {
-		echo "<h2>Active Ban List</h2>\n<table border='1'>\n";
-		echo "<tr><th>Type</th><th>IP/Name/Email</th><th>Banned by</th><th>Reason</th><th>Time</th><th>Expiry</th>";
-		$isAdmin = $session->hasright($_SESSION['user'], "Admin");
-		if ($isAdmin) {
-			echo "<td>Unban</td>";
-		}
-		echo "</tr>";
-		$query = "SELECT * FROM acc_ban WHERE (ban_duration > UNIX_TIMESTAMP() OR ban_duration = -1) AND ban_active = 1;";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		while ($row = mysql_fetch_assoc($result)) {
-			if ( !isset($row['ban_duration']) || $row['ban_duration'] == "-1") {
-				$until = "Indefinite";
-			} else {
-				$until = date("F j, Y, g:i a", $row['ban_duration']);
-			}
-			echo "<tr><td>" . htmlentities($row['ban_type'],ENT_COMPAT,'UTF-8') . '</td>';
-			switch($row['ban_type'])
-			{
-				case "IP":
-					echo '<td>';
-					if ($isAdmin) { 
-						echo '<a href="' . $tsurl . '/search.php?term='.$row['ban_target'].'&amp;type=IP">';
-					}
-					echo $row['ban_target'];
-					if ($isAdmin) { 
-						echo '</a>';
-					}
-					echo '</td>';
-					break;
-				case "EMail":
-					echo '<td>';
-					echo '<a href="' . $tsurl . '/search.php?term='.$row['ban_target'].'&amp;type=email">';
-					echo $row['ban_target'];
-					echo '</a>';
-					echo '</td>';
-					break;
-				case "Name";
-					echo '<td><a href="' . $tsurl . '/search.php?term='.$row['ban_target'].'&amp;type=Request">'.$row['ban_target'].'</a></td>';
-					break;
-				default:
-					echo '<td>'.$row['ban_target'].'</td>';
-					break;
-			}
-			echo "<td>".$row['ban_user']."</td><td>".$row['ban_reason']."</td><td>".$row['ban_date']."</td><td>$until</td>";
-			if ($isAdmin) {
-				echo "<td><a href=\"$tsurl/acc.php?action=unban&amp;id=" . $row['ban_id'] . "\">Unban</a></td>";
-			}
-			echo "</tr>";
-		}
-		echo "</table>\n";
-		if ($isAdmin) {
-			echo "<h2>Ban an IP, Name or E-Mail</h2>\n";
-			echo "<form action=\"$tsurl/acc.php?action=sban\" method=\"post\">";
-			echo "<table>";
-			echo "<tr><td>Ban target:</td><td><input type=\"text\" name=\"target\" /></td></tr>\n";
-			echo "<tr><td>Reason:</td><td><input type=\"text\" name=\"banreason\" /></td></tr>\n";
-			echo "<tr><td>Duration:</td><td>\n";
-			echo "<select name=\"duration\">\n";
-			echo "<option value=\"-1\">Indefinite</option>\n";
-			echo "<option value=\"86400\">24 Hours</option>\n";
-			echo "<option value=\"604800\">One Week</option>\n";
-			echo "<option value=\"2629743\">One Month</option>\n";
-			echo "<option value=\"other\">Other</option>\n";
-			echo "</select></td></tr>\n";
-			/* TODO: Add some fancy javascript that hides this until the user selects other from the menu above */
-			echo "<tr><td>Other:</td><td><input type=\"text\" name=\"otherduration\"/></td></tr>";
-			echo "<tr><td>Type:</td><td>\n";
- 			echo "<select name=\"type\"><option value=\"IP\">IP</option><option value=\"Name\">Name</option><option value=\"EMail\">E-Mail</option></select>\n";
- 			echo "</td></tr>\n";
-			echo "</table><br />\n";
-			echo "<input type=\"submit\"/></form>\n";
-		}
-		$skin->displayIfooter();
-		die();
+		} 
+        
+        $smarty->assign("bantype", $type);
+        $smarty->assign("bantarget", $target);
+        $smarty->display("bans/banform.tpl");
+	} 
+    else 
+    {
+        $bans = Ban::getActiveBans();
+  
+        $smarty->assign("activebans", $bans);
+        $smarty->display("bans/banlist.tpl");
 	}
+    
+    BootstrapSkin::displayInternalFooter();
+    die();
 }
 elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 	global $availableRequestStates;
@@ -1182,62 +1129,38 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		echo "Defer target not valid.<br />\n";
 	}
 }
-elseif ($action == "welcomeperf" || $action == "prefs") { //Welcomeperf is deprecated, but to avoid conflicts, include it still.
+elseif ($action == "prefs") {
 	if (isset ($_POST['sig'])) {
-		// HTML escaping is now done in Smarty, only need to escape SQL here.
-		$sig = $tsSQL->escape($_POST['sig']);
-		$sid = $tsSQL->escape($_SESSION['user']);
-		$emailsig = $tsSQL->escape($_POST['emailsig']);
-		if( isset( $_POST['secureenable'] ) ) {
-			$secureon = 1;
-		} else {
-			$secureon = 0;
-		}
-		if( isset( $_POST['abortpref'] ) ) {
-			$abortprefOld = 1;
-		} else {
-			$abortprefOld= 0;
-		}
+        
+        $user = User::getCurrent();
+        $user->setWelcomeSig($_POST['sig']);
+        $user->setEmailSig($_POST['emailsig']);
+        $user->setAbortPref(isset( $_POST['abortpref'] ) ? 1 : 0);
+        
 		if( isset( $_POST['email'] ) ) {
-			$mailisvalid = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.(ac|ad|ae|aero|af|ag|ai|al|am|an|ao|aq|ar|arpa|as|asia|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|biz|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cat|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|com|coop|cr|cu|cv|cx|cy|cz|de|dj|dk|dm|do|dz|ec|edu|ee|eg|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gov|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|info|int|io|iq|ir|is|it|je|jm|jo|jobs|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mil|mk|ml|mm|mn|mo|mobi|mp|mq|mr|ms|mt|mu|museum|mv|mw|mx|my|mz|na|name|nc|ne|net|nf|ng|ni|nl|no|np|nr|nu|nz|om|org|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|pro|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sy|sz|tc|td|tel|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|travel|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)$/i', $_POST['email']);
+			$mailisvalid = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+$/i', trim($_POST['email']));
 			if ($mailisvalid == 0) {
-				$skin->displayRequestMsg("ERROR: Invalid E-mail address.<br />");
+                BootstrapSkin::displayAlertBox("Invalid email address", "alert-error", "Error!");
 			}
 			else {
-				$newemail = $tsSQL->escape($_POST['email']);
+                $user->setEmail(trim($_POST['email']));
 			}
 		}
-		if (isset($newemail)) {
-		$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld', user_email = '$newemail', user_emailsig = '$emailsig' WHERE user_name = '$sid'";
-		}
-		else {
-			$query = "UPDATE acc_user SET user_welcome_sig = '$sig', user_secure = '$secureon', user_abortpref = '$abortprefOld', user_emailsig = '$emailsig' WHERE user_name = '$sid'";
-		}
-		$result = $tsSQL->query($query);
-		if (!$result)
-			$tsSQL->showError($tsSQL->getError());
-		$skin->displayRequestMsg("Preferences updated!<br />\n");
+
+        try 
+        {
+            $user->save();
+        }
+        catch(PDOException $ex)
+        {
+            BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Error saving Preferences", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
+        }
+        
+        BootstrapSkin::displayAlertBox("Preferences updated!", "alert-info");
 	}
-	$sid = $tsSQL->escape( $_SESSION['user'] );
-	$query = "SELECT * FROM acc_user WHERE user_name = '$sid'";
-	$result = $tsSQL->query($query);
-	if (!$result)
-		$tsSQL->showError($tsSQL->getError());
-	$row = mysql_fetch_assoc($result);
-	
-	$smarty->assign("securepref", $row['user_secure']);
-	$sig = $row['user_welcome_sig'];
-	$smarty->assign("sig", $sig);
-	if(array_key_exists('user_abortpref',$row)){
-		$smarty->assign("abortpref", $row['user_abortpref']);
-	}
-	$useremail = $row['user_email'];
-	$smarty->assign("email", $useremail);
-	$onwikiname = $row['user_onwikiname'];
-	$smarty->assign("onwikiname", $onwikiname);
-	$emailsig = $row['user_emailsig'];
-	$smarty->assign("emailsig", $emailsig);
-	
+    
 	$smarty->display("prefs.tpl");
 	BootstrapSkin::displayInternalFooter();
 	die();

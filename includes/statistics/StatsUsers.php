@@ -255,16 +255,16 @@ class StatsUsers extends StatisticsPage
 						}
 					}
 					
-					$contrib_link="<a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\" $contrib_css_class>contribs</a>"; 
+					$contrib_link="<a href=\"https://" . $wikiurl . "/wiki/Special:Contributions/" . $row['pend_name'] . "\" $contrib_css_class>contribs</a>"; 
 					
 					// Display the name of the account that was created
 					if($session->hasright($_SESSION['user'], 'User') || $session->hasright($_SESSION['user'], 'Admin')) 
 					{
-							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - $contrib_link - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
+							$out.= "<li> <a href=\"https://" . $wikiurl . "/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"https://" . $wikiurl . "/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - $contrib_link - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
 					}
 					else
 					{
-							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - $contrib_link - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\" style=\"color: red;\" title=\"Login required to view request\">zoom</a>) at " . $row['log_time'] . "</li>\n";
+							$out.= "<li> <a href=\"https://" . $wikiurl . "/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"https://" . $wikiurl . "/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - $contrib_link - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\" style=\"color: red;\" title=\"Login required to view request\">zoom</a>) at " . $row['log_time'] . "</li>\n";
 					}
 				}
 				
@@ -297,11 +297,11 @@ class StatsUsers extends StatisticsPage
 					// Display the name of the account that was not created
 					if($session->hasright($_SESSION['user'], 'User') || $session->hasright($_SESSION['user'], 'Admin'))
 					{
-							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
+							$out.= "<li> <a href=\"https://" . $wikiurl . "/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"https://" . $wikiurl . "/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"https://" . $wikiurl . "/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
 					}
 					else
 					{
-							$out.= "<li> <a href=\"http://en.wikipedia.org/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"http://en.wikipedia.org/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"http://en.wikipedia.org/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
+							$out.= "<li> <a href=\"https://" . $wikiurl . "/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"https://" . $wikiurl . "/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"https://" . $wikiurl . "/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
 					}
 				}
 				$out.= "</ol>\n"; // End the ordered list

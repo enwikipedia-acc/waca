@@ -22,7 +22,7 @@ class mediawiki {
 	private $url;
 	public $http;
 	
-	public function __construct ($url='http://en.wikipedia.org/w/api.php',$username=null,$password=null) {
+	public function __construct ($url='https://en.wikipedia.org/w/api.php',$username=null,$password=null) {
 		require_once 'http.php';
 		$this->http = new http();
 		$this->http->useragent = 'PHP Mediawiki Client';

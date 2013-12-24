@@ -49,24 +49,32 @@ class IpLocationProvider implements ILocationProvider
     // adapted from http://www.ipinfodb.com/ip_location_api.php
 	private function getResult($ip)
     {
-		if(filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ))
+        try
         {
-			$xml = @file_get_contents( $this->getApiBase() . '?key=' . $this->apikey . '&ip=' . $ip . '&format=xml');
-
-			if(get_magic_quotes_runtime())
+            if(filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ))
             {
-				$xml = stripslashes($xml);
-			}
+                $xml = @file_get_contents( $this->getApiBase() . '?key=' . $this->apikey . '&ip=' . $ip . '&format=xml');
 
-			$response = @new SimpleXMLElement($xml);
+                if(get_magic_quotes_runtime())
+                {
+                    $xml = stripslashes($xml);
+                }
 
-			foreach($response as $field=>$value)
-            {
-				$result[(string)$field] = (string)$value;
-			}
+                $response = @new SimpleXMLElement($xml);
 
-			return $result;
-		}
+                foreach($response as $field=>$value)
+                {
+                    $result[(string)$field] = (string)$value;
+                }
+
+                return $result;
+            }
+        }
+        catch(Exception $ex)
+        {
+            // TODO: do something smart here, or wherever we use this value.
+            // This is just a temp hack to squash errors on the UI for now.
+        }
         
 		return null;
 	}

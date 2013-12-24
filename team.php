@@ -12,10 +12,16 @@
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
 
-// Get all the classes.
+// load the configuration
 require_once 'config.inc.php';
+
+// Initialize the session data.
+session_start();
+
+// Get all the classes.
 require_once 'devlist.php';
 require_once 'functions.php';
+require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
 require_once 'includes/offlineMessage.php';
 require_once 'includes/imagegen.php';
@@ -38,9 +44,6 @@ $asSQLlink = $asSQL->getLink();
 // Initialize the class object.
 $imagegen = new imagegen();
 $skin     = new skin();
-
-// Initialize the session data.
-session_start();
 
 //Array of objects containing the deleveopers' information.
 $developer = array(
