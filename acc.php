@@ -1388,10 +1388,6 @@ elseif ($action == "logs") {
 				"Unreserved" => "Request unreservation",
 				"BreakReserve" => "Break reservation",
 				"Deferred%" => "Deferred request",
-				"Closed 0" => "Request drop",
-				"Closed custom" => "Request custom close",
-				"Closed custom-y" => "Request custom close, created",
-				"Closed custom-n" => "Request custom close, not created",
 				"Email Confirmed" => "Email confirmed reservation",
 				"Blacklist Hit" => "Blacklist hit", 
 				"DNSBL Hit" => "DNS Blacklist hit",
@@ -1407,13 +1403,22 @@ elseif ($action == "logs") {
 				"Renamed" => "User rename",
 				"Approved" => "User approval",
 				"Promoted" => "User promotion",
-				"Prefchange" => "User preferences change"
+				"Prefchange" => "User preferences change",
+				"Closed 0" => "Request drop",
+				"Closed custom" => "Request custom close",
+				"Closed custom-y" => "Request custom close, created",
+				"Closed custom-n" => "Request custom close, not created"
 	);
-	$query = "SELECT id, name FROM emailtemplate";
+	// Add entries for every Email template, including inactive ones.
+	$query = "SELECT id, name FROM emailtemplate ORDER BY id";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
+	while ($row = mysql_fetch_assoc($result)) {
+		$logAction = "Closed " . $row['id'];
+		$logActions[$logAction] = "Request " . $row['name'];
+	}
+	
 	foreach($logActions as $key => $value)
 	{
 		echo "<option value=\"".$key."\"";
