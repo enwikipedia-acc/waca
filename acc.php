@@ -1317,9 +1317,8 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
 
-	if ($gem = 0) {
+	if ($gem == '0') {
 		$crea = "Dropped";
-		echo $crea;
 	} else if ($gem == 'custom') {
 		$crea = "Custom";
 	} else if ($gem == 'custom-y') {
