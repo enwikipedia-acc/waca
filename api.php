@@ -155,7 +155,7 @@ function actionCount( ) {
 
 	if( $isUser ) {
 		// accounts created
-		$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log LEFT JOIN emailtemplate WHERE (oncreated = '1' OR log_action = 'Closed custom-y') AND log_user = :username");
+		$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log LEFT JOIN emailtemplate ON concat('Closed ', id) = log_action WHERE (oncreated = '1' OR log_action = 'Closed custom-y') AND log_user = :username");
 		$query->bindParam(":username", $username);
 		$query->execute();
 
