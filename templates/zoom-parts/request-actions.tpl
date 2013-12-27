@@ -20,7 +20,7 @@
     {* If custom create reasons are active, then make the Created button a split button dropdown. *}
       {if !empty($createreasons)}
       <div class = "btn-group span4">
-        <a class="btn btn-success span10" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=1&amp;sum={$checksum}">Created</a>
+        <a class="btn btn-success span10" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$createdid}&amp;sum={$checksum}">Created!</a>
         <button type="button" class="btn btn-success dropdown-toggle span2" data-toggle="dropdown"><span class="caret"></span></button>
         <ul class="dropdown-menu" role="menu">
         {foreach $createreasons as $reason}

@@ -535,7 +535,7 @@ function isOnWhitelist($user)
 
 function zoomPage($id,$urlhash)
 {
-	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates, $dontUseWikiDb, $internalInterface;
+	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates, $dontUseWikiDb, $internalInterface, $createdid;
 	global $smarty, $locationProvider, $rdnsProvider;
 	    
 	$gid = $internalInterface->checkreqid($id);
@@ -567,6 +567,7 @@ function zoomPage($id,$urlhash)
 	$createreason = "Requested account at [[WP:ACC]], request #" . $row['pend_id'];
 	$smarty->assign("createreason", $createreason);
 	$smarty->assign("isclosed", $row['pend_status'] == "Closed");
+	$smarty->assign("createdid", $createdid);
 
 	//#region setup whether data is viewable or not
 	
@@ -882,7 +883,7 @@ function zoomPage($id,$urlhash)
 	
 	// Exclude the "Created" reason from this since it should be outside the dropdown.
     $query = "SELECT id, name, jsquestion FROM emailtemplate ";
-	$query .= "WHERE oncreated = '1' AND active = '1' AND id != '1'";
+	$query .= "WHERE oncreated = '1' AND active = '1' AND id != $createdid";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());

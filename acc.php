@@ -1923,6 +1923,7 @@ elseif ($action == "emailmgmt") {
 		die();
 	}
 	if(isset($_GET['edit'])) {
+		global $createdid;
 		$gid = sanitize($_GET['edit']);
 		if(isset($_POST['submit'])) {
 			$emailTemplate = EmailTemplate::getById($gid, gGetDb());
@@ -1931,11 +1932,14 @@ elseif ($action == "emailmgmt") {
 				BootstrapSkin::displayAlertBox("I'm sorry, but you must be an administrator to access this page.");
 				die();
 			}
-			$emailTemplate->setName($_POST['ename']);
 			$emailTemplate->setText($_POST['etext']);
 			$emailTemplate->setJsquestion($_POST['equestion']);
-			$emailTemplate->setOncreated(isset($_POST['ecreated']));
-			$emailTemplate->setActive(isset($_POST['eactive']));
+			
+			if ($gid != $createdid) { // Do not change the name or the checkboxes on the main created message.
+				$emailTemplate->setName($_POST['ename']);
+				$emailTemplate->setOncreated(isset($_POST['ecreated']));
+				$emailTemplate->setActive(isset($_POST['eactive']));
+			}
 			$siuser = sanitize($_SESSION['user']);
 				
 			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
@@ -1960,6 +1964,8 @@ elseif ($action == "emailmgmt") {
 			die();
 		}
 		$emailTemplate = EmailTemplate::getById($_GET['edit'], gGetDb());
+		$smarty->assign('id', $gid);
+		$smarty->assign('createdid', $createdid);
 		$smarty->assign('ename', $emailTemplate->getName());
 		$smarty->assign('etext', $emailTemplate->getText());
 		$smarty->assign('equestion', $emailTemplate->getJsquestion());
