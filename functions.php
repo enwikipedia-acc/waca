@@ -568,6 +568,9 @@ function zoomPage($id,$urlhash)
 	$smarty->assign("createreason", $createreason);
 	$smarty->assign("isclosed", $row['pend_status'] == "Closed");
 	$smarty->assign("createdid", $createdid);
+	$createdreason = EmailTemplate::getById($createdid, gGetDb());
+	$smarty->assign("createdname", $createdreason->getName());
+	$smarty->assign("createdquestion", $createdreason->getJsquestion());
 
 	//#region setup whether data is viewable or not
 	
@@ -912,20 +915,13 @@ function zoomPage($id,$urlhash)
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
-		// Comment out for now, will do something with this soon.
-		// "Soon" will probably be with issue #11.
-		/*if(array_key_exists('user_abortpref',$row)){
-		$out.= '<script language=javascript>';
-		$out.= $messages->getMessage(32);
-		if($row['user_abortpref']==0){
-			//Checks user preferences and accordingly runs script (see script.js)
-			$out.= 'abortChecker()';
-		}
-		}else{
-			//Run script anyways if preference does not exist
-			$out.= 'abortChecker()';
-		}
-		$out.= '</script>';*/
+	if(array_key_exists('user_abortpref',$row)) {
+		$smarty->assign("abortpref", $row['user_abortpref']);
+	}
+	else{
+		// If preference is not set, default to JavaScript questions being on.
+		$smarty->assign("abortpref", 1);
+	}
 		
 	$smarty->assign("userid", $row['user_id']);
 	$smarty->assign("tooluser", $_SESSION['user']);

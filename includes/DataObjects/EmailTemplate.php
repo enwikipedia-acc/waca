@@ -11,7 +11,7 @@ class EmailTemplate extends DataObject
     private $oncreated;
     private $active;
     
-    /* Hack to let me actually let me create a new object for now */
+    /* Put a constructor function here since I'm not sure how else to insert a new entry. */
     function __construct($database = NULL)
     {
     	if ($database) {

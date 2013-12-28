@@ -1,7 +1,7 @@
 ﻿<!-- tpl:zoom-parts/request-actions.tpl -->
 <div class="row-fluid">
   {if $showinfo == true && $isprotected == false && $isreserved == true}
-    <a class="btn btn-primary span6" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true">Create account</a>
+    <a class="btn btn-primary span6" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true"{if !$abortpref && $createdquestion != ''} onclick="return confirm('{$createdquestion}')"{/if}>Create account</a>
   {/if}
   {if $reserved == $currentUser->getUsername()}
     <a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Break reservation</a>
@@ -20,17 +20,17 @@
     {* If custom create reasons are active, then make the Created button a split button dropdown. *}
       {if !empty($createreasons)}
       <div class = "btn-group span4">
-        <a class="btn btn-success span10" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$createdid}&amp;sum={$checksum}">Created!</a>
+        <a class="btn btn-success span10" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$createdid}&amp;sum={$checksum}">{$createdname}</a>
         <button type="button" class="btn btn-success dropdown-toggle span2" data-toggle="dropdown"><span class="caret"></span></button>
         <ul class="dropdown-menu" role="menu">
         {foreach $createreasons as $reason}
-        	<li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$reason@key}&amp;sum={$checksum}">{$reason.name}</a></li>
+        	<li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$reason@key}&amp;sum={$checksum}"{if !$abortpref && $reason.question != ''} onclick="return confirm('{$reason.question}')"{/if}>{$reason.name}</a></li>
         {/foreach}
         </ul>
       </div>
       {else}
       <div class = "span4">
-      <a class="btn btn-success span12" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=1&amp;sum={$checksum}">Created</a>
+      <a class="btn btn-success span12" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$createdid}&amp;sum={$checksum}">{$createdname}</a>
       </div>
       {/if}
       <div class = "span4">
@@ -38,7 +38,7 @@
           <button type="button" class="btn btn-warning dropdown-toggle span12" data-toggle="dropdown">Decline<span class="caret"></span></button>
           <ul class="dropdown-menu">
           {foreach $declinereasons as $reason}
-            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$reason@key}&amp;sum={$checksum}">{$reason.name}</a></li>
+            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$reason@key}&amp;sum={$checksum}"{if !$abortpref && $reason.question != ''} onclick="return confirm('{$reason.question}')"{/if}>{$reason.name}</a></li>
           {/foreach}
           </ul>
         </div>

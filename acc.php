@@ -136,7 +136,7 @@ else {
 // TODO: Improve way the method is called.
 if ($action == '') {
 	echo defaultpage();
-	$skin->displayIfooter();
+	BootstrapSkin::displayInternalFooter();
 	die();
 }
 
@@ -1883,16 +1883,16 @@ elseif ($action == "emailmgmt") {
 		}
 		if(isset($_POST['submit'])) {
 			$emailTemplate = new EmailTemplate(gGetDb());
-			$name = $_POST['ename'];
+			$name = $_POST['name'];
 			$emailTemplate->setName($name);
-			$emailTemplate->setText($_POST['etext']);
-			$emailTemplate->setJsquestion($_POST['equestion']);
-			$emailTemplate->setOncreated(isset($_POST['ecreated']));
-			$emailTemplate->setActive(isset($_POST['eactive']));
+			$emailTemplate->setText($_POST['text']);
+			$emailTemplate->setJsquestion($_POST['jsquestion']);
+			$emailTemplate->setOncreated(isset($_POST['oncreated']));
+			$emailTemplate->setActive(isset($_POST['active']));
 			$siuser = sanitize($_SESSION['user']);
 			
 			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
-			$nameCheck = EmailTemplate::getByName($_POST['ename'], gGetDb());
+			$nameCheck = EmailTemplate::getByName($name, gGetDb());
 			if ($nameCheck) {
 				BootStrap::displayAlertBox("That Email template name is already being used. Please choose another.");
 				die();
@@ -1912,11 +1912,13 @@ elseif ($action == "emailmgmt") {
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
-		$smarty->assign('ename', '');
-		$smarty->assign('etext', '');
-		$smarty->assign('equestion', '');
-		$smarty->assign('ecreated', '');
-		$smarty->assign('eactive', '1');
+		$smarty->assign('id', null);
+		$smarty->assign('createdid', $createdid);
+		$smarty->assign('name', '');
+		$smarty->assign('text', '');
+		$smarty->assign('jsquestion', '');
+		$smarty->assign('oncreated', '');
+		$smarty->assign('active', '1');
 		$smarty->assign('emailmgmtpage', 'Create'); //Use a variable so we don't need two Smarty templates for creating and editing.
 		$smarty->display("emailmgmt-edit.tpl");
 		BootstrapSkin::displayInternalFooter();
@@ -1932,18 +1934,19 @@ elseif ($action == "emailmgmt") {
 				BootstrapSkin::displayAlertBox("I'm sorry, but you must be an administrator to access this page.");
 				die();
 			}
-			$emailTemplate->setText($_POST['etext']);
-			$emailTemplate->setJsquestion($_POST['equestion']);
+			$name = $_POST['name'];
+			$emailTemplate->setName($name);
+			$emailTemplate->setText($_POST['text']);
+			$emailTemplate->setJsquestion($_POST['jsquestion']);
 			
-			if ($gid != $createdid) { // Do not change the name or the checkboxes on the main created message.
-				$emailTemplate->setName($_POST['ename']);
-				$emailTemplate->setOncreated(isset($_POST['ecreated']));
-				$emailTemplate->setActive(isset($_POST['eactive']));
+			if ($gid != $createdid) { // Both checkboxes on the main created message should always be enabled.
+				$emailTemplate->setOncreated(1);
+				$emailTemplate->setActive(1);
 			}
 			$siuser = sanitize($_SESSION['user']);
 				
 			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
-			$nameCheck = EmailTemplate::getByName($_POST['ename'], gGetDb());
+			$nameCheck = EmailTemplate::getByName($name, gGetDb());
 			if ($nameCheck->getId() != "" && $nameCheck->getId() != $gid) {
 				BootstrapSkin::displayAlertBox("That Email template name is already being used. Please choose another.");
 				die();
@@ -1958,19 +1961,18 @@ elseif ($action == "emailmgmt") {
 			header("Refresh:5;URL=$tsurl/acc.php?action=emailmgmt");
 			BootstrapSkin::displayAlertBox("Email template has been saved successfully. You will be returned to Email Management in 5 seconds.<br /><br />\n
 			Click <a href=\"".$tsurl."/acc.php?action=emailmgmt\">here</a> if you are not redirected.");
-			$ename = $_POST['ename'];
-			$accbotSend->send("Email $ename ($gid) edited by $siuser");
+			$accbotSend->send("Email $name ($gid) edited by $siuser");
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
 		$emailTemplate = EmailTemplate::getById($_GET['edit'], gGetDb());
 		$smarty->assign('id', $gid);
 		$smarty->assign('createdid', $createdid);
-		$smarty->assign('ename', $emailTemplate->getName());
-		$smarty->assign('etext', $emailTemplate->getText());
-		$smarty->assign('equestion', $emailTemplate->getJsquestion());
-		$smarty->assign('ecreated', $emailTemplate->getOncreated());
-		$smarty->assign('eactive', $emailTemplate->getActive());
+		$smarty->assign('name', $emailTemplate->getName());
+		$smarty->assign('text', $emailTemplate->getText());
+		$smarty->assign('jsquestion', $emailTemplate->getJsquestion());
+		$smarty->assign('oncreated', $emailTemplate->getOncreated());
+		$smarty->assign('active', $emailTemplate->getActive());
 		$smarty->assign('emailmgmtpage', 'Edit'); // Use a variable so we don't need two Smarty templates for creating and editing.
 		$smarty->display("emailmgmt-edit.tpl");
 		BootstrapSkin::displayInternalFooter();
@@ -1983,9 +1985,8 @@ elseif ($action == "emailmgmt") {
 	$rowsnum = mysql_num_rows($result);
 	if ($rowsnum > 0) {
 		$rows= array();
-		while( $row = mysql_fetch_assoc($result) ) {
+		while( $row = mysql_fetch_assoc($result) )
 			$rows[] = $row;
-		}
 		$smarty->assign('activeemails', $rows);
 		$smarty->assign('displayactive', true);
 	}
@@ -1999,9 +2000,8 @@ elseif ($action == "emailmgmt") {
 	$rowsnum = mysql_num_rows($result);
 	if ($rowsnum > 0) {
 		$rows= array();
-		while( $row = mysql_fetch_assoc($result) ) {
+		while( $row = mysql_fetch_assoc($result) )
 			$rows[] = $row;
-		}
 		$smarty->assign('inactiveemails', $rows);
 		$smarty->assign('displayinactive', true);
 	}
@@ -2015,7 +2015,7 @@ elseif ($action == "emailmgmt") {
 # If the action specified does not exist, goto the default page.
 else {
 	echo defaultpage();
-	$skin->displayIfooter();
+	BootstrapSkin::displayInternalFooter();
 	die();
 }
 ?>
