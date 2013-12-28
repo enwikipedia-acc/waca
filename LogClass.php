@@ -301,7 +301,11 @@ class LogPage
 			}
 			if ($rla == "Unbanned") {
                 $ban = Ban::getById($rlp, gGetDb());
-				$logList .="<li>$rlu unbanned ban ID $rlp (". $ban->getTarget() .") at $rlt ($rlc)</li>";
+                if ($ban) // Deal with bans from when unbanning resulted in the ban's row being deleted.
+                	$bantarget = " (" . $ban->getTarget() . ") ";
+                else
+                	$bantarget = " ";
+				$logList .="<li>$rlu unbanned ban ID $rlp". $bantarget ."at $rlt ($rlc)</li>";
 			}
 			if($rla == "Reserved") {
 				$logList .= "<li>$rlu reserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
@@ -458,7 +462,11 @@ class LogPage
 			}
 			if ($rla == "Unbanned") {
                 $ban = Ban::getById($rlp, gGetDb());
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"unbanned (". $ban->getTarget() .")", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+                if ($ban) // Deal with bans from when unbanning resulted in the ban's row being deleted.
+                	$bantarget = " (" . $ban->getTarget() . ")";
+                else
+                	$bantarget = "";
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"unbanned" . $bantarget, 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if($rla == "Reserved") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"reserved", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');

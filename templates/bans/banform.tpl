@@ -3,10 +3,10 @@
   <div class="control-group">
     <label class="control-label">Type:</label>
     <div class="controls">
-      <select name="type"{if $bantype != ""} disabled="true"{/if} required="true">
-		<option value="IP"{if $bantype == "IP"} selected="true"{/if}>IP</option>
-		<option value="Name"{if $bantype == "Name"} selected="true"{/if}>Name</option>
-		<option value="EMail"{if $bantype == "EMail"} selected="true"{/if}>E-Mail</option>
+      <select name="type" required="true">
+		<option value="IP"{if $bantype == "IP"} selected="true"{else if $bantype != ""} disabled ="true"{/if}>IP</option>
+		<option value="Name"{if $bantype == "Name"} selected="true"{else if $bantype != ""} disabled ="true"{/if}>Name</option>
+		<option value="EMail"{if $bantype == "EMail"} selected="true"{else if $bantype != ""} disabled ="true"{/if}>E-Mail</option>
       </select>
     </div>
   </div>
@@ -14,7 +14,7 @@
   <div class="control-group">
     <label class="control-label">Ban Target:</label>
     <div class="controls">
-      <input type="text" name="target" {if $bantarget != ""} disabled="true" value="{$bantarget|escape}"{/if} required="true"/>
+      <input type="text" name="target" {if $bantarget != ""} readonly="true" value="{$bantarget|escape}"{/if} required="true"/>
     </div>
   </div>
 
