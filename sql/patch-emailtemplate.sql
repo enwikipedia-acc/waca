@@ -28,3 +28,7 @@ INSERT INTO `emailtemplate` (`id`, `name`, `text`, `jsquestion`, `oncreated`, `a
 DROP TABLE IF EXISTS `closes`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=current_user SQL SECURITY INVOKER VIEW `closes` AS select concat('Closed ',cast(`emailtemplate`.`id` AS char)) AS `CONCAT("Closed ",mail_id)`,`emailtemplate`.`name` AS `mail_desc` from `emailtemplate` union select 'Closed 0' AS `Closed 0`,'Dropped' AS `Dropped` union select 'Closed custom' AS `Closed custom`,'Closed custom' AS `Closed custom` union select 'Closed custom-n' AS `Closed custom-n`,'Closed custom - Not created' AS `Closed custom - Not created` union select 'Closed custom-y' AS `Closed custom-y`,'Closed custom - Created' AS `Closed custom - Created`;
+
+-- Make previous SUL Taken and Password Reset closures use the ID in the new table.
+UPDATE `acc_log` SET `log_action` = 'Closed 6' WHERE `log_action` = 'Closed 26';
+UPDATE `acc_log` SET `log_action` = 'Closed 7' WHERE `log_action` = 'Closed 30';
