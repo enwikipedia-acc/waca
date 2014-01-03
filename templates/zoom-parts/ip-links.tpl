@@ -1,4 +1,4 @@
-?<!-- tpl:zoom-parts/ip-links.tpl -->
+<!-- tpl:zoom-parts/ip-links.tpl -->
 <a id="IPTalk-{$ipaddress}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/User_talk:{$ipaddress}" OnClick="$('#IPTalk-{$ipaddress}').css('background-image', 'linear-gradient(to bottom, rgb(0, 255, 0), rgb(0, 230, 0))');">Talk page</a>
 <a id="IPLocalContribs-{$ipaddress}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:Contributions/{$ipaddress}" OnClick="$('#IPLocalContribs-{$ipaddress}').css('background-image', 'linear-gradient(to bottom, rgb(0, 255, 0), rgb(0, 230, 0))');">Local Contributions</a>
 <a id="IPDelEdits-{$ipaddress}" class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=tparis-pcount&amp;data={$ipaddress}" OnClick="$('#IPDelEdits-{$ipaddress}').css('background-image', 'linear-gradient(to bottom, rgb(0, 255, 0), rgb(0, 230, 0))');">Deleted Edits</a>
