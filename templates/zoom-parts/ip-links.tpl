@@ -1,15 +1,15 @@
-﻿<!-- tpl:zoom-parts/ip-links.tpl -->
-<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/User_talk:{$ipaddress}">Talk page</a>
-<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:Contributions/{$ipaddress}">Local Contributions</a>
-<a class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=tparis-pcount&amp;data={$ipaddress}">Deleted Edits</a>
-<a class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=luxo-contributions&amp;data={$ipaddress}">Global Contributions</a>
-<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=block&amp;page={$ipaddress}">Local Block Log</a>
-<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:BlockList/{$ipaddress}">Active Local Blocks</a>
-<a class="btn btn-small" target="_blank" href="https://meta.wikimedia.org/w/index.php?title=Special:Log&amp;type=gblblock&amp;page={$ipaddress}">Global Block Log</a>
-<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:GlobalBlockList/{$ipaddress}">Active Global Blocks</a>
-<a class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=oq-whois&amp;data={$ipaddress}">Whois</a>
-<a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:AbuseLog&amp;wpSearchUser={$ipaddress}">Abuse Filter Log</a>
+?<!-- tpl:zoom-parts/ip-links.tpl -->
+<a id="IPTalk-{$ipaddress}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/User_talk:{$ipaddress}" OnClick="$('#IPTalk-{$ipaddress}').css'background-image', 'linear-gradient(to bottom, rgb(0, 255, 0), rgb(0, 230, 0))';">Talk page</a>
+<a id="IPLocalContribs-{$ipaddress}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:Contributions/{$ipaddress}" OnClick="$('#IPLocalContribs-{$ipaddress}').css'background-image', 'linear-gradient(to bottom, rgb(0, 255, 0), rgb(0, 230, 0))';">Local Contributions</a>
+<a id="IPDelEdits-{$ipaddress}" class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=tparis-pcount&amp;data={$ipaddress}" OnClick="$('#IPDelEdits-{$ipaddress}').css'background-image', 'linear-gradient(to bottom, rgb(0, 255, 0), rgb(0, 230, 0))';">Deleted Edits</a>
+<a id="IPGlobalContribs-{$ipaddress}" class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=luxo-contributions&amp;data={$ipaddress}" OnClick="$('#IPGlobalContribs-{$ipaddress}').css'background-image', 'linear-gradient(to bottom, rgb(0, 255, 0), rgb(0, 230, 0))';">Global Contributions</a>
+<a id="IPLocalBlockLog-{$ipaddress}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=block&amp;page={$ipaddress}" OnClick="$('#IPLocalBlockLog-{$ipaddress}').css'background-image', 'linear-gradient(to bottom, rgb(0, 255, 0), rgb(0, 230, 0))';">Local Block Log</a>
+<a id="IPActiveLocalBlock-{$ipaddress}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:BlockList/{$ipaddress}" OnClick="$('#IPActiveLocalBlock-{$ipaddress}').css'background-image', 'linear-gradient(to bottom, rgb(0, 255, 0), rgb(0, 230, 0))';">Active Local Blocks</a>
+<a id="IPGlobalBlockLog-{$ipaddress}" class="btn btn-small" target="_blank" href="https://meta.wikimedia.org/w/index.php?title=Special:Log&amp;type=gblblock&amp;page={$ipaddress}" OnClick="$('#IPGlobalBlockLog-{$ipaddress}').css'background-image', 'linear-gradient(to bottom, rgb(0, 255, 0), rgb(0, 230, 0))';">Global Block Log</a>
+<a id="IPActiveGlobalBlock-{$ipaddress}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:GlobalBlockList/{$ipaddress}" OnClick="$('#IPActiveGlobalBlock-{$ipaddress}').css'background-image', 'linear-gradient(to bottom, rgb(0, 255, 0), rgb(0, 230, 0))';">Active Global Blocks</a>
+<a id="IPWhois-{$ipaddress}" class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=oq-whois&amp;data={$ipaddress}" OnClick="$('#IPWhois-{$ipaddress}').css'background-image', 'linear-gradient(to bottom, rgb(0, 255, 0), rgb(0, 230, 0))';">Whois</a>
+<a id="IPAbuseLog-{$ipaddress}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:AbuseLog&amp;wpSearchUser={$ipaddress}" OnClick="$('#IPAbuseLog-{$ipaddress}').css'background-image', 'linear-gradient(to bottom, rgb(0, 255, 0), rgb(0, 230, 0))';">Abuse Filter Log</a>
 {if $ischeckuser == true}
-  <a class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:CheckUser&amp;ip={$ipaddress}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$id}">CheckUser</a>
+  <a id="IPCU-{$ipaddress}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:CheckUser&amp;ip={$ipaddress}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$id}" OnClick="$('#IPCU-{$ipaddress}').css'background-image', 'linear-gradient(to bottom, rgb(0, 255, 0), rgb(0, 230, 0))';">CheckUser</a>
 {/if}
 <!-- /tpl:zoom-parts/ip-links.tpl -->
