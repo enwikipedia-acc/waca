@@ -139,15 +139,15 @@ class Ban extends DataObject
         
         $statement->execute();
         
-        $result = array();
-        foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v)
-        {
-            $v->isNew = false;
-            $v->setDatabase($database);
-            $result[] = $v;
-        }
-        
-        return $result;
+		$resultObject = $statement->fetchObject( get_called_class() );
+
+		if($resultObject != false)
+		{
+			$resultObject->isNew = false;
+            $resultObject->setDatabase($database); 
+		}
+
+		return $resultObject;
     }
     
     public function save()
