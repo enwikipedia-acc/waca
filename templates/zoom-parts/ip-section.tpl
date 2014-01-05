@@ -58,7 +58,7 @@
           </td>
           <td>
             {if $proxy.showlinks}
-              {include file="zoom-parts/ip-links.tpl" ipaddress="{$proxy.ip}"}
+              {include file="zoom-parts/ip-links.tpl" ipaddress="{$proxy.ip}" index="{$proxy@iteration}"}
             {/if}
           </td>
         </tr>
@@ -68,7 +68,7 @@
 {else}
   <div class="row-fluid">
     <h3>IP Address links:</h3>
-    {include file="zoom-parts/ip-links.tpl" ipaddress="{$ip}"}
+    {include file="zoom-parts/ip-links.tpl" ipaddress="{$ip}" index="0"}
   </div>
 {/if}
 <hr />
