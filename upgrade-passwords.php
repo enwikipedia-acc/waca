@@ -12,8 +12,6 @@ require_once 'includes/PdoDatabase.php';
 
 $db = gGetDb( );
 
-$db->exec("CREATE TABLE tmp_userpwbackup AS SELECT id, password FROM user WHERE password NOT LIKE ':%';");
-
 if( ! $db->beginTransaction() ) {
   	echo "Error in transaction: Could not start transaction.";
 	exit( 1 );  
