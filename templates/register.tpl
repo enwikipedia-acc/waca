@@ -73,7 +73,7 @@
 
 <div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
   <div class="modal-header">
-    <h3 id="myModalLabel">Modal header</h3>
+    <h3 id="myModalLabel">Help</h3>
   </div>
   <div class="modal-body">
     <p>Please make an edit to your talk page while logged in.  In this edit, note that you requested an account on the ACC account creation interface.  Failure to do this will result in your request being declined as we will be unable to verify it is you who requested the account.</p>
