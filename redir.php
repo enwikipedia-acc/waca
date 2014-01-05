@@ -5,6 +5,7 @@ $toolList = array(
 	'luxo-contributions' => '//tools.wmflabs.org/guc/?user=%DATA%',
 	'oq-whois' => 'http://whois.net/ip-address-lookup/%DATA%',
 	'sulutil' => '//tools.wmflabs.org/quentinv57-tools/tools/sulinfo.php?showinactivity=1&showblocks=1&username=%DATA%',
+	'google' => 'https://www.google.com/search?q=%DATA%',
 );
 
 if(isset($_GET['round2']))
