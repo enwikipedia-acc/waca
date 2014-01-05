@@ -26,12 +26,10 @@ require_once 'includes/StatisticsPage.php';
 require_once 'includes/messages.php';
 require_once 'includes/database.php';
 require_once 'devlist.php';
-require_once 'includes/offlineMessage.php';
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
-$offlineMessage = new offlineMessage(false);
-$offlineMessage->check();
+Offline::check(false);
 
 // Initialize the class objects.
 $messages = new messages();

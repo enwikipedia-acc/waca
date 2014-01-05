@@ -19,7 +19,6 @@ require_once 'functions.php';
 
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
-require_once 'includes/offlineMessage.php';
 require_once 'includes/database.php';
 require_once 'includes/request.php';
 require_once 'includes/skin.php';
@@ -29,8 +28,7 @@ require_once 'includes/strings.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.
-$offlineMessage = new offlineMessage(true);
-$offlineMessage->check();
+Offline::check(true);
 
 // Initialize the database classes.
 $tsSQL = new database("toolserver");
