@@ -277,7 +277,7 @@ elseif ($action == "sreg") {
 	}
 	if (!isset($fail) || $fail != 1) {
 		$user_pass = authutils::encryptPassword($_REQUEST['pass']); // again, using unfiltered as data processing is done here.
-		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_secure,user_confirmationdiff) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', 1,'$conf_revid');";
+		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_confirmationdiff) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$conf_revid');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
