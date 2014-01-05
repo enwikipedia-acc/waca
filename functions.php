@@ -744,9 +744,6 @@ function zoomPage($id,$urlhash)
 	else
 		$smarty->assign("viewuseragent", false);
 	
-	$isadmin = ( $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) );
-	$smarty->assign("isadmin", $isadmin);
-	
 	$request_date = $row['pend_date'];
 	
 	$reserveByUser = isReservedWithRow($row);
@@ -908,23 +905,6 @@ function zoomPage($id,$urlhash)
 		$declinereasons[$row['id']]['question'] = $row['jsquestion'];
 	}
 	$smarty->assign("declinereasons", $declinereasons);
-
-    $sid = sanitize( $_SESSION['user'] );
-	$query = "SELECT user_abortpref, user_id FROM acc_user WHERE user_name = '$sid'";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-	if(array_key_exists('user_abortpref',$row)) {
-		$smarty->assign("abortpref", $row['user_abortpref']);
-	}
-	else{
-		// If preference is not set, default to JavaScript questions being on.
-		$smarty->assign("abortpref", 1);
-	}
-		
-	$smarty->assign("userid", $row['user_id']);
-	$smarty->assign("tooluser", $_SESSION['user']);
 	
 	return $smarty->fetch("request-zoom.tpl");
 }

@@ -48,8 +48,6 @@ class messages {
 	
 	public function isEmail($messageNumber)
 	{
-		global $tsSQL;
-		
 		// override for drop
 		if( $messageNumber == 0 ) return true;
 		

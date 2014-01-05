@@ -1,11 +1,11 @@
 ﻿<!-- tpl:zoom-parts/request-actions.tpl -->
 <div class="row-fluid">
   {if $showinfo == true && $isprotected == false && $isreserved == true}
-    <a class="btn btn-primary span6" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true"{if !$abortpref && $createdquestion != ''} onclick="return confirm('{$createdquestion}')"{/if}>Create account</a>
+    <a class="btn btn-primary span6" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true"{if !$currentUser->getAbortPref() && $createdquestion != ''} onclick="return confirm('{$createdquestion}')"{/if}>Create account</a>
   {/if}
   {if $reserved == $currentUser->getUsername()}
     <a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Break reservation</a>
-  {elseif $isadmin && $isreserved}
+  {elseif $currentUser->isAdmin() && $isreserved}
     <a class="btn span6 offset6 btn-warning" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Force break</a>
   {/if}
   {if !$isreserved}
@@ -24,7 +24,7 @@
         <button type="button" class="btn btn-success dropdown-toggle span2" data-toggle="dropdown"><span class="caret"></span></button>
         <ul class="dropdown-menu" role="menu">
         {foreach $createreasons as $reason}
-        	<li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$reason@key}&amp;sum={$checksum}"{if !$abortpref && $reason.question != ''} onclick="return confirm('{$reason.question}')"{/if}>{$reason.name}</a></li>
+        	<li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$reason@key}&amp;sum={$checksum}"{if !$currentUser->getAbortPref() && $reason.question != ''} onclick="return confirm('{$reason.question}')"{/if}>{$reason.name}</a></li>
         {/foreach}
         </ul>
       </div>
@@ -38,7 +38,7 @@
           <button type="button" class="btn btn-warning dropdown-toggle span12" data-toggle="dropdown">Decline<span class="caret"></span></button>
           <ul class="dropdown-menu">
           {foreach $declinereasons as $reason}
-            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$reason@key}&amp;sum={$checksum}"{if !$abortpref && $reason.question != ''} onclick="return confirm('{$reason.question}')"{/if}>{$reason.name}</a></li>
+            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$reason@key}&amp;sum={$checksum}"{if !$currentUser->getAbortPref() && $reason.question != ''} onclick="return confirm('{$reason.question}')"{/if}>{$reason.name}</a></li>
           {/foreach}
           </ul>
         </div>
@@ -67,7 +67,7 @@
   </div>
 {/if}
               
-{if $isadmin}
+{if $currentUser->isAdmin()}
   <hr />
   <div class="row-fluid">
     <a class="btn btn-danger span4" href="{$tsurl}/acc.php?action=ban&amp;name={$id}">Ban Username</a>

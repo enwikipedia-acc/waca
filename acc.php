@@ -124,14 +124,6 @@ elseif (!isset($_GET['nocheck']))
         $session->checksecurity($_SESSION['user']);
 }
 
-// Store if user is an admin in a Smarty variable now, so it can be easily accessed in templates.
-if($session->hasright($_SESSION['user'], 'Admin')) {
-	$smarty->assign('userisadmin', true);
-}
-else {
-	$smarty->assign('userisadmin', false);
-}
-
 // When no action is specified the default Internal ACC are displayed.
 // TODO: Improve way the method is called.
 if ($action == '') {
@@ -1410,10 +1402,9 @@ elseif ($action == "logs") {
 	);
 	// Add entries for every Email template, including inactive ones.
 	$query = "SELECT id, name FROM emailtemplate ORDER BY id";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	while ($row = mysql_fetch_assoc($result)) {
+	$statement = gGetDb()->prepare($query);
+	$statement->execute();
+	while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 		$logAction = "Closed " . $row['id'];
 		$logActions[$logAction] = "Request " . $row['name'];
 	}
@@ -1877,8 +1868,9 @@ elseif ($action == "emailmgmt") {
 	/* New page for managing Emails, since I would rather not be handling editing
 	interface messages (such as the Sitenotice) and the new Emails in the same place. */
 	if(isset($_GET['create'])) {
-		if(!$session->hasright($_SESSION['user'], 'Admin')) {
+		if(!User::getCurrent()->isAdmin()) {
 			BootstrapSkin::displayAlertBox("I'm sorry, but you must be an administrator to access this page.");
+			BootstrapSkin::displayInternalFooter();
 			die();
 		}
 		if(isset($_POST['submit'])) {
@@ -1895,13 +1887,13 @@ elseif ($action == "emailmgmt") {
 			$nameCheck = EmailTemplate::getByName($name, gGetDb());
 			if ($nameCheck) {
 				BootStrap::displayAlertBox("That Email template name is already being used. Please choose another.");
+				BootstrapSkin::displayInternalFooter();
 				die();
 			}
 			
 			$emailTemplate->save();
 			$id = $emailTemplate->getId();
-			$now = date("Y-m-d H-i-s");
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$id', '$siuser', 'CreatedEmail', '$now');";
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$id', '$siuser', 'CreatedEmail', CURRENT_TIMESTAMP());";
 			$result = $tsSQL->query($query);
 			if (!$result)
 				sqlerror("Query failed: $query ERROR: " . mysql_error());
@@ -1932,6 +1924,7 @@ elseif ($action == "emailmgmt") {
 			// Allow the user to see the edit form (with read only fields) but not POST anything.
 			if(!$session->hasright($_SESSION['user'], 'Admin')) {
 				BootstrapSkin::displayAlertBox("I'm sorry, but you must be an administrator to access this page.");
+				BootstrapSkin::displayInternalFooter();
 				die();
 			}
 			$name = $_POST['name'];
@@ -1939,9 +1932,13 @@ elseif ($action == "emailmgmt") {
 			$emailTemplate->setText($_POST['text']);
 			$emailTemplate->setJsquestion($_POST['jsquestion']);
 			
-			if ($gid != $createdid) { // Both checkboxes on the main created message should always be enabled.
+			if ($gid == $createdid) { // Both checkboxes on the main created message should always be enabled.
 				$emailTemplate->setOncreated(1);
 				$emailTemplate->setActive(1);
+			}
+			else {
+				$emailTemplate->setOncreated(isset($_POST['oncreated']));
+				$emailTemplate->setActive(isset($_POST['active']));
 			}
 			$siuser = sanitize($_SESSION['user']);
 				
@@ -1949,6 +1946,7 @@ elseif ($action == "emailmgmt") {
 			$nameCheck = EmailTemplate::getByName($name, gGetDb());
 			if ($nameCheck->getId() != "" && $nameCheck->getId() != $gid) {
 				BootstrapSkin::displayAlertBox("That Email template name is already being used. Please choose another.");
+				BootstrapSkin::displayInternalFooter();
 				die();
 			}
 
@@ -1979,13 +1977,15 @@ elseif ($action == "emailmgmt") {
 		die();
 	}
 	$query = "SELECT id, name FROM emailtemplate WHERE active = 1";
-	$result = $tsSQL->query($query);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$rowsnum = mysql_num_rows($result);
+	$statement = gGetDb()->prepare($query);
+	$statement->execute();
+	$query2 = "SELECT COUNT(*) FROM emailtemplate WHERE active = 1";
+	$statement2 = gGetDb()->prepare($query);
+	$statement2->execute();
+	$rowsnum =  $statement2->fetchColumn();
 	if ($rowsnum > 0) {
 		$rows= array();
-		while( $row = mysql_fetch_assoc($result) )
+		while( $row = $statement->fetch(PDO::FETCH_ASSOC) )
 			$rows[] = $row;
 		$smarty->assign('activeemails', $rows);
 		$smarty->assign('displayactive', true);
@@ -1994,13 +1994,15 @@ elseif ($action == "emailmgmt") {
 		$smarty->assign('displayactive', false);
 	}
 	$query = "SELECT id, name FROM emailtemplate WHERE active = 0";
-	$result = $tsSQL->query($query);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$rowsnum = mysql_num_rows($result);
+	$statement = gGetDb()->prepare($query);
+	$statement->execute();
+	$query2 = "SELECT COUNT(*) FROM emailtemplate WHERE active = 0";
+	$statement2 = gGetDb()->prepare($query);
+	$statement2->execute();
+	$rowsnum =  $statement2->fetchColumn();
 	if ($rowsnum > 0) {
 		$rows= array();
-		while( $row = mysql_fetch_assoc($result) )
+		while( $row = $statement->fetch(PDO::FETCH_ASSOC) )
 			$rows[] = $row;
 		$smarty->assign('inactiveemails', $rows);
 		$smarty->assign('displayinactive', true);
