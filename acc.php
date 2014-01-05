@@ -1883,9 +1883,7 @@ elseif ($action == "ec") { // edit comment
 }
 elseif ($action == "sendtouser") { 
     
-    // Sanitises the resid for use and checks its validity.
-    print_r($_POST);
-    
+    // Sanitises the resid for use and checks its validity.    
 	$request = $internalInterface->checkreqid($_POST['id']);
 	$userid = $session->getUidFromUsername($_POST['user']);
 	

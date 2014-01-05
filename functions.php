@@ -845,18 +845,19 @@ function zoomPage($id,$urlhash)
 	// START OTHER REQUESTS BY IP AND EMAIL STUFF
     // assign to user
     if (! isProtected(0)) {
-		$userListQuery = "SELECT CONCAT('\"', username, '\"') as usernamea FROM user;";
+		$userListQuery = "SELECT username FROM user;";
 		$userListResult = gGetDb()->query($userListQuery);
 		if (!$userListResult)
 			sqlerror("Query failed: $query ERROR: " . gGetDb()->errorInfo() ,"Database query error.");
-		$userList = '[' . implode(",", $userListResult->fetchColumn()) . ']';	
-        $smarty->assign("jsuserlist", $userList);
+        $userListData = $userListResult->fetchAll(PDO::FETCH_COLUMN);
+        $userListProcessedData = array();
+        foreach ($userListData as $userListItem)
+        {
+            $userListProcessedData[] = "\"" . htmlentities($userListItem) . "\"";
+        }
         
-		$out .= "<form action='$tsurl/acc.php?action=sendtouser&amp;hash=$urlhash' method='post'>";
-		$out .= "<input type='hidden' name='id' value='$gid' />";
-		$out .= "<input type='text' required placeholder='Assign to user...' name='user' class='span3' data-provide='typeahead' data-items='4' data-source='" . $userList . "'>";
-		$out .= "<input class='btn' type='submit' value='Assign to user' />";
-		$out .= "</form>";
+		$userList = '[' . implode(",", $userListProcessedData) . ']';	
+        $smarty->assign("jsuserlist", $userList);
 	}
     // end: assign to user
     
