@@ -1885,40 +1885,67 @@ elseif ($action == "sendtouser") {
     
     // Sanitises the resid for use and checks its validity.    
 	$request = $internalInterface->checkreqid($_POST['id']);
-	$userid = $session->getUidFromUsername($_POST['user']);
-	
-	mysql_query('SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;',$tsSQLlink);
-	mysql_query('BEGIN TRANSACTION;',$tsSQLlink);
     
-	$query = "UPDATE `acc_pend` SET `pend_reserved` = '".$userid."' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result){		//Unlock tables first!
-		mysql_query("ROLLBACK;", $tsSQLlink);
-		Die("Error reserving request.");
-	}
-	$now = date("Y-m-d H-i-s");
+    $database = gGetDb();
 	
-	// old user sends
-	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$request', '".sanitise($_SESSION['user'])."', 'SendReserved', '$now', '');";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result) {
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-		mysql_query("ROLLBACK;", $tsSQLlink);
-	}
-	
-	// new user reserves...
-	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$request', '".mysql_real_escape_string($_POST['user'], $tsSQLlink)."', 'ReceiveReserved', '$now', '');";
-	$result = mysql_query($query, $tsSQLlink);
-	
-	if (!$result) {
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-		mysql_query("ROLLBACK;", $tsSQLlink);
-	}
+    $user = User::getByUsername($_POST['user'], $database);
+    $curuser = User::getCurrent()->getUsername();
+    
+    if($database->beginTransaction())
+    {
+        try
+        {
+            $updateStatement = $database->prepare("UPDATE acc_pend SET pend_reserved = :userid WHERE pend_id = :request LIMIT 1;");
+            $updateStatement->bindParam(":userid", $user->getId());
+            $updateStatement->bindParam(":request", $request);
+            if(!$updateStatement->execute())
+            {
+                throw new Exception("Error updating reserved status of request.");   
+            }
+            
+            $logStatement = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:request, :user, :action, CURRENT_TIMESTAMP(), '');");
+            $action = "SendReserved";
+            $logStatement->bindParam(":user", $curuser);
+            $logStatement->bindParam(":request", $request);
+            $logStatement->bindParam(":action", $action);
+            if(!$logStatement->execute())
+            {
+                throw new Exception("Error inserting send log entry.");   
+            }
+            
+            $logStatement->bindParam(":user", $user->getUsername());
+            $action = "ReceiveReserved";
+            if(!$logStatement->execute())
+            {
+                throw new Exception("Error inserting send log entry.");   
+            }
+            
+            $database->commit();
+        }
+        catch(Exception $ex)
+        {
+            $database->rollBack();          
+            BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Query Error", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die(); 
+        }
+        catch(PDOException $ex)
+        {
+            $database->rollBack();          
+            BootstrapSkin::displayAlertBox("An error was encountered during the transaction, and the transaction has been rolled back. <br />" . $ex->getMessage(), "alert-error", "Database Error", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die(); 
+        }
+    }
+    else
+    {
+        BootstrapSkin::displayAlertBox("Could not start database transaction.", "alert-error", "Database Error", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
 	//$accbotSend->send("Request $request is being handled by " . $_POST['user']);
 
-	// Release the lock on the table.
-	mysql_query('COMMIT;',$tsSQLlink);
-    
     // redirect to zoom page
     echo "<meta http-equiv=\"Refresh\" Content=\"0; URL=$tsurl/acc.php?action=zoom&id=$request\">";
 }
