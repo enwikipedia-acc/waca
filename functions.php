@@ -845,7 +845,7 @@ function zoomPage($id,$urlhash)
 	// START OTHER REQUESTS BY IP AND EMAIL STUFF
     // assign to user
     if (! isProtected(0)) {
-		$userListQuery = "SELECT username FROM user;";
+		$userListQuery = "SELECT username FROM user WHERE status = 'User' or status = 'Admin';";
 		$userListResult = gGetDb()->query($userListQuery);
 		if (!$userListResult)
 			sqlerror("Query failed: $query ERROR: " . gGetDb()->errorInfo() ,"Database query error.");

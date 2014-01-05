@@ -13,8 +13,8 @@
       <form action="{$tsurl}/acc.php?action=sendtouser&amp;hash={$checksum}" method="post" class="form-inline">
         <input type="hidden" name="id" value="{$id}" />
         <div class="row-fluid">
-          <input type="text" required="true" placeholder="Assign to user..." name="user" data-provide="typeahead" data-items="4" data-source='{$jsuserlist}' class="span8"/>
-          <input class="btn span4" type="submit" value="Assign to user" />
+          <input type="text" required="true" placeholder="Send reservation to another user..." name="user" data-provide="typeahead" data-items="4" data-source='{$jsuserlist}' class="span8"/>
+          <input class="btn span4" type="submit" value="Send Reservation" />
         </div>
       </form>
     </div>
