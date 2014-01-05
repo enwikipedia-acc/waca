@@ -1,3 +1,7 @@
 [submodule "lib/bootstrap-sortable"]
 	path = lib/bootstrap-sortable
 	url = git@github.com:enwikipedia-acc/bootstrap-sortable.git
+[submodule "lib/password_compat"]
+	path = lib/password_compat
+	url = git@github.com:ircmaxell/password_compat.git
+	branch = master

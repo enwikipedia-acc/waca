@@ -11,6 +11,9 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
+if (!defined("ACC")) {
+	die();
+} // Invalid entry point
 
 class QueryBrowser
 {
@@ -21,21 +24,12 @@ class QueryBrowser
 	var $overrideTableTitles = false;
 	var $rowFetchMode = MYSQL_ASSOC;
 	
-	public function executeQuery($query)
-	{
-		global $tsSQL;
-		$results = $tsSQL->query($query);
-		return $results;
-	}
-	
 	public function executeQueryToTable($query)
 	{
 		$out = "";
 
-		
-		$results = $this->executeQuery($query);
+		$results = $this->executeQueryToArray($query);
 
-	
 		$out.= '<table class="table table-striped table-hover table-condensed"><tr>';
 
 		if($this->numberedList == true)
@@ -52,22 +46,19 @@ class QueryBrowser
 		}
 		else
 		{
-			for ($i = 0; $i < mysql_num_fields($results) ; $i++)
-			{
-				$out.=  "<th>" . mysql_field_name($results,$i) . "</th>"; 
-			}	
+            if(count($results) > 0)
+            {
+                foreach ($results[0] as $k => $v)
+                {
+                    $out.=  "<th>" . $k . "</th>"; 
+                }
+            }
 		}
 		$out.=  "</tr>";
 		
-
 		
 		$currentreq = 0;
-		while($row = 
-			(function_exists($this->tableCallbackFunction) 
-				? mysql_fetch_array($results, $this->rowFetchMode)
-				: mysql_fetch_assoc($results)
-				)
-		)
+		foreach($results as $row)
 		{
 			$currentreq++;
 			if(function_exists($this->tableCallbackFunction))
@@ -76,13 +67,8 @@ class QueryBrowser
 			}
 			else
 			{
-				$out.=  '<tr';
-				if ($currentreq % 2 == 0) {
-					$out.=  ' class="alternate">';
-				} else {
-					$out.=  '>';
-				}
-	
+				$out.=  '<tr>';
+                
 				if($this->numberedList == true)
 				{
 					$out.="<th>" . $currentreq . "</th>";
@@ -100,31 +86,20 @@ class QueryBrowser
 			
 		}
 		
-
-		
 		$out.=  "</table>";
 		
-
 		return $out;
 	}
 	
 	public function executeQueryToArray($query)
 	{
-		$resultset = $this->executeQuery($query);
-		
-		$results = array();
-		
-		while($row = 
-			(function_exists($this->tableCallbackFunction) 
-				? mysql_fetch_array($resultset, $this->rowFetchMode)
-				: mysql_fetch_assoc($resultset)
-				)
-		)
-		{
-			$results[] = $row;
-		}
-		
-		return $results;
+        $database = gGetDb();
+        
+        $statement = $database->prepare($query);
+        
+        $statement->execute();
+        
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
 	}
 	
 }

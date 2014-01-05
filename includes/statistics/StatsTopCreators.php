@@ -11,6 +11,9 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
+if (!defined("ACC")) {
+	die();
+} // Invalid entry point
 
 class StatsTopCreators extends StatisticsPage
 {
@@ -104,10 +107,6 @@ function statsTopCreatorsRowCallback($row, $rowno)
 	// $out = '<!-- vardump: $row:' . print_r($row,true) . "-->";
 
 	$out .= "<tr";
-	if($rowno % 2 == 0)
-	{
-		$out .= ' class="alternate"';	
-	}
 	$out .= '>';
 	
 	$out .= '<th>'.$rowno.'</th>';

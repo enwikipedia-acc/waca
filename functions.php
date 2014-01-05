@@ -16,10 +16,9 @@ global $ACC;
 global $tsurl;
 global $dontUseWikiDb;
 
-if ($ACC != "1") {
-	header("Location: $tsurl/");
+if (!defined("ACC")) {
 	die();
-} //Re-route, if you're a web client.
+} // Invalid entry point
 
 require_once 'queryBrowser.php';
 require_once 'LogClass.php';
@@ -29,7 +28,6 @@ require_once 'includes/internalInterface.php';
 require_once 'includes/session.php';
 require_once 'includes/request.php';
 require_once 'includes/authutils.php';
-require_once 'autolink.php';
 
 // Initialize the class objects.
 $messages = new messages();
@@ -215,7 +213,21 @@ function sendemail($messageno, $target, $id) {
 	$row = mysql_fetch_assoc($result);
 	$mailtxt = $row['mail_text'];
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-	mail($target, "RE: [ACC #$id] English Wikipedia Account Request", $mailtxt, $headers);
+	
+	// Get the closing user's Email signature and append it to the Email.
+	$sid = sanitize($_SESSION['user']);
+	$query = "SELECT user_emailsig FROM acc_user WHERE user_name = '$sid'";
+	$result = mysql_query($query);
+	if (!$result)
+		sqlerror("Query failed: $query ERROR: " . mysql_error());
+	$row = mysql_fetch_assoc($result);
+	if($row['user_emailsig'] != "") {
+		$emailsig = html_entity_decode($row['user_emailsig'], ENT_QUOTES, "UTF-8");
+		mail($target, "RE: [ACC #$id] English Wikipedia Account Request", $mailtxt . "\n\n" . $emailsig, $headers);
+	}
+	else {
+		mail($target, "RE: [ACC #$id] English Wikipedia Account Request", $mailtxt, $headers);
+	}
 }
 
 function listrequests($type, $hideip, $correcthash) {
@@ -263,7 +275,7 @@ function listrequests($type, $hideip, $correcthash) {
 
     $tablestart = "";
 	if( $totalRequests > $requestLimitThreshold ) {
-		$tablestart .= "<p><span class=\"warning\">Miser mode: not all requests are shown for speed. </span>Only $requestLimitShowOnly of $totalRequests are shown here.</p>";
+		$tablestart .= BootstrapSkin::displayAlertBox("<strong>Miser mode:</strong> Not all requests are shown for speed. Only $requestLimitShowOnly of $totalRequests are shown here.", "alert-error", "", false, false, true);
     }
  
     $tablestart .= '<table class="table table-striped sortable"><thead><tr><th data-defaultsort="asc"><span class="hidden-phone">#</span></th><td><!-- zoom --></td><td><!-- comment --></td><th><span class="visible-desktop">Email address</span><span class="visible-tablet">Email and IP</span><span class="visible-phone">Request details</span></th><th><span class="visible-desktop">IP address</span></th><th><span class="hidden-phone">Username</span></th><td><!-- ban --></td><td><!-- reserve status --></td><td><!--reserve button--></td></tr></thead><tbody>';
@@ -340,17 +352,12 @@ function listrequests($type, $hideip, $correcthash) {
 		$reserveByUser = isReservedWithRow($row);
 
         $smartyreserved = false;
-        $smartyyoureserved = false;
         if($reserveByUser != 0)
         {
             $smartyreserved = $session->getUsernameFromUid($reserveByUser);
-            if( $reserveByUser == $_SESSION['userID'] ){
-               $smartyyoureserved = true;
-            }
         }
         
-        $smarty->assign("reserved", $smartyreserved);  
-        $smarty->assign("youreserved", $smartyyoureserved);
+        $smarty->assign("reserved", $smartyreserved);
         $canbreak = ( $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) );
         $smarty->assign("canbreak", $canbreak);
         
@@ -450,29 +457,28 @@ function getdevs() {
 }
 
 function defaultpage() {
-	global $tsSQLlink, $toolserver_database, $skin, $tsurl, $availableRequestStates, $defaultRequestStateKey;
-	@mysql_select_db( $toolserver_database, $tsSQLlink) or sqlerror(mysql_error,"Could not select db");
-	$html = '<h1>Create an account!</h1>';
-
+	global $availableRequestStates, $defaultRequestStateKey;
+    
+    $requestSectionData = array();
 	// list requests in each section
-	foreach($availableRequestStates as $k => $v) {
-		$html .= "<h2>".$v['header']."</h2>";
-		$html .= listrequests($k, TRUE, FALSE);
-	}	
+	foreach($availableRequestStates as $k => $v) 
+    {
+        $requestSectionData[$v['header']] = listrequests($k, TRUE, FALSE);
+    }
+    
+    global $smarty;
 	
-	$html .= "<h2>Last 5 Closed requests</h2><span id=\"closed\"></span>\n";
-	$query = "SELECT pend_id, pend_name, pend_checksum FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	$html .= "<ol>\n";
-	$currentrow = 0;
-	while ( list( $pend_id, $pend_name, $pend_checksum ) = mysql_fetch_row( $result ) ) {
-		$out = '<li>';
-		$out .= "<a class=\"btn btn-small btn-info\" href=\"$tsurl/acc.php?action=zoom&amp;id=" . $pend_id . "\">Zoom</a><a class=\"btn btn-warning btn-small\" href=\"$tsurl/acc.php?action=defer&amp;id=" . $pend_id . "&amp;sum=" . $pend_checksum . "&amp;target=$defaultRequestStateKey\">Reset</a> <a href=\"http://en.wikipedia.org/wiki/User:" . $pend_name . "\">" . _utf8_decode($pend_name) . "</a></li>";
-		$html .= $out;
-	}
-	$html .= "</ol>\n";
+    $query = "SELECT pend_id, pend_name, pend_checksum, log_time FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
+    $database = gGetDb();
+    $statement = $database->prepare($query);
+    $statement->execute();
+    
+    $last5result = $statement->fetchAll(PDO::FETCH_ASSOC);
+    
+    $smarty->assign("lastFive", $last5result);
+    $smarty->assign("requestSectionData", $requestSectionData);
+    $html = $smarty->fetch("mainpage/mainpage.tpl");
+    
 	return $html;
 }
 
@@ -535,9 +541,10 @@ function isOnWhitelist($user)
 function zoomPage($id,$urlhash)
 {
 	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates, $dontUseWikiDb, $internalInterface;
-
-	$out = "";
+	global $smarty, $locationProvider, $rdnsProvider;
+	    
 	$gid = $internalInterface->checkreqid($id);
+	$smarty->assign("id", $gid);
 	$urlhash = sanitize($urlhash);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
 	$result = mysql_query($query, $tsSQLlink);
@@ -548,14 +555,23 @@ function zoomPage($id,$urlhash)
 		$out .= $skin->displayRequestMsg("Email has not yet been confirmed for this request, so it can not yet be closed or viewed.");
 		return $out;
 	}
-	$out .= "<h2>Details for Request #" . $id . ":</h2>";
-	$thisip = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
+	$thisip = trim(getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']));
+	$smarty->assign("ip", $thisip);
+    $smarty->assign("iplocation", $locationProvider->getIpLocation($thisip));
 	$thisid = $row['pend_id'];
 	$thisemail = $row['pend_email'];
+	$smarty->assign("email", $thisemail);
 	if ($row['pend_date'] == "0000-00-00 00:00:00") {
 		$row['pend_date'] = "Date Unknown";
 	}
+	$smarty->assign("date", $row['pend_date']);
 	$sUser = $row['pend_name'];
+	$smarty->assign("username", $sUser);
+	$smarty->assign("usernamerawunicode", html_entity_decode($sUser));
+	$smarty->assign("useragent", $row['pend_useragent']);
+	$createreason = "Requested account at [[WP:ACC]], request #" . $row['pend_id'];
+	$smarty->assign("createreason", $createreason);
+	$smarty->assign("isclosed", $row['pend_status'] == "Closed");
 
 	//#region setup whether data is viewable or not
 	
@@ -613,319 +629,154 @@ function zoomPage($id,$urlhash)
 	
 	if ($row['pend_status'] == "Closed") {
 		$hash = md5($thisid. $thisemail . $thisip . microtime()); //If the request is closed, change the hash based on microseconds similar to the checksums.
+		$smarty->assign("isclosed", true);
 	} else {
 		$hash = md5($thisid . $thisemail . $thisip);
+		$smarty->assign("isclosed", false);
 	}
+	$smarty->assign("hash", $hash);
 	if ($hash == $urlhash) {
 		$correcthash = TRUE;
 	}
 	else {
 		$correcthash = FALSE;
 	}
-	$requesttable = listrequests($thisid, $hideinfo, $correcthash);
-	$out .= $requesttable;
-
-	//Show the links for things like IP contributions/blocks.
-	$sid = sanitize($_SESSION['user']);
-	$query3 = "SELECT * FROM acc_user WHERE user_name = '$sid';";
-	$result3 = mysql_query($query3, $tsSQLlink);
-	if (!$result3)
-	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	$row3 = mysql_fetch_assoc($result3);
-	if ( $row3['user_secure'] > 0 ) {
-		$wikipediaurl = "https://en.wikipedia.org/";
-		$metaurl = "https://meta.wikimedia.org/";
-	} else {
-		$wikipediaurl = "http://en.wikipedia.org/";
-		$metaurl = "http://meta.wikimedia.org/";
-	}
+	
+	$smarty->assign("showinfo", false);
+	$smarty->assign("ischeckuser", false);
+	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']))
+		$smarty->assign("showinfo", true);
+	if ($session->isCheckuser($_SESSION['user']))
+		$smarty->assign("ischeckuser", true);
+	
 	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
+		$smarty->assign("proxyip", $row['pend_proxyip']);
 		if ($row['pend_proxyip']) {
-			$out .= '<br /><p><i>This request came from '.$row['pend_ip'].', stating it was forwarded for '.$row['pend_proxyip'].'. The IP address which Wikipedia will see is the first "untrusted" IP address in the list below. Links are shown for all addresses starting from where the chain becomes untrusted. IPs past the first untrusted address are not trusted to be correct. Please see the <a href="https://toolserver.org/~acc/other/xff.html">XFF demo</a> for more details.</i></p>';
-
-			$out .= '<p><strong>Forwarded IP addresses:</strong><table>';
-			
-			$tablerownum = 0;
+			$smartyproxies = array(); // Initialize array to store data to be output in Smarty template.
+			$smartyproxiesindex = 0;
 			
 			$proxies = explode(",", $row['pend_proxyip']);
 			$proxies[] = $row['pend_ip'];
 			
 			$origin = $proxies[0];
+			$smarty->assign("origin", $origin);
 			
 			$proxies = array_reverse($proxies);
 			$trust = true;
-			$lasttrust = true;
-			foreach($proxies as $proxynum => $p) {
-				$p2 = trim($p);
+            global $rfc1918ips;
 
-				$trusted = isXffTrusted($p2);				
-				$lasttrust = $trust;
-				$trust = $trust & $trusted & ($proxynum < count($proxies) - 1);
-				
-				$entry = "<tr ". ( $tablerownum == 1 ? 'class="alternate"' : "" ).">";
-				$tablerownum = ++$tablerownum % 2;
-				$entry .= ( ( $origin != $p2 ) ? 
-					(	$trust ? "<td style=\"color:grey;\">(trusted)</td>"
-						: ($trusted ? "<td style=\"color:orange;\">(via untrusted)</td>" : "<td style=\"color:red;\">(untrusted)</td>" )
-					)
-					: (	$lasttrust ? "<td>(origin)</td>"
-						: ("<td style=\"color:red;\">(origin untrusted)</td>" ) )
-					);
-					
-				global $rfc1918ips;
-					
-				$iprdns = @ gethostbyaddr($p2);
+            foreach($proxies as $proxynum => $p) {
+                $p2 = trim($p);
+				$smartyproxies[$smartyproxiesindex]['ip'] = $p2;
+
+                // get data on this IP.
+				$trusted = isXffTrusted($p2);
 				$ipisprivate = ipInRange($rfc1918ips, $p2);
+                
+                if( !$ipisprivate) 
+                {
+				    $iprdns = $rdnsProvider->getRdns($p2);
+                    $iplocation = $locationProvider->getIpLocation($p2);
+                }
+                else
+                {
+                    // this is going to fail, so why bother trying?
+                    $iprdns = false;
+                    $iplocation = false;
+                }
+                
+                // current trust chain status BEFORE this link
+				$pretrust = $trust;
 				
-				if( $iprdns == $p2 ) {
-					if( $ipisprivate ) {
-						$iprdns = "<i><a style=\"color:grey;\" href=\"http://en.wikipedia.org/wiki/Private_network\">Non-routable address</a></i>";
-					} else {
-						$iprdns = "<i>(no rdns available)</i>";
-					}
-				} else if( $iprdns === false ) {
-                    $iprdnsfailed = true;
-					$iprdns = "<i>(unable to determine address)</i>";
-				} else {
-					if( $ipisprivate ) {
-						$iprdns = "<i><a style=\"color:grey;\" href=\"http://en.wikipedia.org/wiki/Private_network\">Non-routable address</a></i>";
-					} else {
-						$iprdns = "RDNS: $iprdns";
-					}
+                // is *this* link trusted?
+				$smartyproxies[$smartyproxiesindex]['trustedlink'] = $trusted;
+                
+                // current trust chain status AFTER this link
+                $trust = $trust & $trusted;
+                if($pretrust && $p2 == $origin)
+                {
+                    $trust = true;   
+                }
+				$smartyproxies[$smartyproxiesindex]['trust'] = $trust;
+				
+				$smartyproxies[$smartyproxiesindex]['rdnsfailed'] = $iprdns === false;
+				$smartyproxies[$smartyproxiesindex]['rdns'] = $iprdns;
+				$smartyproxies[$smartyproxiesindex]['routable'] = ! $ipisprivate;
+				
+				$smartyproxies[$smartyproxiesindex]['location'] = $iplocation;
+				
+                if( $iprdns == $p2 && $ipisprivate == false) {
+					$smartyproxies[$smartyproxiesindex]['rdns'] = NULL;
 				}
-				$entry .= "<td style=\"padding:3px\">$p2<br /><span style=\"color:grey;\">" . $iprdns . "</span></td><td>";
-				if( ( ! $trust ) && ( ! $ipisprivate ) && ( $iprdns!=="<i>(unable to determine address)</i>" ) ) {
-                    $entry .= showIPlinks($p2, $wikipediaurl, $metaurl, $row['pend_id'], $session);
-				}
-				$entry .= "</td></tr>";
-				
-				
-				$out .= $entry;
+                
+				$smartyproxies[$smartyproxiesindex]['showlinks'] = (!$trust || $p2 == $origin) && !$ipisprivate;
+                				
+				$smartyproxiesindex++;
 			}
 			
-
-			
-			$out .= "</table>";
-		}
-		else {
-			$out .= '<p><b>IP Address links:</b> ';
-			$out .= showIPlinks($row['pend_ip'], $wikipediaurl, $metaurl, $row['pend_id'], $session);
+			$smarty->assign("proxies", $smartyproxies);
 		}
 	}
 
-	$userurl = urlencode(html_entity_decode($sUser));
-	$userurl = str_replace("%26amp%3B", "%26", $userurl);
+	global $protectReservedRequests, $defaultRequestStateKey;
 	
-	
-	$out .= '<p><b>Username links:</b> <a class="request-req" href="'.$wikipediaurl.'w/index.php?title=User:';
-	$out .= $userurl . '" target="_blank">User page</a> | ';
-
-	// 	Creation log
-	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page=User:';
-	$out .= $userurl . '" target="_blank">Creation log</a> | ';
-
-	// 	SUL link
-	$out .= '<a class="request-req" href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&showblocks=1&username=';
-	$out .= $userurl. '" target="_blank">SUL</a> ( ';
-
-    $out .= '<a class="request-req" href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
-    $out .= $userurl. '" target="_blank">alt</a> | ';
-    
-    //Show Special:CentralAuth link due to bug 35792 <https://bugzilla.wikimedia.org/show_bug.cgi?id=35792>
-    $out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
-    $out .= $userurl.'" target="_blank">Special:CentralAuth</a> ) | ';
-
-	// 	User list
-	$out .= '<a class="request-req" href="'.$wikipediaurl.'w/index.php?title=Special%3AListUsers&amp;username=';
-	$out .= $userurl . '&amp;group=&amp;limit=1" target="_blank">Username list</a> | ';
-	
-	//Search Wikipedia mainspace for the username.  See bug ACC-253 on Toolserver JIRA at https://jira.toolserver.org/browse/ACC-253
-	$out .= '<a class="request=req" href="'.$wikipediaurl.'w/index.php?title=Special%3ASearch&profile=advanced&search=';
-	$out .= $userurl . '&fulltext=Search&ns0=1&redirs=1&profile=advanced" target="_blank">Wikipedia mainspace search</a> | ';
-	
-	//TODO: add an api query to display editcount and blocks if we can't access the s1 cluster -- MM 09/04/11
-	
-	// Google
-	$out .= '<a class="request-req" href="http://www.google.com/search?q=';
-	$out .= preg_replace("/_/","+",$userurl) . '" target="_blank">Google search</a></p>';
-
-
-	global $protectReservedRequests;
-	if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
-	{
-		//Hide create user link because it contains the E-Mail address.
-		if ($hideip == FALSE ||  $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) { 
-			// Create user link
-			$out .= '<p><b>Create account link:</b> <a class="request-req-create" href="'.$wikipediaurl.'w/index.php?title=Special:UserLogin/signup&amp;wpName=';
-			$out .= $userurl . '&amp;wpEmail=' . urlencode($row['pend_email']) . '&amp;uselang=en-acc&amp;wpReason='.urlencode("Requested account at [[WP:ACC]], request #" . $row['pend_id']).'&amp;wpCreateaccountMail=true" target="_blank">Create!</a></p>';
-		}
-	}
+	$smarty->assign("isprotected", isProtected($row['pend_id']));
+	$smarty->assign("isreserved", isReserved($row['pend_id']));
 		
-	$out.="<p><b>Actions:</b> ";
 	$type = $row['pend_status'];
 	$checksum = $row['pend_checksum'];
 	$pendid = $row['pend_id'];
-
-	if(! isProtected($row['pend_id']) && isReserved($row['pend_id']))
-	{
-		// Done
-		$out .= '<a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=1&amp;sum=' . $row['pend_checksum'] . '"><strong>Created!</strong></a>';
-
-		// Similar
-		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=2&amp;sum=' . $row['pend_checksum'] . '">Similar</a>';
-
-		// Taken
-		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=3&amp;sum=' . $row['pend_checksum'] . '">Taken</a>';
-
-		// SUL Taken
-		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=26&amp;sum=' . $row['pend_checksum'] . '">SUL Taken</a>';
-
-		// UPolicy
-		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=4&amp;sum=' . $row['pend_checksum'] . '">UPolicy</a>';
-
-		// Invalid
-		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=5&amp;sum=' . $row['pend_checksum'] . '">Invalid</a>';
-
-		// Email reset notification
-		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=30&amp;sum=' . $row['pend_checksum'] . '">Password Reset</a>';
-
-		// Custom
-		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=custom&amp;sum=' . $row['pend_checksum'] . '">Custom</a>';
-		
-		// Drop
-		$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";
-			
-		if (!isset ($target)) {
-			$target = "zoom";
-		}
-		$out .= deferlinks($type,$checksum,$pendid);
-	}
-	else
-	{
-		if(isProtected($row['pend_id'])) {
-			$out .= 'This request is reserved';
-		}
-		else {
-			$out .= 'This request is not reserved';
-			if ($type != "Closed")
-				$out .= ' | <a class="request-done" href="' . $tsurl . '/acc.php?action=done&amp;id=' . $row['pend_id'] . '&amp;email=0&amp;sum=' . $row['pend_checksum'] . '">Drop</a>' . "\n";				
-			$out .= deferlinks($type,$checksum,$pendid);
-		}
-	}
+	$smarty->assign("checksum", $row['pend_checksum']);
+	$smarty->assign("type", $type);
+	$smarty->assign("defaultstate", $defaultRequestStateKey);
+	$smarty->assign("requeststates", $availableRequestStates);
 	
 	$cmtlen = strlen(trim($row['pend_cmt']));
 	$request_comment = "";
 	if ($cmtlen != 0) {
-		$request_comment = autolink($row['pend_cmt']);
+		$request_comment = $row['pend_cmt'];
 	}
 
 	global $tsurl;
 
-	$reservingUser = isReserved($thisid);
-	if( $reservingUser != 0 )
-	{
-		$out .= "<h3>This request is currently being handled by " . $session->getUsernameFromUid($reservingUser) ."</h3>";
-	}
-	if ($reservingUser == $_SESSION['userID'] && $row['pend_status'] != "Closed") {
-		$out .= '<p><b>URL to allow other users to see IP/Email:</b> <a href="' . $tsurl . '/acc.php?action=zoom&amp;id=' . $thisid . '&amp;hash=' . $hash . '">' . $tsurl . '/acc.php?action=zoom&amp;id=' . $thisid . '&amp;hash=' . $hash . '</a></p>';
-	}
-
 	global $allowViewingOfUseragent;
-	if($allowViewingOfUseragent)
-	{
-		global $session, $suser;
-		if($session->isCheckuser($_SESSION['user']))
-		{
-			$out .= "<h3>User agent: \"" . $row['pend_useragent'] . "\"</h3>";
-		}
-	}
-	$out .= '<p><b>Date request made:</b> ' . $row['pend_date'] . '</p>';
+	if($session->isCheckuser($_SESSION['user']) && $allowViewingOfUseragent == true)
+		$smarty->assign("viewuseragent", true);
+	else
+		$smarty->assign("viewuseragent", false);
+	
+	$isadmin = ( $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) );
+	$smarty->assign("isadmin", $isadmin);
+	
 	$request_date = $row['pend_date'];
 	
-	$request = new accRequest();
-	if($request->isblacklisted($sUser))
-		$out .= '<p><b>Requested username is blacklisted.</b></p>';
+	$reserveByUser = isReservedWithRow($row);
+
+	$smartyreserved = "";
+	if($reserveByUser != 0) {
+		$smartyreserved = $session->getUsernameFromUid($reserveByUser);
+	}
+    
+	$smarty->assign("reserved", $smartyreserved);
 	
+	$request = new accRequest();
+	$smarty->assign("isblacklisted", false);
+    $blacklistresult = $request->isblacklisted($sUser);
+	if($blacklistresult)
+    {
+		$smarty->assign("isblacklisted", true);
+		$smarty->assign("blacklistregex", $blacklistresult);
+	
+    }
 	$out2 = "<h2>Possibly conflicting usernames</h2>\n";
 	$spoofs = getSpoofs( $sUser );
-
-	// Display message if there is no conflicting usernames.
-	// This part would not be displayed as soon as an account was created.
-	// This is because then the username would have a spoof, ie himself.
-	if( !$spoofs ) {
-		$out2 .= "<i>None detected</i><br />\n";
-	}
-
-	// Checks whether there is an array of spoofs.
-	elseif ( !is_array($spoofs) ) {
-		$out2 .= "<h3 style='color: red'>$spoofs</h3>\n";
-	}
-
-	// Display details for the different conflicting usernames.
-	else {
-		$out2 .= "<ul>\n";
-		foreach( $spoofs as $oSpoof ) {
-			// Wouldnt work for requests where there are conflicting names.
-			// The conflicting names would be tested again the created username.
-			if ( $oSpoof == $sUser ) {
-				$out .= "<h3>Note: This account has already been created</h3>";
-				continue;
-			}
-
-			$oS = urlencode($oSpoof);
-
-			// Show the Wikipedia Userpage of the conflicting users.
-			$posc1 = '<a href="'.$wikipediaurl.'w/index.php?title=User:';
-			$posc1 .= $oS . '" target="_blank">' . $oSpoof . '</a> ';
-
-			// Show the contributions of the conflicting users.
-			$posc2 = '<a href="'.$wikipediaurl.'w/index.php?title=Special:Contributions/';
-			$posc2 .= $oS . '" target="_blank">contribs</a> ';
-
-			// Show the logs of the conflicting users.
-			$posc3 = '<a href="'.$wikipediaurl.'w/index.php?title=Special%3ALog&amp;type=&amp;user=&amp;page=User%3A';
-			$posc3 .= $oS . '" target="_blank">Logs</a> ';
-
-			// Open the SUL of the conflicting users.
-			$posc4 = '<a href="http://toolserver.org/~quentinv57/tools/sulinfo.php?username=';
-			$posc4 .= $oS . '" target="_blank">SUL</a> ';
-			
-			// Open the SUL of the conflicting users.
-			$posc4 .= '(<a href="http://toolserver.org/~quentinv57/tools/sulinfo.php?showinactivity=1&showblocks=1&username=';
-			$posc4 .= $oS . '" target="_blank">SUL-ib</a> | ';
-
-			$posc4 .= '<a href="http://toolserver.org/~hersfold/newfakeSULutil.php?username=';
-			$posc4 .= $oS . '" target="_blank">alt</a> | ';
-			
-			//Show Special:CentralAuth link due to bug 35792 <https://bugzilla.wikimedia.org/show_bug.cgi?id=35792>
-			$posc4 .= '<a href="'.$wikipediaurl.'w/index.php?title=Special%3ACentralAuth&target=';
-			$posc4 .= $oS.'" target="_blank">Special:CentralAuth</a>)';
-			
-			// Password reset links
-			$posc5 = '<a href="'.$wikipediaurl.'wiki/Special:PasswordReset?wpUsername=';
-			$posc5 .= $oS . '" target="_blank">Send Password reset</a> ';
-			
-			// tp counter
-			$posc6 = '<a href="http://toolserver.org/~tparis/pcount/index.php?lang=en&wiki=wikipedia&name=';
-			$posc6 .= $oS . '" target="_blank">Count</a> ';
-
-			// Adds all the variables together for one line.
-			$out2 .= "<li>" . $posc1 . "( " . $posc2 . " | " . $posc3 . " | " . $posc4 . " | " . $posc5 . " | " . $posc6 . " )</li>\n";
-		}
-		$out2 .= "</ul>\n";
-	}
-	$out .= $out2;
-
-	if ($urlhash != "") {
-		$out .= "<h2>Logs for this request:<small> (<a href='$tsurl/acc.php?action=comment&amp;id=$gid&amp;hash=$urlhash'>new comment</a>)</small></h2>";
-	} else {
-		$out .= "<h2>Logs for this request:<small> (<a href='$tsurl/acc.php?action=comment&amp;id=$gid'>new comment</a>)</small></h2>";
-	}
 	
+	$smarty->assign("spoofs", $spoofs);
+	
+	// START LOG DISPLAY
 	$loggerclass = new LogPage();
 	$loggerclass->filterRequest=$gid;
 	$logs = $loggerclass->getRequestLogs();
-
 	
 	if ($session->hasright($_SESSION['user'], 'Admin')) {
 		$query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' ORDER BY cmt_id ASC;";
@@ -940,7 +791,7 @@ function zoomPage($id,$urlhash)
 	}
 	
 	while ($row = mysql_fetch_assoc($result)) {
-		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => 0, 'comment' => html_entity_decode($row['cmt_comment']), 'action' => "comment", 'security' => $row['cmt_visability'], 'id' => $row['cmt_id']);
+		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => 0, 'comment' => $row['cmt_comment'], 'action' => "comment", 'security' => $row['cmt_visability'], 'id' => $row['cmt_id']);
 	}
 	
 	if($request_comment !== ""){
@@ -960,70 +811,46 @@ function zoomPage($id,$urlhash)
 	
 	if ($logs) {
 		$logs = doSort($logs);
-		$rownumber = 0;
-		$out .= "<table>";
-		foreach ($logs as $row) {
-			$rownumber += 1;
-			$date = $row['time'];
-			$username = $row['user'];
-			if(!isset($namecache[$username])) {
-				$id = getUserIdFromName($username);
-				$namecache['$username'] = $id;
+		foreach ($logs as &$row) {
+			$row['canedit'] = false;
+			if(!isset($row['security'])) {
+				$row['security'] = '';
 			}
-			$userid = $namecache['$username'] ;
-			$action = $row['description'];
-			$out .= "<tr";
-			if ($rownumber % 2 == 0) {$out .= ' class="alternate"';}
-			$out .= "><td style=\"white-space: nowrap\">&nbsp;";
-			if ($userid !== null)
-				$out .= "<a href='$tsurl/statistics.php?page=Users&amp;user=$userid'>$username</a>";
+			if(!isset($namecache[$row['user']]))
+				$row['userid'] = getUserIdFromName($row['user']);
 			else
-				$out .= $username;
+				$row['userid'] = $namecache[($row['user'])];
+			
 			if($row['action'] == "comment"){
-				$out .= "&nbsp;</td><td>&nbsp;".$row['comment']."&nbsp;</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
+				$row['entry'] = xss($row['comment']);
 			
 				global $enableCommentEditing;
-				if($enableCommentEditing && ($session->hasright($_SESSION['user'], 'Admin') || $_SESSION['user'] == $row['user']) && isset($row['id'])) {
-					$out .= "<td><a href=\"$tsurl/acc.php?action=ec&amp;id=".$row['id']."\">Edit</a></td>";
-				}
+				if($enableCommentEditing && ($session->hasright($_SESSION['user'], 'Admin') || $_SESSION['user'] == $row['user']) && isset($row['id']))
+					$row['canedit'] = true;
 			} elseif($row['action'] == "Closed custom-n" ||$row['action'] == "Closed custom-y"  ) {
-				$out .= "&nbsp;</td><td><em>&nbsp;$action:&nbsp;</em><br />".str_replace("\n", '<br />', xss($row['comment']))."</td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
+				$row['entry'] = "<em>" .$row['description'] . "</em><br />" . str_replace("\n", '<br />', xss($row['comment']));
 			} else {
-				
-				foreach($availableRequestStates as $deferState){
-					$action=str_replace("deferred to ".$deferState['defertolog'],"deferred to ".$deferState['deferto'],$action);	//#35: The log text(defertolog) should not be displayed to the user, deferto is what should be displayed
-				}
-				$out .= "&nbsp;</td><td><em>&nbsp;$action&nbsp;</em></td><td style=\"white-space: nowrap\">&nbsp;$date&nbsp;</td>";
+				foreach($availableRequestStates as $deferState)
+					$row['entry'] = "<em>" . str_replace("deferred to ".$deferState['defertolog'],"deferred to ".$deferState['deferto'],$row['description']) . "</em>"; //#35: The log text(defertolog) should not be displayed to the user, deferto is what should be displayed
 			}
-			if (isset($row['security']) && $row['security'] == "admin") {
-				$out .= "<td style=\"white-space: nowrap\">&nbsp;<font color='red'>(admin only)</font>&nbsp;</td>";
-			} else {
-				$out .= "";
-			}
-			$out .= "</tr>";
 		}
-		$out .= "</table>";
-	} else {
-		$out .= "<i>None.</i>\n";
+		unset($row);
 	}
-	if ($urlhash != "") {
-		$out .= "<form action='$tsurl/acc.php?action=comment-quick&amp;hash=$urlhash' method='post'>";
-	} else {
-		$out .= "<form action='$tsurl/acc.php?action=comment-quick' method='post'>";
-	}
-	$out .= "<input type='hidden' name='id' value='$gid' /><input type='text' name='comment' size='75' /><input type='hidden' name='visibility' value='user' /><input type='submit' value='Quick Reply' /></form>";
+	$smarty->assign("zoomlogs", $logs);
 
+	$ipmsg = 'this ip';
+	if ($hideinfo == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']))
+	$ipmsg = $thisip;
+
+	// START OTHER REQUESTS BY IP AND EMAIL STUFF
     // assign to user
     if (! isProtected(0)) {
-		$userListQuery = "SELECT user_name FROM acc_user;";
-		$userListResult = mysql_query($userListQuery, $tsSQLlink);
+		$userListQuery = "SELECT CONCAT('\"', username, '\"') as usernamea FROM user;";
+		$userListResult = gGetDb()->query($userListQuery);
 		if (!$userListResult)
-			sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-		$userListData = array();
-		while( $u = mysql_fetch_assoc( $userListResult ) ) {
-			$userListData[] = '"' . $u['user_name'] . '"';
-		}
-		$userList = '[' . implode(",", $userListData) . ']';	
+			sqlerror("Query failed: $query ERROR: " . gGetDb()->errorInfo() ,"Database query error.");
+		$userList = '[' . implode(",", $userListResult->fetchColumn()) . ']';	
+        $smarty->assign("jsuserlist", $userList);
         
 		$out .= "<form action='$tsurl/acc.php?action=sendtouser&amp;hash=$urlhash' method='post'>";
 		$out .= "<input type='hidden' name='id' value='$gid' />";
@@ -1038,76 +865,60 @@ function zoomPage($id,$urlhash)
 	$ipmsg = $thisip;
 
 
-	$out .= "<h2>Other requests from $ipmsg:</h2>\n";
 	if ($thisip != '127.0.0.1') {
-		$query = "SELECT * FROM acc_pend WHERE (pend_proxyip LIKE '%{$thisip}%' OR pend_ip = '$thisip') AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
+		$query = "SELECT pend_date, pend_id, pend_name FROM acc_pend WHERE (pend_proxyip LIKE '%{$thisip}%' OR pend_ip = '$thisip') AND pend_id != '$thisid' AND (pend_mailconfirm = 'Confirmed' OR pend_mailconfirm = '');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 
-		$currentrow = 0;
 		if (mysql_num_rows($result) != 0) {
 			mysql_data_seek($result, 0);
 		}
+		$smarty->assign("numip", mysql_num_rows($result));
+		$otherip = array();
+		$i = 0;
 		while ($row = mysql_fetch_assoc($result)) {
-			if ($currentrow == 0) { $out .= "<table cellspacing=\"0\">\n"; }
-			$currentrow += 1;
-			$out .= "<tr";
-			if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
-			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
+			$otherip[$i]['date'] = $row['pend_date'];
+			$otherip[$i]['id'] = $row['pend_id'];
+			$otherip[$i]['name'] = $row['pend_name'];
+			$i++;
 		}
-		if ($currentrow == 0) {
-			$out .= "<i>None.</i>\n";
-		}
-		else {$out .= "</table>\n";}
-	} else {
-		$out .= "<i>IP information cleared.</i>\n";
+		$smarty->assign("otherip", $otherip);
 	}
 
-	// Displayes other requests from this email.
-	$emailmsg = 'this email';
-	if ($hideinfo == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user'])) {
-		$emailmsg = $thisemail;
-	}
-	$out .= "<h2>Other requests from $emailmsg:</h2>\n";
+	// Displays other requests from this email.
+	$smarty->assign("otheremail", false);
+	
 	if ($thisemail != 'acc@toolserver.org') {
-		$query = "SELECT * FROM acc_pend WHERE pend_email = '" . mysql_real_escape_string($thisemail, $tsSQLlink) . "' AND pend_id != '$thisid' AND pend_mailconfirm = 'Confirmed';";
+		$query = "SELECT pend_date, pend_id, pend_name FROM acc_pend WHERE pend_email = '" . mysql_real_escape_string($thisemail, $tsSQLlink) . "' AND pend_id != '$thisid' AND pend_id != '$thisid' AND (pend_mailconfirm = 'Confirmed' OR pend_mailconfirm = '');";
 		$result = mysql_query($query, $tsSQLlink);
 		if (!$result)
 		Die("Query failed: $query ERROR: " . mysql_error());
 
-		$currentrow = 0;
 		if (mysql_num_rows($result) != 0) {
 			mysql_data_seek($result, 0);
 		}
+		$smarty->assign("numemail", mysql_num_rows($result));
+		$otheremail = array();
+		$i = 0;
 		while ($row = mysql_fetch_assoc($result)) {
-			// Creates the table for the first time.
-			if ($currentrow == 0) {
-				$out .= "<table cellspacing=\"0\">\n";
-			}
-
-			$currentrow += 1;
-			$out .= "<tr";
-			if ($currentrow % 2 == 0) {$out .= ' class="alternate"';}
-			$out .= "><td>". $row['pend_date'] . "</td><td><a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">" . $row['pend_name'] . "</a></td></tr>";
+			$otheremail[$i]['date'] = $row['pend_date'];
+			$otheremail[$i]['id'] = $row['pend_id'];
+			$otheremail[$i]['name'] = $row['pend_name'];
+			$i++;
 		}
-		// Checks whether there were similar requests.
-		if ($currentrow == 0) {
-			$out .= "<i>None.</i>\n";
-		}
-		else {$out .= "</table>";}
-	} else {
-		$out .= "<i>Email information cleared.</i>\n";
+		$smarty->assign("otheremail", $otheremail);
 	}
 
-//Script connect for request closure abort 
     $sid = sanitize( $_SESSION['user'] );
-	$query = "SELECT * FROM acc_user WHERE user_name = '$sid'";
+	$query = "SELECT user_abortpref, user_id FROM acc_user WHERE user_name = '$sid'";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
-		if(array_key_exists('user_abortpref',$row)){
+		// Comment out for now, will do something with this soon.
+		// "Soon" will probably be with issue #11.
+		/*if(array_key_exists('user_abortpref',$row)){
 		$out.= '<script language=javascript>';
 		$out.= $messages->getMessage(32);
 		if($row['user_abortpref']==0){
@@ -1116,32 +927,14 @@ function zoomPage($id,$urlhash)
 		}
 		}else{
 			//Run script anyways if preference does not exist
-			$out.= 'abortChecker()';		
+			$out.= 'abortChecker()';
 		}
-		$out.= '</script>';
+		$out.= '</script>';*/
 		
-	return $out;
-}
-
-function deferlinks($type, $checksum, $pendid) {
-	global $tsurl, $availableRequestStates, $defaultRequestStateKey;
+	$smarty->assign("userid", $row['user_id']);
+	$smarty->assign("tooluser", $_SESSION['user']);
 	
-	if(!array_key_exists($type, $availableRequestStates))
-	{
-		return " | <a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=".$defaultRequestStateKey."\">Reset Request</a>";
-	}
-	
-	$out = " | Defer to: ";
-	
-	foreach(array_diff_key($availableRequestStates, array($type=>$availableRequestStates[$type])) as $k => $v)
-	{
-		$out .= "<a class=\"request-done\" href=\"$tsurl/acc.php?action=defer&amp;id=$pendid&amp;sum=$checksum&amp;target=".$k."\">".$v['deferto']."</a> - ";
-	}
-
-	$out = rtrim($out, '- ');
-
-	return $out;
-	
+	return $smarty->fetch("request-zoom.tpl");
 }
 
 function getToolVersion() {

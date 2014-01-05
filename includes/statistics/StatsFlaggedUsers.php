@@ -11,12 +11,15 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
+if (!defined("ACC")) {
+	die();
+} // Invalid entry point
 
 class StatsFlaggedUsers extends StatisticsPage
 {
 	function execute()
 	{
-		global $asSQL, $tsSQL;
+		global $asSQL, $tsSQL, $wikiurl;
 		$query = 'select g.ug_user, n.user_name from user_groups g inner join user_ids n on g.ug_user=n.user_id where ug_group = "accountcreator";';
 		$results = $asSQL->query($query);
 		$out= "<table cellspacing=\"0\">";
@@ -43,10 +46,10 @@ class StatsFlaggedUsers extends StatisticsPage
 				$currentreq++;
 				$out.= '<tr>';
 				$out.="<td>".$row['ug_user']."</td>" . 
-					"<td><a href=\"http://en.wikipedia.org/wiki/User:".$row['user_name']."\">".$row['user_name']."</a></td>" . 
-					"<td><a href=\"http://en.wikipedia.org/wiki/User_talk:".$row['user_name']."\">talk</a></td>" . 
-					"<td><a href=\"http://en.wikipedia.org/wiki/Special:Contributions/".$row['user_name']."\">contribs</a></td>" . 
-					"<td><a href=\"http://en.wikipedia.org/wiki/Special:UserRights/".$row['user_name']."\">rights</a></td>" . 
+					"<td><a href=\"https://" . $wikiurl . "/wiki/User:".$row['user_name']."\">".$row['user_name']."</a></td>" . 
+					"<td><a href=\"https://" . $wikiurl . "/wiki/User_talk:".$row['user_name']."\">talk</a></td>" . 
+					"<td><a href=\"https://" . $wikiurl . "/wiki/Special:Contributions/".$row['user_name']."\">contribs</a></td>" . 
+					"<td><a href=\"https://" . $wikiurl . "/wiki/Special:UserRights/".$row['user_name']."\">rights</a></td>" . 
 					"<td>".$accrow['user_name']."</td>" . 
 					"<td>".$accrow['user_level']."</td>" . 
 					"</tr>";

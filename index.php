@@ -16,8 +16,9 @@
 require_once 'config.inc.php';
 require_once 'AntiSpoof.php';
 require_once 'functions.php';
+
+require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
-require_once 'includes/offlineMessage.php';
 require_once 'includes/database.php';
 require_once 'includes/request.php';
 require_once 'includes/skin.php';
@@ -27,8 +28,7 @@ require_once 'includes/strings.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.
-$offlineMessage = new offlineMessage(true);
-$offlineMessage->check();
+Offline::check(true);
 
 // Initialize the database classes.
 $tsSQL = new database("toolserver");
@@ -68,9 +68,13 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	// Trim whitespace and make the first character uppercase.
 	$_POST['name'] = $strings->struname($_POST['name']);
 	
+	// Trim whitespace from the Email.
+	$_POST['email'] = $strings->stremail($_POST['email']);
+	$_POST['emailconfirm'] = $strings->stremail($_POST['emailconfirm']);
+	
 	// Initialize the variables and escapes them for MySQL.
 	$user = $tsSQL->escape($_POST['name']);
-	$email = $tsSQL->escape(trim($_POST['email']));
+	$email = $tsSQL->escape($_POST['email']);
 
 	// Check for various types of bans.
 	// See the request class for details on each one.
@@ -80,11 +84,6 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$request->checkBan('EMail',$_POST['email']);
 	$request->blockedOnEn();
 	
-	// Check the blacklists.
-	$request->checkBlacklist($emailblacklist,$_POST['email'],$_POST['email'],'Email-Bl');
-	$request->checkBlacklist($nameblacklist,$_POST['name'],$_POST['email'],'Name-Bl');
-	$request->doDnsBlacklistCheck();
-
 	// Do automated checks on the username and email adress.
 	$request->finalChecks($user,$email);
 

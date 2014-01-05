@@ -8,11 +8,11 @@
 
 // Get all the classes.
 require_once 'config.inc.php';
+require_once 'lib/password_compat/lib/password.php';
 
-if ($ACC != "1") {
-	header("Location: $tsurl/");
+if (!defined("ACC")) {
 	die();
-} //Re-route, if you're a web client
+} // Invalid entry point
 
 class authutils {
     
@@ -32,12 +32,16 @@ class authutils {
             // check the version is one of the allowed ones:
             if( $minimumPasswordVersion > $data[ 0 ] ) return false;
             
-            // re-encrypt the new password
-            $newcrypt = call_user_func( array( "authutils", "encryptVersion" . $data[ 0 ] ), $password, $data[ 1 ] );
+            if( $data[ 0 ] < 2 ) {
+                // re-encrypt the new password
+                $newcrypt = call_user_func( array( "authutils", "encryptVersion" . $data[ 0 ] ), $password, $data[ 1 ] );
             
-            // compare encryptions
-            return ( $newcrypt == $credentials );
+                // compare encryptions
+                return ( $newcrypt == $credentials );
+            }
             
+            return call_user_func( array( "authutils", "verifyVersion" . $data[ 0 ] ), $password, $data[ 2 ] );
+
         } else { // old style, eew.
         
             // not allowed this version of password
@@ -53,11 +57,11 @@ class authutils {
     }
     
     public static function isCredentialVersionLatest( $credentials ) {
-        return substr( $credentials, 0, 3 ) === ":1:";
+        return substr( $credentials, 0, 3 ) === ":2:";
     }
     
     public static function encryptPassword( $password ) {
-        return self::encryptVersion1( $password, microtime() );
+        return self::encryptVersion2( $password, microtime() );
     }
     
     private static function encryptVersion0( $password, $salt ) {
@@ -66,5 +70,13 @@ class authutils {
     
     private static function encryptVersion1( $password, $salt ) {
         return ':1:' . $salt . ':' . md5( $salt . '-' . md5( $password ) );
+    }
+    
+    private static function encryptVersion2( $password, $salt ) {
+        return ':2:x:' . password_hash( $password, PASSWORD_BCRYPT );
+    }
+    
+    private static function verifyVersion2( $password, $hash ) {
+        return password_verify( $password, $hash );
     }
 }

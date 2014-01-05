@@ -11,11 +11,9 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
-
-if ($ACC != "1") {
-	header("Location: $tsurl/");
+if (!defined("ACC")) {
 	die();
-} //Re-route, if you're a web client.
+} // Invalid entry point
 
 $tagstack = array();
 
@@ -96,9 +94,12 @@ class BootstrapSkin {
     
     /**
      * Summary of displayAlertBox
-     * @param $message
-     * @param $type Alert type - use bootstrap css class
-     * @param $header
+     * @param $message string Message to show
+     * @param $type string Alert type - use bootstrap css class
+     * @param $header string the header of the box
+     * @param $block bool Whether to make this a block or not
+     * @param $closable bool add a close button
+     * @param $return bool return the content as a string, or display it.
      */
     public static function displayAlertBox( $message, $type = "", $header = "", $block = false, $closeable = true, $return = false ) {
         global $smarty;

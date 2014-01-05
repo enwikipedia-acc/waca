@@ -12,20 +12,24 @@
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
 
-// Get all the classes.
+// load the configuration
 require_once 'config.inc.php';
+
+// Initialize the session data.
+session_start();
+
+// Get all the classes.
 require_once 'devlist.php';
 require_once 'functions.php';
+require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
-require_once 'includes/offlineMessage.php';
 require_once 'includes/imagegen.php';
 require_once 'includes/database.php';
 require_once 'includes/skin.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.
-$offlineMessage = new offlineMessage(true);
-$offlineMessage->check();
+Offline::check(true);
 
 // Initialize the database classes.
 $tsSQL = new database("toolserver");
@@ -38,9 +42,6 @@ $asSQLlink = $asSQL->getLink();
 // Initialize the class object.
 $imagegen = new imagegen();
 $skin     = new skin();
-
-// Initialize the session data.
-session_start();
 
 //Array of objects containing the deleveopers' information.
 $developer = array(
@@ -55,7 +56,7 @@ $developer = array(
 				"Name" => "Andrew Adams",
 				"Role" => "Developer",
 				"Retired" => NULL,
-				"Access" => "Git, Mailing list moderator, Labs project",
+				"Access" => "Git, Mailing list admin, Labs project",
 				"Cloak" => "*!*@wikipedia/pdpc.active.FastLizard4",
 				"Other" => NULL,
 			),
@@ -104,31 +105,31 @@ $developer = array(
 			),
 		"John" =>
 			array(
-					"IRC" => "JohnLewis",
-					"EMail" => "johnflewis93@gmail.com",
-					"ToolID" => "889",
-					"wiki" => "John F. Lewis",
-					"WWW" => NULL,
-					"Name" => "John Lewis",
-					"Role" => "Developer",
-					"Retired" => NULL,
-					"Access" => "Git, Mailing list moderator",
-					"Cloak" => "*!*@wikimedia/John-F-Lewis",
-					"Other" => NULL,
+				"IRC" => "JohnLewis",
+				"EMail" => "johnflewis93@gmail.com",
+				"ToolID" => "889",
+				"wiki" => "John F. Lewis",
+				"WWW" => NULL,
+				"Name" => "John Lewis",
+				"Role" => "Developer",
+				"Retired" => NULL,
+				"Access" => "Git, Mailing list moderator",
+				"Cloak" => "*!*@wikimedia/John-F-Lewis",
+				"Other" => NULL,
 			),
 		"Manishearth" =>
 			array(
-					"IRC" => "Manishearth",
-					"EMail" => "manishsmail@gmail.com",
-					"ToolID" => "607",
-					"wiki" => "Manishearth",
-					"WWW" => "http://enwp.org/User:Manishearth",
-					"Name" => "Manish Goregaokar",
-					"Role" => "Developer",
-					"Retired" => NULL,
-					"Access" => "Git",
-					"Cloak" => "*!*@wikipedia/Manishearth",
-					"Other" => NULL,
+				"IRC" => "Manishearth",
+				"EMail" => "manishsmail@gmail.com",
+				"ToolID" => "607",
+				"wiki" => "Manishearth",
+				"WWW" => "http://enwp.org/User:Manishearth",
+				"Name" => "Manish Goregaokar",
+				"Role" => "Developer",
+				"Retired" => NULL,
+				"Access" => "Git",
+				"Cloak" => "*!*@wikipedia/Manishearth",
+				"Other" => NULL,
 			)
 );
 // End of the array of developers.

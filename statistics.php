@@ -12,20 +12,24 @@
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
 
-// Get all the classes.
+// load the configuration
 require_once 'config.inc.php';
+
+// Initialize the session data.
+session_start();
+
+// Get all the classes.
 require_once 'functions.php';
+require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
 require_once 'includes/StatisticsPage.php';
 require_once 'includes/messages.php';
 require_once 'includes/database.php';
 require_once 'devlist.php';
-require_once 'includes/offlineMessage.php';
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
-$offlineMessage = new offlineMessage(false);
-$offlineMessage->check();
+Offline::check(false);
 
 // Initialize the class objects.
 $messages = new messages();
