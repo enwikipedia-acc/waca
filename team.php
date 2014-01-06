@@ -18,6 +18,12 @@ require_once 'config.inc.php';
 // Initialize the session data.
 session_start();
 
+$teamEmailImages = false;
+if(extension_loaded('gd'))
+{
+    $teamEmailImages = true;
+}
+
 // Get all the classes.
 require_once 'devlist.php';
 require_once 'functions.php';
@@ -67,7 +73,7 @@ $developer = array(
 		"Stwalkerster" =>
 			array(
 				"IRC" => "Stwalkerster",
-				"EMail" => "stwalkerster@googlemail.com",
+				"EMail" => "wikimedia@stwalkerster.co.uk",
 				"ToolID" => "7",
 				"wiki" => "Stwalkerster",
 				"WWW" => "https://stwalkerster.co.uk/",
@@ -404,14 +410,15 @@ foreach($developer as $devName => $devInfo) {
 					echo "<li>Real name: $infoContent</li>\n";
 					break;
 				case "EMail":
-					// Generate the image and write a copy to the filesystem.
-					$emailHTML=$infoContent;
-					if($teamEmailImages){
-					  $id = $imagegen->create($infoContent);
+					if($teamEmailImages)
+                    {
+                      // Generate the image and write a copy to the filesystem.
+                      $id = $imagegen->create($infoContent);
+					  // Outputs the image to the sceen.
 					  $emailHTML='<img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" />';
+                      echo '<li>E-Mail Address: ' . $emailHTML . '</li>';
 					}
-					// Outputs the image to the sceen.
-					echo '<li>E-Mail Address: ' . $emailHTML . '</li>';
+                    
 					break;
 				case "ToolID":
 					echo "<li>Userpage on tool: <a href=\"$tsurl/statistics.php?page=Users&amp;user=$infoContent\">Click here</a></li>\n";
@@ -464,14 +471,15 @@ foreach($inactiveDeveloper as $devName => $devInfo) {
 					echo "<li>Real name: $infoContent</li>\n";
 					break;
 				case "EMail":
-					// Generate the image and write a copy to the filesystem.
-					$emailHTML=$infoContent;
-					if($teamEmailImages){
-					  $id = $imagegen->create($infoContent);
-					  $emailHTML='<img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" />';
+					if($teamEmailImages)
+                    {
+                        // Generate the image and write a copy to the filesystem.
+					    $id = $imagegen->create($infoContent);
+					    $emailHTML='<img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" />';
+					    // Outputs the image to the sceen.
+					    echo '<li>E-Mail Address: ' . $emailHTML . '</li>';
 					}
-					// Outputs the image to the sceen.
-					echo '<li>E-Mail Address: ' . $emailHTML . '</li>';
+                    
 					break;
 				case "ToolID":
 					echo "<li>Userpage on tool: <a href=\"$tsurl/statistics.php?page=Users&amp;user=$infoContent\">Click here</a></li>\n";
