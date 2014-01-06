@@ -23,7 +23,9 @@ require_once 'devlist.php';
 require_once 'functions.php';
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
-require_once 'includes/imagegen.php';
+if($teamEmailImages){
+	require_once 'includes/imagegen.php';
+}
 require_once 'includes/database.php';
 require_once 'includes/skin.php';
 
@@ -40,7 +42,9 @@ $tsSQLlink = $tsSQL->getLink();
 $asSQLlink = $asSQL->getLink();
 
 // Initialize the class object.
-$imagegen = new imagegen();
+if($teamEmailImages){
+	$imagegen = new imagegen();
+}
 $skin     = new skin();
 
 //Array of objects containing the deleveopers' information.
@@ -401,9 +405,13 @@ foreach($developer as $devName => $devInfo) {
 					break;
 				case "EMail":
 					// Generate the image and write a copy to the filesystem.
-					$id = $imagegen->create($infoContent);
+					$emailHTML=$infoContent;
+					if($teamEmailImages){
+					  $id = $imagegen->create($infoContent);
+					  $emailHTML='<img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" />';
+					}
 					// Outputs the image to the sceen.
-					echo '<li>E-Mail Address: <img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" /></li>';
+					echo '<li>E-Mail Address: ' . $emailHTML . '</li>';
 					break;
 				case "ToolID":
 					echo "<li>Userpage on tool: <a href=\"$tsurl/statistics.php?page=Users&amp;user=$infoContent\">Click here</a></li>\n";
@@ -457,9 +465,13 @@ foreach($inactiveDeveloper as $devName => $devInfo) {
 					break;
 				case "EMail":
 					// Generate the image and write a copy to the filesystem.
-					$id = $imagegen->create($infoContent);
+					$emailHTML=$infoContent;
+					if($teamEmailImages){
+					  $id = $imagegen->create($infoContent);
+					  $emailHTML='<img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" />';
+					}
 					// Outputs the image to the sceen.
-					echo '<li>E-Mail Address: <img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" /></li>';
+					echo '<li>E-Mail Address: ' . $emailHTML . '</li>';
 					break;
 				case "ToolID":
 					echo "<li>Userpage on tool: <a href=\"$tsurl/statistics.php?page=Users&amp;user=$infoContent\">Click here</a></li>\n";
