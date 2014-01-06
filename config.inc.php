@@ -180,9 +180,6 @@ $usePathInfo = true;
 // user agent of the tool.
 $toolUserAgent = "Wikipedia-ACC Tool/0.1 (+http://toolserver.org/~acc/team.php)";
 
-//Use imagegen.php (requires the php gd extension) for emails in team.php
-$teamEmailImages=false; // Temporarily false till gd is enabled.
-
 // list of squid proxies requests go through.
 $squidIpList = array();
 
