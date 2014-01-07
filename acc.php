@@ -1988,7 +1988,7 @@ elseif ($action == "emailmgmt") {
 		$smarty->assign('oncreated', '');
 		$smarty->assign('active', '1');
 		$smarty->assign('emailmgmtpage', 'Create'); //Use a variable so we don't need two Smarty templates for creating and editing.
-		$smarty->display("emailmgmt-edit.tpl");
+		$smarty->display("email-management/edit.tpl");
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
@@ -2048,7 +2048,7 @@ elseif ($action == "emailmgmt") {
 		$smarty->assign('oncreated', $emailTemplate->getOncreated());
 		$smarty->assign('active', $emailTemplate->getActive());
 		$smarty->assign('emailmgmtpage', 'Edit'); // Use a variable so we don't need two Smarty templates for creating and editing.
-		$smarty->display("emailmgmt-edit.tpl");
+		$smarty->display("email-management/edit.tpl");
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
@@ -2086,7 +2086,7 @@ elseif ($action == "emailmgmt") {
 	else {
 		$smarty->assign('displayinactive', false);
 	}
-	$smarty->display("emailmgmt.tpl");
+	$smarty->display("email-management/main.tpl");
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
