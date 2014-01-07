@@ -21,10 +21,11 @@ class http {
 	public $useragent;
 	
 	public function __construct () {
+		global $varfilepath;
 		$this->useragent = 'PHP cURL';
 		$this->curl = curl_init();
 		
-		$this->cookiejar = '/tmp/http.cookies.'.dechex(rand(0,99999999)).'.dat';
+		$this->cookiejar = $varfilepath .'http.cookies.'.dechex(rand(0,99999999)).'.dat';
 		touch($this->cookiejar);
 		chmod($this->cookiejar,0600);
 		curl_setopt($this->curl,CURLOPT_COOKIEJAR,$this->cookiejar);

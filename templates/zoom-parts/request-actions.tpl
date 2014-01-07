@@ -1,7 +1,7 @@
 ﻿<!-- tpl:zoom-parts/request-actions.tpl -->
 <div class="row-fluid">
   {if $showinfo == true && $isprotected == false && $isreserved == true}
-  <a class="btn btn-primary span12" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true">Create account</a>
+  <a class="btn btn-primary span12" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true"{if !$currentUser->getAbortPref() && $createdquestion != ''} onclick="return confirm('{$createdquestion}')"{/if}>Create account</a>
   {/if}
 </div>
 
@@ -19,7 +19,7 @@
       </form>
     </div>
     <a class="btn btn-inverse span4" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Break reservation</a>
-  {elseif $isadmin && $isreserved}
+  {elseif $currentUser->isAdmin() && $isreserved}
     <a class="btn span6 offset6 btn-warning" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Force break</a>
   {/if}
   {if !$isreserved}
@@ -31,19 +31,29 @@
   <hr />
   <div class="row-fluid">
     {if $isreserved == true}
-      <div class = "span4">
-        <a class="btn btn-success span12" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=1&amp;sum={$checksum}">Created</a>
+    {* If custom create reasons are active, then make the Created button a split button dropdown. *}
+      {if !empty($createreasons)}
+      <div class = "btn-group span4">
+        <a class="btn btn-success span10" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$createdid}&amp;sum={$checksum}">{$createdname}</a>
+        <button type="button" class="btn btn-success dropdown-toggle span2" data-toggle="dropdown"><span class="caret"></span></button>
+        <ul class="dropdown-menu" role="menu">
+        {foreach $createreasons as $reason}
+        	<li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$reason@key}&amp;sum={$checksum}"{if !$currentUser->getAbortPref() && $reason.question != ''} onclick="return confirm('{$reason.question}')"{/if}>{$reason.name}</a></li>
+        {/foreach}
+        </ul>
       </div>
-      <div class="span4">
+      {else}
+      <div class = "span4">
+      <a class="btn btn-success span12" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$createdid}&amp;sum={$checksum}">{$createdname}</a>
+      </div>
+      {/if}
+      <div class = "span4">
         <div class="btn-group span6">
           <button type="button" class="btn btn-warning dropdown-toggle span12" data-toggle="dropdown">Decline<span class="caret"></span></button>
           <ul class="dropdown-menu">
-            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=2&amp;sum={$checksum}">Similar</a></li>
-            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=3&amp;sum={$checksum}">Taken</a></li>
-            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=26&amp;sum={$checksum}">SUL Taken</a></li>
-            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=4&amp;sum={$checksum}">UPolicy</a></li>
-            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=5&amp;sum={$checksum}">Invalid</a></li>
-            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=30&amp;sum={$checksum}">Password reset</a></li>
+          {foreach $declinereasons as $reason}
+            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email={$reason@key}&amp;sum={$checksum}"{if !$currentUser->getAbortPref() && $reason.question != ''} onclick="return confirm('{$reason.question}')"{/if}>{$reason.name}</a></li>
+          {/foreach}
           </ul>
         </div>
         <a class="btn btn-info span6" href="{$tsurl}/acc.php?action=done&amp;id={$id}&amp;email=custom&amp;sum={$checksum}">Custom</a>
@@ -71,7 +81,7 @@
   </div>
 {/if}
               
-{if $isadmin}
+{if $currentUser->isAdmin()}
   <hr />
   <div class="row-fluid">
     <a class="btn btn-danger span4" href="{$tsurl}/acc.php?action=ban&amp;name={$id}">Ban Username</a>

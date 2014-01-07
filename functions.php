@@ -205,13 +205,8 @@ function sendemail($messageno, $target, $id) {
 	global $toolserver_database;
 	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
-	$messageno = sanitize($messageno);
-	$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
-	$result = mysql_query($query);
-	if (!$result)
-	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	$row = mysql_fetch_assoc($result);
-	$mailtxt = $row['mail_text'];
+	$template = EmailTemplate::getById($messageno, gGetDb());
+	$mailtxt = $template->getText();
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	
 	// Get the closing user's Email signature and append it to the Email.
@@ -540,7 +535,7 @@ function isOnWhitelist($user)
 
 function zoomPage($id,$urlhash)
 {
-	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates, $dontUseWikiDb, $internalInterface;
+	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates, $dontUseWikiDb, $internalInterface, $createdid;
 	global $smarty, $locationProvider, $rdnsProvider;
 	    
 	$gid = $internalInterface->checkreqid($id);
@@ -572,6 +567,10 @@ function zoomPage($id,$urlhash)
 	$createreason = "Requested account at [[WP:ACC]], request #" . $row['pend_id'];
 	$smarty->assign("createreason", $createreason);
 	$smarty->assign("isclosed", $row['pend_status'] == "Closed");
+	$smarty->assign("createdid", $createdid);
+	$createdreason = EmailTemplate::getById($createdid, gGetDb());
+	$smarty->assign("createdname", $createdreason->getName());
+	$smarty->assign("createdquestion", $createdreason->getJsquestion());
 
 	//#region setup whether data is viewable or not
 	
@@ -745,9 +744,6 @@ function zoomPage($id,$urlhash)
 	else
 		$smarty->assign("viewuseragent", false);
 	
-	$isadmin = ( $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) );
-	$smarty->assign("isadmin", $isadmin);
-	
 	$request_date = $row['pend_date'];
 	
 	$reserveByUser = isReservedWithRow($row);
@@ -912,30 +908,31 @@ function zoomPage($id,$urlhash)
 		}
 		$smarty->assign("otheremail", $otheremail);
 	}
-
-    $sid = sanitize( $_SESSION['user'] );
-	$query = "SELECT user_abortpref, user_id FROM acc_user WHERE user_name = '$sid'";
+	
+	// Exclude the "Created" reason from this since it should be outside the dropdown.
+    $query = "SELECT id, name, jsquestion FROM emailtemplate ";
+	$query .= "WHERE oncreated = '1' AND active = '1' AND id != $createdid";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-		// Comment out for now, will do something with this soon.
-		// "Soon" will probably be with issue #11.
-		/*if(array_key_exists('user_abortpref',$row)){
-		$out.= '<script language=javascript>';
-		$out.= $messages->getMessage(32);
-		if($row['user_abortpref']==0){
-			//Checks user preferences and accordingly runs script (see script.js)
-			$out.= 'abortChecker()';
-		}
-		}else{
-			//Run script anyways if preference does not exist
-			$out.= 'abortChecker()';
-		}
-		$out.= '</script>';*/
-		
-	$smarty->assign("userid", $row['user_id']);
-	$smarty->assign("tooluser", $_SESSION['user']);
+	$createreasons = array();
+	while ($row = mysql_fetch_assoc($result)) {
+		$createreasons[$row['id']]['name'] = $row['name'];
+		$createreasons[$row['id']]['question'] = $row['jsquestion'];
+	}
+	$smarty->assign("createreasons", $createreasons);
+	
+	$query = "SELECT id, name, jsquestion FROM emailtemplate ";
+	$query .= "WHERE oncreated = '0' AND active = '1'";
+	$result = mysql_query($query, $tsSQLlink);
+	if (!$result)
+		sqlerror("Query failed: $query ERROR: " . mysql_error());
+	$declinereasons = array();
+	while ($row = mysql_fetch_assoc($result)) {
+		$declinereasons[$row['id']]['name'] = $row['name'];
+		$declinereasons[$row['id']]['question'] = $row['jsquestion'];
+	}
+	$smarty->assign("declinereasons", $declinereasons);
 	
 	return $smarty->fetch("request-zoom.tpl");
 }

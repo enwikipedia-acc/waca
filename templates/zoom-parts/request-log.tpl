@@ -18,7 +18,7 @@
             </tr>
         {/if}
         <tr>
-            <td><a href="{$tsurl}/statistics.php?page=Users&amp;user={$userid}">{$tooluser}</a></td>
+            <td><a href="{$tsurl}/statistics.php?page=Users&amp;user={$userid}">{$currentUser->getUsername()}</a></td>
             <td>
             <input type="hidden" name="id" value="{$id}"/>
             <input type="hidden" name="visibility" value="user" />

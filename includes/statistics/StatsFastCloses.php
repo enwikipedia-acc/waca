@@ -35,8 +35,6 @@ INNER JOIN closes c
 LEFT JOIN acc_user u
   ON Closed.log_user = u.user_name
 WHERE
-  Closed.log_action != "Closed 4"
-  AND
   Closed.log_action LIKE "Closed%"
   AND
   Reserved.log_action = "Reserved"

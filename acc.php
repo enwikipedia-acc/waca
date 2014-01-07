@@ -126,7 +126,7 @@ elseif (!isset($_GET['nocheck']))
 // TODO: Improve way the method is called.
 if ($action == '') {
 	echo defaultpage();
-	$skin->displayIfooter();
+	BootstrapSkin::displayInternalFooter();
 	die();
 }
 
@@ -1306,39 +1306,20 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
 		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	switch ($gem) {
-		case 0 :
-			$crea = "Dropped";
-			break;
-		case 1 :
-			$crea = "Created";
-			break;
-		case 2 :
-			$crea = "Too Similar";
-			break;
-		case 3 :
-			$crea = "Taken";
-			break;
-		case 4 :
-			$crea = "Username vio";
-			break;
-		case 5 :
-			$crea = "Impossible";
-			break;
-		case 26:
-			$crea = "SUL Taken";
-			break;
-		case 30:
-			$crea = "Password Reset";
-			break;
-	}
-	if ($gem == 'custom') {
+
+	if ($gem == '0') {
+		$crea = "Dropped";
+	} else if ($gem == 'custom') {
 		$crea = "Custom";
 	} else if ($gem == 'custom-y') {
 		$crea = "Custom, Created";
 	} else if ($gem == 'custom-n') {
 		$crea = "Custom, Not Created";
+	} else {
+		$template = EmailTemplate::getById($gem, gGetDb());
+		$crea = $template->getName();
 	}
+
 	$now = explode("-", $now);
 	$now = $now['0'] . "-" . $now['1'] . "-" . $now['2'] . ":" . $now['3'] . ":" . $now['4'];
 	$accbotSend->send("Request " . $_GET['id'] . " (" . $row2['pend_name'] . ") Marked as 'Done' ($crea) by " . $_SESSION['user'] . " on $now");
@@ -1396,17 +1377,6 @@ elseif ($action == "logs") {
 				"Unreserved" => "Request unreservation",
 				"BreakReserve" => "Break reservation",
 				"Deferred%" => "Deferred request",
-				"Closed 1" => "Request creation",
-				"Closed 3" => "Request taken",
-				"Closed 2" => "Request similarity",
-				"Closed 5" => "Request marked as invalid",
-				"Closed 4" => "Request Username policy violation",
-				"Closed 0" => "Request drop",
-				"Closed 26" => "Request taken in SUL",
-				"Closed 30" => "Request closed, password reset",
-				"Closed custom" => "Request custom close",
-				"Closed custom-y" => "Request custom close, created",
-				"Closed custom-n" => "Request custom close, not created",
 				"Email Confirmed" => "Email confirmed reservation",
 				"Blacklist Hit" => "Blacklist hit", 
 				"DNSBL Hit" => "DNS Blacklist hit",
@@ -1425,7 +1395,20 @@ elseif ($action == "logs") {
 				"Prefchange" => "User preferences change",
                 "SendReserved" => "Reservation sending",
                 "ReceiveReserved" => "Reservation recieving",
+				"Closed 0" => "Request drop",
+				"Closed custom" => "Request custom close",
+				"Closed custom-y" => "Request custom close, created",
+				"Closed custom-n" => "Request custom close, not created"
 	);
+	// Add entries for every Email template, including inactive ones.
+	$query = "SELECT id, name FROM emailtemplate ORDER BY id";
+	$statement = gGetDb()->prepare($query);
+	$statement->execute();
+	while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+		$logAction = "Closed " . $row['id'];
+		$logActions[$logAction] = "Request " . $row['name'];
+	}
+	
 	foreach($logActions as $key => $value)
 	{
 		echo "<option value=\"".$key."\"";
@@ -1955,5 +1938,147 @@ elseif ($action == "sendtouser") {
 
     // redirect to zoom page
     echo "<meta http-equiv=\"Refresh\" Content=\"0; URL=$tsurl/acc.php?action=zoom&id=$request\">";
+}
+elseif ($action == "emailmgmt") { 
+	/* New page for managing Emails, since I would rather not be handling editing
+	interface messages (such as the Sitenotice) and the new Emails in the same place. */
+	if(isset($_GET['create'])) {
+		if(!User::getCurrent()->isAdmin()) {
+			BootstrapSkin::displayAlertBox("I'm sorry, but you must be an administrator to access this page.");
+			BootstrapSkin::displayInternalFooter();
+			die();
+		}
+		if(isset($_POST['submit'])) {
+			$emailTemplate = new EmailTemplate();
+            $emailTemplate->setDatabase(gGetDb());
+            
+			$name = $_POST['name'];
+            
+			$emailTemplate->setName($name);
+			$emailTemplate->setText($_POST['text']);
+			$emailTemplate->setJsquestion($_POST['jsquestion']);
+			$emailTemplate->setOncreated(isset($_POST['oncreated']));
+			$emailTemplate->setActive(isset($_POST['active']));
+			$siuser = sanitize($_SESSION['user']);
+			
+			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
+			$nameCheck = EmailTemplate::getByName($name, gGetDb());
+			if ($nameCheck) {
+				BootStrap::displayAlertBox("That Email template name is already being used. Please choose another.");
+				BootstrapSkin::displayInternalFooter();
+				die();
+			}
+			
+			$emailTemplate->save();
+			$id = $emailTemplate->getId();
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$id', '$siuser', 'CreatedEmail', CURRENT_TIMESTAMP());";
+			$result = $tsSQL->query($query);
+			if (!$result)
+				sqlerror("Query failed: $query ERROR: " . mysql_error());
+		    header("Refresh:5;URL=$tsurl/acc.php?action=emailmgmt");
+			BootstrapSkin::displayAlertBox("Email template has been saved successfully. You will be returned to Email Management in 5 seconds.<br /><br />\n
+			Click <a href=\"".$tsurl."/acc.php?action=emailmgmt\">here</a> if you are not redirected.");
+			$accbotSend->send("Email $name ($id) created by $siuser");
+			BootstrapSkin::displayInternalFooter();
+			die();
+		}
+		$smarty->assign('id', null);
+		$smarty->assign('createdid', $createdid);
+        $smarty->assign('emailTemplate', new EmailTemplate());
+        $smarty->assign('emailmgmtpage', 'Create'); //Use a variable so we don't need two Smarty templates for creating and editing.
+		$smarty->display("email-management/edit.tpl");
+		BootstrapSkin::displayInternalFooter();
+		die();
+	}
+	if(isset($_GET['edit'])) {
+		global $createdid;
+		$gid = sanitize($_GET['edit']);
+		if(isset($_POST['submit'])) {
+			$emailTemplate = EmailTemplate::getById($gid, gGetDb());
+			// Allow the user to see the edit form (with read only fields) but not POST anything.
+			if(!User::getCurrent()->isAdmin()) {
+				BootstrapSkin::displayAlertBox("I'm sorry, but you must be an administrator to access this page.");
+				BootstrapSkin::displayInternalFooter();
+				die();
+			}
+			$name = $_POST['name'];
+			$emailTemplate->setName($name);
+			$emailTemplate->setText($_POST['text']);
+			$emailTemplate->setJsquestion($_POST['jsquestion']);
+			
+			if ($gid == $createdid) { // Both checkboxes on the main created message should always be enabled.
+				$emailTemplate->setOncreated(1);
+				$emailTemplate->setActive(1);
+			}
+			else {
+				$emailTemplate->setOncreated(isset($_POST['oncreated']));
+				$emailTemplate->setActive(isset($_POST['active']));
+			}
+			$siuser = sanitize($_SESSION['user']);
+				
+			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
+			$nameCheck = EmailTemplate::getByName($name, gGetDb());
+			if ($nameCheck->getId() != "" && $nameCheck->getId() != $gid) {
+				BootstrapSkin::displayAlertBox("That Email template name is already being used. Please choose another.");
+				BootstrapSkin::displayInternalFooter();
+				die();
+			}
+
+			$emailTemplate->save();
+            
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$siuser', 'EditedEmail', CURRENT_TIMESTAMP())";
+			$result = $tsSQL->query($query);
+			if (!$result)
+				sqlerror("Query failed: $query ERROR: " . mysql_error());
+			header("Refresh:5;URL=$tsurl/acc.php?action=emailmgmt");
+			BootstrapSkin::displayAlertBox("Email template has been saved successfully. You will be returned to Email Management in 5 seconds.<br /><br />\n
+			Click <a href=\"".$tsurl."/acc.php?action=emailmgmt\">here</a> if you are not redirected.");
+			$accbotSend->send("Email $name ($gid) edited by $siuser");
+			BootstrapSkin::displayInternalFooter();
+			die();
+		}
+		$emailTemplate = EmailTemplate::getById($_GET['edit'], gGetDb());
+		$smarty->assign('id', $gid);
+        $smarty->assign('emailTemplate', $emailTemplate);
+		$smarty->assign('createdid', $createdid);
+		$smarty->assign('emailmgmtpage', 'Edit'); // Use a variable so we don't need two Smarty templates for creating and editing.
+		$smarty->display("email-management/edit.tpl");
+		BootstrapSkin::displayInternalFooter();
+		die();
+	}
+	$query = "SELECT id, name FROM emailtemplate WHERE active = 1";
+	$statement = gGetDb()->prepare($query);
+	$statement->execute();
+	$rows= array();
+	while( $row = $statement->fetch(PDO::FETCH_ASSOC) )
+		$rows[] = $row;
+	$smarty->assign('activeemails', $rows);
+        
+	$query = "SELECT id, name FROM emailtemplate WHERE active = 0";
+	$statement = gGetDb()->prepare($query);
+	$statement->execute();
+	$query2 = "SELECT COUNT(*) FROM emailtemplate WHERE active = 0";
+	$statement2 = gGetDb()->prepare($query);
+	$statement2->execute();
+	$rowsnum =  $statement2->fetchColumn();
+	if ($rowsnum > 0) {
+		$rows= array();
+		while( $row = $statement->fetch(PDO::FETCH_ASSOC) )
+			$rows[] = $row;
+		$smarty->assign('inactiveemails', $rows);
+		$smarty->assign('displayinactive', true);
+	}
+	else {
+		$smarty->assign('displayinactive', false);
+	}
+	$smarty->display("email-management/main.tpl");
+	BootstrapSkin::displayInternalFooter();
+	die();
+}
+# If the action specified does not exist, goto the default page.
+else {
+	echo defaultpage();
+	BootstrapSkin::displayInternalFooter();
+	die();
 }
 ?>

@@ -32,7 +32,7 @@ QUERY;
                 $r = $qb->executeQueryToTable($query);
                 echo mysql_error();
 
-				$header = "<p>Your name and signature will only appear here if you have automatic welcoming enabled. You can see the code defined for your signature, the code the bot will use, and what this renders as.</p><p>If your signature doesn't get recognised by the bot, it's probably cos you don't have a link to your userpage in it.</p>";
+				$header = "<p>Your name and signature will only appear here if you have automatic welcoming enabled. You can see the code defined for your signature, the code the bot will use, and what this renders as.</p><p>If your signature doesn't get recognised by the bot, it's probably because you don't have a link to your userpage in it.</p>";
 				
                 return $header . "<hr />". $r;
         }
