@@ -1982,12 +1982,8 @@ elseif ($action == "emailmgmt") {
 		}
 		$smarty->assign('id', null);
 		$smarty->assign('createdid', $createdid);
-		$smarty->assign('name', '');
-		$smarty->assign('text', '');
-		$smarty->assign('jsquestion', '');
-		$smarty->assign('oncreated', '');
-		$smarty->assign('active', '1');
-		$smarty->assign('emailmgmtpage', 'Create'); //Use a variable so we don't need two Smarty templates for creating and editing.
+        $smarty->assign('emailTemplate', new EmailTemplate());
+        $smarty->assign('emailmgmtpage', 'Create'); //Use a variable so we don't need two Smarty templates for creating and editing.
 		$smarty->display("email-management/edit.tpl");
 		BootstrapSkin::displayInternalFooter();
 		die();
@@ -2041,12 +2037,8 @@ elseif ($action == "emailmgmt") {
 		}
 		$emailTemplate = EmailTemplate::getById($_GET['edit'], gGetDb());
 		$smarty->assign('id', $gid);
+        $smarty->assign('emailTemplate', $emailTemplate);
 		$smarty->assign('createdid', $createdid);
-		$smarty->assign('name', $emailTemplate->getName());
-		$smarty->assign('text', $emailTemplate->getText());
-		$smarty->assign('jsquestion', $emailTemplate->getJsquestion());
-		$smarty->assign('oncreated', $emailTemplate->getOncreated());
-		$smarty->assign('active', $emailTemplate->getActive());
 		$smarty->assign('emailmgmtpage', 'Edit'); // Use a variable so we don't need two Smarty templates for creating and editing.
 		$smarty->display("email-management/edit.tpl");
 		BootstrapSkin::displayInternalFooter();
