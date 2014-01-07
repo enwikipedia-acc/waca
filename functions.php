@@ -838,11 +838,12 @@ function zoomPage($id,$urlhash)
 	}
 	$smarty->assign("zoomlogs", $logs);
 
-	$ipmsg = 'this ip';
-	if ($hideinfo == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']))
-	$ipmsg = $thisip;
 
 	// START OTHER REQUESTS BY IP AND EMAIL STUFF
+	
+	// Displays other requests from this ip.
+	$smarty->assign("otherip", false);
+	$smarty->assign("numip", 0);
     // assign to user
     if (! isProtected(0)) {
 		$userListQuery = "SELECT username FROM user WHERE status = 'User' or status = 'Admin';";
@@ -889,6 +890,7 @@ function zoomPage($id,$urlhash)
 
 	// Displays other requests from this email.
 	$smarty->assign("otheremail", false);
+	$smarty->assign("numemail", 0);
 	
 	if ($thisemail != 'acc@toolserver.org') {
 		$query = "SELECT pend_date, pend_id, pend_name FROM acc_pend WHERE pend_email = '" . mysql_real_escape_string($thisemail, $tsSQLlink) . "' AND pend_id != '$thisid' AND pend_id != '$thisid' AND (pend_mailconfirm = 'Confirmed' OR pend_mailconfirm = '');";
