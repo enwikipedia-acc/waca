@@ -31,13 +31,11 @@ class BootstrapSkin {
         
         $userid = isset($_SESSION['userID']) ? $_SESSION['userID'] : 0;
         $user = isset($_SESSION['user']) ? $_SESSION['user'] : "";
-        $isAdmin= isset($_SESSION['user']) && $session->hasright($_SESSION['user'], 'Admin');
         $msg = new messages();
         $sitenotice = $msg->getSitenotice();
         $smarty->assign("userid", $userid);
         $smarty->assign("username", $user);
         $smarty->assign("sitenotice", $sitenotice);
-        $smarty->assign("isAdmin", $isAdmin);
         $smarty->display("header-internal.tpl");
         //print_r($_SESSION);
         
