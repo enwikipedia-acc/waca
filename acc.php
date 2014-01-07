@@ -1422,7 +1422,9 @@ elseif ($action == "logs") {
 				"Renamed" => "User rename",
 				"Approved" => "User approval",
 				"Promoted" => "User promotion",
-				"Prefchange" => "User preferences change"
+				"Prefchange" => "User preferences change",
+                "SendReserved" => "Reservation sending",
+                "ReceiveReserved" => "Reservation recieving",
 	);
 	foreach($logActions as $key => $value)
 	{
@@ -1878,5 +1880,80 @@ elseif ($action == "ec") { // edit comment
 		$skin->displayIfooter();
 		die();
 	}
+}
+elseif ($action == "sendtouser") { 
+    
+    // Sanitises the resid for use and checks its validity.    
+	$request = $internalInterface->checkreqid($_POST['id']);
+    
+    $database = gGetDb();
+	
+    $user = User::getByUsername($_POST['user'], $database);
+    $curuser = User::getCurrent()->getUsername();
+    
+    if($user == false)
+    {
+        BootstrapSkin::displayAlertBox("We couldn't find the user you wanted to send the reservation to. Please check that this user exists and is an active user on the tool.", "alert-error", "Could not find user", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+    if($database->beginTransaction())
+    {
+        try
+        {
+            $updateStatement = $database->prepare("UPDATE acc_pend SET pend_reserved = :userid WHERE pend_id = :request LIMIT 1;");
+            $updateStatement->bindParam(":userid", $user->getId());
+            $updateStatement->bindParam(":request", $request);
+            if(!$updateStatement->execute())
+            {
+                throw new Exception("Error updating reserved status of request.");   
+            }
+            
+            $logStatement = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:request, :user, :action, CURRENT_TIMESTAMP(), '');");
+            $action = "SendReserved";
+            $logStatement->bindParam(":user", $curuser);
+            $logStatement->bindParam(":request", $request);
+            $logStatement->bindParam(":action", $action);
+            if(!$logStatement->execute())
+            {
+                throw new Exception("Error inserting send log entry.");   
+            }
+            
+            $logStatement->bindParam(":user", $user->getUsername());
+            $action = "ReceiveReserved";
+            if(!$logStatement->execute())
+            {
+                throw new Exception("Error inserting send log entry.");   
+            }
+            
+            $database->commit();
+        }
+        catch(Exception $ex)
+        {
+            $database->rollBack();          
+            BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Query Error", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die(); 
+        }
+        catch(PDOException $ex)
+        {
+            $database->rollBack();          
+            BootstrapSkin::displayAlertBox("An error was encountered during the transaction, and the transaction has been rolled back. <br />" . $ex->getMessage(), "alert-error", "Database Error", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die(); 
+        }
+    }
+    else
+    {
+        BootstrapSkin::displayAlertBox("Could not start database transaction.", "alert-error", "Database Error", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+	//$accbotSend->send("Request $request is being handled by " . $_POST['user']);
+
+    // redirect to zoom page
+    echo "<meta http-equiv=\"Refresh\" Content=\"0; URL=$tsurl/acc.php?action=zoom&id=$request\">";
 }
 ?>

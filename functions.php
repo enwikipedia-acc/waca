@@ -838,11 +838,34 @@ function zoomPage($id,$urlhash)
 	}
 	$smarty->assign("zoomlogs", $logs);
 
+
 	// START OTHER REQUESTS BY IP AND EMAIL STUFF
 	
 	// Displays other requests from this ip.
 	$smarty->assign("otherip", false);
 	$smarty->assign("numip", 0);
+    // assign to user
+    if (! isProtected(0)) {
+		$userListQuery = "SELECT username FROM user WHERE status = 'User' or status = 'Admin';";
+		$userListResult = gGetDb()->query($userListQuery);
+		if (!$userListResult)
+			sqlerror("Query failed: $query ERROR: " . gGetDb()->errorInfo() ,"Database query error.");
+        $userListData = $userListResult->fetchAll(PDO::FETCH_COLUMN);
+        $userListProcessedData = array();
+        foreach ($userListData as $userListItem)
+        {
+            $userListProcessedData[] = "\"" . htmlentities($userListItem) . "\"";
+        }
+        
+		$userList = '[' . implode(",", $userListProcessedData) . ']';	
+        $smarty->assign("jsuserlist", $userList);
+	}
+    // end: assign to user
+    
+	$ipmsg = 'this ip';
+	if ($hideinfo == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']))
+	$ipmsg = $thisip;
+
 
 	if ($thisip != '127.0.0.1') {
 		$query = "SELECT pend_date, pend_id, pend_name FROM acc_pend WHERE (pend_proxyip LIKE '%{$thisip}%' OR pend_ip = '$thisip') AND pend_id != '$thisid' AND (pend_mailconfirm = 'Confirmed' OR pend_mailconfirm = '');";
