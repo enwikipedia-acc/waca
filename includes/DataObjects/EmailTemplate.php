@@ -8,8 +8,8 @@ class EmailTemplate extends DataObject
     private $name;
     private $text;
     private $jsquestion;
-    private $oncreated;
-    private $active;
+    private $oncreated = 0;
+    private $active = 1;
         
     public static function getByName($name, PdoDatabase $database)
     {
