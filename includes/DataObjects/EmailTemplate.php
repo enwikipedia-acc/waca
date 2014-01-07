@@ -39,6 +39,7 @@ class EmailTemplate extends DataObject
 			$statement->bindParam(":jsquestion", $this->jsquestion);
 			$statement->bindParam(":oncreated", $this->oncreated);
 			$statement->bindParam(":active", $this->active);
+            
 			if($statement->execute())
 			{
 				$this->isNew = false;
@@ -91,18 +92,18 @@ class EmailTemplate extends DataObject
     }
 
     public function getOncreated(){
-        return $this->oncreated;
+        return $this->oncreated == 1;
     }
 
     public function setOncreated($oncreated){
-        $this->oncreated = $oncreated;
+        $this->oncreated = $oncreated ? 1 : 0;
     }
 
     public function getActive(){
-        return $this->active;
+        return $this->active == 1;
     }
 
     public function setActive($active){
-        $this->active = $active;
+        $this->active = $active ? 1 : 0;
     }
 }
