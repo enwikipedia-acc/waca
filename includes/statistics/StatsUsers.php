@@ -215,7 +215,7 @@ class StatsUsers extends StatisticsPage
 		$out.="<h2>Summary of user activity:</h2>";
 		
 		$qb = new QueryBrowser();
-		$out .= $qb->executeQueryToTable('SELECT mail_desc AS "Close type", COUNT(*) AS Count FROM acc_log l INNER JOIN closes ON `CONCAT("Closed ",mail_id)` = l.log_action WHERE l.log_user = "'.$siuser.'" AND l.log_action LIKE "Closed%" GROUP BY l.log_action;');
+		$out .= $qb->executeQueryToTable('SELECT mail_desc AS "Close type", COUNT(*) AS Count FROM acc_log l INNER JOIN closes ON `closed` = l.log_action WHERE l.log_user = "'.$siuser.'" AND l.log_action LIKE "Closed%" GROUP BY l.log_action;');
 		
 		
 		// List the requests this user has marked as 'created'
