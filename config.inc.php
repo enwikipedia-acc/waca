@@ -236,6 +236,9 @@ $rfc1918ips = array(
 // be left false when you don't need it, since this will open a popup window on every page load.
 $smartydebug = false;
 
+// ID of the Email template used for the main "Created!" close reason.
+$createdid = 1;
+
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********
 ***************************************************************************

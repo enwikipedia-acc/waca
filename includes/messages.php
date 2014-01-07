@@ -51,22 +51,16 @@ class messages {
 		// override for drop
 		if( $messageNumber == 0 ) return true;
 		
-		global $tsSQL;
-		
 		if (!preg_match('/^[0-9]*$/',$messageNumber)) {
 			die('Invalid Input.');
 		}
 		
-		$query = "SELECT mail_type FROM acc_emails WHERE mail_id = " . $tsSQL->escape($messageNumber) . ";";
+		$id = EmailTemplate::getById($messageNumber, gGetDb());
 		
-		$result = $tsSQL->query($query);
-		if(!$result)
-		{
-			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"Database query error.");
+		if ($id)
+			return true;
+		else
 			return false;
-		} 
-		$row = mysql_fetch_assoc($result);
-		return ($row['mail_type'] == "Message");
 	}
 
 	public function getSitenotice()

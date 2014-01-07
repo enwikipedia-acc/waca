@@ -216,38 +216,25 @@ class LogPage
 			if ($row['log_action'] == "Closed") {
 				$logList .="<li>$rlu $rla, <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
-			if ($row['log_action'] == "Closed 0") {
-				$logList .="<li>$rlu Dropped, <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed 1") {
-				$logList .="<li>$rlu Closed (Account created), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed 2") {
-				$logList .="<li>$rlu Closed (Too Similar), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed 3") {
-				$logList .="<li>$rlu Closed (Taken), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed 4") {
-				$logList .="<li>$rlu Closed (Username vio), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed 5") {
-				$logList .="<li>$rlu Closed (Technical Impossibility), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed 26") {
-				$logList .="<li>$rlu Closed (Taken in SUL), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed 30") {
-				$logList .="<li>$rlu Closed (Password Reset), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed custom") {
-				$logList .="<li>$rlu Closed (Custom), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-		    if ($row['log_action'] == "Closed custom-y") {
-				$logList .="<li>$rlu Closed (Custom, Created), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-			}
-			if ($row['log_action'] == "Closed custom-n") {
-				$logList .="<li>$rlu Closed (Custom, Not Created), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+			if (substr($row['log_action'],0,7) == "Closed ") {
+				if ($row['log_action'] == "Closed 0") {
+					$logList .="<li>$rlu Dropped, <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				} 
+				else if ($row['log_action'] == "Closed custom") {
+					$logList .="<li>$rlu Closed (Custom), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				}
+		   		else if ($row['log_action'] == "Closed custom-y") {
+					$logList .="<li>$rlu Closed (Custom, Created), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				}
+				else if ($row['log_action'] == "Closed custom-n") {
+					$logList .="<li>$rlu Closed (Custom, Not Created), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				}
+				else {
+					$eid = mysql_real_escape_string(substr($row['log_action'],7));
+                    $template = EmailTemplate::getById($eid, gGetDb());
+					$ename = htmlentities($template->getName(),ENT_QUOTES,'UTF-8');
+					$logList .="<li>$rlu Closed ($ename), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				}
 			}
 			if ($row['log_action'] == "Blacklist Hit" || $row['log_action'] == "DNSBL Hit") {
 				$logList .="<li>$rlu <strong>Rejected by Blacklist</strong> $rlp, $rlc at $rlt.</li>\n";
@@ -323,6 +310,12 @@ class LogPage
 			if($rla == "Reserved") {
 				$logList .= "<li>$rlu reserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
 			}
+			if($rla == "SendReserved") {
+				$logList .= "<li>$rlu sent reserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
+			}			
+            if($rla == "ReceiveReserved") {
+				$logList .= "<li>$rlu received a reserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
+			}
 			if($rla == "Unreserved") {
 				$logList .= "<li>$rlu unreserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
 			}
@@ -336,6 +329,14 @@ class LogPage
 					Die("Query failed: $query4 ERROR: " . mysql_error());
 				$row4 = mysql_fetch_assoc($result4);
 				$logList .= "<li>$rlu edited <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row4['pend_id'] ."\">comment $rlp</a>, at $rlt</li>";
+			}
+			if ($rla == "CreatedEmail") {
+                $template = EmailTemplate::getById($rlp, gGetDb());
+				$logList .="<li>$rlu created email <a href=\"$tsurl/acc.php?action=emailmgmt&amp;edit=$rlp\">$rlp (" . $template->getName() . ")</a>, at $rlt.</li>\n";
+			}
+			if ($rla == "EditedEmail") {
+                $template = EmailTemplate::getById($rlp, gGetDb());
+				$logList .="<li>$rlu edited email <a href=\"$tsurl/acc.php?action=emailmgmt&amp;edit=$rlp\">$rlp (" . $template->getName() . ")</a>, at $rlt.</li>\n";
 			}
 			$logListCount++;
 		}
@@ -381,38 +382,24 @@ class LogPage
 			if ($row['log_action'] == "Closed") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>$rla, 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
-			if ($row['log_action'] == "Closed 0") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"dropped", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed 1") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (created)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed 2") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (too similar)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed 3") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (taken)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed 4") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (policy)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed 5") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (technical)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed 26") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (SUL)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed 30") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (password reset)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed custom") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-		    if ($row['log_action'] == "Closed custom-y") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason - account created)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
-			}
-			if ($row['log_action'] == "Closed custom-n") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason - account not created)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+			if (substr($row['log_action'],0,7) == "Closed ") {
+				if ($row['log_action'] == "Closed 0") {
+					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"dropped", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+				}
+				else if ($row['log_action'] == "Closed custom") {
+					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+				}
+				else if ($row['log_action'] == "Closed custom-y") {
+					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason - account created)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+				}
+				else if ($row['log_action'] == "Closed custom-n") {
+					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason - account not created)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+				}
+				else {
+                    $template = EmailTemplate::getById(substr($row['log_action'],7), gGetDb());
+					$ename = htmlentities($template->getName(),ENT_QUOTES,'UTF-8');
+					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed ($ename)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+				}
 			}
 			if ($row['log_action'] == "Blacklist Hit" || $row['log_action'] == "DNSBL Hit") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"rejected by blacklist", 'target' => $rlp, 'comment' => $rlc, 'action' => "Blacklist");
@@ -420,11 +407,17 @@ class LogPage
 			if ($rla == 'Email Confirmed') {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"email-confirmed", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
+			if ($rla == "CreatedEmail") {
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"created email", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+			}
 			if ($rla == "CreatedTemplate") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"created template", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "DeletedTemplate") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"deletd template", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"deleted template", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+			}
+			if ($rla == "EditedEmail") {
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"edited email", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "EditedTemplate") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"edited template", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
@@ -483,6 +476,12 @@ class LogPage
 			}
 			if($rla == "Reserved") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"reserved", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+			}			
+            if($rla == "SendReserved") {
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"sent reservation", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+			}
+            if($rla == "ReceiveReserved") {
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"received reservation", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if($rla == "Unreserved") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"unreserved", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
@@ -509,10 +508,12 @@ class LogPage
 				case "Approved":
 				case "badpass":
 				case "Banned":
+				case "CreatedEmail":
 				case "CreatedTemplate":
 				case "Declined":
 				case "DeletedTemplate":
 				case "Edited":
+				case "EditedEmail":
 				case "EditedTemplate":
 				case "Prefchange":
 				case "Promoted":
@@ -523,18 +524,13 @@ class LogPage
 				case "Deferred":
 				case "Closed":
 				case "Closed 0":
-				case "Closed 1":
-				case "Closed 2":
-				case "Closed 3":
-				case "Closed 4":
-				case "Closed 5":
-				case "Closed 26":
-				case "Closed 30":
 				case "Closed custom":
 				case "Closed custom-n":
 				case "Closed custom-y":
 				case "Email Confirmed":
 				case "Reserved":
+				case "SendReserved":
+				case "ReceiveReserved":
 				case "Unreserved":
 				case "BreakReserve":
 				case "EditComment-r":

@@ -155,7 +155,7 @@ function actionCount( ) {
 
 	if( $isUser ) {
 		// accounts created
-		$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log WHERE (log_action = 'Closed 1' OR log_action = 'Closed custom-y') AND log_user = :username");
+		$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log LEFT JOIN emailtemplate ON concat('Closed ', id) = log_action WHERE (oncreated = '1' OR log_action = 'Closed custom-y') AND log_user = :username");
 		$query->bindParam(":username", $username);
 		$query->execute();
 
@@ -214,9 +214,32 @@ function actionCount( ) {
 			$query->execute();
 			$pcc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("prefchange",$pcc['count']);
+			
+			// Combine all three actions affecting Welcome templates into one count.
+			$action = "CreatedTemplate";
+			$query->execute();
+			$ctc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+			$action = "EditedTemplate";
+			$query->execute();
+			$etc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+			$action = "DeletedTemplate";
+			$query->execute();
+			$dtc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+			$welctemptotal = $ctc['count'] + $etc['count'] + $dtc['count'];
+			$docUser->setAttribute("welctempchange", $welctemptotal);
+			
+			// Combine both actions affecting Email templates into one count.
+			$action = "CreatedEmail";
+			$query->execute();
+			$cec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+			$action = "EditedEmail";
+			$query->execute();
+			$eec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+			$emailtemptotal = $cec['count'] + $eec['count'];
+			$docUser->setAttribute("emailtempchange", $emailtemptotal);
 		}
 
-		$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log WHERE log_time LIKE :date  AND (log_action = 'Closed 1' OR log_action = 'Closed custom-y') AND log_user = :username");
+		$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log LEFT JOIN emailtemplate ON concat('Closed ', id) = log_action WHERE log_time LIKE :date  AND (oncreated = '1' OR log_action = 'Closed custom-y') AND log_user = :username");
 		$query->bindParam(":username", $username);
 		$date = date( 'Y-m-d' ) . "%";
 		$query->bindParam(":date", $date );

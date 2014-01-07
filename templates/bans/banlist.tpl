@@ -20,7 +20,7 @@
     {foreach from=$activebans item="ban"}
       <tr>
         <td>{$ban->getType()}</td>
-        <td>{$ban->getTarget()|escape}</td>
+        <td>{$ban->getTarget()}</td>
         <td>
             {if $ban->getType() == "IP"}
               <a class="btn btn-small btn-info" href="{$tsurl}/search.php?type=IP&amp;term={$ban->getTarget()|escape:'url'}">

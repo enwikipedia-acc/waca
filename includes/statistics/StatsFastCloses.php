@@ -31,12 +31,10 @@ FROM acc_log Closed
 INNER JOIN acc_log Reserved 
   ON Closed.log_pend = Reserved.log_pend
 INNER JOIN closes c
-  ON c.`CONCAT("Closed ",mail_id)` = Closed.log_action
+  ON c.`closed` = Closed.log_action
 LEFT JOIN acc_user u
   ON Closed.log_user = u.user_name
 WHERE
-  Closed.log_action != "Closed 4"
-  AND
   Closed.log_action LIKE "Closed%"
   AND
   Reserved.log_action = "Reserved"

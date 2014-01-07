@@ -30,30 +30,30 @@ class StatsTopCreators extends StatisticsPage
 		 * Retrieve all-time stats
 		 */
 		
-		$top5aout = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.`user_level` FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE (`log_action` = "Closed 1" OR `log_action` = "Closed custom-y") GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
+		$top5aout = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.`user_level` FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` LEFT JOIN `emailtemplate` e ON concat(\'Closed \', e.`id`) = l.`log_action` WHERE (e.`oncreated` = "1" OR `log_action` = "Closed custom-y") GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
 		
-        $top5activeout = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.`user_level` FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE (`log_action` = "Closed 1" OR `log_action` = "Closed custom-y") AND u.`user_level` != "Suspended" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
+        $top5activeout = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.`user_level` FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` LEFT JOIN `emailtemplate` e ON concat(\'Closed \', e.`id`) = l.`log_action` WHERE (e.`oncreated` = "1" OR `log_action` = "Closed custom-y") AND u.`user_level` != "Suspended" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
 
 		/*
 		 * Retrieve today's stats (so far)
 		 */
 		
 		$now = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d")));
-		$top5out = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.`user_level` FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE (`log_action` = "Closed 1" OR `log_action` = "Closed custom-y") AND `log_time` LIKE "'.$now.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
+		$top5out = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.`user_level` FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` LEFT JOIN `emailtemplate` e ON concat(\'Closed \', e.`id`) = l.`log_action` WHERE (e.`oncreated` = "1" OR `log_action` = "Closed custom-y") AND `log_time` LIKE "'.$now.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
 		
 		/*
 		 * Retrieve Yesterday's stats
 		 */
 		
 		$yesterday = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 1));
-		$top5yout = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.`user_level` FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE (`log_action` = "Closed 1" OR `log_action` = "Closed custom-y") AND `log_time` LIKE "'.$yesterday.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
+		$top5yout = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.`user_level` FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` LEFT JOIN `emailtemplate` e ON concat(\'Closed \', e.`id`) = l.`log_action` WHERE (e.`oncreated` = "1" OR `log_action` = "Closed custom-y") AND `log_time` LIKE "'.$yesterday.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
 		
 		/*
 		 *  Retrieve last 7 days
 		 */
 		
 		$lastweek = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 7));
-		$top5wout = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.`user_level` FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE (`log_action` = "Closed 1" OR `log_action` = "Closed custom-y") AND `log_time` > "'.$lastweek.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
+		$top5wout = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.`user_level` FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` LEFT JOIN `emailtemplate` e ON concat(\'Closed \', e.`id`) = l.`log_action` WHERE (e.`oncreated` = "1" OR `log_action` = "Closed custom-y") AND `log_time` > "'.$lastweek.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
 		 
 		
 		/*
@@ -61,7 +61,7 @@ class StatsTopCreators extends StatisticsPage
 		 */
 		
 		$lastmonth = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 28));
-		$top5mout = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.`user_level` FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` WHERE (`log_action` = "Closed 1" OR `log_action` = "Closed custom-y") AND `log_time` > "'.$lastmonth.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
+		$top5mout = $qb->executeQueryToTable('SELECT COUNT(*), `user_id`, `log_user`, u.`user_level` FROM `acc_log` l INNER JOIN `acc_user` u ON u.`user_name` = l.`log_user` LEFT JOIN `emailtemplate` e ON concat(\'Closed \', e.`id`) = l.`log_action` WHERE (e.`oncreated` = "1" OR `log_action` = "Closed custom-y") AND `log_time` > "'.$lastmonth.'%" GROUP BY `log_user`, `user_id` ORDER BY COUNT(*) DESC;');
 
 		$out = "<h2>Contents</h2><ul><li><a href=\"#alltimeactive\">All-time active top creators</a></li><li><a href=\"#today\">Today's creators</a></li><li><a href=\"#yesterday\">Yesterday's creators</a></li><li><a href=\"#lastweek\">Last 7 days</a></li><li><a href=\"#lastmonth\">Last 28 days</a></li></ul>";
 		$out.= '<p><a href="#">Username</a> means an active account.<br /><a class="muted" href="#">Username</a> means a suspended account.<br /><a class="text-success" href="#">Username</a> means a tool admin account.</p>';
