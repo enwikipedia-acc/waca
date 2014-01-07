@@ -516,7 +516,7 @@ foreach($inactiveDeveloper as $devName => $devInfo) {
 echo "</div></div>
 </div>
 
-<hr /><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by GitHub and can be found <a href=\"https://github.com/enwikipedia-acc/waca/\">here</a>.</p>";
+<hr /><p>ACC is kindly hosted by the Wikimedia Labs. Our code respository is hosted by GitHub and can be found <a href=\"https://github.com/enwikipedia-acc/waca/\">here</a>.</p>";
 
 
 BootstrapSkin::displayInternalFooter();
