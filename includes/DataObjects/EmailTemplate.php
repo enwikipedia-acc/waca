@@ -10,16 +10,7 @@ class EmailTemplate extends DataObject
     private $jsquestion;
     private $oncreated;
     private $active;
-    
-    /* Put a constructor function here since I'm not sure how else to insert a new entry. */
-    function __construct($database = NULL)
-    {
-    	if ($database) {
-    		$this->isNew = true;
-    		$this->setDatabase($database);
-    	}
-    }
-    
+        
     public static function getByName($name, PdoDatabase $database)
     {
     	$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE name = :name LIMIT 1;");

@@ -1949,7 +1949,8 @@ elseif ($action == "emailmgmt") {
 			die();
 		}
 		if(isset($_POST['submit'])) {
-			$emailTemplate = new EmailTemplate(gGetDb());
+			$emailTemplate = new EmailTemplate();
+            $emailTemplate->setDatabase(gGetDb());
 			$name = $_POST['name'];
 			$emailTemplate->setName($name);
 			$emailTemplate->setText($_POST['text']);
