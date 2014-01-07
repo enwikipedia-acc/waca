@@ -1,18 +1,44 @@
-<h2>Email Management</h2>
-{if $currentUser->isAdmin() == true}<a class="btn btn-primary" href="{$tsurl}/acc.php?action=emailmgmt&amp;create=1">Create!</a>{/if}
-{if $displayactive == true}
-	<h3>Active Emails</h3>
-	<table>
-	{foreach $activeemails as $row}
-		<tr><td>{$row@iteration}. </td><td>{$row.name}</td> <td><a class="btn btn-{if $currentUser->isAdmin()}warning{else}primary{/if}" href="{$tsurl}/acc.php?action=emailmgmt&amp;edit={$row.id}">{if $currentUser->isAdmin()}Edit!{else}View!{/if}</a></td></tr>
-	{/foreach}
-	</table>
-{/if}
-{if $displayinactive == true}
-	<h3>Inactive Emails</h3>
-	<table>
-	{foreach $inactiveemails as $row}
-		<tr><td>{$row@iteration}. </td><td>{$row.name}</td> <td><a class="btn btn-{if $currentUser->isAdmin()}warning{else}primary{/if}" href="{$tsurl}/acc.php?action=emailmgmt&amp;edit={$row.id}">{if $currentUser->isAdmin()}Edit!{else}View!{/if}</a></td></tr>
-	{/foreach}
-	</table>
-{/if}
+<div class="page-header">
+  <h1>Email Management<small>
+    Create and edit close reasons{if $currentUser->isAdmin() == true} &nbsp;<a class="btn btn-primary" href="{$tsurl}/acc.php?action=emailmgmt&amp;create=1">
+      <i class="icon-white icon-plus"></i>&nbsp;Create
+    </a>{/if}
+  </small></h1>
+</div>
+
+<div class="row-fluid">
+  <div class="span6">
+	  <h3>Active Emails</h3>
+    <table class="table table-striped table-nonfluid">
+      {foreach $activeemails as $row}
+      <tr>
+        <td>{$row@iteration}.</td>
+        <th>{$row.name}</th>
+        <td>
+          <a class="btn {if $currentUser->isAdmin()}btn-warning{/if}" href="{$tsurl}/acc.php?action=emailmgmt&amp;edit={$row.id}">
+            {if $currentUser->isAdmin()}<i class="icon-white icon-pencil"></i>&nbsp;Edit!{else}<i class="icon-black icon-eye-open"></i>&nbsp;View!{/if}
+          </a>
+        </td>
+      </tr>
+      {/foreach}
+    </table>
+  </div>
+  {if $displayinactive == true}
+  <div class="span6">
+	  <h3>Inactive Emails</h3>
+    <table class="table table-striped table-nonfluid">
+      {foreach $inactiveemails as $row}
+      <tr>
+        <td>{$row@iteration}.</td>
+        <th>{$row.name}</th>
+        <td>
+          <a class="btn {if $currentUser->isAdmin()}btn-warning{/if}" href="{$tsurl}/acc.php?action=emailmgmt&amp;edit={$row.id}">
+            {if $currentUser->isAdmin()}<i class="icon-white icon-pencil"></i>&nbsp;Edit!{else}<i class="icon-black icon-eye-open"></i>&nbsp;View!{/if}
+          </a>
+        </td>
+      </tr>
+      {/foreach}
+    </table>
+  </div>
+  {/if}
+</div>

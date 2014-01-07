@@ -2049,20 +2049,11 @@ elseif ($action == "emailmgmt") {
 	$query = "SELECT id, name FROM emailtemplate WHERE active = 1";
 	$statement = gGetDb()->prepare($query);
 	$statement->execute();
-	$query2 = "SELECT COUNT(*) FROM emailtemplate WHERE active = 1";
-	$statement2 = gGetDb()->prepare($query);
-	$statement2->execute();
-	$rowsnum =  $statement2->fetchColumn();
-	if ($rowsnum > 0) {
-		$rows= array();
-		while( $row = $statement->fetch(PDO::FETCH_ASSOC) )
-			$rows[] = $row;
-		$smarty->assign('activeemails', $rows);
-		$smarty->assign('displayactive', true);
-	}
-	else {
-		$smarty->assign('displayactive', false);
-	}
+	$rows= array();
+	while( $row = $statement->fetch(PDO::FETCH_ASSOC) )
+		$rows[] = $row;
+	$smarty->assign('activeemails', $rows);
+        
 	$query = "SELECT id, name FROM emailtemplate WHERE active = 0";
 	$statement = gGetDb()->prepare($query);
 	$statement->execute();
