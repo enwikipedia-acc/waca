@@ -71,7 +71,9 @@
 					<li><a href="{$tsurl}/acc.php?action=ban"><i class="icon-ban-circle"></i> Ban Management</a></li>
 					<li><a href="{$tsurl}/acc.php?action=messagemgmt"><i class="icon-print"></i> Message Management</a></li>
 					<li><a href="{$tsurl}/acc.php?action=templatemgmt"><i class="icon-file"></i> Template Management</a></li>
+					{if $isAdmin}
 					<li><a href="{$tsurl}/users.php"><i class="icon-user"></i> User Management</a></li>
+					{/if}
 				  </ul>
 			  </li>
               <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Help<b class="caret"></b></a>
