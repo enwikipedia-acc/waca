@@ -84,10 +84,10 @@ class User extends DataObject
 			$statement = $this->dbObject->prepare(
                 "INSERT INTO `user` (" . 
                 "username, email, password, status, onwikiname, welcome_sig, lastactive, forcelogout," . 
-                "secure, checkuser, identified, welcome_template, abortpref, confirmationdiff, emailsig" . 
+                "checkuser, identified, welcome_template, abortpref, confirmationdiff, emailsig" . 
                 ") VALUES (" . 
                 ":username, :email, :password, :status, :onwikiname, :welcome_sig, :lastactive, :forcelogout," . 
-                ":secure, :checkuser, :identified, :welcome_template, :abortpref, :confirmationdiff, :emailsig" . 
+                ":checkuser, :identified, :welcome_template, :abortpref, :confirmationdiff, :emailsig" . 
                 ");");
 			$statement->bindParam(":username", $this->username);
 			$statement->bindParam(":email", $this->email);
@@ -96,7 +96,6 @@ class User extends DataObject
 			$statement->bindParam(":welcome_sig", $this->welcome_sig);
 			$statement->bindParam(":lastactive", $this->lastactive);
 			$statement->bindParam(":forcelogout", $this->forcelogout);
-			$statement->bindParam(":secure", 1);
 			$statement->bindParam(":checkuser", $this->checkuser);
 			$statement->bindParam(":identified", $this->identified);
 			$statement->bindParam(":welcome_template", $this->welcome_template);
