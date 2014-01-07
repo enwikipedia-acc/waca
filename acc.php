@@ -1951,7 +1951,9 @@ elseif ($action == "emailmgmt") {
 		if(isset($_POST['submit'])) {
 			$emailTemplate = new EmailTemplate();
             $emailTemplate->setDatabase(gGetDb());
+            
 			$name = $_POST['name'];
+            
 			$emailTemplate->setName($name);
 			$emailTemplate->setText($_POST['text']);
 			$emailTemplate->setJsquestion($_POST['jsquestion']);
@@ -1994,7 +1996,7 @@ elseif ($action == "emailmgmt") {
 		if(isset($_POST['submit'])) {
 			$emailTemplate = EmailTemplate::getById($gid, gGetDb());
 			// Allow the user to see the edit form (with read only fields) but not POST anything.
-			if(!$session->hasright($_SESSION['user'], 'Admin')) {
+			if(!User::getCurrent()->isAdmin()) {
 				BootstrapSkin::displayAlertBox("I'm sorry, but you must be an administrator to access this page.");
 				BootstrapSkin::displayInternalFooter();
 				die();
@@ -2023,8 +2025,8 @@ elseif ($action == "emailmgmt") {
 			}
 
 			$emailTemplate->save();
-			$now = date("Y-m-d H-i-s");
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$siuser', 'EditedEmail', '$now')";
+            
+			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$siuser', 'EditedEmail', CURRENT_TIMESTAMP())";
 			$result = $tsSQL->query($query);
 			if (!$result)
 				sqlerror("Query failed: $query ERROR: " . mysql_error());
