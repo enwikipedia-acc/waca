@@ -1,4 +1,9 @@
-<h1>{$emailmgmtpage} Email template</h1>
+<div class="page-header">
+  <h1>Email Management<small>
+    {$emailmgmtpage} Email template
+  </small>
+</div>
+
 <div class="row-fluid">
 	<div class="span12">
 		<form class="form-horizontal" method="post">
@@ -35,11 +40,11 @@
 					<input type="checkbox" id="inputActive" name="active"{if !$currentUser->isAdmin() || $id == $createdid} disabled{/if}{if {$emailTemplate->getActive()}} checked{/if}>
 				</div>
 			</div>
-			<div class="control-group">
-				<div class="controls">
-					<button type="submit" class="btn" name="submit"{if !$currentUser->isAdmin()} disabled{/if}>Submit</button>
-				</div>
-			</div>
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" name="submit"{if !$currentUser->isAdmin()} disabled{/if}>
+          <i class="icon-white icon-ok"></i>&nbsp;Save
+        </button>
+      </div>
 		</form>
 	</div>
 </div>

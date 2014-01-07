@@ -1,7 +1,7 @@
 <div class="page-header">
   <h1>Email Management<small>
     Create and edit close reasons{if $currentUser->isAdmin() == true} &nbsp;<a class="btn btn-primary" href="{$tsurl}/acc.php?action=emailmgmt&amp;create=1">
-      <i class="icon-white icon-plus"></i>&nbsp;Create
+      <i class="icon-white icon-plus"></i>&nbsp;Create new Message
     </a>{/if}
   </small></h1>
 </div>
@@ -16,7 +16,7 @@
         <th>{$row.name}</th>
         <td>
           <a class="btn {if $currentUser->isAdmin()}btn-warning{/if}" href="{$tsurl}/acc.php?action=emailmgmt&amp;edit={$row.id}">
-            {if $currentUser->isAdmin()}<i class="icon-white icon-pencil"></i>&nbsp;Edit!{else}<i class="icon-black icon-eye-open"></i>&nbsp;View!{/if}
+            {if $currentUser->isAdmin()}<i class="icon-white icon-pencil"></i>&nbsp;Edit Message{else}<i class="icon-black icon-eye-open"></i>&nbsp;View Message{/if}
           </a>
         </td>
       </tr>
@@ -33,7 +33,7 @@
         <th>{$row.name}</th>
         <td>
           <a class="btn {if $currentUser->isAdmin()}btn-warning{/if}" href="{$tsurl}/acc.php?action=emailmgmt&amp;edit={$row.id}">
-            {if $currentUser->isAdmin()}<i class="icon-white icon-pencil"></i>&nbsp;Edit!{else}<i class="icon-black icon-eye-open"></i>&nbsp;View!{/if}
+            {if $currentUser->isAdmin()}<i class="icon-white icon-pencil"></i>&nbsp;Edit Message{else}<i class="icon-black icon-eye-open"></i>&nbsp;View Message{/if}
           </a>
         </td>
       </tr>
