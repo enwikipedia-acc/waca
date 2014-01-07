@@ -1891,6 +1891,13 @@ elseif ($action == "sendtouser") {
     $user = User::getByUsername($_POST['user'], $database);
     $curuser = User::getCurrent()->getUsername();
     
+    if($user == false)
+    {
+        BootstrapSkin::displayAlertBox("We couldn't find the user you wanted to send the reservation to. Please check that this user exists and is an active user on the tool.", "alert-error", "Could not find user", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
     if($database->beginTransaction())
     {
         try
