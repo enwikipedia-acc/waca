@@ -55,7 +55,7 @@
             <span class="icon-bar"></span>
           </button>
           <a class="brand" href="{$tsurl}/acc.php">Account Creation Interface</a>
-          <div class="nav-collapse collapse">
+          {block name="navmenu"}<div class="nav-collapse collapse">
             <ul class="nav">
               <li{* class="active"*}><a href="{$tsurl}/acc.php"><i class="icon-home icon-white"></i> Requests</a></li>
 			  <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Meta<b class="caret"></b></a>
@@ -72,7 +72,9 @@
 					<li><a href="{$tsurl}/acc.php?action=messagemgmt"><i class="icon-print"></i> Message Management</a></li>
 					<li><a href="{$tsurl}/acc.php?action=emailmgmt"><i class="icon-envelope"></i> Email Management</a></li>
 					<li><a href="{$tsurl}/acc.php?action=templatemgmt"><i class="icon-file"></i> Template Management</a></li>
+					{if $currentUser->isAdmin()}
 					<li><a href="{$tsurl}/users.php"><i class="icon-user"></i> User Management</a></li>
+					{/if}
 				  </ul>
 			  </li>
               <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Help<b class="caret"></b></a>
@@ -102,13 +104,14 @@
 				Not logged in
 			</p>
 			{/if}
-          </div><!--/.nav-collapse -->
+          </div><!--/.nav-collapse -->{/block}
         </div>
       </div>
     </div>
 
-	{include file="modal-flowchart.tpl"}
+	{block name="modals"}{include file="modal-flowchart.tpl"}{/block}
 	
+	{block name="sitenotice"}
     <div class="container-fluid">
 	{if $userid != 0}
 		<div class="row-fluid">
@@ -121,3 +124,4 @@
 			</div>
 		</div><!--/row-->
 	{/if}
+	{/block}

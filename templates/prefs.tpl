@@ -32,14 +32,6 @@
 	<div class="control-group">
 		<div class="controls">
 			<label class="checkbox">
-				<input type="checkbox" id="inputSecureenable" name="secureenable" checked disabled /> Enable use of the secure server
-			</label>
-      <span class="help-block muted">This setting is deprecated and will be removed at a later date.</span>
-		</div>
-	</div>
-	<div class="control-group">
-		<div class="controls">
-			<label class="checkbox">
 				<input type="checkbox" id="inputAbortpref" name="abortpref"{if $currentUser->getAbortPref()} checked{/if}> Don't ask to double check before closing requests (requires Javascript)
 			</label>
 		</div>

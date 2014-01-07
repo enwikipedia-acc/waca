@@ -18,20 +18,26 @@ require_once 'config.inc.php';
 // Initialize the session data.
 session_start();
 
+$teamEmailImages = false;
+if(extension_loaded('gd'))
+{
+    $teamEmailImages = true;
+}
+
 // Get all the classes.
 require_once 'devlist.php';
 require_once 'functions.php';
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
-require_once 'includes/offlineMessage.php';
-require_once 'includes/imagegen.php';
+if($teamEmailImages){
+	require_once 'includes/imagegen.php';
+}
 require_once 'includes/database.php';
 require_once 'includes/skin.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.
-$offlineMessage = new offlineMessage(true);
-$offlineMessage->check();
+Offline::check(true);
 
 // Initialize the database classes.
 $tsSQL = new database("toolserver");
@@ -42,7 +48,9 @@ $tsSQLlink = $tsSQL->getLink();
 $asSQLlink = $asSQL->getLink();
 
 // Initialize the class object.
-$imagegen = new imagegen();
+if($teamEmailImages){
+	$imagegen = new imagegen();
+}
 $skin     = new skin();
 
 //Array of objects containing the deleveopers' information.
@@ -65,7 +73,7 @@ $developer = array(
 		"Stwalkerster" =>
 			array(
 				"IRC" => "Stwalkerster",
-				"EMail" => "stwalkerster@googlemail.com",
+				"EMail" => "wikimedia@stwalkerster.co.uk",
 				"ToolID" => "7",
 				"wiki" => "Stwalkerster",
 				"WWW" => "https://stwalkerster.co.uk/",
@@ -402,10 +410,15 @@ foreach($developer as $devName => $devInfo) {
 					echo "<li>Real name: $infoContent</li>\n";
 					break;
 				case "EMail":
-					// Generate the image and write a copy to the filesystem.
-					$id = $imagegen->create($infoContent);
-					// Outputs the image to the sceen.
-					echo '<li>E-Mail Address: <img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" /></li>';
+					if($teamEmailImages)
+                    {
+                      // Generate the image and write a copy to the filesystem.
+                      $id = $imagegen->create($infoContent);
+					  // Outputs the image to the sceen.
+					  $emailHTML='<img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" />';
+                      echo '<li>E-Mail Address: ' . $emailHTML . '</li>';
+					}
+                    
 					break;
 				case "ToolID":
 					echo "<li>Userpage on tool: <a href=\"$tsurl/statistics.php?page=Users&amp;user=$infoContent\">Click here</a></li>\n";
@@ -458,10 +471,15 @@ foreach($inactiveDeveloper as $devName => $devInfo) {
 					echo "<li>Real name: $infoContent</li>\n";
 					break;
 				case "EMail":
-					// Generate the image and write a copy to the filesystem.
-					$id = $imagegen->create($infoContent);
-					// Outputs the image to the sceen.
-					echo '<li>E-Mail Address: <img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" /></li>';
+					if($teamEmailImages)
+                    {
+                        // Generate the image and write a copy to the filesystem.
+					    $id = $imagegen->create($infoContent);
+					    $emailHTML='<img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" />';
+					    // Outputs the image to the sceen.
+					    echo '<li>E-Mail Address: ' . $emailHTML . '</li>';
+					}
+                    
 					break;
 				case "ToolID":
 					echo "<li>Userpage on tool: <a href=\"$tsurl/statistics.php?page=Users&amp;user=$infoContent\">Click here</a></li>\n";
@@ -498,7 +516,7 @@ foreach($inactiveDeveloper as $devName => $devInfo) {
 echo "</div></div>
 </div>
 
-<hr /><p>ACC is kindly hosted by the Wikimedia Toolserver. Our code respository is hosted by GitHub and can be found <a href=\"https://github.com/enwikipedia-acc/waca/\">here</a>.</p>";
+<hr /><p>ACC is kindly hosted by the Wikimedia Labs. Our code respository is hosted by GitHub and can be found <a href=\"https://github.com/enwikipedia-acc/waca/\">here</a>.</p>";
 
 
 BootstrapSkin::displayInternalFooter();

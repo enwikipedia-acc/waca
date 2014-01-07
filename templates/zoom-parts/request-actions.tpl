@@ -1,10 +1,24 @@
 ﻿<!-- tpl:zoom-parts/request-actions.tpl -->
 <div class="row-fluid">
   {if $showinfo == true && $isprotected == false && $isreserved == true}
-    <a class="btn btn-primary span6" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true"{if !$currentUser->getAbortPref() && $createdquestion != ''} onclick="return confirm('{$createdquestion}')"{/if}>Create account</a>
+  <a class="btn btn-primary span12" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$email|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true"{if !$currentUser->getAbortPref() && $createdquestion != ''} onclick="return confirm('{$createdquestion}')"{/if}>Create account</a>
   {/if}
+</div>
+
+<hr />
+
+<div class="row-fluid">
   {if $reserved == $currentUser->getUsername()}
-    <a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Break reservation</a>
+    <div class="span8">
+      <form action="{$tsurl}/acc.php?action=sendtouser&amp;hash={$checksum}" method="post" class="form-inline">
+        <input type="hidden" name="id" value="{$id}" />
+        <div class="row-fluid">
+          <input type="text" required="true" placeholder="Send reservation to another user..." name="user" data-provide="typeahead" data-items="4" data-source='{$jsuserlist}' class="span8"/>
+          <input class="btn span4" type="submit" value="Send Reservation" />
+        </div>
+      </form>
+    </div>
+    <a class="btn btn-inverse span4" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Break reservation</a>
   {elseif $currentUser->isAdmin() && $isreserved}
     <a class="btn span6 offset6 btn-warning" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$id}">Force break</a>
   {/if}
@@ -75,4 +89,6 @@
     <a class="btn btn-danger span4" href="{$tsurl}/acc.php?action=ban&amp;ip={$id}">Ban IP</a>
   </div>
 {/if}
+
+<hr />
 <!-- /tpl:zoom-parts/request-actions.tpl -->
