@@ -67,6 +67,14 @@ class EmailTemplate extends DataObject
 		}
     }
     
+    /**
+     * Override delete() from DataObject
+     */
+    public function delete()
+    {
+        throw new Exception("You shouldn't be doing that, you'll break logs.");   
+    }
+    
     public function getName(){
         return $this->name;
     }
