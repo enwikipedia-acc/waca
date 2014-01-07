@@ -42,6 +42,9 @@
 		position: static;
 	}
 	</style>
+
+	<!-- Our extra styles -->
+    <link href="{$tsurl}/extra-styles.css" rel="stylesheet">
   </head>
 
   <body>
