@@ -14,7 +14,10 @@
                                 <input type="text" id="email" name="email" placeholder="Email" class="offset2 span8" required>
                         </div>
                         <div class="control-group row">
-                                        <button type="submit" class="btn btn-primary btn-block btn-large span8 offset2">Submit</button>
+                                        <button type="submit" class="btn btn-primary btn-block btn-large span8 offset2">Sign in</button>
+                        </div>
+                        <div class="control-group row">
+                                        <a class="btn btn-block span8 offset2" href="{$tsurl}/acc.php">Return to login</a>
                         </div>
                 </form>
         </div>
