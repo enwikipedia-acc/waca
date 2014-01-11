@@ -1,4 +1,4 @@
-﻿.table-nonfluid 
+.table-nonfluid 
 {
    width: auto;
 }
@@ -6,15 +6,15 @@
 /* Visited buttons */
 
 .btn-visited {
-  background-color: #f5f5f5;
+  background-color: #F5F5F5;
   *background-color: #E6DDF6;
-  background-image: -moz-linear-gradient(top, #ffffff, #CCB9F6);
-  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#CCB9F6));
-  background-image: -webkit-linear-gradient(top, #ffffff, #CCB9F6);
-  background-image: -o-linear-gradient(top, #ffffff, #CCB9F6);
-  background-image: linear-gradient(to bottom, #ffffff, #CCB9F6) !important;
+  background-image: -moz-linear-gradient(top, #DDD1F6, #CCB9F6);
+  background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#DDD1F6), to(#CCB9F6));
+  background-image: -webkit-linear-gradient(top, #DDD1F6, #CCB9F6);
+  background-image: -o-linear-gradient(top, #DDD1F6, #CCB9F6);
+  background-image: linear-gradient(to bottom, #DDD1F6, #CCB9F6) !important;
   background-repeat: repeat-x;
-  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff', endColorstr='#ffCCB9F6', GradientType=0);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFDDD1F6', endColorstr='#FFCCB9F6', GradientType=0);
   filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
 
