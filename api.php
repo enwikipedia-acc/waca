@@ -62,7 +62,7 @@ function actionStatus()
 		$docStatus->setAttribute($value['api'], $sus['count']);
 	}
 
-	$query = $database->prepare("SELECT COUNT(*) AS count FROM ban");
+	$query = $database->prepare("SELECT COUNT(*) AS count FROM ban WHERE (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;");
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 	$docStatus->setAttribute("bans", $sus['count']);
