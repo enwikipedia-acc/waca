@@ -7,7 +7,7 @@
         The IP address which Wikipedia will see is the first "untrusted" IP address in the list below. 
         Links are shown for all addresses starting from where the chain becomes untrusted. 
         IPs past the first untrusted address are not trusted to be correct. 
-        Please see the <a href="https://toolserver.org/~acc/other/xff.html">XFF demo</a> for more details.
+        Please see the <a href="https://accounts-dev.wmflabs.org/other/xff.html">XFF demo</a> for more details.
     </p>
     <h4>Forwarded IP addresses:</h4>    
     <table class="table table-condensed table-striped">

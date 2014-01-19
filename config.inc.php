@@ -46,7 +46,7 @@ $antispoof_table = "spoofuser";
 $wikiurl = "en.wikipedia.org";
 
 // URL of the current copy of the tool.
-$tsurl = "http://stable.toolserver.org/acc";
+$tsurl = "https://accounts.wmflabs.org";
 
 // Root pathname of the local installation of the tool.
 $filepath = "/projects/acc/www/"; 
@@ -178,7 +178,7 @@ $enableCommentEditing = 1;	// Enable admin editing of comments
 $usePathInfo = true;
 
 // user agent of the tool.
-$toolUserAgent = "Wikipedia-ACC Tool/0.1 (+http://toolserver.org/~acc/team.php)";
+$toolUserAgent = "Wikipedia-ACC Tool/0.1 (+https://accounts.wmflabs.org/team.php)";
 
 // list of squid proxies requests go through.
 $squidIpList = array();

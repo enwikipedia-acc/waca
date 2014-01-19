@@ -1475,7 +1475,7 @@ elseif ($action == "reserve") {
 	}
 	
 	// Lock the tables to avoid a possible conflict.
-	// See the following bug: https://jira.toolserver.org/browse/ACC-101
+	// See the following bug: http://www.webcitation.org/6MjKF433v (ACC-101)
 	mysql_query('LOCK TABLES acc_pend,acc_log WRITE;',$tsSQLlink);
 	
 	// Check if the request is not reserved.

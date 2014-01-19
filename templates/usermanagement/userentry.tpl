@@ -16,7 +16,7 @@
           <i class="icon icon-user"></i>&nbsp;
           <span class="visible-desktop">ID Noticeboard</span>
         </a>
-        <a class="btn" href="//toolserver.org/~tparis/pcount/index.php?name={$user->getOnWikiName()|escape:'url'}&amp;lang=en&amp;wiki=wikipedia">
+        <a class="btn" href="//tools.wmflabs.org/xtools/pcount/index.php?lang=en&wiki=wikipedia&name={$user->getOnWikiName()|escape:'url'}">
           <i class="icon icon-th"></i>&nbsp;
           <span class="visible-desktop">Count</span>
         </a>
