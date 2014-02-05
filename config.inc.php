@@ -31,6 +31,8 @@ $toolserver_database = "";
 
 $toolserver_notification_database = "acc_notifications";
 $toolserver_notification_dbhost = "dbmaster.srv.stwalkerster.net";
+$notifications_username = "";
+$notifications_username = "";
 
 // The antispoof configuration.
 $antispoof_equivset = "equivset.php";
@@ -262,8 +264,8 @@ $cDatabaseConfig = array(
 	),
 	"notifications" => array (
 		"dsrcname" => "mysql:host=".$toolserver_notification_dbhost.";dbname=".$toolserver_notification_database,
-		"username" => $toolserver_username,
-		"password" => $toolserver_password
+		"username" => $notifications_username,
+		"password" => $notifications_password
 	),
 );
 
