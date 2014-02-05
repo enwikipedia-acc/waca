@@ -32,7 +32,7 @@ $toolserver_database = "";
 $toolserver_notification_database = "acc_notifications";
 $toolserver_notification_dbhost = "dbmaster.srv.stwalkerster.net";
 $notifications_username = "";
-$notifications_username = "";
+$notifications_password = "";
 
 // The antispoof configuration.
 $antispoof_equivset = "equivset.php";
