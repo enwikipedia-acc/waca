@@ -17,6 +17,7 @@ $database = new PdoDatabase("mysql:host=".$toolserver_host.";dbname=".$toolserve
 $database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 header("Content-Type: text/xml");
+header("Access-Control-Allow-Origin: https://en.wikipedia.org");
 
 $document = new DomDocument('1.0');
 $doc_api = $document->createElement("api");
