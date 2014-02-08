@@ -81,7 +81,7 @@
   </div>
 {/if}
               
-{if $currentUser->isAdmin()}
+{if $currentUser->isAdmin() || $currentUser->isCheckuser()}
   <hr />
   <div class="row-fluid">
     <a class="btn btn-danger span4" href="{$tsurl}/acc.php?action=ban&amp;name={$id}">Ban Username</a>

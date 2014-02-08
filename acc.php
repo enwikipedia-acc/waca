@@ -745,7 +745,7 @@ elseif ($action == "templatemgmt") {
 elseif ($action == "sban") 
 {	
 	// Checks whether the current user is an admin.
-	if(!User::getCurrent()->isAdmin()) 
+	if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) 
     {
         BootstrapSkin::displayAlertBox("Only administrators or checkusers may unban users", "alert-error", "", false, false);
         BootstrapSkin::displayInternalFooter();
@@ -910,7 +910,7 @@ elseif ($action == "unban")
         die();
     }
     
-    if(!User::getCurrent()->isAdmin())
+    if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser())
     {
         BootstrapSkin::displayAlertBox("Only administrators or checkusers may unban users", "alert-error", "", false, false);
         BootstrapSkin::displayInternalFooter();
