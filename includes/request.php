@@ -631,10 +631,9 @@ class accRequest {
 		$xffheader = getenv("HTTP_X_FORWARDED_FOR");
 		if($xffheader != "") $proxystring = "'" . $tsSQL->escape($xffheader) . "'";
 		
-		$useragent = 'NULL';
-		$uaheader = getenv("HTTP_USER_AGENT");
-		if ($uaheader != "")
-			$useragent = $tsSQL->escape(htmlentities($uaheader,ENT_COMPAT,'UTF-8'));
+		$useragent = isset($_SERVER["HTTP_USER_AGENT"]) 
+				? "'" . $tsSQL->escape(htmlentities($_SERVER["HTTP_USER_AGENT"],ENT_COMPAT,'UTF-8')) . "'"
+				: 'null';
 		
 		// Gets the current date and time.
 		$dnow = date("Y-m-d H-i-s");
@@ -651,7 +650,7 @@ class accRequest {
 			$uLevel = "Admin";
 			
 		// Formulates and executes SQL query to insert the new request.
-		$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_proxyip , pend_name , pend_cmt , pend_status , pend_date, pend_reserved, pend_useragent) VALUES ( NULL , '$email', '$ip', $proxystring, '$user', '$comments', '$uLevel' , '$dnow', '$defaultReserver', '$useragent' );";
+		$query = "INSERT INTO acc_pend (pend_id , pend_email , pend_ip , pend_proxyip , pend_name , pend_cmt , pend_status , pend_date, pend_reserved, pend_useragent) VALUES ( NULL , '$email', '$ip', $proxystring, '$user', '$comments', '$uLevel' , '$dnow', '$defaultReserver', $useragent );";
 		$result = $tsSQL->query($query);
 		
 		// Display error message upon failure.
