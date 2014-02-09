@@ -236,9 +236,6 @@ class LogPage
 					$logList .="<li>$rlu Closed ($ename), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 				}
 			}
-			if ($row['log_action'] == "Blacklist Hit" || $row['log_action'] == "DNSBL Hit") {
-				$logList .="<li>$rlu <strong>Rejected by Blacklist</strong> $rlp, $rlc at $rlt.</li>\n";
-			}
 			if ($rla == 'Email Confirmed') {
 				$logList .="<li>$rlu email-confirmed request $rlp ($rlt)</li>\n";
 			}
@@ -401,9 +398,6 @@ class LogPage
 					$ename = htmlentities($template->getName(),ENT_QUOTES,'UTF-8');
 					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed ($ename)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 				}
-			}
-			if ($row['log_action'] == "Blacklist Hit" || $row['log_action'] == "DNSBL Hit") {
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"rejected by blacklist", 'target' => $rlp, 'comment' => $rlc, 'action' => "Blacklist");
 			}
 			if ($rla == 'Email Confirmed') {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"email-confirmed", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
