@@ -60,32 +60,32 @@
           <a class="brand" href="{$tsurl}/acc.php">Account Creation Interface</a>
           {block name="navmenu"}<div class="nav-collapse collapse">
             <ul class="nav">
-              <li{* class="active"*}><a href="{$tsurl}/acc.php"><i class="icon-home icon-white"></i> Requests</a></li>
-			  <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Meta<b class="caret"></b></a>
+              <li{* class="active"*}><a href="{$tsurl}/acc.php"><i class="icon-home icon-white"></i>&nbsp;Requests</a></li>
+			  <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-tag icon-white"></i>&nbsp;Meta&nbsp;<b class="caret"></b></a>
 				  <ul class="dropdown-menu">
-					<li><a href="{$tsurl}/acc.php?action=logs"><i class="icon-list"></i> Logs</a></li>
-					<li><a href="{$tsurl}/statistics.php?page=Users"><i class="icon-user"></i> Users</a></li>
-					<li><a href="{$tsurl}/search.php"><i class="icon-search"></i> Search</a></li>
-					<li><a href="{$tsurl}/statistics.php"><i class="icon-tasks"></i> Statistics</a></li>
+					<li><a href="{$tsurl}/acc.php?action=logs"><i class="icon-list"></i>&nbsp;Logs</a></li>
+					<li><a href="{$tsurl}/statistics.php?page=Users"><i class="icon-user"></i>&nbsp;Users</a></li>
+					<li><a href="{$tsurl}/search.php"><i class="icon-search"></i>&nbsp;Search</a></li>
+					<li><a href="{$tsurl}/statistics.php"><i class="icon-tasks"></i>&nbsp;Statistics</a></li>
 				  </ul>
 			  </li>
-              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Management<b class="caret"></b></a>
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench icon-white"></i>&nbsp;Management&nbsp;<b class="caret"></b></a>
 				  <ul class="dropdown-menu">
-					<li><a href="{$tsurl}/acc.php?action=ban"><i class="icon-ban-circle"></i> Ban Management</a></li>
-					<li><a href="{$tsurl}/acc.php?action=messagemgmt"><i class="icon-print"></i> Message Management</a></li>
-					<li><a href="{$tsurl}/acc.php?action=emailmgmt"><i class="icon-envelope"></i> Email Management</a></li>
-					<li><a href="{$tsurl}/acc.php?action=templatemgmt"><i class="icon-file"></i> Template Management</a></li>
+					<li><a href="{$tsurl}/acc.php?action=ban"><i class="icon-ban-circle"></i>&nbsp;Ban Management</a></li>
+					<li><a href="{$tsurl}/acc.php?action=messagemgmt"><i class="icon-print"></i>&nbsp;Message Management</a></li>
+					<li><a href="{$tsurl}/acc.php?action=emailmgmt"><i class="icon-envelope"></i>&nbsp;Email Management</a></li>
+					<li><a href="{$tsurl}/acc.php?action=templatemgmt"><i class="icon-file"></i>&nbsp;Template Management</a></li>
 					{if $currentUser->isAdmin()}
 					<li><a href="{$tsurl}/users.php"><i class="icon-user"></i> User Management</a></li>
 					{/if}
 				  </ul>
 			  </li>
-              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Help<b class="caret"></b></a>
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign icon-white"></i>&nbsp;Help&nbsp;<b class="caret"></b></a>
 				  <ul class="dropdown-menu">
-					<li><a href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide"><i class="icon-question-sign"></i> Guide</a></li>
-					<li><a href="//en.wikipedia.org/wiki/Wikipedia:Username_policy"><i class="icon-warning-sign"></i> Username Policy</a></li>
-					<li><a href="#modalFlowchart" role="button" data-toggle="modal"><i class="icon-check"></i> Similar account flowchart</a></li>
-					<li><a href="http://webchat.freenode.net/?channels=wikipedia-en-accounts"><i class="icon-comment"></i> Chat</a></li>
+					<li><a href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide"><i class="icon-question-sign"></i>&nbsp;Guide</a></li>
+					<li><a href="//en.wikipedia.org/wiki/Wikipedia:Username_policy"><i class="icon-warning-sign"></i>&nbsp;Username Policy</a></li>
+					<li><a href="#modalFlowchart" role="button" data-toggle="modal"><i class="icon-check"></i>&nbsp;Similar account flowchart</a></li>
+					<li><a href="http://webchat.freenode.net/?channels=wikipedia-en-accounts"><i class="icon-comment"></i>&nbsp;Chat</a></li>
 				  </ul>
 			  </li>
             </ul>
