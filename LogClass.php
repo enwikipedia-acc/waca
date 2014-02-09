@@ -274,7 +274,8 @@ class LogPage
 				$logList .="<li>$rlu $rla, User $rlp (" . $row2['user_name'] . ") at $rlt$moreinfo.</li>\n";
 			}
 			if ($rla == "Renamed") {
-				$logList .="<li>$rlu renamed $rlc at $rlt.</li>\n";
+                $data = unserialize($rlc);
+				$logList .="<li>$rlu renamed ${data['old']} to ${data['new']} at $rlt.</li>\n";
 			}
 			if ($rla == "Prefchange") {
 				$query2 = "SELECT user_name FROM acc_user WHERE user_id = '$rlp';";

@@ -358,7 +358,8 @@ class StatsUsers extends StatisticsPage
 						
 						case "Renamed":
 							// Another user renamed this user
-							$out.= "<li><a href=\"$tsurl/statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> " . $row['log_cmt'] . " at " . $row['log_time'] . ".</li>\n";	
+                            $data = unserialize($row['log_cmt']);
+							$out.= "<li><a href=\"$tsurl/statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> " . $data['old'] . " to " . $data['new'] . " at " . $row['log_time'] . ".</li>\n";	
 							break;
 						
 						default:
