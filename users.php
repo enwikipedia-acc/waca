@@ -321,15 +321,8 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
             {
                 throw new Exception("comment update failed.");   
             }
-		    
-		    if (User::getCurrent()->getUsername() == $oldname)
-		    {
-			    $logentry = "themself to " . $_POST['newname'];
-		    }
-		    else
-		    {
-			    $logentry = $oldname . " to " . $_POST['newname'];
-		    }
+            
+            $logentry = serialize(array('old' => $oldname, 'new' => $_POST['newname']));
             
             $userid = $user->getId();
             $currentUser = User::getCurrent()->getUsername();
