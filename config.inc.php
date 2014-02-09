@@ -272,9 +272,6 @@ $cDatabaseConfig = array(
 // //Keep the included files from being executed.
 define("ACC", 1);
 
-// Retrieving the blacklists.
-require_once ($filepath.'blacklist.php');
-
 // Sets the values of the cookie configuration options.
 ini_set('session.cookie_path', $cookiepath);
 ini_set('session.name', $sessionname);
