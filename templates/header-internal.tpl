@@ -60,6 +60,7 @@
           <a class="brand" href="{$tsurl}/acc.php">Account Creation Interface</a>
           {block name="navmenu"}<div class="nav-collapse collapse">
             <ul class="nav">
+			{if $userid != 0}
               <li{* class="active"*}><a href="{$tsurl}/acc.php"><i class="icon-home icon-white"></i>&nbsp;Requests</a></li>
 			  <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-tag icon-white"></i>&nbsp;Meta&nbsp;<b class="caret"></b></a>
 				  <ul class="dropdown-menu">
@@ -80,6 +81,17 @@
 					{/if}
 				  </ul>
 			  </li>
+			  <li>
+				<form class="navbar-form form-search" action="{$tsurl}/acc.php">
+				  <input type="hidden" name="action" value="zoom">
+				  <input class="span2" type="text" placeholder="Request ID" name="id" class="search-query">
+				  <button type="submit" class="btn"><i class="icon-arrow-right"></i>&nbsp;Go</button>
+				</form>
+			  </li>
+			{/if}
+            </ul>
+			<ul class="nav pull-right">
+			
               <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign icon-white"></i>&nbsp;Help&nbsp;<b class="caret"></b></a>
 				  <ul class="dropdown-menu">
 					<li><a href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide"><i class="icon-question-sign"></i>&nbsp;Guide</a></li>
@@ -88,16 +100,9 @@
 					<li><a href="http://webchat.freenode.net/?channels=wikipedia-en-accounts"><i class="icon-comment"></i>&nbsp;Chat</a></li>
 				  </ul>
 			  </li>
-            </ul>
-			<form class="nav navbar-form form-search" action="{$tsurl}/acc.php">
-              <input type="hidden" name="action" value="zoom">
-              <input class="span2" type="text" placeholder="Request ID" name="id" class="search-query">
-              <button type="submit" class="btn"><i class="icon-arrow-right"></i>&nbsp;Go</button>
-            </form>
 			{if $userid != 0}
-			<ul class="nav pull-right">
 				<li class="dropdown">
-					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> {$username} <b class="caret"></b></a>
+					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> <strong>{$username}</strong> <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li class="nav-header">Account</li>
 						<li><a href="{$tsurl}/statistics.php?page=Users&amp;user={$userid}"><i class="icon-tasks"></i> My statistics</a></li>
@@ -106,12 +111,14 @@
 						<li><a href="{$tsurl}/acc.php?action=logout"><i class="icon-lock"></i> Logout</a></li>
 					</ul>
 				</li>
-			</ul>
 			{else}
-			<p class="navbar-text pull-right">
-				Not logged in
-			</p>
+				<li>
+					<p class="navbar-text pull-right">
+						<strong>Not logged in</strong>
+					</p>
+				</li>
 			{/if}
+			</ul>
           </div><!--/.nav-collapse -->{/block}
         </div>
       </div>
