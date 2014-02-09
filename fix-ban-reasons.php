@@ -31,9 +31,9 @@ try
 
     $banupd = $db->prepare("UPDATE ban SET reason = :reason WHERE reason = :oldreason;");
 
-    foreach($data as $r)
+    foreach($data as $u)
     {
-        $banupd->execute( array( ":user" => str_replace("&quot;", "\"",$u['reason']), ":oldreason" => $u['reason'] ) );    
+        $banupd->execute( array( ":reason" => str_replace("&quot;", "\"",$u['reason']), ":oldreason" => $u['reason'] ) );    
     }
 }
 catch(Exception $ex)
