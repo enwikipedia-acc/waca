@@ -506,7 +506,6 @@ class LogPage
 		{
 			switch($entry['action']){
 				case "Approved":
-				case "badpass":
 				case "Banned":
 				case "CreatedEmail":
 				case "CreatedTemplate":
