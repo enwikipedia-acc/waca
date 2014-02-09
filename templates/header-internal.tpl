@@ -89,6 +89,11 @@
 				  </ul>
 			  </li>
             </ul>
+			<form class="nav navbar-form form-search" action="{$tsurl}/acc.php">
+              <input type="hidden" name="action" value="zoom">
+              <input class="span2" type="text" placeholder="Request ID" name="id" class="search-query">
+              <button type="submit" class="btn"><i class="icon-arrow-right"></i>&nbsp;Go</button>
+            </form>
 			{if $userid != 0}
 			<ul class="nav pull-right">
 				<li class="dropdown">
