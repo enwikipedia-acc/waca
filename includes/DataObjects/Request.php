@@ -18,6 +18,10 @@ class Request extends DataObject
     private $useragent;
     private $forwardedip;
     
+    private $hasComments = "?";
+    private $ipRequests = "-1"; // disabled for performance. set to ? to re-enable.
+    private $emailRequests = "?";
+    
     public function save()
     {
         if($this->isNew)
@@ -83,6 +87,11 @@ class Request extends DataObject
     public function getIp()
     {
         return $this->ip;
+    }
+    
+    public function getTrustedIp()
+    {
+        return getTrustedClientIP($this->ip, $this->forwardedip);
     }
 
     public function setIp($ip)
@@ -164,6 +173,11 @@ class Request extends DataObject
     {
         return $this->reserved;
     }
+    
+    public function getReservedObject()
+    {
+        return User::getById($this->reserved, $this->dbObject);   
+    }
 
     public function setReserved($reserved)
     {
@@ -188,5 +202,62 @@ class Request extends DataObject
     public function setForwardedIp($forwardedip)
     {
         $this->forwardedip = $forwardedip;
+    }
+
+    public function hasComments()
+    {
+        if($this->hasComments !== "?")
+        {
+            return $this->hasComments;   
+        }
+        
+        if($this->comment != "")
+        {
+            $this->hasComments = true;
+            return true;
+        }
+        
+        $commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) as num FROM acc_cmt where pend_id = :id;");
+        $commentsQuery->bindParam(":id", $this->id);
+        
+        $commentsQuery->execute();
+        
+        $this->hasComments = ($commentsQuery->fetchColumn() == 0);
+        return $this->hasComments;
+    }
+    
+    public function numberOfIpRequests()
+    {
+        if($this->ipRequests !== "?")
+        {
+            return $this->ipRequests;   
+        }
+        
+        $commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) FROM request WHERE ip = :ip AND id != :id AND emailconfirm = 'Confirmed';");
+        $commentsQuery->bindParam(":id", $this->id);
+        $commentsQuery->bindParam(":ip", $this->ip);
+        
+        $commentsQuery->execute();
+        
+        $this->ipRequests = $commentsQuery->fetchColumn();
+        return $this->ipRequests;
+    }
+    
+    public function numberOfEmailRequests()
+    {
+        if($this->emailRequests !== "?")
+        {
+            return $this->emailRequests;   
+        }
+        
+        $commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) FROM request WHERE email = :email AND id != :id AND emailconfirm = 'Confirmed';");
+        $commentsQuery->bindParam(":id", $this->id);
+        $commentsQuery->bindParam(":email", $this->email);
+        
+        $commentsQuery->execute();
+        
+        $this->emailRequests = $commentsQuery->fetchColumn();
+        
+        return $this->emailRequests;
     }
 }
