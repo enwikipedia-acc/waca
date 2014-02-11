@@ -204,10 +204,8 @@ function zoomPage($id,$urlhash)
 	
 	$smarty->assign("isprotected", isProtected($request->getId()));
     
-	$type = $request->getStatus();
 	$checksum = $request->getChecksum();
 	$pendid = $request->getId();
-	$smarty->assign("type", $type);
 	$smarty->assign("defaultstate", $defaultRequestStateKey);
 	$smarty->assign("requeststates", $availableRequestStates);
 	

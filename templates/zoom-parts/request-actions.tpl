@@ -61,7 +61,7 @@
     {/if}
                   
     <div class="span4{if $request->getReserved() == 0} offset8{/if}">
-      {if !array_key_exists($type, $requeststates)}
+      {if !array_key_exists($request->getStatus(), $requeststates)}
         <a class="btn span12" href="{$tsurl}/acc.php?action=defer&amp;id={$request->getId()}&amp;sum={$request->getChecksum()}&amp;target={$defaultstate}">Reset request</a>
       {else}
         <div class="btn-group span6">
