@@ -8,7 +8,7 @@
             <tr>
                 <th>Email address:</th>
                 <td><a href="mailto:{$request->getEmail()}">{$request->getEmail()}</a></td>
-                <td><span class="badge{if $numemail > 0} badge-important{/if}">{$numemail}</span></td>
+                <td><span class="badge{if count($request->getRelatedEmailRequests()) > 0} badge-important{/if}">{count($request->getRelatedEmailRequests())}</span></td>
             </tr>
             <tr>
                 <th>IP address:</th>
@@ -25,7 +25,7 @@
                 </td>
                 <td>
                     {if $proxyip != NULL}<span class="label label-info">XFF</span>{/if}
-                    <span class="badge{if $numip > 0} badge-important{/if}">{$numip}</span>
+                    <span class="badge{if count($request->getRelatedIpRequests()) > 0} badge-important{/if}">{count($request->getRelatedIpRequests())}</span>
                 </td>
             </tr>
             {/if}
@@ -52,7 +52,7 @@
   <div class="row-fluid hidden-phone">
     <div class="span4"><strong>Email address:</strong></div>
     <div class="span7"><a href="mailto:{$request->getEmail()}">{$request->getEmail()}</a></div>
-    <div class="span1"><span class="badge{if $numemail > 0} badge-important{/if}">{$numemail}</span></div>
+    <div class="span1"><span class="badge{if count($request->getRelatedEmailRequests()) > 0} badge-important{/if}">{count($request->getRelatedEmailRequests())}</span></div>
   </div>
   <div class="row-fluid hidden-phone">
       <div class="span4"><strong>IP address:</strong></div>
@@ -67,7 +67,7 @@
           {/if}
         </span>
       </div>
-      <div class="span1"><span class="label label-info">XFF</span><span class="badge{if $numip > 0} badge-important{/if}">{$numip}</span></div>
+      <div class="span1"><span class="label label-info">XFF</span><span class="badge{if count($request->getRelatedIpRequests()) > 0} badge-important{/if}">{count($request->getRelatedIpRequests())}</span></div>
   </div>
 {/if}
 <div class="row-fluid hidden-phone">

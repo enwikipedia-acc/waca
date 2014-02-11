@@ -306,9 +306,7 @@ function zoomPage($id,$urlhash)
 	// START OTHER REQUESTS BY IP AND EMAIL STUFF
 	
 	// Displays other requests from this ip.
-	$smarty->assign("otherip", false);
-	$smarty->assign("numip", 0);
-    
+
     // assign to user
 	$userListQuery = "SELECT username FROM user WHERE status = 'User' or status = 'Admin';";
 	$userListResult = gGetDb()->query($userListQuery);
@@ -323,56 +321,6 @@ function zoomPage($id,$urlhash)
     $smarty->assign("jsuserlist", $userList);
     // end: assign to user
     
-	$ipmsg = 'this ip';
-	if ($hideinfo == FALSE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']))
-        $ipmsg = $thisip;
-
-
-	if ($thisip != '127.0.0.1') {
-		$query = "SELECT pend_date, pend_id, pend_name FROM acc_pend WHERE (pend_proxyip LIKE '%{$thisip}%' OR pend_ip = '$thisip') AND pend_id != '$thisid' AND (pend_mailconfirm = 'Confirmed' OR pend_mailconfirm = '');";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-            Die("Query failed: $query ERROR: " . mysql_error());
-
-		if (mysql_num_rows($result) != 0) {
-			mysql_data_seek($result, 0);
-		}
-		$smarty->assign("numip", mysql_num_rows($result));
-		$otherip = array();
-		$i = 0;
-		while ($row = mysql_fetch_assoc($result)) {
-			$otherip[$i]['date'] = $row['pend_date'];
-			$otherip[$i]['id'] = $row['pend_id'];
-			$otherip[$i]['name'] = $row['pend_name'];
-			$i++;
-		}
-		$smarty->assign("otherip", $otherip);
-	}
-
-	// Displays other requests from this email.
-	$smarty->assign("otheremail", false);
-	$smarty->assign("numemail", 0);
-	
-	if ($thisemail != 'acc@toolserver.org') {
-		$query = "SELECT pend_date, pend_id, pend_name FROM acc_pend WHERE pend_email = '" . mysql_real_escape_string($thisemail, $tsSQLlink) . "' AND pend_id != '$thisid' AND pend_id != '$thisid' AND (pend_mailconfirm = 'Confirmed' OR pend_mailconfirm = '');";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-            Die("Query failed: $query ERROR: " . mysql_error());
-
-		if (mysql_num_rows($result) != 0) {
-			mysql_data_seek($result, 0);
-		}
-		$smarty->assign("numemail", mysql_num_rows($result));
-		$otheremail = array();
-		$i = 0;
-		while ($row = mysql_fetch_assoc($result)) {
-			$otheremail[$i]['date'] = $row['pend_date'];
-			$otheremail[$i]['id'] = $row['pend_id'];
-			$otheremail[$i]['name'] = $row['pend_name'];
-			$i++;
-		}
-		$smarty->assign("otheremail", $otheremail);
-	}
 	
 	// Exclude the "Created" reason from this since it should be outside the dropdown.
     $query = "SELECT id, name, jsquestion FROM emailtemplate ";
