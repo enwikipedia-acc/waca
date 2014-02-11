@@ -19,9 +19,8 @@ class Request extends DataObject
     private $forwardedip;
     
     private $hasComments = "?";
-    private $ipRequests = false;
-    private $emailRequests = false;
-    private $blacklistCache = null;
+    private $ipRequests = "-1"; // disabled for performance. set to ? to re-enable.
+    private $emailRequests = "?";
     
     public function save()
     {
@@ -92,7 +91,7 @@ class Request extends DataObject
     
     public function getTrustedIp()
     {
-        return trim(getTrustedClientIP($this->ip, $this->forwardedip));
+        return getTrustedClientIP($this->ip, $this->forwardedip);
     }
 
     public function setIp($ip)
@@ -102,7 +101,7 @@ class Request extends DataObject
 
     public function getName()
     {
-        return html_entity_decode($this->name);
+        return $this->name;
     }
 
     public function setName($name)
@@ -227,71 +226,38 @@ class Request extends DataObject
         return $this->hasComments;
     }
     
-    public function getRelatedEmailRequests()
+    public function numberOfIpRequests()
     {
-        if($this->emailRequests == false)
+        if($this->ipRequests !== "?")
         {
-            $query = $this->dbObject->prepare("SELECT * FROM request WHERE email = :email AND id != :id AND emailconfirm = 'Confirmed';");
-            $query->bindParam(":id", $this->id);
-            $query->bindParam(":email", $this->email);
-            
-            $query->execute();
-            
-            $this->emailRequests = $query->fetchAll(PDO::FETCH_CLASS, "Request");
-            
-            foreach($this->emailRequests as $r)
-            {
-                $r->setDatabase($this->dbObject);   
-            }
+            return $this->ipRequests;   
         }
         
-        return $this->emailRequests;
-    }
+        $commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) FROM request WHERE ip = :ip AND id != :id AND emailconfirm = 'Confirmed';");
+        $commentsQuery->bindParam(":id", $this->id);
+        $commentsQuery->bindParam(":ip", $this->ip);
         
-    public function getRelatedIpRequests()
-    {
-        if($this->ipRequests == false)
-        {
-            $query = $this->dbObject->prepare("SELECT * FROM request WHERE (ip = :ip OR forwardedip LIKE :forwarded) AND id != :id AND emailconfirm = 'Confirmed';");
-            
-            $trustedIp = $this->getTrustedIp();
-            $trustedFilter = '%' . $trustedIp . '%';
-                        
-            $query->bindParam(":id", $this->id);
-            $query->bindParam(":ip", $trustedIp);
-            $query->bindParam(":forwarded", $trustedFilter);
-            
-            $query->execute();
-            
-            $this->ipRequests = $query->fetchAll(PDO::FETCH_CLASS, "Request");
-            
-            foreach($this->emailRequests as $r)
-            {
-                $r->setDatabase($this->dbObject);   
-            }
-        }
+        $commentsQuery->execute();
         
+        $this->ipRequests = $commentsQuery->fetchColumn();
         return $this->ipRequests;
     }
     
-    public function isBlacklisted()
+    public function numberOfEmailRequests()
     {
-        global $enableTitleBlacklist;
-        
-        if(! $enableTitleBlacklist || $this->blacklistCache === false)
+        if($this->emailRequests !== "?")
         {
-            return false;
+            return $this->emailRequests;   
         }
         
-        $apiResult = file_get_contents("https://en.wikipedia.org/w/api.php?action=titleblacklist&tbtitle=" . urlencode($user) . "&tbaction=new-account&tbnooverride&format=php");
+        $commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) FROM request WHERE email = :email AND id != :id AND emailconfirm = 'Confirmed';");
+        $commentsQuery->bindParam(":id", $this->id);
+        $commentsQuery->bindParam(":email", $this->email);
         
-        $data = unserialize($apiResult);
+        $commentsQuery->execute();
         
-        $result = $data['titleblacklist']['result'] == "ok";
+        $this->emailRequests = $commentsQuery->fetchColumn();
         
-        $this->blacklistCache = $result ? false : $data['titleblacklist']['line'];
-        
-        return $this->blacklistCache;
-
+        return $this->emailRequests;
     }
 }

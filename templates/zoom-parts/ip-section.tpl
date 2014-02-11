@@ -3,7 +3,7 @@
   <div class="row-fluid">
     <h3>IP Address data:</h3>
     <p class="muted">
-        This request came from {$request->getIP()}, stating it was forwarded for {$request->getForwardedIp()} via the X-Forwarded-For HTTP header. 
+        This request came from {$ip}, stating it was forwarded for {$proxyip} via the X-Forwarded-For HTTP header. 
         The IP address which Wikipedia will see is the first "untrusted" IP address in the list below. 
         Links are shown for all addresses starting from where the chain becomes untrusted. 
         IPs past the first untrusted address are not trusted to be correct. 
@@ -68,7 +68,7 @@
 {else}
   <div class="row-fluid">
     <h3>IP Address links:</h3>
-    {include file="zoom-parts/ip-links.tpl" ipaddress="{$request->getTrustedIp()}" index="0"}
+    {include file="zoom-parts/ip-links.tpl" ipaddress="{$ip}" index="0"}
   </div>
 {/if}
 <hr />
