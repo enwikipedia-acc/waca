@@ -19,8 +19,8 @@ class Request extends DataObject
     private $forwardedip;
     
     private $hasComments = "?";
-    private $ipRequests = "-1"; // disabled for performance. set to ? to re-enable.
-    private $emailRequests = "?";
+    private $ipRequests = false;
+    private $emailRequests = false;
     
     public function save()
     {
@@ -91,7 +91,7 @@ class Request extends DataObject
     
     public function getTrustedIp()
     {
-        return getTrustedClientIP($this->ip, $this->forwardedip);
+        return trim(getTrustedClientIP($this->ip, $this->forwardedip));
     }
 
     public function setIp($ip)
@@ -226,38 +226,52 @@ class Request extends DataObject
         return $this->hasComments;
     }
     
-    public function numberOfIpRequests()
+    public function getRelatedEmailRequests()
     {
-        if($this->ipRequests !== "?")
+        if($this->emailRequests == false)
         {
-            return $this->ipRequests;   
+            $query = $this->dbObject->prepare("SELECT * FROM request WHERE email = :email AND id != :id AND emailconfirm = 'Confirmed';");
+            $query->bindParam(":id", $this->id);
+            $query->bindParam(":email", $this->email);
+            
+            $query->execute();
+            
+            $this->emailRequests = $query->fetchAll(PDO::FETCH_CLASS, "Request");
+            
+            foreach($this->emailRequests as $r)
+            {
+                $r->setDatabase($this->dbObject);   
+            }
         }
-        
-        $commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) FROM request WHERE ip = :ip AND id != :id AND emailconfirm = 'Confirmed';");
-        $commentsQuery->bindParam(":id", $this->id);
-        $commentsQuery->bindParam(":ip", $this->ip);
-        
-        $commentsQuery->execute();
-        
-        $this->ipRequests = $commentsQuery->fetchColumn();
-        return $this->ipRequests;
-    }
-    
-    public function numberOfEmailRequests()
-    {
-        if($this->emailRequests !== "?")
-        {
-            return $this->emailRequests;   
-        }
-        
-        $commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) FROM request WHERE email = :email AND id != :id AND emailconfirm = 'Confirmed';");
-        $commentsQuery->bindParam(":id", $this->id);
-        $commentsQuery->bindParam(":email", $this->email);
-        
-        $commentsQuery->execute();
-        
-        $this->emailRequests = $commentsQuery->fetchColumn();
         
         return $this->emailRequests;
+    }
+        
+    public function getRelatedIpRequests()
+    {
+        if($this->ipRequests == false)
+        {
+            $query = $this->dbObject->prepare("SELECT * FROM request WHERE (ip = :ip OR forwardedip LIKE :forwarded) AND id != :id AND emailconfirm = 'Confirmed';");
+            
+            $trustedIp = $this->getTrustedIp();
+            $trustedFilter = '%' . $trustedIp . '%';
+            
+            echo ($trustedFilter);
+            
+            $query->bindParam(":id", $this->id);
+            $query->bindParam(":ip", $trustedIp);
+            $query->bindParam(":forwarded", $trustedFilter);
+            
+            $query->execute();
+            
+            $this->ipRequests = $query->fetchAll(PDO::FETCH_CLASS, "Request");
+            
+            foreach($this->emailRequests as $r)
+            {
+                $r->setDatabase($this->dbObject);   
+            }
+        }
+        
+        return $this->ipRequests;
     }
 }
