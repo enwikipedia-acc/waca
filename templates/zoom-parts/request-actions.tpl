@@ -1,7 +1,7 @@
 ﻿<!-- tpl:zoom-parts/request-actions.tpl -->
 <div class="row-fluid">
   {if $showinfo == true && $isprotected == false && $request->getReserved() != 0}
-  <a class="btn btn-primary span12" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$request->getName()|escape:'url'}&amp;wpEmail={$request->getEmail()|escape:'url'}&amp;wpReason=Requested%20account%20at%20%5B%5BWP%3AACC%5D%5D%2C%20request%20%23{$request->getId()}&amp;wpCreateaccountMail=true"{if !$currentUser->getAbortPref() && $createdquestion != ''} onclick="return confirm('{$createdquestion}')"{/if}>Create account</a>
+  <a class="btn btn-primary span12" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$request->getName()|escape:'url'}&amp;wpEmail={$request->getEmail()|escape:'url'}&amp;wpReason=Requested%20account%20at%20%5B%5BWP%3AACC%5D%5D%2C%20request%20%23{$request->getId()}&amp;wpCreateaccountMail=true"{if !$currentUser->getAbortPref() && $createdEmailTemplate->getJsquestion() != ''} onclick="return confirm('{$createdEmailTemplate->getJsquestion()}')"{/if}>Create account</a>
   {/if}
 </div>
 
@@ -34,7 +34,7 @@
     {* If custom create reasons are active, then make the Created button a split button dropdown. *}
       {if !empty($createreasons)}
       <div class = "btn-group span4">
-        <a class="btn btn-success span10" href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$createdid}&amp;sum={$request->getChecksum()}">{$createdname}</a>
+        <a class="btn btn-success span10" href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$createdEmailTemplate->getId()}&amp;sum={$request->getChecksum()}">{$createdEmailTemplate->getName()}</a>
         <button type="button" class="btn btn-success dropdown-toggle span2" data-toggle="dropdown"><span class="caret"></span></button>
         <ul class="dropdown-menu" role="menu">
         {foreach $createreasons as $reason}
@@ -44,7 +44,7 @@
       </div>
       {else}
       <div class = "span4">
-      <a class="btn btn-success span12" href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$createdid}&amp;sum={$request->getChecksum()}">{$createdname}</a>
+      <a class="btn btn-success span12" href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$createdEmailTemplate->getId()}&amp;sum={$request->getChecksum()}">{$createdEmailTemplate->getName()}</a>
       </div>
       {/if}
       <div class = "span4">

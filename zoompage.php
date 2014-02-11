@@ -42,10 +42,8 @@ function zoomPage($id,$urlhash)
     
 	$sUser = $request->getName();
     
-	$smarty->assign("createdid", $createdid);
 	$createdreason = EmailTemplate::getById($createdid, gGetDb());
-	$smarty->assign("createdname", $createdreason->getName());
-	$smarty->assign("createdquestion", $createdreason->getJsquestion());
+	$smarty->assign("createdEmailTemplate", $createdreason);
 
 	//#region setup whether data is viewable or not
 	
