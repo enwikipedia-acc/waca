@@ -256,9 +256,7 @@ class Request extends DataObject
             
             $trustedIp = $this->getTrustedIp();
             $trustedFilter = '%' . $trustedIp . '%';
-            
-            echo ($trustedFilter);
-            
+                        
             $query->bindParam(":id", $this->id);
             $query->bindParam(":ip", $trustedIp);
             $query->bindParam(":forwarded", $trustedFilter);
