@@ -443,9 +443,22 @@ function zoomPage($id,$urlhash)
 {
 	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates, $dontUseWikiDb, $internalInterface, $createdid;
 	global $smarty, $locationProvider, $rdnsProvider;
+    
+    $database = gGetDb();
+    $request = Request::getById($id, $database);
+    if($request == false)
+    {
+        // Notifies the user and stops the script.
+        BootstrapSkin::displayAlertBox("Could not load the requested request!", "alert-error","Error",true,false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
 	    
-	$gid = $internalInterface->checkreqid($id);
 	$smarty->assign("id", $gid);
+	$gid = $request->getId();
+    
+    $smarty->assign('request', $request);
+    
 	$urlhash = sanitize($urlhash);
 	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
 	$result = mysql_query($query, $tsSQLlink);
@@ -456,8 +469,8 @@ function zoomPage($id,$urlhash)
 		$out .= $skin->displayRequestMsg("Email has not yet been confirmed for this request, so it can not yet be closed or viewed.");
 		return $out;
 	}
-	$thisip = trim(getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']));
 	$smarty->assign("ip", $thisip);
+	$thisip = $request->getTrustedIp();
     $smarty->assign("iplocation", $locationProvider->getIpLocation($thisip));
 	$thisid = $row['pend_id'];
 	$thisemail = $row['pend_email'];

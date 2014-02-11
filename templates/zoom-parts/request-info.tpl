@@ -7,13 +7,13 @@
             {if $showinfo}
             <tr>
                 <th>Email address:</th>
-                <td><a href="mailto:{$email}">{$email}</a></td>
+                <td><a href="mailto:{$request->getEmail()}">{$request->getEmail()}</a></td>
                 <td><span class="badge{if $numemail > 0} badge-important{/if}">{$numemail}</span></td>
             </tr>
             <tr>
                 <th>IP address:</th>
                 <td>
-                  {$ip}
+                  {$request->getTrustedIp()}
                   <br />
                   <span class="muted">
                     {if $iplocation != null}
@@ -36,7 +36,7 @@
             <tr>
                 <th>Reveal link:</th>
                 <td>
-                <a href="{$tsurl}/acc.php?action=zoom&amp;id={$id}&amp;hash={$hash}">
+                <a href="{$tsurl}/acc.php?action=zoom&amp;id={$request->getId()}&amp;hash={$hash}">
                   Reveal link
                 </a></td>
                 <td></td>
@@ -51,13 +51,13 @@
 {if $showinfo}
   <div class="row-fluid hidden-phone">
     <div class="span4"><strong>Email address:</strong></div>
-    <div class="span7"><a href="mailto:{$email}">{$email}</a></div>
+    <div class="span7"><a href="mailto:{$request->getEmail()}">{$request->getEmail()}</a></div>
     <div class="span1"><span class="badge{if $numemail > 0} badge-important{/if}">{$numemail}</span></div>
   </div>
   <div class="row-fluid hidden-phone">
       <div class="span4"><strong>IP address:</strong></div>
       <div class="span7">
-        {$ip}
+        {$request->getTrustedIp()}
         <br />
         <span class="muted">
           {if $iplocation != null}
@@ -90,7 +90,7 @@
      {if $reserved}
       {$reserved}
       {if $reserved == $currentUser->getUsername()}
-        <a href="{$tsurl}/acc.php?action=zoom&amp;id={$id}&amp;hash={$hash}">(reveal to others)</a>
+        <a href="{$tsurl}/acc.php?action=zoom&amp;id={$request->getId()}&amp;hash={$hash}">(reveal to others)</a>
       {/if}
      {else}
       None

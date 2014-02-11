@@ -20,14 +20,14 @@
         <tr>
             <td><a href="{$tsurl}/statistics.php?page=Users&amp;user={$currentUser->getId()}">{$currentUser->getUsername()}</a></td>
             <td>
-            <input type="hidden" name="id" value="{$id}"/>
+            <input type="hidden" name="id" value="{$request->getId()}"/>
             <input type="hidden" name="visibility" value="user" />
             <input class="span12" placeholder="Quick comment" name="comment"/>
             </td>
             <td colspan="2">
             <div class="btn-group">
                 <button class="btn btn-primary" type="submit">Save</button>
-                <a class="btn" href="{$tsurl}/acc.php?action=comment&amp;id={$id}">Advanced</a>
+                <a class="btn" href="{$tsurl}/acc.php?action=comment&amp;id={$request->getId()}">Advanced</a>
             </div>
             </td>
         </tr>
