@@ -18,7 +18,7 @@ if (!defined("ACC")) {
 
 function zoomPage($id,$urlhash)
 {
-	global $tsSQLlink, $session, $skin, $tsurl, $messages, $availableRequestStates, $dontUseWikiDb, $internalInterface, $createdid;
+	global $tsSQLlink, $session, $availableRequestStates, $createdid;
 	global $smarty, $locationProvider, $rdnsProvider;
     
     $database = gGetDb();
@@ -35,13 +35,8 @@ function zoomPage($id,$urlhash)
     
 	$urlhash = sanitize($urlhash);
        
-	$thisip = $request->getTrustedIp();
-    $smarty->assign("iplocation", $locationProvider->getIpLocation($thisip));
-	$thisid = $request->getId();
-	$thisemail = $request->getEmail();
-    
-	$sUser = $request->getName();
-    
+    $smarty->assign("iplocation", $locationProvider->getIpLocation($request->getTrustedIp()));
+        
 	$createdreason = EmailTemplate::getById($createdid, gGetDb());
 	$smarty->assign("createdEmailTemplate", $createdreason);
 
@@ -56,7 +51,7 @@ function zoomPage($id,$urlhash)
 	
 	$sessionuser = $_SESSION['userID'];
 	$query = "SELECT * FROM acc_pend WHERE pend_email = '" . 
-				mysql_real_escape_string($thisemail, $tsSQLlink) . 
+				mysql_real_escape_string($request->getEmail(), $tsSQLlink) . 
 				"' AND pend_reserved = '" . 
 				mysql_real_escape_string($sessionuser, $tsSQLlink) . 
 				"' AND pend_mailconfirm = 'Confirmed' AND ( ".$statesSqlFragment." );";
@@ -72,9 +67,9 @@ function zoomPage($id,$urlhash)
 
 	$sessionuser = $_SESSION['userID'];
 	$query2 = "SELECT * FROM acc_pend WHERE (pend_ip = '" . 
-			mysql_real_escape_string($thisip, $tsSQLlink) . 
+			mysql_real_escape_string($request->getTrustedIp(), $tsSQLlink) . 
 			"' OR pend_proxyip LIKE '%" .
-			mysql_real_escape_string($thisip, $tsSQLlink) . 
+			mysql_real_escape_string($request->getTrustedIp(), $tsSQLlink) . 
 			"%') AND pend_reserved = '" .
 			mysql_real_escape_string($sessionuser, $tsSQLlink) . 
 			"' AND pend_mailconfirm = 'Confirmed' AND ( ".$statesSqlFragment." );";
@@ -100,10 +95,10 @@ function zoomPage($id,$urlhash)
 	//#endregion
 	
 	if ($request->getStatus() == "Closed") {
-		$hash = md5($thisid. $thisemail . $thisip . microtime()); //If the request is closed, change the hash based on microseconds similar to the checksums.
+		$hash = md5($request->getId() . $request->getEmail() . $request->getTrustedIp() . microtime()); //If the request is closed, change the hash based on microseconds similar to the checksums.
 		$smarty->assign("isclosed", true);
 	} else {
-		$hash = md5($thisid . $thisemail . $thisip);
+		$hash = md5($request->getId() . $request->getEmail() . $request->getTrustedIp());
 		$smarty->assign("isclosed", false);
 	}
 	$smarty->assign("hash", $hash);
@@ -195,12 +190,8 @@ function zoomPage($id,$urlhash)
     
 	$smarty->assign("defaultstate", $defaultRequestStateKey);
 	$smarty->assign("requeststates", $availableRequestStates);
-	
-
-
-	global $tsurl;
-	
-	$spoofs = getSpoofs( $sUser );
+		
+	$spoofs = getSpoofs( $request->getName(); );
 	$smarty->assign("spoofs", $spoofs);
 	
 	// START LOG DISPLAY
@@ -224,7 +215,7 @@ function zoomPage($id,$urlhash)
 		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => 0, 'comment' => $row['cmt_comment'], 'action' => "comment", 'security' => $row['cmt_visability'], 'id' => $row['cmt_id']);
 	}
     
-	if(trim($request->getComment()) !== ""){
+	if(trim($request->getComment()) !== "") {
 		$logs[] = array(
 			'time'=> $request->getDate(), 
 			'user'=> $request->getName(), 
@@ -243,29 +234,37 @@ function zoomPage($id,$urlhash)
 		$logs = doSort($logs);
 		foreach ($logs as &$row) {
 			$row['canedit'] = false;
+            
 			if(!isset($row['security'])) {
 				$row['security'] = '';
 			}
-			if(!isset($namecache[$row['user']]))
+            
+			if(!isset($namecache[$row['user']])) {
 				$row['userid'] = getUserIdFromName($row['user']);
-			else
+            } else {
 				$row['userid'] = $namecache[($row['user'])];
+            }
 			
-			if($row['action'] == "comment"){
+			if($row['action'] == "comment") {
 				$row['entry'] = xss($row['comment']);
                 
 				global $enableCommentEditing;
 				if($enableCommentEditing && ($session->hasright($_SESSION['user'], 'Admin') || $_SESSION['user'] == $row['user']) && isset($row['id']))
+                {
 					$row['canedit'] = true;
+                }
 			} elseif($row['action'] == "Closed custom-n" ||$row['action'] == "Closed custom-y"  ) {
 				$row['entry'] = "<em>" .$row['description'] . "</em><br />" . str_replace("\n", '<br />', xss($row['comment']));
 			} else {
 				foreach($availableRequestStates as $deferState)
+                {
 					$row['entry'] = "<em>" . str_replace("deferred to ".$deferState['defertolog'],"deferred to ".$deferState['deferto'],$row['description']) . "</em>"; //#35: The log text(defertolog) should not be displayed to the user, deferto is what should be displayed
+                }
 			}
-		}
+		} // /foreach
 		unset($row);
-	}
+	} // if($logs)
+    
 	$smarty->assign("zoomlogs", $logs);
 
 
