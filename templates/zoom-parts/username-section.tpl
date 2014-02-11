@@ -1,9 +1,9 @@
 ﻿<!-- tpl:zoom-parts/username-section.tpl -->
 <div class="row-fluid">
   <h3>Username data for {$request->getName()}:</h3>
-  {if $isblacklisted}
+  {if $request->isBlacklisted()}
     {include file="alert.tpl" alertblock="1" alerttype="alert-error" alertclosable="0" alertheader="Requested Username is Blacklisted"
-      alertmessage="The requested username is currently blacklisted by the regular expression <code>{$blacklistregex|escape}</code>."}
+      alertmessage="The requested username is currently blacklisted by the regular expression <code>{$request->isBlacklisted()|escape}</code>."}
   {/if}
            
   <div class="btn-group">

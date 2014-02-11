@@ -21,6 +21,7 @@ class Request extends DataObject
     private $hasComments = "?";
     private $ipRequests = false;
     private $emailRequests = false;
+    private $blacklistCache = null;
     
     public function save()
     {
@@ -273,5 +274,26 @@ class Request extends DataObject
         }
         
         return $this->ipRequests;
+    }
+    
+    public function isBlacklisted()
+    {
+        global $enableTitleBlacklist;
+        
+        if(! $enableTitleBlacklist || $this->blacklistCache === false)
+        {
+            return false;
+        }
+        
+        $apiResult = file_get_contents("https://en.wikipedia.org/w/api.php?action=titleblacklist&tbtitle=" . urlencode($user) . "&tbaction=new-account&tbnooverride&format=php");
+        
+        $data = unserialize($apiResult);
+        
+        $result = $data['titleblacklist']['result'] == "ok";
+        
+        $this->blacklistCache = $result ? false : $data['titleblacklist']['line'];
+        
+        return $this->blacklistCache;
+
     }
 }
