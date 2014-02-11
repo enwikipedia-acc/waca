@@ -651,9 +651,9 @@ function zoomPage($id,$urlhash)
 	
 
 	
-	$request = new accRequest();
+	$legacyRequest = new accRequest();
 	$smarty->assign("isblacklisted", false);
-    $blacklistresult = $request->isblacklisted($sUser);
+    $blacklistresult = $legacyRequest->isblacklisted($sUser);
 	if($blacklistresult)
     {
 		$smarty->assign("isblacklisted", true);
