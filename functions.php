@@ -471,11 +471,6 @@ function zoomPage($id,$urlhash)
 	$thisid = $request->getId();
 	$thisemail = $request->getEmail();
     
-    $requestDate = $request->getDate();
-	if ($requestDate == "0000-00-00 00:00:00") {
-		$requestDate = "Date Unknown";
-	}
-	$smarty->assign("date", $requestDate);
 	$sUser = $request->getName();
 	$smarty->assign("username", $sUser);
 	$smarty->assign("usernamerawunicode", html_entity_decode($sUser));

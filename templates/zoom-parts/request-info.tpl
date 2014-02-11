@@ -30,7 +30,7 @@
             </tr>
             {/if}
             <tr><th>Requested name:</th><td>{$username}</td><td></td></tr>
-            <tr><th>Date:</th><td>{$date}</td><td></td></tr>
+            <tr><th>Date:</th><td>{$request->getDate()}</td><td></td></tr>
             {if $currentUser->isCheckUser()}<tr><th>User Agent:</th><td>{$request->getUserAgent()}</td><td></td></tr>{/if}
             {if $currentUser->getId() == $request->getReserved()}
             <tr>
@@ -76,7 +76,7 @@
 </div>
 <div class="row-fluid hidden-phone">
     <div class="span4"><strong>Date:</strong></div>
-    <div class="span8">{$date}</div>
+    <div class="span8">{$request->getDate()}</div>
 </div>
 {if $currentUser->isCheckUser()}
   <div class="row-fluid hidden-phone">
