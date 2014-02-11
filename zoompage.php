@@ -36,13 +36,7 @@ function zoomPage($id,$urlhash)
     $smarty->assign('request', $request);
     
 	$urlhash = sanitize($urlhash);
-    
-    // TODO: move to template
-	if ($request->getEmailConfirm() != 'Confirmed' && $request->getEmailConfirm() != "" && !isset($_GET['ecoverride'])) {
-		$out .= $skin->displayRequestMsg("Email has not yet been confirmed for this request, so it can not yet be closed or viewed.");
-		return $out;
-	}
-    
+       
 	$thisip = $request->getTrustedIp();
     $smarty->assign("iplocation", $locationProvider->getIpLocation($thisip));
 	$thisid = $request->getId();
@@ -204,33 +198,22 @@ function zoomPage($id,$urlhash)
 	
 	$smarty->assign("isprotected", isProtected($request->getId()));
     
-	$checksum = $request->getChecksum();
-	$pendid = $request->getId();
 	$smarty->assign("defaultstate", $defaultRequestStateKey);
 	$smarty->assign("requeststates", $availableRequestStates);
 	
-	$cmtlen = strlen(trim($request->getComment()));
-	$request_comment = "";
-	if ($cmtlen != 0) {
-		$request_comment = $request->getComment();
-	}
+
 
 	global $tsurl;
 	
-	$request_date = $request->getDate();
-	
-
-	$out2 = "<h2>Possibly conflicting usernames</h2>\n";
 	$spoofs = getSpoofs( $sUser );
-	
 	$smarty->assign("spoofs", $spoofs);
 	
 	// START LOG DISPLAY
 	$loggerclass = new LogPage();
-	$loggerclass->filterRequest=$gid;
+	$loggerclass->filterRequest = $request->getId();
 	$logs = $loggerclass->getRequestLogs();
 	
-	if ($session->hasright($_SESSION['user'], 'Admin')) {
+	if (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
 		$query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' ORDER BY cmt_id ASC;";
 	} else {
 		$user = sanitise($_SESSION['user']);
@@ -245,14 +228,14 @@ function zoomPage($id,$urlhash)
 	while ($row = mysql_fetch_assoc($result)) {
 		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => 0, 'comment' => $row['cmt_comment'], 'action' => "comment", 'security' => $row['cmt_visability'], 'id' => $row['cmt_id']);
 	}
-	
-	if($request_comment !== ""){
+    
+	if(trim($request->getComment()) !== ""){
 		$logs[] = array(
 			'time'=> $request->getDate(), 
-			'user'=>$sUser, 
+			'user'=> $request->getName(), 
 			'description' => '',
 			'target' => 0, 
-			'comment' => $request_comment, 
+			'comment' => $request->getComment(), 
 			'action' => "comment", 
 			'security' => ''
 			);
