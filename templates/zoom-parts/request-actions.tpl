@@ -10,7 +10,7 @@
 <div class="row-fluid">
   {if $reserved == $currentUser->getUsername()}
     <div class="span8">
-      <form action="{$tsurl}/acc.php?action=sendtouser&amp;hash={$checksum}" method="post" class="form-inline">
+      <form action="{$tsurl}/acc.php?action=sendtouser&amp;hash={$request->getChecksum()}" method="post" class="form-inline">
         <input type="hidden" name="id" value="{$request->getId()}" />
         <div class="row-fluid">
           <input type="text" required="true" placeholder="Send reservation to another user..." name="user" data-provide="typeahead" data-items="4" data-source='{$jsuserlist}' class="span8"/>
@@ -34,17 +34,17 @@
     {* If custom create reasons are active, then make the Created button a split button dropdown. *}
       {if !empty($createreasons)}
       <div class = "btn-group span4">
-        <a class="btn btn-success span10" href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$createdid}&amp;sum={$checksum}">{$createdname}</a>
+        <a class="btn btn-success span10" href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$createdid}&amp;sum={$request->getChecksum()}">{$createdname}</a>
         <button type="button" class="btn btn-success dropdown-toggle span2" data-toggle="dropdown"><span class="caret"></span></button>
         <ul class="dropdown-menu" role="menu">
         {foreach $createreasons as $reason}
-        	<li><a href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$reason@key}&amp;sum={$checksum}"{if !$currentUser->getAbortPref() && $reason.question != ''} onclick="return confirm('{$reason.question}')"{/if}>{$reason.name}</a></li>
+        	<li><a href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$reason@key}&amp;sum={$request->getChecksum()}"{if !$currentUser->getAbortPref() && $reason.question != ''} onclick="return confirm('{$reason.question}')"{/if}>{$reason.name}</a></li>
         {/foreach}
         </ul>
       </div>
       {else}
       <div class = "span4">
-      <a class="btn btn-success span12" href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$createdid}&amp;sum={$checksum}">{$createdname}</a>
+      <a class="btn btn-success span12" href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$createdid}&amp;sum={$request->getChecksum()}">{$createdname}</a>
       </div>
       {/if}
       <div class = "span4">
@@ -52,30 +52,30 @@
           <button type="button" class="btn btn-warning dropdown-toggle span12" data-toggle="dropdown">Decline<span class="caret"></span></button>
           <ul class="dropdown-menu">
           {foreach $declinereasons as $reason}
-            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$reason@key}&amp;sum={$checksum}"{if !$currentUser->getAbortPref() && $reason.question != ''} onclick="return confirm('{$reason.question}')"{/if}>{$reason.name}</a></li>
+            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$reason@key}&amp;sum={$request->getChecksum()}"{if !$currentUser->getAbortPref() && $reason.question != ''} onclick="return confirm('{$reason.question}')"{/if}>{$reason.name}</a></li>
           {/foreach}
           </ul>
         </div>
-        <a class="btn btn-info span6" href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email=custom&amp;sum={$checksum}">Custom</a>
+        <a class="btn btn-info span6" href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email=custom&amp;sum={$request->getChecksum()}">Custom</a>
       </div> <!-- /span4 -->
     {/if}
                   
     <div class="span4{if !$isreserved} offset8{/if}">
       {if !array_key_exists($type, $requeststates)}
-        <a class="btn span12" href="{$tsurl}/acc.php?action=defer&amp;id={$request->getId()}&amp;sum={$checksum}&amp;target={$defaultstate}">Reset request</a>
+        <a class="btn span12" href="{$tsurl}/acc.php?action=defer&amp;id={$request->getId()}&amp;sum={$request->getChecksum()}&amp;target={$defaultstate}">Reset request</a>
       {else}
         <div class="btn-group span6">
           <button type="button" class="btn btn-default dropdown-toggle span12" data-toggle="dropdown">Defer&nbsp;<span class="caret"></span></button>
           <ul class="dropdown-menu">
             {foreach $requeststates as $state}
-              <li><a href="{$tsurl}/acc.php?action=defer&amp;id={$request->getId()}&amp;sum={$checksum}&amp;target={$state@key}">{$state.deferto|capitalize}</a></li>
+              <li><a href="{$tsurl}/acc.php?action=defer&amp;id={$request->getId()}&amp;sum={$request->getChecksum()}&amp;target={$state@key}">{$state.deferto|capitalize}</a></li>
             {/foreach}
           </ul>
         </div>
       {/if}
                   
-      {if !$isclosed}
-        <a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email=0&amp;sum={$checksum}">Drop</a>
+      {if $request->getStatus() != "Closed"}
+        <a class="btn btn-inverse span6" href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email=0&amp;sum={$request->getChecksum()}">Drop</a>
       {/if}
     </div>
   </div>

@@ -31,7 +31,7 @@
             {/if}
             <tr><th>Requested name:</th><td>{$username}</td><td></td></tr>
             <tr><th>Date:</th><td>{$date}</td><td></td></tr>
-            {if $viewuseragent}<tr><th>User Agent:</th><td>{$useragent}</td><td></td></tr>{/if}
+            {if $currentUser->isCheckUser()}<tr><th>User Agent:</th><td>{$useragent}</td><td></td></tr>{/if}
             {if $currentUser->getUsername() == $reserved}
             <tr>
                 <th>Reveal link:</th>
@@ -78,7 +78,7 @@
     <div class="span4"><strong>Date:</strong></div>
     <div class="span8">{$date}</div>
 </div>
-{if $viewuseragent}
+{if $currentUser->isCheckUser()}
   <div class="row-fluid hidden-phone">
     <div class="span4"><strong>User Agent:</strong></div>
     <div class="span8">{$useragent}</div>

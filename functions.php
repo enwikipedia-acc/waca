@@ -482,7 +482,6 @@ function zoomPage($id,$urlhash)
 	$smarty->assign("useragent", $request->getUserAgent());
 	$createreason = "Requested account at [[WP:ACC]], request #" . $request->getId();
 	$smarty->assign("createreason", $createreason);
-	$smarty->assign("isclosed", $request->getStatus() == "Closed");
 	$smarty->assign("createdid", $createdid);
 	$createdreason = EmailTemplate::getById($createdid, gGetDb());
 	$smarty->assign("createdname", $createdreason->getName());
@@ -558,11 +557,8 @@ function zoomPage($id,$urlhash)
 	}
 	
 	$smarty->assign("showinfo", false);
-	$smarty->assign("ischeckuser", false);
 	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']))
 		$smarty->assign("showinfo", true);
-	if ($session->isCheckuser($_SESSION['user']))
-		$smarty->assign("ischeckuser", true);
 	
 	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
 		$smarty->assign("proxyip", $request->getForwardedIp());
@@ -641,7 +637,6 @@ function zoomPage($id,$urlhash)
 	$type = $request->getStatus();
 	$checksum = $request->getChecksum();
 	$pendid = $request->getId();
-	$smarty->assign("checksum", $request->getChecksum());
 	$smarty->assign("type", $type);
 	$smarty->assign("defaultstate", $defaultRequestStateKey);
 	$smarty->assign("requeststates", $availableRequestStates);
@@ -653,12 +648,6 @@ function zoomPage($id,$urlhash)
 	}
 
 	global $tsurl;
-
-	global $allowViewingOfUseragent;
-	if($session->isCheckuser($_SESSION['user']) && $allowViewingOfUseragent == true)
-		$smarty->assign("viewuseragent", true);
-	else
-		$smarty->assign("viewuseragent", false);
 	
 	$request_date = $request->getDate();
 	
