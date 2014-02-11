@@ -2,63 +2,13 @@
 <div class="row-fluid">
   <!-- page header -->
   <div class="span12">
-    <h2>Details for Request #{$id}:</h2>
+    <h2>Details for Request #{$request->getId()}:</h2>
   </div>
 </div><!--/row-->   
 
-<div class="row-fluid">
-  <!-- request details -->
-  <div class="span6 container-fluid">
-    {include file="zoom-parts/request-info.tpl"}
-    <hr />
-    {include file="zoom-parts/request-actions.tpl"}
-  </div>
-  <div class="span6 container-fluid">
-    {include file="zoom-parts/request-log.tpl"}
-  </div>
-</div><!--/row-->    
-
-<hr />
-{if $showinfo == true}
-  {include file="zoom-parts/ip-section.tpl"}
+{if $request->getEmailConfirm() != "Confirmed" && $request->getEmailConfirm() != "" && (!$ecoverride)}
+{include file="alert.tpl" alertblock="1" alerttype="alert-error" alertclosable="0" alertheader="Email confirmation required."
+alertmessage="The email address has not yet been confirmed for this request, so it can not yet be closed or viewed."}
+{else}
+{include file="zoom-parts/zoom-base.tpl"}
 {/if}
-
-{include file="zoom-parts/username-section.tpl"}
-
-<div class="row-fluid">
-  <div class="span6">
-    <h3>Other requests from {if $showinfo == true}{$email}{else}this email address{/if}</h3>
-    {if $email == "acc@toolserver.org"}
-      <p class="muted">Email information cleared</p>
-    {elseif $numemail == 0}
-      <p class="muted">None detected</p>
-    {else}
-      <table class="table table-condensed table-striped">
-        {foreach $otheremail as $others}
-          <tr>
-            <td>{$others.date}</td>
-            <td><a target="_blank" href="{$tsurl}/acc.php?action=zoom&amp;id={$others.id}">{$others.name}</a></td>
-          </tr>
-        {/foreach}
-      </table>
-    {/if}
-  </div>
-  <div class="span6">
-    <h3>Other requests from {if $showinfo == true}{$ip}{else}this IP address{/if}</h3>
-    {if $ip == "127.0.0.1"}
-      <p class="muted">IP information cleared</p>
-    {elseif $numip == 0}
-      <p class="muted">None detected</p>
-    {else}
-      <table class="table table-condensed table-striped">
-        {foreach $otherip as $others}
-          <tr>
-            <td>{$others.date}</td>
-            <td><a target="_blank" href="{$tsurl}/acc.php?action=zoom&amp;id={$others.id}">{$others.name}</a></td>
-          </tr>
-        {/foreach}
-      </table>
-    {/if}
-  </div>
-</div>
-<!-- /tpl:request-zoom.tpl -->

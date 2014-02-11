@@ -9,7 +9,7 @@
 <a id="IPActiveGlobalBlock-{$index}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:GlobalBlockList/{$ipaddress}" onMouseUp="$('#IPActiveGlobalBlock-{$index}').addClass('btn-visited');">Active Global Blocks</a>
 <a id="IPWhois-{$index}" class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=oq-whois&amp;data={$ipaddress}" onMouseUp="$('#IPWhois-{$index}').addClass('btn-visited');">Whois</a>
 <a id="IPAbuseLog-{$index}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:AbuseLog&amp;wpSearchUser={$ipaddress}" onMouseUp="$('#IPAbuseLog-{$index}').addClass('btn-visited');">Abuse Filter Log</a>
-  <a id="IPCU-{$index}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:CheckUser&amp;ip={$ipaddress}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$id}" onMouseUp="$('#IPCU-{$index}').addClass('btn-visited');">CheckUser</a>
 {if $currentUser->isCheckUser() == true}
+  <a id="IPCU-{$index}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:CheckUser&amp;ip={$ipaddress}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$request->getId()}" onMouseUp="$('#IPCU-{$index}').addClass('btn-visited');">CheckUser</a>
 {/if}
 <!-- /tpl:zoom-parts/ip-links.tpl -->
