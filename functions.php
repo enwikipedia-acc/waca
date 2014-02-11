@@ -466,26 +466,32 @@ function zoomPage($id,$urlhash)
 	Die("Query failed: $query ERROR: " . mysql_error());
 	$row = mysql_fetch_assoc($result);
 	if ($row['pend_mailconfirm'] != 'Confirmed' && $row['pend_mailconfirm'] != "" && !isset($_GET['ecoverride'])) {
+    
+    // TODO: move to template
+	if ($request->getEmailConfirm() != 'Confirmed' && $request->getEmailConfirm() != "" && !isset($_GET['ecoverride'])) {
 		$out .= $skin->displayRequestMsg("Email has not yet been confirmed for this request, so it can not yet be closed or viewed.");
 		return $out;
 	}
 	$smarty->assign("ip", $thisip);
+    
 	$thisip = $request->getTrustedIp();
     $smarty->assign("iplocation", $locationProvider->getIpLocation($thisip));
-	$thisid = $row['pend_id'];
-	$thisemail = $row['pend_email'];
 	$smarty->assign("email", $thisemail);
-	if ($row['pend_date'] == "0000-00-00 00:00:00") {
-		$row['pend_date'] = "Date Unknown";
+	$thisid = $request->getId();
+	$thisemail = $request->getEmail();
+    
+    $requestDate = $request->getDate();
+	if ($requestDate == "0000-00-00 00:00:00") {
+		$requestDate = "Date Unknown";
 	}
-	$smarty->assign("date", $row['pend_date']);
-	$sUser = $row['pend_name'];
+	$smarty->assign("date", $requestDate);
+	$sUser = $request->getName();
 	$smarty->assign("username", $sUser);
 	$smarty->assign("usernamerawunicode", html_entity_decode($sUser));
-	$smarty->assign("useragent", $row['pend_useragent']);
-	$createreason = "Requested account at [[WP:ACC]], request #" . $row['pend_id'];
+	$smarty->assign("useragent", $request->getUserAgent());
+	$createreason = "Requested account at [[WP:ACC]], request #" . $request->getId();
 	$smarty->assign("createreason", $createreason);
-	$smarty->assign("isclosed", $row['pend_status'] == "Closed");
+	$smarty->assign("isclosed", $request->getStatus() == "Closed");
 	$smarty->assign("createdid", $createdid);
 	$createdreason = EmailTemplate::getById($createdid, gGetDb());
 	$smarty->assign("createdname", $createdreason->getName());
@@ -545,7 +551,7 @@ function zoomPage($id,$urlhash)
 	
 	//#endregion
 	
-	if ($row['pend_status'] == "Closed") {
+	if ($request->getStatus() == "Closed") {
 		$hash = md5($thisid. $thisemail . $thisip . microtime()); //If the request is closed, change the hash based on microseconds similar to the checksums.
 		$smarty->assign("isclosed", true);
 	} else {
@@ -568,13 +574,13 @@ function zoomPage($id,$urlhash)
 		$smarty->assign("ischeckuser", true);
 	
 	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
-		$smarty->assign("proxyip", $row['pend_proxyip']);
-		if ($row['pend_proxyip']) {
+		$smarty->assign("proxyip", $request->getForwardedIp());
+		if ($request->getForwardedIp()) {
 			$smartyproxies = array(); // Initialize array to store data to be output in Smarty template.
 			$smartyproxiesindex = 0;
 			
-			$proxies = explode(",", $row['pend_proxyip']);
-			$proxies[] = $row['pend_ip'];
+			$proxies = explode(",", $request->getForwardedIp());
+			$proxies[] = $request->getIp();
 			
 			$origin = $proxies[0];
 			$smarty->assign("origin", $origin);
@@ -638,21 +644,21 @@ function zoomPage($id,$urlhash)
 
 	global $protectReservedRequests, $defaultRequestStateKey;
 	
-	$smarty->assign("isprotected", isProtected($row['pend_id']));
-	$smarty->assign("isreserved", isReserved($row['pend_id']));
+	$smarty->assign("isprotected", isProtected($request->getId()));
+	$smarty->assign("isreserved", isReserved($request->getId()));
 		
-	$type = $row['pend_status'];
-	$checksum = $row['pend_checksum'];
-	$pendid = $row['pend_id'];
-	$smarty->assign("checksum", $row['pend_checksum']);
+	$type = $request->getStatus();
+	$checksum = $request->getChecksum();
+	$pendid = $request->getId();
+	$smarty->assign("checksum", $request->getChecksum());
 	$smarty->assign("type", $type);
 	$smarty->assign("defaultstate", $defaultRequestStateKey);
 	$smarty->assign("requeststates", $availableRequestStates);
 	
-	$cmtlen = strlen(trim($row['pend_cmt']));
+	$cmtlen = strlen(trim($request->getComment()));
 	$request_comment = "";
 	if ($cmtlen != 0) {
-		$request_comment = $row['pend_cmt'];
+		$request_comment = $request->getComment();
 	}
 
 	global $tsurl;
@@ -663,9 +669,9 @@ function zoomPage($id,$urlhash)
 	else
 		$smarty->assign("viewuseragent", false);
 	
-	$request_date = $row['pend_date'];
+	$request_date = $request->getDate();
 	
-	$reserveByUser = isReservedWithRow($row);
+	$reserveByUser = $request->getReserved();
 
 	$smartyreserved = "";
 	if($reserveByUser != 0) {
