@@ -102,7 +102,7 @@ class Request extends DataObject
 
     public function getName()
     {
-        return html_entity_decode($this->name);
+        return $this->name;
     }
 
     public function setName($name)

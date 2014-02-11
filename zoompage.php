@@ -34,7 +34,9 @@ function zoomPage($id,$urlhash)
     $smarty->assign('request', $request);
     
 	$urlhash = sanitize($urlhash);
-       
+    
+    $smarty->assign("usernamerawunicode", html_entity_decode($sUser));
+    
     $smarty->assign("iplocation", $locationProvider->getIpLocation($request->getTrustedIp()));
         
 	$createdreason = EmailTemplate::getById($createdid, gGetDb());
