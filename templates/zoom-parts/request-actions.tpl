@@ -1,7 +1,7 @@
 ﻿<!-- tpl:zoom-parts/request-actions.tpl -->
 <div class="row-fluid">
   {if $showinfo == true && $isprotected == false && $request->getReserved() != 0}
-  <a class="btn btn-primary span12" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$request->getName()|escape:'url'}&amp;wpEmail={$request->getEmail()|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true"{if !$currentUser->getAbortPref() && $createdquestion != ''} onclick="return confirm('{$createdquestion}')"{/if}>Create account</a>
+  <a class="btn btn-primary span12" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$request->getName()|escape:'url'}&amp;wpEmail={$request->getEmail()|escape:'url'}&amp;wpReason=Requested%20account%20at%20%5B%5BWP%3AACC%5D%5D%2C%20request%20%23{$request->getId()}&amp;wpCreateaccountMail=true"{if !$currentUser->getAbortPref() && $createdquestion != ''} onclick="return confirm('{$createdquestion}')"{/if}>Create account</a>
   {/if}
 </div>
 

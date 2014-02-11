@@ -41,8 +41,7 @@ function zoomPage($id,$urlhash)
 	$thisemail = $request->getEmail();
     
 	$sUser = $request->getName();
-	$createreason = "Requested account at [[WP:ACC]], request #" . $request->getId();
-	$smarty->assign("createreason", $createreason);
+    
 	$smarty->assign("createdid", $createdid);
 	$createdreason = EmailTemplate::getById($createdid, gGetDb());
 	$smarty->assign("createdname", $createdreason->getName());
