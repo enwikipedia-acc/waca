@@ -33,6 +33,13 @@ function gGetDb($db = "acc") {
         
         $accdbobject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         
+        // emulating prepared statements gives a performance boost on MySQL.
+        // 
+        // however, our version of PDO doesn't seem to understand parameter types when emulating
+        // the prepared statements, so we're forced to turn this off for now.
+        // -- stw 2014-02-11
+        $accdbobject->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+        
         $accdbobjects[ $db ] = $accdbobject;
 	}
 	return $accdbobjects[ $db ];

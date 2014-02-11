@@ -225,146 +225,52 @@ function sendemail($messageno, $target, $id) {
 	}
 }
 
-function listrequests($type, $hideip, $correcthash) {
+function listrequests($type) {
 	/*
 	 * List requests, at Zoom, and, on the main page
 	 */
-	global $toolserver_database, $tsSQLlink, $tsurl;
 	global $secure;
 	global $enableEmailConfirm;
-	global $session;
 	global $availableRequestStates;
-	
-	global $requestLimitThreshold, $requestLimitShowOnly;
-	$totalRequests = 0;
-	
-	if($secure != 1) { die("Not logged in"); }
-	@ mysql_select_db($toolserver_database, $tsSQLlink) or sqlerror(mysql_error(),"Error selecting database.");
-
-	if ($enableEmailConfirm == 1) {
-		if (array_key_exists($type, $availableRequestStates)) {
-			
-			$totalRequestsQ = mysql_query("SELECT COUNT(*) FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed';");
-			$totalRequestsR = mysql_fetch_assoc( $totalRequestsQ );
-			$totalRequests = $totalRequestsR["COUNT(*)"];
-			
-			if( $totalRequests > $requestLimitThreshold ) {
-				$query = "SELECT * FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed' LIMIT $requestLimitShowOnly;";
-			} else {
-				$query = "SELECT * FROM acc_pend WHERE pend_status = '$type' AND pend_mailconfirm = 'Confirmed';";
-			}
-		} else {
-			$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
-		}
-	} else {
-		if (array_key_exists($type, $availableRequestStates)) {
-			$query = "SELECT * FROM acc_pend WHERE pend_status = '$type';";
-		} else {
-			$query = "SELECT * FROM acc_pend WHERE pend_id = '$type';";
-		}
-	}
-
-	$result = mysql_query($query);
-	if (!$result)
-	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-
-    $tablestart = "";
-	if( $totalRequests > $requestLimitThreshold ) {
-		$tablestart .= BootstrapSkin::displayAlertBox("<strong>Miser mode:</strong> Not all requests are shown for speed. Only $requestLimitShowOnly of $totalRequests are shown here.", "alert-error", "", false, false, true);
-    }
- 
-    $tablestart .= '<table class="table table-striped sortable"><thead><tr><th data-defaultsort="asc"><span class="hidden-phone">#</span></th><td><!-- zoom --></td><td><!-- comment --></td><th><span class="visible-desktop">Email address</span><span class="visible-tablet">Email and IP</span><span class="visible-phone">Request details</span></th><th><span class="visible-desktop">IP address</span></th><th><span class="hidden-phone">Username</span></th><td><!-- ban --></td><td><!-- reserve status --></td><td><!--reserve button--></td></tr></thead><tbody>';
-
-	$tableend = "</tbody></table>\n";
-	$reqlist = '';
-	$currentreq = 0;
-	
-	$sid = sanitize($_SESSION['user']);
-	$query4 = "SELECT * FROM acc_user WHERE user_name = '$sid';";
-	$result4 = mysql_query($query4, $tsSQLlink);
-	if (!$result4) {
-		sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	}
-	$row4 = mysql_fetch_assoc($result4);
-	
-    global $smarty;
+    	
+	global $requestLimitShowOnly;
     
-	while ( $row = mysql_fetch_assoc( $result ) ) {
-		$currentreq += 1;
-		$smarty->assign( "rownum" , $currentreq );
-        
-        
-        $uname = $row['pend_name'];
-		$rid = $row['pend_id'];
-        
-        $smarty->assign( "rid", $rid );
-        $smarty->assign("name", $uname);
-		
-		$data = mysql_query("SELECT COUNT(*) as num FROM acc_cmt where pend_id = '" . $rid . "';"); // indexed
-		$commentcountrow = mysql_fetch_assoc($data);
-		$commentcount=$commentcountrow['num'];
-		
-        $hascomments = ($row['pend_cmt'] != ""  || $commentcount != 0);
-        $smarty->assign("hascmt", $hascomments);
-        
-		
-		$clientIpAddr = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
-        
-        $smarty->assign("ip", $clientIpAddr);
-        
-        /// disabled for performance
-        
-//		$query2 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE (`pend_ip` = '" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "' OR `pend_proxyip` LIKE '%" . mysql_real_escape_string($clientIpAddr,$tsSQLlink) . "%') AND `pend_mailconfirm` = 'Confirmed';";
-//		$result2 = mysql_query($query2); // TODO: OPTIMISE ME! I TAKE 20s TO EXECUTE!
-//		if (!$result2) {
-//			sqlerror("Query failed: $query2 ERROR: " . mysql_error(),"Database query error.");
-//		}
-//		$otheripreqs = mysql_fetch_assoc($result2);
-//		$otheripreqs["count"]--;
-        $otheripreqs = array("count" => "-1");		
-        
-        //////////////////////////////////
-
-        $numOtherIpRequests = $otheripreqs["count"];
-        $smarty->assign("numip" , $numOtherIpRequests);
-        
-        $query3 = "SELECT COUNT(*) AS `count` FROM `acc_pend` WHERE `pend_email` = '" . mysql_real_escape_string($row['pend_email'],$tsSQLlink) . "' AND `pend_id` != '" . mysql_real_escape_string($row['pend_id'],$tsSQLlink) . "' AND `pend_mailconfirm` = 'Confirmed';";
-		$result3 = mysql_query($query3);
-		if (!$result3) {
-			sqlerror("Query failed: $query3 ERROR: " . mysql_error(),"Database query error.");
-		}
-		$otheremailreqs = mysql_fetch_assoc($result3);
-		$numOtherEmailRequests = $otheremailreqs['count'];
-        $smarty->assign("nummail", $numOtherEmailRequests);
-        $mailaddr = $row['pend_email'];
-        $smarty->assign("mail", $mailaddr);
-        
-		$showdata = ($hideip == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) );
-        $smarty->assign("showdata", $showdata);
-        $canban = ( $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) );
-        $smarty->assign("canban", $canban);
+    $database = gGetDb();
 	
-		$reserveByUser = isReservedWithRow($row);
-
-        $smartyreserved = false;
-        if($reserveByUser != 0)
-        {
-            $smartyreserved = $session->getUsernameFromUid($reserveByUser);
-        }
-        
-        $smarty->assign("reserved", $smartyreserved);
-        $canbreak = ( $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) );
-        $smarty->assign("canbreak", $canbreak);
-        
-        
-		$reqlist .= $smarty->fetch("request-entry.tpl");
-	}
-	if( $currentreq == 0 ) {
-		return( "<i>No requests at this time</i>" );
+	if($secure != 1) { die("Not logged in"); } // stw(2014-02-09) why is this here?
+   
+    if (!array_key_exists($type, $availableRequestStates)) {
+        throw new Exception("huh? unknown type.");
+    }
+    
+    $totalRequestsStatement = $database->prepare("SELECT COUNT(*) FROM request WHERE status = :type AND emailconfirm = 'Confirmed';");
+    $totalRequestsStatement->bindParam(":type", $type);
+    $totalRequestsStatement->execute();
+    $totalRequests = $totalRequestsStatement->fetchColumn();
+    
+    if ($enableEmailConfirm == 1) {		
+		$query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed' LIMIT :lim;";
 	} else {
-		return ($tablestart . $reqlist . $tableend);
+        $query = "SELECT * FROM request WHERE status = :type LIMIT :lim;";
 	}
 
+    $statement = $database->prepare($query);
+    $statement->bindParam(":type", $type);
+    $statement->bindParam(":lim", $requestLimitShowOnly, PDO::PARAM_INT);
+    $statement->execute();
+    
+    $requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
+    foreach($requests as $req)
+    {
+        $req->setDatabase($database);   
+    }
+
+    global $smarty;
+    $smarty->assign("requests", $requests);
+    $smarty->assign("requestLimitShowOnly", $requestLimitShowOnly);
+    $smarty->assign("totalRequests", $totalRequests);
+    
+    return $smarty->fetch("mainpage/requestlist.tpl");
 }
 
 function isProtected($requestid)
@@ -458,7 +364,7 @@ function defaultpage() {
 	// list requests in each section
 	foreach($availableRequestStates as $k => $v) 
     {
-        $requestSectionData[$v['header']] = listrequests($k, TRUE, FALSE);
+        $requestSectionData[$v['header']] = listrequests($k);
     }
     
     global $smarty;
