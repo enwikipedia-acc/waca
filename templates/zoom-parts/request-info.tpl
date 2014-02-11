@@ -7,7 +7,7 @@
             {if $showinfo}
             <tr>
                 <th>Email address:</th>
-                <td><a href="mailto:{$request->getEmail()|escape:'url'}">{$request->getEmail()|escape}</a></td>
+                <td><a href="mailto:{$request->getEmail()}">{$request->getEmail()}</a></td>
                 <td><span class="badge{if count($request->getRelatedEmailRequests()) > 0} badge-important{/if}">{count($request->getRelatedEmailRequests())}</span></td>
             </tr>
             <tr>
@@ -29,9 +29,9 @@
                 </td>
             </tr>
             {/if}
-            <tr><th>Requested name:</th><td>{$request->getName()|escape}</td><td></td></tr>
+            <tr><th>Requested name:</th><td>{$request->getName()}</td><td></td></tr>
             <tr><th>Date:</th><td>{$request->getDate()}</td><td></td></tr>
-            {if $currentUser->isCheckUser()}<tr><th>User Agent:</th><td>{$request->getUserAgent()|escape}</td><td></td></tr>{/if}
+            {if $currentUser->isCheckUser()}<tr><th>User Agent:</th><td>{$request->getUserAgent()}</td><td></td></tr>{/if}
             {if $currentUser->getId() == $request->getReserved()}
             <tr>
                 <th>Reveal link:</th>
@@ -51,7 +51,7 @@
 {if $showinfo}
   <div class="row-fluid hidden-phone">
     <div class="span4"><strong>Email address:</strong></div>
-    <div class="span7"><a href="mailto:{$request->getEmail()|escape:'url'}">{$request->getEmail()|escape}</a></div>
+    <div class="span7"><a href="mailto:{$request->getEmail()}">{$request->getEmail()}</a></div>
     <div class="span1"><span class="badge{if count($request->getRelatedEmailRequests()) > 0} badge-important{/if}">{count($request->getRelatedEmailRequests())}</span></div>
   </div>
   <div class="row-fluid hidden-phone">
@@ -72,7 +72,7 @@
 {/if}
 <div class="row-fluid hidden-phone">
     <div class="span4"><strong>Requested name:</strong></div>
-    <div class="span8">{$request->getName()|escape}</div>
+    <div class="span8">{$request->getName()}</div>
 </div>
 <div class="row-fluid hidden-phone">
     <div class="span4"><strong>Date:</strong></div>
@@ -81,14 +81,14 @@
 {if $currentUser->isCheckUser()}
   <div class="row-fluid hidden-phone">
     <div class="span4"><strong>User Agent:</strong></div>
-    <div class="span8">{$request->getUserAgent()|escape}</div>
+    <div class="span8">{$request->getUserAgent()}</div>
   </div>
 {/if}
 <div class="row-fluid hidden-phone">
   <div class="span4"><strong>Reserved by:</strong></div>
   <div class="span8">
     {if $request->getReserved() != 0}
-      {$request->getReservedObject()->getUsername()|escape}
+      {$request->getReservedObject()->getUsername()}
       {if $request->getReserved() == $currentUser->getId()}
         <a href="{$tsurl}/acc.php?action=zoom&amp;id={$request->getId()}&amp;hash={$hash}">(reveal to others)</a>
       {/if}
