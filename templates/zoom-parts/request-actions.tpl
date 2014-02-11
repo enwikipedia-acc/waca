@@ -35,10 +35,10 @@
       {if !empty($createreasons)}
       <div class = "btn-group span4">
         <a class="btn btn-success span10" href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$createdEmailTemplate->getId()}&amp;sum={$request->getChecksum()}">{$createdEmailTemplate->getName()}</a>
-        <button type="button" class="btn btn-success dropdown-toggle span2" data-toggle="dropdown"><span class="caret"></span></button>
+        <button type="button" class="btn btn-success dropdown-toggle span2" data-toggle="dropdown">&nbsp;<span class="caret"></span></button>
         <ul class="dropdown-menu" role="menu">
         {foreach $createreasons as $reason}
-        	<li><a href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$reason@key}&amp;sum={$request->getChecksum()}"{if !$currentUser->getAbortPref() && $reason.question != ''} onclick="return confirm('{$reason.question}')"{/if}>{$reason.name}</a></li>
+        	<li><a href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$reason->getId()}&amp;sum={$request->getChecksum()}"{if !$currentUser->getAbortPref() && $reason->getJsquestion() != ''} onclick="return confirm('{$reason->getJsquestion()}')"{/if}>{$reason->getName()}</a></li>
         {/foreach}
         </ul>
       </div>
@@ -49,10 +49,10 @@
       {/if}
       <div class = "span4">
         <div class="btn-group span6">
-          <button type="button" class="btn btn-warning dropdown-toggle span12" data-toggle="dropdown">Decline<span class="caret"></span></button>
+          <button type="button" class="btn btn-warning dropdown-toggle span12" data-toggle="dropdown">Decline&nbsp;<span class="caret"></span></button>
           <ul class="dropdown-menu">
           {foreach $declinereasons as $reason}
-            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$reason@key}&amp;sum={$request->getChecksum()}"{if !$currentUser->getAbortPref() && $reason.question != ''} onclick="return confirm('{$reason.question}')"{/if}>{$reason.name}</a></li>
+            <li><a href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$reason->getId()}&amp;sum={$request->getChecksum()}"{if !$currentUser->getAbortPref() && $reason->getJsquestion() != ''} onclick="return confirm('{$reason->getJsquestion()}')"{/if}>{$reason->getName()}</a></li>
           {/foreach}
           </ul>
         </div>

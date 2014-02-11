@@ -287,30 +287,10 @@ function zoomPage($id,$urlhash)
     $smarty->assign("jsuserlist", $userList);
     // end: assign to user
     
-	
-	// Exclude the "Created" reason from this since it should be outside the dropdown.
-    $query = "SELECT id, name, jsquestion FROM emailtemplate ";
-	$query .= "WHERE oncreated = '1' AND active = '1' AND id != $createdid";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$createreasons = array();
-	while ($row = mysql_fetch_assoc($result)) {
-		$createreasons[$row['id']]['name'] = $row['name'];
-		$createreasons[$row['id']]['question'] = $row['jsquestion'];
-	}
+	$createreasons = EmailTemplate::getActiveTemplates(/* forCreated */ 1);
 	$smarty->assign("createreasons", $createreasons);
 	
-	$query = "SELECT id, name, jsquestion FROM emailtemplate ";
-	$query .= "WHERE oncreated = '0' AND active = '1'";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$declinereasons = array();
-	while ($row = mysql_fetch_assoc($result)) {
-		$declinereasons[$row['id']]['name'] = $row['name'];
-		$declinereasons[$row['id']]['question'] = $row['jsquestion'];
-	}
+	$declinereasons = EmailTemplate::getActiveTemplates(/* forCreated */ 0);
 	$smarty->assign("declinereasons", $declinereasons);
 	
 	return $smarty->fetch("request-zoom.tpl");
