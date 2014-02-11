@@ -31,8 +31,8 @@
             {/if}
             <tr><th>Requested name:</th><td>{$username}</td><td></td></tr>
             <tr><th>Date:</th><td>{$date}</td><td></td></tr>
-            {if $currentUser->isCheckUser()}<tr><th>User Agent:</th><td>{$useragent}</td><td></td></tr>{/if}
-            {if $currentUser->getUsername() == $reserved}
+            {if $currentUser->isCheckUser()}<tr><th>User Agent:</th><td>{$request->getUserAgent()}</td><td></td></tr>{/if}
+            {if $currentUser->getId() == $request->getReserved()}
             <tr>
                 <th>Reveal link:</th>
                 <td>
@@ -42,7 +42,7 @@
                 <td></td>
             </tr>
             {/if}
-            <tr><th>Reserved by:</th><td>{if $reserved}{$reserved}{else}None{/if}</td>
+            <tr><th>Reserved by:</th><td>{if $request->getReserved() != 0}{$request->getReservedObject()->getUsername()}{else}None{/if}</td>
             <td></td></tr>
         </tbody>
     </table>
@@ -81,20 +81,20 @@
 {if $currentUser->isCheckUser()}
   <div class="row-fluid hidden-phone">
     <div class="span4"><strong>User Agent:</strong></div>
-    <div class="span8">{$useragent}</div>
+    <div class="span8">{$request->getUserAgent()}</div>
   </div>
 {/if}
 <div class="row-fluid hidden-phone">
   <div class="span4"><strong>Reserved by:</strong></div>
   <div class="span8">
-     {if $reserved}
-      {$reserved}
-      {if $reserved == $currentUser->getUsername()}
+    {if $request->getReserved() != 0}
+      {$request->getReservedObject()->getUsername()}
+      {if $request->getReserved() == $currentUser->getId()}
         <a href="{$tsurl}/acc.php?action=zoom&amp;id={$request->getId()}&amp;hash={$hash}">(reveal to others)</a>
       {/if}
-     {else}
+    {else}
       None
-     {/if}
+    {/if}
    </div>
 </div>
 <!-- /tpl:zoom-parts/request-info.tpl -->

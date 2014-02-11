@@ -1,6 +1,6 @@
 ﻿<!-- tpl:zoom-parts/request-actions.tpl -->
 <div class="row-fluid">
-  {if $showinfo == true && $isprotected == false && $isreserved == true}
+  {if $showinfo == true && $isprotected == false && $request->getReserved() != 0}
   <a class="btn btn-primary span12" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$request->getEmail()|escape:'url'}&amp;wpReason={$createreason|escape:'url'}&amp;wpCreateaccountMail=true"{if !$currentUser->getAbortPref() && $createdquestion != ''} onclick="return confirm('{$createdquestion}')"{/if}>Create account</a>
   {/if}
 </div>
@@ -8,7 +8,7 @@
 <hr />
 
 <div class="row-fluid">
-  {if $reserved == $currentUser->getUsername()}
+  {if $request->getReserved() == $currentUser->getId()}
     <div class="span8">
       <form action="{$tsurl}/acc.php?action=sendtouser&amp;hash={$request->getChecksum()}" method="post" class="form-inline">
         <input type="hidden" name="id" value="{$request->getId()}" />
@@ -19,10 +19,10 @@
       </form>
     </div>
     <a class="btn btn-inverse span4" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$request->getId()}">Break reservation</a>
-  {elseif $currentUser->isAdmin() && $isreserved}
+  {elseif $currentUser->isAdmin() && $request->getReserved() != 0}
     <a class="btn span6 offset6 btn-warning" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$request->getId()}">Force break</a>
   {/if}
-  {if !$isreserved}
+  {if $request->getReserved() == 0}
     <a class="btn span6 offset6 btn-success" href="{$tsurl}/acc.php?action=reserve&amp;resid={$request->getId()}">Reserve</a>
   {/if}
 </div> <!-- /row-fluid -->
@@ -30,7 +30,7 @@
 {if $isprotected == false}
   <hr />
   <div class="row-fluid">
-    {if $isreserved == true}
+    {if $request->getReserved() != 0}
     {* If custom create reasons are active, then make the Created button a split button dropdown. *}
       {if !empty($createreasons)}
       <div class = "btn-group span4">
@@ -60,7 +60,7 @@
       </div> <!-- /span4 -->
     {/if}
                   
-    <div class="span4{if !$isreserved} offset8{/if}">
+    <div class="span4{if $request->getReserved() == 0} offset8{/if}">
       {if !array_key_exists($type, $requeststates)}
         <a class="btn span12" href="{$tsurl}/acc.php?action=defer&amp;id={$request->getId()}&amp;sum={$request->getChecksum()}&amp;target={$defaultstate}">Reset request</a>
       {else}

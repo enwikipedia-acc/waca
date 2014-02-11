@@ -479,7 +479,6 @@ function zoomPage($id,$urlhash)
 	$sUser = $request->getName();
 	$smarty->assign("username", $sUser);
 	$smarty->assign("usernamerawunicode", html_entity_decode($sUser));
-	$smarty->assign("useragent", $request->getUserAgent());
 	$createreason = "Requested account at [[WP:ACC]], request #" . $request->getId();
 	$smarty->assign("createreason", $createreason);
 	$smarty->assign("createdid", $createdid);
@@ -632,7 +631,6 @@ function zoomPage($id,$urlhash)
 	global $protectReservedRequests, $defaultRequestStateKey;
 	
 	$smarty->assign("isprotected", isProtected($request->getId()));
-	$smarty->assign("isreserved", isReserved($request->getId()));
 		
 	$type = $request->getStatus();
 	$checksum = $request->getChecksum();
@@ -651,14 +649,7 @@ function zoomPage($id,$urlhash)
 	
 	$request_date = $request->getDate();
 	
-	$reserveByUser = $request->getReserved();
 
-	$smartyreserved = "";
-	if($reserveByUser != 0) {
-		$smartyreserved = $session->getUsernameFromUid($reserveByUser);
-	}
-    
-	$smarty->assign("reserved", $smartyreserved);
 	
 	$request = new accRequest();
 	$smarty->assign("isblacklisted", false);
