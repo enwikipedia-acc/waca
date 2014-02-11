@@ -30,9 +30,7 @@ function zoomPage($id,$urlhash)
         BootstrapSkin::displayInternalFooter();
         die();
     }
-    
-	$gid = $request->getId();
-    
+        
     $smarty->assign('request', $request);
     
 	$urlhash = sanitize($urlhash);
@@ -214,10 +212,10 @@ function zoomPage($id,$urlhash)
 	$logs = $loggerclass->getRequestLogs();
 	
 	if (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
-		$query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' ORDER BY cmt_id ASC;";
+		$query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '{$request->getId()}' ORDER BY cmt_id ASC;";
 	} else {
-		$user = sanitise($_SESSION['user']);
-		$query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '$gid' AND (cmt_visability = 'user' OR cmt_user = '$user') ORDER BY cmt_id ASC;";
+		$user = sanitise(User::getCurrent()->getUsername());
+		$query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '{$request->getId()}' AND (cmt_visability = 'user' OR cmt_user = '$user') ORDER BY cmt_id ASC;";
 	}
 	$result = mysql_query($query, $tsSQLlink);
 	
