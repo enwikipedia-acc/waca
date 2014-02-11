@@ -191,7 +191,7 @@ function zoomPage($id,$urlhash)
 	$smarty->assign("defaultstate", $defaultRequestStateKey);
 	$smarty->assign("requeststates", $availableRequestStates);
 		
-	$spoofs = getSpoofs( $request->getName(); );
+	$spoofs = getSpoofs( $request->getName() );
 	$smarty->assign("spoofs", $spoofs);
 	
 	// START LOG DISPLAY
