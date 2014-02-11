@@ -11,6 +11,32 @@ class EmailTemplate extends DataObject
     private $oncreated = 0;
     private $active = 1;
         
+    public static function getActiveTemplates($forCreated, PdoDatabase $database = null)
+    {
+        if($database == null)
+        {
+            $database = gGetDb();   
+        }
+        
+        global $createdid;
+        
+    	$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE oncreated = :forcreated AND active = 1 AND id != :createdid;");
+    	$statement->bindParam(":createdid", $createdid);
+    	$statement->bindParam(":forcreated", $forCreated);
+        
+    	$statement->execute();
+        
+    	$resultObject = $statement->fetchAll( PDO::FETCH_CLASS, get_called_class() );
+        
+        foreach ($resultObject as $t)
+        {
+            $t->setDatabase($database);
+            $t->isNew = false;
+        }
+        
+    	return $resultObject;
+    }
+    
     public static function getByName($name, PdoDatabase $database)
     {
     	$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE name = :name LIMIT 1;");
