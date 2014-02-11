@@ -454,29 +454,20 @@ function zoomPage($id,$urlhash)
         die();
     }
 	    
-	$smarty->assign("id", $gid);
 	$gid = $request->getId();
     
     $smarty->assign('request', $request);
     
 	$urlhash = sanitize($urlhash);
-	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-	Die("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-	if ($row['pend_mailconfirm'] != 'Confirmed' && $row['pend_mailconfirm'] != "" && !isset($_GET['ecoverride'])) {
     
     // TODO: move to template
 	if ($request->getEmailConfirm() != 'Confirmed' && $request->getEmailConfirm() != "" && !isset($_GET['ecoverride'])) {
 		$out .= $skin->displayRequestMsg("Email has not yet been confirmed for this request, so it can not yet be closed or viewed.");
 		return $out;
 	}
-	$smarty->assign("ip", $thisip);
     
 	$thisip = $request->getTrustedIp();
     $smarty->assign("iplocation", $locationProvider->getIpLocation($thisip));
-	$smarty->assign("email", $thisemail);
 	$thisid = $request->getId();
 	$thisemail = $request->getEmail();
     
