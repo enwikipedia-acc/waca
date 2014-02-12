@@ -35,7 +35,7 @@ function zoomPage($id,$urlhash)
     
 	$urlhash = sanitize($urlhash);
     
-    $smarty->assign("usernamerawunicode", html_entity_decode($sUser));
+    $smarty->assign("usernamerawunicode", html_entity_decode($request->getName()));
     
     $smarty->assign("iplocation", $locationProvider->getIpLocation($request->getTrustedIp()));
         
