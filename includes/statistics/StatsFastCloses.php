@@ -31,7 +31,7 @@ FROM acc_log Closed
 INNER JOIN acc_log Reserved 
   ON Closed.log_pend = Reserved.log_pend
 INNER JOIN closes c
-  ON c.`closed` = Closed.log_action
+  ON c.`closes` = Closed.log_action
 LEFT JOIN acc_user u
   ON Closed.log_user = u.user_name
 WHERE
