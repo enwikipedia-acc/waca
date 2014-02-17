@@ -23,8 +23,14 @@ $document = new DomDocument('1.0');
 $doc_api = $document->createElement("api");
 $document->appendChild($doc_api);
 
+// get the request action, defaulting to help
+$requestAction = "help";
+if(isset($_GET['action']))
+{
+    $requestAction = $_GET['action'];
+}
 
-switch($_GET['action'])
+switch($requestAction)
 {
 	case "count":
 		actionCount();
