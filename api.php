@@ -17,9 +17,8 @@ $database = new PdoDatabase("mysql:host=".$toolserver_host.";dbname=".$toolserve
 $database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 header("Content-Type: text/xml");
-$allowedIn = array("http://en.wikipedia.org", "https://en.wikipedia.org", "http://meta.wikimedia.org", "https://meta.wikimedia.org");
-if(in_array($_SERVER['HTTP_ORIGIN'], $allowedIn)){
-	$CORS = $allowedIn[array_search($_SERVER['HTTP_ORIGIN'], $allowedIn)];
+if(in_array($_SERVER['HTTP_ORIGIN'], $CORSallowed)){
+	$CORS = $CORSallowed[array_search($_SERVER['HTTP_ORIGIN'], $CORSallowed)];
 	header("Access-Control-Allow-Origin: " . $CORS);
 }
 
