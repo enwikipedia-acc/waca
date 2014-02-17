@@ -223,7 +223,7 @@ class Request extends DataObject
         
         $commentsQuery->execute();
         
-        $this->hasComments = ($commentsQuery->fetchColumn() == 0);
+        $this->hasComments = ($commentsQuery->fetchColumn() != 0);
         return $this->hasComments;
     }
     
