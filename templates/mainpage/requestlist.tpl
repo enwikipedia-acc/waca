@@ -1,4 +1,4 @@
-﻿<!-- requestlist.tpl -->
+<!-- requestlist.tpl -->
 {if $totalRequests > $requestLimitShowOnly}
 	{include file="alert.tpl" alertblock="0" alerttype="alert-error" alertclosable="0" alertheader="Miser mode:"
 		  alertmessage="Not all requests are shown for speed. Only {$requestLimitShowOnly} of {$totalRequests} are shown here."}
