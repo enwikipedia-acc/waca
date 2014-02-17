@@ -18,7 +18,7 @@ $database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 header("Content-Type: text/xml");
 if(in_array($_SERVER['HTTP_ORIGIN'], $CORSallowed)){
-	$CORS = $_SERVER['HTTP_ORIGIN'];
+	$CORS = $CORSallowed[array_search($_SERVER['HTTP_ORIGIN'], $CORSallowed)];
 	header("Access-Control-Allow-Origin: " . $CORS);
 }
 
