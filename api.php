@@ -18,7 +18,8 @@ $database->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 header("Content-Type: text/xml");
 if(in_array($_SERVER['HTTP_ORIGIN'], $CORSallowed)){
-	header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
+	$CORS = $_SERVER['HTTP_ORIGIN'];
+	header("Access-Control-Allow-Origin: " . $CORS);
 }
 
 $document = new DomDocument('1.0');
