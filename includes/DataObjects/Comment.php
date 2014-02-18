@@ -18,8 +18,18 @@ class Comment extends DataObject
             $database = gGetDb();   
         }
         
-        $query = "SELECT * FROM comment WHERE request = :target;";
-        $statement = $database->prepare($query);
+        if(User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser())
+        {
+            // current user is an admin or checkuser, so retrieve everything.
+            $statement = $database->prepare("SELECT * FROM comment WHERE request = :target;");
+        }
+        else
+        {
+            // current user isn't an admin, so limit to only those which are visibile to users, and private comments the user has posted themselves.
+            $statement = $database->prepare("SELECT * FROM comment WHERE request = :target AND (visibility = 'user' || user = :userid);");
+            $statement->bindParam(":userid", User::getCurrent()->getId());    
+        }
+        
         $statement->bindParam(":target", $id);
         
         $statement->execute();
