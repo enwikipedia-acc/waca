@@ -67,9 +67,10 @@ class Comment extends DataObject
 		}
 		else
 		{ // update
-            $statement = $this->dbObject->prepare("UPDATE comment SET comment = :comment WHERE id = :id LIMIT 1;");
+            $statement = $this->dbObject->prepare("UPDATE comment SET comment = :comment, visibility = :visibility WHERE id = :id LIMIT 1;");
             $statement->bindParam(":id", $this->id);
             $statement->bindParam(":comment", $this->comment);
+            $statement->bindParam(":visibility", $this->visibility);
             
 			if(!$statement->execute())
 			{

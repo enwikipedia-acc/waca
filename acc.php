@@ -1788,70 +1788,64 @@ elseif ($action == "changepassword") {
 	$skin->displayIfooter();
 	die();
 }
-elseif ($action == "ec") { // edit comment
-	if(!isset($_GET['id']) || !( !is_int($_GET['id']) ? (ctype_digit($_GET['id'])) : true ) ) {
-		// Only using die("Message"); for errors looks ugly.
-		$skin->displayRequestMsg("No comment found.");
-		$skin->displayIfooter();
-		die();
-	}
-	
-	$result = mysql_query("SELECT * FROM acc_cmt WHERE cmt_id = '" . sanitize($_GET['id']) . "';");
-	$row = mysql_fetch_assoc($result);
-	
-	if($row==false) {
-		$skin->displayRequestMsg("No comment found.");
-		$skin->displayIfooter();
+elseif ($action == "ec")
+{ 
+    // edit comment
+    
+    $comment = Comment::getById($_GET['id'], gGetDb());
+    
+    if($comment == false) 
+    {
+        // Only using die("Message"); for errors looks ugly.
+        BootstrapSkin::displayAlertBox("Comment not found.", "alert-error", "Error", true, false);
+        BootstrapSkin::displayInternalFooter();
 		die();
 	}
 	
 	// Unauthorized if user is not an admin or the user who made the comment being edited.
-	if(!$session->hasright($_SESSION['user'], "Admin") && $row['cmt_user'] != $_SESSION['user']) { 
-		$skin->displayRequestMsg("Unauthorized.");
-		$skin->displayIfooter();
+	if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser() && $comment->getUser() != User::getCurrent()->getId())
+    { 
+        BootstrapSkin::displayAlertBox("Access denied.", "alert-error", "", false, false);
+        BootstrapSkin::displayInternalFooter();
 		die();
 	}
 	
 	// get[id] is safe by this point.
 	
-	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-		mysql_query("UPDATE acc_cmt SET cmt_comment = \"".mysql_real_escape_string($_POST['newcomment'],$tsSQLlink)."\", cmt_visability = \"".mysql_real_escape_string($_POST['visability'],$tsSQLlink)."\" WHERE cmt_id = \"".sanitize($_GET['id'])."\" LIMIT 1;");
-		$now = date("Y-m-d H-i-s");
-		mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('".sanitize($_GET['id'])."', '".sanitize($_SESSION['user'])."', 'EditComment-c', '$now');");
-		mysql_query("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('".sanitize($row["pend_id"])."', '".sanitize($_SESSION['user'])."', 'EditComment-r', '$now');");
-		$accbotSend->send("Comment " . $_GET['id'] . " edited by " . sanitize($_SESSION['user']));
+	if ($_SERVER['REQUEST_METHOD'] == 'POST') 
+    {
+        $comment->setComment($_POST['newcomment']);
+        $comment->setVisibility($_POST['visibility']);
+        
+        $comment->save();
+        
+        $logQuery = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ( :id, :user, :action, CURRENT_TIMESTAMP() );";
+        $database = gGetDb();
+        $logStatement = $database->prepare($logQuery);
+        
+        $logAction = "EditComment-c";
+        $logStatement->bindParam(":user", User::getCurrent()->getUsername());
+        $logStatement->bindParam(":id", $comment->getId());
+        $logStatement->bindParam(":action", $logAction);
+        $logStatement->execute();
+        
+        $logAction = "EditComment-r";    
+        $logStatement->bindParam(":id", $comment->getRequest());
+        $logStatement->execute();
+        
+        $accbotSend->send("Comment " . $comment->getId() . " edited by " . User::getCurrent()->getUsername());
+        
 		//Show user confirmation that the edit has been saved, and redirect them to the request after 5 seconds.
-		header("Refresh:5;URL=$tsurl/acc.php?action=zoom&id=".$row['pend_id']);
-		$skin->displayRequestMsg("Comment has been saved successfully. You will be redirected to the request in 5 seconds.<br /><br />\n
-		Click <a href=\"".$tsurl."/acc.php?action=zoom&id=".$row['pend_id']."\">here</a> if you are not redirected.");
-		$skin->displayIfooter();
+		header("Refresh:5;URL=$tsurl/acc.php?action=zoom&id=" . $comment->getRequest());
+        
+		BootstrapSkin::displayAlertBox("You will be redirected to the request in 5 seconds Click <a href=\"" . $tsurl . "/acc.php?action=zoom&id=" . $comment->getRequest() . "\">here</a> if you are not redirected.", "alert-success", "Comment has been saved successfully.", true, false);
+        BootstrapSkin::displayInternalFooter();
 		die();
 	}
 	else {	
-		echo "<h2>Edit comment #".$_GET['id']."</h2>"; 
-		global $tsurl;
-		echo "<form method=\"post\">\n";
-		echo "<strong>Time:</strong>&nbsp;" . $row['cmt_time'] . "<br />\n";
-		echo "<strong>Author:</strong>&nbsp;" . $row['cmt_user'] . "<br />\n";
-		echo "<strong>Security:</strong>&nbsp;<select name = \"visability\">\n";
-	    if ( $row['cmt_visability'] == "user") {
-	    	echo "<option value=\"user\" selected>User</option>\n";
-	    	echo "<option value = \"admin\">Admin</option>\n";
-	    }
-	    else {
-	    	echo "<option value = \"user\">User</option>\n";
-	    	echo "<option value = \"admin\" selected>Admin</option>\n";
-	    }
-	    echo "</select><br />\n";
-		echo "<strong>Request:</strong>&nbsp;<a href=\"".$tsurl."/acc.php?action=zoom&id=".$row['pend_id']."\">#" . $row['pend_id'] . "</a><br />";
-		
-		echo "<strong>Old text:</strong><pre>".htmlentities($row['cmt_comment'],ENT_COMPAT,'UTF-8')."</pre>";
-		
-		echo "<input type=\"text\" size=\"100\" name=\"newcomment\" value=\"".htmlentities($row['cmt_comment'],ENT_COMPAT,'UTF-8')."\" />";
-		echo "<input type=\"submit\" />";
-		echo "</form>";
-			
-		$skin->displayIfooter();
+        $smarty->assign("comment", $comment);
+        $smarty->display("edit-comment.tpl");
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
 }
