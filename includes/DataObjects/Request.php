@@ -218,7 +218,7 @@ class Request extends DataObject
             return true;
         }
         
-        $commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) as num FROM acc_cmt where pend_id = :id;");
+        $commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) as num FROM comment where request = :id;");
         $commentsQuery->bindParam(":id", $this->id);
         
         $commentsQuery->execute();
