@@ -112,12 +112,12 @@ function zoomPage($id,$urlhash)
 	}
 	
 	$smarty->assign("showinfo", false);
-	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']))
+	if ($hideinfo == FALSE || $correcthash == TRUE || User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() )
     {
 		$smarty->assign("showinfo", true);
     }
     
-	if ($hideinfo == FALSE || $correcthash == TRUE || $session->hasright($_SESSION['user'], 'Admin') || $session->isCheckuser($_SESSION['user']) ) {
+	if ($hideinfo == FALSE || $correcthash == TRUE || User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() ) {
 		$smarty->assign("proxyip", $request->getForwardedIp());
 		if ($request->getForwardedIp()) {
 			$smartyproxies = array(); // Initialize array to store data to be output in Smarty template.
