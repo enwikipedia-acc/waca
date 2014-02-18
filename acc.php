@@ -1680,7 +1680,7 @@ elseif ($action == "comment") {
 
 elseif ($action == "comment-add") 
 {
-    $request = Request::getById($_POST['id']);
+    $request = Request::getById($_POST['id'], gGetDb());
     if($request == false)
     {
         BootstrapSkin::displayAlertBox("Could not find request!", "alert-error", "Error", true, false);
@@ -1738,7 +1738,7 @@ elseif ($action == "comment-add")
 
 elseif ($action == "comment-quick") 
 {
-    $request = Request::getById($_POST['id']);
+    $request = Request::getById($_POST['id'], gGetDb());
     if($request == false)
     {
         BootstrapSkin::displayAlertBox("Could not find request!", "alert-error", "Error", true, false);
