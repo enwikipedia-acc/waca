@@ -1,4 +1,4 @@
-﻿<!-- tpl:zoom-parts/username-section.tpl -->
+<!-- tpl:zoom-parts/username-section.tpl -->
 <div class="row-fluid">
   <h3>Username data for {$request->getName()}:</h3>
   {if $request->isBlacklisted()}

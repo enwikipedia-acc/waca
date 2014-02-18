@@ -1,4 +1,4 @@
-﻿<div class="row-fluid">
+<div class="row-fluid">
   <div class="page-header">
 	  <h1>Create an account!</h1>
   </div>

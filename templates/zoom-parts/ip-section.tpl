@@ -1,4 +1,4 @@
-﻿<!-- tpl:zoom-parts/ip-section.tpl -->
+<!-- tpl:zoom-parts/ip-section.tpl -->
 {if $proxyip != NULL}
   <div class="row-fluid">
     <h3>IP Address data:</h3>

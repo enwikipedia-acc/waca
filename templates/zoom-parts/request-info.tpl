@@ -1,4 +1,4 @@
-﻿<!-- tpl:zoom-parts/request-info.tpl -->
+<!-- tpl:zoom-parts/request-info.tpl -->
 <div class="row-fluid visible-phone">
     <div class="span12">
         <h3>Request data:</h3>

@@ -1,4 +1,4 @@
-﻿<!-- tpl:zoom-parts/ip-links.tpl -->
+<!-- tpl:zoom-parts/ip-links.tpl -->
 <a id="IPTalk-{$index}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/User_talk:{$ipaddress}" onMouseUp="$('#IPTalk-{$index}').addClass('btn-visited');">Talk page</a>
 <a id="IPLocalContribs-{$index}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:Contributions/{$ipaddress}" onMouseUp="$('#IPLocalContribs-{$index}').addClass('btn-visited');">Local Contributions</a>
 <a id="IPDelEdits-{$index}" class="btn btn-small" target="_blank" href="{$tsurl}/redir.php?tool=tparis-pcount&amp;data={$ipaddress}" onMouseUp="$('#IPDelEdits-{$index}').addClass('btn-visited');">Deleted Edits</a>

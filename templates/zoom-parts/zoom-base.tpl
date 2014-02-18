@@ -1,4 +1,4 @@
-﻿<!-- tpl:zoom-base.tpl -->
+<!-- tpl:zoom-base.tpl -->
 <div class="row-fluid">
   <!-- request details -->
   <div class="span6 container-fluid">
