@@ -1678,39 +1678,62 @@ elseif ($action == "comment") {
 	die();
 }
 
-elseif ($action == "comment-add") {
-	$id = $internalInterface->checkreqid($_POST['id']);
-    echo "<h2>Adding comment to request " . $id . "...</h2><br />";
-    if ((isset($_POST['id'])) && (isset($_POST['id'])) && (isset($_POST['visibility'])) && ($_POST['comment'] != "") && ($_POST['id'] != "")) {
-        $user = sanitise($_SESSION['user']);
-        $comment = mysql_real_escape_string($_POST['comment']);
-        $visibility = sanitise($_POST['visibility']);
-        $now = date("Y-m-d H-i-s");
-        
-        if (isset($_GET['hash'])) {
-		$urlhash = sanitise($_GET['hash']);
-	    }
-	    else {
-		$urlhash = "";
-	    }
-        
-        // the mysql field name is actually cmt_visability. yes, it's a typo, but I cba to fix it
-		$query = "INSERT INTO acc_cmt (cmt_time, cmt_user, cmt_comment, cmt_visability, pend_id) VALUES ('$now', '$user', '$comment', '$visibility', '$id');";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result) {
-            sqlerror("Query failed: $query ERROR: " . mysql_error()); }
-        echo " Comment added Successfully! <br />
-        <a href='$tsurl/acc.php?action=zoom&amp;id=$id&amp;hash=$urlhash'>Return to request #$id</a>";
-        $botcomment_pvt =  ($visibility == "admin") ? "private " : "";
-        $botcomment = $user . " posted a " . $botcomment_pvt . "comment on request " . $id;
-
-        $accbotSend->send($botcomment);
-    } else {
-        echo "ERROR: A required input is missing <br />
-        <a href='$tsurl/acc.php'>Return to main</a>";
+elseif ($action == "comment-add") 
+{
+    $request = Request::getById($_POST['id']);
+    if($request == false)
+    {
+        BootstrapSkin::displayAlertBox("Could not find request!", "alert-error", "Error", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
     }
- $skin->displayIfooter();
- die();
+    
+    if(!isset($_POST['comment']) || $_POST['comment'] == "")
+    {
+        BootstrapSkin::displayAlertBox("Comment must be supplied!", "alert-error", "Error", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die(); 
+    }
+    
+    $visibility = 'user';
+    if( isset($_POST['visibility']) )
+    {
+        // sanity check
+        $visibility = $_POST['visibility'] == 'user' ? 'user' : 'admin';
+    }
+    
+    $comment = new Comment();
+    $comment->setDatabase(gGetDb());
+    
+    $comment->setRequest($request->getId());
+    $comment->setVisibility($visibility);
+    $comment->setUser(User::getCurrent()->getId());
+    $comment->setComment($_POST['comment']);
+    
+    $comment->save();
+    
+    if (isset($_GET['hash'])) 
+    {
+        $urlhash = urlencode(htmlentities($_GET['hash']));
+    }
+    else 
+    {
+        $urlhash = "";
+    }
+
+    BootstrapSkin::displayAlertBox(
+        "<a href='$tsurl/acc.php?action=zoom&amp;id={$request->getId()}&amp;hash=$urlhash'>Return to request #{$request->getId()}</a>",
+        "alert-success",
+        "Comment added Successfully!",
+        true, false);
+        
+    $botcomment_pvt =  ($visibility == "admin") ? "private " : "";
+    $botcomment = User::getCurrent()->getUsername() . " posted a " . $botcomment_pvt . "comment on request " . $request->getId();
+
+    $accbotSend->send($botcomment);
+        
+    BootstrapSkin::displayInternalFooter();
+    die();
 }
 
 elseif ($action == "comment-quick") {
