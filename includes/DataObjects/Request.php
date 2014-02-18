@@ -292,6 +292,10 @@ class Request extends DataObject
         $this->blacklistCache = $result ? false : $data['titleblacklist']['line'];
         
         return $this->blacklistCache;
-
+    }
+    
+    public function getComments()
+    {
+        return Comment::getForRequest($this->id, $this->dbObject);   
     }
 }

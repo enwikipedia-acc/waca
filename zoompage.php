@@ -201,20 +201,20 @@ function zoomPage($id,$urlhash)
 	$loggerclass->filterRequest = $request->getId();
 	$logs = $loggerclass->getRequestLogs();
 	
-	if (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
-		$query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '{$request->getId()}' ORDER BY cmt_id ASC;";
-	} else {
-		$user = sanitise(User::getCurrent()->getUsername());
-		$query = "SELECT * FROM acc_cmt JOIN acc_user ON (user_name = cmt_user) WHERE pend_id = '{$request->getId()}' AND (cmt_visability = 'user' OR cmt_user = '$user') ORDER BY cmt_id ASC;";
-	}
-	$result = mysql_query($query, $tsSQLlink);
-	
-	if (!$result) {
-		Die("Query failed: $query ERROR: " . mysql_error());
-	}
-	
-	while ($row = mysql_fetch_assoc($result)) {
-		$logs[] = array('time'=> $row['cmt_time'], 'user'=>$row['cmt_user'], 'description' => '', 'target' => 0, 'comment' => $row['cmt_comment'], 'action' => "comment", 'security' => $row['cmt_visability'], 'id' => $row['cmt_id']);
+	$comments = $request->getComments();
+    
+    foreach ($comments as $c) {
+		$logs[] = array(
+            'time' => $c->getTime(), 
+            'user' => $c->getUserObject()->getUsername(),
+            'userid' => $c->getUser(),
+            'description' => '', 
+            'target' => 0, 
+            'comment' => $c->getComment(), 
+            'action' => "comment", 
+            'security' => $c->getVisibility(), 
+            'id' => $c->getId()
+            );
 	}
     
 	if(trim($request->getComment()) !== "") {
@@ -241,17 +241,20 @@ function zoomPage($id,$urlhash)
 				$row['security'] = '';
 			}
             
-			if(!isset($namecache[$row['user']])) {
-				$row['userid'] = getUserIdFromName($row['user']);
-            } else {
-				$row['userid'] = $namecache[($row['user'])];
+            if(!isset($row['userid']))
+            {
+                if(!isset($namecache[$row['user']])) {
+                    $row['userid'] = getUserIdFromName($row['user']);
+                } else {
+                    $row['userid'] = $namecache[($row['user'])];
+                }
             }
-			
+            
 			if($row['action'] == "comment") {
 				$row['entry'] = xss($row['comment']);
                 
 				global $enableCommentEditing;
-				if($enableCommentEditing && ($session->hasright($_SESSION['user'], 'Admin') || $_SESSION['user'] == $row['user']) && isset($row['id']))
+				if($enableCommentEditing && (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() || User::getCurrent()->getId() == $row['userid']) && isset($row['id']))
                 {
 					$row['canedit'] = true;
                 }
