@@ -133,11 +133,11 @@ class StatsMain extends StatisticsPage
 		$snew = mysql_fetch_assoc($result);
 		$out.="<tr><th>New tool users</th><td>".$snew['COUNT(*)']."</td></tr>";
 		
-		$mostComments = "select pend_id from acc_cmt group by pend_id order by count(*) desc limit 1;";
+		$mostComments = "select request from comment group by request order by count(*) desc limit 1;";
 		$mostCommentsResult = $tsSQL->query($mostComments);
 		if(!$mostCommentsResult) Die("ERROR: No result returned. (mc)");
 		$mostCommentsRow = mysql_fetch_assoc($mostCommentsResult);
-		$mostCommentsId = $mostCommentsRow['pend_id'];
+		$mostCommentsId = $mostCommentsRow['request'];
 		$out.="<tr><th>Request with most comments</th><td><a href=\"$tsurl/acc.php?action=zoom&amp;id=".$mostCommentsId."\">".$mostCommentsId."</a></td></tr>";
 	
 		$now = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 1));
