@@ -15,4 +15,5 @@ ALTER TABLE comment
 CHANGE COLUMN id id INT(11) NOT NULL AUTO_INCREMENT ,
 ADD PRIMARY KEY (id);
 
-ALTER TABLE acc_cmt COMMENT = '[DEPRECATED] Request comments' ;
+-- don't use this any more. for anything.
+RENAME TABLE acc_cmt TO acc_cmt_deprecated;
