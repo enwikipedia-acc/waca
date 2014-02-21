@@ -1,0 +1,1 @@
+If you need to use a file in this folder, check if it needs to be run from the tool root first, and possibly move it there temporarially.
