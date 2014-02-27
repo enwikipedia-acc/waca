@@ -75,8 +75,14 @@
     <div class="span8">{$request->getName()}</div>
 </div>
 <div class="row-fluid hidden-phone">
-    <div class="span4"><strong>Date:</strong></div>
-    <div class="span8">{$request->getDate()}</div>
+  <div class="span4">
+    <strong>Date:</strong>
+  </div>
+  <div class="span8">
+    {$request->getDate()} <span class="muted">
+      <em>({$request->getDate()|relativedate})</em>
+    </span>
+  </div>
 </div>
 {if $currentUser->isCheckUser()}
   <div class="row-fluid hidden-phone">

@@ -29,7 +29,11 @@
       <table class="table table-condensed table-striped">
         {foreach $request->getRelatedEmailRequests() as $others}
           <tr>
-            <td>{$others->getDate()}</td>
+            <td>
+              {$others->getDate()}<span class="muted">
+                <em>({$others->getDate()|relativedate})</em>
+              </span>
+            </td>
             <td><a target="_blank" href="{$tsurl}/acc.php?action=zoom&amp;id={$others->getId()}">{$others->getName()}</a></td>
           </tr>
         {/foreach}
@@ -45,8 +49,12 @@
     {else}
       <table class="table table-condensed table-striped">
         {foreach $request->getRelatedIpRequests() as $others}
-        <tr>
-            <td>{$others->getDate()}</td>
+          <tr>
+            <td>
+              {$others->getDate()}<span class="muted">
+                <em>({$others->getDate()|relativedate})</em>
+              </span>
+            </td>
             <td><a target="_blank" href="{$tsurl}/acc.php?action=zoom&amp;id={$others->getId()}">{$others->getName()}</a></td>
           </tr>
         {/foreach}

@@ -649,4 +649,73 @@ function welcomerbotRenderSig($creator, $sig) {
 	}
 	return $signature;
 }
-?>
+
+/**
+ * Transforms a date string into a relative representation of the date ("2 weeks ago").
+ * @param string $input A string representing a date
+ * @return string
+ * @example {$variable|relativedate} from Smarty
+ */
+function relativedate($input) 
+{
+    $now = new DateTime();
+    $then = new DateTime($input);
+    
+    $secs = $now->getTimestamp() - $then->getTimestamp();
+    
+    $second = 1;
+    $minute = 60 * $second;
+    $hour = 60 * $minute;
+    $day = 24 * $hour;
+    $week = 7 * $day;
+    $month = 30 * $day;
+    $year = 365 * $day;
+    
+    $pluralise = true;
+    
+    if ($secs <= 10) 
+    {
+        $output = "just now";
+        $pluralise = false;
+    }
+    elseif ($secs > 10 && $secs < $minute) 
+    {
+        $output = round($secs/$second) . " second";
+    }
+    elseif ($secs >= $minute && $secs < $hour) 
+    {
+        $output = round($secs/$minute) . " minute";
+    }
+    elseif ($secs >= $hour && $secs < $day) 
+    {
+        $output = round($secs/$hour) . " hour";
+    }
+    elseif ($secs >= $day && $secs < $week) 
+    {
+        $output = round($secs/$day) . " day";
+    }
+    elseif ($secs >= $week && $secs < $month) 
+    {
+        $output = round($secs/$week) . " week";
+    }
+    elseif ($secs >= $month && $secs < $year) 
+    {
+        $output = round($secs/$month) . " month";
+    }
+    elseif ($secs >= $year && $secs < $year * 10) 
+    {
+        $output = round($secs/$year) . " year";
+    }
+    else
+    { 
+        $output = "a long time ago";
+        $pluralise = false;
+    }
+    
+    if ($pluralise)
+    {
+        $output = (substr($output,0,2) <> "1 ") ? $output . "s ago" : $output . " ago";
+    }
+
+    return $output;
+}
