@@ -33,3 +33,12 @@
   background-color: #CCB9F6 \9;
 }
     
+.plainlinks {
+    color: #333333;
+    text-decoration: none;
+}
+
+.plainlinks:hover {
+    color: #333333;
+    text-decoration: none;
+}

@@ -14,6 +14,13 @@
 	<script src="{$tsurl}/lib/bootstrap/js/bootstrap.js" type="text/javascript"></script>
 	<script src="{$tsurl}/lib/bootstrap-sortable/js/bootstrap-sortable.js" type="text/javascript"></script>
 
+  {* initialise the tooltips *}
+  <script type="text/javascript">
+    $(function () {
+    $("[rel='tooltip']").tooltip();
+    });
+  </script>
+
   </body>
 </html>
 
