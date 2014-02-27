@@ -22,7 +22,7 @@
                 <td>
                   <a rel="tooltip" href="#log{$smarty.foreach.logloop.index}" title="{$zoomrow.time}" data-toggle="tooltip" class="plainlinks" id="#log{$smarty.foreach.logloop.index}">{$zoomrow.time|relativedate}</a>
                 </td>
-                <td>{if $zoomrow.canedit == true}<a class="btn btn-small" href="{$tsurl}/acc.php?action=ec&amp;id={$zoomrow.id}">Edit</a>{/if}</td>
+                <td>{if $zoomrow.canedit == true}<a class="btn btn-small" href="{$tsurl}/acc.php?action=ec&amp;id={$zoomrow.id}"><i class="icon icon-pencil"></i></a>{/if}</td>
               </tr>
             {/foreach}
         {else}
