@@ -47,6 +47,20 @@ class InterfaceMessage extends DataObject
     {
 		return $this->content;
 	}
+    
+    public function getContentForDisplay()
+    {
+        global $tsurl;
+        
+        $message = $this->content;
+        
+        if( strpos($message, "%VERSION%") !== false ) {
+			$message = str_replace('%VERSION%', getToolVersion(), $message);
+		}
+		
+		$message = str_replace('%TSURL%', $tsurl, $message);
+		return $message;
+    }
 
 	public function setContent($content)
     {
