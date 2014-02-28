@@ -329,14 +329,6 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
                 throw new Exception("log_user update failed.");   
             }
             
-            $commentupdate = $database->prepare("UPDATE acc_cmt SET cmt_user = :newname WHERE cmt_user = :oldname;");
-            $commentupdate->bindParam(":newname", $_POST['newname']);
-            $commentupdate->bindParam(":oldname", $oldname);
-            if(!$commentupdate->execute())
-            {
-                throw new Exception("comment update failed.");   
-            }
-            
             $logentry = serialize(array('old' => $oldname, 'new' => $_POST['newname']));
             
             $userid = $user->getId();
