@@ -100,18 +100,30 @@ class BootstrapSkin {
      * @param $block bool Whether to make this a block or not
      * @param $closable bool add a close button
      * @param $return bool return the content as a string, or display it.
+     * @param $centre bool centre the box in the page, like a dialog.
      */
-    public static function displayAlertBox( $message, $type = "", $header = "", $block = false, $closeable = true, $return = false ) {
+    public static function displayAlertBox( $message, $type = "", $header = "", $block = false, $closeable = true, $return = false, $centre = false) {
         global $smarty;
         $smarty->assign("alertmessage", $message);
         $smarty->assign("alerttype", $type);
         $smarty->assign("alertheader", $header);
         $smarty->assign("alertblock", $block);
         $smarty->assign("alertclosable", $closeable);
-        if($return) {
-            return $smarty->fetch("alert.tpl");
-        } else {
-            $smarty->display("alert.tpl");
+        
+        $returnData = $smarty->fetch("alert.tpl");
+        
+        if($centre)
+        {
+            $returnData = '<div class="row-fluid"><div class="span8 offset2">' . $returnData . '</div></div>';
+        }
+        
+        if($return) 
+        {
+            return $returnData;
+        } 
+        else 
+        {
+            echo $returnData;
         }
     }
     

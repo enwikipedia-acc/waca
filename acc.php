@@ -1152,123 +1152,123 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	// check for valid close reasons
 	global $messages, $skin;
 	
-	if (!isset($_GET['email']) | !($messages->isEmail($_GET['email'])) and $_GET['email'] != 'custom') {
-		echo "Invalid close reason";
-		$skin->displayIfooter();
+	if (!isset($_GET['email']) | !($messages->isEmail($_GET['email'])) and $_GET['email'] != 'custom') 
+    {
+        BootstrapSkin::displayAlertBox("Invalid close reason", "alert-error", "Error", true, false);
+        BootstrapSkin::displayInternalFooter();
 		die();
 	}
 	
 	// sanitise this input ready for inclusion in queries
+    $request = Request::getById($_GET['id'], gGetDb());
+    
 	$gid = $internalInterface->checkreqid($_GET['id']);
 	$gem = sanitize($_GET['email']);
 	
 	// check the checksum is valid
-	if (csvalid($gid, $_GET['sum']) != 1) {
-		echo "Invalid checksum (This is similar to an edit conflict on Wikipedia; it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
-		$skin->displayIfooter();
+	if (csvalid($gid, $_GET['sum']) != 1) 
+    {
+        BootstrapSkin::displayAlertBox("This is similar to an edit conflict on Wikipedia; it means that you have tried to perform an action on a request that someone else has performed an action on since you loaded the page.", "alert-error", "Invalid Checksum", true, false);
+        BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	
-	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
 	
 	// check if an email has already been sent
-	if ($row['pend_emailsent'] == "1" && !isset($_GET['override']) && $gem != 0) {
-		echo "<br />This request has already been closed in a manner that has generated an e-mail to the user, Proceed?<br />\n";
-		echo "<a href=\"$tsurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;override=yes&amp;email=" . $_GET['email'] . "\">Yes</a> / <a href=\"$tsurl/acc.php\">No</a><br />\n";
-		$skin->displayIfooter();
+	if ($request->getEmailSent() == "1" && !isset($_GET['override']) && $gem != 0) 
+    {
+        $alertContent = "<p>This request has already been closed in a manner that has generated an e-mail to the user, Proceed?</p><br />";
+        $alertContent .= "<div class=\"row-fluid\">";
+        $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$tsurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;override=yes&amp;email=" . $_GET['email'] . "\">Yes</a>";
+        $alertContent .= "<a class=\"btn btn-danger span3\" href=\"$tsurl/acc.php\">No</a>";
+        $alertContent .= "</div>";
+        
+        BootstrapSkin::displayAlertBox($alertContent, "alert-info", "Warning!", true, false, false, true);
+        BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	
-	
 	
 	// check the request is not reserved by someone else
-	if( $row['pend_reserved'] != 0 && !isset($_GET['reserveoverride']) && $row['pend_reserved'] != $_SESSION['userID'])
+	if( $request->getReserved() != 0 && !isset($_GET['reserveoverride']) && $request->getReserved() != User::getCurrent()->getId())
 	{
-		echo "<br />This request is currently marked as being handled by ".$session->getUsernameFromUid($row['pend_reserved']).", Proceed?<br />\n";
-		echo "<a href=\"$tsurl/acc.php?".$_SERVER["QUERY_STRING"]."&reserveoverride=yes\">Yes</a> / <a href=\"$tsurl/acc.php\">No</a><br />\n";
-		$skin->displayIfooter();
+        $alertContent = "<p>This request is currently marked as being handled by " . $request->getReservedObject()->getUsername() . ", Proceed?</p><br />";
+        $alertContent .= "<div class=\"row-fluid\">";
+        $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$tsurl/acc.php?".$_SERVER["QUERY_STRING"]."&reserveoverride=yes\">Yes</a>";
+        $alertContent .= "<a class=\"btn btn-danger span3\" href=\"$tsurl/acc.php\">No</a>";
+        $alertContent .= "</div>";
+        
+        BootstrapSkin::displayAlertBox($alertContent, "alert-info", "Warning!", true, false, false, true);
+        BootstrapSkin::displayInternalFooter();
 		die();
 	}
 	
-	
 	$sid = sanitize($_SESSION['user']);
-	$query = "SELECT * FROM acc_pend WHERE pend_id = '$gid';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row2 = mysql_fetch_assoc($result);
-	$gus = sanitize($row2['pend_name']);
-	if ($row2['pend_status'] == "Closed") {
-		echo "<h2>ERROR</h2>Cannot close this request. Already closed.<br />\n";
-		$skin->displayIfooter();
+    $gus = sanitize($request->getName());
+    
+	if ($request->getStatus() == "Closed") 
+    {
+        BootstrapSkin::displayAlertBox("Cannot close this request. Already closed.", "alert-error", "Error", true, false);
+        BootstrapSkin::displayInternalFooter();
 		die();
 	}
 	
 	// Checks whether the username is already in use on Wikipedia.
-	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . urlencode($row2['pend_name']) . "&format=php");
+	$userexist = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=" . urlencode($request->getName()) . "&format=php");
 	$ue = unserialize($userexist);
 	if (!isset ($ue['query']['users']['0']['missing'])) {
-		$exists = 1;
+		$exists = true;
 	}
 	else {
-		$exists = 0;
+		$exists = false;
 	}
 	
 	// check if a request being created does not already exist. 
-	if ($gem == 1 && $exists == 0 && !isset($_GET['createoverride'])) {
-		echo "<br />You have chosen to mark this request as \"created\", but the account does not exist on the English Wikipedia, proceed?  <br />\n";
-		echo "<a href=\"$tsurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;createoverride=yes&amp;email=" . $_GET['email'] . "\">Yes</a> / <a href=\"$tsurl/acc.php\">No</a><br />\n";
-		$skin->displayIfooter();
+	if ($gem == 1 && !$exists && !isset($_GET['createoverride'])) {
+        $alertContent = "<p>You have chosen to mark this request as \"created\", but the account does not exist on the English Wikipedia, proceed?</p><br />";
+        $alertContent .= "<div class=\"row-fluid\">";
+        $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$tsurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;createoverride=yes&amp;email=" . $_GET['email'] . "\">Yes</a>";
+        $alertContent .= "<a class=\"btn btn-danger span3\" href=\"$tsurl/acc.php\">No</a>";
+        $alertContent .= "</div>";
+        
+        BootstrapSkin::displayAlertBox($alertContent, "alert-info", "Warning!", true, false, false, true);
+        BootstrapSkin::displayInternalFooter();
 		die();
 	}
 	
 	// custom close reasons
 	if ($gem  == 'custom') {
-		if (!isset($_POST['msgbody']) or empty($_POST['msgbody'])) {
-			$querystring = htmlspecialchars($_SERVER["QUERY_STRING"],ENT_COMPAT,'UTF-8'); //Send it through htmlspecialchars so HTML validators don't complain. 
-			echo "<form action='?".$querystring."' method='post'><fieldset>";
-            echo "<legend>Custom close</legend>";
-			echo "<label for=\"\">Please enter your message to the user below.</label>";
-            BootstrapSkin::displayAlertBox("The contents of this box will be sent as an email to the user with the signature set in <a href=\"$tsurl/acc.php?action=prefs\">your preferences</a> appended to it. <b>If you do not set a signature in your preferences, please manually enter one at the end of your message</b>.","alert-error","Caution!",true,false);
-			echo "<textarea id=\"msgbody\" name=\"msgbody\" rows=\"15\" class=\"input-block-level\"></textarea>";
-			echo "<label class=\"checkbox\"><input type=\"checkbox\" name=\"created\" />Account created</label>";
-			echo "<label class=\"checkbox\"><input type=\"checkbox\" name=\"ccmailist\" checked=\"checked\"";   
-			if (!($session->hasright($_SESSION['user'], "Admin")))
-				echo " disabled";
-			echo "/>CC to mailing list</label>";
-            echo '<div class="form-actions"><button type="submit" class="btn btn-primary">Close and send</button><a href="?action=zoom&amp;id=' . $gid . '" class="btn">Cancel</a></div>';
-			echo "</fieldset></form>\n";
-			$skin->displayIfooter();
+		if (!isset($_POST['msgbody']) or empty($_POST['msgbody'])) 
+        {
+            // Send it through htmlspecialchars so HTML validators don't complain. 
+			$querystring = htmlspecialchars($_SERVER["QUERY_STRING"],ENT_COMPAT,'UTF-8'); 
+            
+            $smarty->assign("querystring", $querystring);
+            $smarty->assign("request", $request);
+            $smarty->display("custom-close.tpl");
+			BootstrapSkin::displayInternalFooter();
 			die();
-		} else {			
+		} 
+        else 
+        {			
 			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
-			if (!($session->hasright($_SESSION['user'], "Admin")) || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on")
+			if (! User::getCurrent()->isAdmin() || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on")
+            {
 				$headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
-			$headers .= 'X-ACC-Request: ' . $gid . "\r\n";
-			$headers .= 'X-ACC-UserID: ' . $_SESSION['userID'] . "\r\n";
+            }
+            
+			$headers .= 'X-ACC-Request: ' . $request->getId() . "\r\n";
+			$headers .= 'X-ACC-UserID: ' . User::getCurrent()->getId() . "\r\n";
 			
-			// Get the closing user's Email signature and append it to the Email.
-			$sid = sanitize($_SESSION['user']);
-			$query = "SELECT user_emailsig FROM acc_user WHERE user_name = '$sid'";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			$row = mysql_fetch_assoc($result);
-			if($row['user_emailsig'] != "") {
-				$emailsig = html_entity_decode($row['user_emailsig'], ENT_QUOTES, "UTF-8");
-				mail($row2['pend_email'], "RE: [ACC #$gid] English Wikipedia Account Request", $_POST['msgbody'] . "\n\n". $emailsig, $headers);
+			// Get the closing user's Email signature and append it to the Email.            
+			if(User::getCurrent()->getEmailSig() != "") {
+				$emailsig = html_entity_decode(User::getCurrent()->getEmailSig(), ENT_QUOTES, "UTF-8");
+				mail($request->getEmail(), "RE: [ACC #{$request->getId()}] English Wikipedia Account Request", $_POST['msgbody'] . "\n\n". $emailsig, $headers);
 			}
 			else {
-				mail($row2['pend_email'], "RE: [ACC #$gid] English Wikipedia Account Request", $_POST['msgbody'], $headers);
+				mail($request->getEmail(), "RE: [ACC #{$request->getId()}] English Wikipedia Account Request", $_POST['msgbody'], $headers);
 			}
 			
-			$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $gid . "';";
-			$result = mysql_query($query, $tsSQLlink);
-		
+            $request->setEmailSent(1);
+            
 			if (isset($_POST['created']) && $_POST['created'] == "on") {
 				$gem  = 'custom-y';
 			} else {
@@ -1277,6 +1277,8 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		}
 	}
 	
+    /*
+    // Commented out cos it's causing a load of issues, and theoretically should never work?
 	$query = "SELECT * FROM acc_user WHERE user_name = '$sid';";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
@@ -1288,18 +1290,22 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		if (!$result)
 			sqlerror("Query failed: $query ERROR: " . mysql_error());
 	}
-	$query = "UPDATE acc_pend SET pend_status = 'Closed'";
-	$query .= ", `pend_reserved` = '0'";
-	$query .= " WHERE pend_id = '$gid';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$now = date("Y-m-d H-i-s");
-	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES ('$gid', '$sid', 'Closed $gem', '$now', " . (isset($_POST['msgbody']) ? ("'" . sanitize($_POST['msgbody']) . "'") : "''") . ");";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-
+    */
+    
+    $request->setStatus('Closed');
+    $request->setReserved(0);
+    
+    $request->save();
+    
+    $closeaction = "Closed $gem";
+    $messagebody = isset($_POST['msgbody']) ? $_POST['msgbody'] : '';
+    $statement = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:request, :user, :closeaction, CURRENT_TIMESTAMP(), :msgbody);");
+    $statement->bindParam(':request', $request->getId());
+    $statement->bindParam(':user', User::getCurrent()->getUsername());
+    $statement->bindParam(':closeaction', $closeaction);
+    $statement->bindParam(':msgbody', $messagebody);
+    $statement->execute();
+    
 	if ($gem == '0') {
 		$crea = "Dropped";
 	} else if ($gem == 'custom') {
@@ -1315,17 +1321,18 @@ elseif ($action == "done" && $_GET['id'] != "") {
 
 	$now = explode("-", $now);
 	$now = $now['0'] . "-" . $now['1'] . "-" . $now['2'] . ":" . $now['3'] . ":" . $now['4'];
-	$accbotSend->send("Request " . $_GET['id'] . " (" . $row2['pend_name'] . ") Marked as 'Done' ($crea) by " . $_SESSION['user'] . " on $now");
-	$skin->displayRequestMsg("Request " . $_GET['id'] . " (" . htmlentities($row2['pend_name'],ENT_COMPAT,'UTF-8') . ") marked as 'Done'.<br />");
-	$towhom = $row2['pend_email'];
+	$accbotSend->send("Request " . $request->getId() . " (" . $request->getName() . ") Marked as 'Done' ($crea) by " . User::getCurrent()->getUsername() . " on $now");
+	$skin->displayRequestMsg("Request " . $request->getId() . " (" . htmlentities($request->getName(),ENT_COMPAT,'UTF-8') . ") marked as 'Done'.<br />");
+	$towhom = $request->getEmail();
 	if ($gem != "0" && $gem != 'custom' && $gem != 'custom-y' && $gem != 'custom-n') {
 		sendemail($gem, $towhom, $gid);
-		$query = "UPDATE acc_pend SET pend_emailsent = '1' WHERE pend_id = '" . $gid . "';";
-		$result = mysql_query($query, $tsSQLlink);
+        $request->setEmailSent(1);
 	}
+    $request->save();
+    
 	upcsum($_GET['id']);
 	echo defaultpage();
-	$skin->displayIfooter();
+	BootstrapSkin::displayInternalFooter();
 	die();
 }
 elseif ($action == "zoom") {
