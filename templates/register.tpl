@@ -11,27 +11,27 @@
   <div class="control-group">
     <label for="name" class="control-label">Desired username:</label>
     <div class="controls">
-      <input id="name" type="text" name="name" />
+      <input id="name" type="text" name="name" required="required"/>
     </div>
   </div>
   <div class="control-group">
     <label for="pass" class="control-label">Choose a password:</label>
     <div class="controls">
-      <input type="password" id="pass" name="pass" />
+      <input type="password" id="pass" name="pass" required="required" />
       <span class="help-inline">Please do not use the same password you use on Wikipedia!</span>
     </div>
   </div>
   <div class="control-group">
     <label for="pass2" class="control-label">Confirm password:</label>
     <div class="controls">
-      <input type="password" id="pass2" name="pass2" />
+      <input type="password" id="pass2" name="pass2" required="required" />
     </div>
   </div>
 
   <div class="control-group">
     <label for="email" class="control-label">E-mail Address:</label>
     <div class="controls">
-      <input type="email" id="email" name="email" />
+      <input type="email" id="email" name="email" required="required" />
     </div>
   </div>
   
@@ -40,14 +40,14 @@
 	<div class="control-group">
 	  <label for="wname" class="control-label">Wikipedia username:</label>
       <div class="controls">
-        <input type="text" id="wname" name="wname" />
+        <input type="text" id="wname" name="wname" required="required" />
       </div>
     </div>
 
     <div class="control-group">
       <label for="conf_revid" class="control-label">Confirmation revision ID:</label>
       <div class="controls">
-        <input type="text" id="conf_revid" name="conf_revid" />
+        <input type="text" id="conf_revid" name="conf_revid" required="required" />
         <span class="help-inline">
           <a href="#myModal" role="button" class="btn" data-toggle="modal">Help!</a>
         </span>
@@ -59,7 +59,7 @@
   <div class="control-group">
     <div class="controls">
       <label class="checkbox">
-        <input type="checkbox" id="guidelines" name="guidelines" />
+        <input type="checkbox" id="guidelines" name="guidelines"  required="required"/>
         I have read and understand the <a href="http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide">interface guidelines</a>.
 	  </label>
     </div>
