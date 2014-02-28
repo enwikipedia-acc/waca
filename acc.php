@@ -383,81 +383,70 @@ elseif ($action == "login") {
 	$newaction = $_GET['newaction'];
 	$internalInterface -> login($puser, $ip, $password, $newaction);
 }
-elseif ($action == "messagemgmt") {
-	if (isset ($_GET['view'])) {
-	    if (!preg_match('/^[0-9]*$/',$_GET['view']))
-		    die('Invaild GET value passed.');
-		
-	    $mid = sanitize($_GET['view']);
-		/*
-		OK, let's try and use acc_user for storing usernames. I've added a new column, rev_userid. Let's try and use that.
-		
-		I've put together a new query to aid the process:
-		select r.rev_id, r.rev_msg, r.rev_timestamp, r.rev_userid, u.user_name, m.mail_id, m.mail_text, m.mail_count, m.mail_desc, m.mail_type from acc_rev r inner join acc_user u on r.rev_userid = u.user_id join acc_emails m on m.mail_id = r.rev_msg where m.mail_id = 1 order by r.rev_id desc limit 1;
-
-		*/
-		$query = "SELECT * FROM acc_emails WHERE mail_id = $mid ORDER BY mail_id DESC LIMIT 1;";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		$row = mysql_fetch_assoc($result);
-		$mailtext = htmlentities($row['mail_text'],ENT_COMPAT,'UTF-8');
-		echo "<h2>View message</h2><br />Message ID: " . $row['mail_id'] . "<br />\n";
-		echo "Message count: " . $row['mail_count'] . "<br />\n";
-		echo "Message title: " . $row['mail_desc'] . "<br />\n";
-		echo "Message text: <br /><pre>$mailtext</pre><br />\n";
-		$skin->displayIfooter();
+elseif ($action == "messagemgmt") 
+{
+	if (isset($_GET['view'])) 
+    {
+        $message = InterfaceMessage::getById($_GET['view'], gGetDb());
+                
+	    if ($message == false)
+        {
+            BootstrapSkin::displayAlertBox("Unable to find specified message", "alert-error", "Error", true, false);
+            BootstrapSkin::displayInternalFooter();
+		    die();
+        }
+        
+        $smarty->assign("message", $message);
+        $smarty->assign("readonly", true);
+        $smarty->display("message-management/editform.tpl");
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	if (isset ($_GET['edit'])) {
-	    if(!$session->hasright($_SESSION['user'], 'Admin')) {
-			echo "I'm sorry, but, this page is restricted to administrators only.<br />\n";
-			$skin->displayIfooter();
+	if (isset($_GET['edit'])) 
+    {
+	    if(!(User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()))
+        {
+            BootstrapSkin::displayAlertBox("I'm sorry, but, this page is restricted to administrators only.", "alert-error", "Access Denied", true, false);
+            BootstrapSkin::displayInternalFooter();
 			die();
 		}
-		if (!preg_match('/^[0-9]*$/',$_GET['edit']))
-			die('Invaild GET value passed.');		
-		$mid = sanitize($_GET['edit']);
-		if ( isset( $_GET['submit'] ) ) {
-			$mtext = sanitize($_POST['mailtext']);
-			$mtext = html_entity_decode($mtext);
-			$mdesc = sanitize($_POST['maildesc']);
-			$siuser = sanitize($_SESSION['user']);
-			$query = "UPDATE acc_emails SET mail_text = '$mtext', mail_desc = '$mdesc', mail_count = mail_count + 1 WHERE mail_id = '$mid';";
-			$result = mysql_query( $query, $tsSQLlink );
-			if( !$result ) {
-				sqlerror(mysql_error(),"Could not update message");
-			}
-			$now = date("Y-m-d H-i-s");
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$mid', '$siuser', 'Edited', '$now');";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			$query = "SELECT mail_desc FROM acc_emails WHERE mail_id = $mid;";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			$row = mysql_fetch_assoc($result);
-			$mailname = $row['mail_desc'];
-			echo "Message $mailname ($mid) updated.<br />\n";
-			$accbotSend->send("Message $mailname ($mid) edited by $siuser");
-			$skin->displayIfooter();
+        
+        $message = InterfaceMessage::getById($_GET['edit'], gGetDb());
+        
+	    if ($message == false)
+        {
+            BootstrapSkin::displayAlertBox("Unable to find specified message", "alert-error", "Error", true, false);
+            BootstrapSkin::displayInternalFooter();
+		    die();
+        }
+        
+		if ( isset( $_GET['submit'] ) ) 
+        {
+            $message->setContent($_POST['mailtext']);
+            $message->setDescription($_POST['maildesc']);
+            $message->save();
+            
+            $logStatement = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:message, :user, 'Edited', CURRENT_TIMESTAMP());");
+            $logStatement->bindParam(":message", $message->getId());
+            $logStatement->bindParam(":user", User::getCurrent()->getUsername());
+            $logStatement->execute();
+            
+			$mailname = $message->getDescription();
+            
+            BootstrapSkin::displayAlertBox("Message $mailname ({$message->getId()}) updated.", "alert-success", "Saved!", true, false);
+			$accbotSend->send("Message $mailname ({$message->getId()}) edited by $siuser");
+			BootstrapSkin::displayInternalFooter();
 			die();
 		}
-		$query = "SELECT * FROM acc_emails WHERE mail_id = $mid;";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		$row = mysql_fetch_assoc($result);
-		$mailtext = htmlentities($row['mail_text'],ENT_COMPAT,'UTF-8');
-		echo "<h2>Edit message</h2><strong>This is NOT a toy. If you can see this form, you can edit this message. <br />WARNING: MISUSE OF THIS FUNCTION WILL RESULT IN LOSS OF ACCESS.</strong><br />\n<form action=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mid&amp;submit=1\" method=\"post\"><br />\n";
-		echo "<input type=\"text\" name=\"maildesc\" value=\"" . $row['mail_desc'] . "\"/><br />\n";
-		echo "<textarea name=\"mailtext\" rows=\"20\" cols=\"60\">$mailtext</textarea><br />\n";
-		echo "<input type=\"submit\"/><input type=\"reset\"/><br />\n";
-		echo "</form>";
-		$skin->displayIfooter();
+        
+        $smarty->assign("message", $message);
+        $smarty->assign("readonly", false);
+        $smarty->display("message-management/editform.tpl");
+        
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
+    
 	$query = "SELECT mail_id, mail_count, mail_desc FROM acc_emails WHERE mail_type = 'Message';";
 	$result = mysql_query($query, $tsSQLlink);
 	if (!$result)
