@@ -434,7 +434,7 @@ elseif ($action == "messagemgmt")
 			$mailname = $message->getDescription();
             
             BootstrapSkin::displayAlertBox("Message $mailname ({$message->getId()}) updated.", "alert-success", "Saved!", true, false);
-			$accbotSend->send("Message $mailname ({$message->getId()}) edited by $siuser");
+			$accbotSend->send("Message $mailname ({$message->getId()}) edited by " . User::getCurrent()->getUsername());
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
