@@ -41,6 +41,21 @@ $messages = new messages();
 $accbotSend = new accbotSend();
 $session = new session();
 
+#region User search
+
+if(isset($_GET['usersearch']))
+{
+    $user = User::getByUsername($_GET['usersearch'], gGetDb());
+    
+    if($user != false)
+    {
+        header("Location: $tsurl/statistics.php?page=Users&user={$user->getId()}");
+        die();
+    }
+}
+
+#endregion
+
 // Display the header of the interface.
 BootstrapSkin::displayInternalHeader();
 
@@ -423,11 +438,32 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {
 
 echo <<<HTML
 <div class="page-header">
-  <h1>User Management<small> Approve, suspend, promote, demote, etc.</small></h1>
+  <h1>User Management<small> Approve, suspend, promote, demote, etc.&nbsp;<a class="btn btn-primary" href="?showall"><i class="icon-white icon-eye-open"></i>&nbsp;Show all</a></small></h1>
 </div>
 HTML;
 
 BootstrapSkin::displayAlertBox("If it says you can do it, you can do it. Please use this responsibly.", "alert-warning","This interface is NOT a toy.",true,false);
+
+// assign to user
+$userListQuery = "SELECT username FROM user;";
+$userListResult = gGetDb()->query($userListQuery);
+$userListData = $userListResult->fetchAll(PDO::FETCH_COLUMN);
+$userListProcessedData = array();
+foreach ($userListData as $userListItem)
+{
+    $userListProcessedData[] = "\"" . htmlentities($userListItem) . "\"";
+}
+
+$jsuserlist = '[' . implode(",", $userListProcessedData) . ']';
+
+echo <<<HTML
+<div class="row-fluid">
+    <form class="form-search">
+        <input type="text" class="input-large" placeholder="Jump to user" data-provide="typeahead" data-items="10" data-source='{$jsuserlist}' name="usersearch">
+        <button type="submit" class="btn">Search</button>
+    </form>
+</div>
+HTML;
 
 /**
  * CURRENTLY UNUSED!!
@@ -512,20 +548,21 @@ $statement2->execute();
 $result = $statement2->fetchAll(PDO::FETCH_CLASS, "User");
 $smarty->assign("userlist", $result);
 $smarty->display("usermanagement/userlist.tpl");
-echo <<<HTML
-</div>
-</div></div>
+echo '</div></div></div>';
 
+if(isset($_GET['showall']))
+{
+    echo <<<HTML
 <div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFive">Suspended accounts</a></div><div id="collapseFive" class="accordion-body collapse"><div class="accordion-inner">
 HTML;
 
 
-$level = "Suspended";
-$statement->execute();
-$result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
-$smarty->assign("userlist", $result);
-$smarty->display("usermanagement/userlist.tpl");
-echo <<<HTML
+    $level = "Suspended";
+    $statement->execute();
+    $result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
+    $smarty->assign("userlist", $result);
+    $smarty->display("usermanagement/userlist.tpl");
+    echo <<<HTML
 </div>
 </div></div>
 
@@ -533,12 +570,13 @@ echo <<<HTML
 HTML;
 
 
-$level = "Declined";
-$statement->execute();
-$result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
-$smarty->assign("userlist", $result);
-$smarty->display("usermanagement/userlist.tpl");
-echo "</div></div></div>";
+    $level = "Declined";
+    $statement->execute();
+    $result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
+    $smarty->assign("userlist", $result);
+    $smarty->display("usermanagement/userlist.tpl");
+    echo "</div></div></div>";
+}
 
 BootstrapSkin::displayInternalFooter();
 die();
