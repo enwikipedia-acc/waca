@@ -249,13 +249,8 @@ class LogPage
 				$logList .="<li>$rlu edited <a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$rlp\">template $rlp</a>, at $rlt.</li>\n";
 			}
 			if ($rla == "Edited") {
-				$mid = $rlp;
-				$query3 = "SELECT * FROM acc_emails WHERE mail_id = '$mid';";
-				$result3 = mysql_query($query3, $tsSQLlink);
-				if (!$result3)
-					Die("Query failed: $query ERROR: " . mysql_error());
-				$row3 = mysql_fetch_assoc($result3);
-				$logList .="<li>$rlu Edited message <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$rlp\">$rlp (" . $row3['mail_desc'] . ")</a>, at $rlt.</li>\n";
+                $message = InterfaceMessage::getById($rlp, gGetDb());
+				$logList .="<li>$rlu Edited message <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$rlp\">$rlp (" . $message->getDescription() . ")</a>, at $rlt.</li>\n";
 			}
 			if ($rla == "Promoted" || $rla == "Demoted" || $rla == "Approved" || $rla == "Suspended" || $rla == "Declined") {
 				$uid = $rlp;
@@ -418,13 +413,8 @@ class LogPage
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"edited template", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "Edited") {
-				$mid = $rlp;
-				$query3 = "SELECT * FROM acc_emails WHERE mail_id = '$mid';";
-				$result3 = mysql_query($query3, $tsSQLlink);
-				if (!$result3)
-					Die("Query failed: $query ERROR: " . mysql_error());
-				$row3 = mysql_fetch_assoc($result3);
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"edited message ". $row3['mail_desc'], 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+                $message = InterfaceMessage::getById($rlp, gGetDb());
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"edited message ". $message->getDescription(), 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "Promoted" || $rla == "Demoted" || $rla == "Approved" || $rla == "Suspended" || $rla == "Declined") {
 				$uid = mysql_real_escape_string($rlp, $tsSQLlink);

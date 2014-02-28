@@ -16,15 +16,13 @@ if (!defined("ACC")) {
 } // Invalid entry point
 
 class messages {
-	public function getMessage ($messageno) {
-		global $tsSQL, $tsurl, $toolserver_database;
-		$messageno = $tsSQL->escape($messageno);
-		$query = "SELECT * FROM {$toolserver_database}.acc_emails WHERE mail_id = '$messageno';";
-		$result = $tsSQL->query($query);
-		if (!$result)
-			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"Database query error.");
-		$row = mysql_fetch_assoc($result);
-		$message = $row['mail_text'];
+	public function getMessage($messageno) 
+    {
+        $messageObject = InterfaceMessage::getById($messageno, gGetDb());
+        
+		global $tsSQL;
+
+		$message = $messageObject->getContent();
 		
 		if( strpos($message, "%VERSION%") !== false ) {
 			$message = str_replace('%VERSION%', getToolVersion(), $message);
@@ -34,16 +32,11 @@ class messages {
 		return $message;
 	}
 	
-	public function getMessageCount ($messageno) {
-		global $tsSQL, $tsurl;
-		$messageno = $tsSQL->escape($messageno);
-		$query = "SELECT * FROM acc_emails WHERE mail_id = '$messageno';";
-		$result = $tsSQL->query($query);
-		if (!$result)
-			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"Database query error.");
-		$row = mysql_fetch_assoc($result);
-		$message = $row['mail_count'];
-		return $message;
+	public function getMessageCount ($messageno) 
+    {
+        $message = InterfaceMessage::getById($messageno, gGetDb());
+
+		return $message->getUpdateCounter();
 	}
 	
 	public function isEmail($messageNumber)
