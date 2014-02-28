@@ -447,66 +447,22 @@ elseif ($action == "messagemgmt")
 		die();
 	}
     
-	$query = "SELECT mail_id, mail_count, mail_desc FROM acc_emails WHERE mail_type = 'Message';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	echo "<div class=\"page-header\"><h1>Message Management<small> View and edit the email and interface messages</small></h1></div>";
-	echo "<h2>Email messages</h2>";
-	echo "<ul>\n";
-	while ( list( $mail_id, $mail_count, $mail_desc ) = mysql_fetch_row( $result ) ) {
-		$out = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mail_id\">Edit!</a> - <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
-		$out2 = "<li>$mail_id) <small>[ $mail_desc ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mail_id\">View!</a></small></li>";
-		if($session->hasright($_SESSION['user'], 'Admin')){
-		    echo "$out\n";
-		}
-		elseif(!$session->hasright($_SESSION['user'], 'Admin')){
-		    echo "$out2\n";
-		}
-	}
-	echo "</ul>";
-	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Interface';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	echo "<h2>Public Interface messages</h2>\n";
-	echo "<ul>\n";
-	while ($row = mysql_fetch_assoc($result)) {
-		$mailn = $row['mail_id'];
-		$mailc = $row['mail_count'];
-		$maild = $row['mail_desc'];
-		$out = "<li>$mailn) <small>[ $maild ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		$out2 = "<li>$mailn) <small>[ $maild ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if($session->hasright($_SESSION['user'], 'Admin')){
-		echo "$out\n";
-		}
-		elseif(!$session->hasright($_SESSION['user'], 'Admin')){
-		echo "$out2\n";
-		}
-	}
-	echo "</ul>";
-	$query = "SELECT * FROM acc_emails WHERE mail_type = 'Internal';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-
-	echo "<h2>Internal Interface messages</h2>\n";
-	echo "<ul>\n";
-	while ($row = mysql_fetch_assoc($result)) {
-		$mailn = $row['mail_id'];
-		$mailc = $row['mail_count'];
-		$maild = $row['mail_desc'];
-		$out = "<li>$mailn) <small>[ $maild ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;edit=$mailn\">Edit!</a> - <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		$out2 = "<li>$mailn) <small>[ $maild ] <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$mailn\">View!</a></small></li>";
-		if($session->hasright($_SESSION['user'], 'Admin')){
-		echo "$out\n";
-		}
-		elseif(!$session->hasright($_SESSION['user'], 'Admin')){
-		echo "$out2\n";
-		}
-	}
-	echo "</ul>";
-	$skin->displayIfooter();
+    $fetchStatement = gGetDb()->prepare("SELECT * FROM interfacemessage WHERE type = :type");
+    $data = array();
+    
+    $fetchStatement->execute(array(":type" => "Message"));
+    $data['Email messages'] = $fetchStatement->fetchAll(PDO::FETCH_CLASS, 'InterfaceMessage');
+    
+    $fetchStatement->execute(array(":type" => "Interface"));
+    $data['Public Interface messages'] = $fetchStatement->fetchAll(PDO::FETCH_CLASS, 'InterfaceMessage');
+    
+    $fetchStatement->execute(array(":type" => "Internal"));
+    $data['Internal Interface messages'] = $fetchStatement->fetchAll(PDO::FETCH_CLASS, 'InterfaceMessage');
+    
+    $smarty->assign("data", $data);
+    $smarty->display('message-management/view.tpl');
+   
+	BootstrapSkin::displayInternalFooter();
 	die();
 }
 elseif ($action == "templatemgmt") {
