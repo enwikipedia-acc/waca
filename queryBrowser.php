@@ -22,7 +22,7 @@ class QueryBrowser
 	var $numberedListTitle = "#";
 	var $tableCallbackFunction = false;
 	var $overrideTableTitles = false;
-	var $rowFetchMode = MYSQL_ASSOC;
+	var $rowFetchMode = PDO::FETCH_ASSOC;
 	
 	public function executeQueryToTable($query)
 	{
@@ -99,7 +99,7 @@ class QueryBrowser
         
         $statement->execute();
         
-        return $statement->fetchAll(PDO::FETCH_ASSOC);
+        return $statement->fetchAll($this->rowFetchMode);
 	}
 	
 }

@@ -33,7 +33,7 @@ sql;
         
 		global $tsurl;
 		$qb = new QueryBrowser();
-		$qb->rowFetchMode = MYSQL_NUM;
+		$qb->rowFetchMode = PDO::FETCH_NUM;
 		$r = $qb->executeQueryToTable($query); 
 		echo mysql_error();
 

@@ -43,7 +43,7 @@ class StatsIdUsers extends StatisticsPage
 	
 		global $tsurl;
 		$qb = new QueryBrowser();
-		$qb->rowFetchMode = MYSQL_NUM;
+		$qb->rowFetchMode = PDO::FETCH_NUM;
         $qb->overrideTableTitles = array("User name", "Access level", "Checkuser?");    
 		$r = $qb->executeQueryToTable($query); 
 		echo mysql_error();

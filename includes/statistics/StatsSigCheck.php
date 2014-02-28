@@ -26,7 +26,7 @@ select user_name, user_onwikiname, user_welcome_sig from acc_user where user_wel
 QUERY;
                 global $tsurl;
                 $qb = new QueryBrowser();
-                $qb->rowFetchMode = MYSQL_ASSOC;
+                $qb->rowFetchMode = PDO::FETCH_ASSOC;
                 $qb->tableCallbackFunction = "statsSigCheckRowCallback";
                 $qb->overrideTableTitles = array("Username (ACC)", "Username (enwiki)", "Defined signature", "Signature the bot will use", "Rendered signature");
                 $r = $qb->executeQueryToTable($query);
