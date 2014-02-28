@@ -451,7 +451,7 @@ $userListData = $userListResult->fetchAll(PDO::FETCH_COLUMN);
 $userListProcessedData = array();
 foreach ($userListData as $userListItem)
 {
-    $userListProcessedData[] = "\"" . htmlentities($userListItem) . "\"";
+    $userListProcessedData[] = "\"" . htmlentities($userListItem, ENT_QUOTES | ENT_HTML5) . "\"";
 }
 
 $jsuserlist = '[' . implode(",", $userListProcessedData) . ']';
