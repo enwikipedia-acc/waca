@@ -1319,8 +1319,8 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		$crea = $template->getName();
 	}
 
-	$now = explode("-", $now);
-	$now = $now['0'] . "-" . $now['1'] . "-" . $now['2'] . ":" . $now['3'] . ":" . $now['4'];
+	$now = new DateTime();
+    $now = $now->format("Y-m-d H:i:s");
 	$accbotSend->send("Request " . $request->getId() . " (" . $request->getName() . ") Marked as 'Done' ($crea) by " . User::getCurrent()->getUsername() . " on $now");
 	$skin->displayRequestMsg("Request " . $request->getId() . " (" . htmlentities($request->getName(),ENT_COMPAT,'UTF-8') . ") marked as 'Done'.<br />");
 	$towhom = $request->getEmail();
