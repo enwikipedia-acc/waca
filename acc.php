@@ -796,7 +796,7 @@ elseif ($action == "sban")
 	switch( $_POST[ 'type' ] ) 
     {
 		case 'IP':
-			if( ip2long( $_POST[ 'target' ] ) === false ) {
+			if( filter_var( $_POST[ 'target' ], FILTER_VALIDATE_IP ) === false ) {
                 BootstrapSkin::displayAlertBox("Invalid target - I'm expecting an IP address.", "alert-error", "", false, false);
                 BootstrapSkin::displayInternalFooter();
 				die();
@@ -1038,7 +1038,7 @@ elseif ($action == "ban") {
 		} 
         
         $smarty->assign("bantype", $type);
-        $smarty->assign("bantarget", $target);
+        $smarty->assign("bantarget", trim($target));
         $smarty->display("bans/banform.tpl");
 	} 
     else 
