@@ -2018,7 +2018,7 @@ elseif ($action == "emailmgmt") {
 				
 			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
 			$nameCheck = EmailTemplate::getByName($name, gGetDb());
-			if ($nameCheck->getId() != "" && $nameCheck->getId() != $gid) {
+			if ($nameCheck != false && $nameCheck->getId() != $gid) {
 				BootstrapSkin::displayAlertBox("That Email template name is already being used. Please choose another.");
 				BootstrapSkin::displayInternalFooter();
 				die();
