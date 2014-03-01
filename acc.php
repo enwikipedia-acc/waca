@@ -1097,7 +1097,23 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	// check for valid close reasons
 	global $messages, $skin;
 	
-	if (!isset($_GET['email']) | !($messages->isEmail($_GET['email'])) and $_GET['email'] != 'custom') 
+    if(isset($_GET['email'])) 
+    {
+        if($_GET['email'] == 0 || $_GET['email'] == "custom")
+        {
+            $validEmail = true;
+        }
+        else
+        {
+            $validEmail = EmailTemplate::getById($_GET['email'], gGetDb()) != false;
+        }
+    }
+    else
+    {
+        $validEmail = false;
+    }
+    
+	if ($validEmail == false) 
     {
         BootstrapSkin::displayAlertBox("Invalid close reason", "alert-error", "Error", true, false);
         BootstrapSkin::displayInternalFooter();
