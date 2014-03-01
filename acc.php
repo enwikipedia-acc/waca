@@ -145,7 +145,7 @@ elseif ($action == "sreg") {
 	$userblocked = $sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
 	$ub = unserialize( $userblocked );
 	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) {
-		$message = $messages->getMessage( '9' );
+		$message = InterfaceMessage::get(InterfaceMessage::DECL_BLOCKED);
 		BootstrapSkin::displayAlertBox("You are presently blocked on the English Wikipedia", "alert-error", "Error");
 		echo "</div>";
 		$skin->displayPfooter();

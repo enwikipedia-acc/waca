@@ -16,17 +16,6 @@ if (!defined("ACC")) {
 } // Invalid entry point
 
 class messages {
-	/**
-	 * Summary of getMessage
-	 * @param mixed $messageno 
-	 * @return mixed
-     * @deprecated
-	 */
-	public function getMessage($messageno) 
-    {
-        return InterfaceMessage::getById($messageno, gGetDb())->getContentForDisplay();
-	}
-	
 	public function isEmail($messageNumber)
 	{
 		// override for drop
