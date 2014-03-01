@@ -1199,12 +1199,35 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	}
 	
 	// custom close reasons
-	if ($gem  == 'custom') {
+    if ($gem  == 'custom') 
+    {
 		if (!isset($_POST['msgbody']) or empty($_POST['msgbody'])) 
         {
             // Send it through htmlspecialchars so HTML validators don't complain. 
 			$querystring = htmlspecialchars($_SERVER["QUERY_STRING"],ENT_COMPAT,'UTF-8'); 
             
+            $template = false;
+            if(isset($_GET['preload']))
+            {
+                $template = EmailTemplate::getById($_GET['preload'], gGetDb());
+            }
+            
+            if($template != false)
+            {
+                $preloadTitle = $template->getName();
+                $preloadText = $template->getText();
+                $forcreated = $template->getOncreated();
+            }
+            else
+            {
+                $preloadText = "";
+                $preloadTitle = "";
+                $forcreated = false;
+            }
+            
+            $smarty->assign("preloadtext", $preloadText);
+            $smarty->assign("preloadtitle", $preloadTitle);
+            $smarty->assign("forcreated", $forcreated);
             $smarty->assign("querystring", $querystring);
             $smarty->assign("request", $request);
             $smarty->display("custom-close.tpl");
