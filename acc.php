@@ -1993,7 +1993,9 @@ elseif ($action == "emailmgmt") {
 	if(isset($_GET['edit'])) {
 		global $createdid;
 		$gid = sanitize($_GET['edit']);
-		if(isset($_POST['submit'])) {
+        
+		if(isset($_POST['submit'])) 
+        {
 			$emailTemplate = EmailTemplate::getById($gid, gGetDb());
 			// Allow the user to see the edit form (with read only fields) but not POST anything.
 			if(!User::getCurrent()->isAdmin()) {
@@ -2034,9 +2036,11 @@ elseif ($action == "emailmgmt") {
 			BootstrapSkin::displayAlertBox("Email template has been saved successfully. You will be returned to Email Management in 5 seconds.<br /><br />\n
 			Click <a href=\"".$tsurl."/acc.php?action=emailmgmt\">here</a> if you are not redirected.");
 			$accbotSend->send("Email $name ($gid) edited by $siuser");
+            
 			BootstrapSkin::displayInternalFooter();
 			die();
-		}
+		} // /if was submitted
+        
 		$emailTemplate = EmailTemplate::getById($_GET['edit'], gGetDb());
 		$smarty->assign('id', $gid);
         $smarty->assign('emailTemplate', $emailTemplate);
@@ -2046,31 +2050,28 @@ elseif ($action == "emailmgmt") {
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	$query = "SELECT id, name FROM emailtemplate WHERE active = 1";
+    
+	$query = "SELECT * FROM emailtemplate WHERE active = 1";
 	$statement = gGetDb()->prepare($query);
 	$statement->execute();
-	$rows= array();
-	while( $row = $statement->fetch(PDO::FETCH_ASSOC) )
-		$rows[] = $row;
+    $rows = $statement->fetchAll(PDO::FETCH_CLASS, "EmailTemplate");
 	$smarty->assign('activeemails', $rows);
         
-	$query = "SELECT id, name FROM emailtemplate WHERE active = 0";
+	$query = "SELECT * FROM emailtemplate WHERE active = 0";
 	$statement = gGetDb()->prepare($query);
 	$statement->execute();
-	$query2 = "SELECT COUNT(*) FROM emailtemplate WHERE active = 0";
-	$statement2 = gGetDb()->prepare($query);
-	$statement2->execute();
-	$rowsnum =  $statement2->fetchColumn();
-	if ($rowsnum > 0) {
-		$rows= array();
-		while( $row = $statement->fetch(PDO::FETCH_ASSOC) )
-			$rows[] = $row;
-		$smarty->assign('inactiveemails', $rows);
+    $inactiverows = $statement->fetchAll(PDO::FETCH_CLASS, "EmailTemplate");
+    $smarty->assign('inactiveemails', $inactiverows);
+ 
+	if (count($inactiverows) > 0) 
+    {
 		$smarty->assign('displayinactive', true);
 	}
-	else {
+	else 
+    {
 		$smarty->assign('displayinactive', false);
 	}
+    
 	$smarty->display("email-management/main.tpl");
 	BootstrapSkin::displayInternalFooter();
 	die();
