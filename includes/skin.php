@@ -32,7 +32,7 @@ class BootstrapSkin {
         $userid = isset($_SESSION['userID']) ? $_SESSION['userID'] : 0;
         $user = isset($_SESSION['user']) ? $_SESSION['user'] : "";
         $msg = new messages();
-        $sitenotice = $msg->getSitenotice();
+        $sitenotice = InterfaceMessage::getById(31, gGetDb())->getContentForDisplay();
         $smarty->assign("userid", $userid);
         $smarty->assign("username", $user);
         $smarty->assign("sitenotice", $sitenotice);
