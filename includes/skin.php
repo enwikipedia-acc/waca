@@ -31,7 +31,6 @@ class BootstrapSkin {
         
         $userid = isset($_SESSION['userID']) ? $_SESSION['userID'] : 0;
         $user = isset($_SESSION['user']) ? $_SESSION['user'] : "";
-        $msg = new messages();
         $sitenotice = InterfaceMessage::get(InterfaceMessage::SITENOTICE);
         $smarty->assign("userid", $userid);
         $smarty->assign("username", $user);

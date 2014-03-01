@@ -29,7 +29,6 @@ require_once 'includes/request.php';
 require_once 'includes/authutils.php';
 
 // Initialize the class objects.
-$messages = new messages();
 $internalInterface = new internalInterface();
 $session = new session();
 

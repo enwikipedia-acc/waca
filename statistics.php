@@ -30,9 +30,6 @@ require_once 'devlist.php';
 // Uses the false variable as its the internal interface.
 Offline::check(false);
 
-// Initialize the class objects.
-$messages = new messages();
-
 // Initialize the database classes.
 $tsSQL = new database("toolserver");
 $asSQL = new database("antispoof");

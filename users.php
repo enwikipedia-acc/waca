@@ -36,7 +36,6 @@ $tsSQL = new database("toolserver");
 $tsSQLlink = $tsSQL->getLink();
 
 // Initialize the class objects.
-$messages = new messages();
 $accbotSend = new accbotSend();
 $session = new session();
 

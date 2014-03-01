@@ -49,7 +49,6 @@ $tsSQLlink = $tsSQL->getLink();
 $asSQLlink = $asSQL->getLink();
 
 // Initialize the class objects.
-$messages = new messages();
 $skin     = new skin();
 $accbotSend = new accbotSend();
 $session = new session();

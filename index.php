@@ -35,7 +35,6 @@ $asSQL = new database("antispoof");
 
 // Initialize the class objects.
 $request  = new accRequest();
-$messages = new messages();
 $accbot   = new accbotSend();
 $skin     = new skin();
 $strings  = new strings();
