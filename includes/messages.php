@@ -15,21 +15,9 @@ if (!defined("ACC")) {
 	die();
 } // Invalid entry point
 
+/**
+ * Summary of messages
+ * @deprecated
+ */
 class messages {
-	public function isEmail($messageNumber)
-	{
-		// override for drop
-		if( $messageNumber == 0 ) return true;
-		
-		if (!preg_match('/^[0-9]*$/',$messageNumber)) {
-			die('Invalid Input.');
-		}
-		
-		$id = EmailTemplate::getById($messageNumber, gGetDb());
-		
-		if ($id)
-			return true;
-		else
-			return false;
-	}
 }
