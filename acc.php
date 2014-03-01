@@ -1112,20 +1112,25 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		echo "Defer target not valid.<br />\n";
 	}
 }
-elseif ($action == "prefs") {
-	if (isset ($_POST['sig'])) {
-        
+elseif ($action == "prefs") 
+{
+	if (isset ($_POST['sig'])) 
+    {
         $user = User::getCurrent();
         $user->setWelcomeSig($_POST['sig']);
         $user->setEmailSig($_POST['emailsig']);
         $user->setAbortPref(isset( $_POST['abortpref'] ) ? 1 : 0);
         
-		if( isset( $_POST['email'] ) ) {
-			$mailisvalid = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+$/i', trim($_POST['email']));
-			if ($mailisvalid == 0) {
+		if( isset( $_POST['email'] ) ) 
+        {
+			$mailisvalid = filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL);
+            
+			if ($mailisvalid === false) 
+            {
                 BootstrapSkin::displayAlertBox("Invalid email address", "alert-error", "Error!");
 			}
-			else {
+			else 
+            {
                 $user->setEmail(trim($_POST['email']));
 			}
 		}
@@ -1335,20 +1340,25 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
-elseif ($action == "zoom") {
-	if (!isset($_GET['id'])) {
-		echo "No user specified!<br />\n";		
-		$skin->displayIfooter();
+elseif ($action == "zoom") 
+{
+	if (!isset($_GET['id'])) 
+    {
+        BootstrapSkin::displayAlertBox("No request specified!", "alert-error", "Error!", true, false);
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	if (isset($_GET['hash'])) {
+    
+	if (isset($_GET['hash'])) 
+    {
 		$urlhash = $_GET['hash'];
 	}
-	else {
+	else 
+    {
 		$urlhash = "";
 	}
 	echo zoomPage($_GET['id'],$urlhash);
-	$skin->displayIfooter();
+	BootstrapSkin::displayInternalFooter();
 	die();
 }
 elseif ($action == "logout") {
