@@ -291,11 +291,18 @@ function zoomPage($id,$urlhash)
     $smarty->assign("jsuserlist", $userList);
     // end: assign to user
     
+    // TODO: refactor this!
 	$createreasons = EmailTemplate::getActiveTemplates(/* forCreated */ 1);
 	$smarty->assign("createreasons", $createreasons);
 	
 	$declinereasons = EmailTemplate::getActiveTemplates(/* forCreated */ 0);
 	$smarty->assign("declinereasons", $declinereasons);
+    
+    $allcreatereasons = EmailTemplate::getAllActiveTemplates(/* forCreated */ 1);
+	$smarty->assign("allcreatereasons", $allcreatereasons);
+	
+	$alldeclinereasons = EmailTemplate::getAllActiveTemplates(/* forCreated */ 0);
+	$smarty->assign("alldeclinereasons", $alldeclinereasons);
 	
 	return $smarty->fetch("request-zoom.tpl");
 }

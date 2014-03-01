@@ -2034,10 +2034,12 @@ elseif ($action == "emailmgmt") {
 			if ($gid == $createdid) { // Both checkboxes on the main created message should always be enabled.
 				$emailTemplate->setOncreated(1);
 				$emailTemplate->setActive(1);
+                $emailTemplate->setPreloadOnly(0);
 			}
 			else {
 				$emailTemplate->setOncreated(isset($_POST['oncreated']));
 				$emailTemplate->setActive(isset($_POST['active']));
+                $emailTemplate->setPreloadOnly(isset($_POST['preloadonly']));
 			}
 			$siuser = sanitize($_SESSION['user']);
 				

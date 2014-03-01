@@ -38,7 +38,8 @@
         <button type="button" class="btn btn-success dropdown-toggle span2" data-toggle="dropdown">&nbsp;<span class="caret"></span></button>
         <ul class="dropdown-menu" role="menu">
         {foreach $createreasons as $reason}
-        	<li><a href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$reason->getId()}&amp;sum={$request->getChecksum()}"{if !$currentUser->getAbortPref() && $reason->getJsquestion() != ''} onclick="return confirm('{$reason->getJsquestion()}')"{/if}>{$reason->getName()}</a></li>
+        	  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$reason->getId()}&amp;sum={$request->getChecksum()}"{if !$currentUser->getAbortPref() && $reason->getJsquestion() != ''} onclick="return confirm('{$reason->getJsquestion()}')"{/if}>{$reason->getName()}</a></li>
+
         {/foreach}
         </ul>
       </div>
@@ -60,11 +61,11 @@
           <a class="btn btn-info span8" href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email=custom&amp;sum={$request->getChecksum()}">Custom</a>
           <button type="button" class="btn btn-info dropdown-toggle span4" data-toggle="dropdown">&nbsp;<span class="caret"></span></button>
           <ul class="dropdown-menu" role="menu">
-            {foreach $createreasons as $reason}
+            {foreach $allcreatereasons as $reason}
         	  <li><a href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email=custom&amp;sum={$request->getChecksum()}&preload={$reason->getId()}">{$reason->getName()}</a></li>
             {/foreach}
             <li class="divider"></li>
-            {foreach $declinereasons as $reason}
+            {foreach $alldeclinereasons as $reason}
             <li>
               <a href="{$tsurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email=custom&amp;sum={$request->getChecksum()}&preload={$reason->getId()}">{$reason->getName()}</a>
             </li>

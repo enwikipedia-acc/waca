@@ -18,6 +18,9 @@
           {if $row->getOncreated()}<span class="label label-success">Create</span>{else}<span class="label label-important">Decline</span>{/if}
         </td>
         <td>
+          {if $row->getPreloadOnly()}<span class="label label-info">Preload only</span>{/if}
+        </td>
+        <td>
           <a class="btn {if $currentUser->isAdmin()}btn-warning{/if}" href="{$tsurl}/acc.php?action=emailmgmt&amp;edit={$row->getId()}">
             {if $currentUser->isAdmin()}<i class="icon-white icon-pencil"></i>&nbsp;Edit Message{else}<i class="icon-black icon-eye-open"></i>&nbsp;View Message{/if}
           </a>
@@ -36,6 +39,9 @@
         <th>{$row->getName()}</th>
         <td>
           {if $row->getOncreated()}<span class="label label-success">Create</span>{else}<span class="label label-important">Decline</span>{/if}
+        </td>
+        <td>
+          {if $row->getPreloadOnly()}<span class="label label-info">Preload only</span>{/if}
         </td>
         <td>
           <a class="btn {if $currentUser->isAdmin()}btn-warning{/if}" href="{$tsurl}/acc.php?action=emailmgmt&amp;edit={$row->getId()}">
