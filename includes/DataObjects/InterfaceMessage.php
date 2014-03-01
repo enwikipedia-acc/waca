@@ -10,6 +10,28 @@ class InterfaceMessage extends DataObject
     private $description;
     private $type;
     
+    const SITENOTICE = "31";
+    
+    /**
+     * Get a message.
+     * 
+     * This is going to be used as a new way of dealing with saved messages for #28
+     * 
+     * The basic idea is there's a key stored in a new column, and we do lookups on that
+     * instead of a possibly variable auto-incrementing ID.
+     * 
+     * We can use class constants so the keys are defined in one place only for now, and for
+     * now we are using the auto-incrementing ID as the value of the key, so this function
+     * just uses getById() at the moment.
+     * 
+     * @param mixed $key 
+     * @return mixed
+     */
+    public static function get($key)
+    {
+        return self::getById($key, gGetDb())->getContentForDisplay();
+    }
+    
     public function save()
     {        
         if($this->isNew)
