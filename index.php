@@ -22,7 +22,6 @@ require_once 'includes/SmartyInit.php';
 require_once 'includes/database.php';
 require_once 'includes/request.php';
 require_once 'includes/skin.php';
-require_once 'includes/messages.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/strings.php';
 
