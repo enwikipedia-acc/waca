@@ -22,7 +22,6 @@ if (!defined("ACC")) {
 
 require_once 'queryBrowser.php';
 require_once 'LogClass.php';
-require_once 'includes/messages.php';
 include_once 'AntiSpoof.php';
 require_once 'includes/internalInterface.php';
 require_once 'includes/session.php';

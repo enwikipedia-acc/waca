@@ -28,7 +28,6 @@ require_once 'functions.php';
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php'; // this needs to be high up, but below config, functions, and database
 require_once 'includes/database.php';
-require_once 'includes/messages.php';
 require_once 'includes/skin.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
@@ -145,7 +144,7 @@ elseif ($action == "sreg") {
 	$userblocked = $sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
 	$ub = unserialize( $userblocked );
 	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) {
-		$message = $messages->getMessage( '9' );
+		$message = InterfaceMessage::get(InterfaceMessage::DECL_BLOCKED);
 		BootstrapSkin::displayAlertBox("You are presently blocked on the English Wikipedia", "alert-error", "Error");
 		echo "</div>";
 		$skin->displayPfooter();

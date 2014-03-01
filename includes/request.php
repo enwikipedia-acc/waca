@@ -72,7 +72,7 @@ class accRequest {
 		// Checks whether the tor field in the array is said to yes.
 		if ($toruser['tor'] == "yes") {
 			// Gets message to display to the user.
-			$message = $messages->getMessage(19);
+			$message = InterfaceMessage::get(InterfaceMessage::DECL_BANNED);
 			
 			// Displays the appropiate message to the user.
 			echo "$message<strong><a href=\"https://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse.</strong><br /></div>\n";
@@ -99,19 +99,19 @@ class accRequest {
         
 		if ($ban != false && count($ban) > 0) 
         {	
-				// User is still banned.
-				// Gets message to display to the user.
-				$message = $messages->getMessage(19);
+            // User is still banned.
+            // Gets message to display to the user.
+            $message = InterfaceMessage::get(InterfaceMessage::DECL_BANNED);
 				
-				// Displays the appropiate message to the user and the retrieved reason.
-				echo "$message<strong>" . htmlentities($ban->getReason()) . "</strong><br /></div>\n";
+            // Displays the appropiate message to the user and the retrieved reason.
+            echo "$message<strong>" . htmlentities($ban->getReason()) . "</strong><br /></div>\n";
 				
-				// Display the footer of the interface.
-				BootstrapSkin::displayPublicFooter();
+            // Display the footer of the interface.
+            BootstrapSkin::displayPublicFooter();
 			
-				// Terminates the current script, as the user is still banned.
-				// This is done because the requesting process should be stopped. 
-				die();
+            // Terminates the current script, as the user is still banned.
+            // This is done because the requesting process should be stopped. 
+            die();
 		}
 	}
 	
@@ -503,7 +503,7 @@ class accRequest {
 		$userexist = file_get_contents("https://" . $wikiurl . "/w/api.php?action=query&list=users&ususers=" . urlencode($_POST['name']) . "&format=php");
 		$ue = unserialize($userexist);
 		if (!isset ($ue['query']['users']['0']['missing'])&&isset ($ue['query']['users']['0']['userid'])) {
-			$message = $messages->getMessage(10);
+			$message = InterfaceMessage::get(InterfaceMessage::DECL_TAKEN);
 			$skin->displayRequestMsg("<!-- m:10 -->$message<br />\n");
 			$fail = 1;
 		}
@@ -514,7 +514,7 @@ class accRequest {
 		$userexist = file_get_contents("https://" . $wikiurl . "/w/api.php?action=query&meta=globaluserinfo&guiuser=" . urlencode($reqname) . "&format=php");
 		$ue = unserialize($userexist);
 		if (isset ($ue['query']['globaluserinfo']['id'])) {
-			$message = $messages->getMessage(28);
+			$message = InterfaceMessage::get(InterfaceMessage::DECL_SULTAKEN);
 			$skin->displayRequestMsg("<!-- m:28 -->$message<br />\n");
 			$fail = 1;
 		}
@@ -522,7 +522,7 @@ class accRequest {
 		// Checks whether the username consists entirely of numbers.
 		$nums = preg_match("/^[0-9]+$/", $_POST['name']);
 		if ($nums > 0) {
-			$message = $messages->getMessage(11);
+			$message =InterfaceMessage::get(InterfaceMessage::DECL_NUMONLY);
 			$skin->displayRequestMsg("<!-- m:11 -->$message<br />\n");
 			$fail = 1;
 		}
@@ -530,7 +530,7 @@ class accRequest {
 		// Checks whether the username is an email adress.
 		$unameismail = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/i', $_POST['name']);
 		if ($unameismail > 0) {
-			$message = $messages->getMessage(12);
+			$message = InterfaceMessage::get(InterfaceMessage::DECL_EMAIL);
 			$skin->displayRequestMsg("<!-- m:12 -->$message<br />\n");
 			$fail = 1;
 		}
@@ -538,21 +538,21 @@ class accRequest {
 		// Checks whether the username contains invalid characters.
 		$unameisinvalidchar = preg_match('/[\#\/\|\[\]\{\}\@\%\:\~\<\>]/', $_POST['name']);
 		if ($unameisinvalidchar > 0 || ltrim( rtrim( $_POST['name'])) == "" ||htmlentities($user,ENT_COMPAT,'UTF-8')=="" ||htmlentities(ltrim(rtrim($user)),ENT_COMPAT,'UTF-8')=="" ) {
-			$message = $messages->getMessage(13);
+			$message = InterfaceMessage::get(InterfaceMessage::DECL_INVCHAR);
 			$skin->displayRequestMsg("<!-- m:13 -->$message<br />\n");
 			$fail = 1;
 		}
 		
 		// Checks whether the email adresses match.
 		if($_POST['email'] != $_POST['emailconfirm']) {
-			$message = $messages->getMessage(27);
+			$message = InterfaceMessage::get(InterfaceMessage::DECL_NONMATCHEMAIL);
 			$skin->displayRequestMsg("<!-- m:27 -->$message<br />\n");
 			$fail = 1;
 		}
 		
 		// Checks whether the email adress is valid.
 		if (!$this->emailvalid($_POST['email'])) {
-			$message = $messages->getMessage(14);
+			$message = InterfaceMessage::get(InterfaceMessage::DECL_INVEMAIL);
 			$skin->displayRequestMsg("<!-- m:14a -->$message<br />\n");
 			$fail = 1;
 		}
@@ -560,7 +560,7 @@ class accRequest {
 		// Checks whether the email adress is valid.
 		$mailiswmf = preg_match('/.*@.*wiki(m.dia|p.dia)\.(org|com)/i', $email);
 		if ($mailiswmf != 0) {
-			$message = $messages->getMessage(14);
+			$message = InterfaceMessage::get(InterfaceMessage::DECL_INVEMAIL);
 			$skin->displayRequestMsg("<!-- m:14b -->$message<br />\n");
 			$fail = 1;
 		}
@@ -570,7 +570,7 @@ class accRequest {
 		$result = $tsSQL->query($query);
 		$row = mysql_fetch_assoc($result);
 		if ($row['pend_id'] != "") {
-			$message = $messages->getMessage(17);
+			$message = InterfaceMessage::get(InterfaceMessage::DECL_DUPEUSER);
 			$skin->displayRequestMsg("<!-- m:17 -->$message<br />\n");
 			$fail = 1;
 		}
@@ -580,7 +580,7 @@ class accRequest {
 		$result = $tsSQL->query($query);
 		$row = mysql_fetch_assoc($result);
 		if ($row['pend_id'] != "") {
-			$message = $messages->getMessage(18);
+			$message = InterfaceMessage::get(InterfaceMessage::DECL_DUPEEMAIL);
 			$skin->displayRequestMsg("<!-- m:18 -->$message<br />\n");
 			$fail = 1;
 		}
@@ -589,7 +589,7 @@ class accRequest {
 		// Notifies the requester that the request was unsuccessfull.
 		if ($fail == 1) {
 			// Gets message to display to the user.
-			$message = $messages->getMessage(16);
+			$message = InterfaceMessage::get(InterfaceMessage::DECL_FINAL);
 			
 			// Displays the appropiate message to the user.
 			$skin->displayRequestMsg("<!-- m:16 -->$message<br />\n");
