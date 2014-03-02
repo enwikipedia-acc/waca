@@ -200,21 +200,5 @@ class session {
 		if (!$result)
 			Die("Error determining user from UID.");
 	}
-    
-    public function getUidFromUsername($username)
-	{
-		/**
-         * Retrieves a username from a user id
-         */
-		$query = "SELECT user_id FROM acc_user WHERE user_name = '" . sanitize($username) . "';";
-		$result = mysql_query($query);
-		if (!$result)
-			Die("Error determining UID from user.");
-		$row = mysql_fetch_assoc($result);
-		return $row['user_id'];
-		$result = mysql_query($query);
-		if (!$result)
-			Die("Error determining UID from username.");
-	}
 }
 ?>
