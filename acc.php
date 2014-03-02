@@ -297,7 +297,7 @@ elseif ($action == "forgotpw")
 {
 	if (isset ($_GET['si']) && isset ($_GET['id'])) 
     {
-        $user = User::getById($_GET['id']);
+        $user = User::getById($_GET['id'], gGetDb());
         
 		if (isset ($_POST['pw']) && isset ($_POST['pw2'])) 
         {
@@ -349,7 +349,7 @@ elseif ($action == "forgotpw")
     
 	if (isset ($_POST['username'])) 
     {
-        $user = User::getByUsername($_POST['username']);
+        $user = User::getByUsername($_POST['username'], gGetDb());
 
 		if ($user == false) 
         {
