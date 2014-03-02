@@ -1,9 +1,9 @@
 <!-- requestlist.tpl -->
-{if $totalRequests > $requestLimitShowOnly}
+{if $requests.total > $requestLimitShowOnly}
 	{include file="alert.tpl" alertblock="0" alerttype="alert-error" alertclosable="0" alertheader="Miser mode:"
-		  alertmessage="Not all requests are shown for speed. Only {$requestLimitShowOnly} of {$totalRequests} are shown here."}
+		  alertmessage="Not all requests are shown for speed. Only {$requestLimitShowOnly} of {$requests.total} are shown here."}
 {/if}
-{if count($requests) > 0}
+{if count($requests.requests) > 0}
 	<table class="table table-striped sortable">
 		<thead>
 			<tr>
@@ -19,7 +19,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{foreach from=$requests item="r"}
+			{foreach from=$requests.requests item="r"}
 				{include file="request-entry.tpl" request=$r}
 			{/foreach}
 		</tbody>

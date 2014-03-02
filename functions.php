@@ -223,54 +223,6 @@ function sendemail($messageno, $target, $id) {
 	}
 }
 
-function listrequests($type) {
-	/*
-	 * List requests, at Zoom, and, on the main page
-	 */
-	global $secure;
-	global $enableEmailConfirm;
-	global $availableRequestStates;
-    	
-	global $requestLimitShowOnly;
-    
-    $database = gGetDb();
-	
-	if($secure != 1) { die("Not logged in"); } // stw(2014-02-09) why is this here?
-   
-    if (!array_key_exists($type, $availableRequestStates)) {
-        throw new Exception("huh? unknown type.");
-    }
-    
-    $totalRequestsStatement = $database->prepare("SELECT COUNT(*) FROM request WHERE status = :type AND emailconfirm = 'Confirmed';");
-    $totalRequestsStatement->bindParam(":type", $type);
-    $totalRequestsStatement->execute();
-    $totalRequests = $totalRequestsStatement->fetchColumn();
-    
-    if ($enableEmailConfirm == 1) {		
-		$query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed' LIMIT :lim;";
-	} else {
-        $query = "SELECT * FROM request WHERE status = :type LIMIT :lim;";
-	}
-
-    $statement = $database->prepare($query);
-    $statement->bindParam(":type", $type);
-    $statement->bindParam(":lim", $requestLimitShowOnly, PDO::PARAM_INT);
-    $statement->execute();
-    
-    $requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
-    foreach($requests as $req)
-    {
-        $req->setDatabase($database);   
-    }
-
-    global $smarty;
-    $smarty->assign("requests", $requests);
-    $smarty->assign("requestLimitShowOnly", $requestLimitShowOnly);
-    $smarty->assign("totalRequests", $totalRequests);
-    
-    return $smarty->fetch("mainpage/requestlist.tpl");
-}
-
 function isProtected($requestid)
 {
 	global $protectReservedRequests;
@@ -356,19 +308,51 @@ function getdevs() {
 }
 
 function defaultpage() {
-	global $availableRequestStates, $defaultRequestStateKey;
+	global $availableRequestStates, $defaultRequestStateKey, $requestLimitShowOnly, $enableEmailConfirm;
+    
+    $database = gGetDb();
     
     $requestSectionData = array();
-	// list requests in each section
-	foreach($availableRequestStates as $k => $v) 
+    
+    if ($enableEmailConfirm == 1) 
+    {		
+        $query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed' LIMIT :lim;";
+        $totalquery = "SELECT COUNT(*) FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
+    } 
+    else 
     {
-        $requestSectionData[$v['header']] = listrequests($k);
+        $query = "SELECT * FROM request WHERE status = :type LIMIT :lim;";
+        $totalquery = "SELECT COUNT(*) FROM request WHERE status = :type;";
+    }
+    
+    $statement = $database->prepare($query);
+    $statement->bindParam(":lim", $requestLimitShowOnly, PDO::PARAM_INT);
+    
+    $totalRequestsStatement = $database->prepare($totalquery);
+            
+	// list requests in each section
+	foreach($availableRequestStates as $type => $v) 
+    {
+        $statement->bindParam(":type", $type);
+        $statement->execute();
+        
+        $requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
+        foreach($requests as $req)
+        {
+            $req->setDatabase($database);   
+        }
+
+        $totalRequestsStatement->bindParam(":type", $type);
+        $totalRequestsStatement->execute();
+        $totalRequests = $totalRequestsStatement->fetchColumn();
+
+        $requestSectionData[$v['header']] = array("requests" => $requests, "total" => $totalRequests);
     }
     
     global $smarty;
+    $smarty->assign("requestLimitShowOnly", $requestLimitShowOnly);
 	
     $query = "SELECT pend_id, pend_name, pend_checksum, log_time FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
-    $database = gGetDb();
     $statement = $database->prepare($query);
     $statement->execute();
     
