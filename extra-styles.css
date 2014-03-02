@@ -42,3 +42,7 @@
     color: #333333;
     text-decoration: none;
 }
+
+.linkWrapSection .btn {
+    margin-bottom: 5px;
+}
