@@ -1,4 +1,4 @@
-set<?php
+<?php
 if (!defined("ACC")) {
 	die();
 } // Invalid entry point
