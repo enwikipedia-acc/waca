@@ -297,65 +297,43 @@ elseif ($action == "forgotpw")
 {
 	if (isset ($_GET['si']) && isset ($_GET['id'])) 
     {
+        $user = User::getById($_GET['id']);
+        
 		if (isset ($_POST['pw']) && isset ($_POST['pw2'])) 
         {
-			$puser = sanitize($_GET['id']);
-			$query = "SELECT * FROM acc_user WHERE user_id = '$puser';";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-            {
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-            }
-            
-			$row = mysql_fetch_assoc($result);
-			$hashme = $row['user_name'] . $row['user_email'] . $row['user_welcome_templateid'] . $row['user_id'] . $row['user_pass'];
-			$hash = md5($hashme);
+			$hash = $user->getForgottenPasswordHash();
             
 			if ($hash == $_GET['si']) 
             {
 				if ($_POST['pw'] == $_POST['pw2']) 
                 {
-					$pw = authutils::encryptPassword($_POST['pw2']);
-					$query = "UPDATE acc_user SET user_pass = '$pw' WHERE user_id = '$puser';";
-					$result = mysql_query($query, $tsSQLlink);
-					if (!$result) 
-                    {
-						sqlerror("Query failed: $query ERROR: " . mysql_error());
-					}
+                    $user->setPassword($_POST['pw2']);
+                    $user->save();
                     
-					echo "Password reset!\n<br />\nYou may now <a href=\"$tsurl/acc.php\">Login</a>";
+                    BootstrapSkin::displayAlertBox("You may now <a href=\"$tsurl/acc.php\">Login</a>", "alert-error", "Password reset!", true, false);
+                    BootstrapSkin::displayInternalFooter();
+                    die();
 				} 
                 else 
                 {
-					echo "<h2>ERROR</h2>Passwords did not match!<br />\n";
+                    BootstrapSkin::displayAlertBox("Passwords did not match!", "alert-error", "Error", true, false);
+                    BootstrapSkin::displayInternalFooter();
+                    die();
 				}
 			} 
             else 
             {
-				echo "<h2>ERROR</h2>\nInvalid request.1<br />";
+                BootstrapSkin::displayAlertBox("Invalid request<!-- 1 -->", "alert-error", "Error", true, false);
+                BootstrapSkin::displayInternalFooter();
+                die();
 			}
-            
-			$skin->displayPfooter();
-			die();
 		}
         
-		$puser = sanitize($_GET['id']);
-		$query = "SELECT * FROM acc_user WHERE user_id = '$puser';";
-		$result = mysql_query($query, $tsSQLlink );
-        
-		if (!$result)
-        {
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-        }
-        
-		$row = mysql_fetch_assoc($result);
-		$hashme = $row['user_name'] . $row['user_email'] . $row['user_welcome_templateid'] . $row['user_id'] . $row['user_pass'];
-		$hash = md5($hashme);
+		$hash = $user->getForgottenPasswordHash();
         
 		if ($hash == $_GET['si']) 
         {
-			$smarty->assign('user_name',$row['user_name']);
-			$smarty->assign('user_email',$row['user_email']);
+			$smarty->assign('user', $user);
 			$smarty->assign('si',$_GET['si']);
 			$smarty->assign('id',$_GET['id']);
 			$smarty->display('forgot-password/forgotpwreset.tpl');
@@ -371,39 +349,37 @@ elseif ($action == "forgotpw")
     
 	if (isset ($_POST['username'])) 
     {
-		$puser = mysql_real_escape_string($_POST['username']);
-		$query = "SELECT * FROM acc_user WHERE user_name = '$puser';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
+        $user = User::getByUsername($_POST['username']);
+
+		if ($user == false) 
         {
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-        }
-        
-		$row = mysql_fetch_assoc($result);
-		if (!isset($row['user_id'])) 
-        {
-			echo "<h2>ERROR</h2>Missing or incorrect Username supplied.\n";
+            BootstrapSkin::displayAlertBox("Could not find user with that username and email address!", "alert-error", "Error", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
 		}
-		elseif (strtolower($_POST['email']) != strtolower($row['user_email'])) 
+		elseif (strtolower($_POST['email']) != strtolower($user->getEmail())) 
         {
-			echo "<h2>ERROR</h2>Missing or incorrect Email address supplied.\n";
+            BootstrapSkin::displayAlertBox("Could not find user with that username and email address!", "alert-error", "Error", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
 		}
 		else
         {
-		    $hashme = $row['user_name'] . $row['user_email'] . $row['user_welcome_templateid'] . $row['user_id'] . $row['user_pass'];
-		    $hash = md5($hashme);
+		    $hash = $user->getForgottenPasswordHash();
 		    // re bug 29: please don't escape the url parameters here: it's a plain text email so no need to escape, or you break the link
-		    $mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested a password reset for your account.\n\nPlease go to $tsurl/acc.php?action=forgotpw&si=$hash&id=" . $row['user_id'] . " to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
+		    $mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested a password reset for your account.\n\nPlease go to $tsurl/acc.php?action=forgotpw&si=$hash&id=" . $user->getId() . " to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
 		    $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-		    mail($row['user_email'], "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
-		    echo "Your password reset request has been completed. Please check your e-mail.\n<br />";
+		    mail($user->getEmail(), "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
+            BootstrapSkin::displayAlertBox("<strong>Your password reset request has been completed.</strong> Please check your e-mail.", "alert-success", "", false, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
 		}
 	}
     
     $smarty->display('forgot-password/forgotpw.tpl');
 
-	$skin->displayPfooter();
-	die();
+    BootstrapSkin::displayInternalFooter();
+    die();
 }
 elseif ($action == "login") {
 	$puser = sanitize($_POST['username']);

@@ -1,4 +1,4 @@
-<?php
+set<?php
 if (!defined("ACC")) {
 	die();
 } // Invalid entry point
@@ -385,4 +385,9 @@ class User extends DataObject
     }
     
     #endregion 
+
+    public function getForgottenPasswordHash()
+    {
+        return md5($this->username . $this->email . $this->welcome_template . $this->id -> $this->password);
+    }
 }
