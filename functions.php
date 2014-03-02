@@ -277,17 +277,24 @@ function isReservedWithRow($row) {
  * @param (ignored)
  * @todo re-implement parameters
  */
-function showlogin($action=null, $params=null) {
+function showlogin($action=null, $params=null) 
+{
     global $smarty;
-    
     
 	// Check whether there are any errors.
     $errorbartext = "";
 	if (isset($_GET['error'])) {
-		if ($_GET['error']=='authfail') {
+		if ($_GET['error']=='authfail') 
+        {
             $errorbartext = BootstrapSkin::displayAlertBox("Username and/or password incorrect. Please try again.", "alert-error","Auth failure",true,false,true);
-		} elseif ($_GET['error']=='noid') {
+		} 
+        elseif ($_GET['error']=='noid') 
+        {
             $errorbartext = BootstrapSkin::displayAlertBox("User account is not identified. Please email accounts-enwiki-l@lists.wikimedia.org if you believe this is in error.", "alert-error","Auth failure",true,false,true);
+		} 
+        elseif ($_GET['error']=='newacct') 
+        {
+            $errorbartext = BootstrapSkin::displayAlertBox("I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.", "alert-info","Account pending",true,false,true);
 		}
 	}
     $smarty->assign("errorbar", $errorbartext);   

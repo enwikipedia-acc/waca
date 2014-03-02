@@ -78,8 +78,12 @@ class internalInterface {
 		
 		return $whoactive;
 	}
-	public function login($user, $ip, $password, $newaction) {
+	
+    public function login($user, $ip, $password, $newaction) 
+    {
 		global $tsSQL, $forceIdentification, $tsurl, $skin;
+        
+        
 		$result = $tsSQL->query("SELECT * FROM acc_user WHERE user_name = \"$user\";");
 		// Display error upon failure.
 		if (!$result) 
@@ -146,6 +150,7 @@ class internalInterface {
 				header("Location: $tsurl/acc.php");
 		}
 	}
+    
 	public function checkreqid($id) {
 		global $skin, $tsSQL;
 		/*

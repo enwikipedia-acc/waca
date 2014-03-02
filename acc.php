@@ -287,10 +287,10 @@ elseif ($action == "sreg") {
 	die();
 }
 
-elseif ($action == "register") {
-	global $smarty;
+elseif ($action == "register") 
+{
     $smarty->display("register.tpl");
-	$skin->displayPfooter();
+	BootstrapSkin::displayInternalFooter();
 	die();
 }
 elseif ($action == "forgotpw")
