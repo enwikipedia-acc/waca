@@ -332,14 +332,11 @@ elseif ($action == "forgotpw") {
 		$hashme = $row['user_name'] . $row['user_email'] . $row['user_welcome_templateid'] . $row['user_id'] . $row['user_pass'];
 		$hash = md5($hashme);
 		if ($hash == $_GET['si']) {
-			echo '<h2>Reset password for '. htmlentities($row['user_name']).' ('.htmlentities($row['user_email']).')</h2><form action="'.$tsurl.'/acc.php?action=forgotpw&amp;si='.htmlentities($_GET['si']).'&amp;id='. htmlentities($_GET['id']).'" method="post">';
-			echo <<<HTML
-			New Password: <input type="password" name="pw"><br />
-            New Password (confirm): <input type="password" name="pw2"><br />
-            <input type="submit"><input type="reset">
-            </form><br />
-HTML;
-            echo "Return to <a href=\"$tsurl/acc.php\">Login</a>";
+			$smarty->assign('user_name',$row['user_name']);
+			$smarty->assign('user_email',$row['user_email']);
+			$smarty->assign('si',$_GET['si']);
+			$smarty->assign('id',$_GET['id']);
+			$smarty->display('forgotpwreset.tpl');
 		} else {
 			echo "<h2>ERROR</h2>\nInvalid request. The HASH supplied in the link did not match the HASH in the database!<br />";
 		}
