@@ -336,7 +336,7 @@ elseif ($action == "forgotpw") {
 			$smarty->assign('user_email',$row['user_email']);
 			$smarty->assign('si',$_GET['si']);
 			$smarty->assign('id',$_GET['id']);
-			$smarty->display('forgotpwreset.tpl');
+			$smarty->display('forgot-password/forgotpwreset.tpl');
 		} else {
 			echo "<h2>ERROR</h2>\nInvalid request. The HASH supplied in the link did not match the HASH in the database!<br />";
 		}
@@ -366,7 +366,8 @@ elseif ($action == "forgotpw") {
 		echo "Your password reset request has been completed. Please check your e-mail.\n<br />";
 		}
 	}
-$smarty->display('forgotpw.tpl');
+    
+    $smarty->display('forgot-password/forgotpw.tpl');
 
 	$skin->displayPfooter();
 	die();
