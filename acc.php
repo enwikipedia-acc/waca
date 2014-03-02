@@ -381,12 +381,81 @@ elseif ($action == "forgotpw")
     BootstrapSkin::displayInternalFooter();
     die();
 }
-elseif ($action == "login") {
-	$puser = sanitize($_POST['username']);
-	$ip = sanitize($_SERVER['REMOTE_ADDR']);
-	$password = $_POST['password'];
-	$newaction = $_GET['newaction'];
-	$internalInterface -> login($puser, $ip, $password, $newaction);
+elseif ($action == "login") 
+{
+    $user = User::getByUsername($_POST['username'], gGetDb());
+    
+    if($user == false || !$user->authenticate($_POST['password']) )
+    {
+        header("Location: $tsurl/acc.php?error=authfail&tplUsername=" . urlencode($_POST['username']));
+        die();
+    }
+    
+    // At this point, the user has successfully authenticated themselves.
+    // We now proceed to perform login-specific actions, and check the user actually has
+    // the correct permissions to continue with the login.
+    
+    if($user->getForcelogout())
+    {
+        $user->setForcelogout(false);
+        $user->save();
+    }
+    
+    if($user->isNew()) 
+    {
+        header("Location: $tsurl/acc.php?error=newacct");
+        die();
+    }
+    
+    $database = gGetDb();
+    $suspendstatement = $database->prepare("SELECT log_cmt FROM acc_log WHERE log_action = :action AND log_pend = :userid ORDER BY log_time DESC LIMIT 1;");
+    
+    if($user->isDeclined()) 
+    {
+        $suspendAction = "Declined";
+        $userid = $user->getId();
+        $suspendstatement->bindParam(":action", $suspendAction);
+        $suspendstatement->bindParam(":userid", $userid);
+        $suspendstatement->execute();
+        
+        $suspendreason = $suspendstatement->fetchColumn();
+        
+        BootstrapSkin::displayInternalHeader();
+        $smarty->assign("suspendreason", $suspendreason);
+        $smarty->display("login/declined.tpl");
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+    if($user->isSuspended()) 
+    {
+        $suspendAction = "Suspended";
+        $userid = $user->getId();
+        $suspendstatement->bindParam(":action", $suspendAction);
+        $suspendstatement->bindParam(":userid", $userid);
+        $suspendstatement->execute();
+        
+        $suspendreason = $suspendstatement->fetchColumn();
+        
+        BootstrapSkin::displayInternalHeader();
+        $smarty->assign("suspendreason", $suspendreason);
+        $smarty->display("login/suspended.tpl");
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+    if($user->isIdentified() && $forceIdentification == 1) 
+    {
+        header("Location: $tsurl/acc.php?error=noid");
+        die();
+    }
+    
+    // At this point, we've tested that the user is OK, so we set the login cookies.
+    
+    $_SESSION['user'] = $user->getUsername();
+    $_SESSION['userID'] = $user->getId();
+    
+    header("Location: $tsurl/acc.php");
 }
 elseif ($action == "messagemgmt") 
 {
