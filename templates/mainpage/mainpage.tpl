@@ -8,7 +8,7 @@
   {foreach from=$requestSectionData key="header" item="section"}
     <div>
       <h2>{$header} <small>({$section.total} request{if $section.total != 1}s{/if})</small></h2>
-      {include file="mainpage/requestlist.tpl" requests=$section}
+      {include file="mainpage/requestlist.tpl" requests=$section showStatus=false}
     </div>
   {/foreach}
 </div>

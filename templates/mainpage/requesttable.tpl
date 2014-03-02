@@ -4,7 +4,9 @@
 			<th data-defaultsort="asc"><span class="hidden-phone">#</span></th>
 			<td><!-- zoom --></td>
 			<td><!-- comment --></td>
-			<th>Request state</th>
+      {if $showStatus}
+			  <th>Request state</th>
+      {/if}
 			<th><span class="visible-desktop">Email address</span><span class="visible-tablet">Email and IP</span><span class="visible-phone">Request details</span></th>
 			<th><span class="visible-desktop">IP address</span></th>
 			<th><span class="hidden-phone">Username</span></th>

@@ -3,5 +3,5 @@
 {if count($requests) == 0}
 	nothing!
 {else}
-	{include file="mainpage/requesttable.tpl"}
+	{include file="mainpage/requesttable.tpl" showStatus=true}
 {/if}
