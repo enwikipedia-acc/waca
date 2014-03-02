@@ -5,6 +5,7 @@
     <a class="btn btn-small visible-desktop" href="{$tsurl}/acc.php?action=zoom&amp;id={$r->getId()}"><i class="icon-black icon-search"></i>&nbsp;Zoom</a>
   </td>
   <td>{if $r->hasComments() == true}<span class="label label-info visible-desktop">Comment</span>{/if}</td>
+  <td>{$r->getStatus()}</td>
 	<td>{if $currentUser->isAdmin() || $currentUser->isCheckUser() == true}<a href="mailto:{$r->getEmail()}" target="_blank">{$r->getEmail()}</a>&nbsp;<span class="badge{if count($r->getRelatedEmailRequests()) > 0} badge-important{/if}">{count($r->getRelatedEmailRequests())}</span><span class="hidden-desktop"><br /><a href="https://en.wikipedia.org/wiki/User_talk:{$r->getTrustedIp()}" target="_blank">{$r->getTrustedIp()}</a>&nbsp;<span class="badge {if count($r->getRelatedIpRequests()) > 0} badge-important{/if}">{count($r->getRelatedIpRequests())}</span>{/if}
 		<span class="visible-phone"><br /><a href="https://en.wikipedia.org/wiki/User:{$r->getName()}" target="_blank">{$r->getName()}</a></span></span></td>
 	<td>{if $currentUser->isAdmin() || $currentUser->isCheckUser() == true}<span class="visible-desktop"><a href="https://en.wikipedia.org/wiki/User_talk:{$r->getTrustedIp()}" target="_blank">{$r->getTrustedIp()}</a>&nbsp;<span class="badge {if count($r->getRelatedIpRequests()) > 0} badge-important{/if}">{count($r->getRelatedIpRequests())}</span></span>{/if}</td>
