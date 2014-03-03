@@ -1648,67 +1648,85 @@ elseif ($action == "reserve") {
 	die();
 		
 }
-elseif ($action == "breakreserve") {
-
-	$request = $internalInterface->checkreqid($_GET['resid']);
-	
-	//check request is reserved
-	$reservedBy = isReserved($request);
-	if( $reservedBy == "" ) {
-		$skin->displayRequestMsg("Request is not reserved.");
-		$skin->displayIfooter();
-		die();
-	}
-	if( $reservedBy != $_SESSION['userID'] )
+elseif ($action == "breakreserve") 
+{
+    $database = gGetDb();
+    
+    $request = Request::getById($_GET['resid'], $database);
+        
+    if($request == false)
+    {
+        BootstrapSkin::displayAlertBox("Could not find request.", "alert-error", "Error", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+    if($request->getReserved() == 0)
+    {
+        BootstrapSkin::displayAlertBox("Request is not reserved.", "alert-error", "Error", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+    $reservedUser = $request->getReservedObject();
+    
+    if($reservedUser == false)
+    {
+        BootstrapSkin::displayAlertBox("Could not find user who reserved the request (!!).", "alert-error", "Error", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+	if( $reservedUser->getId() != User::getCurrent()->getId() )
 	{
 		global $enableAdminBreakReserve;
-		if($enableAdminBreakReserve && ($session->hasright($_SESSION['user'], "Admin"))) {
+		if($enableAdminBreakReserve && User::getCurrent()->isAdmin()) 
+        {
 			if(isset($_GET['confirm']) && $_GET['confirm'] == 1)	
 			{
-				$query = "UPDATE `acc_pend` SET `pend_reserved` = '0' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
-				$result = mysql_query($query, $tsSQLlink);
-				if (!$result)
-					Die("Error unreserving request.");
-				$now = date("Y-m-d H-i-s");
-				$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$request', '".sanitise($_SESSION['user'])."', 'BreakReserve', '$now');";
-				$result = mysql_query($query, $tsSQLlink);
-				if (!$result)
-					sqlerror("Query failed: $query ERROR: " . mysql_error());
-				$accbotSend->send("Reservation on Request $request broken by " . $session->getUsernameFromUid($_SESSION['userID']));
+                $request->setReserved(0);
+                $request->save();
+
+				$query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :username, 'BreakReserve', CURRENT_TIMESTAMP());");
+                $query->bindParam(":request", $request->getId());
+                $query->bindParam(":username", User::getCurrent()->getUsername());
+                $query->execute();
+                
+				$accbotSend->send("Reservation on Request {$request->getId()} broken by " . User::getCurrent()->getUsername());
 				header("Location: acc.php");
 				die();
 			}
 			else
 			{
 				global $tsurl;
-				echo "Are you sure you wish to break " . $session->getUsernameFromUid($reservedBy) .
+                // TODO: Bootstrap
+				echo "Are you sure you wish to break " . $reservedUser->getUsername() .
 					"'s reservation?<br />" . 
-					"<a href=\"$tsurl/acc.php?action=breakreserve&resid=$request&confirm=1\">Yes</a> / " . 
-					"<a href=\"$tsurl/acc.php?action=zoom&id=$request\">No</a>";
-			}
-			}
-			else {
-				echo "You cannot break ".$session->getUsernameFromUid($reservedBy)."'s reservation";
+					"<a href=\"$tsurl/acc.php?action=breakreserve&resid={$request->getId()}&confirm=1\">Yes</a> / " . 
+                    "<a href=\"$tsurl/acc.php?action=zoom&id={$request->getId()}\">No</a>";
 			}
 		}
+		else 
+        {
+			echo "You cannot break " . $reservedUser->getUsername() . "'s reservation";
+		}
+	}
 	else
 	{
-		$query = "UPDATE `acc_pend` SET `pend_reserved` = '0' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-		{
-			die("Error unreserving request.");
-		}
-		$now = date("Y-m-d H-i-s");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$request', '".sanitise($_SESSION['user'])."', 'Unreserved', '$now');";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
+        $request->setReserved(0);
+        $request->save();
+
+        $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :username, 'Unreserved', CURRENT_TIMESTAMP());");
+        $query->bindParam(":request", $request->getId());
+        $query->bindParam(":username", User::getCurrent()->getUsername());
+        $query->execute();
+        
 		$accbotSend->send("Request $request is no longer being handled.");
 		header("Location: acc.php");
 		die();
 	}
-	$skin->displayIfooter();
+    
+	BootstrapSkin::displayInternalFooter();
 	die();		
 }
 
