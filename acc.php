@@ -1858,48 +1858,45 @@ elseif ($action == "changepassword") {
 	$newpasswordconfirm = sanitize($_POST['newpasswordconfirm']);
 	$sessionuser = sanitize($_SESSION['user']);
 	
-	if ((!isset($_POST['oldpassword'])) || $_POST['oldpassword'] == "" ) { //Throw an error if old password is not specified.
-		$skin->displayRequestMsg("You did not enter your old password.<br />\n");	
-		$skin->displayIfooter();
+	if ((!isset($_POST['oldpassword'])) || $_POST['oldpassword'] == "" ) 
+    { 
+        //Throw an error if old password is not specified.
+        BootstrapSkin::displayAlertBox("You did not enter your old password.", "alert-error", "Error", true, false);
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
 	
-	if ((!isset($_POST['newpassword'])) || $_POST['newpassword'] == "" ) { //Throw an error if new password is not specified.
-		$skin->displayRequestMsg("You did not enter your new password.<br />\n");	
-		$skin->displayIfooter();
-		die();
+	if ((!isset($_POST['newpassword'])) || $_POST['newpassword'] == "" ) 
+    { 
+        //Throw an error if new password is not specified.
+        BootstrapSkin::displayAlertBox("You did not enter your new password.", "alert-error", "Error", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
 	}
 	
-	if ($_POST['newpassword'] != $_POST['newpasswordconfirm']) { //Throw an error if new password does not match what is in the confirmation box.
-		$skin->displayRequestMsg("The 2 new passwords you entered do not match.<br />\n");	
-		$skin->displayIfooter();
+	if ($_POST['newpassword'] != $_POST['newpasswordconfirm']) 
+    { 
+        //Throw an error if new password does not match what is in the confirmation box.
+        BootstrapSkin::displayAlertBox("The 2 new passwords you entered do not match.", "alert-error", "Error", true, false);
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	
-	$query = "SELECT * FROM acc_user WHERE user_name = '$sessionuser';"; //Run a query to get information about the logged in user.
-	$result = mysql_query($query, $tsSQLlink);
-    if (!$result) {
-    	sqlerror("Query failed: $query ERROR: " . mysql_error());
-    }
-    $row = mysql_fetch_assoc($result);
     
-   
-    if ( ! authutils::testCredentials( $_POST['oldpassword'], $row['user_pass'] ) ) { //Throw an error if the old password field's value does not match the user's current password.
-    	$skin->displayRequestMsg("The old password you entered is not correct.<br />\n");	
-		$skin->displayIfooter();
+    $user = User::getCurrent();
+	   
+    if ( ! $user->authenticate($_POST['oldpassword']) ) 
+    { 
+        //Throw an error if the old password field's value does not match the user's current password.
+        BootstrapSkin::displayAlertBox("The old password you entered is not correct.", "alert-error", "Error", true, false);
+		BootstrapSkin::displayInternalFooter();
 		die();
     }
     
-    $user_pass = authutils::encryptPassword($newpassword); //Encrypt the new password before entering it into the database.
+    $user->setPassword($_POST['newpassword']);
+    $user->save();
     
-    $query2 = "UPDATE acc_user SET user_pass = '$user_pass' WHERE user_name = '$sessionuser';"; //Update the password in the database.
-    $result2 = mysql_query($query2, $tsSQLlink);
-    if (!$result2) {
-    	sqlerror("Query failed: $query2 ERROR: " . mysql_error());
-    }
-    
-    $skin->displayRequestMsg("Password successfully changed!<br />\n");	//Output a success message if we got this far.
-	$skin->displayIfooter();
+    BootstrapSkin::displayAlertBox("Password successfully changed!", "alert-success",false, false);
+	BootstrapSkin::displayInternalFooter();
 	die();
 }
 elseif ($action == "ec")
