@@ -126,8 +126,9 @@
 
 	{block name="modals"}{include file="modal-flowchart.tpl"}{/block}
 	
-	{block name="sitenotice"}
+
     <div class="container-fluid">
+	{block name="sitenotice"}
 	{if $userid != 0}
 		<div class="row-fluid">
 			<!-- site notice -->
@@ -140,3 +141,8 @@
 		</div><!--/row-->
 	{/if}
 	{/block}
+	{if count($alerts) > 0}
+		{foreach $alerts as $a}
+			{$a->getAlertBox()}
+		{/foreach}
+	{/if}

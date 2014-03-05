@@ -35,6 +35,7 @@ class BootstrapSkin {
         $smarty->assign("userid", $userid);
         $smarty->assign("username", $user);
         $smarty->assign("sitenotice", $sitenotice);
+        $smarty->assign("alerts", SessionAlert::retrieve());
         $smarty->display("header-internal.tpl");
         //print_r($_SESSION);
         
