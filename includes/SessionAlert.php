@@ -34,6 +34,8 @@ class SessionAlert
         }
         
         $data[] = serialize( $alert );
+        
+        $_SESSION['alerts'] = $data;
     }
     
     public static function retrieve()
