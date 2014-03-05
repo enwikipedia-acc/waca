@@ -1510,143 +1510,89 @@ elseif ($action == "logs") {
 	$skin->displayIfooter();
 	die();
 }
-elseif ($action == "reserve") {
-	// Gets the global variables.
-	global $allowDoubleReserving, $skin;
-	
-	// Sanitises the resid for use and checks its validity.
-	$request = $internalInterface->checkreqid($_GET['resid']);
+elseif ($action == "reserve") 
+{    
+    $database = gGetDb();
+    
+    $database->transactionally(function() use ($database)
+    {
+        $request = Request::getById($_GET['resid'], gGetDb());
+        
+        if($request == false)
+        {
+            throw new TransactionException("Request not found", "Error");
+        }
+        
+        global $enableEmailConfirm, $allowDoubleReserving, $tsurl, $accbotSend;
+	    if($enableEmailConfirm == 1)
+        {
+            if($request->getEmailConfirm() != "Confirmed")
+		    {
+                throw new TransactionException("Email address not yet confirmed for this request.", "Error");
+		    }
+	    }
 
-	global $enableEmailConfirm;
-	if($enableEmailConfirm == 1){
-		// check the request is email-confirmed to prevent jumping the gun (ACC-122)
-		$mcresult = mysql_query('SELECT pend_mailconfirm FROM acc_pend WHERE pend_id = ' . $request . ';', $tsSQLlink) or die(sqlerror(mysql_error(),"error"));
-		$mcrow = mysql_fetch_row($mcresult);
-		if($mcrow[0] != "Confirmed")
-		{
-			$skin->displayRequestMsg("This request is not yet email-confirmed!");
-			die();
-		}
-	}
-	
-	$query = "SELECT pend_status FROM acc_pend WHERE pend_id = '$request';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-	$query2 = "SELECT log_time FROM acc_log WHERE log_pend = '$request' AND log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 1;";
-	$result2 = mysql_query($query2, $tsSQLlink);
-	if (!$result2)
-		sqlerror("Query failed: $query2 ERROR: " . mysql_error());
-	$row2 = mysql_fetch_assoc($result2);
-	$date->modify("-7 days");
-	$oneweek = $date->format("Y-m-d H:i:s");
-	if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && !($session->hasright($_SESSION['user'], "Admin"))) {
-		$skin->displayRequestMsg("Only administrators and checkusers can reserve a request that has been closed for over a week.");	
-		$skin->displayIfooter();
-		die();
-	}
-	
-	// Lock the tables to avoid a possible conflict.
-	// See the following bug: http://www.webcitation.org/6MjKF433v (ACC-101)
-	mysql_query('LOCK TABLES acc_pend,acc_log WRITE;',$tsSQLlink);
-	
-	// Check if the request is not reserved.
-	$reservedBy = isReserved($request);
-	if($reservedBy != false)
-	{
-		// Notify the user that the request is already reserved.
-		die("Request already reserved by ".$session->getUsernameFromUid($reservedBy));
-	}
-	
-	if(isset($allowDoubleReserving)){
-		// Check the number of requests a user has reserved already
-		$doubleReserveCountQuery = "SELECT COUNT(*) FROM acc_pend WHERE pend_reserved = ".$_SESSION['userID'].';';
-		$doubleReserveCountResult = mysql_query($doubleReserveCountQuery, $tsSQLlink);
-		if (!$doubleReserveCountResult)	Die("Error in determining other reserved requests.");
-		$doubleReserveCountRow = mysql_fetch_assoc($doubleReserveCountResult);
-		$doubleReserveCount = $doubleReserveCountRow['COUNT(*)'];
+        $logQuery = $database->prepare("SELECT log_time FROM acc_log WHERE log_pend = :request AND log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 1;");
+        $logQuery->bindValue(":request", $request->getId());
+        $logQuery->execute();
+        $logTime = $logQuery->fetchColumn();
+        
+        $date = new DateTime();
+        $date->modify("-7 days");
+	    $oneweek = $date->format("Y-m-d H:i:s");
+        
+	    if ($request->getStatus() == "Closed" && $logTime < $oneweek && !User::getCurrent()->isAdmin()) 
+        {
+            throw new TransactionException("Only administrators and checkusers can reserve a request that has been closed for over a week.", "Error");
+	    }
+        
+       	if($request->getReserved() != 0)
+        {
+            throw new TransactionException("Request is already reserved by {$request->getReservedObject()->getUsername()}.", "Error");
+        }
+           
+        if(isset($allowDoubleReserving))
+        {
+		    // Check the number of requests a user has reserved already
+        
+		    $doubleReserveCountQuery = $database->prepare("SELECT COUNT(*) FROM request WHERE reserved = :userid;");
+            $doubleReserveCountQuery->bindValue(":userid", User::getCurrent()->getId());
+            $doubleReserveCountQuery->execute();
+		    $doubleReserveCount = $doubleReserveCountQuery->fetchColumn();
 		
-		// User already has at least one reserved. 
-		if( $doubleReserveCount != 0) 
-		{
-			switch($allowDoubleReserving)
-			{
-				case "warn":
-					// Alert the user.
-					if(isset($_GET['confdoublereserve']) && $_GET['confdoublereserve'] == "yes")
-					{
-						// The user confirms they wish to reserve another request.
-					}
-					else
-					{
-						//Unlock tables first!
-						mysql_query("UNLOCK TABLES;", $tsSQLlink);
-						die('You already have reserved a request. Are you sure you wish to reserve another?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confdoublereserve=yes">Yes, reserve this request also</a></li><li><a href="' . $tsurl . '/acc.php">No, return to main request interface</a></li></ul>');
-					}
-					break;
-				case "deny":
-					//Unlock tables first!
-					mysql_query("UNLOCK TABLES;", $tsSQLlink);
-					// Prevent the user from continuing.
-					die('You already have a request reserved!<br />Your request to reserve an additional request has been denied.<br /><a href="' . $tsurl . '/acc.php">Return to main request interface</a>');
-					break;
-				case "inform":
-					// Tell the user that they already have requests reserved, but let them through anyway..
-					echo '<div id="doublereserve-warn">WARNING: You have multiple requests reserved.</div>';
-					break;
-				case "ignore":
-					// Do sod all.
-					break;
-				default:
-					// Do sod all.
-					break;
-			}
-		}
-	}
+		    // User already has at least one reserved. 
+		    if( $doubleReserveCount != 0) 
+		    {
+                SessionAlert::warning("You have multiple requests reserved!");
+		    }
+	    }
 	
-	// Is the request closed?
-	if(! isset($_GET['confclosed']) )
-	{
-		$query = "select pend_status from acc_pend where pend_id = '".$request."';";
-		$result = mysql_query($query,$tsSQLlink);
-		$row = mysql_fetch_assoc($result);
-		if($row['pend_status']=="Closed")
-		{		
-			//Unlock tables first!
-			mysql_query("UNLOCK TABLES;", $tsSQLlink);
-			Die('This request is currently closed. Are you sure you wish to reserve it?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confclosed=yes">Yes, reserve this closed request</a></li><li><a href="' . $tsurl . '/acc.php">No, return to main request interface</a></li></ul>');			
-		}
-	}	
+	    // Is the request closed?
+	    if(! isset($_GET['confclosed']) )
+	    {
+		    if($request->getStatus() == "Closed")
+		    {		
+                // FIXME: bootstrappify properly
+			    throw new TransactionException('This request is currently closed. Are you sure you wish to reserve it?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confclosed=yes">Yes, reserve this closed request</a></li><li><a href="' . $tsurl . '/acc.php">No, return to main request interface</a></li></ul>', "Request closed", "alert-info");
+		    }
+	    }	
+        
+        $request->setReserved(User::getCurrent()->getId());
+        $request->save();
 	
-	// No, lets reserve the request.
-	$query = "UPDATE `acc_pend` SET `pend_reserved` = '".$_SESSION['userID']."' WHERE `acc_pend`.`pend_id` = $request LIMIT 1;";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result){		//Unlock tables first!
-		mysql_query("UNLOCK TABLES;", $tsSQLlink);
-		Die("Error reserving request.");
-	}
-	$now = date("Y-m-d H-i-s");
-	$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$request', '".sanitise($_SESSION['user'])."', 'Reserved', '$now');";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$accbotSend->send("Request $request is being handled by " . $session->getUsernameFromUid($_SESSION['userID']));
+        $query = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :user, 'Reserved', CURRENT_TIMESTAMP);");
+        $query->bindValue(":user", User::getCurrent()->getUsername());
+        $query->bindValue(":request", $request->getId());
+        $query->execute();
+    
+        $accbotSend->send("Request {$request->getId()} is being handled by " . User::getCurrent()->getUsername());
+                
+        SessionAlert::success("Reserved request {$request->getId()}.");
 
-	// Release the lock on the table.
-	mysql_query('UNLOCK TABLES;',$tsSQLlink);
-	
-	if($doubleReserveCount) {
-		//Autorefresh is probably not a good idea when warnings are displayed, as there is no guarantee that the user has acknowledged the warning.  Disabling.  This also resolves Issue #3 on GitHub.  --FastLizard4
-		echo "<p><a href=\"{$tsurl}/acc.php?action=zoom&id={$request}\">Acknowledge, return to request page</a></p>\n";
-	} else {
-		// Decided to use the HTML redirect, because the PHP code results in an error.
-		// I know that this breaks the Back button, but currently I dont have another solution.
-		// As an alternative one could implement output buffering to solve this problem.
-		echo "<meta http-equiv=\"Refresh\" Content=\"0; URL=$tsurl/acc.php?action=zoom&id=$request\">";
-}
-	die();
-		
+        header("Location: $tsurl/acc.php?action=zoom&id={$request->getId()}");
+    });
+	    
+	die();	
 }
 elseif ($action == "breakreserve") 
 {
@@ -1721,7 +1667,7 @@ elseif ($action == "breakreserve")
         $query->bindParam(":username", User::getCurrent()->getUsername());
         $query->execute();
         
-		$accbotSend->send("Request $request is no longer being handled.");
+		$accbotSend->send("Request {$request->getId()} is no longer being handled.");
 		header("Location: acc.php");
 		die();
 	}
