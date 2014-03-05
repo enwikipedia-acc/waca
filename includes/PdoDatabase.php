@@ -85,4 +85,29 @@ class PdoDatabase extends PDO {
 		parent::rollback();
 		$this->hasActiveTransaction = false;
 	}
+    
+    public function transactionally(callable $method)
+    {
+        if( ! $this->beginTransaction() ) 
+        {
+            BootstrapSkin::displayAlertBox("Error starting database transaction.", "alert-error", "Database transaction error", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
+        }
+        
+        try
+        {
+            $method();
+            
+            $this->commit();
+        }
+        catch(TransactionException $ex)
+        {
+            $this->rollBack();
+            
+            BootstrapSkin::displayAlertBox($ex->getMessage(), $ex->getAlertType(), $ex->getTitle(), true, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
+        }
+    }
 }
