@@ -40,11 +40,6 @@ function gGetDb($db = "acc") {
         // -- stw 2014-02-11
         $accdbobject->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
         
-        // FIXME: remove this! it shouldn't be here. 
-        //    temp fix for bug.
-        // -- stw 2014-03-05
-        $accdbobject->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
-        
         $accdbobjects[ $db ] = $accdbobject;
 	}
 	return $accdbobjects[ $db ];
