@@ -420,6 +420,8 @@ elseif ($action == "login")
         
         $suspendreason = $suspendstatement->fetchColumn();
         
+        $suspendstatement->closeCursor();
+        
         BootstrapSkin::displayInternalHeader();
         $smarty->assign("suspendreason", $suspendreason);
         $smarty->display("login/declined.tpl");
@@ -436,6 +438,8 @@ elseif ($action == "login")
         $suspendstatement->execute();
         
         $suspendreason = $suspendstatement->fetchColumn();
+        
+        $suspendstatement->closeCursor();
         
         BootstrapSkin::displayInternalHeader();
         $smarty->assign("suspendreason", $suspendreason);
@@ -1536,6 +1540,7 @@ elseif ($action == "reserve")
         $logQuery->bindValue(":request", $request->getId());
         $logQuery->execute();
         $logTime = $logQuery->fetchColumn();
+        $logQuery->closeCursor();
         
         $date = new DateTime();
         $date->modify("-7 days");
@@ -1559,6 +1564,7 @@ elseif ($action == "reserve")
             $doubleReserveCountQuery->bindValue(":userid", User::getCurrent()->getId());
             $doubleReserveCountQuery->execute();
 		    $doubleReserveCount = $doubleReserveCountQuery->fetchColumn();
+            $doubleReserveCountQuery->closeCursor();
 		
 		    // User already has at least one reserved. 
 		    if( $doubleReserveCount != 0) 
