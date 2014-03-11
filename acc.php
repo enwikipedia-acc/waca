@@ -448,7 +448,7 @@ elseif ($action == "login")
         die();
     }
     
-    if($user->isIdentified() && $forceIdentification == 1) 
+    if(!$user->isIdentified() && $forceIdentification == 1) 
     {
         header("Location: $tsurl/acc.php?error=noid");
         die();
