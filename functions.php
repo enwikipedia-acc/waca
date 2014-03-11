@@ -352,7 +352,8 @@ function defaultpage() {
         $totalRequestsStatement->bindParam(":type", $type);
         $totalRequestsStatement->execute();
         $totalRequests = $totalRequestsStatement->fetchColumn();
-
+        $totalRequestsStatement->closeCursor();
+        
         $requestSectionData[$v['header']] = array("requests" => $requests, "total" => $totalRequests);
     }
     
