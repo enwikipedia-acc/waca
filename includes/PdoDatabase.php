@@ -86,7 +86,7 @@ class PdoDatabase extends PDO {
 		$this->hasActiveTransaction = false;
 	}
     
-    public function transactionally(callable $method)
+    public function transactionally($method)
     {
         if( ! $this->beginTransaction() ) 
         {
