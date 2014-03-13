@@ -15,18 +15,26 @@ if (!defined("ACC")) {
     die();
 } // Invalid entry point
 
-class Offline {
+class Offline 
+{
     public static function check($external)
     {
         global $smarty, $dontUseDb, $dontUseDbCulprit, $dontUseDbReason;
-		if ($dontUseDb) {
-			if ($external) {
+        
+		if ($dontUseDb) 
+        {
+			if ($external) 
+            {
 				$smarty->display("offline/external.tpl");
-            } else {
+            } 
+            else 
+            {
                 $smarty->assign("dontUseDbCulprit", $dontUseDbCulprit);
                 $smarty->assign("dontUseDbReason", $dontUseDbReason);
+                $smarty->assign("alerts", array());
 				$smarty->display("offline/internal.tpl");
 			}
+            
 			die();
 		}
     }
