@@ -505,8 +505,8 @@ elseif ($action == "messagemgmt")
             $message->save();
             
             $logStatement = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:message, :user, 'Edited', CURRENT_TIMESTAMP());");
-            $logStatement->bindParam(":message", $message->getId());
-            $logStatement->bindParam(":user", User::getCurrent()->getUsername());
+            $logStatement->bindValue(":message", $message->getId());
+            $logStatement->bindValue(":user", User::getCurrent()->getUsername());
             $logStatement->execute();
             
 			$mailname = $message->getDescription();

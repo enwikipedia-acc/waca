@@ -3,7 +3,7 @@
   {if $readonly}
     <div class="form-horizontal">
   {else}
-    <form action="{$tsurl}/acc.php?action=messagemgmt&amp;edit=1&amp;submit=1" method="post" class="form-horizontal">
+    <form action="{$tsurl}/acc.php?action=messagemgmt&amp;edit={$message->getId()}&amp;submit=1" method="post" class="form-horizontal">
   {/if}
     <div class="control-group">
       <label for="maildesc" class="control-label" >Description</label>

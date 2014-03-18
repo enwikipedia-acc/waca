@@ -22,3 +22,5 @@ temp/*
 core
 favicon.ico
 desktop.ini
+info.php
+web.*.config
