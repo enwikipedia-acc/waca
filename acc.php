@@ -525,7 +525,7 @@ elseif ($action == "messagemgmt")
 		die();
 	}
     
-    $fetchStatement = gGetDb()->prepare("SELECT * FROM interfacemessage WHERE type = :type");
+    $fetchStatement = gGetDb()->prepare("SELECT * FROM interfacemessage WHERE type = :type AND description NOT LIKE '%[deprecated]';");
     $data = array();
     
     $fetchStatement->execute(array(":type" => "Message"));
