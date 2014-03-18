@@ -528,8 +528,9 @@ elseif ($action == "messagemgmt")
     $fetchStatement = gGetDb()->prepare("SELECT * FROM interfacemessage WHERE type = :type AND description NOT LIKE '%[deprecated]';");
     $data = array();
     
-    $fetchStatement->execute(array(":type" => "Message"));
-    $data['Email messages'] = $fetchStatement->fetchAll(PDO::FETCH_CLASS, 'InterfaceMessage');
+    // hide from display, these are all deprecated now. --stw 17-MAR-2014
+    // $fetchStatement->execute(array(":type" => "Message"));
+    // $data['Email messages'] = $fetchStatement->fetchAll(PDO::FETCH_CLASS, 'InterfaceMessage');
     
     $fetchStatement->execute(array(":type" => "Interface"));
     $data['Public Interface messages'] = $fetchStatement->fetchAll(PDO::FETCH_CLASS, 'InterfaceMessage');
