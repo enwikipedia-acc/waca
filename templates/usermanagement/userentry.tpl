@@ -16,7 +16,7 @@
           <i class="icon icon-user"></i>&nbsp;
           <span class="visible-desktop">ID Noticeboard</span>
         </a>
-        <a class="btn" href="//tools.wmflabs.org/supercount/index.php?user={$user->getOnWikiName()|escape:'url'}&project=en.wikipedia">
+        <a class="btn" href="{$tsurl}/redir.php?tool=tparis-pcount&amp;data={$user->getOnWikiName()|escape:'url'}">
           <i class="icon icon-th"></i>&nbsp;
           <span class="visible-desktop">Count</span>
         </a>
