@@ -1179,11 +1179,17 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	// sanitise this input ready for inclusion in queries
     $request = Request::getById($_GET['id'], gGetDb());
     
-	$gid = $internalInterface->checkreqid($_GET['id']);
+    if ($request == false) {
+        // Notifies the user and stops the script.
+        BootstrapSkin::displayAlertBox("The request ID supplied is invalid!", "alert-error","Error",true,false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
 	$gem = sanitize($_GET['email']);
 	
 	// check the checksum is valid
-	if (csvalid($gid, $_GET['sum']) != 1) 
+	if (csvalid($request->getId(), $_GET['sum']) != 1) 
     {
         BootstrapSkin::displayAlertBox("This is similar to an edit conflict on Wikipedia; it means that you have tried to perform an action on a request that someone else has performed an action on since you loaded the page.", "alert-error", "Invalid Checksum", true, false);
         BootstrapSkin::displayInternalFooter();
@@ -1217,10 +1223,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
         BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	
-	$sid = sanitize($_SESSION['user']);
-    $gus = sanitize($request->getName());
-    
+	    
 	if ($request->getStatus() == "Closed") 
     {
         BootstrapSkin::displayAlertBox("Cannot close this request. Already closed.", "alert-error", "Error", true, false);
@@ -1350,7 +1353,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$skin->displayRequestMsg("Request " . $request->getId() . " (" . htmlentities($request->getName(),ENT_COMPAT,'UTF-8') . ") marked as 'Done'.<br />");
 	$towhom = $request->getEmail();
 	if ($gem != "0" && $gem != 'custom' && $gem != 'custom-y' && $gem != 'custom-n') {
-		sendemail($gem, $towhom, $gid);
+		sendemail($gem, $towhom, $request->getId());
         $request->setEmailSent(1);
 	}
     $request->save();
