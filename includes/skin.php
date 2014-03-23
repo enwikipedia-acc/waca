@@ -68,7 +68,7 @@ class BootstrapSkin {
      * Prints the internal interface footer to the screen.
      */
     public static function displayInternalFooter() {
-        global $smarty, $internalInterface, $tagstack;
+        global $smarty, $tagstack;
         
         // close all declared open tags
         while(count($tagstack) != 0) 
