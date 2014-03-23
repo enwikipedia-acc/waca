@@ -1036,64 +1036,76 @@ elseif ($action == "ban") {
     BootstrapSkin::displayInternalFooter();
     die();
 }
-elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
+elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") 
+{
 	global $availableRequestStates;
-	$target = sanitize($_GET['target']);
 	
-	if (array_key_exists($target, $availableRequestStates)) {
-			
+	if (array_key_exists($_GET['target'], $availableRequestStates)) 
+    {
+		$request = Request::getById($_GET['id'], gGetDb());
 		
-			
-		$gid = $internalInterface->checkreqid($_GET['id']);
-		if (csvalid($gid, $_GET['sum']) != 1) {
-			echo "Invalid checksum (This is similar to an edit conflict on Wikipedia; it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
-			$skin->displayIfooter();
-			die();
-		}
-		$sid = sanitize($_SESSION['user']);
-		$query = "SELECT pend_status FROM acc_pend WHERE pend_id = '$gid';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		$row = mysql_fetch_assoc($result);
-		$query2 = "SELECT log_time FROM acc_log WHERE log_pend = '$gid' AND log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 1;";
-		$result2 = mysql_query($query2, $tsSQLlink);
-		if (!$result2)
-			sqlerror("Query failed: $query2 ERROR: " . mysql_error());
-		$row2 = mysql_fetch_assoc($result2);
+        if($request == false)
+        {
+            BootstrapSkin::displayAlertBox("Could not find the specified request!", "alert-error", "Error!", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
+        }
+		
+        if( csvalid($request->getId(), $_GET['sum']) != 1 )
+        {
+            SessionAlert::error("This is similar to an edit conflict on Wikipedia; it means that you have tried to perform an action on a request that someone else has performed an action on since you loaded the page", "Invalid checksum");
+            header("Location: acc.php?action=zoom&id={$request->getId()}");
+            die();
+        }
+        
+		$statement = gGetDb()->prepare("SELECT log_time FROM acc_log WHERE log_pend = :request AND log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 1;");
+        $statement->execute(array(":request" => $request->getId()));
+        $logTime = $statement->fetchColumn();
+        $statement->closeCursor();
+        
+        $date = new DateTime();
 		$date->modify("-7 days");
 		$oneweek = $date->format("Y-m-d H:i:s");
-		if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && ! ($session->hasright($_SESSION['user'], "Admin"))) {
-			$skin->displayRequestMsg("Only administrators and checkusers can reopen a request that has been closed for over a week.");	
-			$skin->displayIfooter();
+        
+		if ($request->getStatus() == "Closed" && $logTime < $oneweek && ! User::getCurrent()->isAdmin() && ! User::getCurrent()->isCheckuser()) 
+        {
+			SessionAlert::error("Only administrators and checkusers can reopen a request that has been closed for over a week.");
+            header("Location: acc.php?action=zoom&id={$request->getId()}");
 			die();
 		}
-		if ($row['pend_status'] == $target) {
-			echo "Cannot set status, target already deferred to $target<br />\n";
-			$skin->displayIfooter();
+        
+		if ($request->getStatus() == $_GET['target']) 
+        {
+            SessionAlert::error("Cannot set status, target already deferred to " . htmlentities($_GET['target']), "Error");
+            header("Location: acc.php?action=zoom&id={$request->getId()}");
 			die();
 		}
-		$query = "UPDATE acc_pend SET pend_status = '$target', pend_reserved = '0' WHERE pend_id = '$gid';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
+        
+        $request->setReserved(0);
+        $request->setStatus($_GET['target']);
+        $request->save();
+        
+		$deto = $availableRequestStates[$_GET['target']]['deferto'];
+		$detolog = $availableRequestStates[$_GET['target']]['defertolog'];
 
-		$deto = $availableRequestStates[$target]['deferto'];
-		$detolog = $availableRequestStates[$target]['defertolog'];
-
-
-		$now = date("Y-m-d H-i-s");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $detolog', '$now');";
-		upcsum($gid);
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		$accbotSend->send("Request $gid deferred to $deto by $sid");
-		$skin->displayRequestMsg("Request " . sanitize($_GET['id']) . " deferred to $deto.");
-		header("Location: acc.php");
+        $statement2 = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :user, :deferlog, CURRENT_TIMESTAMP());");
+        $statement2->bindValue(":deferlog", "Deferred to $detolog");
+        $statement2->bindValue(":request", $request->getId());
+        $statement2->bindValue(":user", User::getCurrent()->getUsername());
+        $statement2->execute();
+        
+		upcsum($request->getId());
+        
+		$accbotSend->send("Request {$request->getId()} deferred to $deto by " . User::getCurrent()->getUsername());
+        SessionAlert::success("Request {$request->getId()} deferred to $deto");
+		header("Location: acc.php?action=zoom&id={$request->getId()}");
 		die();
-	} else {
-		echo "Defer target not valid.<br />\n";
+	} 
+    else 
+    {
+        BootstrapSkin::displayAlertBox("Defer target not valid.", "alert-error", "Error", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
 	}
 }
 elseif ($action == "prefs") 
