@@ -70,6 +70,11 @@ if (isset($_GET['action'])) {
 // Clear session before banner and logged in as message is generated on logout attempt - Prom3th3an
 if ($action == "logout") {
 	session_unset();
+    
+    BootstrapSkin::displayInternalHeader();
+    echo showlogin($action, $_GET);
+    BootstrapSkin::displayInternalFooter();
+    die();
 }
 
 // Checks whether the user and nocheck variable is set.
@@ -1299,21 +1304,6 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			}
 		}
 	}
-	
-    /*
-    // Commented out cos it's causing a load of issues, and theoretically should never work?
-	$query = "SELECT * FROM acc_user WHERE user_name = '$sid';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-	if ($row['user_welcome_templateid'] > 0 && ($gem == "1" || $gem == "custom-y")) {
-		$query = "INSERT INTO acc_welcome (welcome_uid, welcome_user, welcome_status) VALUES ('$sid', '$gus', 'Open');";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-	}
-    */
     
     $request->setStatus('Closed');
     $request->setReserved(0);
@@ -1378,10 +1368,6 @@ elseif ($action == "zoom")
 	echo zoomPage($_GET['id'],$urlhash);
 	BootstrapSkin::displayInternalFooter();
 	die();
-}
-elseif ($action == "logout") {
-	echo showlogin();
-	die("Logged out!\n");
 }
 elseif ($action == "logs") {
 	if(isset($_GET['user'])){
@@ -1746,12 +1732,8 @@ elseif ($action == "comment-quick")
     header("Location: acc.php?action=zoom&id=" . $request->getId());
 }
 
-elseif ($action == "changepassword") {
-	$oldpassword = sanitize($_POST['oldpassword']); //Sanitize the values for SQL queries. 
-	$newpassword = sanitize($_POST['newpassword']);
-	$newpasswordconfirm = sanitize($_POST['newpasswordconfirm']);
-	$sessionuser = sanitize($_SESSION['user']);
-	
+elseif ($action == "changepassword")
+{	
 	if ((!isset($_POST['oldpassword'])) || $_POST['oldpassword'] == "" ) 
     { 
         //Throw an error if old password is not specified.
