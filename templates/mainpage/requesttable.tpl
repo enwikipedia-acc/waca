@@ -10,6 +10,7 @@
 			<th><span class="visible-desktop">Email address</span><span class="visible-tablet">Email and IP</span><span class="visible-phone">Request details</span></th>
 			<th><span class="visible-desktop">IP address</span></th>
 			<th><span class="hidden-phone">Username</span></th>
+			<th><span class="visible-desktop">Request time</span></th>
 			<td><!-- ban --></td>
 			<td><!-- reserve status --></td>
 			<td><!--reserve button--></td>

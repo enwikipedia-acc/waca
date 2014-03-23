@@ -12,6 +12,9 @@
 		<span class="visible-phone"><br /><a href="https://en.wikipedia.org/wiki/User:{$r->getName()}" target="_blank">{$r->getName()}</a></span></span></td>
 	<td>{if $currentUser->isAdmin() || $currentUser->isCheckUser() == true}<span class="visible-desktop"><a href="https://en.wikipedia.org/wiki/User_talk:{$r->getTrustedIp()}" target="_blank">{$r->getTrustedIp()}</a>&nbsp;<span class="badge {if count($r->getRelatedIpRequests()) > 0} badge-important{/if}">{count($r->getRelatedIpRequests())}</span></span>{/if}</td>
 	<td><span class="hidden-phone"><a href="https://en.wikipedia.org/wiki/User:{$r->getName()}" target="_blank">{$r->getName()}</a></span></td>
+	<td><span class="visible-desktop">
+    <a rel="tooltip" href="#rqtime{$r->getId()}" title="{$r->getDate()}" data-toggle="tooltip" class="plainlinks" id="#rqtime{$r->getId()}">{$r->getDate()|relativedate}</a>
+  </span></td>
 	<td>{if $currentUser->isAdmin() || $currentUser->isCheckuser() }<div class="btn-group hidden-phone"><a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">
     <i class="icon-white icon-ban-circle"></i>&nbsp;Ban&nbsp;<span class="caret"></span></a><ul class="dropdown-menu"><li><a href="{$tsurl}/acc.php?action=ban&amp;ip={$r->getId()}">IP</a></li><li><a href="{$tsurl}/acc.php?action=ban&amp;email={$r->getId()}">Email</a></li><li><a href="{$tsurl}/acc.php?action=ban&amp;name={$r->getId()}">Name</a></li></ul></div>{/if}</td>
 	<td>
