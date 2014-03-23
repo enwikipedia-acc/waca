@@ -89,7 +89,7 @@ class InterfaceMessage extends DataObject
         $message = $this->content;
         
         if( strpos($message, "%VERSION%") !== false ) {
-			$message = str_replace('%VERSION%', getToolVersion(), $message);
+			$message = str_replace('%VERSION%', Environment::getToolVersion(), $message);
 		}
 		
 		$message = str_replace('%TSURL%', $tsurl, $message);

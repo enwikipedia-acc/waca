@@ -426,10 +426,6 @@ function isOnWhitelist($user)
 
 require_once('zoompage.php');
 
-function getToolVersion() {
-	return exec("git describe --always --dirty");
-}
-
 function displayPreview($wikicode) {
 	$parseresult = unserialize(file_get_contents('http://en.wikipedia.org/w/api.php?action=parse&format=php&text='.urlencode($wikicode)));
 	$out = "<br />\n<h3>Preview</h3>\n<div style=\"border: 2px dashed rgb(26, 79, 133);\">\n<div style=\"margin: 20px;\">";
@@ -536,17 +532,6 @@ function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid, &$session) {
 
 	return $out;
 	
-}
-
-function getUserIdFromName($name) {
-	global $tsSQLlink;
-	$res = mysql_query("SELECT user_id FROM acc_user WHERE user_name = '" . mysql_real_escape_string($name, $tsSQLlink) . "';", $tsSQLlink);
-	if (!$res) {
-		return null;
-	}
-	
-	$r = mysql_fetch_assoc($res);
-	return $r['user_id'];
 }
 
 $trustedipcache = array();

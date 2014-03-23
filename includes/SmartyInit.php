@@ -8,7 +8,7 @@ require_once 'lib/smarty/Smarty.class.php';
 global $smarty, $smartydebug;
 $smarty = new Smarty();
 
-$toolVersion = getToolVersion();
+$toolVersion = Environment::getToolVersion();
 $currentUser = User::getCurrent();
 
 $smarty->assign("tsurl", $tsurl);

@@ -243,9 +243,22 @@ function zoomPage($id,$urlhash)
             
             if(!isset($row['userid']))
             {
-                if(!isset($namecache[$row['user']])) {
-                    $row['userid'] = getUserIdFromName($row['user']);
-                } else {
+                if(!isset($namecache[$row['user']])) 
+                {
+                    $userObject = User::getByUsername($row['user'], gGetDb());
+                    if($userObject != false)
+                    {
+                        $namecache[$row['user']] = $userObject->getId();
+                    }
+                    else
+                    {
+                        $namecache[$row['user']]= 0;
+                    }
+                    
+                    $row['userid'] = $namecache[$row['user']];
+                } 
+                else 
+                {
                     $row['userid'] = $namecache[($row['user'])];
                 }
             }
