@@ -128,34 +128,29 @@ if ($action == '') {
 	die();
 }
 
-elseif ($action == "sreg") {
-	if(isset($_SESSION['user']))
-	{
-		$suser = sanitize($_SESSION['user']);
-	}
-	else
-	{
-		$suser = '';
-	}
-
+elseif ($action == "sreg")
+{
     $sregHttpClient = new http();
+    
 	$cu_name = rawurlencode( $_REQUEST['wname'] );
 	$userblocked = $sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
 	$ub = unserialize( $userblocked );
-	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) {
+	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) 
+    {
 		$message = InterfaceMessage::get(InterfaceMessage::DECL_BLOCKED);
 		BootstrapSkin::displayAlertBox("You are presently blocked on the English Wikipedia", "alert-error", "Error");
-		echo "</div>";
-		$skin->displayPfooter();
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
+    
 	$userexist = $sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
 	$ue = unserialize( $userexist );
-	foreach ( $ue['query']['users'] as $oneue ) {
-		if ( isset($oneue['missing'])) {
+	foreach ( $ue['query']['users'] as $oneue ) 
+    {
+		if ( isset($oneue['missing'])) 
+        {
 			BootstrapSkin::displayAlertBox("Invalid on-wiki username", "alert-error", "Error");
-			echo "</div>";
-			$skin->displayPfooter();
+            BootstrapSkin::displayInternalFooter();
 			die();
 		}
 	}
@@ -165,125 +160,85 @@ elseif ($action == "sreg") {
 	if( $onRegistrationNewbieCheck ) 
 	{
 		global $onRegistrationNewbieCheckEditCount, $onRegistrationNewbieCheckAge;
+        
 		$isNewbie = unserialize($sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$cu_name" ));
 		$time = $isNewbie['query']['allusers'][0]['registration'];
 		$time2 = time() - strtotime($time);
 		$editcount = $isNewbie['query']['allusers'][0]['editcount'];
-		if (!($editcount > $onRegistrationNewbieCheckEditCount and $time2 > $onRegistrationNewbieCheckAge)) {
+		if (!($editcount > $onRegistrationNewbieCheckEditCount and $time2 > $onRegistrationNewbieCheckAge)) 
+        {
             BootstrapSkin::displayAlertBox("You are too new to request an account at the moment.", "alert-info", "Sorry!", false);
-			echo "</div>";
-			$skin->displayPfooter();
+            BootstrapSkin::displayInternalFooter();
 			die();
 		}
 	}
+    
 	// check if user checked the "I have read and understand the interface guidelines" checkbox
 	if(!isset($_REQUEST['guidelines'])) {
         BootstrapSkin::displayAlertBox("You must read <a href=\"http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide\">the interface guidelines</a> before your request may be submitted.", "alert-info", "Sorry!", false);
-		echo "</div>";
-		$skin->displayPfooter();
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
 	
-	$user = sanitize($_REQUEST['name']);
-	$wname = mysql_real_escape_string($_REQUEST['wname']);
-	$pass = mysql_real_escape_string($_REQUEST['pass']);
-	$pass2 = mysql_real_escape_string($_REQUEST['pass2']);
-	$email = mysql_real_escape_string($_REQUEST['email']);
-	$sig = mysql_real_escape_string($_REQUEST['sig']);
-	$conf_revid=mysql_real_escape_string($_REQUEST['conf_revid']);
-    
-	if(isset($_REQUEST['welcomeenable']))
-	{
-		$welcomeenable = mysql_real_escape_string($_REQUEST['welcomeenable']);	
-	}
-	else
-	{
-		$welcomeenable=false;
-	}
-	if ( !isset($user) || !isset($wname) || !isset($pass) || !isset($pass2) || !isset($email) || !isset($conf_revid)|| strlen($email) < 6) {
-        BootstrapSkin::displayAlertBox("Form data may not be blank.", "alert-error", "Error!", false);
-		
-		echo "</div>";
-		$skin->displayPfooter();
-		die();
-	}
-	if (isset($_POST['debug']) && $_POST['debug'] == "on") {
-		echo "<pre>\n";
-		print_r($_REQUEST);
-		echo "</pre>\n";
-	}
-	$mailisvalid = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.(ac|ad|ae|aero|af|ag|ai|al|am|an|ao|aq|ar|arpa|as|asia|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|biz|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cat|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|com|coop|cr|cu|cv|cx|cy|cz|de|dj|dk|dm|do|dz|ec|edu|ee|eg|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gov|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|info|int|io|iq|ir|is|it|je|jm|jo|jobs|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mil|mk|ml|mm|mn|mo|mobi|mp|mq|mr|ms|mt|mu|museum|mv|mw|mx|my|mz|na|name|nc|ne|net|nf|ng|ni|nl|no|np|nr|nu|nz|om|org|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|pro|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sy|sz|tc|td|tel|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|travel|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)$/i', $_REQUEST['email']);
-	if ($mailisvalid == 0) {
+	if (!filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL)) {
 		BootstrapSkin::displayAlertBox("Invalid email address", "alert-error", "Error!", false);
-		echo "</div>";
-		$skin->displayPfooter();
-		die();
+        BootstrapSkin::displayInternalFooter();
+        die();
 	}
-	if ($_REQUEST['pass'] !== $_REQUEST['pass2']) { // comparing pre-filtered values here, secure as it's just a comparison.
+    
+	if ($_REQUEST['pass'] !== $_REQUEST['pass2']) 
+    { 
         BootstrapSkin::displayAlertBox("Your passwords did not match, please try again.", "alert-error", "Error!", false);
-		echo "</div>";
-		$skin->displayPfooter();
+        BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	if(!((string)(int)$conf_revid === (string)$conf_revid)||$conf_revid==""){
+    
+	if(!((string)(int)$_REQUEST['conf_revid'] === (string)$_REQUEST['conf_revid']) || $_REQUEST['conf_revid'] == "")
+    {
 		BootstrapSkin::displayAlertBox("Please enter the revision id of your confirmation edit in the \"Confirmation diff\" field. The revid is the number after the &diff= part of the URL of a diff.", "alert-error", "Error!", false);
-		echo "</div>";
-		$skin->displayPfooter();
-		die();		
-	
+        BootstrapSkin::displayInternalFooter();
+        die();		
 	}
-	$query = "SELECT * FROM acc_user WHERE user_name = '$user' LIMIT 1;";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-	if ($row['user_id'] != "") {
+    
+	if (User::getByUsername($_REQUEST['name'], gGetDb()) != false) {
         BootstrapSkin::displayAlertBox("Sorry, but that username is in use. Please choose another.", "alert-error", "Error!", false);
-		$skin->displayPfooter();
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	$query = "SELECT * FROM acc_user WHERE user_email = '$email' LIMIT 1;";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-	if ($row['user_id'] != "") {
-		$skin->displayRequestMsg( "I'm sorry, but that e-mail address is in use.<br />");
-		echo "</div>";
-		$skin->displayPfooter();
+    
+	$query = gGetDb()->prepare("SELECT * FROM user WHERE email = :email LIMIT 1;");
+    $query->execute(array(":email" => $_REQUEST['email']));
+    if($query->fetchObject("User") != false)
+    {
+        BootstrapSkin::displayAlertBox("I'm sorry, but that e-mail address is in use.", "alert-error", "Error!", false);
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	$query = "SELECT * FROM acc_user WHERE user_onwikiname = '$wname' LIMIT 1;";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-	if ($row['user_id'] != "") {
-		$skin->displayRequestMsg("I'm sorry, but $wname already has an account here.<br />");
-		echo "</div>";
-		$skin->displayPfooter();
+    $query->closeCursor();
+    
+    $query = gGetDb()->prepare("SELECT * FROM user WHERE onwikiname = :onwikiname LIMIT 1;");
+    $query->execute(array(":onwikiname" => $_REQUEST['wname']));
+    if($query->fetchObject("User") != false)
+    {
+        BootstrapSkin::displayAlertBox("I'm sorry, but that Wikipedia account is in use here.", "alert-error", "Error!", false);
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	$query = "SELECT * FROM acc_pend WHERE pend_name = '$user' AND (pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Closed') AND DATE_SUB(CURDATE(),INTERVAL 7 DAY) <= pend_date LIMIT 1;";
-	$result = mysql_query($query, $tsSQLlink);
-	$row = mysql_fetch_assoc($result);
-	if (!empty($row['pend_name'])) {
-		$skin->displayRequestMsg("I'm sorry, you are too new to request an account at the moment.<br />");
-		echo "</div>";
-		$skin->displayPfooter();
-		die();
-	}
-	if (!isset($fail) || $fail != 1) {
-		$user_pass = authutils::encryptPassword($_REQUEST['pass']); // again, using unfiltered as data processing is done here.
-		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_confirmationdiff) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$conf_revid');";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		$accbotSend->send("New user: $user");
-		$skin->displayRequestMsg("Account requested! Your username is $user! Your request will be reviewed soon.</b><br /><br />");
-	}
-	echo "</div>";
-	$skin->displayPfooter();
+    $query->closeCursor();
+
+    $newUser = new User();
+    $newUser->setDatabase(gGetDb());
+    
+    $newUser->setUsername($_REQUEST['name']);
+    $newUser->setPassword($_REQUEST['pass']);
+    $newUser->setEmail($_REQUEST['email']);
+    $newUser->setOnWikiName($_REQUEST['wname']);
+    $newUser->setConfirmationDiff($_REQUEST['conf_revid']);
+    $newUser->save();
+    
+	$accbotSend->send("New user: " . $_REQUEST['name']);
+	BootstrapSkin::displayAlertBox("Your request will be reviewed soon by a tool administrator, and you'll get an email informing you of the decision.", "alert-success", "Account requested!", false);
+    BootstrapSkin::displayInternalFooter();
 	die();
 }
 

@@ -8,17 +8,17 @@ class User extends DataObject
     private $username;
     private $email;
     private $password;
-    private $status;
+    private $status = "New";
     private $onwikiname;
-    private $welcome_sig;
-    private $lastactive;
-    private $forcelogout;
-    private $checkuser;
-    private $identified;
-    private $welcome_template;
-    private $abortpref;
-    private $confirmationdiff;
-    private $emailsig;
+    private $welcome_sig = "";
+    private $lastactive = "0000-00-00 00:00:00";
+    private $forcelogout = 0;
+    private $checkuser = 0;
+    private $identified = 0;
+    private $welcome_template = 0;
+    private $abortpref = 0;
+    private $confirmationdiff = 0;
+    private $emailsig = "";
     
     // cache variable of the current user - it's never going to change in the middle of a request.
     private static $currentUser;
@@ -92,6 +92,7 @@ class User extends DataObject
 			$statement->bindParam(":username", $this->username);
 			$statement->bindParam(":email", $this->email);
 			$statement->bindParam(":password", $this->password);
+			$statement->bindParam(":status", $this->status);
 			$statement->bindParam(":onwikiname", $this->onwikiname);
 			$statement->bindParam(":welcome_sig", $this->welcome_sig);
 			$statement->bindParam(":lastactive", $this->lastactive);
