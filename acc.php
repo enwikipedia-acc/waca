@@ -1381,12 +1381,18 @@ elseif ($action == "zoom")
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
-elseif ($action == "logs") {
-	if(isset($_GET['user'])){
+elseif ($action == "logs") 
+{
+	if(isset($_GET['user']))
+    {
 		$filteruser = $_GET['user'];
-		$filteruserl = xss($filteruser); 
-		$filteruserl = " value=\"".$filteruserl."\"";
-	} else { $filteruserl = ""; $filteruser = "";}
+		$filteruserl = " value=\"" . htmlentities($filteruser, ENT_QUOTES, 'UTF-8') . "\"";
+	}
+    else
+    { 
+        $filteruserl = ""; 
+        $filteruser = "";
+    }
 	
 	echo '<h2>Logs</h2>
 	<form action="'.$tsurl.'/acc.php" method="get">
@@ -1450,10 +1456,10 @@ elseif ($action == "logs") {
 	$logPage = new LogPage();
 
 	if( isset($_GET['user']) ){
-		$logPage->filterUser = sanitise($_GET['user']);
+		$logPage->filterUser = sanitize($_GET['user']);
 	}
 	if (isset ($_GET['limit'])) {
-		$limit = sanitise($_GET['limit']);
+		$limit = sanitize($_GET['limit']);
 	}
 	if (isset ($_GET['from'])) {
 		$offset = $_GET['from'];	
@@ -1461,7 +1467,7 @@ elseif ($action == "logs") {
 	
 	if(isset($_GET['logaction']))
 	{
-		$logPage->filterAction=sanitise($_GET['logaction']);
+		$logPage->filterAction=sanitize($_GET['logaction']);
 	}
 
 	echo $logPage->showListLog(isset($offset) ? $offset : 0 ,isset($limit) ? $limit : 100);

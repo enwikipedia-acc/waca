@@ -126,7 +126,6 @@ function getSpoofs( $username ) {
 	} else { return "This function is currently disabled."; }
 }
 
-function sanitise($what) { return sanitize($what); }
 function sanitize($what) {
 	/*
 	 * Shortcut to mysql_real_escape_string
@@ -135,10 +134,6 @@ function sanitize($what) {
 	$what = mysql_real_escape_string($what,$tsSQLlink);
 	$what = htmlentities($what,ENT_COMPAT,'UTF-8');
 	return ($what);
-}
-
-function xss ($string) {
-	return htmlentities($string,ENT_QUOTES,'UTF-8');
 }
 
 function upcsum($id) {

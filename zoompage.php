@@ -251,7 +251,7 @@ function zoomPage($id,$urlhash)
             }
             
 			if($row['action'] == "comment") {
-				$row['entry'] = xss($row['comment']);
+				$row['entry'] = htmlentities($row['comment'], ENT_QUOTES, 'UTF-8');
                 
 				global $enableCommentEditing;
 				if($enableCommentEditing && (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() || User::getCurrent()->getId() == $row['userid']) && isset($row['id']))
@@ -259,7 +259,7 @@ function zoomPage($id,$urlhash)
 					$row['canedit'] = true;
                 }
 			} elseif($row['action'] == "Closed custom-n" ||$row['action'] == "Closed custom-y"  ) {
-				$row['entry'] = "<em>" .$row['description'] . "</em><br />" . str_replace("\n", '<br />', xss($row['comment']));
+				$row['entry'] = "<em>" .$row['description'] . "</em><br />" . str_replace("\n", '<br />', htmlentities($row['comment'], ENT_QUOTES, 'UTF-8'));
 			} else {
 				foreach($availableRequestStates as $deferState)
                 {

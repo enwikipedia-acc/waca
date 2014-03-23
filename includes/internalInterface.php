@@ -93,7 +93,7 @@ class internalInterface {
 			die();
 		}
 		
-		$sid = sanitise($id);
+		$sid = sanitize($id);
 		
 		// Formulates and executes SQL query to check if the request exists.
 		$query = "SELECT Count(*) FROM acc_pend WHERE pend_id = '$sid';";
