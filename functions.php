@@ -635,9 +635,13 @@ function relativedate($input)
     
     $second = 1;
     $minute = 60 * $second;
+    $minuteCut = 60 * $second;
     $hour = 60 * $minute;
+    $hourCut = 60 * $minute;
     $day = 24 * $hour;
+    $dayCut = 48 * $hour;
     $week = 7 * $day;
+    $weekCut = 14 * $day;
     $month = 30 * $day;
     $year = 365 * $day;
     
@@ -648,23 +652,23 @@ function relativedate($input)
         $output = "just now";
         $pluralise = false;
     }
-    elseif ($secs > 10 && $secs < $minute) 
+    elseif ($secs > 10 && $secs < $minuteCut) 
     {
         $output = round($secs/$second) . " second";
     }
-    elseif ($secs >= $minute && $secs < $hour) 
+    elseif ($secs >= $minuteCut && $secs < $hourCut) 
     {
         $output = round($secs/$minute) . " minute";
     }
-    elseif ($secs >= $hour && $secs < $day) 
+    elseif ($secs >= $hourCut && $secs < $dayCut) 
     {
         $output = round($secs/$hour) . " hour";
     }
-    elseif ($secs >= $day && $secs < $week) 
+    elseif ($secs >= $dayCut && $secs < $weekCut) 
     {
         $output = round($secs/$day) . " day";
     }
-    elseif ($secs >= $week && $secs < $month) 
+    elseif ($secs >= $weekCut && $secs < $month) 
     {
         $output = round($secs/$week) . " week";
     }
