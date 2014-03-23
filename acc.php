@@ -1857,13 +1857,20 @@ elseif ($action == "ec")
 		die();
 	}
 }
-elseif ($action == "sendtouser") { 
-    
-    // Sanitises the resid for use and checks its validity.    
-	$request = $internalInterface->checkreqid($_POST['id']);
-    
+elseif ($action == "sendtouser") 
+{ 
     $database = gGetDb();
-	
+    
+    $requestObject = Request::getById($_POST['id'], $database);
+    if($requestObject == false)
+    {
+        BootstrapSkin::displayAlertBox("Request invalid", "alert-error", "Could not find request", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+    $request = $requestObject->getId();
+    
     $user = User::getByUsername($_POST['user'], $database);
     $curuser = User::getCurrent()->getUsername();
     
@@ -1879,8 +1886,8 @@ elseif ($action == "sendtouser") {
         try
         {
             $updateStatement = $database->prepare("UPDATE acc_pend SET pend_reserved = :userid WHERE pend_id = :request LIMIT 1;");
-            $updateStatement->bindParam(":userid", $user->getId());
-            $updateStatement->bindParam(":request", $request);
+            $updateStatement->bindValue(":userid", $user->getId());
+            $updateStatement->bindValue(":request", $request);
             if(!$updateStatement->execute())
             {
                 throw new Exception("Error updating reserved status of request.");   
@@ -1888,19 +1895,19 @@ elseif ($action == "sendtouser") {
             
             $logStatement = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:request, :user, :action, CURRENT_TIMESTAMP(), '');");
             $action = "SendReserved";
-            $logStatement->bindParam(":user", $curuser);
-            $logStatement->bindParam(":request", $request);
+            $logStatement->bindValue(":user", $curuser);
+            $logStatement->bindValue(":request", $request);
             $logStatement->bindParam(":action", $action);
             if(!$logStatement->execute())
             {
                 throw new Exception("Error inserting send log entry.");   
             }
             
-            $logStatement->bindParam(":user", $user->getUsername());
+            $logStatement->bindValue(":user", $user->getUsername());
             $action = "ReceiveReserved";
             if(!$logStatement->execute())
             {
-                throw new Exception("Error inserting send log entry.");   
+                throw new Exception("Error inserting receive log entry.");   
             }
             
             $database->commit();

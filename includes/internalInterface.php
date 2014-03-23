@@ -78,39 +78,5 @@ class internalInterface {
 		
 		return $whoactive;
 	}
-	
-	public function checkreqid($id) {
-		global $skin, $tsSQL;
-		/*
-		 * Checks if a request exists and sanitizes it.
-		*/
-		
-		// Make sure there are no invalid characters.
-		if (!preg_match('/^[0-9]*$/',$id)) {
-			// Notifies the user and stops the script.
-            BootstrapSkin::displayAlertBox("The request ID supplied is invalid!", "alert-error","Error",true,false);
-			BootstrapSkin::displayInternalFooter();
-			die();
-		}
-		
-		$sid = sanitize($id);
-		
-		// Formulates and executes SQL query to check if the request exists.
-		$query = "SELECT Count(*) FROM acc_pend WHERE pend_id = '$sid';";
-		$result = $tsSQL->query($query);
-		if (!$result) 
-			$tsSQL->showError(mysql_error(), "Database error");
-		$row = mysql_fetch_row($result);
-		
-		// The query counted the amount of records with the particular request ID.
-		// When the value is zero it is an indication that that request doesnt exist.
-		if($row[0]==="0") {
-			// Notifies the user and stops the script.
-            BootstrapSkin::displayAlertBox("The request ID supplied is invalid!", "alert-error","Error",true,false);
-			BootstrapSkin::displayInternalFooter();
-			die();
-		}
-		return $sid;
-	}
 }
 ?>
