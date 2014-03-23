@@ -1,10 +1,7 @@
 <tr>
-	<td><span class="hidden-phone">{$r->getId()}</span></td>
 	<td>
-    <a class="btn btn-small{if $r->hasComments() == true} btn-info{/if} hidden-desktop" href="{$tsurl}/acc.php?action=zoom&amp;id={$r->getId()}"><i class="{if $r->hasComments() == true}icon-white{else}icon-black{/if} icon-search"></i></a>
-    <a class="btn btn-small visible-desktop" href="{$tsurl}/acc.php?action=zoom&amp;id={$r->getId()}"><i class="icon-black icon-search"></i>&nbsp;Zoom</a>
+    <a class="btn btn-small{if $r->hasComments() == true} btn-info{/if}" href="{$tsurl}/acc.php?action=zoom&amp;id={$r->getId()}"><i class="{if $r->hasComments() == true}icon-white{else}icon-black{/if} icon-search"></i><span class="visible-desktop">&nbsp;{$r->getId()}</span></a>
   </td>
-  <td>{if $r->hasComments() == true}<span class="label label-info visible-desktop">Comment</span>{/if}</td>
   {if $showStatus}
     <td>{$r->getStatus()}</td>
   {/if}

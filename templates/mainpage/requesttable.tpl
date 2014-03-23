@@ -2,8 +2,6 @@
 	<thead>
 		<tr>
 			<th data-defaultsort="asc"><span class="hidden-phone">#</span></th>
-			<td><!-- zoom --></td>
-			<td><!-- comment --></td>
       {if $showStatus}
 			  <th>Request state</th>
       {/if}
