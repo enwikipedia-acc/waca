@@ -47,6 +47,8 @@ $antispoof_table = "spoofuser";
 // Does nothing yet, intended for further localization.
 $wikiurl = "en.wikipedia.org";
 
+$mediawikiWebServiceEndpoint = "https://en.wikipedia.org/w/api.php";
+
 // URL of the current copy of the tool.
 $tsurl = "https://accounts.wmflabs.org";
 
@@ -157,6 +159,10 @@ $BUgzip = "/usr/bin/gzip"; 							// Add the gzip parameters here if needed.
 $BUtar = "/bin/tar -cvf";						// Add the tar parameters here if needed.
 
 
+/************************************
+ * Providers Configuration
+*/
+
 // IP GeoLocation
 // ------------------------
 // To set this up, change the class to "IpLocationProvider", and put *your* ipinfodb API key in.
@@ -166,6 +172,8 @@ $locationProviderApiKey = "super secret"; // ipinfodb api key
 
 // RDNS Provider ( RDnsLookupProvider / CachedRDnsLookupProvider / FakeRDnsLookupProvider)
 $rdnsProviderClass = "CachedRDnsLookupProvider";
+
+$antispoofProviderClass = "FakeAntiSpoofProvider";
 
 /***********************************
  * Other stuff that doesn't fit in.
@@ -220,10 +228,6 @@ $CORSallowed = array(
 	"https://en.wikipedia.org",
 	"http://meta.wikimedia.org",
 	"https://meta.wikimedia.org");
-
-/************************************
- * Providers Configuration
-*/
 
 $providerCacheExpiry = $dataclear_interval;
 

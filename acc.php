@@ -54,9 +54,10 @@ $accbotSend = new accbotSend();
 $session = new session();
 $date = new DateTime();
 
+// initialise providers
 $locationProvider = new $locationProviderClass(gGetDb('acc'), $locationProviderApiKey);
 $rdnsProvider = new $rdnsProviderClass(gGetDb('acc'));
-
+$antispoofProvider = new $antispoofProviderClass();
 
 // Clears the action variable.
 $action = '';

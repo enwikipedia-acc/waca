@@ -19,7 +19,7 @@ if (!defined("ACC")) {
 function zoomPage($id,$urlhash)
 {
 	global $tsSQLlink, $session, $availableRequestStates, $createdid;
-	global $smarty, $locationProvider, $rdnsProvider;
+	global $smarty, $locationProvider, $rdnsProvider, $antispoofProvider;
     
     $database = gGetDb();
     $request = Request::getById($id, $database);
@@ -193,7 +193,15 @@ function zoomPage($id,$urlhash)
 	$smarty->assign("defaultstate", $defaultRequestStateKey);
 	$smarty->assign("requeststates", $availableRequestStates);
 		
-	$spoofs = getSpoofs( $request->getName() );
+    try
+    {
+        $spoofs = $antispoofProvider->getSpoofs( $request->getName() );
+    }
+    catch (Exception $ex)
+    {
+        $spoofs = $ex->getMessage();   
+    }
+    
 	$smarty->assign("spoofs", $spoofs);
 	
 	// START LOG DISPLAY

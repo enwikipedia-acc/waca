@@ -22,7 +22,6 @@ if (!defined("ACC")) {
 
 require_once 'queryBrowser.php';
 require_once 'LogClass.php';
-include_once 'AntiSpoof.php';
 require_once 'includes/session.php';
 require_once 'includes/request.php';
 require_once 'includes/authutils.php';
@@ -84,44 +83,6 @@ function _utf8_decode($string) {
 		$string = utf8_decode($string);
 	}
 	return $string;
-}
-
-function getSpoofs( $username ) {
-	global $dontUseWikiDb;
-	if( !$dontUseWikiDb ) {
-		global $toolserver_username;
-		global $toolserver_password;
-		global $antispoof_host;
-		global $antispoof_db;
-		global $antispoof_table;
-		global $antispoof_password;
-		$spooflink = mysql_pconnect($antispoof_host, $toolserver_username, $antispoof_password);
-		$link = mysql_select_db($antispoof_db, $spooflink);
-		if( !$link ) {
-			sqlerror(mysql_error(),"Error selecting database.");
-		}
-		$return = AntiSpoof::checkUnicodeString( $username );
-		if($return[0] == 'OK' ) {
-			$sanitized = sanitize($return[1]);
-			$query = "SELECT su_name FROM ".$antispoof_table." WHERE su_normalized = '$sanitized';";
-			$result = mysql_query($query, $spooflink);
-			if(!$result) sqlerror("ERROR: No result returned. - ".mysql_error(),"Database error.");
-			$numSpoof = 0;
-			$reSpoofs = array();
-			while ( list( $su_name ) = mysql_fetch_row( $result ) ) {
-				if( isset( $su_name ) ) { $numSpoof++; }
-				array_push( $reSpoofs, $su_name );
-			}
-			mysql_close( $spooflink );
-			if( $numSpoof == 0 ) {
-				return( FALSE );
-			} else {
-				return( $reSpoofs );
-			}
-		} else {
-			return ( $return[1] );
-		}
-	} else { return "This function is currently disabled."; }
 }
 
 function sanitize($what) {

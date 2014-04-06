@@ -240,8 +240,20 @@ class accRequest {
 					$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ($pid, '$user', 'Email Confirmed', '$now')";
 					$result = $tsSQL->query($query);
 					if ( !$result )
+                    {
 						$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
-					$spoofs = $this->getSpoofs($user);
+                    }
+                    
+                    global $antispoofProvider;
+                    try
+                    {
+                        $spoofs = $antispoofProvider->getSpoofs($user);
+                    }
+                    catch(Exception $ex)
+                    {
+                        $spoofs = false;
+                    }
+                    
 					if( $spoofs === FALSE ) {
 						$uLevel = "Open";
 						$what = "";
@@ -249,6 +261,7 @@ class accRequest {
 						$uLevel = "Admin";
 						$what = "<Account Creator Needed!>";
 					}
+                    
 					$comments = html_entity_decode(stripslashes($row['pend_cmt']));
 					
 					$ircmessage = "\00314[[\00303acc:\00307$pid\00314]]\0034 N\00310 \00302$tsurl/acc.php?action=zoom&id=$pid\003 \0035*\003 \00303$user\003 \0035*\00310 $what\003";
@@ -379,59 +392,6 @@ class accRequest {
 		} else {
 			return true;
 		}
-	}
-	
-	/**
-	 * Checks whether there any conflicts are.
-	 * @param $username The username to check for spoofs.
-	 */
-	public function getSpoofs($username) {
-		// Get global variables from configuration file and index objects.
-		global $dontUseWikiDb, $asSQL, $antispoof_table;
-		
-		if(!$dontUseWikiDb) {
-			// Checks the username using the AntiSpoof class.
-			$return = AntiSpoof::checkUnicodeString($username);
-			
-			// Checks whether the results were positive.
-			if($return[0] == 'OK' ) {
-				// Assigns the username and escapes it for MySQL.
-				$sanitized = $asSQL->escape($return[1]);
-				
-				// Formulates and executes SQL query to check for usernames.
-				$query = "SELECT su_name FROM " . $antispoof_table . " WHERE su_normalized = '$sanitized';";
-				$result = $asSQL->query($query);
-				
-				// Creates empty variables.
-				$numSpoof = 0;
-				$reSpoofs = array();
-				
-				// Assigns the current row of the SQL query to a list.
-				// Each row of the SQL query is a conflict.
-				while (list($su_name) = mysql_fetch_row($result)) {
-					// When the variable is set, it indicates a conflict.
-					if(isset($su_name)) {
-						$numSpoof++;
-					}
-					// Adds to conflicting username to the array.
-					array_push($reSpoofs, $su_name);
-				}
-				
-				// When there was no conflicts FALSE are returned.
-				if($numSpoof == 0) {
-					return(FALSE);
-				} else {
-					// If there were conflicts, the conflicts are returned.
-					return($reSpoofs);
-				}
-			} else {
-				// If the first variable wasnt OK, the variable are returned.
-				return ($return[1]);
-			}
-		} else {
-			// When spoof checking is disabled, FALSE is automatically returned.
-			return FALSE;
-			}
 	}
 	
 	/*
@@ -638,13 +598,24 @@ class accRequest {
 		// Gets the current date and time.
 		$dnow = date("Y-m-d H-i-s");
 		
-		if($this->getSpoofs($user)) {
-			// If there were spoofs an Admin should handle the request.
-			$uLevel = "Admin";
-		} else {
-			// Otherwise anyone could handle the request.
-			$uLevel = "Open";
-		}
+        global $antispoofProvider;
+        try
+        {
+		    if($antispoofProvider->getSpoofs($user)) 
+            {
+			    // If there were spoofs an Admin should handle the request.
+			    $uLevel = "Admin";
+		    } 
+            else 
+            {
+			    // Otherwise anyone could handle the request.
+			    $uLevel = "Open";
+		    }
+        }
+        catch(Exception $ex)
+        {
+            $uLevel = "Open";
+        }
 		
 		if ($uLevel != "Admin" && $this->isblacklisted($user))
 			$uLevel = "Admin";
