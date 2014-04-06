@@ -157,6 +157,10 @@ $BUgzip = "/usr/bin/gzip"; 							// Add the gzip parameters here if needed.
 $BUtar = "/bin/tar -cvf";						// Add the tar parameters here if needed.
 
 
+/************************************
+ * Providers Configuration
+*/
+
 // IP GeoLocation
 // ------------------------
 // To set this up, change the class to "IpLocationProvider", and put *your* ipinfodb API key in.
@@ -166,6 +170,8 @@ $locationProviderApiKey = "super secret"; // ipinfodb api key
 
 // RDNS Provider ( RDnsLookupProvider / CachedRDnsLookupProvider / FakeRDnsLookupProvider)
 $rdnsProviderClass = "CachedRDnsLookupProvider";
+
+$antispoofProviderClass = "FakeAntiSpoofProvider";
 
 /***********************************
  * Other stuff that doesn't fit in.
@@ -220,10 +226,6 @@ $CORSallowed = array(
 	"https://en.wikipedia.org",
 	"http://meta.wikimedia.org",
 	"https://meta.wikimedia.org");
-
-/************************************
- * Providers Configuration
-*/
 
 $providerCacheExpiry = $dataclear_interval;
 
