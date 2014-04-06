@@ -11,7 +11,7 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
 	<script src="{$tsurl}/lib/jquery-1.9.1.min.js" type="text/javascript"></script>
-	<script src="{$tsurl}/lib/bootstrap/js/bootstrap.js" type="text/javascript"></script>
+	<script src="{$tsurl}/lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 	<script src="{$tsurl}/lib/bootstrap-sortable/js/bootstrap-sortable.js" type="text/javascript"></script>
 
   {* initialise the tooltips *}
