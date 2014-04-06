@@ -39,6 +39,8 @@ $accbot   = new accbotSend();
 $skin     = new skin();
 $strings  = new strings();
 
+$antispoofProvider = new $antispoofProviderClass();
+
 // Display the header of the interface.
 $skin->displayPheader();
 
