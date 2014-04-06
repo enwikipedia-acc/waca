@@ -47,6 +47,8 @@ $antispoof_table = "spoofuser";
 // Does nothing yet, intended for further localization.
 $wikiurl = "en.wikipedia.org";
 
+$mediawikiWebServiceEndpoint = "https://en.wikipedia.org/w/api.php";
+
 // URL of the current copy of the tool.
 $tsurl = "https://accounts.wmflabs.org";
 
