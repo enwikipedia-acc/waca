@@ -3,14 +3,29 @@ if (!defined("ACC")) {
 	die();
 } // Invalid entry point
 
-class NaiveApiAntispoofProvider implements IAntiSpoofProvider
+class CachedApiAntispoofProvider implements IAntiSpoofProvider
 {
     public function getSpoofs($username)
     {
         global $mediawikiWebServiceEndpoint;
         
-        // get the data from the API
-        $data = file_get_contents( $mediawikiWebServiceEndpoint . "?action=antispoof&format=php&username=" . urlencode( $username ) );
+        $cacheResult = AntiSpoofCache::getByUsername($username, gGetDb());
+        if($cacheResult == false)
+        {
+            // get the data from the API
+            $data = file_get_contents( $mediawikiWebServiceEndpoint . "?action=antispoof&format=php&username=" . urlencode( $username ) );
+                
+            $cacheEntry = new AntiSpoofCache();
+            $cacheEntry->setDatabase(gGetDb());
+            $cacheEntry->setUsername($username);
+            $cacheEntry->setData($data);
+            $cacheEntry->save();
+        }
+        else
+        {
+            $data = $cacheResult->getData();   
+        }
+        
         $result = unserialize($data);
         
         if( $result['antispoof']['result'] == "pass" )
