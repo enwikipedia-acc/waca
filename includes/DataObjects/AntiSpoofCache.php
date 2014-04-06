@@ -56,6 +56,10 @@ class AntiSpoofCache extends DataObject
     {
         if($this->isNew)
 		{ // insert
+            
+            // clear old data first
+            $this->dbObject->exec("delete from antispoofcache where timestamp < date_sub(now(), interval 3 hour);");
+            
 			$statement = $this->dbObject->prepare("INSERT INTO `antispoofcache` (username, data) VALUES (:username, :data);");
 			$statement->bindParam(":username", $this->username);
 			$statement->bindParam(":data", $this->data);
