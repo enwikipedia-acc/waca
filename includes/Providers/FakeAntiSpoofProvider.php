@@ -1,17 +1,12 @@
 <?php
+if (!defined("ACC")) {
+	die();
+} // Invalid entry point
 
-/**
- * FakeAntiSpoofProvider short summary.
- *
- * FakeAntiSpoofProvider description.
- *
- * @version 1.0
- * @author stwalkerster
- */
 class FakeAntiSpoofProvider implements IAntiSpoofProvider
 {
     public function getSpoofs($username)
     {
-        return array( "JWales", "Jwales", "JWhales" );   
+        throw new Exception("This function is currently disabled.");
     }
 }
