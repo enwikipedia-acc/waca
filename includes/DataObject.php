@@ -16,7 +16,7 @@ abstract class DataObject
 {
     protected $id = 0;
     
-    protected $isNew = true;
+    public $isNew = true;
     
     protected $dbObject;
     
