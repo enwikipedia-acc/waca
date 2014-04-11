@@ -1615,11 +1615,10 @@ elseif ($action == "breakreserve")
 			else
 			{
 				global $tsurl;
-                // TODO: Bootstrap
-				echo "Are you sure you wish to break " . $reservedUser->getUsername() .
-					"'s reservation?<br />" . 
-					"<a href=\"$tsurl/acc.php?action=breakreserve&resid={$request->getId()}&confirm=1\">Yes</a> / " . 
-                    "<a href=\"$tsurl/acc.php?action=zoom&id={$request->getId()}\">No</a>";
+                $smarty->assign("reservedUser", $reservedUser);
+                $smarty->assign("request", $request);
+                
+                $smarty->display("confirmations/breakreserve.tpl");
 			}
 		}
 		else 

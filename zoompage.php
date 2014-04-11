@@ -30,6 +30,15 @@ function zoomPage($id,$urlhash)
         BootstrapSkin::displayInternalFooter();
         die();
     }
+    
+    if(isset($_GET['ecoverride']) && User::getCurrent()->isAdmin() )
+    {
+        $smarty->assign('ecoverride', true);
+    }
+    else
+    {
+        $smarty->assign('ecoverride', false);
+    }
         
     $smarty->assign('request', $request);
     
