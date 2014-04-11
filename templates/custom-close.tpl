@@ -20,7 +20,7 @@
         
         <label class="checkbox">
           <input type="checkbox" name="ccmailist" checked="checked"
-				    {if $currentUser->isAdmin() || $currentUser->isCheckuser()}disabled="disabled"{/if}
+				    {if !$currentUser->isAdmin() && !$currentUser->isCheckuser()}disabled="disabled"{/if}
             />
           CC to mailing list
         </label>
