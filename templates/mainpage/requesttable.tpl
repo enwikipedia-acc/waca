@@ -5,8 +5,20 @@
       {if $showStatus}
 			  <th>Request state</th>
       {/if}
-			<th><span class="visible-desktop">Email address</span><span class="visible-tablet">Email and IP</span><span class="visible-phone">Request details</span></th>
-			<th><span class="visible-desktop">IP address</span></th>
+			<th>
+        {if $currentUser->isAdmin() || $currentUser->isCheckUser()}
+          <span class="visible-desktop">Email address</span>
+          <span class="visible-tablet">Email and IP</span>
+          <span class="visible-phone">Request details</span>
+        {else}
+          <span class="visible-phone">Username</span>
+        {/if}
+      </th>
+			<th>
+        {if $currentUser->isAdmin() || $currentUser->isCheckUser()}
+          <span class="visible-desktop">IP address</span>
+        {/if}
+      </th>
 			<th><span class="hidden-phone">Username</span></th>
 			<th><span class="visible-desktop">Request time</span></th>
 			<td><!-- ban --></td>
