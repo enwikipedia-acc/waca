@@ -1,9 +1,9 @@
 <div class="page-header">
 	<h1>User preferences<small> Change your preferences.</small></h1>
 </div>
+<form class="form-horizontal" method="post">
 <fieldset>
   <legend>General settings</legend>
-<form class="form-horizontal" method="post">
   <div class="control-group">
     <label class="control-label" for="inputSig">Your signature (wikicode)</label>
     <div class="controls">
@@ -15,12 +15,6 @@
 		<label class="control-label" for="inputEmail">Your Email address</label>
 		<div class="controls">
 			<input class="input-xlarge" type="email" id="inputEmail" name="email" value="{$currentUser->getEmail()|escape}" />
-		</div>
-	</div>
-	<div class="control-group">
-		<label class="control-label">Your on-wiki username</label>
-		<div class="controls">
-			<span class="input-xlarge uneditable-input">{$currentUser->getOnWikiName()|escape}</span>
 		</div>
 	</div>
 	<div class="control-group">
@@ -41,33 +35,52 @@
 			<button type="submit" class="btn btn-primary">Save preferences</button>
 		</div>
 	</div>
-</form>
 </fieldset>
-<fieldset>
-<legend>Change your password</legend>
+</form>
+
+<div class="form-horizontal">
+  <fieldset>
+    <legend>Wikipedia Account</legend>
+    <div class="control-group">
+      <label class="control-label">Attached Wikipedia account:</label>
+      <div class="controls">
+        <a href="{$mediawikiScriptPath}?title=User:{$currentUser->getOAuthOnWikiName()|escape:'url'}">{$currentUser->getOAuthOnWikiName()|escape}</a>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="controls">
+        <a href="{$tsurl}/acc.php?action=oauthdetach" class="btn btn-danger">Detach account</a>
+      </div>
+    </div>
+  </fieldset>
+</div>
+
 <form class="form-horizontal" method="post" action="{$tsurl}/acc.php?action=changepassword">
-	<div class="control-group">
-		<label class="control-label" for="inputOldpassword">Your old password</label>
-		<div class="controls">
-			<input class="input-xlarge" type="password" id="inputOldpassword" name="oldpassword">
-		</div>
-	</div>
-	<div class="control-group">
-		<label class="control-label" for="inputNewpassword">Your new password</label>
-		<div class="controls">
-			<input class="input-xlarge" type="password" id="inputNewpassword" name="newpassword">
-		</div>
-	</div>
-	<div class="control-group">
-		<label class="control-label" for="inputNewpasswordconfirm">Confirm new password</label>
-		<div class="controls">
-			<input class="input-xlarge" type="password" id="inputNewpasswordconfirm" name="newpasswordconfirm">
-		</div>
-	</div>
-	<div class="control-group">
-		<div class="controls">
-			<button type="submit" class="btn btn-primary">Update password</button>
-		</div>
-	</div>
+  <fieldset>
+    <legend>Change your password</legend>
+    <div class="control-group">
+      <label class="control-label" for="inputOldpassword">Your old password</label>
+      <div class="controls">
+        <input class="input-xlarge" type="password" id="inputOldpassword" name="oldpassword" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputNewpassword">Your new password</label>
+      <div class="controls">
+        <input class="input-xlarge" type="password" id="inputNewpassword" name="newpassword" />
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="inputNewpasswordconfirm">Confirm new password</label>
+      <div class="controls">
+        <input class="input-xlarge" type="password" id="inputNewpasswordconfirm" name="newpasswordconfirm" />
+      </div>
+    </div>
+    <div class="control-group">
+      <div class="controls">
+        <button type="submit" class="btn btn-primary">Update password</button>
+      </div>
+    </div>
+  </fieldset>
 </form>
-</fieldset>

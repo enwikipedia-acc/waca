@@ -99,7 +99,6 @@ class User extends DataObject
 		return $resultObject;
     }
     
- 
     public function save()
     {
 		if($this->isNew)
@@ -224,7 +223,13 @@ class User extends DataObject
         return $this->status;
     }
 
-    public function getOnWikiName(){
+    public function getOnWikiName()
+    {
+        if($this->oauthaccesstoken != null)
+        {
+            return $this->getOAuthOnWikiName();   
+        }
+        
         return $this->onwikiname;
     }
 
@@ -467,4 +472,22 @@ class User extends DataObject
     {
         return md5($this->username . $this->email . $this->welcome_template . $this->id -> $this->password);
     }
+
+    public function getOAuthOnWikiName()
+    {
+        if($this->oauthaccesstoken == null)
+        {
+            return null;   
+        }
+        
+        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl;
+        
+        $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl);
+        $data = $util->apiCall(array(
+            'action' => 'query',
+            'meta' => 'userinfo'), $this->oauthaccesstoken, $this->oauthaccesssecret);
+        
+        return $data->query->userinfo->name;
+    }
+    
 }

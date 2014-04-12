@@ -2083,6 +2083,17 @@ elseif ($action == "emailmgmt") {
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
+elseif ($action == "oauthdetach")
+{ 
+    $currentUser = User::getCurrent();
+    $currentUser->setOAuthAccessSecret(null);
+    $currentUser->setOAuthAccessToken(null);
+    $currentUser->setOAuthRequestSecret(null);
+    $currentUser->setOAuthRequestToken(null);
+    $currentUser->save();
+    
+    header("Location: {$tsurl}/acc.php?action=logout");
+}    
 # If the action specified does not exist, goto the default page.
 else {
 	echo defaultpage();

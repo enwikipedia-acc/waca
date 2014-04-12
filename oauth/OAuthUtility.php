@@ -89,7 +89,8 @@ class OAuthUtility
         
         $data = curl_exec( $ch );
         
-        if( !$data ) {
+        if( !$data )
+        {
 	        throw new Exception('Curl error: ' . curl_error( $ch ));
         }
 
@@ -97,4 +98,45 @@ class OAuthUtility
         
         return $token;
     }
+    
+    public function apiCall($apiParams, $accessToken, $accessSecret)
+    {
+        global $mediawikiWebServiceEndpoint, $toolUserAgent;
+        
+        $userToken = new OAuthToken( $accessToken, $accessSecret );
+        
+        $apiParams['format'] = 'json';
+        
+        $c = new OAuthConsumer( $this->consumerToken, $this->consumerSecret );
+        
+        $api_req = OAuthRequest::from_consumer_and_token(
+            $c,           // Consumer
+            $userToken, // User Access Token
+            "GET",        // HTTP Method
+            $mediawikiWebServiceEndpoint,      // Endpoint url
+            $apiParams    // Extra signed parameters
+        );
+        
+        $hmac_method = new OAuthSignatureMethod_HMAC_SHA1();
+        
+        $api_req->sign_request( $hmac_method, $c, $userToken );
+        
+        $ch = curl_init();
+        curl_setopt( $ch, CURLOPT_URL, $mediawikiWebServiceEndpoint . "?" . http_build_query( $apiParams ) );
+        curl_setopt( $ch, CURLOPT_HEADER, 0 );
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+        curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
+        curl_setopt( $ch, CURLOPT_HTTPHEADER, array( $api_req->to_header() ) ); // Authorization header required for api
+        curl_setopt( $ch, CURLOPT_USERAGENT, $toolUserAgent);
+        
+        $data = curl_exec( $ch );
+        
+        if( !$data ) 
+        {
+	        throw new Exception('Curl error: ' . curl_error( $ch ));
+        }
+        
+        return json_decode($data);
+    }
+    
 }
