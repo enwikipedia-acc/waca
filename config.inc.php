@@ -158,6 +158,12 @@ $BUdumper = "/opt/ts/mysql/5.1/bin/mysqldump --defaults-file=~/.my.cnf p_acc_liv
 $BUgzip = "/usr/bin/gzip"; 							// Add the gzip parameters here if needed.
 $BUtar = "/bin/tar -cvf";						// Add the tar parameters here if needed.
 
+/************************************
+ * OAuth Configuration
+ */
+
+$oauthConsumerToken = "";
+$oauthSecretToken = "";
 
 /************************************
  * Providers Configuration
