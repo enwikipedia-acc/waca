@@ -399,6 +399,32 @@ elseif ($action == "login")
     $_SESSION['user'] = $user->getUsername();
     $_SESSION['userID'] = $user->getId();
     
+    if( $user->getOAuthAccessToken() == null)
+    {
+        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl;
+
+        try
+        {
+            // Get a request token for OAuth
+            $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl);
+            $requestToken = $util->getRequestToken();
+
+            // save the request token for later
+            $user->setOAuthRequestToken($requestToken->key);
+            $user->setOAuthRequestSecret($requestToken->secret);
+            $user->save();
+            
+            $redirectUrl = $util->getAuthoriseUrl($requestToken);
+            
+            header("Location: {$redirectUrl}");
+            die();
+        }
+        catch(Exception $ex)
+        {
+            throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
+        }        
+    }
+    
     header("Location: $tsurl/acc.php");
 }
 elseif ($action == "messagemgmt") 
