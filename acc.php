@@ -138,46 +138,8 @@ elseif ($action == "sreg")
 {
     $sregHttpClient = new http();
     
-	$cu_name = rawurlencode( $_REQUEST['wname'] );
-	$userblocked = $sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
-	$ub = unserialize( $userblocked );
-	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) 
-    {
-		$message = InterfaceMessage::get(InterfaceMessage::DECL_BLOCKED);
-		BootstrapSkin::displayAlertBox("You are presently blocked on the English Wikipedia", "alert-error", "Error");
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-    
-	$userexist = $sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
-	$ue = unserialize( $userexist );
-	foreach ( $ue['query']['users'] as $oneue ) 
-    {
-		if ( isset($oneue['missing'])) 
-        {
-			BootstrapSkin::displayAlertBox("Invalid on-wiki username", "alert-error", "Error");
-            BootstrapSkin::displayInternalFooter();
-			die();
-		}
-	}
-
-	// check if the user is to new
-	global $onRegistrationNewbieCheck;
-	if( $onRegistrationNewbieCheck ) 
-	{
-		global $onRegistrationNewbieCheckEditCount, $onRegistrationNewbieCheckAge;
-        
-		$isNewbie = unserialize($sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$cu_name" ));
-		$time = $isNewbie['query']['allusers'][0]['registration'];
-		$time2 = time() - strtotime($time);
-		$editcount = $isNewbie['query']['allusers'][0]['editcount'];
-		if (!($editcount > $onRegistrationNewbieCheckEditCount and $time2 > $onRegistrationNewbieCheckAge)) 
-        {
-            BootstrapSkin::displayAlertBox("You are too new to request an account at the moment.", "alert-info", "Sorry!", false);
-            BootstrapSkin::displayInternalFooter();
-			die();
-		}
-	}
+    // TODO: check blocked
+    // TODO: check age.
     
 	// check if user checked the "I have read and understand the interface guidelines" checkbox
 	if(!isset($_REQUEST['guidelines'])) {
@@ -199,13 +161,6 @@ elseif ($action == "sreg")
 		die();
 	}
     
-	if(!((string)(int)$_REQUEST['conf_revid'] === (string)$_REQUEST['conf_revid']) || $_REQUEST['conf_revid'] == "")
-    {
-		BootstrapSkin::displayAlertBox("Please enter the revision id of your confirmation edit in the \"Confirmation diff\" field. The revid is the number after the &diff= part of the URL of a diff.", "alert-error", "Error!", false);
-        BootstrapSkin::displayInternalFooter();
-        die();		
-	}
-    
 	if (User::getByUsername($_REQUEST['name'], gGetDb()) != false) {
         BootstrapSkin::displayAlertBox("Sorry, but that username is in use. Please choose another.", "alert-error", "Error!", false);
 		BootstrapSkin::displayInternalFooter();
@@ -221,16 +176,6 @@ elseif ($action == "sreg")
 		die();
 	}
     $query->closeCursor();
-    
-    $query = gGetDb()->prepare("SELECT * FROM user WHERE onwikiname = :onwikiname LIMIT 1;");
-    $query->execute(array(":onwikiname" => $_REQUEST['wname']));
-    if($query->fetchObject("User") != false)
-    {
-        BootstrapSkin::displayAlertBox("I'm sorry, but that Wikipedia account is in use here.", "alert-error", "Error!", false);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-    $query->closeCursor();
 
     $newUser = new User();
     $newUser->setDatabase(gGetDb());
@@ -238,9 +183,9 @@ elseif ($action == "sreg")
     $newUser->setUsername($_REQUEST['name']);
     $newUser->setPassword($_REQUEST['pass']);
     $newUser->setEmail($_REQUEST['email']);
-    $newUser->setOnWikiName($_REQUEST['wname']);
-    $newUser->setConfirmationDiff($_REQUEST['conf_revid']);
     $newUser->save();
+    
+    
     
 	$accbotSend->send("New user: " . $_REQUEST['name']);
 	BootstrapSkin::displayAlertBox("Your request will be reviewed soon by a tool administrator, and you'll get an email informing you of the decision.", "alert-success", "Account requested!", false);
