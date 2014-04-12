@@ -19,6 +19,10 @@ class User extends DataObject
     private $abortpref = 0;
     private $confirmationdiff = 0;
     private $emailsig = "";
+    private $oauthrequesttoken = "";
+    private $oauthrequestsecret = "";
+    private $oauthaccesstoken = "";
+    private $oauthaccesssecret = "";
     
     // cache variable of the current user - it's never going to change in the middle of a request.
     private static $currentUser;
@@ -84,10 +88,12 @@ class User extends DataObject
 			$statement = $this->dbObject->prepare(
                 "INSERT INTO `user` (" . 
                 "username, email, password, status, onwikiname, welcome_sig, lastactive, forcelogout," . 
-                "checkuser, identified, welcome_template, abortpref, confirmationdiff, emailsig" . 
+                "checkuser, identified, welcome_template, abortpref, confirmationdiff, emailsig," . 
+                "oauthrequesttoken, oauthrequestsecret, oauthaccesstoken, oauthaccesssecret" .
                 ") VALUES (" . 
                 ":username, :email, :password, :status, :onwikiname, :welcome_sig, :lastactive, :forcelogout," . 
-                ":checkuser, :identified, :welcome_template, :abortpref, :confirmationdiff, :emailsig" . 
+                ":checkuser, :identified, :welcome_template, :abortpref, :confirmationdiff, :emailsig," . 
+                ":ort, :ors, :oat, :oas" .
                 ");");
 			$statement->bindParam(":username", $this->username);
 			$statement->bindParam(":email", $this->email);
@@ -103,6 +109,11 @@ class User extends DataObject
 			$statement->bindParam(":abortpref", $this->abortpref);
 			$statement->bindParam(":confirmationdiff", $this->confirmationdiff);
 			$statement->bindParam(":emailsig", $this->emailsig);
+            $statement->bindParam(":ort", $this->oauthrequesttoken);
+            $statement->bindParam(":ors", $this->oauthrequestsecret);
+            $statement->bindParam(":oat", $this->oauthaccesstoken);
+            $statement->bindParam(":oas", $this->oauthaccesssecret);
+            
 			if($statement->execute())
 			{
 				$this->isNew = false;
@@ -120,7 +131,8 @@ class User extends DataObject
                 "onwikiname = :onwikiname, welcome_sig = :welcome_sig, lastactive = :lastactive, " .
                 "forcelogout = :forcelogout, checkuser = :checkuser, identified = :identified, " .
                 "welcome_template = :welcome_template, abortpref = :abortpref, confirmationdiff = :confirmationdiff, " .
-                "emailsig = :emailsig " .
+                "emailsig = :emailsig, " .
+                "oauthrequesttoken = :ort, oauthrequestsecret = :ors, oauthaccesstoken = :oat, oauthaccesssecret = :oas " .
                 "WHERE id = :id LIMIT 1;");
 			$statement->bindParam(":id", $this->id);
 			$statement->bindParam(":username", $this->username);
@@ -136,7 +148,12 @@ class User extends DataObject
 			$statement->bindParam(":welcome_template", $this->welcome_template);
 			$statement->bindParam(":abortpref", $this->abortpref);
 			$statement->bindParam(":confirmationdiff", $this->confirmationdiff);
-			$statement->bindParam(":emailsig", $this->emailsig);            
+			$statement->bindParam(":emailsig", $this->emailsig);
+            $statement->bindParam(":ort", $this->oauthrequesttoken);
+            $statement->bindParam(":ors", $this->oauthrequestsecret);
+            $statement->bindParam(":oat", $this->oauthaccesstoken);
+            $statement->bindParam(":oas", $this->oauthaccesssecret);
+            
 			if(!$statement->execute())
 			{
 				throw new Exception($statement->errorInfo());
@@ -271,6 +288,46 @@ class User extends DataObject
     public function setEmailSig($emailsig){
         $this->emailsig = $emailsig;
     }
+    
+    public function getOAuthRequestToken()
+	{
+		return $this->oauthrequesttoken;
+	}
+
+	public function setOAuthRequestToken($oauthrequesttoken)
+	{
+		$this->oauthrequesttoken = $oauthrequesttoken;
+	}
+
+	public function getOAuthRequestSecret()
+	{
+		return $this->oauthrequestsecret;
+	}
+
+	public function setOAuthRequestSecret($oauthrequestsecret)
+	{
+		$this->oauthrequestsecret = $oauthrequestsecret;
+	}
+
+	public function getOAuthAccessToken()
+    {
+		return $this->oauthaccesstoken;
+	}
+
+	public function setOAuthAccessToken($oauthaccesstoken)
+	{
+		$this->oauthaccesstoken = $oauthaccesstoken;
+	}
+
+	public function getOAuthAccessSecret()
+	{
+		return $this->oauthaccesssecret;
+	}
+
+	public function setOAuthAccessSecret($oauthaccesssecret)
+	{
+		$this->oauthaccesssecret = $oauthaccesssecret;
+	}
 
     #endregion
     
