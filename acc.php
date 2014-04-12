@@ -219,9 +219,6 @@ elseif ($action == "sreg")
         
     });
     
-    //$accbotSend->send("New user: " . $_REQUEST['name']);
-    //BootstrapSkin::displayAlertBox("Your request will be reviewed soon by a tool administrator, and you'll get an email informing you of the decision.", "alert-success", "Account requested!", false);
-    //BootstrapSkin::displayInternalFooter();
 	die();
 }
 
