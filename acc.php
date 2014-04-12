@@ -32,6 +32,8 @@ require_once 'includes/skin.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
 require_once 'includes/http.php';
+require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
+require_once 'oauth/OAuthUtility.php';
 
 // Set the current version of the ACC.
 $version = "0.9.7";
@@ -177,19 +179,46 @@ elseif ($action == "sreg")
 	}
     $query->closeCursor();
 
-    $newUser = new User();
-    $newUser->setDatabase(gGetDb());
+    $database = gGetDb();
     
-    $newUser->setUsername($_REQUEST['name']);
-    $newUser->setPassword($_REQUEST['pass']);
-    $newUser->setEmail($_REQUEST['email']);
-    $newUser->save();
+    $database->transactionally(function() use ($database)
+    {
     
+        $newUser = new User();
+        $newUser->setDatabase($database);
     
+        $newUser->setUsername($_REQUEST['name']);
+        $newUser->setPassword($_REQUEST['pass']);
+        $newUser->setEmail($_REQUEST['email']);
+        $newUser->save();
     
-	$accbotSend->send("New user: " . $_REQUEST['name']);
-	BootstrapSkin::displayAlertBox("Your request will be reviewed soon by a tool administrator, and you'll get an email informing you of the decision.", "alert-success", "Account requested!", false);
-    BootstrapSkin::displayInternalFooter();
+        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl;
+    
+        try
+        {
+            // Get a request token for OAuth
+            $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl);
+            $requestToken = $util->getRequestToken();
+    
+            // save the request token for later
+            $newUser->setOAuthRequestToken($requestToken->key);
+            $newUser->setOAuthRequestSecret($requestToken->secret);
+            $newUser->save();
+        
+            $redirectUrl = $util->getAuthoriseUrl($requestToken);
+            
+            header("Location: {$redirectUrl}");
+        }
+        catch(Exception $ex)
+        {
+            throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
+        }
+        
+    });
+    
+    //$accbotSend->send("New user: " . $_REQUEST['name']);
+    //BootstrapSkin::displayAlertBox("Your request will be reviewed soon by a tool administrator, and you'll get an email informing you of the decision.", "alert-success", "Account requested!", false);
+    //BootstrapSkin::displayInternalFooter();
 	die();
 }
 

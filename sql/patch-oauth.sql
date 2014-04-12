@@ -1,13 +1,11 @@
 ﻿ALTER TABLE `acc_user` 
-ADD COLUMN `oauthrequesttoken` VARCHAR(45) NULL AFTER `user_emailsig`,
-ADD COLUMN `oauthrequestsecret` VARCHAR(45) NULL AFTER `oauthrequesttoken`,
-ADD COLUMN `oauthaccesstoken` VARCHAR(45) NULL AFTER `oauthrequestsecret`,
-ADD COLUMN `oauthaccesssecret` VARCHAR(45) NULL AFTER `oauthaccesstoken`;
+	ADD COLUMN `oauthrequesttoken` VARCHAR(45) NULL AFTER `user_emailsig`,
+	ADD COLUMN `oauthrequestsecret` VARCHAR(45) NULL AFTER `oauthrequesttoken`,
+	ADD COLUMN `oauthaccesstoken` VARCHAR(45) NULL AFTER `oauthrequestsecret`,
+	ADD COLUMN `oauthaccesssecret` VARCHAR(45) NULL AFTER `oauthaccesstoken`;
 
-CREATE 
-     OR REPLACE 
-VIEW `user` AS
-    select 
+CREATE OR REPLACE VIEW `user` AS
+    SELECT 
         `acc_user`.`user_id` AS `id`,
         `acc_user`.`user_name` AS `username`,
         `acc_user`.`user_email` AS `email`,
@@ -28,5 +26,8 @@ VIEW `user` AS
         `acc_user`.`oauthrequestsecret` AS `oauthrequestsecret`,
         `acc_user`.`oauthaccesstoken` AS `oauthaccesstoken`,
         `acc_user`.`oauthaccesssecret` AS `oauthaccesssecret`		
-    from
+    FROM
         `acc_user`;
+
+ALTER TABLE `acc_user` 
+	CHANGE COLUMN `user_onwikiname` `user_onwikiname` VARCHAR(255) NULL ;

@@ -1,6 +1,11 @@
 <?php
 
-class OAuthUtil
+function wfDebugLog($section, $message)
+{
+    // no op, needed by the mediawiki oauth library.   
+}
+
+class OAuthUtility
 {
     private $consumerToken;
     private $consumerSecret;
@@ -17,9 +22,9 @@ class OAuthUtil
     {    
         global $toolUserAgent;
         
-        $endpoint = $this->baseUrl . '/initiate&format=json&oauth_callback=oob';
+        $endpoint = $this->baseUrl . '/initiate?format=json&oauth_callback=oob';
         
-        $c = new OAuthConsumer( $this->consumerKey, $this->consumerSecret );
+        $c = new OAuthConsumer( $this->consumerToken, $this->consumerSecret );
         $parsed = parse_url( $endpoint );
         $params = array();
         parse_str($parsed['query'], $params);
@@ -43,12 +48,17 @@ class OAuthUtil
         
         $token = json_decode( $data );
         
+        if(isset($token->error))
+        {
+            throw new Exception("Error encountered while getting token.");
+        }
+        
         return $token;
     }
     
     public function getAuthoriseUrl($requestToken)
     {
-        return "{$baseUrl}/authorize&oauth_token={$requestToken}&oauth_consumer_key={$this->consumerToken}";
+        return "{$this->baseUrl}/authorize?oauth_token={$requestToken->key}&oauth_consumer_key={$this->consumerToken}";
     }
     
     public function callbackCompleted($requestToken, $verifyToken)
@@ -57,7 +67,7 @@ class OAuthUtil
         
         $endpoint = $this->baseUrl . '/token&format=json';
 
-        $c = new OAuthConsumer( $this->consumerKey, $this->consumerSecret );
+        $c = new OAuthConsumer( $this->consumerToken, $this->consumerSecret );
         $rc = new OAuthConsumer( $requestToken->key, $requestToken->secret );
         $parsed = parse_url( $endpoint );
         parse_str($parsed['query'], $params);

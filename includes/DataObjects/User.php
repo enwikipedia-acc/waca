@@ -19,10 +19,10 @@ class User extends DataObject
     private $abortpref = 0;
     private $confirmationdiff = 0;
     private $emailsig = "";
-    private $oauthrequesttoken = "";
-    private $oauthrequestsecret = "";
-    private $oauthaccesstoken = "";
-    private $oauthaccesssecret = "";
+    private $oauthrequesttoken = null;
+    private $oauthrequestsecret = null;
+    private $oauthaccesstoken = null;
+    private $oauthaccesssecret = null;
     
     // cache variable of the current user - it's never going to change in the middle of a request.
     private static $currentUser;

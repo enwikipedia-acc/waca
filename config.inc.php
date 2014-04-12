@@ -164,6 +164,7 @@ $BUtar = "/bin/tar -cvf";						// Add the tar parameters here if needed.
 
 $oauthConsumerToken = "";
 $oauthSecretToken = "";
+$oauthBaseUrl = "https://en.wikipedia.org/wiki/Special:OAuth";
 
 /************************************
  * Providers Configuration
