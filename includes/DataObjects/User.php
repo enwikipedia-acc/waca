@@ -80,6 +80,25 @@ class User extends DataObject
 
 		return $resultObject;
     }
+    
+    public static function getByRequestToken($requestToken, PdoDatabase $database)
+    {
+		$statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE oauthrequesttoken = :id LIMIT 1;");
+		$statement->bindParam(":id", $requestToken);
+
+		$statement->execute();
+
+		$resultObject = $statement->fetchObject( get_called_class() );
+
+		if($resultObject != false)
+		{
+			$resultObject->isNew = false;
+            $resultObject->setDatabase($database); 
+		}
+
+		return $resultObject;
+    }
+    
  
     public function save()
     {

@@ -164,7 +164,10 @@ $BUtar = "/bin/tar -cvf";						// Add the tar parameters here if needed.
 
 $oauthConsumerToken = "";
 $oauthSecretToken = "";
-$oauthBaseUrl = "https://en.wikipedia.org/wiki/Special:OAuth";
+
+// path to Special:OAuth on target wiki.
+// don't use pretty urls, see [[bugzilla:57500]]
+$oauthBaseUrl = "https://en.wikipedia.org/w/index.php?title=Special:OAuth";
 
 /************************************
  * Providers Configuration

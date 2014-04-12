@@ -91,7 +91,7 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 
 	// Checks whether the user want to reset his password or register a new account.
 	// Performs the clause when the action is not one of the above options.
-	if ($action != 'register' && $action != 'forgotpw' && $action != 'sreg') {
+	if ($action != 'register' && $action != 'forgotpw' && $action != 'sreg' && $action != "registercomplete") {
 		if (isset($action)) {
 			// Display the login form and the rest of the page coding.
 			// The data in the current $GET varianle would be send as parameter.
@@ -204,6 +204,9 @@ elseif ($action == "sreg")
             $newUser->setOAuthRequestToken($requestToken->key);
             $newUser->setOAuthRequestSecret($requestToken->secret);
             $newUser->save();
+            
+            global $accbotSend;
+            $accbotSend->send("New user: " . $_REQUEST['name']);
         
             $redirectUrl = $util->getAuthoriseUrl($requestToken);
             
@@ -227,6 +230,11 @@ elseif ($action == "register")
     $smarty->display("register.tpl");
 	BootstrapSkin::displayInternalFooter();
 	die();
+}
+elseif ($action == "registercomplete")
+{
+    BootstrapSkin::displayAlertBox("Your request will be reviewed soon by a tool administrator, and you'll get an email informing you of the decision.", "alert-success", "Account requested!", false);
+    BootstrapSkin::displayInternalFooter();
 }
 elseif ($action == "forgotpw")
 {

@@ -22,7 +22,7 @@ class OAuthUtility
     {    
         global $toolUserAgent;
         
-        $endpoint = $this->baseUrl . '/initiate?format=json&oauth_callback=oob';
+        $endpoint = $this->baseUrl . '/initiate&format=json&oauth_callback=oob';
         
         $c = new OAuthConsumer( $this->consumerToken, $this->consumerSecret );
         $parsed = parse_url( $endpoint );
@@ -58,17 +58,17 @@ class OAuthUtility
     
     public function getAuthoriseUrl($requestToken)
     {
-        return "{$this->baseUrl}/authorize?oauth_token={$requestToken->key}&oauth_consumer_key={$this->consumerToken}";
+        return "{$this->baseUrl}/authorize&oauth_token={$requestToken->key}&oauth_consumer_key={$this->consumerToken}";
     }
     
-    public function callbackCompleted($requestToken, $verifyToken)
+    public function callbackCompleted($requestToken, $requestSecret, $verifyToken)
     {
         global $toolUserAgent;
         
         $endpoint = $this->baseUrl . '/token&format=json';
 
         $c = new OAuthConsumer( $this->consumerToken, $this->consumerSecret );
-        $rc = new OAuthConsumer( $requestToken->key, $requestToken->secret );
+        $rc = new OAuthConsumer( $requestToken, $requestSecret );
         $parsed = parse_url( $endpoint );
         parse_str($parsed['query'], $params);
         $params['oauth_verifier'] = trim($verifyToken);
