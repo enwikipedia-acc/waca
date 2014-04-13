@@ -170,6 +170,8 @@ $oauthSecretToken = "";
 // don't use pretty urls, see [[bugzilla:57500]]
 $oauthBaseUrl = "https://en.wikipedia.org/w/index.php?title=Special:OAuth";
 
+$oauthMediaWikiCanonicalServer = "";
+
 /************************************
  * Providers Configuration
 */

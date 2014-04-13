@@ -44,10 +44,51 @@
     <div class="control-group">
       <label class="control-label">Attached Wikipedia account:</label>
       <div class="controls">
-        <a href="{$mediawikiScriptPath}?title=User:{$currentUser->getOAuthOnWikiName()|escape:'url'}">{$currentUser->getOAuthOnWikiName()|escape}</a>
+        <a href="{$mediawikiScriptPath}?title=User:{$currentUser->getOAuthIdentity()->username|escape:'url'}">{$currentUser->getOAuthIdentity()->username|escape}</a>
       </div>
     </div>
 
+    <div class="control-group">
+      <label class="control-label">Email address:</label>
+      <div class="controls">
+        <div class="alert{if $currentUser->getOAuthIdentity()->confirmed_email} alert-success{/if}">
+          {if $currentUser->getOAuthIdentity()->confirmed_email}
+            Email address confirmed
+          {else}
+            Email address <strong>NOT</strong> confirmed
+          {/if}
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">Blocked:</label>
+      <div class="controls">
+        <div class="alert{if $currentUser->getOAuthIdentity()->blocked} alert-error{else} alert-success{/if}">
+          {if $currentUser->getOAuthIdentity()->blocked}
+            <strong>Blocked on Wikipedia!</strong>
+          {else}
+            Not blocked.
+          {/if}
+        </div>
+      </div>
+    </div>
+
+    <div class="control-group">
+      <label class="control-label">Rights:</label>
+      {foreach from=array('read', 'edit', 'createtalk', 'noratelimit', 'createaccount', 'apihighlimits', 'checkuser') item="right"}
+      <div class="controls">
+          <div class="alert{if in_array($right, $currentUser->getOAuthIdentity()->rights)} alert-success{else} alert-error{/if}">
+            {if in_array($right, $currentUser->getOAuthIdentity()->rights)}
+              Found: {$right}
+            {else}
+              <strong>NOT Found: {$right}</strong>
+            {/if}
+          </div>
+        </div>
+      {/foreach}
+    </div>
+    
     <div class="control-group">
       <div class="controls">
         <a href="{$tsurl}/acc.php?action=oauthdetach" class="btn btn-danger">Detach account</a>

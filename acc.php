@@ -33,6 +33,7 @@ require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
 require_once 'includes/http.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
+require_once 'lib/mediawiki-extensions-OAuth/lib/JWT.php';
 require_once 'oauth/OAuthUtility.php';
 
 // Set the current version of the ACC.

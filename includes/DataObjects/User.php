@@ -473,21 +473,43 @@ class User extends DataObject
         return md5($this->username . $this->email . $this->welcome_template . $this->id -> $this->password);
     }
 
-    public function getOAuthOnWikiName()
+    private $identityCache;
+    public function getOAuthIdentity()
     {
         if($this->oauthaccesstoken == null)
         {
+            $this->identityCache = null;
             return null;   
         }
         
-        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl;
-        
-        $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl);
-        $data = $util->apiCall(array(
-            'action' => 'query',
-            'meta' => 'userinfo'), $this->oauthaccesstoken, $this->oauthaccesssecret);
-        
-        return $data->query->userinfo->name;
+        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthMediaWikiCanonicalServer;
+
+        // check the cache
+        if(
+            $this->identityCache != null &&
+            $this->identityCache->aud == $oauthConsumerToken &&
+  //          $this->identityCache->iat < new DateTime() &&
+ //           $this->identityCache->exp > new DateTime() &&
+            $this->identityCache->iss == $oauthMediaWikiCanonicalServer
+            )
+        {
+            return $this->identityCache;
+        }
+        else
+        {
+            try
+            {
+                $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl);
+                $this->identityCache = $util->getIdentity($this->oauthaccesstoken, $this->oauthaccesssecret);
+            }
+            catch(UnexpectedValueException $ex)
+            {
+                $this->identityCache = null;
+            }
+            
+            return $this->identityCache;
+            
+        }
     }
     
 }

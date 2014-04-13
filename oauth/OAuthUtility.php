@@ -139,4 +139,41 @@ class OAuthUtility
         return json_decode($data);
     }
     
+    public function getIdentity($accessToken, $accessSecret)
+    {
+       
+        global $toolUserAgent;
+        
+        $endpoint = $this->baseUrl . '/identify&format=json';
+
+        $c = new OAuthConsumer( $this->consumerToken, $this->consumerSecret );
+        $rc = new OAuthToken( $accessToken, $accessSecret );
+        $parsed = parse_url( $endpoint );
+        parse_str($parsed['query'], $params);
+
+        $acc_req = OAuthRequest::from_consumer_and_token($c, $rc, "GET", $endpoint, $params);
+        
+        $hmac_method = new OAuthSignatureMethod_HMAC_SHA1();
+        $acc_req->sign_request($hmac_method, $c, $rc);
+
+        unset( $ch );
+        $ch = curl_init();
+        curl_setopt( $ch, CURLOPT_URL, (string) $acc_req );
+        curl_setopt( $ch, CURLOPT_PORT , 443 );
+        curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
+        curl_setopt( $ch, CURLOPT_HEADER, 0 );
+        curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
+        curl_setopt( $ch, CURLOPT_USERAGENT, $toolUserAgent);
+        
+        $data = curl_exec( $ch );
+        
+        if( !$data )
+        {
+	        throw new Exception('Curl error: ' . curl_error( $ch ));
+        }
+
+        $identity = JWT::decode( $data , $this->consumerSecret );
+        
+        return $identity;
+    }
 }
