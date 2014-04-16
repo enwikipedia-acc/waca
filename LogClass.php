@@ -278,7 +278,7 @@ class LogPage
 				$logList .="<li>$rlu changed user preferences for $rlp (" . $row2['user_name'] . ") at $rlt</li>\n";
 			}
 			if ($rla == "Banned") {
-				$query2 = 'SELECT ban_target, ban_duration FROM `ban` WHERE `ban_id` = \'' .$rlp. '\'; '; 
+				$query2 = 'SELECT target, duration FROM `ban` WHERE `id` = \'' .$rlp. '\'; '; 
 				$result2 = mysql_query($query2);
 				if (!$result2)
 					Die("Query failed: $query2 ERROR: " . mysql_error());
