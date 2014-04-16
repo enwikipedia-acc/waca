@@ -283,14 +283,14 @@ class LogPage
 				if (!$result2)
 					Die("Query failed: $query2 ERROR: " . mysql_error());
 				$row2 = mysql_fetch_assoc($result2);
-				if ($row2['ban_duration'] == "-1") {
+				if ($row2['duration'] == "-1") {
 					$until = "indefinitely";
 				}
 				else {
-					$durationtime = date("F j, Y, g:i a", $row2['ban_duration']);
+					$durationtime = date("F j, Y, g:i a", $row2['duration']);
 				    $until = "until $durationtime";
 				}
-				$logList .="<li>$rlu banned ". $row2['ban_target'] ." $until at $rlt ($rlc)</li>";
+				$logList .="<li>$rlu banned ". $row2['target'] ." $until at $rlt ($rlc)</li>";
 			}
 			if ($rla == "Unbanned") {
                 $ban = Ban::getById($rlp, gGetDb());
