@@ -31,7 +31,7 @@ class CachedApiAntispoofProvider implements IAntiSpoofProvider
         if( $result['antispoof']['result'] == "pass" )
         {
             // All good here!
-            return array();
+            return false;
         }
         
         if( $result['antispoof']['result'] == "conflict" )
