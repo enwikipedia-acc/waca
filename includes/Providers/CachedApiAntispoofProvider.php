@@ -20,6 +20,8 @@ class CachedApiAntispoofProvider implements IAntiSpoofProvider
             $cacheEntry->setUsername($username);
             $cacheEntry->setData($data);
             $cacheEntry->save();
+            
+            $cacheResult = $cacheEntry;
         }
         else
         {
@@ -28,10 +30,22 @@ class CachedApiAntispoofProvider implements IAntiSpoofProvider
         
         $result = unserialize($data);
         
+        if(!isset($result['antispoof']) || !isset($result['antispoof']['result']))
+        {
+            $cacheResult->delete();
+            
+            if(isset($result['error']['info']))
+            {
+                throw new Exception( "Unrecognised API response to query: " . $result['error']['info'] );
+            }
+            
+            throw new Exception( "Unrecognised API response to query." );
+        }
+        
         if( $result['antispoof']['result'] == "pass" )
         {
             // All good here!
-            return false;
+            return array();
         }
         
         if( $result['antispoof']['result'] == "conflict" )
