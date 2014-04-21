@@ -1329,10 +1329,10 @@ elseif ($action == "done" && $_GET['id'] != "") {
     $closeaction = "Closed $gem";
     $messagebody = isset($_POST['msgbody']) ? $_POST['msgbody'] : '';
     $statement = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:request, :user, :closeaction, CURRENT_TIMESTAMP(), :msgbody);");
-    $statement->bindParam(':request', $request->getId());
-    $statement->bindParam(':user', User::getCurrent()->getUsername());
-    $statement->bindParam(':closeaction', $closeaction);
-    $statement->bindParam(':msgbody', $messagebody);
+    $statement->bindValue(':request', $request->getId());
+    $statement->bindValue(':user', User::getCurrent()->getUsername());
+    $statement->bindValue(':closeaction', $closeaction);
+    $statement->bindValue(':msgbody', $messagebody);
     $statement->execute();
     
 	if ($gem == '0') {
