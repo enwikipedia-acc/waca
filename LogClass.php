@@ -278,19 +278,19 @@ class LogPage
 				$logList .="<li>$rlu changed user preferences for $rlp (" . $row2['user_name'] . ") at $rlt</li>\n";
 			}
 			if ($rla == "Banned") {
-				$query2 = 'SELECT ban_target, ban_duration FROM `ban` WHERE `ban_id` = \'' .$rlp. '\'; '; 
+				$query2 = 'SELECT target, duration FROM `ban` WHERE `id` = \'' .$rlp. '\'; '; 
 				$result2 = mysql_query($query2);
 				if (!$result2)
 					Die("Query failed: $query2 ERROR: " . mysql_error());
 				$row2 = mysql_fetch_assoc($result2);
-				if ($row2['ban_duration'] == "-1") {
+				if ($row2['duration'] == "-1") {
 					$until = "indefinitely";
 				}
 				else {
-					$durationtime = date("F j, Y, g:i a", $row2['ban_duration']);
+					$durationtime = date("F j, Y, g:i a", $row2['duration']);
 				    $until = "until $durationtime";
 				}
-				$logList .="<li>$rlu banned ". $row2['ban_target'] ." $until at $rlt ($rlc)</li>";
+				$logList .="<li>$rlu banned ". $row2['target'] ." $until at $rlt ($rlc)</li>";
 			}
 			if ($rla == "Unbanned") {
                 $ban = Ban::getById($rlp, gGetDb());

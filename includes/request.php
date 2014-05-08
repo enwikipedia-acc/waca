@@ -251,10 +251,10 @@ class accRequest {
                     }
                     catch(Exception $ex)
                     {
-                        $spoofs = false;
+                        $spoofs = array();
                     }
                     
-					if( $spoofs === FALSE ) {
+					if( count($spoofs) === 0 ) {
 						$uLevel = "Open";
 						$what = "";
 					} else {
@@ -601,7 +601,7 @@ class accRequest {
         global $antispoofProvider;
         try
         {
-		    if($antispoofProvider->getSpoofs($user)) 
+		    if(count($antispoofProvider->getSpoofs($user)) > 0) 
             {
 			    // If there were spoofs an Admin should handle the request.
 			    $uLevel = "Admin";

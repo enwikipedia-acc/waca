@@ -70,7 +70,7 @@
 					<li><a href="{$tsurl}/statistics.php"><i class="icon-tasks"></i>&nbsp;Statistics</a></li>
 				  </ul>
 			  </li>
-              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench icon-white"></i>&nbsp;Management&nbsp;<b class="caret"></b></a>
+              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench icon-white"></i>&nbsp;Admin&nbsp;<b class="caret"></b></a>
 				  <ul class="dropdown-menu">
 					<li><a href="{$tsurl}/acc.php?action=ban"><i class="icon-ban-circle"></i>&nbsp;Ban Management</a></li>
 					<li><a href="{$tsurl}/acc.php?action=messagemgmt"><i class="icon-print"></i>&nbsp;Message Management</a></li>
@@ -85,21 +85,11 @@
 				<form class="navbar-form form-search" action="{$tsurl}/acc.php">
 				  <input type="hidden" name="action" value="zoom">
 				  <input class="span2" type="text" placeholder="Request ID" name="id" class="search-query">
-				  <button type="submit" class="btn"><i class="icon-arrow-right"></i>&nbsp;Go</button>
 				</form>
 			  </li>
 			{/if}
             </ul>
 			<ul class="nav pull-right">
-			
-              <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-question-sign icon-white"></i>&nbsp;Help&nbsp;<b class="caret"></b></a>
-				  <ul class="dropdown-menu">
-					<li><a href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide"><i class="icon-question-sign"></i>&nbsp;Guide</a></li>
-					<li><a href="//en.wikipedia.org/wiki/Wikipedia:Username_policy"><i class="icon-warning-sign"></i>&nbsp;Username Policy</a></li>
-					<li><a href="#modalFlowchart" role="button" data-toggle="modal"><i class="icon-check"></i>&nbsp;Similar account flowchart</a></li>
-					<li><a href="http://webchat.freenode.net/?channels=wikipedia-en-accounts"><i class="icon-comment"></i>&nbsp;Chat</a></li>
-				  </ul>
-			  </li>
 			{if $userid != 0}
 				<li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> <strong>{$username}</strong> <b class="caret"></b></a>
@@ -107,6 +97,12 @@
 						<li class="nav-header">Account</li>
 						<li><a href="{$tsurl}/statistics.php?page=Users&amp;user={$userid}"><i class="icon-tasks"></i> My statistics</a></li>
 						<li><a href="{$tsurl}/acc.php?action=prefs"><i class="icon-edit"></i> Edit Preferences</a></li>
+						<li class="divider"></li>
+						<li class="nav-header">Help</li>
+						<li><a href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide"><i class="icon-question-sign"></i>&nbsp;Guide</a></li>
+						<li><a href="//en.wikipedia.org/wiki/Wikipedia:Username_policy"><i class="icon-warning-sign"></i>&nbsp;Username Policy</a></li>
+						<li><a href="#modalFlowchart" role="button" data-toggle="modal"><i class="icon-check"></i>&nbsp;Similar account flowchart</a></li>
+						<li><a href="http://webchat.freenode.net/?channels=wikipedia-en-accounts"><i class="icon-comment"></i>&nbsp;Chat</a></li>
 						<li class="divider"></li>						
 						<li><a href="{$tsurl}/acc.php?action=logout"><i class="icon-lock"></i> Logout</a></li>
 					</ul>

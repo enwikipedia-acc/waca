@@ -456,39 +456,44 @@ elseif ($action == "messagemgmt")
 			die();
 		}
         
-        $message = InterfaceMessage::getById($_GET['edit'], gGetDb());
+        $database = gGetDb();
         
-	    if ($message == false)
+        $database->transactionally(function() use ($database)
         {
-            BootstrapSkin::displayAlertBox("Unable to find specified message", "alert-error", "Error", true, false);
-            BootstrapSkin::displayInternalFooter();
-		    die();
-        }
-        
-		if ( isset( $_GET['submit'] ) ) 
-        {
-            $message->setContent($_POST['mailtext']);
-            $message->setDescription($_POST['maildesc']);
-            $message->save();
+            global $smarty, $accbotSend;
             
-            $logStatement = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:message, :user, 'Edited', CURRENT_TIMESTAMP());");
-            $logStatement->bindValue(":message", $message->getId());
-            $logStatement->bindValue(":user", User::getCurrent()->getUsername());
-            $logStatement->execute();
+            $message = InterfaceMessage::getById($_GET['edit'], $database);
             
-			$mailname = $message->getDescription();
+            if ($message == false)
+            {
+                throw new TransactionException("Unable to find specified message", "Error");
+            }
             
-            BootstrapSkin::displayAlertBox("Message $mailname ({$message->getId()}) updated.", "alert-success", "Saved!", true, false);
-			$accbotSend->send("Message $mailname ({$message->getId()}) edited by " . User::getCurrent()->getUsername());
-			BootstrapSkin::displayInternalFooter();
-			die();
-		}
+            if ( isset( $_GET['submit'] ) ) 
+            {   
+                $message->setContent($_POST['mailtext']);
+                $message->setDescription($_POST['maildesc']);
+                $message->save();
+            
+                $logStatement = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:message, :user, 'Edited', CURRENT_TIMESTAMP());");
+                $logStatement->bindValue(":message", $message->getId());
+                $logStatement->bindValue(":user", User::getCurrent()->getUsername());
+                $logStatement->execute();
+            
+			    $mailname = $message->getDescription();
+            
+                BootstrapSkin::displayAlertBox("Message $mailname ({$message->getId()}) updated.", "alert-success", "Saved!", true, false);
+			    $accbotSend->send("Message $mailname ({$message->getId()}) edited by " . User::getCurrent()->getUsername());
+			    BootstrapSkin::displayInternalFooter();
+		    }
+            
+            $smarty->assign("message", $message);
+            $smarty->assign("readonly", false);
+            $smarty->display("message-management/editform.tpl");
         
-        $smarty->assign("message", $message);
-        $smarty->assign("readonly", false);
-        $smarty->display("message-management/editform.tpl");
+		    BootstrapSkin::displayInternalFooter();
+        });
         
-		BootstrapSkin::displayInternalFooter();
 		die();
 	}
     
@@ -825,26 +830,20 @@ elseif ($action == "sban")
     
     $database = gGetDb();
     
-    if(!$database->beginTransaction())
-    {
-        BootstrapSkin::displayAlertBox("Error initiating database transaction", "alert-error", "", false, false);
-        BootstrapSkin::displayInternalFooter();
-        die();
-    }
+    $ban = new Ban();
     
     $currentUsername = User::getCurrent()->getUsername();
-    $ban = new Ban();
-            
-    $ban->setDatabase($database);
-    $ban->setActive(1);
-    $ban->setType($_POST['type']);
-    $ban->setTarget($_POST['target']);
-    $ban->setUser($currentUsername);
-    $ban->setReason($_POST['banreason']);
-    $ban->setDuration($duration);
     
-    try
+    $database->transactionally(function() use ($database, $ban, $duration, $currentUsername) 
     {
+        $ban->setDatabase($database);
+        $ban->setActive(1);
+        $ban->setType($_POST['type']);
+        $ban->setTarget($_POST['target']);
+        $ban->setUser($currentUsername);
+        $ban->setReason($_POST['banreason']);
+        $ban->setDuration($duration);
+    
         $ban->save();
         
         $logQuery = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:banid, :siuser, 'Banned', CURRENT_TIMESTAMP(), :reason);";
@@ -853,20 +852,12 @@ elseif ($action == "sban")
         $logStatement->bindParam(":banid", $banid);
         $logStatement->bindParam(":siuser", $currentUsername);
         $logStatement->bindParam(":reason", $_POST['banreason']);
+        
         if(!$logStatement->execute())
         {
-            throw new Exception("Error saving log entry.");   
+            throw new TransactionException("Error saving log entry.");   
         }
-    }
-    catch(Exception $ex)
-    {
-        $database->rollBack();
-        BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Error in transaction", false, false);
-        BootstrapSkin::displayInternalFooter();
-        die();
-    }
-    
-    $database->commit();
+    });
     
     $smarty->assign("ban", $ban);
     BootstrapSkin::displayAlertBox($smarty->fetch("bans/bancomplete.tpl"), "alert-info","", false, false);
@@ -912,7 +903,7 @@ elseif ($action == "unban")
         
     if($ban == false)
     {
-        BootstrapSkin::displayAlertBox("The specified ban ID is not currently active!", "alert-error", "", false, false);
+        BootstrapSkin::displayAlertBox("The specified ban ID is not currently active or doesn't exist!", "alert-error", "", false, false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
@@ -929,15 +920,7 @@ elseif ($action == "unban")
 		{
             $database = gGetDb();
             
-            if(!$database->beginTransaction())
-            {
-                BootstrapSkin::displayAlertBox("Error initiating database transaction", "alert-error", "", false, false);
-                BootstrapSkin::displayInternalFooter();
-                die();
-            }
-            
-            try
-            {
+            $database->transactionally(function() use ($database, $ban) {
                 $ban->setActive(0);
                 $ban->save();
                 
@@ -952,19 +935,10 @@ elseif ($action == "unban")
                 
                 if(!$statement->execute())
                 {
-                    throw new Exception("Error saving log entry.");   
+                    throw new TransactionException("Error saving log entry.");   
                 }
-            }
-            catch(Exception $ex)
-            {
-                $database->rollBack();
-                BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Error in transaction", false, false);
-                BootstrapSkin::displayInternalFooter();
-                die();
-            }
-            
-            $database->commit();
-		
+            });
+        
             BootstrapSkin::displayAlertBox("Unbanned " . $ban->getTarget(), "alert-info", "", false, false);
             BootstrapSkin::displayInternalFooter();
 			$accbotSend->send($ban->getTarget() . " unbanned by " . User::getCurrent()->getUsername() . " ({$_POST['unbanreason']}))");
@@ -1088,25 +1062,36 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "")
 			die();
 		}
         
-        $request->setReserved(0);
-        $request->setStatus($_GET['target']);
-        $request->save();
+        $database = gGetDb();
+        $database->transactionally(function() use ($database, $request)
+        {
+            global $accbotSend, $availableRequestStates;
+                
+            $request->setReserved(0);
+            $request->setStatus($_GET['target']);
+            $request->save();
+            
+            $deto = $availableRequestStates[$_GET['target']]['deferto'];
+    		$detolog = $availableRequestStates[$_GET['target']]['defertolog'];
+            
+            $statement2 = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :user, :deferlog, CURRENT_TIMESTAMP());");
+            $statement2->bindValue(":deferlog", "Deferred to $detolog");
+            $statement2->bindValue(":request", $request->getId());
+            $statement2->bindValue(":user", User::getCurrent()->getUsername());
+            
+            if(!$statement2->execute()) 
+            {
+                throw new TransactionException("Error occurred saving log entry");    
+            }
+            
+            upcsum($request->getId());
         
-		$deto = $availableRequestStates[$_GET['target']]['deferto'];
-		$detolog = $availableRequestStates[$_GET['target']]['defertolog'];
-
-        $statement2 = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :user, :deferlog, CURRENT_TIMESTAMP());");
-        $statement2->bindValue(":deferlog", "Deferred to $detolog");
-        $statement2->bindValue(":request", $request->getId());
-        $statement2->bindValue(":user", User::getCurrent()->getUsername());
-        $statement2->execute();
+		    $accbotSend->send("Request {$request->getId()} deferred to $deto by " . User::getCurrent()->getUsername());
+            SessionAlert::success("Request {$request->getId()} deferred to $deto");
+		    header("Location: acc.php?action=zoom&id={$request->getId()}");
+        });
         
-		upcsum($request->getId());
-        
-		$accbotSend->send("Request {$request->getId()} deferred to $deto by " . User::getCurrent()->getUsername());
-        SessionAlert::success("Request {$request->getId()} deferred to $deto");
-		header("Location: acc.php?action=zoom&id={$request->getId()}");
-		die();
+        die();
 	} 
     else 
     {
@@ -1330,15 +1315,16 @@ elseif ($action == "done" && $_GET['id'] != "") {
     $request->setStatus('Closed');
     $request->setReserved(0);
     
+    // TODO: make this transactional
     $request->save();
     
     $closeaction = "Closed $gem";
     $messagebody = isset($_POST['msgbody']) ? $_POST['msgbody'] : '';
     $statement = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:request, :user, :closeaction, CURRENT_TIMESTAMP(), :msgbody);");
-    $statement->bindParam(':request', $request->getId());
-    $statement->bindParam(':user', User::getCurrent()->getUsername());
-    $statement->bindParam(':closeaction', $closeaction);
-    $statement->bindParam(':msgbody', $messagebody);
+    $statement->bindValue(':request', $request->getId());
+    $statement->bindValue(':user', User::getCurrent()->getUsername());
+    $statement->bindValue(':closeaction', $closeaction);
+    $statement->bindValue(':msgbody', $messagebody);
     $statement->execute();
     
 	if ($gem == '0') {
@@ -1606,17 +1592,27 @@ elseif ($action == "breakreserve")
         {
 			if(isset($_GET['confirm']) && $_GET['confirm'] == 1)	
 			{
-                $request->setReserved(0);
-                $request->save();
+                $database->transactionally(function() use($database, $request)
+                {
+                    global $accbotSend;
+                    
+                    $request->setReserved(0);
+                    $request->save();
 
-				$query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :username, 'BreakReserve', CURRENT_TIMESTAMP());");
-                $query->bindParam(":request", $request->getId());
-                $query->bindParam(":username", User::getCurrent()->getUsername());
-                $query->execute();
+				    $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :username, 'BreakReserve', CURRENT_TIMESTAMP());");
+                    $query->bindParam(":request", $request->getId());
+                    $query->bindParam(":username", User::getCurrent()->getUsername());
+                    
+                    if(!$query->execute())
+                    {
+                        throw new TransactionException("Error creating log entry.");
+                    }
                 
-				$accbotSend->send("Reservation on Request {$request->getId()} broken by " . User::getCurrent()->getUsername());
-				header("Location: acc.php");
-				die();
+				    $accbotSend->send("Reservation on Request {$request->getId()} broken by " . User::getCurrent()->getUsername());
+				    header("Location: acc.php");
+                });
+                
+                die();
 			}
 			else
 			{
@@ -1634,17 +1630,27 @@ elseif ($action == "breakreserve")
 	}
 	else
 	{
-        $request->setReserved(0);
-        $request->save();
+        $database->transactionally(function() use ($database, $request)
+        {
+            global $accbotSend;
+            
+            $request->setReserved(0);
+            $request->save();
 
-        $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :username, 'Unreserved', CURRENT_TIMESTAMP());");
-        $query->bindParam(":request", $request->getId());
-        $query->bindParam(":username", User::getCurrent()->getUsername());
-        $query->execute();
+            $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :username, 'Unreserved', CURRENT_TIMESTAMP());");
+            $query->bindParam(":request", $request->getId());
+            $query->bindParam(":username", User::getCurrent()->getUsername());
+            
+            if(!$query->execute()) 
+            {
+                throw new TransactionException("Error creating log entry");
+            }
         
-		$accbotSend->send("Request {$request->getId()} is no longer being handled.");
-		header("Location: acc.php");
-		die();
+		    $accbotSend->send("Request {$request->getId()} is no longer being handled.");
+		    header("Location: acc.php");
+        });
+        
+        die();
 	}
     
 	BootstrapSkin::displayInternalFooter();
@@ -1828,35 +1834,40 @@ elseif ($action == "ec")
 	
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') 
     {
-        $comment->setComment($_POST['newcomment']);
-        $comment->setVisibility($_POST['visibility']);
-        
-        $comment->save();
-        
-        $logQuery = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ( :id, :user, :action, CURRENT_TIMESTAMP() );";
         $database = gGetDb();
-        $logStatement = $database->prepare($logQuery);
+        $database->transactionally(function() use ($database, $comment, $tsurl) 
+        {
+            global $accbotSend;
+            
+            $comment->setComment($_POST['newcomment']);
+            $comment->setVisibility($_POST['visibility']);
         
-        $logAction = "EditComment-c";
-        $logStatement->bindParam(":user", User::getCurrent()->getUsername());
-        $logStatement->bindParam(":id", $comment->getId());
-        $logStatement->bindParam(":action", $logAction);
-        $logStatement->execute();
+            $comment->save();
         
-        $logAction = "EditComment-r";    
-        $logStatement->bindParam(":id", $comment->getRequest());
-        $logStatement->execute();
+            $logQuery = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ( :id, :user, :action, CURRENT_TIMESTAMP() );";
         
-        $accbotSend->send("Comment " . $comment->getId() . " edited by " . User::getCurrent()->getUsername());
+            $logStatement = $database->prepare($logQuery);
         
-		//Show user confirmation that the edit has been saved, and redirect them to the request after 5 seconds.
-		header("Refresh:5;URL=$tsurl/acc.php?action=zoom&id=" . $comment->getRequest());
+            $logAction = "EditComment-c";
+            $logStatement->bindParam(":user", User::getCurrent()->getUsername());
+            $logStatement->bindParam(":id", $comment->getId());
+            $logStatement->bindParam(":action", $logAction);
+            $logStatement->execute();
         
-		BootstrapSkin::displayAlertBox("You will be redirected to the request in 5 seconds Click <a href=\"" . $tsurl . "/acc.php?action=zoom&id=" . $comment->getRequest() . "\">here</a> if you are not redirected.", "alert-success", "Comment has been saved successfully.", true, false);
-        BootstrapSkin::displayInternalFooter();
-		die();
+            $logAction = "EditComment-r";    
+            $logStatement->bindParam(":id", $comment->getRequest());
+            $logStatement->execute();
+        
+            $accbotSend->send("Comment " . $comment->getId() . " edited by " . User::getCurrent()->getUsername());
+        
+            SessionAlert::success("Comment has been saved successfully");
+		    header("Location: $tsurl/acc.php?action=zoom&id=" . $comment->getRequest());
+        });
+        
+        die();    
 	}
-	else {	
+	else 
+    {	
         $smarty->assign("comment", $comment);
         $smarty->display("edit-comment.tpl");
 		BootstrapSkin::displayInternalFooter();
@@ -1887,63 +1898,38 @@ elseif ($action == "sendtouser")
         die();
     }
     
-    if($database->beginTransaction())
+    $database->transactionally(function() use ($database, $user, $request, $curuser)
     {
-        try
+        $updateStatement = $database->prepare("UPDATE acc_pend SET pend_reserved = :userid WHERE pend_id = :request LIMIT 1;");
+        $updateStatement->bindValue(":userid", $user->getId());
+        $updateStatement->bindValue(":request", $request);
+        if(!$updateStatement->execute())
         {
-            $updateStatement = $database->prepare("UPDATE acc_pend SET pend_reserved = :userid WHERE pend_id = :request LIMIT 1;");
-            $updateStatement->bindValue(":userid", $user->getId());
-            $updateStatement->bindValue(":request", $request);
-            if(!$updateStatement->execute())
-            {
-                throw new Exception("Error updating reserved status of request.");   
-            }
-            
-            $logStatement = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:request, :user, :action, CURRENT_TIMESTAMP(), '');");
-            $action = "SendReserved";
-            $logStatement->bindValue(":user", $curuser);
-            $logStatement->bindValue(":request", $request);
-            $logStatement->bindParam(":action", $action);
-            if(!$logStatement->execute())
-            {
-                throw new Exception("Error inserting send log entry.");   
-            }
-            
-            $logStatement->bindValue(":user", $user->getUsername());
-            $action = "ReceiveReserved";
-            if(!$logStatement->execute())
-            {
-                throw new Exception("Error inserting receive log entry.");   
-            }
-            
-            $database->commit();
+            throw new TransactionException("Error updating reserved status of request.");   
         }
-        catch(Exception $ex)
+            
+        $logStatement = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:request, :user, :action, CURRENT_TIMESTAMP(), '');");
+        $action = "SendReserved";
+        $logStatement->bindValue(":user", $curuser);
+        $logStatement->bindValue(":request", $request);
+        $logStatement->bindParam(":action", $action);
+        if(!$logStatement->execute())
         {
-            $database->rollBack();          
-            BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Query Error", true, false);
-            BootstrapSkin::displayInternalFooter();
-            die(); 
+            throw new TransactionException("Error inserting send log entry.");   
         }
-        catch(PDOException $ex)
+            
+        $logStatement->bindValue(":user", $user->getUsername());
+        $action = "ReceiveReserved";
+        if(!$logStatement->execute())
         {
-            $database->rollBack();          
-            BootstrapSkin::displayAlertBox("An error was encountered during the transaction, and the transaction has been rolled back. <br />" . $ex->getMessage(), "alert-error", "Database Error", true, false);
-            BootstrapSkin::displayInternalFooter();
-            die(); 
+            throw new TransactionException("Error inserting receive log entry.");   
         }
-    }
-    else
-    {
-        BootstrapSkin::displayAlertBox("Could not start database transaction.", "alert-error", "Database Error", true, false);
-        BootstrapSkin::displayInternalFooter();
-        die();
-    }
+    });
     
 	//$accbotSend->send("Request $request is being handled by " . $_POST['user']);
 
-    // redirect to zoom page
-    echo "<meta http-equiv=\"Refresh\" Content=\"0; URL=$tsurl/acc.php?action=zoom&id=$request\">";
+    SessionAlert::success("Reservation sent successfully");
+    header("Location: $tsurl/acc.php?action=zoom&id=$request");
 }
 elseif ($action == "emailmgmt") { 
 	/* New page for managing Emails, since I would rather not be handling editing
@@ -1954,40 +1940,46 @@ elseif ($action == "emailmgmt") {
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
-		if(isset($_POST['submit'])) {
-			$emailTemplate = new EmailTemplate();
-            $emailTemplate->setDatabase(gGetDb());
+		if(isset($_POST['submit'])) 
+        {
+            $database = gGetDb();
+            $database->transactionally(function() use ($database)
+            {
+                global $tsurl;
+                
+                $emailTemplate = new EmailTemplate();
+                $emailTemplate->setDatabase($database);
             
-			$name = $_POST['name'];
-            
-			$emailTemplate->setName($name);
-			$emailTemplate->setText($_POST['text']);
-			$emailTemplate->setJsquestion($_POST['jsquestion']);
-			$emailTemplate->setOncreated(isset($_POST['oncreated']));
-			$emailTemplate->setActive(isset($_POST['active']));
-			$siuser = sanitize($_SESSION['user']);
+        	    $emailTemplate->setName($_POST['name']);
+			    $emailTemplate->setText($_POST['text']);
+			    $emailTemplate->setJsquestion($_POST['jsquestion']);
+			    $emailTemplate->setOncreated(isset($_POST['oncreated']));
+			    $emailTemplate->setActive(isset($_POST['active']));
+			    
+			    // Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
+                // getByName(...) returns false on no records found.
+                if (EmailTemplate::getByName($_POST['name'], $database)) 
+                {
+				    throw new TransactionException("That Email template name is already being used. Please choose another.");
+			    }
 			
-			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
-			$nameCheck = EmailTemplate::getByName($name, gGetDb());
-			if ($nameCheck) {
-				BootStrap::displayAlertBox("That Email template name is already being used. Please choose another.");
-				BootstrapSkin::displayInternalFooter();
-				die();
-			}
-			
-			$emailTemplate->save();
-			$id = $emailTemplate->getId();
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$id', '$siuser', 'CreatedEmail', CURRENT_TIMESTAMP());";
-			$result = $tsSQL->query($query);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-		    header("Refresh:5;URL=$tsurl/acc.php?action=emailmgmt");
-			BootstrapSkin::displayAlertBox("Email template has been saved successfully. You will be returned to Email Management in 5 seconds.<br /><br />\n
-			Click <a href=\"".$tsurl."/acc.php?action=emailmgmt\">here</a> if you are not redirected.");
-			$accbotSend->send("Email $name ($id) created by $siuser");
-			BootstrapSkin::displayInternalFooter();
-			die();
+			    $emailTemplate->save();
+			    $id = $emailTemplate->getId();
+                
+			    $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:id, :user, 'CreatedEmail', CURRENT_TIMESTAMP());");
+                if(!$query->execute(array(":id" => $emailTemplate->getId(), ":user" => User::getCurrent()->getUsername())))
+                {
+                    throw new TransactionException();    
+                }
+                
+                SessionAlert::success("Email template has been saved successfully.");
+                header("Location: $tsurl/acc.php?action=emailmgmt");
+
+                $accbotSend->send("Email {$_POST['name']} ({$emailTemplate->getId()}) created by " . User::getCurrent()->getUsername());
+			    die();    
+            });
 		}
+        
 		$smarty->assign('id', null);
 		$smarty->assign('createdid', $createdid);
         $smarty->assign('emailTemplate', new EmailTemplate());
@@ -2034,6 +2026,7 @@ elseif ($action == "emailmgmt") {
 				die();
 			}
 
+            // TODO: do this transactionally.
 			$emailTemplate->save();
             
 			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$siuser', 'EditedEmail', CURRENT_TIMESTAMP())";
