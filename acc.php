@@ -1083,8 +1083,9 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "")
 		    $accbotSend->send("Request {$request->getId()} deferred to $deto by " . User::getCurrent()->getUsername());
             SessionAlert::success("Request {$request->getId()} deferred to $deto");
 		    header("Location: acc.php?action=zoom&id={$request->getId()}");
-		    die();
         });
+        
+        die();
 	} 
     else 
     {
@@ -1623,8 +1624,10 @@ elseif ($action == "breakreserve")
 	}
 	else
 	{
-        $database->transactionally(function() use ($database)
+        $database->transactionally(function() use ($database, $request)
         {
+            global $accbotSend;
+            
             $request->setReserved(0);
             $request->save();
 
