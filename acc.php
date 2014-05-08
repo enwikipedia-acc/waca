@@ -1603,8 +1603,9 @@ elseif ($action == "breakreserve")
                 
 				    $accbotSend->send("Reservation on Request {$request->getId()} broken by " . User::getCurrent()->getUsername());
 				    header("Location: acc.php");
-				    die();
                 });
+                
+                die();
 			}
 			else
 			{
@@ -1638,8 +1639,9 @@ elseif ($action == "breakreserve")
         
 		    $accbotSend->send("Request {$request->getId()} is no longer being handled.");
 		    header("Location: acc.php");
-		    die();
         });
+        
+        die();
 	}
     
 	BootstrapSkin::displayInternalFooter();
