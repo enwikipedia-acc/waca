@@ -1059,7 +1059,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "")
         $database = gGetDb();
         $database->transactionally(function() use ($database, $request)
         {
-            global $accbotSend;
+            global $accbotSend, $availableRequestStates;
                 
             $request->setReserved(0);
             $request->setStatus($_GET['target']);
@@ -1856,9 +1856,9 @@ elseif ($action == "ec")
         
             SessionAlert::success("Comment has been saved successfully");
 		    header("Location: $tsurl/acc.php?action=zoom&id=" . $comment->getRequest());
-        
-            die();    
         });
+        
+        die();    
 	}
 	else 
     {	
@@ -1892,7 +1892,7 @@ elseif ($action == "sendtouser")
         die();
     }
     
-    $database->transactionally(function() use ($database)
+    $database->transactionally(function() use ($database, $user, $request, $curuser)
     {
         $updateStatement = $database->prepare("UPDATE acc_pend SET pend_reserved = :userid WHERE pend_id = :request LIMIT 1;");
         $updateStatement->bindValue(":userid", $user->getId());
