@@ -1842,12 +1842,10 @@ elseif ($action == "ec")
         
             $accbotSend->send("Comment " . $comment->getId() . " edited by " . User::getCurrent()->getUsername());
         
-		    //Show user confirmation that the edit has been saved, and redirect them to the request after 5 seconds.
-		    header("Refresh:5;URL=$tsurl/acc.php?action=zoom&id=" . $comment->getRequest());
+            SessionAlert::success("Comment has been saved successfully");
+		    header("Location: $tsurl/acc.php?action=zoom&id=" . $comment->getRequest());
         
-		    BootstrapSkin::displayAlertBox("You will be redirected to the request in 5 seconds Click <a href=\"" . $tsurl . "/acc.php?action=zoom&id=" . $comment->getRequest() . "\">here</a> if you are not redirected.", "alert-success", "Comment has been saved successfully.", true, false);
-            BootstrapSkin::displayInternalFooter();
-		    die();    
+            die();    
         });
 	}
 	else 
@@ -1912,8 +1910,8 @@ elseif ($action == "sendtouser")
     
 	//$accbotSend->send("Request $request is being handled by " . $_POST['user']);
 
-    // redirect to zoom page
-    echo "<meta http-equiv=\"Refresh\" Content=\"0; URL=$tsurl/acc.php?action=zoom&id=$request\">";
+    SessionAlert::success("Reservation sent successfully");
+    header("Location: $tsurl/acc.php?action=zoom&id=$request");
 }
 elseif ($action == "emailmgmt") { 
 	/* New page for managing Emails, since I would rather not be handling editing
