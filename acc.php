@@ -826,7 +826,7 @@ elseif ($action == "sban")
     
     $ban = new Ban();
     
-    $database->transactionally(function() use ($database, $ban) {
+    $database->transactionally(function() use ($database, $ban, $duration) {
         $currentUsername = User::getCurrent()->getUsername();
             
         $ban->setDatabase($database);
@@ -1074,14 +1074,14 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "")
             {
                 throw new TransactionException("Error occurred saving log entry");    
             }
+            
+            upcsum($request->getId());
+        
+		    $accbotSend->send("Request {$request->getId()} deferred to $deto by " . User::getCurrent()->getUsername());
+            SessionAlert::success("Request {$request->getId()} deferred to $deto");
+		    header("Location: acc.php?action=zoom&id={$request->getId()}");
+		    die();
         });
-        
-		upcsum($request->getId());
-        
-		$accbotSend->send("Request {$request->getId()} deferred to $deto by " . User::getCurrent()->getUsername());
-        SessionAlert::success("Request {$request->getId()} deferred to $deto");
-		header("Location: acc.php?action=zoom&id={$request->getId()}");
-		die();
 	} 
     else 
     {
@@ -1821,6 +1821,8 @@ elseif ($action == "ec")
         $database = gGetDb();
         $database->transactionally(function() use ($database, $comment, $tsurl) 
         {
+            global $accbotSend;
+            
             $comment->setComment($_POST['newcomment']);
             $comment->setVisibility($_POST['visibility']);
         
