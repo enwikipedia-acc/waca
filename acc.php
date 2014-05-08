@@ -826,9 +826,10 @@ elseif ($action == "sban")
     
     $ban = new Ban();
     
-    $database->transactionally(function() use ($database, $ban, $duration) {
-        $currentUsername = User::getCurrent()->getUsername();
-            
+    $currentUsername = User::getCurrent()->getUsername();
+    
+    $database->transactionally(function() use ($database, $ban, $duration, $currentUsername) 
+    {
         $ban->setDatabase($database);
         $ban->setActive(1);
         $ban->setType($_POST['type']);
@@ -1058,6 +1059,8 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "")
         $database = gGetDb();
         $database->transactionally(function() use ($database, $request)
         {
+            global $accbotSend;
+                
             $request->setReserved(0);
             $request->setStatus($_GET['target']);
             $request->save();
