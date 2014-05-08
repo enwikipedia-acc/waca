@@ -1585,8 +1585,10 @@ elseif ($action == "breakreserve")
         {
 			if(isset($_GET['confirm']) && $_GET['confirm'] == 1)	
 			{
-                $database->transactionally(function() use($database)
+                $database->transactionally(function() use($database, $request)
                 {
+                    global $accbotSend;
+                    
                     $request->setReserved(0);
                     $request->save();
 
