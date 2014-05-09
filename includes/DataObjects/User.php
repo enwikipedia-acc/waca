@@ -258,7 +258,7 @@ class User extends DataObject
     }
 
     public function setForcelogout($forcelogout){
-        $this->forcelogout = $forcelogout;
+        $this->forcelogout = $forcelogout ? 1 : 0;
     }
     
     public function getSecure(){
