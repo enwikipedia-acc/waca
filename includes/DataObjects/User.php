@@ -488,8 +488,8 @@ class User extends DataObject
         if(
             $this->identityCache != null &&
             $this->identityCache->aud == $oauthConsumerToken &&
-  //          $this->identityCache->iat < new DateTime() &&
- //           $this->identityCache->exp > new DateTime() &&
+            DateTime::createFromFormat("U", $this->identityCache->iat) < new DateTime() &&
+            DateTime::createFromFormat("U", $this->identityCache->exp) > new DateTime() &&
             $this->identityCache->iss == $oauthMediaWikiCanonicalServer
             )
         {
