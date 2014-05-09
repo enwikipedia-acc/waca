@@ -23,6 +23,7 @@ class User extends DataObject
     private $oauthrequestsecret = null;
     private $oauthaccesstoken = null;
     private $oauthaccesssecret = null;
+    private $oauthidentitycache = null;
     
     // cache variable of the current user - it's never going to change in the middle of a request.
     private static $currentUser;
@@ -97,6 +98,38 @@ class User extends DataObject
 		}
 
 		return $resultObject;
+    }
+    
+    public static function getAllWithStatus($status, PdoDatabase $database)
+    {
+        $statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE status = :status");
+        $statement->execute( array( ":status" => $status ) );
+        
+        $resultObject = $statement->fetchAll( PDO::FETCH_CLASS, get_called_class() );
+        
+        foreach ($resultObject as $u)
+        {
+            $u->setDatabase($database);
+            $u->isNew = false;
+        }
+     
+        return $resultObject;
+    }
+    
+    public static function getAllCheckusers(PdoDatabase $database)
+    {
+        $statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE checkuser = 1;");
+        $statement->execute();
+        
+        $resultObject = $statement->fetchAll( PDO::FETCH_CLASS, get_called_class() );
+        
+        foreach ($resultObject as $u)
+        {
+            $u->setDatabase($database);
+            $u->isNew = false;
+        }
+        
+        return $resultObject;
     }
     
     public function save()
@@ -223,6 +256,10 @@ class User extends DataObject
         return $this->status;
     }
 
+    /**
+     * Gets the user's onwiki name
+     * @return mixed
+     */
     public function getOnWikiName()
     {
         if($this->oauthaccesstoken != null)
@@ -230,6 +267,17 @@ class User extends DataObject
             return $this->getOAuthOnWikiName();   
         }
         
+        return $this->onwikiname;
+    }
+    
+    /**
+     * This is probably NOT the function you want!
+     * 
+     * Take a look at getOnWikiName() instead.
+     * @return mixed
+     */
+    public function getStoredOnWikiName()
+    {        
         return $this->onwikiname;
     }
 
@@ -473,17 +521,30 @@ class User extends DataObject
         return md5($this->username . $this->email . $this->welcome_template . $this->id -> $this->password);
     }
 
-    private $identityCache;
     public function getOAuthIdentity()
     {
         if($this->oauthaccesstoken == null)
         {
             $this->identityCache = null;
+            $this->oauthidentitycache = null;
+            $this->dbObject->
+                prepare( "UPDATE user SET oauthidentitycache = null WHERE id = :id;" )->
+                execute( array( ":id" => $this->id ) );
+            
             return null;   
         }
         
         global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthMediaWikiCanonicalServer;
 
+        if($this->oauthidentitycache == null)
+        {
+            $this->identityCache == null;
+        }
+        else
+        {
+            $this->identityCache = unserialize($this->oauthidentitycache);
+        }
+        
         // check the cache
         if(
             $this->identityCache != null &&
@@ -501,10 +562,18 @@ class User extends DataObject
             {
                 $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl);
                 $this->identityCache = $util->getIdentity($this->oauthaccesstoken, $this->oauthaccesssecret);
+                $this->oauthidentitycache = serialize($this->identityCache);
+                $this->dbObject->
+                    prepare( "UPDATE user SET oauthidentitycache = :identity WHERE id = :id;" )->
+                    execute( array( ":id" => $this->id, ":identity" => $this->oauthidentitycache ) );
             }
             catch(UnexpectedValueException $ex)
             {
                 $this->identityCache = null;
+                $this->oauthidentitycache = null;
+                $this->dbObject->
+                    prepare( "UPDATE user SET oauthidentitycache = null WHERE id = :id;" )->
+                    execute( array( ":id" => $this->id ) );
             }
             
             return $this->identityCache;

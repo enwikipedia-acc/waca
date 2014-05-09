@@ -25,7 +25,8 @@ CREATE OR REPLACE VIEW `user` AS
 		`acc_user`.`oauthrequesttoken` AS `oauthrequesttoken`,
         `acc_user`.`oauthrequestsecret` AS `oauthrequestsecret`,
         `acc_user`.`oauthaccesstoken` AS `oauthaccesstoken`,
-        `acc_user`.`oauthaccesssecret` AS `oauthaccesssecret`		
+        `acc_user`.`oauthaccesssecret` AS `oauthaccesssecret`,	
+		`acc_user`.`oauthidentitycache` AS `oauthidentitycache`
     FROM
         `acc_user`;
 
