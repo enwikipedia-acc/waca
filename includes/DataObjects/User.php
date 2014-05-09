@@ -28,6 +28,8 @@ class User extends DataObject
     // cache variable of the current user - it's never going to change in the middle of a request.
     private static $currentUser;
     
+    private $identityCache = null;
+    
     /**
      * Summary of getCurrent
      * @param PdoDatabase $database
@@ -538,7 +540,7 @@ class User extends DataObject
 
         if($this->oauthidentitycache == null)
         {
-            $this->identityCache == null;
+            $this->identityCache = null;
         }
         else
         {
