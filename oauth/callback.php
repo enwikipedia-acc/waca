@@ -54,6 +54,7 @@ catch (Exception $exception)
 
 $user->setOAuthAccessToken($result->key);
 $user->setOAuthAccessSecret($result->secret);
+$user->setOnWikiName("##OAUTH##");
 $user->save();
 
 if( $user->getStatus() == "New" )

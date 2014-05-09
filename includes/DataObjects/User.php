@@ -9,7 +9,7 @@ class User extends DataObject
     private $email;
     private $password;
     private $status = "New";
-    private $onwikiname;
+    private $onwikiname = "##OAUTH##";
     private $welcome_sig = "";
     private $lastactive = "0000-00-00 00:00:00";
     private $forcelogout = 0;
@@ -517,4 +517,13 @@ class User extends DataObject
         return $this->getOAuthIdentity()->username;
     }
     
+    public function isOAuthLinked()
+    {
+        if ($this->onwikiname === "##OAUTH##")
+        {
+            return true; // special value. If an account must be oauth linked, this is true.
+        }
+        
+        return $this->oauthaccesstoken !== null;
+    }
 }
