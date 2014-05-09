@@ -512,4 +512,9 @@ class User extends DataObject
         }
     }
     
+    private function getOAuthOnWikiName()
+    {
+        return $this->getOAuthIdentity()->username;
+    }
+    
 }
