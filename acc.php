@@ -2140,4 +2140,3 @@ else {
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
-?>

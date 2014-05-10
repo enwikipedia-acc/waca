@@ -18,4 +18,3 @@ if (!defined("ACC")) {
 class requestValidation {
 
 }
-?>

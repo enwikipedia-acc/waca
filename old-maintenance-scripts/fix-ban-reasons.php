@@ -47,4 +47,3 @@ catch(Exception $ex)
 $db->commit();
 
 echo "Update complete.";
-?>

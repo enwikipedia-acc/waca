@@ -48,4 +48,3 @@ if(isset($_SERVER['PATH_INFO']))
 $sp = StatisticsPage::Create($page);
 
 $sp->Show();
-?>

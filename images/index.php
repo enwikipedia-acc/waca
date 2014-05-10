@@ -17,4 +17,3 @@ require_once('../config.inc.php');
 global $baseurl;
 header("Location: $baseurl/");
 die();
-?>

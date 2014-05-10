@@ -230,4 +230,3 @@ class skin {
         BootstrapSkin::displayRequestForm();
 	}
 }
-?>

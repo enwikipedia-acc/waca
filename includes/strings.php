@@ -51,4 +51,3 @@ class strings {
 		return $newemail;
 	}
 }
-?>

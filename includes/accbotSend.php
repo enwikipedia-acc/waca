@@ -41,5 +41,3 @@ class accbotSend {
 		return;
 	}
 }
-
-?>

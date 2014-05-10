@@ -64,4 +64,3 @@ class imagegen {
 		return $id;
 	}
 }
-?>

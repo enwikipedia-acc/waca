@@ -520,4 +520,3 @@ echo "</div></div>
 
 
 BootstrapSkin::displayInternalFooter();
-?>
