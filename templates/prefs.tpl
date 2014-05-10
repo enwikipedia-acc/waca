@@ -76,7 +76,8 @@
         </div>
       </div>
     </div>
-
+    
+    {*
     <div class="control-group">
       <label class="control-label">Grants:</label>
       {foreach from=array('useoauth') item="right"}
@@ -91,6 +92,7 @@
         </div>
       {/foreach}
     </div>
+    *}
     
     <div class="control-group">
       <div class="controls">
