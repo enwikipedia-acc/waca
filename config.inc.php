@@ -172,6 +172,8 @@ $oauthBaseUrl = "https://en.wikipedia.org/w/index.php?title=Special:OAuth";
 
 $oauthMediaWikiCanonicalServer = "";
 
+$useOauthSignup = false;
+
 /************************************
  * Providers Configuration
 */

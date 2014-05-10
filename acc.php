@@ -164,6 +164,13 @@ elseif ($action == "sreg")
 		die();
 	}
     
+	if(!((string)(int)$_REQUEST['conf_revid'] === (string)$_REQUEST['conf_revid']) || $_REQUEST['conf_revid'] == "")
+    {
+		BootstrapSkin::displayAlertBox("Please enter the revision id of your confirmation edit in the \"Confirmation diff\" field. The revid is the number after the &diff= part of the URL of a diff.", "alert-error", "Error!", false);
+        BootstrapSkin::displayInternalFooter();
+        die();		
+	}
+    
 	if (User::getByUsername($_REQUEST['name'], gGetDb()) != false) {
         BootstrapSkin::displayAlertBox("Sorry, but that username is in use. Please choose another.", "alert-error", "Error!", false);
 		BootstrapSkin::displayInternalFooter();
@@ -191,33 +198,43 @@ elseif ($action == "sreg")
         $newUser->setUsername($_REQUEST['name']);
         $newUser->setPassword($_REQUEST['pass']);
         $newUser->setEmail($_REQUEST['email']);
+        $newUser->setOnWikiName($_REQUEST['wname']);
+        $newUser->setConfirmationDiff($_REQUEST['conf_revid']);
         $newUser->save();
     
-        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl;
+        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $useOauthSignup;
     
-        try
+        if($useOauthSignup)
         {
-            // Get a request token for OAuth
-            $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl);
-            $requestToken = $util->getRequestToken();
+            try
+            {
+                // Get a request token for OAuth
+                $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl);
+                $requestToken = $util->getRequestToken();
     
-            // save the request token for later
-            $newUser->setOAuthRequestToken($requestToken->key);
-            $newUser->setOAuthRequestSecret($requestToken->secret);
-            $newUser->save();
+                // save the request token for later
+                $newUser->setOAuthRequestToken($requestToken->key);
+                $newUser->setOAuthRequestSecret($requestToken->secret);
+                $newUser->save();
             
-            global $accbotSend;
+                global $accbotSend;
+                $accbotSend->send("New user: " . $_REQUEST['name']);
+        
+                $redirectUrl = $util->getAuthoriseUrl($requestToken);
+            
+                header("Location: {$redirectUrl}");
+            }
+            catch(Exception $ex)
+            {
+                throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
+            }
+        }
+        else
+        {
+            global $tsurl, $accbotSend;
             $accbotSend->send("New user: " . $_REQUEST['name']);
-        
-            $redirectUrl = $util->getAuthoriseUrl($requestToken);
-            
-            header("Location: {$redirectUrl}");
+            header("Location: {$tsurl}acc.php?action=registercomplete");
         }
-        catch(Exception $ex)
-        {
-            throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
-        }
-        
     });
     
 	die();
@@ -2084,6 +2101,7 @@ elseif ($action == "oauthdetach")
     $currentUser->setOAuthAccessToken(null);
     $currentUser->setOAuthRequestSecret(null);
     $currentUser->setOAuthRequestToken(null);
+        
     $currentUser->save();
     
     header("Location: {$tsurl}/acc.php?action=logout");
