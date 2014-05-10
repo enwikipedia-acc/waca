@@ -43,7 +43,7 @@ abstract class StatisticsPage
 		}
 		else
 		{	// class def doesn't exist: error
-			die("Unknown statistics page: " + $statsPage);
+			die("Unknown statistics page: " . $statsPage);
 		}
 	
 		// ok, so the file where the class def should be exists, but we need to check the class
@@ -69,7 +69,7 @@ abstract class StatisticsPage
 		else
 		{
 			// file exists, but no definition of the class
-			die("No definition for statistics page: " + $statsPage);
+			die("No definition for statistics page: " . $statsPage);
 		}
 	}
 	
