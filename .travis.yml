@@ -1,0 +1,19 @@
+language: php
+
+php:
+  - 5.4
+
+git:
+  submodules: false
+
+script:
+  - bash .travis.phplint.sh
+
+notifications:
+  irc:
+    channels:
+      - "chat.freenode.net#wikipedia-en-accounts-devs"
+    on_success: change
+    on_failure: always
+    template:
+      - "%{repository}/%{branch}/%{commit} - %{author} %{message} %{build_url}"
