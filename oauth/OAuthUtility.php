@@ -36,7 +36,6 @@ class OAuthUtility
 
         $ch = curl_init();
         curl_setopt( $ch, CURLOPT_URL, (string) $req_req );
-        curl_setopt( $ch, CURLOPT_PORT , 443 );
         curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
         curl_setopt( $ch, CURLOPT_HEADER, 0 );
         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
@@ -83,7 +82,6 @@ class OAuthUtility
         unset( $ch );
         $ch = curl_init();
         curl_setopt( $ch, CURLOPT_URL, (string) $acc_req );
-        curl_setopt( $ch, CURLOPT_PORT , 443 );
         curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
         curl_setopt( $ch, CURLOPT_HEADER, 0 );
         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
@@ -161,7 +159,6 @@ class OAuthUtility
         unset( $ch );
         $ch = curl_init();
         curl_setopt( $ch, CURLOPT_URL, (string) $acc_req );
-        curl_setopt( $ch, CURLOPT_PORT , 443 );
         curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
         curl_setopt( $ch, CURLOPT_HEADER, 0 );
         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
