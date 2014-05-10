@@ -3,7 +3,7 @@
   {if $readonly}
     <div class="form-horizontal">
   {else}
-    <form action="{$tsurl}/acc.php?action=messagemgmt&amp;edit={$message->getId()}&amp;submit=1" method="post" class="form-horizontal">
+    <form action="{$baseurl}/acc.php?action=messagemgmt&amp;edit={$message->getId()}&amp;submit=1" method="post" class="form-horizontal">
   {/if}
     <div class="control-group">
       <label for="maildesc" class="control-label" >Description</label>
@@ -27,7 +27,7 @@
     </div>
 
     <div class="form-actions">
-      <a href="{$tsurl}/acc.php?action=messagemgmt" class="btn">Cancel</a>
+      <a href="{$baseurl}/acc.php?action=messagemgmt" class="btn">Cancel</a>
       {if !$readonly}
         <button type="submit" class="btn btn-success">
           <i class="icon-white icon-ok"></i>&nbsp;Save

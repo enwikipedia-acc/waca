@@ -112,7 +112,7 @@ class StatsUsers extends StatisticsPage
 	function getUserDetail($userId)
 	{
 		$out="";
-		global $tsSQL, $asSQL, $enableRenames, $tsurl, $session, $wikiurl, $dontUseWikiDb;
+		global $tsSQL, $asSQL, $enableRenames, $baseurl, $session, $wikiurl, $dontUseWikiDb;
 		$gid = $tsSQL->escape($userId); // Validate the user ID for security (SQL Injection, etc)
 		if (!preg_match('/^[0-9]+$/i',$gid)) {
 			return "User ID invalid";
@@ -163,11 +163,11 @@ class StatsUsers extends StatisticsPage
 		// State whether the user has auto welcoming enabled
 		if($session->hasright($_SESSION['user'], 'User') || $session->hasright($_SESSION['user'], 'Admin'))
 		{
-			$out.= "<li>User has <a href=\"$tsurl/acc.php?action=templatemgmt\">automatic welcoming</a> enabled: " . $welcome . ".</li>\n";
+			$out.= "<li>User has <a href=\"$baseurl/acc.php?action=templatemgmt\">automatic welcoming</a> enabled: " . $welcome . ".</li>\n";
 		}
 		else
 		{
-			$out.= "<li>User has <a href=\"$tsurl/acc.php?action=templatemgmt\" style=\"color: red;\" title=\"Login required to continue\">automatic welcoming</a> enabled: " . $welcome . ".</li>\n";
+			$out.= "<li>User has <a href=\"$baseurl/acc.php?action=templatemgmt\" style=\"color: red;\" title=\"Login required to continue\">automatic welcoming</a> enabled: " . $welcome . ".</li>\n";
 		}
 		$out.= "</ul>\n<br/>";
 		
@@ -190,19 +190,19 @@ class StatsUsers extends StatisticsPage
 			{
 				case "User":
 					// Build suspend and promote links
-					$tools .= " <a href=\"$tsurl/users.php?suspend=" . $row['user_id'] . "\">Suspend!</a> - <a href=\"users.php?promote=" . $row['user_id'] . "\">Promote!</a> ]";
+					$tools .= " <a href=\"$baseurl/users.php?suspend=" . $row['user_id'] . "\">Suspend!</a> - <a href=\"users.php?promote=" . $row['user_id'] . "\">Promote!</a> ]";
 					$out.= $tools;
 					break;
 					
 				case "Admin":
 					// Build suspend and demote links
-					$tools .= " <a href=\"$tsurl/users.php?suspend=" . $row['user_id'] . "\">Suspend!</a> - <a href=\"users.php?demote=" . $row['user_id'] . "\">Demote!</a> ]";
+					$tools .= " <a href=\"$baseurl/users.php?suspend=" . $row['user_id'] . "\">Suspend!</a> - <a href=\"users.php?demote=" . $row['user_id'] . "\">Demote!</a> ]";
 					$out.= $tools;
 					break;
 					
 				case "Suspended":
 					// Build unsuspend link
-					$tools .= " <a href=\"$tsurl/users.php?approve=" . $row['user_id'] . "\">Unsuspend!</a> ]";
+					$tools .= " <a href=\"$baseurl/users.php?approve=" . $row['user_id'] . "\">Unsuspend!</a> ]";
 					$out.= $tools;
 					break;
 					
@@ -260,11 +260,11 @@ class StatsUsers extends StatisticsPage
 					// Display the name of the account that was created
 					if($session->hasright($_SESSION['user'], 'User') || $session->hasright($_SESSION['user'], 'Admin')) 
 					{
-							$out.= "<li> <a href=\"https://" . $wikiurl . "/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"https://" . $wikiurl . "/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - $contrib_link - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
+							$out.= "<li> <a href=\"https://" . $wikiurl . "/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"https://" . $wikiurl . "/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - $contrib_link - <a href=\"$baseurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
 					}
 					else
 					{
-							$out.= "<li> <a href=\"https://" . $wikiurl . "/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"https://" . $wikiurl . "/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - $contrib_link - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\" style=\"color: red;\" title=\"Login required to view request\">zoom</a>) at " . $row['log_time'] . "</li>\n";
+							$out.= "<li> <a href=\"https://" . $wikiurl . "/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"https://" . $wikiurl . "/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - $contrib_link - <a href=\"$baseurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\" style=\"color: red;\" title=\"Login required to view request\">zoom</a>) at " . $row['log_time'] . "</li>\n";
 					}
 				}
 				
@@ -297,11 +297,11 @@ class StatsUsers extends StatisticsPage
 					// Display the name of the account that was not created
 					if($session->hasright($_SESSION['user'], 'User') || $session->hasright($_SESSION['user'], 'Admin'))
 					{
-							$out.= "<li> <a href=\"https://" . $wikiurl . "/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"https://" . $wikiurl . "/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"https://" . $wikiurl . "/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
+							$out.= "<li> <a href=\"https://" . $wikiurl . "/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"https://" . $wikiurl . "/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"https://" . $wikiurl . "/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$baseurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\">zoom</a>) at " . $row['log_time'] . "</li>\n";
 					}
 					else
 					{
-							$out.= "<li> <a href=\"https://" . $wikiurl . "/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"https://" . $wikiurl . "/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"https://" . $wikiurl . "/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
+							$out.= "<li> <a href=\"https://" . $wikiurl . "/wiki/User:" . $row['pend_name'] . "\">" . $row['pend_name'] . "</a> (<a href=\"https://" . $wikiurl . "/wiki/User_talk:" . $row['pend_name'] . "\">talk</a> - <a href=\"https://" . $wikiurl . "/wiki/Special:Contributions/" . $row['pend_name'] . "\">contribs</a> - <a href=\"$baseurl/acc.php?action=zoom&amp;id=" . $row['pend_id'] . "\"><span style = \"color: red;\" title=\"Login required to view request\">zoom</span></a>) at " . $row['log_time'] . "</li>\n";
 					}
 				}
 				$out.= "</ol>\n"; // End the ordered list
@@ -353,18 +353,18 @@ class StatsUsers extends StatisticsPage
 					{
 						case "Prefchange":
 							// Another user changed this user's preferences
-							$out.= "<li><a href=\"$tsurl/statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> changed user preferences for " . $username . " at " . $row['log_time'] . "</li>\n";
+							$out.= "<li><a href=\"$baseurl/statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> changed user preferences for " . $username . " at " . $row['log_time'] . "</li>\n";
 							break;
 						
 						case "Renamed":
 							// Another user renamed this user
                             $data = unserialize($row['log_cmt']);
-							$out.= "<li><a href=\"$tsurl/statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> " . $data['old'] . " to " . $data['new'] . " at " . $row['log_time'] . ".</li>\n";	
+							$out.= "<li><a href=\"$baseurl/statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> " . $data['old'] . " to " . $data['new'] . " at " . $row['log_time'] . ".</li>\n";
 							break;
 						
 						default:
 							// Anything else			
-							$out.= "<li><a href=\"$tsurl/statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> at " . $row['log_time'] . $comments . "</li>\n";
+							$out.= "<li><a href=\"$baseurl/statistics.php?page=Users&amp;user=" . $uid_r['user_id'] . "\">" . $row['log_user'] . "</a> <strong>" . $row['log_action'] . "</strong> at " . $row['log_time'] . $comments . "</li>\n";
 							break;
 					}
 				}

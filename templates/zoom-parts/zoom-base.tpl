@@ -34,7 +34,7 @@
                 <em>({$others->getDate()|relativedate})</em>
               </span>
             </td>
-            <td><a target="_blank" href="{$tsurl}/acc.php?action=zoom&amp;id={$others->getId()}">{$others->getName()}</a></td>
+            <td><a target="_blank" href="{$baseurl}/acc.php?action=zoom&amp;id={$others->getId()}">{$others->getName()}</a></td>
           </tr>
         {/foreach}
       </table>
@@ -55,7 +55,7 @@
                 <em>({$others->getDate()|relativedate})</em>
               </span>
             </td>
-            <td><a target="_blank" href="{$tsurl}/acc.php?action=zoom&amp;id={$others->getId()}">{$others->getName()}</a></td>
+            <td><a target="_blank" href="{$baseurl}/acc.php?action=zoom&amp;id={$others->getId()}">{$others->getName()}</a></td>
           </tr>
         {/foreach}
       </table>

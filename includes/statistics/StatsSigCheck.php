@@ -24,7 +24,7 @@ class StatsSigCheck extends StatisticsPage
                 $query = <<<QUERY
 select user_name, user_onwikiname, user_welcome_sig from acc_user where user_welcome_templateid != 0 and (user_level = "Admin" or user_level = "User");
 QUERY;
-                global $tsurl;
+                global $baseurl;
                 $qb = new QueryBrowser();
                 $qb->rowFetchMode = PDO::FETCH_ASSOC;
                 $qb->tableCallbackFunction = "statsSigCheckRowCallback";

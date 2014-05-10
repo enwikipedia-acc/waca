@@ -231,9 +231,9 @@ elseif ($action == "sreg")
         }
         else
         {
-            global $tsurl, $accbotSend;
+            global $baseurl, $accbotSend;
             $accbotSend->send("New user: " . $_REQUEST['name']);
-            header("Location: {$tsurl}acc.php?action=registercomplete");
+            header("Location: {$baseurl}acc.php?action=registercomplete");
         }
     });
     
@@ -268,7 +268,7 @@ elseif ($action == "forgotpw")
                     $user->setPassword($_POST['pw2']);
                     $user->save();
                     
-                    BootstrapSkin::displayAlertBox("You may now <a href=\"$tsurl/acc.php\">Login</a>", "alert-error", "Password reset!", true, false);
+                    BootstrapSkin::displayAlertBox("You may now <a href=\"$baseurl/acc.php\">Login</a>", "alert-error", "Password reset!", true, false);
                     BootstrapSkin::displayInternalFooter();
                     die();
 				} 
@@ -325,7 +325,7 @@ elseif ($action == "forgotpw")
         {
 		    $hash = $user->getForgottenPasswordHash();
 		    // re bug 29: please don't escape the url parameters here: it's a plain text email so no need to escape, or you break the link
-		    $mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested a password reset for your account.\n\nPlease go to $tsurl/acc.php?action=forgotpw&si=$hash&id=" . $user->getId() . " to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
+		    $mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested a password reset for your account.\n\nPlease go to $baseurl/acc.php?action=forgotpw&si=$hash&id=" . $user->getId() . " to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
 		    $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		    mail($user->getEmail(), "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
             BootstrapSkin::displayAlertBox("<strong>Your password reset request has been completed.</strong> Please check your e-mail.", "alert-success", "", false, false);
@@ -345,7 +345,7 @@ elseif ($action == "login")
     
     if($user == false || !$user->authenticate($_POST['password']) )
     {
-        header("Location: $tsurl/acc.php?error=authfail&tplUsername=" . urlencode($_POST['username']));
+        header("Location: $baseurl/acc.php?error=authfail&tplUsername=" . urlencode($_POST['username']));
         die();
     }
     
@@ -361,7 +361,7 @@ elseif ($action == "login")
     
     if($user->isNew()) 
     {
-        header("Location: $tsurl/acc.php?error=newacct");
+        header("Location: $baseurl/acc.php?error=newacct");
         die();
     }
     
@@ -408,7 +408,7 @@ elseif ($action == "login")
     
     if(!$user->isIdentified() && $forceIdentification == 1) 
     {
-        header("Location: $tsurl/acc.php?error=noid");
+        header("Location: $baseurl/acc.php?error=noid");
         die();
     }
     
@@ -419,7 +419,7 @@ elseif ($action == "login")
     
     if( $user->getOAuthAccessToken() == null && $user->getStoredOnWikiName() == "##OAUTH##")
     {
-        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl;
+        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $baseurl;
 
         try
         {
@@ -443,7 +443,7 @@ elseif ($action == "login")
         }        
     }
     
-    header("Location: $tsurl/acc.php");
+    header("Location: $baseurl/acc.php");
 }
 elseif ($action == "messagemgmt") 
 {
@@ -548,7 +548,7 @@ elseif ($action == "templatemgmt") {
 		echo "Display code: ".$row['template_usercode']."<br />\n";
 		echo "Bot code: ".str_replace("\n", '\n', $row['template_botcode'])."<br />\n";
 		echo displayPreview($row['template_usercode']);
-		echo "<br /><a href='$tsurl/acc.php?action=templatemgmt'>Back</a>";
+		echo "<br /><a href='$baseurl/acc.php?action=templatemgmt'>Back</a>";
 		$skin->displayIfooter();
 		die();
 	}
@@ -586,7 +586,7 @@ elseif ($action == "templatemgmt") {
 				$usercode = '';
 				$botcode = '';
 			}
-			echo "<form action=\"$tsurl/acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">\n";
+			echo "<form action=\"$baseurl/acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">\n";
 			echo "Display code: <input type=\"text\" name=\"usercode\" value=\"$usercode\" size=\"40\"/><br />\n";
 			echo "Bot code: <input type=\"text\" name=\"botcode\" value=\"$botcode\" size=\"40\"/><br />\n";
 			echo "<input type=\"submit\" name=\"submit\" value=\"Create!\"/><input type=\"submit\" name=\"preview\" value=\"Preview\"/><br />\n";
@@ -627,7 +627,7 @@ elseif ($action == "templatemgmt") {
 			echo "The following users were using the template, and have been switched to the default one:\n";
 			echo "<ul>\n";
 			while (list($affected_id, $affected_name) = mysql_fetch_row($usersaffected)) {
-				echo "<li><a href=$tsurl/statistics.php?page=Users&user=$affected_id>$affected_name</a></li>\n";
+				echo "<li><a href=$baseurl/statistics.php?page=Users&user=$affected_id>$affected_name</a></li>\n";
 			}
 			echo "</ul>\nPlease try inform these users that their template has been changed.";
 		} else {
@@ -677,7 +677,7 @@ elseif ($action == "templatemgmt") {
 				$usercode = str_replace("\n", '\n', $row['template_usercode']);
 				$botcode = str_replace("\n", '\n', $row['template_botcode']);
 			}
-			echo "<form action=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$tid\" method=\"post\">\n";
+			echo "<form action=\"$baseurl/acc.php?action=templatemgmt&amp;edit=$tid\" method=\"post\">\n";
 			echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\" value=\"$usercode\"/><br />\n";
 			echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\" value=\"$botcode\"/><br />\n";
 			echo "<input type=\"submit\" name=\"submit\" value=\"Edit!\"/><input type=\"submit\" name=\"preview\" value=\"Preview\"/><br />\n";
@@ -713,7 +713,7 @@ elseif ($action == "templatemgmt") {
 	if (!$result)
 		sqlerror(mysql_error());
 	echo "<h2>Welcome templates</h2>\n";
-	echo "<form action=\"$tsurl/acc.php?action=templatemgmt&amp;set=yes\" method=\"post\" name=\"templateselection\">";
+	echo "<form action=\"$baseurl/acc.php?action=templatemgmt&amp;set=yes\" method=\"post\" name=\"templateselection\">";
 	echo "<table><tbody>\n";
 	$current = 0;
 	while ( list($template_id, $usercode) = mysql_fetch_row($result) ) {
@@ -730,12 +730,12 @@ elseif ($action == "templatemgmt") {
 		echo "<td onclick=\"document.templateselection.selectedtemplate[$currentrow].checked = true;\">&nbsp;<small>$usercode</small>&nbsp;</td>";
 		if($session->hasright($_SESSION['user'], 'Admin')) {
 			if ($template_id != 1) {
-				echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;<a href=\"$tsurl/acc.php?action=templatemgmt&amp;del=$template_id\" onclick=\"javascript:return confirm('Are you sure you wish to delete template $template_id?')\">Delete!</a>&nbsp;</td>";
+				echo "<td><a href=\"$baseurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;<a href=\"$baseurl/acc.php?action=templatemgmt&amp;del=$template_id\" onclick=\"javascript:return confirm('Are you sure you wish to delete template $template_id?')\">Delete!</a>&nbsp;</td>";
 			} else {
 				echo "<td></td>";
 			}
 		}
-		echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td></tr>";
+		echo "<td><a href=\"$baseurl/acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td></tr>";
 	}
 	echo "<tr><td><input type=\"radio\" name=\"selectedtemplate\" value=\"0\"";
 	if ($userinfo['user_welcome_templateid'] == 0)
@@ -748,7 +748,7 @@ elseif ($action == "templatemgmt") {
 	echo "<input type=\"submit\" value=\"Update template choice\" />";
 	echo "</form>";
 	if ($session->hasright($_SESSION['user'], 'Admin')) {
-		echo "<form action=\"$tsurl/acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">";
+		echo "<form action=\"$baseurl/acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">";
 		echo "<input type=\"submit\" value=\"Add new\" />";
 		echo "</form>";
 	}
@@ -1210,8 +1210,8 @@ elseif ($action == "done" && $_GET['id'] != "") {
     {
         $alertContent = "<p>This request has already been closed in a manner that has generated an e-mail to the user, Proceed?</p><br />";
         $alertContent .= "<div class=\"row-fluid\">";
-        $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$tsurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;override=yes&amp;email=" . $_GET['email'] . "\">Yes</a>";
-        $alertContent .= "<a class=\"btn btn-danger span3\" href=\"$tsurl/acc.php\">No</a>";
+        $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$baseurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;override=yes&amp;email=" . $_GET['email'] . "\">Yes</a>";
+        $alertContent .= "<a class=\"btn btn-danger span3\" href=\"$baseurl/acc.php\">No</a>";
         $alertContent .= "</div>";
         
         BootstrapSkin::displayAlertBox($alertContent, "alert-info", "Warning!", true, false, false, true);
@@ -1224,8 +1224,8 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	{
         $alertContent = "<p>This request is currently marked as being handled by " . $request->getReservedObject()->getUsername() . ", Proceed?</p><br />";
         $alertContent .= "<div class=\"row-fluid\">";
-        $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$tsurl/acc.php?".$_SERVER["QUERY_STRING"]."&reserveoverride=yes\">Yes</a>";
-        $alertContent .= "<a class=\"btn btn-danger span3\" href=\"$tsurl/acc.php\">No</a>";
+        $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$baseurl/acc.php?".$_SERVER["QUERY_STRING"]."&reserveoverride=yes\">Yes</a>";
+        $alertContent .= "<a class=\"btn btn-danger span3\" href=\"$baseurl/acc.php\">No</a>";
         $alertContent .= "</div>";
         
         BootstrapSkin::displayAlertBox($alertContent, "alert-info", "Warning!", true, false, false, true);
@@ -1254,8 +1254,8 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if ($gem == 1 && !$exists && !isset($_GET['createoverride'])) {
         $alertContent = "<p>You have chosen to mark this request as \"created\", but the account does not exist on the English Wikipedia, proceed?</p><br />";
         $alertContent .= "<div class=\"row-fluid\">";
-        $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$tsurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;createoverride=yes&amp;email=" . $_GET['email'] . "\">Yes</a>";
-        $alertContent .= "<a class=\"btn btn-danger span3\" href=\"$tsurl/acc.php\">No</a>";
+        $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$baseurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;createoverride=yes&amp;email=" . $_GET['email'] . "\">Yes</a>";
+        $alertContent .= "<a class=\"btn btn-danger span3\" href=\"$baseurl/acc.php\">No</a>";
         $alertContent .= "</div>";
         
         BootstrapSkin::displayAlertBox($alertContent, "alert-info", "Warning!", true, false, false, true);
@@ -1408,7 +1408,7 @@ elseif ($action == "logs")
     }
 	
 	echo '<h2>Logs</h2>
-	<form action="'.$tsurl.'/acc.php" method="get">
+	<form action="'.$baseurl.'/acc.php" method="get">
 		<input type="hidden" name="action" value="logs" />
 		<table>
 			<tr><td>Filter by username:</td><td><input type="text" name="user"'.$filteruserl.' /></td></tr>
@@ -1500,7 +1500,7 @@ elseif ($action == "reserve")
             throw new TransactionException("Request not found", "Error");
         }
         
-        global $enableEmailConfirm, $allowDoubleReserving, $tsurl, $accbotSend;
+        global $enableEmailConfirm, $allowDoubleReserving, $baseurl, $accbotSend;
 	    if($enableEmailConfirm == 1)
         {
             if($request->getEmailConfirm() != "Confirmed")
@@ -1552,7 +1552,7 @@ elseif ($action == "reserve")
 		    if($request->getStatus() == "Closed")
 		    {		
                 // FIXME: bootstrappify properly
-			    throw new TransactionException('This request is currently closed. Are you sure you wish to reserve it?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confclosed=yes">Yes, reserve this closed request</a></li><li><a href="' . $tsurl . '/acc.php">No, return to main request interface</a></li></ul>', "Request closed", "alert-info");
+			    throw new TransactionException('This request is currently closed. Are you sure you wish to reserve it?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confclosed=yes">Yes, reserve this closed request</a></li><li><a href="' . $baseurl . '/acc.php">No, return to main request interface</a></li></ul>', "Request closed", "alert-info");
 		    }
 	    }	
         
@@ -1568,7 +1568,7 @@ elseif ($action == "reserve")
                 
         SessionAlert::success("Reserved request {$request->getId()}.");
 
-        header("Location: $tsurl/acc.php?action=zoom&id={$request->getId()}");
+        header("Location: $baseurl/acc.php?action=zoom&id={$request->getId()}");
     });
 	    
 	die();	
@@ -1633,7 +1633,7 @@ elseif ($action == "breakreserve")
 			}
 			else
 			{
-				global $tsurl;
+				global $baseurl;
                 $smarty->assign("reservedUser", $reservedUser);
                 $smarty->assign("request", $request);
                 
@@ -1727,7 +1727,7 @@ elseif ($action == "comment-add")
     }
 
     BootstrapSkin::displayAlertBox(
-        "<a href='$tsurl/acc.php?action=zoom&amp;id={$request->getId()}&amp;hash=$urlhash'>Return to request #{$request->getId()}</a>",
+        "<a href='$baseurl/acc.php?action=zoom&amp;id={$request->getId()}&amp;hash=$urlhash'>Return to request #{$request->getId()}</a>",
         "alert-success",
         "Comment added Successfully!",
         true, false);
@@ -1852,7 +1852,7 @@ elseif ($action == "ec")
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') 
     {
         $database = gGetDb();
-        $database->transactionally(function() use ($database, $comment, $tsurl) 
+        $database->transactionally(function() use ($database, $comment, $baseurl)
         {
             global $accbotSend;
             
@@ -1878,7 +1878,7 @@ elseif ($action == "ec")
             $accbotSend->send("Comment " . $comment->getId() . " edited by " . User::getCurrent()->getUsername());
         
             SessionAlert::success("Comment has been saved successfully");
-		    header("Location: $tsurl/acc.php?action=zoom&id=" . $comment->getRequest());
+		    header("Location: $baseurl/acc.php?action=zoom&id=" . $comment->getRequest());
         });
         
         die();    
@@ -1946,7 +1946,7 @@ elseif ($action == "sendtouser")
 	//$accbotSend->send("Request $request is being handled by " . $_POST['user']);
 
     SessionAlert::success("Reservation sent successfully");
-    header("Location: $tsurl/acc.php?action=zoom&id=$request");
+    header("Location: $baseurl/acc.php?action=zoom&id=$request");
 }
 elseif ($action == "emailmgmt") { 
 	/* New page for managing Emails, since I would rather not be handling editing
@@ -1962,7 +1962,7 @@ elseif ($action == "emailmgmt") {
             $database = gGetDb();
             $database->transactionally(function() use ($database)
             {
-                global $tsurl;
+                global $baseurl;
                 
                 $emailTemplate = new EmailTemplate();
                 $emailTemplate->setDatabase($database);
@@ -1990,7 +1990,7 @@ elseif ($action == "emailmgmt") {
                 }
                 
                 SessionAlert::success("Email template has been saved successfully.");
-                header("Location: $tsurl/acc.php?action=emailmgmt");
+                header("Location: $baseurl/acc.php?action=emailmgmt");
 
                 $accbotSend->send("Email {$_POST['name']} ({$emailTemplate->getId()}) created by " . User::getCurrent()->getUsername());
 			    die();    
@@ -2050,9 +2050,9 @@ elseif ($action == "emailmgmt") {
 			$result = $tsSQL->query($query);
 			if (!$result)
 				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			header("Refresh:5;URL=$tsurl/acc.php?action=emailmgmt");
+			header("Refresh:5;URL=$baseurl/acc.php?action=emailmgmt");
 			BootstrapSkin::displayAlertBox("Email template has been saved successfully. You will be returned to Email Management in 5 seconds.<br /><br />\n
-			Click <a href=\"".$tsurl."/acc.php?action=emailmgmt\">here</a> if you are not redirected.");
+			Click <a href=\"".$baseurl."/acc.php?action=emailmgmt\">here</a> if you are not redirected.");
 			$accbotSend->send("Email $name ($gid) edited by $siuser");
             
 			BootstrapSkin::displayInternalFooter();
@@ -2104,7 +2104,7 @@ elseif ($action == "oauthdetach")
         
     $currentUser->save();
     
-    header("Location: {$tsurl}/acc.php?action=logout");
+    header("Location: {$baseurl}/acc.php?action=logout");
 }
 elseif ($action == "oauthattach")
 {

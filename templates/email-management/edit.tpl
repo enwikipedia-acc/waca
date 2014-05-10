@@ -60,7 +60,7 @@
 			</div>
       
       <div class="form-actions">
-        <a class="btn" href="{$tsurl}/acc.php?action=emailmgmt">Cancel</a>
+        <a class="btn" href="{$baseurl}/acc.php?action=emailmgmt">Cancel</a>
         <button type="submit" class="btn btn-primary" name="submit"{if !$currentUser->isAdmin()} disabled{/if}>
           <i class="icon-white icon-ok"></i>&nbsp;Save
         </button>

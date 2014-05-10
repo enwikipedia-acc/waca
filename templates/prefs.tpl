@@ -96,7 +96,7 @@
     
     <div class="control-group">
       <div class="controls">
-        <a href="{$tsurl}/acc.php?action=oauthdetach" class="btn btn-danger">Detach account</a>
+        <a href="{$baseurl}/acc.php?action=oauthdetach" class="btn btn-danger">Detach account</a>
       </div>
     </div>
     {else}
@@ -109,14 +109,14 @@
 
     <div class="control-group">
       <div class="controls">
-        <a href="{$tsurl}/acc.php?action=oauthattach" class="btn btn-success">Attach account</a>
+        <a href="{$baseurl}/acc.php?action=oauthattach" class="btn btn-success">Attach account</a>
       </div>
     </div>
     {/if}
   </fieldset>
 </div>
 
-<form class="form-horizontal" method="post" action="{$tsurl}/acc.php?action=changepassword">
+<form class="form-horizontal" method="post" action="{$baseurl}/acc.php?action=changepassword">
   <fieldset>
     <legend>Change your password</legend>
     <div class="control-group">

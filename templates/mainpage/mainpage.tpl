@@ -30,12 +30,12 @@
         {$req.pend_name|escape}
       </td>
       <td>
-        <a href="{$tsurl}/acc.php?action=zoom&amp;id={$req.pend_id|escape:'url'}" class="btn btn-info">
+        <a href="{$baseurl}/acc.php?action=zoom&amp;id={$req.pend_id|escape:'url'}" class="btn btn-info">
           <i class="icon-white icon-search"></i>&nbsp;Zoom
         </a>
       </td>
       <td>
-        <a href="{$tsurl}/acc.php?action=defer&amp;id={$req.pend_id|escape:'url'}&amp;sum={$req.pend_checksum|escape:'url'}&amp;target=Open" class="btn btn-warning">
+        <a href="{$baseurl}/acc.php?action=defer&amp;id={$req.pend_id|escape:'url'}&amp;sum={$req.pend_checksum|escape:'url'}&amp;target=Open" class="btn btn-warning">
           <i class="icon-white icon-refresh"></i>&nbsp;Reset
         </a>
       </td>

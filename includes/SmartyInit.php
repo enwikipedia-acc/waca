@@ -11,7 +11,7 @@ $smarty = new Smarty();
 $toolVersion = Environment::getToolVersion();
 $currentUser = User::getCurrent();
 
-$smarty->assign("tsurl", $tsurl);
+$smarty->assign("baseurl", $baseurl);
 $smarty->assign("wikiurl", $wikiurl);
 $smarty->assign("mediawikiScriptPath", $mediawikiScriptPath);
 $smarty->assign("toolversion", $toolVersion);
