@@ -169,8 +169,10 @@ $oauthSecretToken = "";
 // path to Special:OAuth on target wiki.
 // don't use pretty urls, see [[bugzilla:57500]]
 $oauthBaseUrl = "https://en.wikipedia.org/w/index.php?title=Special:OAuth";
+// use this for requests from the server, if some special url is needed.
+$oauthBaseUrlInternal = "https://en.wikipedia.org/w/index.php?title=Special:OAuth";
 
-$oauthMediaWikiCanonicalServer = "";
+$oauthMediaWikiCanonicalServer = "http://en.wikipedia.org";
 
 $useOauthSignup = false;
 

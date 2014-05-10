@@ -202,14 +202,14 @@ elseif ($action == "sreg")
         $newUser->setConfirmationDiff($_REQUEST['conf_revid']);
         $newUser->save();
     
-        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $useOauthSignup;
+        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal, $useOauthSignup;
     
         if($useOauthSignup)
         {
             try
             {
                 // Get a request token for OAuth
-                $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl);
+                $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
                 $requestToken = $util->getRequestToken();
     
                 // save the request token for later
@@ -419,12 +419,12 @@ elseif ($action == "login")
     
     if( $user->getOAuthAccessToken() == null && $user->getStoredOnWikiName() == "##OAUTH##")
     {
-        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $baseurl;
+        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal, $baseurl;
 
         try
         {
             // Get a request token for OAuth
-            $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl);
+            $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
             $requestToken = $util->getRequestToken();
 
             // save the request token for later
@@ -2113,12 +2113,12 @@ elseif ($action == "oauthattach")
     {
         try
         {
-            global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl;
+            global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;
             
             $user = User::getCurrent();
             
             // Get a request token for OAuth
-            $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl);
+            $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
             $requestToken = $util->getRequestToken();
 
             // save the request token for later

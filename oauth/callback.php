@@ -36,9 +36,9 @@ if($user == false)
     die();
 }
 
-global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl;
+global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;
 
-$util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl);
+$util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
 
 try
 {

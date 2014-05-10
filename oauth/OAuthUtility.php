@@ -10,19 +10,21 @@ class OAuthUtility
     private $consumerToken;
     private $consumerSecret;
     private $baseUrl;
+    private $baseUrlInternal;
     
-    public function __construct($consumerToken, $consumerSecret, $baseUrl)
+    public function __construct($consumerToken, $consumerSecret, $baseUrl, $baseUrlInternal)
     {
         $this->consumerSecret = $consumerSecret;
         $this->consumerToken = $consumerToken;
         $this->baseUrl = $baseUrl;
+        $this->baseUrlInternal = $baseUrlInternal;
     }
     
     public function getRequestToken()
     {    
         global $toolUserAgent;
         
-        $endpoint = $this->baseUrl . '/initiate&format=json&oauth_callback=oob';
+        $endpoint = $this->baseUrlInternal . '/initiate&format=json&oauth_callback=oob';
         
         $c = new OAuthConsumer( $this->consumerToken, $this->consumerSecret );
         $parsed = parse_url( $endpoint );
@@ -65,7 +67,7 @@ class OAuthUtility
     {
         global $toolUserAgent;
         
-        $endpoint = $this->baseUrl . '/token&format=json';
+        $endpoint = $this->baseUrlInternal . '/token&format=json';
 
         $c = new OAuthConsumer( $this->consumerToken, $this->consumerSecret );
         $rc = new OAuthConsumer( $requestToken, $requestSecret );
@@ -144,7 +146,7 @@ class OAuthUtility
        
         global $toolUserAgent;
         
-        $endpoint = $this->baseUrl . '/identify&format=json';
+        $endpoint = $this->baseUrlInternal . '/identify&format=json';
 
         $c = new OAuthConsumer( $this->consumerToken, $this->consumerSecret );
         $rc = new OAuthToken( $accessToken, $accessSecret );

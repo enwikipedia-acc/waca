@@ -536,7 +536,7 @@ class User extends DataObject
             return null;   
         }
         
-        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthMediaWikiCanonicalServer;
+        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal, $oauthMediaWikiCanonicalServer;
 
         if($this->oauthidentitycache == null)
         {
@@ -562,7 +562,7 @@ class User extends DataObject
         {
             try
             {
-                $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl);
+                $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
                 $this->identityCache = $util->getIdentity($this->oauthaccesstoken, $this->oauthaccesssecret);
                 $this->oauthidentitycache = serialize($this->identityCache);
                 $this->dbObject->
