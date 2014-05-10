@@ -41,6 +41,9 @@
 <div class="form-horizontal">
   <fieldset>
     <legend>Wikipedia Account</legend>
+
+    {if $currentUser->isOAuthLinked() }
+
     <div class="control-group">
       <label class="control-label">Attached Wikipedia account:</label>
       <div class="controls">
@@ -94,6 +97,20 @@
         <a href="{$tsurl}/acc.php?action=oauthdetach" class="btn btn-danger">Detach account</a>
       </div>
     </div>
+    {else}
+    <div class="control-group">
+      <label class="control-label">On-wiki username</label>
+      <div class="controls">
+        <input disabled="disabled" class="input-xlarge" type="text" value="{$currentUser->getOnWikiName()|escape}" />
+      </div>
+    </div>
+
+    <div class="control-group">
+      <div class="controls">
+        <a href="{$tsurl}/acc.php?action=oauthattach" class="btn btn-success">Attach account</a>
+      </div>
+    </div>
+    {/if}
   </fieldset>
 </div>
 

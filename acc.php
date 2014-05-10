@@ -400,7 +400,7 @@ elseif ($action == "login")
     $_SESSION['user'] = $user->getUsername();
     $_SESSION['userID'] = $user->getId();
     
-    if( $user->getOAuthAccessToken() == null)
+    if( $user->getOAuthAccessToken() == null && $user->getStoredOnWikiName() == "##OAUTH##")
     {
         global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl;
 
@@ -2087,7 +2087,38 @@ elseif ($action == "oauthdetach")
     $currentUser->save();
     
     header("Location: {$tsurl}/acc.php?action=logout");
-}    
+}
+elseif ($action == "oauthattach")
+{
+    $database = gGetDb();
+    $database->transactionally(function() use ($database)
+    {
+        try
+        {
+            global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl;
+            
+            $user = User::getCurrent();
+            
+            // Get a request token for OAuth
+            $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl);
+            $requestToken = $util->getRequestToken();
+
+            // save the request token for later
+            $user->setOAuthRequestToken($requestToken->key);
+            $user->setOAuthRequestSecret($requestToken->secret);
+            $user->save();
+        
+            $redirectUrl = $util->getAuthoriseUrl($requestToken);
+        
+            header("Location: {$redirectUrl}");
+        
+        }
+        catch(Exception $ex)
+        {
+            throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
+        }
+    });
+}
 # If the action specified does not exist, goto the default page.
 else {
 	echo defaultpage();
