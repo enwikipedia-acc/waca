@@ -78,7 +78,7 @@
     </div>
 
     <div class="control-group">
-      <label class="control-label">Rights:</label>
+      <label class="control-label">Grants:</label>
       {foreach from=array('useoauth', 'highvolume', 'createeditmovepage', 'createaccount') item="right"}
       <div class="controls">
           <div class="alert{if in_array($right, $currentUser->getOAuthIdentity()->grants)} alert-success{else} alert-error{/if}">
