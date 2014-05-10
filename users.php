@@ -26,6 +26,9 @@ require_once 'includes/database.php';
 require_once 'includes/skin.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
+require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
+require_once 'lib/mediawiki-extensions-OAuth/lib/JWT.php';
+require_once 'oauth/OAuthUtility.php';
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
@@ -489,12 +492,7 @@ BootstrapSkin::pushTagStack("</div>");
 
 $database = gGetDb();
 
-$statement = $database->prepare("SELECT * FROM user WHERE status = :level;");
-
-$level = "New";
-$statement->bindParam(":level", $level);
-$statement->execute();
-$result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
+$result = User::getAllWithStatus("New", $database);
 
 if($result != false && count($result) != 0)
 {
@@ -506,9 +504,7 @@ if($result != false && count($result) != 0)
 }
 echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">Users</a></div><div id="collapseTwo" class="accordion-body collapse"><div class="accordion-inner">';
 
-$level = "User";
-$statement->execute();
-$result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
+$result = User::getAllWithStatus("User", $database);
 $smarty->assign("userlist", $result);
 $smarty->display("usermanagement/userlist.tpl");
 echo <<<HTML
@@ -519,10 +515,7 @@ echo <<<HTML
 <p class="muted">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
 HTML;
 
-
-$level = "Admin";
-$statement->execute();
-$result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
+$result = User::getAllWithStatus("Admin", $database);
 $smarty->assign("userlist", $result);
 $smarty->display("usermanagement/userlist.tpl");
 echo <<<HTML
@@ -533,9 +526,7 @@ echo <<<HTML
 <p class="muted">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
 HTML;
 
-$statement2 = $database->prepare("SELECT * FROM user WHERE checkuser = 1;");
-$statement2->execute();
-$result = $statement2->fetchAll(PDO::FETCH_CLASS, "User");
+$result = User::getAllCheckusers( $database );
 $smarty->assign("userlist", $result);
 $smarty->display("usermanagement/userlist.tpl");
 echo '</div></div></div>';
@@ -546,10 +537,7 @@ if(isset($_GET['showall']))
 <div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFive">Suspended accounts</a></div><div id="collapseFive" class="accordion-body collapse"><div class="accordion-inner">
 HTML;
 
-
-    $level = "Suspended";
-    $statement->execute();
-    $result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
+    $result = User::getAllWithStatus("Suspended", $database);
     $smarty->assign("userlist", $result);
     $smarty->display("usermanagement/userlist.tpl");
     echo <<<HTML
@@ -559,10 +547,7 @@ HTML;
 <div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseSix">Declined accounts</a></div><div id="collapseSix" class="accordion-body collapse"><div class="accordion-inner">
 HTML;
 
-
-    $level = "Declined";
-    $statement->execute();
-    $result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
+    $result = User::getAllWithStatus("Declined", $database);
     $smarty->assign("userlist", $result);
     $smarty->display("usermanagement/userlist.tpl");
     echo "</div></div></div>";

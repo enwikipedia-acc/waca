@@ -32,6 +32,9 @@ require_once 'includes/skin.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
 require_once 'includes/http.php';
+require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
+require_once 'lib/mediawiki-extensions-OAuth/lib/JWT.php';
+require_once 'oauth/OAuthUtility.php';
 
 // Set the current version of the ACC.
 $version = "0.9.7";
@@ -89,7 +92,7 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 
 	// Checks whether the user want to reset his password or register a new account.
 	// Performs the clause when the action is not one of the above options.
-	if ($action != 'register' && $action != 'forgotpw' && $action != 'sreg') {
+	if ($action != 'register' && $action != 'forgotpw' && $action != 'sreg' && $action != "registercomplete") {
 		if (isset($action)) {
 			// Display the login form and the rest of the page coding.
 			// The data in the current $GET varianle would be send as parameter.
@@ -138,46 +141,8 @@ elseif ($action == "sreg")
 {
     $sregHttpClient = new http();
     
-	$cu_name = rawurlencode( $_REQUEST['wname'] );
-	$userblocked = $sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
-	$ub = unserialize( $userblocked );
-	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) 
-    {
-		$message = InterfaceMessage::get(InterfaceMessage::DECL_BLOCKED);
-		BootstrapSkin::displayAlertBox("You are presently blocked on the English Wikipedia", "alert-error", "Error");
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-    
-	$userexist = $sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
-	$ue = unserialize( $userexist );
-	foreach ( $ue['query']['users'] as $oneue ) 
-    {
-		if ( isset($oneue['missing'])) 
-        {
-			BootstrapSkin::displayAlertBox("Invalid on-wiki username", "alert-error", "Error");
-            BootstrapSkin::displayInternalFooter();
-			die();
-		}
-	}
-
-	// check if the user is to new
-	global $onRegistrationNewbieCheck;
-	if( $onRegistrationNewbieCheck ) 
-	{
-		global $onRegistrationNewbieCheckEditCount, $onRegistrationNewbieCheckAge;
-        
-		$isNewbie = unserialize($sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$cu_name" ));
-		$time = $isNewbie['query']['allusers'][0]['registration'];
-		$time2 = time() - strtotime($time);
-		$editcount = $isNewbie['query']['allusers'][0]['editcount'];
-		if (!($editcount > $onRegistrationNewbieCheckEditCount and $time2 > $onRegistrationNewbieCheckAge)) 
-        {
-            BootstrapSkin::displayAlertBox("You are too new to request an account at the moment.", "alert-info", "Sorry!", false);
-            BootstrapSkin::displayInternalFooter();
-			die();
-		}
-	}
+    // TODO: check blocked
+    // TODO: check age.
     
 	// check if user checked the "I have read and understand the interface guidelines" checkbox
 	if(!isset($_REQUEST['guidelines'])) {
@@ -221,30 +186,57 @@ elseif ($action == "sreg")
 		die();
 	}
     $query->closeCursor();
-    
-    $query = gGetDb()->prepare("SELECT * FROM user WHERE onwikiname = :onwikiname LIMIT 1;");
-    $query->execute(array(":onwikiname" => $_REQUEST['wname']));
-    if($query->fetchObject("User") != false)
-    {
-        BootstrapSkin::displayAlertBox("I'm sorry, but that Wikipedia account is in use here.", "alert-error", "Error!", false);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-    $query->closeCursor();
 
-    $newUser = new User();
-    $newUser->setDatabase(gGetDb());
+    $database = gGetDb();
     
-    $newUser->setUsername($_REQUEST['name']);
-    $newUser->setPassword($_REQUEST['pass']);
-    $newUser->setEmail($_REQUEST['email']);
-    $newUser->setOnWikiName($_REQUEST['wname']);
-    $newUser->setConfirmationDiff($_REQUEST['conf_revid']);
-    $newUser->save();
+    $database->transactionally(function() use ($database)
+    {
     
-	$accbotSend->send("New user: " . $_REQUEST['name']);
-	BootstrapSkin::displayAlertBox("Your request will be reviewed soon by a tool administrator, and you'll get an email informing you of the decision.", "alert-success", "Account requested!", false);
-    BootstrapSkin::displayInternalFooter();
+        $newUser = new User();
+        $newUser->setDatabase($database);
+    
+        $newUser->setUsername($_REQUEST['name']);
+        $newUser->setPassword($_REQUEST['pass']);
+        $newUser->setEmail($_REQUEST['email']);
+        $newUser->setOnWikiName($_REQUEST['wname']);
+        $newUser->setConfirmationDiff($_REQUEST['conf_revid']);
+        $newUser->save();
+    
+        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal, $useOauthSignup;
+    
+        if($useOauthSignup)
+        {
+            try
+            {
+                // Get a request token for OAuth
+                $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
+                $requestToken = $util->getRequestToken();
+    
+                // save the request token for later
+                $newUser->setOAuthRequestToken($requestToken->key);
+                $newUser->setOAuthRequestSecret($requestToken->secret);
+                $newUser->save();
+            
+                global $accbotSend;
+                $accbotSend->send("New user: " . $_REQUEST['name']);
+        
+                $redirectUrl = $util->getAuthoriseUrl($requestToken);
+            
+                header("Location: {$redirectUrl}");
+            }
+            catch(Exception $ex)
+            {
+                throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
+            }
+        }
+        else
+        {
+            global $baseurl, $accbotSend;
+            $accbotSend->send("New user: " . $_REQUEST['name']);
+            header("Location: {$baseurl}acc.php?action=registercomplete");
+        }
+    });
+    
 	die();
 }
 
@@ -253,6 +245,11 @@ elseif ($action == "register")
     $smarty->display("register.tpl");
 	BootstrapSkin::displayInternalFooter();
 	die();
+}
+elseif ($action == "registercomplete")
+{
+    BootstrapSkin::displayAlertBox("Your request will be reviewed soon by a tool administrator, and you'll get an email informing you of the decision.", "alert-success", "Account requested!", false);
+    BootstrapSkin::displayInternalFooter();
 }
 elseif ($action == "forgotpw")
 {
@@ -419,6 +416,32 @@ elseif ($action == "login")
     
     $_SESSION['user'] = $user->getUsername();
     $_SESSION['userID'] = $user->getId();
+    
+    if( $user->getOAuthAccessToken() == null && $user->getStoredOnWikiName() == "##OAUTH##")
+    {
+        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal, $baseurl;
+
+        try
+        {
+            // Get a request token for OAuth
+            $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
+            $requestToken = $util->getRequestToken();
+
+            // save the request token for later
+            $user->setOAuthRequestToken($requestToken->key);
+            $user->setOAuthRequestSecret($requestToken->secret);
+            $user->save();
+            
+            $redirectUrl = $util->getAuthoriseUrl($requestToken);
+            
+            header("Location: {$redirectUrl}");
+            die();
+        }
+        catch(Exception $ex)
+        {
+            throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
+        }        
+    }
     
     header("Location: $baseurl/acc.php");
 }
@@ -2070,6 +2093,49 @@ elseif ($action == "emailmgmt") {
 	$smarty->display("email-management/main.tpl");
 	BootstrapSkin::displayInternalFooter();
 	die();
+}
+elseif ($action == "oauthdetach")
+{ 
+    $currentUser = User::getCurrent();
+    $currentUser->setOAuthAccessSecret(null);
+    $currentUser->setOAuthAccessToken(null);
+    $currentUser->setOAuthRequestSecret(null);
+    $currentUser->setOAuthRequestToken(null);
+        
+    $currentUser->save();
+    
+    header("Location: {$baseurl}/acc.php?action=logout");
+}
+elseif ($action == "oauthattach")
+{
+    $database = gGetDb();
+    $database->transactionally(function() use ($database)
+    {
+        try
+        {
+            global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;
+            
+            $user = User::getCurrent();
+            
+            // Get a request token for OAuth
+            $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
+            $requestToken = $util->getRequestToken();
+
+            // save the request token for later
+            $user->setOAuthRequestToken($requestToken->key);
+            $user->setOAuthRequestSecret($requestToken->secret);
+            $user->save();
+        
+            $redirectUrl = $util->getAuthoriseUrl($requestToken);
+        
+            header("Location: {$redirectUrl}");
+        
+        }
+        catch(Exception $ex)
+        {
+            throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
+        }
+    });
 }
 # If the action specified does not exist, goto the default page.
 else {

@@ -13,6 +13,7 @@ $currentUser = User::getCurrent();
 
 $smarty->assign("baseurl", $baseurl);
 $smarty->assign("wikiurl", $wikiurl);
+$smarty->assign("mediawikiScriptPath", $mediawikiScriptPath);
 $smarty->assign("toolversion", $toolVersion);
 $smarty->assign("currentUser", $currentUser);
 $smarty->debugging = $smartydebug;

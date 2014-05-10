@@ -9,7 +9,7 @@ class User extends DataObject
     private $email;
     private $password;
     private $status = "New";
-    private $onwikiname;
+    private $onwikiname = "##OAUTH##";
     private $welcome_sig = "";
     private $lastactive = "0000-00-00 00:00:00";
     private $forcelogout = 0;
@@ -19,9 +19,16 @@ class User extends DataObject
     private $abortpref = 0;
     private $confirmationdiff = 0;
     private $emailsig = "";
+    private $oauthrequesttoken = null;
+    private $oauthrequestsecret = null;
+    private $oauthaccesstoken = null;
+    private $oauthaccesssecret = null;
+    private $oauthidentitycache = null;
     
     // cache variable of the current user - it's never going to change in the middle of a request.
     private static $currentUser;
+    
+    private $identityCache = null;
     
     /**
      * Summary of getCurrent
@@ -76,7 +83,57 @@ class User extends DataObject
 
 		return $resultObject;
     }
- 
+    
+    public static function getByRequestToken($requestToken, PdoDatabase $database)
+    {
+		$statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE oauthrequesttoken = :id LIMIT 1;");
+		$statement->bindParam(":id", $requestToken);
+
+		$statement->execute();
+
+		$resultObject = $statement->fetchObject( get_called_class() );
+
+		if($resultObject != false)
+		{
+			$resultObject->isNew = false;
+            $resultObject->setDatabase($database); 
+		}
+
+		return $resultObject;
+    }
+    
+    public static function getAllWithStatus($status, PdoDatabase $database)
+    {
+        $statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE status = :status");
+        $statement->execute( array( ":status" => $status ) );
+        
+        $resultObject = $statement->fetchAll( PDO::FETCH_CLASS, get_called_class() );
+        
+        foreach ($resultObject as $u)
+        {
+            $u->setDatabase($database);
+            $u->isNew = false;
+        }
+     
+        return $resultObject;
+    }
+    
+    public static function getAllCheckusers(PdoDatabase $database)
+    {
+        $statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE checkuser = 1;");
+        $statement->execute();
+        
+        $resultObject = $statement->fetchAll( PDO::FETCH_CLASS, get_called_class() );
+        
+        foreach ($resultObject as $u)
+        {
+            $u->setDatabase($database);
+            $u->isNew = false;
+        }
+        
+        return $resultObject;
+    }
+    
     public function save()
     {
 		if($this->isNew)
@@ -84,10 +141,12 @@ class User extends DataObject
 			$statement = $this->dbObject->prepare(
                 "INSERT INTO `user` (" . 
                 "username, email, password, status, onwikiname, welcome_sig, lastactive, forcelogout," . 
-                "checkuser, identified, welcome_template, abortpref, confirmationdiff, emailsig" . 
+                "checkuser, identified, welcome_template, abortpref, confirmationdiff, emailsig," . 
+                "oauthrequesttoken, oauthrequestsecret, oauthaccesstoken, oauthaccesssecret" .
                 ") VALUES (" . 
                 ":username, :email, :password, :status, :onwikiname, :welcome_sig, :lastactive, :forcelogout," . 
-                ":checkuser, :identified, :welcome_template, :abortpref, :confirmationdiff, :emailsig" . 
+                ":checkuser, :identified, :welcome_template, :abortpref, :confirmationdiff, :emailsig," . 
+                ":ort, :ors, :oat, :oas" .
                 ");");
 			$statement->bindParam(":username", $this->username);
 			$statement->bindParam(":email", $this->email);
@@ -103,6 +162,11 @@ class User extends DataObject
 			$statement->bindParam(":abortpref", $this->abortpref);
 			$statement->bindParam(":confirmationdiff", $this->confirmationdiff);
 			$statement->bindParam(":emailsig", $this->emailsig);
+            $statement->bindParam(":ort", $this->oauthrequesttoken);
+            $statement->bindParam(":ors", $this->oauthrequestsecret);
+            $statement->bindParam(":oat", $this->oauthaccesstoken);
+            $statement->bindParam(":oas", $this->oauthaccesssecret);
+            
 			if($statement->execute())
 			{
 				$this->isNew = false;
@@ -120,7 +184,8 @@ class User extends DataObject
                 "onwikiname = :onwikiname, welcome_sig = :welcome_sig, lastactive = :lastactive, " .
                 "forcelogout = :forcelogout, checkuser = :checkuser, identified = :identified, " .
                 "welcome_template = :welcome_template, abortpref = :abortpref, confirmationdiff = :confirmationdiff, " .
-                "emailsig = :emailsig " .
+                "emailsig = :emailsig, " .
+                "oauthrequesttoken = :ort, oauthrequestsecret = :ors, oauthaccesstoken = :oat, oauthaccesssecret = :oas " .
                 "WHERE id = :id LIMIT 1;");
 			$statement->bindParam(":id", $this->id);
 			$statement->bindParam(":username", $this->username);
@@ -136,7 +201,12 @@ class User extends DataObject
 			$statement->bindParam(":welcome_template", $this->welcome_template);
 			$statement->bindParam(":abortpref", $this->abortpref);
 			$statement->bindParam(":confirmationdiff", $this->confirmationdiff);
-			$statement->bindParam(":emailsig", $this->emailsig);            
+			$statement->bindParam(":emailsig", $this->emailsig);
+            $statement->bindParam(":ort", $this->oauthrequesttoken);
+            $statement->bindParam(":ors", $this->oauthrequestsecret);
+            $statement->bindParam(":oat", $this->oauthaccesstoken);
+            $statement->bindParam(":oas", $this->oauthaccesssecret);
+            
 			if(!$statement->execute())
 			{
 				throw new Exception($statement->errorInfo());
@@ -188,7 +258,28 @@ class User extends DataObject
         return $this->status;
     }
 
-    public function getOnWikiName(){
+    /**
+     * Gets the user's onwiki name
+     * @return mixed
+     */
+    public function getOnWikiName()
+    {
+        if($this->oauthaccesstoken != null)
+        {
+            return $this->getOAuthOnWikiName();   
+        }
+        
+        return $this->onwikiname;
+    }
+    
+    /**
+     * This is probably NOT the function you want!
+     * 
+     * Take a look at getOnWikiName() instead.
+     * @return mixed
+     */
+    public function getStoredOnWikiName()
+    {        
         return $this->onwikiname;
     }
 
@@ -217,7 +308,7 @@ class User extends DataObject
     }
 
     public function setForcelogout($forcelogout){
-        $this->forcelogout = $forcelogout;
+        $this->forcelogout = $forcelogout ? 1 : 0;
     }
     
     public function getSecure(){
@@ -271,6 +362,46 @@ class User extends DataObject
     public function setEmailSig($emailsig){
         $this->emailsig = $emailsig;
     }
+    
+    public function getOAuthRequestToken()
+	{
+		return $this->oauthrequesttoken;
+	}
+
+	public function setOAuthRequestToken($oauthrequesttoken)
+	{
+		$this->oauthrequesttoken = $oauthrequesttoken;
+	}
+
+	public function getOAuthRequestSecret()
+	{
+		return $this->oauthrequestsecret;
+	}
+
+	public function setOAuthRequestSecret($oauthrequestsecret)
+	{
+		$this->oauthrequestsecret = $oauthrequestsecret;
+	}
+
+	public function getOAuthAccessToken()
+    {
+		return $this->oauthaccesstoken;
+	}
+
+	public function setOAuthAccessToken($oauthaccesstoken)
+	{
+		$this->oauthaccesstoken = $oauthaccesstoken;
+	}
+
+	public function getOAuthAccessSecret()
+	{
+		return $this->oauthaccesssecret;
+	}
+
+	public function setOAuthAccessSecret($oauthaccesssecret)
+	{
+		$this->oauthaccesssecret = $oauthaccesssecret;
+	}
 
     #endregion
     
@@ -390,5 +521,80 @@ class User extends DataObject
     public function getForgottenPasswordHash()
     {
         return md5($this->username . $this->email . $this->welcome_template . $this->id -> $this->password);
+    }
+
+    public function getOAuthIdentity()
+    {
+        if($this->oauthaccesstoken == null)
+        {
+            $this->identityCache = null;
+            $this->oauthidentitycache = null;
+            $this->dbObject->
+                prepare( "UPDATE user SET oauthidentitycache = null WHERE id = :id;" )->
+                execute( array( ":id" => $this->id ) );
+            
+            return null;   
+        }
+        
+        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal, $oauthMediaWikiCanonicalServer;
+
+        if($this->oauthidentitycache == null)
+        {
+            $this->identityCache = null;
+        }
+        else
+        {
+            $this->identityCache = unserialize($this->oauthidentitycache);
+        }
+        
+        // check the cache
+        if(
+            $this->identityCache != null &&
+            $this->identityCache->aud == $oauthConsumerToken &&
+            DateTime::createFromFormat("U", $this->identityCache->iat) < new DateTime() &&
+            DateTime::createFromFormat("U", $this->identityCache->exp) > new DateTime() &&
+            $this->identityCache->iss == $oauthMediaWikiCanonicalServer
+            )
+        {
+            return $this->identityCache;
+        }
+        else
+        {
+            try
+            {
+                $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
+                $this->identityCache = $util->getIdentity($this->oauthaccesstoken, $this->oauthaccesssecret);
+                $this->oauthidentitycache = serialize($this->identityCache);
+                $this->dbObject->
+                    prepare( "UPDATE user SET oauthidentitycache = :identity WHERE id = :id;" )->
+                    execute( array( ":id" => $this->id, ":identity" => $this->oauthidentitycache ) );
+            }
+            catch(UnexpectedValueException $ex)
+            {
+                $this->identityCache = null;
+                $this->oauthidentitycache = null;
+                $this->dbObject->
+                    prepare( "UPDATE user SET oauthidentitycache = null WHERE id = :id;" )->
+                    execute( array( ":id" => $this->id ) );
+            }
+            
+            return $this->identityCache;
+            
+        }
+    }
+    
+    private function getOAuthOnWikiName()
+    {
+        return $this->getOAuthIdentity()->username;
+    }
+    
+    public function isOAuthLinked()
+    {
+        if ($this->onwikiname === "##OAUTH##")
+        {
+            return true; // special value. If an account must be oauth linked, this is true.
+        }
+        
+        return $this->oauthaccesstoken !== null;
     }
 }

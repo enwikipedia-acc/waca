@@ -48,6 +48,7 @@ $antispoof_table = "spoofuser";
 $wikiurl = "en.wikipedia.org";
 
 $mediawikiWebServiceEndpoint = "https://en.wikipedia.org/w/api.php";
+$mediawikiScriptPath = "https://en.wikipedia.org/w/index.php";
 
 // URL of the current copy of the tool.
 $baseurl = "https://accounts.wmflabs.org";
@@ -158,6 +159,22 @@ $BUdumper = "/opt/ts/mysql/5.1/bin/mysqldump --defaults-file=~/.my.cnf p_acc_liv
 $BUgzip = "/usr/bin/gzip"; 							// Add the gzip parameters here if needed.
 $BUtar = "/bin/tar -cvf";						// Add the tar parameters here if needed.
 
+/************************************
+ * OAuth Configuration
+ */
+
+$oauthConsumerToken = "";
+$oauthSecretToken = "";
+
+// path to Special:OAuth on target wiki.
+// don't use pretty urls, see [[bugzilla:57500]]
+$oauthBaseUrl = "https://en.wikipedia.org/w/index.php?title=Special:OAuth";
+// use this for requests from the server, if some special url is needed.
+$oauthBaseUrlInternal = "https://en.wikipedia.org/w/index.php?title=Special:OAuth";
+
+$oauthMediaWikiCanonicalServer = "http://en.wikipedia.org";
+
+$useOauthSignup = false;
 
 /************************************
  * Providers Configuration

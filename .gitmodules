@@ -5,3 +5,6 @@
 	path = lib/password_compat
 	url = git@github.com:ircmaxell/password_compat.git
 	branch = master
+[submodule "lib/mediawiki-extensions-OAuth"]
+	path = lib/mediawiki-extensions-OAuth
+	url = git@github.com:wikimedia/mediawiki-extensions-OAuth.git
