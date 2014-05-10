@@ -1,8 +1,11 @@
 ﻿ALTER TABLE `acc_user` 
+	CHANGE COLUMN `user_onwikiname` `user_onwikiname` VARCHAR(255) NULL,
 	ADD COLUMN `oauthrequesttoken` VARCHAR(45) NULL AFTER `user_emailsig`,
 	ADD COLUMN `oauthrequestsecret` VARCHAR(45) NULL AFTER `oauthrequesttoken`,
 	ADD COLUMN `oauthaccesstoken` VARCHAR(45) NULL AFTER `oauthrequestsecret`,
-	ADD COLUMN `oauthaccesssecret` VARCHAR(45) NULL AFTER `oauthaccesstoken`;
+	ADD COLUMN `oauthaccesssecret` VARCHAR(45) NULL AFTER `oauthaccesstoken`,
+	ADD COLUMN `oauthidentitycache` BLOB NULL DEFAULT NULL AFTER `oauthaccesssecret`,
+	DROP INDEX `user_onwikiname_UNIQUE` ;
 
 CREATE OR REPLACE VIEW `user` AS
     SELECT 
@@ -29,6 +32,3 @@ CREATE OR REPLACE VIEW `user` AS
 		`acc_user`.`oauthidentitycache` AS `oauthidentitycache`
     FROM
         `acc_user`;
-
-ALTER TABLE `acc_user` 
-	CHANGE COLUMN `user_onwikiname` `user_onwikiname` VARCHAR(255) NULL ;
