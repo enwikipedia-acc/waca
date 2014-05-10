@@ -23,17 +23,17 @@
         <td>{$ban->getTarget()}</td>
         <td>
             {if $ban->getType() == "IP"}
-              <a class="btn btn-small btn-info" href="{$tsurl}/search.php?type=IP&amp;term={$ban->getTarget()|escape:'url'}">
+              <a class="btn btn-small btn-info" href="{$baseurl}/search.php?type=IP&amp;term={$ban->getTarget()|escape:'url'}">
                 <i class="icon-white icon-search"></i>
                 <span class="visible-desktop">&nbsp;Search</span>
               </a>
             {elseif $ban->getType() == "Name"}
-              <a class="btn btn-small btn-info" href="{$tsurl}/search.php?type=Request&amp;term={$ban->getTarget()|escape:'url'}">
+              <a class="btn btn-small btn-info" href="{$baseurl}/search.php?type=Request&amp;term={$ban->getTarget()|escape:'url'}">
                 <i class="icon-white icon-search"></i>
                 <span class="visible-desktop">&nbsp;Search</span>
               </a>
             {elseif $ban->getType() == "EMail"}
-              <a class="btn btn-small btn-info" href="{$tsurl}/search.php?type=email&amp;term={$ban->getTarget()|escape:'url'}">
+              <a class="btn btn-small btn-info" href="{$baseurl}/search.php?type=email&amp;term={$ban->getTarget()|escape:'url'}">
                 <i class="icon-white icon-search"></i>
                 <span class="visible-desktop">&nbsp;Search</span>
               </a>
@@ -46,7 +46,7 @@
 
         {if $currentUser->isAdmin()}
         <td>
-          <a class="btn btn-success btn-small" href="{$tsurl}/acc.php?action=unban&amp;id={$ban->getId()}">
+          <a class="btn btn-success btn-small" href="{$baseurl}/acc.php?action=unban&amp;id={$ban->getId()}">
             <i class="icon-white icon-ok"></i><span class="visible-desktop">&nbsp;Unban</span>
           </a>
         </td>

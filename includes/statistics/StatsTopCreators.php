@@ -112,14 +112,14 @@ function statsTopCreatorsRowCallback($row, $rowno)
 	$out .= '<th>'.$rowno.'</th>';
 	$out .= '<td>'.$row['COUNT(*)'].'</td>';
 	
-	global $tsurl;
+	global $baseurl;
 	$out .= '<td><a ';
 	
 	
 	if($row['user_level'] == "Suspended") $out .= 'class="muted" '; 
 	if($row['user_level'] == "Admin") $out .= 'class="text-success" ';	
 	
-	$out .= 'href="'.$tsurl.'/statistics.php?page=Users&amp;user='.$row['user_id'].'">'.$row['log_user'].'</a></td>';
+	$out .= 'href="'.$baseurl.'/statistics.php?page=Users&amp;user='.$row['user_id'].'">'.$row['log_user'].'</a></td>';
 	
 	$out .= '</tr>';
 	

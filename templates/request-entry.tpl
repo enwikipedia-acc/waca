@@ -17,7 +17,7 @@
 <tr>
   
 	<td>
-    <a class="btn btn-small{if $r->hasComments() == true} btn-info{/if}" href="{$tsurl}/acc.php?action=zoom&amp;id={$r->getId()}"><i class="{if $r->hasComments() == true}icon-white{else}icon-black{/if} icon-search"></i><span class="visible-desktop">&nbsp;{$r->getId()}</span></a>
+    <a class="btn btn-small{if $r->hasComments() == true} btn-info{/if}" href="{$baseurl}/acc.php?action=zoom&amp;id={$r->getId()}"><i class="{if $r->hasComments() == true}icon-white{else}icon-black{/if} icon-search"></i><span class="visible-desktop">&nbsp;{$r->getId()}</span></a>
   </td>
   
   {if $showStatus}
@@ -70,9 +70,9 @@
           <i class="icon-white icon-ban-circle"></i>&nbsp;Ban&nbsp;<span class="caret"></span>
         </a>
         <ul class="dropdown-menu">
-          <li><a href="{$tsurl}/acc.php?action=ban&amp;ip={$r->getId()}">IP</a></li>
-          <li><a href="{$tsurl}/acc.php?action=ban&amp;email={$r->getId()}">Email</a></li>
-          <li><a href="{$tsurl}/acc.php?action=ban&amp;name={$r->getId()}">Name</a></li>
+          <li><a href="{$baseurl}/acc.php?action=ban&amp;ip={$r->getId()}">IP</a></li>
+          <li><a href="{$baseurl}/acc.php?action=ban&amp;email={$r->getId()}">Email</a></li>
+          <li><a href="{$baseurl}/acc.php?action=ban&amp;name={$r->getId()}">Name</a></li>
         </ul>
       </div>
     {/if}
@@ -89,7 +89,7 @@
   <td>
     {if $r->getReserved() == false}
     
-      <a class="btn btn-small btn-success" href="{$tsurl}/acc.php?action=reserve&amp;resid={$r->getId()}">
+      <a class="btn btn-small btn-success" href="{$baseurl}/acc.php?action=reserve&amp;resid={$r->getId()}">
         <i class="icon-white icon-star-empty"></i>&nbsp;Reserve
       </a>
     
@@ -97,17 +97,17 @@
     
       {if $r->getReserved() == $currentUser->getId()}
       
-        <a class="btn btn-small btn-inverse" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$r->getId()}">
+        <a class="btn btn-small btn-inverse" href="{$baseurl}/acc.php?action=breakreserve&amp;resid={$r->getId()}">
           <i class="icon-white icon-star"></i>&nbsp;Unreserve
         </a>
     
       {else}
       
         {if $currentUser->isAdmin() || $currentUser->isCheckUser() }
-          <a class="btn btn-small btn-warning visible-desktop" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$r->getId()}">
+          <a class="btn btn-small btn-warning visible-desktop" href="{$baseurl}/acc.php?action=breakreserve&amp;resid={$r->getId()}">
             <i class="icon-white icon-trash"></i>&nbsp;Force break
           </a>    
-          <a class="btn btn-small btn-warning hidden-desktop" href="{$tsurl}/acc.php?action=breakreserve&amp;resid={$r->getId()}">
+          <a class="btn btn-small btn-warning hidden-desktop" href="{$baseurl}/acc.php?action=breakreserve&amp;resid={$r->getId()}">
             <i class="icon-white icon-trash"></i>&nbsp; {$r->getReservedObject()->getUsername()|escape}
           </a>
         {else}

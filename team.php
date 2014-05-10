@@ -421,7 +421,7 @@ foreach($developer as $devName => $devInfo) {
                     
 					break;
 				case "ToolID":
-					echo "<li>Userpage on tool: <a href=\"$tsurl/statistics.php?page=Users&amp;user=$infoContent\">Click here</a></li>\n";
+					echo "<li>Userpage on tool: <a href=\"$baseurl/statistics.php?page=Users&amp;user=$infoContent\">Click here</a></li>\n";
 					break;
 				case "wiki":
 					echo "<li>Enwiki Username: <a href=\"http://en.wikipedia.org/wiki/User:$infoContent\">$infoContent</a></li>\n";
@@ -482,7 +482,7 @@ foreach($inactiveDeveloper as $devName => $devInfo) {
                     
 					break;
 				case "ToolID":
-					echo "<li>Userpage on tool: <a href=\"$tsurl/statistics.php?page=Users&amp;user=$infoContent\">Click here</a></li>\n";
+					echo "<li>Userpage on tool: <a href=\"$baseurl/statistics.php?page=Users&amp;user=$infoContent\">Click here</a></li>\n";
 					break;
 				case "wiki":
 					echo "<li>Enwiki Username: <a href=\"http://en.wikipedia.org/wiki/User:$infoContent\">$infoContent</a></li>\n";

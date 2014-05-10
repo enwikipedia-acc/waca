@@ -13,7 +13,7 @@
  ***************************************************************************/
 
 global $ACC;
-global $tsurl;
+global $baseurl;
 global $dontUseWikiDb;
 
 if (!defined("ACC")) {
@@ -429,7 +429,7 @@ function doSort(array $items)
 }
 
 function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid, &$session) {
-	global $tsurl;
+	global $baseurl;
 	
 	$out = '<a class="request-src" href="'.$wikipediaurl.'wiki/User_talk:';
 	$out .= $ip . '" target="_blank">Talk page</a> ';
@@ -443,12 +443,12 @@ function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid, &$session) {
 	
 	//X's edit counter
 	$out .= '| ';
-	$out .= '<a class="request-src" href="'.$tsurl . "/redir.php?tool=tparis-pcount&data=" . $ip. '"';
+	$out .= '<a class="request-src" href="'.$baseurl . "/redir.php?tool=tparis-pcount&data=" . $ip. '"';
 	$out .= ' target="_blank">Deleted Edits</a> ';
 
 	// IP global contribs
 	$out .= '| ';
-	$out .= '<a class="request-src" href="'. $tsurl . "/redir.php?tool=luxo-contributions&data=" . $ip. '" target="_blank">Global Contributions</a> ';
+	$out .= '<a class="request-src" href="'. $baseurl . "/redir.php?tool=luxo-contributions&data=" . $ip. '" target="_blank">Global Contributions</a> ';
 	
 	// IP blocks
 	$out .= '| ';
@@ -472,11 +472,11 @@ function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid, &$session) {
 
 	// IP whois
 	$out .= '| ';
-	$out .= '<a class="request-src" href="' . $tsurl . "/redir.php?tool=oq-whois&data=" . $ip . '" target="_blank">Whois</a> ';
+	$out .= '<a class="request-src" href="' . $baseurl . "/redir.php?tool=oq-whois&data=" . $ip . '" target="_blank">Whois</a> ';
 
 	// IP geolocate
 	$out .= '| ';
-	$out .= '<a class="request-src" href="' . $tsurl . "/redir.php?tool=ipinfodb-locator&data=" . $ip . '" target="_blank">Geolocate</a> ';
+	$out .= '<a class="request-src" href="' . $baseurl . "/redir.php?tool=ipinfodb-locator&data=" . $ip . '" target="_blank">Geolocate</a> ';
 
 	// Abuse Filter
 	$out .= '| ';
