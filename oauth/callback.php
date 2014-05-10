@@ -26,6 +26,14 @@ require_once 'includes/http.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
 require_once 'oauth/OAuthUtility.php';
 
+// Initialize the database classes.
+$tsSQL = new database("toolserver");
+$asSQL = new database("antispoof");
+
+// Creates database links for later use.
+$tsSQLlink = $tsSQL->getLink();
+$asSQLlink = $asSQL->getLink();
+
 $user = User::getByRequestToken($_GET['oauth_token'], gGetDb());
 
 if($user == false)
