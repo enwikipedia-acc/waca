@@ -22,8 +22,8 @@ class EmailTemplate extends DataObject
         global $createdid;
         
     	$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE oncreated = :forcreated AND active = 1 AND preloadonly = 0 AND id != :createdid;");
-    	$statement->bindParam(":createdid", $createdid);
-    	$statement->bindParam(":forcreated", $forCreated);
+    	$statement->bindValue(":createdid", $createdid);
+    	$statement->bindValue(":forcreated", $forCreated);
         
     	$statement->execute();
         
@@ -46,7 +46,7 @@ class EmailTemplate extends DataObject
         }
         
     	$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE oncreated = :forcreated AND active = 1;");
-    	$statement->bindParam(":forcreated", $forCreated);
+    	$statement->bindValue(":forcreated", $forCreated);
         
     	$statement->execute();
         
@@ -64,7 +64,7 @@ class EmailTemplate extends DataObject
     public static function getByName($name, PdoDatabase $database)
     {
     	$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE name = :name LIMIT 1;");
-    	$statement->bindParam(":name", $name);
+    	$statement->bindValue(":name", $name);
     
     	$statement->execute();
     
@@ -84,12 +84,12 @@ class EmailTemplate extends DataObject
         if($this->isNew)
 		{ // insert
 			$statement = $this->dbObject->prepare("INSERT INTO `emailtemplate` (name, text, jsquestion, oncreated, active, preloadonly) VALUES (:name, :text, :jsquestion, :oncreated, :active, :preloadonly);");
-			$statement->bindParam(":name", $this->name);
-			$statement->bindParam(":text", $this->text);
-			$statement->bindParam(":jsquestion", $this->jsquestion);
-			$statement->bindParam(":oncreated", $this->oncreated);
-			$statement->bindParam(":active", $this->active);
-			$statement->bindParam(":preloadonly", $this->preloadonly);
+			$statement->bindValue(":name", $this->name);
+			$statement->bindValue(":text", $this->text);
+			$statement->bindValue(":jsquestion", $this->jsquestion);
+			$statement->bindValue(":oncreated", $this->oncreated);
+			$statement->bindValue(":active", $this->active);
+			$statement->bindValue(":preloadonly", $this->preloadonly);
             
 			if($statement->execute())
 			{
@@ -104,13 +104,13 @@ class EmailTemplate extends DataObject
 		else
 		{ // update
 			$statement = $this->dbObject->prepare("UPDATE `emailtemplate` SET name = :name, text = :text, jsquestion = :jsquestion, oncreated = :oncreated, active = :active, preloadonly = :preloadonly WHERE id = :id LIMIT 1;");
-			$statement->bindParam(":id", $this->id);
-			$statement->bindParam(":name", $this->name);
-			$statement->bindParam(":text", $this->text);
-			$statement->bindParam(":jsquestion", $this->jsquestion);
-			$statement->bindParam(":oncreated", $this->oncreated);
-			$statement->bindParam(":active", $this->active);
-			$statement->bindParam(":preloadonly", $this->preloadonly);
+			$statement->bindValue(":id", $this->id);
+			$statement->bindValue(":name", $this->name);
+			$statement->bindValue(":text", $this->text);
+			$statement->bindValue(":jsquestion", $this->jsquestion);
+			$statement->bindValue(":oncreated", $this->oncreated);
+			$statement->bindValue(":active", $this->active);
+			$statement->bindValue(":preloadonly", $this->preloadonly);
             
 			if(!$statement->execute())
 			{

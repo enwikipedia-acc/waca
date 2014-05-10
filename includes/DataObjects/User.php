@@ -69,7 +69,7 @@ class User extends DataObject
     public static function getByUsername($username, PdoDatabase $database)
     {
         $statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE username = :id LIMIT 1;");
-		$statement->bindParam(":id", $username);
+		$statement->bindValue(":id", $username);
 
 		$statement->execute();
 
@@ -87,7 +87,7 @@ class User extends DataObject
     public static function getByRequestToken($requestToken, PdoDatabase $database)
     {
 		$statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE oauthrequesttoken = :id LIMIT 1;");
-		$statement->bindParam(":id", $requestToken);
+		$statement->bindValue(":id", $requestToken);
 
 		$statement->execute();
 
@@ -148,24 +148,24 @@ class User extends DataObject
                 ":checkuser, :identified, :welcome_template, :abortpref, :confirmationdiff, :emailsig," . 
                 ":ort, :ors, :oat, :oas" .
                 ");");
-			$statement->bindParam(":username", $this->username);
-			$statement->bindParam(":email", $this->email);
-			$statement->bindParam(":password", $this->password);
-			$statement->bindParam(":status", $this->status);
-			$statement->bindParam(":onwikiname", $this->onwikiname);
-			$statement->bindParam(":welcome_sig", $this->welcome_sig);
-			$statement->bindParam(":lastactive", $this->lastactive);
-			$statement->bindParam(":forcelogout", $this->forcelogout);
-			$statement->bindParam(":checkuser", $this->checkuser);
-			$statement->bindParam(":identified", $this->identified);
-			$statement->bindParam(":welcome_template", $this->welcome_template);
-			$statement->bindParam(":abortpref", $this->abortpref);
-			$statement->bindParam(":confirmationdiff", $this->confirmationdiff);
-			$statement->bindParam(":emailsig", $this->emailsig);
-            $statement->bindParam(":ort", $this->oauthrequesttoken);
-            $statement->bindParam(":ors", $this->oauthrequestsecret);
-            $statement->bindParam(":oat", $this->oauthaccesstoken);
-            $statement->bindParam(":oas", $this->oauthaccesssecret);
+			$statement->bindValue(":username", $this->username);
+			$statement->bindValue(":email", $this->email);
+			$statement->bindValue(":password", $this->password);
+			$statement->bindValue(":status", $this->status);
+			$statement->bindValue(":onwikiname", $this->onwikiname);
+			$statement->bindValue(":welcome_sig", $this->welcome_sig);
+			$statement->bindValue(":lastactive", $this->lastactive);
+			$statement->bindValue(":forcelogout", $this->forcelogout);
+			$statement->bindValue(":checkuser", $this->checkuser);
+			$statement->bindValue(":identified", $this->identified);
+			$statement->bindValue(":welcome_template", $this->welcome_template);
+			$statement->bindValue(":abortpref", $this->abortpref);
+			$statement->bindValue(":confirmationdiff", $this->confirmationdiff);
+			$statement->bindValue(":emailsig", $this->emailsig);
+            $statement->bindValue(":ort", $this->oauthrequesttoken);
+            $statement->bindValue(":ors", $this->oauthrequestsecret);
+            $statement->bindValue(":oat", $this->oauthaccesstoken);
+            $statement->bindValue(":oas", $this->oauthaccesssecret);
             
 			if($statement->execute())
 			{
@@ -187,25 +187,25 @@ class User extends DataObject
                 "emailsig = :emailsig, " .
                 "oauthrequesttoken = :ort, oauthrequestsecret = :ors, oauthaccesstoken = :oat, oauthaccesssecret = :oas " .
                 "WHERE id = :id LIMIT 1;");
-			$statement->bindParam(":id", $this->id);
-			$statement->bindParam(":username", $this->username);
-			$statement->bindParam(":email", $this->email);
-			$statement->bindParam(":password", $this->password);
-			$statement->bindParam(":status", $this->status);
-			$statement->bindParam(":onwikiname", $this->onwikiname);
-			$statement->bindParam(":welcome_sig", $this->welcome_sig);
-			$statement->bindParam(":lastactive", $this->lastactive);
-			$statement->bindParam(":forcelogout", $this->forcelogout);
-			$statement->bindParam(":checkuser", $this->checkuser);
-			$statement->bindParam(":identified", $this->identified);
-			$statement->bindParam(":welcome_template", $this->welcome_template);
-			$statement->bindParam(":abortpref", $this->abortpref);
-			$statement->bindParam(":confirmationdiff", $this->confirmationdiff);
-			$statement->bindParam(":emailsig", $this->emailsig);
-            $statement->bindParam(":ort", $this->oauthrequesttoken);
-            $statement->bindParam(":ors", $this->oauthrequestsecret);
-            $statement->bindParam(":oat", $this->oauthaccesstoken);
-            $statement->bindParam(":oas", $this->oauthaccesssecret);
+			$statement->bindValue(":id", $this->id);
+			$statement->bindValue(":username", $this->username);
+			$statement->bindValue(":email", $this->email);
+			$statement->bindValue(":password", $this->password);
+			$statement->bindValue(":status", $this->status);
+			$statement->bindValue(":onwikiname", $this->onwikiname);
+			$statement->bindValue(":welcome_sig", $this->welcome_sig);
+			$statement->bindValue(":lastactive", $this->lastactive);
+			$statement->bindValue(":forcelogout", $this->forcelogout);
+			$statement->bindValue(":checkuser", $this->checkuser);
+			$statement->bindValue(":identified", $this->identified);
+			$statement->bindValue(":welcome_template", $this->welcome_template);
+			$statement->bindValue(":abortpref", $this->abortpref);
+			$statement->bindValue(":confirmationdiff", $this->confirmationdiff);
+			$statement->bindValue(":emailsig", $this->emailsig);
+            $statement->bindValue(":ort", $this->oauthrequesttoken);
+            $statement->bindValue(":ors", $this->oauthrequestsecret);
+            $statement->bindValue(":oat", $this->oauthaccesstoken);
+            $statement->bindValue(":oas", $this->oauthaccesssecret);
             
 			if(!$statement->execute())
 			{
@@ -425,17 +425,17 @@ class User extends DataObject
         {
             $this->status = $status;            
             $statusquery = $this->dbObject->prepare("UPDATE user SET status = :status WHERE id = :id;");
-            $statusquery->bindParam(":status", $status);
-            $statusquery->bindParam(":id", $this->id);
+            $statusquery->bindValue(":status", $status);
+            $statusquery->bindValue(":id", $this->id);
             
             $username = User::getCurrent($this->dbObject)->getUsername();
             
             // TODO: update me to use new logging systems.
             $logquery = $this->dbObject->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:id, :user, :action, CURRENT_TIMESTAMP(), :cmt);");
-            $logquery->bindParam(":user", $username);
-            $logquery->bindParam(":id", $this->id);
-            $logquery->bindParam(":action", $logaction);
-            $logquery->bindParam(":cmt", $comment);
+            $logquery->bindValue(":user", $username);
+            $logquery->bindValue(":id", $this->id);
+            $logquery->bindValue(":action", $logaction);
+            $logquery->bindValue(":cmt", $comment);
             
             $statusquery->execute();
             $logquery->execute();

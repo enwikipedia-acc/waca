@@ -14,9 +14,9 @@ class WelcomeQueue extends DataObject
         if($this->isNew)
 		{ // insert
 			$statement = $this->dbObject->prepare("INSERT INTO `welcomequeue` (user, request, status) VALUES (:user, :request, :status);");
-			$statement->bindParam(":user", $this->user);
-			$statement->bindParam(":request", $this->request);
-			$statement->bindParam(":status", $this->status);
+			$statement->bindValue(":user", $this->user);
+			$statement->bindValue(":request", $this->request);
+			$statement->bindValue(":status", $this->status);
             
 			if($statement->execute())
 			{
@@ -33,10 +33,10 @@ class WelcomeQueue extends DataObject
 			$statement = $this->dbObject->prepare("UPDATE `welcomequeue` SET " . 
                 "status = :status, user = :user, request = :request" .
                 "WHERE id = :id LIMIT 1;");
-			$statement->bindParam(":id", $this->id);
-			$statement->bindParam(":status", $this->status);
-			$statement->bindParam(":request", $this->request);
-			$statement->bindParam(":user", $this->user);
+			$statement->bindValue(":id", $this->id);
+			$statement->bindValue(":status", $this->status);
+			$statement->bindValue(":request", $this->request);
+			$statement->bindValue(":user", $this->user);
 			if(!$statement->execute())
 			{
 				throw new Exception($statement->errorInfo());

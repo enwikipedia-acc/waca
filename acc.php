@@ -369,8 +369,8 @@ elseif ($action == "login")
     {
         $suspendAction = "Declined";
         $userid = $user->getId();
-        $suspendstatement->bindParam(":action", $suspendAction);
-        $suspendstatement->bindParam(":userid", $userid);
+        $suspendstatement->bindValue(":action", $suspendAction);
+        $suspendstatement->bindValue(":userid", $userid);
         $suspendstatement->execute();
         
         $suspendreason = $suspendstatement->fetchColumn();
@@ -388,8 +388,8 @@ elseif ($action == "login")
     {
         $suspendAction = "Suspended";
         $userid = $user->getId();
-        $suspendstatement->bindParam(":action", $suspendAction);
-        $suspendstatement->bindParam(":userid", $userid);
+        $suspendstatement->bindValue(":action", $suspendAction);
+        $suspendstatement->bindValue(":userid", $userid);
         $suspendstatement->execute();
         
         $suspendreason = $suspendstatement->fetchColumn();
@@ -863,9 +863,9 @@ elseif ($action == "sban")
         $logQuery = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:banid, :siuser, 'Banned', CURRENT_TIMESTAMP(), :reason);";
         $logStatement = $database->prepare($logQuery);
         $banid = $ban->getId();
-        $logStatement->bindParam(":banid", $banid);
-        $logStatement->bindParam(":siuser", $currentUsername);
-        $logStatement->bindParam(":reason", $_POST['banreason']);
+        $logStatement->bindValue(":banid", $banid);
+        $logStatement->bindValue(":siuser", $currentUsername);
+        $logStatement->bindValue(":reason", $_POST['banreason']);
         
         if(!$logStatement->execute())
         {
@@ -943,9 +943,9 @@ elseif ($action == "unban")
                 
                 $query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:id, :user, 'Unbanned', CURRENT_TIMESTAMP(), :reason);";
                 $statement = $database->prepare($query);
-                $statement->bindParam(":id", $banId);
-                $statement->bindParam(":user", $currentUser);
-                $statement->bindParam(":reason", $_POST['unbanreason']);
+                $statement->bindValue(":id", $banId);
+                $statement->bindValue(":user", $currentUser);
+                $statement->bindValue(":reason", $_POST['unbanreason']);
                 
                 if(!$statement->execute())
                 {
@@ -984,7 +984,7 @@ elseif ($action == "ban") {
 		if (isset($_GET['ip'])) {
 			$query = "SELECT pend_ip, pend_proxyip FROM acc_pend WHERE pend_id = :ip;";
             $statement = $database->prepare($query);
-            $statement->bindParam(":ip", $_GET['ip']);
+            $statement->bindValue(":ip", $_GET['ip']);
             $statement->execute();
 			$row = $statement->fetch(PDO::FETCH_ASSOC);
 			$target = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
@@ -993,7 +993,7 @@ elseif ($action == "ban") {
 		elseif (isset($_GET['email'])) {
             $query = "SELECT pend_email FROM acc_pend WHERE pend_id = :ip;";
             $statement = $database->prepare($query);
-            $statement->bindParam(":ip", $_GET['email']);
+            $statement->bindValue(":ip", $_GET['email']);
             $statement->execute();
 			$row = $statement->fetch(PDO::FETCH_ASSOC);
 			$target = $row['pend_email'];
@@ -1002,7 +1002,7 @@ elseif ($action == "ban") {
 		elseif (isset($_GET['name'])) {
             $query = "SELECT pend_name FROM acc_pend WHERE pend_id = :ip;";
             $statement = $database->prepare($query);
-            $statement->bindParam(":ip", $_GET['name']);
+            $statement->bindValue(":ip", $_GET['name']);
             $statement->execute();
 			$row = $statement->fetch(PDO::FETCH_ASSOC);
 			$target = $row['pend_name'];
@@ -1614,8 +1614,8 @@ elseif ($action == "breakreserve")
                     $request->save();
 
 				    $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :username, 'BreakReserve', CURRENT_TIMESTAMP());");
-                    $query->bindParam(":request", $request->getId());
-                    $query->bindParam(":username", User::getCurrent()->getUsername());
+                    $query->bindValue(":request", $request->getId());
+                    $query->bindValue(":username", User::getCurrent()->getUsername());
                     
                     if(!$query->execute())
                     {
@@ -1652,8 +1652,8 @@ elseif ($action == "breakreserve")
             $request->save();
 
             $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :username, 'Unreserved', CURRENT_TIMESTAMP());");
-            $query->bindParam(":request", $request->getId());
-            $query->bindParam(":username", User::getCurrent()->getUsername());
+            $query->bindValue(":request", $request->getId());
+            $query->bindValue(":username", User::getCurrent()->getUsername());
             
             if(!$query->execute()) 
             {
@@ -1863,13 +1863,13 @@ elseif ($action == "ec")
             $logStatement = $database->prepare($logQuery);
         
             $logAction = "EditComment-c";
-            $logStatement->bindParam(":user", User::getCurrent()->getUsername());
-            $logStatement->bindParam(":id", $comment->getId());
-            $logStatement->bindParam(":action", $logAction);
+            $logStatement->bindValue(":user", User::getCurrent()->getUsername());
+            $logStatement->bindValue(":id", $comment->getId());
+            $logStatement->bindValue(":action", "EditComment-c");
             $logStatement->execute();
         
-            $logAction = "EditComment-r";    
-            $logStatement->bindParam(":id", $comment->getRequest());
+            $logStatement->bindValue(":id", $comment->getRequest());
+            $logStatement->bindValue(":action", "EditComment-r");
             $logStatement->execute();
         
             $accbotSend->send("Comment " . $comment->getId() . " edited by " . User::getCurrent()->getUsername());
@@ -1926,14 +1926,14 @@ elseif ($action == "sendtouser")
         $action = "SendReserved";
         $logStatement->bindValue(":user", $curuser);
         $logStatement->bindValue(":request", $request);
-        $logStatement->bindParam(":action", $action);
+        $logStatement->bindValue(":action", "SendReserved");
         if(!$logStatement->execute())
         {
             throw new TransactionException("Error inserting send log entry.");   
         }
             
         $logStatement->bindValue(":user", $user->getUsername());
-        $action = "ReceiveReserved";
+        $logStatement->bindValue(":action", "ReceiveReserved");
         if(!$logStatement->execute())
         {
             throw new TransactionException("Error inserting receive log entry.");   

@@ -285,14 +285,14 @@ function defaultpage() {
     }
     
     $statement = $database->prepare($query);
-    $statement->bindParam(":lim", $requestLimitShowOnly, PDO::PARAM_INT);
+    $statement->bindValue(":lim", $requestLimitShowOnly, PDO::PARAM_INT);
     
     $totalRequestsStatement = $database->prepare($totalquery);
             
 	// list requests in each section
 	foreach($availableRequestStates as $type => $v) 
     {
-        $statement->bindParam(":type", $type);
+        $statement->bindValue(":type", $type);
         $statement->execute();
         
         $requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
@@ -301,7 +301,7 @@ function defaultpage() {
             $req->setDatabase($database);   
         }
 
-        $totalRequestsStatement->bindParam(":type", $type);
+        $totalRequestsStatement->bindValue(":type", $type);
         $totalRequestsStatement->execute();
         $totalRequests = $totalRequestsStatement->fetchColumn();
         $totalRequestsStatement->closeCursor();

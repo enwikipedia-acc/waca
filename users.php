@@ -315,16 +315,16 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
             
             $tgtmessage = "User " . $_GET['rename'] . " (" . $oldname . ")";
             $logpendupdate = $database->prepare("UPDATE acc_log SET log_pend = :newname WHERE log_pend = :tgtmessage AND log_action != 'Renamed'");
-            $logpendupdate->bindParam(":newname", $_POST['newname']);
-            $logpendupdate->bindParam(":tgtmessage", $tgtmessage);
+            $logpendupdate->bindValue(":newname", $_POST['newname']);
+            $logpendupdate->bindValue(":tgtmessage", $tgtmessage);
             if(!$logpendupdate->execute())
             {
                 throw new Exception("log_pend update failed.");   
             }
         
             $logupdate = $database->prepare("UPDATE acc_log SET log_user = :newname WHERE log_user = :oldname;");
-            $logupdate->bindParam(":newname", $_POST['newname']);
-            $logupdate->bindParam(":oldname", $oldname);
+            $logupdate->bindValue(":newname", $_POST['newname']);
+            $logupdate->bindValue(":oldname", $oldname);
             if(!$logupdate->execute())
             {
                 throw new Exception("log_user update failed.");   
@@ -335,9 +335,9 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
             $userid = $user->getId();
             $currentUser = User::getCurrent()->getUsername();
             $logentryquery = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:userid, :siuser, 'Renamed', CURRENT_TIMESTAMP(), :logentry);");
-            $logentryquery->bindParam(":logentry", $logentry);
-            $logentryquery->bindParam(":userid", $userid);
-            $logentryquery->bindParam(":siuser", $currentUser);
+            $logentryquery->bindValue(":logentry", $logentry);
+            $logentryquery->bindValue(":userid", $userid);
+            $logentryquery->bindValue(":siuser", $currentUser);
             if(!$logentryquery->execute())
             {
                 throw new Exception("logging failed.");   
@@ -404,8 +404,8 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {
        
             $siuser = User::getCurrent()->getUsername();
             $logquery = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:gid, :sid, 'Prefchange', CURRENT_TIMESTAMP(), '');");
-            $logquery->bindParam(":gid", $_GET['edituser']);
-            $logquery->bindParam(":sid", $siuser);
+            $logquery->bindValue(":gid", $_GET['edituser']);
+            $logquery->bindValue(":sid", $siuser);
             if(!$logquery->execute()) throw new Exception("Logging failed.");
         
 		    $accbotSend->send($siuser . " changed preferences for " . $user->getUsername());

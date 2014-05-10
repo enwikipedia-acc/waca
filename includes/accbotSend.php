@@ -30,8 +30,8 @@ class accbotSend {
 		    $db = gGetDb('notifications');
 		
 		    $q = $db->prepare( "INSERT INTO notification values (null,null,:notiftype,:message);" );
-		    $q->bindParam(":message", $msg);
-		    $q->bindParam(":notiftype", $ircBotNotificationType);
+		    $q->bindValue(":message", $msg);
+		    $q->bindValue(":notiftype", $ircBotNotificationType);
 		    $q->execute();
         }
         catch(Exception $ex)
