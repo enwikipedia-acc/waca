@@ -84,7 +84,7 @@ class InterfaceMessage extends DataObject
     
     public function getContentForDisplay()
     {
-        global $tsurl;
+        global $baseurl;
         
         $message = $this->content;
         
@@ -92,7 +92,7 @@ class InterfaceMessage extends DataObject
 			$message = str_replace('%VERSION%', Environment::getToolVersion(), $message);
 		}
 		
-		$message = str_replace('%TSURL%', $tsurl, $message);
+		$message = str_replace('%TSURL%', $baseurl, $message);
 		return $message;
     }
 

@@ -47,7 +47,7 @@ if(isset($_GET['usersearch']))
     
     if($user != false)
     {
-        header("Location: $tsurl/statistics.php?page=Users&user={$user->getId()}");
+        header("Location: $baseurl/statistics.php?page=Users&user={$user->getId()}");
         die();
     }
 }
@@ -108,7 +108,7 @@ if (isset ($_GET['approve']))
 
     $accbotSend->send($user->getUsername() . " approved by " . User::getCurrent()->getUsername());
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-	mail($user->getEmail(), "ACC Account Approved", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been approved by " . User::getCurrent()->getUsername() . ". To login please go to $tsurl/acc.php.\n- The English Wikipedia Account Creation Team", $headers);
+	mail($user->getEmail(), "ACC Account Approved", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been approved by " . User::getCurrent()->getUsername() . ". To login please go to $baseurl/acc.php.\n- The English Wikipedia Account Creation Team", $headers);
     BootstrapSkin::displayInternalFooter();
     die();
 }

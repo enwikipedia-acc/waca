@@ -31,7 +31,7 @@ ORDER BY `Version` ASC, "Type" ASC
 ;
 sql;
         
-		global $tsurl;
+		global $baseurl;
 		$qb = new QueryBrowser();
 		$qb->rowFetchMode = PDO::FETCH_NUM;
 		$r = $qb->executeQueryToTable($query); 

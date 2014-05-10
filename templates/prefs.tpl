@@ -45,7 +45,7 @@
 </fieldset>
 <fieldset>
 <legend>Change your password</legend>
-<form class="form-horizontal" method="post" action="{$tsurl}/acc.php?action=changepassword">
+<form class="form-horizontal" method="post" action="{$baseurl}/acc.php?action=changepassword">
 	<div class="control-group">
 		<label class="control-label" for="inputOldpassword">Your old password</label>
 		<div class="controls">
