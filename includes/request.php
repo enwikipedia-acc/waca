@@ -123,7 +123,7 @@ class accRequest {
 	*/
 	public function confirmEmail($id=null) {
 		// Get requered objects from index file.
-		global $tsSQL, $tsurl;
+		global $tsSQL, $baseurl;
 		
 		// Assigns the ID if the param ID is null.
 		if ($id==null) {
@@ -186,7 +186,7 @@ class accRequest {
 		}
 		
 		// Formulates the email message that should be send to the user.
-		$mailtxt = "Hello! You, or a user from " . trim($ip) . " has requested an account on the English Wikipedia ( https://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nOnce your click this link, your request will be reviewed, and you will shortly receive a separate email with more information.  Your password\nis not yet available.\n\nIf you did not make this request, please disregard this message.\n\n";
+		$mailtxt = "Hello! You, or a user from " . trim($ip) . " has requested an account on the English Wikipedia ( https://en.wikipedia.org ).\n\nPlease go to $baseurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nOnce your click this link, your request will be reviewed, and you will shortly receive a separate email with more information.  Your password\nis not yet available.\n\nIf you did not make this request, please disregard this message.\n\n";
 		
 		// Creates the needed headers.
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
@@ -214,7 +214,7 @@ class accRequest {
 	
 	public function checkConfirmEmail() {
 		// Get global variables from configuration file.
-		global $enableEmailConfirm, $tsurl;
+		global $enableEmailConfirm, $baseurl;
 		
 		// Get variables and objects from index file.
 		global $tsSQL, $messages, $action, $accbot, $skin;
@@ -264,7 +264,7 @@ class accRequest {
                     
 					$comments = html_entity_decode(stripslashes($row['pend_cmt']));
 					
-					$ircmessage = "\00314[[\00303acc:\00307$pid\00314]]\0034 N\00310 \00302$tsurl/acc.php?action=zoom&id=$pid\003 \0035*\003 \00303$user\003 \0035*\00310 $what\003";
+					$ircmessage = "\00314[[\00303acc:\00307$pid\00314]]\0034 N\00310 \00302$baseurl/acc.php?action=zoom&id=$pid\003 \0035*\003 \00303$user\003 \0035*\00310 $what\003";
 					
 					if(mb_strlen($comments) > 0)
 					{

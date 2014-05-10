@@ -74,10 +74,10 @@ class StatsMonthlyStats extends StatisticsPage
 				);
 			}
 			
-			global $tsurl;
+			global $baseurl;
 			foreach ($this->createClosuresGraph($queries) as $i) {
 			
-				$out.= '<img src="'.$tsurl.'/render/' . $i[0] . '" alt="'.$i[1].'"/>';
+				$out.= '<img src="'.$baseurl.'/render/' . $i[0] . '" alt="'.$i[1].'"/>';
 			}
 
 		}

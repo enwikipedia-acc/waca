@@ -12,9 +12,9 @@
     <td>{$i->getId()}</td>
     <th>{$i->getDescription()}</th>
     <td>
-      <a href="{$tsurl}/acc.php?action=messagemgmt&amp;edit={$i->getId()}" class="btn">
+      <a href="{$baseurl}/acc.php?action=messagemgmt&amp;edit={$i->getId()}" class="btn">
         <i class="icon icon-pencil"></i>&nbsp;Edit</a>
-      <a href="{$tsurl}/acc.php?action=messagemgmt&amp;view={$i->getId()}" class="btn">
+      <a href="{$baseurl}/acc.php?action=messagemgmt&amp;view={$i->getId()}" class="btn">
         <i class="icon icon-eye-open"></i>&nbsp;View</a>
     </td>
   </tr>

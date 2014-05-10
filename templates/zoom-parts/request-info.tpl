@@ -36,7 +36,7 @@
             <tr>
                 <th>Reveal link:</th>
                 <td>
-                <a href="{$tsurl}/acc.php?action=zoom&amp;id={$request->getId()}&amp;hash={$hash}">
+                <a href="{$baseurl}/acc.php?action=zoom&amp;id={$request->getId()}&amp;hash={$hash}">
                   Reveal link
                 </a></td>
                 <td></td>
@@ -96,7 +96,7 @@
     {if $request->getReserved() != 0}
       {$request->getReservedObject()->getUsername()}
       {if $request->getReserved() == $currentUser->getId()}
-        <a href="{$tsurl}/acc.php?action=zoom&amp;id={$request->getId()}&amp;hash={$hash}">(reveal to others)</a>
+        <a href="{$baseurl}/acc.php?action=zoom&amp;id={$request->getId()}&amp;hash={$hash}">(reveal to others)</a>
       {/if}
     {else}
       None

@@ -18,7 +18,7 @@
 require_once ('config.inc.php');
 
 if ( isset( $_SERVER['REMOTE_ADDR'] ) ) { // Invalid entry point.
-	header( "Location: $tsurl/" );
+	header( "Location: $baseurl/" );
 	die( );
 }
 
@@ -94,7 +94,7 @@ if (!$result)
 $top5a = array ();
 while ($topa = mysql_fetch_assoc($result))
 	array_push($top5a, $topa);
-$top5aout = "\nAll time top 5 account creators: (see $tsurl/statistics.php?page=TopCreators for more!)\n";
+$top5aout = "\nAll time top 5 account creators: (see $baseurl/statistics.php?page=TopCreators for more!)\n";
 $top5aout .= "-------------------------------------------------------------\n";
 foreach ($top5a as $top1a)
 	$top5aout .= $top1a['log_user'] . " - " . $top1a['COUNT(*)'] . "\n";
@@ -128,7 +128,7 @@ if (!$result)
 $top5 = array ();
 while ($top = mysql_fetch_assoc($result))
 	array_push($top5, $top);
-$top5out = "\nToday's top 5 account creators: (see $tsurl/statistics.php?page=TopCreators for more!)\n";
+$top5out = "\nToday's top 5 account creators: (see $baseurl/statistics.php?page=TopCreators for more!)\n";
 $top5out .= "-------------------------------------------------------------\n";
 foreach ($top5 as $top1)
 	$top5out .= $top1['log_user'] . " - " . $top1['count(*)'] . "\n";
@@ -194,7 +194,7 @@ $nunconfirmed = $unconfirmed['COUNT(*)'];
 
 /* Put mail together */
 $out = "\n";
-$out .= "Tool URL is $tsurl/acc.php\n\n";
+$out .= "Tool URL is $baseurl/acc.php\n\n";
 $out .= "Site Statistics as of " . date('l\, F jS Y\, \a\t h:i:s A') . "!\n";
 $out .= "-------------------------------------------------------------\n";
 $out .= $queueout;

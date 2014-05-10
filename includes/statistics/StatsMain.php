@@ -75,7 +75,7 @@ class StatsMain extends StatisticsPage
 	}
 	function smallStats()
 	{
-		global $tsSQL, $tsurl;
+		global $tsSQL, $baseurl;
 		$out= '<h4>Statistics</h4><table class="table table-striped table-condensed">';
 		$openq = "SELECT COUNT(*) FROM acc_pend WHERE pend_status = 'Open' AND pend_mailconfirm = 'Confirmed';";
 		$result = $tsSQL->query($openq);
@@ -138,7 +138,7 @@ class StatsMain extends StatisticsPage
 		if(!$mostCommentsResult) Die("ERROR: No result returned. (mc)");
 		$mostCommentsRow = mysql_fetch_assoc($mostCommentsResult);
 		$mostCommentsId = $mostCommentsRow['request'];
-		$out.="<tr><th>Request with most comments</th><td><a href=\"$tsurl/acc.php?action=zoom&amp;id=".$mostCommentsId."\">".$mostCommentsId."</a></td></tr>";
+		$out.="<tr><th>Request with most comments</th><td><a href=\"$baseurl/acc.php?action=zoom&amp;id=".$mostCommentsId."\">".$mostCommentsId."</a></td></tr>";
 	
 		$now = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 1));
 		

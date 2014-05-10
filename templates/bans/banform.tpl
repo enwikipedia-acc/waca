@@ -1,5 +1,5 @@
 ﻿<h2>Ban an IP, name, or email address</h2>
-<form class="form-horizontal" action="{$tsurl}/acc.php?action=sban" method="post">
+<form class="form-horizontal" action="{$baseurl}/acc.php?action=sban" method="post">
   <div class="control-group">
     <label class="control-label">Type:</label>
     <div class="controls">

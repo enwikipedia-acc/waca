@@ -50,7 +50,7 @@ $wikiurl = "en.wikipedia.org";
 $mediawikiWebServiceEndpoint = "https://en.wikipedia.org/w/api.php";
 
 // URL of the current copy of the tool.
-$tsurl = "https://accounts.wmflabs.org";
+$baseurl = "https://accounts.wmflabs.org";
 
 // Root pathname of the local installation of the tool.
 $filepath = "/projects/acc/www/"; 

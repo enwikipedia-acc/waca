@@ -1,6 +1,6 @@
 <!-- tpl:zoom-parts/request-log.tpl -->
 <h3>Log:</h3>
-<form action="{$tsurl}/acc.php?action=comment-quick&amp;hash={$hash}" method="post">
+<form action="{$baseurl}/acc.php?action=comment-quick&amp;hash={$hash}" method="post">
     <table class="table table-condensed table-striped">
         <tbody>
           {if $zoomlogs}
@@ -8,7 +8,7 @@
               <tr>
                 <td>
                   {if $zoomrow.userid != NULL}
-                    <a href='{$tsurl}/statistics.php?page=Users&amp;user={$zoomrow.userid}'>{$zoomrow.user}</a>
+                    <a href='{$baseurl}/statistics.php?page=Users&amp;user={$zoomrow.userid}'>{$zoomrow.user}</a>
                   {else}
                     {$zoomrow.user}
                   {/if}
@@ -22,7 +22,7 @@
                 <td>
                   <a rel="tooltip" href="#log{$smarty.foreach.logloop.index}" title="{$zoomrow.time}" data-toggle="tooltip" class="plainlinks" id="#log{$smarty.foreach.logloop.index}">{$zoomrow.time|relativedate}</a>
                 </td>
-                <td>{if $zoomrow.canedit == true}<a class="btn btn-small" href="{$tsurl}/acc.php?action=ec&amp;id={$zoomrow.id}"><i class="icon icon-pencil"></i></a>{/if}</td>
+                <td>{if $zoomrow.canedit == true}<a class="btn btn-small" href="{$baseurl}/acc.php?action=ec&amp;id={$zoomrow.id}"><i class="icon icon-pencil"></i></a>{/if}</td>
               </tr>
             {/foreach}
         {else}
@@ -36,7 +36,7 @@
             </tr>
         {/if}
         <tr>
-            <td><a href="{$tsurl}/statistics.php?page=Users&amp;user={$userid}">{$currentUser->getUsername()}</a></td>
+            <td><a href="{$baseurl}/statistics.php?page=Users&amp;user={$userid}">{$currentUser->getUsername()}</a></td>
             <td>
             <input type="hidden" name="id" value="{$request->getId()}"/>
             <input type="hidden" name="visibility" value="user" />
@@ -45,7 +45,7 @@
             <td colspan="2">
             <div class="btn-group">
                 <button class="btn btn-primary" type="submit">Save</button>
-                <a class="btn" href="{$tsurl}/acc.php?action=comment&amp;id={$request->getId()}">Advanced</a>
+                <a class="btn" href="{$baseurl}/acc.php?action=comment&amp;id={$request->getId()}">Advanced</a>
             </div>
             </td>
         </tr>

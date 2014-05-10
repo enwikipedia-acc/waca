@@ -19,7 +19,7 @@ class StatsInactiveUsers extends StatisticsPage
 {
 	function execute()
 	{
-		global $tsSQL, $tsurl, $session;
+		global $tsSQL, $baseurl, $session;
 		
 		if( isset( $_SESSION['user'] ) ) {
 			$sessionuser = $_SESSION['user'];
@@ -114,7 +114,7 @@ class StatsInactiveUsers extends StatisticsPage
 					if($allowSuspend)
 					{
 						$inactivesuspend = "Inactive for 45 or more days. Please contact a tool admin if you wish to come back.";
-						$out.= "<td><a class=\"btn btn-danger btn-small\" href=\"$tsurl/users.php?suspend=$userid&amp;preload=$inactivesuspend\"><i class=\"icon-ban-circle icon-white\"></i> Suspend!</a></td>";
+						$out.= "<td><a class=\"btn btn-danger btn-small\" href=\"$baseurl/users.php?suspend=$userid&amp;preload=$inactivesuspend\"><i class=\"icon-ban-circle icon-white\"></i> Suspend!</a></td>";
 					} else {
 						$out.= "<td>Immune from inactivity</td>";
 					}

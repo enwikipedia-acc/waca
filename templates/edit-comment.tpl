@@ -4,14 +4,14 @@
         <div class="control-group">
             <label class="control-label" for="request">Request</label>
             <div class="controls">
-              <span class="input-large uneditable-input"><a href="{$tsurl}/acc.php?action=zoom&id={$comment->getRequest()}">{$comment->getRequestObject()->getName()|escape}</a></span>
+              <span class="input-large uneditable-input"><a href="{$baseurl}/acc.php?action=zoom&id={$comment->getRequest()}">{$comment->getRequestObject()->getName()|escape}</a></span>
             </div>
         </div>
 
         <div class="control-group">
             <label class="control-label" for="user">User</label>
             <div class="controls">
-              <span class="input-large uneditable-input"><a href="{$tsurl}/statistics.php?page=Users&user={$comment->getUser()}">{$comment->getUserObject()->getUsername()|escape}</a></span>
+              <span class="input-large uneditable-input"><a href="{$baseurl}/statistics.php?page=Users&user={$comment->getUser()}">{$comment->getUserObject()->getUsername()|escape}</a></span>
             </div>
         </div>
 
