@@ -16,6 +16,7 @@ deploy/
 .settings/
 .buildpath
 .project
+.idea
 templates_c/*
 *.phpproj.user
 temp/*
