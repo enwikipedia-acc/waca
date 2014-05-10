@@ -139,8 +139,6 @@ if ($action == '') {
 
 elseif ($action == "sreg")
 {
-    $sregHttpClient = new http();
-    
     // TODO: check blocked
     // TODO: check age.
     
