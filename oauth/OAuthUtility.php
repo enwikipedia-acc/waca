@@ -91,9 +91,7 @@ class OAuthUtility
         
         if( !$data )
         {
-            
-            
-	        throw new Exception(var_dump(curl_getinfo($ch)) );//'Curl error: ' . curl_error( $ch ));
+	        throw new Exception('Curl error: ' . curl_error( $ch ));
         }
 
         $token = json_decode( $data );
@@ -165,7 +163,7 @@ class OAuthUtility
         curl_setopt( $ch, CURLOPT_HEADER, 0 );
         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
         curl_setopt( $ch, CURLOPT_USERAGENT, $toolUserAgent);
-            
+        
         $data = curl_exec( $ch );
         
         if( !$data )
