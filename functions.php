@@ -195,8 +195,6 @@ function isProtected($requestid)
 	} else {
 		return false;
 	}
-	
-	return false;
 }
 
 /**

@@ -31,7 +31,6 @@ require_once 'includes/database.php';
 require_once 'includes/skin.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
-require_once 'includes/http.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/JWT.php';
 require_once 'oauth/OAuthUtility.php';
@@ -139,8 +138,6 @@ if ($action == '') {
 
 elseif ($action == "sreg")
 {
-    $sregHttpClient = new http();
-    
     // TODO: check blocked
     // TODO: check age.
     
@@ -2143,4 +2140,3 @@ else {
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
-?>

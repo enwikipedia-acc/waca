@@ -29,4 +29,3 @@ if( $db->beginTransaction() ) {
 }
 
 echo "Deletion complete.";
-?>

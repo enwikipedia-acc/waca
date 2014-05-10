@@ -320,12 +320,10 @@ class accRequest {
 		// There is then a yes flag assigned to the flag array.
 		if ($ahbl == "127.0.0.2") {
 			$flags['transit'] = "yes";
-			"yes";
 			$flags['tor'] = "yes";
 		}
 		if ($ahbl == "127.0.0.3") {
 			$flags['exit'] = "yes";
-			"yes";
 			$flags['tor'] = "yes";
 		}
 		
@@ -657,4 +655,3 @@ class accRequest {
 		}
 	}
 }
-?>

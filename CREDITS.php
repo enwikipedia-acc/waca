@@ -37,4 +37,3 @@ require_once('config.inc.php');
 global $baseurl;
 header("Location: $baseurl/team.php");
 die();
-?>

@@ -196,9 +196,5 @@ class session {
 			Die("Error determining user from UID.");
 		$row = mysql_fetch_assoc($result);
 		return $row['user_name'];
-		$result = mysql_query($query);
-		if (!$result)
-			Die("Error determining user from UID.");
 	}
 }
-?>

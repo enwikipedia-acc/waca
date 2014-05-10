@@ -220,4 +220,3 @@ $message = $out;
 $headers = 'From: accstats@helpmebot.org.uk' . "\n";
 if( $argv[1] != "-testrun" )
 	mail($to, $subject, $message, $headers);
-?>

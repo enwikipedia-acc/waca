@@ -17,4 +17,3 @@ $smarty->assign("mediawikiScriptPath", $mediawikiScriptPath);
 $smarty->assign("toolversion", $toolVersion);
 $smarty->assign("currentUser", $currentUser);
 $smarty->debugging = $smartydebug;
-?>

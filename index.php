@@ -95,4 +95,3 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 }
 // Display the footer of the interface.
 $skin->displayPfooter();
-?>

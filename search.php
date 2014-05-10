@@ -168,4 +168,3 @@ else
 }
 
 BootstrapSkin::displayInternalFooter();
-?>
