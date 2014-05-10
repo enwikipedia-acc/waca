@@ -50,7 +50,7 @@ class OAuthUtility
         
         $token = json_decode( $data );
         
-        if(isset($token->error))
+        if(!isset($token) || isset($token->error))
         {
             throw new Exception("Error encountered while getting token.");
         }
