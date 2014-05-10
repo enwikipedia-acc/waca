@@ -76,10 +76,10 @@
 
     <div class="control-group">
       <label class="control-label">Rights:</label>
-      {foreach from=array('read', 'edit', 'createtalk', 'noratelimit', 'createaccount', 'apihighlimits', 'checkuser') item="right"}
+      {foreach from=array('useoauth', 'highvolume', 'createeditmovepage', 'createaccount') item="right"}
       <div class="controls">
-          <div class="alert{if in_array($right, $currentUser->getOAuthIdentity()->rights)} alert-success{else} alert-error{/if}">
-            {if in_array($right, $currentUser->getOAuthIdentity()->rights)}
+          <div class="alert{if in_array($right, $currentUser->getOAuthIdentity()->grants)} alert-success{else} alert-error{/if}">
+            {if in_array($right, $currentUser->getOAuthIdentity()->grants)}
               Found: {$right}
             {else}
               <strong>NOT Found: {$right}</strong>
