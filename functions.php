@@ -365,22 +365,6 @@ function array_search_recursive($needle, $haystack, $path=array())
 	return false;
 }
 
-function isOnWhitelist($user)
-{
-	$apir = file_get_contents("http://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=Wikipedia:Request_an_account/Whitelist&rvprop=content&format=php");
-	$apir = unserialize($apir);
-	$apir = $apir['query']['pages'];
-
-	foreach($apir as $r) {
-		$text = $r['revisions']['0']['*'];
-	}
-
-	if( preg_match( '/\*\[\[User:'.$user.'\]\]/', $text ) ) {
-		return true;
-	}
-	return false;
-}
-
 require_once('zoompage.php');
 
 function displayPreview($wikicode) {
