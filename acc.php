@@ -2007,21 +2007,23 @@ elseif ($action == "emailmgmt") {
 		global $createdid;
 		$gid = sanitize($_GET['edit']);
         
+        $database = gGetDb();
+        
 		if(isset($_POST['submit'])) 
         {
-			$emailTemplate = EmailTemplate::getById($gid, gGetDb());
+			$emailTemplate = EmailTemplate::getById($_GET['edit'], $database);
 			// Allow the user to see the edit form (with read only fields) but not POST anything.
 			if(!User::getCurrent()->isAdmin()) {
 				BootstrapSkin::displayAlertBox("I'm sorry, but you must be an administrator to access this page.");
 				BootstrapSkin::displayInternalFooter();
 				die();
 			}
-			$name = $_POST['name'];
-			$emailTemplate->setName($name);
+            
+			$emailTemplate->setName($_POST['name']);
 			$emailTemplate->setText($_POST['text']);
 			$emailTemplate->setJsquestion($_POST['jsquestion']);
 			
-			if ($gid == $createdid) { // Both checkboxes on the main created message should always be enabled.
+			if ($_GET['edit'] == $createdid) { // Both checkboxes on the main created message should always be enabled.
 				$emailTemplate->setOncreated(1);
 				$emailTemplate->setActive(1);
                 $emailTemplate->setPreloadOnly(0);
@@ -2034,28 +2036,33 @@ elseif ($action == "emailmgmt") {
 			$siuser = sanitize($_SESSION['user']);
 				
 			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
-			$nameCheck = EmailTemplate::getByName($name, gGetDb());
-			if ($nameCheck != false && $nameCheck->getId() != $gid) {
+			$nameCheck = EmailTemplate::getByName($_POST['name'], gGetDb());
+			if ($nameCheck != false && $nameCheck->getId() != $_GET['edit']) {
 				BootstrapSkin::displayAlertBox("That Email template name is already being used. Please choose another.");
 				BootstrapSkin::displayInternalFooter();
 				die();
 			}
 
-            // TODO: do this transactionally.
-			$emailTemplate->save();
+            $database->transactionally(function() use ($database, $emailTemplate) 
+            {
+                $emailTemplate->save();
+                
+                $logQuery = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:id, :username, 'EditedEmail', CURRENT_TIMESTAMP())");
+                $logQuery->execute(array(":id" => $_GET['edit'], ":username" => User::getCurrent()->getCurrent()));
             
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$siuser', 'EditedEmail', CURRENT_TIMESTAMP())";
-			$result = $tsSQL->query($query);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			header("Refresh:5;URL=$baseurl/acc.php?action=emailmgmt");
-			BootstrapSkin::displayAlertBox("Email template has been saved successfully. You will be returned to Email Management in 5 seconds.<br /><br />\n
-			Click <a href=\"".$baseurl."/acc.php?action=emailmgmt\">here</a> if you are not redirected.");
-			$accbotSend->send("Email $name ($gid) edited by $siuser");
+			
+			    if (! $logQuery->execute(array(":id" => $_GET['edit'], ":username" => User::getCurrent()->getCurrent())))
+			    {
+                    throw new TransactionException("Error saving log entry");
+                }
             
-			BootstrapSkin::displayInternalFooter();
+			    header("Location: $baseurl/acc.php?action=emailmgmt");
+			    SessionAlert::success("Email template has been saved successfully.");
+			    $accbotSend->send("Email {$_POST['name']} ({$_GET['edit']}) edited by " . User::getCurrent()->getUsername());
+            });
+            
 			die();
-		} // /if was submitted
+		}
         
 		$emailTemplate = EmailTemplate::getById($_GET['edit'], gGetDb());
 		$smarty->assign('id', $gid);
