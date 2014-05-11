@@ -138,6 +138,8 @@ if ($action == '') {
 
 elseif ($action == "sreg")
 {
+    global $useOauthSignup;
+        
     // TODO: check blocked
     // TODO: check age.
     
@@ -161,12 +163,15 @@ elseif ($action == "sreg")
 		die();
 	}
     
-	if(!((string)(int)$_REQUEST['conf_revid'] === (string)$_REQUEST['conf_revid']) || $_REQUEST['conf_revid'] == "")
+    if(!$useOauthSignup)
     {
-		BootstrapSkin::displayAlertBox("Please enter the revision id of your confirmation edit in the \"Confirmation diff\" field. The revid is the number after the &diff= part of the URL of a diff.", "alert-error", "Error!", false);
-        BootstrapSkin::displayInternalFooter();
-        die();		
-	}
+        if(!((string)(int)$_REQUEST['conf_revid'] === (string)$_REQUEST['conf_revid']) || $_REQUEST['conf_revid'] == "")
+        {
+            BootstrapSkin::displayAlertBox("Please enter the revision id of your confirmation edit in the \"Confirmation diff\" field. The revid is the number after the &diff= part of the URL of a diff.", "alert-error", "Error!", false);
+            BootstrapSkin::displayInternalFooter();
+            die();		
+        }
+    }
     
 	if (User::getByUsername($_REQUEST['name'], gGetDb()) != false) {
         BootstrapSkin::displayAlertBox("Sorry, but that username is in use. Please choose another.", "alert-error", "Error!", false);
@@ -186,7 +191,7 @@ elseif ($action == "sreg")
 
     $database = gGetDb();
     
-    $database->transactionally(function() use ($database)
+    $database->transactionally(function() use ($database, $useOauthSignup)
     {
     
         $newUser = new User();
@@ -195,8 +200,13 @@ elseif ($action == "sreg")
         $newUser->setUsername($_REQUEST['name']);
         $newUser->setPassword($_REQUEST['pass']);
         $newUser->setEmail($_REQUEST['email']);
-        $newUser->setOnWikiName($_REQUEST['wname']);
-        $newUser->setConfirmationDiff($_REQUEST['conf_revid']);
+        
+        if(!$useOauthSignup)
+        {
+            $newUser->setOnWikiName($_REQUEST['wname']);
+            $newUser->setConfirmationDiff($_REQUEST['conf_revid']);
+        }
+        
         $newUser->save();
     
         global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal, $useOauthSignup;
@@ -239,6 +249,8 @@ elseif ($action == "sreg")
 
 elseif ($action == "register") 
 {
+    global $useOauthSignup;
+    $smarty->assign("useOauthSignup", $useOauthSignup);
     $smarty->display("register.tpl");
 	BootstrapSkin::displayInternalFooter();
 	die();

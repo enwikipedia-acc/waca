@@ -5,11 +5,15 @@
 <fieldset>
   <legend>General settings</legend>
   <div class="control-group">
+    {if !$currentUser->isOAuthLinked() }
     <label class="control-label" for="inputSig">Your signature (wikicode)</label>
     <div class="controls">
       <input class="input-xxlarge" type="text" id="inputSig" name="sig" value="{$currentUser->getWelcomeSig()|escape}" />
-        <span class="help-block">This would be the same as ~~~ on-wiki. No date, please.</span>
-      </div>
+      <span class="help-block">This would be the same as ~~~ on-wiki. No date, please.</span>
+    </div>
+    {else}
+    <input type="hidden" name="sig" value=""/>
+    {/if}
   </div>
 	<div class="control-group">
 		<label class="control-label" for="inputEmail">Your Email address</label>
