@@ -11,7 +11,7 @@
     <div class="accordion-group">
       <div class="accordion-heading">
         <a class="accordion-toggle" data-toggle="collapse" data-parent="#requestListAccordion" href="#collapse{$section.api}">
-          {$header} <span class="badge badge-info">{$section.total}</span>
+          {$header} <span class="badge badge-info">{if $section.total > 0}{$section.total}{/if}</span>
         </a>
       </div>
       <div id="collapse{$section.api}" class="accordion-body collapse out">
