@@ -238,7 +238,7 @@ function defaultpage() {
         $totalRequests = $totalRequestsStatement->fetchColumn();
         $totalRequestsStatement->closeCursor();
         
-        $requestSectionData[$v['header']] = array("requests" => $requests, "total" => $totalRequests);
+        $requestSectionData[$v['header']] = array("requests" => $requests, "total" => $totalRequests, "api" => $v['api']);
     }
     
     global $smarty;

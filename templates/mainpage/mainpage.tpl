@@ -5,18 +5,29 @@
 </div>
 
 <div class="row-fluid">
-  {foreach from=$requestSectionData key="header" item="section"}
-    <div>
-      <h2>{$header} <small>({$section.total} request{if $section.total != 1}s{/if})</small></h2>
-      {include file="mainpage/requestlist.tpl" requests=$section showStatus=false}
+
+  <div class="accordion" id="requestListAccordion">
+    {foreach from=$requestSectionData key="header" item="section"}
+    <div class="accordion-group">
+      <div class="accordion-heading">
+        <a class="accordion-toggle" data-toggle="collapse" data-parent="#requestListAccordion" href="#collapse{$section.api}">
+          {$header} <span class="badge badge-info">{$section.total}</span>
+        </a>
+      </div>
+      <div id="collapse{$section.api}" class="accordion-body collapse out">
+        <div class="accordion-inner">
+          {include file="mainpage/requestlist.tpl" requests=$section showStatus=false}
+        </div>
+      </div>
     </div>
-  {/foreach}
+    {/foreach}
+  </div>
 </div>
 
 <hr />
 
 <div class="row-fluid">
-  <h2>Last 5 Closed requests</h2>
+  <h3>Last 5 Closed requests</h3>
   <table class="table table-condensed table-striped" style="width:auto;">
     <thead>
       <th>ID</th>
