@@ -68,15 +68,8 @@ class authutils {
         return md5( $password );
     }
     
-    private static function encryptVersion1( $password, $salt ) {
-        return ':1:' . $salt . ':' . md5( $salt . '-' . md5( $password ) );
-    }
-    
     private static function encryptVersion2( $password, $salt ) {
         return ':2:x:' . password_hash( $password, PASSWORD_BCRYPT );
     }
-    
-    private static function verifyVersion2( $password, $hash ) {
-        return password_verify( $password, $hash );
-    }
+
 }
