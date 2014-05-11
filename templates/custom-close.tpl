@@ -2,7 +2,13 @@
   <fieldset>
     <legend>Custom close{if $preloadtitle != ""} - {$preloadtitle|escape}{/if}</legend>
 
-
+    <div class="control-group">
+      <label for="msgbody" class="control-label">Request information</label>
+      <div class="controls">
+        {include file="zoom-parts/request-info.tpl" hash="x" showinfo=true showLink=false}
+      </div>
+    </div>
+    
     <div class="control-group">
       <label for="msgbody" class="control-label">Message to be sent to the user:</label>
       <div class="controls">

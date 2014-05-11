@@ -2,7 +2,7 @@
 <div class="row-fluid">
   <!-- request details -->
   <div class="span6 container-fluid">
-    {include file="zoom-parts/request-info.tpl"}
+    {include file="zoom-parts/request-info.tpl" showLink="true"}
     <hr />
     {include file="zoom-parts/request-actions.tpl"}
   </div>

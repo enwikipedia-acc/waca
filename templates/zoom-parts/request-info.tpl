@@ -95,7 +95,7 @@
   <div class="span8">
     {if $request->getReserved() != 0}
       {$request->getReservedObject()->getUsername()}
-      {if $request->getReserved() == $currentUser->getId()}
+      {if $request->getReserved() == $currentUser->getId() && $showLink}
         <a href="{$baseurl}/acc.php?action=zoom&amp;id={$request->getId()}&amp;hash={$hash}">(reveal to others)</a>
       {/if}
     {else}

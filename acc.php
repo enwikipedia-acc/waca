@@ -1292,6 +1292,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
             $smarty->assign("forcreated", $forcreated);
             $smarty->assign("querystring", $querystring);
             $smarty->assign("request", $request);
+            $smarty->assign("iplocation", $locationProvider->getIpLocation($request->getTrustedIp()));
             $smarty->display("custom-close.tpl");
 			BootstrapSkin::displayInternalFooter();
 			die();
