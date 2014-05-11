@@ -102,14 +102,16 @@ class StatsTopCreators extends StatisticsPage
 	
 }
 function statsTopCreatorsRowCallback($row, $rowno) 
-{   $out = "";
-	
-	// $out = '<!-- vardump: $row:' . print_r($row,true) . "-->";
-
-	$out .= "<tr";
+{   	
+	$out = "<tr";
+    if($row['log_user'] == User::getCurrent()->getUsername())
+    {
+        $out .= ' class="info"';   
+    }
+    
 	$out .= '>';
 	
-	$out .= '<th>'.$rowno.'</th>';
+	$out .= '<td>'.$rowno.'</td>';
 	$out .= '<td>'.$row['COUNT(*)'].'</td>';
 	
 	global $baseurl;
