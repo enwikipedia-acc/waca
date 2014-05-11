@@ -29,62 +29,6 @@ require_once 'includes/authutils.php';
 // Initialize the class objects.
 $session = new session();
 
-function formatForBot( $data ) {
-	global $ircBotCommunicationKey;
-	$pData[0] = encryptMessage( $data, $ircBotCommunicationKey );
-	$pData[1] = $data;
-	$sData = serialize( $pData );
-	return $sData;
-}
-
-function encryptMessage( $text, $key ) {
-	$keylen = strlen($key);
-
-	if( $keylen % 2 == 0 ) {
-		$power = ord( $key[$keylen / 2] ) + $keylen;
-	}
-	else {
-		$power = ord( $key[($keylen / 2) + 0.5] ) + $keylen;
-	}
-
-	$textlen = strlen( $text );
-	while( $textlen < 64 ) {
-		$text .= $text;
-		$textlen = strlen( $text );
-	}
-
-	$newtext = null;
-	for( $i = 0; $i < 64; $i++ ) {
-		$pow = pow( ord( $text[$i] ), $power );
-		$pow = str_replace( array( '+', '.', 'E' ), '', $pow );
-		$toadd = dechex( substr($pow, -2) );
-		while( strlen( $toadd ) < 2 ) {
-			$toadd .= 'f';
-		}
-		if( strlen( $toadd ) > 2 ) $toadd = substr($toadd, -2);
-		$newtext .= $toadd;
-	}
-
-	return $newtext;
-}
-
-function _utf8_decode($string) {
-	/*
-	 * Improved utd8_decode() function
-	 */
-	$tmp = $string;
-	$count = 0;
-	while (mb_detect_encoding($tmp) == "UTF-8") {
-		$tmp = utf8_decode($tmp);
-		$count++;
-	}
-
-	for ($i = 0; $i < $count -1; $i++) {
-		$string = utf8_decode($string);
-	}
-	return $string;
-}
-
 function sanitize($what) {
 	/*
 	 * Shortcut to mysql_real_escape_string
@@ -254,18 +198,6 @@ function showlogin($action=null, $params=null)
     $smarty->display("login.tpl");
 }
 
-function getdevs() {
-	global $regdevlist;
-	$newdevlist = array_reverse($regdevlist);
-	$temp = $newdevlist['0'];
-	unset ($newdevlist['0']);
-	foreach ($newdevlist as $dev) {
-		$devs .= "<a href=\"http://en.wikipedia.org/wiki/User talk:" . $dev['1'] . "\">" . $dev['0'] . "</a>, ";
-	}
-	$devs .= "<a href=\"http://en.wikipedia.org/wiki/User talk:" . $temp['1'] . "\">" . $temp['0'] . "</a>";
-	return $devs;
-}
-
 function defaultpage() {
 	global $availableRequestStates, $defaultRequestStateKey, $requestLimitShowOnly, $enableEmailConfirm;
     
@@ -323,17 +255,6 @@ function defaultpage() {
     $html = $smarty->fetch("mainpage/mainpage.tpl");
     
 	return $html;
-}
-
-/**
- * If the Wiki/antispoof database is marked as disabled, then die.
- */
-function ifWikiDbDisabledDie() {
-	global $dontUseWikiDb;
-	if( $dontUseWikiDb ){
-		echo "Apologies, this command requires access to the wiki database, which is currently unavailable.";
-		die();
-	}
 }
 
 function sqlerror ($sql_error, $generic_error="Query failed.") {
@@ -408,71 +329,6 @@ function doSort(array $items)
 	
 	// return the array back to the caller
 	return $items;
-}
-
-function showIPlinks($ip, $wikipediaurl, $metaurl, $rqid, &$session) {
-	global $baseurl;
-	
-	$out = '<a class="request-src" href="'.$wikipediaurl.'wiki/User_talk:';
-	$out .= $ip . '" target="_blank">Talk page</a> ';
-
-	// IP contribs
-	$out .= '| ';
-	$out .= '<a class="request-src" href="'.$wikipediaurl.'wiki/Special:Contributions/';
-	$out .= $ip . '" target="_blank">Local Contributions</a> ';
-	
-	
-	
-	//X's edit counter
-	$out .= '| ';
-	$out .= '<a class="request-src" href="'.$baseurl . "/redir.php?tool=tparis-pcount&data=" . $ip. '"';
-	$out .= ' target="_blank">Deleted Edits</a> ';
-
-	// IP global contribs
-	$out .= '| ';
-	$out .= '<a class="request-src" href="'. $baseurl . "/redir.php?tool=luxo-contributions&data=" . $ip. '" target="_blank">Global Contributions</a> ';
-	
-	// IP blocks
-	$out .= '| ';
-	$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special:Log&amp;type=block&amp;page=User:';
-	$out .= $ip . '" target="_blank">Local Block Log</a> ';
-
-	// rangeblocks
-	$out .= '| ';
-	$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3ABlockList&amp;ip=';
-	$out .= $ip . '" target="_blank">Active Local Blocks</a> ';
-
-	// Global blocks
-	$out .= '| ';
-	$out .= '<a class="request-src" href="'.$metaurl.'w/index.php?title=Special:Log&amp;type=gblblock&amp;page=User:';
-	$out .= $ip . '" target="_blank">Global Block Log</a> ';
-
-	// Global range blocks/Locally disabled Global Blocks
-	$out .= '| ';
-	$out .= '<a class="request-src" href="'.$wikipediaurl.'w/index.php?title=Special%3AGlobalBlockList&amp;ip=';
-	$out .= $ip . '" target="_blank">Active Global Blocks</a> ';
-
-	// IP whois
-	$out .= '| ';
-	$out .= '<a class="request-src" href="' . $baseurl . "/redir.php?tool=oq-whois&data=" . $ip . '" target="_blank">Whois</a> ';
-
-	// IP geolocate
-	$out .= '| ';
-	$out .= '<a class="request-src" href="' . $baseurl . "/redir.php?tool=ipinfodb-locator&data=" . $ip . '" target="_blank">Geolocate</a> ';
-
-	// Abuse Filter
-	$out .= '| ';
-	$out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:AbuseLog&amp;wpSearchUser=' . $ip . '" target="_blank">Abuse Filter Log</a> ';
-	 
-	if( $session->isCheckuser($_SESSION['user']) ) {
-	// CheckUser links
-	 $out .= '| ';
-	 $out .= '<a class="request-src" href="' . $wikipediaurl . 'w/index.php?title=Special:CheckUser&ip=' . $ip . '&reason=%5B%5BWP:ACC%5D%5D%20request%20%23' . $rqid . '" target="_blank">CheckUser</a> ';
-	}
-	 
-
-	return $out;
-	
 }
 
 $trustedipcache = array();
