@@ -420,25 +420,6 @@ class accRequest {
 		$result = $tsSQL->query($query);
 	}
 	
-	private function isOnWhitelist($user) {
-		// Reads the entire Whitelist file into a string.
-		$apir = file_get_contents("https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=Wikipedia:Request_an_account/Whitelist&rvprop=content&format=php");
-		
-		// Takes the variable and converts it back into a PHP value.
-		$apir = unserialize($apir);
-		
-		$apir = $apir['query']['pages'];
-	
-		foreach($apir as $r) {
-			$text = $r['revisions']['0']['*'];
-		}
-	
-		if( preg_match( '/\*\[\[User:'.preg_quote($user,'/').'\]\]/', $text ) ) {
-			return true;
-		}
-		return false;
-	}
-	
 	public function blockedOnEn() {
 		// not working, and not needed. Also causing problems with other things
 		// TODO: remove all calls to this function.
