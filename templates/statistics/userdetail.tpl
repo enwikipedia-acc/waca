@@ -5,7 +5,7 @@
 			<li>User ID: {$user->getId()}</li>
 			<li>User Level: {$user->getStatus()}</li>
 			<li>User On-wiki name: {$user->getOnWikiName()|escape} {if $user->isOAuthLinked()}<span class="label {if $user->getOnWikiName() == "##OAUTH##"}label-important{else}label-success{/if}">OAuth</span>{/if}</li>
-			{if $user->getConfirmationDiff() != 0}<li><a href="http://$wikiurl/w/index.php?diff={$user->getConfirmationDiff()}">Confirmation diff</a></li>{/if}
+			{if $user->getConfirmationDiff() != 0}<li><a href="{$mediawikiScriptPath}?diff={$user->getConfirmationDiff()}">Confirmation diff</a></li>{/if}
 			<li>{if $user->getLastActive() == "0000-00-00 00:00:00"}User has never used the interface{else}User last active: {$user->getLastActive()}{/if}</li>
 		</ul>
 
