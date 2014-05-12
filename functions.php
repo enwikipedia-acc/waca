@@ -100,22 +100,19 @@ function sendemail($messageno, $target, $id) {
 	global $toolserver_database;
 	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
 	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
-	$template = EmailTemplate::getById($messageno, gGetDb());
+	
+    $template = EmailTemplate::getById($messageno, gGetDb());
 	$mailtxt = $template->getText();
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-	
+	    
 	// Get the closing user's Email signature and append it to the Email.
-	$sid = sanitize($_SESSION['user']);
-	$query = "SELECT user_emailsig FROM acc_user WHERE user_name = '$sid'";
-	$result = mysql_query($query);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-	if($row['user_emailsig'] != "") {
-		$emailsig = html_entity_decode($row['user_emailsig'], ENT_QUOTES, "UTF-8");
+	if(User::getCurrent()->getEmailSig() != "") 
+    {
+		$emailsig = html_entity_decode(User::getCurrent()->getEmailSig(), ENT_QUOTES, "UTF-8");
 		mail($target, "RE: [ACC #$id] English Wikipedia Account Request", $mailtxt . "\n\n" . $emailsig, $headers);
 	}
-	else {
+	else 
+    {
 		mail($target, "RE: [ACC #$id] English Wikipedia Account Request", $mailtxt, $headers);
 	}
 }
