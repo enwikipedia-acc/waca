@@ -134,6 +134,25 @@ class User extends DataObject
         return $resultObject;
     }
     
+    public static function getAllInactive(PdoDatabase $database)
+    {   
+        $date = new DateTime();
+		$date->modify("-45 days");
+        
+        $statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE lastactive < :lastactivelimit and status != 'Suspended' and status != 'Declined' and status != 'New' ORDER BY lastactive     ASC;");
+        $statement->execute( array( ":lastactivelimit" => $date->format("Y-m-d H:i:s") ) );
+        
+        $resultObject = $statement->fetchAll( PDO::FETCH_CLASS, get_called_class() );
+        
+        foreach ($resultObject as $u)
+        {
+            $u->setDatabase($database);
+            $u->isNew = false;
+        }
+        
+        return $resultObject;
+    }
+    
     public function save()
     {
 		if($this->isNew)
@@ -596,5 +615,16 @@ class User extends DataObject
         }
         
         return $this->oauthaccesstoken !== null;
+    }
+
+    public function getApprovalDate()
+    {
+        $query = $this->dbObject->prepare("SELECT log_time FROM acc_log WHERE log_pend = :userid AND log_action = 'Approved' ORDER BY log_id DESC LIMIT 1;");
+        $query->execute( array( ":userid" => $this->id ) );
+        
+        $data = DateTime::createFromFormat( "Y-m-d H:i:s", $query->fetchColumn() );
+        $query->closeCursor();
+        
+        return $data;
     }
 }
