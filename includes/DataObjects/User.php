@@ -250,6 +250,14 @@ class User extends DataObject
         return $result;
     }
     
+    public function touchLastLogin()
+    {
+        $this
+            ->dbObject
+            ->prepare("UPDATE user SET lastactive = CURRENT_TIMESTAMP() WHERE id = :id;")
+            ->execute(array(":id" => $this->id));
+    }
+    
     #region properties
     
     public function getUsername(){
