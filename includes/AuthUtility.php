@@ -14,7 +14,7 @@ if (!defined("ACC")) {
 	die();
 } // Invalid entry point
 
-class authutils {
+class AuthUtility {
     
     /**
      * Test the specified data against the specified credentials

@@ -24,7 +24,6 @@ require_once 'queryBrowser.php';
 require_once 'LogClass.php';
 require_once 'includes/session.php';
 require_once 'includes/request.php';
-require_once 'includes/authutils.php';
 
 // Initialize the class objects.
 $session = new session();

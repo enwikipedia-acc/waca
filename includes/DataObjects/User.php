@@ -216,14 +216,14 @@ class User extends DataObject
 
     public function authenticate($password)
     {
-        $result = authutils::testCredentials($password, $this->password);
+        $result = AuthUtility::testCredentials($password, $this->password);
         
         if($result == true)
         {
             // password version is out of date, update it.
-            if(!authutils::isCredentialVersionLatest($this->password))
+            if(!AuthUtility::isCredentialVersionLatest($this->password))
             {
-                $this->password = authutils::encryptPassword($password);
+                $this->password = AuthUtility::encryptPassword($password);
                 $this->save();
             }
         }
@@ -251,7 +251,7 @@ class User extends DataObject
     }
 
     public function setPassword($password){
-        $this->password = authutils::encryptPassword($password);
+        $this->password = AuthUtility::encryptPassword($password);
     }
 
     public function getStatus(){
