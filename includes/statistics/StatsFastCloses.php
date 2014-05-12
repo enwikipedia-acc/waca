@@ -23,7 +23,7 @@ class StatsFastCloses extends StatisticsPage
 SELECT
   Closed.log_pend AS Request,
   Closed.log_user AS User,
-  u.user_id AS UserID,
+  u.id AS UserID,
   TIMEDIFF(Closed.log_time, Reserved.log_time) AS "Time Taken",
   mail_desc AS "Close Type",
   Closed.log_time AS "Date"
@@ -32,8 +32,8 @@ INNER JOIN acc_log Reserved
   ON Closed.log_pend = Reserved.log_pend
 INNER JOIN closes c
   ON c.`closes` = Closed.log_action
-LEFT JOIN acc_user u
-  ON Closed.log_user = u.user_name
+LEFT JOIN user u
+  ON Closed.log_user = u.username
 WHERE
   Closed.log_action LIKE "Closed%"
   AND
@@ -56,8 +56,7 @@ QUERY;
 		$qb->overrideTableTitles = 
 			array( "Request", "User", "Time Taken", "Close Type", "Date" );
 		$qb->rowFetchMode = PDO::FETCH_NUM;
-		$r = $qb->executeQueryToTable($query); 
-		echo mysql_error();
+		$r = $qb->executeQueryToTable($query);
 
 		return $r;
 	}
