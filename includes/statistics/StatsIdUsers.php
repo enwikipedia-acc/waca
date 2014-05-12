@@ -39,14 +39,13 @@ class StatsIdUsers extends StatisticsPage
 	
 	function getUserList()
 	{
-		$query = "select user_name, user_level, user_checkuser from acc_user where user_identified = 1 order by user_name;";
+		$query = "select username, status, checkuser from user where identified = 1 order by user_name;";
 	
 		global $baseurl;
 		$qb = new QueryBrowser();
 		$qb->rowFetchMode = PDO::FETCH_NUM;
         $qb->overrideTableTitles = array("User name", "Access level", "Checkuser?");    
-		$r = $qb->executeQueryToTable($query); 
-		echo mysql_error();
+		$r = $qb->executeQueryToTable($query);
 
 		return $r;
 	}
