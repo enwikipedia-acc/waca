@@ -8,6 +8,7 @@ git:
 
 script:
   - bash .travis.phplint.sh
+  - phpunit
 
 notifications:
   irc:
