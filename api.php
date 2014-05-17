@@ -88,11 +88,13 @@ function actionStatus()
 	$docStatus->setAttribute("useradmin", $sus['count']);
 	
 	$level = "User";
+	$query->bindParam(":ulevel", $level);
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 	$docStatus->setAttribute("user", $sus['count']);
 	
 	$level = "New";
+	$query->bindParam(":ulevel", $level);
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 	$docStatus->setAttribute("usernew", $sus['count']);
