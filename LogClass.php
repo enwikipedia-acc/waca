@@ -192,7 +192,7 @@ class LogPage
 	
 	public function showListLog($offset, $limit)
 	{
-		global $tsSQLlink, $session, $tsurl;
+		global $tsSQLlink, $session, $baseurl;
 		$out="";
 		
 		$result = $this->getLog($offset, $limit);
@@ -211,46 +211,46 @@ class LogPage
 			}
 			
 			if (substr($rla,0,strlen("Deferred")) == "Deferred") {
-				$logList .="<li>$rlu $rla, <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				$logList .="<li>$rlu $rla, <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 			if ($row['log_action'] == "Closed") {
-				$logList .="<li>$rlu $rla, <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+				$logList .="<li>$rlu $rla, <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
 			if (substr($row['log_action'],0,7) == "Closed ") {
 				if ($row['log_action'] == "Closed 0") {
-					$logList .="<li>$rlu Dropped, <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+					$logList .="<li>$rlu Dropped, <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 				} 
 				else if ($row['log_action'] == "Closed custom") {
-					$logList .="<li>$rlu Closed (Custom), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+					$logList .="<li>$rlu Closed (Custom), <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 				}
 		   		else if ($row['log_action'] == "Closed custom-y") {
-					$logList .="<li>$rlu Closed (Custom, Created), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+					$logList .="<li>$rlu Closed (Custom, Created), <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 				}
 				else if ($row['log_action'] == "Closed custom-n") {
-					$logList .="<li>$rlu Closed (Custom, Not Created), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+					$logList .="<li>$rlu Closed (Custom, Not Created), <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 				}
 				else {
 					$eid = mysql_real_escape_string(substr($row['log_action'],7));
                     $template = EmailTemplate::getById($eid, gGetDb());
 					$ename = htmlentities($template->getName(),ENT_QUOTES,'UTF-8');
-					$logList .="<li>$rlu Closed ($ename), <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
+					$logList .="<li>$rlu Closed ($ename), <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 				}
 			}
 			if ($rla == 'Email Confirmed') {
 				$logList .="<li>$rlu email-confirmed request $rlp ($rlt)</li>\n";
 			}
 			if ($rla == "CreatedTemplate") {
-				$logList .="<li>$rlu created <a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$rlp\">template $rlp</a>, at $rlt.</li>\n";
+				$logList .="<li>$rlu created <a href=\"$baseurl/acc.php?action=templatemgmt&amp;view=$rlp\">template $rlp</a>, at $rlt.</li>\n";
 			}
 			if ($rla == "DeletedTemplate") {
 				$logList .="<li>$rlu deleted template $rlp, at $rlt.</li>\n";
 			}
 			if ($rla == "EditedTemplate") {
-				$logList .="<li>$rlu edited <a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$rlp\">template $rlp</a>, at $rlt.</li>\n";
+				$logList .="<li>$rlu edited <a href=\"$baseurl/acc.php?action=templatemgmt&amp;view=$rlp\">template $rlp</a>, at $rlt.</li>\n";
 			}
 			if ($rla == "Edited") {
                 $message = InterfaceMessage::getById($rlp, gGetDb());
-				$logList .="<li>$rlu Edited message <a href=\"$tsurl/acc.php?action=messagemgmt&amp;view=$rlp\">$rlp (" . $message->getDescription() . ")</a>, at $rlt.</li>\n";
+				$logList .="<li>$rlu Edited message <a href=\"$baseurl/acc.php?action=messagemgmt&amp;view=$rlp\">$rlp (" . $message->getDescription() . ")</a>, at $rlt.</li>\n";
 			}
 			if ($rla == "Promoted" || $rla == "Demoted" || $rla == "Approved" || $rla == "Suspended" || $rla == "Declined") {
 				$uid = $rlp;
@@ -278,19 +278,19 @@ class LogPage
 				$logList .="<li>$rlu changed user preferences for $rlp (" . $row2['user_name'] . ") at $rlt</li>\n";
 			}
 			if ($rla == "Banned") {
-				$query2 = 'SELECT ban_target, ban_duration FROM `ban` WHERE `ban_id` = \'' .$rlp. '\'; '; 
+				$query2 = 'SELECT target, duration FROM `ban` WHERE `id` = \'' .$rlp. '\'; '; 
 				$result2 = mysql_query($query2);
 				if (!$result2)
 					Die("Query failed: $query2 ERROR: " . mysql_error());
 				$row2 = mysql_fetch_assoc($result2);
-				if ($row2['ban_duration'] == "-1") {
+				if ($row2['duration'] == "-1") {
 					$until = "indefinitely";
 				}
 				else {
-					$durationtime = date("F j, Y, g:i a", $row2['ban_duration']);
+					$durationtime = date("F j, Y, g:i a", $row2['duration']);
 				    $until = "until $durationtime";
 				}
-				$logList .="<li>$rlu banned ". $row2['ban_target'] ." $until at $rlt ($rlc)</li>";
+				$logList .="<li>$rlu banned ". $row2['target'] ." $until at $rlt ($rlc)</li>";
 			}
 			if ($rla == "Unbanned") {
                 $ban = Ban::getById($rlp, gGetDb());
@@ -301,19 +301,19 @@ class LogPage
 				$logList .="<li>$rlu unbanned ban ID $rlp". $bantarget ."at $rlt ($rlc)</li>";
 			}
 			if($rla == "Reserved") {
-				$logList .= "<li>$rlu reserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
+				$logList .= "<li>$rlu reserved request <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
 			}
 			if($rla == "SendReserved") {
-				$logList .= "<li>$rlu sent reserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
+				$logList .= "<li>$rlu sent reserved request <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
 			}			
             if($rla == "ReceiveReserved") {
-				$logList .= "<li>$rlu received a reserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
+				$logList .= "<li>$rlu received a reserved request <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
 			}
 			if($rla == "Unreserved") {
-				$logList .= "<li>$rlu unreserved request <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
+				$logList .= "<li>$rlu unreserved request <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt</li>";
 			}
 			if($rla == "BreakReserve") {
-				$logList .= "<li>$rlu broke the reservation on <a href=\"$tsurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a>, at $rlt</li>";
+				$logList .= "<li>$rlu broke the reservation on <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a>, at $rlt</li>";
 			}			
 			if($rla == "EditComment-c") {
 				$query4 = "SELECT request FROM comment WHERE id = $rlp;";
@@ -321,15 +321,15 @@ class LogPage
 				if (!$result4)
 					Die("Query failed: $query4 ERROR: " . mysql_error());
 				$row4 = mysql_fetch_assoc($result4);
-				$logList .= "<li>$rlu edited <a href=\"$tsurl/acc.php?action=zoom&amp;id=" . $row4['request'] ."\">comment $rlp</a>, at $rlt</li>";
+				$logList .= "<li>$rlu edited <a href=\"$baseurl/acc.php?action=zoom&amp;id=" . $row4['request'] ."\">comment $rlp</a>, at $rlt</li>";
 			}
 			if ($rla == "CreatedEmail") {
                 $template = EmailTemplate::getById($rlp, gGetDb());
-				$logList .="<li>$rlu created email <a href=\"$tsurl/acc.php?action=emailmgmt&amp;edit=$rlp\">$rlp (" . $template->getName() . ")</a>, at $rlt.</li>\n";
+				$logList .="<li>$rlu created email <a href=\"$baseurl/acc.php?action=emailmgmt&amp;edit=$rlp\">$rlp (" . $template->getName() . ")</a>, at $rlt.</li>\n";
 			}
 			if ($rla == "EditedEmail") {
                 $template = EmailTemplate::getById($rlp, gGetDb());
-				$logList .="<li>$rlu edited email <a href=\"$tsurl/acc.php?action=emailmgmt&amp;edit=$rlp\">$rlp (" . $template->getName() . ")</a>, at $rlt.</li>\n";
+				$logList .="<li>$rlu edited email <a href=\"$baseurl/acc.php?action=emailmgmt&amp;edit=$rlp\">$rlp (" . $template->getName() . ")</a>, at $rlt.</li>\n";
 			}
 			$logListCount++;
 		}
@@ -353,7 +353,7 @@ class LogPage
 	
 	public function getArrayLog($offset=0, $limit="infinity")
 	{
-		global $tsSQLlink, $session, $tsurl;
+		global $tsSQLlink, $session, $baseurl;
 		
 		$out=array();
 		$result = $this->getLog($offset, $limit);

@@ -35,6 +35,7 @@
     </div>
   </div>
   
+  {if ! $useOauthSignup}
   <fieldset>
     <legend>You on Wikipedia</legend>
 	<div class="control-group">
@@ -55,7 +56,8 @@
       </div>
     </div>
   </fieldset>
-    
+  {/if}
+  
   <div class="control-group">
     <div class="controls">
       <label class="checkbox">

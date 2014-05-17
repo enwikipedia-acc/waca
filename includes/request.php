@@ -123,7 +123,7 @@ class accRequest {
 	*/
 	public function confirmEmail($id=null) {
 		// Get requered objects from index file.
-		global $tsSQL, $tsurl;
+		global $tsSQL, $baseurl;
 		
 		// Assigns the ID if the param ID is null.
 		if ($id==null) {
@@ -186,7 +186,7 @@ class accRequest {
 		}
 		
 		// Formulates the email message that should be send to the user.
-		$mailtxt = "Hello! You, or a user from " . trim($ip) . " has requested an account on the English Wikipedia ( https://en.wikipedia.org ).\n\nPlease go to $tsurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nOnce your click this link, your request will be reviewed, and you will shortly receive a separate email with more information.  Your password\nis not yet available.\n\nIf you did not make this request, please disregard this message.\n\n";
+		$mailtxt = "Hello! You, or a user from " . trim($ip) . " has requested an account on the English Wikipedia ( https://en.wikipedia.org ).\n\nPlease go to $baseurl/index.php?action=confirm&si=$hash&id=" . $row['pend_id'] . "&nocheck=1 in order to complete this request.\n\nOnce your click this link, your request will be reviewed, and you will shortly receive a separate email with more information.  Your password\nis not yet available.\n\nIf you did not make this request, please disregard this message.\n\n";
 		
 		// Creates the needed headers.
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
@@ -214,7 +214,7 @@ class accRequest {
 	
 	public function checkConfirmEmail() {
 		// Get global variables from configuration file.
-		global $enableEmailConfirm, $tsurl;
+		global $enableEmailConfirm, $baseurl;
 		
 		// Get variables and objects from index file.
 		global $tsSQL, $messages, $action, $accbot, $skin;
@@ -240,18 +240,31 @@ class accRequest {
 					$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ($pid, '$user', 'Email Confirmed', '$now')";
 					$result = $tsSQL->query($query);
 					if ( !$result )
+                    {
 						$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
-					$spoofs = $this->getSpoofs($user);
-					if( $spoofs === FALSE ) {
+                    }
+                    
+                    global $antispoofProvider;
+                    try
+                    {
+                        $spoofs = $antispoofProvider->getSpoofs($user);
+                    }
+                    catch(Exception $ex)
+                    {
+                        $spoofs = array();
+                    }
+                    
+					if( count($spoofs) === 0 ) {
 						$uLevel = "Open";
 						$what = "";
 					} else {
 						$uLevel = "Admin";
 						$what = "<Account Creator Needed!>";
 					}
+                    
 					$comments = html_entity_decode(stripslashes($row['pend_cmt']));
 					
-					$ircmessage = "\00314[[\00303acc:\00307$pid\00314]]\0034 N\00310 \00302$tsurl/acc.php?action=zoom&id=$pid\003 \0035*\003 \00303$user\003 \0035*\00310 $what\003";
+					$ircmessage = "\00314[[\00303acc:\00307$pid\00314]]\0034 N\00310 \00302$baseurl/acc.php?action=zoom&id=$pid\003 \0035*\003 \00303$user\003 \0035*\00310 $what\003";
 					
 					if(mb_strlen($comments) > 0)
 					{
@@ -307,12 +320,10 @@ class accRequest {
 		// There is then a yes flag assigned to the flag array.
 		if ($ahbl == "127.0.0.2") {
 			$flags['transit'] = "yes";
-			"yes";
 			$flags['tor'] = "yes";
 		}
 		if ($ahbl == "127.0.0.3") {
 			$flags['exit'] = "yes";
-			"yes";
 			$flags['tor'] = "yes";
 		}
 		
@@ -381,59 +392,6 @@ class accRequest {
 		}
 	}
 	
-	/**
-	 * Checks whether there any conflicts are.
-	 * @param $username The username to check for spoofs.
-	 */
-	public function getSpoofs($username) {
-		// Get global variables from configuration file and index objects.
-		global $dontUseWikiDb, $asSQL, $antispoof_table;
-		
-		if(!$dontUseWikiDb) {
-			// Checks the username using the AntiSpoof class.
-			$return = AntiSpoof::checkUnicodeString($username);
-			
-			// Checks whether the results were positive.
-			if($return[0] == 'OK' ) {
-				// Assigns the username and escapes it for MySQL.
-				$sanitized = $asSQL->escape($return[1]);
-				
-				// Formulates and executes SQL query to check for usernames.
-				$query = "SELECT su_name FROM " . $antispoof_table . " WHERE su_normalized = '$sanitized';";
-				$result = $asSQL->query($query);
-				
-				// Creates empty variables.
-				$numSpoof = 0;
-				$reSpoofs = array();
-				
-				// Assigns the current row of the SQL query to a list.
-				// Each row of the SQL query is a conflict.
-				while (list($su_name) = mysql_fetch_row($result)) {
-					// When the variable is set, it indicates a conflict.
-					if(isset($su_name)) {
-						$numSpoof++;
-					}
-					// Adds to conflicting username to the array.
-					array_push($reSpoofs, $su_name);
-				}
-				
-				// When there was no conflicts FALSE are returned.
-				if($numSpoof == 0) {
-					return(FALSE);
-				} else {
-					// If there were conflicts, the conflicts are returned.
-					return($reSpoofs);
-				}
-			} else {
-				// If the first variable wasnt OK, the variable are returned.
-				return ($return[1]);
-			}
-		} else {
-			// When spoof checking is disabled, FALSE is automatically returned.
-			return FALSE;
-			}
-	}
-	
 	/*
 	* Updates the entries checksum (on each load of that entry, to prevent dupes).
 	* @param $id The ID to use.
@@ -460,25 +418,6 @@ class accRequest {
 		// Formulates and executes SQL query to update the request HASH.
 		$query = "UPDATE acc_pend SET pend_checksum = '$hash' WHERE pend_id = '$id';";
 		$result = $tsSQL->query($query);
-	}
-	
-	private function isOnWhitelist($user) {
-		// Reads the entire Whitelist file into a string.
-		$apir = file_get_contents("https://en.wikipedia.org/w/api.php?action=query&prop=revisions&titles=Wikipedia:Request_an_account/Whitelist&rvprop=content&format=php");
-		
-		// Takes the variable and converts it back into a PHP value.
-		$apir = unserialize($apir);
-		
-		$apir = $apir['query']['pages'];
-	
-		foreach($apir as $r) {
-			$text = $r['revisions']['0']['*'];
-		}
-	
-		if( preg_match( '/\*\[\[User:'.preg_quote($user,'/').'\]\]/', $text ) ) {
-			return true;
-		}
-		return false;
 	}
 	
 	public function blockedOnEn() {
@@ -638,13 +577,24 @@ class accRequest {
 		// Gets the current date and time.
 		$dnow = date("Y-m-d H-i-s");
 		
-		if($this->getSpoofs($user)) {
-			// If there were spoofs an Admin should handle the request.
-			$uLevel = "Admin";
-		} else {
-			// Otherwise anyone could handle the request.
-			$uLevel = "Open";
-		}
+        global $antispoofProvider;
+        try
+        {
+		    if(count($antispoofProvider->getSpoofs($user)) > 0) 
+            {
+			    // If there were spoofs an Admin should handle the request.
+			    $uLevel = "Admin";
+		    } 
+            else 
+            {
+			    // Otherwise anyone could handle the request.
+			    $uLevel = "Open";
+		    }
+        }
+        catch(Exception $ex)
+        {
+            $uLevel = "Open";
+        }
 		
 		if ($uLevel != "Admin" && $this->isblacklisted($user))
 			$uLevel = "Admin";
@@ -686,4 +636,3 @@ class accRequest {
 		}
 	}
 }
-?>

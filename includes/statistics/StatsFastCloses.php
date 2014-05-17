@@ -50,7 +50,7 @@ ORDER BY
   TIMEDIFF(Closed.log_time, Reserved.log_time) ASC
 ;
 QUERY;
-		global $tsurl;
+		global $baseurl;
 		$qb = new QueryBrowser();
 		$qb->tableCallbackFunction = "statsFastClosesRowCallback";
 		$qb->overrideTableTitles = 
@@ -85,7 +85,7 @@ function statsFastClosesRowCallback($row, $currentreq)
 	$out =  '<tr>';
 	
 	
-	global $tsurl;
+	global $baseurl;
 	
 	for($colid = 0; $colid < count($row); $colid++) {
 		$cell = $row[$colid];
@@ -93,10 +93,10 @@ function statsFastClosesRowCallback($row, $currentreq)
 		$out .= "<td>" ;
 		
 		if($colid == 0) {
-			$out .= "<a href=\"" . $tsurl . "/acc.php?action=zoom&id=" . $cell . "\">";
+			$out .= "<a href=\"" . $baseurl . "/acc.php?action=zoom&id=" . $cell . "\">";
 		}
 		if($colid == 1) {
-			$out .= "<a href=\"" . $tsurl . "/statistics.php/Users?user=" . $row[++$colid] . "\">";
+			$out .= "<a href=\"" . $baseurl . "/statistics.php/Users?user=" . $row[++$colid] . "\">";
 		}
 		
 		$out .= $cell;

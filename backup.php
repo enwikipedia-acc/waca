@@ -39,4 +39,3 @@ $cmdLine = "$BUdumper > $BUdir/$BUbasefile$dateModifier.sql; $BUgzip $BUdir/$BUb
 echo "running command $cmdLine\n";
 shell_exec( $cmdLine );
 echo "done.";
-?>

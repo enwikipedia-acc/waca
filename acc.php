@@ -31,7 +31,9 @@ require_once 'includes/database.php';
 require_once 'includes/skin.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
-require_once 'includes/http.php';
+require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
+require_once 'lib/mediawiki-extensions-OAuth/lib/JWT.php';
+require_once 'oauth/OAuthUtility.php';
 
 // Set the current version of the ACC.
 $version = "0.9.7";
@@ -54,9 +56,10 @@ $accbotSend = new accbotSend();
 $session = new session();
 $date = new DateTime();
 
+// initialise providers
 $locationProvider = new $locationProviderClass(gGetDb('acc'), $locationProviderApiKey);
 $rdnsProvider = new $rdnsProviderClass(gGetDb('acc'));
-
+$antispoofProvider = new $antispoofProviderClass();
 
 // Clears the action variable.
 $action = '';
@@ -70,6 +73,11 @@ if (isset($_GET['action'])) {
 // Clear session before banner and logged in as message is generated on logout attempt - Prom3th3an
 if ($action == "logout") {
 	session_unset();
+    
+    BootstrapSkin::displayInternalHeader();
+    echo showlogin($action, $_GET);
+    BootstrapSkin::displayInternalFooter();
+    die();
 }
 
 // Checks whether the user and nocheck variable is set.
@@ -83,7 +91,7 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 
 	// Checks whether the user want to reset his password or register a new account.
 	// Performs the clause when the action is not one of the above options.
-	if ($action != 'register' && $action != 'forgotpw' && $action != 'sreg') {
+	if ($action != 'register' && $action != 'forgotpw' && $action != 'sreg' && $action != "registercomplete") {
 		if (isset($action)) {
 			// Display the login form and the rest of the page coding.
 			// The data in the current $GET varianle would be send as parameter.
@@ -128,170 +136,129 @@ if ($action == '') {
 	die();
 }
 
-elseif ($action == "sreg") {
-	if(isset($_SESSION['user']))
-	{
-		$suser = sanitize($_SESSION['user']);
-	}
-	else
-	{
-		$suser = '';
-	}
-
-    $sregHttpClient = new http();
-	$cu_name = rawurlencode( $_REQUEST['wname'] );
-	$userblocked = $sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=blocks&bkusers=$cu_name&format=php" );
-	$ub = unserialize( $userblocked );
-	if ( isset ( $ub['query']['blocks']['0']['id'] ) ) {
-		$message = InterfaceMessage::get(InterfaceMessage::DECL_BLOCKED);
-		BootstrapSkin::displayAlertBox("You are presently blocked on the English Wikipedia", "alert-error", "Error");
-		echo "</div>";
-		$skin->displayPfooter();
-		die();
-	}
-	$userexist = $sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=users&ususers=$cu_name&format=php" );
-	$ue = unserialize( $userexist );
-	foreach ( $ue['query']['users'] as $oneue ) {
-		if ( isset($oneue['missing'])) {
-			BootstrapSkin::displayAlertBox("Invalid on-wiki username", "alert-error", "Error");
-			echo "</div>";
-			$skin->displayPfooter();
-			die();
-		}
-	}
-
-	// check if the user is to new
-	global $onRegistrationNewbieCheck;
-	if( $onRegistrationNewbieCheck ) 
-	{
-		global $onRegistrationNewbieCheckEditCount, $onRegistrationNewbieCheckAge;
-		$isNewbie = unserialize($sregHttpClient->get( "http://en.wikipedia.org/w/api.php?action=query&list=allusers&format=php&auprop=editcount|registration&aulimit=1&aufrom=$cu_name" ));
-		$time = $isNewbie['query']['allusers'][0]['registration'];
-		$time2 = time() - strtotime($time);
-		$editcount = $isNewbie['query']['allusers'][0]['editcount'];
-		if (!($editcount > $onRegistrationNewbieCheckEditCount and $time2 > $onRegistrationNewbieCheckAge)) {
-            BootstrapSkin::displayAlertBox("You are too new to request an account at the moment.", "alert-info", "Sorry!", false);
-			echo "</div>";
-			$skin->displayPfooter();
-			die();
-		}
-	}
+elseif ($action == "sreg")
+{
+    global $useOauthSignup;
+        
+    // TODO: check blocked
+    // TODO: check age.
+    
 	// check if user checked the "I have read and understand the interface guidelines" checkbox
 	if(!isset($_REQUEST['guidelines'])) {
         BootstrapSkin::displayAlertBox("You must read <a href=\"http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide\">the interface guidelines</a> before your request may be submitted.", "alert-info", "Sorry!", false);
-		echo "</div>";
-		$skin->displayPfooter();
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
 	
-	$user = sanitize($_REQUEST['name']);
-	$wname = mysql_real_escape_string($_REQUEST['wname']);
-	$pass = mysql_real_escape_string($_REQUEST['pass']);
-	$pass2 = mysql_real_escape_string($_REQUEST['pass2']);
-	$email = mysql_real_escape_string($_REQUEST['email']);
-	$sig = mysql_real_escape_string($_REQUEST['sig']);
-	$conf_revid=mysql_real_escape_string($_REQUEST['conf_revid']);
-    
-	if(isset($_REQUEST['welcomeenable']))
-	{
-		$welcomeenable = mysql_real_escape_string($_REQUEST['welcomeenable']);	
-	}
-	else
-	{
-		$welcomeenable=false;
-	}
-	if ( !isset($user) || !isset($wname) || !isset($pass) || !isset($pass2) || !isset($email) || !isset($conf_revid)|| strlen($email) < 6) {
-        BootstrapSkin::displayAlertBox("Form data may not be blank.", "alert-error", "Error!", false);
-		
-		echo "</div>";
-		$skin->displayPfooter();
-		die();
-	}
-	if (isset($_POST['debug']) && $_POST['debug'] == "on") {
-		echo "<pre>\n";
-		print_r($_REQUEST);
-		echo "</pre>\n";
-	}
-	$mailisvalid = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.(ac|ad|ae|aero|af|ag|ai|al|am|an|ao|aq|ar|arpa|as|asia|at|au|aw|ax|az|ba|bb|bd|be|bf|bg|bh|bi|biz|bj|bm|bn|bo|br|bs|bt|bv|bw|by|bz|ca|cat|cc|cd|cf|cg|ch|ci|ck|cl|cm|cn|co|com|coop|cr|cu|cv|cx|cy|cz|de|dj|dk|dm|do|dz|ec|edu|ee|eg|er|es|et|eu|fi|fj|fk|fm|fo|fr|ga|gb|gd|ge|gf|gg|gh|gi|gl|gm|gn|gov|gp|gq|gr|gs|gt|gu|gw|gy|hk|hm|hn|hr|ht|hu|id|ie|il|im|in|info|int|io|iq|ir|is|it|je|jm|jo|jobs|jp|ke|kg|kh|ki|km|kn|kp|kr|kw|ky|kz|la|lb|lc|li|lk|lr|ls|lt|lu|lv|ly|ma|mc|md|me|mg|mh|mil|mk|ml|mm|mn|mo|mobi|mp|mq|mr|ms|mt|mu|museum|mv|mw|mx|my|mz|na|name|nc|ne|net|nf|ng|ni|nl|no|np|nr|nu|nz|om|org|pa|pe|pf|pg|ph|pk|pl|pm|pn|pr|pro|ps|pt|pw|py|qa|re|ro|rs|ru|rw|sa|sb|sc|sd|se|sg|sh|si|sj|sk|sl|sm|sn|so|sr|st|su|sv|sy|sz|tc|td|tel|tf|tg|th|tj|tk|tl|tm|tn|to|tp|tr|travel|tt|tv|tw|tz|ua|ug|uk|us|uy|uz|va|vc|ve|vg|vi|vn|vu|wf|ws|ye|yt|yu|za|zm|zw)$/i', $_REQUEST['email']);
-	if ($mailisvalid == 0) {
+	if (!filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL)) {
 		BootstrapSkin::displayAlertBox("Invalid email address", "alert-error", "Error!", false);
-		echo "</div>";
-		$skin->displayPfooter();
-		die();
+        BootstrapSkin::displayInternalFooter();
+        die();
 	}
-	if ($_REQUEST['pass'] !== $_REQUEST['pass2']) { // comparing pre-filtered values here, secure as it's just a comparison.
+    
+	if ($_REQUEST['pass'] !== $_REQUEST['pass2']) 
+    { 
         BootstrapSkin::displayAlertBox("Your passwords did not match, please try again.", "alert-error", "Error!", false);
-		echo "</div>";
-		$skin->displayPfooter();
+        BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	if(!((string)(int)$conf_revid === (string)$conf_revid)||$conf_revid==""){
-		BootstrapSkin::displayAlertBox("Please enter the revision id of your confirmation edit in the \"Confirmation diff\" field. The revid is the number after the &diff= part of the URL of a diff.", "alert-error", "Error!", false);
-		echo "</div>";
-		$skin->displayPfooter();
-		die();		
-	
-	}
-	$query = "SELECT * FROM acc_user WHERE user_name = '$user' LIMIT 1;";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-	if ($row['user_id'] != "") {
+    
+    if(!$useOauthSignup)
+    {
+        if(!((string)(int)$_REQUEST['conf_revid'] === (string)$_REQUEST['conf_revid']) || $_REQUEST['conf_revid'] == "")
+        {
+            BootstrapSkin::displayAlertBox("Please enter the revision id of your confirmation edit in the \"Confirmation diff\" field. The revid is the number after the &diff= part of the URL of a diff.", "alert-error", "Error!", false);
+            BootstrapSkin::displayInternalFooter();
+            die();		
+        }
+    }
+    
+	if (User::getByUsername($_REQUEST['name'], gGetDb()) != false) {
         BootstrapSkin::displayAlertBox("Sorry, but that username is in use. Please choose another.", "alert-error", "Error!", false);
-		$skin->displayPfooter();
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	$query = "SELECT * FROM acc_user WHERE user_email = '$email' LIMIT 1;";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-	if ($row['user_id'] != "") {
-		$skin->displayRequestMsg( "I'm sorry, but that e-mail address is in use.<br />");
-		echo "</div>";
-		$skin->displayPfooter();
+    
+	$query = gGetDb()->prepare("SELECT * FROM user WHERE email = :email LIMIT 1;");
+    $query->execute(array(":email" => $_REQUEST['email']));
+    if($query->fetchObject("User") != false)
+    {
+        BootstrapSkin::displayAlertBox("I'm sorry, but that e-mail address is in use.", "alert-error", "Error!", false);
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	$query = "SELECT * FROM acc_user WHERE user_onwikiname = '$wname' LIMIT 1;";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-	if ($row['user_id'] != "") {
-		$skin->displayRequestMsg("I'm sorry, but $wname already has an account here.<br />");
-		echo "</div>";
-		$skin->displayPfooter();
-		die();
-	}
-	$query = "SELECT * FROM acc_pend WHERE pend_name = '$user' AND (pend_status = 'Open' OR pend_status = 'Admin' OR pend_status = 'Closed') AND DATE_SUB(CURDATE(),INTERVAL 7 DAY) <= pend_date LIMIT 1;";
-	$result = mysql_query($query, $tsSQLlink);
-	$row = mysql_fetch_assoc($result);
-	if (!empty($row['pend_name'])) {
-		$skin->displayRequestMsg("I'm sorry, you are too new to request an account at the moment.<br />");
-		echo "</div>";
-		$skin->displayPfooter();
-		die();
-	}
-	if (!isset($fail) || $fail != 1) {
-		$user_pass = authutils::encryptPassword($_REQUEST['pass']); // again, using unfiltered as data processing is done here.
-		$query = "INSERT INTO acc_user (user_name, user_email, user_pass, user_level, user_onwikiname, user_confirmationdiff) VALUES ('$user', '$email', '$user_pass', 'New', '$wname', '$conf_revid');";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		$accbotSend->send("New user: $user");
-		$skin->displayRequestMsg("Account requested! Your username is $user! Your request will be reviewed soon.</b><br /><br />");
-	}
-	echo "</div>";
-	$skin->displayPfooter();
+    $query->closeCursor();
+
+    $database = gGetDb();
+    
+    $database->transactionally(function() use ($database, $useOauthSignup)
+    {
+    
+        $newUser = new User();
+        $newUser->setDatabase($database);
+    
+        $newUser->setUsername($_REQUEST['name']);
+        $newUser->setPassword($_REQUEST['pass']);
+        $newUser->setEmail($_REQUEST['email']);
+        
+        if(!$useOauthSignup)
+        {
+            $newUser->setOnWikiName($_REQUEST['wname']);
+            $newUser->setConfirmationDiff($_REQUEST['conf_revid']);
+        }
+        
+        $newUser->save();
+    
+        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal, $useOauthSignup;
+    
+        if($useOauthSignup)
+        {
+            try
+            {
+                // Get a request token for OAuth
+                $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
+                $requestToken = $util->getRequestToken();
+    
+                // save the request token for later
+                $newUser->setOAuthRequestToken($requestToken->key);
+                $newUser->setOAuthRequestSecret($requestToken->secret);
+                $newUser->save();
+            
+                global $accbotSend;
+                $accbotSend->send("New user: " . $_REQUEST['name']);
+        
+                $redirectUrl = $util->getAuthoriseUrl($requestToken);
+            
+                header("Location: {$redirectUrl}");
+            }
+            catch(Exception $ex)
+            {
+                throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
+            }
+        }
+        else
+        {
+            global $baseurl, $accbotSend;
+            $accbotSend->send("New user: " . $_REQUEST['name']);
+            header("Location: {$baseurl}acc.php?action=registercomplete");
+        }
+    });
+    
 	die();
 }
 
 elseif ($action == "register") 
 {
+    global $useOauthSignup;
+    $smarty->assign("useOauthSignup", $useOauthSignup);
     $smarty->display("register.tpl");
 	BootstrapSkin::displayInternalFooter();
 	die();
+}
+elseif ($action == "registercomplete")
+{
+    BootstrapSkin::displayAlertBox("Your request will be reviewed soon by a tool administrator, and you'll get an email informing you of the decision.", "alert-success", "Account requested!", false);
+    BootstrapSkin::displayInternalFooter();
 }
 elseif ($action == "forgotpw")
 {
@@ -310,7 +277,7 @@ elseif ($action == "forgotpw")
                     $user->setPassword($_POST['pw2']);
                     $user->save();
                     
-                    BootstrapSkin::displayAlertBox("You may now <a href=\"$tsurl/acc.php\">Login</a>", "alert-error", "Password reset!", true, false);
+                    BootstrapSkin::displayAlertBox("You may now <a href=\"$baseurl/acc.php\">Login</a>", "alert-error", "Password reset!", true, false);
                     BootstrapSkin::displayInternalFooter();
                     die();
 				} 
@@ -367,7 +334,7 @@ elseif ($action == "forgotpw")
         {
 		    $hash = $user->getForgottenPasswordHash();
 		    // re bug 29: please don't escape the url parameters here: it's a plain text email so no need to escape, or you break the link
-		    $mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested a password reset for your account.\n\nPlease go to $tsurl/acc.php?action=forgotpw&si=$hash&id=" . $user->getId() . " to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
+		    $mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested a password reset for your account.\n\nPlease go to $baseurl/acc.php?action=forgotpw&si=$hash&id=" . $user->getId() . " to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
 		    $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		    mail($user->getEmail(), "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
             BootstrapSkin::displayAlertBox("<strong>Your password reset request has been completed.</strong> Please check your e-mail.", "alert-success", "", false, false);
@@ -387,7 +354,7 @@ elseif ($action == "login")
     
     if($user == false || !$user->authenticate($_POST['password']) )
     {
-        header("Location: $tsurl/acc.php?error=authfail&tplUsername=" . urlencode($_POST['username']));
+        header("Location: $baseurl/acc.php?error=authfail&tplUsername=" . urlencode($_POST['username']));
         die();
     }
     
@@ -403,7 +370,7 @@ elseif ($action == "login")
     
     if($user->isNew()) 
     {
-        header("Location: $tsurl/acc.php?error=newacct");
+        header("Location: $baseurl/acc.php?error=newacct");
         die();
     }
     
@@ -414,8 +381,8 @@ elseif ($action == "login")
     {
         $suspendAction = "Declined";
         $userid = $user->getId();
-        $suspendstatement->bindParam(":action", $suspendAction);
-        $suspendstatement->bindParam(":userid", $userid);
+        $suspendstatement->bindValue(":action", $suspendAction);
+        $suspendstatement->bindValue(":userid", $userid);
         $suspendstatement->execute();
         
         $suspendreason = $suspendstatement->fetchColumn();
@@ -433,8 +400,8 @@ elseif ($action == "login")
     {
         $suspendAction = "Suspended";
         $userid = $user->getId();
-        $suspendstatement->bindParam(":action", $suspendAction);
-        $suspendstatement->bindParam(":userid", $userid);
+        $suspendstatement->bindValue(":action", $suspendAction);
+        $suspendstatement->bindValue(":userid", $userid);
         $suspendstatement->execute();
         
         $suspendreason = $suspendstatement->fetchColumn();
@@ -450,7 +417,7 @@ elseif ($action == "login")
     
     if(!$user->isIdentified() && $forceIdentification == 1) 
     {
-        header("Location: $tsurl/acc.php?error=noid");
+        header("Location: $baseurl/acc.php?error=noid");
         die();
     }
     
@@ -459,7 +426,33 @@ elseif ($action == "login")
     $_SESSION['user'] = $user->getUsername();
     $_SESSION['userID'] = $user->getId();
     
-    header("Location: $tsurl/acc.php");
+    if( $user->getOAuthAccessToken() == null && $user->getStoredOnWikiName() == "##OAUTH##")
+    {
+        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal, $baseurl;
+
+        try
+        {
+            // Get a request token for OAuth
+            $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
+            $requestToken = $util->getRequestToken();
+
+            // save the request token for later
+            $user->setOAuthRequestToken($requestToken->key);
+            $user->setOAuthRequestSecret($requestToken->secret);
+            $user->save();
+            
+            $redirectUrl = $util->getAuthoriseUrl($requestToken);
+            
+            header("Location: {$redirectUrl}");
+            die();
+        }
+        catch(Exception $ex)
+        {
+            throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
+        }        
+    }
+    
+    header("Location: $baseurl/acc.php");
 }
 elseif ($action == "messagemgmt") 
 {
@@ -489,39 +482,44 @@ elseif ($action == "messagemgmt")
 			die();
 		}
         
-        $message = InterfaceMessage::getById($_GET['edit'], gGetDb());
+        $database = gGetDb();
         
-	    if ($message == false)
+        $database->transactionally(function() use ($database)
         {
-            BootstrapSkin::displayAlertBox("Unable to find specified message", "alert-error", "Error", true, false);
-            BootstrapSkin::displayInternalFooter();
-		    die();
-        }
-        
-		if ( isset( $_GET['submit'] ) ) 
-        {
-            $message->setContent($_POST['mailtext']);
-            $message->setDescription($_POST['maildesc']);
-            $message->save();
+            global $smarty, $accbotSend;
             
-            $logStatement = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:message, :user, 'Edited', CURRENT_TIMESTAMP());");
-            $logStatement->bindValue(":message", $message->getId());
-            $logStatement->bindValue(":user", User::getCurrent()->getUsername());
-            $logStatement->execute();
+            $message = InterfaceMessage::getById($_GET['edit'], $database);
             
-			$mailname = $message->getDescription();
+            if ($message == false)
+            {
+                throw new TransactionException("Unable to find specified message", "Error");
+            }
             
-            BootstrapSkin::displayAlertBox("Message $mailname ({$message->getId()}) updated.", "alert-success", "Saved!", true, false);
-			$accbotSend->send("Message $mailname ({$message->getId()}) edited by " . User::getCurrent()->getUsername());
-			BootstrapSkin::displayInternalFooter();
-			die();
-		}
+            if ( isset( $_GET['submit'] ) ) 
+            {   
+                $message->setContent($_POST['mailtext']);
+                $message->setDescription($_POST['maildesc']);
+                $message->save();
+            
+                $logStatement = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:message, :user, 'Edited', CURRENT_TIMESTAMP());");
+                $logStatement->bindValue(":message", $message->getId());
+                $logStatement->bindValue(":user", User::getCurrent()->getUsername());
+                $logStatement->execute();
+            
+			    $mailname = $message->getDescription();
+            
+                BootstrapSkin::displayAlertBox("Message $mailname ({$message->getId()}) updated.", "alert-success", "Saved!", true, false);
+			    $accbotSend->send("Message $mailname ({$message->getId()}) edited by " . User::getCurrent()->getUsername());
+			    BootstrapSkin::displayInternalFooter();
+		    }
+            
+            $smarty->assign("message", $message);
+            $smarty->assign("readonly", false);
+            $smarty->display("message-management/editform.tpl");
         
-        $smarty->assign("message", $message);
-        $smarty->assign("readonly", false);
-        $smarty->display("message-management/editform.tpl");
+		    BootstrapSkin::displayInternalFooter();
+        });
         
-		BootstrapSkin::displayInternalFooter();
 		die();
 	}
     
@@ -559,7 +557,7 @@ elseif ($action == "templatemgmt") {
 		echo "Display code: ".$row['template_usercode']."<br />\n";
 		echo "Bot code: ".str_replace("\n", '\n', $row['template_botcode'])."<br />\n";
 		echo displayPreview($row['template_usercode']);
-		echo "<br /><a href='$tsurl/acc.php?action=templatemgmt'>Back</a>";
+		echo "<br /><a href='$baseurl/acc.php?action=templatemgmt'>Back</a>";
 		$skin->displayIfooter();
 		die();
 	}
@@ -597,7 +595,7 @@ elseif ($action == "templatemgmt") {
 				$usercode = '';
 				$botcode = '';
 			}
-			echo "<form action=\"$tsurl/acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">\n";
+			echo "<form action=\"$baseurl/acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">\n";
 			echo "Display code: <input type=\"text\" name=\"usercode\" value=\"$usercode\" size=\"40\"/><br />\n";
 			echo "Bot code: <input type=\"text\" name=\"botcode\" value=\"$botcode\" size=\"40\"/><br />\n";
 			echo "<input type=\"submit\" name=\"submit\" value=\"Create!\"/><input type=\"submit\" name=\"preview\" value=\"Preview\"/><br />\n";
@@ -638,7 +636,7 @@ elseif ($action == "templatemgmt") {
 			echo "The following users were using the template, and have been switched to the default one:\n";
 			echo "<ul>\n";
 			while (list($affected_id, $affected_name) = mysql_fetch_row($usersaffected)) {
-				echo "<li><a href=$tsurl/statistics.php?page=Users&user=$affected_id>$affected_name</a></li>\n";
+				echo "<li><a href=$baseurl/statistics.php?page=Users&user=$affected_id>$affected_name</a></li>\n";
 			}
 			echo "</ul>\nPlease try inform these users that their template has been changed.";
 		} else {
@@ -688,7 +686,7 @@ elseif ($action == "templatemgmt") {
 				$usercode = str_replace("\n", '\n', $row['template_usercode']);
 				$botcode = str_replace("\n", '\n', $row['template_botcode']);
 			}
-			echo "<form action=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$tid\" method=\"post\">\n";
+			echo "<form action=\"$baseurl/acc.php?action=templatemgmt&amp;edit=$tid\" method=\"post\">\n";
 			echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\" value=\"$usercode\"/><br />\n";
 			echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\" value=\"$botcode\"/><br />\n";
 			echo "<input type=\"submit\" name=\"submit\" value=\"Edit!\"/><input type=\"submit\" name=\"preview\" value=\"Preview\"/><br />\n";
@@ -724,7 +722,7 @@ elseif ($action == "templatemgmt") {
 	if (!$result)
 		sqlerror(mysql_error());
 	echo "<h2>Welcome templates</h2>\n";
-	echo "<form action=\"$tsurl/acc.php?action=templatemgmt&amp;set=yes\" method=\"post\" name=\"templateselection\">";
+	echo "<form action=\"$baseurl/acc.php?action=templatemgmt&amp;set=yes\" method=\"post\" name=\"templateselection\">";
 	echo "<table><tbody>\n";
 	$current = 0;
 	while ( list($template_id, $usercode) = mysql_fetch_row($result) ) {
@@ -741,12 +739,12 @@ elseif ($action == "templatemgmt") {
 		echo "<td onclick=\"document.templateselection.selectedtemplate[$currentrow].checked = true;\">&nbsp;<small>$usercode</small>&nbsp;</td>";
 		if($session->hasright($_SESSION['user'], 'Admin')) {
 			if ($template_id != 1) {
-				echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;<a href=\"$tsurl/acc.php?action=templatemgmt&amp;del=$template_id\" onclick=\"javascript:return confirm('Are you sure you wish to delete template $template_id?')\">Delete!</a>&nbsp;</td>";
+				echo "<td><a href=\"$baseurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;<a href=\"$baseurl/acc.php?action=templatemgmt&amp;del=$template_id\" onclick=\"javascript:return confirm('Are you sure you wish to delete template $template_id?')\">Delete!</a>&nbsp;</td>";
 			} else {
 				echo "<td></td>";
 			}
 		}
-		echo "<td><a href=\"$tsurl/acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td></tr>";
+		echo "<td><a href=\"$baseurl/acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td></tr>";
 	}
 	echo "<tr><td><input type=\"radio\" name=\"selectedtemplate\" value=\"0\"";
 	if ($userinfo['user_welcome_templateid'] == 0)
@@ -759,7 +757,7 @@ elseif ($action == "templatemgmt") {
 	echo "<input type=\"submit\" value=\"Update template choice\" />";
 	echo "</form>";
 	if ($session->hasright($_SESSION['user'], 'Admin')) {
-		echo "<form action=\"$tsurl/acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">";
+		echo "<form action=\"$baseurl/acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">";
 		echo "<input type=\"submit\" value=\"Add new\" />";
 		echo "</form>";
 	}
@@ -858,48 +856,34 @@ elseif ($action == "sban")
     
     $database = gGetDb();
     
-    if(!$database->beginTransaction())
-    {
-        BootstrapSkin::displayAlertBox("Error initiating database transaction", "alert-error", "", false, false);
-        BootstrapSkin::displayInternalFooter();
-        die();
-    }
+    $ban = new Ban();
     
     $currentUsername = User::getCurrent()->getUsername();
-    $ban = new Ban();
-            
-    $ban->setDatabase($database);
-    $ban->setActive(1);
-    $ban->setType($_POST['type']);
-    $ban->setTarget($_POST['target']);
-    $ban->setUser($currentUsername);
-    $ban->setReason($_POST['banreason']);
-    $ban->setDuration($duration);
     
-    try
+    $database->transactionally(function() use ($database, $ban, $duration, $currentUsername) 
     {
+        $ban->setDatabase($database);
+        $ban->setActive(1);
+        $ban->setType($_POST['type']);
+        $ban->setTarget($_POST['target']);
+        $ban->setUser($currentUsername);
+        $ban->setReason($_POST['banreason']);
+        $ban->setDuration($duration);
+    
         $ban->save();
         
         $logQuery = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:banid, :siuser, 'Banned', CURRENT_TIMESTAMP(), :reason);";
         $logStatement = $database->prepare($logQuery);
         $banid = $ban->getId();
-        $logStatement->bindParam(":banid", $banid);
-        $logStatement->bindParam(":siuser", $currentUsername);
-        $logStatement->bindParam(":reason", $_POST['banreason']);
+        $logStatement->bindValue(":banid", $banid);
+        $logStatement->bindValue(":siuser", $currentUsername);
+        $logStatement->bindValue(":reason", $_POST['banreason']);
+        
         if(!$logStatement->execute())
         {
-            throw new Exception("Error saving log entry.");   
+            throw new TransactionException("Error saving log entry.");   
         }
-    }
-    catch(Exception $ex)
-    {
-        $database->rollBack();
-        BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Error in transaction", false, false);
-        BootstrapSkin::displayInternalFooter();
-        die();
-    }
-    
-    $database->commit();
+    });
     
     $smarty->assign("ban", $ban);
     BootstrapSkin::displayAlertBox($smarty->fetch("bans/bancomplete.tpl"), "alert-info","", false, false);
@@ -945,7 +929,7 @@ elseif ($action == "unban")
         
     if($ban == false)
     {
-        BootstrapSkin::displayAlertBox("The specified ban ID is not currently active!", "alert-error", "", false, false);
+        BootstrapSkin::displayAlertBox("The specified ban ID is not currently active or doesn't exist!", "alert-error", "", false, false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
@@ -962,15 +946,7 @@ elseif ($action == "unban")
 		{
             $database = gGetDb();
             
-            if(!$database->beginTransaction())
-            {
-                BootstrapSkin::displayAlertBox("Error initiating database transaction", "alert-error", "", false, false);
-                BootstrapSkin::displayInternalFooter();
-                die();
-            }
-            
-            try
-            {
+            $database->transactionally(function() use ($database, $ban) {
                 $ban->setActive(0);
                 $ban->save();
                 
@@ -979,25 +955,16 @@ elseif ($action == "unban")
                 
                 $query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:id, :user, 'Unbanned', CURRENT_TIMESTAMP(), :reason);";
                 $statement = $database->prepare($query);
-                $statement->bindParam(":id", $banId);
-                $statement->bindParam(":user", $currentUser);
-                $statement->bindParam(":reason", $_POST['unbanreason']);
+                $statement->bindValue(":id", $banId);
+                $statement->bindValue(":user", $currentUser);
+                $statement->bindValue(":reason", $_POST['unbanreason']);
                 
                 if(!$statement->execute())
                 {
-                    throw new Exception("Error saving log entry.");   
+                    throw new TransactionException("Error saving log entry.");   
                 }
-            }
-            catch(Exception $ex)
-            {
-                $database->rollBack();
-                BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Error in transaction", false, false);
-                BootstrapSkin::displayInternalFooter();
-                die();
-            }
-            
-            $database->commit();
-		
+            });
+        
             BootstrapSkin::displayAlertBox("Unbanned " . $ban->getTarget(), "alert-info", "", false, false);
             BootstrapSkin::displayInternalFooter();
 			$accbotSend->send($ban->getTarget() . " unbanned by " . User::getCurrent()->getUsername() . " ({$_POST['unbanreason']}))");
@@ -1029,7 +996,7 @@ elseif ($action == "ban") {
 		if (isset($_GET['ip'])) {
 			$query = "SELECT pend_ip, pend_proxyip FROM acc_pend WHERE pend_id = :ip;";
             $statement = $database->prepare($query);
-            $statement->bindParam(":ip", $_GET['ip']);
+            $statement->bindValue(":ip", $_GET['ip']);
             $statement->execute();
 			$row = $statement->fetch(PDO::FETCH_ASSOC);
 			$target = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
@@ -1038,7 +1005,7 @@ elseif ($action == "ban") {
 		elseif (isset($_GET['email'])) {
             $query = "SELECT pend_email FROM acc_pend WHERE pend_id = :ip;";
             $statement = $database->prepare($query);
-            $statement->bindParam(":ip", $_GET['email']);
+            $statement->bindValue(":ip", $_GET['email']);
             $statement->execute();
 			$row = $statement->fetch(PDO::FETCH_ASSOC);
 			$target = $row['pend_email'];
@@ -1047,7 +1014,7 @@ elseif ($action == "ban") {
 		elseif (isset($_GET['name'])) {
             $query = "SELECT pend_name FROM acc_pend WHERE pend_id = :ip;";
             $statement = $database->prepare($query);
-            $statement->bindParam(":ip", $_GET['name']);
+            $statement->bindValue(":ip", $_GET['name']);
             $statement->execute();
 			$row = $statement->fetch(PDO::FETCH_ASSOC);
 			$target = $row['pend_name'];
@@ -1076,64 +1043,87 @@ elseif ($action == "ban") {
     BootstrapSkin::displayInternalFooter();
     die();
 }
-elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
+elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") 
+{
 	global $availableRequestStates;
-	$target = sanitize($_GET['target']);
 	
-	if (array_key_exists($target, $availableRequestStates)) {
-			
+	if (array_key_exists($_GET['target'], $availableRequestStates)) 
+    {
+		$request = Request::getById($_GET['id'], gGetDb());
 		
-			
-		$gid = $internalInterface->checkreqid($_GET['id']);
-		if (csvalid($gid, $_GET['sum']) != 1) {
-			echo "Invalid checksum (This is similar to an edit conflict on Wikipedia; it means that <br />you have tried to perform an action on a request that someone else has performed an action on since you loaded the page)<br />";
-			$skin->displayIfooter();
-			die();
-		}
-		$sid = sanitize($_SESSION['user']);
-		$query = "SELECT pend_status FROM acc_pend WHERE pend_id = '$gid';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		$row = mysql_fetch_assoc($result);
-		$query2 = "SELECT log_time FROM acc_log WHERE log_pend = '$gid' AND log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 1;";
-		$result2 = mysql_query($query2, $tsSQLlink);
-		if (!$result2)
-			sqlerror("Query failed: $query2 ERROR: " . mysql_error());
-		$row2 = mysql_fetch_assoc($result2);
+        if($request == false)
+        {
+            BootstrapSkin::displayAlertBox("Could not find the specified request!", "alert-error", "Error!", true, false);
+            BootstrapSkin::displayInternalFooter();
+            die();
+        }
+		
+        if( csvalid($request->getId(), $_GET['sum']) != 1 )
+        {
+            SessionAlert::error("This is similar to an edit conflict on Wikipedia; it means that you have tried to perform an action on a request that someone else has performed an action on since you loaded the page", "Invalid checksum");
+            header("Location: acc.php?action=zoom&id={$request->getId()}");
+            die();
+        }
+        
+		$statement = gGetDb()->prepare("SELECT log_time FROM acc_log WHERE log_pend = :request AND log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 1;");
+        $statement->execute(array(":request" => $request->getId()));
+        $logTime = $statement->fetchColumn();
+        $statement->closeCursor();
+        
+        $date = new DateTime();
 		$date->modify("-7 days");
 		$oneweek = $date->format("Y-m-d H:i:s");
-		if ($row['pend_status'] == "Closed" && $row2['log_time'] < $oneweek && ! ($session->hasright($_SESSION['user'], "Admin"))) {
-			$skin->displayRequestMsg("Only administrators and checkusers can reopen a request that has been closed for over a week.");	
-			$skin->displayIfooter();
+        
+		if ($request->getStatus() == "Closed" && $logTime < $oneweek && ! User::getCurrent()->isAdmin() && ! User::getCurrent()->isCheckuser()) 
+        {
+			SessionAlert::error("Only administrators and checkusers can reopen a request that has been closed for over a week.");
+            header("Location: acc.php?action=zoom&id={$request->getId()}");
 			die();
 		}
-		if ($row['pend_status'] == $target) {
-			echo "Cannot set status, target already deferred to $target<br />\n";
-			$skin->displayIfooter();
+        
+		if ($request->getStatus() == $_GET['target']) 
+        {
+            SessionAlert::error("Cannot set status, target already deferred to " . htmlentities($_GET['target']), "Error");
+            header("Location: acc.php?action=zoom&id={$request->getId()}");
 			die();
 		}
-		$query = "UPDATE acc_pend SET pend_status = '$target', pend_reserved = '0' WHERE pend_id = '$gid';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-
-		$deto = $availableRequestStates[$target]['deferto'];
-		$detolog = $availableRequestStates[$target]['defertolog'];
-
-
-		$now = date("Y-m-d H-i-s");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$sid', 'Deferred to $detolog', '$now');";
-		upcsum($gid);
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-		$accbotSend->send("Request $gid deferred to $deto by $sid");
-		$skin->displayRequestMsg("Request " . sanitize($_GET['id']) . " deferred to $deto.");
-		header("Location: acc.php");
-		die();
-	} else {
-		echo "Defer target not valid.<br />\n";
+        
+        $database = gGetDb();
+        $database->transactionally(function() use ($database, $request)
+        {
+            global $accbotSend, $availableRequestStates;
+                
+            $request->setReserved(0);
+            $request->setStatus($_GET['target']);
+            $request->save();
+            
+            $deto = $availableRequestStates[$_GET['target']]['deferto'];
+    		$detolog = $availableRequestStates[$_GET['target']]['defertolog'];
+            
+            $statement2 = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :user, :deferlog, CURRENT_TIMESTAMP());");
+            $statement2->bindValue(":deferlog", "Deferred to $detolog");
+            $statement2->bindValue(":request", $request->getId());
+            $statement2->bindValue(":user", User::getCurrent()->getUsername());
+            
+            if(!$statement2->execute()) 
+            {
+                throw new TransactionException("Error occurred saving log entry");    
+            }
+            
+            upcsum($request->getId());
+        
+		    $accbotSend->send("Request {$request->getId()} deferred to $deto by " . User::getCurrent()->getUsername());
+            SessionAlert::success("Request {$request->getId()} deferred to $deto");
+		    header("Location: acc.php?action=zoom&id={$request->getId()}");
+        });
+        
+        die();
+	} 
+    else 
+    {
+        BootstrapSkin::displayAlertBox("Defer target not valid.", "alert-error", "Error", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
 	}
 }
 elseif ($action == "prefs") 
@@ -1207,11 +1197,17 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	// sanitise this input ready for inclusion in queries
     $request = Request::getById($_GET['id'], gGetDb());
     
-	$gid = $internalInterface->checkreqid($_GET['id']);
+    if ($request == false) {
+        // Notifies the user and stops the script.
+        BootstrapSkin::displayAlertBox("The request ID supplied is invalid!", "alert-error","Error",true,false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
 	$gem = sanitize($_GET['email']);
 	
 	// check the checksum is valid
-	if (csvalid($gid, $_GET['sum']) != 1) 
+	if (csvalid($request->getId(), $_GET['sum']) != 1) 
     {
         BootstrapSkin::displayAlertBox("This is similar to an edit conflict on Wikipedia; it means that you have tried to perform an action on a request that someone else has performed an action on since you loaded the page.", "alert-error", "Invalid Checksum", true, false);
         BootstrapSkin::displayInternalFooter();
@@ -1223,8 +1219,8 @@ elseif ($action == "done" && $_GET['id'] != "") {
     {
         $alertContent = "<p>This request has already been closed in a manner that has generated an e-mail to the user, Proceed?</p><br />";
         $alertContent .= "<div class=\"row-fluid\">";
-        $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$tsurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;override=yes&amp;email=" . $_GET['email'] . "\">Yes</a>";
-        $alertContent .= "<a class=\"btn btn-danger span3\" href=\"$tsurl/acc.php\">No</a>";
+        $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$baseurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;override=yes&amp;email=" . $_GET['email'] . "\">Yes</a>";
+        $alertContent .= "<a class=\"btn btn-danger span3\" href=\"$baseurl/acc.php\">No</a>";
         $alertContent .= "</div>";
         
         BootstrapSkin::displayAlertBox($alertContent, "alert-info", "Warning!", true, false, false, true);
@@ -1237,18 +1233,15 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	{
         $alertContent = "<p>This request is currently marked as being handled by " . $request->getReservedObject()->getUsername() . ", Proceed?</p><br />";
         $alertContent .= "<div class=\"row-fluid\">";
-        $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$tsurl/acc.php?".$_SERVER["QUERY_STRING"]."&reserveoverride=yes\">Yes</a>";
-        $alertContent .= "<a class=\"btn btn-danger span3\" href=\"$tsurl/acc.php\">No</a>";
+        $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$baseurl/acc.php?".$_SERVER["QUERY_STRING"]."&reserveoverride=yes\">Yes</a>";
+        $alertContent .= "<a class=\"btn btn-danger span3\" href=\"$baseurl/acc.php\">No</a>";
         $alertContent .= "</div>";
         
         BootstrapSkin::displayAlertBox($alertContent, "alert-info", "Warning!", true, false, false, true);
         BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	
-	$sid = sanitize($_SESSION['user']);
-    $gus = sanitize($request->getName());
-    
+	    
 	if ($request->getStatus() == "Closed") 
     {
         BootstrapSkin::displayAlertBox("Cannot close this request. Already closed.", "alert-error", "Error", true, false);
@@ -1270,8 +1263,8 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if ($gem == 1 && !$exists && !isset($_GET['createoverride'])) {
         $alertContent = "<p>You have chosen to mark this request as \"created\", but the account does not exist on the English Wikipedia, proceed?</p><br />";
         $alertContent .= "<div class=\"row-fluid\">";
-        $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$tsurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;createoverride=yes&amp;email=" . $_GET['email'] . "\">Yes</a>";
-        $alertContent .= "<a class=\"btn btn-danger span3\" href=\"$tsurl/acc.php\">No</a>";
+        $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$baseurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;createoverride=yes&amp;email=" . $_GET['email'] . "\">Yes</a>";
+        $alertContent .= "<a class=\"btn btn-danger span3\" href=\"$baseurl/acc.php\">No</a>";
         $alertContent .= "</div>";
         
         BootstrapSkin::displayAlertBox($alertContent, "alert-info", "Warning!", true, false, false, true);
@@ -1311,6 +1304,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
             $smarty->assign("forcreated", $forcreated);
             $smarty->assign("querystring", $querystring);
             $smarty->assign("request", $request);
+            $smarty->assign("iplocation", $locationProvider->getIpLocation($request->getTrustedIp()));
             $smarty->display("custom-close.tpl");
 			BootstrapSkin::displayInternalFooter();
 			die();
@@ -1344,34 +1338,20 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			}
 		}
 	}
-	
-    /*
-    // Commented out cos it's causing a load of issues, and theoretically should never work?
-	$query = "SELECT * FROM acc_user WHERE user_name = '$sid';";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror("Query failed: $query ERROR: " . mysql_error());
-	$row = mysql_fetch_assoc($result);
-	if ($row['user_welcome_templateid'] > 0 && ($gem == "1" || $gem == "custom-y")) {
-		$query = "INSERT INTO acc_welcome (welcome_uid, welcome_user, welcome_status) VALUES ('$sid', '$gus', 'Open');";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror("Query failed: $query ERROR: " . mysql_error());
-	}
-    */
     
     $request->setStatus('Closed');
     $request->setReserved(0);
     
+    // TODO: make this transactional
     $request->save();
     
     $closeaction = "Closed $gem";
     $messagebody = isset($_POST['msgbody']) ? $_POST['msgbody'] : '';
     $statement = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:request, :user, :closeaction, CURRENT_TIMESTAMP(), :msgbody);");
-    $statement->bindParam(':request', $request->getId());
-    $statement->bindParam(':user', User::getCurrent()->getUsername());
-    $statement->bindParam(':closeaction', $closeaction);
-    $statement->bindParam(':msgbody', $messagebody);
+    $statement->bindValue(':request', $request->getId());
+    $statement->bindValue(':user', User::getCurrent()->getUsername());
+    $statement->bindValue(':closeaction', $closeaction);
+    $statement->bindValue(':msgbody', $messagebody);
     $statement->execute();
     
 	if ($gem == '0') {
@@ -1393,7 +1373,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$skin->displayRequestMsg("Request " . $request->getId() . " (" . htmlentities($request->getName(),ENT_COMPAT,'UTF-8') . ") marked as 'Done'.<br />");
 	$towhom = $request->getEmail();
 	if ($gem != "0" && $gem != 'custom' && $gem != 'custom-y' && $gem != 'custom-n') {
-		sendemail($gem, $towhom, $gid);
+		sendemail($gem, $towhom, $request->getId());
         $request->setEmailSent(1);
 	}
     $request->save();
@@ -1424,19 +1404,21 @@ elseif ($action == "zoom")
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
-elseif ($action == "logout") {
-	echo showlogin();
-	die("Logged out!\n");
-}
-elseif ($action == "logs") {
-	if(isset($_GET['user'])){
+elseif ($action == "logs") 
+{
+	if(isset($_GET['user']))
+    {
 		$filteruser = $_GET['user'];
-		$filteruserl = xss($filteruser); 
-		$filteruserl = " value=\"".$filteruserl."\"";
-	} else { $filteruserl = ""; $filteruser = "";}
+		$filteruserl = " value=\"" . htmlentities($filteruser, ENT_QUOTES, 'UTF-8') . "\"";
+	}
+    else
+    { 
+        $filteruserl = ""; 
+        $filteruser = "";
+    }
 	
 	echo '<h2>Logs</h2>
-	<form action="'.$tsurl.'/acc.php" method="get">
+	<form action="'.$baseurl.'/acc.php" method="get">
 		<input type="hidden" name="action" value="logs" />
 		<table>
 			<tr><td>Filter by username:</td><td><input type="text" name="user"'.$filteruserl.' /></td></tr>
@@ -1497,10 +1479,10 @@ elseif ($action == "logs") {
 	$logPage = new LogPage();
 
 	if( isset($_GET['user']) ){
-		$logPage->filterUser = sanitise($_GET['user']);
+		$logPage->filterUser = sanitize($_GET['user']);
 	}
 	if (isset ($_GET['limit'])) {
-		$limit = sanitise($_GET['limit']);
+		$limit = sanitize($_GET['limit']);
 	}
 	if (isset ($_GET['from'])) {
 		$offset = $_GET['from'];	
@@ -1508,7 +1490,7 @@ elseif ($action == "logs") {
 	
 	if(isset($_GET['logaction']))
 	{
-		$logPage->filterAction=sanitise($_GET['logaction']);
+		$logPage->filterAction=sanitize($_GET['logaction']);
 	}
 
 	echo $logPage->showListLog(isset($offset) ? $offset : 0 ,isset($limit) ? $limit : 100);
@@ -1528,7 +1510,7 @@ elseif ($action == "reserve")
             throw new TransactionException("Request not found", "Error");
         }
         
-        global $enableEmailConfirm, $allowDoubleReserving, $tsurl, $accbotSend;
+        global $enableEmailConfirm, $allowDoubleReserving, $baseurl, $accbotSend;
 	    if($enableEmailConfirm == 1)
         {
             if($request->getEmailConfirm() != "Confirmed")
@@ -1580,7 +1562,7 @@ elseif ($action == "reserve")
 		    if($request->getStatus() == "Closed")
 		    {		
                 // FIXME: bootstrappify properly
-			    throw new TransactionException('This request is currently closed. Are you sure you wish to reserve it?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confclosed=yes">Yes, reserve this closed request</a></li><li><a href="' . $tsurl . '/acc.php">No, return to main request interface</a></li></ul>', "Request closed", "alert-info");
+			    throw new TransactionException('This request is currently closed. Are you sure you wish to reserve it?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confclosed=yes">Yes, reserve this closed request</a></li><li><a href="' . $baseurl . '/acc.php">No, return to main request interface</a></li></ul>', "Request closed", "alert-info");
 		    }
 	    }	
         
@@ -1596,7 +1578,7 @@ elseif ($action == "reserve")
                 
         SessionAlert::success("Reserved request {$request->getId()}.");
 
-        header("Location: $tsurl/acc.php?action=zoom&id={$request->getId()}");
+        header("Location: $baseurl/acc.php?action=zoom&id={$request->getId()}");
     });
 	    
 	die();	
@@ -1637,26 +1619,35 @@ elseif ($action == "breakreserve")
         {
 			if(isset($_GET['confirm']) && $_GET['confirm'] == 1)	
 			{
-                $request->setReserved(0);
-                $request->save();
+                $database->transactionally(function() use($database, $request)
+                {
+                    global $accbotSend;
+                    
+                    $request->setReserved(0);
+                    $request->save();
 
-				$query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :username, 'BreakReserve', CURRENT_TIMESTAMP());");
-                $query->bindParam(":request", $request->getId());
-                $query->bindParam(":username", User::getCurrent()->getUsername());
-                $query->execute();
+				    $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :username, 'BreakReserve', CURRENT_TIMESTAMP());");
+                    $query->bindValue(":request", $request->getId());
+                    $query->bindValue(":username", User::getCurrent()->getUsername());
+                    
+                    if(!$query->execute())
+                    {
+                        throw new TransactionException("Error creating log entry.");
+                    }
                 
-				$accbotSend->send("Reservation on Request {$request->getId()} broken by " . User::getCurrent()->getUsername());
-				header("Location: acc.php");
-				die();
+				    $accbotSend->send("Reservation on Request {$request->getId()} broken by " . User::getCurrent()->getUsername());
+				    header("Location: acc.php");
+                });
+                
+                die();
 			}
 			else
 			{
-				global $tsurl;
-                // TODO: Bootstrap
-				echo "Are you sure you wish to break " . $reservedUser->getUsername() .
-					"'s reservation?<br />" . 
-					"<a href=\"$tsurl/acc.php?action=breakreserve&resid={$request->getId()}&confirm=1\">Yes</a> / " . 
-                    "<a href=\"$tsurl/acc.php?action=zoom&id={$request->getId()}\">No</a>";
+				global $baseurl;
+                $smarty->assign("reservedUser", $reservedUser);
+                $smarty->assign("request", $request);
+                
+                $smarty->display("confirmations/breakreserve.tpl");
 			}
 		}
 		else 
@@ -1666,17 +1657,27 @@ elseif ($action == "breakreserve")
 	}
 	else
 	{
-        $request->setReserved(0);
-        $request->save();
+        $database->transactionally(function() use ($database, $request)
+        {
+            global $accbotSend;
+            
+            $request->setReserved(0);
+            $request->save();
 
-        $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :username, 'Unreserved', CURRENT_TIMESTAMP());");
-        $query->bindParam(":request", $request->getId());
-        $query->bindParam(":username", User::getCurrent()->getUsername());
-        $query->execute();
+            $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :username, 'Unreserved', CURRENT_TIMESTAMP());");
+            $query->bindValue(":request", $request->getId());
+            $query->bindValue(":username", User::getCurrent()->getUsername());
+            
+            if(!$query->execute()) 
+            {
+                throw new TransactionException("Error creating log entry");
+            }
         
-		$accbotSend->send("Request {$request->getId()} is no longer being handled.");
-		header("Location: acc.php");
-		die();
+		    $accbotSend->send("Request {$request->getId()} is no longer being handled.");
+		    header("Location: acc.php");
+        });
+        
+        die();
 	}
     
 	BootstrapSkin::displayInternalFooter();
@@ -1736,7 +1737,7 @@ elseif ($action == "comment-add")
     }
 
     BootstrapSkin::displayAlertBox(
-        "<a href='$tsurl/acc.php?action=zoom&amp;id={$request->getId()}&amp;hash=$urlhash'>Return to request #{$request->getId()}</a>",
+        "<a href='$baseurl/acc.php?action=zoom&amp;id={$request->getId()}&amp;hash=$urlhash'>Return to request #{$request->getId()}</a>",
         "alert-success",
         "Comment added Successfully!",
         true, false);
@@ -1791,12 +1792,8 @@ elseif ($action == "comment-quick")
     header("Location: acc.php?action=zoom&id=" . $request->getId());
 }
 
-elseif ($action == "changepassword") {
-	$oldpassword = sanitize($_POST['oldpassword']); //Sanitize the values for SQL queries. 
-	$newpassword = sanitize($_POST['newpassword']);
-	$newpasswordconfirm = sanitize($_POST['newpasswordconfirm']);
-	$sessionuser = sanitize($_SESSION['user']);
-	
+elseif ($action == "changepassword")
+{	
 	if ((!isset($_POST['oldpassword'])) || $_POST['oldpassword'] == "" ) 
     { 
         //Throw an error if old password is not specified.
@@ -1864,48 +1861,60 @@ elseif ($action == "ec")
 	
 	if ($_SERVER['REQUEST_METHOD'] == 'POST') 
     {
-        $comment->setComment($_POST['newcomment']);
-        $comment->setVisibility($_POST['visibility']);
-        
-        $comment->save();
-        
-        $logQuery = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ( :id, :user, :action, CURRENT_TIMESTAMP() );";
         $database = gGetDb();
-        $logStatement = $database->prepare($logQuery);
+        $database->transactionally(function() use ($database, $comment, $baseurl)
+        {
+            global $accbotSend;
+            
+            $comment->setComment($_POST['newcomment']);
+            $comment->setVisibility($_POST['visibility']);
         
-        $logAction = "EditComment-c";
-        $logStatement->bindParam(":user", User::getCurrent()->getUsername());
-        $logStatement->bindParam(":id", $comment->getId());
-        $logStatement->bindParam(":action", $logAction);
-        $logStatement->execute();
+            $comment->save();
         
-        $logAction = "EditComment-r";    
-        $logStatement->bindParam(":id", $comment->getRequest());
-        $logStatement->execute();
+            $logQuery = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ( :id, :user, :action, CURRENT_TIMESTAMP() );";
         
-        $accbotSend->send("Comment " . $comment->getId() . " edited by " . User::getCurrent()->getUsername());
+            $logStatement = $database->prepare($logQuery);
         
-		//Show user confirmation that the edit has been saved, and redirect them to the request after 5 seconds.
-		header("Refresh:5;URL=$tsurl/acc.php?action=zoom&id=" . $comment->getRequest());
+            $logAction = "EditComment-c";
+            $logStatement->bindValue(":user", User::getCurrent()->getUsername());
+            $logStatement->bindValue(":id", $comment->getId());
+            $logStatement->bindValue(":action", "EditComment-c");
+            $logStatement->execute();
         
-		BootstrapSkin::displayAlertBox("You will be redirected to the request in 5 seconds Click <a href=\"" . $tsurl . "/acc.php?action=zoom&id=" . $comment->getRequest() . "\">here</a> if you are not redirected.", "alert-success", "Comment has been saved successfully.", true, false);
-        BootstrapSkin::displayInternalFooter();
-		die();
+            $logStatement->bindValue(":id", $comment->getRequest());
+            $logStatement->bindValue(":action", "EditComment-r");
+            $logStatement->execute();
+        
+            $accbotSend->send("Comment " . $comment->getId() . " edited by " . User::getCurrent()->getUsername());
+        
+            SessionAlert::success("Comment has been saved successfully");
+		    header("Location: $baseurl/acc.php?action=zoom&id=" . $comment->getRequest());
+        });
+        
+        die();    
 	}
-	else {	
+	else 
+    {	
         $smarty->assign("comment", $comment);
         $smarty->display("edit-comment.tpl");
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
 }
-elseif ($action == "sendtouser") { 
-    
-    // Sanitises the resid for use and checks its validity.    
-	$request = $internalInterface->checkreqid($_POST['id']);
-    
+elseif ($action == "sendtouser") 
+{ 
     $database = gGetDb();
-	
+    
+    $requestObject = Request::getById($_POST['id'], $database);
+    if($requestObject == false)
+    {
+        BootstrapSkin::displayAlertBox("Request invalid", "alert-error", "Could not find request", true, false);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
+    $request = $requestObject->getId();
+    
     $user = User::getByUsername($_POST['user'], $database);
     $curuser = User::getCurrent()->getUsername();
     
@@ -1916,63 +1925,38 @@ elseif ($action == "sendtouser") {
         die();
     }
     
-    if($database->beginTransaction())
+    $database->transactionally(function() use ($database, $user, $request, $curuser)
     {
-        try
+        $updateStatement = $database->prepare("UPDATE acc_pend SET pend_reserved = :userid WHERE pend_id = :request LIMIT 1;");
+        $updateStatement->bindValue(":userid", $user->getId());
+        $updateStatement->bindValue(":request", $request);
+        if(!$updateStatement->execute())
         {
-            $updateStatement = $database->prepare("UPDATE acc_pend SET pend_reserved = :userid WHERE pend_id = :request LIMIT 1;");
-            $updateStatement->bindParam(":userid", $user->getId());
-            $updateStatement->bindParam(":request", $request);
-            if(!$updateStatement->execute())
-            {
-                throw new Exception("Error updating reserved status of request.");   
-            }
-            
-            $logStatement = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:request, :user, :action, CURRENT_TIMESTAMP(), '');");
-            $action = "SendReserved";
-            $logStatement->bindParam(":user", $curuser);
-            $logStatement->bindParam(":request", $request);
-            $logStatement->bindParam(":action", $action);
-            if(!$logStatement->execute())
-            {
-                throw new Exception("Error inserting send log entry.");   
-            }
-            
-            $logStatement->bindParam(":user", $user->getUsername());
-            $action = "ReceiveReserved";
-            if(!$logStatement->execute())
-            {
-                throw new Exception("Error inserting send log entry.");   
-            }
-            
-            $database->commit();
+            throw new TransactionException("Error updating reserved status of request.");   
         }
-        catch(Exception $ex)
+            
+        $logStatement = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:request, :user, :action, CURRENT_TIMESTAMP(), '');");
+        $action = "SendReserved";
+        $logStatement->bindValue(":user", $curuser);
+        $logStatement->bindValue(":request", $request);
+        $logStatement->bindValue(":action", "SendReserved");
+        if(!$logStatement->execute())
         {
-            $database->rollBack();          
-            BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Query Error", true, false);
-            BootstrapSkin::displayInternalFooter();
-            die(); 
+            throw new TransactionException("Error inserting send log entry.");   
         }
-        catch(PDOException $ex)
+            
+        $logStatement->bindValue(":user", $user->getUsername());
+        $logStatement->bindValue(":action", "ReceiveReserved");
+        if(!$logStatement->execute())
         {
-            $database->rollBack();          
-            BootstrapSkin::displayAlertBox("An error was encountered during the transaction, and the transaction has been rolled back. <br />" . $ex->getMessage(), "alert-error", "Database Error", true, false);
-            BootstrapSkin::displayInternalFooter();
-            die(); 
+            throw new TransactionException("Error inserting receive log entry.");   
         }
-    }
-    else
-    {
-        BootstrapSkin::displayAlertBox("Could not start database transaction.", "alert-error", "Database Error", true, false);
-        BootstrapSkin::displayInternalFooter();
-        die();
-    }
+    });
     
 	//$accbotSend->send("Request $request is being handled by " . $_POST['user']);
 
-    // redirect to zoom page
-    echo "<meta http-equiv=\"Refresh\" Content=\"0; URL=$tsurl/acc.php?action=zoom&id=$request\">";
+    SessionAlert::success("Reservation sent successfully");
+    header("Location: $baseurl/acc.php?action=zoom&id=$request");
 }
 elseif ($action == "emailmgmt") { 
 	/* New page for managing Emails, since I would rather not be handling editing
@@ -1983,40 +1967,46 @@ elseif ($action == "emailmgmt") {
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
-		if(isset($_POST['submit'])) {
-			$emailTemplate = new EmailTemplate();
-            $emailTemplate->setDatabase(gGetDb());
+		if(isset($_POST['submit'])) 
+        {
+            $database = gGetDb();
+            $database->transactionally(function() use ($database)
+            {
+                global $baseurl;
+                
+                $emailTemplate = new EmailTemplate();
+                $emailTemplate->setDatabase($database);
             
-			$name = $_POST['name'];
-            
-			$emailTemplate->setName($name);
-			$emailTemplate->setText($_POST['text']);
-			$emailTemplate->setJsquestion($_POST['jsquestion']);
-			$emailTemplate->setOncreated(isset($_POST['oncreated']));
-			$emailTemplate->setActive(isset($_POST['active']));
-			$siuser = sanitize($_SESSION['user']);
+        	    $emailTemplate->setName($_POST['name']);
+			    $emailTemplate->setText($_POST['text']);
+			    $emailTemplate->setJsquestion($_POST['jsquestion']);
+			    $emailTemplate->setOncreated(isset($_POST['oncreated']));
+			    $emailTemplate->setActive(isset($_POST['active']));
+			    
+			    // Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
+                // getByName(...) returns false on no records found.
+                if (EmailTemplate::getByName($_POST['name'], $database)) 
+                {
+				    throw new TransactionException("That Email template name is already being used. Please choose another.");
+			    }
 			
-			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
-			$nameCheck = EmailTemplate::getByName($name, gGetDb());
-			if ($nameCheck) {
-				BootStrap::displayAlertBox("That Email template name is already being used. Please choose another.");
-				BootstrapSkin::displayInternalFooter();
-				die();
-			}
-			
-			$emailTemplate->save();
-			$id = $emailTemplate->getId();
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$id', '$siuser', 'CreatedEmail', CURRENT_TIMESTAMP());";
-			$result = $tsSQL->query($query);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-		    header("Refresh:5;URL=$tsurl/acc.php?action=emailmgmt");
-			BootstrapSkin::displayAlertBox("Email template has been saved successfully. You will be returned to Email Management in 5 seconds.<br /><br />\n
-			Click <a href=\"".$tsurl."/acc.php?action=emailmgmt\">here</a> if you are not redirected.");
-			$accbotSend->send("Email $name ($id) created by $siuser");
-			BootstrapSkin::displayInternalFooter();
-			die();
+			    $emailTemplate->save();
+			    $id = $emailTemplate->getId();
+                
+			    $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:id, :user, 'CreatedEmail', CURRENT_TIMESTAMP());");
+                if(!$query->execute(array(":id" => $emailTemplate->getId(), ":user" => User::getCurrent()->getUsername())))
+                {
+                    throw new TransactionException();    
+                }
+                
+                SessionAlert::success("Email template has been saved successfully.");
+                header("Location: $baseurl/acc.php?action=emailmgmt");
+
+                $accbotSend->send("Email {$_POST['name']} ({$emailTemplate->getId()}) created by " . User::getCurrent()->getUsername());
+			    die();    
+            });
 		}
+        
 		$smarty->assign('id', null);
 		$smarty->assign('createdid', $createdid);
         $smarty->assign('emailTemplate', new EmailTemplate());
@@ -2029,21 +2019,23 @@ elseif ($action == "emailmgmt") {
 		global $createdid;
 		$gid = sanitize($_GET['edit']);
         
+        $database = gGetDb();
+        
 		if(isset($_POST['submit'])) 
         {
-			$emailTemplate = EmailTemplate::getById($gid, gGetDb());
+			$emailTemplate = EmailTemplate::getById($_GET['edit'], $database);
 			// Allow the user to see the edit form (with read only fields) but not POST anything.
 			if(!User::getCurrent()->isAdmin()) {
 				BootstrapSkin::displayAlertBox("I'm sorry, but you must be an administrator to access this page.");
 				BootstrapSkin::displayInternalFooter();
 				die();
 			}
-			$name = $_POST['name'];
-			$emailTemplate->setName($name);
+            
+			$emailTemplate->setName($_POST['name']);
 			$emailTemplate->setText($_POST['text']);
 			$emailTemplate->setJsquestion($_POST['jsquestion']);
 			
-			if ($gid == $createdid) { // Both checkboxes on the main created message should always be enabled.
+			if ($_GET['edit'] == $createdid) { // Both checkboxes on the main created message should always be enabled.
 				$emailTemplate->setOncreated(1);
 				$emailTemplate->setActive(1);
                 $emailTemplate->setPreloadOnly(0);
@@ -2056,27 +2048,33 @@ elseif ($action == "emailmgmt") {
 			$siuser = sanitize($_SESSION['user']);
 				
 			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
-			$nameCheck = EmailTemplate::getByName($name, gGetDb());
-			if ($nameCheck != false && $nameCheck->getId() != $gid) {
+			$nameCheck = EmailTemplate::getByName($_POST['name'], gGetDb());
+			if ($nameCheck != false && $nameCheck->getId() != $_GET['edit']) {
 				BootstrapSkin::displayAlertBox("That Email template name is already being used. Please choose another.");
 				BootstrapSkin::displayInternalFooter();
 				die();
 			}
 
-			$emailTemplate->save();
+            $database->transactionally(function() use ($database, $emailTemplate) 
+            {
+                $emailTemplate->save();
+                
+                $logQuery = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:id, :username, 'EditedEmail', CURRENT_TIMESTAMP())");
+                $logQuery->execute(array(":id" => $_GET['edit'], ":username" => User::getCurrent()->getCurrent()));
             
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$gid', '$siuser', 'EditedEmail', CURRENT_TIMESTAMP())";
-			$result = $tsSQL->query($query);
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			header("Refresh:5;URL=$tsurl/acc.php?action=emailmgmt");
-			BootstrapSkin::displayAlertBox("Email template has been saved successfully. You will be returned to Email Management in 5 seconds.<br /><br />\n
-			Click <a href=\"".$tsurl."/acc.php?action=emailmgmt\">here</a> if you are not redirected.");
-			$accbotSend->send("Email $name ($gid) edited by $siuser");
+			
+			    if (! $logQuery->execute(array(":id" => $_GET['edit'], ":username" => User::getCurrent()->getCurrent())))
+			    {
+                    throw new TransactionException("Error saving log entry");
+                }
             
-			BootstrapSkin::displayInternalFooter();
+			    header("Location: $baseurl/acc.php?action=emailmgmt");
+			    SessionAlert::success("Email template has been saved successfully.");
+			    $accbotSend->send("Email {$_POST['name']} ({$_GET['edit']}) edited by " . User::getCurrent()->getUsername());
+            });
+            
 			die();
-		} // /if was submitted
+		}
         
 		$emailTemplate = EmailTemplate::getById($_GET['edit'], gGetDb());
 		$smarty->assign('id', $gid);
@@ -2113,10 +2111,52 @@ elseif ($action == "emailmgmt") {
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
+elseif ($action == "oauthdetach")
+{ 
+    $currentUser = User::getCurrent();
+    $currentUser->setOAuthAccessSecret(null);
+    $currentUser->setOAuthAccessToken(null);
+    $currentUser->setOAuthRequestSecret(null);
+    $currentUser->setOAuthRequestToken(null);
+        
+    $currentUser->save();
+    
+    header("Location: {$baseurl}/acc.php?action=logout");
+}
+elseif ($action == "oauthattach")
+{
+    $database = gGetDb();
+    $database->transactionally(function() use ($database)
+    {
+        try
+        {
+            global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;
+            
+            $user = User::getCurrent();
+            
+            // Get a request token for OAuth
+            $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
+            $requestToken = $util->getRequestToken();
+
+            // save the request token for later
+            $user->setOAuthRequestToken($requestToken->key);
+            $user->setOAuthRequestSecret($requestToken->secret);
+            $user->save();
+        
+            $redirectUrl = $util->getAuthoriseUrl($requestToken);
+        
+            header("Location: {$redirectUrl}");
+        
+        }
+        catch(Exception $ex)
+        {
+            throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
+        }
+    });
+}
 # If the action specified does not exist, goto the default page.
 else {
 	echo defaultpage();
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
-?>

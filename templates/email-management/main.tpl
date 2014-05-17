@@ -1,6 +1,6 @@
 <div class="page-header">
   <h1>Email Management<small>
-    Create and edit close reasons{if $currentUser->isAdmin() == true} &nbsp;<a class="btn btn-primary" href="{$tsurl}/acc.php?action=emailmgmt&amp;create=1">
+    Create and edit close reasons{if $currentUser->isAdmin() == true} &nbsp;<a class="btn btn-primary" href="{$baseurl}/acc.php?action=emailmgmt&amp;create=1">
       <i class="icon-white icon-plus"></i>&nbsp;Create new Message
     </a>{/if}
   </small></h1>
@@ -21,7 +21,7 @@
           {if $row->getPreloadOnly()}<span class="label label-info">Preload only</span>{/if}
         </td>
         <td>
-          <a class="btn {if $currentUser->isAdmin()}btn-warning{/if}" href="{$tsurl}/acc.php?action=emailmgmt&amp;edit={$row->getId()}">
+          <a class="btn {if $currentUser->isAdmin()}btn-warning{/if}" href="{$baseurl}/acc.php?action=emailmgmt&amp;edit={$row->getId()}">
             {if $currentUser->isAdmin()}<i class="icon-white icon-pencil"></i>&nbsp;Edit Message{else}<i class="icon-black icon-eye-open"></i>&nbsp;View Message{/if}
           </a>
         </td>
@@ -44,7 +44,7 @@
           {if $row->getPreloadOnly()}<span class="label label-info">Preload only</span>{/if}
         </td>
         <td>
-          <a class="btn {if $currentUser->isAdmin()}btn-warning{/if}" href="{$tsurl}/acc.php?action=emailmgmt&amp;edit={$row->getId()}">
+          <a class="btn {if $currentUser->isAdmin()}btn-warning{/if}" href="{$baseurl}/acc.php?action=emailmgmt&amp;edit={$row->getId()}">
             {if $currentUser->isAdmin()}<i class="icon-white icon-pencil"></i>&nbsp;Edit Message{else}<i class="icon-black icon-eye-open"></i>&nbsp;View Message{/if}
           </a>
         </td>

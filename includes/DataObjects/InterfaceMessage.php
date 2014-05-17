@@ -49,9 +49,9 @@ class InterfaceMessage extends DataObject
         if($this->isNew)
 		{ // insert
 			$statement = $this->dbObject->prepare("INSERT INTO interfacemessage (updatecounter, description, type, content) VALUES (0, :desc, :type, :content);");
-			$statement->bindParam(":type", $this->type);
-			$statement->bindParam(":desc", $this->description);
-			$statement->bindParam(":content", $this->content);
+			$statement->bindValue(":type", $this->type);
+			$statement->bindValue(":desc", $this->description);
+			$statement->bindValue(":content", $this->content);
 			if($statement->execute())
 			{
 				$this->isNew = false;
@@ -65,10 +65,10 @@ class InterfaceMessage extends DataObject
 		else
 		{ // update
 			$statement = $this->dbObject->prepare("UPDATE interfacemessage SET type = :type, description = :desc, content = :content, updatecounter = updatecounter + 1 WHERE id = :id LIMIT 1;");
-			$statement->bindParam(":id", $this->id);
-			$statement->bindParam(":type", $this->type);
-			$statement->bindParam(":desc", $this->description);
-			$statement->bindParam(":content", $this->content);
+			$statement->bindValue(":id", $this->id);
+			$statement->bindValue(":type", $this->type);
+			$statement->bindValue(":desc", $this->description);
+			$statement->bindValue(":content", $this->content);
             
 			if(!$statement->execute())
 			{
@@ -84,15 +84,15 @@ class InterfaceMessage extends DataObject
     
     public function getContentForDisplay()
     {
-        global $tsurl;
+        global $baseurl;
         
         $message = $this->content;
         
         if( strpos($message, "%VERSION%") !== false ) {
-			$message = str_replace('%VERSION%', getToolVersion(), $message);
+			$message = str_replace('%VERSION%', Environment::getToolVersion(), $message);
 		}
 		
-		$message = str_replace('%TSURL%', $tsurl, $message);
+		$message = str_replace('%TSURL%', $baseurl, $message);
 		return $message;
     }
 

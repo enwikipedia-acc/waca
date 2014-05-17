@@ -68,27 +68,46 @@ class BootstrapSkin {
      * Prints the internal interface footer to the screen.
      */
     public static function displayInternalFooter() {
-        global $smarty, $internalInterface, $tagstack;
+        global $smarty, $tagstack;
         
         // close all declared open tags
-        while(count($tagstack) != 0) { echo array_pop($tagstack); }
+        while(count($tagstack) != 0) 
+        { 
+            echo array_pop($tagstack); 
+        }
         
-		$howma = $internalInterface->gethowma(true);
-		$howout = $internalInterface->showhowma();
-		if ($howma != 1) { // not equal to one, as zero uses the plural form too.
-			$onlinemessage = "$howma Account Creators currently online (past 5 minutes): $howout";
+		$last5min = time() - 300;
+		$last5mins = date("Y-m-d H:i:s", $last5min); 		
+		
+        $database = gGetDb();
+        $statement = $database->prepare("SELECT * FROM user WHERE lastactive > :lastfive;");
+        $statement->execute(array(":lastfive" => $last5mins));
+        $resultSet = $statement->fetchAll(PDO::FETCH_CLASS, "User");
+        $resultSetCount = count($resultSet);
+        
+        $creators = implode(", ", array_map(function($arg)
+        { 
+            return "<a href=\"statistics.php?page=Users&amp;user=" . $arg->getId() . "\">" . htmlentities($arg->getUsername()) . "</a>";
+        }, $resultSet));
+        
+		if ($resultSetCount != 1) { // not equal to one, as zero uses the plural form too.
+			$onlinemessage = $resultSetCount . " Account Creators currently online (past 5 minutes): $creators";
         } else {
-			$onlinemessage = "$howma Account Creator currently online (past 5 minutes): $howout";
+			$onlinemessage = $resultSetCount . " Account Creator currently online (past 5 minutes): $creators";
         }
         
         $online = '<p class="span6 text-right"><small>' . $onlinemessage . '</small></p>';
-        if( isset( $_SESSION['user'] ) ) {
+        
+        if( isset( $_SESSION['user'] ) ) 
+        {
             $smarty->assign("onlineusers", $online);
         }
-        else {
+        else 
+        {
             $emptystring="";
             $smarty->assign("onlineusers", $emptystring);   
         }
+        
         $smarty->display("footer.tpl");
     }
     
@@ -211,4 +230,3 @@ class skin {
         BootstrapSkin::displayRequestForm();
 	}
 }
-?>

@@ -110,6 +110,3 @@ else
 	echo "Error starting transaction.\n";
 	
 mysql_close();
-
-
-?>

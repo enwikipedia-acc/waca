@@ -19,7 +19,7 @@ if (!defined("ACC")) {
 function zoomPage($id,$urlhash)
 {
 	global $tsSQLlink, $session, $availableRequestStates, $createdid;
-	global $smarty, $locationProvider, $rdnsProvider;
+	global $smarty, $locationProvider, $rdnsProvider, $antispoofProvider;
     
     $database = gGetDb();
     $request = Request::getById($id, $database);
@@ -29,6 +29,15 @@ function zoomPage($id,$urlhash)
         BootstrapSkin::displayAlertBox("Could not load the requested request!", "alert-error","Error",true,false);
         BootstrapSkin::displayInternalFooter();
         die();
+    }
+    
+    if(isset($_GET['ecoverride']) && User::getCurrent()->isAdmin() )
+    {
+        $smarty->assign('ecoverride', true);
+    }
+    else
+    {
+        $smarty->assign('ecoverride', false);
     }
         
     $smarty->assign('request', $request);
@@ -193,7 +202,15 @@ function zoomPage($id,$urlhash)
 	$smarty->assign("defaultstate", $defaultRequestStateKey);
 	$smarty->assign("requeststates", $availableRequestStates);
 		
-	$spoofs = getSpoofs( $request->getName() );
+    try
+    {
+        $spoofs = $antispoofProvider->getSpoofs( $request->getName() );
+    }
+    catch (Exception $ex)
+    {
+        $spoofs = $ex->getMessage();   
+    }
+    
 	$smarty->assign("spoofs", $spoofs);
 	
 	// START LOG DISPLAY
@@ -243,15 +260,28 @@ function zoomPage($id,$urlhash)
             
             if(!isset($row['userid']))
             {
-                if(!isset($namecache[$row['user']])) {
-                    $row['userid'] = getUserIdFromName($row['user']);
-                } else {
+                if(!isset($namecache[$row['user']])) 
+                {
+                    $userObject = User::getByUsername($row['user'], gGetDb());
+                    if($userObject != false)
+                    {
+                        $namecache[$row['user']] = $userObject->getId();
+                    }
+                    else
+                    {
+                        $namecache[$row['user']]= 0;
+                    }
+                    
+                    $row['userid'] = $namecache[$row['user']];
+                } 
+                else 
+                {
                     $row['userid'] = $namecache[($row['user'])];
                 }
             }
             
 			if($row['action'] == "comment") {
-				$row['entry'] = xss($row['comment']);
+				$row['entry'] = htmlentities($row['comment'], ENT_QUOTES, 'UTF-8');
                 
 				global $enableCommentEditing;
 				if($enableCommentEditing && (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() || User::getCurrent()->getId() == $row['userid']) && isset($row['id']))
@@ -259,7 +289,7 @@ function zoomPage($id,$urlhash)
 					$row['canedit'] = true;
                 }
 			} elseif($row['action'] == "Closed custom-n" ||$row['action'] == "Closed custom-y"  ) {
-				$row['entry'] = "<em>" .$row['description'] . "</em><br />" . str_replace("\n", '<br />', xss($row['comment']));
+				$row['entry'] = "<em>" .$row['description'] . "</em><br />" . str_replace("\n", '<br />', htmlentities($row['comment'], ENT_QUOTES, 'UTF-8'));
 			} else {
 				foreach($availableRequestStates as $deferState)
                 {

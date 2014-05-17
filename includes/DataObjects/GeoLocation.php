@@ -12,7 +12,7 @@ class GeoLocation extends DataObject
     public static function getByAddress($address, PdoDatabase $database)
     {
         $statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE address = :id LIMIT 1;");
-		$statement->bindParam(":id", $address);
+		$statement->bindValue(":id", $address);
 
 		$statement->execute();
 
@@ -32,8 +32,8 @@ class GeoLocation extends DataObject
 		if($this->isNew)
 		{ // insert
 			$statement = $this->dbObject->prepare("INSERT INTO `geolocation` (address, data) VALUES (:address, :data);");
-			$statement->bindParam(":address", $this->address);
-			$statement->bindParam(":data", $this->data);
+			$statement->bindValue(":address", $this->address);
+			$statement->bindValue(":data", $this->data);
 			if($statement->execute())
 			{
 				$this->isNew = false;
@@ -47,9 +47,9 @@ class GeoLocation extends DataObject
 		else
 		{ // update
 			$statement = $this->dbObject->prepare("UPDATE `geolocation` SET address = :address, data = :data WHERE id = :id LIMIT 1;");
-			$statement->bindParam(":address", $this->address);
-			$statement->bindParam(":id", $this->id);
-			$statement->bindParam(":data", $this->data);
+			$statement->bindValue(":address", $this->address);
+			$statement->bindValue(":id", $this->id);
+			$statement->bindValue(":data", $this->data);
             
 			if(!$statement->execute())
 			{

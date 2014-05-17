@@ -34,17 +34,17 @@ class Request extends DataObject
                 ":email, :ip, :name, :comment, :status, CURRENT_TIMESTAMP(), :checksum, :emailsent," . 
                 ":emailconfirm, :reserved, :useragent, :forwardedip" . 
                 ");");
-			$statement->bindParam(":email", $this->email);
-			$statement->bindParam(":ip", $this->ip);
-			$statement->bindParam(":name", $this->name);
-			$statement->bindParam(":comment", $this->comment);
-			$statement->bindParam(":status", $this->status);
-			$statement->bindParam(":checksum", $this->checksum);
-			$statement->bindParam(":emailsent", $this->emailsent);
-			$statement->bindParam(":emailconfirm", $this->emailconfirm);
-			$statement->bindParam(":reserved", $this->reserved);
-			$statement->bindParam(":useragent", $this->useragent);
-			$statement->bindParam(":forwardedip", $this->forwardedip);
+			$statement->bindValue(":email", $this->email);
+			$statement->bindValue(":ip", $this->ip);
+			$statement->bindValue(":name", $this->name);
+			$statement->bindValue(":comment", $this->comment);
+			$statement->bindValue(":status", $this->status);
+			$statement->bindValue(":checksum", $this->checksum);
+			$statement->bindValue(":emailsent", $this->emailsent);
+			$statement->bindValue(":emailconfirm", $this->emailconfirm);
+			$statement->bindValue(":reserved", $this->reserved);
+			$statement->bindValue(":useragent", $this->useragent);
+			$statement->bindValue(":forwardedip", $this->forwardedip);
 			if($statement->execute())
 			{
 				$this->isNew = false;
@@ -61,12 +61,12 @@ class Request extends DataObject
                 "status = :status, checksum = :checksum, emailsent = :emailsent, emailconfirm = :emailconfirm, " .
                 "reserved = :reserved " .
                 "WHERE id = :id LIMIT 1;");
-			$statement->bindParam(":id", $this->id);
-			$statement->bindParam(":status", $this->status);
-			$statement->bindParam(":checksum", $this->checksum);
-			$statement->bindParam(":emailsent", $this->emailsent);
-			$statement->bindParam(":emailconfirm", $this->emailconfirm);
-			$statement->bindParam(":reserved", $this->reserved);  
+			$statement->bindValue(":id", $this->id);
+			$statement->bindValue(":status", $this->status);
+			$statement->bindValue(":checksum", $this->checksum);
+			$statement->bindValue(":emailsent", $this->emailsent);
+			$statement->bindValue(":emailconfirm", $this->emailconfirm);
+			$statement->bindValue(":reserved", $this->reserved);  
 			if(!$statement->execute())
 			{
 				throw new Exception($statement->errorInfo());
@@ -219,7 +219,7 @@ class Request extends DataObject
         }
         
         $commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) as num FROM comment where request = :id;");
-        $commentsQuery->bindParam(":id", $this->id);
+        $commentsQuery->bindValue(":id", $this->id);
         
         $commentsQuery->execute();
         
@@ -232,8 +232,8 @@ class Request extends DataObject
         if($this->emailRequests == false)
         {
             $query = $this->dbObject->prepare("SELECT * FROM request WHERE email = :email AND id != :id AND emailconfirm = 'Confirmed';");
-            $query->bindParam(":id", $this->id);
-            $query->bindParam(":email", $this->email);
+            $query->bindValue(":id", $this->id);
+            $query->bindValue(":email", $this->email);
             
             $query->execute();
             
@@ -257,9 +257,9 @@ class Request extends DataObject
             $trustedIp = $this->getTrustedIp();
             $trustedFilter = '%' . $trustedIp . '%';
                         
-            $query->bindParam(":id", $this->id);
-            $query->bindParam(":ip", $trustedIp);
-            $query->bindParam(":forwarded", $trustedFilter);
+            $query->bindValue(":id", $this->id);
+            $query->bindValue(":ip", $trustedIp);
+            $query->bindValue(":forwarded", $trustedFilter);
             
             $query->execute();
             

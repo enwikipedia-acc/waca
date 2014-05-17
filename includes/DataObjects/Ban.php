@@ -30,7 +30,7 @@ class Ban extends DataObject
         {
             $query = "SELECT * FROM ban WHERE target = :target;";
             $statement = $database->prepare($query);
-            $statement->bindParam(":target", $target);
+            $statement->bindValue(":target", $target);
         }
         else
         {    
@@ -68,7 +68,7 @@ class Ban extends DataObject
         {
             $query = "SELECT * FROM ban WHERE target = :target AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;";
             $statement = $database->prepare($query);
-            $statement->bindParam(":target", $target);
+            $statement->bindValue(":target", $target);
         }
         else
         {    
@@ -103,7 +103,7 @@ class Ban extends DataObject
         }
 
         $statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE id = :id  AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;");
-		$statement->bindParam(":id", $id);
+		$statement->bindValue(":id", $id);
 
 		$statement->execute();
 
@@ -134,8 +134,8 @@ class Ban extends DataObject
         
         $query = "SELECT * FROM ban WHERE type = :type AND target = :target AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;";
         $statement = $database->prepare($query);
-        $statement->bindParam(":target", $target);
-        $statement->bindParam(":type", $type);
+        $statement->bindValue(":target", $target);
+        $statement->bindValue(":type", $type);
         
         $statement->execute();
         
@@ -155,12 +155,12 @@ class Ban extends DataObject
         if($this->isNew)
 		{ // insert
 			$statement = $this->dbObject->prepare("INSERT INTO `ban` (type, target, user, reason, date, duration, active) VALUES (:type, :target, :user, :reason, CURRENT_TIMESTAMP(), :duration, :active);");
-			$statement->bindParam(":type", $this->type);
-			$statement->bindParam(":target", $this->target);
-			$statement->bindParam(":user", $this->user);
-			$statement->bindParam(":reason", $this->reason);
-			$statement->bindParam(":duration", $this->duration);
-			$statement->bindParam(":active", $this->active);
+			$statement->bindValue(":type", $this->type);
+			$statement->bindValue(":target", $this->target);
+			$statement->bindValue(":user", $this->user);
+			$statement->bindValue(":reason", $this->reason);
+			$statement->bindValue(":duration", $this->duration);
+			$statement->bindValue(":active", $this->active);
 			if($statement->execute())
 			{
 				$this->isNew = false;
@@ -174,10 +174,10 @@ class Ban extends DataObject
 		else
 		{ // update
 			$statement = $this->dbObject->prepare("UPDATE `ban` SET duration = :duration, active = :active, user = :user WHERE id = :id LIMIT 1;");
-			$statement->bindParam(":id", $this->id);
-			$statement->bindParam(":duration", $this->duration);
-			$statement->bindParam(":active", $this->active);
-			$statement->bindParam(":user", $this->user);
+			$statement->bindValue(":id", $this->id);
+			$statement->bindValue(":duration", $this->duration);
+			$statement->bindValue(":active", $this->active);
+			$statement->bindValue(":user", $this->user);
             
 			if(!$statement->execute())
 			{

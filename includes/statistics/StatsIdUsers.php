@@ -41,7 +41,7 @@ class StatsIdUsers extends StatisticsPage
 	{
 		$query = "select user_name, user_level, user_checkuser from acc_user where user_identified = 1 order by user_name;";
 	
-		global $tsurl;
+		global $baseurl;
 		$qb = new QueryBrowser();
 		$qb->rowFetchMode = PDO::FETCH_NUM;
         $qb->overrideTableTitles = array("User name", "Access level", "Checkuser?");    

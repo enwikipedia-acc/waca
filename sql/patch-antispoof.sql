@@ -1,0 +1,6 @@
+CREATE TABLE `antispoofcache` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `username` VARCHAR(255) NOT NULL,
+  `data` BLOB NOT NULL,
+  `timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`));

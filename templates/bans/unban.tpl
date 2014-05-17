@@ -1,4 +1,4 @@
-﻿<form class="form-horizontal" method="post" action="{$tsurl}/acc.php?action=unban&amp;confirmunban=true&amp;id={$ban->getId()}">
+﻿<form class="form-horizontal" method="post" action="{$baseurl}/acc.php?action=unban&amp;confirmunban=true&amp;id={$ban->getId()}">
   <fieldset>
     <legend>Unbanning {$ban->getTarget()|escape}</legend>
 
@@ -13,7 +13,7 @@
     </div>
   </fieldset>
   <div class="form-actions">
-    <a class="btn" href="{$tsurl}/acc.php?action=ban">Cancel</a>
+    <a class="btn" href="{$baseurl}/acc.php?action=ban">Cancel</a>
     <button type="submit" class="btn btn-success">
       <i class="icon-white icon-ok"></i>&nbsp;Unban
     </button>

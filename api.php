@@ -64,12 +64,11 @@ function actionStatus()
 	$status = "Open";			
 	$mailconfirm = "Confirmed";			
 	$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_pend WHERE pend_status = :pstatus AND pend_mailconfirm = :pmailconfirm;");
-	$query->bindParam(":pstatus", $status);
-	$query->bindParam(":pmailconfirm", $mailconfirm);
+	$query->bindValue(":pmailconfirm", $mailconfirm);
 	
 	global $availableRequestStates;
 	foreach( $availableRequestStates as $key => $value ) {
-		$status = $key;
+        $query->bindValue(":pstatus", $key);
 		$query->execute();
 		$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 		$docStatus->setAttribute($value['api'], $sus['count']);
@@ -82,7 +81,7 @@ function actionStatus()
 
 	$level = "Admin";
 	$query = $database->prepare("SELECT COUNT(*) AS count FROM user WHERE status = :ulevel;");
-	$query->bindParam(":ulevel", $level);
+	$query->bindValue(":ulevel", $level);
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 	$docStatus->setAttribute("useradmin", $sus['count']);
@@ -120,7 +119,7 @@ function actionStats()
 	// verify is a user
 	
 	$isUserQuery = $database->prepare("SELECT COUNT(*) AS count FROM user WHERE username = :username;");
-	$isUserQuery->bindParam(":username", $username);
+	$isUserQuery->bindValue(":username", $username);
 	$isUserQuery->execute();
 	
 	$isUser = $isUserQuery->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
@@ -129,7 +128,7 @@ function actionStats()
 
 	if( $isUser ) {
 		$userQuery = $database->prepare("SELECT  username, status, lastactive, welcome_template, onwikiname FROM user WHERE username = :username;");
-		$userQuery->bindParam(":username", $username);
+		$userQuery->bindValue(":username", $username);
 		$userQuery->execute();
 		
 		$user = $userQuery->fetch(PDO::FETCH_ASSOC) or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
@@ -161,7 +160,7 @@ function actionCount( ) {
 	// verify is a user
 	
 	$isUserQuery = $database->prepare("SELECT COUNT(*) AS count FROM user WHERE username = :username;");
-	$isUserQuery->bindParam(":username", $username);
+	$isUserQuery->bindValue(":username", $username);
 	$isUserQuery->execute();
 	
 	$isUser = $isUserQuery->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
@@ -171,14 +170,14 @@ function actionCount( ) {
 	if( $isUser ) {
 		// accounts created
 		$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log LEFT JOIN emailtemplate ON concat('Closed ', id) = log_action WHERE (oncreated = '1' OR log_action = 'Closed custom-y') AND log_user = :username");
-		$query->bindParam(":username", $username);
+		$query->bindValue(":username", $username);
 		$query->execute();
 
 		$count = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 		$docUser->setAttribute("created",$count['count']);
 
 		$query = $database->prepare("SELECT * FROM user WHERE username = :username");
-		$query->bindParam(":username", $username);
+		$query->bindValue(":username", $username);
 		$query->execute();
 		
 		$user = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
@@ -189,8 +188,8 @@ function actionCount( ) {
 		if( $user['status'] == 'Admin' ) {
 			$action = "Suspended";			
 			$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log WHERE log_user = :username AND log_action = :action");
-			$query->bindParam(":username", $username);
-			$query->bindParam(":action", $action);
+			$query->bindValue(":username", $username);
+			$query->bindValue(":action", $action);
 			$query->execute();
 			$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("suspended", $sus['count']);
@@ -255,9 +254,9 @@ function actionCount( ) {
 		}
 
 		$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log LEFT JOIN emailtemplate ON concat('Closed ', id) = log_action WHERE log_time LIKE :date  AND (oncreated = '1' OR log_action = 'Closed custom-y') AND log_user = :username");
-		$query->bindParam(":username", $username);
+		$query->bindValue(":username", $username);
 		$date = date( 'Y-m-d' ) . "%";
-		$query->bindParam(":date", $date );
+		$query->bindValue(":date", $date );
 		$query->execute();
 		$today = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 		$docUser->setAttribute("today",$today['count']);

@@ -25,6 +25,9 @@ require_once 'includes/SmartyInit.php';
 require_once 'includes/StatisticsPage.php';
 require_once 'includes/database.php';
 require_once 'devlist.php';
+require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
+require_once 'lib/mediawiki-extensions-OAuth/lib/JWT.php';
+require_once 'oauth/OAuthUtility.php';
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
@@ -48,4 +51,3 @@ if(isset($_SERVER['PATH_INFO']))
 $sp = StatisticsPage::Create($page);
 
 $sp->Show();
-?>

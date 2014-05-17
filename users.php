@@ -26,6 +26,9 @@ require_once 'includes/database.php';
 require_once 'includes/skin.php';
 require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
+require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
+require_once 'lib/mediawiki-extensions-OAuth/lib/JWT.php';
+require_once 'oauth/OAuthUtility.php';
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
@@ -47,7 +50,7 @@ if(isset($_GET['usersearch']))
     
     if($user != false)
     {
-        header("Location: $tsurl/statistics.php?page=Users&user={$user->getId()}");
+        header("Location: $baseurl/statistics.php?page=Users&user={$user->getId()}");
         die();
     }
 }
@@ -108,7 +111,7 @@ if (isset ($_GET['approve']))
 
     $accbotSend->send($user->getUsername() . " approved by " . User::getCurrent()->getUsername());
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-	mail($user->getEmail(), "ACC Account Approved", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been approved by " . User::getCurrent()->getUsername() . ". To login please go to $tsurl/acc.php.\n- The English Wikipedia Account Creation Team", $headers);
+	mail($user->getEmail(), "ACC Account Approved", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been approved by " . User::getCurrent()->getUsername() . ". To login please go to $baseurl/acc.php.\n- The English Wikipedia Account Creation Team", $headers);
     BootstrapSkin::displayInternalFooter();
     die();
 }
@@ -312,16 +315,16 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
             
             $tgtmessage = "User " . $_GET['rename'] . " (" . $oldname . ")";
             $logpendupdate = $database->prepare("UPDATE acc_log SET log_pend = :newname WHERE log_pend = :tgtmessage AND log_action != 'Renamed'");
-            $logpendupdate->bindParam(":newname", $_POST['newname']);
-            $logpendupdate->bindParam(":tgtmessage", $tgtmessage);
+            $logpendupdate->bindValue(":newname", $_POST['newname']);
+            $logpendupdate->bindValue(":tgtmessage", $tgtmessage);
             if(!$logpendupdate->execute())
             {
                 throw new Exception("log_pend update failed.");   
             }
         
             $logupdate = $database->prepare("UPDATE acc_log SET log_user = :newname WHERE log_user = :oldname;");
-            $logupdate->bindParam(":newname", $_POST['newname']);
-            $logupdate->bindParam(":oldname", $oldname);
+            $logupdate->bindValue(":newname", $_POST['newname']);
+            $logupdate->bindValue(":oldname", $oldname);
             if(!$logupdate->execute())
             {
                 throw new Exception("log_user update failed.");   
@@ -332,9 +335,9 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
             $userid = $user->getId();
             $currentUser = User::getCurrent()->getUsername();
             $logentryquery = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:userid, :siuser, 'Renamed', CURRENT_TIMESTAMP(), :logentry);");
-            $logentryquery->bindParam(":logentry", $logentry);
-            $logentryquery->bindParam(":userid", $userid);
-            $logentryquery->bindParam(":siuser", $currentUser);
+            $logentryquery->bindValue(":logentry", $logentry);
+            $logentryquery->bindValue(":userid", $userid);
+            $logentryquery->bindValue(":siuser", $currentUser);
             if(!$logentryquery->execute())
             {
                 throw new Exception("logging failed.");   
@@ -401,8 +404,8 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {
        
             $siuser = User::getCurrent()->getUsername();
             $logquery = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:gid, :sid, 'Prefchange', CURRENT_TIMESTAMP(), '');");
-            $logquery->bindParam(":gid", $_GET['edituser']);
-            $logquery->bindParam(":sid", $siuser);
+            $logquery->bindValue(":gid", $_GET['edituser']);
+            $logquery->bindValue(":sid", $siuser);
             if(!$logquery->execute()) throw new Exception("Logging failed.");
         
 		    $accbotSend->send($siuser . " changed preferences for " . $user->getUsername());
@@ -489,12 +492,7 @@ BootstrapSkin::pushTagStack("</div>");
 
 $database = gGetDb();
 
-$statement = $database->prepare("SELECT * FROM user WHERE status = :level;");
-
-$level = "New";
-$statement->bindParam(":level", $level);
-$statement->execute();
-$result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
+$result = User::getAllWithStatus("New", $database);
 
 if($result != false && count($result) != 0)
 {
@@ -506,9 +504,7 @@ if($result != false && count($result) != 0)
 }
 echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">Users</a></div><div id="collapseTwo" class="accordion-body collapse"><div class="accordion-inner">';
 
-$level = "User";
-$statement->execute();
-$result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
+$result = User::getAllWithStatus("User", $database);
 $smarty->assign("userlist", $result);
 $smarty->display("usermanagement/userlist.tpl");
 echo <<<HTML
@@ -519,10 +515,7 @@ echo <<<HTML
 <p class="muted">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
 HTML;
 
-
-$level = "Admin";
-$statement->execute();
-$result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
+$result = User::getAllWithStatus("Admin", $database);
 $smarty->assign("userlist", $result);
 $smarty->display("usermanagement/userlist.tpl");
 echo <<<HTML
@@ -533,9 +526,7 @@ echo <<<HTML
 <p class="muted">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
 HTML;
 
-$statement2 = $database->prepare("SELECT * FROM user WHERE checkuser = 1;");
-$statement2->execute();
-$result = $statement2->fetchAll(PDO::FETCH_CLASS, "User");
+$result = User::getAllCheckusers( $database );
 $smarty->assign("userlist", $result);
 $smarty->display("usermanagement/userlist.tpl");
 echo '</div></div></div>';
@@ -546,10 +537,7 @@ if(isset($_GET['showall']))
 <div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFive">Suspended accounts</a></div><div id="collapseFive" class="accordion-body collapse"><div class="accordion-inner">
 HTML;
 
-
-    $level = "Suspended";
-    $statement->execute();
-    $result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
+    $result = User::getAllWithStatus("Suspended", $database);
     $smarty->assign("userlist", $result);
     $smarty->display("usermanagement/userlist.tpl");
     echo <<<HTML
@@ -559,10 +547,7 @@ HTML;
 <div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseSix">Declined accounts</a></div><div id="collapseSix" class="accordion-body collapse"><div class="accordion-inner">
 HTML;
 
-
-    $level = "Declined";
-    $statement->execute();
-    $result = $statement->fetchAll(PDO::FETCH_CLASS, "User");
+    $result = User::getAllWithStatus("Declined", $database);
     $smarty->assign("userlist", $result);
     $smarty->display("usermanagement/userlist.tpl");
     echo "</div></div></div>";

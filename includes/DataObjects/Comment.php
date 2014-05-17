@@ -27,10 +27,10 @@ class Comment extends DataObject
         {
             // current user isn't an admin, so limit to only those which are visibile to users, and private comments the user has posted themselves.
             $statement = $database->prepare("SELECT * FROM comment WHERE request = :target AND (visibility = 'user' || user = :userid);");
-            $statement->bindParam(":userid", User::getCurrent()->getId());    
+            $statement->bindValue(":userid", User::getCurrent()->getId());    
         }
         
-        $statement->bindParam(":target", $id);
+        $statement->bindValue(":target", $id);
         
         $statement->execute();
         
@@ -50,10 +50,10 @@ class Comment extends DataObject
         if($this->isNew)
 		{ // insert
             $statement = $this->dbObject->prepare("INSERT INTO comment ( time, user, comment, visibility, request ) VALUES ( CURRENT_TIMESTAMP(), :user, :comment, :visibility, :request );");
-            $statement->bindParam(":user", $this->user);
-            $statement->bindParam(":comment", $this->comment);
-            $statement->bindParam(":visibility", $this->visibility);
-            $statement->bindParam(":request", $this->request);
+            $statement->bindValue(":user", $this->user);
+            $statement->bindValue(":comment", $this->comment);
+            $statement->bindValue(":visibility", $this->visibility);
+            $statement->bindValue(":request", $this->request);
             
 			if($statement->execute())
 			{
@@ -68,9 +68,9 @@ class Comment extends DataObject
 		else
 		{ // update
             $statement = $this->dbObject->prepare("UPDATE comment SET comment = :comment, visibility = :visibility WHERE id = :id LIMIT 1;");
-            $statement->bindParam(":id", $this->id);
-            $statement->bindParam(":comment", $this->comment);
-            $statement->bindParam(":visibility", $this->visibility);
+            $statement->bindValue(":id", $this->id);
+            $statement->bindValue(":comment", $this->comment);
+            $statement->bindValue(":visibility", $this->visibility);
             
 			if(!$statement->execute())
 			{

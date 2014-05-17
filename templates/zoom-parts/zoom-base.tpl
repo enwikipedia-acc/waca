@@ -2,7 +2,7 @@
 <div class="row-fluid">
   <!-- request details -->
   <div class="span6 container-fluid">
-    {include file="zoom-parts/request-info.tpl"}
+    {include file="zoom-parts/request-info.tpl" showLink="true"}
     <hr />
     {include file="zoom-parts/request-actions.tpl"}
   </div>
@@ -34,7 +34,7 @@
                 <em>({$others->getDate()|relativedate})</em>
               </span>
             </td>
-            <td><a target="_blank" href="{$tsurl}/acc.php?action=zoom&amp;id={$others->getId()}">{$others->getName()}</a></td>
+            <td><a target="_blank" href="{$baseurl}/acc.php?action=zoom&amp;id={$others->getId()}">{$others->getName()}</a></td>
           </tr>
         {/foreach}
       </table>
@@ -55,7 +55,7 @@
                 <em>({$others->getDate()|relativedate})</em>
               </span>
             </td>
-            <td><a target="_blank" href="{$tsurl}/acc.php?action=zoom&amp;id={$others->getId()}">{$others->getName()}</a></td>
+            <td><a target="_blank" href="{$baseurl}/acc.php?action=zoom&amp;id={$others->getId()}">{$others->getName()}</a></td>
           </tr>
         {/foreach}
       </table>

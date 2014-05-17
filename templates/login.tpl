@@ -7,7 +7,7 @@
 </div>
 <div class="row-fluid">
 	<div class="offset4 span4 well">
-		<form class="container-fluid" action="{$tsurl}/acc.php?action=login&amp;nocheck=1" method="post">
+		<form class="container-fluid" action="{$baseurl}/acc.php?action=login&amp;nocheck=1" method="post">
 			<div class="control-group row">
 				<input type="text" id="username" name="username" placeholder="Username" {if isset($smarty.get.tplUsername)} value="{$smarty.get.tplUsername|escape}"{/if} class="offset1 span10" required>
 			</div>
@@ -19,10 +19,10 @@
 			</div>
 			<div class="control-group row">
 				<div class="offset1 span5">
-					<a class="btn btn-block" href="{$tsurl}/acc.php?action=forgotpw">Forgot password?</a>
+					<a class="btn btn-block" href="{$baseurl}/acc.php?action=forgotpw">Forgot password?</a>
 				</div>
 				<div class="span5">
-					<a class="btn btn-block" href="{$tsurl}/acc.php?action=register">Register</a>
+					<a class="btn btn-block" href="{$baseurl}/acc.php?action=register">Register</a>
 				</div>
 			</div>
 		</form>

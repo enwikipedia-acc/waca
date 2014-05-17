@@ -102,24 +102,26 @@ class StatsTopCreators extends StatisticsPage
 	
 }
 function statsTopCreatorsRowCallback($row, $rowno) 
-{   $out = "";
-	
-	// $out = '<!-- vardump: $row:' . print_r($row,true) . "-->";
-
-	$out .= "<tr";
+{   	
+	$out = "<tr";
+    if($row['log_user'] == User::getCurrent()->getUsername())
+    {
+        $out .= ' class="info"';   
+    }
+    
 	$out .= '>';
 	
-	$out .= '<th>'.$rowno.'</th>';
+	$out .= '<td>'.$rowno.'</td>';
 	$out .= '<td>'.$row['COUNT(*)'].'</td>';
 	
-	global $tsurl;
+	global $baseurl;
 	$out .= '<td><a ';
 	
 	
 	if($row['user_level'] == "Suspended") $out .= 'class="muted" '; 
 	if($row['user_level'] == "Admin") $out .= 'class="text-success" ';	
 	
-	$out .= 'href="'.$tsurl.'/statistics.php?page=Users&amp;user='.$row['user_id'].'">'.$row['log_user'].'</a></td>';
+	$out .= 'href="'.$baseurl.'/statistics.php?page=Users&amp;user='.$row['user_id'].'">'.$row['log_user'].'</a></td>';
 	
 	$out .= '</tr>';
 	

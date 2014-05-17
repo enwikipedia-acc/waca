@@ -89,7 +89,7 @@ if( isset($_GET['term']) && isset($_GET['type']) )
         $qterm = '%' . $term . '%';
         
         $statement = gGetDb()->prepare("SELECT * FROM request WHERE email LIKE :term;");
-        $statement->bindParam(":term", $qterm);
+        $statement->bindValue(":term", $qterm);
         $statement->execute();
         $requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
         foreach($requests as $r)
@@ -118,8 +118,8 @@ if( isset($_GET['term']) && isset($_GET['type']) )
         $qterm = '%' . $term . '%';
         
         $statement = gGetDb()->prepare("SELECT * FROM request WHERE email <> 'acc@toolserver.org' and ip <> '127.0.0.1' and ip LIKE :term or forwardedip LIKE :term2;");
-        $statement->bindParam(":term", $qterm);
-        $statement->bindParam(":term2", $qterm);
+        $statement->bindValue(":term", $qterm);
+        $statement->bindValue(":term2", $qterm);
         $statement->execute();
         $requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
         foreach($requests as $r)
@@ -139,7 +139,7 @@ if( isset($_GET['term']) && isset($_GET['type']) )
         $qterm = '%' . $term . '%';
         
         $statement = gGetDb()->prepare("SELECT * FROM request WHERE name LIKE :term;");
-        $statement->bindParam(":term", $qterm);
+        $statement->bindValue(":term", $qterm);
         $statement->execute();
         $requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
         foreach($requests as $r)
@@ -168,4 +168,3 @@ else
 }
 
 BootstrapSkin::displayInternalFooter();
-?>

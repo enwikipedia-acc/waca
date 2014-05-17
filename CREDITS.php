@@ -34,7 +34,6 @@
 
 // Redirect user away from the current directory.
 require_once('config.inc.php');
-global $tsurl;
-header("Location: $tsurl/team.php");
+global $baseurl;
+header("Location: $baseurl/team.php");
 die();
-?>

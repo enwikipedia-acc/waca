@@ -80,5 +80,3 @@ if(count($res)) {
 
 $db->close();
 echo "Run complete, exiting.\n";
-
-?>

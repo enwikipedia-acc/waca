@@ -192,4 +192,3 @@ class database {
 	//	  mysql_close($this->dbLink);
 	// }
 }
-?>
