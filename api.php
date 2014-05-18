@@ -79,21 +79,18 @@ function actionStatus()
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 	$docStatus->setAttribute("bans", $sus['count']);
 
-	$level = "Admin";
-	$query = $database->prepare("SELECT COUNT(*) AS count FROM user WHERE status = :ulevel;");
-	$query->bindValue(":ulevel", $level);
+    $query = $database->prepare("SELECT COUNT(*) AS count FROM user WHERE status = :ulevel;");
+	$query->bindValue(":ulevel", "Admin");
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 	$docStatus->setAttribute("useradmin", $sus['count']);
 	
-	$level = "User";
-	$query->bindParam(":ulevel", $level);
+	$query->bindValue(":ulevel", "User");
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 	$docStatus->setAttribute("user", $sus['count']);
 	
-	$level = "New";
-	$query->bindParam(":ulevel", $level);
+	$query->bindValue(":ulevel", "New");
 	$query->execute();
 	$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 	$docStatus->setAttribute("usernew", $sus['count']);
