@@ -1,10 +1,10 @@
 [submodule "lib/bootstrap-sortable"]
 	path = lib/bootstrap-sortable
-	url = git@github.com:enwikipedia-acc/bootstrap-sortable.git
+	url = https://github.com/enwikipedia-acc/bootstrap-sortable.git
 [submodule "lib/password_compat"]
 	path = lib/password_compat
-	url = git@github.com:ircmaxell/password_compat.git
+	url = https://github.com/ircmaxell/password_compat.git
 	branch = master
 [submodule "lib/mediawiki-extensions-OAuth"]
 	path = lib/mediawiki-extensions-OAuth
-	url = git@github.com:wikimedia/mediawiki-extensions-OAuth.git
+	url = https://github.com/wikimedia/mediawiki-extensions-OAuth.git
