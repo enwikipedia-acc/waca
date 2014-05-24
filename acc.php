@@ -2060,10 +2060,10 @@ elseif ($action == "emailmgmt") {
                 $emailTemplate->save();
                 
                 $logQuery = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:id, :username, 'EditedEmail', CURRENT_TIMESTAMP())");
-                $logQuery->execute(array(":id" => $_GET['edit'], ":username" => User::getCurrent()->getCurrent()));
+                $logQuery->execute(array(":id" => $_GET['edit'], ":username" => User::getCurrent()->getUsername()));
             
 			
-			    if (! $logQuery->execute(array(":id" => $_GET['edit'], ":username" => User::getCurrent()->getCurrent())))
+			    if (! $logQuery->execute(array(":id" => $_GET['edit'], ":username" => User::getCurrent()->getUsername())))
 			    {
                     throw new TransactionException("Error saving log entry");
                 }
