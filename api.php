@@ -194,49 +194,59 @@ function actionCount( ) {
 			$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("suspended", $sus['count']);
 
-			$action = "Promoted";	
+			$action = "Promoted";
+			$query->bindValue(":action", $action);
 			$query->execute();
 			$pro = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("promoted",$pro['count']);
 
-			$action = "Approved";	
+			$action = "Approved";
+			$query->bindValue(":action", $action);
 			$query->execute(); 
 			$app = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("approved",$app['count']);
 
-			$action = "Demoted";	
+			$action = "Demoted";
+			$query->bindValue(":action", $action);
 			$query->execute();
 			$dem = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("demoted",$dem['count']);
 
-			$action = "Declined";	
+			$action = "Declined";
+			$query->bindValue(":action", $action);
 			$query->execute();
 			$dec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("declined",$dec['count']);
 
-			$action = "Renamed";	
+			$action = "Renamed";
+			$query->bindValue(":action", $action);
 			$query->execute();
 			$rnc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("renamed",$rnc['count']);
 			
-			$action = "Edited";	
+			$action = "Edited";
+			$query->bindValue(":action", $action);
 			$query->execute();
 			$mec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("edited",$mec['count']);
 			
 			$action = "Prefchange";
+			$query->bindValue(":action", $action);
 			$query->execute();
 			$pcc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("prefchange",$pcc['count']);
 			
 			// Combine all three actions affecting Welcome templates into one count.
 			$action = "CreatedTemplate";
+			$query->bindValue(":action", $action);
 			$query->execute();
 			$ctc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$action = "EditedTemplate";
+			$query->bindValue(":action", $action);
 			$query->execute();
 			$etc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$action = "DeletedTemplate";
+			$query->bindValue(":action", $action);
 			$query->execute();
 			$dtc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$welctemptotal = $ctc['count'] + $etc['count'] + $dtc['count'];
@@ -244,9 +254,11 @@ function actionCount( ) {
 			
 			// Combine both actions affecting Email templates into one count.
 			$action = "CreatedEmail";
+			$query->bindValue(":action", $action);
 			$query->execute();
 			$cec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$action = "EditedEmail";
+			$query->bindValue(":action", $action);
 			$query->execute();
 			$eec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$emailtemptotal = $cec['count'] + $eec['count'];
