@@ -138,11 +138,13 @@ function actionStats()
 	}
 }
 
-function actionCount( ) {
+function actionCount( ) 
+{
 	global $document, $doc_api, $database;
 
 	$username = isset( $_GET['user'] ) ? $_GET['user'] : '';
-	if( $username == '' ) {
+	if( $username == '' ) 
+    {
 		$err = $document->createElement("error");
 		$doc_api->appendChild($err);
 		$err->setAttribute("error", "Please specify a username");
@@ -164,7 +166,8 @@ function actionCount( ) {
 
 	$isUser = ( ( $isUser['count'] == 0 ) ? false : true );
 
-	if( $isUser ) {
+	if( $isUser ) 
+    {
 		// accounts created
 		$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log LEFT JOIN emailtemplate ON concat('Closed ', id) = log_action WHERE (oncreated = '1' OR log_action = 'Closed custom-y') AND log_user = :username");
 		$query->bindValue(":username", $username);
@@ -182,94 +185,74 @@ function actionCount( ) {
 			
 		$adminInfo = '';
 		$docUser->setAttribute("level",$user['status']);
-		if( $user['status'] == 'Admin' ) {
-			$action = "Suspended";			
+		if( $user['status'] == 'Admin' ) 
+        {	
 			$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log WHERE log_user = :username AND log_action = :action");
 			$query->bindValue(":username", $username);
-			$query->bindValue(":action", $action);
+			$query->bindValue(":action", "Suspended");
 			$query->execute();
 			$sus = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("suspended", $sus['count']);
 
-			$action = "Promoted";
-			$query->bindValue(":action", $action);
+			$query->bindValue(":action", "Promoted");
 			$query->execute();
 			$pro = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("promoted",$pro['count']);
 
-			$action = "Approved";
-			$query->bindValue(":action", $action);
+			$query->bindValue(":action", "Approved");
 			$query->execute(); 
 			$app = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("approved",$app['count']);
 
-			$action = "Demoted";
-			$query->bindValue(":action", $action);
+			$query->bindValue(":action", "Demoted");
 			$query->execute();
 			$dem = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("demoted",$dem['count']);
 
-			$action = "Declined";
-			$query->bindValue(":action", $action);
+			$query->bindValue(":action", "Declined");
 			$query->execute();
 			$dec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("declined",$dec['count']);
 
-			$action = "Renamed";
-			$query->bindValue(":action", $action);
+			$query->bindValue(":action", "Renamed");
 			$query->execute();
 			$rnc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("renamed",$rnc['count']);
 			
-			$action = "Edited";
-			$query->bindValue(":action", $action);
+			$query->bindValue(":action", "Edited");
 			$query->execute();
 			$mec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("edited",$mec['count']);
 			
-			$action = "Prefchange";
-			$query->bindValue(":action", $action);
+			$query->bindValue(":action", "Prefchange");
 			$query->execute();
 			$pcc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 			$docUser->setAttribute("prefchange",$pcc['count']);
 			
 			// Combine all three actions affecting Welcome templates into one count.
-			$action = "CreatedTemplate";
-			$query->bindValue(":action", $action);
-			$query->execute();
-			$ctc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-			$action = "EditedTemplate";
-			$query->bindValue(":action", $action);
-			$query->execute();
-			$etc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-			$action = "DeletedTemplate";
-			$query->bindValue(":action", $action);
-			$query->execute();
-			$dtc = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-			$welctemptotal = $ctc['count'] + $etc['count'] + $dtc['count'];
-			$docUser->setAttribute("welctempchange", $welctemptotal);
+            $combinedquery = $database->prepare("SELECT COUNT(*) AS count FROM acc_log WHERE log_user = :username AND log_action IN ('CreatedTemplate', 'EditedTemplate', 'DeletedTemplate');");
+			$combinedquery->bindValue(":username", $username);
+			$combinedquery->execute();
+			$dtc = $combinedquery->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+			$docUser->setAttribute("welctempchange", $dtc['count']);
 			
 			// Combine both actions affecting Email templates into one count.
-			$action = "CreatedEmail";
-			$query->bindValue(":action", $action);
-			$query->execute();
-			$cec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-			$action = "EditedEmail";
-			$query->bindValue(":action", $action);
-			$query->execute();
-			$eec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
-			$emailtemptotal = $cec['count'] + $eec['count'];
-			$docUser->setAttribute("emailtempchange", $emailtemptotal);
+            $combinedquery = $database->prepare("SELECT COUNT(*) AS count FROM acc_log WHERE log_user = :username AND log_action IN ('CreatedEmail', 'EditedEmail');");
+			$combinedquery->bindValue(":username", $username);
+			$combinedquery->execute();
+            $cec = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
+			$docUser->setAttribute("emailtempchange", $cec['count']);
 		}
 
 		$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_log LEFT JOIN emailtemplate ON concat('Closed ', id) = log_action WHERE log_time LIKE :date  AND (oncreated = '1' OR log_action = 'Closed custom-y') AND log_user = :username");
 		$query->bindValue(":username", $username);
-		$date = date( 'Y-m-d' ) . "%";
-		$query->bindValue(":date", $date );
+		$query->bindValue(":date", date( 'Y-m-d' ) . "%" );
 		$query->execute();
 		$today = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 		$docUser->setAttribute("today",$today['count']);
-	} else {
+	} 
+    else 
+    {
 		$docUser->setAttribute("missing","true");
 	}
 }
