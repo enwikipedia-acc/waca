@@ -50,7 +50,7 @@ class StatsMonthlyStats extends StatisticsPage
 				die("Query error.");
             }
             
-			foreach ($result->fetchAll(PDO::FETCH_ASSOC) as $row)
+			foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row)
             {
 				$id = $row['id'];
 				$name = $row['name'];
