@@ -2003,8 +2003,9 @@ elseif ($action == "emailmgmt") {
                 header("Location: $baseurl/acc.php?action=emailmgmt");
 
                 $accbotSend->send("Email {$_POST['name']} ({$emailTemplate->getId()}) created by " . User::getCurrent()->getUsername());
-			    die();    
             });
+            
+            die();    
 		}
         
 		$smarty->assign('id', null);
@@ -2068,9 +2069,12 @@ elseif ($action == "emailmgmt") {
                     throw new TransactionException("Error saving log entry");
                 }
             
+                global $baseurl, $accbotSend;
+                
 			    header("Location: $baseurl/acc.php?action=emailmgmt");
-			    SessionAlert::success("Email template has been saved successfully.");
 			    $accbotSend->send("Email {$_POST['name']} ({$_GET['edit']}) edited by " . User::getCurrent()->getUsername());
+                
+			    SessionAlert::success("Email template has been saved successfully.");
             });
             
 			die();
