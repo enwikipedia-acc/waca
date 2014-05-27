@@ -1,182 +1,273 @@
-SQL Structure
+mysql> show tables;      
++-------------------+
+| Tables_in_acc2    |
++-------------------+
+| acc_log           |
+| acc_pend          |
+| acc_template      |
+| acc_trustedips    |
+| acc_user          |
+| acc_welcome       |
+| antispoofcache    |
+| ban               |
+| closes            |
+| comment           |
+| emailtemplate     |
+| geolocation       |
+| interfacemessage  |
+| rdnscache         |
+| request           |
+| user              |
+| welcomequeue      |
++-------------------+
+17 rows in set (0.00 sec)
 
-* This file is out of date, but still contains some useful information. *
-
-
-mysql> SHOW tables;
-+-----------------+
-| Tables_in_p_acc |
-+-----------------+
-| acc_ban         | 
-| acc_emails      | 
-| acc_log         | 
-| acc_pend        | 
-| acc_user        | 
-| acc_welcome     | 
-+-----------------+
-6 rows in set (0.00 sec)
-
-acc_emails
-This table is used to store the canned e-mail responses.
-
-
-mysql> DESCRIBE acc_emails;
+mysql> describe acc_log; 
 +------------+--------------+------+-----+---------+----------------+
 | Field      | Type         | Null | Key | Default | Extra          |
 +------------+--------------+------+-----+---------+----------------+
-| mail_id    | int(11)      | NO   | PRI | NULL    | auto_increment | 
-| mail_text  | blob         | NO   |     | NULL    |                | 
-| mail_count | int(11)      | NO   |     | NULL    |                | 
-| mail_desc  | varchar(255) | NO   |     | NULL    |                | 
-| mail_type  | varchar(255) | NO   |     | NULL    |                | 
+| log_id     | int(11)      | NO   | PRI | NULL    | auto_increment |
+| log_pend   | varchar(255) | NO   | MUL | NULL    |                |
+| log_user   | varchar(255) | NO   |     | NULL    |                |
+| log_action | varchar(255) | NO   | MUL | NULL    |                |
+| log_time   | datetime     | NO   |     | NULL    |                |
+| log_cmt    | blob         | NO   |     | NULL    |                |
 +------------+--------------+------+-----+---------+----------------+
-5 rows in set (0.00 sec)
-
-
-
-*mail_id - Table key
-*mail_text - The text of the canned mail
-*mail_count - Per-mail usage counters
-*mail_desc - Message description
-*mail_type - Type of message. May be used to specify email or interface presently.
-
-acc_log
-This table contains logging data.
-
-mysql> describe acc_log;
-+------------+--------------+------+-----+---------+----------------+
-| Field      | Type         | Null | Key | Default | Extra          |
-+------------+--------------+------+-----+---------+----------------+
-| log_id     | int(11)      | NO   | PRI | NULL    | auto_increment | 
-| log_pend   | varchar(255) | NO   |     | NULL    |                | 
-| log_user   | varchar(255) | NO   |     | NULL    |                | 
-| log_action | varchar(255) | NO   |     | NULL    |                | 
-| log_time   | datetime     | NO   |     | NULL    |                | 
-| log_cmt    | blob         | NO   |     | NULL    |                | 
-+------------+--------------+------+-----+---------+----------------+
-6 rows in set (0.00 sec)
-
-
-*log_id - Table key
-*log_pend - pend_id linked to the logged event, or, user_id of the affected system user
-*log_user - Username of the user performing the action
-*log_action - The action performed
-*log_time - Timestamp
-*log_cmt - Used for comments on some actions (presently only user decline and suspend)
-
-acc_pend
-This table contains pending requests.
+6 rows in set (0.01 sec)
 
 mysql> describe acc_pend;
 +------------------+--------------+------+-----+-------------------+----------------+
 | Field            | Type         | Null | Key | Default           | Extra          |
 +------------------+--------------+------+-----+-------------------+----------------+
-| pend_id          | int(11)      | NO   | PRI | NULL              | auto_increment | 
-| pend_email       | varchar(512) | NO   |     | NULL              |                | 
-| pend_ip          | varchar(255) | NO   |     | NULL              |                | 
-| pend_name        | varchar(512) | NO   |     | NULL              |                | 
-| pend_cmt         | mediumtext   | NO   |     | NULL              |                | 
-| pend_status      | varchar(255) | NO   |     | NULL              |                | 
-| pend_date        | timestamp    | NO   |     | CURRENT_TIMESTAMP |                | 
-| pend_checksum    | varchar(256) | NO   |     | NULL              |                | 
-| pend_emailsent   | varchar(10)  | NO   |     | NULL              |                | 
-| pend_mailconfirm | varchar(255) | NO   |     | NULL              |                | 
+| pend_id          | int(11)      | NO   | PRI | NULL              | auto_increment |
+| pend_email       | varchar(512) | NO   | MUL | NULL              |                |
+| pend_ip          | varchar(255) | NO   | MUL | NULL              |                |
+| pend_name        | varchar(512) | NO   |     | NULL              |                |
+| pend_cmt         | mediumtext   | NO   |     | NULL              |                |
+| pend_status      | varchar(255) | NO   | MUL | NULL              |                |
+| pend_date        | timestamp    | NO   |     | CURRENT_TIMESTAMP |                |
+| pend_checksum    | varchar(256) | NO   |     | NULL              |                |
+| pend_emailsent   | varchar(10)  | NO   |     | NULL              |                |
+| pend_mailconfirm | varchar(255) | NO   |     | NULL              |                |
+| pend_reserved    | int(11)      | NO   |     | 0                 |                |
+| pend_useragent   | blob         | NO   | MUL | NULL              |                |
+| pend_proxyip     | varchar(255) | YES  |     | NULL              |                |
 +------------------+--------------+------+-----+-------------------+----------------+
-10 rows in set (0.00 sec)
+13 rows in set (0.00 sec)
 
-*pend_id - Table key
-*pend_email - E-mail supplied by requesting user
-*pend_ip - IP of the requesting user
-*pend_name - Requested username
-*pend_cmt - Comments from requesting user
-*pend_status - Status of this request
-*pend_date - Date of this request
-*pend_checksum - A checksum of this request
-*pend_emailsent - If the user has been sent an email
-*pend_mailconfirm - A salted, random value used in e-mail confirmation
+mysql> describe acc_template;
++-------------------+----------+------+-----+---------+----------------+
+| Field             | Type     | Null | Key | Default | Extra          |
++-------------------+----------+------+-----+---------+----------------+
+| template_id       | int(11)  | NO   | PRI | NULL    | auto_increment |
+| template_usercode | tinytext | NO   |     | NULL    |                |
+| template_botcode  | tinytext | NO   |     | NULL    |                |
++-------------------+----------+------+-----+---------+----------------+
+3 rows in set (0.00 sec)
 
-acc_user
-This table contains all internal user data.
+mysql> describe acc_trustedips;
++-------------------+-------------+------+-----+---------+-------+
+| Field             | Type        | Null | Key | Default | Extra |
++-------------------+-------------+------+-----+---------+-------+
+| trustedips_ipaddr | varchar(15) | NO   | PRI | NULL    |       |
++-------------------+-------------+------+-----+---------+-------+
+1 row in set (0.00 sec)
 
-mysql> DESCRIBE acc_user;
-+-----------------------+---------------+------+-----+---------+----------------+
-| Field                 | Type          | Null | Key | Default | Extra          |
-+-----------------------+---------------+------+-----+---------+----------------+
-| user_id               | int(11)       | NO   | PRI | NULL    | auto_increment |
-| user_name             | varchar(255)  | NO   |     | NULL    |                |
-| user_email            | varchar(255)  | NO   |     | NULL    |                |
-| user_pass             | varchar(255)  | NO   |     | NULL    |                |
-| user_level            | varchar(255)  | NO   |     | NULL    |                |
-| user_onwikiname       | varchar(255)  | NO   |     | NULL    |                |
-| user_welcome          | int(11)       | NO   |     | 0       |                |
-| user_welcome_sig      | varchar(4096) | NO   |     | NULL    |                |
-| user_welcome_template | varchar(1024) | NO   |     | NULL    |                |
-| user_lastactive       | datetime      | YES  |     | NULL    |                |
-| user_forcelogout      | int(3)        | YES  |     | NULL    |                |
-| user_secure           | int(11)       | NO   |     | 0       |                |
-+-----------------------+---------------+------+-----+---------+----------------+
-12 rows in set (0.01 sec)
+mysql> describe acc_user;
++-------------------------+------------------+------+-----+---------------------+----------------+
+| Field                   | Type             | Null | Key | Default             | Extra          |
++-------------------------+------------------+------+-----+---------------------+----------------+
+| user_id                 | int(11)          | NO   | PRI | NULL                | auto_increment |
+| user_name               | varchar(255)     | NO   | UNI | NULL                |                |
+| user_email              | varchar(255)     | NO   | UNI | NULL                |                |
+| user_pass               | varchar(255)     | NO   |     | NULL                |                |
+| user_level              | varchar(255)     | NO   |     | New                 |                |
+| user_onwikiname         | varchar(255)     | YES  |     | NULL                |                |
+| user_welcome_sig        | varchar(4096)    | NO   |     |                     |                |
+| user_welcome_template   | varchar(1024)    | NO   |     | 0                   |                |
+| user_lastactive         | datetime         | NO   |     | 0000-00-00 00:00:00 |                |
+| user_lastip             | varchar(40)      | NO   |     | 0.0.0.0             |                |
+| user_forcelogout        | int(3)           | NO   |     | 0                   |                |
+| user_secure             | int(11)          | NO   |     | 1                   |                |
+| user_checkuser          | int(1)           | NO   |     | 0                   |                |
+| user_identified         | int(1) unsigned  | NO   |     | 0                   |                |
+| user_welcome_templateid | int(11)          | NO   |     | 0                   |                |
+| user_abortpref          | tinyint(4)       | NO   |     | 0                   |                |
+| user_confirmationdiff   | int(10) unsigned | NO   |     | 0                   |                |
+| user_emailsig           | blob             | NO   |     | NULL                |                |
+| oauthrequesttoken       | varchar(45)      | YES  |     | NULL                |                |
+| oauthrequestsecret      | varchar(45)      | YES  |     | NULL                |                |
+| oauthaccesstoken        | varchar(45)      | YES  |     | NULL                |                |
+| oauthaccesssecret       | varchar(45)      | YES  |     | NULL                |                |
+| oauthidentitycache      | blob             | YES  |     | NULL                |                |
++-------------------------+------------------+------+-----+---------------------+----------------+
+23 rows in set (0.01 sec)
 
-*user_id - Table key
-*user_name - The user's chosen name
-*user_email - The user's e-mail address
-*user_pass - The user's password (stored in a one-way cipher)
-*user_level - The user's access level (New, User, Admin, Suspended, Declined presently)
-*user_onwikiname - The user's on-wiki name.
-*user_welcome - Set welcoming on or off. 0 for off, 1 for on. Default 1
-*user_welcome_sig - The user's preferred welcome sig
-*user_welcome_template - The user's preferred welcoming template
-*user_lastactive - Timestamp of the last time the user accessed acc.php, used for 'whos online' stats
-*user_forcelogout - Force the user to log out if set to 1
-*user_secure - Turn on use of the  secure server. 0 for off, 1 for on. Default 1
-
-acc_ban
-This table holds e-mail addresses and IP's that are banned from the request system.
-mysql> describe acc_ban;
-+--------------+---------------+------+-----+---------+----------------+
-| Field        | Type          | Null | Key | Default | Extra          |
-+--------------+---------------+------+-----+---------+----------------+
-| ban_id       | int(11)       | NO   | PRI | NULL    | auto_increment | 
-| ban_type     | varchar(255)  | NO   |     | NULL    |                | 
-| ban_target   | varchar(700)  | NO   | UNI | NULL    |                | 
-| ban_user     | varchar(255)  | NO   |     | NULL    |                | 
-| ban_reason   | varchar(4096) | NO   |     | NULL    |                | 
-| ban_date     | varchar(1024) | NO   |     | NULL    |                | 
-| ban_duration | varchar(255)  | NO   |     | NULL    |                | 
-+--------------+---------------+------+-----+---------+----------------+
-7 rows in set (0.00 sec)
-
-
-*ban_id - Table key
-*ban_type - Type of ban? E-mail or IP presently
-*ban_target - IP or E-mail addy of ban target
-*ban_user - Username of admin setting ban
-*ban_reason - Why?
-*ban_date - Time ban was set
-*ban_duration - Ban duration, in seconds
-
-acc_welcome
-This table holds pending and closed welcomes.
 mysql> describe acc_welcome;
 +------------------+---------------+------+-----+---------+----------------+
 | Field            | Type          | Null | Key | Default | Extra          |
 +------------------+---------------+------+-----+---------+----------------+
-| welcome_id       | int(11)       | NO   | PRI | NULL    | auto_increment | 
-| welcome_uid      | int(11)       | NO   |     | NULL    |                | 
-| welcome_user     | varchar(1024) | NO   |     | NULL    |                | 
-| welcome_sig      | varchar(4096) | NO   |     | NULL    |                | 
-| welcome_status   | varchar(96)   | NO   |     | NULL    |                | 
-| welcome_pend     | int(11)       | NO   |     | NULL    |                | 
-| welcome_template | varchar(2048) | NO   |     | NULL    |                | 
+| welcome_id       | int(11)       | NO   | PRI | NULL    | auto_increment |
+| welcome_uid      | varchar(1024) | NO   |     | NULL    |                |
+| welcome_user     | varchar(1024) | NO   |     | NULL    |                |
+| welcome_sig      | varchar(4096) | NO   |     | NULL    |                |
+| welcome_status   | varchar(96)   | NO   |     | NULL    |                |
+| welcome_pend     | int(11)       | NO   |     | NULL    |                |
+| welcome_template | varchar(2048) | NO   |     | NULL    |                |
 +------------------+---------------+------+-----+---------+----------------+
 7 rows in set (0.00 sec)
 
+mysql> describe antispoofcache;
++-----------+--------------+------+-----+-------------------+----------------+
+| Field     | Type         | Null | Key | Default           | Extra          |
++-----------+--------------+------+-----+-------------------+----------------+
+| id        | int(11)      | NO   | PRI | NULL              | auto_increment |
+| username  | varchar(255) | NO   |     | NULL              |                |
+| data      | blob         | NO   |     | NULL              |                |
+| timestamp | timestamp    | NO   |     | CURRENT_TIMESTAMP |                |
++-----------+--------------+------+-----+-------------------+----------------+
+4 rows in set (0.00 sec)
 
-*welcome_id - Table key
-*welcome_uid - acc_user / user_id of the user that requested the operation
-*welcome_user - Username of the user to be welcomed
-*welcome_sig - The welcoming user's signature
-*welcome_status - The status of this operation
-*welcome_template - The template to use
-*welcome_pend - acc_pend / pend_id of the closed request.
+mysql> describe ban;
++----------+---------------+------+-----+---------+-------+
+| Field    | Type          | Null | Key | Default | Extra |
++----------+---------------+------+-----+---------+-------+
+| id       | int(11)       | NO   | PRI | NULL    |       |
+| type     | varchar(255)  | NO   |     | NULL    |       |
+| target   | varchar(700)  | NO   |     | NULL    |       |
+| user     | varchar(255)  | NO   |     | NULL    |       |
+| reason   | varchar(4096) | NO   |     | NULL    |       |
+| date     | varchar(1024) | NO   |     | NULL    |       |
+| duration | varchar(255)  | NO   |     | NULL    |       |
+| active   | tinyint(1)    | NO   |     | 1       |       |
++----------+---------------+------+-----+---------+-------+
+8 rows in set (0.01 sec)
 
+mysql> describe closes;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| closes    | varchar(18)  | NO   |     |         |       |
+| mail_desc | varchar(255) | NO   |     |         |       |
++-----------+--------------+------+-----+---------+-------+
+2 rows in set (0.01 sec)
+
+mysql> describe comment;
++------------+--------------+------+-----+---------------------+----------------+
+| Field      | Type         | Null | Key | Default             | Extra          |
++------------+--------------+------+-----+---------------------+----------------+
+| id         | int(11)      | NO   | PRI | NULL                | auto_increment |
+| time       | timestamp    | NO   |     | 0000-00-00 00:00:00 |                |
+| user       | int(11)      | NO   |     | 0                   |                |
+| comment    | mediumtext   | NO   |     | NULL                |                |
+| visibility | varchar(255) | NO   |     | NULL                |                |
+| request    | int(11)      | NO   |     | NULL                |                |
++------------+--------------+------+-----+---------------------+----------------+
+6 rows in set (0.00 sec)
+
+mysql> describe emailtemplate;
++-------------+--------------+------+-----+---------+----------------+
+| Field       | Type         | Null | Key | Default | Extra          |
++-------------+--------------+------+-----+---------+----------------+
+| id          | int(11)      | NO   | PRI | NULL    | auto_increment |
+| name        | varchar(255) | NO   | UNI | NULL    |                |
+| text        | blob         | NO   |     | NULL    |                |
+| jsquestion  | mediumtext   | NO   |     | NULL    |                |
+| oncreated   | tinyint(1)   | NO   |     | 0       |                |
+| active      | tinyint(1)   | NO   |     | 1       |                |
+| preloadonly | tinyint(1)   | NO   |     | 0       |                |
++-------------+--------------+------+-----+---------+----------------+
+7 rows in set (0.00 sec)
+
+mysql> describe geolocation;
++----------+-------------+------+-----+-------------------+-----------------------------+
+| Field    | Type        | Null | Key | Default           | Extra                       |
++----------+-------------+------+-----+-------------------+-----------------------------+
+| id       | int(11)     | NO   | PRI | NULL              | auto_increment              |
+| address  | varchar(45) | NO   | UNI | NULL              |                             |
+| data     | blob        | NO   |     | NULL              |                             |
+| creation | timestamp   | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
++----------+-------------+------+-----+-------------------+-----------------------------+
+4 rows in set (0.00 sec)
+
+mysql> describe interfacemessage;
++---------------+--------------+------+-----+---------+----------------+
+| Field         | Type         | Null | Key | Default | Extra          |
++---------------+--------------+------+-----+---------+----------------+
+| id            | int(11)      | NO   | PRI | NULL    | auto_increment |
+| content       | blob         | NO   |     | NULL    |                |
+| updatecounter | int(11)      | NO   |     | NULL    |                |
+| description   | varchar(255) | NO   |     | NULL    |                |
+| type          | varchar(255) | NO   |     | NULL    |                |
++---------------+--------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> describe rdnscache;
++----------+-------------+------+-----+-------------------+-----------------------------+
+| Field    | Type        | Null | Key | Default           | Extra                       |
++----------+-------------+------+-----+-------------------+-----------------------------+
+| id       | int(11)     | NO   | PRI | NULL              | auto_increment              |
+| address  | varchar(45) | NO   | UNI | NULL              |                             |
+| data     | blob        | NO   |     | NULL              |                             |
+| creation | timestamp   | NO   |     | CURRENT_TIMESTAMP | on update CURRENT_TIMESTAMP |
++----------+-------------+------+-----+-------------------+-----------------------------+
+4 rows in set (0.00 sec)
+
+mysql> describe request;
++--------------+--------------+------+-----+---------------------+-------+
+| Field        | Type         | Null | Key | Default             | Extra |
++--------------+--------------+------+-----+---------------------+-------+
+| id           | int(11)      | NO   |     | 0                   |       |
+| email        | varchar(512) | NO   |     | NULL                |       |
+| ip           | varchar(255) | NO   |     | NULL                |       |
+| name         | varchar(512) | NO   |     | NULL                |       |
+| comment      | mediumtext   | NO   |     | NULL                |       |
+| status       | varchar(255) | NO   |     | NULL                |       |
+| date         | timestamp    | NO   |     | 0000-00-00 00:00:00 |       |
+| checksum     | varchar(256) | NO   |     | NULL                |       |
+| emailsent    | varchar(10)  | NO   |     | NULL                |       |
+| emailconfirm | varchar(255) | NO   |     | NULL                |       |
+| reserved     | int(11)      | NO   |     | 0                   |       |
+| useragent    | blob         | NO   |     | NULL                |       |
+| forwardedip  | varchar(255) | YES  |     | NULL                |       |
++--------------+--------------+------+-----+---------------------+-------+
+13 rows in set (0.01 sec)
+
+mysql> describe user;
++--------------------+------------------+------+-----+---------------------+-------+
+| Field              | Type             | Null | Key | Default             | Extra |
++--------------------+------------------+------+-----+---------------------+-------+
+| id                 | int(11)          | NO   |     | 0                   |       |
+| username           | varchar(255)     | NO   |     | NULL                |       |
+| email              | varchar(255)     | NO   |     | NULL                |       |
+| password           | varchar(255)     | NO   |     | NULL                |       |
+| status             | varchar(255)     | NO   |     | New                 |       |
+| onwikiname         | varchar(255)     | YES  |     | NULL                |       |
+| welcome_sig        | varchar(4096)    | NO   |     |                     |       |
+| lastactive         | datetime         | NO   |     | 0000-00-00 00:00:00 |       |
+| forcelogout        | int(3)           | NO   |     | 0                   |       |
+| secure             | int(11)          | NO   |     | 1                   |       |
+| checkuser          | int(1)           | NO   |     | 0                   |       |
+| identified         | int(1) unsigned  | NO   |     | 0                   |       |
+| welcome_template   | int(11)          | NO   |     | 0                   |       |
+| abortpref          | tinyint(4)       | NO   |     | 0                   |       |
+| confirmationdiff   | int(10) unsigned | NO   |     | 0                   |       |
+| emailsig           | blob             | NO   |     | NULL                |       |
+| oauthrequesttoken  | varchar(45)      | YES  |     | NULL                |       |
+| oauthrequestsecret | varchar(45)      | YES  |     | NULL                |       |
+| oauthaccesstoken   | varchar(45)      | YES  |     | NULL                |       |
+| oauthaccesssecret  | varchar(45)      | YES  |     | NULL                |       |
+| oauthidentitycache | blob             | YES  |     | NULL                |       |
++--------------------+------------------+------+-----+---------------------+-------+
+21 rows in set (0.00 sec)
+
+mysql> describe welcomequeue;
++---------+-------------+------+-----+---------+----------------+
+| Field   | Type        | Null | Key | Default | Extra          |
++---------+-------------+------+-----+---------+----------------+
+| id      | int(11)     | NO   | PRI | NULL    | auto_increment |
+| user    | int(11)     | NO   |     | NULL    |                |
+| request | int(11)     | NO   |     | NULL    |                |
+| status  | varchar(10) | NO   |     | Open    |                |
++---------+-------------+------+-----+---------+----------------+
+4 rows in set (0.00 sec)
