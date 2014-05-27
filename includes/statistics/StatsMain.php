@@ -19,32 +19,33 @@ class StatsMain extends StatisticsPage
 {
 	function execute()
 	{
-        $out = '<div class="row-fluid"><div class="span6">';
-        
-		$out .= "<h4>Menu</h4><ul>";
-		global $filepath, $usePathInfo;
-		$files = scandir($filepath . "/includes/statistics/");
+        global $smarty, $filepath;
+
+		$files = scandir( $filepath . "/includes/statistics/" );
 
 		$statsPageDefinitions = preg_grep("/php$/",$files);
 		
-		$urlFragment = $usePathInfo ? $_SERVER["SCRIPT_NAME"] . "/" : "?page=";
-		
-		foreach ($statsPageDefinitions as $i) {
-			require_once $filepath . "/includes/statistics/" . $i;
-			$expld =  explode('.',$i);
-			$c = $expld[0];
-			$o = new $c;
-			if($o->hideFromMenu() == false)
+		foreach ($statsPageDefinitions as $i) 
+        {
+			require_once($filepath . "/includes/statistics/" . $i);
+			$expld = explode('.', $i);
+			$className = $expld[0];
+			$statsPageObject = new $className;
+            
+			if($statsPageObject->hideFromMenu() == false)
 			{
-				$out.='<li><a href="'.$urlFragment.$o->getPageName().'">'.$o->getPageTitle().'</a></li>';
+			    $statsPages[] = $statsPageObject;
 			}
 		}
-		$out.='</ul></div><div class="span6">';
-		$out.=$this->smallStats();
-        $out .= '</div></div><div class="row-fluid"><div class="span12">';
-		$out.=$this->rrdtoolGraphs();
-        $out .= "</div></div>";
-		return $out;
+        
+		$smallStats = $this->smallStats();
+		$rrdToolGraphs = $this->rrdtoolGraphs();
+        
+        $smarty->assign("statsPages", $statsPages);
+        $smarty->assign("smallStats", $smallStats);
+        $smarty->assign("rrdToolGraphs", $rrdToolGraphs);
+       
+		return $smarty->fetch("statistics/main.tpl");
 	}
 	
 	function getPageTitle()
