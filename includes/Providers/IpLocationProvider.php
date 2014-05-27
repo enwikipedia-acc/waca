@@ -62,7 +62,9 @@ class IpLocationProvider implements ILocationProvider
 
                 $response = @new SimpleXMLElement($xml);
 
-                foreach($response as $field=>$value)
+                $result = array();
+                
+                foreach($response as $field => $value)
                 {
                     $result[(string)$field] = (string)$value;
                 }

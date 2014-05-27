@@ -372,6 +372,7 @@ class accRequest {
 		if (function_exists('checkdnsrr')) {
 			getmxrr($domain, $mxhosts, $mxweight);
 			if (count($mxhosts) > 0) {
+                $mxs = array();
 				for ($i = 0; $i < count($mxhosts); $i++) {
 					$mxs[$mxhosts[$i]] = $mxweight[$i];
 				}

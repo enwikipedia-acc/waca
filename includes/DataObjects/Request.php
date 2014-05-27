@@ -283,7 +283,7 @@ class Request extends DataObject
             return false;
         }
         
-        $apiResult = file_get_contents("https://en.wikipedia.org/w/api.php?action=titleblacklist&tbtitle=" . urlencode($user) . "&tbaction=new-account&tbnooverride&format=php");
+        $apiResult = file_get_contents("https://en.wikipedia.org/w/api.php?action=titleblacklist&tbtitle=" . urlencode($this->name) . "&tbaction=new-account&tbnooverride&format=php");
         
         $data = unserialize($apiResult);
         
