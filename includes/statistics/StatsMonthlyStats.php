@@ -45,8 +45,11 @@ class StatsMonthlyStats extends StatisticsPage
 			
             
 			$query = gGetDb()->query("SELECT id, name FROM emailtemplate WHERE active = '1';");
-			if (!$result)
-				sqlerror("Query failed: $query ERROR: " . mysql_error());
+			if (!$query)
+            {
+				die("Query error.");
+            }
+            
 			foreach ($result->fetchAll(PDO::FETCH_ASSOC) as $row)
             {
 				$id = $row['id'];
