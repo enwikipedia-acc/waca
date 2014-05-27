@@ -42,11 +42,11 @@ class User extends DataObject
             $database = gGetDb();   
         }
         
-        if(User::$currentUser === null)
+        if(self::$currentUser === null)
         {
             if(isset($_SESSION['userID']))
             {
-                User::$currentUser = User::getById($_SESSION['userID'], $database);
+                self::$currentUser = self::getById($_SESSION['userID'], $database);
             }
             else
             {
@@ -59,11 +59,11 @@ class User extends DataObject
                 $anonymousCoward->id = -1;
                 $anonymousCoward->identified = 0; // use the identification lockout too.
                 
-                User::$currentUser = $anonymousCoward;
+                self::$currentUser = $anonymousCoward;
             }
         }
         
-        return User::$currentUser;
+        return self::$currentUser;
     }
     
     public static function getByUsername($username, PdoDatabase $database)
@@ -455,7 +455,7 @@ class User extends DataObject
             $statusquery->bindValue(":status", $status);
             $statusquery->bindValue(":id", $this->id);
             
-            $username = User::getCurrent($this->dbObject)->getUsername();
+            $username = self::getCurrent($this->dbObject)->getUsername();
             
             // TODO: update me to use new logging systems.
             $logquery = $this->dbObject->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:id, :user, :action, CURRENT_TIMESTAMP(), :cmt);");

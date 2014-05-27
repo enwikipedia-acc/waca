@@ -43,11 +43,12 @@ class StatsMonthlyStats extends StatisticsPage
 					'series' => "Dropped requests by month"
 				);
 			
-			$query = "SELECT id, name FROM emailtemplate WHERE active = '1';";
-			$result = $tsSQL->query($query);
+            
+			$query = gGetDb()->query("SELECT id, name FROM emailtemplate WHERE active = '1';");
 			if (!$result)
 				sqlerror("Query failed: $query ERROR: " . mysql_error());
-			while ($row = mysql_fetch_assoc($result)) {
+			foreach ($result->fetchAll(PDO::FETCH_ASSOC) as $row)
+            {
 				$id = $row['id'];
 				$name = $row['name'];
 				$queries[] = array(
@@ -170,7 +171,7 @@ class StatsMonthlyStats extends StatisticsPage
 		
 		is_dir($basedirectory . $imgpath) || mkdir($basedirectory . $imgpath, 0777, true);
 		
-		$imgpath .= implode($imghashparts) ;
+		$imgpath .= implode("", $imghashparts) ;
 		return $imgpath;
 	}
 }

@@ -31,22 +31,22 @@ class SessionAlert
      */
     public static function quick($message, $type = "alert-info")
     {
-        SessionAlert::append(new SessionAlert($message, "", $type, true, false));
+        self::append(new SessionAlert($message, "", $type, true, false));
     }
     
     public static function success($message)
     {
-        SessionAlert::append(new SessionAlert($message, "", "alert-success", true, true));
+        self::append(new SessionAlert($message, "", "alert-success", true, true));
     }
     
     public static function warning($message, $title = "Warning!")
     {
-        SessionAlert::append(new SessionAlert($message, $title, "alert-warning", true, true));
+        self::append(new SessionAlert($message, $title, "alert-warning", true, true));
     }
     
     public static function error($message, $title = "Error!")
     {
-        SessionAlert::append(new SessionAlert($message, $title, "alert-error", true, true));
+        self::append(new SessionAlert($message, $title, "alert-error", true, true));
     }
 
     
