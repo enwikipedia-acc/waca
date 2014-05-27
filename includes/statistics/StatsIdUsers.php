@@ -39,7 +39,7 @@ class StatsIdUsers extends StatisticsPage
 	
 	function getUserList()
 	{
-		$query = "select username, status, checkuser from user where identified = 1 order by user_name;";
+		$query = "select username, status, checkuser from user where identified = 1 order by username;";
 	
 		global $baseurl;
 		$qb = new QueryBrowser();
