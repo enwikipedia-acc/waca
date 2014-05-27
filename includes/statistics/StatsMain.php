@@ -25,6 +25,8 @@ class StatsMain extends StatisticsPage
 
 		$statsPageDefinitions = preg_grep("/php$/",$files);
 		
+        $statsPages = array();
+        
 		foreach ($statsPageDefinitions as $i) 
         {
 			require_once($filepath . "/includes/statistics/" . $i);
