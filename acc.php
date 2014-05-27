@@ -1972,7 +1972,7 @@ elseif ($action == "emailmgmt") {
             $database = gGetDb();
             $database->transactionally(function() use ($database)
             {
-                global $baseurl;
+                global $baseurl, $accbotSend;
                 
                 $emailTemplate = new EmailTemplate();
                 $emailTemplate->setDatabase($database);
