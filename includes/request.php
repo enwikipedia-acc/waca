@@ -196,7 +196,7 @@ class accRequest {
 		// Confirms mail went through (JIRA ACC-44)
 		if ($mailsuccess == false) {
             global $skin;
-            $result = $tsSQL->query("DELETE FROM `acc_pend` WHERE `pend_id`= $id;");
+            $tsSQL->query("DELETE FROM `acc_pend` WHERE `pend_id`= $id;");
 			$skin->displayRequestMsg("Sorry, it appears we were unable to send an email to the email address you specified. Please check the spelling and try again.");
 			$skin->displayPfooter();
 			die();			
@@ -255,10 +255,8 @@ class accRequest {
                     }
                     
 					if( count($spoofs) === 0 ) {
-						$uLevel = "Open";
 						$what = "";
 					} else {
-						$uLevel = "Admin";
 						$what = "<Account Creator Needed!>";
 					}
                     
@@ -418,7 +416,7 @@ class accRequest {
 		
 		// Formulates and executes SQL query to update the request HASH.
 		$query = "UPDATE acc_pend SET pend_checksum = '$hash' WHERE pend_id = '$id';";
-		$result = $tsSQL->query($query);
+		$tsSQL->query($query);
 	}
 	
 	public function blockedOnEn() {

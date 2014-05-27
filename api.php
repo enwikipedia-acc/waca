@@ -60,8 +60,7 @@ function actionStatus()
 	
 	$docStatus = $document->createElement("status");
 	$doc_api->appendChild($docStatus);
-	
-	$status = "Open";			
+		
 	$mailconfirm = "Confirmed";			
 	$query = $database->prepare("SELECT COUNT(*) AS count FROM acc_pend WHERE pend_status = :pstatus AND pend_mailconfirm = :pmailconfirm;");
 	$query->bindValue(":pmailconfirm", $mailconfirm);
@@ -182,8 +181,6 @@ function actionCount( )
 		
 		$user = $query->fetch() or die( 'MySQL Error: ' . PDO::errorInfo() . "\n" );
 
-			
-		$adminInfo = '';
 		$docUser->setAttribute("level",$user['status']);
 		if( $user['status'] == 'Admin' ) 
         {	

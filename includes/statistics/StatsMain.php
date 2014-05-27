@@ -150,10 +150,7 @@ class StatsMain extends StatisticsPage
 		$result = $tsSQL->query($logq);
 		if (!$result)
 			Die("ERROR: No result returned.7");
-		$dropped = 0;
-		$created = 0;
-		$toosimilar = 0;
-		
+        
 		$WQquery = "SELECT COUNT(*) AS pending FROM acc_welcome WHERE welcome_status = \"Open\";";
 		$WQresult = $tsSQL->query($WQquery);
 		if(!$WQresult) Die("ERROR: No result returned. (WQ)");

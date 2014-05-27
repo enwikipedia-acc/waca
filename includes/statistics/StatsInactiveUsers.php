@@ -20,14 +20,7 @@ class StatsInactiveUsers extends StatisticsPage
 	function execute()
 	{
         global $smarty;
-		global $tsSQL, $baseurl, $session;
-		
-		if( isset( $_SESSION['user'] ) ) {
-			$sessionuser = $_SESSION['user'];
-		} else {
-			$sessionuser = "";
-		}
-		
+        		
 		$showImmune = false;
 		if(isset($_GET['showimmune']))
 		{
