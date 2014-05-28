@@ -257,7 +257,7 @@ class Request extends DataObject
         {
             global $cDataClearIp;
             
-            $query = $this->dbObject->prepare("SELECT * FROM request WHERE (ip = :ip OR forwardedip LIKE :forwarded) AND :ip != :clearedip AND id != :id AND emailconfirm = 'Confirmed';");
+            $query = $this->dbObject->prepare("SELECT * FROM request WHERE (ip = :ip OR forwardedip LIKE :forwarded) AND ip != :clearedip AND id != :id AND emailconfirm = 'Confirmed';");
             
             $trustedIp = $this->getTrustedIp();
             $trustedFilter = '%' . $trustedIp . '%';
