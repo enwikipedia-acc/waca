@@ -231,9 +231,12 @@ class Request extends DataObject
     {
         if($this->emailRequests == false)
         {
-            $query = $this->dbObject->prepare("SELECT * FROM request WHERE email = :email AND id != :id AND emailconfirm = 'Confirmed';");
+            global $cDataClearEmail;
+            
+            $query = $this->dbObject->prepare("SELECT * FROM request WHERE email = :email AND email != :clearedemail AND id != :id AND emailconfirm = 'Confirmed';");
             $query->bindValue(":id", $this->id);
             $query->bindValue(":email", $this->email);
+            $query->bindValue(":clearedemail", $cDataClearEmail);
             
             $query->execute();
             
@@ -252,7 +255,9 @@ class Request extends DataObject
     {
         if($this->ipRequests == false)
         {
-            $query = $this->dbObject->prepare("SELECT * FROM request WHERE (ip = :ip OR forwardedip LIKE :forwarded) AND id != :id AND emailconfirm = 'Confirmed';");
+            global $cDataClearIp;
+            
+            $query = $this->dbObject->prepare("SELECT * FROM request WHERE (ip = :ip OR forwardedip LIKE :forwarded) AND :ip != :clearedip AND id != :id AND emailconfirm = 'Confirmed';");
             
             $trustedIp = $this->getTrustedIp();
             $trustedFilter = '%' . $trustedIp . '%';
@@ -260,6 +265,7 @@ class Request extends DataObject
             $query->bindValue(":id", $this->id);
             $query->bindValue(":ip", $trustedIp);
             $query->bindValue(":forwarded", $trustedFilter);
+            $query->bindValue(":clearedip", $cDataClearIp);
             
             $query->execute();
             
