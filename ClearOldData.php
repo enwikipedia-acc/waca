@@ -11,9 +11,9 @@ $db = gGetDb( );
 if( $db->beginTransaction() ) {
 	$query = $db->prepare( "UPDATE acc_pend SET pend_ip = :ip, pend_proxyip = :proxy, pend_email = :mail, pend_useragent = :agent WHERE pend_date < DATE_SUB(curdate(), INTERVAL :intvl);" );
 	$success = $query->execute( array( 
-		":ip" => "127.0.0.1",
+		":ip" => $cDataClearIp,
 		":proxy" => null,
-		":mail" => "acc@toolserver.org",
+		":mail" => $cDataClearEmail,
 		":agent" => "",
 		":intvl" => $dataclear_interval,
 	) );

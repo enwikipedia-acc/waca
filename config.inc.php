@@ -193,6 +193,14 @@ $rdnsProviderClass = "CachedRDnsLookupProvider";
 $antispoofProviderClass = "FakeAntiSpoofProvider";
 
 /***********************************
+ * Data clear script
+ */
+
+$dataclear_interval = '15 DAY';
+$cDataClearIp = '127.0.0.1';
+$cDataClearEmail = 'acc@toolserver.org';
+
+/***********************************
  * Other stuff that doesn't fit in.
  */
 
@@ -235,9 +243,6 @@ $availableRequestStates = array(
 	);
 	
 $defaultRequestStateKey = 'Open';
-
-// time delay in mysql interval form for clearing the private data from the tool.
-$dataclear_interval = '15 DAY';
 
 // CORS
 $CORSallowed = array(
