@@ -775,6 +775,8 @@ elseif ($action == "templatemgmt")
 }
 elseif ($action == "sban") 
 {	
+    global $smarty;
+    
 	// Checks whether the current user is an admin.
 	if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) 
     {
@@ -1029,7 +1031,13 @@ elseif ($action == "ban") {
 			$target = $row['pend_name'];
 			$type = "Name";
 		}
-               
+        else
+        {
+            BootstrapSkin::displayAlertBox("Unknown ban type.", "alert-error");
+            BootstrapSkin::displayInternalFooter();
+			die();    
+        }
+        
 		if (count(Ban::getActiveBans($target))) 
         {
 			BootstrapSkin::displayAlertBox("This target is already banned!", "alert-error");
@@ -1136,6 +1144,8 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "")
 }
 elseif ($action == "prefs") 
 {
+    global $smarty;
+    
 	if (isset ($_POST['sig'])) 
     {
         $user = User::getCurrent();
@@ -1414,6 +1424,8 @@ elseif ($action == "zoom")
 }
 elseif ($action == "logs") 
 {
+    global $baseurl;
+    
 	if(isset($_GET['user']))
     {
 		$filteruser = $_GET['user'];
@@ -1851,7 +1863,7 @@ elseif ($action == "ec")
 { 
     // edit comment
   
-    global $smarty;
+    global $smarty, $baseurl;
     
     $comment = Comment::getById($_GET['id'], gGetDb());
     
@@ -1917,6 +1929,8 @@ elseif ($action == "ec")
 }
 elseif ($action == "sendtouser") 
 { 
+    global $baseurl;
+    
     $database = gGetDb();
     
     $requestObject = Request::getById($_POST['id'], $database);
@@ -1974,7 +1988,7 @@ elseif ($action == "sendtouser")
 }
 elseif ($action == "emailmgmt") 
 {
-    global $smarty;
+    global $smarty, $createdid;
     
 	/* New page for managing Emails, since I would rather not be handling editing
 	interface messages (such as the Sitenotice) and the new Emails in the same place. */
@@ -2013,7 +2027,7 @@ elseif ($action == "emailmgmt")
 			    $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:id, :user, 'CreatedEmail', CURRENT_TIMESTAMP());");
                 if(!$query->execute(array(":id" => $emailTemplate->getId(), ":user" => User::getCurrent()->getUsername())))
                 {
-                    throw new TransactionException();    
+                    throw new TransactionException("Error creating log entry.");    
                 }
                 
                 SessionAlert::success("Email template has been saved successfully.");
@@ -2134,6 +2148,8 @@ elseif ($action == "emailmgmt")
 }
 elseif ($action == "oauthdetach")
 { 
+    global $baseurl;
+    
     $currentUser = User::getCurrent();
     $currentUser->setOAuthAccessSecret(null);
     $currentUser->setOAuthAccessToken(null);
