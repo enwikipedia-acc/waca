@@ -249,7 +249,7 @@ elseif ($action == "sreg")
 
 elseif ($action == "register") 
 {
-    global $useOauthSignup;
+    global $useOauthSignup, $smarty;
     $smarty->assign("useOauthSignup", $useOauthSignup);
     $smarty->display("register.tpl");
 	BootstrapSkin::displayInternalFooter();
@@ -262,6 +262,8 @@ elseif ($action == "registercomplete")
 }
 elseif ($action == "forgotpw")
 {
+    global $baseurl, $smarty;
+    
 	if (isset ($_GET['si']) && isset ($_GET['id'])) 
     {
         $user = User::getById($_GET['id'], gGetDb());
@@ -350,6 +352,8 @@ elseif ($action == "forgotpw")
 }
 elseif ($action == "login") 
 {
+    global $baseurl, $smarty;
+    
     $user = User::getByUsername($_POST['username'], gGetDb());
     
     if($user == false || !$user->authenticate($_POST['password']) )
@@ -428,7 +432,7 @@ elseif ($action == "login")
     
     if( $user->getOAuthAccessToken() == null && $user->getStoredOnWikiName() == "##OAUTH##")
     {
-        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal, $baseurl;
+        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;
 
         try
         {
@@ -456,6 +460,8 @@ elseif ($action == "login")
 }
 elseif ($action == "messagemgmt") 
 {
+    global $smarty;
+    
 	if (isset($_GET['view'])) 
     {
         $message = InterfaceMessage::getById($_GET['view'], gGetDb());
@@ -542,7 +548,10 @@ elseif ($action == "messagemgmt")
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
-elseif ($action == "templatemgmt") {
+elseif ($action == "templatemgmt") 
+{
+    global $baseurl;
+    
 	if (isset($_GET['view'])) {
 		if (!preg_match('/^[0-9]*$/',$_GET['view']))
 			die('Invaild GET value passed.');
