@@ -14,15 +14,18 @@ if (!defined("ACC")) {
 	die();
 } // Invalid entry point
 
-class AuthUtility {
+class AuthUtility 
+{
     
     /**
      * Test the specified data against the specified credentials
      */
-    public static function testCredentials( $password, $credentials ) {
+    public static function testCredentials( $password, $credentials ) 
+    {
         global $minimumPasswordVersion;
     
-        if( substr( $credentials, 0, 1 ) == ":" ) {
+        if( substr( $credentials, 0, 1 ) == ":" ) 
+        {
             // new style, but what version?
             $data = explode( ':', substr( $credentials, 1 ) );
             
@@ -37,7 +40,7 @@ class AuthUtility {
             // re-encrypt the new password
             if( $data[ 0 ] == 0 )
             {
-                return $credentials == self::encryptVersion0($password, $data[ 1 ]); 
+                return $credentials == self::encryptVersion0($password); 
             }
             if ( $data[ 0 ] == 1 )   
             {
@@ -55,38 +58,47 @@ class AuthUtility {
             // old style, eew.
         
             // not allowed this version of password
-            if( $minimumPasswordVersion > 0 ) return false;
+            if( $minimumPasswordVersion > 0 ) 
+            {
+                return false;
+            }
         
             // various different ways of escaping this have been done in the past.
             // we have to test all to make sure it's gonna work, reducing security.
-            return ( self::encryptVersion0( $password, "" ) == $credentials
-                || self::encryptVersion0( sanitize( $password ), "" ) == $credentials
-                || self::encryptVersion0( mysql_escape_string( $password ), "" ) == $credentials
+            return ( self::encryptVersion0( $password ) == $credentials
+                || self::encryptVersion0( sanitize( $password ) ) == $credentials
+                || self::encryptVersion0( mysql_escape_string( $password ) ) == $credentials
                 );
         }
     }
     
-    public static function isCredentialVersionLatest( $credentials ) {
+    public static function isCredentialVersionLatest( $credentials ) 
+    {
         return substr( $credentials, 0, 3 ) === ":2:";
     }
     
-    public static function encryptPassword( $password ) {
-        return self::encryptVersion2( $password, microtime() );
+    public static function encryptPassword( $password ) 
+    {
+        return self::encryptVersion2( $password );
     }
     
-    private static function encryptVersion0( $password, $salt ) {
+    private static function encryptVersion0( $password ) 
+    {
         return md5( $password );
     }
     
-    private static function encryptVersion1( $password, $salt ) {
+    private static function encryptVersion1( $password, $salt ) 
+    {
         return ':1:' . $salt . ':' . md5( $salt . '-' . md5( $password ) );
     }
     
-    private static function encryptVersion2( $password, $salt ) {
+    private static function encryptVersion2( $password ) 
+    {
         return ':2:x:' . password_hash( $password, PASSWORD_BCRYPT );
     }
     
-    private static function verifyVersion2( $password, $hash ) {
+    private static function verifyVersion2( $password, $hash ) 
+    {
         return password_verify( $password, $hash );
     }
 }
