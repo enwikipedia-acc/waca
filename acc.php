@@ -22,7 +22,6 @@ require_once 'config.inc.php';
 session_start();
 
 // Get all the classes.
-require_once 'devlist.php';
 require_once 'LogClass.php';
 require_once 'functions.php';
 require_once 'includes/PdoDatabase.php';

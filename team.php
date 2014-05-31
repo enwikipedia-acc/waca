@@ -25,7 +25,6 @@ if(extension_loaded('gd'))
 }
 
 // Get all the classes.
-require_once 'devlist.php';
 require_once 'functions.php';
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';

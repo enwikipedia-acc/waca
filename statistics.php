@@ -24,7 +24,6 @@ require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
 require_once 'includes/StatisticsPage.php';
 require_once 'includes/database.php';
-require_once 'devlist.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/JWT.php';
 require_once 'oauth/OAuthUtility.php';
