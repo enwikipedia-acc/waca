@@ -74,7 +74,7 @@ class AntiSpoofCache extends DataObject
 			}
 			else
 			{
-				throw new Exception($statement->errorInfo());
+				throw new Exception($statement->errorInfo()[2]);
 			}
 		}       
     }

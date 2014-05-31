@@ -44,7 +44,7 @@ class RDnsCache extends DataObject
 			}
 			else
 			{
-				throw new Exception($statement->errorInfo());
+				throw new Exception($statement->errorInfo()[2]);
 			}
 		}
 		else
@@ -56,7 +56,7 @@ class RDnsCache extends DataObject
             
 			if(!$statement->execute())
 			{
-				throw new Exception($statement->errorInfo());
+				throw new Exception($statement->errorInfo()[2]);
 			}
 		} 
     }

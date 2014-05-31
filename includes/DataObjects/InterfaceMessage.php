@@ -61,7 +61,7 @@ class InterfaceMessage extends DataObject
 			}
 			else
 			{
-				throw new Exception($statement->errorInfo());
+				throw new Exception($statement->errorInfo()[2]);
 			}
 		}
 		else
@@ -74,7 +74,7 @@ class InterfaceMessage extends DataObject
             
 			if(!$statement->execute())
 			{
-				throw new Exception($statement->errorInfo());
+				throw new Exception($statement->errorInfo()[2]);
 			}
 		}         
     }

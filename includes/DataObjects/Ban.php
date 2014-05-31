@@ -168,7 +168,7 @@ class Ban extends DataObject
 			}
 			else
 			{
-				throw new Exception($statement->errorInfo());
+				throw new Exception($statement->errorInfo()[2]);
 			}
 		}
 		else
@@ -181,7 +181,7 @@ class Ban extends DataObject
             
 			if(!$statement->execute())
 			{
-				throw new Exception($statement->errorInfo());
+				throw new Exception($statement->errorInfo()[2]);
 			}
 		}         
     }

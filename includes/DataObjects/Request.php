@@ -54,7 +54,7 @@ class Request extends DataObject
 			}
 			else
 			{
-				throw new Exception($statement->errorInfo());
+				throw new Exception($statement->errorInfo()[2]);
 			}
 		}
 		else
@@ -71,7 +71,7 @@ class Request extends DataObject
 			$statement->bindValue(":reserved", $this->reserved);  
 			if(!$statement->execute())
 			{
-				throw new Exception($statement->errorInfo());
+				throw new Exception($statement->errorInfo()[2]);
 			}
 		} 
         

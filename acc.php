@@ -1859,7 +1859,7 @@ elseif ($action == "changepassword")
     $user->setPassword($_POST['newpassword']);
     $user->save();
     
-    BootstrapSkin::displayAlertBox("Password successfully changed!", "alert-success",false, false);
+    BootstrapSkin::displayAlertBox("Password successfully changed!", "alert-success", "", false, false);
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
