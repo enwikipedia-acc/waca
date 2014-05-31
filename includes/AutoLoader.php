@@ -9,6 +9,12 @@ class AutoLoader
     {
         global $filepath;
         
+        // handle namespaces sensibly
+        if(strpos($class, "Waca") !== false)
+        {
+            $class = str_replace("Waca\\", "", $class);
+        }
+        
         $paths = array(
             $filepath . $class . ".php",
             $filepath . 'includes/' . $class . ".php",
@@ -16,6 +22,11 @@ class AutoLoader
             $filepath . 'includes/Providers/' . $class . ".php",
             $filepath . 'includes/Providers/Interfaces/' . $class . ".php",
         );
+        
+        // extra includes which are awkward to autoload
+        require_once($filepath . 'oauth/OAuthUtility.php');
+        require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/OAuth.php');
+        require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/JWT.php');
         
         foreach($paths as $file)
         {
