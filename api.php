@@ -21,4 +21,4 @@ if(isset($_GET['action']))
     $requestAction = $_GET['action'];
 }
 
-echo $api->execute();
+echo $api->execute($requestAction);
