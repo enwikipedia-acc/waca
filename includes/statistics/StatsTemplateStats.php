@@ -11,9 +11,6 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
 class StatsTemplateStats extends StatisticsPage
 {
@@ -28,14 +25,17 @@ QUERY;
 
 		return $r;
 	}
+    
 	function getPageName()
 	{
 		return "TemplateStats";
 	}
+    
 	function getPageTitle()
 	{
 		return "Template Stats";
 	}
+    
 	function isProtected()
 	{
 		return true;
@@ -46,4 +46,3 @@ QUERY;
 		return false;		
 	}
 }
-

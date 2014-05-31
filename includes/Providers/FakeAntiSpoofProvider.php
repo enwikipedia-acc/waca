@@ -1,8 +1,8 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * Mock AntiSpoof provider for testing or development work.
+ */
 class FakeAntiSpoofProvider implements IAntiSpoofProvider
 {
     public function getSpoofs($username)

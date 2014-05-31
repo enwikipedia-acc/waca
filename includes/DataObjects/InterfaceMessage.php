@@ -1,8 +1,10 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * Interface data object
+ * 
+ * Interface messages for those messages which are not templates.
+ */
 class InterfaceMessage extends DataObject
 {
     private $content;

@@ -1,8 +1,8 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * Mock RDNS provider for testing and development
+ */
 class FakeRDnsLookupProvider implements IRDnsProvider
 {
     public function __construct(PdoDatabase $database)

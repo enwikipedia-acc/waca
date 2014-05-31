@@ -3,16 +3,20 @@ if (!defined("ACC")) {
 	die();
 } // Invalid entry point
 
-function gGetDb($db = "acc") {
+function gGetDb($db = "acc") 
+{
     global $accdbobjects;
-    if( ! is_array( $accdbobjects ) ) {
+    if( ! is_array( $accdbobjects ) ) 
+    {
         $accdbobjects = array();   
     }
     
-	if( ! isset( $accdbobjects[ $db ] ) ) {
+	if( ! isset( $accdbobjects[ $db ] ) ) 
+    {
 		global $cDatabaseConfig;
 	
-		if(! array_key_exists( $db, $cDatabaseConfig ) ) {
+		if(! array_key_exists( $db, $cDatabaseConfig ) ) 
+        {
 			trigger_error( "Database configuration not found for alias $db" );
 			die();
 		}
@@ -42,6 +46,7 @@ function gGetDb($db = "acc") {
         
         $accdbobjects[ $db ] = $accdbobject;
 	}
+    
 	return $accdbobjects[ $db ];
 }
 
@@ -54,18 +59,23 @@ class PdoDatabase extends PDO {
 	 * Determines if this connection has a transaction in progress or not
 	 * @return true if there is a transaction in progress.
 	 */
-	public function hasActiveTransaction() {
+	public function hasActiveTransaction() 
+    {
 		return $this->hasActiveTransaction;
 	}
 
-	public function beginTransaction() {
+	public function beginTransaction() 
+    {
 		// Override the pre-existing method, which doesn't stop you from 
 		// starting transactions within transactions - which doesn't work and 
 		// will throw an exception. This elimiates the need to catch exeptions
 		// all over the rest of the code
-		if ( $this->hasActiveTransaction ) {
+		if ( $this->hasActiveTransaction ) 
+        {
 			return false;
-		} else {
+		} 
+        else 
+        {
 			// set the transaction isolation level for every transaction.
 			$this->exec( "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;" );
 			
@@ -76,12 +86,14 @@ class PdoDatabase extends PDO {
 		}
 	}
 
-	public function commit() {
+	public function commit() 
+    {
 		parent::commit();
 		$this->hasActiveTransaction = false;
 	}
 
-	public function rollBack() {
+	public function rollBack() 
+    {
 		parent::rollback();
 		$this->hasActiveTransaction = false;
 	}

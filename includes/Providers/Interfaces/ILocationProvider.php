@@ -1,8 +1,8 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * IP Location provider interface
+ */
 interface ILocationProvider
 {
     public function getIpLocation($address);

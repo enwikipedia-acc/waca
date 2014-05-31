@@ -1,8 +1,8 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * Comment data object
+ */
 class Comment extends DataObject
 {
     private $time;

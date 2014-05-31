@@ -1,15 +1,7 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
 /**
- * AutoLoader short summary.
- *
- * AutoLoader description.
- *
- * @version 1.0
- * @author stwalkerster
+ * AutoLoader for the new classes
  */
 class AutoLoader
 {

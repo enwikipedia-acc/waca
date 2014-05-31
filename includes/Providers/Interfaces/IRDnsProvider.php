@@ -1,8 +1,8 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * Reverse DNS provider interface
+ */
 interface IRDnsProvider
 {
     public function getRdns($address);   

@@ -1,8 +1,16 @@
 <?php
-if (!defined("ACC")) {
-    die();
-} // Invalid entry point
 
+/**
+ * Session Alerts
+ * 
+ * Session alerts allow you to raise a message to be shown to the user on the
+ * next page load, allowing you to still give a user a message after a 
+ * redirect. It's a lot nicer to deal with than redirecting to a message page,
+ * or sending the user somewhere with error message parameters.
+ * 
+ * It's advisable to use the static methods, unless you need something more
+ * customised. The defaults should tie you over nicely.
+ */
 class SessionAlert
 {
     private $message;
@@ -49,7 +57,6 @@ class SessionAlert
         self::append(new SessionAlert($message, $title, "alert-error", true, true));
     }
 
-    
     public static function append(SessionAlert $alert)
     {
         $data = array();

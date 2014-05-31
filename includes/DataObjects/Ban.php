@@ -1,8 +1,8 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * Ban data object
+ */
 class Ban extends DataObject
 {
     private $type;

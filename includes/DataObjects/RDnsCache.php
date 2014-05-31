@@ -1,8 +1,8 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * RDNS Cache data object
+ */
 class RDnsCache extends DataObject
 {
     private $address;

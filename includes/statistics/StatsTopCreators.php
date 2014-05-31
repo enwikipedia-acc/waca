@@ -11,9 +11,6 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
 class StatsTopCreators extends StatisticsPage
 {
@@ -90,6 +87,7 @@ class StatsTopCreators extends StatisticsPage
 	{
 		return "TopCreators";
 	}
+    
 	function isProtected()
 	{
 		return true;
@@ -99,8 +97,8 @@ class StatsTopCreators extends StatisticsPage
 	{
 		return false;
 	}
-	
 }
+
 function statsTopCreatorsRowCallback($row, $rowno) 
 {   	
 	$out = "<tr";

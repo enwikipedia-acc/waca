@@ -1,8 +1,11 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * Cached API Antispoof Provider
+ * 
+ * Provides a list of similar usernames from a MediaWiki API module, and caches
+ * it in the database.
+ */
 class CachedApiAntispoofProvider implements IAntiSpoofProvider
 {
     public function getSpoofs($username)

@@ -1,8 +1,11 @@
 <?php
-if (!defined("ACC")) {
-    die();
-} // Invalid entry point
 
+/**
+ * Transaction Exception
+ * 
+ * Raise this inside a transactionally() block and you'll terminate the 
+ * transaction and show an error message to the user.
+ */
 class TransactionException extends Exception
 {
     private $title;

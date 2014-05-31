@@ -1,8 +1,8 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * AntiSpoof provider interface
+ */
 interface IAntiSpoofProvider
 {
     public function getSpoofs($username);

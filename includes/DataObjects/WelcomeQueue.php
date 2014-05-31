@@ -1,8 +1,8 @@
 <?php
-if (!defined("ACC")) {
-    die();
-} // Invalid entry point
 
+/**
+ * Welcome Queue data object
+ */
 class WelcomeQueue extends DataObject
 {
     private $user;

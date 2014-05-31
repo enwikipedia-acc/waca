@@ -11,9 +11,6 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
 class StatsMonthlyStats extends StatisticsPage
 {
@@ -92,18 +89,22 @@ class StatsMonthlyStats extends StatisticsPage
 		
 		return $out;
 	}
+    
 	function getPageName()
 	{
 		return "MonthlyStats";
 	}
+    
 	function getPageTitle()
 	{
 		return "Monthly Statistics";
 	}
+    
 	function isProtected()
 	{
 		return true;
 	}
+    
 	function requiresWikiDatabase()
 	{
 		return false;	

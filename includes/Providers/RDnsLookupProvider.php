@@ -1,8 +1,8 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * Basic RDNS loopup provider.
+ */
 class RDnsLookupProvider implements IRDnsProvider
 {
     public function __construct(PdoDatabase $database)

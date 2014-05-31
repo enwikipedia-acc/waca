@@ -1,10 +1,8 @@
 <?php
 
-if (!defined("ACC")) {
-    die();
-} // Invalid entry point
-
-
+/**
+ * Class providing information about the tool's runtime environment
+ */
 class Environment
 {
     private static $toolVersion;

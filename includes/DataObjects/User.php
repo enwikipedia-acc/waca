@@ -1,8 +1,8 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * User data object
+ */
 class User extends DataObject
 {
     private $username;

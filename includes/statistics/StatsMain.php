@@ -11,9 +11,6 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
 class StatsMain extends StatisticsPage
 {
@@ -64,18 +61,22 @@ class StatsMain extends StatisticsPage
 	{
 		return true;
 	}
+    
 	function requiresWikiDatabase()
 	{
 		return false;
 	}
+    
     function requiresSimpleHtmlEnvironment()
     {
         return false;   
     }
+    
 	function hideFromMenu()
 	{
 		return true;
 	}
+    
 	function smallStats()
 	{
 		global $tsSQL, $baseurl;

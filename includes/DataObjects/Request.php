@@ -1,8 +1,10 @@
 <?php
-if (!defined("ACC")) {
-    die();
-} // Invalid entry point
 
+/**
+ * Request data object
+ * 
+ * This data object is the main request object.
+ */
 class Request extends DataObject
 {
     private $email;

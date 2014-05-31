@@ -11,9 +11,6 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
 class StatsReservedRequests extends StatisticsPage
 {
@@ -23,14 +20,17 @@ class StatsReservedRequests extends StatisticsPage
 		$qb = new QueryBrowser();
 		return $qb->executeQueryToTable('SELECT CONCAT("<a href=\"'.$baseurl.'/acc.php?action=zoom&amp;id=", p.`pend_id`, "\">",p.`pend_id`,"</a>") AS "#", p.`pend_name` AS "Requested Name", p.`pend_status` AS "Status", u.`user_name` AS "Reserved by" FROM `acc_pend` p INNER JOIN `acc_user` u on u.`user_id` = p.`pend_reserved` WHERE `pend_reserved` != 0;');
 	}
+    
 	function getPageName()
 	{
 		return "ReservedRequests";
 	}
+    
 	function getPageTitle()
 	{
 		return "All currently reserved requests";
 	}
+    
 	function isProtected()
 	{
 		return true;

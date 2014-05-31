@@ -1,8 +1,8 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * IP location provider
+ */
 class IpLocationProvider implements ILocationProvider
 {
     private $apikey;

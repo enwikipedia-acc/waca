@@ -1,8 +1,8 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * IP Info DB IP location provider
+ */
 class IpInfoDbProxyLocationProvider extends IpLocationProvider implements ILocationProvider
 {
     protected function getApiBase()

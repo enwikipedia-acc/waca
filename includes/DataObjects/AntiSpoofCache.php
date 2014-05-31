@@ -1,8 +1,8 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * AntiSpoofCache data object
+ */
 class AntiSpoofCache extends DataObject
 {
     protected $username;

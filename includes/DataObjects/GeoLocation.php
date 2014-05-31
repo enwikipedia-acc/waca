@@ -1,8 +1,10 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * Geolocation data object
+ * 
+ * This is a cache.
+ */
 class GeoLocation extends DataObject
 {
     private $address;

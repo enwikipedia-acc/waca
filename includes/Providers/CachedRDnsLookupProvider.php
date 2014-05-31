@@ -1,8 +1,11 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * Cached RDNS Lookup Provider
+ * 
+ * Provides a service to look up the reverse DNS of an IP address, and caches
+ * the result in the database.
+ */
 class CachedRDnsLookupProvider implements IRDnsProvider
 {
     private $database;

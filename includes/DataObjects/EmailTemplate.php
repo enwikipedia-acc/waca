@@ -1,8 +1,10 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
+/**
+ * Email template data object
+ * 
+ * This is the close reasons thing.
+ */
 class EmailTemplate extends DataObject
 {
     private $name;
