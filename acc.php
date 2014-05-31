@@ -1168,7 +1168,7 @@ elseif ($action == "prefs")
 }
 elseif ($action == "done" && $_GET['id'] != "") {
 	// check for valid close reasons
-	global $messages, $skin;
+	global $messages, $skin, $baseurl, $smarty;
 	
     if(isset($_GET['email'])) 
     {
@@ -1584,6 +1584,8 @@ elseif ($action == "reserve")
 }
 elseif ($action == "breakreserve") 
 {
+    global $smarty;
+    
     $database = gGetDb();
     
     $request = Request::getById($_GET['resid'], $database);
@@ -1685,6 +1687,8 @@ elseif ($action == "breakreserve")
 
 elseif ($action == "comment") 
 {
+    global $smarty;
+    
     $request = Request::getById($_GET['id'], gGetDb());
     $smarty->assign("request", $request);
     $smarty->display("commentform.tpl");
@@ -1837,6 +1841,8 @@ elseif ($action == "changepassword")
 elseif ($action == "ec")
 { 
     // edit comment
+  
+    global $smarty;
     
     $comment = Comment::getById($_GET['id'], gGetDb());
     
@@ -1957,7 +1963,10 @@ elseif ($action == "sendtouser")
     SessionAlert::success("Reservation sent successfully");
     header("Location: $baseurl/acc.php?action=zoom&id=$request");
 }
-elseif ($action == "emailmgmt") { 
+elseif ($action == "emailmgmt") 
+{
+    global $smarty;
+    
 	/* New page for managing Emails, since I would rather not be handling editing
 	interface messages (such as the Sitenotice) and the new Emails in the same place. */
 	if(isset($_GET['create'])) {
