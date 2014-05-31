@@ -38,6 +38,11 @@ function sanitize($what) {
 	return ($what);
 }
 
+/**
+ * Summary of upcsum
+ * @param mixed $id 
+ * @deprecated
+ */
 function upcsum($id) {
 	/*
 	 * Updates the entries checksum (on each load of that entry, to prevent dupes)
