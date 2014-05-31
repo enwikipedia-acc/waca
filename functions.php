@@ -145,6 +145,7 @@ function isProtected($requestid)
 /**
  * Checks to see if a request is marked as reserved by a user
  * Returns uid if reserved, false if not
+ * @deprecated
  */
 function isReserved($requestid)
 {
@@ -162,6 +163,12 @@ function isReserved($requestid)
 	return isReservedWithRow($row);
 }
 
+/**
+ * Summary of isReservedWithRow
+ * @param mixed $row 
+ * @return mixed
+ * @deprecated
+ */
 function isReservedWithRow($row) {
 	if(isset($row['pend_reserved']) && $row['pend_reserved'] != 0) { 
 		return $row['pend_reserved'];
