@@ -48,7 +48,7 @@ foreach ( $iprange as $r ) {
 
 echo "Resolving DNS...\n";
 foreach ( $dnsdomain as $d ) {
-	$ips = gethostbynamel( $r );
+	$ips = gethostbynamel( $d );
 	
 	if( $ips === false ) {
 		echo "Invalid DNS name $d\n";
