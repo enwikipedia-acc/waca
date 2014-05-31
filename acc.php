@@ -74,7 +74,7 @@ if ($action == "logout") {
 	session_unset();
     
     BootstrapSkin::displayInternalHeader();
-    echo showlogin($action, $_GET);
+    echo showlogin();
     BootstrapSkin::displayInternalFooter();
     die();
 }
@@ -95,7 +95,7 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 			// Display the login form and the rest of the page coding.
 			// The data in the current $GET varianle would be send as parameter.
 			// There it would be used to possibly fill some of the form's fields.
-			echo showlogin($action, $_GET);
+			echo showlogin();
 			BootstrapSkin::displayInternalFooter();
 		}
 		elseif (!isset($action)) {
