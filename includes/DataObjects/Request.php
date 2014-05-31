@@ -150,6 +150,11 @@ class Request extends DataObject
         $this->checksum = $checksum;
     }
 
+    public function updateChecksum()
+    {
+        $this->checksum = md5($this->id . $this->name . $this->email . microtime());
+    }
+    
     public function getEmailSent()
     {
         return $this->emailsent;

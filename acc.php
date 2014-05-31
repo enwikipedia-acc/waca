@@ -1095,6 +1095,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "")
                 
             $request->setReserved(0);
             $request->setStatus($_GET['target']);
+            $request->updateChecksum();
             $request->save();
             
             $deto = $availableRequestStates[$_GET['target']]['deferto'];
@@ -1109,8 +1110,6 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "")
             {
                 throw new TransactionException("Error occurred saving log entry");    
             }
-            
-            upcsum($request->getId());
         
 		    $accbotSend->send("Request {$request->getId()} deferred to $deto by " . User::getCurrent()->getUsername());
             SessionAlert::success("Request {$request->getId()} deferred to $deto");
