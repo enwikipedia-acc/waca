@@ -48,10 +48,12 @@ $tsSQLlink = $tsSQL->getLink();
 $asSQLlink = $asSQL->getLink();
 
 // Initialize the class object.
-if($teamEmailImages){
+if($teamEmailImages)
+{
 	$imagegen = new imagegen();
 }
-$skin     = new skin();
+
+$skin = new skin();
 
 //Array of objects containing the deleveopers' information.
 $developer = array(
@@ -397,12 +399,17 @@ ksort($inactiveDeveloper);
 
 // Print the data for each developer.
 echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Active Developers</a></div><div id="collapseOne" class="accordion-body collapse in"><div class="accordion-inner">';
-foreach($developer as $devName => $devInfo) {
+foreach($developer as $devName => $devInfo) 
+{
 	echo "<h4>$devName</h4>\n<ul>\n";
-	foreach($devInfo as $infoName => $infoContent) {
+    
+	foreach($devInfo as $infoName => $infoContent) 
+    {
 		// Check whether a field has been set to NULL or not.
-		if($infoContent != NULL) {
-			switch($infoName) {
+		if($infoContent != NULL) 
+        {
+			switch($infoName) 
+            {
 				case "IRC":
 					echo "<li>IRC Name: $infoContent</li>\n";
 					break;
@@ -410,13 +417,13 @@ foreach($developer as $devName => $devInfo) {
 					echo "<li>Real name: $infoContent</li>\n";
 					break;
 				case "EMail":
-					if($teamEmailImages)
+					if($teamEmailImages && isset($imagegen))
                     {
-                      // Generate the image and write a copy to the filesystem.
-                      $id = $imagegen->create($infoContent);
-					  // Outputs the image to the sceen.
-					  $emailHTML='<img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" />';
-                      echo '<li>E-Mail Address: ' . $emailHTML . '</li>';
+                        // Generate the image and write a copy to the filesystem.
+                        $id = $imagegen->create($infoContent);
+					    // Outputs the image to the sceen.
+					    $emailHTML='<img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" />';
+                        echo '<li>E-Mail Address: ' . $emailHTML . '</li>';
 					}
                     
 					break;

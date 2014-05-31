@@ -922,6 +922,8 @@ elseif ($action == "sban")
 }
 elseif ($action == "unban") 
 {
+    global $smarty;
+    
     if(!isset($_GET['id']) || $_GET['id'] == "")
     {
         BootstrapSkin::displayAlertBox("The ID parameter appears to be missing! This is probably a bug.", "alert-error", "Ahoy There! Something's not right...", true, false);
@@ -1719,6 +1721,8 @@ elseif ($action == "comment")
 
 elseif ($action == "comment-add") 
 {
+    global $baseurl;
+    
     $request = Request::getById($_POST['id'], gGetDb());
     if($request == false)
     {
