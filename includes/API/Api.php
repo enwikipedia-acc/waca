@@ -7,29 +7,24 @@ namespace Waca\API;
  */
 class Api
 {    
-    public function __construct()
+    public function __construct($httpOrigin)
     {
         header("Content-Type: text/xml");
 
         // javascript access control
-        if(isset($_SERVER['HTTP_ORIGIN']))
+        if($httpOrigin !== null)
         {
-            if(in_array($_SERVER['HTTP_ORIGIN'], $CORSallowed))
+            global $CORSallowed;
+            
+            if(in_array($httpOrigin, $CORSallowed))
             {
-                header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
+                header("Access-Control-Allow-Origin: " . $httpOrigin);
             }
         }
     }
     
-    public function execute()
-    {
-        // get the request action, defaulting to help
-        $requestAction = "";
-        if(isset($_GET['action']))
-        {
-            $requestAction = $_GET['action'];
-        }
-        
+    public function execute($requestAction)
+    {       
         switch ($requestAction)
         {
         	case "count":

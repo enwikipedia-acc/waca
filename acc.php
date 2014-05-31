@@ -1395,9 +1395,10 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		sendemail($gem, $towhom, $request->getId());
         $request->setEmailSent(1);
 	}
+    
+    $request->updateChecksum();
     $request->save();
     
-	upcsum($_GET['id']);
 	echo defaultpage();
 	BootstrapSkin::displayInternalFooter();
 	die();

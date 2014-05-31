@@ -10,5 +10,15 @@ require_once("config.inc.php");
 require_once('functions.php');
 require_once("includes/PdoDatabase.php");
 
-$api = new Waca\API\Api();
+$httpOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
+
+$api = new Waca\API\Api($httpOrigin);
+
+// get the request action, defaulting to help
+$requestAction = "";
+if(isset($_GET['action']))
+{
+    $requestAction = $_GET['action'];
+}
+
 echo $api->execute();
