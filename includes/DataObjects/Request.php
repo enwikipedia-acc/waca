@@ -319,8 +319,6 @@ class Request extends DataObject
             return false;
         }
         
-        $reservedTo = $this->getReserved();
-
         if($this->reserved != 0)
         {
             if($this->reserved == User::getCurrent()->getId())
