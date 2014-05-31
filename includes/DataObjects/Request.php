@@ -309,4 +309,33 @@ class Request extends DataObject
     {
         return Comment::getForRequest($this->id, $this->dbObject);   
     }
+    
+    public function isProtected()
+    {
+        global $protectReservedRequests;
+
+        if(!$protectReservedRequests) 
+        {
+            return false;
+        }
+        
+        $reservedTo = $this->getReserved();
+
+        if($this->reserved != 0)
+        {
+            if($this->reserved == User::getCurrent()->getId())
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        } 
+        else 
+        {
+            return false;
+        }
+
+    }   
 }

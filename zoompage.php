@@ -197,7 +197,8 @@ function zoomPage($id,$urlhash)
 
 	global $protectReservedRequests, $defaultRequestStateKey;
 	
-	$smarty->assign("isprotected", isProtected($request->getId()));
+    // TODO: remove me and replace with call in the template directly
+	$smarty->assign("isprotected", $request->isProtected());
     
 	$smarty->assign("defaultstate", $defaultRequestStateKey);
 	$smarty->assign("requeststates", $availableRequestStates);

@@ -122,59 +122,6 @@ function sendemail($messageno, $target, $id) {
 	}
 }
 
-function isProtected($requestid)
-{
-	global $protectReservedRequests;
-
-	if(! $protectReservedRequests ) return false;
-
-	$reservedTo = isReserved($requestid);
-
-	if($reservedTo)
-	{
-		if($reservedTo == $_SESSION['userID']) {
-			return false;
-		} else {
-			return true;
-		}
-	} else {
-		return false;
-	}
-}
-
-/**
- * Checks to see if a request is marked as reserved by a user
- * Returns uid if reserved, false if not
- * @deprecated
- */
-function isReserved($requestid)
-{
-	if (!preg_match('/^[0-9]*$/',$requestid)) {
-		die('Invalid Input.'); // TODO: make this a pretty error message
-	}
-
-	$rqid = sanitize($requestid);
-	$query = "SELECT pend_reserved FROM acc_pend WHERE pend_id = $rqid;";
-	$result = mysql_query($query);
-	if (!$result) {
-		die("Error determining reserved status of request. Check the request id.");
-	}
-	$row = mysql_fetch_assoc($result);
-	return isReservedWithRow($row);
-}
-
-/**
- * Summary of isReservedWithRow
- * @param mixed $row 
- * @return mixed
- * @deprecated
- */
-function isReservedWithRow($row) {
-	if(isset($row['pend_reserved']) && $row['pend_reserved'] != 0) { 
-		return $row['pend_reserved'];
-	} else {return false;}
-}
-
 /**
  * Show the login page
  * @param (ignored)
