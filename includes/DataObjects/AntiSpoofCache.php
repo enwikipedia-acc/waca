@@ -42,6 +42,9 @@ class AntiSpoofCache extends DataObject
         return $this->data;   
     }
     
+    /**
+     * @param string $data
+     */
     public function setData($data)
     {
         $this->data = $data;

@@ -27,7 +27,7 @@ class database {
 	/**
 	 * Creates a new instance of the database class.
 	 * @param $name Which database to connect to. { "toolserver" | "antispoof" }
-	 * @return New instance of the particular database class.
+	 * @return database New instance of the particular database class.
 	 */
 	public function __construct($name) {
 
@@ -80,7 +80,7 @@ class database {
 	
 	/**
 	 * Only generate a link to the database.
-	 * @return A MySQL persistent link identifier.
+	 * @return resource A MySQL persistent link identifier.
 	 */
 	public function getLink() {
 		global $link;
@@ -120,7 +120,7 @@ class database {
 	/**
 	 * Run a MySQL query on the database.
 	 * @param $query The SQL query to execute. The query string should not end with a semicolon. Data inside the query should be properly escaped.
-	 * @return MySQL query result.
+	 * @return resource MySQL query result.
 	 */
 	public function query($query) {
 		return mysql_query($query,$this->dbLink);
@@ -130,7 +130,7 @@ class database {
 	 * Run a query on the database, pushing the results into an array.
 	 * @param $query The SQL query to execute.
 	 * @param $result Reference array, set to contain results of query.
-	 * @return bool: Whether the query succeded.
+	 * @return bool Whether the query succeded.
 	 */
 	public function queryToArray($query, &$result)
 	{
@@ -153,7 +153,7 @@ class database {
 	/**
 	 * Escapes a string for MySQL.
 	 * @param $string The string to escape
-	 * @return The escaped string.
+	 * @return string The escaped string.
 	 */
 	public function escape($string) {
 		// WARNING: This does not escape against XSS, this is intentional to avoid double escape etc.
@@ -163,8 +163,8 @@ class database {
 	
 	/**
 	 * Shows either the SQL error, or a generic error, depending on the configuration of the tool instance.
-	 * @param $sql_error Info-rich message giving the actual error message provided by the database.
-	 * @param $generic_error Generic error message, used to tell people there's a problem, but not too much information.
+	 * @param string $sql_error Info-rich message giving the actual error message provided by the database.
+	 * @param string $generic_error Generic error message, used to tell people there's a problem, but not too much information.
 	 */
 	public function showError($sql_error,$generic_error=null) {
 		global $enableSQLError;
@@ -180,7 +180,7 @@ class database {
 	
 	/**
 	 * Returns the text of the error message from previous MySQL function.
-	 * @return The error text from the last MySQL function.
+	 * @return string The error text from the last MySQL function.
 	 */
 	public function getError() {
 		return mysql_error($this->dbLink);

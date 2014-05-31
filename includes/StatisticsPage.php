@@ -118,7 +118,7 @@ abstract class StatisticsPage
 
 	/**
 	 * Determines if the statistics page should be hidden from the main menu. Defaults to false.
-	 * @return unknown_type
+	 * @return boolean
 	 */
 	public function hideFromMenu()
 	{

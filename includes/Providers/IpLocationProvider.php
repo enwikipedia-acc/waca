@@ -47,6 +47,10 @@ class IpLocationProvider implements ILocationProvider
     }
     
     // adapted from http://www.ipinfodb.com/ip_location_api.php
+
+	/**
+	 * @param string $ip
+	 */
 	private function getResult($ip)
     {
         try

@@ -153,6 +153,9 @@ class BootstrapSkin {
         $smarty->display("request-form.tpl");
     }
 
+    /**
+     * @param string $tag
+     */
     public static function pushTagStack($tag) {
         global $tagstack;    
         array_push($tagstack, $tag);

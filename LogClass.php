@@ -22,6 +22,9 @@ class LogPage
 	var $filterRequest = "";
 	var $showPager = true;
 	
+	/**
+	 * @param integer $logListCount
+	 */
 	private function createPager($offset, $limit, $logListCount, $count) {
 		$pager = '';
 		if($offset != 0)

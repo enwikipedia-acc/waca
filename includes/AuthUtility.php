@@ -19,6 +19,7 @@ class AuthUtility
     
     /**
      * Test the specified data against the specified credentials
+     * @param string $credentials
      */
     public static function testCredentials( $password, $credentials ) 
     {
@@ -72,6 +73,9 @@ class AuthUtility
         }
     }
     
+    /**
+     * @param string $credentials
+     */
     public static function isCredentialVersionLatest( $credentials ) 
     {
         return substr( $credentials, 0, 3 ) === ":2:";

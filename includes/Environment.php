@@ -9,7 +9,7 @@ class Environment
     
     /**
      * Gets the tool version, using cached data if available.
-     * @return mixed
+     * @return string
      */
     public static function getToolVersion()
     {

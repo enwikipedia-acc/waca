@@ -2,7 +2,6 @@
 
 namespace Waca\API\Actions;
 
-use Waca\API\ApiException as ApiException;
 use Waca\API\ApiActionBase as ApiActionBase;
 use Waca\API\IApiAction as IApiAction;
 

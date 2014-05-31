@@ -14,6 +14,9 @@ class EmailTemplate extends DataObject
     private $active = 1;
     private $preloadonly = 0;
         
+    /**
+     * @param integer $forCreated
+     */
     public static function getActiveTemplates($forCreated, PdoDatabase $database = null)
     {
         if($database == null)
@@ -40,6 +43,9 @@ class EmailTemplate extends DataObject
     	return $resultObject;
     }
     
+    /**
+     * @param integer $forCreated
+     */
     public static function getAllActiveTemplates($forCreated, PdoDatabase $database = null)
     {
         if($database == null)

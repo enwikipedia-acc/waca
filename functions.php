@@ -124,9 +124,6 @@ function sendemail($messageno, $target, $id) {
 
 /**
  * Show the login page
- * @param (ignored)
- * @param (ignored)
- * @todo re-implement parameters
  */
 function showlogin() 
 {
@@ -212,6 +209,11 @@ function defaultpage() {
 	return $html;
 }
 
+/**
+ * @param string $sql_error the output of mysql_error
+ * @param string $generic_error the error to show if sql errors are hidden
+ * @deprecated Use PDO
+ */
 function sqlerror ($sql_error, $generic_error="Query failed.") {
 	/*
 	 * Show the user an error
@@ -287,6 +289,10 @@ function doSort(array $items)
 }
 
 $trustedipcache = array();
+
+/**
+ * @param string $ip
+ */
 function isXffTrusted($ip) {
 	global $tsSQL, $squidIpList, $trustedipcache;
 	
@@ -308,6 +314,9 @@ function isXffTrusted($ip) {
 	}
 }
 
+/**
+ * @return string
+ */
 function getTrustedClientIP($dbip, $dbproxyip)
 {
 	$clientIpAddr = $dbip;
@@ -352,6 +361,7 @@ function explodeCidr( $range ) {
 
 /**
  * Takes an array( "low" => "high ) values, and returns true if $needle is in at least one of them.
+ * @param string $ip
  */
 function ipInRange( $haystack, $ip ) {
 	$needle = ip2long($ip);
@@ -364,6 +374,9 @@ function ipInRange( $haystack, $ip ) {
 	return false;
 }
 
+/**
+ * @return string
+ */
 function welcomerbotRenderSig($creator, $sig) {
 	$signature = html_entity_decode($sig) . ' ~~~~~';
 	if (!preg_match("/((\[\[[ ]*(w:)?[ ]*(en:)?)|(\{\{subst:))[ ]*User[ ]*:[ ]*".$creator."[ ]*(\]\]|\||\}\}|\/)/i", $signature)) {

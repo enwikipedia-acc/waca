@@ -4,7 +4,6 @@ namespace Waca\API\Actions;
 
 use Waca\API\ApiActionBase as ApiActionBase;
 use Waca\API\IApiAction as IApiAction;
-
 use Waca\API\Api as Api;
 
 /**
@@ -22,7 +21,7 @@ class HelpAction extends ApiActionBase implements IApiAction
     
     /**
      * Gets the help information
-     * @return DOMElement
+     * @return \DOMNode
      */
     protected function getHelpElement()
     {

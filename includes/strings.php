@@ -18,6 +18,7 @@ if (!defined("ACC")) {
 class strings {
 	/**
 	 * Multibyte version of ucfirst() since no such function is included in PHP by default.
+	 * @param string $string
 	 */
 	private function mb_ucfirst($string) {
 		$strlen = mb_strlen($string);

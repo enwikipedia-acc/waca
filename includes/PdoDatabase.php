@@ -57,7 +57,7 @@ class PdoDatabase extends PDO {
 
 	/**
 	 * Determines if this connection has a transaction in progress or not
-	 * @return true if there is a transaction in progress.
+	 * @return boolean true if there is a transaction in progress.
 	 */
 	public function hasActiveTransaction() 
     {

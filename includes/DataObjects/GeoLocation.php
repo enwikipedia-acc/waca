@@ -11,6 +11,9 @@ class GeoLocation extends DataObject
     private $data;
     private $creation;
     
+    /**
+     * @param string $address
+     */
     public static function getByAddress($address, PdoDatabase $database)
     {
         $statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE address = :id LIMIT 1;");
@@ -65,6 +68,9 @@ class GeoLocation extends DataObject
         return $this->address;   
     }
     
+    /**
+     * @param string $address
+     */
     public function setAddress($address)
     {
         $this->address = $address;

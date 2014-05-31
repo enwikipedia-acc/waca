@@ -24,6 +24,9 @@ class QueryBrowser
 	var $overrideTableTitles = false;
 	var $rowFetchMode = PDO::FETCH_ASSOC;
 	
+	/**
+	 * @param string $query
+	 */
 	public function executeQueryToTable($query)
 	{
 		$out = "";

@@ -341,6 +341,9 @@ class accRequest {
 			return False;
 	}
 
+	/**
+	 * @param string $user
+	 */
 	public function isblacklisted($user) {
 		global $enableTitleblacklist;
 		if ($enableTitleblacklist == 1) { 

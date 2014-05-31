@@ -49,7 +49,7 @@ class session {
 	 * Summary of hasright
 	 * @param mixed $username 
 	 * @param mixed $checkright 
-	 * @return mixed
+	 * @return boolean
      * @deprecated
 	 */
 	public function hasright($username, $checkright) 

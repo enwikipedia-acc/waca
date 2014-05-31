@@ -102,6 +102,9 @@ class User extends DataObject
 		return $resultObject;
     }
     
+    /**
+     * @param string $status
+     */
     public static function getAllWithStatus($status, PdoDatabase $database)
     {
         $statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE status = :status");
@@ -303,7 +306,7 @@ class User extends DataObject
      * This is probably NOT the function you want!
      * 
      * Take a look at getOnWikiName() instead.
-     * @return mixed
+     * @return string
      */
     public function getStoredOnWikiName()
     {        
@@ -382,6 +385,9 @@ class User extends DataObject
         $this->confirmationdiff = $confirmationdiff;
     }
 
+    /**
+     * @return string
+     */
     public function getEmailSig(){
         return $this->emailsig;
     }
@@ -434,6 +440,10 @@ class User extends DataObject
     
     #region changing access level
     
+    /**
+     * @param string $status
+     * @param string $logaction
+     */
     private function updateStatus($status, $logaction, $comment)
     {
         $oldstatus = $this->status;

@@ -167,6 +167,9 @@ class StatsMonthlyStats extends StatisticsPage
 		
 	}
 	
+	/**
+	 * @param string $imghash
+	 */
 	private function createPathFromHash($imghash, $basedirectory = "render/") {
 		$imghashparts = str_split($imghash);
 		$imgpath = array_shift($imghashparts) . "/" ;
