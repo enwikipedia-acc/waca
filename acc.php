@@ -1905,7 +1905,6 @@ elseif ($action == "ec")
         
             $logStatement = $database->prepare($logQuery);
         
-            $logAction = "EditComment-c";
             $logStatement->bindValue(":user", User::getCurrent()->getUsername());
             $logStatement->bindValue(":id", $comment->getId());
             $logStatement->bindValue(":action", "EditComment-c");
@@ -1968,7 +1967,7 @@ elseif ($action == "sendtouser")
         }
             
         $logStatement = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:request, :user, :action, CURRENT_TIMESTAMP(), '');");
-        $action = "SendReserved";
+        
         $logStatement->bindValue(":user", $curuser);
         $logStatement->bindValue(":request", $request);
         $logStatement->bindValue(":action", "SendReserved");
@@ -2026,7 +2025,6 @@ elseif ($action == "emailmgmt")
 			    }
 			
 			    $emailTemplate->save();
-			    $id = $emailTemplate->getId();
                 
 			    $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:id, :user, 'CreatedEmail', CURRENT_TIMESTAMP());");
                 if(!$query->execute(array(":id" => $emailTemplate->getId(), ":user" => User::getCurrent()->getUsername())))
