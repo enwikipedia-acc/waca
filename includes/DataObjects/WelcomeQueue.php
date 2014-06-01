@@ -25,7 +25,7 @@ class WelcomeQueue extends DataObject
 			}
 			else
 			{
-				throw new Exception($statement->errorInfo()[2]);
+				throw new Exception($statement->errorInfo());
 			}
 		}
 		else
@@ -39,7 +39,7 @@ class WelcomeQueue extends DataObject
 			$statement->bindValue(":user", $this->user);
 			if(!$statement->execute())
 			{
-				throw new Exception($statement->errorInfo()[2]);
+				throw new Exception($statement->errorInfo());
 			}
 		} 
         

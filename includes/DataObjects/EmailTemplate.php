@@ -106,7 +106,7 @@ class EmailTemplate extends DataObject
 			}
 			else
 			{
-				throw new Exception($statement->errorInfo()[2]);
+				throw new Exception($statement->errorInfo());
 			}
 		}
 		else
@@ -122,7 +122,7 @@ class EmailTemplate extends DataObject
             
 			if(!$statement->execute())
 			{
-				throw new Exception($statement->errorInfo()[2]);
+				throw new Exception($statement->errorInfo());
 			}
 		}
     }
