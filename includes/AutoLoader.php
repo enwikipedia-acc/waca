@@ -12,7 +12,10 @@ class AutoLoader
         // handle namespaces sensibly
         if(strpos($class, "Waca") !== false)
         {
+            // strip off the initial namespace
             $class = str_replace("Waca\\", "", $class);
+            
+            // swap backslashes for forward slashes to map to directory names
             $class = str_replace("\\", "/", $class);
         }
         
