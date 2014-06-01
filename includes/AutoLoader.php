@@ -13,6 +13,7 @@ class AutoLoader
         if(strpos($class, "Waca") !== false)
         {
             $class = str_replace("Waca\\", "", $class);
+            $class = str_replace("\\", "/", $class);
         }
         
         $paths = array(
