@@ -8,6 +8,35 @@ class WelcomeTemplate extends DataObject
     private $usercode;
     private $botcode;
     
+    private $usageCache;
+    
+    /**
+     * Summary of getAll
+     * @param PdoDatabase $database 
+     * @return WelcomeTemplate[]
+     */
+    public static function getAll(PdoDatabase $database = null)
+    {
+        if($database == null)
+        {
+            $database = gGetDb();   
+        }
+
+        $statement = $database->prepare("SELECT * FROM welcometemplate;");
+        
+        $statement->execute();
+        
+        $result = array();
+        foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v)
+        {
+            $v->isNew = false;
+            $v->setDatabase($database);
+            $result[] = $v;
+        }
+        
+        return $result;
+    }
+    
     public function save()
     {
         if($this->isNew)
@@ -40,19 +69,45 @@ class WelcomeTemplate extends DataObject
 		}
     }
     
-    public function getUserCode(){
+    public function getUserCode()
+    {
         return $this->usercode;
     }
 
-    public function setUserCode($usercode){
+    public function setUserCode($usercode)
+    {
         $this->usercode = $usercode;
     }
 
-    public function getBotCode(){
+    public function getBotCode()
+    {
         return $this->botcode;
     }
 
-    public function setBotCode($botcode){
+    public function setBotCode($botcode)
+    {
         $this->botcode = $botcode;
+    }
+    
+    public function getUsersUsingTemplate()
+    {
+        if($this->usageCache === null)
+        {
+            $statement = $this->dbObject->prepare("SELECT * FROM user WHERE welcome_template = :id;");
+        
+            $statement->execute(array(":id" => $this->id));
+        
+            $result = array();
+            foreach ($statement->fetchAll(PDO::FETCH_CLASS, 'User') as $v)
+            {
+                $v->isNew = false;
+                $v->setDatabase($this->dbObject);
+                $result[] = $v;
+            }
+        
+            $this->usageCache = $result;
+        }
+        
+        return $this->usageCache;
     }
 }

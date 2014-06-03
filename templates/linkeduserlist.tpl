@@ -1,0 +1,1 @@
+﻿{if count($users) > 0}<ul>{foreach from=$users item="u"}<li>{include file="linkeduser.tpl" user=$u}</li>{/foreach}</ul>{else}No users.{/if}

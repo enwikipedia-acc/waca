@@ -549,52 +549,66 @@ elseif ($action == "messagemgmt")
 }
 elseif ($action == "templatemgmt") 
 {
-    global $baseurl;
+    global $baseurl, $smarty;
     
-	if (isset($_GET['view'])) {
-		if (!preg_match('/^[0-9]*$/',$_GET['view']))
-			die('Invaild GET value passed.');
-	
-		$tid = sanitize($_GET['view']);
-		$query = "SELECT * FROM acc_template WHERE template_id = '$tid' LIMIT 1;";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror(mysql_error());
-		$row = mysql_fetch_assoc($result);
-		echo "<h2>View template</h2><br />Template ID: ".$row['template_id']."<br />\n";
-		echo "Display code: ".$row['template_usercode']."<br />\n";
-		echo "Bot code: ".str_replace("\n", '\n', $row['template_botcode'])."<br />\n";
-		echo displayPreview($row['template_usercode']);
-		echo "<br /><a href='$baseurl/acc.php?action=templatemgmt'>Back</a>";
-		$skin->displayIfooter();
+	if (isset($_GET['view'])) 
+    {
+        $template = WelcomeTemplate::getById($_GET['view'], gGetDb());
+        
+        if($template === false)
+        {
+            SessionAlert::success("Something went wrong, we can't find the template you asked for! Please try again.");
+            header("Location: {$baseurl}/acc.php?action=templatemgmt");
+            die();
+        }
+        
+        $smarty->assign("template", $template);
+        $smarty->display("welcometemplate/view.tpl");
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	if (isset($_GET['add'])) {
-		if(!$session->hasright($_SESSION['user'], 'Admin')) {
-			echo "I'm sorry, but you do not have permission to access this page.<br />\n";
-			$skin->displayIfooter();
+    
+	if (isset($_GET['add'])) 
+    {
+		if(!User::getCurrent()->isAdmin() || !User::getCurrent()->isCheckuser()) 
+        {
+            BootstrapSkin::displayAlertBox("I'm sorry, but you do not have permission to access this page.", "alert-error", "Access Denied", true, false);
+			BootstrapSkin::displayInternalFooter();
 			die();
 		}
-		if (isset($_POST['submit'])) {
-			$usercode = sanitize($_POST['usercode']);
-			$usercode = str_replace('\n', "\n", $usercode);
-			$botcode = sanitize($_POST['botcode']);
-			$botcode = str_replace('\n', "\n", $botcode);
-			$siuser = sanitize($_SESSION['user']);
-			$query = "INSERT INTO acc_template (template_usercode, template_botcode) VALUES ('$usercode', '$botcode');";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror(mysql_error());
-			$now = date("Y-m-d H-i-s");
-			$tid = mysql_insert_id();
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$tid', '$siuser', 'CreatedTemplate', '$now');";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror(mysql_error());
-			echo "Template $tid created.";
-			$accbotSend->send("New template $tid ($usercode) created by $siuser.");
-		} else {
-			echo "<h2>Create template</h2><strong>This is NOT a toy. If you can see this form, you can create a new template.</strong><br />The display code will be displayed as it is to users when choosing template.<br />In the bot code, \$username will be replaced with the account creator's username, and \$signature with his signature, including a timestamp.<br />Please remember that these two variables should be used, and not ~~~~ as this will use the bot's signature.\n";
+        
+		if (isset($_POST['submit'])) 
+        {
+            global $baseurl;
+            
+            $database = gGetDb();
+            
+            $database->transactionally(function() use ($database, $accbotSend, $baseurl)
+            {
+                $template = new WelcomeTemplate();
+                $template->setDatabase($database);
+                $template->setUserCode($_POST['usercode']);
+                $template->setBotCode($_POST['botcode']);
+                $template->save();
+            
+                $query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:templateid, :username, 'CreatedTemplate', CURRENT_TIMESTAMP());";
+                $statement = $database->prepare($query);
+                $statement->execute(
+                    array(
+                        ":templateid" => $template->getId(), 
+                        ":username" => User::getCurrent()->getUsername()
+                        )
+                    );
+            
+                $accbotSend->send("New template {$template->getId()} created by " . User::getCurrent()->getUsername());
+            
+                SessionAlert::success("Template successfully created.");
+                header("Location: $baseurl/acc.php?action=templatemgmt");
+            });
+		} 
+        else 
+        {
+			
 			if (isset($_POST['preview'])) {
 				$usercode = $_POST['usercode'];
 				$botcode = $_POST['botcode'];
@@ -603,174 +617,150 @@ elseif ($action == "templatemgmt")
 				$usercode = '';
 				$botcode = '';
 			}
-			echo "<form action=\"$baseurl/acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">\n";
-			echo "Display code: <input type=\"text\" name=\"usercode\" value=\"$usercode\" size=\"40\"/><br />\n";
-			echo "Bot code: <input type=\"text\" name=\"botcode\" value=\"$botcode\" size=\"40\"/><br />\n";
-			echo "<input type=\"submit\" name=\"submit\" value=\"Create!\"/><input type=\"submit\" name=\"preview\" value=\"Preview\"/><br />\n";
-			echo "</form>";
-			$skin->displayIfooter();
-			die();
+
+            $smarty->assign("usercode", $usercode);
+            $smarty->assign("botcode", $botcode);
+            
+            $smarty->display("welcometemplate/add.tpl");
+            BootstrapSkin::displayInternalFooter();
+            die();
 		}
+        
+        die();
 	}
-	if (isset($_GET['del'])) {
-		if(!$session->hasright($_SESSION['user'], 'Admin') || $_GET['del'] == '1') {
-			echo "I'm sorry, but you do not have permission to access this page.<br />\n";
-			$skin->displayIfooter();
+    
+    if(isset($_GET['select']))
+    {
+        $user = User::getCurrent();
+        
+        if($_GET['select'] == 0)
+        {
+            $user->setWelcomeTemplate(null);
+            $user->save();
+            
+            SessionAlert::success("Disabled automatic user welcoming.");
+            header("Location: {$baseurl}/acc.php?action=templatemgmt");
+            die();
+        }
+        else
+        {
+            $template = WelcomeTemplate::getById($_GET['select'], gGetDb());
+            if($template !== false)
+            {
+                $user->setWelcomeTemplate($template->getId());
+                $user->save();
+                
+                SessionAlert::success("Updated selected welcome template for automatic welcoming.");
+                header("Location: {$baseurl}/acc.php?action=templatemgmt");
+                die();
+            }
+            else
+            {
+                SessionAlert::success("Something went wrong, we can't find the template you asked for! Please try again.");
+                header("Location: {$baseurl}/acc.php?action=templatemgmt");
+                die();
+            }
+        }
+    }
+    
+	if (isset($_GET['del'])) 
+    {
+        global $baseurl;
+        
+		if(!User::getCurrent()->isAdmin() || !User::getCurrent()->isCheckuser()) 
+        {
+            BootstrapSkin::displayAlertBox("I'm sorry, but you do not have permission to access this page.", "alert-error", "Access Denied", true, false);
+			BootstrapSkin::displayInternalFooter();
 			die();
 		}
-		if (!preg_match('/^[0-9]*$/', $_GET['del']))
-			die('Invaild GET value passed.');
-		$tid = sanitize($_GET['del']);
-		$siuser = sanitize($_SESSION['user']);
-		$query = "SELECT user_id, user_name FROM acc_user WHERE user_welcome_templateid = '$tid';";
-		$usersaffected = mysql_query($query, $tsSQLlink);
-		if (!$usersaffected)
-			sqlerror(mysql_error());
-		$query = "UPDATE acc_user SET user_welcome_templateid = '1' WHERE user_welcome_templateid = '$tid';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror(mysql_error());
-		$query = "DELETE FROM acc_template WHERE template_id = '$tid';";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror(mysql_error());
-		$now = date("Y-m-d H-i-s");
-		$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$tid', '$siuser', 'DeletedTemplate', '$now');";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror(mysql_error());
-		echo "Template $tid deleted.<br />";
-		if (mysql_num_rows($usersaffected)) {
-			echo "The following users were using the template, and have been switched to the default one:\n";
-			echo "<ul>\n";
-			while (list($affected_id, $affected_name) = mysql_fetch_row($usersaffected)) {
-				echo "<li><a href=$baseurl/statistics.php?page=Users&user=$affected_id>$affected_name</a></li>\n";
-			}
-			echo "</ul>\nPlease try inform these users that their template has been changed.";
-		} else {
-			echo "No users were using the template.";
+
+        $database = gGetDb();
+        
+        $template = WelcomeTemplate::getById($_GET['del'], $database);
+        if($template == false)
+        {
+            SessionAlert::success("Something went wrong, we can't find the template you asked for! Please try again.");
+            header("Location: {$baseurl}/acc.php?action=templatemgmt");
+            die();
+        }
+        
+        $database->transactionally(function() use($database, $template, $accbotSend)
+        {
+            $tid = $template->getId();
+            
+            $database
+                ->prepare("UPDATE user SET welcome_template = NULL WHERE welcome_template = :id;")
+                ->execute(array(":id" => $tid));
+            
+            $database
+                ->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:tid, :user, 'DeletedTemplate', CURRENT_TIMESTAMP());")
+                ->execute(array(":tid" => $tid, ":user" => User::getCurrent()->getUsername()));
+            
+            $template->delete();
+            
+            SessionAlert::success("Template deleted. Any users who were using this template have had automatic welcoming disabled.");
+		    $accbotSend->send("Template $tid deleted by " . User::getCurrent()->getUsername());
+        });
+        
+        header("Location: $baseurl/acc.php?action=templatemgmt");
+	    die();			
+	}
+    
+	if (isset($_GET['edit'])) 
+    {
+		if(!User::getCurrent()->isAdmin() || !User::getCurrent()->isCheckuser()) 
+        {
+            BootstrapSkin::displayAlertBox("I'm sorry, but you do not have permission to access this page.", "alert-error", "Access Denied", true, false);
+			BootstrapSkin::displayInternalFooter();
+			die();
 		}
+
+        $database = gGetDb();
+        
+        $template = WelcomeTemplate::getById($_GET['edit'], $database);
+        if($template == false)
+        {
+            SessionAlert::success("Something went wrong, we can't find the template you asked for! Please try again.");
+            header("Location: {$baseurl}/acc.php?action=templatemgmt");
+            die();
+        }
+
+        $tid = sanitize($_GET['edit']);
+		if (isset($_POST['submit'])) 
+        {
+            $database->transactionally(function() use($database, $template, $accbotSend)
+            {
+                $template->setUserCode($_POST['usercode']);
+                $template->setBotCode($_POST['botcode']);
+                $template->save();
 			
-		$accbotSend->send("Template $tid deleted by $siuser.");
-	}
-	if (isset($_GET['edit'])) {
-		if(!$session->hasright($_SESSION['user'], 'Admin') || $_GET['edit'] == '1') {
-			echo "I'm sorry, but you do not have permission to access this page.<br />\n";
-			$skin->displayIfooter();
-			die();
-		}
-		if (!preg_match('/^[0-9]*$/', $_GET['edit']))
-			die('Invaild GET value passed.');
-		$tid = sanitize($_GET['edit']);
-		if (isset($_POST['submit'])) {
-			$usercode = sanitize($_POST['usercode']);
-			$usercode = str_replace('\n', "\n", $usercode);
-			$botcode = sanitize($_POST['botcode']);
-			$botcode = str_replace('\n', "\n", $botcode);
-			$siuser = sanitize($_SESSION['user']);
-			$query = "UPDATE acc_template SET template_usercode = '$usercode', template_botcode = '$botcode' WHERE template_id = '$tid';";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror(mysql_error());
-			$now = date("Y-m-d H-i-s");
-			$query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ('$tid', '$siuser', 'EditedTemplate', '$now');";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror(mysql_error());
-			echo "Template $tid ($usercode) updated.<br />\n";
-			$accbotSend->send("Template $tid ($usercode) edited by $siuser.");
-		} else {
-			echo "<h2>Edit template</h2><strong>This is NOT a toy. If you can see this form, you can edit this template.</strong><br />The display code will be displayed as it is to users when choosing template.<br />In the bot code, \$username will be replaced with the account creator's username, and \$signature with his signature, including a timestamp.<br />Please remember that these two variables should be used, and not ~~~~ as this will use the bot's signature.\n";
-			if (isset($_POST['preview'])) {
-				$usercode = $_POST['usercode'];
-				$botcode = $_POST['botcode'];
-				echo displayPreview($usercode);
-			} else {
-				$query = "SELECT * FROM acc_template WHERE template_id = '$tid';";
-				$result = mysql_query($query, $tsSQLlink);
-				if (!$result)
-					sqlerror(mysql_error());
-				$row = mysql_fetch_assoc($result);
-				$usercode = str_replace("\n", '\n', $row['template_usercode']);
-				$botcode = str_replace("\n", '\n', $row['template_botcode']);
-			}
-			echo "<form action=\"$baseurl/acc.php?action=templatemgmt&amp;edit=$tid\" method=\"post\">\n";
-			echo "Display code: <input type=\"text\" name=\"usercode\" size=\"40\" value=\"$usercode\"/><br />\n";
-			echo "Bot code: <input type=\"text\" name=\"botcode\" size=\"40\" value=\"$botcode\"/><br />\n";
-			echo "<input type=\"submit\" name=\"submit\" value=\"Edit!\"/><input type=\"submit\" name=\"preview\" value=\"Preview\"/><br />\n";
-			echo "</form>";
-			$skin->displayIfooter();
+                $statement = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:id, :user, 'EditedTemplate', CURRENT_TIMESTAMP());");
+                $statement->execute(array(":id" => $template->getId(), ":user" => User::getCurrent()->getUsername()));
+            
+                SessionAlert::success("Template updated.");
+			    $accbotSend->send("Template {$template->getId()} edited by " . User::getCurrent()->getUsername());
+            });
+            
+            header("Location: $baseurl/acc.php?action=templatemgmt");
+            die();
+		} 
+        else 
+        {
+            $smarty->assign("template", $template);
+            $smarty->display("welcometemplate/edit.tpl");
+            
+			BootstrapSkin::displayInternalFooter();
 			die();
 		}
 	}
-	$sid = sanitize( $_SESSION['user'] );
-	if (isset($_GET['set'])) {
-		$selected = sanitize($_POST['selectedtemplate']);
-		$query = "SELECT * FROM acc_template WHERE template_id = $selected;";
-		$result = mysql_query($query, $tsSQLlink);
-		if (!$result)
-			sqlerror(mysql_error());
-		if (mysql_num_rows($result) || $selected == '0') {
-			$query = "UPDATE acc_user SET user_welcome_templateid = $selected WHERE user_name = '$sid';";
-			$result = mysql_query($query, $tsSQLlink);
-			if (!$result)
-				sqlerror(mysql_error());
-			echo "Template choice saved.";
-		} else {
-			echo "Invalid selection.";
-		}
-	}
-	$query = "SELECT user_welcome_templateid FROM acc_user WHERE user_name = '$sid'";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror(mysql_error());
-	$userinfo = mysql_fetch_assoc($result);
-	$query = "SELECT template_id, template_usercode FROM acc_template;";
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result)
-		sqlerror(mysql_error());
-	echo "<h2>Welcome templates</h2>\n";
-	echo "<form action=\"$baseurl/acc.php?action=templatemgmt&amp;set=yes\" method=\"post\" name=\"templateselection\">";
-	echo "<table><tbody>\n";
-	$current = 0;
-	while ( list($template_id, $usercode) = mysql_fetch_row($result) ) {
-		$currentrow = $current;
-		$current += 1;
-		echo "<tr";
-		if ($current % 2 == 0)
-			echo ' class="alternate"';
-		echo '>';
-		echo "<td><input type=\"radio\" name=\"selectedtemplate\" value=\"$template_id\"";
-		if ($userinfo['user_welcome_templateid'] == $template_id)
-			echo " checked=\"checked\"";
-		echo " /></td>";
-		echo "<td onclick=\"document.templateselection.selectedtemplate[$currentrow].checked = true;\">&nbsp;<small>$usercode</small>&nbsp;</td>";
-		if($session->hasright($_SESSION['user'], 'Admin')) {
-			if ($template_id != 1) {
-				echo "<td><a href=\"$baseurl/acc.php?action=templatemgmt&amp;edit=$template_id\">Edit!</a>&nbsp;<a href=\"$baseurl/acc.php?action=templatemgmt&amp;del=$template_id\" onclick=\"javascript:return confirm('Are you sure you wish to delete template $template_id?')\">Delete!</a>&nbsp;</td>";
-			} else {
-				echo "<td></td>";
-			}
-		}
-		echo "<td><a href=\"$baseurl/acc.php?action=templatemgmt&amp;view=$template_id\">View!</a></td></tr>";
-	}
-	echo "<tr><td><input type=\"radio\" name=\"selectedtemplate\" value=\"0\"";
-	if ($userinfo['user_welcome_templateid'] == 0)
-		echo " checked=\"checked\"";
-	echo " /></td><td onclick=\"document.templateselection.selectedtemplate[$current].checked = true;\">&nbsp;&nbsp;Disable automatic welcoming.</td><td></td>";
-	if ($session->hasright($_SESSION['user'], 'Admin'))
-		echo "<td></td>";
-	echo "</tr>";
-	echo "</tbody></table><br />";
-	echo "<input type=\"submit\" value=\"Update template choice\" />";
-	echo "</form>";
-	if ($session->hasright($_SESSION['user'], 'Admin')) {
-		echo "<form action=\"$baseurl/acc.php?action=templatemgmt&amp;add=yes\" method=\"post\">";
-		echo "<input type=\"submit\" value=\"Add new\" />";
-		echo "</form>";
-	}
-	$skin->displayIfooter();
-	die();
+    
+    $templateList = WelcomeTemplate::getAll();
+    
+    $smarty->assign("templatelist", $templateList);
+    $smarty->display("welcometemplate/list.tpl");
+    
+    BootstrapSkin::displayInternalFooter();
+    die();
 }
 elseif ($action == "sban") 
 {	

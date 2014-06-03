@@ -21,6 +21,13 @@
     });
   </script>
 
+
+  <script type="text/javascript">
+    $(function () {
+    $("[rel='popover']").popover();
+    });
+  </script>
+
   </body>
 </html>
 
