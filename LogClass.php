@@ -257,28 +257,31 @@ class LogPage
 			}
 			if ($rla == "Promoted" || $rla == "Demoted" || $rla == "Approved" || $rla == "Suspended" || $rla == "Declined") {
 				$uid = $rlp;
-				$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-				$result2 = mysql_query($query2, $tsSQLlink);
-				if (!$result2)
-					Die("Query failed: $query2 ERROR: " . mysql_error());
-				$row2 = mysql_fetch_assoc($result2);
+                $user = User::getById($uid, gGetDb());
+				
+				if ($user === false)
+                {
+					die("User $uid not found.");
+                }
+                
 				$moreinfo = "";
 				if ($rla == "Declined" || $rla == "Suspended" || $rla == "Demoted") {
 					$moreinfo = " because \"$rlc\"";
 				}
-				$logList .="<li>$rlu $rla, User $rlp (" . $row2['user_name'] . ") at $rlt$moreinfo.</li>\n";
+				$logList .="<li>$rlu $rla, User $rlp (" . $user->getUsername() . ") at $rlt$moreinfo.</li>\n";
 			}
 			if ($rla == "Renamed") {
                 $data = unserialize($rlc);
 				$logList .="<li>$rlu renamed ${data['old']} to ${data['new']} at $rlt.</li>\n";
 			}
 			if ($rla == "Prefchange") {
-				$query2 = "SELECT user_name FROM acc_user WHERE user_id = '$rlp';";
-				$result2 = mysql_query($query2, $tsSQLlink);
-				if (!$result2)
-					Die("Query failed: $query2 ERROR: " . mysql_error());
-				$row2 = mysql_fetch_assoc($result2);
-				$logList .="<li>$rlu changed user preferences for $rlp (" . $row2['user_name'] . ") at $rlt</li>\n";
+                $user = User::getById($rlp, gGetDb());
+				if ($user === false)
+                {
+					die("User $rlp not found.");
+                }
+                
+				$logList .="<li>$rlu changed user preferences for $rlp (" . $user->getUsername() . ") at $rlt</li>\n";
 			}
 			if ($rla == "Banned") {
 				$query2 = 'SELECT target, duration FROM `ban` WHERE `id` = \'' .$rlp. '\'; '; 
@@ -420,24 +423,25 @@ class LogPage
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"edited message ". $message->getDescription(), 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "Promoted" || $rla == "Demoted" || $rla == "Approved" || $rla == "Suspended" || $rla == "Declined") {
-				$uid = mysql_real_escape_string($rlp, $tsSQLlink);
-				$query2 = "SELECT * FROM acc_user WHERE user_id = '$uid';";
-				$result2 = mysql_query($query2, $tsSQLlink);
-				if (!$result2)
-					Die("Query failed: $query2 ERROR: " . mysql_error());
-				$row2 = mysql_fetch_assoc($result2);
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>strtolower($rla) . $row2['user_name'], 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+                $user = User::getById($rlp, gGetDb());
+                if($user === false)
+                {
+                    die("User $rlp not found");
+                }
+                    
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>strtolower($rla) . $user->getUsername(), 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "Renamed") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"renamed", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "Prefchange") {
-				$query2 = "SELECT user_name FROM acc_user WHERE user_id = '$rlp';";
-				$result2 = mysql_query($query2, $tsSQLlink);
-				if (!$result2)
-					Die("Query failed: $query2 ERROR: " . mysql_error());
-				$row2 = mysql_fetch_assoc($result2);
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"changed user preferences for " . $row2['user_name'], 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+                $user = User::getById($rlp, gGetDb());
+                if($user === false)
+                {
+                    die("User $rlp not found");
+                }
+
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"changed user preferences for " . $user->getUsername(), 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "Banned") {
 				$query2 = 'SELECT ban_target, ban_duration FROM `ban` WHERE `ban_target` = \'' .$rlp. '\'; '; 

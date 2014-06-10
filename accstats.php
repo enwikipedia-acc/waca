@@ -43,31 +43,31 @@ if (!$result)
 	Die("ERROR: No result returned on unconfirmed requests query.");
 $unconfirmed = mysql_fetch_assoc($result);
 
-$sadminq = "SELECT COUNT(*) FROM acc_user WHERE user_level = 'Admin';";
+$sadminq = "SELECT COUNT(*) FROM user WHERE status = 'Admin';";
 $result = mysql_query($sadminq);
 if (!$result)
 	Die("ERROR: No result returned on \"Site admins\" query.");
 $sadmin = mysql_fetch_assoc($result);
 
-$scheckuserq = "SELECT COUNT(*) FROM acc_user WHERE user_checkuser = '1';";
+$scheckuserq = "SELECT COUNT(*) FROM user WHERE checkuser = '1';";
 $result = mysql_query($scheckuserq);
 if (!$result)
 	Die("ERROR: No result returned on \"Site checkusers\" query.");
 $scheckuser = mysql_fetch_assoc($result);
 
-$suserq = "SELECT COUNT(*) FROM acc_user WHERE user_level = 'User';";
+$suserq = "SELECT COUNT(*) FROM user WHERE status = 'User';";
 $result = mysql_query($suserq);
 if (!$result)
 	Die("ERROR: No result returned on \"Site users\" query.");
 $suser = mysql_fetch_assoc($result);
 
-$ssuspq = "SELECT COUNT(*) FROM acc_user WHERE user_level = 'Suspended';";
+$ssuspq = "SELECT COUNT(*) FROM user WHERE status = 'Suspended';";
 $result = mysql_query($ssuspq);
 if (!$result)
 	Die("ERROR: No result returned on \"Site suspended accounts\" query.");
 $ssusp = mysql_fetch_assoc($result);
 
-$snewq = "SELECT COUNT(*) FROM acc_user WHERE user_level = 'New';";
+$snewq = "SELECT COUNT(*) FROM user WHERE status = 'New';";
 $result = mysql_query($snewq);
 if (!$result)
 	Die("ERROR: No result returned on \"Site users awaiting approval\" query.");
@@ -101,7 +101,7 @@ foreach ($top5a as $top1a)
 $top5aout .= "\n";
 
 /* Query for listing newly approved tool users */
-$whosnewq = "SELECT * FROM acc_log JOIN acc_user ON log_pend = user_id WHERE log_action = 'Approved' AND log_time LIKE '$now%';";
+$whosnewq = "SELECT * FROM acc_log JOIN user u ON log_pend = u.id WHERE log_action = 'Approved' AND log_time LIKE '$now%';";
 $result = mysql_query($whosnewq);
 if (!$result)
 	Die("ERROR: No result returned on \"New ACC Users Approved today\" query.");
