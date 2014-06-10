@@ -20,6 +20,7 @@ require_once 'config.inc.php';
 
 /**
  * This class is used to comunicate with the Toolserver and Antispoof databases.
+ * @deprecated
  */
 class database {
 	private $dbLink, $host, $db;
@@ -27,7 +28,8 @@ class database {
 	/**
 	 * Creates a new instance of the database class.
 	 * @param $name Which database to connect to. { "toolserver" | "antispoof" }
-	 * @return database New instance of the particular database class.
+     * @return database New instance of the particular database class.
+     * @deprecated
 	 */
 	public function __construct($name) {
 
@@ -66,7 +68,8 @@ class database {
 	 * @param $host The MySQL server.
 	 * @param $username The username.
 	 * @param $password The password.
-	 * @param $database The name of the database that is to be selected.
+     * @param $database The name of the database that is to be selected.
+     * @deprecated
 	 */
 	private function connect($host, $username, $password, $database) {
 		$this->dbLink = mysql_pconnect($host,$username,$password) or $this->showError("Error connecting to database ($database on $host): ".$this->getError(),'Error connecting to database.');
@@ -80,7 +83,8 @@ class database {
 	
 	/**
 	 * Only generate a link to the database.
-	 * @return resource A MySQL persistent link identifier.
+     * @return resource A MySQL persistent link identifier.
+     * @deprecated
 	 */
 	public function getLink() {
 		global $link;
@@ -110,7 +114,8 @@ class database {
 	
 	/**
 	 * Select a MySQL database.
-	 * @param $database The name of the database that is to be selected.
+     * @param $database The name of the database that is to be selected.
+     * @deprecated
 	 */
 	private function selectDb($database) {
 		// TODO: Improve error msg and handling
@@ -120,7 +125,8 @@ class database {
 	/**
 	 * Run a MySQL query on the database.
 	 * @param $query The SQL query to execute. The query string should not end with a semicolon. Data inside the query should be properly escaped.
-	 * @return resource MySQL query result.
+     * @return resource MySQL query result.
+     * @deprecated
 	 */
 	public function query($query) {
 		return mysql_query($query,$this->dbLink);
@@ -130,7 +136,8 @@ class database {
 	 * Run a query on the database, pushing the results into an array.
 	 * @param $query The SQL query to execute.
 	 * @param $result Reference array, set to contain results of query.
-	 * @return bool Whether the query succeded.
+     * @return bool Whether the query succeded.
+     * @deprecated
 	 */
 	public function queryToArray($query, &$result)
 	{
@@ -153,7 +160,8 @@ class database {
 	/**
 	 * Escapes a string for MySQL.
 	 * @param $string The string to escape
-	 * @return string The escaped string.
+     * @return string The escaped string.
+     * @deprecated
 	 */
 	public function escape($string) {
 		// WARNING: This does not escape against XSS, this is intentional to avoid double escape etc.
@@ -164,7 +172,8 @@ class database {
 	/**
 	 * Shows either the SQL error, or a generic error, depending on the configuration of the tool instance.
 	 * @param string $sql_error Info-rich message giving the actual error message provided by the database.
-	 * @param string $generic_error Generic error message, used to tell people there's a problem, but not too much information.
+     * @param string $generic_error Generic error message, used to tell people there's a problem, but not too much information.
+     * @deprecated
 	 */
 	public function showError($sql_error,$generic_error=null) {
 		global $enableSQLError;
@@ -180,15 +189,10 @@ class database {
 	
 	/**
 	 * Returns the text of the error message from previous MySQL function.
-	 * @return string The error text from the last MySQL function.
+     * @return string The error text from the last MySQL function.
+     * @deprecated
 	 */
 	public function getError() {
 		return mysql_error($this->dbLink);
 	}
-	
-	// The database is connected on a passive manner.
-	// Because of this we cannot call mysql_close().
-	// public function __destruct() {
-	//	  mysql_close($this->dbLink);
-	// }
 }
