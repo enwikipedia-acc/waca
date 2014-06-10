@@ -15,15 +15,20 @@ if (!defined("ACC")) {
 	die();
 } // Invalid entry point
 
-$tagstack = array();
+
 
 class BootstrapSkin {
-    public static function displayPublicHeader() {
+    
+    private static $tagstack = array();
+    
+    public static function displayPublicHeader() 
+    {
         global $smarty;
         $smarty->display("header-external.tpl");
     }
     
-    public static function displayInternalHeader() {
+    public static function displayInternalHeader() 
+    {
         // userid
         // username
         // sitenotice
@@ -50,11 +55,15 @@ class BootstrapSkin {
     /**
      * Prints the public interface footer to the screen.
      */
-    public static function displayPublicFooter() {
-        global $smarty, $tagstack;
+    public static function displayPublicFooter() 
+    {
+        global $smarty;
         
         // close all declared open tags
-        while(count($tagstack) != 0) { echo array_pop($tagstack); }
+        while(count(self::$tagstack) != 0) 
+        {
+            echo array_pop(self::$tagstack); 
+        }
         
         $online = '';
         $smarty->assign("onlineusers", $online);
@@ -65,13 +74,14 @@ class BootstrapSkin {
 	/**
      * Prints the internal interface footer to the screen.
      */
-    public static function displayInternalFooter() {
-        global $smarty, $tagstack;
+    public static function displayInternalFooter() 
+    {
+        global $smarty;
         
         // close all declared open tags
-        while(count($tagstack) != 0) 
+        while(count(self::$tagstack) != 0) 
         { 
-            echo array_pop($tagstack); 
+            echo array_pop(self::$tagstack); 
         }
         
 		$last5min = time() - 300;
@@ -83,14 +93,24 @@ class BootstrapSkin {
         $resultSet = $statement->fetchAll(PDO::FETCH_CLASS, "User");
         $resultSetCount = count($resultSet);
         
-        $creators = implode(", ", array_map(function($arg)
-        { 
-            return "<a href=\"statistics.php?page=Users&amp;user=" . $arg->getId() . "\">" . htmlentities($arg->getUsername()) . "</a>";
-        }, $resultSet));
+        $creators = implode(
+            ", ", 
+            array_map(
+                function($arg)
+                { 
+                    return "<a href=\"statistics.php?page=Users&amp;user=" . $arg->getId() . "\">" . htmlentities($arg->getUsername()) . "</a>";
+                }, 
+                $resultSet
+            )
+        );
         
-		if ($resultSetCount != 1) { // not equal to one, as zero uses the plural form too.
+        // not equal to one, as zero uses the plural form too.
+		if ($resultSetCount != 1) 
+        { 
 			$onlinemessage = $resultSetCount . " Account Creators currently online (past 5 minutes): $creators";
-        } else {
+        } 
+        else 
+        {
 			$onlinemessage = $resultSetCount . " Account Creator currently online (past 5 minutes): $creators";
         }
         
@@ -119,7 +139,8 @@ class BootstrapSkin {
      * @param $return bool return the content as a string, or display it.
      * @param $centre bool centre the box in the page, like a dialog.
      */
-    public static function displayAlertBox( $message, $type = "", $header = "", $block = false, $closeable = true, $return = false, $centre = false) {
+    public static function displayAlertBox( $message, $type = "", $header = "", $block = false, $closeable = true, $return = false, $centre = false) 
+    {
         global $smarty;
         $smarty->assign("alertmessage", $message);
         $smarty->assign("alerttype", $type);
@@ -148,7 +169,8 @@ class BootstrapSkin {
      * Prints the account request form to the screen.
      * @deprecated
      */
-    public static function displayRequestForm( ) {
+    public static function displayRequestForm( ) 
+    {
         global $smarty;
         $smarty->display("request-form.tpl");
     }
@@ -156,14 +178,14 @@ class BootstrapSkin {
     /**
      * @param string $tag
      */
-    public static function pushTagStack($tag) {
-        global $tagstack;    
-        array_push($tagstack, $tag);
+    public static function pushTagStack($tag) 
+    {
+        array_push(self::$tagstack, $tag);
     }
     
-    public static function popTagStack() {
-        global $tagstack;    
-        return array_pop($tagstack);
+    public static function popTagStack() 
+    {
+        return array_pop(self::$tagstack);
     }
     
 }
