@@ -1512,7 +1512,9 @@ elseif ($action == "logs")
 	}
 
 	echo $logPage->showListLog(isset($offset) ? $offset : 0 ,isset($limit) ? $limit : 100);
-	$skin->displayIfooter();
+    
+	BootstrapSkin::displayInternalFooter();
+    
 	die();
 }
 elseif ($action == "reserve") 
