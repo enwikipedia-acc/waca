@@ -47,7 +47,7 @@ function upcsum($id) {
 	/*
 	 * Updates the entries checksum (on each load of that entry, to prevent dupes)
 	 */
-	$request = Request::getById($id);
+	$request = Request::getById($id, gGetDb());
     $request->updateChecksum();
     $request->save();
 }
@@ -64,7 +64,7 @@ function csvalid($id, $sum)
 	/*
 	 * Checks to make sure the entries checksum is still valid
 	 */
-    $request = Request::getById($id);
+    $request = Request::getById($id, gGetDb());
     if($request->getChecksum() == $sum)
     {
         return 1;   
