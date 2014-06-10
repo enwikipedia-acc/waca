@@ -14,24 +14,12 @@ require_once 'config.inc.php';
 session_start();
 
 // Get all the classes.
-require_once 'LogClass.php';
 require_once 'functions.php';
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php'; // this needs to be high up, but below config, functions, and database
-require_once 'includes/database.php';
 require_once 'includes/skin.php';
-require_once 'includes/accbotSend.php';
-require_once 'includes/session.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
 require_once 'oauth/OAuthUtility.php';
-
-// Initialize the database classes.
-$tsSQL = new database("toolserver");
-$asSQL = new database("antispoof");
-
-// Creates database links for later use.
-$tsSQLlink = $tsSQL->getLink();
-$asSQLlink = $asSQL->getLink();
 
 $user = User::getByRequestToken($_GET['oauth_token'], gGetDb());
 
