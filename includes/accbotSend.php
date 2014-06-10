@@ -15,29 +15,17 @@ if (!defined("ACC")) {
 	die();
 } // Invalid entry point
 
-// accbot class
+/**
+ * accbot class
+ * @deprecated
+ */
 class accbotSend {
+	/**
+	 * Summary of send
+	 * @param mixed $message 
+     * @deprecated
+	 */
 	public function send($message) {
-		global $whichami, $ircBotNotificationType;
-		$message = html_entity_decode($message,ENT_COMPAT,'UTF-8'); // If a message going to the bot was for whatever reason sent through sanitze() earlier, reverse it. 
-		$message = stripslashes($message);
-		$blacklist = array("DCC", "CCTP", "PRIVMSG");
-		$message = str_replace($blacklist, "(IRC Blacklist)", $message); //Lets stop DCC etc
-
-		$msg = chr(2)."[$whichami]".chr(2).": $message";
-        
-		try {
-		    $db = gGetDb('notifications');
-		
-		    $q = $db->prepare( "INSERT INTO notification values (null,null,:notiftype,:message);" );
-		    $q->bindValue(":message", $msg);
-		    $q->bindValue(":notiftype", $ircBotNotificationType);
-		    $q->execute();
-        }
-        catch(Exception $ex)
-        {
-            // blat any errors.
-        }
-		return;
+		AccBot::send($message);
 	}
 }
