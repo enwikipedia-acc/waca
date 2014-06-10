@@ -17,7 +17,32 @@ class StatsTemplateStats extends StatisticsPage
 	function execute()
 	{
 		$query = <<<QUERY
-select template_id as "Template ID", template_usercode as "Template Code", count as "Active users using template", countall as "All users using template" from acc_template left join (select user_welcome_templateid, count(*) as count from acc_user where (user_level = "User" or user_level = "Admin") and user_welcome_templateid != 0 group by user_welcome_templateid) u on user_welcome_templateid = template_id left join (select user_welcome_templateid as allid, count(*) as countall from acc_user where user_welcome_templateid != 0 group by user_welcome_templateid) u2 on allid = template_id;
+SELECT 
+    t.id as "Template ID", 
+    t.usercode as "Template Code", 
+    u.count as "Active users using template", 
+    countall as "All users using template" 
+FROM welcometemplate t
+    LEFT JOIN 
+    (
+        SELECT 
+            welcome_template, 
+            COUNT(*) as count 
+        FROM user 
+        WHERE 
+            (status = "User" OR status = "Admin") 
+            AND welcome_template IS NOT NULL 
+        GROUP BY welcome_template
+    ) u ON u.welcome_template = t.id 
+    LEFT JOIN 
+    (
+        SELECT 
+            welcome_template as allid, 
+            COUNT(*) as countall 
+        FROM user 
+        WHERE welcome_template IS NOT NULL
+        GROUP BY welcome_template
+    ) u2 ON u2.allid = t.id;
 QUERY;
 		global $baseurl;
 		$qb = new QueryBrowser();

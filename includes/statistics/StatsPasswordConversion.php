@@ -17,13 +17,13 @@ class StatsPasswordConversion extends StatisticsPage
 	function execute()
 	{
 		$query = <<<sql
-SELECT "0" AS "Version", "Active" AS "Type", COUNT(*) AS "Count" FROM acc_user WHERE user_pass NOT LIKE ":%" AND (user_level = "User" OR user_level = "Admin")
+SELECT "0" AS "Version", "Active" AS "Type", COUNT(*) AS "Count" FROM user WHERE password NOT LIKE ":%" AND (status = "User" OR status = "Admin")
 UNION
-SELECT "0", "Inactive", COUNT(*) FROM acc_user WHERE user_pass NOT LIKE ":%" AND NOT (user_level = "User" OR user_level = "Admin")
+SELECT "0", "Inactive", COUNT(*) FROM user WHERE password NOT LIKE ":%" AND NOT (status = "User" OR status = "Admin")
 UNION
-SELECT SUBSTRING(user_pass FROM 2 FOR 1), "Active", COUNT(*) FROM acc_user WHERE user_pass LIKE ":%" AND (user_level = "User" OR user_level = "Admin") GROUP BY SUBSTRING(user_pass FROM 2 FOR 1)
+SELECT SUBSTRING(password FROM 2 FOR 1), "Active", COUNT(*) FROM user WHERE password LIKE ":%" AND (status = "User" OR status = "Admin") GROUP BY SUBSTRING(password FROM 2 FOR 1)
 UNION
-SELECT SUBSTRING(user_pass FROM 2 FOR 1), "Inactive", COUNT(*) FROM acc_user WHERE user_pass LIKE ":%" AND NOT (user_level = "User" OR user_level = "Admin") GROUP BY SUBSTRING(user_pass FROM 2 FOR 1)
+SELECT SUBSTRING(password FROM 2 FOR 1), "Inactive", COUNT(*) FROM user WHERE password LIKE ":%" AND NOT (status = "User" OR status = "Admin") GROUP BY SUBSTRING(password FROM 2 FOR 1)
 ORDER BY `Version` ASC, "Type" ASC
 ;
 sql;
