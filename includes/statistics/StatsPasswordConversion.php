@@ -14,7 +14,7 @@
 
 class StatsPasswordConversion extends StatisticsPage
 {
-	function execute()
+	protected function execute()
 	{
 		$query = <<<sql
 SELECT "0" AS "Version", "Active" AS "Type", COUNT(*) AS "Count" FROM user WHERE password NOT LIKE ":%" AND (status = "User" OR status = "Admin")
@@ -37,22 +37,22 @@ sql;
 		return $r;
 	}
 	
-	function getPageTitle()
+	public function getPageTitle()
 	{
 		return "Password conversion status";
 	}
 	
-	function getPageName()
+	public function getPageName()
 	{
 		return "PasswordConversion";
 	}
 	
-	function isProtected()
+	public function isProtected()
 	{
 		return true;
 	}
 	
-	function requiresWikiDatabase()
+	public function requiresWikiDatabase()
 	{
 		return false;
 	}

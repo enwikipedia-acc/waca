@@ -14,7 +14,7 @@
 
 class StatsInactiveUsers extends StatisticsPage
 {
-	function execute()
+	protected function execute()
 	{
         global $smarty;
         		
@@ -32,22 +32,22 @@ class StatsInactiveUsers extends StatisticsPage
         return $smarty->fetch("statistics/inactiveusers.tpl");        
 	}
     
-	function getPageName()
+	public function getPageName()
 	{
 		return "InactiveUsers";
 	}
 	
-    function getPageTitle()
+    public function getPageTitle()
 	{
 		return "Inactive tool users";
 	}
 	
-    function isProtected()
+    public function isProtected()
 	{
 		return true;
 	}
 	
-	function requiresWikiDatabase()
+	public function requiresWikiDatabase()
 	{
 		return false;
 	}

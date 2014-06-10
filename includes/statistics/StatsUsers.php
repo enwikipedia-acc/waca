@@ -14,7 +14,7 @@
 
 class StatsUsers extends StatisticsPage
 {
-	function execute()
+	protected function execute()
 	{
 		if(!isset($_GET['user']))
 		{
@@ -26,22 +26,22 @@ class StatsUsers extends StatisticsPage
 		}
 	}
 	
-	function getPageTitle()
+	public function getPageTitle()
 	{
 		return "Account Creation Tool users";
 	}
 	
-	function getPageName()
+	public function getPageName()
 	{
 		return "Users";
 	}
 	
-	function isProtected()
+	public function isProtected()
 	{
 		return false;
 	}
 	
-	function getUserList()
+	private function getUserList()
 	{
         $lists = array(
             "Admin" => User::getAllWithStatus("Admin", gGetDb()),
@@ -54,7 +54,7 @@ class StatsUsers extends StatisticsPage
 		return $smarty->fetch("statistics/users.tpl");
 	}
 	
-	function getUserDetail($userId)
+	private function getUserDetail($userId)
 	{
         $database = gGetDb();
         
@@ -91,7 +91,7 @@ class StatsUsers extends StatisticsPage
 		return $smarty->fetch("statistics/userdetail.tpl");
 	}
 	
-	function requiresWikiDatabase()
+	public function requiresWikiDatabase()
 	{
 		return false;
 	}

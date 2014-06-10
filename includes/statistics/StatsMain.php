@@ -14,7 +14,7 @@
 
 class StatsMain extends StatisticsPage
 {
-	function execute()
+	protected function execute()
 	{
         global $smarty, $filepath;
 
@@ -47,32 +47,32 @@ class StatsMain extends StatisticsPage
 		return $smarty->fetch("statistics/main.tpl");
 	}
 	
-	function getPageTitle()
+	public function getPageTitle()
 	{
 		return "Account Creation Statistics";
 	}
 	
-	function getPageName()
+	public function getPageName()
 	{
 		return "Main";
 	}
 	
-	function isProtected()
+	public function isProtected()
 	{
 		return true;
 	}
     
-	function requiresWikiDatabase()
+	public function requiresWikiDatabase()
 	{
 		return false;
 	}
     
-    function requiresSimpleHtmlEnvironment()
+    public function requiresSimpleHtmlEnvironment()
     {
         return false;   
     }
     
-	function hideFromMenu()
+	public function hideFromMenu()
 	{
 		return true;
 	}

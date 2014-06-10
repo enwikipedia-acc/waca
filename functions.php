@@ -268,7 +268,8 @@ function doSort(array $items)
 		$flag = false;
 		
 		// loop through the array
-		for ($i = 0; $i < (count($items) - 1); $i++) {
+        $loopLimit = (count($items) - 1);
+		for ($i = 0; $i < $loopLimit; $i++) {
 			// are these two items out of order?
 			if(strtotime($items[$i]['time']) > strtotime($items[$i + 1]['time']))
 			{
@@ -352,7 +353,8 @@ function explodeCidr( $range ) {
 
 	$list = array();
 
-	for( $x = bindec( $blow ); $x <= bindec( $bhigh ); $x++ ) {
+    $bindecBHigh = bindec( $bhigh );
+	for( $x = bindec( $blow ); $x <= $bindecBHigh; $x++ ) {
 		$list[] = long2ip( $x );
 	}
 

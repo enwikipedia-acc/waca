@@ -12,10 +12,6 @@
  ** See CREDITS for the list of developers.                               **
  ***************************************************************************/
 
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
-
 function zoomPage($id,$urlhash)
 {
 	global $tsSQLlink, $session, $availableRequestStates, $createdid;

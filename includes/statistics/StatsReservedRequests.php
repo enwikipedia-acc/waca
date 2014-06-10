@@ -14,7 +14,7 @@
 
 class StatsReservedRequests extends StatisticsPage
 {
-	function execute()
+	protected function execute()
 	{
 		global $baseurl;
         
@@ -33,22 +33,22 @@ sql;
 		return $qb->executeQueryToTable($query);
 	}
     
-	function getPageName()
+	public function getPageName()
 	{
 		return "ReservedRequests";
 	}
     
-	function getPageTitle()
+	public function getPageTitle()
 	{
 		return "All currently reserved requests";
 	}
     
-	function isProtected()
+	public function isProtected()
 	{
 		return true;
 	}
 	
-	function requiresWikiDatabase()
+	public function requiresWikiDatabase()
 	{
 		return false;		
 	}

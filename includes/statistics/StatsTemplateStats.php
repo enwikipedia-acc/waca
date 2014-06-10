@@ -14,7 +14,7 @@
 
 class StatsTemplateStats extends StatisticsPage
 {
-	function execute()
+	protected function execute()
 	{
 		$query = <<<QUERY
 SELECT 
@@ -51,22 +51,22 @@ QUERY;
 		return $r;
 	}
     
-	function getPageName()
+	public function getPageName()
 	{
 		return "TemplateStats";
 	}
     
-	function getPageTitle()
+	public function getPageTitle()
 	{
 		return "Template Stats";
 	}
     
-	function isProtected()
+	public function isProtected()
 	{
 		return true;
 	}
 	
-	function requiresWikiDatabase()
+	public function requiresWikiDatabase()
 	{
 		return false;		
 	}

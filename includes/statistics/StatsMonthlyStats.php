@@ -14,7 +14,7 @@
 
 class StatsMonthlyStats extends StatisticsPage
 {
-	function execute()
+	protected function execute()
 	{
 		$qb = new QueryBrowser();
 	
@@ -90,27 +90,27 @@ class StatsMonthlyStats extends StatisticsPage
 		return $out;
 	}
     
-	function getPageName()
+	public function getPageName()
 	{
 		return "MonthlyStats";
 	}
     
-	function getPageTitle()
+	public function getPageTitle()
 	{
 		return "Monthly Statistics";
 	}
     
-	function isProtected()
+	public function isProtected()
 	{
 		return true;
 	}
     
-	function requiresWikiDatabase()
+	public function requiresWikiDatabase()
 	{
 		return false;	
 	}
 
-	function createClosuresGraph($queries)
+	private function createClosuresGraph($queries)
 	{
 		$qb = new QueryBrowser();
 		

@@ -14,7 +14,7 @@
 
 class StatsTopCreators extends StatisticsPage
 {
-	function execute()
+	protected function execute()
 	{
         global $smarty;
         
@@ -152,22 +152,22 @@ SQL
 		return $smarty->fetch("statistics/topcreators.tpl");
 	}
 
-	function getPageTitle()
+	public function getPageTitle()
 	{
 		return "Top Account Creators";
 	}
 	
-	function getPageName()
+	public function getPageName()
 	{
 		return "TopCreators";
 	}
     
-	function isProtected()
+	public function isProtected()
 	{
 		return true;
 	}
 
-	function requiresWikiDatabase()
+	public function requiresWikiDatabase()
 	{
 		return false;
 	}

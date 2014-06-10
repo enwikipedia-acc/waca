@@ -14,7 +14,7 @@
 
 class StatsFastCloses extends StatisticsPage
 {
-	function execute()
+	protected function execute()
 	{
 		$query = <<<QUERY
 SELECT
@@ -57,20 +57,23 @@ QUERY;
 
 		return $r;
 	}
-	function getPageName()
+    
+	public function getPageName()
 	{
 		return "FastCloses";
 	}
-	function getPageTitle()
+    
+	public function getPageTitle()
 	{
 		return "Requests closed less than 30 seconds after reservation in the past 3 months";
 	}
-	function isProtected()
+    
+	public function isProtected()
 	{
 		return true;
 	}
 	
-	function requiresWikiDatabase()
+	public function requiresWikiDatabase()
 	{
 		return false;		
 	}
@@ -83,7 +86,9 @@ function statsFastClosesRowCallback($row, $currentreq)
 	
 	global $baseurl;
 	
-	for($colid = 0; $colid < count($row); $colid++) {
+    $rowCount = count($row);
+    
+	for($colid = 0; $colid < $rowCount; $colid++) {
 		$cell = $row[$colid];
 		
 		$out .= "<td>" ;

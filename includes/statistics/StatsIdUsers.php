@@ -14,27 +14,27 @@
 
 class StatsIdUsers extends StatisticsPage
 {
-	function execute()
+	protected function execute()
 	{
 		return $this->getUserList();
 	}
 	
-	function getPageTitle()
+	public function getPageTitle()
 	{
 		return "All identified users";
 	}
 	
-	function getPageName()
+	public function getPageName()
 	{
 		return "IdUsers";
 	}
 	
-	function isProtected()
+	public function isProtected()
 	{
 		return true;
 	}
 	
-	function getUserList()
+	private function getUserList()
 	{
 		$query = "select username, status, checkuser from user where identified = 1 order by username;";
 	
@@ -47,7 +47,7 @@ class StatsIdUsers extends StatisticsPage
 		return $r;
 	}
 	
-	function requiresWikiDatabase()
+	public function requiresWikiDatabase()
 	{
 		return false;
 	}

@@ -11,9 +11,6 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
 class accRequest {
 	private $id;
@@ -372,9 +369,10 @@ class accRequest {
 		
 		if (function_exists('checkdnsrr')) {
 			getmxrr($domain, $mxhosts, $mxweight);
-			if (count($mxhosts) > 0) {
+            $numberOfMXHosts = count($mxhosts);
+			if ($numberOfMXHosts > 0) {
                 $mxs = array();
-				for ($i = 0; $i < count($mxhosts); $i++) {
+				for ($i = 0; $i < $numberOfMXHosts; $i++) {
 					$mxs[$mxhosts[$i]] = $mxweight[$i];
 				}
 				$mailers = array_keys($mxs);
