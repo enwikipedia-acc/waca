@@ -66,12 +66,10 @@ class session {
 	
 	/**
      * Check the user's security level on page load, and bounce accordingly
-	 * @param unknown_type $username
-	 * @return boolean|Ambigous <>
 	 * 
 	 * @deprecated
 	 */
-	public function checksecurity($username) 
+	public function checksecurity() 
     {
 		global $secure, $smarty;
 		if (User::getCurrent()->isNew()) 

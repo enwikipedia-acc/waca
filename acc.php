@@ -124,7 +124,7 @@ elseif (!isset($_GET['nocheck']))
 
 		// ?
         BootstrapSkin::displayInternalHeader();
-        $session->checksecurity($_SESSION['user']);
+        $session->checksecurity();
 }
 
 // When no action is specified the default Internal ACC are displayed.

@@ -16,6 +16,8 @@ class StatsReservedRequests extends StatisticsPage
 {
 	function execute()
 	{
+		global $baseurl;
+        
         $query = <<<sql
 SELECT 
     CONCAT("<a href=\"", $baseurl, "/acc.php?action=zoom&amp;id=", p.pend_id, "\">", p.pend_id, "</a>") AS "#", 
@@ -27,7 +29,6 @@ FROM acc_pend p
 WHERE pend_reserved != 0;
 sql;
         
-		global $baseurl;
 		$qb = new QueryBrowser();
 		return $qb->executeQueryToTable($query);
 	}
