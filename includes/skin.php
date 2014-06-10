@@ -11,22 +11,27 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
-
-
 
 class BootstrapSkin {
     
+    /**
+     * Summary of $tagstack
+     * @var string[]
+     */
     private static $tagstack = array();
     
+    /**
+     * Summary of displayPublicHeader
+     */
     public static function displayPublicHeader() 
     {
         global $smarty;
         $smarty->display("header-external.tpl");
     }
     
+    /**
+     * Summary of displayInternalHeader
+     */
     public static function displayInternalHeader() 
     {
         // userid
@@ -176,16 +181,23 @@ class BootstrapSkin {
     }
 
     /**
-     * @param string $tag
+     * Push a close tag onto the tag stack.
+     * 
+     * This will ensure that all tags are closed when you show the footer.
+     * 
+     * @param string $tag The closing tag to display
      */
     public static function pushTagStack($tag) 
     {
         array_push(self::$tagstack, $tag);
     }
     
+    /**
+     * Remove an item from the tagstack
+     * @return string
+     */
     public static function popTagStack() 
     {
         return array_pop(self::$tagstack);
     }
-    
 }
