@@ -20,11 +20,11 @@ class AutoLoader
         }
         
         $paths = array(
-            $filepath . $class . ".php",
             $filepath . 'includes/' . $class . ".php",
             $filepath . 'includes/DataObjects/' . $class . ".php",
             $filepath . 'includes/Providers/' . $class . ".php",
             $filepath . 'includes/Providers/Interfaces/' . $class . ".php",
+            $filepath . $class . ".php",
         );
         
         // extra includes which are awkward to autoload
@@ -37,6 +37,11 @@ class AutoLoader
             if(file_exists($file))
             {
                 require_once($file);
+            }
+            
+            if(class_exists($class))
+            {
+                return;   
             }
         }
     }
