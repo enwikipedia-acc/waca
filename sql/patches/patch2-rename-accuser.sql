@@ -1,7 +1,7 @@
 ﻿DROP VIEW IF EXISTS user;
 
 ALTER TABLE `acc_user` 
-DROP COLUMN `user_secureuser`,
+DROP COLUMN `user_secure`,
 DROP COLUMN `user_lastip`,
 DROP COLUMN `user_welcome_template`,
 CHANGE COLUMN `user_id` `id` INT(11) NOT NULL AUTO_INCREMENT ,
