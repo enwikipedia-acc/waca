@@ -132,10 +132,9 @@ abstract class StatisticsPage
 	public function Show()
 	{
 		// Get the needed objects.
-		global $skin;
 				
 		// fetch and show page header
-		global $messages, $dontUseWikiDb, $session;
+		global $dontUseWikiDb, $session;
 		
         BootstrapSkin::displayInternalHeader();
 		
