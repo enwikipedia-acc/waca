@@ -37,12 +37,12 @@ class StatsMain extends StatisticsPage
 			}
 		}
         
-		$smallStats = $this->smallStats();
-		$rrdToolGraphs = $this->rrdtoolGraphs();
+		$this->smallStats();
         
         $smarty->assign("statsPages", $statsPages);
-        $smarty->assign("smallStats", $smallStats);
-        $smarty->assign("rrdToolGraphs", $rrdToolGraphs);
+        
+        $graphList = array("day", "2day", "4day", "week", "2week", "month", "3month");
+        $smarty->assign("graphList", $graphList);
        
 		return $smarty->fetch("statistics/main.tpl");
 	}
@@ -77,105 +77,80 @@ class StatsMain extends StatisticsPage
 		return true;
 	}
     
-	function smallStats()
-	{
-		global $tsSQL, $baseurl;
-		$out= '<h4>Statistics</h4><table class="table table-striped table-condensed">';
-		$openq = "SELECT COUNT(*) FROM acc_pend WHERE pend_status = 'Open' AND pend_mailconfirm = 'Confirmed';";
-		$result = $tsSQL->query($openq);
-		if (!$result)
-			Die("ERROR: No result returned.1");
-		$open = mysql_fetch_assoc($result);
-		$out.= "<tr><th>Open Requests</th><td>".$open['COUNT(*)']."</td></tr>";
-		
-		$adminq = "SELECT COUNT(*) FROM acc_pend WHERE pend_status = 'Admin' AND pend_mailconfirm = 'Confirmed';";
-		$result = $tsSQL->query($adminq);
-		if (!$result)
-			Die("ERROR: No result returned.2");
-		$admin = mysql_fetch_assoc($result);
-		$out.= "<tr><th>Requests needing an account creator</th><td>".$admin['COUNT(*)']."</td></tr>";
-		
-		$checkuserq = "SELECT COUNT(*) FROM acc_pend WHERE pend_status = 'Checkuser' AND pend_mailconfirm = 'Confirmed';";
-		$result = $tsSQL->query($checkuserq);
-		if (!$result)
-			Die("ERROR: No result returned.2");
-		$checkuser = mysql_fetch_assoc($result);
-		$out.= "<tr><th>Requests needing a checkuser</th><td>".$checkuser['COUNT(*)']."</td></tr>";
-		
-		$unconfirmedq = "SELECT COUNT(*) FROM acc_pend WHERE pend_mailconfirm != 'Confirmed' AND pend_mailconfirm != '';";
-		$result = $tsSQL->query($unconfirmedq);
-		if (!$result)
-			Die("ERROR: No result returned.2");
-		$unconfirmed = mysql_fetch_assoc($result);
-		$out.= "<tr><th>Unconfirmed requests</th><td>".$unconfirmed['COUNT(*)']."</td></tr>";
-		
-		$sadminq = "SELECT COUNT(*) FROM acc_user WHERE user_level = 'Admin';";
-		$result = $tsSQL->query($sadminq);
-		if (!$result)
-			Die("ERROR: No result returned.3");
-		$sadmin = mysql_fetch_assoc($result);
-		$out.="<tr><th>Tool administrators</th><td>".$sadmin['COUNT(*)']."</td></tr>";
-		
-		$suserq = "SELECT COUNT(*) FROM acc_user WHERE user_level = 'User';";
-		$result = $tsSQL->query($suserq);
-		if (!$result)
-			Die("ERROR: No result returned.4");
-		$suser = mysql_fetch_assoc($result);
-		$out.="<tr><th>Tool users</th><td>".$suser['COUNT(*)']."</td></tr>";
-		
-		$ssuspq = "SELECT COUNT(*) FROM acc_user WHERE user_level = 'Suspended';";
-		$result = $tsSQL->query($ssuspq);
-		if (!$result)
-			Die("ERROR: No result returned.5");
-		$ssusp = mysql_fetch_assoc($result);
-		$out.="<tr><th>Tool suspended users</th><td>".$ssusp['COUNT(*)']."</td></tr>";
-		
-		$snewq = "SELECT COUNT(*) FROM acc_user WHERE user_level = 'New';";
-		$result = $tsSQL->query($snewq);
-		if (!$result)
-			Die("ERROR: No result returned.6");
-		$snew = mysql_fetch_assoc($result);
-		$out.="<tr><th>New tool users</th><td>".$snew['COUNT(*)']."</td></tr>";
-		
-		$mostComments = "select request from comment group by request order by count(*) desc limit 1;";
-		$mostCommentsResult = $tsSQL->query($mostComments);
-		if(!$mostCommentsResult) Die("ERROR: No result returned. (mc)");
-		$mostCommentsRow = mysql_fetch_assoc($mostCommentsResult);
-		$mostCommentsId = $mostCommentsRow['request'];
-		$out.="<tr><th>Request with most comments</th><td><a href=\"$baseurl/acc.php?action=zoom&amp;id=".$mostCommentsId."\">".$mostCommentsId."</a></td></tr>";
-	
-		$now = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 1));
-		
-		//Process log for stats
-		$logq = "select * from acc_log AS A
-			JOIN acc_pend AS B ON log_pend = pend_id
-			where log_time RLIKE '^$now.*' AND
-			log_action RLIKE '^(Closed.*|Deferred.*|Blacklist.*)';";
-		$result = $tsSQL->query($logq);
-		if (!$result)
-			Die("ERROR: No result returned.7");
+	/**
+	 * Gets the relevant statistics from the database for the small statistics table
+	 */
+	private function smallStats()
+	{		
+        global $smarty;
         
-		$WQquery = "SELECT COUNT(*) AS pending FROM acc_welcome WHERE welcome_status = \"Open\";";
-		$WQresult = $tsSQL->query($WQquery);
-		if(!$WQresult) Die("ERROR: No result returned. (WQ)");
-		$WQrow = mysql_fetch_assoc($WQresult);
-		$out.="<tr><th>Welcome queue length</th><td>". $WQrow['pending']."</td></tr>";
-		
-		$out.="</table>";
-		return $out;
-	}
+        $database = gGetDb();
+        $requestsQuery = "SELECT COUNT(*) FROM acc_pend WHERE pend_status = :status AND pend_mailconfirm = 'Confirmed';";
+        
+        $requestsStatement = $database->prepare($requestsQuery);
+        
+        // TODO: use the request states thing here.
+        
+        // Open Requests
+        $requestsStatement->execute(array(":status" => "Open"));
+        $open = $requestsStatement->fetchColumn();
+        $requestsStatement->closeCursor();
+        $smarty->assign("statsOpen", $open);
+        
+        // Admin Requests
+        $requestsStatement->execute(array(":status" => "Admin"));
+        $admin = $requestsStatement->fetchColumn();
+        $requestsStatement->closeCursor();
+        $smarty->assign("statsAdmin", $admin);
+        
+        // Checkuser Requests
+        $requestsStatement->execute(array(":status" => "Checkuser"));
+        $checkuser = $requestsStatement->fetchColumn();
+        $requestsStatement->closeCursor();
+        $smarty->assign("statsCheckuser", $checkuser);
 
-	function rrdtoolGraphs()
-	{
-		$out = "<h4>Graphs (<a href=\"http://acc.stwalkerster.info/acc-new/\">see more!</a>)</h4>";
-		$pathbase = "http://acc.stwalkerster.info/acc-new/";
-		$pathsuffix = "/acc.svg";
-		$time = array("day", "2day", "4day", "week", "2week", "month", "3month");
+        // Unconfirmed requests
+		$unconfirmedStatement = $database->query("SELECT COUNT(*) FROM acc_pend WHERE pend_mailconfirm != 'Confirmed' AND pend_mailconfirm != '';");
+        $unconfirmed = $unconfirmedStatement->fetchColumn();
+        $unconfirmedStatement->closeCursor();
+        $smarty->assign("statsUnconfirmed", $unconfirmed);
+        
+        $userStatusStatement = $database->prepare("SELECT COUNT(*) FROM user WHERE status = :status;");
 		
-		foreach($time as $t){
-			$out.= "<img src=\"$pathbase$t$pathsuffix\" alt=\"graph\"/><br />";
-		}
+        // Admin users
+		$userStatusStatement->execute(array(":status" => "Admin"));
+        $adminusers = $userStatusStatement->fetchColumn();
+        $userStatusStatement->closeCursor();
+        $smarty->assign("statsAdminUsers", $adminusers);
+        
+        // Users
+		$userStatusStatement->execute(array(":status" => "User"));
+        $users = $userStatusStatement->fetchColumn();
+        $userStatusStatement->closeCursor();
+        $smarty->assign("statsUsers", $users);
 		
-		return $out;
+        // Suspended users
+		$userStatusStatement->execute(array(":status" => "Suspended"));
+        $suspendedUsers = $userStatusStatement->fetchColumn();
+        $userStatusStatement->closeCursor();
+        $smarty->assign("statsSuspendedUsers", $suspendedUsers);
+		
+        // New users
+		$userStatusStatement->execute(array(":status" => "New"));
+        $newUsers = $userStatusStatement->fetchColumn();
+        $userStatusStatement->closeCursor();
+        $smarty->assign("statsNewUsers", $newUsers);
+        
+		// Most comments on a request
+		$mostCommentsStatement = $database->query("SELECT request FROM comment GROUP BY request ORDER BY COUNT(*) DESC LIMIT 1;");
+        $mostComments = $mostCommentsStatement->fetchColumn();
+        $mostCommentsStatement->closeCursor();
+        $smarty->assign("mostComments", $mostComments);
+        
+        // Welcome queue length
+		$welcomeQueueStatement = $database->query("SELECT COUNT(*) FROM acc_welcome WHERE welcome_status = 'Open';");
+		$welcomeQueueLength = $welcomeQueueStatement->fetchColumn();
+        $welcomeQueueStatement->closeCursor();
+        $smarty->assign("welcomeQueueLength",$welcomeQueueLength);
 	}
 }
