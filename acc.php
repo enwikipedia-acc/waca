@@ -1073,7 +1073,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "")
             die();
         }
 		
-        if( csvalid($request->getId(), $_GET['sum']) != 1 )
+        if( $request->getChecksum() != $_GET['sum'] )
         {
             SessionAlert::error("This is similar to an edit conflict on Wikipedia; it means that you have tried to perform an action on a request that someone else has performed an action on since you loaded the page", "Invalid checksum");
             header("Location: acc.php?action=zoom&id={$request->getId()}");
@@ -1223,7 +1223,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$gem = sanitize($_GET['email']);
 	
 	// check the checksum is valid
-	if (csvalid($request->getId(), $_GET['sum']) != 1) 
+	if ($request->getChecksum() != $_GET['sum']) 
     {
         BootstrapSkin::displayAlertBox("This is similar to an edit conflict on Wikipedia; it means that you have tried to perform an action on a request that someone else has performed an action on since you loaded the page.", "alert-error", "Invalid Checksum", true, false);
         BootstrapSkin::displayInternalFooter();

@@ -391,40 +391,7 @@ class accRequest {
 			return true;
 		}
 	}
-	
-	/*
-	* Updates the entries checksum (on each load of that entry, to prevent dupes).
-	* @param $id The ID to use.
-	*/
-	public function upcsum($id) {
-		// Get the needed objects from index file.
-		global $tsSQL;
 		
-		// Formulates and executes SQL query to return the request.
-		$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
-		$result = $tsSQL->query($query);
-		
-		// Display error upon failure.
-		if (!$result) {
-			$tsSQL->showError("Query failed: $query ERROR: " . $tsSQL->getError(),"Database query error.");
-		}
-		
-		// Assigns the row to the varibale.
-		$pend = mysql_fetch_assoc($result);
-		
-		// Generates the required HASH.
-		$hash = md5($pend['pend_id'] . $pend['pend_name'] . $pend['pend_email'] . microtime());
-		
-		// Formulates and executes SQL query to update the request HASH.
-		$query = "UPDATE acc_pend SET pend_checksum = '$hash' WHERE pend_id = '$id';";
-		$tsSQL->query($query);
-	}
-	
-	public function blockedOnEn() {
-		// not working, and not needed. Also causing problems with other things
-		// TODO: remove all calls to this function.
-	}
-	
     /**
 	 * Do some automated checks on the username and email adress.
 	 * @param $user The username to check.
@@ -626,7 +593,9 @@ class accRequest {
 		// Checks whether the ID is not zero nor empty.
 		if ($pid != 0 || $pid != "") {
 			// Updates the entries checksum.
-			$this->upcsum($pid);
+			$requestObject = Request::getById($pid, gGetDb());
+            $requestObject->updateChecksum();
+            $requestObject->save();
 		}
 		
 		// Checks whether email confirmation is activated.

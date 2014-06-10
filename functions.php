@@ -39,40 +39,6 @@ function sanitize($what) {
 }
 
 /**
- * Summary of upcsum
- * @param mixed $id 
- * @deprecated
- */
-function upcsum($id) {
-	/*
-	 * Updates the entries checksum (on each load of that entry, to prevent dupes)
-	 */
-	$request = Request::getById($id, gGetDb());
-    $request->updateChecksum();
-    $request->save();
-}
-
-/**
- * Summary of csvalid
- * @deprecated Just do a comparison with the request object!
- * @param int $id 
- * @param string $sum 
- * @return int
- */
-function csvalid($id, $sum) 
-{
-	/*
-	 * Checks to make sure the entries checksum is still valid
-	 */
-    $request = Request::getById($id, gGetDb());
-    if($request->getChecksum() == $sum)
-    {
-        return 1;   
-    }
-    return 0;
-}
-
-/**
  * Send a "close pend ticket" email to the end user. (created, taken, etc...)
  */
 function sendemail($messageno, $target, $id) 

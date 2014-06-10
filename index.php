@@ -81,7 +81,6 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 	$request->checkBan('IP',$_SERVER['REMOTE_ADDR']);
 	$request->checkBan('Name',$_POST['name']);
 	$request->checkBan('EMail',$_POST['email']);
-	$request->blockedOnEn();
 	
 	// Do automated checks on the username and email adress.
 	$request->finalChecks($user,$email);
