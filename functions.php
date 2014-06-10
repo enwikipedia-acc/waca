@@ -47,78 +47,48 @@ function upcsum($id) {
 	/*
 	 * Updates the entries checksum (on each load of that entry, to prevent dupes)
 	 */
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	$link = mysql_select_db($toolserver_database);
-	if( !$link ) {
-	 sqlerror(mysql_error(),"Error selecting database.");
-	}
-	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
-	$result = mysql_query($query);
-	if (!$result)
-	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	$pend = mysql_fetch_assoc($result);
-	$hash = md5($pend['pend_id'] . $pend['pend_name'] . $pend['pend_email'] . microtime());
-	$query = "UPDATE acc_pend SET pend_checksum = '$hash' WHERE pend_id = '$id';";
-	mysql_query($query);
+	$request = Request::getById($id);
+    $request->updateChecksum();
+    $request->save();
 }
 
-function csvalid($id, $sum) {
+/**
+ * Summary of csvalid
+ * @deprecated Just do a comparison with the request object!
+ * @param int $id 
+ * @param string $sum 
+ * @return int
+ */
+function csvalid($id, $sum) 
+{
 	/*
 	 * Checks to make sure the entries checksum is still valid
 	 */
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	$link = mysql_select_db($toolserver_database);
-	if( !$link ) {
-		sqlerror(mysql_error(),"Error selecting database.");
-	}
-	$query = "SELECT * FROM acc_pend WHERE pend_id = '$id';";
-	$result = mysql_query($query);
-	if (!$result)
-	sqlerror("Query failed: $query ERROR: " . mysql_error(),"Database query error.");
-	$pend = mysql_fetch_assoc($result);
-	if (!isset($pend['pend_checksum'])) {
-		upcsum($id);
-		return (1);
-	}
-	if ($pend['pend_checksum'] == $sum) {
-		return (1);
-	} else {
-		return (0);
-	}
+    $request = Request::getById($id);
+    if($request->getChecksum() == $sum)
+    {
+        return 1;   
+    }
+    return 0;
 }
 
-function sendemail($messageno, $target, $id) {
-	/*
-	 * Send a "close pend ticket" email to the end user. (created, taken, etc...)
-	 */
-	global $toolserver_username;
-	global $toolserver_password;
-	global $toolserver_host;
-	global $toolserver_database;
-	mysql_pconnect($toolserver_host, $toolserver_username, $toolserver_password);
-	@ mysql_select_db($toolserver_database) or sqlerror(mysql_error(),"Error selecting database.");
-	
+/**
+ * Send a "close pend ticket" email to the end user. (created, taken, etc...)
+ */
+function sendemail($messageno, $target, $id) 
+{
     $template = EmailTemplate::getById($messageno, gGetDb());
-	$mailtxt = $template->getText();
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	    
 	// Get the closing user's Email signature and append it to the Email.
 	if(User::getCurrent()->getEmailSig() != "") 
     {
 		$emailsig = html_entity_decode(User::getCurrent()->getEmailSig(), ENT_QUOTES, "UTF-8");
-		mail($target, "RE: [ACC #$id] English Wikipedia Account Request", $mailtxt . "\n\n" . $emailsig, $headers);
+		mail($target, "RE: [ACC #$id] English Wikipedia Account Request", $template->getText() . "\n\n" . $emailsig, $headers);
 	}
 	else 
     {
-		mail($target, "RE: [ACC #$id] English Wikipedia Account Request", $mailtxt, $headers);
+		mail($target, "RE: [ACC #$id] English Wikipedia Account Request", $template->getText(), $headers);
 	}
 }
 
@@ -210,15 +180,12 @@ function defaultpage() {
 }
 
 /**
+ * Show the user an error depending on $enableSQLError.
  * @param string $sql_error the output of mysql_error
  * @param string $generic_error the error to show if sql errors are hidden
  * @deprecated Use PDO
  */
 function sqlerror ($sql_error, $generic_error="Query failed.") {
-	/*
-	 * Show the user an error
-	 * depending on $enableSQLError.
-	 */
 	global $enableSQLError;
 	if ($enableSQLError) {
 		die($sql_error);
