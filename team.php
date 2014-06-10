@@ -36,7 +36,11 @@ require_once 'includes/skin.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.
-Offline::check(true);
+if(Offline::isOffline())
+{
+    echo Offline::getOfflineMessage(false);
+    die();
+}
 
 // Initialize the database classes.
 $tsSQL = new database("toolserver");
@@ -51,8 +55,6 @@ if($teamEmailImages)
 {
 	$imagegen = new imagegen();
 }
-
-$skin = new skin();
 
 //Array of objects containing the deleveopers' information.
 $developer = array(

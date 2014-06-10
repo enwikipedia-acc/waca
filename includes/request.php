@@ -61,7 +61,7 @@ class accRequest {
 	
 	public function isTOR() {
 		// Get messages object from index file.
-		global $messages, $skin;
+		global $messages;
 		
 		// Checks whether the IP is of the TOR network.
 		$toruser = $this->checktor($_SERVER['REMOTE_ADDR']);
@@ -195,9 +195,8 @@ class accRequest {
 		$mailsuccess = mail($row['pend_email'], "[ACC #$id] English Wikipedia Account Request", $mailtxt, $headers);
 		// Confirms mail went through (JIRA ACC-44)
 		if ($mailsuccess == false) {
-            global $skin;
             $tsSQL->query("DELETE FROM `acc_pend` WHERE `pend_id`= $id;");
-			$skin->displayRequestMsg("Sorry, it appears we were unable to send an email to the email address you specified. Please check the spelling and try again.");
+			BootstrapSkin::displayAlertBox("Sorry, it appears we were unable to send an email to the email address you specified. Please check the spelling and try again.");
 			BootstrapSkin::displayPublicFooter();
             
             // we probably want to output
@@ -220,7 +219,7 @@ class accRequest {
 		global $enableEmailConfirm, $baseurl;
 		
 		// Get variables and objects from index file.
-		global $tsSQL, $messages, $action, $accbot, $skin;
+		global $tsSQL, $messages, $action, $accbot;
 		
 		// Checks whether email confirmation is activated.
 		if ($enableEmailConfirm == 1) {
@@ -411,7 +410,7 @@ class accRequest {
 	 */
 	public function finalChecks($user,$email) {
 		// Get objects from the index file.
-		global $messages, $tsSQL, $skin, $caSQL, $dontUseWikiDb, $wikiurl;
+		global $messages, $tsSQL, $caSQL, $dontUseWikiDb, $wikiurl;
 		
 		// Used to check if a request complies to the automated tests.
 		// The value is reseted, as the user has another chance to complete the form.
@@ -422,7 +421,7 @@ class accRequest {
 		$ue = unserialize($userexist);
 		if (!isset ($ue['query']['users']['0']['missing'])&&isset ($ue['query']['users']['0']['userid'])) {
 			$message = InterfaceMessage::get(InterfaceMessage::DECL_TAKEN);
-			$skin->displayRequestMsg("<!-- m:10 -->$message<br />\n");
+			BootstrapSkin::displayAlertBox("<!-- m:10 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -433,7 +432,7 @@ class accRequest {
 		$ue = unserialize($userexist);
 		if (isset ($ue['query']['globaluserinfo']['id'])) {
 			$message = InterfaceMessage::get(InterfaceMessage::DECL_SULTAKEN);
-			$skin->displayRequestMsg("<!-- m:28 -->$message<br />\n");
+			BootstrapSkin::displayAlertBox("<!-- m:28 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -441,7 +440,7 @@ class accRequest {
 		$nums = preg_match("/^[0-9]+$/", $_POST['name']);
 		if ($nums > 0) {
 			$message =InterfaceMessage::get(InterfaceMessage::DECL_NUMONLY);
-			$skin->displayRequestMsg("<!-- m:11 -->$message<br />\n");
+			BootstrapSkin::displayAlertBox("<!-- m:11 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -449,7 +448,7 @@ class accRequest {
 		$unameismail = preg_match('/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,6}$/i', $_POST['name']);
 		if ($unameismail > 0) {
 			$message = InterfaceMessage::get(InterfaceMessage::DECL_EMAIL);
-			$skin->displayRequestMsg("<!-- m:12 -->$message<br />\n");
+			BootstrapSkin::displayAlertBox("<!-- m:12 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -457,21 +456,21 @@ class accRequest {
 		$unameisinvalidchar = preg_match('/[\#\/\|\[\]\{\}\@\%\:\~\<\>]/', $_POST['name']);
 		if ($unameisinvalidchar > 0 || ltrim( rtrim( $_POST['name'])) == "" ||htmlentities($user,ENT_COMPAT,'UTF-8')=="" ||htmlentities(ltrim(rtrim($user)),ENT_COMPAT,'UTF-8')=="" ) {
 			$message = InterfaceMessage::get(InterfaceMessage::DECL_INVCHAR);
-			$skin->displayRequestMsg("<!-- m:13 -->$message<br />\n");
+			BootstrapSkin::displayAlertBox("<!-- m:13 -->$message<br />\n");
 			$fail = 1;
 		}
 		
 		// Checks whether the email adresses match.
 		if($_POST['email'] != $_POST['emailconfirm']) {
 			$message = InterfaceMessage::get(InterfaceMessage::DECL_NONMATCHEMAIL);
-			$skin->displayRequestMsg("<!-- m:27 -->$message<br />\n");
+			BootstrapSkin::displayAlertBox("<!-- m:27 -->$message<br />\n");
 			$fail = 1;
 		}
 		
 		// Checks whether the email adress is valid.
 		if (!$this->emailvalid($_POST['email'])) {
 			$message = InterfaceMessage::get(InterfaceMessage::DECL_INVEMAIL);
-			$skin->displayRequestMsg("<!-- m:14a -->$message<br />\n");
+			BootstrapSkin::displayAlertBox("<!-- m:14a -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -479,7 +478,7 @@ class accRequest {
 		$mailiswmf = preg_match('/.*@.*wiki(m.dia|p.dia)\.(org|com)/i', $email);
 		if ($mailiswmf != 0) {
 			$message = InterfaceMessage::get(InterfaceMessage::DECL_INVEMAIL);
-			$skin->displayRequestMsg("<!-- m:14b -->$message<br />\n");
+			BootstrapSkin::displayAlertBox("<!-- m:14b -->$message<br />\n");
 			$fail = 1;
 		}
 
@@ -489,7 +488,7 @@ class accRequest {
 		$row = mysql_fetch_assoc($result);
 		if ($row['pend_id'] != "") {
 			$message = InterfaceMessage::get(InterfaceMessage::DECL_DUPEUSER);
-			$skin->displayRequestMsg("<!-- m:17 -->$message<br />\n");
+			BootstrapSkin::displayAlertBox("<!-- m:17 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -499,7 +498,7 @@ class accRequest {
 		$row = mysql_fetch_assoc($result);
 		if ($row['pend_id'] != "") {
 			$message = InterfaceMessage::get(InterfaceMessage::DECL_DUPEEMAIL);
-			$skin->displayRequestMsg("<!-- m:18 -->$message<br />\n");
+			BootstrapSkin::displayAlertBox("<!-- m:18 -->$message<br />\n");
 			$fail = 1;
 		}
 		
@@ -510,7 +509,7 @@ class accRequest {
 			$message = InterfaceMessage::get(InterfaceMessage::DECL_FINAL);
 			
 			// Displays the appropiate message to the user.
-			$skin->displayRequestMsg("<!-- m:16 -->$message<br />\n");
+			BootstrapSkin::displayAlertBox("<!-- m:16 -->$message<br />\n");
 			
 			// Display the request form and footer of the interface.
 			BootstrapSkin::displayRequestForm();

@@ -26,7 +26,11 @@ require_once 'includes/strings.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.
-Offline::check(true);
+if(Offline::isOffline())
+{
+    echo Offline::getOfflineMessage(true);
+    die();
+}
 
 // Initialize the database classes.
 $tsSQL = new database("toolserver");
@@ -35,7 +39,6 @@ $asSQL = new database("antispoof");
 // Initialize the class objects.
 $request  = new accRequest();
 $accbot   = new accbotSend();
-$skin     = new skin();
 $strings  = new strings();
 
 $antispoofProvider = new $antispoofProviderClass();

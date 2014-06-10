@@ -39,7 +39,11 @@ $version = "0.9.7";
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
-Offline::check(false);
+if(Offline::isOffline())
+{
+    echo Offline::getOfflineMessage(false);
+    die();
+}
 
 // Initialize the database classes.
 $tsSQL = new database("toolserver");
@@ -50,7 +54,6 @@ $tsSQLlink = $tsSQL->getLink();
 $asSQLlink = $asSQL->getLink();
 
 // Initialize the class objects.
-$skin     = new skin();
 $accbotSend = new accbotSend();
 $session = new session();
 $date = new DateTime();
@@ -1185,7 +1188,7 @@ elseif ($action == "prefs")
 }
 elseif ($action == "done" && $_GET['id'] != "") {
 	// check for valid close reasons
-	global $messages, $skin, $baseurl, $smarty;
+	global $messages, $baseurl, $smarty;
 	
     if(isset($_GET['email'])) 
     {

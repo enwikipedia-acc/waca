@@ -32,7 +32,11 @@ require_once 'oauth/OAuthUtility.php';
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
-Offline::check(false);
+if(Offline::isOffline())
+{
+    echo Offline::getOfflineMessage(false);
+    die();
+}
 
 // Initialize the database classes.
 $tsSQL = new database("toolserver");

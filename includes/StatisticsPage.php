@@ -18,9 +18,6 @@ if (!defined("ACC")) {
 // Get all the classes.
 require_once 'includes/skin.php';
 
-// Initialize the class object.
-$skin     = new skin();
-
 abstract class StatisticsPage
 {
 	
