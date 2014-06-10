@@ -75,7 +75,10 @@ class accRequest {
 			echo "$message<strong><a href=\"https://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse.</strong><br /></div>\n";
 			
 			// Display the footer of the interface.
-			$skin->displayPfooter();
+			BootstrapSkin::displayPublicFooter();
+            
+            // we probably want to output
+            ob_end_flush();
 			
 			// Terminates the current script, as the user is banned.
 			// This is done because the requesting process should be stopped. 
@@ -195,7 +198,10 @@ class accRequest {
             global $skin;
             $tsSQL->query("DELETE FROM `acc_pend` WHERE `pend_id`= $id;");
 			$skin->displayRequestMsg("Sorry, it appears we were unable to send an email to the email address you specified. Please check the spelling and try again.");
-			$skin->displayPfooter();
+			BootstrapSkin::displayPublicFooter();
+            
+            // we probably want to output
+            ob_end_flush();
 			die();			
 		}
 		
@@ -272,13 +278,19 @@ class accRequest {
 				} else {
 					echo "E-mail confirmation failed!<br />\n";
 				}
-				$skin->displayPfooter();
+				BootstrapSkin::displayPublicFooter();
+                
+                // we probably want to output
+                ob_end_flush();
 				die();
 			} elseif ( $action == "confirm" ) {
 				echo "Invalid Parameters. Please be sure you copied the URL correctly<br />\n";
 				
 				// Display the footer of the interface.
-				$skin->displayPfooter();
+				BootstrapSkin::displayPublicFooter();
+                
+                // we probably want to output
+                ob_end_flush();
 			
 				// Terminates the current script, as the parameters are incorrect.
 				die();
@@ -501,8 +513,12 @@ class accRequest {
 			$skin->displayRequestMsg("<!-- m:16 -->$message<br />\n");
 			
 			// Display the request form and footer of the interface.
-			$skin->displayRequest();
-			$skin->displayPfooter();
+			BootstrapSkin::displayRequestForm();
+            
+			BootstrapSkin::displayPublicFooter();
+            
+            // we probably want to output
+            ob_end_flush();
 			
 			// Terminates the current script, as automated checks are failed.
 			die();

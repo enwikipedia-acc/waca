@@ -86,7 +86,7 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 	// Sets the parameter to blank, this way the correct options would be displayed.
 	// It would tell the user now that he or she should log in or create an account.
 	$suser = '';
-	$skin->displayIheader($suser);
+	BootstrapSkin::displayInternalHeader();
 
 	// Checks whether the user want to reset his password or register a new account.
 	// Performs the clause when the action is not one of the above options.
@@ -1383,10 +1383,9 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		$crea = $template->getName();
 	}
 
-	$now = new DateTime();
-    $now = $now->format("Y-m-d H:i:s");
-	$accbotSend->send("Request " . $request->getId() . " (" . $request->getName() . ") Marked as 'Done' ($crea) by " . User::getCurrent()->getUsername() . " on $now");
-	$skin->displayRequestMsg("Request " . $request->getId() . " (" . htmlentities($request->getName(),ENT_COMPAT,'UTF-8') . ") marked as 'Done'.<br />");
+	$accbotSend->send("Request " . $request->getId() . " (" . $request->getName() . ") Marked as 'Done' ($crea) by " . User::getCurrent()->getUsername());
+    BootstrapSkin::displayAlertBox("Request " . $request->getId() . " (" . htmlentities($request->getName(),ENT_COMPAT,'UTF-8') . ") marked as 'Done'.", "alert-success");
+    
 	$towhom = $request->getEmail();
 	if ($gem != "0" && $gem != 'custom' && $gem != 'custom-y' && $gem != 'custom-n') {
 		sendemail($gem, $towhom, $request->getId());

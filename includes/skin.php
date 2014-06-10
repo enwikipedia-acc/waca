@@ -172,47 +172,8 @@ class BootstrapSkin {
  * Old skin stuff, just aliases for BootstrapSkin now
  * @deprecated
  */
-class skin {
-	
-	/**
-	 * Prints the public interface header to the screen.
-     * @deprecated
-	 */
-	public function displayPheader() {
-		BootstrapSkin::displayPublicHeader();
-	}
-	
-	/**
-	 * Prints the internal interface header to the screen.
-	 * @param $username The username of the curretly logged in user.
-     * @deprecated
-	 */
-	public function displayIheader($username) {
-        BootstrapSkin::displayInternalHeader();
-	}
-	
-	/**
-	 * Prints the public interface footer to the screen.
-     * @deprecated
-	 */
-	public function displayPfooter() {
-		// Displayes the interface header.
-		BootstrapSkin::displayPublicFooter();
-
-		// we probably want to output
-		ob_end_flush();
-	}
-	
-	/**
-	 * Prints the internal interface footer to the screen.
-     * @deprecated
-	 */
-	public function displayIfooter() {
-        BootstrapSkin::displayInternalFooter();
-		// we probably want to output
-		ob_end_flush();
-	}
-	
+class skin
+{
 	/**
 	 * Prints a request message to the screen.
 	 * @param $message The message to print to the screen.
@@ -221,13 +182,5 @@ class skin {
 	public function displayRequestMsg($message) {
 		// Prints a request message to the screen using the message variable.
 		BootstrapSkin::displayAlertBox($message);
-	}
-	
-	/**
-     * Prints the account request form to the screen.
-     * @deprecated
-	 */
-	public function displayRequest() {
-        BootstrapSkin::displayRequestForm();
 	}
 }

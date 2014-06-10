@@ -41,7 +41,7 @@ $strings  = new strings();
 $antispoofProvider = new $antispoofProviderClass();
 
 // Display the header of the interface.
-$skin->displayPheader();
+BootstrapSkin::displayPublicHeader();
 
 // Clears the action variable.
 unset($action);
@@ -90,7 +90,10 @@ if (isset ($_POST['name']) && isset ($_POST['email'])) {
 } else {
 	// Displayes the form if nothing has been filled in on page load.
 	// Happens as default when the page is loaded for the first time.
-	$skin->displayRequest();
+	BootstrapSkin::displayRequestForm();
 }
-// Display the footer of the interface.
-$skin->displayPfooter();
+
+BootstrapSkin::displayPublicFooter();
+
+// we probably want to output
+ob_end_flush();
