@@ -267,6 +267,13 @@ elseif ($action == "forgotpw")
     {
         $user = User::getById($_GET['id'], gGetDb());
         
+        if($user === false)
+        {
+            BootstrapSkin::displayAlertBox("User not found.", "alert-error");
+            BootstrapSkin::displayInternalFooter();
+            die();
+        }
+        
 		if (isset ($_POST['pw']) && isset ($_POST['pw2'])) 
         {
 			$hash = $user->getForgottenPasswordHash();
