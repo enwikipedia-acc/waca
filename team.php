@@ -32,7 +32,6 @@ if($teamEmailImages){
 	require_once 'includes/imagegen.php';
 }
 require_once 'includes/database.php';
-require_once 'includes/skin.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.

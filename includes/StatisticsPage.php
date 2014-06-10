@@ -15,9 +15,6 @@ if (!defined("ACC")) {
 	die();
 } // Invalid entry point
 
-// Get all the classes.
-require_once 'includes/skin.php';
-
 abstract class StatisticsPage
 {
 	

@@ -25,7 +25,6 @@ require_once 'functions.php';
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
 require_once 'includes/database.php';
-require_once 'includes/skin.php';
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
