@@ -27,7 +27,6 @@ require_once 'functions.php';
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php'; // this needs to be high up, but below config, functions, and database
 require_once 'includes/database.php';
-require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/JWT.php';
@@ -53,7 +52,6 @@ $tsSQLlink = $tsSQL->getLink();
 $asSQLlink = $asSQL->getLink();
 
 // Initialize the class objects.
-$accbotSend = new accbotSend();
 $session = new session();
 $date = new DateTime();
 
@@ -225,8 +223,7 @@ elseif ($action == "sreg")
                 $newUser->setOAuthRequestSecret($requestToken->secret);
                 $newUser->save();
             
-                global $accbotSend;
-                $accbotSend->send("New user: " . $_REQUEST['name']);
+                Notification::userNew($newUser);
         
                 $redirectUrl = $util->getAuthoriseUrl($requestToken);
             
@@ -239,8 +236,8 @@ elseif ($action == "sreg")
         }
         else
         {
-            global $baseurl, $accbotSend;
-            $accbotSend->send("New user: " . $_REQUEST['name']);
+            global $baseurl;
+            Notification::userNew($newUser);
             header("Location: {$baseurl}acc.php?action=registercomplete");
         }
     });
@@ -500,7 +497,7 @@ elseif ($action == "messagemgmt")
         
         $database->transactionally(function() use ($database)
         {
-            global $smarty, $accbotSend;
+            global $smarty;
             
             $message = InterfaceMessage::getById($_GET['edit'], $database);
             
@@ -520,10 +517,10 @@ elseif ($action == "messagemgmt")
                 $logStatement->bindValue(":user", User::getCurrent()->getUsername());
                 $logStatement->execute();
             
-			    $mailname = $message->getDescription();
-            
-                BootstrapSkin::displayAlertBox("Message $mailname ({$message->getId()}) updated.", "alert-success", "Saved!", true, false);
-			    $accbotSend->send("Message $mailname ({$message->getId()}) edited by " . User::getCurrent()->getUsername());
+                BootstrapSkin::displayAlertBox("Message {$message->getDescription()} ({$message->getId()}) updated.", "alert-success", "Saved!", true, false);
+                
+                Notification::interfaceMessageEdited($message);
+                
 			    BootstrapSkin::displayInternalFooter();
 		    }
             
@@ -592,7 +589,7 @@ elseif ($action == "templatemgmt")
             
             $database = gGetDb();
             
-            $database->transactionally(function() use ($database, $accbotSend, $baseurl)
+            $database->transactionally(function() use ($database, $baseurl)
             {
                 $template = new WelcomeTemplate();
                 $template->setDatabase($database);
@@ -609,7 +606,7 @@ elseif ($action == "templatemgmt")
                         )
                     );
             
-                $accbotSend->send("New template {$template->getId()} created by " . User::getCurrent()->getUsername());
+                Notification::welcomeTemplateCreated($template);
             
                 SessionAlert::success("Template successfully created.");
                 header("Location: $baseurl/acc.php?action=templatemgmt");
@@ -693,7 +690,7 @@ elseif ($action == "templatemgmt")
             die();
         }
         
-        $database->transactionally(function() use($database, $template, $accbotSend)
+        $database->transactionally(function() use($database, $template)
         {
             $tid = $template->getId();
             
@@ -708,7 +705,7 @@ elseif ($action == "templatemgmt")
             $template->delete();
             
             SessionAlert::success("Template deleted. Any users who were using this template have had automatic welcoming disabled.");
-		    $accbotSend->send("Template $tid deleted by " . User::getCurrent()->getUsername());
+		    Notification::welcomeTemplateDeleted($tid);
         });
         
         header("Location: $baseurl/acc.php?action=templatemgmt");
@@ -737,7 +734,7 @@ elseif ($action == "templatemgmt")
         $tid = sanitize($_GET['edit']);
 		if (isset($_POST['submit'])) 
         {
-            $database->transactionally(function() use($database, $template, $accbotSend)
+            $database->transactionally(function() use($database, $template)
             {
                 $template->setUserCode($_POST['usercode']);
                 $template->setBotCode($_POST['botcode']);
@@ -747,7 +744,7 @@ elseif ($action == "templatemgmt")
                 $statement->execute(array(":id" => $template->getId(), ":user" => User::getCurrent()->getUsername()));
             
                 SessionAlert::success("Template updated.");
-			    $accbotSend->send("Template {$template->getId()} edited by " . User::getCurrent()->getUsername());
+                Notification::welcomeTemplateEdited($template);
             });
             
             header("Location: $baseurl/acc.php?action=templatemgmt");
@@ -896,24 +893,8 @@ elseif ($action == "sban")
     
     $smarty->assign("ban", $ban);
     BootstrapSkin::displayAlertBox($smarty->fetch("bans/bancomplete.tpl"), "alert-info","", false, false);
-    
-	if ( !isset($duration) || $duration == "-1") 
-    {
-		$until = "Indefinite";
-	} 
-    else 
-    {
-		$until = date("F j, Y, g:i a", $duration);
-	}
-    
-	if ($until == 'Indefinite') 
-    {
-		$accbotSend->send($ban->getTarget() . " banned by $currentUsername for " . $ban->getReason() . " indefinitely");
-	} 
-    else 
-    {
-		$accbotSend->send($ban->getTarget() . " banned by $currentUsername for " . $ban->getReason() . " until $until");
-	}
+        
+	Notification::banned($ban);
     
     BootstrapSkin::displayInternalFooter();
 	die();
@@ -957,7 +938,8 @@ elseif ($action == "unban")
 		{
             $database = gGetDb();
             
-            $database->transactionally(function() use ($database, $ban) {
+            $database->transactionally(function() use ($database, $ban) 
+            {
                 $ban->setActive(0);
                 $ban->save();
                 
@@ -978,7 +960,7 @@ elseif ($action == "unban")
         
             BootstrapSkin::displayAlertBox("Unbanned " . $ban->getTarget(), "alert-info", "", false, false);
             BootstrapSkin::displayInternalFooter();
-			$accbotSend->send($ban->getTarget() . " unbanned by " . User::getCurrent()->getUsername() . " ({$_POST['unbanreason']}))");
+            Notification::unbanned($ban, $_POST['unbanreason']);
 			die();
 		}
 	}
@@ -1108,7 +1090,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "")
         $database = gGetDb();
         $database->transactionally(function() use ($database, $request)
         {
-            global $accbotSend, $availableRequestStates;
+            global $availableRequestStates;
                 
             $request->setReserved(0);
             $request->setStatus($_GET['target']);
@@ -1128,7 +1110,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "")
                 throw new TransactionException("Error occurred saving log entry");    
             }
         
-		    $accbotSend->send("Request {$request->getId()} deferred to $deto by " . User::getCurrent()->getUsername());
+		    Notification::requestDeferred($request);
             SessionAlert::success("Request {$request->getId()} deferred to $deto");
 		    header("Location: acc.php");
         });
@@ -1385,7 +1367,8 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		$crea = $template->getName();
 	}
 
-	$accbotSend->send("Request " . $request->getId() . " (" . $request->getName() . ") Marked as 'Done' ($crea) by " . User::getCurrent()->getUsername());
+    Notification::requestClosed($request, $crea);
+	
     BootstrapSkin::displayAlertBox("Request " . $request->getId() . " (" . htmlentities($request->getName(),ENT_COMPAT,'UTF-8') . ") marked as 'Done'.", "alert-success");
     
 	$towhom = $request->getEmail();
@@ -1532,7 +1515,7 @@ elseif ($action == "reserve")
             throw new TransactionException("Request not found", "Error");
         }
         
-        global $enableEmailConfirm, $allowDoubleReserving, $baseurl, $accbotSend;
+        global $enableEmailConfirm, $allowDoubleReserving, $baseurl;
 	    if($enableEmailConfirm == 1)
         {
             if($request->getEmailConfirm() != "Confirmed")
@@ -1596,7 +1579,7 @@ elseif ($action == "reserve")
         $query->bindValue(":request", $request->getId());
         $query->execute();
     
-        $accbotSend->send("Request {$request->getId()} is being handled by " . User::getCurrent()->getUsername());
+        Notification::requestReserved($request);
                 
         SessionAlert::success("Reserved request {$request->getId()}.");
 
@@ -1645,8 +1628,6 @@ elseif ($action == "breakreserve")
 			{
                 $database->transactionally(function() use($database, $request)
                 {
-                    global $accbotSend;
-                    
                     $request->setReserved(0);
                     $request->save();
 
@@ -1659,8 +1640,8 @@ elseif ($action == "breakreserve")
                         throw new TransactionException("Error creating log entry.");
                     }
                 
-				    $accbotSend->send("Reservation on Request {$request->getId()} broken by " . User::getCurrent()->getUsername());
-				    header("Location: acc.php");
+                    Notification::requestReserveBroken($request);
+                    header("Location: acc.php");
                 });
                 
                 die();
@@ -1683,8 +1664,6 @@ elseif ($action == "breakreserve")
 	{
         $database->transactionally(function() use ($database, $request)
         {
-            global $accbotSend;
-            
             $request->setReserved(0);
             $request->save();
 
@@ -1697,7 +1676,7 @@ elseif ($action == "breakreserve")
                 throw new TransactionException("Error creating log entry");
             }
         
-		    $accbotSend->send("Request {$request->getId()} is no longer being handled.");
+            Notification::requestUnreserved($request);
 		    header("Location: acc.php");
         });
         
@@ -1770,10 +1749,7 @@ elseif ($action == "comment-add")
         "Comment added Successfully!",
         true, false);
         
-    $botcomment_pvt =  ($visibility == "admin") ? "private " : "";
-    $botcomment = User::getCurrent()->getUsername() . " posted a " . $botcomment_pvt . "comment on request " . $request->getId();
-
-    $accbotSend->send($botcomment);
+    Notification::commentCreated($comment);
         
     BootstrapSkin::displayInternalFooter();
     die();
@@ -1812,10 +1788,7 @@ elseif ($action == "comment-quick")
     
     $comment->save();
     
-    $botcomment_pvt =  ($visibility == "admin") ? "private " : "";
-    $botcomment = User::getCurrent()->getUsername() . " posted a " . $botcomment_pvt . "comment on request " . $request->getId();
-
-    $accbotSend->send($botcomment);
+    Notification::commentCreated($comment);
     
     header("Location: acc.php?action=zoom&id=" . $request->getId());
 }
@@ -1894,7 +1867,6 @@ elseif ($action == "ec")
         $database = gGetDb();
         $database->transactionally(function() use ($database, $comment, $baseurl)
         {
-            global $accbotSend;
             
             $comment->setComment($_POST['newcomment']);
             $comment->setVisibility($_POST['visibility']);
@@ -1914,7 +1886,7 @@ elseif ($action == "ec")
             $logStatement->bindValue(":action", "EditComment-r");
             $logStatement->execute();
         
-            $accbotSend->send("Comment " . $comment->getId() . " edited by " . User::getCurrent()->getUsername());
+            Notification::commentEdited($comment);
         
             SessionAlert::success("Comment has been saved successfully");
 		    header("Location: $baseurl/acc.php?action=zoom&id=" . $comment->getRequest());
@@ -1984,8 +1956,6 @@ elseif ($action == "sendtouser")
         }
     });
     
-	//$accbotSend->send("Request $request is being handled by " . $_POST['user']);
-
     SessionAlert::success("Reservation sent successfully");
     header("Location: $baseurl/acc.php?action=zoom&id=$request");
 }
@@ -2006,7 +1976,7 @@ elseif ($action == "emailmgmt")
             $database = gGetDb();
             $database->transactionally(function() use ($database)
             {
-                global $baseurl, $accbotSend;
+                global $baseurl;
                 
                 $emailTemplate = new EmailTemplate();
                 $emailTemplate->setDatabase($database);
@@ -2032,10 +2002,10 @@ elseif ($action == "emailmgmt")
                     throw new TransactionException("Error creating log entry.");    
                 }
                 
+                Notification::emailCreated($emailTemplate);
+                
                 SessionAlert::success("Email template has been saved successfully.");
                 header("Location: $baseurl/acc.php?action=emailmgmt");
-
-                $accbotSend->send("Email {$_POST['name']} ({$emailTemplate->getId()}) created by " . User::getCurrent()->getUsername());
             });
             
             die();    
@@ -2102,12 +2072,11 @@ elseif ($action == "emailmgmt")
                     throw new TransactionException("Error saving log entry");
                 }
             
-                global $baseurl, $accbotSend;
+                global $baseurl;
                 
-			    header("Location: $baseurl/acc.php?action=emailmgmt");
-			    $accbotSend->send("Email {$_POST['name']} ({$_GET['edit']}) edited by " . User::getCurrent()->getUsername());
-                
+                Notification::emailEdited($emailTemplate);
 			    SessionAlert::success("Email template has been saved successfully.");
+			    header("Location: $baseurl/acc.php?action=emailmgmt");
             });
             
 			die();

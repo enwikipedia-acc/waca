@@ -23,7 +23,6 @@ require_once 'functions.php';
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
 require_once 'includes/database.php';
-require_once 'includes/accbotSend.php';
 require_once 'includes/session.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/JWT.php';
@@ -42,7 +41,6 @@ $tsSQL = new database("toolserver");
 $tsSQLlink = $tsSQL->getLink();
 
 // Initialize the class objects.
-$accbotSend = new accbotSend();
 $session = new session();
 
 #region User search
@@ -112,7 +110,8 @@ if (isset ($_GET['approve']))
     
     BootstrapSkin::displayAlertBox("Approved user " . $user->getUsername(), "alert-info", "", false);
 
-    $accbotSend->send($user->getUsername() . " approved by " . User::getCurrent()->getUsername());
+    Notification::userApproved($user);
+    
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	mail($user->getEmail(), "ACC Account Approved", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been approved by " . User::getCurrent()->getUsername() . ". To login please go to $baseurl/acc.php.\n- The English Wikipedia Account Creation Team", $headers);
     BootstrapSkin::displayInternalFooter();
@@ -152,7 +151,7 @@ if (isset ($_GET['demote']))
 
 		BootstrapSkin::displayAlertBox( "Changed " . $user->getUsername() . "'s access to 'User'", "alert-info", "", false);
 		
-        $accbotSend->send($user->getUsername() . " demoted by " . User::getCurrent()->getUsername() . " because: \"" . $_POST['reason'] . "\"");
+        Notification::userDemoted($user, $_POST['reason']);
 		
         $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($user->getEmail(), "ACC Account Demoted", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been demoted by " . User::getCurrent()->getUsername() . " because " . User::getCurrent()->getUsername() . ". To contest this demotion please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
@@ -190,9 +189,10 @@ if (isset ($_GET['suspend'])) {
 	} else {
 		$user->suspend($_POST['reason']);
 
+        Notification::userSuspended($user, $_POST['reason']);
 		BootstrapSkin::displayAlertBox("Suspended user " . $user->getUsername(), "alert-info", "", false);
-		$accbotSend->send($user->getUsername() . " had tool access suspended by " . User::getCurrent()->getUsername() . " because: \"" . $_POST['reason'] . "\"");
-		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+
+        $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($user->getEmail(), "ACC Account Suspended", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been suspended by " . User::getCurrent()->getUsername() . " because ".$_POST['reason'].". To contest this suspension please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
 		BootstrapSkin::displayInternalFooter();
 		die();
@@ -217,8 +217,10 @@ if (isset ($_GET['promote'])) {
     
     $user->promote();
     
+    Notification::userPromoted($user);
+    
 	BootstrapSkin::displayAlertBox($user->getUsername() . " promoted to 'Admin'", "alert-info", "", false);
-	$accbotSend->send($user->getUsername() . " promoted to admin by " . User::getCurrent()->getUsername());
+	
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	mail($user->getEmail(), "ACC Account Promoted", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been promted to admin status by " . User::getCurrent()->getUsername() . ".\n- The English Wikipedia Account Creation Team", $headers);
     die();
@@ -251,9 +253,10 @@ if (isset ($_GET['decline'])) {
 	} else {
         $user->decline($_POST['reason']);
         
+        Notification::userDeclined($user, $_POST['reason']);
+        
         BootstrapSkin::displayAlertBox("Declined user " . $user->getUsername(), "alert-info", "", false);
 
-        $accbotSend->send($user->getUsername() . " was declined access by " . User::getCurrent()->getUsername() . " because: \"" . $_POST['reason'] . "\"");
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 		mail($user->getEmail(), "ACC Account Declined", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been declined access to the account creation tool by " . User::getCurrent()->getUsername() . " because " . $_POST['reason'] . ". For more infomation please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
 		BootstrapSkin::displayInternalFooter();
@@ -358,14 +361,7 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
         
         $database->commit();
         
-		if (User::getCurrent()->getId() == $user->getId())
-		{
-			$accbotSend->send(User::getCurrent()->getUsername() . " changed their username to " . $_POST['newname']);
-		}
-		else
-		{
-			$accbotSend->send(User::getCurrent()->getUsername() . " changed " . $oldname . "'s username to " . $_POST['newname']);
-		}
+        Notification::userRenamed($user, $oldname);
         
 		BootstrapSkin::displayInternalFooter();
 		die();
@@ -411,7 +407,7 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {
             $logquery->bindValue(":sid", $siuser);
             if(!$logquery->execute()) throw new Exception("Logging failed.");
         
-		    $accbotSend->send($siuser . " changed preferences for " . $user->getUsername());
+		    Notification::userPrefChange($user);
 		    BootstrapSkin::displayAlertBox("Changes saved.", "alert-info");
         }
         catch (Exception $ex)

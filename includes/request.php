@@ -219,7 +219,7 @@ class accRequest {
 		global $enableEmailConfirm, $baseurl;
 		
 		// Get variables and objects from index file.
-		global $tsSQL, $messages, $action, $accbot;
+		global $tsSQL, $messages, $action;
 		
 		// Checks whether email confirmation is activated.
 		if ($enableEmailConfirm == 1) {
@@ -270,7 +270,9 @@ class accRequest {
 					{
 						$ircmessage .= " <Requestor Left Comment>";
 					}
-					$accbot->send($ircmessage);
+                    
+                    // TODO: split this up.
+                    Notification::send($ircmessage);
 					
 				} elseif( $row['pend_mailconfirm'] == "Confirmed" ) {
 					echo "Your e-mail address has already been confirmed!\n";
