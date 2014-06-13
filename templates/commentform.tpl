@@ -2,9 +2,10 @@
     <h2>Comment on a request #{$request->getId()} <small>({$request->getName()|escape})</small></h2>
     <form action="{$baseurl}/acc.php?action=comment-add" method="post" class="form-horizontal span8">
         <div class="control-group">
-            <label for="id" class="control-label">Request ID:</label>
+            <label for="displayid" class="control-label">Request ID:</label>
             <div class="controls">
-                <input type="text" name="id" value="{$request->getId()}" disabled="disabled"/>
+                <input type="text" name="displayid" value="{$request->getId()}" disabled="disabled"/>
+                <input type="hidden" name="id" value="{$request->getId()}" />
             </div>
         </div>
         <div class="control-group">
