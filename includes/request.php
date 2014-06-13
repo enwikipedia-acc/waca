@@ -246,33 +246,8 @@ class accRequest {
 						$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
                     }
                     
-                    global $antispoofProvider;
-                    try
-                    {
-                        $spoofs = $antispoofProvider->getSpoofs($user);
-                    }
-                    catch(Exception $ex)
-                    {
-                        $spoofs = array();
-                    }
-                    
-					if( count($spoofs) === 0 ) {
-						$what = "";
-					} else {
-						$what = "<Account Creator Needed!>";
-					}
-                    
-					$comments = html_entity_decode(stripslashes($row['pend_cmt']));
-					
-					$ircmessage = "\00314[[\00303acc:\00307$pid\00314]]\0034 N\00310 \00302$baseurl/acc.php?action=zoom&id=$pid\003 \0035*\003 \00303$user\003 \0035*\00310 $what\003";
-					
-					if(mb_strlen($comments) > 0)
-					{
-						$ircmessage .= " <Requestor Left Comment>";
-					}
-                    
-                    // TODO: split this up.
-                    Notification::send($ircmessage);
+                    $request = Request::getById($pid, gGetDb());
+                    Notification::requestReceived($request);
 					
 				} elseif( $row['pend_mailconfirm'] == "Confirmed" ) {
 					echo "Your e-mail address has already been confirmed!\n";

@@ -77,14 +77,7 @@ class Notification extends DataObject
 	}
     #endregion
     
-    /**
-     * Don't use me directly from outside this class.
-     * 
-     * There are existing usages on the public interface, but don't add more plz. kthxbai.
-     * 
-     * @param mixed $message The message to send.
-     */
-    public static function send($message)
+    protected static function send($message)
     {
         global $ircBotNotificationType, $whichami;
         
@@ -193,6 +186,24 @@ class Notification extends DataObject
     #endregion
     
     #region request management
+    
+    public static function requestReceived(Request $request)
+    {
+        global $baseurl;
+        
+        self::send(
+            IrcColourCode::DARK_GREY . "[[" 
+            . IrcColourCode::DARK_GREEN . "acc:" 
+            . IrcColourCode::ORANGE . $request->getId() 
+            . IrcColourCode::DARK_GREY . "]]"
+            . IrcColourCode::RED . " N "
+            . IrcColourCode::DARK_BLUE . $baseurl . "/acc.php?action=zoom&id={$request->getId()} "
+            . IrcColourCode::DARK_RED . "* "
+            . IrcColourCode::DARK_GREEN . $request->getName() 
+            . IrcColourCode::DARK_RED . " * "
+            . IrcColourCode::RESET
+            );
+    }
     
     public static function requestDeferred(Request $request)
     {
