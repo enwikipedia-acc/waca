@@ -96,7 +96,7 @@ class Notification extends DataObject
         $notification = new Notification();
         $notification->setDatabase( gGetDb('notifications') );
         $notification->setType($ircBotNotificationType);
-        $notification->setText($message);
+        $notification->setText($msg);
         
         $notification->save();
     }
