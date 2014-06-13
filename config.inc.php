@@ -29,7 +29,7 @@ $toolserver_password = "";
 $toolserver_host = "";
 $toolserver_database = "";
 
-$toolserver_notification_database = "helpmebot_v6";
+$toolserver_notification_database = "notifications";
 $toolserver_notification_dbhost = "dbmaster.srv.stwalkerster.net";
 $notifications_username = "";
 $notifications_password = "";

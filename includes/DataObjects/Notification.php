@@ -91,7 +91,7 @@ class Notification extends DataObject
         $blacklist = array("DCC", "CCTP", "PRIVMSG");
 		$message = str_replace($blacklist, "(IRC Blacklist)", $message); //Lets stop DCC etc
 
-		$msg = chr(2)."[$whichami]".chr(2).": $message";
+		$msg = IrcColourCode::RESET . IrcColourCode::BOLD . "[$whichami]". IrcColourCode::RESET .": $message";
         
         $notification = new Notification();
         $notification->setDatabase( gGetDb('notifications') );
