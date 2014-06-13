@@ -120,17 +120,17 @@ class Notification extends DataObject
     
     public static function userDeclined(User $user, $reason)
     {
-        self::send("{$user->getUsername()} declined by " . User::getCurrent()->getUsername() . "($reason)");   
+        self::send("{$user->getUsername()} declined by " . User::getCurrent()->getUsername() . " ($reason)");   
     }
     
     public static function userDemoted(User $user, $reason)
     {
-        self::send("{$user->getUsername()} demoted by " . User::getCurrent()->getUsername() . "($reason)");   
+        self::send("{$user->getUsername()} demoted by " . User::getCurrent()->getUsername() . " ($reason)");   
     }
     
     public static function userSuspended(User $user, $reason)
     {
-        self::send("{$user->getUsername()} suspended by " . User::getCurrent()->getUsername() . "($reason)");   
+        self::send("{$user->getUsername()} suspended by " . User::getCurrent()->getUsername() . " ($reason)");   
     }
     
     public static function userPrefChange(User $user)
@@ -247,11 +247,6 @@ class Notification extends DataObject
     public static function emailCreated(EmailTemplate $template)
     {
         self::send( "Email {$template->getId()} ({$template->getName()}) created by " . User::getCurrent()->getUsername());
-    }
-    
-    public static function emailDeleted($templateid, $templatename)
-    {
-        self::send( "Email {$templateid} ({$template->getName()}) deleted by " . User::getCurrent()->getUsername());
     }
     
     public static function emailEdited(EmailTemplate $template)
