@@ -5,6 +5,7 @@ if (isset($_SERVER['REQUEST_METHOD'])) {
 ini_set('display_errors', 1);
 ini_set('memory_limit', '256M');
 require_once 'config.inc.php';
+require_once 'includes/PdoDatabase.php';
 require_once 'functions.php';
 
 echo "Fetching file...\n";
@@ -66,47 +67,19 @@ foreach ( $dnsdomain as $d ) {
 
 echo "Uniq-ing array...\n";
 
-$ip=array_unique($ip);
-$count = count($ip);
+$ip = array_unique($ip);
 
-echo "Prepping query for $count addresses...";
-
-
-$sqlquery = 'INSERT INTO `acc_trustedips` (`trustedips_ipaddr`) VALUES ';
-foreach ($ip as $i) {
-	$sqlquery .= "('$i'), ";
-}
-$sqlquery = substr($sqlquery, 0, -2) . ';';
-
-mysql_connect($toolserver_host, $toolserver_username, $toolserver_password);
-@ mysql_select_db($toolserver_database) or die(mysql_error());
+$database = gGetDb();
 
 echo "Executing transaction...\n";
-
-mysql_query("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;");
-
-if(mysql_query("START TRANSACTION;"))
+$database->transactionally(function() use ($ip, $database)
 {
-	$success1 = mysql_query("DELETE FROM `acc_trustedips`;");
-	if(!$success1)
-		echo mysql_error()."\n";
-
-	$success2 = mysql_query($sqlquery);
-	if(!$success2)
-		echo mysql_error()."\n";
-
-	if($success1 && $success2)
-	{
-		mysql_query("COMMIT;");
-		echo "The trusted IPs table has been recreated.\n";
-	}
-	else
-	{
-		mysql_query("ROLLBACK;");
-		echo "Error in transaction.\n";
-	}
+    $database->exec("DELETE FROM acc_trustedips;");
+    
+    $insert = $database->prepare("INSERT INTO acc_trustedips (trustedips_ipaddr) VALUES (:ip);");
+    
+    foreach ($ip as $i)
+    {
+        $insert->execute(array(":ip", $i));
+    }
 }
-else
-	echo "Error starting transaction.\n";
-	
-mysql_close();

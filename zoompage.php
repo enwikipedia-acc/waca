@@ -47,59 +47,36 @@ function zoomPage($id,$urlhash)
 	$createdreason = EmailTemplate::getById($createdid, gGetDb());
 	$smarty->assign("createdEmailTemplate", $createdreason);
 
-	//#region setup whether data is viewable or not
+	#region setup whether data is viewable or not
 	
-	// build the sql fragment of possible open states
-	$statesSqlFragment = " ";
-	foreach($availableRequestStates as $k => $v){
-		$statesSqlFragment .= "pend_status = '".sanitize($k)."' OR ";
-	}
-	$statesSqlFragment = rtrim($statesSqlFragment, " OR");
-	
-	$sessionuser = $_SESSION['userID'];
-	$query = "SELECT * FROM acc_pend WHERE pend_email = '" . 
-				mysql_real_escape_string($request->getEmail(), $tsSQLlink) . 
-				"' AND pend_reserved = '" . 
-				mysql_real_escape_string($sessionuser, $tsSQLlink) . 
-				"' AND pend_mailconfirm = 'Confirmed' AND ( ".$statesSqlFragment." );";
-
-	$result = mysql_query($query, $tsSQLlink);
-	if (!$result) {
-		Die("Query failed: $query ERROR: " . mysql_error());
-	}
-	$hideemail = TRUE;
-	if (mysql_num_rows($result) > 0) {
-		$hideemail = FALSE;
-	}
-
-	$sessionuser = $_SESSION['userID'];
-	$query2 = "SELECT * FROM acc_pend WHERE (pend_ip = '" . 
-			mysql_real_escape_string($request->getTrustedIp(), $tsSQLlink) . 
-			"' OR pend_proxyip LIKE '%" .
-			mysql_real_escape_string($request->getTrustedIp(), $tsSQLlink) . 
-			"%') AND pend_reserved = '" .
-			mysql_real_escape_string($sessionuser, $tsSQLlink) . 
-			"' AND pend_mailconfirm = 'Confirmed' AND ( ".$statesSqlFragment." );";
-
-	$result2 = mysql_query($query2, $tsSQLlink);
-	
-	if (!$result2) {
-		Die("Query failed: $query2 ERROR: " . mysql_error());
-	}
-	
-	$hideip = TRUE;
-	
-	if (mysql_num_rows($result2) > 0) {
-		$hideip = FALSE;
-	}
-	
-	if( $hideip == FALSE || $hideemail == FALSE ) {
-		$hideinfo = FALSE;
-	} else {
-		$hideinfo = TRUE;
-	}
-	
-	//#endregion
+    $viewableDataStatement = $database->prepare(<<<SQL
+        SELECT COUNT(*) 
+        FROM acc_pend 
+        WHERE 
+            (
+                pend_email = :email 
+                OR pend_ip = :trustedIp 
+                OR pend_proxyip LIKE :trustedProxy
+            ) 
+            AND pend_reserved = :reserved 
+            AND pend_mailconfirm = 'Confirmed' 
+            AND pend_status != 'Closed';
+SQL
+    );
+    
+    $viewableDataStatement->bindValue(":email", $request->getEmail());
+    $viewableDataStatement->bindValue(":reserved", User::getCurrent()->getId());
+    $viewableDataStatement->bindValue(":trustedIp", $request->getTrustedIp());
+    $viewableDataStatement->bindValue(":trustedProxy", '%' . $request->getTrustedIp() . '%');
+    
+    $viewableDataStatement->execute();
+    
+    $viewableData = $viewableDataStatement->fetchColumn();
+    $viewableDataStatement->closeCursor();
+    
+    $hideinfo = ($viewableData == 0);
+    
+	#endregion
 	
 	if ($request->getStatus() == "Closed") {
 		$hash = md5($request->getId() . $request->getEmail() . $request->getTrustedIp() . microtime()); //If the request is closed, change the hash based on microseconds similar to the checksums.
