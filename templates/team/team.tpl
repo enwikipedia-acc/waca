@@ -36,8 +36,9 @@
 <div class="row-fluid">
     <div class="span12">
         <p>
-            ACC is kindly hosted by the Wikimedia Labs.
+            ACC is kindly hosted by <a href="https://wikitech.wikimedia.org/">Wikimedia Labs</a>.
             Our code respository is hosted by GitHub and can be found <a href="https://github.com/enwikipedia-acc/waca/">here</a>.
+            Thanks to all those who have submitted patches who are not mentioned above!
         </p>
     </div>
 </div>

@@ -37,12 +37,11 @@ $developer = array(
 		"FastLizard4" =>
 			array(
 				"IRC" => "FastLizard4",
-				"EMail" => "FastLizard4@gmail.com",
 				"ToolID" => "18",
 				"wiki" => "FastLizard4",
 				"WWW" => "http://fastlizard4.org/",
 				"Name" => "Andrew Adams",
-				"Role" => "Developer",
+				"Role" => "Project Lead, Developer",
 				"Retired" => NULL,
 				"Access" => "Git, Mailing list admin, Labs project",
 				"Cloak" => "*!*@wikipedia/pdpc.active.FastLizard4",
@@ -51,14 +50,13 @@ $developer = array(
 		"Stwalkerster" =>
 			array(
 				"IRC" => "Stwalkerster",
-				"EMail" => "wikimedia@stwalkerster.co.uk",
 				"ToolID" => "7",
 				"wiki" => "Stwalkerster",
 				"WWW" => "https://stwalkerster.co.uk/",
 				"Name" => "Simon Walker",
 				"Role" => "Project Lead, Developer",
 				"Retired" => NULL,
-				"Access" => "Git, Database, Toolserver shell, Mailing list admin, Labs project",
+				"Access" => "Git, Mailing list admin, Labs project",
 				"Cloak" => "*!*@wikimedia/stwalkerster",
 				"Other" => NULL,
 			),
@@ -66,7 +64,6 @@ $developer = array(
 		"FunPika" =>
 			array(
 				"IRC" => "FunPika",
-				"EMail" => "stevend811@comcast.net",
 				"ToolID" => "38",
 				"wiki" => "FunPika",
 				"WWW" => "https://github.com/FunPika",
@@ -80,35 +77,32 @@ $developer = array(
 		"DeltaQuad" =>
 			array(
 				"IRC" => "DeltaQuad",
-				"EMail" => "deltaquadwiki@gmail.com",
 				"ToolID" => "662",
 				"wiki" => "DeltaQuad",
 				"WWW" => "http://enwp.org/DeltaQuad",
 				"Name" => "DeltaQuad",
-				"Role" => "Liaison to WMF, Developer",
-				"Retired" => NULL,
-				"Access" => "Git, Database, Toolserver shell, Mailing list admin, Labs project",
+				"Role" => "",
+				"Retired" => "Liaison to WMF, Developer, Project Lead",
+				"Access" => "Git, Labs project",
 				"Cloak" => "*!*@wikipedia/DeltaQuad",//I change nicks alot
 				"Other" => NULL,
 			),
 		"John" =>
 			array(
 				"IRC" => "JohnLewis",
-				"EMail" => "johnflewis93@gmail.com",
 				"ToolID" => "889",
 				"wiki" => "John F. Lewis",
 				"WWW" => NULL,
 				"Name" => "John Lewis",
 				"Role" => "Developer",
 				"Retired" => NULL,
-				"Access" => "Git, Mailing list moderator",
+				"Access" => "Git, Mailing list admin",
 				"Cloak" => "*!*@wikimedia/John-F-Lewis",
 				"Other" => NULL,
 			),
 		"Manishearth" =>
 			array(
 				"IRC" => "Manishearth",
-				"EMail" => "manishsmail@gmail.com",
 				"ToolID" => "607",
 				"wiki" => "Manishearth",
 				"WWW" => "http://enwp.org/User:Manishearth",
@@ -117,6 +111,19 @@ $developer = array(
 				"Retired" => NULL,
 				"Access" => "Git",
 				"Cloak" => "*!*@wikipedia/Manishearth",
+				"Other" => NULL,
+			),
+		"Cyberpower678" =>
+			array(
+				"IRC" => "Cyberpower678",
+				"ToolID" => "850",
+				"wiki" => "Cyberpower678",
+				"WWW" => "",
+				"Name" => "",
+				"Role" => "",
+				"Retired" => NULL,
+				"Access" => "Mailing list mod",
+				"Cloak" => "*!*@wikipedia/Cyberpower678",
 				"Other" => NULL,
 			)
 );
@@ -128,35 +135,32 @@ $inactiveDeveloper = array(
 		"SQL" =>
 				array(                                    //Set any of these to NULL to keep them from being displayed.
 				"IRC" => "SQLDb, SXT40",                  //IRC Name.
-				"EMail" => "sxwiki@gmail.com",            //Public E-mail address.
 				"ToolID" => "1",                          //Tool user ID for linking to page in users.php. 
 				"wiki" => "SQL",                          //Enwiki Username.
 				"WWW" => "http://toolserver.org/~sql",    //Your website.
 				"Name" => NULL,                           //Real name.
 				"Role" => NULL,	  //Project Role(s).
 				"Retired" => "Project Lead",		  // Retired Project Role(s)
-				"Access" => "Database, Live shell",       //Project Access levels.
+				"Access" => NULL,       //Project Access levels.
 				"Cloak" => "*!*@wikipedia/SQL",           //IRC Cloak.
-				"Other" => NULL,                          //Anything else, comments, etc.
+				"Other" => "Original developer",                          //Anything else, comments, etc.
 			),
 		"Cobi" =>
 			array(
 				"IRC" => "Cobi",
-				"EMail" => NULL,
 				"ToolID" => "64",
 				"wiki" => "Cobi",
 				"WWW" => NULL,
 				"Name" => NULL,
 				"Role" => NULL,
 				"Retired" => "Developer",
-				"Access" => "Git, Database, Toolserver shell",
+				"Access" => "Git",
 				"Cloak" => "*!*@cobi.cluenet.org",
 				"Other" => NULL,
 			),
 		"Charlie" =>
 			array(
 				"IRC" => "charlie, chuck",
-				"EMail" => "charlie@yourwiki.net",
 				"ToolID" => "67",
 				"wiki" => "Cmelbye",
 				"WWW" => "http://charlie.yourwiki.net/",
@@ -170,7 +174,6 @@ $inactiveDeveloper = array(
       		"Soxred93" =>
 			array(
 				"IRC" => "|X|",
-				"EMail" => NULL,
 				"ToolID" => "4",
 				"wiki" => "X!",
 				"WWW" => NULL,
@@ -179,12 +182,11 @@ $inactiveDeveloper = array(
 				"Retired" => "Developer",
 				"Access" => "Git",
 				"Cloak" => "*!*@wikipedia/Soxred93",
-				"Other" => "Wrote the original ACC Tool",
+				"Other" => "Wrote the original ACC Tool, 'Incubez'",
 			),
 		"Alexfusco5" =>
 			array(
 				"IRC" => "Alexfusco5",
-				"EMail" => "alexfusco5@gmail.com",
 				"ToolID" => "34",
 				"wiki" => "Alexfusco5",
 				"WWW" => "http://en.wikipedia.org/wiki/User:Alexfusco5",
@@ -198,21 +200,19 @@ $inactiveDeveloper = array(
 		"OverlordQ" =>
 			array(
 				"IRC" => "OverlordQ",
-				"EMail" => NULL,
 				"ToolID" => "36",
 				"wiki" => "OverlordQ",
 				"WWW" => NULL,
 				"Name" => NULL,
 				"Role" => NULL,
 				"Retired" => "Developer",
-				"Access" => "Database, Toolserver shell",
+				"Access" => "",
 				"Cloak" => "*!*@wikipedia/OverlordQ",
 				"Other" => NULL,
 			),
 		"Prodego" =>
 			array(
 				"IRC" => "Prodego",
-				"EMail" => "Prodego@gmail.com",
 				"ToolID" => "14",
 				"wiki" => "Prodego",
 				"WWW" => NULL,
@@ -226,7 +226,6 @@ $inactiveDeveloper = array(
       		"Prom3th3an" =>
 			array(
 				"IRC" => "Prom_cat",
-				"EMail" => "bretthillebrand@internode.on.net",
 				"ToolID" => "91",
 				"wiki" => "Promethean",
 				"WWW" => "",
@@ -240,21 +239,19 @@ $inactiveDeveloper = array(
 		"Chris" =>
 			array(
 				"IRC" => "Chris_G",
-				"EMail" => "chris@toolserver.org",
 				"ToolID" => "20",
 				"wiki" => "Chris_G",
 				"WWW" => "http://toolserver.org/~chris/",
 				"Name" => NULL,
 				"Role" => NULL,
 				"Retired" => "Developer",
-				"Access" => "",
+				"Access" => "Git",
 				"Cloak" => "*!*@wikipedia/Chris-G",
 				"Other" => NULL,
 			),
 		"LouriePieterse" =>
 			array(
 				"IRC" => "LouriePieterse",
-				"EMail" => "louriepieterse@yahoo.com",
 				"ToolID" => "556",
 				"wiki" => "LouriePieterse",
 				"WWW" => "http://en.wikipedia.org/wiki/User:LouriePieterse",
@@ -265,24 +262,9 @@ $inactiveDeveloper = array(
 				"Cloak" => NULL,
 				"Other" => NULL,
 			),
-		"Chenzw" => // added by stwalkerster because you have access on sourceforge.net.
-			array(
-				"IRC" => NULL,
-				"EMail" => NULL,
-				"ToolID" => NULL,
-				"wiki" => "Chenzw",
-				"WWW" => NULL,
-				"Name" => NULL,
-				"Role" => NULL,
-				"Retired" => NULL,
-				"Access" => "",
-				"Cloak" => NULL,
-				"Other" => NULL,
-			),
 		"Thehelpfulone" => // added by stwalkerster because you have access on sourceforge.net.
 			array(
 				"IRC" => "Thehelpfulone",
-				"EMail" => "thehelpfulonewiki@gmail.com",
 				"ToolID" => "8",
 				"wiki" => "Thehelpfulone",
 				"WWW" => "http://en.wikipedia.org/wiki/User:Thehelpfulone",
@@ -296,7 +278,6 @@ $inactiveDeveloper = array(
 		"EdoDodo" =>
 			array(
 				"IRC" => "EdoDodo",
-				"EMail" => "dodo@toolserver.org",
 				"ToolID" => "660",
 				"wiki" => "EdoDodo",
 				"WWW" => "http://toolserver.org/~dodo/",
@@ -310,7 +291,6 @@ $inactiveDeveloper = array(
 		"1234r00t" =>
 			array(
 				"IRC" => "Mr_R00t",
-				"EMail" => "sauronthefish@gmail.com",
 				"ToolID" => "718",
 				"wiki" => "1234r00t",
 				"WWW" => "en.wikipedia.org/wiki/User:1234r00t",
@@ -324,7 +304,6 @@ $inactiveDeveloper = array(
 		"MacMed" =>
 			array(
 				"IRC" => "MacMed",
-				"EMail" => "",
 				"ToolID" => "537",
 				"wiki" => "MacMed",
 				"WWW" => "",
@@ -338,7 +317,6 @@ $inactiveDeveloper = array(
 		"Logan" =>
 			array(
 				"IRC" => "Logan_",
-				"EMail" => "",
 				"ToolID" => "783",
 				"wiki" => "Logan",
 				"WWW" => "",
