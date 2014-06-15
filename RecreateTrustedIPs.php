@@ -82,4 +82,4 @@ $database->transactionally(function() use ($ip, $database)
     {
         $insert->execute(array(":ip", $i));
     }
-}
+});
