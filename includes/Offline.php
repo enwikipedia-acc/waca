@@ -11,14 +11,11 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
-if (!defined("ACC")) {
-    die();
-} // Invalid entry point
 
 /**
  * Handles the tool offline messages
  */
-class Offline 
+class Offline
 {
     /**
      * Summary of check

@@ -23,17 +23,17 @@ class StatsAction extends ApiActionBase implements IApiAction
      */
     private $database;
     
-    public function execute(\DOMElement $doc_api)
+    public function execute(\DOMElement $apiDocument)
     {
         $username = isset( $_GET['user'] ) ? trim($_GET['user']) : '';
-        if( $username == '' ) 
+        if($username == '') 
         {
             throw new ApiException("Please specify a username");
         }
         
         $userElement = $this->document->createElement("user");
         $userElement->setAttribute("username", $username);
-        $doc_api->appendChild($userElement);
+        $apiDocument->appendChild($userElement);
         
         $this->database = gGetDb();
         
@@ -42,7 +42,7 @@ class StatsAction extends ApiActionBase implements IApiAction
         if($this->user === false)
         {
             $userElement->setAttribute("missing", "true");
-            return $doc_api;
+            return $apiDocument;
         }
         
         $userElement->setAttribute("status", $this->user->getStatus());
@@ -51,6 +51,6 @@ class StatsAction extends ApiActionBase implements IApiAction
         $userElement->setAttribute("onwikiname", $this->user->getOnWikiName());
         $userElement->setAttribute("oauth", $this->user->isOAuthLinked() ? "true" : "false");
         
-        return $doc_api;
+        return $apiDocument;
     }
 }

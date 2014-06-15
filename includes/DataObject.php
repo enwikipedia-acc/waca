@@ -1,11 +1,13 @@
 <?php
 
 /**
- * DataObject is the base class for all the database access classes. Each "DataObject" holds one record from the database, and
- * provides functions to allow loading from and saving to the database.
+ * DataObject is the base class for all the database access classes. Each 
+ * "DataObject" holds one record from the database, and provides functions to 
+ * allow loading from and saving to the database.
  *
- * Note: This requires the database tables to be named the same as the classes, and the database tables must have an "id" column.
- * Simple views can be used as a way of aliasing to allow for a transition period.
+ * Note: This requires the database tables to be named the same as the classes, 
+ * and the database tables must have an "id" column. Simple views can be used 
+ * as a way of aliasing to allow for a transition period.
  * 
  * @author Simon Walker
  */
@@ -26,7 +28,8 @@ abstract class DataObject
      * Retrieves a data object by it's row ID.
      * @param $id
      */
-	public static function getById($id, PdoDatabase $database) {
+	public static function getById($id, PdoDatabase $database) 
+    {
 		$statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE id = :id LIMIT 1;");
 		$statement->bindValue(":id", $id);
 
@@ -46,7 +49,7 @@ abstract class DataObject
 	/**
      * Saves a data object to the database, either updating or inserting a record.
      */
-	public abstract function save();
+	abstract public function save();
 
 	/**
 	 * Retrieves the ID attribute
@@ -61,11 +64,15 @@ abstract class DataObject
 	 */
 	public function delete() 
     {
-		$statement = $this->dbObject->prepare("DELETE FROM `" . strtolower( get_called_class() ) . "` WHERE id = :id LIMIT 1;");
+		$statement = $this->dbObject->prepare(
+            "DELETE FROM `" 
+            . strtolower( get_called_class() ) 
+            . "` WHERE id = :id LIMIT 1;");
+        
 		$statement->bindValue(":id", $this->id);
 		$statement->execute();
 
-		$this->id=0;
+		$this->id = 0;
 		$this->isNew = true;
     }
 }

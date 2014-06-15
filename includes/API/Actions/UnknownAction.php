@@ -9,15 +9,15 @@ use Waca\API\IApiAction as IApiAction;
  */
 class UnknownAction extends HelpAction implements IApiAction
 {
-    public function execute(\DOMElement $doc_api)
+    public function execute(\DOMElement $apiDocument)
     {
         $errorText = "Unknown API action specified.";
         $errorNode = $this->document->createElement("error", $errorText);
-        $doc_api->appendChild($errorNode);
+        $apiDocument->appendChild($errorNode);
         
         $helpElement = $this->getHelpElement();
-        $doc_api->appendChild($helpElement);
+        $apiDocument->appendChild($helpElement);
         
-        return $doc_api;
+        return $apiDocument;
     }
 }

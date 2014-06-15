@@ -12,7 +12,7 @@
  ** See CREDITS for the list of developers.                               **
  ***************************************************************************/
 
-class BootstrapSkin 
+class BootstrapSkin
 {
     /**
      * Summary of $tagstack
@@ -47,9 +47,8 @@ class BootstrapSkin
         $smarty->assign("sitenotice", $sitenotice);
         $smarty->assign("alerts", SessionAlert::retrieve());
         $smarty->display("header-internal.tpl");
-        //print_r($_SESSION);
         
-        if( $userid != 0 ) 
+        if($userid != 0) 
         {
             User::getCurrent()->touchLastLogin();
         
@@ -103,7 +102,12 @@ class BootstrapSkin
             array_map(
                 function($arg)
                 { 
-                    return "<a href=\"statistics.php?page=Users&amp;user=" . $arg->getId() . "\">" . htmlentities($arg->getUsername()) . "</a>";
+                    return 
+                        "<a href=\"statistics.php?page=Users&amp;user=" 
+                        . $arg->getId() 
+                        . "\">" 
+                        . htmlentities($arg->getUsername()) 
+                        . "</a>";
                 }, 
                 $resultSet
             )
@@ -144,7 +148,15 @@ class BootstrapSkin
      * @param $return bool return the content as a string, or display it.
      * @param $centre bool centre the box in the page, like a dialog.
      */
-    public static function displayAlertBox( $message, $type = "", $header = "", $block = false, $closeable = true, $return = false, $centre = false) 
+    public static function displayAlertBox( 
+        $message, 
+        $type = "", 
+        $header = "", 
+        $block = false, 
+        $closeable = true, 
+        $return = false, 
+        $centre = false
+        ) 
     {
         global $smarty;
         $smarty->assign("alertmessage", $message);

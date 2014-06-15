@@ -6,7 +6,7 @@ namespace Waca\API;
  * API
  */
 class Api
-{    
+{
     public function __construct($httpOrigin)
     {
         header("Content-Type: text/xml");
@@ -27,23 +27,23 @@ class Api
     {       
         switch ($requestAction)
         {
-        	case "count":
+            case "count":
                 $result = new Actions\CountAction();
                 $data = $result->run();
                 break;
-        	case "status":
+            case "status":
                 $result = new Actions\StatusAction();
                 $data = $result->run();
                 break;
-        	case "stats":
+            case "stats":
                 $result = new Actions\StatsAction();
                 $data = $result->run();
                 break;
-        	case "help":
+            case "help":
                 $result = new Actions\HelpAction();
                 $data = $result->run();
                 break;
-        	default:
+            default:
                 $result = new Actions\UnknownAction();
                 $data = $result->run();
                 break;

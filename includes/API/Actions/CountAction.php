@@ -23,17 +23,17 @@ class CountAction extends ApiActionBase implements IApiAction
      */
     private $database;
     
-    public function execute(\DOMElement $doc_api)
+    public function execute(\DOMElement $apiDocument)
     {
         $username = isset( $_GET['user'] ) ? trim($_GET['user']) : '';
-        if( $username == '' ) 
+        if($username == '') 
         {
             throw new ApiException("Please specify a username");
         }
         
         $userElement = $this->document->createElement("user");
         $userElement->setAttribute("name", $username);
-        $doc_api->appendChild($userElement);
+        $apiDocument->appendChild($userElement);
         
         $this->database = gGetDb();
         
@@ -42,7 +42,7 @@ class CountAction extends ApiActionBase implements IApiAction
         if($this->user === false)
         {
             $userElement->setAttribute("missing", "true");
-            return $doc_api;
+            return $apiDocument;
         }
         
         $userElement->setAttribute("level", $this->user->getStatus());
@@ -55,7 +55,7 @@ class CountAction extends ApiActionBase implements IApiAction
             $this->fetchAdminData($userElement);
         }
         
-        return $doc_api;
+        return $apiDocument;
     }
     
     private function getAccountsCreated()
@@ -156,7 +156,15 @@ QUERY;
         $statement->closeCursor();
         
         // Combine all three actions affecting Welcome templates into one count.
-        $combinedquery = $this->database->prepare("SELECT COUNT(*) AS count FROM acc_log WHERE log_user = :username AND log_action IN ('CreatedTemplate', 'EditedTemplate', 'DeletedTemplate');");
+        $combinedquery = $this->database->prepare(<<<SQL
+            SELECT 
+                COUNT(*) AS count 
+            FROM acc_log 
+            WHERE log_user = :username 
+                AND log_action IN ('CreatedTemplate', 'EditedTemplate', 'DeletedTemplate');
+SQL
+        );
+        
         $combinedquery->bindValue(":username", $this->user->getUsername());
         $combinedquery->execute();
         $dtc = $combinedquery->fetchColumn();
@@ -164,7 +172,14 @@ QUERY;
         $combinedquery->closeCursor();
         
         // Combine both actions affecting Email templates into one count.
-        $combinedquery = $this->database->prepare("SELECT COUNT(*) AS count FROM acc_log WHERE log_user = :username AND log_action IN ('CreatedEmail', 'EditedEmail');");
+        $combinedquery = $this->database->prepare(<<<SQL
+            SELECT COUNT(*) AS count 
+            FROM acc_log 
+            WHERE log_user = :username 
+                AND log_action IN ('CreatedEmail', 'EditedEmail');
+SQL
+        );
+        
         $combinedquery->bindValue(":username", $this->user->getUsername());
         $combinedquery->execute();
         $cec = $combinedquery->fetchColumn();
