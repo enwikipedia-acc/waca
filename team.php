@@ -18,20 +18,10 @@ require_once 'config.inc.php';
 // Initialize the session data.
 session_start();
 
-$teamEmailImages = false;
-if(extension_loaded('gd'))
-{
-    $teamEmailImages = true;
-}
-
 // Get all the classes.
 require_once 'functions.php';
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
-if($teamEmailImages){
-	require_once 'includes/imagegen.php';
-}
-require_once 'includes/database.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.
@@ -39,20 +29,6 @@ if(Offline::isOffline())
 {
     echo Offline::getOfflineMessage(false);
     die();
-}
-
-// Initialize the database classes.
-$tsSQL = new database("toolserver");
-$asSQL = new database("antispoof");
-
-// Creates database links for later use.
-$tsSQLlink = $tsSQL->getLink();
-$asSQLlink = $asSQL->getLink();
-
-// Initialize the class object.
-if($teamEmailImages)
-{
-	$imagegen = new imagegen();
 }
 
 //Array of objects containing the deleveopers' information.
@@ -375,155 +351,13 @@ $inactiveDeveloper = array(
 			)
 );
 
-
-
-BootstrapSkin::displayInternalHeader();
-
-// Display the page heading, and start the accordian
-echo <<<HTML
-<div class="page-header">
-  <h1>Development Team<small> We're not all geeks!</small></h1>
-</div>
-<div class="row-fluid"><div class="span12"><div class="accordion" id="accordion2">
-HTML;
-
-BootstrapSkin::pushTagStack("</div>"); // accordian
-BootstrapSkin::pushTagStack("</div>"); // span12
-BootstrapSkin::pushTagStack("</div>"); // row-fluid
-
-
-
 // Sort the array with the developers.
 ksort($developer);
 ksort($inactiveDeveloper);
 
-// Print the data for each developer.
-echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Active Developers</a></div><div id="collapseOne" class="accordion-body collapse in"><div class="accordion-inner">';
-foreach($developer as $devName => $devInfo) 
-{
-	echo "<h4>$devName</h4>\n<ul>\n";
-    
-	foreach($devInfo as $infoName => $infoContent) 
-    {
-		// Check whether a field has been set to NULL or not.
-		if($infoContent != NULL) 
-        {
-			switch($infoName) 
-            {
-				case "IRC":
-					echo "<li>IRC Name: $infoContent</li>\n";
-					break;
-				case "Name":
-					echo "<li>Real name: $infoContent</li>\n";
-					break;
-				case "EMail":
-					if($teamEmailImages && isset($imagegen))
-                    {
-                        // Generate the image and write a copy to the filesystem.
-                        $id = $imagegen->create($infoContent);
-					    // Outputs the image to the sceen.
-					    $emailHTML='<img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" />';
-                        echo '<li>E-Mail Address: ' . $emailHTML . '</li>';
-					}
-                    
-					break;
-				case "ToolID":
-					echo "<li>Userpage on tool: <a href=\"$baseurl/statistics.php?page=Users&amp;user=$infoContent\">Click here</a></li>\n";
-					break;
-				case "wiki":
-					echo "<li>Enwiki Username: <a href=\"http://en.wikipedia.org/wiki/User:$infoContent\">$infoContent</a></li>\n";
-					break;
-				case "WWW":
-					echo "<li>Homepage: <a href=\"$infoContent\">$infoContent</a></li>\n";
-					break;
-				case "Role":
-					echo "<li>Project Role: $infoContent</li>\n";
-					break;
-				case "Retired":
-					echo "<li>Retired Role: $infoContent</li>\n";
-					break;
-				case "Access":
-					echo "<li>Access: $infoContent</li>\n";
-					break;
-				case "Cloak":
-					echo "<li>IRC Cloak: $infoContent</li>\n";
-					break;
-				case "Other":
-					echo "<li>Other: $infoContent</li>\n";
-					break;
-			}
-		}
-	}
-	// End to the bulleted list and continues on a new line.
-	echo "</ul>\n";
-}
-echo <<<HTML
-</div></div>
-</div>
+$smarty->assign("developer", $developer);
+$smarty->assign("inactiveDeveloper", $inactiveDeveloper);
 
-<div class="accordion-group">
-<div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">Inactive Developers</a></div>
-<div id="collapseTwo" class="accordion-body collapse"><div class="accordion-inner">
-HTML;
-foreach($inactiveDeveloper as $devName => $devInfo) {
-	echo "<h4>$devName</h4>\n<ul>\n";
-	foreach($devInfo as $infoName => $infoContent) {
-		// Check whether a field has been set to NULL or not.
-		if($infoContent != NULL) {
-			switch($infoName) {
-				case "IRC":
-					echo "<li>IRC Name: $infoContent</li>\n";
-					break;
-				case "Name":
-					echo "<li>Real name: $infoContent</li>\n";
-					break;
-				case "EMail":
-					if($teamEmailImages)
-                    {
-                        // Generate the image and write a copy to the filesystem.
-					    $id = $imagegen->create($infoContent);
-					    $emailHTML='<img src="images/' . substr($id,0,1) . '/' . $id . '.png" style="margin-bottom:-2px" alt="Email" />';
-					    // Outputs the image to the sceen.
-					    echo '<li>E-Mail Address: ' . $emailHTML . '</li>';
-					}
-                    
-					break;
-				case "ToolID":
-					echo "<li>Userpage on tool: <a href=\"$baseurl/statistics.php?page=Users&amp;user=$infoContent\">Click here</a></li>\n";
-					break;
-				case "wiki":
-					echo "<li>Enwiki Username: <a href=\"http://en.wikipedia.org/wiki/User:$infoContent\">$infoContent</a></li>\n";
-					break;
-				case "WWW":
-					echo "<li>Homepage: <a href=\"$infoContent\">$infoContent</a></li>\n";
-					break;
-				case "Role":
-					echo "<li>Project Role: $infoContent</li>\n";
-					break;
-				case "Retired":
-					echo "<li>Retired Role: $infoContent</li>\n";
-					break;
-				case "Access":
-					echo "<li>Access: $infoContent</li>\n";
-					break;
-				case "Cloak":
-					echo "<li>IRC Cloak: $infoContent</li>\n";
-					break;
-				case "Other":
-					echo "<li>Other: $infoContent</li>\n";
-					break;
-			}
-		}
-	}
-	// End to the bulleted list and continues on a new line.
-	echo "</ul>\n";
-}
-
-// Display details about the ACC hosting.
-echo "</div></div>
-</div>
-
-<hr /><p>ACC is kindly hosted by the Wikimedia Labs. Our code respository is hosted by GitHub and can be found <a href=\"https://github.com/enwikipedia-acc/waca/\">here</a>.</p>";
-
-
+BootstrapSkin::displayInternalHeader();
+$smarty->display("team/team.tpl");
 BootstrapSkin::displayInternalFooter();
