@@ -42,10 +42,10 @@ $developer = array(
 				"WWW" => "http://fastlizard4.org/",
 				"Name" => "Andrew Adams",
 				"Role" => "Project Lead, Developer",
-				"Retired" => NULL,
+				"Retired" => null,
 				"Access" => "Git, Mailing list admin, Labs project",
 				"Cloak" => "*!*@wikipedia/pdpc.active.FastLizard4",
-				"Other" => NULL,
+				"Other" => null,
 			),
 		"Stwalkerster" =>
 			array(
@@ -55,10 +55,10 @@ $developer = array(
 				"WWW" => "https://stwalkerster.co.uk/",
 				"Name" => "Simon Walker",
 				"Role" => "Project Lead, Developer",
-				"Retired" => NULL,
+				"Retired" => null,
 				"Access" => "Git, Mailing list admin, Labs project",
 				"Cloak" => "*!*@wikimedia/stwalkerster",
-				"Other" => NULL,
+				"Other" => null,
 			),
 		
 		"FunPika" =>
@@ -67,12 +67,12 @@ $developer = array(
 				"ToolID" => "38",
 				"wiki" => "FunPika",
 				"WWW" => "https://github.com/FunPika",
-				"Name" => NULL,
+				"Name" => null,
 				"Role" => "Developer",
-				"Retired" => NULL,
+				"Retired" => null,
 				"Access" => "Git",
 				"Cloak" => "*!*@wikipedia/FunPika",
-				"Other" => NULL,
+				"Other" => null,
 			),
 		"DeltaQuad" =>
 			array(
@@ -85,20 +85,20 @@ $developer = array(
 				"Retired" => "Liaison to WMF, Developer, Project Lead",
 				"Access" => "Git, Labs project",
 				"Cloak" => "*!*@wikipedia/DeltaQuad",//I change nicks alot
-				"Other" => NULL,
+				"Other" => null,
 			),
 		"John" =>
 			array(
 				"IRC" => "JohnLewis",
 				"ToolID" => "889",
 				"wiki" => "John F. Lewis",
-				"WWW" => NULL,
+				"WWW" => null,
 				"Name" => "John Lewis",
 				"Role" => "Developer",
-				"Retired" => NULL,
+				"Retired" => null,
 				"Access" => "Git, Mailing list admin",
 				"Cloak" => "*!*@wikimedia/John-F-Lewis",
-				"Other" => NULL,
+				"Other" => null,
 			),
 		"Manishearth" =>
 			array(
@@ -108,10 +108,10 @@ $developer = array(
 				"WWW" => "http://enwp.org/User:Manishearth",
 				"Name" => "Manish Goregaokar",
 				"Role" => "Developer",
-				"Retired" => NULL,
+				"Retired" => null,
 				"Access" => "Git",
 				"Cloak" => "*!*@wikipedia/Manishearth",
-				"Other" => NULL,
+				"Other" => null,
 			),
 		"Cyberpower678" =>
 			array(
@@ -121,10 +121,10 @@ $developer = array(
 				"WWW" => "",
 				"Name" => "",
 				"Role" => "",
-				"Retired" => NULL,
+				"Retired" => null,
 				"Access" => "Mailing list mod",
 				"Cloak" => "*!*@wikipedia/Cyberpower678",
-				"Other" => NULL,
+				"Other" => null,
 			)
 );
 // End of the array of developers.
@@ -133,15 +133,15 @@ $developer = array(
 $inactiveDeveloper = array(
 
 		"SQL" =>
-				array(                                    //Set any of these to NULL to keep them from being displayed.
+				array(                                    //Set any of these to null to keep them from being displayed.
 				"IRC" => "SQLDb, SXT40",                  //IRC Name.
 				"ToolID" => "1",                          //Tool user ID for linking to page in users.php. 
 				"wiki" => "SQL",                          //Enwiki Username.
 				"WWW" => "http://toolserver.org/~sql",    //Your website.
-				"Name" => NULL,                           //Real name.
-				"Role" => NULL,	  //Project Role(s).
+				"Name" => null,                           //Real name.
+				"Role" => null,	  //Project Role(s).
 				"Retired" => "Project Lead",		  // Retired Project Role(s)
-				"Access" => NULL,       //Project Access levels.
+				"Access" => null,       //Project Access levels.
 				"Cloak" => "*!*@wikipedia/SQL",           //IRC Cloak.
 				"Other" => "Original developer",                          //Anything else, comments, etc.
 			),
@@ -150,13 +150,13 @@ $inactiveDeveloper = array(
 				"IRC" => "Cobi",
 				"ToolID" => "64",
 				"wiki" => "Cobi",
-				"WWW" => NULL,
-				"Name" => NULL,
-				"Role" => NULL,
+				"WWW" => null,
+				"Name" => null,
+				"Role" => null,
 				"Retired" => "Developer",
 				"Access" => "Git",
 				"Cloak" => "*!*@cobi.cluenet.org",
-				"Other" => NULL,
+				"Other" => null,
 			),
 		"Charlie" =>
 			array(
@@ -165,20 +165,20 @@ $inactiveDeveloper = array(
 				"wiki" => "Cmelbye",
 				"WWW" => "http://charlie.yourwiki.net/",
 				"Name" => "Charles Melbye",
-				"Role" => NULL,
+				"Role" => null,
 				"Retired" => "Developer, Web designer",
 				"Access" => "",
 				"Cloak" => "*!*@yourwiki/staff/charlie",
-				"Other" => NULL,
+				"Other" => null,
 			),
       		"Soxred93" =>
 			array(
 				"IRC" => "|X|",
 				"ToolID" => "4",
 				"wiki" => "X!",
-				"WWW" => NULL,
-				"Name" => NULL,
-				"Role" => NULL,
+				"WWW" => null,
+				"Name" => null,
+				"Role" => null,
 				"Retired" => "Developer",
 				"Access" => "Git",
 				"Cloak" => "*!*@wikipedia/Soxred93",
@@ -191,37 +191,37 @@ $inactiveDeveloper = array(
 				"wiki" => "Alexfusco5",
 				"WWW" => "http://en.wikipedia.org/wiki/User:Alexfusco5",
 				"Name" => "Alex Fusco",
-				"Role" => NULL,
+				"Role" => null,
 				"Retired" => "Developer",
 				"Access" => "",
-				"Cloak" => NULL,
-				"Other" => NULL,
+				"Cloak" => null,
+				"Other" => null,
 			),
 		"OverlordQ" =>
 			array(
 				"IRC" => "OverlordQ",
 				"ToolID" => "36",
 				"wiki" => "OverlordQ",
-				"WWW" => NULL,
-				"Name" => NULL,
-				"Role" => NULL,
+				"WWW" => null,
+				"Name" => null,
+				"Role" => null,
 				"Retired" => "Developer",
 				"Access" => "",
 				"Cloak" => "*!*@wikipedia/OverlordQ",
-				"Other" => NULL,
+				"Other" => null,
 			),
 		"Prodego" =>
 			array(
 				"IRC" => "Prodego",
 				"ToolID" => "14",
 				"wiki" => "Prodego",
-				"WWW" => NULL,
-				"Name" => NULL,
-				"Role" => NULL,
+				"WWW" => null,
+				"Name" => null,
+				"Role" => null,
 				"Retired" => "Developer",
 				"Access" => "",
 				"Cloak" => "*!*@wikipedia/Prodego",
-				"Other" => NULL,
+				"Other" => null,
 			),
       		"Prom3th3an" =>
 			array(
@@ -230,11 +230,11 @@ $inactiveDeveloper = array(
 				"wiki" => "Promethean",
 				"WWW" => "",
 				"Name" => "Brett Hillebrand",
-				"Role" => NULL,
+				"Role" => null,
 				"Retired" => "Developer",
 				"Access" => "",
 				"Cloak" => "*!*@wikimedia/Promethean",
-				"Other" => NULL,
+				"Other" => null,
 			),
 		"Chris" =>
 			array(
@@ -242,12 +242,12 @@ $inactiveDeveloper = array(
 				"ToolID" => "20",
 				"wiki" => "Chris_G",
 				"WWW" => "http://toolserver.org/~chris/",
-				"Name" => NULL,
-				"Role" => NULL,
+				"Name" => null,
+				"Role" => null,
 				"Retired" => "Developer",
 				"Access" => "Git",
 				"Cloak" => "*!*@wikipedia/Chris-G",
-				"Other" => NULL,
+				"Other" => null,
 			),
 		"LouriePieterse" =>
 			array(
@@ -256,11 +256,11 @@ $inactiveDeveloper = array(
 				"wiki" => "LouriePieterse",
 				"WWW" => "http://en.wikipedia.org/wiki/User:LouriePieterse",
 				"Name" => "Lourie Pieterse",
-				"Role" => NULL,
+				"Role" => null,
 				"Retired" => "Developer",
 				"Access" => "",
-				"Cloak" => NULL,
-				"Other" => NULL,
+				"Cloak" => null,
+				"Other" => null,
 			),
 		"Thehelpfulone" => // added by stwalkerster because you have access on sourceforge.net.
 			array(
@@ -268,12 +268,12 @@ $inactiveDeveloper = array(
 				"ToolID" => "8",
 				"wiki" => "Thehelpfulone",
 				"WWW" => "http://en.wikipedia.org/wiki/User:Thehelpfulone",
-				"Name" => NULL,
-				"Role" => NULL,
-				"Retired" => NULL,
+				"Name" => null,
+				"Role" => null,
+				"Retired" => null,
 				"Access" => "Git",
 				"Cloak" => "*!*@wikimedia/Thehelpfulone",
-				"Other" => NULL,
+				"Other" => null,
 			),
 		"EdoDodo" =>
 			array(
@@ -282,11 +282,11 @@ $inactiveDeveloper = array(
 				"wiki" => "EdoDodo",
 				"WWW" => "http://toolserver.org/~dodo/",
 				"Name" => "Edoardo",
-				"Role" => NULL,
+				"Role" => null,
 				"Retired" => "Developer",
 				"Access" => "",
 				"Cloak" => "*!*@wikipedia/EdoDodo",
-				"Other" => NULL,
+				"Other" => null,
 			),
 		"1234r00t" =>
 			array(
@@ -295,11 +295,11 @@ $inactiveDeveloper = array(
 				"wiki" => "1234r00t",
 				"WWW" => "en.wikipedia.org/wiki/User:1234r00t",
 				"Name" => "Max Meisler",
-				"Role" => NULL,
+				"Role" => null,
 				"Retired" => "Developer",
 				"Access" => "",
 				"Cloak" => "*!*@wikipedia/Mr-R00t",
-				"Other" => NULL
+				"Other" => null
 			),
 		"MacMed" =>
 			array(
@@ -308,11 +308,11 @@ $inactiveDeveloper = array(
 				"wiki" => "MacMed",
 				"WWW" => "",
 				"Name" => "",
-				"Role" => NULL,
+				"Role" => null,
 				"Retired" => "Developer",
 				"Access" => "",
 				"Cloak" => "*!*@Wikipedia/MacMed",
-				"Other" => NULL,
+				"Other" => null,
 			),
 		"Logan" =>
 			array(
@@ -321,11 +321,11 @@ $inactiveDeveloper = array(
 				"wiki" => "Logan",
 				"WWW" => "",
 				"Name" => "",
-				"Role" => NULL,
+				"Role" => null,
 				"Retired" => "Developer",
 				"Access" => "Git",
 				"Cloak" => "*!*@ubuntu/member/logan",
-				"Other" => NULL,
+				"Other" => null,
 			)
 );
 
