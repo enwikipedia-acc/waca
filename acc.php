@@ -1553,50 +1553,53 @@ elseif ($action == "reserve")
             throw new TransactionException("Only administrators and checkusers can reserve a request that has been closed for over a week.", "Error");
 	    }
         
-       	if($request->getReserved() != 0)
+       	if($request->getReserved() != 0 && $request->getReserved() != User::getCurrent()->getId())
         {
             throw new TransactionException("Request is already reserved by {$request->getReservedObject()->getUsername()}.", "Error");
         }
            
-        if(isset($allowDoubleReserving))
+        if($request->getReserved() == 0)
         {
-		    // Check the number of requests a user has reserved already
+            if(isset($allowDoubleReserving))
+            {
+		        // Check the number of requests a user has reserved already
         
-		    $doubleReserveCountQuery = $database->prepare("SELECT COUNT(*) FROM request WHERE reserved = :userid;");
-            $doubleReserveCountQuery->bindValue(":userid", User::getCurrent()->getId());
-            $doubleReserveCountQuery->execute();
-		    $doubleReserveCount = $doubleReserveCountQuery->fetchColumn();
-            $doubleReserveCountQuery->closeCursor();
+		        $doubleReserveCountQuery = $database->prepare("SELECT COUNT(*) FROM request WHERE reserved = :userid;");
+                $doubleReserveCountQuery->bindValue(":userid", User::getCurrent()->getId());
+                $doubleReserveCountQuery->execute();
+		        $doubleReserveCount = $doubleReserveCountQuery->fetchColumn();
+                $doubleReserveCountQuery->closeCursor();
 		
-		    // User already has at least one reserved. 
-		    if( $doubleReserveCount != 0) 
-		    {
-                SessionAlert::warning("You have multiple requests reserved!");
-		    }
-	    }
+		        // User already has at least one reserved. 
+		        if( $doubleReserveCount != 0) 
+		        {
+                    SessionAlert::warning("You have multiple requests reserved!");
+		        }
+	        }
 	
-	    // Is the request closed?
-	    if(! isset($_GET['confclosed']) )
-	    {
-		    if($request->getStatus() == "Closed")
-		    {		
-                // FIXME: bootstrappify properly
-			    throw new TransactionException('This request is currently closed. Are you sure you wish to reserve it?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confclosed=yes">Yes, reserve this closed request</a></li><li><a href="' . $baseurl . '/acc.php">No, return to main request interface</a></li></ul>', "Request closed", "alert-info");
-		    }
-	    }	
+	        // Is the request closed?
+	        if(! isset($_GET['confclosed']) )
+	        {
+		        if($request->getStatus() == "Closed")
+		        {		
+                    // FIXME: bootstrappify properly
+			        throw new TransactionException('This request is currently closed. Are you sure you wish to reserve it?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confclosed=yes">Yes, reserve this closed request</a></li><li><a href="' . $baseurl . '/acc.php">No, return to main request interface</a></li></ul>', "Request closed", "alert-info");
+		        }
+	        }	
         
-        $request->setReserved(User::getCurrent()->getId());
-        $request->save();
+            $request->setReserved(User::getCurrent()->getId());
+            $request->save();
 	
-        $query = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :user, 'Reserved', CURRENT_TIMESTAMP);");
-        $query->bindValue(":user", User::getCurrent()->getUsername());
-        $query->bindValue(":request", $request->getId());
-        $query->execute();
+            $query = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :user, 'Reserved', CURRENT_TIMESTAMP);");
+            $query->bindValue(":user", User::getCurrent()->getUsername());
+            $query->bindValue(":request", $request->getId());
+            $query->execute();
     
-        $accbotSend->send("Request {$request->getId()} is being handled by " . User::getCurrent()->getUsername());
+            $accbotSend->send("Request {$request->getId()} is being handled by " . User::getCurrent()->getUsername());
                 
-        SessionAlert::success("Reserved request {$request->getId()}.");
-
+            SessionAlert::success("Reserved request {$request->getId()}.");
+        }
+        
         header("Location: $baseurl/acc.php?action=zoom&id={$request->getId()}");
     });
 	    
