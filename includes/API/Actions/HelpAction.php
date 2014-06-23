@@ -11,12 +11,12 @@ use Waca\API\Api as Api;
  */
 class HelpAction extends ApiActionBase implements IApiAction
 {
-    public function execute(\DOMElement $doc_api)
+    public function execute(\DOMElement $apiDocument)
     {
         $helpElement = $this->getHelpElement();
-        $doc_api->appendChild($helpElement);
+        $apiDocument->appendChild($helpElement);
         
-        return $doc_api;
+        return $apiDocument;
     }
     
     /**

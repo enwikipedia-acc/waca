@@ -1,22 +1,9 @@
 <?php
 
-/*
- * Auth utilities functions
- * @author Simon Walker
- * @licence PD
- */
-
-// Get all the classes.
-require_once 'config.inc.php';
 require_once 'lib/password_compat/lib/password.php';
 
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
-
-class AuthUtility 
+class AuthUtility
 {
-    
     /**
      * Test the specified data against the specified credentials
      * @param string $credentials
@@ -25,10 +12,10 @@ class AuthUtility
     {
         global $minimumPasswordVersion;
     
-        if( substr( $credentials, 0, 1 ) == ":" ) 
+        if(substr($credentials, 0, 1) == ":") 
         {
             // new style, but what version?
-            $data = explode( ':', substr( $credentials, 1 ) );
+            $data = explode(':', substr($credentials, 1));
             
             // call the encryptVersion function for the version that this password actually is.
             // syntax: :0:HASH  OR   HASH
@@ -36,18 +23,21 @@ class AuthUtility
             // syntax: :2:x:HASH
             
             // check the version is one of the allowed ones:
-            if( $minimumPasswordVersion > $data[ 0 ] ) return false;
+            if($minimumPasswordVersion > $data[ 0 ])
+            {
+                return false;
+            }
             
             // re-encrypt the new password
-            if( $data[ 0 ] == 0 )
+            if($data[ 0 ] == 0)
             {
                 return $credentials == self::encryptVersion0($password); 
             }
-            if ( $data[ 0 ] == 1 )   
+            if($data[ 0 ] == 1)   
             {
                 return $credentials == self::encryptVersion1($password, $data[ 1 ]);  
             }
-            if( $data[ 0 ] == 2 )
+            if($data[ 0 ] == 2)
             {
                 return self::verifyVersion2($password, $data[ 2 ]); 
             }
@@ -59,16 +49,16 @@ class AuthUtility
             // old style, eew.
         
             // not allowed this version of password
-            if( $minimumPasswordVersion > 0 ) 
+            if($minimumPasswordVersion > 0)
             {
                 return false;
             }
         
             // various different ways of escaping this have been done in the past.
             // we have to test all to make sure it's gonna work, reducing security.
-            return ( self::encryptVersion0( $password ) == $credentials
-                || self::encryptVersion0( sanitize( $password ) ) == $credentials
-                || self::encryptVersion0( mysql_escape_string( $password ) ) == $credentials
+            return (self::encryptVersion0($password) == $credentials
+                || self::encryptVersion0(sanitize($password)) == $credentials
+                || self::encryptVersion0(mysql_escape_string($password)) == $credentials
                 );
         }
     }
@@ -76,33 +66,33 @@ class AuthUtility
     /**
      * @param string $credentials
      */
-    public static function isCredentialVersionLatest( $credentials ) 
+    public static function isCredentialVersionLatest($credentials) 
     {
-        return substr( $credentials, 0, 3 ) === ":2:";
+        return substr($credentials, 0, 3) === ":2:";
     }
     
-    public static function encryptPassword( $password ) 
+    public static function encryptPassword($password) 
     {
-        return self::encryptVersion2( $password );
+        return self::encryptVersion2($password);
     }
     
-    private static function encryptVersion0( $password ) 
+    private static function encryptVersion0($password) 
     {
-        return md5( $password );
+        return md5($password);
     }
     
     private static function encryptVersion1( $password, $salt ) 
     {
-        return ':1:' . $salt . ':' . md5( $salt . '-' . md5( $password ) );
+        return ':1:' . $salt . ':' . md5($salt . '-' . md5($password));
     }
     
-    private static function encryptVersion2( $password ) 
+    private static function encryptVersion2($password) 
     {
-        return ':2:x:' . password_hash( $password, PASSWORD_BCRYPT );
+        return ':2:x:' . password_hash($password, PASSWORD_BCRYPT);
     }
     
-    private static function verifyVersion2( $password, $hash ) 
+    private static function verifyVersion2($password, $hash) 
     {
-        return password_verify( $password, $hash );
+        return password_verify($password, $hash);
     }
 }

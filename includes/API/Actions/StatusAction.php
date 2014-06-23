@@ -16,15 +16,22 @@ class StatusAction extends ApiActionBase implements IApiAction
      */
     private $database;
     
-    public function execute(\DOMElement $doc_api)
+    public function execute(\DOMElement $apiDocument)
     {
         $this->database = gGetDb();
         
         $statusElement = $this->document->createElement("status");
-        $doc_api->appendChild($statusElement);
+        $apiDocument->appendChild($statusElement);
 		
         $mailconfirm = "Confirmed";			
-        $query = $this->database->prepare("SELECT COUNT(*) AS count FROM acc_pend WHERE pend_status = :pstatus AND pend_mailconfirm = :pmailconfirm;");
+        $query = $this->database->prepare(<<<SQL
+            SELECT COUNT(*) AS count 
+            FROM acc_pend 
+            WHERE 
+                pend_status = :pstatus 
+                AND pend_mailconfirm = :pmailconfirm;
+SQL
+        );
         $query->bindValue(":pmailconfirm", $mailconfirm);
         
         global $availableRequestStates;
@@ -37,7 +44,15 @@ class StatusAction extends ApiActionBase implements IApiAction
             $query->closeCursor();
         }
 
-        $query = $this->database->prepare("SELECT COUNT(*) AS count FROM ban WHERE (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;");
+        $query = $this->database->prepare(<<<SQL
+            SELECT COUNT(*) AS count 
+            FROM ban 
+            WHERE 
+                (duration > UNIX_TIMESTAMP() OR duration = -1) 
+                AND active = 1;
+SQL
+        );
+        
         $query->execute();
         $sus = $query->fetchColumn();
         $statusElement->setAttribute("bans", $sus);
@@ -62,6 +77,6 @@ class StatusAction extends ApiActionBase implements IApiAction
         $statusElement->setAttribute("usernew", $sus);
         $query->closeCursor();
         
-        return $doc_api;
+        return $apiDocument;
     }
 }

@@ -21,26 +21,26 @@ abstract class ApiActionBase implements IApiAction
     /**
      * Method that runs API action
      */
-    public abstract function execute(\DOMElement $doc_api);
+    abstract public function execute(\DOMElement $apiDocument);
     
     
     public function run()
     {
         
-        $doc_api = $this->document->createElement("api");
+        $apiDocument = $this->document->createElement("api");
         
         try
         {
-            $doc_api = $this->execute($doc_api);
+            $apiDocument = $this->execute($apiDocument);
         }
         catch(ApiException $ex)
         {
             $exception = $this->document->createElement("error");
             $exception->setAttribute("message", $ex->getMessage());
-            $doc_api->appendChild($exception);
+            $apiDocument->appendChild($exception);
         }
 
-        $this->document->appendChild($doc_api);
+        $this->document->appendChild($apiDocument);
         
         return $this->document->saveXml();
     }
