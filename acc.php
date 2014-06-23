@@ -1522,7 +1522,7 @@ elseif ($action == "reserve")
     
     $database->transactionally(function() use ($database)
     {
-        $request = Request::getById($_GET['resid'], gGetDb());
+        $request = Request::getById($_GET['resid'], $database);
         
         if($request == false)
         {
@@ -1548,12 +1548,12 @@ elseif ($action == "reserve")
         $date->modify("-7 days");
 	    $oneweek = $date->format("Y-m-d H:i:s");
         
-	    if ($request->getStatus() == "Closed" && $logTime < $oneweek && !User::getCurrent()->isAdmin()) 
+	    if ($request->getStatus() == "Closed" && $logTime < $oneweek && !User::getCurrent($database)->isAdmin()) 
         {
             throw new TransactionException("Only administrators and checkusers can reserve a request that has been closed for over a week.", "Error");
 	    }
         
-       	if($request->getReserved() != 0 && $request->getReserved() != User::getCurrent()->getId())
+       	if($request->getReserved() != 0 && $request->getReserved() != User::getCurrent($database)->getId())
         {
             throw new TransactionException("Request is already reserved by {$request->getReservedObject()->getUsername()}.", "Error");
         }
@@ -1565,7 +1565,7 @@ elseif ($action == "reserve")
 		        // Check the number of requests a user has reserved already
         
 		        $doubleReserveCountQuery = $database->prepare("SELECT COUNT(*) FROM request WHERE reserved = :userid;");
-                $doubleReserveCountQuery->bindValue(":userid", User::getCurrent()->getId());
+                $doubleReserveCountQuery->bindValue(":userid", User::getCurrent($database)->getId());
                 $doubleReserveCountQuery->execute();
 		        $doubleReserveCount = $doubleReserveCountQuery->fetchColumn();
                 $doubleReserveCountQuery->closeCursor();
@@ -1587,15 +1587,15 @@ elseif ($action == "reserve")
 		        }
 	        }	
         
-            $request->setReserved(User::getCurrent()->getId());
+            $request->setReserved(User::getCurrent($database)->getId());
             $request->save();
 	
-            $query = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :user, 'Reserved', CURRENT_TIMESTAMP);");
-            $query->bindValue(":user", User::getCurrent()->getUsername());
+            $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :user, 'Reserved', CURRENT_TIMESTAMP);");
+            $query->bindValue(":user", User::getCurrent($database)->getUsername());
             $query->bindValue(":request", $request->getId());
             $query->execute();
     
-            $accbotSend->send("Request {$request->getId()} is being handled by " . User::getCurrent()->getUsername());
+            $accbotSend->send("Request {$request->getId()} is being handled by " . User::getCurrent($database)->getUsername());
                 
             SessionAlert::success("Reserved request {$request->getId()}.");
         }
