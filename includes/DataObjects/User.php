@@ -602,7 +602,7 @@ SQL
 
     public function getForgottenPasswordHash()
     {
-        return md5($this->username . $this->email . $this->welcome_template . $this->id -> $this->password);
+        return md5($this->username . $this->email . $this->welcome_template . $this->id . $this->password);
     }
 
     public function getOAuthIdentity()
