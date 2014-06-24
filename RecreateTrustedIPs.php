@@ -1,7 +1,7 @@
 <?php
 if (isset($_SERVER['REQUEST_METHOD'])) 
 {
-	die();
+    die();
 } // Web clients die.
 
 ini_set('display_errors', 1);
@@ -22,61 +22,61 @@ $dnsdomain = array();
 echo "Sorting file...\n";
 foreach ( $htmlfile as $line_num => $line ) 
 {
-	// skip the comments
-	if( substr( $line, 0, 1 ) === "#" ) 
+    // skip the comments
+    if( substr( $line, 0, 1 ) === "#" ) 
     {
         continue;
     }
-	
-	// match a regex of an CIDR range:
-	$ipcidr = "@(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:/(?:32|3[01]|[0-2]?[0-9]))?@";
-	if( preg_match( $ipcidr, $line ) === 1 ) 
+    
+    // match a regex of an CIDR range:
+    $ipcidr = "@(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:/(?:32|3[01]|[0-2]?[0-9]))?@";
+    if( preg_match( $ipcidr, $line ) === 1 ) 
     {
-		$iprange[] = $line;
-		continue;
-	}
-	
-	$ipnoncidr = "@(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:/(?:32|3[01]|[0-2]?[0-9]))?@";
-	if( preg_match( $ipnoncidr, $line ) === 1 ) 
+        $iprange[] = $line;
+        continue;
+    }
+    
+    $ipnoncidr = "@(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:/(?:32|3[01]|[0-2]?[0-9]))?@";
+    if( preg_match( $ipnoncidr, $line ) === 1 ) 
     {
-		$ip[] = $line;
-		continue;
-	}
-	
-	// it's probably a DNS name.
-	$dnsdomain[] = $line;
+        $ip[] = $line;
+        continue;
+    }
+    
+    // it's probably a DNS name.
+    $dnsdomain[] = $line;
 }
-	
+    
 echo "Exploding CIDRs...\n";
 foreach ( $iprange as $r ) 
 {
-	$ips = explodeCidr($r);
-	
-	foreach ( $ips as $i ) 
+    $ips = explodeCidr($r);
+    
+    foreach ( $ips as $i ) 
     {
-		$ip[] = $i;
-	}
+        $ip[] = $i;
+    }
 }
 
 echo "Resolving DNS...\n";
 foreach ( $dnsdomain as $d ) 
 {
-	$ips = gethostbynamel( $d );
-	
-	if( $ips === false ) 
+    $ips = gethostbynamel( $d );
+    
+    if( $ips === false ) 
     {
-		echo "Invalid DNS name $d\n";
-		continue;
-	}
-	
-	foreach ( $ips as $i ) 
+        echo "Invalid DNS name $d\n";
+        continue;
+    }
+    
+    foreach ( $ips as $i ) 
     {
-		$ip[] = $i;
-	}
-	
-	
-	// don't DoS
-	usleep( 10000 );
+        $ip[] = $i;
+    }
+    
+    
+    // don't DoS
+    usleep( 10000 );
 }
 
 echo "Uniq-ing array...\n";

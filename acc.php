@@ -56,6 +56,7 @@ $session = new session();
 $date = new DateTime();
 
 // initialise providers
+global $squidIpList;
 $locationProvider = new $locationProviderClass(gGetDb('acc'), $locationProviderApiKey);
 $rdnsProvider = new $rdnsProviderClass(gGetDb('acc'));
 $antispoofProvider = new $antispoofProviderClass();

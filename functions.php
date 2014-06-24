@@ -34,14 +34,12 @@ $session = new session();
  * @return mixed
  * @deprecated
  */
-function sanitize($what) {
-	/*
-	 * Shortcut to mysql_real_escape_string
-	 */
+function sanitize($what) 
+{
 	global $tsSQLlink;
-	$what = mysql_real_escape_string($what,$tsSQLlink);
-	$what = htmlentities($what,ENT_COMPAT,'UTF-8');
-	return ($what);
+	$what = mysql_real_escape_string($what, $tsSQLlink);
+	$what = htmlentities($what, ENT_COMPAT, 'UTF-8');
+	return $what;
 }
 
 /**
@@ -257,10 +255,12 @@ function getTrustedClientIP($dbip, $dbproxyip)
 	return $clientIpAddr;
 }
 
-function explodeCidr( $range ) {
+function explodeCidr( $range ) 
+{
 	$ip_arr = explode( '/' , $range );
 
-	if( ! isset( $ip_arr[1] ) ) {
+	if( ! isset( $ip_arr[1] ) ) 
+    {
 		return array( $range );
 	}
 	
@@ -273,7 +273,8 @@ function explodeCidr( $range ) {
 	$list = array();
 
     $bindecBHigh = bindec( $bhigh );
-	for( $x = bindec( $blow ); $x <= $bindecBHigh; $x++ ) {
+	for($x = bindec($blow); $x <= $bindecBHigh; $x++) 
+    {
 		$list[] = long2ip( $x );
 	}
 
@@ -284,23 +285,29 @@ function explodeCidr( $range ) {
  * Takes an array( "low" => "high ) values, and returns true if $needle is in at least one of them.
  * @param string $ip
  */
-function ipInRange( $haystack, $ip ) {
+function ipInRange( $haystack, $ip ) 
+{
 	$needle = ip2long($ip);
 
-	foreach( $haystack as $low => $high ) {
-		if( ip2long($low) <= $needle && ip2long($high) >= $needle ) {
+	foreach( $haystack as $low => $high ) 
+    {
+		if( ip2long($low) <= $needle && ip2long($high) >= $needle ) 
+        {
 			return true;
 		}
 	}
+    
 	return false;
 }
 
 /**
  * @return string
  */
-function welcomerbotRenderSig($creator, $sig) {
+function welcomerbotRenderSig($creator, $sig) 
+{
 	$signature = html_entity_decode($sig) . ' ~~~~~';
-	if (!preg_match("/((\[\[[ ]*(w:)?[ ]*(en:)?)|(\{\{subst:))[ ]*User[ ]*:[ ]*".$creator."[ ]*(\]\]|\||\}\}|\/)/i", $signature)) {
+	if (!preg_match("/((\[\[[ ]*(w:)?[ ]*(en:)?)|(\{\{subst:))[ ]*User[ ]*:[ ]*".$creator."[ ]*(\]\]|\||\}\}|\/)/i", $signature)) 
+    {
 		$signature = "--[[User:$creator|$creator]] ([[User talk:$creator|talk]]) ~~~~~";
 	}
 	return $signature;
