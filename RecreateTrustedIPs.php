@@ -1,9 +1,12 @@
 <?php
-if (isset($_SERVER['REQUEST_METHOD'])) {
+if (isset($_SERVER['REQUEST_METHOD'])) 
+{
 	die();
 } // Web clients die.
+
 ini_set('display_errors', 1);
 ini_set('memory_limit', '256M');
+
 require_once 'config.inc.php';
 require_once 'includes/PdoDatabase.php';
 require_once 'functions.php';
@@ -17,19 +20,25 @@ $iprange = array();
 $dnsdomain = array();
 
 echo "Sorting file...\n";
-foreach ( $htmlfile as $line_num => $line ) {
+foreach ( $htmlfile as $line_num => $line ) 
+{
 	// skip the comments
-	if( substr( $line, 0, 1 ) === "#" ) continue;
+	if( substr( $line, 0, 1 ) === "#" ) 
+    {
+        continue;
+    }
 	
 	// match a regex of an CIDR range:
 	$ipcidr = "@(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:/(?:32|3[01]|[0-2]?[0-9]))?@";
-	if( preg_match( $ipcidr, $line ) === 1 ) {
+	if( preg_match( $ipcidr, $line ) === 1 ) 
+    {
 		$iprange[] = $line;
 		continue;
 	}
 	
 	$ipnoncidr = "@(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:/(?:32|3[01]|[0-2]?[0-9]))?@";
-	if( preg_match( $ipnoncidr, $line ) === 1 ) {
+	if( preg_match( $ipnoncidr, $line ) === 1 ) 
+    {
 		$ip[] = $line;
 		continue;
 	}
@@ -39,24 +48,29 @@ foreach ( $htmlfile as $line_num => $line ) {
 }
 	
 echo "Exploding CIDRs...\n";
-foreach ( $iprange as $r ) {
+foreach ( $iprange as $r ) 
+{
 	$ips = explodeCidr($r);
 	
-	foreach ( $ips as $i ) {
+	foreach ( $ips as $i ) 
+    {
 		$ip[] = $i;
 	}
 }
 
 echo "Resolving DNS...\n";
-foreach ( $dnsdomain as $d ) {
+foreach ( $dnsdomain as $d ) 
+{
 	$ips = gethostbynamel( $d );
 	
-	if( $ips === false ) {
+	if( $ips === false ) 
+    {
 		echo "Invalid DNS name $d\n";
 		continue;
 	}
 	
-	foreach ( $ips as $i ) {
+	foreach ( $ips as $i ) 
+    {
 		$ip[] = $i;
 	}
 	
