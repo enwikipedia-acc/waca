@@ -59,6 +59,7 @@ $date = new DateTime();
 $locationProvider = new $locationProviderClass(gGetDb('acc'), $locationProviderApiKey);
 $rdnsProvider = new $rdnsProviderClass(gGetDb('acc'));
 $antispoofProvider = new $antispoofProviderClass();
+$xffTrustProvider = new $xffTrustProviderClass($squidIpList);
 
 // Clears the action variable.
 $action = '';

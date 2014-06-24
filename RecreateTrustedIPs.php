@@ -74,9 +74,9 @@ $database = gGetDb();
 echo "Executing transaction...\n";
 $database->transactionally(function() use ($ip, $database)
 {
-    $database->exec("DELETE FROM acc_trustedips;");
+    $database->exec("DELETE FROM xfftrustcache;");
     
-    $insert = $database->prepare("INSERT INTO acc_trustedips (trustedips_ipaddr) VALUES (:ip);");
+    $insert = $database->prepare("INSERT INTO xfftrustcache (ip) VALUES (:ip);");
     
     foreach ($ip as $i)
     {

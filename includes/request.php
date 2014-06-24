@@ -313,18 +313,6 @@ class accRequest {
 		// The flags array are returned to the isTor method.
 		return ($flags);
 	}
-	
-	public function istrusted($ip) {
-		global $tsSQL;
-		$query = "SELECT * FROM `acc_trustedips` WHERE `trustedips_ipaddr` = '$ip';";
-		$result = $tsSQL->query($query);
-		if (!$result)
-			$tsSQL->showError("Query failed: $query ERROR: ".$tsSQL->getError(),"ERROR: Database query failed. If the problem persists please contact a <a href='team.php'>developer</a>.");
-		if (mysql_num_rows($result))
-			return True;
-		else
-			return False;
-	}
 
 	/**
 	 * @param string $user

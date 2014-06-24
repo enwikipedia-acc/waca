@@ -191,6 +191,7 @@ $locationProviderApiKey = "super secret"; // ipinfodb api key
 $rdnsProviderClass = "CachedRDnsLookupProvider";
 
 $antispoofProviderClass = "FakeAntiSpoofProvider";
+$xffTrustProviderClass = "XffTrustProvider";
 
 /***********************************
  * Data clear script

@@ -16,6 +16,7 @@ function zoomPage($id,$urlhash)
 {
 	global $tsSQLlink, $session, $availableRequestStates, $createdid;
 	global $smarty, $locationProvider, $rdnsProvider, $antispoofProvider;
+    global $xffTrustProvider;
     
     $database = gGetDb();
     $request = Request::getById($id, $database);
@@ -120,7 +121,7 @@ SQL
 				$smartyproxies[$smartyproxiesindex]['ip'] = $p2;
 
                 // get data on this IP.
-				$trusted = isXffTrusted($p2);
+				$trusted = $xffTrustProvider->isTrusted($p2);
 				$ipisprivate = ipInRange($rfc1918ips, $p2);
                 
                 if( !$ipisprivate) 
