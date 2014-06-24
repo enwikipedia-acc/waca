@@ -731,7 +731,6 @@ elseif ($action == "templatemgmt")
             die();
         }
 
-        $tid = sanitize($_GET['edit']);
 		if (isset($_POST['submit'])) 
         {
             $database->transactionally(function() use($database, $template)
@@ -2024,7 +2023,6 @@ elseif ($action == "emailmgmt")
 	}
 	if(isset($_GET['edit'])) {
 		global $createdid;
-		$gid = sanitize($_GET['edit']);
         
         $database = gGetDb();
         
@@ -2052,7 +2050,6 @@ elseif ($action == "emailmgmt")
 				$emailTemplate->setActive(isset($_POST['active']));
                 $emailTemplate->setPreloadOnly(isset($_POST['preloadonly']));
 			}
-			$siuser = sanitize($_SESSION['user']);
 				
 			// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
 			$nameCheck = EmailTemplate::getByName($_POST['name'], gGetDb());
@@ -2086,7 +2083,7 @@ elseif ($action == "emailmgmt")
 		}
         
 		$emailTemplate = EmailTemplate::getById($_GET['edit'], gGetDb());
-		$smarty->assign('id', $gid);
+		$smarty->assign('id', $emailTemplate->getId());
         $smarty->assign('emailTemplate', $emailTemplate);
 		$smarty->assign('createdid', $createdid);
 		$smarty->assign('emailmgmtpage', 'Edit'); // Use a variable so we don't need two Smarty templates for creating and editing.

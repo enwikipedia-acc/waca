@@ -28,6 +28,12 @@ require_once 'includes/request.php';
 // Initialize the class objects.
 $session = new session();
 
+/**
+ * Summary of sanitize
+ * @param mixed $what 
+ * @return mixed
+ * @deprecated
+ */
 function sanitize($what) {
 	/*
 	 * Shortcut to mysql_real_escape_string

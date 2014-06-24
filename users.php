@@ -136,7 +136,6 @@ if (isset ($_GET['demote']))
         die();
     }
     
-	$did = $_GET['demote']; // clean because we've already pulled back a user from the database.
 	if (!isset($_POST['reason'])) {
 
         global $smarty;
@@ -161,7 +160,6 @@ if (isset ($_GET['demote']))
 }
 
 if (isset ($_GET['suspend'])) {
-	$did = sanitize($_GET['suspend']);
     $user = User::getById($_GET['suspend'], gGetDb());
     
     if($user == false)
