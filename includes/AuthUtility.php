@@ -12,55 +12,35 @@ class AuthUtility
     {
         global $minimumPasswordVersion;
     
-        if(substr($credentials, 0, 1) == ":") 
+        if(substr($credentials, 0, 1) != ":") 
         {
-            // new style, but what version?
-            $data = explode(':', substr($credentials, 1));
-            
-            // call the encryptVersion function for the version that this password actually is.
-            // syntax: :0:HASH  OR   HASH
-            // syntax: :1:SALT:HASH
-            // syntax: :2:x:HASH
-            
-            // check the version is one of the allowed ones:
-            if($minimumPasswordVersion > $data[ 0 ])
-            {
-                return false;
-            }
-            
-            // re-encrypt the new password
-            if($data[ 0 ] == 0)
-            {
-                return $credentials == self::encryptVersion0($password); 
-            }
-            if($data[ 0 ] == 1)   
-            {
-                return $credentials == self::encryptVersion1($password, $data[ 1 ]);  
-            }
-            if($data[ 0 ] == 2)
-            {
-                return self::verifyVersion2($password, $data[ 2 ]); 
-            }
-            
             return false;
-        } 
-        else 
-        { 
-            // old style, eew.
-        
-            // not allowed this version of password
-            if($minimumPasswordVersion > 0)
-            {
-                return false;
-            }
-        
-            // various different ways of escaping this have been done in the past.
-            // we have to test all to make sure it's gonna work, reducing security.
-            return (self::encryptVersion0($password) == $credentials
-                || self::encryptVersion0(sanitize($password)) == $credentials
-                || self::encryptVersion0(mysql_escape_string($password)) == $credentials
-                );
         }
+        
+        // determine password version
+        $data = explode(':', substr($credentials, 1));
+            
+        // call the encryptVersion function for the version that this password actually is.
+        // syntax: :1:SALT:HASH
+        // syntax: :2:x:HASH
+            
+        // check the version is one of the allowed ones:
+        if($minimumPasswordVersion > $data[ 0 ])
+        {
+            return false;
+        }
+
+        if($data[ 0 ] == 1)   
+        {
+            return $credentials == self::encryptVersion1($password, $data[ 1 ]);  
+        }
+        
+        if($data[ 0 ] == 2)
+        {
+            return self::verifyVersion2($password, $data[ 2 ]); 
+        }
+            
+        return false;
     }
     
     /**
@@ -74,11 +54,6 @@ class AuthUtility
     public static function encryptPassword($password) 
     {
         return self::encryptVersion2($password);
-    }
-    
-    private static function encryptVersion0($password) 
-    {
-        return md5($password);
     }
     
     private static function encryptVersion1( $password, $salt ) 
