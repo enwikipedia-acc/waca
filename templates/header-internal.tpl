@@ -74,8 +74,8 @@
 				  <ul class="dropdown-menu">
 					<li><a href="{$baseurl}/acc.php?action=ban"><i class="icon-ban-circle"></i>&nbsp;Ban Management</a></li>
 					<li><a href="{$baseurl}/acc.php?action=messagemgmt"><i class="icon-print"></i>&nbsp;Message Management</a></li>
-					<li><a href="{$baseurl}/acc.php?action=emailmgmt"><i class="icon-envelope"></i>&nbsp;Email Management</a></li>
-					<li><a href="{$baseurl}/acc.php?action=templatemgmt"><i class="icon-file"></i>&nbsp;Template Management</a></li>
+					<li><a href="{$baseurl}/acc.php?action=emailmgmt"><i class="icon-envelope"></i>&nbsp;Close Email Management</a></li>
+					<li><a href="{$baseurl}/acc.php?action=templatemgmt"><i class="icon-file"></i>&nbsp;Welcome Template Management</a></li>
 					{if $currentUser->isAdmin()}
 					<li><a href="{$baseurl}/users.php"><i class="icon-user"></i> User Management</a></li>
 					{/if}
