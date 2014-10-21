@@ -577,7 +577,7 @@ elseif ($action == "templatemgmt")
     
 	if (isset($_GET['add'])) 
     {
-		if(!User::getCurrent()->isAdmin() || !User::getCurrent()->isCheckuser()) 
+		if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) 
         {
             BootstrapSkin::displayAlertBox("I'm sorry, but you do not have permission to access this page.", "alert-error", "Access Denied", true, false);
 			BootstrapSkin::displayInternalFooter();
@@ -674,7 +674,7 @@ elseif ($action == "templatemgmt")
     {
         global $baseurl;
         
-		if(!User::getCurrent()->isAdmin() || !User::getCurrent()->isCheckuser()) 
+		if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) 
         {
             BootstrapSkin::displayAlertBox("I'm sorry, but you do not have permission to access this page.", "alert-error", "Access Denied", true, false);
 			BootstrapSkin::displayInternalFooter();
@@ -715,7 +715,7 @@ elseif ($action == "templatemgmt")
     
 	if (isset($_GET['edit'])) 
     {
-		if(!User::getCurrent()->isAdmin() || !User::getCurrent()->isCheckuser()) 
+		if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) 
         {
             BootstrapSkin::displayAlertBox("I'm sorry, but you do not have permission to access this page.", "alert-error", "Access Denied", true, false);
 			BootstrapSkin::displayInternalFooter();
