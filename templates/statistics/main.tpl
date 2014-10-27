@@ -14,11 +14,11 @@
 <div class="row-fluid">
   <div class="span12">
     <h4>
-      Graphs (<a href="http://acc.stwalkerster.info/acc-new/">see more!</a>)
+      Graphs (<a href="http://accounts-dev.wmflabs.org/graph/">see more!</a>)
     </h4>
     {foreach from=$graphList item="graph"}
     <p>
-      <img src="http://acc.stwalkerster.info/acc-new/{$graph}/acc.svg" alt="graph"/>
+      <img src="http://accounts-dev.wmflabs.org/graph/{$graph}/acc.svg" alt="graph"/>
     </p>
     {/foreach}
   </div>
