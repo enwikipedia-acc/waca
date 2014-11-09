@@ -2,7 +2,7 @@
     <h2>Privacy Policy Warning!</h2>
     <p><strong>Please read this information carefully.</strong></p>
     <p>The Wikimedia Foundation has requested that the ACC project be compliant with the Foundation's <a href="https://meta.wikimedia.org/wiki/Privacy_policy">Privacy Policy</a>, specifically with regards to the <a href="https://meta.wikimedia.org/wiki/Privacy_policy#protection-duration">retention of non-public personally identifying information</a>, such as requesters' email addresses and IP addresses.</p>
-    <p>To summarize, ACC may only store this data in special locations designed to handle this data, and these locations are automatically scrubbed periodically to ensure that non-public data is retained for no longer than it needs to be.</p>
+    <p>To summarize, ACC may only store this data in special locations designed to handle this data, and these locations are automatically scrubbed periodically to ensure that non-public data is retained for no longer than it needs to be.  The comments section is not considered one of these "secured" locations, as implementing automatic scrubbing for comments is both infeasible and undesirable.</p>
     <p>These restrictions are the same reason why you must now be <a href="https://meta.wikimedia.org/wiki/Identification_noticeboard">"Identified"</a> to the Wikimedia Foundation to be able to access ACC.</p>
     <p>The software has detected what appears to be an IP address in text of the comment you have just attempted to post (the request ID and content of the comment is displayed below).</p>
     <p>Since not all IP addresses are considered non-public for the purposes of the Privacy Policy, you may override this warning if you choose and post your comment anyway.  Before doing so, though, you must read the acknowledgement in red below and check the box to confirm your understanding.  You should also at this point (re-)read DeltaQuad's <a href="https://accounts-dev.wmflabs.org/other/identinfoemail.html">email regarding what is and is not acceptable under the Privacy Policy</a>.</p>
@@ -17,9 +17,10 @@
             </div>
         </div>
         <div class="control-group">
-            <label for="comment" class="control-label">Comment text:</label>
+            <label for="comment-display" class="control-label">Comment text:</label>
             <div class="controls">
-                <textarea name="comment" class="input-xxlarge" disabled="disabled" rows="6">{$comment}</textarea>
+                <textarea name="comment-display" class="input-xxlarge" disabled="disabled" rows="6">{$comment}</textarea>
+                <input type="hidden" name="comment" value="{$comment}" />
             </div>
         </div>
         <div class="control-group">
