@@ -1,6 +1,6 @@
 <div class="row-fluid">
     <h2>Privacy Policy Warning!</h2>
-    <form action="{$baseurl}/acc.php" method="post" class="form-horizontal span8">
+    <form action="{$baseurl}/acc.php?action=comment-add" method="post" class="form-horizontal span8">
         <div class="control-group">
             <label for="displayid" class="control-label">Request ID:</label>
             <div class="controls">
@@ -18,7 +18,7 @@
 						<strong>If you wish to cancel or edit your comment, please use the "back" button in your browser now.</strong>
 				</div>
 				<div class="control-group">
-            		<table><tr><td><input type="checkbox" name="privpol-check-override" value="override" /></td><td style="color: #F00;">By checking this box, I confirm that I understand that personally identifying information, such as IP addresses of requesters, is not to be posted to the comments section of an ACC request, and I assert that the IP address (or IP address-like text) in my comment is not considered personally identifying information.  <strong>I furthermore understand that posting personally identifying information to the comments of an ACC request may result in my permanent suspension from the ACC project, at the discretion of the ACC administrators, and that Wikimedia Foundation Legal will be advised of all Privacy Policy violations, which may lead to the loss of my Identified status with the Foundation.</strong></td></tr></table>
+            		<table><tr><td><input type="checkbox" name="privpol-check-override" value="override" /></td><td style="color: #F00; padding-left: 5px;">By checking this box, I confirm that I understand that personally identifying information, such as IP addresses of requesters, is not to be posted to the comments section of an ACC request, and I assert that the IP address (or IP address-like text) in my comment is not considered personally identifying information.  <strong>I furthermore understand that posting personally identifying information to the comments of an ACC request may result in my permanent suspension from the ACC project, at the discretion of the ACC administrators, and that Wikimedia Foundation Legal will be advised of all Privacy Policy violations, which may lead to the loss of my Identified status with the Foundation.</strong></td></tr></table>
         </div>
         <div class="control-group">
         		<div class="controls">
