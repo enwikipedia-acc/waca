@@ -1734,6 +1734,7 @@ elseif ($action == "comment-add")
     		$smarty->assign("comment", $_POST['comment']);
     		$smarty->display("privpol-warning.tpl");
     		BootstrapSkin::displayInternalFooter();
+    		die();
 		}
     
     $comment = new Comment();
