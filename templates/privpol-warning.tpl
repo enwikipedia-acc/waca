@@ -8,7 +8,7 @@
     <p>Since not all IP addresses are considered non-public for the purposes of the Privacy Policy, you may override this warning if you choose and post your comment anyway.  Before doing so, though, you must read the acknowledgement in red below and check the box to confirm your understanding.  You should also at this point (re-)read DeltaQuad's <a href="https://accounts-dev.wmflabs.org/other/identinfoemail.html">email regarding what is and is not acceptable under the Privacy Policy</a>.</p>
     <p>If you are not sure whether or not the IP address in your comment is okay to be posted, please either play it safe and simply not post the IP address, or ask an ACC administrator.  <strong>Good faith will <em>not</em> be assumed with privacy policy violations.</strong></p>
     <p>If you are absolutely certain that you want to go ahead and post this comment, either because it does not actually contain an IP address or because any IP address(es) contained within are not considered non-public, check the box below and click the button to proceed.</p>
-    <form action="{$baseurl}/acc.php?action=comment-add" method="post" class="form-horizontal span8">
+    <form action="{$baseurl}/acc.php?action={$actionLocation}" method="post" class="form-horizontal span8">
         <div class="control-group">
             <label for="displayid" class="control-label">Request ID:</label>
             <div class="controls">
