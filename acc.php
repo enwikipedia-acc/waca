@@ -1732,7 +1732,7 @@ elseif ($action == "comment-add")
     if(preg_match('/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/', $_POST['comment']) && $_POST['privpol-check-override'] != "override") {
 			  $request = Request::getById($_GET['id'], gGetDb());
     		$smarty->assign("request", $request);
-    		$smarty->assign("comment", $_POST['comment'])
+    		$smarty->assign("comment", $_POST['comment']);
     		$smarty->display("privpol-warning.tpl");
     		BootstrapSkin::displayInternalFooter();
 		}
