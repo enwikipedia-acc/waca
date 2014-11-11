@@ -19,8 +19,8 @@
         <div class="control-group">
             <label for="comment-display" class="control-label">Comment text:</label>
             <div class="controls">
-                <textarea name="comment-display" class="input-xxlarge" disabled="disabled" rows="6">{$comment}</textarea>
-                <input type="hidden" name="comment" value="{$comment}" />
+                <textarea name="comment-display" class="input-xxlarge" disabled="disabled" rows="6">{$comment|escape}</textarea>
+                <input type="hidden" name="comment" value="{$comment|escape}" />
             </div>
         </div>
         <div class="control-group">
