@@ -35,10 +35,11 @@ $tsSQL = new database("toolserver");
 $asSQL = new database("antispoof");
 
 // Initialize the class objects.
-$request  = new accRequest();
-$strings  = new strings();
+$request = new accRequest();
+$strings = new strings();
 
 $antispoofProvider = new $antispoofProviderClass();
+$xffTrustProvider  = new $xffTrustProviderClass($squidIpList);
 
 // Display the header of the interface.
 BootstrapSkin::displayPublicHeader();
