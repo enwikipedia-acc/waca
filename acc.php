@@ -246,12 +246,11 @@ elseif ($action == "sreg")
     
 	die();
 }
-
 elseif ($action == "register") 
 {
     global $useOauthSignup, $smarty;
     $smarty->assign("useOauthSignup", $useOauthSignup);
-    $smarty->display("register.tpl");
+    $smarty->display("registration/register.tpl");
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
