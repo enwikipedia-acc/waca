@@ -139,27 +139,27 @@ if ($action == '') {
 
 elseif ($action == "sreg")
 {
-    global $useOauthSignup;
+    global $useOauthSignup, $smarty;
         
     // TODO: check blocked
     // TODO: check age.
     
 	// check if user checked the "I have read and understand the interface guidelines" checkbox
 	if(!isset($_REQUEST['guidelines'])) {
-        BootstrapSkin::displayAlertBox("You must read <a href=\"http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide\">the interface guidelines</a> before your request may be submitted.", "alert-info", "Sorry!", false);
+        $smarty->display("registration/alert-interfaceguidelines.tpl");
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
 	
 	if (!filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL)) {
-		BootstrapSkin::displayAlertBox("Invalid email address", "alert-error", "Error!", false);
+        $smarty->display("registration/alert-invalidemail.tpl");
         BootstrapSkin::displayInternalFooter();
         die();
 	}
     
 	if ($_REQUEST['pass'] !== $_REQUEST['pass2']) 
     { 
-        BootstrapSkin::displayAlertBox("Your passwords did not match, please try again.", "alert-error", "Error!", false);
+        $smarty->display("registration/alert-passwordmismatch.tpl");
         BootstrapSkin::displayInternalFooter();
 		die();
 	}
@@ -168,14 +168,15 @@ elseif ($action == "sreg")
     {
         if(!((string)(int)$_REQUEST['conf_revid'] === (string)$_REQUEST['conf_revid']) || $_REQUEST['conf_revid'] == "")
         {
-            BootstrapSkin::displayAlertBox("Please enter the revision id of your confirmation edit in the \"Confirmation diff\" field. The revid is the number after the &diff= part of the URL of a diff.", "alert-error", "Error!", false);
+            $smarty->display("registration/alert-confrevid.tpl");
             BootstrapSkin::displayInternalFooter();
             die();		
         }
     }
     
-	if (User::getByUsername($_REQUEST['name'], gGetDb()) != false) {
-        BootstrapSkin::displayAlertBox("Sorry, but that username is in use. Please choose another.", "alert-error", "Error!", false);
+	if (User::getByUsername($_REQUEST['name'], gGetDb()) != false) 
+    {
+        $smarty->display("registration/alert-usernametaken.tpl");
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
@@ -184,7 +185,7 @@ elseif ($action == "sreg")
     $query->execute(array(":email" => $_REQUEST['email']));
     if($query->fetchObject("User") != false)
     {
-        BootstrapSkin::displayAlertBox("I'm sorry, but that e-mail address is in use.", "alert-error", "Error!", false);
+        $smarty->display("registration/alert-emailtaken.tpl");
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
@@ -233,7 +234,12 @@ elseif ($action == "sreg")
             }
             catch(Exception $ex)
             {
-                throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
+                throw new TransactionException(
+                    $ex->getMessage(), 
+                    "Connection to Wikipedia failed.", 
+                    "alert-error", 
+                    0, 
+                    $ex);
             }
         }
         else
@@ -256,7 +262,7 @@ elseif ($action == "register")
 }
 elseif ($action == "registercomplete")
 {
-    BootstrapSkin::displayAlertBox("Your request will be reviewed soon by a tool administrator, and you'll get an email informing you of the decision.", "alert-success", "Account requested!", false);
+    $smarty->display("registration/alert-registrationcomplete.tpl");
     BootstrapSkin::displayInternalFooter();
 }
 elseif ($action == "forgotpw")
@@ -285,7 +291,13 @@ elseif ($action == "forgotpw")
                     $user->setPassword($_POST['pw2']);
                     $user->save();
                     
-                    BootstrapSkin::displayAlertBox("You may now <a href=\"$baseurl/acc.php\">Login</a>", "alert-error", "Password reset!", true, false);
+                    BootstrapSkin::displayAlertBox(
+                        "You may now <a href=\"$baseurl/acc.php\">Login</a>", 
+                        "alert-error", 
+                        "Password reset!", 
+                        true, 
+                        false);
+                    
                     BootstrapSkin::displayInternalFooter();
                     die();
 				} 
@@ -315,7 +327,12 @@ elseif ($action == "forgotpw")
 		} 
         else 
         {
-            BootstrapSkin::displayAlertBox("The hash supplied in the link did not match the hash in the database!", "alert-error", "Invalid request", true, false);
+            BootstrapSkin::displayAlertBox(
+                "The hash supplied in the link did not match the hash in the database!", 
+                "alert-error", 
+                "Invalid request", 
+                true, 
+                false);
 		}
         
 		BootstrapSkin::displayInternalFooter();
@@ -328,24 +345,51 @@ elseif ($action == "forgotpw")
 
 		if ($user == false) 
         {
-            BootstrapSkin::displayAlertBox("Could not find user with that username and email address!", "alert-error", "Error", true, false);
+            BootstrapSkin::displayAlertBox(
+                "Could not find user with that username and email address!", 
+                "alert-error", 
+                "Error", 
+                true, 
+                false);
+            
             BootstrapSkin::displayInternalFooter();
             die();
 		}
 		elseif (strtolower($_POST['email']) != strtolower($user->getEmail())) 
         {
-            BootstrapSkin::displayAlertBox("Could not find user with that username and email address!", "alert-error", "Error", true, false);
+            BootstrapSkin::displayAlertBox("Could not find user with that username and email address!", 
+                "alert-error", 
+                "Error", 
+                true, 
+                false);
+            
             BootstrapSkin::displayInternalFooter();
             die();
 		}
 		else
         {
 		    $hash = $user->getForgottenPasswordHash();
-		    // re bug 29: please don't escape the url parameters here: it's a plain text email so no need to escape, or you break the link
-		    $mailtxt = "Hello! You, or a user from " . $_SERVER['REMOTE_ADDR'] . ", has requested a password reset for your account.\n\nPlease go to $baseurl/acc.php?action=forgotpw&si=$hash&id=" . $user->getId() . " to complete this request.\n\nIf you did not request this reset, please disregard this message.\n\n";
+                       
+            $smarty->assign("user", $user);
+            $smarty->assign("hash", $hash);
+            $smarty->assign("remoteAddress", $_SERVER['REMOTE_ADDR']);
+            
+		    $mailtxt = $smarty->fetch("forgot-password/reset-mail.tpl");
 		    $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-		    mail($user->getEmail(), "English Wikipedia Account Request System - Forgotten password", $mailtxt, $headers);
-            BootstrapSkin::displayAlertBox("<strong>Your password reset request has been completed.</strong> Please check your e-mail.", "alert-success", "", false, false);
+            
+		    mail(
+                $user->getEmail(), 
+                "English Wikipedia Account Request System - Forgotten password", 
+                $mailtxt, 
+                $headers);
+            
+            BootstrapSkin::displayAlertBox(
+                "<strong>Your password reset request has been completed.</strong> Please check your e-mail.", 
+                "alert-success", 
+                "", 
+                false, 
+                false);
+            
             BootstrapSkin::displayInternalFooter();
             die();
 		}
@@ -385,7 +429,17 @@ elseif ($action == "login")
     }
     
     $database = gGetDb();
-    $suspendstatement = $database->prepare("SELECT log_cmt FROM acc_log WHERE log_action = :action AND log_pend = :userid ORDER BY log_time DESC LIMIT 1;");
+    
+    $sqlText = <<<SQL
+        SELECT log_cmt 
+        FROM acc_log 
+        WHERE log_action = :action 
+        AND log_pend = :userid 
+        ORDER BY log_time DESC 
+        LIMIT 1;
+SQL;
+    
+    $suspendstatement = $database->prepare($sqlText);
     
     if($user->isDeclined()) 
     {
@@ -489,7 +543,7 @@ elseif ($action == "messagemgmt")
     {
 	    if(!(User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()))
         {
-            BootstrapSkin::displayAlertBox("I'm sorry, but, this page is restricted to administrators only.", "alert-error", "Access Denied", true, false);
+            BootstrapSkin::displayAccessDenied();
             BootstrapSkin::displayInternalFooter();
 			die();
 		}
@@ -513,12 +567,19 @@ elseif ($action == "messagemgmt")
                 $message->setDescription($_POST['maildesc']);
                 $message->save();
             
-                $logStatement = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:message, :user, 'Edited', CURRENT_TIMESTAMP());");
+                $sqlText = <<<SQL
+                    INSERT INTO acc_log (log_pend, log_user, log_action, log_time) 
+                    VALUES (:message, :user, 'Edited', CURRENT_TIMESTAMP());
+SQL;
+                    
+                $logStatement = gGetDb()->prepare($sqlText);
                 $logStatement->bindValue(":message", $message->getId());
                 $logStatement->bindValue(":user", User::getCurrent()->getUsername());
                 $logStatement->execute();
             
-                BootstrapSkin::displayAlertBox("Message {$message->getDescription()} ({$message->getId()}) updated.", "alert-success", "Saved!", true, false);
+                
+                $smarty->assign("message", $message);
+                $smarty->display("message-management/alert-editsuccess.tpl");
                 
                 Notification::interfaceMessageEdited($message);
                 
@@ -536,13 +597,16 @@ elseif ($action == "messagemgmt")
 		die();
 	}
     
-    $fetchStatement = gGetDb()->prepare("SELECT * FROM interfacemessage WHERE type = :type AND description NOT LIKE '%[deprecated]';");
+    $sqlText = <<<SQL
+        SELECT * 
+        FROM interfacemessage 
+        WHERE type = :type 
+            AND description NOT LIKE '%[deprecated]';
+SQL;
+    
+    $fetchStatement = gGetDb()->prepare($sqlText);
     $data = array();
-    
-    // hide from display, these are all deprecated now. --stw 17-MAR-2014
-    // $fetchStatement->execute(array(":type" => "Message"));
-    // $data['Email messages'] = $fetchStatement->fetchAll(PDO::FETCH_CLASS, 'InterfaceMessage');
-    
+        
     //$fetchStatement->execute(array(":type" => "Interface"));
     //$data['Public Interface messages'] = $fetchStatement->fetchAll(PDO::FETCH_CLASS, 'InterfaceMessage');
     
@@ -580,7 +644,8 @@ elseif ($action == "templatemgmt")
     {
 		if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) 
         {
-            BootstrapSkin::displayAlertBox("I'm sorry, but you do not have permission to access this page.", "alert-error", "Access Denied", true, false);
+            BootstrapSkin::displayAccessDenied();
+            
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
@@ -599,7 +664,11 @@ elseif ($action == "templatemgmt")
                 $template->setBotCode($_POST['botcode']);
                 $template->save();
             
-                $query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:templateid, :username, 'CreatedTemplate', CURRENT_TIMESTAMP());";
+                $query = <<<SQL
+                    INSERT INTO acc_log (log_pend, log_user, log_action, log_time) 
+                    VALUES (:templateid, :username, 'CreatedTemplate', CURRENT_TIMESTAMP());
+SQL;
+                
                 $statement = $database->prepare($query);
                 $statement->execute(
                     array(
@@ -664,7 +733,7 @@ elseif ($action == "templatemgmt")
             }
             else
             {
-                SessionAlert::success("Something went wrong, we can't find the template you asked for! Please try again.");
+                SessionAlert::error("Something went wrong, we can't find the template you asked for!");
                 header("Location: {$baseurl}/acc.php?action=templatemgmt");
                 die();
             }
@@ -677,7 +746,7 @@ elseif ($action == "templatemgmt")
         
 		if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) 
         {
-            BootstrapSkin::displayAlertBox("I'm sorry, but you do not have permission to access this page.", "alert-error", "Access Denied", true, false);
+            BootstrapSkin::displayAccessDenied();
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
@@ -687,7 +756,7 @@ elseif ($action == "templatemgmt")
         $template = WelcomeTemplate::getById($_GET['del'], $database);
         if($template == false)
         {
-            SessionAlert::success("Something went wrong, we can't find the template you asked for! Please try again.");
+            SessionAlert::error("Something went wrong, we can't find the template you asked for!");
             header("Location: {$baseurl}/acc.php?action=templatemgmt");
             die();
         }
@@ -701,7 +770,8 @@ elseif ($action == "templatemgmt")
                 ->execute(array(":id" => $tid));
             
             $database
-                ->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:tid, :user, 'DeletedTemplate', CURRENT_TIMESTAMP());")
+                ->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) 
+                            VALUES (:tid, :user, 'DeletedTemplate', CURRENT_TIMESTAMP());")
                 ->execute(array(":tid" => $tid, ":user" => User::getCurrent()->getUsername()));
             
             $template->delete();
@@ -718,7 +788,7 @@ elseif ($action == "templatemgmt")
     {
 		if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) 
         {
-            BootstrapSkin::displayAlertBox("I'm sorry, but you do not have permission to access this page.", "alert-error", "Access Denied", true, false);
+            BootstrapSkin::displayAccessDenied();
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
@@ -741,7 +811,8 @@ elseif ($action == "templatemgmt")
                 $template->setBotCode($_POST['botcode']);
                 $template->save();
 			
-                $statement = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:id, :user, 'EditedTemplate', CURRENT_TIMESTAMP());");
+                $statement = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) 
+                                                    VALUES (:id, :user, 'EditedTemplate', CURRENT_TIMESTAMP());");
                 $statement->execute(array(":id" => $template->getId(), ":user" => User::getCurrent()->getUsername()));
             
                 SessionAlert::success("Template updated.");
@@ -776,7 +847,7 @@ elseif ($action == "sban")
 	// Checks whether the current user is an admin.
 	if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) 
     {
-        BootstrapSkin::displayAlertBox("Only administrators or checkusers may unban users", "alert-error", "", false, false);
+        BootstrapSkin::displayAccessDenied();
         BootstrapSkin::displayInternalFooter();
         die();
 	}
@@ -812,7 +883,7 @@ elseif ($action == "sban")
 		} 
         elseif (time() > $duration) 
         {
-            BootstrapSkin::displayAlertBox("Invalid ban time - it would have already expired!", "alert-error", "", false, false);
+            BootstrapSkin::displayAlertBox("Ban time has already expired!", "alert-error", "", false, false);
             BootstrapSkin::displayInternalFooter();
 			die();
 		}
@@ -826,14 +897,19 @@ elseif ($action == "sban")
     {
 		case 'IP':
 			if( filter_var( $_POST[ 'target' ], FILTER_VALIDATE_IP ) === false ) {
-                BootstrapSkin::displayAlertBox("Invalid target - I'm expecting an IP address.", "alert-error", "", false, false);
+                BootstrapSkin::displayAlertBox("Invalid target - IP address expected.", "alert-error", "", false, false);
                 BootstrapSkin::displayInternalFooter();
 				die();
 			}
             
 			global $squidIpList;
 			if( in_array( $_POST[ 'target' ], $squidIpList ) ) {
-                BootstrapSkin::displayAlertBox("This IP address is on the protected list of proxies, and cannot be banned.", "alert-error", "", false, false);
+                BootstrapSkin::displayAlertBox(
+                    "This IP address is on the protected list of proxies, and cannot be banned.", 
+                    "alert-error", 
+                    "", 
+                    false, 
+                    false);
                 BootstrapSkin::displayInternalFooter();
 				die();
 			}
@@ -843,13 +919,19 @@ elseif ($action == "sban")
 		case 'EMail':
             // TODO: cut this down to a bare-bones implementation so we don't accidentally reject a valid address.
 			if( !preg_match( ';^(?:[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&\'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?\.)+[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[A-Za-z0-9-]*[A-Za-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$;', $_POST['target'] ) ) {
-                BootstrapSkin::displayAlertBox("Invalid target - I'm expecting an email address.", "alert-error", "", false, false);
+                BootstrapSkin::displayAlertBox(
+                    "Invalid target - email address expected.", 
+                    "alert-error", 
+                    "", 
+                    false, 
+                    false);
+                
                 BootstrapSkin::displayInternalFooter();
 				die();
 			}
 			break;
 		default:
-            BootstrapSkin::displayAlertBox("I don't know what type of target you want me to ban! You'll need to choose from email address, IP, or requested name.", "alert-error", "", false, false);
+            BootstrapSkin::displayAlertBox("I don't know what type of target you want to ban! You'll need to choose from email address, IP, or requested name.", "alert-error", "", false, false);
             BootstrapSkin::displayInternalFooter();
 			die();
 	}
@@ -879,7 +961,11 @@ elseif ($action == "sban")
     
         $ban->save();
         
-        $logQuery = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:banid, :siuser, 'Banned', CURRENT_TIMESTAMP(), :reason);";
+        $logQuery = <<<SQL
+            INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) 
+            VALUES (:banid, :siuser, 'Banned', CURRENT_TIMESTAMP(), :reason);
+SQL;
+        
         $logStatement = $database->prepare($logQuery);
         $banid = $ban->getId();
         $logStatement->bindValue(":banid", $banid);
@@ -906,14 +992,19 @@ elseif ($action == "unban")
     
     if(!isset($_GET['id']) || $_GET['id'] == "")
     {
-        BootstrapSkin::displayAlertBox("The ID parameter appears to be missing! This is probably a bug.", "alert-error", "Ahoy There! Something's not right...", true, false);
+        BootstrapSkin::displayAlertBox(
+            "The ID parameter appears to be missing! This is probably a bug.", 
+            "alert-error", 
+            "Ahoy There! Something's not right...", 
+            true, 
+            false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
     
     if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser())
     {
-        BootstrapSkin::displayAlertBox("Only administrators or checkusers may unban users", "alert-error", "", false, false);
+        BootstrapSkin::displayAccessDenied();
         BootstrapSkin::displayInternalFooter();
         die();
     }
@@ -922,7 +1013,13 @@ elseif ($action == "unban")
         
     if($ban == false)
     {
-        BootstrapSkin::displayAlertBox("The specified ban ID is not currently active or doesn't exist!", "alert-error", "", false, false);
+        BootstrapSkin::displayAlertBox(
+            "The specified ban ID is not currently active or doesn't exist!", 
+            "alert-error", 
+            "", 
+            false, 
+            false);
+        
         BootstrapSkin::displayInternalFooter();
         die();
     }
@@ -947,7 +1044,11 @@ elseif ($action == "unban")
                 $banId = $ban->getId();
                 $currentUser = User::getCurrent()->getUsername();
                 
-                $query = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:id, :user, 'Unbanned', CURRENT_TIMESTAMP(), :reason);";
+                $query = <<<SQL
+                    INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) 
+                    VALUES (:id, :user, 'Unbanned', CURRENT_TIMESTAMP(), :reason);
+SQL;
+                
                 $statement = $database->prepare($query);
                 $statement->bindValue(":id", $banId);
                 $statement->bindValue(":user", $currentUser);
@@ -1053,19 +1154,38 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "")
 		
         if($request == false)
         {
-            BootstrapSkin::displayAlertBox("Could not find the specified request!", "alert-error", "Error!", true, false);
+            BootstrapSkin::displayAlertBox(
+                "Could not find the specified request!", 
+                "alert-error", 
+                "Error!", 
+                true, 
+                false);
+            
             BootstrapSkin::displayInternalFooter();
             die();
         }
 		
         if( $request->getChecksum() != $_GET['sum'] )
         {
-            SessionAlert::error("This is similar to an edit conflict on Wikipedia; it means that you have tried to perform an action on a request that someone else has performed an action on since you loaded the page", "Invalid checksum");
+            SessionAlert::error(
+                "This is similar to an edit conflict on Wikipedia; it means that you have tried to perform an action "
+                . "on a request that someone else has performed an action on since you loaded the page",
+                "Invalid checksum");
+            
             header("Location: acc.php?action=zoom&id={$request->getId()}");
             die();
         }
         
-		$statement = gGetDb()->prepare("SELECT log_time FROM acc_log WHERE log_pend = :request AND log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 1;");
+        $sqlText = <<<SQL
+            SELECT log_time 
+            FROM acc_log 
+            WHERE log_pend = :request 
+                AND log_action LIKE 'Closed%' 
+            ORDER BY log_time DESC 
+            LIMIT 1;
+SQL;
+        
+		$statement = gGetDb()->prepare($sqlText);
         $statement->execute(array(":request" => $request->getId()));
         $logTime = $statement->fetchColumn();
         $statement->closeCursor();
@@ -1074,7 +1194,10 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "")
 		$date->modify("-7 days");
 		$oneweek = $date->format("Y-m-d H:i:s");
         
-		if ($request->getStatus() == "Closed" && $logTime < $oneweek && ! User::getCurrent()->isAdmin() && ! User::getCurrent()->isCheckuser()) 
+		if ($request->getStatus() == "Closed" 
+            && $logTime < $oneweek 
+            && ! User::getCurrent()->isAdmin() 
+            && ! User::getCurrent()->isCheckuser()) 
         {
 			SessionAlert::error("Only administrators and checkusers can reopen a request that has been closed for over a week.");
             header("Location: acc.php?action=zoom&id={$request->getId()}");
@@ -1083,7 +1206,9 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "")
         
 		if ($request->getStatus() == $_GET['target']) 
         {
-            SessionAlert::error("Cannot set status, target already deferred to " . htmlentities($_GET['target']), "Error");
+            SessionAlert::error(
+                "Cannot set status, target already deferred to " . htmlentities($_GET['target']), 
+                "Error");
             header("Location: acc.php?action=zoom&id={$request->getId()}");
 			die();
 		}
@@ -1101,7 +1226,8 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "")
             $deto = $availableRequestStates[$_GET['target']]['deferto'];
     		$detolog = $availableRequestStates[$_GET['target']]['defertolog'];
             
-            $statement2 = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :user, :deferlog, CURRENT_TIMESTAMP());");
+            $statement2 = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) 
+                                                VALUES (:request, :user, :deferlog, CURRENT_TIMESTAMP());");
             $statement2->bindValue(":deferlog", "Deferred to $detolog");
             $statement2->bindValue(":request", $request->getId());
             $statement2->bindValue(":user", User::getCurrent()->getUsername());
@@ -1348,7 +1474,8 @@ elseif ($action == "done" && $_GET['id'] != "") {
     
     $closeaction = "Closed $gem";
     $messagebody = isset($_POST['msgbody']) ? $_POST['msgbody'] : '';
-    $statement = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:request, :user, :closeaction, CURRENT_TIMESTAMP(), :msgbody);");
+    $statement = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) 
+                                            VALUES (:request, :user, :closeaction, CURRENT_TIMESTAMP(), :msgbody);");
     $statement->bindValue(':request', $request->getId());
     $statement->bindValue(':user', User::getCurrent()->getUsername());
     $statement->bindValue(':closeaction', $closeaction);
@@ -1635,7 +1762,8 @@ elseif ($action == "breakreserve")
                     $request->setReserved(0);
                     $request->save();
 
-				    $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :username, 'BreakReserve', CURRENT_TIMESTAMP());");
+				    $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) 
+                                                VALUES (:request, :username, 'BreakReserve', CURRENT_TIMESTAMP());");
                     $query->bindValue(":request", $request->getId());
                     $query->bindValue(":username", User::getCurrent()->getUsername());
                     
@@ -1671,7 +1799,8 @@ elseif ($action == "breakreserve")
             $request->setReserved(0);
             $request->save();
 
-            $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :username, 'Unreserved', CURRENT_TIMESTAMP());");
+            $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) 
+                                            VALUES (:request, :username, 'Unreserved', CURRENT_TIMESTAMP());");
             $query->bindValue(":request", $request->getId());
             $query->bindValue(":username", User::getCurrent()->getUsername());
             
@@ -1881,7 +2010,7 @@ elseif ($action == "ec")
 	// Unauthorized if user is not an admin or the user who made the comment being edited.
 	if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser() && $comment->getUser() != User::getCurrent()->getId())
     { 
-        BootstrapSkin::displayAlertBox("Access denied.", "alert-error", "", false, false);
+        BootstrapSkin::displayAccessDenied();
         BootstrapSkin::displayInternalFooter();
 		die();
 	}
@@ -1993,7 +2122,7 @@ elseif ($action == "emailmgmt")
 	interface messages (such as the Sitenotice) and the new Emails in the same place. */
 	if(isset($_GET['create'])) {
 		if(!User::getCurrent()->isAdmin()) {
-			BootstrapSkin::displayAlertBox("I'm sorry, but you must be an administrator to access this page.");
+			BootstrapSkin::displayAccessDenied();
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
@@ -2055,7 +2184,7 @@ elseif ($action == "emailmgmt")
 			$emailTemplate = EmailTemplate::getById($_GET['edit'], $database);
 			// Allow the user to see the edit form (with read only fields) but not POST anything.
 			if(!User::getCurrent()->isAdmin()) {
-				BootstrapSkin::displayAlertBox("I'm sorry, but you must be an administrator to access this page.");
+				BootstrapSkin::displayAccessDenied();
 				BootstrapSkin::displayInternalFooter();
 				die();
 			}

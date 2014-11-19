@@ -212,4 +212,14 @@ class BootstrapSkin
     {
         return array_pop(self::$tagstack);
     }
+
+    public static function displayAccessDenied()
+    {
+        self::displayAlertBox(
+            "I'm sorry, but you do not have permission to access this page.", 
+            "alert-error", 
+            "Access Denied", 
+            true, 
+            false);
+    }
 }
