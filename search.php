@@ -24,7 +24,6 @@ session_start();
 require_once 'functions.php';
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
-require_once 'includes/database.php';
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
@@ -33,16 +32,6 @@ if(Offline::isOffline())
     echo Offline::getOfflineMessage(false);
     die();
 }
-// Initialize the database classes.
-$tsSQL = new database("toolserver");
-$asSQL = new database("antispoof");
-
-// Creates database links for later use.
-$tsSQLlink = $tsSQL->getLink();
-$asSQLlink = $asSQL->getLink();
-
-// Initialize the class objects.
-$bskin     = new BootstrapSkin();
 
 if( isset( $_SESSION['user'] ) ) {
 	$sessionuser = $_SESSION['user'];
