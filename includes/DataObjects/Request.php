@@ -20,9 +20,15 @@ class Request extends DataObject
     private $useragent;
     private $forwardedip;
     
-    private $hasComments = "?";
-    private $ipRequests = false;
-    private $emailRequests = false;
+    private $hasComments = false;
+    private $hasCommentsResolved = false;
+    
+    private $ipRequests;
+    private $ipRequestsResolved = false;
+    
+    private $emailRequests;
+    private $emailRequestsResolved = false;
+    
     private $blacklistCache = null;
         
     /**
@@ -71,7 +77,7 @@ SQL
 			if($statement->execute())
 			{
 				$this->isNew = false;
-				$this->id = $this->dbObject->lastInsertId();
+				$this->id = (int)$this->dbObject->lastInsertId();
 			}
 			else
 			{
@@ -250,7 +256,7 @@ SQL
 
     public function hasComments()
     {
-        if($this->hasComments !== "?")
+        if($this->hasCommentsResolved)
         {
             return $this->hasComments;   
         }
@@ -258,6 +264,7 @@ SQL
         if($this->comment != "")
         {
             $this->hasComments = true;
+            $this->hasCommentsResolved = true;
             return true;
         }
         
@@ -267,12 +274,14 @@ SQL
         $commentsQuery->execute();
         
         $this->hasComments = ($commentsQuery->fetchColumn() != 0);
+        $this->hasCommentsResolved = true;
+        
         return $this->hasComments;
     }
     
     public function getRelatedEmailRequests()
     {
-        if($this->emailRequests == false)
+        if($this->emailRequestsResolved == false)
         {
             global $cDataClearEmail;
             
@@ -284,6 +293,7 @@ SQL
             $query->execute();
             
             $this->emailRequests = $query->fetchAll(PDO::FETCH_CLASS, "Request");
+            $this->emailRequestsResolved = true;
             
             foreach($this->emailRequests as $r)
             {
@@ -296,7 +306,7 @@ SQL
         
     public function getRelatedIpRequests()
     {
-        if($this->ipRequests == false)
+        if($this->ipRequestsResolved == false)
         {
             global $cDataClearIp;
             
@@ -313,6 +323,7 @@ SQL
             $query->execute();
             
             $this->ipRequests = $query->fetchAll(PDO::FETCH_CLASS, "Request");
+            $this->ipRequestsResolved = true;
             
             foreach($this->emailRequests as $r)
             {
