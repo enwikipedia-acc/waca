@@ -46,3 +46,21 @@ Useful (but optional) extensions:
 * IIS 8.5
 * Windows 8.1
 
+## XAMPP setup
+
+**Please note, XAMPP is not required. Any webserver properly configured will do. This is just a quick-start method if you want it.**
+
+This was written using Windows 10.
+
+1. Install Git (or Git Extensions! It's awesome. https://code.google.com/p/gitextensions/ )
+2. Install XAMPP (https://www.apachefriends.org/index.html)
+  3. This was tested using XAMPP 5.6.3
+  4. You don't need to install anything other than Apache, PHP, MySQL, and PHPMyAdmin (technically, PHPMyAdmin is optional)
+  5. This also assumes you're installing it under C:\xampp\.
+5. Start Apache and MySQL from the XAMPP control panel
+6. Clone the ACC repo to C:\xampp\htdocs\waca\
+6. Browse to http://localhost/phpmyadmin/ and create a new database called "waca".
+7. Import the following files into your new database in this order:
+  8. C:\xampp\htdocs\waca\sql\db-structure.sql
+  9. C:\xampp\htdocs\waca\sql\email-template-data.sql
+  10. Anything in the C:\xampp\htdocs\waca\sql\patches\ directory in numerical order.
