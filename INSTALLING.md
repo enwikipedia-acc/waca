@@ -46,7 +46,11 @@ Useful (but optional) extensions:
 * IIS 8.5
 * Windows 8.1
 
-## XAMPP setup
+# Basic information
+
+You'll need to import the database, and create a config.local.inc.php file.
+
+# XAMPP setup
 
 **Please note, XAMPP is not required. Any webserver properly configured will do. This is just a quick-start method if you want it.**
 
@@ -60,7 +64,10 @@ This was written using Windows 10.
 5. Start Apache and MySQL from the XAMPP control panel
 6. Clone the ACC repo to C:\xampp\htdocs\waca\
 6. Browse to http://localhost/phpmyadmin/ and create a new database called "waca".
-7. Import the following files into your new database in this order:
-  8. C:\xampp\htdocs\waca\sql\db-structure.sql
-  9. C:\xampp\htdocs\waca\sql\email-template-data.sql
-  10. Anything in the C:\xampp\htdocs\waca\sql\patches\ directory in numerical order.
+7. EITHER: 
+  8. Import the following files into your new database in this order:
+    8. C:\xampp\htdocs\waca\sql\db-structure.sql
+    9. Anything in the C:\xampp\htdocs\waca\sql\seed\ directory
+    10. Anything in the C:\xampp\htdocs\waca\sql\patches\ directory in numerical order.
+  9. OR: Grab schema.sql from https://jenkins.stwalkerster.co.uk/job/waca-database-build/ IF THE BUILD IS SUCCESSFUL AND CURRENT and run that into the database.
+10. Create a new PHP file
