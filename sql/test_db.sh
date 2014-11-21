@@ -45,6 +45,9 @@ echo "Comparing dumps..."
 diff -q schema.sql schema2.sql
 
 echo "Rewriting definer..."
-cat schema.sql | sed "s/!50013 DEFINER=/DISABLED: 50013 DEFINER=/" > schema.sql
+cat schema.sql | sed "s/!50013 DEFINER=/DISABLED: 50013 DEFINER=/" > database.sql
+
+echo "Removing unneeded files..."
+rm schema.sql schema2.sql
 
 echo "Done."
