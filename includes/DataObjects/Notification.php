@@ -92,7 +92,12 @@ class Notification extends DataObject
      */
     protected static function send($message)
     {
-        global $ircBotNotificationType, $whichami;
+        global $ircBotNotificationType, $whichami, $ircBotNotificationsEnabled;
+        
+        if(!$ircBotNotificationsEnabled)
+        {
+            return;   
+        }
         
         $blacklist = array("DCC", "CCTP", "PRIVMSG");
 		$message = str_replace($blacklist, "(IRC Blacklist)", $message); //Lets stop DCC etc

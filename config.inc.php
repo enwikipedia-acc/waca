@@ -91,6 +91,7 @@ $ircBotNickname = "ACCBot";					// The nickname of the ACCBot.
 $ircBotCommandTrigger = '!';				// The ACCBot's command trigger.
 
 $ircBotNotificationType = 1;				// Helpmebot's notification type ID.
+$ircBotNotificationsEnabled = 1;            // Enable Helpmebot's notifications.
 // Name of this instance of the tool.
 // This name would be used by the bot as reference point.	
 $whichami = 'Live';
