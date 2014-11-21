@@ -1,7 +1,0 @@
-﻿ALTER TABLE acc_trustedips
-CHANGE COLUMN trustedips_ipaddr ip VARCHAR(15) NOT NULL ,
-ADD COLUMN id INT NOT NULL AUTO_INCREMENT FIRST,
-DROP PRIMARY KEY,
-ADD PRIMARY KEY (id),
-ADD INDEX IDX_xfftrustcache_ip (ip ASC), 
-RENAME TO  xfftrustcache;
