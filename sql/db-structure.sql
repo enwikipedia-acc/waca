@@ -432,7 +432,6 @@ CREATE TABLE `xfftrustcache` (
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`stwalkerster`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `acc_emails` AS select `interfacemessage`.`id` AS `mail_id`,`interfacemessage`.`content` AS `mail_content`,`interfacemessage`.`updatecounter` AS `mail_count`,`interfacemessage`.`description` AS `mail_desc`,`interfacemessage`.`type` AS `mail_type` from `interfacemessage` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -451,7 +450,6 @@ CREATE TABLE `xfftrustcache` (
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`stwalkerster`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `acc_template` AS select `t`.`id` AS `template_id`,`t`.`usercode` AS `template_usercode`,`t`.`botcode` AS `template_botcode` from `welcometemplate` `t` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -470,7 +468,6 @@ CREATE TABLE `xfftrustcache` (
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`stwalkerster`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `acc_trustedips` AS select `xfftrustcache`.`id` AS `trustedips_ipaddr` from `xfftrustcache` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -489,7 +486,6 @@ CREATE TABLE `xfftrustcache` (
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`stwalkerster`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `acc_user` AS select `user`.`id` AS `user_id`,`user`.`username` AS `user_name`,`user`.`email` AS `user_email`,`user`.`password` AS `user_password`,`user`.`status` AS `user_level`,`user`.`onwikiname` AS `user_onwikiname`,`user`.`welcome_sig` AS `user_welcome_sig`,'' AS `user_welcome_template`,`user`.`lastactive` AS `user_lastactive`,'0.0.0.0' AS `user_lastip`,`user`.`forcelogout` AS `user_forcelogout`,'1' AS `user_secure`,`user`.`checkuser` AS `user_checkuser`,`user`.`identified` AS `user_identified`,`user`.`welcome_template` AS `user_welcome_templateid`,`user`.`abortpref` AS `user_abortpref`,`user`.`confirmationdiff` AS `user_confirmationdiff`,`user`.`emailsig` AS `user_emailsig`,`user`.`oauthrequesttoken` AS `oauthrequesttoken`,`user`.`oauthrequestsecret` AS `oauthrequestsecret`,`user`.`oauthaccesstoken` AS `oauthaccesstoken`,`user`.`oauthaccesssecret` AS `oauthaccesssecret`,`user`.`oauthidentitycache` AS `oauthidentitycache` from `user` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -508,7 +504,6 @@ CREATE TABLE `xfftrustcache` (
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`stwalkerster`@`%` SQL SECURITY INVOKER */
 /*!50001 VIEW `closes` AS select concat('Closed ',cast(`emailtemplate`.`id` as char charset utf8)) AS `closes`,`emailtemplate`.`name` AS `mail_desc` from `emailtemplate` union select 'Closed 0' AS `Closed 0`,'Dropped' AS `Dropped` union select 'Closed custom' AS `Closed custom`,'Closed custom' AS `My_exp_Closed custom` union select 'Closed custom-n' AS `Closed custom-n`,'Closed custom - Not created' AS `Closed custom - Not created` union select 'Closed custom-y' AS `Closed custom-y`,'Closed custom - Created' AS `Closed custom - Created` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -527,7 +522,6 @@ CREATE TABLE `xfftrustcache` (
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`stwalkerster`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `createdusers` AS select distinct `acc_pend`.`pend_name` AS `pend_name` from (`acc_log` join `acc_pend` on((`acc_pend`.`pend_id` = `acc_log`.`log_pend`))) where (`acc_log`.`log_action` = 'Closed 1') order by `acc_pend`.`pend_name` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
@@ -546,7 +540,6 @@ CREATE TABLE `xfftrustcache` (
 /*!50001 SET character_set_results     = utf8 */;
 /*!50001 SET collation_connection      = utf8_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
-/*!50013 DEFINER=`stwalkerster`@`%` SQL SECURITY DEFINER */
 /*!50001 VIEW `request` AS select `acc_pend`.`pend_id` AS `id`,`acc_pend`.`pend_email` AS `email`,`acc_pend`.`pend_ip` AS `ip`,`acc_pend`.`pend_name` AS `name`,`acc_pend`.`pend_cmt` AS `comment`,`acc_pend`.`pend_status` AS `status`,`acc_pend`.`pend_date` AS `date`,`acc_pend`.`pend_checksum` AS `checksum`,`acc_pend`.`pend_emailsent` AS `emailsent`,`acc_pend`.`pend_mailconfirm` AS `emailconfirm`,`acc_pend`.`pend_reserved` AS `reserved`,`acc_pend`.`pend_useragent` AS `useragent`,`acc_pend`.`pend_proxyip` AS `forwardedip` from `acc_pend` */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
