@@ -44,4 +44,7 @@ mysqldump --compact -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_SCHEM
 echo "Comparing dumps..."
 diff -q schema.sql schema2.sql
 
+echo "Rewriting definer..."
+cat schema.sql | sed "s/'jenkins_build'@'%.lon.stwalkerster.net'/CURRENT_USER/" > schema.sql
+
 echo "Done."
