@@ -48,7 +48,7 @@ Useful (but optional) extensions:
 
 # Basic information
 
-You'll need to import the database, and create a config.local.inc.php file.
+You'll need to import the database, and create a config.local.inc.php file (see below). The database schema files can be found in the sql/ subdirectory, or a single-file dump can be found here: https://jenkins.stwalkerster.co.uk/job/waca-database-build/
 
 # XAMPP setup
 
@@ -70,4 +70,44 @@ This was written using Windows 10.
     9. Anything in the C:\xampp\htdocs\waca\sql\seed\ directory
     10. Anything in the C:\xampp\htdocs\waca\sql\patches\ directory in numerical order.
   9. OR: Grab schema.sql from https://jenkins.stwalkerster.co.uk/job/waca-database-build/ IF THE BUILD IS SUCCESSFUL AND CURRENT and run that into the database.
-10. Create a new PHP file
+10. Create the configuration file (see below).
+
+# Configuration File
+Create a new PHP file called config.local.inc.php, and fill it with the following:
+```php
+<?php
+
+// Database configuration settings
+$toolserver_username = "root";
+$toolserver_password = "";
+$toolserver_host = "localhost";
+$toolserver_database = "waca";
+
+// Disconnect from IRC notifications and the wiki database.
+$ircBotNotificationsEnabled = 0;
+$dontUseWikiDb = 1;
+
+// Paths and stuff
+$baseurl = "http://localhost/waca";
+$filepath = "C:/xampp/htdocs/waca/"; 
+$cookiepath = '/waca/';
+
+$whichami = "MyName";
+
+// these turn off features which you probably want off for ease of development.
+$enableEmailConfirm = 0;
+$forceIdentification = false;
+$locationProviderClass = "FakeLocationProvider";
+$antispoofProviderClass = "FakeAntiSpoofProvider";
+$rdnsProviderClass = "FakeRDnsLookupProvider";
+$useOauthSignup = false;
+
+```
+
+This will become your personal config file. Any settings you define here will override those in config.inc.php.
+
+Most settings are flags to turn on and off features for development systems which may or may not have the necessary tools or access keys to do stuff. Feel free to switch any of these on if you know what you're doing.
+
+# First Login!
+
+Browse to http://localhost/waca/acc.php, and log in! There's a user created by default called "Admin", with the password "Admin".
