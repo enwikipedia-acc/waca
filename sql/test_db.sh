@@ -27,7 +27,7 @@ for f in `ls patches/patch*.sql`; do
 done
 
 echo "Dumping schema to file..."
-mysqldump -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_SCHEMA > schema.sql
+mysqldump --compact -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_SCHEMA > schema.sql
 
 echo "Dropping database from server..."
 mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD -e "DROP DATABASE IF EXISTS $MYSQL_SCHEMA;"
@@ -39,7 +39,7 @@ echo "Reloading database from file..."
 mysql -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_SCHEMA < schema.sql
 
 echo "Dumping schema to file..."
-mysqldump -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_SCHEMA > schema2.sql
+mysqldump --compact -h $MYSQL_HOST -u $MYSQL_USER -p$MYSQL_PASSWORD $MYSQL_SCHEMA > schema2.sql
 
 echo "Comparing dumps..."
 diff -q schema.sql schema2.sql
