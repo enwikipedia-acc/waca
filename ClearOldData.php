@@ -10,24 +10,19 @@ require_once 'includes/PdoDatabase.php';
 
 $db = gGetDb( );
 
-if( $db->beginTransaction() ) {
-	$query = $db->prepare( "UPDATE acc_pend SET pend_ip = :ip, pend_proxyip = :proxy, pend_email = :mail, pend_useragent = :agent WHERE pend_date < DATE_SUB(curdate(), INTERVAL :intvl);" );
+$db->transactionally(function() use ($db)
+{
+    global $cDataClearIp, $cDataClearEmail, $dataclear_interval;
+    
+	$query = $db->prepare( "UPDATE request SET ip = :ip, forwardedip = null, email = :mail, useragent = '' WHERE date < DATE_SUB(curdate(), INTERVAL $dataclear_interval);" );
 	$success = $query->execute( array( 
 		":ip" => $cDataClearIp,
-		":proxy" => null,
-		":mail" => $cDataClearEmail,
-		":agent" => "",
-		":intvl" => $dataclear_interval,
+		":mail" => $cDataClearEmail
 	) );
 	
 	if( ! $success ) {
-		$db->rollback();
-		echo "Error in transaction: Could not clear data.";
-		print_r( $db->errorInfo() );
-		exit( 1 );
+		throw new TransactionException("Error in transaction: Could not clear data.");
 	}
-	
-	$db->commit();
-}
+});
 
 echo "Deletion complete.";
