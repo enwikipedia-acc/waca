@@ -43,6 +43,10 @@ class Api
                 $result = new Actions\HelpAction();
                 $data = $result->run();
                 break;
+            case "monitor":
+                $result = new Actions\MonitorAction();
+                $data = $result->run();
+                break;
             default:
                 $result = new Actions\UnknownAction();
                 $data = $result->run();
@@ -54,6 +58,6 @@ class Api
     
     public static function getActionList()
     {
-        return array( "count", "status", "stats", "help" );
+        return array( "count", "status", "stats", "help", "monitor" );
     }
 }
