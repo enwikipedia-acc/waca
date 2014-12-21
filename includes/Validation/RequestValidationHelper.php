@@ -224,6 +224,8 @@ class RequestValidationHelper
     
     private function userSulExists()
     {
+        global $mediawikiWebServiceEndpoint;
+        
         $reqname = str_replace("_", " ", $this->request->getName());
 		$userexist = file_get_contents($mediawikiWebServiceEndpoint . "?action=query&meta=globaluserinfo&guiuser=" . urlencode($reqname) . "&format=php");
 		$ue = unserialize($userexist);

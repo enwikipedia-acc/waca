@@ -13,8 +13,8 @@ class Request extends DataObject
     private $comment;
     private $status = "Open";
     private $date;
-    private $checksum;
-    private $emailsent;
+    private $checksum = 0;
+    private $emailsent = 0;
     private $emailconfirm;
     private $reserved = 0;
     private $useragent;
