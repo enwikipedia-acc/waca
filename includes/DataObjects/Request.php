@@ -11,12 +11,12 @@ class Request extends DataObject
     private $ip;
     private $name;
     private $comment;
-    private $status;
+    private $status = "Open";
     private $date;
     private $checksum;
     private $emailsent;
     private $emailconfirm;
-    private $reserved;
+    private $reserved = 0;
     private $useragent;
     private $forwardedip;
     
@@ -24,6 +24,27 @@ class Request extends DataObject
     private $ipRequests = false;
     private $emailRequests = false;
     private $blacklistCache = null;
+        
+    /**
+     * This function removes all old requests which are not yet email-confirmed 
+     * from the database.
+     */
+    public static function cleanExpiredUnconfirmedRequests()
+    {
+        global $emailConfirmationExpiryDays;
+        
+        $database = gGetDb();
+        $statement = $database->prepare(<<<SQL
+            DELETE FROM request 
+            WHERE 
+                date < DATE_SUB(CURRENT_TIMESTAMP(), INTERVAL $emailConfirmationExpiryDays DAY) 
+                AND emailconfirm != 'Confirmed' 
+                AND emailconfirm != '';
+SQL
+        );
+        
+        $statement->execute();
+    }
     
     public function save()
     {
@@ -338,4 +359,46 @@ class Request extends DataObject
         }
 
     }   
+
+    public function confirmEmail($si)
+    {
+        if($this->getEmailConfirm() == "Confirmed")
+        {
+            // already confirmed. Act as though we've completed successfully.
+            return;   
+        }
+        
+        if($this->getEmailConfirm() == $si)
+        {
+            $this->setEmailConfirm("Confirmed");
+        }
+        else
+        {
+            throw new TransactionException("Confirmation hash does not match the expected value", "Email confirmation failed");   
+        }
+    }
+    
+    public function generateEmailConfirmationHash()
+    {
+        $this->emailconfirm = bin2hex(openssl_random_pseudo_bytes(16));
+    }
+    
+    public function sendConfirmationEmail()
+    {
+        global $smarty;
+        
+        $smarty->assign("ip", $this->getTrustedIp());
+        $smarty->assign("id", $this->getId());
+        $smarty->assign("hash", $this->getEmailConfirm());
+        
+		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+		
+		// Sends the confirmation email to the user.
+		$mailsuccess = mail($this->getEmail(), "[ACC #{$this->getId()}] English Wikipedia Account Request", $smarty->fetch('request/confirmation-mail.tpl'), $headers);
+        
+        if(!$mailsuccess)
+        {
+            throw new Exception("Error sending email.");   
+        }
+    }
 }

@@ -1,5 +1,5 @@
 <?php
 //This file is used by phpunit
 
-//ACC needs to be defined to load some files!
-define( 'ACC', 'PhpunitBootstrap' );
+// Load the config file for the autoloader.
+require_once __DIR__ . '/../config.inc.php';

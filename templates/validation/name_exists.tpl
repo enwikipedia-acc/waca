@@ -1,0 +1,1 @@
+﻿I'm sorry, but the username you selected is already taken. Please try another. Please note that Wikipedia automatically capitalizes the first letter of any user name, therefore [[User:example]] would become [[User:Example]].

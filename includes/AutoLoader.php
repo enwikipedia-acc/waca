@@ -24,6 +24,9 @@ class AutoLoader
             $filepath . 'includes/DataObjects/' . $class . ".php",
             $filepath . 'includes/Providers/' . $class . ".php",
             $filepath . 'includes/Providers/Interfaces/' . $class . ".php",
+            $filepath . 'includes/Validation/' . $class . ".php",
+            $filepath . 'includes/Helpers/' . $class . ".php",
+            $filepath . 'includes/Helpers/Interfaces/' . $class . ".php",
             $filepath . $class . ".php",
         );
         

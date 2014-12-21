@@ -118,7 +118,17 @@ class PdoDatabase extends PDO {
             $this->rollBack();
             
             BootstrapSkin::displayAlertBox($ex->getMessage(), $ex->getAlertType(), $ex->getTitle(), true, false);
-            BootstrapSkin::displayInternalFooter();
+            
+            // TODO: yuk.
+            if(defined("PUBLICMODE"))
+            {
+                BootstrapSkin::displayPublicFooter();
+            }
+            else
+            {
+                BootstrapSkin::displayInternalFooter();
+            }
+            
             die();
         }
     }

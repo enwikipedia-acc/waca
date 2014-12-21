@@ -13,18 +13,7 @@ class InterfaceMessage extends DataObject
     private $type;
     
     const SITENOTICE = '31';
-    const DECL_BLOCKED = '9';
     const DECL_BANNED = '19';
-    const DECL_TAKEN = '10';
-    const DECL_NUMONLY = '11';
-    const DECL_EMAIL = '12';
-    const DECL_INVCHAR = '13';
-    const DECL_NONMATCHEMAIL = '27';
-    const DECL_INVEMAIL = '14';
-    const DECL_SULTAKEN = '28';
-    const DECL_DUPEUSER = '17';
-    const DECL_DUPEEMAIL = '18';
-    const DECL_FINAL = '16';
     
     /**
      * Get a message.
