@@ -53,6 +53,13 @@ if(isset($_GET['action']) && $_GET['action'] == "confirm")
         
         $request = Request::getById($_GET['id'], $database);
         
+        if($request === false)
+        {
+            BootstrapSkin::displayAlertBox("We can't find your request in our system. Please note that requests expire after a certain period, so if it's been a little while, please submit again.", "alert-error", "Request not found", true, false);
+            BootstrapSkin::displayPublicFooter();  
+            die();
+        }
+        
         if($request->getEmailConfirm() == "Confirmed")
         {
             $smarty->display("request/email-confirmed.tpl");
