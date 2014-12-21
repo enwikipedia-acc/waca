@@ -524,6 +524,7 @@ elseif ($action == "messagemgmt")
                 Notification::interfaceMessageEdited($message);
                 
 			    BootstrapSkin::displayInternalFooter();
+                return;
 		    }
             
             $smarty->assign("message", $message);
@@ -543,8 +544,8 @@ elseif ($action == "messagemgmt")
     // $fetchStatement->execute(array(":type" => "Message"));
     // $data['Email messages'] = $fetchStatement->fetchAll(PDO::FETCH_CLASS, 'InterfaceMessage');
     
-    $fetchStatement->execute(array(":type" => "Interface"));
-    $data['Public Interface messages'] = $fetchStatement->fetchAll(PDO::FETCH_CLASS, 'InterfaceMessage');
+    //$fetchStatement->execute(array(":type" => "Interface"));
+    //$data['Public Interface messages'] = $fetchStatement->fetchAll(PDO::FETCH_CLASS, 'InterfaceMessage');
     
     $fetchStatement->execute(array(":type" => "Internal"));
     $data['Internal Interface messages'] = $fetchStatement->fetchAll(PDO::FETCH_CLASS, 'InterfaceMessage');
