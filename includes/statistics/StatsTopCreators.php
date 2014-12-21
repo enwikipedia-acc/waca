@@ -164,7 +164,7 @@ SQL
     
 	public function isProtected()
 	{
-		return true;
+		return false;
 	}
 
 	public function requiresWikiDatabase()
