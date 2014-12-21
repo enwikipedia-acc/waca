@@ -46,7 +46,13 @@ if(isset($_GET['action']) && $_GET['action'] == "confirm")
     {
         if(!isset($_GET['id']) || !isset($_GET['si']))
         {
-            BootstrapSkin::displayAlertBox("Please check the link you received", "alert-error", "Missing parameters", true, false);
+            BootstrapSkin::displayAlertBox(
+                "Please check the link you received", 
+                "alert-error", 
+                "Missing parameters", 
+                true, 
+                false);
+            
             BootstrapSkin::displayPublicFooter();  
             die();
         }
@@ -55,7 +61,12 @@ if(isset($_GET['action']) && $_GET['action'] == "confirm")
         
         if($request === false)
         {
-            BootstrapSkin::displayAlertBox("We can't find your request in our system. Please note that requests expire after a certain period, so if it's been a little while, please submit again.", "alert-error", "Request not found", true, false);
+            BootstrapSkin::displayAlertBox(
+                $smarty->fetch('request/request-not-found.tpl'), 
+                "alert-error", 
+                "Request not found", 
+                true, 
+                false);
             BootstrapSkin::displayPublicFooter();  
             die();
         }
@@ -71,13 +82,18 @@ if(isset($_GET['action']) && $_GET['action'] == "confirm")
         {        
             if($request === false)
             {
-                throw new TransactionException("It looks like we couldn't find your request! Try clicking the link in the email again, or email us at accounts-enwiki-l@lists.wikimedia.org for assistance", "Ooops!");
+                throw new TransactionException($smarty->fetch('request/request-not-found.tpl'), "Ooops!");
             }
         
             $request->confirmEmail($_GET['si']);
             $request->save();
             
-            $logStatement = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :requestname, 'Email Confirmed', CURRENT_TIMESTAMP());");
+            $logStatement = $database->prepare(<<<SQL
+                INSERT INTO acc_log (log_pend, log_user, log_action, log_time) 
+                VALUES (:request, :requestname, 'Email Confirmed', CURRENT_TIMESTAMP());
+SQL
+            );
+            
             $logStatement->bindValue(":request", $request->getId());
             $logStatement->bindValue(":requestname", $request->getName());
             $logStatement->execute();
@@ -133,7 +149,9 @@ else
         {
             foreach ($validationErrors as $validationError)
             {
-                BootstrapSkin::displayAlertBox($smarty->fetch("validation/" . $validationError->getErrorCode() . ".tpl"), "alert-error");
+                BootstrapSkin::displayAlertBox(
+                    $smarty->fetch("validation/" . $validationError->getErrorCode() . ".tpl"),
+                    "alert-error");
             }
             
             $smarty->display("request/request-form.tpl");

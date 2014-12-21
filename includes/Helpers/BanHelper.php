@@ -5,7 +5,7 @@ class BanHelper implements IBanHelper
     /**
      * Summary of nameIsBanned
      * @param string $name The name to test if is banned.
-     * @return Ban
+     * @return Ban|boolean
      */
     public function nameIsBanned($name)
     {
@@ -15,7 +15,7 @@ class BanHelper implements IBanHelper
     /**
      * Summary of emailIsBanned
      * @param string $email 
-     * @return Ban
+     * @return Ban|boolean
      */
     public function emailIsBanned($email)
     {
@@ -25,7 +25,7 @@ class BanHelper implements IBanHelper
     /**
      * Summary of ipIsBanned
      * @param string $ip 
-     * @return Ban
+     * @return Ban|boolean
      */
     public function ipIsBanned($ip)
     {
