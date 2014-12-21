@@ -103,6 +103,9 @@ SQL
         return $this->email;
     }
 
+    /**
+     * @param string $email
+     */
     public function setEmail($email)
     {
         $this->email = $email;
@@ -118,6 +121,9 @@ SQL
         return trim(getTrustedClientIP($this->ip, $this->forwardedip));
     }
 
+    /**
+     * @param string $ip
+     */
     public function setIp($ip)
     {
         $this->ip = $ip;
@@ -128,6 +134,9 @@ SQL
         return $this->name;
     }
 
+    /**
+     * @param string $name
+     */
     public function setName($name)
     {
         $this->name = $name;
@@ -148,6 +157,9 @@ SQL
         return $this->status;
     }
     
+    /**
+     * @param string $status
+     */
     public function setStatus($status)
     {
         $this->status = $status;   
@@ -193,6 +205,9 @@ SQL
         return $this->emailconfirm;
     }
 
+    /**
+     * @param string $emailconfirm
+     */
     public function setEmailConfirm($emailconfirm)
     {
         $this->emailconfirm = $emailconfirm;

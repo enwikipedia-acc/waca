@@ -2,9 +2,9 @@
 
 namespace Waca\API\Actions;
 
+use Waca\API\Api as Api;
 use Waca\API\ApiActionBase as ApiActionBase;
 use Waca\API\IApiAction as IApiAction;
-use Waca\API\Api as Api;
 
 /**
  * API Help action
