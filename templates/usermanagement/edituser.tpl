@@ -21,14 +21,22 @@
             <input class="input-xlarge" type="email" id="user_email" name="user_email" value="{$user->getEmail()|escape}" required="true"/>
         </div>
     </div>
-
-    <div class="control-group">
-        <label class="control-label" for="user_onwikiname">On-wiki Username:</label>
-        <div class="controls">
-            <input class="input-xlarge" type="text" id="user_onwikiname" name="user_onwikiname" value="{$user->getOnWikiName()|escape}" required="true"/>
+    {if $user->isOAuthLinked()}
+        <div class="control-group">
+            <label class="control-label" for="user_onwikiname">On-wiki Username:</label>
+            <div class="controls">
+                <span class="input-xlarge uneditable-input" id="user_onwikiname">{$user->getOnWikiName()|escape}</span>
+                <span class="label label-success">OAuth</span>
+            </div>
         </div>
-    </div>
-    
+    {else}
+        <div class="control-group">
+            <label class="control-label" for="user_onwikiname">On-wiki Username:</label>
+            <div class="controls">
+                <input class="input-xlarge" type="text" id="user_onwikiname" name="user_onwikiname" value="{$user->getOnWikiName()|escape}" required="true"/>
+            </div>
+        </div>
+    {/if}
     <div class="control-group">
 	    <div class="controls">
 		    <button type="submit" class="btn btn-primary">Save preferences</button>

@@ -600,11 +600,8 @@ SQL
     
     #endregion 
 
-    public function getForgottenPasswordHash()
-    {
-        return md5($this->username . $this->email . $this->welcome_template . $this->id . $this->password);
-    }
-
+    #region OAuth
+    
     public function getOAuthIdentity()
     {
         if($this->oauthaccesstoken == null)
@@ -658,25 +655,6 @@ SQL
         return $this->oauthaccesstoken !== null;
     }
 
-    public function getApprovalDate()
-    {
-        $query = $this->dbObject->prepare(<<<SQL
-            SELECT log_time 
-            FROM acc_log 
-            WHERE log_pend = :userid 
-                AND log_action = 'Approved' 
-            ORDER BY log_id DESC 
-            LIMIT 1;
-SQL
-        );
-        $query->execute( array( ":userid" => $this->id ) );
-        
-        $data = DateTime::createFromFormat( "Y-m-d H:i:s", $query->fetchColumn() );
-        $query->closeCursor();
-        
-        return $data;
-    }
-
     private function clearOAuthData()
     {
         $this->identityCache = null;
@@ -708,5 +686,31 @@ SQL
                 prepare( "UPDATE user SET oauthidentitycache = null WHERE id = :id;" )->
                 execute( array( ":id" => $this->id ) );
         }   
+    }
+    
+    #endregion
+    
+    public function getForgottenPasswordHash()
+    {
+        return md5($this->username . $this->email . $this->welcome_template . $this->id . $this->password);
+    }
+
+    public function getApprovalDate()
+    {
+        $query = $this->dbObject->prepare(<<<SQL
+            SELECT log_time 
+            FROM acc_log 
+            WHERE log_pend = :userid 
+                AND log_action = 'Approved' 
+            ORDER BY log_id DESC 
+            LIMIT 1;
+SQL
+        );
+        $query->execute( array( ":userid" => $this->id ) );
+        
+        $data = DateTime::createFromFormat( "Y-m-d H:i:s", $query->fetchColumn() );
+        $query->closeCursor();
+        
+        return $data;
     }
 }

@@ -396,7 +396,12 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {
         try
         {
             $user->setEmail($_POST['user_email']);
-            $user->setOnWikiName($_POST['user_onwikiname']);
+            
+            if(!$user->isOAuthLinked())
+            {
+                $user->setOnWikiName($_POST['user_onwikiname']);
+            }
+            
             $user->save();
        
             $siuser = User::getCurrent()->getUsername();

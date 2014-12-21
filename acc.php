@@ -246,7 +246,7 @@ elseif ($action == "sreg")
         {
             global $baseurl;
             Notification::userNew($newUser);
-            header("Location: {$baseurl}acc.php?action=registercomplete");
+            header("Location: {$baseurl}/acc.php?action=registercomplete");
         }
     });
     
@@ -412,6 +412,28 @@ elseif ($action == "login")
         die();
     }
     
+    if($user->getStoredOnWikiName() == "##OAUTH##" && $user->getOAuthAccessToken() == null)
+    {
+        reattachOAuthAccount($user);   
+    }
+    
+    if($user->isOAuthLinked())
+    {
+        try
+        {
+            // test retrieval of the identity
+            $user->getOAuthIdentity();
+        }
+        catch(TransactionException $ex)
+        {
+            $user->setOAuthAccessToken(null);
+            $user->setOAuthAccessSecret(null);
+            $user->save();
+            
+            reattachOAuthAccount($user);
+        }
+    }
+    
     // At this point, the user has successfully authenticated themselves.
     // We now proceed to perform login-specific actions, and check the user actually has
     // the correct permissions to continue with the login.
@@ -492,28 +514,7 @@ SQL;
     
     if( $user->getOAuthAccessToken() == null && $user->getStoredOnWikiName() == "##OAUTH##")
     {
-        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;
-
-        try
-        {
-            // Get a request token for OAuth
-            $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
-            $requestToken = $util->getRequestToken();
-
-            // save the request token for later
-            $user->setOAuthRequestToken($requestToken->key);
-            $user->setOAuthRequestSecret($requestToken->secret);
-            $user->save();
-            
-            $redirectUrl = $util->getAuthoriseUrl($requestToken);
-            
-            header("Location: {$redirectUrl}");
-            die();
-        }
-        catch(Exception $ex)
-        {
-            throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
-        }        
+        reattachOAuthAccount($user);
     }
     
     header("Location: $baseurl/acc.php");

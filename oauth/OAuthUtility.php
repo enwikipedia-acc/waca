@@ -170,6 +170,13 @@ class OAuthUtility
         {
 	        throw new Exception('Curl error: ' . curl_error( $ch ));
         }
+        
+        $decodedData = json_decode($data);
+        
+        if(isset($decodedData->error))
+        {
+            throw new TransactionException($decodedData->error);
+        }
 
         $identity = JWT::decode( $data , $this->consumerSecret );
         
