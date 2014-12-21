@@ -4,7 +4,6 @@ namespace Waca\API\Actions;
 
 use Waca\API\ApiActionBase as ApiActionBase;
 use Waca\API\IApiAction as IApiAction;
-use Waca\API\Api as Api;
 
 /**
  * MonitorAction short summary.
@@ -43,6 +42,9 @@ class MonitorAction extends ApiActionBase implements IApiAction
         return $apiDocument;
     }
     
+    /**
+     * @return string|null
+     */
     private function getOldest()
     {
         global $cDataClearIp, $cDataClearEmail;
@@ -58,6 +60,9 @@ class MonitorAction extends ApiActionBase implements IApiAction
         return $result;        
     } 
     
+    /**
+     * @return string|null
+     */
     private function getNewest()
     {
         global $cDataClearIp, $cDataClearEmail;

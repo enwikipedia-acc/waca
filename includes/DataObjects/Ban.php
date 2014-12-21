@@ -120,8 +120,8 @@ class Ban extends DataObject
     
     /**
      * Get all active bans for a target and type.
-     * @param $target
-     * @param $type
+     * @param string $target
+     * @param string $type
      * @param PdoDatabase $database
      * @return
      */

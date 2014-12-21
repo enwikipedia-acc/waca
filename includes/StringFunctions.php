@@ -2,6 +2,9 @@
 
 class StringFunctions
 {
+    /**
+     * @param string $string
+     */
     private static function mb_ucfirst($string) {
 		$strlen = mb_strlen($string);
 		$substr = mb_substr($string, 0, 1);
