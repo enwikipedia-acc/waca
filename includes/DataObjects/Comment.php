@@ -11,6 +11,9 @@ class Comment extends DataObject
     private $visibility = "user";
     private $request;    
     
+    /**
+     * @param integer $id
+     */
     public static function getForRequest($id, PdoDatabase $database = null)
     {
         if($database == null)

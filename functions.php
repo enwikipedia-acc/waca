@@ -31,7 +31,7 @@ $session = new session();
 /**
  * Summary of sanitize
  * @param mixed $what 
- * @return mixed
+ * @return string
  * @deprecated
  */
 function sanitize($what) 
