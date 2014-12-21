@@ -176,6 +176,7 @@ $oauthBaseUrlInternal = "https://en.wikipedia.org/w/index.php?title=Special:OAut
 $oauthMediaWikiCanonicalServer = "http://en.wikipedia.org";
 
 $useOauthSignup = true;
+$enforceOAuth = false;
 
 /************************************
  * Providers Configuration

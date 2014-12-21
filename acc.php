@@ -433,6 +433,15 @@ elseif ($action == "login")
             reattachOAuthAccount($user);
         }
     }
+    else
+    {
+        global $enforceOAuth;
+        
+        if($enforceOAuth)
+        {
+            reattachOAuthAccount($user);
+        }
+    }
     
     // At this point, the user has successfully authenticated themselves.
     // We now proceed to perform login-specific actions, and check the user actually has
@@ -1254,7 +1263,7 @@ SQL;
 }
 elseif ($action == "prefs") 
 {
-    global $smarty;
+    global $smarty, $enforceOAuth;
     
 	if (isset ($_POST['sig'])) 
     {
@@ -1291,6 +1300,7 @@ elseif ($action == "prefs")
         BootstrapSkin::displayAlertBox("Preferences updated!", "alert-info");
 	}
     
+    $smarty->assign("enforceOAuth", $enforceOAuth);
 	$smarty->display("prefs.tpl");
 	BootstrapSkin::displayInternalFooter();
 	die();
@@ -2273,17 +2283,19 @@ elseif ($action == "emailmgmt")
 }
 elseif ($action == "oauthdetach")
 { 
+    if($enforceOAuth)
+    {
+        BootstrapSkin::displayAccessDenied();
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    
     global $baseurl;
-    
-    $currentUser = User::getCurrent();
-    $currentUser->setOAuthAccessSecret(null);
-    $currentUser->setOAuthAccessToken(null);
-    $currentUser->setOAuthRequestSecret(null);
-    $currentUser->setOAuthRequestToken(null);
         
-    $currentUser->save();
-    
-    header("Location: {$baseurl}/acc.php?action=logout");
+    $currentUser = User::getCurrent();
+    $currentUser->detachAccount();
+        
+    header("Location: {$baseurl}/acc.php?action=logout&nocheck=1");
 }
 elseif ($action == "oauthattach")
 {

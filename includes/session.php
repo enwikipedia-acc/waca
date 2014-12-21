@@ -94,6 +94,16 @@ class session {
                 reattachOAuthAccount(User::getCurrent());
             }
         }
+        else
+        {
+            global $enforceOAuth;
+            
+            if($enforceOAuth)
+            {
+                reattachOAuthAccount(User::getCurrent());
+            }
+        }
+        
         
 		if (User::getCurrent()->isNew()) 
         {

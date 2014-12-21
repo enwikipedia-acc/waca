@@ -48,74 +48,87 @@
 
     {if $currentUser->isOAuthLinked() }
 
-    <div class="control-group">
-      <label class="control-label">Attached Wikipedia account:</label>
-      <div class="controls">
-        <a href="{$mediawikiScriptPath}?title=User:{$currentUser->getOAuthIdentity()->username|escape:'url'}">{$currentUser->getOAuthIdentity()->username|escape}</a>
-      </div>
-    </div>
-
-    <div class="control-group">
-      <label class="control-label">Email address:</label>
-      <div class="controls">
-        <div class="alert{if $currentUser->getOAuthIdentity()->confirmed_email} alert-success{/if}">
-          {if $currentUser->getOAuthIdentity()->confirmed_email}
-            Email address confirmed
-          {else}
-            Email address <strong>NOT</strong> confirmed
-          {/if}
+      <div class="control-group">
+        <label class="control-label">Attached Wikipedia account:</label>
+        <div class="controls">
+          <a href="{$mediawikiScriptPath}?title=User:{$currentUser->getOAuthIdentity()->username|escape:'url'}">{$currentUser->getOAuthIdentity()->username|escape}</a>
         </div>
       </div>
-    </div>
 
-    <div class="control-group">
-      <label class="control-label">Blocked:</label>
-      <div class="controls">
-        <div class="alert{if $currentUser->getOAuthIdentity()->blocked} alert-error{else} alert-success{/if}">
-          {if $currentUser->getOAuthIdentity()->blocked}
-            <strong>Blocked on Wikipedia!</strong>
-          {else}
-            Not blocked.
-          {/if}
+      <div class="control-group">
+        <label class="control-label">Identity:</label>
+        <div class="controls">
+            <div class="row-fluid">
+              <div class="span4 alert-block alert{if $currentUser->getOAuthIdentity()->confirmed_email} alert-success{/if}">
+                {if $currentUser->getOAuthIdentity()->confirmed_email}
+                  <i class="icon-ok"></i>&nbsp;Email address confirmed
+                {else}
+                  <i class="icon-remove"></i>&nbsp;Email address <strong>NOT</strong> confirmed
+                {/if}
+              </div>
+              <div class="span4 alert-block alert{if $currentUser->getOAuthIdentity()->blocked} alert-error{else} alert-success{/if}">
+                {if $currentUser->getOAuthIdentity()->blocked}
+                <i class="icon-remove"></i>&nbsp;<strong>Blocked on Wikipedia!</strong>
+                {else}
+                <i class="icon-ok"></i>&nbsp;Not blocked.
+                {/if}
+              </div>
+
+              <div class="span4 alert-block alert alert-success">
+                <i class="icon-ok"></i>&nbsp;Account verified by {$currentUser->getOAuthIdentity()->iss}
+              </div>
+            </div>
         </div>
       </div>
-    </div>
-    
-    {*
+
     <div class="control-group">
       <label class="control-label">Grants:</label>
-      {foreach from=array('useoauth') item="right"}
       <div class="controls">
-          <div class="alert{if in_array($right, $currentUser->getOAuthIdentity()->grants)} alert-success{else} alert-error{/if}">
-            {if in_array($right, $currentUser->getOAuthIdentity()->grants)}
-              Found: {$right}
-            {else}
-              <strong>NOT Found: {$right}</strong>
-            {/if}
+        <div class="row-fluid">
+          <div class="alert{if $currentUser->oauthCanUse()} alert-success{else} alert-error{/if} span4 alert-block">
+            <i class="icon-{if $currentUser->oauthCanUse()}ok{else}remove{/if}"></i>&nbsp;Basic rights
           </div>
+{*
+          <div class="alert{if $currentUser->oauthCanEdit()} alert-success{else} alert-error{/if} span4 alert-block">
+            <i class="icon-{if $currentUser->oauthCanEdit()}ok{else}remove{/if}"></i>&nbsp;Create, edit, and move pages
+          </div>
+
+          <div class="alert{if $currentUser->oauthCanCreateAccount()} alert-success{else} alert-error{/if} span4 alert-block">
+            <i class="icon-{if $currentUser->oauthCanCreateAccount()}ok{else}remove{/if}"></i>&nbsp;Create accounts
+          </div>*}
         </div>
-      {/foreach}
-    </div>
-    *}
-    
-    <div class="control-group">
-      <div class="controls">
-        <a href="{$baseurl}/acc.php?action=oauthdetach" class="btn btn-danger">Detach account</a>
-      </div>
-    </div>
-    {else}
-    <div class="control-group">
-      <label class="control-label">On-wiki username</label>
-      <div class="controls">
-        <input disabled="disabled" class="input-xlarge" type="text" value="{$currentUser->getOnWikiName()|escape}" />
       </div>
     </div>
 
     <div class="control-group">
+      <label class="control-label">Cache:</label>
       <div class="controls">
-        <a href="{$baseurl}/acc.php?action=oauthattach" class="btn btn-success">Attach account</a>
+        User identity retrieved at {DateTime::createFromFormat("U", $currentUser->getOAuthIdentity()->iat)->format("r")}, will expire at {DateTime::createFromFormat("U", $currentUser->getOAuthIdentity()->exp)->format("r")}
       </div>
     </div>
+
+    {*var_dump($currentUser->getOAuthIdentity())*}
+
+    {if !$enforceOAuth }
+    <div class="control-group">
+          <div class="controls">
+            <a href="{$baseurl}/acc.php?action=oauthdetach" class="btn btn-danger">Detach account</a>
+          </div>
+        </div>
+      {/if}
+    {else}
+      <div class="control-group">
+        <label class="control-label">On-wiki username</label>
+        <div class="controls">
+          <input disabled="disabled" class="input-xlarge" type="text" value="{$currentUser->getOnWikiName()|escape}" />
+        </div>
+      </div>
+
+      <div class="control-group">
+        <div class="controls">
+          <a href="{$baseurl}/acc.php?action=oauthattach" class="btn btn-success">Attach account</a>
+        </div>
+      </div>
     {/if}
   </fieldset>
 </div>
