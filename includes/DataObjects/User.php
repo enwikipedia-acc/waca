@@ -609,16 +609,10 @@ SQL
     {
         if($this->oauthaccesstoken == null)
         {
-            $this->identityCache = null;
-            $this->oauthidentitycache = null;
-            $clearCacheQuery = "UPDATE user SET oauthidentitycache = null WHERE id = :id;";
-            $this->dbObject->prepare($clearCacheQuery)->execute( array( ":id" => $this->id ) );
-            
-            return null;   
+            $this->clearOAuthData();
         }
         
-        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl;
-        global $oauthBaseUrlInternal, $oauthMediaWikiCanonicalServer;
+        global $oauthConsumerToken, $oauthMediaWikiCanonicalServer;
 
         if($this->oauthidentitycache == null)
         {
@@ -642,23 +636,7 @@ SQL
         }
         else
         {
-            try
-            {
-                $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
-                $this->identityCache = $util->getIdentity($this->oauthaccesstoken, $this->oauthaccesssecret);
-                $this->oauthidentitycache = serialize($this->identityCache);
-                $this->dbObject->
-                    prepare( "UPDATE user SET oauthidentitycache = :identity WHERE id = :id;" )->
-                    execute( array( ":id" => $this->id, ":identity" => $this->oauthidentitycache ) );
-            }
-            catch(UnexpectedValueException $ex)
-            {
-                $this->identityCache = null;
-                $this->oauthidentitycache = null;
-                $this->dbObject->
-                    prepare( "UPDATE user SET oauthidentitycache = null WHERE id = :id;" )->
-                    execute( array( ":id" => $this->id ) );
-            }
+            $this->getIdentityCache();
             
             return $this->identityCache;
             
@@ -697,5 +675,38 @@ SQL
         $query->closeCursor();
         
         return $data;
+    }
+
+    private function clearOAuthData()
+    {
+        $this->identityCache = null;
+        $this->oauthidentitycache = null;
+        $clearCacheQuery = "UPDATE user SET oauthidentitycache = null WHERE id = :id;";
+        $this->dbObject->prepare($clearCacheQuery)->execute( array( ":id" => $this->id ) );
+        
+        return null;
+    }
+    
+    private function getIdentityCache()
+    {
+        global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;
+        
+        try
+        {
+            $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
+            $this->identityCache = $util->getIdentity($this->oauthaccesstoken, $this->oauthaccesssecret);
+            $this->oauthidentitycache = serialize($this->identityCache);
+            $this->dbObject->
+                prepare( "UPDATE user SET oauthidentitycache = :identity WHERE id = :id;" )->
+                execute( array( ":id" => $this->id, ":identity" => $this->oauthidentitycache ) );
+        }
+        catch(UnexpectedValueException $ex)
+        {
+            $this->identityCache = null;
+            $this->oauthidentitycache = null;
+            $this->dbObject->
+                prepare( "UPDATE user SET oauthidentitycache = null WHERE id = :id;" )->
+                execute( array( ":id" => $this->id ) );
+        }   
     }
 }
