@@ -321,7 +321,15 @@ SQL
     {
         if($this->oauthaccesstoken != null)
         {
-            return $this->getOAuthOnWikiName();   
+            try
+            {
+                return $this->getOAuthOnWikiName();   
+            }
+            catch(Exception $ex)
+            {
+                // urm.. log this?
+                return $this->onwikiname;
+            }
         }
         
         return $this->onwikiname;
@@ -703,22 +711,42 @@ SQL
     
     public function oauthCanUse()
     {
-        return in_array('useoauth', $this->getOAuthIdentity()->grants); 
+        try
+        {
+            return in_array('useoauth', $this->getOAuthIdentity()->grants); 
+        } 
+        catch (Exception $ex)
+        {
+            return false;
+        }
     }
     
     public function oauthCanEdit()
-    {
-        return false //in_array('useoauth', $this->getOAuthIdentity()->grants);
-            && in_array('createtalk', $this->getOAuthIdentity()->rights)
-            && in_array('edit', $this->getOAuthIdentity()->rights)
-            && in_array('writeapi', $this->getOAuthIdentity()->rights);
+    { 
+        try
+        {
+            return false //in_array('useoauth', $this->getOAuthIdentity()->grants);
+                && in_array('createtalk', $this->getOAuthIdentity()->rights)
+                && in_array('edit', $this->getOAuthIdentity()->rights)
+                && in_array('writeapi', $this->getOAuthIdentity()->rights);} 
+        catch (Exception $ex)
+        {
+            return false;
+        }
     }
     
     public function oauthCanCreateAccount()
-    {
-        return false //in_array('useoauth', $this->getOAuthIdentity()->grants);
-            && in_array('createaccount', $this->getOAuthIdentity()->rights)
-            && in_array('writeapi', $this->getOAuthIdentity()->rights);
+    { 
+        try
+        {
+            return false //in_array('useoauth', $this->getOAuthIdentity()->grants);
+                && in_array('createaccount', $this->getOAuthIdentity()->rights)
+                && in_array('writeapi', $this->getOAuthIdentity()->rights);
+        } 
+        catch (Exception $ex)
+        {
+            return false;
+        }
     }
     
     #endregion

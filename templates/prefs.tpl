@@ -46,7 +46,7 @@
   <fieldset>
     <legend>Wikipedia Account</legend>
 
-    {if $currentUser->isOAuthLinked() }
+    {if $currentUser->isOAuthLinked() && $currentUser->getOnWikiName() != "##OAUTH##" }
 
       <div class="control-group">
         <label class="control-label">Attached Wikipedia account:</label>
