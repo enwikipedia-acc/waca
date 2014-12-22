@@ -78,6 +78,22 @@
                 <i class="icon-ok"></i>&nbsp;Account verified by {$currentUser->getOAuthIdentity()->iss}
               </div>
             </div>
+          <div class="row-fluid">
+            <div class="accordion" id="identityTicketContainer">
+              <div class="accordion-group">
+                <div class="accordion-heading">
+                  <a class="accordion-toggle" data-toggle="collapse" data-parent="#identityTicketContainer" href="#identityTicketCollapseOne">
+                    Show identity ticket
+                  </a>
+                </div>
+                <div id="identityTicketCollapseOne" class="accordion-body collapse out">
+                  <div class="accordion-inner">
+                    <pre>{json_encode($currentUser->getOAuthIdentity(), 128)}</pre>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -103,7 +119,7 @@
     <div class="control-group">
       <label class="control-label">Cache:</label>
       <div class="controls">
-        User identity retrieved at {DateTime::createFromFormat("U", $currentUser->getOAuthIdentity()->iat)->format("r")}, will expire at {DateTime::createFromFormat("U", $currentUser->getOAuthIdentity()->exp)->format("r")}
+        Identity ticket retrieved at {DateTime::createFromFormat("U", $currentUser->getOAuthIdentity()->iat)->format("r")}, will expire at {DateTime::createFromFormat("U", $currentUser->getOAuthIdentity()->exp)->format("r")}
       </div>
     </div>
 
