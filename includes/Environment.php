@@ -6,7 +6,7 @@
 class Environment
 {
     private static $toolVersion;
-    
+
     /**
      * Gets the tool version, using cached data if available.
      * @return string
@@ -17,7 +17,7 @@ class Environment
         {
             self::$toolVersion = exec("git describe --always --dirty");
         }
-        
-        return self::$toolVersion;   
+
+        return self::$toolVersion;
     }
 }

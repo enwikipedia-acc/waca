@@ -8,17 +8,17 @@ interface IBanHelper
      * @return Ban
      */
     public function nameIsBanned($name);
-        
+
     /**
      * Summary of emailIsBanned
-     * @param string $email 
+     * @param string $email
      * @return Ban
      */
     public function emailIsBanned($email);
-    
+
     /**
      * Summary of ipIsBanned
-     * @param string $ip 
+     * @param string $ip
      * @return Ban
      */
     public function ipIsBanned($ip);

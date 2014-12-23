@@ -11,20 +11,20 @@ class BanHelper implements IBanHelper
     {
         return Ban::getBanByTarget($name, "Name");
     }
-    
+
     /**
      * Summary of emailIsBanned
-     * @param string $email 
+     * @param string $email
      * @return Ban|boolean
      */
     public function emailIsBanned($email)
     {
         return Ban::getBanByTarget($email, "EMail");
     }
-    
+
     /**
      * Summary of ipIsBanned
-     * @param string $ip 
+     * @param string $ip
      * @return Ban|boolean
      */
     public function ipIsBanned($ip)
