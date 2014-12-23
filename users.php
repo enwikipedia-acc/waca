@@ -48,7 +48,7 @@ $session = new session();
 if(isset($_GET['usersearch']))
 {
     $user = User::getByUsername($_GET['usersearch'], gGetDb());
-    
+
     if($user != false)
     {
         header("Location: $baseurl/statistics.php?page=Users&user={$user->getId()}");
@@ -70,222 +70,222 @@ echo $out;
 
 #region Checks if the current user has admin rights.
 
-if( User::getCurrent() == false ) 
+if( User::getCurrent() == false )
 {
     showlogin();
     BootstrapSkin::displayInternalFooter();
-	die();
+    die();
 }
 
 if( ! User::getCurrent()->isAdmin() )
 {
-	// Displays both the error message and the footer of the interface.
+    // Displays both the error message and the footer of the interface.
     BootstrapSkin::displayAlertBox("I'm sorry, but, this page is restricted to administrators only.", "alert-error", "Access Denied",true,false);
     BootstrapSkin::displayInternalFooter();
-	die();
+    die();
 }
 #endregion
 
 #region user access actions
 
-if (isset ($_GET['approve'])) 
+if (isset ($_GET['approve']))
 {
     $user = User::getById($_GET['approve'], gGetDb());
-    
+
     if($user == false)
     {
         BootstrapSkin::displayAlertBox("Sorry, the user you are trying to approve could not be found.", "alert-error", "Error",true,false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
-    
+
     if($user->isUser() || $user->isAdmin())
     {
         BootstrapSkin::displayAlertBox("Sorry, the user you are trying to approve has already been approved.", "alert-error", "Error",true,false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
-    
+
     $user->approve();
-    
+
     BootstrapSkin::displayAlertBox("Approved user " . $user->getUsername(), "alert-info", "", false);
 
     Notification::userApproved($user);
-    
-	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-	mail($user->getEmail(), "ACC Account Approved", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been approved by " . User::getCurrent()->getUsername() . ". To login please go to $baseurl/acc.php.\n- The English Wikipedia Account Creation Team", $headers);
+
+    $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+    mail($user->getEmail(), "ACC Account Approved", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been approved by " . User::getCurrent()->getUsername() . ". To login please go to $baseurl/acc.php.\n- The English Wikipedia Account Creation Team", $headers);
     BootstrapSkin::displayInternalFooter();
     die();
 }
 
-if (isset ($_GET['demote'])) 
+if (isset ($_GET['demote']))
 {
     $user = User::getById($_GET['demote'], gGetDb());
-    
+
     if( $user == false)
     {
         BootstrapSkin::displayAlertBox("Sorry, the user you are trying to demote could not be found.", "alert-error", "Error",true,false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
-    
+
     if(!$user->isAdmin())
     {
         BootstrapSkin::displayAlertBox("Sorry, the user you are trying to demote is not an admin.", "alert-error", "Error",true,false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
-    
-	if (!isset($_POST['reason'])) {
+
+    if (!isset($_POST['reason'])) {
 
         global $smarty;
         $smarty->assign("user", $user);
         $smarty->assign("status", "User");
         $smarty->assign("action", "demote");
         $smarty->display("usermanagement/changelevel-reason.tpl");
-		BootstrapSkin::displayInternalFooter();
-		die();
-	} else {
+        BootstrapSkin::displayInternalFooter();
+        die();
+    } else {
         $user->demote($_POST['reason']);
 
-		BootstrapSkin::displayAlertBox( "Changed " . $user->getUsername() . "'s access to 'User'", "alert-info", "", false);
-		
+        BootstrapSkin::displayAlertBox( "Changed " . $user->getUsername() . "'s access to 'User'", "alert-info", "", false);
+
         Notification::userDemoted($user, $_POST['reason']);
-		
+
         $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-		mail($user->getEmail(), "ACC Account Demoted", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been demoted by " . User::getCurrent()->getUsername() . " because " . User::getCurrent()->getUsername() . ". To contest this demotion please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
+        mail($user->getEmail(), "ACC Account Demoted", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been demoted by " . User::getCurrent()->getUsername() . " because " . User::getCurrent()->getUsername() . ". To contest this demotion please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
 }
 
 if (isset ($_GET['suspend'])) {
     $user = User::getById($_GET['suspend'], gGetDb());
-    
+
     if($user == false)
     {
         BootstrapSkin::displayAlertBox("Sorry, the user you are trying to suspend could not be found.", "alert-error", "Error",true,false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
-    
+
     if($user->isSuspended())
     {
         BootstrapSkin::displayAlertBox("Sorry, the user you are trying to suspend is already suspended.", "alert-error", "Error",true,false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
-    
-	elseif (!isset($_POST['reason'])) {
+
+    elseif (!isset($_POST['reason'])) {
         global $smarty;
         $smarty->assign("user", $user);
         $smarty->assign("status", "Suspended");
         $smarty->assign("action", "suspend");
         $smarty->display("usermanagement/changelevel-reason.tpl");
-		BootstrapSkin::displayInternalFooter();
-		die();
-	} else {
-		$user->suspend($_POST['reason']);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    } else {
+        $user->suspend($_POST['reason']);
 
         Notification::userSuspended($user, $_POST['reason']);
-		BootstrapSkin::displayAlertBox("Suspended user " . $user->getUsername(), "alert-info", "", false);
+        BootstrapSkin::displayAlertBox("Suspended user " . $user->getUsername(), "alert-info", "", false);
 
         $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-		mail($user->getEmail(), "ACC Account Suspended", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been suspended by " . User::getCurrent()->getUsername() . " because ".$_POST['reason'].". To contest this suspension please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
+        mail($user->getEmail(), "ACC Account Suspended", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been suspended by " . User::getCurrent()->getUsername() . " because ".$_POST['reason'].". To contest this suspension please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
 }
 
 if (isset ($_GET['promote'])) {
     $user = User::getById($_GET['promote'], gGetDb());
-    
+
     if($user == false)
     {
         BootstrapSkin::displayAlertBox("Sorry, the user you are trying to promote could not be found.", "alert-error", "Error",true,false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
-    
-	if ($user->isAdmin()) {
+
+    if ($user->isAdmin()) {
         BootstrapSkin::displayAlertBox("Sorry, the user you are trying to promote has Administrator access.", "alert-error", "Error", true, false);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}		
-    
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+
     $user->promote();
-    
+
     Notification::userPromoted($user);
-    
-	BootstrapSkin::displayAlertBox($user->getUsername() . " promoted to 'Admin'", "alert-info", "", false);
-	
-	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-	mail($user->getEmail(), "ACC Account Promoted", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been promted to admin status by " . User::getCurrent()->getUsername() . ".\n- The English Wikipedia Account Creation Team", $headers);
+
+    BootstrapSkin::displayAlertBox($user->getUsername() . " promoted to 'Admin'", "alert-info", "", false);
+
+    $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+    mail($user->getEmail(), "ACC Account Promoted", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been promted to admin status by " . User::getCurrent()->getUsername() . ".\n- The English Wikipedia Account Creation Team", $headers);
     die();
 }
 
 if (isset ($_GET['decline'])) {
     $user = User::getById($_GET['decline'], gGetDb());
-    
+
     if($user == false)
     {
         BootstrapSkin::displayAlertBox("Sorry, the user you are trying to decline could not be found.", "alert-error", "Error",true,false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
-    
-	if ($user->isAdmin()) {
+
+    if ($user->isAdmin()) {
         BootstrapSkin::displayAlertBox("Sorry, the user you are trying to decline is not new.", "alert-error", "Error", true, false);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}		
-    
-	if (!isset($_POST['reason'])) {
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+
+    if (!isset($_POST['reason'])) {
         global $smarty;
         $smarty->assign("user", $user);
         $smarty->assign("status", "Declined");
         $smarty->assign("action", "decline");
         $smarty->display("usermanagement/changelevel-reason.tpl");
-		BootstrapSkin::displayInternalFooter();
-		die();
-	} else {
+        BootstrapSkin::displayInternalFooter();
+        die();
+    } else {
         $user->decline($_POST['reason']);
-        
+
         Notification::userDeclined($user, $_POST['reason']);
-        
+
         BootstrapSkin::displayAlertBox("Declined user " . $user->getUsername(), "alert-info", "", false);
 
-		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-		mail($user->getEmail(), "ACC Account Declined", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been declined access to the account creation tool by " . User::getCurrent()->getUsername() . " because " . $_POST['reason'] . ". For more infomation please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
+        $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
+        mail($user->getEmail(), "ACC Account Declined", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been declined access to the account creation tool by " . User::getCurrent()->getUsername() . " because " . $_POST['reason'] . ". For more infomation please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
 }
 
 #endregion
 
 #region renaming
 
-if ( isset ($_GET['rename']) && $enableRenames == 1 ) 
+if ( isset ($_GET['rename']) && $enableRenames == 1 )
 {
     $user = User::getById($_GET['rename'], gGetDb());
-    
+
     if($user == false)
     {
         BootstrapSkin::displayAlertBox("Sorry, the user you are trying to rename could not be found.", "alert-error", "Error", true, false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
-    
-	if (!isset($_POST['newname'])) 
+
+    if (!isset($_POST['newname']))
     {
-		global $smarty;
+        global $smarty;
         $smarty->assign("user", $user);
         $smarty->display("usermanagement/renameuser.tpl");
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-    else 
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
+    else
     {
         if(!isset($_POST['newname']) || trim($_POST['newname']) == "")
         {
@@ -293,49 +293,49 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
             BootstrapSkin::displayInternalFooter();
             die();
         }
-        
+
         if(User::getByUsername($_POST['newname'], gGetDb()) != false)
         {
             BootstrapSkin::displayAlertBox("Username already exists.", "alert-error", "Error", true, false);
             BootstrapSkin::displayInternalFooter();
             die();
         }
-        
+
         $database = gGetDb();
-        
+
         if(!$database->beginTransaction())
         {
             BootstrapSkin::displayAlertBox("Database transaction could not be started.", "alert-error", "Error", true, false);
             BootstrapSkin::displayInternalFooter();
             die();
         }
-        
+
         try
         {
             $oldname = $user->getUsername();
-            
+
             $user->setUsername($_POST['newname']);
             $user->save();
-            
+
             $tgtmessage = "User " . $_GET['rename'] . " (" . $oldname . ")";
             $logpendupdate = $database->prepare("UPDATE acc_log SET log_pend = :newname WHERE log_pend = :tgtmessage AND log_action != 'Renamed'");
             $logpendupdate->bindValue(":newname", $_POST['newname']);
             $logpendupdate->bindValue(":tgtmessage", $tgtmessage);
             if(!$logpendupdate->execute())
             {
-                throw new Exception("log_pend update failed.");   
+                throw new Exception("log_pend update failed.");
             }
-        
+
             $logupdate = $database->prepare("UPDATE acc_log SET log_user = :newname WHERE log_user = :oldname;");
             $logupdate->bindValue(":newname", $_POST['newname']);
             $logupdate->bindValue(":oldname", $oldname);
             if(!$logupdate->execute())
             {
-                throw new Exception("log_user update failed.");   
+                throw new Exception("log_user update failed.");
             }
-            
+
             $logentry = serialize(array('old' => $oldname, 'new' => $_POST['newname']));
-            
+
             $userid = $user->getId();
             $currentUser = User::getCurrent()->getUsername();
             $logentryquery = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:userid, :siuser, 'Renamed', CURRENT_TIMESTAMP(), :logentry);");
@@ -344,10 +344,10 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
             $logentryquery->bindValue(":siuser", $currentUser);
             if(!$logentryquery->execute())
             {
-                throw new Exception("logging failed.");   
+                throw new Exception("logging failed.");
             }
-            
-		    BootstrapSkin::displayAlertBox("Changed User " . htmlentities($oldname,ENT_COMPAT,'UTF-8') . " name to ". htmlentities($_POST['newname'],ENT_COMPAT,'UTF-8') , "alert-info","",false);        
+
+            BootstrapSkin::displayAlertBox("Changed User " . htmlentities($oldname,ENT_COMPAT,'UTF-8') . " name to ". htmlentities($_POST['newname'],ENT_COMPAT,'UTF-8') , "alert-info","",false);
         }
         catch (Exception $ex)
         {
@@ -356,14 +356,14 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
             BootstrapSkin::displayInternalFooter();
             die();
         }
-        
+
         $database->commit();
-        
+
         Notification::userRenamed($user, $oldname);
-        
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
+
+        BootstrapSkin::displayInternalFooter();
+        die();
+    }
 }
 
 #endregion
@@ -372,19 +372,19 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
 
 if (isset ($_GET['edituser']) && $enableRenames == 1) {
     $user = User::getById($_GET['edituser'], gGetDb());
-    
+
     if($user == false)
     {
         BootstrapSkin::displayAlertBox("Sorry, the user you are trying to rename could not be found.", "alert-error", "Error", true, false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
-    
-	if ($_SERVER['REQUEST_METHOD'] != "POST") {
+
+    if ($_SERVER['REQUEST_METHOD'] != "POST") {
         global $smarty;
         $smarty->assign("user", $user);
         $smarty->display("usermanagement/edituser.tpl");
-	} else {
+    } else {
         $database = gGetDb();
         if(!$database->beginTransaction())
         {
@@ -392,26 +392,26 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {
             BootstrapSkin::displayInternalFooter();
             die();
         }
-        
+
         try
         {
             $user->setEmail($_POST['user_email']);
-            
+
             if(!$user->isOAuthLinked())
             {
                 $user->setOnWikiName($_POST['user_onwikiname']);
             }
-            
+
             $user->save();
-       
+
             $siuser = User::getCurrent()->getUsername();
             $logquery = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:gid, :sid, 'Prefchange', CURRENT_TIMESTAMP(), '');");
             $logquery->bindValue(":gid", $_GET['edituser']);
             $logquery->bindValue(":sid", $siuser);
             if(!$logquery->execute()) throw new Exception("Logging failed.");
-        
-		    Notification::userPrefChange($user);
-		    BootstrapSkin::displayAlertBox("Changes saved.", "alert-info");
+
+            Notification::userPrefChange($user);
+            BootstrapSkin::displayAlertBox("Changes saved.", "alert-info");
         }
         catch (Exception $ex)
         {
@@ -420,11 +420,11 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {
             BootstrapSkin::displayInternalFooter();
             die();
         }
-        
+
         $database->commit();
-	}
-	BootstrapSkin::displayInternalFooter();
-	die();
+    }
+    BootstrapSkin::displayInternalFooter();
+    die();
 }
 
 #endregion
@@ -462,13 +462,13 @@ HTML;
 
 /**
  * CURRENTLY UNUSED!!
- * 
+ *
  * Shows A list of users in a table with the relevant buttons for that access level.
- * 
+ *
  * Uses smarty
- * 
+ *
  * Different levels may require the use of different data attributes.
- * 
+ *
  * @param $data An array of arrays (see example)
  * @param $level The user access level
  * @example showUserList( array(
@@ -477,7 +477,7 @@ HTML;
  *              "onwikiname" => "foo",
  *              ),
  *          )
- *          
+ *
  */
 function showUserList($data, $level) {
        global $smarty;
@@ -499,10 +499,10 @@ $result = User::getAllWithStatus("New", $database);
 if($result != false && count($result) != 0)
 {
     echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Open requests</a></div><div id="collapseOne" class="accordion-body collapse in"><div class="accordion-inner">';
-    
+
     $smarty->assign("userlist", $result);
     $smarty->display("usermanagement/userlist.tpl");
-	echo "</div></div></div>\n";
+    echo "</div></div></div>\n";
 }
 echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">Users</a></div><div id="collapseTwo" class="accordion-body collapse"><div class="accordion-inner">';
 

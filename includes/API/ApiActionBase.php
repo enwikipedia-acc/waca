@@ -12,23 +12,22 @@ abstract class ApiActionBase implements IApiAction
      * @var DomDocument
      */
     protected $document;
-    
+
     public function __construct()
     {
         $this->document = new \DomDocument('1.0');
     }
-    
+
     /**
      * Method that runs API action
      */
     abstract public function execute(\DOMElement $apiDocument);
-    
-    
+
     public function run()
     {
-        
+
         $apiDocument = $this->document->createElement("api");
-        
+
         try
         {
             $apiDocument = $this->execute($apiDocument);
@@ -41,7 +40,7 @@ abstract class ApiActionBase implements IApiAction
         }
 
         $this->document->appendChild($apiDocument);
-        
+
         return $this->document->saveXml();
     }
 }
