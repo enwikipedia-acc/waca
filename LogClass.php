@@ -190,6 +190,13 @@ class LogPage
 		return substr_replace($urlParams, '&amp;', 0, 5);		
 	}
 	
+	/**
+	 * Summary of showListLog
+	 * @param mixed $offset 
+	 * @param mixed $limit 
+	 * @return mixed
+     * @deprecated
+	 */
 	public function showListLog($offset, $limit)
 	{
 		global $tsSQLlink, $session, $baseurl;
@@ -354,6 +361,13 @@ class LogPage
 		
 	}	
 	
+	/**
+	 * Summary of getArrayLog
+	 * @param mixed $offset 
+	 * @param mixed $limit 
+	 * @return mixed
+     * @deprecated
+	 */
 	public function getArrayLog($offset=0, $limit="infinity")
 	{
 		global $tsSQLlink, $session, $baseurl;
@@ -486,6 +500,11 @@ class LogPage
 		return $out;
 	}
 	
+	/**
+	 * Summary of getRequestLogs
+	 * @return mixed
+     * @deprecated
+	 */
 	public function getRequestLogs()
 	{
 		$entirelog = $this->getArrayLog();
