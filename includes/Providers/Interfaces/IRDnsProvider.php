@@ -5,5 +5,5 @@
  */
 interface IRDnsProvider
 {
-    public function getRdns($address);   
+    public function getRdns($address);
 }

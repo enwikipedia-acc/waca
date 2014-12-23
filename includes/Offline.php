@@ -25,25 +25,25 @@ class Offline
     public static function check($external)
     {
         global $smarty, $dontUseDb, $dontUseDbCulprit, $dontUseDbReason;
-        
-		if ($dontUseDb) 
+
+        if ($dontUseDb)
         {
-			if ($external) 
+            if ($external)
             {
-				$smarty->display("offline/external.tpl");
-            } 
-            else 
+                $smarty->display("offline/external.tpl");
+            }
+            else
             {
                 $smarty->assign("dontUseDbCulprit", $dontUseDbCulprit);
                 $smarty->assign("dontUseDbReason", $dontUseDbReason);
                 $smarty->assign("alerts", array());
-				$smarty->display("offline/internal.tpl");
-			}
-            
-			die();
-		}
+                $smarty->display("offline/internal.tpl");
+            }
+
+            die();
+        }
     }
-   
+
     /**
      * Determines if the tool is offline
      * @return bool
@@ -51,23 +51,23 @@ class Offline
     public static function isOffline()
     {
         global $dontUseDb;
-        
+
         return (bool)$dontUseDb;
     }
-    
+
     /**
      * Gets the offline message
-     * @param bool $external 
+     * @param bool $external
      */
     public static function getOfflineMessage($external)
     {
         global $smarty, $dontUseDbCulprit, $dontUseDbReason;
-        
-        if ($external) 
+
+        if ($external)
         {
             $smarty->fetch("offline/external.tpl");
-        } 
-        else 
+        }
+        else
         {
             $smarty->assign("dontUseDbCulprit", $dontUseDbCulprit);
             $smarty->assign("dontUseDbReason", $dontUseDbReason);
