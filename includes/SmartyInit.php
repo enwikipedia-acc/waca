@@ -1,6 +1,6 @@
 <?php
 if (!defined("ACC")) {
-	die();
+    die();
 } // Invalid entry point
 
 require_once 'lib/smarty/Smarty.class.php';
