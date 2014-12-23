@@ -24,12 +24,12 @@ class User extends DataObject
     private $oauthaccesstoken = null;
     private $oauthaccesssecret = null;
     private $oauthidentitycache = null;
-
+    
     // cache variable of the current user - it's never going to change in the middle of a request.
     private static $currentUser;
-
+    
     private $identityCache = null;
-
+    
     /**
      * Summary of getCurrent
      * @param PdoDatabase $database
@@ -39,9 +39,9 @@ class User extends DataObject
     {
         if($database === null)
         {
-            $database = gGetDb();
+            $database = gGetDb();   
         }
-
+        
         if(self::$currentUser === null)
         {
             if(isset($_SESSION['userID']))
@@ -58,14 +58,14 @@ class User extends DataObject
                 $anonymousCoward->onwikiname = "127.0.0.1";
                 $anonymousCoward->id = -1;
                 $anonymousCoward->identified = 0; // use the identification lockout too.
-
+                
                 self::$currentUser = $anonymousCoward;
             }
         }
-
+        
         return self::$currentUser;
     }
-
+    
     public static function getByUsername($username, PdoDatabase $database)
     {
         $statement = $database->prepare("SELECT * FROM user WHERE username = :id LIMIT 1;");
@@ -78,12 +78,12 @@ class User extends DataObject
         if($resultObject != false)
         {
             $resultObject->isNew = false;
-            $resultObject->setDatabase($database);
+            $resultObject->setDatabase($database); 
         }
 
         return $resultObject;
     }
-
+    
     public static function getByRequestToken($requestToken, PdoDatabase $database)
     {
         $statement = $database->prepare("SELECT * FROM user WHERE oauthrequesttoken = :id LIMIT 1;");
@@ -96,12 +96,12 @@ class User extends DataObject
         if($resultObject != false)
         {
             $resultObject->isNew = false;
-            $resultObject->setDatabase($database);
+            $resultObject->setDatabase($database); 
         }
 
         return $resultObject;
     }
-
+    
     /**
      * @param string $status
      */
@@ -109,158 +109,158 @@ class User extends DataObject
     {
         $statement = $database->prepare("SELECT * FROM user WHERE status = :status");
         $statement->execute( array( ":status" => $status ) );
-
+        
         $resultObject = $statement->fetchAll( PDO::FETCH_CLASS, get_called_class() );
-
+        
         foreach ($resultObject as $u)
         {
             $u->setDatabase($database);
             $u->isNew = false;
         }
-
+     
         return $resultObject;
     }
-
+    
     public static function getAllCheckusers(PdoDatabase $database)
     {
         $statement = $database->prepare("SELECT * FROM user WHERE checkuser = 1;");
         $statement->execute();
-
+        
         $resultObject = $statement->fetchAll( PDO::FETCH_CLASS, get_called_class() );
-
+        
         foreach ($resultObject as $u)
         {
             $u->setDatabase($database);
             $u->isNew = false;
         }
-
+        
         return $resultObject;
     }
-
+    
     public static function getAllInactive(PdoDatabase $database)
-    {
+    {   
         $date = new DateTime();
         $date->modify("-45 days");
-
+        
         $statement = $database->prepare(<<<SQL
-            SELECT *
-            FROM user
-            WHERE lastactive < :lastactivelimit
-                AND status != 'Suspended'
-                AND status != 'Declined'
-                AND status != 'New'
+            SELECT * 
+            FROM user 
+            WHERE lastactive < :lastactivelimit 
+                AND status != 'Suspended' 
+                AND status != 'Declined' 
+                AND status != 'New' 
             ORDER BY lastactive ASC;
 SQL
         );
         $statement->execute( array( ":lastactivelimit" => $date->format("Y-m-d H:i:s") ) );
-
+        
         $resultObject = $statement->fetchAll( PDO::FETCH_CLASS, get_called_class() );
-
+        
         foreach ($resultObject as $u)
         {
             $u->setDatabase($database);
             $u->isNew = false;
         }
-
+        
         return $resultObject;
     }
-
+    
     public function save()
     {
-        if($this->isNew)
-        { // insert
-            $statement = $this->dbObject->prepare(<<<SQL
-                INSERT INTO `user` (
-                    username, email, password, status, onwikiname, welcome_sig,
-                    lastactive, forcelogout, checkuser, identified,
-                    welcome_template, abortpref, confirmationdiff, emailsig,
-                    oauthrequesttoken, oauthrequestsecret,
+		if($this->isNew)
+		{ // insert
+			$statement = $this->dbObject->prepare(<<<SQL
+                INSERT INTO `user` ( 
+                    username, email, password, status, onwikiname, welcome_sig, 
+                    lastactive, forcelogout, checkuser, identified, 
+                    welcome_template, abortpref, confirmationdiff, emailsig, 
+                    oauthrequesttoken, oauthrequestsecret, 
                     oauthaccesstoken, oauthaccesssecret
                 ) VALUES (
                     :username, :email, :password, :status, :onwikiname, :welcome_sig,
-                    :lastactive, :forcelogout, :checkuser, :identified,
-                    :welcome_template, :abortpref, :confirmationdiff, :emailsig,
+                    :lastactive, :forcelogout, :checkuser, :identified, 
+                    :welcome_template, :abortpref, :confirmationdiff, :emailsig, 
                     :ort, :ors, :oat, :oas
                 );
 SQL
             );
-            $statement->bindValue(":username", $this->username);
-            $statement->bindValue(":email", $this->email);
-            $statement->bindValue(":password", $this->password);
-            $statement->bindValue(":status", $this->status);
-            $statement->bindValue(":onwikiname", $this->onwikiname);
-            $statement->bindValue(":welcome_sig", $this->welcome_sig);
-            $statement->bindValue(":lastactive", $this->lastactive);
-            $statement->bindValue(":forcelogout", $this->forcelogout);
-            $statement->bindValue(":checkuser", $this->checkuser);
-            $statement->bindValue(":identified", $this->identified);
-            $statement->bindValue(":welcome_template", $this->welcome_template);
-            $statement->bindValue(":abortpref", $this->abortpref);
-            $statement->bindValue(":confirmationdiff", $this->confirmationdiff);
-            $statement->bindValue(":emailsig", $this->emailsig);
+			$statement->bindValue(":username", $this->username);
+			$statement->bindValue(":email", $this->email);
+			$statement->bindValue(":password", $this->password);
+			$statement->bindValue(":status", $this->status);
+			$statement->bindValue(":onwikiname", $this->onwikiname);
+			$statement->bindValue(":welcome_sig", $this->welcome_sig);
+			$statement->bindValue(":lastactive", $this->lastactive);
+			$statement->bindValue(":forcelogout", $this->forcelogout);
+			$statement->bindValue(":checkuser", $this->checkuser);
+			$statement->bindValue(":identified", $this->identified);
+			$statement->bindValue(":welcome_template", $this->welcome_template);
+			$statement->bindValue(":abortpref", $this->abortpref);
+			$statement->bindValue(":confirmationdiff", $this->confirmationdiff);
+			$statement->bindValue(":emailsig", $this->emailsig);
             $statement->bindValue(":ort", $this->oauthrequesttoken);
             $statement->bindValue(":ors", $this->oauthrequestsecret);
             $statement->bindValue(":oat", $this->oauthaccesstoken);
             $statement->bindValue(":oas", $this->oauthaccesssecret);
-
-            if($statement->execute())
-            {
-                $this->isNew = false;
-                $this->id = (int)$this->dbObject->lastInsertId();
-            }
-            else
-            {
-                throw new Exception($statement->errorInfo());
-            }
-        }
-        else
-        { // update
-            $statement = $this->dbObject->prepare(<<<SQL
-                UPDATE `user` SET
-                    username = :username, email = :email,
+            
+			if($statement->execute())
+			{
+				$this->isNew = false;
+				$this->id = (int)$this->dbObject->lastInsertId();
+			}
+			else
+			{
+				throw new Exception($statement->errorInfo());
+			}
+		}
+		else
+		{ // update
+			$statement = $this->dbObject->prepare(<<<SQL
+                UPDATE `user` SET 
+                    username = :username, email = :email, 
                     password = :password, status = :status,
-                    onwikiname = :onwikiname, welcome_sig = :welcome_sig,
-                    lastactive = :lastactive, forcelogout = :forcelogout,
+                    onwikiname = :onwikiname, welcome_sig = :welcome_sig, 
+                    lastactive = :lastactive, forcelogout = :forcelogout, 
                     checkuser = :checkuser, identified = :identified,
-                    welcome_template = :welcome_template, abortpref = :abortpref,
-                    confirmationdiff = :confirmationdiff, emailsig = :emailsig,
-                    oauthrequesttoken = :ort, oauthrequestsecret = :ors,
-                    oauthaccesstoken = :oat, oauthaccesssecret = :oas
-                WHERE id = :id
+                    welcome_template = :welcome_template, abortpref = :abortpref, 
+                    confirmationdiff = :confirmationdiff, emailsig = :emailsig, 
+                    oauthrequesttoken = :ort, oauthrequestsecret = :ors, 
+                    oauthaccesstoken = :oat, oauthaccesssecret = :oas 
+                WHERE id = :id 
                 LIMIT 1;
 SQL
             );
-            $statement->bindValue(":id", $this->id);
-            $statement->bindValue(":username", $this->username);
-            $statement->bindValue(":email", $this->email);
-            $statement->bindValue(":password", $this->password);
-            $statement->bindValue(":status", $this->status);
-            $statement->bindValue(":onwikiname", $this->onwikiname);
-            $statement->bindValue(":welcome_sig", $this->welcome_sig);
-            $statement->bindValue(":lastactive", $this->lastactive);
-            $statement->bindValue(":forcelogout", $this->forcelogout);
-            $statement->bindValue(":checkuser", $this->checkuser);
-            $statement->bindValue(":identified", $this->identified);
-            $statement->bindValue(":welcome_template", $this->welcome_template);
-            $statement->bindValue(":abortpref", $this->abortpref);
-            $statement->bindValue(":confirmationdiff", $this->confirmationdiff);
-            $statement->bindValue(":emailsig", $this->emailsig);
+			$statement->bindValue(":id", $this->id);
+			$statement->bindValue(":username", $this->username);
+			$statement->bindValue(":email", $this->email);
+			$statement->bindValue(":password", $this->password);
+			$statement->bindValue(":status", $this->status);
+			$statement->bindValue(":onwikiname", $this->onwikiname);
+			$statement->bindValue(":welcome_sig", $this->welcome_sig);
+			$statement->bindValue(":lastactive", $this->lastactive);
+			$statement->bindValue(":forcelogout", $this->forcelogout);
+			$statement->bindValue(":checkuser", $this->checkuser);
+			$statement->bindValue(":identified", $this->identified);
+			$statement->bindValue(":welcome_template", $this->welcome_template);
+			$statement->bindValue(":abortpref", $this->abortpref);
+			$statement->bindValue(":confirmationdiff", $this->confirmationdiff);
+			$statement->bindValue(":emailsig", $this->emailsig);
             $statement->bindValue(":ort", $this->oauthrequesttoken);
             $statement->bindValue(":ors", $this->oauthrequestsecret);
             $statement->bindValue(":oat", $this->oauthaccesstoken);
             $statement->bindValue(":oas", $this->oauthaccesssecret);
-
-            if(!$statement->execute())
-            {
-                throw new Exception($statement->errorInfo());
-            }
-        }
+            
+			if(!$statement->execute())
+			{
+				throw new Exception($statement->errorInfo());
+			}
+		} 
     }
 
     public function authenticate($password)
     {
         $result = AuthUtility::testCredentials($password, $this->password);
-
+        
         if($result == true)
         {
             // password version is out of date, update it.
@@ -270,18 +270,18 @@ SQL
                 $this->save();
             }
         }
-
+        
         return $result;
     }
-
+    
     public function touchLastLogin()
     {
         $query = "UPDATE user SET lastactive = CURRENT_TIMESTAMP() WHERE id = :id;";
         $this->dbObject->prepare($query)->execute(array(":id" => $this->id));
     }
-
+    
     #region properties
-
+    
     public function getUsername()
     {
         return $this->username;
@@ -380,7 +380,7 @@ SQL
     {
         $this->forcelogout = $forcelogout ? 1 : 0;
     }
-
+    
     public function getSecure()
     {
         return true;
@@ -448,7 +448,7 @@ SQL
     {
         $this->emailsig = $emailsig;
     }
-
+    
     public function getOAuthRequestToken()
     {
         return $this->oauthrequesttoken;
@@ -486,13 +486,13 @@ SQL
 
     public function setOAuthAccessSecret($oauthaccesssecret)
     {
-        $this->oauthaccesssecret = $oauthaccesssecret;
+        $this->oauthaccesssecret = $oauthaccesssecret;       
     }
 
     #endregion
-
+    
     #region changing access level
-
+    
     /**
      * @param string $status
      * @param string $logaction
@@ -500,33 +500,33 @@ SQL
     private function updateStatus($status, $logaction, $comment)
     {
         $oldstatus = $this->status;
-
+        
         if($comment == null)
         {
             $comment = "Changing user access from $oldstatus to $status";
         }
-
+        
         if(!$this->dbObject->beginTransaction())
         {
             throw new Exception("Could not begin database transaction");
         }
-
+        
         try
         {
-            $this->status = $status;
+            $this->status = $status;            
             $statusquery = $this->dbObject->prepare("UPDATE user SET status = :status WHERE id = :id;");
             $statusquery->bindValue(":status", $status);
             $statusquery->bindValue(":id", $this->id);
-
+            
             $username = self::getCurrent($this->dbObject)->getUsername();
-
+            
             // TODO: update me to use new logging systems.
             $logquery = $this->dbObject->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:id, :user, :action, CURRENT_TIMESTAMP(), :cmt);");
             $logquery->bindValue(":user", $username);
             $logquery->bindValue(":id", $this->id);
             $logquery->bindValue(":action", $logaction);
             $logquery->bindValue(":cmt", $comment);
-
+            
             $statusquery->execute();
             $logquery->execute();
         }
@@ -535,88 +535,88 @@ SQL
             // something went wrong, so rollback and rethrow for someone else to handle the error.
             $this->dbObject->rollBack();
             $this->status = $oldstatus;
-
+            
             throw $ex;
         }
-
+        
         $this->dbObject->commit();
     }
-
+    
     public function approve()
     {
         $this->updateStatus("User", "Approved", null);
     }
-
+    
     public function suspend($comment)
     {
         $this->updateStatus("Suspended", "Suspended", $comment);
     }
-
+    
     public function decline($comment)
     {
         $this->updateStatus("Declined", "Declined", $comment);
     }
-
+    
     public function promote()
     {
         $this->updateStatus("Admin", "Promoted", null);
     }
-
+    
     public function demote($comment)
     {
         $this->updateStatus("User", "Demoted", $comment);
     }
 
     #endregion
-
+    
     #region user access checks
-
+    
     public function isAdmin()
     {
         return $this->status == "Admin";
     }
-
+    
     public function isCheckuser()
     {
         return $this->checkuser == 1;
     }
-
+    
     public function isIdentified()
     {
-        return $this->identified == 1;
+        return $this->identified == 1;   
     }
-
+    
     public function isSuspended()
     {
         return $this->status == "Suspended";
     }
-
+    
     public function isNew()
     {
         return $this->status == "New";
     }
-
+    
     public function isUser()
     {
-        return $this->status == "User";
+        return $this->status == "User";   
     }
-
+    
     public function isDeclined()
     {
         return $this->status == "Declined";
     }
-
-    #endregion
+    
+    #endregion 
 
     #region OAuth
-
+    
     public function getOAuthIdentity()
     {
         if($this->oauthaccesstoken == null)
         {
             $this->clearOAuthData();
         }
-
+        
         global $oauthConsumerToken, $oauthMediaWikiCanonicalServer;
 
         if($this->oauthidentitycache == null)
@@ -627,7 +627,7 @@ SQL
         {
             $this->identityCache = unserialize($this->oauthidentitycache);
         }
-
+        
         // check the cache
         if(
             $this->identityCache != null &&
@@ -642,24 +642,24 @@ SQL
         else
         {
             $this->getIdentityCache();
-
+            
             return $this->identityCache;
-
+            
         }
     }
-
+    
     private function getOAuthOnWikiName()
     {
         return $this->getOAuthIdentity()->username;
     }
-
+    
     public function isOAuthLinked()
     {
         if ($this->onwikiname === "##OAUTH##")
         {
             return true; // special value. If an account must be oauth linked, this is true.
         }
-
+        
         return $this->oauthaccesstoken !== null;
     }
 
@@ -669,14 +669,14 @@ SQL
         $this->oauthidentitycache = null;
         $clearCacheQuery = "UPDATE user SET oauthidentitycache = null WHERE id = :id;";
         $this->dbObject->prepare($clearCacheQuery)->execute( array( ":id" => $this->id ) );
-
+        
         return null;
     }
-
+    
     private function getIdentityCache()
     {
         global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;
-
+        
         try
         {
             $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
@@ -693,9 +693,9 @@ SQL
             $this->dbObject->
                 prepare( "UPDATE user SET oauthidentitycache = null WHERE id = :id;" )->
                 execute( array( ":id" => $this->id ) );
-        }
+        }   
     }
-
+    
     public function detachAccount()
     {
         $this->setOnWikiName($this->getOAuthOnWikiName());
@@ -759,19 +759,19 @@ SQL
     public function getApprovalDate()
     {
         $query = $this->dbObject->prepare(<<<SQL
-            SELECT log_time
-            FROM acc_log
-            WHERE log_pend = :userid
-                AND log_action = 'Approved'
-            ORDER BY log_id DESC
+            SELECT log_time 
+            FROM acc_log 
+            WHERE log_pend = :userid 
+                AND log_action = 'Approved' 
+            ORDER BY log_id DESC 
             LIMIT 1;
 SQL
         );
         $query->execute( array( ":userid" => $this->id ) );
-
+        
         $data = DateTime::createFromFormat( "Y-m-d H:i:s", $query->fetchColumn() );
         $query->closeCursor();
-
+        
         return $data;
     }
 }
