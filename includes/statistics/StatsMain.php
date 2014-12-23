@@ -146,11 +146,5 @@ class StatsMain extends StatisticsPage
         $mostComments = $mostCommentsStatement->fetchColumn();
         $mostCommentsStatement->closeCursor();
         $smarty->assign("mostComments", $mostComments);
-        
-        // Welcome queue length
-		$welcomeQueueStatement = $database->query("SELECT COUNT(*) FROM acc_welcome WHERE welcome_status = 'Open';");
-		$welcomeQueueLength = $welcomeQueueStatement->fetchColumn();
-        $welcomeQueueStatement->closeCursor();
-        $smarty->assign("welcomeQueueLength",$welcomeQueueLength);
 	}
 }
