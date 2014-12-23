@@ -130,13 +130,24 @@ function defaultpage() {
         $totalRequests = $totalRequestsStatement->fetchColumn();
         $totalRequestsStatement->closeCursor();
         
-        $requestSectionData[$v['header']] = array("requests" => $requests, "total" => $totalRequests, "api" => $v['api']);
+        $requestSectionData[$v['header']] = array(
+            "requests" => $requests, 
+            "total" => $totalRequests, 
+            "api" => $v['api']);
     }
     
     global $smarty;
     $smarty->assign("requestLimitShowOnly", $requestLimitShowOnly);
 	
-    $query = "SELECT pend_id, pend_name, pend_checksum, log_time FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
+    $query = <<<SQL
+        SELECT r.id, r.name, r.checksum
+        FROM request r 
+        JOIN acc_log l ON r.id = l.log_pend 
+        WHERE l.log_action LIKE 'Closed%' 
+        ORDER BY l.log_time DESC 
+        LIMIT 5;
+SQL;
+    
     $statement = $database->prepare($query);
     $statement->execute();
     

@@ -66,24 +66,57 @@ class StatsUsers extends StatisticsPage
         
         global $smarty;
 		
-        $activitySummary = $database->prepare("select coalesce(c.mail_desc, l.log_action) action, COUNT(*) count from acc_log l left join closes c on l.log_action = c.closes where l.log_user = :username group by action;");
+        $activitySummary = $database->prepare(<<<SQL
+            SELECT COALESCE(c.mail_desc, l.log_action) AS action, COUNT(*) AS count 
+            FROM acc_log l 
+            LEFT JOIN closes c ON l.log_action = c.closes 
+            WHERE l.log_user = :username 
+            GROUP BY action;
+SQL
+        );
         $activitySummary->execute(array(":username" => $user->getUsername()));
 		$activitySummaryData = $activitySummary->fetchAll(PDO::FETCH_ASSOC);
         
         $smarty->assign("user", $user);
         $smarty->assign("activity", $activitySummaryData);
 		
-        $usersCreatedQuery = $database->prepare("SELECT log_time time, pend_name name, pend_id id FROM acc_log JOIN acc_pend ON pend_id = log_pend LEFT JOIN emailtemplate ON concat('Closed ', id) = log_action WHERE log_user = :username AND log_action LIKE 'Closed %' AND (oncreated = '1' OR log_action = 'Closed custom-y') ORDER BY log_time;");
+        $usersCreatedQuery = $database->prepare(<<<SQL
+            SELECT l.log_time time, r.name name, r.id id 
+            FROM acc_log l
+            JOIN request r ON r.id = l.log_pend 
+            LEFT JOIN emailtemplate e ON concat('Closed ', e.id) = l.log_action 
+            WHERE l.log_user = :username 
+                AND l.log_action LIKE 'Closed %' 
+                AND (e.oncreated = '1' OR l.log_action = 'Closed custom-y') 
+            ORDER BY l.log_time;
+SQL
+        );
         $usersCreatedQuery->execute(array(":username" => $user->getUsername()));
         $usersCreated = $usersCreatedQuery->fetchAll(PDO::FETCH_ASSOC);
         $smarty->assign("created", $usersCreated);
         
-        $usersNotCreatedQuery = $database->prepare("SELECT log_time time, pend_name name, pend_id id FROM acc_log JOIN acc_pend ON pend_id = log_pend LEFT JOIN emailtemplate ON concat('Closed ', id) = log_action WHERE log_user = :username AND log_action LIKE 'Closed %' AND (oncreated = '0' OR log_action = 'Closed custom-n' OR log_action='Closed 0') ORDER BY log_time;");
+        $usersNotCreatedQuery = $database->prepare(<<<SQL
+            SELECT l.log_time time, r.name name, r.id id 
+            FROM acc_log l
+            JOIN request r ON r.id = l.log_pend 
+            LEFT JOIN emailtemplate e ON concat('Closed ', e.id) = l.log_action 
+            WHERE l.log_user = :username 
+                AND l.log_action LIKE 'Closed %' 
+                AND (e.oncreated = '0' OR l.log_action = 'Closed custom-n' OR l.log_action='Closed 0') 
+            ORDER BY l.log_time;
+SQL
+        );
         $usersNotCreatedQuery->execute(array(":username" => $user->getUsername()));
         $usersNotCreated = $usersNotCreatedQuery->fetchAll(PDO::FETCH_ASSOC);
         $smarty->assign("notcreated", $usersNotCreated);
         
-        $accountLogQuery = $database->prepare("SELECT * FROM acc_log where log_pend = :userid AND log_action RLIKE '(Approved|Suspended|Declined|Promoted|Demoted|Renamed|fchange)';");
+        $accountLogQuery = $database->prepare(<<<SQL
+            SELECT * 
+            FROM acc_log l 
+            WHERE l.log_pend = :userid 
+	            AND log_action IN ('Approved','Suspended','Declined','Promoted','Demoted','Renamed','Prefchange');     
+SQL
+        );
         $accountLogQuery->execute(array(":userid" => $user->getId()));
         $accountLog = $accountLogQuery->fetchAll(PDO::FETCH_ASSOC);
         $smarty->assign("accountlog", $accountLog);

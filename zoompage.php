@@ -52,16 +52,16 @@ function zoomPage($id,$urlhash)
 	
     $viewableDataStatement = $database->prepare(<<<SQL
         SELECT COUNT(*) 
-        FROM acc_pend 
+        FROM request 
         WHERE 
             (
-                pend_email = :email 
-                OR pend_ip = :trustedIp 
-                OR pend_proxyip LIKE :trustedProxy
+                email = :email 
+                OR ip = :trustedIp 
+                OR forwardedip LIKE :trustedProxy
             ) 
-            AND pend_reserved = :reserved 
-            AND pend_mailconfirm = 'Confirmed' 
-            AND pend_status != 'Closed';
+            AND reserved = :reserved 
+            AND emailconfirm = 'Confirmed' 
+            AND status != 'Closed';
 SQL
     );
     

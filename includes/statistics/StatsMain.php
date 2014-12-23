@@ -85,7 +85,7 @@ class StatsMain extends StatisticsPage
         global $smarty;
         
         $database = gGetDb();
-        $requestsQuery = "SELECT COUNT(*) FROM acc_pend WHERE pend_status = :status AND pend_mailconfirm = 'Confirmed';";
+        $requestsQuery = "SELECT COUNT(*) FROM request WHERE status = :status AND emailconfirm = 'Confirmed';";
         
         $requestsStatement = $database->prepare($requestsQuery);
         
@@ -110,7 +110,7 @@ class StatsMain extends StatisticsPage
         $smarty->assign("statsCheckuser", $checkuser);
 
         // Unconfirmed requests
-		$unconfirmedStatement = $database->query("SELECT COUNT(*) FROM acc_pend WHERE pend_mailconfirm != 'Confirmed' AND pend_mailconfirm != '';");
+		$unconfirmedStatement = $database->query("SELECT COUNT(*) FROM request WHERE emailconfirm != 'Confirmed' AND emailconfirm != '';");
         $unconfirmed = $unconfirmedStatement->fetchColumn();
         $unconfirmedStatement->closeCursor();
         $smarty->assign("statsUnconfirmed", $unconfirmed);

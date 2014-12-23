@@ -1099,30 +1099,30 @@ elseif ($action == "ban") {
         $database = gGetDb();
         // TODO: rewrite me!
 		if (isset($_GET['ip'])) {
-			$query = "SELECT pend_ip, pend_proxyip FROM acc_pend WHERE pend_id = :ip;";
+			$query = "SELECT ip, forwardedip FROM request WHERE id = :ip;";
             $statement = $database->prepare($query);
             $statement->bindValue(":ip", $_GET['ip']);
             $statement->execute();
 			$row = $statement->fetch(PDO::FETCH_ASSOC);
-			$target = getTrustedClientIP($row['pend_ip'], $row['pend_proxyip']);
+			$target = getTrustedClientIP($row['ip'], $row['forwardedip']);
 			$type = "IP";
 		}
 		elseif (isset($_GET['email'])) {
-            $query = "SELECT pend_email FROM acc_pend WHERE pend_id = :ip;";
+            $query = "SELECT email FROM request WHERE id = :ip;";
             $statement = $database->prepare($query);
             $statement->bindValue(":ip", $_GET['email']);
             $statement->execute();
 			$row = $statement->fetch(PDO::FETCH_ASSOC);
-			$target = $row['pend_email'];
+			$target = $row['email'];
 			$type = "EMail";
 		}
 		elseif (isset($_GET['name'])) {
-            $query = "SELECT pend_name FROM acc_pend WHERE pend_id = :ip;";
+            $query = "SELECT name FROM request WHERE id = :ip;";
             $statement = $database->prepare($query);
             $statement->bindValue(":ip", $_GET['name']);
             $statement->execute();
 			$row = $statement->fetch(PDO::FETCH_ASSOC);
-			$target = $row['pend_name'];
+			$target = $row['name'];
 			$type = "Name";
 		}
         else
@@ -2096,7 +2096,7 @@ elseif ($action == "sendtouser")
     
     $database->transactionally(function() use ($database, $user, $request, $curuser)
     {
-        $updateStatement = $database->prepare("UPDATE acc_pend SET pend_reserved = :userid WHERE pend_id = :request LIMIT 1;");
+        $updateStatement = $database->prepare("UPDATE request SET reserved = :userid WHERE id = :request LIMIT 1;");
         $updateStatement->bindValue(":userid", $user->getId());
         $updateStatement->bindValue(":request", $request);
         if(!$updateStatement->execute())

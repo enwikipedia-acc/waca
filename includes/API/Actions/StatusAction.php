@@ -23,16 +23,14 @@ class StatusAction extends ApiActionBase implements IApiAction
         $statusElement = $this->document->createElement("status");
         $apiDocument->appendChild($statusElement);
 		
-        $mailconfirm = "Confirmed";			
         $query = $this->database->prepare(<<<SQL
             SELECT COUNT(*) AS count 
-            FROM acc_pend 
+            FROM request 
             WHERE 
-                pend_status = :pstatus 
-                AND pend_mailconfirm = :pmailconfirm;
+                status = :pstatus 
+                AND emailconfirm = "Confirmed";
 SQL
         );
-        $query->bindValue(":pmailconfirm", $mailconfirm);
         
         global $availableRequestStates;
         foreach( $availableRequestStates as $key => $value ) 
