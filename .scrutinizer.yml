@@ -2,7 +2,7 @@ inherit: true
 
 tools:
     php_code_sniffer: true
-    php_cpd: true
+    php_cpd: false
     php_cs_fixer: true
     php_loc: true
     php_mess_detector: true
