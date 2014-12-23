@@ -9,7 +9,7 @@ class FakeLocationProvider implements ILocationProvider
     {
         // do nothing.
     }
-    
+
     public function getIpLocation($address)
     {
         return null;

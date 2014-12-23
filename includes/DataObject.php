@@ -1,78 +1,78 @@
 <?php
 
 /**
- * DataObject is the base class for all the database access classes. Each 
- * "DataObject" holds one record from the database, and provides functions to 
+ * DataObject is the base class for all the database access classes. Each
+ * "DataObject" holds one record from the database, and provides functions to
  * allow loading from and saving to the database.
  *
- * Note: This requires the database tables to be named the same as the classes, 
- * and the database tables must have an "id" column. Simple views can be used 
+ * Note: This requires the database tables to be named the same as the classes,
+ * and the database tables must have an "id" column. Simple views can be used
  * as a way of aliasing to allow for a transition period.
- * 
+ *
  * @author Simon Walker
  */
 abstract class DataObject
 {
     protected $id = 0;
-    
+
     public $isNew = true;
-    
+
     protected $dbObject;
-    
+
     public function setDatabase(PdoDatabase $db)
     {
         $this->dbObject = $db;
     }
-    
-	/**
+
+    /**
      * Retrieves a data object by it's row ID.
      * @param $id
      */
-	public static function getById($id, PdoDatabase $database) 
+    public static function getById($id, PdoDatabase $database)
     {
-		$statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE id = :id LIMIT 1;");
-		$statement->bindValue(":id", $id);
+        $statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE id = :id LIMIT 1;");
+        $statement->bindValue(":id", $id);
 
-		$statement->execute();
+        $statement->execute();
 
-		$resultObject = $statement->fetchObject( get_called_class() );
+        $resultObject = $statement->fetchObject( get_called_class() );
 
-		if($resultObject != false)
-		{
-			$resultObject->isNew = false;
-            $resultObject->setDatabase($database); 
-		}
+        if($resultObject != false)
+        {
+            $resultObject->isNew = false;
+            $resultObject->setDatabase($database);
+        }
 
-		return $resultObject;
-	}
+        return $resultObject;
+    }
 
-	/**
+    /**
      * Saves a data object to the database, either updating or inserting a record.
      */
-	abstract public function save();
+    abstract public function save();
 
-	/**
-	 * Retrieves the ID attribute
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-	/**
-	 * Deletes the object from the database
-	 */
-	public function delete() 
+    /**
+     * Retrieves the ID attribute
+     */
+    public function getId()
     {
-		$statement = $this->dbObject->prepare(
-            "DELETE FROM `" 
-            . strtolower( get_called_class() ) 
-            . "` WHERE id = :id LIMIT 1;");
-        
-		$statement->bindValue(":id", $this->id);
-		$statement->execute();
+        return $this->id;
+    }
 
-		$this->id = 0;
-		$this->isNew = true;
+    /**
+     * Deletes the object from the database
+     */
+    public function delete()
+    {
+        $statement = $this->dbObject->prepare(
+            "DELETE FROM `"
+            . strtolower( get_called_class() )
+            . "` WHERE id = :id LIMIT 1;");
+
+        $statement->bindValue(":id", $this->id);
+        $statement->execute();
+
+        $this->id = 0;
+        $this->isNew = true;
     }
 }

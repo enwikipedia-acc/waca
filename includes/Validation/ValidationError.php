@@ -15,45 +15,45 @@ class ValidationError
     const OPEN_REQUEST_NAME  = "open_request_name";
     const BANNED             = "banned";
     const BANNED_TOR         = "banned_tor";
-    
+
     /**
      * Summary of $errorCode
      * @var string
      */
     private $errorCode;
-    
+
     /**
      * Summary of $isError
      * @var bool
      */
     private $isError;
-    
+
     /**
      * Summary of __construct
-     * @param string $errorCode 
-     * @param bool $isError 
+     * @param string $errorCode
+     * @param bool $isError
      */
     public function __construct($errorCode, $isError = true)
     {
-        $this->errorCode = $errorCode;   
-        $this->isError = $isError;   
+        $this->errorCode = $errorCode;
+        $this->isError = $isError;
     }
-    
+
     /**
      * Summary of getErrorCode
      * @return string
      */
     public function getErrorCode()
     {
-        return $this->errorCode;   
+        return $this->errorCode;
     }
-    
+
     /**
      * Summary of isError
      * @return bool
      */
     public function isError()
     {
-        return $this->isError;   
+        return $this->isError;
     }
 }
