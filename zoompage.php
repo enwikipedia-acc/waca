@@ -16,7 +16,7 @@ function zoomPage($id,$urlhash)
 {
 	global $tsSQLlink, $session, $availableRequestStates, $createdid;
 	global $smarty, $locationProvider, $rdnsProvider, $antispoofProvider;
-    global $xffTrustProvider;
+	global $xffTrustProvider, $enableEmailConfirm;
     
     $database = gGetDb();
     $request = Request::getById($id, $database);
@@ -28,6 +28,8 @@ function zoomPage($id,$urlhash)
         die();
     }
     
+    $smarty->assign('ecenable', $enableEmailConfirm);
+
     if(isset($_GET['ecoverride']) && User::getCurrent()->isAdmin() )
     {
         $smarty->assign('ecoverride', true);
