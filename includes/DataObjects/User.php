@@ -507,56 +507,54 @@ SQL
     
     #region changing access level
     
-    /**
-     * @param string $status
-     * @param string $logaction
-     */
-    private function updateStatus($status, $logaction, $comment)
-    {
-        $oldstatus = $this->status;
-        
-        if($comment == null)
-        {
-            $comment = "Changing user access from $oldstatus to $status";
-        }
-        
-        $this->dbObject->transactionally(function() use ($logaction, $comment, $status)
-        {
-            $this->status = $status;            
-            $statusquery = $this->dbObject->prepare("UPDATE user SET status = :status WHERE id = :id;");
-            $statusquery->bindValue(":status", $status);
-            $statusquery->bindValue(":id", $this->id);
-            
-            $username = self::getCurrent($this->dbObject)->getUsername();
-            
-            $statusquery->execute();
-            Logger::UserStatusChange($this->dbObject, $this, $comment, $logaction);
-        });
-    }
-    
     public function approve()
     {
-        $this->updateStatus("User", "Approved", null);
+        $this->dbObject->transactionally(function()
+        {
+            $this->status = "User";            
+            $this->save();
+            Logger::ApprovedUser($this->dbObject, $this);
+        });
     }
     
     public function suspend($comment)
     {
-        $this->updateStatus("Suspended", "Suspended", $comment);
+        $this->dbObject->transactionally(function()
+        {
+            $this->status = "Suspended";            
+            $this->save();
+            Logger::SuspendedUser($this->dbObject, $this, $comment);
+        });
     }
     
     public function decline($comment)
     {
-        $this->updateStatus("Declined", "Declined", $comment);
+        $this->dbObject->transactionally(function()
+        {
+            $this->status = "Declined";            
+            $this->save();
+            Logger::DeclinedUser($this->dbObject, $this, $comment);
+        });
     }
     
     public function promote()
     {
-        $this->updateStatus("Admin", "Promoted", null);
+        $this->dbObject->transactionally(function()
+        {
+            $this->status = "Admin";            
+            $this->save();
+            Logger::PromotedUser($this->dbObject, $this);
+        });
     }
     
     public function demote($comment)
     {
-        $this->updateStatus("User", "Demoted", $comment);
+        $this->dbObject->transactionally(function()
+        {
+            $this->status = "User";            
+            $this->save();
+            Logger::DemotedUser($this->dbObject, $this, $comment);
+        });
     }
 
     #endregion

@@ -10,40 +10,53 @@
  */
 class Logger
 {
-    private static function CreateLogEntry(PdoDatabase $database, DataObject $object, $logaction, $comment = null)
+    private static function CreateLogEntry(PdoDatabase $database, DataObject $object, $logaction, $comment = null, $user = null)
     {
+        if($user == null)
+        {
+            $user = User::getCurrent();    
+        }
+        
         $log = new Log();
         $log->setDatabase($database);
         $log->setAction($logaction);
         $log->setObjectId($object->getId());
         $log->setObjectType(get_class($object));
-        $log->setUser(User::getCurrent());
+        $log->setUser($user);
         $log->setComment($comment);
         $log->save();
     }
     
     public static function EmailConfirmed(PdoDatabase $database, Request $object)
     {
-        $log = new Log();
-        $log->setDatabase($database);
-        $log->setAction("Email Confirmed");
-        $log->setObjectId($object->getId());
-        $log->setObjectType(get_class($object));
-        $log->setUser(User::getCommunity());
-        $log->setComment(null);
-        $log->save();
+        self::CreateLogEntry($database, $object, "Email Confirmed", null, User::getCommunity());
     }
 
     #region Users
-    /**
-     * I don't like this. --stw
-     * 
-     * I'd prefer it split into different calls instead of passing logaction
-     * @deprecated
-     */
-    public static function UserStatusChange(PdoDatabase $database, User $object, $comment, $logaction)
+    
+    public static function ApprovedUser(PdoDatabase $database, User $object)
     {
-        self::CreateLogEntry($database, $object, $logaction, $comment);
+        self::CreateLogEntry($database, $object, "Approved");        
+    }
+    
+    public static function DeclinedUser(PdoDatabase $database, User $object, $comment)
+    {
+        self::CreateLogEntry($database, $object, "Declined", $comment);        
+    }
+    
+    public static function SuspendedUser(PdoDatabase $database, User $object, $comment)
+    {
+        self::CreateLogEntry($database, $object, "Suspended", $comment);        
+    }
+    
+    public static function DemotedUser(PdoDatabase $database, User $object, $comment)
+    {
+        self::CreateLogEntry($database, $object, "Demoted", $comment);        
+    }
+    
+    public static function PromotedUser(PdoDatabase $database, User $object)
+    {
+        self::CreateLogEntry($database, $object, "Promoted");        
     }
     
     public static function RenamedUser(PdoDatabase $database, User $object, $comment)
@@ -132,15 +145,7 @@ class Logger
     public static function SendReservation(PdoDatabase $database, Request $object, User $target)
     {
         self::CreateLogEntry($database, $object, "SendReserved");
-        
-        $log = new Log();
-        $log->setDatabase($database);
-        $log->setAction("ReceiveReserved");
-        $log->setObjectId($object->getId());
-        $log->setObjectType(get_class($object));
-        $log->setUser($target->getId());
-        $log->setComment(null);
-        $log->save();
+        self::CreateLogEntry($database, $object, "ReceiveReserved", null, $target);
     }
 
     #endregion
