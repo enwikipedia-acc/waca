@@ -94,6 +94,6 @@ $database->transactionally(function() use ($ip, $database)
     
     foreach ($ip as $i)
     {
-        $insert->execute(array(":ip", $i));
+        $insert->execute(array(":ip" => $i));
     }
 });
