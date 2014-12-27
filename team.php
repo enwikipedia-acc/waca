@@ -125,6 +125,19 @@ $developer = array(
 				"Access" => "Mailing list mod",
 				"Cloak" => "*!*@wikipedia/Cyberpower678",
 				"Other" => null,
+			),
+		"Technical 13" =>
+			array(
+				"IRC" => "Technical_13",
+				"ToolID" => "890",
+				"wiki" => "Technical 13",
+				"WWW" => "https://github.com/Technical-13/waca",
+				"Name" => "Donald J. Fortier II",
+				"Role" => "Developer",
+				"Retired" => null,
+				"Access" => "Git",
+				"Cloak" => "*!*@wikimedia/Technical-13",
+				"Other" => null,
 			)
 );
 // End of the array of developers.
