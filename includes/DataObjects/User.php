@@ -717,7 +717,8 @@ SQL
     { 
         try
         {
-            return false //in_array('useoauth', $this->getOAuthIdentity()->grants);
+            return in_array('useoauth', $this->getOAuthIdentity()->grants)
+                && in_array('createeditmovepage', $this->getOAuthIdentity()->grants)
                 && in_array('createtalk', $this->getOAuthIdentity()->rights)
                 && in_array('edit', $this->getOAuthIdentity()->rights)
                 && in_array('writeapi', $this->getOAuthIdentity()->rights);} 
@@ -731,7 +732,8 @@ SQL
     { 
         try
         {
-            return false //in_array('useoauth', $this->getOAuthIdentity()->grants);
+            return in_array('useoauth', $this->getOAuthIdentity()->grants)
+                && in_array('createaccount', $this->getOAuthIdentity()->grants)
                 && in_array('createaccount', $this->getOAuthIdentity()->rights)
                 && in_array('writeapi', $this->getOAuthIdentity()->rights);
         } 

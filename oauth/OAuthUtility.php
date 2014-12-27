@@ -99,7 +99,7 @@ class OAuthUtility
         return $token;
     }
 
-    public function apiCall($apiParams, $accessToken, $accessSecret)
+    public function apiCall($apiParams, $accessToken, $accessSecret, $method = "GET")
     {
         global $mediawikiWebServiceEndpoint, $toolUserAgent;
 
@@ -112,7 +112,7 @@ class OAuthUtility
         $api_req = OAuthRequest::from_consumer_and_token(
             $c,           // Consumer
             $userToken, // User Access Token
-            "GET",        // HTTP Method
+            $method,        // HTTP Method
             $mediawikiWebServiceEndpoint,      // Endpoint url
             $apiParams    // Extra signed parameters
         );
@@ -122,7 +122,18 @@ class OAuthUtility
         $api_req->sign_request( $hmac_method, $c, $userToken );
 
         $ch = curl_init();
-        curl_setopt( $ch, CURLOPT_URL, $mediawikiWebServiceEndpoint . "?" . http_build_query( $apiParams ) );
+        if($method == "GET")
+        {
+            curl_setopt( $ch, CURLOPT_URL, $mediawikiWebServiceEndpoint . "?" . http_build_query( $apiParams ) );
+        }
+        
+        if($method == "POST")
+        {
+            curl_setopt( $ch, CURLOPT_URL, $mediawikiWebServiceEndpoint);
+            curl_setopt( $ch, CURLOPT_POST, count($apiParams));
+            curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $apiParams ));   
+        }
+        
         curl_setopt( $ch, CURLOPT_HEADER, 0 );
         curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
         curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
