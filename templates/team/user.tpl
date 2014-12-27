@@ -15,7 +15,7 @@
             <li>Enwiki Username: <a href="http://en.wikipedia.org/wiki/User:{$infoContent|escape:'url'}">{$infoContent|escape}</a></li>
         {/if}
         {if $infoName == "WWW"}
-            <li>Homepage: <a href="{$infoContent|escape:'url'}">{$infoContent|escape}</a></li>
+            <li>Homepage: <a href="{$infoContent}">{$infoContent|escape}</a></li>
         {/if}
         {if $infoName == "Role"}
             <li>Project role: {$infoContent|escape}</li>
