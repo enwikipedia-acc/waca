@@ -57,103 +57,49 @@ class LogPage
 		$pager = substr($pager, 0, -3);
 		return $pager;
 	}
-	
-	// accepts "infinity" for limit parameter
+		
+	/**
+	 * Summary of getLog
+	 * @param mixed $offset 
+	 * @param mixed $limit Accepts number or "infinity"
+	 * @param mixed $count 
+	 * @return PdoStatement
+	 */
 	private function getLog($offset = 0, $limit = 100, $count = false)
 	{
-		//CREATE TABLE `acc_log` (
-		//`log_id` INT( 11 ) NOT NULL AUTO_INCREMENT PRIMARY KEY ,
-		//`log_pend` VARCHAR( 255 ) NOT NULL ,
-		//`log_user` VARCHAR( 255 ) NOT NULL ,
-		//`log_action` VARCHAR( 255 ) NOT NULL ,
-		//`log_time` DATETIME NOT NULL ,
-		//`log_cmt` BLOB NOT NULL
-		//) ENGINE = InnoDB; 
-		
-
-		global $tsSQLlink;
-		
-		$sqlWhereAdded = 0;
-		if (!$count)
-			$logQuery = 'SELECT * FROM acc_log l ';
-		else
-			$logQuery = 'SELECT COUNT(*) AS `count` FROM acc_log l ';
-		
-		if($this->filterRequest != '')
-		{
-			if($sqlWhereAdded == 0)
-			{
-				$logQuery.= "WHERE ";
-				$sqlWhereAdded = 1;
-			}
-			else
-			{
-				$logQuery.= "AND ";
-			}
-			$logQuery .= 'log_pend LIKE "'.$this->filterRequest.'"';
-		}
-		if($this->filterUser != '')
-		{
-			if($sqlWhereAdded == 0)
-			{
-				$logQuery.= "WHERE ";
-				$sqlWhereAdded = 1;
-			}
-			else
-			{
-				$logQuery.= "AND ";
-			}
-			$logQuery .= 'log_user LIKE "'.$this->filterUser.'"';
-		}
-		if($this->filterAction != '')
-		{
-			if($sqlWhereAdded == 0)
-			{
-				$logQuery.= "WHERE ";
-				$sqlWhereAdded = 1;
-			}
-			else
-			{
-				$logQuery.= "AND ";
-			}
-			$logQuery .= 'log_action LIKE "'.$this->filterAction.'"';
-		}
-		
-		if (!$count) {
-			$logQuery.= "ORDER BY log_time DESC ";
+        $logQuery = $count 
+            ? 'SELECT COUNT(*) AS `count` FROM log l '
+            : 'SELECT l.id, l.objectid, l.objecttype, l.user AS userid, u.username AS user, l.action, l.timestamp, l.comment FROM log l INNER JOIN user u ON u.id = l.user ';
+        
+        $logQuery .= 
+            "WHERE (:ignorerequest = true OR objectid LIKE :request) "
+            . "AND (:ignoreuser = true OR user LIKE :user) "
+            . "AND (:ignoreaction = true OR action LIKE :action) ";
+                
+        $params = array();
+        $params[":request"] = $this->filterRequest;
+        $params[":ignorerequest"] = ($this->filterRequest == '');
+        $params[":user"] = $this->filterUser;
+        $params[":ignoreuser"] = ($this->filterUser == '');
+        $params[":action"] = $this->filterAction;
+        $params[":ignoreaction"] = ($this->filterAction == '');
+              
+        if (!$count)
+        {
+			$logQuery.= "ORDER BY timestamp DESC ";
 			
-		
 			if($limit != "infinity")
-			{
-				if($limit != '')
-				{
-					if (!preg_match('/^[0-9]*$/',$limit)) {
-						die('Invalid limit value passed.');
-					}
-					$limit = sanitize($limit);
-				}
-				else
-				{
-					$limit = 100;
-				}
-				
-				$logQuery.=' LIMIT '.$limit;
-				
-				if($offset != '')
-				{
-					if (!preg_match('/^[0-9]*$/',$offset)) {
-						die('Invaild limit value passed.');
-					}
-					$offset = sanitize($offset);
-
-					$logQuery.=' OFFSET '.$offset;
-				}
+			{		
+				$logQuery.=' LIMIT :limit OFFSET :offset';
+			    $params[":limit"] = $limit;	
+			    $params[":offset"] = $offset;	
 			}
 		}
 		
-		$logResult = mysql_query($logQuery, $tsSQLlink) or sqlerror(mysql_error() . "<i>$logQuery</i>","Ooops in LogPage class");
-		
-		return $logResult;
+        $statement = gGetDb()->prepare($logQuery);
+        $statement->execute($params);
+        
+        return $statement;
 	}
 	
 	private function swapUrlParams($limit, $offset)
@@ -199,45 +145,47 @@ class LogPage
 	 */
 	public function showListLog($offset, $limit)
 	{
-		global $tsSQLlink, $session, $baseurl;
-		$out="";
+        global $session, $baseurl;
+		$out = "";
 		
+        $count = $this->getLog($offset, null, true)->fetchColumn();
+        
 		$result = $this->getLog($offset, $limit);
-		$count = current(mysql_fetch_array($this->getLog($offset, null, true)));
+		
 		$logList = "";
 		$logListCount = 0;
-		while ($row = mysql_fetch_assoc($result)) {
-			$rlu = $row['log_user'];
-			$rla = $row['log_action'];
-			$rlp = $row['log_pend'];
-			$rlt = $row['log_time'];
-			$rlc = $row['log_cmt'];
+		while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+			$rlu = $row['user'];
+			$rla = $row['action'];
+			$rlp = $row['objectid'];
+			$rlt = $row['timestamp'];
+			$rlc = $row['comment'];
 			
-			if ($row['log_time'] == "0000-00-00 00:00:00") {
-				$row['log_time'] = "Date Unknown";
+			if ($row['timestamp'] == "0000-00-00 00:00:00") {
+				$row['timestamp'] = "Date Unknown";
 			}
 			
 			if (substr($rla,0,strlen("Deferred")) == "Deferred") {
 				$logList .="<li>$rlu $rla, <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
-			if ($row['log_action'] == "Closed") {
+			if ($row['action'] == "Closed") {
 				$logList .="<li>$rlu $rla, <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 			}
-			if (substr($row['log_action'],0,7) == "Closed ") {
-				if ($row['log_action'] == "Closed 0") {
+			if (substr($row['action'],0,7) == "Closed ") {
+				if ($row['action'] == "Closed 0") {
 					$logList .="<li>$rlu Dropped, <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 				} 
-				else if ($row['log_action'] == "Closed custom") {
+				else if ($row['action'] == "Closed custom") {
 					$logList .="<li>$rlu Closed (Custom), <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 				}
-		   		else if ($row['log_action'] == "Closed custom-y") {
+		   		else if ($row['action'] == "Closed custom-y") {
 					$logList .="<li>$rlu Closed (Custom, Created), <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 				}
-				else if ($row['log_action'] == "Closed custom-n") {
+				else if ($row['action'] == "Closed custom-n") {
 					$logList .="<li>$rlu Closed (Custom, Not Created), <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 				}
 				else {
-					$eid = mysql_real_escape_string(substr($row['log_action'],7));
+					$eid = mysql_real_escape_string(substr($row['action'],7));
                     $template = EmailTemplate::getById($eid, gGetDb());
 					$ename = htmlentities($template->getName(),ENT_QUOTES,'UTF-8');
 					$logList .="<li>$rlu Closed ($ename), <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
@@ -288,19 +236,15 @@ class LogPage
 				$logList .="<li>$rlu changed user preferences for $rlp (" . $user->getUsername() . ") at $rlt</li>\n";
 			}
 			if ($rla == "Banned") {
-				$query2 = 'SELECT target, duration FROM `ban` WHERE `id` = \'' .$rlp. '\'; '; 
-				$result2 = mysql_query($query2);
-				if (!$result2)
-					Die("Query failed: $query2 ERROR: " . mysql_error());
-				$row2 = mysql_fetch_assoc($result2);
-				if ($row2['duration'] == "-1") {
+				$ban = Ban::getById($rlp, gGetDb());
+				if ($ban->getDuration() == "-1") {
 					$until = "indefinitely";
 				}
 				else {
-					$durationtime = date("F j, Y, g:i a", $row2['duration']);
+					$durationtime = date("F j, Y, g:i a", $ban->getDuration());
 				    $until = "until $durationtime";
 				}
-				$logList .="<li>$rlu banned ". $row2['target'] ." $until at $rlt ($rlc)</li>";
+				$logList .="<li>$rlu banned {$ban->getTarget()} $until at $rlt ($rlc)</li>";
 			}
 			if ($rla == "Unbanned") {
                 $ban = Ban::getById($rlp, gGetDb());
@@ -358,7 +302,6 @@ class LogPage
 		}
 		
 		return $out;
-		
 	}	
 	
 	/**
@@ -370,17 +313,17 @@ class LogPage
 	 */
 	public function getArrayLog($offset=0, $limit="infinity")
 	{
-		global $tsSQLlink, $session, $baseurl;
+		global $session, $baseurl;
 		
-		$out=array();
+		$out = array();
 		$result = $this->getLog($offset, $limit);
 		
-		while ($row = mysql_fetch_assoc($result)) {
-			$rlu = $row['log_user'];
-			$rla = $row['log_action'];
-			$rlp = $row['log_pend'];
-			$rlt = $row['log_time'];
-			$rlc = $row['log_cmt'];
+		while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
+			$rlu = $row['user'];
+			$rla = $row['action'];
+			$rlp = $row['objectid'];
+			$rlt = $row['timestamp'];
+			$rlc = $row['comment'];
 			
 			if ($rlt == "0000-00-00 00:00:00") {
 				$rlt = "Date Unknown";
@@ -389,24 +332,24 @@ class LogPage
 
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>strtolower($rla), 'target' => $rlp, 'comment' => $rlc, 'action' => "Deferred");
 			}
-			if ($row['log_action'] == "Closed") {
+			if ($row['action'] == "Closed") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>$rla, 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
-			if (substr($row['log_action'],0,7) == "Closed ") {
-				if ($row['log_action'] == "Closed 0") {
+			if (substr($row['action'],0,7) == "Closed ") {
+				if ($row['action'] == "Closed 0") {
 					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"dropped", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 				}
-				else if ($row['log_action'] == "Closed custom") {
+				else if ($row['action'] == "Closed custom") {
 					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 				}
-				else if ($row['log_action'] == "Closed custom-y") {
+				else if ($row['action'] == "Closed custom-y") {
 					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason - account created)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 				}
-				else if ($row['log_action'] == "Closed custom-n") {
+				else if ($row['action'] == "Closed custom-n") {
 					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed (custom reason - account not created)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 				}
 				else {
-                    $template = EmailTemplate::getById(substr($row['log_action'],7), gGetDb());
+                    $template = EmailTemplate::getById(substr($row['action'],7), gGetDb());
 					$ename = htmlentities($template->getName(),ENT_QUOTES,'UTF-8');
 					$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"closed ($ename)", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 				}
@@ -454,20 +397,18 @@ class LogPage
 
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"changed user preferences for " . $user->getUsername(), 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
-			if ($rla == "Banned") {
-				$query2 = 'SELECT ban_target, ban_duration FROM `ban` WHERE `ban_target` = \'' .$rlp. '\'; '; 
-				$result2 = mysql_query($query2, $tsSQLlink);
-				if (!$result2)
-					Die("Query failed: $query2 ERROR: " . mysql_error());
-				$row2 = mysql_fetch_assoc($result2);
-				if ($row2['ban_duration'] == "-1") {
+			if ($rla == "Banned") 
+            {
+                $ban = Ban::getById($rlp, gGetDb());
+                
+                if ($ban->getDuration() == "-1") {
 					$until = "indefinitely";
 				}
 				else {
-					$durationtime = date("F j, Y, g:i a", $row2['ban_duration']);
+					$durationtime = date("F j, Y, g:i a", $ban->getDuration());
 				    $until = "until $durationtime";
 				}
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"banned ". $row2['ban_target'] ." $until", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"banned ". $ban->getTarget() ." $until", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "Unbanned") {
                 $ban = Ban::getById($rlp, gGetDb());
