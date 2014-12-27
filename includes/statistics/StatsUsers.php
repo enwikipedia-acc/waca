@@ -14,58 +14,58 @@
 
 class StatsUsers extends StatisticsPage
 {
-	protected function execute()
-	{
-		if(!isset($_GET['user']))
-		{
-			return $this->getUserList();
-		}
-		else
-		{
-			return $this->getUserDetail($_GET['user']);
-		}
-	}
-	
-	public function getPageTitle()
-	{
-		return "Account Creation Tool users";
-	}
-	
-	public function getPageName()
-	{
-		return "Users";
-	}
-	
-	public function isProtected()
-	{
-		return false;
-	}
-	
-	private function getUserList()
-	{
+    protected function execute()
+    {
+        if(!isset($_GET['user']))
+        {
+            return $this->getUserList();
+        }
+        else
+        {
+            return $this->getUserDetail($_GET['user']);
+        }
+    }
+
+    public function getPageTitle()
+    {
+        return "Account Creation Tool users";
+    }
+
+    public function getPageName()
+    {
+        return "Users";
+    }
+
+    public function isProtected()
+    {
+        return false;
+    }
+
+    private function getUserList()
+    {
         $lists = array(
             "Admin" => User::getAllWithStatus("Admin", gGetDb()),
             "User" => User::getAllWithStatus("User", gGetDb()),
             "CheckUsers" => User::getAllCheckusers(gGetDb())
         );
-        
+
         global $smarty;
         $smarty->assign("lists", $lists);
-		return $smarty->fetch("statistics/users.tpl");
-	}
-	
-	private function getUserDetail($userId)
-	{
+        return $smarty->fetch("statistics/users.tpl");
+    }
+
+    private function getUserDetail($userId)
+    {
         $database = gGetDb();
-        
+
         $user = User::getById($userId, $database);
         if($user == false)
         {
             return BootstrapSkin::displayAlertBox("User not found", "alert-error", "Error", true, false, true);
         }
-        
+
         global $smarty;
-		
+
         $activitySummary = $database->prepare(<<<SQL
             SELECT COALESCE(c.mail_desc, l.log_action) AS action, COUNT(*) AS count 
             FROM acc_log l 
@@ -75,11 +75,11 @@ class StatsUsers extends StatisticsPage
 SQL
         );
         $activitySummary->execute(array(":username" => $user->getUsername()));
-		$activitySummaryData = $activitySummary->fetchAll(PDO::FETCH_ASSOC);
-        
+        $activitySummaryData = $activitySummary->fetchAll(PDO::FETCH_ASSOC);
+
         $smarty->assign("user", $user);
         $smarty->assign("activity", $activitySummaryData);
-		
+
         $usersCreatedQuery = $database->prepare(<<<SQL
             SELECT l.log_time time, r.name name, r.id id 
             FROM acc_log l
@@ -94,7 +94,7 @@ SQL
         $usersCreatedQuery->execute(array(":username" => $user->getUsername()));
         $usersCreated = $usersCreatedQuery->fetchAll(PDO::FETCH_ASSOC);
         $smarty->assign("created", $usersCreated);
-        
+
         $usersNotCreatedQuery = $database->prepare(<<<SQL
             SELECT l.log_time time, r.name name, r.id id 
             FROM acc_log l
@@ -109,7 +109,7 @@ SQL
         $usersNotCreatedQuery->execute(array(":username" => $user->getUsername()));
         $usersNotCreated = $usersNotCreatedQuery->fetchAll(PDO::FETCH_ASSOC);
         $smarty->assign("notcreated", $usersNotCreated);
-        
+
         $accountLogQuery = $database->prepare(<<<SQL
             SELECT * 
             FROM acc_log l 
@@ -120,12 +120,12 @@ SQL
         $accountLogQuery->execute(array(":userid" => $user->getId()));
         $accountLog = $accountLogQuery->fetchAll(PDO::FETCH_ASSOC);
         $smarty->assign("accountlog", $accountLog);
-        
-		return $smarty->fetch("statistics/userdetail.tpl");
-	}
-	
-	public function requiresWikiDatabase()
-	{
-		return false;
-	}
+
+        return $smarty->fetch("statistics/userdetail.tpl");
+    }
+
+    public function requiresWikiDatabase()
+    {
+        return false;
+    }
 }

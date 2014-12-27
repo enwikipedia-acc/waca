@@ -66,7 +66,7 @@ class XffTrustProvider implements IXffTrustProvider
             return false;
         }
 
-        if($result > 1)
+        if($result >= 1)
         {
             $this->trustedCache[] = $ip;
             return true;
