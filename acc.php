@@ -1281,7 +1281,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
         die();
     }
     
-	$gem = sanitize($_GET['email']);
+	$gem = $_GET['email'];
 	
 	// check the checksum is valid
 	if ($request->getChecksum() != $_GET['sum']) 
@@ -1552,10 +1552,10 @@ elseif ($action == "logs")
 	$logPage = new LogPage();
 
 	if( isset($_GET['user']) ){
-		$logPage->filterUser = sanitize($_GET['user']);
+		$logPage->filterUser = $_GET['user'];
 	}
 	if (isset ($_GET['limit'])) {
-		$limit = sanitize($_GET['limit']);
+		$limit = $_GET['limit'];
 	}
 	if (isset ($_GET['from'])) {
 		$offset = $_GET['from'];	
@@ -1563,7 +1563,7 @@ elseif ($action == "logs")
 	
 	if(isset($_GET['logaction']))
 	{
-		$logPage->filterAction=sanitize($_GET['logaction']);
+		$logPage->filterAction = $_GET['logaction'];
 	}
 
 	echo $logPage->showListLog(isset($offset) ? $offset : 0 ,isset($limit) ? $limit : 100);

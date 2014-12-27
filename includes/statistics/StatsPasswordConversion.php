@@ -32,7 +32,6 @@ sql;
         $qb = new QueryBrowser();
         $qb->rowFetchMode = PDO::FETCH_NUM;
         $r = $qb->executeQueryToTable($query);
-        echo mysql_error();
 
         return $r;
     }

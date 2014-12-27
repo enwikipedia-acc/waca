@@ -185,7 +185,7 @@ class LogPage
 					$logList .="<li>$rlu Closed (Custom, Not Created), <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 				}
 				else {
-					$eid = mysql_real_escape_string(substr($row['action'],7));
+					$eid = substr($row['action'],7);
                     $template = EmailTemplate::getById($eid, gGetDb());
 					$ename = htmlentities($template->getName(),ENT_QUOTES,'UTF-8');
 					$logList .="<li>$rlu Closed ($ename), <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
@@ -270,12 +270,8 @@ class LogPage
 				$logList .= "<li>$rlu broke the reservation on <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a>, at $rlt</li>";
 			}			
 			if($rla == "EditComment-c") {
-				$query4 = "SELECT request FROM comment WHERE id = $rlp;";
-				$result4 = mysql_query($query4);
-				if (!$result4)
-					Die("Query failed: $query4 ERROR: " . mysql_error());
-				$row4 = mysql_fetch_assoc($result4);
-				$logList .= "<li>$rlu edited <a href=\"$baseurl/acc.php?action=zoom&amp;id=" . $row4['request'] ."\">comment $rlp</a>, at $rlt</li>";
+                $comment = Comment::getById($rlp, gGetDb());
+				$logList .= "<li>$rlu edited <a href=\"$baseurl/acc.php?action=zoom&amp;id=" . $comment->getRequest() ."\">comment $rlp</a>, at $rlt</li>";
 			}
 			if ($rla == "CreatedEmail") {
                 $template = EmailTemplate::getById($rlp, gGetDb());

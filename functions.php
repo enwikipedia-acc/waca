@@ -29,20 +29,6 @@ require_once 'includes/request.php';
 $session = new session();
 
 /**
- * Summary of sanitize
- * @param mixed $what 
- * @return string
- * @deprecated
- */
-function sanitize($what) 
-{
-	global $tsSQLlink;
-	$what = mysql_real_escape_string($what, $tsSQLlink);
-	$what = htmlentities($what, ENT_COMPAT, 'UTF-8');
-	return $what;
-}
-
-/**
  * Send a "close pend ticket" email to the end user. (created, taken, etc...)
  */
 function sendemail($messageno, $target, $id) 
@@ -158,21 +144,6 @@ SQL;
     $html = $smarty->fetch("mainpage/mainpage.tpl");
     
 	return $html;
-}
-
-/**
- * Show the user an error depending on $enableSQLError.
- * @param string $sql_error the output of mysql_error
- * @param string $generic_error the error to show if sql errors are hidden
- * @deprecated Use PDO
- */
-function sqlerror ($sql_error, $generic_error="Query failed.") {
-	global $enableSQLError;
-	if ($enableSQLError) {
-		die($sql_error);
-	} else {
-		die($generic_error);
-	}
 }
 
 function array_search_recursive($needle, $haystack, $path=array())

@@ -39,9 +39,7 @@ function zoomPage($id,$urlhash)
         $smarty->assign('ecoverride', false);
     }
         
-    $smarty->assign('request', $request);
-    
-	$urlhash = sanitize($urlhash);
+    $smarty->assign('request', $request);    
     
     $smarty->assign("usernamerawunicode", html_entity_decode($request->getName()));
     
