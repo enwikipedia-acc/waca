@@ -102,21 +102,21 @@ echo "Executing transaction...\n";
 $database->transactionally(function() use ($ip, $database)
 {
     $database->exec("DELETE FROM xfftrustcache;");
-    
+
     $insert = $database->prepare("INSERT INTO xfftrustcache (ip) VALUES (:ip);");
-    
+
     $successful = true;
-    
+
     foreach ($ip as $i)
     {
         if(count($i) > 15)
         {
             echo "Rejected $i\n";
-            continue;
-            
             $successful = false;
+
+            continue;
         }
-        
+
         try
         {
             $insert->execute(array(":ip" => $i));
@@ -128,7 +128,7 @@ $database->transactionally(function() use ($ip, $database)
             $successful = false;   
         }
     }
-    
+
     if(!$successful)
     {
         throw new Exception("Encountered errors during transaction processing");   
