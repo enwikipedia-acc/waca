@@ -568,7 +568,7 @@ elseif ($action == "messagemgmt")
                 $message->setDescription($_POST['maildesc']);
                 $message->save();
             
-                Logger::InterfaceMessageEdited(gGetDb(), $message);
+                Logger::interfaceMessageEdited(gGetDb(), $message);
               
                 $smarty->assign("message", $message);
                 $smarty->display("message-management/alert-editsuccess.tpl");
@@ -656,7 +656,7 @@ elseif ($action == "templatemgmt")
                 $template->setBotCode($_POST['botcode']);
                 $template->save();
             
-                Logger::WelcomeTemplateCreated($database, $template);
+                Logger::welcomeTemplateCreated($database, $template);
                             
                 Notification::welcomeTemplateCreated($template);
             
@@ -750,7 +750,7 @@ elseif ($action == "templatemgmt")
                 ->prepare("UPDATE user SET welcome_template = NULL WHERE welcome_template = :id;")
                 ->execute(array(":id" => $tid));
             
-            Logger::WelcomeTemplateDeleted($database, $template);
+            Logger::welcomeTemplateDeleted($database, $template);
             
             $template->delete();
             
@@ -789,7 +789,7 @@ elseif ($action == "templatemgmt")
                 $template->setBotCode($_POST['botcode']);
                 $template->save();
 			
-                Logger::WelcomeTemplateEdited($database, $template);
+                Logger::welcomeTemplateEdited($database, $template);
                 
                 SessionAlert::success("Template updated.");
                 Notification::welcomeTemplateEdited($template);
@@ -937,7 +937,7 @@ elseif ($action == "sban")
     
         $ban->save();
         
-        Logger::Banned($database, $ban, $_POST['banreason']);
+        Logger::banned($database, $ban, $_POST['banreason']);
     });
     
     $smarty->assign("ban", $ban);
@@ -1006,7 +1006,7 @@ elseif ($action == "unban")
                 $banId = $ban->getId();
                 $currentUser = User::getCurrent()->getUsername();
                 
-                Logger::Unbanned($database, $ban, $_POST['unbanreason']);
+                Logger::unbanned($database, $ban, $_POST['unbanreason']);
             });
         
             BootstrapSkin::displayAlertBox("Unbanned " . $ban->getTarget(), "alert-info", "", false, false);
@@ -1175,7 +1175,7 @@ SQL;
             $deto = $availableRequestStates[$_GET['target']]['deferto'];
     		$detolog = $availableRequestStates[$_GET['target']]['defertolog'];
             
-            Logger::DeferRequest($database, $request, $detolog);
+            Logger::deferRequest($database, $request, $detolog);
         
 		    Notification::requestDeferred($request);
             SessionAlert::success("Request {$request->getId()} deferred to $deto");
@@ -1413,7 +1413,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
     // TODO: make this transactional
     $request->save();
     
-    Logger::CloseRequest(gGetDb(), $request, $gem, $messagebody);
+    Logger::closeRequest(gGetDb(), $request, $gem, $messagebody);
     
 	if ($gem == '0') {
 		$crea = "Dropped";
@@ -1637,7 +1637,7 @@ elseif ($action == "reserve")
             $request->setReserved(User::getCurrent($database)->getId());
             $request->save();
 	
-            Logger::Reserve($database, $request);
+            Logger::reserve($database, $request);
                 
             Notification::requestReserved($request);
                 
@@ -1692,7 +1692,7 @@ elseif ($action == "breakreserve")
                     $request->setReserved(0);
                     $request->save();
 
-				    Logger::BreakReserve($database, $request);
+				    Logger::breakReserve($database, $request);
                 
                     Notification::requestReserveBroken($request);
                     header("Location: acc.php");
@@ -1721,7 +1721,7 @@ elseif ($action == "breakreserve")
             $request->setReserved(0);
             $request->save();
 
-            Logger::Unreserve($database, $request);
+            Logger::unreserve($database, $request);
         
             Notification::requestUnreserved($request);
 		    header("Location: acc.php");
@@ -1942,7 +1942,7 @@ elseif ($action == "ec")
         
             $comment->save();
         
-            Logger::EditComment($database, $comment);
+            Logger::editComment($database, $comment);
         
             Notification::commentEdited($comment);
         
@@ -1996,7 +1996,7 @@ elseif ($action == "sendtouser")
             throw new TransactionException("Error updating reserved status of request.");   
         }
         
-        Logger::SendReservation($database, Request::getById($request) ,$user);
+        Logger::sendReservation($database, Request::getById($request) ,$user);
     });
     
     SessionAlert::success("Reservation sent successfully");
@@ -2039,7 +2039,7 @@ elseif ($action == "emailmgmt")
 			
 			    $emailTemplate->save();
                 
-			    Logger::CreateEmail($database, $emailTemplate);
+			    Logger::createEmail($database, $emailTemplate);
                 
                 Notification::emailCreated($emailTemplate);
                 
@@ -2100,7 +2100,7 @@ elseif ($action == "emailmgmt")
             {
                 $emailTemplate->save();
                 
-                Logger::EditedEmail($database, $emailTemplate);
+                Logger::editedEmail($database, $emailTemplate);
             
                 global $baseurl;
                 

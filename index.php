@@ -88,7 +88,7 @@ if(isset($_GET['action']) && $_GET['action'] == "confirm")
             $request->confirmEmail($_GET['si']);
             $request->save();
             
-            Logger::EmailConfirmed($database, $request);
+            Logger::emailConfirmed($database, $request);
         });
         
         $smarty->display("request/email-confirmed.tpl");

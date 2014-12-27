@@ -10,7 +10,7 @@
  */
 class Logger
 {
-    private static function CreateLogEntry(PdoDatabase $database, DataObject $object, $logaction, $comment = null, $user = null)
+    private static function createLogEntry(PdoDatabase $database, DataObject $object, $logaction, $comment = null, $user = null)
     {
         if($user == null)
         {
@@ -27,139 +27,139 @@ class Logger
         $log->save();
     }
     
-    public static function EmailConfirmed(PdoDatabase $database, Request $object)
+    public static function emailConfirmed(PdoDatabase $database, Request $object)
     {
-        self::CreateLogEntry($database, $object, "Email Confirmed", null, User::getCommunity());
+        self::createLogEntry($database, $object, "Email Confirmed", null, User::getCommunity());
     }
 
     #region Users
     
-    public static function ApprovedUser(PdoDatabase $database, User $object)
+    public static function approvedUser(PdoDatabase $database, User $object)
     {
-        self::CreateLogEntry($database, $object, "Approved");        
+        self::createLogEntry($database, $object, "Approved");        
     }
     
-    public static function DeclinedUser(PdoDatabase $database, User $object, $comment)
+    public static function declinedUser(PdoDatabase $database, User $object, $comment)
     {
-        self::CreateLogEntry($database, $object, "Declined", $comment);        
+        self::createLogEntry($database, $object, "Declined", $comment);        
     }
     
-    public static function SuspendedUser(PdoDatabase $database, User $object, $comment)
+    public static function suspendedUser(PdoDatabase $database, User $object, $comment)
     {
-        self::CreateLogEntry($database, $object, "Suspended", $comment);        
+        self::createLogEntry($database, $object, "Suspended", $comment);        
+    }
+   
+    public static function demotedUser(PdoDatabase $database, User $object, $comment)
+    {
+        self::createLogEntry($database, $object, "Demoted", $comment);        
     }
     
-    public static function DemotedUser(PdoDatabase $database, User $object, $comment)
+    public static function promotedUser(PdoDatabase $database, User $object)
     {
-        self::CreateLogEntry($database, $object, "Demoted", $comment);        
+        self::createLogEntry($database, $object, "Promoted");        
     }
     
-    public static function PromotedUser(PdoDatabase $database, User $object)
+    public static function renamedUser(PdoDatabase $database, User $object, $comment)
     {
-        self::CreateLogEntry($database, $object, "Promoted");        
+        self::createLogEntry($database, $object, "Renamed", $comment);
     }
     
-    public static function RenamedUser(PdoDatabase $database, User $object, $comment)
+    public static function userPreferencesChange(PdoDatabase $database, User $object)
     {
-        self::CreateLogEntry($database, $object, "Renamed", $comment);
-    }
-    
-    public static function UserPreferencesChange(PdoDatabase $database, User $object)
-    {
-        self::CreateLogEntry($database, $object, "Prefchange");
+        self::createLogEntry($database, $object, "Prefchange");
     }
     
     #endregion
     
-    public static function InterfaceMessageEdited(PdoDatabase $database, InterfaceMessage $object)
+    public static function interfaceMessageEdited(PdoDatabase $database, InterfaceMessage $object)
     {
-        self::CreateLogEntry($database, $object, "Edited");
+        self::createLogEntry($database, $object, "Edited");
     }
     
     #region Welcome Templates
     
-    public static function WelcomeTemplateCreated(PdoDatabase $database, WelcomeTemplate $object)
+    public static function welcomeTemplateCreated(PdoDatabase $database, WelcomeTemplate $object)
     {
-        self::CreateLogEntry($database, $object, "CreatedTemplate");
+        self::createLogEntry($database, $object, "CreatedTemplate");
     }
     
-    public static function WelcomeTemplateEdited(PdoDatabase $database, WelcomeTemplate $object)
+    public static function welcomeTemplateEdited(PdoDatabase $database, WelcomeTemplate $object)
     {
-        self::CreateLogEntry($database, $object, "EditedTemplate");
+        self::createLogEntry($database, $object, "EditedTemplate");
     }
     
-    public static function WelcomeTemplateDeleted(PdoDatabase $database, WelcomeTemplate $object)
+    public static function welcomeTemplateDeleted(PdoDatabase $database, WelcomeTemplate $object)
     {
-        self::CreateLogEntry($database, $object, "DeletedTemplate");
+        self::createLogEntry($database, $object, "DeletedTemplate");
     }
     
     #endregion
     
     #region Bans
     
-    public static function Banned(PdoDatabase $database, Ban $object, $reason)
+    public static function banned(PdoDatabase $database, Ban $object, $reason)
     {
-        self::CreateLogEntry($database, $object, "Banned", $reason);
+        self::createLogEntry($database, $object, "Banned", $reason);
     }
     
-    public static function Unbanned(PdoDatabase $database, Ban $object, $reason)
+    public static function unbanned(PdoDatabase $database, Ban $object, $reason)
     {
-        self::CreateLogEntry($database, $object, "Unbanned", $reason);
+        self::createLogEntry($database, $object, "Unbanned", $reason);
     }
     
     #endregion
     
     #region Requests
     
-    public static function DeferRequest(PdoDatabase $database, Request $object, $target)
+    public static function deferRequest(PdoDatabase $database, Request $object, $target)
     {
-        self::CreateLogEntry($database, $object, "Deferred to $target");
+        self::createLogEntry($database, $object, "Deferred to $target");
     }
     
-    public static function CloseRequest(PdoDatabase $database, Request $object, $target, $comment)
+    public static function closeRequest(PdoDatabase $database, Request $object, $target, $comment)
     {
-        self::CreateLogEntry($database, $object, "Closed $target", $comment);
+        self::createLogEntry($database, $object, "Closed $target", $comment);
     }
     
-    public static function Reserve(PdoDatabase $database, Request $object)
+    public static function reserve(PdoDatabase $database, Request $object)
     {
-        self::CreateLogEntry($database, $object, "Reserved");
+        self::createLogEntry($database, $object, "Reserved");
     }
     
-    public static function BreakReserve(PdoDatabase $database, Request $object)
+    public static function breakReserve(PdoDatabase $database, Request $object)
     {
-        self::CreateLogEntry($database, $object, "BreakReserve");
+        self::createLogEntry($database, $object, "BreakReserve");
     }
     
-    public static function Unreserve(PdoDatabase $database, Request $object)
+    public static function unreserve(PdoDatabase $database, Request $object)
     {
-        self::CreateLogEntry($database, $object, "Unreserved");
+        self::createLogEntry($database, $object, "Unreserved");
     }
     
-    public static function EditComment(PdoDatabase $database, Comment $object)
+    public static function editComment(PdoDatabase $database, Comment $object)
     {
-        self::CreateLogEntry($database, $object->getRequestObject(), "EditComment-r");
-        self::CreateLogEntry($database, $object, "EditComment-c");
+        self::createLogEntry($database, $object->getRequestObject(), "EditComment-r");
+        self::createLogEntry($database, $object, "EditComment-c");
     }
 
-    public static function SendReservation(PdoDatabase $database, Request $object, User $target)
+    public static function sendReservation(PdoDatabase $database, Request $object, User $target)
     {
-        self::CreateLogEntry($database, $object, "SendReserved");
-        self::CreateLogEntry($database, $object, "ReceiveReserved", null, $target);
+        self::createLogEntry($database, $object, "SendReserved");
+        self::createLogEntry($database, $object, "ReceiveReserved", null, $target);
     }
 
     #endregion
     
     #region Email templates
     
-    public static function CreateEmail(PdoDatabase $database, EmailTemplate $object)
+    public static function createEmail(PdoDatabase $database, EmailTemplate $object)
     {
-        self::CreateLogEntry($database, $object, "CreatedEmail");
+        self::createLogEntry($database, $object, "CreatedEmail");
     }
     
-    public static function EditedEmail(PdoDatabase $database, EmailTemplate $object)
+    public static function editedEmail(PdoDatabase $database, EmailTemplate $object)
     {
-        self::CreateLogEntry($database, $object, "EditedEmail");
+        self::createLogEntry($database, $object, "EditedEmail");
     }
     
     #endregion

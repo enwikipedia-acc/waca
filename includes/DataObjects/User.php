@@ -513,7 +513,7 @@ SQL
         {
             $this->status = "User";            
             $this->save();
-            Logger::ApprovedUser($this->dbObject, $this);
+            Logger::approvedUser($this->dbObject, $this);
         });
     }
     
@@ -523,7 +523,7 @@ SQL
         {
             $this->status = "Suspended";            
             $this->save();
-            Logger::SuspendedUser($this->dbObject, $this, $comment);
+            Logger::suspendedUser($this->dbObject, $this, $comment);
         });
     }
     
@@ -533,7 +533,7 @@ SQL
         {
             $this->status = "Declined";            
             $this->save();
-            Logger::DeclinedUser($this->dbObject, $this, $comment);
+            Logger::declinedUser($this->dbObject, $this, $comment);
         });
     }
     
@@ -543,7 +543,7 @@ SQL
         {
             $this->status = "Admin";            
             $this->save();
-            Logger::PromotedUser($this->dbObject, $this);
+            Logger::promotedUser($this->dbObject, $this);
         });
     }
     
@@ -553,7 +553,7 @@ SQL
         {
             $this->status = "User";            
             $this->save();
-            Logger::DemotedUser($this->dbObject, $this, $comment);
+            Logger::demotedUser($this->dbObject, $this, $comment);
         });
     }
 
