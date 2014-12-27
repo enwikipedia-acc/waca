@@ -530,7 +530,7 @@ SQL
             $username = self::getCurrent($this->dbObject)->getUsername();
             
             $statusquery->execute();
-            LogHelper::UserStatusChange($this->dbObject, $this, $comment, $logaction);
+            Logger::UserStatusChange($this->dbObject, $this, $comment, $logaction);
         });
     }
     

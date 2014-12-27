@@ -318,7 +318,7 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
             $user->save();
 
             $logentry = serialize(array('old' => $oldname, 'new' => $_POST['newname']));
-            LogHelper::RenamedUser($database, $user, $logentry);
+            Logger::RenamedUser($database, $user, $logentry);
            
             BootstrapSkin::displayAlertBox("Changed User " . htmlentities($oldname,ENT_COMPAT,'UTF-8') . " name to ". htmlentities($_POST['newname'],ENT_COMPAT,'UTF-8') , "alert-info","",false);
         }
@@ -377,7 +377,7 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {
 
             $user->save();
 
-            LogHelper::UserPreferencesChange($database, $user);
+            Logger::UserPreferencesChange($database, $user);
             
             Notification::userPrefChange($user);
             BootstrapSkin::displayAlertBox("Changes saved.", "alert-info");

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * LogHelper short summary.
+ * Logger short summary.
  *
- * LogHelper description.
+ * Logger description.
  *
  * @version 1.0
  * @author stwalkerster
  */
-class LogHelper
+class Logger
 {
     private static function CreateLogEntry(PdoDatabase $database, DataObject $object, $logaction, $comment = null)
     {
