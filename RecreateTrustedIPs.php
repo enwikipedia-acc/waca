@@ -20,10 +20,23 @@ $iprange = array();
 $dnsdomain = array();
 
 echo "Sorting file...\n";
-foreach ( $htmlfile as $line_num => $line ) 
+foreach ( $htmlfile as $line_num => $rawline ) 
 {
-    // skip the comments
-    if( substr( $line, 0, 1 ) === "#" ) 
+    // remove the comments
+    $hashPos = strpos($rawline, '#');
+	if ($hashPos !== false)
+    {
+		$line = substr( $rawline, 0, $hashPos );
+	}
+    else
+    {
+        $line = $rawline;
+    }
+    
+    $line = trim($line);
+    
+    // this was a comment or empty line...
+    if( $line == "" ) 
     {
         continue;
     }
@@ -89,11 +102,37 @@ echo "Executing transaction...\n";
 $database->transactionally(function() use ($ip, $database)
 {
     $database->exec("DELETE FROM xfftrustcache;");
-    
+
     $insert = $database->prepare("INSERT INTO xfftrustcache (ip) VALUES (:ip);");
-    
+
+    $successful = true;
+
     foreach ($ip as $i)
     {
-        $insert->execute(array(":ip", $i));
+        if(count($i) > 15)
+        {
+            echo "Rejected $i\n";
+            $successful = false;
+
+            continue;
+        }
+
+        try
+        {
+            $insert->execute(array(":ip" => $i));
+        }
+        catch(PDOException $ex)
+        {
+            echo "Exception on $i :\n";
+            echo $ex->getMessage();
+            $successful = false;   
+        }
+    }
+
+    if(!$successful)
+    {
+        throw new Exception("Encountered errors during transaction processing");   
     }
 });
+
+echo "Complete.\n";

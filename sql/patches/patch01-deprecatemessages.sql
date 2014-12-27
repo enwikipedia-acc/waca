@@ -1,0 +1,1 @@
+﻿UPDATE interfacemessage SET description = CONCAT(description, ' [deprecated]') WHERE id IN (10, 11, 12, 13, 14, 16, 17, 18, 19, 20, 27, 28);

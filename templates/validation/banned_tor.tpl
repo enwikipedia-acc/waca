@@ -1,0 +1,1 @@
+﻿Tor exit nodes are currently banned from using this tool due to excessive abuse. Please note that Tor is also currently banned from editing Wikipedia.

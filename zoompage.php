@@ -14,9 +14,9 @@
 
 function zoomPage($id,$urlhash)
 {
-	global $tsSQLlink, $session, $availableRequestStates, $createdid;
+	global $session, $availableRequestStates, $createdid;
 	global $smarty, $locationProvider, $rdnsProvider, $antispoofProvider;
-    global $xffTrustProvider;
+	global $xffTrustProvider, $enableEmailConfirm;
     
     $database = gGetDb();
     $request = Request::getById($id, $database);
@@ -28,6 +28,8 @@ function zoomPage($id,$urlhash)
         die();
     }
     
+    $smarty->assign('ecenable', $enableEmailConfirm);
+
     if(isset($_GET['ecoverride']) && User::getCurrent()->isAdmin() )
     {
         $smarty->assign('ecoverride', true);
@@ -37,9 +39,7 @@ function zoomPage($id,$urlhash)
         $smarty->assign('ecoverride', false);
     }
         
-    $smarty->assign('request', $request);
-    
-	$urlhash = sanitize($urlhash);
+    $smarty->assign('request', $request);    
     
     $smarty->assign("usernamerawunicode", html_entity_decode($request->getName()));
     
@@ -52,16 +52,16 @@ function zoomPage($id,$urlhash)
 	
     $viewableDataStatement = $database->prepare(<<<SQL
         SELECT COUNT(*) 
-        FROM acc_pend 
+        FROM request 
         WHERE 
             (
-                pend_email = :email 
-                OR pend_ip = :trustedIp 
-                OR pend_proxyip LIKE :trustedProxy
+                email = :email 
+                OR ip = :trustedIp 
+                OR forwardedip LIKE :trustedProxy
             ) 
-            AND pend_reserved = :reserved 
-            AND pend_mailconfirm = 'Confirmed' 
-            AND pend_status != 'Closed';
+            AND reserved = :reserved 
+            AND emailconfirm = 'Confirmed' 
+            AND status != 'Closed';
 SQL
     );
     

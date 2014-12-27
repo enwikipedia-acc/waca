@@ -14,10 +14,10 @@ class UnknownAction extends HelpAction implements IApiAction
         $errorText = "Unknown API action specified.";
         $errorNode = $this->document->createElement("error", $errorText);
         $apiDocument->appendChild($errorNode);
-        
+
         $helpElement = $this->getHelpElement();
         $apiDocument->appendChild($helpElement);
-        
+
         return $apiDocument;
     }
 }

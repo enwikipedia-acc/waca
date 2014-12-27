@@ -29,20 +29,6 @@ require_once 'includes/request.php';
 $session = new session();
 
 /**
- * Summary of sanitize
- * @param mixed $what 
- * @return mixed
- * @deprecated
- */
-function sanitize($what) 
-{
-	global $tsSQLlink;
-	$what = mysql_real_escape_string($what, $tsSQLlink);
-	$what = htmlentities($what, ENT_COMPAT, 'UTF-8');
-	return $what;
-}
-
-/**
  * Send a "close pend ticket" email to the end user. (created, taken, etc...)
  */
 function sendemail($messageno, $target, $id) 
@@ -130,13 +116,24 @@ function defaultpage() {
         $totalRequests = $totalRequestsStatement->fetchColumn();
         $totalRequestsStatement->closeCursor();
         
-        $requestSectionData[$v['header']] = array("requests" => $requests, "total" => $totalRequests, "api" => $v['api']);
+        $requestSectionData[$v['header']] = array(
+            "requests" => $requests, 
+            "total" => $totalRequests, 
+            "api" => $v['api']);
     }
     
     global $smarty;
     $smarty->assign("requestLimitShowOnly", $requestLimitShowOnly);
 	
-    $query = "SELECT pend_id, pend_name, pend_checksum, log_time FROM acc_pend JOIN acc_log ON pend_id = log_pend WHERE log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 5;";
+    $query = <<<SQL
+        SELECT r.id, r.name, r.checksum
+        FROM request r 
+        JOIN acc_log l ON r.id = l.log_pend 
+        WHERE l.log_action LIKE 'Closed%' 
+        ORDER BY l.log_time DESC 
+        LIMIT 5;
+SQL;
+    
     $statement = $database->prepare($query);
     $statement->execute();
     
@@ -147,21 +144,6 @@ function defaultpage() {
     $html = $smarty->fetch("mainpage/mainpage.tpl");
     
 	return $html;
-}
-
-/**
- * Show the user an error depending on $enableSQLError.
- * @param string $sql_error the output of mysql_error
- * @param string $generic_error the error to show if sql errors are hidden
- * @deprecated Use PDO
- */
-function sqlerror ($sql_error, $generic_error="Query failed.") {
-	global $enableSQLError;
-	if ($enableSQLError) {
-		die($sql_error);
-	} else {
-		die($generic_error);
-	}
 }
 
 function array_search_recursive($needle, $haystack, $path=array())
@@ -385,4 +367,30 @@ function relativedate($input)
     }
 
     return $output;
+}
+
+function reattachOAuthAccount(User $user)
+{
+    global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;
+
+    try
+    {
+        // Get a request token for OAuth
+        $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
+        $requestToken = $util->getRequestToken();
+
+        // save the request token for later
+        $user->setOAuthRequestToken($requestToken->key);
+        $user->setOAuthRequestSecret($requestToken->secret);
+        $user->save();
+            
+        $redirectUrl = $util->getAuthoriseUrl($requestToken);
+            
+        header("Location: {$redirectUrl}");
+        die();
+    }
+    catch(Exception $ex)
+    {
+        throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
+    }     
 }

@@ -128,6 +128,8 @@ $forceIdentification = true;
 //   1 = hashed, salted
 $minimumPasswordVersion = 0;
 
+$communityUsername = "[Community]";
+
 /***********************************
  * Reservations
  */
@@ -176,6 +178,7 @@ $oauthBaseUrlInternal = "https://en.wikipedia.org/w/index.php?title=Special:OAut
 $oauthMediaWikiCanonicalServer = "http://en.wikipedia.org";
 
 $useOauthSignup = true;
+$enforceOAuth = false;
 
 /************************************
  * Providers Configuration
@@ -272,6 +275,9 @@ $rfc1918ips = array(
 // be left false when you don't need it, since this will open a popup window on every page load.
 $smartydebug = false;
 
+// Enables logging all SQL queries. This is a performance hit, so only enable it when needed.
+$enableQueryLog = false;
+
 // ID of the Email template used for the main "Created!" close reason.
 $createdid = 1;
 
@@ -313,7 +319,6 @@ ini_set('user_agent', $toolUserAgent);
 
 foreach(array( 
     "mbstring",  // unicode and stuff
-    "mysql",  // legacy database
     "pdo", "pdo_mysql",  // new database module
     "session", "date", "pcre", // core stuff
     "curl", // mediawiki api access etc

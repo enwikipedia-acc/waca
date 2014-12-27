@@ -1,0 +1,1 @@
+﻿Your requested username has been automatically adjusted due to technical restrictions. Underscores have been replaced with spaces, and the first character has been capitalised.

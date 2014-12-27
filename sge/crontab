@@ -3,9 +3,6 @@
 #
 
 #
-#      welcomerbot
-0,15,30,45 * * * * qcronsub -N welcomerbot /home/project/a/c/c/acc/public_html/sge/sge-welcomerbot.sh
-#
 #      iptable
 #0 0 * * * qcronsub -N iptable /home/project/a/c/c/acc/public_html/sge/sge-iptable.sh
 # ^ DO NOT RE-ENABLE without modifications to add the toolserver to the trusted IP list, or rehashing the code entirely. --stw

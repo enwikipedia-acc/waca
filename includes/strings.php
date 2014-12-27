@@ -19,6 +19,7 @@ class strings {
 	/**
 	 * Multibyte version of ucfirst() since no such function is included in PHP by default.
 	 * @param string $string
+     * @deprecated StringFunctions class
 	 */
 	private function mb_ucfirst($string) {
 		$strlen = mb_strlen($string);
@@ -30,7 +31,8 @@ class strings {
 	}
 	
 	/**
-	 * Formats a string to be used as a username.
+     * Formats a string to be used as a username.
+     * @deprecated StringFunctions class
 	 */
 	public function struname($username) {
 		$uname = mb_ereg_replace("^[ \t]+|[ \t]+$","",$username);
@@ -43,7 +45,8 @@ class strings {
 	/**
 	 * Formats a string to be used as an email (specifically strips whitespace
 	 * from the beginning/end of the Email, as well as immediately before/after
-	 * the @ in the Email).
+     * the @ in the Email).
+     * @deprecated StringFunctions class
 	 */
 	public function stremail($email) {
 		$newemail = mb_ereg_replace("^[ \t]+|[ \t]+$","", $email);

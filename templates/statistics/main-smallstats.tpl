@@ -39,9 +39,5 @@
         <a href="{$baseurl}/acc.php?action=zoom&amp;id={$mostComments}">{$mostComments}</a>
       </td>
     </tr>
-    <tr>
-      <th>Welcome queue length</th>
-      <td>{$welcomeQueueLength}</td>
-    </tr>
   </table>
 </div>

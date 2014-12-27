@@ -67,6 +67,14 @@
     </div>
   </div>
 
+  {if $useOauthSignup}
+  <div class="control-group">
+    <div class="controls">
+      {include file="alert.tpl" alertblock=false alerttype="alert-info" alertheader="" alertclosable=false alertmessage="<strong>Heads up!</strong> After you click the Signup button, you will be redirected to Wikipedia, and be prompted to allow this tool access to your Wikipedia account. Please see the guide for more information."}
+    </div>
+  </div>
+  {/if}
+
   <div class="form-actions">
     <button type="submit" class="btn btn-primary">Signup</button>
   </div>

@@ -15,16 +15,16 @@ class Api
         if($httpOrigin !== null)
         {
             global $CORSallowed;
-            
+
             if(in_array($httpOrigin, $CORSallowed))
             {
                 header("Access-Control-Allow-Origin: " . $httpOrigin);
             }
         }
     }
-    
+
     public function execute($requestAction)
-    {       
+    {
         switch ($requestAction)
         {
             case "count":
@@ -43,17 +43,21 @@ class Api
                 $result = new Actions\HelpAction();
                 $data = $result->run();
                 break;
+            case "monitor":
+                $result = new Actions\MonitorAction();
+                $data = $result->run();
+                break;
             default:
                 $result = new Actions\UnknownAction();
                 $data = $result->run();
                 break;
         }
-        
+
         return $data;
     }
-    
+
     public static function getActionList()
     {
-        return array( "count", "status", "stats", "help" );
+        return array( "count", "status", "stats", "help", "monitor" );
     }
 }
