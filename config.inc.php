@@ -275,6 +275,9 @@ $rfc1918ips = array(
 // be left false when you don't need it, since this will open a popup window on every page load.
 $smartydebug = false;
 
+// Enables logging all SQL queries. This is a performance hit, so only enable it when needed.
+$enableQueryLog = false;
+
 // ID of the Email template used for the main "Created!" close reason.
 $createdid = 1;
 

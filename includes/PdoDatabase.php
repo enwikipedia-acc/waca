@@ -54,6 +54,12 @@ $accdbobjects = array();
 
 class PdoDatabase extends PDO {
     protected $hasActiveTransaction = false;
+    
+    /**
+     * Summary of $queryLogStatement
+     * @var PDOStatement
+     */
+    private $queryLogStatement;
 
     /**
      * Determines if this connection has a transaction in progress or not
@@ -131,5 +137,36 @@ class PdoDatabase extends PDO {
 
             die();
         }
+    }
+
+    public function prepare($statement, $driver_options = array())
+    {
+        global $enableQueryLog;
+        if($enableQueryLog)
+        {
+            try
+            {
+                if($this->queryLogStatement === null)
+                {
+                    $this->queryLogStatement = 
+                        parent::prepare("INSERT INTO applicationlog (source, message, stack) VALUES (:source, :message, :stack);");
+                }
+                            
+                $this->queryLogStatement->execute(
+                    array(
+                        ":source" => "QueryLog",
+                        ":message" => $statement,
+                        ":stack" => DebugHelper::getBacktrace()
+                    )
+                );
+            }
+            catch(Exception $ex)
+            {
+                trigger_error("Error logging query. Disabling for this request. " . $ex->getMessage(), E_USER_NOTICE);
+                $enableQueryLog = false;
+            }
+        }
+        
+        return parent::prepare($statement, $driver_options);   
     }
 }
