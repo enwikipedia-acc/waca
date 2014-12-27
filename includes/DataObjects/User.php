@@ -50,24 +50,38 @@ class User extends DataObject
             }
             else
             {
-                $anonymousCoward = new User();
-                $anonymousCoward->username = "Anonymous Coward";
-                $anonymousCoward->email = "anonymous-coward@nonexistent.local";
-                $anonymousCoward->password = ":0:x"; // encrypted version0 password is never equal to "x"
-                $anonymousCoward->status = "Anonymous"; // Not a user...
-                $anonymousCoward->onwikiname = "127.0.0.1";
-                $anonymousCoward->id = -1;
-                $anonymousCoward->identified = 0; // use the identification lockout too.
-                
+                $anonymousCoward = new CommunityUser();
+               
                 self::$currentUser = $anonymousCoward;
             }
         }
-        
+
         return self::$currentUser;
+    }
+    
+    public static function getById($id, PdoDatabase $database)
+    {
+        if($id == "-1")
+        {
+            return new CommunityUser();
+        }
+
+        return parent::getById($id, $database);
+    }
+
+    public static function getCommunity()
+    {
+        return new CommunityUser();   
     }
     
     public static function getByUsername($username, PdoDatabase $database)
     {
+        global $communityUsername;
+        if($username == $communityUsername)
+        {
+            return new CommunityUser();
+        }
+
         $statement = $database->prepare("SELECT * FROM user WHERE username = :id LIMIT 1;");
         $statement->bindValue(":id", $username);
 
@@ -506,12 +520,7 @@ SQL
             $comment = "Changing user access from $oldstatus to $status";
         }
         
-        if(!$this->dbObject->beginTransaction())
-        {
-            throw new Exception("Could not begin database transaction");
-        }
-        
-        try
+        $this->dbObject->transactionally(function() use ($logaction, $comment, $status)
         {
             $this->status = $status;            
             $statusquery = $this->dbObject->prepare("UPDATE user SET status = :status WHERE id = :id;");
@@ -520,26 +529,9 @@ SQL
             
             $username = self::getCurrent($this->dbObject)->getUsername();
             
-            // TODO: update me to use new logging systems.
-            $logquery = $this->dbObject->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:id, :user, :action, CURRENT_TIMESTAMP(), :cmt);");
-            $logquery->bindValue(":user", $username);
-            $logquery->bindValue(":id", $this->id);
-            $logquery->bindValue(":action", $logaction);
-            $logquery->bindValue(":cmt", $comment);
-            
             $statusquery->execute();
-            $logquery->execute();
-        }
-        catch( Exception $ex )
-        {
-            // something went wrong, so rollback and rethrow for someone else to handle the error.
-            $this->dbObject->rollBack();
-            $this->status = $oldstatus;
-            
-            throw $ex;
-        }
-        
-        $this->dbObject->commit();
+            LogHelper::UserStatusChange($this->dbObject, $this, $comment, $logaction);
+        });
     }
     
     public function approve()
@@ -759,11 +751,12 @@ SQL
     public function getApprovalDate()
     {
         $query = $this->dbObject->prepare(<<<SQL
-            SELECT log_time 
-            FROM acc_log 
-            WHERE log_pend = :userid 
-                AND log_action = 'Approved' 
-            ORDER BY log_id DESC 
+            SELECT timestamp 
+            FROM log 
+            WHERE objectid = :userid
+                AND objecttype = 'User'
+                AND action = 'Approved' 
+            ORDER BY id DESC 
             LIMIT 1;
 SQL
         );

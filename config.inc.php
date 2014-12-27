@@ -128,6 +128,8 @@ $forceIdentification = true;
 //   1 = hashed, salted
 $minimumPasswordVersion = 0;
 
+$communityUsername = "[Community]";
+
 /***********************************
  * Reservations
  */

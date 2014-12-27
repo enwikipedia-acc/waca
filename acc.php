@@ -577,17 +577,8 @@ elseif ($action == "messagemgmt")
                 $message->setDescription($_POST['maildesc']);
                 $message->save();
             
-                $sqlText = <<<SQL
-                    INSERT INTO acc_log (log_pend, log_user, log_action, log_time) 
-                    VALUES (:message, :user, 'Edited', CURRENT_TIMESTAMP());
-SQL;
-                    
-                $logStatement = gGetDb()->prepare($sqlText);
-                $logStatement->bindValue(":message", $message->getId());
-                $logStatement->bindValue(":user", User::getCurrent()->getUsername());
-                $logStatement->execute();
-            
-                
+                LogHelper::InterfaceMessageEdited(gGetDb(), $message);
+              
                 $smarty->assign("message", $message);
                 $smarty->display("message-management/alert-editsuccess.tpl");
                 
@@ -674,19 +665,8 @@ elseif ($action == "templatemgmt")
                 $template->setBotCode($_POST['botcode']);
                 $template->save();
             
-                $query = <<<SQL
-                    INSERT INTO acc_log (log_pend, log_user, log_action, log_time) 
-                    VALUES (:templateid, :username, 'CreatedTemplate', CURRENT_TIMESTAMP());
-SQL;
-                
-                $statement = $database->prepare($query);
-                $statement->execute(
-                    array(
-                        ":templateid" => $template->getId(), 
-                        ":username" => User::getCurrent()->getUsername()
-                        )
-                    );
-            
+                LogHelper::WelcomeTemplateCreated($database, $template);
+                            
                 Notification::welcomeTemplateCreated($template);
             
                 SessionAlert::success("Template successfully created.");
@@ -779,10 +759,7 @@ SQL;
                 ->prepare("UPDATE user SET welcome_template = NULL WHERE welcome_template = :id;")
                 ->execute(array(":id" => $tid));
             
-            $database
-                ->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) 
-                            VALUES (:tid, :user, 'DeletedTemplate', CURRENT_TIMESTAMP());")
-                ->execute(array(":tid" => $tid, ":user" => User::getCurrent()->getUsername()));
+            LogHelper::WelcomeTemplateDeleted($database, $template);
             
             $template->delete();
             
@@ -821,10 +798,8 @@ SQL;
                 $template->setBotCode($_POST['botcode']);
                 $template->save();
 			
-                $statement = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) 
-                                                    VALUES (:id, :user, 'EditedTemplate', CURRENT_TIMESTAMP());");
-                $statement->execute(array(":id" => $template->getId(), ":user" => User::getCurrent()->getUsername()));
-            
+                LogHelper::WelcomeTemplateEdited($database, $template);
+                
                 SessionAlert::success("Template updated.");
                 Notification::welcomeTemplateEdited($template);
             });
@@ -971,21 +946,7 @@ elseif ($action == "sban")
     
         $ban->save();
         
-        $logQuery = <<<SQL
-            INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) 
-            VALUES (:banid, :siuser, 'Banned', CURRENT_TIMESTAMP(), :reason);
-SQL;
-        
-        $logStatement = $database->prepare($logQuery);
-        $banid = $ban->getId();
-        $logStatement->bindValue(":banid", $banid);
-        $logStatement->bindValue(":siuser", $currentUsername);
-        $logStatement->bindValue(":reason", $_POST['banreason']);
-        
-        if(!$logStatement->execute())
-        {
-            throw new TransactionException("Error saving log entry.");   
-        }
+        LogHelper::Banned($database, $ban, $_POST['banreason']);
     });
     
     $smarty->assign("ban", $ban);
@@ -1054,20 +1015,7 @@ elseif ($action == "unban")
                 $banId = $ban->getId();
                 $currentUser = User::getCurrent()->getUsername();
                 
-                $query = <<<SQL
-                    INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) 
-                    VALUES (:id, :user, 'Unbanned', CURRENT_TIMESTAMP(), :reason);
-SQL;
-                
-                $statement = $database->prepare($query);
-                $statement->bindValue(":id", $banId);
-                $statement->bindValue(":user", $currentUser);
-                $statement->bindValue(":reason", $_POST['unbanreason']);
-                
-                if(!$statement->execute())
-                {
-                    throw new TransactionException("Error saving log entry.");   
-                }
+                LogHelper::Unbanned($database, $ban, $_POST['unbanreason']);
             });
         
             BootstrapSkin::displayAlertBox("Unbanned " . $ban->getTarget(), "alert-info", "", false, false);
@@ -1236,16 +1184,7 @@ SQL;
             $deto = $availableRequestStates[$_GET['target']]['deferto'];
     		$detolog = $availableRequestStates[$_GET['target']]['defertolog'];
             
-            $statement2 = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) 
-                                                VALUES (:request, :user, :deferlog, CURRENT_TIMESTAMP());");
-            $statement2->bindValue(":deferlog", "Deferred to $detolog");
-            $statement2->bindValue(":request", $request->getId());
-            $statement2->bindValue(":user", User::getCurrent()->getUsername());
-            
-            if(!$statement2->execute()) 
-            {
-                throw new TransactionException("Error occurred saving log entry");    
-            }
+            LogHelper::DeferRequest($database, $request, $detolog);
         
 		    Notification::requestDeferred($request);
             SessionAlert::success("Request {$request->getId()} deferred to $deto");
@@ -1483,15 +1422,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
     // TODO: make this transactional
     $request->save();
     
-    $closeaction = "Closed $gem";
-    $messagebody = isset($_POST['msgbody']) ? $_POST['msgbody'] : '';
-    $statement = gGetDb()->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) 
-                                            VALUES (:request, :user, :closeaction, CURRENT_TIMESTAMP(), :msgbody);");
-    $statement->bindValue(':request', $request->getId());
-    $statement->bindValue(':user', User::getCurrent()->getUsername());
-    $statement->bindValue(':closeaction', $closeaction);
-    $statement->bindValue(':msgbody', $messagebody);
-    $statement->execute();
+    LogHelper::CloseRequest(gGetDb(), $request, $gem, $messagebody);
     
 	if ($gem == '0') {
 		$crea = "Dropped";
@@ -1715,11 +1646,8 @@ elseif ($action == "reserve")
             $request->setReserved(User::getCurrent($database)->getId());
             $request->save();
 	
-            $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:request, :user, 'Reserved', CURRENT_TIMESTAMP);");
-            $query->bindValue(":user", User::getCurrent($database)->getUsername());
-            $query->bindValue(":request", $request->getId());
-            $query->execute();
-    
+            LogHelper::Reserve($database, $request);
+                
             Notification::requestReserved($request);
                 
             SessionAlert::success("Reserved request {$request->getId()}.");
@@ -1773,15 +1701,7 @@ elseif ($action == "breakreserve")
                     $request->setReserved(0);
                     $request->save();
 
-				    $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) 
-                                                VALUES (:request, :username, 'BreakReserve', CURRENT_TIMESTAMP());");
-                    $query->bindValue(":request", $request->getId());
-                    $query->bindValue(":username", User::getCurrent()->getUsername());
-                    
-                    if(!$query->execute())
-                    {
-                        throw new TransactionException("Error creating log entry.");
-                    }
+				    LogHelper::BreakReserve($database, $request);
                 
                     Notification::requestReserveBroken($request);
                     header("Location: acc.php");
@@ -1810,15 +1730,7 @@ elseif ($action == "breakreserve")
             $request->setReserved(0);
             $request->save();
 
-            $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) 
-                                            VALUES (:request, :username, 'Unreserved', CURRENT_TIMESTAMP());");
-            $query->bindValue(":request", $request->getId());
-            $query->bindValue(":username", User::getCurrent()->getUsername());
-            
-            if(!$query->execute()) 
-            {
-                throw new TransactionException("Error creating log entry");
-            }
+            LogHelper::Unreserve($database, $request);
         
             Notification::requestUnreserved($request);
 		    header("Location: acc.php");
@@ -2039,18 +1951,7 @@ elseif ($action == "ec")
         
             $comment->save();
         
-            $logQuery = "INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES ( :id, :user, :action, CURRENT_TIMESTAMP() );";
-        
-            $logStatement = $database->prepare($logQuery);
-        
-            $logStatement->bindValue(":user", User::getCurrent()->getUsername());
-            $logStatement->bindValue(":id", $comment->getId());
-            $logStatement->bindValue(":action", "EditComment-c");
-            $logStatement->execute();
-        
-            $logStatement->bindValue(":id", $comment->getRequest());
-            $logStatement->bindValue(":action", "EditComment-r");
-            $logStatement->execute();
+            LogHelper::EditComment($database, $comment);
         
             Notification::commentEdited($comment);
         
@@ -2103,23 +2004,8 @@ elseif ($action == "sendtouser")
         {
             throw new TransactionException("Error updating reserved status of request.");   
         }
-            
-        $logStatement = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:request, :user, :action, CURRENT_TIMESTAMP(), '');");
         
-        $logStatement->bindValue(":user", $curuser);
-        $logStatement->bindValue(":request", $request);
-        $logStatement->bindValue(":action", "SendReserved");
-        if(!$logStatement->execute())
-        {
-            throw new TransactionException("Error inserting send log entry.");   
-        }
-            
-        $logStatement->bindValue(":user", $user->getUsername());
-        $logStatement->bindValue(":action", "ReceiveReserved");
-        if(!$logStatement->execute())
-        {
-            throw new TransactionException("Error inserting receive log entry.");   
-        }
+        LogHelper::SendReservation($database, Request::getById($request) ,$user);
     });
     
     SessionAlert::success("Reservation sent successfully");
@@ -2162,11 +2048,7 @@ elseif ($action == "emailmgmt")
 			
 			    $emailTemplate->save();
                 
-			    $query = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:id, :user, 'CreatedEmail', CURRENT_TIMESTAMP());");
-                if(!$query->execute(array(":id" => $emailTemplate->getId(), ":user" => User::getCurrent()->getUsername())))
-                {
-                    throw new TransactionException("Error creating log entry.");    
-                }
+			    LogHelper::CreateEmail($database, $emailTemplate);
                 
                 Notification::emailCreated($emailTemplate);
                 
@@ -2227,14 +2109,7 @@ elseif ($action == "emailmgmt")
             {
                 $emailTemplate->save();
                 
-                $logQuery = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time) VALUES (:id, :username, 'EditedEmail', CURRENT_TIMESTAMP())");
-                $logQuery->execute(array(":id" => $_GET['edit'], ":username" => User::getCurrent()->getUsername()));
-            
-			
-			    if (! $logQuery->execute(array(":id" => $_GET['edit'], ":username" => User::getCurrent()->getUsername())))
-			    {
-                    throw new TransactionException("Error saving log entry");
-                }
+                LogHelper::EditedEmail($database, $emailTemplate);
             
                 global $baseurl;
                 

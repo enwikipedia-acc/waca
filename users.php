@@ -317,36 +317,9 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
             $user->setUsername($_POST['newname']);
             $user->save();
 
-            $tgtmessage = "User " . $_GET['rename'] . " (" . $oldname . ")";
-            $logpendupdate = $database->prepare("UPDATE acc_log SET log_pend = :newname WHERE log_pend = :tgtmessage AND log_action != 'Renamed'");
-            $logpendupdate->bindValue(":newname", $_POST['newname']);
-            $logpendupdate->bindValue(":tgtmessage", $tgtmessage);
-            if(!$logpendupdate->execute())
-            {
-                throw new Exception("log_pend update failed.");
-            }
-
-            $logupdate = $database->prepare("UPDATE acc_log SET log_user = :newname WHERE log_user = :oldname;");
-            $logupdate->bindValue(":newname", $_POST['newname']);
-            $logupdate->bindValue(":oldname", $oldname);
-            if(!$logupdate->execute())
-            {
-                throw new Exception("log_user update failed.");
-            }
-
             $logentry = serialize(array('old' => $oldname, 'new' => $_POST['newname']));
-
-            $userid = $user->getId();
-            $currentUser = User::getCurrent()->getUsername();
-            $logentryquery = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:userid, :siuser, 'Renamed', CURRENT_TIMESTAMP(), :logentry);");
-            $logentryquery->bindValue(":logentry", $logentry);
-            $logentryquery->bindValue(":userid", $userid);
-            $logentryquery->bindValue(":siuser", $currentUser);
-            if(!$logentryquery->execute())
-            {
-                throw new Exception("logging failed.");
-            }
-
+            LogHelper::RenamedUser($database, $user, $logentry);
+           
             BootstrapSkin::displayAlertBox("Changed User " . htmlentities($oldname,ENT_COMPAT,'UTF-8') . " name to ". htmlentities($_POST['newname'],ENT_COMPAT,'UTF-8') , "alert-info","",false);
         }
         catch (Exception $ex)
@@ -404,12 +377,8 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {
 
             $user->save();
 
-            $siuser = User::getCurrent()->getUsername();
-            $logquery = $database->prepare("INSERT INTO acc_log (log_pend, log_user, log_action, log_time, log_cmt) VALUES (:gid, :sid, 'Prefchange', CURRENT_TIMESTAMP(), '');");
-            $logquery->bindValue(":gid", $_GET['edituser']);
-            $logquery->bindValue(":sid", $siuser);
-            if(!$logquery->execute()) throw new Exception("Logging failed.");
-
+            LogHelper::UserPreferencesChange($database, $user);
+            
             Notification::userPrefChange($user);
             BootstrapSkin::displayAlertBox("Changes saved.", "alert-info");
         }
