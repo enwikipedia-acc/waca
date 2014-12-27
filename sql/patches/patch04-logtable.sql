@@ -19,8 +19,8 @@ UPDATE log SET objecttype = CASE
         WHEN action = 'Edited' THEN 'InterfaceMessage'
         WHEN action = 'EditComment-c' THEN 'Comment'
         WHEN action LIKE '%Reserve%' THEN 'Request'
-        WHEN action LIKE '%Email' THEN 'Email'
-        WHEN action LIKE '%Template' THEN 'Template'
+        WHEN action LIKE '%Email' THEN 'EmailTemplate'
+        WHEN action LIKE '%Template' THEN 'WelcomeTemplate'
         WHEN action LIKE 'Closed %' THEN 'Request'
         WHEN action LIKE 'Deferred to %' THEN 'Request'
     END;
