@@ -23,7 +23,6 @@ require_once 'functions.php';
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
 require_once 'includes/StatisticsPage.php';
-require_once 'includes/database.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/JWT.php';
 require_once 'oauth/OAuthUtility.php';
@@ -35,14 +34,6 @@ if(Offline::isOffline())
     echo Offline::getOfflineMessage(false);
     die();
 }
-
-// Initialize the database classes.
-$tsSQL = new database("toolserver");
-$asSQL = new database("antispoof");
-
-// Creates database links for use by functions.php. 
-$tsSQLlink = $tsSQL->getLink();
-$asSQLlink = $asSQL->getLink();
 
 $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
 

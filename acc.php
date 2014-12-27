@@ -26,7 +26,6 @@ require_once 'LogClass.php';
 require_once 'functions.php';
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php'; // this needs to be high up, but below config, functions, and database
-require_once 'includes/database.php';
 require_once 'includes/session.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/JWT.php';
@@ -42,14 +41,6 @@ if(Offline::isOffline())
     echo Offline::getOfflineMessage(false);
     die();
 }
-
-// Initialize the database classes.
-$tsSQL = new database("toolserver");
-$asSQL = new database("antispoof");
-
-// Creates database links for later use.
-$tsSQLlink = $tsSQL->getLink();
-$asSQLlink = $asSQL->getLink();
 
 // Initialize the class objects.
 $session = new session();

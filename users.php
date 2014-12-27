@@ -22,7 +22,6 @@ session_start();
 require_once 'functions.php';
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
-require_once 'includes/database.php';
 require_once 'includes/session.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
 require_once 'lib/mediawiki-extensions-OAuth/lib/JWT.php';
@@ -35,10 +34,6 @@ if(Offline::isOffline())
     echo Offline::getOfflineMessage(false);
     die();
 }
-
-// Initialize the database classes.
-$tsSQL = new database("toolserver");
-$tsSQLlink = $tsSQL->getLink();
 
 // Initialize the class objects.
 $session = new session();

@@ -37,7 +37,7 @@ class BootstrapSkin
         // userid
         // username
         // sitenotice
-        global $smarty, $session, $tsSQL;
+        global $smarty, $session;
 
         $userid = isset($_SESSION['userID']) ? $_SESSION['userID'] : 0;
         $user = isset($_SESSION['user']) ? $_SESSION['user'] : "";

@@ -316,7 +316,6 @@ ini_set('user_agent', $toolUserAgent);
 
 foreach(array( 
     "mbstring",  // unicode and stuff
-    "mysql",  // legacy database
     "pdo", "pdo_mysql",  // new database module
     "session", "date", "pcre", // core stuff
     "curl", // mediawiki api access etc

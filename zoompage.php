@@ -14,7 +14,7 @@
 
 function zoomPage($id,$urlhash)
 {
-	global $tsSQLlink, $session, $availableRequestStates, $createdid;
+	global $session, $availableRequestStates, $createdid;
 	global $smarty, $locationProvider, $rdnsProvider, $antispoofProvider;
 	global $xffTrustProvider, $enableEmailConfirm;
     
