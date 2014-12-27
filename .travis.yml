@@ -4,7 +4,7 @@ php:
   - 5.4
 
 git:
-  submodules: false
+  submodules: true
 
 script:
   - bash .travis.phplint.sh
