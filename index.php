@@ -148,7 +148,7 @@ else
             
             $smarty->display("request/request-form.tpl");
         }
-        else
+        else if ($enableEmailConfirm == 1)
         {
             $request->generateEmailConfirmationHash();
 
@@ -164,6 +164,19 @@ else
             $request->sendConfirmationEmail();
             
             $smarty->display("request/email-confirmation.tpl");
+        }
+        else
+        {
+			$request->setEmailConfirm(0); // Since it can't be null
+			$database->transactionally(function() use($request)
+			{
+				$request->save();
+				$request->updateChecksum();
+				$request->save();
+			});
+			$smarty->display("request/email-confirmed.tpl");
+			Notification::requestReceived($request);
+			BootstrapSkin::displayPublicFooter();
         }
         
         BootstrapSkin::displayPublicFooter();
