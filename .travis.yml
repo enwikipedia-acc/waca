@@ -15,7 +15,7 @@ git:
 
 before_script:
   - cd sql
-  - ./create_db.sh
+  - bash create_db.sh
   - cd ..
 
 script:
