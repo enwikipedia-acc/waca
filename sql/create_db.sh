@@ -6,27 +6,27 @@ set -e
 
 # Default to values given in variables used by TravisCI if no args are given
 if [ $# -ge 1 ]; then
-	$SQL_SERVER = $1
+	SQL_SERVER=$1
 else
-	$SQL_SERVER = $DB_SERV
+	SQL_SERVER=$DB_SERV
 fi
 
 if [ $# -ge 2 ]; then
-	$SQL_DBNAME = $2
+	SQL_DBNAME=$2
 else
-	$SQL_DBNAME = $DB_NAME
+	SQL_DBNAME=$DB_NAME
 fi
 
 if [ $# -ge 3 ]; then
-	$SQL_USERNAME = $3
+	SQL_USERNAME=$3
 else
-	$SQL_USERNAME = $DB_USER
+	SQL_USERNAME=$DB_USER
 fi
 
 if [ $# -ge 4 ]; then
-	$SQL_PASSWORD = $4
+	SQL_PASSWORD=$4
 else
-	$SQL_PASSWORD = $DB_PASS
+	SQL_PASSWORD=$DB_PASS
 fi
 
 echo "Creating database..."
