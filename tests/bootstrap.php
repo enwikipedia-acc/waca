@@ -6,9 +6,13 @@ $localconf = __DIR__ . '/../config.local.inc.php';
 if(!file_exists($localconf))
 {
     touch($localconf);
+    file_put_contents($localconf, "<?php\n");
+    file_put_contents($localconf, "\$filepath = \"" . getcwd() . "/\";\n", FILE_APPEND);
+    file_put_contents($localconf, "\$toolserver_host = \"" . getenv('DB_SERV') . "/\";\n", FILE_APPEND);
+    file_put_contents($localconf, "\$toolserver_database = \"" . getcwd('DB_NAME') . "/\";\n", FILE_APPEND);
+    file_put_contents($localconf, "\$toolserver_username = \"" . getcwd('DB_USER') . "/\";\n", FILE_APPEND);
+    file_put_contents($localconf, "\$toolserver_password = \"" . getcwd('DB_PASS') . "/\";\n", FILE_APPEND);
 }
-
-file_put_contents($localconf, "<?php\n\$filepath = \"" . getcwd() . "/\";\n");
 
 // Load the config file for the autoloader.
 require_once __DIR__ . '/../config.inc.php';
