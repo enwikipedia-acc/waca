@@ -9,9 +9,9 @@ if(!file_exists($localconf))
     file_put_contents($localconf, "<?php\n");
     file_put_contents($localconf, "\$filepath = \"" . getcwd() . "/\";\n", FILE_APPEND);
     file_put_contents($localconf, "\$toolserver_host = \"" . getenv('DB_SERV') . "/\";\n", FILE_APPEND);
-    file_put_contents($localconf, "\$toolserver_database = \"" . getcwd('DB_NAME') . "/\";\n", FILE_APPEND);
-    file_put_contents($localconf, "\$toolserver_username = \"" . getcwd('DB_USER') . "/\";\n", FILE_APPEND);
-    file_put_contents($localconf, "\$toolserver_password = \"" . getcwd('DB_PASS') . "/\";\n", FILE_APPEND);
+    file_put_contents($localconf, "\$toolserver_database = \"" . getenv('DB_NAME') . "/\";\n", FILE_APPEND);
+    file_put_contents($localconf, "\$toolserver_username = \"" . getenv('DB_USER') . "/\";\n", FILE_APPEND);
+    file_put_contents($localconf, "\$toolserver_password = \"" . getenv('DB_PASS') . "/\";\n", FILE_APPEND);
 }
 
 // Load the config file for the autoloader.
