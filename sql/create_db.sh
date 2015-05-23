@@ -24,27 +24,29 @@ else
 fi
 
 if [ $# -ge 4 ]; then
-	SQL_PASSWORD=$4
+	SQL_PASSWORD=-p$4
+elif [ -n "$DB_PASS" ]; then
+	SQL_PASSWORD=-p$DB_PASS
 else
-	SQL_PASSWORD=$DB_PASS
+	SQL_PASSWORD=
 fi
 
 echo "Creating database..."
-mysql -h $SQL_SERVER -u $SQL_USERNAME -p$SQL_PASSWORD -e "CREATE DATABASE $SQL_DBNAME;"
+mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "CREATE DATABASE $SQL_DBNAME;"
 
 echo "Loading initial schema..."
-mysql -h $SQL_SERVER -u $SQL_USERNAME -p$SQL_PASSWORD $SQL_DBNAME < db-structure.sql
+mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < db-structure.sql
 
 echo "Loading initial seed data..."
 for f in `ls seed/*_data.sql`; do
 	echo "  * $f"
-	mysql -h $SQL_SERVER -u $SQL_USERNAME -p$SQL_PASSWORD $SQL_DBNAME < $f
+	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < $f
 done
 
 echo "Applying patches..."
 for f in `ls patches/patch*.sql`; do
 	echo "  * $f"
-	mysql -h $SQL_SERVER -u $SQL_USERNAME -p$SQL_PASSWORD $SQL_DBNAME < $f
+	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < $f
 done
 
 echo "Done."
