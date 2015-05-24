@@ -210,30 +210,34 @@ class LogPage
 			if ($rla == "Promoted" || $rla == "Demoted" || $rla == "Approved" || $rla == "Suspended" || $rla == "Declined") {
 				$uid = $rlp;
                 $user = User::getById($uid, gGetDb());
+                $username = htmlentities($user->getUsername());
 				
 				if ($user === false)
                 {
-					die("User $uid not found.");
+					die("User $uid not found."); 
                 }
                 
 				$moreinfo = "";
 				if ($rla == "Declined" || $rla == "Suspended" || $rla == "Demoted") {
 					$moreinfo = " because \"$rlc\"";
 				}
-				$logList .="<li>$rlu $rla, User $rlp (" . $user->getUsername() . ") at $rlt$moreinfo.</li>\n";
+				$logList .="<li>$rlu $rla, User $rlp (" . $username . ") at $rlt$moreinfo.</li>\n";
 			}
 			if ($rla == "Renamed") {
                 $data = unserialize($rlc);
-				$logList .="<li>$rlu renamed ${data['old']} to ${data['new']} at $rlt.</li>\n";
+                $old = htmlentities($data['old']);
+                $new = htmlentities($data['new']);
+				$logList .="<li>$rlu renamed $old to $new at $rlt.</li>\n";
 			}
 			if ($rla == "Prefchange") {
                 $user = User::getById($rlp, gGetDb());
+                $username = htmlentities($user->getUsername());
 				if ($user === false)
                 {
 					die("User $rlp not found.");
                 }
                 
-				$logList .="<li>$rlu changed user preferences for $rlp (" . $user->getUsername() . ") at $rlt</li>\n";
+				$logList .="<li>$rlu changed user preferences for $rlp (" . $username . ") at $rlt</li>\n";
 			}
 			if ($rla == "Banned") {
 				$ban = Ban::getById($rlp, gGetDb());
@@ -374,24 +378,26 @@ class LogPage
 			}
 			if ($rla == "Promoted" || $rla == "Demoted" || $rla == "Approved" || $rla == "Suspended" || $rla == "Declined") {
                 $user = User::getById($rlp, gGetDb());
+                $username = htmlentities($user->getUsername());
                 if($user === false)
                 {
                     die("User $rlp not found");
                 }
                     
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>strtolower($rla) . $user->getUsername(), 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>strtolower($rla) . $username, 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "Renamed") {
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"renamed", 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "Prefchange") {
                 $user = User::getById($rlp, gGetDb());
+                $username = htmlentities($user->getUsername());
                 if($user === false)
                 {
                     die("User $rlp not found");
                 }
 
-				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"changed user preferences for " . $user->getUsername(), 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
+				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"changed user preferences for " . $username, 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if ($rla == "Banned") 
             {
