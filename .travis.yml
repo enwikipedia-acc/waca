@@ -1,7 +1,6 @@
 language: php
 
 php:
-  - 5.4
   - 5.5
   - 5.6
   
@@ -13,6 +12,11 @@ sudo: false
 
 git:
   submodules: true
+
+before_script:
+  - cd sql
+  - bash create_db.sh
+  - cd ..
 
 script:
   - bash .travis.phplint.sh
