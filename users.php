@@ -103,7 +103,7 @@ if (isset ($_GET['approve']))
 
     $user->approve();
 
-    BootstrapSkin::displayAlertBox("Approved user " . $user->getUsername(), "alert-info", "", false);
+    BootstrapSkin::displayAlertBox("Approved user " . htmlentities($user->getUsername(),ENT_COMPAT,'UTF-8'), "alert-info", "", false);
 
     Notification::userApproved($user);
 
@@ -143,7 +143,7 @@ if (isset ($_GET['demote']))
     } else {
         $user->demote($_POST['reason']);
 
-        BootstrapSkin::displayAlertBox( "Changed " . $user->getUsername() . "'s access to 'User'", "alert-info", "", false);
+        BootstrapSkin::displayAlertBox( "Changed " . htmlentities($user->getUsername(),ENT_COMPAT,'UTF-8') . "'s access to 'User'", "alert-info", "", false);
 
         Notification::userDemoted($user, $_POST['reason']);
 
@@ -183,7 +183,7 @@ if (isset ($_GET['suspend'])) {
         $user->suspend($_POST['reason']);
 
         Notification::userSuspended($user, $_POST['reason']);
-        BootstrapSkin::displayAlertBox("Suspended user " . $user->getUsername(), "alert-info", "", false);
+        BootstrapSkin::displayAlertBox("Suspended user " . htmlentities($user->getUsername(),ENT_COMPAT,'UTF-8'), "alert-info", "", false);
 
         $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
         mail($user->getEmail(), "ACC Account Suspended", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been suspended by " . User::getCurrent()->getUsername() . " because ".$_POST['reason'].". To contest this suspension please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
@@ -212,7 +212,7 @@ if (isset ($_GET['promote'])) {
 
     Notification::userPromoted($user);
 
-    BootstrapSkin::displayAlertBox($user->getUsername() . " promoted to 'Admin'", "alert-info", "", false);
+    BootstrapSkin::displayAlertBox(htmlentities($user->getUsername(),ENT_COMPAT,'UTF-8') . " promoted to 'Admin'", "alert-info", "", false);
 
     $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
     mail($user->getEmail(), "ACC Account Promoted", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been promted to admin status by " . User::getCurrent()->getUsername() . ".\n- The English Wikipedia Account Creation Team", $headers);
@@ -248,7 +248,7 @@ if (isset ($_GET['decline'])) {
 
         Notification::userDeclined($user, $_POST['reason']);
 
-        BootstrapSkin::displayAlertBox("Declined user " . $user->getUsername(), "alert-info", "", false);
+        BootstrapSkin::displayAlertBox("Declined user " . htmlentities($user->getUsername(),ENT_COMPAT,'UTF-8'), "alert-info", "", false);
 
         $headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
         mail($user->getEmail(), "ACC Account Declined", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been declined access to the account creation tool by " . User::getCurrent()->getUsername() . " because " . $_POST['reason'] . ". For more infomation please email accounts-enwiki-l@lists.wikimedia.org.\n- The English Wikipedia Account Creation Team", $headers);
@@ -410,7 +410,7 @@ $userListData = $userListResult->fetchAll(PDO::FETCH_COLUMN);
 $userListProcessedData = array();
 foreach ($userListData as $userListItem)
 {
-    $userListProcessedData[] = "\"" . htmlentities($userListItem, ENT_QUOTES) . "\"";
+    $userListProcessedData[] = "\"" . htmlentities($userListItem, ENT_COMPAT, 'UTF-8') . "\"";
 }
 
 $jsuserlist = '[' . implode(",", $userListProcessedData) . ']';

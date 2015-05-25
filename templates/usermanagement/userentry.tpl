@@ -1,6 +1,6 @@
 ﻿<tr>
   <th>
-    <a href="{$baseurl}/statistics.php?page=Users&amp;user={$user->getId()}">{$user->getUsername()}</a>
+    <a href="{$baseurl}/statistics.php?page=Users&amp;user={$user->getId()}">{$user->getUsername()|escape}</a>
   </th>
   <td>
     {if ($user->isOAuthLinked() && $user->getOnWikiName() != "##OAUTH##") || !$user->isOAuthLinked()}
