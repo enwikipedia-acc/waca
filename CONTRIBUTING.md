@@ -121,7 +121,38 @@ $statement->bindValue(":data", $data);
 $statement->execute();
 ```
 
+#### Transactions
+
+Please use transactions for all new code. The easiest way to do this is to wrap your code in a `transactionally()` call as a callback. The database class will then wrap your code in a try/catch block with automatic transaction commit/rollback. Throw a `TransactionException` if you encounter an error and need to abort.
+
+```php
+$database = gGetDb();
+$database->transactionally(function() use ($database) 
+{
+    $database->exec(<<<SQL
+        UPDATE user 
+        SET 
+            oauthrequesttoken = null, 
+            oauthrequestsecret = null, 
+            oauthaccesstoken = null, 
+            oauthaccesssecret = null, 
+            oauthidentitycache = null;
+SQL
+    );
+});
+```
+
 ### Templating
+
+We use [Smarty](http://www.smarty.net/) as a templating engine to handle all output to the web.
+
+Smarty is very powerful, and allows us to put display logic directly within the templates, leaving our PHP code free of display code to cleanly handle the business logic.
+
+No display code should be in the PHP files, everything should be in the templates, and as everything is contained in the templates, escaping for display can be done exactly at the point of display, and it's obvious where data isn't escaped for display. Therefore, no escaping should be done in the PHP code.
+
+We use v3.1.14 of Smarty currently, and it's probably a better idea to get yourself familiar with it from [their documentation](http://www.smarty.net/docs/en/). Useful sections:
+* [Variables](http://www.smarty.net/docs/en/language.syntax.variables.tpl)
+* [Escaping](http://www.smarty.net/docs/en/language.modifier.escape.tpl)
 
 [1]: http://www.php-fig.org/psr/psr-1/
 
