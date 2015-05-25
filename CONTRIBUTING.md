@@ -1,4 +1,4 @@
-﻿# Contributing!
+# Contributing!
 
 Hi! Thanks for contributing!
 
@@ -6,7 +6,7 @@ For the best experience for everyone, there's a few guidelines we'd like everyon
 
 ## Code Style
 
-This is a work-in-progress, so feel free to put ideas forward as to coding styles.
+This is a work-in-progress, so feel free to put ideas forward as to coding styles. The current guideline is based on suggestions from team members, and the recommendations from the [PHP Framework Interop Group](http://www.php-fig.org/)
 
 * Files are UTF-8 encoded without a BOM ([PSR-1][1])
 * Only use long-syntax php tags: `<?php` and omit the closing tag at the end of a file. ([PSR-1][1])
@@ -16,7 +16,7 @@ This is a work-in-progress, so feel free to put ideas forward as to coding style
 
 ### Future work
 
-Namespacing currently isn't done, but we should be looking towards this goal.
+Namespacing currently isn't implemented, but we should be looking towards this goal.
 
 ### Indentation and Braces
 
@@ -27,7 +27,6 @@ Namespacing currently isn't done, but we should be looking towards this goal.
 * Spaces before and after brackets, not inside ([PSR-1][1]).
 
 Quick example:
-
 
 ```php
 class Foo extends Bar implements FooInterface
@@ -49,8 +48,6 @@ class Foo extends Bar implements FooInterface
 	}
 }
 ```
-
-
 
 ### Line length and wrapping
 
@@ -81,7 +78,16 @@ class Foo
 }
 ```
 
+### Misc
 
+* The ternary (`?:`) operator should only be used where appropriate - short expressions only please!
+* Heredoc/Nowdoc should not be used for output - use templates. Extended SQL statements are OK.
+
+## How-tos
+
+### Database
+
+### Templating
 
 [1]: http://www.php-fig.org/psr/psr-1/
 
