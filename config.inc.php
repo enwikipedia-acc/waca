@@ -324,3 +324,8 @@ foreach(array(
 require_once($filepath . "includes/AutoLoader.php");
 
 spl_autoload_register( "AutoLoader::load" );
+
+// Extra includes which are just plain awkward wherever they are.
+require_once($filepath . 'oauth/OAuthUtility.php');
+require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/OAuth.php');
+require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/JWT.php');

@@ -24,9 +24,6 @@ require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
 require_once 'includes/database.php';
 require_once 'includes/session.php';
-require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
-require_once 'lib/mediawiki-extensions-OAuth/lib/JWT.php';
-require_once 'oauth/OAuthUtility.php';
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.

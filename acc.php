@@ -28,9 +28,6 @@ require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php'; // this needs to be high up, but below config, functions, and database
 require_once 'includes/database.php';
 require_once 'includes/session.php';
-require_once 'lib/mediawiki-extensions-OAuth/lib/OAuth.php';
-require_once 'lib/mediawiki-extensions-OAuth/lib/JWT.php';
-require_once 'oauth/OAuthUtility.php';
 
 // Set the current version of the ACC.
 $version = "0.9.7";
