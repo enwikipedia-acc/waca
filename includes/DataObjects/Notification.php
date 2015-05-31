@@ -104,12 +104,25 @@ class Notification extends DataObject
 
         $msg = IrcColourCode::RESET . IrcColourCode::BOLD . "[$whichami]". IrcColourCode::RESET .": $message";
 
-        $notification = new Notification();
-        $notification->setDatabase( gGetDb('notifications') );
-        $notification->setType($ircBotNotificationType);
-        $notification->setText($msg);
+        try
+        {
+            $database = gGetDb('notifications');
+            
+            $notification = new Notification();
+            $notification->setDatabase( $database );
+            $notification->setType($ircBotNotificationType);
+            $notification->setText($msg);
 
-        $notification->save();
+            $notification->save();
+        }
+        catch(Exception $ex)
+        {
+            // OK, so we failed to send the notification - that db might be down?
+            // This is non-critical, so silently fail.
+            
+            // Disable notifications for remainder of request.
+            $ircBotNotificationsEnabled = false;
+        }
     }
 
     #region user management
