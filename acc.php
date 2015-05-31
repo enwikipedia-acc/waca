@@ -1410,7 +1410,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
     // TODO: make this transactional
     $request->save();
     
-    Logger::closeRequest(gGetDb(), $request, $gem, $messagebody);
+    Logger::closeRequest(gGetDb(), $request, $gem, $_POST['msgbody']);
     
 	if ($gem == '0') {
 		$crea = "Dropped";
