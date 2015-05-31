@@ -65,14 +65,14 @@ class Offline
 
         if ($external)
         {
-            $smarty->fetch("offline/external.tpl");
+            return $smarty->fetch("offline/external.tpl");
         }
         else
         {
             $smarty->assign("dontUseDbCulprit", $dontUseDbCulprit);
             $smarty->assign("dontUseDbReason", $dontUseDbReason);
             $smarty->assign("alerts", array());
-            $smarty->fetch("offline/internal.tpl");
+            return $smarty->fetch("offline/internal.tpl");
         }
     }
 }

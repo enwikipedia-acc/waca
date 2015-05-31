@@ -30,11 +30,6 @@ class AutoLoader
             $filepath . $class . ".php",
         );
 
-        // extra includes which are awkward to autoload
-        require_once($filepath . 'oauth/OAuthUtility.php');
-        require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/OAuth.php');
-        require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/JWT.php');
-
         foreach($paths as $file)
         {
             if(file_exists($file))
