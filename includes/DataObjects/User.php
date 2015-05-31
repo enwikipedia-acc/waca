@@ -275,7 +275,7 @@ SQL
     {
         $result = AuthUtility::testCredentials($password, $this->password);
         
-        if($result == true)
+        if($result === true)
         {
             // password version is out of date, update it.
             if(!AuthUtility::isCredentialVersionLatest($this->password))

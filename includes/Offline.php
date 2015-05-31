@@ -58,6 +58,7 @@ class Offline
     /**
      * Gets the offline message
      * @param bool $external
+     * @return string
      */
     public static function getOfflineMessage($external)
     {

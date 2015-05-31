@@ -7,6 +7,7 @@ class AuthUtility
     /**
      * Test the specified data against the specified credentials
      * @param string $credentials
+     * @return boolean
      */
     public static function testCredentials( $password, $credentials )
     {
