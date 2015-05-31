@@ -100,7 +100,9 @@ $forceIdentification = false;
 $locationProviderClass = "FakeLocationProvider";
 $antispoofProviderClass = "FakeAntiSpoofProvider";
 $rdnsProviderClass = "FakeRDnsLookupProvider";
+
 $useOauthSignup = false;
+$enforceOAuth = false;
 
 ```
 
@@ -111,3 +113,24 @@ Most settings are flags to turn on and off features for development systems whic
 # First Login!
 
 Browse to http://localhost/waca/acc.php, and log in! There's a user created by default called "Admin", with the password "Admin".
+
+# OAuth setup
+
+OK, so this is a tricky one, but worth doing so your environment is the same as the production one.
+
+1. Get an account on https://accounts-oauth.wmflabs.org/ - you'll need to ask someone who's already got an account to create you one.
+2. Go to `Special:OAuthConsumerRegistration`, and request a token for a new consumer. The OAuth "callback" URL field needs to point to /oauth/callback.php (or wherever that script is located on your webserver). Importantly, this must be how *you* see it - it's fine to put a localhost url in here. It's used as the target of a redirect, so as long as your browser can see it, it should be fine. At the moment, we only need basic rights, but that may change in the future. Ignore the usage restrictions and RSA key - we don't use those.
+3. You'll get two hexadecimal strings - **don't lose these** - put them in your config.local.inc.php file as `$oauthConsumerToken` and `$oauthSecretToken`
+4. Go to `Special:OAuthManageConsumers/proposed`, click review/manage on your consumer and approve it.
+5. Set up a few more properties in config.local.inc.php:
+
+```php
+$oauthBaseUrl = "https://accounts-oauth.wmflabs.org/w/index.php?title=Special:OAuth";
+$oauthBaseUrlInternal = $oauthBaseUrl;
+$oauthMediaWikiCanonicalServer = "http://accounts-oauth.wmflabs.org";
+
+$useOauthSignup = true;
+$enforceOAuth = true;
+```
+
+You should now be able to use OAuth!
