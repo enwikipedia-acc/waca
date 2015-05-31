@@ -12,6 +12,7 @@
   <a id="IPAbuseLog-{$index}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:AbuseLog&amp;wpSearchUser={$ipaddress}" onMouseUp="$('#IPAbuseLog-{$index}').addClass('btn-visited');">Abuse Filter Log</a>
   {if $currentUser->isCheckUser() == true}
     <a id="IPCU-{$index}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:CheckUser&amp;ip={$ipaddress}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$request->getId()}" onMouseUp="$('#IPCU-{$index}').addClass('btn-visited');">CheckUser</a>
+    <a id="IPCULog-{$index}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:CheckUserLog?cuSearchType=target&cuSearch={$ipaddress}" onMouseUp="$('#IPCULog-{$index}').addClass('btn-visited');">CU Log</a>
   {/if}
 </div>
 <!-- /tpl:zoom-parts/ip-links.tpl -->
