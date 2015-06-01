@@ -14,19 +14,19 @@
 
 class StatsTopCreators extends StatisticsPage
 {
-    protected function execute()
-    {
-        global $smarty;
+	protected function execute()
+	{
+		global $smarty;
 
-        $qb = new QueryBrowser();
-        $qb->numberedList = true;
-        $qb->numberedListTitle = "Postition";
+		$qb = new QueryBrowser();
+		$qb->numberedList = true;
+		$qb->numberedListTitle = "Postition";
 
-        $qb->tableCallbackFunction="statsTopCreatorsRowCallback";
-        $qb->overrideTableTitles = array("# Created", "Username");
+		$qb->tableCallbackFunction="statsTopCreatorsRowCallback";
+		$qb->overrideTableTitles = array("# Created", "Username");
 
-        // Retrieve all-time stats
-        $top5aout = $qb->executeQueryToTable(<<<SQL
+		// Retrieve all-time stats
+		$top5aout = $qb->executeQueryToTable(<<<SQL
             SELECT
                 COUNT(*),
                 u.`id` user_id,
@@ -40,10 +40,10 @@ class StatsTopCreators extends StatisticsPage
             GROUP BY `log_user`, u.`id`
             ORDER BY COUNT(*) DESC;
 SQL
-        );
+		);
 
-        // Retrieve all-time stats for active users only
-        $top5activeout = $qb->executeQueryToTable(<<<SQL
+		// Retrieve all-time stats for active users only
+		$top5activeout = $qb->executeQueryToTable(<<<SQL
             SELECT
                 COUNT(*),
                 u.`id` user_id,
@@ -59,11 +59,11 @@ SQL
             GROUP BY `log_user`, u.`id`
             ORDER BY COUNT(*) DESC;
 SQL
-        );
+		);
 
-        // Retrieve today's stats (so far)
-        $now = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d")));
-        $top5out = $qb->executeQueryToTable(<<<SQL
+		// Retrieve today's stats (so far)
+		$now = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d")));
+		$top5out = $qb->executeQueryToTable(<<<SQL
             SELECT
                 COUNT(*),
                 u.`id` user_id,
@@ -79,11 +79,11 @@ SQL
             GROUP BY `log_user`, u.`id`
             ORDER BY COUNT(*) DESC;
 SQL
-        );
+		);
 
-        // Retrieve Yesterday's stats
-        $yesterday = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 1));
-        $top5yout = $qb->executeQueryToTable(<<<SQL
+		// Retrieve Yesterday's stats
+		$yesterday = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 1));
+		$top5yout = $qb->executeQueryToTable(<<<SQL
             SELECT
                 COUNT(*),
                 u.`id` user_id,
@@ -99,11 +99,11 @@ SQL
             GROUP BY `log_user`, u.`id`
             ORDER BY COUNT(*) DESC;
 SQL
-        );
+		);
 
-        // Retrieve last 7 days
-        $lastweek = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 7));
-        $top5wout = $qb->executeQueryToTable(<<<SQL
+		// Retrieve last 7 days
+		$lastweek = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 7));
+		$top5wout = $qb->executeQueryToTable(<<<SQL
             SELECT
                 COUNT(*),
                 u.`id` user_id,
@@ -119,11 +119,11 @@ SQL
             GROUP BY `log_user`, u.`id`
             ORDER BY COUNT(*) DESC;
 SQL
-        );
+		);
 
-        // Retrieve last month's stats
-        $lastmonth = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 28));
-        $top5mout = $qb->executeQueryToTable(<<<SQL
+		// Retrieve last month's stats
+		$lastmonth = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 28));
+		$top5mout = $qb->executeQueryToTable(<<<SQL
             SELECT
                 COUNT(*),
                 u.`id` user_id,
@@ -139,65 +139,65 @@ SQL
             GROUP BY `log_user`, u.`id`
             ORDER BY COUNT(*) DESC;
 SQL
-        );
+		);
 
-        // Put it all together
-        $smarty->assign("top5aout", $top5aout);
-        $smarty->assign("top5activeout", $top5activeout);
-        $smarty->assign("top5out", $top5out);
-        $smarty->assign("top5yout", $top5yout);
-        $smarty->assign("top5wout", $top5wout);
-        $smarty->assign("top5mout", $top5mout);
+		// Put it all together
+		$smarty->assign("top5aout", $top5aout);
+		$smarty->assign("top5activeout", $top5activeout);
+		$smarty->assign("top5out", $top5out);
+		$smarty->assign("top5yout", $top5yout);
+		$smarty->assign("top5wout", $top5wout);
+		$smarty->assign("top5mout", $top5mout);
 
-        return $smarty->fetch("statistics/topcreators.tpl");
-    }
+		return $smarty->fetch("statistics/topcreators.tpl");
+	}
 
-    public function getPageTitle()
-    {
-        return "Top Account Creators";
-    }
+	public function getPageTitle()
+	{
+		return "Top Account Creators";
+	}
 
-    public function getPageName()
-    {
-        return "TopCreators";
-    }
+	public function getPageName()
+	{
+		return "TopCreators";
+	}
 
-    public function isProtected()
-    {
-        return false;
-    }
+	public function isProtected()
+	{
+		return false;
+	}
 
-    public function requiresWikiDatabase()
-    {
-        return false;
-    }
+	public function requiresWikiDatabase()
+	{
+		return false;
+	}
 }
 
 function statsTopCreatorsRowCallback($row, $rowno)
 {
-    $out = "<tr";
-    if($row['log_user'] == User::getCurrent()->getUsername()) {
-        $out .= ' class="info"';
-    }
+	$out = "<tr";
+	if($row['log_user'] == User::getCurrent()->getUsername()) {
+		$out .= ' class="info"';
+	}
 
-    $out .= '>';
+	$out .= '>';
 
-    $out .= '<td>'.$rowno.'</td>';
-    $out .= '<td>'.$row['COUNT(*)'].'</td>';
+	$out .= '<td>'.$rowno.'</td>';
+	$out .= '<td>'.$row['COUNT(*)'].'</td>';
 
-    global $baseurl;
-    $out .= '<td><a ';
+	global $baseurl;
+	$out .= '<td><a ';
 
-    if($row['user_level'] == "Suspended") {
-    	$out .= 'class="muted" ';
-    }
-    if($row['user_level'] == "Admin") {
-    	$out .= 'class="text-success" ';
-    }
+	if($row['user_level'] == "Suspended") {
+		$out .= 'class="muted" ';
+	}
+	if($row['user_level'] == "Admin") {
+		$out .= 'class="text-success" ';
+	}
 
-    $out .= 'href="'.$baseurl.'/statistics.php?page=Users&amp;user='.$row['user_id'].'">'.$row['log_user'].'</a></td>';
+	$out .= 'href="'.$baseurl.'/statistics.php?page=Users&amp;user='.$row['user_id'].'">'.$row['log_user'].'</a></td>';
 
-    $out .= '</tr>';
+	$out .= '</tr>';
 
-    return $out;
+	return $out;
 }

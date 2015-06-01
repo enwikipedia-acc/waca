@@ -45,11 +45,11 @@ class QueryBrowser
 			}
 		}
 		else {
-            if(count($results) > 0) {
-                foreach ($results[0] as $k => $v) {
-                    $out.=  "<th>" . $k . "</th>"; 
-                }
-            }
+			if(count($results) > 0) {
+				foreach ($results[0] as $k => $v) {
+					$out.=  "<th>" . $k . "</th>"; 
+				}
+			}
 		}
 		$out.=  "</tr>";
 		
@@ -86,13 +86,13 @@ class QueryBrowser
 	
 	public function executeQueryToArray($query)
 	{
-        $database = gGetDb();
+		$database = gGetDb();
         
-        $statement = $database->prepare($query);
+		$statement = $database->prepare($query);
         
-        $statement->execute();
+		$statement->execute();
         
-        return $statement->fetchAll($this->rowFetchMode);
+		return $statement->fetchAll($this->rowFetchMode);
 	}
 	
 }

@@ -1,6 +1,6 @@
 <?php
 if (isset($_SERVER['REQUEST_METHOD'])) {
-    die();
+	die();
 } // Web clients die.
 
 ini_set('display_errors', 1);
@@ -12,7 +12,7 @@ $db = gGetDb( );
 
 $db->transactionally(function() use ($db)
 {
-    global $cDataClearIp, $cDataClearEmail, $dataclear_interval;
+	global $cDataClearIp, $cDataClearEmail, $dataclear_interval;
     
 	$query = $db->prepare( "UPDATE request SET ip = :ip, forwardedip = null, email = :mail, useragent = '' WHERE date < DATE_SUB(curdate(), INTERVAL $dataclear_interval);" );
 	$success = $query->execute( array( 

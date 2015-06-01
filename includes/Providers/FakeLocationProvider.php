@@ -5,13 +5,13 @@
  */
 class FakeLocationProvider implements ILocationProvider
 {
-    public function __construct(PdoDatabase $database, $apikey)
-    {
-        // do nothing.
-    }
+	public function __construct(PdoDatabase $database, $apikey)
+	{
+		// do nothing.
+	}
 
-    public function getIpLocation($address)
-    {
-        return null;
-    }
+	public function getIpLocation($address)
+	{
+		return null;
+	}
 }

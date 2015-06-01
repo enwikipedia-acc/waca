@@ -32,7 +32,7 @@ $session = new session();
  */
 function sendemail($messageno, $target, $id)
 {
-    $template = EmailTemplate::getById($messageno, gGetDb());
+	$template = EmailTemplate::getById($messageno, gGetDb());
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	    
 	// Get the closing user's Email signature and append it to the Email.
@@ -50,73 +50,73 @@ function sendemail($messageno, $target, $id)
  */
 function showlogin()
 {
-    global $smarty;
+	global $smarty;
     
 	// Check whether there are any errors.
-    $errorbartext = "";
+	$errorbartext = "";
 	if (isset($_GET['error'])) {
 		if ($_GET['error']=='authfail') {
-            $errorbartext = BootstrapSkin::displayAlertBox("Username and/or password incorrect. Please try again.", "alert-error","Auth failure",true,false,true);
+			$errorbartext = BootstrapSkin::displayAlertBox("Username and/or password incorrect. Please try again.", "alert-error","Auth failure",true,false,true);
 		}
 		elseif ($_GET['error']=='noid') {
-            $errorbartext = BootstrapSkin::displayAlertBox("User account is not identified. Please email accounts-enwiki-l@lists.wikimedia.org if you believe this is in error.", "alert-error","Auth failure",true,false,true);
+			$errorbartext = BootstrapSkin::displayAlertBox("User account is not identified. Please email accounts-enwiki-l@lists.wikimedia.org if you believe this is in error.", "alert-error","Auth failure",true,false,true);
 		}
 		elseif ($_GET['error']=='newacct') {
-            $errorbartext = BootstrapSkin::displayAlertBox("I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.", "alert-info","Account pending",true,false,true);
+			$errorbartext = BootstrapSkin::displayAlertBox("I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.", "alert-info","Account pending",true,false,true);
 		}
 	}
-    $smarty->assign("errorbar", $errorbartext);   
+	$smarty->assign("errorbar", $errorbartext);   
     
-    $smarty->display("login.tpl");
+	$smarty->display("login.tpl");
 }
 
 function defaultpage()
 {
 	global $availableRequestStates, $defaultRequestStateKey, $requestLimitShowOnly, $enableEmailConfirm;
     
-    $database = gGetDb();
+	$database = gGetDb();
     
-    $requestSectionData = array();
+	$requestSectionData = array();
     
-    if ($enableEmailConfirm == 1) {
-        $query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed' LIMIT :lim;";
-        $totalquery = "SELECT COUNT(*) FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
-    }
-    else {
-        $query = "SELECT * FROM request WHERE status = :type LIMIT :lim;";
-        $totalquery = "SELECT COUNT(*) FROM request WHERE status = :type;";
-    }
+	if ($enableEmailConfirm == 1) {
+		$query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed' LIMIT :lim;";
+		$totalquery = "SELECT COUNT(*) FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
+	}
+	else {
+		$query = "SELECT * FROM request WHERE status = :type LIMIT :lim;";
+		$totalquery = "SELECT COUNT(*) FROM request WHERE status = :type;";
+	}
     
-    $statement = $database->prepare($query);
-    $statement->bindValue(":lim", $requestLimitShowOnly, PDO::PARAM_INT);
+	$statement = $database->prepare($query);
+	$statement->bindValue(":lim", $requestLimitShowOnly, PDO::PARAM_INT);
     
-    $totalRequestsStatement = $database->prepare($totalquery);
+	$totalRequestsStatement = $database->prepare($totalquery);
             
 	// list requests in each section
 	foreach($availableRequestStates as $type => $v) {
-        $statement->bindValue(":type", $type);
-        $statement->execute();
+		$statement->bindValue(":type", $type);
+		$statement->execute();
         
-        $requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
-        foreach($requests as $req) {
-            $req->setDatabase($database);   
-        }
+		$requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
+		foreach($requests as $req) {
+			$req->setDatabase($database);   
+		}
 
-        $totalRequestsStatement->bindValue(":type", $type);
-        $totalRequestsStatement->execute();
-        $totalRequests = $totalRequestsStatement->fetchColumn();
-        $totalRequestsStatement->closeCursor();
+		$totalRequestsStatement->bindValue(":type", $type);
+		$totalRequestsStatement->execute();
+		$totalRequests = $totalRequestsStatement->fetchColumn();
+		$totalRequestsStatement->closeCursor();
         
-        $requestSectionData[$v['header']] = array(
-            "requests" => $requests, 
-            "total" => $totalRequests, 
-            "api" => $v['api']);
-    }
+		$requestSectionData[$v['header']] = array(
+			"requests" => $requests, 
+			"total" => $totalRequests, 
+			"api" => $v['api']);
+	}
     
-    global $smarty;
-    $smarty->assign("requestLimitShowOnly", $requestLimitShowOnly);
+	global $smarty;
+	$smarty->assign("requestLimitShowOnly", $requestLimitShowOnly);
 	
-    $query = <<<SQL
+	$query = <<<SQL
         SELECT r.id, r.name, r.checksum
         FROM request r 
         JOIN acc_log l ON r.id = l.log_pend 
@@ -125,14 +125,14 @@ function defaultpage()
         LIMIT 5;
 SQL;
     
-    $statement = $database->prepare($query);
-    $statement->execute();
+	$statement = $database->prepare($query);
+	$statement->execute();
     
-    $last5result = $statement->fetchAll(PDO::FETCH_ASSOC);
+	$last5result = $statement->fetchAll(PDO::FETCH_ASSOC);
     
-    $smarty->assign("lastFive", $last5result);
-    $smarty->assign("requestSectionData", $requestSectionData);
-    $html = $smarty->fetch("mainpage/mainpage.tpl");
+	$smarty->assign("lastFive", $last5result);
+	$smarty->assign("requestSectionData", $requestSectionData);
+	$html = $smarty->fetch("mainpage/mainpage.tpl");
     
 	return $html;
 }
@@ -147,8 +147,9 @@ function array_search_recursive($needle, $haystack, $path=array())
 				return $path2;
 		}
 		else if(is_array($val)) {
-				if($ret = array_search_recursive($needle, $val, $path2))
-		return $ret;
+				if($ret = array_search_recursive($needle, $val, $path2)) {
+						return $ret;
+				}
 		}
 	}
 	return false;
@@ -180,7 +181,7 @@ function doSort(array $items)
 		$flag = false;
 		
 		// loop through the array
-        $loopLimit = (count($items) - 1);
+		$loopLimit = (count($items) - 1);
 		for ($i = 0; $i < $loopLimit; $i++) {
 			// are these two items out of order?
 			if(strtotime($items[$i]['time']) > strtotime($items[$i + 1]['time'])) {
@@ -205,7 +206,7 @@ function doSort(array $items)
  */
 function getTrustedClientIP($dbip, $dbproxyip)
 {
-    global $xffTrustProvider;
+	global $xffTrustProvider;
     
 	$clientIpAddr = $dbip;
 	if($dbproxyip) {
@@ -215,8 +216,8 @@ function getTrustedClientIP($dbip, $dbproxyip)
 		
 		foreach($ipList as $ipnumber => $ip) {
 			if($xffTrustProvider->isTrusted(trim($ip)) && $ipnumber < (count($ipList) - 1)) {
-                continue;
-            }
+				continue;
+			}
 			
 			$clientIpAddr = $ip;
 			break;
@@ -242,7 +243,7 @@ function explodeCidr( $range )
 
 	$list = array();
 
-    $bindecBHigh = bindec( $bhigh );
+	$bindecBHigh = bindec( $bhigh );
 	for($x = bindec($blow); $x <= $bindecBHigh; $x++) {
 		$list[] = long2ip( $x );
 	}
@@ -287,82 +288,82 @@ function welcomerbotRenderSig($creator, $sig)
  */
 function relativedate($input)
 {
-    $now = new DateTime();
-    $then = new DateTime($input);
+	$now = new DateTime();
+	$then = new DateTime($input);
     
-    $secs = $now->getTimestamp() - $then->getTimestamp();
+	$secs = $now->getTimestamp() - $then->getTimestamp();
     
-    $second = 1;
-    $minute = 60 * $second;
-    $minuteCut = 60 * $second;
-    $hour = 60 * $minute;
-    $hourCut = 60 * $minute;
-    $day = 24 * $hour;
-    $dayCut = 48 * $hour;
-    $week = 7 * $day;
-    $weekCut = 14 * $day;
-    $month = 30 * $day;
-    $year = 365 * $day;
+	$second = 1;
+	$minute = 60 * $second;
+	$minuteCut = 60 * $second;
+	$hour = 60 * $minute;
+	$hourCut = 60 * $minute;
+	$day = 24 * $hour;
+	$dayCut = 48 * $hour;
+	$week = 7 * $day;
+	$weekCut = 14 * $day;
+	$month = 30 * $day;
+	$year = 365 * $day;
     
-    $pluralise = true;
+	$pluralise = true;
     
-    if ($secs <= 10) {
-        $output = "just now";
-        $pluralise = false;
-    }
-    elseif ($secs > 10 && $secs < $minuteCut) {
-        $output = round($secs/$second) . " second";
-    }
-    elseif ($secs >= $minuteCut && $secs < $hourCut) {
-        $output = round($secs/$minute) . " minute";
-    }
-    elseif ($secs >= $hourCut && $secs < $dayCut) {
-        $output = round($secs/$hour) . " hour";
-    }
-    elseif ($secs >= $dayCut && $secs < $weekCut) {
-        $output = round($secs/$day) . " day";
-    }
-    elseif ($secs >= $weekCut && $secs < $month) {
-        $output = round($secs/$week) . " week";
-    }
-    elseif ($secs >= $month && $secs < $year) {
-        $output = round($secs/$month) . " month";
-    }
-    elseif ($secs >= $year && $secs < $year * 10) {
-        $output = round($secs/$year) . " year";
-    }
-    else {
-        $output = "a long time ago";
-        $pluralise = false;
-    }
+	if ($secs <= 10) {
+		$output = "just now";
+		$pluralise = false;
+	}
+	elseif ($secs > 10 && $secs < $minuteCut) {
+		$output = round($secs/$second) . " second";
+	}
+	elseif ($secs >= $minuteCut && $secs < $hourCut) {
+		$output = round($secs/$minute) . " minute";
+	}
+	elseif ($secs >= $hourCut && $secs < $dayCut) {
+		$output = round($secs/$hour) . " hour";
+	}
+	elseif ($secs >= $dayCut && $secs < $weekCut) {
+		$output = round($secs/$day) . " day";
+	}
+	elseif ($secs >= $weekCut && $secs < $month) {
+		$output = round($secs/$week) . " week";
+	}
+	elseif ($secs >= $month && $secs < $year) {
+		$output = round($secs/$month) . " month";
+	}
+	elseif ($secs >= $year && $secs < $year * 10) {
+		$output = round($secs/$year) . " year";
+	}
+	else {
+		$output = "a long time ago";
+		$pluralise = false;
+	}
     
-    if ($pluralise) {
-        $output = (substr($output,0,2) <> "1 ") ? $output . "s ago" : $output . " ago";
-    }
+	if ($pluralise) {
+		$output = (substr($output,0,2) <> "1 ") ? $output . "s ago" : $output . " ago";
+	}
 
-    return $output;
+	return $output;
 }
 
 function reattachOAuthAccount(User $user)
 {
-    global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;
+	global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;
 
-    try {
-        // Get a request token for OAuth
-        $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
-        $requestToken = $util->getRequestToken();
+	try {
+		// Get a request token for OAuth
+		$util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
+		$requestToken = $util->getRequestToken();
 
-        // save the request token for later
-        $user->setOAuthRequestToken($requestToken->key);
-        $user->setOAuthRequestSecret($requestToken->secret);
-        $user->save();
+		// save the request token for later
+		$user->setOAuthRequestToken($requestToken->key);
+		$user->setOAuthRequestSecret($requestToken->secret);
+		$user->save();
             
-        $redirectUrl = $util->getAuthoriseUrl($requestToken);
+		$redirectUrl = $util->getAuthoriseUrl($requestToken);
             
-        header("Location: {$redirectUrl}");
-        die();
-    }
-    catch(Exception $ex) {
-        throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
-    }     
+		header("Location: {$redirectUrl}");
+		die();
+	}
+	catch(Exception $ex) {
+		throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
+	}     
 }

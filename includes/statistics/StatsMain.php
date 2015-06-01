@@ -14,135 +14,135 @@
 
 class StatsMain extends StatisticsPage
 {
-    protected function execute()
-    {
-        global $smarty, $filepath;
+	protected function execute()
+	{
+		global $smarty, $filepath;
 
-        $files = scandir( $filepath . "/includes/statistics/" );
+		$files = scandir( $filepath . "/includes/statistics/" );
 
-        $statsPageDefinitions = preg_grep("/php$/",$files);
+		$statsPageDefinitions = preg_grep("/php$/",$files);
 
-        $statsPages = array();
+		$statsPages = array();
 
-        foreach ($statsPageDefinitions as $i) {
-            require_once($filepath . "/includes/statistics/" . $i);
-            $expld = explode('.', $i);
-            $className = $expld[0];
-            $statsPageObject = new $className;
+		foreach ($statsPageDefinitions as $i) {
+			require_once($filepath . "/includes/statistics/" . $i);
+			$expld = explode('.', $i);
+			$className = $expld[0];
+			$statsPageObject = new $className;
 
-            if($statsPageObject->hideFromMenu() == false) {
-                $statsPages[] = $statsPageObject;
-            }
-        }
+			if($statsPageObject->hideFromMenu() == false) {
+				$statsPages[] = $statsPageObject;
+			}
+		}
 
-        $this->smallStats();
+		$this->smallStats();
 
-        $smarty->assign("statsPages", $statsPages);
+		$smarty->assign("statsPages", $statsPages);
 
-        $graphList = array("day", "2day", "4day", "week", "2week", "month", "3month");
-        $smarty->assign("graphList", $graphList);
+		$graphList = array("day", "2day", "4day", "week", "2week", "month", "3month");
+		$smarty->assign("graphList", $graphList);
 
-        return $smarty->fetch("statistics/main.tpl");
-    }
+		return $smarty->fetch("statistics/main.tpl");
+	}
 
-    public function getPageTitle()
-    {
-        return "Account Creation Statistics";
-    }
+	public function getPageTitle()
+	{
+		return "Account Creation Statistics";
+	}
 
-    public function getPageName()
-    {
-        return "Main";
-    }
+	public function getPageName()
+	{
+		return "Main";
+	}
 
-    public function isProtected()
-    {
-        return true;
-    }
+	public function isProtected()
+	{
+		return true;
+	}
 
-    public function requiresWikiDatabase()
-    {
-        return false;
-    }
+	public function requiresWikiDatabase()
+	{
+		return false;
+	}
 
-    public function requiresSimpleHtmlEnvironment()
-    {
-        return false;
-    }
+	public function requiresSimpleHtmlEnvironment()
+	{
+		return false;
+	}
 
-    public function hideFromMenu()
-    {
-        return true;
-    }
+	public function hideFromMenu()
+	{
+		return true;
+	}
 
-    /**
-     * Gets the relevant statistics from the database for the small statistics table
-     */
-    private function smallStats()
-    {
-        global $smarty;
+	/**
+	 * Gets the relevant statistics from the database for the small statistics table
+	 */
+	private function smallStats()
+	{
+		global $smarty;
 
-        $database = gGetDb();
-        $requestsQuery = "SELECT COUNT(*) FROM request WHERE status = :status AND emailconfirm = 'Confirmed';";
+		$database = gGetDb();
+		$requestsQuery = "SELECT COUNT(*) FROM request WHERE status = :status AND emailconfirm = 'Confirmed';";
 
-        $requestsStatement = $database->prepare($requestsQuery);
+		$requestsStatement = $database->prepare($requestsQuery);
 
-        // TODO: use the request states thing here.
+		// TODO: use the request states thing here.
 
-        // Open Requests
-        $requestsStatement->execute(array(":status" => "Open"));
-        $open = $requestsStatement->fetchColumn();
-        $requestsStatement->closeCursor();
-        $smarty->assign("statsOpen", $open);
+		// Open Requests
+		$requestsStatement->execute(array(":status" => "Open"));
+		$open = $requestsStatement->fetchColumn();
+		$requestsStatement->closeCursor();
+		$smarty->assign("statsOpen", $open);
 
-        // Admin Requests
-        $requestsStatement->execute(array(":status" => "Admin"));
-        $admin = $requestsStatement->fetchColumn();
-        $requestsStatement->closeCursor();
-        $smarty->assign("statsAdmin", $admin);
+		// Admin Requests
+		$requestsStatement->execute(array(":status" => "Admin"));
+		$admin = $requestsStatement->fetchColumn();
+		$requestsStatement->closeCursor();
+		$smarty->assign("statsAdmin", $admin);
 
-        // Checkuser Requests
-        $requestsStatement->execute(array(":status" => "Checkuser"));
-        $checkuser = $requestsStatement->fetchColumn();
-        $requestsStatement->closeCursor();
-        $smarty->assign("statsCheckuser", $checkuser);
+		// Checkuser Requests
+		$requestsStatement->execute(array(":status" => "Checkuser"));
+		$checkuser = $requestsStatement->fetchColumn();
+		$requestsStatement->closeCursor();
+		$smarty->assign("statsCheckuser", $checkuser);
 
-        // Unconfirmed requests
+		// Unconfirmed requests
 		$unconfirmedStatement = $database->query("SELECT COUNT(*) FROM request WHERE emailconfirm != 'Confirmed' AND emailconfirm != '';");
-        $unconfirmed = $unconfirmedStatement->fetchColumn();
-        $unconfirmedStatement->closeCursor();
-        $smarty->assign("statsUnconfirmed", $unconfirmed);
+		$unconfirmed = $unconfirmedStatement->fetchColumn();
+		$unconfirmedStatement->closeCursor();
+		$smarty->assign("statsUnconfirmed", $unconfirmed);
 
-        $userStatusStatement = $database->prepare("SELECT COUNT(*) FROM user WHERE status = :status;");
+		$userStatusStatement = $database->prepare("SELECT COUNT(*) FROM user WHERE status = :status;");
 
-        // Admin users
-        $userStatusStatement->execute(array(":status" => "Admin"));
-        $adminusers = $userStatusStatement->fetchColumn();
-        $userStatusStatement->closeCursor();
-        $smarty->assign("statsAdminUsers", $adminusers);
+		// Admin users
+		$userStatusStatement->execute(array(":status" => "Admin"));
+		$adminusers = $userStatusStatement->fetchColumn();
+		$userStatusStatement->closeCursor();
+		$smarty->assign("statsAdminUsers", $adminusers);
 
-        // Users
-        $userStatusStatement->execute(array(":status" => "User"));
-        $users = $userStatusStatement->fetchColumn();
-        $userStatusStatement->closeCursor();
-        $smarty->assign("statsUsers", $users);
+		// Users
+		$userStatusStatement->execute(array(":status" => "User"));
+		$users = $userStatusStatement->fetchColumn();
+		$userStatusStatement->closeCursor();
+		$smarty->assign("statsUsers", $users);
 
-        // Suspended users
-        $userStatusStatement->execute(array(":status" => "Suspended"));
-        $suspendedUsers = $userStatusStatement->fetchColumn();
-        $userStatusStatement->closeCursor();
-        $smarty->assign("statsSuspendedUsers", $suspendedUsers);
+		// Suspended users
+		$userStatusStatement->execute(array(":status" => "Suspended"));
+		$suspendedUsers = $userStatusStatement->fetchColumn();
+		$userStatusStatement->closeCursor();
+		$smarty->assign("statsSuspendedUsers", $suspendedUsers);
 
-        // New users
-        $userStatusStatement->execute(array(":status" => "New"));
-        $newUsers = $userStatusStatement->fetchColumn();
-        $userStatusStatement->closeCursor();
-        $smarty->assign("statsNewUsers", $newUsers);
+		// New users
+		$userStatusStatement->execute(array(":status" => "New"));
+		$newUsers = $userStatusStatement->fetchColumn();
+		$userStatusStatement->closeCursor();
+		$smarty->assign("statsNewUsers", $newUsers);
 
-        // Most comments on a request
-        $mostCommentsStatement = $database->query("SELECT request FROM comment GROUP BY request ORDER BY COUNT(*) DESC LIMIT 1;");
-        $mostComments = $mostCommentsStatement->fetchColumn();
-        $mostCommentsStatement->closeCursor();
-        $smarty->assign("mostComments", $mostComments);
-    }
+		// Most comments on a request
+		$mostCommentsStatement = $database->query("SELECT request FROM comment GROUP BY request ORDER BY COUNT(*) DESC LIMIT 1;");
+		$mostComments = $mostCommentsStatement->fetchColumn();
+		$mostCommentsStatement->closeCursor();
+		$smarty->assign("mostComments", $mostComments);
+	}
 }

@@ -318,12 +318,12 @@ ini_set('session.name', $sessionname);
 ini_set('user_agent', $toolUserAgent);
 
 foreach(array( 
-    "mbstring",  // unicode and stuff
-    "pdo", "pdo_mysql",  // new database module
-    "session", "date", "pcre", // core stuff
-    "curl", // mediawiki api access etc
-    "mcrypt", "openssl", // password encryption etc
-    ) as $x) {if(!extension_loaded($x)) {die("extension $x is required.");}}
+	"mbstring",  // unicode and stuff
+	"pdo", "pdo_mysql",  // new database module
+	"session", "date", "pcre", // core stuff
+	"curl", // mediawiki api access etc
+	"mcrypt", "openssl", // password encryption etc
+	) as $x) {if(!extension_loaded($x)) {die("extension $x is required.");}}
 
 require_once($filepath . "includes/AutoLoader.php");
 

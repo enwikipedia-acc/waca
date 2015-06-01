@@ -13,7 +13,7 @@
 ***************************************************************************/
 
 if (isset($_SERVER['REQUEST_METHOD'])) {
-    die();
+	die();
 } //Web clients die.
 
 // Get all the classes.

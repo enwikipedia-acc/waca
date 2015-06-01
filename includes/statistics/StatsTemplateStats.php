@@ -14,9 +14,9 @@
 
 class StatsTemplateStats extends StatisticsPage
 {
-    protected function execute()
-    {
-        $query = <<<QUERY
+	protected function execute()
+	{
+		$query = <<<QUERY
 SELECT
     t.id as "Template ID",
     t.usercode as "Template Code",
@@ -44,30 +44,30 @@ FROM welcometemplate t
         GROUP BY welcome_template
     ) u2 ON u2.allid = t.id;
 QUERY;
-        global $baseurl;
-        $qb = new QueryBrowser();
-        $r = $qb->executeQueryToTable($query);
+		global $baseurl;
+		$qb = new QueryBrowser();
+		$r = $qb->executeQueryToTable($query);
 
-        return $r;
-    }
+		return $r;
+	}
 
-    public function getPageName()
-    {
-        return "TemplateStats";
-    }
+	public function getPageName()
+	{
+		return "TemplateStats";
+	}
 
-    public function getPageTitle()
-    {
-        return "Template Stats";
-    }
+	public function getPageTitle()
+	{
+		return "Template Stats";
+	}
 
-    public function isProtected()
-    {
-        return true;
-    }
+	public function isProtected()
+	{
+		return true;
+	}
 
-    public function requiresWikiDatabase()
-    {
-        return false;
-    }
+	public function requiresWikiDatabase()
+	{
+		return false;
+	}
 }

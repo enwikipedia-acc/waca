@@ -28,8 +28,8 @@ require_once 'includes/SmartyInit.php';
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
 if(Offline::isOffline()) {
-    echo Offline::getOfflineMessage(false);
-    die();
+	echo Offline::getOfflineMessage(false);
+	die();
 }
 
 if( isset( $_SESSION['user'] ) ) {
@@ -43,8 +43,8 @@ BootstrapSkin::displayInternalHeader();
 
 // protect against logged out users
 if( !$session->hasright($sessionuser, "Admin") && !$session->hasright($sessionuser, "User")) {
-    showlogin();
-    BootstrapSkin::displayInternalFooter();
+	showlogin();
+	BootstrapSkin::displayInternalFooter();
 	die();
 }
 
@@ -55,37 +55,37 @@ BootstrapSkin::pushTagStack("</div>"); // span12
 BootstrapSkin::pushTagStack("</div>"); // row
     
 if( isset($_GET['term']) && isset($_GET['type']) ) {
-    $term = $_GET['term'];
+	$term = $_GET['term'];
     
 	if($term == "" || $term == "%") {
-        BootstrapSkin::displayAlertBox( "No search term entered.","alert-error","",false );
-        $smarty->display("search/searchform.tpl");
-        BootstrapSkin::displayInternalFooter();
+		BootstrapSkin::displayAlertBox( "No search term entered.","alert-error","",false );
+		$smarty->display("search/searchform.tpl");
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
 
 	if( $_GET['type'] == "email") {
 		if($term == "@") {
-            BootstrapSkin::displayAlertBox("The search term '@' is not valid for email address searches!");
-            $smarty->display("search/searchform.tpl");
-            BootstrapSkin::displayInternalFooter();
+			BootstrapSkin::displayAlertBox("The search term '@' is not valid for email address searches!");
+			$smarty->display("search/searchform.tpl");
+			BootstrapSkin::displayInternalFooter();
 			die();
 		}			
 
-        $qterm = '%' . $term . '%';
+		$qterm = '%' . $term . '%';
         
-        $statement = gGetDb()->prepare("SELECT * FROM request WHERE email LIKE :term;");
-        $statement->bindValue(":term", $qterm);
-        $statement->execute();
-        $requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
-        foreach($requests as $r) {
-            $r->setDatabase(gGetDb());   
-        }
+		$statement = gGetDb()->prepare("SELECT * FROM request WHERE email LIKE :term;");
+		$statement->bindValue(":term", $qterm);
+		$statement->execute();
+		$requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
+		foreach($requests as $r) {
+			$r->setDatabase(gGetDb());   
+		}
         
-        $smarty->assign("term", $term);
-        $smarty->assign("requests", $requests);
-        $target = "email address";
-        $smarty->assign("target", $target);
+		$smarty->assign("term", $term);
+		$smarty->assign("requests", $requests);
+		$target = "email address";
+		$smarty->assign("target", $target);
         
 		$smarty->display("search/searchresult.tpl");
 	}
@@ -93,57 +93,57 @@ if( isset($_GET['term']) && isset($_GET['type']) ) {
 		// move this to here, so non-admins can perform searches, but not on IP addresses or emails
 		if( ! User::getCurrent()->isAdmin() && ! User::getCurrent()->isCheckuser() ) {
 			// Displays both the error message and the footer of the interface.
-            BootstrapSkin::displayAlertBox("IP address search is only available to tool admins and checkusers.", "alert-error", "Access Denied");
-            $smarty->display("search/searchform.tpl");
-            BootstrapSkin::displayInternalFooter();
+			BootstrapSkin::displayAlertBox("IP address search is only available to tool admins and checkusers.", "alert-error", "Access Denied");
+			$smarty->display("search/searchform.tpl");
+			BootstrapSkin::displayInternalFooter();
 			die();
 		}
         
-        $qterm = '%' . $term . '%';
+		$qterm = '%' . $term . '%';
         
-        $statement = gGetDb()->prepare("SELECT * FROM request WHERE email <> 'acc@toolserver.org' and ip <> '127.0.0.1' and ip LIKE :term or forwardedip LIKE :term2;");
-        $statement->bindValue(":term", $qterm);
-        $statement->bindValue(":term2", $qterm);
-        $statement->execute();
-        $requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
-        foreach($requests as $r) {
-            $r->setDatabase(gGetDb());   
-        }
+		$statement = gGetDb()->prepare("SELECT * FROM request WHERE email <> 'acc@toolserver.org' and ip <> '127.0.0.1' and ip LIKE :term or forwardedip LIKE :term2;");
+		$statement->bindValue(":term", $qterm);
+		$statement->bindValue(":term2", $qterm);
+		$statement->execute();
+		$requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
+		foreach($requests as $r) {
+			$r->setDatabase(gGetDb());   
+		}
         
-        $smarty->assign("term", $term);
-        $smarty->assign("requests", $requests);
-        $target = "IP address";
-        $smarty->assign("target", $target);
+		$smarty->assign("term", $term);
+		$smarty->assign("requests", $requests);
+		$target = "IP address";
+		$smarty->assign("target", $target);
         
 		$smarty->display("search/searchresult.tpl");
 	}
 	elseif( $_GET['type'] == 'Request') {
-        $qterm = '%' . $term . '%';
+		$qterm = '%' . $term . '%';
         
-        $statement = gGetDb()->prepare("SELECT * FROM request WHERE name LIKE :term;");
-        $statement->bindValue(":term", $qterm);
-        $statement->execute();
-        $requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
-        foreach($requests as $r) {
-            $r->setDatabase(gGetDb());   
-        }
+		$statement = gGetDb()->prepare("SELECT * FROM request WHERE name LIKE :term;");
+		$statement->bindValue(":term", $qterm);
+		$statement->execute();
+		$requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
+		foreach($requests as $r) {
+			$r->setDatabase(gGetDb());   
+		}
         
-        $smarty->assign("term", $term);
-        $smarty->assign("requests", $requests);
-        $target = "requested name";
-        $smarty->assign("target", $target);
+		$smarty->assign("term", $term);
+		$smarty->assign("requests", $requests);
+		$target = "requested name";
+		$smarty->assign("target", $target);
         
 		$smarty->display("search/searchresult.tpl");
 	}
 	else {
-        BootstrapSkin::displayAlertBox("Unknown search type", "alert-error", "Error");
+		BootstrapSkin::displayAlertBox("Unknown search type", "alert-error", "Error");
 		$smarty->display("search/searchform.tpl");
-        BootstrapSkin::displayInternalFooter();
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
 }
 else {
-    $smarty->display("search/searchform.tpl");
+	$smarty->display("search/searchform.tpl");
 }
 
 BootstrapSkin::displayInternalFooter();

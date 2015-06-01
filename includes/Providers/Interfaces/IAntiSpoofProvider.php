@@ -5,5 +5,5 @@
  */
 interface IAntiSpoofProvider
 {
-    public function getSpoofs($username);
+	public function getSpoofs($username);
 }

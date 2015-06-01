@@ -17,7 +17,7 @@ $api = new Waca\API\Api($httpOrigin);
 // get the request action, defaulting to help
 $requestAction = "";
 if(isset($_GET['action'])) {
-    $requestAction = $_GET['action'];
+	$requestAction = $_GET['action'];
 }
 
 echo $api->execute($requestAction);

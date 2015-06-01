@@ -14,7 +14,7 @@ $database = gGetDb();
 
 $database->transactionally(function() use ($database)
 {
-    $database->exec(<<<SQL
+	$database->exec(<<<SQL
         UPDATE user 
         SET 
             oauthrequesttoken = null, 
@@ -23,5 +23,5 @@ $database->transactionally(function() use ($database)
             oauthaccesssecret = null, 
             oauthidentitycache = null;
 SQL
-    );
+	);
 });
