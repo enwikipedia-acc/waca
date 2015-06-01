@@ -19,7 +19,7 @@ class StatsInactiveUsers extends StatisticsPage
 		global $smarty;
 
 		$showImmune = false;
-		if(isset($_GET['showimmune'])) {
+		if (isset($_GET['showimmune'])) {
 			$showImmune = true;
 		}
 		$smarty->assign("showImmune", $showImmune);

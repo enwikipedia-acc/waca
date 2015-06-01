@@ -36,7 +36,7 @@ function sendemail($messageno, $target, $id)
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	    
 	// Get the closing user's Email signature and append it to the Email.
-	if(User::getCurrent()->getEmailSig() != "") {
+	if (User::getCurrent()->getEmailSig() != "") {
 		$emailsig = html_entity_decode(User::getCurrent()->getEmailSig(), ENT_QUOTES, "UTF-8");
 		mail($target, "RE: [ACC #$id] English Wikipedia Account Request", $template->getText() . "\n\n" . $emailsig, $headers);
 	}
@@ -55,14 +55,14 @@ function showlogin()
 	// Check whether there are any errors.
 	$errorbartext = "";
 	if (isset($_GET['error'])) {
-		if ($_GET['error']=='authfail') {
-			$errorbartext = BootstrapSkin::displayAlertBox("Username and/or password incorrect. Please try again.", "alert-error","Auth failure",true,false,true);
+		if ($_GET['error'] == 'authfail') {
+			$errorbartext = BootstrapSkin::displayAlertBox("Username and/or password incorrect. Please try again.", "alert-error", "Auth failure", true, false, true);
 		}
-		elseif ($_GET['error']=='noid') {
-			$errorbartext = BootstrapSkin::displayAlertBox("User account is not identified. Please email accounts-enwiki-l@lists.wikimedia.org if you believe this is in error.", "alert-error","Auth failure",true,false,true);
+		elseif ($_GET['error'] == 'noid') {
+			$errorbartext = BootstrapSkin::displayAlertBox("User account is not identified. Please email accounts-enwiki-l@lists.wikimedia.org if you believe this is in error.", "alert-error", "Auth failure", true, false, true);
 		}
-		elseif ($_GET['error']=='newacct') {
-			$errorbartext = BootstrapSkin::displayAlertBox("I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.", "alert-info","Account pending",true,false,true);
+		elseif ($_GET['error'] == 'newacct') {
+			$errorbartext = BootstrapSkin::displayAlertBox("I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.", "alert-info", "Account pending", true, false, true);
 		}
 	}
 	$smarty->assign("errorbar", $errorbartext);   
@@ -93,12 +93,12 @@ function defaultpage()
 	$totalRequestsStatement = $database->prepare($totalquery);
             
 	// list requests in each section
-	foreach($availableRequestStates as $type => $v) {
+	foreach ($availableRequestStates as $type => $v) {
 		$statement->bindValue(":type", $type);
 		$statement->execute();
         
 		$requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
-		foreach($requests as $req) {
+		foreach ($requests as $req) {
 			$req->setDatabase($database);   
 		}
 
@@ -137,17 +137,17 @@ SQL;
 	return $html;
 }
 
-function array_search_recursive($needle, $haystack, $path=array())
+function array_search_recursive($needle, $haystack, $path = array())
 {
-	foreach($haystack as $id => $val) {
-		$path2=$path;
+	foreach ($haystack as $id => $val) {
+		$path2 = $path;
 		$path2[] = $id;
 
-		if($val === $needle) {
+		if ($val === $needle) {
 				return $path2;
 		}
-		else if(is_array($val)) {
-				if($ret = array_search_recursive($needle, $val, $path2)) {
+		else if (is_array($val)) {
+				if ($ret = array_search_recursive($needle, $val, $path2)) {
 						return $ret;
 				}
 		}
@@ -159,7 +159,7 @@ require_once('zoompage.php');
 
 function displayPreview($wikicode)
 {
-	$parseresult = unserialize(file_get_contents('http://en.wikipedia.org/w/api.php?action=parse&format=php&text='.urlencode($wikicode)));
+	$parseresult = unserialize(file_get_contents('http://en.wikipedia.org/w/api.php?action=parse&format=php&text=' . urlencode($wikicode)));
 	$out = "<br />\n<h3>Preview</h3>\n<div style=\"border: 2px dashed rgb(26, 79, 133);\">\n<div style=\"margin: 20px;\">";
 	$out .= $parseresult['parse']['text']['*'];
 	$out .= '</div></div>';
@@ -184,7 +184,7 @@ function doSort(array $items)
 		$loopLimit = (count($items) - 1);
 		for ($i = 0; $i < $loopLimit; $i++) {
 			// are these two items out of order?
-			if(strtotime($items[$i]['time']) > strtotime($items[$i + 1]['time'])) {
+			if (strtotime($items[$i]['time']) > strtotime($items[$i + 1]['time'])) {
 				// swap them
 				$swap = $items[$i];
 				$items[$i] = $items[$i + 1];
@@ -195,7 +195,7 @@ function doSort(array $items)
 			}
 		}
 	}
-	while($flag);
+	while ($flag);
 	
 	// return the array back to the caller
 	return $items;
@@ -209,13 +209,13 @@ function getTrustedClientIP($dbip, $dbproxyip)
 	global $xffTrustProvider;
     
 	$clientIpAddr = $dbip;
-	if($dbproxyip) {
+	if ($dbproxyip) {
 		$ipList = explode(",", $dbproxyip);
 		$ipList[] = $clientIpAddr;
 		$ipList = array_reverse($ipList);
 		
-		foreach($ipList as $ipnumber => $ip) {
-			if($xffTrustProvider->isTrusted(trim($ip)) && $ipnumber < (count($ipList) - 1)) {
+		foreach ($ipList as $ipnumber => $ip) {
+			if ($xffTrustProvider->isTrusted(trim($ip)) && $ipnumber < (count($ipList) - 1)) {
 				continue;
 			}
 			
@@ -227,25 +227,25 @@ function getTrustedClientIP($dbip, $dbproxyip)
 	return $clientIpAddr;
 }
 
-function explodeCidr( $range )
+function explodeCidr($range)
 {
-	$ip_arr = explode( '/' , $range );
+	$ip_arr = explode('/', $range);
 
-	if( ! isset( $ip_arr[1] ) ) {
-		return array( $range );
+	if (!isset($ip_arr[1])) {
+		return array($range);
 	}
 	
 	$blow = ( 
-		str_pad( decbin( ip2long( $ip_arr[0] ) ), 32, "0", STR_PAD_LEFT) &
-		str_pad( str_pad( "", $ip_arr[1], "1" ), 32, "0" ) 
+		str_pad(decbin(ip2long($ip_arr[0])), 32, "0", STR_PAD_LEFT) &
+		str_pad(str_pad("", $ip_arr[1], "1"), 32, "0") 
 		);
-	$bhigh = ($blow | str_pad( str_pad( "", $ip_arr[1], "0" ), 32, "1" ) );
+	$bhigh = ($blow | str_pad(str_pad("", $ip_arr[1], "0"), 32, "1"));
 
 	$list = array();
 
-	$bindecBHigh = bindec( $bhigh );
-	for($x = bindec($blow); $x <= $bindecBHigh; $x++) {
-		$list[] = long2ip( $x );
+	$bindecBHigh = bindec($bhigh);
+	for ($x = bindec($blow); $x <= $bindecBHigh; $x++) {
+		$list[] = long2ip($x);
 	}
 
 	return $list;
@@ -255,12 +255,12 @@ function explodeCidr( $range )
  * Takes an array( "low" => "high ) values, and returns true if $needle is in at least one of them.
  * @param string $ip
  */
-function ipInRange( $haystack, $ip )
+function ipInRange($haystack, $ip)
 {
 	$needle = ip2long($ip);
 
-	foreach( $haystack as $low => $high ) {
-		if( ip2long($low) <= $needle && ip2long($high) >= $needle ) {
+	foreach ($haystack as $low => $high) {
+		if (ip2long($low) <= $needle && ip2long($high) >= $needle) {
 			return true;
 		}
 	}
@@ -274,7 +274,7 @@ function ipInRange( $haystack, $ip )
 function welcomerbotRenderSig($creator, $sig)
 {
 	$signature = html_entity_decode($sig) . ' ~~~~~';
-	if (!preg_match("/((\[\[[ ]*(w:)?[ ]*(en:)?)|(\{\{subst:))[ ]*User[ ]*:[ ]*".$creator."[ ]*(\]\]|\||\}\}|\/)/i", $signature)) {
+	if (!preg_match("/((\[\[[ ]*(w:)?[ ]*(en:)?)|(\{\{subst:))[ ]*User[ ]*:[ ]*" . $creator . "[ ]*(\]\]|\||\}\}|\/)/i", $signature)) {
 		$signature = "--[[User:$creator|$creator]] ([[User talk:$creator|talk]]) ~~~~~";
 	}
 	return $signature;
@@ -312,25 +312,25 @@ function relativedate($input)
 		$pluralise = false;
 	}
 	elseif ($secs > 10 && $secs < $minuteCut) {
-		$output = round($secs/$second) . " second";
+		$output = round($secs / $second) . " second";
 	}
 	elseif ($secs >= $minuteCut && $secs < $hourCut) {
-		$output = round($secs/$minute) . " minute";
+		$output = round($secs / $minute) . " minute";
 	}
 	elseif ($secs >= $hourCut && $secs < $dayCut) {
-		$output = round($secs/$hour) . " hour";
+		$output = round($secs / $hour) . " hour";
 	}
 	elseif ($secs >= $dayCut && $secs < $weekCut) {
-		$output = round($secs/$day) . " day";
+		$output = round($secs / $day) . " day";
 	}
 	elseif ($secs >= $weekCut && $secs < $month) {
-		$output = round($secs/$week) . " week";
+		$output = round($secs / $week) . " week";
 	}
 	elseif ($secs >= $month && $secs < $year) {
-		$output = round($secs/$month) . " month";
+		$output = round($secs / $month) . " month";
 	}
 	elseif ($secs >= $year && $secs < $year * 10) {
-		$output = round($secs/$year) . " year";
+		$output = round($secs / $year) . " year";
 	}
 	else {
 		$output = "a long time ago";
@@ -338,7 +338,7 @@ function relativedate($input)
 	}
     
 	if ($pluralise) {
-		$output = (substr($output,0,2) <> "1 ") ? $output . "s ago" : $output . " ago";
+		$output = (substr($output, 0, 2) <> "1 ") ? $output . "s ago" : $output . " ago";
 	}
 
 	return $output;
@@ -363,7 +363,7 @@ function reattachOAuthAccount(User $user)
 		header("Location: {$redirectUrl}");
 		die();
 	}
-	catch(Exception $ex) {
+	catch (Exception $ex) {
 		throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
 	}     
 }

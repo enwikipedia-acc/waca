@@ -33,53 +33,53 @@ class QueryBrowser
 
 		$results = $this->executeQueryToArray($query);
 
-		$out.= '<table class="table table-striped table-hover table-condensed"><tr>';
+		$out .= '<table class="table table-striped table-hover table-condensed"><tr>';
 
-		if($this->numberedList == true) {
-			$out.="<th>" . $this->numberedListTitle . "</th>";
+		if ($this->numberedList == true) {
+			$out .= "<th>" . $this->numberedListTitle . "</th>";
 		}
 
-		if($this->overrideTableTitles != false) {
-			foreach($this->overrideTableTitles as $value) {
-				$out.=  "<th>" . $value . "</th>"; 
+		if ($this->overrideTableTitles != false) {
+			foreach ($this->overrideTableTitles as $value) {
+				$out .= "<th>" . $value . "</th>"; 
 			}
 		}
 		else {
-			if(count($results) > 0) {
+			if (count($results) > 0) {
 				foreach ($results[0] as $k => $v) {
-					$out.=  "<th>" . $k . "</th>"; 
+					$out .= "<th>" . $k . "</th>"; 
 				}
 			}
 		}
-		$out.=  "</tr>";
+		$out .= "</tr>";
 		
 		
 		$currentreq = 0;
-		foreach($results as $row) {
+		foreach ($results as $row) {
 			$currentreq++;
-			if(function_exists($this->tableCallbackFunction)) {
+			if (function_exists($this->tableCallbackFunction)) {
 				$out .= call_user_func($this->tableCallbackFunction, $row, $currentreq);	
 			}
 			else {
-				$out.=  '<tr>';
+				$out .= '<tr>';
                 
-				if($this->numberedList == true) {
-					$out.="<th>" . $currentreq . "</th>";
+				if ($this->numberedList == true) {
+					$out .= "<th>" . $currentreq . "</th>";
 				}
 				
 				
 				foreach ($row as $cell) {
 	
-					$out.=  "<td>" . $cell . "</td>";
+					$out .= "<td>" . $cell . "</td>";
 				}
 	
 				
-				$out.="</tr>";
+				$out .= "</tr>";
 			}
 			
 		}
 		
-		$out.=  "</table>";
+		$out .= "</table>";
 		
 		return $out;
 	}

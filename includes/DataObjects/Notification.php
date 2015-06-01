@@ -22,13 +22,13 @@ class Notification extends DataObject
 
 	public function save()
 	{
-		if($this->isNew) {
+		if ($this->isNew) {
 // insert
 			$statement = $this->dbObject->prepare("INSERT INTO notification ( type, text ) VALUES ( :type, :text );");
 			$statement->bindValue(":type", $this->type);
 			$statement->bindValue(":text", $this->text);
 
-			if($statement->execute()) {
+			if ($statement->execute()) {
 				$this->isNew = false;
 				$this->id = $this->dbObject->lastInsertId();
 			}
@@ -91,26 +91,26 @@ class Notification extends DataObject
 	{
 		global $ircBotNotificationType, $whichami, $ircBotNotificationsEnabled;
 
-		if(!$ircBotNotificationsEnabled) {
+		if (!$ircBotNotificationsEnabled) {
 			return;
 		}
 
 		$blacklist = array("DCC", "CCTP", "PRIVMSG");
 		$message = str_replace($blacklist, "(IRC Blacklist)", $message); //Lets stop DCC etc
 
-		$msg = IrcColourCode::RESET . IrcColourCode::BOLD . "[$whichami]". IrcColourCode::RESET .": $message";
+		$msg = IrcColourCode::RESET . IrcColourCode::BOLD . "[$whichami]" . IrcColourCode::RESET . ": $message";
 
 		try {
 			$database = gGetDb('notifications');
             
 			$notification = new Notification();
-			$notification->setDatabase( $database );
+			$notification->setDatabase($database);
 			$notification->setType($ircBotNotificationType);
 			$notification->setText($msg);
 
 			$notification->save();
 		}
-		catch(Exception $ex) {
+		catch (Exception $ex) {
 			// OK, so we failed to send the notification - that db might be down?
 			// This is non-critical, so silently fail.
             
@@ -207,7 +207,7 @@ class Notification extends DataObject
 	 */
 	public static function interfaceMessageEdited(InterfaceMessage $message)
 	{
-		self::send( "Message {$message->getDescription()} ({$message->getId()}) edited by " . User::getCurrent()->getUsername());
+		self::send("Message {$message->getDescription()} ({$message->getId()}) edited by " . User::getCurrent()->getUsername());
 	}
 	#endregion
 
@@ -218,7 +218,7 @@ class Notification extends DataObject
 	 */
 	public static function welcomeTemplateCreated(WelcomeTemplate $template)
 	{
-		self::send( "Welcome template {$template->getId()} created by " . User::getCurrent()->getUsername());
+		self::send("Welcome template {$template->getId()} created by " . User::getCurrent()->getUsername());
 	}
 
 	/**
@@ -227,7 +227,7 @@ class Notification extends DataObject
 	 */
 	public static function welcomeTemplateDeleted($templateid)
 	{
-		self::send( "Welcome template {$templateid} deleted by " . User::getCurrent()->getUsername());
+		self::send("Welcome template {$templateid} deleted by " . User::getCurrent()->getUsername());
 	}
 
 	/**
@@ -236,7 +236,7 @@ class Notification extends DataObject
 	 */
 	public static function welcomeTemplateEdited(WelcomeTemplate $template)
 	{
-		self::send( "Welcome template {$template->getId()} edited by " . User::getCurrent()->getUsername());
+		self::send("Welcome template {$template->getId()} edited by " . User::getCurrent()->getUsername());
 	}
 
 	#endregion
@@ -248,14 +248,14 @@ class Notification extends DataObject
 	 */
 	public static function banned(Ban $ban)
 	{
-		if($ban->getDuration() == -1) {
+		if ($ban->getDuration() == -1) {
 			$duration = "indefinitely";
 		}
 		else {
 			$duration = "until " . date("F j, Y, g:i a", $ban->getDuration());
 		}
 
-		self::send( $ban->getTarget() . " banned by " . User::getCurrent()->getUsername() . " for '" . $ban->getReason() . "' " . $duration);
+		self::send($ban->getTarget() . " banned by " . User::getCurrent()->getUsername() . " for '" . $ban->getReason() . "' " . $duration);
 	}
 
 	/**
@@ -265,7 +265,7 @@ class Notification extends DataObject
 	 */
 	public static function unbanned(Ban $ban, $unbanreason)
 	{
-		self::send( $ban->getTarget() . " unbanned by " . User::getCurrent()->getUsername() . " (" . $unbanreason . ")");
+		self::send($ban->getTarget() . " unbanned by " . User::getCurrent()->getUsername() . " (" . $unbanreason . ")");
 	}
 
 	#endregion
@@ -302,7 +302,7 @@ class Notification extends DataObject
 	{
 		global $availableRequestStates;
 
-		self::send( "Request {$request->getId()} ({$request->getName()}) deferred to {$availableRequestStates[$request->getStatus()]['deferto']} by " . User::getCurrent()->getUsername());
+		self::send("Request {$request->getId()} ({$request->getName()}) deferred to {$availableRequestStates[$request->getStatus()]['deferto']} by " . User::getCurrent()->getUsername());
 	}
 
 	/**
@@ -312,7 +312,7 @@ class Notification extends DataObject
 	 */
 	public static function requestClosed(Request $request, $closetype)
 	{
-		self::send( "Request {$request->getId()} ({$request->getName()}) closed ($closetype) by " . User::getCurrent()->getUsername());
+		self::send("Request {$request->getId()} ({$request->getName()}) closed ($closetype) by " . User::getCurrent()->getUsername());
 	}
 
 	#endregion
@@ -325,7 +325,7 @@ class Notification extends DataObject
 	 */
 	public static function requestReserved(Request $request)
 	{
-		self::send( "Request {$request->getId()} ({$request->getName()}) reserved by " . User::getCurrent()->getUsername());
+		self::send("Request {$request->getId()} ({$request->getName()}) reserved by " . User::getCurrent()->getUsername());
 	}
 
 	/**
@@ -334,7 +334,7 @@ class Notification extends DataObject
 	 */
 	public static function requestReserveBroken(Request $request)
 	{
-		self::send( "Reservation on request {$request->getId()} ({$request->getName()}) broken by " . User::getCurrent()->getUsername());
+		self::send("Reservation on request {$request->getId()} ({$request->getName()}) broken by " . User::getCurrent()->getUsername());
 	}
 
 	/**
@@ -343,7 +343,7 @@ class Notification extends DataObject
 	 */
 	public static function requestUnreserved(Request $request)
 	{
-		self::send( "Request {$request->getId()} ({$request->getName()}) is no longer being handled.");
+		self::send("Request {$request->getId()} ({$request->getName()}) is no longer being handled.");
 	}
 
 	#endregion
@@ -378,7 +378,7 @@ class Notification extends DataObject
 	 */
 	public static function emailCreated(EmailTemplate $template)
 	{
-		self::send( "Email {$template->getId()} ({$template->getName()}) created by " . User::getCurrent()->getUsername());
+		self::send("Email {$template->getId()} ({$template->getName()}) created by " . User::getCurrent()->getUsername());
 	}
 
 	/**
@@ -387,7 +387,7 @@ class Notification extends DataObject
 	 */
 	public static function emailEdited(EmailTemplate $template)
 	{
-		self::send( "Email {$template->getId()} ({$template->getName()}) edited by " . User::getCurrent()->getUsername());
+		self::send("Email {$template->getId()} ({$template->getName()}) edited by " . User::getCurrent()->getUsername());
 	}
 
 	#endregion

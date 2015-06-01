@@ -37,12 +37,12 @@ class User extends DataObject
 	 */
 	public static function getCurrent(PdoDatabase $database = null)
 	{
-		if($database === null) {
+		if ($database === null) {
 			$database = gGetDb();   
 		}
         
-		if(self::$currentUser === null) {
-			if(isset($_SESSION['userID'])) {
+		if (self::$currentUser === null) {
+			if (isset($_SESSION['userID'])) {
 				self::$currentUser = self::getById($_SESSION['userID'], $database);
 			}
 			else {
@@ -57,7 +57,7 @@ class User extends DataObject
     
 	public static function getById($id, PdoDatabase $database)
 	{
-		if($id == "-1") {
+		if ($id == "-1") {
 			return new CommunityUser();
 		}
 
@@ -72,7 +72,7 @@ class User extends DataObject
 	public static function getByUsername($username, PdoDatabase $database)
 	{
 		global $communityUsername;
-		if($username == $communityUsername) {
+		if ($username == $communityUsername) {
 			return new CommunityUser();
 		}
 
@@ -81,9 +81,9 @@ class User extends DataObject
 
 		$statement->execute();
 
-		$resultObject = $statement->fetchObject( get_called_class() );
+		$resultObject = $statement->fetchObject(get_called_class());
 
-		if($resultObject != false) {
+		if ($resultObject != false) {
 			$resultObject->isNew = false;
 			$resultObject->setDatabase($database); 
 		}
@@ -98,9 +98,9 @@ class User extends DataObject
 
 		$statement->execute();
 
-		$resultObject = $statement->fetchObject( get_called_class() );
+		$resultObject = $statement->fetchObject(get_called_class());
 
-		if($resultObject != false) {
+		if ($resultObject != false) {
 			$resultObject->isNew = false;
 			$resultObject->setDatabase($database); 
 		}
@@ -114,9 +114,9 @@ class User extends DataObject
 	public static function getAllWithStatus($status, PdoDatabase $database)
 	{
 		$statement = $database->prepare("SELECT * FROM user WHERE status = :status");
-		$statement->execute( array( ":status" => $status ) );
+		$statement->execute(array(":status" => $status));
         
-		$resultObject = $statement->fetchAll( PDO::FETCH_CLASS, get_called_class() );
+		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
         
 		foreach ($resultObject as $u) {
 			$u->setDatabase($database);
@@ -131,7 +131,7 @@ class User extends DataObject
 		$statement = $database->prepare("SELECT * FROM user WHERE checkuser = 1;");
 		$statement->execute();
         
-		$resultObject = $statement->fetchAll( PDO::FETCH_CLASS, get_called_class() );
+		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
         
 		foreach ($resultObject as $u) {
 			$u->setDatabase($database);
@@ -156,9 +156,9 @@ class User extends DataObject
             ORDER BY lastactive ASC;
 SQL
 		);
-		$statement->execute( array( ":lastactivelimit" => $date->format("Y-m-d H:i:s") ) );
+		$statement->execute(array(":lastactivelimit" => $date->format("Y-m-d H:i:s")));
         
-		$resultObject = $statement->fetchAll( PDO::FETCH_CLASS, get_called_class() );
+		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
         
 		foreach ($resultObject as $u) {
 			$u->setDatabase($database);
@@ -170,7 +170,7 @@ SQL
     
 	public function save()
 	{
-		if($this->isNew) {
+		if ($this->isNew) {
 // insert
 			$statement = $this->dbObject->prepare(<<<SQL
                 INSERT INTO `user` ( 
@@ -206,7 +206,7 @@ SQL
 			$statement->bindValue(":oat", $this->oauthaccesstoken);
 			$statement->bindValue(":oas", $this->oauthaccesssecret);
             
-			if($statement->execute()) {
+			if ($statement->execute()) {
 				$this->isNew = false;
 				$this->id = (int)$this->dbObject->lastInsertId();
 			}
@@ -251,7 +251,7 @@ SQL
 			$statement->bindValue(":oat", $this->oauthaccesstoken);
 			$statement->bindValue(":oas", $this->oauthaccesssecret);
             
-			if(!$statement->execute()) {
+			if (!$statement->execute()) {
 				throw new Exception($statement->errorInfo());
 			}
 		} 
@@ -261,9 +261,9 @@ SQL
 	{
 		$result = AuthUtility::testCredentials($password, $this->password);
         
-		if($result === true) {
+		if ($result === true) {
 			// password version is out of date, update it.
-			if(!AuthUtility::isCredentialVersionLatest($this->password)) {
+			if (!AuthUtility::isCredentialVersionLatest($this->password)) {
 				$this->password = AuthUtility::encryptPassword($password);
 				$this->save();
 			}
@@ -317,11 +317,11 @@ SQL
 	 */
 	public function getOnWikiName()
 	{
-		if($this->oauthaccesstoken != null) {
+		if ($this->oauthaccesstoken != null) {
 			try {
 				return $this->getOAuthOnWikiName();   
 			}
-			catch(Exception $ex) {
+			catch (Exception $ex) {
 				// urm.. log this?
 				return $this->onwikiname;
 			}
@@ -577,10 +577,10 @@ SQL
 		return $this->status == "Declined";
 	}
     
-    public function isCommunityUser()
-    {
-        return false;   
-    }
+	public function isCommunityUser()
+	{
+		return false;   
+	}
     
 	#endregion 
 
@@ -588,13 +588,13 @@ SQL
     
 	public function getOAuthIdentity()
 	{
-		if($this->oauthaccesstoken == null) {
+		if ($this->oauthaccesstoken == null) {
 			$this->clearOAuthData();
 		}
         
 		global $oauthConsumerToken, $oauthMediaWikiCanonicalServer;
 
-		if($this->oauthidentitycache == null) {
+		if ($this->oauthidentitycache == null) {
 			$this->identityCache = null;
 		}
 		else {
@@ -602,7 +602,7 @@ SQL
 		}
         
 		// check the cache
-		if(
+		if (
 			$this->identityCache != null &&
 			$this->identityCache->aud == $oauthConsumerToken &&
 			DateTime::createFromFormat("U", $this->identityCache->iat) < new DateTime() &&
@@ -638,7 +638,7 @@ SQL
 		$this->identityCache = null;
 		$this->oauthidentitycache = null;
 		$clearCacheQuery = "UPDATE user SET oauthidentitycache = null WHERE id = :id;";
-		$this->dbObject->prepare($clearCacheQuery)->execute( array( ":id" => $this->id ) );
+		$this->dbObject->prepare($clearCacheQuery)->execute(array(":id" => $this->id));
         
 		return null;
 	}
@@ -652,15 +652,15 @@ SQL
 			$this->identityCache = $util->getIdentity($this->oauthaccesstoken, $this->oauthaccesssecret);
 			$this->oauthidentitycache = serialize($this->identityCache);
 			$this->dbObject->
-				prepare( "UPDATE user SET oauthidentitycache = :identity WHERE id = :id;" )->
-				execute( array( ":id" => $this->id, ":identity" => $this->oauthidentitycache ) );
+				prepare("UPDATE user SET oauthidentitycache = :identity WHERE id = :id;")->
+				execute(array(":id" => $this->id, ":identity" => $this->oauthidentitycache));
 		}
-		catch(UnexpectedValueException $ex) {
+		catch (UnexpectedValueException $ex) {
 			$this->identityCache = null;
 			$this->oauthidentitycache = null;
 			$this->dbObject->
-				prepare( "UPDATE user SET oauthidentitycache = null WHERE id = :id;" )->
-				execute( array( ":id" => $this->id ) );
+				prepare("UPDATE user SET oauthidentitycache = null WHERE id = :id;")->
+				execute(array(":id" => $this->id));
 		}   
 	}
     
@@ -694,7 +694,7 @@ SQL
 				&& in_array('createeditmovepage', $this->getOAuthIdentity()->grants)
 				&& in_array('createtalk', $this->getOAuthIdentity()->rights)
 				&& in_array('edit', $this->getOAuthIdentity()->rights)
-				&& in_array('writeapi', $this->getOAuthIdentity()->rights);}
+				&& in_array('writeapi', $this->getOAuthIdentity()->rights); }
 				catch (Exception $ex) {
 			return false;
 		}
@@ -732,9 +732,9 @@ SQL
             LIMIT 1;
 SQL
 		);
-		$query->execute( array( ":userid" => $this->id ) );
+		$query->execute(array(":userid" => $this->id));
         
-		$data = DateTime::createFromFormat( "Y-m-d H:i:s", $query->fetchColumn() );
+		$data = DateTime::createFromFormat("Y-m-d H:i:s", $query->fetchColumn());
 		$query->closeCursor();
         
 		return $data;

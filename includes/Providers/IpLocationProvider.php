@@ -21,7 +21,7 @@ class IpLocationProvider implements ILocationProvider
 		// lets look in our database first.
 		$location = GeoLocation::getByAddress($address, $this->database);
 
-		if($location != null) {
+		if ($location != null) {
 			// touch cache timer
 			$location->save();
 
@@ -31,7 +31,7 @@ class IpLocationProvider implements ILocationProvider
 		// OK, it's not there, let's do an IP2Location lookup.
 		$result = $this->getResult($address);
 
-		if($result != null) {
+		if ($result != null) {
 			$location = new GeoLocation();
 			$location->setDatabase($this->database);
 			$location->setAddress($address);
@@ -52,10 +52,10 @@ class IpLocationProvider implements ILocationProvider
 	private function getResult($ip)
 	{
 		try {
-			if(filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 )) {
-				$xml = @file_get_contents( $this->getApiBase() . '?key=' . $this->apikey . '&ip=' . $ip . '&format=xml');
+			if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+				$xml = @file_get_contents($this->getApiBase() . '?key=' . $this->apikey . '&ip=' . $ip . '&format=xml');
 
-				if(get_magic_quotes_runtime()) {
+				if (get_magic_quotes_runtime()) {
 					$xml = stripslashes($xml);
 				}
 
@@ -63,14 +63,14 @@ class IpLocationProvider implements ILocationProvider
 
 				$result = array();
 
-				foreach($response as $field => $value) {
+				foreach ($response as $field => $value) {
 					$result[(string)$field] = (string)$value;
 				}
 
 				return $result;
 			}
 		}
-		catch(Exception $ex) {
+		catch (Exception $ex) {
 			return null;
 
 			// TODO: do something smart here, or wherever we use this value.

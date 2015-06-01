@@ -16,14 +16,14 @@ class GeoLocation extends DataObject
 	 */
 	public static function getByAddress($address, PdoDatabase $database)
 	{
-		$statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE address = :id LIMIT 1;");
+		$statement = $database->prepare("SELECT * FROM `" . strtolower(get_called_class()) . "` WHERE address = :id LIMIT 1;");
 		$statement->bindValue(":id", $address);
 
 		$statement->execute();
 
-		$resultObject = $statement->fetchObject( get_called_class() );
+		$resultObject = $statement->fetchObject(get_called_class());
 
-		if($resultObject != false) {
+		if ($resultObject != false) {
 			$resultObject->isNew = false;
 			$resultObject->setDatabase($database);
 		}
@@ -33,12 +33,12 @@ class GeoLocation extends DataObject
 
 	public function save()
 	{
-		if($this->isNew) {
+		if ($this->isNew) {
 // insert
 			$statement = $this->dbObject->prepare("INSERT INTO `geolocation` (address, data) VALUES (:address, :data);");
 			$statement->bindValue(":address", $this->address);
 			$statement->bindValue(":data", $this->data);
-			if($statement->execute()) {
+			if ($statement->execute()) {
 				$this->isNew = false;
 				$this->id = $this->dbObject->lastInsertId();
 			}
@@ -53,7 +53,7 @@ class GeoLocation extends DataObject
 			$statement->bindValue(":id", $this->id);
 			$statement->bindValue(":data", $this->data);
 
-			if(!$statement->execute()) {
+			if (!$statement->execute()) {
 				throw new Exception($statement->errorInfo());
 			}
 		}

@@ -12,7 +12,7 @@
  ** See CREDITS for the list of developers.                               **
  ***************************************************************************/
 
-function zoomPage($id,$urlhash)
+function zoomPage($id, $urlhash)
 {
 	global $session, $availableRequestStates, $createdid;
 	global $smarty, $locationProvider, $rdnsProvider, $antispoofProvider;
@@ -20,16 +20,16 @@ function zoomPage($id,$urlhash)
     
 	$database = gGetDb();
 	$request = Request::getById($id, $database);
-	if($request == false) {
+	if ($request == false) {
 		// Notifies the user and stops the script.
-		BootstrapSkin::displayAlertBox("Could not load the requested request!", "alert-error","Error",true,false);
+		BootstrapSkin::displayAlertBox("Could not load the requested request!", "alert-error", "Error", true, false);
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
     
 	$smarty->assign('ecenable', $enableEmailConfirm);
 
-	if(isset($_GET['ecoverride']) && User::getCurrent()->isAdmin() ) {
+	if (isset($_GET['ecoverride']) && User::getCurrent()->isAdmin()) {
 		$smarty->assign('ecoverride', true);
 	}
 	else {
@@ -93,11 +93,11 @@ SQL
 	}
 	
 	$smarty->assign("showinfo", false);
-	if ($hideinfo == false || $correcthash == true || User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() ) {
+	if ($hideinfo == false || $correcthash == true || User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
 		$smarty->assign("showinfo", true);
 	}
     
-	if ($hideinfo == false || $correcthash == true || User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() ) {
+	if ($hideinfo == false || $correcthash == true || User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
 		$smarty->assign("proxyip", $request->getForwardedIp());
 		if ($request->getForwardedIp()) {
 			$smartyproxies = array(); // Initialize array to store data to be output in Smarty template.
@@ -113,7 +113,7 @@ SQL
 			$trust = true;
 			global $rfc1918ips;
 
-			foreach($proxies as $proxynum => $p) {
+			foreach ($proxies as $proxynum => $p) {
 				$p2 = trim($p);
 				$smartyproxies[$smartyproxiesindex]['ip'] = $p2;
 
@@ -121,7 +121,7 @@ SQL
 				$trusted = $xffTrustProvider->isTrusted($p2);
 				$ipisprivate = ipInRange($rfc1918ips, $p2);
                 
-				if( !$ipisprivate) {
+				if (!$ipisprivate) {
 					$iprdns = $rdnsProvider->getRdns($p2);
 					$iplocation = $locationProvider->getIpLocation($p2);
 				}
@@ -139,18 +139,18 @@ SQL
                 
 				// current trust chain status AFTER this link
 				$trust = $trust & $trusted;
-				if($pretrust && $p2 == $origin) {
+				if ($pretrust && $p2 == $origin) {
 					$trust = true;   
 				}
 				$smartyproxies[$smartyproxiesindex]['trust'] = $trust;
 				
 				$smartyproxies[$smartyproxiesindex]['rdnsfailed'] = $iprdns === false;
 				$smartyproxies[$smartyproxiesindex]['rdns'] = $iprdns;
-				$smartyproxies[$smartyproxiesindex]['routable'] = ! $ipisprivate;
+				$smartyproxies[$smartyproxiesindex]['routable'] = !$ipisprivate;
 				
 				$smartyproxies[$smartyproxiesindex]['location'] = $iplocation;
 				
-				if( $iprdns == $p2 && $ipisprivate == false) {
+				if ($iprdns == $p2 && $ipisprivate == false) {
 					$smartyproxies[$smartyproxiesindex]['rdns'] = null;
 				}
                 
@@ -172,7 +172,7 @@ SQL
 	$smarty->assign("requeststates", $availableRequestStates);
 		
 	try {
-		$spoofs = $antispoofProvider->getSpoofs( $request->getName() );
+		$spoofs = $antispoofProvider->getSpoofs($request->getName());
 	}
 	catch (Exception $ex) {
 		$spoofs = $ex->getMessage();   
@@ -201,7 +201,7 @@ SQL
 			);
 	}
     
-	if(trim($request->getComment()) !== "") {
+	if (trim($request->getComment()) !== "") {
 		$logs[] = array(
 			'time'=> $request->getDate(), 
 			'user'=> $request->getName(), 
@@ -221,18 +221,18 @@ SQL
 		foreach ($logs as &$row) {
 			$row['canedit'] = false;
             
-			if(!isset($row['security'])) {
+			if (!isset($row['security'])) {
 				$row['security'] = '';
 			}
             
-			if(!isset($row['userid'])) {
-				if(!isset($namecache[$row['user']])) {
+			if (!isset($row['userid'])) {
+				if (!isset($namecache[$row['user']])) {
 					$userObject = User::getByUsername($row['user'], gGetDb());
-					if($userObject != false) {
+					if ($userObject != false) {
 						$namecache[$row['user']] = $userObject->getId();
 					}
 					else {
-						$namecache[$row['user']]= 0;
+						$namecache[$row['user']] = 0;
 					}
                     
 					$row['userid'] = $namecache[$row['user']];
@@ -242,20 +242,20 @@ SQL
 				}
 			}
             
-			if($row['action'] == "comment") {
+			if ($row['action'] == "comment") {
 				$row['entry'] = htmlentities($row['comment'], ENT_QUOTES, 'UTF-8');
                 
 				global $enableCommentEditing;
-				if($enableCommentEditing && (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() || User::getCurrent()->getId() == $row['userid']) && isset($row['id'])) {
+				if ($enableCommentEditing && (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() || User::getCurrent()->getId() == $row['userid']) && isset($row['id'])) {
 					$row['canedit'] = true;
 				}
 			}
-			elseif($row['action'] == "Closed custom-n" ||$row['action'] == "Closed custom-y"  ) {
-				$row['entry'] = "<em>" .$row['description'] . "</em><br />" . str_replace("\n", '<br />', htmlentities($row['comment'], ENT_QUOTES, 'UTF-8'));
+			elseif ($row['action'] == "Closed custom-n" || $row['action'] == "Closed custom-y") {
+				$row['entry'] = "<em>" . $row['description'] . "</em><br />" . str_replace("\n", '<br />', htmlentities($row['comment'], ENT_QUOTES, 'UTF-8'));
 			}
 			else {
-				foreach($availableRequestStates as $deferState) {
-					$row['entry'] = "<em>" . str_replace("deferred to ".$deferState['defertolog'],"deferred to ".$deferState['deferto'],$row['description']) . "</em>"; //#35: The log text(defertolog) should not be displayed to the user, deferto is what should be displayed
+				foreach ($availableRequestStates as $deferState) {
+					$row['entry'] = "<em>" . str_replace("deferred to " . $deferState['defertolog'], "deferred to " . $deferState['deferto'], $row['description']) . "</em>"; //#35: The log text(defertolog) should not be displayed to the user, deferto is what should be displayed
 				}
 			}
 		} // /foreach

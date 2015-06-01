@@ -48,7 +48,7 @@ class BootstrapSkin
 		$smarty->assign("alerts", SessionAlert::retrieve());
 		$smarty->display("header-internal.tpl");
 
-		if($userid != 0) {
+		if ($userid != 0) {
 			User::getCurrent()->touchLastLogin();
 
 			$session->forceLogout($_SESSION['userID']);
@@ -63,7 +63,7 @@ class BootstrapSkin
 		global $smarty;
 
 		// close all declared open tags
-		while(count(self::$tagstack) != 0) {
+		while (count(self::$tagstack) != 0) {
 			echo array_pop(self::$tagstack);
 		}
 
@@ -81,7 +81,7 @@ class BootstrapSkin
 		global $smarty;
 
 		// close all declared open tags
-		while(count(self::$tagstack) != 0) {
+		while (count(self::$tagstack) != 0) {
 			echo array_pop(self::$tagstack);
 		}
 
@@ -120,11 +120,11 @@ class BootstrapSkin
 
 		$online = '<p class="span6 text-right"><small>' . $onlinemessage . '</small></p>';
 
-		if( isset( $_SESSION['user'] ) ) {
+		if (isset($_SESSION['user'])) {
 			$smarty->assign("onlineusers", $online);
 		}
 		else {
-			$emptystring="";
+			$emptystring = "";
 			$smarty->assign("onlineusers", $emptystring);
 		}
 
@@ -159,11 +159,11 @@ class BootstrapSkin
 
 		$returnData = $smarty->fetch("alert.tpl");
 
-		if($centre) {
+		if ($centre) {
 			$returnData = '<div class="row-fluid"><div class="span8 offset2">' . $returnData . '</div></div>';
 		}
 
-		if($return) {
+		if ($return) {
 			return $returnData;
 		}
 		else {

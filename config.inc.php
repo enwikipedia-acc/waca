@@ -71,27 +71,27 @@ $xff_trusted_hosts_file = '../TrustedXFF/trusted-hosts.txt';
  * Tool downtime
  */
 
-$dontUseDb = 0; 			// Disable the tool completely.
-$dontUseWikiDb = 0; 		// Disable access to the Wiki database.
-$dontUseDbReason = ""; 		// Reason for disabling the tool.
-$dontUseDbCulprit = ""; 	// Your name, or the person who broke the tool.
+$dontUseDb = 0; // Disable the tool completely.
+$dontUseWikiDb = 0; // Disable access to the Wiki database.
+$dontUseDbReason = ""; // Reason for disabling the tool.
+$dontUseDbCulprit = ""; // Your name, or the person who broke the tool.
 	
 /**************************************
  * ACCBot IRC bot
  */
 
-$ircBotDaemonise = true;					// Run the IRC bot as a daemon, detached from the terminal.
+$ircBotDaemonise = true; // Run the IRC bot as a daemon, detached from the terminal.
 
-$ircBotNickServPassword = ""; 				// Password for ACCBot's Nickserv account.
-$ircBotCommunicationKey = ""; 				// Key used to communicate with the ACCBot.
-$ircBotNetworkHost = "chat.freenode.net"; 	// The host to use for connecting.
-$ircBotNetworkPort = 6667;					// The port on the particular host.
-$ircBotChannel = "#wikipedia-en-accounts";	// The channel in which the discussions are.
-$ircBotNickname = "ACCBot";					// The nickname of the ACCBot.
-$ircBotCommandTrigger = '!';				// The ACCBot's command trigger.
+$ircBotNickServPassword = ""; // Password for ACCBot's Nickserv account.
+$ircBotCommunicationKey = ""; // Key used to communicate with the ACCBot.
+$ircBotNetworkHost = "chat.freenode.net"; // The host to use for connecting.
+$ircBotNetworkPort = 6667; // The port on the particular host.
+$ircBotChannel = "#wikipedia-en-accounts"; // The channel in which the discussions are.
+$ircBotNickname = "ACCBot"; // The nickname of the ACCBot.
+$ircBotCommandTrigger = '!'; // The ACCBot's command trigger.
 
-$ircBotNotificationType = 1;				// Helpmebot's notification type ID.
-$ircBotNotificationsEnabled = 1;            // Enable Helpmebot's notifications.
+$ircBotNotificationType = 1; // Helpmebot's notification type ID.
+$ircBotNotificationsEnabled = 1; // Enable Helpmebot's notifications.
 // Name of this instance of the tool.
 // This name would be used by the bot as reference point.	
 $whichami = 'Live';
@@ -110,9 +110,9 @@ $emailConfirmationExpiryDays = 7;
  */
 
 // Parameters for performing a newbie check on tool registration.
-$onRegistrationNewbieCheck = true;			// Enable the newbie checking.
-$onRegistrationNewbieCheckEditCount = 20;	// Minimum amount of edits on Wikipedia.
-$onRegistrationNewbieCheckAge = 5184000;	// Account age on Wikipedia in seconds.
+$onRegistrationNewbieCheck = true; // Enable the newbie checking.
+$onRegistrationNewbieCheckEditCount = 20; // Minimum amount of edits on Wikipedia.
+$onRegistrationNewbieCheckAge = 5184000; // Account age on Wikipedia in seconds.
 
 // Enable interface account renaming.
 $enableRenames = 1; 		
@@ -155,12 +155,12 @@ $protectReservedRequests = true;
  * Backup Configuration
  */
 
-$BUbasefile = "backup";							// The basefile's name.
-$BUdir = "/home/project/a/c/c/acc/backups";		// The directory where backups should be stored.
-$BUmonthdir = $BUdir . "/monthly";				// The directory where monthly backups should be stored.
+$BUbasefile = "backup"; // The basefile's name.
+$BUdir = "/home/project/a/c/c/acc/backups"; // The directory where backups should be stored.
+$BUmonthdir = $BUdir . "/monthly"; // The directory where monthly backups should be stored.
 $BUdumper = "/opt/ts/mysql/5.1/bin/mysqldump --defaults-file=~/.my.cnf p_acc_live"; // Add parameters here if they are needed.
-$BUgzip = "/usr/bin/gzip"; 							// Add the gzip parameters here if needed.
-$BUtar = "/bin/tar -cvf";						// Add the tar parameters here if needed.
+$BUgzip = "/usr/bin/gzip"; // Add the gzip parameters here if needed.
+$BUtar = "/bin/tar -cvf"; // Add the tar parameters here if needed.
 
 /************************************
  * OAuth Configuration
@@ -209,10 +209,10 @@ $cDataClearEmail = 'acc@toolserver.org';
  * Other stuff that doesn't fit in.
  */
 
-$enableSQLError = 0; 		// Enable the display of SQL errors.
-$showGraphs = 1; 			// Show graphs on statistics pages.
-$enableTitleblacklist = 0;  // Enable Title Blacklist checks.
-$enableCommentEditing = 1;	// Enable admin editing of comments
+$enableSQLError = 0; // Enable the display of SQL errors.
+$showGraphs = 1; // Show graphs on statistics pages.
+$enableTitleblacklist = 0; // Enable Title Blacklist checks.
+$enableCommentEditing = 1; // Enable admin editing of comments
 
 // Enable the use of PATH_INFO for request parameters to prettify URLs.
 $usePathInfo = true;
@@ -292,18 +292,18 @@ $createdid = 1;
 require_once('config.local.inc.php');
 
 $cDatabaseConfig = array(
-	"acc" => array (
-		"dsrcname" => "mysql:host=".$toolserver_host.";dbname=".$toolserver_database,
+	"acc" => array(
+		"dsrcname" => "mysql:host=" . $toolserver_host . ";dbname=" . $toolserver_database,
 		"username" => $toolserver_username,
 		"password" => $toolserver_password
 	),
-	"wikipedia" => array (
-		"dsrcname" => "mysql:host=".$antispoof_host.";dbname=".$antispoof_db,
+	"wikipedia" => array(
+		"dsrcname" => "mysql:host=" . $antispoof_host . ";dbname=" . $antispoof_db,
 		"username" => $toolserver_username,
 		"password" => $toolserver_password
 	),
-	"notifications" => array (
-		"dsrcname" => "mysql:host=".$toolserver_notification_dbhost.";dbname=".$toolserver_notification_database,
+	"notifications" => array(
+		"dsrcname" => "mysql:host=" . $toolserver_notification_dbhost . ";dbname=" . $toolserver_notification_database,
 		"username" => $notifications_username,
 		"password" => $notifications_password
 	),
@@ -317,17 +317,17 @@ ini_set('session.cookie_path', $cookiepath);
 ini_set('session.name', $sessionname);
 ini_set('user_agent', $toolUserAgent);
 
-foreach(array( 
-	"mbstring",  // unicode and stuff
-	"pdo", "pdo_mysql",  // new database module
+foreach (array( 
+	"mbstring", // unicode and stuff
+	"pdo", "pdo_mysql", // new database module
 	"session", "date", "pcre", // core stuff
 	"curl", // mediawiki api access etc
 	"mcrypt", "openssl", // password encryption etc
-	) as $x) {if(!extension_loaded($x)) {die("extension $x is required.");}}
+	) as $x) {if (!extension_loaded($x)) {die("extension $x is required."); }}
 
 require_once($filepath . "includes/AutoLoader.php");
 
-spl_autoload_register( "AutoLoader::load" );
+spl_autoload_register("AutoLoader::load");
 
 // Extra includes which are just plain awkward wherever they are.
 require_once($filepath . 'oauth/OAuthUtility.php');

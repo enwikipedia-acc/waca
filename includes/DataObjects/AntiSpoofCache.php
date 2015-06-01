@@ -11,14 +11,14 @@ class AntiSpoofCache extends DataObject
 
 	public static function getByUsername($username, PdoDatabase $database)
 	{
-		$statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE username = :id AND timestamp > date_sub(now(), interval 3 hour) LIMIT 1;");
+		$statement = $database->prepare("SELECT * FROM `" . strtolower(get_called_class()) . "` WHERE username = :id AND timestamp > date_sub(now(), interval 3 hour) LIMIT 1;");
 		$statement->bindValue(":id", $username);
 
 		$statement->execute();
 
-		$resultObject = $statement->fetchObject( get_called_class() );
+		$resultObject = $statement->fetchObject(get_called_class());
 
-		if($resultObject != false) {
+		if ($resultObject != false) {
 			$resultObject->isNew = false;
 			$resultObject->setDatabase($database);
 		}
@@ -56,7 +56,7 @@ class AntiSpoofCache extends DataObject
 
 	public function save()
 	{
-		if($this->isNew) {
+		if ($this->isNew) {
 // insert
 
 			// clear old data first
@@ -66,7 +66,7 @@ class AntiSpoofCache extends DataObject
 			$statement->bindValue(":username", $this->username);
 			$statement->bindValue(":data", $this->data);
 
-			if($statement->execute()) {
+			if ($statement->execute()) {
 				$this->isNew = false;
 				$this->id = $this->dbObject->lastInsertId();
 			}

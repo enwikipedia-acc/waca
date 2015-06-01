@@ -16,7 +16,7 @@ class StatsUsers extends StatisticsPage
 {
 	protected function execute()
 	{
-		if(!isset($_GET['user'])) {
+		if (!isset($_GET['user'])) {
 			return $this->getUserList();
 		}
 		else {
@@ -57,7 +57,7 @@ class StatsUsers extends StatisticsPage
 		$database = gGetDb();
 
 		$user = User::getById($userId, $database);
-		if($user == false) {
+		if ($user == false) {
 			return BootstrapSkin::displayAlertBox("User not found", "alert-error", "Error", true, false, true);
 		}
 

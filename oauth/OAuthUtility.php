@@ -26,8 +26,8 @@ class OAuthUtility
 
 		$endpoint = $this->baseUrlInternal . '/initiate&format=json&oauth_callback=oob';
 
-		$c = new OAuthConsumer( $this->consumerToken, $this->consumerSecret );
-		$parsed = parse_url( $endpoint );
+		$c = new OAuthConsumer($this->consumerToken, $this->consumerSecret);
+		$parsed = parse_url($endpoint);
 		$params = array();
 		parse_str($parsed['query'], $params);
 		$req_req = OAuthRequest::from_consumer_and_token($c, null, "GET", $endpoint, $params);
@@ -35,20 +35,20 @@ class OAuthUtility
 		$req_req->sign_request($hmac_method, $c, null);
 
 		$ch = curl_init();
-		curl_setopt( $ch, CURLOPT_URL, (string) $req_req );
-		curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
-		curl_setopt( $ch, CURLOPT_HEADER, 0 );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt( $ch, CURLOPT_USERAGENT, $toolUserAgent);
-		$data = curl_exec( $ch );
+		curl_setopt($ch, CURLOPT_URL, (string)$req_req);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_USERAGENT, $toolUserAgent);
+		$data = curl_exec($ch);
 
-		if( !$data ) {
-			throw new Exception('Curl error: ' . curl_error( $ch ));
+		if (!$data) {
+			throw new Exception('Curl error: ' . curl_error($ch));
 		}
 
-		$token = json_decode( $data );
+		$token = json_decode($data);
 
-		if(!isset($token) || isset($token->error)) {
+		if (!isset($token) || isset($token->error)) {
 			throw new Exception("Error encountered while getting token.");
 		}
 
@@ -66,9 +66,9 @@ class OAuthUtility
 
 		$endpoint = $this->baseUrlInternal . '/token&format=json';
 
-		$c = new OAuthConsumer( $this->consumerToken, $this->consumerSecret );
-		$rc = new OAuthConsumer( $requestToken, $requestSecret );
-		$parsed = parse_url( $endpoint );
+		$c = new OAuthConsumer($this->consumerToken, $this->consumerSecret);
+		$rc = new OAuthConsumer($requestToken, $requestSecret);
+		$parsed = parse_url($endpoint);
 		parse_str($parsed['query'], $params);
 		$params['oauth_verifier'] = trim($verifyToken);
 
@@ -77,21 +77,21 @@ class OAuthUtility
 		$hmac_method = new OAuthSignatureMethod_HMAC_SHA1();
 		$acc_req->sign_request($hmac_method, $c, $rc);
 
-		unset( $ch );
+		unset($ch);
 		$ch = curl_init();
-		curl_setopt( $ch, CURLOPT_URL, (string) $acc_req );
-		curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
-		curl_setopt( $ch, CURLOPT_HEADER, 0 );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt( $ch, CURLOPT_USERAGENT, $toolUserAgent);
+		curl_setopt($ch, CURLOPT_URL, (string)$acc_req);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_USERAGENT, $toolUserAgent);
 
-		$data = curl_exec( $ch );
+		$data = curl_exec($ch);
 
-		if( !$data ) {
-			throw new Exception('Curl error: ' . curl_error( $ch ));
+		if (!$data) {
+			throw new Exception('Curl error: ' . curl_error($ch));
 		}
 
-		$token = json_decode( $data );
+		$token = json_decode($data);
 
 		return $token;
 	}
@@ -100,45 +100,45 @@ class OAuthUtility
 	{
 		global $mediawikiWebServiceEndpoint, $toolUserAgent;
 
-		$userToken = new OAuthToken( $accessToken, $accessSecret );
+		$userToken = new OAuthToken($accessToken, $accessSecret);
 
 		$apiParams['format'] = 'json';
 
-		$c = new OAuthConsumer( $this->consumerToken, $this->consumerSecret );
+		$c = new OAuthConsumer($this->consumerToken, $this->consumerSecret);
 
 		$api_req = OAuthRequest::from_consumer_and_token(
-			$c,           // Consumer
+			$c, // Consumer
 			$userToken, // User Access Token
-			$method,        // HTTP Method
-			$mediawikiWebServiceEndpoint,      // Endpoint url
+			$method, // HTTP Method
+			$mediawikiWebServiceEndpoint, // Endpoint url
 			$apiParams    // Extra signed parameters
 		);
 
 		$hmac_method = new OAuthSignatureMethod_HMAC_SHA1();
 
-		$api_req->sign_request( $hmac_method, $c, $userToken );
+		$api_req->sign_request($hmac_method, $c, $userToken);
 
 		$ch = curl_init();
-		if($method == "GET") {
-			curl_setopt( $ch, CURLOPT_URL, $mediawikiWebServiceEndpoint . "?" . http_build_query( $apiParams ) );
+		if ($method == "GET") {
+			curl_setopt($ch, CURLOPT_URL, $mediawikiWebServiceEndpoint . "?" . http_build_query($apiParams));
 		}
         
-		if($method == "POST") {
-			curl_setopt( $ch, CURLOPT_URL, $mediawikiWebServiceEndpoint);
-			curl_setopt( $ch, CURLOPT_POST, count($apiParams));
-			curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $apiParams ));   
+		if ($method == "POST") {
+			curl_setopt($ch, CURLOPT_URL, $mediawikiWebServiceEndpoint);
+			curl_setopt($ch, CURLOPT_POST, count($apiParams));
+			curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($apiParams));   
 		}
         
-		curl_setopt( $ch, CURLOPT_HEADER, 0 );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
-		curl_setopt( $ch, CURLOPT_HTTPHEADER, array( $api_req->to_header() ) ); // Authorization header required for api
-		curl_setopt( $ch, CURLOPT_USERAGENT, $toolUserAgent);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		curl_setopt($ch, CURLOPT_HTTPHEADER, array($api_req->to_header())); // Authorization header required for api
+		curl_setopt($ch, CURLOPT_USERAGENT, $toolUserAgent);
 
-		$data = curl_exec( $ch );
+		$data = curl_exec($ch);
 
-		if( !$data ) {
-			throw new Exception('Curl error: ' . curl_error( $ch ));
+		if (!$data) {
+			throw new Exception('Curl error: ' . curl_error($ch));
 		}
 
 		return json_decode($data);
@@ -151,9 +151,9 @@ class OAuthUtility
 
 		$endpoint = $this->baseUrlInternal . '/identify&format=json';
 
-		$c = new OAuthConsumer( $this->consumerToken, $this->consumerSecret );
-		$rc = new OAuthToken( $accessToken, $accessSecret );
-		$parsed = parse_url( $endpoint );
+		$c = new OAuthConsumer($this->consumerToken, $this->consumerSecret);
+		$rc = new OAuthToken($accessToken, $accessSecret);
+		$parsed = parse_url($endpoint);
 		parse_str($parsed['query'], $params);
 
 		$acc_req = OAuthRequest::from_consumer_and_token($c, $rc, "GET", $endpoint, $params);
@@ -161,27 +161,27 @@ class OAuthUtility
 		$hmac_method = new OAuthSignatureMethod_HMAC_SHA1();
 		$acc_req->sign_request($hmac_method, $c, $rc);
 
-		unset( $ch );
+		unset($ch);
 		$ch = curl_init();
-		curl_setopt( $ch, CURLOPT_URL, (string) $acc_req );
-		curl_setopt( $ch, CURLOPT_SSL_VERIFYPEER, 0 );
-		curl_setopt( $ch, CURLOPT_HEADER, 0 );
-		curl_setopt( $ch, CURLOPT_RETURNTRANSFER, 1 );
-		curl_setopt( $ch, CURLOPT_USERAGENT, $toolUserAgent);
+		curl_setopt($ch, CURLOPT_URL, (string)$acc_req);
+		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+		curl_setopt($ch, CURLOPT_HEADER, 0);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+		curl_setopt($ch, CURLOPT_USERAGENT, $toolUserAgent);
 
-		$data = curl_exec( $ch );
+		$data = curl_exec($ch);
 
-		if( !$data ) {
-			throw new Exception('Curl error: ' . curl_error( $ch ));
+		if (!$data) {
+			throw new Exception('Curl error: ' . curl_error($ch));
 		}
 
 		$decodedData = json_decode($data);
 
-		if(isset($decodedData->error)) {
+		if (isset($decodedData->error)) {
 			throw new TransactionException($decodedData->error);
 		}
 
-		$identity = JWT::decode( $data , $this->consumerSecret );
+		$identity = JWT::decode($data, $this->consumerSecret);
 
 		return $identity;
 	}
