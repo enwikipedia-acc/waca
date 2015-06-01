@@ -2,8 +2,16 @@
 
 class MockBanHelper implements IBanHelper
 {
+	/**
+	 * Summary of $result
+	 * @var Ban|boolean
+	 */
 	private $result = false;
 
+	/**
+	 * Summary of setResult
+	 * @param Ban|boolean $result 
+	 */
 	public function setResult($result)
 	{
 		$this->result = $result;

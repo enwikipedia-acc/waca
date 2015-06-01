@@ -202,6 +202,10 @@ function doSort(array $items)
 }
 
 /**
+ * Parses an XFF header and client IP to find the last trusted client IP
+ * 
+ * @param string $dbip The IP address the request came from
+ * @param string $dbproxyip The contents of the XFF header of the request
  * @return string
  */
 function getTrustedClientIP($dbip, $dbproxyip)
@@ -227,6 +231,12 @@ function getTrustedClientIP($dbip, $dbproxyip)
 	return $clientIpAddr;
 }
 
+/**
+ * Explodes a CIDR range into an array of addresses
+ * 
+ * @param string $range A CIDR-format range
+ * @return array An array containing every IP address in the range
+ */
 function explodeCidr($range)
 {
 	$ip_arr = explode('/', $range);
@@ -252,8 +262,9 @@ function explodeCidr($range)
 }
 
 /**
- * Takes an array( "low" => "high ) values, and returns true if $needle is in at least one of them.
+ * Takes an array( "low" => "high" ) values, and returns true if $needle is in at least one of them.
  * @param string $ip
+ * @param array $haystack
  */
 function ipInRange($haystack, $ip)
 {
@@ -344,6 +355,11 @@ function relativedate($input)
 	return $output;
 }
 
+/**
+ * Summary of reattachOAuthAccount
+ * @param User $user 
+ * @throws TransactionException 
+ */
 function reattachOAuthAccount(User $user)
 {
 	global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;

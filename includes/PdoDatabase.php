@@ -66,6 +66,10 @@ class PdoDatabase extends PDO
 		return $this->hasActiveTransaction;
 	}
 
+	/**
+	 * Summary of beginTransaction
+	 * @return bool
+	 */
 	public function beginTransaction()
 	{
 		// Override the pre-existing method, which doesn't stop you from
@@ -98,6 +102,10 @@ class PdoDatabase extends PDO
 		$this->hasActiveTransaction = false;
 	}
 
+	/**
+	 * Summary of transactionally
+	 * @param Closure $method 
+	 */
 	public function transactionally($method)
 	{
 		if (!$this->beginTransaction()) {
@@ -128,6 +136,12 @@ class PdoDatabase extends PDO
 		}
 	}
 
+	/**
+	 * Summary of prepare
+	 * @param string $statement 
+	 * @param array $driver_options 
+	 * @return PDOStatement
+	 */
 	public function prepare($statement, $driver_options = array())
 	{
 		global $enableQueryLog;

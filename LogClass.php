@@ -21,6 +21,9 @@ class LogPage
 	
 	/**
 	 * @param integer $logListCount
+     * @param integer $count
+     * @param integer $offset
+     * @param integer $limit
 	 */
 	private function createPager($offset, $limit, $logListCount, $count)
 	{
@@ -57,12 +60,13 @@ class LogPage
 		$pager = substr($pager, 0, -3);
 		return $pager;
 	}
-		
+	
+    // FIXME: boolean value called count?
 	/**
 	 * Summary of getLog
-	 * @param mixed $offset 
-	 * @param mixed $limit Accepts number or "infinity"
-	 * @param mixed $count 
+	 * @param integer $offset 
+	 * @param integer|string $limit Accepts number or "infinity"
+	 * @param boolean $count
 	 * @return PdoStatement
 	 */
 	private function getLog($offset = 0, $limit = 100, $count = false)
@@ -134,7 +138,7 @@ class LogPage
 	 * Summary of showListLog
 	 * @param mixed $offset 
 	 * @param mixed $limit 
-	 * @return mixed
+	 * @return string|null
 	 * @deprecated
 	 */
 	public function showListLog($offset, $limit)
@@ -301,9 +305,9 @@ class LogPage
 	
 	/**
 	 * Summary of getArrayLog
-	 * @param mixed $offset 
-	 * @param mixed $limit 
-	 * @return mixed
+	 * @param integer $offset 
+	 * @param integer|string $limit 
+	 * @return array
 	 * @deprecated
 	 */
 	public function getArrayLog($offset = 0, $limit = "infinity")

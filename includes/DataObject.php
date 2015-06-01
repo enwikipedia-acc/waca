@@ -26,7 +26,8 @@ abstract class DataObject
 
 	/**
 	 * Retrieves a data object by it's row ID.
-	 * @param $id
+	 * @param int $id
+     * @return DataObject|null
 	 */
 	public static function getById($id, PdoDatabase $database)
 	{

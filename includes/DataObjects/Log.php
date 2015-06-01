@@ -55,6 +55,10 @@ SQL
 		return $this->objectid;
 	}
 
+	/**
+	 * Summary of setObjectId
+	 * @param int $objectid 
+	 */
 	public function setObjectId($objectid)
 	{
 		$this->objectid = $objectid;
@@ -65,6 +69,10 @@ SQL
 		return $this->objecttype;
 	}
 
+	/**
+	 * Summary of setObjectType
+	 * @param string $objecttype 
+	 */
 	public function setObjectType($objecttype)
 	{
 		$this->objecttype = $objecttype;
@@ -94,6 +102,10 @@ SQL
 		return $this->action;
 	}
 
+	/**
+	 * Summary of setAction
+	 * @param string $action 
+	 */
 	public function setAction($action)
 	{
 		$this->action = $action;
@@ -109,6 +121,10 @@ SQL
 		return $this->comment;
 	}
 
+	/**
+	 * Summary of setComment
+	 * @param string $comment 
+	 */
 	public function setComment($comment)
 	{
 		$this->comment = $comment;
