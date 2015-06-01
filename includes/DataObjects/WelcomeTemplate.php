@@ -5,102 +5,102 @@
  */
 class WelcomeTemplate extends DataObject
 {
-    private $usercode;
-    private $botcode;
+	private $usercode;
+	private $botcode;
 
-    private $usageCache;
+	private $usageCache;
 
-    /**
-     * Summary of getAll
-     * @param PdoDatabase $database
-     * @return WelcomeTemplate[]
-     */
-    public static function getAll(PdoDatabase $database = null)
-    {
-        if($database == null) {
-            $database = gGetDb();
-        }
+	/**
+	 * Summary of getAll
+	 * @param PdoDatabase $database
+	 * @return WelcomeTemplate[]
+	 */
+	public static function getAll(PdoDatabase $database = null)
+	{
+		if($database == null) {
+			$database = gGetDb();
+		}
 
-        $statement = $database->prepare("SELECT * FROM welcometemplate;");
+		$statement = $database->prepare("SELECT * FROM welcometemplate;");
 
-        $statement->execute();
+		$statement->execute();
 
-        $result = array();
-        foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
-            $v->isNew = false;
-            $v->setDatabase($database);
-            $result[] = $v;
-        }
+		$result = array();
+		foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
+			$v->isNew = false;
+			$v->setDatabase($database);
+			$result[] = $v;
+		}
 
-        return $result;
-    }
+		return $result;
+	}
 
-    public function save()
-    {
-        if($this->isNew) {
+	public function save()
+	{
+		if($this->isNew) {
 // insert
-            $statement = $this->dbObject->prepare("INSERT INTO welcometemplate (usercode, botcode) VALUES (:usercode, :botcode);");
-            $statement->bindValue(":usercode", $this->usercode);
-            $statement->bindValue(":botcode", $this->botcode);
+			$statement = $this->dbObject->prepare("INSERT INTO welcometemplate (usercode, botcode) VALUES (:usercode, :botcode);");
+			$statement->bindValue(":usercode", $this->usercode);
+			$statement->bindValue(":botcode", $this->botcode);
 
-            if($statement->execute()) {
-                $this->isNew = false;
-                $this->id = $this->dbObject->lastInsertId();
-            }
-            else {
-                throw new Exception($statement->errorInfo());
-            }
-        }
-        else {
+			if($statement->execute()) {
+				$this->isNew = false;
+				$this->id = $this->dbObject->lastInsertId();
+			}
+			else {
+				throw new Exception($statement->errorInfo());
+			}
+		}
+		else {
 // update
-            $statement = $this->dbObject->prepare("UPDATE `welcometemplate` SET usercode = :usercode, botcode = :botcode WHERE id = :id LIMIT 1;");
-            $statement->bindValue(":id", $this->id);
-            $statement->bindValue(":usercode", $this->usercode);
-            $statement->bindValue(":botcode", $this->botcode);
+			$statement = $this->dbObject->prepare("UPDATE `welcometemplate` SET usercode = :usercode, botcode = :botcode WHERE id = :id LIMIT 1;");
+			$statement->bindValue(":id", $this->id);
+			$statement->bindValue(":usercode", $this->usercode);
+			$statement->bindValue(":botcode", $this->botcode);
 
-            if(!$statement->execute()) {
-                throw new Exception($statement->errorInfo());
-            }
-        }
-    }
+			if(!$statement->execute()) {
+				throw new Exception($statement->errorInfo());
+			}
+		}
+	}
 
-    public function getUserCode()
-    {
-        return $this->usercode;
-    }
+	public function getUserCode()
+	{
+		return $this->usercode;
+	}
 
-    public function setUserCode($usercode)
-    {
-        $this->usercode = $usercode;
-    }
+	public function setUserCode($usercode)
+	{
+		$this->usercode = $usercode;
+	}
 
-    public function getBotCode()
-    {
-        return $this->botcode;
-    }
+	public function getBotCode()
+	{
+		return $this->botcode;
+	}
 
-    public function setBotCode($botcode)
-    {
-        $this->botcode = $botcode;
-    }
+	public function setBotCode($botcode)
+	{
+		$this->botcode = $botcode;
+	}
 
-    public function getUsersUsingTemplate()
-    {
-        if($this->usageCache === null) {
-            $statement = $this->dbObject->prepare("SELECT * FROM user WHERE welcome_template = :id;");
+	public function getUsersUsingTemplate()
+	{
+		if($this->usageCache === null) {
+			$statement = $this->dbObject->prepare("SELECT * FROM user WHERE welcome_template = :id;");
 
-            $statement->execute(array(":id" => $this->id));
+			$statement->execute(array(":id" => $this->id));
 
-            $result = array();
-            foreach ($statement->fetchAll(PDO::FETCH_CLASS, 'User') as $v) {
-                $v->isNew = false;
-                $v->setDatabase($this->dbObject);
-                $result[] = $v;
-            }
+			$result = array();
+			foreach ($statement->fetchAll(PDO::FETCH_CLASS, 'User') as $v) {
+				$v->isNew = false;
+				$v->setDatabase($this->dbObject);
+				$result[] = $v;
+			}
 
-            $this->usageCache = $result;
-        }
+			$this->usageCache = $result;
+		}
 
-        return $this->usageCache;
-    }
+		return $this->usageCache;
+	}
 }

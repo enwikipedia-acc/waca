@@ -15,59 +15,59 @@ use Waca\API\IApiAction as IApiAction;
  */
 class MonitorAction extends ApiActionBase implements IApiAction
 {
-    /**
-     * The datbase
-     * @var PdoDatabase $database
-     */
-    private $database;
+	/**
+	 * The datbase
+	 * @var PdoDatabase $database
+	 */
+	private $database;
 
-    public function execute(\DOMElement $apiDocument)
-    {
-        $this->database = gGetDb();
+	public function execute(\DOMElement $apiDocument)
+	{
+		$this->database = gGetDb();
 
-        $now = new \DateTime();
+		$now = new \DateTime();
 
-        $old = $this->getOldest();
-        $oldest = new \DateTime($old);
+		$old = $this->getOldest();
+		$oldest = new \DateTime($old);
 
-        $new = $this->getNewest();
-        $newest = new \DateTime($new);
+		$new = $this->getNewest();
+		$newest = new \DateTime($new);
 
-        $monitoringElement = $this->document->createElement("data");
-        $monitoringElement->setAttribute("date", $now->format('c'));
-        $monitoringElement->setAttribute("oldest", $old == null ? null : $oldest->format('c'));
-        $monitoringElement->setAttribute("newest", $new == null ? null : $newest->format('c'));
-        $apiDocument->appendChild($monitoringElement);
+		$monitoringElement = $this->document->createElement("data");
+		$monitoringElement->setAttribute("date", $now->format('c'));
+		$monitoringElement->setAttribute("oldest", $old == null ? null : $oldest->format('c'));
+		$monitoringElement->setAttribute("newest", $new == null ? null : $newest->format('c'));
+		$apiDocument->appendChild($monitoringElement);
 
-        return $apiDocument;
-    }
+		return $apiDocument;
+	}
 
-    /**
-     * @return string|null
-     */
-    private function getOldest()
-    {
-        global $cDataClearIp, $cDataClearEmail;
-        $statement = $this->database->prepare("select min(date) from request where email != :email and ip != :ip;");
-        $successful = $statement->execute(array(':email' => $cDataClearEmail, ':ip' => $cDataClearIp));
+	/**
+	 * @return string|null
+	 */
+	private function getOldest()
+	{
+		global $cDataClearIp, $cDataClearEmail;
+		$statement = $this->database->prepare("select min(date) from request where email != :email and ip != :ip;");
+		$successful = $statement->execute(array(':email' => $cDataClearEmail, ':ip' => $cDataClearIp));
 
-        if(!$successful) {
-            return null;
-        }
+		if(!$successful) {
+			return null;
+		}
 
-        $result = $statement->fetchColumn();
-        return $result;
-    }
+		$result = $statement->fetchColumn();
+		return $result;
+	}
 
-    /**
-     * @return string|null
-     */
-    private function getNewest()
-    {
-        global $cDataClearIp, $cDataClearEmail;
-        $statement = $this->database->prepare("select max(date) from request where email != :email and ip != :ip;");
-        $statement->execute(array(':email' => $cDataClearEmail, ':ip' => $cDataClearIp));
-        $result = $statement->fetchColumn(0);
-        return $result;
-    }
+	/**
+	 * @return string|null
+	 */
+	private function getNewest()
+	{
+		global $cDataClearIp, $cDataClearEmail;
+		$statement = $this->database->prepare("select max(date) from request where email != :email and ip != :ip;");
+		$statement->execute(array(':email' => $cDataClearEmail, ':ip' => $cDataClearIp));
+		$result = $statement->fetchColumn(0);
+		return $result;
+	}
 }

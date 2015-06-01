@@ -13,65 +13,65 @@
  */
 abstract class DataObject
 {
-    protected $id = 0;
+	protected $id = 0;
 
-    public $isNew = true;
+	public $isNew = true;
 
-    protected $dbObject;
+	protected $dbObject;
 
-    public function setDatabase(PdoDatabase $db)
-    {
-        $this->dbObject = $db;
-    }
+	public function setDatabase(PdoDatabase $db)
+	{
+		$this->dbObject = $db;
+	}
 
-    /**
-     * Retrieves a data object by it's row ID.
-     * @param $id
-     */
-    public static function getById($id, PdoDatabase $database)
-    {
-        $statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE id = :id LIMIT 1;");
-        $statement->bindValue(":id", $id);
+	/**
+	 * Retrieves a data object by it's row ID.
+	 * @param $id
+	 */
+	public static function getById($id, PdoDatabase $database)
+	{
+		$statement = $database->prepare("SELECT * FROM `" . strtolower( get_called_class() ) . "` WHERE id = :id LIMIT 1;");
+		$statement->bindValue(":id", $id);
 
-        $statement->execute();
+		$statement->execute();
 
-        $resultObject = $statement->fetchObject( get_called_class() );
+		$resultObject = $statement->fetchObject( get_called_class() );
 
-        if($resultObject != false) {
-            $resultObject->isNew = false;
-            $resultObject->setDatabase($database);
-        }
+		if($resultObject != false) {
+			$resultObject->isNew = false;
+			$resultObject->setDatabase($database);
+		}
 
-        return $resultObject;
-    }
+		return $resultObject;
+	}
 
-    /**
-     * Saves a data object to the database, either updating or inserting a record.
-     */
-    abstract public function save();
+	/**
+	 * Saves a data object to the database, either updating or inserting a record.
+	 */
+	abstract public function save();
 
-    /**
-     * Retrieves the ID attribute
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+	/**
+	 * Retrieves the ID attribute
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 
-    /**
-     * Deletes the object from the database
-     */
-    public function delete()
-    {
-        $statement = $this->dbObject->prepare(
-            "DELETE FROM `"
-            . strtolower( get_called_class() )
-            . "` WHERE id = :id LIMIT 1;");
+	/**
+	 * Deletes the object from the database
+	 */
+	public function delete()
+	{
+		$statement = $this->dbObject->prepare(
+			"DELETE FROM `"
+			. strtolower( get_called_class() )
+			. "` WHERE id = :id LIMIT 1;");
 
-        $statement->bindValue(":id", $this->id);
-        $statement->execute();
+		$statement->bindValue(":id", $this->id);
+		$statement->execute();
 
-        $this->id = 0;
-        $this->isNew = true;
-    }
+		$this->id = 0;
+		$this->isNew = true;
+	}
 }

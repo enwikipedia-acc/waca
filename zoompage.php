@@ -86,18 +86,18 @@ SQL
 	}
 	$smarty->assign("hash", $hash);
 	if ($hash == $urlhash) {
-		$correcthash = TRUE;
+		$correcthash = true;
 	}
 	else {
-		$correcthash = FALSE;
+		$correcthash = false;
 	}
 	
 	$smarty->assign("showinfo", false);
-	if ($hideinfo == FALSE || $correcthash == TRUE || User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() ) {
+	if ($hideinfo == false || $correcthash == true || User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() ) {
 		$smarty->assign("showinfo", true);
 	}
     
-	if ($hideinfo == FALSE || $correcthash == TRUE || User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() ) {
+	if ($hideinfo == false || $correcthash == true || User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() ) {
 		$smarty->assign("proxyip", $request->getForwardedIp());
 		if ($request->getForwardedIp()) {
 			$smartyproxies = array(); // Initialize array to store data to be output in Smarty template.

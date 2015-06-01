@@ -10,31 +10,31 @@
  */
 class DebugHelper
 {
-    public static function getBacktrace()
-    {
-        $backtrace = debug_backtrace();
+	public static function getBacktrace()
+	{
+		$backtrace = debug_backtrace();
         
-        $output = "";
+		$output = "";
         
-        $count = 0;
-        foreach ($backtrace as $line) {
-            if($count == 0) {
-                $count++;
-                continue;
-            }
+		$count = 0;
+		foreach ($backtrace as $line) {
+			if($count == 0) {
+				$count++;
+				continue;
+			}
             
-            $output .= "#{$count}: ";
+			$output .= "#{$count}: ";
             
-            if(isset($line['type']) && $line['type'] != "") {
-                $output .= $line['class'] . $line['type'];
-            }
+			if(isset($line['type']) && $line['type'] != "") {
+				$output .= $line['class'] . $line['type'];
+			}
             
-            $output .= $line['function'] . "(...)";
-            $output .= " [{$line['file']}#{$line['line']}\r\n";
+			$output .= $line['function'] . "(...)";
+			$output .= " [{$line['file']}#{$line['line']}\r\n";
             
-            $count++;
-        }
+			$count++;
+		}
         
-        return $output;
-    }
+		return $output;
+	}
 }

@@ -26,8 +26,8 @@ require_once 'includes/SmartyInit.php';
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.
 if(Offline::isOffline()) {
-    echo Offline::getOfflineMessage(false);
-    die();
+	echo Offline::getOfflineMessage(false);
+	die();
 }
 
 //Array of objects containing the deleveopers' information.
@@ -183,7 +183,7 @@ $inactiveDeveloper = array(
 				"Cloak" => "*!*@yourwiki/staff/charlie",
 				"Other" => null,
 			),
-      		"Soxred93" =>
+	  		"Soxred93" =>
 			array(
 				"IRC" => "|X|",
 				"ToolID" => "4",
@@ -235,7 +235,7 @@ $inactiveDeveloper = array(
 				"Cloak" => "*!*@wikipedia/Prodego",
 				"Other" => null,
 			),
-      		"Prom3th3an" =>
+	  		"Prom3th3an" =>
 			array(
 				"IRC" => "Prom_cat",
 				"ToolID" => "91",

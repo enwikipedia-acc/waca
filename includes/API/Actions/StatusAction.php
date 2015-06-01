@@ -10,70 +10,70 @@ use Waca\API\IApiAction as IApiAction;
  */
 class StatusAction extends ApiActionBase implements IApiAction
 {
-    /**
-     * The datbase
-     * @var PdoDatabase $database
-     */
-    private $database;
+	/**
+	 * The datbase
+	 * @var PdoDatabase $database
+	 */
+	private $database;
 
-    public function execute(\DOMElement $apiDocument)
-    {
-        $this->database = gGetDb();
+	public function execute(\DOMElement $apiDocument)
+	{
+		$this->database = gGetDb();
 
-        $statusElement = $this->document->createElement("status");
-        $apiDocument->appendChild($statusElement);
+		$statusElement = $this->document->createElement("status");
+		$apiDocument->appendChild($statusElement);
 
-        $query = $this->database->prepare(<<<SQL
+		$query = $this->database->prepare(<<<SQL
             SELECT COUNT(*) AS count
             FROM request
             WHERE
                 status = :pstatus
                 AND emailconfirm = "Confirmed";
 SQL
-        );
+		);
 
-        global $availableRequestStates;
-        foreach( $availableRequestStates as $key => $value ) {
-            $query->bindValue(":pstatus", $key);
-            $query->execute();
-            $sus = $query->fetchColumn();
-            $statusElement->setAttribute($value['api'], $sus);
-            $query->closeCursor();
-        }
+		global $availableRequestStates;
+		foreach( $availableRequestStates as $key => $value ) {
+			$query->bindValue(":pstatus", $key);
+			$query->execute();
+			$sus = $query->fetchColumn();
+			$statusElement->setAttribute($value['api'], $sus);
+			$query->closeCursor();
+		}
 
-        $query = $this->database->prepare(<<<SQL
+		$query = $this->database->prepare(<<<SQL
             SELECT COUNT(*) AS count
             FROM ban
             WHERE
                 (duration > UNIX_TIMESTAMP() OR duration = -1)
                 AND active = 1;
 SQL
-        );
+		);
 
-        $query->execute();
-        $sus = $query->fetchColumn();
-        $statusElement->setAttribute("bans", $sus);
-        $query->closeCursor();
+		$query->execute();
+		$sus = $query->fetchColumn();
+		$statusElement->setAttribute("bans", $sus);
+		$query->closeCursor();
 
-        $query = $this->database->prepare("SELECT COUNT(*) AS count FROM user WHERE status = :ulevel;");
-        $query->bindValue(":ulevel", "Admin");
-        $query->execute();
-        $sus = $query->fetchColumn();
-        $statusElement->setAttribute("useradmin", $sus);
-        $query->closeCursor();
+		$query = $this->database->prepare("SELECT COUNT(*) AS count FROM user WHERE status = :ulevel;");
+		$query->bindValue(":ulevel", "Admin");
+		$query->execute();
+		$sus = $query->fetchColumn();
+		$statusElement->setAttribute("useradmin", $sus);
+		$query->closeCursor();
 
-        $query->bindValue(":ulevel", "User");
-        $query->execute();
-        $sus = $query->fetchColumn();
-        $statusElement->setAttribute("user", $sus);
-        $query->closeCursor();
+		$query->bindValue(":ulevel", "User");
+		$query->execute();
+		$sus = $query->fetchColumn();
+		$statusElement->setAttribute("user", $sus);
+		$query->closeCursor();
 
-        $query->bindValue(":ulevel", "New");
-        $query->execute();
-        $sus = $query->fetchColumn();
-        $statusElement->setAttribute("usernew", $sus);
-        $query->closeCursor();
+		$query->bindValue(":ulevel", "New");
+		$query->execute();
+		$sus = $query->fetchColumn();
+		$statusElement->setAttribute("usernew", $sus);
+		$query->closeCursor();
 
-        return $apiDocument;
-    }
+		return $apiDocument;
+	}
 }

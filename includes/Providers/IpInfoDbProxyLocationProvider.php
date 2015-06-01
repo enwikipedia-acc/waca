@@ -5,8 +5,8 @@
  */
 class IpInfoDbProxyLocationProvider extends IpLocationProvider implements ILocationProvider
 {
-    protected function getApiBase()
-    {
-        return "http://api.ipinfodb.com/v3/ip-city/";
-    }
+	protected function getApiBase()
+	{
+		return "http://api.ipinfodb.com/v3/ip-city/";
+	}
 }

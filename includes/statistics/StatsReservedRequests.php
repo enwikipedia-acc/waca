@@ -14,11 +14,11 @@
 
 class StatsReservedRequests extends StatisticsPage
 {
-    protected function execute()
-    {
-        global $baseurl;
+	protected function execute()
+	{
+		global $baseurl;
 
-        $query = <<<sql
+		$query = <<<sql
 SELECT
     CONCAT("<a href=\"", "$baseurl", "/acc.php?action=zoom&amp;id=", p.id, "\">", p.id, "</a>") AS "#",
     p.name AS "Requested Name",
@@ -29,27 +29,27 @@ FROM request p
 WHERE reserved != 0;
 sql;
 
-        $qb = new QueryBrowser();
-        return $qb->executeQueryToTable($query);
-    }
+		$qb = new QueryBrowser();
+		return $qb->executeQueryToTable($query);
+	}
 
-    public function getPageName()
-    {
-        return "ReservedRequests";
-    }
+	public function getPageName()
+	{
+		return "ReservedRequests";
+	}
 
-    public function getPageTitle()
-    {
-        return "All currently reserved requests";
-    }
+	public function getPageTitle()
+	{
+		return "All currently reserved requests";
+	}
 
-    public function isProtected()
-    {
-        return true;
-    }
+	public function isProtected()
+	{
+		return true;
+	}
 
-    public function requiresWikiDatabase()
-    {
-        return false;
-    }
+	public function requiresWikiDatabase()
+	{
+		return false;
+	}
 }

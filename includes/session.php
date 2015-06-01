@@ -25,7 +25,7 @@ class session
 
 	public function forceLogout( $uid )
 	{
-        $user = User::getById($uid, gGetDb());
+		$user = User::getById($uid, gGetDb());
        
 		if( $user->getForceLogout() == "1" ) {
 			$_SESSION = array();
@@ -34,15 +34,15 @@ class session
 			}
 			session_destroy( );
 			
-            echo "You have been forcibly logged out, probably due to being renamed. Please log back in.";
+			echo "You have been forcibly logged out, probably due to being renamed. Please log back in.";
             
-            BootstrapSkin::displayAlertBox("You have been forcibly logged out, probably due to being renamed. Please log back in.", "alert-error", "Logged out", true, false);
+			BootstrapSkin::displayAlertBox("You have been forcibly logged out, probably due to being renamed. Please log back in.", "alert-error", "Logged out", true, false);
             
-            $user->setForceLogout(0);
-            $user->save();
+			$user->setForceLogout(0);
+			$user->save();
             
-            BootstrapSkin::displayInternalFooter();
-            die();
+			BootstrapSkin::displayInternalFooter();
+			die();
 		}
 	}
 	
@@ -51,21 +51,21 @@ class session
 	 * @param mixed $username 
 	 * @param mixed $checkright 
 	 * @return boolean
-     * @deprecated
+	 * @deprecated
 	 */
 	public function hasright($username, $checkright)
 	{
-        $user = User::getByUsername($username, gGetDb());
-        if($user->isCheckuser() && $checkright == "Admin") {
-            return true;   
-        }
+		$user = User::getByUsername($username, gGetDb());
+		if($user->isCheckuser() && $checkright == "Admin") {
+			return true;   
+		}
         
-        return $user->getStatus() == $checkright;
+		return $user->getStatus() == $checkright;
 	}
 	
 	
 	/**
-     * Check the user's security level on page load, and bounce accordingly
+	 * Check the user's security level on page load, and bounce accordingly
 	 * 
 	 * @deprecated
 	 */
@@ -73,66 +73,66 @@ class session
 	{
 		global $secure, $smarty;
         
-        if(User::getCurrent()->getStoredOnWikiName() == "##OAUTH##" && User::getCurrent()->getOAuthAccessToken() == null) {
-            reattachOAuthAccount(User::getCurrent());   
-        }
+		if(User::getCurrent()->getStoredOnWikiName() == "##OAUTH##" && User::getCurrent()->getOAuthAccessToken() == null) {
+			reattachOAuthAccount(User::getCurrent());   
+		}
         
-        if(User::getCurrent()->isOAuthLinked()) {
-            try {
-                // test retrieval of the identity
-                User::getCurrent()->getOAuthIdentity();
-            }
-            catch(TransactionException $ex) {
-                User::getCurrent()->setOAuthAccessToken(null);
-                User::getCurrent()->setOAuthAccessSecret(null);
-                User::getCurrent()->save();
+		if(User::getCurrent()->isOAuthLinked()) {
+			try {
+				// test retrieval of the identity
+				User::getCurrent()->getOAuthIdentity();
+			}
+			catch(TransactionException $ex) {
+				User::getCurrent()->setOAuthAccessToken(null);
+				User::getCurrent()->setOAuthAccessSecret(null);
+				User::getCurrent()->save();
                 
-                reattachOAuthAccount(User::getCurrent());
-            }
-        }
-        else {
-            global $enforceOAuth;
+				reattachOAuthAccount(User::getCurrent());
+			}
+		}
+		else {
+			global $enforceOAuth;
             
-            if($enforceOAuth) {
-                reattachOAuthAccount(User::getCurrent());
-            }
-        }
+			if($enforceOAuth) {
+				reattachOAuthAccount(User::getCurrent());
+			}
+		}
         
         
 		if (User::getCurrent()->isNew()) {
-            BootstrapSkin::displayAlertBox("I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.", "alert-error", "New account", true, false);
+			BootstrapSkin::displayAlertBox("I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.", "alert-error", "New account", true, false);
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
 		elseif (User::getCurrent()->isSuspended()) {
-            $database = gGetDb();
-            $suspendstatement = $database->prepare("SELECT log_cmt FROM acc_log WHERE log_action = 'Suspended' AND log_pend = :userid ORDER BY log_time DESC LIMIT 1;");
+			$database = gGetDb();
+			$suspendstatement = $database->prepare("SELECT log_cmt FROM acc_log WHERE log_action = 'Suspended' AND log_pend = :userid ORDER BY log_time DESC LIMIT 1;");
             
-            $suspendstatement->bindValue(":userid", User::getCurrent()->getId());
-            $suspendstatement->execute();
+			$suspendstatement->bindValue(":userid", User::getCurrent()->getId());
+			$suspendstatement->execute();
             
-            $suspendreason = $suspendstatement->fetchColumn();
-            $suspendstatement->closeCursor();
+			$suspendreason = $suspendstatement->fetchColumn();
+			$suspendstatement->closeCursor();
             
-            $smarty->assign("suspendreason", $suspendreason);
-            $smarty->display("login/suspended.tpl");
-            BootstrapSkin::displayInternalFooter();
-            die();
+			$smarty->assign("suspendreason", $suspendreason);
+			$smarty->display("login/suspended.tpl");
+			BootstrapSkin::displayInternalFooter();
+			die();
 		}
 		elseif (User::getCurrent()->isDeclined()) {
-            $database = gGetDb();
-            $suspendstatement = $database->prepare("SELECT log_cmt FROM acc_log WHERE log_action = 'Declined' AND log_pend = :userid ORDER BY log_time DESC LIMIT 1;");
+			$database = gGetDb();
+			$suspendstatement = $database->prepare("SELECT log_cmt FROM acc_log WHERE log_action = 'Declined' AND log_pend = :userid ORDER BY log_time DESC LIMIT 1;");
             
-            $suspendstatement->bindValue(":userid", User::getCurrent()->getId());
-            $suspendstatement->execute();
+			$suspendstatement->bindValue(":userid", User::getCurrent()->getId());
+			$suspendstatement->execute();
                 
-            $suspendreason = $suspendstatement->fetchColumn();
-            $suspendstatement->closeCursor();
+			$suspendreason = $suspendstatement->fetchColumn();
+			$suspendstatement->closeCursor();
                 
-            $smarty->assign("suspendreason", $suspendreason);
-            $smarty->display("login/declined.tpl");
-            BootstrapSkin::displayInternalFooter();
-            die();
+			$smarty->assign("suspendreason", $suspendreason);
+			$smarty->display("login/declined.tpl");
+			BootstrapSkin::displayInternalFooter();
+			die();
 		}
 		elseif (User::getCurrent()->isUser() || User::getCurrent()->isAdmin() ) {
 			$secure = 1;

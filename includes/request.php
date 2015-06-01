@@ -33,8 +33,8 @@ class accRequest
 			// Display the footer of the interface.
 			BootstrapSkin::displayPublicFooter();
             
-            // we probably want to output
-            ob_end_flush();
+			// we probably want to output
+			ob_end_flush();
 			
 			// Terminates the current script, as the user is banned.
 			// This is done because the requesting process should be stopped. 

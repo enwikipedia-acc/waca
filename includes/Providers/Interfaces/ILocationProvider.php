@@ -5,5 +5,5 @@
  */
 interface ILocationProvider
 {
-    public function getIpLocation($address);
+	public function getIpLocation($address);
 }

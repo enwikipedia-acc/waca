@@ -14,9 +14,9 @@
 
 class StatsPasswordConversion extends StatisticsPage
 {
-    protected function execute()
-    {
-        $query = <<<sql
+	protected function execute()
+	{
+		$query = <<<sql
 SELECT "0" AS "Version", "Active" AS "Type", COUNT(*) AS "Count" FROM user WHERE password NOT LIKE ":%" AND (status = "User" OR status = "Admin")
 UNION
 SELECT "0", "Inactive", COUNT(*) FROM user WHERE password NOT LIKE ":%" AND NOT (status = "User" OR status = "Admin")
@@ -28,31 +28,31 @@ ORDER BY `Version` ASC, "Type" ASC
 ;
 sql;
 
-        global $baseurl;
-        $qb = new QueryBrowser();
-        $qb->rowFetchMode = PDO::FETCH_NUM;
-        $r = $qb->executeQueryToTable($query);
+		global $baseurl;
+		$qb = new QueryBrowser();
+		$qb->rowFetchMode = PDO::FETCH_NUM;
+		$r = $qb->executeQueryToTable($query);
 
-        return $r;
-    }
+		return $r;
+	}
 
-    public function getPageTitle()
-    {
-        return "Password conversion status";
-    }
+	public function getPageTitle()
+	{
+		return "Password conversion status";
+	}
 
-    public function getPageName()
-    {
-        return "PasswordConversion";
-    }
+	public function getPageName()
+	{
+		return "PasswordConversion";
+	}
 
-    public function isProtected()
-    {
-        return true;
-    }
+	public function isProtected()
+	{
+		return true;
+	}
 
-    public function requiresWikiDatabase()
-    {
-        return false;
-    }
+	public function requiresWikiDatabase()
+	{
+		return false;
+	}
 }

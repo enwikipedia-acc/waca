@@ -5,8 +5,8 @@
  */
 class FakeAntiSpoofProvider implements IAntiSpoofProvider
 {
-    public function getSpoofs($username)
-    {
-        throw new Exception("This function is currently disabled.");
-    }
+	public function getSpoofs($username)
+	{
+		throw new Exception("This function is currently disabled.");
+	}
 }

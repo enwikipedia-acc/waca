@@ -8,7 +8,7 @@ namespace Waca\API;
 interface IApiAction
 {
 
-    public function execute(\DOMElement $apiDocument);
+	public function execute(\DOMElement $apiDocument);
 
-    public function run();
+	public function run();
 }

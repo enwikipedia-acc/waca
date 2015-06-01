@@ -14,40 +14,40 @@
 
 class StatsInactiveUsers extends StatisticsPage
 {
-    protected function execute()
-    {
-        global $smarty;
+	protected function execute()
+	{
+		global $smarty;
 
-        $showImmune = false;
-        if(isset($_GET['showimmune'])) {
-            $showImmune = true;
-        }
-        $smarty->assign("showImmune", $showImmune);
+		$showImmune = false;
+		if(isset($_GET['showimmune'])) {
+			$showImmune = true;
+		}
+		$smarty->assign("showImmune", $showImmune);
 
-        $inactiveUsers = User::getAllInactive(gGetDb());
+		$inactiveUsers = User::getAllInactive(gGetDb());
 
-        $smarty->assign("inactiveUsers", $inactiveUsers);
+		$smarty->assign("inactiveUsers", $inactiveUsers);
 
-        return $smarty->fetch("statistics/inactiveusers.tpl");
-    }
+		return $smarty->fetch("statistics/inactiveusers.tpl");
+	}
 
-    public function getPageName()
-    {
-        return "InactiveUsers";
-    }
+	public function getPageName()
+	{
+		return "InactiveUsers";
+	}
 
-    public function getPageTitle()
-    {
-        return "Inactive tool users";
-    }
+	public function getPageTitle()
+	{
+		return "Inactive tool users";
+	}
 
-    public function isProtected()
-    {
-        return true;
-    }
+	public function isProtected()
+	{
+		return true;
+	}
 
-    public function requiresWikiDatabase()
-    {
-        return false;
-    }
+	public function requiresWikiDatabase()
+	{
+		return false;
+	}
 }
