@@ -1337,6 +1337,8 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		die();
 	}
 	
+    $messageBody = null;
+    
 	// custom close reasons
     if ($gem  == 'custom') 
     {
@@ -1401,6 +1403,8 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			} else {
 				$gem  = 'custom-n';
 			}
+            
+            $messageBody = $_POST['msgbody'];
 		}
 	}
     
@@ -1410,7 +1414,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
     // TODO: make this transactional
     $request->save();
     
-    Logger::closeRequest(gGetDb(), $request, $gem, $_POST['msgbody']);
+    Logger::closeRequest(gGetDb(), $request, $gem, $messageBody);
     
 	if ($gem == '0') {
 		$crea = "Dropped";
