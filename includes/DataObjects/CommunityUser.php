@@ -53,7 +53,7 @@ class CommunityUser extends User
 
 	public function getStatus()
 	{
-		return "Admin";
+		return "Community";
 	}
 
 	public function getOnWikiName()
@@ -186,7 +186,7 @@ class CommunityUser extends User
     
 	public function isAdmin()
 	{
-		return true;
+		return false;
 	}
     
 	public function isCheckuser()
@@ -196,7 +196,7 @@ class CommunityUser extends User
     
 	public function isIdentified()
 	{
-		return true;
+		return false;
 	}
     
 	public function isSuspended()
@@ -217,6 +217,11 @@ class CommunityUser extends User
 	public function isDeclined()
 	{
 		return false;
+	}
+    
+	public function isCommunityUser()
+	{
+		return true;
 	}
     
 	#endregion 

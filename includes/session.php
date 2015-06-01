@@ -134,7 +134,7 @@ class session
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
-		elseif (User::getCurrent()->isUser() || User::getCurrent()->isAdmin() ) {
+		elseif ((!User::getCurrent()->isCommunityUser()) && (User::getCurrent()->isUser() || User::getCurrent()->isAdmin() )) {
 			$secure = 1;
 		}
 		else {

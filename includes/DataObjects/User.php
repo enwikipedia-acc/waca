@@ -577,6 +577,11 @@ SQL
 		return $this->status == "Declined";
 	}
     
+    public function isCommunityUser()
+    {
+        return false;   
+    }
+    
 	#endregion 
 
 	#region OAuth

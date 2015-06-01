@@ -42,7 +42,7 @@ else {
 BootstrapSkin::displayInternalHeader();
 
 // protect against logged out users
-if( !$session->hasright($sessionuser, "Admin") && !$session->hasright($sessionuser, "User")) {
+if( User::getCurrent()->isCommunityUser()) {
 	showlogin();
 	BootstrapSkin::displayInternalFooter();
 	die();

@@ -59,7 +59,7 @@ echo $out;
 
 #region Checks if the current user has admin rights.
 
-if( User::getCurrent() == false ) {
+if( User::getCurrent()->isCommunityUser() ) {
 	showlogin();
 	BootstrapSkin::displayInternalFooter();
 	die();
