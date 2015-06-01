@@ -62,11 +62,11 @@ class SessionAlert
 	public static function append(SessionAlert $alert)
 	{
 		$data = array();
-		if( isset($_SESSION['alerts']) ) {
+		if (isset($_SESSION['alerts'])) {
 			$data = $_SESSION['alerts'];
 		}
 
-		$data[] = serialize( $alert );
+		$data[] = serialize($alert);
 
 		$_SESSION['alerts'] = $data;
 	}
@@ -74,8 +74,8 @@ class SessionAlert
 	public static function retrieve()
 	{
 		$block = array();
-		if(isset($_SESSION['alerts'])) {
-			foreach($_SESSION['alerts'] as $a) {
+		if (isset($_SESSION['alerts'])) {
+			foreach ($_SESSION['alerts'] as $a) {
 				$block[] = unserialize($a);
 			}
 		}

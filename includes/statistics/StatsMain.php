@@ -18,9 +18,9 @@ class StatsMain extends StatisticsPage
 	{
 		global $smarty, $filepath;
 
-		$files = scandir( $filepath . "/includes/statistics/" );
+		$files = scandir($filepath . "/includes/statistics/");
 
-		$statsPageDefinitions = preg_grep("/php$/",$files);
+		$statsPageDefinitions = preg_grep("/php$/", $files);
 
 		$statsPages = array();
 
@@ -30,7 +30,7 @@ class StatsMain extends StatisticsPage
 			$className = $expld[0];
 			$statsPageObject = new $className;
 
-			if($statsPageObject->hideFromMenu() == false) {
+			if ($statsPageObject->hideFromMenu() == false) {
 				$statsPages[] = $statsPageObject;
 			}
 		}

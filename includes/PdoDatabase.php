@@ -6,23 +6,23 @@ if (!defined("ACC")) {
 function gGetDb($db = "acc")
 {
 	global $accdbobjects;
-	if( ! is_array( $accdbobjects ) ) {
+	if (!is_array($accdbobjects)) {
 		$accdbobjects = array();
 	}
 
-	if( ! isset( $accdbobjects[ $db ] ) ) {
+	if (!isset($accdbobjects[$db])) {
 		global $cDatabaseConfig;
 
-		if(! array_key_exists( $db, $cDatabaseConfig ) ) {
-			trigger_error( "Database configuration not found for alias $db" );
+		if (!array_key_exists($db, $cDatabaseConfig)) {
+			trigger_error("Database configuration not found for alias $db");
 			die();
 		}
 
 		try {
 			$accdbobject = new PdoDatabase(
-				$cDatabaseConfig[ $db ][ "dsrcname" ],
-				$cDatabaseConfig[ $db ][ "username" ],
-				$cDatabaseConfig[ $db ][ "password" ]
+				$cDatabaseConfig[$db]["dsrcname"],
+				$cDatabaseConfig[$db]["username"],
+				$cDatabaseConfig[$db]["password"]
 			);
 		}
 		catch (PDOException $ex) {
@@ -39,10 +39,10 @@ function gGetDb($db = "acc")
 		// -- stw 2014-02-11
 		$accdbobject->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
-		$accdbobjects[ $db ] = $accdbobject;
+		$accdbobjects[$db] = $accdbobject;
 	}
 
-	return $accdbobjects[ $db ];
+	return $accdbobjects[$db];
 }
 
 $accdbobjects = array();
@@ -72,12 +72,12 @@ class PdoDatabase extends PDO
 		// starting transactions within transactions - which doesn't work and
 		// will throw an exception. This elimiates the need to catch exeptions
 		// all over the rest of the code
-		if ( $this->hasActiveTransaction ) {
+		if ($this->hasActiveTransaction) {
 			return false;
 		}
 		else {
 			// set the transaction isolation level for every transaction.
-			$this->exec( "SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;" );
+			$this->exec("SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;");
 
 			// start a new transaction, and return whether or not the start was
 			// successful
@@ -100,7 +100,7 @@ class PdoDatabase extends PDO
 
 	public function transactionally($method)
 	{
-		if( ! $this->beginTransaction() ) {
+		if (!$this->beginTransaction()) {
 			BootstrapSkin::displayAlertBox("Error starting database transaction.", "alert-error", "Database transaction error", true, false);
 			BootstrapSkin::displayInternalFooter();
 			die();
@@ -111,13 +111,13 @@ class PdoDatabase extends PDO
 
 			$this->commit();
 		}
-		catch(TransactionException $ex) {
+		catch (TransactionException $ex) {
 			$this->rollBack();
 
 			BootstrapSkin::displayAlertBox($ex->getMessage(), $ex->getAlertType(), $ex->getTitle(), true, false);
 
 			// TODO: yuk.
-			if(defined("PUBLICMODE")) {
+			if (defined("PUBLICMODE")) {
 				BootstrapSkin::displayPublicFooter();
 			}
 			else {
@@ -131,9 +131,9 @@ class PdoDatabase extends PDO
 	public function prepare($statement, $driver_options = array())
 	{
 		global $enableQueryLog;
-		if($enableQueryLog) {
+		if ($enableQueryLog) {
 			try {
-				if($this->queryLogStatement === null) {
+				if ($this->queryLogStatement === null) {
 					$this->queryLogStatement = 
 						parent::prepare("INSERT INTO applicationlog (source, message, stack) VALUES (:source, :message, :stack);");
 				}
@@ -146,7 +146,7 @@ class PdoDatabase extends PDO
 					)
 				);
 			}
-			catch(Exception $ex) {
+			catch (Exception $ex) {
 				trigger_error("Error logging query. Disabling for this request. " . $ex->getMessage(), E_USER_NOTICE);
 				$enableQueryLog = false;
 			}

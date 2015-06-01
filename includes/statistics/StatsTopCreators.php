@@ -22,7 +22,7 @@ class StatsTopCreators extends StatisticsPage
 		$qb->numberedList = true;
 		$qb->numberedListTitle = "Postition";
 
-		$qb->tableCallbackFunction="statsTopCreatorsRowCallback";
+		$qb->tableCallbackFunction = "statsTopCreatorsRowCallback";
 		$qb->overrideTableTitles = array("# Created", "Username");
 
 		// Retrieve all-time stats
@@ -176,26 +176,26 @@ SQL
 function statsTopCreatorsRowCallback($row, $rowno)
 {
 	$out = "<tr";
-	if($row['log_user'] == User::getCurrent()->getUsername()) {
+	if ($row['log_user'] == User::getCurrent()->getUsername()) {
 		$out .= ' class="info"';
 	}
 
 	$out .= '>';
 
-	$out .= '<td>'.$rowno.'</td>';
-	$out .= '<td>'.$row['COUNT(*)'].'</td>';
+	$out .= '<td>' . $rowno . '</td>';
+	$out .= '<td>' . $row['COUNT(*)'] . '</td>';
 
 	global $baseurl;
 	$out .= '<td><a ';
 
-	if($row['user_level'] == "Suspended") {
+	if ($row['user_level'] == "Suspended") {
 		$out .= 'class="muted" ';
 	}
-	if($row['user_level'] == "Admin") {
+	if ($row['user_level'] == "Admin") {
 		$out .= 'class="text-success" ';
 	}
 
-	$out .= 'href="'.$baseurl.'/statistics.php?page=Users&amp;user='.$row['user_id'].'">'.$row['log_user'].'</a></td>';
+	$out .= 'href="' . $baseurl . '/statistics.php?page=Users&amp;user=' . $row['user_id'] . '">' . $row['log_user'] . '</a></td>';
 
 	$out .= '</tr>';
 

@@ -23,14 +23,14 @@ if (!defined("ACC")) {
 class session
 {
 
-	public function forceLogout( $uid )
+	public function forceLogout($uid)
 	{
 		$user = User::getById($uid, gGetDb());
        
-		if( $user->getForceLogout() == "1" ) {
+		if ($user->getForceLogout() == "1") {
 			$_SESSION = array();
 			if (isset($_COOKIE[session_name()])) {
-				setcookie(session_name(), '', time()-42000, '/');
+				setcookie(session_name(), '', time() - 42000, '/');
 			}
 			session_destroy( );
 			
@@ -56,7 +56,7 @@ class session
 	public function hasright($username, $checkright)
 	{
 		$user = User::getByUsername($username, gGetDb());
-		if($user->isCheckuser() && $checkright == "Admin") {
+		if ($user->isCheckuser() && $checkright == "Admin") {
 			return true;   
 		}
         
@@ -73,16 +73,16 @@ class session
 	{
 		global $secure, $smarty;
         
-		if(User::getCurrent()->getStoredOnWikiName() == "##OAUTH##" && User::getCurrent()->getOAuthAccessToken() == null) {
+		if (User::getCurrent()->getStoredOnWikiName() == "##OAUTH##" && User::getCurrent()->getOAuthAccessToken() == null) {
 			reattachOAuthAccount(User::getCurrent());   
 		}
         
-		if(User::getCurrent()->isOAuthLinked()) {
+		if (User::getCurrent()->isOAuthLinked()) {
 			try {
 				// test retrieval of the identity
 				User::getCurrent()->getOAuthIdentity();
 			}
-			catch(TransactionException $ex) {
+			catch (TransactionException $ex) {
 				User::getCurrent()->setOAuthAccessToken(null);
 				User::getCurrent()->setOAuthAccessSecret(null);
 				User::getCurrent()->save();
@@ -93,7 +93,7 @@ class session
 		else {
 			global $enforceOAuth;
             
-			if($enforceOAuth) {
+			if ($enforceOAuth) {
 				reattachOAuthAccount(User::getCurrent());
 			}
 		}
@@ -134,7 +134,7 @@ class session
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
-		elseif ((!User::getCurrent()->isCommunityUser()) && (User::getCurrent()->isUser() || User::getCurrent()->isAdmin() )) {
+		elseif ((!User::getCurrent()->isCommunityUser()) && (User::getCurrent()->isUser() || User::getCurrent()->isAdmin())) {
 			$secure = 1;
 		}
 		else {

@@ -14,13 +14,13 @@ $db->transactionally(function() use ($db)
 {
 	global $cDataClearIp, $cDataClearEmail, $dataclear_interval;
     
-	$query = $db->prepare( "UPDATE request SET ip = :ip, forwardedip = null, email = :mail, useragent = '' WHERE date < DATE_SUB(curdate(), INTERVAL $dataclear_interval);" );
-	$success = $query->execute( array( 
+	$query = $db->prepare("UPDATE request SET ip = :ip, forwardedip = null, email = :mail, useragent = '' WHERE date < DATE_SUB(curdate(), INTERVAL $dataclear_interval);");
+	$success = $query->execute(array( 
 		":ip" => $cDataClearIp,
 		":mail" => $cDataClearEmail
-	) );
+	));
 	
-	if( ! $success ) {
+	if (!$success) {
 		throw new TransactionException("Error in transaction: Could not clear data.");
 	}
 });

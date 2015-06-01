@@ -16,11 +16,11 @@ class Comment extends DataObject
 	 */
 	public static function getForRequest($id, PdoDatabase $database = null)
 	{
-		if($database == null) {
+		if ($database == null) {
 			$database = gGetDb();
 		}
 
-		if(User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
+		if (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
 			// current user is an admin or checkuser, so retrieve everything.
 			$statement = $database->prepare("SELECT * FROM comment WHERE request = :target;");
 		}
@@ -46,7 +46,7 @@ class Comment extends DataObject
 
 	public function save()
 	{
-		if($this->isNew) {
+		if ($this->isNew) {
 // insert
 			$statement = $this->dbObject->prepare("INSERT INTO comment ( time, user, comment, visibility, request ) VALUES ( CURRENT_TIMESTAMP(), :user, :comment, :visibility, :request );");
 			$statement->bindValue(":user", $this->user);
@@ -54,7 +54,7 @@ class Comment extends DataObject
 			$statement->bindValue(":visibility", $this->visibility);
 			$statement->bindValue(":request", $this->request);
 
-			if($statement->execute()) {
+			if ($statement->execute()) {
 				$this->isNew = false;
 				$this->id = $this->dbObject->lastInsertId();
 			}
@@ -69,7 +69,7 @@ class Comment extends DataObject
 			$statement->bindValue(":comment", $this->comment);
 			$statement->bindValue(":visibility", $this->visibility);
 
-			if(!$statement->execute()) {
+			if (!$statement->execute()) {
 				throw new Exception($statement->errorInfo());
 			}
 		}

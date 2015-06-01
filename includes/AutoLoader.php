@@ -10,7 +10,7 @@ class AutoLoader
 		global $filepath;
 
 		// handle namespaces sensibly
-		if(strpos($class, "Waca") !== false) {
+		if (strpos($class, "Waca") !== false) {
 			// strip off the initial namespace
 			$class = str_replace("Waca\\", "", $class);
 
@@ -29,12 +29,12 @@ class AutoLoader
 			$filepath . $class . ".php",
 		);
 
-		foreach($paths as $file) {
-			if(file_exists($file)) {
+		foreach ($paths as $file) {
+			if (file_exists($file)) {
 				require_once($file);
 			}
 
-			if(class_exists($class)) {
+			if (class_exists($class)) {
 				return;
 			}
 		}

@@ -19,7 +19,7 @@ class EmailTemplate extends DataObject
 	 */
 	public static function getActiveTemplates($forCreated, PdoDatabase $database = null)
 	{
-		if($database == null) {
+		if ($database == null) {
 			$database = gGetDb();
 		}
 
@@ -31,7 +31,7 @@ class EmailTemplate extends DataObject
 
 		$statement->execute();
 
-		$resultObject = $statement->fetchAll( PDO::FETCH_CLASS, get_called_class() );
+		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
 
 		foreach ($resultObject as $t) {
 			$t->setDatabase($database);
@@ -46,7 +46,7 @@ class EmailTemplate extends DataObject
 	 */
 	public static function getAllActiveTemplates($forCreated, PdoDatabase $database = null)
 	{
-		if($database == null) {
+		if ($database == null) {
 			$database = gGetDb();
 		}
 
@@ -55,7 +55,7 @@ class EmailTemplate extends DataObject
 
 		$statement->execute();
 
-		$resultObject = $statement->fetchAll( PDO::FETCH_CLASS, get_called_class() );
+		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
 
 		foreach ($resultObject as $t) {
 			$t->setDatabase($database);
@@ -72,9 +72,9 @@ class EmailTemplate extends DataObject
 
 		$statement->execute();
 
-		$resultObject = $statement->fetchObject( get_called_class() );
+		$resultObject = $statement->fetchObject(get_called_class());
 
-		if($resultObject != false) {
+		if ($resultObject != false) {
 			$resultObject->isNew = false;
 			$resultObject->setDatabase($database);
 		}
@@ -84,7 +84,7 @@ class EmailTemplate extends DataObject
 
 	public function save()
 	{
-		if($this->isNew) {
+		if ($this->isNew) {
 // insert
 			$statement = $this->dbObject->prepare("INSERT INTO `emailtemplate` (name, text, jsquestion, oncreated, active, preloadonly) VALUES (:name, :text, :jsquestion, :oncreated, :active, :preloadonly);");
 			$statement->bindValue(":name", $this->name);
@@ -94,7 +94,7 @@ class EmailTemplate extends DataObject
 			$statement->bindValue(":active", $this->active);
 			$statement->bindValue(":preloadonly", $this->preloadonly);
 
-			if($statement->execute()) {
+			if ($statement->execute()) {
 				$this->isNew = false;
 				$this->id = $this->dbObject->lastInsertId();
 			}
@@ -113,7 +113,7 @@ class EmailTemplate extends DataObject
 			$statement->bindValue(":active", $this->active);
 			$statement->bindValue(":preloadonly", $this->preloadonly);
 
-			if(!$statement->execute()) {
+			if (!$statement->execute()) {
 				throw new Exception($statement->errorInfo());
 			}
 		}

@@ -33,7 +33,7 @@ SQL
 		);
 
 		global $availableRequestStates;
-		foreach( $availableRequestStates as $key => $value ) {
+		foreach ($availableRequestStates as $key => $value) {
 			$query->bindValue(":pstatus", $key);
 			$query->execute();
 			$sus = $query->fetchColumn();

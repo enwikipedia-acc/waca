@@ -31,7 +31,7 @@ abstract class StatisticsPage
 
 		global $filepath;
 		// check the stats page definition exists...
-		if(file_exists($filepath . "/includes/statistics/Stats" . $pageName . ".php")) {
+		if (file_exists($filepath . "/includes/statistics/Stats" . $pageName . ".php")) {
 // and include it.
 			require_once($filepath . "/includes/statistics/Stats" . $pageName . ".php");
 		}
@@ -42,14 +42,14 @@ abstract class StatisticsPage
 
 		// ok, so the file where the class def should be exists, but we need to check the class
 		// itself exists.
-		if(class_exists($statsPage)) {
+		if (class_exists($statsPage)) {
 // the class exists, all is ok.
 
 			// create the stats page object
 			$object = new $statsPage;
 
 			// check the newly created object has inherits from StatisticsPage class
-			if(get_parent_class($object)=="StatisticsPage") {
+			if (get_parent_class($object) == "StatisticsPage") {
 				// all is good, return the new statistics page object
 				return $object;
 			}
@@ -128,7 +128,7 @@ abstract class StatisticsPage
 
 		BootstrapSkin::displayInternalHeader();
 
-		if($this->requiresWikiDatabase() && ($dontUseWikiDb == 1)) {
+		if ($this->requiresWikiDatabase() && ($dontUseWikiDb == 1)) {
 // wiki database unavailable, don't show stats page
 			BootstrapSkin::displayAlertBox("This statistics page is currently unavailable.", "alert-error", "Database unavailable", true, false);
 			BootstrapSkin::displayInternalFooter();
@@ -138,10 +138,10 @@ abstract class StatisticsPage
 		// wiki database available OR stats page doesn't need wiki database
 
 		// check protection level
-		if($this->isProtected()) {
+		if ($this->isProtected()) {
 			// protected, check accesslevel.
-			$sessionuser = ( isset($_SESSION['user']) ? $_SESSION['user'] : "");
-			if( !($session->hasright($sessionuser, "Admin") || $session->hasright($sessionuser, "User"))) {
+			$sessionuser = (isset($_SESSION['user']) ? $_SESSION['user'] : "");
+			if (!($session->hasright($sessionuser, "Admin") || $session->hasright($sessionuser, "User"))) {
 // not authed
 				showlogin();
 				BootstrapSkin::displayInternalFooter();
@@ -152,7 +152,7 @@ abstract class StatisticsPage
 		// not protected or access allowed
 		echo '<div class="page-header"><h1>' . $this->getPageTitle() . '</h1></div>';
 
-		if( $this->requiresSimpleHtmlEnvironment() ) {
+		if ($this->requiresSimpleHtmlEnvironment()) {
 			echo '<div class="row-fluid"><div class="span12">';
 			BootstrapSkin::pushTagStack("</div>");
 			BootstrapSkin::pushTagStack("</div>");

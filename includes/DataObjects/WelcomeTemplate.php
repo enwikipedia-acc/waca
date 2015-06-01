@@ -17,7 +17,7 @@ class WelcomeTemplate extends DataObject
 	 */
 	public static function getAll(PdoDatabase $database = null)
 	{
-		if($database == null) {
+		if ($database == null) {
 			$database = gGetDb();
 		}
 
@@ -37,13 +37,13 @@ class WelcomeTemplate extends DataObject
 
 	public function save()
 	{
-		if($this->isNew) {
+		if ($this->isNew) {
 // insert
 			$statement = $this->dbObject->prepare("INSERT INTO welcometemplate (usercode, botcode) VALUES (:usercode, :botcode);");
 			$statement->bindValue(":usercode", $this->usercode);
 			$statement->bindValue(":botcode", $this->botcode);
 
-			if($statement->execute()) {
+			if ($statement->execute()) {
 				$this->isNew = false;
 				$this->id = $this->dbObject->lastInsertId();
 			}
@@ -58,7 +58,7 @@ class WelcomeTemplate extends DataObject
 			$statement->bindValue(":usercode", $this->usercode);
 			$statement->bindValue(":botcode", $this->botcode);
 
-			if(!$statement->execute()) {
+			if (!$statement->execute()) {
 				throw new Exception($statement->errorInfo());
 			}
 		}
@@ -86,7 +86,7 @@ class WelcomeTemplate extends DataObject
 
 	public function getUsersUsingTemplate()
 	{
-		if($this->usageCache === null) {
+		if ($this->usageCache === null) {
 			$statement = $this->dbObject->prepare("SELECT * FROM user WHERE welcome_template = :id;");
 
 			$statement->execute(array(":id" => $this->id));

@@ -3,7 +3,7 @@
 
 $localconf = __DIR__ . '/../config.local.inc.php';
 
-if(!file_exists($localconf)) {
+if (!file_exists($localconf)) {
 	touch($localconf);
 	file_put_contents($localconf, "<?php\n");
 	file_put_contents($localconf, "\$filepath = \"" . getcwd() . "/\";\n", FILE_APPEND);

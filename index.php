@@ -21,7 +21,7 @@ require_once 'includes/SmartyInit.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.
-if(Offline::isOffline()) {
+if (Offline::isOffline()) {
 	echo Offline::getOfflineMessage(true);
 	die();
 }
@@ -38,9 +38,9 @@ $database          = gGetDb();
 // Display the header of the interface.
 BootstrapSkin::displayPublicHeader();
 
-if(isset($_GET['action']) && $_GET['action'] == "confirm") {
+if (isset($_GET['action']) && $_GET['action'] == "confirm") {
 	try {
-		if(!isset($_GET['id']) || !isset($_GET['si'])) {
+		if (!isset($_GET['id']) || !isset($_GET['si'])) {
 			BootstrapSkin::displayAlertBox(
 				"Please check the link you received", 
 				"alert-error", 
@@ -54,7 +54,7 @@ if(isset($_GET['action']) && $_GET['action'] == "confirm") {
         
 		$request = Request::getById($_GET['id'], $database);
         
-		if($request === false) {
+		if ($request === false) {
 			BootstrapSkin::displayAlertBox(
 				$smarty->fetch('request/request-not-found.tpl'), 
 				"alert-error", 
@@ -65,7 +65,7 @@ if(isset($_GET['action']) && $_GET['action'] == "confirm") {
 			die();
 		}
         
-		if($request->getEmailConfirm() == "Confirmed") {
+		if ($request->getEmailConfirm() == "Confirmed") {
 			$smarty->display("request/email-confirmed.tpl");
 			BootstrapSkin::displayPublicFooter();
 			return;
@@ -73,7 +73,7 @@ if(isset($_GET['action']) && $_GET['action'] == "confirm") {
         
 		$database->transactionally(function() use($database, $request)
 		{
-			if($request === false) {
+			if ($request === false) {
 				throw new TransactionException($smarty->fetch('request/request-not-found.tpl'), "Ooops!");
 			}
         
@@ -90,13 +90,13 @@ if(isset($_GET['action']) && $_GET['action'] == "confirm") {
         
 		BootstrapSkin::displayPublicFooter();
 	}
-	catch(Exception $ex) {
+	catch (Exception $ex) {
 		BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Unknown error", true, false);
 		BootstrapSkin::displayPublicFooter();
 	}
 }
 else {
-	if($_SERVER['REQUEST_METHOD'] == "POST") {
+	if ($_SERVER['REQUEST_METHOD'] == "POST") {
 		$errorEncountered = false;
         
 		$request = new Request();
@@ -107,11 +107,11 @@ else {
 		$request->setComment($_POST['comments']);
 		$request->setIp($_SERVER['REMOTE_ADDR']);
         
-		if(isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+		if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
 			$request->setForwardedIp($_SERVER['HTTP_X_FORWARDED_FOR']);
 		}
         
-		if(isset($_SERVER['HTTP_USER_AGENT'])) {
+		if (isset($_SERVER['HTTP_USER_AGENT'])) {
 			$request->setUserAgent($_SERVER['HTTP_USER_AGENT']);
 		}
         
@@ -124,7 +124,7 @@ else {
         
 		$validationErrors = array_merge($nameValidation, $emailValidation, $otherValidation);
         
-		if(count($validationErrors) > 0) {
+		if (count($validationErrors) > 0) {
 			foreach ($validationErrors as $validationError) {
 				BootstrapSkin::displayAlertBox(
 					$smarty->fetch("validation/" . $validationError->getErrorCode() . ".tpl"),

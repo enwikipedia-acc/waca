@@ -23,7 +23,7 @@ class StatsMonthlyStats extends StatisticsPage
 		$out = $qb->executeQueryToTable($query);
 
 		global $showGraphs;
-		if($showGraphs == 1) {
+		if ($showGraphs == 1) {
 			global $filepath;
 			require_once($filepath . 'graph/pChart/pChart.class');
 			require_once($filepath . 'graph/pChart/pData.class');
@@ -65,20 +65,20 @@ class StatsMonthlyStats extends StatisticsPage
 			global $availableRequestStates;
 			foreach ($availableRequestStates as $state) {
 				$queries[] = array(
-					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Deferred to ".$state['defertolog']."' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
-					'series' => "Requests deferred to ".$state['deferto']." by month"
+					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Deferred to " . $state['defertolog'] . "' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
+					'series' => "Requests deferred to " . $state['deferto'] . " by month"
 				);
 			}
 
 			global $baseurl;
 			foreach ($this->createClosuresGraph($queries) as $i) {
 
-				$out.= '<img src="'.$baseurl.'/render/' . $i[0] . '" alt="'.$i[1].'"/>';
+				$out .= '<img src="' . $baseurl . '/render/' . $i[0] . '" alt="' . $i[1] . '"/>';
 			}
 
 		}
 		else {
-			$out.= BootstrapSkin::displayAlertBox("Graph drawing is currently disabled.","alert-info","",false,false,true);
+			$out .= BootstrapSkin::displayAlertBox("Graph drawing is currently disabled.", "alert-info", "", false, false, true);
 		}
 
 		return $out;
@@ -114,9 +114,9 @@ class StatsMonthlyStats extends StatisticsPage
 			$DataSet = new pData();
 			$qResult = $qb->executeQueryToArray($q['query']);
 
-			if(sizeof($qResult) > 0) {
+			if (sizeof($qResult) > 0) {
 
-				foreach($qResult as $row) {
+				foreach ($qResult as $row) {
 					$DataSet->AddPoint($row['y'], $q['series'], $row['x']);
 				}
 
@@ -127,26 +127,26 @@ class StatsMonthlyStats extends StatisticsPage
 
 				$imagehashes[] = array($chartname, $q['series']);
 
-				if(!file_exists($chartname)) {
-					$Test = new pChart(700,280);
-					$Test->setFontProperties("graph/Fonts/tahoma.ttf",8);
-					$Test->setGraphArea(50,30,680,200);
-					$Test->drawFilledRoundedRectangle(7,7,693,273,5,240,240,240);
-					$Test->drawRoundedRectangle(5,5,695,275,5,230,230,230);
-					$Test->drawGraphArea(255,255,255,true);
-					$Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),SCALE_NORMAL,150,150,150,true,45,2);
-					$Test->drawGrid(4,true,230,230,230,50);
+				if (!file_exists($chartname)) {
+					$Test = new pChart(700, 280);
+					$Test->setFontProperties("graph/Fonts/tahoma.ttf", 8);
+					$Test->setGraphArea(50, 30, 680, 200);
+					$Test->drawFilledRoundedRectangle(7, 7, 693, 273, 5, 240, 240, 240);
+					$Test->drawRoundedRectangle(5, 5, 695, 275, 5, 230, 230, 230);
+					$Test->drawGraphArea(255, 255, 255, true);
+					$Test->drawScale($DataSet->GetData(), $DataSet->GetDataDescription(), SCALE_NORMAL, 150, 150, 150, true, 45, 2);
+					$Test->drawGrid(4, true, 230, 230, 230, 50);
 
 					// Draw the 0 line
-					$Test->setFontProperties("graph/Fonts/tahoma.ttf",6);
-					$Test->drawTreshold(0,143,55,72,true,true);
+					$Test->setFontProperties("graph/Fonts/tahoma.ttf", 6);
+					$Test->drawTreshold(0, 143, 55, 72, true, true);
 
 					// Draw the cubic curve graph
-					$Test->drawFilledCubicCurve($DataSet->GetData(),$DataSet->GetDataDescription(),.1,50);
+					$Test->drawFilledCubicCurve($DataSet->GetData(), $DataSet->GetDataDescription(), .1, 50);
 
 					// Finish the graph
-					$Test->setFontProperties("graph/Fonts/tahoma.ttf",10);
-					$Test->drawTitle(50,22, $q['series'],50,50,50,585);
+					$Test->setFontProperties("graph/Fonts/tahoma.ttf", 10);
+					$Test->drawTitle(50, 22, $q['series'], 50, 50, 50, 585);
 					$Test->Render("render/" . $chartname);
 				}
 			}
@@ -162,13 +162,13 @@ class StatsMonthlyStats extends StatisticsPage
 	private function createPathFromHash($imghash, $basedirectory = "render/")
 	{
 		$imghashparts = str_split($imghash);
-		$imgpath = array_shift($imghashparts) . "/" ;
-		$imgpath .= array_shift($imghashparts) . "/" ;
-		$imgpath .= array_shift($imghashparts) . "/" ;
+		$imgpath = array_shift($imghashparts) . "/";
+		$imgpath .= array_shift($imghashparts) . "/";
+		$imgpath .= array_shift($imghashparts) . "/";
 
 		is_dir($basedirectory . $imgpath) || mkdir($basedirectory . $imgpath, 0777, true);
 
-		$imgpath .= implode("", $imghashparts) ;
+		$imgpath .= implode("", $imghashparts);
 		return $imgpath;
 	}
 }

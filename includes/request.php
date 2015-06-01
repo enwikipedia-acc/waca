@@ -48,7 +48,7 @@ class accRequest
 	public function checktor($addr)
 	{
 		// Creates empty array.
-		$flags = array ();
+		$flags = array();
 		
 		// Sets tor variable to no.
 		$flags['tor'] = "no";
@@ -58,7 +58,7 @@ class accRequest
 		
 		// Checks whether the user uses the IPv6 addy.
 		// Returns the flags array with the false variable.
-		if(strpos($addr,':') != -1 ) {
+		if (strpos($addr, ':') != -1) {
 			return $flags;
 		}
 		

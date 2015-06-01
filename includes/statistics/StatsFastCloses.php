@@ -51,7 +51,7 @@ QUERY;
 		$qb = new QueryBrowser();
 		$qb->tableCallbackFunction = "statsFastClosesRowCallback";
 		$qb->overrideTableTitles =
-			array( "Request", "User", "Time Taken", "Close Type", "Date" );
+			array("Request", "User", "Time Taken", "Close Type", "Date");
 		$qb->rowFetchMode = PDO::FETCH_NUM;
 		$r = $qb->executeQueryToTable($query);
 
@@ -81,34 +81,34 @@ QUERY;
 
 function statsFastClosesRowCallback($row, $currentreq)
 {
-	$out =  '<tr>';
+	$out = '<tr>';
 
 	global $baseurl;
 
 	$rowCount = count($row);
 
-	for($colid = 0; $colid < $rowCount; $colid++) {
+	for ($colid = 0; $colid < $rowCount; $colid++) {
 		$cell = $row[$colid];
 
-		$out .= "<td>" ;
+		$out .= "<td>";
 
-		if($colid == 0) {
+		if ($colid == 0) {
 			$out .= "<a href=\"" . $baseurl . "/acc.php?action=zoom&id=" . $cell . "\">";
 		}
-		if($colid == 1) {
+		if ($colid == 1) {
 			$out .= "<a href=\"" . $baseurl . "/statistics.php/Users?user=" . $row[++$colid] . "\">";
 		}
 
 		$out .= $cell;
 
-		if($colid == 0 || $colid == 2 ) {
+		if ($colid == 0 || $colid == 2) {
 			$out .= "</a>"; // colid is now 2 if triggered from above due to postinc
 		}
 
 		$out .= "</td>";
 	}
 
-	$out.="</tr>";
+	$out .= "</tr>";
 
 	return $out;
 }

@@ -261,7 +261,7 @@ class CommunityUser extends User
 
 	public function getApprovalDate()
 	{
-		$data = DateTime::createFromFormat( "Y-m-d H:i:s", "1970-01-01 00:00:00" );
+		$data = DateTime::createFromFormat("Y-m-d H:i:s", "1970-01-01 00:00:00");
 		return $data;
 	}
 }

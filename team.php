@@ -25,7 +25,7 @@ require_once 'includes/SmartyInit.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.
-if(Offline::isOffline()) {
+if (Offline::isOffline()) {
 	echo Offline::getOfflineMessage(false);
 	die();
 }
@@ -83,7 +83,7 @@ $developer = array(
 				"Role" => "",
 				"Retired" => "Liaison to WMF, Developer, Project Lead",
 				"Access" => "Git, Labs project",
-				"Cloak" => "*!*@wikipedia/DeltaQuad",//I change nicks alot
+				"Cloak" => "*!*@wikipedia/DeltaQuad", //I change nicks alot
 				"Other" => null,
 			),
 		"John" =>
@@ -146,16 +146,16 @@ $inactiveDeveloper = array(
 
 		"SQL" =>
 				array(                                    //Set any of these to null to keep them from being displayed.
-				"IRC" => "SQLDb, SXT40",                  //IRC Name.
-				"ToolID" => "1",                          //Tool user ID for linking to page in users.php. 
-				"wiki" => "SQL",                          //Enwiki Username.
-				"WWW" => "http://toolserver.org/~sql",    //Your website.
-				"Name" => null,                           //Real name.
-				"Role" => null,	  //Project Role(s).
-				"Retired" => "Project Lead",		  // Retired Project Role(s)
-				"Access" => null,       //Project Access levels.
-				"Cloak" => "*!*@wikipedia/SQL",           //IRC Cloak.
-				"Other" => "Original developer",                          //Anything else, comments, etc.
+				"IRC" => "SQLDb, SXT40", //IRC Name.
+				"ToolID" => "1", //Tool user ID for linking to page in users.php. 
+				"wiki" => "SQL", //Enwiki Username.
+				"WWW" => "http://toolserver.org/~sql", //Your website.
+				"Name" => null, //Real name.
+				"Role" => null, //Project Role(s).
+				"Retired" => "Project Lead", // Retired Project Role(s)
+				"Access" => null, //Project Access levels.
+				"Cloak" => "*!*@wikipedia/SQL", //IRC Cloak.
+				"Other" => "Original developer", //Anything else, comments, etc.
 			),
 		"Cobi" =>
 			array(
