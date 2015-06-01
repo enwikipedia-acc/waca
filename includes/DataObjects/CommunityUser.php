@@ -62,7 +62,7 @@ class CommunityUser extends User
     }
     
     public function getStoredOnWikiName()
-    {        
+    {
         return $this->getOnWikiName();
     }
 
@@ -243,12 +243,12 @@ class CommunityUser extends User
     }
     
     public function oauthCanEdit()
-    { 
+    {
         return false;
     }
     
     public function oauthCanCreateAccount()
-    { 
+    {
         return false;
     }
     

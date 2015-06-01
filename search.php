@@ -27,15 +27,15 @@ require_once 'includes/SmartyInit.php';
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
-if(Offline::isOffline())
-{
+if(Offline::isOffline()) {
     echo Offline::getOfflineMessage(false);
     die();
 }
 
 if( isset( $_SESSION['user'] ) ) {
 	$sessionuser = $_SESSION['user'];
-} else {
+}
+else {
 	$sessionuser = "";
 }
 
@@ -54,22 +54,18 @@ $smarty->display("search/header.tpl");
 BootstrapSkin::pushTagStack("</div>"); // span12
 BootstrapSkin::pushTagStack("</div>"); // row
     
-if( isset($_GET['term']) && isset($_GET['type']) ) 
-{
+if( isset($_GET['term']) && isset($_GET['type']) ) {
     $term = $_GET['term'];
     
-	if($term == "" || $term == "%") 
-    {
+	if($term == "" || $term == "%") {
         BootstrapSkin::displayAlertBox( "No search term entered.","alert-error","",false );
         $smarty->display("search/searchform.tpl");
         BootstrapSkin::displayInternalFooter();
 		die();
 	}
 
-	if( $_GET['type'] == "email") 
-    {
-		if($term == "@") 
-        {
+	if( $_GET['type'] == "email") {
+		if($term == "@") {
             BootstrapSkin::displayAlertBox("The search term '@' is not valid for email address searches!");
             $smarty->display("search/searchform.tpl");
             BootstrapSkin::displayInternalFooter();
@@ -82,8 +78,7 @@ if( isset($_GET['term']) && isset($_GET['type']) )
         $statement->bindValue(":term", $qterm);
         $statement->execute();
         $requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
-        foreach($requests as $r)
-        {
+        foreach($requests as $r) {
             $r->setDatabase(gGetDb());   
         }
         
@@ -94,8 +89,7 @@ if( isset($_GET['term']) && isset($_GET['type']) )
         
 		$smarty->display("search/searchresult.tpl");
 	}
-	elseif( $_GET['type'] == 'IP') 
-    {
+	elseif( $_GET['type'] == 'IP') {
 		// move this to here, so non-admins can perform searches, but not on IP addresses or emails
 		if( ! User::getCurrent()->isAdmin() && ! User::getCurrent()->isCheckuser() ) {
 			// Displays both the error message and the footer of the interface.
@@ -112,8 +106,7 @@ if( isset($_GET['term']) && isset($_GET['type']) )
         $statement->bindValue(":term2", $qterm);
         $statement->execute();
         $requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
-        foreach($requests as $r)
-        {
+        foreach($requests as $r) {
             $r->setDatabase(gGetDb());   
         }
         
@@ -124,16 +117,14 @@ if( isset($_GET['term']) && isset($_GET['type']) )
         
 		$smarty->display("search/searchresult.tpl");
 	}
-	elseif( $_GET['type'] == 'Request') 
-    {
+	elseif( $_GET['type'] == 'Request') {
         $qterm = '%' . $term . '%';
         
         $statement = gGetDb()->prepare("SELECT * FROM request WHERE name LIKE :term;");
         $statement->bindValue(":term", $qterm);
         $statement->execute();
         $requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
-        foreach($requests as $r)
-        {
+        foreach($requests as $r) {
             $r->setDatabase(gGetDb());   
         }
         
@@ -144,16 +135,14 @@ if( isset($_GET['term']) && isset($_GET['type']) )
         
 		$smarty->display("search/searchresult.tpl");
 	}
-	else
-	{
+	else {
         BootstrapSkin::displayAlertBox("Unknown search type", "alert-error", "Error");
 		$smarty->display("search/searchform.tpl");
         BootstrapSkin::displayInternalFooter();
 		die();
 	}
 }
-else 
-{
+else {
     $smarty->display("search/searchform.tpl");
 }
 

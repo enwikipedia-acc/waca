@@ -37,32 +37,29 @@ class InterfaceMessage extends DataObject
 
     public function save()
     {
-        if($this->isNew)
-        { // insert
+        if($this->isNew) {
+// insert
             $statement = $this->dbObject->prepare("INSERT INTO interfacemessage (updatecounter, description, type, content) VALUES (0, :desc, :type, :content);");
             $statement->bindValue(":type", $this->type);
             $statement->bindValue(":desc", $this->description);
             $statement->bindValue(":content", $this->content);
-            if($statement->execute())
-            {
+            if($statement->execute()) {
                 $this->isNew = false;
                 $this->id = $this->dbObject->lastInsertId();
             }
-            else
-            {
+            else {
                 throw new Exception($statement->errorInfo());
             }
         }
-        else
-        { // update
+        else {
+// update
             $statement = $this->dbObject->prepare("UPDATE interfacemessage SET type = :type, description = :desc, content = :content, updatecounter = updatecounter + 1 WHERE id = :id LIMIT 1;");
             $statement->bindValue(":id", $this->id);
             $statement->bindValue(":type", $this->type);
             $statement->bindValue(":desc", $this->description);
             $statement->bindValue(":content", $this->content);
 
-            if(!$statement->execute())
-            {
+            if(!$statement->execute()) {
                 throw new Exception($statement->errorInfo());
             }
         }

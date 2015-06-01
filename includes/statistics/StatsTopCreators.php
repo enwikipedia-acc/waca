@@ -176,8 +176,7 @@ SQL
 function statsTopCreatorsRowCallback($row, $rowno)
 {
     $out = "<tr";
-    if($row['log_user'] == User::getCurrent()->getUsername())
-    {
+    if($row['log_user'] == User::getCurrent()->getUsername()) {
         $out .= ' class="info"';
     }
 
@@ -189,8 +188,12 @@ function statsTopCreatorsRowCallback($row, $rowno)
     global $baseurl;
     $out .= '<td><a ';
 
-    if($row['user_level'] == "Suspended") $out .= 'class="muted" ';
-    if($row['user_level'] == "Admin") $out .= 'class="text-success" ';
+    if($row['user_level'] == "Suspended") {
+    	$out .= 'class="muted" ';
+    }
+    if($row['user_level'] == "Admin") {
+    	$out .= 'class="text-success" ';
+    }
 
     $out .= 'href="'.$baseurl.'/statistics.php?page=Users&amp;user='.$row['user_id'].'">'.$row['log_user'].'</a></td>';
 

@@ -51,8 +51,7 @@ class MonitorAction extends ApiActionBase implements IApiAction
         $statement = $this->database->prepare("select min(date) from request where email != :email and ip != :ip;");
         $successful = $statement->execute(array(':email' => $cDataClearEmail, ':ip' => $cDataClearIp));
 
-        if(!$successful)
-        {
+        if(!$successful) {
             return null;
         }
 

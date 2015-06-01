@@ -31,8 +31,7 @@ class HelpAction extends ApiActionBase implements IApiAction
         $helptext = $this->document->createElement("info", $helpInfo);
         $helpactions = $this->document->createElement("actions");
 
-        foreach (Api::getActionList() as $action)
-        {
+        foreach (Api::getActionList() as $action) {
             $actionElement = $this->document->createElement("action", $action);
             $helpactions->appendChild($actionElement);
         }

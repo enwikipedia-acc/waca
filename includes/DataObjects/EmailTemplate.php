@@ -19,8 +19,7 @@ class EmailTemplate extends DataObject
      */
     public static function getActiveTemplates($forCreated, PdoDatabase $database = null)
     {
-        if($database == null)
-        {
+        if($database == null) {
             $database = gGetDb();
         }
 
@@ -34,8 +33,7 @@ class EmailTemplate extends DataObject
 
         $resultObject = $statement->fetchAll( PDO::FETCH_CLASS, get_called_class() );
 
-        foreach ($resultObject as $t)
-        {
+        foreach ($resultObject as $t) {
             $t->setDatabase($database);
             $t->isNew = false;
         }
@@ -48,8 +46,7 @@ class EmailTemplate extends DataObject
      */
     public static function getAllActiveTemplates($forCreated, PdoDatabase $database = null)
     {
-        if($database == null)
-        {
+        if($database == null) {
             $database = gGetDb();
         }
 
@@ -60,8 +57,7 @@ class EmailTemplate extends DataObject
 
         $resultObject = $statement->fetchAll( PDO::FETCH_CLASS, get_called_class() );
 
-        foreach ($resultObject as $t)
-        {
+        foreach ($resultObject as $t) {
             $t->setDatabase($database);
             $t->isNew = false;
         }
@@ -78,8 +74,7 @@ class EmailTemplate extends DataObject
 
         $resultObject = $statement->fetchObject( get_called_class() );
 
-        if($resultObject != false)
-        {
+        if($resultObject != false) {
             $resultObject->isNew = false;
             $resultObject->setDatabase($database);
         }
@@ -89,8 +84,8 @@ class EmailTemplate extends DataObject
 
     public function save()
     {
-        if($this->isNew)
-        { // insert
+        if($this->isNew) {
+// insert
             $statement = $this->dbObject->prepare("INSERT INTO `emailtemplate` (name, text, jsquestion, oncreated, active, preloadonly) VALUES (:name, :text, :jsquestion, :oncreated, :active, :preloadonly);");
             $statement->bindValue(":name", $this->name);
             $statement->bindValue(":text", $this->text);
@@ -99,18 +94,16 @@ class EmailTemplate extends DataObject
             $statement->bindValue(":active", $this->active);
             $statement->bindValue(":preloadonly", $this->preloadonly);
 
-            if($statement->execute())
-            {
+            if($statement->execute()) {
                 $this->isNew = false;
                 $this->id = $this->dbObject->lastInsertId();
             }
-            else
-            {
+            else {
                 throw new Exception($statement->errorInfo());
             }
         }
-        else
-        { // update
+        else {
+// update
             $statement = $this->dbObject->prepare("UPDATE `emailtemplate` SET name = :name, text = :text, jsquestion = :jsquestion, oncreated = :oncreated, active = :active, preloadonly = :preloadonly WHERE id = :id LIMIT 1;");
             $statement->bindValue(":id", $this->id);
             $statement->bindValue(":name", $this->name);
@@ -120,8 +113,7 @@ class EmailTemplate extends DataObject
             $statement->bindValue(":active", $this->active);
             $statement->bindValue(":preloadonly", $this->preloadonly);
 
-            if(!$statement->execute())
-            {
+            if(!$statement->execute()) {
                 throw new Exception($statement->errorInfo());
             }
         }
@@ -135,43 +127,53 @@ class EmailTemplate extends DataObject
         throw new Exception("You shouldn't be doing that, you'll break logs.");
     }
 
-    public function getName(){
+    public function getName()
+    {
         return $this->name;
     }
 
-    public function setName($name){
+    public function setName($name)
+    {
         $this->name = $name;
     }
 
-    public function getText(){
+    public function getText()
+    {
         return $this->text;
     }
 
-    public function setText($text){
+    public function setText($text)
+    {
         $this->text = $text;
     }
 
-    public function getJsquestion(){
+    public function getJsquestion()
+    {
         return $this->jsquestion;
     }
 
-    public function setJsquestion($jsquestion){
+    public function setJsquestion($jsquestion)
+    {
         $this->jsquestion = $jsquestion;
     }
 
-    public function getOncreated(){
+    public function getOncreated()
+    {
         return $this->oncreated == 1;
     }
 
-    public function setOncreated($oncreated){
+    public function setOncreated($oncreated)
+    {
         $this->oncreated = $oncreated ? 1 : 0;
     }
 
-    public function getActive(){
+    public function getActive()
+    {
         return $this->active == 1;
     }
 
-    public function setActive($active){
+    public function setActive($active)
+    {
         $this->active = $active ? 1 : 0;
     }
 

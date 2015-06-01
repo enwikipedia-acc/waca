@@ -22,24 +22,21 @@ class Notification extends DataObject
 
     public function save()
     {
-        if($this->isNew)
-        { // insert
+        if($this->isNew) {
+// insert
             $statement = $this->dbObject->prepare("INSERT INTO notification ( type, text ) VALUES ( :type, :text );");
             $statement->bindValue(":type", $this->type);
             $statement->bindValue(":text", $this->text);
 
-            if($statement->execute())
-            {
+            if($statement->execute()) {
                 $this->isNew = false;
                 $this->id = $this->dbObject->lastInsertId();
             }
-            else
-            {
+            else {
                 throw new Exception($statement->errorInfo());
             }
         }
-        else
-        {
+        else {
             throw new Exception("You shouldn't be doing this...");
         }
     }
@@ -94,8 +91,7 @@ class Notification extends DataObject
     {
         global $ircBotNotificationType, $whichami, $ircBotNotificationsEnabled;
 
-        if(!$ircBotNotificationsEnabled)
-        {
+        if(!$ircBotNotificationsEnabled) {
             return;
         }
 
@@ -104,8 +100,7 @@ class Notification extends DataObject
 
         $msg = IrcColourCode::RESET . IrcColourCode::BOLD . "[$whichami]". IrcColourCode::RESET .": $message";
 
-        try
-        {
+        try {
             $database = gGetDb('notifications');
             
             $notification = new Notification();
@@ -115,8 +110,7 @@ class Notification extends DataObject
 
             $notification->save();
         }
-        catch(Exception $ex)
-        {
+        catch(Exception $ex) {
             // OK, so we failed to send the notification - that db might be down?
             // This is non-critical, so silently fail.
             
@@ -254,12 +248,10 @@ class Notification extends DataObject
      */
     public static function banned(Ban $ban)
     {
-        if($ban->getDuration() == -1)
-        {
+        if($ban->getDuration() == -1) {
             $duration = "indefinitely";
         }
-        else
-        {
+        else {
             $duration = "until " . date("F j, Y, g:i a", $ban->getDuration());
         }
 

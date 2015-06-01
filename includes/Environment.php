@@ -13,8 +13,7 @@ class Environment
      */
     public static function getToolVersion()
     {
-        if(self::$toolVersion == false)
-        {
+        if(self::$toolVersion == false) {
             self::$toolVersion = exec("git describe --always --dirty");
         }
 

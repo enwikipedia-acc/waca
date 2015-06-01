@@ -13,8 +13,7 @@ class AuthUtility
     {
         global $minimumPasswordVersion;
 
-        if(substr($credentials, 0, 1) != ":")
-        {
+        if(substr($credentials, 0, 1) != ":") {
             return false;
         }
 
@@ -26,18 +25,15 @@ class AuthUtility
         // syntax: :2:x:HASH
 
         // check the version is one of the allowed ones:
-        if($minimumPasswordVersion > $data[ 0 ])
-        {
+        if($minimumPasswordVersion > $data[ 0 ]) {
             return false;
         }
 
-        if($data[ 0 ] == 1)
-        {
+        if($data[ 0 ] == 1) {
             return $credentials == self::encryptVersion1($password, $data[ 1 ]);
         }
 
-        if($data[ 0 ] == 2)
-        {
+        if($data[ 0 ] == 2) {
             return self::verifyVersion2($password, $data[ 2 ]);
         }
 

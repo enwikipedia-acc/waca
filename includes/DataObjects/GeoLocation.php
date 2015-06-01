@@ -23,8 +23,7 @@ class GeoLocation extends DataObject
 
         $resultObject = $statement->fetchObject( get_called_class() );
 
-        if($resultObject != false)
-        {
+        if($resultObject != false) {
             $resultObject->isNew = false;
             $resultObject->setDatabase($database);
         }
@@ -34,30 +33,27 @@ class GeoLocation extends DataObject
 
     public function save()
     {
-        if($this->isNew)
-        { // insert
+        if($this->isNew) {
+// insert
             $statement = $this->dbObject->prepare("INSERT INTO `geolocation` (address, data) VALUES (:address, :data);");
             $statement->bindValue(":address", $this->address);
             $statement->bindValue(":data", $this->data);
-            if($statement->execute())
-            {
+            if($statement->execute()) {
                 $this->isNew = false;
                 $this->id = $this->dbObject->lastInsertId();
             }
-            else
-            {
+            else {
                 throw new Exception($statement->errorInfo());
             }
         }
-        else
-        { // update
+        else {
+// update
             $statement = $this->dbObject->prepare("UPDATE `geolocation` SET address = :address, data = :data WHERE id = :id LIMIT 1;");
             $statement->bindValue(":address", $this->address);
             $statement->bindValue(":id", $this->id);
             $statement->bindValue(":data", $this->data);
 
-            if(!$statement->execute())
-            {
+            if(!$statement->execute()) {
                 throw new Exception($statement->errorInfo());
             }
         }

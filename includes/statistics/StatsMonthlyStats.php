@@ -23,8 +23,7 @@ class StatsMonthlyStats extends StatisticsPage
         $out = $qb->executeQueryToTable($query);
 
         global $showGraphs;
-        if($showGraphs == 1)
-        {
+        if($showGraphs == 1) {
             global $filepath;
             require_once($filepath . 'graph/pChart/pChart.class');
             require_once($filepath . 'graph/pChart/pData.class');
@@ -41,13 +40,11 @@ class StatsMonthlyStats extends StatisticsPage
                 );
 
             $query = gGetDb()->query("SELECT id, name FROM emailtemplate WHERE active = '1';");
-            if (!$query)
-            {
+            if (!$query) {
                 die("Query error.");
             }
 
-            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row)
-            {
+            foreach ($query->fetchAll(PDO::FETCH_ASSOC) as $row) {
                 $id = $row['id'];
                 $name = $row['name'];
                 $queries[] = array(
@@ -66,8 +63,7 @@ class StatsMonthlyStats extends StatisticsPage
                 );
 
             global $availableRequestStates;
-            foreach ($availableRequestStates as $state)
-            {
+            foreach ($availableRequestStates as $state) {
                 $queries[] = array(
                     'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Deferred to ".$state['defertolog']."' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
                     'series' => "Requests deferred to ".$state['deferto']." by month"
@@ -81,8 +77,7 @@ class StatsMonthlyStats extends StatisticsPage
             }
 
         }
-        else
-        {
+        else {
             $out.= BootstrapSkin::displayAlertBox("Graph drawing is currently disabled.","alert-info","",false,false,true);
         }
 
@@ -119,11 +114,9 @@ class StatsMonthlyStats extends StatisticsPage
             $DataSet = new pData();
             $qResult = $qb->executeQueryToArray($q['query']);
 
-            if(sizeof($qResult) > 0)
-            {
+            if(sizeof($qResult) > 0) {
 
-                foreach($qResult as $row)
-                {
+                foreach($qResult as $row) {
                     $DataSet->AddPoint($row['y'], $q['series'], $row['x']);
                 }
 
@@ -134,20 +127,19 @@ class StatsMonthlyStats extends StatisticsPage
 
                 $imagehashes[] = array($chartname, $q['series']);
 
-                if(!file_exists($chartname))
-                {
+                if(!file_exists($chartname)) {
                     $Test = new pChart(700,280);
                     $Test->setFontProperties("graph/Fonts/tahoma.ttf",8);
                     $Test->setGraphArea(50,30,680,200);
                     $Test->drawFilledRoundedRectangle(7,7,693,273,5,240,240,240);
                     $Test->drawRoundedRectangle(5,5,695,275,5,230,230,230);
-                    $Test->drawGraphArea(255,255,255,TRUE);
-                    $Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),SCALE_NORMAL,150,150,150,TRUE,45,2);
-                    $Test->drawGrid(4,TRUE,230,230,230,50);
+                    $Test->drawGraphArea(255,255,255,true);
+                    $Test->drawScale($DataSet->GetData(),$DataSet->GetDataDescription(),SCALE_NORMAL,150,150,150,true,45,2);
+                    $Test->drawGrid(4,true,230,230,230,50);
 
                     // Draw the 0 line
                     $Test->setFontProperties("graph/Fonts/tahoma.ttf",6);
-                    $Test->drawTreshold(0,143,55,72,TRUE,TRUE);
+                    $Test->drawTreshold(0,143,55,72,true,true);
 
                     // Draw the cubic curve graph
                     $Test->drawFilledCubicCurve($DataSet->GetData(),$DataSet->GetDataDescription(),.1,50);
@@ -167,7 +159,8 @@ class StatsMonthlyStats extends StatisticsPage
     /**
      * @param string $imghash
      */
-    private function createPathFromHash($imghash, $basedirectory = "render/") {
+    private function createPathFromHash($imghash, $basedirectory = "render/")
+    {
         $imghashparts = str_split($imghash);
         $imgpath = array_shift($imghashparts) . "/" ;
         $imgpath .= array_shift($imghashparts) . "/" ;

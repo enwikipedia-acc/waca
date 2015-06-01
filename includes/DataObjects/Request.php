@@ -54,8 +54,8 @@ SQL
 
     public function save()
     {
-        if($this->isNew)
-        { // insert
+        if($this->isNew) {
+// insert
             $statement = $this->dbObject->prepare(
                 "INSERT INTO `request` (" .
                 "email, ip, name, comment, status, date, checksum, emailsent, emailconfirm, reserved, useragent, forwardedip" .
@@ -74,18 +74,16 @@ SQL
             $statement->bindValue(":reserved", $this->reserved);
             $statement->bindValue(":useragent", $this->useragent);
             $statement->bindValue(":forwardedip", $this->forwardedip);
-            if($statement->execute())
-            {
+            if($statement->execute()) {
                 $this->isNew = false;
                 $this->id = (int)$this->dbObject->lastInsertId();
             }
-            else
-            {
+            else {
                 throw new Exception($statement->errorInfo());
             }
         }
-        else
-        { // update
+        else {
+// update
             $statement = $this->dbObject->prepare("UPDATE `request` SET " .
                 "status = :status, checksum = :checksum, emailsent = :emailsent, emailconfirm = :emailconfirm, " .
                 "reserved = :reserved " .
@@ -96,8 +94,7 @@ SQL
             $statement->bindValue(":emailsent", $this->emailsent);
             $statement->bindValue(":emailconfirm", $this->emailconfirm);
             $statement->bindValue(":reserved", $this->reserved);
-            if(!$statement->execute())
-            {
+            if(!$statement->execute()) {
                 throw new Exception($statement->errorInfo());
             }
         }
@@ -256,13 +253,11 @@ SQL
 
     public function hasComments()
     {
-        if($this->hasCommentsResolved)
-        {
+        if($this->hasCommentsResolved) {
             return $this->hasComments;
         }
 
-        if($this->comment != "")
-        {
+        if($this->comment != "") {
             $this->hasComments = true;
             $this->hasCommentsResolved = true;
             return true;
@@ -281,8 +276,7 @@ SQL
 
     public function getRelatedEmailRequests()
     {
-        if($this->emailRequestsResolved == false)
-        {
+        if($this->emailRequestsResolved == false) {
             global $cDataClearEmail;
 
             $query = $this->dbObject->prepare("SELECT * FROM request WHERE email = :email AND email != :clearedemail AND id != :id AND emailconfirm = 'Confirmed';");
@@ -295,8 +289,7 @@ SQL
             $this->emailRequests = $query->fetchAll(PDO::FETCH_CLASS, "Request");
             $this->emailRequestsResolved = true;
 
-            foreach($this->emailRequests as $r)
-            {
+            foreach($this->emailRequests as $r) {
                 $r->setDatabase($this->dbObject);
             }
         }
@@ -306,8 +299,7 @@ SQL
 
     public function getRelatedIpRequests()
     {
-        if($this->ipRequestsResolved == false)
-        {
+        if($this->ipRequestsResolved == false) {
             global $cDataClearIp;
 
             $query = $this->dbObject->prepare("SELECT * FROM request WHERE (ip = :ip OR forwardedip LIKE :forwarded) AND ip != :clearedip AND id != :id AND emailconfirm = 'Confirmed';");
@@ -325,8 +317,7 @@ SQL
             $this->ipRequests = $query->fetchAll(PDO::FETCH_CLASS, "Request");
             $this->ipRequestsResolved = true;
 
-            foreach($this->emailRequests as $r)
-            {
+            foreach($this->emailRequests as $r) {
                 $r->setDatabase($this->dbObject);
             }
         }
@@ -338,8 +329,7 @@ SQL
     {
         global $enableTitleBlacklist;
 
-        if(! $enableTitleBlacklist || $this->blacklistCache === false)
-        {
+        if(! $enableTitleBlacklist || $this->blacklistCache === false) {
             return false;
         }
 
@@ -363,24 +353,19 @@ SQL
     {
         global $protectReservedRequests;
 
-        if(!$protectReservedRequests)
-        {
+        if(!$protectReservedRequests) {
             return false;
         }
 
-        if($this->reserved != 0)
-        {
-            if($this->reserved == User::getCurrent()->getId())
-            {
+        if($this->reserved != 0) {
+            if($this->reserved == User::getCurrent()->getId()) {
                 return false;
             }
-            else
-            {
+            else {
                 return true;
             }
         }
-        else
-        {
+        else {
             return false;
         }
 
@@ -388,18 +373,15 @@ SQL
 
     public function confirmEmail($si)
     {
-        if($this->getEmailConfirm() == "Confirmed")
-        {
+        if($this->getEmailConfirm() == "Confirmed") {
             // already confirmed. Act as though we've completed successfully.
             return;
         }
 
-        if($this->getEmailConfirm() == $si)
-        {
+        if($this->getEmailConfirm() == $si) {
             $this->setEmailConfirm("Confirmed");
         }
-        else
-        {
+        else {
             throw new TransactionException("Confirmation hash does not match the expected value", "Email confirmation failed");
         }
     }
@@ -422,8 +404,7 @@ SQL
         // Sends the confirmation email to the user.
         $mailsuccess = mail($this->getEmail(), "[ACC #{$this->getId()}] English Wikipedia Account Request", $smarty->fetch('request/confirmation-mail.tpl'), $headers);
 
-        if(!$mailsuccess)
-        {
+        if(!$mailsuccess) {
             throw new Exception("Error sending email.");
         }
     }

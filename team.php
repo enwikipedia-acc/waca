@@ -25,8 +25,7 @@ require_once 'includes/SmartyInit.php';
 
 // Check to see if the database is unavailable.
 // Uses the true variable as the public uses this page.
-if(Offline::isOffline())
-{
+if(Offline::isOffline()) {
     echo Offline::getOfflineMessage(false);
     die();
 }

@@ -12,8 +12,7 @@ class Logger
 {
     private static function createLogEntry(PdoDatabase $database, DataObject $object, $logaction, $comment = null, $user = null)
     {
-        if($user == null)
-        {
+        if($user == null) {
             $user = User::getCurrent();    
         }
         

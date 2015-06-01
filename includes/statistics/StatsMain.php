@@ -24,15 +24,13 @@ class StatsMain extends StatisticsPage
 
         $statsPages = array();
 
-        foreach ($statsPageDefinitions as $i)
-        {
+        foreach ($statsPageDefinitions as $i) {
             require_once($filepath . "/includes/statistics/" . $i);
             $expld = explode('.', $i);
             $className = $expld[0];
             $statsPageObject = new $className;
 
-            if($statsPageObject->hideFromMenu() == false)
-            {
+            if($statsPageObject->hideFromMenu() == false) {
                 $statsPages[] = $statsPageObject;
             }
         }

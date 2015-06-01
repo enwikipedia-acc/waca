@@ -12,12 +12,10 @@ class Api
         header("Content-Type: text/xml");
 
         // javascript access control
-        if($httpOrigin !== null)
-        {
+        if($httpOrigin !== null) {
             global $CORSallowed;
 
-            if(in_array($httpOrigin, $CORSallowed))
-            {
+            if(in_array($httpOrigin, $CORSallowed)) {
                 header("Access-Control-Allow-Origin: " . $httpOrigin);
             }
         }
@@ -25,8 +23,7 @@ class Api
 
     public function execute($requestAction)
     {
-        switch ($requestAction)
-        {
+        switch ($requestAction) {
             case "count":
                 $result = new Actions\CountAction();
                 $data = $result->run();

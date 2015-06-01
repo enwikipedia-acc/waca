@@ -22,18 +22,17 @@ class LogPage
 	/**
 	 * @param integer $logListCount
 	 */
-	private function createPager($offset, $limit, $logListCount, $count) {
+	private function createPager($offset, $limit, $logListCount, $count)
+	{
 		$pager = '';
-		if($offset != 0)
-		{
+		if($offset != 0) {
 			$backOffset = ($offset < $limit) ? 0 : $offset - $limit;
 			$latestLink = $this->swapUrlParams($limit, 0);
 			$urlParams = $this->swapUrlParams($limit, $backOffset);
 			$pager.= '<a href="?'.$latestLink.'">Latest</a> | <a href="?'.$urlParams.'">Previous '.$limit.'</a> | ';
 		}
 
-		if(($offset + $limit) < $count)
-		{
+		if(($offset + $limit) < $count) {
 			$forwardOffset = $offset + $limit;
 			$earliestLink = $this->swapUrlParams($limit, $count - $limit);
 			$urlParams = $this->swapUrlParams($limit, $forwardOffset);
@@ -49,7 +48,8 @@ class LogPage
 			if ($potentialLimit != $limit && $potentialLimit < ($count - $offset)) {
 				$urlParams = $this->swapUrlParams($potentialLimit, $offset);
 				$pager .= "<a href='?$urlParams'>$potentialLimit</a>";
-			} else {
+			}
+			else {
 				$pager .= $potentialLimit;
 			}
 			$pager .= " | ";
@@ -84,12 +84,10 @@ class LogPage
         $params[":action"] = $this->filterAction;
         $params[":ignoreaction"] = ($this->filterAction == '');
               
-        if (!$count)
-        {
+        if (!$count) {
 			$logQuery.= "ORDER BY timestamp DESC ";
 			
-			if($limit != "infinity")
-			{		
+			if($limit != "infinity") {
 				$logQuery.=' LIMIT :limit OFFSET :offset';
 			    $params[":limit"] = $limit;	
 			    $params[":offset"] = $offset;	
@@ -109,10 +107,8 @@ class LogPage
 		$doneFrom = false;
 		$doneLimit = false;
 		if($enableSQLError == 1){ echo "<!--" ; echo print_r($_GET); echo "-->";}
-		foreach($_GET as $key => $value)
-		{
-			switch($key)
-			{
+		foreach($_GET as $key => $value) {
+			switch($key) {
 				case "from":
 					$value = $offset;
 					$doneFrom = true;
@@ -125,12 +121,10 @@ class LogPage
 			
 			$urlParams.= '&amp;' . $key . '=' . $value;
 		}
-		if(!$doneFrom)
-		{
+		if(!$doneFrom) {
 			$urlParams.= '&amp;from=' . $offset;
 		}
-		if(!$doneLimit)
-		{
+		if(!$doneLimit) {
 			$urlParams.= '&amp;limit=' . $limit;
 		}
 		return substr_replace($urlParams, '&amp;', 0, 5);		
@@ -174,11 +168,11 @@ class LogPage
 			if (substr($row['action'],0,7) == "Closed ") {
 				if ($row['action'] == "Closed 0") {
 					$logList .="<li>$rlu Dropped, <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
-				} 
+				}
 				else if ($row['action'] == "Closed custom") {
 					$logList .="<li>$rlu Closed (Custom), <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 				}
-		   		else if ($row['action'] == "Closed custom-y") {
+				else if ($row['action'] == "Closed custom-y") {
 					$logList .="<li>$rlu Closed (Custom, Created), <a href=\"$baseurl/acc.php?action=zoom&amp;id=$rlp\">Request $rlp</a> at $rlt.</li>\n";
 				}
 				else if ($row['action'] == "Closed custom-n") {
@@ -212,8 +206,7 @@ class LogPage
                 $user = User::getById($uid, gGetDb());
                 $username = htmlentities($user->getUsername());
 				
-				if ($user === false)
-                {
+				if ($user === false) {
 					die("User $uid not found."); 
                 }
                 
@@ -232,8 +225,7 @@ class LogPage
 			if ($rla == "Prefchange") {
                 $user = User::getById($rlp, gGetDb());
                 $username = htmlentities($user->getUsername());
-				if ($user === false)
-                {
+				if ($user === false) {
 					die("User $rlp not found.");
                 }
                 
@@ -252,10 +244,13 @@ class LogPage
 			}
 			if ($rla == "Unbanned") {
                 $ban = Ban::getById($rlp, gGetDb());
-                if ($ban) // Deal with bans from when unbanning resulted in the ban's row being deleted.
+                if ($ban) {
+                	// Deal with bans from when unbanning resulted in the ban's row being deleted.
                 	$bantarget = " (" . $ban->getTarget() . ") ";
-                else
-                	$bantarget = " ";
+                }
+                else {
+                                	$bantarget = " ";
+                }
 				$logList .="<li>$rlu unbanned ban ID $rlp". $bantarget ."at $rlt ($rlc)</li>";
 			}
 			if($rla == "Reserved") {
@@ -288,16 +283,16 @@ class LogPage
 			$logListCount++;
 		}
 		
-		if( $logList == "")
-		{
+		if( $logList == "") {
 			$out.= "<i>No results</i>";	
 		}
-		else
-		{
-			if($this->showPager == true)
-				$pager = $this->createPager($offset, $limit, $logListCount, $count);
-			else
-				$pager = '';
+		else {
+			if($this->showPager == true) {
+							$pager = $this->createPager($offset, $limit, $logListCount, $count);
+			}
+			else {
+							$pager = '';
+			}
 			$out.= "$pager<ul>$logList</ul>$pager";	
 		}
 		
@@ -379,8 +374,7 @@ class LogPage
 			if ($rla == "Promoted" || $rla == "Demoted" || $rla == "Approved" || $rla == "Suspended" || $rla == "Declined") {
                 $user = User::getById($rlp, gGetDb());
                 $username = htmlentities($user->getUsername());
-                if($user === false)
-                {
+                if($user === false) {
                     die("User $rlp not found");
                 }
                     
@@ -392,15 +386,13 @@ class LogPage
 			if ($rla == "Prefchange") {
                 $user = User::getById($rlp, gGetDb());
                 $username = htmlentities($user->getUsername());
-                if($user === false)
-                {
+                if($user === false) {
                     die("User $rlp not found");
                 }
 
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"changed user preferences for " . $username, 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
-			if ($rla == "Banned") 
-            {
+			if ($rla == "Banned") {
                 $ban = Ban::getById($rlp, gGetDb());
                 
                 if ($ban->getDuration() == "-1") {
@@ -414,10 +406,13 @@ class LogPage
 			}
 			if ($rla == "Unbanned") {
                 $ban = Ban::getById($rlp, gGetDb());
-                if ($ban) // Deal with bans from when unbanning resulted in the ban's row being deleted.
+                if ($ban) {
+                	// Deal with bans from when unbanning resulted in the ban's row being deleted.
                 	$bantarget = " (" . $ban->getTarget() . ")";
-                else
-                	$bantarget = "";
+                }
+                else {
+                                	$bantarget = "";
+                }
 				$out[] = array('time'=> $rlt, 'user'=>$rlu, 'description' =>"unbanned" . $bantarget, 'target' => $rlp, 'comment' => $rlc, 'action' => $rla, 'security' => 'user');
 			}
 			if($rla == "Reserved") {
@@ -453,9 +448,8 @@ class LogPage
 		$entirelog = $this->getArrayLog();
 		
 		$requestlog = array();
-		foreach($entirelog as $entry)
-		{
-			switch($entry['action']){
+		foreach($entirelog as $entry) {
+			switch($entry['action']) {
 				case "Approved":
 				case "Banned":
 				case "CreatedEmail":

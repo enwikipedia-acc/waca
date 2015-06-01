@@ -17,18 +17,15 @@ class DebugHelper
         $output = "";
         
         $count = 0;
-        foreach ($backtrace as $line)
-        {
-            if($count == 0)
-            {
+        foreach ($backtrace as $line) {
+            if($count == 0) {
                 $count++;
                 continue;
             }
             
             $output .= "#{$count}: ";
             
-            if(isset($line['type']) && $line['type'] != "")
-            {
+            if(isset($line['type']) && $line['type'] != "") {
                 $output .= $line['class'] . $line['type'];
             }
             

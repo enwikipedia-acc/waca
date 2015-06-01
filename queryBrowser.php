@@ -35,24 +35,18 @@ class QueryBrowser
 
 		$out.= '<table class="table table-striped table-hover table-condensed"><tr>';
 
-		if($this->numberedList == true)
-		{
+		if($this->numberedList == true) {
 			$out.="<th>" . $this->numberedListTitle . "</th>";
 		}
 
-		if($this->overrideTableTitles != false)
-		{
-			foreach($this->overrideTableTitles as $value)
-			{
+		if($this->overrideTableTitles != false) {
+			foreach($this->overrideTableTitles as $value) {
 				$out.=  "<th>" . $value . "</th>"; 
 			}
 		}
-		else
-		{
-            if(count($results) > 0)
-            {
-                foreach ($results[0] as $k => $v)
-                {
+		else {
+            if(count($results) > 0) {
+                foreach ($results[0] as $k => $v) {
                     $out.=  "<th>" . $k . "</th>"; 
                 }
             }
@@ -61,19 +55,15 @@ class QueryBrowser
 		
 		
 		$currentreq = 0;
-		foreach($results as $row)
-		{
+		foreach($results as $row) {
 			$currentreq++;
-			if(function_exists($this->tableCallbackFunction))
-			{
+			if(function_exists($this->tableCallbackFunction)) {
 				$out .= call_user_func($this->tableCallbackFunction, $row, $currentreq);	
 			}
-			else
-			{
+			else {
 				$out.=  '<tr>';
                 
-				if($this->numberedList == true)
-				{
+				if($this->numberedList == true) {
 					$out.="<th>" . $currentreq . "</th>";
 				}
 				
