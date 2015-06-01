@@ -20,10 +20,11 @@ if (!defined("ACC")) {
  * @author stwalkerster
  *
  */
-class session {
+class session
+{
 
-	public function forceLogout( $uid ) 
-    {
+	public function forceLogout( $uid )
+	{
         $user = User::getById($uid, gGetDb());
        
 		if( $user->getForceLogout() == "1" ) {
@@ -52,11 +53,10 @@ class session {
 	 * @return boolean
      * @deprecated
 	 */
-	public function hasright($username, $checkright) 
-    {
+	public function hasright($username, $checkright)
+	{
         $user = User::getByUsername($username, gGetDb());
-        if($user->isCheckuser() && $checkright == "Admin")
-        {
+        if($user->isCheckuser() && $checkright == "Admin") {
             return true;   
         }
         
@@ -69,24 +69,20 @@ class session {
 	 * 
 	 * @deprecated
 	 */
-	public function checksecurity() 
-    {
+	public function checksecurity()
+	{
 		global $secure, $smarty;
         
-        if(User::getCurrent()->getStoredOnWikiName() == "##OAUTH##" && User::getCurrent()->getOAuthAccessToken() == null)
-        {
+        if(User::getCurrent()->getStoredOnWikiName() == "##OAUTH##" && User::getCurrent()->getOAuthAccessToken() == null) {
             reattachOAuthAccount(User::getCurrent());   
         }
         
-        if(User::getCurrent()->isOAuthLinked())
-        {
-            try
-            {
+        if(User::getCurrent()->isOAuthLinked()) {
+            try {
                 // test retrieval of the identity
                 User::getCurrent()->getOAuthIdentity();
             }
-            catch(TransactionException $ex)
-            {
+            catch(TransactionException $ex) {
                 User::getCurrent()->setOAuthAccessToken(null);
                 User::getCurrent()->setOAuthAccessSecret(null);
                 User::getCurrent()->save();
@@ -94,25 +90,21 @@ class session {
                 reattachOAuthAccount(User::getCurrent());
             }
         }
-        else
-        {
+        else {
             global $enforceOAuth;
             
-            if($enforceOAuth)
-            {
+            if($enforceOAuth) {
                 reattachOAuthAccount(User::getCurrent());
             }
         }
         
         
-		if (User::getCurrent()->isNew()) 
-        {
+		if (User::getCurrent()->isNew()) {
             BootstrapSkin::displayAlertBox("I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.", "alert-error", "New account", true, false);
 			BootstrapSkin::displayInternalFooter();
 			die();
-		} 
-        elseif (User::getCurrent()->isSuspended()) 
-        {           
+		}
+		elseif (User::getCurrent()->isSuspended()) {
             $database = gGetDb();
             $suspendstatement = $database->prepare("SELECT log_cmt FROM acc_log WHERE log_action = 'Suspended' AND log_pend = :userid ORDER BY log_time DESC LIMIT 1;");
             
@@ -126,9 +118,8 @@ class session {
             $smarty->display("login/suspended.tpl");
             BootstrapSkin::displayInternalFooter();
             die();
-		} 
-        elseif (User::getCurrent()->isDeclined()) 
-        {
+		}
+		elseif (User::getCurrent()->isDeclined()) {
             $database = gGetDb();
             $suspendstatement = $database->prepare("SELECT log_cmt FROM acc_log WHERE log_action = 'Declined' AND log_pend = :userid ORDER BY log_time DESC LIMIT 1;");
             
@@ -142,13 +133,11 @@ class session {
             $smarty->display("login/declined.tpl");
             BootstrapSkin::displayInternalFooter();
             die();
-		} 
-        elseif (User::getCurrent()->isUser() || User::getCurrent()->isAdmin() ) 
-        {
+		}
+		elseif (User::getCurrent()->isUser() || User::getCurrent()->isAdmin() ) {
 			$secure = 1;
-		} 
-        else 
-        {
+		}
+		else {
 			//die("Not logged in!");
 		}
 	}

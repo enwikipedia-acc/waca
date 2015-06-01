@@ -39,18 +39,15 @@ class XffTrustProvider implements IXffTrustProvider
      */
     public function isTrusted($ip, PdoDatabase $database = null)
     {
-        if(in_array($ip, $this->trustedCache))
-        {
+        if(in_array($ip, $this->trustedCache)) {
             return true;
         }
 
-        if(in_array($ip, $this->untrustedCache))
-        {
+        if(in_array($ip, $this->untrustedCache)) {
             return false;
         }
 
-        if($database == null)
-        {
+        if($database == null) {
             $database = gGetDb();
         }
 
@@ -60,14 +57,12 @@ class XffTrustProvider implements IXffTrustProvider
         $result = $statement->fetchColumn();
         $statement->closeCursor();
 
-        if($result == 0)
-        {
+        if($result == 0) {
             $this->untrustedCache[] = $ip;
             return false;
         }
 
-        if($result >= 1)
-        {
+        if($result >= 1) {
             $this->trustedCache[] = $ip;
             return true;
         }

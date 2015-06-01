@@ -16,8 +16,7 @@ class RDnsLookupProvider implements IRDnsProvider
         // OK, it's not there, let's do an rdns lookup.
         $result = @ gethostbyaddr($address);
 
-        if($result !== false)
-        {
+        if($result !== false) {
             return $result;
         }
 

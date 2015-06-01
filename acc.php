@@ -33,8 +33,7 @@ $version = "0.9.7";
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
-if(Offline::isOffline())
-{
+if(Offline::isOffline()) {
     echo Offline::getOfflineMessage(false);
     die();
 }
@@ -97,7 +96,8 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 		// All the needed HTML code is displayed for the user.
 		// The script is thus terminated.
 		die();
-	} else {
+	}
+	else {
 	    // A content block is created if the action is none of the above.
 		// This block would later be used to keep all the HTML except the header and footer.
 		$out = "<div id=\"content\">";
@@ -107,8 +107,7 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 // Executes if the user variable is set, but not the nocheck.
 // This ussually happens when an user account has been renamed.
 // LouriePieterse: I cant figure out for what reason this is used.
-elseif (!isset($_GET['nocheck']))
-{
+elseif (!isset($_GET['nocheck'])) {
 		// Forces the current user to logout.
         $session->forceLogout($_SESSION['userID']);
 
@@ -124,9 +123,7 @@ if ($action == '') {
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
-
-elseif ($action == "sreg")
-{
+elseif ($action == "sreg") {
     global $useOauthSignup, $smarty;
         
     // TODO: check blocked
@@ -145,25 +142,21 @@ elseif ($action == "sreg")
         die();
 	}
     
-	if ($_REQUEST['pass'] !== $_REQUEST['pass2']) 
-    { 
+	if ($_REQUEST['pass'] !== $_REQUEST['pass2']) {
         $smarty->display("registration/alert-passwordmismatch.tpl");
         BootstrapSkin::displayInternalFooter();
 		die();
 	}
     
-    if(!$useOauthSignup)
-    {
-        if(!((string)(int)$_REQUEST['conf_revid'] === (string)$_REQUEST['conf_revid']) || $_REQUEST['conf_revid'] == "")
-        {
+    if(!$useOauthSignup) {
+        if(!((string)(int)$_REQUEST['conf_revid'] === (string)$_REQUEST['conf_revid']) || $_REQUEST['conf_revid'] == "") {
             $smarty->display("registration/alert-confrevid.tpl");
             BootstrapSkin::displayInternalFooter();
             die();		
         }
     }
     
-	if (User::getByUsername($_REQUEST['name'], gGetDb()) != false) 
-    {
+	if (User::getByUsername($_REQUEST['name'], gGetDb()) != false) {
         $smarty->display("registration/alert-usernametaken.tpl");
 		BootstrapSkin::displayInternalFooter();
 		die();
@@ -171,8 +164,7 @@ elseif ($action == "sreg")
     
 	$query = gGetDb()->prepare("SELECT * FROM user WHERE email = :email LIMIT 1;");
     $query->execute(array(":email" => $_REQUEST['email']));
-    if($query->fetchObject("User") != false)
-    {
+    if($query->fetchObject("User") != false) {
         $smarty->display("registration/alert-emailtaken.tpl");
 		BootstrapSkin::displayInternalFooter();
 		die();
@@ -191,8 +183,7 @@ elseif ($action == "sreg")
         $newUser->setPassword($_REQUEST['pass']);
         $newUser->setEmail($_REQUEST['email']);
         
-        if(!$useOauthSignup)
-        {
+        if(!$useOauthSignup) {
             $newUser->setOnWikiName($_REQUEST['wname']);
             $newUser->setConfirmationDiff($_REQUEST['conf_revid']);
         }
@@ -201,10 +192,8 @@ elseif ($action == "sreg")
     
         global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal, $useOauthSignup;
     
-        if($useOauthSignup)
-        {
-            try
-            {
+        if($useOauthSignup) {
+            try {
                 // Get a request token for OAuth
                 $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
                 $requestToken = $util->getRequestToken();
@@ -220,8 +209,7 @@ elseif ($action == "sreg")
             
                 header("Location: {$redirectUrl}");
             }
-            catch(Exception $ex)
-            {
+            catch(Exception $ex) {
                 throw new TransactionException(
                     $ex->getMessage(), 
                     "Connection to Wikipedia failed.", 
@@ -230,8 +218,7 @@ elseif ($action == "sreg")
                     $ex);
             }
         }
-        else
-        {
+        else {
             global $baseurl;
             Notification::userNew($newUser);
             header("Location: {$baseurl}/acc.php?action=registercomplete");
@@ -240,42 +227,34 @@ elseif ($action == "sreg")
     
 	die();
 }
-elseif ($action == "register") 
-{
+elseif ($action == "register") {
     global $useOauthSignup, $smarty;
     $smarty->assign("useOauthSignup", $useOauthSignup);
     $smarty->display("registration/register.tpl");
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
-elseif ($action == "registercomplete")
-{
+elseif ($action == "registercomplete") {
     $smarty->display("registration/alert-registrationcomplete.tpl");
     BootstrapSkin::displayInternalFooter();
 }
-elseif ($action == "forgotpw")
-{
+elseif ($action == "forgotpw") {
     global $baseurl, $smarty;
     
-	if (isset ($_GET['si']) && isset ($_GET['id'])) 
-    {
+	if (isset ($_GET['si']) && isset ($_GET['id'])) {
         $user = User::getById($_GET['id'], gGetDb());
         
-        if($user === false)
-        {
+        if($user === false) {
             BootstrapSkin::displayAlertBox("User not found.", "alert-error");
             BootstrapSkin::displayInternalFooter();
             die();
         }
         
-		if (isset ($_POST['pw']) && isset ($_POST['pw2'])) 
-        {
+		if (isset ($_POST['pw']) && isset ($_POST['pw2'])) {
 			$hash = $user->getForgottenPasswordHash();
             
-			if ($hash == $_GET['si']) 
-            {
-				if ($_POST['pw'] == $_POST['pw2']) 
-                {
+			if ($hash == $_GET['si']) {
+				if ($_POST['pw'] == $_POST['pw2']) {
                     $user->setPassword($_POST['pw2']);
                     $user->save();
                     
@@ -288,16 +267,14 @@ elseif ($action == "forgotpw")
                     
                     BootstrapSkin::displayInternalFooter();
                     die();
-				} 
-                else 
-                {
+				}
+				else {
                     BootstrapSkin::displayAlertBox("Passwords did not match!", "alert-error", "Error", true, false);
                     BootstrapSkin::displayInternalFooter();
                     die();
 				}
-			} 
-            else 
-            {
+			}
+			else {
                 BootstrapSkin::displayAlertBox("Invalid request<!-- 1 -->", "alert-error", "Error", true, false);
                 BootstrapSkin::displayInternalFooter();
                 die();
@@ -306,15 +283,13 @@ elseif ($action == "forgotpw")
         
 		$hash = $user->getForgottenPasswordHash();
         
-		if ($hash == $_GET['si']) 
-        {
+		if ($hash == $_GET['si']) {
 			$smarty->assign('user', $user);
 			$smarty->assign('si',$_GET['si']);
 			$smarty->assign('id',$_GET['id']);
 			$smarty->display('forgot-password/forgotpwreset.tpl');
-		} 
-        else 
-        {
+		}
+		else {
             BootstrapSkin::displayAlertBox(
                 "The hash supplied in the link did not match the hash in the database!", 
                 "alert-error", 
@@ -327,12 +302,10 @@ elseif ($action == "forgotpw")
 		die();
 	}
     
-	if (isset ($_POST['username'])) 
-    {
+	if (isset ($_POST['username'])) {
         $user = User::getByUsername($_POST['username'], gGetDb());
 
-		if ($user == false) 
-        {
+		if ($user == false) {
             BootstrapSkin::displayAlertBox(
                 "Could not find user with that username and email address!", 
                 "alert-error", 
@@ -343,8 +316,7 @@ elseif ($action == "forgotpw")
             BootstrapSkin::displayInternalFooter();
             die();
 		}
-		elseif (strtolower($_POST['email']) != strtolower($user->getEmail())) 
-        {
+		elseif (strtolower($_POST['email']) != strtolower($user->getEmail())) {
             BootstrapSkin::displayAlertBox("Could not find user with that username and email address!", 
                 "alert-error", 
                 "Error", 
@@ -354,8 +326,7 @@ elseif ($action == "forgotpw")
             BootstrapSkin::displayInternalFooter();
             die();
 		}
-		else
-        {
+		else {
 		    $hash = $user->getForgottenPasswordHash();
                        
             $smarty->assign("user", $user);
@@ -388,32 +359,26 @@ elseif ($action == "forgotpw")
     BootstrapSkin::displayInternalFooter();
     die();
 }
-elseif ($action == "login") 
-{
+elseif ($action == "login") {
     global $baseurl, $smarty;
     
     $user = User::getByUsername($_POST['username'], gGetDb());
     
-    if($user == false || !$user->authenticate($_POST['password']) )
-    {
+    if($user == false || !$user->authenticate($_POST['password']) ) {
         header("Location: $baseurl/acc.php?error=authfail&tplUsername=" . urlencode($_POST['username']));
         die();
     }
     
-    if($user->getStoredOnWikiName() == "##OAUTH##" && $user->getOAuthAccessToken() == null)
-    {
+    if($user->getStoredOnWikiName() == "##OAUTH##" && $user->getOAuthAccessToken() == null) {
         reattachOAuthAccount($user);   
     }
     
-    if($user->isOAuthLinked())
-    {
-        try
-        {
+    if($user->isOAuthLinked()) {
+        try {
             // test retrieval of the identity
             $user->getOAuthIdentity();
         }
-        catch(TransactionException $ex)
-        {
+        catch(TransactionException $ex) {
             $user->setOAuthAccessToken(null);
             $user->setOAuthAccessSecret(null);
             $user->save();
@@ -421,12 +386,10 @@ elseif ($action == "login")
             reattachOAuthAccount($user);
         }
     }
-    else
-    {
+    else {
         global $enforceOAuth;
         
-        if($enforceOAuth)
-        {
+        if($enforceOAuth) {
             reattachOAuthAccount($user);
         }
     }
@@ -435,14 +398,12 @@ elseif ($action == "login")
     // We now proceed to perform login-specific actions, and check the user actually has
     // the correct permissions to continue with the login.
     
-    if($user->getForcelogout())
-    {
+    if($user->getForcelogout()) {
         $user->setForcelogout(false);
         $user->save();
     }
     
-    if($user->isNew()) 
-    {
+    if($user->isNew()) {
         header("Location: $baseurl/acc.php?error=newacct");
         die();
     }
@@ -460,8 +421,7 @@ SQL;
     
     $suspendstatement = $database->prepare($sqlText);
     
-    if($user->isDeclined()) 
-    {
+    if($user->isDeclined()) {
         $suspendAction = "Declined";
         $userid = $user->getId();
         $suspendstatement->bindValue(":action", $suspendAction);
@@ -479,8 +439,7 @@ SQL;
         die();
     }
     
-    if($user->isSuspended()) 
-    {
+    if($user->isSuspended()) {
         $suspendAction = "Suspended";
         $userid = $user->getId();
         $suspendstatement->bindValue(":action", $suspendAction);
@@ -498,8 +457,7 @@ SQL;
         die();
     }
     
-    if(!$user->isIdentified() && $forceIdentification == 1) 
-    {
+    if(!$user->isIdentified() && $forceIdentification == 1) {
         header("Location: $baseurl/acc.php?error=noid");
         die();
     }
@@ -509,23 +467,19 @@ SQL;
     $_SESSION['user'] = $user->getUsername();
     $_SESSION['userID'] = $user->getId();
     
-    if( $user->getOAuthAccessToken() == null && $user->getStoredOnWikiName() == "##OAUTH##")
-    {
+    if( $user->getOAuthAccessToken() == null && $user->getStoredOnWikiName() == "##OAUTH##") {
         reattachOAuthAccount($user);
     }
     
     header("Location: $baseurl/acc.php");
 }
-elseif ($action == "messagemgmt") 
-{
+elseif ($action == "messagemgmt") {
     global $smarty;
     
-	if (isset($_GET['view'])) 
-    {
+	if (isset($_GET['view'])) {
         $message = InterfaceMessage::getById($_GET['view'], gGetDb());
                 
-	    if ($message == false)
-        {
+	    if ($message == false) {
             BootstrapSkin::displayAlertBox("Unable to find specified message", "alert-error", "Error", true, false);
             BootstrapSkin::displayInternalFooter();
 		    die();
@@ -537,10 +491,8 @@ elseif ($action == "messagemgmt")
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
-	if (isset($_GET['edit'])) 
-    {
-	    if(!(User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()))
-        {
+	if (isset($_GET['edit'])) {
+	    if(!(User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser())) {
             BootstrapSkin::displayAccessDenied();
             BootstrapSkin::displayInternalFooter();
 			die();
@@ -554,13 +506,11 @@ elseif ($action == "messagemgmt")
             
             $message = InterfaceMessage::getById($_GET['edit'], $database);
             
-            if ($message == false)
-            {
+            if ($message == false) {
                 throw new TransactionException("Unable to find specified message", "Error");
             }
             
-            if ( isset( $_GET['submit'] ) ) 
-            {   
+            if ( isset( $_GET['submit'] ) ) {
                 $message->setContent($_POST['mailtext']);
                 $message->setDescription($_POST['maildesc']);
                 $message->save();
@@ -608,16 +558,13 @@ SQL;
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
-elseif ($action == "templatemgmt") 
-{
+elseif ($action == "templatemgmt") {
     global $baseurl, $smarty;
     
-	if (isset($_GET['view'])) 
-    {
+	if (isset($_GET['view'])) {
         $template = WelcomeTemplate::getById($_GET['view'], gGetDb());
         
-        if($template === false)
-        {
+        if($template === false) {
             SessionAlert::success("Something went wrong, we can't find the template you asked for! Please try again.");
             header("Location: {$baseurl}/acc.php?action=templatemgmt");
             die();
@@ -629,18 +576,15 @@ elseif ($action == "templatemgmt")
 		die();
 	}
     
-	if (isset($_GET['add'])) 
-    {
-		if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) 
-        {
+	if (isset($_GET['add'])) {
+		if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) {
             BootstrapSkin::displayAccessDenied();
             
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
         
-		if (isset($_POST['submit'])) 
-        {
+		if (isset($_POST['submit'])) {
             global $baseurl;
             
             $database = gGetDb();
@@ -660,15 +604,15 @@ elseif ($action == "templatemgmt")
                 SessionAlert::success("Template successfully created.");
                 header("Location: $baseurl/acc.php?action=templatemgmt");
             });
-		} 
-        else 
-        {
+		}
+		else {
 			
 			if (isset($_POST['preview'])) {
 				$usercode = $_POST['usercode'];
 				$botcode = $_POST['botcode'];
 				echo displayPreview($usercode);
-			} else {
+			}
+			else {
 				$usercode = '';
 				$botcode = '';
 			}
@@ -684,12 +628,10 @@ elseif ($action == "templatemgmt")
         die();
 	}
     
-    if(isset($_GET['select']))
-    {
+    if(isset($_GET['select'])) {
         $user = User::getCurrent();
         
-        if($_GET['select'] == 0)
-        {
+        if($_GET['select'] == 0) {
             $user->setWelcomeTemplate(null);
             $user->save();
             
@@ -697,11 +639,9 @@ elseif ($action == "templatemgmt")
             header("Location: {$baseurl}/acc.php?action=templatemgmt");
             die();
         }
-        else
-        {
+        else {
             $template = WelcomeTemplate::getById($_GET['select'], gGetDb());
-            if($template !== false)
-            {
+            if($template !== false) {
                 $user->setWelcomeTemplate($template->getId());
                 $user->save();
                 
@@ -709,8 +649,7 @@ elseif ($action == "templatemgmt")
                 header("Location: {$baseurl}/acc.php?action=templatemgmt");
                 die();
             }
-            else
-            {
+            else {
                 SessionAlert::error("Something went wrong, we can't find the template you asked for!");
                 header("Location: {$baseurl}/acc.php?action=templatemgmt");
                 die();
@@ -718,12 +657,10 @@ elseif ($action == "templatemgmt")
         }
     }
     
-	if (isset($_GET['del'])) 
-    {
+	if (isset($_GET['del'])) {
         global $baseurl;
         
-		if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) 
-        {
+		if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) {
             BootstrapSkin::displayAccessDenied();
 			BootstrapSkin::displayInternalFooter();
 			die();
@@ -732,8 +669,7 @@ elseif ($action == "templatemgmt")
         $database = gGetDb();
         
         $template = WelcomeTemplate::getById($_GET['del'], $database);
-        if($template == false)
-        {
+        if($template == false) {
             SessionAlert::error("Something went wrong, we can't find the template you asked for!");
             header("Location: {$baseurl}/acc.php?action=templatemgmt");
             die();
@@ -759,10 +695,8 @@ elseif ($action == "templatemgmt")
 	    die();			
 	}
     
-	if (isset($_GET['edit'])) 
-    {
-		if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) 
-        {
+	if (isset($_GET['edit'])) {
+		if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) {
             BootstrapSkin::displayAccessDenied();
 			BootstrapSkin::displayInternalFooter();
 			die();
@@ -771,15 +705,13 @@ elseif ($action == "templatemgmt")
         $database = gGetDb();
         
         $template = WelcomeTemplate::getById($_GET['edit'], $database);
-        if($template == false)
-        {
+        if($template == false) {
             SessionAlert::success("Something went wrong, we can't find the template you asked for! Please try again.");
             header("Location: {$baseurl}/acc.php?action=templatemgmt");
             die();
         }
 
-		if (isset($_POST['submit'])) 
-        {
+		if (isset($_POST['submit'])) {
             $database->transactionally(function() use($database, $template)
             {
                 $template->setUserCode($_POST['usercode']);
@@ -794,9 +726,8 @@ elseif ($action == "templatemgmt")
             
             header("Location: $baseurl/acc.php?action=templatemgmt");
             die();
-		} 
-        else 
-        {
+		}
+		else {
             $smarty->assign("template", $template);
             $smarty->display("welcometemplate/edit.tpl");
             
@@ -813,13 +744,11 @@ elseif ($action == "templatemgmt")
     BootstrapSkin::displayInternalFooter();
     die();
 }
-elseif ($action == "sban") 
-{	
+elseif ($action == "sban") {
     global $smarty;
     
 	// Checks whether the current user is an admin.
-	if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) 
-    {
+	if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) {
         BootstrapSkin::displayAccessDenied();
         BootstrapSkin::displayInternalFooter();
         die();
@@ -841,33 +770,27 @@ elseif ($action == "sban")
 	
 	$duration = $_POST['duration'];
     
-	if ($duration == "-1")
-    {
+	if ($duration == "-1") {
 		$duration = -1;
 	}
-    elseif ($duration == "other") 
-    {
+	elseif ($duration == "other") {
 		$duration = strtotime($_POST['otherduration']);
-		if (!$duration) 
-        {
+		if (!$duration) {
             BootstrapSkin::displayAlertBox("Invalid ban time", "alert-error", "", false, false);
             BootstrapSkin::displayInternalFooter();
 			die();
-		} 
-        elseif (time() > $duration) 
-        {
+		}
+		elseif (time() > $duration) {
             BootstrapSkin::displayAlertBox("Ban time has already expired!", "alert-error", "", false, false);
             BootstrapSkin::displayInternalFooter();
 			die();
 		}
-	} 
-    else 
-    {
+	}
+	else {
 		$duration = $duration +time();
 	}
     
-	switch( $_POST[ 'type' ] ) 
-    {
+	switch( $_POST[ 'type' ] ) {
 		case 'IP':
 			if( filter_var( $_POST[ 'target' ], FILTER_VALIDATE_IP ) === false ) {
                 BootstrapSkin::displayAlertBox("Invalid target - IP address expected.", "alert-error", "", false, false);
@@ -909,8 +832,7 @@ elseif ($action == "sban")
 			die();
 	}
         
-    if(count(Ban::getActiveBans($_POST['target'])) > 0)
-    {
+    if(count(Ban::getActiveBans($_POST['target'])) > 0) {
         BootstrapSkin::displayAlertBox("This target is already banned!", "alert-error", "", false, false);
         BootstrapSkin::displayInternalFooter();
         die();
@@ -922,7 +844,7 @@ elseif ($action == "sban")
     
     $currentUsername = User::getCurrent()->getUsername();
     
-    $database->transactionally(function() use ($database, $ban, $duration, $currentUsername) 
+    $database->transactionally(function() use ($database, $ban, $duration, $currentUsername)
     {
         $ban->setDatabase($database);
         $ban->setActive(1);
@@ -945,12 +867,10 @@ elseif ($action == "sban")
     BootstrapSkin::displayInternalFooter();
 	die();
 }
-elseif ($action == "unban") 
-{
+elseif ($action == "unban") {
     global $smarty;
     
-    if(!isset($_GET['id']) || $_GET['id'] == "")
-    {
+    if(!isset($_GET['id']) || $_GET['id'] == "") {
         BootstrapSkin::displayAlertBox(
             "The ID parameter appears to be missing! This is probably a bug.", 
             "alert-error", 
@@ -961,8 +881,7 @@ elseif ($action == "unban")
         die();
     }
     
-    if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser())
-    {
+    if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) {
         BootstrapSkin::displayAccessDenied();
         BootstrapSkin::displayInternalFooter();
         die();
@@ -970,8 +889,7 @@ elseif ($action == "unban")
     
     $ban = Ban::getActiveId($_GET['id']);
         
-    if($ban == false)
-    {
+    if($ban == false) {
         BootstrapSkin::displayAlertBox(
             "The specified ban ID is not currently active or doesn't exist!", 
             "alert-error", 
@@ -983,19 +901,16 @@ elseif ($action == "unban")
         die();
     }
 
-	if( isset($_GET['confirmunban']) && $_GET['confirmunban'] == "true" )
-	{
-		if (!isset($_POST['unbanreason']) || $_POST['unbanreason'] == "") 
-		{
+	if( isset($_GET['confirmunban']) && $_GET['confirmunban'] == "true" ) {
+		if (!isset($_POST['unbanreason']) || $_POST['unbanreason'] == "") {
             BootstrapSkin::displayAlertBox("You must enter an unban reason!", "alert-error", "", false, false);
             BootstrapSkin::displayInternalFooter();
             die();
 		}
-		else 
-		{
+		else {
             $database = gGetDb();
             
-            $database->transactionally(function() use ($database, $ban) 
+            $database->transactionally(function() use ($database, $ban)
             {
                 $ban->setActive(0);
                 $ban->save();
@@ -1012,21 +927,18 @@ elseif ($action == "unban")
 			die();
 		}
 	}
-	else
-	{
+	else {
         $smarty->assign("ban", $ban);
         $smarty->display("bans/unban.tpl");
         
 		BootstrapSkin::displayInternalFooter();
 	}
 }
-elseif ($action == "ban") {    
+elseif ($action == "ban") {
     global $smarty;
     
-	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name']))
-    {
-		if(!$session->hasright($_SESSION['user'], "Admin"))
-        {
+	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name'])) {
+		if(!$session->hasright($_SESSION['user'], "Admin")) {
 		    BootstrapSkin::displayAlertBox("Only administrators or checkusers may ban users", "alert-error");
             BootstrapSkin::displayInternalFooter();
             die();
@@ -1061,15 +973,13 @@ elseif ($action == "ban") {
 			$target = $row['name'];
 			$type = "Name";
 		}
-        else
-        {
+		else {
             BootstrapSkin::displayAlertBox("Unknown ban type.", "alert-error");
             BootstrapSkin::displayInternalFooter();
 			die();    
         }
         
-		if (count(Ban::getActiveBans($target))) 
-        {
+		if (count(Ban::getActiveBans($target))) {
 			BootstrapSkin::displayAlertBox("This target is already banned!", "alert-error");
             BootstrapSkin::displayInternalFooter();
 			die();
@@ -1078,9 +988,8 @@ elseif ($action == "ban") {
         $smarty->assign("bantype", $type);
         $smarty->assign("bantarget", trim($target));
         $smarty->display("bans/banform.tpl");
-	} 
-    else 
-    {
+	}
+	else {
         $bans = Ban::getActiveBans();
   
         $smarty->assign("activebans", $bans);
@@ -1090,16 +999,13 @@ elseif ($action == "ban") {
     BootstrapSkin::displayInternalFooter();
     die();
 }
-elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") 
-{
+elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 	global $availableRequestStates;
 	
-	if (array_key_exists($_GET['target'], $availableRequestStates)) 
-    {
+	if (array_key_exists($_GET['target'], $availableRequestStates)) {
 		$request = Request::getById($_GET['id'], gGetDb());
 		
-        if($request == false)
-        {
+        if($request == false) {
             BootstrapSkin::displayAlertBox(
                 "Could not find the specified request!", 
                 "alert-error", 
@@ -1111,8 +1017,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "")
             die();
         }
 		
-        if( $request->getChecksum() != $_GET['sum'] )
-        {
+        if( $request->getChecksum() != $_GET['sum'] ) {
             SessionAlert::error(
                 "This is similar to an edit conflict on Wikipedia; it means that you have tried to perform an action "
                 . "on a request that someone else has performed an action on since you loaded the page",
@@ -1143,15 +1048,13 @@ SQL;
 		if ($request->getStatus() == "Closed" 
             && $logTime < $oneweek 
             && ! User::getCurrent()->isAdmin() 
-            && ! User::getCurrent()->isCheckuser()) 
-        {
+            && ! User::getCurrent()->isCheckuser()) {
 			SessionAlert::error("Only administrators and checkusers can reopen a request that has been closed for over a week.");
             header("Location: acc.php?action=zoom&id={$request->getId()}");
 			die();
 		}
         
-		if ($request->getStatus() == $_GET['target']) 
-        {
+		if ($request->getStatus() == $_GET['target']) {
             SessionAlert::error(
                 "Cannot set status, target already deferred to " . htmlentities($_GET['target']), 
                 "Error");
@@ -1180,45 +1083,37 @@ SQL;
         });
         
         die();
-	} 
-    else 
-    {
+	}
+	else {
         BootstrapSkin::displayAlertBox("Defer target not valid.", "alert-error", "Error", true, false);
         BootstrapSkin::displayInternalFooter();
         die();
 	}
 }
-elseif ($action == "prefs") 
-{
+elseif ($action == "prefs") {
     global $smarty, $enforceOAuth;
     
-	if (isset ($_POST['sig'])) 
-    {
+	if (isset ($_POST['sig'])) {
         $user = User::getCurrent();
         $user->setWelcomeSig($_POST['sig']);
         $user->setEmailSig($_POST['emailsig']);
         $user->setAbortPref(isset( $_POST['abortpref'] ) ? 1 : 0);
         
-		if( isset( $_POST['email'] ) ) 
-        {
+		if( isset( $_POST['email'] ) ) {
 			$mailisvalid = filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL);
             
-			if ($mailisvalid === false) 
-            {
+			if ($mailisvalid === false) {
                 BootstrapSkin::displayAlertBox("Invalid email address", "alert-error", "Error!");
 			}
-			else 
-            {
+			else {
                 $user->setEmail(trim($_POST['email']));
 			}
 		}
 
-        try 
-        {
+        try {
             $user->save();
         }
-        catch(PDOException $ex)
-        {
+        catch(PDOException $ex) {
             BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Error saving Preferences", true, false);
             BootstrapSkin::displayInternalFooter();
             die();
@@ -1236,24 +1131,19 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	// check for valid close reasons
 	global $messages, $baseurl, $smarty;
 	
-    if(isset($_GET['email'])) 
-    {
-        if($_GET['email'] == 0 || $_GET['email'] == "custom")
-        {
+    if(isset($_GET['email'])) {
+        if($_GET['email'] == 0 || $_GET['email'] == "custom") {
             $validEmail = true;
         }
-        else
-        {
+        else {
             $validEmail = EmailTemplate::getById($_GET['email'], gGetDb()) != false;
         }
     }
-    else
-    {
+    else {
         $validEmail = false;
     }
     
-	if ($validEmail == false) 
-    {
+	if ($validEmail == false) {
         BootstrapSkin::displayAlertBox("Invalid close reason", "alert-error", "Error", true, false);
         BootstrapSkin::displayInternalFooter();
 		die();
@@ -1272,16 +1162,14 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	$gem = $_GET['email'];
 	
 	// check the checksum is valid
-	if ($request->getChecksum() != $_GET['sum']) 
-    {
+	if ($request->getChecksum() != $_GET['sum']) {
         BootstrapSkin::displayAlertBox("This is similar to an edit conflict on Wikipedia; it means that you have tried to perform an action on a request that someone else has performed an action on since you loaded the page.", "alert-error", "Invalid Checksum", true, false);
         BootstrapSkin::displayInternalFooter();
 		die();
 	}
 	
 	// check if an email has already been sent
-	if ($request->getEmailSent() == "1" && !isset($_GET['override']) && $gem != 0) 
-    {
+	if ($request->getEmailSent() == "1" && !isset($_GET['override']) && $gem != 0) {
         $alertContent = "<p>This request has already been closed in a manner that has generated an e-mail to the user, Proceed?</p><br />";
         $alertContent .= "<div class=\"row-fluid\">";
         $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$baseurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;override=yes&amp;email=" . $_GET['email'] . "\">Yes</a>";
@@ -1294,8 +1182,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	}
 	
 	// check the request is not reserved by someone else
-	if( $request->getReserved() != 0 && !isset($_GET['reserveoverride']) && $request->getReserved() != User::getCurrent()->getId())
-	{
+	if( $request->getReserved() != 0 && !isset($_GET['reserveoverride']) && $request->getReserved() != User::getCurrent()->getId()) {
         $alertContent = "<p>This request is currently marked as being handled by " . $request->getReservedObject()->getUsername() . ", Proceed?</p><br />";
         $alertContent .= "<div class=\"row-fluid\">";
         $alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$baseurl/acc.php?".$_SERVER["QUERY_STRING"]."&reserveoverride=yes\">Yes</a>";
@@ -1307,8 +1194,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		die();
 	}
 	    
-	if ($request->getStatus() == "Closed") 
-    {
+	if ($request->getStatus() == "Closed") {
         BootstrapSkin::displayAlertBox("Cannot close this request. Already closed.", "alert-error", "Error", true, false);
         BootstrapSkin::displayInternalFooter();
 		die();
@@ -1340,27 +1226,22 @@ elseif ($action == "done" && $_GET['id'] != "") {
     $messageBody = null;
     
 	// custom close reasons
-    if ($gem  == 'custom') 
-    {
-		if (!isset($_POST['msgbody']) or empty($_POST['msgbody'])) 
-        {
+    if ($gem  == 'custom') {
+		if (!isset($_POST['msgbody']) or empty($_POST['msgbody'])) {
             // Send it through htmlspecialchars so HTML validators don't complain. 
 			$querystring = htmlspecialchars($_SERVER["QUERY_STRING"],ENT_COMPAT,'UTF-8'); 
             
             $template = false;
-            if(isset($_GET['preload']))
-            {
+            if(isset($_GET['preload'])) {
                 $template = EmailTemplate::getById($_GET['preload'], gGetDb());
             }
             
-            if($template != false)
-            {
+            if($template != false) {
                 $preloadTitle = $template->getName();
                 $preloadText = $template->getText();
                 $forcreated = $template->getOncreated();
             }
-            else
-            {
+            else {
                 $preloadText = "";
                 $preloadTitle = "";
                 $forcreated = false;
@@ -1375,12 +1256,10 @@ elseif ($action == "done" && $_GET['id'] != "") {
             $smarty->display("custom-close.tpl");
 			BootstrapSkin::displayInternalFooter();
 			die();
-		} 
-        else 
-        {			
+		}
+		else {
 			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
-			if (! User::getCurrent()->isAdmin() || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on")
-            {
+			if (! User::getCurrent()->isAdmin() || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on") {
 				$headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
             }
             
@@ -1400,7 +1279,8 @@ elseif ($action == "done" && $_GET['id'] != "") {
             
 			if (isset($_POST['created']) && $_POST['created'] == "on") {
 				$gem  = 'custom-y';
-			} else {
+			}
+			else {
 				$gem  = 'custom-n';
 			}
             
@@ -1418,13 +1298,17 @@ elseif ($action == "done" && $_GET['id'] != "") {
     
 	if ($gem == '0') {
 		$crea = "Dropped";
-	} else if ($gem == 'custom') {
+	}
+	else if ($gem == 'custom') {
 		$crea = "Custom";
-	} else if ($gem == 'custom-y') {
+	}
+	else if ($gem == 'custom-y') {
 		$crea = "Custom, Created";
-	} else if ($gem == 'custom-n') {
+	}
+	else if ($gem == 'custom-n') {
 		$crea = "Custom, Not Created";
-	} else {
+	}
+	else {
 		$template = EmailTemplate::getById($gem, gGetDb());
 		$crea = $template->getName();
 	}
@@ -1446,38 +1330,31 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
-elseif ($action == "zoom") 
-{
-	if (!isset($_GET['id'])) 
-    {
+elseif ($action == "zoom") {
+	if (!isset($_GET['id'])) {
         BootstrapSkin::displayAlertBox("No request specified!", "alert-error", "Error!", true, false);
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
     
-	if (isset($_GET['hash'])) 
-    {
+	if (isset($_GET['hash'])) {
 		$urlhash = $_GET['hash'];
 	}
-	else 
-    {
+	else {
 		$urlhash = "";
 	}
 	echo zoomPage($_GET['id'],$urlhash);
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
-elseif ($action == "logs") 
-{
+elseif ($action == "logs") {
     global $baseurl;
     
-	if(isset($_GET['user']))
-    {
+	if(isset($_GET['user'])) {
 		$filteruser = $_GET['user'];
 		$filteruserl = " value=\"" . htmlentities($filteruser, ENT_QUOTES, 'UTF-8') . "\"";
 	}
-    else
-    { 
+	else {
         $filteruserl = ""; 
         $filteruser = "";
     }
@@ -1527,10 +1404,12 @@ elseif ($action == "logs")
 		$logActions[$logAction] = "Request " . $row['name'];
 	}
 	
-	foreach($logActions as $key => $value)
-	{
+	foreach($logActions as $key => $value) {
 		echo "<option value=\"".$key."\"";
-		if(isset($_GET['logaction'])) { if($key == $_GET['logaction']) echo " selected=\"selected\""; }
+		if(isset($_GET['logaction'])) { if($key == $_GET['logaction']) {
+			echo " selected=\"selected\"";
+		}
+		}
 		echo ">".$value."</option>";
 		
 	}
@@ -1543,7 +1422,7 @@ elseif ($action == "logs")
 	
 	$logPage = new LogPage();
 
-	if( isset($_GET['user']) ){
+	if( isset($_GET['user']) ) {
 		$logPage->filterUser = $_GET['user'];
 	}
 	if (isset ($_GET['limit'])) {
@@ -1553,8 +1432,7 @@ elseif ($action == "logs")
 		$offset = $_GET['from'];	
 	}
 	
-	if(isset($_GET['logaction']))
-	{
+	if(isset($_GET['logaction'])) {
 		$logPage->filterAction = $_GET['logaction'];
 	}
 
@@ -1564,24 +1442,20 @@ elseif ($action == "logs")
     
 	die();
 }
-elseif ($action == "reserve") 
-{    
+elseif ($action == "reserve") {
     $database = gGetDb();
     
     $database->transactionally(function() use ($database)
     {
         $request = Request::getById($_GET['resid'], $database);
         
-        if($request == false)
-        {
+        if($request == false) {
             throw new TransactionException("Request not found", "Error");
         }
         
         global $enableEmailConfirm, $allowDoubleReserving, $baseurl;
-	    if($enableEmailConfirm == 1)
-        {
-            if($request->getEmailConfirm() != "Confirmed")
-		    {
+	    if($enableEmailConfirm == 1) {
+            if($request->getEmailConfirm() != "Confirmed") {
                 throw new TransactionException("Email address not yet confirmed for this request.", "Error");
 		    }
 	    }
@@ -1596,20 +1470,16 @@ elseif ($action == "reserve")
         $date->modify("-7 days");
 	    $oneweek = $date->format("Y-m-d H:i:s");
         
-	    if ($request->getStatus() == "Closed" && $logTime < $oneweek && !User::getCurrent($database)->isAdmin()) 
-        {
+	    if ($request->getStatus() == "Closed" && $logTime < $oneweek && !User::getCurrent($database)->isAdmin()) {
             throw new TransactionException("Only administrators and checkusers can reserve a request that has been closed for over a week.", "Error");
 	    }
         
-       	if($request->getReserved() != 0 && $request->getReserved() != User::getCurrent($database)->getId())
-        {
+       	if($request->getReserved() != 0 && $request->getReserved() != User::getCurrent($database)->getId()) {
             throw new TransactionException("Request is already reserved by {$request->getReservedObject()->getUsername()}.", "Error");
         }
            
-        if($request->getReserved() == 0)
-        {
-            if(isset($allowDoubleReserving))
-            {
+        if($request->getReserved() == 0) {
+            if(isset($allowDoubleReserving)) {
 		        // Check the number of requests a user has reserved already
         
 		        $doubleReserveCountQuery = $database->prepare("SELECT COUNT(*) FROM request WHERE reserved = :userid;");
@@ -1619,17 +1489,14 @@ elseif ($action == "reserve")
                 $doubleReserveCountQuery->closeCursor();
 		
 		        // User already has at least one reserved. 
-		        if( $doubleReserveCount != 0) 
-		        {
+		        if( $doubleReserveCount != 0) {
                     SessionAlert::warning("You have multiple requests reserved!");
 		        }
 	        }
 	
 	        // Is the request closed?
-	        if(! isset($_GET['confclosed']) )
-	        {
-		        if($request->getStatus() == "Closed")
-		        {		
+	        if(! isset($_GET['confclosed']) ) {
+		        if($request->getStatus() == "Closed") {
                     // FIXME: bootstrappify properly
 			        throw new TransactionException('This request is currently closed. Are you sure you wish to reserve it?<br /><ul><li><a href="'.$_SERVER["REQUEST_URI"].'&confclosed=yes">Yes, reserve this closed request</a></li><li><a href="' . $baseurl . '/acc.php">No, return to main request interface</a></li></ul>', "Request closed", "alert-info");
 		        }
@@ -1650,23 +1517,20 @@ elseif ($action == "reserve")
 	    
 	die();	
 }
-elseif ($action == "breakreserve") 
-{
+elseif ($action == "breakreserve") {
     global $smarty;
     
     $database = gGetDb();
     
     $request = Request::getById($_GET['resid'], $database);
         
-    if($request == false)
-    {
+    if($request == false) {
         BootstrapSkin::displayAlertBox("Could not find request.", "alert-error", "Error", true, false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
     
-    if($request->getReserved() == 0)
-    {
+    if($request->getReserved() == 0) {
         BootstrapSkin::displayAlertBox("Request is not reserved.", "alert-error", "Error", true, false);
         BootstrapSkin::displayInternalFooter();
         die();
@@ -1674,20 +1538,16 @@ elseif ($action == "breakreserve")
     
     $reservedUser = $request->getReservedObject();
     
-    if($reservedUser == false)
-    {
+    if($reservedUser == false) {
         BootstrapSkin::displayAlertBox("Could not find user who reserved the request (!!).", "alert-error", "Error", true, false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
     
-	if( $reservedUser->getId() != User::getCurrent()->getId() )
-	{
+	if( $reservedUser->getId() != User::getCurrent()->getId() ) {
 		global $enableAdminBreakReserve;
-		if($enableAdminBreakReserve && User::getCurrent()->isAdmin()) 
-        {
-			if(isset($_GET['confirm']) && $_GET['confirm'] == 1)	
-			{
+		if($enableAdminBreakReserve && User::getCurrent()->isAdmin()) {
+			if(isset($_GET['confirm']) && $_GET['confirm'] == 1) {
                 $database->transactionally(function() use($database, $request)
                 {
                     $request->setReserved(0);
@@ -1701,8 +1561,7 @@ elseif ($action == "breakreserve")
                 
                 die();
 			}
-			else
-			{
+			else {
 				global $baseurl;
                 $smarty->assign("reservedUser", $reservedUser);
                 $smarty->assign("request", $request);
@@ -1710,13 +1569,11 @@ elseif ($action == "breakreserve")
                 $smarty->display("confirmations/breakreserve.tpl");
 			}
 		}
-		else 
-        {
+		else {
 			echo "You cannot break " . $reservedUser->getUsername() . "'s reservation";
 		}
 	}
-	else
-	{
+	else {
         $database->transactionally(function() use ($database, $request)
         {
             $request->setReserved(0);
@@ -1734,9 +1591,7 @@ elseif ($action == "breakreserve")
 	BootstrapSkin::displayInternalFooter();
 	die();		
 }
-
-elseif ($action == "comment") 
-{
+elseif ($action == "comment") {
     global $smarty;
     
     $request = Request::getById($_GET['id'], gGetDb());
@@ -1745,29 +1600,24 @@ elseif ($action == "comment")
     BootstrapSkin::displayInternalFooter();
     die();
 }
-
-elseif ($action == "comment-add") 
-{
+elseif ($action == "comment-add") {
     global $baseurl, $smarty;
     
     $request = Request::getById($_POST['id'], gGetDb());
-    if($request == false)
-    {
+    if($request == false) {
         BootstrapSkin::displayAlertBox("Could not find request!", "alert-error", "Error", true, false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
     
-    if(!isset($_POST['comment']) || $_POST['comment'] == "")
-    {
+    if(!isset($_POST['comment']) || $_POST['comment'] == "") {
         BootstrapSkin::displayAlertBox("Comment must be supplied!", "alert-error", "Error", true, false);
         BootstrapSkin::displayInternalFooter();
         die(); 
     }
     
     $visibility = 'user';
-    if( isset($_POST['visibility']) )
-    {
+    if( isset($_POST['visibility']) ) {
         // sanity check
         $visibility = $_POST['visibility'] == 'user' ? 'user' : 'admin';
     }
@@ -1793,12 +1643,10 @@ elseif ($action == "comment-add")
     
     $comment->save();
     
-    if (isset($_GET['hash'])) 
-    {
+    if (isset($_GET['hash'])) {
         $urlhash = urlencode(htmlentities($_GET['hash']));
     }
-    else 
-    {
+    else {
         $urlhash = "";
     }
 
@@ -1813,26 +1661,21 @@ elseif ($action == "comment-add")
     BootstrapSkin::displayInternalFooter();
     die();
 }
-
-elseif ($action == "comment-quick") 
-{
+elseif ($action == "comment-quick") {
     $request = Request::getById($_POST['id'], gGetDb());
-    if($request == false)
-    {
+    if($request == false) {
         BootstrapSkin::displayAlertBox("Could not find request!", "alert-error", "Error", true, false);
         BootstrapSkin::displayInternalFooter();
         die();
     }
     
-    if(!isset($_POST['comment']) || $_POST['comment'] == "")
-    {
+    if(!isset($_POST['comment']) || $_POST['comment'] == "") {
 		header("Location: acc.php?action=zoom&id=" . $request->getId());
         die(); 
     }
     
     $visibility = 'user';
-    if( isset($_POST['visibility']) )
-    {
+    if( isset($_POST['visibility']) ) {
         // sanity check
         $visibility = $_POST['visibility'] == 'user' ? 'user' : 'admin';
     }
@@ -1862,27 +1705,22 @@ elseif ($action == "comment-quick")
     
     header("Location: acc.php?action=zoom&id=" . $request->getId());
 }
-
-elseif ($action == "changepassword")
-{	
-	if ((!isset($_POST['oldpassword'])) || $_POST['oldpassword'] == "" ) 
-    { 
+elseif ($action == "changepassword") {
+	if ((!isset($_POST['oldpassword'])) || $_POST['oldpassword'] == "" ) {
         //Throw an error if old password is not specified.
         BootstrapSkin::displayAlertBox("You did not enter your old password.", "alert-error", "Error", true, false);
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
 	
-	if ((!isset($_POST['newpassword'])) || $_POST['newpassword'] == "" ) 
-    { 
+	if ((!isset($_POST['newpassword'])) || $_POST['newpassword'] == "" ) {
         //Throw an error if new password is not specified.
         BootstrapSkin::displayAlertBox("You did not enter your new password.", "alert-error", "Error", true, false);
         BootstrapSkin::displayInternalFooter();
         die();
 	}
 	
-	if ($_POST['newpassword'] != $_POST['newpasswordconfirm']) 
-    { 
+	if ($_POST['newpassword'] != $_POST['newpasswordconfirm']) {
         //Throw an error if new password does not match what is in the confirmation box.
         BootstrapSkin::displayAlertBox("The 2 new passwords you entered do not match.", "alert-error", "Error", true, false);
 		BootstrapSkin::displayInternalFooter();
@@ -1891,8 +1729,7 @@ elseif ($action == "changepassword")
     
     $user = User::getCurrent();
 	   
-    if ( ! $user->authenticate($_POST['oldpassword']) ) 
-    { 
+    if ( ! $user->authenticate($_POST['oldpassword']) ) {
         //Throw an error if the old password field's value does not match the user's current password.
         BootstrapSkin::displayAlertBox("The old password you entered is not correct.", "alert-error", "Error", true, false);
 		BootstrapSkin::displayInternalFooter();
@@ -1906,16 +1743,14 @@ elseif ($action == "changepassword")
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
-elseif ($action == "ec")
-{ 
+elseif ($action == "ec") {
     // edit comment
   
     global $smarty, $baseurl;
     
     $comment = Comment::getById($_GET['id'], gGetDb());
     
-    if($comment == false) 
-    {
+    if($comment == false) {
         // Only using die("Message"); for errors looks ugly.
         BootstrapSkin::displayAlertBox("Comment not found.", "alert-error", "Error", true, false);
         BootstrapSkin::displayInternalFooter();
@@ -1923,8 +1758,7 @@ elseif ($action == "ec")
 	}
 	
 	// Unauthorized if user is not an admin or the user who made the comment being edited.
-	if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser() && $comment->getUser() != User::getCurrent()->getId())
-    { 
+	if(!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser() && $comment->getUser() != User::getCurrent()->getId()) {
         BootstrapSkin::displayAccessDenied();
         BootstrapSkin::displayInternalFooter();
 		die();
@@ -1932,8 +1766,7 @@ elseif ($action == "ec")
 	
 	// get[id] is safe by this point.
 	
-	if ($_SERVER['REQUEST_METHOD'] == 'POST') 
-    {
+	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $database = gGetDb();
         $database->transactionally(function() use ($database, $comment, $baseurl)
         {
@@ -1953,23 +1786,20 @@ elseif ($action == "ec")
         
         die();    
 	}
-	else 
-    {	
+	else {
         $smarty->assign("comment", $comment);
         $smarty->display("edit-comment.tpl");
 		BootstrapSkin::displayInternalFooter();
 		die();
 	}
 }
-elseif ($action == "sendtouser") 
-{ 
+elseif ($action == "sendtouser") {
     global $baseurl;
     
     $database = gGetDb();
     
     $requestObject = Request::getById($_POST['id'], $database);
-    if($requestObject == false)
-    {
+    if($requestObject == false) {
         BootstrapSkin::displayAlertBox("Request invalid", "alert-error", "Could not find request", true, false);
         BootstrapSkin::displayInternalFooter();
         die();
@@ -1980,8 +1810,7 @@ elseif ($action == "sendtouser")
     $user = User::getByUsername($_POST['user'], $database);
     $curuser = User::getCurrent()->getUsername();
     
-    if($user == false)
-    {
+    if($user == false) {
         BootstrapSkin::displayAlertBox("We couldn't find the user you wanted to send the reservation to. Please check that this user exists and is an active user on the tool.", "alert-error", "Could not find user", true, false);
         BootstrapSkin::displayInternalFooter();
         die();
@@ -1992,8 +1821,7 @@ elseif ($action == "sendtouser")
         $updateStatement = $database->prepare("UPDATE request SET reserved = :userid WHERE id = :request LIMIT 1;");
         $updateStatement->bindValue(":userid", $user->getId());
         $updateStatement->bindValue(":request", $request);
-        if(!$updateStatement->execute())
-        {
+        if(!$updateStatement->execute()) {
             throw new TransactionException("Error updating reserved status of request.");   
         }
         
@@ -2003,8 +1831,7 @@ elseif ($action == "sendtouser")
     SessionAlert::success("Reservation sent successfully");
     header("Location: $baseurl/acc.php?action=zoom&id=$request");
 }
-elseif ($action == "emailmgmt") 
-{
+elseif ($action == "emailmgmt") {
     global $smarty, $createdid;
     
 	/* New page for managing Emails, since I would rather not be handling editing
@@ -2015,8 +1842,7 @@ elseif ($action == "emailmgmt")
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
-		if(isset($_POST['submit'])) 
-        {
+		if(isset($_POST['submit'])) {
             $database = gGetDb();
             $database->transactionally(function() use ($database)
             {
@@ -2033,8 +1859,7 @@ elseif ($action == "emailmgmt")
 			    
 			    // Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
                 // getByName(...) returns false on no records found.
-                if (EmailTemplate::getByName($_POST['name'], $database)) 
-                {
+                if (EmailTemplate::getByName($_POST['name'], $database)) {
 				    throw new TransactionException("That Email template name is already being used. Please choose another.");
 			    }
 			
@@ -2064,8 +1889,7 @@ elseif ($action == "emailmgmt")
         
         $database = gGetDb();
         
-		if(isset($_POST['submit'])) 
-        {
+		if(isset($_POST['submit'])) {
 			$emailTemplate = EmailTemplate::getById($_GET['edit'], $database);
 			// Allow the user to see the edit form (with read only fields) but not POST anything.
 			if(!User::getCurrent()->isAdmin()) {
@@ -2078,7 +1902,8 @@ elseif ($action == "emailmgmt")
 			$emailTemplate->setText($_POST['text']);
 			$emailTemplate->setJsquestion($_POST['jsquestion']);
 			
-			if ($_GET['edit'] == $createdid) { // Both checkboxes on the main created message should always be enabled.
+			if ($_GET['edit'] == $createdid) {
+// Both checkboxes on the main created message should always be enabled.
 				$emailTemplate->setOncreated(1);
 				$emailTemplate->setActive(1);
                 $emailTemplate->setPreloadOnly(0);
@@ -2097,7 +1922,7 @@ elseif ($action == "emailmgmt")
 				die();
 			}
 
-            $database->transactionally(function() use ($database, $emailTemplate) 
+            $database->transactionally(function() use ($database, $emailTemplate)
             {
                 $emailTemplate->save();
                 
@@ -2135,12 +1960,10 @@ elseif ($action == "emailmgmt")
     $inactiverows = $statement->fetchAll(PDO::FETCH_CLASS, "EmailTemplate");
     $smarty->assign('inactiveemails', $inactiverows);
  
-	if (count($inactiverows) > 0) 
-    {
+	if (count($inactiverows) > 0) {
 		$smarty->assign('displayinactive', true);
 	}
-	else 
-    {
+	else {
 		$smarty->assign('displayinactive', false);
 	}
     
@@ -2148,10 +1971,8 @@ elseif ($action == "emailmgmt")
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
-elseif ($action == "oauthdetach")
-{ 
-    if($enforceOAuth)
-    {
+elseif ($action == "oauthdetach") {
+    if($enforceOAuth) {
         BootstrapSkin::displayAccessDenied();
         BootstrapSkin::displayInternalFooter();
         die();
@@ -2164,13 +1985,11 @@ elseif ($action == "oauthdetach")
         
     header("Location: {$baseurl}/acc.php?action=logout&nocheck=1");
 }
-elseif ($action == "oauthattach")
-{
+elseif ($action == "oauthattach") {
     $database = gGetDb();
     $database->transactionally(function() use ($database)
     {
-        try
-        {
+        try {
             global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;
             
             $user = User::getCurrent();
@@ -2189,8 +2008,7 @@ elseif ($action == "oauthattach")
             header("Location: {$redirectUrl}");
         
         }
-        catch(Exception $ex)
-        {
+        catch(Exception $ex) {
             throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
         }
     });

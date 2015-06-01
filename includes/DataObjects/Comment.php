@@ -16,18 +16,15 @@ class Comment extends DataObject
      */
     public static function getForRequest($id, PdoDatabase $database = null)
     {
-        if($database == null)
-        {
+        if($database == null) {
             $database = gGetDb();
         }
 
-        if(User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser())
-        {
+        if(User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
             // current user is an admin or checkuser, so retrieve everything.
             $statement = $database->prepare("SELECT * FROM comment WHERE request = :target;");
         }
-        else
-        {
+        else {
             // current user isn't an admin, so limit to only those which are visibile to users, and private comments the user has posted themselves.
             $statement = $database->prepare("SELECT * FROM comment WHERE request = :target AND (visibility = 'user' || user = :userid);");
             $statement->bindValue(":userid", User::getCurrent()->getId());
@@ -38,8 +35,7 @@ class Comment extends DataObject
         $statement->execute();
 
         $result = array();
-        foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v)
-        {
+        foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
             $v->isNew = false;
             $v->setDatabase($database);
             $result[] = $v;
@@ -50,33 +46,30 @@ class Comment extends DataObject
 
     public function save()
     {
-        if($this->isNew)
-        { // insert
+        if($this->isNew) {
+// insert
             $statement = $this->dbObject->prepare("INSERT INTO comment ( time, user, comment, visibility, request ) VALUES ( CURRENT_TIMESTAMP(), :user, :comment, :visibility, :request );");
             $statement->bindValue(":user", $this->user);
             $statement->bindValue(":comment", $this->comment);
             $statement->bindValue(":visibility", $this->visibility);
             $statement->bindValue(":request", $this->request);
 
-            if($statement->execute())
-            {
+            if($statement->execute()) {
                 $this->isNew = false;
                 $this->id = $this->dbObject->lastInsertId();
             }
-            else
-            {
+            else {
                 throw new Exception($statement->errorInfo());
             }
         }
-        else
-        { // update
+        else {
+// update
             $statement = $this->dbObject->prepare("UPDATE comment SET comment = :comment, visibility = :visibility WHERE id = :id LIMIT 1;");
             $statement->bindValue(":id", $this->id);
             $statement->bindValue(":comment", $this->comment);
             $statement->bindValue(":visibility", $this->visibility);
 
-            if(!$statement->execute())
-            {
+            if(!$statement->execute()) {
                 throw new Exception($statement->errorInfo());
             }
         }

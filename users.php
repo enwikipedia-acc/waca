@@ -26,8 +26,7 @@ require_once 'includes/session.php';
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
-if(Offline::isOffline())
-{
+if(Offline::isOffline()) {
     echo Offline::getOfflineMessage(false);
     die();
 }
@@ -37,12 +36,10 @@ $session = new session();
 
 #region User search
 
-if(isset($_GET['usersearch']))
-{
+if(isset($_GET['usersearch'])) {
     $user = User::getByUsername($_GET['usersearch'], gGetDb());
 
-    if($user != false)
-    {
+    if($user != false) {
         header("Location: $baseurl/statistics.php?page=Users&user={$user->getId()}");
         die();
     }
@@ -62,15 +59,13 @@ echo $out;
 
 #region Checks if the current user has admin rights.
 
-if( User::getCurrent() == false )
-{
+if( User::getCurrent() == false ) {
     showlogin();
     BootstrapSkin::displayInternalFooter();
     die();
 }
 
-if( ! User::getCurrent()->isAdmin() )
-{
+if( ! User::getCurrent()->isAdmin() ) {
     // Displays both the error message and the footer of the interface.
     BootstrapSkin::displayAlertBox(
             "I'm sorry, but, this page is restricted to administrators only.", 
@@ -85,12 +80,10 @@ if( ! User::getCurrent()->isAdmin() )
 
 #region user access actions
 
-if (isset ($_GET['approve']))
-{
+if (isset ($_GET['approve'])) {
     $user = User::getById($_GET['approve'], gGetDb());
 
-    if($user == false)
-    {
+    if($user == false) {
         BootstrapSkin::displayAlertBox(
             "Sorry, the user you are trying to approve could not be found.", 
             "alert-error", 
@@ -101,8 +94,7 @@ if (isset ($_GET['approve']))
         die();
     }
 
-    if($user->isUser() || $user->isAdmin())
-    {
+    if($user->isUser() || $user->isAdmin()) {
         BootstrapSkin::displayAlertBox(
             "Sorry, the user you are trying to approve has already been approved.", 
             "alert-error", 
@@ -130,12 +122,10 @@ if (isset ($_GET['approve']))
     die();
 }
 
-if (isset ($_GET['demote']))
-{
+if (isset ($_GET['demote'])) {
     $user = User::getById($_GET['demote'], gGetDb());
 
-    if( $user == false)
-    {
+    if( $user == false) {
         BootstrapSkin::displayAlertBox(
             "Sorry, the user you are trying to demote could not be found.", 
             "alert-error", 
@@ -146,8 +136,7 @@ if (isset ($_GET['demote']))
         die();
     }
 
-    if(!$user->isAdmin())
-    {
+    if(!$user->isAdmin()) {
         BootstrapSkin::displayAlertBox(
             "Sorry, the user you are trying to demote is not an admin.", 
             "alert-error", 
@@ -167,7 +156,8 @@ if (isset ($_GET['demote']))
         $smarty->display("usermanagement/changelevel-reason.tpl");
         BootstrapSkin::displayInternalFooter();
         die();
-    } else {
+    }
+    else {
         $user->demote($_POST['reason']);
 
         BootstrapSkin::displayAlertBox( 
@@ -190,8 +180,7 @@ if (isset ($_GET['demote']))
 if (isset ($_GET['suspend'])) {
     $user = User::getById($_GET['suspend'], gGetDb());
 
-    if($user == false)
-    {
+    if($user == false) {
         BootstrapSkin::displayAlertBox(
             "Sorry, the user you are trying to suspend could not be found.", 
             "alert-error", 
@@ -202,8 +191,7 @@ if (isset ($_GET['suspend'])) {
         die();
     }
 
-    if($user->isSuspended())
-    {
+    if($user->isSuspended()) {
         BootstrapSkin::displayAlertBox(
             "Sorry, the user you are trying to suspend is already suspended.", 
             "alert-error", 
@@ -213,7 +201,6 @@ if (isset ($_GET['suspend'])) {
         BootstrapSkin::displayInternalFooter();
         die();
     }
-
     elseif (!isset($_POST['reason'])) {
         global $smarty;
         $smarty->assign("user", $user);
@@ -222,7 +209,8 @@ if (isset ($_GET['suspend'])) {
         $smarty->display("usermanagement/changelevel-reason.tpl");
         BootstrapSkin::displayInternalFooter();
         die();
-    } else {
+    }
+    else {
         $user->suspend($_POST['reason']);
 
         Notification::userSuspended($user, $_POST['reason']);
@@ -244,8 +232,7 @@ if (isset ($_GET['suspend'])) {
 if (isset ($_GET['promote'])) {
     $user = User::getById($_GET['promote'], gGetDb());
 
-    if($user == false)
-    {
+    if($user == false) {
         BootstrapSkin::displayAlertBox(
             "Sorry, the user you are trying to promote could not be found.", 
             "alert-error", 
@@ -287,8 +274,7 @@ if (isset ($_GET['promote'])) {
 if (isset ($_GET['decline'])) {
     $user = User::getById($_GET['decline'], gGetDb());
 
-    if($user == false)
-    {
+    if($user == false) {
         BootstrapSkin::displayAlertBox(
             "Sorry, the user you are trying to decline could not be found.", 
             "alert-error", 
@@ -317,7 +303,8 @@ if (isset ($_GET['decline'])) {
         $smarty->display("usermanagement/changelevel-reason.tpl");
         BootstrapSkin::displayInternalFooter();
         die();
-    } else {
+    }
+    else {
         $user->decline($_POST['reason']);
 
         Notification::userDeclined($user, $_POST['reason']);
@@ -341,12 +328,10 @@ if (isset ($_GET['decline'])) {
 
 #region renaming
 
-if ( isset ($_GET['rename']) && $enableRenames == 1 )
-{
+if ( isset ($_GET['rename']) && $enableRenames == 1 ) {
     $user = User::getById($_GET['rename'], gGetDb());
 
-    if($user == false)
-    {
+    if($user == false) {
         BootstrapSkin::displayAlertBox(
             "Sorry, the user you are trying to rename could not be found.", 
             "alert-error", 
@@ -357,25 +342,21 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
         die();
     }
 
-    if (!isset($_POST['newname']))
-    {
+    if (!isset($_POST['newname'])) {
         global $smarty;
         $smarty->assign("user", $user);
         $smarty->display("usermanagement/renameuser.tpl");
         BootstrapSkin::displayInternalFooter();
         die();
     }
-    else
-    {
-        if(!isset($_POST['newname']) || trim($_POST['newname']) == "")
-        {
+    else {
+        if(!isset($_POST['newname']) || trim($_POST['newname']) == "") {
             BootstrapSkin::displayAlertBox("The new username cannot be empty.", "alert-error", "Error", true, false);
             BootstrapSkin::displayInternalFooter();
             die();
         }
 
-        if(User::getByUsername($_POST['newname'], gGetDb()) != false)
-        {
+        if(User::getByUsername($_POST['newname'], gGetDb()) != false) {
             BootstrapSkin::displayAlertBox("Username already exists.", "alert-error", "Error", true, false);
             BootstrapSkin::displayInternalFooter();
             die();
@@ -383,8 +364,7 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
 
         $database = gGetDb();
 
-        if(!$database->beginTransaction())
-        {
+        if(!$database->beginTransaction()) {
             BootstrapSkin::displayAlertBox(
                 "Database transaction could not be started.", 
                 "alert-error", 
@@ -395,8 +375,7 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
             die();
         }
 
-        try
-        {
+        try {
             $oldname = $user->getUsername();
 
             $user->setUsername($_POST['newname']);
@@ -414,8 +393,7 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
                 "",
                 false);
         }
-        catch (Exception $ex)
-        {
+        catch (Exception $ex) {
             $database->rollBack();
             BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Error", true, false);
             BootstrapSkin::displayInternalFooter();
@@ -438,8 +416,7 @@ if ( isset ($_GET['rename']) && $enableRenames == 1 )
 if (isset ($_GET['edituser']) && $enableRenames == 1) {
     $user = User::getById($_GET['edituser'], gGetDb());
 
-    if($user == false)
-    {
+    if($user == false) {
         BootstrapSkin::displayAlertBox(
             "Sorry, the user you are trying to rename could not be found.", 
             "alert-error", 
@@ -454,10 +431,10 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {
         global $smarty;
         $smarty->assign("user", $user);
         $smarty->display("usermanagement/edituser.tpl");
-    } else {
+    }
+    else {
         $database = gGetDb();
-        if(!$database->beginTransaction())
-        {
+        if(!$database->beginTransaction()) {
             BootstrapSkin::displayAlertBox(
                 "Database transaction could not be started.", 
                 "alert-error", 
@@ -468,12 +445,10 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {
             die();
         }
 
-        try
-        {
+        try {
             $user->setEmail($_POST['user_email']);
 
-            if(!$user->isOAuthLinked())
-            {
+            if(!$user->isOAuthLinked()) {
                 $user->setOnWikiName($_POST['user_onwikiname']);
             }
 
@@ -484,8 +459,7 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {
             Notification::userPrefChange($user);
             BootstrapSkin::displayAlertBox("Changes saved.", "alert-info");
         }
-        catch (Exception $ex)
-        {
+        catch (Exception $ex) {
             $database->rollBack();
             BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Error", true, false);
             BootstrapSkin::displayInternalFooter();
@@ -520,8 +494,7 @@ $userListQuery = "SELECT username FROM user;";
 $userListResult = gGetDb()->query($userListQuery);
 $userListData = $userListResult->fetchAll(PDO::FETCH_COLUMN);
 $userListProcessedData = array();
-foreach ($userListData as $userListItem)
-{
+foreach ($userListData as $userListItem) {
     $userListProcessedData[] = "\"" . htmlentities($userListItem, ENT_COMPAT, 'UTF-8') . "\"";
 }
 
@@ -555,7 +528,8 @@ HTML;
  *          )
  *
  */
-function showUserList($data, $level) {
+function showUserList($data, $level)
+{
        global $smarty;
        $smarty->assign("listuserlevel", $level);
        $smarty->assign("listuserdata", $data);
@@ -572,8 +546,7 @@ $database = gGetDb();
 
 $result = User::getAllWithStatus("New", $database);
 
-if($result != false && count($result) != 0)
-{
+if($result != false && count($result) != 0) {
     echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Open requests</a></div><div id="collapseOne" class="accordion-body collapse in"><div class="accordion-inner">';
 
     $smarty->assign("userlist", $result);
@@ -609,8 +582,7 @@ $smarty->assign("userlist", $result);
 $smarty->display("usermanagement/userlist.tpl");
 echo '</div></div></div>';
 
-if(isset($_GET['showall']))
-{
+if(isset($_GET['showall'])) {
     echo <<<HTML
 <div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFive">Suspended accounts</a></div><div id="collapseFive" class="accordion-body collapse"><div class="accordion-inner">
 HTML;

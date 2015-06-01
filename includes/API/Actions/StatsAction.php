@@ -26,8 +26,7 @@ class StatsAction extends ApiActionBase implements IApiAction
     public function execute(\DOMElement $apiDocument)
     {
         $username = isset( $_GET['user'] ) ? trim($_GET['user']) : '';
-        if($username == '')
-        {
+        if($username == '') {
             throw new ApiException("Please specify a username");
         }
 
@@ -39,8 +38,7 @@ class StatsAction extends ApiActionBase implements IApiAction
 
         $this->user = \User::getByUsername($username, $this->database);
 
-        if($this->user === false)
-        {
+        if($this->user === false) {
             $userElement->setAttribute("missing", "true");
             return $apiDocument;
         }

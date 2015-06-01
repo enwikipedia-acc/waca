@@ -31,57 +31,49 @@ class RequestValidationHelper
 
         // ERRORS
         // name is empty
-        if(trim($this->request->getName()) == "")
-        {
+        if(trim($this->request->getName()) == "") {
             $errorList[ValidationError::NAME_EMPTY] = new ValidationError(ValidationError::NAME_EMPTY);
         }
 
         // name is banned
         $ban = $this->banHelper->nameIsBanned($this->request->getName());
-        if($ban != false)
-        {
+        if($ban != false) {
             $errorList[ValidationError::BANNED] = new ValidationError(ValidationError::BANNED);
         }
 
         // username already exists
         // TODO: implement
-        if($this->userExists())
-        {
+        if($this->userExists()) {
             $errorList[ValidationError::NAME_EXISTS] = new ValidationError(ValidationError::NAME_EXISTS);
         }
 
         // username part of SUL account
         // TODO: implement
-        if($this->userSulExists())
-        {
+        if($this->userSulExists()) {
             // using same error slot as name exists - it's the same sort of error, and we probably only want to show one.
             $errorList[ValidationError::NAME_EXISTS] = new ValidationError(ValidationError::NAME_EXISTS_SUL);
         }
 
         // username is numbers
-        if(preg_match("/^[0-9]+$/", $this->request->getName()) === 1)
-        {
+        if(preg_match("/^[0-9]+$/", $this->request->getName()) === 1) {
             $errorList[ValidationError::NAME_NUMONLY] = new ValidationError(ValidationError::NAME_NUMONLY);
         }
 
         // username can't contain #@/<>[]|{}
-        if(preg_match("/[" . preg_quote("#@/<>[]|{}", "/") . "]/", $this->request->getName()) === 1)
-        {
+        if(preg_match("/[" . preg_quote("#@/<>[]|{}", "/") . "]/", $this->request->getName()) === 1) {
             $errorList[ValidationError::NAME_INVALIDCHAR] = new ValidationError(ValidationError::NAME_INVALIDCHAR);
         }
 
         // existing non-closed request for this name
         // TODO: implement
-        if($this->nameRequestExists())
-        {
+        if($this->nameRequestExists()) {
             $errorList[ValidationError::OPEN_REQUEST_NAME] = new ValidationError(ValidationError::OPEN_REQUEST_NAME);
         }
 
         // WARNINGS
         // name has to be sanitised
         // TODO: implement
-        if(false)
-        {
+        if(false) {
             $errorList[ValidationError::NAME_SANITISED] = new ValidationError(ValidationError::NAME_SANITISED, false);
         }
 
@@ -100,35 +92,29 @@ class RequestValidationHelper
 
         // Email is banned
         $ban = $this->banHelper->emailIsBanned($this->request->getEmail());
-        if($ban != false)
-        {
+        if($ban != false) {
             $errorList[ValidationError::BANNED] = new ValidationError(ValidationError::BANNED);
         }
 
         // email addresses must match
-        if($this->request->getEmail() != $this->emailConfirmation)
-        {
+        if($this->request->getEmail() != $this->emailConfirmation) {
             $errorList[ValidationError::EMAIL_MISMATCH] = new ValidationError(ValidationError::EMAIL_MISMATCH);
         }
 
         // email address must be validly formed
-        if(trim($this->request->getEmail()) == "")
-        {
+        if(trim($this->request->getEmail()) == "") {
             $errorList[ValidationError::EMAIL_EMPTY] = new ValidationError(ValidationError::EMAIL_EMPTY);
         }
 
         // email address must be validly formed
-        if(! filter_var($this->request->getEmail(), FILTER_VALIDATE_EMAIL))
-        {
-            if(trim($this->request->getEmail()) != "")
-            {
+        if(! filter_var($this->request->getEmail(), FILTER_VALIDATE_EMAIL)) {
+            if(trim($this->request->getEmail()) != "") {
                 $errorList[ValidationError::EMAIL_INVALID] = new ValidationError(ValidationError::EMAIL_INVALID);
             }
         }
 
         // email address can't be wikimedia/wikipedia .com/org
-        if(preg_match('/.*@.*wiki(m.dia|p.dia)\.(org|com)/i', $this->request->getEmail()) === 1)
-        {
+        if(preg_match('/.*@.*wiki(m.dia|p.dia)\.(org|com)/i', $this->request->getEmail()) === 1) {
             $errorList[ValidationError::EMAIL_WIKIMEDIA] = new ValidationError(ValidationError::EMAIL_WIKIMEDIA);
         }
 
@@ -149,15 +135,13 @@ class RequestValidationHelper
 
         // TOR nodes
         // TODO: Implement
-        if(false)
-        {
+        if(false) {
             $errorList[ValidationError::BANNED] = new ValidationError(ValidationError::BANNED_TOR);
         }
 
         // IP banned
         $ban = $this->banHelper->ipIsBanned($this->request->getTrustedIp());
-        if($ban != false)
-        {
+        if($ban != false) {
             $errorList[ValidationError::BANNED] = new ValidationError(ValidationError::BANNED);
         }
 
@@ -175,16 +159,13 @@ class RequestValidationHelper
     private function checkAntiSpoof()
     {
         global $antispoofProvider;
-        try
-        {
-            if(count($antispoofProvider->getSpoofs($this->request->getName())) > 0)
-            {
+        try {
+            if(count($antispoofProvider->getSpoofs($this->request->getName())) > 0) {
                 // If there were spoofs an Admin should handle the request.
                 $this->request->setStatus("Admin");
             }
         }
-        catch(Exception $ex)
-        {
+        catch(Exception $ex) {
             // hrm.
             // TODO: log this?
         }
@@ -193,16 +174,14 @@ class RequestValidationHelper
     private function checkTitleBlacklist()
     {
         global $enableTitleblacklist;
-        if ($enableTitleblacklist == 1)
-        {
+        if ($enableTitleblacklist == 1) {
             $apiResult = file_get_contents("https://en.wikipedia.org/w/api.php?action=titleblacklist&tbtitle=" . urlencode($this->request->getName()) . "&tbaction=new-account&tbnooverride&format=php");
 
             $data = unserialize($apiResult);
 
             $requestIsOk = $data['titleblacklist']['result'] == "ok";
 
-            if(!$requestIsOk)
-            {
+            if(!$requestIsOk) {
                 $this->request->setStatus("Admin");
             }
         }
@@ -214,8 +193,7 @@ class RequestValidationHelper
 
         $userexist = file_get_contents($mediawikiWebServiceEndpoint . "?action=query&list=users&ususers=" . urlencode($this->request->getName()) . "&format=php");
         $ue = unserialize($userexist);
-        if (!isset ($ue['query']['users']['0']['missing'])&&isset ($ue['query']['users']['0']['userid']))
-        {
+        if (!isset ($ue['query']['users']['0']['missing'])&&isset ($ue['query']['users']['0']['userid'])) {
             return true;
         }
 
@@ -229,8 +207,7 @@ class RequestValidationHelper
         $reqname = str_replace("_", " ", $this->request->getName());
         $userexist = file_get_contents($mediawikiWebServiceEndpoint . "?action=query&meta=globaluserinfo&guiuser=" . urlencode($reqname) . "&format=php");
         $ue = unserialize($userexist);
-        if (isset ($ue['query']['globaluserinfo']['id']))
-        {
+        if (isset ($ue['query']['globaluserinfo']['id'])) {
             return true;
         }
 
@@ -243,8 +220,7 @@ class RequestValidationHelper
         $statement = gGetDb()->prepare($query);
         $statement->execute(array(':name' => $this->request->getName()));
 
-        if(!$statement)
-        {
+        if(!$statement) {
             return false;
         }
 

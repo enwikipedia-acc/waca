@@ -18,8 +18,7 @@ class AntiSpoofCache extends DataObject
 
         $resultObject = $statement->fetchObject( get_called_class() );
 
-        if($resultObject != false)
-        {
+        if($resultObject != false) {
             $resultObject->isNew = false;
             $resultObject->setDatabase($database);
         }
@@ -57,8 +56,8 @@ class AntiSpoofCache extends DataObject
 
     public function save()
     {
-        if($this->isNew)
-        { // insert
+        if($this->isNew) {
+// insert
 
             // clear old data first
             $this->dbObject->exec("delete from antispoofcache where timestamp < date_sub(now(), interval 3 hour);");
@@ -67,13 +66,11 @@ class AntiSpoofCache extends DataObject
             $statement->bindValue(":username", $this->username);
             $statement->bindValue(":data", $this->data);
 
-            if($statement->execute())
-            {
+            if($statement->execute()) {
                 $this->isNew = false;
                 $this->id = $this->dbObject->lastInsertId();
             }
-            else
-            {
+            else {
                 throw new Exception($statement->errorInfo());
             }
         }

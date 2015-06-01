@@ -30,9 +30,9 @@ class OAuthUtility
         $parsed = parse_url( $endpoint );
         $params = array();
         parse_str($parsed['query'], $params);
-        $req_req = OAuthRequest::from_consumer_and_token($c, NULL, "GET", $endpoint, $params);
+        $req_req = OAuthRequest::from_consumer_and_token($c, null, "GET", $endpoint, $params);
         $hmac_method = new OAuthSignatureMethod_HMAC_SHA1();
-        $req_req->sign_request($hmac_method, $c, NULL);
+        $req_req->sign_request($hmac_method, $c, null);
 
         $ch = curl_init();
         curl_setopt( $ch, CURLOPT_URL, (string) $req_req );
@@ -42,15 +42,13 @@ class OAuthUtility
         curl_setopt( $ch, CURLOPT_USERAGENT, $toolUserAgent);
         $data = curl_exec( $ch );
 
-        if( !$data )
-        {
+        if( !$data ) {
             throw new Exception('Curl error: ' . curl_error( $ch ));
         }
 
         $token = json_decode( $data );
 
-        if(!isset($token) || isset($token->error))
-        {
+        if(!isset($token) || isset($token->error)) {
             throw new Exception("Error encountered while getting token.");
         }
 
@@ -89,8 +87,7 @@ class OAuthUtility
 
         $data = curl_exec( $ch );
 
-        if( !$data )
-        {
+        if( !$data ) {
             throw new Exception('Curl error: ' . curl_error( $ch ));
         }
 
@@ -122,13 +119,11 @@ class OAuthUtility
         $api_req->sign_request( $hmac_method, $c, $userToken );
 
         $ch = curl_init();
-        if($method == "GET")
-        {
+        if($method == "GET") {
             curl_setopt( $ch, CURLOPT_URL, $mediawikiWebServiceEndpoint . "?" . http_build_query( $apiParams ) );
         }
         
-        if($method == "POST")
-        {
+        if($method == "POST") {
             curl_setopt( $ch, CURLOPT_URL, $mediawikiWebServiceEndpoint);
             curl_setopt( $ch, CURLOPT_POST, count($apiParams));
             curl_setopt( $ch, CURLOPT_POSTFIELDS, http_build_query( $apiParams ));   
@@ -142,8 +137,7 @@ class OAuthUtility
 
         $data = curl_exec( $ch );
 
-        if( !$data )
-        {
+        if( !$data ) {
             throw new Exception('Curl error: ' . curl_error( $ch ));
         }
 
@@ -177,15 +171,13 @@ class OAuthUtility
 
         $data = curl_exec( $ch );
 
-        if( !$data )
-        {
+        if( !$data ) {
             throw new Exception('Curl error: ' . curl_error( $ch ));
         }
 
         $decodedData = json_decode($data);
 
-        if(isset($decodedData->error))
-        {
+        if(isset($decodedData->error)) {
             throw new TransactionException($decodedData->error);
         }
 

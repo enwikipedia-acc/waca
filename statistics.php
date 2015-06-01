@@ -26,16 +26,14 @@ require_once 'includes/StatisticsPage.php';
 
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
-if(Offline::isOffline())
-{
+if(Offline::isOffline()) {
     echo Offline::getOfflineMessage(false);
     die();
 }
 
 $page = isset($_GET['page']) ? $_GET['page'] : 'Main';
 
-if(isset($_SERVER['PATH_INFO']))
-{
+if(isset($_SERVER['PATH_INFO'])) {
 	$page = substr($_SERVER['PATH_INFO'],1);
 }
 

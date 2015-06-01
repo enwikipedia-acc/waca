@@ -20,8 +20,7 @@ function zoomPage($id,$urlhash)
     
 	$database = gGetDb();
 	$request = Request::getById($id, $database);
-	if($request == false)
-	{
+	if($request == false) {
 		// Notifies the user and stops the script.
 		BootstrapSkin::displayAlertBox("Could not load the requested request!", "alert-error","Error",true,false);
 		BootstrapSkin::displayInternalFooter();
@@ -30,12 +29,10 @@ function zoomPage($id,$urlhash)
     
 	$smarty->assign('ecenable', $enableEmailConfirm);
 
-	if(isset($_GET['ecoverride']) && User::getCurrent()->isAdmin() )
-	{
+	if(isset($_GET['ecoverride']) && User::getCurrent()->isAdmin() ) {
 		$smarty->assign('ecoverride', true);
 	}
-	else
-	{
+	else {
 		$smarty->assign('ecoverride', false);
 	}
         
@@ -82,7 +79,8 @@ SQL
 	if ($request->getStatus() == "Closed") {
 		$hash = md5($request->getId() . $request->getEmail() . $request->getTrustedIp() . microtime()); //If the request is closed, change the hash based on microseconds similar to the checksums.
 		$smarty->assign("isclosed", true);
-	} else {
+	}
+	else {
 		$hash = md5($request->getId() . $request->getEmail() . $request->getTrustedIp());
 		$smarty->assign("isclosed", false);
 	}
@@ -95,8 +93,7 @@ SQL
 	}
 	
 	$smarty->assign("showinfo", false);
-	if ($hideinfo == FALSE || $correcthash == TRUE || User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() )
-	{
+	if ($hideinfo == FALSE || $correcthash == TRUE || User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() ) {
 		$smarty->assign("showinfo", true);
 	}
     
@@ -124,13 +121,11 @@ SQL
 				$trusted = $xffTrustProvider->isTrusted($p2);
 				$ipisprivate = ipInRange($rfc1918ips, $p2);
                 
-				if( !$ipisprivate) 
-				{
+				if( !$ipisprivate) {
 					$iprdns = $rdnsProvider->getRdns($p2);
 					$iplocation = $locationProvider->getIpLocation($p2);
 				}
-				else
-				{
+				else {
 					// this is going to fail, so why bother trying?
 					$iprdns = false;
 					$iplocation = false;
@@ -144,8 +139,7 @@ SQL
                 
 				// current trust chain status AFTER this link
 				$trust = $trust & $trusted;
-				if($pretrust && $p2 == $origin)
-				{
+				if($pretrust && $p2 == $origin) {
 					$trust = true;   
 				}
 				$smartyproxies[$smartyproxiesindex]['trust'] = $trust;
@@ -157,7 +151,7 @@ SQL
 				$smartyproxies[$smartyproxiesindex]['location'] = $iplocation;
 				
 				if( $iprdns == $p2 && $ipisprivate == false) {
-					$smartyproxies[$smartyproxiesindex]['rdns'] = NULL;
+					$smartyproxies[$smartyproxiesindex]['rdns'] = null;
 				}
                 
 				$smartyproxies[$smartyproxiesindex]['showlinks'] = (!$trust || $p2 == $origin) && !$ipisprivate;
@@ -177,12 +171,10 @@ SQL
 	$smarty->assign("defaultstate", $defaultRequestStateKey);
 	$smarty->assign("requeststates", $availableRequestStates);
 		
-	try
-	{
+	try {
 		$spoofs = $antispoofProvider->getSpoofs( $request->getName() );
 	}
-	catch (Exception $ex)
-	{
+	catch (Exception $ex) {
 		$spoofs = $ex->getMessage();   
 	}
     
@@ -233,24 +225,19 @@ SQL
 				$row['security'] = '';
 			}
             
-			if(!isset($row['userid']))
-			{
-				if(!isset($namecache[$row['user']])) 
-				{
+			if(!isset($row['userid'])) {
+				if(!isset($namecache[$row['user']])) {
 					$userObject = User::getByUsername($row['user'], gGetDb());
-					if($userObject != false)
-					{
+					if($userObject != false) {
 						$namecache[$row['user']] = $userObject->getId();
 					}
-					else
-					{
+					else {
 						$namecache[$row['user']]= 0;
 					}
                     
 					$row['userid'] = $namecache[$row['user']];
-				} 
-				else 
-				{
+				}
+				else {
 					$row['userid'] = $namecache[($row['user'])];
 				}
 			}
@@ -259,15 +246,15 @@ SQL
 				$row['entry'] = htmlentities($row['comment'], ENT_QUOTES, 'UTF-8');
                 
 				global $enableCommentEditing;
-				if($enableCommentEditing && (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() || User::getCurrent()->getId() == $row['userid']) && isset($row['id']))
-				{
+				if($enableCommentEditing && (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() || User::getCurrent()->getId() == $row['userid']) && isset($row['id'])) {
 					$row['canedit'] = true;
 				}
-			} elseif($row['action'] == "Closed custom-n" ||$row['action'] == "Closed custom-y"  ) {
+			}
+			elseif($row['action'] == "Closed custom-n" ||$row['action'] == "Closed custom-y"  ) {
 				$row['entry'] = "<em>" .$row['description'] . "</em><br />" . str_replace("\n", '<br />', htmlentities($row['comment'], ENT_QUOTES, 'UTF-8'));
-			} else {
-				foreach($availableRequestStates as $deferState)
-				{
+			}
+			else {
+				foreach($availableRequestStates as $deferState) {
 					$row['entry'] = "<em>" . str_replace("deferred to ".$deferState['defertolog'],"deferred to ".$deferState['deferto'],$row['description']) . "</em>"; //#35: The log text(defertolog) should not be displayed to the user, deferto is what should be displayed
 				}
 			}
@@ -287,8 +274,7 @@ SQL
 	$userListResult = gGetDb()->query($userListQuery);
 	$userListData = $userListResult->fetchAll(PDO::FETCH_COLUMN);
 	$userListProcessedData = array();
-	foreach ($userListData as $userListItem)
-	{
+	foreach ($userListData as $userListItem) {
 		$userListProcessedData[] = "\"" . htmlentities($userListItem) . "\"";
 	}
     

@@ -20,8 +20,7 @@ require_once 'includes/SmartyInit.php'; // this needs to be high up, but below c
 
 $user = User::getByRequestToken($_GET['oauth_token'], gGetDb());
 
-if($user == false)
-{
+if($user == false) {
     BootstrapSkin::displayInternalHeader();
     BootstrapSkin::displayAlertBox("Could not find request token in local store.", "alert-error", "Error", true, false);
     BootstrapSkin::displayInternalFooter();
@@ -32,12 +31,10 @@ global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInter
 
 $util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
 
-try
-{
+try {
     $result = $util->callbackCompleted($user->getOAuthRequestToken(), $user->getOAuthRequestSecret(), $_GET['oauth_verifier']);
 }
-catch (Exception $exception)
-{
+catch (Exception $exception) {
     BootstrapSkin::displayInternalHeader();
     BootstrapSkin::displayAlertBox("OAuth Error: {$exception->getMessage()}", "alert-error", "OAuth Error", true, false);
     BootstrapSkin::displayInternalFooter();
@@ -49,8 +46,7 @@ $user->setOAuthAccessSecret($result->secret);
 $user->setOnWikiName("##OAUTH##");
 $user->save();
 
-if( $user->getStatus() == "New" )
-{
+if( $user->getStatus() == "New" ) {
     header("Location: ../acc.php?action=registercomplete");
     die();
 }

@@ -26,14 +26,11 @@ class Offline
     {
         global $smarty, $dontUseDb, $dontUseDbCulprit, $dontUseDbReason;
 
-        if ($dontUseDb)
-        {
-            if ($external)
-            {
+        if ($dontUseDb) {
+            if ($external) {
                 $smarty->display("offline/external.tpl");
             }
-            else
-            {
+            else {
                 $smarty->assign("dontUseDbCulprit", $dontUseDbCulprit);
                 $smarty->assign("dontUseDbReason", $dontUseDbReason);
                 $smarty->assign("alerts", array());
@@ -64,12 +61,10 @@ class Offline
     {
         global $smarty, $dontUseDbCulprit, $dontUseDbReason;
 
-        if ($external)
-        {
+        if ($external) {
             return $smarty->fetch("offline/external.tpl");
         }
-        else
-        {
+        else {
             $smarty->assign("dontUseDbCulprit", $dontUseDbCulprit);
             $smarty->assign("dontUseDbReason", $dontUseDbReason);
             $smarty->assign("alerts", array());

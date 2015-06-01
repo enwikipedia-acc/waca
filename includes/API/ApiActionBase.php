@@ -28,12 +28,10 @@ abstract class ApiActionBase implements IApiAction
 
         $apiDocument = $this->document->createElement("api");
 
-        try
-        {
+        try {
             $apiDocument = $this->execute($apiDocument);
         }
-        catch(ApiException $ex)
-        {
+        catch(ApiException $ex) {
             $exception = $this->document->createElement("error");
             $exception->setAttribute("message", $ex->getMessage());
             $apiDocument->appendChild($exception);

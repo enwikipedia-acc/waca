@@ -1,8 +1,10 @@
 <?php
 
-class TransactionExceptionTest extends PHPUnit_Framework_TestCase {
+class TransactionExceptionTest extends PHPUnit_Framework_TestCase
+{
 
-    public function testDefaultConstruction() {
+    public function testDefaultConstruction()
+    {
         $message = 'imamessagestring';
 
         $e = new TransactionException( $message );

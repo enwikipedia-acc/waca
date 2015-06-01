@@ -19,8 +19,7 @@ class Log extends DataObject
 
     public function save()
     {
-        if($this->isNew)
-        {
+        if($this->isNew) {
             $statement = $this->dbObject->prepare(<<<SQL
                 INSERT INTO log (objectid, objecttype, user, action, timestamp, comment) 
                 VALUES (:id, :type, :user, :action, CURRENT_TIMESTAMP(), :comment);
@@ -33,18 +32,15 @@ SQL
             $statement->bindValue(":action", $this->action);
             $statement->bindValue(":comment", $this->comment);
 
-            if($statement->execute())
-            {
+            if($statement->execute()) {
                 $this->isNew = false;
                 $this->id = $this->dbObject->lastInsertId();
             }
-            else
-            {
+            else {
                 throw new Exception($statement->errorInfo());
             }
         }
-        else
-        {
+        else {
             throw new Exception("Updating logs is not available");
         }
     }
@@ -85,12 +81,10 @@ SQL
      */
     public function setUser($user)
     {
-        if(is_a($user, "User"))
-        {
+        if(is_a($user, "User")) {
             $this->user = $user->getId();   
         }
-        else
-        {
+        else {
             $this->user = $user;   
         }
     }

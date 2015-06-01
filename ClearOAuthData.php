@@ -12,7 +12,7 @@ require_once 'includes/PdoDatabase.php';
 
 $database = gGetDb();
 
-$database->transactionally(function() use ($database) 
+$database->transactionally(function() use ($database)
 {
     $database->exec(<<<SQL
         UPDATE user 

@@ -12,8 +12,10 @@
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
 
-class accRequest {
-	public function isTOR() {
+class accRequest
+{
+	public function isTOR()
+	{
 		// Get messages object from index file.
 		global $messages;
 		
@@ -43,7 +45,8 @@ class accRequest {
 	/*
 	* Check if the supplied host is a TOR node.
 	*/
-	public function checktor($addr) {
+	public function checktor($addr)
+	{
 		// Creates empty array.
 		$flags = array ();
 		
