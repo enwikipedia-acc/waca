@@ -181,89 +181,72 @@ SQL
 	$smarty->assign("spoofs", $spoofs);
 	
 	// START LOG DISPLAY
-	$loggerclass = new LogPage();
-	$loggerclass->filterRequest = $request->getId();
-	$logs = $loggerclass->getRequestLogs();
 	
-	$comments = $request->getComments();
-    
-	foreach ($comments as $c) {
-		$logs[] = array(
-			'time' => $c->getTime(), 
-			'user' => $c->getUserObject()->getUsername(),
-			'userid' => $c->getUser(),
-			'description' => '', 
-			'target' => 0, 
-			'comment' => $c->getComment(), 
-			'action' => "comment", 
-			'security' => $c->getVisibility(), 
-			'id' => $c->getId()
-			);
-	}
-    
+	$logs = Logger::getRequestLogsWithComments($request->getId(), $request->getDatabase());
+	$requestLogs = array();
+	
 	if (trim($request->getComment()) !== "") {
-		$logs[] = array(
-			'time'=> $request->getDate(), 
-			'user'=> $request->getName(), 
-			'description' => '',
-			'target' => 0, 
-			'comment' => $request->getComment(), 
-			'action' => "comment", 
-			'security' => ''
-			);
+		$requestLogs[] = array(
+			'type' => 'comment',
+			'security' => 'user',
+			'userid' => null,
+			'user' => $request->getName(),
+			'entry' => null,
+			'time' => $request->getDate(),
+			'canedit' => false,
+			'id' => $request->getId(),
+			'comment' => $request->getComment(),
+		);
 	}
-	
 	
 	$namecache = array();
 	
-	if ($logs) {
-		$logs = doSort($logs);
-		foreach ($logs as &$row) {
-			$row['canedit'] = false;
-            
-			if (!isset($row['security'])) {
-				$row['security'] = '';
-			}
-            
-			if (!isset($row['userid'])) {
-				if (!isset($namecache[$row['user']])) {
-					$userObject = User::getByUsername($row['user'], gGetDb());
-					if ($userObject != false) {
-						$namecache[$row['user']] = $userObject->getId();
-					}
-					else {
-						$namecache[$row['user']] = 0;
-					}
-                    
-					$row['userid'] = $namecache[$row['user']];
-				}
-				else {
-					$row['userid'] = $namecache[($row['user'])];
-				}
-			}
-            
-			if ($row['action'] == "comment") {
-				$row['entry'] = htmlentities($row['comment'], ENT_QUOTES, 'UTF-8');
-                
-				global $enableCommentEditing;
-				if ($enableCommentEditing && (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser() || User::getCurrent()->getId() == $row['userid']) && isset($row['id'])) {
-					$row['canedit'] = true;
-				}
-			}
-			elseif ($row['action'] == "Closed custom-n" || $row['action'] == "Closed custom-y") {
-				$row['entry'] = "<em>" . $row['description'] . "</em><br />" . str_replace("\n", '<br />', htmlentities($row['comment'], ENT_QUOTES, 'UTF-8'));
-			}
-			else {
-				foreach ($availableRequestStates as $deferState) {
-					$row['entry'] = "<em>" . str_replace("deferred to " . $deferState['defertolog'], "deferred to " . $deferState['deferto'], $row['description']) . "</em>"; //#35: The log text(defertolog) should not be displayed to the user, deferto is what should be displayed
-				}
-			}
-		} // /foreach
-		unset($row);
-	} // if($logs)
-    
-	$smarty->assign("zoomlogs", $logs);
-
+	$editableComments = false;
+	global $enableCommentEditing;
+	if ($enableCommentEditing) {
+		if (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
+			$editableComments = true;
+		}
+	}
+	
+	foreach ($logs as $entry) {
+		// both log and comment have a 'user' field
+		if (!array_key_exists($entry->getUser(), $namecache)) {
+			$namecache[$entry->getUser()] = $entry->getUserObject();
+		}
+		
+		if ($entry instanceof Comment) {
+			$requestLogs[] = array(
+				'type' => 'comment',
+				'security' => $entry->getVisibility(), 
+				'user' => $namecache[$entry->getUser()]->getUsername(),
+				'userid' => $entry->getUser() == -1 ? null : $entry->getUser(),
+				'entry' => null,
+				'time' => $entry->getTime(),
+				'canedit' => $enableCommentEditing 
+					&& ($editableComments || $entry->getUser() == User::getCurrent()->getId()),
+				'id' => $entry->getId(),
+				'comment' => $entry->getComment(),
+			);
+		}
+		
+		if ($entry instanceof Log) {
+			$requestLogs[] = array(
+				'type' => 'log',
+				'security' => 'user',
+				'userid' => $entry->getUser() == -1 ? null : $entry->getUser(),
+				'user' => $namecache[$entry->getUser()]->getUsername(),
+				'entry' => Logger::getLogDescription($entry),
+				'time' => $entry->getTimestamp(),
+				'canedit' => false,
+				'id' => $entry->getId(),
+				'comment' => $entry->getComment(),
+			);
+		}
+	}
+	
+	$smarty->assign("requestLogs", $requestLogs);
+	
 
 	// START OTHER REQUESTS BY IP AND EMAIL STUFF
 	

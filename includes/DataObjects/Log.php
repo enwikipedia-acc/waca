@@ -82,6 +82,15 @@ SQL
 	{
 		return $this->user;
 	}
+	
+	/**
+	 * Summary of getUserObject
+	 * @return User|null
+	 */
+	public function getUserObject()
+	{
+		return User::getById($this->user, $this->dbObject);
+	}
 
 	/**
 	 * Summary of setUser

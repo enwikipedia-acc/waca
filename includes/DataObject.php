@@ -23,6 +23,15 @@ abstract class DataObject
 	{
 		$this->dbObject = $db;
 	}
+    
+    /**
+     * Gets the database associated with this data object.
+     * @return PdoDatabase
+     */
+    public function getDatabase()
+    {
+        return $this->dbObject;   
+    }
 
 	/**
 	 * Retrieves a data object by it's row ID.

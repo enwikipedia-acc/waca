@@ -167,41 +167,6 @@ function displayPreview($wikicode)
 }
 
 /**
- * A simple implementation of a bubble sort on a multidimensional array.
- *
- * @param array $items A two-dimensional array, to be sorted by a date variable
- * in the 'time' field of the arrays inside the array passed.
- * @return array sorted array.
- */
-function doSort(array $items)
-{
-	// Loop through until it's sorted
-	do {
-		// reset flag to false, we've not made any changes in this iteration yet
-		$flag = false;
-		
-		// loop through the array
-		$loopLimit = (count($items) - 1);
-		for ($i = 0; $i < $loopLimit; $i++) {
-			// are these two items out of order?
-			if (strtotime($items[$i]['time']) > strtotime($items[$i + 1]['time'])) {
-				// swap them
-				$swap = $items[$i];
-				$items[$i] = $items[$i + 1];
-				$items[$i + 1] = $swap;
-				
-				// set a flag to say we've modified the array this time around
-				$flag = true;
-			}
-		}
-	}
-	while ($flag);
-	
-	// return the array back to the caller
-	return $items;
-}
-
-/**
  * Parses an XFF header and client IP to find the last trusted client IP
  * 
  * @param string $dbip The IP address the request came from
