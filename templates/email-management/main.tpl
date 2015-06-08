@@ -13,7 +13,7 @@
       {foreach $activeemails as $row}
       <tr>
         <td>{$row@iteration}.</td>
-        <th>{$row->getName()}</th>
+        <th>{$row->getName()|escape}</th>
         <td>
           {if $row->getOncreated()}<span class="label label-success">Create</span>{else}<span class="label label-important">Decline</span>{/if}
         </td>
@@ -36,7 +36,7 @@
       {foreach $inactiveemails as $row}
       <tr>
         <td>{$row@iteration}.</td>
-        <th>{$row->getName()}</th>
+        <th>{$row->getName()|escape}</th>
         <td>
           {if $row->getOncreated()}<span class="label label-success">Create</span>{else}<span class="label label-important">Decline</span>{/if}
         </td>

@@ -5,13 +5,13 @@
     <button type="button" class="btn btn-success dropdown-toggle span2" data-toggle="dropdown">&nbsp;<span class="caret"></span></button>
     <ul class="dropdown-menu" role="menu">
         {foreach $createreasons as $reason}
-            <li><a href="{$baseurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$reason->getId()}&amp;sum={$request->getChecksum()}"{if !$currentUser->getAbortPref() && $reason->getJsquestion() != ''} onclick="return confirm('{$reason->getJsquestion()}')"{/if}>{$reason->getName()}</a></li>
+            <li><a href="{$baseurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$reason->getId()}&amp;sum={$request->getChecksum()}"{if !$currentUser->getAbortPref() && $reason->getJsquestion() != ''} onclick="return confirm('{$reason->getJsquestion()}')"{/if}>{$reason->getName()|escape}</a></li>
 
         {/foreach}
     </ul>
 </div>
 {else}
 <div class = "span4">
-    <a class="btn btn-success span12" href="{$baseurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$createdEmailTemplate->getId()}&amp;sum={$request->getChecksum()}">{$createdEmailTemplate->getName()}</a>
+    <a class="btn btn-success span12" href="{$baseurl}/acc.php?action=done&amp;id={$request->getId()}&amp;email={$createdEmailTemplate->getId()}&amp;sum={$request->getChecksum()}">{$createdEmailTemplate->getName()|escape}</a>
 </div>
 {/if}
