@@ -408,4 +408,9 @@ SQL
 			throw new Exception("Error sending email.");
 		}
 	}
+	
+	public function getObjectDescription()
+	{
+		return '<a href="acc.php?action=zoom&amp;id=' . $this->getId() . '">Request #' . $this->getId() . " (" . htmlentities($this->name) . ")</a>";
+	}
 }

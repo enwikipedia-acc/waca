@@ -490,20 +490,14 @@ BootstrapSkin::displayAlertBox(
 	false);
 
 // assign to user
-$userListQuery = "SELECT username FROM user;";
-$userListResult = gGetDb()->query($userListQuery);
-$userListData = $userListResult->fetchAll(PDO::FETCH_COLUMN);
-$userListProcessedData = array();
-foreach ($userListData as $userListItem) {
-	$userListProcessedData[] = "\"" . htmlentities($userListItem, ENT_COMPAT, 'UTF-8') . "\"";
-}
-
-$jsuserlist = '[' . implode(",", $userListProcessedData) . ']';
+$userListData = User::getAllUsernames(gGetDb());
+$smarty->assign("jsuserlist", $userListData);
+$smartydatalist = $smarty->fetch("usermanagement/jsuserlist.tpl");
 
 echo <<<HTML
 <div class="row-fluid">
     <form class="form-search">
-        <input type="text" class="input-large" placeholder="Jump to user" data-provide="typeahead" data-items="10" data-source='{$jsuserlist}' name="usersearch">
+        <input type="text" class="input-large" placeholder="Jump to user" $smartydatalist name="usersearch">
         <button type="submit" class="btn">Search</button>
     </form>
 </div>

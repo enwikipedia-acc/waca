@@ -15,7 +15,10 @@ class EmailTemplate extends DataObject
 	private $preloadonly = 0;
 
 	/**
-	 * @param integer $forCreated
+	 * Gets active non-preload templates
+	 * @param integer $forCreated Created templates?
+	 * @param PdoDatabase $database 
+	 * @return array|false
 	 */
 	public static function getActiveTemplates($forCreated, PdoDatabase $database = null)
 	{
@@ -42,7 +45,10 @@ class EmailTemplate extends DataObject
 	}
 
 	/**
-	 * @param integer $forCreated
+	 * Gets active non-preload and preload templates
+	 * @param mixed $forCreated Created templates?
+	 * @param PdoDatabase $database 
+	 * @return array|false
 	 */
 	public static function getAllActiveTemplates($forCreated, PdoDatabase $database = null)
 	{
@@ -185,5 +191,10 @@ class EmailTemplate extends DataObject
 	public function setPreloadOnly($preloadonly)
 	{
 		$this->preloadonly = $preloadonly ? 1 : 0;
+	}
+	
+	public function getObjectDescription()
+	{
+		return '<a href="acc.php?action=emailmgmt&amp;edit=' . $this->getId() . '">Email Template #' . $this->getId() . " (" . htmlentities($this->name) . ")</a>";
 	}
 }

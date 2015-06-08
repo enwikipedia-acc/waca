@@ -247,4 +247,9 @@ class Ban extends DataObject
 	{
 		$this->active = $active;
 	}
+	
+	public function getObjectDescription()
+	{
+		return 'Ban #' . $this->getId() . " (" . htmlentities($this->target) . ")</a>";
+	}
 }

@@ -138,4 +138,25 @@ SQL
 	{
 		$this->comment = $comment;
 	}
+	
+	/**
+	 * Let's be really sneaky here, and fake this to the object description of the logged object.
+	 * @return string
+	 */
+	public function getObjectDescription()
+	{
+		$type = $this->objecttype;
+		
+		if ($type == "") {
+			return "";
+		}
+		
+		$object = $type::getById($this->objectid, $this->dbObject);
+		
+		if ($object === false) {
+			return '[' . $this->objecttype . " " . $this->objectid . ']';
+		}
+		
+		return $object->getObjectDescription();
+	}
 }

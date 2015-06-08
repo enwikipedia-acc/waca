@@ -84,4 +84,9 @@ abstract class DataObject
 		$this->id = 0;
 		$this->isNew = true;
 	}
+	
+	public function getObjectDescription()
+	{
+		return '[' . get_called_class() . " " . $this->getId() . ']';	
+	}
 }

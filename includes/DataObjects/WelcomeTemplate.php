@@ -103,4 +103,9 @@ class WelcomeTemplate extends DataObject
 
 		return $this->usageCache;
 	}
+	
+	public function getObjectDescription()
+	{
+		return '<a href="acc.php?action=templatemgmt&amp;view=' . $this->getId() . '">' . htmlentities($this->usercode) . "</a>";
+	}
 }

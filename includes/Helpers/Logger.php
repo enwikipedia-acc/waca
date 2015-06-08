@@ -314,7 +314,120 @@ class Logger
 		}
 		
 		// OK, I don't know what this is. Fall back to something sane.
-		return "performed an unknown action";
+		return "performed an unknown action ({$entry->getAction()})";
+	}
+	
+	/**
+	 * Summary of getLogs
+	 * @param mixed $userFilter 
+	 * @param mixed $actionFilter 
+	 * @param mixed $limit 
+	 * @param mixed $offset 
+	 * @return mixed
+	 */
+	public static function getLogs($userFilter, $actionFilter, $limit = 100, $offset = 0)
+	{
+		$database = gGetDb();
+		
+		$whereClause = "(:userFilter = 0 OR user = :userid) AND (:actionFilter = 0 OR action = :action)";
+		$searchSqlStatement = "SELECT * FROM log WHERE $whereClause ORDER BY timestamp DESC LIMIT :limit OFFSET :offset;";
+		$countSqlStatement = "SELECT COUNT(1) FROM log WHERE $whereClause;";
+		
+		$searchStatement = $database->prepare($searchSqlStatement);
+		$countStatement = $database->prepare($countSqlStatement);
+		
+		$searchStatement->bindValue(":limit", $limit, PDO::PARAM_INT);
+		$searchStatement->bindValue(":offset", $offset, PDO::PARAM_INT);
+		
+		if ($userFilter === false) {
+			$searchStatement->bindValue(":userFilter", 0, PDO::PARAM_INT);
+			$countStatement->bindValue(":userFilter", 0, PDO::PARAM_INT);
+			$searchStatement->bindValue(":userid", 0, PDO::PARAM_INT);
+			$countStatement->bindValue(":userid", 0, PDO::PARAM_INT);
+		}
+		else {
+			$searchStatement->bindValue(":userFilter", 1, PDO::PARAM_INT);
+			$countStatement->bindValue(":userFilter", 1, PDO::PARAM_INT);
+			$searchStatement->bindValue(":userid", User::getByUsername($userFilter, $database)->getId(), PDO::PARAM_INT);
+			$countStatement->bindValue(":userid", User::getByUsername($userFilter, $database)->getId(), PDO::PARAM_INT);
+		}
+		
+		if ($actionFilter === false) {
+			$searchStatement->bindValue(":actionFilter", 0, PDO::PARAM_INT);
+			$countStatement->bindValue(":actionFilter", 0, PDO::PARAM_INT);
+			$searchStatement->bindValue(":action", "", PDO::PARAM_STR);
+			$countStatement->bindValue(":action", "", PDO::PARAM_STR);
+		}
+		else {
+			$searchStatement->bindValue(":actionFilter", 1, PDO::PARAM_INT);
+			$countStatement->bindValue(":actionFilter", 1, PDO::PARAM_INT);
+			$searchStatement->bindValue(":action", $actionFilter, PDO::PARAM_STR);
+			$countStatement->bindValue(":action", $actionFilter, PDO::PARAM_STR);
+		}
+		
+		if (!$countStatement->execute()) {
+			return false;
+		}
+		
+		$count = $countStatement->fetchColumn(0);
+		$countStatement->closeCursor();
+		
+		if ($searchStatement->execute()) {
+			$data = $searchStatement->fetchAll(PDO::FETCH_CLASS, "Log");
+			
+			foreach ($data as $entry) {
+				$entry->setDatabase($database);
+				$entry->isNew = false;
+			}
+			
+			$data['count'] = $count;
+			
+			return $data;
+		}
+		
+		return false;
+	}
+	
+	/**
+	 * Summary of getLogActions
+	 */
+	public static function getLogActions()
+	{
+		$database = gGetDb();
+				
+		$lookup = array(
+			'Reserved' => 'reserved',
+			'Email Confirmed' => 'email-confirmed',
+			'Unreserved' => 'unreserved',
+			'Approved' => 'approved',
+			'Suspended' => 'suspended',
+			'Banned' => 'banned',
+			'Edited' => 'edited interface message',
+			'Declined' => 'declined',
+			'EditComment-c' => 'edited a comment',
+			'EditComment-r' => 'edited a comment',
+			'Unbanned' => 'unbanned',
+			'Promoted' => 'promoted to tool admin',
+			'BreakReserve' => 'forcibly broke the reservation',
+			'Prefchange' => 'changed user preferences',
+			'Renamed' => 'renamed',
+			'Demoted' => 'demoted from tool admin',
+			'ReceiveReserved' => 'received the reservation',
+			'SendReserved' => 'sent the reservation',
+			'EditedEmail' => 'edited email',
+			'DeletedTemplate' => 'deleted template',
+			'EditedTemplate' => 'edited template',
+			'CreatedEmail' => 'created email',
+			'CreatedTemplate' => 'created template',
+			);
+		
+		$statement = $database->query("SELECT CONCAT('Closed ', id) as k, CONCAT('closed (',name,')') as v FROM emailtemplate;");
+		foreach($statement->fetchAll(PDO::FETCH_ASSOC) as $row)
+		{
+			$lookup[$row['k']] = $row['v'];
+		}
+		
+		return $lookup;
 	}
 	
 	#endregion

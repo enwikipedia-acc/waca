@@ -168,6 +168,30 @@ SQL
 		return $resultObject;
 	}
     
+	/**
+	 * Summary of getAllUsernames
+	 * @param PdoDatabase $database 
+	 * @param null|string $filter 
+	 */
+	public static function getAllUsernames(PdoDatabase $database, $filter = null)
+	{
+		if ($filter === null) {
+			$userListQuery = "SELECT username FROM user;";
+			$userListResult = $database->query($userListQuery);
+		}
+		elseif ($filter === true) {
+			$userListQuery = "SELECT username FROM user WHERE status IN ('User', 'Admin');";
+			$userListResult = $database->query($userListQuery);
+		}
+		else {
+			$userListQuery = "SELECT username FROM user WHERE status = :status;";
+			$userListResult = $database->prepare($userListQuery);
+			$userListResult->execute(array(":status" => $filter));
+		}
+		
+		return $userListResult->fetchAll(PDO::FETCH_COLUMN);
+	}
+	
 	public function save()
 	{
 		if ($this->isNew) {
@@ -738,5 +762,10 @@ SQL
 		$query->closeCursor();
         
 		return $data;
+	}
+	
+	public function getObjectDescription()
+	{
+		return '<a href="statistics.php?page=Users&amp;user=' . $this->getId() . '">' . htmlentities($this->username) . "</a>";
 	}
 }

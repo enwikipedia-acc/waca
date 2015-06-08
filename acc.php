@@ -1349,97 +1349,79 @@ elseif ($action == "zoom") {
 }
 elseif ($action == "logs") {
 	global $baseurl;
-    
-	if (isset($_GET['user'])) {
-		$filteruser = $_GET['user'];
-		$filteruserl = " value=\"" . htmlentities($filteruser, ENT_QUOTES, 'UTF-8') . "\"";
-	}
-	else {
-		$filteruserl = ""; 
-		$filteruser = "";
+	
+	$filterUser = isset($_GET['filterUser']) && $_GET['filterUser'] != "" ? $_GET['filterUser'] : false;
+	$filterAction = isset($_GET['filterAction']) && $_GET['filterAction'] != "" ? $_GET['filterAction'] : false;
+	
+	$limit = 100;
+	if (isset($_GET['limit'])) {
+		$limit = (int)$_GET['limit'];
 	}
 	
-	echo '<h2>Logs</h2>
-	<form action="'.$baseurl . '/acc.php" method="get">
-		<input type="hidden" name="action" value="logs" />
-		<table>
-			<tr><td>Filter by username:</td><td><input type="text" name="user"'.$filteruserl . ' /></td></tr>
-			<tr><td>Filter by log action:</td>
-				<td>
-					<select id="logActionSelect" name="logaction">';
-	$logActions = array(
-			//  log entry type => display name
-				"" => "(All)",
-				"Reserved" => "Request reservation",
-				"Unreserved" => "Request unreservation",
-				"BreakReserve" => "Break reservation",
-				"Deferred%" => "Deferred request",
-				"Email Confirmed" => "Email confirmed reservation",
-				"Banned" => "Ban",
-				"Unbanned" => "Unban",
-				"Edited" => "Message editing",
-				"CreatedTemplate" => "Template creation",
-				"EditedTemplate" => "Template editing",
-				"DeletedTemplate" => "Template deletion",
-				"Declined" => "User declination",
-				"Suspended" => "User suspension",
-				"Demoted" => "User demotion",
-				"Renamed" => "User rename",
-				"Approved" => "User approval",
-				"Promoted" => "User promotion",
-				"Prefchange" => "User preferences change",
-						"SendReserved" => "Reservation sending",
-						"ReceiveReserved" => "Reservation recieving",
-				"Closed 0" => "Request drop",
-				"Closed custom" => "Request custom close",
-				"Closed custom-y" => "Request custom close, created",
-				"Closed custom-n" => "Request custom close, not created"
+	$offset = 0;
+	$page = 1;
+	if (isset($_GET['page'])) {
+		$page = (int)$_GET['page'];
+		$offset = ($page - 1) * $limit;
+	}
+	
+	$logs = Logger::getLogs($filterUser, $filterAction, $limit, $offset);
+	if ($logs === false) {
+		$smarty->assign("logs", array());
+		$smarty->display("logs/main.tpl");
+		BootstrapSkin::displayInternalFooter();
+		die();
+	}
+	
+	$count = $logs['count'];
+	unset($logs['count']);
+	
+	// The number of pages on the pager to show. Must be odd
+	$pageLimit = 9;
+	
+	$pageData = array( 
+		'canprev' => $page != 1,
+		'cannext' => ($page * $limit) < $count,
+		'maxpage' => ceil($count / $limit),
+		'pagelimit' => $pageLimit,
 	);
-	// Add entries for every Email template, including inactive ones.
-	$query = "SELECT id, name FROM emailtemplate ORDER BY id";
-	$statement = gGetDb()->prepare($query);
-	$statement->execute();
-	while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
-		$logAction = "Closed " . $row['id'];
-		$logActions[$logAction] = "Request " . $row['name'];
+	
+	$pageMargin = (($pageLimit - 1) / 2);
+	$pageData['lowpage'] = max(1, $page - $pageMargin);
+	$pageData['hipage'] = min($pageData['maxpage'], $page + $pageMargin);
+	
+	$pageCount = ($pageData['hipage'] - $pageData['lowpage']) + 1;
+	
+	if ($pageCount < $pageLimit) {
+		if ($pageData['lowpage'] == 1 && $pageData['hipage'] == $pageData['maxpage']) {
+			// nothing to do, we're already at max range.	
+		}
+		elseif ($pageData['lowpage'] == 1 && $pageData['hipage'] < $pageData['maxpage']) {
+			$pageData['hipage'] = min($pageLimit, $pageData['maxpage']);
+		}
+		elseif ($pageData['lowpage'] > 1 && $pageData['hipage'] == $pageData['maxpage']) {
+			$pageData['lowpage'] = max(1, $pageData['maxpage'] - $pageLimit + 1);
+		}
 	}
 	
-	foreach ($logActions as $key => $value) {
-		echo "<option value=\"" . $key . "\"";
-		if (isset($_GET['logaction'])) { if ($key == $_GET['logaction']) {
-			echo " selected=\"selected\"";
-		}
-		}
-		echo ">" . $value . "</option>";
+	$pageData['pages'] = range($pageData['lowpage'], $pageData['hipage']);
 		
-	}
-	echo '			</select>
-				</td>
-			</tr>
-		</table>
-	<input type="submit" /></form>';
+	$smarty->assign("pagedata", $pageData);
+	
+	$smarty->assign("limit", $limit);
+	$smarty->assign("page", $page);
+	
+	$activeUsers = User::getAllUsernames(gGetDb(), true);
+	
+	$smarty->assign("jsuserlist", $activeUsers);
+	$smarty->assign("logs", $logs);
 	
 	
-	$logPage = new LogPage();
-
-	if (isset($_GET['user'])) {
-		$logPage->filterUser = $_GET['user'];
-	}
-	if (isset ($_GET['limit'])) {
-		$limit = $_GET['limit'];
-	}
-	if (isset ($_GET['from'])) {
-		$offset = $_GET['from'];	
-	}
+	$smarty->assign("filterUser", $filterUser);
+	$smarty->assign("filterAction", $filterAction);
+	$smarty->display("logs/main.tpl");
 	
-	if (isset($_GET['logaction'])) {
-		$logPage->filterAction = $_GET['logaction'];
-	}
-
-	echo $logPage->showListLog(isset($offset) ? $offset : 0, isset($limit) ? $limit : 100);
-    
 	BootstrapSkin::displayInternalFooter();
-    
 	die();
 }
 elseif ($action == "reserve") {

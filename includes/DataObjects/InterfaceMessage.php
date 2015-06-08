@@ -113,4 +113,9 @@ class InterfaceMessage extends DataObject
 	{
 		$this->type = $type;
 	}
+	
+	public function getObjectDescription()
+	{
+		return '<a href="acc.php?action=messagemgmt&amp;view=' . $this->getId() . '">' . htmlentities($this->description) . "</a>";
+	}
 }
