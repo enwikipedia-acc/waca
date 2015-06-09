@@ -21,7 +21,6 @@ if (!defined("ACC")) {
 } // Invalid entry point
 
 require_once 'queryBrowser.php';
-require_once 'LogClass.php';
 require_once 'includes/session.php';
 
 // Initialize the class objects.
