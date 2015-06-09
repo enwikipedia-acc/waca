@@ -47,7 +47,7 @@ class Comment extends DataObject
 	public function save()
 	{
 		if ($this->isNew) {
-            // insert
+			// insert
 			$statement = $this->dbObject->prepare("INSERT INTO comment ( time, user, comment, visibility, request ) VALUES ( CURRENT_TIMESTAMP(), :user, :comment, :visibility, :request );");
 			$statement->bindValue(":user", $this->user);
 			$statement->bindValue(":comment", $this->comment);
@@ -63,7 +63,7 @@ class Comment extends DataObject
 			}
 		}
 		else {
-            // update
+			// update
 			$statement = $this->dbObject->prepare("UPDATE comment SET comment = :comment, visibility = :visibility WHERE id = :id LIMIT 1;");
 			$statement->bindValue(":id", $this->id);
 			$statement->bindValue(":comment", $this->comment);

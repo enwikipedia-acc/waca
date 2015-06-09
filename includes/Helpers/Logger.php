@@ -10,6 +10,9 @@
  */
 class Logger
 {
+	/**
+	 * @param User $user
+	 */
 	private static function createLogEntry(PdoDatabase $database, DataObject $object, $logaction, $comment = null, $user = null)
 	{
 		if ($user == null) {
@@ -176,7 +179,7 @@ class Logger
 		$logStatement = $db->prepare(
 			"SELECT * FROM log WHERE objecttype = 'Request' AND objectid = :requestid ORDER BY timestamp DESC");
 		
-		$result = $logStatement->execute(array( ":requestid" => $requestId));
+		$result = $logStatement->execute(array(":requestid" => $requestId));
 		if ($result) {
 			$data = $logStatement->fetchAll(PDO::FETCH_CLASS, "Log");
 			foreach ($data as $entry) {
@@ -321,8 +324,8 @@ class Logger
 	 * Summary of getLogs
 	 * @param mixed $userFilter 
 	 * @param mixed $actionFilter 
-	 * @param mixed $limit 
-	 * @param mixed $offset 
+	 * @param integer $limit 
+	 * @param integer $offset 
 	 * @return mixed
 	 */
 	public static function getLogs($userFilter, $actionFilter, $limit = 100, $offset = 0)
@@ -422,7 +425,7 @@ class Logger
 			);
 		
 		$statement = $database->query("SELECT CONCAT('Closed ', id) as k, CONCAT('closed (',name,')') as v FROM emailtemplate;");
-		foreach($statement->fetchAll(PDO::FETCH_ASSOC) as $row)
+		foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row)
 		{
 			$lookup[$row['k']] = $row['v'];
 		}
