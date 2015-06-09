@@ -573,7 +573,7 @@ SQL
     
 	public function isCheckuser()
 	{
-		return $this->checkuser == 1;
+		return $this->checkuser == 1 || $this->oauthCanCheckUser();
 	}
     
 	public function isIdentified()
@@ -731,6 +731,16 @@ SQL
 				&& in_array('createaccount', $this->getOAuthIdentity()->grants)
 				&& in_array('createaccount', $this->getOAuthIdentity()->rights)
 				&& in_array('writeapi', $this->getOAuthIdentity()->rights);
+		}
+		catch (Exception $ex) {
+			return false;
+		}
+	}
+
+	public function oauthCanCheckUser()
+	{
+		try {
+			return in_array('checkuser', $this->getOAuthIdentity()->rights);
 		}
 		catch (Exception $ex) {
 			return false;

@@ -256,6 +256,11 @@ class CommunityUser extends User
 	{
 		return false;
 	}
+
+	public function oauthCanCheckUser()
+	{
+		return false;
+	}
     
 	#endregion
 
