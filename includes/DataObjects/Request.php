@@ -351,12 +351,6 @@ SQL
 
 	public function isProtected()
 	{
-		global $protectReservedRequests;
-
-		if (!$protectReservedRequests) {
-			return false;
-		}
-
 		if ($this->reserved != 0) {
 			if ($this->reserved == User::getCurrent()->getId()) {
 				return false;

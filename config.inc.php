@@ -145,9 +145,6 @@ $enableAdminBreakReserve = true;
 //    deny: Prevents the user from reserving a second request.
 $allowDoubleReserving = "warn";
 
-// protect reserved requests to prevent all but the reserving user from handling the request.
-$protectReservedRequests = true;
-
 /************************************
  * Backup Configuration
  */

@@ -163,7 +163,7 @@ SQL
 		}
 	}
 
-	global $protectReservedRequests, $defaultRequestStateKey;
+	global $defaultRequestStateKey;
 	
 	// TODO: remove me and replace with call in the template directly
 	$smarty->assign("isprotected", $request->isProtected());
