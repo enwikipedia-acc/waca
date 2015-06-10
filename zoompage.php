@@ -220,8 +220,7 @@ SQL
 				'userid' => $entry->getUser() == -1 ? null : $entry->getUser(),
 				'entry' => null,
 				'time' => $entry->getTime(),
-				'canedit' => $enableCommentEditing 
-					&& ($editableComments || $entry->getUser() == User::getCurrent()->getId()),
+				'canedit' => ($editableComments || $entry->getUser() == User::getCurrent()->getId()),
 				'id' => $entry->getId(),
 				'comment' => $entry->getComment(),
 			);
