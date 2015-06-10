@@ -203,7 +203,6 @@ $cDataClearEmail = 'acc@toolserver.org';
 $enableSQLError = 0; // Enable the display of SQL errors.
 $showGraphs = 1; // Show graphs on statistics pages.
 $enableTitleblacklist = 0; // Enable Title Blacklist checks.
-$enableCommentEditing = 1; // Enable admin editing of comments
 
 // Enable the use of PATH_INFO for request parameters to prettify URLs.
 $usePathInfo = true;

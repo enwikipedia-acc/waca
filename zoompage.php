@@ -202,11 +202,8 @@ SQL
 	$namecache = array();
 	
 	$editableComments = false;
-	global $enableCommentEditing;
-	if ($enableCommentEditing) {
-		if (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
-			$editableComments = true;
-		}
+	if (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
+		$editableComments = true;
 	}
 	
 	foreach ($logs as $entry) {
