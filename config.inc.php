@@ -114,9 +114,6 @@ $onRegistrationNewbieCheck = true; // Enable the newbie checking.
 $onRegistrationNewbieCheckEditCount = 20; // Minimum amount of edits on Wikipedia.
 $onRegistrationNewbieCheckAge = 5184000; // Account age on Wikipedia in seconds.
 
-// Enable interface account renaming.
-$enableRenames = 1; 		
-
 // Allow checkusers to see the useragent
 $allowViewingOfUseragent = true;
 

@@ -328,7 +328,7 @@ if (isset ($_GET['decline'])) {
 
 #region renaming
 
-if (isset ($_GET['rename']) && $enableRenames == 1) {
+if (isset ($_GET['rename'])) {
 	$user = User::getById($_GET['rename'], gGetDb());
 
 	if ($user == false) {
