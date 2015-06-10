@@ -132,13 +132,6 @@ $communityUsername = "[Community]";
 // Adapted from livehack by st - use the userid, zero for unreserved.
 $defaultReserver = 0;
 
-// Double reserving configuration.
-//    ignore: Ignores the fact that some users have reserved two requests.
-//    inform: Reserves the second request, but alerts the user.
-//    warn: Asks the user if they are sure they wish to reserve the second request.
-//    deny: Prevents the user from reserving a second request.
-$allowDoubleReserving = "warn";
-
 /************************************
  * Backup Configuration
  */

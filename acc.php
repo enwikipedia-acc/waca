@@ -1434,7 +1434,7 @@ elseif ($action == "reserve") {
 			throw new TransactionException("Request not found", "Error");
 		}
         
-		global $enableEmailConfirm, $allowDoubleReserving, $baseurl;
+		global $enableEmailConfirm, $baseurl;
 		if ($enableEmailConfirm == 1) {
 			if ($request->getEmailConfirm() != "Confirmed") {
 				throw new TransactionException("Email address not yet confirmed for this request.", "Error");
@@ -1460,21 +1460,18 @@ elseif ($action == "reserve") {
 		}
            
 		if ($request->getReserved() == 0) {
-			if (isset($allowDoubleReserving)) {
-				// Check the number of requests a user has reserved already
-        
-				$doubleReserveCountQuery = $database->prepare("SELECT COUNT(*) FROM request WHERE reserved = :userid;");
-				$doubleReserveCountQuery->bindValue(":userid", User::getCurrent($database)->getId());
-				$doubleReserveCountQuery->execute();
-				$doubleReserveCount = $doubleReserveCountQuery->fetchColumn();
-				$doubleReserveCountQuery->closeCursor();
-		
-				// User already has at least one reserved. 
-				if ($doubleReserveCount != 0) {
-					SessionAlert::warning("You have multiple requests reserved!");
-				}
+			// Check the number of requests a user has reserved already
+			$doubleReserveCountQuery = $database->prepare("SELECT COUNT(*) FROM request WHERE reserved = :userid;");
+			$doubleReserveCountQuery->bindValue(":userid", User::getCurrent($database)->getId());
+			$doubleReserveCountQuery->execute();
+			$doubleReserveCount = $doubleReserveCountQuery->fetchColumn();
+			$doubleReserveCountQuery->closeCursor();
+
+			// User already has at least one reserved. 
+			if ($doubleReserveCount != 0) {
+				SessionAlert::warning("You have multiple requests reserved!");
 			}
-	
+
 			// Is the request closed?
 			if (!isset($_GET['confclosed'])) {
 				if ($request->getStatus() == "Closed") {
