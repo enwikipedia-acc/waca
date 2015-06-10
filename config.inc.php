@@ -135,9 +135,6 @@ $communityUsername = "[Community]";
 // Adapted from livehack by st - use the userid, zero for unreserved.
 $defaultReserver = 0;
 
-// Allow admins to break any reservation. (stable)
-$enableAdminBreakReserve = true;
-
 // Double reserving configuration.
 //    ignore: Ignores the fact that some users have reserved two requests.
 //    inform: Reserves the second request, but alerts the user.

@@ -1526,8 +1526,7 @@ elseif ($action == "breakreserve") {
 	}
     
 	if ($reservedUser->getId() != User::getCurrent()->getId()) {
-		global $enableAdminBreakReserve;
-		if ($enableAdminBreakReserve && User::getCurrent()->isAdmin()) {
+		if (User::getCurrent()->isAdmin()) {
 			if (isset($_GET['confirm']) && $_GET['confirm'] == 1) {
 				$database->transactionally(function() use($database, $request)
 				{
