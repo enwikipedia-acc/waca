@@ -44,7 +44,6 @@ class StatsUsers extends StatisticsPage
 		$lists = array(
 			"Admin" => User::getAllWithStatus("Admin", gGetDb()),
 			"User" => User::getAllWithStatus("User", gGetDb()),
-			"CheckUsers" => User::getAllCheckusers(gGetDb())
 		);
 
 		global $smarty;

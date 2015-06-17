@@ -13,7 +13,7 @@ class User extends DataObject
 	private $welcome_sig = "";
 	private $lastactive = "0000-00-00 00:00:00";
 	private $forcelogout = 0;
-	private $checkuser = 0;
+	private $root = 0;
 	private $identified = 0;
 	private $welcome_template = 0;
 	private $abortpref = 0;
@@ -126,21 +126,6 @@ class User extends DataObject
 		return $resultObject;
 	}
     
-	public static function getAllCheckusers(PdoDatabase $database)
-	{
-		$statement = $database->prepare("SELECT * FROM user WHERE checkuser = 1;");
-		$statement->execute();
-        
-		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
-        
-		foreach ($resultObject as $u) {
-			$u->setDatabase($database);
-			$u->isNew = false;
-		}
-        
-		return $resultObject;
-	}
-    
 	public static function getAllInactive(PdoDatabase $database)
 	{
 		$date = new DateTime();
@@ -199,13 +184,13 @@ SQL
 			$statement = $this->dbObject->prepare(<<<SQL
                 INSERT INTO `user` ( 
                     username, email, password, status, onwikiname, welcome_sig, 
-                    lastactive, forcelogout, checkuser, identified, 
+                    lastactive, forcelogout, root, identified, 
                     welcome_template, abortpref, confirmationdiff, emailsig, 
                     oauthrequesttoken, oauthrequestsecret, 
                     oauthaccesstoken, oauthaccesssecret
                 ) VALUES (
                     :username, :email, :password, :status, :onwikiname, :welcome_sig,
-                    :lastactive, :forcelogout, :checkuser, :identified, 
+                    :lastactive, :forcelogout, :root, :identified, 
                     :welcome_template, :abortpref, :confirmationdiff, :emailsig, 
                     :ort, :ors, :oat, :oas
                 );
@@ -219,7 +204,7 @@ SQL
 			$statement->bindValue(":welcome_sig", $this->welcome_sig);
 			$statement->bindValue(":lastactive", $this->lastactive);
 			$statement->bindValue(":forcelogout", $this->forcelogout);
-			$statement->bindValue(":checkuser", $this->checkuser);
+			$statement->bindValue(":root", $this->root);
 			$statement->bindValue(":identified", $this->identified);
 			$statement->bindValue(":welcome_template", $this->welcome_template);
 			$statement->bindValue(":abortpref", $this->abortpref);
@@ -246,7 +231,7 @@ SQL
                     password = :password, status = :status,
                     onwikiname = :onwikiname, welcome_sig = :welcome_sig, 
                     lastactive = :lastactive, forcelogout = :forcelogout, 
-                    checkuser = :checkuser, identified = :identified,
+                    root = :root, identified = :identified,
                     welcome_template = :welcome_template, abortpref = :abortpref, 
                     confirmationdiff = :confirmationdiff, emailsig = :emailsig, 
                     oauthrequesttoken = :ort, oauthrequestsecret = :ors, 
@@ -264,7 +249,7 @@ SQL
 			$statement->bindValue(":welcome_sig", $this->welcome_sig);
 			$statement->bindValue(":lastactive", $this->lastactive);
 			$statement->bindValue(":forcelogout", $this->forcelogout);
-			$statement->bindValue(":checkuser", $this->checkuser);
+			$statement->bindValue(":root", $this->root);
 			$statement->bindValue(":identified", $this->identified);
 			$statement->bindValue(":welcome_template", $this->welcome_template);
 			$statement->bindValue(":abortpref", $this->abortpref);
@@ -403,16 +388,6 @@ SQL
 	public function getSecure()
 	{
 		return true;
-	}
-
-	public function getCheckuser()
-	{
-		return $this->checkuser;
-	}
-
-	public function setCheckuser($checkuser)
-	{
-		$this->checkuser = $checkuser;
 	}
 
 	public function getIdentified()
@@ -573,7 +548,7 @@ SQL
     
 	public function isCheckuser()
 	{
-		return $this->checkuser == 1 || $this->oauthCanCheckUser();
+		return $this->root == 1 || $this->oauthCanCheckUser();
 	}
     
 	public function isIdentified()

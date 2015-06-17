@@ -1,0 +1,1 @@
+ALTER TABLE user CHANGE checkuser root INT(1) NOT NULL DEFAULT 0;

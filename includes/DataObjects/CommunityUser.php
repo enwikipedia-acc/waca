@@ -103,15 +103,6 @@ class CommunityUser extends User
 		return true;
 	}
 
-	public function getCheckuser()
-	{
-		return false;
-	}
-
-	public function setCheckuser($checkuser)
-	{
-	}
-
 	public function getIdentified()
 	{
 		return false;
