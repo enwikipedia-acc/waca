@@ -133,17 +133,17 @@ class User extends DataObject
         
 		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
 
-        $resultsCollection = array();
+		$resultsCollection = array();
 
 		foreach ($resultObject as $u) {
 			$u->setDatabase($database);
 			$u->isNew = false;
 
-            if(! $u->isCheckuser()) {
-                continue;
-            }
+			if(! $u->isCheckuser()) {
+				continue;
+			}
 
-            $resultsCollection[] = $u;
+			$resultsCollection[] = $u;
 		}
         
 		return $resultsCollection;
