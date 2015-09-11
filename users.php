@@ -563,17 +563,6 @@ HTML;
 $result = User::getAllWithStatus("Admin", $database);
 $smarty->assign("userlist", $result);
 $smarty->display("usermanagement/userlist.tpl");
-echo <<<HTML
-</div>
-</div></div>
-
-<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFour">Tool Checkuser access</a></div><div id="collapseFour" class="accordion-body collapse"><div class="accordion-inner">
-<p class="muted">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
-HTML;
-
-$result = User::getAllCheckusers($database);
-$smarty->assign("userlist", $result);
-$smarty->display("usermanagement/userlist.tpl");
 echo '</div></div></div>';
 
 if (isset($_GET['showall'])) {
