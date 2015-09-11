@@ -26,3 +26,4 @@ desktop.ini
 info.php
 web.*.config
 .user.ini
+.vs/*
