@@ -190,7 +190,7 @@ SQL
                     oauthaccesstoken, oauthaccesssecret
                 ) VALUES (
                     :username, :email, :password, :status, :onwikiname, :welcome_sig,
-                    :lastactive, :forcelogout, :root, :identified, 
+                    :lastactive, :forcelogout, 0, :identified, 
                     :welcome_template, :abortpref, :confirmationdiff, :emailsig, 
                     :ort, :ors, :oat, :oas
                 );
@@ -204,7 +204,6 @@ SQL
 			$statement->bindValue(":welcome_sig", $this->welcome_sig);
 			$statement->bindValue(":lastactive", $this->lastactive);
 			$statement->bindValue(":forcelogout", $this->forcelogout);
-			$statement->bindValue(":root", $this->root);
 			$statement->bindValue(":identified", $this->identified);
 			$statement->bindValue(":welcome_template", $this->welcome_template);
 			$statement->bindValue(":abortpref", $this->abortpref);
@@ -231,7 +230,7 @@ SQL
                     password = :password, status = :status,
                     onwikiname = :onwikiname, welcome_sig = :welcome_sig, 
                     lastactive = :lastactive, forcelogout = :forcelogout, 
-                    root = :root, identified = :identified,
+                    identified = :identified,
                     welcome_template = :welcome_template, abortpref = :abortpref, 
                     confirmationdiff = :confirmationdiff, emailsig = :emailsig, 
                     oauthrequesttoken = :ort, oauthrequestsecret = :ors, 
@@ -249,7 +248,6 @@ SQL
 			$statement->bindValue(":welcome_sig", $this->welcome_sig);
 			$statement->bindValue(":lastactive", $this->lastactive);
 			$statement->bindValue(":forcelogout", $this->forcelogout);
-			$statement->bindValue(":root", $this->root);
 			$statement->bindValue(":identified", $this->identified);
 			$statement->bindValue(":welcome_template", $this->welcome_template);
 			$statement->bindValue(":abortpref", $this->abortpref);
