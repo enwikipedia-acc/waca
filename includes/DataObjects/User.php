@@ -125,7 +125,30 @@ class User extends DataObject
      
 		return $resultObject;
 	}
-    
+
+	public static function getAllCheckusers(PdoDatabase $database)
+	{
+		$statement = $database->prepare("SELECT * FROM user WHERE status IN ('User', 'Admin');");
+		$statement->execute();
+        
+		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
+
+        $resultsCollection = array();
+
+		foreach ($resultObject as $u) {
+			$u->setDatabase($database);
+			$u->isNew = false;
+
+            if(! $u->isCheckuser()) {
+                continue;
+            }
+
+            $resultsCollection[] = $u;
+		}
+        
+		return $resultsCollection;
+	}
+
 	public static function getAllInactive(PdoDatabase $database)
 	{
 		$date = new DateTime();
