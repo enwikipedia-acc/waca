@@ -23,26 +23,39 @@ class StatsAction extends ApiActionBase implements IApiAction
 	 */
 	private $database;
 
+	/**
+	 * Summary of execute
+	 * @param \DOMElement $apiDocument
+	 * @return \DOMElement
+	 */
 	public function execute(\DOMElement $apiDocument)
 	{
 		$username = isset($_GET['user']) ? trim($_GET['user']) : '';
-		if ($username == '') {
-			throw new ApiException("Please specify a username");
+		$wikiusername = isset($_GET['wikiuser']) ? trim($_GET['wikiuser']) : '';
+
+		if ($username === '' && $wikiusername === '') {
+			throw new ApiException("Please specify a username using either user or wikiuser parameters.");
 		}
 
 		$userElement = $this->document->createElement("user");
-		$userElement->setAttribute("username", $username);
 		$apiDocument->appendChild($userElement);
 
 		$this->database = gGetDb();
 
-		$this->user = \User::getByUsername($username, $this->database);
+        if($username !== '') {
+            $this->user = \User::getByUsername($username, $this->database);
+        }
+        else {
+            $this->user = \User::getByOnWikiUsername($wikiusername, $this->database);
+        }
 
 		if ($this->user === false) {
 			$userElement->setAttribute("missing", "true");
 			return $apiDocument;
 		}
 
+        
+		$userElement->setAttribute("username", $this->user->getUsername());
 		$userElement->setAttribute("status", $this->user->getStatus());
 		$userElement->setAttribute("lastactive", $this->user->getLastActive());
 		$userElement->setAttribute("welcome_template", $this->user->getWelcomeTemplate());

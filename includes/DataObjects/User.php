@@ -90,6 +90,72 @@ class User extends DataObject
 
 		return $resultObject;
 	}
+
+    /**
+     * Gets a user by their onwiki username.
+     * 
+     * Don't use without asking me first. It's really inefficient in it's current implementation.
+     * We need to restructure the user table again to make this more efficient.
+     * We don't actually store the onwiki name in the table any more, instead we
+     * are storing JSON in a column (!!). Yep, my fault. Code review is an awesome thing.
+     *            -- stw 2015-10-20
+     * @param string $username 
+     * @param PdoDatabase $database 
+     * @return User|false
+     */
+    public static function getByOnWikiUsername($username, PdoDatabase $database)
+	{
+        // Firstly, try to search by the efficient database lookup.
+		$statement = $database->prepare("SELECT * FROM user WHERE onwikiname = :id LIMIT 1;");
+		$statement->bindValue(":id", $username);
+		$statement->execute();
+
+		$resultObject = $statement->fetchObject(get_called_class());
+
+		if ($resultObject != false) {
+			$resultObject->isNew = false;
+			$resultObject->setDatabase($database); 
+
+            return $resultObject;
+		}
+
+        // For active users, the above has failed. Let's do it the hard way.
+        $statement = $database->prepare("SELECT * FROM user WHERE onwikiname = '##OAUTH##' AND oauthaccesstoken IS NOT NULL;");
+        $statement->execute();
+        $resultSet = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
+
+        foreach ($resultSet as $user)
+        {
+            // We have to set this before doing OAuth queries. :(
+            $user->isNew = false;
+            $user->setDatabase($database); 
+
+            // Using cached data here!
+        	if($user->getOAuthOnWikiName(true) == $username)
+            {
+                // Success.
+                return $user;
+            }
+        }
+
+        // Cached data failed. Let's do it the *REALLY* hard way.
+        foreach ($resultSet as $user)
+        {
+            // We have to set this before doing OAuth queries. :(
+            $user->isNew = false;
+            $user->setDatabase($database); 
+
+            // Using cached data here!
+        	if($user->getOAuthOnWikiName(false) == $username)
+            {
+                // Success.
+                return $user;
+            }
+        }
+        
+        // Nope. Sorry.
+		return false;
+	}
     
 	public static function getByRequestToken($requestToken, PdoDatabase $database)
 	{
@@ -606,7 +672,7 @@ SQL
 
 	#region OAuth
     
-	public function getOAuthIdentity()
+	public function getOAuthIdentity($useCached = false)
 	{
 		if ($this->oauthaccesstoken == null) {
 			$this->clearOAuthData();
@@ -625,23 +691,37 @@ SQL
 		if (
 			$this->identityCache != null &&
 			$this->identityCache->aud == $oauthConsumerToken &&
-			DateTime::createFromFormat("U", $this->identityCache->iat) < new DateTime() &&
-			DateTime::createFromFormat("U", $this->identityCache->exp) > new DateTime() &&
 			$this->identityCache->iss == $oauthMediaWikiCanonicalServer
 			) {
-			return $this->identityCache;
+            if(
+                $useCached || (
+			        DateTime::createFromFormat("U", $this->identityCache->iat) < new DateTime() &&
+			        DateTime::createFromFormat("U", $this->identityCache->exp) > new DateTime()
+                    )
+                ) {
+                return $this->identityCache;
+            }
 		}
 		else {
 			$this->getIdentityCache();
             
 			return $this->identityCache;
-            
 		}
 	}
     
-	private function getOAuthOnWikiName()
+	/**
+	 * Summary of getOAuthOnWikiName
+	 * @param mixed $useCached Set to false for everything where up-to-date data is important.
+	 * @return mixed
+	 */
+	private function getOAuthOnWikiName($useCached = false)
 	{
-		return $this->getOAuthIdentity()->username;
+        $identity = $this->getOAuthIdentity($useCached);
+        if($identity !== null) {
+            return $identity->username;
+        }
+
+        return false;
 	}
     
 	public function isOAuthLinked()
