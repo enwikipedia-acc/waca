@@ -24,12 +24,12 @@ class User extends DataObject
 	private $oauthaccesstoken = null;
 	private $oauthaccesssecret = null;
 	private $oauthidentitycache = null;
-    
+
 	// cache variable of the current user - it's never going to change in the middle of a request.
 	private static $currentUser;
-    
+
 	private $identityCache = null;
-    
+
 	/**
 	 * Summary of getCurrent
 	 * @param PdoDatabase $database
@@ -40,14 +40,14 @@ class User extends DataObject
 		if ($database === null) {
 			$database = gGetDb();   
 		}
-        
+
 		if (self::$currentUser === null) {
 			if (isset($_SESSION['userID'])) {
 				self::$currentUser = self::getById($_SESSION['userID'], $database);
 			}
 			else {
 				$anonymousCoward = new CommunityUser();
-               
+
 				self::$currentUser = $anonymousCoward;
 			}
 		}
@@ -68,7 +68,7 @@ class User extends DataObject
 	{
 		return new CommunityUser();   
 	}
-    
+
 	public static function getByUsername($username, PdoDatabase $database)
 	{
 		global $communityUsername;
@@ -91,21 +91,21 @@ class User extends DataObject
 		return $resultObject;
 	}
 
-    /**
-     * Gets a user by their onwiki username.
-     * 
-     * Don't use without asking me first. It's really inefficient in it's current implementation.
-     * We need to restructure the user table again to make this more efficient.
-     * We don't actually store the onwiki name in the table any more, instead we
-     * are storing JSON in a column (!!). Yep, my fault. Code review is an awesome thing.
-     *            -- stw 2015-10-20
-     * @param string $username 
-     * @param PdoDatabase $database 
-     * @return User|false
-     */
-    public static function getByOnWikiUsername($username, PdoDatabase $database)
+	/**
+	 * Gets a user by their onwiki username.
+	 * 
+	 * Don't use without asking me first. It's really inefficient in it's current implementation.
+	 * We need to restructure the user table again to make this more efficient.
+	 * We don't actually store the onwiki name in the table any more, instead we
+	 * are storing JSON in a column (!!). Yep, my fault. Code review is an awesome thing.
+	 *            -- stw 2015-10-20
+	 * @param string $username 
+	 * @param PdoDatabase $database 
+	 * @return User|false
+	 */
+	public static function getByOnWikiUsername($username, PdoDatabase $database)
 	{
-        // Firstly, try to search by the efficient database lookup.
+		// Firstly, try to search by the efficient database lookup.
 		$statement = $database->prepare("SELECT * FROM user WHERE onwikiname = :id LIMIT 1;");
 		$statement->bindValue(":id", $username);
 		$statement->execute();
@@ -116,47 +116,44 @@ class User extends DataObject
 			$resultObject->isNew = false;
 			$resultObject->setDatabase($database); 
 
-            return $resultObject;
+			return $resultObject;
 		}
 
-        // For active users, the above has failed. Let's do it the hard way.
-        $statement = $database->prepare("SELECT * FROM user WHERE onwikiname = '##OAUTH##' AND oauthaccesstoken IS NOT NULL;");
-        $statement->execute();
-        $resultSet = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
+		// For active users, the above has failed. Let's do it the hard way.
+		$sqlStatement = "SELECT * FROM user WHERE onwikiname = '##OAUTH##' AND oauthaccesstoken IS NOT NULL;";
+		$statement = $database->prepare($sqlStatement);
+		$statement->execute();
+		$resultSet = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
 
-        foreach ($resultSet as $user)
-        {
-            // We have to set this before doing OAuth queries. :(
-            $user->isNew = false;
-            $user->setDatabase($database); 
+		foreach ($resultSet as $user) {
+			// We have to set this before doing OAuth queries. :(
+			$user->isNew = false;
+			$user->setDatabase($database); 
 
-            // Using cached data here!
-        	if($user->getOAuthOnWikiName(true) == $username)
-            {
-                // Success.
-                return $user;
-            }
-        }
+			// Using cached data here!
+			if($user->getOAuthOnWikiName(true) == $username) {
+				// Success.
+				return $user;
+			}
+		}
 
-        // Cached data failed. Let's do it the *REALLY* hard way.
-        foreach ($resultSet as $user)
-        {
-            // We have to set this before doing OAuth queries. :(
-            $user->isNew = false;
-            $user->setDatabase($database); 
+		// Cached data failed. Let's do it the *REALLY* hard way.
+		foreach ($resultSet as $user) {
+			// We have to set this before doing OAuth queries. :(
+			$user->isNew = false;
+			$user->setDatabase($database); 
 
-            // Using cached data here!
-        	if($user->getOAuthOnWikiName(false) == $username)
-            {
-                // Success.
-                return $user;
-            }
-        }
-        
-        // Nope. Sorry.
+			// Don't use the cached data, but instead query the API.
+			if($user->getOAuthOnWikiName(false) == $username) {
+				// Success.
+				return $user;
+			}
+		}
+
+		// Nope. Sorry.
 		return false;
 	}
-    
+
 	public static function getByRequestToken($requestToken, PdoDatabase $database)
 	{
 		$statement = $database->prepare("SELECT * FROM user WHERE oauthrequesttoken = :id LIMIT 1;");
@@ -173,7 +170,7 @@ class User extends DataObject
 
 		return $resultObject;
 	}
-    
+
 	/**
 	 * @param string $status
 	 */
@@ -181,14 +178,14 @@ class User extends DataObject
 	{
 		$statement = $database->prepare("SELECT * FROM user WHERE status = :status");
 		$statement->execute(array(":status" => $status));
-        
+
 		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
-        
+
 		foreach ($resultObject as $u) {
 			$u->setDatabase($database);
 			$u->isNew = false;
 		}
-     
+
 		return $resultObject;
 	}
 
@@ -196,7 +193,7 @@ class User extends DataObject
 	{
 		$statement = $database->prepare("SELECT * FROM user WHERE status IN ('User', 'Admin');");
 		$statement->execute();
-        
+
 		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
 
 		$resultsCollection = array();
@@ -211,7 +208,7 @@ class User extends DataObject
 
 			$resultsCollection[] = $u;
 		}
-        
+
 		return $resultsCollection;
 	}
 
@@ -219,29 +216,29 @@ class User extends DataObject
 	{
 		$date = new DateTime();
 		$date->modify("-45 days");
-        
+
 		$statement = $database->prepare(<<<SQL
-            SELECT * 
-            FROM user 
-            WHERE lastactive < :lastactivelimit 
-                AND status != 'Suspended' 
-                AND status != 'Declined' 
-                AND status != 'New' 
-            ORDER BY lastactive ASC;
+			SELECT * 
+			FROM user 
+			WHERE lastactive < :lastactivelimit 
+				AND status != 'Suspended' 
+				AND status != 'Declined' 
+				AND status != 'New' 
+			ORDER BY lastactive ASC;
 SQL
 		);
 		$statement->execute(array(":lastactivelimit" => $date->format("Y-m-d H:i:s")));
-        
+
 		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
-        
+
 		foreach ($resultObject as $u) {
 			$u->setDatabase($database);
 			$u->isNew = false;
 		}
-        
+
 		return $resultObject;
 	}
-    
+
 	/**
 	 * Summary of getAllUsernames
 	 * @param PdoDatabase $database 
@@ -271,18 +268,18 @@ SQL
 		if ($this->isNew) {
 // insert
 			$statement = $this->dbObject->prepare(<<<SQL
-                INSERT INTO `user` ( 
-                    username, email, password, status, onwikiname, welcome_sig, 
-                    lastactive, forcelogout, root, identified, 
-                    welcome_template, abortpref, confirmationdiff, emailsig, 
-                    oauthrequesttoken, oauthrequestsecret, 
-                    oauthaccesstoken, oauthaccesssecret
-                ) VALUES (
-                    :username, :email, :password, :status, :onwikiname, :welcome_sig,
-                    :lastactive, :forcelogout, 0, :identified, 
-                    :welcome_template, :abortpref, :confirmationdiff, :emailsig, 
-                    :ort, :ors, :oat, :oas
-                );
+				INSERT INTO `user` ( 
+					username, email, password, status, onwikiname, welcome_sig, 
+					lastactive, forcelogout, root, identified, 
+					welcome_template, abortpref, confirmationdiff, emailsig, 
+					oauthrequesttoken, oauthrequestsecret, 
+					oauthaccesstoken, oauthaccesssecret
+				) VALUES (
+					:username, :email, :password, :status, :onwikiname, :welcome_sig,
+					:lastactive, :forcelogout, 0, :identified, 
+					:welcome_template, :abortpref, :confirmationdiff, :emailsig, 
+					:ort, :ors, :oat, :oas
+				);
 SQL
 			);
 			$statement->bindValue(":username", $this->username);
@@ -314,18 +311,18 @@ SQL
 		else {
 // update
 			$statement = $this->dbObject->prepare(<<<SQL
-                UPDATE `user` SET 
-                    username = :username, email = :email, 
-                    password = :password, status = :status,
-                    onwikiname = :onwikiname, welcome_sig = :welcome_sig, 
-                    lastactive = :lastactive, forcelogout = :forcelogout, 
-                    identified = :identified,
-                    welcome_template = :welcome_template, abortpref = :abortpref, 
-                    confirmationdiff = :confirmationdiff, emailsig = :emailsig, 
-                    oauthrequesttoken = :ort, oauthrequestsecret = :ors, 
-                    oauthaccesstoken = :oat, oauthaccesssecret = :oas 
-                WHERE id = :id 
-                LIMIT 1;
+				UPDATE `user` SET 
+					username = :username, email = :email, 
+					password = :password, status = :status,
+					onwikiname = :onwikiname, welcome_sig = :welcome_sig, 
+					lastactive = :lastactive, forcelogout = :forcelogout, 
+					identified = :identified,
+					welcome_template = :welcome_template, abortpref = :abortpref, 
+					confirmationdiff = :confirmationdiff, emailsig = :emailsig, 
+					oauthrequesttoken = :ort, oauthrequestsecret = :ors, 
+					oauthaccesstoken = :oat, oauthaccesssecret = :oas 
+				WHERE id = :id 
+				LIMIT 1;
 SQL
 			);
 			$statement->bindValue(":id", $this->id);
@@ -693,14 +690,14 @@ SQL
 			$this->identityCache->aud == $oauthConsumerToken &&
 			$this->identityCache->iss == $oauthMediaWikiCanonicalServer
 			) {
-            if(
-                $useCached || (
-			        DateTime::createFromFormat("U", $this->identityCache->iat) < new DateTime() &&
-			        DateTime::createFromFormat("U", $this->identityCache->exp) > new DateTime()
-                    )
-                ) {
-                return $this->identityCache;
-            }
+			if(
+				$useCached || (
+					DateTime::createFromFormat("U", $this->identityCache->iat) < new DateTime() &&
+					DateTime::createFromFormat("U", $this->identityCache->exp) > new DateTime()
+					)
+				) {
+				return $this->identityCache;
+			}
 		}
 		else {
 			$this->getIdentityCache();
@@ -716,12 +713,12 @@ SQL
 	 */
 	private function getOAuthOnWikiName($useCached = false)
 	{
-        $identity = $this->getOAuthIdentity($useCached);
-        if($identity !== null) {
-            return $identity->username;
-        }
+		$identity = $this->getOAuthIdentity($useCached);
+		if($identity !== null) {
+			return $identity->username;
+		}
 
-        return false;
+		return false;
 	}
     
 	public function isOAuthLinked()
@@ -825,21 +822,19 @@ SQL
     
 	#endregion
     
-	public function getForgottenPasswordHash()
-	{
+	public function getForgottenPasswordHash() {
 		return md5($this->username . $this->email . $this->welcome_template . $this->id . $this->password);
 	}
 
-	public function getApprovalDate()
-	{
+	public function getApprovalDate() {
 		$query = $this->dbObject->prepare(<<<SQL
-            SELECT timestamp 
-            FROM log 
-            WHERE objectid = :userid
-                AND objecttype = 'User'
-                AND action = 'Approved' 
-            ORDER BY id DESC 
-            LIMIT 1;
+			SELECT timestamp 
+			FROM log 
+			WHERE objectid = :userid
+				AND objecttype = 'User'
+				AND action = 'Approved' 
+			ORDER BY id DESC 
+			LIMIT 1;
 SQL
 		);
 		$query->execute(array(":userid" => $this->id));

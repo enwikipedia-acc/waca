@@ -21,8 +21,8 @@ abstract class StatisticsPage
 	/**
 	 * Creates a statistics page.
 	 *
-	 * @param $pageName Name of the page
-	 * @return Object of type dependant on the name specified.
+	 * @param $pageName string Name of the page
+	 * @return StatisticsPage Object of type dependant on the name specified.
 	 */
 	public static function Create($pageName)
 	{
@@ -66,31 +66,31 @@ abstract class StatisticsPage
 
 	/**
 	 * Abstract method provides the content of the statistics page
-	 * @return string. content of stats page.
+	 * @return string content of stats page.
 	 */
 	abstract protected function execute();
 
 	/**
 	 * Returns the title of the page (initial header, and name in menu)
-	 * @return string.
+	 * @return string
 	 */
 	abstract public function getPageTitle();
 
 	/**
 	 * Returns the name of the page (used in urls, and class defs)
-	 * @return string.
+	 * @return string
 	 */
 	abstract public function getPageName();
 
 	/**
 	 * Determines if the stats page is only available to logged-in users, or everyone.
-	 * @return bool.
+	 * @return bool
 	 */
 	abstract public function isProtected();
 
 	/**
 	 * Determines if the statistics page requires the wiki database. Defaults to true
-	 * @return bool.
+	 * @return bool
 	 */
 	public function requiresWikiDatabase()
 	{
@@ -99,7 +99,7 @@ abstract class StatisticsPage
 
 	/**
 	 * Determines if the statistics page requires a simple HTML environment. Defaults to true
-	 * @return bool.
+	 * @return bool
 	 */
 	public function requiresSimpleHtmlEnvironment()
 	{
@@ -117,7 +117,6 @@ abstract class StatisticsPage
 
 	/**
 	 * Shows the statistics page.
-	 * @return null.
 	 */
 	public function Show()
 	{
