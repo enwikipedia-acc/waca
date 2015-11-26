@@ -575,7 +575,7 @@ SQL
 	{
 		$this->dbObject->transactionally(function()
 		{
-			$this->status = "User";            
+			$this->status = "User";
 			$this->save();
 			Logger::approvedUser($this->dbObject, $this);
 		});
@@ -583,9 +583,9 @@ SQL
     
 	public function suspend($comment)
 	{
-		$this->dbObject->transactionally(function()
+		$this->dbObject->transactionally(function() use ($comment)
 		{
-			$this->status = "Suspended";            
+			$this->status = "Suspended";
 			$this->save();
 			Logger::suspendedUser($this->dbObject, $this, $comment);
 		});
@@ -593,9 +593,9 @@ SQL
     
 	public function decline($comment)
 	{
-		$this->dbObject->transactionally(function()
+		$this->dbObject->transactionally(function() use ($comment)
 		{
-			$this->status = "Declined";            
+			$this->status = "Declined";
 			$this->save();
 			Logger::declinedUser($this->dbObject, $this, $comment);
 		});
@@ -605,7 +605,7 @@ SQL
 	{
 		$this->dbObject->transactionally(function()
 		{
-			$this->status = "Admin";            
+			$this->status = "Admin";
 			$this->save();
 			Logger::promotedUser($this->dbObject, $this);
 		});
@@ -613,9 +613,9 @@ SQL
     
 	public function demote($comment)
 	{
-		$this->dbObject->transactionally(function()
+		$this->dbObject->transactionally(function() use ($comment)
 		{
-			$this->status = "User";            
+			$this->status = "User";
 			$this->save();
 			Logger::demotedUser($this->dbObject, $this, $comment);
 		});
@@ -637,7 +637,7 @@ SQL
     
 	public function isIdentified()
 	{
-		return $this->identified == 1;   
+		return $this->identified == 1;
 	}
     
 	public function isSuspended()
@@ -652,7 +652,7 @@ SQL
     
 	public function isUser()
 	{
-		return $this->status == "User";   
+		return $this->status == "User";
 	}
     
 	public function isDeclined()
