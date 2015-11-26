@@ -590,7 +590,7 @@ SQL
     
 	public function suspend($comment)
 	{
-		$this->dbObject->transactionally(function()
+		$this->dbObject->transactionally(function() use ($comment)
 		{
 			$this->status = "Suspended";            
 			$this->save();
@@ -600,7 +600,7 @@ SQL
     
 	public function decline($comment)
 	{
-		$this->dbObject->transactionally(function()
+		$this->dbObject->transactionally(function() use ($comment)
 		{
 			$this->status = "Declined";            
 			$this->save();
@@ -620,7 +620,7 @@ SQL
     
 	public function demote($comment)
 	{
-		$this->dbObject->transactionally(function()
+		$this->dbObject->transactionally(function() use ($comment)
 		{
 			$this->status = "User";            
 			$this->save();
