@@ -65,7 +65,18 @@ function showlogin()
 		}
 	}
 	$smarty->assign("errorbar", $errorbartext);   
-    
+
+	global $strictTransportSecurityExpiry;
+	if ($strictTransportSecurityExpiry !== false) {
+		if ($_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+			header("Strict-Transport-Security: max-age=15768000");
+		}
+		else {
+			$path = 'https://' . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
+			header("Location: " . $path);
+		}
+	}
+
 	$smarty->display("login.tpl");
 }
 

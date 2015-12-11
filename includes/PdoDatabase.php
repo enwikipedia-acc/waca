@@ -149,14 +149,20 @@ class PdoDatabase extends PDO
 			try {
 				if ($this->queryLogStatement === null) {
 					$this->queryLogStatement = 
-						parent::prepare("INSERT INTO applicationlog (source, message, stack) VALUES (:source, :message, :stack);");
+						parent::prepare(<<<SQL
+							INSERT INTO applicationlog (source, message, stack, request, request_ts) 
+							VALUES (:source, :message, :stack, :request, :rqts);
+SQL
+						);
 				}
-                            
+
 				$this->queryLogStatement->execute(
 					array(
 						":source" => "QueryLog",
 						":message" => $statement,
-						":stack" => DebugHelper::getBacktrace()
+						":stack" => DebugHelper::getBacktrace(),
+						":request" => $_SERVER["REQUEST_URI"],
+						":rqts" => $_SERVER["REQUEST_TIME_FLOAT"],
 					)
 				);
 			}

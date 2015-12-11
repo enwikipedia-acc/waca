@@ -13,13 +13,13 @@ class StatsAction extends ApiActionBase implements IApiAction
 {
 	/**
 	 * The target user
-	 * @var User $user
+	 * @var \User $user
 	 */
 	private $user;
 
 	/**
 	 * The datbase
-	 * @var PdoDatabase $database
+	 * @var \PdoDatabase $database
 	 */
 	private $database;
 
@@ -42,19 +42,18 @@ class StatsAction extends ApiActionBase implements IApiAction
 
 		$this->database = gGetDb();
 
-        if($username !== '') {
-            $this->user = \User::getByUsername($username, $this->database);
-        }
-        else {
-            $this->user = \User::getByOnWikiUsername($wikiusername, $this->database);
-        }
+		if ($username !== '') {
+			$this->user = \User::getByUsername($username, $this->database);
+		}
+		else {
+			$this->user = \User::getByOnWikiUsername($wikiusername, $this->database);
+		}
 
 		if ($this->user === false) {
 			$userElement->setAttribute("missing", "true");
 			return $apiDocument;
 		}
 
-        
 		$userElement->setAttribute("username", $this->user->getUsername());
 		$userElement->setAttribute("status", $this->user->getStatus());
 		$userElement->setAttribute("lastactive", $this->user->getLastActive());
