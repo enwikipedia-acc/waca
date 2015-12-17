@@ -29,6 +29,7 @@ before_script:
 script:
   - bash .travis.phplint.sh
   - phpunit --coverage-clover=coverage.xml
+  - codecov
 
 #notifications:
 #  irc:
