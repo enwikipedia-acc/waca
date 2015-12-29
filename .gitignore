@@ -26,5 +26,5 @@ desktop.ini
 info.php
 web.*.config
 .user.ini
-.vs/config/applicationhost.config
 waca.sln.DotSettings.user
+.vs/*

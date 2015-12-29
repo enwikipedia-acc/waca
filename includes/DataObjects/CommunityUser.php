@@ -228,7 +228,7 @@ class CommunityUser extends User
 
 	#region OAuth
     
-	public function getOAuthIdentity()
+	public function getOAuthIdentity($useCached = false)
 	{
 		return null;
 	}

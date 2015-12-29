@@ -261,6 +261,9 @@ $enableQueryLog = false;
 // ID of the Email template used for the main "Created!" close reason.
 $createdid = 1;
 
+// HSTS expiry - use false to disable header.
+$strictTransportSecurityExpiry = false;
+
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********
 ***************************************************************************

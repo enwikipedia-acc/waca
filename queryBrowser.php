@@ -17,11 +17,29 @@ if (!defined("ACC")) {
 
 class QueryBrowser
 {
-	
+	/**
+	 * @var boolean
+	 */
 	var $numberedList = false;
-	var $numberedListTitle = "#";
-	var $tableCallbackFunction = false;
-	var $overrideTableTitles = false;
+	
+    /**
+     * @var string
+     */
+    var $numberedListTitle = "#";
+	
+    /**
+     * @var boolean|callable
+     */
+    var $tableCallbackFunction = false;
+	
+    /**
+     * @var boolean|string[]
+     */
+    var $overrideTableTitles = false;
+
+	/**
+	 * @var int
+	 */
 	var $rowFetchMode = PDO::FETCH_ASSOC;
 	
 	/**
