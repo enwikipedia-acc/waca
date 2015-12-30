@@ -1802,7 +1802,7 @@ elseif ($action == "sendtouser") {
 			throw new TransactionException("Error updating reserved status of request.");   
 		}
         
-		Logger::sendReservation($database, Request::getById($request), $user);
+		Logger::sendReservation($database, Request::getById($request, $database), $user);
 	});
     
 	SessionAlert::success("Reservation sent successfully");
