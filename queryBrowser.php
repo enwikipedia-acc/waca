@@ -20,27 +20,27 @@ class QueryBrowser
 	/**
 	 * @var boolean
 	 */
-	var $numberedList = false;
+	public $numberedList = false;
 	
     /**
      * @var string
      */
-    var $numberedListTitle = "#";
+    public $numberedListTitle = "#";
 	
     /**
      * @var boolean|callable
      */
-    var $tableCallbackFunction = false;
+    public $tableCallbackFunction = false;
 	
     /**
      * @var boolean|string[]
      */
-    var $overrideTableTitles = false;
+    public $overrideTableTitles = false;
 
 	/**
 	 * @var int
 	 */
-	var $rowFetchMode = PDO::FETCH_ASSOC;
+	public $rowFetchMode = PDO::FETCH_ASSOC;
 	
 	/**
 	 * @param string $query

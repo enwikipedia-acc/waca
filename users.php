@@ -541,13 +541,25 @@ $database = gGetDb();
 $result = User::getAllWithStatus("New", $database);
 
 if ($result != false && count($result) != 0) {
-	echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Open requests</a></div><div id="collapseOne" class="accordion-body collapse in"><div class="accordion-inner">';
+	echo <<<HTML
+<div class="accordion-group">
+<div class="accordion-heading">
+    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Open requests</a>
+</div>
+<div id="collapseOne" class="accordion-body collapse in"><div class="accordion-inner">
+HTML;
 
 	$smarty->assign("userlist", $result);
 	$smarty->display("usermanagement/userlist.tpl");
 	echo "</div></div></div>\n";
 }
-echo '<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">Users</a></div><div id="collapseTwo" class="accordion-body collapse"><div class="accordion-inner">';
+echo <<<HTML
+<div class="accordion-group">
+<div class="accordion-heading">
+    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">Users</a>
+</div>
+<div id="collapseTwo" class="accordion-body collapse"><div class="accordion-inner">
+HTML;
 
 $result = User::getAllWithStatus("User", $database);
 $smarty->assign("userlist", $result);
@@ -556,8 +568,15 @@ echo <<<HTML
 </div>
 </div></div>
 
-<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">Admins</a></div><div id="collapseThree" class="accordion-body collapse"><div class="accordion-inner">
-<p class="muted">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
+<div class="accordion-group">
+<div class="accordion-heading">
+    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">Admins</a>
+</div>
+<div id="collapseThree" class="accordion-body collapse"><div class="accordion-inner">
+<p class="muted">
+Please note: Users marked as checkusers automatically get administrative rights, even if they do 
+not appear in the tool administrators section.
+</p>
 HTML;
 
 $result = User::getAllWithStatus("Admin", $database);
@@ -567,8 +586,15 @@ echo <<<HTML
 </div>
 </div></div>
 
-<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFour">Tool Checkuser access</a></div><div id="collapseFour" class="accordion-body collapse"><div class="accordion-inner">
-<p class="muted">Please note: Users marked as checkusers automatically get administrative rights, even if they do not appear in the tool administrators section.</p>
+<div class="accordion-group">
+<div class="accordion-heading">
+    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFour">Tool Checkuser access</a>
+</div>
+<div id="collapseFour" class="accordion-body collapse"><div class="accordion-inner">
+<p class="muted">
+Please note: Users marked as checkusers automatically get administrative rights, even if they do
+not appear in the tool administrators section.
+</p>
 HTML;
 
 $result = User::getAllCheckusers($database);
@@ -578,7 +604,11 @@ echo '</div></div></div>';
 
 if (isset($_GET['showall'])) {
 	echo <<<HTML
-<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFive">Suspended accounts</a></div><div id="collapseFive" class="accordion-body collapse"><div class="accordion-inner">
+<div class="accordion-group">
+<div class="accordion-heading">
+    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFive">Suspended accounts</a>
+</div>
+<div id="collapseFive" class="accordion-body collapse"><div class="accordion-inner">
 HTML;
 
 	$result = User::getAllWithStatus("Suspended", $database);
@@ -588,7 +618,11 @@ HTML;
 </div>
 </div></div>
 
-<div class="accordion-group"><div class="accordion-heading"><a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseSix">Declined accounts</a></div><div id="collapseSix" class="accordion-body collapse"><div class="accordion-inner">
+<div class="accordion-group">
+<div class="accordion-heading">
+    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseSix">Declined accounts</a>
+</div>
+<div id="collapseSix" class="accordion-body collapse"><div class="accordion-inner">
 HTML;
 
 	$result = User::getAllWithStatus("Declined", $database);

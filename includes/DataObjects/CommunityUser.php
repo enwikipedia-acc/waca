@@ -103,9 +103,12 @@ class CommunityUser extends User
 		return true;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getCheckuser()
 	{
-		return false;
+		return 0;
 	}
 
 	public function setCheckuser($checkuser)
