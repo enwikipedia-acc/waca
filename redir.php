@@ -3,6 +3,7 @@
 $toolList = array(
 	'tparis-pcount' => '//tools.wmflabs.org/supercount/index.php?user=%DATA%&project=en.wikipedia',
 	'luxo-contributions' => '//tools.wmflabs.org/quentinv57-tools/tools/globalcontribs.php?username=%DATA%',
+	'guc' => '//tools.wmflabs.org/guc/?user=%DATA%',
 	'oq-whois' => 'https://whois.domaintools.com/%DATA%',
 	'sulutil' => '//tools.wmflabs.org/quentinv57-tools/tools/sulinfo.php?showinactivity=1&showblocks=1&username=%DATA%',
 	'google' => 'https://www.google.com/search?q=%DATA%',
