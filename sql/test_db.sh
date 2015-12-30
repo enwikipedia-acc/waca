@@ -63,6 +63,10 @@ done
 
 echo "Applying patches..."
 for f in `ls patches/patch*.sql`; do
+	if [ "$f" == "patches/patch00-example.sql" ]; then
+		continue;
+	fi
+
 	echo "  * $f"
 	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < $f
 done
