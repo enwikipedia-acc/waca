@@ -150,6 +150,10 @@ class Logger
 		self::createLogEntry($database, $object, "ReceiveReserved", null, $target);
 	}
 
+	public static function sentMail(PdoDatabase $database, Request $object, $comment)
+	{
+		self::createLogEntry($database, $object, "SentMail", $comment);
+	}
 	#endregion
 	
 	#region Email templates
@@ -310,6 +314,7 @@ class Logger
 			'EditedTemplate' => 'edited template',
 			'CreatedEmail' => 'created email',
 			'CreatedTemplate' => 'created template',
+			'SentMail' => 'sent an email to the requestor',
 			);
 		
 		if (array_key_exists($entry->getAction(), $lookup)) {
@@ -422,6 +427,7 @@ class Logger
 			'EditedTemplate' => 'edited template',
 			'CreatedEmail' => 'created email',
 			'CreatedTemplate' => 'created template',
+			'SentMail' => 'sent an email to the requestor',
 			);
 		
 		$statement = $database->query("SELECT CONCAT('Closed ', id) as k, CONCAT('closed (',name,')') as v FROM emailtemplate;");

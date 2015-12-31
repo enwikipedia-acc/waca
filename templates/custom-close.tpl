@@ -18,20 +18,35 @@
       </div>
     </div>
 
-    <div class="control-group">
-      <div class="controls">
-        <label class="checkbox">
-          <input type="checkbox" name="created" {if $forcreated}checked="checked"{/if}/>Account created
-        </label>
-        
-        <label class="checkbox">
-          <input type="checkbox" name="ccmailist" checked="checked"
-				    {if !$currentUser->isAdmin() && !$currentUser->isCheckuser()}disabled="disabled"{/if}
-            />
-          CC to mailing list
-        </label>
-      </div>
-    </div>
+	<div class="control-group">
+		<label class="control-label" for="inputAction">Action to take</label>
+		<div class="controls">
+			<select class="input-xlarge" id="inputAction" name="action" required="required">
+				<option value="" {if $defaultAction == ""}selected="selected"{/if}>(please select)</option>
+				<option value="mail">Only send the email</option>
+				<optgroup label="Send email and close request...">
+					<option value="created" {if $defaultAction == "created"}selected="selected"{/if}>Close request as created</option>
+					<option value="not created" {if $defaultAction == "not created"}selected="selected"{/if}>Close request as NOT created</option>
+				</optgroup>
+				<optgroup label="Send email and defer to...">
+					{foreach $requeststates as $state}
+					<option value="{$state@key}" {if $defaultAction == $state@key}selected="selected"{/if}>Defer to {$state.deferto|capitalize}</option>
+					{/foreach}
+				</optgroup>
+			</select>
+		</div>
+	</div>
+
+	<div class="control-group">
+		<div class="controls">
+			<label class="checkbox">
+				<input type="checkbox" name="ccmailist" checked="checked"
+					   {if !$currentUser->isAdmin() && !$currentUser->isCheckuser()}disabled="disabled"{/if}
+				/>
+				CC to mailing list
+			</label>
+		</div>
+	</div>
 
     <div class="form-actions">
       <button type="submit" class="btn btn-primary">Close and send</button>

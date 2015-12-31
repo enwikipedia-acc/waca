@@ -262,17 +262,20 @@ SQL
 	// end: assign to user
     
 	// TODO: refactor this!
-	$createreasons = EmailTemplate::getActiveTemplates(/* forCreated */ 1);
+	$createreasons = EmailTemplate::getActiveTemplates(EmailTemplate::CREATED);
 	$smarty->assign("createreasons", $createreasons);
 	
-	$declinereasons = EmailTemplate::getActiveTemplates(/* forCreated */ 0);
+	$declinereasons = EmailTemplate::getActiveTemplates(EmailTemplate::NOT_CREATED);
 	$smarty->assign("declinereasons", $declinereasons);
     
-	$allcreatereasons = EmailTemplate::getAllActiveTemplates(/* forCreated */ 1);
+	$allcreatereasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::CREATED);
 	$smarty->assign("allcreatereasons", $allcreatereasons);
 	
-	$alldeclinereasons = EmailTemplate::getAllActiveTemplates(/* forCreated */ 0);
+	$alldeclinereasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::NOT_CREATED);
 	$smarty->assign("alldeclinereasons", $alldeclinereasons);
+
+	$allotherreasons = EmailTemplate::getAllActiveTemplates(false);
+	$smarty->assign("allotherreasons", $allotherreasons);
 	
 	return $smarty->fetch("request-zoom.tpl");
 }

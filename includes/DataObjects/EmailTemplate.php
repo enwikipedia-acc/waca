@@ -7,20 +7,24 @@
  */
 class EmailTemplate extends DataObject
 {
+	const CREATED = "created";
+	const NOT_CREATED = "not created";
+	const NONE = null;
+
 	private $name;
 	private $text;
 	private $jsquestion;
-	private $oncreated = 0;
 	private $active = 1;
 	private $preloadonly = 0;
+	private $defaultaction = self::NOT_CREATED;
 
 	/**
 	 * Gets active non-preload templates
-	 * @param integer $forCreated Created templates?
+	 * @param string $defaultAction Default action to take (EmailTemplate::CREATED or EmailTemplate::NOT_CREATED)
 	 * @param PdoDatabase $database 
 	 * @return array|false
 	 */
-	public static function getActiveTemplates($forCreated, PdoDatabase $database = null)
+	public static function getActiveTemplates($defaultAction, PdoDatabase $database = null)
 	{
 		if ($database == null) {
 			$database = gGetDb();
@@ -28,9 +32,9 @@ class EmailTemplate extends DataObject
 
 		global $createdid;
 
-		$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE oncreated = :forcreated AND active = 1 AND preloadonly = 0 AND id != :createdid;");
+		$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE defaultaction = :forcreated AND active = 1 AND preloadonly = 0 AND id != :createdid;");
 		$statement->bindValue(":createdid", $createdid);
-		$statement->bindValue(":forcreated", $forCreated);
+		$statement->bindValue(":forcreated", $defaultAction);
 
 		$statement->execute();
 
@@ -46,18 +50,24 @@ class EmailTemplate extends DataObject
 
 	/**
 	 * Gets active non-preload and preload templates
-	 * @param mixed $forCreated Created templates?
+	 * @param string $defaultAction Default action to take (EmailTemplate::CREATED or EmailTemplate::NOT_CREATED)
 	 * @param PdoDatabase $database 
 	 * @return array|false
 	 */
-	public static function getAllActiveTemplates($forCreated, PdoDatabase $database = null)
+	public static function getAllActiveTemplates($defaultAction, PdoDatabase $database = null)
 	{
 		if ($database == null) {
 			$database = gGetDb();
 		}
 
-		$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE oncreated = :forcreated AND active = 1;");
-		$statement->bindValue(":forcreated", $forCreated);
+		$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE defaultaction = :forcreated AND active = 1;");
+
+		if($defaultAction === false) {
+			$statement = $database->prepare(
+				"SELECT * FROM `emailtemplate` WHERE defaultaction not in ('created', 'not created') AND active = 1;");
+		}
+
+		$statement->bindValue(":forcreated", $defaultAction);
 
 		$statement->execute();
 
@@ -92,11 +102,11 @@ class EmailTemplate extends DataObject
 	{
 		if ($this->isNew) {
 // insert
-			$statement = $this->dbObject->prepare("INSERT INTO `emailtemplate` (name, text, jsquestion, oncreated, active, preloadonly) VALUES (:name, :text, :jsquestion, :oncreated, :active, :preloadonly);");
+			$statement = $this->dbObject->prepare("INSERT INTO `emailtemplate` (name, text, jsquestion, defaultaction, active, preloadonly) VALUES (:name, :text, :jsquestion, :defaultaction, :active, :preloadonly);");
 			$statement->bindValue(":name", $this->name);
 			$statement->bindValue(":text", $this->text);
 			$statement->bindValue(":jsquestion", $this->jsquestion);
-			$statement->bindValue(":oncreated", $this->oncreated);
+			$statement->bindValue(":defaultaction", $this->defaultaction);
 			$statement->bindValue(":active", $this->active);
 			$statement->bindValue(":preloadonly", $this->preloadonly);
 
@@ -110,12 +120,12 @@ class EmailTemplate extends DataObject
 		}
 		else {
 // update
-			$statement = $this->dbObject->prepare("UPDATE `emailtemplate` SET name = :name, text = :text, jsquestion = :jsquestion, oncreated = :oncreated, active = :active, preloadonly = :preloadonly WHERE id = :id LIMIT 1;");
+			$statement = $this->dbObject->prepare("UPDATE `emailtemplate` SET name = :name, text = :text, jsquestion = :jsquestion, defaultaction = :defaultaction, active = :active, preloadonly = :preloadonly WHERE id = :id LIMIT 1;");
 			$statement->bindValue(":id", $this->id);
 			$statement->bindValue(":name", $this->name);
 			$statement->bindValue(":text", $this->text);
 			$statement->bindValue(":jsquestion", $this->jsquestion);
-			$statement->bindValue(":oncreated", $this->oncreated);
+			$statement->bindValue(":defaultaction", $this->defaultaction);
 			$statement->bindValue(":active", $this->active);
 			$statement->bindValue(":preloadonly", $this->preloadonly);
 
@@ -163,14 +173,14 @@ class EmailTemplate extends DataObject
 		$this->jsquestion = $jsquestion;
 	}
 
-	public function getOncreated()
+	public function getDefaultAction()
 	{
-		return $this->oncreated == 1;
+		return $this->defaultaction;
 	}
 
-	public function setOncreated($oncreated)
+	public function setDefaultAction($defaultAction)
 	{
-		$this->oncreated = $oncreated ? 1 : 0;
+		$this->defaultaction = $defaultAction;
 	}
 
 	public function getActive()

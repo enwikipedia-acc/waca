@@ -36,11 +36,21 @@
 			</div>
 
 			<div class="control-group">
+				<label class="control-label" for="inputDefaultAction">Default action</label>
 				<div class="controls">
-					<label class="checkbox">
-						<input type="checkbox"  id="inputCreated" name="oncreated"{if !$currentUser->isAdmin() || $id == $createdid} disabled{/if}{if {$emailTemplate->getOnCreated()}} checked{/if} />
-						Used for created requests
-					</label>
+					<select class="input-large" id="inputDefaultAction" name="defaultaction" {if !$currentUser->isAdmin()} disabled{/if}>
+						<option value="" {if $emailTemplate->getDefaultAction() == ""}selected="selected"{/if}>No default</option>
+						<optgroup label="Close request">
+							<option value="created" {if $emailTemplate->getDefaultAction() == "created"}selected="selected"{/if}>... as created</option>
+							<option value="not created" {if $emailTemplate->getDefaultAction() == "not created"}selected="selected"{/if}>... as NOT created</option>
+						</optgroup>
+						<optgroup label="Defer to">
+							{foreach $requeststates as $state}
+							<option value="{$state@key}" {if $emailTemplate->getDefaultAction() == $state@key}selected="selected"{/if}>... {$state.deferto|capitalize}</option>
+							{/foreach}
+						</optgroup>
+					</select>
+					<span class="help-block">The default action to take on custom close. This is also used for populating decline and created dropdowns</span>
 				</div>
 			</div>
 

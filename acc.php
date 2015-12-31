@@ -1238,17 +1238,18 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			if ($template != false) {
 				$preloadTitle = $template->getName();
 				$preloadText = $template->getText();
-				$forcreated = $template->getOncreated();
+				$preloadAction = $template->getDefaultAction();
 			}
 			else {
 				$preloadText = "";
 				$preloadTitle = "";
-				$forcreated = false;
+				$preloadAction = "";
 			}
             
+			$smarty->assign("requeststates", $availableRequestStates);
+			$smarty->assign("defaultAction", $preloadAction);
 			$smarty->assign("preloadtext", $preloadText);
 			$smarty->assign("preloadtitle", $preloadTitle);
-			$smarty->assign("forcreated", $forcreated);
 			$smarty->assign("querystring", $querystring);
 			$smarty->assign("request", $request);
 			$smarty->assign("iplocation", $locationProvider->getIpLocation($request->getTrustedIp()));
@@ -1256,78 +1257,115 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
+
+		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
+		if (!User::getCurrent()->isAdmin() || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on") {
+			$headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
+		}
+
+		$headers .= 'X-ACC-Request: ' . $request->getId() . "\r\n";
+		$headers .= 'X-ACC-UserID: ' . User::getCurrent()->getId() . "\r\n";
+
+		// Get the closing user's Email signature and append it to the Email.
+		if (User::getCurrent()->getEmailSig() != "") {
+			$emailsig = html_entity_decode(User::getCurrent()->getEmailSig(), ENT_QUOTES, "UTF-8");
+			mail($request->getEmail(), "RE: [ACC #{$request->getId()}] English Wikipedia Account Request", $_POST['msgbody'] . "\n\n" . $emailsig, $headers);
+		}
 		else {
-			$headers = 'From: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
-			if (!User::getCurrent()->isAdmin() || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on") {
-				$headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
-			}
-            
-			$headers .= 'X-ACC-Request: ' . $request->getId() . "\r\n";
-			$headers .= 'X-ACC-UserID: ' . User::getCurrent()->getId() . "\r\n";
-			
-			// Get the closing user's Email signature and append it to the Email.            
-			if (User::getCurrent()->getEmailSig() != "") {
-				$emailsig = html_entity_decode(User::getCurrent()->getEmailSig(), ENT_QUOTES, "UTF-8");
-				mail($request->getEmail(), "RE: [ACC #{$request->getId()}] English Wikipedia Account Request", $_POST['msgbody'] . "\n\n" . $emailsig, $headers);
-			}
-			else {
-				mail($request->getEmail(), "RE: [ACC #{$request->getId()}] English Wikipedia Account Request", $_POST['msgbody'], $headers);
-			}
-			
-			$request->setEmailSent(1);
-            
-			if (isset($_POST['created']) && $_POST['created'] == "on") {
+			mail($request->getEmail(), "RE: [ACC #{$request->getId()}] English Wikipedia Account Request", $_POST['msgbody'], $headers);
+		}
+
+		$request->setEmailSent(1);
+		$messageBody = $_POST['msgbody'];
+
+		if ($_POST['action'] == EmailTemplate::CREATED || $_POST['action'] == EmailTemplate::NOT_CREATED) {
+			$request->setStatus('Closed');
+
+			if($_POST['action'] == EmailTemplate::CREATED){
 				$gem  = 'custom-y';
+				$crea = "Custom, Created";
 			}
 			else {
 				$gem  = 'custom-n';
+				$crea = "Custom, Not Created";
 			}
-            
-			$messageBody = $_POST['msgbody'];
-		}
-	}
-    
-	$request->setStatus('Closed');
-	$request->setReserved(0);
-    
-	// TODO: make this transactional
-	$request->save();
-    
-	Logger::closeRequest(gGetDb(), $request, $gem, $messageBody);
-    
-	if ($gem == '0') {
-		$crea = "Dropped";
-	}
-	else if ($gem == 'custom') {
-		$crea = "Custom";
-	}
-	else if ($gem == 'custom-y') {
-		$crea = "Custom, Created";
-	}
-	else if ($gem == 'custom-n') {
-		$crea = "Custom, Not Created";
-	}
-	else {
-		$template = EmailTemplate::getById($gem, gGetDb());
-		$crea = $template->getName();
-	}
 
-	Notification::requestClosed($request, $crea);
-	
-	BootstrapSkin::displayAlertBox("Request " . $request->getId() . " (" . htmlentities($request->getName(), ENT_COMPAT, 'UTF-8') . ") marked as 'Done'.", "alert-success");
-    
-	$towhom = $request->getEmail();
-	if ($gem != "0" && $gem != 'custom' && $gem != 'custom-y' && $gem != 'custom-n') {
-		sendemail($gem, $towhom, $request->getId());
-		$request->setEmailSent(1);
+			Logger::closeRequest(gGetDb(), $request, $gem, $messageBody);
+			
+			Notification::requestClosed($request, $crea);
+			BootstrapSkin::displayAlertBox(
+				"Request " . $request->getId() . " (" . htmlentities($request->getName(), ENT_COMPAT, 'UTF-8') . ") marked as 'Done'.", 
+				"alert-success");
+		}
+		else if ($_POST['action'] == "mail") {
+			// no action other than send mail!
+			Logger::sentMail(gGetDb(), $request, $messageBody);
+			Logger::unreserve(gGetDb(), $request);
+		}
+		else if(array_key_exists($_POST['action'], $availableRequestStates) ) {
+			// Defer
+
+			$request->setStatus($_POST['action']);
+			$deto = $availableRequestStates[$_POST['action']]['deferto'];
+			$detolog = $availableRequestStates[$_POST['action']]['defertolog'];
+
+			Logger::sentMail(gGetDb(), $request, $messageBody);
+			Logger::deferRequest(gGetDb(), $request, $detolog);
+			
+			Notification::requestDeferred($request);
+			SessionAlert::success("Request {$request->getId()} deferred to $deto");
+		}
+		else {
+			// hmm. not sure what happened. Log that we sent the mail anyway.
+			Logger::sentMail(gGetDb(), $request, $messageBody);
+			Logger::unreserve(gGetDb(), $request);
+		}
+
+		$request->setReserved(0);
+		$request->save();
+		
+		$request->updateChecksum();
+		$request->save();
+
+		echo defaultpage();
+		BootstrapSkin::displayInternalFooter();
+		die();		
 	}
-    
-	$request->updateChecksum();
-	$request->save();
-    
-	echo defaultpage();
-	BootstrapSkin::displayInternalFooter();
-	die();
+	else{
+		// Not a custom close, just a normal close
+	    
+		$request->setStatus('Closed');
+		$request->setReserved(0);
+		
+		// TODO: make this transactional
+		$request->save();
+		
+		Logger::closeRequest(gGetDb(), $request, $gem, $messageBody);
+		
+		if ($gem == '0') {
+			$crea = "Dropped";
+		}
+		else {
+			$template = EmailTemplate::getById($gem, gGetDb());
+			$crea = $template->getName();
+		}
+
+		Notification::requestClosed($request, $crea);
+		BootstrapSkin::displayAlertBox("Request " . $request->getId() . " (" . htmlentities($request->getName(), ENT_COMPAT, 'UTF-8') . ") marked as 'Done'.", "alert-success");
+		
+		$towhom = $request->getEmail();
+		if ($gem != "0") {
+			sendemail($gem, $towhom, $request->getId());
+			$request->setEmailSent(1);
+		}
+		
+		$request->updateChecksum();
+		$request->save();
+		
+		echo defaultpage();
+		BootstrapSkin::displayInternalFooter();
+		die();
+	}
 }
 elseif ($action == "zoom") {
 	if (!isset($_GET['id'])) {
@@ -1809,7 +1847,7 @@ elseif ($action == "sendtouser") {
 	header("Location: $baseurl/acc.php?action=zoom&id=$request");
 }
 elseif ($action == "emailmgmt") {
-	global $smarty, $createdid;
+	global $smarty, $createdid, $availableRequestStates;
     
 	/* New page for managing Emails, since I would rather not be handling editing
 	interface messages (such as the Sitenotice) and the new Emails in the same place. */
@@ -1831,9 +1869,9 @@ elseif ($action == "emailmgmt") {
 				$emailTemplate->setName($_POST['name']);
 				$emailTemplate->setText($_POST['text']);
 				$emailTemplate->setJsquestion($_POST['jsquestion']);
-				$emailTemplate->setOncreated(isset($_POST['oncreated']));
+				$emailTemplate->setDefaultAction($_POST['defaultaction']);
 				$emailTemplate->setActive(isset($_POST['active']));
-			    
+
 				// Check if the entered name already exists (since these names are going to be used as the labels for buttons on the zoom page).
 				// getByName(...) returns false on no records found.
 				if (EmailTemplate::getByName($_POST['name'], $database)) {
@@ -1850,11 +1888,12 @@ elseif ($action == "emailmgmt") {
 				header("Location: $baseurl/acc.php?action=emailmgmt");
 			});
             
-			die();    
+			die();
 		}
         
 		$smarty->assign('id', null);
 		$smarty->assign('createdid', $createdid);
+		$smarty->assign('requeststates', $availableRequestStates);
 		$smarty->assign('emailTemplate', new EmailTemplate());
 		$smarty->assign('emailmgmtpage', 'Create'); //Use a variable so we don't need two Smarty templates for creating and editing.
 		$smarty->display("email-management/edit.tpl");
@@ -1880,13 +1919,13 @@ elseif ($action == "emailmgmt") {
 			$emailTemplate->setJsquestion($_POST['jsquestion']);
 			
 			if ($_GET['edit'] == $createdid) {
-// Both checkboxes on the main created message should always be enabled.
-				$emailTemplate->setOncreated(1);
+				// Both checkboxes on the main created message should always be enabled.
+				$emailTemplate->setDefaultAction(EmailTemplate::CREATED);
 				$emailTemplate->setActive(1);
 				$emailTemplate->setPreloadOnly(0);
 			}
 			else {
-				$emailTemplate->setOncreated(isset($_POST['oncreated']));
+				$emailTemplate->setDefaultAction($_POST['defaultaction']);
 				$emailTemplate->setActive(isset($_POST['active']));
 				$emailTemplate->setPreloadOnly(isset($_POST['preloadonly']));
 			}
@@ -1919,6 +1958,7 @@ elseif ($action == "emailmgmt") {
 		$smarty->assign('id', $emailTemplate->getId());
 		$smarty->assign('emailTemplate', $emailTemplate);
 		$smarty->assign('createdid', $createdid);
+		$smarty->assign('requeststates', $availableRequestStates);
 		$smarty->assign('emailmgmtpage', 'Edit'); // Use a variable so we don't need two Smarty templates for creating and editing.
 		$smarty->display("email-management/edit.tpl");
 		BootstrapSkin::displayInternalFooter();

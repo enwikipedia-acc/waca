@@ -8,14 +8,22 @@
 
 <div class="row-fluid">
   <div class="span6">
-	  <h3>Active Emails</h3>
+    <h3>Active Emails</h3>
     <table class="table table-striped table-nonfluid">
       {foreach $activeemails as $row}
       <tr>
         <td>{$row@iteration}.</td>
         <th>{$row->getName()|escape}</th>
         <td>
-          {if $row->getOncreated()}<span class="label label-success">Create</span>{else}<span class="label label-important">Decline</span>{/if}
+          {if $row->getDefaultAction() == EmailTemplate::CREATED}
+            <span class="label label-success">Create</span>
+          {elseif $row->getDefaultAction() == EmailTemplate::NOT_CREATED}
+            <span class="label label-important">Decline</span>
+          {elseif $row->getDefaultAction() == EmailTemplate::NONE}
+            <span class="label">No default</span>
+          {else}
+            <span class="label label-info">Other</span>
+          {/if}
         </td>
         <td>
           {if $row->getPreloadOnly()}<span class="label label-info">Preload only</span>{/if}
@@ -31,14 +39,22 @@
   </div>
   {if $displayinactive == true}
   <div class="span6">
-	  <h3>Inactive Emails</h3>
+    <h3>Inactive Emails</h3>
     <table class="table table-striped table-nonfluid">
       {foreach $inactiveemails as $row}
       <tr>
         <td>{$row@iteration}.</td>
         <th>{$row->getName()|escape}</th>
         <td>
-          {if $row->getOncreated()}<span class="label label-success">Create</span>{else}<span class="label label-important">Decline</span>{/if}
+          {if $row->getDefaultAction() == EmailTemplate::CREATED}
+            <span class="label label-success">Create</span>
+          {elseif $row->getDefaultAction() == EmailTemplate::NOT_CREATED}
+            <span class="label label-important">Decline</span>
+          {elseif $row->getDefaultAction() == EmailTemplate::NONE}
+            <span class="label">No default</span>
+          {else}
+            <span class="label label-info">Other</span>
+          {/if}
         </td>
         <td>
           {if $row->getPreloadOnly()}<span class="label label-info">Preload only</span>{/if}
