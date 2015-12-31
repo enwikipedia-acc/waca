@@ -28,3 +28,4 @@ web.*.config
 .user.ini
 waca.sln.DotSettings.user
 .vs/*
+.idea/

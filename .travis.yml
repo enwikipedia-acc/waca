@@ -3,11 +3,19 @@ language: php
 php:
   - 5.5
   - 5.6
+  - 7.0
   
 matrix:
   allow_failures:
     - php: 5.6
-    
+    - php: 7.0
+
+before_install:
+  - pip install --user codecov
+
+after_success:
+  - codecov
+
 sudo: false
 
 git:
@@ -20,7 +28,8 @@ before_script:
 
 script:
   - bash .travis.phplint.sh
-  - phpunit
+  - phpunit --coverage-clover=coverage.xml
+  - codecov
 
 notifications:
   irc:
