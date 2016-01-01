@@ -361,6 +361,11 @@ elseif ($action == "forgotpw") {
 elseif ($action == "login") {
 	global $baseurl, $smarty;
     
+	if (!isset($_POST['username'])) {
+		header("Location: $baseurl/acc.php?error=authfail&tplUsername=");
+		die();
+	}
+
 	$user = User::getByUsername($_POST['username'], gGetDb());
     
 	if ($user == false || !$user->authenticate($_POST['password'])) {

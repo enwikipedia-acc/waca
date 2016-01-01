@@ -97,6 +97,9 @@ SQL
 		$smarty->assign("showinfo", true);
 	}
     
+	// force to not show, overriden later
+	$smarty->assign("proxyip", "");
+
 	if ($hideinfo == false || $correcthash == true || User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
 		$smarty->assign("proxyip", $request->getForwardedIp());
 		if ($request->getForwardedIp()) {
