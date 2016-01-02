@@ -1,7 +1,5 @@
 <?php
 
-require_once 'lib/password_compat/lib/password.php';
-
 class AuthUtility
 {
 	/**
