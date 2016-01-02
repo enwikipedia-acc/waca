@@ -86,19 +86,6 @@ $developer = array(
 				"Cloak" => "*!*@wikipedia/DeltaQuad", //I change nicks alot
 				"Other" => null,
 			),
-		"John" =>
-			array(
-				"IRC" => "JohnLewis",
-				"ToolID" => "889",
-				"wiki" => "John F. Lewis",
-				"WWW" => null,
-				"Name" => "John Lewis",
-				"Role" => "Developer",
-				"Retired" => null,
-				"Access" => "Git, Mailing list admin",
-				"Cloak" => "*!*@wikimedia/John-F-Lewis",
-				"Other" => null,
-			),
 		"Manishearth" =>
 			array(
 				"IRC" => "Manishearth",
@@ -123,19 +110,6 @@ $developer = array(
 				"Retired" => null,
 				"Access" => "Mailing list mod",
 				"Cloak" => "*!*@wikipedia/Cyberpower678",
-				"Other" => null,
-			),
-		"Technical 13" =>
-			array(
-				"IRC" => "Technical_13",
-				"ToolID" => "890",
-				"wiki" => "Technical 13",
-				"WWW" => "https://github.com/Technical-13/waca",
-				"Name" => "Donald J. Fortier II",
-				"Role" => "Developer",
-				"Retired" => null,
-				"Access" => "Git",
-				"Cloak" => "*!*@wikimedia/Technical-13",
 				"Other" => null,
 			)
 );
@@ -257,7 +231,7 @@ $inactiveDeveloper = array(
 				"Name" => null,
 				"Role" => null,
 				"Retired" => "Developer",
-				"Access" => "Git",
+				"Access" => "",
 				"Cloak" => "*!*@wikipedia/Chris-G",
 				"Other" => null,
 			),
@@ -337,6 +311,32 @@ $inactiveDeveloper = array(
 				"Retired" => "Developer",
 				"Access" => "Git",
 				"Cloak" => "*!*@ubuntu/member/logan",
+				"Other" => null,
+			),
+		"John" =>
+			array(
+				"IRC" => "JohnLewis",
+				"ToolID" => "889",
+				"wiki" => "John F. Lewis",
+				"WWW" => null,
+				"Name" => "John Lewis",
+				"Role" => "",
+				"Retired" => "Developer",
+				"Access" => "",
+				"Cloak" => "*!*@wikimedia/John-F-Lewis",
+				"Other" => null,
+			),
+		"Technical 13" =>
+			array(
+				"IRC" => "Technical_13",
+				"ToolID" => "890",
+				"wiki" => "Technical 13",
+				"WWW" => "https://github.com/Technical-13/waca",
+				"Name" => "Donald J. Fortier II",
+				"Role" => "",
+				"Retired" => "Developer",
+				"Access" => "",
+				"Cloak" => "*!*@wikimedia/Technical-13",
 				"Other" => null,
 			)
 );
