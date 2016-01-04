@@ -29,3 +29,5 @@ web.*.config
 waca.sln.DotSettings.user
 .vs/*
 .idea/
+.vagrant/
+puphpet/files/dot/ssh/
