@@ -40,13 +40,13 @@
 				<div class="controls">
 					<select class="input-large" id="inputDefaultAction" name="defaultaction" {if !$currentUser->isAdmin()} disabled{/if}>
 						<option value="" {if $emailTemplate->getDefaultAction() == ""}selected="selected"{/if}>No default</option>
-						<optgroup label="Close request">
-							<option value="created" {if $emailTemplate->getDefaultAction() == "created"}selected="selected"{/if}>... as created</option>
-							<option value="not created" {if $emailTemplate->getDefaultAction() == "not created"}selected="selected"{/if}>... as NOT created</option>
+						<optgroup label="Close request...">
+							<option value="created" {if $emailTemplate->getDefaultAction() == "created"}selected="selected"{/if}>Close request as created</option>
+							<option value="not created" {if $emailTemplate->getDefaultAction() == "not created"}selected="selected"{/if}>Close request as NOT created</option>
 						</optgroup>
-						<optgroup label="Defer to">
+						<optgroup label="Defer to...">
 							{foreach $requeststates as $state}
-							<option value="{$state@key}" {if $emailTemplate->getDefaultAction() == $state@key}selected="selected"{/if}>... {$state.deferto|capitalize}</option>
+							<option value="{$state@key}" {if $emailTemplate->getDefaultAction() == $state@key}selected="selected"{/if}>Defer to {$state.deferto|capitalize}</option>
 							{/foreach}
 						</optgroup>
 					</select>
