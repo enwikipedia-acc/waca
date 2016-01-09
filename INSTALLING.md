@@ -4,7 +4,7 @@ This is a brief installation guide for developers/testers etc to get this system
 
 * Web server
 * MySQL 5.5+ (or equivalent)
-* PHP 5.3+
+* PHP 5.5+
 
 The webserver must be configured to pre-process *.php files through the PHP engine before sending them to a client.
 
@@ -34,17 +34,17 @@ Useful (but optional) extensions:
 
 ### Production
 
-* MySQL 5.5.40-0ubuntu0.12.04.1
-* PHP 5.3.10-1ubuntu3.15
-* Apache 2.2.22 (Ubuntu)
-* Ubuntu 12.04 LTS (Wikimedia Labs)
+* MySQL 5.5.46-0ubuntu0.12.04.2
+* PHP 5.6.9-0+deb8u1
+* Apache 2.4.10 (Debian)
+* Debian Jessie (Wikimedia Labs)
 
 ### stwalkerster's main development environment
 
-* MariaDB 5.5.35
-* PHP 5.5.11 (NTS VC11-x86 build)
-* IIS 8.5
-* Windows 8.1
+* MariaDB 10.0.15
+* PHP 5.6.1 (NTS VC11-x86 build)
+* PHP Development server
+* Windows 10
 
 # Basic information
 
