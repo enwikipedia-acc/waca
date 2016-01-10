@@ -1218,7 +1218,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	if ($gem == 1 && !$exists && !isset($_GET['createoverride'])) {
 		$alertContent = "<p>You have chosen to mark this request as \"created\", but the account does not exist on the English Wikipedia, proceed?</p><br />";
 		$alertContent .= "<div class=\"row-fluid\">";
-		$alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$baseurl/acc.php?sum=" . $_GET['sum'] . "&amp;action=done&amp;id=" . $_GET['id'] . "&amp;createoverride=yes&amp;email=" . $_GET['email'] . "\">Yes</a>";
+		$alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$baseurl/acc.php?" . $_SERVER["QUERY_STRING"] ."&amp;createoverride=yes\">Yes</a>";
 		$alertContent .= "<a class=\"btn btn-danger span3\" href=\"$baseurl/acc.php\">No</a>";
 		$alertContent .= "</div>";
         
