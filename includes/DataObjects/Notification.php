@@ -346,6 +346,12 @@ class Notification extends DataObject
 		self::send("Request {$request->getId()} ({$request->getName()}) is no longer being handled.");
 	}
 
+	public static function requestReservationSent(Request $request, User $target) {
+		self::send(
+			"Reservation of request {$request->getId()} ({$request->getName()}) sent to {$target->getUsername()} by " 
+			. User::getCurrent()->getUsername());
+	}
+
 	#endregion
 
 	#region comments

@@ -1848,6 +1848,7 @@ elseif ($action == "sendtouser") {
 		Logger::sendReservation($database, Request::getById($request, $database), $user);
 	});
     
+	Notification::requestReservationSent($request, $user);
 	SessionAlert::success("Reservation sent successfully");
 	header("Location: $baseurl/acc.php?action=zoom&id=$request");
 }
