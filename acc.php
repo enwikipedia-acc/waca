@@ -1322,7 +1322,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			Logger::deferRequest(gGetDb(), $request, $detolog);
 			
 			Notification::requestDeferredWithMail($request);
-			BootstrapSkin::displayAlertBox("Request {$request->getId()} deferred to $deto", 
+			BootstrapSkin::displayAlertBox("Request {$request->getId()} deferred to $deto, sending an email.", 
 				"alert-success");
 		}
 		else {
