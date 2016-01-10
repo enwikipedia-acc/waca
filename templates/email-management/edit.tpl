@@ -38,7 +38,7 @@
 			<div class="control-group">
 				<label class="control-label" for="inputDefaultAction">Default action</label>
 				<div class="controls">
-					<select class="input-large" id="inputDefaultAction" name="defaultaction" {if !$currentUser->isAdmin()} disabled{/if}>
+					<select class="input-large" id="inputDefaultAction" name="defaultaction" {if !$currentUser->isAdmin() || $id == $createdid} disabled{/if}>
 						<option value="" {if $emailTemplate->getDefaultAction() == ""}selected="selected"{/if}>No default</option>
 						<optgroup label="Close request...">
 							<option value="created" {if $emailTemplate->getDefaultAction() == "created"}selected="selected"{/if}>Close request as created</option>
