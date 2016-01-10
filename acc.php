@@ -1306,6 +1306,10 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			// no action other than send mail!
 			Logger::sentMail(gGetDb(), $request, $messageBody);
 			Logger::unreserve(gGetDb(), $request);
+
+			Notification::sentMail($request);
+			BootstrapSkin::displayAlertBox("Sent mail to Request {$request->getId()}", 
+				"alert-success");
 		}
 		else if(array_key_exists($_POST['action'], $availableRequestStates) ) {
 			// Defer
@@ -1317,13 +1321,18 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			Logger::sentMail(gGetDb(), $request, $messageBody);
 			Logger::deferRequest(gGetDb(), $request, $detolog);
 			
-			Notification::requestDeferred($request);
-			SessionAlert::success("Request {$request->getId()} deferred to $deto");
+			Notification::requestDeferredWithMail($request);
+			BootstrapSkin::displayAlertBox("Request {$request->getId()} deferred to $deto", 
+				"alert-success");
 		}
 		else {
 			// hmm. not sure what happened. Log that we sent the mail anyway.
 			Logger::sentMail(gGetDb(), $request, $messageBody);
 			Logger::unreserve(gGetDb(), $request);
+
+			Notification::sentMail($request);
+			BootstrapSkin::displayAlertBox("Sent mail to Request {$request->getId()}", 
+				"alert-success");
 		}
 
 		$request->setReserved(0);

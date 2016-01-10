@@ -304,6 +304,17 @@ class Notification extends DataObject
 
 		self::send("Request {$request->getId()} ({$request->getName()}) deferred to {$availableRequestStates[$request->getStatus()]['deferto']} by " . User::getCurrent()->getUsername());
 	}
+	/**
+	 * 
+	 * Summary of requestDeferredWithMail
+	 * @param Request $request
+	 */
+	public static function requestDeferredWithMail(Request $request)
+	{
+		global $availableRequestStates;
+
+		self::send("Request {$request->getId()} ({$request->getName()}) deferred to {$availableRequestStates[$request->getStatus()]['deferto']} with an email by " . User::getCurrent()->getUsername());
+	}
 
 	/**
 	 * Summary of requestClosed
@@ -313,6 +324,15 @@ class Notification extends DataObject
 	public static function requestClosed(Request $request, $closetype)
 	{
 		self::send("Request {$request->getId()} ({$request->getName()}) closed ($closetype) by " . User::getCurrent()->getUsername());
+	}
+
+	/**
+	 * Summary of sentMail
+	 * @param Request $request
+	 */
+	public static function sentMail(Request $request) {
+		self::send(User::getCurrent()->getUsername() 
+			. " sent an email related to Request {$request->getId()} ({$request->getName()})");
 	}
 
 	#endregion
@@ -346,6 +366,11 @@ class Notification extends DataObject
 		self::send("Request {$request->getId()} ({$request->getName()}) is no longer being handled.");
 	}
 
+	/**
+	 * Summary of requestReservationSent
+	 * @param Request $request
+	 * @param User $target
+	 */
 	public static function requestReservationSent(Request $request, User $target) {
 		self::send(
 			"Reservation of request {$request->getId()} ({$request->getName()}) sent to {$target->getUsername()} by " 
