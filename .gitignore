@@ -16,7 +16,7 @@ deploy/
 .settings/
 .buildpath
 .project
-.idea
+.idea/
 templates_c/*
 *.phpproj.user
 temp/*
@@ -28,5 +28,4 @@ web.*.config
 .user.ini
 waca.sln.DotSettings.user
 .vs/*
-.idea/
 .arc*
