@@ -160,12 +160,12 @@ function defaultpage()
 	$smarty->assign("requestLimitShowOnly", $requestLimitShowOnly);
 	
 	$query = <<<SQL
-        SELECT r.id, r.name, r.checksum
-        FROM request r 
-        JOIN acc_log l ON r.id = l.log_pend 
-        WHERE l.log_action LIKE 'Closed%' 
-        ORDER BY l.log_time DESC 
-        LIMIT 5;
+		SELECT request.id, request.name, request.checksum
+		FROM request 
+		JOIN log ON log.objectid = request.id and log.objecttype = 'Request'
+		WHERE log.action LIKE 'Closed%' 
+		ORDER BY log.timestamp DESC 
+		LIMIT 5;
 SQL;
     
 	$statement = $database->prepare($query);
