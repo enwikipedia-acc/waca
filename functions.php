@@ -160,12 +160,12 @@ function defaultpage()
 	$smarty->assign("requestLimitShowOnly", $requestLimitShowOnly);
 	
 	$query = <<<SQL
-        SELECT r.id, r.name, r.checksum
-        FROM request r 
-        JOIN acc_log l ON r.id = l.log_pend 
-        WHERE l.log_action LIKE 'Closed%' 
-        ORDER BY l.log_time DESC 
-        LIMIT 5;
+		SELECT request.id, request.name, request.checksum
+		FROM request 
+		JOIN log ON log.objectid = request.id and log.objecttype = 'Request'
+		WHERE log.action LIKE 'Closed%' 
+		ORDER BY log.timestamp DESC 
+		LIMIT 5;
 SQL;
     
 	$statement = $database->prepare($query);
@@ -390,4 +390,25 @@ function reattachOAuthAccount(User $user)
 	catch (Exception $ex) {
 		throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
 	}     
+}
+
+/**
+ * Generates the JavaScript source for XSS-safe typeahead autocompletion for usernames.  This output is expected to be
+ * passed as the $tailscript argument to \BootstrapSkin::displayInternalFooter().
+ *
+ * @param $users string[] Array of usernames as strings
+ * @return string
+ */
+function getTypeaheadSource($users) {
+	$userList = "";
+	foreach ($users as $v) {
+		$userList .= "\"" . htmlentities($v) . "\", ";
+	}
+	$userList = "[" . rtrim($userList, ", ") . "]";
+	$tailscript = <<<JS
+$('.username-typeahead').typeahead({
+	source: {$userList}
+});
+JS;
+	return $tailscript;
 }

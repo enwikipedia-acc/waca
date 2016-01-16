@@ -2,7 +2,7 @@
 <form class="form-inline" method="get" action="acc.php">
 	<input type="hidden" name="action" value="logs" />
 	<input type="hidden" name="page" value="1" />
-  <input type="text" id="inputUsername" placeholder="All users" {include file="usermanagement/jsuserlist.tpl"} name="filterUser" value="{$filterUser|escape}"/>
+  <input type="text" id="inputUsername" class="username-typeahead" placeholder="All users" data-provide="typeahead" data-items="10" name="filterUser" value="{$filterUser|escape}"/>
   <!--<input type="text" id="inputAction" placeholder="Filter by Action" name="filterAction" value="{$filterAction|escape}" />-->
 	<select id="inputAction" name="filterAction">
 		<option value="">All log actions</option>

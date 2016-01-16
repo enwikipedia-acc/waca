@@ -1461,18 +1461,17 @@ elseif ($action == "logs") {
 	
 	$smarty->assign("limit", $limit);
 	$smarty->assign("page", $page);
-	
-	$activeUsers = User::getAllUsernames(gGetDb(), true);
-	
-	$smarty->assign("jsuserlist", $activeUsers);
+
 	$smarty->assign("logs", $logs);
 	
 	
 	$smarty->assign("filterUser", $filterUser);
 	$smarty->assign("filterAction", $filterAction);
 	$smarty->display("logs/main.tpl");
+
+	$tailscript = getTypeaheadSource(User::getAllUsernames(gGetDb(), true));
 	
-	BootstrapSkin::displayInternalFooter();
+	BootstrapSkin::displayInternalFooter($tailscript);
 	die();
 }
 elseif ($action == "reserve") {

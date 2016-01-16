@@ -64,11 +64,12 @@ class StatsUsers extends StatisticsPage
 		global $smarty;
 
 		$activitySummary = $database->prepare(<<<SQL
-            SELECT COALESCE(c.mail_desc, l.log_action) AS action, COUNT(*) AS count 
-            FROM acc_log l 
-            LEFT JOIN closes c ON l.log_action = c.closes 
-            WHERE l.log_user = :username 
-            GROUP BY action;
+SELECT COALESCE(closes.mail_desc, log.action) AS action, COUNT(*) AS count
+FROM log
+INNER JOIN user ON log.user = user.id
+LEFT JOIN closes ON log.action = closes.closes
+WHERE user.username = :username
+GROUP BY action;
 SQL
 		);
 		$activitySummary->execute(array(":username" => $user->getUsername()));
@@ -78,14 +79,15 @@ SQL
 		$smarty->assign("activity", $activitySummaryData);
 
 		$usersCreatedQuery = $database->prepare(<<<SQL
-            SELECT l.log_time time, r.name name, r.id id 
-            FROM acc_log l
-            JOIN request r ON r.id = l.log_pend 
-            LEFT JOIN emailtemplate e ON concat('Closed ', e.id) = l.log_action 
-            WHERE l.log_user = :username 
-                AND l.log_action LIKE 'Closed %' 
-                AND (e.oncreated = '1' OR l.log_action = 'Closed custom-y') 
-            ORDER BY l.log_time;
+SELECT log.timestamp time, request.name name, request.id id
+FROM log
+INNER JOIN request ON (request.id = log.objectid and log.objecttype = 'Request')
+INNER JOIN user ON log.user = user.id
+LEFT JOIN emailtemplate ON concat('Closed ', emailtemplate.id) = log.action
+WHERE user.username = :username
+    AND log.action LIKE 'Closed %'
+    AND (emailtemplate.oncreated = '1' OR log.action = 'Closed custom-y')
+ORDER BY log.timestamp;
 SQL
 		);
 		$usersCreatedQuery->execute(array(":username" => $user->getUsername()));
@@ -93,14 +95,15 @@ SQL
 		$smarty->assign("created", $usersCreated);
 
 		$usersNotCreatedQuery = $database->prepare(<<<SQL
-            SELECT l.log_time time, r.name name, r.id id 
-            FROM acc_log l
-            JOIN request r ON r.id = l.log_pend 
-            LEFT JOIN emailtemplate e ON concat('Closed ', e.id) = l.log_action 
-            WHERE l.log_user = :username 
-                AND l.log_action LIKE 'Closed %' 
-                AND (e.oncreated = '0' OR l.log_action = 'Closed custom-n' OR l.log_action='Closed 0') 
-            ORDER BY l.log_time;
+SELECT log.timestamp time, request.name name, request.id id
+FROM log
+JOIN request ON request.id = log.objectid and log.objecttype = 'Request'
+JOIN user ON log.user = user.id
+LEFT JOIN emailtemplate ON concat('Closed ', emailtemplate.id) = log.action
+WHERE user.username = :username
+    AND log.action LIKE 'Closed %'
+    AND (emailtemplate.oncreated = '0' OR log.action = 'Closed custom-n' OR log.action = 'Closed 0')
+ORDER BY log.timestamp;
 SQL
 		);
 		$usersNotCreatedQuery->execute(array(":username" => $user->getUsername()));
@@ -108,10 +111,10 @@ SQL
 		$smarty->assign("notcreated", $usersNotCreated);
 
 		$accountLogQuery = $database->prepare(<<<SQL
-            SELECT * 
-            FROM acc_log l 
-            WHERE l.log_pend = :userid 
-	            AND log_action IN ('Approved','Suspended','Declined','Promoted','Demoted','Renamed','Prefchange');     
+SELECT * FROM log
+WHERE log.objectid = :userid
+AND log.objecttype = 'User'
+AND log.action IN ('Approved','Suspended','Declined','Promoted','Demoted','Renamed','Prefchange'); 
 SQL
 		);
 		$accountLogQuery->execute(array(":userid" => $user->getId()));

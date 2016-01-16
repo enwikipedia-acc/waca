@@ -26,8 +26,11 @@
     $(function () {
     $("[rel='popover']").popover();
     });
-  </script>
-
-  </body>
+  </script>{if $tailscript}
+   <script type="text/javascript">
+       {$tailscript}
+   </script>
+{/if}
+   </body>
 </html>
 

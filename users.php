@@ -490,14 +490,12 @@ BootstrapSkin::displayAlertBox(
 	false);
 
 // assign to user
-$userListData = User::getAllUsernames(gGetDb());
-$smarty->assign("jsuserlist", $userListData);
-$smartydatalist = $smarty->fetch("usermanagement/jsuserlist.tpl");
+$tailscript = getTypeaheadSource(User::getAllUsernames(gGetDb()));
 
 echo <<<HTML
 <div class="row-fluid">
     <form class="form-search">
-        <input type="text" class="input-large" placeholder="Jump to user" $smartydatalist name="usersearch">
+        <input type="text" class="input-large username-typeahead" placeholder="Jump to user" data-provide="typeahead" data-items="10" name="usersearch">
         <button type="submit" class="btn">Search</button>
     </form>
 </div>
@@ -631,5 +629,5 @@ HTML;
 	echo "</div></div></div>";
 }
 
-BootstrapSkin::displayInternalFooter();
+BootstrapSkin::displayInternalFooter($tailscript);
 die();
