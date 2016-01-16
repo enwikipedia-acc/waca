@@ -391,3 +391,24 @@ function reattachOAuthAccount(User $user)
 		throw new TransactionException($ex->getMessage(), "Connection to Wikipedia failed.", "alert-error", 0, $ex);
 	}     
 }
+
+/**
+ * Generates the JavaScript source for XSS-safe typeahead autocompletion for usernames.  This output is expected to be
+ * passed as the $tailscript argument to \BootstrapSkin::displayInternalFooter().
+ *
+ * @param $users string[] Array of usernames as strings
+ * @return string
+ */
+function getTypeaheadSource($users) {
+	$userList = "";
+	foreach ($users as $v) {
+		$userList .= "\"" . htmlentities($v) . "\", ";
+	}
+	$userList = "[" . rtrim($userList, ", ") . "]";
+	$tailscript = <<<JS
+$('.username-typeahead').typeahead({
+	source: {$userList}
+});
+JS;
+	return $tailscript;
+}

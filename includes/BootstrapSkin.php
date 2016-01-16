@@ -73,10 +73,14 @@ class BootstrapSkin
 		$smarty->display("footer.tpl");
 	}
 
+
 	/**
 	 * Prints the internal interface footer to the screen.
+	 *
+	 * @param string|null $tailscript JavaScript to append to the page, usually so it can call jQuery
+	 * @throws Exception
 	 */
-	public static function displayInternalFooter()
+	public static function displayInternalFooter($tailscript = null)
 	{
 		global $smarty;
 
@@ -127,6 +131,8 @@ class BootstrapSkin
 			$emptystring = "";
 			$smarty->assign("onlineusers", $emptystring);
 		}
+
+		$smarty->assign("tailscript", $tailscript);
 
 		$smarty->display("footer.tpl");
 	}
