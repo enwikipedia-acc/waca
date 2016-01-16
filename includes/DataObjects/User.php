@@ -644,7 +644,7 @@ SQL
     
 	public function isCheckuser()
 	{
-		return $this->checkuser == 1 || $this->oauthCanCheckUser();
+		return $this->checkuser == 1 || ($this->isOAuthLinked() && $this->oauthCanCheckUser());
 	}
     
 	public function isIdentified()
