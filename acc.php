@@ -415,12 +415,9 @@ elseif ($action == "login") {
 	$database = gGetDb();
     
 	$sqlText = <<<SQL
-        SELECT log_cmt 
-        FROM acc_log 
-        WHERE log_action = :action 
-        AND log_pend = :userid 
-        ORDER BY log_time DESC 
-        LIMIT 1;
+SELECT comment FROM log
+WHERE action = :action AND objectid = :userid AND objecttype = 'User'
+ORDER BY timestamp DESC LIMIT 1;
 SQL;
     
 	$suspendstatement = $database->prepare($sqlText);
@@ -1032,12 +1029,9 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 		}
         
 		$sqlText = <<<SQL
-            SELECT log_time 
-            FROM acc_log 
-            WHERE log_pend = :request 
-                AND log_action LIKE 'Closed%' 
-            ORDER BY log_time DESC 
-            LIMIT 1;
+SELECT timestamp FROM log
+WHERE objectid = :request and objecttype = 'Request' AND action LIKE 'Closed%'
+ORDER BY timestamp DESC LIMIT 1;
 SQL;
         
 		$statement = gGetDb()->prepare($sqlText);
@@ -1492,7 +1486,12 @@ elseif ($action == "reserve") {
 			}
 		}
 
-		$logQuery = $database->prepare("SELECT log_time FROM acc_log WHERE log_pend = :request AND log_action LIKE 'Closed%' ORDER BY log_time DESC LIMIT 1;");
+		$logQuery = $database->prepare(<<<SQL
+SELECT timestamp FROM log
+WHERE objectid = :request AND objecttype = 'Request' AND action LIKE 'Closed%'
+ORDER BY timestamp DESC LIMIT 1;
+SQL
+		);
 		$logQuery->bindValue(":request", $request->getId());
 		$logQuery->execute();
 		$logTime = $logQuery->fetchColumn();

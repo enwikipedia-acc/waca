@@ -58,13 +58,14 @@ class CountAction extends ApiActionBase implements IApiAction
 	private function getAccountsCreated()
 	{
 		$query = <<<QUERY
-        SELECT
-            COUNT(*) AS count
-        FROM acc_log
-            LEFT JOIN emailtemplate ON concat('Closed ', id) = log_action
+        SELECT COUNT(*) AS count
+        FROM log
+            LEFT JOIN emailtemplate ON concat('Closed ', emailtemplate.id) = log.action
+            INNER JOIN user ON log.user = user.id
         WHERE
-            (oncreated = '1' OR log_action = 'Closed custom-y')
-            AND log_user = :username;
+            (oncreated = '1' OR log.action = 'Closed custom-y')
+            AND log.objecttype = 'Request'
+            AND user.username = :username;
 QUERY;
 
 		$statement = $this->database->prepare($query);
@@ -80,12 +81,13 @@ QUERY;
 		$query = <<<QUERY
         SELECT
             COUNT(*) AS count
-        FROM acc_log
-            LEFT JOIN emailtemplate ON concat('Closed ', id) = log_action
+        FROM log
+            LEFT JOIN emailtemplate ON concat('Closed ', emailtemplate.id) = log.action
+            INNER JOIN user ON log.user = user.id
         WHERE
-            log_time LIKE :date
-            AND (oncreated = '1' OR log_action = 'Closed custom-y')
-            AND log_user = :username;
+            log.timestamp LIKE :date
+            AND (oncreated = '1' OR log.action = 'Closed custom-y')
+            AND user.username = :username;
 QUERY;
 
 		$statement = $this->database->prepare($query);
@@ -100,10 +102,10 @@ QUERY;
 
 	private function fetchAdminData(\DOMElement $userElement)
 	{
-		$query = "SELECT COUNT(*) AS count FROM acc_log WHERE log_user = :username AND log_action = :action";
+		$query = "SELECT COUNT(*) AS count FROM log WHERE log.user = :userid AND log.action = :action;";
 
 		$statement = $this->database->prepare($query);
-		$statement->bindValue(":username", $this->user->getUsername());
+		$statement->bindValue(":userid", $this->user->getId());
 		$statement->bindValue(":action", "Suspended");
 		$statement->execute();
 		$sus = $statement->fetchColumn();
@@ -156,13 +158,13 @@ QUERY;
 		$combinedquery = $this->database->prepare(<<<SQL
             SELECT
                 COUNT(*) AS count
-            FROM acc_log
-            WHERE log_user = :username
-                AND log_action IN ('CreatedTemplate', 'EditedTemplate', 'DeletedTemplate');
+            FROM log
+            WHERE log.user = :userid
+                AND log.action IN ('CreatedTemplate', 'EditedTemplate', 'DeletedTemplate');
 SQL
 		);
 
-		$combinedquery->bindValue(":username", $this->user->getUsername());
+		$combinedquery->bindValue(":userid", $this->user->getId());
 		$combinedquery->execute();
 		$dtc = $combinedquery->fetchColumn();
 		$userElement->setAttribute("welctempchange", $dtc);
@@ -171,13 +173,13 @@ SQL
 		// Combine both actions affecting Email templates into one count.
 		$combinedquery = $this->database->prepare(<<<SQL
             SELECT COUNT(*) AS count
-            FROM acc_log
-            WHERE log_user = :username
-                AND log_action IN ('CreatedEmail', 'EditedEmail');
+            FROM log
+            WHERE log.user = :userid
+                AND log.action IN ('CreatedEmail', 'EditedEmail');
 SQL
 		);
 
-		$combinedquery->bindValue(":username", $this->user->getUsername());
+		$combinedquery->bindValue(":userid", $this->user->getId());
 		$combinedquery->execute();
 		$cec = $combinedquery->fetchColumn();
 		$userElement->setAttribute("emailtempchange", $cec);

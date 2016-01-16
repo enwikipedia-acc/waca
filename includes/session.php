@@ -106,7 +106,14 @@ class session
 		}
 		elseif (User::getCurrent()->isSuspended()) {
 			$database = gGetDb();
-			$suspendstatement = $database->prepare("SELECT log_cmt FROM acc_log WHERE log_action = 'Suspended' AND log_pend = :userid ORDER BY log_time DESC LIMIT 1;");
+			$suspendstatement = $database->prepare(<<<SQL
+SELECT comment 
+FROM log 
+WHERE action = 'Suspended' AND objectid = :userid and objecttype = 'User' 
+ORDER BY timestamp DESC
+LIMIT 1;
+SQL
+			);
             
 			$suspendstatement->bindValue(":userid", User::getCurrent()->getId());
 			$suspendstatement->execute();
@@ -121,7 +128,14 @@ class session
 		}
 		elseif (User::getCurrent()->isDeclined()) {
 			$database = gGetDb();
-			$suspendstatement = $database->prepare("SELECT log_cmt FROM acc_log WHERE log_action = 'Declined' AND log_pend = :userid ORDER BY log_time DESC LIMIT 1;");
+			$suspendstatement = $database->prepare(<<<SQL
+SELECT comment
+FROM log
+WHERE action = 'Declined' AND objectid = :userid and objecttype = 'User'
+ORDER BY timestamp DESC
+LIMIT 1;
+SQL
+			);
             
 			$suspendstatement->bindValue(":userid", User::getCurrent()->getId());
 			$suspendstatement->execute();
