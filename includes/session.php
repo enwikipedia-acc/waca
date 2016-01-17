@@ -11,15 +11,7 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
-/**
- * Enter description here ...
- * @author stwalkerster
- *
- */
 class session
 {
 

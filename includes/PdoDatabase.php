@@ -1,7 +1,4 @@
 <?php
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
 /**
  * @param string $db
@@ -10,50 +7,16 @@ if (!defined("ACC")) {
  */
 function gGetDb($db = "acc")
 {
-	global $accDbObjects;
-	if (!is_array($accDbObjects)) {
-		$accDbObjects = array();
-	}
-
-	if (!isset($accDbObjects[$db])) {
-		global $cDatabaseConfig;
-
-		if (!array_key_exists($db, $cDatabaseConfig)) {
-			trigger_error("Database configuration not found for alias $db");
-			die();
-		}
-
-		try {
-			$accDbObject = new PdoDatabase(
-				$cDatabaseConfig[$db]["dsrcname"],
-				$cDatabaseConfig[$db]["username"],
-				$cDatabaseConfig[$db]["password"]
-			);
-		}
-		catch (PDOException $ex) {
-			// wrap around any potential stack traces which may include passwords
-			throw new Exception("Error connectiong to database '$db': " . $ex->getMessage());
-		}
-
-		$accDbObject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-		// emulating prepared statements gives a performance boost on MySQL.
-		//
-		// however, our version of PDO doesn't seem to understand parameter types when emulating
-		// the prepared statements, so we're forced to turn this off for now.
-		// -- stw 2014-02-11
-		$accDbObject->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
-
-		$accDbObjects[$db] = $accDbObject;
-	}
-
-	return $accDbObjects[$db];
+	return PdoDatabase::getDatabaseConnection($db);
 }
-
-$accDbObjects = array();
 
 class PdoDatabase extends PDO
 {
+	/**
+	 * @var PdoDatabase[]
+	 */
+	private static $connections = array();
+
 	/**
 	 * @var bool True if a transaction is active
 	 */
@@ -64,6 +27,47 @@ class PdoDatabase extends PDO
 	 * @var PDOStatement
 	 */
 	private $queryLogStatement;
+
+	/**
+	 * @param string $connectionName
+	 * @return PdoDatabase
+	 * @throws Exception
+	 */
+	public static function getDatabaseConnection($connectionName)
+	{
+		if (!isset(self::$connections[$connectionName])) {
+			global $cDatabaseConfig;
+
+			if (!array_key_exists($connectionName, $cDatabaseConfig)) {
+				throw new Exception("Database configuration not found for alias $connectionName");
+			}
+
+			try {
+				$databaseObject = new PdoDatabase(
+					$cDatabaseConfig[$connectionName]["dsrcname"],
+					$cDatabaseConfig[$connectionName]["username"],
+					$cDatabaseConfig[$connectionName]["password"]
+				);
+			}
+			catch (PDOException $ex) {
+				// wrap around any potential stack traces which may include passwords
+				throw new Exception("Error connecting to database '$connectionName': " . $ex->getMessage());
+			}
+
+			$databaseObject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+			// emulating prepared statements gives a performance boost on MySQL.
+			//
+			// however, our version of PDO doesn't seem to understand parameter types when emulating
+			// the prepared statements, so we're forced to turn this off for now.
+			// -- stw 2014-02-11
+			$databaseObject->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+
+			self::$connections[$connectionName] = $databaseObject;
+		}
+
+		return self::$connections[$connectionName];
+	}
 
 	/**
 	 * Determines if this connection has a transaction in progress or not
