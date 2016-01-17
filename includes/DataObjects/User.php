@@ -732,7 +732,10 @@ SQL
 
 		return false;
 	}
-    
+
+	/**
+	 * @return bool
+     */
 	public function isOAuthLinked()
 	{
 		if ($this->onwikiname === "##OAUTH##") {
@@ -822,8 +825,15 @@ SQL
 		}
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function oauthCanCheckUser()
 	{
+		if (!$this->isOAuthLinked()) {
+			return false;
+		}
+
 		try {
 			return in_array('checkuser', $this->getOAuthIdentity()->rights);
 		}
