@@ -31,8 +31,8 @@ class Request extends DataObject
 
 	private $blacklistCache = null;
     
-    private static $commentsQuery = null;
-    private static $commentsResults = array();
+	private static $commentsQuery = null;
+	private static $commentsResults = array();
 
 	/**
 	 * This function removes all old requests which are not yet email-confirmed
@@ -260,10 +260,10 @@ SQL
 			return $this->hasComments;
 		}
         
-        if (isset(self::$commentsResults[$this->id])) {
-            $this->hasCommentsResolved = true;
-            return $this->hasComments = self::$commentsResults[$this->id];
-        }
+		if (isset(self::$commentsResults[$this->id])) {
+		    $this->hasCommentsResolved = true;
+		    return $this->hasComments = self::$commentsResults[$this->id];
+		}
 
 		if ($this->comment != "") {
 			$this->hasComments = true;
