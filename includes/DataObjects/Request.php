@@ -30,6 +30,9 @@ class Request extends DataObject
 	private $emailRequestsResolved = false;
 
 	private $blacklistCache = null;
+    
+    private static $commentsQuery = null;
+    private static $commentsResults = array();
 
 	/**
 	 * This function removes all old requests which are not yet email-confirmed
@@ -256,6 +259,11 @@ SQL
 		if ($this->hasCommentsResolved) {
 			return $this->hasComments;
 		}
+        
+        if (isset(self::$commentsResults[$this->id])) {
+            $this->hasCommentsResolved = true;
+            return $this->hasComments = self::$commentsResults[$this->id];
+        }
 
 		if ($this->comment != "") {
 			$this->hasComments = true;
@@ -263,12 +271,12 @@ SQL
 			return true;
 		}
 
-		$commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) as num FROM comment where request = :id;");
-		$commentsQuery->bindValue(":id", $this->id);
+		if (is_null(self::$commentsQuery)) self::$commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) as num FROM comment where request = :id;");
+		self::$commentsQuery->bindValue(":id", $this->id);
 
-		$commentsQuery->execute();
+		self::$commentsQuery->execute();
 
-		$this->hasComments = ($commentsQuery->fetchColumn() != 0);
+		self::$commentsResults[$this->id] = $this->hasComments = (self::$commentsQuery->fetchColumn() != 0);
 		$this->hasCommentsResolved = true;
 
 		return $this->hasComments;
