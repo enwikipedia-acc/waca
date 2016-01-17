@@ -111,10 +111,16 @@ SQL
 		$smarty->assign("notcreated", $usersNotCreated);
 
 		$accountLogQuery = $database->prepare(<<<SQL
-SELECT * FROM log
+SELECT
+	user.username as log_user,
+    log.action as log_action,
+    log.timestamp as log_time,
+    log.comment as log_cmt
+FROM log
+INNER JOIN user ON user.id = log.user
 WHERE log.objectid = :userid
 AND log.objecttype = 'User'
-AND log.action IN ('Approved','Suspended','Declined','Promoted','Demoted','Renamed','Prefchange'); 
+AND log.action IN ('Approved','Suspended','Declined','Promoted','Demoted','Renamed','Prefchange');
 SQL
 		);
 		$accountLogQuery->execute(array(":userid" => $user->getId()));
