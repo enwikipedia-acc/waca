@@ -147,7 +147,7 @@ class OAuthUtility
 	public function getIdentity($accessToken, $accessSecret)
 	{
 		
-        global $toolUserAgent;
+		global $toolUserAgent;
 
 		$endpoint = $this->baseUrlInternal . '/identify&format=json';
 
