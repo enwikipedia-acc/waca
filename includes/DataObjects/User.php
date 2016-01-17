@@ -644,7 +644,7 @@ SQL
     
 	public function isCheckuser()
 	{
-		return $this->checkuser == 1 || ($this->isOAuthLinked() && $this->oauthCanCheckUser());
+		return $this->checkuser == 1 || $this->oauthCanCheckUser();
 	}
     
 	public function isIdentified()
@@ -732,7 +732,10 @@ SQL
 
 		return false;
 	}
-    
+
+	/**
+	 * @return bool
+	 */
 	public function isOAuthLinked()
 	{
 		if ($this->onwikiname === "##OAUTH##") {
@@ -822,8 +825,15 @@ SQL
 		}
 	}
 
-	public function oauthCanCheckUser()
+	/**
+	 * @return bool
+	 */
+	protected function oauthCanCheckUser()
 	{
+		if (!$this->isOAuthLinked()) {
+			return false;
+		}
+
 		try {
 			return in_array('checkuser', $this->getOAuthIdentity()->rights);
 		}

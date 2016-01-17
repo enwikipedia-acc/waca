@@ -260,7 +260,7 @@ class CommunityUser extends User
 		return false;
 	}
 
-	public function oauthCanCheckUser()
+	protected function oauthCanCheckUser()
 	{
 		return false;
 	}
