@@ -735,7 +735,7 @@ SQL
 
 	/**
 	 * @return bool
-     */
+	 */
 	public function isOAuthLinked()
 	{
 		if ($this->onwikiname === "##OAUTH##") {
