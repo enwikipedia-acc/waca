@@ -71,7 +71,7 @@ if (isset($_GET['action']) && $_GET['action'] == "confirm") {
 			return;
 		}
         
-		$database->transactionally(function() use($database, $request)
+		$database->transactionally(function() use($database, $request, $smarty)
 		{
 			if ($request === false) {
 				throw new TransactionException($smarty->fetch('request/request-not-found.tpl'), "Ooops!");
