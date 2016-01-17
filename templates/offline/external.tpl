@@ -9,4 +9,4 @@
 		<p>Thanks for your interest in joining Wikipedia.</p>
         </div>
 	</div>
-{include file="footer.tpl" onlineusers=""}
+{include file="footer.tpl" onlineusers="" tailscript=""}

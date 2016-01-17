@@ -69,6 +69,7 @@ class BootstrapSkin
 
 		$online = '';
 		$smarty->assign("onlineusers", $online);
+		$smarty->assign("tailscript", null);
 
 		$smarty->display("footer.tpl");
 	}
