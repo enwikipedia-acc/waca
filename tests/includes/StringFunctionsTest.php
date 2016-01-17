@@ -17,7 +17,7 @@ class StringFunctionsTest extends PHPUnit_Framework_TestCase
 		$this->e = null;
 	}
 
-	public function test_formatAsUsername()	{
+	public function testFormatAsUsername()	{
 		// Happy path
 		$this->assertEquals($this->e->formatAsUsername("this"), "This");
 		$this->assertEquals($this->e->formatAsUsername("1this"), "1this");
@@ -32,7 +32,7 @@ class StringFunctionsTest extends PHPUnit_Framework_TestCase
 		$this->assertNotEquals($this->e->formatAsUsername("1this"), "1This");
 	}
 
-	public function test_formatAsEmail()
+	public function testFormatAsEmail()
 	{
 		$this->assertEquals($this->e->formatAsEmail("this@example.com"), "this@example.com");
 		$this->assertEquals($this->e->formatAsEmail("1this12345@example.com"), "1this12345@example.com");

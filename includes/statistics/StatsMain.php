@@ -33,7 +33,7 @@ class StatsMain extends StatisticsPage
 			/** @var StatisticsPage $statsPageObject */
 			$statsPageObject = new $className;
 
-			if ($statsPageObject->hideFromMenu() == false) {
+			if ($statsPageObject->hideFromMenu() === false) {
 				$statsPages[] = $statsPageObject;
 			}
 		}

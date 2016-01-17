@@ -32,7 +32,11 @@ class EmailTemplate extends DataObject
 
 		global $createdid;
 
-		$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE defaultaction = :forcreated AND active = 1 AND preloadonly = 0 AND id != :createdid;");
+		$statement = $database->prepare(<<<SQL
+SELECT * FROM `emailtemplate`
+WHERE defaultaction = :forcreated AND active = 1 AND preloadonly = 0 AND id != :createdid;
+SQL
+		);
 		$statement->bindValue(":createdid", $createdid);
 		$statement->bindValue(":forcreated", $defaultAction);
 
@@ -51,7 +55,7 @@ class EmailTemplate extends DataObject
 
 	/**
 	 * Gets active non-preload and preload templates
-	 * @param string $defaultAction Default action to take (EmailTemplate::CREATED or EmailTemplate::NOT_CREATED)
+	 * @param bool|string $defaultAction Default action to take (EmailTemplate::CREATED or EmailTemplate::NOT_CREATED)
 	 * @param PdoDatabase $database 
 	 * @return array|false
 	 */
@@ -103,8 +107,12 @@ class EmailTemplate extends DataObject
 	public function save()
 	{
 		if ($this->isNew) {
-// insert
-			$statement = $this->dbObject->prepare("INSERT INTO `emailtemplate` (name, text, jsquestion, defaultaction, active, preloadonly) VALUES (:name, :text, :jsquestion, :defaultaction, :active, :preloadonly);");
+			// insert
+			$statement = $this->dbObject->prepare(<<<SQL
+INSERT INTO `emailtemplate` (name, text, jsquestion, defaultaction, active, preloadonly)
+VALUES (:name, :text, :jsquestion, :defaultaction, :active, :preloadonly);
+SQL
+			);
 			$statement->bindValue(":name", $this->name);
 			$statement->bindValue(":text", $this->text);
 			$statement->bindValue(":jsquestion", $this->jsquestion);
@@ -121,8 +129,18 @@ class EmailTemplate extends DataObject
 			}
 		}
 		else {
-// update
-			$statement = $this->dbObject->prepare("UPDATE `emailtemplate` SET name = :name, text = :text, jsquestion = :jsquestion, defaultaction = :defaultaction, active = :active, preloadonly = :preloadonly WHERE id = :id LIMIT 1;");
+			// update
+			$statement = $this->dbObject->prepare(<<<SQL
+UPDATE `emailtemplate`
+SET name = :name,
+	text = :text,
+	jsquestion = :jsquestion,
+	defaultaction = :defaultaction,
+	active = :active,
+	preloadonly = :preloadonly
+WHERE id = :id LIMIT 1;
+SQL
+			);
 			$statement->bindValue(":id", $this->id);
 			$statement->bindValue(":name", $this->name);
 			$statement->bindValue(":text", $this->text);
@@ -175,11 +193,17 @@ class EmailTemplate extends DataObject
 		$this->jsquestion = $jsquestion;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getDefaultAction()
 	{
 		return $this->defaultaction;
 	}
 
+	/**
+	 * @param string $defaultAction
+	 */
 	public function setDefaultAction($defaultAction)
 	{
 		$this->defaultaction = $defaultAction;
@@ -207,6 +231,8 @@ class EmailTemplate extends DataObject
 	
 	public function getObjectDescription()
 	{
-		return '<a href="acc.php?action=emailmgmt&amp;edit=' . $this->getId() . '">Email Template #' . $this->getId() . " (" . htmlentities($this->name) . ")</a>";
+		$safeName = htmlentities($this->name);
+		$id = $this->id;
+		return "<a href=\"acc.php?action=emailmgmt&amp;edit={$id}\">Email Template #{$id} ({$safeName})</a>";
 	}
 }

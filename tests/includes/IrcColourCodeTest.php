@@ -14,7 +14,7 @@ class IrcColourCodeTest extends PHPUnit_Framework_TestCase
 		$this->irc = null;
 	}
 
-	public function test_colorCodes()
+	public function testColorCodes()
 	{
 		$i = $this->irc;
 

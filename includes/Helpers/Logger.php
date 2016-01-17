@@ -339,7 +339,7 @@ class Logger
 	 * @param mixed $actionFilter 
 	 * @param integer $limit 
 	 * @param integer $offset 
-	 * @return mixed
+	 * @return bool|array<string,string>
 	 */
 	public static function getLogs($userFilter, $actionFilter, $limit = 100, $offset = 0)
 	{

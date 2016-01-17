@@ -16,7 +16,7 @@ class TransactionException extends Exception
 	 * @param string $title
 	 * @param string $alertType
 	 * @param int $code
-	 * @param Exception $previous
+	 * @param null|Exception $previous
 	 */
 	public function __construct($message, $title = "Error occured during transaction", $alertType = "alert-error", $code = 0, Exception $previous = null)
 	{

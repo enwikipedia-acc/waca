@@ -96,7 +96,12 @@ class Ban extends DataObject
 			$database = gGetDb();
 		}
 
-		$statement = $database->prepare("SELECT * FROM ban WHERE id = :id  AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;");
+		$statement = $database->prepare(<<<SQL
+SELECT *
+FROM ban
+WHERE id = :id  AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;
+SQL
+		);
 		$statement->bindValue(":id", $id);
 
 		$statement->execute();

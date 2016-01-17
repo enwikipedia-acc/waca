@@ -13,7 +13,7 @@ class Comment extends DataObject
 
 	/**
 	 * @param integer $id
-	 * @param PdoDatabase $database
+	 * @param null|PdoDatabase $database
 	 * @return Comment[]
 	 * @throws Exception
 	 */
@@ -28,8 +28,13 @@ class Comment extends DataObject
 			$statement = $database->prepare("SELECT * FROM comment WHERE request = :target;");
 		}
 		else {
-			// current user isn't an admin, so limit to only those which are visible to users, and private comments the user has posted themselves.
-			$statement = $database->prepare("SELECT * FROM comment WHERE request = :target AND (visibility = 'user' || user = :userid);");
+			// current user isn't an admin, so limit to only those which are visible to users, and private comments
+			// the user has posted themselves.
+			$statement = $database->prepare(<<<SQL
+SELECT * FROM comment
+WHERE request = :target AND (visibility = 'user' OR user = :userid);
+SQL
+);
 			$statement->bindValue(":userid", User::getCurrent()->getId());
 		}
 
@@ -52,7 +57,11 @@ class Comment extends DataObject
 	{
 		if ($this->isNew) {
 			// insert
-			$statement = $this->dbObject->prepare("INSERT INTO comment ( time, user, comment, visibility, request ) VALUES ( CURRENT_TIMESTAMP(), :user, :comment, :visibility, :request );");
+			$statement = $this->dbObject->prepare(<<<SQL
+INSERT INTO comment ( time, user, comment, visibility, request )
+VALUES ( CURRENT_TIMESTAMP(), :user, :comment, :visibility, :request );
+SQL
+			);
 			$statement->bindValue(":user", $this->user);
 			$statement->bindValue(":comment", $this->comment);
 			$statement->bindValue(":visibility", $this->visibility);
@@ -68,7 +77,12 @@ class Comment extends DataObject
 		}
 		else {
 			// update
-			$statement = $this->dbObject->prepare("UPDATE comment SET comment = :comment, visibility = :visibility WHERE id = :id LIMIT 1;");
+			$statement = $this->dbObject->prepare(<<<SQL
+UPDATE comment
+SET comment = :comment, visibility = :visibility
+WHERE id = :id LIMIT 1;
+SQL
+			);
 			$statement->bindValue(":id", $this->id);
 			$statement->bindValue(":comment", $this->comment);
 			$statement->bindValue(":visibility", $this->visibility);

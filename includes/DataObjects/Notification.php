@@ -23,7 +23,7 @@ class Notification extends DataObject
 	public function save()
 	{
 		if ($this->isNew) {
-// insert
+			// insert
 			$statement = $this->dbObject->prepare("INSERT INTO notification ( type, text ) VALUES ( :type, :text );");
 			$statement->bindValue(":type", $this->type);
 			$statement->bindValue(":text", $this->text);
@@ -255,7 +255,9 @@ class Notification extends DataObject
 			$duration = "until " . date("F j, Y, g:i a", $ban->getDuration());
 		}
 
-		self::send($ban->getTarget() . " banned by " . User::getCurrent()->getUsername() . " for '" . $ban->getReason() . "' " . $duration);
+		$username = User::getCurrent()->getUsername();
+
+		self::send("{$ban->getTarget()} banned by {$username} for '{$ban->getReason()}' {$duration}");
 	}
 
 	/**
@@ -302,7 +304,10 @@ class Notification extends DataObject
 	{
 		global $availableRequestStates;
 
-		self::send("Request {$request->getId()} ({$request->getName()}) deferred to {$availableRequestStates[$request->getStatus()]['deferto']} by " . User::getCurrent()->getUsername());
+		$deferTo = $availableRequestStates[$request->getStatus()]['deferto'];
+		$username = User::getCurrent()->getUsername();
+
+		self::send("Request {$request->getId()} ({$request->getName()}) deferred to {$deferTo} by {$username}");
 	}
 	/**
 	 * 
@@ -313,7 +318,10 @@ class Notification extends DataObject
 	{
 		global $availableRequestStates;
 
-		self::send("Request {$request->getId()} ({$request->getName()}) deferred to {$availableRequestStates[$request->getStatus()]['deferto']} with an email by " . User::getCurrent()->getUsername());
+		$deferTo = $availableRequestStates[$request->getStatus()]['deferto'];
+		$username = User::getCurrent()->getUsername();
+
+		self::send("Request {$request->getId()} ({$request->getName()}) deferred to {$deferTo} with an email by {$username}");
 	}
 
 	/**
@@ -323,7 +331,9 @@ class Notification extends DataObject
 	 */
 	public static function requestClosed(Request $request, $closetype)
 	{
-		self::send("Request {$request->getId()} ({$request->getName()}) closed ($closetype) by " . User::getCurrent()->getUsername());
+		$username = User::getCurrent()->getUsername();
+
+		self::send("Request {$request->getId()} ({$request->getName()}) closed ($closetype) by {$username}");
 	}
 
 	/**
@@ -346,7 +356,9 @@ class Notification extends DataObject
 	 */
 	public static function requestReserved(Request $request)
 	{
-		self::send("Request {$request->getId()} ({$request->getName()}) reserved by " . User::getCurrent()->getUsername());
+		$username = User::getCurrent()->getUsername();
+
+		self::send("Request {$request->getId()} ({$request->getName()}) reserved by {$username}");
 	}
 
 	/**
@@ -355,7 +367,9 @@ class Notification extends DataObject
 	 */
 	public static function requestReserveBroken(Request $request)
 	{
-		self::send("Reservation on request {$request->getId()} ({$request->getName()}) broken by " . User::getCurrent()->getUsername());
+		$username = User::getCurrent()->getUsername();
+
+		self::send("Reservation on request {$request->getId()} ({$request->getName()}) broken by {$username}");
 	}
 
 	/**
@@ -374,9 +388,11 @@ class Notification extends DataObject
 	 */
 	public static function requestReservationSent(Request $request, User $target)
 	{
+		$username = User::getCurrent()->getUsername();
+
 		self::send(
 			"Reservation of request {$request->getId()} ({$request->getName()}) sent to {$target->getUsername()} by " 
-			. User::getCurrent()->getUsername());
+			. $username);
 	}
 
 	#endregion
@@ -389,7 +405,11 @@ class Notification extends DataObject
 	 */
 	public static function commentCreated(Comment $comment)
 	{
-		self::send(User::getCurrent()->getUsername() . " posted a " . ($comment->getVisibility() == "admin" ? "private " : "") . "comment on request {$comment->getRequest()} ({$comment->getRequestObject()->getName()})");
+		$req = $comment->getRequestObject();
+		$username = User::getCurrent()->getUsername();
+		$visibility = ($comment->getVisibility() == "admin" ? "private " : "");
+
+		self::send("{$username} posted a {$visibility}comment on request {$req->getId()} ({$req->getName()})");
 	}
 
 	/**
@@ -398,7 +418,10 @@ class Notification extends DataObject
 	 */
 	public static function commentEdited(Comment $comment)
 	{
-		self::send("Comment {$comment->getId()} on request {$comment->getRequest()} ({$comment->getRequestObject()->getName()}) edited by " . User::getCurrent()->getUsername());
+		$req = $comment->getRequestObject();
+		$username = User::getCurrent()->getUsername();
+
+		self::send("Comment {$comment->getId()} on request {$req->getId()} ({$req->getName()}) edited by {$username}");
 	}
 
 	#endregion
