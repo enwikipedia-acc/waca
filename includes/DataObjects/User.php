@@ -828,7 +828,7 @@ SQL
 	/**
 	 * @return bool
 	 */
-	public function oauthCanCheckUser()
+	protected function oauthCanCheckUser()
 	{
 		if (!$this->isOAuthLinked()) {
 			return false;
