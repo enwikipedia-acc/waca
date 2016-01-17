@@ -18,33 +18,27 @@ class StatsFastCloses extends StatisticsPage
 	{
 		$query = <<<QUERY
 SELECT
-  Closed.log_pend AS Request,
-  Closed.log_user AS User,
-  u.id AS UserID,
-  TIMEDIFF(Closed.log_time, Reserved.log_time) AS "Time Taken",
-  mail_desc AS "Close Type",
-  Closed.log_time AS "Date"
-FROM acc_log Closed
-INNER JOIN acc_log Reserved
-  ON Closed.log_pend = Reserved.log_pend
-INNER JOIN closes c
-  ON c.`closes` = Closed.log_action
-LEFT JOIN user u
-  ON Closed.log_user = u.username
-WHERE
-  Closed.log_action LIKE "Closed%"
-  AND
-  Reserved.log_action = "Reserved"
-  AND
-  TIMEDIFF(Closed.log_time, Reserved.log_time) < "00:00:30"
-  AND
-  Closed.log_user = Reserved.log_user
-  AND
-  TIMEDIFF(Closed.log_time, Reserved.log_time) > "00:00:00"
-  AND
-  DATE(Closed.log_time) > DATE(NOW()-INTERVAL 3 MONTH)
-ORDER BY
-  TIMEDIFF(Closed.log_time, Reserved.log_time) ASC
+  log_closed.objectid AS Request,
+  user.username AS User,
+  log_closed.user AS UserID,
+  TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) AS "Time Taken",
+  closes.mail_desc AS "Close Type",
+  log_closed.timestamp AS "Date"
+
+FROM log log_closed
+INNER JOIN log log_reserved ON log_closed.objectid = log_reserved.objectid 
+	AND log_closed.objecttype = log_reserved.objecttype
+INNER JOIN closes ON closes.`closes` = log_closed.action
+LEFT JOIN user ON log_closed.user = user.id
+
+WHERE log_closed.action LIKE "Closed%"
+  AND log_reserved.action = "Reserved"
+  AND TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) < "00:00:30"
+  AND log_closed.user = log_reserved.user
+  AND TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) > "00:00:00"
+  AND DATE(log_closed.timestamp) > DATE(NOW()-INTERVAL 3 MONTH)
+
+ORDER BY TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) ASC
 ;
 QUERY;
 		global $baseurl;

@@ -18,7 +18,16 @@ class StatsMonthlyStats extends StatisticsPage
 	{
 		$qb = new QueryBrowser();
 
-		$query = "SELECT COUNT(DISTINCT log_id) AS 'Requests Closed', YEAR(log_time) AS 'Year', MONTHNAME(log_time) AS 'Month' FROM acc_log WHERE log_action LIKE 'Closed%' GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;";
+		$query = <<<SQL
+SELECT
+    COUNT(DISTINCT id) AS 'Requests Closed',
+    YEAR(timestamp) AS 'Year',
+    MONTHNAME(timestamp) AS 'Month'
+FROM log
+WHERE action LIKE 'Closed%'
+GROUP BY EXTRACT(YEAR_MONTH FROM timestamp)
+ORDER BY YEAR(timestamp) , MONTH(timestamp) ASC;
+SQL;
 
 		$out = $qb->executeQueryToTable($query);
 
@@ -31,11 +40,31 @@ class StatsMonthlyStats extends StatisticsPage
 			$queries = array();
 
 			$queries[] = array(
-					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed%' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
+					'query' => <<<SQL
+SELECT
+    COUNT(DISTINCT id) AS 'y',
+    CONCAT(YEAR(timestamp), '/', MONTHNAME(timestamp)) AS 'x'
+FROM log
+WHERE action LIKE 'Closed%'
+  AND YEAR(timestamp) != 0
+GROUP BY EXTRACT(YEAR_MONTH FROM timestamp)
+ORDER BY YEAR(timestamp) , MONTH(timestamp) ASC;
+SQL
+					,
 					'series' => "All closed requests by month"
 				);
 			$queries[] = array(
-					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed 0' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
+					'query' => <<<SQL
+SELECT
+    COUNT(DISTINCT id) AS 'y',
+    CONCAT(YEAR(timestamp), '/', MONTHNAME(timestamp)) AS 'x'
+FROM log
+WHERE action LIKE 'Closed 0'
+  AND YEAR(timestamp) != 0
+GROUP BY EXTRACT(YEAR_MONTH FROM timestamp)
+ORDER BY YEAR(timestamp) , MONTH(timestamp) ASC;
+SQL
+					,
 					'series' => "Dropped requests by month"
 				);
 
@@ -48,24 +77,64 @@ class StatsMonthlyStats extends StatisticsPage
 				$id = $row['id'];
 				$name = $row['name'];
 				$queries[] = array(
-					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed $id' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
+					'query' => <<<SQL
+SELECT
+    COUNT(DISTINCT id) AS 'y',
+    CONCAT(YEAR(timestamp), '/', MONTHNAME(timestamp)) AS 'x'
+FROM log
+WHERE action LIKE 'Closed $id'
+  AND YEAR(timestamp) != 0
+GROUP BY EXTRACT(YEAR_MONTH FROM timestamp)
+ORDER BY YEAR(timestamp) , MONTH(timestamp) ASC;
+SQL
+					,
 					'series' => "$name requests by month"
 				);
 			}
 
 			$queries[] = array(
-					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed custom-y' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
+					'query' => <<<SQL
+SELECT
+    COUNT(DISTINCT id) AS 'y',
+    CONCAT(YEAR(timestamp), '/', MONTHNAME(timestamp)) AS 'x'
+FROM log
+WHERE action = 'Closed custom-y'
+  AND YEAR(timestamp) != 0
+GROUP BY EXTRACT(YEAR_MONTH FROM timestamp)
+ORDER BY YEAR(timestamp) , MONTH(timestamp) ASC;
+SQL
+					,
 					'series' => "Custom created requests by month"
 				);
 			$queries[] = array(
-					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Closed custom-n' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
+					'query' => <<<SQL
+SELECT
+    COUNT(DISTINCT id) AS 'y',
+    CONCAT(YEAR(timestamp), '/', MONTHNAME(timestamp)) AS 'x'
+FROM log
+WHERE action = 'Closed custom-n'
+  AND YEAR(timestamp) != 0
+GROUP BY EXTRACT(YEAR_MONTH FROM timestamp)
+ORDER BY YEAR(timestamp) , MONTH(timestamp) ASC;
+SQL
+					,
 					'series' => "Custom not created requests by month"
 				);
 
 			global $availableRequestStates;
 			foreach ($availableRequestStates as $state) {
 				$queries[] = array(
-					'query' => "SELECT COUNT(DISTINCT log_id) AS 'y', CONCAT( YEAR(log_time), '/' , MONTHNAME(log_time)) AS 'x' FROM acc_log WHERE log_action LIKE 'Deferred to " . $state['defertolog'] . "' AND YEAR(log_time) != 0 GROUP BY EXTRACT(YEAR_MONTH FROM log_time) ORDER BY YEAR(log_time), MONTH(log_time) ASC;",
+					'query' => <<<SQL
+SELECT
+    COUNT(DISTINCT id) AS 'y',
+    CONCAT(YEAR(timestamp), '/', MONTHNAME(timestamp)) AS 'x'
+FROM log
+WHERE action LIKE 'Deferred to {$state["defertolog"]}'
+  AND YEAR(timestamp) != 0
+GROUP BY EXTRACT(YEAR_MONTH FROM timestamp)
+ORDER BY YEAR(timestamp) , MONTH(timestamp) ASC;
+SQL
+					,
 					'series' => "Requests deferred to " . $state['deferto'] . " by month"
 				);
 			}
