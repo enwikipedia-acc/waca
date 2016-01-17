@@ -43,9 +43,13 @@ $date = new DateTime();
 
 // initialise providers
 global $squidIpList;
+/** @var ILocationProvider $locationProvider */
 $locationProvider = new $locationProviderClass(gGetDb('acc'), $locationProviderApiKey);
+/** @var IRDnsProvider $rdnsProvider */
 $rdnsProvider = new $rdnsProviderClass(gGetDb('acc'));
+/** @var IAntiSpoofProvider $antispoofProvider */
 $antispoofProvider = new $antispoofProviderClass();
+/** @var IXffTrustProvider $xffTrustProvider */
 $xffTrustProvider = new $xffTrustProviderClass($squidIpList);
 
 // Clears the action variable.

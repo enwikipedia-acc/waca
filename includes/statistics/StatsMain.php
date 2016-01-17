@@ -25,9 +25,12 @@ class StatsMain extends StatisticsPage
 		$statsPages = array();
 
 		foreach ($statsPageDefinitions as $i) {
+			// TODO: is this require still needed? AutoLoader ftw.
 			require_once($filepath . "/includes/statistics/" . $i);
 			$expld = explode('.', $i);
 			$className = $expld[0];
+
+			/** @var StatisticsPage $statsPageObject */
 			$statsPageObject = new $className;
 
 			if ($statsPageObject->hideFromMenu() == false) {

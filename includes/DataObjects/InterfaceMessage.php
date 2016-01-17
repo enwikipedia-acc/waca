@@ -32,7 +32,9 @@ class InterfaceMessage extends DataObject
 	 */
 	public static function get($key)
 	{
-		return self::getById($key, gGetDb())->getContentForDisplay();
+		/** @var InterfaceMessage $message */
+		$message = self::getById($key, gGetDb());
+		return $message->getContentForDisplay();
 	}
 
 	public function save()

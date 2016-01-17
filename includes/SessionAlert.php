@@ -20,7 +20,11 @@ class SessionAlert
 	private $block;
 
 	/**
+	 * @param string $message
 	 * @param string $title
+	 * @param string $type
+	 * @param bool $closable
+	 * @param bool $block
 	 */
 	public function __construct($message, $title, $type = "alert-info", $closable = true, $block = true)
 	{
@@ -38,6 +42,8 @@ class SessionAlert
 
 	/**
 	 * Shows a quick one-liner message
+	 * @param string $message
+	 * @param string $type
 	 */
 	public static function quick($message, $type = "alert-info")
 	{

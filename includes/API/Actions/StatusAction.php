@@ -5,13 +5,15 @@ namespace Waca\API\Actions;
 use Waca\API\ApiActionBase as ApiActionBase;
 use Waca\API\IApiAction as IApiAction;
 
+use \PdoDatabase as PdoDatabase;
+
 /**
  * API Count action
  */
 class StatusAction extends ApiActionBase implements IApiAction
 {
 	/**
-	 * The datbase
+	 * The database
 	 * @var PdoDatabase $database
 	 */
 	private $database;
@@ -28,7 +30,7 @@ class StatusAction extends ApiActionBase implements IApiAction
             FROM request
             WHERE
                 status = :pstatus
-                AND emailconfirm = "Confirmed";
+                AND emailconfirm = 'Confirmed';
 SQL
 		);
 

@@ -11,9 +11,14 @@
 class Logger
 {
 	/**
+	 * @param PdoDatabase $database
+	 * @param DataObject $object
+	 * @param string $logAction
+	 * @param null $comment
 	 * @param User $user
+	 * @throws Exception
 	 */
-	private static function createLogEntry(PdoDatabase $database, DataObject $object, $logaction, $comment = null, $user = null)
+	private static function createLogEntry(PdoDatabase $database, DataObject $object, $logAction, $comment = null, $user = null)
 	{
 		if ($user == null) {
 			$user = User::getCurrent();	
@@ -21,7 +26,7 @@ class Logger
 		
 		$log = new Log();
 		$log->setDatabase($database);
-		$log->setAction($logaction);
+		$log->setAction($logAction);
 		$log->setObjectId($object->getId());
 		$log->setObjectType(get_class($object));
 		$log->setUser($user);
@@ -186,6 +191,8 @@ class Logger
 		$result = $logStatement->execute(array(":requestid" => $requestId));
 		if ($result) {
 			$data = $logStatement->fetchAll(PDO::FETCH_CLASS, "Log");
+
+			/** @var Log $entry */
 			foreach ($data as $entry) {
 				$entry->isNew = false;
 				$entry->setDatabase($db);
@@ -281,6 +288,7 @@ class Logger
 		if (substr($entry->getAction(), 0, strlen($text)) == $text) {
 			// Closed with a reason - do a lookup here.
 			$id = substr($entry->getAction(), strlen($text));
+			/** @var EmailTemplate $template */
 			$template = EmailTemplate::getById((int)$id, $entry->getDatabase());
 			
 			if ($template != false) {
@@ -382,7 +390,8 @@ class Logger
 		
 		if ($searchStatement->execute()) {
 			$data = $searchStatement->fetchAll(PDO::FETCH_CLASS, "Log");
-			
+
+			/** @var Log $entry */
 			foreach ($data as $entry) {
 				$entry->setDatabase($database);
 				$entry->isNew = false;

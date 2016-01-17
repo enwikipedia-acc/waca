@@ -11,7 +11,7 @@ class AntiSpoofCache extends DataObject
 
 	public static function getByUsername($username, PdoDatabase $database)
 	{
-		$statement = $database->prepare("SELECT * FROM `" . strtolower(get_called_class()) . "` WHERE username = :id AND timestamp > date_sub(now(), interval 3 hour) LIMIT 1;");
+		$statement = $database->prepare("SELECT * FROM antispoofcache WHERE username = :id AND timestamp > date_sub(now(), interval 3 hour) LIMIT 1;");
 		$statement->bindValue(":id", $username);
 
 		$statement->execute();

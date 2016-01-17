@@ -104,6 +104,7 @@ class BootstrapSkin
 			array_map(
 				function($arg)
 				{
+					/** @var User $arg */
 					return
 						"<a href=\"statistics.php?page=Users&amp;user="
 						. $arg->getId()
@@ -144,9 +145,10 @@ class BootstrapSkin
 	 * @param $type string Alert type - use bootstrap css class
 	 * @param $header string the header of the box
 	 * @param $block bool Whether to make this a block or not
-	 * @param $closable bool add a close button
+	 * @param $closeable bool add a close button
 	 * @param $return bool return the content as a string, or display it.
 	 * @param $centre bool centre the box in the page, like a dialog.
+	 * @return string|null
 	 */
 	public static function displayAlertBox(
 		$message,
@@ -175,6 +177,7 @@ class BootstrapSkin
 		}
 		else {
 			echo $returnData;
+			return null;
 		}
 	}
 

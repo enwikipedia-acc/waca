@@ -18,44 +18,26 @@ if (!defined("ACC")) {
 class strings
 {
 	/**
-	 * Multibyte version of ucfirst() since no such function is included in PHP by default.
-	 * @param string $string
-	 * @deprecated StringFunctions class
-	 */
-	private function mb_ucfirst($string)
-	{
-		$strlen = mb_strlen($string);
-		$substr = mb_substr($string, 0, 1);
-		$substr2 = mb_substr($string, 1, $strlen - 1);
-		$upstring = mb_strtoupper($substr);
-		$ustring = $upstring . $substr2;
-		return $ustring;
-	}
-	
-	/**
 	 * Formats a string to be used as a username.
 	 * @deprecated StringFunctions class
+	 * @param $username
+	 * @return string
 	 */
 	public function struname($username)
 	{
-		$uname = mb_ereg_replace("^[ \t]+|[ \t]+$", "", $username);
-		$uname = $this->mb_ucfirst($uname);
-		$uname = mb_ereg_replace("[ ]+", "_", $uname);
-		$uname = mb_ereg_replace("[_]+$", "", $uname);
-		return $uname;
+		return StringFunctions::formatAsUsername($username);
 	}
-	
+
 	/**
 	 * Formats a string to be used as an email (specifically strips whitespace
 	 * from the beginning/end of the Email, as well as immediately before/after
 	 * the @ in the Email).
 	 * @deprecated StringFunctions class
+	 * @param $email
+	 * @return string
 	 */
 	public function stremail($email)
 	{
-		$newemail = mb_ereg_replace("^[ \t]+|[ \t]+$", "", $email);
-		$newemail = mb_ereg_replace("[ \t]+@", "@", $newemail);
-		$newemail = mb_ereg_replace("@[ \t]+", "@", $newemail);
-		return $newemail;
+		return StringFunctions::formatAsEmail($email);
 	}
 }

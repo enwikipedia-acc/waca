@@ -40,6 +40,7 @@ class EmailTemplate extends DataObject
 
 		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
 
+		/** @var EmailTemplate $t */
 		foreach ($resultObject as $t) {
 			$t->setDatabase($database);
 			$t->isNew = false;
@@ -73,6 +74,7 @@ class EmailTemplate extends DataObject
 
 		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
 
+		/** @var EmailTemplate $t */
 		foreach ($resultObject as $t) {
 			$t->setDatabase($database);
 			$t->isNew = false;

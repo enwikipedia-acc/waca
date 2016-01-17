@@ -20,7 +20,7 @@ class StatsTopCreators extends StatisticsPage
 
 		$qb = new QueryBrowser();
 		$qb->numberedList = true;
-		$qb->numberedListTitle = "Postition";
+		$qb->numberedListTitle = "Position";
 
 		$qb->tableCallbackFunction = "statsTopCreatorsRowCallback";
 		$qb->overrideTableTitles = array("# Created", "Username");
@@ -35,8 +35,8 @@ SELECT
 FROM log
 LEFT JOIN emailtemplate ON concat('Closed ', emailtemplate.id) = log.action
 INNER JOIN user ON user.id = log.user
-WHERE emailtemplate.oncreated = "1"
-   OR log.action = "Closed custom-y"
+WHERE emailtemplate.oncreated = '1'
+   OR log.action = 'Closed custom-y'
 
 GROUP BY log.user, user.username, user.status
 ORDER BY COUNT(*) DESC;
@@ -54,8 +54,8 @@ FROM log
 LEFT JOIN emailtemplate ON concat('Closed ', emailtemplate.id) = log.action
 INNER JOIN user ON user.id = log.user
 WHERE
-	(emailtemplate.oncreated = 1 OR log.action = "Closed custom-y")
-    AND user.status != "Suspended"
+	(emailtemplate.oncreated = 1 OR log.action = 'Closed custom-y')
+    AND user.status != 'Suspended'
 GROUP BY user.username, user.id
 ORDER BY COUNT(*) DESC;
 SQL

@@ -13,6 +13,9 @@ class Comment extends DataObject
 
 	/**
 	 * @param integer $id
+	 * @param PdoDatabase $database
+	 * @return Comment[]
+	 * @throws Exception
 	 */
 	public static function getForRequest($id, PdoDatabase $database = null)
 	{
@@ -25,7 +28,7 @@ class Comment extends DataObject
 			$statement = $database->prepare("SELECT * FROM comment WHERE request = :target;");
 		}
 		else {
-			// current user isn't an admin, so limit to only those which are visibile to users, and private comments the user has posted themselves.
+			// current user isn't an admin, so limit to only those which are visible to users, and private comments the user has posted themselves.
 			$statement = $database->prepare("SELECT * FROM comment WHERE request = :target AND (visibility = 'user' || user = :userid);");
 			$statement->bindValue(":userid", User::getCurrent()->getId());
 		}
@@ -35,6 +38,7 @@ class Comment extends DataObject
 		$statement->execute();
 
 		$result = array();
+		/** @var Comment $v */
 		foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
 			$v->isNew = false;
 			$v->setDatabase($database);

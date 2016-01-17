@@ -4,8 +4,9 @@ class AuthUtility
 {
 	/**
 	 * Test the specified data against the specified credentials
+	 * @param string $password
 	 * @param string $credentials
-	 * @return boolean
+	 * @return bool
 	 */
 	public static function testCredentials($password, $credentials)
 	{
@@ -40,6 +41,7 @@ class AuthUtility
 
 	/**
 	 * @param string $credentials
+	 * @return bool
 	 */
 	public static function isCredentialVersionLatest($credentials)
 	{

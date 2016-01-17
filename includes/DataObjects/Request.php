@@ -23,9 +23,15 @@ class Request extends DataObject
 	private $hasComments = false;
 	private $hasCommentsResolved = false;
 
+	/**
+	 * @var Request[]
+	 */
 	private $ipRequests;
 	private $ipRequestsResolved = false;
 
+	/**
+	 * @var Request[]
+	 */
 	private $emailRequests;
 	private $emailRequestsResolved = false;
 

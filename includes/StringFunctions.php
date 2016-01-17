@@ -4,6 +4,7 @@ class StringFunctions
 {
 	/**
 	 * @param string $string
+	 * @return string
 	 */
 	private static function mb_ucfirst($string)
 	{
@@ -17,6 +18,8 @@ class StringFunctions
 
 	/**
 	 * Formats a string to be used as a username.
+	 * @param $username
+	 * @return string
 	 */
 	public static function formatAsUsername($username)
 	{
@@ -31,6 +34,8 @@ class StringFunctions
 	 * Formats a string to be used as an email (specifically strips whitespace
 	 * from the beginning/end of the Email, as well as immediately before/after
 	 * the @ in the Email).
+	 * @param $email
+	 * @return string
 	 */
 	public static function formatAsEmail($email)
 	{

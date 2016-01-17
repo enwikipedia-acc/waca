@@ -92,11 +92,11 @@ class User extends DataObject
 	}
 
 	/**
-	 * Gets a user by their onwiki username.
+	 * Gets a user by their on-wiki username.
 	 * 
 	 * Don't use without asking me first. It's really inefficient in it's current implementation.
 	 * We need to restructure the user table again to make this more efficient.
-	 * We don't actually store the onwiki name in the table any more, instead we
+	 * We don't actually store the on-wiki name in the table any more, instead we
 	 * are storing JSON in a column (!!). Yep, my fault. Code review is an awesome thing.
 	 *            -- stw 2015-10-20
 	 * @param string $username 
@@ -125,6 +125,7 @@ class User extends DataObject
 		$statement->execute();
 		$resultSet = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
 
+		/** @var User $user */
 		foreach ($resultSet as $user) {
 			// We have to set this before doing OAuth queries. :(
 			$user->isNew = false;
@@ -173,6 +174,8 @@ class User extends DataObject
 
 	/**
 	 * @param string $status
+	 * @param PdoDatabase $database
+	 * @return User[]
 	 */
 	public static function getAllWithStatus($status, PdoDatabase $database)
 	{
@@ -181,6 +184,7 @@ class User extends DataObject
 
 		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
 
+		/** @var User $u */
 		foreach ($resultObject as $u) {
 			$u->setDatabase($database);
 			$u->isNew = false;
@@ -198,6 +202,7 @@ class User extends DataObject
 
 		$resultsCollection = array();
 
+		/** @var User $u */
 		foreach ($resultObject as $u) {
 			$u->setDatabase($database);
 			$u->isNew = false;
@@ -231,6 +236,7 @@ SQL
 
 		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
 
+		/** @var User $u */
 		foreach ($resultObject as $u) {
 			$u->setDatabase($database);
 			$u->isNew = false;
@@ -240,9 +246,10 @@ SQL
 	}
 
 	/**
-	 * Summary of getAllUsernames
-	 * @param PdoDatabase $database 
-	 * @param null|string $filter 
+	 * Gets all the usernames in the system
+	 * @param PdoDatabase $database
+	 * @param null|bool|string $filter If null, no filter. If true, active users only, otherwise provided status.
+	 * @return string[]
 	 */
 	public static function getAllUsernames(PdoDatabase $database, $filter = null)
 	{
@@ -407,7 +414,7 @@ SQL
 	}
 
 	/**
-	 * Gets the user's onwiki name
+	 * Gets the user's on-wiki name
 	 * @return mixed
 	 */
 	public function getOnWikiName()
@@ -436,9 +443,9 @@ SQL
 		return $this->onwikiname;
 	}
 
-	public function setOnWikiName($onwikiname)
+	public function setOnWikiName($onWikiName)
 	{
-		$this->onwikiname = $onwikiname;
+		$this->onwikiname = $onWikiName;
 	}
 
 	public function getWelcomeSig()
@@ -446,9 +453,9 @@ SQL
 		return $this->welcome_sig;
 	}
 
-	public function setWelcomeSig($welcomesig)
+	public function setWelcomeSig($welcomeSig)
 	{
-		$this->welcome_sig = $welcomesig;
+		$this->welcome_sig = $welcomeSig;
 	}
 
 	public function getLastActive()
@@ -456,9 +463,9 @@ SQL
 		return $this->lastactive;
 	}
 
-	public function setLastActive($lastactive)
+	public function setLastActive($lastActive)
 	{
-		$this->lastactive = $lastactive;
+		$this->lastactive = $lastActive;
 	}
 
 	public function getForcelogout()
@@ -466,9 +473,9 @@ SQL
 		return $this->forcelogout;
 	}
 
-	public function setForcelogout($forcelogout)
+	public function setForcelogout($forceLogout)
 	{
-		$this->forcelogout = $forcelogout ? 1 : 0;
+		$this->forcelogout = $forceLogout ? 1 : 0;
 	}
     
 	public function getSecure()
@@ -501,9 +508,9 @@ SQL
 		return $this->welcome_template;
 	}
 
-	public function setWelcomeTemplate($welcometemplate)
+	public function setWelcomeTemplate($welcomeTemplate)
 	{
-		$this->welcome_template = $welcometemplate;
+		$this->welcome_template = $welcomeTemplate;
 	}
 
 	public function getAbortPref()
@@ -511,9 +518,9 @@ SQL
 		return $this->abortpref;
 	}
 
-	public function setAbortPref($abortpref)
+	public function setAbortPref($abortPreference)
 	{
-		$this->abortpref = $abortpref;
+		$this->abortpref = $abortPreference;
 	}
 
 	public function getConfirmationDiff()
@@ -521,9 +528,9 @@ SQL
 		return $this->confirmationdiff;
 	}
 
-	public function setConfirmationDiff($confirmationdiff)
+	public function setConfirmationDiff($confirmationDiff)
 	{
-		$this->confirmationdiff = $confirmationdiff;
+		$this->confirmationdiff = $confirmationDiff;
 	}
 
 	/**
@@ -534,9 +541,9 @@ SQL
 		return $this->emailsig;
 	}
 
-	public function setEmailSig($emailsig)
+	public function setEmailSig($emailSignature)
 	{
-		$this->emailsig = $emailsig;
+		$this->emailsig = $emailSignature;
 	}
     
 	public function getOAuthRequestToken()
@@ -544,9 +551,9 @@ SQL
 		return $this->oauthrequesttoken;
 	}
 
-	public function setOAuthRequestToken($oauthrequesttoken)
+	public function setOAuthRequestToken($oAuthRequestToken)
 	{
-		$this->oauthrequesttoken = $oauthrequesttoken;
+		$this->oauthrequesttoken = $oAuthRequestToken;
 	}
 
 	public function getOAuthRequestSecret()
@@ -554,9 +561,9 @@ SQL
 		return $this->oauthrequestsecret;
 	}
 
-	public function setOAuthRequestSecret($oauthrequestsecret)
+	public function setOAuthRequestSecret($oAuthRequestSecret)
 	{
-		$this->oauthrequestsecret = $oauthrequestsecret;
+		$this->oauthrequestsecret = $oAuthRequestSecret;
 	}
 
 	public function getOAuthAccessToken()
@@ -564,9 +571,9 @@ SQL
 		return $this->oauthaccesstoken;
 	}
 
-	public function setOAuthAccessToken($oauthaccesstoken)
+	public function setOAuthAccessToken($oAuthAccessToken)
 	{
-		$this->oauthaccesstoken = $oauthaccesstoken;
+		$this->oauthaccesstoken = $oAuthAccessToken;
 	}
 
 	public function getOAuthAccessSecret()
@@ -574,9 +581,9 @@ SQL
 		return $this->oauthaccesssecret;
 	}
 
-	public function setOAuthAccessSecret($oauthaccesssecret)
+	public function setOAuthAccessSecret($oAuthAccessSecret)
 	{
-		$this->oauthaccesssecret = $oauthaccesssecret;       
+		$this->oauthaccesssecret = $oAuthAccessSecret;
 	}
 
 	#endregion

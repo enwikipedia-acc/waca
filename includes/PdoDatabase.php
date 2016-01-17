@@ -3,14 +3,19 @@ if (!defined("ACC")) {
 	die();
 } // Invalid entry point
 
+/**
+ * @param string $db
+ * @return PdoDatabase
+ * @throws Exception
+ */
 function gGetDb($db = "acc")
 {
-	global $accdbobjects;
-	if (!is_array($accdbobjects)) {
-		$accdbobjects = array();
+	global $accDbObjects;
+	if (!is_array($accDbObjects)) {
+		$accDbObjects = array();
 	}
 
-	if (!isset($accdbobjects[$db])) {
+	if (!isset($accDbObjects[$db])) {
 		global $cDatabaseConfig;
 
 		if (!array_key_exists($db, $cDatabaseConfig)) {
@@ -19,7 +24,7 @@ function gGetDb($db = "acc")
 		}
 
 		try {
-			$accdbobject = new PdoDatabase(
+			$accDbObject = new PdoDatabase(
 				$cDatabaseConfig[$db]["dsrcname"],
 				$cDatabaseConfig[$db]["username"],
 				$cDatabaseConfig[$db]["password"]
@@ -30,25 +35,28 @@ function gGetDb($db = "acc")
 			throw new Exception("Error connectiong to database '$db': " . $ex->getMessage());
 		}
 
-		$accdbobject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+		$accDbObject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
 		// emulating prepared statements gives a performance boost on MySQL.
 		//
 		// however, our version of PDO doesn't seem to understand parameter types when emulating
 		// the prepared statements, so we're forced to turn this off for now.
 		// -- stw 2014-02-11
-		$accdbobject->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+		$accDbObject->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 
-		$accdbobjects[$db] = $accdbobject;
+		$accDbObjects[$db] = $accDbObject;
 	}
 
-	return $accdbobjects[$db];
+	return $accDbObjects[$db];
 }
 
-$accdbobjects = array();
+$accDbObjects = array();
 
 class PdoDatabase extends PDO
 {
+	/**
+	 * @var bool True if a transaction is active
+	 */
 	protected $hasActiveTransaction = false;
     
 	/**
@@ -74,7 +82,7 @@ class PdoDatabase extends PDO
 	{
 		// Override the pre-existing method, which doesn't stop you from
 		// starting transactions within transactions - which doesn't work and
-		// will throw an exception. This elimiates the need to catch exeptions
+		// will throw an exception. This eliminates the need to catch exceptions
 		// all over the rest of the code
 		if ($this->hasActiveTransaction) {
 			return false;
@@ -90,12 +98,18 @@ class PdoDatabase extends PDO
 		}
 	}
 
+	/**
+	 * Commits the active transaction
+	 */
 	public function commit()
 	{
 		parent::commit();
 		$this->hasActiveTransaction = false;
 	}
 
+	/**
+	 * Rolls back a transaction
+	 */
 	public function rollBack()
 	{
 		parent::rollback();
@@ -137,7 +151,7 @@ class PdoDatabase extends PDO
 	}
 
 	/**
-	 * Summary of prepare
+	 * Prepares a statement for execution.
 	 * @param string $statement 
 	 * @param array $driver_options 
 	 * @return PDOStatement
