@@ -63,7 +63,7 @@ class EmailTemplate extends DataObject
 
 		$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE defaultaction = :forcreated AND active = 1;");
 
-		if($defaultAction === false) {
+		if ($defaultAction === false) {
 			$statement = $database->prepare(
 				"SELECT * FROM `emailtemplate` WHERE defaultaction not in ('created', 'not created') AND active = 1;");
 		}

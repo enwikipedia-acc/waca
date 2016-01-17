@@ -132,7 +132,7 @@ class User extends DataObject
 			$user->setDatabase($database); 
 
 			// Using cached data here!
-			if($user->getOAuthOnWikiName(true) == $username) {
+			if ($user->getOAuthOnWikiName(true) == $username) {
 				// Success.
 				return $user;
 			}
@@ -145,7 +145,7 @@ class User extends DataObject
 			$user->setDatabase($database); 
 
 			// Don't use the cached data, but instead query the API.
-			if($user->getOAuthOnWikiName(false) == $username) {
+			if ($user->getOAuthOnWikiName(false) == $username) {
 				// Success.
 				return $user;
 			}
@@ -207,7 +207,7 @@ class User extends DataObject
 			$u->setDatabase($database);
 			$u->isNew = false;
 
-			if(! $u->isCheckuser()) {
+			if (!$u->isCheckuser()) {
 				continue;
 			}
 
@@ -709,7 +709,7 @@ SQL
 			$this->identityCache->aud == $oauthConsumerToken &&
 			$this->identityCache->iss == $oauthMediaWikiCanonicalServer
 			) {
-			if(
+			if (
 				$useCached || (
 					DateTime::createFromFormat("U", $this->identityCache->iat) < new DateTime() &&
 					DateTime::createFromFormat("U", $this->identityCache->exp) > new DateTime()
@@ -733,7 +733,7 @@ SQL
 	private function getOAuthOnWikiName($useCached = false)
 	{
 		$identity = $this->getOAuthIdentity($useCached);
-		if($identity !== null) {
+		if ($identity !== null) {
 			return $identity->username;
 		}
 
@@ -851,11 +851,13 @@ SQL
     
 	#endregion
     
-	public function getForgottenPasswordHash() {
+	public function getForgottenPasswordHash()
+	{
 		return md5($this->username . $this->email . $this->welcome_template . $this->id . $this->password);
 	}
 
-	public function getApprovalDate() {
+	public function getApprovalDate()
+	{
 		$query = $this->dbObject->prepare(<<<SQL
 			SELECT timestamp 
 			FROM log 

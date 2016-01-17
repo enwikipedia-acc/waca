@@ -330,7 +330,8 @@ class Notification extends DataObject
 	 * Summary of sentMail
 	 * @param Request $request
 	 */
-	public static function sentMail(Request $request) {
+	public static function sentMail(Request $request)
+	{
 		self::send(User::getCurrent()->getUsername() 
 			. " sent an email related to Request {$request->getId()} ({$request->getName()})");
 	}
@@ -371,7 +372,8 @@ class Notification extends DataObject
 	 * @param Request $request
 	 * @param User $target
 	 */
-	public static function requestReservationSent(Request $request, User $target) {
+	public static function requestReservationSent(Request $request, User $target)
+	{
 		self::send(
 			"Reservation of request {$request->getId()} ({$request->getName()}) sent to {$target->getUsername()} by " 
 			. User::getCurrent()->getUsername());

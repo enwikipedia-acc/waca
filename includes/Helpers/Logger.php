@@ -440,8 +440,7 @@ class Logger
 			);
 		
 		$statement = $database->query("SELECT CONCAT('Closed ', id) as k, CONCAT('closed (',name,')') as v FROM emailtemplate;");
-		foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row)
-		{
+		foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			$lookup[$row['k']] = $row['v'];
 		}
 		

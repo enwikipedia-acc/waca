@@ -14,7 +14,6 @@
 
 abstract class StatisticsPage
 {
-
 	/**
 	 * Creates a statistics page.
 	 *
@@ -137,8 +136,7 @@ abstract class StatisticsPage
 		if ($this->isProtected()) {
 			// protected, check access level.
 			$currentUser = User::getCurrent();
-			if($currentUser->isCommunityUser() || (!$currentUser->isUser() && !$currentUser->isAdmin()))
-			{
+			if ($currentUser->isCommunityUser() || (!$currentUser->isUser() && !$currentUser->isAdmin())) {
 				showlogin();
 				BootstrapSkin::displayInternalFooter();
 				die();

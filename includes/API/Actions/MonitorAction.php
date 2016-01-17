@@ -62,7 +62,7 @@ class MonitorAction extends ApiActionBase implements IApiAction
 	}
 
 	/**
-	 * @return string|null
+	 * @return string
 	 */
 	private function getNewest()
 	{

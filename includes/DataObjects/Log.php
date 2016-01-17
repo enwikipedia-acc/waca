@@ -94,7 +94,7 @@ SQL
 
 	/**
 	 * Summary of setUser
-	 * @param int|User $user 
+	 * @param User $user
 	 */
 	public function setUser($user)
 	{

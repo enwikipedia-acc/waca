@@ -18,29 +18,30 @@ class QueryBrowser
 	 * @var boolean
 	 */
 	public $numberedList = false;
-	
-    /**
-     * @var string
-     */
-    public $numberedListTitle = "#";
-	
-    /**
-     * @var boolean|callable
-     */
-    public $tableCallbackFunction = false;
-	
-    /**
-     * @var boolean|string[]
-     */
-    public $overrideTableTitles = false;
+
+	/**
+	 * @var string
+	 */
+	public $numberedListTitle = "#";
+
+	/**
+	 * @var boolean|callable
+	 */
+	public $tableCallbackFunction = false;
+
+	/**
+	 * @var boolean|string[]
+	 */
+	public $overrideTableTitles = false;
 
 	/**
 	 * @var int
 	 */
 	public $rowFetchMode = PDO::FETCH_ASSOC;
-	
+
 	/**
 	 * @param string $query
+	 * @return string
 	 */
 	public function executeQueryToTable($query)
 	{
