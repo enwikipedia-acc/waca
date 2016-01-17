@@ -317,7 +317,7 @@ SQL
 			$this->ipRequests = $query->fetchAll(PDO::FETCH_CLASS, "Request");
 			$this->ipRequestsResolved = true;
 
-			foreach ($this->emailRequests as $r) {
+			foreach ($this->ipRequests as $r) {
 				$r->setDatabase($this->dbObject);
 			}
 		}
