@@ -138,14 +138,14 @@ abstract class StatisticsPage
 
 		// check protection level
 		if ($this->isProtected()) {
-			// protected, check accesslevel.
-			$sessionuser = (isset($_SESSION['user']) ? $_SESSION['user'] : "");
-			if (!($session->hasright($sessionuser, "Admin") || $session->hasright($sessionuser, "User"))) {
-// not authed
+			if (User::getCurrent()->isCommunityUser()) {
 				showlogin();
 				BootstrapSkin::displayInternalFooter();
 				die();
 			}
+
+			$session = new session();
+			$session->checksecurity();
 		}
 
 		// not protected or access allowed
