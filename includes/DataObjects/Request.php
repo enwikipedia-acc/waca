@@ -413,4 +413,29 @@ SQL
 	{
 		return '<a href="acc.php?action=zoom&amp;id=' . $this->getId() . '">Request #' . $this->getId() . " (" . htmlentities($this->name) . ")</a>";
 	}
+
+	public function getClosureReason()
+	{
+		if ($this->status != 'Closed') {
+			throw new Exception("Can't get closure reason for open request.");
+		}
+
+		$statement = $this->dbObject->prepare(<<<SQL
+SELECT closes.mail_desc
+FROM log
+INNER JOIN closes ON log.action = closes.closes
+WHERE log.objecttype = 'Request'
+AND log.objectid = :requestId
+AND log.action LIKE 'Closed%'
+ORDER BY log.timestamp DESC
+LIMIT 1;
+SQL
+		);
+
+		$statement->bindValue(":requestId", $this->id);
+		$statement->execute();
+		$reason = $statement->fetchColumn();
+
+		return $reason;
+	}
 }
