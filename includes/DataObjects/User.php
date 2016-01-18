@@ -52,6 +52,7 @@ class User extends DataObject
 			}
 		}
 
+
 		return self::$currentUser;
 	}
     
@@ -708,12 +709,18 @@ SQL
 					DateTime::createFromFormat("U", $this->identityCache->exp) > new DateTime()
 					)
 				) {
+				// Use cached value - it's either valid or we don't care.
+				return $this->identityCache;
+			}
+			else {
+				// Cache expired and not forcing use of cached value
+				$this->getIdentityCache();
 				return $this->identityCache;
 			}
 		}
 		else {
+			// Cache isn't ours or doesn't exist
 			$this->getIdentityCache();
-            
 			return $this->identityCache;
 		}
 	}
@@ -773,6 +780,8 @@ SQL
 			$this->dbObject->
 				prepare("UPDATE user SET oauthidentitycache = null WHERE id = :id;")->
 				execute(array(":id" => $this->id));
+
+			SessionAlert::warning("OAuth error getting identity from MediaWiki: " . $ex->getMessage());
 		}   
 	}
     
@@ -835,7 +844,8 @@ SQL
 		}
 
 		try {
-			return in_array('checkuser', $this->getOAuthIdentity()->rights);
+			$identity = $this->getOAuthIdentity();
+			return in_array('checkuser', $identity->rights);
 		}
 		catch (Exception $ex) {
 			return false;
