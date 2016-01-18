@@ -45,25 +45,7 @@ class session
 			die();
 		}
 	}
-	
-	/**
-	 * Summary of hasright
-	 * @param mixed $username 
-	 * @param mixed $checkright 
-	 * @return boolean
-	 * @deprecated
-	 */
-	public function hasright($username, $checkright)
-	{
-		$user = User::getByUsername($username, gGetDb());
-		if ($user->isCheckuser() && $checkright == "Admin") {
-			return true;   
-		}
-        
-		return $user->getStatus() == $checkright;
-	}
-	
-	
+
 	/**
 	 * Check the user's security level on page load, and bounce accordingly
 	 * 
