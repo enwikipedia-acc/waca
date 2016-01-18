@@ -1582,7 +1582,7 @@ elseif ($action == "breakreserve") {
 			}
 		}
 		else {
-			echo "You cannot break " . $reservedUser->getUsername() . "'s reservation";
+			echo "You cannot break " . htmlentities($reservedUser->getUsername()) . "'s reservation";
 		}
 	}
 	else {
