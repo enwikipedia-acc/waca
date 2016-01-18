@@ -41,6 +41,9 @@ else {
 
 BootstrapSkin::displayInternalHeader();
 
+$session = new session();
+$session->checksecurity();
+
 // protect against logged out users
 if (User::getCurrent()->isCommunityUser()) {
 	showlogin();
