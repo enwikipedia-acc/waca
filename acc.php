@@ -27,9 +27,6 @@ require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php'; // this needs to be high up, but below config, functions, and database
 require_once 'includes/session.php';
 
-// Set the current version of the ACC.
-$version = "0.9.7";
-
 // Check to see if the database is unavailable.
 // Uses the false variable as its the internal interface.
 if (Offline::isOffline()) {
@@ -924,7 +921,7 @@ elseif ($action == "ban") {
 	global $smarty;
     
 	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name'])) {
-		if (!$session->hasright($_SESSION['user'], "Admin")) {
+		if (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
 			BootstrapSkin::displayAlertBox("Only administrators or checkusers may ban users", "alert-error");
 			BootstrapSkin::displayInternalFooter();
 			die();
