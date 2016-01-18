@@ -28,6 +28,7 @@ class StatsTopCreators extends StatisticsPage
 		// Retrieve all-time stats
 		$top5aout = $qb->executeQueryToTable(<<<SQL
 SELECT
+	/* StatsTopCreators::execute()/top5aout */
     COUNT(*),
     log.user user_id,
     user.username log_user,
@@ -46,6 +47,7 @@ SQL
 		// Retrieve all-time stats for active users only
 		$top5activeout = $qb->executeQueryToTable(<<<SQL
 SELECT
+	/* StatsTopCreators::execute()/top5activeout */
     COUNT(*),
     log.user user_id,
     user.username log_user,
@@ -65,6 +67,7 @@ SQL
 		$now = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d")));
 		$top5out = $qb->executeQueryToTable(<<<SQL
 SELECT
+	/* StatsTopCreators::execute()/top5out */
     COUNT(*),
     log.user user_id,
     user.username log_user,
@@ -83,6 +86,7 @@ SQL
 		$yesterday = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 1));
 		$top5yout = $qb->executeQueryToTable(<<<SQL
 SELECT
+	/* StatsTopCreators::execute()/top5yout */
     COUNT(*),
     log.user user_id,
     user.username log_user,
@@ -101,6 +105,7 @@ SQL
 		$lastweek = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 7));
 		$top5wout = $qb->executeQueryToTable(<<<SQL
 SELECT
+	/* StatsTopCreators::execute()/top5wout */
     COUNT(*),
     log.user user_id,
     user.username log_user,
@@ -119,6 +124,7 @@ SQL
 		$lastmonth = date("Y-m-d", mktime(0, 0, 0, date("m"), date("d") - 28));
 		$top5mout = $qb->executeQueryToTable(<<<SQL
 SELECT
+	/* StatsTopCreators::execute()/top5mout */
     COUNT(*),
     log.user user_id,
     user.username log_user,
