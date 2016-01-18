@@ -213,8 +213,8 @@ $availableRequestStates = array(
 		'header' => 'Open requests',
 		'api' => "open",
 		),
-	'Admin'=>array(
-		'defertolog' => 'admins', // don't change or you'll break old logs
+	'Flagged users'=>array(
+		'defertolog' => 'flagged users', // don't change or you'll break old logs
 		'deferto' => 'flagged users',
 		'header' => 'Flagged user needed',
 		'api' => "admin",
