@@ -26,7 +26,7 @@ class StatusAction extends ApiActionBase implements IApiAction
 		$apiDocument->appendChild($statusElement);
 
 		$query = $this->database->prepare(<<<SQL
-            SELECT COUNT(*) AS count
+            SELECT /* Api/StatusAction */ COUNT(*) AS count
             FROM request
             WHERE
                 status = :pstatus
@@ -44,7 +44,7 @@ SQL
 		}
 
 		$query = $this->database->prepare(<<<SQL
-            SELECT COUNT(*) AS count
+            SELECT /* Api/StatusAction */ COUNT(*) AS count
             FROM ban
             WHERE
                 (duration > UNIX_TIMESTAMP() OR duration = -1)
@@ -57,7 +57,7 @@ SQL
 		$statusElement->setAttribute("bans", $sus);
 		$query->closeCursor();
 
-		$query = $this->database->prepare("SELECT COUNT(*) AS count FROM user WHERE status = :ulevel;");
+		$query = $this->database->prepare("SELECT /* Api/StatusAction */ COUNT(*) AS count FROM user WHERE status = :ulevel;");
 		$query->bindValue(":ulevel", "Admin");
 		$query->execute();
 		$sus = $query->fetchColumn();
