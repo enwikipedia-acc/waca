@@ -71,33 +71,16 @@ if ($action == "logout") {
 	die();
 }
 
-// Checks whether the user and nocheck variable is set.
-// When none of these are set, the user should first login.
-if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
-//if (!isset($_SESSION['user']) && !($action=='login' && isset($_POST['username']))) {
-	// Sets the parameter to blank, this way the correct options would be displayed.
-	// It would tell the user now that he or she should log in or create an account.
+// Checks whether the user is set - the user should first login.
+if (!isset($_SESSION['user'])) {
 	$suser = '';
 	BootstrapSkin::displayInternalHeader();
 
 	// Checks whether the user want to reset his password or register a new account.
 	// Performs the clause when the action is not one of the above options.
-	if ($action != 'register' && $action != 'forgotpw' && $action != 'sreg' && $action != "registercomplete") {
-		if (isset($action)) {
-			// Display the login form and the rest of the page coding.
-			// The data in the current $GET varianle would be send as parameter.
-			// There it would be used to possibly fill some of the form's fields.
-			echo showlogin();
-			BootstrapSkin::displayInternalFooter();
-		}
-		elseif (!isset($action)) {
-			// When the action variable isn't set to anything,
-			// the login page is displayed for the user to complete.
-			echo showlogin();
-			BootstrapSkin::displayInternalFooter();
-		}
-		// All the needed HTML code is displayed for the user.
-		// The script is thus terminated.
+	if ($action != 'register' && $action != 'forgotpw' && $action != 'sreg' && $action != "registercomplete" && $action != "login") {
+		echo showlogin();
+		BootstrapSkin::displayInternalFooter();
 		die();
 	}
 	else {
@@ -107,17 +90,13 @@ if (!isset($_SESSION['user']) && !isset($_GET['nocheck'])) {
 		echo $out;
 	}
 }
-// Executes if the user variable is set, but not the nocheck.
-// This ussually happens when an user account has been renamed.
-// LouriePieterse: I cant figure out for what reason this is used.
-elseif (!isset($_GET['nocheck'])) {
-		// Forces the current user to logout.
-		$session->forceLogout($_SESSION['userID']);
 
-		// ?
-		BootstrapSkin::displayInternalHeader();
-		$session->checksecurity();
-}
+// Forces the current user to logout if necessary.
+$session->forceLogout($_SESSION['userID']);
+
+BootstrapSkin::displayInternalHeader();
+$session->checksecurity();
+
 
 // When no action is specified the default Internal ACC are displayed.
 // TODO: Improve way the method is called.
