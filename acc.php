@@ -92,7 +92,9 @@ if (!isset($_SESSION['user'])) {
 }
 
 // Forces the current user to logout if necessary.
-$session->forceLogout($_SESSION['userID']);
+if (isset($_SESSION['userID'])) {
+	$session->forceLogout($_SESSION['userID']);
+}
 
 BootstrapSkin::displayInternalHeader();
 $session->checksecurity();
@@ -1996,7 +1998,7 @@ elseif ($action == "oauthdetach") {
 	$currentUser = User::getCurrent();
 	$currentUser->detachAccount();
         
-	header("Location: {$baseurl}/acc.php?action=logout&nocheck=1");
+	header("Location: {$baseurl}/acc.php?action=logout");
 }
 elseif ($action == "oauthattach") {
 	$database = gGetDb();
