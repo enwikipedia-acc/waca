@@ -25,6 +25,8 @@ class session
 				setcookie(session_name(), '', time() - 42000, '/');
 			}
 			session_destroy( );
+
+			BootstrapSkin::displayInternalHeader();
 			
 			echo "You have been forcibly logged out, probably due to being renamed. Please log back in.";
             
