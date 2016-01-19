@@ -921,7 +921,7 @@ elseif ($action == "ban") {
 	global $smarty;
     
 	if (isset ($_GET['ip']) || isset ($_GET['email']) || isset ($_GET['name'])) {
-		if (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
+		if (!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) {
 			BootstrapSkin::displayAlertBox("Only administrators or checkusers may ban users", "alert-error");
 			BootstrapSkin::displayInternalFooter();
 			die();
