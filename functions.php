@@ -48,9 +48,10 @@ function sendemail($messageno, $target, $id)
  * Returns a value indicating whether the current request was issued over HTTPSs
  * @return bool true if HTTPS
  */
-function isHttps() {
+function isHttps()
+{
 	if (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
-		if($_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+		if ($_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
 			// Client <=> Proxy is encrypted
 			return true;
 		}
@@ -61,12 +62,12 @@ function isHttps() {
 	}
 
 	if (isset($_SERVER['HTTPS'])) {
-		if($_SERVER['HTTPS'] === 'off') {
+		if ($_SERVER['HTTPS'] === 'off') {
 			// ISAPI on IIS breaks the spec. :(
 			return false;
 		}
 
-		if($_SERVER['HTTPS'] !== '') {
+		if ($_SERVER['HTTPS'] !== '') {
 			// Set to a non-empty value
 			return true;
 		}
@@ -399,7 +400,8 @@ function reattachOAuthAccount(User $user)
  * @param $users string[] Array of usernames as strings
  * @return string
  */
-function getTypeaheadSource($users) {
+function getTypeaheadSource($users)
+{
 	$userList = "";
 	foreach ($users as $v) {
 		$userList .= "\"" . htmlentities($v) . "\", ";

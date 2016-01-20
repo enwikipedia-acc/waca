@@ -11,4 +11,4 @@
             <p>For more information, <a href="irc://irc.freenode.net/#wikipedia-en-accounts">join IRC</a>, check the mailing list (<a href="https://lists.wikimedia.org/mailman/listinfo/accounts-enwiki-l">sign up if you need to</a>) or just light candles – they may help too.</p>
         </div>
 	</div>
-{include file="footer.tpl" onlineusers=""}
+{include file="footer.tpl" onlineusers="" tailscript=""}

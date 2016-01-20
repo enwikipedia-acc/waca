@@ -69,6 +69,7 @@ class BootstrapSkin
 
 		$online = '';
 		$smarty->assign("onlineusers", $online);
+		$smarty->assign("tailscript", null);
 
 		$smarty->display("footer.tpl");
 	}
@@ -103,6 +104,7 @@ class BootstrapSkin
 			array_map(
 				function($arg)
 				{
+					/** @var User $arg */
 					return
 						"<a href=\"statistics.php?page=Users&amp;user="
 						. $arg->getId()
@@ -139,13 +141,16 @@ class BootstrapSkin
 
 	/**
 	 * Summary of displayAlertBox
-	 * @param $message string Message to show
-	 * @param $type string Alert type - use bootstrap css class
-	 * @param $header string the header of the box
-	 * @param $block bool Whether to make this a block or not
-	 * @param $closable bool add a close button
-	 * @param $return bool return the content as a string, or display it.
-	 * @param $centre bool centre the box in the page, like a dialog.
+	 * @param string $message   Message to show
+	 * @param string $type      Alert type - use bootstrap css class
+	 * @param string $header    the header of the box
+	 * @param bool   $block     Whether to make this a block or not
+	 * @param bool   $closeable add a close button
+	 * @param bool   $return    return the content as a string, or display it.
+	 * @param bool   $centre    centre the box in the page, like a dialog.
+	 * @return null|string
+	 * @throws Exception
+	 * @throws SmartyException
 	 */
 	public static function displayAlertBox(
 		$message,
@@ -174,6 +179,7 @@ class BootstrapSkin
 		}
 		else {
 			echo $returnData;
+			return null;
 		}
 	}
 

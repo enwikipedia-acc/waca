@@ -227,6 +227,7 @@ SQL
 
 	/**
 	 * @param string $imghash
+	 * @return string
 	 */
 	private function createPathFromHash($imghash, $basedirectory = "render/")
 	{

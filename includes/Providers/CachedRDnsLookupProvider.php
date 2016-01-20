@@ -20,24 +20,24 @@ class CachedRDnsLookupProvider implements IRDnsProvider
 		$address = trim($address);
 
 		// lets look in our cache database first.
-		$rdns = RDnsCache::getByAddress($address, $this->database);
+		$rDns = RDnsCache::getByAddress($address, $this->database);
 
-		if ($rdns != null) {
+		if ($rDns != null) {
 			// touch cache timer
-			$rdns->save();
+			$rDns->save();
 
-			return $rdns->getData();
+			return $rDns->getData();
 		}
 
 		// OK, it's not there, let's do an rdns lookup.
 		$result = @ gethostbyaddr($address);
 
 		if ($result !== false) {
-			$rdns = new RDnsCache();
-			$rdns->setDatabase($this->database);
-			$rdns->setAddress($address);
-			$rdns->setData($result);
-			$rdns->save();
+			$rDns = new RDnsCache();
+			$rDns->setDatabase($this->database);
+			$rDns->setAddress($address);
+			$rDns->setData($result);
+			$rDns->save();
 
 			return $result;
 		}

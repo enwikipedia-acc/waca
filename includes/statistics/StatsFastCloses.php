@@ -16,14 +16,14 @@ class StatsFastCloses extends StatisticsPage
 {
 	protected function execute()
 	{
-		$query = <<<QUERY
+		$query = <<<SQL
 SELECT
   log_closed.objectid AS Request,
   user.username AS User,
   log_closed.user AS UserID,
-  TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) AS "Time Taken",
-  closes.mail_desc AS "Close Type",
-  log_closed.timestamp AS "Date"
+  TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) AS 'Time Taken',
+  closes.mail_desc AS 'Close Type',
+  log_closed.timestamp AS 'Date'
 
 FROM log log_closed
 INNER JOIN log log_reserved ON log_closed.objectid = log_reserved.objectid 
@@ -31,17 +31,17 @@ INNER JOIN log log_reserved ON log_closed.objectid = log_reserved.objectid
 INNER JOIN closes ON closes.`closes` = log_closed.action
 LEFT JOIN user ON log_closed.user = user.id
 
-WHERE log_closed.action LIKE "Closed%"
-  AND log_reserved.action = "Reserved"
-  AND TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) < "00:00:30"
+WHERE log_closed.action LIKE 'Closed%'
+  AND log_reserved.action = 'Reserved'
+  AND TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) < '00:00:30'
   AND log_closed.user = log_reserved.user
-  AND TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) > "00:00:00"
+  AND TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) > '00:00:00'
   AND DATE(log_closed.timestamp) > DATE(NOW()-INTERVAL 3 MONTH)
 
 ORDER BY TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) ASC
 ;
-QUERY;
-		global $baseurl;
+SQL;
+
 		$qb = new QueryBrowser();
 		$qb->tableCallbackFunction = "statsFastClosesRowCallback";
 		$qb->overrideTableTitles =

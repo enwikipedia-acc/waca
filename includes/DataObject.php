@@ -13,10 +13,20 @@
  */
 abstract class DataObject
 {
+	/**
+	 * @var int ID of the object
+	 */
 	protected $id = 0;
 
+	/**
+	 * @var bool
+	 * TODO: we should probably make this a read-only method rather than public - why should anything external set this?
+	 */
 	public $isNew = true;
 
+	/**
+	 * @var PdoDatabase
+	 */
 	protected $dbObject;
 
 	public function setDatabase(PdoDatabase $db)
@@ -36,6 +46,7 @@ abstract class DataObject
 	/**
 	 * Retrieves a data object by it's row ID.
 	 * @param int $id
+	 * @param PdoDatabase $database
 	 * @return DataObject|null
 	 */
 	public static function getById($id, PdoDatabase $database)

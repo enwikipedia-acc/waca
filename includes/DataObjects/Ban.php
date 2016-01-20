@@ -17,7 +17,7 @@ class Ban extends DataObject
 	 * Gets all bans, expired and active filtered by the optional target.
 	 * @param $target string The email, IP, or name of the target of the ban
 	 * @param PdoDatabase $database gGetDb()
-	 * @return
+	 * @return Ban[]
 	 */
 	public static function getAllBans($target = null, PdoDatabase $database = null)
 	{
@@ -38,6 +38,7 @@ class Ban extends DataObject
 		$statement->execute();
 
 		$result = array();
+		/** @var Ban $v */
 		foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
 			$v->isNew = false;
 			$v->setDatabase($database);
@@ -51,7 +52,7 @@ class Ban extends DataObject
 	 * Gets all active bans, filtered by the optional target.
 	 * @param $target
 	 * @param PdoDatabase $database
-	 * @return
+	 * @return Ban[]
 	 */
 	public static function getActiveBans($target = null, PdoDatabase $database = null)
 	{
@@ -72,6 +73,8 @@ class Ban extends DataObject
 		$statement->execute();
 
 		$result = array();
+
+		/** @var Ban $v */
 		foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
 			$v->isNew = false;
 			$v->setDatabase($database);
@@ -85,7 +88,7 @@ class Ban extends DataObject
 	 * Gets a ban by it's ID if it's currently active.
 	 * @param $id
 	 * @param PdoDatabase $database
-	 * @return
+	 * @return Ban
 	 */
 	public static function getActiveId($id, PdoDatabase $database = null)
 	{
@@ -93,7 +96,12 @@ class Ban extends DataObject
 			$database = gGetDb();
 		}
 
-		$statement = $database->prepare("SELECT * FROM `" . strtolower(get_called_class()) . "` WHERE id = :id  AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;");
+		$statement = $database->prepare(<<<SQL
+SELECT *
+FROM ban
+WHERE id = :id  AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;
+SQL
+		);
 		$statement->bindValue(":id", $id);
 
 		$statement->execute();
@@ -113,7 +121,7 @@ class Ban extends DataObject
 	 * @param string $target
 	 * @param string $type
 	 * @param PdoDatabase $database
-	 * @return
+	 * @return Ban
 	 */
 	public static function getBanByTarget($target, $type, PdoDatabase $database = null)
 	{

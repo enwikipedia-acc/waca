@@ -16,7 +16,7 @@ class StatsTemplateStats extends StatisticsPage
 {
 	protected function execute()
 	{
-		$query = <<<QUERY
+		$query = <<<SQL
 SELECT
     t.id as "Template ID",
     t.usercode as "Template Code",
@@ -43,8 +43,8 @@ FROM welcometemplate t
         WHERE welcome_template IS NOT NULL
         GROUP BY welcome_template
     ) u2 ON u2.allid = t.id;
-QUERY;
-		global $baseurl;
+SQL;
+
 		$qb = new QueryBrowser();
 		$r = $qb->executeQueryToTable($query);
 

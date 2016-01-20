@@ -5,6 +5,8 @@ namespace Waca\API\Actions;
 use Waca\API\ApiActionBase as ApiActionBase;
 use Waca\API\IApiAction as IApiAction;
 
+use \PdoDatabase as PdoDatabase;
+
 /**
  * MonitorAction short summary.
  *
@@ -16,7 +18,7 @@ use Waca\API\IApiAction as IApiAction;
 class MonitorAction extends ApiActionBase implements IApiAction
 {
 	/**
-	 * The datbase
+	 * The database
 	 * @var PdoDatabase $database
 	 */
 	private $database;
@@ -60,7 +62,7 @@ class MonitorAction extends ApiActionBase implements IApiAction
 	}
 
 	/**
-	 * @return string|null
+	 * @return string
 	 */
 	private function getNewest()
 	{

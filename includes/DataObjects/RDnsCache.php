@@ -1,7 +1,7 @@
 <?php
 
 /**
- * RDNS Cache data object
+ * rDNS Cache data object
  */
 class RDnsCache extends DataObject
 {
@@ -11,10 +11,12 @@ class RDnsCache extends DataObject
 
 	/**
 	 * @param string $address
+	 * @param PdoDatabase $database
+	 * @return RDnsCache
 	 */
 	public static function getByAddress($address, PdoDatabase $database)
 	{
-		$statement = $database->prepare("SELECT * FROM `" . strtolower(get_called_class()) . "` WHERE address = :id LIMIT 1;");
+		$statement = $database->prepare("SELECT * FROM rdnscache WHERE address = :id LIMIT 1;");
 		$statement->bindValue(":id", $address);
 
 		$statement->execute();

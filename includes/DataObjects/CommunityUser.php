@@ -66,7 +66,7 @@ class CommunityUser extends User
 		return $this->getOnWikiName();
 	}
 
-	public function setOnWikiName($onwikiname)
+	public function setOnWikiName($onWikiName)
 	{
 	}
 
@@ -75,7 +75,7 @@ class CommunityUser extends User
 		return null;
 	}
 
-	public function setWelcomeSig($welcomesig)
+	public function setWelcomeSig($welcomeSig)
 	{
 	}
 
@@ -85,7 +85,7 @@ class CommunityUser extends User
 		return $now->format("Y-m-d H:i:s");
 	}
 
-	public function setLastActive($lastactive)
+	public function setLastActive($lastActive)
 	{
 	}
 
@@ -94,7 +94,7 @@ class CommunityUser extends User
 		return 1;
 	}
 
-	public function setForcelogout($forcelogout)
+	public function setForcelogout($forceLogout)
 	{
 	}
     
@@ -129,7 +129,7 @@ class CommunityUser extends User
 		return 0;
 	}
 
-	public function setWelcomeTemplate($welcometemplate)
+	public function setWelcomeTemplate($welcomeTemplate)
 	{
 	}
 
@@ -138,7 +138,7 @@ class CommunityUser extends User
 		return 0;
 	}
 
-	public function setAbortPref($abortpref)
+	public function setAbortPref($abortPreference)
 	{
 	}
 
@@ -147,7 +147,7 @@ class CommunityUser extends User
 		return null;
 	}
 
-	public function setConfirmationDiff($confirmationdiff)
+	public function setConfirmationDiff($confirmationDiff)
 	{
 	}
 
@@ -156,7 +156,7 @@ class CommunityUser extends User
 		return null;
 	}
 
-	public function setEmailSig($emailsig)
+	public function setEmailSig($emailSignature)
 	{
 	}
     
@@ -260,7 +260,7 @@ class CommunityUser extends User
 		return false;
 	}
 
-	public function oauthCanCheckUser()
+	protected function oauthCanCheckUser()
 	{
 		return false;
 	}

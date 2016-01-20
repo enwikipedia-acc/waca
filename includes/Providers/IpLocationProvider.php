@@ -48,16 +48,13 @@ class IpLocationProvider implements ILocationProvider
 
 	/**
 	 * @param string $ip
+	 * @return array|null
 	 */
 	private function getResult($ip)
 	{
 		try {
 			if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
 				$xml = @file_get_contents($this->getApiBase() . '?key=' . $this->apikey . '&ip=' . $ip . '&format=xml');
-
-				if (get_magic_quotes_runtime()) {
-					$xml = stripslashes($xml);
-				}
 
 				$response = @new SimpleXMLElement($xml);
 

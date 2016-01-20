@@ -26,6 +26,7 @@ class WelcomeTemplate extends DataObject
 		$statement->execute();
 
 		$result = array();
+		/** @var WelcomeTemplate $v */
 		foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
 			$v->isNew = false;
 			$v->setDatabase($database);
@@ -92,6 +93,7 @@ class WelcomeTemplate extends DataObject
 			$statement->execute(array(":id" => $this->id));
 
 			$result = array();
+			/** @var WelcomeTemplate $v */
 			foreach ($statement->fetchAll(PDO::FETCH_CLASS, 'User') as $v) {
 				$v->isNew = false;
 				$v->setDatabase($this->dbObject);

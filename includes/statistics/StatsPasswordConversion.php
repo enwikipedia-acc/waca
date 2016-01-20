@@ -17,18 +17,17 @@ class StatsPasswordConversion extends StatisticsPage
 	protected function execute()
 	{
 		$query = <<<sql
-SELECT "0" AS "Version", "Active" AS "Type", COUNT(*) AS "Count" FROM user WHERE password NOT LIKE ":%" AND (status = "User" OR status = "Admin")
+SELECT '0' AS 'Version', 'Active' AS 'Type', COUNT(*) AS 'Count' FROM user WHERE password NOT LIKE ':%' AND (status = 'User' OR status = 'Admin')
 UNION
-SELECT "0", "Inactive", COUNT(*) FROM user WHERE password NOT LIKE ":%" AND NOT (status = "User" OR status = "Admin")
+SELECT '0', 'Inactive', COUNT(*) FROM user WHERE password NOT LIKE ':%' AND NOT (status = 'User' OR status = 'Admin')
 UNION
-SELECT SUBSTRING(password FROM 2 FOR 1), "Active", COUNT(*) FROM user WHERE password LIKE ":%" AND (status = "User" OR status = "Admin") GROUP BY SUBSTRING(password FROM 2 FOR 1)
+SELECT SUBSTRING(password FROM 2 FOR 1), 'Active', COUNT(*) FROM user WHERE password LIKE ':%' AND (status = 'User' OR status = 'Admin') GROUP BY SUBSTRING(password FROM 2 FOR 1)
 UNION
-SELECT SUBSTRING(password FROM 2 FOR 1), "Inactive", COUNT(*) FROM user WHERE password LIKE ":%" AND NOT (status = "User" OR status = "Admin") GROUP BY SUBSTRING(password FROM 2 FOR 1)
-ORDER BY `Version` ASC, "Type" ASC
+SELECT SUBSTRING(password FROM 2 FOR 1), 'Inactive', COUNT(*) FROM user WHERE password LIKE ':%' AND NOT (status = 'User' OR status = 'Admin') GROUP BY SUBSTRING(password FROM 2 FOR 1)
+ORDER BY `Version` ASC, 'Type' ASC
 ;
 sql;
 
-		global $baseurl;
 		$qb = new QueryBrowser();
 		$qb->rowFetchMode = PDO::FETCH_NUM;
 		$r = $qb->executeQueryToTable($query);

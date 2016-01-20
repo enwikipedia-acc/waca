@@ -16,9 +16,6 @@ class accRequest
 {
 	public function isTOR()
 	{
-		// Get messages object from index file.
-		global $messages;
-		
 		// Checks whether the IP is of the TOR network.
 		$toruser = $this->checktor($_SERVER['REMOTE_ADDR']);
 		

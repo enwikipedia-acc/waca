@@ -11,13 +11,9 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
-if (!defined("ACC")) {
-	die();
-} // Invalid entry point
 
 abstract class StatisticsPage
 {
-
 	/**
 	 * Creates a statistics page.
 	 *
@@ -32,18 +28,18 @@ abstract class StatisticsPage
 		global $filepath;
 		// check the stats page definition exists...
 		if (file_exists($filepath . "/includes/statistics/Stats" . $pageName . ".php")) {
-// and include it.
+		// and include it.
 			require_once($filepath . "/includes/statistics/Stats" . $pageName . ".php");
 		}
 		else {
-// class def doesn't exist: error
+			// class def doesn't exist: error
 			die("Unknown statistics page: " . $statsPage);
 		}
 
 		// ok, so the file where the class def should be exists, but we need to check the class
 		// itself exists.
 		if (class_exists($statsPage)) {
-// the class exists, all is ok.
+			// the class exists, all is ok.
 
 			// create the stats page object
 			$object = new $statsPage;
@@ -123,7 +119,7 @@ abstract class StatisticsPage
 		// Get the needed objects.
 
 		// fetch and show page header
-		global $dontUseWikiDb, $session;
+		global $dontUseWikiDb;
 
 		BootstrapSkin::displayInternalHeader();
 
@@ -138,10 +134,9 @@ abstract class StatisticsPage
 
 		// check protection level
 		if ($this->isProtected()) {
-			// protected, check accesslevel.
-			$sessionuser = (isset($_SESSION['user']) ? $_SESSION['user'] : "");
-			if (!($session->hasright($sessionuser, "Admin") || $session->hasright($sessionuser, "User"))) {
-// not authed
+			// protected, check access level.
+			$currentUser = User::getCurrent();
+			if ($currentUser->isCommunityUser() || (!$currentUser->isUser() && !$currentUser->isAdmin())) {
 				showlogin();
 				BootstrapSkin::displayInternalFooter();
 				die();

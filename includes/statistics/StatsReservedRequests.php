@@ -20,10 +20,10 @@ class StatsReservedRequests extends StatisticsPage
 
 		$query = <<<sql
 SELECT
-    CONCAT("<a href=\"", "$baseurl", "/acc.php?action=zoom&amp;id=", p.id, "\">", p.id, "</a>") AS "#",
-    p.name AS "Requested Name",
-    p.status AS "Status",
-    u.username AS "Reserved by"
+    CONCAT('<a href="', '$baseurl', '/acc.php?action=zoom&amp;id=', p.id, '">', p.id, '</a>') AS '#',
+    p.name AS 'Requested Name',
+    p.status AS 'Status',
+    u.username AS 'Reserved by'
 FROM request p
     INNER JOIN user u ON u.id = p.reserved
 WHERE reserved != 0;

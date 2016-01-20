@@ -6,6 +6,9 @@ use Waca\API\ApiActionBase as ApiActionBase;
 use Waca\API\ApiException as ApiException;
 use Waca\API\IApiAction as IApiAction;
 
+use \PdoDatabase as PdoDatabase;
+use \User as User;
+
 /**
  * API Count action
  */
@@ -18,7 +21,7 @@ class CountAction extends ApiActionBase implements IApiAction
 	private $user;
 
 	/**
-	 * The datbase
+	 * The database
 	 * @var PdoDatabase $database
 	 */
 	private $database;

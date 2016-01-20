@@ -57,11 +57,11 @@ SQL
 
 	/**
 	 * Summary of setObjectId
-	 * @param int $objectid 
+	 * @param int $objectId
 	 */
-	public function setObjectId($objectid)
+	public function setObjectId($objectId)
 	{
-		$this->objectid = $objectid;
+		$this->objectid = $objectId;
 	}
 
 	public function getObjectType()
@@ -71,11 +71,11 @@ SQL
 
 	/**
 	 * Summary of setObjectType
-	 * @param string $objecttype 
+	 * @param string $objectType
 	 */
-	public function setObjectType($objecttype)
+	public function setObjectType($objectType)
 	{
-		$this->objecttype = $objecttype;
+		$this->objecttype = $objectType;
 	}
 
 	public function getUser()
@@ -94,7 +94,7 @@ SQL
 
 	/**
 	 * Summary of setUser
-	 * @param int|User $user 
+	 * @param User $user
 	 */
 	public function setUser($user)
 	{
@@ -150,9 +150,10 @@ SQL
 		if ($type == "") {
 			return "";
 		}
-		
+
+		/** @var DataObject $object */
 		$object = $type::getById($this->objectid, $this->dbObject);
-		
+
 		if ($object === false) {
 			return '[' . $this->objecttype . " " . $this->objectid . ']';
 		}
