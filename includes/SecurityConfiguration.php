@@ -112,6 +112,13 @@ final class SecurityConfiguration
 		$allowed = false;
 
 		// admin
+		if ($user->isAdmin()) {
+			if ($this->admin === self::DENY) {
+				return false;
+			}
+
+			$allowed |= $this->admin === self::ALLOW;
+		}
 		// TODO: finish me off
 
 		// user
@@ -124,6 +131,13 @@ final class SecurityConfiguration
 		}
 
 		// checkuser
+		if ($user->isCheckuser()) {
+			if ($this->checkuser === self::DENY) {
+				return false;
+			}
+
+			$allowed |= $this->checkuser === self::ALLOW;
+		}
 
 		// community
 		if ($user->isCommunityUser()) {
@@ -135,8 +149,22 @@ final class SecurityConfiguration
 		}
 
 		// suspended
+		if ($user->isSuspended()) {
+			if ($this->suspended === self::DENY) {
+				return false;
+			}
+
+			$allowed |= $this->suspended === self::ALLOW;
+		}
 
 		// declined
+		if ($user->isDeclined()) {
+			if ($this->declined === self::DENY) {
+				return false;
+			}
+
+			$allowed |= $this->declined === self::ALLOW;
+		}
 
 		// new
 		if ($user->isNew()) {
