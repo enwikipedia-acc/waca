@@ -1,6 +1,240 @@
 <?php
+namespace Waca\Tests;
 
-class SecurityConfigurationTest extends PHPUnit_Framework_Test
+use User;
+use Waca\SecurityConfiguration;
+
+class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 {
- private $user; public function setUp() { $this->user = $this->getMockBuilder(User::class)->getMock(); $this->user->method('isAdmin')->willReturn(false); $this->user->method('isUser')->willReturn(false); $this->user->method('isCheckuser')->willReturn(false); $this->user->method('isDeclined')->willReturn(false); $this->user->method('isSuspended')->willReturn(false); $this->user->method('isNew')->willReturn(false); $this->user->method('isCommunityUser')->willReturn(false); } public function testAllowsAdmin() { $user->method('isAdmin')->willReturn(true); $config = new SecurityConfiguration()->setAdmin(SecurityConfiguration::ALLOW); $this->assertTrue($config->allows($user)); } public function testAllowsUser() { $user->method('isUser')->willReturn(true); $config = new SecurityConfiguration()->setUser(SecurityConfiguration::ALLOW); $this->assertTrue($config->allows($user)); } public function testAllowsCheckuser() { $user->method('isCheckuser')->willReturn(true); $config = new SecurityConfiguration()->setCheckuser(SecurityConfiguration::ALLOW); $this->assertTrue($config->allows($user)); } public function testAllowsDeclined() { $user->method('isDeclined')->willReturn(true); $config = new SecurityConfiguration()->setDeclined(SecurityConfiguration::ALLOW); $this->assertTrue($config->allows($user)); } public function testAllowsSuspended() { $user->method('isSuspended')->willReturn(true); $config = new SecurityConfiguration()->setSuspended(SecurityConfiguration::ALLOW); $this->assertTrue($config->allows($user)); } public function testAllowsNew() { $user->method('isNew')->willReturn(true); $config = new SecurityConfiguration()->setNew(SecurityConfiguration::ALLOW); $this->assertTrue($config->allows($user)); } public function testAllowsCommunity() { $user->method('isCommunityUser')->willReturn(true); $config = new SecurityConfiguration()->setCommunity(SecurityConfiguration::ALLOW); $this->assertTrue($config->allows($user)); } public function testAllowsAdminWithNonApplicableDeny() { $user->method('isAdmin')->willReturn(true); $config = new SecurityConfiguration()->setAdmin(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY); $this->assertTrue($config->allows($user)); } public function testAllowsUserWithNonApplicableDeny() { $user->method('isUser')->willReturn(true); $config = new SecurityConfiguration()->setUser(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY); $this->assertTrue($config->allows($user)); } public function testAllowsCheckuserWithNonApplicableDeny() { $user->method('isCheckuser')->willReturn(true); $config = new SecurityConfiguration()->setCheckuser(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY); $this->assertTrue($config->allows($user)); } public function testAllowsDeclinedWithNonApplicableDeny() { $user->method('isDeclined')->willReturn(true); $config = new SecurityConfiguration()->setDeclined(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY); $this->assertTrue($config->allows($user)); } public function testAllowsSuspendedWithNonApplicableDeny() { $user->method('isSuspended')->willReturn(true); $config = new SecurityConfiguration()->setSuspended(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY); $this->assertTrue($config->allows($user)); } public function testAllowsNewWithNonApplicableDeny() { $user->method('isNew')->willReturn(true); $config = new SecurityConfiguration()->setNew(SecurityConfiguration::ALLOW)->setAdmin(SecurityConfiguration::DENY); $this->assertTrue($config->allows($user)); } public function testAllowsCommunityWithNonApplicableDeny() { $user->method('isCommunityUser')->willReturn(true); $config = new SecurityConfiguration()->setCommunity(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY); $this->assertTrue($config->allows($user)); } public function testAllowsAdminWithApplicableDeny() { $user->method('isAdmin')->willReturn(true); $config = new SecurityConfiguration()->setAdmin(SecurityConfiguration::DENY); $this->assertFalse($config->allows($user)); } public function testAllowsUserWithApplicableDeny() { $user->method('isUser')->willReturn(true); $config = new SecurityConfiguration()->setUser(SecurityConfiguration::DENY); $this->assertFalse($config->allows($user)); } public function testAllowsCheckuserWithApplicableDeny() { $user->method('isCheckuser')->willReturn(true); $config = new SecurityConfiguration()->setCheckuser(SecurityConfiguration::DENY); $this->assertFalse($config->allows($user)); } public function testAllowsDeclinedWithApplicableDeny() { $user->method('isDeclined')->willReturn(true); $config = new SecurityConfiguration()->setDeclined(SecurityConfiguration::DENY); $this->assertFalse($config->allows($user)); } public function testAllowsSuspendedWithApplicableDeny() { $user->method('isSuspended')->willReturn(true); $config = new SecurityConfiguration()->setSuspended(SecurityConfiguration::DENY); $this->assertFalse($config->allows($user)); } public function testAllowsNewWithApplicableDeny() { $user->method('isNew')->willReturn(true); $config = new SecurityConfiguration()->setNew(SecurityConfiguration::DENY); $this->assertFalse($config->allows($user)); } public function testAllowsCommunityWithApplicableDeny() { $user->method('isCommunityUser')->willReturn(true); $config = new SecurityConfiguration()->setCommunity(SecurityConfiguration::DENY); $this->assertFalse($config->allows($user)); } public function testAllowsAdminWithDefault() { $user->method('isAdmin')->willReturn(true); $config = new SecurityConfiguration(); $this->assertFalse($config->allows($user)); } public function testAllowsUserWithDefault() { $user->method('isUser')->willReturn(true); $config = new SecurityConfiguration(); $this->assertFalse($config->allows($user)); } public function testAllowsCheckuserWithDefault() { $user->method('isCheckuser')->willReturn(true); $config = new SecurityConfiguration(); $this->assertFalse($config->allows($user)); } public function testAllowsDeclinedWithDefault() { $user->method('isDeclined')->willReturn(true); $config = new SecurityConfiguration(); $this->assertFalse($config->allows($user)); } public function testAllowsSuspendedWithDefault() { $user->method('isSuspended')->willReturn(true); $config = new SecurityConfiguration(); $this->assertFalse($config->allows($user)); } public function testAllowsNewWithDefault() { $user->method('isNew')->willReturn(true); $config = new SecurityConfiguration(); $this->assertFalse($config->allows($user)); } public function testAllowsCommunityWithDefault() { $user->method('isCommunityUser')->willReturn(true); $config = new SecurityConfiguration(); $this->assertFalse($config->allows($user)); }
+	// @var  \PHPUnit_Framework_MockObject_MockObject */
+	private $user;
+
+	public function setUp()
+	{
+		$this->user = $this->getMockBuilder(User::class)->getMock();
+		$this->user->method('isAdmin')->willReturn(false);
+		$this->user->method('isUser')->willReturn(false);
+		$this->user->method('isCheckuser')->willReturn(false);
+		$this->user->method('isDeclined')->willReturn(false);
+		$this->user->method('isSuspended')->willReturn(false);
+		$this->user->method('isNew')->willReturn(false);
+		$this->user->method('isCommunityUser')->willReturn(false);
+	}
+
+	public function testAllowsAdmin()
+	{
+		$this->user->method('isAdmin')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setAdmin(SecurityConfiguration::ALLOW);
+		$this->assertTrue($config->allows($this->user));
+	}
+
+	public function testAllowsUser()
+	{
+		$this->user->method('isUser')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setUser(SecurityConfiguration::ALLOW);
+		$this->assertTrue($config->allows($this->user));
+	}
+
+	public function testAllowsCheckuser()
+	{
+		$this->user->method('isCheckuser')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setCheckuser(SecurityConfiguration::ALLOW);
+		$this->assertTrue($config->allows($this->user));
+	}
+
+	public function testAllowsDeclined()
+	{
+		$this->user->method('isDeclined')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setDeclined(SecurityConfiguration::ALLOW);
+		$this->assertTrue($config->allows($this->user));
+	}
+
+	public function testAllowsSuspended()
+	{
+		$this->user->method('isSuspended')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setSuspended(SecurityConfiguration::ALLOW);
+		$this->assertTrue($config->allows($this->user));
+	}
+
+	public function testAllowsNew()
+	{
+		$this->user->method('isNew')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setNew(SecurityConfiguration::ALLOW);
+		$this->assertTrue($config->allows($this->user));
+	}
+
+	public function testAllowsCommunity()
+	{
+		$this->user->method('isCommunityUser')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setCommunity(SecurityConfiguration::ALLOW);
+		$this->assertTrue($config->allows($this->user));
+	}
+
+	public function testAllowsAdminWithNonApplicableDeny()
+	{
+		$this->user->method('isAdmin')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setAdmin(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY);
+		$this->assertTrue($config->allows($this->user));
+	}
+
+	public function testAllowsUserWithNonApplicableDeny()
+	{
+		$this->user->method('isUser')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setUser(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY);
+		$this->assertTrue($config->allows($this->user));
+	}
+
+	public function testAllowsCheckuserWithNonApplicableDeny()
+	{
+		$this->user->method('isCheckuser')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setCheckuser(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY);
+		$this->assertTrue($config->allows($this->user));
+	}
+
+	public function testAllowsDeclinedWithNonApplicableDeny()
+	{
+		$this->user->method('isDeclined')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setDeclined(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY);
+		$this->assertTrue($config->allows($this->user));
+	}
+
+	public function testAllowsSuspendedWithNonApplicableDeny()
+	{
+		$this->user->method('isSuspended')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setSuspended(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY);
+		$this->assertTrue($config->allows($this->user));
+	}
+
+	public function testAllowsNewWithNonApplicableDeny()
+	{
+		$this->user->method('isNew')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setNew(SecurityConfiguration::ALLOW)->setAdmin(SecurityConfiguration::DENY);
+		$this->assertTrue($config->allows($this->user));
+	}
+
+	public function testAllowsCommunityWithNonApplicableDeny()
+	{
+		$this->user->method('isCommunityUser')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setCommunity(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY);
+		$this->assertTrue($config->allows($this->user));
+	}
+
+	public function testAllowsAdminWithApplicableDeny()
+	{
+		$this->user->method('isAdmin')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setAdmin(SecurityConfiguration::DENY);
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testAllowsUserWithApplicableDeny()
+	{
+		$this->user->method('isUser')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setUser(SecurityConfiguration::DENY);
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testAllowsCheckuserWithApplicableDeny()
+	{
+		$this->user->method('isCheckuser')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setCheckuser(SecurityConfiguration::DENY);
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testAllowsDeclinedWithApplicableDeny()
+	{
+		$this->user->method('isDeclined')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setDeclined(SecurityConfiguration::DENY);
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testAllowsSuspendedWithApplicableDeny()
+	{
+		$this->user->method('isSuspended')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setSuspended(SecurityConfiguration::DENY);
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testAllowsNewWithApplicableDeny()
+	{
+		$this->user->method('isNew')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setNew(SecurityConfiguration::DENY);
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testAllowsCommunityWithApplicableDeny()
+	{
+		$this->user->method('isCommunityUser')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$config->setCommunity(SecurityConfiguration::DENY);
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testAllowsAdminWithDefault()
+	{
+		$this->user->method('isAdmin')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testAllowsUserWithDefault()
+	{
+		$this->user->method('isUser')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testAllowsCheckuserWithDefault()
+	{
+		$this->user->method('isCheckuser')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testAllowsDeclinedWithDefault()
+	{
+		$this->user->method('isDeclined')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testAllowsSuspendedWithDefault()
+	{
+		$this->user->method('isSuspended')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testAllowsNewWithDefault()
+	{
+		$this->user->method('isNew')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testAllowsCommunityWithDefault()
+	{
+		$this->user->method('isCommunityUser')->willReturn(true);
+		$config = new SecurityConfiguration();
+		$this->assertFalse($config->allows($this->user));
+	}
 }

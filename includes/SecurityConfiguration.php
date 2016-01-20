@@ -6,21 +6,17 @@ use \User;
 
 /**
  * Class SecurityConfiguration
- * @package Waca
+ * @package  Waca
  * @category Security-Critical
  */
 final class SecurityConfiguration
 {
 	const ALLOW = "allow";
 	const DENY = "deny";
-
 	private $admin = "default";
 	private $user = "default";
-
 	private $checkuser = "default";
-
 	private $community = "default";
-
 	private $suspended = "default";
 	private $declined = "default";
 	private $new = "default";
