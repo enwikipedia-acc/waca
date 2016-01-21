@@ -4,26 +4,24 @@ namespace Waca\Tests;
 use User;
 use Waca\SecurityConfiguration;
 
+/**
+ * Class SecurityConfigurationTest
+ * @package Waca\Tests
+ * @category Security-Critical
+ */
 class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 {
-	// @var  \PHPUnit_Framework_MockObject_MockObject */
 	private $user;
 
 	public function setUp()
 	{
 		$this->user = $this->getMockBuilder(User::class)->getMock();
-		$this->user->method('isAdmin')->willReturn(false);
-		$this->user->method('isUser')->willReturn(false);
-		$this->user->method('isCheckuser')->willReturn(false);
-		$this->user->method('isDeclined')->willReturn(false);
-		$this->user->method('isSuspended')->willReturn(false);
-		$this->user->method('isNew')->willReturn(false);
-		$this->user->method('isCommunityUser')->willReturn(false);
 	}
 
 	public function testAllowsAdmin()
 	{
 		$this->user->method('isAdmin')->willReturn(true);
+
 		$config = new SecurityConfiguration();
 		$config->setAdmin(SecurityConfiguration::ALLOW);
 		$this->assertTrue($config->allows($this->user));
@@ -32,6 +30,7 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 	public function testAllowsUser()
 	{
 		$this->user->method('isUser')->willReturn(true);
+
 		$config = new SecurityConfiguration();
 		$config->setUser(SecurityConfiguration::ALLOW);
 		$this->assertTrue($config->allows($this->user));
@@ -40,6 +39,7 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 	public function testAllowsCheckuser()
 	{
 		$this->user->method('isCheckuser')->willReturn(true);
+
 		$config = new SecurityConfiguration();
 		$config->setCheckuser(SecurityConfiguration::ALLOW);
 		$this->assertTrue($config->allows($this->user));
@@ -48,6 +48,7 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 	public function testAllowsDeclined()
 	{
 		$this->user->method('isDeclined')->willReturn(true);
+
 		$config = new SecurityConfiguration();
 		$config->setDeclined(SecurityConfiguration::ALLOW);
 		$this->assertTrue($config->allows($this->user));
@@ -56,6 +57,7 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 	public function testAllowsSuspended()
 	{
 		$this->user->method('isSuspended')->willReturn(true);
+
 		$config = new SecurityConfiguration();
 		$config->setSuspended(SecurityConfiguration::ALLOW);
 		$this->assertTrue($config->allows($this->user));
@@ -64,6 +66,7 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 	public function testAllowsNew()
 	{
 		$this->user->method('isNew')->willReturn(true);
+
 		$config = new SecurityConfiguration();
 		$config->setNew(SecurityConfiguration::ALLOW);
 		$this->assertTrue($config->allows($this->user));
@@ -72,6 +75,7 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 	public function testAllowsCommunity()
 	{
 		$this->user->method('isCommunityUser')->willReturn(true);
+
 		$config = new SecurityConfiguration();
 		$config->setCommunity(SecurityConfiguration::ALLOW);
 		$this->assertTrue($config->allows($this->user));
@@ -80,6 +84,7 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 	public function testAllowsAdminWithNonApplicableDeny()
 	{
 		$this->user->method('isAdmin')->willReturn(true);
+
 		$config = new SecurityConfiguration();
 		$config->setAdmin(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY);
 		$this->assertTrue($config->allows($this->user));

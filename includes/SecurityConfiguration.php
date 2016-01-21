@@ -113,7 +113,7 @@ final class SecurityConfiguration
 				return false;
 			}
 
-			$allowed |= $this->admin === self::ALLOW;
+			$allowed = $allowed || $this->admin === self::ALLOW;
 		}
 		// TODO: finish me off
 
@@ -123,7 +123,7 @@ final class SecurityConfiguration
 				return false;
 			}
 
-			$allowed |= $this->user === self::ALLOW;
+			$allowed = $allowed || $this->user === self::ALLOW;
 		}
 
 		// checkuser
@@ -132,7 +132,7 @@ final class SecurityConfiguration
 				return false;
 			}
 
-			$allowed |= $this->checkuser === self::ALLOW;
+			$allowed = $allowed || $this->checkuser === self::ALLOW;
 		}
 
 		// community
@@ -141,7 +141,7 @@ final class SecurityConfiguration
 				return false;
 			}
 
-			$allowed |= $this->community === self::ALLOW;
+			$allowed = $allowed || $this->community === self::ALLOW;
 		}
 
 		// suspended
@@ -150,7 +150,7 @@ final class SecurityConfiguration
 				return false;
 			}
 
-			$allowed |= $this->suspended === self::ALLOW;
+			$allowed = $allowed || $this->suspended === self::ALLOW;
 		}
 
 		// declined
@@ -159,7 +159,7 @@ final class SecurityConfiguration
 				return false;
 			}
 
-			$allowed |= $this->declined === self::ALLOW;
+			$allowed = $allowed || $this->declined === self::ALLOW;
 		}
 
 		// new
@@ -168,7 +168,7 @@ final class SecurityConfiguration
 				return false;
 			}
 
-			$allowed |= $this->new === self::ALLOW;
+			$allowed = $allowed || $this->new === self::ALLOW;
 		}
 
 		return $allowed;
