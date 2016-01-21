@@ -47,7 +47,7 @@ function sendemail($messageno, $target, $id)
 /**
  * Returns a value indicating whether the current request was issued over HTTPSs
  * @return bool true if HTTPS
- * @deprecated \Waca\WebRequest::isHttps();
+ * @deprecated This method is deprecated. Please use WebRequest::isHttps instead.
  */
 function isHttps()
 {
