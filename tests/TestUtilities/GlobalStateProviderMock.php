@@ -62,7 +62,7 @@ class GlobalStateProviderMock implements IGlobalStateProvider
 	/**
 	 * @return array
 	 */
-	public function getServerSuperGlobal()
+	public function &getServerSuperGlobal()
 	{
 		return $this->server;
 	}
@@ -70,7 +70,7 @@ class GlobalStateProviderMock implements IGlobalStateProvider
 	/**
 	 * @return array
 	 */
-	public function getGetSuperGlobal()
+	public function &getGetSuperGlobal()
 	{
 		return $this->get;
 	}
@@ -78,7 +78,7 @@ class GlobalStateProviderMock implements IGlobalStateProvider
 	/**
 	 * @return array
 	 */
-	public function getPostSuperGlobal()
+	public function &getPostSuperGlobal()
 	{
 		return $this->post;
 	}
@@ -86,7 +86,7 @@ class GlobalStateProviderMock implements IGlobalStateProvider
 	/**
 	 * @return array
 	 */
-	public function getSessionSuperGlobal()
+	public function &getSessionSuperGlobal()
 	{
 		return $this->session;
 	}

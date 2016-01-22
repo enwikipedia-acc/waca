@@ -173,4 +173,64 @@ final class SecurityConfiguration
 
 		return $allowed;
 	}
+
+	/**
+	 * Returns a pre-built security configuration for a public page.
+	 *
+	 * @category Security-Critical
+	 * @return SecurityConfiguration
+	 */
+	public static final function publicPage()
+	{
+		$config = new SecurityConfiguration();
+		$config->setAdmin(self::ALLOW)
+			->setUser(self::ALLOW)
+			->setCheckuser(self::ALLOW)
+			->setCommunity(self::ALLOW)
+			->setSuspended(self::ALLOW)
+			->setDeclined(self::ALLOW)
+			->setNew(self::ALLOW);
+
+		return $config;
+	}
+
+	/**
+	 * Returns a pre-built security configuration for an internal page.
+	 *
+	 * @category Security-Critical
+	 * @return SecurityConfiguration
+	 */
+	public static final function internalPage()
+	{
+		$config = new SecurityConfiguration();
+		$config->setAdmin(self::ALLOW)
+			->setUser(self::ALLOW)
+			->setCheckuser(self::ALLOW)
+			->setCommunity(self::DENY)
+			->setSuspended(self::DENY)
+			->setDeclined(self::DENY)
+			->setNew(self::DENY);
+
+		return $config;
+	}
+
+	/**
+	 * Returns a pre-built security configuration for a tool admin only page.
+	 *
+	 * @category Security-Critical
+	 * @return SecurityConfiguration
+	 */
+	public static final function adminPage()
+	{
+		$config = new SecurityConfiguration();
+		$config->setAdmin(self::ALLOW)
+			->setUser(self::DENY)
+			->setCheckuser(self::ALLOW)
+			->setCommunity(self::DENY)
+			->setSuspended(self::DENY)
+			->setDeclined(self::DENY)
+			->setNew(self::DENY);
+
+		return $config;
+	}
 }

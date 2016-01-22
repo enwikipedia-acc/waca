@@ -5,14 +5,18 @@ namespace Waca\Pages;
 use Waca\PageBase;
 use Waca\SecurityConfiguration;
 
-class Page404 extends PageBase
+/**
+ * Class PageLogin
+ * @package Waca\Pages
+ */
+class PageLogin extends PageBase
 {
 	/**
-	 * Main function for this page, when no actions are called.
+	 * Main function for this page, when no specific actions are called.
 	 */
 	protected function main()
 	{
-
+		// TODO: Implement main() method.
 	}
 
 	/**
@@ -26,7 +30,7 @@ class Page404 extends PageBase
 	 */
 	protected function getSecurityConfiguration()
 	{
-		// public because 404s will never contain private data.
+		// Login pages, by definition, have to be accessible to the public
 		return SecurityConfiguration::publicPage();
 	}
 }

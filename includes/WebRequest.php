@@ -62,9 +62,9 @@ class WebRequest
 	}
 
 	/**
-	 * Gets the pathinfo
+	 * Gets the path info
 	 *
-	 * @return array Array of pathinfo segments
+	 * @return array Array of path info segments
 	 */
 	public static function pathInfo()
 	{

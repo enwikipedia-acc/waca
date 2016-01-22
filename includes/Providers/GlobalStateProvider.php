@@ -16,7 +16,7 @@ class GlobalStateProvider implements IGlobalStateProvider
 	/**
 	 * @return array
 	 */
-	public function getServerSuperGlobal()
+	public function &getServerSuperGlobal()
 	{
 		return $_SERVER;
 	}
@@ -24,7 +24,7 @@ class GlobalStateProvider implements IGlobalStateProvider
 	/**
 	 * @return array
 	 */
-	public function getGetSuperGlobal()
+	public function &getGetSuperGlobal()
 	{
 		return $_GET;
 	}
@@ -32,7 +32,7 @@ class GlobalStateProvider implements IGlobalStateProvider
 	/**
 	 * @return array
 	 */
-	public function getPostSuperGlobal()
+	public function &getPostSuperGlobal()
 	{
 		return $_POST;
 	}
@@ -40,7 +40,7 @@ class GlobalStateProvider implements IGlobalStateProvider
 	/**
 	 * @return array
 	 */
-	public function getSessionSuperGlobal()
+	public function &getSessionSuperGlobal()
 	{
 		return $_SESSION;
 	}

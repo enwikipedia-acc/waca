@@ -11,6 +11,7 @@ use Waca\SecurityConfiguration;
  */
 class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 {
+	/** @var User|\PHPUnit_Framework_MockObject_MockObject */
 	private $user;
 
 	public function setUp()
@@ -240,6 +241,47 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->user->method('isCommunityUser')->willReturn(true);
 		$config = new SecurityConfiguration();
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testCheckuserAnonymousBypass() {
+		// This should never happen, but putting a test in to ensure we handle it correctly!
+		$this->user->method('isCommunityUser')->willReturn(true);
+		$this->user->method('isCheckuser')->willReturn(true);
+
+		$config = new SecurityConfiguration();
+		$config->setCheckuser(SecurityConfiguration::ALLOW);
+
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testCheckuserSuspendedBypass() {
+		$this->user->method('isSuspended')->willReturn(true);
+		$this->user->method('isCheckuser')->willReturn(true);
+
+		$config = new SecurityConfiguration();
+		$config->setCheckuser(SecurityConfiguration::ALLOW);
+
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testCheckuserDeclinedBypass() {
+		$this->user->method('isDeclined')->willReturn(true);
+		$this->user->method('isCheckuser')->willReturn(true);
+
+		$config = new SecurityConfiguration();
+		$config->setCheckuser(SecurityConfiguration::ALLOW);
+
+		$this->assertFalse($config->allows($this->user));
+	}
+
+	public function testCheckuserNewBypass() {
+		$this->user->method('isNew')->willReturn(true);
+		$this->user->method('isCheckuser')->willReturn(true);
+
+		$config = new SecurityConfiguration();
+		$config->setCheckuser(SecurityConfiguration::ALLOW);
+
 		$this->assertFalse($config->allows($this->user));
 	}
 }

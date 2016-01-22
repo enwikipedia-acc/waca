@@ -3,8 +3,6 @@ if (!defined("ACC")) {
 	die();
 } // Invalid entry point
 
-require_once 'lib/smarty/Smarty.class.php';
-
 global $smarty, $smartydebug;
 $smarty = new Smarty();
 
