@@ -2,8 +2,20 @@
 
 namespace Waca\Exceptions;
 
-use Exception;
-
-class AccessDeniedException extends Exception
+/**
+ * Class AccessDeniedException
+ *
+ * Thrown when a logged-in user does not have permissions to access a page
+ *
+ * @package Waca\Exceptions
+ */
+class AccessDeniedException extends ReadableException
 {
+	public function getReadableError()
+	{
+		header("HTTP/1.1 403 Forbidden");
+
+		$this->setUpSmarty();
+		return $this->fetchTemplate("exception/access-denied.tpl");
+	}
 }

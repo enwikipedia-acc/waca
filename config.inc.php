@@ -274,6 +274,9 @@ $strictTransportSecurityExpiry = false;
 // Retriving the local configuration file.
 require_once('config.local.inc.php');
 
+// Enforce a schema version
+$schemaVersion = 16;
+
 $cDatabaseConfig = array(
 	"acc" => array(
 		"dsrcname" => "mysql:host=" . $toolserver_host . ";dbname=" . $toolserver_database,
@@ -308,13 +311,13 @@ foreach (array(
 	"mcrypt", "openssl", // password encryption etc
 	) as $x) {if (!extension_loaded($x)) {die("extension $x is required."); }}
 
+// Set up the AutoLoader
 require_once($filepath . "includes/AutoLoader.php");
-
 spl_autoload_register("AutoLoader::load");
+require_once($filepath . 'vendor/autoload.php')
 
 // Extra includes which are just plain awkward wherever they are.
-
-require_once($filepath . 'vendor/autoload.php');
+;
 require_once($filepath . 'oauth/OAuthUtility.php');
 require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/OAuth.php');
 require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/JWT.php');

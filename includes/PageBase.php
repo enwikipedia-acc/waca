@@ -2,25 +2,23 @@
 namespace Waca;
 
 use Exception;
-use InterfaceMessage;
-use Smarty;
 use User;
 use Waca\Exceptions\AccessDeniedException;
+use Waca\Exceptions\NotIdentifiedException;
+use Waca\Fragments\TemplateOutput;
 
 abstract class PageBase
 {
+	use TemplateOutput;
+
 	/** @var array The callable route to be taken, as determined by the request router. */
 	private $route = null;
 	/** @var string The name of the route to use, as determined by the request router. */
 	private $routeName = "main";
-	/** @var Smarty */
-	private $smarty;
 	/** @var string Smarty template to display */
 	private $template = "base.tpl";
 	/** @var string HTML title. Currently unused. */
 	private $htmlTitle;
-	/** @var string Extra JavaScript to include at the end of the page's execution */
-	private $tailScript;
 
 	/**
 	 * Sets the route the request will take. Only should be called from the request router.
@@ -56,32 +54,35 @@ abstract class PageBase
 
 		$this->setupPage();
 
-		// Security barrier
+		// Security barrier.
+		//
+		// This code essentially doesn't care if the user is logged in or not, as the
 		if ($this->getSecurityConfiguration()->allows(User::getCurrent())) {
-
-			call_user_func($this->route);
-
-			$this->finalisePage();
-
-			// Check we have a template to use!
-			if ($this->template !== false) {
-				$content = $this->smarty->fetch($this->template);
-				ob_clean();
-				print($content);
-				ob_flush();
-			}
+			// We're allowed to run the page, so let's run it.
+			$this->runPage();
 		}
 		else {
 			// Not allowed to access this resource.
 			// Firstly, let's check if we're even logged in.
-			if(User::getCurrent()->isCommunityUser()){
+			if (User::getCurrent()->isCommunityUser()) {
 				// Not logged in, redirect to login page
 
+				// TODO: return to current page? Possibly as a session var?
+				$this->redirect("login");
+				return;
 			}
-			else
-			{
-				// actual error here.
-				throw new AccessDeniedException();
+			else {
+				// Decide whether this was a rights failure, or an identification failure.
+
+				global $forceIdentification;
+				if($forceIdentification && User::getCurrent()->isIdentified() != 1) {
+					// Not identified
+					throw new NotIdentifiedException();
+				}
+				else {
+					// Nope, plain old access denied
+					throw new AccessDeniedException();
+				}
 			}
 		}
 	}
@@ -112,15 +113,6 @@ abstract class PageBase
 	}
 
 	/**
-	 * @param $name  string The name of the variable
-	 * @param $value mixed The value to assign
-	 */
-	protected final function assign($name, $value)
-	{
-		$this->smarty->assign($name, $value);
-	}
-
-	/**
 	 * Sets the name of the template this page should display.
 	 * @param $name string
 	 */
@@ -130,13 +122,42 @@ abstract class PageBase
 	}
 
 	/**
-	 * Include extra JavaScript at the end of the page's execution
+	 * Sends the redirect headers to perform a GET at the new address.
 	 *
-	 * @param $script string JavaScript to include at the end of the page
+	 * Also nullifies the set template so Smarty does not render it.
+	 *
+	 * @param $path string URL to redirect to
 	 */
-	protected final function setTailScript($script)
+	protected function redirectUrl($path)
 	{
-		$this->tailScript = $script;
+		// 303 See Other = re-request at new address with a GET.
+		header("HTTP/1.1 303 See Other");
+		header("Location: $path");
+
+		$this->setTemplate(null);
+	}
+
+	/**
+	 * Sends the redirect headers to perform a GET at the destination page.
+	 *
+	 * Also nullifies the set template so Smarty does not render it.
+	 *
+	 * @param string     $page   The page to redirect requests to (as used in the UR)
+	 * @param null|string $action The action to use on the page.
+	 */
+	protected function redirect($page, $action = null)
+	{
+		global $baseurl;
+		$pathInfo = array($baseurl . "/internal.php");
+
+		$pathInfo[1] = $page;
+
+		if($action !== null) {
+			$pathInfo[2] = $action;
+		}
+
+		$url = implode("/", $pathInfo);
+		$this->redirectUrl($url);
 	}
 
 	/**
@@ -144,35 +165,7 @@ abstract class PageBase
 	 */
 	private final function setupPage()
 	{
-		$this->smarty = new Smarty();
-		$this->setUpSmartyVariables();
-	}
-
-	/**
-	 * Sets up the variables used by the main Smarty base template.
-	 *
-	 * This list is getting kinda long.
-	 */
-	private final function setUpSmartyVariables()
-	{
-		global $baseurl, $wikiurl, $mediawikiScriptPath;
-
-		$this->assign("currentUser", User::getCurrent());
-		$this->assign("loggedIn", (!User::getCurrent()->isCommunityUser()));
-		$this->assign("baseurl", $baseurl);
-		$this->assign("wikiurl", $wikiurl);
-		$this->assign("mediawikiScriptPath", $mediawikiScriptPath);
-
-		// TODO: this isn't very mockable, and requires a database link.
-		$siteNoticeText = InterfaceMessage::get(InterfaceMessage::SITENOTICE);
-		$this->assign("siteNoticeText", $siteNoticeText);
-
-		// TODO: this isn't mockable either, and has side effects if you don't have git
-		$this->assign("toolversion", Environment::getToolVersion());
-
-		// TODO: implement this somehow
-		$this->assign("onlineusers", "");
-		$this->assign("tailscript", $this->tailScript);
+		$this->setUpSmarty();
 	}
 
 	/**
@@ -187,5 +180,28 @@ abstract class PageBase
 		$this->assign("alerts", array());
 
 		$this->assign("htmlTitle", $this->htmlTitle);
+	}
+
+	/**
+	 * Runs the page logic as routed by the RequestRouter
+	 *
+	 * Only should be called after a security barrier! That means only from execute().
+	 */
+	private final function runPage()
+	{
+		// run the page code
+		call_user_func($this->route);
+
+		// run any finalisation code needed before we send the output to the browser.
+		$this->finalisePage();
+
+		// Check we have a template to use!
+		if ($this->template !== false) {
+			$content = $this->fetchTemplate($this->template);
+			ob_clean();
+			print($content);
+			ob_flush();
+			return;
+		}
 	}
 }

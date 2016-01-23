@@ -2,6 +2,7 @@
 
 namespace Waca;
 
+use User;
 use Waca\Providers\Interfaces\IGlobalStateProvider;
 
 /**
@@ -82,11 +83,42 @@ class WebRequest
 			return array();
 		}
 
-		return array_filter(explode('/', $server['PATH_INFO']));
+		$exploded = explode('/', $server['PATH_INFO']);
+
+		// filter out empty values, and reindex from zero. Notably, the first element is always zero, since it starts
+		// with a /
+		return array_values(array_filter($exploded));
 	}
 
 	public static function setGlobalStateProvider($globalState)
 	{
 		self::$globalStateProvider = $globalState;
+	}
+
+	/**
+	 * @param $key string
+	 * @return null|string
+	 */
+	public static function postString($key){
+		$post = &self::$globalStateProvider->getPostSuperGlobal();
+		if(!array_key_exists($key, $post))
+		{
+			return null;
+		}
+
+		// TODO: do we need more security here, and possibly an @security-critical?
+		return $post[$key];
+	}
+
+	/**
+	 * Sets the logged-in user to the specified user.
+	 *
+	 * @param User $user
+	 */
+	public static function setLoggedInUser(User $user)
+	{
+		$session = &self::$globalStateProvider->getSessionSuperGlobal();
+
+		$session['userID'] = $user->getId();
 	}
 }

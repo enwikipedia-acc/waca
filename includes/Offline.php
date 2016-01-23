@@ -67,6 +67,8 @@ class Offline
 		$smarty->assign("baseurl", $baseurl);
 		$smarty->assign("toolversion", Environment::getToolVersion());
 
+		header("HTTP/1.1 503 Service Unavailable");
+
 		if ($external) {
 			return $smarty->fetch("offline/external.tpl");
 		}

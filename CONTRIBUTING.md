@@ -13,10 +13,7 @@ This is a work-in-progress, so feel free to put ideas forward as to coding style
 * PHP 5.5 please, nothing newer as it won't run in production.
 * Files contain a single class definition, and the file is named for the class. 
   Alternatively, they should contain a script, not both. ([PSR-1][1])
-
-### Future work
-
-Namespacing currently isn't implemented, but we should be looking towards this goal.
+  All new classes should be appropriately namespaced.
 
 ### Indentation and Braces
 
@@ -83,7 +80,7 @@ class Foo
 ### Misc
 
 * The ternary (`?:`) operator should only be used where appropriate - short expressions only please!
-* Heredoc/Nowdoc should not be used for output - use templates. Extended SQL statements are OK.
+* Heredoc/Nowdoc should not be used for output - use templates. Extended SQL statements are OK, but please use appropriate boundary markers, such as `SQL`;
 
 ## How-tos
 

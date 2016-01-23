@@ -21,6 +21,20 @@ final class SecurityConfiguration
 	private $declined = "default";
 	private $new = "default";
 
+	private $requireIdentified;
+
+	/**
+	 * SecurityConfiguration constructor.
+	 */
+	public function __construct()
+	{
+		global $forceIdentification;
+
+		// Initialise require identified to the boolean value of $forceIdentification. Test for truthiness not true
+		// because I think we set this to 1/0 instead of true/false.
+		$this->requireIdentified = ($forceIdentification == 1);
+	}
+
 	/**
 	 * @param string $admin
 	 * @return SecurityConfiguration
@@ -99,13 +113,22 @@ final class SecurityConfiguration
 	}
 
 	/**
-	 * @param User $user Tests if a user is allowed to perform an action
+	 * Tests if a user is allowed to perform an action.
+	 *
+	 * This method should form a hard, deterministic security barrier, and only return true if it is absolutely sure
+	 * that a user should have access to something.
+	 *
+	 * @param User $user
 	 * @return bool
 	 * @category Security-Critical
 	 */
 	public final function allows(User $user)
 	{
 		$allowed = false;
+
+		if($this->requireIdentified && !$user->isCommunityUser() && $user->getIdentified() !== 1) {
+			return false;
+		}
 
 		// admin
 		if ($user->isAdmin()) {
@@ -115,7 +138,6 @@ final class SecurityConfiguration
 
 			$allowed = $allowed || $this->admin === self::ALLOW;
 		}
-		// TODO: finish me off
 
 		// user
 		if ($user->isUser()) {

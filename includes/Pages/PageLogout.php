@@ -4,17 +4,17 @@ namespace Waca\Pages;
 
 use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Session;
 
-class Page404 extends PageBase
+class PageLogout extends PageBase
 {
 	/**
-	 * Main function for this page, when no actions are called.
+	 * Main function for this page, when no specific actions are called.
 	 */
 	protected function main()
 	{
-		header("HTTP/1.1 404 Not Found");
-
-		$this->setTemplate("404.tpl");
+		Session::destroy();
+		$this->redirect("login");
 	}
 
 	/**
@@ -28,7 +28,6 @@ class Page404 extends PageBase
 	 */
 	protected function getSecurityConfiguration()
 	{
-		// public because 404s will never contain private data.
 		return SecurityConfiguration::publicPage();
 	}
 }

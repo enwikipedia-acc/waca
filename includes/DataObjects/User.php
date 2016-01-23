@@ -70,6 +70,11 @@ class User extends DataObject
 		return new CommunityUser();   
 	}
 
+	/**
+	 * @param  string      $username
+	 * @param  PdoDatabase $database
+	 * @return CommunityUser|User
+	 */
 	public static function getByUsername($username, PdoDatabase $database)
 	{
 		global $communityUsername;
@@ -86,7 +91,7 @@ class User extends DataObject
 
 		if ($resultObject != false) {
 			$resultObject->isNew = false;
-			$resultObject->setDatabase($database); 
+			$resultObject->setDatabase($database);
 		}
 
 		return $resultObject;
@@ -474,6 +479,9 @@ SQL
 		return $this->forcelogout;
 	}
 
+	/**
+	 * @param $forceLogout bool
+	 */
 	public function setForcelogout($forceLogout)
 	{
 		$this->forcelogout = $forceLogout ? 1 : 0;

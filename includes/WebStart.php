@@ -2,8 +2,9 @@
 namespace Waca;
 
 use \Offline;
-use Waca\Exceptions\AccessDeniedException;
+use PdoDatabase;
 use Waca\Exceptions\EnvironmentException;
+use Waca\Exceptions\ReadableException;
 use Waca\Providers\GlobalStateProvider;
 
 /**
@@ -29,9 +30,9 @@ class WebStart
 			ob_end_clean();
 			print Offline::getOfflineMessage(false, $ex->getMessage());
 		}
-		catch(AccessDeniedException $ex) {
+		catch(ReadableException $ex) {
 			ob_end_clean();
-			print Offline::getOfflineMessage(false, $ex->getMessage());
+			print $ex->getReadableError();
 		}
 		finally {
 			$this->cleanupEnvironment();
@@ -45,6 +46,7 @@ class WebStart
 	 * Let's build something ourselves, and hope it works.
 	 *
 	 * @param $exception
+	 * @category Security-Critical - has the potential to leak data when exception is thrown.
 	 */
 	public static function exceptionHandler($exception)
 	{
@@ -102,14 +104,17 @@ HTML;
 	 * and shut down prematurely.
 	 *
 	 * @return bool
+	 * @throws EnvironmentException
 	 */
 	private function setupEnvironment()
 	{
+		global $schemaVersion;
+
 		// initialise global exception handler
 		set_exception_handler(array(WebStart::class, "exceptionHandler"));
 
 		// start output buffering if necessary
-		if(ob_get_level() === 0) {
+		if (ob_get_level() === 0) {
 			ob_start();
 		}
 
@@ -123,6 +128,14 @@ HTML;
 			return false;
 		}
 
+		// check the schema version
+		$database = PdoDatabase::getDatabaseConnection("acc");
+		$actualVersion = $database->query("SELECT version FROM schemaversion")->fetchColumn();
+		if ($actualVersion !== $schemaVersion) {
+			throw new EnvironmentException("Database schema is wrong version! Please either update configuration or database.");
+		}
+
+		// Start up sessions
 		Session::start();
 
 		// environment initialised!

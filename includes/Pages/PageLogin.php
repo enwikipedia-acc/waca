@@ -2,8 +2,11 @@
 
 namespace Waca\Pages;
 
+use Exception;
+use User;
 use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\WebRequest;
 
 /**
  * Class PageLogin
@@ -16,7 +19,42 @@ class PageLogin extends PageBase
 	 */
 	protected function main()
 	{
+		// OK. This page runs in two modes. Currently not sure whether to split that by action, or just one big if
+		// statement in this method. I'm gonna go for the latter for now, but this is an architectural decision we
+		// probably need to make - sooner rather than later!
 
+		if (WebRequest::wasPosted()) {
+			// POST. Do some authentication.
+			$username = WebRequest::postString("username");
+			$password = WebRequest::postString("password");
+
+			if ($username === null || $password === null || $username === "" || $password === "") {
+				// todo: no username/password submitted.
+				throw new Exception("No username/password specified");
+			}
+
+			$user = User::getByUsername($username, gGetDb());
+
+			if ($user == false || !$user->authenticate($password)) {
+				// todo: authentication failed
+				throw new Exception("Authentication failed");
+			}
+
+			// Touch force logout
+			$user->setForcelogout(0);
+			$user->save();
+
+			// TODO: OAuth code
+
+			WebRequest::setLoggedInUser($user);
+
+			// Redirect to the main page
+			$this->redirect("");
+		}
+		else {
+			// GET. Show the form
+			$this->setTemplate("login.tpl");
+		}
 	}
 
 	/**

@@ -57,3 +57,14 @@ default denied access.
 Anything marked `@category Security-Critical` is probably critical to maintaining the security of the tool, so should
 be triple-checked before being modified in any way! Don't forget that this includes the initial deployment!
 
+## Exceptions
+
+Don't be afraid to use them! Unhandled Exceptions will be caught at a global level by the tool, although the error message that
+this produces is not a very readable or user-friendly one.
+
+Apart from that, there are two types of exception which are handled in a special way by the tool: `EnvironmentException`
+and `ReadableException`. The former will push the tool offline for that request, and is intended to be used in situations
+where there is no possible way the tool could run, such as a missing PHP extension, database unavailable, etc. The second
+is designed for situations where the current state of the tool or a user's request is so appallingly bad that we don't
+want to continue at all, such as access denied, user not identified, etc. These will build a templated HTML message for
+the user, and display it before exiting.

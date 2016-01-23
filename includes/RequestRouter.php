@@ -1,6 +1,9 @@
 <?php
 namespace Waca;
 
+use Waca\Pages\Page404;
+use Waca\Pages\PageLogin;
+use Waca\Pages\PageLogout;
 use Waca\Pages\PageMain;
 
 /**
@@ -53,10 +56,15 @@ class RequestRouter
 	 * @var array
 	 */
 	private $routeMap = array(
-		"foo" =>
+		"logout" =>
 			array(
-				"class"   => PageFoo::class,
-				"actions" => array("bar", "baz")
+				"class"   => PageLogout::class,
+				"actions" => array()
+			),
+		"login" =>
+			array(
+				"class"   => PageLogin::class,
+				"actions" => array()
 			)
 	);
 
@@ -103,7 +111,9 @@ class RequestRouter
 			if (array_key_exists($classSegment, $this->routeMap)) {
 				// Route exists, but we don't have an action in path info, so default to main.
 
-				if (array_search($requestedAction, $this->routeMap[$classSegment]['actions']) !== false) {
+				if (isset($this->routeMap[$classSegment]['actions'])
+					&& array_search($requestedAction, $this->routeMap[$classSegment]['actions']) !== false
+				) {
 					// Action exists in allowed action list. Allow both the page and the action
 					$pageClass = $this->routeMap[$classSegment]['class'];
 					$action = $requestedAction;

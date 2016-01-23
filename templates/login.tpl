@@ -1,13 +1,14 @@
+{extends file="base.tpl"}
+{block name="content"}
 <h3 class="text-center">Account Creation Interface</h3>
 <div class="row-fluid">
 	<div class="offset4 span4">
 		{include file="alert.tpl" alertblock="false" alerttype="alert-info" alertclosable=false alertheader="" alertmessage="<strong>You're not logged in!</strong> Please log in to continue."}
-		{$errorbar}
 	</div>
 </div>
 <div class="row-fluid">
 	<div class="offset4 span4 well">
-		<form class="container-fluid" action="{$baseurl}/acc.php?action=login" method="post">
+		<form class="container-fluid" method="post">
 			<div class="control-group row">
 				<input type="text" id="username" name="username" placeholder="Username" {if isset($smarty.get.tplUsername)} value="{$smarty.get.tplUsername|escape}"{/if} class="offset1 span10" required>
 			</div>
@@ -28,3 +29,4 @@
 		</form>
 	</div>
 </div>
+{/block}

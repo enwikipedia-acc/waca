@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>{if $htmlTitle !== null}{$htmlTitle} :: {/if}Account Creation Interface</title>
+    <title>{if isset($htmlTitle) && $htmlTitle !== null}{$htmlTitle} :: {/if}Account Creation Interface</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- bootstrap styles -->
@@ -30,7 +30,7 @@
             {block name="navmenu"}<div class="nav-collapse collapse">
                 <ul class="nav">
                     {if ! $currentUser->isCommunityUser()}
-                        <li{* class="active"*}><a href="{$baseurl}/acc.php"><i class="icon-home icon-white"></i>&nbsp;Requests</a></li>
+                        <li><a href="{$baseurl}/acc.php"><i class="icon-home icon-white"></i>&nbsp;Requests</a></li>
                         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-tag icon-white"></i>&nbsp;Meta&nbsp;<b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li><a href="{$baseurl}/acc.php?action=logs"><i class="icon-list"></i>&nbsp;Logs</a></li>
@@ -73,7 +73,7 @@
                                 <li><a href="#modalFlowchart" role="button" data-toggle="modal"><i class="icon-check"></i>&nbsp;Similar account flowchart</a></li>
                                 <li><a href="http://webchat.freenode.net/?channels=wikipedia-en-accounts"><i class="icon-comment"></i>&nbsp;Chat</a></li>
                                 <li class="divider"></li>
-                                <li><a href="{$baseurl}/acc.php?action=logout"><i class="icon-lock"></i> Logout</a></li>
+                                <li><a href="{$baseurl}/internal.php/logout"><i class="icon-lock"></i> Logout</a></li>
                             </ul>
                         </li>
                     {else}
@@ -92,26 +92,9 @@
 {block name="modals"}{include file="modal-flowchart.tpl"}{/block}
 
 <div class="container-fluid">
-    {block name="sitenotice"}
-        {if ! $currentUser->isCommunityUser()}
-            <div class="row-fluid">
-                <!-- site notice -->
-                <div class="span12">
-                    <div class="alert alert-block">
-                        <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        {$siteNoticeText}
-                    </div>
-                </div>
-            </div><!--/row-->
-        {/if}
-    {/block}
-    {if count($alerts) > 0}
-        {foreach $alerts as $a}
-            {$a->getAlertBox()}
-        {/foreach}
-    {/if}
+    {block name="sitenotice"}{/block}
 
-    {block name="pagecontent"}This page doesn't do anything. If you see this, and you're not a developer, this is a bug.{/block}
+    {block name="content"}This page doesn't do anything. If you see this, and you're not a developer, this is a bug.{/block}
 
     <hr />
 

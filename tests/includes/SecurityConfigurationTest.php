@@ -284,4 +284,8 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertFalse($config->allows($this->user));
 	}
+
+	public function testIdentification() {
+		$this->fail("Please implement me!");
+	}
 }
