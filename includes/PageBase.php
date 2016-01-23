@@ -2,25 +2,25 @@
 namespace Waca;
 
 use Exception;
+use InterfaceMessage;
 use Smarty;
 use User;
+use Waca\Exceptions\AccessDeniedException;
 
 abstract class PageBase
 {
 	/** @var array The callable route to be taken, as determined by the request router. */
 	private $route = null;
-
 	/** @var string The name of the route to use, as determined by the request router. */
 	private $routeName = "main";
-
 	/** @var Smarty */
 	private $smarty;
-
 	/** @var string Smarty template to display */
-	private $template;
-
+	private $template = "base.tpl";
 	/** @var string HTML title. Currently unused. */
 	private $htmlTitle;
+	/** @var string Extra JavaScript to include at the end of the page's execution */
+	private $tailScript;
 
 	/**
 	 * Sets the route the request will take. Only should be called from the request router.
@@ -65,15 +65,24 @@ abstract class PageBase
 
 			// Check we have a template to use!
 			if ($this->template !== false) {
-				$content = $this->smarty->fetch("base.tpl");
+				$content = $this->smarty->fetch($this->template);
 				ob_clean();
 				print($content);
 				ob_flush();
 			}
 		}
 		else {
-			// TODO: Headers etc
-			throw new Exception("403 error, security config disallows");
+			// Not allowed to access this resource.
+			// Firstly, let's check if we're even logged in.
+			if(User::getCurrent()->isCommunityUser()){
+				// Not logged in, redirect to login page
+
+			}
+			else
+			{
+				// actual error here.
+				throw new AccessDeniedException();
+			}
 		}
 	}
 
@@ -103,7 +112,7 @@ abstract class PageBase
 	}
 
 	/**
-	 * @param $name string The name of the variable
+	 * @param $name  string The name of the variable
 	 * @param $value mixed The value to assign
 	 */
 	protected final function assign($name, $value)
@@ -121,18 +130,49 @@ abstract class PageBase
 	}
 
 	/**
+	 * Include extra JavaScript at the end of the page's execution
+	 *
+	 * @param $script string JavaScript to include at the end of the page
+	 */
+	protected final function setTailScript($script)
+	{
+		$this->tailScript = $script;
+	}
+
+	/**
 	 * Performs generic page setup actions
 	 */
 	private final function setupPage()
 	{
+		$this->smarty = new Smarty();
+		$this->setUpSmartyVariables();
+	}
+
+	/**
+	 * Sets up the variables used by the main Smarty base template.
+	 *
+	 * This list is getting kinda long.
+	 */
+	private final function setUpSmartyVariables()
+	{
 		global $baseurl, $wikiurl, $mediawikiScriptPath;
 
-		$this->smarty = new Smarty();
-
 		$this->assign("currentUser", User::getCurrent());
+		$this->assign("loggedIn", (!User::getCurrent()->isCommunityUser()));
 		$this->assign("baseurl", $baseurl);
 		$this->assign("wikiurl", $wikiurl);
 		$this->assign("mediawikiScriptPath", $mediawikiScriptPath);
+
+		// TODO: this isn't very mockable, and requires a database link.
+		$siteNoticeText = InterfaceMessage::get(InterfaceMessage::SITENOTICE);
+		$this->assign("siteNoticeText", $siteNoticeText);
+
+		// TODO: this isn't mockable either, and has side effects if you don't have git
+		$this->assign("toolversion", Environment::getToolVersion());
+
+		// TODO: implement this somehow
+		$this->assign("onlineusers", "");
+		$this->assign("tailscript", $this->tailScript);
 	}
 
 	/**
@@ -140,6 +180,12 @@ abstract class PageBase
 	 */
 	private final function finalisePage()
 	{
+		// TODO: session alerts, but how do they fit in?
+		// We don't want to clear them unless we know they're definitely going to be displayed to the user (think
+		// redirects, but at the same time, we can't clear them after page execution in case the user has displayed
+		// more session alerts.
+		$this->assign("alerts", array());
+
 		$this->assign("htmlTitle", $this->htmlTitle);
 	}
 }

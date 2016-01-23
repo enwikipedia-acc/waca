@@ -16,7 +16,7 @@ class PageLogin extends PageBase
 	 */
 	protected function main()
 	{
-		// TODO: Implement main() method.
+
 	}
 
 	/**

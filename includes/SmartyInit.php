@@ -1,4 +1,8 @@
 <?php
+/**
+ * @deprecated
+ */
+
 if (!defined("ACC")) {
 	die();
 } // Invalid entry point
@@ -6,7 +10,7 @@ if (!defined("ACC")) {
 global $smarty, $smartydebug;
 $smarty = new Smarty();
 
-$toolVersion = Environment::getToolVersion();
+$toolVersion = \Waca\Environment::getToolVersion();
 $currentUser = User::getCurrent();
 
 $smarty->assign("baseurl", $baseurl);

@@ -11,6 +11,7 @@
 **                                                                       **
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
+use Waca\Environment;
 
 /**
  * Handles the tool offline messages
@@ -55,18 +56,32 @@ class Offline
 	/**
 	 * Gets the offline message
 	 * @param bool $external
+	 * @param null $message
 	 * @return string
 	 */
-	public static function getOfflineMessage($external)
+	public static function getOfflineMessage($external, $message = null)
 	{
-		global $smarty, $dontUseDbCulprit, $dontUseDbReason;
+		global $dontUseDbCulprit, $dontUseDbReason, $baseurl;
+
+		$smarty = new Smarty();
+		$smarty->assign("baseurl", $baseurl);
+		$smarty->assign("toolversion", Environment::getToolVersion());
 
 		if ($external) {
 			return $smarty->fetch("offline/external.tpl");
 		}
 		else {
+			$hideCulprit = true;
+
+			// Use the provided message if possible
+			if($message === null) {
+				$hideCulprit = false;
+				$message = $dontUseDbReason;
+			}
+
+			$smarty->assign("hideCulprit", $hideCulprit);
 			$smarty->assign("dontUseDbCulprit", $dontUseDbCulprit);
-			$smarty->assign("dontUseDbReason", $dontUseDbReason);
+			$smarty->assign("dontUseDbReason", $message);
 			$smarty->assign("alerts", array());
 			return $smarty->fetch("offline/internal.tpl");
 		}

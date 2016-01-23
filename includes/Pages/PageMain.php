@@ -1,6 +1,7 @@
 <?php
 namespace Waca\Pages;
 
+use Waca\Exceptions\EnvironmentException;
 use Waca\PageBase;
 use Waca\SecurityConfiguration;
 
@@ -12,10 +13,13 @@ class PageMain extends PageBase
 	protected function main()
 	{
 		// TODO: Implement main() method.
-		phpinfo();
+		echo "la dee da";
 
 
-		$this->setTemplate("fgoo");
+		//$this->setTemplate("fgoo");
+
+		//throw new EnvironmentException("Error connecting to database");
+
 		// throw new \Exception("Not implemented yet!");
 	}
 
@@ -31,6 +35,6 @@ class PageMain extends PageBase
 	protected function getSecurityConfiguration()
 	{
 		// TODO: Implement getSecurityConfiguration() method.
-		return SecurityConfiguration::publicPage();
+		return SecurityConfiguration::internalPage();
 	}
 }

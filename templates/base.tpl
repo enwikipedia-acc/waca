@@ -3,18 +3,14 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>{if $htmlTitle !== ""}{$htmlTitle} :: {/if}Account Creation Interface</title>
+    <title>{if $htmlTitle !== null}{$htmlTitle} :: {/if}Account Creation Interface</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <!-- bootstrap styles -->
     <link href="{$baseurl}/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
     <link href="{$baseurl}/resources/baseStyles.css" rel="stylesheet" />
     <link href="{$baseurl}/lib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" />
     <link href="{$baseurl}/lib/bootstrap-sortable/css/bootstrap-sortable.css" rel="stylesheet" />
-
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="{$baseurl}/lib/bootstrap/js/html5shiv.js"></script>
-    <![endif]-->
 
     <!-- Our extra styles -->
     <link href="{$baseurl}/resources/styles.css" rel="stylesheet" />
@@ -33,7 +29,7 @@
             <a class="brand" href="{$baseurl}/acc.php">Account Creation Interface</a>
             {block name="navmenu"}<div class="nav-collapse collapse">
                 <ul class="nav">
-                    {if $userid != 0}
+                    {if ! $currentUser->isCommunityUser()}
                         <li{* class="active"*}><a href="{$baseurl}/acc.php"><i class="icon-home icon-white"></i>&nbsp;Requests</a></li>
                         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-tag icon-white"></i>&nbsp;Meta&nbsp;<b class="caret"></b></a>
                             <ul class="dropdown-menu">
@@ -63,12 +59,12 @@
                     {/if}
                 </ul>
                 <ul class="nav pull-right">
-                    {if $userid != 0}
+                    {if ! $currentUser->isCommunityUser()}
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> <strong>{$username}</strong> <b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> <strong>{$currentUser->getUsername()}</strong> <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li class="nav-header">Account</li>
-                                <li><a href="{$baseurl}/statistics.php?page=Users&amp;user={$userid}"><i class="icon-tasks"></i> My statistics</a></li>
+                                <li><a href="{$baseurl}/statistics.php?page=Users&amp;user={$currentUser->getId()}"><i class="icon-tasks"></i> My statistics</a></li>
                                 <li><a href="{$baseurl}/acc.php?action=prefs"><i class="icon-edit"></i> Edit Preferences</a></li>
                                 <li class="divider"></li>
                                 <li class="nav-header">Help</li>
@@ -95,16 +91,15 @@
 
 {block name="modals"}{include file="modal-flowchart.tpl"}{/block}
 
-
 <div class="container-fluid">
     {block name="sitenotice"}
-        {if $userid != 0}
+        {if ! $currentUser->isCommunityUser()}
             <div class="row-fluid">
                 <!-- site notice -->
                 <div class="span12">
                     <div class="alert alert-block">
                         <button type="button" class="close" data-dismiss="alert">&times;</button>
-                        {$sitenotice}
+                        {$siteNoticeText}
                     </div>
                 </div>
             </div><!--/row-->
@@ -115,3 +110,41 @@
             {$a->getAlertBox()}
         {/foreach}
     {/if}
+
+    {block name="pagecontent"}This page doesn't do anything. If you see this, and you're not a developer, this is a bug.{/block}
+
+    <hr />
+
+    <footer class="row-fluid">
+        <p class="{if $onlineusers == ""}span12{else}span6{/if}"><small>Account Creation Assistance Manager (<a href="https://github.com/enwikipedia-acc/waca/tree/{$toolversion}">version {$toolversion}</a>) by <a href="{$baseurl}/team.php">The ACC development team</a> (<a href="https://github.com/enwikipedia-acc/waca/issues">Bug reports</a>).</small></p>
+        {$onlineusers}
+    </footer>
+
+</div><!--/.fluid-container-->
+
+<!-- Le javascript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{$baseurl}/lib/jquery-1.9.1.min.js" type="text/javascript"></script>
+<script src="{$baseurl}/lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="{$baseurl}/lib/bootstrap-sortable/js/bootstrap-sortable.js" type="text/javascript"></script>
+
+{* initialise the tooltips *}
+<script type="text/javascript">
+    $(function () {
+        $("[rel='tooltip']").tooltip();
+    });
+</script>
+<script type="text/javascript">
+    $(function () {
+        $("[rel='popover']").popover();
+    });
+</script>
+{if $tailscript}
+    <script type="text/javascript">
+        {$tailscript}
+    </script>
+{/if}
+</body>
+</html>
+

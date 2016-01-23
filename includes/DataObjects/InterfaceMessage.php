@@ -1,4 +1,5 @@
 <?php
+use Waca\Environment;
 
 /**
  * Interface data object
@@ -27,8 +28,8 @@ class InterfaceMessage extends DataObject
 	 * now we are using the auto-incrementing ID as the value of the key, so this function
 	 * just uses getById() at the moment.
 	 *
-	 * @param mixed $key
-	 * @return mixed
+	 * @param int $key The ID to look up
+	 * @return string The content for display
 	 */
 	public static function get($key)
 	{

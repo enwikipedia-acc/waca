@@ -77,7 +77,24 @@ class SessionAlert
 		$_SESSION['alerts'] = $data;
 	}
 
+	/**
+	 * @return array
+	 * @deprecated Split into separate getAlerts() and clearAlerts() methods in Session
+	 */
 	public static function retrieve()
+	{
+		$block = self::getAlerts();
+
+		$_SESSION['alerts'] = array();
+
+		return $block;
+	}
+
+	/**
+	 * Retrieves the alerts which have been saved to the session
+	 * @return array
+	 */
+	public static function getAlerts()
 	{
 		$block = array();
 		if (isset($_SESSION['alerts'])) {
@@ -86,8 +103,10 @@ class SessionAlert
 			}
 		}
 
-		$_SESSION['alerts'] = array();
-
 		return $block;
+	}
+
+	public static function clearAlerts(){
+
 	}
 }

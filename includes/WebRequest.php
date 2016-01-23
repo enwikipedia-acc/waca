@@ -8,7 +8,8 @@ use Waca\Providers\Interfaces\IGlobalStateProvider;
  * Holds helper functions regarding the current request.
  *
  * This is the only place where it is allowed to use super-globals, but even then access MUST be pushed through the
- * global state provider to allow for unit tests.
+ * global state provider to allow for unit tests. It's strongly recommended to do sanitising of data here, especially
+ * if extra logic is required to get a deterministic value, like isHttps().
  *
  * @package Waca
  */
@@ -19,6 +20,10 @@ class WebRequest
 	 */
 	private static $globalStateProvider;
 
+	/**
+	 * Returns a boolean value if the request was submitted with the HTTP POST method.
+	 * @return bool
+	 */
 	public static function wasPosted()
 	{
 		$server = &self::$globalStateProvider->getServerSuperGlobal();
@@ -31,6 +36,10 @@ class WebRequest
 		return false;
 	}
 
+	/**
+	 * Gets a boolean value stating whether the request was served over HTTPS or not.
+	 * @return bool
+	 */
 	public static function isHttps()
 	{
 		$server = &self::$globalStateProvider->getServerSuperGlobal();

@@ -1,4 +1,5 @@
 <?php
+namespace Waca;
 
 /**
  * Class providing information about the tool's runtime environment

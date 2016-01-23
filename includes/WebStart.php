@@ -2,6 +2,8 @@
 namespace Waca;
 
 use \Offline;
+use Waca\Exceptions\AccessDeniedException;
+use Waca\Exceptions\EnvironmentException;
 use Waca\Providers\GlobalStateProvider;
 
 /**
@@ -18,8 +20,20 @@ class WebStart
 	 */
 	public function run()
 	{
-		if ($this->setupEnvironment()) {
-			$this->main();
+		try {
+			if ($this->setupEnvironment()) {
+				$this->main();
+			}
+		}
+		catch(EnvironmentException $ex) {
+			ob_end_clean();
+			print Offline::getOfflineMessage(false, $ex->getMessage());
+		}
+		catch(AccessDeniedException $ex) {
+			ob_end_clean();
+			print Offline::getOfflineMessage(false, $ex->getMessage());
+		}
+		finally {
 			$this->cleanupEnvironment();
 		}
 	}
@@ -68,7 +82,9 @@ HTML;
 		$message = str_replace($filepath, "", $message);
 
 		// clear and discard any content that's been saved to the output buffer
-		ob_end_clean();
+		if(ob_get_level() > 0) {
+			ob_end_clean();
+		}
 
 		// push exception into the document.
 		$message = str_replace('$1$', $message, $errorDocument);
@@ -92,10 +108,12 @@ HTML;
 		// initialise global exception handler
 		set_exception_handler(array(WebStart::class, "exceptionHandler"));
 
-		// start output buffering
-		ob_start();
+		// start output buffering if necessary
+		if(ob_get_level() === 0) {
+			ob_start();
+		}
 
-		// initialise superglobal providers
+		// initialise super-global providers
 		WebRequest::setGlobalStateProvider(new GlobalStateProvider());
 
 		// check the tool is still online
@@ -126,10 +144,17 @@ HTML;
 
 	/**
 	 * Any cleanup tasks should go here
+	 *
+	 * Note that we need to be very careful here, as exceptions may have been thrown and handled.
+	 * This should *only* be for cleaning up, no logic should go here.
 	 */
 	private function cleanupEnvironment()
 	{
 		// Clean up anything we splurged after sending the page.
-		ob_end_clean();
+		if (ob_get_level() > 0) {
+			for ($i = ob_get_level(); $i > 0; $i--) {
+				ob_end_clean();
+			}
+		}
 	}
 }
