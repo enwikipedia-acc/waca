@@ -13,6 +13,8 @@ class AccessDeniedException extends ReadableException
 {
 	public function getReadableError()
 	{
+		// TODO: set up something to display nicer error messages for new/declined/suspended users.
+
 		header("HTTP/1.1 403 Forbidden");
 
 		$this->setUpSmarty();

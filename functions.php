@@ -56,40 +56,15 @@ function isHttps()
 
 /**
  * Show the login page
+ *
+ * @deprecated
  */
 function showlogin()
 {
-	global $smarty;
-    
-	// Check whether there are any errors.
-	$errorbartext = "";
-	if (isset($_GET['error'])) {
-		if ($_GET['error'] == 'authfail') {
-			$errorbartext = BootstrapSkin::displayAlertBox("Username and/or password incorrect. Please try again.", "alert-error", "Auth failure", true, false, true);
-		}
-		elseif ($_GET['error'] == 'noid') {
-			$errorbartext = BootstrapSkin::displayAlertBox("User account is not identified. Please email accounts-enwiki-l@lists.wikimedia.org if you believe this is in error.", "alert-error", "Auth failure", true, false, true);
-		}
-		elseif ($_GET['error'] == 'newacct') {
-			$errorbartext = BootstrapSkin::displayAlertBox("I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.", "alert-info", "Account pending", true, false, true);
-		}
-	}
-	$smarty->assign("errorbar", $errorbartext);   
-
-	global $strictTransportSecurityExpiry;
-	if ($strictTransportSecurityExpiry !== false) {
-		if (isHttps()) {
-			// Client can clearly use HTTPS, so let's enforce it for all connections.
-			header("Strict-Transport-Security: max-age=15768000");
-		}
-		else {
-			// This is the login form, not the request form. We need protection here.
-			$path = 'https://' . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
-			header("Location: " . $path);
-		}
-	}
-
-	$smarty->display("login.tpl");
+	ob_end_clean();
+	global $baseurl;
+	header("Location: $baseurl/internal.php/login");
+	die;
 }
 
 function defaultpage()

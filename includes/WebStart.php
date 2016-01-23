@@ -1,6 +1,7 @@
 <?php
 namespace Waca;
 
+use Exception;
 use \Offline;
 use PdoDatabase;
 use Waca\Exceptions\EnvironmentException;
@@ -48,9 +49,9 @@ class WebStart
 	 * @param $exception
 	 * @category Security-Critical - has the potential to leak data when exception is thrown.
 	 */
-	public static function exceptionHandler($exception)
+	public static function exceptionHandler(Exception $exception)
 	{
-		global $baseurl, $filepath;
+		global $baseurl, $filepath, $enableErrorTrace;
 
 		$errorDocument = <<<HTML
 <!DOCTYPE html>
@@ -67,29 +68,40 @@ class WebStart
 <link href="{$baseurl}/lib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 </head><body><div class="container">
 <h1>Oops! Something went wrong!</h1>
-<p>We'll work on fixing this for you, so why not come back later?</p><p class="muted">If our trained monkeys ask, tell them this:</p><pre>$1$</pre>
+<p>We'll work on fixing this for you, so why not come back later?</p><p class="muted">If our trained monkeys ask, tell them this error ID: <code>$1$</code></p>
+$2$
 </div></body></html>
 HTML;
 
-		$message = "Unhandled " . $exception;
+		$errorData = self::getExceptionData($exception);
+		$errorData['server'] = $_SERVER;
+		$errorData['get'] = $_GET;
+		$errorData['post'] = $_POST;
 
-		// strip out database passwords from the error message
-		// TODO
+		$state = serialize($errorData);
+		$errorId = sha1($state);
 
-		// clean any secret variables, including the first 15 chars of the database password (yay php.)
-		// TODO
-		//$message = str_replace($mycnf['user'], "webserver", $message);
-		//$message = str_replace($mycnf['password'], "sekrit", $message);
-		//$message = str_replace(substr($mycnf['password'], 0, 15) . '...', "sekrit", $message);
-		$message = str_replace($filepath, "", $message);
+		// TODO: log the error state somewhere.
 
 		// clear and discard any content that's been saved to the output buffer
-		if(ob_get_level() > 0) {
+		if (ob_get_level() > 0) {
 			ob_end_clean();
 		}
 
-		// push exception into the document.
-		$message = str_replace('$1$', $message, $errorDocument);
+		// push error ID into the document.
+		$message = str_replace('$1$', $errorId, $errorDocument);
+
+		if ($enableErrorTrace) {
+			ob_start();
+			var_dump($errorData);
+			$textErrorData = ob_get_contents();
+			ob_end_clean();
+
+			$message = str_replace('$2$', $textErrorData, $message);
+		}
+		else {
+			$message = str_replace('$2$', "", $message);
+		}
 
 		// output the document
 		print $message;
@@ -169,5 +181,22 @@ HTML;
 				ob_end_clean();
 			}
 		}
+	}
+
+	/**
+	 * @param Exception $exception
+	 * @return array
+	 */
+	private static function getExceptionData($exception)
+	{
+		if ($exception == null) {
+			return null;
+		}
+
+		return array(
+			'message'  => $exception->getMessage(),
+			'stack'    => $exception->getTraceAsString(),
+			'previous' => self::getExceptionData($exception->getPrevious())
+		);
 	}
 }

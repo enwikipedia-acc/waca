@@ -31,6 +31,7 @@ class BootstrapSkin
 
 	/**
 	 * Summary of displayInternalHeader
+	 * @deprecated
 	 */
 	public static function displayInternalHeader()
 	{
@@ -39,16 +40,15 @@ class BootstrapSkin
 		// sitenotice
 		global $smarty, $session;
 
-		$userid = isset($_SESSION['userID']) ? $_SESSION['userID'] : 0;
-		$user = isset($_SESSION['user']) ? $_SESSION['user'] : "";
+		$userid = isset($_SESSION['userID']) ? $_SESSION['userID'] : -1;
 		$sitenotice = InterfaceMessage::get(InterfaceMessage::SITENOTICE);
 		$smarty->assign("userid", $userid);
-		$smarty->assign("username", $user);
+		$smarty->assign("username", User::getById($userid, gGetDb())->getUsername());
 		$smarty->assign("sitenotice", $sitenotice);
 		$smarty->assign("alerts", SessionAlert::retrieve());
 		$smarty->display("header-internal.tpl");
 
-		if ($userid != 0) {
+		if ($userid != -1) {
 			User::getCurrent()->touchLastLogin();
 
 			$session->forceLogout($_SESSION['userID']);
@@ -80,6 +80,7 @@ class BootstrapSkin
 	 *
 	 * @param string|null $tailscript JavaScript to append to the page, usually so it can call jQuery
 	 * @throws Exception
+	 * @deprecated
 	 */
 	public static function displayInternalFooter($tailscript = null)
 	{

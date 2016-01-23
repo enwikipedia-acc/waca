@@ -19,6 +19,20 @@ class PageLogin extends PageBase
 	 */
 	protected function main()
 	{
+		// Start by enforcing HTTPS
+		global $strictTransportSecurityExpiry;
+		if ($strictTransportSecurityExpiry !== false) {
+			if (WebRequest::isHttps()) {
+				// Client can clearly use HTTPS, so let's enforce it for all connections.
+				header("Strict-Transport-Security: max-age=15768000");
+			}
+			else {
+				// This is the login form, not the request form. We need protection here.
+				$path = 'https://' . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
+				header("Location: " . $path);
+			}
+		}
+
 		// OK. This page runs in two modes. Currently not sure whether to split that by action, or just one big if
 		// statement in this method. I'm gonna go for the latter for now, but this is an architectural decision we
 		// probably need to make - sooner rather than later!

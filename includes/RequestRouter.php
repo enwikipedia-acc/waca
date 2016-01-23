@@ -5,6 +5,7 @@ use Waca\Pages\Page404;
 use Waca\Pages\PageLogin;
 use Waca\Pages\PageLogout;
 use Waca\Pages\PageMain;
+use Waca\Pages\PageSearch;
 
 /**
  * Request router
@@ -65,7 +66,12 @@ class RequestRouter
 			array(
 				"class"   => PageLogin::class,
 				"actions" => array()
-			)
+			),
+		"search" =>
+			array(
+				"class"   => PageSearch::class,
+				"actions" => array()
+			),
 	);
 
 	/**
@@ -77,8 +83,7 @@ class RequestRouter
 	{
 		$pathInfo = WebRequest::pathInfo();
 
-		// Default to the 404 and main action.
-		$pageClass = Page404::class;
+		// set up the default action
 		$action = "main";
 
 		if (count($pathInfo) === 0) {

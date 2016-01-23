@@ -1,29 +1,35 @@
-<form action="search.php" method="get" class="form-horizontal">
-  <div class="control-group">
-    <label class="control-label" for="term">Search term</label>
-    <div class="controls">
-      <input type="text" id="term" name="term" placeholder="Search for...">
-        </div>
-  </div>
-  <div class="control-group">
-    <label class="control-label" for="term">Search as ...</label>
-    <div class="controls">
-      <select name="type">
-        <option value="Request">... requested username</option>
-        <option value="email">... email address</option>
-        {if $currentUser->isAdmin() || $currentUser->isCheckuser()}
-        <option value="IP">... IP address</option>
-        <option value="CIDR" disabled="disabled">... CIDR Range</option>{* not implemented yet! *}
-        {else}
-        <option value="IP" disabled="disabled">... IP address</option>
-        <option value="CIDR" disabled="disabled">... CIDR Range</option>
-        {/if}
-      </select>
+{extends file="pagebase.tpl"}
+{block name="content"}
+    <div class="page-header">
+        <h1>Search
+            <small> for a request</small>
+        </h1>
     </div>
-  </div>
-  <div class="form-actions">
-    <button type="submit" class="btn btn-primary">
-      <i class="icon-search icon-white"></i>&nbsp;Search
-    </button>
-  </div>
-</form>
+    <div class="row-fluid">
+        <div class="span12">
+            <form method="post" class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="term">Search term</label>
+                    <div class="controls">
+                        <input type="text" id="term" name="term" placeholder="Search for...">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="type">Search as ...</label>
+                    <div class="controls">
+                        <select name="type" id="type">
+                            <option value="name">... requested username</option>
+                            <option value="email">... email address</option>
+                            <option value="ip">... IP address</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="icon-search icon-white"></i>&nbsp;Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+{/block}

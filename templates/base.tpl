@@ -30,21 +30,21 @@
             {block name="navmenu"}<div class="nav-collapse collapse">
                 <ul class="nav">
                     {if ! $currentUser->isCommunityUser()}
-                        <li><a href="{$baseurl}/acc.php"><i class="icon-home icon-white"></i>&nbsp;Requests</a></li>
+                        <li><a href="{$baseurl}/internal.php"><i class="icon-home icon-white"></i>&nbsp;Requests</a></li>
                         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-tag icon-white"></i>&nbsp;Meta&nbsp;<b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><a href="{$baseurl}/acc.php?action=logs"><i class="icon-list"></i>&nbsp;Logs</a></li>
-                                <li><a href="{$baseurl}/statistics.php?page=Users"><i class="icon-user"></i>&nbsp;Users</a></li>
-                                <li><a href="{$baseurl}/search.php"><i class="icon-search"></i>&nbsp;Search</a></li>
-                                <li><a href="{$baseurl}/statistics.php"><i class="icon-tasks"></i>&nbsp;Statistics</a></li>
+                                <li><a href="{$baseurl}/internal.php/logs"><i class="icon-list"></i>&nbsp;Logs</a></li>
+                                <li><a href="{$baseurl}/internal.php/statistics/users"><i class="icon-user"></i>&nbsp;Users</a></li>
+                                <li><a href="{$baseurl}/internal.php/search"><i class="icon-search"></i>&nbsp;Search</a></li>
+                                <li><a href="{$baseurl}/internal.php/statistics"><i class="icon-tasks"></i>&nbsp;Statistics</a></li>
                             </ul>
                         </li>
                         <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench icon-white"></i>&nbsp;Admin&nbsp;<b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li><a href="{$baseurl}/acc.php?action=ban"><i class="icon-ban-circle"></i>&nbsp;Ban Management</a></li>
-                                <li><a href="{$baseurl}/acc.php?action=messagemgmt"><i class="icon-print"></i>&nbsp;Message Management</a></li>
-                                <li><a href="{$baseurl}/acc.php?action=emailmgmt"><i class="icon-envelope"></i>&nbsp;Close Email Management</a></li>
-                                <li><a href="{$baseurl}/acc.php?action=templatemgmt"><i class="icon-file"></i>&nbsp;Welcome Template Management</a></li>
+                                <li><a href="{$baseurl}/internal.php/bans"><i class="icon-ban-circle"></i>&nbsp;Ban Management</a></li>
+                                <li><a href="{$baseurl}/internal.php/messagemgmt"><i class="icon-print"></i>&nbsp;Message Management</a></li>
+                                <li><a href="{$baseurl}/internal.php/emailmgmt"><i class="icon-envelope"></i>&nbsp;Close Email Management</a></li>
+                                <li><a href="{$baseurl}/internal.php/templatemgmt"><i class="icon-file"></i>&nbsp;Welcome Template Management</a></li>
                                 {if $currentUser->isAdmin()}
                                     <li><a href="{$baseurl}/users.php"><i class="icon-user"></i> User Management</a></li>
                                 {/if}

@@ -1,19 +1,32 @@
 <?php
+
 namespace Waca\Pages;
 
-use Waca\Exceptions\EnvironmentException;
 use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\WebRequest;
 
-class PageMain extends PageBase
+class PageRegister extends PageBase
 {
 	/**
-	 * Main function for this page, when no actions are called.
+	 * Main function for this page, when no specific actions are called.
 	 */
 	protected function main()
 	{
-		global $baseurl;
-		$this->redirectUrl($baseurl . '/acc.php');
+		// Dual-mode page
+		if(WebRequest::wasPosted())
+		{
+
+
+		}
+		else{
+			global $useOauthSignup;
+			$this->assign("useOauthSignup", $useOauthSignup);
+
+			return $this->fetchTemplate("registration/register.tpl");
+		}
+
+
 	}
 
 	/**
@@ -28,6 +41,5 @@ class PageMain extends PageBase
 	protected function getSecurityConfiguration()
 	{
 		// TODO: Implement getSecurityConfiguration() method.
-		return SecurityConfiguration::internalPage();
 	}
 }

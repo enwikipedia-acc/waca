@@ -58,37 +58,16 @@ if (isset($_GET['action'])) {
 	$action = $_GET['action'];
 }
 
-// Clear session before banner and logged in as message is generated on logout attempt - Prom3th3an
-if ($action == "logout") {
-	session_unset();
-    
-	BootstrapSkin::displayInternalHeader();
-	echo showlogin();
-	BootstrapSkin::displayInternalFooter();
+
+// Checks whether the user is set - the user should first login.
+if (!isset($_SESSION['userID'])) {
+	ob_end_clean();
+	global $baseurl;
+	header("Location: $baseurl/internal.php/login");
 	die();
 }
 
-// Checks whether the user is set - the user should first login.
-if (!isset($_SESSION['user'])) {
-	$suser = '';
-	BootstrapSkin::displayInternalHeader();
-
-	// Checks whether the user want to reset his password or register a new account.
-	// Performs the clause when the action is not one of the above options.
-	if ($action != 'register' && $action != 'forgotpw' && $action != 'sreg' && $action != "registercomplete" && $action != "login") {
-		echo showlogin();
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-	else {
-		// A content block is created if the action is none of the above.
-		// This block would later be used to keep all the HTML except the header and footer.
-		$out = "<div id=\"content\">";
-		echo $out;
-	}
-}
-
-// Forces the current user to logout if necessary.
+// Forces the current user to ogout if necessary.
 if (isset($_SESSION['userID'])) {
 	$session->forceLogout($_SESSION['userID']);
 }

@@ -66,7 +66,7 @@
 				  <ul class="dropdown-menu">
 					<li><a href="{$baseurl}/acc.php?action=logs"><i class="icon-list"></i>&nbsp;Logs</a></li>
 					<li><a href="{$baseurl}/statistics.php?page=Users"><i class="icon-user"></i>&nbsp;Users</a></li>
-					<li><a href="{$baseurl}/search.php"><i class="icon-search"></i>&nbsp;Search</a></li>
+					<li><a href="{$baseurl}/internal.php/search"><i class="icon-search"></i>&nbsp;Search</a></li>
 					<li><a href="{$baseurl}/statistics.php"><i class="icon-tasks"></i>&nbsp;Statistics</a></li>
 				  </ul>
 			  </li>
@@ -104,7 +104,7 @@
 						<li><a href="#modalFlowchart" role="button" data-toggle="modal"><i class="icon-check"></i>&nbsp;Similar account flowchart</a></li>
 						<li><a href="http://webchat.freenode.net/?channels=wikipedia-en-accounts"><i class="icon-comment"></i>&nbsp;Chat</a></li>
 						<li class="divider"></li>						
-						<li><a href="{$baseurl}/acc.php?action=logout"><i class="icon-lock"></i> Logout</a></li>
+						<li><a href="{$baseurl}/internal.php/logout"><i class="icon-lock"></i> Logout</a></li>
 					</ul>
 				</li>
 			{else}

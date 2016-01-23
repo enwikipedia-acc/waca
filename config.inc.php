@@ -264,6 +264,9 @@ $createdid = 1;
 // HSTS expiry - use false to disable header.
 $strictTransportSecurityExpiry = false;
 
+// Must be disabled in production.
+$enableErrorTrace = false;
+
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********
 ***************************************************************************
@@ -319,5 +322,6 @@ require_once($filepath . 'vendor/autoload.php')
 // Extra includes which are just plain awkward wherever they are.
 ;
 require_once($filepath . 'oauth/OAuthUtility.php');
+require_once($filepath . 'functions.php');
 require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/OAuth.php');
 require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/JWT.php');
