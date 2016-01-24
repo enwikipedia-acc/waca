@@ -95,6 +95,8 @@ class WebRequest
 		self::$globalStateProvider = $globalState;
 	}
 
+	#region POST variables
+
 	/**
 	 * @param $key string
 	 * @return null|string
@@ -106,9 +108,54 @@ class WebRequest
 			return null;
 		}
 
-		// TODO: do we need more security here, and possibly an @security-critical?
-		return $post[$key];
+		return (string)$post[$key];
 	}
+
+	#endregion
+
+	#region GET variables
+
+	/**
+	 * @param $key
+	 * @return bool
+	 */
+	public static function getBoolean($key)
+	{
+		$get = &self::$globalStateProvider->getGetSuperGlobal();
+		if(!array_key_exists($key, $get))
+		{
+			return false;
+		}
+
+		// presence of parameter only
+		if($get[$key] === "")
+		{
+			return true;
+		}
+
+		if(in_array($get[$key], array(false, 'no', 'off', 0)))
+		{
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * @param string $key
+	 * @return int|null
+	 */
+	public static function getInt($key) {
+		$get = &self::$globalStateProvider->getGetSuperGlobal();
+		if(!array_key_exists($key, $get))
+		{
+			return null;
+		}
+
+		return (int)filter_var($get[$key], FILTER_SANITIZE_NUMBER_INT);
+	}
+
+	#endregion
 
 	/**
 	 * Sets the logged-in user to the specified user.

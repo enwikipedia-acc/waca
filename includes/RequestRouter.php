@@ -6,6 +6,7 @@ use Waca\Pages\PageLogin;
 use Waca\Pages\PageLogout;
 use Waca\Pages\PageMain;
 use Waca\Pages\PageSearch;
+use Waca\Pages\PageUserManagement;
 
 /**
  * Request router
@@ -72,6 +73,19 @@ class RequestRouter
 				"class"   => PageSearch::class,
 				"actions" => array()
 			),
+		"userManagement" =>
+			array(
+				"class"   => PageUserManagement::class,
+				"actions" => array(
+					// "approve",
+					// "decline",
+					// "rename",
+					// "edit",
+					"suspend",
+					// "promote",
+					// "demote",
+				)
+			),
 	);
 
 	/**
@@ -107,7 +121,7 @@ class RequestRouter
 		}
 		else {
 			// Multiple path info segments.
-			// TODO: account for sublevels of pages.
+			// TODO: account for sub-levels of pages.
 			// For now, assume [0] == class & [1] == action
 
 			$classSegment = $pathInfo[0];

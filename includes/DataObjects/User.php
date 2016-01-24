@@ -55,7 +55,12 @@ class User extends DataObject
 
 		return self::$currentUser;
 	}
-    
+
+	/**
+	 * @param int         $id
+	 * @param PdoDatabase $database
+	 * @return CommunityUser|User|false
+	 */
 	public static function getById($id, PdoDatabase $database)
 	{
 		if ($id == "-1") {

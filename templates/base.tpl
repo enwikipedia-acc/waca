@@ -46,7 +46,7 @@
                                 <li><a href="{$baseurl}/internal.php/emailmgmt"><i class="icon-envelope"></i>&nbsp;Close Email Management</a></li>
                                 <li><a href="{$baseurl}/internal.php/templatemgmt"><i class="icon-file"></i>&nbsp;Welcome Template Management</a></li>
                                 {if $currentUser->isAdmin()}
-                                    <li><a href="{$baseurl}/users.php"><i class="icon-user"></i> User Management</a></li>
+                                    <li><a href="{$baseurl}/internal.php/userManagement"><i class="icon-user"></i> User Management</a></li>
                                 {/if}
                             </ul>
                         </li>

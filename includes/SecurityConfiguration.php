@@ -226,12 +226,7 @@ final class SecurityConfiguration
 	{
 		$config = new SecurityConfiguration();
 		$config->setAdmin(self::ALLOW)
-			->setUser(self::ALLOW)
-			->setCheckuser(self::ALLOW)
-			->setCommunity(self::DENY)
-			->setSuspended(self::DENY)
-			->setDeclined(self::DENY)
-			->setNew(self::DENY);
+			->setCommunity(self::DENY);
 
 		return $config;
 	}
@@ -246,8 +241,6 @@ final class SecurityConfiguration
 	{
 		$config = new SecurityConfiguration();
 		$config->setAdmin(self::ALLOW)
-			->setUser(self::DENY)
-			->setCheckuser(self::ALLOW)
 			->setCommunity(self::DENY)
 			->setSuspended(self::DENY)
 			->setDeclined(self::DENY)

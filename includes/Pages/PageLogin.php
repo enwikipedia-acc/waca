@@ -33,10 +33,6 @@ class PageLogin extends PageBase
 			}
 		}
 
-		// OK. This page runs in two modes. Currently not sure whether to split that by action, or just one big if
-		// statement in this method. I'm gonna go for the latter for now, but this is an architectural decision we
-		// probably need to make - sooner rather than later!
-
 		if (WebRequest::wasPosted()) {
 			// POST. Do some authentication.
 			$username = WebRequest::postString("username");

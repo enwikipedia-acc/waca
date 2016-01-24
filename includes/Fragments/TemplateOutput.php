@@ -61,7 +61,6 @@ trait TemplateOutput
 
 		// TODO: implement this somehow
 		$this->assign("onlineusers", "");
-		$this->assign("tailscript", $this->tailScript);
 	}
 
 	/**
@@ -72,6 +71,8 @@ trait TemplateOutput
 	 */
 	protected final function fetchTemplate($template)
 	{
+		$this->assign("tailscript", $this->tailScript);
+
 		return $this->smarty->fetch($template);
 	}
 }

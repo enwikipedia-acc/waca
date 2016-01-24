@@ -47,6 +47,13 @@ if (isset($_GET['usersearch'])) {
 
 #endregion
 
+if (User::getCurrent()->isCommunityUser()) {
+	ob_end_clean();
+	global $baseurl;
+	header("Location: $baseurl/internal.php/login");
+	die();
+}
+
 // Display the header of the interface.
 BootstrapSkin::displayInternalHeader();
 
@@ -59,11 +66,6 @@ echo $out;
 
 #region Checks if the current user has admin rights.
 
-if (User::getCurrent()->isCommunityUser()) {
-	showlogin();
-	BootstrapSkin::displayInternalFooter();
-	die();
-}
 
 if (!User::getCurrent()->isAdmin()) {
 	// Displays both the error message and the footer of the interface.
@@ -473,161 +475,3 @@ if (isset ($_GET['edituser']) && $enableRenames == 1) {
 }
 
 #endregion
-
-// ---------------------   USER MANAGEMENT MAIN PAGE -----------------------------------------
-
-echo <<<HTML
-<div class="page-header">
-  <h1>User Management<small> Approve, suspend, promote, demote, etc.&nbsp;<a class="btn btn-primary" href="?showall"><i class="icon-white icon-eye-open"></i>&nbsp;Show all</a></small></h1>
-</div>
-HTML;
-
-BootstrapSkin::displayAlertBox(
-	"If it says you can do it, you can do it. Please use this responsibly.", 
-	"alert-warning",
-	"This interface is NOT a toy.",
-	true,
-	false);
-
-// assign to user
-$tailscript = getTypeaheadSource(User::getAllUsernames(gGetDb()));
-
-echo <<<HTML
-<div class="row-fluid">
-    <form class="form-search">
-        <input type="text" class="input-large username-typeahead" placeholder="Jump to user" data-provide="typeahead" data-items="10" name="usersearch">
-        <button type="submit" class="btn">Search</button>
-    </form>
-</div>
-HTML;
-
-/**
- * CURRENTLY UNUSED!!
- *
- * Shows A list of users in a table with the relevant buttons for that access level.
- *
- * Uses smarty
- *
- * Different levels may require the use of different data attributes.
- *
- * @param $data An array of arrays (see example)
- * @param $level The user access level
- * @example showUserList( array(
- *          1 => array(
- *              "username" => "foo",
- *              "onwikiname" => "foo",
- *              ),
- *          )
- *
- */
-function showUserList($data, $level)
-{
-	   global $smarty;
-	   $smarty->assign("listuserlevel", $level);
-	   $smarty->assign("listuserdata", $data);
-	   $smarty->display("usermanagement-userlist.tpl");
-}
-
-global $smarty;
-echo '<div class="row-fluid"><div class="span12"><div class="accordion" id="accordion2">';
-BootstrapSkin::pushTagStack("</div>");
-BootstrapSkin::pushTagStack("</div>");
-BootstrapSkin::pushTagStack("</div>");
-
-$database = gGetDb();
-
-$result = User::getAllWithStatus("New", $database);
-
-if ($result != false && count($result) != 0) {
-	echo <<<HTML
-<div class="accordion-group">
-<div class="accordion-heading">
-    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseOne">Open requests</a>
-</div>
-<div id="collapseOne" class="accordion-body collapse in"><div class="accordion-inner">
-HTML;
-
-	$smarty->assign("userlist", $result);
-	$smarty->display("usermanagement/userlist.tpl");
-	echo "</div></div></div>\n";
-}
-echo <<<HTML
-<div class="accordion-group">
-<div class="accordion-heading">
-    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseTwo">Users</a>
-</div>
-<div id="collapseTwo" class="accordion-body collapse"><div class="accordion-inner">
-HTML;
-
-$result = User::getAllWithStatus("User", $database);
-$smarty->assign("userlist", $result);
-$smarty->display("usermanagement/userlist.tpl");
-echo <<<HTML
-</div>
-</div></div>
-
-<div class="accordion-group">
-<div class="accordion-heading">
-    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseThree">Admins</a>
-</div>
-<div id="collapseThree" class="accordion-body collapse"><div class="accordion-inner">
-<p class="muted">
-Please note: Users marked as checkusers automatically get administrative rights, even if they do 
-not appear in the tool administrators section.
-</p>
-HTML;
-
-$result = User::getAllWithStatus("Admin", $database);
-$smarty->assign("userlist", $result);
-$smarty->display("usermanagement/userlist.tpl");
-echo <<<HTML
-</div>
-</div></div>
-
-<div class="accordion-group">
-<div class="accordion-heading">
-    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFour">Tool Checkuser access</a>
-</div>
-<div id="collapseFour" class="accordion-body collapse"><div class="accordion-inner">
-<p class="muted">
-Please note: Users marked as checkusers automatically get administrative rights, even if they do
-not appear in the tool administrators section.
-</p>
-HTML;
-
-$result = User::getAllCheckusers($database);
-$smarty->assign("userlist", $result);
-$smarty->display("usermanagement/userlist.tpl");
-echo '</div></div></div>';
-
-if (isset($_GET['showall'])) {
-	echo <<<HTML
-<div class="accordion-group">
-<div class="accordion-heading">
-    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseFive">Suspended accounts</a>
-</div>
-<div id="collapseFive" class="accordion-body collapse"><div class="accordion-inner">
-HTML;
-
-	$result = User::getAllWithStatus("Suspended", $database);
-	$smarty->assign("userlist", $result);
-	$smarty->display("usermanagement/userlist.tpl");
-	echo <<<HTML
-</div>
-</div></div>
-
-<div class="accordion-group">
-<div class="accordion-heading">
-    <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordion2" href="#collapseSix">Declined accounts</a>
-</div>
-<div id="collapseSix" class="accordion-body collapse"><div class="accordion-inner">
-HTML;
-
-	$result = User::getAllWithStatus("Declined", $database);
-	$smarty->assign("userlist", $result);
-	$smarty->display("usermanagement/userlist.tpl");
-	echo "</div></div></div>";
-}
-
-BootstrapSkin::displayInternalFooter($tailscript);
-die();
