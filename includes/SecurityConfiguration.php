@@ -226,7 +226,10 @@ final class SecurityConfiguration
 	{
 		$config = new SecurityConfiguration();
 		$config->setAdmin(self::ALLOW)
-			->setCommunity(self::DENY);
+			->setCommunity(self::DENY)
+			->setNew(self::DENY)
+			->setDeclined(self::DENY)
+			->setSuspended(self::DENY);
 
 		return $config;
 	}
@@ -241,6 +244,17 @@ final class SecurityConfiguration
 	{
 		$config = new SecurityConfiguration();
 		$config->setAdmin(self::ALLOW)
+			->setCommunity(self::DENY)
+			->setSuspended(self::DENY)
+			->setDeclined(self::DENY)
+			->setNew(self::DENY);
+
+		return $config;
+	}
+
+	public static final function checkUserData(){
+		$config = new SecurityConfiguration();
+		$config->setCheckuser(self::ALLOW)
 			->setCommunity(self::DENY)
 			->setSuspended(self::DENY)
 			->setDeclined(self::DENY)

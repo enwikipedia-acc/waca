@@ -108,6 +108,10 @@ class WebRequest
 			return null;
 		}
 
+		if ($post[$key] === "") {
+			return null;
+		}
+
 		return (string)$post[$key];
 	}
 
@@ -130,6 +134,26 @@ class WebRequest
 		}
 
 		return (string)$filteredValue;
+	}
+
+	/**
+	 * @param string $key
+	 * @return int|null
+	 */
+	public static function postInt($key)
+	{
+		$post = &self::$globalStateProvider->getPostSuperGlobal();
+		if (!array_key_exists($key, $post)) {
+			return null;
+		}
+
+		$filteredValue = filter_var($post[$key], FILTER_SANITIZE_NUMBER_INT);
+
+		if ($filteredValue === false) {
+			return null;
+		}
+
+		return (int)$filteredValue;
 	}
 
 	#endregion
@@ -180,6 +204,20 @@ class WebRequest
 		}
 
 		return (int)$filteredValue;
+	}
+
+	public static function getString($key)
+	{
+		$get = &self::$globalStateProvider->getGetSuperGlobal();
+		if (!array_key_exists($key, $get)) {
+			return null;
+		}
+
+		if ($get[$key] === "") {
+			return null;
+		}
+
+		return (string)$get[$key];
 	}
 
 	#endregion

@@ -47,9 +47,9 @@
                             <i class="icon-white icon-ban-circle"></i>&nbsp;Ban&nbsp;<span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a href="{$baseurl}/acc.php?action=ban&amp;ip={$r->getId()}">IP</a></li>
-                            <li><a href="{$baseurl}/acc.php?action=ban&amp;email={$r->getId()}">Email</a></li>
-                            <li><a href="{$baseurl}/acc.php?action=ban&amp;name={$r->getId()}">Name</a></li>
+                            <li><a href="{$baseurl}/internal.php/bans/set?type=IP&amp;request={$r->getId()}">IP</a></li>
+                            <li><a href="{$baseurl}/internal.php/bans/set?type=EMail&amp;request={$r->getId()}">Email</a></li>
+                            <li><a href="{$baseurl}/internal.php/bans/set?type=Name&amp;request={$r->getId()}">Name</a></li>
                         </ul>
                     </div>
                 {/if}

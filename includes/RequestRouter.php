@@ -2,6 +2,8 @@
 namespace Waca;
 
 use Waca\Pages\Page404;
+use Waca\Pages\PageBan;
+use Waca\Pages\PageLog;
 use Waca\Pages\PageLogin;
 use Waca\Pages\PageLogout;
 use Waca\Pages\PageMain;
@@ -54,6 +56,8 @@ class RequestRouter
 	 * /internal.php/bar/baz        => returns instance of Page404, routed to main()
 	 * /internal.php/bar/baz?query  => returns instance of Page404, routed to main()
 	 *
+	 * Take care when changing this - a lot of places rely on the array key for redirects and other links. If you need
+	 * to change the key, then you'll likely have to update a lot of files.
 	 *
 	 * @var array
 	 */
@@ -72,6 +76,16 @@ class RequestRouter
 			array(
 				"class"   => PageSearch::class,
 				"actions" => array()
+			),
+		"logs" =>
+			array(
+				"class"   => PageLog::class,
+				"actions" => array()
+			),
+		"bans" =>
+			array(
+				"class"   => PageBan::class,
+				"actions" => array("set", "remove")
 			),
 		"userManagement" =>
 			array(

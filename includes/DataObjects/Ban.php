@@ -206,6 +206,10 @@ SQL
 		return $user;
 	}
 
+	/**
+	 * @param string|int $user UserID or username of user who is setting the ban. Will be translated into ID
+	 * @throws Exception
+	 */
 	public function setUser($user)
 	{
 		if (User::getById($user, gGetDb()) == false) {

@@ -61,6 +61,8 @@ trait TemplateOutput
 
 		// TODO: implement this somehow
 		$this->assign("onlineusers", "");
+
+		$this->assign("page", $this);
 	}
 
 	/**

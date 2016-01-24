@@ -335,8 +335,8 @@ class Logger
 	
 	/**
 	 * Summary of getLogs
-	 * @param mixed $userFilter 
-	 * @param mixed $actionFilter 
+	 * @param string|null $userFilter
+	 * @param string|null $actionFilter
 	 * @param integer $limit 
 	 * @param integer $offset 
 	 * @return bool|array<string,string>
@@ -355,7 +355,7 @@ class Logger
 		$searchStatement->bindValue(":limit", $limit, PDO::PARAM_INT);
 		$searchStatement->bindValue(":offset", $offset, PDO::PARAM_INT);
 		
-		if ($userFilter === false) {
+		if ($userFilter === null) {
 			$searchStatement->bindValue(":userFilter", 0, PDO::PARAM_INT);
 			$countStatement->bindValue(":userFilter", 0, PDO::PARAM_INT);
 			$searchStatement->bindValue(":userid", 0, PDO::PARAM_INT);
@@ -368,7 +368,7 @@ class Logger
 			$countStatement->bindValue(":userid", User::getByUsername($userFilter, $database)->getId(), PDO::PARAM_INT);
 		}
 		
-		if ($actionFilter === false) {
+		if ($actionFilter === null) {
 			$searchStatement->bindValue(":actionFilter", 0, PDO::PARAM_INT);
 			$countStatement->bindValue(":actionFilter", 0, PDO::PARAM_INT);
 			$searchStatement->bindValue(":action", "", PDO::PARAM_STR);

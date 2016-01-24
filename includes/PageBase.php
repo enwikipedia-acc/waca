@@ -88,6 +88,30 @@ abstract class PageBase
 	}
 
 	/**
+	 * Tests the security barrier for a specified action.
+	 *
+	 * Intended to be used from within templates
+	 *
+	 * @param string $action
+	 * @return boolean
+	 * @category Security-Critical
+	 */
+	public final function barrierTest($action)
+	{
+		$tmpRouteName = $this->routeName;
+
+		try {
+			$this->routeName = $action;
+			$allowed = $this->getSecurityConfiguration()->allows(User::getCurrent());
+		}
+		finally {
+			$this->routeName = $tmpRouteName;
+		}
+
+		return $allowed;
+	}
+
+	/**
 	 * Main function for this page, when no specific actions are called.
 	 */
 	protected abstract function main();

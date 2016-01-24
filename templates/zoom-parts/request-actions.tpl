@@ -67,9 +67,9 @@
     <h5>Ban</h5>
   </div> <!-- /row-fluid -->
   <div class="row-fluid">
-    <a class="btn btn-danger span4" href="{$baseurl}/acc.php?action=ban&amp;name={$request->getId()}">Ban Username</a>
-    <a class="btn btn-danger span4" href="{$baseurl}/acc.php?action=ban&amp;email={$request->getId()}">Ban Email</a>
-    <a class="btn btn-danger span4" href="{$baseurl}/acc.php?action=ban&amp;ip={$request->getId()}">Ban IP</a>
+    <a class="btn btn-danger span4" href="{$baseurl}/internal.php/bans/set?type=Name&amp;request={$request->getId()}">Ban Username</a>
+    <a class="btn btn-danger span4" href="{$baseurl}/internal.php/bans/set?type=EMail&amp;request={$request->getId()}">Ban Email</a>
+    <a class="btn btn-danger span4" href="{$baseurl}/internal.php/bans/set?type=IP&amp;request{$request->getId()}">Ban IP</a>
   </div>
 {/if}
 
