@@ -111,6 +111,27 @@ class WebRequest
 		return (string)$post[$key];
 	}
 
+	/**
+	 * @param $key
+	 * @return null|string
+	 */
+	public static function postEmail($key)
+	{
+		$post = &self::$globalStateProvider->getPostSuperGlobal();
+		if(!array_key_exists($key, $post))
+		{
+			return null;
+		}
+
+		$filteredValue = filter_var($post[$key], FILTER_SANITIZE_EMAIL);
+
+		if ($filteredValue === false) {
+			return null;
+		}
+
+		return (string)$filteredValue;
+	}
+
 	#endregion
 
 	#region GET variables
@@ -145,14 +166,20 @@ class WebRequest
 	 * @param string $key
 	 * @return int|null
 	 */
-	public static function getInt($key) {
+	public static function getInt($key)
+	{
 		$get = &self::$globalStateProvider->getGetSuperGlobal();
-		if(!array_key_exists($key, $get))
-		{
+		if (!array_key_exists($key, $get)) {
 			return null;
 		}
 
-		return (int)filter_var($get[$key], FILTER_SANITIZE_NUMBER_INT);
+		$filteredValue = filter_var($get[$key], FILTER_SANITIZE_NUMBER_INT);
+
+		if ($filteredValue === false) {
+			return null;
+		}
+
+		return (int)$filteredValue;
 	}
 
 	#endregion
@@ -168,4 +195,5 @@ class WebRequest
 
 		$session['userID'] = $user->getId();
 	}
+
 }

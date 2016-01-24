@@ -77,13 +77,13 @@ class RequestRouter
 			array(
 				"class"   => PageUserManagement::class,
 				"actions" => array(
-					// "approve",
-					// "decline",
-					// "rename",
-					// "edit",
+					"approve",
+					"decline",
+					"rename",
+					"editUser",
 					"suspend",
-					// "promote",
-					// "demote",
+					"promote",
+					"demote",
 				)
 			),
 	);
