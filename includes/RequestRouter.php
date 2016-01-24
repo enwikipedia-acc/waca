@@ -3,6 +3,7 @@ namespace Waca;
 
 use Waca\Pages\Page404;
 use Waca\Pages\PageBan;
+use Waca\Pages\PageForgotPassword;
 use Waca\Pages\PageLog;
 use Waca\Pages\PageLogin;
 use Waca\Pages\PageLogout;
@@ -71,6 +72,11 @@ class RequestRouter
 			array(
 				"class"   => PageLogin::class,
 				"actions" => array()
+			),
+		"forgotPassword" =>
+			array(
+				"class"   => PageForgotPassword::class,
+				"actions" => array('reset')
 			),
 		"search" =>
 			array(

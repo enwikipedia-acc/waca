@@ -6,6 +6,7 @@ use User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\NotIdentifiedException;
 use Waca\Fragments\TemplateOutput;
+use Waca\Helpers\Interfaces\IEmailHelper;
 
 abstract class PageBase
 {
@@ -19,6 +20,8 @@ abstract class PageBase
 	private $template = "base.tpl";
 	/** @var string HTML title. Currently unused. */
 	private $htmlTitle;
+	/** @var IEmailHelper */
+	private $emailHelper;
 
 	/**
 	 * Sets the route the request will take. Only should be called from the request router.
@@ -109,6 +112,22 @@ abstract class PageBase
 		}
 
 		return $allowed;
+	}
+
+	/**
+	 * @param IEmailHelper $emailHelper
+	 */
+	public function setEmailHelper($emailHelper)
+	{
+		$this->emailHelper = $emailHelper;
+	}
+
+	/**
+	 * @return IEmailHelper
+	 */
+	public function getEmailHelper()
+	{
+		return $this->emailHelper;
 	}
 
 	/**

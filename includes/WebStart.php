@@ -6,6 +6,7 @@ use \Offline;
 use PdoDatabase;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Exceptions\ReadableException;
+use Waca\Helpers\EmailHelper;
 use Waca\Providers\GlobalStateProvider;
 
 /**
@@ -162,6 +163,9 @@ HTML;
 		// Get the right route for the request
 		$router = new RequestRouter();
 		$page = $router->route();
+
+		// set up helpers and inject them into the page.
+		$page->setEmailHelper(new EmailHelper());
 
 		// run the route code for the request.
 		$page->execute();

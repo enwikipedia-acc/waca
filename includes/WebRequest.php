@@ -29,8 +29,7 @@ class WebRequest
 	{
 		$server = &self::$globalStateProvider->getServerSuperGlobal();
 
-		if(isset($server["REQUEST_METHOD"]) && $server["REQUEST_METHOD"] == "POST")
-		{
+		if (isset($server["REQUEST_METHOD"]) && $server["REQUEST_METHOD"] == "POST") {
 			return true;
 		}
 
@@ -90,6 +89,28 @@ class WebRequest
 		return array_values(array_filter($exploded));
 	}
 
+	public static function remoteAddress()
+	{
+		$server = &self::$globalStateProvider->getServerSuperGlobal();
+
+		if (isset($server['REMOTE_ADDR'])) {
+			return $server['REMOTE_ADDR'];
+		}
+
+		return null;
+	}
+
+	public static function forwardedAddress()
+	{
+		$server = &self::$globalStateProvider->getServerSuperGlobal();
+
+		if (isset($server['HTTP_X_FORWARDED_FOR'])) {
+			return $server['HTTP_X_FORWARDED_FOR'];
+		}
+
+		return null;
+	}
+
 	public static function setGlobalStateProvider($globalState)
 	{
 		self::$globalStateProvider = $globalState;
@@ -101,10 +122,10 @@ class WebRequest
 	 * @param $key string
 	 * @return null|string
 	 */
-	public static function postString($key){
+	public static function postString($key)
+	{
 		$post = &self::$globalStateProvider->getPostSuperGlobal();
-		if(!array_key_exists($key, $post))
-		{
+		if (!array_key_exists($key, $post)) {
 			return null;
 		}
 
@@ -122,8 +143,7 @@ class WebRequest
 	public static function postEmail($key)
 	{
 		$post = &self::$globalStateProvider->getPostSuperGlobal();
-		if(!array_key_exists($key, $post))
-		{
+		if (!array_key_exists($key, $post)) {
 			return null;
 		}
 
@@ -167,19 +187,16 @@ class WebRequest
 	public static function getBoolean($key)
 	{
 		$get = &self::$globalStateProvider->getGetSuperGlobal();
-		if(!array_key_exists($key, $get))
-		{
+		if (!array_key_exists($key, $get)) {
 			return false;
 		}
 
 		// presence of parameter only
-		if($get[$key] === "")
-		{
+		if ($get[$key] === "") {
 			return true;
 		}
 
-		if(in_array($get[$key], array(false, 'no', 'off', 0)))
-		{
+		if (in_array($get[$key], array(false, 'no', 'off', 0))) {
 			return false;
 		}
 
@@ -233,5 +250,4 @@ class WebRequest
 
 		$session['userID'] = $user->getId();
 	}
-
 }

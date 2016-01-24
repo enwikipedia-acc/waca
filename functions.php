@@ -226,7 +226,8 @@ function explodeCidr($range)
 /**
  * Takes an array( "low" => "high" ) values, and returns true if $needle is in at least one of them.
  * @param string $ip
- * @param array $haystack
+ * @param array  $haystack
+ * @return bool
  */
 function ipInRange($haystack, $ip)
 {
