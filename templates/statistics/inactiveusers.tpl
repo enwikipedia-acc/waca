@@ -30,7 +30,7 @@
           {if $currentUser->isAdmin()}
             <td>
               {if ! $user->isCheckuser()}
-              <a class="btn btn-danger btn-small" href="{$baseurl}/users.php?suspend={$user->getId()}&amp;preload=Inactive%20for%2045%20or%20more%20days.%20Please%20contact%20a%20tool%20admin%20if%20you%20wish%20to%20come%20back.">
+              <a class="btn btn-danger btn-small" href="{$baseurl}/internal.php/userManagement/suspend?user={$user->getId()}&amp;preload=Inactive%20for%2045%20or%20more%20days.%20Please%20contact%20a%20tool%20admin%20if%20you%20wish%20to%20come%20back.">
                 <i class="icon-ban-circle icon-white"></i> Suspend!
               </a>
               {/if}

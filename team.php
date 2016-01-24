@@ -121,7 +121,7 @@ $inactiveDeveloper = array(
 		"SQL" =>
 				array(                                    //Set any of these to null to keep them from being displayed.
 				"IRC" => "SQLDb, SXT40", //IRC Name.
-				"ToolID" => "1", //Tool user ID for linking to page in users.php. 
+				"ToolID" => "1", //Tool user ID for linking to page in user management
 				"wiki" => "SQL", //Enwiki Username.
 				"WWW" => "http://toolserver.org/~sql", //Your website.
 				"Name" => null, //Real name.
