@@ -20,7 +20,7 @@ abstract class DataObject
 
 	/**
 	 * @var bool
-	 * TODO: we should probably make this a read-only method rather than public - why should anything external set this?
+	 * @todo we should probably make this a read-only method rather than public - why should anything external set this?
 	 */
 	public $isNew = true;
 
@@ -95,7 +95,11 @@ abstract class DataObject
 		$this->id = 0;
 		$this->isNew = true;
 	}
-	
+
+	/**
+	 * Gets a user-visible description of the object.
+	 * @return string
+	 */
 	public function getObjectDescription()
 	{
 		return '[' . get_called_class() . " " . $this->getId() . ']';	

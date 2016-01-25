@@ -6,6 +6,9 @@ namespace Waca;
  */
 class Environment
 {
+	/**
+	 * @var string Cached copy of the tool version
+	 */
 	private static $toolVersion;
 
 	/**

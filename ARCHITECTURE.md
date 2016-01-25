@@ -10,10 +10,10 @@
 
 ### Deprecated entry points
 * `acc.php`
-* `search.php`
+* `search.php` - Deleted
 * `statistics.php`
 * `team.php` - Static-ish page.
-* `users.php`
+* `users.php` - Deleted
 
 ## Web request routing
 
@@ -35,11 +35,41 @@ Tests follow a similar architecture, and should be placed in their corresponding
 namespace is `\Waca\Tests`. Thus, for a class `\Waca\WebRequest` at the file path `includes/WebRequest.php` would have a 
 corresponding test class `\Waca\Tests\WebRequestTest` at the file path `tests/WebRequestTest.php`.
 
+## Banned stuff
 
-## Superglobals
+### Super-globals
 
 Don't use these _anywhere_ **except** `WebRequest`. Data leaving `WebRequest` should be of a declared type 
-(int, string, etc). Don't assume that there is protection in place.
+(int, string, etc), or a filtered value (`filter_var`). Don't assume that this data is secure because it's come from
+`WebRequest` - it's user data and should be assumed to be malicious.
+
+### `mail()`
+
+This is allowed in exactly one place - `\Waca\Helpers\EmailHelper`. Everything else should attempt to acquire an 
+`IEmailHelper` from somewhere and use it - be aware that it may not be an `EmailHelper` you get, but it _will_ be an 
+`IEmailHelper`.
+
+### Non-parameterised database calls
+
+Mostly, this means preparing a query, then executing it with parameters. Direct calls to `PdoDatabase::query()` and 
+`PdoDatabase::exec()` _are_ still allowed, but the entire statement *must* be hardcoded. No user input is allowed. 
+
+Allowed code:
+```php
+$actualVersion = $database->query("SELECT version FROM schemaversion")->fetchColumn();
+
+$this->dbObject->exec("delete from antispoofcache where timestamp < date_sub(now(), interval 3 hour);");
+
+$statement = $this->dbObject->prepare("INSERT INTO antispoofcache (username, data) VALUES (:username, :data);");
+$statement->bindValue(":username", $this->username);
+$statement->bindValue(":data", $this->data);
+$success = $statement->execute();
+```
+
+
+### Anything else that can't be mocked.
+
+This means hardcoded file paths, web addresses, etc.
 
 ## Security
 

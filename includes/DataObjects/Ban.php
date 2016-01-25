@@ -146,6 +146,9 @@ SQL
 		return $resultObject;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function save()
 	{
 		if ($this->isNew) {
@@ -179,26 +182,41 @@ SQL
 		}
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function getType()
 	{
 		return $this->type;
 	}
 
+	/**
+	 * @param $type
+	 */
 	public function setType($type)
 	{
 		$this->type = $type;
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function getTarget()
 	{
 		return $this->target;
 	}
 
+	/**
+	 * @param $target
+	 */
 	public function setTarget($target)
 	{
 		$this->target = $target;
 	}
 
+	/**
+	 * @return CommunityUser|false|User
+	 */
 	public function getUser()
 	{
 		$user = User::getById($this->user, gGetDb());
@@ -225,41 +243,66 @@ SQL
 		}
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function getReason()
 	{
 		return $this->reason;
 	}
 
+	/**
+	 * @param $reason
+	 */
 	public function setReason($reason)
 	{
 		$this->reason = $reason;
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function getDate()
 	{
 		return $this->date;
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function getDuration()
 	{
 		return $this->duration;
 	}
 
+	/**
+	 * @param $duration
+	 */
 	public function setDuration($duration)
 	{
 		$this->duration = $duration;
 	}
 
+	/**
+	 * @return mixed
+	 */
 	public function getActive()
 	{
 		return $this->active;
 	}
 
+	/**
+	 * @param $active
+	 */
 	public function setActive($active)
 	{
 		$this->active = $active;
 	}
-	
+
+	/**
+	 * Gets a user-visible description of the object.
+	 * @return string
+	 */
 	public function getObjectDescription()
 	{
 		return 'Ban #' . $this->getId() . " (" . htmlentities($this->target) . ")</a>";

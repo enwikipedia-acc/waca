@@ -8,12 +8,26 @@ use Waca\Environment;
  */
 class InterfaceMessage extends DataObject
 {
+	/** @var string */
 	private $content;
+
+	/** @var int */
 	private $updatecounter;
+
+	/** @var string */
 	private $description;
+
+	/** @var string */
 	private $type;
 
+	/**
+	 * The "site notice" interface message ID
+	 */
 	const SITENOTICE = '31';
+
+	/**
+	 * The "banned" interface message ID
+	 */
 	const DECL_BANNED = '19';
 
 	/**
@@ -38,6 +52,10 @@ class InterfaceMessage extends DataObject
 		return $message->getContentForDisplay();
 	}
 
+	/**
+	 * Saves the object
+	 * @throws Exception
+	 */
 	public function save()
 	{
 		if ($this->isNew) {
@@ -68,11 +86,20 @@ class InterfaceMessage extends DataObject
 		}
 	}
 
+	/**
+	 * Gets the content of the message
+	 * @return string
+	 */
 	public function getContent()
 	{
 		return $this->content;
 	}
 
+	/**
+	 * Gets the content of the message intended for display.
+	 * @return string
+	 * @todo We should probably swap this for Smarty.
+	 */
 	public function getContentForDisplay()
 	{
 		global $baseurl;
@@ -87,36 +114,64 @@ class InterfaceMessage extends DataObject
 		return $message;
 	}
 
+	/**
+	 * Sets the content of the message
+	 * @param int $content
+	 */
 	public function setContent($content)
 	{
 		$this->content = $content;
 	}
 
+	/**
+	 * Gets the message update counter
+	 * @return int
+	 */
 	public function getUpdateCounter()
 	{
 		return $this->updatecounter;
 	}
 
+	/**
+	 * Gets the description of the message
+	 * @return string
+	 */
 	public function getDescription()
 	{
 		return $this->description;
 	}
 
+	/**
+	 * Sets the description of the message
+	 * @param string $description
+	 */
 	public function setDescription($description)
 	{
 		$this->description = $description;
 	}
 
+	/**
+	 * Gets the type of the message
+	 * @return string
+	 */
 	public function getType()
 	{
 		return $this->type;
 	}
 
+	/**
+	 * Sets the type of the message
+	 * @param string $type
+	 */
 	public function setType($type)
 	{
 		$this->type = $type;
 	}
-	
+
+	/**
+	 * Gets a user-visible description of the object.
+	 * @return string
+	 */
 	public function getObjectDescription()
 	{
 		return '<a href="acc.php?action=messagemgmt&amp;view=' . $this->getId() . '">' . htmlentities($this->description) . "</a>";

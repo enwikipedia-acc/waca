@@ -30,10 +30,12 @@ class User extends DataObject
 
 	private $identityCache = null;
 
+	#region Object load methods
+
 	/**
-	 * Summary of getCurrent
+	 * Gets the currently logged in user
 	 * @param PdoDatabase $database
-	 * @return User The currently logged in user, or an anonymous coward with userid -1.
+	 * @return User|CommunityUser
 	 */
 	public static function getCurrent(PdoDatabase $database = null)
 	{
@@ -57,6 +59,7 @@ class User extends DataObject
 	}
 
 	/**
+	 * Gets a user by their user ID
 	 * @param int         $id
 	 * @param PdoDatabase $database
 	 * @return CommunityUser|User|false
@@ -70,15 +73,19 @@ class User extends DataObject
 		return parent::getById($id, $database);
 	}
 
+	/**
+	 * @return CommunityUser
+	 */
 	public static function getCommunity()
 	{
 		return new CommunityUser();   
 	}
 
 	/**
+	 * Gets a user by their username
 	 * @param  string      $username
 	 * @param  PdoDatabase $database
-	 * @return CommunityUser|User
+	 * @return CommunityUser|User|false
 	 */
 	public static function getByUsername($username, PdoDatabase $database)
 	{
@@ -166,6 +173,13 @@ class User extends DataObject
 		return false;
 	}
 
+	/**
+	 * Gets a user by their OAuth request token
+	 *
+	 * @param string      $requestToken
+	 * @param PdoDatabase $database
+	 * @return User|false
+	 */
 	public static function getByRequestToken($requestToken, PdoDatabase $database)
 	{
 		$statement = $database->prepare("SELECT * FROM user WHERE oauthrequesttoken = :id LIMIT 1;");
@@ -184,6 +198,8 @@ class User extends DataObject
 	}
 
 	/**
+	 * Gets all users with a supplied status
+	 *
 	 * @param string $status
 	 * @param PdoDatabase $database
 	 * @return User[]
@@ -204,6 +220,11 @@ class User extends DataObject
 		return $resultObject;
 	}
 
+	/**
+	 * Gets all checkusers
+	 * @param PdoDatabase $database
+	 * @return User[]
+	 */
 	public static function getAllCheckusers(PdoDatabase $database)
 	{
 		$statement = $database->prepare("SELECT * FROM user WHERE checkuser = 1;");
@@ -228,6 +249,11 @@ class User extends DataObject
 		return $resultsCollection;
 	}
 
+	/**
+	 * Gets all inactive users
+	 * @param PdoDatabase $database
+	 * @return User[]
+	 */
 	public static function getAllInactive(PdoDatabase $database)
 	{
 		$date = new DateTime();
@@ -280,7 +306,14 @@ SQL
 		
 		return $userListResult->fetchAll(PDO::FETCH_COLUMN);
 	}
-	
+
+	#endregion
+
+	/**
+	 * Saves the current object
+	 *
+	 * @throws Exception
+	 */
 	public function save()
 	{
 		if ($this->isNew) {
@@ -370,6 +403,14 @@ SQL
 		} 
 	}
 
+	/**
+	 * Authenticates the user with the supplied password
+	 *
+	 * @param $password
+	 * @return bool
+	 * @throws Exception
+	 * @category Security-Critical
+	 */
 	public function authenticate($password)
 	{
 		$result = AuthUtility::testCredentials($password, $this->password);
@@ -384,7 +425,11 @@ SQL
         
 		return $result;
 	}
-    
+
+	/**
+	 * Updates the last login attribute
+	 * @todo This should probably update the object too.
+	 */
 	public function touchLastLogin()
 	{
 		$query = "UPDATE user SET lastactive = CURRENT_TIMESTAMP() WHERE id = :id;";
@@ -392,33 +437,58 @@ SQL
 	}
     
 	#region properties
-    
+
+	/**
+	 * Gets the tool username
+	 * @return string
+	 */
 	public function getUsername()
 	{
 		return $this->username;
 	}
 
+	/**
+	 * Sets the tool username
+	 * @param string $username
+	 */
 	public function setUsername($username)
 	{
 		$this->username = $username;
 		$this->forcelogout = 1;
 	}
 
+	/**
+	 * Gets the user's email address
+	 * @return string
+	 */
 	public function getEmail()
 	{
 		return $this->email;
 	}
 
+	/**
+	 * Sets the user's email address
+	 * @param string $email
+	 */
 	public function setEmail($email)
 	{
 		$this->email = $email;
 	}
 
+	/**
+	 * Sets the user's password
+	 * @param string $password the plaintext password
+	 * @category Security-Critical
+	 */
 	public function setPassword($password)
 	{
 		$this->password = AuthUtility::encryptPassword($password);
 	}
 
+	/**
+	 * Gets the status (User, Admin, Suspended, etc - excludes checkuser) of the user.
+	 * @return string
+	 */
 	public function getStatus()
 	{
 		return $this->status;
@@ -426,7 +496,7 @@ SQL
 
 	/**
 	 * Gets the user's on-wiki name
-	 * @return mixed
+	 * @return string
 	 */
 	public function getOnWikiName()
 	{
@@ -454,100 +524,128 @@ SQL
 		return $this->onwikiname;
 	}
 
+	/**
+	 * Sets the user's on-wiki name
+	 *
+	 * This can have interesting side-effects with OAuth.
+	 *
+	 * @param $onWikiName
+	 */
 	public function setOnWikiName($onWikiName)
 	{
 		$this->onwikiname = $onWikiName;
 	}
 
+	/**
+	 * Gets the welcome signature
+	 * @return string
+	 */
 	public function getWelcomeSig()
 	{
 		return $this->welcome_sig;
 	}
 
+	/**
+	 * Sets the welcome signature
+	 * @param string $welcomeSig
+	 */
 	public function setWelcomeSig($welcomeSig)
 	{
 		$this->welcome_sig = $welcomeSig;
 	}
 
+	/**
+	 * Gets the last activity date for the user
+	 *
+	 * @see touchLastLogin()
+	 * @return string
+	 * @todo This should probably return an instance of DateTime
+	 */
 	public function getLastActive()
 	{
 		return $this->lastactive;
 	}
 
-	public function setLastActive($lastActive)
-	{
-		$this->lastactive = $lastActive;
-	}
-
+	/**
+	 * Gets the user's forced logout status
+	 *
+	 * @todo this should return a bool to match the setter, plus a rename
+	 * @return int
+	 */
 	public function getForcelogout()
 	{
 		return $this->forcelogout;
 	}
 
 	/**
+	 * Sets the user's forced logout status
 	 * @param $forceLogout bool
+	 * @todo Rename me please!
 	 */
 	public function setForcelogout($forceLogout)
 	{
 		$this->forcelogout = $forceLogout ? 1 : 0;
 	}
-    
-	public function getSecure()
-	{
-		return true;
-	}
 
-	public function getCheckuser()
-	{
-		return $this->checkuser;
-	}
-
-	public function setCheckuser($checkuser)
-	{
-		$this->checkuser = $checkuser;
-	}
-
-	public function getIdentified()
-	{
-		return $this->identified;
-	}
-
-	public function setIdentified($identified)
-	{
-		$this->identified = $identified;
-	}
-
+	/**
+	 * Returns the ID of the welcome template used.
+	 * @return int
+	 */
 	public function getWelcomeTemplate()
 	{
 		return $this->welcome_template;
 	}
 
+	/**
+	 * Sets the ID of the welcome template used.
+	 * @param $welcomeTemplate
+	 */
 	public function setWelcomeTemplate($welcomeTemplate)
 	{
 		$this->welcome_template = $welcomeTemplate;
 	}
 
+	/**
+	 * Gets the user's abort preference
+	 * @todo this is badly named too! Also a bool that's actually an int.
+	 * @return int
+	 */
 	public function getAbortPref()
 	{
 		return $this->abortpref;
 	}
 
+	/**
+	 * Sets the user's abort preference
+	 * @todo rename, retype, and re-comment.
+	 * @param int $abortPreference
+	 */
 	public function setAbortPref($abortPreference)
 	{
 		$this->abortpref = $abortPreference;
 	}
 
+	/**
+	 * Gets the user's confirmation diff. Unused if OAuth is in use.
+	 * @return int the diff ID
+	 */
 	public function getConfirmationDiff()
 	{
 		return $this->confirmationdiff;
 	}
 
+	/**
+	 * Sets the user's confirmation diff.
+	 * @param int $confirmationDiff
+	 */
 	public function setConfirmationDiff($confirmationDiff)
 	{
 		$this->confirmationdiff = $confirmationDiff;
 	}
 
 	/**
+	 * Gets the users' email signature used on outbound mail.
+	 * @todo rename me!
 	 * @return string
 	 */
 	public function getEmailSig()
@@ -555,46 +653,94 @@ SQL
 		return $this->emailsig;
 	}
 
+	/**
+	 * Sets the user's email signature for outbound mail.
+	 * @param string $emailSignature
+	 */
 	public function setEmailSig($emailSignature)
 	{
 		$this->emailsig = $emailSignature;
 	}
-    
+
+	/**
+	 * Gets the user's OAuth request token.
+	 *
+	 * @todo move me to a collaborator.
+	 * @return null|string
+	 */
 	public function getOAuthRequestToken()
 	{
 		return $this->oauthrequesttoken;
 	}
 
+	/**
+	 * Sets the user's OAuth request token
+	 * @todo move me to a collaborator
+	 * @param string $oAuthRequestToken
+	 */
 	public function setOAuthRequestToken($oAuthRequestToken)
 	{
 		$this->oauthrequesttoken = $oAuthRequestToken;
 	}
 
+	/**
+	 * Gets the users OAuth request secret
+	 * @category Security-Critical
+	 * @todo move me to a collaborator
+	 * @return null|string
+	 */
 	public function getOAuthRequestSecret()
 	{
 		return $this->oauthrequestsecret;
 	}
 
+	/**
+	 * Sets the user's OAuth request secret
+	 * @todo move me to a collaborator
+	 * @param $oAuthRequestSecret
+	 */
 	public function setOAuthRequestSecret($oAuthRequestSecret)
 	{
 		$this->oauthrequestsecret = $oAuthRequestSecret;
 	}
 
+	/**
+	 * Gets the user's access token
+	 * @category Security-Critical
+	 * @todo move me to a collaborator
+	 * @return null|string
+	 */
 	public function getOAuthAccessToken()
 	{
 		return $this->oauthaccesstoken;
 	}
 
+	/**
+	 * Sets the user's access token
+	 * @todo move me to a collaborator
+	 * @param $oAuthAccessToken
+	 */
 	public function setOAuthAccessToken($oAuthAccessToken)
 	{
 		$this->oauthaccesstoken = $oAuthAccessToken;
 	}
 
+	/**
+	 * Gets the user's OAuth access secret
+	 * @category Security-Critical
+	 * @todo move me to a collaborator
+	 * @return null
+	 */
 	public function getOAuthAccessSecret()
 	{
 		return $this->oauthaccesssecret;
 	}
 
+	/**
+	 * Sets the user's OAuth access secret
+	 * @todo move me to a collaborator
+	 * @param $oAuthAccessSecret
+	 */
 	public function setOAuthAccessSecret($oAuthAccessSecret)
 	{
 		$this->oauthaccesssecret = $oAuthAccessSecret;
@@ -603,7 +749,11 @@ SQL
 	#endregion
     
 	#region changing access level
-    
+
+	/**
+	 * Approves the user, changing access to 'User'
+	 * @category Security-Critical
+	 */
 	public function approve()
 	{
 		$this->dbObject->transactionally(function()
@@ -613,7 +763,12 @@ SQL
 			Logger::approvedUser($this->dbObject, $this);
 		});
 	}
-    
+
+	/**
+	 * Suspends the user
+	 * @category Security-Critical
+	 * @param $comment
+	 */
 	public function suspend($comment)
 	{
 		$this->dbObject->transactionally(function() use ($comment)
@@ -623,7 +778,12 @@ SQL
 			Logger::suspendedUser($this->dbObject, $this, $comment);
 		});
 	}
-    
+
+	/**
+	 * Declines the user (from new => declined)
+	 * @category Security-Critical
+	 * @param $comment
+	 */
 	public function decline($comment)
 	{
 		$this->dbObject->transactionally(function() use ($comment)
@@ -633,7 +793,11 @@ SQL
 			Logger::declinedUser($this->dbObject, $this, $comment);
 		});
 	}
-    
+
+	/**
+	 * Promotes the user to tool administrator
+	 * @category Security-Critical
+	 */
 	public function promote()
 	{
 		$this->dbObject->transactionally(function()
@@ -643,7 +807,12 @@ SQL
 			Logger::promotedUser($this->dbObject, $this);
 		});
 	}
-    
+
+	/**
+	 * Demotes the user to a standard user
+	 * @category Security-Critical
+	 * @param $comment
+	 */
 	public function demote($comment)
 	{
 		$this->dbObject->transactionally(function() use ($comment)
@@ -657,42 +826,84 @@ SQL
 	#endregion
     
 	#region user access checks
-    
+
+	/**
+	 * Tests if the user is an admin
+	 * @return bool
+	 * @category Security-Critical
+	 */
 	public function isAdmin()
 	{
 		return $this->status == "Admin";
 	}
-    
+
+	/**
+	 * Tests if the user is a checkuser
+	 * @return bool
+	 * @category Security-Critical
+	 */
 	public function isCheckuser()
 	{
 		return $this->checkuser == 1 || $this->oauthCanCheckUser();
 	}
-    
+
+	/**
+	 * Tests if the user is identified
+	 * @return bool
+	 * @category Security-Critical
+	 */
 	public function isIdentified()
 	{
-		return $this->identified == 1;
+		return $this->identified === 1;
 	}
-    
+
+	/**
+	 * Tests if the user is suspended
+	 * @return bool
+	 * @category Security-Critical
+	 */
 	public function isSuspended()
 	{
 		return $this->status == "Suspended";
 	}
-    
+
+	/**
+	 * Tests if the user is new
+	 * @return bool
+	 * @category Security-Critical
+	 */
 	public function isNew()
 	{
 		return $this->status == "New";
 	}
-    
+
+	/**
+	 * Tests if the user is a standard-level user
+	 * @return bool
+	 * @category Security-Critical
+	 */
 	public function isUser()
 	{
 		return $this->status == "User";
 	}
-    
+
+	/**
+	 * Tests if the user has been declined access to the tool
+	 * @return bool
+	 * @category Security-Critical
+	 */
 	public function isDeclined()
 	{
 		return $this->status == "Declined";
 	}
-    
+
+	/**
+	 * Tests if the user is the community user
+	 *
+	 * @todo decide if this means logged out. I think it usually does.
+	 * @return bool
+	 * @category Security-Critical
+	 */
 	public function isCommunityUser()
 	{
 		return false;   
@@ -701,7 +912,13 @@ SQL
 	#endregion 
 
 	#region OAuth
-    
+
+	/**
+	 * @todo move me to a collaborator
+	 * @param bool $useCached
+	 * @return mixed|null
+	 * @category Security-Critical
+	 */
 	public function getOAuthIdentity($useCached = false)
 	{
 		if ($this->oauthaccesstoken == null) {
@@ -746,9 +963,10 @@ SQL
 	}
     
 	/**
-	 * Summary of getOAuthOnWikiName
+	 * @todo move me to a collaborator
 	 * @param mixed $useCached Set to false for everything where up-to-date data is important.
 	 * @return mixed
+	 * @category Security-Critical
 	 */
 	private function getOAuthOnWikiName($useCached = false)
 	{
@@ -762,6 +980,7 @@ SQL
 
 	/**
 	 * @return bool
+	 * @todo move me to a collaborator
 	 */
 	public function isOAuthLinked()
 	{
@@ -772,6 +991,10 @@ SQL
 		return $this->oauthaccesstoken !== null;
 	}
 
+	/**
+	 * @return null
+	 * @todo move me to a collaborator
+	 */
 	private function clearOAuthData()
 	{
 		$this->identityCache = null;
@@ -781,7 +1004,13 @@ SQL
         
 		return null;
 	}
-    
+
+	/**
+	 * @throws Exception
+	 * @throws TransactionException
+	 * @todo move me to a collaborator
+	 * @category Security-Critical
+	 */
 	private function getIdentityCache()
 	{
 		global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;
@@ -804,7 +1033,11 @@ SQL
 			SessionAlert::warning("OAuth error getting identity from MediaWiki: " . $ex->getMessage());
 		}   
 	}
-    
+
+	/**
+	 * @throws Exception
+	 * @todo move me to a collaborator
+	 */
 	public function detachAccount()
 	{
 		$this->setOnWikiName($this->getOAuthOnWikiName());
@@ -817,7 +1050,11 @@ SQL
         
 		$this->save();
 	}
-    
+
+	/**
+	 * @return bool
+	 * @todo move me to a collaborator
+	 */
 	public function oauthCanUse()
 	{
 		try {
@@ -827,7 +1064,11 @@ SQL
 			return false;
 		}
 	}
-    
+
+	/**
+	 * @return bool
+	 * @todo move me to a collaborator
+	 */
 	public function oauthCanEdit()
 	{
 		try {
@@ -840,7 +1081,11 @@ SQL
 			return false;
 		}
 	}
-    
+
+	/**
+	 * @return bool
+	 * @todo move me to a collaborator
+	 */
 	public function oauthCanCreateAccount()
 	{
 		try {
@@ -856,6 +1101,8 @@ SQL
 
 	/**
 	 * @return bool
+	 * @todo move me to a collaborator
+	 * @category Security-Critical
 	 */
 	protected function oauthCanCheckUser()
 	{
@@ -873,12 +1120,21 @@ SQL
 	}
     
 	#endregion
-    
+
+	/**
+	 * Gets a hash of data for the user to reset their password with.
+	 * @category Security-Critical
+	 * @return string
+	 */
 	public function getForgottenPasswordHash()
 	{
 		return md5($this->username . $this->email . $this->welcome_template . $this->id . $this->password);
 	}
 
+	/**
+	 * Gets the approval date of the user
+	 * @return DateTime
+	 */
 	public function getApprovalDate()
 	{
 		$query = $this->dbObject->prepare(<<<SQL
@@ -898,9 +1154,13 @@ SQL
         
 		return $data;
 	}
-	
+
+	/**
+	 * Gets a user-visible description of the object.
+	 * @return string
+	 */
 	public function getObjectDescription()
 	{
-		return '<a href="statistics.php?page=Users&amp;user=' . $this->getId() . '">' . htmlentities($this->username) . "</a>";
+		return '<a href="statistics.php?page=Users&amp;user=' . $this->getId() . '">' . htmlentities($this->username, ENT_COMPAT, 'UTF-8') . "</a>";
 	}
 }
