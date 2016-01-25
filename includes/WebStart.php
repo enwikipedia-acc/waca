@@ -69,7 +69,8 @@ class WebStart
 <link href="{$baseurl}/lib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 </head><body><div class="container">
 <h1>Oops! Something went wrong!</h1>
-<p>We'll work on fixing this for you, so why not come back later?</p><p class="muted">If our trained monkeys ask, tell them this error ID: <code>$1$</code></p>
+<p>We'll work on fixing this for you, so why not come back later?</p>
+<p class="muted">If our trained monkeys ask, tell them this error ID: <code>$1$</code></p>
 $2$
 </div></body></html>
 HTML;
@@ -124,7 +125,7 @@ HTML;
 		global $schemaVersion;
 
 		// initialise global exception handler
-		set_exception_handler(array(WebStart::class, "exceptionHandler"));
+		set_exception_handler(array(self::class, "exceptionHandler"));
 
 		// start output buffering if necessary
 		if (ob_get_level() === 0) {
@@ -189,7 +190,7 @@ HTML;
 
 	/**
 	 * @param Exception $exception
-	 * @return array
+	 * @return array|null
 	 */
 	private static function getExceptionData($exception)
 	{

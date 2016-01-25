@@ -40,7 +40,7 @@ final class SecurityConfiguration
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
-	public final function setAdmin($admin)
+	public function setAdmin($admin)
 	{
 		$this->admin = $admin;
 		return $this;
@@ -51,7 +51,7 @@ final class SecurityConfiguration
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
-	public final function setUser($user)
+	public function setUser($user)
 	{
 		$this->user = $user;
 		return $this;
@@ -62,7 +62,7 @@ final class SecurityConfiguration
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
-	public final function setCheckuser($checkuser)
+	public function setCheckuser($checkuser)
 	{
 		$this->checkuser = $checkuser;
 		return $this;
@@ -73,7 +73,7 @@ final class SecurityConfiguration
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
-	public final function setCommunity($community)
+	public function setCommunity($community)
 	{
 		$this->community = $community;
 		return $this;
@@ -84,7 +84,7 @@ final class SecurityConfiguration
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
-	public final function setSuspended($suspended)
+	public function setSuspended($suspended)
 	{
 		$this->suspended = $suspended;
 		return $this;
@@ -95,7 +95,7 @@ final class SecurityConfiguration
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
-	public final function setDeclined($declined)
+	public function setDeclined($declined)
 	{
 		$this->declined = $declined;
 		return $this;
@@ -106,7 +106,7 @@ final class SecurityConfiguration
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
-	public final function setNew($new)
+	public function setNew($new)
 	{
 		$this->new = $new;
 		return $this;
@@ -122,7 +122,7 @@ final class SecurityConfiguration
 	 * @return bool
 	 * @category Security-Critical
 	 */
-	public final function allows(User $user)
+	public function allows(User $user)
 	{
 		$allowed = false;
 
@@ -202,7 +202,7 @@ final class SecurityConfiguration
 	 * @category Security-Critical
 	 * @return SecurityConfiguration
 	 */
-	public static final function publicPage()
+	public static function publicPage()
 	{
 		$config = new SecurityConfiguration();
 		$config->setAdmin(self::ALLOW)
@@ -222,7 +222,7 @@ final class SecurityConfiguration
 	 * @category Security-Critical
 	 * @return SecurityConfiguration
 	 */
-	public static final function internalPage()
+	public static function internalPage()
 	{
 		$config = new SecurityConfiguration();
 		$config->setAdmin(self::ALLOW)
@@ -240,7 +240,7 @@ final class SecurityConfiguration
 	 * @category Security-Critical
 	 * @return SecurityConfiguration
 	 */
-	public static final function adminPage()
+	public static function adminPage()
 	{
 		$config = new SecurityConfiguration();
 		$config->setAdmin(self::ALLOW)
@@ -252,7 +252,7 @@ final class SecurityConfiguration
 		return $config;
 	}
 
-	public static final function checkUserData(){
+	public static function checkUserData(){
 		$config = new SecurityConfiguration();
 		$config->setCheckuser(self::ALLOW)
 			->setCommunity(self::DENY)

@@ -89,6 +89,10 @@ class WebRequest
 		return array_values(array_filter($exploded));
 	}
 
+	/**
+	 * Gets the remote address of the web request
+	 * @return null|string
+	 */
 	public static function remoteAddress()
 	{
 		$server = &self::$globalStateProvider->getServerSuperGlobal();
@@ -100,6 +104,10 @@ class WebRequest
 		return null;
 	}
 
+	/**
+	 * Gets the XFF header contents for the web request
+	 * @return null|string
+	 */
 	public static function forwardedAddress()
 	{
 		$server = &self::$globalStateProvider->getServerSuperGlobal();
@@ -111,6 +119,13 @@ class WebRequest
 		return null;
 	}
 
+	/**
+	 * Sets the global state provider.
+	 *
+	 * Almost guaranteed this is not the method you want in production code.
+	 *
+	 * @param IGlobalStateProvider $globalState
+	 */
 	public static function setGlobalStateProvider($globalState)
 	{
 		self::$globalStateProvider = $globalState;
