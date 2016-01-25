@@ -10,6 +10,7 @@ matrix:
     - php: 7.0
 
 before_install:
+  - composer install
   - pip install --user codecov
 
 after_success:
