@@ -1,51 +1,59 @@
 <?php
 namespace Waca\Tests;
 
-use Waca\Tests\TestUtilities\GlobalStateProviderMock;
+use PHPUnit_Framework_MockObject_MockObject;
+use Waca\Providers\GlobalStateProvider;
 use Waca\WebRequest;
 
 class WebRequestTest extends \PHPUnit_Framework_TestCase
 {
 	/**
-	 * @var GlobalStateProviderMock
+	 * @var GlobalStateProvider|PHPUnit_Framework_MockObject_MockObject
 	 */
 	private $globalState;
 
 	public function setUp()
 	{
-		$this->globalState = new GlobalStateProviderMock();
+		$this->globalState = $this->getMockBuilder(GlobalStateProvider::class)->getMock();
 		WebRequest::setGlobalStateProvider($this->globalState);
 	}
 
 	public function testWasPostedNoRequestMethod()
 	{
+		$this->globalState->method('getServerSuperGlobal')->willReturn(array());
 		$this->assertFalse(WebRequest::wasPosted());
 	}
 
-	public function testWasPostedGetMethod(){
-		$this->globalState->setServerSuperGlobal(array('REQUEST_METHOD' => 'GET'));
+	public function testWasPostedGetMethod()
+	{
+		$this->globalState->method('getServerSuperGlobal')->willReturn(array('REQUEST_METHOD' => 'GET'));
 		$this->assertFalse(WebRequest::wasPosted());
 	}
 
-	public function testWasPostedPostMethod(){
-		$this->globalState->setServerSuperGlobal(array('REQUEST_METHOD' => 'POST'));
+	public function testWasPostedPostMethod()
+	{
+		$this->globalState->method('getServerSuperGlobal')->willReturn(array('REQUEST_METHOD' => 'POST'));
 		$this->assertTrue(WebRequest::wasPosted());
 	}
 
-	public function testIsHttpsNo(){
+	public function testIsHttpsNo()
+	{
+		$this->globalState->method('getServerSuperGlobal')->willReturn(array());
 		$this->assertFalse(WebRequest::isHttps());
 	}
 
-	public function testIsHttpsYes(){
-		$this->globalState->setServerSuperGlobal(array('HTTPS' => 'yes'));
+	public function testIsHttpsYes()
+	{
+		$this->globalState->method('getServerSuperGlobal')->willReturn(array('HTTPS' => 'yes'));
 		$this->assertTrue(WebRequest::isHttps());
 	}
 
 	/**
 	 * PHP Docs say set to a non-empty value. This will, of course, depend entirely on the SAPI.
 	 */
-	public function testIsHttpsAlsoYes(){
-		$this->globalState->setServerSuperGlobal(array('HTTPS' => 'yay'));
+	public function testIsHttpsAlsoYes()
+	{
+		$this->globalState->method('getServerSuperGlobal')->willReturn(array('HTTPS' => 'yay'));
 		$this->assertTrue(WebRequest::isHttps());
 	}
 
@@ -54,19 +62,27 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 	 *
 	 * https://secure.php.net/reserved.variables.server
 	 */
-	public function testIsHttpsIIS(){
-		$this->globalState->setServerSuperGlobal(array('HTTPS' => 'off'));
+	public function testIsHttpsIIS()
+	{
+		$this->globalState->method('getServerSuperGlobal')->willReturn(array('HTTPS' => 'off'));
 		$this->assertFalse(WebRequest::isHttps());
 	}
 
 	/**
 	 * We can do https-y things if the connection is encrypted between the proxy and the client.
 	 */
-	public function testIsHttpsXffProto() {
-		$this->globalState->setServerSuperGlobal(array('HTTP_X_FORWARDED_PROTO' => 'https'));
+	public function testIsHttpsXffProto()
+	{
+		$this->globalState->method('getServerSuperGlobal')->willReturn(array('HTTP_X_FORWARDED_PROTO' => 'https'));
 		$this->assertTrue(WebRequest::isHttps());
+	}
 
-		$this->globalState->setServerSuperGlobal(array('HTTP_X_FORWARDED_PROTO' => 'https', 'HTTPS' => 'yes'));
+	public function testIsHttpsXffProtoBoth()
+	{
+		$this->globalState->method('getServerSuperGlobal')->willReturn(array(
+			'HTTP_X_FORWARDED_PROTO' => 'https',
+			'HTTPS'                  => 'yes',
+		));
 		$this->assertTrue(WebRequest::isHttps());
 	}
 
@@ -74,9 +90,12 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 	 * Naughty! This is for:
 	 *  [client] <= http => [proxy] <= https => [server]
 	 */
-	public function testIsHttpsNotXffProto() {
-		$this->globalState->setServerSuperGlobal(array('HTTP_X_FORWARDED_PROTO' => 'http', 'HTTPS' => 'yes'));
+	public function testIsHttpsNotXffProto()
+	{
+		$this->globalState->method('getServerSuperGlobal')->willReturn(array(
+			'HTTP_X_FORWARDED_PROTO' => 'http',
+			'HTTPS'                  => 'yes',
+		));
 		$this->assertFalse(WebRequest::isHttps());
 	}
-
 }
