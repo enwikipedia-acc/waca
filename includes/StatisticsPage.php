@@ -134,13 +134,14 @@ abstract class StatisticsPage
 
 		// check protection level
 		if ($this->isProtected()) {
-			// protected, check access level.
-			$currentUser = User::getCurrent();
-			if ($currentUser->isCommunityUser() || (!$currentUser->isUser() && !$currentUser->isAdmin())) {
+			if (User::getCurrent()->isCommunityUser()) {
 				showlogin();
 				BootstrapSkin::displayInternalFooter();
 				die();
 			}
+
+			$session = new session();
+			$session->checksecurity();
 		}
 
 		// not protected or access allowed

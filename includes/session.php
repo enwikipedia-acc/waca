@@ -25,6 +25,8 @@ class session
 				setcookie(session_name(), '', time() - 42000, '/');
 			}
 			session_destroy( );
+
+			BootstrapSkin::displayInternalHeader();
 			
 			echo "You have been forcibly logged out, probably due to being renamed. Please log back in.";
             
@@ -37,25 +39,7 @@ class session
 			die();
 		}
 	}
-	
-	/**
-	 * Summary of hasright
-	 * @param mixed $username 
-	 * @param mixed $checkright 
-	 * @return boolean
-	 * @deprecated
-	 */
-	public function hasright($username, $checkright)
-	{
-		$user = User::getByUsername($username, gGetDb());
-		if ($user->isCheckuser() && $checkright == "Admin") {
-			return true;   
-		}
-        
-		return $user->getStatus() == $checkright;
-	}
-	
-	
+
 	/**
 	 * Check the user's security level on page load, and bounce accordingly
 	 * 
@@ -64,32 +48,36 @@ class session
 	public function checksecurity()
 	{
 		global $secure, $smarty;
-        
-		if (User::getCurrent()->getStoredOnWikiName() == "##OAUTH##" && User::getCurrent()->getOAuthAccessToken() == null) {
-			reattachOAuthAccount(User::getCurrent());   
-		}
-        
-		if (User::getCurrent()->isOAuthLinked()) {
-			try {
-				// test retrieval of the identity
-				User::getCurrent()->getOAuthIdentity();
-			}
-			catch (TransactionException $ex) {
-				User::getCurrent()->setOAuthAccessToken(null);
-				User::getCurrent()->setOAuthAccessSecret(null);
-				User::getCurrent()->save();
-                
+
+		// CommunityUser has no database row, and we really don't want CommunityUser to have oauth credentials...
+		if (!User::getCurrent()->isCommunityUser()) {
+			if (User::getCurrent()->getStoredOnWikiName() == "##OAUTH##"
+				&& User::getCurrent()->getOAuthAccessToken() == null
+			) {
 				reattachOAuthAccount(User::getCurrent());
 			}
-		}
-		else {
-			global $enforceOAuth;
-            
-			if ($enforceOAuth) {
-				reattachOAuthAccount(User::getCurrent());
+
+			if (User::getCurrent()->isOAuthLinked()) {
+				try {
+					// test retrieval of the identity
+					User::getCurrent()->getOAuthIdentity();
+				}
+				catch (TransactionException $ex) {
+					User::getCurrent()->setOAuthAccessToken(null);
+					User::getCurrent()->setOAuthAccessSecret(null);
+					User::getCurrent()->save();
+
+					reattachOAuthAccount(User::getCurrent());
+				}
+			}
+			else {
+				global $enforceOAuth;
+
+				if ($enforceOAuth) {
+					reattachOAuthAccount(User::getCurrent());
+				}
 			}
 		}
-        
         
 		if (User::getCurrent()->isNew()) {
 			BootstrapSkin::displayAlertBox("I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.", "alert-error", "New account", true, false);

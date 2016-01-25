@@ -39,7 +39,17 @@ else {
 	$sessionuser = "";
 }
 
+// initialise providers
+global $squidIpList;
+$locationProvider = new $locationProviderClass(gGetDb('acc'), $locationProviderApiKey);
+$rdnsProvider = new $rdnsProviderClass(gGetDb('acc'));
+$antispoofProvider = new $antispoofProviderClass();
+$xffTrustProvider = new $xffTrustProviderClass($squidIpList);
+
 BootstrapSkin::displayInternalHeader();
+
+$session = new session();
+$session->checksecurity();
 
 // protect against logged out users
 if (User::getCurrent()->isCommunityUser()) {
