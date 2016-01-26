@@ -182,9 +182,9 @@ class WebRequest
 			return null;
 		}
 
-		$filteredValue = filter_var($post[$key], FILTER_SANITIZE_NUMBER_INT);
+		$filteredValue = filter_var($post[$key], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
-		if ($filteredValue === false) {
+		if ($filteredValue === null) {
 			return null;
 		}
 
@@ -248,9 +248,9 @@ class WebRequest
 			return null;
 		}
 
-		$filteredValue = filter_var($get[$key], FILTER_SANITIZE_NUMBER_INT);
+		$filteredValue = filter_var($get[$key], FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE);
 
-		if ($filteredValue === false) {
+		if ($filteredValue === null) {
 			return null;
 		}
 

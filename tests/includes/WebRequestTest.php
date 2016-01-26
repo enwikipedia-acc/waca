@@ -231,23 +231,24 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 	public function testGetBoolean()
 	{
 		$this->globalState->method('getGetSuperGlobal')->willReturn(array(
-			'foo'     => '',
-			'bar'     => 'something',
-			'baz'     => 'on',
-			'quux'    => 'yes',
-			'grunt'   => true,
-			'wubble'  => 1,
-			'snork'   => -1, // not sure about this
+			'foo'    => '',
+			'bar'    => 'something',
+			'baz'    => 'on',
+			'quux'   => 'yes',
+			'grunt'  => true,
+			'wubble' => 1,
+			'snork'  => -1, // not sure about this
 
 			'qux'     => 'off',
 			'flob'    => 'no',
 			'norf'    => false,
 			'blurgle' => 0,
 
-			'quuux'   => null, // not sure about this
+			'quuux' => null, // it's present, so it counts
 
-			'ook'     => array() // not sure about this
-			));
+			'ook' => array() // it's present, so it counts
+			// quuuux is not present on purpose.
+		));
 
 		$this->assertTrue(WebRequest::getBoolean('foo'));
 		$this->assertTrue(WebRequest::getBoolean('bar'));
@@ -255,6 +256,7 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse(WebRequest::getBoolean('qux'));
 		$this->assertTrue(WebRequest::getBoolean('quux'));
 		$this->assertTrue(WebRequest::getBoolean('quuux'));
+		$this->assertFalse(WebRequest::getBoolean('quuuux'));
 		$this->assertFalse(WebRequest::getBoolean('norf'));
 		$this->assertTrue(WebRequest::getBoolean('grunt'));
 		$this->assertFalse(WebRequest::getBoolean('flob'));
@@ -267,41 +269,203 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 	public function testPostBoolean()
 	{
 		$this->globalState->method('getPostSuperGlobal')->willReturn(array(
-			'foo'     => '',
-			'bar'     => 'something',
-			'baz'     => 'on',
-			'quux'    => 'yes',
-			'grunt'   => true,
-			'wubble'  => 1,
-			'snork'   => -1,
+			'foo'    => '',
+			'bar'    => 'something',
+			'baz'    => 'on',
+			'quux'   => 'yes',
+			'grunt'  => true,
+			'wubble' => 1,
+			'snork'  => -1,
 
 			'qux'     => 'off',
 			'flob'    => 'no',
 			'norf'    => false,
 			'blurgle' => 0,
 
-			'quuux'   => null, // it's present, so it counts.
+			'quuux' => null, // it's present, so it counts.
 
-			'ook'     => array() // not sure about this
-			));
+			'ook' => array() // it's present, so it counts.
+			// quuuux is not present on purpose.
+		));
 
 		$this->assertTrue(WebRequest::postBoolean('foo'));
-		$this->assertTrue(WebRequest::postBoolean('bar')); //fails
-		$this->assertTrue(WebRequest::postBoolean('baz')); //fails
+		$this->assertTrue(WebRequest::postBoolean('bar'));
+		$this->assertTrue(WebRequest::postBoolean('baz'));
 		$this->assertFalse(WebRequest::postBoolean('qux'));
-		$this->assertTrue(WebRequest::postBoolean('quux')); //fails
+		$this->assertTrue(WebRequest::postBoolean('quux'));
 		$this->assertTrue(WebRequest::postBoolean('quuux'));
+		$this->assertFalse(WebRequest::postBoolean('quuuux'));
 		$this->assertFalse(WebRequest::postBoolean('norf'));
-		$this->assertTrue(WebRequest::postBoolean('grunt')); //fails
+		$this->assertTrue(WebRequest::postBoolean('grunt'));
 		$this->assertFalse(WebRequest::postBoolean('flob'));
 		$this->assertTrue(WebRequest::postBoolean('wubble'));
 		$this->assertFalse(WebRequest::postBoolean('blurgle'));
 		$this->assertTrue(WebRequest::postBoolean('snork'));
-		$this->assertTrue(WebRequest::postBoolean('ook')); //fails
+		$this->assertTrue(WebRequest::postBoolean('ook'));
 	}
 	#endregion
 
 	#region int
+
+	public function testPostInt()
+	{
+		$this->globalState->method('getPostSuperGlobal')->willReturn(array(
+			// Simple tests
+			'foo'  => 1,
+			'bar'  => 0,
+			'baz'  => -1,
+
+			// From string
+			'qux' => '1',
+			'quux' => '0',
+			'quuux' => '-1',
+
+			// Odd strings
+			'wubble' => '0xF',
+			'snork'  => '010',
+			'garply'  => '0b10',
+
+			'norf'    => 'not a number',
+			'flob'    => '',
+
+			// number, but not an int
+			'blurgle' => 0.1,
+
+			// Other types
+			'grunt'  => true,
+			'ook' => array(),
+			'toto' => null,
+			// pip not present on purpose
+		));
+
+		$this->assertTrue(is_int(WebRequest::postInt('foo')));
+		$this->assertEquals(1, WebRequest::postInt('foo'));
+
+		$this->assertTrue(is_int(WebRequest::postInt('bar')));
+		$this->assertEquals(0, WebRequest::postInt('bar'));
+
+		$this->assertTrue(is_int(WebRequest::postInt('baz')));
+		$this->assertEquals(-1, WebRequest::postInt('baz'));
+
+		$this->assertTrue(is_int(WebRequest::postInt('qux')));
+		$this->assertEquals(1, WebRequest::postInt('qux'));
+
+		$this->assertTrue(is_int(WebRequest::postInt('quux')));
+		$this->assertEquals(0, WebRequest::postInt('quux'));
+
+		$this->assertTrue(is_int(WebRequest::postInt('quuux')));
+		$this->assertEquals(-1, WebRequest::postInt('quuux'));
+
+		$this->assertFalse(is_int(WebRequest::postInt('wubble')));
+		$this->assertNull(WebRequest::postInt('wubble'));
+
+		$this->assertFalse(is_int(WebRequest::postInt('snork')));
+		$this->assertNull(WebRequest::postInt('snork'));
+
+		$this->assertFalse(is_int(WebRequest::postInt('garply')));
+		$this->assertNull(WebRequest::postInt('garply'));
+
+		$this->assertFalse(is_int(WebRequest::postInt('norf')));
+		$this->assertNull( WebRequest::postInt('norf'));
+
+		$this->assertFalse(is_int(WebRequest::postInt('flob')));
+		$this->assertNull( WebRequest::postInt('flob'));
+
+		$this->assertFalse(is_int(WebRequest::postInt('blurgle')));
+		$this->assertNull( WebRequest::postInt('blurgle'));
+
+		$this->assertTrue(is_int(WebRequest::postInt('grunt')));
+		$this->assertEquals(1, WebRequest::postInt('grunt'));
+
+		$this->assertFalse(is_int(WebRequest::postInt('ook')));
+		$this->assertNull( WebRequest::postInt('ook'));
+
+		$this->assertFalse(is_int(WebRequest::postInt('toto')));
+		$this->assertNull( WebRequest::postInt('toto'));
+
+		$this->assertFalse(is_int(WebRequest::postInt('pip')));
+		$this->assertNull( WebRequest::postInt('pip'));
+	}
+
+	public function testGetInt()
+	{
+		$this->globalState->method('getGetSuperGlobal')->willReturn(array(
+			// Simple tests
+			'foo'  => 1,
+			'bar'  => 0,
+			'baz'  => -1,
+
+			// From string
+			'qux' => '1',
+			'quux' => '0',
+			'quuux' => '-1',
+
+			// Odd strings
+			'wubble' => '0xF',
+			'snork'  => '010',
+			'garply'  => '0b10',
+
+			'norf'    => 'not a number',
+			'flob'    => '',
+
+			// number, but not an int
+			'blurgle' => 0.1,
+
+			// Other types
+			'grunt'  => true,
+			'ook' => array(),
+			'toto' => null,
+			// pip not present on purpose
+		));
+
+		$this->assertTrue(is_int(WebRequest::getInt('foo')));
+		$this->assertEquals(1, WebRequest::getInt('foo'));
+
+		$this->assertTrue(is_int(WebRequest::getInt('bar')));
+		$this->assertEquals(0, WebRequest::getInt('bar'));
+
+		$this->assertTrue(is_int(WebRequest::getInt('baz')));
+		$this->assertEquals(-1, WebRequest::getInt('baz'));
+
+		$this->assertTrue(is_int(WebRequest::getInt('qux')));
+		$this->assertEquals(1, WebRequest::getInt('qux'));
+
+		$this->assertTrue(is_int(WebRequest::getInt('quux')));
+		$this->assertEquals(0, WebRequest::getInt('quux'));
+
+		$this->assertTrue(is_int(WebRequest::getInt('quuux')));
+		$this->assertEquals(-1, WebRequest::getInt('quuux'));
+
+		$this->assertFalse(is_int(WebRequest::getInt('wubble')));
+		$this->assertNull(WebRequest::getInt('wubble'));
+
+		$this->assertFalse(is_int(WebRequest::getInt('snork')));
+		$this->assertNull(WebRequest::getInt('snork'));
+
+		$this->assertFalse(is_int(WebRequest::getInt('garply')));
+		$this->assertNull(WebRequest::getInt('garply'));
+
+		$this->assertFalse(is_int(WebRequest::getInt('norf')));
+		$this->assertNull( WebRequest::getInt('norf'));
+
+		$this->assertFalse(is_int(WebRequest::getInt('flob')));
+		$this->assertNull( WebRequest::getInt('flob'));
+
+		$this->assertFalse(is_int(WebRequest::getInt('blurgle')));
+		$this->assertNull( WebRequest::getInt('blurgle'));
+
+		$this->assertTrue(is_int(WebRequest::getInt('grunt')));
+		$this->assertEquals(1, WebRequest::getInt('grunt'));
+
+		$this->assertFalse(is_int(WebRequest::getInt('ook')));
+		$this->assertNull( WebRequest::getInt('ook'));
+
+		$this->assertFalse(is_int(WebRequest::getInt('toto')));
+		$this->assertNull( WebRequest::getInt('toto'));
+
+		$this->assertFalse(is_int(WebRequest::getInt('pip')));
+		$this->assertNull( WebRequest::getInt('pip'));
+	}
 
 	#endregion
 
