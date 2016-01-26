@@ -23,7 +23,7 @@
 
 # General points
 
-## Namespacing
+## Namespaces
 
 The root namespace for all classes should be `\Waca`, which maps to `includes/`. The namespace structure should exactly 
 match the folder structure.
@@ -37,17 +37,31 @@ corresponding test class `\Waca\Tests\WebRequestTest` at the file path `tests/We
 
 ## Banned stuff
 
+### Globals
+
+Kind-of banned. Our configuration system is entirely based in global variables, and we need to fix this. If something 
+uses a global variable it becomes extremely hard to test.
+
 ### Super-globals
 
 Don't use these _anywhere_ **except** `WebRequest`. Data leaving `WebRequest` should be of a declared type 
 (int, string, etc), or a filtered value (`filter_var`). Don't assume that this data is secure because it's come from
 `WebRequest` - it's user data and should be assumed to be malicious.
 
+Super-globals contain user data and untrustworthy - everything should be treated with utmost suspicion. If all access to
+super-globals comes through predefined methods which behave in a well-known and well-tested way, we can be reasonably
+confident that if we expect a string, we actually have a string. Don't assume that this string is safe though!
+
+Also, super-globals are not settable, even from phpunit, so we _have_ to wrap calls to super-globals in something we
+can mock, or we can't test whatever uses them.
+
 ### `mail()`
 
 This is allowed in exactly one place - `\Waca\Helpers\EmailHelper`. Everything else should attempt to acquire an 
 `IEmailHelper` from somewhere and use it - be aware that it may not be an `EmailHelper` you get, but it _will_ be an 
 `IEmailHelper`.
+
+The basic reason for this is we don't want unit testing to actually send emails.
 
 ### Non-parameterised database calls
 
@@ -66,6 +80,7 @@ $statement->bindValue(":data", $this->data);
 $success = $statement->execute();
 ```
 
+This is a bright-line - anything that breaches this runs the risk of introducing serious vulnerabilities. Don't do it.
 
 ### Anything else that can't be mocked.
 

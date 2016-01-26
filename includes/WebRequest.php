@@ -191,6 +191,25 @@ class WebRequest
 		return (int)$filteredValue;
 	}
 
+	public static function postBoolean($key)
+	{
+		$get = &self::$globalStateProvider->getPostSuperGlobal();
+		if (!array_key_exists($key, $get)) {
+			return false;
+		}
+
+		// presence of parameter only
+		if ($get[$key] === "") {
+			return true;
+		}
+
+		if (in_array($get[$key], array(false, 'no', 'off', 0), true)) {
+			return false;
+		}
+
+		return true;
+	}
+
 	#endregion
 
 	#region GET variables
@@ -211,7 +230,7 @@ class WebRequest
 			return true;
 		}
 
-		if (in_array($get[$key], array(false, 'no', 'off', 0))) {
+		if (in_array($get[$key], array(false, 'no', 'off', 0), true)) {
 			return false;
 		}
 
