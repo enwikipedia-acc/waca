@@ -34,14 +34,15 @@ class RequestRouter
 	 *
 	 *     - If a page is defined and requested, but no action is requested, go to that page's main() method
 	 *     - If a page is defined and requested, and an action is defined and requested, go to that action's method.
-	 *     - If a page is defined and requested, and an action NOT defined and requested, go to Page404 and it's main() method.
+	 *     - If a page is defined and requested, and an action NOT defined and requested, go to Page404 and it's main()
+	 *       method.
 	 *     - If a page is NOT defined and requested, go to Page404 and it's main() method.
 	 *
 	 *     - Query parameters are ignored.
 	 *
-	 * The key point here is request routing with validation that this is allowed, before we start hitting the filesystem
-	 * through the AutoLoader, and opening random files. Also, so that we validate the action requested before we start
-	 * calling random methods through the web UI.
+	 * The key point here is request routing with validation that this is allowed, before we start hitting the
+	 * filesystem through the AutoLoader, and opening random files. Also, so that we validate the action requested
+	 * before we start calling random methods through the web UI.
 	 *
 	 * Examples:
 	 * /internal.php                => returns instance of PageMain, routed to main()

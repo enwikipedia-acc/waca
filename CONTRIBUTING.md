@@ -139,6 +139,38 @@ SQL
 });
 ```
 
+#### Database patches
+
+Create a new file in `sql/patches` based on `patch00-example.sql`. Please follow the naming scheme already in place, and
+follow the instructions in the example code.
+
+Pick the next sequential number - this will be your new schema version number. Name the file as `patchXX-description.sql`,
+where `XX` is your version number, and `description` is a very brief summary of the changes you're making.
+
+Now, open your new file, and you'll see it's full of database code. No need to fear! There's two places you need to touch.
+
+Update line 25, and put your version number in where the `0` is:
+
+```sql
+DECLARE patchversion INT DEFAULT 0;
+```
+
+Secondly, place all the database update statements you need to make around line 56, where this block is:
+```sql
+    -- -------------------------------------------------------------------------
+    -- Developers - put your upgrade statements here!
+    -- -------------------------------------------------------------------------
+
+    -- ALTER TABLE foo DROP COLUMN bar;
+
+    -- -------------------------------------------------------------------------
+```
+
+Test your patch by running the entire file against your up-to-date database. It should apply the patch without question,
+if it does complain it's probably because a) your database is out of date, or b) you didn't pick the next sequential
+number. When it's applied, verify it's correctly made the changes you need in the database, and update the tool
+configuration to the correct schema version.
+
 ### Templating
 
 We use [Smarty](http://www.smarty.net/) as a templating engine to handle all output to the web.

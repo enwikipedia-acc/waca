@@ -103,13 +103,13 @@ class PageBan extends PageBase
 			// Attempt to resolve the correct target
 			/** @var Request $request */
 			$request = Request::getById($banTarget, gGetDb());
-			if($request === false){
+			if ($request === false) {
 				$this->assign('bantarget', '');
 				return;
 			}
 
 			$realTarget = '';
-			switch($banType){
+			switch ($banType) {
 				case 'EMail':
 					$realTarget = $request->getEmail();
 					break;
@@ -131,22 +131,20 @@ class PageBan extends PageBase
 	protected function remove()
 	{
 		$banId = WebRequest::getInt('id');
-		if($banId === null || $banId === 0)
-		{
+		if ($banId === null || $banId === 0) {
 			throw new ApplicationLogicException("The ban ID appears to be missing. This is probably a bug.");
 		}
 
 		$ban = Ban::getActiveId($banId);
 
-		if($ban === false){
+		if ($ban === false) {
 			throw new ApplicationLogicException("The specified ban is not currently active, or doesn't exist.");
 		}
 
 		// dual mode
-		if(WebRequest::wasPosted()){
+		if (WebRequest::wasPosted()) {
 			$unbanReason = WebRequest::postString('unbanreason');
-			if($unbanReason === null || trim($unbanReason) === "")
-			{
+			if ($unbanReason === null || trim($unbanReason) === "") {
 				throw new ApplicationLogicException("No unban reason specified");
 			}
 
@@ -161,8 +159,7 @@ class PageBan extends PageBase
 
 			$this->redirect('bans');
 		}
-		else
-		{
+		else {
 			$this->assign("ban", $ban);
 			$this->setTemplate("bans/unban.tpl");
 		}

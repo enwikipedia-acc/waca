@@ -284,4 +284,14 @@ class WebRequest
 
 		$session['userID'] = $user->getId();
 	}
+
+	public static function getServerName()
+	{
+		return self::$globalStateProvider->getServerSuperGlobal()['SERVER_NAME'];
+	}
+
+	public static function getRequestUri()
+	{
+		return self::$globalStateProvider->getServerSuperGlobal()['REQUEST_URI'];
+	}
 }

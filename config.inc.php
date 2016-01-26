@@ -44,9 +44,6 @@ $antispoof_table = "spoofuser";
  * File paths etc
  */
 
-// Does nothing yet, intended for further localization.
-$wikiurl = "en.wikipedia.org";
-
 $mediawikiWebServiceEndpoint = "https://en.wikipedia.org/w/api.php";
 $mediawikiScriptPath = "https://en.wikipedia.org/w/index.php";
 
@@ -183,8 +180,6 @@ $xffTrustProviderClass = "XffTrustProvider";
  */
 
 $dataclear_interval = '15 DAY';
-$cDataClearIp = '127.0.0.1';
-$cDataClearEmail = 'acc@toolserver.org';
 
 /***********************************
  * Other stuff that doesn't fit in.
@@ -277,9 +272,6 @@ $enableErrorTrace = false;
 // Retriving the local configuration file.
 require_once('config.local.inc.php');
 
-// Enforce a schema version
-$schemaVersion = 16;
-
 $cDatabaseConfig = array(
 	"acc" => array(
 		"dsrcname" => "mysql:host=" . $toolserver_host . ";dbname=" . $toolserver_database,
@@ -317,11 +309,19 @@ foreach (array(
 // Set up the AutoLoader
 require_once($filepath . "includes/AutoLoader.php");
 spl_autoload_register("AutoLoader::load");
-require_once($filepath . 'vendor/autoload.php')
+require_once($filepath . 'vendor/autoload.php');
 
 // Extra includes which are just plain awkward wherever they are.
-;
 require_once($filepath . 'oauth/OAuthUtility.php');
 require_once($filepath . 'functions.php');
 require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/OAuth.php');
 require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/JWT.php');
+
+// Initialise the site configuration object
+$siteConfiguration = new \Waca\SiteConfiguration();
+
+$siteConfiguration->setBaseUrl($baseurl)
+	->setFilePath($filepath)
+	->setDebuggingTraceEnabled($enableErrorTrace)
+	->setForceIdentification($forceIdentification)
+	;

@@ -29,10 +29,9 @@ class PageForgotPassword extends PageBase
 			}
 
 			$user = User::getByUsername($username, $database);
-			if ($user === false || strtolower($user->getEmail()) !== strtolower($email)) {
-				// Oooh, not found! Let's do nothing.
-			}
-			else {
+
+			// If the user isn't found, or the email address is wrong, skip sending the details silently.
+			if ($user !== false && strtolower($user->getEmail()) === strtolower($email)) {
 				$clientIp = \getTrustedClientIP(WebRequest::remoteAddress(), WebRequest::forwardedAddress());
 
 				$this->assign("user", $user);

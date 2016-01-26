@@ -23,8 +23,8 @@ class SessionAlert
 	 * @param string $message
 	 * @param string $title
 	 * @param string $type
-	 * @param bool $closable
-	 * @param bool $block
+	 * @param bool   $closable
+	 * @param bool   $block
 	 */
 	public function __construct($message, $title, $type = "alert-info", $closable = true, $block = true)
 	{
@@ -37,7 +37,8 @@ class SessionAlert
 
 	public function getAlertBox()
 	{
-		return BootstrapSkin::displayAlertBox($this->message, $this->type, $this->title, $this->block, $this->closable, true);
+		return BootstrapSkin::displayAlertBox($this->message, $this->type, $this->title, $this->block, $this->closable,
+			true);
 	}
 
 	/**
@@ -106,7 +107,7 @@ class SessionAlert
 		return $block;
 	}
 
-	public static function clearAlerts(){
-
+	public static function clearAlerts()
+	{
 	}
 }

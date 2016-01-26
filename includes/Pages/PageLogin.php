@@ -28,8 +28,8 @@ class PageLogin extends PageBase
 			}
 			else {
 				// This is the login form, not the request form. We need protection here.
-				$path = 'https://' . $_SERVER["SERVER_NAME"] . $_SERVER["REQUEST_URI"];
-				header("Location: " . $path);
+				$this->redirectUrl('https://' . WebRequest::getServerName() . WebRequest::getRequestUri());
+				return;
 			}
 		}
 

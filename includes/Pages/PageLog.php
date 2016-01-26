@@ -61,18 +61,13 @@ class PageLog extends PageBase
 		$pageMargin = (($pageLimit - 1) / 2);
 
 		// Calculate the number of pages either side to show - this is for situations like:
-		//   1   2  (3)  4   5   6   7   8   9
-		// where you can't just use the page margin calculated
-
+		//  [1]  [2] [[3]] [4]  [5]  [6]  [7]  [8]  [9] - where you can't just use the page margin calculated
 		$pageData['lowpage'] = max(1, $page - $pageMargin);
 		$pageData['hipage'] = min($pageData['maxpage'], $page + $pageMargin);
 		$pageCount = ($pageData['hipage'] - $pageData['lowpage']) + 1;
 
 		if ($pageCount < $pageLimit) {
-			if ($pageData['lowpage'] == 1 && $pageData['hipage'] == $pageData['maxpage']) {
-				// nothing to do, we're already at max range.
-			}
-			elseif ($pageData['lowpage'] == 1 && $pageData['hipage'] < $pageData['maxpage']) {
+			if ($pageData['lowpage'] == 1 && $pageData['hipage'] < $pageData['maxpage']) {
 				$pageData['hipage'] = min($pageLimit, $pageData['maxpage']);
 			}
 			elseif ($pageData['lowpage'] > 1 && $pageData['hipage'] == $pageData['maxpage']) {

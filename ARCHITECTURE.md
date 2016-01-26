@@ -40,7 +40,8 @@ corresponding test class `\Waca\Tests\WebRequestTest` at the file path `tests/We
 ### Globals
 
 Kind-of banned. Our configuration system is entirely based in global variables, and we need to fix this. If something 
-uses a global variable it becomes extremely hard to test.
+uses a global variable it becomes extremely hard to test. If it's a configuration variable you want to use, grab it from
+the closest configuration object. If it's not in the configuration object, this is a good opportunity to move it there!
 
 ### Super-globals
 

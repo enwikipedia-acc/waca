@@ -6,6 +6,7 @@ use InterfaceMessage;
 use Smarty;
 use User;
 use Waca\Environment;
+use Waca\SiteConfiguration;
 
 trait TemplateOutput
 {
@@ -14,6 +15,11 @@ trait TemplateOutput
 
 	/** @var string Extra JavaScript to include at the end of the page's execution */
 	private $tailScript;
+
+	/**
+	 * @return SiteConfiguration
+	 */
+	protected abstract function getSiteConfiguration();
 
 	/**
 	 * Include extra JavaScript at the end of the page's execution
@@ -42,15 +48,12 @@ trait TemplateOutput
 	 */
 	protected final function setUpSmarty()
 	{
-		global $baseurl, $wikiurl, $mediawikiScriptPath;
-
 		$this->smarty = new Smarty();
 
 		$this->assign("currentUser", User::getCurrent());
 		$this->assign("loggedIn", (!User::getCurrent()->isCommunityUser()));
-		$this->assign("baseurl", $baseurl);
-		$this->assign("wikiurl", $wikiurl);
-		$this->assign("mediawikiScriptPath", $mediawikiScriptPath);
+		$this->assign("baseurl", $this->getSiteConfiguration()->getBaseUrl());
+		$this->assign("mediawikiScriptPath", $this->getSiteConfiguration()->getMediawikiScriptPath());
 
 		// TODO: this isn't very mockable, and requires a database link.
 		$siteNoticeText = InterfaceMessage::get(InterfaceMessage::SITENOTICE);

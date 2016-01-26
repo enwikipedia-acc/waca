@@ -60,19 +60,19 @@ class PageUserManagement extends PageBase
 		$userId = WebRequest::getInt('user');
 		$user = User::getById($userId, $database);
 
-		if($user === false){
+		if ($user === false) {
 			throw new ApplicationLogicException('Sorry, the user you are trying to suspend could not be found.');
 		}
 
-		if($user->isSuspended()){
+		if ($user->isSuspended()) {
 			throw new ApplicationLogicException('Sorry, the user you are trying to suspend is already suspended.');
 		}
 
 		// Dual-mode action
-		if(WebRequest::wasPosted()){
+		if (WebRequest::wasPosted()) {
 			$reason = WebRequest::postString('reason');
 
-			if($reason === null || trim($reason) === ""){
+			if ($reason === null || trim($reason) === "") {
 				throw new ApplicationLogicException('No reason provided');
 			}
 
@@ -106,19 +106,19 @@ class PageUserManagement extends PageBase
 		$userId = WebRequest::getInt('user');
 		$user = User::getById($userId, $database);
 
-		if($user === false){
+		if ($user === false) {
 			throw new ApplicationLogicException('Sorry, the user you are trying to decline could not be found.');
 		}
 
-		if(!$user->isNew()){
+		if (!$user->isNew()) {
 			throw new ApplicationLogicException('Sorry, the user you are trying to decline is not new.');
 		}
 
 		// Dual-mode action
-		if(WebRequest::wasPosted()){
+		if (WebRequest::wasPosted()) {
 			$reason = WebRequest::postString('reason');
 
-			if($reason === null || trim($reason) === ""){
+			if ($reason === null || trim($reason) === "") {
 				throw new ApplicationLogicException('No reason provided');
 			}
 
@@ -152,19 +152,19 @@ class PageUserManagement extends PageBase
 		$userId = WebRequest::getInt('user');
 		$user = User::getById($userId, $database);
 
-		if($user === false){
+		if ($user === false) {
 			throw new ApplicationLogicException('Sorry, the user you are trying to demote could not be found.');
 		}
 
-		if(!$user->isAdmin()){
+		if (!$user->isAdmin()) {
 			throw new ApplicationLogicException('Sorry, the user you are trying to demote is not an admin.');
 		}
 
 		// Dual-mode action
-		if(WebRequest::wasPosted()){
+		if (WebRequest::wasPosted()) {
 			$reason = WebRequest::postString('reason');
 
-			if($reason === null || trim($reason) === ""){
+			if ($reason === null || trim($reason) === "") {
 				throw new ApplicationLogicException('No reason provided');
 			}
 
@@ -198,16 +198,16 @@ class PageUserManagement extends PageBase
 		$userId = WebRequest::getInt('user');
 		$user = User::getById($userId, $database);
 
-		if($user === false){
+		if ($user === false) {
 			throw new ApplicationLogicException('Sorry, the user you are trying to approve could not be found.');
 		}
 
-		if($user->isUser() || $user->isAdmin()){
+		if ($user->isUser() || $user->isAdmin()) {
 			throw new ApplicationLogicException('Sorry, the user you are trying to approve is already an active user.');
 		}
 
 		// Dual-mode action
-		if(WebRequest::wasPosted()){
+		if (WebRequest::wasPosted()) {
 			$user->approve();
 
 			Notification::userApproved($user);
@@ -238,16 +238,16 @@ class PageUserManagement extends PageBase
 		$userId = WebRequest::getInt('user');
 		$user = User::getById($userId, $database);
 
-		if($user === false){
+		if ($user === false) {
 			throw new ApplicationLogicException('Sorry, the user you are trying to promote could not be found.');
 		}
 
-		if($user->isAdmin()){
+		if ($user->isAdmin()) {
 			throw new ApplicationLogicException('Sorry, the user you are trying to promote is already an admin.');
 		}
 
 		// Dual-mode action
-		if(WebRequest::wasPosted()){
+		if (WebRequest::wasPosted()) {
 			$user->promote();
 
 			Notification::userPromoted($user);
@@ -282,15 +282,15 @@ class PageUserManagement extends PageBase
 		$userId = WebRequest::getInt('user');
 		$user = User::getById($userId, $database);
 
-		if($user === false){
+		if ($user === false) {
 			throw new ApplicationLogicException('Sorry, the user you are trying to rename could not be found.');
 		}
 
 		// Dual-mode action
-		if(WebRequest::wasPosted()){
+		if (WebRequest::wasPosted()) {
 			$newUsername = WebRequest::postString('newname');
 
-			if($newUsername === null || trim($newUsername) === ""){
+			if ($newUsername === null || trim($newUsername) === "") {
 				throw new ApplicationLogicException('The new username cannot be empty');
 			}
 
@@ -304,7 +304,7 @@ class PageUserManagement extends PageBase
 
 			$logEntryData = serialize(array(
 				'old' => $oldUsername,
-				'new' => $newUsername
+				'new' => $newUsername,
 			));
 
 			Logger::renamedUser($database, $user, $logEntryData);
@@ -339,22 +339,21 @@ class PageUserManagement extends PageBase
 		$userId = WebRequest::getInt('user');
 		$user = User::getById($userId, $database);
 
-		if($user === false){
+		if ($user === false) {
 			throw new ApplicationLogicException('Sorry, the user you are trying to edit could not be found.');
 		}
 
 		// Dual-mode action
-		if(WebRequest::wasPosted()){
+		if (WebRequest::wasPosted()) {
 			$newEmail = WebRequest::postEmail('user_email');
 			$newOnWikiName = WebRequest::postString('user_onwikiname');
 
-			if($newEmail === null){
+			if ($newEmail === null) {
 				throw new ApplicationLogicException('Invalid email address');
 			}
 
 			if (!$user->isOAuthLinked()) {
-				if(trim($newOnWikiName) == "")
-				{
+				if (trim($newOnWikiName) == "") {
 					throw new ApplicationLogicException('New on-wiki username cannot be blank');
 				}
 

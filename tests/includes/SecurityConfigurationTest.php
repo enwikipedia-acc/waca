@@ -6,7 +6,7 @@ use Waca\SecurityConfiguration;
 
 /**
  * Class SecurityConfigurationTest
- * @package Waca\Tests
+ * @package  Waca\Tests
  * @category Security-Critical
  */
 class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
@@ -244,7 +244,8 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($config->allows($this->user));
 	}
 
-	public function testCheckuserAnonymousBypass() {
+	public function testCheckuserAnonymousBypass()
+	{
 		// This should never happen, but putting a test in to ensure we handle it correctly!
 		$this->user->method('isCommunityUser')->willReturn(true);
 		$this->user->method('isCheckuser')->willReturn(true);
@@ -255,7 +256,8 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($config->allows($this->user));
 	}
 
-	public function testCheckuserSuspendedBypass() {
+	public function testCheckuserSuspendedBypass()
+	{
 		$this->user->method('isSuspended')->willReturn(true);
 		$this->user->method('isCheckuser')->willReturn(true);
 
@@ -265,7 +267,8 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($config->allows($this->user));
 	}
 
-	public function testCheckuserDeclinedBypass() {
+	public function testCheckuserDeclinedBypass()
+	{
 		$this->user->method('isDeclined')->willReturn(true);
 		$this->user->method('isCheckuser')->willReturn(true);
 
@@ -275,7 +278,8 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($config->allows($this->user));
 	}
 
-	public function testCheckuserNewBypass() {
+	public function testCheckuserNewBypass()
+	{
 		$this->user->method('isNew')->willReturn(true);
 		$this->user->method('isCheckuser')->willReturn(true);
 
@@ -285,7 +289,8 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse($config->allows($this->user));
 	}
 
-	public function testIdentification() {
+	public function testIdentification()
+	{
 		$this->fail("Please implement me!");
 	}
 }

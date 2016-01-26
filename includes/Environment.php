@@ -9,7 +9,7 @@ class Environment
 	/**
 	 * @var string Cached copy of the tool version
 	 */
-	private static $toolVersion;
+	private static $toolVersion = null;
 
 	/**
 	 * Gets the tool version, using cached data if available.
@@ -17,7 +17,7 @@ class Environment
 	 */
 	public static function getToolVersion()
 	{
-		if (self::$toolVersion == false) {
+		if (self::$toolVersion === null) {
 			self::$toolVersion = exec("git describe --always --dirty");
 		}
 

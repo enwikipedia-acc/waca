@@ -4,6 +4,7 @@ namespace Waca\Exceptions;
 
 use Exception;
 use Waca\Fragments\TemplateOutput;
+use Waca\SiteConfiguration;
 
 /**
  * Class ReadableException
@@ -20,5 +21,15 @@ abstract class ReadableException extends Exception
 	 * Returns a readable HTML error message that's displayable to the user using templates.
 	 * @return string
 	 */
-	public abstract function getReadableError();
+	abstract public function getReadableError();
+
+	/**
+	 * @return SiteConfiguration
+	 */
+	protected function getSiteConfiguration()
+	{
+		// Uck. However, we have encountered an exception.
+		global $siteConfiguration;
+		return $siteConfiguration;
+	}
 }

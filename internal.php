@@ -2,5 +2,8 @@
 namespace Waca;
 
 require_once('config.inc.php');
-$application = new WebStart();
+
+global $siteConfiguration;
+$application = new WebStart($siteConfiguration);
+
 $application->run();

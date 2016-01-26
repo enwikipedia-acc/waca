@@ -11,7 +11,6 @@ use Waca\Helpers\Interfaces\IEmailHelper;
 abstract class PageBase
 {
 	use TemplateOutput;
-
 	/** @var array The callable route to be taken, as determined by the request router. */
 	private $route = null;
 	/** @var string The name of the route to use, as determined by the request router. */
@@ -22,6 +21,8 @@ abstract class PageBase
 	private $htmlTitle;
 	/** @var IEmailHelper */
 	private $emailHelper;
+	/** @var SiteConfiguration */
+	private $siteConfiguration;
 
 	/**
 	 * Sets the route the request will take. Only should be called from the request router.
@@ -30,7 +31,7 @@ abstract class PageBase
 	 * @throws Exception
 	 * @category Security-Critical
 	 */
-	public final function setRoute($routeName)
+	final public function setRoute($routeName)
 	{
 		// Test the new route is callable before adopting it.
 		$proposedRoute = array($this, $routeName);
@@ -49,10 +50,14 @@ abstract class PageBase
 	 * @throws Exception
 	 * @category Security-Critical
 	 */
-	public final function execute()
+	final    public function execute()
 	{
 		if ($this->route === null) {
 			throw new Exception("Request is unrouted.");
+		}
+
+		if ($this->siteConfiguration === null) {
+			throw new Exception("Page has no configuration!");
 		}
 
 		$this->setupPage();
@@ -77,8 +82,9 @@ abstract class PageBase
 			else {
 				// Decide whether this was a rights failure, or an identification failure.
 
-				global $forceIdentification;
-				if($forceIdentification && User::getCurrent()->isIdentified() != 1) {
+				if ($this->getSiteConfiguration()->getForceIdentification()
+					&& User::getCurrent()->isIdentified() != 1
+				) {
 					// Not identified
 					throw new NotIdentifiedException();
 				}
@@ -99,7 +105,7 @@ abstract class PageBase
 	 * @return boolean
 	 * @category Security-Critical
 	 */
-	public final function barrierTest($action)
+	final    public function barrierTest($action)
 	{
 		$tmpRouteName = $this->routeName;
 
@@ -131,9 +137,29 @@ abstract class PageBase
 	}
 
 	/**
-	 * Main function for this page, when no specific actions are called.
+	 * Sets the site configuration object for this page
+	 * @param $configuration
 	 */
-	protected abstract function main();
+	public function setSiteConfiguration($configuration)
+	{
+		$this->siteConfiguration = $configuration;
+	}
+
+	/**
+	 * Gets the site configuration object
+	 *
+	 * @return SiteConfiguration
+	 */
+	protected function getSiteConfiguration()
+	{
+		return $this->siteConfiguration;
+	}
+
+	/**
+	 * Main function for this page, when no specific actions are called.
+	 * @return void
+	 */
+	abstract protected function main();
 
 	/**
 	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
@@ -144,22 +170,22 @@ abstract class PageBase
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
-	protected abstract function getSecurityConfiguration();
+	abstract protected function getSecurityConfiguration();
 
 	/**
 	 * Gets the name of the route that has been passed from the request router.
 	 * @return string
 	 */
-	protected final function getRouteName()
+	final    protected function getRouteName()
 	{
 		return $this->routeName;
 	}
 
 	/**
 	 * Sets the name of the template this page should display.
-	 * @param $name string
+	 * @param string $name
 	 */
-	protected final function setTemplate($name)
+	final protected function setTemplate($name)
 	{
 		$this->template = $name;
 	}
@@ -169,7 +195,7 @@ abstract class PageBase
 	 *
 	 * Also nullifies the set template so Smarty does not render it.
 	 *
-	 * @param $path string URL to redirect to
+	 * @param string $path URL to redirect to
 	 */
 	protected function redirectUrl($path)
 	{
@@ -185,17 +211,16 @@ abstract class PageBase
 	 *
 	 * Also nullifies the set template so Smarty does not render it.
 	 *
-	 * @param string     $page   The page to redirect requests to (as used in the UR)
+	 * @param string      $page   The page to redirect requests to (as used in the UR)
 	 * @param null|string $action The action to use on the page.
 	 */
 	protected function redirect($page, $action = null)
 	{
-		global $baseurl;
-		$pathInfo = array($baseurl . "/internal.php");
+		$pathInfo = array($this->getSiteConfiguration()->getBaseUrl() . "/internal.php");
 
 		$pathInfo[1] = $page;
 
-		if($action !== null) {
+		if ($action !== null) {
 			$pathInfo[2] = $action;
 		}
 
@@ -206,7 +231,7 @@ abstract class PageBase
 	/**
 	 * Performs generic page setup actions
 	 */
-	private final function setupPage()
+	final    private function setupPage()
 	{
 		$this->setUpSmarty();
 	}
@@ -214,7 +239,7 @@ abstract class PageBase
 	/**
 	 * Performs final tasks needed before rendering the page.
 	 */
-	private final function finalisePage()
+	final private function finalisePage()
 	{
 		// TODO: session alerts, but how do they fit in?
 		// We don't want to clear them unless we know they're definitely going to be displayed to the user (think
@@ -230,7 +255,7 @@ abstract class PageBase
 	 *
 	 * Only should be called after a security barrier! That means only from execute().
 	 */
-	private final function runPage()
+	final    private function runPage()
 	{
 		// run the page code
 		call_user_func($this->route);

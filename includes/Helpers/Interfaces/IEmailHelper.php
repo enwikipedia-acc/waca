@@ -17,7 +17,7 @@ interface IEmailHelper
 	 * @param string $subject
 	 * @param string $content
 	 * @param array  $headers Extra headers to include
-	 * @return
+	 * @return void
 	 */
 	public function sendMail($to, $subject, $content, $headers = array());
 }

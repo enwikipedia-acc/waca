@@ -14,19 +14,15 @@ class PageRegister extends PageBase
 	protected function main()
 	{
 		// Dual-mode page
-		if(WebRequest::wasPosted())
-		{
-
+		if (WebRequest::wasPosted()) {
 
 		}
-		else{
+		else {
 			global $useOauthSignup;
 			$this->assign("useOauthSignup", $useOauthSignup);
 
 			return $this->fetchTemplate("registration/register.tpl");
 		}
-
-
 	}
 
 	/**

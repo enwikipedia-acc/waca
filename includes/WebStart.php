@@ -17,6 +17,20 @@ use Waca\Providers\GlobalStateProvider;
 class WebStart
 {
 	/**
+	 * @var SiteConfiguration
+	 */
+	private $configuration;
+
+	/**
+	 * WebStart constructor.
+	 * @param SiteConfiguration $configuration
+	 */
+	public function __construct(SiteConfiguration $configuration)
+	{
+		$this->configuration = $configuration;
+	}
+
+	/**
 	 * Application entry point.
 	 *
 	 * Sets up the environment and runs the application, performing any global cleanup operations when done.
@@ -28,11 +42,11 @@ class WebStart
 				$this->main();
 			}
 		}
-		catch(EnvironmentException $ex) {
+		catch (EnvironmentException $ex) {
 			ob_end_clean();
 			print Offline::getOfflineMessage(false, $ex->getMessage());
 		}
-		catch(ReadableException $ex) {
+		catch (ReadableException $ex) {
 			ob_end_clean();
 			print $ex->getReadableError();
 		}
@@ -52,7 +66,8 @@ class WebStart
 	 */
 	public static function exceptionHandler(Exception $exception)
 	{
-		global $baseurl, $filepath, $enableErrorTrace;
+		/** @global $siteConfiguration SiteConfiguration */
+		global $siteConfiguration;
 
 		$errorDocument = <<<HTML
 <!DOCTYPE html>
@@ -60,13 +75,13 @@ class WebStart
 <meta charset="utf-8">
 <title>Oops! Something went wrong!</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="{$baseurl}/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="{$siteConfiguration->getBaseUrl()}/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 <style>
   body {
     padding-top: 60px;
   }
 </style>
-<link href="{$baseurl}/lib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
+<link href="{$siteConfiguration->getBaseUrl()}/lib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 </head><body><div class="container">
 <h1>Oops! Something went wrong!</h1>
 <p>We'll work on fixing this for you, so why not come back later?</p>
@@ -93,7 +108,7 @@ HTML;
 		// push error ID into the document.
 		$message = str_replace('$1$', $errorId, $errorDocument);
 
-		if ($enableErrorTrace) {
+		if ($siteConfiguration->getDebuggingTraceEnabled()) {
 			ob_start();
 			var_dump($errorData);
 			$textErrorData = ob_get_contents();
@@ -107,8 +122,6 @@ HTML;
 
 		// output the document
 		print $message;
-
-		die;
 	}
 
 	/**
@@ -122,8 +135,6 @@ HTML;
 	 */
 	private function setupEnvironment()
 	{
-		global $schemaVersion;
-
 		// initialise global exception handler
 		set_exception_handler(array(self::class, "exceptionHandler"));
 
@@ -145,7 +156,7 @@ HTML;
 		// check the schema version
 		$database = PdoDatabase::getDatabaseConnection("acc");
 		$actualVersion = $database->query("SELECT version FROM schemaversion")->fetchColumn();
-		if ($actualVersion !== $schemaVersion) {
+		if ($actualVersion !== $this->configuration->getSchemaVersion()) {
 			throw new EnvironmentException("Database schema is wrong version! Please either update configuration or database.");
 		}
 
@@ -164,6 +175,8 @@ HTML;
 		// Get the right route for the request
 		$router = new RequestRouter();
 		$page = $router->route();
+
+		$page->setSiteConfiguration($this->configuration);
 
 		// set up helpers and inject them into the page.
 		$page->setEmailHelper(new EmailHelper());
@@ -201,7 +214,7 @@ HTML;
 		return array(
 			'message'  => $exception->getMessage(),
 			'stack'    => $exception->getTraceAsString(),
-			'previous' => self::getExceptionData($exception->getPrevious())
+			'previous' => self::getExceptionData($exception->getPrevious()),
 		);
 	}
 }

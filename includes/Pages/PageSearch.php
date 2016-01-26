@@ -88,8 +88,6 @@ class PageSearch extends PageBase
 	 */
 	private function getNameSearchResults($searchTerm)
 	{
-		global $cDataClearIp, $cDataClearEmail;
-
 		$padded = '%' . $searchTerm . '%';
 
 		$database = gGetDb();
@@ -97,8 +95,8 @@ class PageSearch extends PageBase
 		$query = 'SELECT * FROM request WHERE name LIKE :term AND email <> :clearedEmail AND ip <> :clearedIp';
 		$statement = $database->prepare($query);
 		$statement->bindValue(":term", $padded);
-		$statement->bindValue(":clearedEmail", $cDataClearEmail);
-		$statement->bindValue(":clearedIp", $cDataClearIp);
+		$statement->bindValue(":clearedEmail", $this->getSiteConfiguration()->getDataClearEmail());
+		$statement->bindValue(":clearedIp", $this->getSiteConfiguration()->getDataClearIp());
 		$statement->execute();
 
 		/** @var Request $r */
@@ -119,9 +117,7 @@ class PageSearch extends PageBase
 	 */
 	private function getEmailSearchResults($searchTerm)
 	{
-		global $cDataClearIp, $cDataClearEmail;
-
-		if($searchTerm === "@") {
+		if ($searchTerm === "@") {
 			throw new ApplicationLogicException('The search term "@" is not valid for email address searches!');
 		}
 
@@ -132,8 +128,8 @@ class PageSearch extends PageBase
 		$query = 'SELECT * FROM request WHERE email LIKE :term AND email <> :clearedEmail AND ip <> :clearedIp';
 		$statement = $database->prepare($query);
 		$statement->bindValue(":term", $padded);
-		$statement->bindValue(":clearedEmail", $cDataClearEmail);
-		$statement->bindValue(":clearedIp", $cDataClearIp);
+		$statement->bindValue(":clearedEmail", $this->getSiteConfiguration()->getDataClearEmail());
+		$statement->bindValue(":clearedIp", $this->getSiteConfiguration()->getDataClearIp());
 		$statement->execute();
 
 		/** @var Request $r */
@@ -153,8 +149,6 @@ class PageSearch extends PageBase
 	 */
 	private function getIpSearchResults($searchTerm)
 	{
-		global $cDataClearIp, $cDataClearEmail;
-
 		$padded = '%' . $searchTerm . '%';
 
 		$database = gGetDb();
@@ -167,8 +161,8 @@ SQL;
 		$statement = $database->prepare($query);
 		$statement->bindValue(":term", $searchTerm);
 		$statement->bindValue(":paddedTerm", $padded);
-		$statement->bindValue(":clearedEmail", $cDataClearEmail);
-		$statement->bindValue(":clearedIp", $cDataClearIp);
+		$statement->bindValue(":clearedEmail", $this->getSiteConfiguration()->getDataClearEmail());
+		$statement->bindValue(":clearedIp", $this->getSiteConfiguration()->getDataClearIp());
 		$statement->execute();
 
 		/** @var Request $r */

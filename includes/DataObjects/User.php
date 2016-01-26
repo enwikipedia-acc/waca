@@ -1133,7 +1133,7 @@ SQL
 
 	/**
 	 * Gets the approval date of the user
-	 * @return DateTime
+	 * @return DateTime|false
 	 */
 	public function getApprovalDate()
 	{

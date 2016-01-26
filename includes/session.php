@@ -55,7 +55,7 @@ namespace {
 			// CommunityUser has no database row, and we really don't want CommunityUser to have oauth credentials...
 			if (!User::getCurrent()->isCommunityUser()) {
 				if (User::getCurrent()->getStoredOnWikiName() == "##OAUTH##"
-					&& User::getCurrent()->getOAuthAccessToken() == null
+					&& User::getCurrent()->getOAuthAccessToken() === null
 				) {
 					reattachOAuthAccount(User::getCurrent());
 				}

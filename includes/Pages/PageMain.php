@@ -12,8 +12,7 @@ class PageMain extends PageBase
 	 */
 	protected function main()
 	{
-		global $baseurl;
-		$this->redirectUrl($baseurl . '/acc.php');
+		$this->redirectUrl($this->getSiteConfiguration()->getBaseUrl() . '/acc.php');
 	}
 
 	/**

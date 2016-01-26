@@ -20,7 +20,6 @@ final class SecurityConfiguration
 	private $suspended = "default";
 	private $declined = "default";
 	private $new = "default";
-
 	private $requireIdentified;
 
 	/**
@@ -126,7 +125,7 @@ final class SecurityConfiguration
 	{
 		$allowed = false;
 
-		if($this->requireIdentified && !$user->isCommunityUser() && $user->isIdentified()) {
+		if ($this->requireIdentified && !$user->isCommunityUser() && $user->isIdentified()) {
 			return false;
 		}
 
@@ -252,7 +251,8 @@ final class SecurityConfiguration
 		return $config;
 	}
 
-	public static function checkUserData(){
+	public static function checkUserData()
+	{
 		$config = new SecurityConfiguration();
 		$config->setCheckuser(self::ALLOW)
 			->setCommunity(self::DENY)

@@ -1,6 +1,6 @@
 ﻿<div class="btn-group">
     {if $user->isNew() || $user->isSuspended() || $user->isDeclined()}
-        <a class="btn" href="//{$wikiurl}/w/index.php?diff={$user->getConfirmationDiff()|escape:'url'}">
+        <a class="btn" href="{$mediawikiScriptPath}?diff={$user->getConfirmationDiff()|escape:'url'}">
             <i class="icon icon-edit"></i>&nbsp;
             <span class="visible-desktop">Diff</span>
         </a>
