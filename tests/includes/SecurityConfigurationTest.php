@@ -1,6 +1,7 @@
 <?php
 namespace Waca\Tests;
 
+use ReflectionProperty;
 use User;
 use Waca\SecurityConfiguration;
 
@@ -42,7 +43,12 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->user->method('isCheckuser')->willReturn(true);
 
 		$config = new SecurityConfiguration();
-		$config->setCheckuser(SecurityConfiguration::ALLOW);
+
+		// set checkuser using reflection
+		$reflector = new ReflectionProperty(SecurityConfiguration::class, 'checkuser');
+		$reflector->setAccessible(true);
+		$reflector->setValue($config, SecurityConfiguration::ALLOW);
+
 		$this->assertTrue($config->allows($this->user));
 	}
 
@@ -103,7 +109,13 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->user->method('isCheckuser')->willReturn(true);
 		$config = new SecurityConfiguration();
-		$config->setCheckuser(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY);
+
+		// set checkuser using reflection
+		$reflector = new ReflectionProperty(SecurityConfiguration::class, 'checkuser');
+		$reflector->setAccessible(true);
+		$reflector->setValue($config, SecurityConfiguration::ALLOW);
+
+		$config->setNew(SecurityConfiguration::DENY);
 		$this->assertTrue($config->allows($this->user));
 	}
 
@@ -159,7 +171,12 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->user->method('isCheckuser')->willReturn(true);
 		$config = new SecurityConfiguration();
-		$config->setCheckuser(SecurityConfiguration::DENY);
+
+		// set checkuser using reflection
+		$reflector = new ReflectionProperty(SecurityConfiguration::class, 'checkuser');
+		$reflector->setAccessible(true);
+		$reflector->setValue($config, SecurityConfiguration::DENY);
+
 		$this->assertFalse($config->allows($this->user));
 	}
 
@@ -251,7 +268,13 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->user->method('isCheckuser')->willReturn(true);
 
 		$config = new SecurityConfiguration();
-		$config->setCheckuser(SecurityConfiguration::ALLOW);
+
+		// set checkuser using reflection
+		$reflector = new ReflectionProperty(SecurityConfiguration::class, 'checkuser');
+		$reflector->setAccessible(true);
+		$reflector->setValue($config, SecurityConfiguration::ALLOW);
+
+		$config->setCommunity(SecurityConfiguration::DENY);
 
 		$this->assertFalse($config->allows($this->user));
 	}
@@ -262,7 +285,13 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->user->method('isCheckuser')->willReturn(true);
 
 		$config = new SecurityConfiguration();
-		$config->setCheckuser(SecurityConfiguration::ALLOW);
+
+		// set checkuser using reflection
+		$reflector = new ReflectionProperty(SecurityConfiguration::class, 'checkuser');
+		$reflector->setAccessible(true);
+		$reflector->setValue($config, SecurityConfiguration::ALLOW);
+
+		$config->setSuspended(SecurityConfiguration::DENY);
 
 		$this->assertFalse($config->allows($this->user));
 	}
@@ -273,7 +302,13 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->user->method('isCheckuser')->willReturn(true);
 
 		$config = new SecurityConfiguration();
-		$config->setCheckuser(SecurityConfiguration::ALLOW);
+
+		// set checkuser using reflection
+		$reflector = new ReflectionProperty(SecurityConfiguration::class, 'checkuser');
+		$reflector->setAccessible(true);
+		$reflector->setValue($config, SecurityConfiguration::ALLOW);
+
+		$config->setDeclined(SecurityConfiguration::DENY);
 
 		$this->assertFalse($config->allows($this->user));
 	}
@@ -284,13 +319,19 @@ class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->user->method('isCheckuser')->willReturn(true);
 
 		$config = new SecurityConfiguration();
-		$config->setCheckuser(SecurityConfiguration::ALLOW);
+
+		// set checkuser using reflection
+		$reflector = new ReflectionProperty(SecurityConfiguration::class, 'checkuser');
+		$reflector->setAccessible(true);
+		$reflector->setValue($config, SecurityConfiguration::ALLOW);
+
+		$config->setNew(SecurityConfiguration::DENY);
 
 		$this->assertFalse($config->allows($this->user));
 	}
 
 	public function testIdentification()
 	{
-		$this->fail("Please implement me!");
+		$this->markTestIncomplete("Please implement me!");
 	}
 }

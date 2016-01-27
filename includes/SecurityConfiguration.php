@@ -57,11 +57,18 @@ final class SecurityConfiguration
 	}
 
 	/**
+	 * Sets whether a checkuser is able to gain access.
+	 *
+	 * This is private because it's DANGEROUS. Checkusers are not mutually-exclusive with other rights. As such, a
+	 * suspended checkuser who tries to access a page which allows checkusers will be granted access to the page, UNLESS
+	 * that page is also set to deny New/Declined/Suspended users. I have no problem with this method being used, but
+	 * please ONLY use it in this class in static methods. DO NOT set it to public.
+	 *
 	 * @param string $checkuser
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
-	public function setCheckuser($checkuser)
+	private function setCheckuser($checkuser)
 	{
 		$this->checkuser = $checkuser;
 		return $this;
@@ -147,15 +154,6 @@ final class SecurityConfiguration
 			$allowed = $allowed || $this->user === self::ALLOW;
 		}
 
-		// checkuser
-		if ($user->isCheckuser()) {
-			if ($this->checkuser === self::DENY) {
-				return false;
-			}
-
-			$allowed = $allowed || $this->checkuser === self::ALLOW;
-		}
-
 		// community
 		if ($user->isCommunityUser()) {
 			if ($this->community === self::DENY) {
@@ -192,6 +190,15 @@ final class SecurityConfiguration
 			$allowed = $allowed || $this->new === self::ALLOW;
 		}
 
+		// checkuser
+		if ($user->isCheckuser()) {
+			if ($this->checkuser === self::DENY) {
+				return false;
+			}
+
+			$allowed = $allowed || $this->checkuser === self::ALLOW;
+		}
+
 		return $allowed;
 	}
 
@@ -225,10 +232,7 @@ final class SecurityConfiguration
 	{
 		$config = new SecurityConfiguration();
 		$config->setAdmin(self::ALLOW)
-			->setCommunity(self::DENY)
-			->setNew(self::DENY)
-			->setDeclined(self::DENY)
-			->setSuspended(self::DENY);
+			->setUser(self::ALLOW);
 
 		return $config;
 	}
@@ -242,11 +246,7 @@ final class SecurityConfiguration
 	public static function adminPage()
 	{
 		$config = new SecurityConfiguration();
-		$config->setAdmin(self::ALLOW)
-			->setCommunity(self::DENY)
-			->setSuspended(self::DENY)
-			->setDeclined(self::DENY)
-			->setNew(self::DENY);
+		$config->setAdmin(self::ALLOW);
 
 		return $config;
 	}
