@@ -2,6 +2,7 @@
   "description": "Wikipedia Account Creation Assistance Tool",
   "minimum-stability": "stable",
   "require": {
-    "smarty/smarty": "v3.1.29"
+    "smarty/smarty": "v3.1.29",
+    "components/jquery": "1.9.1"
   }
 }
