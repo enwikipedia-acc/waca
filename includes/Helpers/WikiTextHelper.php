@@ -10,7 +10,6 @@ class WikiTextHelper
 	 * @var SiteConfiguration
 	 */
 	private $configuration;
-
 	/**
 	 * @var HttpHelper
 	 */

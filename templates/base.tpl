@@ -43,7 +43,7 @@
                             <ul class="dropdown-menu">
                                 <li><a href="{$baseurl}/internal.php/bans"><i class="icon-ban-circle"></i>&nbsp;Ban Management</a></li>
                                 <li><a href="{$baseurl}/internal.php/emailmgmt"><i class="icon-envelope"></i>&nbsp;Close Email Management</a></li>
-                                <li><a href="{$baseurl}/internal.php/templatemgmt"><i class="icon-file"></i>&nbsp;Welcome Template Management</a></li>
+                                <li><a href="{$baseurl}/internal.php/welcomeTemplates"><i class="icon-file"></i>&nbsp;Welcome Template Management</a></li>
                                 {if $currentUser->isAdmin()}
                                     <li><a href="{$baseurl}/internal.php/siteNotice"><i class="icon-print"></i>&nbsp;Site Notice Management</a></li>
                                     <li><a href="{$baseurl}/internal.php/userManagement"><i class="icon-user"></i> User Management</a></li>

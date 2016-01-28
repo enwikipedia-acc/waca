@@ -9,7 +9,8 @@ class HttpHelper
 	 * @param string $url
 	 * @return string
 	 */
-	public function get($url){
+	public function get($url)
+	{
 		return file_get_contents($url);
 	}
 }
