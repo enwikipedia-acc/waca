@@ -7,6 +7,8 @@ use PdoDatabase;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Exceptions\ReadableException;
 use Waca\Helpers\EmailHelper;
+use Waca\Helpers\HttpHelper;
+use Waca\Helpers\WikiTextHelper;
 use Waca\Providers\GlobalStateProvider;
 
 /**
@@ -180,6 +182,8 @@ HTML;
 
 		// set up helpers and inject them into the page.
 		$page->setEmailHelper(new EmailHelper());
+		$page->setHttpHelper(new HttpHelper());
+		$page->setWikiTextHelper(new WikiTextHelper($this->configuration, $page->getHttpHelper()));
 
 		// run the route code for the request.
 		$page->execute();

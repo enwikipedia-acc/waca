@@ -1,6 +1,7 @@
 <?php
 namespace Waca\Tests;
 
+use PHPUnit_Framework_TestCase;
 use ReflectionProperty;
 use User;
 use Waca\SecurityConfiguration;
@@ -10,7 +11,7 @@ use Waca\SecurityConfiguration;
  * @package  Waca\Tests
  * @category Security-Critical
  */
-class SecurityConfigurationTest extends \PHPUnit_Framework_TestCase
+class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 {
 	/** @var User|\PHPUnit_Framework_MockObject_MockObject */
 	private $user;

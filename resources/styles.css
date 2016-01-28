@@ -53,3 +53,7 @@ until a newer Bootstrap version with this fixed is released and we upgrade to it
 .linkWrapSection .btn {
     margin-bottom: 5px;
 }
+
+form.form-compact {
+    margin-bottom: 0;
+}

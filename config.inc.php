@@ -324,4 +324,7 @@ $siteConfiguration->setBaseUrl($baseurl)
 	->setFilePath($filepath)
 	->setDebuggingTraceEnabled($enableErrorTrace)
 	->setForceIdentification($forceIdentification)
+	->setMediawikiScriptPath($mediawikiScriptPath)
+	->setMediawikiWebServiceEndpoint($mediawikiWebServiceEndpoint)
+	->setEnforceOAuth($enforceOAuth)
 	;

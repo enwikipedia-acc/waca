@@ -83,6 +83,7 @@ if ($action == '') {
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
+
 elseif ($action == "sreg") {
 	global $useOauthSignup, $smarty;
         
@@ -198,192 +199,7 @@ elseif ($action == "registercomplete") {
 	$smarty->display("registration/alert-registrationcomplete.tpl");
 	BootstrapSkin::displayInternalFooter();
 }
-elseif ($action == "templatemgmt") {
-	global $baseurl, $smarty;
-    
-	if (isset($_GET['view'])) {
-		$template = WelcomeTemplate::getById($_GET['view'], gGetDb());
-        
-		if ($template === false) {
-			SessionAlert::success("Something went wrong, we can't find the template you asked for! Please try again.");
-			header("Location: {$baseurl}/acc.php?action=templatemgmt");
-			die();
-		}
-        
-		$smarty->assign("template", $template);
-		$smarty->display("welcometemplate/view.tpl");
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-    
-	if (isset($_GET['add'])) {
-		if (!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) {
-			BootstrapSkin::displayAccessDenied();
-            
-			BootstrapSkin::displayInternalFooter();
-			die();
-		}
-        
-		if (isset($_POST['submit'])) {
-			global $baseurl;
-            
-			$database = gGetDb();
-            
-			$database->transactionally(function() use ($database, $baseurl)
-			{
-				$template = new WelcomeTemplate();
-				$template->setDatabase($database);
-				$template->setUserCode($_POST['usercode']);
-				$template->setBotCode($_POST['botcode']);
-				$template->save();
-            
-				Logger::welcomeTemplateCreated($database, $template);
-                            
-				Notification::welcomeTemplateCreated($template);
-            
-				SessionAlert::success("Template successfully created.");
-				header("Location: $baseurl/acc.php?action=templatemgmt");
-			});
-		}
-		else {
-			
-			if (isset($_POST['preview'])) {
-				$usercode = $_POST['usercode'];
-				$botcode = $_POST['botcode'];
-				echo displayPreview($usercode);
-			}
-			else {
-				$usercode = '';
-				$botcode = '';
-			}
 
-			$smarty->assign("usercode", $usercode);
-			$smarty->assign("botcode", $botcode);
-            
-			$smarty->display("welcometemplate/add.tpl");
-			BootstrapSkin::displayInternalFooter();
-			die();
-		}
-        
-		die();
-	}
-    
-	if (isset($_GET['select'])) {
-		$user = User::getCurrent();
-        
-		if ($_GET['select'] == 0) {
-			$user->setWelcomeTemplate(null);
-			$user->save();
-            
-			SessionAlert::success("Disabled automatic user welcoming.");
-			header("Location: {$baseurl}/acc.php?action=templatemgmt");
-			die();
-		}
-		else {
-			$template = WelcomeTemplate::getById($_GET['select'], gGetDb());
-			if ($template !== false) {
-				$user->setWelcomeTemplate($template->getId());
-				$user->save();
-                
-				SessionAlert::success("Updated selected welcome template for automatic welcoming.");
-				header("Location: {$baseurl}/acc.php?action=templatemgmt");
-				die();
-			}
-			else {
-				SessionAlert::error("Something went wrong, we can't find the template you asked for!");
-				header("Location: {$baseurl}/acc.php?action=templatemgmt");
-				die();
-			}
-		}
-	}
-    
-	if (isset($_GET['del'])) {
-		global $baseurl;
-        
-		if (!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) {
-			BootstrapSkin::displayAccessDenied();
-			BootstrapSkin::displayInternalFooter();
-			die();
-		}
-
-		$database = gGetDb();
-        
-		$template = WelcomeTemplate::getById($_GET['del'], $database);
-		if ($template == false) {
-			SessionAlert::error("Something went wrong, we can't find the template you asked for!");
-			header("Location: {$baseurl}/acc.php?action=templatemgmt");
-			die();
-		}
-        
-		$database->transactionally(function() use($database, $template)
-		{
-			$tid = $template->getId();
-            
-			$database
-				->prepare("UPDATE user SET welcome_template = NULL WHERE welcome_template = :id;")
-				->execute(array(":id" => $tid));
-            
-			Logger::welcomeTemplateDeleted($database, $template);
-            
-			$template->delete();
-            
-			SessionAlert::success("Template deleted. Any users who were using this template have had automatic welcoming disabled.");
-			Notification::welcomeTemplateDeleted($tid);
-		});
-        
-		header("Location: $baseurl/acc.php?action=templatemgmt");
-		die();			
-	}
-    
-	if (isset($_GET['edit'])) {
-		if (!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) {
-			BootstrapSkin::displayAccessDenied();
-			BootstrapSkin::displayInternalFooter();
-			die();
-		}
-
-		$database = gGetDb();
-        
-		$template = WelcomeTemplate::getById($_GET['edit'], $database);
-		if ($template == false) {
-			SessionAlert::success("Something went wrong, we can't find the template you asked for! Please try again.");
-			header("Location: {$baseurl}/acc.php?action=templatemgmt");
-			die();
-		}
-
-		if (isset($_POST['submit'])) {
-			$database->transactionally(function() use($database, $template)
-			{
-				$template->setUserCode($_POST['usercode']);
-				$template->setBotCode($_POST['botcode']);
-				$template->save();
-			
-				Logger::welcomeTemplateEdited($database, $template);
-                
-				SessionAlert::success("Template updated.");
-				Notification::welcomeTemplateEdited($template);
-			});
-            
-			header("Location: $baseurl/acc.php?action=templatemgmt");
-			die();
-		}
-		else {
-			$smarty->assign("template", $template);
-			$smarty->display("welcometemplate/edit.tpl");
-            
-			BootstrapSkin::displayInternalFooter();
-			die();
-		}
-	}
-    
-	$templateList = WelcomeTemplate::getAll();
-    
-	$smarty->assign("templatelist", $templateList);
-	$smarty->display("welcometemplate/list.tpl");
-    
-	BootstrapSkin::displayInternalFooter();
-	die();
-}
 elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 	global $availableRequestStates;
 	
@@ -1092,6 +908,7 @@ elseif ($action == "sendtouser") {
 	SessionAlert::success("Reservation sent successfully");
 	header("Location: $baseurl/acc.php?action=zoom&id=$request");
 }
+
 elseif ($action == "emailmgmt") {
 	global $smarty, $createdid, $availableRequestStates;
     
@@ -1234,6 +1051,7 @@ elseif ($action == "emailmgmt") {
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
+
 elseif ($action == "oauthdetach") {
 	if ($enforceOAuth) {
 		BootstrapSkin::displayAccessDenied();

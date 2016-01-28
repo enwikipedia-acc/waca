@@ -6,7 +6,9 @@ use User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\NotIdentifiedException;
 use Waca\Fragments\TemplateOutput;
+use Waca\Helpers\HttpHelper;
 use Waca\Helpers\Interfaces\IEmailHelper;
+use Waca\Helpers\WikiTextHelper;
 
 abstract class PageBase
 {
@@ -23,6 +25,12 @@ abstract class PageBase
 	private $emailHelper;
 	/** @var SiteConfiguration */
 	private $siteConfiguration;
+
+	/** @var HttpHelper */
+	private $httpHelper;
+
+	/** @var WikiTextHelper */
+	private $wikiTextHelper;
 
 	/**
 	 * Sets the route the request will take. Only should be called from the request router.
@@ -50,7 +58,7 @@ abstract class PageBase
 	 * @throws Exception
 	 * @category Security-Critical
 	 */
-	final    public function execute()
+	final public function execute()
 	{
 		if ($this->route === null) {
 			throw new Exception("Request is unrouted.");
@@ -105,7 +113,7 @@ abstract class PageBase
 	 * @return boolean
 	 * @category Security-Critical
 	 */
-	final    public function barrierTest($action)
+	final public function barrierTest($action)
 	{
 		$tmpRouteName = $this->routeName;
 
@@ -156,6 +164,38 @@ abstract class PageBase
 	}
 
 	/**
+	 * @return HttpHelper
+	 */
+	public function getHttpHelper()
+	{
+		return $this->httpHelper;
+	}
+
+	/**
+	 * @param HttpHelper $httpHelper
+	 */
+	public function setHttpHelper($httpHelper)
+	{
+		$this->httpHelper = $httpHelper;
+	}
+
+	/**
+	 * @return WikiTextHelper
+	 */
+	public function getWikiTextHelper()
+	{
+		return $this->wikiTextHelper;
+	}
+
+	/**
+	 * @param WikiTextHelper $wikiTextHelper
+	 */
+	public function setWikiTextHelper($wikiTextHelper)
+	{
+		$this->wikiTextHelper = $wikiTextHelper;
+	}
+
+	/**
 	 * Main function for this page, when no specific actions are called.
 	 * @return void
 	 */
@@ -176,7 +216,7 @@ abstract class PageBase
 	 * Gets the name of the route that has been passed from the request router.
 	 * @return string
 	 */
-	final    protected function getRouteName()
+	final protected function getRouteName()
 	{
 		return $this->routeName;
 	}
@@ -231,7 +271,7 @@ abstract class PageBase
 	/**
 	 * Performs generic page setup actions
 	 */
-	final    private function setupPage()
+	final private function setupPage()
 	{
 		$this->setUpSmarty();
 	}
@@ -255,7 +295,7 @@ abstract class PageBase
 	 *
 	 * Only should be called after a security barrier! That means only from execute().
 	 */
-	final    private function runPage()
+	final private function runPage()
 	{
 		// run the page code
 		call_user_func($this->route);

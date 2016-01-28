@@ -154,6 +154,9 @@ function array_search_recursive($needle, $haystack, $path = array())
 
 require_once('zoompage.php');
 
+/**
+ * @deprecated please... god.. no...
+ */
 function displayPreview($wikicode)
 {
 	$parseresult = unserialize(file_get_contents('http://en.wikipedia.org/w/api.php?action=parse&format=php&text=' . urlencode($wikicode)));

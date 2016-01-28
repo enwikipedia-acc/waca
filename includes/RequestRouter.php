@@ -13,6 +13,7 @@ use Waca\Pages\PageMain;
 use Waca\Pages\PagePreferences;
 use Waca\Pages\PageSearch;
 use Waca\Pages\PageUserManagement;
+use Waca\Pages\PageWelcomeTemplateManagement;
 
 /**
  * Request router
@@ -119,6 +120,11 @@ class RequestRouter
 			array(
 				'class' => PagePreferences::class,
 				'actions' => array('changePassword')
+			),
+		'welcomeTemplates' =>
+			array(
+				'class' => PageWelcomeTemplateManagement::class,
+				'actions' => array('select', 'edit', 'delete', 'add', 'view')
 			),
 	);
 
