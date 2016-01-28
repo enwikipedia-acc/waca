@@ -203,11 +203,10 @@ class Notification extends DataObject
 
 	/**
 	 * Summary of interfaceMessageEdited
-	 * @param InterfaceMessage $message
 	 */
-	public static function interfaceMessageEdited(InterfaceMessage $message)
+	public static function interfaceMessageEdited()
 	{
-		self::send("Message {$message->getDescription()} ({$message->getId()}) edited by " . User::getCurrent()->getUsername());
+		self::send("Site notice edited by " . User::getCurrent()->getUsername());
 	}
 	#endregion
 

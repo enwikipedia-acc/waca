@@ -4,6 +4,7 @@ namespace Waca;
 use Waca\Pages\Page404;
 use Waca\Pages\PageBan;
 use Waca\Pages\PageForgotPassword;
+use Waca\Pages\PageInterfaceManagement;
 use Waca\Pages\PageLog;
 use Waca\Pages\PageLogin;
 use Waca\Pages\PageLogout;
@@ -106,6 +107,11 @@ class RequestRouter
 					"promote",
 					"demote",
 				)
+			),
+		"siteNotice" =>
+			array(
+				"class" => PageInterfaceManagement::class,
+				"actions" => array()
 			),
 	);
 
