@@ -1,6 +1,7 @@
 <?php
 namespace Waca;
 
+use Exception;
 use Waca\Pages\Page404;
 use Waca\Pages\PageBan;
 use Waca\Pages\PageForgotPassword;
@@ -66,64 +67,64 @@ class RequestRouter
 	 * @var array
 	 */
 	private $routeMap = array(
-		"logout" =>
+		'logout' =>
 			array(
-				"class"   => PageLogout::class,
-				"actions" => array()
+				'class'   => PageLogout::class,
+				'actions' => array()
 			),
-		"login" =>
+		'login' =>
 			array(
-				"class"   => PageLogin::class,
-				"actions" => array()
+				'class'   => PageLogin::class,
+				'actions' => array()
 			),
-		"forgotPassword" =>
+		'forgotPassword' =>
 			array(
-				"class"   => PageForgotPassword::class,
-				"actions" => array('reset')
+				'class'   => PageForgotPassword::class,
+				'actions' => array('reset')
 			),
-		"search" =>
+		'search' =>
 			array(
-				"class"   => PageSearch::class,
-				"actions" => array()
+				'class'   => PageSearch::class,
+				'actions' => array()
 			),
-		"logs" =>
+		'logs' =>
 			array(
-				"class"   => PageLog::class,
-				"actions" => array()
+				'class'   => PageLog::class,
+				'actions' => array()
 			),
-		"bans" =>
+		'bans' =>
 			array(
-				"class"   => PageBan::class,
-				"actions" => array("set", "remove")
+				'class'   => PageBan::class,
+				'actions' => array('set', 'remove')
 			),
-		"userManagement" =>
+		'userManagement' =>
 			array(
-				"class"   => PageUserManagement::class,
-				"actions" => array(
-					"approve",
-					"decline",
-					"rename",
-					"editUser",
-					"suspend",
-					"promote",
-					"demote",
+				'class'   => PageUserManagement::class,
+				'actions' => array(
+					'approve',
+					'decline',
+					'rename',
+					'editUser',
+					'suspend',
+					'promote',
+					'demote',
 				)
 			),
-		"siteNotice" =>
+		'siteNotice' =>
 			array(
-				"class" => PageInterfaceManagement::class,
-				"actions" => array()
+				'class' => PageInterfaceManagement::class,
+				'actions' => array()
 			),
-		"preferences" =>
+		'preferences' =>
 			array(
-				"class" => PagePreferences::class,
+				'class' => PagePreferences::class,
 				'actions' => array('changePassword')
 			),
 	);
 
 	/**
 	 * @return PageBase
-	 * @throws \Exception
+	 * @throws Exception
 	 * @category Security-Critical
 	 */
 	public function route()
@@ -144,7 +145,7 @@ class RequestRouter
 			if (array_key_exists($classSegment, $this->routeMap)) {
 				// Route exists, but we don't have an action in path info, so default to main.
 				$pageClass = $this->routeMap[$classSegment]['class'];
-				$action = "main";
+				$action = 'main';
 			}
 			else {
 				// Doesn't exist in map. Fall back to 404
@@ -173,13 +174,13 @@ class RequestRouter
 				else {
 					// Valid page, invalid action. 404 our way out.
 					$pageClass = Page404::class;
-					$action = "main";
+					$action = 'main';
 				}
 			}
 			else {
 				// Class doesn't exist in map. Fall back to 404
 				$pageClass = Page404::class;
-				$action = "main";
+				$action = 'main';
 			}
 		}
 
@@ -189,7 +190,7 @@ class RequestRouter
 		// Dynamic creation, so we've got to be careful here. We can't use built-in language type protection, so
 		// let's use our own.
 		if (!($page instanceof PageBase)) {
-			throw new \Exception("Expected a page, but this is not a page.");
+			throw new Exception('Expected a page, but this is not a page.');
 		}
 
 		// OK, I'm happy at this point that we know we're running a page, and we know it's probably what we want if it

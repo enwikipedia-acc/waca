@@ -212,9 +212,10 @@ HTML;
 		}
 
 		return array(
-			'message'  => $exception->getMessage(),
-			'stack'    => $exception->getTraceAsString(),
-			'previous' => self::getExceptionData($exception->getPrevious()),
+			'exception' => get_class($exception),
+			'message'   => $exception->getMessage(),
+			'stack'     => $exception->getTraceAsString(),
+			'previous'  => self::getExceptionData($exception->getPrevious()),
 		);
 	}
 }
