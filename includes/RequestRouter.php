@@ -9,6 +9,7 @@ use Waca\Pages\PageLog;
 use Waca\Pages\PageLogin;
 use Waca\Pages\PageLogout;
 use Waca\Pages\PageMain;
+use Waca\Pages\PagePreferences;
 use Waca\Pages\PageSearch;
 use Waca\Pages\PageUserManagement;
 
@@ -111,6 +112,11 @@ class RequestRouter
 		"siteNotice" =>
 			array(
 				"class" => PageInterfaceManagement::class,
+				"actions" => array()
+			),
+		"preferences" =>
+			array(
+				"class" => PagePreferences::class,
 				"actions" => array()
 			),
 	);

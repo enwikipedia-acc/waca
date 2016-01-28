@@ -13,13 +13,14 @@ class SiteConfiguration
 {
 	private $baseUrl;
 	private $filePath;
-	private $schemaVersion = 16;
+	private $schemaVersion = 17;
 	private $debuggingTraceEnabled;
 	private $dataClearIp = '127.0.0.1';
 	private $dataClearEmail = 'acc@toolserver.org';
 	private $forceIdentification = true;
 	private $mediawikiScriptPath = "https://en.wikipedia.org/w/index.php";
 	private $mediawikiWebServiceEndpoint = "";
+	private $enforceOAuth = true;
 
 	/**
 	 * Gets the base URL of the tool
@@ -176,5 +177,23 @@ class SiteConfiguration
 	public function getMediawikiWebServiceEndpoint()
 	{
 		return $this->mediawikiWebServiceEndpoint;
+	}
+
+	/**
+	 * @param boolean $enforceOAuth
+	 * @return SiteConfiguration
+	 */
+	public function setEnforceOAuth($enforceOAuth)
+	{
+		$this->enforceOAuth = $enforceOAuth;
+		return $this;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getEnforceOAuth()
+	{
+		return $this->enforceOAuth;
 	}
 }

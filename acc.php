@@ -472,43 +472,6 @@ SQL;
 		die();
 	}
 }
-elseif ($action == "prefs") {
-	global $smarty, $enforceOAuth;
-    
-	if (isset ($_POST['sig'])) {
-		$user = User::getCurrent();
-		$user->setWelcomeSig($_POST['sig']);
-		$user->setEmailSig($_POST['emailsig']);
-		$user->setAbortPref(isset($_POST['abortpref']) ? 1 : 0);
-        
-		if (isset($_POST['email'])) {
-			$mailisvalid = filter_var(trim($_POST['email']), FILTER_VALIDATE_EMAIL);
-            
-			if ($mailisvalid === false) {
-				BootstrapSkin::displayAlertBox("Invalid email address", "alert-error", "Error!");
-			}
-			else {
-				$user->setEmail(trim($_POST['email']));
-			}
-		}
-
-		try {
-			$user->save();
-		}
-		catch (PDOException $ex) {
-			BootstrapSkin::displayAlertBox($ex->getMessage(), "alert-error", "Error saving Preferences", true, false);
-			BootstrapSkin::displayInternalFooter();
-			die();
-		}
-        
-		BootstrapSkin::displayAlertBox("Preferences updated!", "alert-info");
-	}
-    
-	$smarty->assign("enforceOAuth", $enforceOAuth);
-	$smarty->display("prefs.tpl");
-	BootstrapSkin::displayInternalFooter();
-	die();
-}
 elseif ($action == "done" && $_GET['id'] != "") {
 	// check for valid close reasons
 	global $messages, $baseurl, $smarty;
@@ -1041,6 +1004,10 @@ elseif ($action == "comment-quick") {
 	header("Location: acc.php?action=zoom&id=" . $request->getId());
 }
 elseif ($action == "changepassword") {
+
+	// SIMON NOTE: The template for this is at preferences/changepassword.tpl
+	// It used to be on the preferences page, but has now moved.
+
 	if ((!isset($_POST['oldpassword'])) || $_POST['oldpassword'] == "") {
 		//Throw an error if old password is not specified.
 		BootstrapSkin::displayAlertBox("You did not enter your old password.", "alert-error", "Error", true, false);

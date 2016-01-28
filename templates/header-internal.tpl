@@ -96,7 +96,7 @@
 					<ul class="dropdown-menu">
 						<li class="nav-header">Account</li>
 						<li><a href="{$baseurl}/statistics.php?page=Users&amp;user={$userid}"><i class="icon-tasks"></i> My statistics</a></li>
-						<li><a href="{$baseurl}/acc.php?action=prefs"><i class="icon-edit"></i> Edit Preferences</a></li>
+						<li><a href="{$baseurl}/internal.php/preferences"><i class="icon-edit"></i> Edit Preferences</a></li>
 						<li class="divider"></li>
 						<li class="nav-header">Help</li>
 						<li><a href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide"><i class="icon-question-sign"></i>&nbsp;Guide</a></li>
