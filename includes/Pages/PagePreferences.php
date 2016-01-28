@@ -4,6 +4,7 @@ namespace Waca\Pages;
 
 use SessionAlert;
 use User;
+use Waca\Exceptions\ApplicationLogicException;
 use Waca\PageBase;
 use Waca\SecurityConfiguration;
 use Waca\WebRequest;
@@ -39,6 +40,41 @@ class PagePreferences extends PageBase
 		{
 			$this->setTemplate('preferences/prefs.tpl');
 			$this->assign("enforceOAuth", $enforceOAuth);
+		}
+	}
+
+	protected function changePassword()
+	{
+		if(WebRequest::wasPosted())
+		{
+			$oldPassword = WebRequest::postString('oldpassword');
+			$newPassword = WebRequest::postString('newpassword');
+			$newPasswordConfirmation = WebRequest::postString('newpasswordconfirm');
+
+			if($oldPassword === null || $newPassword === null || $newPasswordConfirmation === null){
+				throw new ApplicationLogicException('All three fields must be completed to change your password');
+			}
+
+			if($newPassword !== $newPasswordConfirmation){
+				throw new ApplicationLogicException('Your new passwords did not match!');
+			}
+
+			$user = User::getCurrent();
+
+			if(!$user->authenticate($oldPassword)){
+				throw new ApplicationLogicException('The password you entered was incorrect.');
+			}
+
+			$user->setPassword($newPassword);
+			$user->save();
+
+			SessionAlert::success('Password changed successfully!');
+
+			$this->redirect('preferences');
+		}
+		else{
+			// not allowed to GET this.
+			$this->redirect('preferences');
 		}
 	}
 

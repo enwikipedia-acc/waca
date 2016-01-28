@@ -117,7 +117,7 @@ class RequestRouter
 		"preferences" =>
 			array(
 				"class" => PagePreferences::class,
-				"actions" => array()
+				'actions' => array('changePassword')
 			),
 	);
 

@@ -1003,48 +1003,6 @@ elseif ($action == "comment-quick") {
     
 	header("Location: acc.php?action=zoom&id=" . $request->getId());
 }
-elseif ($action == "changepassword") {
-
-	// SIMON NOTE: The template for this is at preferences/changepassword.tpl
-	// It used to be on the preferences page, but has now moved.
-
-	if ((!isset($_POST['oldpassword'])) || $_POST['oldpassword'] == "") {
-		//Throw an error if old password is not specified.
-		BootstrapSkin::displayAlertBox("You did not enter your old password.", "alert-error", "Error", true, false);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-	
-	if ((!isset($_POST['newpassword'])) || $_POST['newpassword'] == "") {
-		//Throw an error if new password is not specified.
-		BootstrapSkin::displayAlertBox("You did not enter your new password.", "alert-error", "Error", true, false);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-	
-	if ($_POST['newpassword'] != $_POST['newpasswordconfirm']) {
-		//Throw an error if new password does not match what is in the confirmation box.
-		BootstrapSkin::displayAlertBox("The 2 new passwords you entered do not match.", "alert-error", "Error", true, false);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-    
-	$user = User::getCurrent();
-	   
-	if (!$user->authenticate($_POST['oldpassword'])) {
-		//Throw an error if the old password field's value does not match the user's current password.
-		BootstrapSkin::displayAlertBox("The old password you entered is not correct.", "alert-error", "Error", true, false);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-    
-	$user->setPassword($_POST['newpassword']);
-	$user->save();
-    
-	BootstrapSkin::displayAlertBox("Password successfully changed!", "alert-success", "", false, false);
-	BootstrapSkin::displayInternalFooter();
-	die();
-}
 elseif ($action == "ec") {
 	// edit comment
   

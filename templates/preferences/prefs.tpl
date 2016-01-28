@@ -161,6 +161,33 @@
                 </div>
             {/if}
         </fieldset>
-    </div>{*
-     *}
+    </div>
+    <form class="form-horizontal" method="post" action="{$baseurl}/internal.php/preferences/changePassword">
+        <fieldset>
+            <legend>Change your password</legend>
+            <div class="control-group">
+                <label class="control-label" for="inputOldpassword">Your old password</label>
+                <div class="controls">
+                    <input class="input-xlarge" type="password" id="inputOldpassword" name="oldpassword" required="required"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputNewpassword">Your new password</label>
+                <div class="controls">
+                    <input class="input-xlarge" type="password" id="inputNewpassword" name="newpassword" required="required"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputNewpasswordconfirm">Confirm new password</label>
+                <div class="controls">
+                    <input class="input-xlarge" type="password" id="inputNewpasswordconfirm" name="newpasswordconfirm" required="required"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <button type="submit" class="btn btn-primary">Update password</button>
+                </div>
+            </div>
+        </fieldset>
+    </form>
 {/block}
