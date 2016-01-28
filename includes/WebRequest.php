@@ -285,13 +285,31 @@ class WebRequest
 		$session['userID'] = $user->getId();
 	}
 
-	public static function getServerName()
+	/**
+	 * @return string|null
+	 */
+	public static function serverName()
 	{
-		return self::$globalStateProvider->getServerSuperGlobal()['SERVER_NAME'];
+		$server = &self::$globalStateProvider->getServerSuperGlobal();
+
+		if (isset($server['SERVER_NAME'])) {
+			return $server['SERVER_NAME'];
+		}
+
+		return null;
 	}
 
-	public static function getRequestUri()
+	/**
+	 * @return string|null
+	 */
+	public static function requestUri()
 	{
-		return self::$globalStateProvider->getServerSuperGlobal()['REQUEST_URI'];
+		$server = &self::$globalStateProvider->getServerSuperGlobal();
+
+		if (isset($server['REQUEST_URI'])) {
+			return $server['REQUEST_URI'];
+		}
+
+		return null;
 	}
 }

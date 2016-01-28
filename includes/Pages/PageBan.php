@@ -3,6 +3,7 @@
 namespace Waca\Pages;
 
 use Ban;
+use Exception;
 use Logger;
 use Notification;
 use Request;
@@ -33,95 +34,10 @@ class PageBan extends PageBase
 	{
 		// dual-mode action
 		if (WebRequest::wasPosted()) {
-			$reason = WebRequest::postString('banreason');
-			$target = WebRequest::postString('target');
-
-			// Checks whether there is a reason entered for ban.
-			if ($reason === null || trim($reason) === "") {
-				throw new ApplicationLogicException('You must specify a ban reason');
-			}
-
-			// Checks whether there is a target entered to ban.
-			if ($target === null || trim($target) === "") {
-				throw new ApplicationLogicException('You must specify a target to be banned');
-			}
-
-			// Validate ban duration
-			$duration = $this->getBanDuration();
-
-			// Validate ban type & target for that type
-			$type = WebRequest::postString('type');
-			$this->validateBanType($type, $target);
-
-			if (count(Ban::getActiveBans($target)) > 0) {
-				throw new ApplicationLogicException('This target is already banned!');
-			}
-
-			$database = gGetDb();
-
-			$ban = new Ban();
-			$currentUsername = User::getCurrent()->getId();
-
-			$ban->setDatabase($database);
-			$ban->setActive(1);
-			$ban->setType($type);
-			$ban->setTarget($target);
-			$ban->setUser($currentUsername);
-			$ban->setReason($reason);
-			$ban->setDuration($duration);
-
-			$ban->save();
-
-			Logger::banned($database, $ban, $reason);
-
-			Notification::banned($ban);
-			SessionAlert::quick('Ban has been set.');
-
-			$this->redirect('bans');
+			$this->doPostSet();
 		}
 		else {
-			$this->setTemplate('bans/banform.tpl');
-
-			$banType = WebRequest::getString('type');
-			$banTarget = WebRequest::getInt('request');
-
-			// if the parameters are null, skip loading a request.
-			if ($banType === null
-				|| !in_array($banType, array('IP', 'Name', 'EMail'))
-				|| $banTarget === null
-				|| $banTarget === 0
-			) {
-				$this->assign('bantarget', '');
-				$this->assign('bantype', '');
-
-				return;
-			}
-
-			// Set the ban type, which the user has indicated.
-			$this->assign('bantype', $banType);
-
-			// Attempt to resolve the correct target
-			/** @var Request $request */
-			$request = Request::getById($banTarget, gGetDb());
-			if ($request === false) {
-				$this->assign('bantarget', '');
-				return;
-			}
-
-			$realTarget = '';
-			switch ($banType) {
-				case 'EMail':
-					$realTarget = $request->getEmail();
-					break;
-				case 'IP':
-					$realTarget = $request->getTrustedIp();
-					break;
-				case 'Name':
-					$realTarget = $request->getName();
-					break;
-			}
-
-			$this->assign('bantarget', $realTarget);
+			$this->doGetSet();
 		}
 	}
 
@@ -244,5 +160,109 @@ class PageBan extends PageBase
 			default:
 				throw new ApplicationLogicException("Unknown ban type");
 		}
+	}
+
+	/**
+	 * Handles the POST method on the set action
+	 *
+	 * @throws ApplicationLogicException
+	 * @throws Exception
+	 */
+	private function doPostSet()
+	{
+		$reason = WebRequest::postString('banreason');
+		$target = WebRequest::postString('target');
+
+		// Checks whether there is a reason entered for ban.
+		if ($reason === null || trim($reason) === "") {
+			throw new ApplicationLogicException('You must specify a ban reason');
+		}
+
+		// Checks whether there is a target entered to ban.
+		if ($target === null || trim($target) === "") {
+			throw new ApplicationLogicException('You must specify a target to be banned');
+		}
+
+		// Validate ban duration
+		$duration = $this->getBanDuration();
+
+		// Validate ban type & target for that type
+		$type = WebRequest::postString('type');
+		$this->validateBanType($type, $target);
+
+		if (count(Ban::getActiveBans($target)) > 0) {
+			throw new ApplicationLogicException('This target is already banned!');
+		}
+
+		$database = gGetDb();
+
+		$ban = new Ban();
+		$currentUsername = User::getCurrent()->getId();
+
+		$ban->setDatabase($database);
+		$ban->setActive(1);
+		$ban->setType($type);
+		$ban->setTarget($target);
+		$ban->setUser($currentUsername);
+		$ban->setReason($reason);
+		$ban->setDuration($duration);
+
+		$ban->save();
+
+		Logger::banned($database, $ban, $reason);
+
+		Notification::banned($ban);
+		SessionAlert::quick('Ban has been set.');
+
+		$this->redirect('bans');
+	}
+
+	/**
+	 * Handles the GET method on the set action
+	 */
+	protected function doGetSet()
+	{
+		$this->setTemplate('bans/banform.tpl');
+
+		$banType = WebRequest::getString('type');
+		$banTarget = WebRequest::getInt('request');
+
+		// if the parameters are null, skip loading a request.
+		if ($banType === null
+			|| !in_array($banType, array('IP', 'Name', 'EMail'))
+			|| $banTarget === null
+			|| $banTarget === 0
+		) {
+			$this->assign('bantarget', '');
+			$this->assign('bantype', '');
+
+			return;
+		}
+
+		// Set the ban type, which the user has indicated.
+		$this->assign('bantype', $banType);
+
+		// Attempt to resolve the correct target
+		/** @var Request $request */
+		$request = Request::getById($banTarget, gGetDb());
+		if ($request === false) {
+			$this->assign('bantarget', '');
+			return;
+		}
+
+		$realTarget = '';
+		switch ($banType) {
+			case 'EMail':
+				$realTarget = $request->getEmail();
+				break;
+			case 'IP':
+				$realTarget = $request->getTrustedIp();
+				break;
+			case 'Name':
+				$realTarget = $request->getName();
+				break;
+		}
+
+		$this->assign('bantarget', $realTarget);
 	}
 }

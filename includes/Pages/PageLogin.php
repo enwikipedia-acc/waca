@@ -28,7 +28,7 @@ class PageLogin extends PageBase
 			}
 			else {
 				// This is the login form, not the request form. We need protection here.
-				$this->redirectUrl('https://' . WebRequest::getServerName() . WebRequest::getRequestUri());
+				$this->redirectUrl('https://' . WebRequest::serverName() . WebRequest::requestUri());
 				return;
 			}
 		}

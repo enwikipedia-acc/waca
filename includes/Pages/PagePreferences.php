@@ -20,7 +20,7 @@ class PagePreferences extends PageBase
 		$enforceOAuth = $this->getSiteConfiguration()->getEnforceOAuth();
 
 		// Dual mode
-		if(WebRequest::wasPosted()){
+		if (WebRequest::wasPosted()) {
 			$user = User::getCurrent();
 			$user->setWelcomeSig(WebRequest::postString('sig'));
 			$user->setEmailSig(WebRequest::postString('emailsig'));
@@ -36,8 +36,7 @@ class PagePreferences extends PageBase
 
 			$this->redirect('');
 		}
-		else
-		{
+		else {
 			$this->setTemplate('preferences/prefs.tpl');
 			$this->assign("enforceOAuth", $enforceOAuth);
 		}
@@ -45,23 +44,22 @@ class PagePreferences extends PageBase
 
 	protected function changePassword()
 	{
-		if(WebRequest::wasPosted())
-		{
+		if (WebRequest::wasPosted()) {
 			$oldPassword = WebRequest::postString('oldpassword');
 			$newPassword = WebRequest::postString('newpassword');
 			$newPasswordConfirmation = WebRequest::postString('newpasswordconfirm');
 
-			if($oldPassword === null || $newPassword === null || $newPasswordConfirmation === null){
+			if ($oldPassword === null || $newPassword === null || $newPasswordConfirmation === null) {
 				throw new ApplicationLogicException('All three fields must be completed to change your password');
 			}
 
-			if($newPassword !== $newPasswordConfirmation){
+			if ($newPassword !== $newPasswordConfirmation) {
 				throw new ApplicationLogicException('Your new passwords did not match!');
 			}
 
 			$user = User::getCurrent();
 
-			if(!$user->authenticate($oldPassword)){
+			if (!$user->authenticate($oldPassword)) {
 				throw new ApplicationLogicException('The password you entered was incorrect.');
 			}
 
@@ -72,7 +70,7 @@ class PagePreferences extends PageBase
 
 			$this->redirect('preferences');
 		}
-		else{
+		else {
 			// not allowed to GET this.
 			$this->redirect('preferences');
 		}
@@ -86,7 +84,7 @@ class PagePreferences extends PageBase
 	 *
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
-	 * @todo Verify the security config here - do we want this internal only, or allow all logged in users access?
+	 * @todo     Verify the security config here - do we want this internal only, or allow all logged in users access?
 	 */
 	protected function getSecurityConfiguration()
 	{

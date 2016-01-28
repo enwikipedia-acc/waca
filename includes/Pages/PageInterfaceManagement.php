@@ -23,7 +23,7 @@ class PageInterfaceManagement extends PageBase
 		$siteNoticeMessage = InterfaceMessage::getById(InterfaceMessage::SITENOTICE, $database);
 
 		// Dual-mode
-		if(WebRequest::wasPosted()){
+		if (WebRequest::wasPosted()) {
 			$siteNoticeMessage->setContent(WebRequest::postString('mailtext'));
 			$siteNoticeMessage->save();
 
@@ -32,7 +32,7 @@ class PageInterfaceManagement extends PageBase
 
 			$this->redirect('');
 		}
-		else{
+		else {
 			$this->setTemplate('interface-management/editform.tpl');
 			$this->assign('message', $siteNoticeMessage);
 		}
