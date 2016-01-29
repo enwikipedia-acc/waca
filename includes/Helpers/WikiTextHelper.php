@@ -26,6 +26,12 @@ class WikiTextHelper
 		$this->http = $http;
 	}
 
+	/**
+	 * Gets the HTML for the provided wiki-markup from the MediaWiki service endpoint
+	 *
+	 * @param string $wikiText
+	 * @return string
+	 */
 	public function getHtmlForWikiText($wikiText)
 	{
 		$endpoint = $this->configuration->getMediawikiWebServiceEndpoint();

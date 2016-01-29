@@ -58,6 +58,8 @@ class PageUserManagement extends PageBase
 		$database = gGetDb();
 
 		$userId = WebRequest::getInt('user');
+
+		/** @var User $user */
 		$user = User::getById($userId, $database);
 
 		if ($user === false) {
