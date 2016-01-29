@@ -25,10 +25,8 @@ abstract class PageBase
 	private $emailHelper;
 	/** @var SiteConfiguration */
 	private $siteConfiguration;
-
 	/** @var HttpHelper */
 	private $httpHelper;
-
 	/** @var WikiTextHelper */
 	private $wikiTextHelper;
 
@@ -216,7 +214,7 @@ abstract class PageBase
 	 * Gets the name of the route that has been passed from the request router.
 	 * @return string
 	 */
-	final protected function getRouteName()
+	final public function getRouteName()
 	{
 		return $this->routeName;
 	}

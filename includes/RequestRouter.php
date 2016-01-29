@@ -17,7 +17,7 @@ use Waca\Pages\PageWelcomeTemplateManagement;
 
 /**
  * Request router
- * @package Waca
+ * @package  Waca
  * @category Security-Critical
  */
 class RequestRouter
@@ -68,37 +68,37 @@ class RequestRouter
 	 * @var array
 	 */
 	private $routeMap = array(
-		'logout' =>
+		'logout'           =>
 			array(
 				'class'   => PageLogout::class,
-				'actions' => array()
+				'actions' => array(),
 			),
-		'login' =>
+		'login'            =>
 			array(
 				'class'   => PageLogin::class,
-				'actions' => array()
+				'actions' => array(),
 			),
-		'forgotPassword' =>
+		'forgotPassword'   =>
 			array(
 				'class'   => PageForgotPassword::class,
-				'actions' => array('reset')
+				'actions' => array('reset'),
 			),
-		'search' =>
+		'search'           =>
 			array(
 				'class'   => PageSearch::class,
-				'actions' => array()
+				'actions' => array(),
 			),
-		'logs' =>
+		'logs'             =>
 			array(
 				'class'   => PageLog::class,
-				'actions' => array()
+				'actions' => array(),
 			),
-		'bans' =>
+		'bans'             =>
 			array(
 				'class'   => PageBan::class,
-				'actions' => array('set', 'remove')
+				'actions' => array('set', 'remove'),
 			),
-		'userManagement' =>
+		'userManagement'   =>
 			array(
 				'class'   => PageUserManagement::class,
 				'actions' => array(
@@ -109,86 +109,34 @@ class RequestRouter
 					'suspend',
 					'promote',
 					'demote',
-				)
+				),
 			),
-		'siteNotice' =>
+		'siteNotice'       =>
 			array(
-				'class' => PageInterfaceManagement::class,
-				'actions' => array()
+				'class'   => PageInterfaceManagement::class,
+				'actions' => array(),
 			),
-		'preferences' =>
+		'preferences'      =>
 			array(
-				'class' => PagePreferences::class,
-				'actions' => array('changePassword')
+				'class'   => PagePreferences::class,
+				'actions' => array('changePassword'),
 			),
 		'welcomeTemplates' =>
 			array(
-				'class' => PageWelcomeTemplateManagement::class,
-				'actions' => array('select', 'edit', 'delete', 'add', 'view')
+				'class'   => PageWelcomeTemplateManagement::class,
+				'actions' => array('select', 'edit', 'delete', 'add', 'view'),
 			),
 	);
 
 	/**
 	 * @return PageBase
 	 * @throws Exception
-	 * @category Security-Critical
 	 */
 	public function route()
 	{
 		$pathInfo = WebRequest::pathInfo();
 
-		// set up the default action
-		$action = "main";
-
-		if (count($pathInfo) === 0) {
-			// No pathInfo, so no page to load. Load the main page.
-			$pageClass = PageMain::class;
-		}
-		elseif (count($pathInfo) === 1) {
-			// Exactly one path info segment, it's got to be a page.
-			$classSegment = $pathInfo[0];
-
-			if (array_key_exists($classSegment, $this->routeMap)) {
-				// Route exists, but we don't have an action in path info, so default to main.
-				$pageClass = $this->routeMap[$classSegment]['class'];
-				$action = 'main';
-			}
-			else {
-				// Doesn't exist in map. Fall back to 404
-				$pageClass = Page404::class;
-				$action = "main";
-			}
-		}
-		else {
-			// Multiple path info segments.
-			// TODO: account for sub-levels of pages.
-			// For now, assume [0] == class & [1] == action
-
-			$classSegment = $pathInfo[0];
-			$requestedAction = $pathInfo[1];
-
-			if (array_key_exists($classSegment, $this->routeMap)) {
-				// Route exists, but we don't have an action in path info, so default to main.
-
-				if (isset($this->routeMap[$classSegment]['actions'])
-					&& array_search($requestedAction, $this->routeMap[$classSegment]['actions']) !== false
-				) {
-					// Action exists in allowed action list. Allow both the page and the action
-					$pageClass = $this->routeMap[$classSegment]['class'];
-					$action = $requestedAction;
-				}
-				else {
-					// Valid page, invalid action. 404 our way out.
-					$pageClass = Page404::class;
-					$action = 'main';
-				}
-			}
-			else {
-				// Class doesn't exist in map. Fall back to 404
-				$pageClass = Page404::class;
-				$action = 'main';
-			}
-		}
+		list($pageClass, $action) = $this->getRouteFromPath($pathInfo);
 
 		/** @var PageBase $page */
 		$page = new $pageClass();
@@ -203,5 +151,98 @@ class RequestRouter
 		// inherits PageBase and has been created from the routing map.
 		$page->setRoute($action);
 		return $page;
+	}
+
+	/**
+	 * @param $pathInfo
+	 * @return array
+	 */
+	public function getRouteFromPath($pathInfo)
+	{
+		if (count($pathInfo) === 0) {
+			// No pathInfo, so no page to load. Load the main page.
+			$pageClass = PageMain::class;
+			$action = "main";
+			return array($pageClass, $action);
+		}
+		elseif (count($pathInfo) === 1) {
+			// Exactly one path info segment, it's got to be a page.
+			$classSegment = $pathInfo[0];
+
+			return $this->routeSinglePathSegment($classSegment);
+		}
+
+		// OK, we have two or more segments now.
+		if (count($pathInfo) > 2) {
+			// Let's handle more than two, and collapse it down into two.
+			$requestedAction = array_pop($pathInfo);
+			$classSegment = implode('/', $pathInfo);
+		}
+		else {
+			// Two path info segments.
+			$classSegment = $pathInfo[0];
+			$requestedAction = $pathInfo[1];
+		}
+
+		$routeMap = $this->routePathSegments($classSegment, $requestedAction);
+
+		if ($routeMap[0] === Page404::class) {
+			$routeMap = $this->routeSinglePathSegment($classSegment . '/' . $requestedAction);
+		}
+
+		return $routeMap;
+	}
+
+	/**
+	 * @param $classSegment
+	 * @param $requestedAction
+	 * @return array
+	 */
+	private function routePathSegments($classSegment, $requestedAction)
+	{
+		if (array_key_exists($classSegment, $this->routeMap)) {
+			// Route exists, but we don't have an action in path info, so default to main.
+
+			if (isset($this->routeMap[$classSegment]['actions'])
+				&& array_search($requestedAction, $this->routeMap[$classSegment]['actions']) !== false
+			) {
+				// Action exists in allowed action list. Allow both the page and the action
+				$pageClass = $this->routeMap[$classSegment]['class'];
+				$action = $requestedAction;
+				return array($pageClass, $action);
+			}
+			else {
+				// Valid page, invalid action. 404 our way out.
+				$pageClass = Page404::class;
+				$action = 'main';
+				return array($pageClass, $action);
+			}
+		}
+		else {
+			// Class doesn't exist in map. Fall back to 404
+			$pageClass = Page404::class;
+			$action = 'main';
+			return array($pageClass, $action);
+		}
+	}
+
+	/**
+	 * @param $classSegment
+	 * @return array
+	 */
+	private function routeSinglePathSegment($classSegment)
+	{
+		if (array_key_exists($classSegment, $this->routeMap)) {
+			// Route exists, but we don't have an action in path info, so default to main.
+			$pageClass = $this->routeMap[$classSegment]['class'];
+			$action = 'main';
+			return array($pageClass, $action);
+		}
+		else {
+			// Doesn't exist in map. Fall back to 404
+			$pageClass = Page404::class;
+			$action = "main";
+			return array($pageClass, $action);
+		}
 	}
 }
