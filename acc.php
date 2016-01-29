@@ -79,8 +79,9 @@ $session->checksecurity();
 // When no action is specified the default Internal ACC are displayed.
 // TODO: Improve way the method is called.
 if ($action == '') {
-	echo defaultpage();
-	BootstrapSkin::displayInternalFooter();
+	ob_end_clean();
+	global $baseurl;
+	header("Location: $baseurl/internal.php");
 	die();
 }
 
@@ -1096,7 +1097,8 @@ elseif ($action == "oauthattach") {
 }
 # If the action specified does not exist, goto the default page.
 else {
-	echo defaultpage();
-	BootstrapSkin::displayInternalFooter();
+	ob_end_clean();
+	global $baseurl;
+	header("Location: $baseurl/internal.php");
 	die();
 }

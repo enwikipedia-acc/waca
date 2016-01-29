@@ -234,7 +234,6 @@ $CORSallowed = array(
 $providerCacheExpiry = $dataclear_interval;
 
 // miser mode
-$requestLimitThreshold = 50;
 $requestLimitShowOnly = 25;
 
 // rfc 1918
@@ -327,4 +326,7 @@ $siteConfiguration->setBaseUrl($baseurl)
 	->setMediawikiScriptPath($mediawikiScriptPath)
 	->setMediawikiWebServiceEndpoint($mediawikiWebServiceEndpoint)
 	->setEnforceOAuth($enforceOAuth)
+	->setEmailConfirmationEnabled($enableEmailConfirm == 1)
+	->setMiserModeLimit($requestLimitShowOnly)
+	->setRequestStates($availableRequestStates)
 	;

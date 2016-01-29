@@ -46,7 +46,7 @@ class BootstrapSkin
 		$smarty->assign("username", User::getById($userid, gGetDb())->getUsername());
 		$smarty->assign("sitenotice", $sitenotice);
 		$smarty->assign("alerts", SessionAlert::retrieve());
-		$smarty->display("header-internal.tpl");
+		echo $smarty->fetch("header-internal.tpl");
 
 		if ($userid != -1) {
 			User::getCurrent()->touchLastLogin();

@@ -28,6 +28,7 @@ $session = new session();
 
 /**
  * Send a "close pend ticket" email to the end user. (created, taken, etc...)
+ * @deprecated
  */
 function sendemail($messageno, $target, $id)
 {
@@ -45,16 +46,6 @@ function sendemail($messageno, $target, $id)
 }
 
 /**
- * Returns a value indicating whether the current request was issued over HTTPSs
- * @return bool true if HTTPS
- * @deprecated This method is deprecated. Please use the method in WebRequest instead.
- */
-function isHttps()
-{
-	return \Waca\WebRequest::isHttps();
-}
-
-/**
  * Show the login page
  *
  * @deprecated
@@ -67,71 +58,15 @@ function showlogin()
 	die;
 }
 
+/**
+ * @deprecated
+ */
 function defaultpage()
 {
-	global $availableRequestStates, $defaultRequestStateKey, $requestLimitShowOnly, $enableEmailConfirm;
-    
-	$database = gGetDb();
-    
-	$requestSectionData = array();
-    
-	if ($enableEmailConfirm == 1) {
-		$query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed' LIMIT :lim;";
-		$totalquery = "SELECT COUNT(*) FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
-	}
-	else {
-		$query = "SELECT * FROM request WHERE status = :type LIMIT :lim;";
-		$totalquery = "SELECT COUNT(*) FROM request WHERE status = :type;";
-	}
-    
-	$statement = $database->prepare($query);
-	$statement->bindValue(":lim", $requestLimitShowOnly, PDO::PARAM_INT);
-    
-	$totalRequestsStatement = $database->prepare($totalquery);
-            
-	// list requests in each section
-	foreach ($availableRequestStates as $type => $v) {
-		$statement->bindValue(":type", $type);
-		$statement->execute();
-        
-		$requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
-		foreach ($requests as $req) {
-			$req->setDatabase($database);   
-		}
-
-		$totalRequestsStatement->bindValue(":type", $type);
-		$totalRequestsStatement->execute();
-		$totalRequests = $totalRequestsStatement->fetchColumn();
-		$totalRequestsStatement->closeCursor();
-        
-		$requestSectionData[$v['header']] = array(
-			"requests" => $requests, 
-			"total" => $totalRequests, 
-			"api" => $v['api']);
-	}
-    
-	global $smarty;
-	$smarty->assign("requestLimitShowOnly", $requestLimitShowOnly);
-	
-	$query = <<<SQL
-		SELECT request.id, request.name, request.checksum
-		FROM request 
-		JOIN log ON log.objectid = request.id and log.objecttype = 'Request'
-		WHERE log.action LIKE 'Closed%' 
-		ORDER BY log.timestamp DESC 
-		LIMIT 5;
-SQL;
-    
-	$statement = $database->prepare($query);
-	$statement->execute();
-    
-	$last5result = $statement->fetchAll(PDO::FETCH_ASSOC);
-    
-	$smarty->assign("lastFive", $last5result);
-	$smarty->assign("requestSectionData", $requestSectionData);
-	$html = $smarty->fetch("mainpage/mainpage.tpl");
-    
-	return $html;
+	ob_end_clean();
+	global $baseurl;
+	header("Location: $baseurl/internal.php");
+	die();
 }
 
 function array_search_recursive($needle, $haystack, $path = array())
@@ -153,18 +88,6 @@ function array_search_recursive($needle, $haystack, $path = array())
 }
 
 require_once('zoompage.php');
-
-/**
- * @deprecated please... god.. no...
- */
-function displayPreview($wikicode)
-{
-	$parseresult = unserialize(file_get_contents('http://en.wikipedia.org/w/api.php?action=parse&format=php&text=' . urlencode($wikicode)));
-	$out = "<br />\n<h3>Preview</h3>\n<div style=\"border: 2px dashed rgb(26, 79, 133);\">\n<div style=\"margin: 20px;\">";
-	$out .= $parseresult['parse']['text']['*'];
-	$out .= '</div></div>';
-	return $out;
-}
 
 /**
  * Parses an XFF header and client IP to find the last trusted client IP

@@ -26,7 +26,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="brand" href="{$baseurl}/acc.php">Account Creation Interface</a>
+            <a class="brand" href="{$baseurl}/internal.php">Account Creation Interface</a>
             {block name="navmenu"}<div class="nav-collapse collapse">
                 <ul class="nav">
                     {if ! $currentUser->isCommunityUser()}

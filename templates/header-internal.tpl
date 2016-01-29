@@ -57,11 +57,11 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="brand" href="{$baseurl}/acc.php">Account Creation Interface</a>
+          <a class="brand" href="{$baseurl}/internal.php">Account Creation Interface</a>
           {block name="navmenu"}<div class="nav-collapse collapse">
             <ul class="nav">
 			{if $userid != 0}
-              <li{* class="active"*}><a href="{$baseurl}/acc.php"><i class="icon-home icon-white"></i>&nbsp;Requests</a></li>
+              <li{* class="active"*}><a href="{$baseurl}/internal.php"><i class="icon-home icon-white"></i>&nbsp;Requests</a></li>
 			  <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-tag icon-white"></i>&nbsp;Meta&nbsp;<b class="caret"></b></a>
 				  <ul class="dropdown-menu">
 					<li><a href="{$baseurl}/internal.php/logs"><i class="icon-list"></i>&nbsp;Logs</a></li>

@@ -21,6 +21,28 @@ class SiteConfiguration
 	private $mediawikiScriptPath = "https://en.wikipedia.org/w/index.php";
 	private $mediawikiWebServiceEndpoint = "";
 	private $enforceOAuth = true;
+	private $emailConfirmationEnabled = true;
+	private $miserModeLimit = 25;
+	private $requestStates = array(
+		'Open'          => array(
+			'defertolog' => 'users', // don't change or you'll break old logs
+			'deferto'    => 'users',
+			'header'     => 'Open requests',
+			'api'        => "open",
+		),
+		'Flagged users' => array(
+			'defertolog' => 'flagged users', // don't change or you'll break old logs
+			'deferto'    => 'flagged users',
+			'header'     => 'Flagged user needed',
+			'api'        => "admin",
+		),
+		'Checkuser'     => array(
+			'defertolog' => 'checkusers', // don't change or you'll break old logs
+			'deferto'    => 'checkusers',
+			'header'     => 'Checkuser needed',
+			'api'        => "checkuser",
+		),
+	);
 
 	/**
 	 * Gets the base URL of the tool
@@ -195,5 +217,59 @@ class SiteConfiguration
 	public function getEnforceOAuth()
 	{
 		return $this->enforceOAuth;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getEmailConfirmationEnabled()
+	{
+		return $this->emailConfirmationEnabled;
+	}
+
+	/**
+	 * @param boolean $emailConfirmationEnabled
+	 * @return $this
+	 */
+	public function setEmailConfirmationEnabled($emailConfirmationEnabled)
+	{
+		$this->emailConfirmationEnabled = $emailConfirmationEnabled;
+		return $this;
+	}
+
+	/**
+	 * @param int $miserModeLimit
+	 * @return SiteConfiguration
+	 */
+	public function setMiserModeLimit($miserModeLimit)
+	{
+		$this->miserModeLimit = $miserModeLimit;
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getMiserModeLimit()
+	{
+		return $this->miserModeLimit;
+	}
+
+	/**
+	 * @param array $requestStates
+	 * @return SiteConfiguration
+	 */
+	public function setRequestStates($requestStates)
+	{
+		$this->requestStates = $requestStates;
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getRequestStates()
+	{
+		return $this->requestStates;
 	}
 }
