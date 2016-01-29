@@ -135,27 +135,15 @@ class PageBan extends PageBase
 	 */
 	private function validateBanType($type, $target)
 	{
-		global $squidIpList;
-
 		switch ($type) {
 			case 'IP':
-				if (filter_var($target, FILTER_VALIDATE_IP) === false) {
-					throw new ApplicationLogicException('Invalid target - IP address expected.');
-				}
-
-				if (in_array($target, $squidIpList)) {
-					throw new ApplicationLogicException("This IP address is on the protected list of proxies, and cannot be banned.");
-				}
-
+				$this->validateIpBan($target);
 				return;
 			case 'Name':
 				// No validation needed here.
 				return;
 			case 'EMail':
-				if (filter_var($target, FILTER_VALIDATE_EMAIL) !== $target) {
-					throw new ApplicationLogicException('Invalid target - email address expected.');
-				}
-
+				$this->validateEmailBanTarget($target);
 				return;
 			default:
 				throw new ApplicationLogicException("Unknown ban type");
@@ -264,5 +252,37 @@ class PageBan extends PageBase
 		}
 
 		$this->assign('bantarget', $realTarget);
+	}
+
+	/**
+	 * Validates an IP ban target
+	 *
+	 * @param string $target
+	 * @throws ApplicationLogicException
+	 */
+	private function validateIpBan($target)
+	{
+		$squidIpList = $this->getSiteConfiguration()->getSquidList();
+
+		if (filter_var($target, FILTER_VALIDATE_IP) === false) {
+			throw new ApplicationLogicException('Invalid target - IP address expected.');
+		}
+
+		if (in_array($target, $squidIpList)) {
+			throw new ApplicationLogicException("This IP address is on the protected list of proxies, and cannot be banned.");
+		}
+	}
+
+	/**
+	 * Validates an email address as a ban target
+	 *
+	 * @param string $target
+	 * @throws ApplicationLogicException
+	 */
+	private function validateEmailBanTarget($target)
+	{
+		if (filter_var($target, FILTER_VALIDATE_EMAIL) !== $target) {
+			throw new ApplicationLogicException('Invalid target - email address expected.');
+		}
 	}
 }

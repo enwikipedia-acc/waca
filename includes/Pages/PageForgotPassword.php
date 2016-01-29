@@ -2,6 +2,7 @@
 
 namespace Waca\Pages;
 
+use PdoDatabase;
 use SessionAlert;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
@@ -69,27 +70,11 @@ class PageForgotPassword extends PageBase
 		}
 
 		$database = gGetDb();
-		$user = User::getById($id, $database);
-
-		if ($user === false || $user->getForgottenPasswordHash() !== $si) {
-			throw new ApplicationLogicException("User not found");
-		}
+		$user = $this->getResettingUser($id, $database, $si);
 
 		// Dual mode
 		if (WebRequest::wasPosted()) {
-			$pw = WebRequest::postString('pw');
-			$pw2 = WebRequest::postString('pw2');
-
-			if ($pw === $pw2) {
-				$user->setPassword($pw);
-				$user->save();
-
-				SessionAlert::success('You may now log in!');
-				$this->redirect('login');
-			}
-			else {
-				throw new ApplicationLogicException('Passwords do not match!');
-			}
+			$this->doReset($user);
 		}
 		else {
 			$this->assign('user', $user);
@@ -109,5 +94,48 @@ class PageForgotPassword extends PageBase
 	protected function getSecurityConfiguration()
 	{
 		return SecurityConfiguration::publicPage();
+	}
+
+	/**
+	 * Gets the user resetting their password from the database, or throwing an exception if that is not possible.
+	 *
+	 * @param integer     $id       The ID of the user to retrieve
+	 * @param PdoDatabase $database The database object to use
+	 * @param string      $si       The reset hash provided
+	 * @return User
+	 * @throws ApplicationLogicException
+	 */
+	private function getResettingUser($id, $database, $si)
+	{
+		$user = User::getById($id, $database);
+
+		if ($user === false || $user->getForgottenPasswordHash() !== $si || $user->isCommunityUser()) {
+			throw new ApplicationLogicException("User not found");
+		}
+
+		return $user;
+	}
+
+	/**
+	 * Performs the setting of the new password
+	 *
+	 * @param User $user The user to set the password for
+	 * @throws ApplicationLogicException
+	 */
+	private function doReset(User $user)
+	{
+		$pw = WebRequest::postString('pw');
+		$pw2 = WebRequest::postString('pw2');
+
+		if ($pw === $pw2) {
+			$user->setPassword($pw);
+			$user->save();
+
+			SessionAlert::success('You may now log in!');
+			$this->redirect('login');
+		}
+		else {
+			throw new ApplicationLogicException('Passwords do not match!');
+		}
 	}
 }

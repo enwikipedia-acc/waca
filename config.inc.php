@@ -329,4 +329,5 @@ $siteConfiguration->setBaseUrl($baseurl)
 	->setEmailConfirmationEnabled($enableEmailConfirm == 1)
 	->setMiserModeLimit($requestLimitShowOnly)
 	->setRequestStates($availableRequestStates)
+	->setSquidList($squidIpList)
 	;

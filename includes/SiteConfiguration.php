@@ -43,6 +43,7 @@ class SiteConfiguration
 			'api'        => "checkuser",
 		),
 	);
+	private $squidList = array();
 
 	/**
 	 * Gets the base URL of the tool
@@ -271,5 +272,23 @@ class SiteConfiguration
 	public function getRequestStates()
 	{
 		return $this->requestStates;
+	}
+
+	/**
+	 * @param array $squidList
+	 * @return SiteConfiguration
+	 */
+	public function setSquidList($squidList)
+	{
+		$this->squidList = $squidList;
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getSquidList()
+	{
+		return $this->squidList;
 	}
 }
