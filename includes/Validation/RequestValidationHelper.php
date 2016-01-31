@@ -163,7 +163,7 @@ class RequestValidationHelper
 		try {
 			if (count($antispoofProvider->getSpoofs($this->request->getName())) > 0) {
 				// If there were spoofs an Admin should handle the request.
-				$this->request->setStatus("Admin");
+				$this->request->setStatus("Flagged users");
 			}
 		}
 		catch (Exception $ex) {
@@ -183,7 +183,7 @@ class RequestValidationHelper
 			$requestIsOk = $data['titleblacklist']['result'] == "ok";
 
 			if (!$requestIsOk) {
-				$this->request->setStatus("Admin");
+				$this->request->setStatus("Flagged users");
 			}
 		}
 	}
