@@ -99,7 +99,7 @@ class StatsMain extends StatisticsPage
 		$smarty->assign("statsOpen", $open);
 
 		// Admin Requests
-		$requestsStatement->execute(array(":status" => "Admin"));
+		$requestsStatement->execute(array(":status" => "Flagged users"));
 		$admin = $requestsStatement->fetchColumn();
 		$requestsStatement->closeCursor();
 		$smarty->assign("statsAdmin", $admin);
