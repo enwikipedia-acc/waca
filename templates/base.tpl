@@ -64,7 +64,7 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> <strong>{$currentUser->getUsername()}</strong> <b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li class="nav-header">Account</li>
-                                <li><a href="{$baseurl}/statistics.php?page=Users&amp;user={$currentUser->getId()}"><i class="icon-tasks"></i> My statistics</a></li>
+                                <li><a href="{$baseurl}/internal.php/statistics/users/detail?user={$currentUser->getId()}"><i class="icon-tasks"></i> My statistics</a></li>
                                 <li><a href="{$baseurl}/internal.php/preferences"><i class="icon-edit"></i> Edit Preferences</a></li>
                                 <li class="divider"></li>
                                 <li class="nav-header">Help</li>

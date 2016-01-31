@@ -1,26 +1,18 @@
 <?php
-/**************************************************************************
-**********      English Wikipedia Account Request Interface      **********
-***************************************************************************
-** Wikipedia Account Request Graphic Design by Charles Melbye,           **
-** which is licensed under a Creative Commons                            **
-** Attribution-Noncommercial-Share Alike 3.0 United States License.      **
-**                                                                       **
-** All other code are released under the Public Domain                   **
-** by the ACC Development Team.                                          **
-**                                                                       **
-** See CREDITS for the list of developers.                               **
-***************************************************************************/
+namespace Waca\Pages\Statistics;
+
+use PDO;
+use QueryBrowser;
+use Waca\StatisticsPage;
 
 class StatsFastCloses extends StatisticsPage
 {
-	protected function execute()
+	protected function executeStatisticsPage()
 	{
 		$query = <<<SQL
 SELECT
   log_closed.objectid AS Request,
   user.username AS User,
-  log_closed.user AS UserID,
   TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) AS 'Time Taken',
   closes.mail_desc AS 'Close Type',
   log_closed.timestamp AS 'Date'
@@ -90,7 +82,7 @@ function statsFastClosesRowCallback($row, $currentreq)
 			$out .= "<a href=\"" . $baseurl . "/acc.php?action=zoom&id=" . $cell . "\">";
 		}
 		if ($colid == 1) {
-			$out .= "<a href=\"" . $baseurl . "/statistics.php/Users?user=" . $row[++$colid] . "\">";
+			$out .= "<a href=\"" . $baseurl . "/internal.php/statistics/users/detail?user=" . $row[++$colid] . "\">";
 		}
 
 		$out .= $cell;

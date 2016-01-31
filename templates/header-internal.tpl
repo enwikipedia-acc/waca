@@ -65,9 +65,9 @@
 			  <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-tag icon-white"></i>&nbsp;Meta&nbsp;<b class="caret"></b></a>
 				  <ul class="dropdown-menu">
 					<li><a href="{$baseurl}/internal.php/logs"><i class="icon-list"></i>&nbsp;Logs</a></li>
-					<li><a href="{$baseurl}/statistics.php?page=Users"><i class="icon-user"></i>&nbsp;Users</a></li>
+					<li><a href="{$baseurl}/internal.php/statistics/users"><i class="icon-user"></i>&nbsp;Users</a></li>
 					<li><a href="{$baseurl}/internal.php/search"><i class="icon-search"></i>&nbsp;Search</a></li>
-					<li><a href="{$baseurl}/statistics.php"><i class="icon-tasks"></i>&nbsp;Statistics</a></li>
+					<li><a href="{$baseurl}/internal.php/statistics"><i class="icon-tasks"></i>&nbsp;Statistics</a></li>
 				  </ul>
 			  </li>
               <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-wrench icon-white"></i>&nbsp;Admin&nbsp;<b class="caret"></b></a>
@@ -95,7 +95,7 @@
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="icon-user icon-white"></i> <strong>{$username}</strong> <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li class="nav-header">Account</li>
-						<li><a href="{$baseurl}/statistics.php?page=Users&amp;user={$userid}"><i class="icon-tasks"></i> My statistics</a></li>
+						<li><a href="{$baseurl}/internal.php/statistics/users/detail?user={$userid}"><i class="icon-tasks"></i> My statistics</a></li>
 						<li><a href="{$baseurl}/internal.php/preferences"><i class="icon-edit"></i> Edit Preferences</a></li>
 						<li class="divider"></li>
 						<li class="nav-header">Help</li>

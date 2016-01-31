@@ -14,13 +14,23 @@ use Waca\Pages\PagePreferences;
 use Waca\Pages\PageSearch;
 use Waca\Pages\PageUserManagement;
 use Waca\Pages\PageWelcomeTemplateManagement;
+use Waca\Pages\Statistics\StatsFastCloses;
+use Waca\Pages\Statistics\StatsIdUsers;
+use Waca\Pages\Statistics\StatsInactiveUsers;
+use Waca\Pages\Statistics\StatsMain;
+use Waca\Pages\Statistics\StatsMonthlyStats;
+use Waca\Pages\Statistics\StatsPasswordConversion;
+use Waca\Pages\Statistics\StatsReservedRequests;
+use Waca\Pages\Statistics\StatsTemplateStats;
+use Waca\Pages\Statistics\StatsTopCreators;
+use Waca\Pages\Statistics\StatsUsers;
 
 /**
  * Request router
  * @package  Waca
  * @category Security-Critical
  */
-class RequestRouter
+final class RequestRouter
 {
 	/**
 	 * This is the core routing table for the application. The basic idea is:
@@ -68,37 +78,37 @@ class RequestRouter
 	 * @var array
 	 */
 	private $routeMap = array(
-		'logout'           =>
+		'logout'                        =>
 			array(
 				'class'   => PageLogout::class,
 				'actions' => array(),
 			),
-		'login'            =>
+		'login'                         =>
 			array(
 				'class'   => PageLogin::class,
 				'actions' => array(),
 			),
-		'forgotPassword'   =>
+		'forgotPassword'                =>
 			array(
 				'class'   => PageForgotPassword::class,
 				'actions' => array('reset'),
 			),
-		'search'           =>
+		'search'                        =>
 			array(
 				'class'   => PageSearch::class,
 				'actions' => array(),
 			),
-		'logs'             =>
+		'logs'                          =>
 			array(
 				'class'   => PageLog::class,
 				'actions' => array(),
 			),
-		'bans'             =>
+		'bans'                          =>
 			array(
 				'class'   => PageBan::class,
 				'actions' => array('set', 'remove'),
 			),
-		'userManagement'   =>
+		'userManagement'                =>
 			array(
 				'class'   => PageUserManagement::class,
 				'actions' => array(
@@ -111,21 +121,72 @@ class RequestRouter
 					'demote',
 				),
 			),
-		'siteNotice'       =>
+		'siteNotice'                    =>
 			array(
 				'class'   => PageInterfaceManagement::class,
 				'actions' => array(),
 			),
-		'preferences'      =>
+		'preferences'                   =>
 			array(
 				'class'   => PagePreferences::class,
 				'actions' => array('changePassword'),
 			),
-		'welcomeTemplates' =>
+		'welcomeTemplates'              =>
 			array(
 				'class'   => PageWelcomeTemplateManagement::class,
 				'actions' => array('select', 'edit', 'delete', 'add', 'view'),
 			),
+		'statistics'                    =>
+			array(
+				'class'   => StatsMain::class,
+				'actions' => array(),
+			),
+		'statistics/fastCloses'         =>
+			array(
+				'class'   => StatsFastCloses::class,
+				'actions' => array(),
+			),
+		'statistics/idUsers'            =>
+			array(
+				'class'   => StatsIdUsers::class,
+				'actions' => array(),
+			),
+		'statistics/inactiveUsers'      =>
+			array(
+				'class'   => StatsInactiveUsers::class,
+				'actions' => array(),
+			),
+		'statistics/monthlyStats'       =>
+			array(
+				'class'   => StatsMonthlyStats::class,
+				'actions' => array(),
+			),
+		'statistics/passwordConversion' =>
+			array(
+				'class'   => StatsPasswordConversion::class,
+				'actions' => array(),
+			),
+		'statistics/reservedRequests'   =>
+			array(
+				'class'   => StatsReservedRequests::class,
+				'actions' => array(),
+			),
+		'statistics/templateStats'      =>
+			array(
+				'class'   => StatsTemplateStats::class,
+				'actions' => array(),
+			),
+		'statistics/topCreators'        =>
+			array(
+				'class'   => StatsTopCreators::class,
+				'actions' => array(),
+			),
+		'statistics/users'              =>
+			array(
+				'class'   => StatsUsers::class,
+				'actions' => array('detail'),
+			),
+
 	);
 
 	/**
@@ -150,11 +211,13 @@ class RequestRouter
 		// OK, I'm happy at this point that we know we're running a page, and we know it's probably what we want if it
 		// inherits PageBase and has been created from the routing map.
 		$page->setRoute($action);
+
 		return $page;
 	}
 
 	/**
 	 * @param $pathInfo
+	 *
 	 * @return array
 	 */
 	public function getRouteFromPath($pathInfo)
@@ -163,6 +226,7 @@ class RequestRouter
 			// No pathInfo, so no page to load. Load the main page.
 			$pageClass = PageMain::class;
 			$action = "main";
+
 			return array($pageClass, $action);
 		}
 		elseif (count($pathInfo) === 1) {
@@ -196,6 +260,7 @@ class RequestRouter
 	/**
 	 * @param $classSegment
 	 * @param $requestedAction
+	 *
 	 * @return array
 	 */
 	private function routePathSegments($classSegment, $requestedAction)
@@ -209,12 +274,14 @@ class RequestRouter
 				// Action exists in allowed action list. Allow both the page and the action
 				$pageClass = $this->routeMap[$classSegment]['class'];
 				$action = $requestedAction;
+
 				return array($pageClass, $action);
 			}
 			else {
 				// Valid page, invalid action. 404 our way out.
 				$pageClass = Page404::class;
 				$action = 'main';
+
 				return array($pageClass, $action);
 			}
 		}
@@ -222,12 +289,14 @@ class RequestRouter
 			// Class doesn't exist in map. Fall back to 404
 			$pageClass = Page404::class;
 			$action = 'main';
+
 			return array($pageClass, $action);
 		}
 	}
 
 	/**
 	 * @param $classSegment
+	 *
 	 * @return array
 	 */
 	private function routeSinglePathSegment($classSegment)
@@ -236,12 +305,14 @@ class RequestRouter
 			// Route exists, but we don't have an action in path info, so default to main.
 			$pageClass = $this->routeMap[$classSegment]['class'];
 			$action = 'main';
+
 			return array($pageClass, $action);
 		}
 		else {
 			// Doesn't exist in map. Fall back to 404
 			$pageClass = Page404::class;
 			$action = "main";
+
 			return array($pageClass, $action);
 		}
 	}

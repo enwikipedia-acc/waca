@@ -1,45 +1,17 @@
 <?php
-/**************************************************************************
-**********      English Wikipedia Account Request Interface      **********
-***************************************************************************
-** Wikipedia Account Request Graphic Design by Charles Melbye,           **
-** which is licensed under a Creative Commons                            **
-** Attribution-Noncommercial-Share Alike 3.0 United States License.      **
-**                                                                       **
-** All other code are released under the Public Domain                   **
-** by the ACC Development Team.                                          **
-**                                                                       **
-** See CREDITS for the list of developers.                               **
-***************************************************************************/
+namespace Waca\Pages\Statistics;
+
+use BootstrapSkin;
+use PDO;
+use User;
+use Waca\Exceptions\ApplicationLogicException;
+use Waca\SecurityConfiguration;
+use Waca\StatisticsPage;
+use Waca\WebRequest;
 
 class StatsUsers extends StatisticsPage
 {
-	protected function execute()
-	{
-		if (!isset($_GET['user'])) {
-			return $this->getUserList();
-		}
-		else {
-			return $this->getUserDetail($_GET['user']);
-		}
-	}
-
-	public function getPageTitle()
-	{
-		return "Account Creation Tool users";
-	}
-
-	public function getPageName()
-	{
-		return "Users";
-	}
-
-	public function isProtected()
-	{
-		return false;
-	}
-
-	private function getUserList()
+	public function main()
 	{
 		$lists = array(
 			"Admin" => User::getAllWithStatus("Admin", gGetDb()),
@@ -47,21 +19,35 @@ class StatsUsers extends StatisticsPage
 			"CheckUsers" => User::getAllCheckusers(gGetDb())
 		);
 
-		global $smarty;
-		$smarty->assign("lists", $lists);
-		return $smarty->fetch("statistics/users.tpl");
+		$this->assign("lists", $lists);
+
+		$this->assign('statsPageTitle', $this->getPageTitle());
+		$this->setTemplate("statistics/users.tpl");
 	}
 
-	private function getUserDetail($userId)
+	public function getPageTitle()
 	{
+		return "Account Creation Tool users";
+	}
+
+	public function getSecurityConfiguration()
+	{
+		return SecurityConfiguration::publicPage();
+	}
+
+	protected function detail()
+	{
+		$userId = WebRequest::getInt('user');
+		if ($userId === null) {
+			throw new ApplicationLogicException("User not found");
+		}
+
 		$database = gGetDb();
 
 		$user = User::getById($userId, $database);
 		if ($user == false) {
-			return BootstrapSkin::displayAlertBox("User not found", "alert-error", "Error", true, false, true);
+			throw new ApplicationLogicException('User not found');
 		}
-
-		global $smarty;
 
 		$activitySummary = $database->prepare(<<<SQL
 SELECT COALESCE(closes.mail_desc, log.action) AS action, COUNT(*) AS count
@@ -75,8 +61,8 @@ SQL
 		$activitySummary->execute(array(":username" => $user->getUsername()));
 		$activitySummaryData = $activitySummary->fetchAll(PDO::FETCH_ASSOC);
 
-		$smarty->assign("user", $user);
-		$smarty->assign("activity", $activitySummaryData);
+		$this->assign("user", $user);
+		$this->assign("activity", $activitySummaryData);
 
 		$usersCreatedQuery = $database->prepare(<<<SQL
 SELECT log.timestamp time, request.name name, request.id id
@@ -92,7 +78,7 @@ SQL
 		);
 		$usersCreatedQuery->execute(array(":username" => $user->getUsername()));
 		$usersCreated = $usersCreatedQuery->fetchAll(PDO::FETCH_ASSOC);
-		$smarty->assign("created", $usersCreated);
+		$this->assign("created", $usersCreated);
 
 		$usersNotCreatedQuery = $database->prepare(<<<SQL
 SELECT log.timestamp time, request.name name, request.id id
@@ -108,7 +94,7 @@ SQL
 		);
 		$usersNotCreatedQuery->execute(array(":username" => $user->getUsername()));
 		$usersNotCreated = $usersNotCreatedQuery->fetchAll(PDO::FETCH_ASSOC);
-		$smarty->assign("notcreated", $usersNotCreated);
+		$this->assign("notcreated", $usersNotCreated);
 
 		$accountLogQuery = $database->prepare(<<<SQL
 SELECT
@@ -125,13 +111,9 @@ SQL
 		);
 		$accountLogQuery->execute(array(":userid" => $user->getId()));
 		$accountLog = $accountLogQuery->fetchAll(PDO::FETCH_ASSOC);
-		$smarty->assign("accountlog", $accountLog);
+		$this->assign("accountlog", $accountLog);
 
-		return $smarty->fetch("statistics/userdetail.tpl");
-	}
-
-	public function requiresWikiDatabase()
-	{
-		return false;
+		$this->assign('statsPageTitle', $this->getPageTitle());
+		$this->setTemplate("statistics/userdetail.tpl");
 	}
 }

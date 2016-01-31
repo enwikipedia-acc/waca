@@ -16,7 +16,8 @@ deploy/
 .settings/
 .buildpath
 .project
-.idea/
+.idea/*
+!.idea/codeStyleSettings.xml
 templates_c/*
 *.phpproj.user
 temp/*
@@ -30,3 +31,4 @@ waca.sln.DotSettings.user
 .vs/*
 .arc*
 vendor/*
+components/*

@@ -182,4 +182,36 @@ class RequestRouterTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals(PageUserManagement::class, get_class($page));
 		$this->assertEquals('approve', $page->getRouteName());
 	}
+
+	public function testSubPagePathRoutingWithPartialMatch()
+	{
+		$this->globalState->method('getServerSuperGlobal')->willReturn(array(
+			'PATH_INFO' => 'stats/foo',
+		));
+
+		$routeMap = array(
+			'stats' =>
+				array(
+					'class'   => PageMain::class,
+					'actions' => array(),
+				),
+			'stats/foo' =>
+				array(
+					'class'   => PageUserManagement::class,
+					'actions' => array(),
+				),
+		);
+
+		$router = new RequestRouter();
+
+		// set request route using reflection
+		$reflector = new ReflectionProperty(RequestRouter::class, 'routeMap');
+		$reflector->setAccessible(true);
+		$reflector->setValue($router, $routeMap);
+
+		$page = $router->route();
+
+		$this->assertEquals(PageUserManagement::class, get_class($page));
+		$this->assertEquals('main', $page->getRouteName());
+	}
 }

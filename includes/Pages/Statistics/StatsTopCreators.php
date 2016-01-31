@@ -1,36 +1,28 @@
 <?php
-/**************************************************************************
-**********      English Wikipedia Account Request Interface      **********
-***************************************************************************
-** Wikipedia Account Request Graphic Design by Charles Melbye,           **
-** which is licensed under a Creative Commons                            **
-** Attribution-Noncommercial-Share Alike 3.0 United States License.      **
-**                                                                       **
-** All other code are released under the Public Domain                   **
-** by the ACC Development Team.                                          **
-**                                                                       **
-** See CREDITS for the list of developers.                               **
-***************************************************************************/
+namespace Waca\Pages\Statistics;
+
+use QueryBrowser;
+use User;
+use Waca\StatisticsPage;
 
 class StatsTopCreators extends StatisticsPage
 {
-	protected function execute()
+	protected function executeStatisticsPage()
 	{
-		global $smarty;
+		$smarty = $this;
 
 		$qb = new QueryBrowser();
 		$qb->numberedList = true;
 		$qb->numberedListTitle = "Position";
 
 		$qb->tableCallbackFunction = "statsTopCreatorsRowCallback";
-		$qb->overrideTableTitles = array("# Created", "Username");
+		$qb->overrideTableTitles = array("# Created", "Username", "Access");
 
 		// Retrieve all-time stats
 		$top5aout = $qb->executeQueryToTable(<<<SQL
 SELECT
 	/* StatsTopCreators::execute()/top5aout */
     COUNT(*),
-    log.user user_id,
     user.username log_user,
     user.status user_level
 FROM log
@@ -49,7 +41,6 @@ SQL
 SELECT
 	/* StatsTopCreators::execute()/top5activeout */
     COUNT(*),
-    log.user user_id,
     user.username log_user,
     user.status user_level
 FROM log
@@ -69,7 +60,6 @@ SQL
 SELECT
 	/* StatsTopCreators::execute()/top5out */
     COUNT(*),
-    log.user user_id,
     user.username log_user,
     user.status user_level
 FROM log
@@ -88,7 +78,6 @@ SQL
 SELECT
 	/* StatsTopCreators::execute()/top5yout */
     COUNT(*),
-    log.user user_id,
     user.username log_user,
     user.status user_level
 FROM log
@@ -107,7 +96,6 @@ SQL
 SELECT
 	/* StatsTopCreators::execute()/top5wout */
     COUNT(*),
-    log.user user_id,
     user.username log_user,
     user.status user_level
 FROM log
@@ -126,7 +114,6 @@ SQL
 SELECT
 	/* StatsTopCreators::execute()/top5mout */
     COUNT(*),
-    log.user user_id,
     user.username log_user,
     user.status user_level
 FROM log
@@ -147,7 +134,7 @@ SQL
 		$smarty->assign("top5wout", $top5wout);
 		$smarty->assign("top5mout", $top5mout);
 
-		return $smarty->fetch("statistics/topcreators.tpl");
+		$this->setTemplate('statistics/top-creators.tpl');
 	}
 
 	public function getPageTitle()
@@ -155,17 +142,7 @@ SQL
 		return "Top Account Creators";
 	}
 
-	public function getPageName()
-	{
-		return "TopCreators";
-	}
-
 	public function isProtected()
-	{
-		return false;
-	}
-
-	public function requiresWikiDatabase()
 	{
 		return false;
 	}
@@ -193,7 +170,7 @@ function statsTopCreatorsRowCallback($row, $rowno)
 		$out .= 'class="text-success" ';
 	}
 
-	$out .= 'href="' . $baseurl . '/statistics.php?page=Users&amp;user=' . $row['user_id'] . '">' . $row['log_user'] . '</a></td>';
+	$out .= 'href="' . $baseurl . '/internal.php/statistics/users/detail?user=' . $row['user_id'] . '">' . $row['log_user'] . '</a></td>';
 
 	$out .= '</tr>';
 

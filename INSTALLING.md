@@ -42,7 +42,7 @@ Useful (but optional) extensions:
 ### stwalkerster's main development environment
 
 * MariaDB 10.0.15
-* PHP 5.6.1 (NTS VC11-x86 build)
+* PHP 5.6.17 (NTS VC11-x86 build)
 * PHP Development server
 * Windows 10
 

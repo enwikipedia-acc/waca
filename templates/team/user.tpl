@@ -9,7 +9,7 @@
             <li>Real Name: {$infoContent|escape}</li>
         {/if}
         {if $infoName == "ToolID"}
-            <li>Userpage on tool: <a href="{$baseurl}/statistics.php?page=Users&amp;user={$infoContent|escape:'url'}">Click here</a></li>
+            <li>Userpage on tool: <a href="{$baseurl}/internal.php/statistics/users/detail?user={$infoContent|escape:'url'}">Click here</a></li>
         {/if}
         {if $infoName == "wiki"}
             <li>Enwiki Username: <a href="http://en.wikipedia.org/wiki/User:{$infoContent|escape:'url'}">{$infoContent|escape}</a></li>

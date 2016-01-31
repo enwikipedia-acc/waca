@@ -105,9 +105,11 @@ class BootstrapSkin
 			array_map(
 				function($arg)
 				{
+					global $baseurl;
+
 					/** @var User $arg */
 					return
-						"<a href=\"statistics.php?page=Users&amp;user="
+						"<a href=\"{$baseurl}/internal.php/statistics/users/detail?user="
 						. $arg->getId()
 						. "\">"
 						. htmlentities($arg->getUsername())
@@ -152,6 +154,7 @@ class BootstrapSkin
 	 * @return null|string
 	 * @throws Exception
 	 * @throws SmartyException
+	 * @deprecated
 	 */
 	public static function displayAlertBox(
 		$message,

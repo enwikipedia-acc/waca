@@ -23,7 +23,7 @@
                 <td>{$entry->getTimestamp()} <em class="muted">({$entry->getTimestamp()|relativedate})</em></td>
                 <td>
                     {if $entry->getUser() != -1}
-                    <a href='{$baseurl}/statistics.php?page=Users&amp;user={$entry->getUser()}'>
+                    <a href='{$baseurl}/internal.php/statistics/users/detail?user={$entry->getUser()}'>
                         {/if}
                         {$entry->getUserObject()->getUsername()|escape}
                         {if $entry->getUser() != -1}

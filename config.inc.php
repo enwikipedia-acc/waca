@@ -186,7 +186,6 @@ $dataclear_interval = '15 DAY';
  */
 
 $enableSQLError = 0; // Enable the display of SQL errors.
-$showGraphs = 1; // Show graphs on statistics pages.
 $enableTitleblacklist = 0; // Enable Title Blacklist checks.
 
 // Enable the use of PATH_INFO for request parameters to prettify URLs.

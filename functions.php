@@ -189,7 +189,14 @@ function welcomerbotRenderSig($creator, $sig)
 function relativedate($input)
 {
 	$now = new DateTime();
-	$then = new DateTime($input);
+
+	if (gettype($input) === 'object' && get_class($input) === DateTime::class) {
+		$then = $input;
+	}
+	else {
+		$then = new DateTime($input);
+	}
+
     
 	$secs = $now->getTimestamp() - $then->getTimestamp();
     

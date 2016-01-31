@@ -11,7 +11,7 @@
         <div class="control-group">
             <label class="control-label" for="user">User</label>
             <div class="controls">
-              <span class="input-large uneditable-input"><a href="{$baseurl}/statistics.php?page=Users&user={$comment->getUser()}">{$comment->getUserObject()->getUsername()|escape}</a></span>
+              <span class="input-large uneditable-input"><a href="{$baseurl}/internal.php/statistics/users/detail?user={$comment->getUser()}">{$comment->getUserObject()->getUsername()|escape}</a></span>
             </div>
         </div>
 

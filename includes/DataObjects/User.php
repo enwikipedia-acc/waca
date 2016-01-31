@@ -1161,7 +1161,9 @@ SQL
 	 */
 	public function getObjectDescription()
 	{
+		global $baseurl;
+
 		$username = htmlentities($this->username, ENT_COMPAT, 'UTF-8');
-		return '<a href="statistics.php?page=Users&amp;user=' . $this->getId() . '">' . $username . "</a>";
+		return '<a href="' . $baseurl . '/internal.php/statistics/users/detail?user=' . $this->getId() . '">' . $username . "</a>";
 	}
 }

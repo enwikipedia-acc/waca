@@ -129,7 +129,7 @@ abstract class PageBase
 	/**
 	 * @param IEmailHelper $emailHelper
 	 */
-	public function setEmailHelper($emailHelper)
+	final public function setEmailHelper($emailHelper)
 	{
 		$this->emailHelper = $emailHelper;
 	}
@@ -137,7 +137,7 @@ abstract class PageBase
 	/**
 	 * @return IEmailHelper
 	 */
-	public function getEmailHelper()
+	final public function getEmailHelper()
 	{
 		return $this->emailHelper;
 	}
@@ -146,7 +146,7 @@ abstract class PageBase
 	 * Sets the site configuration object for this page
 	 * @param $configuration
 	 */
-	public function setSiteConfiguration($configuration)
+	final public function setSiteConfiguration($configuration)
 	{
 		$this->siteConfiguration = $configuration;
 	}
@@ -156,7 +156,7 @@ abstract class PageBase
 	 *
 	 * @return SiteConfiguration
 	 */
-	protected function getSiteConfiguration()
+	final protected function getSiteConfiguration()
 	{
 		return $this->siteConfiguration;
 	}
@@ -164,7 +164,7 @@ abstract class PageBase
 	/**
 	 * @return HttpHelper
 	 */
-	public function getHttpHelper()
+	final public function getHttpHelper()
 	{
 		return $this->httpHelper;
 	}
@@ -172,7 +172,7 @@ abstract class PageBase
 	/**
 	 * @param HttpHelper $httpHelper
 	 */
-	public function setHttpHelper($httpHelper)
+	final public function setHttpHelper($httpHelper)
 	{
 		$this->httpHelper = $httpHelper;
 	}
@@ -180,7 +180,7 @@ abstract class PageBase
 	/**
 	 * @return WikiTextHelper
 	 */
-	public function getWikiTextHelper()
+	final public function getWikiTextHelper()
 	{
 		return $this->wikiTextHelper;
 	}
@@ -188,7 +188,7 @@ abstract class PageBase
 	/**
 	 * @param WikiTextHelper $wikiTextHelper
 	 */
-	public function setWikiTextHelper($wikiTextHelper)
+	final public function setWikiTextHelper($wikiTextHelper)
 	{
 		$this->wikiTextHelper = $wikiTextHelper;
 	}
@@ -235,7 +235,7 @@ abstract class PageBase
 	 *
 	 * @param string $path URL to redirect to
 	 */
-	protected function redirectUrl($path)
+	final protected function redirectUrl($path)
 	{
 		// 303 See Other = re-request at new address with a GET.
 		header("HTTP/1.1 303 See Other");
@@ -252,7 +252,7 @@ abstract class PageBase
 	 * @param string      $page   The page to redirect requests to (as used in the UR)
 	 * @param null|string $action The action to use on the page.
 	 */
-	protected function redirect($page, $action = null)
+	final protected function redirect($page, $action = null)
 	{
 		$pathInfo = array($this->getSiteConfiguration()->getBaseUrl() . "/internal.php");
 

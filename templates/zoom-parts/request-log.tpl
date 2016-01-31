@@ -8,7 +8,7 @@
 					<tr {if $zoomrow.security == "admin"}class="error"{/if}>
 						<td>
 							{if $zoomrow.userid != NULL}
-								<a href='{$baseurl}/statistics.php?page=Users&amp;user={$zoomrow.userid}'>{$zoomrow.user|escape}</a>
+								<a href='{$baseurl}/internal.php/statistics/users/detail?user={$zoomrow.userid}'>{$zoomrow.user|escape}</a>
 							{else}
 								{$zoomrow.user}
 							{/if}
@@ -55,7 +55,7 @@
 			{/if}
 			<tr>
 				<td>
-					<a href="{$baseurl}/statistics.php?page=Users&amp;user={$userid}">{$currentUser->getUsername()|escape}</a>
+					<a href="{$baseurl}/internal.php/statistics/users/detail?user={$userid}">{$currentUser->getUsername()|escape}</a>
 				</td>
 				<td>
 					<input type="hidden" name="id" value="{$request->getId()}"/>

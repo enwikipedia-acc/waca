@@ -132,7 +132,7 @@ final class SecurityConfiguration
 	{
 		$allowed = false;
 
-		if ($this->requireIdentified && !$user->isCommunityUser() && $user->isIdentified()) {
+		if ($this->requireIdentified && !$user->isCommunityUser() && !$user->isIdentified()) {
 			return false;
 		}
 

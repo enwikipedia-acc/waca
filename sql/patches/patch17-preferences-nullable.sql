@@ -56,6 +56,9 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
     CHANGE COLUMN `welcome_sig` `welcome_sig` VARCHAR(4096) NULL DEFAULT NULL ,
     CHANGE COLUMN `emailsig` `emailsig` BLOB NULL DEFAULT NULL;
 
+    UPDATE user SET welcome_sig = null WHERE welcome_sig = '';
+    UPDATE user SET emailsig = null WHERE emailsig = '';
+
     -- -------------------------------------------------------------------------
     -- finally, update the schema version to indicate success
     UPDATE schemaversion SET version = patchversion;
