@@ -27,7 +27,7 @@ class Ban extends DataObject
 			$database = gGetDb();
 		}
 
-		if ($target != null) {
+		if ($target !== null) {
 			$query = "SELECT * FROM ban WHERE target = :target;";
 			$statement = $database->prepare($query);
 			$statement->bindValue(":target", $target);
@@ -64,7 +64,7 @@ class Ban extends DataObject
 			$database = gGetDb();
 		}
 
-		if ($target != null) {
+		if ($target !== null) {
 			$query = "SELECT * FROM ban WHERE target = :target AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;";
 			$statement = $database->prepare($query);
 			$statement->bindValue(":target", $target);
