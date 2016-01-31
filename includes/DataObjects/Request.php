@@ -125,6 +125,9 @@ SQL
 		return $this->ip;
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public function getTrustedIp()
 	{
 		return trim(getTrustedClientIP($this->ip, $this->forwardedip));
@@ -355,6 +358,7 @@ SQL
 		return Comment::getForRequest($this->id, $this->dbObject);
 	}
 
+	/** @deprecated */
 	public function isProtected()
 	{
 		if ($this->reserved != 0) {
@@ -411,7 +415,7 @@ SQL
 	
 	public function getObjectDescription()
 	{
-		return '<a href="acc.php?action=zoom&amp;id=' . $this->getId() . '">Request #' . $this->getId() . " (" . htmlentities($this->name) . ")</a>";
+		return '<a href="internal.php/viewRequest?id=' . $this->getId() . '">Request #' . $this->getId() . " (" . htmlentities($this->name) . ")</a>";
 	}
 
 	public function getClosureReason()
@@ -437,5 +441,40 @@ SQL
 		$reason = $statement->fetchColumn();
 
 		return $reason;
+	}
+
+	/**
+	 * Gets a value indicating whether the request was closed as created or not.
+	 */
+	public function getWasCreated()
+	{
+		if ($this->status != 'Closed') {
+			throw new Exception("Can't get closure reason for open request.");
+		}
+
+		$statement = $this->dbObject->prepare(<<<SQL
+SELECT emailtemplate.oncreated, log.action
+FROM log
+LEFT JOIN emailtemplate ON CONCAT('Closed ', emailtemplate.id) = log.action
+WHERE log.objecttype = 'Request'
+AND log.objectid = :requestId
+AND log.action LIKE 'Closed%'
+ORDER BY log.timestamp DESC
+LIMIT 1;
+SQL
+		);
+
+		$statement->bindValue(":requestId", $this->id);
+		$statement->execute();
+		$onCreated = $statement->fetchColumn(0);
+		$logAction = $statement->fetchColumn(1);
+		$statement->closeCursor();
+
+		if($onCreated === null)
+		{
+			return $logAction === "Closed custom-y";
+		}
+
+		return (bool)$onCreated;
 	}
 }

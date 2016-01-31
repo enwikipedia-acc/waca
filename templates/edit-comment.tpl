@@ -4,7 +4,7 @@
         <div class="control-group">
             <label class="control-label" for="request">Request</label>
             <div class="controls">
-              <span class="input-large uneditable-input"><a href="{$baseurl}/acc.php?action=zoom&id={$comment->getRequest()}">{$comment->getRequestObject()->getName()|escape}</a></span>
+              <span class="input-large uneditable-input"><a href="{$baseurl}/internal.php/viewRequest?id={$comment->getRequest()}">{$comment->getRequestObject()->getName()|escape}</a></span>
             </div>
         </div>
 

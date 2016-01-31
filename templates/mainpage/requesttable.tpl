@@ -17,7 +17,7 @@
         <tr>
             <td>
                 <a class="btn btn-small{if $r->hasComments() == true} btn-info{/if}"
-                   href="{$baseurl}/acc.php?action=zoom&amp;id={$r->getId()}"><i
+                   href="{$baseurl}/internal.php/viewRequest?id={$r->getId()}"><i
                             class="{if $r->hasComments() == true}icon-white{else}icon-black{/if} icon-search"></i><span
                             class="visible-desktop">&nbsp;{$r->getId()}</span></a>
             </td>

@@ -44,6 +44,9 @@ class SiteConfiguration
 		),
 	);
 	private $squidList = array();
+	private $defaultCreatedTemplateId = 1;
+	private $defaultRequestStateKey = 'Open';
+	private $defaultRequestDeferredStateKey = 'Flagged users';
 	private $useStrictTransportSecurity = false;
 
 	/**
@@ -60,11 +63,13 @@ class SiteConfiguration
 
 	/**
 	 * @param string $baseUrl
+	 *
 	 * @return SiteConfiguration
 	 */
 	public function setBaseUrl($baseUrl)
 	{
 		$this->baseUrl = $baseUrl;
+
 		return $this;
 	}
 
@@ -79,11 +84,13 @@ class SiteConfiguration
 
 	/**
 	 * @param string $filePath
+	 *
 	 * @return SiteConfiguration
 	 */
 	public function setFilePath($filePath)
 	{
 		$this->filePath = $filePath;
+
 		return $this;
 	}
 
@@ -105,11 +112,13 @@ class SiteConfiguration
 
 	/**
 	 * @param mixed $debuggingTraceEnabled
+	 *
 	 * @return SiteConfiguration
 	 */
 	public function setDebuggingTraceEnabled($debuggingTraceEnabled)
 	{
 		$this->debuggingTraceEnabled = $debuggingTraceEnabled;
+
 		return $this;
 	}
 
@@ -123,11 +132,13 @@ class SiteConfiguration
 
 	/**
 	 * @param string $dataClearIp
+	 *
 	 * @return SiteConfiguration
 	 */
 	public function setDataClearIp($dataClearIp)
 	{
 		$this->dataClearIp = $dataClearIp;
+
 		return $this;
 	}
 
@@ -141,11 +152,13 @@ class SiteConfiguration
 
 	/**
 	 * @param string $dataClearEmail
+	 *
 	 * @return SiteConfiguration
 	 */
 	public function setDataClearEmail($dataClearEmail)
 	{
 		$this->dataClearEmail = $dataClearEmail;
+
 		return $this;
 	}
 
@@ -159,21 +172,13 @@ class SiteConfiguration
 
 	/**
 	 * @param boolean $forceIdentification
+	 *
 	 * @return SiteConfiguration
 	 */
 	public function setForceIdentification($forceIdentification)
 	{
 		$this->forceIdentification = $forceIdentification;
-		return $this;
-	}
 
-	/**
-	 * @param string $mediawikiScriptPath
-	 * @return SiteConfiguration
-	 */
-	public function setMediawikiScriptPath($mediawikiScriptPath)
-	{
-		$this->mediawikiScriptPath = $mediawikiScriptPath;
 		return $this;
 	}
 
@@ -186,12 +191,14 @@ class SiteConfiguration
 	}
 
 	/**
-	 * @param string $mediawikiWebServiceEndpoint
+	 * @param string $mediawikiScriptPath
+	 *
 	 * @return SiteConfiguration
 	 */
-	public function setMediawikiWebServiceEndpoint($mediawikiWebServiceEndpoint)
+	public function setMediawikiScriptPath($mediawikiScriptPath)
 	{
-		$this->mediawikiWebServiceEndpoint = $mediawikiWebServiceEndpoint;
+		$this->mediawikiScriptPath = $mediawikiScriptPath;
+
 		return $this;
 	}
 
@@ -204,12 +211,14 @@ class SiteConfiguration
 	}
 
 	/**
-	 * @param boolean $enforceOAuth
+	 * @param string $mediawikiWebServiceEndpoint
+	 *
 	 * @return SiteConfiguration
 	 */
-	public function setEnforceOAuth($enforceOAuth)
+	public function setMediawikiWebServiceEndpoint($mediawikiWebServiceEndpoint)
 	{
-		$this->enforceOAuth = $enforceOAuth;
+		$this->mediawikiWebServiceEndpoint = $mediawikiWebServiceEndpoint;
+
 		return $this;
 	}
 
@@ -222,6 +231,18 @@ class SiteConfiguration
 	}
 
 	/**
+	 * @param boolean $enforceOAuth
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setEnforceOAuth($enforceOAuth)
+	{
+		$this->enforceOAuth = $enforceOAuth;
+
+		return $this;
+	}
+
+	/**
 	 * @return boolean
 	 */
 	public function getEmailConfirmationEnabled()
@@ -231,21 +252,13 @@ class SiteConfiguration
 
 	/**
 	 * @param boolean $emailConfirmationEnabled
+	 *
 	 * @return $this
 	 */
 	public function setEmailConfirmationEnabled($emailConfirmationEnabled)
 	{
 		$this->emailConfirmationEnabled = $emailConfirmationEnabled;
-		return $this;
-	}
 
-	/**
-	 * @param int $miserModeLimit
-	 * @return SiteConfiguration
-	 */
-	public function setMiserModeLimit($miserModeLimit)
-	{
-		$this->miserModeLimit = $miserModeLimit;
 		return $this;
 	}
 
@@ -258,12 +271,14 @@ class SiteConfiguration
 	}
 
 	/**
-	 * @param array $requestStates
+	 * @param int $miserModeLimit
+	 *
 	 * @return SiteConfiguration
 	 */
-	public function setRequestStates($requestStates)
+	public function setMiserModeLimit($miserModeLimit)
 	{
-		$this->requestStates = $requestStates;
+		$this->miserModeLimit = $miserModeLimit;
+
 		return $this;
 	}
 
@@ -276,12 +291,14 @@ class SiteConfiguration
 	}
 
 	/**
-	 * @param array $squidList
+	 * @param array $requestStates
+	 *
 	 * @return SiteConfiguration
 	 */
-	public function setSquidList($squidList)
+	public function setRequestStates($requestStates)
 	{
-		$this->squidList = $squidList;
+		$this->requestStates = $requestStates;
+
 		return $this;
 	}
 
@@ -291,6 +308,78 @@ class SiteConfiguration
 	public function getSquidList()
 	{
 		return $this->squidList;
+	}
+
+	/**
+	 * @param array $squidList
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setSquidList($squidList)
+	{
+		$this->squidList = $squidList;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getDefaultCreatedTemplateId()
+	{
+		return $this->defaultCreatedTemplateId;
+	}
+
+	/**
+	 * @param int $defaultCreatedTemplateId
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setDefaultCreatedTemplateId($defaultCreatedTemplateId)
+	{
+		$this->defaultCreatedTemplateId = $defaultCreatedTemplateId;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDefaultRequestStateKey()
+	{
+		return $this->defaultRequestStateKey;
+	}
+
+	/**
+	 * @param string $defaultRequestStateKey
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setDefaultRequestStateKey($defaultRequestStateKey)
+	{
+		$this->defaultRequestStateKey = $defaultRequestStateKey;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDefaultRequestDeferredStateKey()
+	{
+		return $this->defaultRequestDeferredStateKey;
+	}
+
+	/**
+	 * @param string $defaultRequestDeferredStateKey
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setDefaultRequestDeferredStateKey($defaultRequestDeferredStateKey)
+	{
+		$this->defaultRequestDeferredStateKey = $defaultRequestDeferredStateKey;
+
+		return $this;
 	}
 
 	/**

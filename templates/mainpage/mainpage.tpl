@@ -41,7 +41,7 @@
                         {$req.name|escape}
                     </td>
                     <td>
-                        <a href="{$baseurl}/acc.php?action=zoom&amp;id={$req.id|escape:'url'}" class="btn btn-info">
+                        <a href="{$baseurl}/internal.php/viewRequest?id={$req.id|escape:'url'}" class="btn btn-info">
                             <i class="icon-white icon-search"></i>&nbsp;Zoom
                         </a>
                     </td>

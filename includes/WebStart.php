@@ -1,7 +1,10 @@
 <?php
 namespace Waca;
 
+use CachedApiAntispoofProvider;
+use CachedRDnsLookupProvider;
 use Exception;
+use FakeLocationProvider;
 use \Offline;
 use PdoDatabase;
 use Waca\Exceptions\EnvironmentException;
@@ -10,6 +13,7 @@ use Waca\Helpers\EmailHelper;
 use Waca\Helpers\HttpHelper;
 use Waca\Helpers\WikiTextHelper;
 use Waca\Providers\GlobalStateProvider;
+use XffTrustProvider;
 
 /**
  * Internal application entry point.
@@ -186,6 +190,12 @@ HTML;
 		$page->setEmailHelper(new EmailHelper());
 		$page->setHttpHelper(new HttpHelper());
 		$page->setWikiTextHelper(new WikiTextHelper($this->configuration, $page->getHttpHelper()));
+
+		// todo: inject from configuration
+		$page->setLocationProvider(new FakeLocationProvider(gGetDb(), null));
+		$page->setXffTrustProvider(new XffTrustProvider($this->configuration->getSquidList(), gGetDb()));
+		$page->setRdnsProvider(new CachedRDnsLookupProvider(gGetDb()));
+		$page->setAntiSpoofProvider(new CachedApiAntispoofProvider());
 
 		// run the route code for the request.
 		$page->execute();

@@ -57,3 +57,17 @@ until a newer Bootstrap version with this fixed is released and we upgrade to it
 form.form-compact {
     margin-bottom: 0;
 }
+
+/* Zoom page tweaks */
+hr.zoom-button-divider {
+    border-top-color: #ddd;
+    margin-top: 10px;
+}
+
+h5.zoom-button-header {
+    color: #999;
+    margin-top: -15px;
+    margin-bottom: 5px;
+    font-weight: normal;
+    font-style: italic;
+}

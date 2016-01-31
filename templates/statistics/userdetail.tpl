@@ -53,7 +53,7 @@
                         <a href="{$mediawikiScriptPath}?title=User_talk:{$user.name|escape:'url'}">talk</a> -
                         <a href="{$mediawikiScriptPath}?title=Special:Contributions/{$user.name|escape:'url'}">contribs</a>
                         -
-                        <a href="{$baseurl}/acc.php?action=zoom&id={$user.id}">zoom</a>
+                        <a href="{$baseurl}/internal.php/viewRequest?id={$user.id}">zoom</a>
                         ) at {$user.time}
                     </li>
                 {/foreach}
@@ -70,7 +70,7 @@
                         <a href="{$mediawikiScriptPath}?title=User_talk:{$user.name|escape:'url'}">talk</a> -
                         <a href="{$mediawikiScriptPath}?title=Special:Contributions/{$user.name|escape:'url'}">contribs</a>
                         -
-                        <a href="{$baseurl}/acc.php?action=zoom&id={$user.id}">zoom</a>
+                        <a href="{$baseurl}/internal.php/viewRequest?id={$user.id}">zoom</a>
                         ) at {$user.time}
                     </li>
                 {/foreach}

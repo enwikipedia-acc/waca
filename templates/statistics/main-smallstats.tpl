@@ -36,7 +36,7 @@
     <tr>
       <th>Request with most comments</th>
       <td>
-        <a href="{$baseurl}/acc.php?action=zoom&amp;id={$mostComments}">{$mostComments}</a>
+        <a href="{$baseurl}/internal.php/viewRequest?id={$mostComments}">{$mostComments}</a>
       </td>
     </tr>
   </table>

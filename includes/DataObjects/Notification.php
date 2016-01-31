@@ -287,7 +287,7 @@ class Notification extends DataObject
 			. IrcColourCode::ORANGE . $request->getId()
 			. IrcColourCode::DARK_GREY . "]]"
 			. IrcColourCode::RED . " N "
-			. IrcColourCode::DARK_BLUE . $baseurl . "/acc.php?action=zoom&id={$request->getId()} "
+			. IrcColourCode::DARK_BLUE . $baseurl . "/internal.php/viewRequest?id={$request->getId()} "
 			. IrcColourCode::DARK_RED . "* "
 			. IrcColourCode::DARK_GREEN . $request->getName()
 			. IrcColourCode::DARK_RED . " * "

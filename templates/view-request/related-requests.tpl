@@ -1,7 +1,7 @@
 <table class="table table-condensed table-striped">
     {foreach $requests as $others}
         <tr>
-            <td><a target="_blank" href="{$baseurl}/acc.php?action=zoom&amp;id={$others->getId()}">#{$others->getId()}</a></td>
+            <td><a target="_blank" href="{$baseurl}/internal.php/viewRequest?id={$others->getId()}">#{$others->getId()}</a></td>
             <td>
                 {$others->getDate()}<span class="muted">
                 <em>({$others->getDate()|relativedate})</em>

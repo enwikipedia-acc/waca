@@ -2,6 +2,10 @@
 namespace Waca;
 
 use Exception;
+use IAntiSpoofProvider;
+use ILocationProvider;
+use IRDnsProvider;
+use IXffTrustProvider;
 use User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\NotIdentifiedException;
@@ -29,11 +33,20 @@ abstract class PageBase
 	private $httpHelper;
 	/** @var WikiTextHelper */
 	private $wikiTextHelper;
+	/** @var ILocationProvider */
+	private $locationProvider;
+	/** @var IXffTrustProvider */
+	private $xffTrustProvider;
+	/** @var IRDnsProvider */
+	private $rdnsProvider;
+	/** @var IAntiSpoofProvider */
+	private $antiSpoofProvider;
 
 	/**
 	 * Sets the route the request will take. Only should be called from the request router.
 	 *
 	 * @param $routeName string
+	 *
 	 * @throws Exception
 	 * @category Security-Critical
 	 */
@@ -86,6 +99,7 @@ abstract class PageBase
 	 * Intended to be used from within templates
 	 *
 	 * @param string $action
+	 *
 	 * @return boolean
 	 * @category Security-Critical
 	 */
@@ -122,6 +136,7 @@ abstract class PageBase
 
 	/**
 	 * Sets the site configuration object for this page
+	 *
 	 * @param $configuration
 	 */
 	final public function setSiteConfiguration($configuration)
@@ -172,6 +187,70 @@ abstract class PageBase
 	}
 
 	/**
+	 * @param ILocationProvider $locationProvider
+	 */
+	final public function setLocationProvider(ILocationProvider $locationProvider)
+	{
+		$this->locationProvider = $locationProvider;
+	}
+
+	/**
+	 * @return ILocationProvider
+	 */
+	final public function getLocationProvider()
+	{
+		return $this->locationProvider;
+	}
+
+	/**
+	 * @param IXffTrustProvider $xffTrustProvider
+	 */
+	final public function setXffTrustProvider(IXffTrustProvider $xffTrustProvider)
+	{
+		$this->xffTrustProvider = $xffTrustProvider;
+	}
+
+	/**
+	 * @return IXffTrustProvider
+	 */
+	final public function getXffTrustProvider()
+	{
+		return $this->xffTrustProvider;
+	}
+
+	/**
+	 * @return IRDnsProvider
+	 */
+	final public function getRdnsProvider()
+	{
+		return $this->rdnsProvider;
+	}
+
+	/**
+	 * @param IRDnsProvider $rdnsProvider
+	 */
+	public function setRdnsProvider($rdnsProvider)
+	{
+		$this->rdnsProvider = $rdnsProvider;
+	}
+
+	/**
+	 * @return IAntiSpoofProvider
+	 */
+	public function getAntiSpoofProvider()
+	{
+		return $this->antiSpoofProvider;
+	}
+
+	/**
+	 * @param IAntiSpoofProvider $antiSpoofProvider
+	 */
+	public function setAntiSpoofProvider($antiSpoofProvider)
+	{
+		$this->antiSpoofProvider = $antiSpoofProvider;
+	}
+
+	/**
 	 * Main function for this page, when no specific actions are called.
 	 * @return void
 	 */
@@ -199,6 +278,7 @@ abstract class PageBase
 
 	/**
 	 * Sets the name of the template this page should display.
+	 *
 	 * @param string $name
 	 */
 	final protected function setTemplate($name)
@@ -285,23 +365,26 @@ abstract class PageBase
 			ob_clean();
 			print($content);
 			ob_flush();
+
 			return;
 		}
 	}
 
 	/**
-	 * Handles an access denied error during the security barrier test
-	 *
-	 * @throws AccessDeniedException
-	 * @throws NotIdentifiedException
+	 * @param string $title
 	 */
-	private function handleAccessDenied()
+	final protected function setHtmlTitle($title){
+		$this->htmlTitle = $title;
+	}
+
+	protected function handleAccessDenied()
 	{
 		// Not allowed to access this resource.
 		// Firstly, let's check if we're even logged in.
 		if (User::getCurrent()->isCommunityUser()) {
 			// Not logged in, redirect to login page
-			WebRequest::setPostLoginRedirect();
+
+			// TODO: return to current page? Possibly as a session var?
 			$this->redirect("login");
 
 			return;

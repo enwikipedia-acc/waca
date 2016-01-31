@@ -2,13 +2,15 @@
   <fieldset>
     <legend>Custom close{if $preloadtitle != ""} - {$preloadtitle|escape}{/if}</legend>
 
+	{*
     <div class="control-group">
       <label for="msgbody" class="control-label">Request information</label>
       <div class="controls">
         {include file="zoom-parts/request-info.tpl" hash="x" showinfo=true showLink=false}
       </div>
     </div>
-    
+    *}
+
     <div class="control-group">
       <label for="msgbody" class="control-label">Message to be sent to the user:</label>
       <div class="controls">
@@ -50,7 +52,7 @@
 
     <div class="form-actions">
       <button type="submit" class="btn btn-primary">Close and send</button>
-      <a href="?action=zoom&amp;id={$request->getId()}" class="btn">Cancel</a>
+      <a href="{$baseurl}/internal.php/viewRequest?id={$request->getId()}" class="btn">Cancel</a>
     </div>
   </fieldset>
 </form>

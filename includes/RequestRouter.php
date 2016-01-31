@@ -2,6 +2,7 @@
 namespace Waca;
 
 use Exception;
+use Pages\PageViewRequest;
 use Waca\Pages\Page404;
 use Waca\Pages\PageBan;
 use Waca\Pages\PageForgotPassword;
@@ -185,6 +186,11 @@ final class RequestRouter
 			array(
 				'class'   => StatsUsers::class,
 				'actions' => array('detail'),
+			),
+		'viewRequest'                   =>
+			array(
+				'class'   => PageViewRequest::class,
+				'actions' => array(),
 			),
 
 	);

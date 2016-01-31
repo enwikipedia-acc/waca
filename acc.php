@@ -225,7 +225,7 @@ elseif ($action == "defer" && $_GET['id'] != "" && $_GET['sum'] != "") {
 				. "on a request that someone else has performed an action on since you loaded the page",
 				"Invalid checksum");
             
-			header("Location: acc.php?action=zoom&id={$request->getId()}");
+			header("Location: $baseurl/internal.php/viewRequest?id={$request->getId()}");
 			die();
 		}
         
@@ -249,7 +249,7 @@ SQL;
 			&& !User::getCurrent()->isAdmin() 
 			&& !User::getCurrent()->isCheckuser()) {
 			SessionAlert::error("Only administrators and checkusers can reopen a request that has been closed for over a week.");
-			header("Location: acc.php?action=zoom&id={$request->getId()}");
+			header("Location: $baseurl/internal.php/viewRequest?id={$request->getId()}");
 			die();
 		}
         
@@ -257,7 +257,7 @@ SQL;
 			SessionAlert::error(
 				"Cannot set status, target already deferred to " . htmlentities($_GET['target']), 
 				"Error");
-			header("Location: acc.php?action=zoom&id={$request->getId()}");
+			header("Location: $baseurl/internal.php/viewRequest?id={$request->getId()}");
 			die();
 		}
         
@@ -539,23 +539,6 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		die();
 	}
 }
-elseif ($action == "zoom") {
-	if (!isset($_GET['id'])) {
-		BootstrapSkin::displayAlertBox("No request specified!", "alert-error", "Error!", true, false);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-    
-	if (isset($_GET['hash'])) {
-		$urlhash = $_GET['hash'];
-	}
-	else {
-		$urlhash = "";
-	}
-	echo zoomPage($_GET['id'], $urlhash);
-	BootstrapSkin::displayInternalFooter();
-	die();
-}
 elseif ($action == "reserve") {
 	$database = gGetDb();
     
@@ -628,7 +611,7 @@ SQL
 			SessionAlert::success("Reserved request {$request->getId()}.");
 		}
         
-		header("Location: $baseurl/acc.php?action=zoom&id={$request->getId()}");
+		header("Location: $baseurl/internal.php/viewRequest?id={$request->getId()}");
 	});
 	    
 	die();	
@@ -766,7 +749,7 @@ elseif ($action == "comment-add") {
 	}
 
 	BootstrapSkin::displayAlertBox(
-		"<a href='$baseurl/acc.php?action=zoom&amp;id={$request->getId()}&amp;hash=$urlhash'>Return to request #{$request->getId()}</a>",
+		"<a href='$baseurl/internal.php/viewRequest?id={$request->getId()}'>Return to request #{$request->getId()}</a>",
 		"alert-success",
 		"Comment added Successfully!",
 		true, false);
@@ -785,7 +768,7 @@ elseif ($action == "comment-quick") {
 	}
     
 	if (!isset($_POST['comment']) || $_POST['comment'] == "") {
-		header("Location: acc.php?action=zoom&id=" . $request->getId());
+		header("Location: $baseurl/internal.php/viewRequest?id=" . $request->getId());
 		die(); 
 	}
     
@@ -818,7 +801,7 @@ elseif ($action == "comment-quick") {
     
 	Notification::commentCreated($comment);
     
-	header("Location: acc.php?action=zoom&id=" . $request->getId());
+	header("Location: $baseurl/internal.php/viewRequest?id=" . $request->getId());
 }
 elseif ($action == "ec") {
 	// edit comment
@@ -858,7 +841,7 @@ elseif ($action == "ec") {
 			Notification::commentEdited($comment);
         
 			SessionAlert::success("Comment has been saved successfully");
-			header("Location: $baseurl/acc.php?action=zoom&id=" . $comment->getRequest());
+			header("Location: $baseurl/internal.php/viewRequest?id=" . $comment->getRequest());
 		});
         
 		die();    
@@ -907,7 +890,7 @@ elseif ($action == "sendtouser") {
     
 	Notification::requestReservationSent($request, $user);
 	SessionAlert::success("Reservation sent successfully");
-	header("Location: $baseurl/acc.php?action=zoom&id=$request");
+	header("Location: $baseurl/internal.php/viewRequest?id=$request");
 }
 
 elseif ($action == "emailmgmt") {

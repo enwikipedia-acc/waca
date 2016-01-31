@@ -86,36 +86,18 @@ function array_search_recursive($needle, $haystack, $path = array())
 	return false;
 }
 
-require_once('zoompage.php');
-
 /**
  * Parses an XFF header and client IP to find the last trusted client IP
  * 
  * @param string $dbip The IP address the request came from
  * @param string $dbproxyip The contents of the XFF header of the request
  * @return string
+ * @deprecated
  */
 function getTrustedClientIP($dbip, $dbproxyip)
 {
 	global $xffTrustProvider;
-    
-	$clientIpAddr = $dbip;
-	if ($dbproxyip) {
-		$ipList = explode(",", $dbproxyip);
-		$ipList[] = $clientIpAddr;
-		$ipList = array_reverse($ipList);
-		
-		foreach ($ipList as $ipnumber => $ip) {
-			if ($xffTrustProvider->isTrusted(trim($ip)) && $ipnumber < (count($ipList) - 1)) {
-				continue;
-			}
-			
-			$clientIpAddr = $ip;
-			break;
-		}
-	}
-	
-	return $clientIpAddr;
+    return $xffTrustProvider->getTrustedClientIp($dbip, $dbproxyip);
 }
 
 /**
