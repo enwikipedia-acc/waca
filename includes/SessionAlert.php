@@ -35,6 +35,10 @@ class SessionAlert
 		$this->block = $block;
 	}
 
+	/**
+	 * @deprecated
+	 * @return null|string
+	 */
 	public function getAlertBox()
 	{
 		return BootstrapSkin::displayAlertBox($this->message, $this->type, $this->title, $this->block, $this->closable,
@@ -43,6 +47,7 @@ class SessionAlert
 
 	/**
 	 * Shows a quick one-liner message
+	 *
 	 * @param string $message
 	 * @param string $type
 	 */
@@ -51,21 +56,41 @@ class SessionAlert
 		self::append(new SessionAlert($message, "", $type, true, false));
 	}
 
+	/**
+	 * Shows a quick one-liner success message
+	 *
+	 * @param string $message
+	 */
 	public static function success($message)
 	{
 		self::append(new SessionAlert($message, "", "alert-success", true, true));
 	}
 
+	/**
+	 * Shows a quick one-liner warning message
+	 *
+	 * @param string $message
+	 * @param string $title
+	 */
 	public static function warning($message, $title = "Warning!")
 	{
 		self::append(new SessionAlert($message, $title, "alert-warning", true, true));
 	}
 
+	/**
+	 * Shows a quick one-liner error message
+	 *
+	 * @param string $message
+	 * @param string $title
+	 */
 	public static function error($message, $title = "Error!")
 	{
 		self::append(new SessionAlert($message, $title, "alert-error", true, true));
 	}
 
+	/**
+	 * @param SessionAlert $alert
+	 */
 	public static function append(SessionAlert $alert)
 	{
 		$data = array();
@@ -107,6 +132,9 @@ class SessionAlert
 		return $block;
 	}
 
+	/**
+	 * @todo
+	 */
 	public static function clearAlerts()
 	{
 	}

@@ -17,7 +17,8 @@ class StringFunctionsTest extends PHPUnit_Framework_TestCase
 		$this->e = null;
 	}
 
-	public function testFormatAsUsername()	{
+	public function testFormatAsUsername()
+	{
 		// Happy path
 		$this->assertEquals($this->e->formatAsUsername("this"), "This");
 		$this->assertEquals($this->e->formatAsUsername("1this"), "1this");

@@ -5,7 +5,9 @@
  */
 class WelcomeTemplate extends DataObject
 {
+	/** @var string */
 	private $usercode;
+	/** @var string */
 	private $botcode;
 
 	private $usageCache;
@@ -36,6 +38,9 @@ class WelcomeTemplate extends DataObject
 		return $result;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function save()
 	{
 		if ($this->isNew) {
@@ -65,26 +70,41 @@ class WelcomeTemplate extends DataObject
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getUserCode()
 	{
 		return $this->usercode;
 	}
 
+	/**
+	 * @param string $usercode
+	 */
 	public function setUserCode($usercode)
 	{
 		$this->usercode = $usercode;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getBotCode()
 	{
 		return $this->botcode;
 	}
 
+	/**
+	 * @param string $botcode
+	 */
 	public function setBotCode($botcode)
 	{
 		$this->botcode = $botcode;
 	}
 
+	/**
+	 * @return User[]
+	 */
 	public function getUsersUsingTemplate()
 	{
 		if ($this->usageCache === null) {
@@ -105,7 +125,10 @@ class WelcomeTemplate extends DataObject
 
 		return $this->usageCache;
 	}
-	
+
+	/**
+	 * @return string
+	 */
 	public function getObjectDescription()
 	{
 		return '<a href="acc.php?action=templatemgmt&amp;view=' . $this->getId() . '">' . htmlentities($this->usercode) . "</a>";

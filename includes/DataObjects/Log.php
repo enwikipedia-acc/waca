@@ -6,7 +6,7 @@
  * Log description.
  *
  * @version 1.0
- * @author stwalkerster
+ * @author  stwalkerster
  */
 class Log extends DataObject
 {
@@ -57,6 +57,7 @@ SQL
 
 	/**
 	 * Summary of setObjectId
+	 *
 	 * @param int $objectId
 	 */
 	public function setObjectId($objectId)
@@ -71,6 +72,7 @@ SQL
 
 	/**
 	 * Summary of setObjectType
+	 *
 	 * @param string $objectType
 	 */
 	public function setObjectType($objectType)
@@ -82,27 +84,34 @@ SQL
 	{
 		return $this->user;
 	}
-	
+
 	/**
 	 * Summary of getUserObject
 	 * @return User|null
 	 */
 	public function getUserObject()
 	{
-		return User::getById($this->user, $this->dbObject);
+		/** @var User|bool $user */
+		$user = User::getById($this->user, $this->dbObject);
+		if ($user === false) {
+			$user = null;
+		}
+
+		return $user;
 	}
 
 	/**
 	 * Summary of setUser
+	 *
 	 * @param User $user
 	 */
 	public function setUser($user)
 	{
 		if (is_a($user, "User")) {
-			$this->user = $user->getId();   
+			$this->user = $user->getId();
 		}
 		else {
-			$this->user = $user;   
+			$this->user = $user;
 		}
 	}
 
@@ -113,7 +122,8 @@ SQL
 
 	/**
 	 * Summary of setAction
-	 * @param string $action 
+	 *
+	 * @param string $action
 	 */
 	public function setAction($action)
 	{
@@ -132,13 +142,14 @@ SQL
 
 	/**
 	 * Summary of setComment
-	 * @param string $comment 
+	 *
+	 * @param string $comment
 	 */
 	public function setComment($comment)
 	{
 		$this->comment = $comment;
 	}
-	
+
 	/**
 	 * Let's be really sneaky here, and fake this to the object description of the logged object.
 	 * @return string
@@ -146,7 +157,7 @@ SQL
 	public function getObjectDescription()
 	{
 		$type = $this->objecttype;
-		
+
 		if ($type == "") {
 			return "";
 		}
@@ -157,7 +168,7 @@ SQL
 		if ($object === false) {
 			return '[' . $this->objecttype . " " . $this->objectid . ']';
 		}
-		
+
 		return $object->getObjectDescription();
 	}
 }

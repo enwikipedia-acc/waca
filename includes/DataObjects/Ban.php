@@ -15,8 +15,10 @@ class Ban extends DataObject
 
 	/**
 	 * Gets all bans, expired and active filtered by the optional target.
-	 * @param $target string The email, IP, or name of the target of the ban
-	 * @param PdoDatabase $database gGetDb()
+	 *
+	 * @param string      $target   The email, IP, or name of the target of the ban
+	 * @param PdoDatabase $database The database object to look up with
+	 *
 	 * @return Ban[]
 	 */
 	public static function getAllBans($target = null, PdoDatabase $database = null)
@@ -50,8 +52,10 @@ class Ban extends DataObject
 
 	/**
 	 * Gets all active bans, filtered by the optional target.
-	 * @param $target
+	 *
+	 * @param string      $target
 	 * @param PdoDatabase $database
+	 *
 	 * @return Ban[]
 	 */
 	public static function getActiveBans($target = null, PdoDatabase $database = null)
@@ -86,8 +90,10 @@ class Ban extends DataObject
 
 	/**
 	 * Gets a ban by it's ID if it's currently active.
-	 * @param $id
+	 *
+	 * @param     integer $id
 	 * @param PdoDatabase $database
+	 *
 	 * @return Ban
 	 */
 	public static function getActiveId($id, PdoDatabase $database = null)
@@ -118,9 +124,11 @@ SQL
 
 	/**
 	 * Get all active bans for a target and type.
-	 * @param string $target
-	 * @param string $type
+	 *
+	 * @param string      $target
+	 * @param string      $type
 	 * @param PdoDatabase $database
+	 *
 	 * @return Ban
 	 */
 	public static function getBanByTarget($target, $type, PdoDatabase $database = null)
@@ -152,7 +160,7 @@ SQL
 	public function save()
 	{
 		if ($this->isNew) {
-// insert
+			// insert
 			$statement = $this->dbObject->prepare("INSERT INTO `ban` (type, target, user, reason, date, duration, active) VALUES (:type, :target, :user, :reason, CURRENT_TIMESTAMP(), :duration, :active);");
 			$statement->bindValue(":type", $this->type);
 			$statement->bindValue(":target", $this->target);
@@ -169,7 +177,7 @@ SQL
 			}
 		}
 		else {
-// update
+			// update
 			$statement = $this->dbObject->prepare("UPDATE `ban` SET duration = :duration, active = :active, user = :user WHERE id = :id LIMIT 1;");
 			$statement->bindValue(":id", $this->id);
 			$statement->bindValue(":duration", $this->duration);
@@ -183,7 +191,7 @@ SQL
 	}
 
 	/**
-	 * @return mixed
+	 * @return string
 	 */
 	public function getType()
 	{
@@ -191,7 +199,7 @@ SQL
 	}
 
 	/**
-	 * @param $type
+	 * @param string $type
 	 */
 	public function setType($type)
 	{
@@ -199,7 +207,7 @@ SQL
 	}
 
 	/**
-	 * @return mixed
+	 * @return string
 	 */
 	public function getTarget()
 	{
@@ -207,7 +215,7 @@ SQL
 	}
 
 	/**
-	 * @param $target
+	 * @param string $target
 	 */
 	public function setTarget($target)
 	{
@@ -226,6 +234,7 @@ SQL
 
 	/**
 	 * @param string|int $user UserID or username of user who is setting the ban. Will be translated into ID
+	 *
 	 * @throws Exception
 	 */
 	public function setUser($user)
@@ -244,7 +253,7 @@ SQL
 	}
 
 	/**
-	 * @return mixed
+	 * @return string
 	 */
 	public function getReason()
 	{
@@ -252,7 +261,7 @@ SQL
 	}
 
 	/**
-	 * @param $reason
+	 * @param string $reason
 	 */
 	public function setReason($reason)
 	{
@@ -276,7 +285,7 @@ SQL
 	}
 
 	/**
-	 * @param $duration
+	 * @param mixed $duration
 	 */
 	public function setDuration($duration)
 	{
@@ -284,7 +293,8 @@ SQL
 	}
 
 	/**
-	 * @return mixed
+	 * @return int
+	 * @todo Boolean?
 	 */
 	public function getActive()
 	{
@@ -292,7 +302,7 @@ SQL
 	}
 
 	/**
-	 * @param $active
+	 * @param int $active
 	 */
 	public function setActive($active)
 	{

@@ -10,5 +10,13 @@ tools:
     php_analyzer: true
     sensiolabs_security_checker: true
 
+    php_code_coverage:
+      enabled: true
+      test_command: phpunit --colors --verbose
+
 filter:
     excluded_paths: ["lib/*"]
+
+build_failure_conditions:
+    - 'elements.rating(<= F).new.exists'
+    - 'issues.severity(>= MAJOR).new.exists'

@@ -12,8 +12,9 @@ class Comment extends DataObject
 	private $request;
 
 	/**
-	 * @param integer $id
+	 * @param integer          $id
 	 * @param null|PdoDatabase $database
+	 *
 	 * @return Comment[]
 	 * @throws Exception
 	 */
@@ -34,7 +35,7 @@ class Comment extends DataObject
 SELECT * FROM comment
 WHERE request = :target AND (visibility = 'user' OR user = :userid);
 SQL
-);
+			);
 			$statement->bindValue(":userid", User::getCurrent()->getId());
 		}
 
@@ -109,7 +110,13 @@ SQL
 	 */
 	public function getUserObject()
 	{
-		return User::getById($this->user, $this->dbObject);
+		/** @var User|bool $user */
+		$user = User::getById($this->user, $this->dbObject);
+		if ($user === false) {
+			$user = null;
+		}
+
+		return $user;
 	}
 
 	public function setUser($user)
@@ -148,7 +155,13 @@ SQL
 	 */
 	public function getRequestObject()
 	{
-		return Request::getById($this->request, $this->dbObject);
+		/** @var Request|boolean $request */
+		$request = Request::getById($this->request, $this->dbObject);
+		if ($request === false) {
+			$request = null;
+		}
+
+		return $request;
 	}
 
 	public function setRequest($request)

@@ -470,6 +470,14 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 	#endregion
 
 	#region email
+	public function testGetEmail()
+	{
+		$this->markTestIncomplete("not implemented uet");
+	}
 
+	public function testPostEmail()
+	{
+		$this->markTestIncomplete("not implemented uet");
+	}
 	#endregion
 }

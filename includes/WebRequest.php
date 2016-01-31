@@ -134,7 +134,8 @@ class WebRequest
 	#region POST variables
 
 	/**
-	 * @param $key string
+	 * @param string $key
+	 *
 	 * @return null|string
 	 */
 	public static function postString($key)
@@ -152,7 +153,8 @@ class WebRequest
 	}
 
 	/**
-	 * @param $key
+	 * @param string $key
+	 *
 	 * @return null|string
 	 */
 	public static function postEmail($key)
@@ -173,6 +175,7 @@ class WebRequest
 
 	/**
 	 * @param string $key
+	 *
 	 * @return int|null
 	 */
 	public static function postInt($key)
@@ -215,7 +218,8 @@ class WebRequest
 	#region GET variables
 
 	/**
-	 * @param $key
+	 * @param string $key
+	 *
 	 * @return bool
 	 */
 	public static function getBoolean($key)
@@ -239,6 +243,7 @@ class WebRequest
 
 	/**
 	 * @param string $key
+	 *
 	 * @return int|null
 	 */
 	public static function getInt($key)
@@ -257,6 +262,11 @@ class WebRequest
 		return (int)$filteredValue;
 	}
 
+	/**
+	 * @param string $key
+	 *
+	 * @return null|string
+	 */
 	public static function getString($key)
 	{
 		$get = &self::$globalStateProvider->getGetSuperGlobal();
