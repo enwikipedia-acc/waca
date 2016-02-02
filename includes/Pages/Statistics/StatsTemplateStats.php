@@ -2,12 +2,12 @@
 namespace Waca\Pages\Statistics;
 
 use PDO;
+use Waca\PageBase;
 use Waca\SecurityConfiguration;
-use Waca\StatisticsPage;
 
-class StatsTemplateStats extends StatisticsPage
+class StatsTemplateStats extends PageBase
 {
-	protected function executeStatisticsPage()
+	public function main()
 	{
 		$query = <<<SQL
 SELECT
@@ -43,11 +43,6 @@ SQL;
 		$this->assign('dataTable', $data);
 		$this->assign('statsPageTitle','Template Stats');
 		$this->setTemplate('statistics/welcome-template-usage.tpl');
-	}
-
-	public function getPageTitle()
-	{
-		return "Template Stats";
 	}
 
 	public function getSecurityConfiguration()

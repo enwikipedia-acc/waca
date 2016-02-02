@@ -1,15 +1,14 @@
 <?php
 namespace Waca\Pages\Statistics;
 
-use BootstrapSkin;
 use PDO;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\PageBase;
 use Waca\SecurityConfiguration;
-use Waca\StatisticsPage;
 use Waca\WebRequest;
 
-class StatsUsers extends StatisticsPage
+class StatsUsers extends PageBase
 {
 	public function main()
 	{
@@ -21,13 +20,8 @@ class StatsUsers extends StatisticsPage
 
 		$this->assign("lists", $lists);
 
-		$this->assign('statsPageTitle', $this->getPageTitle());
+		$this->assign('statsPageTitle', 'Account Creation Tool users');
 		$this->setTemplate("statistics/users.tpl");
-	}
-
-	public function getPageTitle()
-	{
-		return "Account Creation Tool users";
 	}
 
 	public function getSecurityConfiguration()
@@ -118,7 +112,7 @@ SQL
 		$accountLog = $accountLogQuery->fetchAll(PDO::FETCH_ASSOC);
 		$this->assign("accountlog", $accountLog);
 
-		$this->assign('statsPageTitle', $this->getPageTitle());
+		$this->assign('statsPageTitle', 'Account Creation Tool users');
 		$this->setTemplate("statistics/userdetail.tpl");
 	}
 }

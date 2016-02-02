@@ -2,10 +2,10 @@
 namespace Waca\Pages\Statistics;
 
 use PDO;
+use Waca\PageBase;
 use Waca\SecurityConfiguration;
-use Waca\StatisticsPage;
 
-class StatsIdUsers extends StatisticsPage
+class StatsIdUsers extends PageBase
 {
 	public function main()
 	{
@@ -17,11 +17,6 @@ class StatsIdUsers extends StatisticsPage
 		$this->assign('dataTable', $data);
 		$this->assign('statsPageTitle','All identified users');
 		$this->setTemplate('statistics/identified-users.tpl');
-	}
-
-	public function getPageTitle()
-	{
-		return "All identified users";
 	}
 
 	public function getSecurityConfiguration()

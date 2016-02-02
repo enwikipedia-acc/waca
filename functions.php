@@ -20,7 +20,6 @@ if (!defined("ACC")) {
 	die();
 } // Invalid entry point
 
-require_once 'queryBrowser.php';
 require_once 'includes/session.php';
 
 // Initialize the class objects.

@@ -2,10 +2,10 @@
 namespace Waca\Pages\Statistics;
 
 use PDO;
+use Waca\PageBase;
 use Waca\SecurityConfiguration;
-use Waca\StatisticsPage;
 
-class StatsMonthlyStats extends StatisticsPage
+class StatsMonthlyStats extends PageBase
 {
 	public function main()
 	{
@@ -27,11 +27,6 @@ SQL;
 		$this->assign('dataTable', $data);
 		$this->assign('statsPageTitle','Monthly Statistics');
 		$this->setTemplate('statistics/monthly-stats.tpl');
-	}
-
-	public function getPageTitle()
-	{
-		return "Monthly Statistics";
 	}
 
 	public function getSecurityConfiguration()

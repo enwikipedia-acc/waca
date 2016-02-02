@@ -2,10 +2,10 @@
 namespace Waca\Pages\Statistics;
 
 use PDO;
+use Waca\PageBase;
 use Waca\SecurityConfiguration;
-use Waca\StatisticsPage;
 
-class StatsReservedRequests extends StatisticsPage
+class StatsReservedRequests extends PageBase
 {
 	public function main()
 	{
@@ -27,11 +27,6 @@ sql;
 		$this->assign('dataTable', $data);
 		$this->assign('statsPageTitle','All currently reserved requests');
 		$this->setTemplate('statistics/reserved-requests.tpl');
-	}
-
-	public function getPageTitle()
-	{
-		return "All currently reserved requests";
 	}
 
 	public function getSecurityConfiguration()

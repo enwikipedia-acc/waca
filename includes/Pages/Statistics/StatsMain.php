@@ -1,14 +1,14 @@
 <?php
 namespace Waca\Pages\Statistics;
 
+use Waca\PageBase;
 use Waca\SecurityConfiguration;
-use Waca\StatisticsPage;
 
-class StatsMain extends StatisticsPage
+class StatsMain extends PageBase
 {
 	public function main()
 	{
-		$this->assign('statsPageTitle', $this->getPageTitle());
+		$this->assign('statsPageTitle', 'Account Creation Statistics');
 
 		$statsPages = array(
 			'fastCloses'         => 'Requests closed less than 30 seconds after reservation in the past 3 months',
@@ -29,11 +29,6 @@ class StatsMain extends StatisticsPage
 		$this->assign('graphList', $graphList);
 
 		$this->setTemplate('statistics/main.tpl');
-	}
-
-	public function getPageTitle()
-	{
-		return 'Account Creation Statistics';
 	}
 
 	public function getSecurityConfiguration()

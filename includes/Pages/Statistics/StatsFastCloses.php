@@ -2,10 +2,10 @@
 namespace Waca\Pages\Statistics;
 
 use PDO;
+use Waca\PageBase;
 use Waca\SecurityConfiguration;
-use Waca\StatisticsPage;
 
-class StatsFastCloses extends StatisticsPage
+class StatsFastCloses extends PageBase
 {
 	public function main()
 	{
@@ -40,11 +40,6 @@ SQL;
 		$this->assign('dataTable', $data);
 		$this->assign('statsPageTitle','Requests closed less than 30 seconds after reservation in the past 3 months');
 		$this->setTemplate('statistics/fast-closes.tpl');
-	}
-
-	public function getPageTitle()
-	{
-		return "Requests closed less than 30 seconds after reservation in the past 3 months";
 	}
 
 	public function getSecurityConfiguration()

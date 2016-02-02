@@ -2,11 +2,11 @@
 namespace Waca\Pages\Statistics;
 
 use User;
+use Waca\PageBase;
 use Waca\SecurityConfiguration;
-use Waca\StatisticsPage;
 use Waca\WebRequest;
 
-class StatsInactiveUsers extends StatisticsPage
+class StatsInactiveUsers extends PageBase
 {
 	public function main()
 	{
@@ -20,12 +20,7 @@ class StatsInactiveUsers extends StatisticsPage
 		$this->assign('inactiveUsers', $inactiveUsers);
 
 		$this->setTemplate('statistics/inactive-users.tpl');
-		$this->assign('statsPageTitle', $this->getPageTitle());
-	}
-
-	public function getPageTitle()
-	{
-		return "Inactive tool users";
+		$this->assign('statsPageTitle', 'Inactive tool users');
 	}
 
 	public function getSecurityConfiguration()
