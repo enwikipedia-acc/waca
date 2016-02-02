@@ -2,20 +2,21 @@
 namespace Waca\Pages\Statistics;
 
 use PDO;
-use QueryBrowser;
+use Waca\SecurityConfiguration;
 use Waca\StatisticsPage;
 
 class StatsFastCloses extends StatisticsPage
 {
-	protected function executeStatisticsPage()
+	public function main()
 	{
 		$query = <<<SQL
 SELECT
-  log_closed.objectid AS Request,
-  user.username AS User,
-  TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) AS 'Time Taken',
-  closes.mail_desc AS 'Close Type',
-  log_closed.timestamp AS 'Date'
+  log_closed.objectid AS request,
+  user.username AS user,
+  user.id AS userid,
+  TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) AS timetaken,
+  closes.mail_desc AS closetype,
+  log_closed.timestamp AS date
 
 FROM log log_closed
 INNER JOIN log log_reserved ON log_closed.objectid = log_reserved.objectid 
@@ -33,20 +34,12 @@ WHERE log_closed.action LIKE 'Closed%'
 ORDER BY TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) ASC
 ;
 SQL;
-
-		$qb = new QueryBrowser();
-		$qb->tableCallbackFunction = "statsFastClosesRowCallback";
-		$qb->overrideTableTitles =
-			array("Request", "User", "Time Taken", "Close Type", "Date");
-		$qb->rowFetchMode = PDO::FETCH_NUM;
-		$r = $qb->executeQueryToTable($query);
-
-		return $r;
-	}
-
-	public function getPageName()
-	{
-		return "FastCloses";
+		$database = gGetDb();
+		$statement = $database->query($query);
+		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
+		$this->assign('dataTable', $data);
+		$this->assign('statsPageTitle','Requests closed less than 30 seconds after reservation in the past 3 months');
+		$this->setTemplate('statistics/fast-closes.tpl');
 	}
 
 	public function getPageTitle()
@@ -54,47 +47,8 @@ SQL;
 		return "Requests closed less than 30 seconds after reservation in the past 3 months";
 	}
 
-	public function isProtected()
+	public function getSecurityConfiguration()
 	{
-		return true;
+		return SecurityConfiguration::internalPage();
 	}
-
-	public function requiresWikiDatabase()
-	{
-		return false;
-	}
-}
-
-function statsFastClosesRowCallback($row, $currentreq)
-{
-	$out = '<tr>';
-
-	global $baseurl;
-
-	$rowCount = count($row);
-
-	for ($colid = 0; $colid < $rowCount; $colid++) {
-		$cell = $row[$colid];
-
-		$out .= "<td>";
-
-		if ($colid == 0) {
-			$out .= "<a href=\"" . $baseurl . "/acc.php?action=zoom&id=" . $cell . "\">";
-		}
-		if ($colid == 1) {
-			$out .= "<a href=\"" . $baseurl . "/internal.php/statistics/users/detail?user=" . $row[++$colid] . "\">";
-		}
-
-		$out .= $cell;
-
-		if ($colid == 0 || $colid == 2) {
-			$out .= "</a>"; // colid is now 2 if triggered from above due to postinc
-		}
-
-		$out .= "</td>";
-	}
-
-	$out .= "</tr>";
-
-	return $out;
 }

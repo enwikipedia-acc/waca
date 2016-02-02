@@ -33,6 +33,8 @@ abstract class StatisticsPage extends PageBase
 
 	/**
 	 * Main function for this page, when no specific actions are called.
+	 *
+	 * @todo Change to protected.
 	 * @return void
 	 */
 	public function main()

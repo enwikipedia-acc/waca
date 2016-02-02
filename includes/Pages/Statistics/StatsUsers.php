@@ -35,6 +35,11 @@ class StatsUsers extends StatisticsPage
 		return SecurityConfiguration::publicPage();
 	}
 
+	/**
+	 * Entry point for the detail action.
+	 *
+	 * @throws ApplicationLogicException
+	 */
 	protected function detail()
 	{
 		$userId = WebRequest::getInt('user');

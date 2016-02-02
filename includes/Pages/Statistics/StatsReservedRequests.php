@@ -1,33 +1,32 @@
 <?php
 namespace Waca\Pages\Statistics;
 
-use QueryBrowser;
+use PDO;
+use Waca\SecurityConfiguration;
 use Waca\StatisticsPage;
 
 class StatsReservedRequests extends StatisticsPage
 {
-	protected function executeStatisticsPage()
+	public function main()
 	{
-		global $baseurl;
-
 		$query = <<<sql
 SELECT
-    CONCAT('<a href="', '$baseurl', '/acc.php?action=zoom&amp;id=', p.id, '">', p.id, '</a>') AS '#',
-    p.name AS 'Requested Name',
-    p.status AS 'Status',
-    u.username AS 'Reserved by'
+    p.id as requestid,
+    p.name AS name,
+    p.status AS status,
+    u.username AS user,
+    u.id as userid
 FROM request p
     INNER JOIN user u ON u.id = p.reserved
 WHERE reserved != 0;
 sql;
 
-		$qb = new QueryBrowser();
-		return $qb->executeQueryToTable($query);
-	}
-
-	public function getPageName()
-	{
-		return "ReservedRequests";
+		$database = gGetDb();
+		$statement = $database->query($query);
+		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
+		$this->assign('dataTable', $data);
+		$this->assign('statsPageTitle','All currently reserved requests');
+		$this->setTemplate('statistics/reserved-requests.tpl');
 	}
 
 	public function getPageTitle()
@@ -35,13 +34,8 @@ sql;
 		return "All currently reserved requests";
 	}
 
-	public function isProtected()
+	public function getSecurityConfiguration()
 	{
-		return true;
-	}
-
-	public function requiresWikiDatabase()
-	{
-		return false;
+		return SecurityConfiguration::internalPage();
 	}
 }

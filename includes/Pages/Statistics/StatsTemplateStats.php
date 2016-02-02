@@ -1,7 +1,8 @@
 <?php
 namespace Waca\Pages\Statistics;
 
-use QueryBrowser;
+use PDO;
+use Waca\SecurityConfiguration;
 use Waca\StatisticsPage;
 
 class StatsTemplateStats extends StatisticsPage
@@ -10,10 +11,10 @@ class StatsTemplateStats extends StatisticsPage
 	{
 		$query = <<<SQL
 SELECT
-    t.id as "Template ID",
-    t.usercode as "Template Code",
-    u.count as "Active users using template",
-    countall as "All users using template"
+    t.id as templateid,
+    t.usercode as usercode,
+    u.count as activecount,
+    countall as usercount
 FROM welcometemplate t
     LEFT JOIN
     (
@@ -36,16 +37,12 @@ FROM welcometemplate t
         GROUP BY welcome_template
     ) u2 ON u2.allid = t.id;
 SQL;
-
-		$qb = new QueryBrowser();
-		$r = $qb->executeQueryToTable($query);
-
-		return $r;
-	}
-
-	public function getPageName()
-	{
-		return "TemplateStats";
+		$database = gGetDb();
+		$statement = $database->query($query);
+		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
+		$this->assign('dataTable', $data);
+		$this->assign('statsPageTitle','Template Stats');
+		$this->setTemplate('statistics/welcome-template-usage.tpl');
 	}
 
 	public function getPageTitle()
@@ -53,13 +50,8 @@ SQL;
 		return "Template Stats";
 	}
 
-	public function isProtected()
+	public function getSecurityConfiguration()
 	{
-		return true;
-	}
-
-	public function requiresWikiDatabase()
-	{
-		return false;
+		return SecurityConfiguration::internalPage();
 	}
 }

@@ -15,7 +15,6 @@ class StatsMain extends StatisticsPage
 			'idUsers'            => 'All identified users',
 			'inactiveUsers'      => 'Inactive tool users',
 			'monthlyStats'       => 'Monthly Statistics',
-			'passwordConversion' => 'Password conversion status',
 			'reservedRequests'   => 'All currently reserved requests',
 			'templateStats'      => 'Template Stats',
 			'topCreators'        => 'Top Account Creators',

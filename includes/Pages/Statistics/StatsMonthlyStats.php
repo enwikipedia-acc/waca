@@ -1,36 +1,32 @@
 <?php
 namespace Waca\Pages\Statistics;
 
-use QueryBrowser;
+use PDO;
+use Waca\SecurityConfiguration;
 use Waca\StatisticsPage;
 
 class StatsMonthlyStats extends StatisticsPage
 {
-	protected function executeStatisticsPage()
+	public function main()
 	{
-		$qb = new QueryBrowser();
-
 		$query = <<<SQL
 SELECT
-    COUNT(DISTINCT id) AS 'Requests Closed',
-    YEAR(timestamp) AS 'Year',
-    MONTHNAME(timestamp) AS 'Month'
-FROM log
+    COUNT(DISTINCT id) AS closed,
+    YEAR(timestamp) AS year,
+    MONTHNAME(timestamp) AS month
+FROM log /* StatsMonthlyStats */
 WHERE action LIKE 'Closed%'
 GROUP BY EXTRACT(YEAR_MONTH FROM timestamp)
 ORDER BY YEAR(timestamp) , MONTH(timestamp) ASC;
 SQL;
 
-		$out = $qb->executeQueryToTable($query);
+		$database = gGetDb();
+		$statement = $database->query($query);
+		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-		return $out;
-
-		// TODO: would be nice to get the graphs back without horribly-managed dependencies
-	}
-
-	public function getPageName()
-	{
-		return "MonthlyStats";
+		$this->assign('dataTable', $data);
+		$this->assign('statsPageTitle','Monthly Statistics');
+		$this->setTemplate('statistics/monthly-stats.tpl');
 	}
 
 	public function getPageTitle()
@@ -38,13 +34,8 @@ SQL;
 		return "Monthly Statistics";
 	}
 
-	public function isProtected()
+	public function getSecurityConfiguration()
 	{
-		return true;
-	}
-
-	public function requiresWikiDatabase()
-	{
-		return false;
+		return SecurityConfiguration::internalPage();
 	}
 }
