@@ -12,9 +12,18 @@ class Logger
 {
 	/**
 	 * @param PdoDatabase $database
+	 * @param Request     $object
+	 */
+	public static function emailConfirmed(PdoDatabase $database, Request $object)
+	{
+		self::createLogEntry($database, $object, "Email Confirmed", null, User::getCommunity());
+	}
+
+	/**
+	 * @param PdoDatabase $database
 	 * @param DataObject  $object
 	 * @param string      $logAction
-	 * @param null        $comment
+	 * @param null|string $comment
 	 * @param User        $user
 	 *
 	 * @throws Exception
@@ -38,15 +47,6 @@ class Logger
 		$log->setUser($user);
 		$log->setComment($comment);
 		$log->save();
-	}
-
-	/**
-	 * @param PdoDatabase $database
-	 * @param Request     $object
-	 */
-	public static function emailConfirmed(PdoDatabase $database, Request $object)
-	{
-		self::createLogEntry($database, $object, "Email Confirmed", null, User::getCommunity());
 	}
 
 	#region Users
@@ -291,40 +291,6 @@ class Logger
 	#region Display
 
 	/**
-	 * Summary of getRequestLogs
-	 *
-	 * @param int         $requestId ID of the request to get logs for
-	 * @param PdoDatabase $db        Database to use
-	 *
-	 * @return array|bool
-	 */
-	public static function getRequestLogs($requestId, PdoDatabase $db)
-	{
-		$logStatement = $db->prepare(
-			<<<SQL
-SELECT * FROM log
-WHERE objecttype = 'Request' AND objectid = :requestId
-ORDER BY timestamp DESC
-SQL
-);
-
-		$result = $logStatement->execute(array(":requestId" => $requestId));
-		if ($result) {
-			$data = $logStatement->fetchAll(PDO::FETCH_CLASS, "Log");
-
-			/** @var Log $entry */
-			foreach ($data as $entry) {
-				$entry->isNew = false;
-				$entry->setDatabase($db);
-			}
-
-			return $data;
-		}
-
-		return false;
-	}
-
-	/**
 	 * Summary of getRequestLogsWithComments
 	 *
 	 * @param int         $requestId
@@ -371,6 +337,40 @@ SQL
 		while ($flag);
 
 		return $items;
+	}
+
+	/**
+	 * Summary of getRequestLogs
+	 *
+	 * @param int         $requestId ID of the request to get logs for
+	 * @param PdoDatabase $db        Database to use
+	 *
+	 * @return array|bool
+	 */
+	public static function getRequestLogs($requestId, PdoDatabase $db)
+	{
+		$logStatement = $db->prepare(
+			<<<SQL
+SELECT * FROM log
+WHERE objecttype = 'Request' AND objectid = :requestId
+ORDER BY timestamp DESC
+SQL
+		);
+
+		$result = $logStatement->execute(array(":requestId" => $requestId));
+		if ($result) {
+			$data = $logStatement->fetchAll(PDO::FETCH_CLASS, "Log");
+
+			/** @var Log $entry */
+			foreach ($data as $entry) {
+				$entry->isNew = false;
+				$entry->setDatabase($db);
+			}
+
+			return $data;
+		}
+
+		return false;
 	}
 
 	/**
@@ -568,7 +568,7 @@ SQL
 SELECT CONCAT('Closed ', id) AS k, CONCAT('closed (',name,')') AS v
 FROM emailtemplate;
 SQL
-);
+		);
 		foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
 			$lookup[$row['k']] = $row['v'];
 		}

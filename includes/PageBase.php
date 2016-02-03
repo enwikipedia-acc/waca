@@ -76,30 +76,7 @@ abstract class PageBase
 			$this->runPage();
 		}
 		else {
-			// Not allowed to access this resource.
-			// Firstly, let's check if we're even logged in.
-			if (User::getCurrent()->isCommunityUser()) {
-				// Not logged in, redirect to login page
-
-				// TODO: return to current page? Possibly as a session var?
-				WebRequest::setPostLoginRedirect();
-				$this->redirect("login");
-				return;
-			}
-			else {
-				// Decide whether this was a rights failure, or an identification failure.
-
-				if ($this->getSiteConfiguration()->getForceIdentification()
-					&& User::getCurrent()->isIdentified() != 1
-				) {
-					// Not identified
-					throw new NotIdentifiedException();
-				}
-				else {
-					// Nope, plain old access denied
-					throw new AccessDeniedException();
-				}
-			}
+			$this->handleAccessDenied();
 		}
 	}
 
@@ -309,6 +286,39 @@ abstract class PageBase
 			print($content);
 			ob_flush();
 			return;
+		}
+	}
+
+	/**
+	 * Handles an access denied error during the security barrier test
+	 *
+	 * @throws AccessDeniedException
+	 * @throws NotIdentifiedException
+	 */
+	private function handleAccessDenied()
+	{
+		// Not allowed to access this resource.
+		// Firstly, let's check if we're even logged in.
+		if (User::getCurrent()->isCommunityUser()) {
+			// Not logged in, redirect to login page
+			WebRequest::setPostLoginRedirect();
+			$this->redirect("login");
+
+			return;
+		}
+		else {
+			// Decide whether this was a rights failure, or an identification failure.
+
+			if ($this->getSiteConfiguration()->getForceIdentification()
+				&& User::getCurrent()->isIdentified() != 1
+			) {
+				// Not identified
+				throw new NotIdentifiedException();
+			}
+			else {
+				// Nope, plain old access denied
+				throw new AccessDeniedException();
+			}
 		}
 	}
 }
