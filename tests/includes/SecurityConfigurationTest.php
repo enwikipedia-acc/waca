@@ -18,6 +18,11 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 
 	public function setUp()
 	{
+		// for now...
+		// @todo fix me please!
+		global $forceIdentification;
+		$forceIdentification = 0;
+
 		$this->user = $this->getMockBuilder(User::class)->getMock();
 	}
 
