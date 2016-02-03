@@ -13,9 +13,9 @@ class StatsUsers extends PageBase
 	public function main()
 	{
 		$lists = array(
-			"Admin" => User::getAllWithStatus("Admin", gGetDb()),
-			"User" => User::getAllWithStatus("User", gGetDb()),
-			"CheckUsers" => User::getAllCheckusers(gGetDb())
+			"Admin"      => User::getAllWithStatus("Admin", gGetDb()),
+			"User"       => User::getAllWithStatus("User", gGetDb()),
+			"CheckUsers" => User::getAllCheckusers(gGetDb()),
 		);
 
 		$this->assign("lists", $lists);
@@ -66,7 +66,7 @@ SQL
 		$usersCreatedQuery = $database->prepare(<<<SQL
 SELECT log.timestamp time, request.name name, request.id id
 FROM log
-INNER JOIN request ON (request.id = log.objectid and log.objecttype = 'Request')
+INNER JOIN request ON (request.id = log.objectid AND log.objecttype = 'Request')
 INNER JOIN user ON log.user = user.id
 LEFT JOIN emailtemplate ON concat('Closed ', emailtemplate.id) = log.action
 WHERE user.username = :username
@@ -82,7 +82,7 @@ SQL
 		$usersNotCreatedQuery = $database->prepare(<<<SQL
 SELECT log.timestamp time, request.name name, request.id id
 FROM log
-JOIN request ON request.id = log.objectid and log.objecttype = 'Request'
+JOIN request ON request.id = log.objectid AND log.objecttype = 'Request'
 JOIN user ON log.user = user.id
 LEFT JOIN emailtemplate ON concat('Closed ', emailtemplate.id) = log.action
 WHERE user.username = :username
@@ -97,10 +97,10 @@ SQL
 
 		$accountLogQuery = $database->prepare(<<<SQL
 SELECT
-	user.username as log_user,
-    log.action as log_action,
-    log.timestamp as log_time,
-    log.comment as log_cmt
+	user.username AS log_user,
+    log.action AS log_action,
+    log.timestamp AS log_time,
+    log.comment AS log_cmt
 FROM log
 INNER JOIN user ON user.id = log.user
 WHERE log.objectid = :userid

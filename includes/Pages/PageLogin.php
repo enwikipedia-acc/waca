@@ -2,8 +2,8 @@
 
 namespace Waca\Pages;
 
-use Exception;
 use User;
+use Waca\Exceptions\ApplicationLogicException;
 use Waca\PageBase;
 use Waca\SecurityConfiguration;
 use Waca\WebRequest;
@@ -20,8 +20,7 @@ class PageLogin extends PageBase
 	protected function main()
 	{
 		// Start by enforcing HTTPS
-		global $strictTransportSecurityExpiry;
-		if ($strictTransportSecurityExpiry !== false) {
+		if ($this->getSiteConfiguration()->getUseStrictTransportSecurity() !== false) {
 			if (WebRequest::isHttps()) {
 				// Client can clearly use HTTPS, so let's enforce it for all connections.
 				header("Strict-Transport-Security: max-age=15768000");
@@ -29,26 +28,15 @@ class PageLogin extends PageBase
 			else {
 				// This is the login form, not the request form. We need protection here.
 				$this->redirectUrl('https://' . WebRequest::serverName() . WebRequest::requestUri());
+
 				return;
 			}
 		}
 
 		if (WebRequest::wasPosted()) {
 			// POST. Do some authentication.
-			$username = WebRequest::postString("username");
-			$password = WebRequest::postString("password");
 
-			if ($username === null || $password === null || $username === "" || $password === "") {
-				// todo: no username/password submitted.
-				throw new Exception("No username/password specified");
-			}
-
-			$user = User::getByUsername($username, gGetDb());
-
-			if ($user == false || !$user->authenticate($password)) {
-				// todo: authentication failed
-				throw new Exception("Authentication failed");
-			}
+			$user = $this->getAuthenticatingUser();
 
 			// Touch force logout
 			$user->setForcelogout(0);
@@ -58,13 +46,34 @@ class PageLogin extends PageBase
 
 			WebRequest::setLoggedInUser($user);
 
-			// Redirect to the main page
-			$this->redirect("");
+			$this->goBackWhenceYouCame();
 		}
 		else {
 			// GET. Show the form
 			$this->setTemplate("login.tpl");
 		}
+	}
+
+	/**
+	 * @return User
+	 * @throws ApplicationLogicException
+	 */
+	private function getAuthenticatingUser()
+	{
+		$username = WebRequest::postString("username");
+		$password = WebRequest::postString("password");
+
+		if ($username === null || $password === null || $username === "" || $password === "") {
+			throw new ApplicationLogicException("No username/password specified");
+		}
+
+		$user = User::getByUsername($username, gGetDb());
+
+		if ($user == false || !$user->authenticate($password)) {
+			throw new ApplicationLogicException("Authentication failed");
+		}
+
+		return $user;
 	}
 
 	/**
@@ -80,5 +89,21 @@ class PageLogin extends PageBase
 	{
 		// Login pages, by definition, have to be accessible to the public
 		return SecurityConfiguration::publicPage();
+	}
+
+	/**
+	 * Redirect the user back to wherever they came from after a successful login
+	 */
+	private function goBackWhenceYouCame()
+	{
+		// Redirect to wherever the user came from
+		$redirectDestination = WebRequest::clearPostLoginRedirect();
+		if ($redirectDestination !== null) {
+			$this->redirectUrl($redirectDestination);
+		}
+		else {
+			// go to the home page
+			$this->redirect("");
+		}
 	}
 }

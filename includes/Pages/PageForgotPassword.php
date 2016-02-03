@@ -30,19 +30,7 @@ class PageForgotPassword extends PageBase
 			}
 
 			$user = User::getByUsername($username, $database);
-
-			// If the user isn't found, or the email address is wrong, skip sending the details silently.
-			if ($user !== false && strtolower($user->getEmail()) === strtolower($email)) {
-				$clientIp = \getTrustedClientIP(WebRequest::remoteAddress(), WebRequest::forwardedAddress());
-
-				$this->assign("user", $user);
-				$this->assign("hash", $user->getForgottenPasswordHash());
-				$this->assign("remoteAddress", $clientIp);
-
-				$emailContent = $this->fetchTemplate('forgot-password/reset-mail.tpl');
-
-				$this->getEmailHelper()->sendMail($user->getEmail(), "", $emailContent);
-			}
+			$this->sendResetMail($user, $email);
 
 			SessionAlert::success(
 				'<strong>Your password reset request has been completed.</strong> Please check your e-mail.');
@@ -51,6 +39,28 @@ class PageForgotPassword extends PageBase
 		}
 		else {
 			$this->setTemplate('forgot-password/forgotpw.tpl');
+		}
+	}
+
+	/**
+	 * Sends a reset email if the user is authenticated
+	 *
+	 * @param User   $user  The user located from the database
+	 * @param string $email The provided email address
+	 */
+	private function sendResetMail(User $user, $email)
+	{
+		// If the user isn't found, or the email address is wrong, skip sending the details silently.
+		if ($user !== false && strtolower($user->getEmail()) === strtolower($email)) {
+			$clientIp = \getTrustedClientIP(WebRequest::remoteAddress(), WebRequest::forwardedAddress());
+
+			$this->assign("user", $user);
+			$this->assign("hash", $user->getForgottenPasswordHash());
+			$this->assign("remoteAddress", $clientIp);
+
+			$emailContent = $this->fetchTemplate('forgot-password/reset-mail.tpl');
+
+			$this->getEmailHelper()->sendMail($user->getEmail(), "", $emailContent);
 		}
 	}
 
@@ -83,25 +93,12 @@ class PageForgotPassword extends PageBase
 	}
 
 	/**
-	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-	 * the return value from this function.
-	 *
-	 * If this page even supports actions, you will need to check the route
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	protected function getSecurityConfiguration()
-	{
-		return SecurityConfiguration::publicPage();
-	}
-
-	/**
 	 * Gets the user resetting their password from the database, or throwing an exception if that is not possible.
 	 *
 	 * @param integer     $id       The ID of the user to retrieve
 	 * @param PdoDatabase $database The database object to use
 	 * @param string      $si       The reset hash provided
+	 *
 	 * @return User
 	 * @throws ApplicationLogicException
 	 */
@@ -120,6 +117,7 @@ class PageForgotPassword extends PageBase
 	 * Performs the setting of the new password
 	 *
 	 * @param User $user The user to set the password for
+	 *
 	 * @throws ApplicationLogicException
 	 */
 	private function doReset(User $user)
@@ -137,5 +135,19 @@ class PageForgotPassword extends PageBase
 		else {
 			throw new ApplicationLogicException('Passwords do not match!');
 		}
+	}
+
+	/**
+	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
+	 * the return value from this function.
+	 *
+	 * If this page even supports actions, you will need to check the route
+	 *
+	 * @return SecurityConfiguration
+	 * @category Security-Critical
+	 */
+	protected function getSecurityConfiguration()
+	{
+		return SecurityConfiguration::publicPage();
 	}
 }

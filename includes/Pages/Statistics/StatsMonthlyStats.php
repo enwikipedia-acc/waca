@@ -25,7 +25,7 @@ SQL;
 		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 		$this->assign('dataTable', $data);
-		$this->assign('statsPageTitle','Monthly Statistics');
+		$this->assign('statsPageTitle', 'Monthly Statistics');
 		$this->setTemplate('statistics/monthly-stats.tpl');
 	}
 

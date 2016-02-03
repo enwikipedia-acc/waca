@@ -329,4 +329,5 @@ $siteConfiguration->setBaseUrl($baseurl)
 	->setMiserModeLimit($requestLimitShowOnly)
 	->setRequestStates($availableRequestStates)
 	->setSquidList($squidIpList)
+	->setUseStrictTransportSecurity($strictTransportSecurityExpiry)
 	;

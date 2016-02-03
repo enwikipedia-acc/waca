@@ -82,6 +82,7 @@ abstract class PageBase
 				// Not logged in, redirect to login page
 
 				// TODO: return to current page? Possibly as a session var?
+				WebRequest::setPostLoginRedirect();
 				$this->redirect("login");
 				return;
 			}

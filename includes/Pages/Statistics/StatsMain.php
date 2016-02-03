@@ -11,14 +11,14 @@ class StatsMain extends PageBase
 		$this->assign('statsPageTitle', 'Account Creation Statistics');
 
 		$statsPages = array(
-			'fastCloses'         => 'Requests closed less than 30 seconds after reservation in the past 3 months',
-			'idUsers'            => 'All identified users',
-			'inactiveUsers'      => 'Inactive tool users',
-			'monthlyStats'       => 'Monthly Statistics',
-			'reservedRequests'   => 'All currently reserved requests',
-			'templateStats'      => 'Template Stats',
-			'topCreators'        => 'Top Account Creators',
-			'users'              => 'Account Creation Tool users',
+			'fastCloses'       => 'Requests closed less than 30 seconds after reservation in the past 3 months',
+			'idUsers'          => 'All identified users',
+			'inactiveUsers'    => 'Inactive tool users',
+			'monthlyStats'     => 'Monthly Statistics',
+			'reservedRequests' => 'All currently reserved requests',
+			'templateStats'    => 'Template Stats',
+			'topCreators'      => 'Top Account Creators',
+			'users'            => 'Account Creation Tool users',
 		);
 
 		$this->smallStats();
@@ -29,11 +29,6 @@ class StatsMain extends PageBase
 		$this->assign('graphList', $graphList);
 
 		$this->setTemplate('statistics/main.tpl');
-	}
-
-	public function getSecurityConfiguration()
-	{
-		return SecurityConfiguration::internalPage();
 	}
 
 	/**
@@ -111,5 +106,10 @@ SQL
 		$mostComments = $mostCommentsStatement->fetchColumn();
 		$mostCommentsStatement->closeCursor();
 		$this->assign('mostComments', $mostComments);
+	}
+
+	public function getSecurityConfiguration()
+	{
+		return SecurityConfiguration::internalPage();
 	}
 }

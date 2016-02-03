@@ -38,7 +38,7 @@ SQL;
 		$statement = $database->query($query);
 		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
 		$this->assign('dataTable', $data);
-		$this->assign('statsPageTitle','Requests closed less than 30 seconds after reservation in the past 3 months');
+		$this->assign('statsPageTitle', 'Requests closed less than 30 seconds after reservation in the past 3 months');
 		$this->setTemplate('statistics/fast-closes.tpl');
 	}
 

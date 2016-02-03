@@ -11,11 +11,11 @@ class StatsReservedRequests extends PageBase
 	{
 		$query = <<<sql
 SELECT
-    p.id as requestid,
+    p.id AS requestid,
     p.name AS name,
     p.status AS status,
     u.username AS user,
-    u.id as userid
+    u.id AS userid
 FROM request p
     INNER JOIN user u ON u.id = p.reserved
 WHERE reserved != 0;
@@ -25,7 +25,7 @@ sql;
 		$statement = $database->query($query);
 		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
 		$this->assign('dataTable', $data);
-		$this->assign('statsPageTitle','All currently reserved requests');
+		$this->assign('statsPageTitle', 'All currently reserved requests');
 		$this->setTemplate('statistics/reserved-requests.tpl');
 	}
 

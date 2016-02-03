@@ -44,6 +44,7 @@ class SiteConfiguration
 		),
 	);
 	private $squidList = array();
+	private $useStrictTransportSecurity = false;
 
 	/**
 	 * Gets the base URL of the tool
@@ -290,5 +291,25 @@ class SiteConfiguration
 	public function getSquidList()
 	{
 		return $this->squidList;
+	}
+
+	/**
+	 * @param boolean $useStrictTransportSecurity
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setUseStrictTransportSecurity($useStrictTransportSecurity)
+	{
+		$this->useStrictTransportSecurity = $useStrictTransportSecurity;
+
+		return $this;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getUseStrictTransportSecurity()
+	{
+		return $this->useStrictTransportSecurity;
 	}
 }

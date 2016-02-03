@@ -89,7 +89,6 @@ SQL;
 	 */
 	protected function getSecurityConfiguration()
 	{
-		// TODO: Implement getSecurityConfiguration() method.
 		return SecurityConfiguration::internalPage();
 	}
 }

@@ -283,6 +283,8 @@ class WebRequest
 
 	#endregion
 
+	#region Login stuff
+
 	/**
 	 * Sets the logged-in user to the specified user.
 	 *
@@ -296,17 +298,12 @@ class WebRequest
 	}
 
 	/**
-	 * @return string|null
+	 * Sets the post-login redirect
 	 */
-	public static function serverName()
+	public static function setPostLoginRedirect()
 	{
-		$server = &self::$globalStateProvider->getServerSuperGlobal();
-
-		if (isset($server['SERVER_NAME'])) {
-			return $server['SERVER_NAME'];
-		}
-
-		return null;
+		$session = &self::$globalStateProvider->getSessionSuperGlobal();
+		$session['returnTo'] = self::requestUri();
 	}
 
 	/**
@@ -318,6 +315,39 @@ class WebRequest
 
 		if (isset($server['REQUEST_URI'])) {
 			return $server['REQUEST_URI'];
+		}
+
+		return null;
+	}
+
+	#endregion
+
+	/**
+	 * Clears the post-login redirect
+	 * @return string
+	 */
+	public static function clearPostLoginRedirect()
+	{
+		$session = &self::$globalStateProvider->getSessionSuperGlobal();
+		if (array_key_exists('returnTo', $session)) {
+			$path = $session['returnTo'];
+			unset($session['returnTo']);
+
+			return $path;
+		}
+
+		return null;
+	}
+
+	/**
+	 * @return string|null
+	 */
+	public static function serverName()
+	{
+		$server = &self::$globalStateProvider->getServerSuperGlobal();
+
+		if (isset($server['SERVER_NAME'])) {
+			return $server['SERVER_NAME'];
 		}
 
 		return null;

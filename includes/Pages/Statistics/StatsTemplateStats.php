@@ -11,16 +11,16 @@ class StatsTemplateStats extends PageBase
 	{
 		$query = <<<SQL
 SELECT
-    t.id as templateid,
-    t.usercode as usercode,
-    u.count as activecount,
-    countall as usercount
+    t.id AS templateid,
+    t.usercode AS usercode,
+    u.count AS activecount,
+    countall AS usercount
 FROM welcometemplate t
     LEFT JOIN
     (
         SELECT
             welcome_template,
-            COUNT(*) as count
+            COUNT(*) AS count
         FROM user
         WHERE
             (status = 'User' OR status = 'Admin')
@@ -30,8 +30,8 @@ FROM welcometemplate t
     LEFT JOIN
     (
         SELECT
-            welcome_template as allid,
-            COUNT(*) as countall
+            welcome_template AS allid,
+            COUNT(*) AS countall
         FROM user
         WHERE welcome_template IS NOT NULL
         GROUP BY welcome_template
@@ -41,7 +41,7 @@ SQL;
 		$statement = $database->query($query);
 		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
 		$this->assign('dataTable', $data);
-		$this->assign('statsPageTitle','Template Stats');
+		$this->assign('statsPageTitle', 'Template Stats');
 		$this->setTemplate('statistics/welcome-template-usage.tpl');
 	}
 

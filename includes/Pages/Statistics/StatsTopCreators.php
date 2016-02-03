@@ -115,22 +115,22 @@ SQL;
 
 		// Put it all together
 		$queries = array(
-			'queryAllTime' => $queryAllTime,
+			'queryAllTime'       => $queryAllTime,
 			'queryAllTimeActive' => $queryAllTimeActive,
-			'queryToday' => $queryToday,
-			'queryYesterday' => $queryYesterday,
-			'queryLast7Days' => $queryLast7Days,
-			'queryLast28Days' => $queryLast28Days
+			'queryToday'         => $queryToday,
+			'queryYesterday'     => $queryYesterday,
+			'queryLast7Days'     => $queryLast7Days,
+			'queryLast28Days'    => $queryLast28Days,
 		);
 
 		$database = gGetDb();
-		foreach($queries as $name => $sql){
+		foreach ($queries as $name => $sql) {
 			$statement = $database->query($sql);
 			$data = $statement->fetchAll(PDO::FETCH_ASSOC);
 			$this->assign($name, $data);
 		}
 
-		$this->assign('statsPageTitle','Top Account Creators');
+		$this->assign('statsPageTitle', 'Top Account Creators');
 		$this->setTemplate('statistics/top-creators.tpl');
 	}
 

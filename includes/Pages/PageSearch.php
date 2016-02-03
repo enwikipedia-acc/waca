@@ -25,37 +25,30 @@ class PageSearch extends PageBase
 			$searchTerm = WebRequest::postString('term');
 
 			if (in_array($searchType, array('name', 'email', 'ip'))) {
-				try {
-					if ($searchTerm === '%' || $searchTerm === '') {
-						throw new ApplicationLogicException('No search term specified entered');
-					}
-
-					$results = array();
-
-					switch ($searchType) {
-						case 'name':
-							$results = $this->getNameSearchResults($searchTerm);
-							break;
-						case 'email':
-							$results = $this->getEmailSearchResults($searchTerm);
-							break;
-						case 'ip':
-							$results = $this->getIpSearchResults($searchTerm);
-							break;
-					}
-
-					// deal with results
-					$this->assign('requests', $results);
-					$this->assign('term', $searchTerm);
-					$this->assign('target', $searchType);
-
-					$this->setTemplate('search/searchResult.tpl');
+				if ($searchTerm === '%' || $searchTerm === '') {
+					throw new ApplicationLogicException('No search term specified entered');
 				}
-				catch (ApplicationLogicException $ex) {
-					// error occurred retrieving results
-					// todo: handle more gracefully.
-					throw new Exception('An error occurred with the search request.', 0, $ex);
+
+				$results = array();
+
+				switch ($searchType) {
+					case 'name':
+						$results = $this->getNameSearchResults($searchTerm);
+						break;
+					case 'email':
+						$results = $this->getEmailSearchResults($searchTerm);
+						break;
+					case 'ip':
+						$results = $this->getIpSearchResults($searchTerm);
+						break;
 				}
+
+				// deal with results
+				$this->assign('requests', $results);
+				$this->assign('term', $searchTerm);
+				$this->assign('target', $searchType);
+
+				$this->setTemplate('search/searchResult.tpl');
 			}
 			else {
 				// todo: handle more gracefully.
@@ -68,22 +61,10 @@ class PageSearch extends PageBase
 	}
 
 	/**
-	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-	 * the return value from this function.
-	 *
-	 * If this page even supports actions, you will need to check the route
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	protected function getSecurityConfiguration()
-	{
-		return SecurityConfiguration::internalPage();
-	}
-
-	/**
 	 * Gets search results by name
+	 *
 	 * @param $searchTerm string
+	 *
 	 * @returns array<Request>
 	 */
 	private function getNameSearchResults($searchTerm)
@@ -111,7 +92,9 @@ class PageSearch extends PageBase
 
 	/**
 	 * Gets search results by email
+	 *
 	 * @param $searchTerm string
+	 *
 	 * @return array <Request>
 	 * @throws ApplicationLogicException
 	 */
@@ -144,7 +127,9 @@ class PageSearch extends PageBase
 
 	/**
 	 * Gets search results by IP address or XFF IP address
+	 *
 	 * @param $searchTerm string
+	 *
 	 * @returns array<Request>
 	 */
 	private function getIpSearchResults($searchTerm)
@@ -173,5 +158,19 @@ SQL;
 		}
 
 		return $requests;
+	}
+
+	/**
+	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
+	 * the return value from this function.
+	 *
+	 * If this page even supports actions, you will need to check the route
+	 *
+	 * @return SecurityConfiguration
+	 * @category Security-Critical
+	 */
+	protected function getSecurityConfiguration()
+	{
+		return SecurityConfiguration::internalPage();
 	}
 }
