@@ -14,8 +14,8 @@ class EmailHelper implements IEmailHelper
 	 */
 	public function sendMail($to, $subject, $content, $headers = array())
 	{
-		$headers["From"] = 'accounts-enwiki-l@lists.wikimedia.org';
-		$headerString = "";
+		$headers['From'] = 'accounts-enwiki-l@lists.wikimedia.org';
+		$headerString = '';
 
 		foreach ($headers as $header => $headerValue) {
 			$headerString .= $header . ': ' . $headerValue . "\r\n";

@@ -27,8 +27,11 @@ You'll also need some PHP extensions:
 There's nothing special here, these are all standard PHP extensions that are bundled with PHP - you may 
 just need to switch some of them on in the php.ini file.
 
-Useful (but optional) extensions:
+Useful (but optional) extensions - only used for development:
 * xdebug (http://xdebug.org/)
+* runkit (http://pecl.php.net/runkit / https://github.com/zenovich/runkit/)
+
+Note that runkit is a pain[1] to get working on Windows, and is only used by some unit tests.
 
 ## Known good configurations
 
@@ -134,3 +137,5 @@ $enforceOAuth = true;
 ```
 
 You should now be able to use OAuth!
+
+[1]: https://github.com/zenovich/runkit/issues/22
