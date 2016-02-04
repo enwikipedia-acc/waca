@@ -14,8 +14,13 @@ class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 
 	public function testValidateGoodName()
 	{
+		$banHelperMock = $this->getMockBuilder('IBanHelper')->getMock();
+		$banHelperMock->method('emailIsBanned')->willReturn(false);
+		$banHelperMock->method('nameIsBanned')->willReturn(false);
+		$banHelperMock->method('ipIsBanned')->willReturn(false);
+
 		// arrange
-		$validationHelper = new RequestValidationHelper(new MockBanHelper(), $this->request, $this->request->getEmail());
+		$validationHelper = new RequestValidationHelper($banHelperMock, $this->request, $this->request->getEmail());
 
 		// act
 		$result = $validationHelper->validateName();
