@@ -29,3 +29,5 @@ web.*.config
 waca.sln.DotSettings.user
 .vs/*
 .arc*
+vendor/*
+components/*
