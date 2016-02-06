@@ -18,13 +18,13 @@
             <li>Homepage: <a href="{$infoContent}">{$infoContent|escape}</a></li>
         {/if}
         {if $infoName == "Role"}
-            <li>Project role: {$infoContent|escape}</li>
+            <li>Project role: {', '|implode:$infoContent}</li>
         {/if}
         {if $infoName == "Retired"}
-            <li>Former role: {$infoContent|escape}</li>
+            <li>Former role: {', '|implode:$infoContent}</li>
         {/if}
         {if $infoName == "Access"}
-            <li>Access: {$infoContent|escape}</li>
+            <li>Access: {', '|implode:$infoContent}</li>
         {/if}
         {if $infoName == "Cloak"}
             <li>Cloak: {$infoContent|escape}</li>

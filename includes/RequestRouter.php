@@ -13,6 +13,7 @@ use Waca\Pages\PageLogout;
 use Waca\Pages\PageMain;
 use Waca\Pages\PagePreferences;
 use Waca\Pages\PageSearch;
+use Waca\Pages\PageTeam;
 use Waca\Pages\PageUserManagement;
 use Waca\Pages\PageWelcomeTemplateManagement;
 use Waca\Pages\Statistics\StatsFastCloses;
@@ -192,6 +193,11 @@ final class RequestRouter
 				'class'   => PageViewRequest::class,
 				'actions' => array(),
 			),
+		'team'                          =>
+			array(
+				'class'   => PageTeam::class,
+				'actions' => array(),
+			),
 
 	);
 
@@ -265,6 +271,29 @@ final class RequestRouter
 
 	/**
 	 * @param $classSegment
+	 *
+	 * @return array
+	 */
+	private function routeSinglePathSegment($classSegment)
+	{
+		if (array_key_exists($classSegment, $this->routeMap)) {
+			// Route exists, but we don't have an action in path info, so default to main.
+			$pageClass = $this->routeMap[$classSegment]['class'];
+			$action = 'main';
+
+			return array($pageClass, $action);
+		}
+		else {
+			// Doesn't exist in map. Fall back to 404
+			$pageClass = Page404::class;
+			$action = "main";
+
+			return array($pageClass, $action);
+		}
+	}
+
+	/**
+	 * @param $classSegment
 	 * @param $requestedAction
 	 *
 	 * @return array
@@ -295,29 +324,6 @@ final class RequestRouter
 			// Class doesn't exist in map. Fall back to 404
 			$pageClass = Page404::class;
 			$action = 'main';
-
-			return array($pageClass, $action);
-		}
-	}
-
-	/**
-	 * @param $classSegment
-	 *
-	 * @return array
-	 */
-	private function routeSinglePathSegment($classSegment)
-	{
-		if (array_key_exists($classSegment, $this->routeMap)) {
-			// Route exists, but we don't have an action in path info, so default to main.
-			$pageClass = $this->routeMap[$classSegment]['class'];
-			$action = 'main';
-
-			return array($pageClass, $action);
-		}
-		else {
-			// Doesn't exist in map. Fall back to 404
-			$pageClass = Page404::class;
-			$action = "main";
 
 			return array($pageClass, $action);
 		}

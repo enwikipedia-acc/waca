@@ -13,6 +13,7 @@
           <option name="LOWER_CASE_NULL_CONST" value="true" />
           <option name="BLANK_LINE_BEFORE_RETURN_STATEMENT" value="true" />
           <option name="KEEP_RPAREN_AND_LBRACE_ON_ONE_LINE" value="true" />
+          <option name="SPACE_BEFORE_CLOSURE_LEFT_PARENTHESIS" value="false" />
         </PHPCodeStyleSettings>
         <XML>
           <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />

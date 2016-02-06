@@ -192,7 +192,7 @@ $enableTitleblacklist = 0; // Enable Title Blacklist checks.
 $usePathInfo = true;
 
 // user agent of the tool.
-$toolUserAgent = "Wikipedia-ACC Tool/0.1 (+https://accounts.wmflabs.org/team.php)";
+$toolUserAgent = "Wikipedia-ACC Tool/0.1 (+https://accounts.wmflabs.org/internal.php/team)";
 
 // list of squid proxies requests go through.
 $squidIpList = array();

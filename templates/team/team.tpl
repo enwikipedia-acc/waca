@@ -1,4 +1,6 @@
-﻿<div class="page-header">
+﻿{extends file="base.tpl"}
+{block name="content"}
+<div class="page-header">
     <h1>Development Team<small> We're not all geeks!</small></h1>
 </div>
 <div class="row-fluid">
@@ -42,3 +44,4 @@
         </p>
     </div>
 </div>
+{/block}
