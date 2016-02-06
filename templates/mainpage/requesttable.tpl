@@ -65,10 +65,12 @@
             {* Reserve Button *}
             <td>
                 {if $r->getReserved() == false}
-                    <a class="btn btn-small btn-success"
-                       href="{$baseurl}/acc.php?action=reserve&amp;resid={$r->getId()}">
-                        <i class="icon-white icon-star-empty"></i>&nbsp;Reserve
-                    </a>
+                    <form action="{$baseurl}/internal.php/viewRequest/reserve" method="post" class="form-compact">
+                        <input type="hidden" name="request" value="{$r->getId()}" />
+                        <button class="btn btn-small btn-success" type="submit">
+                            <i class="icon-white icon-star-empty"></i>&nbsp;Reserve
+                        </button>
+                    </form>
                 {else}
 
                     {if $r->getReserved() == $currentUser->getId()}

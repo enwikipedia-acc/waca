@@ -94,6 +94,170 @@ abstract class PageBase
 	}
 
 	/**
+	 * Performs generic page setup actions
+	 */
+	final private function setupPage()
+	{
+		$this->setUpSmarty();
+	}
+
+	/**
+	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
+	 * the return value from this function.
+	 *
+	 * If this page even supports actions, you will need to check the route
+	 *
+	 * @return SecurityConfiguration
+	 * @category Security-Critical
+	 */
+	abstract protected function getSecurityConfiguration();
+
+	/**
+	 * Runs the page logic as routed by the RequestRouter
+	 *
+	 * Only should be called after a security barrier! That means only from execute().
+	 */
+	final private function runPage()
+	{
+		// run the page code
+		call_user_func($this->route);
+
+		// run any finalisation code needed before we send the output to the browser.
+		$this->finalisePage();
+
+		// Check we have a template to use!
+		if ($this->template !== false) {
+			$content = $this->fetchTemplate($this->template);
+			ob_clean();
+			print($content);
+			ob_flush();
+
+			return;
+		}
+	}
+
+	/**
+	 * Performs final tasks needed before rendering the page.
+	 */
+	final private function finalisePage()
+	{
+		// TODO: session alerts, but how do they fit in?
+		// We don't want to clear them unless we know they're definitely going to be displayed to the user (think
+		// redirects, but at the same time, we can't clear them after page execution in case the user has displayed
+		// more session alerts.
+		$this->assign("alerts", array());
+
+		$this->assign("htmlTitle", $this->htmlTitle);
+	}
+
+	protected function handleAccessDenied()
+	{
+		// Not allowed to access this resource.
+		// Firstly, let's check if we're even logged in.
+		if (User::getCurrent()->isCommunityUser()) {
+			// Not logged in, redirect to login page
+
+			// TODO: return to current page? Possibly as a session var?
+			$this->redirect("login");
+
+			return;
+		}
+		else {
+			// Decide whether this was a rights failure, or an identification failure.
+
+			if ($this->getSiteConfiguration()->getForceIdentification()
+				&& User::getCurrent()->isIdentified() != 1
+			) {
+				// Not identified
+				throw new NotIdentifiedException();
+			}
+			else {
+				// Nope, plain old access denied
+				throw new AccessDeniedException();
+			}
+		}
+	}
+
+	/**
+	 * Sends the redirect headers to perform a GET at the destination page.
+	 *
+	 * Also nullifies the set template so Smarty does not render it.
+	 *
+	 * @param string      $page   The page to redirect requests to (as used in the UR)
+	 * @param null|string $action The action to use on the page.
+	 * @param null|array  $parameters
+	 */
+	final protected function redirect($page, $action = null, $parameters = null)
+	{
+		$pathInfo = array($this->getSiteConfiguration()->getBaseUrl() . "/internal.php");
+
+		$pathInfo[1] = $page;
+
+		if ($action !== null) {
+			$pathInfo[2] = $action;
+		}
+
+		$url = implode("/", $pathInfo);
+
+		if (is_array($parameters) && count($parameters) > 0) {
+			$parameterData = array();
+			foreach ($parameters as $key => $value) {
+				$parameterData[] = $key . '=' . urlencode($value);
+			}
+
+			$url .= '?' . implode('&', $parameterData);
+		}
+
+		$this->redirectUrl($url);
+	}
+
+	/**
+	 * Gets the site configuration object
+	 *
+	 * @return SiteConfiguration
+	 */
+	final protected function getSiteConfiguration()
+	{
+		return $this->siteConfiguration;
+	}
+
+	/**
+	 * Sets the site configuration object for this page
+	 *
+	 * @param $configuration
+	 */
+	final public function setSiteConfiguration($configuration)
+	{
+		$this->siteConfiguration = $configuration;
+	}
+
+	/**
+	 * Sends the redirect headers to perform a GET at the new address.
+	 *
+	 * Also nullifies the set template so Smarty does not render it.
+	 *
+	 * @param string $path URL to redirect to
+	 */
+	final protected function redirectUrl($path)
+	{
+		// 303 See Other = re-request at new address with a GET.
+		header("HTTP/1.1 303 See Other");
+		header("Location: $path");
+
+		$this->setTemplate(null);
+	}
+
+	/**
+	 * Sets the name of the template this page should display.
+	 *
+	 * @param string $name
+	 */
+	final protected function setTemplate($name)
+	{
+		$this->template = $name;
+	}
+
+	/**
 	 * Tests the security barrier for a specified action.
 	 *
 	 * Intended to be used from within templates
@@ -119,14 +283,6 @@ abstract class PageBase
 	}
 
 	/**
-	 * @param IEmailHelper $emailHelper
-	 */
-	final public function setEmailHelper($emailHelper)
-	{
-		$this->emailHelper = $emailHelper;
-	}
-
-	/**
 	 * @return IEmailHelper
 	 */
 	final public function getEmailHelper()
@@ -135,23 +291,11 @@ abstract class PageBase
 	}
 
 	/**
-	 * Sets the site configuration object for this page
-	 *
-	 * @param $configuration
+	 * @param IEmailHelper $emailHelper
 	 */
-	final public function setSiteConfiguration($configuration)
+	final public function setEmailHelper($emailHelper)
 	{
-		$this->siteConfiguration = $configuration;
-	}
-
-	/**
-	 * Gets the site configuration object
-	 *
-	 * @return SiteConfiguration
-	 */
-	final protected function getSiteConfiguration()
-	{
-		return $this->siteConfiguration;
+		$this->emailHelper = $emailHelper;
 	}
 
 	/**
@@ -187,14 +331,6 @@ abstract class PageBase
 	}
 
 	/**
-	 * @param ILocationProvider $locationProvider
-	 */
-	final public function setLocationProvider(ILocationProvider $locationProvider)
-	{
-		$this->locationProvider = $locationProvider;
-	}
-
-	/**
 	 * @return ILocationProvider
 	 */
 	final public function getLocationProvider()
@@ -203,11 +339,11 @@ abstract class PageBase
 	}
 
 	/**
-	 * @param IXffTrustProvider $xffTrustProvider
+	 * @param ILocationProvider $locationProvider
 	 */
-	final public function setXffTrustProvider(IXffTrustProvider $xffTrustProvider)
+	final public function setLocationProvider(ILocationProvider $locationProvider)
 	{
-		$this->xffTrustProvider = $xffTrustProvider;
+		$this->locationProvider = $locationProvider;
 	}
 
 	/**
@@ -216,6 +352,14 @@ abstract class PageBase
 	final public function getXffTrustProvider()
 	{
 		return $this->xffTrustProvider;
+	}
+
+	/**
+	 * @param IXffTrustProvider $xffTrustProvider
+	 */
+	final public function setXffTrustProvider(IXffTrustProvider $xffTrustProvider)
+	{
+		$this->xffTrustProvider = $xffTrustProvider;
 	}
 
 	/**
@@ -251,23 +395,6 @@ abstract class PageBase
 	}
 
 	/**
-	 * Main function for this page, when no specific actions are called.
-	 * @return void
-	 */
-	abstract protected function main();
-
-	/**
-	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-	 * the return value from this function.
-	 *
-	 * If this page even supports actions, you will need to check the route
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	abstract protected function getSecurityConfiguration();
-
-	/**
 	 * Gets the name of the route that has been passed from the request router.
 	 * @return string
 	 */
@@ -277,131 +404,16 @@ abstract class PageBase
 	}
 
 	/**
-	 * Sets the name of the template this page should display.
-	 *
-	 * @param string $name
+	 * Main function for this page, when no specific actions are called.
+	 * @return void
 	 */
-	final protected function setTemplate($name)
-	{
-		$this->template = $name;
-	}
-
-	/**
-	 * Sends the redirect headers to perform a GET at the new address.
-	 *
-	 * Also nullifies the set template so Smarty does not render it.
-	 *
-	 * @param string $path URL to redirect to
-	 */
-	final protected function redirectUrl($path)
-	{
-		// 303 See Other = re-request at new address with a GET.
-		header("HTTP/1.1 303 See Other");
-		header("Location: $path");
-
-		$this->setTemplate(null);
-	}
-
-	/**
-	 * Sends the redirect headers to perform a GET at the destination page.
-	 *
-	 * Also nullifies the set template so Smarty does not render it.
-	 *
-	 * @param string      $page   The page to redirect requests to (as used in the UR)
-	 * @param null|string $action The action to use on the page.
-	 */
-	final protected function redirect($page, $action = null)
-	{
-		$pathInfo = array($this->getSiteConfiguration()->getBaseUrl() . "/internal.php");
-
-		$pathInfo[1] = $page;
-
-		if ($action !== null) {
-			$pathInfo[2] = $action;
-		}
-
-		$url = implode("/", $pathInfo);
-		$this->redirectUrl($url);
-	}
-
-	/**
-	 * Performs generic page setup actions
-	 */
-	final private function setupPage()
-	{
-		$this->setUpSmarty();
-	}
-
-	/**
-	 * Performs final tasks needed before rendering the page.
-	 */
-	final private function finalisePage()
-	{
-		// TODO: session alerts, but how do they fit in?
-		// We don't want to clear them unless we know they're definitely going to be displayed to the user (think
-		// redirects, but at the same time, we can't clear them after page execution in case the user has displayed
-		// more session alerts.
-		$this->assign("alerts", array());
-
-		$this->assign("htmlTitle", $this->htmlTitle);
-	}
-
-	/**
-	 * Runs the page logic as routed by the RequestRouter
-	 *
-	 * Only should be called after a security barrier! That means only from execute().
-	 */
-	final private function runPage()
-	{
-		// run the page code
-		call_user_func($this->route);
-
-		// run any finalisation code needed before we send the output to the browser.
-		$this->finalisePage();
-
-		// Check we have a template to use!
-		if ($this->template !== false) {
-			$content = $this->fetchTemplate($this->template);
-			ob_clean();
-			print($content);
-			ob_flush();
-
-			return;
-		}
-	}
+	abstract protected function main();
 
 	/**
 	 * @param string $title
 	 */
-	final protected function setHtmlTitle($title){
-		$this->htmlTitle = $title;
-	}
-
-	protected function handleAccessDenied()
+	final protected function setHtmlTitle($title)
 	{
-		// Not allowed to access this resource.
-		// Firstly, let's check if we're even logged in.
-		if (User::getCurrent()->isCommunityUser()) {
-			// Not logged in, redirect to login page
-
-			// TODO: return to current page? Possibly as a session var?
-			$this->redirect("login");
-
-			return;
-		}
-		else {
-			// Decide whether this was a rights failure, or an identification failure.
-
-			if ($this->getSiteConfiguration()->getForceIdentification()
-				&& User::getCurrent()->isIdentified() != 1
-			) {
-				// Not identified
-				throw new NotIdentifiedException();
-			}
-			else {
-				// Nope, plain old access denied
-				throw new AccessDeniedException();
-			}
-		}
+		$this->htmlTitle = $title;
 	}
 }

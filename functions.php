@@ -68,24 +68,6 @@ function defaultpage()
 	die();
 }
 
-function array_search_recursive($needle, $haystack, $path = array())
-{
-	foreach ($haystack as $id => $val) {
-		$path2 = $path;
-		$path2[] = $id;
-
-		if ($val === $needle) {
-				return $path2;
-		}
-		else if (is_array($val)) {
-				if ($ret = array_search_recursive($needle, $val, $path2)) {
-						return $ret;
-				}
-		}
-	}
-	return false;
-}
-
 /**
  * Parses an XFF header and client IP to find the last trusted client IP
  * 
@@ -98,36 +80,6 @@ function getTrustedClientIP($dbip, $dbproxyip)
 {
 	global $xffTrustProvider;
     return $xffTrustProvider->getTrustedClientIp($dbip, $dbproxyip);
-}
-
-/**
- * Explodes a CIDR range into an array of addresses
- * 
- * @param string $range A CIDR-format range
- * @return array An array containing every IP address in the range
- */
-function explodeCidr($range)
-{
-	$ip_arr = explode('/', $range);
-
-	if (!isset($ip_arr[1])) {
-		return array($range);
-	}
-	
-	$blow = ( 
-		str_pad(decbin(ip2long($ip_arr[0])), 32, "0", STR_PAD_LEFT) &
-		str_pad(str_pad("", $ip_arr[1], "1"), 32, "0") 
-		);
-	$bhigh = ($blow | str_pad(str_pad("", $ip_arr[1], "0"), 32, "1"));
-
-	$list = array();
-
-	$bindecBHigh = bindec($bhigh);
-	for ($x = bindec($blow); $x <= $bindecBHigh; $x++) {
-		$list[] = long2ip($x);
-	}
-
-	return $list;
 }
 
 /**

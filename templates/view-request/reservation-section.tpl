@@ -26,8 +26,10 @@
            href="{$baseurl}/acc.php?action=breakreserve&amp;resid={$requestId}">Force break</a>
     {/if}
     {if ! $requestIsReserved}
-        <a class="btn span4 btn-success"
-           href="{$baseurl}/acc.php?action=reserve&amp;resid={$requestId}">Reserve</a>
+        <form action="{$baseurl}/internal.php/viewRequest/reserve" method="post">
+            <input type="hidden" name="request" value="{$requestId}" />
+            <button class="btn span4 btn-success" type="submit">Reserve</button>
+        </form>
     {/if}
 </div> <!-- /row-fluid -->
 <hr class="zoom-button-divider" />

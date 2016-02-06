@@ -12,6 +12,7 @@ use Waca\Pages\PageLogin;
 use Waca\Pages\PageLogout;
 use Waca\Pages\PageMain;
 use Waca\Pages\PagePreferences;
+use Waca\Pages\PageReservation;
 use Waca\Pages\PageSearch;
 use Waca\Pages\PageTeam;
 use Waca\Pages\PageUserManagement;
@@ -196,6 +197,11 @@ final class RequestRouter
 		'team'                          =>
 			array(
 				'class'   => PageTeam::class,
+				'actions' => array(),
+			),
+		'viewRequest/reserve'           =>
+			array(
+				'class'   => PageReservation::class,
 				'actions' => array(),
 			),
 
