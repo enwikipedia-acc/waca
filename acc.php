@@ -1371,7 +1371,9 @@ elseif ($action == "zoom") {
 		$urlhash = "";
 	}
 	echo zoomPage($_GET['id'], $urlhash);
-	BootstrapSkin::displayInternalFooter();
+
+	$tailscript = getTypeaheadSource(User::getAllUsernames(gGetDb()));
+	BootstrapSkin::displayInternalFooter($tailscript);
 	die();
 }
 elseif ($action == "logs") {

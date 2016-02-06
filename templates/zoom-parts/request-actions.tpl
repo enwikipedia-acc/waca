@@ -16,7 +16,7 @@
     <form action="{$baseurl}/acc.php?action=sendtouser&amp;hash={$request->getChecksum()}" method="post" class="form-inline">
       <input type="hidden" name="id" value="{$request->getId()}" />
       <div class="row-fluid">
-        <input type="text" required="true" placeholder="Send reservation to another user..." name="user" data-provide="typeahead" data-items="4" data-source='{$jsuserlist}' class="span8" {if $request->getReserved() != $currentUser->getId()}disabled={/if}/>
+        <input type="text" required="true" placeholder="Send reservation to another user..." name="user" data-provide="typeahead" data-items="4" class="span8 username-typeahead" {if $request->getReserved() != $currentUser->getId()}disabled={/if}/>
         <input class="btn span4" type="submit" value="Send Reservation"/>
       </div>
     </form>
