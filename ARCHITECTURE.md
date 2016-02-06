@@ -11,8 +11,8 @@
 ### Deprecated entry points
 * `acc.php`
 * `search.php` - Deleted
-* `statistics.php`
-* `team.php` - Static-ish page.
+* `statistics.php` - Deleted
+* `team.php` - Deleted
 * `users.php` - Deleted
 
 ## Web request routing
