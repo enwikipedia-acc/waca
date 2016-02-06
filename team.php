@@ -111,6 +111,19 @@ $developer = array(
 				"Access" => "Mailing list mod",
 				"Cloak" => "*!*@wikipedia/Cyberpower678",
 				"Other" => null,
+			),
+		"Matthewrbowker" =>
+			array(
+				"IRC" => "Matthew_",
+				"ToolID" => "788",
+				"wiki" => "Matthewrbowker",
+				"WWW" => "",
+				"Name" => "Matthew Bowker",
+				"Role" => "",
+				"Retired" => null,
+				"Access" => "",
+				"Cloak" => "*!*@wikimedia/Matthewrbowker",
+				"Other" => null,
 			)
 );
 // End of the array of developers.
