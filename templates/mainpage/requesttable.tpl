@@ -48,8 +48,11 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><a href="{$baseurl}/internal.php/bans/set?type=IP&amp;request={$r->getId()}">IP</a></li>
-                            <li><a href="{$baseurl}/internal.php/bans/set?type=EMail&amp;request={$r->getId()}">Email</a></li>
-                            <li><a href="{$baseurl}/internal.php/bans/set?type=Name&amp;request={$r->getId()}">Name</a></li>
+                            <li>
+                                <a href="{$baseurl}/internal.php/bans/set?type=EMail&amp;request={$r->getId()}">Email</a>
+                            </li>
+                            <li><a href="{$baseurl}/internal.php/bans/set?type=Name&amp;request={$r->getId()}">Name</a>
+                            </li>
                         </ul>
                     </div>
                 {/if}
@@ -66,7 +69,7 @@
             <td>
                 {if $r->getReserved() == false}
                     <form action="{$baseurl}/internal.php/viewRequest/reserve" method="post" class="form-compact">
-                        <input type="hidden" name="request" value="{$r->getId()}" />
+                        <input type="hidden" name="request" value="{$r->getId()}"/>
                         <button class="btn btn-small btn-success" type="submit">
                             <i class="icon-white icon-star-empty"></i>&nbsp;Reserve
                         </button>
@@ -74,27 +77,24 @@
                 {else}
 
                     {if $r->getReserved() == $currentUser->getId()}
-                        <a class="btn btn-small btn-inverse"
-                           href="{$baseurl}/acc.php?action=breakreserve&amp;resid={$r->getId()}">
-                            <i class="icon-white icon-star"></i>&nbsp;Unreserve
-                        </a>
+                        <form action="{$baseurl}/internal.php/viewRequest/breakReserve" method="post"
+                              class="form-compact">
+                            <input type="hidden" name="request" value="{$r->getId()}"/>
+                            <button class="btn btn-small btn-inverse" type="submit">
+                                <i class="icon-white icon-star"></i>&nbsp;Unreserve
+                            </button>
+                        </form>
                     {else}
-
                         {if $currentUser->isAdmin() || $currentUser->isCheckUser() }
-                            <a class="btn btn-small btn-warning visible-desktop"
-                               href="{$baseurl}/acc.php?action=breakreserve&amp;resid={$r->getId()}">
-                                <i class="icon-white icon-trash"></i>&nbsp;Force break
-                            </a>
-                            <a class="btn btn-small btn-warning hidden-desktop"
-                               href="{$baseurl}/acc.php?action=breakreserve&amp;resid={$r->getId()}">
-                                <i class="icon-white icon-trash"></i>&nbsp; {$r->getReservedObject()->getUsername()|escape}
-                            </a>
-                        {else}
-                            <span class="hidden-desktop">{$r->getReservedObject()->getUsername()|escape}</span>
+                            <form action="{$baseurl}/internal.php/viewRequest/breakReserve" method="post"
+                                  class="form-compact">
+                                <input type="hidden" name="request" value="{$r->getId()}"/>
+                                <button class="btn btn-small btn-warning" type="submit">
+                                    <i class="icon-white icon-trash"></i>&nbsp;Force break
+                                </button>
+                            </form>
                         {/if}
-
                     {/if}
-
                 {/if}
             </td>
         </tr>

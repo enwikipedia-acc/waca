@@ -194,7 +194,7 @@ abstract class PageBase
 	 * @param null|string $action The action to use on the page.
 	 * @param null|array  $parameters
 	 */
-	final protected function redirect($page, $action = null, $parameters = null)
+	final protected function redirect($page = '', $action = null, $parameters = null)
 	{
 		$pathInfo = array($this->getSiteConfiguration()->getBaseUrl() . "/internal.php");
 

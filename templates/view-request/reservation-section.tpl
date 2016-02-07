@@ -19,12 +19,17 @@
         {/if}
     </div>
     {if $requestIsReservedByMe}
-        <a class="btn btn-inverse span4"
-           href="{$baseurl}/acc.php?action=breakreserve&amp;resid={$requestId}">Break reservation</a>
+        <form action="{$baseurl}/internal.php/viewRequest/breakReserve" method="post">
+            <input type="hidden" name="request" value="{$requestId}"/>
+            <button class="btn span4 btn-inverse" type="submit">Break reservation</button>
+        </form>
     {elseif $currentUser->isAdmin() && $requestIsReserved}
-        <a class="btn span4 btn-warning"
-           href="{$baseurl}/acc.php?action=breakreserve&amp;resid={$requestId}">Force break</a>
+        <form action="{$baseurl}/internal.php/viewRequest/breakReserve" method="post">
+            <input type="hidden" name="request" value="{$requestId}"/>
+            <button class="btn span4 btn-warning" type="submit">Force break</button>
+        </form>
     {/if}
+
     {if ! $requestIsReserved}
         <form action="{$baseurl}/internal.php/viewRequest/reserve" method="post">
             <input type="hidden" name="request" value="{$requestId}" />

@@ -5,15 +5,12 @@ namespace Waca\Pages;
 use DateTime;
 use Logger;
 use Notification;
-use Request;
 use SessionAlert;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
-use Waca\WebRequest;
 
-class PageReservation extends PageBase
+class PageReservation extends RequestActionBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.
@@ -21,24 +18,9 @@ class PageReservation extends PageBase
 	 */
 	protected function main()
 	{
-		// if the request was not posted, send the user away.
-		if (!WebRequest::wasPosted()) {
-			throw new ApplicationLogicException('This page does not support GET methods.');
-		}
-
-		$requestId = WebRequest::postInt('request');
-		if ($requestId === null) {
-			throw new ApplicationLogicException('Request ID not found');
-		}
-
+		$this->checkPosted();
 		$database = gGetDb();
-
-		/** @var Request $request */
-		$request = Request::getById($requestId, $database);
-
-		if ($request === false) {
-			throw new ApplicationLogicException('Request not found');
-		}
+		$request = $this->getRequest($database);
 
 		$logQuery = $database->prepare(<<<SQL
 SELECT timestamp FROM log

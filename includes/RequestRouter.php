@@ -5,6 +5,7 @@ use Exception;
 use Pages\PageViewRequest;
 use Waca\Pages\Page404;
 use Waca\Pages\PageBan;
+use Waca\Pages\PageBreakReservation;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageForgotPassword;
 use Waca\Pages\PageInterfaceManagement;
@@ -149,57 +150,62 @@ final class RequestRouter
 				'class'   => StatsFastCloses::class,
 				'actions' => array(),
 			),
-		'statistics/idUsers'            =>
+		'statistics/idUsers'          =>
 			array(
 				'class'   => StatsIdUsers::class,
 				'actions' => array(),
 			),
-		'statistics/inactiveUsers'      =>
+		'statistics/inactiveUsers'    =>
 			array(
 				'class'   => StatsInactiveUsers::class,
 				'actions' => array(),
 			),
-		'statistics/monthlyStats'       =>
+		'statistics/monthlyStats'     =>
 			array(
 				'class'   => StatsMonthlyStats::class,
 				'actions' => array(),
 			),
-		'statistics/reservedRequests'   =>
+		'statistics/reservedRequests' =>
 			array(
 				'class'   => StatsReservedRequests::class,
 				'actions' => array(),
 			),
-		'statistics/templateStats'      =>
+		'statistics/templateStats'    =>
 			array(
 				'class'   => StatsTemplateStats::class,
 				'actions' => array(),
 			),
-		'statistics/topCreators'        =>
+		'statistics/topCreators'      =>
 			array(
 				'class'   => StatsTopCreators::class,
 				'actions' => array(),
 			),
-		'statistics/users'              =>
+		'statistics/users'            =>
 			array(
 				'class'   => StatsUsers::class,
 				'actions' => array('detail'),
 			),
-		'viewRequest'                   =>
+		'viewRequest'                 =>
 			array(
 				'class'   => PageViewRequest::class,
 				'actions' => array(),
 			),
-		'team'                          =>
+		'team'                        =>
 			array(
 				'class'   => PageTeam::class,
 				'actions' => array(),
 			),
-		'viewRequest/reserve'           =>
+		'viewRequest/reserve'         =>
 			array(
 				'class'   => PageReservation::class,
 				'actions' => array(),
 			),
-		'emailManagement'               =>
+		'viewRequest/breakReserve'    =>
+			array(
+				'class'   => PageBreakReservation::class,
+				'actions' => array(),
+			),
+		'emailManagement'             =>
 			array(
 				'class'   => PageEmailManagement::class,
 				'actions' => array('create', 'edit', 'view'),
