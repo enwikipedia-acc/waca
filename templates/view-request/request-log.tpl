@@ -1,6 +1,6 @@
 <h3>Log:</h3>
-<form action="{$baseurl}/acc.php?action=comment-quick" method="post">
-    <table class="table table-condensed table-striped">
+<form action="{$baseurl}/internal.php/viewRequest/comment" method="post">
+    <table class="table table-condensed table-striped table-bordered table-hover">
         <tbody>
         {if $requestLogs}
             {foreach from=$requestLogs item=zoomrow name=logloop}
@@ -57,19 +57,20 @@
                 <a href="{$baseurl}/internal.php/statistics/users/detail?user={$currentUser->getId()}">{$currentUser->getUsername()|escape}</a>
             </td>
             <td>
-                <input type="hidden" name="id" value="{$requestId}"/>
+                <input type="hidden" name="request" value="{$requestId}"/>
                 <input type="hidden" name="visibility" value="user"/>
-                <input class="span12" placeholder="Quick comment" name="comment"/>
+                <input class="span12 input-compact" type="text" placeholder="Quick comment" name="comment"/>
             </td>
             <td>
-                <div class="btn-group">
-                    <button class="btn btn-primary" type="submit">Save</button>
-                    <a class="btn" href="{$baseurl}/acc.php?action=comment&amp;id={$requestId}">Advanced</a>
-                </div>
+                <button class="btn btn-primary" type="submit">Save</button>
+                <label style="display: inline;" title="Make this comment visible only to tool administrators">
+                    <span class="label label-important">
+                        <input type="checkbox" name="adminOnly" />
+                        <i class="icon-white icon-lock"></i>
+                    </span>
+                </label>
             </td>
         </tr>
         </tbody>
     </table>
 </form>
-
-<hr class="zoom-button-divider"/>

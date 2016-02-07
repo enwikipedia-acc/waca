@@ -14,6 +14,7 @@ use Waca\Pages\PageLogin;
 use Waca\Pages\PageLogout;
 use Waca\Pages\PageMain;
 use Waca\Pages\PagePreferences;
+use Waca\Pages\RequestAction\PageComment;
 use Waca\Pages\RequestAction\PageDeferRequest;
 use Waca\Pages\RequestAction\PageReservation;
 use Waca\Pages\PageSearch;
@@ -209,6 +210,11 @@ final class RequestRouter
 		'viewRequest/defer'           =>
 			array(
 				'class'   => PageDeferRequest::class,
+				'actions' => array(),
+			),
+		'viewRequest/comment'           =>
+			array(
+				'class'   => PageComment::class,
 				'actions' => array(),
 			),
 		'emailManagement'             =>

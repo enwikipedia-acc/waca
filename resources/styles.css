@@ -58,6 +58,9 @@ until a newer Bootstrap version with this fixed is released and we upgrade to it
 form.form-compact {
     margin-bottom: 0;
 }
+input.input-compact {
+    margin-bottom: 0;
+}
 
 /* Zoom page tweaks */
 hr.zoom-button-divider {

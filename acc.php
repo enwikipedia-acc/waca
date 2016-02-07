@@ -452,120 +452,6 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	}
 }
 
-elseif ($action == "comment") {
-	global $smarty;
-    
-	$request = Request::getById($_GET['id'], gGetDb());
-	$smarty->assign("request", $request);
-	$smarty->display("commentform.tpl");
-	BootstrapSkin::displayInternalFooter();
-	die();
-}
-elseif ($action == "comment-add") {
-	global $baseurl, $smarty;
-    
-	$request = Request::getById($_POST['id'], gGetDb());
-	if ($request == false) {
-		BootstrapSkin::displayAlertBox("Could not find request!", "alert-error", "Error", true, false);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-    
-	if (!isset($_POST['comment']) || $_POST['comment'] == "") {
-		BootstrapSkin::displayAlertBox("Comment must be supplied!", "alert-error", "Error", true, false);
-		BootstrapSkin::displayInternalFooter();
-		die(); 
-	}
-    
-	$visibility = 'user';
-	if (isset($_POST['visibility'])) {
-		// sanity check
-		$visibility = $_POST['visibility'] == 'user' ? 'user' : 'admin';
-	}
-    
-	//Look for and detect IPv4/IPv6 addresses in comment text, and warn the commenter.
-	if ((preg_match('/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/', $_POST['comment']) || preg_match('/(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))/', $_POST['comment'])) && $_POST['privpol-check-override'] != "override") {
-			BootstrapSkin::displayAlertBox("IP address detected in comment text.  Warning acknowledgement checkbox must be checked.", "alert-error", "Error", true, false);
-			$smarty->assign("request", $request);
-			$smarty->assign("comment", $_POST['comment']);
-			$smarty->assign("actionLocation", "comment-add");
-			$smarty->display("privpol-warning.tpl");
-			BootstrapSkin::displayInternalFooter();
-			die();
-		}
-    
-	$comment = new Comment();
-	$comment->setDatabase(gGetDb());
-    
-	$comment->setRequest($request->getId());
-	$comment->setVisibility($visibility);
-	$comment->setUser(User::getCurrent()->getId());
-	$comment->setComment($_POST['comment']);
-    
-	$comment->save();
-    
-	if (isset($_GET['hash'])) {
-		$urlhash = urlencode(htmlentities($_GET['hash']));
-	}
-	else {
-		$urlhash = "";
-	}
-
-	BootstrapSkin::displayAlertBox(
-		"<a href='$baseurl/internal.php/viewRequest?id={$request->getId()}'>Return to request #{$request->getId()}</a>",
-		"alert-success",
-		"Comment added Successfully!",
-		true, false);
-        
-	Notification::commentCreated($comment);
-        
-	BootstrapSkin::displayInternalFooter();
-	die();
-}
-elseif ($action == "comment-quick") {
-	$request = Request::getById($_POST['id'], gGetDb());
-	if ($request == false) {
-		BootstrapSkin::displayAlertBox("Could not find request!", "alert-error", "Error", true, false);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-    
-	if (!isset($_POST['comment']) || $_POST['comment'] == "") {
-		header("Location: $baseurl/internal.php/viewRequest?id=" . $request->getId());
-		die(); 
-	}
-    
-	$visibility = 'user';
-	if (isset($_POST['visibility'])) {
-		// sanity check
-		$visibility = $_POST['visibility'] == 'user' ? 'user' : 'admin';
-	}
-
-	//Look for and detect IPv4/IPv6 addresses in comment text, and warn the commenter.
-	if ((preg_match('/\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/', $_POST['comment']) || preg_match('/(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))/', $_POST['comment'])) && $_POST['privpol-check-override'] != "override") {
-			BootstrapSkin::displayAlertBox("IP address detected in comment text.  Warning acknowledgement checkbox must be checked.", "alert-error", "Error", true, false);
-			$smarty->assign("request", $request);
-			$smarty->assign("comment", $_POST['comment']);
-			$smarty->assign("actionLocation", "comment-quick");
-			$smarty->display("privpol-warning.tpl");
-			BootstrapSkin::displayInternalFooter();
-			die();
-		}
-    
-	$comment = new Comment();
-	$comment->setDatabase(gGetDb());
-    
-	$comment->setRequest($request->getId());
-	$comment->setVisibility($visibility);
-	$comment->setUser(User::getCurrent()->getId());
-	$comment->setComment($_POST['comment']);
-    
-	$comment->save();
-    
-	Notification::commentCreated($comment);
-    
-	header("Location: $baseurl/internal.php/viewRequest?id=" . $request->getId());
-}
 elseif ($action == "ec") {
 	// edit comment
   
@@ -616,6 +502,7 @@ elseif ($action == "ec") {
 		die();
 	}
 }
+
 elseif ($action == "sendtouser") {
 	global $baseurl;
     
