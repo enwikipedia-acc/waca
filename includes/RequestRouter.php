@@ -5,7 +5,7 @@ use Exception;
 use Pages\PageViewRequest;
 use Waca\Pages\Page404;
 use Waca\Pages\PageBan;
-use Waca\Pages\PageBreakReservation;
+use Waca\Pages\RequestAction\PageBreakReservation;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageForgotPassword;
 use Waca\Pages\PageInterfaceManagement;
@@ -14,7 +14,8 @@ use Waca\Pages\PageLogin;
 use Waca\Pages\PageLogout;
 use Waca\Pages\PageMain;
 use Waca\Pages\PagePreferences;
-use Waca\Pages\PageReservation;
+use Waca\Pages\RequestAction\PageDeferRequest;
+use Waca\Pages\RequestAction\PageReservation;
 use Waca\Pages\PageSearch;
 use Waca\Pages\PageTeam;
 use Waca\Pages\PageUserManagement;
@@ -82,37 +83,37 @@ final class RequestRouter
 	 * @var array
 	 */
 	private $routeMap = array(
-		'logout'                        =>
+		'logout'                      =>
 			array(
 				'class'   => PageLogout::class,
 				'actions' => array(),
 			),
-		'login'                         =>
+		'login'                       =>
 			array(
 				'class'   => PageLogin::class,
 				'actions' => array(),
 			),
-		'forgotPassword'                =>
+		'forgotPassword'              =>
 			array(
 				'class'   => PageForgotPassword::class,
 				'actions' => array('reset'),
 			),
-		'search'                        =>
+		'search'                      =>
 			array(
 				'class'   => PageSearch::class,
 				'actions' => array(),
 			),
-		'logs'                          =>
+		'logs'                        =>
 			array(
 				'class'   => PageLog::class,
 				'actions' => array(),
 			),
-		'bans'                          =>
+		'bans'                        =>
 			array(
 				'class'   => PageBan::class,
 				'actions' => array('set', 'remove'),
 			),
-		'userManagement'                =>
+		'userManagement'              =>
 			array(
 				'class'   => PageUserManagement::class,
 				'actions' => array(
@@ -125,27 +126,27 @@ final class RequestRouter
 					'demote',
 				),
 			),
-		'siteNotice'                    =>
+		'siteNotice'                  =>
 			array(
 				'class'   => PageInterfaceManagement::class,
 				'actions' => array(),
 			),
-		'preferences'                   =>
+		'preferences'                 =>
 			array(
 				'class'   => PagePreferences::class,
 				'actions' => array('changePassword'),
 			),
-		'welcomeTemplates'              =>
+		'welcomeTemplates'            =>
 			array(
 				'class'   => PageWelcomeTemplateManagement::class,
 				'actions' => array('select', 'edit', 'delete', 'add', 'view'),
 			),
-		'statistics'                    =>
+		'statistics'                  =>
 			array(
 				'class'   => StatsMain::class,
 				'actions' => array(),
 			),
-		'statistics/fastCloses'         =>
+		'statistics/fastCloses'       =>
 			array(
 				'class'   => StatsFastCloses::class,
 				'actions' => array(),
@@ -203,6 +204,11 @@ final class RequestRouter
 		'viewRequest/breakReserve'    =>
 			array(
 				'class'   => PageBreakReservation::class,
+				'actions' => array(),
+			),
+		'viewRequest/defer'           =>
+			array(
+				'class'   => PageDeferRequest::class,
 				'actions' => array(),
 			),
 		'emailManagement'             =>

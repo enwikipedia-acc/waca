@@ -19,22 +19,18 @@ class Request extends DataObject
 	private $reserved = 0;
 	private $useragent;
 	private $forwardedip;
-
 	private $hasComments = false;
 	private $hasCommentsResolved = false;
-
 	/**
 	 * @var Request[]
 	 */
 	private $ipRequests;
 	private $ipRequestsResolved = false;
-
 	/**
 	 * @var Request[]
 	 */
 	private $emailRequests;
 	private $emailRequestsResolved = false;
-
 	private $blacklistCache = null;
 
 	/**
@@ -61,7 +57,7 @@ SQL
 	public function save()
 	{
 		if ($this->isNew) {
-// insert
+			// insert
 			$statement = $this->dbObject->prepare(
 				"INSERT INTO `request` (" .
 				"email, ip, name, comment, status, date, checksum, emailsent, emailconfirm, reserved, useragent, forwardedip" .
@@ -89,7 +85,7 @@ SQL
 			}
 		}
 		else {
-// update
+			// update
 			$statement = $this->dbObject->prepare("UPDATE `request` SET " .
 				"status = :status, checksum = :checksum, emailsent = :emailsent, emailconfirm = :emailconfirm, " .
 				"reserved = :reserved " .
@@ -104,33 +100,11 @@ SQL
 				throw new Exception($statement->errorInfo());
 			}
 		}
-
-	}
-
-	public function getEmail()
-	{
-		return $this->email;
-	}
-
-	/**
-	 * @param string $email
-	 */
-	public function setEmail($email)
-	{
-		$this->email = $email;
 	}
 
 	public function getIp()
 	{
 		return $this->ip;
-	}
-
-	/**
-	 * @deprecated
-	 */
-	public function getTrustedIp()
-	{
-		return trim(getTrustedClientIP($this->ip, $this->forwardedip));
 	}
 
 	/**
@@ -212,32 +186,19 @@ SQL
 		$this->emailsent = $emailsent;
 	}
 
-	public function getEmailConfirm()
-	{
-		return $this->emailconfirm;
-	}
-
-	/**
-	 * @param string $emailconfirm
-	 */
-	public function setEmailConfirm($emailconfirm)
-	{
-		$this->emailconfirm = $emailconfirm;
-	}
-
 	public function getReserved()
 	{
 		return $this->reserved;
 	}
 
-	public function getReservedObject()
-	{
-		return User::getById($this->reserved, $this->dbObject);
-	}
-
 	public function setReserved($reserved)
 	{
 		$this->reserved = $reserved;
+	}
+
+	public function getReservedObject()
+	{
+		return User::getById($this->reserved, $this->dbObject);
 	}
 
 	public function getUserAgent()
@@ -269,10 +230,11 @@ SQL
 		if ($this->comment != "") {
 			$this->hasComments = true;
 			$this->hasCommentsResolved = true;
+
 			return true;
 		}
 
-		$commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) as num FROM comment where request = :id;");
+		$commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) AS num FROM comment WHERE request = :id;");
 		$commentsQuery->bindValue(":id", $this->id);
 
 		$commentsQuery->execute();
@@ -334,6 +296,14 @@ SQL
 		return $this->ipRequests;
 	}
 
+	/**
+	 * @deprecated
+	 */
+	public function getTrustedIp()
+	{
+		return trim(getTrustedClientIP($this->ip, $this->forwardedip));
+	}
+
 	public function isBlacklisted()
 	{
 		global $enableTitleBlacklist;
@@ -372,7 +342,6 @@ SQL
 		else {
 			return false;
 		}
-
 	}
 
 	public function confirmEmail($si)
@@ -386,8 +355,22 @@ SQL
 			$this->setEmailConfirm("Confirmed");
 		}
 		else {
-			throw new TransactionException("Confirmation hash does not match the expected value", "Email confirmation failed");
+			throw new TransactionException("Confirmation hash does not match the expected value",
+				"Email confirmation failed");
 		}
+	}
+
+	public function getEmailConfirm()
+	{
+		return $this->emailconfirm;
+	}
+
+	/**
+	 * @param string $emailconfirm
+	 */
+	public function setEmailConfirm($emailconfirm)
+	{
+		$this->emailconfirm = $emailconfirm;
 	}
 
 	public function generateEmailConfirmationHash()
@@ -406,13 +389,27 @@ SQL
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 
 		// Sends the confirmation email to the user.
-		$mailsuccess = mail($this->getEmail(), "[ACC #{$this->getId()}] English Wikipedia Account Request", $smarty->fetch('request/confirmation-mail.tpl'), $headers);
+		$mailsuccess = mail($this->getEmail(), "[ACC #{$this->getId()}] English Wikipedia Account Request",
+			$smarty->fetch('request/confirmation-mail.tpl'), $headers);
 
 		if (!$mailsuccess) {
 			throw new Exception("Error sending email.");
 		}
 	}
-	
+
+	public function getEmail()
+	{
+		return $this->email;
+	}
+
+	/**
+	 * @param string $email
+	 */
+	public function setEmail($email)
+	{
+		$this->email = $email;
+	}
+
 	public function getObjectDescription()
 	{
 		return '<a href="internal.php/viewRequest?id=' . $this->getId() . '">Request #' . $this->getId() . " (" . htmlentities($this->name) . ")</a>";
@@ -470,11 +467,29 @@ SQL
 		$logAction = $statement->fetchColumn(1);
 		$statement->closeCursor();
 
-		if($onCreated === null)
-		{
+		if ($onCreated === null) {
 			return $logAction === "Closed custom-y";
 		}
 
 		return (bool)$onCreated;
+	}
+
+	/**
+	 * @return DateTime
+	 */
+	public function getClosureDate()
+	{
+		$logQuery = $this->dbObject->prepare(<<<SQL
+SELECT timestamp FROM log
+WHERE objectid = :request AND objecttype = 'Request' AND action LIKE 'Closed%'
+ORDER BY timestamp DESC LIMIT 1;
+SQL
+		);
+		$logQuery->bindValue(":request", $this->getId());
+		$logQuery->execute();
+		$logTime = $logQuery->fetchColumn();
+		$logQuery->closeCursor();
+
+		return new DateTime($logTime);
 	}
 }

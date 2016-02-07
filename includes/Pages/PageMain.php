@@ -33,6 +33,8 @@ class PageMain extends PageBase
 
 		$totalRequestsStatement = $database->prepare($totalQuery);
 
+		$this->assign('defaultRequestState', $config->getDefaultRequestStateKey());
+
 		foreach ($config->getRequestStates() as $type => $v) {
 			$statement->bindValue(":type", $type);
 			$statement->execute();

@@ -46,10 +46,13 @@
                         </a>
                     </td>
                     <td>
-                        <a href="{$baseurl}/acc.php?action=defer&amp;id={$req.id|escape:'url'}&amp;sum={$req.checksum|escape:'url'}&amp;target=Open"
-                           class="btn btn-warning">
-                            <i class="icon-white icon-refresh"></i>&nbsp;Reset
-                        </a>
+                        <form action="{$baseurl}/internal.php/viewRequest/defer" method="post">
+                            <input type="hidden" name="request" value="{$req.id}"/>
+                            <input type="hidden" name="target" value="{$defaultRequestState}"/>
+                            <button class="btn btn-warning" type="submit">
+                                <i class="icon-white icon-refresh"></i>&nbsp;Reset
+                            </button>
+                        </form>
                     </td>
                 </tr>
             {/foreach}

@@ -1,6 +1,6 @@
 <?php
 
-namespace Waca\Pages;
+namespace Waca\Pages\RequestAction;
 
 use DateTime;
 use Logger;
@@ -22,22 +22,13 @@ class PageReservation extends RequestActionBase
 		$database = gGetDb();
 		$request = $this->getRequest($database);
 
-		$logQuery = $database->prepare(<<<SQL
-SELECT timestamp FROM log
-WHERE objectid = :request AND objecttype = 'Request' AND action LIKE 'Closed%'
-ORDER BY timestamp DESC LIMIT 1;
-SQL
-		);
-		$logQuery->bindValue(":request", $request->getId());
-		$logQuery->execute();
-		$logTime = $logQuery->fetchColumn();
-		$logQuery->closeCursor();
+		$closureDate = $request->getClosureDate();
 
 		$date = new DateTime();
 		$date->modify("-7 days");
 		$oneweek = $date->format("Y-m-d H:i:s");
 
-		if ($request->getStatus() == "Closed" && $logTime < $oneweek && !User::getCurrent($database)->isAdmin()) {
+		if ($request->getStatus() == "Closed" && $closureDate < $oneweek && !User::getCurrent($database)->isAdmin()) {
 			throw new ApplicationLogicException("Only administrators and checkusers can reserve a request that has been closed for over a week.");
 		}
 

@@ -1,11 +1,10 @@
 <?php
 
-namespace Waca\Pages;
+namespace Waca\Pages\RequestAction;
 
 use Request;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\PageBase;
-use Waca\SecurityConfiguration;
 use Waca\WebRequest;
 
 abstract class RequestActionBase extends PageBase

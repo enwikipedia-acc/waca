@@ -1,6 +1,6 @@
 <?php
 
-namespace Waca\Pages;
+namespace Waca\Pages\RequestAction;
 
 use Exception;
 use Logger;

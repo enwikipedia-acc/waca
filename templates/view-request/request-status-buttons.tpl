@@ -13,10 +13,11 @@
 
     <div class="span4{if ! $requestIsReserved} offset8{/if}">
         {if $requestIsClosed}
-            <a class="btn span12"
-               href="{$baseurl}/acc.php?action=defer&amp;id={$requestId}&amp;target={$defaultRequestState}">
-                Reset request
-            </a>
+            <form action="{$baseurl}/internal.php/viewRequest/defer" method="post">
+                <input type="hidden" name="request" value="{$requestId}"/>
+                <input type="hidden" name="target" value="{$defaultRequestState}"/>
+                <button class="btn span12" type="submit">Reset request</button>
+            </form>
         {else}
             {include file="view-request/defer-button.tpl"}
             <a class="btn btn-inverse span6"
