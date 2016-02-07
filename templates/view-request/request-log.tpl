@@ -28,7 +28,7 @@
                             {/if}
                         {else}
                             {if $zoomrow.canedit == true}
-                                <a class="btn btn-mini" href="{$baseurl}/acc.php?action=ec&amp;id={$zoomrow.id}">
+                                <a class="btn btn-mini" href="{$baseurl}/internal.php/editComment?id={$zoomrow.id}">
                                     <i class="icon icon-pencil"></i>
                                 </a>
                                 &nbsp;

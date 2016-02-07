@@ -5,6 +5,7 @@ use Exception;
 use Pages\PageViewRequest;
 use Waca\Pages\Page404;
 use Waca\Pages\PageBan;
+use Waca\Pages\PageEditComment;
 use Waca\Pages\RequestAction\PageBreakReservation;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageForgotPassword;
@@ -215,6 +216,11 @@ final class RequestRouter
 		'viewRequest/comment'           =>
 			array(
 				'class'   => PageComment::class,
+				'actions' => array(),
+			),
+		'editComment' =>
+			array(
+				'class'   => PageEditComment::class,
 				'actions' => array(),
 			),
 		'emailManagement'             =>

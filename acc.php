@@ -452,57 +452,6 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	}
 }
 
-elseif ($action == "ec") {
-	// edit comment
-  
-	global $smarty, $baseurl;
-    
-	$comment = Comment::getById($_GET['id'], gGetDb());
-    
-	if ($comment == false) {
-		// Only using die("Message"); for errors looks ugly.
-		BootstrapSkin::displayAlertBox("Comment not found.", "alert-error", "Error", true, false);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-	
-	// Unauthorized if user is not an admin or the user who made the comment being edited.
-	if (!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser() && $comment->getUser() != User::getCurrent()->getId()) {
-		BootstrapSkin::displayAccessDenied();
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-	
-	// get[id] is safe by this point.
-	
-	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-		$database = gGetDb();
-		$database->transactionally(function() use ($database, $comment, $baseurl)
-		{
-            
-			$comment->setComment($_POST['newcomment']);
-			$comment->setVisibility($_POST['visibility']);
-        
-			$comment->save();
-        
-			Logger::editComment($database, $comment);
-        
-			Notification::commentEdited($comment);
-        
-			SessionAlert::success("Comment has been saved successfully");
-			header("Location: $baseurl/internal.php/viewRequest?id=" . $comment->getRequest());
-		});
-        
-		die();    
-	}
-	else {
-		$smarty->assign("comment", $comment);
-		$smarty->display("edit-comment.tpl");
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-}
-
 elseif ($action == "sendtouser") {
 	global $baseurl;
     
