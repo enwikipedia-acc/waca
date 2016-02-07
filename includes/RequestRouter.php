@@ -5,6 +5,7 @@ use Exception;
 use Pages\PageViewRequest;
 use Waca\Pages\Page404;
 use Waca\Pages\PageBan;
+use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageForgotPassword;
 use Waca\Pages\PageInterfaceManagement;
 use Waca\Pages\PageLog;
@@ -22,7 +23,6 @@ use Waca\Pages\Statistics\StatsIdUsers;
 use Waca\Pages\Statistics\StatsInactiveUsers;
 use Waca\Pages\Statistics\StatsMain;
 use Waca\Pages\Statistics\StatsMonthlyStats;
-use Waca\Pages\Statistics\StatsPasswordConversion;
 use Waca\Pages\Statistics\StatsReservedRequests;
 use Waca\Pages\Statistics\StatsTemplateStats;
 use Waca\Pages\Statistics\StatsTopCreators;
@@ -164,11 +164,6 @@ final class RequestRouter
 				'class'   => StatsMonthlyStats::class,
 				'actions' => array(),
 			),
-		'statistics/passwordConversion' =>
-			array(
-				'class'   => StatsPasswordConversion::class,
-				'actions' => array(),
-			),
 		'statistics/reservedRequests'   =>
 			array(
 				'class'   => StatsReservedRequests::class,
@@ -203,6 +198,11 @@ final class RequestRouter
 			array(
 				'class'   => PageReservation::class,
 				'actions' => array(),
+			),
+		'emailManagement'               =>
+			array(
+				'class'   => PageEmailManagement::class,
+				'actions' => array('create', 'edit', 'view'),
 			),
 
 	);

@@ -54,12 +54,16 @@ SQL
 	}
 
 	/**
-	 * Gets active non-preload and preload templates
-	 * @param bool|string $defaultAction Default action to take (EmailTemplate::CREATED or EmailTemplate::NOT_CREATED)
-	 * @param PdoDatabase $database 
+	 * Gets active non-preload and preload templates, optionally filtered by the default action.
+	 *
+	 * @param null|bool|string $defaultAction Default action to take (EmailTemplate::CREATED,
+	 *                                        EmailTemplate::NOT_CREATED, or EmailTemplate::NONE), or optionally null to
+	 *                                        just get everything.
+	 * @param PdoDatabase      $database
+	 *
 	 * @return array|false
 	 */
-	public static function getAllActiveTemplates($defaultAction, PdoDatabase $database = null)
+	public static function getAllActiveTemplates($defaultAction = null, PdoDatabase $database = null)
 	{
 		if ($database == null) {
 			$database = gGetDb();
@@ -72,8 +76,39 @@ SQL
 				"SELECT * FROM `emailtemplate` WHERE defaultaction not in ('created', 'not created') AND active = 1;");
 		}
 
+		if ($defaultAction === null) {
+			$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE  active = 1;");
+		}
+
 		$statement->bindValue(":forcreated", $defaultAction);
 
+		$statement->execute();
+
+		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
+
+		/** @var EmailTemplate $t */
+		foreach ($resultObject as $t) {
+			$t->setDatabase($database);
+			$t->isNew = false;
+		}
+
+		return $resultObject;
+	}
+
+	/**
+	 * Gets all the unactive templates
+	 *
+	 * @param PdoDatabase|null $database
+	 *
+	 * @return array
+	 */
+	public static function getAllInactiveTemplates(PdoDatabase $database = null)
+	{
+		if ($database == null) {
+			$database = gGetDb();
+		}
+
+		$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE  active = 0;");
 		$statement->execute();
 
 		$resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
@@ -231,8 +266,10 @@ SQL
 	
 	public function getObjectDescription()
 	{
+		global $baseurl;
 		$safeName = htmlentities($this->name);
 		$id = $this->id;
-		return "<a href=\"acc.php?action=emailmgmt&amp;edit={$id}\">Email Template #{$id} ({$safeName})</a>";
+
+		return "<a href=\"{$baseurl}/internal.php/emailManagement/view?id={$id}\">Email Template #{$id} ({$safeName})</a>";
 	}
 }
