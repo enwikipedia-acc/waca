@@ -81,10 +81,17 @@ abstract class PageBase
 
 		$this->setupPage();
 
+		// Get the current security configuration
+		$securityConfiguration = $this->getSecurityConfiguration();
+		if ($securityConfiguration === null) {
+			// page hasn't been written properly.
+			throw new AccessDeniedException();
+		}
+
 		// Security barrier.
 		//
 		// This code essentially doesn't care if the user is logged in or not, as the
-		if ($this->getSecurityConfiguration()->allows(User::getCurrent())) {
+		if ($securityConfiguration->allows(User::getCurrent())) {
 			// We're allowed to run the page, so let's run it.
 			$this->runPage();
 		}
