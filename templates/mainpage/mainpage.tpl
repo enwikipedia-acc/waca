@@ -46,7 +46,7 @@
                         </a>
                     </td>
                     <td>
-                        <form action="{$baseurl}/internal.php/viewRequest/defer" method="post">
+                        <form action="{$baseurl}/internal.php/viewRequest/defer" method="post" class="form-compact">
                             <input type="hidden" name="request" value="{$req.id}"/>
                             <input type="hidden" name="target" value="{$defaultRequestState}"/>
                             <button class="btn btn-warning" type="submit">
