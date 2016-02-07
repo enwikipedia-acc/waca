@@ -452,46 +452,6 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	}
 }
 
-elseif ($action == "sendtouser") {
-	global $baseurl;
-    
-	$database = gGetDb();
-    
-	$requestObject = Request::getById($_POST['id'], $database);
-	if ($requestObject == false) {
-		BootstrapSkin::displayAlertBox("Request invalid", "alert-error", "Could not find request", true, false);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-    
-	$request = $requestObject->getId();
-    
-	$user = User::getByUsername($_POST['user'], $database);
-	$curuser = User::getCurrent()->getUsername();
-    
-	if ($user == false) {
-		BootstrapSkin::displayAlertBox("We couldn't find the user you wanted to send the reservation to. Please check that this user exists and is an active user on the tool.", "alert-error", "Could not find user", true, false);
-		BootstrapSkin::displayInternalFooter();
-		die();
-	}
-    
-	$database->transactionally(function() use ($database, $user, $request, $curuser)
-	{
-		$updateStatement = $database->prepare("UPDATE request SET reserved = :userid WHERE id = :request LIMIT 1;");
-		$updateStatement->bindValue(":userid", $user->getId());
-		$updateStatement->bindValue(":request", $request);
-		if (!$updateStatement->execute()) {
-			throw new TransactionException("Error updating reserved status of request.");   
-		}
-        
-		Logger::sendReservation($database, Request::getById($request, $database), $user);
-	});
-    
-	Notification::requestReservationSent($request, $user);
-	SessionAlert::success("Reservation sent successfully");
-	header("Location: $baseurl/internal.php/viewRequest?id=$request");
-}
-
 elseif ($action == "oauthdetach") {
 	if ($enforceOAuth) {
 		BootstrapSkin::displayAccessDenied();

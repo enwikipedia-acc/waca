@@ -5,8 +5,8 @@
 <div class="row-fluid">
     <div class="span8">
         {if $requestIsReservedByMe}
-            <form action="{$baseurl}/acc.php?action=sendtouser" method="post" class="form-inline">
-                <input type="hidden" name="id" value="{$requestId}"/>
+            <form action="{$baseurl}/internal.php/viewRequest/sendToUser" method="post" class="form-inline">
+                <input type="hidden" name="request" value="{$requestId}"/>
                 <div class="row-fluid">
                     <input type="text" required="true"
                            placeholder="Send reservation to another user..." name="user"

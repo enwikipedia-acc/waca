@@ -22,6 +22,7 @@ use Waca\Pages\PageSearch;
 use Waca\Pages\PageTeam;
 use Waca\Pages\PageUserManagement;
 use Waca\Pages\PageWelcomeTemplateManagement;
+use Waca\Pages\RequestAction\PageSendToUser;
 use Waca\Pages\Statistics\StatsFastCloses;
 use Waca\Pages\Statistics\StatsIdUsers;
 use Waca\Pages\Statistics\StatsInactiveUsers;
@@ -193,37 +194,42 @@ final class RequestRouter
 				'class'   => PageViewRequest::class,
 				'actions' => array(),
 			),
-		'team'                        =>
+		'team'                     =>
 			array(
 				'class'   => PageTeam::class,
 				'actions' => array(),
 			),
-		'viewRequest/reserve'         =>
+		'viewRequest/reserve'      =>
 			array(
 				'class'   => PageReservation::class,
 				'actions' => array(),
 			),
-		'viewRequest/breakReserve'    =>
+		'viewRequest/breakReserve' =>
 			array(
 				'class'   => PageBreakReservation::class,
 				'actions' => array(),
 			),
-		'viewRequest/defer'           =>
+		'viewRequest/defer'        =>
 			array(
 				'class'   => PageDeferRequest::class,
 				'actions' => array(),
 			),
-		'viewRequest/comment'           =>
+		'viewRequest/comment'      =>
 			array(
 				'class'   => PageComment::class,
 				'actions' => array(),
 			),
-		'editComment' =>
+		'viewRequest/sendToUser'   =>
+			array(
+				'class'   => PageSendToUser::class,
+				'actions' => array(),
+			),
+		'editComment'              =>
 			array(
 				'class'   => PageEditComment::class,
 				'actions' => array(),
 			),
-		'emailManagement'             =>
+		'emailManagement'          =>
 			array(
 				'class'   => PageEmailManagement::class,
 				'actions' => array('create', 'edit', 'view'),
