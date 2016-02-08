@@ -123,7 +123,8 @@ class PdoDatabase extends PDO
 
 	/**
 	 * Summary of transactionally
-	 * @param Closure $method 
+	 * @param Closure $method
+	 * @deprecated 
 	 */
 	public function transactionally($method)
 	{
