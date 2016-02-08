@@ -1,4 +1,5 @@
 <?php
+use Waca\Exceptions\EnvironmentException;
 
 /**
  * @param string $db
@@ -51,7 +52,7 @@ class PdoDatabase extends PDO
 			}
 			catch (PDOException $ex) {
 				// wrap around any potential stack traces which may include passwords
-				throw new Exception("Error connecting to database '$connectionName': " . $ex->getMessage());
+				throw new EnvironmentException("Error connecting to database '$connectionName': " . $ex->getMessage());
 			}
 
 			$databaseObject->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
