@@ -1,4 +1,5 @@
 <?php
+use Waca\WebRequest;
 
 /**
  * Session Alerts
@@ -36,16 +37,6 @@ class SessionAlert
 	}
 
 	/**
-	 * @deprecated
-	 * @return null|string
-	 */
-	public function getAlertBox()
-	{
-		return BootstrapSkin::displayAlertBox($this->message, $this->type, $this->title, $this->block, $this->closable,
-			true);
-	}
-
-	/**
 	 * Shows a quick one-liner message
 	 *
 	 * @param string $message
@@ -54,6 +45,16 @@ class SessionAlert
 	public static function quick($message, $type = "alert-info")
 	{
 		self::append(new SessionAlert($message, "", $type, true, false));
+	}
+
+	/**
+	 * @param SessionAlert $alert
+	 */
+	public static function append(SessionAlert $alert)
+	{
+		$data = WebRequest::getSessionAlertData();
+		$data[] = serialize($alert);
+		WebRequest::setSessionAlertData($data);
 	}
 
 	/**
@@ -89,21 +90,6 @@ class SessionAlert
 	}
 
 	/**
-	 * @param SessionAlert $alert
-	 */
-	public static function append(SessionAlert $alert)
-	{
-		$data = array();
-		if (isset($_SESSION['alerts'])) {
-			$data = $_SESSION['alerts'];
-		}
-
-		$data[] = serialize($alert);
-
-		$_SESSION['alerts'] = $data;
-	}
-
-	/**
 	 * @return array
 	 * @deprecated Split into separate getAlerts() and clearAlerts() methods in Session
 	 */
@@ -111,7 +97,7 @@ class SessionAlert
 	{
 		$block = self::getAlerts();
 
-		$_SESSION['alerts'] = array();
+		self::clearAlerts();
 
 		return $block;
 	}
@@ -122,20 +108,60 @@ class SessionAlert
 	 */
 	public static function getAlerts()
 	{
-		$block = array();
-		if (isset($_SESSION['alerts'])) {
-			foreach ($_SESSION['alerts'] as $a) {
-				$block[] = unserialize($a);
-			}
+		$alertData = array();
+
+		foreach (WebRequest::getSessionAlertData() as $a) {
+			$alertData[] = unserialize($a);
 		}
 
-		return $block;
+		return $alertData;
 	}
 
 	/**
-	 * @todo
+	 * Clears the alerts from the session
 	 */
 	public static function clearAlerts()
 	{
+		WebRequest::clearSessionAlertData();
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isBlock()
+	{
+		return $this->block;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function isClosable()
+	{
+		return $this->closable;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getType()
+	{
+		return $this->type;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTitle()
+	{
+		return $this->title;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getMessage()
+	{
+		return $this->message;
 	}
 }

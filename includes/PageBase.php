@@ -6,6 +6,7 @@ use IAntiSpoofProvider;
 use ILocationProvider;
 use IRDnsProvider;
 use IXffTrustProvider;
+use SessionAlert;
 use User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\NotIdentifiedException;
@@ -41,6 +42,8 @@ abstract class PageBase
 	private $rdnsProvider;
 	/** @var IAntiSpoofProvider */
 	private $antiSpoofProvider;
+	/** @var bool Determines if the page is a redirect or not */
+	private $isRedirecting = false;
 
 	/**
 	 * Sets the route the request will take. Only should be called from the request router.
@@ -133,7 +136,7 @@ abstract class PageBase
 		$this->finalisePage();
 
 		// Check we have a template to use!
-		if ($this->template !== false) {
+		if ($this->template !== null) {
 			$content = $this->fetchTemplate($this->template);
 			ob_clean();
 			print($content);
@@ -148,11 +151,15 @@ abstract class PageBase
 	 */
 	final private function finalisePage()
 	{
-		// TODO: session alerts, but how do they fit in?
-		// We don't want to clear them unless we know they're definitely going to be displayed to the user (think
-		// redirects, but at the same time, we can't clear them after page execution in case the user has displayed
-		// more session alerts.
-		$this->assign("alerts", array());
+		if ($this->isRedirecting) {
+			$this->template = null;
+
+			return;
+		}
+
+		// If we're actually displaying content, we want to add the session alerts here!
+		$this->assign("alerts", SessionAlert::getAlerts());
+		SessionAlert::clearAlerts();
 
 		$this->assign("htmlTitle", $this->htmlTitle);
 	}
@@ -252,15 +259,22 @@ abstract class PageBase
 		header("Location: $path");
 
 		$this->setTemplate(null);
+		$this->isRedirecting = true;
 	}
 
 	/**
 	 * Sets the name of the template this page should display.
 	 *
 	 * @param string $name
+	 *
+	 * @throws Exception
 	 */
 	final protected function setTemplate($name)
 	{
+		if ($this->isRedirecting) {
+			throw new Exception('This page has been set as a redirect, no template can be displayed!');
+		}
+
 		$this->template = $name;
 	}
 

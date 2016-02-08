@@ -283,8 +283,6 @@ class WebRequest
 
 	#endregion
 
-	#region Login stuff
-
 	/**
 	 * Sets the logged-in user to the specified user.
 	 *
@@ -320,8 +318,6 @@ class WebRequest
 		return null;
 	}
 
-	#endregion
-
 	/**
 	 * Clears the post-login redirect
 	 * @return string
@@ -351,5 +347,43 @@ class WebRequest
 		}
 
 		return null;
+	}
+
+	/**
+	 * You probably only want to deal with this through SessionAlert.
+	 * @return void
+	 */
+	public static function clearSessionAlertData()
+	{
+		$session = &self::$globalStateProvider->getSessionSuperGlobal();
+		if (array_key_exists('alerts', $session)) {
+			unset($session['alerts']);
+		}
+	}
+
+	/**
+	 * You probably only want to deal with this through SessionAlert.
+	 *
+	 * @return array
+	 */
+	public static function getSessionAlertData()
+	{
+		$session = &self::$globalStateProvider->getSessionSuperGlobal();
+		if (array_key_exists('alerts', $session)) {
+			return $session['alerts'];
+		}
+
+		return array();
+	}
+
+	/**
+	 * You probably only want to deal with this through SessionAlert.
+	 *
+	 * @param array $data
+	 */
+	public static function setSessionAlertData($data)
+	{
+		$session = &self::$globalStateProvider->getSessionSuperGlobal();
+		$session['alerts'] = $data;
 	}
 }
