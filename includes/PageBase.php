@@ -7,8 +7,10 @@ use ILocationProvider;
 use IRDnsProvider;
 use IXffTrustProvider;
 use SessionAlert;
+use TransactionException;
 use User;
 use Waca\Exceptions\AccessDeniedException;
+use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\NotIdentifiedException;
 use Waca\Fragments\TemplateOutput;
 use Waca\Helpers\HttpHelper;
@@ -129,8 +131,20 @@ abstract class PageBase
 	 */
 	final private function runPage()
 	{
-		// run the page code
-		call_user_func($this->route);
+		try {
+			// run the page code
+			call_user_func($this->route);
+		}
+		// catch(TransactionException $ex) {
+		// 	// @todo implement me!
+		// }
+		catch(ApplicationLogicException $ex)
+		{
+			$this->template = null;
+			ob_clean();
+			print($ex->getReadableError());
+			ob_flush();
+		}
 
 		// run any finalisation code needed before we send the output to the browser.
 		$this->finalisePage();
