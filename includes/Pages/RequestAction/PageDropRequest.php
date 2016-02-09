@@ -13,7 +13,6 @@ class PageDropRequest extends PageCloseRequest
 		return EmailTemplate::getDroppedTemplate();
 	}
 
-
 	protected function checkEmailAlreadySent(Request $request, EmailTemplate $template)
 	{
 		return false;
