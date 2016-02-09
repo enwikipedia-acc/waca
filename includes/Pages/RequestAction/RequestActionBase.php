@@ -15,7 +15,7 @@ abstract class RequestActionBase extends PageBase
 	 * @return Request
 	 * @throws ApplicationLogicException
 	 */
-	protected final function getRequest($database)
+	final protected function getRequest($database)
 	{
 		$requestId = WebRequest::postInt('request');
 		if ($requestId === null) {
@@ -32,7 +32,7 @@ abstract class RequestActionBase extends PageBase
 		return $request;
 	}
 
-	protected final function checkPosted()
+	final protected function checkPosted()
 	{
 		// if the request was not posted, send the user away.
 		if (!WebRequest::wasPosted()) {

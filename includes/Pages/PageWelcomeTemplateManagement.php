@@ -184,7 +184,8 @@ class PageWelcomeTemplateManagement extends PageBase
 
 		$template->delete();
 
-		SessionAlert::success("Template deleted. Any users who were using this template have had automatic welcoming disabled.");
+		SessionAlert::success(
+			"Template deleted. Any users who were using this template have had automatic welcoming disabled.");
 		Notification::welcomeTemplateDeleted($templateId);
 	}
 

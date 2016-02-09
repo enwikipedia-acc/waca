@@ -6,7 +6,7 @@
  * Notification description.
  *
  * @version 1.0
- * @author stwalkerster
+ * @author  stwalkerster
  */
 class Notification extends DataObject
 {
@@ -66,6 +66,7 @@ class Notification extends DataObject
 
 	/**
 	 * Summary of setType
+	 *
 	 * @param int $type
 	 */
 	public function setType($type)
@@ -75,6 +76,7 @@ class Notification extends DataObject
 
 	/**
 	 * Summary of setText
+	 *
 	 * @param string $text
 	 */
 	public function setText($text)
@@ -85,6 +87,7 @@ class Notification extends DataObject
 
 	/**
 	 * Send a notification
+	 *
 	 * @param string $message The text to send
 	 */
 	protected static function send($message)
@@ -102,7 +105,7 @@ class Notification extends DataObject
 
 		try {
 			$database = gGetDb('notifications');
-            
+
 			$notification = new Notification();
 			$notification->setDatabase($database);
 			$notification->setType($ircBotNotificationType);
@@ -113,7 +116,7 @@ class Notification extends DataObject
 		catch (Exception $ex) {
 			// OK, so we failed to send the notification - that db might be down?
 			// This is non-critical, so silently fail.
-            
+
 			// Disable notifications for remainder of request.
 			$ircBotNotificationsEnabled = false;
 		}
@@ -123,6 +126,7 @@ class Notification extends DataObject
 
 	/**
 	 * send a new user notification
+	 *
 	 * @param User $user
 	 */
 	public static function userNew(User $user)
@@ -132,6 +136,7 @@ class Notification extends DataObject
 
 	/**
 	 * send an approved notification
+	 *
 	 * @param User $user
 	 */
 	public static function userApproved(User $user)
@@ -141,6 +146,7 @@ class Notification extends DataObject
 
 	/**
 	 * send a promoted notification
+	 *
 	 * @param User $user
 	 */
 	public static function userPromoted(User $user)
@@ -150,7 +156,8 @@ class Notification extends DataObject
 
 	/**
 	 * send a declined notification
-	 * @param User $user
+	 *
+	 * @param User   $user
 	 * @param string $reason the reason the user was declined
 	 */
 	public static function userDeclined(User $user, $reason)
@@ -160,7 +167,8 @@ class Notification extends DataObject
 
 	/**
 	 * send a demotion notification
-	 * @param User $user
+	 *
+	 * @param User   $user
 	 * @param string $reason the reason the user was demoted
 	 */
 	public static function userDemoted(User $user, $reason)
@@ -170,7 +178,8 @@ class Notification extends DataObject
 
 	/**
 	 * send a suspended notification
-	 * @param User $user
+	 *
+	 * @param User   $user
 	 * @param string $reason The reason the user has been suspended
 	 */
 	public static function userSuspended(User $user, $reason)
@@ -180,6 +189,7 @@ class Notification extends DataObject
 
 	/**
 	 * Send a preference change notification
+	 *
 	 * @param User $user
 	 */
 	public static function userPrefChange(User $user)
@@ -189,7 +199,8 @@ class Notification extends DataObject
 
 	/**
 	 * Send a user renamed notification
-	 * @param User $user
+	 *
+	 * @param User  $user
 	 * @param mixed $old
 	 */
 	public static function userRenamed(User $user, $old)
@@ -213,6 +224,7 @@ class Notification extends DataObject
 	#region Welcome Templates
 	/**
 	 * Summary of welcomeTemplateCreated
+	 *
 	 * @param WelcomeTemplate $template
 	 */
 	public static function welcomeTemplateCreated(WelcomeTemplate $template)
@@ -222,6 +234,7 @@ class Notification extends DataObject
 
 	/**
 	 * Summary of welcomeTemplateDeleted
+	 *
 	 * @param int $templateid
 	 */
 	public static function welcomeTemplateDeleted($templateid)
@@ -231,6 +244,7 @@ class Notification extends DataObject
 
 	/**
 	 * Summary of welcomeTemplateEdited
+	 *
 	 * @param WelcomeTemplate $template
 	 */
 	public static function welcomeTemplateEdited(WelcomeTemplate $template)
@@ -243,6 +257,7 @@ class Notification extends DataObject
 	#region bans
 	/**
 	 * Summary of banned
+	 *
 	 * @param Ban $ban
 	 */
 	public static function banned(Ban $ban)
@@ -261,7 +276,8 @@ class Notification extends DataObject
 
 	/**
 	 * Summary of unbanned
-	 * @param Ban $ban
+	 *
+	 * @param Ban    $ban
 	 * @param string $unbanreason
 	 */
 	public static function unbanned(Ban $ban, $unbanreason)
@@ -275,6 +291,7 @@ class Notification extends DataObject
 
 	/**
 	 * Summary of requestReceived
+	 *
 	 * @param Request $request
 	 */
 	public static function requestReceived(Request $request)
@@ -292,11 +309,12 @@ class Notification extends DataObject
 			. IrcColourCode::DARK_GREEN . $request->getName()
 			. IrcColourCode::DARK_RED . " * "
 			. IrcColourCode::RESET
-			);
+		);
 	}
 
 	/**
 	 * Summary of requestDeferred
+	 *
 	 * @param Request $request
 	 */
 	public static function requestDeferred(Request $request)
@@ -308,9 +326,11 @@ class Notification extends DataObject
 
 		self::send("Request {$request->getId()} ({$request->getName()}) deferred to {$deferTo} by {$username}");
 	}
+
 	/**
-	 * 
+	 *
 	 * Summary of requestDeferredWithMail
+	 *
 	 * @param Request $request
 	 */
 	public static function requestDeferredWithMail(Request $request)
@@ -325,8 +345,9 @@ class Notification extends DataObject
 
 	/**
 	 * Summary of requestClosed
+	 *
 	 * @param Request $request
-	 * @param string $closetype
+	 * @param string  $closetype
 	 */
 	public static function requestClosed(Request $request, $closetype)
 	{
@@ -337,11 +358,12 @@ class Notification extends DataObject
 
 	/**
 	 * Summary of sentMail
+	 *
 	 * @param Request $request
 	 */
 	public static function sentMail(Request $request)
 	{
-		self::send(User::getCurrent()->getUsername() 
+		self::send(User::getCurrent()->getUsername()
 			. " sent an email related to Request {$request->getId()} ({$request->getName()})");
 	}
 
@@ -351,6 +373,7 @@ class Notification extends DataObject
 
 	/**
 	 * Summary of requestReserved
+	 *
 	 * @param Request $request
 	 */
 	public static function requestReserved(Request $request)
@@ -362,6 +385,7 @@ class Notification extends DataObject
 
 	/**
 	 * Summary of requestReserveBroken
+	 *
 	 * @param Request $request
 	 */
 	public static function requestReserveBroken(Request $request)
@@ -373,6 +397,7 @@ class Notification extends DataObject
 
 	/**
 	 * Summary of requestUnreserved
+	 *
 	 * @param Request $request
 	 */
 	public static function requestUnreserved(Request $request)
@@ -382,15 +407,16 @@ class Notification extends DataObject
 
 	/**
 	 * Summary of requestReservationSent
+	 *
 	 * @param Request $request
-	 * @param User $target
+	 * @param User    $target
 	 */
 	public static function requestReservationSent(Request $request, User $target)
 	{
 		$username = User::getCurrent()->getUsername();
 
 		self::send(
-			"Reservation of request {$request->getId()} ({$request->getName()}) sent to {$target->getUsername()} by " 
+			"Reservation of request {$request->getId()} ({$request->getName()}) sent to {$target->getUsername()} by "
 			. $username);
 	}
 
@@ -400,27 +426,32 @@ class Notification extends DataObject
 
 	/**
 	 * Summary of commentCreated
+	 *
 	 * @param Comment $comment
+	 * @param Request $request
 	 */
-	public static function commentCreated(Comment $comment)
+	public static function commentCreated(Comment $comment, Request $request)
 	{
-		$req = $comment->getRequestObject();
 		$username = User::getCurrent()->getUsername();
 		$visibility = ($comment->getVisibility() == "admin" ? "private " : "");
 
-		self::send("{$username} posted a {$visibility}comment on request {$req->getId()} ({$req->getName()})");
+		self::send("{$username} posted a {$visibility}comment on request {$request->getId()} ({$request->getName()})");
 	}
 
 	/**
 	 * Summary of commentEdited
+	 *
 	 * @param Comment $comment
+	 * @param Request $request
 	 */
-	public static function commentEdited(Comment $comment)
+	public static function commentEdited(Comment $comment, Request $request)
 	{
-		$req = $comment->getRequestObject();
 		$username = User::getCurrent()->getUsername();
 
-		self::send("Comment {$comment->getId()} on request {$req->getId()} ({$req->getName()}) edited by {$username}");
+		self::send(<<<TAG
+Comment {$comment->getId()} on request {$request->getId()} ({$request->getName()}) edited by {$username}
+TAG
+		);
 	}
 
 	#endregion
@@ -429,21 +460,24 @@ class Notification extends DataObject
 
 	/**
 	 * Summary of emailCreated
+	 *
 	 * @param EmailTemplate $template
 	 */
 	public static function emailCreated(EmailTemplate $template)
 	{
-		self::send("Email {$template->getId()} ({$template->getName()}) created by " . User::getCurrent()->getUsername());
+		self::send("Email {$template->getId()} ({$template->getName()}) created by " . User::getCurrent()
+		                                                                                   ->getUsername());
 	}
 
 	/**
 	 * Summary of emailEdited
+	 *
 	 * @param EmailTemplate $template
 	 */
 	public static function emailEdited(EmailTemplate $template)
 	{
-		self::send("Email {$template->getId()} ({$template->getName()}) edited by " . User::getCurrent()->getUsername());
+		self::send("Email {$template->getId()} ({$template->getName()}) edited by " . User::getCurrent()
+		                                                                                  ->getUsername());
 	}
-
 	#endregion
 }

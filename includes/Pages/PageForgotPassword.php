@@ -45,8 +45,9 @@ class PageForgotPassword extends PageBase
 	/**
 	 * Sends a reset email if the user is authenticated
 	 *
-	 * @param User   $user  The user located from the database
-	 * @param string $email The provided email address
+	 * @param User|boolean $user  The user located from the database, or false. Doesn't really matter, since we do the
+	 *                            check anyway within this method and silently skip if we don't have a user.
+	 * @param string       $email The provided email address
 	 */
 	private function sendResetMail(User $user, $email)
 	{

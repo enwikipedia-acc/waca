@@ -10,21 +10,16 @@ class InterfaceMessage extends DataObject
 {
 	/** @var string */
 	private $content;
-
 	/** @var int */
 	private $updatecounter;
-
 	/** @var string */
 	private $description;
-
 	/** @var string */
 	private $type;
-
 	/**
 	 * The "site notice" interface message ID
 	 */
 	const SITENOTICE = '31';
-
 	/**
 	 * The "banned" interface message ID
 	 */
@@ -43,12 +38,14 @@ class InterfaceMessage extends DataObject
 	 * just uses getById() at the moment.
 	 *
 	 * @param int $key The ID to look up
+	 *
 	 * @return string The content for display
 	 */
 	public static function get($key)
 	{
 		/** @var InterfaceMessage $message */
 		$message = self::getById($key, gGetDb());
+
 		return $message->getContentForDisplay();
 	}
 
@@ -59,7 +56,7 @@ class InterfaceMessage extends DataObject
 	public function save()
 	{
 		if ($this->isNew) {
-// insert
+			// insert
 			$statement = $this->dbObject->prepare(<<<SQL
 INSERT INTO interfacemessage (updatecounter, description, type, content)
 VALUES (0, :desc, :type, :content);
@@ -77,7 +74,7 @@ SQL
 			}
 		}
 		else {
-// update
+			// update
 			$statement = $this->dbObject->prepare(<<<SQL
 UPDATE interfacemessage
 SET type = :type, description = :desc, content = :content, updatecounter = updatecounter + 1
@@ -121,12 +118,14 @@ SQL
 		}
 
 		$message = str_replace('%TSURL%', $baseurl, $message);
+
 		return $message;
 	}
 
 	/**
 	 * Sets the content of the message
-	 * @param int $content
+	 *
+	 * @param string $content
 	 */
 	public function setContent($content)
 	{
@@ -153,6 +152,7 @@ SQL
 
 	/**
 	 * Sets the description of the message
+	 *
 	 * @param string $description
 	 */
 	public function setDescription($description)
@@ -171,6 +171,7 @@ SQL
 
 	/**
 	 * Sets the type of the message
+	 *
 	 * @param string $type
 	 */
 	public function setType($type)
@@ -184,8 +185,10 @@ SQL
 	 */
 	public function getObjectDescription()
 	{
-		return '<a href="acc.php?action=messagemgmt&amp;view=' . $this->getId() . '">'
-		. htmlentities($this->description)
-		. "</a>";
+		$description = '<a href="acc.php?action=messagemgmt&amp;view=' . $this->getId() . '">'
+			. htmlentities($this->description)
+			. "</a>";
+
+		return $description;
 	}
 }

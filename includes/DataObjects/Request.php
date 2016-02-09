@@ -438,7 +438,10 @@ SQL
 
 	public function getObjectDescription()
 	{
-		return '<a href="internal.php/viewRequest?id=' . $this->getId() . '">Request #' . $this->getId() . " (" . htmlentities($this->name) . ")</a>";
+		$value = '<a href="internal.php/viewRequest?id=' . $this->getId() . '">Request #' . $this->getId() . " ("
+			. htmlentities($this->name) . ")</a>";
+
+		return $value;
 	}
 
 	public function getClosureReason()

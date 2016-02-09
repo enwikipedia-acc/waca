@@ -36,7 +36,7 @@ class PageComment extends RequestActionBase
 
 		$commentText = WebRequest::postString('comment');
 		if ($commentText === false || $commentText == '') {
-			$this->redirect('viewRequest', array('id' => $request->getId()));
+			$this->redirect('viewRequest', null, array('id' => $request->getId()));
 
 			return;
 		}
@@ -67,7 +67,7 @@ class PageComment extends RequestActionBase
 
 		$comment->save();
 
-		Notification::commentCreated($comment);
+		Notification::commentCreated($comment, $request);
 		$this->redirect('viewRequest', null, array('id' => $request->getId()));
 	}
 }

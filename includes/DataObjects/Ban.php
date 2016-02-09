@@ -16,7 +16,7 @@ class Ban extends DataObject
 	/**
 	 * Gets all bans, expired and active filtered by the optional target.
 	 *
-	 * @param string      $target   The email, IP, or name of the target of the ban
+	 * @param string|null $target   The email, IP, or name of the target of the ban
 	 * @param PdoDatabase $database The database object to look up with
 	 *
 	 * @return Ban[]
@@ -53,7 +53,7 @@ class Ban extends DataObject
 	/**
 	 * Gets all active bans, filtered by the optional target.
 	 *
-	 * @param string      $target
+	 * @param string|null $target
 	 * @param PdoDatabase $database
 	 *
 	 * @return Ban[]
@@ -241,7 +241,7 @@ SQL
 	}
 
 	/**
-	 * @return CommunityUser|false|User
+	 * @return false|User
 	 */
 	public function getUser()
 	{

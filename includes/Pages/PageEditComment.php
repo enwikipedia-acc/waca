@@ -59,6 +59,8 @@ class PageEditComment extends PageBase
 			throw new AccessDeniedException();
 		}
 
+		$request = Request::getById($comment->getRequest(), $database);
+
 		if (WebRequest::wasPosted()) {
 			$newComment = WebRequest::postString('newcomment');
 			$visibility = WebRequest::postString('visibility');
@@ -72,15 +74,15 @@ class PageEditComment extends PageBase
 
 			$comment->save();
 
-			Logger::editComment($database, $comment);
-			Notification::commentEdited($comment);
+			Logger::editComment($database, $comment, $request);
+			Notification::commentEdited($comment, $request);
 			SessionAlert::success("Comment has been saved successfully");
 
 			$this->redirect('viewRequest', null, array('id' => $comment->getRequest()));
 		}
 		else {
 			$this->assign('comment', $comment);
-			$this->assign('request', Request::getById($comment->getRequest(), $database));
+			$this->assign('request', $request);
 			$this->assign('user', User::getById($comment->getUser(), $database));
 			$this->setTemplate('edit-comment.tpl');
 		}

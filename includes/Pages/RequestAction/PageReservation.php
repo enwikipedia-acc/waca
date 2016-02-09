@@ -29,7 +29,8 @@ class PageReservation extends RequestActionBase
 		$oneweek = $date->format("Y-m-d H:i:s");
 
 		if ($request->getStatus() == "Closed" && $closureDate < $oneweek && !User::getCurrent($database)->isAdmin()) {
-			throw new ApplicationLogicException("Only administrators and checkusers can reserve a request that has been closed for over a week.");
+			throw new ApplicationLogicException(
+				"Only administrators and checkusers can reserve a request that has been closed for over a week.");
 		}
 
 		if ($request->getReserved() != 0 && $request->getReserved() != User::getCurrent($database)->getId()) {

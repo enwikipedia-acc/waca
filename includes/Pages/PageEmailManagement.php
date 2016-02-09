@@ -83,7 +83,7 @@ class PageEmailManagement extends PageBase
 			throw new ApplicationLogicException('Template not specified');
 		}
 		$template = EmailTemplate::getById($templateId, $database);
-		if ($template === false) {
+		if (!is_a($template, EmailTemplate::class)) {
 			throw new ApplicationLogicException('Template not found');
 		}
 

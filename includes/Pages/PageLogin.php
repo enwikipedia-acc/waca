@@ -39,7 +39,7 @@ class PageLogin extends PageBase
 			$user = $this->getAuthenticatingUser();
 
 			// Touch force logout
-			$user->setForcelogout(0);
+			$user->setForcelogout(false);
 			$user->save();
 
 			// TODO: OAuth code

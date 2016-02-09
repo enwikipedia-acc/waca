@@ -41,14 +41,14 @@ class PageDeferRequest extends RequestActionBase
 		$target = WebRequest::postString('target');
 		$requestStates = $this->getSiteConfiguration()->getRequestStates();
 
-		if(!array_key_exists($target, $requestStates)){
+		if (!array_key_exists($target, $requestStates)) {
 			throw new ApplicationLogicException('Defer target not valid');
 		}
 
-		if($request->getStatus() == $target)
-		{
+		if ($request->getStatus() == $target) {
 			SessionAlert::warning('This request is already in the specified queue.');
 			$this->redirect('viewRequest', null, array('id' => $request->getId()));
+
 			return;
 		}
 
@@ -58,7 +58,8 @@ class PageDeferRequest extends RequestActionBase
 		$oneweek = $date->format("Y-m-d H:i:s");
 
 		if ($request->getStatus() == "Closed" && $closureDate < $oneweek && !$currentUser->isAdmin()) {
-			throw new ApplicationLogicException("Only administrators and checkusers can reserve a request that has been closed for over a week.");
+			throw new ApplicationLogicException(
+				"Only administrators and checkusers can reserve a request that has been closed for over a week.");
 		}
 
 		$request->setReserved(0);

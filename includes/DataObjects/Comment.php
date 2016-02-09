@@ -104,21 +104,6 @@ SQL
 		return $this->user;
 	}
 
-	/**
-	 * Summary of getUserObject
-	 * @return User|null
-	 */
-	public function getUserObject()
-	{
-		/** @var User|bool $user */
-		$user = User::getById($this->user, $this->dbObject);
-		if ($user === false) {
-			$user = null;
-		}
-
-		return $user;
-	}
-
 	public function setUser($user)
 	{
 		$this->user = $user;
@@ -147,21 +132,6 @@ SQL
 	public function getRequest()
 	{
 		return $this->request;
-	}
-
-	/**
-	 * Summary of getRequestObject
-	 * @return Request|null
-	 */
-	public function getRequestObject()
-	{
-		/** @var Request|boolean $request */
-		$request = Request::getById($this->request, $this->dbObject);
-		if ($request === false) {
-			$request = null;
-		}
-
-		return $request;
 	}
 
 	public function setRequest($request)

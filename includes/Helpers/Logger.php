@@ -237,10 +237,11 @@ class Logger
 	/**
 	 * @param PdoDatabase $database
 	 * @param Comment     $object
+	 * @param Request     $request
 	 */
-	public static function editComment(PdoDatabase $database, Comment $object)
+	public static function editComment(PdoDatabase $database, Comment $object, Request $request)
 	{
-		self::createLogEntry($database, $object->getRequestObject(), "EditComment-r");
+		self::createLogEntry($database, $request, "EditComment-r");
 		self::createLogEntry($database, $object, "EditComment-c");
 	}
 

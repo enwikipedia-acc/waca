@@ -145,6 +145,14 @@ SQL
 }
 
 namespace Waca{
+
+	/**
+	 * Class Session
+	 *
+	 * This class handles the low-level starting and destroying of sessions.
+	 *
+	 * @package Waca
+	 */
 	class Session
 	{
 		public static function start()

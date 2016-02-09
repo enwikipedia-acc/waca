@@ -86,21 +86,6 @@ SQL
 	}
 
 	/**
-	 * Summary of getUserObject
-	 * @return User|null
-	 */
-	public function getUserObject()
-	{
-		/** @var User|bool $user */
-		$user = User::getById($this->user, $this->dbObject);
-		if ($user === false) {
-			$user = null;
-		}
-
-		return $user;
-	}
-
-	/**
 	 * Summary of setUser
 	 *
 	 * @param User $user

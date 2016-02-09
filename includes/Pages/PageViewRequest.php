@@ -20,7 +20,6 @@ class PageViewRequest extends PageBase
 	const STATUS_SYMBOL_OPEN = '&#x2610';
 	const STATUS_SYMBOL_ACCEPTED = '&#x2611';
 	const STATUS_SYMBOL_REJECTED = '&#x2612';
-
 	/**
 	 * @var array Array of IP address classed as 'private' by RFC1918.
 	 */
@@ -67,8 +66,7 @@ class PageViewRequest extends PageBase
 		$this->setupGeneralData($database);
 
 		$this->assign('requestDataCleared', false);
-		if($request->getEmail() === $this->getSiteConfiguration()->getDataClearEmail())
-		{
+		if ($request->getEmail() === $this->getSiteConfiguration()->getDataClearEmail()) {
 			$this->assign('requestDataCleared', true);
 		}
 
@@ -106,7 +104,7 @@ class PageViewRequest extends PageBase
 		$database = gGetDb();
 
 		$request = Request::getById($requestId, $database);
-		if ($request === false) {
+		if (!is_a($request, Request::class)) {
 			throw new ApplicationLogicException('Could not load the requested request!');
 		}
 
@@ -155,7 +153,7 @@ class PageViewRequest extends PageBase
 	/**
 	 * Sets up data unrelated to the request, such as the email template information
 	 *
-	 * @param PdoDatabase       $database
+	 * @param PdoDatabase $database
 	 */
 	protected function setupGeneralData(PdoDatabase $database)
 	{
@@ -233,7 +231,8 @@ class PageViewRequest extends PageBase
 		foreach ($logs as $entry) {
 			// both log and comment have a 'user' field
 			if (!array_key_exists($entry->getUser(), $nameCache)) {
-				$nameCache[$entry->getUser()] = $entry->getUserObject();
+				$entryUser = User::getById($entry->getUser(), $database);
+				$nameCache[$entry->getUser()] = $entryUser;
 			}
 
 			if ($entry instanceof Comment) {
@@ -378,11 +377,12 @@ class PageViewRequest extends PageBase
 
 				$requestProxyData[$proxyIndex]['location'] = $proxyLocation;
 
-				if ($proxyReverseDns == $proxyAddress && $proxyIsInPrivateRange == false) {
+				if ($proxyReverseDns === $proxyAddress && $proxyIsInPrivateRange == false) {
 					$requestProxyData[$proxyIndex]['rdns'] = null;
 				}
 
-				$requestProxyData[$proxyIndex]['showlinks'] = (!$trust || $proxyAddress == $origin) && !$proxyIsInPrivateRange;
+				$showLinks = (!$trust || $proxyAddress == $origin) && !$proxyIsInPrivateRange;
+				$requestProxyData[$proxyIndex]['showlinks'] = $showLinks;
 
 				$proxyIndex++;
 			}

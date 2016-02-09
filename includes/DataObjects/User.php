@@ -19,13 +19,18 @@ class User extends DataObject
 	private $abortpref = 0;
 	private $confirmationdiff = 0;
 	private $emailsig = "";
+	/** @var null|string */
 	private $oauthrequesttoken = null;
+	/** @var null|string */
 	private $oauthrequestsecret = null;
+	/** @var null|string */
 	private $oauthaccesstoken = null;
+	/** @var null|string */
 	private $oauthaccesssecret = null;
 	private $oauthidentitycache = null;
-	// cache variable of the current user - it's never going to change in the middle of a request.
+	/** @var User Cache variable of the current user - it's never going to change in the middle of a request. */
 	private static $currentUser;
+	/** @var null The identity cache */
 	private $identityCache = null;
 	#region Object load methods
 
@@ -59,10 +64,12 @@ class User extends DataObject
 	/**
 	 * Gets a user by their user ID
 	 *
+	 * Pass -1 to get the community user.
+	 *
 	 * @param int         $id
 	 * @param PdoDatabase $database
 	 *
-	 * @return CommunityUser|User|false
+	 * @return User|false
 	 */
 	public static function getById($id, PdoDatabase $database)
 	{

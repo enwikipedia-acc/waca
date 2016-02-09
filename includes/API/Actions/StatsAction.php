@@ -48,16 +48,18 @@ class StatsAction extends ApiActionBase implements IApiAction
 		$this->database = gGetDb();
 
 		if ($username !== '') {
-			$this->user = \User::getByUsername($username, $this->database);
+			$user = User::getByUsername($username, $this->database);
 		}
 		else {
-			$this->user = \User::getByOnWikiUsername($wikiusername, $this->database);
+			$user = User::getByOnWikiUsername($wikiusername, $this->database);
 		}
 
-		if ($this->user === false) {
+		if ($user === false) {
 			$userElement->setAttribute("missing", "true");
 			return $apiDocument;
 		}
+
+		$this->user = $user;
 
 		$userElement->setAttribute("username", $this->user->getUsername());
 		$userElement->setAttribute("status", $this->user->getStatus());

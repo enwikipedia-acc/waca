@@ -39,7 +39,7 @@ class PageCloseRequest extends RequestActionBase
 	 * Main function for this page, when no specific actions are called.
 	 * @throws ApplicationLogicException
 	 */
-	protected final function processClose()
+	final protected function processClose()
 	{
 		$this->checkPosted();
 		$database = gGetDb();
@@ -201,7 +201,7 @@ class PageCloseRequest extends RequestActionBase
 	 * @throws Exception
 	 * @return void
 	 */
-	protected final function showConfirmation(Request $request, EmailTemplate $template, $templateName)
+	final protected function showConfirmation(Request $request, EmailTemplate $template, $templateName)
 	{
 		$this->assign('request', $request->getId());
 		$this->assign('template', $template->getId());

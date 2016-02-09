@@ -39,12 +39,14 @@ class CountAction extends ApiActionBase implements IApiAction
 
 		$this->database = gGetDb();
 
-		$this->user = \User::getByUsername($username, $this->database);
+		$user = User::getByUsername($username, $this->database);
 
-		if ($this->user === false) {
+		if ($user === false) {
 			$userElement->setAttribute("missing", "true");
 			return $apiDocument;
 		}
+
+		$this->user = $user;
 
 		$userElement->setAttribute("level", $this->user->getStatus());
 		$userElement->setAttribute("created", $this->getAccountsCreated());
