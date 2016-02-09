@@ -65,7 +65,9 @@ class Ban extends DataObject
 		}
 
 		if ($target !== null) {
-			$query = "SELECT * FROM ban WHERE target = :target AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;";
+			$query = <<<SQL
+SELECT * FROM ban WHERE target = :target AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;
+SQL;
 			$statement = $database->prepare($query);
 			$statement->bindValue(":target", $target);
 		}
@@ -137,7 +139,13 @@ SQL
 			$database = gGetDb();
 		}
 
-		$query = "SELECT * FROM ban WHERE type = :type AND target = :target AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;";
+		$query = <<<SQL
+SELECT * FROM ban
+WHERE type = :type
+	AND target = :target
+	AND (duration > UNIX_TIMESTAMP() OR duration = -1)
+	AND active = 1;
+SQL;
 		$statement = $database->prepare($query);
 		$statement->bindValue(":target", $target);
 		$statement->bindValue(":type", $type);
@@ -161,7 +169,11 @@ SQL
 	{
 		if ($this->isNew) {
 			// insert
-			$statement = $this->dbObject->prepare("INSERT INTO `ban` (type, target, user, reason, date, duration, active) VALUES (:type, :target, :user, :reason, CURRENT_TIMESTAMP(), :duration, :active);");
+			$statement = $this->dbObject->prepare(<<<SQL
+INSERT INTO `ban` (type, target, user, reason, date, duration, active)
+VALUES (:type, :target, :user, :reason, CURRENT_TIMESTAMP(), :duration, :active);
+SQL
+			);
 			$statement->bindValue(":type", $this->type);
 			$statement->bindValue(":target", $this->target);
 			$statement->bindValue(":user", $this->user);
@@ -178,7 +190,13 @@ SQL
 		}
 		else {
 			// update
-			$statement = $this->dbObject->prepare("UPDATE `ban` SET duration = :duration, active = :active, user = :user WHERE id = :id LIMIT 1;");
+			$statement = $this->dbObject->prepare(<<<SQL
+UPDATE `ban`
+SET duration = :duration, active = :active, user = :user
+WHERE id = :id
+LIMIT 1;
+SQL
+			);
 			$statement->bindValue(":id", $this->id);
 			$statement->bindValue(":duration", $this->duration);
 			$statement->bindValue(":active", $this->active);

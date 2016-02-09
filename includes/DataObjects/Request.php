@@ -58,13 +58,16 @@ SQL
 	{
 		if ($this->isNew) {
 			// insert
-			$statement = $this->dbObject->prepare(
-				"INSERT INTO `request` (" .
-				"email, ip, name, comment, status, date, checksum, emailsent, emailconfirm, reserved, useragent, forwardedip" .
-				") VALUES (" .
-				":email, :ip, :name, :comment, :status, CURRENT_TIMESTAMP(), :checksum, :emailsent," .
-				":emailconfirm, :reserved, :useragent, :forwardedip" .
-				");");
+			$statement = $this->dbObject->prepare(<<<SQL
+INSERT INTO `request` (
+	email, ip, name, comment, status, date, checksum, emailsent,
+	emailconfirm, reserved, useragent, forwardedip
+) VALUES (
+	:email, :ip, :name, :comment, :status, CURRENT_TIMESTAMP(), :checksum, :emailsent,
+	:emailconfirm, :reserved, :useragent, :forwardedip
+);
+SQL
+			);
 			$statement->bindValue(":email", $this->email);
 			$statement->bindValue(":ip", $this->ip);
 			$statement->bindValue(":name", $this->name);
@@ -86,10 +89,17 @@ SQL
 		}
 		else {
 			// update
-			$statement = $this->dbObject->prepare("UPDATE `request` SET " .
-				"status = :status, checksum = :checksum, emailsent = :emailsent, emailconfirm = :emailconfirm, " .
-				"reserved = :reserved " .
-				"WHERE id = :id LIMIT 1;");
+			$statement = $this->dbObject->prepare(<<<SQL
+UPDATE `request` SET
+	status = :status,
+	checksum = :checksum,
+	emailsent = :emailsent,
+	emailconfirm = :emailconfirm,
+	reserved = :reserved
+WHERE id = :id
+LIMIT 1;
+SQL
+			);
 			$statement->bindValue(":id", $this->id);
 			$statement->bindValue(":status", $this->status);
 			$statement->bindValue(":checksum", $this->checksum);
@@ -250,7 +260,11 @@ SQL
 		if ($this->emailRequestsResolved == false) {
 			global $cDataClearEmail;
 
-			$query = $this->dbObject->prepare("SELECT * FROM request WHERE email = :email AND email != :clearedemail AND id != :id AND emailconfirm = 'Confirmed';");
+			$query = $this->dbObject->prepare(<<<SQL
+SELECT * FROM request
+WHERE email = :email AND email != :clearedemail AND id != :id AND emailconfirm = 'Confirmed';
+SQL
+			);
 			$query->bindValue(":id", $this->id);
 			$query->bindValue(":email", $this->email);
 			$query->bindValue(":clearedemail", $cDataClearEmail);
@@ -273,7 +287,11 @@ SQL
 		if ($this->ipRequestsResolved == false) {
 			global $cDataClearIp;
 
-			$query = $this->dbObject->prepare("SELECT * FROM request WHERE (ip = :ip OR forwardedip LIKE :forwarded) AND ip != :clearedip AND id != :id AND emailconfirm = 'Confirmed';");
+			$query = $this->dbObject->prepare(<<<SQL
+SELECT * FROM request
+WHERE (ip = :ip OR forwardedip LIKE :forwarded) AND ip != :clearedip AND id != :id AND emailconfirm = 'Confirmed';
+SQL
+			);
 
 			$trustedIp = $this->getTrustedIp();
 			$trustedFilter = '%' . $trustedIp . '%';
@@ -304,6 +322,7 @@ SQL
 		return trim(getTrustedClientIP($this->ip, $this->forwardedip));
 	}
 
+	/** @deprecated Should be moved to a helper method */
 	public function isBlacklisted()
 	{
 		global $enableTitleBlacklist;
@@ -312,7 +331,9 @@ SQL
 			return false;
 		}
 
-		$apiResult = file_get_contents("https://en.wikipedia.org/w/api.php?action=titleblacklist&tbtitle=" . urlencode($this->name) . "&tbaction=new-account&tbnooverride&format=php");
+		$apiResult = file_get_contents("https://en.wikipedia.org/w/api.php?action=titleblacklist&tbtitle="
+			. urlencode($this->name)
+			. "&tbaction=new-account&tbnooverride&format=php");
 
 		$data = unserialize($apiResult);
 

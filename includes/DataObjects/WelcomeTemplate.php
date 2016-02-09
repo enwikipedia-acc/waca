@@ -9,12 +9,13 @@ class WelcomeTemplate extends DataObject
 	private $usercode;
 	/** @var string */
 	private $botcode;
-
 	private $usageCache;
 
 	/**
 	 * Summary of getAll
+	 *
 	 * @param PdoDatabase $database
+	 *
 	 * @return WelcomeTemplate[]
 	 */
 	public static function getAll(PdoDatabase $database = null)
@@ -44,8 +45,11 @@ class WelcomeTemplate extends DataObject
 	public function save()
 	{
 		if ($this->isNew) {
-// insert
-			$statement = $this->dbObject->prepare("INSERT INTO welcometemplate (usercode, botcode) VALUES (:usercode, :botcode);");
+			// insert
+			$statement = $this->dbObject->prepare(<<<SQL
+INSERT INTO welcometemplate (usercode, botcode) VALUES (:usercode, :botcode);
+SQL
+			);
 			$statement->bindValue(":usercode", $this->usercode);
 			$statement->bindValue(":botcode", $this->botcode);
 
@@ -58,8 +62,11 @@ class WelcomeTemplate extends DataObject
 			}
 		}
 		else {
-// update
-			$statement = $this->dbObject->prepare("UPDATE `welcometemplate` SET usercode = :usercode, botcode = :botcode WHERE id = :id LIMIT 1;");
+			// update
+			$statement = $this->dbObject->prepare(<<<SQL
+UPDATE `welcometemplate` SET usercode = :usercode, botcode = :botcode WHERE id = :id LIMIT 1;
+SQL
+			);
 			$statement->bindValue(":id", $this->id);
 			$statement->bindValue(":usercode", $this->usercode);
 			$statement->bindValue(":botcode", $this->botcode);
@@ -131,6 +138,7 @@ class WelcomeTemplate extends DataObject
 	 */
 	public function getObjectDescription()
 	{
-		return '<a href="acc.php?action=templatemgmt&amp;view=' . $this->getId() . '">' . htmlentities($this->usercode) . "</a>";
+		return '<a href="acc.php?action=templatemgmt&amp;view=' . $this->getId() . '">'
+		. htmlentities($this->usercode) . "</a>";
 	}
 }

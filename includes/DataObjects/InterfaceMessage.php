@@ -60,7 +60,11 @@ class InterfaceMessage extends DataObject
 	{
 		if ($this->isNew) {
 // insert
-			$statement = $this->dbObject->prepare("INSERT INTO interfacemessage (updatecounter, description, type, content) VALUES (0, :desc, :type, :content);");
+			$statement = $this->dbObject->prepare(<<<SQL
+INSERT INTO interfacemessage (updatecounter, description, type, content)
+VALUES (0, :desc, :type, :content);
+SQL
+			);
 			$statement->bindValue(":type", $this->type);
 			$statement->bindValue(":desc", $this->description);
 			$statement->bindValue(":content", $this->content);
@@ -74,7 +78,13 @@ class InterfaceMessage extends DataObject
 		}
 		else {
 // update
-			$statement = $this->dbObject->prepare("UPDATE interfacemessage SET type = :type, description = :desc, content = :content, updatecounter = updatecounter + 1 WHERE id = :id LIMIT 1;");
+			$statement = $this->dbObject->prepare(<<<SQL
+UPDATE interfacemessage
+SET type = :type, description = :desc, content = :content, updatecounter = updatecounter + 1
+WHERE id = :id
+LIMIT 1;
+SQL
+			);
 			$statement->bindValue(":id", $this->id);
 			$statement->bindValue(":type", $this->type);
 			$statement->bindValue(":desc", $this->description);
@@ -174,6 +184,8 @@ class InterfaceMessage extends DataObject
 	 */
 	public function getObjectDescription()
 	{
-		return '<a href="acc.php?action=messagemgmt&amp;view=' . $this->getId() . '">' . htmlentities($this->description) . "</a>";
+		return '<a href="acc.php?action=messagemgmt&amp;view=' . $this->getId() . '">'
+		. htmlentities($this->description)
+		. "</a>";
 	}
 }
