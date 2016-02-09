@@ -139,6 +139,16 @@ SQL
 		return $resultObject;
 	}
 
+	public static function getDroppedTemplate()
+	{
+		$t = new EmailTemplate();
+		$t->id = 0;
+		$t->active = 1;
+		$t->name = 'Dropped';
+
+		return $t;
+	}
+
 	public function save()
 	{
 		if ($this->isNew) {

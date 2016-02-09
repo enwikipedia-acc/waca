@@ -18,6 +18,7 @@ use Waca\Pages\PagePreferences;
 use Waca\Pages\RequestAction\PageCloseRequest;
 use Waca\Pages\RequestAction\PageComment;
 use Waca\Pages\RequestAction\PageDeferRequest;
+use Waca\Pages\RequestAction\PageDropRequest;
 use Waca\Pages\RequestAction\PageReservation;
 use Waca\Pages\PageSearch;
 use Waca\Pages\PageTeam;
@@ -195,47 +196,52 @@ final class RequestRouter
 				'class'   => PageViewRequest::class,
 				'actions' => array(),
 			),
-		'team'                     =>
+		'team'                        =>
 			array(
 				'class'   => PageTeam::class,
 				'actions' => array(),
 			),
-		'viewRequest/reserve'      =>
+		'viewRequest/reserve'         =>
 			array(
 				'class'   => PageReservation::class,
 				'actions' => array(),
 			),
-		'viewRequest/breakReserve' =>
+		'viewRequest/breakReserve'    =>
 			array(
 				'class'   => PageBreakReservation::class,
 				'actions' => array(),
 			),
-		'viewRequest/defer'        =>
+		'viewRequest/defer'           =>
 			array(
 				'class'   => PageDeferRequest::class,
 				'actions' => array(),
 			),
-		'viewRequest/comment'      =>
+		'viewRequest/comment'         =>
 			array(
 				'class'   => PageComment::class,
 				'actions' => array(),
 			),
-		'viewRequest/sendToUser'   =>
+		'viewRequest/sendToUser'      =>
 			array(
 				'class'   => PageSendToUser::class,
 				'actions' => array(),
 			),
-		'viewRequest/close'   =>
+		'viewRequest/close'           =>
 			array(
 				'class'   => PageCloseRequest::class,
 				'actions' => array(),
 			),
-		'editComment'              =>
+		'viewRequest/drop'            =>
+			array(
+				'class'   => PageDropRequest::class,
+				'actions' => array(),
+			),
+		'editComment'                 =>
 			array(
 				'class'   => PageEditComment::class,
 				'actions' => array(),
 			),
-		'emailManagement'          =>
+		'emailManagement'             =>
 			array(
 				'class'   => PageEmailManagement::class,
 				'actions' => array('create', 'edit', 'view'),
