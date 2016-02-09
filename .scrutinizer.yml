@@ -11,7 +11,9 @@ tools:
     sensiolabs_security_checker: true
     external_code_coverage: true
 filter:
-    excluded_paths: ["lib/*"]
+    excluded_paths:
+        - lib/*
+        - tests/*
 
 build_failure_conditions:
     - 'elements.rating(<= F).new.exists'
