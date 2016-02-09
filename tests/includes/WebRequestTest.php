@@ -243,6 +243,7 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 			'flob'    => 'no',
 			'norf'    => false,
 			'blurgle' => 0,
+			'wibble'  => 'false',
 
 			'quuux' => null, // it's present, so it counts
 
@@ -264,6 +265,7 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse(WebRequest::getBoolean('blurgle'));
 		$this->assertTrue(WebRequest::getBoolean('snork'));
 		$this->assertTrue(WebRequest::getBoolean('ook'));
+		$this->assertFalse(WebRequest::getBoolean('wibble'));
 	}
 
 	public function testPostBoolean()
@@ -281,6 +283,7 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 			'flob'    => 'no',
 			'norf'    => false,
 			'blurgle' => 0,
+			'wibble'  => 'false',
 
 			'quuux' => null, // it's present, so it counts.
 
@@ -302,6 +305,7 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 		$this->assertFalse(WebRequest::postBoolean('blurgle'));
 		$this->assertTrue(WebRequest::postBoolean('snork'));
 		$this->assertTrue(WebRequest::postBoolean('ook'));
+		$this->assertFalse(WebRequest::postBoolean('wibble'));
 	}
 	#endregion
 

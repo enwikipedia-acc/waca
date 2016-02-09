@@ -15,6 +15,7 @@ use Waca\Pages\PageLogin;
 use Waca\Pages\PageLogout;
 use Waca\Pages\PageMain;
 use Waca\Pages\PagePreferences;
+use Waca\Pages\RequestAction\PageCloseRequest;
 use Waca\Pages\RequestAction\PageComment;
 use Waca\Pages\RequestAction\PageDeferRequest;
 use Waca\Pages\RequestAction\PageReservation;
@@ -222,6 +223,11 @@ final class RequestRouter
 		'viewRequest/sendToUser'   =>
 			array(
 				'class'   => PageSendToUser::class,
+				'actions' => array(),
+			),
+		'viewRequest/close'   =>
+			array(
+				'class'   => PageCloseRequest::class,
 				'actions' => array(),
 			),
 		'editComment'              =>

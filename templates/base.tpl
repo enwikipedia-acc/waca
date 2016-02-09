@@ -41,7 +41,9 @@
 <div class="container-fluid">
     {block name="sitenotice"}{/block}
 
-    {block name="content"}This page doesn't do anything. If you see this, and you're not a developer, this is a bug.{/block}
+    {block name="content"}
+        {$defaultContent|default:"This page doesn't do anything. If you see this, and you're not a developer, this is a bug."}
+    {/block}
 
     <hr />
 

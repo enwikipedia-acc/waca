@@ -206,7 +206,7 @@ class WebRequest
 			return true;
 		}
 
-		if (in_array($get[$key], array(false, 'no', 'off', 0), true)) {
+		if (in_array($get[$key], array(false, 'no', 'off', 0, 'false'), true)) {
 			return false;
 		}
 
@@ -234,7 +234,7 @@ class WebRequest
 			return true;
 		}
 
-		if (in_array($get[$key], array(false, 'no', 'off', 0), true)) {
+		if (in_array($get[$key], array(false, 'no', 'off', 0, 'false'), true)) {
 			return false;
 		}
 

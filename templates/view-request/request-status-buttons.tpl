@@ -6,7 +6,7 @@
     {if $requestIsReserved}
         {include file="view-request/created-button.tpl"}
         <div class="span4">
-            {include file="view-request/decline-button.tpl"}{include file="view-request/custom-button.tpl"}
+            {include file="view-request/decline-button.tpl"}{*{include file="view-request/custom-button.tpl"}*}
         </div>
         <!-- /span4 -->
     {/if}
@@ -20,10 +20,10 @@
             </form>
         {else}
             {include file="view-request/defer-button.tpl"}
-            <a class="btn btn-inverse span6"
+          {*  <a class="btn btn-inverse span6"
                href="{$baseurl}/acc.php?action=done&amp;id={$requestId}&amp;email=0">
                 Drop
-            </a>
+            </a>*}
         {/if}
     </div>
 
