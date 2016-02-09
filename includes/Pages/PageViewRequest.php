@@ -340,7 +340,7 @@ class PageViewRequest extends PageBase
 				// get data on this IP.
 				$thisProxyIsTrusted = $this->getXffTrustProvider()->isTrusted($proxyAddress);
 
-				$proxyIsInPrivateRange = ipInRange(self::$rfc1918ips, $proxyAddress);
+				$proxyIsInPrivateRange = $this->getXffTrustProvider()->ipInRange(self::$rfc1918ips, $proxyAddress);
 
 				if (!$proxyIsInPrivateRange) {
 					$proxyReverseDns = $this->getRdnsProvider()->getRdns($proxyAddress);

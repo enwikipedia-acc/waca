@@ -115,4 +115,25 @@ class XffTrustProvider implements IXffTrustProvider
 
 		return $clientIpAddress;
 	}
+
+	/**
+	 * Takes an array( "low" => "high" ) values, and returns true if $needle is in at least one of them.
+	 *
+	 * @param array  $haystack
+	 * @param string $ip
+	 *
+	 * @return bool
+	 */
+	public function ipInRange($haystack, $ip)
+	{
+		$needle = ip2long($ip);
+
+		foreach ($haystack as $low => $high) {
+			if (ip2long($low) <= $needle && ip2long($high) >= $needle) {
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

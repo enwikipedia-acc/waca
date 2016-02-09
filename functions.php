@@ -69,51 +69,6 @@ function defaultpage()
 }
 
 /**
- * Parses an XFF header and client IP to find the last trusted client IP
- * 
- * @param string $dbip The IP address the request came from
- * @param string $dbproxyip The contents of the XFF header of the request
- * @return string
- * @deprecated
- */
-function getTrustedClientIP($dbip, $dbproxyip)
-{
-	global $xffTrustProvider;
-    return $xffTrustProvider->getTrustedClientIp($dbip, $dbproxyip);
-}
-
-/**
- * Takes an array( "low" => "high" ) values, and returns true if $needle is in at least one of them.
- * @param string $ip
- * @param array  $haystack
- * @return bool
- */
-function ipInRange($haystack, $ip)
-{
-	$needle = ip2long($ip);
-
-	foreach ($haystack as $low => $high) {
-		if (ip2long($low) <= $needle && ip2long($high) >= $needle) {
-			return true;
-		}
-	}
-    
-	return false;
-}
-
-/**
- * @return string
- */
-function welcomerbotRenderSig($creator, $sig)
-{
-	$signature = html_entity_decode($sig) . ' ~~~~~';
-	if (!preg_match("/((\[\[[ ]*(w:)?[ ]*(en:)?)|(\{\{subst:))[ ]*User[ ]*:[ ]*" . $creator . "[ ]*(\]\]|\||\}\}|\/)/i", $signature)) {
-		$signature = "--[[User:$creator|$creator]] ([[User talk:$creator|talk]]) ~~~~~";
-	}
-	return $signature;
-}
-
-/**
  * Transforms a date string into a relative representation of the date ("2 weeks ago").
  * @param string $input A string representing a date
  * @return string

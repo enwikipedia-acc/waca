@@ -29,4 +29,12 @@ interface IXffTrustProvider
 	 * @return string Trusted source IP address
 	 */
 	public function getTrustedClientIp($ip, $proxyIp);
+
+	/**
+	 * Takes an array( "low" => "high" ) values, and returns true if $needle is in at least one of them.
+	 * @param array  $haystack
+	 * @param string $ip
+	 * @return bool
+	 */
+	public function ipInRange($haystack, $ip);
 }

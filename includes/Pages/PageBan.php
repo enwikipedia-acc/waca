@@ -244,7 +244,8 @@ class PageBan extends PageBase
 				$realTarget = $request->getEmail();
 				break;
 			case 'IP':
-				$realTarget = $request->getTrustedIp();
+				$xffProvider = $this->getXffTrustProvider();
+				$realTarget = $xffProvider->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
 				break;
 			case 'Name':
 				$realTarget = $request->getName();

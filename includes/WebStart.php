@@ -194,6 +194,11 @@ HTML;
 		// todo: inject from configuration
 		$page->setLocationProvider(new FakeLocationProvider(gGetDb(), null));
 		$page->setXffTrustProvider(new XffTrustProvider($this->configuration->getSquidList(), gGetDb()));
+
+		/* @todo Remove this global statement! It's here for Request.php, which does far more than it should. */
+		global $globalXffTrustProvider;
+		$globalXffTrustProvider = $page->getXffTrustProvider();
+
 		$page->setRdnsProvider(new CachedRDnsLookupProvider(gGetDb()));
 		$page->setAntiSpoofProvider(new CachedApiAntispoofProvider());
 

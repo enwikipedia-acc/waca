@@ -293,7 +293,13 @@ WHERE (ip = :ip OR forwardedip LIKE :forwarded) AND ip != :clearedip AND id != :
 SQL
 			);
 
-			$trustedIp = $this->getTrustedIp();
+			/**
+			 * Note to weary travellers! Don't use this global anywhere else.
+			 * @var IXffTrustProvider $globalXffTrustProvider
+			 */
+			global $globalXffTrustProvider;
+			$trustedIp = $globalXffTrustProvider->getTrustedClientIp($this->ip, $this->forwardedip);
+
 			$trustedFilter = '%' . $trustedIp . '%';
 
 			$query->bindValue(":id", $this->id);
@@ -312,14 +318,6 @@ SQL
 		}
 
 		return $this->ipRequests;
-	}
-
-	/**
-	 * @deprecated
-	 */
-	public function getTrustedIp()
-	{
-		return trim(getTrustedClientIP($this->ip, $this->forwardedip));
 	}
 
 	/** @deprecated Should be moved to a helper method */
@@ -403,7 +401,14 @@ SQL
 	{
 		global $smarty;
 
-		$smarty->assign("ip", $this->getTrustedIp());
+		/**
+		 * Note to weary travellers! Don't use this global anywhere else.
+		 * @var IXffTrustProvider $globalXffTrustProvider
+		 */
+		global $globalXffTrustProvider;
+		$trustedIp = $globalXffTrustProvider->getTrustedClientIp($this->ip, $this->forwardedip);
+
+		$smarty->assign("ip", $trustedIp);
 		$smarty->assign("id", $this->getId());
 		$smarty->assign("hash", $this->getEmailConfirm());
 
