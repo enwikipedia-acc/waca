@@ -20,7 +20,7 @@ class WikiTextHelperTest extends PHPUnit_Framework_TestCase
 		$data = serialize(array('parse' => array('text' => array('*' => $content))));
 
 		/** @var HttpHelper|PHPUnit_Framework_MockObject_MockObject $http */
-		$http = $this->getMockBuilder(HttpHelper::class)->getMock();
+		$http = $this->getMockBuilder(HttpHelper::class)->disableOriginalConstructor()->getMock();
 		$http->method('get')->willReturn($data);
 
 		$helper = new WikiTextHelper($config, $http);
