@@ -188,7 +188,7 @@ HTML;
 
 		// set up helpers and inject them into the page.
 		$page->setEmailHelper(new EmailHelper());
-		$page->setHttpHelper(new HttpHelper());
+		$page->setHttpHelper(new HttpHelper($this->configuration));
 		$page->setWikiTextHelper(new WikiTextHelper($this->configuration, $page->getHttpHelper()));
 
 		// todo: inject from configuration

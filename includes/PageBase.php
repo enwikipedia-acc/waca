@@ -228,12 +228,7 @@ abstract class PageBase
 		$url = implode("/", $pathInfo);
 
 		if (is_array($parameters) && count($parameters) > 0) {
-			$parameterData = array();
-			foreach ($parameters as $key => $value) {
-				$parameterData[] = $key . '=' . urlencode($value);
-			}
-
-			$url .= '?' . implode('&', $parameterData);
+			$url .= HttpHelper::createGetString($parameters);
 		}
 
 		$this->redirectUrl($url);

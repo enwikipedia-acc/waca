@@ -30,7 +30,8 @@ class PageCloseRequest extends RequestActionBase
 		return SecurityConfiguration::internalPage();
 	}
 
-	protected function main() {
+	protected function main()
+	{
 		$this->processClose();
 	}
 
@@ -111,6 +112,7 @@ class PageCloseRequest extends RequestActionBase
 	{
 		if ($request->getEmailSent() == "1" && !WebRequest::postBoolean('emailSentOverride')) {
 			$this->showConfirmation($request, $template, 'close-confirmations/email-sent.tpl');
+
 			return true;
 		}
 
@@ -126,8 +128,12 @@ class PageCloseRequest extends RequestActionBase
 	 *
 	 * @return bool
 	 */
-	private function checkReserveOverride(Request $request, EmailTemplate $template, User $currentUser, PdoDatabase $database)
-	{
+	private function checkReserveOverride(
+		Request $request,
+		EmailTemplate $template,
+		User $currentUser,
+		PdoDatabase $database
+	) {
 		$reservationId = $request->getReserved();
 
 		if ($reservationId !== 0 && $reservationId !== null) {
@@ -135,6 +141,7 @@ class PageCloseRequest extends RequestActionBase
 				if ($currentUser->getId() !== $reservationId) {
 					$this->assign('reserveUser', User::getById($reservationId, $database)->getUsername());
 					$this->showConfirmation($request, $template, 'close-confirmations/reserve-override.tpl');
+
 					return true;
 				}
 			}
@@ -146,16 +153,22 @@ class PageCloseRequest extends RequestActionBase
 	protected function checkAccountCreated(Request $request, EmailTemplate $template)
 	{
 		if ($template->getDefaultAction() === EmailTemplate::CREATED && !WebRequest::postBoolean('createOverride')) {
-			$url = $this->getSiteConfiguration()->getMediawikiWebServiceEndpoint()
-				. '?action=query&list=users&format=php&ususers='
-				. urlencode($request->getName());
+			$parameters = array(
+				'action'  => 'query',
+				'list'    => 'users',
+				'format'  => 'php',
+				'ususers' => $request->getName(),
+			);
 
-			$content = $this->getHttpHelper()->get($url);
+			$content = $this->getHttpHelper()->get($this->getSiteConfiguration()->getMediawikiWebServiceEndpoint(),
+				$parameters);
+
 			$apiResult = unserialize($content);
 			$exists = !isset($apiResult['query']['users']['0']['missing']);
 
 			if (!$exists) {
 				$this->showConfirmation($request, $template, 'close-confirmations/account-created.tpl');
+
 				return true;
 			}
 		}
@@ -168,7 +181,7 @@ class PageCloseRequest extends RequestActionBase
 		$helper = $this->getEmailHelper();
 
 		$emailSig = $currentUser->getEmailSig();
-		if($emailSig !== '' || $emailSig !== null){
+		if ($emailSig !== '' || $emailSig !== null) {
 			$emailSig = "\n\n" . $emailSig;
 		}
 

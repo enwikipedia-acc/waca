@@ -17,6 +17,7 @@ class WikiTextHelper
 
 	/**
 	 * WikiTextHelper constructor.
+	 *
 	 * @param SiteConfiguration $configuration
 	 * @param HttpHelper        $http
 	 */
@@ -30,14 +31,25 @@ class WikiTextHelper
 	 * Gets the HTML for the provided wiki-markup from the MediaWiki service endpoint
 	 *
 	 * @param string $wikiText
+	 *
 	 * @return string
 	 */
 	public function getHtmlForWikiText($wikiText)
 	{
 		$endpoint = $this->configuration->getMediawikiWebServiceEndpoint();
 
-		$url = $endpoint . '?action=parse&pst&contentmodel=wikitext&disablelimitreport&disabletoc&disableeditsection&format=php&text=' . urlencode($wikiText);
-		$apiResult = $this->http->get($url);
+		$parameters = array(
+			'action'             => 'parse',
+			'pst'                => true,
+			'contentmodel'       => 'wikitext',
+			'disablelimitreport' => true,
+			'disabletoc'         => true,
+			'disableeditsection' => true,
+			'format'             => 'php',
+			'text'               => $wikiText,
+		);
+
+		$apiResult = $this->http->get($endpoint, $parameters);
 		$parseResult = unserialize($apiResult);
 
 		return $parseResult['parse']['text']['*'];

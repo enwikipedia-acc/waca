@@ -251,6 +251,11 @@ $strictTransportSecurityExpiry = false;
 // Must be disabled in production.
 $enableErrorTrace = false;
 
+// Dangerous.
+// Don't set this.
+// Definitely don't set this if there's sensitive data stored here you care about such as OAuth credentials.
+$curlDisableSSLVerifyPeer = false;
+
 /**************************************************************************
 **********                   IMPORTANT NOTICE                    **********
 ***************************************************************************
@@ -323,4 +328,6 @@ $siteConfiguration->setBaseUrl($baseurl)
 	->setDefaultCreatedTemplateId($createdid)
 	->setDefaultRequestStateKey($defaultRequestStateKey)
 	->setUseStrictTransportSecurity($strictTransportSecurityExpiry)
+	->setUserAgent($toolUserAgent)
+	->setCurlDisableVerifyPeer($curlDisableSSLVerifyPeer)
 	;
