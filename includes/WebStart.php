@@ -5,7 +5,7 @@ use CachedApiAntispoofProvider;
 use CachedRDnsLookupProvider;
 use Exception;
 use FakeLocationProvider;
-use \Offline;
+use Offline;
 use PdoDatabase;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Exceptions\ReadableException;
@@ -29,6 +29,7 @@ class WebStart
 
 	/**
 	 * WebStart constructor.
+	 *
 	 * @param SiteConfiguration $configuration
 	 */
 	public function __construct(SiteConfiguration $configuration)
@@ -68,6 +69,7 @@ class WebStart
 	 * Let's build something ourselves, and hope it works.
 	 *
 	 * @param $exception
+	 *
 	 * @category Security-Critical - has the potential to leak data when exception is thrown.
 	 */
 	public static function exceptionHandler(Exception $exception)
@@ -126,6 +128,8 @@ HTML;
 			$message = str_replace('$2$', "", $message);
 		}
 
+		header('HTTP/1.1 500 Internal Server Error');
+
 		// output the document
 		print $message;
 	}
@@ -156,6 +160,7 @@ HTML;
 		if (Offline::isOffline()) {
 			print Offline::getOfflineMessage(false);
 			ob_end_flush();
+
 			return false;
 		}
 
@@ -185,6 +190,10 @@ HTML;
 		$page = $router->route();
 
 		$page->setSiteConfiguration($this->configuration);
+
+		// setup the global database object
+		$database = PdoDatabase::getDatabaseConnection('acc');
+		$page->setDatabase($database);
 
 		// set up helpers and inject them into the page.
 		$page->setEmailHelper(new EmailHelper());
@@ -224,6 +233,7 @@ HTML;
 
 	/**
 	 * @param Exception $exception
+	 *
 	 * @return null|array
 	 */
 	private static function getExceptionData($exception)

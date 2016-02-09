@@ -26,7 +26,7 @@ trait TemplateOutput
 	 *
 	 * @param $script string JavaScript to include at the end of the page
 	 */
-	protected final function setTailScript($script)
+	final protected function setTailScript($script)
 	{
 		$this->tailScript = $script;
 	}
@@ -37,16 +37,17 @@ trait TemplateOutput
 	 * @param  array|string $name    the template variable name(s)
 	 * @param  mixed        $value   the value to assign
 	 */
-	protected final function assign($name, $value)
+	final protected function assign($name, $value)
 	{
 		$this->smarty->assign($name, $value);
 	}
+
 	/**
 	 * Sets up the variables used by the main Smarty base template.
 	 *
 	 * This list is getting kinda long.
 	 */
-	protected final function setUpSmarty()
+	final protected function setUpSmarty()
 	{
 		$this->smarty = new Smarty();
 
@@ -74,7 +75,7 @@ trait TemplateOutput
 	 * @param $template string Template file path, relative to /templates/
 	 * @return string Templated HTML
 	 */
-	protected final function fetchTemplate($template)
+	final protected function fetchTemplate($template)
 	{
 		$this->assign("tailscript", $this->tailScript);
 

@@ -6,6 +6,7 @@ use IAntiSpoofProvider;
 use ILocationProvider;
 use IRDnsProvider;
 use IXffTrustProvider;
+use PdoDatabase;
 use SessionAlert;
 use TransactionException;
 use User;
@@ -20,10 +21,8 @@ use Waca\Helpers\WikiTextHelper;
 abstract class PageBase
 {
 	use TemplateOutput;
-	/** @var array The callable route to be taken, as determined by the request router. */
-	private $route = null;
 	/** @var string The name of the route to use, as determined by the request router. */
-	private $routeName = "main";
+	private $routeName = null;
 	/** @var string Smarty template to display */
 	private $template = "base.tpl";
 	/** @var string HTML title. Currently unused. */
@@ -46,6 +45,10 @@ abstract class PageBase
 	private $antiSpoofProvider;
 	/** @var bool Determines if the page is a redirect or not */
 	private $isRedirecting = false;
+	/** @var PdoDatabase */
+	private $database;
+	/** @var array Queue of headers to be sent on successful completion */
+	private $headerQueue = array();
 
 	/**
 	 * Sets the route the request will take. Only should be called from the request router.
@@ -58,13 +61,11 @@ abstract class PageBase
 	final public function setRoute($routeName)
 	{
 		// Test the new route is callable before adopting it.
-		$proposedRoute = array($this, $routeName);
-		if (!is_callable($proposedRoute)) {
+		if (!is_callable(array($this, $routeName))) {
 			throw new Exception("Proposed route '$routeName' is not callable.");
 		}
 
 		// Adopt the new route
-		$this->route = $proposedRoute;
 		$this->routeName = $routeName;
 	}
 
@@ -76,7 +77,7 @@ abstract class PageBase
 	 */
 	final public function execute()
 	{
-		if ($this->route === null) {
+		if ($this->routeName === null) {
 			throw new Exception("Request is unrouted.");
 		}
 
@@ -131,23 +132,53 @@ abstract class PageBase
 	 */
 	final private function runPage()
 	{
+		// initialise a database transaction
+		if (!$this->database->beginTransaction()) {
+			throw new Exception('Failed to start transaction on primary database.');
+		}
+
 		try {
 			// run the page code
-			call_user_func($this->route);
+			$this->{$this->routeName}();
+
+			$this->database->commit();
 		}
-		// catch(TransactionException $ex) {
-		// 	// @todo implement me!
-		// }
-		catch(ApplicationLogicException $ex)
-		{
-			$this->template = null;
-			ob_clean();
-			print($ex->getReadableError());
-			ob_flush();
+		catch (TransactionException $ex) {
+			$this->database->rollBack();
+			throw $ex;
+		}
+		catch (ApplicationLogicException $ex) {
+			// it's an application logic exception, so nothing went seriously wrong with the site. We can use the
+			// standard templating system for this.
+
+			// Firstly, let's undo anything that happened to the database.
+			$this->database->rollBack();
+
+			// Reset smarty
+			$this->setUpSmarty();
+
+			// Set the template
+			$this->setTemplate("exception/application-logic.tpl");
+			$this->assign('message', $ex->getMessage());
+
+			// Force this back to false
+			$this->isRedirecting = false;
+			$this->headerQueue = array();
+		}
+		finally {
+			// Catch any hanging on transactions
+			if ($this->database->hasActiveTransaction()) {
+				$this->database->rollBack();
+			}
 		}
 
 		// run any finalisation code needed before we send the output to the browser.
 		$this->finalisePage();
+
+		// Send the headers
+		foreach ($this->headerQueue as $item) {
+			header($item);
+		}
 
 		// Check we have a template to use!
 		if ($this->template !== null) {
@@ -264,8 +295,8 @@ abstract class PageBase
 	final protected function redirectUrl($path)
 	{
 		// 303 See Other = re-request at new address with a GET.
-		header("HTTP/1.1 303 See Other");
-		header("Location: $path");
+		$this->headerQueue[] = "HTTP/1.1 303 See Other";
+		$this->headerQueue[] = "Location: $path";
 
 		$this->setTemplate(null);
 		$this->isRedirecting = true;
@@ -431,6 +462,16 @@ abstract class PageBase
 	final public function getRouteName()
 	{
 		return $this->routeName;
+	}
+
+	final public function getDatabase()
+	{
+		return $this->database;
+	}
+
+	final public function setDatabase($database)
+	{
+		$this->database = $database;
 	}
 
 	/**
