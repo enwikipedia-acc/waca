@@ -137,13 +137,15 @@ function relativedate($input)
 	$minute = 60 * $second;
 	$minuteCut = 60 * $second;
 	$hour = 60 * $minute;
-	$hourCut = 60 * $minute;
+	$hourCut = 90 * $minute;
 	$day = 24 * $hour;
 	$dayCut = 48 * $hour;
 	$week = 7 * $day;
 	$weekCut = 14 * $day;
 	$month = 30 * $day;
+	$monthCut = 60 * $day;
 	$year = 365 * $day;
+	$yearCut = $year * 2;
     
 	$pluralise = true;
     
@@ -163,13 +165,13 @@ function relativedate($input)
 	elseif ($secs >= $dayCut && $secs < $weekCut) {
 		$output = round($secs / $day) . " day";
 	}
-	elseif ($secs >= $weekCut && $secs < $month) {
+	elseif ($secs >= $weekCut && $secs < $monthCut) {
 		$output = round($secs / $week) . " week";
 	}
-	elseif ($secs >= $month && $secs < $year) {
+	elseif ($secs >= $monthCut && $secs < $yearCut) {
 		$output = round($secs / $month) . " month";
 	}
-	elseif ($secs >= $year && $secs < $year * 10) {
+	elseif ($secs >= $yearCut && $secs < $year * 10) {
 		$output = round($secs / $year) . " year";
 	}
 	else {
