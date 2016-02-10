@@ -16,7 +16,7 @@ class StatsInactiveUsers extends PageBase
 		}
 
 		$this->assign('showImmune', $showImmune);
-		$inactiveUsers = User::getAllInactive(gGetDb());
+		$inactiveUsers = User::getAllInactive($this->getDatabase());
 		$this->assign('inactiveUsers', $inactiveUsers);
 
 		$this->setTemplate('statistics/inactive-users.tpl');

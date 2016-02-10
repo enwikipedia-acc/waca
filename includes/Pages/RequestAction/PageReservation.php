@@ -19,7 +19,7 @@ class PageReservation extends RequestActionBase
 	protected function main()
 	{
 		$this->checkPosted();
-		$database = gGetDb();
+		$database = $this->getDatabase();
 		$request = $this->getRequest($database);
 
 		$closureDate = $request->getClosureDate();

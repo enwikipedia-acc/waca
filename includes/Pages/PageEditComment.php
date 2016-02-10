@@ -46,7 +46,7 @@ class PageEditComment extends PageBase
 			throw new ApplicationLogicException('Comment ID not specified');
 		}
 
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		/** @var Comment $comment */
 		$comment = Comment::getById($commentId, $database);

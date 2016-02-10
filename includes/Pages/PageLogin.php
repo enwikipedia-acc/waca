@@ -67,7 +67,7 @@ class PageLogin extends PageBase
 			throw new ApplicationLogicException("No username/password specified");
 		}
 
-		$user = User::getByUsername($username, gGetDb());
+		$user = User::getByUsername($username, $this->getDatabase());
 
 		if ($user == false || !$user->authenticate($password)) {
 			throw new ApplicationLogicException("Authentication failed");

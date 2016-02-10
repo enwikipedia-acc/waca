@@ -306,7 +306,7 @@ class Logger
 
 		$items = array_merge($logs, $comments);
 
-		$sortKey = function (DataObject $item) {
+		$sortKey = function(DataObject $item) {
 			if ($item instanceof Log) {
 				return $item->getTimestamp();
 			}
@@ -459,17 +459,16 @@ SQL
 	/**
 	 * Summary of getLogs
 	 *
+	 * @param PdoDatabase $database
 	 * @param string|null $userFilter
 	 * @param string|null $actionFilter
 	 * @param integer     $limit
 	 * @param integer     $offset
 	 *
-	 * @return bool|array<string,string>
+	 * @return array|bool <string,string>
 	 */
-	public static function getLogs($userFilter, $actionFilter, $limit = 100, $offset = 0)
+	public static function getLogs(PdoDatabase $database, $userFilter, $actionFilter, $limit = 100, $offset = 0)
 	{
-		$database = gGetDb();
-
 		$whereClause = "(:userFilter = 0 OR user = :userid) AND (:actionFilter = 0 OR action = :action)";
 		$searchSqlStatement = "SELECT * FROM log WHERE $whereClause ORDER BY timestamp DESC LIMIT :limit OFFSET :offset;";
 		$countSqlStatement = "SELECT COUNT(1) FROM log WHERE $whereClause;";

@@ -51,7 +51,7 @@ class PageBan extends PageBase
 			throw new ApplicationLogicException("The ban ID appears to be missing. This is probably a bug.");
 		}
 
-		$ban = Ban::getActiveId($banId);
+		$ban = Ban::getActiveId($banId, $this->getDatabase());
 
 		if ($ban === false) {
 			throw new ApplicationLogicException("The specified ban is not currently active, or doesn't exist.");
@@ -64,7 +64,7 @@ class PageBan extends PageBase
 				throw new ApplicationLogicException("No unban reason specified");
 			}
 
-			$database = gGetDb();
+			$database = $this->getDatabase();
 			$ban->setActive(0);
 			$ban->save();
 
@@ -182,7 +182,7 @@ class PageBan extends PageBase
 			throw new ApplicationLogicException('This target is already banned!');
 		}
 
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$ban = new Ban();
 		$currentUsername = User::getCurrent()->getId();
@@ -215,6 +215,8 @@ class PageBan extends PageBase
 		$banType = WebRequest::getString('type');
 		$banTarget = WebRequest::getInt('request');
 
+		$database = $this->getDatabase();
+
 		// if the parameters are null, skip loading a request.
 		if ($banType === null
 			|| !in_array($banType, array('IP', 'Name', 'EMail'))
@@ -232,7 +234,7 @@ class PageBan extends PageBase
 
 		// Attempt to resolve the correct target
 		/** @var Request $request */
-		$request = Request::getById($banTarget, gGetDb());
+		$request = Request::getById($banTarget, $database);
 		if ($request === false) {
 			$this->assign('bantarget', '');
 			return;

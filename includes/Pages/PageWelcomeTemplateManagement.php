@@ -51,7 +51,7 @@ class PageWelcomeTemplateManagement extends PageBase
 			return;
 		}
 
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$templateId = WebRequest::postInt('template');
 		$template = WelcomeTemplate::getById($templateId, $database);
@@ -75,7 +75,7 @@ class PageWelcomeTemplateManagement extends PageBase
 	 */
 	protected function view()
 	{
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$templateId = WebRequest::getInt('template');
 
@@ -101,7 +101,7 @@ class PageWelcomeTemplateManagement extends PageBase
 	protected function add()
 	{
 		if (WebRequest::wasPosted()) {
-			$database = gGetDb();
+			$database = $this->getDatabase();
 
 			$template = new WelcomeTemplate();
 			$template->setDatabase($database);
@@ -127,7 +127,7 @@ class PageWelcomeTemplateManagement extends PageBase
 	 */
 	protected function edit()
 	{
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$templateId = WebRequest::getInt('template');
 
@@ -165,7 +165,7 @@ class PageWelcomeTemplateManagement extends PageBase
 			return;
 		}
 
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$templateId = WebRequest::postInt('template');
 

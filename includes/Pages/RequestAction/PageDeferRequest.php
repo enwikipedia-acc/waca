@@ -34,7 +34,7 @@ class PageDeferRequest extends RequestActionBase
 	protected function main()
 	{
 		$this->checkPosted();
-		$database = gGetDb();
+		$database = $this->getDatabase();
 		$request = $this->getRequest($database);
 		$currentUser = User::getCurrent();
 

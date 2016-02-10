@@ -201,14 +201,14 @@ HTML;
 		$page->setWikiTextHelper(new WikiTextHelper($this->configuration, $page->getHttpHelper()));
 
 		// todo: inject from configuration
-		$page->setLocationProvider(new FakeLocationProvider(gGetDb(), null));
-		$page->setXffTrustProvider(new XffTrustProvider($this->configuration->getSquidList(), gGetDb()));
+		$page->setLocationProvider(new FakeLocationProvider($database, null));
+		$page->setXffTrustProvider(new XffTrustProvider($this->configuration->getSquidList(), $database));
 
 		/* @todo Remove this global statement! It's here for Request.php, which does far more than it should. */
 		global $globalXffTrustProvider;
 		$globalXffTrustProvider = $page->getXffTrustProvider();
 
-		$page->setRdnsProvider(new CachedRDnsLookupProvider(gGetDb()));
+		$page->setRdnsProvider(new CachedRDnsLookupProvider($database));
 		$page->setAntiSpoofProvider(new CachedApiAntispoofProvider());
 
 		// run the route code for the request.

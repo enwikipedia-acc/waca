@@ -17,7 +17,7 @@ class PageBreakReservation extends RequestActionBase
 	protected function main()
 	{
 		$this->checkPosted();
-		$database = gGetDb();
+		$database = $this->getDatabase();
 		$request = $this->getRequest($database);
 
 		if ($request->getReserved() === 0 || $request->getReserved() === null) {

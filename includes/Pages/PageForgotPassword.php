@@ -23,7 +23,7 @@ class PageForgotPassword extends PageBase
 		if (WebRequest::wasPosted()) {
 			$username = WebRequest::postString('username');
 			$email = WebRequest::postEmail('email');
-			$database = gGetDb();
+			$database = $this->getDatabase();
 
 			if ($username === null || trim($username) === "" || $email === null || trim($email) === "") {
 				throw new ApplicationLogicException("Both username and email address must be specified!");
@@ -81,7 +81,7 @@ class PageForgotPassword extends PageBase
 			throw new ApplicationLogicException("Link not valid, please ensure it has copied correctly");
 		}
 
-		$database = gGetDb();
+		$database = $this->getDatabase();
 		$user = $this->getResettingUser($id, $database, $si);
 
 		// Dual mode

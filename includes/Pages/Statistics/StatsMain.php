@@ -36,7 +36,7 @@ class StatsMain extends PageBase
 	 */
 	private function smallStats()
 	{
-		$database = gGetDb();
+		$database = $this->getDatabase();
 		$requestsQuery = <<<'SQL'
 SELECT COUNT(*) FROM request WHERE status = :status AND emailconfirm = 'Confirmed';
 SQL;

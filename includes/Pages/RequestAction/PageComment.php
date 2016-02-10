@@ -31,7 +31,7 @@ class PageComment extends RequestActionBase
 	protected function main()
 	{
 		$this->checkPosted();
-		$database = gGetDb();
+		$database = $this->getDatabase();
 		$request = $this->getRequest($database);
 
 		$commentText = WebRequest::postString('comment');

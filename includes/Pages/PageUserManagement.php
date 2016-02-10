@@ -22,7 +22,7 @@ class PageUserManagement extends PageBase
 	 */
 	protected function main()
 	{
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		if (WebRequest::getBoolean("showAll")) {
 			$this->assign("showAll", true);
@@ -55,7 +55,7 @@ class PageUserManagement extends PageBase
 	 */
 	protected function suspend()
 	{
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$userId = WebRequest::getInt('user');
 
@@ -103,7 +103,7 @@ class PageUserManagement extends PageBase
 	 */
 	protected function decline()
 	{
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$userId = WebRequest::getInt('user');
 		$user = User::getById($userId, $database);
@@ -149,7 +149,7 @@ class PageUserManagement extends PageBase
 	 */
 	protected function demote()
 	{
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$userId = WebRequest::getInt('user');
 		$user = User::getById($userId, $database);
@@ -195,7 +195,7 @@ class PageUserManagement extends PageBase
 	 */
 	protected function approve()
 	{
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$userId = WebRequest::getInt('user');
 		$user = User::getById($userId, $database);
@@ -235,7 +235,7 @@ class PageUserManagement extends PageBase
 	 */
 	protected function promote()
 	{
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$userId = WebRequest::getInt('user');
 		$user = User::getById($userId, $database);
@@ -279,7 +279,7 @@ class PageUserManagement extends PageBase
 	 */
 	protected function rename()
 	{
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$userId = WebRequest::getInt('user');
 		$user = User::getById($userId, $database);
@@ -336,7 +336,7 @@ class PageUserManagement extends PageBase
 	 */
 	protected function editUser()
 	{
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$userId = WebRequest::getInt('user');
 		$user = User::getById($userId, $database);

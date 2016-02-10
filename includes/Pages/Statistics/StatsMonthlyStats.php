@@ -20,7 +20,7 @@ GROUP BY EXTRACT(YEAR_MONTH FROM timestamp)
 ORDER BY YEAR(timestamp) , MONTH(timestamp) ASC;
 SQL;
 
-		$database = gGetDb();
+		$database = $this->getDatabase();
 		$statement = $database->query($query);
 		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
 

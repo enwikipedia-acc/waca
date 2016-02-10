@@ -11,7 +11,7 @@ class StatsIdUsers extends PageBase
 	{
 		$query = "SELECT id, username, status, checkuser FROM user WHERE identified = 1 ORDER BY username;";
 
-		$database = gGetDb();
+		$database = $this->getDatabase();
 		$statement = $database->query($query);
 		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
 		$this->assign('dataTable', $data);

@@ -21,7 +21,7 @@ FROM request p
 WHERE reserved != 0;
 sql;
 
-		$database = gGetDb();
+		$database = $this->getDatabase();
 		$statement = $database->query($query);
 		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
 		$this->assign('dataTable', $data);

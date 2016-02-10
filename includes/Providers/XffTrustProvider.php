@@ -33,14 +33,9 @@ class XffTrustProvider implements IXffTrustProvider
 	 * @param string[]    $squidIpList List of IP addresses to pre-approve
 	 * @param PdoDatabase $database
 	 */
-	public function __construct($squidIpList, PdoDatabase $database = null)
+	public function __construct($squidIpList, PdoDatabase $database)
 	{
 		$this->trustedCache = $squidIpList;
-
-		if ($database === null) {
-			$database = gGetDb();
-		}
-
 		$this->database = $database;
 	}
 

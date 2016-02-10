@@ -37,7 +37,7 @@ FROM welcometemplate t
         GROUP BY welcome_template
     ) u2 ON u2.allid = t.id;
 SQL;
-		$database = gGetDb();
+		$database = $this->getDatabase();
 		$statement = $database->query($query);
 		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
 		$this->assign('dataTable', $data);

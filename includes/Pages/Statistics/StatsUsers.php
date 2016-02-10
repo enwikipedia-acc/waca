@@ -12,10 +12,12 @@ class StatsUsers extends PageBase
 {
 	public function main()
 	{
+		$database = $this->getDatabase();
+
 		$lists = array(
-			"Admin"      => User::getAllWithStatus("Admin", gGetDb()),
-			"User"       => User::getAllWithStatus("User", gGetDb()),
-			"CheckUsers" => User::getAllCheckusers(gGetDb()),
+			"Admin"      => User::getAllWithStatus("Admin", $database),
+			"User"       => User::getAllWithStatus("User", $database),
+			"CheckUsers" => User::getAllCheckusers($database),
 		);
 
 		$this->assign("lists", $lists);
@@ -41,7 +43,7 @@ class StatsUsers extends PageBase
 			throw new ApplicationLogicException("User not found");
 		}
 
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$user = User::getById($userId, $database);
 		if ($user == false) {

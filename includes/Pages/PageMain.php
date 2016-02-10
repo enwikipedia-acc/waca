@@ -15,7 +15,7 @@ class PageMain extends PageBase
 	{
 		$config = $this->getSiteConfiguration();
 
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$requestSectionData = array();
 

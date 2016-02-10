@@ -17,7 +17,7 @@ class PageInterfaceManagement extends PageBase
 	 */
 	protected function main()
 	{
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		/** @var InterfaceMessage $siteNoticeMessage */
 		$siteNoticeMessage = InterfaceMessage::getById(InterfaceMessage::SITENOTICE, $database);

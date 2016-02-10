@@ -56,7 +56,7 @@ class PageEmailManagement extends PageBase
 
 	protected function view()
 	{
-		$database = gGetDb();
+		$database = $this->getDatabase();
 		$template = $this->getTemplate($database);
 
 		$createdId = $this->getSiteConfiguration()->getDefaultCreatedTemplateId();
@@ -92,7 +92,7 @@ class PageEmailManagement extends PageBase
 
 	protected function edit()
 	{
-		$database = gGetDb();
+		$database = $this->getDatabase();
 		$template = $this->getTemplate($database);
 
 		$createdId = $this->getSiteConfiguration()->getDefaultCreatedTemplateId();
@@ -159,7 +159,7 @@ class PageEmailManagement extends PageBase
 
 	protected function create()
 	{
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$requestStates = $this->getSiteConfiguration()->getRequestStates();
 

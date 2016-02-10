@@ -40,7 +40,7 @@ class PageViewRequest extends PageBase
 		// get some useful objects
 		$request = $this->getRequest();
 		$config = $this->getSiteConfiguration();
-		$database = gGetDb();
+		$database = $this->getDatabase();
 		$currentUser = User::getCurrent();
 
 		// Test we should be able to look at this request
@@ -101,7 +101,7 @@ class PageViewRequest extends PageBase
 			throw new ApplicationLogicException("No request specified");
 		}
 
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$request = Request::getById($requestId, $database);
 		if (!is_a($request, Request::class)) {

@@ -71,7 +71,7 @@ class PageSearch extends PageBase
 	{
 		$padded = '%' . $searchTerm . '%';
 
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$query = 'SELECT * FROM request WHERE name LIKE :term AND email <> :clearedEmail AND ip <> :clearedIp';
 		$statement = $database->prepare($query);
@@ -106,7 +106,7 @@ class PageSearch extends PageBase
 
 		$padded = '%' . $searchTerm . '%';
 
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$query = 'SELECT * FROM request WHERE email LIKE :term AND email <> :clearedEmail AND ip <> :clearedIp';
 		$statement = $database->prepare($query);
@@ -136,7 +136,7 @@ class PageSearch extends PageBase
 	{
 		$padded = '%' . $searchTerm . '%';
 
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$query = <<<SQL
 SELECT * FROM request

@@ -123,7 +123,7 @@ SQL;
 			'queryLast28Days'    => $queryLast28Days,
 		);
 
-		$database = gGetDb();
+		$database = $this->getDatabase();
 		foreach ($queries as $name => $sql) {
 			$statement = $database->query($sql);
 			$data = $statement->fetchAll(PDO::FETCH_ASSOC);

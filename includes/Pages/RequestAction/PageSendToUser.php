@@ -35,7 +35,7 @@ class PageSendToUser extends RequestActionBase
 	protected function main()
 	{
 		$this->checkPosted();
-		$database = gGetDb();
+		$database = $this->getDatabase();
 		$request = $this->getRequest($database);
 
 		if ($request->getReserved() !== User::getCurrent()->getId()) {

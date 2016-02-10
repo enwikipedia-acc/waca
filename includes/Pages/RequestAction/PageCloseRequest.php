@@ -42,7 +42,7 @@ class PageCloseRequest extends RequestActionBase
 	final protected function processClose()
 	{
 		$this->checkPosted();
-		$database = gGetDb();
+		$database = $this->getDatabase();
 
 		$currentUser = User::getCurrent();
 		$template = $this->getTemplate($database);
@@ -68,7 +68,7 @@ class PageCloseRequest extends RequestActionBase
 		$request->setStatus('Closed');
 		$request->setReserved(0);
 
-		Logger::closeRequest(gGetDb(), $request, $template->getId(), null);
+		Logger::closeRequest($database, $request, $template->getId(), null);
 		Notification::requestClosed($request, $template->getName());
 		SessionAlert::success("Request {$request->getId()} has been closed");
 

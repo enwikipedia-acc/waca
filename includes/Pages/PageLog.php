@@ -18,7 +18,7 @@ class PageLog extends PageBase
 		$filterUser = WebRequest::getString('filterUser');
 		$filterAction = WebRequest::getString('filterAction');
 
-		$this->setTailScript(getTypeaheadSource(User::getAllUsernames(gGetDb(), true)));
+		$this->setTailScript(getTypeaheadSource(User::getAllUsernames($this->getDatabase(), true)));
 
 		$limit = WebRequest::getInt('limit');
 		if ($limit === null) {
@@ -32,7 +32,7 @@ class PageLog extends PageBase
 
 		$offset = ($page - 1) * $limit;
 
-		$logs = Logger::getLogs($filterUser, $filterAction, $limit, $offset);
+		$logs = Logger::getLogs($this->getDatabase(), $filterUser, $filterAction, $limit, $offset);
 
 		if ($logs === false) {
 			$this->assign('logs', array());

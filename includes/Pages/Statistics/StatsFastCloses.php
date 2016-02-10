@@ -34,7 +34,7 @@ WHERE log_closed.action LIKE 'Closed%'
 ORDER BY TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) ASC
 ;
 SQL;
-		$database = gGetDb();
+		$database = $this->getDatabase();
 		$statement = $database->query($query);
 		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
 		$this->assign('dataTable', $data);
