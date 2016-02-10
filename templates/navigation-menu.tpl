@@ -43,22 +43,46 @@
                     <strong>{$currentUser->getUsername()}</strong> <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                     <li class="nav-header">Account</li>
-                    <li><a href="{$baseurl}/internal.php/statistics/users/detail?user={$currentUser->getId()}"><i
-                                    class="icon-tasks"></i> My statistics</a></li>
-                    <li><a href="{$baseurl}/internal.php/preferences"><i class="icon-edit"></i> Edit Preferences</a>
+                    <li>
+                        <a href="{$baseurl}/internal.php/statistics/users/detail?user={$currentUser->getId()}">
+                            <i class="icon-tasks"></i> My statistics
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{$baseurl}/internal.php/preferences">
+                            <i class="icon-edit"></i> Edit preferences
+                        </a>
                     </li>
                     <li class="divider"></li>
                     <li class="nav-header">Help</li>
-                    <li><a href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide"><i
-                                    class="icon-question-sign"></i>&nbsp;Guide</a></li>
-                    <li><a href="//en.wikipedia.org/wiki/Wikipedia:Username_policy"><i class="icon-warning-sign"></i>&nbsp;Username
-                            Policy</a></li>
-                    <li><a href="#modalFlowchart" role="button" data-toggle="modal"><i class="icon-check"></i>&nbsp;Similar
-                            account flowchart</a></li>
-                    <li><a href="http://webchat.freenode.net/?channels=wikipedia-en-accounts"><i
-                                    class="icon-comment"></i>&nbsp;Chat</a></li>
+                    <li>
+                        <a href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide">
+                            <i class="icon-question-sign"></i>&nbsp;Guide
+                        </a>
+                    </li>
+                    <li>
+                        <a href="//en.wikipedia.org/wiki/Wikipedia:Username_policy">
+                            <i class="icon-warning-sign"></i>&nbsp;Username policy
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#modalFlowchart" role="button" data-toggle="modal">
+                            <i class="icon-check"></i>&nbsp;Similar account flowchart
+                        </a>
+                    </li>
+                    <li>
+                        <a href="http://webchat.freenode.net/?channels=wikipedia-en-accounts">
+                            <i class="icon-comment"></i>&nbsp;Chat
+                        </a>
+                    </li>
+                    <li>
+                        <a href="https://lists.wikimedia.org/mailman/listinfo/accounts-enwiki-l">
+                            <i class="icon-envelope"></i>&nbsp;Mailing list
+                        </a>
+                    </li>
                     <li class="divider"></li>
                     <li><a href="{$baseurl}/internal.php/logout"><i class="icon-lock"></i> Logout</a></li>
+
                 </ul>
             </li>
         {else}
