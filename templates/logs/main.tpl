@@ -25,7 +25,7 @@
                     {if $entry->getUser() != -1}
                     <a href='{$baseurl}/internal.php/statistics/users/detail?user={$entry->getUser()}'>
                         {/if}
-                        {$entry->getUserObject()->getUsername()|escape}
+                        {$users[$entry->getUser()]|escape}
                         {if $entry->getUser() != -1}
                     </a>
                     {/if}

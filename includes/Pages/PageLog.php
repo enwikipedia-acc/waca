@@ -2,6 +2,7 @@
 
 namespace Waca\Pages;
 
+use Log;
 use Logger;
 use User;
 use Waca\PageBase;
@@ -47,6 +48,49 @@ class PageLog extends PageBase
 		$count = $logs['count'];
 		unset($logs['count']);
 
+		$this->setupPageData($page, $limit, $count);
+
+		$userIds = array();
+		/** @var Log $logEntry */
+		foreach($logs as $logEntry) {
+			$user = $logEntry->getUser();
+			if(!array_search($user, $userIds)){
+				$userIds[] = $user;
+			}
+		}
+
+		$users = User::getUsernames($userIds, $database);
+
+		$this->assign("logs", $logs);
+		$this->assign("users", $users);
+
+		$this->assign("filterUser", $filterUser);
+		$this->assign("filterAction", $filterAction);
+
+		$this->setTemplate("logs/main.tpl");
+	}
+
+	/**
+	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
+	 * the return value from this function.
+	 *
+	 * If this page even supports actions, you will need to check the route
+	 *
+	 * @return SecurityConfiguration
+	 * @category Security-Critical
+	 */
+	protected function getSecurityConfiguration()
+	{
+		return SecurityConfiguration::internalPage();
+	}
+
+	/**
+	 * @param $page
+	 * @param $limit
+	 * @param $count
+	 */
+	protected function setupPageData($page, $limit, $count)
+	{
 		// The number of pages on the pager to show. Must be odd
 		$pageLimit = 9;
 
@@ -86,26 +130,5 @@ class PageLog extends PageBase
 
 		$this->assign("limit", $limit);
 		$this->assign("page", $page);
-
-		$this->assign("logs", $logs);
-
-		$this->assign("filterUser", $filterUser);
-		$this->assign("filterAction", $filterAction);
-
-		$this->setTemplate("logs/main.tpl");
-	}
-
-	/**
-	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-	 * the return value from this function.
-	 *
-	 * If this page even supports actions, you will need to check the route
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	protected function getSecurityConfiguration()
-	{
-		return SecurityConfiguration::internalPage();
 	}
 }

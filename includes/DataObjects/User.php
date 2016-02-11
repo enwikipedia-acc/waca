@@ -329,6 +329,47 @@ SQL
 		return $userListResult->fetchAll(PDO::FETCH_COLUMN);
 	}
 
+	/**
+	 * @param array       $userIds
+	 * @param PdoDatabase $database
+	 *
+	 * @return array
+	 * @throws TransactionException
+	 */
+	public static function getUsernames($userIds, PdoDatabase $database)
+	{
+		if(!is_array($userIds)) {
+			throw new TransactionException('getUsernames() expects array');
+		}
+
+		// Urgh. OK. You can't use IN() with parameters directly, so let's munge something together.
+		$userCount = count($userIds);
+
+		// Firstly, let's create a string of question marks, which will do as positional parameters.
+		$inSection = str_repeat('?,', $userCount - 1) . '?';
+
+		// Now, let's put that into the query. Direct string building here is OK, we're not dealing with user input,
+		// only the *count* of user input, which is safe.
+		$query = "SELECT id, username FROM user WHERE id IN ({$inSection})";
+
+		// Prepare the query
+		$statement = $database->prepare($query);
+
+		// Bind the parameters and execute - in one go - since we already have a handy array kicking around.
+		$statement->execute($userIds);
+
+		$resultSet = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+		$users = array();
+		foreach($resultSet as $row){
+			$users[$row['id']] = $row['username'];
+		}
+
+		$statement->closeCursor();
+
+		return $users;
+	}
+
 	#endregion
 
 	/**
