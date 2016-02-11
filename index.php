@@ -31,9 +31,9 @@ if ($enableEmailConfirm == 1) {
 	Request::cleanExpiredUnconfirmedRequests();
 }
 
-$antispoofProvider = new $antispoofProviderClass();
-$xffTrustProvider  = new $xffTrustProviderClass($squidIpList);
 $database          = gGetDb();
+$antispoofProvider = new $antispoofProviderClass();
+$xffTrustProvider  = new $xffTrustProviderClass($squidIpList, $database);
 
 // Display the header of the interface.
 BootstrapSkin::displayPublicHeader();
