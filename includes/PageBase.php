@@ -103,6 +103,11 @@ abstract class PageBase
 		}
 		else {
 			$this->handleAccessDenied();
+
+			// Send the headers
+			foreach ($this->headerQueue as $item) {
+				header($item);
+			}
 		}
 	}
 
