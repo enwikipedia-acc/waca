@@ -16,6 +16,7 @@ use Waca\Exceptions\NotIdentifiedException;
 use Waca\Fragments\TemplateOutput;
 use Waca\Helpers\HttpHelper;
 use Waca\Helpers\Interfaces\IEmailHelper;
+use Waca\Helpers\Interfaces\ITypeAheadHelper;
 use Waca\Helpers\WikiTextHelper;
 
 abstract class PageBase
@@ -49,6 +50,8 @@ abstract class PageBase
 	private $database;
 	/** @var array Queue of headers to be sent on successful completion */
 	private $headerQueue = array();
+	/** @var ITypeAheadHelper */
+	private $typeAheadHelper;
 
 	/**
 	 * Sets the route the request will take. Only should be called from the request router.
@@ -212,6 +215,8 @@ abstract class PageBase
 		SessionAlert::clearAlerts();
 
 		$this->assign("htmlTitle", $this->htmlTitle);
+
+		$this->assign("typeAheadBlock", $this->typeAheadHelper->getTypeAheadScriptBlock());
 	}
 
 	protected function handleAccessDenied()
@@ -477,6 +482,22 @@ abstract class PageBase
 	final public function setDatabase($database)
 	{
 		$this->database = $database;
+	}
+
+	/**
+	 * @return ITypeAheadHelper
+	 */
+	public function getTypeAheadHelper()
+	{
+		return $this->typeAheadHelper;
+	}
+
+	/**
+	 * @param ITypeAheadHelper $typeAheadHelper
+	 */
+	public function setTypeAheadHelper(ITypeAheadHelper $typeAheadHelper)
+	{
+		$this->typeAheadHelper = $typeAheadHelper;
 	}
 
 	/**

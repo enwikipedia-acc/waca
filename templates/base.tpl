@@ -66,13 +66,13 @@
     $(function () {
         $("[rel='tooltip']").tooltip();
     });
-</script>
-<script type="text/javascript">
     $(function () {
         $("[rel='popover']").popover();
     });
 </script>
-{if $tailscript}
+{* Initialise the type-ahead boxes *}
+{$typeAheadBlock}
+{if $tailScript}
     <script type="text/javascript">
         {$tailscript}
     </script>

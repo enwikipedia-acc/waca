@@ -66,6 +66,9 @@ trait TemplateOutput
 		// TODO: implement this somehow
 		$this->assign("onlineusers", "");
 
+		// default this
+		$this->assign("typeAheadBlock", "");
+
 		$this->assign("page", $this);
 	}
 
@@ -77,7 +80,7 @@ trait TemplateOutput
 	 */
 	final protected function fetchTemplate($template)
 	{
-		$this->assign("tailscript", $this->tailScript);
+		$this->assign("tailScript", $this->tailScript);
 
 		return $this->smarty->fetch($template);
 	}

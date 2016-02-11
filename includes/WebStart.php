@@ -11,6 +11,7 @@ use Waca\Exceptions\EnvironmentException;
 use Waca\Exceptions\ReadableException;
 use Waca\Helpers\EmailHelper;
 use Waca\Helpers\HttpHelper;
+use Waca\Helpers\TypeAheadHelper;
 use Waca\Helpers\WikiTextHelper;
 use Waca\Providers\GlobalStateProvider;
 use XffTrustProvider;
@@ -210,6 +211,7 @@ HTML;
 
 		$page->setRdnsProvider(new CachedRDnsLookupProvider($database));
 		$page->setAntiSpoofProvider(new CachedApiAntispoofProvider());
+		$page->setTypeAheadHelper(new TypeAheadHelper());
 
 		// run the route code for the request.
 		$page->execute();

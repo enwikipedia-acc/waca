@@ -18,7 +18,11 @@ class PageLog extends PageBase
 		$filterUser = WebRequest::getString('filterUser');
 		$filterAction = WebRequest::getString('filterAction');
 
-		$this->setTailScript(getTypeaheadSource(User::getAllUsernames($this->getDatabase(), true)));
+		$database = $this->getDatabase();
+
+		$this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use($database) {
+			return User::getAllUsernames($database);
+		});
 
 		$limit = WebRequest::getInt('limit');
 		if ($limit === null) {
@@ -32,7 +36,7 @@ class PageLog extends PageBase
 
 		$offset = ($page - 1) * $limit;
 
-		$logs = Logger::getLogs($this->getDatabase(), $filterUser, $filterAction, $limit, $offset);
+		$logs = Logger::getLogs($database, $filterUser, $filterAction, $limit, $offset);
 
 		if ($logs === false) {
 			$this->assign('logs', array());

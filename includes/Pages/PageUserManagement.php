@@ -41,7 +41,9 @@ class PageUserManagement extends PageBase
 		$this->assign("adminUsers", User::getAllWithStatus("Admin", $database));
 		$this->assign("checkUsers", User::getAllCheckusers($database));
 
-		$this->setTailScript(\getTypeaheadSource(User::getAllUsernames($database)));
+		$this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use($database) {
+			return User::getAllUsernames($database);
+		});
 
 		$this->setTemplate("usermanagement/main.tpl");
 	}

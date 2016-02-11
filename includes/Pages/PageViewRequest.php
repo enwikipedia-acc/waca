@@ -185,7 +185,9 @@ class PageViewRequest extends PageBase
 		$allOtherReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::NONE);
 		$this->assign("allOtherReasons", $allOtherReasons);
 
-		$this->setTailScript(\getTypeaheadSource(User::getAllUsernames($database)));
+		$this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use($database) {
+			return User::getAllUsernames($database, true);
+		});
 	}
 
 	/**
