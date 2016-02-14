@@ -6,7 +6,7 @@
     {if $requestIsReserved}
         {include file="view-request/created-button.tpl"}
         <div class="span4">
-            {include file="view-request/decline-button.tpl"}{*{include file="view-request/custom-button.tpl"}*}
+            {include file="view-request/decline-button.tpl"}{include file="view-request/custom-button.tpl"}
         </div>
         <!-- /span4 -->
     {/if}

@@ -182,7 +182,7 @@ class PageViewRequest extends PageBase
 		$this->assign("allCreateReasons", $allCreateReasons);
 		$allDeclineReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::NOT_CREATED);
 		$this->assign("allDeclineReasons", $allDeclineReasons);
-		$allOtherReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::NONE);
+		$allOtherReasons = EmailTemplate::getAllActiveTemplates(false);
 		$this->assign("allOtherReasons", $allOtherReasons);
 
 		$this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use($database) {

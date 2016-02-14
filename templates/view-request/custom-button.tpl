@@ -1,6 +1,6 @@
 <div class="btn-group span6">
     <a class="btn btn-info span8"
-       href="{$baseurl}/acc.php?action=done&amp;id={$requestId}&amp;email=custom">
+       href="{$baseurl}/internal.php/viewRequest/custom?request={$requestId}">
         Custom
     </a>
 
@@ -12,7 +12,7 @@
         <li class="nav-header">Preload with created reasons:</li>
         {foreach $allCreateReasons as $reason}
             <li>
-                <a href="{$baseurl}/acc.php?action=done&amp;id={$requestId}&amp;email=custom&amp;preload={$reason->getId()}">
+                <a href="{$baseurl}/internal.php/viewRequest/custom?request={$requestId}&amp;template={$reason->getId()}">
                     {$reason->getName()|escape}
                 </a>
             </li>
@@ -21,7 +21,7 @@
         <li class="nav-header">Preload with NOT created reasons:</li>
         {foreach $allDeclineReasons as $reason}
             <li>
-                <a href="{$baseurl}/acc.php?action=done&amp;id={$requestId}&amp;email=custom&amp;preload={$reason->getId()}">
+                <a href="{$baseurl}/internal.php/viewRequest/custom?request={$requestId}&amp;template={$reason->getId()}">
                     {$reason->getName()|escape}
                 </a>
             </li>
@@ -30,7 +30,7 @@
         <li class="nav-header">Preload with other reasons:</li>
         {foreach $allOtherReasons as $reason}
             <li>
-                <a href="{$baseurl}/acc.php?action=done&amp;id={$requestId}&amp;email=custom&amp;preload={$reason->getId()}">
+                <a href="{$baseurl}/internal.php/viewRequest/custom?request={$requestId}&amp;template={$reason->getId()}">
                     {$reason->getName()|escape}
                 </a>
             </li>

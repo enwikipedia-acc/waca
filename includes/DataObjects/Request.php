@@ -397,6 +397,9 @@ SQL
 		$this->emailconfirm = bin2hex(openssl_random_pseudo_bytes(16));
 	}
 
+	/**
+	 * @deprecated Move to helper!
+	 */
 	public function sendConfirmationEmail()
 	{
 		global $smarty;

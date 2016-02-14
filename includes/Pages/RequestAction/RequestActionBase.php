@@ -2,6 +2,7 @@
 
 namespace Waca\Pages\RequestAction;
 
+use PdoDatabase;
 use Request;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\PageBase;
@@ -10,12 +11,12 @@ use Waca\WebRequest;
 abstract class RequestActionBase extends PageBase
 {
 	/**
-	 * @param $database
+	 * @param PdoDatabase $database
 	 *
 	 * @return Request
 	 * @throws ApplicationLogicException
 	 */
-	final protected function getRequest($database)
+	protected function getRequest(PdoDatabase $database)
 	{
 		$requestId = WebRequest::postInt('request');
 		if ($requestId === null) {

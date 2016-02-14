@@ -3,12 +3,13 @@
 namespace Waca\Pages\RequestAction;
 
 use EmailTemplate;
+use PdoDatabase;
 use Request;
 use User;
 
 class PageDropRequest extends PageCloseRequest
 {
-	protected function getTemplate($database)
+	protected function getTemplate(PdoDatabase $database)
 	{
 		return EmailTemplate::getDroppedTemplate();
 	}
@@ -23,7 +24,7 @@ class PageDropRequest extends PageCloseRequest
 		return false;
 	}
 
-	protected function sendMail(Request $request, EmailTemplate $template, User $currentUser)
+	protected function sendMail(Request $request, EmailTemplate $template, User $currentUser, $ccMailingList)
 	{
 	}
 }

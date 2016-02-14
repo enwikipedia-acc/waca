@@ -17,6 +17,7 @@ use Waca\Pages\PageMain;
 use Waca\Pages\PagePreferences;
 use Waca\Pages\RequestAction\PageCloseRequest;
 use Waca\Pages\RequestAction\PageComment;
+use Waca\Pages\RequestAction\PageCustomClose;
 use Waca\Pages\RequestAction\PageDeferRequest;
 use Waca\Pages\RequestAction\PageDropRequest;
 use Waca\Pages\RequestAction\PageReservation;
@@ -234,6 +235,11 @@ final class RequestRouter
 		'viewRequest/drop'            =>
 			array(
 				'class'   => PageDropRequest::class,
+				'actions' => array(),
+			),
+		'viewRequest/custom'            =>
+			array(
+				'class'   => PageCustomClose::class,
 				'actions' => array(),
 			),
 		'editComment'                 =>

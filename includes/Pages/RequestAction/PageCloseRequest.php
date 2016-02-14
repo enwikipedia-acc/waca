@@ -72,7 +72,7 @@ class PageCloseRequest extends RequestActionBase
 		Notification::requestClosed($request, $template->getName());
 		SessionAlert::success("Request {$request->getId()} has been closed");
 
-		$this->sendMail($request, $template, $currentUser);
+		$this->sendMail($request, $template->getText(), $currentUser, false);
 
 		$request->updateChecksum();
 		$request->save();
@@ -81,12 +81,12 @@ class PageCloseRequest extends RequestActionBase
 	}
 
 	/**
-	 * @param $database
+	 * @param PdoDatabase $database
 	 *
 	 * @return EmailTemplate
 	 * @throws ApplicationLogicException
 	 */
-	protected function getTemplate($database)
+	protected function getTemplate(PdoDatabase $database)
 	{
 		$templateId = WebRequest::postInt('template');
 		if ($templateId === null) {
@@ -176,8 +176,17 @@ class PageCloseRequest extends RequestActionBase
 		return false;
 	}
 
-	protected function sendMail(Request $request, EmailTemplate $template, User $currentUser)
+	protected function sendMail(Request $request, $mailText, User $currentUser, $ccMailingList)
 	{
+		$headers = array(
+			'X-ACC-Request' => $request->getId(),
+			'X-ACC-UserID' => $currentUser->getId()
+		);
+
+		if($ccMailingList){
+			$headers['Cc'] = 'accounts-enwiki-l@lists.wikimedia.org';
+		}
+
 		$helper = $this->getEmailHelper();
 
 		$emailSig = $currentUser->getEmailSig();
@@ -186,9 +195,9 @@ class PageCloseRequest extends RequestActionBase
 		}
 
 		$subject = "RE: [ACC #{$request->getId()}] English Wikipedia Account Request";
-		$content = $template->getText() . $emailSig;
+		$content = $mailText . $emailSig;
 
-		$helper->sendMail($request->getEmail(), $subject, $content);
+		$helper->sendMail($request->getEmail(), $subject, $content, $headers);
 
 		$request->setEmailSent(1);
 	}
@@ -201,7 +210,7 @@ class PageCloseRequest extends RequestActionBase
 	 * @throws Exception
 	 * @return void
 	 */
-	final protected function showConfirmation(Request $request, EmailTemplate $template, $templateName)
+	protected function showConfirmation(Request $request, EmailTemplate $template, $templateName)
 	{
 		$this->assign('request', $request->getId());
 		$this->assign('template', $template->getId());

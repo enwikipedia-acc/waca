@@ -1,6 +1,8 @@
-<form action="?{$querystring}" method="post" class="form-horizontal">
+{extends file="base.tpl"}
+{block name="content"}
+<form method="post" class="form-horizontal">
   <fieldset>
-    <legend>Custom close{if $preloadtitle != ""} - {$preloadtitle|escape}{/if}</legend>
+    <legend>Custom close{if $preloadTitle != ""} - {$preloadTitle|escape}{/if}</legend>
 
 	{*
     <div class="control-group">
@@ -15,8 +17,8 @@
       <label for="msgbody" class="control-label">Message to be sent to the user:</label>
       <div class="controls">
         {include file="alert.tpl" alertblock="1" alerttype="alert-error" alertclosable="0" alertheader="Caution!"
-        alertmessage="The contents of this box will be sent as an email to the user with the signature set in <a href=\"$baseurl/acc.php?action=prefs\">your preferences</a> appended to it. <strong>If you do not set a signature in your preferences, please manually enter one at the end of your message</strong>."}
-        <textarea id="msgbody" name="msgbody" rows="15" class="input-block-level">{$preloadtext|escape}</textarea>
+        alertmessage="The contents of this box will be sent as an email to the user with the signature set in <a href=\"{$baseurl}/internal.php/preferences\">your preferences</a> appended to it. <strong>If you do not set a signature in your preferences, please manually enter one at the end of your message</strong>."}
+        <textarea id="msgbody" name="msgbody" rows="15" class="input-block-level" required="required">{$preloadText|escape}</textarea>
       </div>
     </div>
 
@@ -42,7 +44,7 @@
 	<div class="control-group">
 		<div class="controls">
 			<label class="checkbox">
-				<input type="checkbox" name="ccmailist" checked="checked"
+				<input type="checkbox" name="ccMailingList" checked="checked"
 					   {if !$currentUser->isAdmin() && !$currentUser->isCheckuser()}disabled="disabled"{/if}
 				/>
 				CC to mailing list
@@ -52,8 +54,8 @@
 
     <div class="form-actions">
       <button type="submit" class="btn btn-primary">Close and send</button>
-      <a href="{$baseurl}/internal.php/viewRequest?id={$request->getId()}" class="btn">Cancel</a>
+      <a href="{$baseurl}/internal.php/viewRequest?id={$requestId}" class="btn">Cancel</a>
     </div>
   </fieldset>
 </form>
-
+{/block}
