@@ -130,6 +130,10 @@ class RequestValidationHelper
 	 */
 	public function validateOther()
 	{
+		// @todo remove me!
+		/** @var $xffTrustProvider IXffTrustProvider */
+		global $xffTrustProvider;
+
 		$errorList = array();
 
 		// ERRORS
@@ -141,7 +145,8 @@ class RequestValidationHelper
 		}
 
 		// IP banned
-		$ban = $this->banHelper->ipIsBanned($this->request->getTrustedIp());
+		$trustedIp = $xffTrustProvider->getTrustedClientIp($this->request->getIp(), $this->request->getForwardedIp());
+		$ban = $this->banHelper->ipIsBanned($trustedIp);
 		if ($ban != false) {
 			$errorList[ValidationError::BANNED] = new ValidationError(ValidationError::BANNED);
 		}
@@ -159,7 +164,9 @@ class RequestValidationHelper
 
 	private function checkAntiSpoof()
 	{
+		/** @var $antispoofProvider IAntiSpoofProvider */
 		global $antispoofProvider;
+
 		try {
 			if (count($antispoofProvider->getSpoofs($this->request->getName())) > 0) {
 				// If there were spoofs an Admin should handle the request.

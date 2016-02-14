@@ -568,7 +568,7 @@ SQL
 	 */
 	public function getOnWikiName()
 	{
-		if ($this->oauthaccesstoken != null) {
+		if ($this->oauthaccesstoken !== null) {
 			try {
 				return $this->getOAuthOnWikiName();
 			}
@@ -1000,7 +1000,7 @@ SQL
 	 */
 	public function getOAuthIdentity($useCached = false)
 	{
-		if ($this->oauthaccesstoken == null) {
+		if ($this->oauthaccesstoken === null) {
 			$this->clearOAuthData();
 		}
 

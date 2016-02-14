@@ -52,6 +52,7 @@ class PageLog extends PageBase
 		$this->setupPageData($page, $limit, $count);
 
 		$userIds = array();
+
 		/** @var Log $logEntry */
 		foreach ($logs as $logEntry) {
 			$user = $logEntry->getUser();

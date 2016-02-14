@@ -52,7 +52,11 @@ class PageForgotPassword extends PageBase
 	private function sendResetMail($user, $email)
 	{
 		// If the user isn't found, or the email address is wrong, skip sending the details silently.
-		if ($user !== false && strtolower($user->getEmail()) === strtolower($email)) {
+		if ($user === false) {
+			return;
+		}
+
+		if (strtolower($user->getEmail()) === strtolower($email)) {
 			$clientIp = $this->getXffTrustProvider()
 			                 ->getTrustedClientIp(WebRequest::remoteAddress(), WebRequest::forwardedAddress());
 
