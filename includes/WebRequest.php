@@ -386,4 +386,12 @@ class WebRequest
 		$session = &self::$globalStateProvider->getSessionSuperGlobal();
 		$session['alerts'] = $data;
 	}
+
+	/**
+	 * @return int|null
+	 */
+	public static function getSessionUserId(){
+		$session = &self::$globalStateProvider->getSessionSuperGlobal();
+		return isset($session['userID']) ? (int)$session['userID'] : null;
+	}
 }

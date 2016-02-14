@@ -7,6 +7,7 @@ use Exception;
 use FakeLocationProvider;
 use Offline;
 use PdoDatabase;
+use User;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Exceptions\ReadableException;
 use Waca\Helpers\EmailHelper;
@@ -177,6 +178,9 @@ HTML;
 		// Start up sessions
 		Session::start();
 
+		// Check the user is allowed to be logged in still. This must be before we call
+		$this->checkForceLogout($database);
+
 		// environment initialised!
 		return true;
 	}
@@ -250,5 +254,28 @@ HTML;
 			'stack'     => $exception->getTraceAsString(),
 			'previous'  => self::getExceptionData($exception->getPrevious()),
 		);
+	}
+
+	private function checkForceLogout(PdoDatabase $database)
+	{
+		$sessionUserId = WebRequest::getSessionUserId();
+		iF($sessionUserId === null){
+			return;
+		}
+
+		// Note, User::getCurrent() caches it's result, which we *really* don't want to trigger.
+		$currentUser = User::getById($sessionUserId, $database);
+
+		if($currentUser === false){
+			// Umm... this user has a session cookie with a userId set, but no user exists...
+			Session::restart();
+		}
+
+		if ($currentUser->getForceLogout() == "1") {
+			Session::restart();
+
+			$currentUser->setForceLogout(0);
+			$currentUser->save();
+		}
 	}
 }

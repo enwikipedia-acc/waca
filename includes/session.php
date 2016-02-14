@@ -170,6 +170,11 @@ namespace Waca{
 		{
 			session_destroy();
 		}
+
+		public static function restart(){
+			self::destroy();
+			self::start();
+		}
 	}
 }
 
