@@ -390,8 +390,10 @@ class WebRequest
 	/**
 	 * @return int|null
 	 */
-	public static function getSessionUserId(){
+	public static function getSessionUserId()
+	{
 		$session = &self::$globalStateProvider->getSessionSuperGlobal();
+
 		return isset($session['userID']) ? (int)$session['userID'] : null;
 	}
 }

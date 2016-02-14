@@ -28,35 +28,35 @@ foreach ($htmlfile as $line_num => $rawline) {
 	else {
 		$line = $rawline;
 	}
-    
+
 	$line = trim($line);
-    
+
 	// this was a comment or empty line...
 	if ($line == "") {
 		continue;
 	}
-    
+
 	// match a regex of an CIDR range:
 	$ipcidr = "@(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:/(?:32|3[01]|[0-2]?[0-9]))?@";
 	if (preg_match($ipcidr, $line) === 1) {
 		$iprange[] = $line;
 		continue;
 	}
-    
+
 	$ipnoncidr = "@(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:/(?:32|3[01]|[0-2]?[0-9]))?@";
 	if (preg_match($ipnoncidr, $line) === 1) {
 		$ip[] = $line;
 		continue;
 	}
-    
+
 	// it's probably a DNS name.
 	$dnsdomain[] = $line;
 }
-    
+
 echo "Exploding CIDRs...\n";
 foreach ($iprange as $r) {
 	$ips = explodeCidr($r);
-    
+
 	foreach ($ips as $i) {
 		$ip[] = $i;
 	}
@@ -65,17 +65,16 @@ foreach ($iprange as $r) {
 echo "Resolving DNS...\n";
 foreach ($dnsdomain as $d) {
 	$ips = gethostbynamel($d);
-    
+
 	if ($ips === false) {
 		echo "Invalid DNS name $d\n";
 		continue;
 	}
-    
+
 	foreach ($ips as $i) {
 		$ip[] = $i;
 	}
-    
-    
+
 	// don't DoS
 	usleep(10000);
 }
@@ -87,8 +86,7 @@ $ip = array_unique($ip);
 $database = gGetDb();
 
 echo "Executing transaction...\n";
-$database->transactionally(function() use ($ip, $database)
-{
+$database->transactionally(function() use ($ip, $database) {
 	$database->exec("DELETE FROM xfftrustcache;");
 
 	$insert = $database->prepare("INSERT INTO xfftrustcache (ip) VALUES (:ip);");
@@ -109,12 +107,12 @@ $database->transactionally(function() use ($ip, $database)
 		catch (PDOException $ex) {
 			echo "Exception on $i :\n";
 			echo $ex->getMessage();
-			$successful = false;   
+			$successful = false;
 		}
 	}
 
 	if (!$successful) {
-		throw new Exception("Encountered errors during transaction processing");   
+		throw new Exception("Encountered errors during transaction processing");
 	}
 });
 

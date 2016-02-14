@@ -22,9 +22,10 @@ class PageTeam extends PageBase
 		$inactive = array();
 
 		foreach ($teamData as $name => $item) {
-			if(count($item['Role']) == 0){
+			if (count($item['Role']) == 0) {
 				$inactive[$name] = $item;
-			} else{
+			}
+			else {
 				$active[$name] = $item;
 			}
 		}

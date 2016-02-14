@@ -338,7 +338,7 @@ SQL
 	 */
 	public static function getUsernames($userIds, PdoDatabase $database)
 	{
-		if(!is_array($userIds)) {
+		if (!is_array($userIds)) {
 			throw new TransactionException('getUsernames() expects array');
 		}
 
@@ -361,7 +361,7 @@ SQL
 		$resultSet = $statement->fetchAll(PDO::FETCH_ASSOC);
 
 		$users = array();
-		foreach($resultSet as $row){
+		foreach ($resultSet as $row) {
 			$users[$row['id']] = $row['username'];
 		}
 

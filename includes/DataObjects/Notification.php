@@ -201,7 +201,7 @@ class Notification extends DataObject
 	 * Send a user renamed notification
 	 *
 	 * @param User  $user
-	 * @param mixed $old
+	 * @param string $old
 	 */
 	public static function userRenamed(User $user, $old)
 	{
@@ -465,8 +465,8 @@ TAG
 	 */
 	public static function emailCreated(EmailTemplate $template)
 	{
-		self::send("Email {$template->getId()} ({$template->getName()}) created by " . User::getCurrent()
-		                                                                                   ->getUsername());
+		$username = User::getCurrent()->getUsername();
+		self::send("Email {$template->getId()} ({$template->getName()}) created by " . $username);
 	}
 
 	/**
@@ -476,8 +476,8 @@ TAG
 	 */
 	public static function emailEdited(EmailTemplate $template)
 	{
-		self::send("Email {$template->getId()} ({$template->getName()}) edited by " . User::getCurrent()
-		                                                                                  ->getUsername());
+		$username = User::getCurrent()->getUsername();
+		self::send("Email {$template->getId()} ({$template->getName()}) edited by " . $username);
 	}
 	#endregion
 }

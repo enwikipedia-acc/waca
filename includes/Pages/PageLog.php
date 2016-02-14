@@ -21,7 +21,7 @@ class PageLog extends PageBase
 
 		$database = $this->getDatabase();
 
-		$this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use($database) {
+		$this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use ($database) {
 			return User::getAllUsernames($database);
 		});
 
@@ -42,6 +42,7 @@ class PageLog extends PageBase
 		if ($logs === false) {
 			$this->assign('logs', array());
 			$this->setTemplate('logs/main.tpl');
+
 			return;
 		}
 
@@ -52,9 +53,9 @@ class PageLog extends PageBase
 
 		$userIds = array();
 		/** @var Log $logEntry */
-		foreach($logs as $logEntry) {
+		foreach ($logs as $logEntry) {
 			$user = $logEntry->getUser();
-			if(!array_search($user, $userIds)){
+			if (!array_search($user, $userIds)) {
 				$userIds[] = $user;
 			}
 		}
