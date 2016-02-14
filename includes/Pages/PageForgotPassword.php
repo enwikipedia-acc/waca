@@ -49,7 +49,7 @@ class PageForgotPassword extends PageBase
 	 *                            check anyway within this method and silently skip if we don't have a user.
 	 * @param string       $email The provided email address
 	 */
-	private function sendResetMail(User $user, $email)
+	private function sendResetMail($user, $email)
 	{
 		// If the user isn't found, or the email address is wrong, skip sending the details silently.
 		if ($user !== false && strtolower($user->getEmail()) === strtolower($email)) {

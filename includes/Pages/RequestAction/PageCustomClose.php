@@ -118,15 +118,16 @@ class PageCustomClose extends PageCloseRequest
 	}
 
 	/**
+	 * @param string      $action
 	 * @param Request     $request
 	 * @param PdoDatabase $database
 	 * @param string      $messageBody
 	 */
-	protected function closeRequest(Request $request, PdoDatabase $database, $messageBody)
+	protected function closeRequest($action, Request $request, PdoDatabase $database, $messageBody)
 	{
 		$request->setStatus('Closed');
 
-		if ($_POST['action'] == EmailTemplate::CREATED) {
+		if ($action == EmailTemplate::CREATED) {
 			$logCloseType = 'custom-y';
 			$notificationCloseType = "Custom, Created";
 		}
@@ -189,7 +190,7 @@ class PageCustomClose extends PageCloseRequest
 
 		if ($action === EmailTemplate::CREATED || $action === EmailTemplate::NOT_CREATED) {
 			// Close request
-			$this->closeRequest($request, $database, $messageBody);
+			$this->closeRequest($action, $request, $database, $messageBody);
 		}
 		else {
 			if (array_key_exists($action, $availableRequestStates)) {

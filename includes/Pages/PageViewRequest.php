@@ -379,7 +379,7 @@ class PageViewRequest extends PageBase
 
 				$requestProxyData[$proxyIndex]['location'] = $proxyLocation;
 
-				if ($proxyReverseDns === $proxyAddress && $proxyIsInPrivateRange == false) {
+				if ($proxyReverseDns === $proxyAddress && $proxyIsInPrivateRange === false) {
 					$requestProxyData[$proxyIndex]['rdns'] = null;
 				}
 
