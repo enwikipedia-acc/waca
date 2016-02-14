@@ -180,10 +180,10 @@ class PageCloseRequest extends RequestActionBase
 	{
 		$headers = array(
 			'X-ACC-Request' => $request->getId(),
-			'X-ACC-UserID' => $currentUser->getId()
+			'X-ACC-UserID'  => $currentUser->getId(),
 		);
 
-		if($ccMailingList){
+		if ($ccMailingList) {
 			$headers['Cc'] = 'accounts-enwiki-l@lists.wikimedia.org';
 		}
 

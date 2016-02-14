@@ -259,14 +259,14 @@ HTML;
 	private function checkForceLogout(PdoDatabase $database)
 	{
 		$sessionUserId = WebRequest::getSessionUserId();
-		iF($sessionUserId === null){
+		iF ($sessionUserId === null) {
 			return;
 		}
 
 		// Note, User::getCurrent() caches it's result, which we *really* don't want to trigger.
 		$currentUser = User::getById($sessionUserId, $database);
 
-		if($currentUser === false){
+		if ($currentUser === false) {
 			// Umm... this user has a session cookie with a userId set, but no user exists...
 			Session::restart();
 		}

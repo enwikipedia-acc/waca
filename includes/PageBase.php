@@ -97,10 +97,11 @@ abstract class PageBase
 			throw new AccessDeniedException();
 		}
 
+		$currentUser = User::getCurrent($this->getDatabase());
 		// Security barrier.
 		//
 		// This code essentially doesn't care if the user is logged in or not, as the
-		if ($securityConfiguration->allows(User::getCurrent())) {
+		if ($securityConfiguration->allows($currentUser)) {
 			// We're allowed to run the page, so let's run it.
 			$this->runPage();
 		}

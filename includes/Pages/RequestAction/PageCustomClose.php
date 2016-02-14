@@ -118,9 +118,9 @@ class PageCustomClose extends PageCloseRequest
 	}
 
 	/**
-	 * @param Request $request
+	 * @param Request     $request
 	 * @param PdoDatabase $database
-	 * @param string $messageBody
+	 * @param string      $messageBody
 	 */
 	protected function closeRequest(Request $request, PdoDatabase $database, $messageBody)
 	{
@@ -143,11 +143,11 @@ class PageCustomClose extends PageCloseRequest
 	}
 
 	/**
-	 * @param Request $request
-	 * @param string $action
-	 * @param array $availableRequestStates
+	 * @param Request     $request
+	 * @param string      $action
+	 * @param array       $availableRequestStates
 	 * @param PdoDatabase $database
-	 * @param string $messageBody
+	 * @param string      $messageBody
 	 */
 	protected function deferRequest($request, $action, $availableRequestStates, $database, $messageBody)
 	{
@@ -164,8 +164,8 @@ class PageCustomClose extends PageCloseRequest
 	}
 
 	/**
-	 * @param User $currentUser
-	 * @param Request $request
+	 * @param User        $currentUser
+	 * @param Request     $request
 	 * @param PdoDatabase $database
 	 *
 	 * @throws ApplicationLogicException

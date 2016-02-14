@@ -6,7 +6,6 @@ use Pages\PageViewRequest;
 use Waca\Pages\Page404;
 use Waca\Pages\PageBan;
 use Waca\Pages\PageEditComment;
-use Waca\Pages\RequestAction\PageBreakReservation;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageForgotPassword;
 use Waca\Pages\PageInterfaceManagement;
@@ -15,16 +14,17 @@ use Waca\Pages\PageLogin;
 use Waca\Pages\PageLogout;
 use Waca\Pages\PageMain;
 use Waca\Pages\PagePreferences;
+use Waca\Pages\PageSearch;
+use Waca\Pages\PageTeam;
+use Waca\Pages\PageUserManagement;
+use Waca\Pages\PageWelcomeTemplateManagement;
+use Waca\Pages\RequestAction\PageBreakReservation;
 use Waca\Pages\RequestAction\PageCloseRequest;
 use Waca\Pages\RequestAction\PageComment;
 use Waca\Pages\RequestAction\PageCustomClose;
 use Waca\Pages\RequestAction\PageDeferRequest;
 use Waca\Pages\RequestAction\PageDropRequest;
 use Waca\Pages\RequestAction\PageReservation;
-use Waca\Pages\PageSearch;
-use Waca\Pages\PageTeam;
-use Waca\Pages\PageUserManagement;
-use Waca\Pages\PageWelcomeTemplateManagement;
 use Waca\Pages\RequestAction\PageSendToUser;
 use Waca\Pages\Statistics\StatsFastCloses;
 use Waca\Pages\Statistics\StatsIdUsers;
@@ -237,7 +237,7 @@ final class RequestRouter
 				'class'   => PageDropRequest::class,
 				'actions' => array(),
 			),
-		'viewRequest/custom'            =>
+		'viewRequest/custom'          =>
 			array(
 				'class'   => PageCustomClose::class,
 				'actions' => array(),
