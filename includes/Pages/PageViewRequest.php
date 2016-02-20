@@ -1,6 +1,6 @@
 <?php
 
-namespace Pages;
+namespace Waca\Pages;
 
 use Comment;
 use EmailTemplate;

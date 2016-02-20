@@ -2,7 +2,6 @@
 namespace Waca;
 
 use Exception;
-use Pages\PageViewRequest;
 use Waca\Pages\Page404;
 use Waca\Pages\PageBan;
 use Waca\Pages\PageEditComment;
@@ -19,6 +18,7 @@ use Waca\Pages\PageRegister;
 use Waca\Pages\PageSearch;
 use Waca\Pages\PageTeam;
 use Waca\Pages\PageUserManagement;
+use Waca\Pages\PageViewRequest;
 use Waca\Pages\PageWelcomeTemplateManagement;
 use Waca\Pages\RequestAction\PageBreakReservation;
 use Waca\Pages\RequestAction\PageCloseRequest;
