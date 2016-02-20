@@ -3,6 +3,7 @@
 namespace Waca;
 
 use User;
+use Waca\Exceptions\AccessDeniedException;
 
 /**
  * Class SecurityConfiguration
@@ -151,70 +152,20 @@ final class SecurityConfiguration
 			return false;
 		}
 
-		// admin
-		if ($user->isAdmin()) {
-			if ($this->admin === self::DENY) {
-				return false;
-			}
+		try {
+			$allowed = $allowed || ($user->isAdmin() && $this->test($this->admin));
+			$allowed = $allowed || ($user->isUser() && $this->test($this->user));
+			$allowed = $allowed || ($user->isCommunityUser() && $this->test($this->community));
+			$allowed = $allowed || ($user->isSuspended() && $this->test($this->suspended));
+			$allowed = $allowed || ($user->isDeclined() && $this->test($this->declined));
+			$allowed = $allowed || ($user->isNew() && $this->test($this->new));
+			$allowed = $allowed || ($user->isCheckuser() && $this->test($this->checkuser));
 
-			$allowed = $allowed || $this->admin === self::ALLOW;
+			return $allowed;
 		}
-
-		// user
-		if ($user->isUser()) {
-			if ($this->user === self::DENY) {
-				return false;
-			}
-
-			$allowed = $allowed || $this->user === self::ALLOW;
+		catch (AccessDeniedException $ex) {
+			return false;
 		}
-
-		// community
-		if ($user->isCommunityUser()) {
-			if ($this->community === self::DENY) {
-				return false;
-			}
-
-			$allowed = $allowed || $this->community === self::ALLOW;
-		}
-
-		// suspended
-		if ($user->isSuspended()) {
-			if ($this->suspended === self::DENY) {
-				return false;
-			}
-
-			$allowed = $allowed || $this->suspended === self::ALLOW;
-		}
-
-		// declined
-		if ($user->isDeclined()) {
-			if ($this->declined === self::DENY) {
-				return false;
-			}
-
-			$allowed = $allowed || $this->declined === self::ALLOW;
-		}
-
-		// new
-		if ($user->isNew()) {
-			if ($this->new === self::DENY) {
-				return false;
-			}
-
-			$allowed = $allowed || $this->new === self::ALLOW;
-		}
-
-		// checkuser
-		if ($user->isCheckuser()) {
-			if ($this->checkuser === self::DENY) {
-				return false;
-			}
-
-			$allowed = $allowed || $this->checkuser === self::ALLOW;
-		}
-
-		return $allowed;
 	}
 
 	/**
@@ -288,6 +239,10 @@ final class SecurityConfiguration
 		return $config;
 	}
 
+	/**
+	 * @return SecurityConfiguration
+	 * @category Security-Critical
+	 */
 	public static function checkUserData()
 	{
 		$config = new SecurityConfiguration();
@@ -298,5 +253,22 @@ final class SecurityConfiguration
 			->setNew(self::DENY);
 
 		return $config;
+	}
+
+	/**
+	 * @param $value
+	 *
+	 * @return bool
+	 * @throws AccessDeniedException
+	 * @category Security-Critical
+	 */
+	private function test($value)
+	{
+		if ($value == SecurityConfiguration::DENY) {
+			// FILE_NOT_FOUND...?
+			throw new AccessDeniedException();
+		}
+
+		return $value === SecurityConfiguration::ALLOW;
 	}
 }
