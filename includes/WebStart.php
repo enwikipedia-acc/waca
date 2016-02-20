@@ -178,7 +178,10 @@ HTML;
 		// Start up sessions
 		Session::start();
 
-		// Check the user is allowed to be logged in still. This must be before we call
+		// Check the user is allowed to be logged in still. This must be before we call any user-loading functions and
+		// get the current user cached.
+		// I'm not sure if this function call being here is particularly a good thing, but it's part of starting up a
+		// session I suppose.
 		$this->checkForceLogout($database);
 
 		// environment initialised!

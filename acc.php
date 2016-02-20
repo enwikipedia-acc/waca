@@ -36,12 +36,6 @@ if (Offline::isOffline()) {
 
 // Initialize the class objects.
 $session = new session();
-$date = new DateTime();
-
-// initialise providers
-global $squidIpList;
-/** @var ILocationProvider $locationProvider */
-$locationProvider = new $locationProviderClass(gGetDb('acc'), $locationProviderApiKey);
 
 // Clears the action variable.
 $action = '';
@@ -69,17 +63,7 @@ if (isset($_SESSION['userID'])) {
 BootstrapSkin::displayInternalHeader();
 $session->checksecurity();
 
-
-// When no action is specified the default Internal ACC are displayed.
-// TODO: Improve way the method is called.
-if ($action == '') {
-	ob_end_clean();
-	global $baseurl;
-	header("Location: $baseurl/internal.php");
-	die();
-}
-
-elseif ($action == "oauthdetach") {
+if ($action == "oauthdetach") {
 	if ($enforceOAuth) {
 		BootstrapSkin::displayAccessDenied();
 		BootstrapSkin::displayInternalFooter();
