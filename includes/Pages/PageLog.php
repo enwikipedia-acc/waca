@@ -56,12 +56,17 @@ class PageLog extends PageBase
 		/** @var Log $logEntry */
 		foreach ($logs as $logEntry) {
 			$user = $logEntry->getUser();
+			if ($user === -1) {
+				continue;
+			}
+
 			if (!array_search($user, $userIds)) {
 				$userIds[] = $user;
 			}
 		}
 
 		$users = User::getUsernames($userIds, $database);
+		$users[-1] = User::getCommunity()->getUsername();
 
 		$this->assign("logs", $logs);
 		$this->assign("users", $users);

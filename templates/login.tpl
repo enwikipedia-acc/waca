@@ -23,7 +23,7 @@
 					<a class="btn btn-block" href="{$baseurl}/internal.php/forgotPassword">Forgot password?</a>
 				</div>
 				<div class="span5">
-					<a class="btn btn-block" href="{$baseurl}/acc.php?action=register">Register</a>
+					<a class="btn btn-block" href="{$baseurl}/internal.php/register">Register</a>
 				</div>
 			</div>
 		</form>

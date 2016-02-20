@@ -14,6 +14,7 @@ use Waca\Pages\PageLogin;
 use Waca\Pages\PageLogout;
 use Waca\Pages\PageMain;
 use Waca\Pages\PagePreferences;
+use Waca\Pages\PageRegister;
 use Waca\Pages\PageSearch;
 use Waca\Pages\PageTeam;
 use Waca\Pages\PageUserManagement;
@@ -89,6 +90,9 @@ final class RequestRouter
 	 * @var array
 	 */
 	private $routeMap = array(
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////
+		// Login and registration
 		'logout'                      =>
 			array(
 				'class'   => PageLogout::class,
@@ -104,6 +108,14 @@ final class RequestRouter
 				'class'   => PageForgotPassword::class,
 				'actions' => array('reset'),
 			),
+		'register'              =>
+			array(
+				'class'   => PageRegister::class,
+				'actions' => array('done'),
+			),
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////
+		// Discovery
 		'search'                      =>
 			array(
 				'class'   => PageSearch::class,
@@ -114,6 +126,9 @@ final class RequestRouter
 				'class'   => PageLog::class,
 				'actions' => array(),
 			),
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////
+		// Administration
 		'bans'                        =>
 			array(
 				'class'   => PageBan::class,
@@ -137,16 +152,30 @@ final class RequestRouter
 				'class'   => PageInterfaceManagement::class,
 				'actions' => array(),
 			),
+		'emailManagement'             =>
+			array(
+				'class'   => PageEmailManagement::class,
+				'actions' => array('create', 'edit', 'view'),
+			),
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////
+		// Personal preferences
 		'preferences'                 =>
 			array(
 				'class'   => PagePreferences::class,
 				'actions' => array('changePassword'),
 			),
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////
+		// Welcomer configuration
 		'welcomeTemplates'            =>
 			array(
 				'class'   => PageWelcomeTemplateManagement::class,
 				'actions' => array('select', 'edit', 'delete', 'add', 'view'),
 			),
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////
+		// Statistics
 		'statistics'                  =>
 			array(
 				'class'   => StatsMain::class,
@@ -192,14 +221,12 @@ final class RequestRouter
 				'class'   => StatsUsers::class,
 				'actions' => array('detail'),
 			),
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////
+		// Zoom page
 		'viewRequest'                 =>
 			array(
 				'class'   => PageViewRequest::class,
-				'actions' => array(),
-			),
-		'team'                        =>
-			array(
-				'class'   => PageTeam::class,
 				'actions' => array(),
 			),
 		'viewRequest/reserve'         =>
@@ -247,10 +274,13 @@ final class RequestRouter
 				'class'   => PageEditComment::class,
 				'actions' => array(),
 			),
-		'emailManagement'             =>
+
+		//////////////////////////////////////////////////////////////////////////////////////////////////
+		// Misc stuff
+		'team'                        =>
 			array(
-				'class'   => PageEmailManagement::class,
-				'actions' => array('create', 'edit', 'view'),
+				'class'   => PageTeam::class,
+				'actions' => array(),
 			),
 
 	);

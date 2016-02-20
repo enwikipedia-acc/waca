@@ -53,6 +53,15 @@ class Logger
 
 	/**
 	 * @param PdoDatabase $database
+	 * @param User $user
+	 */
+	public static function newUser(PdoDatabase $database, User $user)
+	{
+		self::createLogEntry($database, $user, 'Registered', null, User::getCommunity());
+	}
+
+	/**
+	 * @param PdoDatabase $database
 	 * @param User        $object
 	 */
 	public static function approvedUser(PdoDatabase $database, User $object)
@@ -446,6 +455,7 @@ SQL
 			'CreatedEmail'    => 'created email',
 			'CreatedTemplate' => 'created template',
 			'SentMail'        => 'sent an email to the requestor',
+			'Registered'      => 'registered a tool account',
 		);
 
 		if (array_key_exists($entry->getAction(), $lookup)) {
@@ -562,6 +572,7 @@ SQL
 			'CreatedEmail'    => 'created email',
 			'CreatedTemplate' => 'created template',
 			'SentMail'        => 'sent an email to the requestor',
+			'Registered'      => 'registered a tool account',
 		);
 
 		$statement = $database->query(<<<SQL

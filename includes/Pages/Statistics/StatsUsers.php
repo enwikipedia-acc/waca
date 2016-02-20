@@ -104,10 +104,10 @@ SELECT
     log.timestamp AS log_time,
     log.comment AS log_cmt
 FROM log
-INNER JOIN user ON user.id = log.user
+LEFT JOIN user ON user.id = log.user
 WHERE log.objectid = :userid
 AND log.objecttype = 'User'
-AND log.action IN ('Approved','Suspended','Declined','Promoted','Demoted','Renamed','Prefchange');
+AND log.action IN ('Approved','Suspended','Declined','Promoted','Demoted','Renamed','Prefchange','Registered');
 SQL
 		);
 		$accountLogQuery->execute(array(":userid" => $user->getId()));

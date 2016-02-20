@@ -50,6 +50,7 @@ class SiteConfiguration
 	private $useStrictTransportSecurity = false;
 	private $userAgent = 'Wikipedia-ACC Tool/0.1 (+https://accounts.wmflabs.org/internal.php/team)';
 	private $curlDisableVerifyPeer = false;
+	private $useOAuthSignup = true;
 
 	/**
 	 * Gets the base URL of the tool
@@ -442,5 +443,25 @@ class SiteConfiguration
 	public function getCurlDisableVerifyPeer()
 	{
 		return $this->curlDisableVerifyPeer;
+	}
+
+	/**
+	 * @param boolean $useOAuthSignup
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setUseOAuthSignup($useOAuthSignup)
+	{
+		$this->useOAuthSignup = $useOAuthSignup;
+
+		return $this;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getUseOAuthSignup()
+	{
+		return $this->useOAuthSignup;
 	}
 }

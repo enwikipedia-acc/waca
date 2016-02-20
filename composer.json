@@ -3,6 +3,7 @@
   "minimum-stability": "stable",
   "require": {
     "smarty/smarty": "v3.1.29",
-    "components/jquery": "1.9.1"
+    "components/jquery": "1.9.1",
+    "mediawiki/oauthclient": "0.1.1"
   }
 }

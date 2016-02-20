@@ -330,4 +330,5 @@ $siteConfiguration->setBaseUrl($baseurl)
 	->setUseStrictTransportSecurity($strictTransportSecurityExpiry)
 	->setUserAgent($toolUserAgent)
 	->setCurlDisableVerifyPeer($curlDisableSSLVerifyPeer)
+	->setUseOAuthSignup(false)
 	;

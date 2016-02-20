@@ -82,6 +82,7 @@ class Foo
 * The ternary (`?:`) operator should only be used where appropriate - short expressions only please!
 * Heredoc/Nowdoc should not be used for output - use templates. Extended SQL statements are OK, but please use appropriate boundary markers, such as `SQL`;
 
+* 
 ## How-tos
 
 Some how-tos for some of the technologies and libraries we use.
@@ -117,6 +118,8 @@ $statement->bindValue(":address", $address);
 $statement->bindValue(":data", $data);
 $statement->execute();
 ```
+
+Please try to use named parameters, and strongly avoid positional parameters, as named parameters can't be broken by accidental reordering.
 
 #### Transactions
 
@@ -182,6 +185,17 @@ No display code should be in the PHP files, everything should be in the template
 We use v3.1.14 of Smarty currently, and it's probably a better idea to get yourself familiar with it from [their documentation](http://www.smarty.net/docs/en/). Useful sections:
 * [Variables](http://www.smarty.net/docs/en/language.syntax.variables.tpl)
 * [Escaping](http://www.smarty.net/docs/en/language.modifier.escape.tpl)
+
+### Creating a new page
+
+There's not much to creating a new page, only two things need to happen:
+
+1. Create your page in the `\Waca\Pages` namespace as a class extending `\Waca\PageBase` (or one of it's subclasses). 
+Implement the two required methods: `main()` and `getSecurityConfiguration()`. `main()` should contain your page's logic. 
+`getSecurityConfiguration()` should return an instance of SecurityConfiguration, please try and use the static instances where possible.
+2. Register your page in `\Waca\RequestRouter` with an appropriate URL slug.
+
+You'll probably want to use templates, and remember not to use superglobals. Most of the utilities you need should be exposed in PageBase already, and this includes the database (`$this->getDatabase()`)
 
 [1]: http://www.php-fig.org/psr/psr-1/
 
