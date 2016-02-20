@@ -840,11 +840,9 @@ SQL
 	 */
 	public function approve()
 	{
-		$this->dbObject->transactionally(function() {
-			$this->status = "User";
-			$this->save();
-			Logger::approvedUser($this->dbObject, $this);
-		});
+		$this->status = "User";
+		$this->save();
+		Logger::approvedUser($this->dbObject, $this);
 	}
 
 	/**
@@ -855,11 +853,9 @@ SQL
 	 */
 	public function suspend($comment)
 	{
-		$this->dbObject->transactionally(function() use ($comment) {
-			$this->status = "Suspended";
-			$this->save();
-			Logger::suspendedUser($this->dbObject, $this, $comment);
-		});
+		$this->status = "Suspended";
+		$this->save();
+		Logger::suspendedUser($this->dbObject, $this, $comment);
 	}
 
 	/**
@@ -870,11 +866,9 @@ SQL
 	 */
 	public function decline($comment)
 	{
-		$this->dbObject->transactionally(function() use ($comment) {
-			$this->status = "Declined";
-			$this->save();
-			Logger::declinedUser($this->dbObject, $this, $comment);
-		});
+		$this->status = "Declined";
+		$this->save();
+		Logger::declinedUser($this->dbObject, $this, $comment);
 	}
 
 	/**
@@ -883,11 +877,9 @@ SQL
 	 */
 	public function promote()
 	{
-		$this->dbObject->transactionally(function() {
-			$this->status = "Admin";
-			$this->save();
-			Logger::promotedUser($this->dbObject, $this);
-		});
+		$this->status = "Admin";
+		$this->save();
+		Logger::promotedUser($this->dbObject, $this);
 	}
 
 	/**
@@ -898,11 +890,9 @@ SQL
 	 */
 	public function demote($comment)
 	{
-		$this->dbObject->transactionally(function() use ($comment) {
-			$this->status = "User";
-			$this->save();
-			Logger::demotedUser($this->dbObject, $this, $comment);
-		});
+		$this->status = "User";
+		$this->save();
+		Logger::demotedUser($this->dbObject, $this, $comment);
 	}
 
 	#endregion
@@ -1101,7 +1091,7 @@ SQL
 	 */
 	private function getIdentityCache()
 	{
-		/** @var IOAuthHelper $oauthHelper*/
+		/** @var IOAuthHelper $oauthHelper */
 		global $oauthHelper;
 
 		try {
