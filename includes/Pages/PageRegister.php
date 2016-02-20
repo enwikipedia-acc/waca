@@ -91,29 +91,9 @@ class PageRegister extends PageBase
 			throw new ApplicationLogicException('You must read the interface guidelines before your request may be submitted.');
 		}
 
-		if ($emailAddress === null) {
-			throw new ApplicationLogicException('Your email address appears to be invalid!');
-		}
-
-		if ($password !== WebRequest::postString('pass2')) {
-			throw new ApplicationLogicException('Your passwords did not match, please try again.');
-		}
-
-		if (User::getByUsername($username, $this->getDatabase()) !== false) {
-			throw new ApplicationLogicException('That username is already in use on this system.');
-		}
-
+		$this->validateGeneralInformation($emailAddress, $password, $username);
 		$this->validateUniqueEmail($emailAddress);
-
-		if (!$useOAuthSignup) {
-			if ($confirmationId === null || $confirmationId <= 0) {
-				throw new ApplicationLogicException('Please enter the revision id of your confirmation edit.');
-			}
-
-			if ($onwikiUsername === null) {
-				throw new ApplicationLogicException('Please specify your on-wiki username.');
-			}
-		}
+		$this->validateNonOAuthFields($useOAuthSignup, $confirmationId, $onwikiUsername);
 	}
 
 	/**
@@ -171,6 +151,48 @@ class PageRegister extends PageBase
 			Notification::userNew($user);
 			WebRequest::setLoggedInUser($user);
 			$this->redirect('preferences');
+		}
+	}
+
+	/**
+	 * @param $useOAuthSignup
+	 * @param $confirmationId
+	 * @param $onwikiUsername
+	 *
+	 * @throws ApplicationLogicException
+	 */
+	private function validateNonOAuthFields($useOAuthSignup, $confirmationId, $onwikiUsername)
+	{
+		if (!$useOAuthSignup) {
+			if ($confirmationId === null || $confirmationId <= 0) {
+				throw new ApplicationLogicException('Please enter the revision id of your confirmation edit.');
+			}
+
+			if ($onwikiUsername === null) {
+				throw new ApplicationLogicException('Please specify your on-wiki username.');
+			}
+		}
+	}
+
+	/**
+	 * @param $emailAddress
+	 * @param $password
+	 * @param $username
+	 *
+	 * @throws ApplicationLogicException
+	 */
+	private function validateGeneralInformation($emailAddress, $password, $username)
+	{
+		if ($emailAddress === null) {
+			throw new ApplicationLogicException('Your email address appears to be invalid!');
+		}
+
+		if ($password !== WebRequest::postString('pass2')) {
+			throw new ApplicationLogicException('Your passwords did not match, please try again.');
+		}
+
+		if (User::getByUsername($username, $this->getDatabase()) !== false) {
+			throw new ApplicationLogicException('That username is already in use on this system.');
 		}
 	}
 }

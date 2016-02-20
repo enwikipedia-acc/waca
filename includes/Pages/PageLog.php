@@ -2,6 +2,7 @@
 
 namespace Waca\Pages;
 
+use Exception;
 use Log;
 use Logger;
 use User;
@@ -55,6 +56,10 @@ class PageLog extends PageBase
 
 		/** @var Log $logEntry */
 		foreach ($logs as $logEntry) {
+			if (!$logEntry instanceof Log) {
+				throw new Exception('Log entry is not an instance of a Log, this should never happen.');
+			}
+
 			$user = $logEntry->getUser();
 			if ($user === -1) {
 				continue;

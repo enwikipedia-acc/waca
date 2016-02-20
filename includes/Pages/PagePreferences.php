@@ -49,19 +49,9 @@ class PagePreferences extends PageBase
 			$newPassword = WebRequest::postString('newpassword');
 			$newPasswordConfirmation = WebRequest::postString('newpasswordconfirm');
 
-			if ($oldPassword === null || $newPassword === null || $newPasswordConfirmation === null) {
-				throw new ApplicationLogicException('All three fields must be completed to change your password');
-			}
+			$user = User::getCurrent($this->getDatabase());
 
-			if ($newPassword !== $newPasswordConfirmation) {
-				throw new ApplicationLogicException('Your new passwords did not match!');
-			}
-
-			$user = User::getCurrent();
-
-			if (!$user->authenticate($oldPassword)) {
-				throw new ApplicationLogicException('The password you entered was incorrect.');
-			}
+			$this->validateNewPassword($oldPassword, $newPassword, $newPasswordConfirmation, $user);
 
 			$user->setPassword($newPassword);
 			$user->save();
@@ -89,5 +79,28 @@ class PagePreferences extends PageBase
 	protected function getSecurityConfiguration()
 	{
 		return SecurityConfiguration::allLoggedInUsersPage();
+	}
+
+	/**
+	 * @param $oldPassword
+	 * @param $newPassword
+	 * @param $newPasswordConfirmation
+	 * @param $user
+	 *
+	 * @throws ApplicationLogicException
+	 */
+	protected function validateNewPassword($oldPassword, $newPassword, $newPasswordConfirmation, $user)
+	{
+		if ($oldPassword === null || $newPassword === null || $newPasswordConfirmation === null) {
+			throw new ApplicationLogicException('All three fields must be completed to change your password');
+		}
+
+		if ($newPassword !== $newPasswordConfirmation) {
+			throw new ApplicationLogicException('Your new passwords did not match!');
+		}
+
+		if (!$user->authenticate($oldPassword)) {
+			throw new ApplicationLogicException('The password you entered was incorrect.');
+		}
 	}
 }

@@ -32,8 +32,7 @@ class PageForgotPassword extends PageBase
 			$user = User::getByUsername($username, $database);
 			$this->sendResetMail($user, $email);
 
-			SessionAlert::success(
-				'<strong>Your password reset request has been completed.</strong> Please check your e-mail.');
+			SessionAlert::success('<strong>Your password reset request has been completed.</strong> Please check your e-mail.');
 
 			$this->redirect('login');
 		}
@@ -52,13 +51,13 @@ class PageForgotPassword extends PageBase
 	private function sendResetMail($user, $email)
 	{
 		// If the user isn't found, or the email address is wrong, skip sending the details silently.
-		if ($user === false) {
+		if (!$user instanceof User) {
 			return;
 		}
 
 		if (strtolower($user->getEmail()) === strtolower($email)) {
 			$clientIp = $this->getXffTrustProvider()
-			                 ->getTrustedClientIp(WebRequest::remoteAddress(), WebRequest::forwardedAddress());
+				->getTrustedClientIp(WebRequest::remoteAddress(), WebRequest::forwardedAddress());
 
 			$this->assign("user", $user);
 			$this->assign("hash", $user->getForgottenPasswordHash());

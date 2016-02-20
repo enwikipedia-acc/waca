@@ -475,7 +475,7 @@ SQL
 	 * @param integer     $limit
 	 * @param integer     $offset
 	 *
-	 * @return array|bool <string,string>
+	 * @return array|bool
 	 */
 	public static function getLogs(PdoDatabase $database, $userFilter, $actionFilter, $limit = 100, $offset = 0)
 	{

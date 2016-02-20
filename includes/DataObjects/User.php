@@ -31,7 +31,7 @@ class User extends DataObject
 	private $oauthidentitycache = null;
 	/** @var User Cache variable of the current user - it's never going to change in the middle of a request. */
 	private static $currentUser;
-	/** @var null The identity cache */
+	/** @var null|JWT The identity cache */
 	private $identityCache = null;
 	#region Object load methods
 

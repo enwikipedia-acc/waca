@@ -24,36 +24,28 @@ class PageSearch extends PageBase
 			$searchType = WebRequest::postString('type');
 			$searchTerm = WebRequest::postString('term');
 
-			if (in_array($searchType, array('name', 'email', 'ip'))) {
-				if ($searchTerm === '%' || $searchTerm === '') {
-					throw new ApplicationLogicException('No search term specified entered');
-				}
+			$this->validateSearchParameters($searchType, $searchTerm);
 
-				$results = array();
+			$results = array();
 
-				switch ($searchType) {
-					case 'name':
-						$results = $this->getNameSearchResults($searchTerm);
-						break;
-					case 'email':
-						$results = $this->getEmailSearchResults($searchTerm);
-						break;
-					case 'ip':
-						$results = $this->getIpSearchResults($searchTerm);
-						break;
-				}
-
-				// deal with results
-				$this->assign('requests', $results);
-				$this->assign('term', $searchTerm);
-				$this->assign('target', $searchType);
-
-				$this->setTemplate('search/searchResult.tpl');
+			switch ($searchType) {
+				case 'name':
+					$results = $this->getNameSearchResults($searchTerm);
+					break;
+				case 'email':
+					$results = $this->getEmailSearchResults($searchTerm);
+					break;
+				case 'ip':
+					$results = $this->getIpSearchResults($searchTerm);
+					break;
 			}
-			else {
-				// todo: handle more gracefully.
-				throw new Exception('Unknown search type');
-			}
+
+			// deal with results
+			$this->assign('requests', $results);
+			$this->assign('term', $searchTerm);
+			$this->assign('target', $searchType);
+
+			$this->setTemplate('search/searchResult.tpl');
 		}
 		else {
 			$this->setTemplate('search/searchForm.tpl');
@@ -172,5 +164,23 @@ SQL;
 	protected function getSecurityConfiguration()
 	{
 		return SecurityConfiguration::internalPage();
+	}
+
+	/**
+	 * @param $searchType
+	 * @param $searchTerm
+	 *
+	 * @throws ApplicationLogicException
+	 */
+	protected function validateSearchParameters($searchType, $searchTerm)
+	{
+		if (!in_array($searchType, array('name', 'email', 'ip'))) {
+			// todo: handle more gracefully.
+			throw new ApplicationLogicException('Unknown search type');
+		}
+
+		if ($searchTerm === '%' || $searchTerm === '') {
+			throw new ApplicationLogicException('No search term specified entered');
+		}
 	}
 }

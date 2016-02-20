@@ -34,10 +34,10 @@ class PageBan extends PageBase
 	{
 		// dual-mode action
 		if (WebRequest::wasPosted()) {
-			$this->doPostSet();
+			$this->handlePostMethodForSetBan();
 		}
 		else {
-			$this->doGetSet();
+			$this->handleGetMethodForSetBan();
 		}
 	}
 
@@ -46,16 +46,7 @@ class PageBan extends PageBase
 	 */
 	protected function remove()
 	{
-		$banId = WebRequest::getInt('id');
-		if ($banId === null || $banId === 0) {
-			throw new ApplicationLogicException("The ban ID appears to be missing. This is probably a bug.");
-		}
-
-		$ban = Ban::getActiveId($banId, $this->getDatabase());
-
-		if ($ban === false) {
-			throw new ApplicationLogicException("The specified ban is not currently active, or doesn't exist.");
-		}
+		$ban = $this->getBanForUnban();
 
 		// dual mode
 		if (WebRequest::wasPosted()) {
@@ -156,7 +147,7 @@ class PageBan extends PageBase
 	 * @throws ApplicationLogicException
 	 * @throws Exception
 	 */
-	private function doPostSet()
+	private function handlePostMethodForSetBan()
 	{
 		$reason = WebRequest::postString('banreason');
 		$target = WebRequest::postString('target');
@@ -208,7 +199,7 @@ class PageBan extends PageBase
 	/**
 	 * Handles the GET method on the set action
 	 */
-	protected function doGetSet()
+	protected function handleGetMethodForSetBan()
 	{
 		$this->setTemplate('bans/banform.tpl');
 
@@ -287,5 +278,25 @@ class PageBan extends PageBase
 		if (filter_var($target, FILTER_VALIDATE_EMAIL) !== $target) {
 			throw new ApplicationLogicException('Invalid target - email address expected.');
 		}
+	}
+
+	/**
+	 * @return Ban
+	 * @throws ApplicationLogicException
+	 */
+	private function getBanForUnban()
+	{
+		$banId = WebRequest::getInt('id');
+		if ($banId === null || $banId === 0) {
+			throw new ApplicationLogicException("The ban ID appears to be missing. This is probably a bug.");
+		}
+
+		$ban = Ban::getActiveId($banId, $this->getDatabase());
+
+		if ($ban === false) {
+			throw new ApplicationLogicException("The specified ban is not currently active, or doesn't exist.");
+		}
+
+		return $ban;
 	}
 }
