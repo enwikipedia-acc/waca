@@ -176,7 +176,7 @@ HTML;
 		$database = PdoDatabase::getDatabaseConnection("acc");
 
 		/** @var int $actualVersion */
-		$actualVersion = $database->query("SELECT version FROM schemaversion")->fetchColumn();
+		$actualVersion = (int)$database->query("SELECT version FROM schemaversion")->fetchColumn();
 		if ($actualVersion !== $this->configuration->getSchemaVersion()) {
 			throw new EnvironmentException("Database schema is wrong version! Please either update configuration or database.");
 		}
