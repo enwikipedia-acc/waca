@@ -7,7 +7,7 @@
 // stats - Gives a readout similar to the user list user information page.
 
 require_once("config.inc.php");
-require_once('functions.php');
+// @todo this requires work, since functions.php has been deleted.
 require_once("includes/PdoDatabase.php");
 
 $httpOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;

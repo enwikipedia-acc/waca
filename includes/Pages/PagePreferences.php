@@ -88,6 +88,6 @@ class PagePreferences extends PageBase
 	 */
 	protected function getSecurityConfiguration()
 	{
-		return SecurityConfiguration::internalPage();
+		return SecurityConfiguration::allLoggedInUsersPage();
 	}
 }

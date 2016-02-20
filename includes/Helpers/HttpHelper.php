@@ -3,7 +3,6 @@
 namespace Waca\Helpers;
 
 use Waca\Exceptions\CurlException;
-use Waca\SiteConfiguration;
 
 class HttpHelper
 {
@@ -12,16 +11,18 @@ class HttpHelper
 	/**
 	 * HttpHelper constructor.
 	 *
-	 * @param SiteConfiguration $configuration
+	 * @param $userAgent
+	 * @param $disableVerifyPeer
 	 */
-	public function __construct(SiteConfiguration $configuration)
+	public function __construct($userAgent, $disableVerifyPeer)
 	{
 		$this->curlHandle = curl_init();
 
-		curl_setopt($this->curlHandle, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($this->curlHandle, CURLOPT_USERAGENT, $configuration->getUserAgent());
+		curl_setopt($this->curlHandle, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($this->curlHandle, CURLOPT_USERAGENT, $userAgent);
+		curl_setopt($this->curlHandle, CURLOPT_FAILONERROR, true);
 
-		if ($configuration->getCurlDisableVerifyPeer()) {
+		if ($disableVerifyPeer) {
 			curl_setopt($this->curlHandle, CURLOPT_SSL_VERIFYPEER, false);
 		}
 	}
@@ -34,23 +35,29 @@ class HttpHelper
 	/**
 	 * Fetches the content of a URL, with an optional parameter set.
 	 *
-	 * @todo Probably need to make this much, much better.
-	 *
 	 * @param string     $url        The URL to fetch.
 	 * @param null|array $parameters Key/value pair of GET parameters to add to the request.
 	 *                               Null lets you handle it yourself.
 	 *
+	 * @param array      $headers
+	 *
 	 * @return string
 	 * @throws CurlException
 	 */
-	public function get($url, $parameters = null)
+	public function get($url, $parameters = null, $headers = array())
 	{
 		if ($parameters !== null && is_array($parameters)) {
-			$getString = $this->createGetString($parameters);
+			$getString = '?' . http_build_query($parameters);
 			$url .= $getString;
 		}
 
 		curl_setopt($this->curlHandle, CURLOPT_URL, $url);
+
+		// Make sure we're doing a GET
+		curl_setopt($this->curlHandle, CURLOPT_POST, false);
+
+		curl_setopt($this->curlHandle, CURLOPT_HTTPHEADER, $headers);
+
 		$result = curl_exec($this->curlHandle);
 
 		if ($result === false) {
@@ -61,33 +68,28 @@ class HttpHelper
 		return $result;
 	}
 
-	/**
-	 * @param array $parameters
-	 *
-	 * @return string
-	 * @category Security-Critical
-	 */
-	public static function createGetString($parameters)
+	public function post($url, $parameters = null, $headers = array())
 	{
-		$getData = array();
+		curl_setopt($this->curlHandle, CURLOPT_URL, $url);
 
-		foreach ($parameters as $key => $value) {
-			if (is_array($value)) {
-				foreach ($value as $v) {
-					$getData[] = $key . '[]=' . urlencode($v);
-				}
-			}
-			else {
-				if ($value === true) {
-					$getData[] = $key;
-				}
-				else {
-					$getData[] = $key . '=' . urlencode($value);
-				}
-			}
+		// Make sure we're doing a POST
+		curl_setopt($this->curlHandle, CURLOPT_POST, true);
+		curl_setopt($this->curlHandle, CURLOPT_POSTFIELDS, http_build_query($parameters));
+
+		curl_setopt($this->curlHandle, CURLOPT_HTTPHEADER, $headers);
+
+		$result = curl_exec($this->curlHandle);
+
+		if ($result === false) {
+			$error = curl_error($this->curlHandle);
+			throw new CurlException('Remote request failed with error ' . $error);
 		}
-		$getString = '?' . implode('&', $getData);
 
-		return $getString;
+		return $result;
+	}
+
+	public function getError()
+	{
+		return curl_error($this->curlHandle);
 	}
 }

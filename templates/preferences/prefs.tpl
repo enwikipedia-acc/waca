@@ -142,7 +142,7 @@
                 {if !$enforceOAuth }
                     <div class="control-group">
                         <div class="controls">
-                            <a href="{$baseurl}/acc.php?action=oauthdetach" class="btn btn-danger">Detach account</a>
+                            <a href="{$baseurl}/internal.php/oauth/detach" class="btn btn-danger">Detach account</a>
                         </div>
                     </div>
                 {/if}
@@ -154,11 +154,13 @@
                                value="{$currentUser->getOnWikiName()|escape}"/>
                     </div>
                 </div>
-                <div class="control-group">
-                    <div class="controls">
-                        <a href="{$baseurl}/acc.php?action=oauthattach" class="btn btn-success">Attach account</a>
+                <form method="post" action="{$baseurl}/internal.php/oauth/attach">
+                    <div class="control-group">
+                        <div class="controls">
+                            <button type="submit" class="btn btn-success">Attach account</button>
+                        </div>
                     </div>
-                </div>
+                </form>
             {/if}
         </fieldset>
     </div>

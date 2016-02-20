@@ -51,6 +51,9 @@ class SiteConfiguration
 	private $userAgent = 'Wikipedia-ACC Tool/0.1 (+https://accounts.wmflabs.org/internal.php/team)';
 	private $curlDisableVerifyPeer = false;
 	private $useOAuthSignup = true;
+	private $oauthBaseUrl;
+	private $oauthConsumerToken;
+	private $oauthConsumerSecret;
 
 	/**
 	 * Gets the base URL of the tool
@@ -463,5 +466,65 @@ class SiteConfiguration
 	public function getUseOAuthSignup()
 	{
 		return $this->useOAuthSignup;
+	}
+
+	/**
+	 * @param string $oauthBaseUrl
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setOAuthBaseUrl($oauthBaseUrl)
+	{
+		$this->oauthBaseUrl = $oauthBaseUrl;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getOAuthBaseUrl()
+	{
+		return $this->oauthBaseUrl;
+	}
+
+	/**
+	 * @param mixed $oauthConsumerToken
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setOAuthConsumerToken($oauthConsumerToken)
+	{
+		$this->oauthConsumerToken = $oauthConsumerToken;
+
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getOAuthConsumerToken()
+	{
+		return $this->oauthConsumerToken;
+	}
+
+	/**
+	 * @param mixed $oauthConsumerSecret
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setOAuthConsumerSecret($oauthConsumerSecret)
+	{
+		$this->oauthConsumerSecret = $oauthConsumerSecret;
+
+		return $this;
+	}
+
+	/**
+	 * @return mixed
+	 */
+	public function getOAuthConsumerSecret()
+	{
+		return $this->oauthConsumerSecret;
 	}
 }

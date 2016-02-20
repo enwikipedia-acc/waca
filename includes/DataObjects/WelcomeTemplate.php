@@ -138,6 +138,7 @@ SQL
 	 */
 	public function getObjectDescription()
 	{
+		// @todo fixme
 		return '<a href="acc.php?action=templatemgmt&amp;view=' . $this->getId() . '">'
 		. htmlentities($this->usercode) . "</a>";
 	}

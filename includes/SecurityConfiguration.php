@@ -2,7 +2,7 @@
 
 namespace Waca;
 
-use \User;
+use User;
 
 /**
  * Class SecurityConfiguration
@@ -36,23 +36,27 @@ final class SecurityConfiguration
 
 	/**
 	 * @param string $admin
+	 *
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
 	public function setAdmin($admin)
 	{
 		$this->admin = $admin;
+
 		return $this;
 	}
 
 	/**
 	 * @param string $user
+	 *
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
 	public function setUser($user)
 	{
 		$this->user = $user;
+
 		return $this;
 	}
 
@@ -65,56 +69,66 @@ final class SecurityConfiguration
 	 * please ONLY use it in this class in static methods. DO NOT set it to public.
 	 *
 	 * @param string $checkuser
+	 *
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
 	private function setCheckuser($checkuser)
 	{
 		$this->checkuser = $checkuser;
+
 		return $this;
 	}
 
 	/**
 	 * @param string $community
+	 *
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
 	public function setCommunity($community)
 	{
 		$this->community = $community;
+
 		return $this;
 	}
 
 	/**
 	 * @param string $suspended
+	 *
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
 	public function setSuspended($suspended)
 	{
 		$this->suspended = $suspended;
+
 		return $this;
 	}
 
 	/**
 	 * @param string $declined
+	 *
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
 	public function setDeclined($declined)
 	{
 		$this->declined = $declined;
+
 		return $this;
 	}
 
 	/**
 	 * @param string $new
+	 *
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
 	public function setNew($new)
 	{
 		$this->new = $new;
+
 		return $this;
 	}
 
@@ -125,6 +139,7 @@ final class SecurityConfiguration
 	 * that a user should have access to something.
 	 *
 	 * @param User $user
+	 *
 	 * @return bool
 	 * @category Security-Critical
 	 */
@@ -212,12 +227,16 @@ final class SecurityConfiguration
 	{
 		$config = new SecurityConfiguration();
 		$config->setAdmin(self::ALLOW)
-			->setUser(self::ALLOW)
-			->setCheckuser(self::ALLOW)
-			->setCommunity(self::ALLOW)
-			->setSuspended(self::ALLOW)
-			->setDeclined(self::ALLOW)
-			->setNew(self::ALLOW);
+		       ->setUser(self::ALLOW)
+		       ->setCheckuser(self::ALLOW)
+		       ->setCommunity(self::ALLOW)
+		       ->setSuspended(self::ALLOW)
+		       ->setDeclined(self::ALLOW)
+		       ->setNew(self::ALLOW);
+
+		// Public pages shouldn't be inaccessible to logged-in, unidentified users.
+		// Otherwise, logged in but unidentified users can't even log out.
+		$config->requireIdentified = false;
 
 		return $config;
 	}
@@ -232,7 +251,7 @@ final class SecurityConfiguration
 	{
 		$config = new SecurityConfiguration();
 		$config->setAdmin(self::ALLOW)
-			->setUser(self::ALLOW);
+		       ->setUser(self::ALLOW);
 
 		return $config;
 	}
@@ -251,14 +270,33 @@ final class SecurityConfiguration
 		return $config;
 	}
 
+	/**
+	 * Returns a pre-built security configuration for a page accessible to *ALL* logged in users, including suspended
+	 * and new users. This probably isn't the setting you want.
+	 *
+	 * @category Security-Critical
+	 * @return SecurityConfiguration
+	 */
+	public static function allLoggedInUsersPage()
+	{
+		$config = new SecurityConfiguration();
+		$config->setAdmin(self::ALLOW)
+		       ->setUser(self::ALLOW)
+		       ->setDeclined(self::ALLOW)
+		       ->setNew(self::ALLOW)
+		       ->setSuspended(self::ALLOW);
+
+		return $config;
+	}
+
 	public static function checkUserData()
 	{
 		$config = new SecurityConfiguration();
 		$config->setCheckuser(self::ALLOW)
-			->setCommunity(self::DENY)
-			->setSuspended(self::DENY)
-			->setDeclined(self::DENY)
-			->setNew(self::DENY);
+		       ->setCommunity(self::DENY)
+		       ->setSuspended(self::DENY)
+		       ->setDeclined(self::DENY)
+		       ->setNew(self::DENY);
 
 		return $config;
 	}

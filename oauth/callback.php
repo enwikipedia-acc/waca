@@ -1,55 +1,36 @@
 <?php
+namespace Waca;
 
-// OAuth callback script
-// THIS IS AN ENTRY POINT
+/*
+ * OAuth callback script
+ * THIS IS AN ENTRY POINT
+ *
+ * This is hack so we don't have to change the OAuth consumer on-wiki
+ * DON'T DO THIS ELSEWHERE.
+ *
+ * No, really, don't.
+ *
+ * @todo
+ * When you finally get around to binning this file, and I'm guessing it's some point after 2018, you really should make
+ * RequestRouter sealed again, and remove the get/set pair from WebStart. Nothing else should use it. If it does, it
+ * also needs to be binned.
+ *
+ * Yes, that was a subtle (as a sledgehammer) reference to xkcd.com/1421
+ *
+ * Note that binning this file will mean creating a new OAuth consumer, which will invalidate *everyone's* OAuth
+ * credentials, so you'll probably want to be sneaky and push them back down to non-attached users unless the far-flung
+ * future has some fancy new toys to handle this.
+ */
+
+// Change directory so we assume we're in the right place.
 chdir("..");
 
-// stop all output until we want it
-ob_start();
+require_once('config.inc.php');
 
-// load the configuration
-require_once 'config.inc.php';
+global $siteConfiguration;
+$application = new WebStart($siteConfiguration);
 
-// Initialize the session data.
-session_start();
+// Override the routing algorithm. This is also a hack to force this to be routed where we want it to go.
+$application->setRequestRouter(new OAuthRequestRouter());
 
-// Get all the classes.
-require_once 'functions.php';
-require_once 'includes/PdoDatabase.php';
-require_once 'includes/SmartyInit.php'; // this needs to be high up, but below config, functions, and database
-
-$user = User::getByRequestToken($_GET['oauth_token'], gGetDb());
-
-if ($user == false) {
-	BootstrapSkin::displayInternalHeader();
-	BootstrapSkin::displayAlertBox("Could not find request token in local store.", "alert-error", "Error", true, false);
-	BootstrapSkin::displayInternalFooter();
-	die();
-}
-
-global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;
-
-$util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
-
-try {
-	$result = $util->callbackCompleted($user->getOAuthRequestToken(), $user->getOAuthRequestSecret(), $_GET['oauth_verifier']);
-}
-catch (Exception $exception) {
-	BootstrapSkin::displayInternalHeader();
-	BootstrapSkin::displayAlertBox("OAuth Error: {$exception->getMessage()}", "alert-error", "OAuth Error", true, false);
-	BootstrapSkin::displayInternalFooter();
-	die();
-}
-
-$user->setOAuthAccessToken($result->key);
-$user->setOAuthAccessSecret($result->secret);
-$user->setOnWikiName("##OAUTH##");
-$user->save();
-
-if ($user->getStatus() == "New") {
-	header("Location: ../acc.php?action=registercomplete");
-	die();
-}
-
-header("Location: ../acc.php?action=prefs");
-die();
+$application->run();

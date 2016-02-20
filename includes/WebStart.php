@@ -12,6 +12,7 @@ use Waca\Exceptions\EnvironmentException;
 use Waca\Exceptions\ReadableException;
 use Waca\Helpers\EmailHelper;
 use Waca\Helpers\HttpHelper;
+use Waca\Helpers\OAuthHelper;
 use Waca\Helpers\TypeAheadHelper;
 use Waca\Helpers\WikiTextHelper;
 use Waca\Providers\GlobalStateProvider;
@@ -25,6 +26,10 @@ use XffTrustProvider;
 class WebStart
 {
 	/**
+	 * @var IRequestRouter
+	 */
+	private $requestRouter;
+	/**
 	 * @var SiteConfiguration
 	 */
 	private $configuration;
@@ -37,6 +42,7 @@ class WebStart
 	public function __construct(SiteConfiguration $configuration)
 	{
 		$this->configuration = $configuration;
+		$this->requestRouter = new RequestRouter();
 	}
 
 	/**
@@ -194,8 +200,7 @@ HTML;
 	private function main()
 	{
 		// Get the right route for the request
-		$router = new RequestRouter();
-		$page = $router->route();
+		$page = $this->requestRouter->route();
 
 		$page->setSiteConfiguration($this->configuration);
 
@@ -204,21 +209,37 @@ HTML;
 		$page->setDatabase($database);
 
 		// set up helpers and inject them into the page.
+		$httpHelper = new HttpHelper(
+			$this->configuration->getUserAgent(),
+			$this->configuration->getCurlDisableVerifyPeer()
+		);
+
 		$page->setEmailHelper(new EmailHelper());
-		$page->setHttpHelper(new HttpHelper($this->configuration));
+		$page->setHttpHelper($httpHelper);
 		$page->setWikiTextHelper(new WikiTextHelper($this->configuration, $page->getHttpHelper()));
 
 		// todo: inject from configuration
 		$page->setLocationProvider(new FakeLocationProvider($database, null));
 		$page->setXffTrustProvider(new XffTrustProvider($this->configuration->getSquidList(), $database));
 
-		/* @todo Remove this global statement! It's here for Request.php, which does far more than it should. */
-		global $globalXffTrustProvider;
-		$globalXffTrustProvider = $page->getXffTrustProvider();
-
 		$page->setRdnsProvider(new CachedRDnsLookupProvider($database));
 		$page->setAntiSpoofProvider(new CachedApiAntispoofProvider());
 		$page->setTypeAheadHelper(new TypeAheadHelper());
+		$page->setOAuthHelper(new OAuthHelper(
+			$this->configuration->getOAuthBaseUrl(),
+			$this->configuration->getOAuthConsumerToken(),
+			$this->configuration->getOAuthConsumerSecret(),
+			$httpHelper,
+			$this->configuration->getMediawikiWebServiceEndpoint()
+		));
+
+		/* @todo Remove this global statement! It's here for User.php, which does far more than it should. */
+		global $oauthHelper;
+		$oauthHelper = $page->getOAuthHelper();
+
+		/* @todo Remove this global statement! It's here for Request.php, which does far more than it should. */
+		global $globalXffTrustProvider;
+		$globalXffTrustProvider = $page->getXffTrustProvider();
 
 		// run the route code for the request.
 		$page->execute();
@@ -280,5 +301,17 @@ HTML;
 			$currentUser->setForceLogout(0);
 			$currentUser->save();
 		}
+	}
+
+	/**
+	 * Don't use this function
+	 *
+	 * Bin it, but first change the OAuth provider on Wikipedia to use the correct URL and also bin oauth/callback.php.
+	 *
+	 * @param IRequestRouter $router
+	 */
+	public function setRequestRouter(IRequestRouter $router)
+	{
+		$this->requestRouter = $router;
 	}
 }

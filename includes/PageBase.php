@@ -16,6 +16,7 @@ use Waca\Exceptions\NotIdentifiedException;
 use Waca\Fragments\TemplateOutput;
 use Waca\Helpers\HttpHelper;
 use Waca\Helpers\Interfaces\IEmailHelper;
+use Waca\Helpers\Interfaces\IOAuthHelper;
 use Waca\Helpers\Interfaces\ITypeAheadHelper;
 use Waca\Helpers\WikiTextHelper;
 
@@ -52,6 +53,8 @@ abstract class PageBase
 	private $headerQueue = array();
 	/** @var ITypeAheadHelper */
 	private $typeAheadHelper;
+	/** @var IOAuthHelper */
+	private $oauthHelper;
 
 	/**
 	 * Sets the route the request will take. Only should be called from the request router.
@@ -98,6 +101,7 @@ abstract class PageBase
 		}
 
 		$currentUser = User::getCurrent($this->getDatabase());
+
 		// Security barrier.
 		//
 		// This code essentially doesn't care if the user is logged in or not, as the
@@ -211,6 +215,13 @@ abstract class PageBase
 			return;
 		}
 
+		if (User::getCurrent($this->getDatabase())->isNew()) {
+			$registeredSuccessfully = new SessionAlert(
+				'Your request will be reviewed soon by a tool administrator, and you\'ll get an email informing you of the decision. You won\'t be able to access most of the tool until then.',
+				'Account Requested!', 'alert-success', false);
+			SessionAlert::append($registeredSuccessfully);
+		}
+
 		// If we're actually displaying content, we want to add the session alerts here!
 		$this->assign("alerts", SessionAlert::getAlerts());
 		SessionAlert::clearAlerts();
@@ -270,7 +281,7 @@ abstract class PageBase
 		$url = implode("/", $pathInfo);
 
 		if (is_array($parameters) && count($parameters) > 0) {
-			$url .= HttpHelper::createGetString($parameters);
+			$url .= '?' . http_build_query($parameters);
 		}
 
 		$this->redirectUrl($url);
@@ -499,6 +510,22 @@ abstract class PageBase
 	public function setTypeAheadHelper(ITypeAheadHelper $typeAheadHelper)
 	{
 		$this->typeAheadHelper = $typeAheadHelper;
+	}
+
+	/**
+	 * @return IOAuthHelper
+	 */
+	public function getOAuthHelper()
+	{
+		return $this->oauthHelper;
+	}
+
+	/**
+	 * @param IOAuthHelper $oauthHelper
+	 */
+	public function setOAuthHelper($oauthHelper)
+	{
+		$this->oauthHelper = $oauthHelper;
 	}
 
 	/**

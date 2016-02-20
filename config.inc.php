@@ -306,10 +306,20 @@ spl_autoload_register("AutoLoader::load");
 require_once($filepath . 'vendor/autoload.php');
 
 // Extra includes which are just plain awkward wherever they are.
-require_once($filepath . 'oauth/OAuthUtility.php');
-require_once($filepath . 'functions.php');
+require_once($filepath . 'oauth/OAuthRequestRouter.php');
 require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/OAuth.php');
 require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/JWT.php');
+
+// Crap that's needed for libraries. >:(
+/**
+ * Don't use me. I'm only here because the MediaWiki OAuth library we're using requires it.
+ *
+ * @param $section
+ * @param $message
+ */
+function wfDebugLog($section, $message)
+{
+}
 
 // Initialise the site configuration object
 $siteConfiguration = new \Waca\SiteConfiguration();
@@ -330,5 +340,8 @@ $siteConfiguration->setBaseUrl($baseurl)
 	->setUseStrictTransportSecurity($strictTransportSecurityExpiry)
 	->setUserAgent($toolUserAgent)
 	->setCurlDisableVerifyPeer($curlDisableSSLVerifyPeer)
-	->setUseOAuthSignup(false)
+	->setUseOAuthSignup($useOauthSignup)
+	->setOAuthBaseUrl($oauthBaseUrl)
+	->setOAuthConsumerToken($oauthConsumerToken)
+	->setOAuthConsumerSecret($oauthSecretToken)
 	;

@@ -1,4 +1,5 @@
 <?php
+use Waca\Helpers\Interfaces\IOAuthHelper;
 
 /**
  * User data object
@@ -519,7 +520,11 @@ SQL
 	public function setUsername($username)
 	{
 		$this->username = $username;
-		$this->forcelogout = 1;
+
+		// If this isn't a brand new user, then it's a rename, force the logout
+		if (!$this->isNew) {
+			$this->forcelogout = 1;
+		}
 	}
 
 	/**
@@ -1078,7 +1083,7 @@ SQL
 	 * @return null
 	 * @todo move me to a collaborator
 	 */
-	private function clearOAuthData()
+	public function clearOAuthData()
 	{
 		$this->identityCache = null;
 		$this->oauthidentitycache = null;
@@ -1096,11 +1101,12 @@ SQL
 	 */
 	private function getIdentityCache()
 	{
-		global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;
+		/** @var IOAuthHelper $oauthHelper*/
+		global $oauthHelper;
 
 		try {
-			$util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
-			$this->identityCache = $util->getIdentity($this->oauthaccesstoken, $this->oauthaccesssecret);
+			$this->identityCache = $oauthHelper->getIdentityTicket($this->oauthaccesstoken, $this->oauthaccesssecret);
+
 			$this->oauthidentitycache = serialize($this->identityCache);
 			$this->dbObject->prepare("UPDATE user SET oauthidentitycache = :identity WHERE id = :id;")
 			               ->execute(array(":id" => $this->id, ":identity" => $this->oauthidentitycache));
@@ -1113,23 +1119,6 @@ SQL
 
 			SessionAlert::warning("OAuth error getting identity from MediaWiki: " . $ex->getMessage());
 		}
-	}
-
-	/**
-	 * @throws Exception
-	 * @todo move me to a collaborator
-	 */
-	public function detachAccount()
-	{
-		$this->setOnWikiName($this->getOAuthOnWikiName());
-		$this->setOAuthAccessSecret(null);
-		$this->setOAuthAccessToken(null);
-		$this->setOAuthRequestSecret(null);
-		$this->setOAuthRequestToken(null);
-
-		$this->clearOAuthData();
-
-		$this->save();
 	}
 
 	/**

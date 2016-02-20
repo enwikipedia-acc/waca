@@ -1,0 +1,161 @@
+<?php
+
+namespace Waca\Pages;
+
+use User;
+use Waca\Exceptions\ApplicationLogicException;
+use Waca\PageBase;
+use Waca\SecurityConfiguration;
+use Waca\Session;
+use Waca\WebRequest;
+
+class PageOAuth extends PageBase
+{
+	/**
+	 * Attach entry point
+	 *
+	 * must be posted, or will redirect to preferences
+	 */
+	protected function attach()
+	{
+		if (!WebRequest::wasPosted()) {
+			$this->redirect('preferences');
+
+			return;
+		}
+
+		$oauthHelper = $this->getOAuthHelper();
+		$user = User::getCurrent($this->getDatabase());
+
+		$requestToken = $oauthHelper->getRequestToken();
+
+		$user->setOAuthRequestToken($requestToken->key);
+		$user->setOAuthRequestSecret($requestToken->secret);
+		$user->save();
+
+		$this->redirectUrl($oauthHelper->getAuthoriseUrl($requestToken->key));
+	}
+
+	/**
+	 * Detach account entry point
+	 */
+	protected function detach()
+	{
+		$user = User::getCurrent($this->getDatabase());
+
+		$user->setOnWikiName($user->getOnWikiName());
+		$user->setOAuthAccessSecret(null);
+		$user->setOAuthAccessToken(null);
+		$user->setOAuthRequestSecret(null);
+		$user->setOAuthRequestToken(null);
+
+		$user->clearOAuthData();
+
+		$user->setForcelogout(true);
+
+		$user->save();
+
+		// force the user to log out
+		Session::destroy();
+
+		$this->redirect('login');
+	}
+
+	/**
+	 * Callback entry point
+	 */
+	protected function callback()
+	{
+		$oauthToken = WebRequest::getString('oauth_token');
+		$oauthVerifier = WebRequest::getString('oauth_verifier');
+
+		$this->doCallbackValidation($oauthToken, $oauthVerifier);
+
+		$user = User::getByRequestToken($oauthToken, $this->getDatabase());
+		if ($user === false) {
+			throw new ApplicationLogicException('Token not found in store, please try again');
+		}
+
+		$accessToken = $this->getOAuthHelper()->callbackCompleted(
+			$user->getOAuthRequestToken(),
+			$user->getOAuthRequestSecret(),
+			$oauthVerifier);
+
+		$user->setOAuthRequestSecret(null);
+		$user->setOAuthRequestToken(null);
+		$user->setOAuthAccessToken($accessToken->key);
+		$user->setOAuthAccessSecret($accessToken->secret);
+
+		// @todo we really should stop doing this kind of thing... it adds performance bottlenecks and breaks 3NF
+		$user->setOnWikiName('##OAUTH##');
+
+		$user->save();
+
+		// OK, we're the same session that just did a partial login that was redirected to OAuth. Let's upgrade the
+		// login to a full login
+		if (WebRequest::getPartialLogin() === $user->getId()) {
+			WebRequest::setLoggedInUser($user);
+		}
+
+		// My thinking is there are three cases here:
+		//   a) new user => redirect to prefs - it's the only thing they can access other than stats
+		//   b) existing user hit the connect button in prefs => redirect to prefs since it's where they were
+		//   c) existing user logging in => redirect to wherever they came from
+		$redirectDestination = WebRequest::clearPostLoginRedirect();
+		if ($redirectDestination !== null && !$user->isNew()) {
+			$this->redirectUrl($redirectDestination);
+		}
+		else {
+			$this->redirect('preferences');
+		}
+	}
+
+	/**
+	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
+	 * the return value from this function.
+	 *
+	 * If this page even supports actions, you will need to check the route
+	 *
+	 * @return SecurityConfiguration
+	 * @category Security-Critical
+	 */
+	protected function getSecurityConfiguration()
+	{
+		if ($this->getRouteName() === 'callback') {
+			return SecurityConfiguration::publicPage();
+		}
+
+		if ($this->getRouteName() === 'detach' && $this->getSiteConfiguration()->getEnforceOAuth()) {
+			// Deny detach when this OAuth is enforced.
+			return new SecurityConfiguration();
+		}
+
+		return SecurityConfiguration::allLoggedInUsersPage();
+	}
+
+	/**
+	 * Main function for this page, when no specific actions are called.
+	 * @return void
+	 */
+	protected function main()
+	{
+		$this->redirect('preferences');
+	}
+
+	/**
+	 * @param string $oauthToken
+	 * @param string $oauthVerifier
+	 *
+	 * @throws ApplicationLogicException
+	 */
+	protected function doCallbackValidation($oauthToken, $oauthVerifier)
+	{
+		if ($oauthToken === null) {
+			throw new ApplicationLogicException('No token provided');
+		}
+
+		if ($oauthVerifier === null) {
+			throw new ApplicationLogicException('No oauth verifier provided.');
+		}
+	}
+}

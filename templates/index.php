@@ -1,2 +1,2 @@
 <?php
-header("Location: ../acc.php");
+header("Location: ../internal.php");

@@ -46,7 +46,8 @@ class PageRegister extends PageBase
 	/**
 	 * Entry point for registration complete
 	 */
-	protected function done() {
+	protected function done()
+	{
 		$this->setTemplate('registration/alert-registrationcomplete.tpl');
 	}
 
@@ -104,7 +105,7 @@ class PageRegister extends PageBase
 
 		$this->validateUniqueEmail($emailAddress);
 
-		if ($useOAuthSignup) {
+		if (!$useOAuthSignup) {
 			if ($confirmationId === null || $confirmationId <= 0) {
 				throw new ApplicationLogicException('Please enter the revision id of your confirmation edit.');
 			}
@@ -154,13 +155,22 @@ class PageRegister extends PageBase
 		Logger::newUser($this->getDatabase(), $user);
 
 		if ($useOAuthSignup) {
-			throw new ApplicationLogicException('not implemented yet!');
-			// @todo implement me!
+			$oauthHelper = $this->getOAuthHelper();
+
+			$requestToken = $oauthHelper->getRequestToken();
+			$user->setOAuthRequestToken($requestToken->key);
+			$user->setOAuthRequestSecret($requestToken->secret);
+			$user->save();
+
+			WebRequest::setPartialLogin($user);
+
+			$this->redirectUrl($oauthHelper->getAuthoriseUrl($requestToken->key));
 		}
 		else {
 			// only notify if we're not using the oauth signup.
 			Notification::userNew($user);
-			$this->redirect('register', 'done');
+			WebRequest::setLoggedInUser($user);
+			$this->redirect('preferences');
 		}
 	}
 }

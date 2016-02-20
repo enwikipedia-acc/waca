@@ -13,6 +13,7 @@ use Waca\Pages\PageLog;
 use Waca\Pages\PageLogin;
 use Waca\Pages\PageLogout;
 use Waca\Pages\PageMain;
+use Waca\Pages\PageOAuth;
 use Waca\Pages\PagePreferences;
 use Waca\Pages\PageRegister;
 use Waca\Pages\PageSearch;
@@ -42,7 +43,7 @@ use Waca\Pages\Statistics\StatsUsers;
  * @package  Waca
  * @category Security-Critical
  */
-final class RequestRouter
+class RequestRouter implements IRequestRouter
 {
 	/**
 	 * This is the core routing table for the application. The basic idea is:
@@ -108,7 +109,7 @@ final class RequestRouter
 				'class'   => PageForgotPassword::class,
 				'actions' => array('reset'),
 			),
-		'register'              =>
+		'register'                    =>
 			array(
 				'class'   => PageRegister::class,
 				'actions' => array('done'),
@@ -164,6 +165,11 @@ final class RequestRouter
 			array(
 				'class'   => PagePreferences::class,
 				'actions' => array('changePassword'),
+			),
+		'oauth'                       =>
+			array(
+				'class'   => PageOAuth::class,
+				'actions' => array('detach', 'attach'),
 			),
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////
@@ -289,7 +295,7 @@ final class RequestRouter
 	 * @return PageBase
 	 * @throws Exception
 	 */
-	public function route()
+	final public function route()
 	{
 		$pathInfo = WebRequest::pathInfo();
 
@@ -358,7 +364,7 @@ final class RequestRouter
 	 *
 	 * @return array
 	 */
-	private function routeSinglePathSegment($classSegment)
+	final protected function routeSinglePathSegment($classSegment)
 	{
 		if (array_key_exists($classSegment, $this->routeMap)) {
 			// Route exists, but we don't have an action in path info, so default to main.
@@ -382,7 +388,7 @@ final class RequestRouter
 	 *
 	 * @return array
 	 */
-	private function routePathSegments($classSegment, $requestedAction)
+	final protected function routePathSegments($classSegment, $requestedAction)
 	{
 		if (array_key_exists($classSegment, $this->routeMap)) {
 			// Route exists, but we don't have an action in path info, so default to main.

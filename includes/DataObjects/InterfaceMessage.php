@@ -185,6 +185,7 @@ SQL
 	 */
 	public function getObjectDescription()
 	{
+		// @todo fixme
 		$description = '<a href="acc.php?action=messagemgmt&amp;view=' . $this->getId() . '">'
 			. htmlentities($this->description)
 			. "</a>";

@@ -14,7 +14,7 @@
 
 // Get all the classes.
 require_once 'config.inc.php';
-require_once 'functions.php';
+// @todo this requires work, since functions.php has been deleted.
 
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
@@ -51,7 +51,8 @@ if (isset($_GET['action']) && $_GET['action'] == "confirm") {
 			BootstrapSkin::displayPublicFooter();  
 			die();
 		}
-        
+
+		/** @var Request $request */
 		$request = Request::getById($_GET['id'], $database);
         
 		if ($request === false) {

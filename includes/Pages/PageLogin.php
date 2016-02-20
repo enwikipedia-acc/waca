@@ -42,11 +42,25 @@ class PageLogin extends PageBase
 			$user->setForcelogout(false);
 			$user->save();
 
-			// TODO: OAuth code
+			if ($this->getSiteConfiguration()->getEnforceOAuth()) {
+				if (!$user->isOAuthLinked()) {
+					$oauthHelper = $this->getOAuthHelper();
+
+					$requestToken = $oauthHelper->getRequestToken();
+					$user->setOAuthRequestToken($requestToken->key);
+					$user->setOAuthRequestSecret($requestToken->secret);
+					$user->save();
+
+					WebRequest::setPartialLogin($user);
+					$this->redirectUrl($oauthHelper->getAuthoriseUrl($requestToken->key));
+
+					return;
+				}
+			}
 
 			WebRequest::setLoggedInUser($user);
 
-			$this->goBackWhenceYouCame();
+			$this->goBackWhenceYouCame($user);
 		}
 		else {
 			// GET. Show the form
@@ -93,8 +107,10 @@ class PageLogin extends PageBase
 
 	/**
 	 * Redirect the user back to wherever they came from after a successful login
+	 *
+	 * @param User $user
 	 */
-	private function goBackWhenceYouCame()
+	private function goBackWhenceYouCame(User $user)
 	{
 		// Redirect to wherever the user came from
 		$redirectDestination = WebRequest::clearPostLoginRedirect();
@@ -102,8 +118,14 @@ class PageLogin extends PageBase
 			$this->redirectUrl($redirectDestination);
 		}
 		else {
-			// go to the home page
-			$this->redirect("");
+			if ($user->isNew()) {
+				// home page isn't allowed, go to preferences instead
+				$this->redirect('preferences');
+			}
+			else {
+				// go to the home page
+				$this->redirect('');
+			}
 		}
 	}
 }

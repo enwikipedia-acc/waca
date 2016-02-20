@@ -8,7 +8,8 @@ ini_set('memory_limit', '256M');
 
 require_once 'config.inc.php';
 require_once 'includes/PdoDatabase.php';
-require_once 'functions.php';
+
+// @todo this requires work, since functions.php has been deleted.
 
 echo "Fetching file...\n";
 
