@@ -227,12 +227,12 @@ final class SecurityConfiguration
 	{
 		$config = new SecurityConfiguration();
 		$config->setAdmin(self::ALLOW)
-		       ->setUser(self::ALLOW)
-		       ->setCheckuser(self::ALLOW)
-		       ->setCommunity(self::ALLOW)
-		       ->setSuspended(self::ALLOW)
-		       ->setDeclined(self::ALLOW)
-		       ->setNew(self::ALLOW);
+			->setUser(self::ALLOW)
+			->setCheckuser(self::ALLOW)
+			->setCommunity(self::ALLOW)
+			->setSuspended(self::ALLOW)
+			->setDeclined(self::ALLOW)
+			->setNew(self::ALLOW);
 
 		// Public pages shouldn't be inaccessible to logged-in, unidentified users.
 		// Otherwise, logged in but unidentified users can't even log out.
@@ -250,8 +250,7 @@ final class SecurityConfiguration
 	public static function internalPage()
 	{
 		$config = new SecurityConfiguration();
-		$config->setAdmin(self::ALLOW)
-		       ->setUser(self::ALLOW);
+		$config->setAdmin(self::ALLOW)->setUser(self::ALLOW);
 
 		return $config;
 	}
@@ -281,10 +280,10 @@ final class SecurityConfiguration
 	{
 		$config = new SecurityConfiguration();
 		$config->setAdmin(self::ALLOW)
-		       ->setUser(self::ALLOW)
-		       ->setDeclined(self::ALLOW)
-		       ->setNew(self::ALLOW)
-		       ->setSuspended(self::ALLOW);
+			->setUser(self::ALLOW)
+			->setDeclined(self::ALLOW)
+			->setNew(self::ALLOW)
+			->setSuspended(self::ALLOW);
 
 		return $config;
 	}
@@ -293,10 +292,10 @@ final class SecurityConfiguration
 	{
 		$config = new SecurityConfiguration();
 		$config->setCheckuser(self::ALLOW)
-		       ->setCommunity(self::DENY)
-		       ->setSuspended(self::DENY)
-		       ->setDeclined(self::DENY)
-		       ->setNew(self::DENY);
+			->setCommunity(self::DENY)
+			->setSuspended(self::DENY)
+			->setDeclined(self::DENY)
+			->setNew(self::DENY);
 
 		return $config;
 	}

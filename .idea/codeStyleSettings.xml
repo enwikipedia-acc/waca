@@ -20,6 +20,7 @@
         </XML>
         <codeStyleSettings language="PHP">
           <option name="RIGHT_MARGIN" value="120" />
+          <option name="KEEP_LINE_BREAKS" value="false" />
           <option name="KEEP_FIRST_COLUMN_COMMENT" value="false" />
           <option name="KEEP_CONTROL_STATEMENT_IN_ONE_LINE" value="false" />
           <option name="KEEP_BLANK_LINES_IN_DECLARATIONS" value="0" />
@@ -30,8 +31,8 @@
           <option name="WHILE_ON_NEW_LINE" value="true" />
           <option name="CATCH_ON_NEW_LINE" value="true" />
           <option name="FINALLY_ON_NEW_LINE" value="true" />
-          <option name="ALIGN_MULTILINE_CHAINED_METHODS" value="true" />
           <option name="ALIGN_MULTILINE_PARAMETERS" value="false" />
+          <option name="ALIGN_MULTILINE_FOR" value="false" />
           <option name="CALL_PARAMETERS_WRAP" value="1" />
           <option name="METHOD_PARAMETERS_WRAP" value="5" />
           <option name="METHOD_PARAMETERS_LPAREN_ON_NEXT_LINE" value="true" />
