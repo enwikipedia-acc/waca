@@ -9,6 +9,8 @@ class StatsFastCloses extends PageBase
 {
 	public function main()
 	{
+		$this->setHtmlTitle('Fast Closes :: Statistics');
+
 		$query = <<<SQL
 SELECT
   log_closed.objectid AS request,

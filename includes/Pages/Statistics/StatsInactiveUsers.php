@@ -10,6 +10,8 @@ class StatsInactiveUsers extends PageBase
 {
 	public function main()
 	{
+		$this->setHtmlTitle('Inactive Users :: Statistics');
+
 		$showImmune = false;
 		if (WebRequest::getBoolean('showimmune')) {
 			$showImmune = true;

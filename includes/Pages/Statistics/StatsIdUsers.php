@@ -9,6 +9,8 @@ class StatsIdUsers extends PageBase
 {
 	public function main()
 	{
+		$this->setHtmlTitle('Identified Users :: Statistics');
+
 		$query = "SELECT id, username, status, checkuser FROM user WHERE identified = 1 ORDER BY username;";
 
 		$database = $this->getDatabase();

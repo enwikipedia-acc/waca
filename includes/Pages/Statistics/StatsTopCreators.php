@@ -9,6 +9,8 @@ class StatsTopCreators extends PageBase
 {
 	public function main()
 	{
+		$this->setHtmlTitle('Top Creators :: Statistics');
+
 		// Retrieve all-time stats
 		$queryAllTime = <<<SQL
 SELECT

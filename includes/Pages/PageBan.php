@@ -21,6 +21,8 @@ class PageBan extends PageBase
 	 */
 	protected function main()
 	{
+		$this->setHtmlTitle('Bans');
+
 		$bans = Ban::getActiveBans();
 
 		$this->assign("activebans", $bans);
@@ -32,6 +34,8 @@ class PageBan extends PageBase
 	 */
 	protected function set()
 	{
+		$this->setHtmlTitle('Bans');
+
 		// dual-mode action
 		if (WebRequest::wasPosted()) {
 			$this->handlePostMethodForSetBan();
@@ -46,6 +50,8 @@ class PageBan extends PageBase
 	 */
 	protected function remove()
 	{
+		$this->setHtmlTitle('Bans');
+
 		$ban = $this->getBanForUnban();
 
 		// dual mode

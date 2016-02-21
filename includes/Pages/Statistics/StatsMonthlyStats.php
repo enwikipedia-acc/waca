@@ -9,6 +9,8 @@ class StatsMonthlyStats extends PageBase
 {
 	public function main()
 	{
+		$this->setHtmlTitle('Monthly Stats :: Statistics');
+
 		$query = <<<SQL
 SELECT
     COUNT(DISTINCT id) AS closed,

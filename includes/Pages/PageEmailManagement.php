@@ -44,6 +44,8 @@ class PageEmailManagement extends PageBase
 	 */
 	protected function main()
 	{
+		$this->setHtmlTitle('Close Emails');
+
 		// Get all active email templates
 		$activeTemplates = EmailTemplate::getAllActiveTemplates();
 		$inactiveTemplates = EmailTemplate::getAllInactiveTemplates();
@@ -56,6 +58,8 @@ class PageEmailManagement extends PageBase
 
 	protected function view()
 	{
+		$this->setHtmlTitle('Close Emails');
+
 		$database = $this->getDatabase();
 		$template = $this->getTemplate($database);
 
@@ -92,6 +96,8 @@ class PageEmailManagement extends PageBase
 
 	protected function edit()
 	{
+		$this->setHtmlTitle('Close Emails');
+
 		$database = $this->getDatabase();
 		$template = $this->getTemplate($database);
 
@@ -159,6 +165,8 @@ class PageEmailManagement extends PageBase
 
 	protected function create()
 	{
+		$this->setHtmlTitle('Close Emails');
+
 		$database = $this->getDatabase();
 
 		$requestStates = $this->getSiteConfiguration()->getRequestStates();

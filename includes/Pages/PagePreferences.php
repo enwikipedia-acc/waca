@@ -17,6 +17,8 @@ class PagePreferences extends PageBase
 	 */
 	protected function main()
 	{
+		$this->setHtmlTitle('Preferences');
+
 		$enforceOAuth = $this->getSiteConfiguration()->getEnforceOAuth();
 
 		// Dual mode
@@ -44,6 +46,8 @@ class PagePreferences extends PageBase
 
 	protected function changePassword()
 	{
+		$this->setHtmlTitle('Change Password');
+
 		if (WebRequest::wasPosted()) {
 			$oldPassword = WebRequest::postString('oldpassword');
 			$newPassword = WebRequest::postString('newpassword');

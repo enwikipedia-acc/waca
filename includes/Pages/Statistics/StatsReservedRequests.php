@@ -9,6 +9,8 @@ class StatsReservedRequests extends PageBase
 {
 	public function main()
 	{
+		$this->setHtmlTitle('Reserved Requests :: Statistics');
+
 		$query = <<<sql
 SELECT
     p.id AS requestid,

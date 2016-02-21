@@ -17,6 +17,8 @@ class PageLog extends PageBase
 	 */
 	protected function main()
 	{
+		$this->setHtmlTitle('Logs');
+
 		$filterUser = WebRequest::getString('filterUser');
 		$filterAction = WebRequest::getString('filterAction');
 

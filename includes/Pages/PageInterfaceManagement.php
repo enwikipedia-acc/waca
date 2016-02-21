@@ -17,6 +17,8 @@ class PageInterfaceManagement extends PageBase
 	 */
 	protected function main()
 	{
+		$this->setHtmlTitle('Site Notice');
+
 		$database = $this->getDatabase();
 
 		/** @var InterfaceMessage $siteNoticeMessage */

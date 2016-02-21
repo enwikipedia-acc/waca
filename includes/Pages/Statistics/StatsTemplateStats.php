@@ -9,6 +9,8 @@ class StatsTemplateStats extends PageBase
 {
 	public function main()
 	{
+		$this->setHtmlTitle('Template Stats :: Statistics');
+
 		$query = <<<SQL
 SELECT
     t.id AS templateid,

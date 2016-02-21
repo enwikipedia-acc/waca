@@ -17,6 +17,8 @@ class PageSearch extends PageBase
 	 */
 	protected function main()
 	{
+		$this->setHtmlTitle('Search');
+
 		// Dual-mode page
 		if (WebRequest::wasPosted()) {
 			// TODO: logging

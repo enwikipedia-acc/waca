@@ -22,6 +22,8 @@ class PageUserManagement extends PageBase
 	 */
 	protected function main()
 	{
+		$this->setHtmlTitle('User Management');
+
 		$database = $this->getDatabase();
 
 		if (WebRequest::getBoolean("showAll")) {
@@ -57,6 +59,8 @@ class PageUserManagement extends PageBase
 	 */
 	protected function suspend()
 	{
+		$this->setHtmlTitle('User Management');
+
 		$database = $this->getDatabase();
 
 		$userId = WebRequest::getInt('user');
@@ -105,6 +109,8 @@ class PageUserManagement extends PageBase
 	 */
 	protected function decline()
 	{
+		$this->setHtmlTitle('User Management');
+
 		$database = $this->getDatabase();
 
 		$userId = WebRequest::getInt('user');
@@ -151,6 +157,8 @@ class PageUserManagement extends PageBase
 	 */
 	protected function demote()
 	{
+		$this->setHtmlTitle('User Management');
+
 		$database = $this->getDatabase();
 
 		$userId = WebRequest::getInt('user');
@@ -197,6 +205,8 @@ class PageUserManagement extends PageBase
 	 */
 	protected function approve()
 	{
+		$this->setHtmlTitle('User Management');
+
 		$database = $this->getDatabase();
 
 		$userId = WebRequest::getInt('user');
@@ -237,6 +247,8 @@ class PageUserManagement extends PageBase
 	 */
 	protected function promote()
 	{
+		$this->setHtmlTitle('User Management');
+
 		$database = $this->getDatabase();
 
 		$userId = WebRequest::getInt('user');
@@ -281,6 +293,8 @@ class PageUserManagement extends PageBase
 	 */
 	protected function rename()
 	{
+		$this->setHtmlTitle('User Management');
+
 		$database = $this->getDatabase();
 
 		$userId = WebRequest::getInt('user');
@@ -338,6 +352,8 @@ class PageUserManagement extends PageBase
 	 */
 	protected function editUser()
 	{
+		$this->setHtmlTitle('User Management');
+
 		$database = $this->getDatabase();
 
 		$userId = WebRequest::getInt('user');

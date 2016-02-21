@@ -8,6 +8,8 @@ class StatsMain extends PageBase
 {
 	public function main()
 	{
+		$this->setHtmlTitle('Statistics');
+
 		$this->assign('statsPageTitle', 'Account Creation Statistics');
 
 		$statsPages = array(

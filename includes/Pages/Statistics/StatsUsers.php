@@ -12,6 +12,8 @@ class StatsUsers extends PageBase
 {
 	public function main()
 	{
+		$this->setHtmlTitle('Users :: Statistics');
+
 		$database = $this->getDatabase();
 
 		$lists = array(
@@ -49,6 +51,9 @@ class StatsUsers extends PageBase
 		if ($user == false) {
 			throw new ApplicationLogicException('User not found');
 		}
+
+		$safeUsername = htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8');
+		$this->setHtmlTitle($safeUsername . ' :: Users :: Statistics');
 
 		$activitySummary = $database->prepare(<<<SQL
 SELECT COALESCE(closes.mail_desc, log.action) AS action, COUNT(*) AS count
