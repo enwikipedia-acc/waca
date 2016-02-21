@@ -153,17 +153,18 @@ final class SecurityConfiguration
 		}
 
 		try {
-			$allowed = $allowed || ($user->isAdmin() && $this->test($this->admin));
-			$allowed = $allowed || ($user->isUser() && $this->test($this->user));
-			$allowed = $allowed || ($user->isCommunityUser() && $this->test($this->community));
-			$allowed = $allowed || ($user->isSuspended() && $this->test($this->suspended));
-			$allowed = $allowed || ($user->isDeclined() && $this->test($this->declined));
-			$allowed = $allowed || ($user->isNew() && $this->test($this->new));
-			$allowed = $allowed || ($user->isCheckuser() && $this->test($this->checkuser));
+			$allowed = $this->test($this->admin, $user->isAdmin())
+				|| $this->test($this->user, $user->isUser())
+				|| $this->test($this->community, $user->isCommunityUser())
+				|| $this->test($this->suspended, $user->isSuspended())
+				|| $this->test($this->declined, $user->isDeclined())
+				|| $this->test($this->new, $user->isNew())
+				|| $this->test($this->checkuser, $user->isCheckuser());
 
 			return $allowed;
 		}
 		catch (AccessDeniedException $ex) {
+			// something is set to deny.
 			return false;
 		}
 	}
@@ -257,13 +258,18 @@ final class SecurityConfiguration
 
 	/**
 	 * @param $value
+	 * @param $filter
 	 *
 	 * @return bool
 	 * @throws AccessDeniedException
 	 * @category Security-Critical
 	 */
-	private function test($value)
+	private function test($value, $filter)
 	{
+		if (!$filter) {
+			return false;
+		}
+
 		if ($value == SecurityConfiguration::DENY) {
 			// FILE_NOT_FOUND...?
 			throw new AccessDeniedException();
