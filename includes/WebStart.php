@@ -23,16 +23,12 @@ use XffTrustProvider;
  *
  * @package Waca
  */
-class WebStart
+class WebStart extends ApplicationBase
 {
 	/**
 	 * @var IRequestRouter
 	 */
 	private $requestRouter;
-	/**
-	 * @var SiteConfiguration
-	 */
-	private $configuration;
 
 	/**
 	 * WebStart constructor.
@@ -41,7 +37,7 @@ class WebStart
 	 */
 	public function __construct(SiteConfiguration $configuration)
 	{
-		$this->configuration = $configuration;
+		parent::__construct($configuration);
 		$this->requestRouter = new RequestRouter();
 	}
 
@@ -151,10 +147,10 @@ HTML;
 	 * @return bool
 	 * @throws EnvironmentException
 	 */
-	private function setupEnvironment()
+	protected function setupEnvironment()
 	{
 		// initialise global exception handler
-		set_exception_handler(array(self::class, "exceptionHandler"));
+		set_exception_handler(array(self::class, 'exceptionHandler'));
 
 		// start output buffering if necessary
 		if (ob_get_level() === 0) {
@@ -172,13 +168,9 @@ HTML;
 			return false;
 		}
 
-		// check the schema version
-		$database = PdoDatabase::getDatabaseConnection("acc");
-
-		/** @var int $actualVersion */
-		$actualVersion = (int)$database->query("SELECT version FROM schemaversion")->fetchColumn();
-		if ($actualVersion !== $this->configuration->getSchemaVersion()) {
-			throw new EnvironmentException("Database schema is wrong version! Please either update configuration or database.");
+		// Call parent setup
+		if(!parent::setupEnvironment()){
+			return false;
 		}
 
 		// Start up sessions
@@ -188,7 +180,7 @@ HTML;
 		// get the current user cached.
 		// I'm not sure if this function call being here is particularly a good thing, but it's part of starting up a
 		// session I suppose.
-		$this->checkForceLogout($database);
+		$this->checkForceLogout();
 
 		// environment initialised!
 		return true;
@@ -197,41 +189,15 @@ HTML;
 	/**
 	 * Main application logic
 	 */
-	private function main()
+	protected function main()
 	{
 		// Get the right route for the request
 		$page = $this->requestRouter->route();
 
-		$page->setSiteConfiguration($this->configuration);
-
-		// setup the global database object
+		$siteConfiguration = $this->getConfiguration();
 		$database = PdoDatabase::getDatabaseConnection('acc');
-		$page->setDatabase($database);
 
-		// set up helpers and inject them into the page.
-		$httpHelper = new HttpHelper(
-			$this->configuration->getUserAgent(),
-			$this->configuration->getCurlDisableVerifyPeer()
-		);
-
-		$page->setEmailHelper(new EmailHelper());
-		$page->setHttpHelper($httpHelper);
-		$page->setWikiTextHelper(new WikiTextHelper($this->configuration, $page->getHttpHelper()));
-
-		// todo: inject from configuration
-		$page->setLocationProvider(new FakeLocationProvider($database, null));
-		$page->setXffTrustProvider(new XffTrustProvider($this->configuration->getSquidList(), $database));
-
-		$page->setRdnsProvider(new CachedRDnsLookupProvider($database));
-		$page->setAntiSpoofProvider(new CachedApiAntispoofProvider());
-		$page->setTypeAheadHelper(new TypeAheadHelper());
-		$page->setOAuthHelper(new OAuthHelper(
-			$this->configuration->getOAuthBaseUrl(),
-			$this->configuration->getOAuthConsumerToken(),
-			$this->configuration->getOAuthConsumerSecret(),
-			$httpHelper,
-			$this->configuration->getMediawikiWebServiceEndpoint()
-		));
+		$this->setupHelpers($page, $siteConfiguration, $database);
 
 		/* @todo Remove this global statement! It's here for User.php, which does far more than it should. */
 		global $oauthHelper;
@@ -251,7 +217,7 @@ HTML;
 	 * Note that we need to be very careful here, as exceptions may have been thrown and handled.
 	 * This should *only* be for cleaning up, no logic should go here.
 	 */
-	private function cleanupEnvironment()
+	protected function cleanupEnvironment()
 	{
 		// Clean up anything we splurged after sending the page.
 		if (ob_get_level() > 0) {
@@ -280,8 +246,10 @@ HTML;
 		);
 	}
 
-	private function checkForceLogout(PdoDatabase $database)
+	private function checkForceLogout()
 	{
+		$database = PdoDatabase::getDatabaseConnection('acc');
+
 		$sessionUserId = WebRequest::getSessionUserId();
 		iF ($sessionUserId === null) {
 			return;

@@ -131,4 +131,35 @@ class XffTrustProvider implements IXffTrustProvider
 
 		return false;
 	}
+
+	/**
+	 * Explodes a CIDR range into an array of addresses
+	 *
+	 * @param string $range A CIDR-format range
+	 *
+	 * @return array An array containing every IP address in the range
+	 */
+	public function explodeCidr($range)
+	{
+		$cidrData = explode('/', $range);
+
+		if (!isset($cidrData[1])) {
+			return array($range);
+		}
+
+		$blow = (
+			str_pad(decbin(ip2long($cidrData[0])), 32, "0", STR_PAD_LEFT) &
+			str_pad(str_pad("", $cidrData[1], "1"), 32, "0")
+		);
+		$bhigh = ($blow | str_pad(str_pad("", $cidrData[1], "0"), 32, "1"));
+
+		$list = array();
+
+		$bindecBHigh = bindec($bhigh);
+		for ($x = bindec($blow); $x <= $bindecBHigh; $x++) {
+			$list[] = long2ip($x);
+		}
+
+		return $list;
+	}
 }

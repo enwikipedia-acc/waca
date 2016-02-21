@@ -17,6 +17,7 @@ class SiteConfiguration
 	private $debuggingTraceEnabled;
 	private $dataClearIp = '127.0.0.1';
 	private $dataClearEmail = 'acc@toolserver.org';
+	private $dataClearInterval = '15 DAY';
 	private $forceIdentification = true;
 	private $mediawikiScriptPath = "https://en.wikipedia.org/w/index.php";
 	private $mediawikiWebServiceEndpoint = "";
@@ -54,6 +55,7 @@ class SiteConfiguration
 	private $oauthBaseUrl;
 	private $oauthConsumerToken;
 	private $oauthConsumerSecret;
+	private $xffTrustedHostsFile = '../TrustedXFF/trusted-hosts.txt';
 
 	/**
 	 * Gets the base URL of the tool
@@ -526,5 +528,45 @@ class SiteConfiguration
 	public function getOAuthConsumerSecret()
 	{
 		return $this->oauthConsumerSecret;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDataClearInterval()
+	{
+		return $this->dataClearInterval;
+	}
+
+	/**
+	 * @param string $dataClearInterval
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setDataClearInterval($dataClearInterval)
+	{
+		$this->dataClearInterval = $dataClearInterval;
+
+		return $this;
+	}
+
+	/**
+	 * @param string $xffTrustedHostsFile
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setXffTrustedHostsFile($xffTrustedHostsFile)
+	{
+		$this->xffTrustedHostsFile = $xffTrustedHostsFile;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getXffTrustedHostsFile()
+	{
+		return $this->xffTrustedHostsFile;
 	}
 }

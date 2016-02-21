@@ -251,6 +251,15 @@ SQL
 	}
 
 	/**
+	 * @deprecated
+	 * @return User
+	 */
+	public function getReservedObject()
+	{
+		return User::getById($this->reserved, gGetDb());
+	}
+
+	/**
 	 * @param int|null $reserved
 	 */
 	public function setReserved($reserved)

@@ -2,11 +2,6 @@
 namespace Waca;
 
 use Exception;
-use IAntiSpoofProvider;
-use ILocationProvider;
-use IRDnsProvider;
-use IXffTrustProvider;
-use PdoDatabase;
 use SessionAlert;
 use TransactionException;
 use User;
@@ -14,13 +9,8 @@ use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\NotIdentifiedException;
 use Waca\Fragments\TemplateOutput;
-use Waca\Helpers\HttpHelper;
-use Waca\Helpers\Interfaces\IEmailHelper;
-use Waca\Helpers\Interfaces\IOAuthHelper;
-use Waca\Helpers\Interfaces\ITypeAheadHelper;
-use Waca\Helpers\WikiTextHelper;
 
-abstract class PageBase
+abstract class PageBase extends TaskBase
 {
 	use TemplateOutput;
 	/** @var string The name of the route to use, as determined by the request router. */
@@ -29,32 +19,10 @@ abstract class PageBase
 	private $template = "base.tpl";
 	/** @var string HTML title. Currently unused. */
 	private $htmlTitle;
-	/** @var IEmailHelper */
-	private $emailHelper;
-	/** @var SiteConfiguration */
-	private $siteConfiguration;
-	/** @var HttpHelper */
-	private $httpHelper;
-	/** @var WikiTextHelper */
-	private $wikiTextHelper;
-	/** @var ILocationProvider */
-	private $locationProvider;
-	/** @var IXffTrustProvider */
-	private $xffTrustProvider;
-	/** @var IRDnsProvider */
-	private $rdnsProvider;
-	/** @var IAntiSpoofProvider */
-	private $antiSpoofProvider;
 	/** @var bool Determines if the page is a redirect or not */
 	private $isRedirecting = false;
-	/** @var PdoDatabase */
-	private $database;
 	/** @var array Queue of headers to be sent on successful completion */
 	private $headerQueue = array();
-	/** @var ITypeAheadHelper */
-	private $typeAheadHelper;
-	/** @var IOAuthHelper */
-	private $oauthHelper;
 
 	/**
 	 * Sets the route the request will take. Only should be called from the request router.
@@ -87,7 +55,7 @@ abstract class PageBase
 			throw new Exception("Request is unrouted.");
 		}
 
-		if ($this->siteConfiguration === null) {
+		if ($this->getSiteConfiguration() === null) {
 			throw new Exception("Page has no configuration!");
 		}
 
@@ -145,8 +113,10 @@ abstract class PageBase
 	 */
 	final private function runPage()
 	{
+		$database = $this->getDatabase();
+
 		// initialise a database transaction
-		if (!$this->database->beginTransaction()) {
+		if (!$database->beginTransaction()) {
 			throw new Exception('Failed to start transaction on primary database.');
 		}
 
@@ -154,10 +124,10 @@ abstract class PageBase
 			// run the page code
 			$this->{$this->routeName}();
 
-			$this->database->commit();
+			$database->commit();
 		}
 		catch (TransactionException $ex) {
-			$this->database->rollBack();
+			$database->rollBack();
 			throw $ex;
 		}
 		catch (ApplicationLogicException $ex) {
@@ -165,7 +135,7 @@ abstract class PageBase
 			// standard templating system for this.
 
 			// Firstly, let's undo anything that happened to the database.
-			$this->database->rollBack();
+			$database->rollBack();
 
 			// Reset smarty
 			$this->setUpSmarty();
@@ -180,8 +150,8 @@ abstract class PageBase
 		}
 		finally {
 			// Catch any hanging on transactions
-			if ($this->database->hasActiveTransaction()) {
-				$this->database->rollBack();
+			if ($database->hasActiveTransaction()) {
+				$database->rollBack();
 			}
 		}
 
@@ -228,7 +198,7 @@ abstract class PageBase
 
 		$this->assign("htmlTitle", $this->htmlTitle);
 
-		$this->assign("typeAheadBlock", $this->typeAheadHelper->getTypeAheadScriptBlock());
+		$this->assign("typeAheadBlock", $this->getTypeAheadHelper()->getTypeAheadScriptBlock());
 	}
 
 	protected function handleAccessDenied()
@@ -285,26 +255,6 @@ abstract class PageBase
 		}
 
 		$this->redirectUrl($url);
-	}
-
-	/**
-	 * Gets the site configuration object
-	 *
-	 * @return SiteConfiguration
-	 */
-	final protected function getSiteConfiguration()
-	{
-		return $this->siteConfiguration;
-	}
-
-	/**
-	 * Sets the site configuration object for this page
-	 *
-	 * @param $configuration
-	 */
-	final public function setSiteConfiguration($configuration)
-	{
-		$this->siteConfiguration = $configuration;
 	}
 
 	/**
@@ -366,166 +316,12 @@ abstract class PageBase
 	}
 
 	/**
-	 * @return IEmailHelper
-	 */
-	final public function getEmailHelper()
-	{
-		return $this->emailHelper;
-	}
-
-	/**
-	 * @param IEmailHelper $emailHelper
-	 */
-	final public function setEmailHelper($emailHelper)
-	{
-		$this->emailHelper = $emailHelper;
-	}
-
-	/**
-	 * @return HttpHelper
-	 */
-	final public function getHttpHelper()
-	{
-		return $this->httpHelper;
-	}
-
-	/**
-	 * @param HttpHelper $httpHelper
-	 */
-	final public function setHttpHelper($httpHelper)
-	{
-		$this->httpHelper = $httpHelper;
-	}
-
-	/**
-	 * @return WikiTextHelper
-	 */
-	final public function getWikiTextHelper()
-	{
-		return $this->wikiTextHelper;
-	}
-
-	/**
-	 * @param WikiTextHelper $wikiTextHelper
-	 */
-	final public function setWikiTextHelper($wikiTextHelper)
-	{
-		$this->wikiTextHelper = $wikiTextHelper;
-	}
-
-	/**
-	 * @return ILocationProvider
-	 */
-	final public function getLocationProvider()
-	{
-		return $this->locationProvider;
-	}
-
-	/**
-	 * @param ILocationProvider $locationProvider
-	 */
-	final public function setLocationProvider(ILocationProvider $locationProvider)
-	{
-		$this->locationProvider = $locationProvider;
-	}
-
-	/**
-	 * @return IXffTrustProvider
-	 */
-	final public function getXffTrustProvider()
-	{
-		return $this->xffTrustProvider;
-	}
-
-	/**
-	 * @param IXffTrustProvider $xffTrustProvider
-	 */
-	final public function setXffTrustProvider(IXffTrustProvider $xffTrustProvider)
-	{
-		$this->xffTrustProvider = $xffTrustProvider;
-	}
-
-	/**
-	 * @return IRDnsProvider
-	 */
-	final public function getRdnsProvider()
-	{
-		return $this->rdnsProvider;
-	}
-
-	/**
-	 * @param IRDnsProvider $rdnsProvider
-	 */
-	public function setRdnsProvider($rdnsProvider)
-	{
-		$this->rdnsProvider = $rdnsProvider;
-	}
-
-	/**
-	 * @return IAntiSpoofProvider
-	 */
-	public function getAntiSpoofProvider()
-	{
-		return $this->antiSpoofProvider;
-	}
-
-	/**
-	 * @param IAntiSpoofProvider $antiSpoofProvider
-	 */
-	public function setAntiSpoofProvider($antiSpoofProvider)
-	{
-		$this->antiSpoofProvider = $antiSpoofProvider;
-	}
-
-	/**
 	 * Gets the name of the route that has been passed from the request router.
 	 * @return string
 	 */
 	final public function getRouteName()
 	{
 		return $this->routeName;
-	}
-
-	final public function getDatabase()
-	{
-		return $this->database;
-	}
-
-	final public function setDatabase($database)
-	{
-		$this->database = $database;
-	}
-
-	/**
-	 * @return ITypeAheadHelper
-	 */
-	public function getTypeAheadHelper()
-	{
-		return $this->typeAheadHelper;
-	}
-
-	/**
-	 * @param ITypeAheadHelper $typeAheadHelper
-	 */
-	public function setTypeAheadHelper(ITypeAheadHelper $typeAheadHelper)
-	{
-		$this->typeAheadHelper = $typeAheadHelper;
-	}
-
-	/**
-	 * @return IOAuthHelper
-	 */
-	public function getOAuthHelper()
-	{
-		return $this->oauthHelper;
-	}
-
-	/**
-	 * @param IOAuthHelper $oauthHelper
-	 */
-	public function setOAuthHelper($oauthHelper)
-	{
-		$this->oauthHelper = $oauthHelper;
 	}
 
 	/**

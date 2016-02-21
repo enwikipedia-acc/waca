@@ -27,13 +27,22 @@ class WebRequest
 	 */
 	public static function wasPosted()
 	{
+		return self::method() === 'POST';
+	}
+
+	/**
+	 * Gets the HTTP Method used
+	 * @return string|null
+	 */
+	public static function method()
+	{
 		$server = &self::$globalStateProvider->getServerSuperGlobal();
 
-		if (isset($server["REQUEST_METHOD"]) && $server["REQUEST_METHOD"] == "POST") {
-			return true;
+		if (isset($server['REQUEST_METHOD'])) {
+			return $server['REQUEST_METHOD'];
 		}
 
-		return false;
+		return null;
 	}
 
 	/**

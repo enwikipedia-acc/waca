@@ -344,4 +344,6 @@ $siteConfiguration->setBaseUrl($baseurl)
 	->setOAuthBaseUrl($oauthBaseUrl)
 	->setOAuthConsumerToken($oauthConsumerToken)
 	->setOAuthConsumerSecret($oauthSecretToken)
+	->setDataClearInterval($dataclear_interval)
+	->setXffTrustedHostsFile($xff_trusted_hosts_file)
 	;

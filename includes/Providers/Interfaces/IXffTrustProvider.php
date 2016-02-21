@@ -37,4 +37,13 @@ interface IXffTrustProvider
 	 * @return bool
 	 */
 	public function ipInRange($haystack, $ip);
+
+	/**
+	 * Explodes a CIDR range into an array of addresses
+	 *
+	 * @param string $range A CIDR-format range
+	 *
+	 * @return array An array containing every IP address in the range
+	 */
+	public function explodeCidr($range);
 }
