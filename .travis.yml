@@ -22,6 +22,8 @@ git:
   submodules: true
 
 before_script:
+  - pecl install runkit
+  - phpenv config-add .travis.php.ini
   - cd sql
   - bash test_db.sh 1
   - cd ..
@@ -33,7 +35,7 @@ script:
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar
-  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.xml
 
 notifications:
   irc:
