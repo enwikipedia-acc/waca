@@ -270,11 +270,11 @@ final class SecurityConfiguration
 			return false;
 		}
 
-		if ($value == SecurityConfiguration::DENY) {
+		if ($value == self::DENY) {
 			// FILE_NOT_FOUND...?
 			throw new AccessDeniedException();
 		}
 
-		return $value === SecurityConfiguration::ALLOW;
+		return $value === self::ALLOW;
 	}
 }

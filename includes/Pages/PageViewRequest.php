@@ -292,7 +292,7 @@ class PageViewRequest extends PageBase
 		$trustedIpLocation = $this->getLocationProvider()->getIpLocation($trustedIp);
 		$this->assign('requestTrustedIpLocation', $trustedIpLocation);
 
-		$this->assign('requestHasForwardedIp', $request->getForwardedIp() != null);
+		$this->assign('requestHasForwardedIp', $request->getForwardedIp() !== null);
 
 		$this->assign('requestRelatedIpRequestsCount', count($relatedEmailRequests));
 		$this->assign('requestRelatedIpRequests', $relatedEmailRequests);
