@@ -17,6 +17,9 @@ class Log extends DataObject
 	private $timestamp;
 	private $comment;
 
+	/**
+	 * @throws Exception
+	 */
 	public function save()
 	{
 		if ($this->isNew) {
@@ -45,11 +48,17 @@ SQL
 		}
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function delete()
 	{
 		throw new Exception("Deleting logs is not available.");
 	}
 
+	/**
+	 * @return int|null
+	 */
 	public function getObjectId()
 	{
 		return $this->objectid;
@@ -65,6 +74,9 @@ SQL
 		$this->objectid = $objectId;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getObjectType()
 	{
 		return $this->objecttype;
@@ -80,6 +92,9 @@ SQL
 		$this->objecttype = $objectType;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getUser()
 	{
 		return $this->user;
@@ -100,6 +115,9 @@ SQL
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getAction()
 	{
 		return $this->action;
@@ -115,11 +133,17 @@ SQL
 		$this->action = $action;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getTimestamp()
 	{
 		return $this->timestamp;
 	}
 
+	/**
+	 * @return string|null
+	 */
 	public function getComment()
 	{
 		return $this->comment;

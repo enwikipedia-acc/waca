@@ -1,6 +1,6 @@
 <?php
 
-namespace Waca;
+namespace Waca\Tasks;
 
 use IAntiSpoofProvider;
 use ILocationProvider;
@@ -12,6 +12,7 @@ use Waca\Helpers\Interfaces\IEmailHelper;
 use Waca\Helpers\Interfaces\IOAuthHelper;
 use Waca\Helpers\Interfaces\ITypeAheadHelper;
 use Waca\Helpers\WikiTextHelper;
+use Waca\SiteConfiguration;
 
 abstract class TaskBase
 {
@@ -37,16 +38,6 @@ abstract class TaskBase
 	private $database;
 	/** @var ITypeAheadHelper */
 	private $typeAheadHelper;
-
-	/**
-	 * Sets the site configuration object for this page
-	 *
-	 * @param $configuration
-	 */
-	final public function setSiteConfiguration($configuration)
-	{
-		$this->siteConfiguration = $configuration;
-	}
 
 	/**
 	 * @return IEmailHelper
@@ -160,11 +151,17 @@ abstract class TaskBase
 		$this->antiSpoofProvider = $antiSpoofProvider;
 	}
 
+	/**
+	 * @return PdoDatabase
+	 */
 	final public function getDatabase()
 	{
 		return $this->database;
 	}
 
+	/**
+	 * @param PdoDatabase $database
+	 */
 	final public function setDatabase($database)
 	{
 		$this->database = $database;
@@ -202,6 +199,8 @@ abstract class TaskBase
 		$this->oauthHelper = $oauthHelper;
 	}
 
+	abstract public function execute();
+
 	/**
 	 * Gets the site configuration object
 	 *
@@ -212,5 +211,13 @@ abstract class TaskBase
 		return $this->siteConfiguration;
 	}
 
-	abstract public function execute();
+	/**
+	 * Sets the site configuration object for this page
+	 *
+	 * @param SiteConfiguration $configuration
+	 */
+	final public function setSiteConfiguration($configuration)
+	{
+		$this->siteConfiguration = $configuration;
+	}
 }

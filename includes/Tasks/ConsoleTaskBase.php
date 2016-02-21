@@ -1,6 +1,6 @@
 <?php
 
-namespace Waca;
+namespace Waca\Tasks;
 
 abstract class ConsoleTaskBase extends TaskBase
 {

@@ -1,4 +1,5 @@
 <?php
+use Waca\IrcColourCode;
 
 /**
  * Notification short summary.

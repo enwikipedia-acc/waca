@@ -10,11 +10,11 @@ use SessionAlert;
 use User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageEditComment extends PageBase
+class PageEditComment extends InternalPageBase
 {
 	/**
 	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in

@@ -11,11 +11,11 @@ use PdoDatabase;
 use Request;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageViewRequest extends PageBase
+class PageViewRequest extends InternalPageBase
 {
 	const STATUS_SYMBOL_OPEN = '&#x2610';
 	const STATUS_SYMBOL_ACCEPTED = '&#x2611';

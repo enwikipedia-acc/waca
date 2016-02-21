@@ -1,10 +1,10 @@
 <?php
 namespace Waca\Pages\Statistics;
 
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 
-class StatsMain extends PageBase
+class StatsMain extends InternalPageBase
 {
 	public function main()
 	{

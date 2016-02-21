@@ -1,5 +1,5 @@
 <?php
-namespace Waca;
+namespace Waca\Router;
 
 use Exception;
 use Waca\Pages\Page404;
@@ -37,10 +37,12 @@ use Waca\Pages\Statistics\StatsReservedRequests;
 use Waca\Pages\Statistics\StatsTemplateStats;
 use Waca\Pages\Statistics\StatsTopCreators;
 use Waca\Pages\Statistics\StatsUsers;
+use Waca\Tasks\PageBase;
+use Waca\WebRequest;
 
 /**
  * Request router
- * @package  Waca
+ * @package  Waca\Router
  * @category Security-Critical
  */
 class RequestRouter implements IRequestRouter
@@ -326,10 +328,7 @@ class RequestRouter implements IRequestRouter
 	{
 		if (count($pathInfo) === 0) {
 			// No pathInfo, so no page to load. Load the main page.
-			$pageClass = PageMain::class;
-			$action = "main";
-
-			return array($pageClass, $action);
+			return $this->getDefaultRoute();
 		}
 		elseif (count($pathInfo) === 1) {
 			// Exactly one path info segment, it's got to be a page.
@@ -366,9 +365,10 @@ class RequestRouter implements IRequestRouter
 	 */
 	final protected function routeSinglePathSegment($classSegment)
 	{
-		if (array_key_exists($classSegment, $this->routeMap)) {
+		$routeMap = $this->getRouteMap();
+		if (array_key_exists($classSegment, $routeMap)) {
 			// Route exists, but we don't have an action in path info, so default to main.
-			$pageClass = $this->routeMap[$classSegment]['class'];
+			$pageClass = $routeMap[$classSegment]['class'];
 			$action = 'main';
 
 			return array($pageClass, $action);
@@ -390,14 +390,15 @@ class RequestRouter implements IRequestRouter
 	 */
 	final protected function routePathSegments($classSegment, $requestedAction)
 	{
-		if (array_key_exists($classSegment, $this->routeMap)) {
+		$routeMap = $this->getRouteMap();
+		if (array_key_exists($classSegment, $routeMap)) {
 			// Route exists, but we don't have an action in path info, so default to main.
 
-			if (isset($this->routeMap[$classSegment]['actions'])
-				&& array_search($requestedAction, $this->routeMap[$classSegment]['actions']) !== false
+			if (isset($routeMap[$classSegment]['actions'])
+				&& array_search($requestedAction, $routeMap[$classSegment]['actions']) !== false
 			) {
 				// Action exists in allowed action list. Allow both the page and the action
-				$pageClass = $this->routeMap[$classSegment]['class'];
+				$pageClass = $routeMap[$classSegment]['class'];
 				$action = $requestedAction;
 
 				return array($pageClass, $action);
@@ -417,5 +418,21 @@ class RequestRouter implements IRequestRouter
 
 			return array($pageClass, $action);
 		}
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getRouteMap()
+	{
+		return $this->routeMap;
+	}
+
+	/**
+	 * @return array
+	 */
+	protected function getDefaultRoute()
+	{
+		return array(PageMain::class, "main");
 	}
 }

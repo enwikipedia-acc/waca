@@ -1,5 +1,7 @@
 <?php
 
+use Waca\IrcColourCode;
+
 class IrcColourCodeTest extends PHPUnit_Framework_TestCase
 {
 	private $irc;

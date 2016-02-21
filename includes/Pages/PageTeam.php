@@ -2,10 +2,10 @@
 
 namespace Waca\Pages;
 
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 
-class PageTeam extends PageBase
+class PageTeam extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.

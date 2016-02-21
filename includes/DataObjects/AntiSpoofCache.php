@@ -5,8 +5,11 @@
  */
 class AntiSpoofCache extends DataObject
 {
+	/** @var string */
 	protected $username;
+	/** @var string */
 	protected $data;
+	/** @var string */
 	protected $timestamp;
 
 	public static function getByUsername($username, PdoDatabase $database)
@@ -32,16 +35,25 @@ SQL
 		return $resultObject;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getUsername()
 	{
 		return $this->username;
 	}
 
+	/**
+	 * @param string $username
+	 */
 	public function setUsername($username)
 	{
 		$this->username = $username;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getData()
 	{
 		return $this->data;
@@ -55,11 +67,18 @@ SQL
 		$this->data = $data;
 	}
 
+	/**
+	 * @return string
+	 * @todo convert to timestamp?
+	 */
 	public function getTimestamp()
 	{
 		return $this->timestamp;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function save()
 	{
 		if ($this->isNew) {

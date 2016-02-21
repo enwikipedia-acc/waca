@@ -4,15 +4,15 @@ namespace Waca\Pages;
 
 use User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
 /**
  * Class PageLogin
  * @package Waca\Pages
  */
-class PageLogin extends PageBase
+class PageLogin extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.

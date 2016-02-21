@@ -176,6 +176,12 @@ class PageCloseRequest extends RequestActionBase
 		return false;
 	}
 
+	/**
+	 * @param Request $request
+	 * @param string  $mailText
+	 * @param User    $currentUser
+	 * @param boolean $ccMailingList
+	 */
 	protected function sendMail(Request $request, $mailText, User $currentUser, $ccMailingList)
 	{
 		$headers = array(

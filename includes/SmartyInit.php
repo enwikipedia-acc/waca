@@ -10,7 +10,7 @@ if (!defined("ACC")) {
 global $smarty, $smartydebug;
 $smarty = new Smarty();
 
-$toolVersion = \Waca\Environment::getToolVersion();
+$toolVersion = Waca\Environment::getToolVersion();
 $currentUser = User::getCurrent();
 
 $smarty->assign("baseurl", $baseurl);

@@ -7,15 +7,15 @@ use Notification;
 use SessionAlert;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
 /**
  * Class PageUserManagement
  * @package Waca\Pages
  */
-class PageUserManagement extends PageBase
+class PageUserManagement extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.

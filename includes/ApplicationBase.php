@@ -13,6 +13,7 @@ use Waca\Helpers\HttpHelper;
 use Waca\Helpers\OAuthHelper;
 use Waca\Helpers\TypeAheadHelper;
 use Waca\Helpers\WikiTextHelper;
+use Waca\Tasks\TaskBase;
 use XffTrustProvider;
 
 abstract class ApplicationBase

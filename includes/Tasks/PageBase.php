@@ -1,28 +1,29 @@
 <?php
-namespace Waca;
+
+namespace Waca\Tasks;
 
 use Exception;
 use SessionAlert;
 use TransactionException;
 use User;
-use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\Exceptions\NotIdentifiedException;
 use Waca\Fragments\TemplateOutput;
+use Waca\WebRequest;
 
 abstract class PageBase extends TaskBase
 {
 	use TemplateOutput;
-	/** @var string The name of the route to use, as determined by the request router. */
-	private $routeName = null;
+
 	/** @var string Smarty template to display */
-	private $template = "base.tpl";
+	protected $template = "base.tpl";
 	/** @var string HTML title. Currently unused. */
-	private $htmlTitle;
+	protected $htmlTitle;
 	/** @var bool Determines if the page is a redirect or not */
-	private $isRedirecting = false;
+	protected $isRedirecting = false;
 	/** @var array Queue of headers to be sent on successful completion */
-	private $headerQueue = array();
+	protected $headerQueue = array();
+	/** @var string The name of the route to use, as determined by the request router. */
+	protected $routeName = null;
 
 	/**
 	 * Sets the route the request will take. Only should be called from the request router.
@@ -44,74 +45,28 @@ abstract class PageBase extends TaskBase
 	}
 
 	/**
-	 * Runs the page code
-	 *
-	 * @throws Exception
-	 * @category Security-Critical
+	 * Gets the name of the route that has been passed from the request router.
+	 * @return string
 	 */
-	final public function execute()
+	final public function getRouteName()
 	{
-		if ($this->routeName === null) {
-			throw new Exception("Request is unrouted.");
-		}
-
-		if ($this->getSiteConfiguration() === null) {
-			throw new Exception("Page has no configuration!");
-		}
-
-		$this->setupPage();
-
-		// Get the current security configuration
-		$securityConfiguration = $this->getSecurityConfiguration();
-		if ($securityConfiguration === null) {
-			// page hasn't been written properly.
-			throw new AccessDeniedException();
-		}
-
-		$currentUser = User::getCurrent($this->getDatabase());
-
-		// Security barrier.
-		//
-		// This code essentially doesn't care if the user is logged in or not, as the
-		if ($securityConfiguration->allows($currentUser)) {
-			// We're allowed to run the page, so let's run it.
-			$this->runPage();
-		}
-		else {
-			$this->handleAccessDenied();
-
-			// Send the headers
-			foreach ($this->headerQueue as $item) {
-				header($item);
-			}
-		}
+		return $this->routeName;
 	}
 
 	/**
 	 * Performs generic page setup actions
 	 */
-	final private function setupPage()
+	final protected function setupPage()
 	{
 		$this->setUpSmarty();
 	}
-
-	/**
-	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-	 * the return value from this function.
-	 *
-	 * If this page even supports actions, you will need to check the route
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	abstract protected function getSecurityConfiguration();
 
 	/**
 	 * Runs the page logic as routed by the RequestRouter
 	 *
 	 * Only should be called after a security barrier! That means only from execute().
 	 */
-	final private function runPage()
+	final protected function runPage()
 	{
 		$database = $this->getDatabase();
 
@@ -177,7 +132,7 @@ abstract class PageBase extends TaskBase
 	/**
 	 * Performs final tasks needed before rendering the page.
 	 */
-	final private function finalisePage()
+	final protected function finalisePage()
 	{
 		if ($this->isRedirecting) {
 			$this->template = null;
@@ -201,34 +156,6 @@ abstract class PageBase extends TaskBase
 		$this->assign("typeAheadBlock", $this->getTypeAheadHelper()->getTypeAheadScriptBlock());
 	}
 
-	protected function handleAccessDenied()
-	{
-		// Not allowed to access this resource.
-		// Firstly, let's check if we're even logged in.
-		if (User::getCurrent()->isCommunityUser()) {
-			// Not logged in, redirect to login page
-
-			// TODO: return to current page? Possibly as a session var?
-			$this->redirect("login");
-
-			return;
-		}
-		else {
-			// Decide whether this was a rights failure, or an identification failure.
-
-			if ($this->getSiteConfiguration()->getForceIdentification()
-				&& User::getCurrent()->isIdentified() != 1
-			) {
-				// Not identified
-				throw new NotIdentifiedException();
-			}
-			else {
-				// Nope, plain old access denied
-				throw new AccessDeniedException();
-			}
-		}
-	}
-
 	/**
 	 * Sends the redirect headers to perform a GET at the destination page.
 	 *
@@ -240,7 +167,7 @@ abstract class PageBase extends TaskBase
 	 */
 	final protected function redirect($page = '', $action = null, $parameters = null)
 	{
-		$pathInfo = array($this->getSiteConfiguration()->getBaseUrl() . "/internal.php");
+		$pathInfo = array(WebRequest::scriptName());
 
 		$pathInfo[1] = $page;
 
@@ -291,40 +218,6 @@ abstract class PageBase extends TaskBase
 	}
 
 	/**
-	 * Tests the security barrier for a specified action.
-	 *
-	 * Intended to be used from within templates
-	 *
-	 * @param string $action
-	 *
-	 * @return boolean
-	 * @category Security-Critical
-	 */
-	final public function barrierTest($action)
-	{
-		$tmpRouteName = $this->routeName;
-
-		try {
-			$this->routeName = $action;
-			$allowed = $this->getSecurityConfiguration()->allows(User::getCurrent());
-		}
-		finally {
-			$this->routeName = $tmpRouteName;
-		}
-
-		return $allowed;
-	}
-
-	/**
-	 * Gets the name of the route that has been passed from the request router.
-	 * @return string
-	 */
-	final public function getRouteName()
-	{
-		return $this->routeName;
-	}
-
-	/**
 	 * Main function for this page, when no specific actions are called.
 	 * @return void
 	 */
@@ -336,5 +229,20 @@ abstract class PageBase extends TaskBase
 	final protected function setHtmlTitle($title)
 	{
 		$this->htmlTitle = $title;
+	}
+
+	public function execute()
+	{
+		if ($this->routeName === null) {
+			throw new Exception("Request is unrouted.");
+		}
+
+		if ($this->getSiteConfiguration() === null) {
+			throw new Exception("Page has no configuration!");
+		}
+
+		$this->setupPage();
+
+		$this->runPage();
 	}
 }

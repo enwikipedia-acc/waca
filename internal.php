@@ -1,6 +1,12 @@
 <?php
 namespace Waca;
 
+/*
+ * Internal interface script
+ *
+ * THIS IS AN ENTRY POINT
+ */
+
 require_once('config.inc.php');
 
 global $siteConfiguration;

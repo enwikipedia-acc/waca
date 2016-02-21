@@ -424,4 +424,26 @@ class WebRequest
 
 		return isset($session['partialLogin']) ? (int)$session['partialLogin'] : null;
 	}
+
+	public static function userAgent()
+	{
+		$server = &self::$globalStateProvider->getServerSuperGlobal();
+
+		if (isset($server['HTTP_USER_AGENT'])) {
+			return $server['HTTP_USER_AGENT'];
+		}
+
+		return null;
+	}
+
+	public static function scriptName()
+	{
+		$server = &self::$globalStateProvider->getServerSuperGlobal();
+
+		if (isset($server['SCRIPT_NAME'])) {
+			return $server['SCRIPT_NAME'];
+		}
+
+		return null;
+	}
 }

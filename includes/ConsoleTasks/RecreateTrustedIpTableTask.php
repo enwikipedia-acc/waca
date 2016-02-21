@@ -5,7 +5,7 @@ namespace Waca\ConsoleTasks;
 use Exception;
 use PDOException;
 use PDOStatement;
-use Waca\ConsoleTaskBase;
+use Waca\Tasks\ConsoleTaskBase;
 
 class RecreateTrustedIpTableTask extends ConsoleTaskBase
 {

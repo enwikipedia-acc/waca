@@ -10,10 +10,11 @@ class Request extends DataObject
 	private $email;
 	private $ip;
 	private $name;
+	/** @var string|null */
 	private $comment;
 	private $status = "Open";
 	private $date;
-	private $checksum = 0;
+	private $checksum = '0';
 	private $emailsent = 0;
 	private $emailconfirm;
 	private $reserved = 0;

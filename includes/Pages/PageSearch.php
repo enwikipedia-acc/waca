@@ -2,15 +2,14 @@
 
 namespace Waca\Pages;
 
-use Exception;
 use PDO;
 use Request;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageSearch extends PageBase
+class PageSearch extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.

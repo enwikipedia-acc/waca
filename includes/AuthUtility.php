@@ -1,11 +1,15 @@
 <?php
 
+namespace Waca;
+
 class AuthUtility
 {
 	/**
 	 * Test the specified data against the specified credentials
+	 *
 	 * @param string $password
 	 * @param string $credentials
+	 *
 	 * @return bool
 	 */
 	public static function testCredentials($password, $credentials)
@@ -41,6 +45,7 @@ class AuthUtility
 
 	/**
 	 * @param string $credentials
+	 *
 	 * @return bool
 	 */
 	public static function isCredentialVersionLatest($credentials)
@@ -50,7 +55,9 @@ class AuthUtility
 
 	/**
 	 * Encrypts a user's password with the latest version of the hash algorithm
+	 *
 	 * @param string $password
+	 *
 	 * @return string
 	 */
 	public static function encryptPassword($password)
@@ -61,6 +68,7 @@ class AuthUtility
 	/**
 	 * @param string $password
 	 * @param string $salt
+	 *
 	 * @return string
 	 */
 	private static function encryptVersion1($password, $salt)
@@ -70,6 +78,7 @@ class AuthUtility
 
 	/**
 	 * @param string $password
+	 *
 	 * @return string
 	 */
 	private static function encryptVersion2($password)
@@ -80,6 +89,7 @@ class AuthUtility
 	/**
 	 * @param string $password
 	 * @param string $hash
+	 *
 	 * @return bool
 	 */
 	private static function verifyVersion2($password, $hash)

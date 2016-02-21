@@ -1,15 +1,19 @@
 <?php
 
-namespace Waca;
+namespace Waca\Router;
 
 use Exception;
-use Waca\Pages\Page404;
-use Waca\Pages\PageMain;
+use Waca\Tasks\InternalPageBase;
 
+/**
+ * Interface IRequestRouter
+ *
+ * @package Waca\Router
+ */
 interface IRequestRouter
 {
 	/**
-	 * @return PageBase
+	 * @return InternalPageBase
 	 * @throws Exception
 	 */
 	public function route();

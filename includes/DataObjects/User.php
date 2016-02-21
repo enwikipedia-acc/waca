@@ -1,4 +1,5 @@
 <?php
+use Waca\AuthUtility;
 use Waca\Helpers\Interfaces\IOAuthHelper;
 
 /**

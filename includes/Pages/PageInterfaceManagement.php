@@ -5,11 +5,11 @@ namespace Waca\Pages;
 use InterfaceMessage;
 use Logger;
 use Notification;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageInterfaceManagement extends PageBase
+class PageInterfaceManagement extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.

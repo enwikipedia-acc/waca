@@ -6,11 +6,11 @@ use PdoDatabase;
 use SessionAlert;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageForgotPassword extends PageBase
+class PageForgotPassword extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.

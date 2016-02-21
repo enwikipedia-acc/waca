@@ -2,7 +2,7 @@
 
 namespace Waca\ConsoleTasks;
 
-use Waca\ConsoleTaskBase;
+use Waca\Tasks\ConsoleTaskBase;
 
 class ClearOAuthDataTask extends ConsoleTaskBase
 {

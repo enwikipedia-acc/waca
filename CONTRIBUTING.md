@@ -123,24 +123,11 @@ Please try to use named parameters, and strongly avoid positional parameters, as
 
 #### Transactions
 
-Please use transactions for all new code. The easiest way to do this is to wrap your code in a `transactionally()` call as a callback. The database class will then wrap your code in a try/catch block with automatic transaction commit/rollback. Throw a `TransactionException` if you encounter an error and need to abort.
-
-```php
-$database = gGetDb();
-$database->transactionally(function() use ($database) 
-{
-    $database->exec(<<<SQL
-        UPDATE user 
-        SET 
-            oauthrequesttoken = null, 
-            oauthrequestsecret = null, 
-            oauthaccesstoken = null, 
-            oauthaccesssecret = null, 
-            oauthidentitycache = null;
-SQL
-    );
-});
-```
+Transactions are handled automatically by the framework - every page load is run within it's own transaction. If you 
+need to rollback the transaction, then you probably want to throw an exception, but it is possible to manually rollback
+the transaction. If you do roll it back manually, you need to take responsibility for handling that rollback correctly,
+and ensuring that future failed statements are also rolled back - aka start a new transaction immediately after 
+rollback.
 
 #### Database patches
 

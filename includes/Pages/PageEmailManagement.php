@@ -8,11 +8,11 @@ use Notification;
 use PdoDatabase;
 use SessionAlert;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageEmailManagement extends PageBase
+class PageEmailManagement extends InternalPageBase
 {
 	/**
 	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in

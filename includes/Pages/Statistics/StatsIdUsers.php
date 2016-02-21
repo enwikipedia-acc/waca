@@ -2,10 +2,10 @@
 namespace Waca\Pages\Statistics;
 
 use PDO;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 
-class StatsIdUsers extends PageBase
+class StatsIdUsers extends InternalPageBase
 {
 	public function main()
 	{

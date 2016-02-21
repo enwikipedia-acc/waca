@@ -3,7 +3,7 @@
 namespace Waca\ConsoleTasks;
 
 use TransactionException;
-use Waca\ConsoleTaskBase;
+use Waca\Tasks\ConsoleTaskBase;
 
 class ClearOldDataTask extends ConsoleTaskBase
 {

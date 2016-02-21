@@ -8,12 +8,12 @@ use Notification;
 use SessionAlert;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 use WelcomeTemplate;
 
-class PageWelcomeTemplateManagement extends PageBase
+class PageWelcomeTemplateManagement extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.

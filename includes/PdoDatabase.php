@@ -3,6 +3,7 @@ use Waca\Exceptions\EnvironmentException;
 
 /**
  * @param string $db
+ *
  * @return PdoDatabase
  * @throws Exception
  */
@@ -17,12 +18,10 @@ class PdoDatabase extends PDO
 	 * @var PdoDatabase[]
 	 */
 	private static $connections = array();
-
 	/**
 	 * @var bool True if a transaction is active
 	 */
 	protected $hasActiveTransaction = false;
-    
 	/**
 	 * Summary of $queryLogStatement
 	 * @var PDOStatement
@@ -31,6 +30,7 @@ class PdoDatabase extends PDO
 
 	/**
 	 * @param string $connectionName
+	 *
 	 * @return PdoDatabase
 	 * @throws Exception
 	 */
@@ -99,6 +99,7 @@ class PdoDatabase extends PDO
 			// start a new transaction, and return whether or not the start was
 			// successful
 			$this->hasActiveTransaction = parent::beginTransaction();
+
 			return $this->hasActiveTransaction;
 		}
 	}
@@ -108,28 +109,34 @@ class PdoDatabase extends PDO
 	 */
 	public function commit()
 	{
-		parent::commit();
-		$this->hasActiveTransaction = false;
-	}
+		if ($this->hasActiveTransaction) {
+			parent::commit();
+			$this->hasActiveTransaction = false;
+		}	}
 
 	/**
 	 * Rolls back a transaction
 	 */
 	public function rollBack()
 	{
-		parent::rollback();
-		$this->hasActiveTransaction = false;
+		if ($this->hasActiveTransaction) {
+			parent::rollback();
+			$this->hasActiveTransaction = false;
+		}
 	}
 
 	/**
 	 * Summary of transactionally
+	 *
 	 * @param Closure $method
-	 * @deprecated 
+	 *
+	 * @deprecated
 	 */
 	public function transactionally($method)
 	{
 		if (!$this->beginTransaction()) {
-			BootstrapSkin::displayAlertBox("Error starting database transaction.", "alert-error", "Database transaction error", true, false);
+			BootstrapSkin::displayAlertBox("Error starting database transaction.", "alert-error",
+				"Database transaction error", true, false);
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
@@ -158,17 +165,19 @@ class PdoDatabase extends PDO
 
 	/**
 	 * Prepares a statement for execution.
-	 * @param string $statement 
-	 * @param array $driver_options 
+	 *
+	 * @param string $statement
+	 * @param array  $driverOptions
+	 *
 	 * @return PDOStatement
 	 */
-	public function prepare($statement, $driver_options = array())
+	public function prepare($statement, $driverOptions = array())
 	{
 		global $enableQueryLog;
 		if ($enableQueryLog) {
 			try {
 				if ($this->queryLogStatement === null) {
-					$this->queryLogStatement = 
+					$this->queryLogStatement =
 						parent::prepare(<<<SQL
 							INSERT INTO applicationlog (source, message, stack, request, request_ts) 
 							VALUES (:source, :message, :stack, :request, :rqts);
@@ -178,11 +187,11 @@ SQL
 
 				$this->queryLogStatement->execute(
 					array(
-						":source" => "QueryLog",
+						":source"  => "QueryLog",
 						":message" => $statement,
-						":stack" => DebugHelper::getBacktrace(),
+						":stack"   => DebugHelper::getBacktrace(),
 						":request" => $_SERVER["REQUEST_URI"],
-						":rqts" => $_SERVER["REQUEST_TIME_FLOAT"],
+						":rqts"    => $_SERVER["REQUEST_TIME_FLOAT"],
 					)
 				);
 			}
@@ -191,7 +200,7 @@ SQL
 				$enableQueryLog = false;
 			}
 		}
-        
-		return parent::prepare($statement, $driver_options);   
+
+		return parent::prepare($statement, $driverOptions);
 	}
 }

@@ -10,7 +10,7 @@ use Waca\Pages\PageLogout;
 use Waca\Pages\PageMain;
 use Waca\Pages\PageUserManagement;
 use Waca\Providers\GlobalStateProvider;
-use Waca\RequestRouter;
+use Waca\Router\RequestRouter;
 use Waca\WebRequest;
 
 class RequestRouterTest extends PHPUnit_Framework_TestCase

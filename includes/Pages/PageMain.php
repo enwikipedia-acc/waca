@@ -3,10 +3,10 @@ namespace Waca\Pages;
 
 use PDO;
 use Request;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 
-class PageMain extends PageBase
+class PageMain extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no actions are called.

@@ -6,11 +6,11 @@ use Exception;
 use Log;
 use Logger;
 use User;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageLog extends PageBase
+class PageLog extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.

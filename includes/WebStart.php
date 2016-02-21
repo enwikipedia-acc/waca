@@ -1,22 +1,15 @@
 <?php
 namespace Waca;
 
-use CachedApiAntispoofProvider;
-use CachedRDnsLookupProvider;
 use Exception;
-use FakeLocationProvider;
 use Offline;
 use PdoDatabase;
 use User;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Exceptions\ReadableException;
-use Waca\Helpers\EmailHelper;
-use Waca\Helpers\HttpHelper;
-use Waca\Helpers\OAuthHelper;
-use Waca\Helpers\TypeAheadHelper;
-use Waca\Helpers\WikiTextHelper;
 use Waca\Providers\GlobalStateProvider;
-use XffTrustProvider;
+use Waca\Router\IRequestRouter;
+use Waca\Router\RequestRouter;
 
 /**
  * Internal application entry point.
@@ -29,16 +22,25 @@ class WebStart extends ApplicationBase
 	 * @var IRequestRouter
 	 */
 	private $requestRouter;
+	/** @var bool */
+	private $isPublic;
 
 	/**
 	 * WebStart constructor.
 	 *
 	 * @param SiteConfiguration $configuration
+	 * @param IRequestRouter    $router
 	 */
-	public function __construct(SiteConfiguration $configuration)
+	public function __construct(SiteConfiguration $configuration, IRequestRouter $router = null)
 	{
 		parent::__construct($configuration);
-		$this->requestRouter = new RequestRouter();
+
+		if ($router === null) {
+			$this->requestRouter = new RequestRouter();
+		}
+		else {
+			$this->requestRouter = $router;
+		}
 	}
 
 	/**
@@ -162,14 +164,14 @@ HTML;
 
 		// check the tool is still online
 		if (Offline::isOffline()) {
-			print Offline::getOfflineMessage(false);
+			print Offline::getOfflineMessage($this->isPublic());
 			ob_end_flush();
 
 			return false;
 		}
 
 		// Call parent setup
-		if(!parent::setupEnvironment()){
+		if (!parent::setupEnvironment()) {
 			return false;
 		}
 
@@ -271,15 +273,12 @@ HTML;
 		}
 	}
 
-	/**
-	 * Don't use this function
-	 *
-	 * Bin it, but first change the OAuth provider on Wikipedia to use the correct URL and also bin oauth/callback.php.
-	 *
-	 * @param IRequestRouter $router
-	 */
-	public function setRequestRouter(IRequestRouter $router)
+	public function isPublic()
 	{
-		$this->requestRouter = $router;
+		return $this->isPublic;
+	}
+
+	public function setPublic($isPublic){
+		$this->isPublic = $isPublic;
 	}
 }

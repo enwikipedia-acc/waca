@@ -306,7 +306,6 @@ spl_autoload_register("AutoLoader::load");
 require_once($filepath . 'vendor/autoload.php');
 
 // Extra includes which are just plain awkward wherever they are.
-require_once($filepath . 'oauth/OAuthRequestRouter.php');
 require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/OAuth.php');
 require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/JWT.php');
 

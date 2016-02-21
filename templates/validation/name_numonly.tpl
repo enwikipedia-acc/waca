@@ -1,1 +1,0 @@
-﻿The username you chose is invalid: it consists entirely of numbers. Please retry with a valid username.

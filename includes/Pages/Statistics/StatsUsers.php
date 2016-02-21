@@ -4,11 +4,11 @@ namespace Waca\Pages\Statistics;
 use PDO;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class StatsUsers extends PageBase
+class StatsUsers extends InternalPageBase
 {
 	public function main()
 	{

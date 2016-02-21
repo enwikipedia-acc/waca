@@ -1,4 +1,11 @@
 <?php
+namespace Waca\Validation;
+
+use Exception;
+use IAntiSpoofProvider;
+use IBanHelper;
+use IXffTrustProvider;
+use Request;
 
 /**
  * Performs the validation of an incoming request.
@@ -11,9 +18,10 @@ class RequestValidationHelper
 
 	/**
 	 * Summary of __construct
+	 *
 	 * @param IBanHelper $banHelper
-	 * @param Request $request
-	 * @param string $emailConfirmation
+	 * @param Request    $request
+	 * @param string     $emailConfirmation
 	 */
 	public function __construct(IBanHelper $banHelper, Request $request, $emailConfirmation)
 	{

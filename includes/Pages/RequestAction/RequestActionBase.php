@@ -5,10 +5,10 @@ namespace Waca\Pages\RequestAction;
 use PdoDatabase;
 use Request;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-abstract class RequestActionBase extends PageBase
+abstract class RequestActionBase extends InternalPageBase
 {
 	/**
 	 * @param PdoDatabase $database
