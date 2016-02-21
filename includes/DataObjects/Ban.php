@@ -241,33 +241,13 @@ SQL
 	}
 
 	/**
-	 * @return false|User
-	 */
-	public function getUser()
-	{
-		$user = User::getById($this->user, gGetDb());
-
-		return $user;
-	}
-
-	/**
-	 * @param string|int $user UserID or username of user who is setting the ban. Will be translated into ID
+	 * @param int $user UserID of user who is setting the ban
 	 *
 	 * @throws Exception
 	 */
 	public function setUser($user)
 	{
-		if (User::getById($user, gGetDb()) == false) {
-			$u = User::getByUsername($user, gGetDb());
-			if ($u == false) {
-				throw new Exception("Unknown user trying to create ban!");
-			}
-
-			$this->user = $u->getId();
-		}
-		else {
-			$this->user = $user;
-		}
+		$this->user = $user;
 	}
 
 	/**

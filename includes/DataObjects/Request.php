@@ -54,6 +54,9 @@ SQL
 		$statement->execute();
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function save()
 	{
 		if ($this->isNew) {
@@ -112,6 +115,9 @@ SQL
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getIp()
 	{
 		return $this->ip;
@@ -125,6 +131,9 @@ SQL
 		$this->ip = $ip;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName()
 	{
 		return $this->name;
@@ -138,16 +147,25 @@ SQL
 		$this->name = $name;
 	}
 
+	/**
+	 * @return string|null
+	 */
 	public function getComment()
 	{
 		return $this->comment;
 	}
 
+	/**
+	 * @param string $comment
+	 */
 	public function setComment($comment)
 	{
 		$this->comment = $comment;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getStatus()
 	{
 		return $this->status;
@@ -161,76 +179,125 @@ SQL
 		$this->status = $status;
 	}
 
+	/**
+	 * @todo make this support DateTime object
+	 * @return string
+	 */
 	public function getDate()
 	{
 		return $this->date;
 	}
 
+	/**
+	 * @todo make this support DateTime object
+	 *
+	 * @param string $date
+	 */
 	public function setDate($date)
 	{
 		$this->date = $date;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getChecksum()
 	{
 		return $this->checksum;
 	}
 
+	/**
+	 * @param string $checksum
+	 */
 	public function setChecksum($checksum)
 	{
 		$this->checksum = $checksum;
 	}
 
+	/**
+	 * @deprecated in favour of optimistic locking IDs
+	 */
 	public function updateChecksum()
 	{
 		$this->checksum = md5($this->id . $this->name . $this->email . microtime());
 	}
 
+	/**
+	 * @todo change this to boolean
+	 * @return int
+	 */
 	public function getEmailSent()
 	{
 		return $this->emailsent;
 	}
 
+	/**
+	 * @todo change this to boolean
+	 *
+	 * @param int $emailsent
+	 */
 	public function setEmailSent($emailsent)
 	{
 		$this->emailsent = $emailsent;
 	}
 
+	/**
+	 * @todo allow this to return null instead
+	 * @return int
+	 */
 	public function getReserved()
 	{
 		return $this->reserved;
 	}
 
+	/**
+	 * @param int|null $reserved
+	 */
 	public function setReserved($reserved)
 	{
+		if ($reserved === null) {
+			// @todo this shouldn't be needed!
+			$reserved = 0;
+		}
+
 		$this->reserved = $reserved;
 	}
 
-	public function getReservedObject()
-	{
-		return User::getById($this->reserved, $this->dbObject);
-	}
-
+	/**
+	 * @return string
+	 */
 	public function getUserAgent()
 	{
 		return $this->useragent;
 	}
 
+	/**
+	 * @param string $useragent
+	 */
 	public function setUserAgent($useragent)
 	{
 		$this->useragent = $useragent;
 	}
 
+	/**
+	 * @return string|null
+	 */
 	public function getForwardedIp()
 	{
 		return $this->forwardedip;
 	}
 
+	/**
+	 * @param string|null $forwardedip
+	 */
 	public function setForwardedIp($forwardedip)
 	{
 		$this->forwardedip = $forwardedip;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function hasComments()
 	{
 		if ($this->hasCommentsResolved) {
@@ -255,6 +322,10 @@ SQL
 		return $this->hasComments;
 	}
 
+	/**
+	 * @deprecated this shouldn't be here.
+	 * @return Request[]
+	 */
 	public function getRelatedEmailRequests()
 	{
 		if ($this->emailRequestsResolved == false) {
@@ -282,6 +353,10 @@ SQL
 		return $this->emailRequests;
 	}
 
+	/**
+	 * @deprecated this shouldn't be here.
+	 * @return Request[]
+	 */
 	public function getRelatedIpRequests()
 	{
 		if ($this->ipRequestsResolved == false) {
@@ -342,27 +417,21 @@ SQL
 		return $this->blacklistCache;
 	}
 
+	/**
+	 * @return Comment[]
+	 * @deprecated This shouldn't be here
+	 */
 	public function getComments()
 	{
 		return Comment::getForRequest($this->id, $this->dbObject);
 	}
 
-	/** @deprecated */
-	public function isProtected()
-	{
-		if ($this->reserved != 0) {
-			if ($this->reserved == User::getCurrent()->getId()) {
-				return false;
-			}
-			else {
-				return true;
-			}
-		}
-		else {
-			return false;
-		}
-	}
-
+	/**
+	 * @param $si
+	 *
+	 * @deprecated
+	 * @throws TransactionException
+	 */
 	public function confirmEmail($si)
 	{
 		if ($this->getEmailConfirm() == "Confirmed") {
@@ -379,6 +448,9 @@ SQL
 		}
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getEmailConfirm()
 	{
 		return $this->emailconfirm;
@@ -426,19 +498,25 @@ SQL
 		}
 	}
 
+	/**
+	 * @return string|null
+	 */
 	public function getEmail()
 	{
 		return $this->email;
 	}
 
 	/**
-	 * @param string $email
+	 * @param string|null $email
 	 */
 	public function setEmail($email)
 	{
 		$this->email = $email;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getObjectDescription()
 	{
 		$value = '<a href="internal.php/viewRequest?id=' . $this->getId() . '">Request #' . $this->getId() . " ("
@@ -447,6 +525,10 @@ SQL
 		return $value;
 	}
 
+	/**
+	 * @return string
+	 * @throws Exception
+	 */
 	public function getClosureReason()
 	{
 		if ($this->status != 'Closed') {

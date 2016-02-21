@@ -107,14 +107,17 @@ class PageBan extends PageBase
 			elseif (time() > $duration) {
 				throw new ApplicationLogicException('Ban time has already expired!');
 			}
+
 			return $duration;
 		}
 		elseif ($duration === "-1") {
 			$duration = -1;
+
 			return $duration;
 		}
 		else {
 			$duration = WebRequest::postInt('duration') + time();
+
 			return $duration;
 		}
 	}
@@ -122,6 +125,7 @@ class PageBan extends PageBase
 	/**
 	 * @param string $type
 	 * @param string $target
+	 *
 	 * @throws ApplicationLogicException
 	 */
 	private function validateBanType($type, $target)
@@ -129,12 +133,14 @@ class PageBan extends PageBase
 		switch ($type) {
 			case 'IP':
 				$this->validateIpBan($target);
+
 				return;
 			case 'Name':
 				// No validation needed here.
 				return;
 			case 'EMail':
 				$this->validateEmailBanTarget($target);
+
 				return;
 			default:
 				throw new ApplicationLogicException("Unknown ban type");
@@ -176,13 +182,11 @@ class PageBan extends PageBase
 		$database = $this->getDatabase();
 
 		$ban = new Ban();
-		$currentUsername = User::getCurrent()->getId();
-
 		$ban->setDatabase($database);
 		$ban->setActive(1);
 		$ban->setType($type);
 		$ban->setTarget($target);
-		$ban->setUser($currentUsername);
+		$ban->setUser(User::getCurrent()->getId());
 		$ban->setReason($reason);
 		$ban->setDuration($duration);
 
@@ -228,6 +232,7 @@ class PageBan extends PageBase
 		$request = Request::getById($banTarget, $database);
 		if ($request === false) {
 			$this->assign('bantarget', '');
+
 			return;
 		}
 
@@ -252,6 +257,7 @@ class PageBan extends PageBase
 	 * Validates an IP ban target
 	 *
 	 * @param string $target
+	 *
 	 * @throws ApplicationLogicException
 	 */
 	private function validateIpBan($target)
@@ -271,6 +277,7 @@ class PageBan extends PageBase
 	 * Validates an email address as a ban target
 	 *
 	 * @param string $target
+	 *
 	 * @throws ApplicationLogicException
 	 */
 	private function validateEmailBanTarget($target)

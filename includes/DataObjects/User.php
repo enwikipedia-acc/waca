@@ -78,7 +78,7 @@ class User extends DataObject
 			return new CommunityUser();
 		}
 
-		/** @var User $user */
+		/** @var User|false $user */
 		$user = parent::getById($id, $database);
 
 		return $user;
@@ -812,7 +812,7 @@ SQL
 	 * Gets the user's OAuth access secret
 	 * @category Security-Critical
 	 * @todo     move me to a collaborator
-	 * @return null
+	 * @return null|string
 	 */
 	public function getOAuthAccessSecret()
 	{
@@ -1099,13 +1099,13 @@ SQL
 
 			$this->oauthidentitycache = serialize($this->identityCache);
 			$this->dbObject->prepare("UPDATE user SET oauthidentitycache = :identity WHERE id = :id;")
-			               ->execute(array(":id" => $this->id, ":identity" => $this->oauthidentitycache));
+				->execute(array(":id" => $this->id, ":identity" => $this->oauthidentitycache));
 		}
 		catch (UnexpectedValueException $ex) {
 			$this->identityCache = null;
 			$this->oauthidentitycache = null;
 			$this->dbObject->prepare("UPDATE user SET oauthidentitycache = NULL WHERE id = :id;")
-			               ->execute(array(":id" => $this->id));
+				->execute(array(":id" => $this->id));
 
 			SessionAlert::warning("OAuth error getting identity from MediaWiki: " . $ex->getMessage());
 		}

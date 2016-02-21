@@ -194,6 +194,11 @@ class WebRequest
 		return (int)$filteredValue;
 	}
 
+	/**
+	 * @param string $key
+	 *
+	 * @return bool
+	 */
 	public static function postBoolean($key)
 	{
 		$get = &self::$globalStateProvider->getPostSuperGlobal();
@@ -365,7 +370,7 @@ class WebRequest
 	/**
 	 * You probably only want to deal with this through SessionAlert.
 	 *
-	 * @return array
+	 * @return string[]
 	 */
 	public static function getSessionAlertData()
 	{
@@ -380,7 +385,7 @@ class WebRequest
 	/**
 	 * You probably only want to deal with this through SessionAlert.
 	 *
-	 * @param array $data
+	 * @param string[] $data
 	 */
 	public static function setSessionAlertData($data)
 	{

@@ -122,6 +122,12 @@ SQL
 		return $resultObject;
 	}
 
+	/**
+	 * @param string      $name
+	 * @param PdoDatabase $database
+	 *
+	 * @return EmailTemplate|false
+	 */
 	public static function getByName($name, PdoDatabase $database)
 	{
 		$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE name = :name LIMIT 1;");
@@ -139,6 +145,9 @@ SQL
 		return $resultObject;
 	}
 
+	/**
+	 * @return EmailTemplate
+	 */
 	public static function getDroppedTemplate()
 	{
 		$t = new EmailTemplate();
@@ -149,6 +158,9 @@ SQL
 		return $t;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function save()
 	{
 		if ($this->isNew) {
@@ -208,31 +220,49 @@ SQL
 		throw new Exception("You shouldn't be doing that, you'll break logs.");
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getName()
 	{
 		return $this->name;
 	}
 
+	/**
+	 * @param string $name
+	 */
 	public function setName($name)
 	{
 		$this->name = $name;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getText()
 	{
 		return $this->text;
 	}
 
+	/**
+	 * @param string $text
+	 */
 	public function setText($text)
 	{
 		$this->text = $text;
 	}
 
+	/**
+	 * @return string|null
+	 */
 	public function getJsquestion()
 	{
 		return $this->jsquestion;
 	}
 
+	/**
+	 * @param string $jsquestion
+	 */
 	public function setJsquestion($jsquestion)
 	{
 		$this->jsquestion = $jsquestion;
@@ -254,26 +284,41 @@ SQL
 		$this->defaultaction = $defaultAction;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function getActive()
 	{
 		return $this->active == 1;
 	}
 
+	/**
+	 * @param bool $active
+	 */
 	public function setActive($active)
 	{
 		$this->active = $active ? 1 : 0;
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function getPreloadOnly()
 	{
 		return $this->preloadonly == 1;
 	}
 
+	/**
+	 * @param bool $preloadonly
+	 */
 	public function setPreloadOnly($preloadonly)
 	{
 		$this->preloadonly = $preloadonly ? 1 : 0;
 	}
-	
+
+	/**
+	 * @return string
+	 */
 	public function getObjectDescription()
 	{
 		global $baseurl;

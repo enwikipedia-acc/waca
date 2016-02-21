@@ -54,6 +54,9 @@ SQL
 		return $result;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function save()
 	{
 		if ($this->isNew) {
@@ -94,46 +97,74 @@ SQL
 		}
 	}
 
+	/**
+	 * @return string
+	 * @todo convert to date
+	 */
 	public function getTime()
 	{
 		return $this->time;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getUser()
 	{
 		return $this->user;
 	}
 
+	/**
+	 * @param int $user
+	 */
 	public function setUser($user)
 	{
 		$this->user = $user;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getComment()
 	{
 		return $this->comment;
 	}
 
+	/**
+	 * @param string $comment
+	 */
 	public function setComment($comment)
 	{
 		$this->comment = $comment;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getVisibility()
 	{
 		return $this->visibility;
 	}
 
+	/**
+	 * @param string $visibility
+	 */
 	public function setVisibility($visibility)
 	{
 		$this->visibility = $visibility;
 	}
 
+	/**
+	 * @return int
+	 */
 	public function getRequest()
 	{
 		return $this->request;
 	}
 
+	/**
+	 * @param int $request
+	 */
 	public function setRequest($request)
 	{
 		$this->request = $request;
