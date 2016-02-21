@@ -18,8 +18,8 @@ class EmailHelperTest extends PHPUnit_Framework_TestCase
 
 	public function setUp()
 	{
-		if (!extension_loaded('runkit') || !class_exists('PHPUnit_Extensions_MockFunction')) {
-			$this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit and tcz/phpunit-mockfunction');
+		if (!extension_loaded('runkit')) {
+			$this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit');
 
 			return;
 		}
@@ -52,7 +52,7 @@ class EmailHelperTest extends PHPUnit_Framework_TestCase
 
 	public function tearDown()
 	{
-		if (extension_loaded('runkit') && class_exists('PHPUnit_Extensions_MockFunction')) {
+		if (extension_loaded('runkit')) {
 			// restore functionality
 			$this->mailMock->restore();
 		}

@@ -18,3 +18,6 @@ if (!file_exists($localconf)) {
 require_once __DIR__ . '/../includes/SiteConfiguration.php';
 require_once __DIR__ . '/../config.inc.php';
 require_once __DIR__ . '/../includes/PdoDatabase.php';
+
+require_once __DIR__ . '/utility/MockFunction.php';
+require_once __DIR__ . '/utility/MockStaticMethod.php';
