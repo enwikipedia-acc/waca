@@ -19,7 +19,7 @@ class PageConfirmEmail extends PublicInterfacePageBase
 	protected function main()
 	{
 		$id = WebRequest::getInt('id');
-		$si = WebRequest::getInt('si');
+		$si = WebRequest::getString('si');
 
 		if ($id === null || $si === null) {
 			throw new ApplicationLogicException('Link incomplete - please double check the link you received.');

@@ -16,7 +16,7 @@ class PublicRequestRouter extends RequestRouter
 	 */
 	protected function getRouteMap()
 	{
-		return $routeMap = array(
+		return array(
 			// Page showing a message stating the request has been submitted to our internal queues
 			'requestSubmitted'          =>
 				array(
