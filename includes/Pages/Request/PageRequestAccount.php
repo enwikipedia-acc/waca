@@ -3,7 +3,6 @@
 namespace Waca\Pages\Request;
 
 use BanHelper;
-use BootstrapSkin;
 use Exception;
 use Notification;
 use Request;
@@ -131,7 +130,6 @@ class PageRequestAccount extends PublicInterfacePageBase
 		$request->save();
 
 		Notification::requestReceived($request);
-		BootstrapSkin::displayPublicFooter();
 
 		$this->redirect('requestSubmitted');
 	}

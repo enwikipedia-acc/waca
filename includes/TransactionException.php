@@ -5,6 +5,8 @@
  *
  * Raise this inside a transactionally() block and you'll terminate the
  * transaction and show an error message to the user.
+ *
+ * @deprecated
  */
 class TransactionException extends Exception
 {

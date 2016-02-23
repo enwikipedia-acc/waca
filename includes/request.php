@@ -14,31 +14,7 @@
 
 class accRequest
 {
-	public function isTOR()
-	{
-		// Checks whether the IP is of the TOR network.
-		$toruser = $this->checktor($_SERVER['REMOTE_ADDR']);
-		
-		// Checks whether the tor field in the array is said to yes.
-		if ($toruser['tor'] == "yes") {
-			// Gets message to display to the user.
-			$message = InterfaceMessage::get(InterfaceMessage::DECL_BANNED);
-			
-			// Displays the appropiate message to the user.
-			echo "$message<strong><a href=\"https://en.wikipedia.org/wiki/Tor_%28anonymity_network%29\">TOR</a> nodes are not permitted to use this tool, due to abuse.</strong><br /></div>\n";
-			
-			// Display the footer of the interface.
-			BootstrapSkin::displayPublicFooter();
-            
-			// we probably want to output
-			ob_end_flush();
-			
-			// Terminates the current script, as the user is banned.
-			// This is done because the requesting process should be stopped. 
-			die();
-		}
-	}
-	
+
 	/*
 	* Check if the supplied host is a TOR node.
 	*/

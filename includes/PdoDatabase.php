@@ -6,6 +6,7 @@ use Waca\Exceptions\EnvironmentException;
  *
  * @return PdoDatabase
  * @throws Exception
+ * @deprecated
  */
 function gGetDb($db = "acc")
 {
@@ -122,44 +123,6 @@ class PdoDatabase extends PDO
 		if ($this->hasActiveTransaction) {
 			parent::rollback();
 			$this->hasActiveTransaction = false;
-		}
-	}
-
-	/**
-	 * Summary of transactionally
-	 *
-	 * @param Closure $method
-	 *
-	 * @deprecated
-	 */
-	public function transactionally($method)
-	{
-		if (!$this->beginTransaction()) {
-			BootstrapSkin::displayAlertBox("Error starting database transaction.", "alert-error",
-				"Database transaction error", true, false);
-			BootstrapSkin::displayInternalFooter();
-			die();
-		}
-
-		try {
-			$method();
-
-			$this->commit();
-		}
-		catch (TransactionException $ex) {
-			$this->rollBack();
-
-			BootstrapSkin::displayAlertBox($ex->getMessage(), $ex->getAlertType(), $ex->getTitle(), true, false);
-
-			// TODO: yuk.
-			if (defined("PUBLICMODE")) {
-				BootstrapSkin::displayPublicFooter();
-			}
-			else {
-				BootstrapSkin::displayInternalFooter();
-			}
-
-			die();
 		}
 	}
 
