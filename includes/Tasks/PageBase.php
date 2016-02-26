@@ -3,6 +3,7 @@
 namespace Waca\Tasks;
 
 use Exception;
+use InterfaceMessage;
 use SessionAlert;
 use TransactionException;
 use User;
@@ -59,6 +60,9 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 	final protected function setupPage()
 	{
 		$this->setUpSmarty();
+
+		$siteNoticeText = InterfaceMessage::get(InterfaceMessage::SITENOTICE, $this->getDatabase());
+		$this->assign('siteNoticeText', $siteNoticeText);
 	}
 
 	/**

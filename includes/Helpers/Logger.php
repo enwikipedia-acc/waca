@@ -541,12 +541,12 @@ SQL
 	}
 
 	/**
+	 * @param PdoDatabase $database
+	 *
 	 * @return array
 	 */
-	public static function getLogActions()
+	public static function getLogActions(PdoDatabase $database)
 	{
-		$database = gGetDb();
-
 		$lookup = array(
 			'Reserved'        => 'reserved',
 			'Email Confirmed' => 'email-confirmed',

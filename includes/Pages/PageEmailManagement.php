@@ -47,8 +47,8 @@ class PageEmailManagement extends InternalPageBase
 		$this->setHtmlTitle('Close Emails');
 
 		// Get all active email templates
-		$activeTemplates = EmailTemplate::getAllActiveTemplates();
-		$inactiveTemplates = EmailTemplate::getAllInactiveTemplates();
+		$activeTemplates = EmailTemplate::getAllActiveTemplates(null, $this->getDatabase());
+		$inactiveTemplates = EmailTemplate::getAllInactiveTemplates($this->getDatabase());
 
 		$this->assign('activeTemplates', $activeTemplates);
 		$this->assign('inactiveTemplates', $inactiveTemplates);

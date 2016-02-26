@@ -4,6 +4,7 @@ namespace Waca\Pages;
 
 use PDO;
 use Request;
+use User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
@@ -45,6 +46,14 @@ class PageSearch extends InternalPageBase
 			$this->assign('requests', $results);
 			$this->assign('term', $searchTerm);
 			$this->assign('target', $searchType);
+
+			$userIds = array_map(
+				function(Request $entry) {
+					return $entry->getReserved();
+				},
+				$results);
+			$userList = User::getUsernames($userIds, $this->getDatabase());
+			$this->assign('userlist', $userList);
 
 			$this->setTemplate('search/searchResult.tpl');
 		}

@@ -3,6 +3,7 @@ namespace Waca\Pages;
 
 use PDO;
 use Request;
+use User;
 use Waca\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 
@@ -51,10 +52,19 @@ class PageMain extends InternalPageBase
 			$totalRequests = $totalRequestsStatement->fetchColumn();
 			$totalRequestsStatement->closeCursor();
 
+			$userIds = array_map(
+				function(Request $entry) {
+					return $entry->getReserved();
+				},
+				$requests);
+			$userList = User::getUsernames($userIds, $this->getDatabase());
+			$this->assign('userlist', $userList);
+
 			$requestSectionData[$v['header']] = array(
 				'requests' => $requests,
 				'total'    => $totalRequests,
 				'api'      => $v['api'],
+				'userlist' => $userList,
 			);
 		}
 

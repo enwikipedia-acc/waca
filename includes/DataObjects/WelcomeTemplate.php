@@ -18,12 +18,8 @@ class WelcomeTemplate extends DataObject
 	 *
 	 * @return WelcomeTemplate[]
 	 */
-	public static function getAll(PdoDatabase $database = null)
+	public static function getAll(PdoDatabase $database)
 	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
-
 		$statement = $database->prepare("SELECT * FROM welcometemplate;");
 
 		$statement->execute();

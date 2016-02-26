@@ -2,11 +2,11 @@
 
 namespace Waca\Pages\Request;
 
-use BanHelper;
 use Exception;
 use Notification;
 use Request;
 use SessionAlert;
+use Waca\Helpers\BanHelper;
 use Waca\Tasks\PublicInterfacePageBase;
 use Waca\Validation\RequestValidationHelper;
 use Waca\Validation\ValidationError;
@@ -78,9 +78,10 @@ class PageRequestAccount extends PublicInterfacePageBase
 	protected function validateRequest($request)
 	{
 		$validationHelper = new RequestValidationHelper(
-			new BanHelper(),
+			new BanHelper($this->getDatabase()),
 			$request,
-			WebRequest::postEmail('emailconfirm'));
+			WebRequest::postEmail('emailconfirm'),
+			$this->getDatabase());
 
 		// These are arrays of ValidationError.
 		$nameValidation = $validationHelper->validateName();

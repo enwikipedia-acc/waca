@@ -2,7 +2,6 @@
 
 namespace Waca\Fragments;
 
-use InterfaceMessage;
 use Smarty;
 use User;
 use Waca\Environment;
@@ -57,9 +56,7 @@ trait TemplateOutput
 		$this->assign("baseurl", $this->getSiteConfiguration()->getBaseUrl());
 		$this->assign("mediawikiScriptPath", $this->getSiteConfiguration()->getMediawikiScriptPath());
 
-		// TODO: this isn't very mockable, and requires a database link.
-		$siteNoticeText = InterfaceMessage::get(InterfaceMessage::SITENOTICE);
-		$this->assign("siteNoticeText", $siteNoticeText);
+		$this->assign('siteNoticeText', '');
 
 		// TODO: this isn't mockable either, and has side effects if you don't have git
 		$this->assign("toolversion", Environment::getToolVersion());

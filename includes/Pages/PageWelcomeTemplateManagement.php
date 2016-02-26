@@ -21,7 +21,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 	 */
 	protected function main()
 	{
-		$templateList = WelcomeTemplate::getAll();
+		$templateList = WelcomeTemplate::getAll($this->getDatabase());
 
 		$this->assign('templateList', $templateList);
 		$this->setTemplate('welcome-template/list.tpl');

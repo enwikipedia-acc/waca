@@ -23,7 +23,7 @@ class PageBan extends InternalPageBase
 	{
 		$this->setHtmlTitle('Bans');
 
-		$bans = Ban::getActiveBans();
+		$bans = Ban::getActiveBans(null, $this->getDatabase());
 
 		$this->assign("activebans", $bans);
 		$this->setTemplate("bans/banlist.tpl");
@@ -181,11 +181,11 @@ class PageBan extends InternalPageBase
 		$type = WebRequest::postString('type');
 		$this->validateBanType($type, $target);
 
-		if (count(Ban::getActiveBans($target)) > 0) {
+		$database = $this->getDatabase();
+
+		if (count(Ban::getActiveBans($target, $database)) > 0) {
 			throw new ApplicationLogicException('This target is already banned!');
 		}
-
-		$database = $this->getDatabase();
 
 		$ban = new Ban();
 		$ban->setDatabase($database);

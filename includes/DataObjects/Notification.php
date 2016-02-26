@@ -90,6 +90,9 @@ class Notification extends DataObject
 	 * Send a notification
 	 *
 	 * @param string $message The text to send
+	 *
+	 * @deprecated
+	 * @todo Move me to a helper class
 	 */
 	protected static function send($message)
 	{

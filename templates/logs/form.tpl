@@ -5,7 +5,7 @@
 
     <select id="inputAction" name="filterAction" title="Log Action">
         <option value="">All log actions</option>
-        {foreach Logger::getLogActions() as $action => $description}
+        {foreach $allLogActions as $action => $description}
             <option value="{$action}" {if $action == $filterAction}selected="selected"{/if}>{$description}</option>
         {/foreach}
     </select>

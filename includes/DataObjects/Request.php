@@ -35,27 +35,6 @@ class Request extends DataObject
 	private $blacklistCache = null;
 
 	/**
-	 * This function removes all old requests which are not yet email-confirmed
-	 * from the database.
-	 */
-	public static function cleanExpiredUnconfirmedRequests()
-	{
-		global $emailConfirmationExpiryDays;
-
-		$database = gGetDb();
-		$statement = $database->prepare(<<<SQL
-            DELETE FROM request
-            WHERE
-                date < DATE_SUB(CURRENT_TIMESTAMP(), INTERVAL $emailConfirmationExpiryDays DAY)
-                AND emailconfirm != 'Confirmed'
-                AND emailconfirm != '';
-SQL
-		);
-
-		$statement->execute();
-	}
-
-	/**
 	 * @throws Exception
 	 */
 	public function save()
@@ -249,15 +228,6 @@ SQL
 	public function getReserved()
 	{
 		return $this->reserved;
-	}
-
-	/**
-	 * @deprecated
-	 * @return User
-	 */
-	public function getReservedObject()
-	{
-		return User::getById($this->reserved, gGetDb());
 	}
 
 	/**

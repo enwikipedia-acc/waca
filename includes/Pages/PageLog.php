@@ -81,6 +81,8 @@ class PageLog extends InternalPageBase
 		$this->assign("filterUser", $filterUser);
 		$this->assign("filterAction", $filterAction);
 
+		$this->assign('allLogActions', Logger::getLogActions($this->getDatabase()));
+
 		$this->setTemplate("logs/main.tpl");
 	}
 

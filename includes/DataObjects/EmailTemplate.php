@@ -24,12 +24,8 @@ class EmailTemplate extends DataObject
 	 * @param PdoDatabase $database 
 	 * @return array|false
 	 */
-	public static function getActiveTemplates($defaultAction, PdoDatabase $database = null)
+	public static function getActiveTemplates($defaultAction, PdoDatabase $database)
 	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
-
 		global $createdid;
 
 		$statement = $database->prepare(<<<SQL
@@ -63,12 +59,8 @@ SQL
 	 *
 	 * @return array|false
 	 */
-	public static function getAllActiveTemplates($defaultAction = null, PdoDatabase $database = null)
+	public static function getAllActiveTemplates($defaultAction, PdoDatabase $database)
 	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
-
 		$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE defaultaction = :forcreated AND active = 1;");
 
 		if ($defaultAction === false) {
@@ -98,16 +90,12 @@ SQL
 	/**
 	 * Gets all the unactive templates
 	 *
-	 * @param PdoDatabase|null $database
+	 * @param PdoDatabase $database
 	 *
 	 * @return array
 	 */
-	public static function getAllInactiveTemplates(PdoDatabase $database = null)
+	public static function getAllInactiveTemplates(PdoDatabase $database)
 	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
-
 		$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE  active = 0;");
 		$statement->execute();
 

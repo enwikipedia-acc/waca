@@ -13,17 +13,13 @@ class Comment extends DataObject
 
 	/**
 	 * @param integer          $id
-	 * @param null|PdoDatabase $database
+	 * @param PdoDatabase $database
 	 *
 	 * @return Comment[]
 	 * @throws Exception
 	 */
-	public static function getForRequest($id, PdoDatabase $database = null)
+	public static function getForRequest($id, PdoDatabase $database)
 	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
-
 		if (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
 			// current user is an admin or checkuser, so retrieve everything.
 			$statement = $database->prepare("SELECT * FROM comment WHERE request = :target;");

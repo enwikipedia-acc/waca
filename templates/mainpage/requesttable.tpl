@@ -64,7 +64,7 @@
             {* Reserve status *}
             <td>
                 {if $r->getReserved() != false && $r->getReserved() != $currentUser->getId()}
-                    <span class="visible-desktop">Being handled by {$r->getReservedObject()->getUsername()|escape}</span>
+                    <span class="visible-desktop">Being handled by {$userlist[$r->getReserved()]|escape}</span>
                 {/if}
             </td>
 

@@ -5,6 +5,7 @@ use Exception;
 use IAntiSpoofProvider;
 use IBanHelper;
 use IXffTrustProvider;
+use PdoDatabase;
 use Request;
 
 /**
@@ -15,19 +16,25 @@ class RequestValidationHelper
 	private $banHelper;
 	private $request;
 	private $emailConfirmation;
+	/**
+	 * @var PdoDatabase
+	 */
+	private $database;
 
 	/**
 	 * Summary of __construct
 	 *
-	 * @param IBanHelper $banHelper
-	 * @param Request    $request
-	 * @param string     $emailConfirmation
+	 * @param IBanHelper  $banHelper
+	 * @param Request     $request
+	 * @param string      $emailConfirmation
+	 * @param PdoDatabase $database
 	 */
-	public function __construct(IBanHelper $banHelper, Request $request, $emailConfirmation)
+	public function __construct(IBanHelper $banHelper, Request $request, $emailConfirmation, PdoDatabase $database)
 	{
 		$this->banHelper = $banHelper;
 		$this->request = $request;
 		$this->emailConfirmation = $emailConfirmation;
+		$this->database = $database;
 	}
 
 	/**
@@ -233,7 +240,7 @@ class RequestValidationHelper
 	private function nameRequestExists()
 	{
 		$query = "SELECT COUNT(id) FROM request WHERE status != 'Closed' AND name = :name;";
-		$statement = gGetDb()->prepare($query);
+		$statement = $this->database->prepare($query);
 		$statement->execute(array(':name' => $this->request->getName()));
 
 		if (!$statement) {

@@ -128,7 +128,12 @@ abstract class ApplicationBase
 		$page->setXffTrustProvider(new XffTrustProvider($siteConfiguration->getSquidList(), $database));
 
 		$page->setRdnsProvider(new CachedRDnsLookupProvider($database));
-		$page->setAntiSpoofProvider(new CachedApiAntispoofProvider());
+
+		$page->setAntiSpoofProvider(new CachedApiAntispoofProvider(
+			$database,
+			$this->getConfiguration()->getMediawikiWebServiceEndpoint(),
+			$httpHelper));
+
 		$page->setTypeAheadHelper(new TypeAheadHelper());
 		$page->setOAuthHelper(new OAuthHelper(
 			$siteConfiguration->getOAuthBaseUrl(),
