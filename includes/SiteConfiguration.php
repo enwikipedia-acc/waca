@@ -56,6 +56,12 @@ class SiteConfiguration
 	private $oauthConsumerToken;
 	private $oauthConsumerSecret;
 	private $xffTrustedHostsFile = '../TrustedXFF/trusted-hosts.txt';
+	private $crossOriginResourceSharingHosts = array(
+		"http://en.wikipedia.org",
+		"https://en.wikipedia.org",
+		"http://meta.wikimedia.org",
+		"https://meta.wikimedia.org",
+	);
 
 	/**
 	 * Gets the base URL of the tool
@@ -568,5 +574,25 @@ class SiteConfiguration
 	public function getXffTrustedHostsFile()
 	{
 		return $this->xffTrustedHostsFile;
+	}
+
+	/**
+	 * @param array $crossOriginResourceSharingHosts
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setCrossOriginResourceSharingHosts($crossOriginResourceSharingHosts)
+	{
+		$this->crossOriginResourceSharingHosts = $crossOriginResourceSharingHosts;
+
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getCrossOriginResourceSharingHosts()
+	{
+		return $this->crossOriginResourceSharingHosts;
 	}
 }

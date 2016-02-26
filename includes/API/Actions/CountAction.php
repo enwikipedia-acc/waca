@@ -2,34 +2,33 @@
 
 namespace Waca\API\Actions;
 
-use Waca\API\ApiActionBase as ApiActionBase;
+use PdoDatabase;
+use User;
 use Waca\API\ApiException as ApiException;
 use Waca\API\IApiAction as IApiAction;
-
-use \PdoDatabase as PdoDatabase;
-use \User as User;
+use Waca\Tasks\ApiPageBase;
+use Waca\WebRequest;
 
 /**
  * API Count action
  */
-class CountAction extends ApiActionBase implements IApiAction
+class CountAction extends ApiPageBase implements IApiAction
 {
 	/**
 	 * The target user
 	 * @var User $user
 	 */
 	private $user;
-
 	/**
 	 * The database
 	 * @var PdoDatabase $database
 	 */
 	private $database;
 
-	public function execute(\DOMElement $apiDocument)
+	public function executeApiAction(\DOMElement $apiDocument)
 	{
-		$username = isset($_GET['user']) ? trim($_GET['user']) : '';
-		if ($username == '') {
+		$username = WebRequest::getString('user');
+		if ($username === null) {
 			throw new ApiException("Please specify a username");
 		}
 
@@ -37,12 +36,13 @@ class CountAction extends ApiActionBase implements IApiAction
 		$userElement->setAttribute("name", $username);
 		$apiDocument->appendChild($userElement);
 
-		$this->database = gGetDb();
+		$this->database = $this->getDatabase();
 
 		$user = User::getByUsername($username, $this->database);
 
 		if ($user === false) {
 			$userElement->setAttribute("missing", "true");
+
 			return $apiDocument;
 		}
 
@@ -189,6 +189,5 @@ SQL
 		$cec = $combinedquery->fetchColumn();
 		$userElement->setAttribute("emailtempchange", $cec);
 		$combinedquery->closeCursor();
-
 	}
 }

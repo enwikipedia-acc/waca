@@ -10,7 +10,7 @@ use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\TemplateOutput;
 use Waca\WebRequest;
 
-abstract class PageBase extends TaskBase
+abstract class PageBase extends TaskBase implements IRoutedTask
 {
 	use TemplateOutput;
 
@@ -23,7 +23,7 @@ abstract class PageBase extends TaskBase
 	/** @var array Queue of headers to be sent on successful completion */
 	protected $headerQueue = array();
 	/** @var string The name of the route to use, as determined by the request router. */
-	protected $routeName = null;
+	private $routeName = null;
 
 	/**
 	 * Sets the route the request will take. Only should be called from the request router.
@@ -77,7 +77,7 @@ abstract class PageBase extends TaskBase
 
 		try {
 			// run the page code
-			$this->{$this->routeName}();
+			$this->{$this->getRouteName()}();
 
 			$database->commit();
 		}
@@ -233,7 +233,7 @@ abstract class PageBase extends TaskBase
 
 	public function execute()
 	{
-		if ($this->routeName === null) {
+		if ($this->getRouteName() === null) {
 			throw new Exception("Request is unrouted.");
 		}
 

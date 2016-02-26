@@ -37,7 +37,7 @@ use Waca\Pages\Statistics\StatsReservedRequests;
 use Waca\Pages\Statistics\StatsTemplateStats;
 use Waca\Pages\Statistics\StatsTopCreators;
 use Waca\Pages\Statistics\StatsUsers;
-use Waca\Tasks\PageBase;
+use Waca\Tasks\IRoutedTask;
 use Waca\WebRequest;
 
 /**
@@ -294,7 +294,7 @@ class RequestRouter implements IRequestRouter
 	);
 
 	/**
-	 * @return PageBase
+	 * @return IRoutedTask
 	 * @throws Exception
 	 */
 	final public function route()
@@ -303,12 +303,12 @@ class RequestRouter implements IRequestRouter
 
 		list($pageClass, $action) = $this->getRouteFromPath($pathInfo);
 
-		/** @var PageBase $page */
+		/** @var IRoutedTask $page */
 		$page = new $pageClass();
 
 		// Dynamic creation, so we've got to be careful here. We can't use built-in language type protection, so
 		// let's use our own.
-		if (!($page instanceof PageBase)) {
+		if (!($page instanceof IRoutedTask)) {
 			throw new Exception('Expected a page, but this is not a page.');
 		}
 
@@ -324,7 +324,7 @@ class RequestRouter implements IRequestRouter
 	 *
 	 * @return array
 	 */
-	public function getRouteFromPath($pathInfo)
+	protected function getRouteFromPath($pathInfo)
 	{
 		if (count($pathInfo) === 0) {
 			// No pathInfo, so no page to load. Load the main page.

@@ -2,15 +2,15 @@
 
 namespace Waca\API\Actions;
 
-use Waca\API\ApiActionBase as ApiActionBase;
-use Waca\API\IApiAction as IApiAction;
-
-use \PdoDatabase as PdoDatabase;
+use DOMElement;
+use PdoDatabase;
+use Waca\API\IApiAction;
+use Waca\Tasks\ApiPageBase;
 
 /**
  * API Count action
  */
-class StatusAction extends ApiActionBase implements IApiAction
+class StatusAction extends ApiPageBase implements IApiAction
 {
 	/**
 	 * The database
@@ -18,9 +18,9 @@ class StatusAction extends ApiActionBase implements IApiAction
 	 */
 	private $database;
 
-	public function execute(\DOMElement $apiDocument)
+	public function executeApiAction(DOMElement $apiDocument)
 	{
-		$this->database = gGetDb();
+		$this->database = $this->getDatabase();
 
 		$statusElement = $this->document->createElement("status");
 		$apiDocument->appendChild($statusElement);

@@ -4,6 +4,7 @@ namespace Waca\Tests;
 
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
+use ReflectionClass;
 use ReflectionProperty;
 use Waca\Pages\Page404;
 use Waca\Pages\PageLogout;
@@ -29,7 +30,12 @@ class RequestRouterTest extends PHPUnit_Framework_TestCase
 	public function testEmptyPathInfo()
 	{
 		$router = new RequestRouter();
-		list($pageClass, $action) = $router->getRouteFromPath(array());
+
+		$reflector = new ReflectionClass($router);
+		$method = $reflector->getMethod('getRouteFromPath');
+		$method->setAccessible(true);
+
+		list($pageClass, $action) = $method->invoke($router, array());
 
 		$this->assertEquals(PageMain::class, $pageClass);
 		$this->assertEquals('main', $action);
@@ -38,7 +44,12 @@ class RequestRouterTest extends PHPUnit_Framework_TestCase
 	public function testSingleItemPathInfo()
 	{
 		$router = new RequestRouter();
-		list($pageClass, $action) = $router->getRouteFromPath(array('logout'));
+
+		$reflector = new ReflectionClass($router);
+		$method = $reflector->getMethod('getRouteFromPath');
+		$method->setAccessible(true);
+
+		list($pageClass, $action) = $method->invoke($router, array('logout'));
 
 		$this->assertEquals(PageLogout::class, $pageClass);
 		$this->assertEquals('main', $action);
@@ -47,7 +58,12 @@ class RequestRouterTest extends PHPUnit_Framework_TestCase
 	public function testSingleItemPathInfoNotFound()
 	{
 		$router = new RequestRouter();
-		list($pageClass, $action) = $router->getRouteFromPath(array('pleaseDontExist'));
+
+		$reflector = new ReflectionClass($router);
+		$method = $reflector->getMethod('getRouteFromPath');
+		$method->setAccessible(true);
+
+		list($pageClass, $action) = $method->invoke($router, array('pleaseDontExist'));
 
 		$this->assertEquals(Page404::class, $pageClass);
 		$this->assertEquals('main', $action);
@@ -56,7 +72,12 @@ class RequestRouterTest extends PHPUnit_Framework_TestCase
 	public function testDualItem()
 	{
 		$router = new RequestRouter();
-		list($pageClass, $action) = $router->getRouteFromPath(array('userManagement', 'approve'));
+
+		$reflector = new ReflectionClass($router);
+		$method = $reflector->getMethod('getRouteFromPath');
+		$method->setAccessible(true);
+
+		list($pageClass, $action) = $method->invoke($router, array('userManagement', 'approve'));
 
 		$this->assertEquals(PageUserManagement::class, $pageClass);
 		$this->assertEquals('approve', $action);
@@ -65,7 +86,12 @@ class RequestRouterTest extends PHPUnit_Framework_TestCase
 	public function testDualItemInvalidAction()
 	{
 		$router = new RequestRouter();
-		list($pageClass, $action) = $router->getRouteFromPath(array('userManagement', 'dontExist'));
+
+		$reflector = new ReflectionClass($router);
+		$method = $reflector->getMethod('getRouteFromPath');
+		$method->setAccessible(true);
+
+		list($pageClass, $action) = $method->invoke($router, array('userManagement', 'dontExist'));
 
 		$this->assertEquals(Page404::class, $pageClass);
 		$this->assertEquals('main', $action);
@@ -74,7 +100,12 @@ class RequestRouterTest extends PHPUnit_Framework_TestCase
 	public function testDualItemInvalidPage()
 	{
 		$router = new RequestRouter();
-		list($pageClass, $action) = $router->getRouteFromPath(array('dontExist', 'approve'));
+
+		$reflector = new ReflectionClass($router);
+		$method = $reflector->getMethod('getRouteFromPath');
+		$method->setAccessible(true);
+
+		list($pageClass, $action) = $method->invoke($router, array('dontExist', 'approve'));
 
 		$this->assertEquals(Page404::class, $pageClass);
 		$this->assertEquals('main', $action);
@@ -83,7 +114,12 @@ class RequestRouterTest extends PHPUnit_Framework_TestCase
 	public function testDualItemInvalidBoth()
 	{
 		$router = new RequestRouter();
-		list($pageClass, $action) = $router->getRouteFromPath(array('dontExist', 'definitelyDontExist'));
+
+		$reflector = new ReflectionClass($router);
+		$method = $reflector->getMethod('getRouteFromPath');
+		$method->setAccessible(true);
+
+		list($pageClass, $action) = $method->invoke($router, array('dontExist', 'definitelyDontExist'));
 
 		$this->assertEquals(Page404::class, $pageClass);
 		$this->assertEquals('main', $action);

@@ -446,4 +446,15 @@ class WebRequest
 
 		return null;
 	}
+
+	public static function origin()
+	{
+		$server = &self::$globalStateProvider->getServerSuperGlobal();
+
+		if (isset($server['HTTP_ORIGIN'])) {
+			return $server['HTTP_ORIGIN'];
+		}
+
+		return null;
+	}
 }

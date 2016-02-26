@@ -14,7 +14,7 @@ use Waca\Helpers\Interfaces\ITypeAheadHelper;
 use Waca\Helpers\WikiTextHelper;
 use Waca\SiteConfiguration;
 
-abstract class TaskBase
+abstract class TaskBase implements ITask
 {
 	/** @var SiteConfiguration */
 	private $siteConfiguration;

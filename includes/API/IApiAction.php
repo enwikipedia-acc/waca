@@ -2,13 +2,14 @@
 
 namespace Waca\API;
 
+use DOMElement;
+
 /**
  * API Action interface
  */
 interface IApiAction
 {
+	public function executeApiAction(DOMElement $apiDocument);
 
-	public function execute(\DOMElement $apiDocument);
-
-	public function run();
+	public function runApiPage();
 }

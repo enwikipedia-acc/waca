@@ -13,7 +13,7 @@ use Waca\Helpers\HttpHelper;
 use Waca\Helpers\OAuthHelper;
 use Waca\Helpers\TypeAheadHelper;
 use Waca\Helpers\WikiTextHelper;
-use Waca\Tasks\TaskBase;
+use Waca\Tasks\ITask;
 use XffTrustProvider;
 
 abstract class ApplicationBase
@@ -102,11 +102,11 @@ abstract class ApplicationBase
 	abstract protected function cleanupEnvironment();
 
 	/**
-	 * @param TaskBase          $page
+	 * @param ITask             $page
 	 * @param SiteConfiguration $siteConfiguration
 	 * @param PdoDatabase       $database
 	 */
-	protected function setupHelpers(TaskBase $page, SiteConfiguration $siteConfiguration, PdoDatabase $database)
+	protected function setupHelpers(ITask $page, SiteConfiguration $siteConfiguration, PdoDatabase $database)
 	{
 		$page->setSiteConfiguration($siteConfiguration);
 

@@ -1,23 +1,20 @@
 <?php
-// API for helpmebot/other bots/etc
-// This is a public-data-only read-only API, much in the same vein of ACCBot was.
-//
-// count - Displays statistics for the targeted user.
-// status - Displays interface statistics, such as the number of open requests.
-// stats - Gives a readout similar to the user list user information page.
+namespace Waca;
 
-require_once("config.inc.php");
-// @todo this requires work, since functions.php has been deleted.
-require_once("includes/PdoDatabase.php");
+use Waca\Router\ApiRequestRouter;
 
-$httpOrigin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : null;
+/*
+ * Public interface script
+ *
+ * THIS IS AN ENTRY POINT
+ */
 
-$api = new Waca\API\Api($httpOrigin);
+require_once('config.inc.php');
 
-// get the request action, defaulting to help
-$requestAction = "";
-if (isset($_GET['action'])) {
-	$requestAction = $_GET['action'];
-}
+global $siteConfiguration;
+$application = new WebStart($siteConfiguration, new ApiRequestRouter());
 
-echo $api->execute($requestAction);
+// This is a public interface
+$application->setPublic(true);
+
+$application->run();

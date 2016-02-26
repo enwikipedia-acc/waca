@@ -2,16 +2,17 @@
 
 namespace Waca\API\Actions;
 
-use Waca\API\Api as Api;
-use Waca\API\ApiActionBase as ApiActionBase;
-use Waca\API\IApiAction as IApiAction;
+use DOMElement;
+use Waca\API\IApiAction;
+use Waca\Router\ApiRequestRouter;
+use Waca\Tasks\ApiPageBase;
 
 /**
  * API Help action
  */
-class HelpAction extends ApiActionBase implements IApiAction
+class HelpAction extends ApiPageBase implements IApiAction
 {
-	public function execute(\DOMElement $apiDocument)
+	public function executeApiAction(DOMElement $apiDocument)
 	{
 		$helpElement = $this->getHelpElement();
 		$apiDocument->appendChild($helpElement);
@@ -31,7 +32,7 @@ class HelpAction extends ApiActionBase implements IApiAction
 		$helptext = $this->document->createElement("info", $helpInfo);
 		$helpactions = $this->document->createElement("actions");
 
-		foreach (Api::getActionList() as $action) {
+		foreach (ApiRequestRouter::getActionList() as $action) {
 			$actionElement = $this->document->createElement("action", $action);
 			$helpactions->appendChild($actionElement);
 		}

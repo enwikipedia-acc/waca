@@ -2,24 +2,22 @@
 
 namespace Waca\API\Actions;
 
-use Waca\API\ApiActionBase as ApiActionBase;
-use Waca\API\ApiException as ApiException;
-use Waca\API\IApiAction as IApiAction;
-
-use \PdoDatabase as PdoDatabase;
-use \User as User;
+use User;
+use Waca\API\ApiException;
+use Waca\API\IApiAction;
+use Waca\Tasks\ApiPageBase;
+use Waca\WebRequest;
 
 /**
  * API Count action
  */
-class StatsAction extends ApiActionBase implements IApiAction
+class StatsAction extends ApiPageBase implements IApiAction
 {
 	/**
 	 * The target user
 	 * @var \User $user
 	 */
 	private $user;
-
 	/**
 	 * The database
 	 * @var \PdoDatabase $database
@@ -28,26 +26,28 @@ class StatsAction extends ApiActionBase implements IApiAction
 
 	/**
 	 * Summary of execute
+	 *
 	 * @param \DOMElement $apiDocument
+	 *
 	 * @return \DOMElement
 	 * @throws ApiException
 	 * @throws \Exception
 	 */
-	public function execute(\DOMElement $apiDocument)
+	public function executeApiAction(\DOMElement $apiDocument)
 	{
-		$username = isset($_GET['user']) ? trim($_GET['user']) : '';
-		$wikiusername = isset($_GET['wikiuser']) ? trim($_GET['wikiuser']) : '';
+		$username = WebRequest::getString('user');
+		$wikiusername = WebRequest::getString('wikiuser');
 
-		if ($username === '' && $wikiusername === '') {
+		if ($username === null && $wikiusername === null) {
 			throw new ApiException("Please specify a username using either user or wikiuser parameters.");
 		}
 
 		$userElement = $this->document->createElement("user");
 		$apiDocument->appendChild($userElement);
 
-		$this->database = gGetDb();
+		$this->database = $this->getDatabase();
 
-		if ($username !== '') {
+		if ($username !== null) {
 			$user = User::getByUsername($username, $this->database);
 		}
 		else {
@@ -56,6 +56,7 @@ class StatsAction extends ApiActionBase implements IApiAction
 
 		if ($user === false) {
 			$userElement->setAttribute("missing", "true");
+
 			return $apiDocument;
 		}
 

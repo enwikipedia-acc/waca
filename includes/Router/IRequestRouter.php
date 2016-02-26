@@ -3,7 +3,7 @@
 namespace Waca\Router;
 
 use Exception;
-use Waca\Tasks\InternalPageBase;
+use Waca\Tasks\IRoutedTask;
 
 /**
  * Interface IRequestRouter
@@ -13,15 +13,8 @@ use Waca\Tasks\InternalPageBase;
 interface IRequestRouter
 {
 	/**
-	 * @return InternalPageBase
+	 * @return IRoutedTask
 	 * @throws Exception
 	 */
 	public function route();
-
-	/**
-	 * @param $pathInfo
-	 *
-	 * @return array
-	 */
-	public function getRouteFromPath($pathInfo);
 }

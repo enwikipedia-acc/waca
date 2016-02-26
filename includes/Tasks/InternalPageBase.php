@@ -17,7 +17,7 @@ abstract class InternalPageBase extends PageBase
 	 */
 	final public function execute()
 	{
-		if ($this->routeName === null) {
+		if ($this->getRouteName() === null) {
 			throw new Exception("Request is unrouted.");
 		}
 
@@ -104,7 +104,7 @@ abstract class InternalPageBase extends PageBase
 	 */
 	final public function barrierTest($action)
 	{
-		$tmpRouteName = $this->routeName;
+		$tmpRouteName = $this->getRouteName();
 
 		try {
 			$this->routeName = $action;

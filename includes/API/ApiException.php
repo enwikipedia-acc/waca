@@ -2,10 +2,12 @@
 
 namespace Waca\API;
 
+use Exception;
+
 /**
  * ApiException
  */
-class ApiException extends \Exception
+class ApiException extends Exception
 {
 	/**
 	 * @param string $message

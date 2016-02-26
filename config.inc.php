@@ -223,13 +223,6 @@ $availableRequestStates = array(
 	
 $defaultRequestStateKey = 'Open';
 
-// CORS
-$CORSallowed = array(
-	"http://en.wikipedia.org",
-	"https://en.wikipedia.org",
-	"http://meta.wikimedia.org",
-	"https://meta.wikimedia.org");
-
 $providerCacheExpiry = $dataclear_interval;
 
 // miser mode
