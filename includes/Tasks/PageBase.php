@@ -3,11 +3,11 @@
 namespace Waca\Tasks;
 
 use Exception;
-use SessionAlert;
 use User;
 use Waca\DataObjects\InterfaceMessage;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\TemplateOutput;
+use Waca\SessionAlert;
 use Waca\WebRequest;
 
 abstract class PageBase extends TaskBase implements IRoutedTask

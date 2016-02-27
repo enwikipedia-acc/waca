@@ -2,17 +2,17 @@
 
 namespace Waca\Tasks;
 
-use IAntiSpoofProvider;
-use ILocationProvider;
-use IRDnsProvider;
-use IXffTrustProvider;
-use PdoDatabase;
 use Waca\Helpers\HttpHelper;
 use Waca\Helpers\Interfaces\IEmailHelper;
 use Waca\Helpers\Interfaces\IOAuthHelper;
 use Waca\Helpers\Interfaces\ITypeAheadHelper;
 use Waca\Helpers\IrcNotificationHelper;
 use Waca\Helpers\WikiTextHelper;
+use Waca\PdoDatabase;
+use Waca\Providers\Interfaces\IAntiSpoofProvider;
+use Waca\Providers\Interfaces\ILocationProvider;
+use Waca\Providers\Interfaces\IRDnsProvider;
+use Waca\Providers\Interfaces\IXffTrustProvider;
 use Waca\SiteConfiguration;
 
 interface ITask

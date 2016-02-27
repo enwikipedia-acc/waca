@@ -3,9 +3,9 @@ namespace Waca\DataObjects;
 
 use Exception;
 use PDO;
-use PdoDatabase;
 use User;
 use Waca\DataObject;
+use Waca\PdoDatabase;
 
 /**
  * Comment data object

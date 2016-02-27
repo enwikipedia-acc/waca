@@ -2,11 +2,7 @@
 
 namespace Waca;
 
-use CachedApiAntispoofProvider;
-use CachedRDnsLookupProvider;
 use Exception;
-use FakeLocationProvider;
-use PdoDatabase;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Helpers\EmailHelper;
 use Waca\Helpers\HttpHelper;
@@ -14,8 +10,11 @@ use Waca\Helpers\IrcNotificationHelper;
 use Waca\Helpers\OAuthHelper;
 use Waca\Helpers\TypeAheadHelper;
 use Waca\Helpers\WikiTextHelper;
+use Waca\Providers\CachedApiAntispoofProvider;
+use Waca\Providers\CachedRDnsLookupProvider;
+use Waca\Providers\FakeLocationProvider;
+use Waca\Providers\XffTrustProvider;
 use Waca\Tasks\ITask;
-use XffTrustProvider;
 
 abstract class ApplicationBase
 {

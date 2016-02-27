@@ -1,5 +1,9 @@
 <?php
+namespace Waca\Providers;
+
 use Waca\DataObjects\RDnsCache;
+use Waca\PdoDatabase;
+use Waca\Providers\Interfaces\IRDnsProvider;
 
 /**
  * Cached RDNS Lookup Provider

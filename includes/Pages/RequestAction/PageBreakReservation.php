@@ -3,12 +3,12 @@
 namespace Waca\Pages\RequestAction;
 
 use Exception;
-use PdoDatabase;
 use User;
 use Waca\DataObjects\Request;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\PdoDatabase;
 use Waca\SecurityConfiguration;
 
 class PageBreakReservation extends RequestActionBase

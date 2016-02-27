@@ -2,11 +2,11 @@
 
 namespace Waca\Pages;
 
-use PdoDatabase;
-use SessionAlert;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\PdoDatabase;
 use Waca\SecurityConfiguration;
+use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 

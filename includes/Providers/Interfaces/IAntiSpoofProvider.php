@@ -1,5 +1,7 @@
 <?php
 
+namespace Waca\Providers\Interfaces;
+
 /**
  * AntiSpoof provider interface
  */

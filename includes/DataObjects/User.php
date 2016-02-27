@@ -4,6 +4,8 @@ use Waca\DataObject;
 use Waca\DataObjects\CommunityUser;
 use Waca\Helpers\Interfaces\IOAuthHelper;
 use Waca\Helpers\Logger;
+use Waca\PdoDatabase;
+use Waca\SessionAlert;
 
 /**
  * User data object

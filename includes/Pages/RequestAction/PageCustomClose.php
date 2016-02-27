@@ -3,13 +3,13 @@
 namespace Waca\Pages\RequestAction;
 
 use Exception;
-use PdoDatabase;
-use SessionAlert;
 use User;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\Request;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\PdoDatabase;
+use Waca\SessionAlert;
 use Waca\WebRequest;
 
 class PageCustomClose extends PageCloseRequest

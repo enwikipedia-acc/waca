@@ -1,5 +1,7 @@
 <?php
 
+namespace Waca\Providers\Interfaces;
+
 /**
  * IP Location provider interface
  */

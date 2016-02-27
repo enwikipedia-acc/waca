@@ -1,11 +1,16 @@
 <?php
 
+namespace Waca\Tests\Validation;
+
+use PHPUnit_Framework_MockObject_MockObject;
+use PHPUnit_Framework_TestCase;
 use Waca\DataObjects\Request;
 use Waca\Helpers\Interfaces\IBanHelper;
+use Waca\PdoDatabase;
 use Waca\Validation\RequestValidationHelper;
 
 /**
- * @backupGlobals disabled
+ * @backupGlobals          disabled
  * @backupStaticAttributes disabled
  */
 class RequestValidationHelperTest extends PHPUnit_Framework_TestCase

@@ -1,5 +1,11 @@
 <?php
+namespace Waca\Providers;
+
+use Exception;
+use SimpleXMLElement;
 use Waca\DataObjects\GeoLocation;
+use Waca\PdoDatabase;
+use Waca\Providers\Interfaces\ILocationProvider;
 
 /**
  * IP location provider
@@ -49,6 +55,7 @@ class IpLocationProvider implements ILocationProvider
 
 	/**
 	 * @param string $ip
+	 *
 	 * @return array|null
 	 */
 	private function getResult($ip)

@@ -2,8 +2,6 @@
 namespace Waca;
 
 use Exception;
-use Offline;
-use PdoDatabase;
 use User;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Exceptions\ReadableException;

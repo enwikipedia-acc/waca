@@ -3,7 +3,6 @@
 namespace Waca\Pages;
 
 use Exception;
-use PdoDatabase;
 use User;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\EmailTemplate;
@@ -11,6 +10,7 @@ use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\PdoDatabase;
 use Waca\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;

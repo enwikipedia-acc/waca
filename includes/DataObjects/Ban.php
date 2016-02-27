@@ -3,8 +3,8 @@ namespace Waca\DataObjects;
 
 use Exception;
 use PDO;
-use PdoDatabase;
 use Waca\DataObject;
+use Waca\PdoDatabase;
 
 /**
  * Ban data object

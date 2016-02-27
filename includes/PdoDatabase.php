@@ -1,4 +1,10 @@
 <?php
+namespace Waca;
+
+use Exception;
+use PDO;
+use PDOException;
+use PDOStatement;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Helpers\DebugHelper;
 
@@ -104,7 +110,8 @@ class PdoDatabase extends PDO
 		if ($this->hasActiveTransaction) {
 			parent::commit();
 			$this->hasActiveTransaction = false;
-		}	}
+		}
+	}
 
 	/**
 	 * Rolls back a transaction

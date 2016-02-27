@@ -3,7 +3,6 @@
 namespace Waca;
 
 use Exception;
-use PdoDatabase;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Tasks\ConsoleTaskBase;
 

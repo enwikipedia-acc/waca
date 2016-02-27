@@ -2,12 +2,12 @@
 
 namespace Waca\Pages;
 
-use PdoDatabase;
-use SessionAlert;
 use Waca\DataObjects\EmailTemplate;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\PdoDatabase;
 use Waca\SecurityConfiguration;
+use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 

@@ -2,11 +2,11 @@
 namespace Waca\Validation;
 
 use Exception;
-use IAntiSpoofProvider;
-use IXffTrustProvider;
-use PdoDatabase;
 use Waca\DataObjects\Request;
 use Waca\Helpers\Interfaces\IBanHelper;
+use Waca\PdoDatabase;
+use Waca\Providers\Interfaces\IAntiSpoofProvider;
+use Waca\Providers\Interfaces\IXffTrustProvider;
 
 /**
  * Performs the validation of an incoming request.

@@ -3,9 +3,9 @@ namespace Waca\DataObjects;
 
 use DateTime;
 use Exception;
-use IXffTrustProvider;
 use PDO;
 use Waca\DataObject;
+use Waca\Providers\Interfaces\IXffTrustProvider;
 
 /**
  * Request data object

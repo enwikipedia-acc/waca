@@ -3,11 +3,11 @@
 namespace Waca\Pages;
 
 use Exception;
-use SessionAlert;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
+use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 use WelcomeTemplate;

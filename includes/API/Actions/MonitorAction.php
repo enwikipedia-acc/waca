@@ -4,8 +4,8 @@ namespace Waca\API\Actions;
 
 use DateTime;
 use DOMElement;
-use PdoDatabase;
 use Waca\API\IApiAction;
+use Waca\PdoDatabase;
 use Waca\Tasks\ApiPageBase;
 
 /**

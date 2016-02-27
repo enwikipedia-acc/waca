@@ -2,9 +2,9 @@
 
 namespace Waca\Pages\RequestAction;
 
-use PdoDatabase;
 use Waca\DataObjects\Request;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\PdoDatabase;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 

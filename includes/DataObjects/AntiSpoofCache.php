@@ -2,8 +2,8 @@
 namespace Waca\DataObjects;
 
 use Exception;
-use PdoDatabase;
 use Waca\DataObject;
+use Waca\PdoDatabase;
 
 /**
  * AntiSpoofCache data object

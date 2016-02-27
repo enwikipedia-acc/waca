@@ -3,11 +3,11 @@
 namespace Waca\Pages\RequestAction;
 
 use Exception;
-use SessionAlert;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
+use Waca\SessionAlert;
 use Waca\WebRequest;
 
 class PageSendToUser extends RequestActionBase

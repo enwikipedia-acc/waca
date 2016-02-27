@@ -3,13 +3,13 @@
 namespace Waca\Pages;
 
 use Exception;
-use SessionAlert;
 use User;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Request;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
+use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 

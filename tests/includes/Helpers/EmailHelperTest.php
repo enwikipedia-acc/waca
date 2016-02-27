@@ -1,6 +1,6 @@
 <?php
 
-namespace includes\Helpers;
+namespace Waca\Tests\Helpers;
 
 use PHPUnit_Extensions_MockFunction;
 use PHPUnit_Framework_TestCase;

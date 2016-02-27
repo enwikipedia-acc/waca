@@ -3,7 +3,6 @@
 namespace Waca\Helpers;
 
 use Exception;
-use PdoDatabase;
 use User;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
@@ -11,6 +10,7 @@ use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\Notification;
 use Waca\DataObjects\Request;
 use Waca\IrcColourCode;
+use Waca\PdoDatabase;
 use Waca\SiteConfiguration;
 use WelcomeTemplate;
 

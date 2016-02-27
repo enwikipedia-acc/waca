@@ -2,9 +2,9 @@
 
 namespace Waca\Helpers;
 
-use PdoDatabase;
 use Waca\DataObjects\Ban;
 use Waca\Helpers\Interfaces\IBanHelper;
+use Waca\PdoDatabase;
 
 class BanHelper implements IBanHelper
 {

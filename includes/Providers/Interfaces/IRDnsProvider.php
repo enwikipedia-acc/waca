@@ -1,5 +1,7 @@
 <?php
 
+namespace Waca\Providers\Interfaces;
+
 /**
  * Reverse DNS provider interface
  */

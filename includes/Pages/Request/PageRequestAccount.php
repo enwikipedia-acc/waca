@@ -3,9 +3,9 @@
 namespace Waca\Pages\Request;
 
 use Exception;
-use SessionAlert;
 use Waca\DataObjects\Request;
 use Waca\Helpers\BanHelper;
+use Waca\SessionAlert;
 use Waca\Tasks\PublicInterfacePageBase;
 use Waca\Validation\RequestValidationHelper;
 use Waca\Validation\ValidationError;

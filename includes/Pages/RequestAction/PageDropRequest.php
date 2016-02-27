@@ -2,10 +2,10 @@
 
 namespace Waca\Pages\RequestAction;
 
-use PdoDatabase;
 use User;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\Request;
+use Waca\PdoDatabase;
 
 class PageDropRequest extends PageCloseRequest
 {

@@ -1,5 +1,5 @@
 <?php
-use Waca\WebRequest;
+namespace Waca;
 
 /**
  * Session Alerts

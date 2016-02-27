@@ -1,6 +1,11 @@
 <?php
+namespace Waca\Providers;
+
+use Exception;
 use Waca\DataObjects\AntiSpoofCache;
 use Waca\Helpers\HttpHelper;
+use Waca\PdoDatabase;
+use Waca\Providers\Interfaces\IAntiSpoofProvider;
 
 /**
  * Cached API Antispoof Provider
@@ -36,9 +41,9 @@ class CachedApiAntispoofProvider implements IAntiSpoofProvider
 		if ($cacheResult == false) {
 			// get the data from the API
 			$data = $this->httpHelper->get($this->mediawikiWebServiceEndpoint, array(
-				'action' => 'antispoof',
-				'format' => 'php',
-				'username' => $username
+				'action'   => 'antispoof',
+				'format'   => 'php',
+				'username' => $username,
 			));
 
 			$cacheEntry = new AntiSpoofCache();

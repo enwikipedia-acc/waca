@@ -1,5 +1,6 @@
 <?php
 use Waca\DataObject;
+use Waca\PdoDatabase;
 
 /**
  * Welcome template data object

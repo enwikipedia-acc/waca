@@ -11,7 +11,9 @@
  **                                                                       **
  ** See CREDITS for the list of developers.                               **
  ***************************************************************************/
-use Waca\Environment;
+namespace Waca;
+
+use Smarty;
 
 /**
  * Handles the tool offline messages

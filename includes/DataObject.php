@@ -2,8 +2,6 @@
 
 namespace Waca;
 
-use PdoDatabase;
-
 /**
  * DataObject is the base class for all the database access classes. Each
  * "DataObject" holds one record from the database, and provides functions to
