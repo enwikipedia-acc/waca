@@ -62,6 +62,10 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 
 		$siteNoticeText = InterfaceMessage::get(InterfaceMessage::SITENOTICE, $this->getDatabase());
 		$this->assign('siteNoticeText', $siteNoticeText);
+
+		$currentUser = User::getCurrent($this->getDatabase());
+		$this->assign('currentUser', $currentUser);
+		$this->assign("loggedIn", (!$currentUser->isCommunityUser()));
 	}
 
 	/**

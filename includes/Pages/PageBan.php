@@ -5,7 +5,6 @@ namespace Waca\Pages;
 use Ban;
 use Exception;
 use Logger;
-use Notification;
 use Request;
 use SessionAlert;
 use User;
@@ -68,7 +67,7 @@ class PageBan extends InternalPageBase
 			Logger::unbanned($database, $ban, $unbanReason);
 
 			SessionAlert::quick("Disabled ban.");
-			Notification::unbanned($ban, $unbanReason);
+			$this->getNotificationHelper->unbanned($ban, $unbanReason);
 
 			$this->redirect('bans');
 		}
@@ -192,7 +191,7 @@ class PageBan extends InternalPageBase
 		$ban->setActive(1);
 		$ban->setType($type);
 		$ban->setTarget($target);
-		$ban->setUser(User::getCurrent()->getId());
+		$ban->setUser(User::getCurrent($database)->getId());
 		$ban->setReason($reason);
 		$ban->setDuration($duration);
 
@@ -200,7 +199,7 @@ class PageBan extends InternalPageBase
 
 		Logger::banned($database, $ban, $reason);
 
-		Notification::banned($ban);
+		$this->getNotificationHelper()->banned($ban);
 		SessionAlert::quick('Ban has been set.');
 
 		$this->redirect('bans');

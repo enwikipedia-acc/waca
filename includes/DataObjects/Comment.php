@@ -20,7 +20,9 @@ class Comment extends DataObject
 	 */
 	public static function getForRequest($id, PdoDatabase $database)
 	{
-		if (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
+		$currentUser = User::getCurrent($database);
+		
+		if ($currentUser->isAdmin() || $currentUser->isCheckuser()) {
 			// current user is an admin or checkuser, so retrieve everything.
 			$statement = $database->prepare("SELECT * FROM comment WHERE request = :target;");
 		}
@@ -32,7 +34,7 @@ SELECT * FROM comment
 WHERE request = :target AND (visibility = 'user' OR user = :userid);
 SQL
 			);
-			$statement->bindValue(":userid", User::getCurrent()->getId());
+			$statement->bindValue(":userid", $currentUser->getId());
 		}
 
 		$statement->bindValue(":target", $id);

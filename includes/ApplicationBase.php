@@ -10,6 +10,7 @@ use PdoDatabase;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Helpers\EmailHelper;
 use Waca\Helpers\HttpHelper;
+use Waca\Helpers\IrcNotificationHelper;
 use Waca\Helpers\OAuthHelper;
 use Waca\Helpers\TypeAheadHelper;
 use Waca\Helpers\WikiTextHelper;
@@ -102,12 +103,17 @@ abstract class ApplicationBase
 	abstract protected function cleanupEnvironment();
 
 	/**
-	 * @param ITask             $page
+	 * @param ITask $page
 	 * @param SiteConfiguration $siteConfiguration
-	 * @param PdoDatabase       $database
+	 * @param PdoDatabase $database
+	 * @param PdoDatabase $notificationsDatabase
 	 */
-	protected function setupHelpers(ITask $page, SiteConfiguration $siteConfiguration, PdoDatabase $database)
-	{
+	protected function setupHelpers(
+		ITask $page,
+		SiteConfiguration $siteConfiguration,
+		PdoDatabase $database,
+		PdoDatabase $notificationsDatabase
+	) {
 		$page->setSiteConfiguration($siteConfiguration);
 
 		// setup the global database object
@@ -142,5 +148,10 @@ abstract class ApplicationBase
 			$httpHelper,
 			$siteConfiguration->getMediawikiWebServiceEndpoint()
 		));
+
+		$page->setNotificationHelper(new IrcNotificationHelper(
+			$siteConfiguration,
+			$notificationsDatabase,
+			$database));
 	}
 }

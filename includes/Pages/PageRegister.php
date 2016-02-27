@@ -3,7 +3,6 @@
 namespace Waca\Pages;
 
 use Logger;
-use Notification;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\SecurityConfiguration;
@@ -148,7 +147,7 @@ class PageRegister extends InternalPageBase
 		}
 		else {
 			// only notify if we're not using the oauth signup.
-			Notification::userNew($user);
+			$this->getNotificationHelper->userNew($user);
 			WebRequest::setLoggedInUser($user);
 			$this->redirect('preferences');
 		}

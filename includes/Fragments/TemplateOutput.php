@@ -51,8 +51,8 @@ trait TemplateOutput
 		$this->smarty = new Smarty();
 		$this->smarty->addPluginsDir($this->getSiteConfiguration()->getFilePath() . 'smarty-plugins');
 
-		$this->assign("currentUser", User::getCurrent());
-		$this->assign("loggedIn", (!User::getCurrent()->isCommunityUser()));
+		$this->assign("currentUser", User::getCommunity());
+		$this->assign("loggedIn", false);
 		$this->assign("baseurl", $this->getSiteConfiguration()->getBaseUrl());
 		$this->assign("mediawikiScriptPath", $this->getSiteConfiguration()->getMediawikiScriptPath());
 

@@ -198,8 +198,9 @@ HTML;
 
 		$siteConfiguration = $this->getConfiguration();
 		$database = PdoDatabase::getDatabaseConnection('acc');
+		$notificationsDatabase = PdoDatabase::getDatabaseConnection('notifications');
 
-		$this->setupHelpers($page, $siteConfiguration, $database);
+		$this->setupHelpers($page, $siteConfiguration, $database, $notificationsDatabase);
 
 		/* @todo Remove this global statement! It's here for User.php, which does far more than it should. */
 		global $oauthHelper;

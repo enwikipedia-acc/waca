@@ -41,7 +41,7 @@ class PageViewRequest extends InternalPageBase
 		$request = $this->getRequest();
 		$config = $this->getSiteConfiguration();
 		$database = $this->getDatabase();
-		$currentUser = User::getCurrent();
+		$currentUser = User::getCurrent($database);
 
 		// Test we should be able to look at this request
 		if ($config->getEmailConfirmationEnabled()) {
@@ -204,6 +204,8 @@ class PageViewRequest extends InternalPageBase
 
 	private function setupLogData(Request $request, PdoDatabase $database)
 	{
+		$currentUser = User::getCurrent($database);
+
 		$logs = Logger::getRequestLogsWithComments($request->getId(), $database);
 		$requestLogs = array();
 
@@ -225,7 +227,7 @@ class PageViewRequest extends InternalPageBase
 		$nameCache = array();
 
 		$editableComments = false;
-		if (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
+		if ($currentUser->isAdmin() || $currentUser->isCheckuser()) {
 			$editableComments = true;
 		}
 
@@ -245,7 +247,7 @@ class PageViewRequest extends InternalPageBase
 					'userid'   => $entry->getUser() == -1 ? null : $entry->getUser(),
 					'entry'    => null,
 					'time'     => $entry->getTime(),
-					'canedit'  => ($editableComments || $entry->getUser() == User::getCurrent()->getId()),
+					'canedit'  => ($editableComments || $entry->getUser() == $currentUser->getId()),
 					'id'       => $entry->getId(),
 					'comment'  => $entry->getComment(),
 				);

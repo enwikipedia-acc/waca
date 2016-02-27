@@ -3,6 +3,7 @@
 namespace Waca\Exceptions;
 
 use Exception;
+use User;
 use Waca\Fragments\TemplateOutput;
 use Waca\SiteConfiguration;
 

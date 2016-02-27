@@ -11,6 +11,7 @@ use Waca\Helpers\HttpHelper;
 use Waca\Helpers\Interfaces\IEmailHelper;
 use Waca\Helpers\Interfaces\IOAuthHelper;
 use Waca\Helpers\Interfaces\ITypeAheadHelper;
+use Waca\Helpers\IrcNotificationHelper;
 use Waca\Helpers\WikiTextHelper;
 use Waca\SiteConfiguration;
 
@@ -38,6 +39,8 @@ abstract class TaskBase implements ITask
 	private $database;
 	/** @var ITypeAheadHelper */
 	private $typeAheadHelper;
+	/** @var IrcNotificationHelper */
+	private $notificationHelper;
 
 	/**
 	 * @return IEmailHelper
@@ -200,6 +203,22 @@ abstract class TaskBase implements ITask
 	}
 
 	abstract public function execute();
+
+	/**
+	 * @return IrcNotificationHelper
+	 */
+	public function getNotificationHelper()
+	{
+		return $this->notificationHelper;
+	}
+
+	/**
+	 * @param IrcNotificationHelper $notificationHelper
+	 */
+	public function setNotificationHelper($notificationHelper)
+	{
+		$this->notificationHelper = $notificationHelper;
+	}
 
 	/**
 	 * Gets the site configuration object

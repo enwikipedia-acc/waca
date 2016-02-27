@@ -338,4 +338,6 @@ $siteConfiguration->setBaseUrl($baseurl)
 	->setOAuthConsumerSecret($oauthSecretToken)
 	->setDataClearInterval($dataclear_interval)
 	->setXffTrustedHostsFile($xff_trusted_hosts_file)
+	->setIrcNotificationsEnabled($ircBotNotificationsEnabled == 1)
+	->setIrcNotificationType($ircBotNotificationType)
 	;

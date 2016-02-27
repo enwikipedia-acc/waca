@@ -66,9 +66,11 @@ abstract class InternalPageBase extends PageBase
 
 	protected function handleAccessDenied()
 	{
+		$currentUser = User::getCurrent($this->getDatabase());
+
 		// Not allowed to access this resource.
 		// Firstly, let's check if we're even logged in.
-		if (User::getCurrent()->isCommunityUser()) {
+		if ($currentUser->isCommunityUser()) {
 			// Not logged in, redirect to login page
 
 			// TODO: return to current page? Possibly as a session var?
@@ -80,7 +82,7 @@ abstract class InternalPageBase extends PageBase
 			// Decide whether this was a rights failure, or an identification failure.
 
 			if ($this->getSiteConfiguration()->getForceIdentification()
-				&& User::getCurrent()->isIdentified() != 1
+				&& $currentUser->isIdentified() != 1
 			) {
 				// Not identified
 				throw new NotIdentifiedException();
@@ -108,7 +110,7 @@ abstract class InternalPageBase extends PageBase
 
 		try {
 			$this->setRoute($action);
-			$allowed = $this->getSecurityConfiguration()->allows(User::getCurrent());
+			$allowed = $this->getSecurityConfiguration()->allows(User::getCurrent($this->getDatabase()));
 		}
 		finally {
 			$this->setRoute($tmpRouteName);

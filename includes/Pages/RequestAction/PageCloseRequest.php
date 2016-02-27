@@ -5,7 +5,6 @@ namespace Waca\Pages\RequestAction;
 use EmailTemplate;
 use Exception;
 use Logger;
-use Notification;
 use PdoDatabase;
 use Request;
 use SessionAlert;
@@ -44,7 +43,7 @@ class PageCloseRequest extends RequestActionBase
 		$this->checkPosted();
 		$database = $this->getDatabase();
 
-		$currentUser = User::getCurrent();
+		$currentUser = User::getCurrent($database);
 		$template = $this->getTemplate($database);
 		$request = $this->getRequest($database);
 
@@ -69,7 +68,7 @@ class PageCloseRequest extends RequestActionBase
 		$request->setReserved(0);
 
 		Logger::closeRequest($database, $request, $template->getId(), null);
-		Notification::requestClosed($request, $template->getName());
+		$this->getNotificationHelper->requestClosed($request, $template->getName());
 		SessionAlert::success("Request {$request->getId()} has been closed");
 
 		$this->sendMail($request, $template->getText(), $currentUser, false);

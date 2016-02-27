@@ -4,7 +4,6 @@ namespace Waca\Pages;
 
 use InterfaceMessage;
 use Logger;
-use Notification;
 use Waca\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -30,7 +29,7 @@ class PageInterfaceManagement extends InternalPageBase
 			$siteNoticeMessage->save();
 
 			Logger::interfaceMessageEdited($database, $siteNoticeMessage);
-			Notification::interfaceMessageEdited();
+			$this->getNotificationHelper->interfaceMessageEdited();
 
 			$this->redirect('');
 		}

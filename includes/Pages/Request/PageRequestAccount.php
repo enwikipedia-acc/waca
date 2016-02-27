@@ -3,7 +3,6 @@
 namespace Waca\Pages\Request;
 
 use Exception;
-use Notification;
 use Request;
 use SessionAlert;
 use Waca\Helpers\BanHelper;
@@ -130,7 +129,7 @@ class PageRequestAccount extends PublicInterfacePageBase
 		$request->setEmailConfirm(0); // Since it can't be null @todo fixme
 		$request->save();
 
-		Notification::requestReceived($request);
+		$this->getNotificationHelper->requestReceived($request);
 
 		$this->redirect('requestSubmitted');
 	}

@@ -4,7 +4,6 @@ namespace Waca\Pages;
 
 use Exception;
 use Logger;
-use Notification;
 use SessionAlert;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
@@ -39,7 +38,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 			$this->redirect('welcomeTemplates');
 		}
 
-		$user = User::getCurrent();
+		$user = User::getCurrent($this->getDatabase());
 
 		if (WebRequest::postBoolean('disable')) {
 			$user->setWelcomeTemplate(null);
@@ -111,7 +110,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 
 			Logger::welcomeTemplateCreated($database, $template);
 
-			Notification::welcomeTemplateCreated($template);
+			$this->getNotificationHelper->welcomeTemplateCreated($template);
 
 			SessionAlert::success("Template successfully created.");
 
@@ -147,7 +146,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 
 			SessionAlert::success("Template updated.");
 
-			Notification::welcomeTemplateEdited($template);
+			$this->getNotificationHelper->welcomeTemplateEdited($template);
 
 			$this->redirect('welcomeTemplates');
 		}
@@ -186,7 +185,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 
 		SessionAlert::success(
 			"Template deleted. Any users who were using this template have had automatic welcoming disabled.");
-		Notification::welcomeTemplateDeleted($templateId);
+		$this->getNotificationHelper->welcomeTemplateDeleted($templateId);
 	}
 
 	/**

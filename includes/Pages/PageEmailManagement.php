@@ -4,7 +4,6 @@ namespace Waca\Pages;
 
 use EmailTemplate;
 use Logger;
-use Notification;
 use PdoDatabase;
 use SessionAlert;
 use Waca\Exceptions\ApplicationLogicException;
@@ -120,7 +119,7 @@ class PageEmailManagement extends InternalPageBase
 
 			$template->save();
 			Logger::editedEmail($database, $template);
-			Notification::emailEdited($template);
+			$this->getNotificationHelper->emailEdited($template);
 			SessionAlert::success("Email template has been saved successfully.");
 
 			$this->redirect('emailManagement');
@@ -185,7 +184,7 @@ class PageEmailManagement extends InternalPageBase
 			$template->save();
 
 			Logger::createEmail($database, $template);
-			Notification::emailCreated($template);
+			$this->getNotificationHelper->emailCreated($template);
 
 			SessionAlert::success("Email template has been saved successfully.");
 

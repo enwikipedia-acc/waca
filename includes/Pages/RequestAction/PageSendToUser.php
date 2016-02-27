@@ -4,7 +4,6 @@ namespace Waca\Pages\RequestAction;
 
 use Exception;
 use Logger;
-use Notification;
 use SessionAlert;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
@@ -38,7 +37,7 @@ class PageSendToUser extends RequestActionBase
 		$database = $this->getDatabase();
 		$request = $this->getRequest($database);
 
-		if ($request->getReserved() !== User::getCurrent()->getId()) {
+		if ($request->getReserved() !== User::getCurrent($database)->getId()) {
 			throw new ApplicationLogicException('You don\'t have this request reserved!');
 		}
 
@@ -60,7 +59,7 @@ class PageSendToUser extends RequestActionBase
 		$request->save();
 
 		Logger::sendReservation($database, $request, $user);
-		Notification::requestReservationSent($request, $user);
+		$this->getNotificationHelper->requestReservationSent($request, $user);
 		SessionAlert::success("Reservation sent successfully");
 
 		$this->redirect('viewRequest', null, array('id' => $request->getId()));

@@ -95,18 +95,14 @@ Table names in our database are lowercase singular forms (`request`, `user`, `ba
 
 Accessing the database is done either at an entity level through subclasses of `DataObject` (preferred), or directly through PDO. The `DataObject` class and it's subclasses implement the [active record pattern](https://en.wikipedia.org/wiki/Active_record_pattern).
 
-Firstly, you'll need to grab a copy of the relevant database object:
-
-```php
-$database = gGetDb();
-```
+Firstly, you'll need to grab a copy of the relevant database object from somewhere close by. If you're on a page, this is likely `$this->getDatabase()`
 
 This is a [PDO](https://php.net/manual/en/class.pdo.php)([ish](includes/PdoDatabase.php)) object which you can do what you need to with.
 
 You can grab entities using the static methods defined on them:
 
 ```php
-$database = gGetDb();
+$database = $this->getDatabase();
 $request = Request::getById($id, $database);
 ```
 

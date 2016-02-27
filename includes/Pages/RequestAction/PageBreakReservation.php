@@ -4,7 +4,6 @@ namespace Waca\Pages\RequestAction;
 
 use Exception;
 use Logger;
-use Notification;
 use PdoDatabase;
 use Request;
 use User;
@@ -24,7 +23,7 @@ class PageBreakReservation extends RequestActionBase
 			throw new ApplicationLogicException('Request is not reserved!');
 		}
 
-		$currentUser = User::getCurrent();
+		$currentUser = User::getCurrent($database);
 
 		if ($currentUser->getId() === $request->getReserved()) {
 			$this->doUnreserve($request, $database);
@@ -53,7 +52,7 @@ class PageBreakReservation extends RequestActionBase
 		$request->save();
 
 		Logger::unreserve($database, $request);
-		Notification::requestUnreserved($request);
+		$this->getNotificationHelper->requestUnreserved($request);
 
 		// Redirect home!
 		$this->redirect();
@@ -73,7 +72,7 @@ class PageBreakReservation extends RequestActionBase
 		$request->save();
 
 		Logger::breakReserve($database, $request);
-		Notification::requestReserveBroken($request);
+		$this->getNotificationHelper->requestReserveBroken($request);
 
 		// Redirect home!
 		$this->redirect();

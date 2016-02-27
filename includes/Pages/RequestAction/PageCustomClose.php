@@ -5,7 +5,6 @@ namespace Waca\Pages\RequestAction;
 use EmailTemplate;
 use Exception;
 use Logger;
-use Notification;
 use PdoDatabase;
 use Request;
 use SessionAlert;
@@ -20,7 +19,7 @@ class PageCustomClose extends PageCloseRequest
 		$database = $this->getDatabase();
 
 		$request = $this->getRequest($database);
-		$currentUser = User::getCurrent();
+		$currentUser = User::getCurrent($this->getDatabase());
 
 		if ($request->getStatus() === 'Closed') {
 			throw new ApplicationLogicException('Request is already closed');
@@ -137,7 +136,7 @@ class PageCustomClose extends PageCloseRequest
 		}
 
 		Logger::closeRequest($database, $request, $logCloseType, $messageBody);
-		Notification::requestClosed($request, $notificationCloseType);
+		$this->getNotificationHelper->requestClosed($request, $notificationCloseType);
 
 		$requestName = htmlentities($request->getName(), ENT_COMPAT, 'UTF-8');
 		SessionAlert::success("Request {$request->getId()} ({$requestName}) marked as 'Done'.");
@@ -158,7 +157,7 @@ class PageCustomClose extends PageCloseRequest
 		Logger::sentMail($database, $request, $messageBody);
 		Logger::deferRequest($database, $request, $detolog);
 
-		Notification::requestDeferredWithMail($request);
+		$this->getNotificationHelper->requestDeferredWithMail($request);
 
 		$deto = $availableRequestStates[$action]['deferto'];
 		SessionAlert::success("Request {$request->getId()} deferred to $deto, sending an email.");
@@ -202,7 +201,7 @@ class PageCustomClose extends PageCloseRequest
 				Logger::sentMail($database, $request, $messageBody);
 				Logger::unreserve($database, $request);
 
-				Notification::sentMail($request);
+				$this->getNotificationHelper->sentMail($request);
 				SessionAlert::success("Sent mail to Request {$request->getId()}");
 			}
 		}

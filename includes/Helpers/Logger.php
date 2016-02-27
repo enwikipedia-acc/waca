@@ -36,7 +36,7 @@ class Logger
 		$user = null
 	) {
 		if ($user == null) {
-			$user = User::getCurrent();
+			$user = User::getCurrent($database);
 		}
 
 		$log = new Log();

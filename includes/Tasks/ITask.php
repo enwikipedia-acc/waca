@@ -11,6 +11,7 @@ use Waca\Helpers\HttpHelper;
 use Waca\Helpers\Interfaces\IEmailHelper;
 use Waca\Helpers\Interfaces\IOAuthHelper;
 use Waca\Helpers\Interfaces\ITypeAheadHelper;
+use Waca\Helpers\IrcNotificationHelper;
 use Waca\Helpers\WikiTextHelper;
 use Waca\SiteConfiguration;
 
@@ -124,4 +125,14 @@ interface ITask
 	 * @param SiteConfiguration $configuration
 	 */
 	public function setSiteConfiguration($configuration);
+
+	/**
+	 * @return IrcNotificationHelper
+	 */
+	public function getNotificationHelper();
+
+	/**
+	 * @param IrcNotificationHelper $notificationHelper
+	 */
+	public function setNotificationHelper($notificationHelper);
 }

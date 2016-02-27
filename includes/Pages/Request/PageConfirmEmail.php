@@ -3,7 +3,6 @@
 namespace Waca\Pages\Request;
 
 use Logger;
-use Notification;
 use Request;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Tasks\PublicInterfacePageBase;
@@ -49,7 +48,7 @@ class PageConfirmEmail extends PublicInterfacePageBase
 		$request->save();
 
 		Logger::emailConfirmed($this->getDatabase(), $request);
-		Notification::requestReceived($request);
+		$this->getNotificationHelper->requestReceived($request);
 
 		$this->redirect('requestSubmitted');
 	}

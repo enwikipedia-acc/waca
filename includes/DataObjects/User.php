@@ -43,12 +43,8 @@ class User extends DataObject
 	 *
 	 * @return User|CommunityUser
 	 */
-	public static function getCurrent(PdoDatabase $database = null)
+	public static function getCurrent(PdoDatabase $database)
 	{
-		if ($database === null) {
-			$database = gGetDb();
-		}
-
 		if (self::$currentUser === null) {
 			if (isset($_SESSION['userID'])) {
 				self::$currentUser = self::getById($_SESSION['userID'], $database);

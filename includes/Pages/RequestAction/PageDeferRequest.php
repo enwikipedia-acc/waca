@@ -4,7 +4,6 @@ namespace Waca\Pages\RequestAction;
 
 use DateTime;
 use Logger;
-use Notification;
 use SessionAlert;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
@@ -36,7 +35,7 @@ class PageDeferRequest extends RequestActionBase
 		$this->checkPosted();
 		$database = $this->getDatabase();
 		$request = $this->getRequest($database);
-		$currentUser = User::getCurrent();
+		$currentUser = User::getCurrent($database);
 
 		$target = WebRequest::postString('target');
 		$requestStates = $this->getSiteConfiguration()->getRequestStates();
@@ -72,7 +71,7 @@ class PageDeferRequest extends RequestActionBase
 
 		Logger::deferRequest($database, $request, $detolog);
 
-		Notification::requestDeferred($request);
+		$this->getNotificationHelper->requestDeferred($request);
 		SessionAlert::success("Request {$request->getId()} deferred to {$deto}");
 
 		$this->redirect();

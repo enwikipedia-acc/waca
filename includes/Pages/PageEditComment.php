@@ -4,7 +4,6 @@ namespace Waca\Pages;
 
 use Comment;
 use Logger;
-use Notification;
 use Request;
 use SessionAlert;
 use User;
@@ -54,7 +53,7 @@ class PageEditComment extends InternalPageBase
 			throw new ApplicationLogicException('Comment not found');
 		}
 
-		$currentUser = User::getCurrent();
+		$currentUser = User::getCurrent($database);
 		if ($comment->getUser() !== $currentUser->getId() && !$this->barrierTest('editOthers')) {
 			throw new AccessDeniedException();
 		}
@@ -75,7 +74,7 @@ class PageEditComment extends InternalPageBase
 			$comment->save();
 
 			Logger::editComment($database, $comment, $request);
-			Notification::commentEdited($comment, $request);
+			$this->getNotificationHelper->commentEdited($comment, $request);
 			SessionAlert::success("Comment has been saved successfully");
 
 			$this->redirect('viewRequest', null, array('id' => $comment->getRequest()));

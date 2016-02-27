@@ -1,18 +1,6 @@
 <?php
 use Waca\Exceptions\EnvironmentException;
 
-/**
- * @param string $db
- *
- * @return PdoDatabase
- * @throws Exception
- * @deprecated
- */
-function gGetDb($db = "acc")
-{
-	return PdoDatabase::getDatabaseConnection($db);
-}
-
 class PdoDatabase extends PDO
 {
 	/**
@@ -30,6 +18,8 @@ class PdoDatabase extends PDO
 	private $queryLogStatement;
 
 	/**
+	 * Unless you're doing low-level work, this is not the function you want.
+	 *
 	 * @param string $connectionName
 	 *
 	 * @return PdoDatabase

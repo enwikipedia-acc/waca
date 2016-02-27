@@ -62,6 +62,8 @@ class SiteConfiguration
 		"http://meta.wikimedia.org",
 		"https://meta.wikimedia.org",
 	);
+	private $ircNotificationType = 1;
+	private $ircNotificationsEnabled = true;
 
 	/**
 	 * Gets the base URL of the tool
@@ -397,6 +399,14 @@ class SiteConfiguration
 	}
 
 	/**
+	 * @return boolean
+	 */
+	public function getUseStrictTransportSecurity()
+	{
+		return $this->useStrictTransportSecurity;
+	}
+
+	/**
 	 * @param boolean $useStrictTransportSecurity
 	 *
 	 * @return SiteConfiguration
@@ -409,11 +419,11 @@ class SiteConfiguration
 	}
 
 	/**
-	 * @return boolean
+	 * @return string
 	 */
-	public function getUseStrictTransportSecurity()
+	public function getUserAgent()
 	{
-		return $this->useStrictTransportSecurity;
+		return $this->userAgent;
 	}
 
 	/**
@@ -429,11 +439,11 @@ class SiteConfiguration
 	}
 
 	/**
-	 * @return string
+	 * @return boolean
 	 */
-	public function getUserAgent()
+	public function getCurlDisableVerifyPeer()
 	{
-		return $this->userAgent;
+		return $this->curlDisableVerifyPeer;
 	}
 
 	/**
@@ -451,9 +461,9 @@ class SiteConfiguration
 	/**
 	 * @return boolean
 	 */
-	public function getCurlDisableVerifyPeer()
+	public function getUseOAuthSignup()
 	{
-		return $this->curlDisableVerifyPeer;
+		return $this->useOAuthSignup;
 	}
 
 	/**
@@ -469,11 +479,11 @@ class SiteConfiguration
 	}
 
 	/**
-	 * @return boolean
+	 * @return string
 	 */
-	public function getUseOAuthSignup()
+	public function getOAuthBaseUrl()
 	{
-		return $this->useOAuthSignup;
+		return $this->oauthBaseUrl;
 	}
 
 	/**
@@ -489,11 +499,11 @@ class SiteConfiguration
 	}
 
 	/**
-	 * @return string
+	 * @return mixed
 	 */
-	public function getOAuthBaseUrl()
+	public function getOAuthConsumerToken()
 	{
-		return $this->oauthBaseUrl;
+		return $this->oauthConsumerToken;
 	}
 
 	/**
@@ -511,9 +521,9 @@ class SiteConfiguration
 	/**
 	 * @return mixed
 	 */
-	public function getOAuthConsumerToken()
+	public function getOAuthConsumerSecret()
 	{
-		return $this->oauthConsumerToken;
+		return $this->oauthConsumerSecret;
 	}
 
 	/**
@@ -526,14 +536,6 @@ class SiteConfiguration
 		$this->oauthConsumerSecret = $oauthConsumerSecret;
 
 		return $this;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getOAuthConsumerSecret()
-	{
-		return $this->oauthConsumerSecret;
 	}
 
 	/**
@@ -557,6 +559,14 @@ class SiteConfiguration
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getXffTrustedHostsFile()
+	{
+		return $this->xffTrustedHostsFile;
+	}
+
+	/**
 	 * @param string $xffTrustedHostsFile
 	 *
 	 * @return SiteConfiguration
@@ -569,11 +579,11 @@ class SiteConfiguration
 	}
 
 	/**
-	 * @return string
+	 * @return array
 	 */
-	public function getXffTrustedHostsFile()
+	public function getCrossOriginResourceSharingHosts()
 	{
-		return $this->xffTrustedHostsFile;
+		return $this->crossOriginResourceSharingHosts;
 	}
 
 	/**
@@ -589,10 +599,42 @@ class SiteConfiguration
 	}
 
 	/**
-	 * @return array
+	 * @return boolean
 	 */
-	public function getCrossOriginResourceSharingHosts()
+	public function getIrcNotificationsEnabled()
 	{
-		return $this->crossOriginResourceSharingHosts;
+		return $this->ircNotificationsEnabled;
+	}
+
+	/**
+	 * @param boolean $ircNotificationsEnabled
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setIrcNotificationsEnabled($ircNotificationsEnabled)
+	{
+		$this->ircNotificationsEnabled = $ircNotificationsEnabled;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getIrcNotificationType()
+	{
+		return $this->ircNotificationType;
+	}
+
+	/**
+	 * @param int $ircNotificationType
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setIrcNotificationType($ircNotificationType)
+	{
+		$this->ircNotificationType = $ircNotificationType;
+
+		return $this;
 	}
 }

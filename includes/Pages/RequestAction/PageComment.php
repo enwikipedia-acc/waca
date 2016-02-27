@@ -3,7 +3,6 @@
 namespace Waca\Pages\RequestAction;
 
 use Comment;
-use Notification;
 use User;
 use Waca\SecurityConfiguration;
 use Waca\WebRequest;
@@ -62,12 +61,12 @@ class PageComment extends RequestActionBase
 
 		$comment->setRequest($request->getId());
 		$comment->setVisibility($visibility);
-		$comment->setUser(User::getCurrent()->getId());
+		$comment->setUser(User::getCurrent($database)->getId());
 		$comment->setComment($commentText);
 
 		$comment->save();
 
-		Notification::commentCreated($comment, $request);
+		$this->getNotificationHelper->commentCreated($comment, $request);
 		$this->redirect('viewRequest', null, array('id' => $request->getId()));
 	}
 }

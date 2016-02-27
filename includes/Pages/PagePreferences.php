@@ -23,7 +23,7 @@ class PagePreferences extends InternalPageBase
 
 		// Dual mode
 		if (WebRequest::wasPosted()) {
-			$user = User::getCurrent();
+			$user = User::getCurrent($this->getDatabase());
 			$user->setWelcomeSig(WebRequest::postString('sig'));
 			$user->setEmailSig(WebRequest::postString('emailsig'));
 			$user->setAbortPref(WebRequest::getBoolean('sig') ? 1 : 0);
