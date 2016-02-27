@@ -3,7 +3,7 @@
 namespace Waca\Pages\RequestAction;
 
 use PdoDatabase;
-use Request;
+use Waca\DataObjects\Request;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;

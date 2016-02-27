@@ -2,13 +2,13 @@
 
 namespace Waca\Pages;
 
-use Comment;
-use Logger;
-use Request;
 use SessionAlert;
 use User;
+use Waca\DataObjects\Comment;
+use Waca\DataObjects\Request;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;

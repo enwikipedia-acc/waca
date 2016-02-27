@@ -1,4 +1,8 @@
 <?php
+namespace Waca\DataObjects;
+
+use Exception;
+use Waca\DataObject;
 
 /**
  * Notification short summary.

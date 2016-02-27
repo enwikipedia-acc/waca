@@ -3,10 +3,10 @@
 namespace Waca\Pages\RequestAction;
 
 use DateTime;
-use Logger;
 use SessionAlert;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
 use Waca\WebRequest;
 

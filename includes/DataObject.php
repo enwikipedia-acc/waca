@@ -1,5 +1,9 @@
 <?php
 
+namespace Waca;
+
+use PdoDatabase;
+
 /**
  * DataObject is the base class for all the database access classes. Each
  * "DataObject" holds one record from the database, and provides functions to
@@ -17,13 +21,11 @@ abstract class DataObject
 	 * @var int ID of the object
 	 */
 	protected $id = 0;
-
 	/**
 	 * @var bool
 	 * @todo we should probably make this a read-only method rather than public - why should anything external set this?
 	 */
 	public $isNew = true;
-
 	/**
 	 * @var PdoDatabase
 	 */
@@ -33,21 +35,23 @@ abstract class DataObject
 	{
 		$this->dbObject = $db;
 	}
-    
+
 	/**
 	 * Gets the database associated with this data object.
 	 * @return PdoDatabase
 	 */
 	public function getDatabase()
 	{
-		return $this->dbObject;   
+		return $this->dbObject;
 	}
 
 	/**
 	 * Retrieves a data object by it's row ID.
-	 * @param int $id
+	 *
+	 * @param int         $id
 	 * @param PdoDatabase $database
-	 * @return DataObject|null
+	 *
+	 * @return DataObject|false
 	 */
 	public static function getById($id, PdoDatabase $database)
 	{
@@ -102,6 +106,6 @@ abstract class DataObject
 	 */
 	public function getObjectDescription()
 	{
-		return '[' . get_called_class() . " " . $this->getId() . ']';	
+		return '[' . get_called_class() . " " . $this->getId() . ']';
 	}
 }

@@ -1,6 +1,9 @@
 <?php
 use Waca\AuthUtility;
+use Waca\DataObject;
+use Waca\DataObjects\CommunityUser;
 use Waca\Helpers\Interfaces\IOAuthHelper;
+use Waca\Helpers\Logger;
 
 /**
  * User data object

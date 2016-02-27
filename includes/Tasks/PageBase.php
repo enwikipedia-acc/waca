@@ -3,9 +3,9 @@
 namespace Waca\Tasks;
 
 use Exception;
-use InterfaceMessage;
 use SessionAlert;
 use User;
+use Waca\DataObjects\InterfaceMessage;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\TemplateOutput;
 use Waca\WebRequest;

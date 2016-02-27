@@ -2,15 +2,15 @@
 
 namespace Waca\Pages;
 
-use Comment;
-use EmailTemplate;
 use Exception;
-use Log;
-use Logger;
 use PdoDatabase;
-use Request;
 use User;
+use Waca\DataObjects\Comment;
+use Waca\DataObjects\EmailTemplate;
+use Waca\DataObjects\Log;
+use Waca\DataObjects\Request;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;

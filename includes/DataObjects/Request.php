@@ -1,4 +1,11 @@
 <?php
+namespace Waca\DataObjects;
+
+use DateTime;
+use Exception;
+use IXffTrustProvider;
+use PDO;
+use Waca\DataObject;
 
 /**
  * Request data object

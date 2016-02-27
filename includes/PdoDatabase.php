@@ -1,5 +1,6 @@
 <?php
 use Waca\Exceptions\EnvironmentException;
+use Waca\Helpers\DebugHelper;
 
 class PdoDatabase extends PDO
 {

@@ -1,4 +1,9 @@
 <?php
+namespace Waca\DataObjects;
+
+use Exception;
+use PdoDatabase;
+use Waca\DataObject;
 
 /**
  * rDNS Cache data object
@@ -10,8 +15,9 @@ class RDnsCache extends DataObject
 	private $creation;
 
 	/**
-	 * @param string $address
+	 * @param string      $address
 	 * @param PdoDatabase $database
+	 *
 	 * @return RDnsCache
 	 */
 	public static function getByAddress($address, PdoDatabase $database)
@@ -34,7 +40,7 @@ class RDnsCache extends DataObject
 	public function save()
 	{
 		if ($this->isNew) {
-// insert
+			// insert
 			$statement = $this->dbObject->prepare(<<<SQL
 INSERT INTO `rdnscache` (address, data) VALUES (:address, :data);
 SQL
@@ -50,7 +56,7 @@ SQL
 			}
 		}
 		else {
-// update
+			// update
 			$statement = $this->dbObject->prepare(<<<SQL
 UPDATE `rdnscache` SET address = :address, data = :data WHERE id = :id LIMIT 1;
 SQL

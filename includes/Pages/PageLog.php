@@ -3,9 +3,9 @@
 namespace Waca\Pages;
 
 use Exception;
-use Log;
-use Logger;
 use User;
+use Waca\DataObjects\Log;
+use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;

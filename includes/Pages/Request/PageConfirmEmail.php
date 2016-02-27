@@ -2,9 +2,9 @@
 
 namespace Waca\Pages\Request;
 
-use Logger;
-use Request;
+use Waca\DataObjects\Request;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Helpers\Logger;
 use Waca\Tasks\PublicInterfacePageBase;
 use Waca\WebRequest;
 

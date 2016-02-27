@@ -1,4 +1,5 @@
 <?php
+use Waca\DataObjects\RDnsCache;
 
 /**
  * Cached RDNS Lookup Provider

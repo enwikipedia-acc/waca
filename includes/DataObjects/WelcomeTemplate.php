@@ -1,4 +1,5 @@
 <?php
+use Waca\DataObject;
 
 /**
  * Welcome template data object

@@ -1,4 +1,10 @@
 <?php
+namespace Waca\DataObjects;
+
+use Exception;
+use PDO;
+use PdoDatabase;
+use Waca\DataObject;
 
 /**
  * Ban data object

@@ -1,4 +1,11 @@
 <?php
+namespace Waca\DataObjects;
+
+use Exception;
+use PDO;
+use PdoDatabase;
+use User;
+use Waca\DataObject;
 
 /**
  * Comment data object
@@ -12,7 +19,7 @@ class Comment extends DataObject
 	private $request;
 
 	/**
-	 * @param integer          $id
+	 * @param integer     $id
 	 * @param PdoDatabase $database
 	 *
 	 * @return Comment[]
@@ -21,7 +28,7 @@ class Comment extends DataObject
 	public static function getForRequest($id, PdoDatabase $database)
 	{
 		$currentUser = User::getCurrent($database);
-		
+
 		if ($currentUser->isAdmin() || $currentUser->isCheckuser()) {
 			// current user is an admin or checkuser, so retrieve everything.
 			$statement = $database->prepare("SELECT * FROM comment WHERE request = :target;");

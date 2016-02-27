@@ -1,4 +1,5 @@
 <?php
+use Waca\DataObjects\AntiSpoofCache;
 use Waca\Helpers\HttpHelper;
 
 /**

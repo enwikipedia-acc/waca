@@ -2,8 +2,8 @@
 namespace Waca\Pages;
 
 use PDO;
-use Request;
 use User;
+use Waca\DataObjects\Request;
 use Waca\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 

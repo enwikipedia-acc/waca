@@ -1,4 +1,18 @@
 <?php
+namespace Waca\Helpers;
+
+use Exception;
+use PDO;
+use PdoDatabase;
+use User;
+use Waca\DataObject;
+use Waca\DataObjects\Ban;
+use Waca\DataObjects\Comment;
+use Waca\DataObjects\EmailTemplate;
+use Waca\DataObjects\InterfaceMessage;
+use Waca\DataObjects\Log;
+use Waca\DataObjects\Request;
+use WelcomeTemplate;
 
 /**
  * Helper class for creating log entries
@@ -53,7 +67,7 @@ class Logger
 
 	/**
 	 * @param PdoDatabase $database
-	 * @param User $user
+	 * @param User        $user
 	 */
 	public static function newUser(PdoDatabase $database, User $user)
 	{

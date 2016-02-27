@@ -3,10 +3,10 @@ namespace Waca\Validation;
 
 use Exception;
 use IAntiSpoofProvider;
-use IBanHelper;
 use IXffTrustProvider;
 use PdoDatabase;
-use Request;
+use Waca\DataObjects\Request;
+use Waca\Helpers\Interfaces\IBanHelper;
 
 /**
  * Performs the validation of an incoming request.

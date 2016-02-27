@@ -2,8 +2,8 @@
 
 namespace Waca\Pages;
 
-use InterfaceMessage;
-use Logger;
+use Waca\DataObjects\InterfaceMessage;
+use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;

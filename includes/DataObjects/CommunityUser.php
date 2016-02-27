@@ -1,5 +1,10 @@
 <?php
 
+namespace Waca\DataObjects;
+
+use DateTime;
+use User;
+
 /**
  * User data object
  */
@@ -9,7 +14,7 @@ class CommunityUser extends User
 	{
 		return -1;
 	}
-    
+
 	public function save()
 	{
 		// Do nothing
@@ -20,16 +25,17 @@ class CommunityUser extends User
 		// Impossible to log in as this user
 		return false;
 	}
-    
+
 	public function touchLastLogin()
 	{
 	}
-    
+
 	#region properties
-    
+
 	public function getUsername()
 	{
 		global $communityUsername;
+
 		return $communityUsername;
 	}
 
@@ -40,6 +46,7 @@ class CommunityUser extends User
 	public function getEmail()
 	{
 		global $cDataClearEmail;
+
 		return $cDataClearEmail;
 	}
 
@@ -60,7 +67,7 @@ class CommunityUser extends User
 	{
 		return "127.0.0.1";
 	}
-    
+
 	public function getStoredOnWikiName()
 	{
 		return $this->getOnWikiName();
@@ -82,6 +89,7 @@ class CommunityUser extends User
 	public function getLastActive()
 	{
 		$now = new DateTime();
+
 		return $now->format("Y-m-d H:i:s");
 	}
 
@@ -97,7 +105,7 @@ class CommunityUser extends User
 	public function setForcelogout($forceLogout)
 	{
 	}
-    
+
 	public function getSecure()
 	{
 		return true;
@@ -159,102 +167,102 @@ class CommunityUser extends User
 	public function setEmailSig($emailSignature)
 	{
 	}
-    
+
 	#endregion
-    
+
 	#region changing access level
 	public function approve()
 	{
 	}
-    
+
 	public function suspend($comment)
 	{
 	}
-    
+
 	public function decline($comment)
 	{
 	}
-    
+
 	public function promote()
 	{
 	}
-    
+
 	public function demote($comment)
 	{
 	}
 
 	#endregion
-    
+
 	#region user access checks
-    
+
 	public function isAdmin()
 	{
 		return false;
 	}
-    
+
 	public function isCheckuser()
 	{
 		return false;
 	}
-    
+
 	public function isIdentified()
 	{
 		return false;
 	}
-    
+
 	public function isSuspended()
 	{
 		return false;
 	}
-    
+
 	public function isNew()
 	{
 		return false;
 	}
-    
+
 	public function isUser()
 	{
 		return false;
 	}
-    
+
 	public function isDeclined()
 	{
 		return false;
 	}
-    
+
 	public function isCommunityUser()
 	{
 		return true;
 	}
-    
+
 	#endregion 
 
 	#region OAuth
-    
+
 	public function getOAuthIdentity($useCached = false)
 	{
 		return null;
 	}
-    
+
 	public function isOAuthLinked()
 	{
 		return false;
 	}
-    
+
 	public function detachAccount()
 	{
 	}
-    
+
 	public function oauthCanUse()
 	{
 		return false;
 	}
-    
+
 	public function oauthCanEdit()
 	{
 		return false;
 	}
-    
+
 	public function oauthCanCreateAccount()
 	{
 		return false;
@@ -264,12 +272,13 @@ class CommunityUser extends User
 	{
 		return false;
 	}
-    
+
 	#endregion
 
 	public function getApprovalDate()
 	{
 		$data = DateTime::createFromFormat("Y-m-d H:i:s", "1970-01-01 00:00:00");
+
 		return $data;
 	}
 }

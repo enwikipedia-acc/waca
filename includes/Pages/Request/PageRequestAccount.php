@@ -3,8 +3,8 @@
 namespace Waca\Pages\Request;
 
 use Exception;
-use Request;
 use SessionAlert;
+use Waca\DataObjects\Request;
 use Waca\Helpers\BanHelper;
 use Waca\Tasks\PublicInterfacePageBase;
 use Waca\Validation\RequestValidationHelper;

@@ -1,4 +1,9 @@
 <?php
+namespace Waca\DataObjects;
+
+use Exception;
+use PdoDatabase;
+use Waca\DataObject;
 
 /**
  * Geolocation data object
@@ -12,8 +17,9 @@ class GeoLocation extends DataObject
 	private $creation;
 
 	/**
-	 * @param string $address
+	 * @param string      $address
 	 * @param PdoDatabase $database
+	 *
 	 * @return GeoLocation
 	 */
 	public static function getByAddress($address, PdoDatabase $database)
@@ -36,7 +42,7 @@ class GeoLocation extends DataObject
 	public function save()
 	{
 		if ($this->isNew) {
-// insert
+			// insert
 			$statement = $this->dbObject->prepare(<<<SQL
 INSERT INTO `geolocation` (address, data) VALUES (:address, :data);
 SQL
@@ -52,7 +58,7 @@ SQL
 			}
 		}
 		else {
-// update
+			// update
 			$statement = $this->dbObject->prepare(<<<SQL
 UPDATE `geolocation` SET address = :address, data = :data WHERE id = :id LIMIT 1;
 SQL

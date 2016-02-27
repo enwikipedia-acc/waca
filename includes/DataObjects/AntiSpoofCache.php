@@ -1,4 +1,9 @@
 <?php
+namespace Waca\DataObjects;
+
+use Exception;
+use PdoDatabase;
+use Waca\DataObject;
 
 /**
  * AntiSpoofCache data object
@@ -17,7 +22,7 @@ class AntiSpoofCache extends DataObject
 		$statement = $database->prepare(<<<SQL
 SELECT *
 FROM antispoofcache
-WHERE username = :id AND timestamp > date_sub(now(), interval 3 hour)
+WHERE username = :id AND timestamp > date_sub(now(), INTERVAL 3 HOUR)
 LIMIT 1
 SQL
 		);
@@ -84,7 +89,7 @@ SQL
 		if ($this->isNew) {
 			// insert
 			// clear old data first
-			$this->dbObject->exec("delete from antispoofcache where timestamp < date_sub(now(), interval 3 hour);");
+			$this->dbObject->exec("DELETE FROM antispoofcache WHERE timestamp < date_sub(now(), INTERVAL 3 HOUR);");
 
 			$statement = $this->dbObject->prepare("INSERT INTO antispoofcache (username, data) VALUES (:username, :data);");
 			$statement->bindValue(":username", $this->username);

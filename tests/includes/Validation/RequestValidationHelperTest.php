@@ -1,5 +1,7 @@
 <?php
 
+use Waca\DataObjects\Request;
+use Waca\Helpers\Interfaces\IBanHelper;
 use Waca\Validation\RequestValidationHelper;
 
 /**

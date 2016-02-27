@@ -1,4 +1,10 @@
 <?php
+namespace Waca\DataObjects;
+
+use Exception;
+use PDO;
+use PdoDatabase;
+use Waca\DataObject;
 
 /**
  * Email template data object
@@ -10,7 +16,6 @@ class EmailTemplate extends DataObject
 	const CREATED = "created";
 	const NOT_CREATED = "not created";
 	const NONE = null;
-
 	private $name;
 	private $text;
 	private $jsquestion;
@@ -20,8 +25,10 @@ class EmailTemplate extends DataObject
 
 	/**
 	 * Gets active non-preload templates
-	 * @param string $defaultAction Default action to take (EmailTemplate::CREATED or EmailTemplate::NOT_CREATED)
-	 * @param PdoDatabase $database 
+	 *
+	 * @param string      $defaultAction Default action to take (EmailTemplate::CREATED or EmailTemplate::NOT_CREATED)
+	 * @param PdoDatabase $database
+	 *
 	 * @return array|false
 	 */
 	public static function getActiveTemplates($defaultAction, PdoDatabase $database)
@@ -65,7 +72,7 @@ SQL
 
 		if ($defaultAction === false) {
 			$statement = $database->prepare(
-				"SELECT * FROM `emailtemplate` WHERE defaultaction not in ('created', 'not created') AND active = 1;");
+				"SELECT * FROM `emailtemplate` WHERE defaultaction NOT IN ('created', 'not created') AND active = 1;");
 		}
 
 		if ($defaultAction === null) {

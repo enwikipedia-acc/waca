@@ -1,4 +1,9 @@
 <?php
+namespace Waca\DataObjects;
+
+use Exception;
+use PdoDatabase;
+use Waca\DataObject;
 use Waca\Environment;
 
 /**

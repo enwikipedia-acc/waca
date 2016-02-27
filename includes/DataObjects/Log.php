@@ -1,4 +1,9 @@
 <?php
+namespace Waca\DataObjects;
+
+use Exception;
+use User;
+use Waca\DataObject;
 
 /**
  * Log short summary.

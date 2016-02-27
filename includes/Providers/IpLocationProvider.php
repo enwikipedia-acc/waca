@@ -1,4 +1,5 @@
 <?php
+use Waca\DataObjects\GeoLocation;
 
 /**
  * IP location provider

@@ -2,14 +2,14 @@
 
 namespace Waca\Helpers;
 
-use Ban;
-use Comment;
-use EmailTemplate;
 use Exception;
-use Notification;
 use PdoDatabase;
-use Request;
 use User;
+use Waca\DataObjects\Ban;
+use Waca\DataObjects\Comment;
+use Waca\DataObjects\EmailTemplate;
+use Waca\DataObjects\Notification;
+use Waca\DataObjects\Request;
 use Waca\IrcColourCode;
 use Waca\SiteConfiguration;
 use WelcomeTemplate;
