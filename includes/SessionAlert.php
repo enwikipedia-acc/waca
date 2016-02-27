@@ -90,19 +90,6 @@ class SessionAlert
 	}
 
 	/**
-	 * @return array
-	 * @deprecated Split into separate getAlerts() and clearAlerts() methods in Session
-	 */
-	public static function retrieve()
-	{
-		$block = self::getAlerts();
-
-		self::clearAlerts();
-
-		return $block;
-	}
-
-	/**
 	 * Retrieves the alerts which have been saved to the session
 	 * @return array
 	 */

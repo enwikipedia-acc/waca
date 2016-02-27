@@ -2,7 +2,7 @@
 
 namespace Waca\ConsoleTasks;
 
-use TransactionException;
+use Exception;
 use Waca\Tasks\ConsoleTaskBase;
 
 class ClearOldDataTask extends ConsoleTaskBase
@@ -24,7 +24,7 @@ SQL
 		));
 
 		if (!$success) {
-			throw new TransactionException("Error in transaction: Could not clear data.");
+			throw new Exception("Error in transaction: Could not clear data.");
 		}
 
 	}

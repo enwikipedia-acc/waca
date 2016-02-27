@@ -336,12 +336,12 @@ SQL
 	 * @param PdoDatabase $database
 	 *
 	 * @return array
-	 * @throws TransactionException
+	 * @throws Exception
 	 */
 	public static function getUsernames($userIds, PdoDatabase $database)
 	{
 		if (!is_array($userIds)) {
-			throw new TransactionException('getUsernames() expects array');
+			throw new Exception('getUsernames() expects array');
 		}
 
 		// Urgh. OK. You can't use IN() with parameters directly, so let's munge something together.
@@ -1086,7 +1086,6 @@ SQL
 
 	/**
 	 * @throws Exception
-	 * @throws TransactionException
 	 * @todo     move me to a collaborator
 	 * @category Security-Critical
 	 */

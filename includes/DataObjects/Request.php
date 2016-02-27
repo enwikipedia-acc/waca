@@ -410,7 +410,7 @@ SQL
 	 * @param $si
 	 *
 	 * @deprecated
-	 * @throws TransactionException
+	 * @throws Exception
 	 */
 	public function confirmEmail($si)
 	{
@@ -423,7 +423,7 @@ SQL
 			$this->setEmailConfirm("Confirmed");
 		}
 		else {
-			throw new TransactionException("Confirmation hash does not match the expected value",
+			throw new Exception("Confirmation hash does not match the expected value",
 				"Email confirmation failed");
 		}
 	}

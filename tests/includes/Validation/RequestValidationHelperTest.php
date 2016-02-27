@@ -4,6 +4,7 @@ use Waca\Validation\RequestValidationHelper;
 
 class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 {
+	/** @var Request */
 	private $request;
 
 	public function setUp()
@@ -16,13 +17,26 @@ class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 
 	public function testValidateGoodName()
 	{
+		/** @var PdoDatabase|PHPUnit_Framework_MockObject_MockObject $dbMock */
+		$dbMock = $this->getMockBuilder('PdoDatabase')
+			->disableOriginalConstructor()
+			->getMock();
+
+		$dbStatementMock = $this->getMockBuilder('PDOStatement')->disableOriginalConstructor()->getMock();
+		$dbMock->method('prepare')->willReturn($dbStatementMock);
+
+		/** @var IBanHelper|PHPUnit_Framework_MockObject_MockObject $banHelperMock */
 		$banHelperMock = $this->getMockBuilder('IBanHelper')->getMock();
 		$banHelperMock->method('emailIsBanned')->willReturn(false);
 		$banHelperMock->method('nameIsBanned')->willReturn(false);
 		$banHelperMock->method('ipIsBanned')->willReturn(false);
 
 		// arrange
-		$validationHelper = new RequestValidationHelper($banHelperMock, $this->request, $this->request->getEmail());
+		$validationHelper = new RequestValidationHelper(
+			$banHelperMock,
+			$this->request,
+			$this->request->getEmail(),
+			$dbMock);
 
 		// act
 		$result = $validationHelper->validateName();

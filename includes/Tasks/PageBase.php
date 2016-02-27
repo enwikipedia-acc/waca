@@ -5,7 +5,6 @@ namespace Waca\Tasks;
 use Exception;
 use InterfaceMessage;
 use SessionAlert;
-use TransactionException;
 use User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\TemplateOutput;
@@ -84,10 +83,6 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 			$this->{$this->getRouteName()}();
 
 			$database->commit();
-		}
-		catch (TransactionException $ex) {
-			$database->rollBack();
-			throw $ex;
 		}
 		catch (ApplicationLogicException $ex) {
 			// it's an application logic exception, so nothing went seriously wrong with the site. We can use the
