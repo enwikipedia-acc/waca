@@ -33,8 +33,12 @@ class CachedApiAntispoofProvider implements IAntiSpoofProvider
 	{
 		$cacheResult = AntiSpoofCache::getByUsername($username, $this->database);
 		if ($cacheResult == false) {
-			// get the data from the API @todo httphelper
-			$data = file_get_contents($this->mediawikiWebServiceEndpoint . "?action=antispoof&format=php&username=" . urlencode($username));
+			// get the data from the API
+			$data = $this->httpHelper->get($this->mediawikiWebServiceEndpoint, array(
+				'action' => 'antispoof',
+				'format' => 'php',
+				'username' => $username
+			));
 
 			$cacheEntry = new AntiSpoofCache();
 			$cacheEntry->setDatabase($this->database);

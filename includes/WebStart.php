@@ -278,7 +278,8 @@ HTML;
 		return $this->isPublic;
 	}
 
-	public function setPublic($isPublic){
+	public function setPublic($isPublic)
+	{
 		$this->isPublic = $isPublic;
 	}
 }

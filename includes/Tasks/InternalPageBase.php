@@ -107,11 +107,11 @@ abstract class InternalPageBase extends PageBase
 		$tmpRouteName = $this->getRouteName();
 
 		try {
-			$this->routeName = $action;
+			$this->setRoute($action);
 			$allowed = $this->getSecurityConfiguration()->allows(User::getCurrent());
 		}
 		finally {
-			$this->routeName = $tmpRouteName;
+			$this->setRoute($tmpRouteName);
 		}
 
 		return $allowed;

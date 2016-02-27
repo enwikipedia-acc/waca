@@ -2,6 +2,10 @@
 
 use Waca\Validation\RequestValidationHelper;
 
+/**
+ * @backupGlobals disabled
+ * @backupStaticAttributes disabled
+ */
 class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 {
 	/** @var Request */

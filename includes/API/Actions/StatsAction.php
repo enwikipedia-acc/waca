@@ -15,14 +15,9 @@ class StatsAction extends ApiPageBase implements IApiAction
 {
 	/**
 	 * The target user
-	 * @var \User $user
+	 * @var User $user
 	 */
 	private $user;
-	/**
-	 * The database
-	 * @var \PdoDatabase $database
-	 */
-	private $database;
 
 	/**
 	 * Summary of execute
@@ -45,13 +40,11 @@ class StatsAction extends ApiPageBase implements IApiAction
 		$userElement = $this->document->createElement("user");
 		$apiDocument->appendChild($userElement);
 
-		$this->database = $this->getDatabase();
-
 		if ($username !== null) {
-			$user = User::getByUsername($username, $this->database);
+			$user = User::getByUsername($username, $this->getDatabase());
 		}
 		else {
-			$user = User::getByOnWikiUsername($wikiusername, $this->database);
+			$user = User::getByOnWikiUsername($wikiusername, $this->getDatabase());
 		}
 
 		if ($user === false) {

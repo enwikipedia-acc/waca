@@ -8,7 +8,7 @@ use Waca\API\ApiException;
 use Waca\API\IApiAction;
 use Waca\WebRequest;
 
-abstract class ApiPageBase extends TaskBase implements ITask, IApiAction
+abstract class ApiPageBase extends TaskBase implements IRoutedTask, IApiAction
 {
 	/**
 	 * API result document
@@ -24,6 +24,19 @@ abstract class ApiPageBase extends TaskBase implements ITask, IApiAction
 	final public function execute()
 	{
 		$this->main();
+	}
+
+	/**
+	 * @param string $routeName
+	 */
+	public function setRoute($routeName)
+	{
+		// no-op
+	}
+
+	public function getRouteName()
+	{
+		return 'main';
 	}
 
 	/**
