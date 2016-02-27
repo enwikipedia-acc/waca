@@ -2,9 +2,9 @@
 
 namespace Waca\Pages;
 
-use User;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;

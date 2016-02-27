@@ -3,8 +3,8 @@
 namespace Waca\Pages;
 
 use Exception;
-use User;
 use Waca\DataObjects\Log;
+use Waca\DataObjects\User;
 use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;

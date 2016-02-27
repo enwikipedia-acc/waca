@@ -2,9 +2,9 @@
 
 namespace Waca\API\Actions;
 
-use User;
 use Waca\API\ApiException;
 use Waca\API\IApiAction;
+use Waca\DataObjects\User;
 use Waca\Tasks\ApiPageBase;
 use Waca\WebRequest;
 

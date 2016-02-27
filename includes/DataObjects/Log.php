@@ -2,7 +2,6 @@
 namespace Waca\DataObjects;
 
 use Exception;
-use User;
 use Waca\DataObject;
 
 /**
@@ -112,7 +111,7 @@ SQL
 	 */
 	public function setUser($user)
 	{
-		if (is_a($user, "User")) {
+		if (is_a($user, "Waca\DataObjects\User")) {
 			$this->user = $user->getId();
 		}
 		else {

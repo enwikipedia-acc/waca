@@ -2,7 +2,7 @@
 
 namespace Waca;
 
-use User;
+use Waca\DataObjects\User;
 use Waca\Providers\Interfaces\IGlobalStateProvider;
 
 /**

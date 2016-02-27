@@ -2,7 +2,7 @@
 namespace Waca\Tasks;
 
 use Exception;
-use User;
+use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\NotIdentifiedException;
 use Waca\SecurityConfiguration;

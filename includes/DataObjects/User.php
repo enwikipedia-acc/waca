@@ -1,7 +1,13 @@
 <?php
+namespace Waca\DataObjects;
+
+use DateTime;
+use Exception;
+use JWT;
+use PDO;
+use UnexpectedValueException;
 use Waca\AuthUtility;
 use Waca\DataObject;
-use Waca\DataObjects\CommunityUser;
 use Waca\Helpers\Interfaces\IOAuthHelper;
 use Waca\Helpers\Logger;
 use Waca\PdoDatabase;

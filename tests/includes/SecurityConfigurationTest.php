@@ -3,7 +3,7 @@ namespace Waca\Tests;
 
 use PHPUnit_Framework_TestCase;
 use ReflectionProperty;
-use User;
+use Waca\DataObjects\User;
 use Waca\SecurityConfiguration;
 
 /**

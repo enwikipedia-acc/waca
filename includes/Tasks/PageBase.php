@@ -3,8 +3,8 @@
 namespace Waca\Tasks;
 
 use Exception;
-use User;
 use Waca\DataObjects\InterfaceMessage;
+use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\TemplateOutput;
 use Waca\SessionAlert;

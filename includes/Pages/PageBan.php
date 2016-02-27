@@ -3,9 +3,9 @@
 namespace Waca\Pages;
 
 use Exception;
-use User;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;

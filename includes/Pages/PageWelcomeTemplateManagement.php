@@ -3,14 +3,14 @@
 namespace Waca\Pages;
 
 use Exception;
-use User;
+use Waca\DataObjects\User;
+use Waca\DataObjects\WelcomeTemplate;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
-use WelcomeTemplate;
 
 class PageWelcomeTemplateManagement extends InternalPageBase
 {

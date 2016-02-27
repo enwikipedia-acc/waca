@@ -3,7 +3,6 @@ namespace Waca\Helpers;
 
 use Exception;
 use PDO;
-use User;
 use Waca\DataObject;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
@@ -11,8 +10,9 @@ use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\InterfaceMessage;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\User;
+use Waca\DataObjects\WelcomeTemplate;
 use Waca\PdoDatabase;
-use WelcomeTemplate;
 
 /**
  * Helper class for creating log entries

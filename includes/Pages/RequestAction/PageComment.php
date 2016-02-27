@@ -2,8 +2,8 @@
 
 namespace Waca\Pages\RequestAction;
 
-use User;
 use Waca\DataObjects\Comment;
+use Waca\DataObjects\User;
 use Waca\SecurityConfiguration;
 use Waca\WebRequest;
 

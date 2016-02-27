@@ -24,6 +24,7 @@ interface ITask
 
 	/**
 	 * @param IEmailHelper $emailHelper
+	 * @return void
 	 */
 	public function setEmailHelper($emailHelper);
 
@@ -34,6 +35,7 @@ interface ITask
 
 	/**
 	 * @param HttpHelper $httpHelper
+	 * @return void
 	 */
 	public function setHttpHelper($httpHelper);
 
@@ -44,6 +46,7 @@ interface ITask
 
 	/**
 	 * @param WikiTextHelper $wikiTextHelper
+	 * @return void
 	 */
 	public function setWikiTextHelper($wikiTextHelper);
 
@@ -54,6 +57,7 @@ interface ITask
 
 	/**
 	 * @param ILocationProvider $locationProvider
+	 * @return void
 	 */
 	public function setLocationProvider(ILocationProvider $locationProvider);
 
@@ -64,6 +68,7 @@ interface ITask
 
 	/**
 	 * @param IXffTrustProvider $xffTrustProvider
+	 * @return void
 	 */
 	public function setXffTrustProvider(IXffTrustProvider $xffTrustProvider);
 
@@ -74,6 +79,7 @@ interface ITask
 
 	/**
 	 * @param IRDnsProvider $rdnsProvider
+	 * @return void
 	 */
 	public function setRdnsProvider($rdnsProvider);
 
@@ -84,6 +90,7 @@ interface ITask
 
 	/**
 	 * @param IAntiSpoofProvider $antiSpoofProvider
+	 * @return void
 	 */
 	public function setAntiSpoofProvider($antiSpoofProvider);
 
@@ -94,6 +101,7 @@ interface ITask
 
 	/**
 	 * @param PdoDatabase $database
+	 * @return void
 	 */
 	public function setDatabase($database);
 
@@ -104,6 +112,7 @@ interface ITask
 
 	/**
 	 * @param ITypeAheadHelper $typeAheadHelper
+	 * @return void
 	 */
 	public function setTypeAheadHelper(ITypeAheadHelper $typeAheadHelper);
 
@@ -114,6 +123,7 @@ interface ITask
 
 	/**
 	 * @param IOAuthHelper $oauthHelper
+	 * @return void
 	 */
 	public function setOAuthHelper($oauthHelper);
 
@@ -123,6 +133,7 @@ interface ITask
 	 * Sets the site configuration object for this page
 	 *
 	 * @param SiteConfiguration $configuration
+	 * @return void
 	 */
 	public function setSiteConfiguration($configuration);
 
@@ -133,6 +144,7 @@ interface ITask
 
 	/**
 	 * @param IrcNotificationHelper $notificationHelper
+	 * @return void
 	 */
 	public function setNotificationHelper($notificationHelper);
 }

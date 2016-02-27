@@ -3,7 +3,6 @@
 namespace Waca\DataObjects;
 
 use DateTime;
-use User;
 
 /**
  * User data object

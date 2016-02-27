@@ -2,7 +2,7 @@
 
 namespace Waca\Exceptions;
 
-use User;
+use Waca\DataObjects\User;
 use Waca\PdoDatabase;
 
 class NotIdentifiedException extends ReadableException

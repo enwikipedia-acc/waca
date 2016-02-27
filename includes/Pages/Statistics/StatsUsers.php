@@ -2,7 +2,7 @@
 namespace Waca\Pages\Statistics;
 
 use PDO;
-use User;
+use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;

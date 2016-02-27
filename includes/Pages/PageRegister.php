@@ -2,7 +2,7 @@
 
 namespace Waca\Pages;
 
-use User;
+use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;

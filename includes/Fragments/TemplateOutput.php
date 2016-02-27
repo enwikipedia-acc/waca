@@ -3,7 +3,7 @@
 namespace Waca\Fragments;
 
 use Smarty;
-use User;
+use Waca\DataObjects\User;
 use Waca\Environment;
 use Waca\SiteConfiguration;
 

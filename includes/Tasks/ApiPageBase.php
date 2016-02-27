@@ -4,6 +4,7 @@ namespace Waca\Tasks;
 
 use DomDocument;
 use DOMElement;
+use DOMNode;
 use Waca\API\ApiException;
 use Waca\API\IApiAction;
 use Waca\WebRequest;
@@ -70,7 +71,7 @@ abstract class ApiPageBase extends TaskBase implements IRoutedTask, IApiAction
 	 *
 	 * @param DOMElement $apiDocument
 	 *
-	 * @return
+	 * @return DOMNode
 	 */
 	abstract public function executeApiAction(DOMElement $apiDocument);
 

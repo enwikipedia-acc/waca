@@ -2,7 +2,7 @@
 namespace Waca;
 
 use Exception;
-use User;
+use Waca\DataObjects\User;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Exceptions\ReadableException;
 use Waca\Providers\GlobalStateProvider;
