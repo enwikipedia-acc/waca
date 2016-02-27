@@ -129,7 +129,7 @@ class PageRequestAccount extends PublicInterfacePageBase
 		$request->setEmailConfirm(0); // Since it can't be null @todo fixme
 		$request->save();
 
-		$this->getNotificationHelper->requestReceived($request);
+		$this->getNotificationHelper()->requestReceived($request);
 
 		$this->redirect('requestSubmitted');
 	}

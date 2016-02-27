@@ -67,7 +67,7 @@ class PageBan extends InternalPageBase
 			Logger::unbanned($database, $ban, $unbanReason);
 
 			SessionAlert::quick("Disabled ban.");
-			$this->getNotificationHelper->unbanned($ban, $unbanReason);
+			$this->getNotificationHelper()->unbanned($ban, $unbanReason);
 
 			$this->redirect('bans');
 		}

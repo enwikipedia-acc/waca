@@ -29,7 +29,7 @@ class PageInterfaceManagement extends InternalPageBase
 			$siteNoticeMessage->save();
 
 			Logger::interfaceMessageEdited($database, $siteNoticeMessage);
-			$this->getNotificationHelper->interfaceMessageEdited();
+			$this->getNotificationHelper()->interfaceMessageEdited();
 
 			$this->redirect('');
 		}

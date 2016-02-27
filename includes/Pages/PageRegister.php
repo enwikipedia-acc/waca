@@ -147,7 +147,7 @@ class PageRegister extends InternalPageBase
 		}
 		else {
 			// only notify if we're not using the oauth signup.
-			$this->getNotificationHelper->userNew($user);
+			$this->getNotificationHelper()->userNew($user);
 			WebRequest::setLoggedInUser($user);
 			$this->redirect('preferences');
 		}

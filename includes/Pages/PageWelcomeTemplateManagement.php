@@ -110,7 +110,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 
 			Logger::welcomeTemplateCreated($database, $template);
 
-			$this->getNotificationHelper->welcomeTemplateCreated($template);
+			$this->getNotificationHelper()->welcomeTemplateCreated($template);
 
 			SessionAlert::success("Template successfully created.");
 
@@ -146,7 +146,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 
 			SessionAlert::success("Template updated.");
 
-			$this->getNotificationHelper->welcomeTemplateEdited($template);
+			$this->getNotificationHelper()->welcomeTemplateEdited($template);
 
 			$this->redirect('welcomeTemplates');
 		}
@@ -185,7 +185,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 
 		SessionAlert::success(
 			"Template deleted. Any users who were using this template have had automatic welcoming disabled.");
-		$this->getNotificationHelper->welcomeTemplateDeleted($templateId);
+		$this->getNotificationHelper()->welcomeTemplateDeleted($templateId);
 	}
 
 	/**

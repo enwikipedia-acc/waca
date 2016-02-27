@@ -52,7 +52,7 @@ class PageBreakReservation extends RequestActionBase
 		$request->save();
 
 		Logger::unreserve($database, $request);
-		$this->getNotificationHelper->requestUnreserved($request);
+		$this->getNotificationHelper()->requestUnreserved($request);
 
 		// Redirect home!
 		$this->redirect();
@@ -72,7 +72,7 @@ class PageBreakReservation extends RequestActionBase
 		$request->save();
 
 		Logger::breakReserve($database, $request);
-		$this->getNotificationHelper->requestReserveBroken($request);
+		$this->getNotificationHelper()->requestReserveBroken($request);
 
 		// Redirect home!
 		$this->redirect();

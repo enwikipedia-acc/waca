@@ -119,7 +119,7 @@ class PageEmailManagement extends InternalPageBase
 
 			$template->save();
 			Logger::editedEmail($database, $template);
-			$this->getNotificationHelper->emailEdited($template);
+			$this->getNotificationHelper()->emailEdited($template);
 			SessionAlert::success("Email template has been saved successfully.");
 
 			$this->redirect('emailManagement');
@@ -184,7 +184,7 @@ class PageEmailManagement extends InternalPageBase
 			$template->save();
 
 			Logger::createEmail($database, $template);
-			$this->getNotificationHelper->emailCreated($template);
+			$this->getNotificationHelper()->emailCreated($template);
 
 			SessionAlert::success("Email template has been saved successfully.");
 

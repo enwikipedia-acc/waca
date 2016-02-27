@@ -54,7 +54,7 @@ class PageReservation extends RequestActionBase
 
 			Logger::reserve($database, $request);
 
-			$this->getNotificationHelper->requestReserved($request);
+			$this->getNotificationHelper()->requestReserved($request);
 
 			SessionAlert::success("Reserved request {$request->getId()}.");
 		}

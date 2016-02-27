@@ -59,7 +59,7 @@ class PageSendToUser extends RequestActionBase
 		$request->save();
 
 		Logger::sendReservation($database, $request, $user);
-		$this->getNotificationHelper->requestReservationSent($request, $user);
+		$this->getNotificationHelper()->requestReservationSent($request, $user);
 		SessionAlert::success("Reservation sent successfully");
 
 		$this->redirect('viewRequest', null, array('id' => $request->getId()));

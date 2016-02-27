@@ -48,7 +48,7 @@ class PageConfirmEmail extends PublicInterfacePageBase
 		$request->save();
 
 		Logger::emailConfirmed($this->getDatabase(), $request);
-		$this->getNotificationHelper->requestReceived($request);
+		$this->getNotificationHelper()->requestReceived($request);
 
 		$this->redirect('requestSubmitted');
 	}

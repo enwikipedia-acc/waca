@@ -66,7 +66,7 @@ class PageComment extends RequestActionBase
 
 		$comment->save();
 
-		$this->getNotificationHelper->commentCreated($comment, $request);
+		$this->getNotificationHelper()->commentCreated($comment, $request);
 		$this->redirect('viewRequest', null, array('id' => $request->getId()));
 	}
 }

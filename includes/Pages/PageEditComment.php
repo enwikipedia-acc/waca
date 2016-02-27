@@ -74,7 +74,7 @@ class PageEditComment extends InternalPageBase
 			$comment->save();
 
 			Logger::editComment($database, $comment, $request);
-			$this->getNotificationHelper->commentEdited($comment, $request);
+			$this->getNotificationHelper()->commentEdited($comment, $request);
 			SessionAlert::success("Comment has been saved successfully");
 
 			$this->redirect('viewRequest', null, array('id' => $comment->getRequest()));

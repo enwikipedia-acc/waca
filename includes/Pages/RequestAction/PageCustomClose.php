@@ -136,7 +136,7 @@ class PageCustomClose extends PageCloseRequest
 		}
 
 		Logger::closeRequest($database, $request, $logCloseType, $messageBody);
-		$this->getNotificationHelper->requestClosed($request, $notificationCloseType);
+		$this->getNotificationHelper()->requestClosed($request, $notificationCloseType);
 
 		$requestName = htmlentities($request->getName(), ENT_COMPAT, 'UTF-8');
 		SessionAlert::success("Request {$request->getId()} ({$requestName}) marked as 'Done'.");
@@ -157,7 +157,7 @@ class PageCustomClose extends PageCloseRequest
 		Logger::sentMail($database, $request, $messageBody);
 		Logger::deferRequest($database, $request, $detolog);
 
-		$this->getNotificationHelper->requestDeferredWithMail($request);
+		$this->getNotificationHelper()->requestDeferredWithMail($request);
 
 		$deto = $availableRequestStates[$action]['deferto'];
 		SessionAlert::success("Request {$request->getId()} deferred to $deto, sending an email.");
@@ -201,7 +201,7 @@ class PageCustomClose extends PageCloseRequest
 				Logger::sentMail($database, $request, $messageBody);
 				Logger::unreserve($database, $request);
 
-				$this->getNotificationHelper->sentMail($request);
+				$this->getNotificationHelper()->sentMail($request);
 				SessionAlert::success("Sent mail to Request {$request->getId()}");
 			}
 		}

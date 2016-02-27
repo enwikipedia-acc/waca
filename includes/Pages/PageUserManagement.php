@@ -85,7 +85,7 @@ class PageUserManagement extends InternalPageBase
 
 			$user->suspend($reason);
 
-			$this->getNotificationHelper->userSuspended($user, $reason);
+			$this->getNotificationHelper()->userSuspended($user, $reason);
 			SessionAlert::quick('Suspended user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
 
 			// TODO: send email
@@ -133,7 +133,7 @@ class PageUserManagement extends InternalPageBase
 
 			$user->decline($reason);
 
-			$this->getNotificationHelper->userDeclined($user, $reason);
+			$this->getNotificationHelper()->userDeclined($user, $reason);
 			SessionAlert::quick('Declined user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
 
 			// TODO: send email
@@ -181,7 +181,7 @@ class PageUserManagement extends InternalPageBase
 
 			$user->demote($reason);
 
-			$this->getNotificationHelper->userDemoted($user, $reason);
+			$this->getNotificationHelper()->userDemoted($user, $reason);
 			SessionAlert::quick('Demoted user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
 
 			// TODO: send email
@@ -223,7 +223,7 @@ class PageUserManagement extends InternalPageBase
 		if (WebRequest::wasPosted()) {
 			$user->approve();
 
-			$this->getNotificationHelper->userApproved($user);
+			$this->getNotificationHelper()->userApproved($user);
 			SessionAlert::quick('Approved user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
 
 			// TODO: send email
@@ -265,7 +265,7 @@ class PageUserManagement extends InternalPageBase
 		if (WebRequest::wasPosted()) {
 			$user->promote();
 
-			$this->getNotificationHelper->userPromoted($user);
+			$this->getNotificationHelper()->userPromoted($user);
 			SessionAlert::quick('Promoted user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
 
 			// TODO: send email
@@ -331,7 +331,7 @@ class PageUserManagement extends InternalPageBase
 				. " name to "
 				. htmlentities($newUsername, ENT_COMPAT, 'UTF-8'));
 
-			$this->getNotificationHelper->userRenamed($user, $oldUsername);
+			$this->getNotificationHelper()->userRenamed($user, $oldUsername);
 
 			// TODO: should we send an email here? we never used to...
 
@@ -384,7 +384,7 @@ class PageUserManagement extends InternalPageBase
 			$user->save();
 
 			Logger::userPreferencesChange($database, $user);
-			$this->getNotificationHelper->userPrefChange($user);
+			$this->getNotificationHelper()->userPrefChange($user);
 			SessionAlert::quick('Changes to user\'s preferences have been saved');
 
 			$this->redirect("userManagement");

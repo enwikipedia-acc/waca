@@ -71,7 +71,7 @@ class PageDeferRequest extends RequestActionBase
 
 		Logger::deferRequest($database, $request, $detolog);
 
-		$this->getNotificationHelper->requestDeferred($request);
+		$this->getNotificationHelper()->requestDeferred($request);
 		SessionAlert::success("Request {$request->getId()} deferred to {$deto}");
 
 		$this->redirect();

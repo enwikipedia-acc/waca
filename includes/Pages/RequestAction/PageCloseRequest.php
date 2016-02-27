@@ -68,7 +68,7 @@ class PageCloseRequest extends RequestActionBase
 		$request->setReserved(0);
 
 		Logger::closeRequest($database, $request, $template->getId(), null);
-		$this->getNotificationHelper->requestClosed($request, $template->getName());
+		$this->getNotificationHelper()->requestClosed($request, $template->getName());
 		SessionAlert::success("Request {$request->getId()} has been closed");
 
 		$this->sendMail($request, $template->getText(), $currentUser, false);
