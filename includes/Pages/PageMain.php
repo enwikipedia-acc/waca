@@ -40,7 +40,7 @@ class PageMain extends InternalPageBase
 			$statement->bindValue(":type", $type);
 			$statement->execute();
 
-			$requests = $statement->fetchAll(PDO::FETCH_CLASS, 'Request');
+			$requests = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
 
 			/** @var Request $req */
 			foreach ($requests as $req) {

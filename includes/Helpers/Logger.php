@@ -383,7 +383,7 @@ SQL
 
 		$result = $logStatement->execute(array(":requestId" => $requestId));
 		if ($result) {
-			$data = $logStatement->fetchAll(PDO::FETCH_CLASS, "Log");
+			$data = $logStatement->fetchAll(PDO::FETCH_CLASS, Log::class);
 
 			/** @var Log $entry */
 			foreach ($data as $entry) {
@@ -538,7 +538,7 @@ SQL
 		$countStatement->closeCursor();
 
 		if ($searchStatement->execute()) {
-			$data = $searchStatement->fetchAll(PDO::FETCH_CLASS, "Log");
+			$data = $searchStatement->fetchAll(PDO::FETCH_CLASS, Log::class);
 
 			/** @var Log $entry */
 			foreach ($data as $entry) {

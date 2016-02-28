@@ -53,7 +53,10 @@ abstract class DataObject
 	 */
 	public static function getById($id, PdoDatabase $database)
 	{
-		$statement = $database->prepare("SELECT * FROM `" . strtolower(get_called_class()) . "` WHERE id = :id LIMIT 1;");
+		$array = explode('\\', get_called_class());
+		$realClassName = strtolower(end($array));
+
+		$statement = $database->prepare("SELECT * FROM {$realClassName} WHERE id = :id LIMIT 1;");
 		$statement->bindValue(":id", $id);
 
 		$statement->execute();
@@ -86,10 +89,10 @@ abstract class DataObject
 	 */
 	public function delete()
 	{
-		$statement = $this->dbObject->prepare(
-			"DELETE FROM `"
-			. strtolower(get_called_class())
-			. "` WHERE id = :id LIMIT 1;");
+		$array = explode('\\', get_called_class());
+		$realClassName = strtolower(end($array));
+
+		$statement = $this->dbObject->prepare("DELETE FROM {$realClassName} WHERE id = :id LIMIT 1;");
 
 		$statement->bindValue(":id", $this->id);
 		$statement->execute();

@@ -1,5 +1,7 @@
 <?php
 
+namespace Waca;
+
 /**
  * AutoLoader for the new classes
  */

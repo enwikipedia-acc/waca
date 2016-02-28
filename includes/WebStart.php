@@ -196,7 +196,14 @@ HTML;
 
 		$siteConfiguration = $this->getConfiguration();
 		$database = PdoDatabase::getDatabaseConnection('acc');
-		$notificationsDatabase = PdoDatabase::getDatabaseConnection('notifications');
+
+		if ($siteConfiguration->getIrcNotificationsEnabled()) {
+			$notificationsDatabase = PdoDatabase::getDatabaseConnection('notifications');
+		}
+		else {
+			// @todo federated table here?
+			$notificationsDatabase = $database;
+		}
 
 		$this->setupHelpers($page, $siteConfiguration, $database, $notificationsDatabase);
 

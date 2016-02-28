@@ -83,7 +83,7 @@ class PageSearch extends InternalPageBase
 		$statement->execute();
 
 		/** @var Request $r */
-		$requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
+		$requests = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
 		foreach ($requests as $r) {
 			$r->setDatabase($database);
 			$r->isNew = false;
@@ -118,7 +118,7 @@ class PageSearch extends InternalPageBase
 		$statement->execute();
 
 		/** @var Request $r */
-		$requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
+		$requests = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
 		foreach ($requests as $r) {
 			$r->setDatabase($database);
 			$r->isNew = false;
@@ -153,7 +153,7 @@ SQL;
 		$statement->execute();
 
 		/** @var Request $r */
-		$requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
+		$requests = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
 		foreach ($requests as $r) {
 			$r->setDatabase($database);
 			$r->isNew = false;

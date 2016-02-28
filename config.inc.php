@@ -295,7 +295,7 @@ foreach (array(
 
 // Set up the AutoLoader
 require_once($filepath . "includes/AutoLoader.php");
-spl_autoload_register("AutoLoader::load");
+spl_autoload_register('Waca\\AutoLoader::load');
 require_once($filepath . 'vendor/autoload.php');
 
 // Extra includes which are just plain awkward wherever they are.
