@@ -23,6 +23,7 @@ class SiteConfiguration
 	private $mediawikiWebServiceEndpoint = "";
 	private $enforceOAuth = true;
 	private $emailConfirmationEnabled = true;
+	private $emailConfirmationExpiryDays = 7;
 	private $miserModeLimit = 25;
 	private $requestStates = array(
 		'Open'          => array(
@@ -657,5 +658,25 @@ class SiteConfiguration
 	public function getErrorLog()
 	{
 		return $this->errorLog;
+	}
+
+	/**
+	 * @param int $emailConfirmationExpiryDays
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setEmailConfirmationExpiryDays($emailConfirmationExpiryDays)
+	{
+		$this->emailConfirmationExpiryDays = $emailConfirmationExpiryDays;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getEmailConfirmationExpiryDays()
+	{
+		return $this->emailConfirmationExpiryDays;
 	}
 }
