@@ -198,16 +198,6 @@ SQL
 	}
 
 	/**
-	 * @param int $user UserID of user who is setting the ban
-	 *
-	 * @throws Exception
-	 */
-	public function setUser($user)
-	{
-		$this->user = $user;
-	}
-
-	/**
 	 * @return string
 	 */
 	public function getReason()
@@ -271,5 +261,23 @@ SQL
 	public function getObjectDescription()
 	{
 		return 'Ban #' . $this->getId() . " (" . htmlentities($this->target) . ")</a>";
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getUser()
+	{
+		return $this->user;
+	}
+
+	/**
+	 * @param int $user UserID of user who is setting the ban
+	 *
+	 * @throws Exception
+	 */
+	public function setUser($user)
+	{
+		$this->user = $user;
 	}
 }

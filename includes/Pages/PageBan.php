@@ -24,8 +24,16 @@ class PageBan extends InternalPageBase
 
 		$bans = Ban::getActiveBans(null, $this->getDatabase());
 
-		$this->assign("activebans", $bans);
-		$this->setTemplate("bans/banlist.tpl");
+		$userIds = array_map(
+			function(Ban $entry) {
+				return $entry->getUser();
+			},
+			$bans);
+		$userList = User::getUsernames($userIds, $this->getDatabase());
+
+		$this->assign('usernames', $userList);
+		$this->assign('activebans', $bans);
+		$this->setTemplate('bans/banlist.tpl');
 	}
 
 	/**
@@ -57,7 +65,7 @@ class PageBan extends InternalPageBase
 		if (WebRequest::wasPosted()) {
 			$unbanReason = WebRequest::postString('unbanreason');
 			if ($unbanReason === null || trim($unbanReason) === "") {
-				throw new ApplicationLogicException("No unban reason specified");
+				throw new ApplicationLogicException('No unban reason specified');
 			}
 
 			$database = $this->getDatabase();
@@ -66,14 +74,14 @@ class PageBan extends InternalPageBase
 
 			Logger::unbanned($database, $ban, $unbanReason);
 
-			SessionAlert::quick("Disabled ban.");
+			SessionAlert::quick('Disabled ban.');
 			$this->getNotificationHelper()->unbanned($ban, $unbanReason);
 
 			$this->redirect('bans');
 		}
 		else {
-			$this->assign("ban", $ban);
-			$this->setTemplate("bans/unban.tpl");
+			$this->assign('ban', $ban);
+			$this->setTemplate('bans/unban.tpl');
 		}
 	}
 

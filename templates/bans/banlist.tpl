@@ -52,7 +52,7 @@
                         </a>
                     {/if}
                 </td>
-                <td>{$ban->getUser()->getUsername()|escape}</td>
+                <td>{$usernames[$ban->getUser()]|escape}</td>
                 <td>{$ban->getReason()|escape}</td>
                 <td>{$ban->getDate()} <span class="muted">({$ban->getDate()|relativedate})</span></td>
                 <td>{if $ban->getDuration() == -1}Indefinite{else}{date("Y-m-d H:i:s", $ban->getDuration())}{/if}</td>
