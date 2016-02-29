@@ -64,6 +64,7 @@ class SiteConfiguration
 	);
 	private $ircNotificationType = 1;
 	private $ircNotificationsEnabled = true;
+	private $errorLog = 'errorlog';
 
 	/**
 	 * Gets the base URL of the tool
@@ -636,5 +637,25 @@ class SiteConfiguration
 		$this->ircNotificationType = $ircNotificationType;
 
 		return $this;
+	}
+
+	/**
+	 * @param string $errorLog
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setErrorLog($errorLog)
+	{
+		$this->errorLog = $errorLog;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getErrorLog()
+	{
+		return $this->errorLog;
 	}
 }

@@ -32,3 +32,4 @@ waca.sln.DotSettings.user
 .arc*
 vendor/*
 components/*
+errorlog/*.log

@@ -110,7 +110,8 @@ HTML;
 		$state = serialize($errorData);
 		$errorId = sha1($state);
 
-		// TODO: log the error state somewhere.
+		// Save the error for later analysis
+		file_put_contents($siteConfiguration->getErrorLog() . '/' . $errorId . '.log', $state);
 
 		// clear and discard any content that's been saved to the output buffer
 		if (ob_get_level() > 0) {
