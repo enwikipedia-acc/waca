@@ -3,6 +3,7 @@
 namespace Waca\DataObjects;
 
 use DateTime;
+use Waca\IdentificationVerifier;
 
 /**
  * User data object
@@ -204,7 +205,7 @@ class CommunityUser extends User
 		return false;
 	}
 
-	public function isIdentified()
+	public function isIdentified(IdentificationVerifier $iv)
 	{
 		return false;
 	}

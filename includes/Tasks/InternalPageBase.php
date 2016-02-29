@@ -5,10 +5,14 @@ use Exception;
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\NotIdentifiedException;
+use Waca\IdentificationVerifier;
 use Waca\SecurityConfiguration;
 
 abstract class InternalPageBase extends PageBase
 {
+	/** @var IdentificationVerifier */
+	private $identificationVerifier;
+
 	/**
 	 * Runs the page code
 	 *
@@ -17,6 +21,8 @@ abstract class InternalPageBase extends PageBase
 	 */
 	final public function execute()
 	{
+		$this->identificationVerifier = new IdentificationVerifier($this->getHttpHelper(), $this->getSiteConfiguration(), $this->getDatabase());
+
 		if ($this->getRouteName() === null) {
 			throw new Exception("Request is unrouted.");
 		}
@@ -39,7 +45,7 @@ abstract class InternalPageBase extends PageBase
 		// Security barrier.
 		//
 		// This code essentially doesn't care if the user is logged in or not, as the
-		if ($securityConfiguration->allows($currentUser)) {
+		if ($securityConfiguration->allows($currentUser, $this->identificationVerifier)) {
 			// We're allowed to run the page, so let's run it.
 			$this->runPage();
 		}
@@ -82,7 +88,7 @@ abstract class InternalPageBase extends PageBase
 			// Decide whether this was a rights failure, or an identification failure.
 
 			if ($this->getSiteConfiguration()->getForceIdentification()
-				&& $currentUser->isIdentified() != 1
+				&& $currentUser->isIdentified($this->identificationVerifier) !== true
 			) {
 				// Not identified
 				throw new NotIdentifiedException();
@@ -110,7 +116,7 @@ abstract class InternalPageBase extends PageBase
 
 		try {
 			$this->setRoute($action);
-			$allowed = $this->getSecurityConfiguration()->allows(User::getCurrent($this->getDatabase()));
+			$allowed = $this->getSecurityConfiguration()->allows(User::getCurrent($this->getDatabase()), $this->identificationVerifier);
 		}
 		finally {
 			$this->setRoute($tmpRouteName);
