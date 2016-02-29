@@ -350,6 +350,11 @@ SQL
 		if (!is_array($userIds)) {
 			throw new Exception('getUsernames() expects array');
 		}
+		
+		if (count($userIds) === 0) {
+		 // empty set of data
+		 return array();
+		}
 
 		// Urgh. OK. You can't use IN() with parameters directly, so let's munge something together.
 		$userCount = count($userIds);
