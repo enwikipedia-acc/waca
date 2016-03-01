@@ -202,6 +202,9 @@ abstract class TaskBase implements ITask
 		$this->oauthHelper = $oauthHelper;
 	}
 
+	/**
+	 * @return void
+	 */
 	abstract public function execute();
 
 	/**

@@ -4,7 +4,6 @@ namespace Waca\Tasks;
 
 use DomDocument;
 use DOMElement;
-use DOMNode;
 use Waca\API\ApiException;
 use Waca\API\IApiAction;
 use Waca\WebRequest;
@@ -35,6 +34,9 @@ abstract class ApiPageBase extends TaskBase implements IRoutedTask, IApiAction
 		// no-op
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getRouteName()
 	{
 		return 'main';
@@ -71,13 +73,15 @@ abstract class ApiPageBase extends TaskBase implements IRoutedTask, IApiAction
 	 *
 	 * @param DOMElement $apiDocument
 	 *
-	 * @return DOMNode
+	 * @return DOMElement
 	 */
 	abstract public function executeApiAction(DOMElement $apiDocument);
 
+	/**
+	 * @return string
+	 */
 	final public function runApiPage()
 	{
-
 		$apiDocument = $this->document->createElement("api");
 
 		try {

@@ -15,7 +15,7 @@ use Waca\WebRequest;
 class ApiRequestRouter implements IRequestRouter
 {
 	/**
-	 * @return array
+	 * @return string[]
 	 */
 	public static function getActionList()
 	{

@@ -90,6 +90,7 @@ abstract class ApplicationBase
 
 	/**
 	 * Main application logic
+	 * @return void
 	 */
 	abstract protected function main();
 
@@ -98,14 +99,18 @@ abstract class ApplicationBase
 	 *
 	 * Note that we need to be very careful here, as exceptions may have been thrown and handled.
 	 * This should *only* be for cleaning up, no logic should go here.
+	 *
+	 * @return void
 	 */
 	abstract protected function cleanupEnvironment();
 
 	/**
-	 * @param ITask $page
+	 * @param ITask             $page
 	 * @param SiteConfiguration $siteConfiguration
-	 * @param PdoDatabase $database
-	 * @param PdoDatabase $notificationsDatabase
+	 * @param PdoDatabase       $database
+	 * @param PdoDatabase       $notificationsDatabase
+	 *
+	 * @return void
 	 */
 	protected function setupHelpers(
 		ITask $page,

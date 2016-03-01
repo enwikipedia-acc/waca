@@ -104,7 +104,7 @@ class PageViewRequest extends InternalPageBase
 		$database = $this->getDatabase();
 
 		$request = Request::getById($requestId, $database);
-		if (!is_a($request, Request::class)) {
+		if ($request === false || !is_a($request, Request::class)) {
 			throw new ApplicationLogicException('Could not load the requested request!');
 		}
 

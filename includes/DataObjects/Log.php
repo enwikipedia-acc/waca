@@ -5,20 +5,20 @@ use Exception;
 use Waca\DataObject;
 
 /**
- * Log short summary.
- *
- * Log description.
- *
- * @version 1.0
- * @author  stwalkerster
+ * Class representing a log entry
  */
 class Log extends DataObject
 {
+	/** @var int */
 	private $objectid;
+	/** @var string */
 	private $objecttype;
+	/** @var int */
 	private $user;
+	/** @var string */
 	private $action;
 	private $timestamp;
+	/** @var string|null */
 	private $comment;
 
 	/**
@@ -61,7 +61,7 @@ SQL
 	}
 
 	/**
-	 * @return int|null
+	 * @return int
 	 */
 	public function getObjectId()
 	{
@@ -111,7 +111,7 @@ SQL
 	 */
 	public function setUser($user)
 	{
-		if (is_a($user, "Waca\DataObjects\User")) {
+		if (is_a($user, User::class)) {
 			$this->user = $user->getId();
 		}
 		else {

@@ -18,6 +18,7 @@ class EmailTemplate extends DataObject
 	const NONE = null;
 	private $name;
 	private $text;
+	/** @var string|null */
 	private $jsquestion;
 	private $active = 1;
 	private $preloadonly = 0;

@@ -44,23 +44,21 @@ class RecreateTrustedIpTableTask extends ConsoleTaskBase
 	}
 
 	/**
-	 * @param $dnsdomain
-	 * @param $ip
-	 *
-	 * @return array
+	 * @param string[] $dnsDomains  the DNS domains to resolve
+	 * @param string[] $ipAddresses existing array of IPs to add to
 	 */
-	protected function resolveDns($dnsdomain, &$ip)
+	protected function resolveDns($dnsDomains, &$ipAddresses)
 	{
-		foreach ($dnsdomain as $d) {
-			$ips = gethostbynamel($d);
+		foreach ($dnsDomains as $domain) {
+			$ipList = gethostbynamel($domain);
 
-			if ($ips === false) {
-				echo "Invalid DNS name $d\n";
+			if ($ipList === false) {
+				echo "Invalid DNS name $domain\n";
 				continue;
 			}
 
-			foreach ($ips as $i) {
-				$ip[] = $i;
+			foreach ($ipList as $ipAddress) {
+				$ipAddresses[] = $ipAddress;
 			}
 
 			// don't DoS

@@ -22,7 +22,7 @@ class HelpAction extends ApiPageBase implements IApiAction
 
 	/**
 	 * Gets the help information
-	 * @return \DOMNode
+	 * @return DOMElement
 	 */
 	protected function getHelpElement()
 	{

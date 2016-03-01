@@ -127,6 +127,9 @@ interface ITask
 	 */
 	public function setOAuthHelper($oauthHelper);
 
+	/**
+	 * @return void
+	 */
 	public function execute();
 
 	/**

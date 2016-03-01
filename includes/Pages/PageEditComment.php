@@ -58,7 +58,12 @@ class PageEditComment extends InternalPageBase
 			throw new AccessDeniedException();
 		}
 
+		/** @var Request $request */
 		$request = Request::getById($comment->getRequest(), $database);
+
+		if ($request === false) {
+			throw new ApplicationLogicException('Request was not found.');
+		}
 
 		if (WebRequest::wasPosted()) {
 			$newComment = WebRequest::postString('newcomment');

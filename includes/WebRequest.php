@@ -412,12 +412,18 @@ class WebRequest
 		return isset($session['userID']) ? (int)$session['userID'] : null;
 	}
 
+	/**
+	 * @param User $user
+	 */
 	public static function setPartialLogin(User $user)
 	{
 		$session = &self::$globalStateProvider->getSessionSuperGlobal();
 		$session['partialLogin'] = $user->getId();
 	}
 
+	/**
+	 * @return int|null
+	 */
 	public static function getPartialLogin()
 	{
 		$session = &self::$globalStateProvider->getSessionSuperGlobal();
@@ -425,6 +431,9 @@ class WebRequest
 		return isset($session['partialLogin']) ? (int)$session['partialLogin'] : null;
 	}
 
+	/**
+	 * @return null|string
+	 */
 	public static function userAgent()
 	{
 		$server = &self::$globalStateProvider->getServerSuperGlobal();
@@ -436,6 +445,9 @@ class WebRequest
 		return null;
 	}
 
+	/**
+	 * @return null|string
+	 */
 	public static function scriptName()
 	{
 		$server = &self::$globalStateProvider->getServerSuperGlobal();
@@ -447,6 +459,9 @@ class WebRequest
 		return null;
 	}
 
+	/**
+	 * @return null|string
+	 */
 	public static function origin()
 	{
 		$server = &self::$globalStateProvider->getServerSuperGlobal();

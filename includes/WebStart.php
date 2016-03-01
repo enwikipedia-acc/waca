@@ -7,7 +7,6 @@ use Waca\Exceptions\EnvironmentException;
 use Waca\Exceptions\ReadableException;
 use Waca\Providers\GlobalStateProvider;
 use Waca\Router\IRequestRouter;
-use Waca\Router\RequestRouter;
 
 /**
  * Internal application entry point.
@@ -26,19 +25,14 @@ class WebStart extends ApplicationBase
 	/**
 	 * WebStart constructor.
 	 *
-	 * @param SiteConfiguration $configuration
-	 * @param IRequestRouter    $router
+	 * @param SiteConfiguration $configuration The site configuration
+	 * @param IRequestRouter    $router        The request router to use
 	 */
-	public function __construct(SiteConfiguration $configuration, IRequestRouter $router = null)
+	public function __construct(SiteConfiguration $configuration, IRequestRouter $router)
 	{
 		parent::__construct($configuration);
 
-		if ($router === null) {
-			$this->requestRouter = new RequestRouter();
-		}
-		else {
-			$this->requestRouter = $router;
-		}
+		$this->requestRouter = $router;
 	}
 
 	/**
@@ -272,10 +266,10 @@ HTML;
 			Session::restart();
 		}
 
-		if ($currentUser->getForceLogout() == "1") {
+		if ($currentUser->getForceLogout() == 1) {
 			Session::restart();
 
-			$currentUser->setForceLogout(0);
+			$currentUser->setForceLogout(false);
 			$currentUser->save();
 		}
 	}

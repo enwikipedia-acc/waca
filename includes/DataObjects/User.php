@@ -12,6 +12,7 @@ use Waca\Helpers\Interfaces\IOAuthHelper;
 use Waca\Helpers\Logger;
 use Waca\PdoDatabase;
 use Waca\SessionAlert;
+use Waca\WebRequest;
 
 /**
  * User data object
@@ -58,7 +59,15 @@ class User extends DataObject
 	{
 		if (self::$currentUser === null) {
 			if (isset($_SESSION['userID'])) {
-				self::$currentUser = self::getById($_SESSION['userID'], $database);
+				/** @var User $user */
+				$user = self::getById(WebRequest::getSessionUserId(), $database);
+
+				if ($user === false) {
+					self::$currentUser = new CommunityUser();
+				}
+				else {
+					self::$currentUser = $user;
+				}
 			}
 			else {
 				$anonymousCoward = new CommunityUser();
@@ -75,14 +84,14 @@ class User extends DataObject
 	 *
 	 * Pass -1 to get the community user.
 	 *
-	 * @param int         $id
+	 * @param int|null    $id
 	 * @param PdoDatabase $database
 	 *
 	 * @return User|false
 	 */
 	public static function getById($id, PdoDatabase $database)
 	{
-		if ($id == "-1") {
+		if ($id === null || $id == -1) {
 			return new CommunityUser();
 		}
 
@@ -350,10 +359,10 @@ SQL
 		if (!is_array($userIds)) {
 			throw new Exception('getUsernames() expects array');
 		}
-		
+
 		if (count($userIds) === 0) {
-		 // empty set of data
-		 return array();
+			// empty set of data
+			return array();
 		}
 
 		// Urgh. OK. You can't use IN() with parameters directly, so let's munge something together.

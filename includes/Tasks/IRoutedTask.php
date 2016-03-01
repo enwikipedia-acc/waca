@@ -11,6 +11,8 @@ interface IRoutedTask extends ITask
 	 *
 	 * @param $routeName string
 	 *
+	 * @return void
+	 *
 	 * @throws Exception
 	 * @category Security-Critical
 	 */

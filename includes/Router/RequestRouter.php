@@ -429,7 +429,7 @@ class RequestRouter implements IRequestRouter
 	}
 
 	/**
-	 * @return array
+	 * @return callable
 	 */
 	protected function getDefaultRoute()
 	{
