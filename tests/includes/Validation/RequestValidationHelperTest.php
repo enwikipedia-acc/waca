@@ -8,6 +8,7 @@ use Waca\DataObjects\Request;
 use Waca\Helpers\Interfaces\IBanHelper;
 use Waca\PdoDatabase;
 use Waca\Tests\Utility\MockableDatabase;
+use Waca\Tests\Utility\MockableDatabaseStatement;
 use Waca\Validation\RequestValidationHelper;
 
 /**
@@ -32,7 +33,7 @@ class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 		/** @var PdoDatabase|PHPUnit_Framework_MockObject_MockObject $dbMock */
 		$dbMock = $this->getMockBuilder(MockableDatabase::class)->getMock();
 
-		$dbStatementMock = $this->getMockBuilder('PDOStatement')->disableOriginalConstructor()->getMock();
+		$dbStatementMock = $this->getMockBuilder(MockableDatabaseStatement::class)->getMock();
 		$dbMock->method('prepare')->willReturn($dbStatementMock);
 
 		/** @var IBanHelper|PHPUnit_Framework_MockObject_MockObject $banHelperMock */

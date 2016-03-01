@@ -23,3 +23,4 @@ require_once __DIR__ . '/utility/MockFunction.php';
 require_once __DIR__ . '/utility/MockStaticMethod.php';
 require_once __DIR__ . '/utility/TestStateProvider.php';
 require_once __DIR__ . '/utility/MockableDatabase.php';
+require_once __DIR__ . '/utility/MockableDatabaseStatement.php';
