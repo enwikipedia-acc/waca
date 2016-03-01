@@ -29,7 +29,7 @@ class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 	public function testValidateGoodName()
 	{
 		/** @var PdoDatabase|PHPUnit_Framework_MockObject_MockObject $dbMock */
-		$dbMock = $this->getMockBuilder('PdoDatabase')
+		$dbMock = $this->getMockBuilder(PdoDatabase::class)
 			->disableOriginalConstructor()
 			->getMock();
 
@@ -37,7 +37,7 @@ class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 		$dbMock->method('prepare')->willReturn($dbStatementMock);
 
 		/** @var IBanHelper|PHPUnit_Framework_MockObject_MockObject $banHelperMock */
-		$banHelperMock = $this->getMockBuilder('IBanHelper')->getMock();
+		$banHelperMock = $this->getMockBuilder(IBanHelper::class)->getMock();
 		$banHelperMock->method('emailIsBanned')->willReturn(false);
 		$banHelperMock->method('nameIsBanned')->willReturn(false);
 		$banHelperMock->method('ipIsBanned')->willReturn(false);

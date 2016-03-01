@@ -2,7 +2,9 @@
 namespace Waca\Tests;
 
 use PHPUnit_Framework_MockObject_MockObject;
+use Waca\DataObjects\User;
 use Waca\Providers\GlobalStateProvider;
+use Waca\Tests\Utility\TestStateProvider;
 use Waca\WebRequest;
 
 class WebRequestTest extends \PHPUnit_Framework_TestCase
@@ -484,4 +486,70 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 		$this->markTestIncomplete("not implemented uet");
 	}
 	#endregion
+
+	public function testSetLoggedInUser()
+	{
+		$state = new TestStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getSessionSuperGlobal();
+		$data['partialLogin'] = 'foo';
+
+		/** @var User|PHPUnit_Framework_MockObject_MockObject $user */
+		$user = $this->getMockBuilder(User::class)->getMock();
+		$user->method('getId')->willReturn(7);
+
+		WebRequest::setLoggedInUser($user);
+
+		$this->assertFalse(isset($data['partialLogin']));
+		$this->assertEquals($data['userID'], 7);
+	}
+
+	public function testSetPostLoginRedirect()
+	{
+		$state = new TestStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getSessionSuperGlobal();
+		$server = &$state->getServerSuperGlobal();
+		$server['REQUEST_URI'] = 'fooooo';
+
+		WebRequest::setPostLoginRedirect();
+
+		$this->assertEquals($data['returnTo'], 'fooooo');
+	}
+
+	public function testSetPostLoginRedirectNoUri()
+	{
+		$state = new TestStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getSessionSuperGlobal();
+
+		WebRequest::setPostLoginRedirect();
+
+		$this->assertNull($data['returnTo']);
+	}
+
+	public function testClearPostLoginRedirect()
+	{
+		$state = new TestStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getSessionSuperGlobal();
+		$data['returnTo'] = 'fooooo';
+
+		$result = WebRequest::clearPostLoginRedirect();
+
+		$this->assertEquals($result, 'fooooo');
+	}
+
+	public function testClearPostLoginRedirectNoUri()
+	{
+		$state = new TestStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$result = WebRequest::clearPostLoginRedirect();
+		$this->assertNull($result);
+	}
 }
