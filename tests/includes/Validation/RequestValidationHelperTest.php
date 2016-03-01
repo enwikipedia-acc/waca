@@ -7,6 +7,7 @@ use PHPUnit_Framework_TestCase;
 use Waca\DataObjects\Request;
 use Waca\Helpers\Interfaces\IBanHelper;
 use Waca\PdoDatabase;
+use Waca\Tests\Utility\MockableDatabase;
 use Waca\Validation\RequestValidationHelper;
 
 /**
@@ -29,9 +30,7 @@ class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 	public function testValidateGoodName()
 	{
 		/** @var PdoDatabase|PHPUnit_Framework_MockObject_MockObject $dbMock */
-		$dbMock = $this->getMockBuilder(PdoDatabase::class)
-			->disableOriginalConstructor()
-			->getMock();
+		$dbMock = $this->getMockBuilder(MockableDatabase::class)->getMock();
 
 		$dbStatementMock = $this->getMockBuilder('PDOStatement')->disableOriginalConstructor()->getMock();
 		$dbMock->method('prepare')->willReturn($dbStatementMock);
