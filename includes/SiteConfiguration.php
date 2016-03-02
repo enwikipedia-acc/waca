@@ -65,6 +65,7 @@ class SiteConfiguration
 	);
 	private $ircNotificationType = 1;
 	private $ircNotificationsEnabled = true;
+	private $ircNotificationsInstance = 'Development';
 	private $errorLog = 'errorlog';
 
 	/**
@@ -678,5 +679,25 @@ class SiteConfiguration
 	public function getEmailConfirmationExpiryDays()
 	{
 		return $this->emailConfirmationExpiryDays;
+	}
+
+	/**
+	 * @param string $ircNotificationsInstance
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setIrcNotificationsInstance($ircNotificationsInstance)
+	{
+		$this->ircNotificationsInstance = $ircNotificationsInstance;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getIrcNotificationsInstance()
+	{
+		return $this->ircNotificationsInstance;
 	}
 }

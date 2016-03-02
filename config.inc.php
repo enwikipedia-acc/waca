@@ -341,4 +341,5 @@ $siteConfiguration->setBaseUrl($baseurl)
 	->setXffTrustedHostsFile($xff_trusted_hosts_file)
 	->setIrcNotificationsEnabled($ircBotNotificationsEnabled == 1)
 	->setIrcNotificationType($ircBotNotificationType)
+	->setIrcNotificationsInstance($whichami)
 	;

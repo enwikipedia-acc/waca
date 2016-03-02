@@ -32,7 +32,7 @@ class WelcomeTemplate extends DataObject
 
 		$result = array();
 		/** @var WelcomeTemplate $v */
-		foreach ($statement->fetchAll(PDO::FETCH_CLASS, WelcomeTemplate::class) as $v) {
+		foreach ($statement->fetchAll(PDO::FETCH_CLASS, self::class) as $v) {
 			$v->isNew = false;
 			$v->setDatabase($database);
 			$result[] = $v;

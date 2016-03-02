@@ -7,6 +7,7 @@ use PHPUnit_Framework_TestCase;
 use Waca\DataObjects\Request;
 use Waca\Helpers\Interfaces\IBanHelper;
 use Waca\PdoDatabase;
+use Waca\Providers\Interfaces\IAntiSpoofProvider;
 use Waca\Tests\Utility\MockableDatabase;
 use Waca\Tests\Utility\MockableDatabaseStatement;
 use Waca\Validation\RequestValidationHelper;
@@ -38,16 +39,21 @@ class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 
 		/** @var IBanHelper|PHPUnit_Framework_MockObject_MockObject $banHelperMock */
 		$banHelperMock = $this->getMockBuilder(IBanHelper::class)->getMock();
-		$banHelperMock->method('emailIsBanned')->willReturn(false);
-		$banHelperMock->method('nameIsBanned')->willReturn(false);
-		$banHelperMock->method('ipIsBanned')->willReturn(false);
+		$banHelperMock->expects($this->once())->method('emailIsBanned')->willReturn(false);
+		$banHelperMock->expects($this->once())->method('nameIsBanned')->willReturn(false);
+		$banHelperMock->expects($this->once())->method('ipIsBanned')->willReturn(false);
+
+		/** @var IAntiSpoofProvider|PHPUnit_Framework_MockObject_MockObject $antispoofMock */
+		$antispoofMock = $this->getMockBuilder(IAntiSpoofProvider::class)->getMock();
+		$antispoofMock->expects($this->once())->method('getSpoofs')->willReturn(array());
 
 		// arrange
 		$validationHelper = new RequestValidationHelper(
 			$banHelperMock,
 			$this->request,
 			$this->request->getEmail(),
-			$dbMock);
+			$dbMock,
+			$antispoofMock);
 
 		// act
 		$result = $validationHelper->validateName();

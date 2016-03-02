@@ -80,7 +80,8 @@ class PageRequestAccount extends PublicInterfacePageBase
 			new BanHelper($this->getDatabase()),
 			$request,
 			WebRequest::postEmail('emailconfirm'),
-			$this->getDatabase());
+			$this->getDatabase(),
+			$this->getAntiSpoofProvider());
 
 		// These are arrays of ValidationError.
 		$nameValidation = $validationHelper->validateName();

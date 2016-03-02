@@ -329,7 +329,7 @@ SQL
 
 			$query->execute();
 
-			$this->emailRequests = $query->fetchAll(PDO::FETCH_CLASS, Request::class);
+			$this->emailRequests = $query->fetchAll(PDO::FETCH_CLASS, self::class);
 			$this->emailRequestsResolved = true;
 
 			foreach ($this->emailRequests as $r) {
@@ -371,7 +371,7 @@ SQL
 
 			$query->execute();
 
-			$this->ipRequests = $query->fetchAll(PDO::FETCH_CLASS, Request::class);
+			$this->ipRequests = $query->fetchAll(PDO::FETCH_CLASS, self::class);
 			$this->ipRequestsResolved = true;
 
 			foreach ($this->ipRequests as $r) {

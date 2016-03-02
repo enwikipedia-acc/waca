@@ -30,6 +30,8 @@ class IrcNotificationHelper
 	private $notificationType;
 	/** @var User $currentUser */
 	private $currentUser;
+	/** @var string $instanceName */
+	private $instanceName;
 
 	/**
 	 * IrcNotificationHelper constructor.
@@ -48,6 +50,9 @@ class IrcNotificationHelper
 
 		$this->notificationsEnabled = $siteConfiguration->getIrcNotificationsEnabled();
 		$this->notificationType = $siteConfiguration->getIrcNotificationType();
+		$this->instanceName = $siteConfiguration->getIrcNotificationsInstance();
+		$this->baseUrl = $siteConfiguration->getBaseUrl();
+		$this->requestStates = $siteConfiguration->getRequestStates();
 
 		$this->currentUser = User::getCurrent($primaryDatabase);
 	}
@@ -59,7 +64,7 @@ class IrcNotificationHelper
 	 */
 	protected function send($message)
 	{
-		global $whichami;
+		$instanceName = $this->instanceName;
 
 		if (!$this->notificationsEnabled) {
 			return;
@@ -68,7 +73,7 @@ class IrcNotificationHelper
 		$blacklist = array("DCC", "CCTP", "PRIVMSG");
 		$message = str_replace($blacklist, "(IRC Blacklist)", $message); // Lets stop DCC etc
 
-		$msg = IrcColourCode::RESET . IrcColourCode::BOLD . "[$whichami]" . IrcColourCode::RESET . ": $message";
+		$msg = IrcColourCode::RESET . IrcColourCode::BOLD . "[$instanceName]" . IrcColourCode::RESET . ": $message";
 
 		try {
 			$notification = new Notification();
@@ -262,15 +267,13 @@ class IrcNotificationHelper
 	 */
 	public function requestReceived(Request $request)
 	{
-		global $baseurl;
-
 		$this->send(
 			IrcColourCode::DARK_GREY . "[["
 			. IrcColourCode::DARK_GREEN . "acc:"
 			. IrcColourCode::ORANGE . $request->getId()
 			. IrcColourCode::DARK_GREY . "]]"
 			. IrcColourCode::RED . " N "
-			. IrcColourCode::DARK_BLUE . $baseurl . "/internal.php/viewRequest?id={$request->getId()} "
+			. IrcColourCode::DARK_BLUE . $this->baseUrl . "/internal.php/viewRequest?id={$request->getId()} "
 			. IrcColourCode::DARK_RED . "* "
 			. IrcColourCode::DARK_GREEN . $request->getName()
 			. IrcColourCode::DARK_RED . " * "
@@ -285,7 +288,7 @@ class IrcNotificationHelper
 	 */
 	public function requestDeferred(Request $request)
 	{
-		global $availableRequestStates;
+		$availableRequestStates = $this->requestStates;
 
 		$deferTo = $availableRequestStates[$request->getStatus()]['deferto'];
 		$username = $this->currentUser->getUsername();
@@ -301,12 +304,14 @@ class IrcNotificationHelper
 	 */
 	public function requestDeferredWithMail(Request $request)
 	{
-		global $availableRequestStates;
+		$availableRequestStates = $this->requestStates;
 
 		$deferTo = $availableRequestStates[$request->getStatus()]['deferto'];
 		$username = $this->currentUser->getUsername();
+		$id = $request->getId();
+		$name = $request->getName();
 
-		$this->send("Request {$request->getId()} ({$request->getName()}) deferred to {$deferTo} with an email by {$username}");
+		$this->send("Request {$id} ({$name}) deferred to {$deferTo} with an email by {$username}");
 	}
 
 	/**

@@ -13,28 +13,37 @@ use Waca\Providers\Interfaces\IXffTrustProvider;
  */
 class RequestValidationHelper
 {
+	/** @var IBanHelper */
 	private $banHelper;
+	/** @var Request */
 	private $request;
 	private $emailConfirmation;
-	/**
-	 * @var PdoDatabase
-	 */
+	/** @var PdoDatabase */
 	private $database;
+	/** @var IAntiSpoofProvider */
+	private $antiSpoofProvider;
 
 	/**
 	 * Summary of __construct
 	 *
-	 * @param IBanHelper  $banHelper
-	 * @param Request     $request
-	 * @param string      $emailConfirmation
-	 * @param PdoDatabase $database
+	 * @param IBanHelper         $banHelper
+	 * @param Request            $request
+	 * @param string             $emailConfirmation
+	 * @param PdoDatabase        $database
+	 * @param IAntiSpoofProvider $antiSpoofProvider
 	 */
-	public function __construct(IBanHelper $banHelper, Request $request, $emailConfirmation, PdoDatabase $database)
-	{
+	public function __construct(
+		IBanHelper $banHelper,
+		Request $request,
+		$emailConfirmation,
+		PdoDatabase $database,
+		IAntiSpoofProvider $antiSpoofProvider
+	) {
 		$this->banHelper = $banHelper;
 		$this->request = $request;
 		$this->emailConfirmation = $emailConfirmation;
 		$this->database = $database;
+		$this->antiSpoofProvider = $antiSpoofProvider;
 	}
 
 	/**
@@ -179,11 +188,8 @@ class RequestValidationHelper
 
 	private function checkAntiSpoof()
 	{
-		/** @var $antispoofProvider IAntiSpoofProvider */
-		global $antispoofProvider;
-
 		try {
-			if (count($antispoofProvider->getSpoofs($this->request->getName())) > 0) {
+			if (count($this->antiSpoofProvider->getSpoofs($this->request->getName())) > 0) {
 				// If there were spoofs an Admin should handle the request.
 				$this->request->setStatus("Flagged users");
 			}

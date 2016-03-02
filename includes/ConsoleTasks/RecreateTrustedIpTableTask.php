@@ -5,6 +5,7 @@ namespace Waca\ConsoleTasks;
 use Exception;
 use PDOException;
 use PDOStatement;
+use Waca\RegexConstants;
 use Waca\Tasks\ConsoleTaskBase;
 
 class RecreateTrustedIpTableTask extends ConsoleTaskBase
@@ -107,13 +108,13 @@ class RecreateTrustedIpTableTask extends ConsoleTaskBase
 			}
 
 			// match a regex of an CIDR range:
-			$ipcidr = "@(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:/(?:32|3[01]|[0-2]?[0-9]))?@";
+			$ipcidr = '@' . RegexConstants::IPV4 . RegexConstants::IPV4_CIDR . '@';
 			if (preg_match($ipcidr, $line) === 1) {
 				$iprange[] = $line;
 				continue;
 			}
 
-			$ipnoncidr = "@(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:/(?:32|3[01]|[0-2]?[0-9]))?@";
+			$ipnoncidr = '@' . RegexConstants::IPV4 . '@';
 			if (preg_match($ipnoncidr, $line) === 1) {
 				$ip[] = $line;
 				continue;
