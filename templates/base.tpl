@@ -7,13 +7,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- bootstrap styles -->
-    <link href="{$baseurl}/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="{$baseurl}/resources/baseStyles.css" rel="stylesheet" />
-    <link href="{$baseurl}/lib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" />
-    <link href="{$baseurl}/lib/bootstrap-sortable/css/bootstrap-sortable.css" rel="stylesheet" />
+    <link href="{$baseurl}/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="{$baseurl}/resources/baseStyles.css" rel="stylesheet"/>
+    <link href="{$baseurl}/lib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet"/>
+    <link href="{$baseurl}/lib/bootstrap-sortable/css/bootstrap-sortable.css" rel="stylesheet"/>
 
     <!-- Our extra styles -->
-    <link href="{$baseurl}/resources/styles.css" rel="stylesheet" />
+    <link href="{$baseurl}/resources/styles.css" rel="stylesheet"/>
 </head>
 
 <body>
@@ -45,10 +45,10 @@
         {$defaultContent|default:"This page doesn't do anything. If you see this, and you're not a developer, this is a bug."}
     {/block}
 
-    <hr />
+    <hr/>
 
     <footer class="row-fluid">
-        <p class="{if $onlineusers == ""}span12{else}span6{/if}">
+        <p class="span6">
             <small>
                 Account Creation Assistance Manager
                 (<a href="https://github.com/enwikipedia-acc/waca/tree/{$toolversion}">version {$toolversion}</a>)
@@ -56,7 +56,18 @@
                 (<a href="https://github.com/enwikipedia-acc/waca/issues">Bug reports</a>)
             </small>
         </p>
-        {$onlineusers}
+        <p class="span6 text-right">
+            <small>
+                {if count($onlineusers) > 0}
+                    {count($onlineusers)} Account Creator{if count($onlineusers) !== 1}s{/if} currently online (past 5 minutes):
+                    {foreach from=$onlineusers item=userObject name=onlineUserLoop}
+                    <a href="{$baseurl}/internal.php/statistics/users/detail?user={$userObject->getId()}">
+                        {$userObject->getUsername()|escape}</a>{if !$smarty.foreach.onlineUserLoop.last}, {/if}
+                    {/foreach}
+                {/if}
+
+            </small>
+        </p>
     </footer>
 
 </div><!--/.fluid-container-->

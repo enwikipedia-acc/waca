@@ -51,23 +51,21 @@ trait TemplateOutput
 		$this->smarty = new Smarty();
 		$this->smarty->addPluginsDir($this->getSiteConfiguration()->getFilePath() . 'smarty-plugins');
 
-		$this->assign("currentUser", User::getCommunity());
-		$this->assign("loggedIn", false);
-		$this->assign("baseurl", $this->getSiteConfiguration()->getBaseUrl());
-		$this->assign("mediawikiScriptPath", $this->getSiteConfiguration()->getMediawikiScriptPath());
+		$this->assign('currentUser', User::getCommunity());
+		$this->assign('loggedIn', false);
+		$this->assign('baseurl', $this->getSiteConfiguration()->getBaseUrl());
+		$this->assign('mediawikiScriptPath', $this->getSiteConfiguration()->getMediawikiScriptPath());
 
 		$this->assign('siteNoticeText', '');
 
 		// TODO: this isn't mockable either, and has side effects if you don't have git
-		$this->assign("toolversion", Environment::getToolVersion());
+		$this->assign('toolversion', Environment::getToolVersion());
 
-		// TODO: implement this somehow
-		$this->assign("onlineusers", "");
+		// default these
+		$this->assign('onlineusers', array());
+		$this->assign('typeAheadBlock', '');
 
-		// default this
-		$this->assign("typeAheadBlock", "");
-
-		$this->assign("page", $this);
+		$this->assign('page', $this);
 	}
 
 	/**

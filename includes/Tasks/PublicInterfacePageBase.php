@@ -16,4 +16,8 @@ abstract class PublicInterfacePageBase extends PageBase
 	{
 		parent::execute();
 	}
+
+	final public function finalisePage(){
+		parent::finalisePage();
+	}
 }

@@ -25,10 +25,6 @@ class CommunityUser extends User
 		return false;
 	}
 
-	public function touchLastLogin()
-	{
-	}
-
 	#region properties
 
 	public function getUsername()
@@ -90,10 +86,6 @@ class CommunityUser extends User
 		$now = new DateTime();
 
 		return $now->format("Y-m-d H:i:s");
-	}
-
-	public function setLastActive($lastActive)
-	{
 	}
 
 	public function getForcelogout()

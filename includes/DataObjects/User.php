@@ -513,16 +513,6 @@ SQL
 		return $result;
 	}
 
-	/**
-	 * Updates the last login attribute
-	 * @todo This should probably update the object too.
-	 */
-	public function touchLastLogin()
-	{
-		$query = "UPDATE user SET lastactive = CURRENT_TIMESTAMP() WHERE id = :id;";
-		$this->dbObject->prepare($query)->execute(array(":id" => $this->id));
-	}
-
 	#region properties
 
 	/**
@@ -653,7 +643,6 @@ SQL
 	/**
 	 * Gets the last activity date for the user
 	 *
-	 * @see  touchLastLogin()
 	 * @return string
 	 * @todo This should probably return an instance of DateTime
 	 */

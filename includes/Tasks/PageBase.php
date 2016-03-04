@@ -65,7 +65,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 
 		$currentUser = User::getCurrent($this->getDatabase());
 		$this->assign('currentUser', $currentUser);
-		$this->assign("loggedIn", (!$currentUser->isCommunityUser()));
+		$this->assign('loggedIn', (!$currentUser->isCommunityUser()));
 	}
 
 	/**
@@ -99,7 +99,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 			$this->setUpSmarty();
 
 			// Set the template
-			$this->setTemplate("exception/application-logic.tpl");
+			$this->setTemplate('exception/application-logic.tpl');
 			$this->assign('message', $ex->getMessage());
 
 			// Force this back to false
@@ -135,7 +135,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 	/**
 	 * Performs final tasks needed before rendering the page.
 	 */
-	final protected function finalisePage()
+	protected function finalisePage()
 	{
 		if ($this->isRedirecting) {
 			$this->template = null;
@@ -143,6 +143,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 			return;
 		}
 
+		// as new users can actually stay logged in
 		if (User::getCurrent($this->getDatabase())->isNew()) {
 			$registeredSuccessfully = new SessionAlert(
 				'Your request will be reviewed soon by a tool administrator, and you\'ll get an email informing you of the decision. You won\'t be able to access most of the tool until then.',
@@ -151,12 +152,12 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 		}
 
 		// If we're actually displaying content, we want to add the session alerts here!
-		$this->assign("alerts", SessionAlert::getAlerts());
+		$this->assign('alerts', SessionAlert::getAlerts());
 		SessionAlert::clearAlerts();
 
-		$this->assign("htmlTitle", $this->htmlTitle);
+		$this->assign('htmlTitle', $this->htmlTitle);
 
-		$this->assign("typeAheadBlock", $this->getTypeAheadHelper()->getTypeAheadScriptBlock());
+		$this->assign('typeAheadBlock', $this->getTypeAheadHelper()->getTypeAheadScriptBlock());
 	}
 
 	/**
@@ -178,7 +179,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 			$pathInfo[2] = $action;
 		}
 
-		$url = implode("/", $pathInfo);
+		$url = implode('/', $pathInfo);
 
 		if (is_array($parameters) && count($parameters) > 0) {
 			$url .= '?' . http_build_query($parameters);
@@ -197,7 +198,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 	final protected function redirectUrl($path)
 	{
 		// 303 See Other = re-request at new address with a GET.
-		$this->headerQueue[] = "HTTP/1.1 303 See Other";
+		$this->headerQueue[] = 'HTTP/1.1 303 See Other';
 		$this->headerQueue[] = "Location: $path";
 
 		$this->setTemplate(null);
@@ -237,11 +238,11 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 	public function execute()
 	{
 		if ($this->getRouteName() === null) {
-			throw new Exception("Request is unrouted.");
+			throw new Exception('Request is unrouted.');
 		}
 
 		if ($this->getSiteConfiguration() === null) {
-			throw new Exception("Page has no configuration!");
+			throw new Exception('Page has no configuration!');
 		}
 
 		$this->setupPage();

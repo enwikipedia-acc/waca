@@ -2,10 +2,12 @@
 namespace Waca\Tasks;
 
 use Exception;
+use PDO;
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\NotIdentifiedException;
 use Waca\SecurityConfiguration;
+use Waca\WebRequest;
 
 abstract class InternalPageBase extends PageBase
 {
@@ -26,6 +28,8 @@ abstract class InternalPageBase extends PageBase
 		}
 
 		$this->setupPage();
+
+		$this->touchUserLastActive();
 
 		// Get the current security configuration
 		$securityConfiguration = $this->getSecurityConfiguration();
@@ -50,6 +54,20 @@ abstract class InternalPageBase extends PageBase
 			foreach ($this->headerQueue as $item) {
 				header($item);
 			}
+		}
+	}
+
+	final public function finalisePage()
+	{
+		parent::finalisePage();
+
+		$database = $this->getDatabase();
+
+		if (!User::getCurrent($database)->isCommunityUser()) {
+			$sql = 'SELECT * FROM user WHERE lastactive > DATE_SUB(CURRENT_TIMESTAMP(), INTERVAL 5 MINUTE);';
+			$statement = $database->query($sql);
+			$activeUsers = $statement->fetchAll(PDO::FETCH_CLASS, User::class);
+			$this->assign('onlineusers', $activeUsers);
 		}
 	}
 
@@ -111,10 +129,22 @@ abstract class InternalPageBase extends PageBase
 		try {
 			$this->setRoute($action);
 			$allowed = $this->getSecurityConfiguration()->allows(User::getCurrent($this->getDatabase()));
+
 			return $allowed;
 		}
 		finally {
 			$this->setRoute($tmpRouteName);
+		}
+	}
+
+	/**
+	 * Updates the lastactive timestamp
+	 */
+	private function touchUserLastActive()
+	{
+		if (WebRequest::getSessionUserId() !== null) {
+			$query = 'UPDATE user SET lastactive = CURRENT_TIMESTAMP() WHERE id = :id;';
+			$this->getDatabase()->prepare($query)->execute(array(":id" => WebRequest::getSessionUserId()));
 		}
 	}
 }
