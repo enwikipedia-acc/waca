@@ -19,6 +19,15 @@ class ApplicationBaseTest extends \PHPUnit_Framework_TestCase
 		$this->ab = $this->getMockForAbstractClass('\Waca\ApplicationBase', [$this->si]);
 	}
 
+	public function testConstruct() {
+
+		$this->ab->expects($this->any())
+			-> method("run")
+			-> will($this->returnValue(NULL));
+
+	}
+
+
 	function testRun() {
 		$this->markTestIncomplete("Not fully implemented yet.");
 
@@ -33,4 +42,5 @@ class ApplicationBaseTest extends \PHPUnit_Framework_TestCase
 			-> method("getConfiguration")
 			-> will($this->returnValue(NULL));
 	}
+
 }
