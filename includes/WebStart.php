@@ -53,8 +53,13 @@ class WebStart extends ApplicationBase
 		PdoDatabase $notificationsDatabase
 	) {
 		parent::setupHelpers($page, $siteConfiguration, $database, $notificationsDatabase);
+
 		$identificationVerifier = new IdentificationVerifier($page->getHttpHelper(), $siteConfiguration, $database);
 		$page->setIdentificationVerifier($identificationVerifier);
+
+		if ($page instanceof InternalPageBase) {
+			$page->setTypeAheadHelper(new TypeAheadHelper());
+		}
 	}
 
 	/**
@@ -206,19 +211,6 @@ HTML;
 
 		// environment initialised!
 		return true;
-	}
-
-	protected function setupHelpers(
-		ITask $page,
-		SiteConfiguration $siteConfiguration,
-		PdoDatabase $database,
-		PdoDatabase $notificationsDatabase
-	) {
-		parent::setupHelpers($page, $siteConfiguration, $database, $notificationsDatabase);
-
-		if ($page instanceof InternalPageBase) {
-			$page->setTypeAheadHelper(new TypeAheadHelper());
-		}
 	}
 
 	/**
