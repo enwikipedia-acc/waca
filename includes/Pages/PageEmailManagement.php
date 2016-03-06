@@ -117,6 +117,10 @@ class PageEmailManagement extends InternalPageBase
 				$template->setPreloadOnly(false);
 			}
 
+			// optimisticly lock on load of edit form
+			$updateVersion = WebRequest::postInt('updateversion');
+			$template->setUpdateVersion($updateVersion);
+
 			$template->save();
 			Logger::editedEmail($database, $template);
 			$this->getNotificationHelper()->emailEdited($template);

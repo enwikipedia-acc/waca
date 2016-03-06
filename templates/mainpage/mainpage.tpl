@@ -48,6 +48,7 @@
                     <td>
                         <form action="{$baseurl}/internal.php/viewRequest/defer" method="post" class="form-compact">
                             <input type="hidden" name="request" value="{$req.id}"/>
+                            <input type="hidden" name="updateversion" value="{$req.updateversion}"/>
                             <input type="hidden" name="target" value="{$defaultRequestState}"/>
                             <button class="btn btn-warning" type="submit">
                                 <i class="icon-white icon-refresh"></i>&nbsp;Reset

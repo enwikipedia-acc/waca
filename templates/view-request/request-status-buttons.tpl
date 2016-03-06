@@ -16,6 +16,7 @@
             <div class="span12">
                 <form action="{$baseurl}/internal.php/viewRequest/defer" method="post" class="form-compact">
                     <input type="hidden" name="request" value="{$requestId}"/>
+                    <input type="hidden" name="updateversion" value="{$updateVersion}"/>
                     <input type="hidden" name="target" value="{$defaultRequestState}"/>
                     <button class="btn btn-block" type="submit">Reset request</button>
                 </form>

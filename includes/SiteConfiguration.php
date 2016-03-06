@@ -13,7 +13,7 @@ class SiteConfiguration
 {
 	private $baseUrl;
 	private $filePath;
-	private $schemaVersion = 18;
+	private $schemaVersion = 19;
 	private $debuggingTraceEnabled;
 	private $dataClearIp = '127.0.0.1';
 	private $dataClearEmail = 'acc@toolserver.org';

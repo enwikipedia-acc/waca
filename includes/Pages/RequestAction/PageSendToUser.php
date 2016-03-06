@@ -56,6 +56,7 @@ class PageSendToUser extends RequestActionBase
 		}
 
 		$request->setReserved($user->getId());
+		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
 		$request->save();
 
 		Logger::sendReservation($database, $request, $user);

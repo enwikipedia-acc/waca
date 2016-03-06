@@ -37,6 +37,7 @@ class CachedApiAntispoofProvider implements IAntiSpoofProvider
 
 	public function getSpoofs($username)
 	{
+		/** @var AntiSpoofCache $cacheResult */
 		$cacheResult = AntiSpoofCache::getByUsername($username, $this->database);
 		if ($cacheResult == false) {
 			// get the data from the API

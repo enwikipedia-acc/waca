@@ -5,6 +5,7 @@ use DateTime;
 use Exception;
 use PDO;
 use Waca\DataObject;
+use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Providers\Interfaces\IXffTrustProvider;
 
 /**
@@ -85,20 +86,31 @@ UPDATE `request` SET
 	checksum = :checksum,
 	emailsent = :emailsent,
 	emailconfirm = :emailconfirm,
-	reserved = :reserved
-WHERE id = :id
+	reserved = :reserved,
+	updateversion = updateversion + 1
+WHERE id = :id AND updateversion = :updateversion
 LIMIT 1;
 SQL
 			);
-			$statement->bindValue(":id", $this->id);
-			$statement->bindValue(":status", $this->status);
-			$statement->bindValue(":checksum", $this->checksum);
-			$statement->bindValue(":emailsent", $this->emailsent);
-			$statement->bindValue(":emailconfirm", $this->emailconfirm);
-			$statement->bindValue(":reserved", $this->reserved);
+
+			$statement->bindValue(':id', $this->id);
+			$statement->bindValue(':updateversion', $this->updateversion);
+
+			$statement->bindValue(':status', $this->status);
+			$statement->bindValue(':checksum', $this->checksum);
+			$statement->bindValue(':emailsent', $this->emailsent);
+			$statement->bindValue(':emailconfirm', $this->emailconfirm);
+			$statement->bindValue(':reserved', $this->reserved);
+
 			if (!$statement->execute()) {
 				throw new Exception($statement->errorInfo());
 			}
+
+			if($statement->rowCount() !== 1){
+				throw new OptimisticLockFailedException();
+			}
+
+			$this->updateversion++;
 		}
 	}
 

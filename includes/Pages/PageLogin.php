@@ -81,6 +81,7 @@ class PageLogin extends InternalPageBase
 			throw new ApplicationLogicException("No username/password specified");
 		}
 
+		/** @var User $user */
 		$user = User::getByUsername($username, $this->getDatabase());
 
 		if ($user == false || !$user->authenticate($password)) {

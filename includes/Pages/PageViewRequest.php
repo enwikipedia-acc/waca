@@ -52,6 +52,7 @@ class PageViewRequest extends InternalPageBase
 		}
 
 		$this->assign('requestId', $request->getId());
+		$this->assign('updateVersion', $request->getUpdateVersion());
 		$this->assign('requestName', $request->getName());
 		$this->assign('requestDate', $request->getDate());
 		$this->assign('requestStatus', $request->getStatus());

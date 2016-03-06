@@ -71,7 +71,7 @@ class PageMain extends InternalPageBase
 		$this->assign('requestLimitShowOnly', $config->getMiserModeLimit());
 
 		$query = <<<SQL
-		SELECT request.id, request.name, request.checksum
+		SELECT request.id, request.name, request.checksum, request.updateversion
 		FROM request /* PageMain::main() */
 		JOIN log ON log.objectid = request.id AND log.objecttype = 'Request'
 		WHERE log.action LIKE 'Closed%'

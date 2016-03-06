@@ -68,6 +68,10 @@ class PageBan extends InternalPageBase
 				throw new ApplicationLogicException('No unban reason specified');
 			}
 
+			// set optimistic locking from delete form page load
+			$updateVersion = WebRequest::postInt('updateversion');
+			$ban->setUpdateVersion($updateVersion);
+
 			$database = $this->getDatabase();
 			$ban->setActive(0);
 			$ban->save();

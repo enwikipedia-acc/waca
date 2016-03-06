@@ -140,6 +140,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 		if (WebRequest::wasPosted()) {
 			$template->setUserCode(WebRequest::postString('usercode'));
 			$template->setBotCode(WebRequest::postString('botcode'));
+			$template->setUpdateVersion(WebRequest::postInt('botcode'));
 			$template->save();
 
 			Logger::welcomeTemplateEdited($database, $template);
@@ -167,6 +168,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 		$database = $this->getDatabase();
 
 		$templateId = WebRequest::postInt('template');
+		$updateVersion = WebRequest::postInt('updateversion');
 
 		/** @var WelcomeTemplate $template */
 		$template = WelcomeTemplate::getById($templateId, $database);
@@ -174,6 +176,9 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 		if ($template === false) {
 			throw new ApplicationLogicException('Cannot find requested template');
 		}
+
+		// set the update version to the version sent by the client (optimisticly lock from initial page load)
+		$template->setUpdateVersion($updateVersion);
 
 		$database
 			->prepare("UPDATE user SET welcome_template = NULL WHERE welcome_template = :id;")

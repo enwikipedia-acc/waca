@@ -73,7 +73,7 @@ class PageCloseRequest extends RequestActionBase
 
 		$this->sendMail($request, $template->getText(), $currentUser, false);
 
-		$request->updateChecksum();
+		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
 		$request->save();
 
 		$this->redirect();

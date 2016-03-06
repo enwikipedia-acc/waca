@@ -10,6 +10,7 @@ use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\PdoDatabase;
 use Waca\SecurityConfiguration;
+use Waca\WebRequest;
 
 class PageBreakReservation extends RequestActionBase
 {
@@ -49,6 +50,7 @@ class PageBreakReservation extends RequestActionBase
 	{
 		// same user! we allow people to unreserve their own stuff
 		$request->setReserved(0);
+		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
 		$request->save();
 
 		Logger::unreserve($database, $request);
@@ -69,6 +71,7 @@ class PageBreakReservation extends RequestActionBase
 		// @todo add a confirmation here
 
 		$request->setReserved(0);
+		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
 		$request->save();
 
 		Logger::breakReserve($database, $request);

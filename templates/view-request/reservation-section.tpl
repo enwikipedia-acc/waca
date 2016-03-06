@@ -7,6 +7,7 @@
         {if $requestIsReservedByMe}
             <form action="{$baseurl}/internal.php/viewRequest/sendToUser" method="post" class="form-inline">
                 <input type="hidden" name="request" value="{$requestId}"/>
+                <input type="hidden" name="updateversion" value="{$updateVersion}"/>
                 <div class="row-fluid">
                     <input type="text" required="true"
                            placeholder="Send reservation to another user..." name="user"
@@ -21,11 +22,13 @@
     {if $requestIsReservedByMe}
         <form action="{$baseurl}/internal.php/viewRequest/breakReserve" method="post">
             <input type="hidden" name="request" value="{$requestId}"/>
+            <input type="hidden" name="updateversion" value="{$updateVersion}"/>
             <button class="btn span4 btn-inverse" type="submit">Break reservation</button>
         </form>
     {elseif $currentUser->isAdmin() && $requestIsReserved}
         <form action="{$baseurl}/internal.php/viewRequest/breakReserve" method="post">
             <input type="hidden" name="request" value="{$requestId}"/>
+            <input type="hidden" name="updateversion" value="{$updateVersion}"/>
             <button class="btn span4 btn-warning" type="submit">Force break</button>
         </form>
     {/if}
@@ -33,6 +36,7 @@
     {if ! $requestIsReserved}
         <form action="{$baseurl}/internal.php/viewRequest/reserve" method="post">
             <input type="hidden" name="request" value="{$requestId}" />
+            <input type="hidden" name="updateversion" value="{$updateVersion}"/>
             <button class="btn span4 btn-success" type="submit">Reserve</button>
         </form>
     {/if}

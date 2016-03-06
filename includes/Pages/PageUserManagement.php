@@ -86,7 +86,10 @@ class PageUserManagement extends InternalPageBase
 				throw new ApplicationLogicException('No reason provided');
 			}
 
-			$user->suspend($reason);
+			$user->setStatus(User::STATUS_SUSPENDED);
+			$user->setUpdateVersion(WebRequest::postInt('updateversion'));
+			$user->save();
+			Logger::suspendedUser($database, $user, $reason);
 
 			$this->getNotificationHelper()->userSuspended($user, $reason);
 			SessionAlert::quick('Suspended user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
@@ -97,7 +100,7 @@ class PageUserManagement extends InternalPageBase
 				'usermanagement/emails/suspended.tpl',
 				$reason,
 				$user,
-				User::getCurrent($database)
+				User::getCurrent($database)->getUsername()
 			);
 
 			$this->redirect('userManagement');
@@ -142,7 +145,10 @@ class PageUserManagement extends InternalPageBase
 				throw new ApplicationLogicException('No reason provided');
 			}
 
-			$user->decline($reason);
+			$user->setStatus(User::STATUS_DECLINED);
+			$user->setUpdateVersion(WebRequest::postInt('updateversion'));
+			$user->save();
+			Logger::declinedUser($database, $user, $reason);
 
 			$this->getNotificationHelper()->userDeclined($user, $reason);
 			SessionAlert::quick('Declined user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
@@ -153,7 +159,7 @@ class PageUserManagement extends InternalPageBase
 				'usermanagement/emails/declined.tpl',
 				$reason,
 				$user,
-				User::getCurrent($database)
+				User::getCurrent($database)->getUsername()
 			);
 
 			$this->redirect('userManagement');
@@ -198,7 +204,10 @@ class PageUserManagement extends InternalPageBase
 				throw new ApplicationLogicException('No reason provided');
 			}
 
-			$user->demote($reason);
+			$user->setStatus(User::STATUS_USER);
+			$user->setUpdateVersion(WebRequest::postInt('updateversion'));
+			$user->save();
+			Logger::demotedUser($database, $user, $reason);
 
 			$this->getNotificationHelper()->userDemoted($user, $reason);
 			SessionAlert::quick('Demoted user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
@@ -209,7 +218,7 @@ class PageUserManagement extends InternalPageBase
 				'usermanagement/emails/demoted.tpl',
 				$reason,
 				$user,
-				User::getCurrent($database)
+				User::getCurrent($database)->getUsername()
 			);
 
 			$this->redirect('userManagement');
@@ -248,7 +257,10 @@ class PageUserManagement extends InternalPageBase
 
 		// Dual-mode action
 		if (WebRequest::wasPosted()) {
-			$user->approve();
+			$user->setStatus(User::STATUS_USER);
+			$user->setUpdateVersion(WebRequest::postInt('updateversion'));
+			$user->save();
+			Logger::approvedUser($database, $user);
 
 			$this->getNotificationHelper()->userApproved($user);
 			SessionAlert::quick('Approved user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
@@ -259,7 +271,7 @@ class PageUserManagement extends InternalPageBase
 				'usermanagement/emails/approved.tpl',
 				null,
 				$user,
-				User::getCurrent($database)
+				User::getCurrent($database)->getUsername()
 			);
 
 			$this->redirect("userManagement");
@@ -298,7 +310,10 @@ class PageUserManagement extends InternalPageBase
 
 		// Dual-mode action
 		if (WebRequest::wasPosted()) {
-			$user->promote();
+			$user->setStatus(User::STATUS_ADMIN);
+			$user->setUpdateVersion(WebRequest::postInt('updateversion'));
+			$user->save();
+			Logger::promotedUser($database, $user);
 
 			$this->getNotificationHelper()->userPromoted($user);
 			SessionAlert::quick('Promoted user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
@@ -309,7 +324,7 @@ class PageUserManagement extends InternalPageBase
 				'usermanagement/emails/promoted.tpl',
 				null,
 				$user,
-				User::getCurrent($database)
+				User::getCurrent($database)->getUsername()
 			);
 
 			$this->redirect("userManagement");
@@ -360,6 +375,8 @@ class PageUserManagement extends InternalPageBase
 
 			$oldUsername = $user->getUsername();
 			$user->setUsername($newUsername);
+			$user->setUpdateVersion(WebRequest::postInt('updateversion'));
+
 			$user->save();
 
 			$logEntryData = serialize(array(
@@ -435,6 +452,8 @@ class PageUserManagement extends InternalPageBase
 			}
 
 			$user->setEmail($newEmail);
+
+			$user->setUpdateVersion(WebRequest::postInt('updateversion'));
 
 			$user->save();
 

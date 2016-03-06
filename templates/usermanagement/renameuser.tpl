@@ -17,6 +17,8 @@
             </div>
         </div>
 
+        <input type="hidden" name="updateversion" value="{$user->getUpdateVersion()}" />
+
         <div class="control-group">
             <div class="controls">
                 <button type="submit" class="btn btn-primary">Rename User</button>

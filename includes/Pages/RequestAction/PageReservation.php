@@ -8,6 +8,7 @@ use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
 use Waca\SessionAlert;
+use Waca\WebRequest;
 
 class PageReservation extends RequestActionBase
 {
@@ -50,6 +51,7 @@ class PageReservation extends RequestActionBase
 			}
 
 			$request->setReserved(User::getCurrent($database)->getId());
+			$request->setUpdateVersion(WebRequest::postInt('updateversion'));
 			$request->save();
 
 			Logger::reserve($database, $request);

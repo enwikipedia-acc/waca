@@ -20,6 +20,8 @@
                 </div>
             </div>
 
+            <input type="hidden" name="updateversion" value="{$template->getUpdateVersion()}" />
+
             <div class="form-actions">
                 <button type="submit" name="submit" class="btn btn-primary">
                     <i class="icon-white icon-ok"></i>&nbsp;Save changes

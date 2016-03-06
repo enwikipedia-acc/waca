@@ -104,6 +104,13 @@ class CommunityUser extends User
 	}
 
 	/**
+	 * @param string $status
+	 */
+	public function setStatus($status)
+	{
+	}
+
+	/**
 	 * @return int
 	 */
 	public function getCheckuser()
@@ -157,29 +164,6 @@ class CommunityUser extends User
 	}
 
 	public function setEmailSig($emailSignature)
-	{
-	}
-
-	#endregion
-
-	#region changing access level
-	public function approve()
-	{
-	}
-
-	public function suspend($comment)
-	{
-	}
-
-	public function decline($comment)
-	{
-	}
-
-	public function promote()
-	{
-	}
-
-	public function demote($comment)
 	{
 	}
 

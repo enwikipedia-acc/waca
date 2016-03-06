@@ -4,6 +4,7 @@ namespace Waca\DataObjects;
 use Exception;
 use PDO;
 use Waca\DataObject;
+use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\PdoDatabase;
 
 /**
@@ -66,16 +67,28 @@ SQL
 		else {
 			// update
 			$statement = $this->dbObject->prepare(<<<SQL
-UPDATE `welcometemplate` SET usercode = :usercode, botcode = :botcode WHERE id = :id LIMIT 1;
+UPDATE `welcometemplate`
+SET usercode = :usercode, botcode = :botcode, updateversion = updateversion + 1
+WHERE id = :id AND updateversion = :updateversion
+LIMIT 1;
 SQL
 			);
-			$statement->bindValue(":id", $this->id);
-			$statement->bindValue(":usercode", $this->usercode);
-			$statement->bindValue(":botcode", $this->botcode);
+
+			$statement->bindValue(':id', $this->id);
+			$statement->bindValue(':updateversion', $this->updateversion);
+
+			$statement->bindValue(':usercode', $this->usercode);
+			$statement->bindValue(':botcode', $this->botcode);
 
 			if (!$statement->execute()) {
 				throw new Exception($statement->errorInfo());
 			}
+
+			if($statement->rowCount() !== 1){
+				throw new OptimisticLockFailedException();
+			}
+
+			$this->updateversion++;
 		}
 	}
 

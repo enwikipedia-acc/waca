@@ -106,6 +106,7 @@ class PageCustomClose extends PageCloseRequest
 		$this->assign('requeststates', $this->getSiteConfiguration()->getRequestStates());
 
 		$this->assign('requestId', $request->getIp());
+		$this->assign('updateVersion', $request->getUpdateVersion());
 
 		// @todo request info on form - we need to do this slightly better than it was before.
 		// $this->assign("request", $request);
@@ -207,9 +208,8 @@ class PageCustomClose extends PageCloseRequest
 		}
 
 		$request->setReserved(0);
-		$request->save();
-
-		$request->updateChecksum();
+		// @todo restructure this... if updateversion fails then the mail has still been sent and alerts triggered. :/
+		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
 		$request->save();
 	}
 }

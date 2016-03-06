@@ -19,6 +19,8 @@
                 </div>
             </div>
 
+            <input type="hidden" name="updateversion" value="updateversion" />
+
             <div class="form-actions">
                 <button type="submit" class="btn btn-success"><i class="icon-white icon-ok"></i>&nbsp;Save</button>
             </div>

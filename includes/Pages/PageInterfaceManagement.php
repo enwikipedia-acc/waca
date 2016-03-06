@@ -26,12 +26,13 @@ class PageInterfaceManagement extends InternalPageBase
 		// Dual-mode
 		if (WebRequest::wasPosted()) {
 			$siteNoticeMessage->setContent(WebRequest::postString('mailtext'));
+			$siteNoticeMessage->setUpdateVersion(WebRequest::postInt('updateversion'));
 			$siteNoticeMessage->save();
 
 			Logger::interfaceMessageEdited($database, $siteNoticeMessage);
 			$this->getNotificationHelper()->interfaceMessageEdited();
 
-			$this->redirect('');
+			$this->redirect();
 		}
 		else {
 			$this->setTemplate('interface-management/editform.tpl');

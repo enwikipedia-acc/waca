@@ -93,6 +93,8 @@
                     </div>
                 </div>
 
+                <input type="hidden" name="updateversion" value="{$emailTemplate->getUpdateVersion()}" />
+
                 <div class="form-actions">
                     <a class="btn" href="{$baseurl}/internal.php/emailManagement">Cancel</a>
                     <button type="submit" class="btn btn-primary" name="submit">
