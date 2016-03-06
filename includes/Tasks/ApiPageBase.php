@@ -2,7 +2,7 @@
 
 namespace Waca\Tasks;
 
-use DomDocument;
+use DOMDocument;
 use DOMElement;
 use Waca\API\ApiException;
 use Waca\API\IApiAction;
@@ -12,7 +12,7 @@ abstract class ApiPageBase extends TaskBase implements IRoutedTask, IApiAction
 {
 	/**
 	 * API result document
-	 * @var DomDocument
+	 * @var DOMElement
 	 */
 	protected $document;
 
@@ -95,6 +95,6 @@ abstract class ApiPageBase extends TaskBase implements IRoutedTask, IApiAction
 
 		$this->document->appendChild($apiDocument);
 
-		return $this->document->saveXml();
+		return $this->document->saveXML();
 	}
 }

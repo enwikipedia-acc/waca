@@ -6,11 +6,31 @@ use PDO;
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\NotIdentifiedException;
+use Waca\Helpers\Interfaces\ITypeAheadHelper;
 use Waca\SecurityConfiguration;
 use Waca\WebRequest;
 
 abstract class InternalPageBase extends PageBase
 {
+	/** @var ITypeAheadHelper */
+	private $typeAheadHelper;
+
+	/**
+	 * @return ITypeAheadHelper
+	 */
+	public function getTypeAheadHelper()
+	{
+		return $this->typeAheadHelper;
+	}
+
+	/**
+	 * @param ITypeAheadHelper $typeAheadHelper
+	 */
+	public function setTypeAheadHelper(ITypeAheadHelper $typeAheadHelper)
+	{
+		$this->typeAheadHelper = $typeAheadHelper;
+	}
+
 	/**
 	 * Runs the page code
 	 *
@@ -57,9 +77,14 @@ abstract class InternalPageBase extends PageBase
 		}
 	}
 
+	/**
+	 * Performs final tasks needed before rendering the page.
+	 */
 	final public function finalisePage()
 	{
 		parent::finalisePage();
+
+		$this->assign('typeAheadBlock', $this->getTypeAheadHelper()->getTypeAheadScriptBlock());
 
 		$database = $this->getDatabase();
 

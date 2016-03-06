@@ -654,22 +654,19 @@ SQL
 	/**
 	 * Gets the user's forced logout status
 	 *
-	 * @todo this should return a bool to match the setter, plus a rename
-	 * @return int
+	 * @return bool
 	 */
-	public function getForcelogout()
+	public function getForceLogout()
 	{
-		return $this->forcelogout;
+		return $this->forcelogout == 1;
 	}
 
 	/**
 	 * Sets the user's forced logout status
 	 *
 	 * @param bool $forceLogout
-	 *
-	 * @todo Rename me please!
 	 */
-	public function setForcelogout($forceLogout)
+	public function setForceLogout($forceLogout)
 	{
 		$this->forcelogout = $forceLogout ? 1 : 0;
 	}
@@ -1225,20 +1222,5 @@ SQL
 		$query->closeCursor();
 
 		return $data;
-	}
-
-	/**
-	 * Gets a user-visible description of the object.
-	 * @return string
-	 */
-	public function getObjectDescription()
-	{
-		global $baseurl;
-
-		$username = htmlentities($this->username, ENT_COMPAT, 'UTF-8');
-
-		return '<a href="' . $baseurl
-		. '/internal.php/statistics/users/detail?user=' . $this->getId() . '">'
-		. $username . "</a>";
 	}
 }

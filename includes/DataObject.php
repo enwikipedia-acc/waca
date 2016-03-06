@@ -100,13 +100,4 @@ abstract class DataObject
 		$this->id = 0;
 		$this->isNew = true;
 	}
-
-	/**
-	 * Gets a user-visible description of the object.
-	 * @return string
-	 */
-	public function getObjectDescription()
-	{
-		return '[' . get_called_class() . " " . $this->getId() . ']';
-	}
 }

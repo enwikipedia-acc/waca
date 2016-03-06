@@ -39,7 +39,7 @@ class PageLogin extends InternalPageBase
 			$user = $this->getAuthenticatingUser();
 
 			// Touch force logout
-			$user->setForcelogout(false);
+			$user->setForceLogout(false);
 			$user->save();
 
 			if ($this->getSiteConfiguration()->getEnforceOAuth()) {

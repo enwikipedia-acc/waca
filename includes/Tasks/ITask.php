@@ -106,17 +106,6 @@ interface ITask
 	public function setDatabase($database);
 
 	/**
-	 * @return ITypeAheadHelper
-	 */
-	public function getTypeAheadHelper();
-
-	/**
-	 * @param ITypeAheadHelper $typeAheadHelper
-	 * @return void
-	 */
-	public function setTypeAheadHelper(ITypeAheadHelper $typeAheadHelper);
-
-	/**
 	 * @return IOAuthHelper
 	 */
 	public function getOAuthHelper();

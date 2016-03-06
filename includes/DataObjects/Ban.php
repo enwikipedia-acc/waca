@@ -238,29 +238,19 @@ SQL
 	}
 
 	/**
-	 * @return int
-	 * @todo Boolean?
+	 * @return bool
 	 */
-	public function getActive()
+	public function isActive()
 	{
-		return $this->active;
+		return $this->active == 1;
 	}
 
 	/**
-	 * @param int $active
+	 * @param bool $active
 	 */
 	public function setActive($active)
 	{
-		$this->active = $active;
-	}
-
-	/**
-	 * Gets a user-visible description of the object.
-	 * @return string
-	 */
-	public function getObjectDescription()
-	{
-		return 'Ban #' . $this->getId() . " (" . htmlentities($this->target) . ")</a>";
+		$this->active = $active ? 1 : 0;
 	}
 
 	/**

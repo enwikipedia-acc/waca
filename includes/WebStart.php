@@ -1,12 +1,16 @@
 <?php
 namespace Waca;
 
+use ErrorException;
 use Exception;
 use Waca\DataObjects\User;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Exceptions\ReadableException;
+use Waca\Helpers\TypeAheadHelper;
 use Waca\Providers\GlobalStateProvider;
 use Waca\Router\IRequestRouter;
+use Waca\Tasks\InternalPageBase;
+use Waca\Tasks\ITask;
 
 /**
  * Internal application entry point.
@@ -133,6 +137,11 @@ HTML;
 		print $message;
 	}
 
+	public static function errorHandler($err_severity, $err_msg, $err_file, $err_line) {
+		// call into the main exception handler above
+		throw new ErrorException($err_msg, 0, $err_severity, $err_file, $err_line);
+	}
+
 	/**
 	 * Environment setup
 	 *
@@ -146,6 +155,7 @@ HTML;
 	{
 		// initialise global exception handler
 		set_exception_handler(array(self::class, 'exceptionHandler'));
+		set_error_handler(array(self::class, 'errorHandler'), E_RECOVERABLE_ERROR);
 
 		// start output buffering if necessary
 		if (ob_get_level() === 0) {
@@ -155,7 +165,6 @@ HTML;
 		// initialise super-global providers
 		WebRequest::setGlobalStateProvider(new GlobalStateProvider());
 
-		// check the tool is still online
 		if (Offline::isOffline()) {
 			print Offline::getOfflineMessage($this->isPublic());
 			ob_end_flush();
@@ -179,6 +188,19 @@ HTML;
 
 		// environment initialised!
 		return true;
+	}
+
+	protected function setupHelpers(
+		ITask $page,
+		SiteConfiguration $siteConfiguration,
+		PdoDatabase $database,
+		PdoDatabase $notificationsDatabase
+	) {
+		parent::setupHelpers($page, $siteConfiguration, $database, $notificationsDatabase);
+
+		if ($page instanceof InternalPageBase) {
+			$page->setTypeAheadHelper(new TypeAheadHelper());
+		}
 	}
 
 	/**
@@ -266,7 +288,7 @@ HTML;
 			Session::restart();
 		}
 
-		if ($currentUser->getForceLogout() == 1) {
+		if ($currentUser->getForceLogout()) {
 			Session::restart();
 
 			$currentUser->setForceLogout(false);

@@ -144,7 +144,6 @@ abstract class ApplicationBase
 			$this->getConfiguration()->getMediawikiWebServiceEndpoint(),
 			$httpHelper));
 
-		$page->setTypeAheadHelper(new TypeAheadHelper());
 		$page->setOAuthHelper(new OAuthHelper(
 			$siteConfiguration->getOAuthBaseUrl(),
 			$siteConfiguration->getOAuthConsumerToken(),

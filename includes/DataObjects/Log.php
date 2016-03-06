@@ -3,6 +3,7 @@ namespace Waca\DataObjects;
 
 use Exception;
 use Waca\DataObject;
+use Waca\RegexConstants;
 
 /**
  * Class representing a log entry
@@ -161,27 +162,5 @@ SQL
 	public function setComment($comment)
 	{
 		$this->comment = $comment;
-	}
-
-	/**
-	 * Let's be really sneaky here, and fake this to the object description of the logged object.
-	 * @return string
-	 */
-	public function getObjectDescription()
-	{
-		$type = $this->objecttype;
-
-		if ($type == "") {
-			return "";
-		}
-
-		/** @var DataObject $object */
-		$object = $type::getById($this->objectid, $this->dbObject);
-
-		if ($object === false) {
-			return '[' . $this->objecttype . " " . $this->objectid . ']';
-		}
-
-		return $object->getObjectDescription();
 	}
 }

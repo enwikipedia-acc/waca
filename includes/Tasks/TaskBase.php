@@ -37,8 +37,6 @@ abstract class TaskBase implements ITask
 	private $oauthHelper;
 	/** @var PdoDatabase */
 	private $database;
-	/** @var ITypeAheadHelper */
-	private $typeAheadHelper;
 	/** @var IrcNotificationHelper */
 	private $notificationHelper;
 
@@ -168,22 +166,6 @@ abstract class TaskBase implements ITask
 	final public function setDatabase($database)
 	{
 		$this->database = $database;
-	}
-
-	/**
-	 * @return ITypeAheadHelper
-	 */
-	public function getTypeAheadHelper()
-	{
-		return $this->typeAheadHelper;
-	}
-
-	/**
-	 * @param ITypeAheadHelper $typeAheadHelper
-	 */
-	public function setTypeAheadHelper(ITypeAheadHelper $typeAheadHelper)
-	{
-		$this->typeAheadHelper = $typeAheadHelper;
 	}
 
 	/**

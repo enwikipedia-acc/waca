@@ -88,12 +88,12 @@ class CommunityUser extends User
 		return $now->format("Y-m-d H:i:s");
 	}
 
-	public function getForcelogout()
+	public function getForceLogout()
 	{
 		return 1;
 	}
 
-	public function setForcelogout($forceLogout)
+	public function setForceLogout($forceLogout)
 	{
 	}
 

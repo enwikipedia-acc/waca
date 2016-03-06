@@ -311,16 +311,4 @@ SQL
 	{
 		$this->preloadonly = $preloadonly ? 1 : 0;
 	}
-
-	/**
-	 * @return string
-	 */
-	public function getObjectDescription()
-	{
-		global $baseurl;
-		$safeName = htmlentities($this->name);
-		$id = $this->id;
-
-		return "<a href=\"{$baseurl}/internal.php/emailManagement/view?id={$id}\">Email Template #{$id} ({$safeName})</a>";
-	}
 }

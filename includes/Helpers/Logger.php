@@ -53,11 +53,17 @@ class Logger
 			$user = User::getCurrent($database);
 		}
 
+		$objectType = get_class($object);
+		if(strpos($objectType, 'Waca\\DataObjects\\') !== false)
+		{
+			$objectType = str_replace('Waca\\DataObjects\\', '', $objectType);
+		}
+
 		$log = new Log();
 		$log->setDatabase($database);
 		$log->setAction($logAction);
 		$log->setObjectId($object->getId());
-		$log->setObjectType(get_class($object));
+		$log->setObjectType($objectType);
 		$log->setUser($user);
 		$log->setComment($comment);
 		$log->save();
@@ -490,6 +496,8 @@ SQL
 	 * @param integer     $offset
 	 *
 	 * @return array|bool
+	 *
+	 * @todo change this to not return a dual-purpose array, but rather to return data we can use through list()
 	 */
 	public static function getLogs(PdoDatabase $database, $userFilter, $actionFilter, $limit = 100, $offset = 0)
 	{

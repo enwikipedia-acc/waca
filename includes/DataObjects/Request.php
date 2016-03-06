@@ -503,17 +503,6 @@ SQL
 
 	/**
 	 * @return string
-	 */
-	public function getObjectDescription()
-	{
-		$value = '<a href="internal.php/viewRequest?id=' . $this->getId() . '">Request #' . $this->getId() . " ("
-			. htmlentities($this->name) . ")</a>";
-
-		return $value;
-	}
-
-	/**
-	 * @return string
 	 * @throws Exception
 	 */
 	public function getClosureReason()

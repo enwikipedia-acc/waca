@@ -7,6 +7,7 @@ use Waca\DataObjects\InterfaceMessage;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\TemplateOutput;
+use Waca\Helpers\Interfaces\ITypeAheadHelper;
 use Waca\SessionAlert;
 use Waca\WebRequest;
 
@@ -156,8 +157,6 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 		SessionAlert::clearAlerts();
 
 		$this->assign('htmlTitle', $this->htmlTitle);
-
-		$this->assign('typeAheadBlock', $this->getTypeAheadHelper()->getTypeAheadScriptBlock());
 	}
 
 	/**
