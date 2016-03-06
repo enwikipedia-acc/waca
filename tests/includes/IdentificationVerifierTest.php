@@ -2,6 +2,7 @@
 
 namespace Waca\Tests;
 
+use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 
 use Waca\Helpers\HttpHelper;
@@ -25,7 +26,8 @@ class IdentificationVerifierTest extends PHPUnit_Framework_TestCase
 	public function setUp()
 	{
 		$dummyConfiguration = new SiteConfiguration();
-		$httpHelper = new HttpHelper($dummyConfiguration->getUserAgent(), false);
+		$httpHelper = new HttpHelper($dummyConfiguration->getUserAgent(), true);
+		/** @var PdoDatabase|PHPUnit_Framework_MockObject_MockObject $dummyDatabase */
 		$dummyDatabase = $this->getMockBuilder(PdoDatabase::class)
 			->disableOriginalConstructor()
 			->getMock();
