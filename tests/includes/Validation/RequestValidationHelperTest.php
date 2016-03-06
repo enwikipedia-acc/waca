@@ -30,7 +30,7 @@ class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 	public function testValidateGoodName()
 	{
 		/** @var PdoDatabase|PHPUnit_Framework_MockObject_MockObject $dbMock */
-		$dbMock = $this->getMockBuilder(PdoDatabase::class)->getMock();
+		$dbMock = $this->getMockBuilder(PdoDatabase::class)->disableOriginalConstructor()->getMock();
 
 		/** @var IBanHelper|PHPUnit_Framework_MockObject_MockObject $banHelperMock */
 		$banHelperMock = $this->getMockBuilder(IBanHelper::class)->getMock();
