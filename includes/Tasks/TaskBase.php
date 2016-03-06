@@ -8,6 +8,7 @@ use Waca\Helpers\Interfaces\IOAuthHelper;
 use Waca\Helpers\Interfaces\ITypeAheadHelper;
 use Waca\Helpers\IrcNotificationHelper;
 use Waca\Helpers\WikiTextHelper;
+use Waca\IdentificationVerifier;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\IAntiSpoofProvider;
 use Waca\Providers\Interfaces\ILocationProvider;
@@ -223,5 +224,14 @@ abstract class TaskBase implements ITask
 	final public function setSiteConfiguration($configuration)
 	{
 		$this->siteConfiguration = $configuration;
+	}
+
+	/**
+	 * @param IdentificationVerifier $identificationVerifier
+	 * @return void
+	 */
+	public function setIdentificationVerifier(IdentificationVerifier $identificationVerifier)
+	{
+		// Go nowhere, do nothing
 	}
 }

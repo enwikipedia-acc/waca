@@ -13,14 +13,16 @@ class SiteConfiguration
 {
 	private $baseUrl;
 	private $filePath;
-	private $schemaVersion = 17;
+	private $schemaVersion = 18;
 	private $debuggingTraceEnabled;
 	private $dataClearIp = '127.0.0.1';
 	private $dataClearEmail = 'acc@toolserver.org';
 	private $dataClearInterval = '15 DAY';
 	private $forceIdentification = true;
+	private $identificationCacheExpiry = '1 DAY';
 	private $mediawikiScriptPath = "https://en.wikipedia.org/w/index.php";
 	private $mediawikiWebServiceEndpoint = "";
+	private $metaWikimediaWebServiceEndpoint = "https://meta.wikimedia.org/w/api.php";
 	private $enforceOAuth = true;
 	private $emailConfirmationEnabled = true;
 	private $emailConfirmationExpiryDays = 7;
@@ -204,6 +206,24 @@ class SiteConfiguration
 	/**
 	 * @return string
 	 */
+	public function getIdentificationCacheExpiry()
+	{
+		return $this->identificationCacheExpiry;
+	}
+
+	/**
+	 * @param string $identificationCacheExpiry
+	 * @return SiteConfiguration
+	 */
+	public function setIdentificationCacheExpiry($identificationCacheExpiry)
+	{
+		$this->identificationCacheExpiry = $identificationCacheExpiry;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getMediawikiScriptPath()
 	{
 		return $this->mediawikiScriptPath;
@@ -237,6 +257,25 @@ class SiteConfiguration
 	public function setMediawikiWebServiceEndpoint($mediawikiWebServiceEndpoint)
 	{
 		$this->mediawikiWebServiceEndpoint = $mediawikiWebServiceEndpoint;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getMetaWikimediaWebServiceEndpoint()
+	{
+		return $this->metaWikimediaWebServiceEndpoint;
+	}
+
+	/**
+	 * @param string $metaWikimediaWebServiceEndpoint
+	 * @return SiteConfiguration
+	 */
+	public function setMetaWikimediaWebServiceEndpoint($metaWikimediaWebServiceEndpoint)
+	{
+		$this->metaWikimediaWebServiceEndpoint = $metaWikimediaWebServiceEndpoint;
 
 		return $this;
 	}

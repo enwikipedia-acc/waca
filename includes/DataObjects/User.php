@@ -10,6 +10,7 @@ use Waca\AuthUtility;
 use Waca\DataObject;
 use Waca\Helpers\Interfaces\IOAuthHelper;
 use Waca\Helpers\Logger;
+use Waca\IdentificationVerifier;
 use Waca\PdoDatabase;
 use Waca\SessionAlert;
 use Waca\WebRequest;
@@ -28,7 +29,7 @@ class User extends DataObject
 	private $lastactive = "0000-00-00 00:00:00";
 	private $forcelogout = 0;
 	private $checkuser = 0;
-	private $identified = 0;
+	private $forceidentified = null;
 	private $welcome_template = 0;
 	private $abortpref = 0;
 	private $confirmationdiff = 0;
@@ -407,7 +408,7 @@ SQL
 			$statement = $this->dbObject->prepare(<<<SQL
 				INSERT INTO `user` ( 
 					username, email, password, status, onwikiname, welcome_sig, 
-					lastactive, forcelogout, checkuser, identified, 
+					lastactive, forcelogout, checkuser, forceidentified,
 					welcome_template, abortpref, confirmationdiff, emailsig, 
 					oauthrequesttoken, oauthrequestsecret, 
 					oauthaccesstoken, oauthaccesssecret
@@ -428,7 +429,7 @@ SQL
 			$statement->bindValue(":lastactive", $this->lastactive);
 			$statement->bindValue(":forcelogout", $this->forcelogout);
 			$statement->bindValue(":checkuser", $this->checkuser);
-			$statement->bindValue(":identified", $this->identified);
+			$statement->bindValue(":forceidentified", $this->forceidentified);
 			$statement->bindValue(":welcome_template", $this->welcome_template);
 			$statement->bindValue(":abortpref", $this->abortpref);
 			$statement->bindValue(":confirmationdiff", $this->confirmationdiff);
@@ -454,7 +455,7 @@ SQL
 					password = :password, status = :status,
 					onwikiname = :onwikiname, welcome_sig = :welcome_sig, 
 					lastactive = :lastactive, forcelogout = :forcelogout, 
-					checkuser = :checkuser, identified = :identified,
+					checkuser = :checkuser, forceidentified = :forceidentified,
 					welcome_template = :welcome_template, abortpref = :abortpref, 
 					confirmationdiff = :confirmationdiff, emailsig = :emailsig, 
 					oauthrequesttoken = :ort, oauthrequestsecret = :ors, 
@@ -473,7 +474,7 @@ SQL
 			$statement->bindValue(":lastactive", $this->lastactive);
 			$statement->bindValue(":forcelogout", $this->forcelogout);
 			$statement->bindValue(":checkuser", $this->checkuser);
-			$statement->bindValue(":identified", $this->identified);
+			$statement->bindValue(":forceidentified", $this->forceidentified);
 			$statement->bindValue(":welcome_template", $this->welcome_template);
 			$statement->bindValue(":abortpref", $this->abortpref);
 			$statement->bindValue(":confirmationdiff", $this->confirmationdiff);
@@ -929,12 +930,25 @@ SQL
 
 	/**
 	 * Tests if the user is identified
+	 * @param IdentificationVerifier $iv
 	 * @return bool
+	 * @todo Figure out what on earth is going on with PDO's typecasting here.  Apparently, it returns string("0") for
+	 *       the force-unidentified case, and int(1) for the identified case?!  This is quite ugly, but probably needed
+	 *       to play it safe for now.
 	 * @category Security-Critical
 	 */
-	public function isIdentified()
+	public function isIdentified(IdentificationVerifier $iv)
 	{
-		return $this->identified === 1;
+		if ($this->forceidentified === 0 || $this->forceidentified === "0") {
+			// User forced to unidentified in the database.
+			return false;
+		} elseif ($this->forceidentified === 1 || $this->forceidentified === "1") {
+			// User forced to identified in the database.
+			return true;
+		} else {
+			// User not forced to any particular identified status; consult IdentificationVerifier
+			return $iv->isUserIdentified($this->getOnWikiName());
+		}
 	}
 
 	/**

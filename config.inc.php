@@ -46,6 +46,7 @@ $antispoof_table = "spoofuser";
 
 $mediawikiWebServiceEndpoint = "https://en.wikipedia.org/w/api.php";
 $mediawikiScriptPath = "https://en.wikipedia.org/w/index.php";
+$metaWikimediaWebServiceEndpoint = "https://meta.wikimedia.org/w/api.php";
 
 // URL of the current copy of the tool.
 $baseurl = "https://accounts.wmflabs.org";
@@ -113,6 +114,9 @@ $onRegistrationNewbieCheckAge = 5184000; // Account age on Wikipedia in seconds.
 
 // Force identification to the foundation
 $forceIdentification = true;
+
+// Time to cache positive automatic identification results, as a MySQL time interval
+$identificationCacheExpiry = "1 DAY";
 
 // minimum password version
 //   0 = hashed
@@ -320,8 +324,10 @@ $siteConfiguration->setBaseUrl($baseurl)
 	->setFilePath($filepath)
 	->setDebuggingTraceEnabled($enableErrorTrace)
 	->setForceIdentification($forceIdentification)
+	->setIdentificationCacheExpiry($identificationCacheExpiry)
 	->setMediawikiScriptPath($mediawikiScriptPath)
 	->setMediawikiWebServiceEndpoint($mediawikiWebServiceEndpoint)
+	->setMetaWikimediaWebServiceEndpoint($metaWikimediaWebServiceEndpoint)
 	->setEnforceOAuth($enforceOAuth)
 	->setEmailConfirmationEnabled($enableEmailConfirm == 1)
 	->setEmailConfirmationExpiryDays($emailConfirmationExpiryDays)

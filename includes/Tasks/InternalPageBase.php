@@ -6,12 +6,15 @@ use PDO;
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\NotIdentifiedException;
+use Waca\IdentificationVerifier;
 use Waca\Helpers\Interfaces\ITypeAheadHelper;
 use Waca\SecurityConfiguration;
 use Waca\WebRequest;
 
 abstract class InternalPageBase extends PageBase
 {
+	/** @var IdentificationVerifier */
+	private $identificationVerifier;
 	/** @var ITypeAheadHelper */
 	private $typeAheadHelper;
 
@@ -21,6 +24,17 @@ abstract class InternalPageBase extends PageBase
 	public function getTypeAheadHelper()
 	{
 		return $this->typeAheadHelper;
+	}
+
+	/**
+	 * Sets up the internal IdentificationVerifier instance.  Intended to be called from WebStart::setupHelpers().
+	 *
+	 * @param IdentificationVerifier $identificationVerifier
+	 * @return void
+	 */
+	public function setIdentificationVerifier(IdentificationVerifier $identificationVerifier)
+	{
+		$this->identificationVerifier = $identificationVerifier;
 	}
 
 	/**
@@ -63,7 +77,7 @@ abstract class InternalPageBase extends PageBase
 		// Security barrier.
 		//
 		// This code essentially doesn't care if the user is logged in or not, as the
-		if ($securityConfiguration->allows($currentUser)) {
+		if ($securityConfiguration->allows($currentUser, $this->identificationVerifier)) {
 			// We're allowed to run the page, so let's run it.
 			$this->runPage();
 		}
@@ -125,7 +139,7 @@ abstract class InternalPageBase extends PageBase
 			// Decide whether this was a rights failure, or an identification failure.
 
 			if ($this->getSiteConfiguration()->getForceIdentification()
-				&& $currentUser->isIdentified() != 1
+				&& $currentUser->isIdentified($this->identificationVerifier) !== true
 			) {
 				// Not identified
 				throw new NotIdentifiedException();
@@ -153,7 +167,7 @@ abstract class InternalPageBase extends PageBase
 
 		try {
 			$this->setRoute($action);
-			$allowed = $this->getSecurityConfiguration()->allows(User::getCurrent($this->getDatabase()));
+			$allowed = $this->getSecurityConfiguration()->allows(User::getCurrent($this->getDatabase()), $this->identificationVerifier);
 
 			return $allowed;
 		}

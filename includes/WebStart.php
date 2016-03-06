@@ -40,6 +40,24 @@ class WebStart extends ApplicationBase
 	}
 
 	/**
+	 * @param ITask             $page
+	 * @param SiteConfiguration $siteConfiguration
+	 * @param PdoDatabase       $database
+	 * @param PdoDatabase       $notificationsDatabase
+	 * @return void
+	 */
+	protected function setupHelpers(
+		ITask $page,
+		SiteConfiguration $siteConfiguration,
+		PdoDatabase $database,
+		PdoDatabase $notificationsDatabase
+	) {
+		parent::setupHelpers($page, $siteConfiguration, $database, $notificationsDatabase);
+		$identificationVerifier = new IdentificationVerifier($page->getHttpHelper(), $siteConfiguration, $database);
+		$page->setIdentificationVerifier($identificationVerifier);
+	}
+
+	/**
 	 * Application entry point.
 	 *
 	 * Sets up the environment and runs the application, performing any global cleanup operations when done.
