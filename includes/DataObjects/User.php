@@ -932,6 +932,9 @@ SQL
 	 * Tests if the user is identified
 	 * @param IdentificationVerifier $iv
 	 * @return bool
+	 * @todo Figure out what on earth is going on with PDO's typecasting here.  Apparently, it returns string("0") for
+	 *       the force-unidentified case, and int(1) for the identified case?!  This is quite ugly, but probably needed
+	 *       to play it safe for now.
 	 * @category Security-Critical
 	 */
 	public function isIdentified(IdentificationVerifier $iv)

@@ -8,6 +8,8 @@ use Waca\Exceptions\ReadableException;
 use Waca\Providers\GlobalStateProvider;
 use Waca\Router\IRequestRouter;
 use Waca\Router\RequestRouter;
+use Waca\Tasks\InternalPageBase;
+use Waca\Tasks\ITask;
 
 /**
  * Internal application entry point.
@@ -39,6 +41,24 @@ class WebStart extends ApplicationBase
 		else {
 			$this->requestRouter = $router;
 		}
+	}
+
+	/**
+	 * @param ITask             $page
+	 * @param SiteConfiguration $siteConfiguration
+	 * @param PdoDatabase       $database
+	 * @param PdoDatabase       $notificationsDatabase
+	 * @return void
+	 */
+	protected function setupHelpers(
+		ITask $page,
+		SiteConfiguration $siteConfiguration,
+		PdoDatabase $database,
+		PdoDatabase $notificationsDatabase
+	) {
+		parent::setupHelpers($page, $siteConfiguration, $database, $notificationsDatabase);
+		$identificationVerifier = new IdentificationVerifier($page->getHttpHelper(), $siteConfiguration, $database);
+		$page->setIdentificationVerifier($identificationVerifier);
 	}
 
 	/**

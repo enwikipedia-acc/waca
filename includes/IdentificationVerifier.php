@@ -83,12 +83,15 @@ class IdentificationVerifier
 	 * @return bool
 	 * @category Security-Critical
 	 */
-	private function checkIdentificationCache($onwikiname) {
+	private function checkIdentificationCache($onwikiname)
+	{
+		$interval = $this->siteConfiguration->getIdentificationCacheExpiry();
+
 		$query = <<<SQL
 			SELECT COUNT(`id`)
 			FROM `idcache`
 			WHERE `onwikiusername` = :onwikiname
-				AND DATE_ADD(`checktime`, INTERVAL {$this->siteConfiguration->getIdentificationCacheExpiry()}) >= NOW();
+				AND DATE_ADD(`checktime`, INTERVAL {$interval}) >= NOW();
 SQL;
 		$stmt = $this->dbObject->prepare($query);
 		$stmt->bindValue(':onwikiname', $onwikiname, PDO::PARAM_STR);
@@ -110,10 +113,13 @@ SQL;
 	 * @param PdoDatabase $dbObject
 	 * @return void
 	 */
-	public static function clearExpiredCacheEntries(SiteConfiguration $siteConfiguration, PdoDatabase $dbObject) {
+	public static function clearExpiredCacheEntries(SiteConfiguration $siteConfiguration, PdoDatabase $dbObject)
+	{
+		$interval = $siteConfiguration->getIdentificationCacheExpiry();
+
 		$query = <<<SQL
 			DELETE FROM `idcache`
-			WHERE DATE_ADD(`checktime`, INTERVAL {$siteConfiguration->getIdentificationCacheExpiry()}) < NOW();
+			WHERE DATE_ADD(`checktime`, INTERVAL {$interval}) < NOW();
 SQL;
 		$dbObject->prepare($query)->execute();
 	}
@@ -127,7 +133,8 @@ SQL;
 	 * @return void
 	 * @category Security-Critical
 	 */
-	private function cacheIdentificationStatus($onwikiname) {
+	private function cacheIdentificationStatus($onwikiname)
+	{
 		$query = <<<SQL
 			INSERT INTO `idcache`
 				(`onwikiusername`)
@@ -149,13 +156,17 @@ SQL;
 	 * @return bool
 	 * @category Security-Critical
 	 */
-	private function isIdentifiedOnWiki($onwikiname) {
+	private function isIdentifiedOnWiki($onwikiname)
+	{
+		// First character of Wikipedia usernames is always capitalized.
+		$onwikiname = ucfirst($onwikiname);
+
 		$parameters = self::$apiQueryParameters;
 		$parameters['pltitles'] = "User:" . $onwikiname;
 		$response = $this->httpHelper->get($this->siteConfiguration->getMetaWikimediaWebServiceEndpoint(), $parameters);
 		$response = json_decode($response, true);
 
-		// Eww.  I hope the page ID never changes....
-		return @$response['query']['pages']['8644848']['links'][0]['title'] === "User:" . $onwikiname;
+		$page = @array_pop($response['query']['pages']);
+		return @$page['links'][0]['title'] === "User:" . $onwikiname;
 	}
 }

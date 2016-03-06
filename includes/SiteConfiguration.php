@@ -203,7 +203,8 @@ class SiteConfiguration
 	/**
 	 * @return string
 	 */
-	public function getIdentificationCacheExpiry() {
+	public function getIdentificationCacheExpiry()
+	{
 		return $this->identificationCacheExpiry;
 	}
 
@@ -211,7 +212,8 @@ class SiteConfiguration
 	 * @param string $identificationCacheExpiry
 	 * @return SiteConfiguration
 	 */
-	public function setIdentificationCacheExpiry($identificationCacheExpiry) {
+	public function setIdentificationCacheExpiry($identificationCacheExpiry)
+	{
 		$this->identificationCacheExpiry = $identificationCacheExpiry;
 		return $this;
 	}
@@ -259,7 +261,8 @@ class SiteConfiguration
 	/**
 	 * @return string
 	 */
-	public function getMetaWikimediaWebServiceEndpoint() {
+	public function getMetaWikimediaWebServiceEndpoint()
+	{
 		return $this->metaWikimediaWebServiceEndpoint;
 	}
 
@@ -267,7 +270,8 @@ class SiteConfiguration
 	 * @param string $metaWikimediaWebServiceEndpoint
 	 * @return SiteConfiguration
 	 */
-	public function setMetaWikimediaWebServiceEndpoint($metaWikimediaWebServiceEndpoint) {
+	public function setMetaWikimediaWebServiceEndpoint($metaWikimediaWebServiceEndpoint)
+	{
 		$this->metaWikimediaWebServiceEndpoint = $metaWikimediaWebServiceEndpoint;
 
 		return $this;

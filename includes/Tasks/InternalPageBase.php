@@ -14,6 +14,17 @@ abstract class InternalPageBase extends PageBase
 	private $identificationVerifier;
 
 	/**
+	 * Sets up the internal IdentificationVerifier instance.  Intended to be called from WebStart::setupHelpers().
+	 *
+	 * @param IdentificationVerifier $identificationVerifier
+	 * @return void
+	 */
+	public function setIdentificationVerifier(IdentificationVerifier $identificationVerifier)
+	{
+		$this->identificationVerifier = $identificationVerifier;
+	}
+
+	/**
 	 * Runs the page code
 	 *
 	 * @throws Exception
@@ -21,8 +32,6 @@ abstract class InternalPageBase extends PageBase
 	 */
 	final public function execute()
 	{
-		$this->identificationVerifier = new IdentificationVerifier($this->getHttpHelper(), $this->getSiteConfiguration(), $this->getDatabase());
-
 		if ($this->getRouteName() === null) {
 			throw new Exception("Request is unrouted.");
 		}
