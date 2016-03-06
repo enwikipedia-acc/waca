@@ -10,7 +10,7 @@ This is a work-in-progress, so feel free to put ideas forward as to coding style
 
 * Files are UTF-8 encoded without a BOM ([PSR-1][1])
 * Only use long-syntax php tags: `<?php` and omit the closing tag at the end of a file. ([PSR-1][1])
-* PHP 5.5 please, nothing newer as it won't run in production.
+* PHP 5.6 please, nothing newer as it won't run in production.
 * Files contain a single class definition, and the file is named for the class. 
   Alternatively, they should contain a script, not both. ([PSR-1][1])
   All new classes should be appropriately namespaced.

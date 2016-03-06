@@ -9,8 +9,6 @@ use Waca\Helpers\HttpHelper;
 use Waca\IdentificationVerifier;
 use Waca\PdoDatabase;
 use Waca\SiteConfiguration;
-use Waca\Tests\Utility\MockableDatabase;
-use Waca\Tests\Utility\MockableDatabaseStatement;
 
 /**
  * Class IdentificationVerifierTest
@@ -30,12 +28,9 @@ class IdentificationVerifierTest extends PHPUnit_Framework_TestCase
 		$dummyConfiguration = new SiteConfiguration();
 		$httpHelper = new HttpHelper($dummyConfiguration->getUserAgent(), true);
 		/** @var PdoDatabase|PHPUnit_Framework_MockObject_MockObject $dummyDatabase */
-		$dummyDatabase = $this->getMockBuilder(MockableDatabase::class)
+		$dummyDatabase = $this->getMockBuilder(PdoDatabase::class)
 			->disableOriginalConstructor()
 			->getMock();
-
-		$dbStatementMock = $this->getMockBuilder(MockableDatabaseStatement::class)->getMock();
-		$dummyDatabase->method('prepare')->willReturn($dbStatementMock);
 
 		$this->identificationVerifier = new IdentificationVerifier($httpHelper, $dummyConfiguration, $dummyDatabase);
 	}
