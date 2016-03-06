@@ -2,6 +2,7 @@
 
 namespace Waca\Tests\Validation;
 
+use PDOStatement;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 use Waca\DataObjects\Request;
@@ -31,6 +32,9 @@ class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 	{
 		/** @var PdoDatabase|PHPUnit_Framework_MockObject_MockObject $dbMock */
 		$dbMock = $this->getMockBuilder(PdoDatabase::class)->disableOriginalConstructor()->getMock();
+		$statement = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
+		$statement->method('fetchColumn')->willReturn(0);
+		$dbMock->method('prepare')->willReturn($statement);
 
 		/** @var IBanHelper|PHPUnit_Framework_MockObject_MockObject $banHelperMock */
 		$banHelperMock = $this->getMockBuilder(IBanHelper::class)->getMock();
