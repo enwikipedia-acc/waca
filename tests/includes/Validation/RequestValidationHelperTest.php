@@ -39,13 +39,13 @@ class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 
 		/** @var IBanHelper|PHPUnit_Framework_MockObject_MockObject $banHelperMock */
 		$banHelperMock = $this->getMockBuilder(IBanHelper::class)->getMock();
-		$banHelperMock->expects($this->once())->method('emailIsBanned')->willReturn(false);
+		$banHelperMock->expects($this->never())->method('emailIsBanned')->willReturn(false);
 		$banHelperMock->expects($this->once())->method('nameIsBanned')->willReturn(false);
-		$banHelperMock->expects($this->once())->method('ipIsBanned')->willReturn(false);
+		$banHelperMock->expects($this->never())->method('ipIsBanned')->willReturn(false);
 
 		/** @var IAntiSpoofProvider|PHPUnit_Framework_MockObject_MockObject $antispoofMock */
 		$antispoofMock = $this->getMockBuilder(IAntiSpoofProvider::class)->getMock();
-		$antispoofMock->expects($this->once())->method('getSpoofs')->willReturn(array());
+		$antispoofMock->expects($this->never())->method('getSpoofs')->willReturn(array());
 
 		// arrange
 		$validationHelper = new RequestValidationHelper(
