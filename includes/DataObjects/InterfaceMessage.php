@@ -1,5 +1,10 @@
 <?php
+namespace Waca\DataObjects;
+
+use Exception;
+use Waca\DataObject;
 use Waca\Environment;
+use Waca\PdoDatabase;
 
 /**
  * Interface data object
@@ -28,23 +33,16 @@ class InterfaceMessage extends DataObject
 	/**
 	 * Get a message.
 	 *
-	 * This is going to be used as a new way of dealing with saved messages for #28
+	 * @param int         $key The ID to look up
 	 *
-	 * The basic idea is there's a key stored in a new column, and we do lookups on that
-	 * instead of a possibly variable auto-incrementing ID.
-	 *
-	 * We can use class constants so the keys are defined in one place only for now, and for
-	 * now we are using the auto-incrementing ID as the value of the key, so this function
-	 * just uses getById() at the moment.
-	 *
-	 * @param int $key The ID to look up
+	 * @param PdoDatabase $database
 	 *
 	 * @return string The content for display
 	 */
-	public static function get($key)
+	public static function get($key, PdoDatabase $database)
 	{
 		/** @var InterfaceMessage $message */
-		$message = self::getById($key, gGetDb());
+		$message = self::getById($key, $database);
 
 		return $message->getContentForDisplay();
 	}
@@ -177,19 +175,5 @@ SQL
 	public function setType($type)
 	{
 		$this->type = $type;
-	}
-
-	/**
-	 * Gets a user-visible description of the object.
-	 * @return string
-	 */
-	public function getObjectDescription()
-	{
-		// @todo fixme
-		$description = '<a href="acc.php?action=messagemgmt&amp;view=' . $this->getId() . '">'
-			. htmlentities($this->description)
-			. "</a>";
-
-		return $description;
 	}
 }

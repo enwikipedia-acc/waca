@@ -2,19 +2,18 @@
 
 namespace Waca\Pages;
 
-use Comment;
-use Logger;
-use Notification;
-use Request;
-use SessionAlert;
-use User;
+use Waca\DataObjects\Comment;
+use Waca\DataObjects\Request;
+use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
+use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
+use Waca\SessionAlert;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageEditComment extends PageBase
+class PageEditComment extends InternalPageBase
 {
 	/**
 	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
@@ -54,12 +53,17 @@ class PageEditComment extends PageBase
 			throw new ApplicationLogicException('Comment not found');
 		}
 
-		$currentUser = User::getCurrent();
+		$currentUser = User::getCurrent($database);
 		if ($comment->getUser() !== $currentUser->getId() && !$this->barrierTest('editOthers')) {
 			throw new AccessDeniedException();
 		}
 
+		/** @var Request $request */
 		$request = Request::getById($comment->getRequest(), $database);
+
+		if ($request === false) {
+			throw new ApplicationLogicException('Request was not found.');
+		}
 
 		if (WebRequest::wasPosted()) {
 			$newComment = WebRequest::postString('newcomment');
@@ -75,7 +79,7 @@ class PageEditComment extends PageBase
 			$comment->save();
 
 			Logger::editComment($database, $comment, $request);
-			Notification::commentEdited($comment, $request);
+			$this->getNotificationHelper()->commentEdited($comment, $request);
 			SessionAlert::success("Comment has been saved successfully");
 
 			$this->redirect('viewRequest', null, array('id' => $comment->getRequest()));

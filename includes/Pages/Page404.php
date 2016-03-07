@@ -2,10 +2,10 @@
 
 namespace Waca\Pages;
 
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 
-class Page404 extends PageBase
+class Page404 extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no actions are called.

@@ -1,12 +1,12 @@
 <?php
 namespace Waca\Pages\Statistics;
 
-use User;
-use Waca\PageBase;
+use Waca\DataObjects\User;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class StatsInactiveUsers extends PageBase
+class StatsInactiveUsers extends InternalPageBase
 {
 	public function main()
 	{

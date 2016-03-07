@@ -1,5 +1,10 @@
 <?php
 
+namespace Waca\Providers;
+
+use Waca\PdoDatabase;
+use Waca\Providers\Interfaces\IRDnsProvider;
+
 /**
  * Basic RDNS loopup provider.
  */

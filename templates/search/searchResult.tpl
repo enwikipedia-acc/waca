@@ -10,6 +10,6 @@
     {if count($requests) == 0}
         {include file="alert.tpl" alertblock=false alerttype="alert-info" alertclosable=false alertheader='' alertmessage='No requests found!'}
     {else}
-        {include file="mainpage/requesttable.tpl" showStatus=true}
+        {include file="mainpage/requesttable.tpl" showStatus=true userlist=$userlist}
     {/if}
 {/block}

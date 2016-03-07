@@ -29,30 +29,24 @@
                 <td>{$ban->getType()|escape}</td>
                 <td>{$ban->getTarget()|escape}</td>
                 <td>
-                    {if $ban->getType() == "IP"}
-                        <a class="btn btn-small btn-info"
-                                {* todo: update this URL *}
-                           href="{$baseurl}/search.php?type=IP&amp;term={$ban->getTarget()|escape:'url'}">
+                    <form action="{$baseurl}/internal.php/search" method="post" class="form-compact">
+                        <input type="hidden" name="term" value="{$ban->getTarget()|escape}" />
+
+                        {if $ban->getType() == "IP"}
+                            <input type="hidden" name="type" value="ip" />
+                        {elseif $ban->getType() == "Name"}
+                            <input type="hidden" name="type" value="name" />
+                        {elseif $ban->getType() == "EMail"}
+                            <input type="hidden" name="type" value="email" />
+                        {/if}
+
+                        <button type="submit" class="btn btn-small btn-info">
                             <i class="icon-white icon-search"></i>
                             <span class="visible-desktop">&nbsp;Search</span>
-                        </a>
-                    {elseif $ban->getType() == "Name"}
-                        <a class="btn btn-small btn-info"
-                                {* todo: update this URL *}
-                           href="{$baseurl}/search.php?type=Request&amp;term={$ban->getTarget()|escape:'url'}">
-                            <i class="icon-white icon-search"></i>
-                            <span class="visible-desktop">&nbsp;Search</span>
-                        </a>
-                    {elseif $ban->getType() == "EMail"}
-                        <a class="btn btn-small btn-info"
-                                {* todo: update this URL *}
-                           href="{$baseurl}/search.php?type=email&amp;term={$ban->getTarget()|escape:'url'}">
-                            <i class="icon-white icon-search"></i>
-                            <span class="visible-desktop">&nbsp;Search</span>
-                        </a>
-                    {/if}
+                        </button>
+                    </form>
                 </td>
-                <td>{$ban->getUser()->getUsername()|escape}</td>
+                <td>{$usernames[$ban->getUser()]|escape}</td>
                 <td>{$ban->getReason()|escape}</td>
                 <td>{$ban->getDate()} <span class="muted">({$ban->getDate()|relativedate})</span></td>
                 <td>{if $ban->getDuration() == -1}Indefinite{else}{date("Y-m-d H:i:s", $ban->getDuration())}{/if}</td>

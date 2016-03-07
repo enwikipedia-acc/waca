@@ -1,4 +1,10 @@
 <?php
+namespace Waca\DataObjects;
+
+use Exception;
+use PDO;
+use Waca\DataObject;
+use Waca\PdoDatabase;
 
 /**
  * Comment data object
@@ -12,19 +18,17 @@ class Comment extends DataObject
 	private $request;
 
 	/**
-	 * @param integer          $id
-	 * @param null|PdoDatabase $database
+	 * @param integer     $id
+	 * @param PdoDatabase $database
 	 *
 	 * @return Comment[]
 	 * @throws Exception
 	 */
-	public static function getForRequest($id, PdoDatabase $database = null)
+	public static function getForRequest($id, PdoDatabase $database)
 	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
+		$currentUser = User::getCurrent($database);
 
-		if (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
+		if ($currentUser->isAdmin() || $currentUser->isCheckuser()) {
 			// current user is an admin or checkuser, so retrieve everything.
 			$statement = $database->prepare("SELECT * FROM comment WHERE request = :target;");
 		}
@@ -36,7 +40,7 @@ SELECT * FROM comment
 WHERE request = :target AND (visibility = 'user' OR user = :userid);
 SQL
 			);
-			$statement->bindValue(":userid", User::getCurrent()->getId());
+			$statement->bindValue(":userid", $currentUser->getId());
 		}
 
 		$statement->bindValue(":target", $id);

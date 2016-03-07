@@ -2,14 +2,13 @@
 
 namespace Waca\Pages;
 
-use InterfaceMessage;
-use Logger;
-use Notification;
-use Waca\PageBase;
+use Waca\DataObjects\InterfaceMessage;
+use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageInterfaceManagement extends PageBase
+class PageInterfaceManagement extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.
@@ -30,7 +29,7 @@ class PageInterfaceManagement extends PageBase
 			$siteNoticeMessage->save();
 
 			Logger::interfaceMessageEdited($database, $siteNoticeMessage);
-			Notification::interfaceMessageEdited();
+			$this->getNotificationHelper()->interfaceMessageEdited();
 
 			$this->redirect('');
 		}

@@ -2,17 +2,16 @@
 
 namespace Waca\Pages;
 
-use EmailTemplate;
-use Logger;
-use Notification;
-use PdoDatabase;
-use SessionAlert;
+use Waca\DataObjects\EmailTemplate;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
+use Waca\Helpers\Logger;
+use Waca\PdoDatabase;
 use Waca\SecurityConfiguration;
+use Waca\SessionAlert;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageEmailManagement extends PageBase
+class PageEmailManagement extends InternalPageBase
 {
 	/**
 	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
@@ -47,8 +46,8 @@ class PageEmailManagement extends PageBase
 		$this->setHtmlTitle('Close Emails');
 
 		// Get all active email templates
-		$activeTemplates = EmailTemplate::getAllActiveTemplates();
-		$inactiveTemplates = EmailTemplate::getAllInactiveTemplates();
+		$activeTemplates = EmailTemplate::getAllActiveTemplates(null, $this->getDatabase());
+		$inactiveTemplates = EmailTemplate::getAllInactiveTemplates($this->getDatabase());
 
 		$this->assign('activeTemplates', $activeTemplates);
 		$this->assign('inactiveTemplates', $inactiveTemplates);
@@ -87,7 +86,7 @@ class PageEmailManagement extends PageBase
 			throw new ApplicationLogicException('Template not specified');
 		}
 		$template = EmailTemplate::getById($templateId, $database);
-		if (!is_a($template, EmailTemplate::class)) {
+		if ($template === false || !is_a($template, EmailTemplate::class)) {
 			throw new ApplicationLogicException('Template not found');
 		}
 
@@ -120,7 +119,7 @@ class PageEmailManagement extends PageBase
 
 			$template->save();
 			Logger::editedEmail($database, $template);
-			Notification::emailEdited($template);
+			$this->getNotificationHelper()->emailEdited($template);
 			SessionAlert::success("Email template has been saved successfully.");
 
 			$this->redirect('emailManagement');
@@ -185,7 +184,7 @@ class PageEmailManagement extends PageBase
 			$template->save();
 
 			Logger::createEmail($database, $template);
-			Notification::emailCreated($template);
+			$this->getNotificationHelper()->emailCreated($template);
 
 			SessionAlert::success("Email template has been saved successfully.");
 

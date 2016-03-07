@@ -2,10 +2,10 @@
 namespace Waca\Pages\Statistics;
 
 use PDO;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 
-class StatsReservedRequests extends PageBase
+class StatsReservedRequests extends InternalPageBase
 {
 	public function main()
 	{

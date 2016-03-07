@@ -2,11 +2,12 @@
 namespace Waca\Pages;
 
 use PDO;
-use Request;
-use Waca\PageBase;
+use Waca\DataObjects\Request;
+use Waca\DataObjects\User;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 
-class PageMain extends PageBase
+class PageMain extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no actions are called.
@@ -39,7 +40,7 @@ class PageMain extends PageBase
 			$statement->bindValue(":type", $type);
 			$statement->execute();
 
-			$requests = $statement->fetchAll(PDO::FETCH_CLASS, 'Request');
+			$requests = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
 
 			/** @var Request $req */
 			foreach ($requests as $req) {
@@ -51,10 +52,19 @@ class PageMain extends PageBase
 			$totalRequests = $totalRequestsStatement->fetchColumn();
 			$totalRequestsStatement->closeCursor();
 
+			$userIds = array_map(
+				function(Request $entry) {
+					return $entry->getReserved();
+				},
+				$requests);
+			$userList = User::getUsernames($userIds, $this->getDatabase());
+			$this->assign('userlist', $userList);
+
 			$requestSectionData[$v['header']] = array(
 				'requests' => $requests,
 				'total'    => $totalRequests,
 				'api'      => $v['api'],
+				'userlist' => $userList,
 			);
 		}
 

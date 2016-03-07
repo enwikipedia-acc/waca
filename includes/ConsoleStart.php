@@ -3,8 +3,8 @@
 namespace Waca;
 
 use Exception;
-use PdoDatabase;
 use Waca\Exceptions\EnvironmentException;
+use Waca\Tasks\ConsoleTaskBase;
 
 class ConsoleStart extends ApplicationBase
 {
@@ -44,7 +44,9 @@ class ConsoleStart extends ApplicationBase
 	protected function main()
 	{
 		$database = PdoDatabase::getDatabaseConnection('acc');
-		$this->setupHelpers($this->consoleTask, $this->getConfiguration(), $database);
+		$notificationsDatabase = PdoDatabase::getDatabaseConnection('notifications');
+
+		$this->setupHelpers($this->consoleTask, $this->getConfiguration(), $database, $notificationsDatabase);
 
 		// initialise a database transaction
 		if (!$database->beginTransaction()) {

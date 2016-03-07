@@ -2,7 +2,7 @@
 
 namespace Waca;
 
-use User;
+use Waca\DataObjects\User;
 use Waca\Providers\Interfaces\IGlobalStateProvider;
 
 /**
@@ -412,16 +412,64 @@ class WebRequest
 		return isset($session['userID']) ? (int)$session['userID'] : null;
 	}
 
+	/**
+	 * @param User $user
+	 */
 	public static function setPartialLogin(User $user)
 	{
 		$session = &self::$globalStateProvider->getSessionSuperGlobal();
 		$session['partialLogin'] = $user->getId();
 	}
 
+	/**
+	 * @return int|null
+	 */
 	public static function getPartialLogin()
 	{
 		$session = &self::$globalStateProvider->getSessionSuperGlobal();
 
 		return isset($session['partialLogin']) ? (int)$session['partialLogin'] : null;
+	}
+
+	/**
+	 * @return null|string
+	 */
+	public static function userAgent()
+	{
+		$server = &self::$globalStateProvider->getServerSuperGlobal();
+
+		if (isset($server['HTTP_USER_AGENT'])) {
+			return $server['HTTP_USER_AGENT'];
+		}
+
+		return null;
+	}
+
+	/**
+	 * @return null|string
+	 */
+	public static function scriptName()
+	{
+		$server = &self::$globalStateProvider->getServerSuperGlobal();
+
+		if (isset($server['SCRIPT_NAME'])) {
+			return $server['SCRIPT_NAME'];
+		}
+
+		return null;
+	}
+
+	/**
+	 * @return null|string
+	 */
+	public static function origin()
+	{
+		$server = &self::$globalStateProvider->getServerSuperGlobal();
+
+		if (isset($server['HTTP_ORIGIN'])) {
+			return $server['HTTP_ORIGIN'];
+		}
+
+		return null;
 	}
 }

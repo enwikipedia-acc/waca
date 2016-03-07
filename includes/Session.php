@@ -12,38 +12,36 @@
  ** See CREDITS for the list of developers.                               **
  ***************************************************************************/
 
-namespace Waca {
+namespace Waca;
 
-	/**
-	 * Class Session
-	 *
-	 * This class handles the low-level starting and destroying of sessions.
-	 *
-	 * @package Waca
-	 */
-	class Session
+/**
+ * Class Session
+ *
+ * This class handles the low-level starting and destroying of sessions.
+ *
+ * @package Waca
+ */
+class Session
+{
+	public static function start()
 	{
-		public static function start()
-		{
-			ini_set('session.cookie_httponly', 1);
+		ini_set('session.cookie_httponly', 1);
 
-			if (WebRequest::isHttps()) {
-				ini_set('session.cookie_secure', 1);
-			}
-
-			session_start();
+		if (WebRequest::isHttps()) {
+			ini_set('session.cookie_secure', 1);
 		}
 
-		public static function destroy()
-		{
-			session_destroy();
-		}
+		session_start();
+	}
 
-		public static function restart()
-		{
-			self::destroy();
-			self::start();
-		}
+	public static function destroy()
+	{
+		session_destroy();
+	}
+
+	public static function restart()
+	{
+		self::destroy();
+		self::start();
 	}
 }
-

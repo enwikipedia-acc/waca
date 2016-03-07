@@ -2,15 +2,14 @@
 
 namespace Waca\Pages;
 
-use Logger;
-use Notification;
-use User;
+use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
+use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageRegister extends PageBase
+class PageRegister extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.
@@ -148,7 +147,7 @@ class PageRegister extends PageBase
 		}
 		else {
 			// only notify if we're not using the oauth signup.
-			Notification::userNew($user);
+			$this->getNotificationHelper()->userNew($user);
 			WebRequest::setLoggedInUser($user);
 			$this->redirect('preferences');
 		}

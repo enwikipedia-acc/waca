@@ -2,14 +2,14 @@
 
 namespace Waca\Pages;
 
-use User;
+use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
 use Waca\Session;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageOAuth extends PageBase
+class PageOAuth extends InternalPageBase
 {
 	/**
 	 * Attach entry point

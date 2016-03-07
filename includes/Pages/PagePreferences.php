@@ -2,14 +2,14 @@
 
 namespace Waca\Pages;
 
-use SessionAlert;
-use User;
+use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\SessionAlert;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PagePreferences extends PageBase
+class PagePreferences extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.
@@ -23,7 +23,7 @@ class PagePreferences extends PageBase
 
 		// Dual mode
 		if (WebRequest::wasPosted()) {
-			$user = User::getCurrent();
+			$user = User::getCurrent($this->getDatabase());
 			$user->setWelcomeSig(WebRequest::postString('sig'));
 			$user->setEmailSig(WebRequest::postString('emailsig'));
 			$user->setAbortPref(WebRequest::getBoolean('sig') ? 1 : 0);

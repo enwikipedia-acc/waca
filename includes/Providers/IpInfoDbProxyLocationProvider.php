@@ -1,5 +1,9 @@
 <?php
 
+namespace Waca\Providers;
+
+use Waca\Providers\Interfaces\ILocationProvider;
+
 /**
  * IP Info DB IP location provider
  */

@@ -1,5 +1,10 @@
 <?php
 
+namespace Waca\Tests;
+
+use PHPUnit_Framework_TestCase;
+use Waca\IrcColourCode;
+
 class IrcColourCodeTest extends PHPUnit_Framework_TestCase
 {
 	private $irc;
@@ -68,5 +73,4 @@ class IrcColourCodeTest extends PHPUnit_Framework_TestCase
 		$this->assertNotEquals($i::DARK_GREY, "\x03141");
 		$this->assertNotEquals($i::LIGHT_GREY, "\x03151");
 	}
-
 }

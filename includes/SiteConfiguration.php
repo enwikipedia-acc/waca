@@ -13,16 +13,19 @@ class SiteConfiguration
 {
 	private $baseUrl;
 	private $filePath;
-	private $schemaVersion = 17;
+	private $schemaVersion = 18;
 	private $debuggingTraceEnabled;
 	private $dataClearIp = '127.0.0.1';
 	private $dataClearEmail = 'acc@toolserver.org';
 	private $dataClearInterval = '15 DAY';
 	private $forceIdentification = true;
+	private $identificationCacheExpiry = '1 DAY';
 	private $mediawikiScriptPath = "https://en.wikipedia.org/w/index.php";
 	private $mediawikiWebServiceEndpoint = "";
+	private $metaWikimediaWebServiceEndpoint = "https://meta.wikimedia.org/w/api.php";
 	private $enforceOAuth = true;
 	private $emailConfirmationEnabled = true;
+	private $emailConfirmationExpiryDays = 7;
 	private $miserModeLimit = 25;
 	private $requestStates = array(
 		'Open'          => array(
@@ -56,6 +59,16 @@ class SiteConfiguration
 	private $oauthConsumerToken;
 	private $oauthConsumerSecret;
 	private $xffTrustedHostsFile = '../TrustedXFF/trusted-hosts.txt';
+	private $crossOriginResourceSharingHosts = array(
+		"http://en.wikipedia.org",
+		"https://en.wikipedia.org",
+		"http://meta.wikimedia.org",
+		"https://meta.wikimedia.org",
+	);
+	private $ircNotificationType = 1;
+	private $ircNotificationsEnabled = true;
+	private $ircNotificationsInstance = 'Development';
+	private $errorLog = 'errorlog';
 
 	/**
 	 * Gets the base URL of the tool
@@ -193,6 +206,24 @@ class SiteConfiguration
 	/**
 	 * @return string
 	 */
+	public function getIdentificationCacheExpiry()
+	{
+		return $this->identificationCacheExpiry;
+	}
+
+	/**
+	 * @param string $identificationCacheExpiry
+	 * @return SiteConfiguration
+	 */
+	public function setIdentificationCacheExpiry($identificationCacheExpiry)
+	{
+		$this->identificationCacheExpiry = $identificationCacheExpiry;
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
 	public function getMediawikiScriptPath()
 	{
 		return $this->mediawikiScriptPath;
@@ -226,6 +257,25 @@ class SiteConfiguration
 	public function setMediawikiWebServiceEndpoint($mediawikiWebServiceEndpoint)
 	{
 		$this->mediawikiWebServiceEndpoint = $mediawikiWebServiceEndpoint;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getMetaWikimediaWebServiceEndpoint()
+	{
+		return $this->metaWikimediaWebServiceEndpoint;
+	}
+
+	/**
+	 * @param string $metaWikimediaWebServiceEndpoint
+	 * @return SiteConfiguration
+	 */
+	public function setMetaWikimediaWebServiceEndpoint($metaWikimediaWebServiceEndpoint)
+	{
+		$this->metaWikimediaWebServiceEndpoint = $metaWikimediaWebServiceEndpoint;
 
 		return $this;
 	}
@@ -391,6 +441,14 @@ class SiteConfiguration
 	}
 
 	/**
+	 * @return boolean
+	 */
+	public function getUseStrictTransportSecurity()
+	{
+		return $this->useStrictTransportSecurity;
+	}
+
+	/**
 	 * @param boolean $useStrictTransportSecurity
 	 *
 	 * @return SiteConfiguration
@@ -403,11 +461,11 @@ class SiteConfiguration
 	}
 
 	/**
-	 * @return boolean
+	 * @return string
 	 */
-	public function getUseStrictTransportSecurity()
+	public function getUserAgent()
 	{
-		return $this->useStrictTransportSecurity;
+		return $this->userAgent;
 	}
 
 	/**
@@ -423,11 +481,11 @@ class SiteConfiguration
 	}
 
 	/**
-	 * @return string
+	 * @return boolean
 	 */
-	public function getUserAgent()
+	public function getCurlDisableVerifyPeer()
 	{
-		return $this->userAgent;
+		return $this->curlDisableVerifyPeer;
 	}
 
 	/**
@@ -445,9 +503,9 @@ class SiteConfiguration
 	/**
 	 * @return boolean
 	 */
-	public function getCurlDisableVerifyPeer()
+	public function getUseOAuthSignup()
 	{
-		return $this->curlDisableVerifyPeer;
+		return $this->useOAuthSignup;
 	}
 
 	/**
@@ -463,11 +521,11 @@ class SiteConfiguration
 	}
 
 	/**
-	 * @return boolean
+	 * @return string
 	 */
-	public function getUseOAuthSignup()
+	public function getOAuthBaseUrl()
 	{
-		return $this->useOAuthSignup;
+		return $this->oauthBaseUrl;
 	}
 
 	/**
@@ -483,11 +541,11 @@ class SiteConfiguration
 	}
 
 	/**
-	 * @return string
+	 * @return mixed
 	 */
-	public function getOAuthBaseUrl()
+	public function getOAuthConsumerToken()
 	{
-		return $this->oauthBaseUrl;
+		return $this->oauthConsumerToken;
 	}
 
 	/**
@@ -505,9 +563,9 @@ class SiteConfiguration
 	/**
 	 * @return mixed
 	 */
-	public function getOAuthConsumerToken()
+	public function getOAuthConsumerSecret()
 	{
-		return $this->oauthConsumerToken;
+		return $this->oauthConsumerSecret;
 	}
 
 	/**
@@ -520,14 +578,6 @@ class SiteConfiguration
 		$this->oauthConsumerSecret = $oauthConsumerSecret;
 
 		return $this;
-	}
-
-	/**
-	 * @return mixed
-	 */
-	public function getOAuthConsumerSecret()
-	{
-		return $this->oauthConsumerSecret;
 	}
 
 	/**
@@ -551,6 +601,14 @@ class SiteConfiguration
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getXffTrustedHostsFile()
+	{
+		return $this->xffTrustedHostsFile;
+	}
+
+	/**
 	 * @param string $xffTrustedHostsFile
 	 *
 	 * @return SiteConfiguration
@@ -563,10 +621,122 @@ class SiteConfiguration
 	}
 
 	/**
+	 * @return array
+	 */
+	public function getCrossOriginResourceSharingHosts()
+	{
+		return $this->crossOriginResourceSharingHosts;
+	}
+
+	/**
+	 * @param array $crossOriginResourceSharingHosts
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setCrossOriginResourceSharingHosts($crossOriginResourceSharingHosts)
+	{
+		$this->crossOriginResourceSharingHosts = $crossOriginResourceSharingHosts;
+
+		return $this;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getIrcNotificationsEnabled()
+	{
+		return $this->ircNotificationsEnabled;
+	}
+
+	/**
+	 * @param boolean $ircNotificationsEnabled
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setIrcNotificationsEnabled($ircNotificationsEnabled)
+	{
+		$this->ircNotificationsEnabled = $ircNotificationsEnabled;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getIrcNotificationType()
+	{
+		return $this->ircNotificationType;
+	}
+
+	/**
+	 * @param int $ircNotificationType
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setIrcNotificationType($ircNotificationType)
+	{
+		$this->ircNotificationType = $ircNotificationType;
+
+		return $this;
+	}
+
+	/**
+	 * @param string $errorLog
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setErrorLog($errorLog)
+	{
+		$this->errorLog = $errorLog;
+
+		return $this;
+	}
+
+	/**
 	 * @return string
 	 */
-	public function getXffTrustedHostsFile()
+	public function getErrorLog()
 	{
-		return $this->xffTrustedHostsFile;
+		return $this->errorLog;
+	}
+
+	/**
+	 * @param int $emailConfirmationExpiryDays
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setEmailConfirmationExpiryDays($emailConfirmationExpiryDays)
+	{
+		$this->emailConfirmationExpiryDays = $emailConfirmationExpiryDays;
+
+		return $this;
+	}
+
+	/**
+	 * @return int
+	 */
+	public function getEmailConfirmationExpiryDays()
+	{
+		return $this->emailConfirmationExpiryDays;
+	}
+
+	/**
+	 * @param string $ircNotificationsInstance
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setIrcNotificationsInstance($ircNotificationsInstance)
+	{
+		$this->ircNotificationsInstance = $ircNotificationsInstance;
+
+		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getIrcNotificationsInstance()
+	{
+		return $this->ircNotificationsInstance;
 	}
 }

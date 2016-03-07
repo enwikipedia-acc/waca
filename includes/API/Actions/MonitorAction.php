@@ -2,10 +2,11 @@
 
 namespace Waca\API\Actions;
 
-use Waca\API\ApiActionBase as ApiActionBase;
-use Waca\API\IApiAction as IApiAction;
-
-use \PdoDatabase as PdoDatabase;
+use DateTime;
+use DOMElement;
+use Waca\API\IApiAction;
+use Waca\PdoDatabase;
+use Waca\Tasks\ApiPageBase;
 
 /**
  * MonitorAction short summary.
@@ -13,9 +14,9 @@ use \PdoDatabase as PdoDatabase;
  * MonitorAction description.
  *
  * @version 1.0
- * @author stwalkerster
+ * @author  stwalkerster
  */
-class MonitorAction extends ApiActionBase implements IApiAction
+class MonitorAction extends ApiPageBase implements IApiAction
 {
 	/**
 	 * The database
@@ -23,17 +24,17 @@ class MonitorAction extends ApiActionBase implements IApiAction
 	 */
 	private $database;
 
-	public function execute(\DOMElement $apiDocument)
+	public function executeApiAction(DOMElement $apiDocument)
 	{
-		$this->database = gGetDb();
+		$this->database = $this->getDatabase();
 
-		$now = new \DateTime();
+		$now = new DateTime();
 
 		$old = $this->getOldest();
-		$oldest = new \DateTime($old);
+		$oldest = new DateTime($old);
 
 		$new = $this->getNewest();
-		$newest = new \DateTime($new);
+		$newest = new DateTime($new);
 
 		$monitoringElement = $this->document->createElement("data");
 		$monitoringElement->setAttribute("date", $now->format('c'));
@@ -50,7 +51,7 @@ class MonitorAction extends ApiActionBase implements IApiAction
 	private function getOldest()
 	{
 		global $cDataClearIp, $cDataClearEmail;
-		$statement = $this->database->prepare("select min(date) from request where email != :email and ip != :ip;");
+		$statement = $this->database->prepare("SELECT min(date) FROM request WHERE email != :email AND ip != :ip;");
 		$successful = $statement->execute(array(':email' => $cDataClearEmail, ':ip' => $cDataClearIp));
 
 		if (!$successful) {
@@ -58,6 +59,7 @@ class MonitorAction extends ApiActionBase implements IApiAction
 		}
 
 		$result = $statement->fetchColumn();
+
 		return $result;
 	}
 
@@ -67,9 +69,10 @@ class MonitorAction extends ApiActionBase implements IApiAction
 	private function getNewest()
 	{
 		global $cDataClearIp, $cDataClearEmail;
-		$statement = $this->database->prepare("select max(date) from request where email != :email and ip != :ip;");
+		$statement = $this->database->prepare("SELECT max(date) FROM request WHERE email != :email AND ip != :ip;");
 		$statement->execute(array(':email' => $cDataClearEmail, ':ip' => $cDataClearIp));
 		$result = $statement->fetchColumn(0);
+
 		return $result;
 	}
 }

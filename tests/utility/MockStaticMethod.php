@@ -1,6 +1,6 @@
 <?php
 
-require_once( dirname( __FILE__ ) . '/MockFunction.php' );
+require_once(dirname(__FILE__) . '/MockFunction.php');
 
 /**
  * Extension for PHPUnit that makes MockObject-style expectations possible for global functions (even PECL functions).
@@ -17,12 +17,11 @@ class PHPUnit_Extensions_MockStaticMethod extends PHPUnit_Extensions_MockFunctio
 	 */
 	public function restore()
 	{
-		if ( $this->active )
-		{
-			list( $class, $method ) = $this->getClassAndMethod();
+		if ($this->active) {
+			list($class, $method) = $this->getClassAndMethod();
 
-			runkit_method_remove( $class, $method );
-			runkit_method_rename( $class, $this->restore_name, $method );
+			runkit_method_remove($class, $method);
+			runkit_method_rename($class, $this->restore_name, $method);
 			$this->active = false;
 		}
 
@@ -32,13 +31,15 @@ class PHPUnit_Extensions_MockStaticMethod extends PHPUnit_Extensions_MockFunctio
 	/**
 	 * Calls original method that we temporary renamed. This maintains the oriignal functionality.
 	 *
-	 * @param type $arguments
+	 * @param array $arguments
+	 *
 	 * @return mixed
 	 */
-	protected function callOriginal( array $arguments )
+	protected function callOriginal(array $arguments)
 	{
-		list( $class ) = $this->getClassAndMethod();
-		return call_user_func_array( array( $class, $this->restore_name ), $arguments );
+		list($class) = $this->getClassAndMethod();
+
+		return call_user_func_array(array($class, $this->restore_name), $arguments);
 	}
 
 	/**
@@ -48,13 +49,13 @@ class PHPUnit_Extensions_MockStaticMethod extends PHPUnit_Extensions_MockFunctio
 	 */
 	protected function createFunction()
 	{
-		list( $class, $method ) = $this->getClassAndMethod();
+		list($class, $method) = $this->getClassAndMethod();
 
-		$this->restore_name	= 'restore_' . $class . '_' . $method . '_' . $this->id . '_' . uniqid();
+		$this->restore_name = 'restore_' . $class . '_' . $method . '_' . $this->id . '_' . uniqid();
 
 		// We save the original method in the class for restoring.
-		runkit_method_copy( $class, $this->restore_name, $class, $method );
-		runkit_method_redefine( $class, $method, '', $this->getCallback(), RUNKIT_ACC_STATIC );
+		runkit_method_copy($class, $this->restore_name, $class, $method);
+		runkit_method_redefine($class, $method, '', $this->getCallback(), RUNKIT_ACC_STATIC);
 
 		$this->active = true;
 	}
@@ -69,26 +70,23 @@ class PHPUnit_Extensions_MockStaticMethod extends PHPUnit_Extensions_MockFunctio
 	{
 		static $classes_and_methods = array();
 
-		if ( isset( $classes_and_methods[$this->function_name] ) )
-		{
+		if (isset($classes_and_methods[$this->function_name])) {
 			return $classes_and_methods[$this->function_name];
 		}
 
-		$class_and_method = explode( '::', $this->function_name );
+		$class_and_method = explode('::', $this->function_name);
 
-		if ( 2 !== count( $class_and_method ) )
-		{
-			trigger_error( 'Invalid static method name. Please provide Classname::method format.', E_USER_ERROR );
+		if (2 !== count($class_and_method)) {
+			trigger_error('Invalid static method name. Please provide Classname::method format.', E_USER_ERROR);
 		}
 
-		if ( !class_exists( $class_and_method[0] ) )
-		{
-			trigger_error( "Class '{$class_and_method[0]}' must exist in order the static method to be mocked.", E_USER_ERROR );
+		if (!class_exists($class_and_method[0])) {
+			trigger_error("Class '{$class_and_method[0]}' must exist in order the static method to be mocked.",
+				E_USER_ERROR);
 		}
 
-		if ( !is_callable( $class_and_method ) )
-		{
-			trigger_error( "Static method '{$this->function_name}' must exist and be public.", E_USER_ERROR );
+		if (!is_callable($class_and_method)) {
+			trigger_error("Static method '{$this->function_name}' must exist and be public.", E_USER_ERROR);
 		}
 
 		return $classes_and_methods[$this->function_name] = $class_and_method;

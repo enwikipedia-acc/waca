@@ -1,25 +1,49 @@
 <?php
+namespace Waca\Validation;
+
+use Exception;
+use Waca\DataObjects\Request;
+use Waca\Helpers\Interfaces\IBanHelper;
+use Waca\PdoDatabase;
+use Waca\Providers\Interfaces\IAntiSpoofProvider;
+use Waca\Providers\Interfaces\IXffTrustProvider;
 
 /**
  * Performs the validation of an incoming request.
  */
 class RequestValidationHelper
 {
+	/** @var IBanHelper */
 	private $banHelper;
+	/** @var Request */
 	private $request;
 	private $emailConfirmation;
+	/** @var PdoDatabase */
+	private $database;
+	/** @var IAntiSpoofProvider */
+	private $antiSpoofProvider;
 
 	/**
 	 * Summary of __construct
-	 * @param IBanHelper $banHelper
-	 * @param Request $request
-	 * @param string $emailConfirmation
+	 *
+	 * @param IBanHelper         $banHelper
+	 * @param Request            $request
+	 * @param string             $emailConfirmation
+	 * @param PdoDatabase        $database
+	 * @param IAntiSpoofProvider $antiSpoofProvider
 	 */
-	public function __construct(IBanHelper $banHelper, Request $request, $emailConfirmation)
-	{
+	public function __construct(
+		IBanHelper $banHelper,
+		Request $request,
+		$emailConfirmation,
+		PdoDatabase $database,
+		IAntiSpoofProvider $antiSpoofProvider
+	) {
 		$this->banHelper = $banHelper;
 		$this->request = $request;
 		$this->emailConfirmation = $emailConfirmation;
+		$this->database = $database;
+		$this->antiSpoofProvider = $antiSpoofProvider;
 	}
 
 	/**
@@ -164,11 +188,8 @@ class RequestValidationHelper
 
 	private function checkAntiSpoof()
 	{
-		/** @var $antispoofProvider IAntiSpoofProvider */
-		global $antispoofProvider;
-
 		try {
-			if (count($antispoofProvider->getSpoofs($this->request->getName())) > 0) {
+			if (count($this->antiSpoofProvider->getSpoofs($this->request->getName())) > 0) {
 				// If there were spoofs an Admin should handle the request.
 				$this->request->setStatus("Flagged users");
 			}
@@ -225,7 +246,7 @@ class RequestValidationHelper
 	private function nameRequestExists()
 	{
 		$query = "SELECT COUNT(id) FROM request WHERE status != 'Closed' AND name = :name;";
-		$statement = gGetDb()->prepare($query);
+		$statement = $this->database->prepare($query);
 		$statement->execute(array(':name' => $this->request->getName()));
 
 		if (!$statement) {

@@ -1,4 +1,10 @@
 <?php
+namespace Waca\DataObjects;
+
+use Exception;
+use PDO;
+use Waca\DataObject;
+use Waca\PdoDatabase;
 
 /**
  * Welcome template data object
@@ -18,19 +24,15 @@ class WelcomeTemplate extends DataObject
 	 *
 	 * @return WelcomeTemplate[]
 	 */
-	public static function getAll(PdoDatabase $database = null)
+	public static function getAll(PdoDatabase $database)
 	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
-
 		$statement = $database->prepare("SELECT * FROM welcometemplate;");
 
 		$statement->execute();
 
 		$result = array();
 		/** @var WelcomeTemplate $v */
-		foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
+		foreach ($statement->fetchAll(PDO::FETCH_CLASS, self::class) as $v) {
 			$v->isNew = false;
 			$v->setDatabase($database);
 			$result[] = $v;
@@ -121,7 +123,7 @@ SQL
 
 			$result = array();
 			/** @var WelcomeTemplate $v */
-			foreach ($statement->fetchAll(PDO::FETCH_CLASS, 'User') as $v) {
+			foreach ($statement->fetchAll(PDO::FETCH_CLASS, User::class) as $v) {
 				$v->isNew = false;
 				$v->setDatabase($this->dbObject);
 				$result[] = $v;
@@ -131,15 +133,5 @@ SQL
 		}
 
 		return $this->usageCache;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getObjectDescription()
-	{
-		// @todo fixme
-		return '<a href="acc.php?action=templatemgmt&amp;view=' . $this->getId() . '">'
-		. htmlentities($this->usercode) . "</a>";
 	}
 }

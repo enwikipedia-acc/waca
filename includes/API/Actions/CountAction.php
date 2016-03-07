@@ -2,17 +2,17 @@
 
 namespace Waca\API\Actions;
 
-use Waca\API\ApiActionBase as ApiActionBase;
+use DOMElement;
 use Waca\API\ApiException as ApiException;
 use Waca\API\IApiAction as IApiAction;
-
-use \PdoDatabase as PdoDatabase;
-use \User as User;
+use Waca\DataObjects\User;
+use Waca\Tasks\ApiPageBase;
+use Waca\WebRequest;
 
 /**
  * API Count action
  */
-class CountAction extends ApiActionBase implements IApiAction
+class CountAction extends ApiPageBase implements IApiAction
 {
 	/**
 	 * The target user
@@ -20,16 +20,10 @@ class CountAction extends ApiActionBase implements IApiAction
 	 */
 	private $user;
 
-	/**
-	 * The database
-	 * @var PdoDatabase $database
-	 */
-	private $database;
-
-	public function execute(\DOMElement $apiDocument)
+	public function executeApiAction(DOMElement $apiDocument)
 	{
-		$username = isset($_GET['user']) ? trim($_GET['user']) : '';
-		if ($username == '') {
+		$username = WebRequest::getString('user');
+		if ($username === null) {
 			throw new ApiException("Please specify a username");
 		}
 
@@ -37,12 +31,11 @@ class CountAction extends ApiActionBase implements IApiAction
 		$userElement->setAttribute("name", $username);
 		$apiDocument->appendChild($userElement);
 
-		$this->database = gGetDb();
-
-		$user = User::getByUsername($username, $this->database);
+		$user = User::getByUsername($username, $this->getDatabase());
 
 		if ($user === false) {
 			$userElement->setAttribute("missing", "true");
+
 			return $apiDocument;
 		}
 
@@ -73,7 +66,7 @@ class CountAction extends ApiActionBase implements IApiAction
             AND user.username = :username;
 QUERY;
 
-		$statement = $this->database->prepare($query);
+		$statement = $this->getDatabase()->prepare($query);
 		$statement->execute(array(":username" => $this->user->getUsername()));
 		$result = $statement->fetchColumn();
 		$statement->closeCursor();
@@ -95,7 +88,7 @@ QUERY;
             AND user.username = :username;
 QUERY;
 
-		$statement = $this->database->prepare($query);
+		$statement = $this->getDatabase()->prepare($query);
 		$statement->bindValue(":username", $this->user->getUsername());
 		$statement->bindValue(":date", date('Y-m-d') . "%");
 		$statement->execute();
@@ -105,11 +98,11 @@ QUERY;
 		return $today;
 	}
 
-	private function fetchAdminData(\DOMElement $userElement)
+	private function fetchAdminData(DOMElement $userElement)
 	{
 		$query = "SELECT COUNT(*) AS count FROM log WHERE log.user = :userid AND log.action = :action;";
 
-		$statement = $this->database->prepare($query);
+		$statement = $this->getDatabase()->prepare($query);
 		$statement->bindValue(":userid", $this->user->getId());
 		$statement->bindValue(":action", "Suspended");
 		$statement->execute();
@@ -160,7 +153,7 @@ QUERY;
 		$statement->closeCursor();
 
 		// Combine all three actions affecting Welcome templates into one count.
-		$combinedquery = $this->database->prepare(<<<SQL
+		$combinedquery = $this->getDatabase()->prepare(<<<SQL
             SELECT
                 COUNT(*) AS count
             FROM log
@@ -176,7 +169,7 @@ SQL
 		$combinedquery->closeCursor();
 
 		// Combine both actions affecting Email templates into one count.
-		$combinedquery = $this->database->prepare(<<<SQL
+		$combinedquery = $this->getDatabase()->prepare(<<<SQL
             SELECT COUNT(*) AS count
             FROM log
             WHERE log.user = :userid
@@ -189,6 +182,5 @@ SQL
 		$cec = $combinedquery->fetchColumn();
 		$userElement->setAttribute("emailtempchange", $cec);
 		$combinedquery->closeCursor();
-
 	}
 }

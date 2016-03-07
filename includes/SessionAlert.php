@@ -1,5 +1,5 @@
 <?php
-use Waca\WebRequest;
+namespace Waca;
 
 /**
  * Session Alerts
@@ -87,19 +87,6 @@ class SessionAlert
 	public static function error($message, $title = "Error!")
 	{
 		self::append(new SessionAlert($message, $title, "alert-error", true, true));
-	}
-
-	/**
-	 * @return array
-	 * @deprecated Split into separate getAlerts() and clearAlerts() methods in Session
-	 */
-	public static function retrieve()
-	{
-		$block = self::getAlerts();
-
-		self::clearAlerts();
-
-		return $block;
 	}
 
 	/**

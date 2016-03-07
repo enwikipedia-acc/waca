@@ -2,21 +2,23 @@
 
 namespace Waca\Pages;
 
-use Logger;
-use Notification;
-use SessionAlert;
-use User;
+use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
+use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
+use Waca\SessionAlert;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
 /**
  * Class PageUserManagement
  * @package Waca\Pages
  */
-class PageUserManagement extends PageBase
+class PageUserManagement extends InternalPageBase
 {
+	/** @var string */
+	private $adminMailingList = 'enwiki-acc-admins@googlegroups.com';
+
 	/**
 	 * Main function for this page, when no specific actions are called.
 	 */
@@ -43,7 +45,7 @@ class PageUserManagement extends PageBase
 		$this->assign("adminUsers", User::getAllWithStatus("Admin", $database));
 		$this->assign("checkUsers", User::getAllCheckusers($database));
 
-		$this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use($database) {
+		$this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use ($database) {
 			return User::getAllUsernames($database);
 		});
 
@@ -86,12 +88,20 @@ class PageUserManagement extends PageBase
 
 			$user->suspend($reason);
 
-			Notification::userSuspended($user, $reason);
+			$this->getNotificationHelper()->userSuspended($user, $reason);
 			SessionAlert::quick('Suspended user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
 
-			// TODO: send email
+			// send email
+			$this->sendStatusChangeEmail(
+				'Your WP:ACC account has been suspended',
+				'usermanagement/emails/suspended.tpl',
+				$reason,
+				$user,
+				User::getCurrent($database)
+			);
 
 			$this->redirect('userManagement');
+
 			return;
 		}
 		else {
@@ -134,12 +144,20 @@ class PageUserManagement extends PageBase
 
 			$user->decline($reason);
 
-			Notification::userDeclined($user, $reason);
+			$this->getNotificationHelper()->userDeclined($user, $reason);
 			SessionAlert::quick('Declined user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
 
-			// TODO: send email
+			// send email
+			$this->sendStatusChangeEmail(
+				'Your WP:ACC account has been declined',
+				'usermanagement/emails/declined.tpl',
+				$reason,
+				$user,
+				User::getCurrent($database)
+			);
 
 			$this->redirect('userManagement');
+
 			return;
 		}
 		else {
@@ -182,12 +200,20 @@ class PageUserManagement extends PageBase
 
 			$user->demote($reason);
 
-			Notification::userDemoted($user, $reason);
+			$this->getNotificationHelper()->userDemoted($user, $reason);
 			SessionAlert::quick('Demoted user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
 
-			// TODO: send email
+			// send email
+			$this->sendStatusChangeEmail(
+				'Your WP:ACC account has been demoted',
+				'usermanagement/emails/demoted.tpl',
+				$reason,
+				$user,
+				User::getCurrent($database)
+			);
 
 			$this->redirect('userManagement');
+
 			return;
 		}
 		else {
@@ -224,12 +250,20 @@ class PageUserManagement extends PageBase
 		if (WebRequest::wasPosted()) {
 			$user->approve();
 
-			Notification::userApproved($user);
+			$this->getNotificationHelper()->userApproved($user);
 			SessionAlert::quick('Approved user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
 
-			// TODO: send email
+			// send email
+			$this->sendStatusChangeEmail(
+				'Your WP:ACC account has been approved',
+				'usermanagement/emails/approved.tpl',
+				null,
+				$user,
+				User::getCurrent($database)
+			);
 
 			$this->redirect("userManagement");
+
 			return;
 		}
 		else {
@@ -266,12 +300,20 @@ class PageUserManagement extends PageBase
 		if (WebRequest::wasPosted()) {
 			$user->promote();
 
-			Notification::userPromoted($user);
+			$this->getNotificationHelper()->userPromoted($user);
 			SessionAlert::quick('Promoted user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
 
-			// TODO: send email
+			// send email
+			$this->sendStatusChangeEmail(
+				'Your WP:ACC account has been promoted',
+				'usermanagement/emails/promoted.tpl',
+				null,
+				$user,
+				User::getCurrent($database)
+			);
 
 			$this->redirect("userManagement");
+
 			return;
 		}
 		else {
@@ -332,11 +374,23 @@ class PageUserManagement extends PageBase
 				. " name to "
 				. htmlentities($newUsername, ENT_COMPAT, 'UTF-8'));
 
-			Notification::userRenamed($user, $oldUsername);
+			$this->getNotificationHelper()->userRenamed($user, $oldUsername);
 
-			// TODO: should we send an email here? we never used to...
+			// send an email to the user.
+			$this->assign('targetUsername', $user->getUsername());
+			$this->assign('toolAdmin', User::getCurrent($database)->getUsername());
+			$this->assign('oldUsername', $oldUsername);
+			$this->assign('mailingList', $this->adminMailingList);
+
+			$this->getEmailHelper()->sendMail(
+				$user->getEmail(),
+				'Your username on WP:ACC has been changed',
+				$this->fetchTemplate('usermanagement/emails/renamed.tpl'),
+				array('Reply-To' => $this->adminMailingList)
+			);
 
 			$this->redirect("userManagement");
+
 			return;
 		}
 		else {
@@ -385,10 +439,11 @@ class PageUserManagement extends PageBase
 			$user->save();
 
 			Logger::userPreferencesChange($database, $user);
-			Notification::userPrefChange($user);
+			$this->getNotificationHelper()->userPrefChange($user);
 			SessionAlert::quick('Changes to user\'s preferences have been saved');
 
 			$this->redirect("userManagement");
+
 			return;
 		}
 		else {
@@ -411,5 +466,29 @@ class PageUserManagement extends PageBase
 	protected function getSecurityConfiguration()
 	{
 		return SecurityConfiguration::adminPage();
+	}
+
+	/**
+	 * Sends a status change email to the user.
+	 *
+	 * @param string      $subject           The subject of the email
+	 * @param string      $template          The smarty template to use
+	 * @param string|null $reason            The reason for performing the status change
+	 * @param User        $user              The user affected
+	 * @param string      $toolAdminUsername The tool admin's username who is making the edit
+	 */
+	private function sendStatusChangeEmail($subject, $template, $reason, $user, $toolAdminUsername)
+	{
+		$this->assign('targetUsername', $user->getUsername());
+		$this->assign('toolAdmin', $toolAdminUsername);
+		$this->assign('actionReason', $reason);
+		$this->assign('mailingList', $this->adminMailingList);
+
+		$this->getEmailHelper()->sendMail(
+			$user->getEmail(),
+			$subject,
+			$this->fetchTemplate($template),
+			array('Reply-To' => $this->adminMailingList)
+		);
 	}
 }

@@ -2,20 +2,20 @@
 
 namespace Waca\Pages;
 
-use Comment;
-use EmailTemplate;
 use Exception;
-use Log;
-use Logger;
-use PdoDatabase;
-use Request;
-use User;
+use Waca\DataObjects\Comment;
+use Waca\DataObjects\EmailTemplate;
+use Waca\DataObjects\Log;
+use Waca\DataObjects\Request;
+use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
+use Waca\Helpers\Logger;
+use Waca\PdoDatabase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageViewRequest extends PageBase
+class PageViewRequest extends InternalPageBase
 {
 	const STATUS_SYMBOL_OPEN = '&#x2610';
 	const STATUS_SYMBOL_ACCEPTED = '&#x2611';
@@ -41,7 +41,7 @@ class PageViewRequest extends PageBase
 		$request = $this->getRequest();
 		$config = $this->getSiteConfiguration();
 		$database = $this->getDatabase();
-		$currentUser = User::getCurrent();
+		$currentUser = User::getCurrent($database);
 
 		// Test we should be able to look at this request
 		if ($config->getEmailConfirmationEnabled()) {
@@ -104,7 +104,7 @@ class PageViewRequest extends PageBase
 		$database = $this->getDatabase();
 
 		$request = Request::getById($requestId, $database);
-		if (!is_a($request, Request::class)) {
+		if ($request === false || !is_a($request, Request::class)) {
 			throw new ApplicationLogicException('Could not load the requested request!');
 		}
 
@@ -173,16 +173,16 @@ class PageViewRequest extends PageBase
 		$this->assign('createdId', $createdTemplate->getId());
 		$this->assign('createdName', $createdTemplate->getName());
 
-		$createReasons = EmailTemplate::getActiveTemplates(EmailTemplate::CREATED);
+		$createReasons = EmailTemplate::getActiveTemplates(EmailTemplate::CREATED, $database);
 		$this->assign("createReasons", $createReasons);
-		$declineReasons = EmailTemplate::getActiveTemplates(EmailTemplate::NOT_CREATED);
+		$declineReasons = EmailTemplate::getActiveTemplates(EmailTemplate::NOT_CREATED, $database);
 		$this->assign("declineReasons", $declineReasons);
 
-		$allCreateReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::CREATED);
+		$allCreateReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::CREATED, $database);
 		$this->assign("allCreateReasons", $allCreateReasons);
-		$allDeclineReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::NOT_CREATED);
+		$allDeclineReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::NOT_CREATED, $database);
 		$this->assign("allDeclineReasons", $allDeclineReasons);
-		$allOtherReasons = EmailTemplate::getAllActiveTemplates(false);
+		$allOtherReasons = EmailTemplate::getAllActiveTemplates(false, $database);
 		$this->assign("allOtherReasons", $allOtherReasons);
 
 		$this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use ($database) {
@@ -204,6 +204,8 @@ class PageViewRequest extends PageBase
 
 	private function setupLogData(Request $request, PdoDatabase $database)
 	{
+		$currentUser = User::getCurrent($database);
+
 		$logs = Logger::getRequestLogsWithComments($request->getId(), $database);
 		$requestLogs = array();
 
@@ -225,7 +227,7 @@ class PageViewRequest extends PageBase
 		$nameCache = array();
 
 		$editableComments = false;
-		if (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
+		if ($currentUser->isAdmin() || $currentUser->isCheckuser()) {
 			$editableComments = true;
 		}
 
@@ -245,7 +247,7 @@ class PageViewRequest extends PageBase
 					'userid'   => $entry->getUser() == -1 ? null : $entry->getUser(),
 					'entry'    => null,
 					'time'     => $entry->getTime(),
-					'canedit'  => ($editableComments || $entry->getUser() == User::getCurrent()->getId()),
+					'canedit'  => ($editableComments || $entry->getUser() == $currentUser->getId()),
 					'id'       => $entry->getId(),
 					'comment'  => $entry->getComment(),
 				);

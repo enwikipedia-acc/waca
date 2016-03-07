@@ -2,9 +2,8 @@
 
 namespace Waca\Fragments;
 
-use InterfaceMessage;
 use Smarty;
-use User;
+use Waca\DataObjects\User;
 use Waca\Environment;
 use Waca\SiteConfiguration;
 
@@ -52,25 +51,21 @@ trait TemplateOutput
 		$this->smarty = new Smarty();
 		$this->smarty->addPluginsDir($this->getSiteConfiguration()->getFilePath() . 'smarty-plugins');
 
-		$this->assign("currentUser", User::getCurrent());
-		$this->assign("loggedIn", (!User::getCurrent()->isCommunityUser()));
-		$this->assign("baseurl", $this->getSiteConfiguration()->getBaseUrl());
-		$this->assign("mediawikiScriptPath", $this->getSiteConfiguration()->getMediawikiScriptPath());
+		$this->assign('currentUser', User::getCommunity());
+		$this->assign('loggedIn', false);
+		$this->assign('baseurl', $this->getSiteConfiguration()->getBaseUrl());
+		$this->assign('mediawikiScriptPath', $this->getSiteConfiguration()->getMediawikiScriptPath());
 
-		// TODO: this isn't very mockable, and requires a database link.
-		$siteNoticeText = InterfaceMessage::get(InterfaceMessage::SITENOTICE);
-		$this->assign("siteNoticeText", $siteNoticeText);
+		$this->assign('siteNoticeText', '');
 
 		// TODO: this isn't mockable either, and has side effects if you don't have git
-		$this->assign("toolversion", Environment::getToolVersion());
+		$this->assign('toolversion', Environment::getToolVersion());
 
-		// TODO: implement this somehow
-		$this->assign("onlineusers", "");
+		// default these
+		$this->assign('onlineusers', array());
+		$this->assign('typeAheadBlock', '');
 
-		// default this
-		$this->assign("typeAheadBlock", "");
-
-		$this->assign("page", $this);
+		$this->assign('page', $this);
 	}
 
 	/**

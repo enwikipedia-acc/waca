@@ -1,5 +1,7 @@
 <?php
 
+namespace Waca\Providers\Interfaces;
+
 /**
  * IXffTrustProvider provides methods for determining IP trust
  *
@@ -14,7 +16,7 @@ interface IXffTrustProvider
 	/**
 	 * Returns a value if the IP address is a trusted proxy
 	 *
-	 * @param string      $ip
+	 * @param string $ip
 	 *
 	 * @return bool
 	 */
@@ -32,8 +34,10 @@ interface IXffTrustProvider
 
 	/**
 	 * Takes an array( "low" => "high" ) values, and returns true if $needle is in at least one of them.
+	 *
 	 * @param array  $haystack
 	 * @param string $ip
+	 *
 	 * @return bool
 	 */
 	public function ipInRange($haystack, $ip);

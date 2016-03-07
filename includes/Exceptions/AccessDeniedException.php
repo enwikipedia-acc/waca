@@ -2,6 +2,9 @@
 
 namespace Waca\Exceptions;
 
+use Waca\DataObjects\User;
+use Waca\PdoDatabase;
+
 /**
  * Class AccessDeniedException
  *
@@ -18,6 +21,13 @@ class AccessDeniedException extends ReadableException
 		header("HTTP/1.1 403 Forbidden");
 
 		$this->setUpSmarty();
+
+		// uck. We should still be able to access the database in this situation though.
+		$database = PdoDatabase::getDatabaseConnection('acc');
+		$currentUser = User::getCurrent($database);
+		$this->assign('currentUser', $currentUser);
+		$this->assign("loggedIn", (!$currentUser->isCommunityUser()));
+
 		return $this->fetchTemplate("exception/access-denied.tpl");
 	}
 }

@@ -1,22 +1,16 @@
 <?php
 namespace Waca;
 
-use CachedApiAntispoofProvider;
-use CachedRDnsLookupProvider;
+use ErrorException;
 use Exception;
-use FakeLocationProvider;
-use Offline;
-use PdoDatabase;
-use User;
+use Waca\DataObjects\User;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Exceptions\ReadableException;
-use Waca\Helpers\EmailHelper;
-use Waca\Helpers\HttpHelper;
-use Waca\Helpers\OAuthHelper;
 use Waca\Helpers\TypeAheadHelper;
-use Waca\Helpers\WikiTextHelper;
 use Waca\Providers\GlobalStateProvider;
-use XffTrustProvider;
+use Waca\Router\IRequestRouter;
+use Waca\Tasks\InternalPageBase;
+use Waca\Tasks\ITask;
 
 /**
  * Internal application entry point.
@@ -29,16 +23,43 @@ class WebStart extends ApplicationBase
 	 * @var IRequestRouter
 	 */
 	private $requestRouter;
+	/** @var bool */
+	private $isPublic;
 
 	/**
 	 * WebStart constructor.
 	 *
-	 * @param SiteConfiguration $configuration
+	 * @param SiteConfiguration $configuration The site configuration
+	 * @param IRequestRouter    $router        The request router to use
 	 */
-	public function __construct(SiteConfiguration $configuration)
+	public function __construct(SiteConfiguration $configuration, IRequestRouter $router)
 	{
 		parent::__construct($configuration);
-		$this->requestRouter = new RequestRouter();
+
+		$this->requestRouter = $router;
+	}
+
+	/**
+	 * @param ITask             $page
+	 * @param SiteConfiguration $siteConfiguration
+	 * @param PdoDatabase       $database
+	 * @param PdoDatabase       $notificationsDatabase
+	 * @return void
+	 */
+	protected function setupHelpers(
+		ITask $page,
+		SiteConfiguration $siteConfiguration,
+		PdoDatabase $database,
+		PdoDatabase $notificationsDatabase
+	) {
+		parent::setupHelpers($page, $siteConfiguration, $database, $notificationsDatabase);
+
+		$identificationVerifier = new IdentificationVerifier($page->getHttpHelper(), $siteConfiguration, $database);
+		$page->setIdentificationVerifier($identificationVerifier);
+
+		if ($page instanceof InternalPageBase) {
+			$page->setTypeAheadHelper(new TypeAheadHelper());
+		}
 	}
 
 	/**
@@ -110,7 +131,8 @@ HTML;
 		$state = serialize($errorData);
 		$errorId = sha1($state);
 
-		// TODO: log the error state somewhere.
+		// Save the error for later analysis
+		file_put_contents($siteConfiguration->getErrorLog() . '/' . $errorId . '.log', $state);
 
 		// clear and discard any content that's been saved to the output buffer
 		if (ob_get_level() > 0) {
@@ -138,6 +160,11 @@ HTML;
 		print $message;
 	}
 
+	public static function errorHandler($err_severity, $err_msg, $err_file, $err_line) {
+		// call into the main exception handler above
+		throw new ErrorException($err_msg, 0, $err_severity, $err_file, $err_line);
+	}
+
 	/**
 	 * Environment setup
 	 *
@@ -151,6 +178,7 @@ HTML;
 	{
 		// initialise global exception handler
 		set_exception_handler(array(self::class, 'exceptionHandler'));
+		set_error_handler(array(self::class, 'errorHandler'), E_RECOVERABLE_ERROR);
 
 		// start output buffering if necessary
 		if (ob_get_level() === 0) {
@@ -160,16 +188,15 @@ HTML;
 		// initialise super-global providers
 		WebRequest::setGlobalStateProvider(new GlobalStateProvider());
 
-		// check the tool is still online
 		if (Offline::isOffline()) {
-			print Offline::getOfflineMessage(false);
+			print Offline::getOfflineMessage($this->isPublic());
 			ob_end_flush();
 
 			return false;
 		}
 
 		// Call parent setup
-		if(!parent::setupEnvironment()){
+		if (!parent::setupEnvironment()) {
 			return false;
 		}
 
@@ -197,7 +224,15 @@ HTML;
 		$siteConfiguration = $this->getConfiguration();
 		$database = PdoDatabase::getDatabaseConnection('acc');
 
-		$this->setupHelpers($page, $siteConfiguration, $database);
+		if ($siteConfiguration->getIrcNotificationsEnabled()) {
+			$notificationsDatabase = PdoDatabase::getDatabaseConnection('notifications');
+		}
+		else {
+			// @todo federated table here?
+			$notificationsDatabase = $database;
+		}
+
+		$this->setupHelpers($page, $siteConfiguration, $database, $notificationsDatabase);
 
 		/* @todo Remove this global statement! It's here for User.php, which does far more than it should. */
 		global $oauthHelper;
@@ -263,23 +298,21 @@ HTML;
 			Session::restart();
 		}
 
-		if ($currentUser->getForceLogout() == "1") {
+		if ($currentUser->getForceLogout()) {
 			Session::restart();
 
-			$currentUser->setForceLogout(0);
+			$currentUser->setForceLogout(false);
 			$currentUser->save();
 		}
 	}
 
-	/**
-	 * Don't use this function
-	 *
-	 * Bin it, but first change the OAuth provider on Wikipedia to use the correct URL and also bin oauth/callback.php.
-	 *
-	 * @param IRequestRouter $router
-	 */
-	public function setRequestRouter(IRequestRouter $router)
+	public function isPublic()
 	{
-		$this->requestRouter = $router;
+		return $this->isPublic;
+	}
+
+	public function setPublic($isPublic)
+	{
+		$this->isPublic = $isPublic;
 	}
 }

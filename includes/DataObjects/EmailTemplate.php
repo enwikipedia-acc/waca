@@ -1,4 +1,10 @@
 <?php
+namespace Waca\DataObjects;
+
+use Exception;
+use PDO;
+use Waca\DataObject;
+use Waca\PdoDatabase;
 
 /**
  * Email template data object
@@ -10,9 +16,9 @@ class EmailTemplate extends DataObject
 	const CREATED = "created";
 	const NOT_CREATED = "not created";
 	const NONE = null;
-
 	private $name;
 	private $text;
+	/** @var string|null */
 	private $jsquestion;
 	private $active = 1;
 	private $preloadonly = 0;
@@ -20,16 +26,14 @@ class EmailTemplate extends DataObject
 
 	/**
 	 * Gets active non-preload templates
-	 * @param string $defaultAction Default action to take (EmailTemplate::CREATED or EmailTemplate::NOT_CREATED)
-	 * @param PdoDatabase $database 
+	 *
+	 * @param string      $defaultAction Default action to take (EmailTemplate::CREATED or EmailTemplate::NOT_CREATED)
+	 * @param PdoDatabase $database
+	 *
 	 * @return array|false
 	 */
-	public static function getActiveTemplates($defaultAction, PdoDatabase $database = null)
+	public static function getActiveTemplates($defaultAction, PdoDatabase $database)
 	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
-
 		global $createdid;
 
 		$statement = $database->prepare(<<<SQL
@@ -63,17 +67,13 @@ SQL
 	 *
 	 * @return array|false
 	 */
-	public static function getAllActiveTemplates($defaultAction = null, PdoDatabase $database = null)
+	public static function getAllActiveTemplates($defaultAction, PdoDatabase $database)
 	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
-
 		$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE defaultaction = :forcreated AND active = 1;");
 
 		if ($defaultAction === false) {
 			$statement = $database->prepare(
-				"SELECT * FROM `emailtemplate` WHERE defaultaction not in ('created', 'not created') AND active = 1;");
+				"SELECT * FROM `emailtemplate` WHERE defaultaction NOT IN ('created', 'not created') AND active = 1;");
 		}
 
 		if ($defaultAction === null) {
@@ -98,16 +98,12 @@ SQL
 	/**
 	 * Gets all the unactive templates
 	 *
-	 * @param PdoDatabase|null $database
+	 * @param PdoDatabase $database
 	 *
 	 * @return array
 	 */
-	public static function getAllInactiveTemplates(PdoDatabase $database = null)
+	public static function getAllInactiveTemplates(PdoDatabase $database)
 	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
-
 		$statement = $database->prepare("SELECT * FROM `emailtemplate` WHERE  active = 0;");
 		$statement->execute();
 
@@ -314,17 +310,5 @@ SQL
 	public function setPreloadOnly($preloadonly)
 	{
 		$this->preloadonly = $preloadonly ? 1 : 0;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getObjectDescription()
-	{
-		global $baseurl;
-		$safeName = htmlentities($this->name);
-		$id = $this->id;
-
-		return "<a href=\"{$baseurl}/internal.php/emailManagement/view?id={$id}\">Email Template #{$id} ({$safeName})</a>";
 	}
 }

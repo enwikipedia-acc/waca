@@ -3,17 +3,16 @@
 namespace Waca\Pages;
 
 use Exception;
-use Logger;
-use Notification;
-use SessionAlert;
-use User;
+use Waca\DataObjects\User;
+use Waca\DataObjects\WelcomeTemplate;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
+use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
+use Waca\SessionAlert;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
-use WelcomeTemplate;
 
-class PageWelcomeTemplateManagement extends PageBase
+class PageWelcomeTemplateManagement extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.
@@ -21,7 +20,7 @@ class PageWelcomeTemplateManagement extends PageBase
 	 */
 	protected function main()
 	{
-		$templateList = WelcomeTemplate::getAll();
+		$templateList = WelcomeTemplate::getAll($this->getDatabase());
 
 		$this->assign('templateList', $templateList);
 		$this->setTemplate('welcome-template/list.tpl');
@@ -39,7 +38,7 @@ class PageWelcomeTemplateManagement extends PageBase
 			$this->redirect('welcomeTemplates');
 		}
 
-		$user = User::getCurrent();
+		$user = User::getCurrent($this->getDatabase());
 
 		if (WebRequest::postBoolean('disable')) {
 			$user->setWelcomeTemplate(null);
@@ -111,7 +110,7 @@ class PageWelcomeTemplateManagement extends PageBase
 
 			Logger::welcomeTemplateCreated($database, $template);
 
-			Notification::welcomeTemplateCreated($template);
+			$this->getNotificationHelper()->welcomeTemplateCreated($template);
 
 			SessionAlert::success("Template successfully created.");
 
@@ -147,7 +146,7 @@ class PageWelcomeTemplateManagement extends PageBase
 
 			SessionAlert::success("Template updated.");
 
-			Notification::welcomeTemplateEdited($template);
+			$this->getNotificationHelper()->welcomeTemplateEdited($template);
 
 			$this->redirect('welcomeTemplates');
 		}
@@ -186,7 +185,7 @@ class PageWelcomeTemplateManagement extends PageBase
 
 		SessionAlert::success(
 			"Template deleted. Any users who were using this template have had automatic welcoming disabled.");
-		Notification::welcomeTemplateDeleted($templateId);
+		$this->getNotificationHelper()->welcomeTemplateDeleted($templateId);
 	}
 
 	/**

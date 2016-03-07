@@ -1,5 +1,11 @@
 <?php
 
+namespace Waca\Providers;
+
+use PDOStatement;
+use Waca\PdoDatabase;
+use Waca\Providers\Interfaces\IXffTrustProvider;
+
 /**
  * XffTrustProvider short summary.
  *

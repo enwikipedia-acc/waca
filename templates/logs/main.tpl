@@ -20,18 +20,17 @@
         <tbody>
         {foreach from=$logs item=entry name=logloop}
             <tr>
-                <td>{$entry->getTimestamp()} <em class="muted">({$entry->getTimestamp()|relativedate})</em></td>
+                <td>{$entry.timestamp} <em class="muted">({$entry.timestamp|relativedate})</em></td>
                 <td>
-                    {if $entry->getUser() != -1}
-                    <a href='{$baseurl}/internal.php/statistics/users/detail?user={$entry->getUser()}'>
-                        {/if}
-                        {$users[$entry->getUser()]|escape}
-                        {if $entry->getUser() != -1}
-                    </a>
+                    {if $entry.userid != -1}
+                        <a href='{$baseurl}/internal.php/statistics/users/detail?user={$entry.username|escape}'>
+                            {$entry.username|escape}
+                        </a>
                     {/if}
+                    {$entry.username|escape}
                 </td>
-                <td>{Logger::getLogDescription($entry)|escape}</td>
-                <td>{$entry->getObjectDescription()}</td>
+                <td>{$entry.description|escape}</td>
+                <td>{$entry.objectdescription}</td>
             </tr>
         {/foreach}
         </tbody>

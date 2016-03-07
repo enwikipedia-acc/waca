@@ -1,5 +1,7 @@
 <?php
 
+namespace Waca;
+
 class IrcColourCode
 {
 	const BOLD = "\x02";
@@ -9,7 +11,6 @@ class IrcColourCode
 	const UNDERLINE2 = "\x1f";
 	const REVERSE = "\x16";
 	const RESET = "\x0f";
-
 	const WHITE = "\x0300";
 	const BLACK = "\x0301";
 	const DARK_BLUE = "\x0302";

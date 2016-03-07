@@ -11,39 +11,15 @@
  **                                                                       **
  ** See CREDITS for the list of developers.                               **
  ***************************************************************************/
-use Waca\Environment;
+namespace Waca;
+
+use Smarty;
 
 /**
  * Handles the tool offline messages
  */
 class Offline
 {
-	/**
-	 * Summary of check
-	 *
-	 * @param bool $external External interface
-	 *
-	 * @deprecated Do checking within the entry point.
-	 */
-	public static function check($external)
-	{
-		global $smarty, $dontUseDb, $dontUseDbCulprit, $dontUseDbReason;
-
-		if ($dontUseDb) {
-			if ($external) {
-				$smarty->display("offline/external.tpl");
-			}
-			else {
-				$smarty->assign("dontUseDbCulprit", $dontUseDbCulprit);
-				$smarty->assign("dontUseDbReason", $dontUseDbReason);
-				$smarty->assign("alerts", array());
-				$smarty->display("offline/internal.tpl");
-			}
-
-			die();
-		}
-	}
-
 	/**
 	 * Determines if the tool is offline
 	 * @return bool

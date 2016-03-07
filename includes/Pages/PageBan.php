@@ -2,19 +2,18 @@
 
 namespace Waca\Pages;
 
-use Ban;
 use Exception;
-use Logger;
-use Notification;
-use Request;
-use SessionAlert;
-use User;
+use Waca\DataObjects\Ban;
+use Waca\DataObjects\Request;
+use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
+use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
+use Waca\SessionAlert;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageBan extends PageBase
+class PageBan extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.
@@ -23,10 +22,18 @@ class PageBan extends PageBase
 	{
 		$this->setHtmlTitle('Bans');
 
-		$bans = Ban::getActiveBans();
+		$bans = Ban::getActiveBans(null, $this->getDatabase());
 
-		$this->assign("activebans", $bans);
-		$this->setTemplate("bans/banlist.tpl");
+		$userIds = array_map(
+			function(Ban $entry) {
+				return $entry->getUser();
+			},
+			$bans);
+		$userList = User::getUsernames($userIds, $this->getDatabase());
+
+		$this->assign('usernames', $userList);
+		$this->assign('activebans', $bans);
+		$this->setTemplate('bans/banlist.tpl');
 	}
 
 	/**
@@ -58,7 +65,7 @@ class PageBan extends PageBase
 		if (WebRequest::wasPosted()) {
 			$unbanReason = WebRequest::postString('unbanreason');
 			if ($unbanReason === null || trim($unbanReason) === "") {
-				throw new ApplicationLogicException("No unban reason specified");
+				throw new ApplicationLogicException('No unban reason specified');
 			}
 
 			$database = $this->getDatabase();
@@ -67,14 +74,14 @@ class PageBan extends PageBase
 
 			Logger::unbanned($database, $ban, $unbanReason);
 
-			SessionAlert::quick("Disabled ban.");
-			Notification::unbanned($ban, $unbanReason);
+			SessionAlert::quick('Disabled ban.');
+			$this->getNotificationHelper()->unbanned($ban, $unbanReason);
 
 			$this->redirect('bans');
 		}
 		else {
-			$this->assign("ban", $ban);
-			$this->setTemplate("bans/unban.tpl");
+			$this->assign('ban', $ban);
+			$this->setTemplate('bans/unban.tpl');
 		}
 	}
 
@@ -181,18 +188,18 @@ class PageBan extends PageBase
 		$type = WebRequest::postString('type');
 		$this->validateBanType($type, $target);
 
-		if (count(Ban::getActiveBans($target)) > 0) {
+		$database = $this->getDatabase();
+
+		if (count(Ban::getActiveBans($target, $database)) > 0) {
 			throw new ApplicationLogicException('This target is already banned!');
 		}
-
-		$database = $this->getDatabase();
 
 		$ban = new Ban();
 		$ban->setDatabase($database);
 		$ban->setActive(1);
 		$ban->setType($type);
 		$ban->setTarget($target);
-		$ban->setUser(User::getCurrent()->getId());
+		$ban->setUser(User::getCurrent($database)->getId());
 		$ban->setReason($reason);
 		$ban->setDuration($duration);
 
@@ -200,7 +207,7 @@ class PageBan extends PageBase
 
 		Logger::banned($database, $ban, $reason);
 
-		Notification::banned($ban);
+		$this->getNotificationHelper()->banned($ban);
 		SessionAlert::quick('Ban has been set.');
 
 		$this->redirect('bans');

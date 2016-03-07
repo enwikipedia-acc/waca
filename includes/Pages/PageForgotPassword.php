@@ -2,15 +2,15 @@
 
 namespace Waca\Pages;
 
-use PdoDatabase;
-use SessionAlert;
-use User;
+use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
+use Waca\PdoDatabase;
 use Waca\SecurityConfiguration;
+use Waca\SessionAlert;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageForgotPassword extends PageBase
+class PageForgotPassword extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.

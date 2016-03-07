@@ -1,15 +1,12 @@
 <?php
-use Waca\Exceptions\EnvironmentException;
+namespace Waca;
 
-/**
- * @param string $db
- * @return PdoDatabase
- * @throws Exception
- */
-function gGetDb($db = "acc")
-{
-	return PdoDatabase::getDatabaseConnection($db);
-}
+use Exception;
+use PDO;
+use PDOException;
+use PDOStatement;
+use Waca\Exceptions\EnvironmentException;
+use Waca\Helpers\DebugHelper;
 
 class PdoDatabase extends PDO
 {
@@ -17,12 +14,10 @@ class PdoDatabase extends PDO
 	 * @var PdoDatabase[]
 	 */
 	private static $connections = array();
-
 	/**
 	 * @var bool True if a transaction is active
 	 */
 	protected $hasActiveTransaction = false;
-    
 	/**
 	 * Summary of $queryLogStatement
 	 * @var PDOStatement
@@ -30,7 +25,10 @@ class PdoDatabase extends PDO
 	private $queryLogStatement;
 
 	/**
+	 * Unless you're doing low-level work, this is not the function you want.
+	 *
 	 * @param string $connectionName
+	 *
 	 * @return PdoDatabase
 	 * @throws Exception
 	 */
@@ -99,6 +97,7 @@ class PdoDatabase extends PDO
 			// start a new transaction, and return whether or not the start was
 			// successful
 			$this->hasActiveTransaction = parent::beginTransaction();
+
 			return $this->hasActiveTransaction;
 		}
 	}
@@ -108,8 +107,10 @@ class PdoDatabase extends PDO
 	 */
 	public function commit()
 	{
-		parent::commit();
-		$this->hasActiveTransaction = false;
+		if ($this->hasActiveTransaction) {
+			parent::commit();
+			$this->hasActiveTransaction = false;
+		}
 	}
 
 	/**
@@ -117,58 +118,27 @@ class PdoDatabase extends PDO
 	 */
 	public function rollBack()
 	{
-		parent::rollback();
-		$this->hasActiveTransaction = false;
-	}
-
-	/**
-	 * Summary of transactionally
-	 * @param Closure $method
-	 * @deprecated 
-	 */
-	public function transactionally($method)
-	{
-		if (!$this->beginTransaction()) {
-			BootstrapSkin::displayAlertBox("Error starting database transaction.", "alert-error", "Database transaction error", true, false);
-			BootstrapSkin::displayInternalFooter();
-			die();
-		}
-
-		try {
-			$method();
-
-			$this->commit();
-		}
-		catch (TransactionException $ex) {
-			$this->rollBack();
-
-			BootstrapSkin::displayAlertBox($ex->getMessage(), $ex->getAlertType(), $ex->getTitle(), true, false);
-
-			// TODO: yuk.
-			if (defined("PUBLICMODE")) {
-				BootstrapSkin::displayPublicFooter();
-			}
-			else {
-				BootstrapSkin::displayInternalFooter();
-			}
-
-			die();
+		if ($this->hasActiveTransaction) {
+			parent::rollback();
+			$this->hasActiveTransaction = false;
 		}
 	}
 
 	/**
 	 * Prepares a statement for execution.
-	 * @param string $statement 
-	 * @param array $driver_options 
+	 *
+	 * @param string $statement
+	 * @param array  $driverOptions
+	 *
 	 * @return PDOStatement
 	 */
-	public function prepare($statement, $driver_options = array())
+	public function prepare($statement, $driverOptions = array())
 	{
 		global $enableQueryLog;
 		if ($enableQueryLog) {
 			try {
 				if ($this->queryLogStatement === null) {
-					$this->queryLogStatement = 
+					$this->queryLogStatement =
 						parent::prepare(<<<SQL
 							INSERT INTO applicationlog (source, message, stack, request, request_ts) 
 							VALUES (:source, :message, :stack, :request, :rqts);
@@ -178,11 +148,11 @@ SQL
 
 				$this->queryLogStatement->execute(
 					array(
-						":source" => "QueryLog",
+						":source"  => "QueryLog",
 						":message" => $statement,
-						":stack" => DebugHelper::getBacktrace(),
+						":stack"   => DebugHelper::getBacktrace(),
 						":request" => $_SERVER["REQUEST_URI"],
-						":rqts" => $_SERVER["REQUEST_TIME_FLOAT"],
+						":rqts"    => $_SERVER["REQUEST_TIME_FLOAT"],
 					)
 				);
 			}
@@ -191,7 +161,7 @@ SQL
 				$enableQueryLog = false;
 			}
 		}
-        
-		return parent::prepare($statement, $driver_options);   
+
+		return parent::prepare($statement, $driverOptions);
 	}
 }

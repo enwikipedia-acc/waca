@@ -1,5 +1,10 @@
 <?php
 
+namespace Waca\Tests;
+
+use PHPUnit_Framework_TestCase;
+use StringFunctions;
+
 class StringFunctionsTest extends PHPUnit_Framework_TestCase
 {
 	/**

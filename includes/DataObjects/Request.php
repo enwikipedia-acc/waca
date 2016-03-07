@@ -1,4 +1,11 @@
 <?php
+namespace Waca\DataObjects;
+
+use DateTime;
+use Exception;
+use PDO;
+use Waca\DataObject;
+use Waca\Providers\Interfaces\IXffTrustProvider;
 
 /**
  * Request data object
@@ -10,10 +17,11 @@ class Request extends DataObject
 	private $email;
 	private $ip;
 	private $name;
+	/** @var string|null */
 	private $comment;
 	private $status = "Open";
 	private $date;
-	private $checksum = 0;
+	private $checksum = '0';
 	private $emailsent = 0;
 	private $emailconfirm;
 	private $reserved = 0;
@@ -32,27 +40,6 @@ class Request extends DataObject
 	private $emailRequests;
 	private $emailRequestsResolved = false;
 	private $blacklistCache = null;
-
-	/**
-	 * This function removes all old requests which are not yet email-confirmed
-	 * from the database.
-	 */
-	public static function cleanExpiredUnconfirmedRequests()
-	{
-		global $emailConfirmationExpiryDays;
-
-		$database = gGetDb();
-		$statement = $database->prepare(<<<SQL
-            DELETE FROM request
-            WHERE
-                date < DATE_SUB(CURRENT_TIMESTAMP(), INTERVAL $emailConfirmationExpiryDays DAY)
-                AND emailconfirm != 'Confirmed'
-                AND emailconfirm != '';
-SQL
-		);
-
-		$statement->execute();
-	}
 
 	/**
 	 * @throws Exception
@@ -251,15 +238,6 @@ SQL
 	}
 
 	/**
-	 * @deprecated
-	 * @return User
-	 */
-	public function getReservedObject()
-	{
-		return User::getById($this->reserved, gGetDb());
-	}
-
-	/**
 	 * @param int|null $reserved
 	 */
 	public function setReserved($reserved)
@@ -351,7 +329,7 @@ SQL
 
 			$query->execute();
 
-			$this->emailRequests = $query->fetchAll(PDO::FETCH_CLASS, "Request");
+			$this->emailRequests = $query->fetchAll(PDO::FETCH_CLASS, self::class);
 			$this->emailRequestsResolved = true;
 
 			foreach ($this->emailRequests as $r) {
@@ -393,7 +371,7 @@ SQL
 
 			$query->execute();
 
-			$this->ipRequests = $query->fetchAll(PDO::FETCH_CLASS, "Request");
+			$this->ipRequests = $query->fetchAll(PDO::FETCH_CLASS, self::class);
 			$this->ipRequestsResolved = true;
 
 			foreach ($this->ipRequests as $r) {
@@ -439,7 +417,7 @@ SQL
 	 * @param $si
 	 *
 	 * @deprecated
-	 * @throws TransactionException
+	 * @throws Exception
 	 */
 	public function confirmEmail($si)
 	{
@@ -452,7 +430,7 @@ SQL
 			$this->setEmailConfirm("Confirmed");
 		}
 		else {
-			throw new TransactionException("Confirmation hash does not match the expected value",
+			throw new Exception("Confirmation hash does not match the expected value",
 				"Email confirmation failed");
 		}
 	}
@@ -521,17 +499,6 @@ SQL
 	public function setEmail($email)
 	{
 		$this->email = $email;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getObjectDescription()
-	{
-		$value = '<a href="internal.php/viewRequest?id=' . $this->getId() . '">Request #' . $this->getId() . " ("
-			. htmlentities($this->name) . ")</a>";
-
-		return $value;
 	}
 
 	/**

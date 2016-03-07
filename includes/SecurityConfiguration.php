@@ -2,7 +2,7 @@
 
 namespace Waca;
 
-use User;
+use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
 
 /**
@@ -140,15 +140,16 @@ final class SecurityConfiguration
 	 * that a user should have access to something.
 	 *
 	 * @param User $user
+	 * @param IdentificationVerifier $iv
 	 *
 	 * @return bool
 	 * @category Security-Critical
 	 */
-	public function allows(User $user)
+	public function allows(User $user, IdentificationVerifier $iv)
 	{
 		$allowed = false;
 
-		if ($this->requireIdentified && !$user->isCommunityUser() && !$user->isIdentified()) {
+		if ($this->requireIdentified && !$user->isCommunityUser() && !$user->isIdentified($iv)) {
 			return false;
 		}
 

@@ -1,4 +1,11 @@
 <?php
+namespace Waca\Providers;
+
+use Exception;
+use Waca\DataObjects\AntiSpoofCache;
+use Waca\Helpers\HttpHelper;
+use Waca\PdoDatabase;
+use Waca\Providers\Interfaces\IAntiSpoofProvider;
 
 /**
  * Cached API Antispoof Provider
@@ -8,17 +15,39 @@
  */
 class CachedApiAntispoofProvider implements IAntiSpoofProvider
 {
+	/**
+	 * @var PdoDatabase
+	 */
+	private $database;
+	/**
+	 * @var string
+	 */
+	private $mediawikiWebServiceEndpoint;
+	/**
+	 * @var HttpHelper
+	 */
+	private $httpHelper;
+
+	public function __construct(PdoDatabase $database, $mediawikiWebServiceEndpoint, HttpHelper $httpHelper)
+	{
+		$this->database = $database;
+		$this->mediawikiWebServiceEndpoint = $mediawikiWebServiceEndpoint;
+		$this->httpHelper = $httpHelper;
+	}
+
 	public function getSpoofs($username)
 	{
-		global $mediawikiWebServiceEndpoint;
-
-		$cacheResult = AntiSpoofCache::getByUsername($username, gGetDb());
+		$cacheResult = AntiSpoofCache::getByUsername($username, $this->database);
 		if ($cacheResult == false) {
 			// get the data from the API
-			$data = file_get_contents($mediawikiWebServiceEndpoint . "?action=antispoof&format=php&username=" . urlencode($username));
+			$data = $this->httpHelper->get($this->mediawikiWebServiceEndpoint, array(
+				'action'   => 'antispoof',
+				'format'   => 'php',
+				'username' => $username,
+			));
 
 			$cacheEntry = new AntiSpoofCache();
-			$cacheEntry->setDatabase(gGetDb());
+			$cacheEntry->setDatabase($this->database);
 			$cacheEntry->setUsername($username);
 			$cacheEntry->setData($data);
 			$cacheEntry->save();

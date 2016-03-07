@@ -5,7 +5,8 @@ namespace Waca\ConsoleTasks;
 use Exception;
 use PDOException;
 use PDOStatement;
-use Waca\ConsoleTaskBase;
+use Waca\RegexConstants;
+use Waca\Tasks\ConsoleTaskBase;
 
 class RecreateTrustedIpTableTask extends ConsoleTaskBase
 {
@@ -44,23 +45,21 @@ class RecreateTrustedIpTableTask extends ConsoleTaskBase
 	}
 
 	/**
-	 * @param $dnsdomain
-	 * @param $ip
-	 *
-	 * @return array
+	 * @param string[] $dnsDomains  the DNS domains to resolve
+	 * @param string[] $ipAddresses existing array of IPs to add to
 	 */
-	protected function resolveDns($dnsdomain, &$ip)
+	protected function resolveDns($dnsDomains, &$ipAddresses)
 	{
-		foreach ($dnsdomain as $d) {
-			$ips = gethostbynamel($d);
+		foreach ($dnsDomains as $domain) {
+			$ipList = gethostbynamel($domain);
 
-			if ($ips === false) {
-				echo "Invalid DNS name $d\n";
+			if ($ipList === false) {
+				echo "Invalid DNS name $domain\n";
 				continue;
 			}
 
-			foreach ($ips as $i) {
-				$ip[] = $i;
+			foreach ($ipList as $ipAddress) {
+				$ipAddresses[] = $ipAddress;
 			}
 
 			// don't DoS
@@ -109,13 +108,13 @@ class RecreateTrustedIpTableTask extends ConsoleTaskBase
 			}
 
 			// match a regex of an CIDR range:
-			$ipcidr = "@(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:/(?:32|3[01]|[0-2]?[0-9]))?@";
+			$ipcidr = '@' . RegexConstants::IPV4 . RegexConstants::IPV4_CIDR . '@';
 			if (preg_match($ipcidr, $line) === 1) {
 				$iprange[] = $line;
 				continue;
 			}
 
-			$ipnoncidr = "@(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(?:/(?:32|3[01]|[0-2]?[0-9]))?@";
+			$ipnoncidr = '@' . RegexConstants::IPV4 . '@';
 			if (preg_match($ipnoncidr, $line) === 1) {
 				$ip[] = $line;
 				continue;

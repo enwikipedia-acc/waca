@@ -46,6 +46,7 @@ $antispoof_table = "spoofuser";
 
 $mediawikiWebServiceEndpoint = "https://en.wikipedia.org/w/api.php";
 $mediawikiScriptPath = "https://en.wikipedia.org/w/index.php";
+$metaWikimediaWebServiceEndpoint = "https://meta.wikimedia.org/w/api.php";
 
 // URL of the current copy of the tool.
 $baseurl = "https://accounts.wmflabs.org";
@@ -113,6 +114,9 @@ $onRegistrationNewbieCheckAge = 5184000; // Account age on Wikipedia in seconds.
 
 // Force identification to the foundation
 $forceIdentification = true;
+
+// Time to cache positive automatic identification results, as a MySQL time interval
+$identificationCacheExpiry = "1 DAY";
 
 // minimum password version
 //   0 = hashed
@@ -223,13 +227,6 @@ $availableRequestStates = array(
 	
 $defaultRequestStateKey = 'Open';
 
-// CORS
-$CORSallowed = array(
-	"http://en.wikipedia.org",
-	"https://en.wikipedia.org",
-	"http://meta.wikimedia.org",
-	"https://meta.wikimedia.org");
-
 $providerCacheExpiry = $dataclear_interval;
 
 // miser mode
@@ -302,11 +299,10 @@ foreach (array(
 
 // Set up the AutoLoader
 require_once($filepath . "includes/AutoLoader.php");
-spl_autoload_register("AutoLoader::load");
+spl_autoload_register('Waca\\AutoLoader::load');
 require_once($filepath . 'vendor/autoload.php');
 
 // Extra includes which are just plain awkward wherever they are.
-require_once($filepath . 'oauth/OAuthRequestRouter.php');
 require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/OAuth.php');
 require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/JWT.php');
 
@@ -328,10 +324,13 @@ $siteConfiguration->setBaseUrl($baseurl)
 	->setFilePath($filepath)
 	->setDebuggingTraceEnabled($enableErrorTrace)
 	->setForceIdentification($forceIdentification)
+	->setIdentificationCacheExpiry($identificationCacheExpiry)
 	->setMediawikiScriptPath($mediawikiScriptPath)
 	->setMediawikiWebServiceEndpoint($mediawikiWebServiceEndpoint)
+	->setMetaWikimediaWebServiceEndpoint($metaWikimediaWebServiceEndpoint)
 	->setEnforceOAuth($enforceOAuth)
 	->setEmailConfirmationEnabled($enableEmailConfirm == 1)
+	->setEmailConfirmationExpiryDays($emailConfirmationExpiryDays)
 	->setMiserModeLimit($requestLimitShowOnly)
 	->setRequestStates($availableRequestStates)
 	->setSquidList($squidIpList)
@@ -346,4 +345,7 @@ $siteConfiguration->setBaseUrl($baseurl)
 	->setOAuthConsumerSecret($oauthSecretToken)
 	->setDataClearInterval($dataclear_interval)
 	->setXffTrustedHostsFile($xff_trusted_hosts_file)
+	->setIrcNotificationsEnabled($ircBotNotificationsEnabled == 1)
+	->setIrcNotificationType($ircBotNotificationType)
+	->setIrcNotificationsInstance($whichami)
 	;

@@ -1,12 +1,20 @@
 <?php
+namespace Waca\DataObjects;
+
+use Exception;
+use Waca\DataObject;
+use Waca\PdoDatabase;
 
 /**
  * AntiSpoofCache data object
  */
 class AntiSpoofCache extends DataObject
 {
+	/** @var string */
 	protected $username;
+	/** @var string */
 	protected $data;
+	/** @var string */
 	protected $timestamp;
 
 	public static function getByUsername($username, PdoDatabase $database)
@@ -14,7 +22,7 @@ class AntiSpoofCache extends DataObject
 		$statement = $database->prepare(<<<SQL
 SELECT *
 FROM antispoofcache
-WHERE username = :id AND timestamp > date_sub(now(), interval 3 hour)
+WHERE username = :id AND timestamp > date_sub(now(), INTERVAL 3 HOUR)
 LIMIT 1
 SQL
 		);
@@ -32,16 +40,25 @@ SQL
 		return $resultObject;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getUsername()
 	{
 		return $this->username;
 	}
 
+	/**
+	 * @param string $username
+	 */
 	public function setUsername($username)
 	{
 		$this->username = $username;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getData()
 	{
 		return $this->data;
@@ -55,17 +72,24 @@ SQL
 		$this->data = $data;
 	}
 
+	/**
+	 * @return string
+	 * @todo convert to timestamp?
+	 */
 	public function getTimestamp()
 	{
 		return $this->timestamp;
 	}
 
+	/**
+	 * @throws Exception
+	 */
 	public function save()
 	{
 		if ($this->isNew) {
 			// insert
 			// clear old data first
-			$this->dbObject->exec("delete from antispoofcache where timestamp < date_sub(now(), interval 3 hour);");
+			$this->dbObject->exec("DELETE FROM antispoofcache WHERE timestamp < date_sub(now(), INTERVAL 3 HOUR);");
 
 			$statement = $this->dbObject->prepare("INSERT INTO antispoofcache (username, data) VALUES (:username, :data);");
 			$statement->bindValue(":username", $this->username);

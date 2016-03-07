@@ -3,12 +3,11 @@
 namespace Waca\Pages\RequestAction;
 
 use DateTime;
-use Logger;
-use Notification;
-use SessionAlert;
-use User;
+use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Helpers\Logger;
 use Waca\SecurityConfiguration;
+use Waca\SessionAlert;
 
 class PageReservation extends RequestActionBase
 {
@@ -55,7 +54,7 @@ class PageReservation extends RequestActionBase
 
 			Logger::reserve($database, $request);
 
-			Notification::requestReserved($request);
+			$this->getNotificationHelper()->requestReserved($request);
 
 			SessionAlert::success("Reserved request {$request->getId()}.");
 		}

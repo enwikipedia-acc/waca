@@ -14,28 +14,24 @@ class PHPUnit_Extensions_MockFunction
 	 * @var integer
 	 */
 	protected $id;
-
 	/**
 	 * Flag to tell if the function mocking is active or not (replacement is in place).
 	 *
 	 * @var boolean
 	 */
 	protected $active = false;
-
 	/**
 	 * Test case from where the mock function is created. Automagically found with call stack.
 	 *
 	 * @var PHPUnit_Framework_TestCase
 	 */
 	protected $test_case;
-
 	/**
 	 * Standard PHPUnit MockObject used to test invocations of the mocked function.
 	 *
 	 * @var object
 	 */
 	protected $mock_object;
-
 	/**
 	 * Object to check if the function is called from its scope (supposedly the test object to the test case).
 	 *
@@ -45,14 +41,12 @@ class PHPUnit_Extensions_MockFunction
 	 * @var object
 	 */
 	protected $scope_object;
-
 	/**
 	 * The name of the original function that gets mocked.
 	 *
 	 * @var string
 	 */
 	protected $function_name;
-
 	/**
 	 * Random temporary name of a funstion there we "save" the original, unmocked function.
 	 *
@@ -61,26 +55,22 @@ class PHPUnit_Extensions_MockFunction
 	 * @var string
 	 */
 	protected $restore_name;
-
 	/**
 	 * Value of the incremental ID that next time will be assigned to an instance of this class.
 	 *
 	 * @var integer
 	 */
 	protected static $next_id = 1;
-
 	/**
 	 * List of active mock object instances (those that are not restored) with their ID as key.
 	 *
 	 * @var PHPUnit_Extensions_MockFunction[]
 	 */
 	protected static $instances = array();
-
 	/**
 	 * Class name of PHPUnit test cases, used to automatically find them in the call stack.
 	 */
 	const TESTCASE_CLASSNAME = 'PHPUnit_Framework_TestCase';
-
 	/**
 	 * Number of call stack items between the function call of the test object and self::invoked().
 	 *
@@ -94,33 +84,31 @@ class PHPUnit_Extensions_MockFunction
 	 * Constructor setting up object.
 	 *
 	 * @param string $function_name Name of the function to mock. Doesn't need to exist, might be newly created.
-	 * @param object $scope_object Object specifying the scope where the mocked function is used.
+	 * @param object $scope_object  Object specifying the scope where the mocked function is used.
 	 */
-	public function __construct( $function_name, $scope_object )
+	public function __construct($function_name, $scope_object)
 	{
-		if ( !function_exists( 'runkit_function_redefine' ) )
-		{
-			trigger_error( 'Runkit is not installed.', E_USER_ERROR );
+		if (!function_exists('runkit_function_redefine')) {
+			trigger_error('Runkit is not installed.', E_USER_ERROR);
 		}
-		
+
 		// APC doesn't quite like runkit.
 		// When they work together, it might result dead process.
-		if ( function_exists( 'apc_clear_cache' ) )
-		{
+		if (function_exists('apc_clear_cache')) {
 			apc_clear_cache();
 		}
-		
-		$this->id				= self::$next_id;
-		$this->function_name	= $function_name;
-		$this->scope_object		= $scope_object;
-		$this->test_case		= self::findTestCase();
-		$this->mock_object		=
+
+		$this->id = self::$next_id;
+		$this->function_name = $function_name;
+		$this->scope_object = $scope_object;
+		$this->test_case = self::findTestCase();
+		$this->mock_object =
 			$this->test_case->getMockBuilder(
-				'Mock_' . str_replace( '::', '__', $this->function_name ) . '_' . $this->id
+				'Mock_' . str_replace('::', '__', $this->function_name) . '_' . $this->id
 			)
-			->disableAutoload()
-			->setMethods(array( 'invoked' ))
-			->getMock();
+				->disableAutoload()
+				->setMethods(array('invoked'))
+				->getMock();
 
 		++self::$next_id;
 		self::$instances[$this->id] = $this;
@@ -148,20 +136,17 @@ class PHPUnit_Extensions_MockFunction
 	 */
 	public function restore()
 	{
-		if ( $this->active )
-		{
-		runkit_function_remove( $this->function_name );
-		if ( isset( $this->restore_name ) )
-		{
-			runkit_function_rename( $this->restore_name, $this->function_name );
-		}
+		if ($this->active) {
+			runkit_function_remove($this->function_name);
+			if (isset($this->restore_name)) {
+				runkit_function_rename($this->restore_name, $this->function_name);
+			}
 			$this->active = false;
 		}
 
-		if ( isset( self::$instances[$this->id] ) )
-				{
-					unset( self::$instances[$this->id] );
-				}
+		if (isset(self::$instances[$this->id])) {
+			unset(self::$instances[$this->id]);
+		}
 	}
 
 	/**
@@ -169,34 +154,35 @@ class PHPUnit_Extensions_MockFunction
 	 *
 	 * It takes the parameters of the function call and passes them to the mock object.
 	 *
-	 * @param type $arguments 0-indexed array of arguments with which the mocked function was called.
+	 * @param array $arguments 0-indexed array of arguments with which the mocked function was called.
+	 *
 	 * @return mixed
 	 */
-	public function invoked( array $arguments )
+	public function invoked(array $arguments)
 	{
 		// Original function is called when the invocation is ousides he scope or
 		// the invocation comes from this object.
-		$caller_object = self::getCallStackObject( self::CALL_STACK_DISTANCE );
-		if ( $caller_object === $this || ( isset( $this->scope_object ) && $this->scope_object !== $caller_object ) )
-		{
-			if ( isset( $this->restore_name ) )
-			{
-				return $this->callOriginal( $arguments );
+		$caller_object = self::getCallStackObject(self::CALL_STACK_DISTANCE);
+		if ($caller_object === $this || (isset($this->scope_object) && $this->scope_object !== $caller_object)) {
+			if (isset($this->restore_name)) {
+				return $this->callOriginal($arguments);
 			}
-			trigger_error( 'Undefined function: ' . $this->function_name, E_USER_ERROR );
+			trigger_error('Undefined function: ' . $this->function_name, E_USER_ERROR);
 		}
-		return call_user_func_array( array( $this->mock_object, __FUNCTION__ ), $arguments );
+
+		return call_user_func_array(array($this->mock_object, __FUNCTION__), $arguments);
 	}
-	
+
 	/**
 	 * Calls original function that we temporary renamed. This maintains the oriignal functionality.
 	 *
-	 * @param type $arguments
+	 * @param array $arguments
+	 *
 	 * @return mixed
 	 */
-	protected function callOriginal( array $arguments )
+	protected function callOriginal(array $arguments)
 	{
-		return call_user_func_array( $this->restore_name, $arguments );
+		return call_user_func_array($this->restore_name, $arguments);
 	}
 
 	/**
@@ -210,21 +196,24 @@ class PHPUnit_Extensions_MockFunction
 	public function expects()
 	{
 		$arguments = func_get_args();
-		return call_user_func_array( array( $this->mock_object, __FUNCTION__ ), $arguments )->method( 'invoked' );
+
+		return call_user_func_array(array($this->mock_object, __FUNCTION__), $arguments)->method('invoked');
 	}
 
 	/**
 	 * Returns an instance of this class selected by its ID. Used in the runkit function.
 	 *
 	 * @param integer $id
+	 *
 	 * @return object
+	 * @throws Exception
 	 */
-	public static function findMock( $id )
+	public static function findMock($id)
 	{
-		if ( !isset( self::$instances[$id] ) )
-		{
-			throw new Exception( 'Mock object not found, might be destroyed already.' );
+		if (!isset(self::$instances[$id])) {
+			throw new Exception('Mock object not found, might be destroyed already.');
 		}
+
 		return self::$instances[$id];
 	}
 
@@ -239,14 +228,13 @@ class PHPUnit_Extensions_MockFunction
 		$backtrace = debug_backtrace();
 		$classname = self::TESTCASE_CLASSNAME;
 
-		do
-		{
-			$calling_test = array_shift( $backtrace );
-		} while( isset( $calling_test ) && !( isset( $calling_test['object'] ) && $calling_test['object'] instanceof $classname ) );
+		do {
+			$calling_test = array_shift($backtrace);
+		}
+		while (isset($calling_test) && !(isset($calling_test['object']) && $calling_test['object'] instanceof $classname));
 
-		if ( !isset( $calling_test ) )
-		{
-			trigger_error( 'No calling test found.', E_USER_ERROR );
+		if (!isset($calling_test)) {
+			trigger_error('No calling test found.', E_USER_ERROR);
 		}
 
 		return $calling_test['object'];
@@ -259,16 +247,14 @@ class PHPUnit_Extensions_MockFunction
 	 */
 	protected function createFunction()
 	{
-		if ( function_exists( $this->function_name ) )
-		{
-			$this->restore_name	= 'restore_' . $this->function_name . '_' . $this->id . '_' . uniqid();
+		if (function_exists($this->function_name)) {
+			$this->restore_name = 'restore_' . $this->function_name . '_' . $this->id . '_' . uniqid();
 
-			runkit_function_copy( $this->function_name, $this->restore_name );
-			runkit_function_redefine( $this->function_name, '', $this->getCallback() );
+			runkit_function_copy($this->function_name, $this->restore_name);
+			runkit_function_redefine($this->function_name, '', $this->getCallback());
 		}
-		else
-		{
-			runkit_function_add( $this->function_name, '', $this->getCallback() );
+		else {
+			runkit_function_add($this->function_name, '', $this->getCallback());
 		}
 
 		$this->active = true;
@@ -285,6 +271,7 @@ class PHPUnit_Extensions_MockFunction
 	protected function getCallback()
 	{
 		$class_name = __CLASS__;
+
 		return <<<CALLBACK
 			\$mock		= $class_name::findMock( {$this->id} );
 			\$arguments = func_get_args();
@@ -302,17 +289,16 @@ CALLBACK;
 	 * Function calls are ignored, the first call after $distance that is made form
 	 * is returned.
 	 *
-	 * @param type $distance The distance in the call stack from the current call and the desired one.
+	 * @param mixed $distance The distance in the call stack from the current call and the desired one.
+	 *
 	 * @return object
 	 */
-	protected static function getCallStackObject( $distance )
+	protected static function getCallStackObject($distance)
 	{
 		$backtrace = debug_backtrace();
 
-		do
-		{
-			if ( isset( $backtrace[$distance]['object'] ) )
-			{
+		do {
+			if (isset($backtrace[$distance]['object'])) {
 				return $backtrace[$distance]['object'];
 			}
 
@@ -321,9 +307,9 @@ CALLBACK;
 			 * Funcsion calls and functions like "user_call_func" get ignored.
 			 */
 			++$distance;
-		} while ( isset( $backtrace[$distance] ) );
+		}
+		while (isset($backtrace[$distance]));
 
 		return null;
 	}
-
 }

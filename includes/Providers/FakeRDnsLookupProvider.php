@@ -1,5 +1,10 @@
 <?php
 
+namespace Waca\Providers;
+
+use Waca\PdoDatabase;
+use Waca\Providers\Interfaces\IRDnsProvider;
+
 /**
  * Mock RDNS provider for testing and development
  */

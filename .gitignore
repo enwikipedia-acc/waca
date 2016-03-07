@@ -34,3 +34,4 @@ vendor/*
 /sql/schema2.sql
 /sql/schema.sql
 components/*
+errorlog/*.log

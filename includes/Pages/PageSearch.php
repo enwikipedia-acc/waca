@@ -2,15 +2,15 @@
 
 namespace Waca\Pages;
 
-use Exception;
 use PDO;
-use Request;
+use Waca\DataObjects\Request;
+use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\PageBase;
 use Waca\SecurityConfiguration;
+use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageSearch extends PageBase
+class PageSearch extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.
@@ -47,6 +47,14 @@ class PageSearch extends PageBase
 			$this->assign('term', $searchTerm);
 			$this->assign('target', $searchType);
 
+			$userIds = array_map(
+				function(Request $entry) {
+					return $entry->getReserved();
+				},
+				$results);
+			$userList = User::getUsernames($userIds, $this->getDatabase());
+			$this->assign('userlist', $userList);
+
 			$this->setTemplate('search/searchResult.tpl');
 		}
 		else {
@@ -75,7 +83,7 @@ class PageSearch extends PageBase
 		$statement->execute();
 
 		/** @var Request $r */
-		$requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
+		$requests = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
 		foreach ($requests as $r) {
 			$r->setDatabase($database);
 			$r->isNew = false;
@@ -110,7 +118,7 @@ class PageSearch extends PageBase
 		$statement->execute();
 
 		/** @var Request $r */
-		$requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
+		$requests = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
 		foreach ($requests as $r) {
 			$r->setDatabase($database);
 			$r->isNew = false;
@@ -145,7 +153,7 @@ SQL;
 		$statement->execute();
 
 		/** @var Request $r */
-		$requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
+		$requests = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
 		foreach ($requests as $r) {
 			$r->setDatabase($database);
 			$r->isNew = false;

@@ -1,4 +1,10 @@
 <?php
+namespace Waca\DataObjects;
+
+use Exception;
+use PDO;
+use Waca\DataObject;
+use Waca\PdoDatabase;
 
 /**
  * Ban data object
@@ -14,43 +20,6 @@ class Ban extends DataObject
 	private $active;
 
 	/**
-	 * Gets all bans, expired and active filtered by the optional target.
-	 *
-	 * @param string|null $target   The email, IP, or name of the target of the ban
-	 * @param PdoDatabase $database The database object to look up with
-	 *
-	 * @return Ban[]
-	 */
-	public static function getAllBans($target = null, PdoDatabase $database = null)
-	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
-
-		if ($target !== null) {
-			$query = "SELECT * FROM ban WHERE target = :target;";
-			$statement = $database->prepare($query);
-			$statement->bindValue(":target", $target);
-		}
-		else {
-			$query = "SELECT * FROM ban;";
-			$statement = $database->prepare($query);
-		}
-
-		$statement->execute();
-
-		$result = array();
-		/** @var Ban $v */
-		foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
-			$v->isNew = false;
-			$v->setDatabase($database);
-			$result[] = $v;
-		}
-
-		return $result;
-	}
-
-	/**
 	 * Gets all active bans, filtered by the optional target.
 	 *
 	 * @param string|null $target
@@ -58,12 +27,8 @@ class Ban extends DataObject
 	 *
 	 * @return Ban[]
 	 */
-	public static function getActiveBans($target = null, PdoDatabase $database = null)
+	public static function getActiveBans($target, PdoDatabase $database)
 	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
-
 		if ($target !== null) {
 			$query = <<<SQL
 SELECT * FROM ban WHERE target = :target AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;
@@ -98,12 +63,8 @@ SQL;
 	 *
 	 * @return Ban
 	 */
-	public static function getActiveId($id, PdoDatabase $database = null)
+	public static function getActiveId($id, PdoDatabase $database)
 	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
-
 		$statement = $database->prepare(<<<SQL
 SELECT *
 FROM ban
@@ -133,12 +94,8 @@ SQL
 	 *
 	 * @return Ban
 	 */
-	public static function getBanByTarget($target, $type, PdoDatabase $database = null)
+	public static function getBanByTarget($target, $type, PdoDatabase $database)
 	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
-
 		$query = <<<SQL
 SELECT * FROM ban
 WHERE type = :type
@@ -241,16 +198,6 @@ SQL
 	}
 
 	/**
-	 * @param int $user UserID of user who is setting the ban
-	 *
-	 * @throws Exception
-	 */
-	public function setUser($user)
-	{
-		$this->user = $user;
-	}
-
-	/**
 	 * @return string
 	 */
 	public function getReason()
@@ -291,28 +238,36 @@ SQL
 	}
 
 	/**
-	 * @return int
-	 * @todo Boolean?
+	 * @return bool
 	 */
-	public function getActive()
+	public function isActive()
 	{
-		return $this->active;
+		return $this->active == 1;
 	}
 
 	/**
-	 * @param int $active
+	 * @param bool $active
 	 */
 	public function setActive($active)
 	{
-		$this->active = $active;
+		$this->active = $active ? 1 : 0;
 	}
 
 	/**
-	 * Gets a user-visible description of the object.
-	 * @return string
+	 * @return int
 	 */
-	public function getObjectDescription()
+	public function getUser()
 	{
-		return 'Ban #' . $this->getId() . " (" . htmlentities($this->target) . ")</a>";
+		return $this->user;
+	}
+
+	/**
+	 * @param int $user UserID of user who is setting the ban
+	 *
+	 * @throws Exception
+	 */
+	public function setUser($user)
+	{
+		$this->user = $user;
 	}
 }

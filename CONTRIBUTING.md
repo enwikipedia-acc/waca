@@ -10,7 +10,7 @@ This is a work-in-progress, so feel free to put ideas forward as to coding style
 
 * Files are UTF-8 encoded without a BOM ([PSR-1][1])
 * Only use long-syntax php tags: `<?php` and omit the closing tag at the end of a file. ([PSR-1][1])
-* PHP 5.5 please, nothing newer as it won't run in production.
+* PHP 5.6 please, nothing newer as it won't run in production.
 * Files contain a single class definition, and the file is named for the class. 
   Alternatively, they should contain a script, not both. ([PSR-1][1])
   All new classes should be appropriately namespaced.
@@ -95,18 +95,14 @@ Table names in our database are lowercase singular forms (`request`, `user`, `ba
 
 Accessing the database is done either at an entity level through subclasses of `DataObject` (preferred), or directly through PDO. The `DataObject` class and it's subclasses implement the [active record pattern](https://en.wikipedia.org/wiki/Active_record_pattern).
 
-Firstly, you'll need to grab a copy of the relevant database object:
-
-```php
-$database = gGetDb();
-```
+Firstly, you'll need to grab a copy of the relevant database object from somewhere close by. If you're on a page, this is likely `$this->getDatabase()`
 
 This is a [PDO](https://php.net/manual/en/class.pdo.php)([ish](includes/PdoDatabase.php)) object which you can do what you need to with.
 
 You can grab entities using the static methods defined on them:
 
 ```php
-$database = gGetDb();
+$database = $this->getDatabase();
 $request = Request::getById($id, $database);
 ```
 
@@ -123,24 +119,11 @@ Please try to use named parameters, and strongly avoid positional parameters, as
 
 #### Transactions
 
-Please use transactions for all new code. The easiest way to do this is to wrap your code in a `transactionally()` call as a callback. The database class will then wrap your code in a try/catch block with automatic transaction commit/rollback. Throw a `TransactionException` if you encounter an error and need to abort.
-
-```php
-$database = gGetDb();
-$database->transactionally(function() use ($database) 
-{
-    $database->exec(<<<SQL
-        UPDATE user 
-        SET 
-            oauthrequesttoken = null, 
-            oauthrequestsecret = null, 
-            oauthaccesstoken = null, 
-            oauthaccesssecret = null, 
-            oauthidentitycache = null;
-SQL
-    );
-});
-```
+Transactions are handled automatically by the framework - every page load is run within it's own transaction. If you 
+need to rollback the transaction, then you probably want to throw an exception, but it is possible to manually rollback
+the transaction. If you do roll it back manually, you need to take responsibility for handling that rollback correctly,
+and ensuring that future failed statements are also rolled back - aka start a new transaction immediately after 
+rollback.
 
 #### Database patches
 

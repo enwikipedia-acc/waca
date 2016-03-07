@@ -2,18 +2,19 @@
 
 namespace Waca;
 
-use CachedApiAntispoofProvider;
-use CachedRDnsLookupProvider;
 use Exception;
-use FakeLocationProvider;
-use PdoDatabase;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Helpers\EmailHelper;
 use Waca\Helpers\HttpHelper;
+use Waca\Helpers\IrcNotificationHelper;
 use Waca\Helpers\OAuthHelper;
 use Waca\Helpers\TypeAheadHelper;
 use Waca\Helpers\WikiTextHelper;
-use XffTrustProvider;
+use Waca\Providers\CachedApiAntispoofProvider;
+use Waca\Providers\CachedRDnsLookupProvider;
+use Waca\Providers\FakeLocationProvider;
+use Waca\Providers\XffTrustProvider;
+use Waca\Tasks\ITask;
 
 abstract class ApplicationBase
 {
@@ -89,6 +90,7 @@ abstract class ApplicationBase
 
 	/**
 	 * Main application logic
+	 * @return void
 	 */
 	abstract protected function main();
 
@@ -97,16 +99,25 @@ abstract class ApplicationBase
 	 *
 	 * Note that we need to be very careful here, as exceptions may have been thrown and handled.
 	 * This should *only* be for cleaning up, no logic should go here.
+	 *
+	 * @return void
 	 */
 	abstract protected function cleanupEnvironment();
 
 	/**
-	 * @param TaskBase          $page
+	 * @param ITask             $page
 	 * @param SiteConfiguration $siteConfiguration
 	 * @param PdoDatabase       $database
+	 * @param PdoDatabase       $notificationsDatabase
+	 *
+	 * @return void
 	 */
-	protected function setupHelpers(TaskBase $page, SiteConfiguration $siteConfiguration, PdoDatabase $database)
-	{
+	protected function setupHelpers(
+		ITask $page,
+		SiteConfiguration $siteConfiguration,
+		PdoDatabase $database,
+		PdoDatabase $notificationsDatabase
+	) {
 		$page->setSiteConfiguration($siteConfiguration);
 
 		// setup the global database object
@@ -127,8 +138,12 @@ abstract class ApplicationBase
 		$page->setXffTrustProvider(new XffTrustProvider($siteConfiguration->getSquidList(), $database));
 
 		$page->setRdnsProvider(new CachedRDnsLookupProvider($database));
-		$page->setAntiSpoofProvider(new CachedApiAntispoofProvider());
-		$page->setTypeAheadHelper(new TypeAheadHelper());
+
+		$page->setAntiSpoofProvider(new CachedApiAntispoofProvider(
+			$database,
+			$this->getConfiguration()->getMediawikiWebServiceEndpoint(),
+			$httpHelper));
+
 		$page->setOAuthHelper(new OAuthHelper(
 			$siteConfiguration->getOAuthBaseUrl(),
 			$siteConfiguration->getOAuthConsumerToken(),
@@ -136,5 +151,10 @@ abstract class ApplicationBase
 			$httpHelper,
 			$siteConfiguration->getMediawikiWebServiceEndpoint()
 		));
+
+		$page->setNotificationHelper(new IrcNotificationHelper(
+			$siteConfiguration,
+			$notificationsDatabase,
+			$database));
 	}
 }

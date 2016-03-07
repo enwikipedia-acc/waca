@@ -1,4 +1,18 @@
 <?php
+namespace Waca\Helpers;
+
+use Exception;
+use PDO;
+use Waca\DataObject;
+use Waca\DataObjects\Ban;
+use Waca\DataObjects\Comment;
+use Waca\DataObjects\EmailTemplate;
+use Waca\DataObjects\InterfaceMessage;
+use Waca\DataObjects\Log;
+use Waca\DataObjects\Request;
+use Waca\DataObjects\User;
+use Waca\DataObjects\WelcomeTemplate;
+use Waca\PdoDatabase;
 
 /**
  * Helper class for creating log entries
@@ -36,14 +50,20 @@ class Logger
 		$user = null
 	) {
 		if ($user == null) {
-			$user = User::getCurrent();
+			$user = User::getCurrent($database);
+		}
+
+		$objectType = get_class($object);
+		if(strpos($objectType, 'Waca\\DataObjects\\') !== false)
+		{
+			$objectType = str_replace('Waca\\DataObjects\\', '', $objectType);
 		}
 
 		$log = new Log();
 		$log->setDatabase($database);
 		$log->setAction($logAction);
 		$log->setObjectId($object->getId());
-		$log->setObjectType(get_class($object));
+		$log->setObjectType($objectType);
 		$log->setUser($user);
 		$log->setComment($comment);
 		$log->save();
@@ -53,7 +73,7 @@ class Logger
 
 	/**
 	 * @param PdoDatabase $database
-	 * @param User $user
+	 * @param User        $user
 	 */
 	public static function newUser(PdoDatabase $database, User $user)
 	{
@@ -369,7 +389,7 @@ SQL
 
 		$result = $logStatement->execute(array(":requestId" => $requestId));
 		if ($result) {
-			$data = $logStatement->fetchAll(PDO::FETCH_CLASS, "Log");
+			$data = $logStatement->fetchAll(PDO::FETCH_CLASS, Log::class);
 
 			/** @var Log $entry */
 			foreach ($data as $entry) {
@@ -476,6 +496,8 @@ SQL
 	 * @param integer     $offset
 	 *
 	 * @return array|bool
+	 *
+	 * @todo change this to not return a dual-purpose array, but rather to return data we can use through list()
 	 */
 	public static function getLogs(PdoDatabase $database, $userFilter, $actionFilter, $limit = 100, $offset = 0)
 	{
@@ -524,7 +546,7 @@ SQL
 		$countStatement->closeCursor();
 
 		if ($searchStatement->execute()) {
-			$data = $searchStatement->fetchAll(PDO::FETCH_CLASS, "Log");
+			$data = $searchStatement->fetchAll(PDO::FETCH_CLASS, Log::class);
 
 			/** @var Log $entry */
 			foreach ($data as $entry) {
@@ -541,12 +563,12 @@ SQL
 	}
 
 	/**
+	 * @param PdoDatabase $database
+	 *
 	 * @return array
 	 */
-	public static function getLogActions()
+	public static function getLogActions(PdoDatabase $database)
 	{
-		$database = gGetDb();
-
 		$lookup = array(
 			'Reserved'        => 'reserved',
 			'Email Confirmed' => 'email-confirmed',
