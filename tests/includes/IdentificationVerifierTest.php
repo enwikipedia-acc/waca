@@ -48,6 +48,8 @@ class IdentificationVerifierTest extends PHPUnit_Framework_TestCase
 		$method = $reflector->getMethod('isIdentifiedOnWiki');
 		$method->setAccessible(true);
 
+		setlocale(LC_ALL, 'UTF8');
+
 		$this->assertTrue($method->invoke($this->identificationVerifier, "Stwalkerster"));
 		$this->assertTrue($method->invoke($this->identificationVerifier, "stwalkerster"), "First character case insensitivity test failed");
 		$this->assertTrue($method->invoke($this->identificationVerifier, "FastLizard4"));

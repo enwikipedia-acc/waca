@@ -158,8 +158,10 @@ SQL;
 	 */
 	private function isIdentifiedOnWiki($onwikiname)
 	{
+		$strings = new StringFunctions();
+
 		// First character of Wikipedia usernames is always capitalized.
-		$onwikiname = ucfirst($onwikiname);
+		$onwikiname = $strings->ucfirst($onwikiname);
 
 		$parameters = self::$apiQueryParameters;
 		$parameters['pltitles'] = "User:" . $onwikiname;
