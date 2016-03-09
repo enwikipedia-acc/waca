@@ -11,18 +11,21 @@ namespace Waca\Tests;
 use PHPUnit_Extensions_MockFunction;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
-use Offline;
+use \Waca\Offline;
 
 class OfflineTest extends PHPUnit_Framework_TestCase
 {
 	private $offline;
+	private $offMock;
 
 	public function setUp() {
 		global $dontUseDb;
 
 		$dontUseDb = true;
 
-		$this->offline = new \Waca\Offline();
+		$this->offline = new Offline();
+
+		$this->offMock = new PHPUnit_Extensions_MockFunction('header', $this->offline);
 	}
 
 	public function testIsOffline() {
@@ -49,20 +52,19 @@ class OfflineTest extends PHPUnit_Framework_TestCase
 		$this->assertNotEquals($this->offline->isOffline(), !$dontUseDb);
 	}
 
-
 	public function testGetOfflineMessage() {
 
 		$external = false;
 		$message = "This is a test message.";
 
-		$offMock = new PHPUnit_Extensions_MockFunction('getOfflineMessage', $this->offline);
 
-		$offMock->expects($this->any())
-			->with($external, $message)
-			->will($this->returnValue(NULL));
+		$this->offMock->expects($this->any())
+			->with("HTTP/1.1 503 Service Unavailable")
+			->will($this->returnValue(null));
 
-		/*
 		ob_start();
+
+		$this->offline->getOfflineMessage($external, $message);
 
 		$text1 = ob_get_contents();
 
@@ -72,7 +74,6 @@ class OfflineTest extends PHPUnit_Framework_TestCase
 		$this->assertContains($message, $text1);
 
 		$this->assertNotContains("After much experimentation, someone finally managed to kill ACC.", $text1);
-		*/
 	}
 
 }
