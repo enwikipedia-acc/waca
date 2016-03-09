@@ -57,14 +57,12 @@ class OfflineTest extends PHPUnit_Framework_TestCase
 
 		$offMock = new PHPUnit_Extensions_MockFunction('getOfflineMessage', $this->offline);
 
-		$offMock->expects($this->once())
+		$offMock->expects($this->any())
 			->with($external, $message)
 			->will($this->returnValue(NULL));
 
 		/*
 		ob_start();
-
-		$offMock->getOfflineMessage();
 
 		$text1 = ob_get_contents();
 
