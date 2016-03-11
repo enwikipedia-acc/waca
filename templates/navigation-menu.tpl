@@ -29,8 +29,7 @@
                 </ul>
             </li>
             <li>
-                <form class="navbar-form form-search" action="{$baseurl}/acc.php">
-                    <input type="hidden" name="action" value="zoom">
+                <form class="navbar-form form-search" action="{$baseurl}/internal.php/viewRequest">
                     <input class="span2" type="text" placeholder="Request ID" name="id" class="search-query">
                 </form>
             </li>
