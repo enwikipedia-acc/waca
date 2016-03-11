@@ -1189,9 +1189,13 @@ elseif ($action == "done" && $_GET['id'] != "") {
 	else {
 		$exists = false;
 	}
-	
-	// check if a request being created does not already exist. 
-	if ($gem == 1 && !$exists && !isset($_GET['createoverride'])) {
+
+	/** @var EmailTemplate $emailTemplate */
+	$emailTemplate = EmailTemplate::getById($gem, gGetDb());
+	$isForCreated = $emailTemplate->getDefaultAction() === EmailTemplate::CREATED;
+
+	// check if a request being created does not already exist.
+	if ($isForCreated && !$exists && !isset($_GET['createoverride'])) {
 		$alertContent = "<p>You have chosen to mark this request as \"created\", but the account does not exist on the English Wikipedia, proceed?</p><br />";
 		$alertContent .= "<div class=\"row-fluid\">";
 		$alertContent .= "<a class=\"btn btn-success offset3 span3\"  href=\"$baseurl/acc.php?" . $_SERVER["QUERY_STRING"] . "&amp;createoverride=yes\">Yes</a>";
