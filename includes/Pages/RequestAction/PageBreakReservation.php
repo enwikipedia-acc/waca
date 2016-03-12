@@ -9,7 +9,7 @@ use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\PdoDatabase;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\WebRequest;
 
 class PageBreakReservation extends RequestActionBase

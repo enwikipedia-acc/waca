@@ -3,7 +3,7 @@ namespace Waca\Pages\Statistics;
 
 use PDO;
 use Waca\InternalPageBase;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 
 class StatsFastCloses extends InternalPageBase
 {

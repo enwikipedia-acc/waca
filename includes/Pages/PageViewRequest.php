@@ -11,7 +11,7 @@ use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\PdoDatabase;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 

@@ -1,9 +1,10 @@
 <?php
 
-namespace Waca;
+namespace Waca\Security;
 
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
+use Waca\IdentificationVerifier;
 
 /**
  * Class SecurityConfiguration

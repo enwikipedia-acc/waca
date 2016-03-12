@@ -4,7 +4,7 @@ namespace Waca\Pages;
 use PDO;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 
 class PageMain extends InternalPageBase

@@ -2,7 +2,7 @@
 
 namespace Waca\Pages;
 
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 
 class PageTeam extends InternalPageBase

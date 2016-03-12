@@ -5,7 +5,7 @@ namespace Waca\Pages;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -479,7 +479,7 @@ class PageUserManagement extends InternalPageBase
 	 *
 	 * If this page even supports actions, you will need to check the route
 	 *
-	 * @return SecurityConfiguration
+	 * @return \Waca\Security\SecurityConfiguration
 	 * @category Security-Critical
 	 */
 	protected function getSecurityConfiguration()

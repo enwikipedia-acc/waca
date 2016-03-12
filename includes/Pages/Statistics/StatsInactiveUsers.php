@@ -2,7 +2,7 @@
 namespace Waca\Pages\Statistics;
 
 use Waca\DataObjects\User;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 

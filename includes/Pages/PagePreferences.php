@@ -4,7 +4,7 @@ namespace Waca\Pages;
 
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;

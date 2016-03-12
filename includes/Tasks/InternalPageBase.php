@@ -8,7 +8,7 @@ use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\NotIdentifiedException;
 use Waca\IdentificationVerifier;
 use Waca\Helpers\Interfaces\ITypeAheadHelper;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\WebRequest;
 
 abstract class InternalPageBase extends PageBase

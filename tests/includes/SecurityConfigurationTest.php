@@ -6,7 +6,7 @@ use PHPUnit_Framework_TestCase;
 use ReflectionProperty;
 use Waca\DataObjects\User;
 use Waca\IdentificationVerifier;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 
 /**
  * Class SecurityConfigurationTest
