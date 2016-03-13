@@ -1192,7 +1192,11 @@ elseif ($action == "done" && $_GET['id'] != "") {
 
 	/** @var EmailTemplate $emailTemplate */
 	$emailTemplate = EmailTemplate::getById($gem, gGetDb());
-	$isForCreated = $emailTemplate->getDefaultAction() === EmailTemplate::CREATED;
+	if ($emailTemplate instanceof EmailTemplate) {
+		$isForCreated = $emailTemplate->getDefaultAction() === EmailTemplate::CREATED;
+	} else {
+		$isForCreated = false;
+	}
 
 	// check if a request being created does not already exist.
 	if ($isForCreated && !$exists && !isset($_GET['createoverride'])) {
