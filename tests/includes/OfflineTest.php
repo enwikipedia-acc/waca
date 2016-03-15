@@ -25,7 +25,7 @@ class OfflineTest extends PHPUnit_Framework_TestCase
 
 		$this->offline = new Offline();
 
-		$this->offMock = new PHPUnit_Extensions_MockFunction('header', $this->offline);
+		$this->offMock = new PHPUnit_Extensions_MockFunction('header', $this);
 	}
 
 	public function testIsOffline() {
@@ -57,23 +57,37 @@ class OfflineTest extends PHPUnit_Framework_TestCase
 		$external = false;
 		$message = "This is a test message.";
 
-
 		$this->offMock->expects($this->any())
 			->with("HTTP/1.1 503 Service Unavailable")
-			->will($this->returnValue(null));
+			->will($this->returnValue(true));
 
 		ob_start();
 
-		$this->offline->getOfflineMessage($external, $message);
+		print $this->offline->getOfflineMessage($external, $message);
 
 		$text1 = ob_get_contents();
 
 		ob_clean();
 
-		$this->assertContains("We’re very sorry, but the account creation request tool is currently offline while critical maintenance is performed.", $text1);
+		$this->assertNotContains("We’re very sorry, but the account creation request tool is currently offline while critical maintenance is performed.", $text1);
 		$this->assertContains($message, $text1);
 
-		$this->assertNotContains("After much experimentation, someone finally managed to kill ACC.", $text1);
+		$this->assertContains("After much experimentation, someone finally managed to kill ACC.", $text1);
+
+		$external = true;
+
+		ob_start();
+
+		print $this->offline->getOfflineMessage($external, $message);
+
+		$text2 = ob_get_contents();
+
+		ob_clean();
+
+		$this->assertContains("We’re very sorry, but the account creation request tool is currently offline while critical maintenance is performed.", $text2);
+		$this->assertNotContains($message, $text2);
+
+		$this->assertNotContains("After much experimentation, someone finally managed to kill ACC.", $text2);
 	}
 
 }
