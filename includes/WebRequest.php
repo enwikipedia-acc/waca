@@ -403,6 +403,32 @@ class WebRequest
 	}
 
 	/**
+	 * You probably only want to deal with this through TokenManager.
+	 *
+	 * @return string[]
+	 */
+	public static function getSessionTokenData()
+	{
+		$session = &self::$globalStateProvider->getSessionSuperGlobal();
+		if (array_key_exists('tokens', $session)) {
+			return $session['tokens'];
+		}
+
+		return array();
+	}
+
+	/**
+	 * You probably only want to deal with this through TokenManager.
+	 *
+	 * @param string[] $data
+	 */
+	public static function setSessionTokenData($data)
+	{
+		$session = &self::$globalStateProvider->getSessionSuperGlobal();
+		$session['tokens'] = $data;
+	}
+
+	/**
 	 * @return int|null
 	 */
 	public static function getSessionUserId()
