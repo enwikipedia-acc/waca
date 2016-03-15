@@ -19,6 +19,12 @@ class OfflineTest extends PHPUnit_Framework_TestCase
 	private $offMock;
 
 	public function setUp() {
+		if (!extension_loaded('runkit')) {
+			$this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit');
+
+			return;
+		}
+
 		global $dontUseDb;
 
 		$dontUseDb = true;
