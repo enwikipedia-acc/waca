@@ -73,7 +73,7 @@ class OfflineTest extends PHPUnit_Framework_TestCase
 
 		$text1 = ob_get_contents();
 
-		ob_clean();
+		ob_end_clean();
 
 		$this->assertNotContains("We’re very sorry, but the account creation request tool is currently offline while critical maintenance is performed.", $text1);
 		$this->assertContains($message, $text1);
@@ -88,7 +88,7 @@ class OfflineTest extends PHPUnit_Framework_TestCase
 
 		$text2 = ob_get_contents();
 
-		ob_clean();
+		ob_end_clean();
 
 		$this->assertContains("We’re very sorry, but the account creation request tool is currently offline while critical maintenance is performed.", $text2);
 		$this->assertNotContains($message, $text2);
