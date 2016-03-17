@@ -3,7 +3,7 @@
 namespace Waca\Tests;
 
 use PHPUnit_Framework_TestCase;
-use StringFunctions;
+use Waca\StringFunctions;
 
 class StringFunctionsTest extends PHPUnit_Framework_TestCase
 {
@@ -52,5 +52,41 @@ class StringFunctionsTest extends PHPUnit_Framework_TestCase
 		$this->assertNotEquals($this->e->formatAsEmail("1this12345@example.com "), "1this12345@example.com ");
 		$this->assertNotEquals($this->e->formatAsEmail("1this12345 @example.com"), "1this12345 @example.com");
 		$this->assertNotEquals($this->e->formatAsEmail("1this12345@ example.com"), "1this12345@ example.com");
+	}
+
+	public function testIsMultibyte()
+	{
+		$emptyString = '';
+		$this->assertFalse($this->e->isMultibyte($emptyString));
+
+		$nullString = null;
+		$this->assertFalse($this->e->isMultibyte($nullString));
+
+		$nbspString = html_entity_decode('&nbsp;');
+		$this->assertTrue($this->e->isMultibyte($nbspString));
+
+		$numberString = '12345';
+		$this->assertFalse($this->e->isMultibyte($numberString));
+
+		$asciiString = 'abcd';
+		$utf8String = 'àbcd';
+		$this->assertFalse($this->e->isMultibyte($asciiString));
+		$this->assertTrue($this->e->isMultibyte($utf8String));
+
+		$greekString = 'ΣΙΛΟΝ';
+		$tibetanString = '༆༇༂༖';
+		$chineseString = '专世丳儽';
+		$this->assertTrue($this->e->isMultibyte($greekString));
+		$this->assertTrue($this->e->isMultibyte($tibetanString));
+		$this->assertTrue($this->e->isMultibyte($chineseString));
+	}
+
+	public function testUcFirst(){
+		$this->assertEquals('Abc', $this->e->ucfirst('abc'));
+		$this->assertEquals('ABC', $this->e->ucfirst('ABC'));
+		$this->assertEquals('123', $this->e->ucfirst('123'));
+
+		$this->assertEquals('Trần Nguyễn Minh Huy', $this->e->ucfirst('Trần Nguyễn Minh Huy'));
+		$this->assertEquals('和平奮鬥救地球', $this->e->ucfirst('和平奮鬥救地球'));
 	}
 }

@@ -2,7 +2,7 @@
 
 namespace Waca\Pages;
 
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 
 class Page404 extends InternalPageBase
@@ -23,7 +23,7 @@ class Page404 extends InternalPageBase
 	 *
 	 * If this page even supports actions, you will need to check the route
 	 *
-	 * @return SecurityConfiguration
+	 * @return \Waca\Security\SecurityConfiguration
 	 * @category Security-Critical
 	 */
 	protected function getSecurityConfiguration()

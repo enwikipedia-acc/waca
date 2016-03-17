@@ -5,6 +5,7 @@
         </button>
 
         <input type="hidden" name="request" value="{$requestId}"/>
+        <input type="hidden" name="updateversion" value="{$updateVersion}"/>
 
         <ul class="dropdown-menu">
             {foreach $requestStates as $state}

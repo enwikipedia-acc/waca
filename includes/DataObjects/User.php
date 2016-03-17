@@ -8,6 +8,7 @@ use PDO;
 use UnexpectedValueException;
 use Waca\AuthUtility;
 use Waca\DataObject;
+use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Helpers\Interfaces\IOAuthHelper;
 use Waca\Helpers\Logger;
 use Waca\IdentificationVerifier;
@@ -20,10 +21,16 @@ use Waca\WebRequest;
  */
 class User extends DataObject
 {
+	const STATUS_USER = 'User';
+	const STATUS_ADMIN = 'Admin';
+	const STATUS_SUSPENDED = 'Suspended';
+	const STATUS_DECLINED = 'Declined';
+	const STATUS_NEW = 'New';
+
 	private $username;
 	private $email;
 	private $password;
-	private $status = "New";
+	private $status = self::STATUS_NEW;
 	private $onwikiname = "##OAUTH##";
 	private $welcome_sig = "";
 	private $lastactive = "0000-00-00 00:00:00";
@@ -459,34 +466,45 @@ SQL
 					welcome_template = :welcome_template, abortpref = :abortpref, 
 					confirmationdiff = :confirmationdiff, emailsig = :emailsig, 
 					oauthrequesttoken = :ort, oauthrequestsecret = :ors, 
-					oauthaccesstoken = :oat, oauthaccesssecret = :oas 
-				WHERE id = :id 
+					oauthaccesstoken = :oat, oauthaccesssecret = :oas,
+					updateversion = updateversion + 1
+				WHERE id = :id AND updateversion = :updateversion
 				LIMIT 1;
 SQL
 			);
-			$statement->bindValue(":id", $this->id);
-			$statement->bindValue(":username", $this->username);
-			$statement->bindValue(":email", $this->email);
-			$statement->bindValue(":password", $this->password);
-			$statement->bindValue(":status", $this->status);
-			$statement->bindValue(":onwikiname", $this->onwikiname);
-			$statement->bindValue(":welcome_sig", $this->welcome_sig);
-			$statement->bindValue(":lastactive", $this->lastactive);
-			$statement->bindValue(":forcelogout", $this->forcelogout);
-			$statement->bindValue(":checkuser", $this->checkuser);
 			$statement->bindValue(":forceidentified", $this->forceidentified);
-			$statement->bindValue(":welcome_template", $this->welcome_template);
-			$statement->bindValue(":abortpref", $this->abortpref);
-			$statement->bindValue(":confirmationdiff", $this->confirmationdiff);
-			$statement->bindValue(":emailsig", $this->emailsig);
-			$statement->bindValue(":ort", $this->oauthrequesttoken);
-			$statement->bindValue(":ors", $this->oauthrequestsecret);
-			$statement->bindValue(":oat", $this->oauthaccesstoken);
-			$statement->bindValue(":oas", $this->oauthaccesssecret);
+
+			$statement->bindValue(':id', $this->id);
+			$statement->bindValue(':updateversion', $this->updateversion);
+
+			$statement->bindValue(':username', $this->username);
+			$statement->bindValue(':email', $this->email);
+			$statement->bindValue(':password', $this->password);
+			$statement->bindValue(':status', $this->status);
+			$statement->bindValue(':onwikiname', $this->onwikiname);
+			$statement->bindValue(':welcome_sig', $this->welcome_sig);
+			$statement->bindValue(':lastactive', $this->lastactive);
+			$statement->bindValue(':forcelogout', $this->forcelogout);
+			$statement->bindValue(':checkuser', $this->checkuser);
+			$statement->bindValue(':forceidentified', $this->forceidentified);
+			$statement->bindValue(':welcome_template', $this->welcome_template);
+			$statement->bindValue(':abortpref', $this->abortpref);
+			$statement->bindValue(':confirmationdiff', $this->confirmationdiff);
+			$statement->bindValue(':emailsig', $this->emailsig);
+			$statement->bindValue(':ort', $this->oauthrequesttoken);
+			$statement->bindValue(':ors', $this->oauthrequestsecret);
+			$statement->bindValue(':oat', $this->oauthaccesstoken);
+			$statement->bindValue(':oas', $this->oauthaccesssecret);
 
 			if (!$statement->execute()) {
 				throw new Exception($statement->errorInfo());
 			}
+
+			if($statement->rowCount() !== 1){
+				throw new OptimisticLockFailedException();
+			}
+
+			$this->updateversion++;
 		}
 	}
 
@@ -578,6 +596,14 @@ SQL
 	public function getStatus()
 	{
 		return $this->status;
+	}
+
+	/**
+	 * @param string $status
+	 */
+	public function setStatus($status)
+	{
+		$this->status = $status;
 	}
 
 	/**
@@ -837,71 +863,6 @@ SQL
 	public function setOAuthAccessSecret($oAuthAccessSecret)
 	{
 		$this->oauthaccesssecret = $oAuthAccessSecret;
-	}
-
-	#endregion
-
-	#region changing access level
-
-	/**
-	 * Approves the user, changing access to 'User'
-	 * @category Security-Critical
-	 */
-	public function approve()
-	{
-		$this->status = "User";
-		$this->save();
-		Logger::approvedUser($this->dbObject, $this);
-	}
-
-	/**
-	 * Suspends the user
-	 * @category Security-Critical
-	 *
-	 * @param string $comment
-	 */
-	public function suspend($comment)
-	{
-		$this->status = "Suspended";
-		$this->save();
-		Logger::suspendedUser($this->dbObject, $this, $comment);
-	}
-
-	/**
-	 * Declines the user (from new => declined)
-	 * @category Security-Critical
-	 *
-	 * @param string $comment
-	 */
-	public function decline($comment)
-	{
-		$this->status = "Declined";
-		$this->save();
-		Logger::declinedUser($this->dbObject, $this, $comment);
-	}
-
-	/**
-	 * Promotes the user to tool administrator
-	 * @category Security-Critical
-	 */
-	public function promote()
-	{
-		$this->status = "Admin";
-		$this->save();
-		Logger::promotedUser($this->dbObject, $this);
-	}
-
-	/**
-	 * Demotes the user to a standard user
-	 * @category Security-Critical
-	 *
-	 * @param string $comment
-	 */
-	public function demote($comment)
-	{
-		$this->status = "User";
-		$this->save();
-		Logger::demotedUser($this->dbObject, $this, $comment);
 	}
 
 	#endregion

@@ -11,7 +11,7 @@ use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\PdoDatabase;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
@@ -52,6 +52,7 @@ class PageViewRequest extends InternalPageBase
 		}
 
 		$this->assign('requestId', $request->getId());
+		$this->assign('updateVersion', $request->getUpdateVersion());
 		$this->assign('requestName', $request->getName());
 		$this->assign('requestDate', $request->getDate());
 		$this->assign('requestStatus', $request->getStatus());

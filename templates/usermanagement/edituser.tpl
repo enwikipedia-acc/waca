@@ -45,6 +45,8 @@
             </div>
         {/if}
 
+        <input type="hidden" name="updateversion" value="{$user->getUpdateVersion()}"/>
+
         <div class="control-group">
             <div class="controls">
                 <button type="submit" class="btn btn-primary">Save preferences</button>

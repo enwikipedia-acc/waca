@@ -11,7 +11,7 @@ use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
 use Waca\Helpers\Logger;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 

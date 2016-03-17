@@ -8,7 +8,7 @@ use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -67,6 +67,10 @@ class PageBan extends InternalPageBase
 			if ($unbanReason === null || trim($unbanReason) === "") {
 				throw new ApplicationLogicException('No unban reason specified');
 			}
+
+			// set optimistic locking from delete form page load
+			$updateVersion = WebRequest::postInt('updateversion');
+			$ban->setUpdateVersion($updateVersion);
 
 			$database = $this->getDatabase();
 			$ban->setActive(0);

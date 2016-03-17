@@ -6,7 +6,7 @@ use Waca\DataObjects\EmailTemplate;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\PdoDatabase;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -19,7 +19,7 @@ class PageEmailManagement extends InternalPageBase
 	 *
 	 * If this page even supports actions, you will need to check the route
 	 *
-	 * @return SecurityConfiguration
+	 * @return \Waca\Security\SecurityConfiguration
 	 * @category Security-Critical
 	 */
 	protected function getSecurityConfiguration()
@@ -116,6 +116,10 @@ class PageEmailManagement extends InternalPageBase
 				$template->setActive(true);
 				$template->setPreloadOnly(false);
 			}
+
+			// optimisticly lock on load of edit form
+			$updateVersion = WebRequest::postInt('updateversion');
+			$template->setUpdateVersion($updateVersion);
 
 			$template->save();
 			Logger::editedEmail($database, $template);

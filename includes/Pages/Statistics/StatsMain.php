@@ -1,7 +1,7 @@
 <?php
 namespace Waca\Pages\Statistics;
 
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 
 class StatsMain extends InternalPageBase

@@ -91,7 +91,7 @@ This means hardcoded file paths, web addresses, etc.
 
 `PageBase` provides a security barrier. Use it.
 
-Override the method `getSecurityConfiguration()`. It returns an object of type `\Waca\SecurityConfiguration`. Inside that
+Override the method `getSecurityConfiguration()`. It returns an object of type `\Waca\Security\SecurityConfiguration`. Inside that
 method you can filter by the route if you want - it's accessible from the class! The overall idea of this is that each
 right is checked in turn (admin, user, checkuser, community, declined, suspended, new) to see if they apply to the user.
 If they do, then that security rule is applied. If it's a DENY rule, then the user is instantly rejected, even if there

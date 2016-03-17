@@ -6,7 +6,7 @@ use DateTime;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\SessionAlert;
 use Waca\WebRequest;
 
@@ -63,7 +63,7 @@ class PageDeferRequest extends RequestActionBase
 
 		$request->setReserved(0);
 		$request->setStatus($target);
-		$request->updateChecksum();
+		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
 		$request->save();
 
 		$deto = $requestStates[$target]['deferto'];

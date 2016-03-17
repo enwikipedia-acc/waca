@@ -57,6 +57,8 @@
                 </div>
             </div>
 
+            <input type="hidden" name="updateversion" value="{$comment->getUpdateVersion()}"/>
+
             <div class="form-actions">
                 <button type="submit" class="btn btn-primary">Save changes</button>
             </div>

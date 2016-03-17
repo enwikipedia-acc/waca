@@ -6,15 +6,14 @@ use Exception;
 use Waca\DataObjects\InterfaceMessage;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Fragments\TemplateOutput;
-use Waca\Helpers\Interfaces\ITypeAheadHelper;
 use Waca\SessionAlert;
 use Waca\WebRequest;
 
 abstract class PageBase extends TaskBase implements IRoutedTask
 {
 	use TemplateOutput;
-
 	/** @var string Smarty template to display */
 	protected $template = "base.tpl";
 	/** @var string HTML title. Currently unused. */
@@ -101,6 +100,24 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 
 			// Set the template
 			$this->setTemplate('exception/application-logic.tpl');
+			$this->assign('message', $ex->getMessage());
+
+			// Force this back to false
+			$this->isRedirecting = false;
+			$this->headerQueue = array();
+		}
+		catch (OptimisticLockFailedException $ex) {
+			// it's an optimistic lock failure exception, so nothing went seriously wrong with the site. We can use the
+			// standard templating system for this.
+
+			// Firstly, let's undo anything that happened to the database.
+			$database->rollBack();
+
+			// Reset smarty
+			$this->setUpSmarty();
+
+			// Set the template
+			$this->setTemplate('exception/optimistic-lock-failure.tpl');
 			$this->assign('message', $ex->getMessage());
 
 			// Force this back to false

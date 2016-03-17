@@ -4,7 +4,7 @@ namespace Waca\Pages;
 
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\Session;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -116,7 +116,7 @@ class PageOAuth extends InternalPageBase
 	 *
 	 * If this page even supports actions, you will need to check the route
 	 *
-	 * @return SecurityConfiguration
+	 * @return \Waca\Security\SecurityConfiguration
 	 * @category Security-Critical
 	 */
 	protected function getSecurityConfiguration()

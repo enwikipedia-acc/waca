@@ -3,6 +3,7 @@ namespace Waca\DataObjects;
 
 use Exception;
 use Waca\DataObject;
+use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\PdoDatabase;
 
 /**
@@ -60,16 +61,28 @@ SQL
 		else {
 			// update
 			$statement = $this->dbObject->prepare(<<<SQL
-UPDATE `geolocation` SET address = :address, data = :data WHERE id = :id LIMIT 1;
+UPDATE `geolocation`
+SET address = :address, data = :data, updateversion = updateversion + 1
+WHERE id = :id AND updateversion = :updateversion
+LIMIT 1;
 SQL
 			);
-			$statement->bindValue(":address", $this->address);
+
 			$statement->bindValue(":id", $this->id);
+			$statement->bindValue(":updateversion", $this->updateversion);
+
+			$statement->bindValue(":address", $this->address);
 			$statement->bindValue(":data", $this->data);
 
 			if (!$statement->execute()) {
 				throw new Exception($statement->errorInfo());
 			}
+
+			if($statement->rowCount() !== 1){
+				throw new OptimisticLockFailedException();
+			}
+
+			$this->updateversion++;
 		}
 	}
 

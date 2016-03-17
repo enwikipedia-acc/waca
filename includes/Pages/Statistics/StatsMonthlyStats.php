@@ -2,7 +2,7 @@
 namespace Waca\Pages\Statistics;
 
 use PDO;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 
 class StatsMonthlyStats extends InternalPageBase

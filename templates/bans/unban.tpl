@@ -17,6 +17,8 @@
             </div>
         </fieldset>
 
+        <input type="hidden" name="updateversion" value="{$ban->getUpdateVersion()}" />
+
         <div class="form-actions">
             <a class="btn" href="{$baseurl}/internal.php/bans">Cancel</a>
             <button type="submit" class="btn btn-success"><i class="icon-white icon-ok"></i>&nbsp;Unban</button>

@@ -4,7 +4,7 @@ namespace Waca\Pages;
 
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
@@ -81,6 +81,7 @@ class PageLogin extends InternalPageBase
 			throw new ApplicationLogicException("No username/password specified");
 		}
 
+		/** @var User $user */
 		$user = User::getByUsername($username, $this->getDatabase());
 
 		if ($user == false || !$user->authenticate($password)) {

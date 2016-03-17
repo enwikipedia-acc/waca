@@ -95,6 +95,7 @@
                                 <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/delete"
                                       class="form-compact">
                                     <input type="hidden" name="template" value="{$t->getId()}"/>
+                                    <input type="hidden" name="updateversion" value="{$t->getUpdateVersion()}"/>
                                     <button type="submit" class="btn btn-danger"><i
                                                 class="icon-white icon-remove"></i>&nbsp;Delete
                                     </button>

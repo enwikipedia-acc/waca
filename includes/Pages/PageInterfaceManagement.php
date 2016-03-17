@@ -4,7 +4,7 @@ namespace Waca\Pages;
 
 use Waca\DataObjects\InterfaceMessage;
 use Waca\Helpers\Logger;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
@@ -26,12 +26,13 @@ class PageInterfaceManagement extends InternalPageBase
 		// Dual-mode
 		if (WebRequest::wasPosted()) {
 			$siteNoticeMessage->setContent(WebRequest::postString('mailtext'));
+			$siteNoticeMessage->setUpdateVersion(WebRequest::postInt('updateversion'));
 			$siteNoticeMessage->save();
 
 			Logger::interfaceMessageEdited($database, $siteNoticeMessage);
 			$this->getNotificationHelper()->interfaceMessageEdited();
 
-			$this->redirect('');
+			$this->redirect();
 		}
 		else {
 			$this->setTemplate('interface-management/editform.tpl');
@@ -45,7 +46,7 @@ class PageInterfaceManagement extends InternalPageBase
 	 *
 	 * If this page even supports actions, you will need to check the route
 	 *
-	 * @return SecurityConfiguration
+	 * @return \Waca\Security\SecurityConfiguration
 	 * @category Security-Critical
 	 */
 	protected function getSecurityConfiguration()

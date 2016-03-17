@@ -5,7 +5,7 @@ namespace Waca\Pages\RequestAction;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\User;
 use Waca\RegexConstants;
-use Waca\SecurityConfiguration;
+use Waca\Security\SecurityConfiguration;
 use Waca\WebRequest;
 
 class PageComment extends RequestActionBase

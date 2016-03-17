@@ -73,6 +73,7 @@
                 {if $r->getReserved() == false}
                     <form action="{$baseurl}/internal.php/viewRequest/reserve" method="post" class="form-compact">
                         <input type="hidden" name="request" value="{$r->getId()}"/>
+                        <input type="hidden" name="updateversion" value="{$r->getUpdateVersion()}"/>
                         <button class="btn btn-small btn-success" type="submit">
                             <i class="icon-white icon-star-empty"></i>&nbsp;Reserve
                         </button>
@@ -83,6 +84,7 @@
                         <form action="{$baseurl}/internal.php/viewRequest/breakReserve" method="post"
                               class="form-compact">
                             <input type="hidden" name="request" value="{$r->getId()}"/>
+                            <input type="hidden" name="updateversion" value="{$r->getUpdateVersion()}"/>
                             <button class="btn btn-small btn-inverse" type="submit">
                                 <i class="icon-white icon-star"></i>&nbsp;Unreserve
                             </button>
@@ -92,6 +94,7 @@
                             <form action="{$baseurl}/internal.php/viewRequest/breakReserve" method="post"
                                   class="form-compact">
                                 <input type="hidden" name="request" value="{$r->getId()}"/>
+                                <input type="hidden" name="updateversion" value="{$r->getUpdateVersion()}"/>
                                 <button class="btn btn-small btn-warning" type="submit">
                                     <i class="icon-white icon-trash"></i>&nbsp;Force break
                                 </button>
