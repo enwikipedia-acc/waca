@@ -31,3 +31,5 @@ waca.sln.DotSettings.user
 .arc*
 /sql/schema2.sql
 /sql/schema.sql
+vendor/*
+components/*

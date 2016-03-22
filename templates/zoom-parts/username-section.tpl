@@ -24,10 +24,10 @@
   {else}
     <table class="table table-condensed table-striped">
       {foreach $spoofs as $spoof}
-        {if $spoof == $username}
+        {if $spoof == $request->getName()}
           <tr>
             <td></td>
-            <td><h3>Note: This account has already been created</h3></td>
+            <td><h3>Note: This account has already been created <a id="SpoofPassReset-{$spoof@iteration}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:PasswordReset?wpUsername={$spoof|escape:'url'}" onMouseUp="$('#SpoofPassReset-{$spoof@iteration}').addClass('btn-visited');">Send Password reset</a></h3></td>
           </tr>
           {continue}
         {/if}
