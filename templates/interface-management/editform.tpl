@@ -3,6 +3,7 @@
     <div class="row-fluid">
         <h2>Edit site notice</h2>
         <form method="post" class="form-horizontal">
+            {include file="security/csrf.tpl"}
 
             <div class="control-group">
                 <label class="control-label">Update Counter</label>

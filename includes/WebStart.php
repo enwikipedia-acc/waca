@@ -9,8 +9,10 @@ use Waca\Exceptions\ReadableException;
 use Waca\Helpers\TypeAheadHelper;
 use Waca\Providers\GlobalStateProvider;
 use Waca\Router\IRequestRouter;
+use Waca\Security\TokenManager;
 use Waca\Tasks\InternalPageBase;
 use Waca\Tasks\ITask;
+use Waca\Tasks\PageBase;
 
 /**
  * Internal application entry point.
@@ -44,6 +46,7 @@ class WebStart extends ApplicationBase
 	 * @param SiteConfiguration $siteConfiguration
 	 * @param PdoDatabase       $database
 	 * @param PdoDatabase       $notificationsDatabase
+	 *
 	 * @return void
 	 */
 	protected function setupHelpers(
@@ -52,13 +55,18 @@ class WebStart extends ApplicationBase
 		PdoDatabase $database,
 		PdoDatabase $notificationsDatabase
 	) {
+
 		parent::setupHelpers($page, $siteConfiguration, $database, $notificationsDatabase);
 
-		$identificationVerifier = new IdentificationVerifier($page->getHttpHelper(), $siteConfiguration, $database);
-		$page->setIdentificationVerifier($identificationVerifier);
+		if ($page instanceof PageBase) {
+			$identificationVerifier = new IdentificationVerifier($page->getHttpHelper(), $siteConfiguration, $database);
+			$page->setIdentificationVerifier($identificationVerifier);
 
-		if ($page instanceof InternalPageBase) {
-			$page->setTypeAheadHelper(new TypeAheadHelper());
+			$page->setTokenManager(new TokenManager());
+
+			if ($page instanceof InternalPageBase) {
+				$page->setTypeAheadHelper(new TypeAheadHelper());
+			}
 		}
 	}
 
@@ -160,7 +168,8 @@ HTML;
 		print $message;
 	}
 
-	public static function errorHandler($err_severity, $err_msg, $err_file, $err_line) {
+	public static function errorHandler($err_severity, $err_msg, $err_file, $err_line)
+	{
 		// call into the main exception handler above
 		throw new ErrorException($err_msg, 0, $err_severity, $err_file, $err_line);
 	}

@@ -25,6 +25,8 @@ class PageInterfaceManagement extends InternalPageBase
 
 		// Dual-mode
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
+
 			$siteNoticeMessage->setContent(WebRequest::postString('mailtext'));
 			$siteNoticeMessage->setUpdateVersion(WebRequest::postInt('updateversion'));
 			$siteNoticeMessage->save();
@@ -35,6 +37,8 @@ class PageInterfaceManagement extends InternalPageBase
 			$this->redirect();
 		}
 		else {
+			$this->assignCSRFToken();
+
 			$this->setTemplate('interface-management/editform.tpl');
 			$this->assign('message', $siteNoticeMessage);
 		}

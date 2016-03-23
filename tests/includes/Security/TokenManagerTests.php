@@ -28,29 +28,38 @@ class TokenManagerTests extends PHPUnit_Framework_TestCase
 		$tokenA = $this->tokenManager->getNewToken('foo');
 		$tokenB = $this->tokenManager->getNewToken('bar');
 		$tokenC = $this->tokenManager->getNewToken('foo');
+		$tokenD = $this->tokenManager->getNewToken();
 
-		$this->assertEquals($tokenA->getTokenData(), $tokenC->getTokenData());
 		$this->assertNotEquals($tokenA->getTokenData(), $tokenB->getTokenData());
+		$this->assertNotEquals($tokenA->getTokenData(), $tokenC->getTokenData());
+		$this->assertNotEquals($tokenA->getTokenData(), $tokenD->getTokenData());
 
 		$this->assertFalse($tokenA->isUsed());
 		$this->assertFalse($tokenB->isUsed());
 		$this->assertFalse($tokenC->isUsed());
+		$this->assertFalse($tokenD->isUsed());
 
 		// should validate...
-		$this->assertTrue($this->tokenManager->validateToken('foo', $tokenA->getTokenData()));
+		$this->assertTrue($this->tokenManager->validateToken($tokenA->getTokenData(), 'foo'));
+		$this->assertTrue($this->tokenManager->validateToken($tokenD->getTokenData()));
 		// ...once...
-		$this->assertFalse($this->tokenManager->validateToken('foo', $tokenA->getTokenData()));
-		$this->assertFalse($this->tokenManager->validateToken('foo', $tokenC->getTokenData()));
+		$this->assertFalse($this->tokenManager->validateToken($tokenA->getTokenData(), 'foo'));
+		$this->assertFalse($this->tokenManager->validateToken($tokenD->getTokenData()));
 	}
 
 	public function testBadToken()
 	{
 		$token = $this->tokenManager->getNewToken('foo');
 
-		$this->assertFalse($this->tokenManager->validateToken('bar', $token->getTokenData()));
-		$this->assertFalse($this->tokenManager->validateToken('bar', 'nonexistent token'));
-		$this->assertFalse($this->tokenManager->validateToken('bar', null));
-		$this->assertFalse($this->tokenManager->validateToken('bar', false));
-		$this->assertFalse($this->tokenManager->validateToken('bar', ''));
+		$this->assertFalse($this->tokenManager->validateToken($token->getTokenData(), 'bar'));
+
+		$this->assertFalse($this->tokenManager->validateToken('nonexistent token', 'bar'));
+		$this->assertFalse($this->tokenManager->validateToken(null, 'bar'));
+		$this->assertFalse($this->tokenManager->validateToken(false, 'bar'));
+		$this->assertFalse($this->tokenManager->validateToken('', 'bar'));
+		$this->assertFalse($this->tokenManager->validateToken('nonexistent token'));
+		$this->assertFalse($this->tokenManager->validateToken(null));
+		$this->assertFalse($this->tokenManager->validateToken(false));
+		$this->assertFalse($this->tokenManager->validateToken(''));
 	}
 }

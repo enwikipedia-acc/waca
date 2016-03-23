@@ -8,12 +8,14 @@ use Waca\WebRequest;
 class TokenManager
 {
 	/**
-	 * @param string $context
-	 * @param string $data
+	 * Validates a CSRF token
+	 *
+	 * @param string      $data    The token data string itself
+	 * @param string|null $context Token context for extra validation
 	 *
 	 * @return bool
 	 */
-	public function validateToken($context, $data)
+	public function validateToken($data, $context = null)
 	{
 		if (!is_string($data) || strlen($data) === 0) {
 			// Nothing to validate
@@ -50,32 +52,14 @@ class TokenManager
 	}
 
 	/**
-	 * @param string $context
+	 * @param string|null $context An optional context for extra validation
 	 *
 	 * @return Token
 	 */
-	public function getNewToken($context)
+	public function getNewToken($context = null)
 	{
-		// search for an existing token with this context path
-		$retrievedToken = null;
-		$tokens = WebRequest::getSessionTokenData();
-		foreach ($tokens as $tokenData => $serialisedToken) {
-			/** @var Token $token */
-			$token = unserialize($serialisedToken);
-
-			if (!$token->isUsed() && $token->getContext() === $context) {
-				$retrievedToken = $token;
-				break;
-			}
-		}
-
-		if ($retrievedToken instanceof Token) {
-			$token = $retrievedToken;
-		}
-		else {
-			$token = new Token($this->generateTokenData(), $context);
-			$this->storeToken($token);
-		}
+		$token = new Token($this->generateTokenData(), $context);
+		$this->storeToken($token);
 
 		return $token;
 	}

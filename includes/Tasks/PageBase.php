@@ -8,6 +8,7 @@ use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Fragments\TemplateOutput;
+use Waca\Security\TokenManager;
 use Waca\SessionAlert;
 use Waca\WebRequest;
 
@@ -24,6 +25,8 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 	protected $headerQueue = array();
 	/** @var string The name of the route to use, as determined by the request router. */
 	private $routeName = null;
+	/** @var TokenManager */
+	protected $tokenManager;
 
 	/**
 	 * Sets the route the request will take. Only should be called from the request router.
@@ -177,6 +180,22 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 	}
 
 	/**
+	 * @return TokenManager
+	 */
+	public function getTokenManager()
+	{
+		return $this->tokenManager;
+	}
+
+	/**
+	 * @param TokenManager $tokenManager
+	 */
+	public function setTokenManager($tokenManager)
+	{
+		$this->tokenManager = $tokenManager;
+	}
+
+	/**
 	 * Sends the redirect headers to perform a GET at the destination page.
 	 *
 	 * Also nullifies the set template so Smarty does not render it.
@@ -264,5 +283,18 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 		$this->setupPage();
 
 		$this->runPage();
+	}
+
+	public function assignCSRFToken()
+	{
+		$token = $this->tokenManager->getNewToken();
+		$this->assign('csrfTokenData', $token->getTokenData());
+	}
+
+	public function validateCSRFToken()
+	{
+		if (!$this->tokenManager->validateToken(WebRequest::getString('csrfTokenData'))) {
+			throw new ApplicationLogicException('Form token is not valid, please reload and try again');
+		}
 	}
 }
