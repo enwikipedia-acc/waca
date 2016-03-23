@@ -16,8 +16,6 @@ class InterfaceMessage extends DataObject
 {
 	/** @var string */
 	private $content;
-	/** @var int */
-	private $updatecounter;
 	/** @var string */
 	private $description;
 	/** @var string */
@@ -26,10 +24,6 @@ class InterfaceMessage extends DataObject
 	 * The "site notice" interface message ID
 	 */
 	const SITENOTICE = '31';
-	/**
-	 * The "banned" interface message ID
-	 */
-	const DECL_BANNED = '19';
 
 	/**
 	 * Get a message.
@@ -76,7 +70,7 @@ SQL
 			// update
 			$statement = $this->dbObject->prepare(<<<SQL
 UPDATE interfacemessage
-SET type = :type, description = :desc, content = :content, updatecounter = updatecounter + 1
+SET type = :type, description = :desc, content = :content, updateversion = updateversion + 1
 WHERE id = :id AND updateversion = :updateversion
 LIMIT 1;
 SQL
@@ -137,15 +131,6 @@ SQL
 	public function setContent($content)
 	{
 		$this->content = $content;
-	}
-
-	/**
-	 * Gets the message update counter
-	 * @return int
-	 */
-	public function getUpdateCounter()
-	{
-		return $this->updatecounter;
 	}
 
 	/**

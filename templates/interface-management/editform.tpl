@@ -6,13 +6,6 @@
             {include file="security/csrf.tpl"}
 
             <div class="control-group">
-                <label class="control-label">Update Counter</label>
-                <div class="controls">
-                    <span class="uneditable-input span1">{$message->getUpdateCounter()}</span>
-                </div>
-            </div>
-
-            <div class="control-group">
                 <label for="mailtext" class="control-label">Content</label>
                 <div class="controls">
                     <textarea name="mailtext" id="mailtext" rows="20"
@@ -20,7 +13,7 @@
                 </div>
             </div>
 
-            <input type="hidden" name="updateversion" value="updateversion" />
+            <input type="hidden" name="updateversion" value="{$message->getUpdateVersion()|escape}" />
 
             <div class="form-actions">
                 <button type="submit" class="btn btn-success"><i class="icon-white icon-ok"></i>&nbsp;Save</button>
