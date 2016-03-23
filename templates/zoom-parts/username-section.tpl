@@ -16,7 +16,8 @@
     <a id="UsernameGoogleSearch" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=google&amp;data={$usernamerawunicode|escape:'url'}" onMouseUp="$('#UsernameGoogleSearch').addClass('btn-visited');">Google search</a>
     {if $showinfo}
       <a id="EmailVisit" class="btn btn-small" target="_blank" href="http://{$emailurl}" onMouseUp="$('#EmailVisit').addClass('btn-visited');">Visit email domain</a>
-      <a id="EmailGoogle" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=google&amp;data={$emailurlencode|escape:'url'}" onMouseUp="$('#EmailGoogle').addClass('btn-visited');">Google email domain</a>
+      <a id="EmailGoogle" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=google&amp;data={$request->getEmail()|escape:'url'}" onMouseUp="$('#EmailGoogle').addClass('btn-visited');">Google email</a>
+      <a id="EmailDomainGoogle" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=google&amp;data={$emailurl|escape:'url'}" onMouseUp="$('#EmailDomainGoogle').addClass('btn-visited');">Google email domain</a>
     {/if}
 
   </div>

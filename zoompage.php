@@ -99,7 +99,6 @@ SQL
 
 	$emailDomain = explode("@", $request->getEmail())[1];
 	$smarty->assign("emailurl", $emailDomain);
-	$smarty->assign("emailurlencode", urlencode($emailDomain));
     
 	// force to not show, overriden later
 	$smarty->assign("proxyip", "");
