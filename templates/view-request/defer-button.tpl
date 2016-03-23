@@ -1,4 +1,5 @@
 <form method="post" action="{$baseurl}/internal.php/viewRequest/defer" class="form-compact">
+    {include file="security/csrf.tpl"}
     <div class="btn-group span6">
         <button type="button" class="btn btn-default dropdown-toggle span12" data-toggle="dropdown">
             Defer&nbsp;<span class="caret"></span>

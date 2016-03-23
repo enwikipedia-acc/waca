@@ -11,7 +11,7 @@
     alertmessage='If it says you can do it, you can do it. Please use this responsibly.'
     alerttype='alert-warning'}
     <div class="row-fluid">
-        <form class="form-search">
+        <form class="form-search" method="get">
             <input type="text" class="input-large username-typeahead" placeholder="Jump to user"
                    data-provide="typeahead" data-items="10" name="usersearch">
             <button type="submit" class="btn">Search</button>

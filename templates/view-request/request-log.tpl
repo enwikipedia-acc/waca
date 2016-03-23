@@ -1,6 +1,7 @@
 <h3>Log:</h3>
 <div style="overflow-x: hidden; overflow-y: scroll; max-height: 450px;">
     <form action="{$baseurl}/internal.php/viewRequest/comment" method="post">
+        {include file="security/csrf.tpl"}
         <table class="table table-condensed table-striped table-bordered table-hover">
             <tbody>
             {if $requestLogs}

@@ -66,6 +66,7 @@ class PageEditComment extends InternalPageBase
 		}
 
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$newComment = WebRequest::postString('newcomment');
 			$visibility = WebRequest::postString('visibility');
 
@@ -89,6 +90,7 @@ class PageEditComment extends InternalPageBase
 			$this->redirect('viewRequest', null, array('id' => $comment->getRequest()));
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->assign('comment', $comment);
 			$this->assign('request', $request);
 			$this->assign('user', User::getById($comment->getUser(), $database));

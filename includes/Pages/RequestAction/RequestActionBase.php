@@ -39,5 +39,8 @@ abstract class RequestActionBase extends InternalPageBase
 		if (!WebRequest::wasPosted()) {
 			throw new ApplicationLogicException('This page does not support GET methods.');
 		}
+
+		// validate the CSRF token
+		$this->validateCSRFToken();
 	}
 }

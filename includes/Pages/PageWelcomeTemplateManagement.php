@@ -22,6 +22,8 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 	{
 		$templateList = WelcomeTemplate::getAll($this->getDatabase());
 
+		$this->assignCSRFToken();
+
 		$this->assign('templateList', $templateList);
 		$this->setTemplate('welcome-template/list.tpl');
 	}
@@ -37,6 +39,8 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 		if (!WebRequest::wasPosted()) {
 			$this->redirect('welcomeTemplates');
 		}
+
+		$this->validateCSRFToken();
 
 		$user = User::getCurrent($this->getDatabase());
 
@@ -100,6 +104,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 	protected function add()
 	{
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$database = $this->getDatabase();
 
 			$template = new WelcomeTemplate();
@@ -117,6 +122,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 			$this->redirect('welcomeTemplates');
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->setTemplate("welcome-template/add.tpl");
 		}
 	}
@@ -138,6 +144,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 		}
 
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$template->setUserCode(WebRequest::postString('usercode'));
 			$template->setBotCode(WebRequest::postString('botcode'));
 			$template->setUpdateVersion(WebRequest::postInt('botcode'));
@@ -152,6 +159,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 			$this->redirect('welcomeTemplates');
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->assign('template', $template);
 			$this->setTemplate('welcome-template/edit.tpl');
 		}
@@ -164,6 +172,8 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 		if (!WebRequest::wasPosted()) {
 			return;
 		}
+
+		$this->validateCSRFToken();
 
 		$database = $this->getDatabase();
 

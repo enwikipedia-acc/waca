@@ -4,6 +4,7 @@
         <h2>Create new template</h2>
 
         <form method="post" class="form-horizontal">
+            {include file="security/csrf.tpl"}
             <div class="control-group">
                 <label class="control-label" for="usercode">Display code:</label>
                 <div class="controls">

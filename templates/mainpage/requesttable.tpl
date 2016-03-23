@@ -72,6 +72,7 @@
             <td>
                 {if $r->getReserved() == false}
                     <form action="{$baseurl}/internal.php/viewRequest/reserve" method="post" class="form-compact">
+                        {include file="security/csrf.tpl"}
                         <input type="hidden" name="request" value="{$r->getId()}"/>
                         <input type="hidden" name="updateversion" value="{$r->getUpdateVersion()}"/>
                         <button class="btn btn-small btn-success" type="submit">
@@ -83,6 +84,7 @@
                     {if $r->getReserved() == $currentUser->getId()}
                         <form action="{$baseurl}/internal.php/viewRequest/breakReserve" method="post"
                               class="form-compact">
+                            {include file="security/csrf.tpl"}
                             <input type="hidden" name="request" value="{$r->getId()}"/>
                             <input type="hidden" name="updateversion" value="{$r->getUpdateVersion()}"/>
                             <button class="btn btn-small btn-inverse" type="submit">
@@ -93,6 +95,7 @@
                         {if $currentUser->isAdmin() || $currentUser->isCheckUser() }
                             <form action="{$baseurl}/internal.php/viewRequest/breakReserve" method="post"
                                   class="form-compact">
+                                {include file="security/csrf.tpl"}
                                 <input type="hidden" name="request" value="{$r->getId()}"/>
                                 <input type="hidden" name="updateversion" value="{$r->getUpdateVersion()}"/>
                                 <button class="btn btn-small btn-warning" type="submit">

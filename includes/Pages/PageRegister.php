@@ -20,9 +20,11 @@ class PageRegister extends InternalPageBase
 
 		// Dual-mode page
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$this->handlePost($useOAuthSignup);
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->assign("useOAuthSignup", $useOAuthSignup);
 			$this->setTemplate("registration/register.tpl");
 		}

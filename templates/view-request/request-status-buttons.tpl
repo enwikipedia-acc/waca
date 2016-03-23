@@ -15,6 +15,7 @@
         {if $requestIsClosed}
             <div class="span12">
                 <form action="{$baseurl}/internal.php/viewRequest/defer" method="post" class="form-compact">
+                    {include file="security/csrf.tpl"}
                     <input type="hidden" name="request" value="{$requestId}"/>
                     <input type="hidden" name="updateversion" value="{$updateVersion}"/>
                     <input type="hidden" name="target" value="{$defaultRequestState}"/>
@@ -25,6 +26,7 @@
             {include file="view-request/defer-button.tpl"}
             <div class="span6">
                 <form method="post" action="{$baseurl}/internal.php/viewRequest/drop" class="form-compact">
+                    {include file="security/csrf.tpl"}
                     <button class="btn btn-inverse btn-block" type="submit" name="template" value="0">
                         Drop
                     </button>

@@ -47,6 +47,7 @@
                     </td>
                     <td>
                         <form action="{$baseurl}/internal.php/viewRequest/defer" method="post" class="form-compact">
+                            {include file="security/csrf.tpl"}
                             <input type="hidden" name="request" value="{$req.id}"/>
                             <input type="hidden" name="updateversion" value="{$req.updateversion}"/>
                             <input type="hidden" name="target" value="{$defaultRequestState}"/>

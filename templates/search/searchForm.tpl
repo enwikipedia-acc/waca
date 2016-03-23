@@ -8,6 +8,7 @@
     <div class="row-fluid">
         <div class="span12">
             <form method="post" class="form-horizontal">
+                {include file="security/csrf.tpl"}
                 <div class="control-group">
                     <label class="control-label" for="term">Search term</label>
                     <div class="controls">

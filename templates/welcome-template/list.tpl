@@ -54,6 +54,7 @@
                         <td>
                             <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select"
                                   class="form-compact">
+                                {include file="security/csrf.tpl"}
                                 <input type="hidden" name="disable" value="true"/>
                                 <button type="submit" class="btn btn-primary"><i
                                             class="icon-white icon-ok"></i>&nbsp;Select
@@ -94,6 +95,7 @@
                             <td>
                                 <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/delete"
                                       class="form-compact">
+                                    {include file="security/csrf.tpl"}
                                     <input type="hidden" name="template" value="{$t->getId()}"/>
                                     <input type="hidden" name="updateversion" value="{$t->getUpdateVersion()}"/>
                                     <button type="submit" class="btn btn-danger"><i
@@ -106,6 +108,7 @@
                             {if $currentUser->getWelcomeTemplate() != $t->getId()}
                                 <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select"
                                       class="form-compact">
+                                    {include file="security/csrf.tpl"}
                                     <input type="hidden" name="template" value="{$t->getId()}"/>
                                     <button type="submit" class="btn btn-primary"><i
                                                 class="icon-white icon-ok"></i>&nbsp;Select

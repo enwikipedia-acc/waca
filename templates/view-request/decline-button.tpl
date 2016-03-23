@@ -1,4 +1,5 @@
 <form class="form-compact" action="{$baseurl}/internal.php/viewRequest/close" method="post">
+    {include file="security/csrf.tpl"}
     <div class="btn-group span6">
         <button type="button" class="btn btn-warning dropdown-toggle span12" data-toggle="dropdown">
             Decline&nbsp;<span class="caret"></span>

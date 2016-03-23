@@ -1,5 +1,6 @@
 {* If custom create reasons are active, then make the Created button a split button dropdown. *}
 <form method="post" class="form-compact" action="{$baseurl}/internal.php/viewRequest/close">
+    {include file="security/csrf.tpl"}
     {if !empty($createReasons)}
         <div class="btn-group span4">
             <button class="btn btn-success span10" type="submit" name="template" value="{$createdId}">

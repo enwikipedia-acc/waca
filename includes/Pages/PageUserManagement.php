@@ -80,6 +80,7 @@ class PageUserManagement extends InternalPageBase
 
 		// Dual-mode action
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$reason = WebRequest::postString('reason');
 
 			if ($reason === null || trim($reason) === "") {
@@ -108,6 +109,7 @@ class PageUserManagement extends InternalPageBase
 			return;
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->setTemplate('usermanagement/changelevel-reason.tpl');
 			$this->assign('user', $user);
 			$this->assign('status', 'Suspended');
@@ -139,6 +141,7 @@ class PageUserManagement extends InternalPageBase
 
 		// Dual-mode action
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$reason = WebRequest::postString('reason');
 
 			if ($reason === null || trim($reason) === "") {
@@ -167,6 +170,7 @@ class PageUserManagement extends InternalPageBase
 			return;
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->setTemplate('usermanagement/changelevel-reason.tpl');
 			$this->assign('user', $user);
 			$this->assign('status', 'Declined');
@@ -198,6 +202,7 @@ class PageUserManagement extends InternalPageBase
 
 		// Dual-mode action
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$reason = WebRequest::postString('reason');
 
 			if ($reason === null || trim($reason) === "") {
@@ -226,6 +231,7 @@ class PageUserManagement extends InternalPageBase
 			return;
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->setTemplate('usermanagement/changelevel-reason.tpl');
 			$this->assign('user', $user);
 			$this->assign('status', 'User');
@@ -257,6 +263,7 @@ class PageUserManagement extends InternalPageBase
 
 		// Dual-mode action
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$user->setStatus(User::STATUS_USER);
 			$user->setUpdateVersion(WebRequest::postInt('updateversion'));
 			$user->save();
@@ -279,6 +286,7 @@ class PageUserManagement extends InternalPageBase
 			return;
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->setTemplate("usermanagement/changelevel-reason.tpl");
 			$this->assign("user", $user);
 			$this->assign("status", "User");
@@ -310,6 +318,7 @@ class PageUserManagement extends InternalPageBase
 
 		// Dual-mode action
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$user->setStatus(User::STATUS_ADMIN);
 			$user->setUpdateVersion(WebRequest::postInt('updateversion'));
 			$user->save();
@@ -332,6 +341,7 @@ class PageUserManagement extends InternalPageBase
 			return;
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->setTemplate("usermanagement/changelevel-reason.tpl");
 			$this->assign("user", $user);
 			$this->assign("status", "Admin");
@@ -363,6 +373,7 @@ class PageUserManagement extends InternalPageBase
 
 		// Dual-mode action
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$newUsername = WebRequest::postString('newname');
 
 			if ($newUsername === null || trim($newUsername) === "") {
@@ -411,6 +422,7 @@ class PageUserManagement extends InternalPageBase
 			return;
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->setTemplate('usermanagement/renameuser.tpl');
 			$this->assign('user', $user);
 		}
@@ -436,6 +448,7 @@ class PageUserManagement extends InternalPageBase
 
 		// Dual-mode action
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$newEmail = WebRequest::postEmail('user_email');
 			$newOnWikiName = WebRequest::postString('user_onwikiname');
 
@@ -466,6 +479,7 @@ class PageUserManagement extends InternalPageBase
 			return;
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->setTemplate('usermanagement/edituser.tpl');
 			$this->assign('user', $user);
 		}

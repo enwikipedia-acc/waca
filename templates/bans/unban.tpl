@@ -1,6 +1,7 @@
 ﻿{extends file="pagebase.tpl"}
 {block name="content"}
     <form class="form-horizontal" method="post">
+        {include file="security/csrf.tpl"}
         <fieldset>
             <legend>Unbanning {$ban->getTarget()|escape}</legend>
 

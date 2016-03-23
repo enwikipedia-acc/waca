@@ -48,6 +48,7 @@ class PageComment extends RequestActionBase
 		$overridePolicy = WebRequest::postBoolean('privpol-check-override');
 
 		if ((preg_match($ipv4Regex, $commentText) || preg_match($ipv6Regex, $commentText)) && !$overridePolicy) {
+			$this->assignCSRFToken();
 			$this->assign("request", $request);
 			$this->assign("comment", $commentText);
 			$this->setTemplate("privpol-warning.tpl");

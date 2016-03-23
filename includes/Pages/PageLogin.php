@@ -35,7 +35,7 @@ class PageLogin extends InternalPageBase
 
 		if (WebRequest::wasPosted()) {
 			// POST. Do some authentication.
-
+			$this->validateCSRFToken();
 			$user = $this->getAuthenticatingUser();
 
 			// Touch force logout
@@ -64,6 +64,7 @@ class PageLogin extends InternalPageBase
 		}
 		else {
 			// GET. Show the form
+			$this->assignCSRFToken();
 			$this->setTemplate("login.tpl");
 		}
 	}

@@ -30,6 +30,7 @@
                 <td>{$ban->getTarget()|escape}</td>
                 <td>
                     <form action="{$baseurl}/internal.php/search" method="post" class="form-compact">
+                        {include file="security/csrf.tpl"}
                         <input type="hidden" name="term" value="{$ban->getTarget()|escape}" />
 
                         {if $ban->getType() == "IP"}

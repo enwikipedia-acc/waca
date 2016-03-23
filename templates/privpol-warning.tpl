@@ -3,6 +3,7 @@
     <div class="row-fluid">
         <h2>Privacy Policy Warning!</h2>
         <form action="{$baseurl}/internal.php/viewRequest/comment" method="post" class="form-horizontal span8">
+            {include file="security/csrf.tpl"}
 
             {include file="alert.tpl" alertblock=false alertclosable=false alerttype="alert-error" alertheader=""
             alertmessage="<strong>Please read this information carefully.</strong>"}

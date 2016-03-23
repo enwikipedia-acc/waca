@@ -2,6 +2,7 @@
 {block name="content"}
     <h3>User Settings for {$user->getUsername()|escape}</h3>
     <form class="form-horizontal" method="post">
+        {include file="security/csrf.tpl"}
         <div class="control-group">
             <label class="control-label" for="user_name">Username:</label>
             <div class="controls">

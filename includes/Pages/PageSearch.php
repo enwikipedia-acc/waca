@@ -21,6 +21,7 @@ class PageSearch extends InternalPageBase
 
 		// Dual-mode page
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			// TODO: logging
 
 			$searchType = WebRequest::postString('type');
@@ -55,9 +56,11 @@ class PageSearch extends InternalPageBase
 			$userList = User::getUsernames($userIds, $this->getDatabase());
 			$this->assign('userlist', $userList);
 
+			$this->assignCSRFToken();
 			$this->setTemplate('search/searchResult.tpl');
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->setTemplate('search/searchForm.tpl');
 		}
 	}

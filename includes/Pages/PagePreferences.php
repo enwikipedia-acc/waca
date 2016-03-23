@@ -23,6 +23,7 @@ class PagePreferences extends InternalPageBase
 
 		// Dual mode
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$user = User::getCurrent($this->getDatabase());
 			$user->setWelcomeSig(WebRequest::postString('sig'));
 			$user->setEmailSig(WebRequest::postString('emailsig'));
@@ -39,6 +40,7 @@ class PagePreferences extends InternalPageBase
 			$this->redirect('');
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->setTemplate('preferences/prefs.tpl');
 			$this->assign("enforceOAuth", $enforceOAuth);
 		}
@@ -49,6 +51,7 @@ class PagePreferences extends InternalPageBase
 		$this->setHtmlTitle('Change Password');
 
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$oldPassword = WebRequest::postString('oldpassword');
 			$newPassword = WebRequest::postString('newpassword');
 			$newPasswordConfirmation = WebRequest::postString('newpasswordconfirm');

@@ -6,6 +6,7 @@
         alertmessage="The user will be shown the reason you enter here. Please keep this in mind."}
     {/if}
     <form class="form-horizontal" method="post">
+        {include file="security/csrf.tpl"}
         <div class="control-group">
             <label class="control-label" for="username">Username:</label>
             <div class="controls">

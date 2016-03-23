@@ -104,6 +104,8 @@ class PageEmailManagement extends InternalPageBase
 		$requestStates = $this->getSiteConfiguration()->getRequestStates();
 
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
+
 			$this->modifyTemplateData($template);
 
 			$other = EmailTemplate::getByName($template->getName(), $database);
@@ -117,7 +119,7 @@ class PageEmailManagement extends InternalPageBase
 				$template->setPreloadOnly(false);
 			}
 
-			// optimisticly lock on load of edit form
+			// optimistically lock on load of edit form
 			$updateVersion = WebRequest::postInt('updateversion');
 			$template->setUpdateVersion($updateVersion);
 
@@ -129,6 +131,7 @@ class PageEmailManagement extends InternalPageBase
 			$this->redirect('emailManagement');
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->assign('id', $template->getId());
 			$this->assign('emailTemplate', $template);
 			$this->assign('createdid', $createdId);
@@ -175,6 +178,7 @@ class PageEmailManagement extends InternalPageBase
 		$requestStates = $this->getSiteConfiguration()->getRequestStates();
 
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$template = new EmailTemplate();
 			$template->setDatabase($database);
 
@@ -195,6 +199,7 @@ class PageEmailManagement extends InternalPageBase
 			$this->redirect('emailManagement');
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->assign('requeststates', $requestStates);
 			$this->setTemplate('email-management/create.tpl');
 		}

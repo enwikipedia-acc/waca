@@ -21,6 +21,7 @@ class PageForgotPassword extends InternalPageBase
 	protected function main()
 	{
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$username = WebRequest::postString('username');
 			$email = WebRequest::postEmail('email');
 			$database = $this->getDatabase();
@@ -37,6 +38,7 @@ class PageForgotPassword extends InternalPageBase
 			$this->redirect('login');
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->setTemplate('forgot-password/forgotpw.tpl');
 		}
 	}
@@ -89,9 +91,11 @@ class PageForgotPassword extends InternalPageBase
 
 		// Dual mode
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$this->doReset($user);
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->assign('user', $user);
 			$this->setTemplate('forgot-password/forgotpwreset.tpl');
 		}

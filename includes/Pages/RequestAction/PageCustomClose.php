@@ -30,11 +30,13 @@ class PageCustomClose extends PageCloseRequest
 
 		// Dual-mode page
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$this->doCustomClose($currentUser, $request, $database);
 
 			$this->redirect();
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->showCustomCloseForm($database, $request);
 		}
 	}

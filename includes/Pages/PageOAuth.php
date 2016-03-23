@@ -24,6 +24,8 @@ class PageOAuth extends InternalPageBase
 			return;
 		}
 
+		$this->validateCSRFToken();
+
 		$oauthHelper = $this->getOAuthHelper();
 		$user = User::getCurrent($this->getDatabase());
 

@@ -217,6 +217,8 @@ class PageCloseRequest extends RequestActionBase
 	 */
 	protected function showConfirmation(Request $request, EmailTemplate $template, $templateName)
 	{
+		$this->assignCSRFToken();
+
 		$this->assign('request', $request->getId());
 		$this->assign('template', $template->getId());
 

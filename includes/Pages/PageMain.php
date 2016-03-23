@@ -14,6 +14,8 @@ class PageMain extends InternalPageBase
 	 */
 	protected function main()
 	{
+		$this->assignCSRFToken();
+
 		$config = $this->getSiteConfiguration();
 
 		$database = $this->getDatabase();

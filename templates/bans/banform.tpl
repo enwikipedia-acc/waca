@@ -2,6 +2,8 @@
 {block name="content"}
     <h3>Ban an IP, name, or email address</h3>
     <form class="form-horizontal" method="post">
+        {include file="security/csrf.tpl"}
+
         <div class="control-group">
             <label class="control-label" for="banType">Type:</label>
             <div class="controls">

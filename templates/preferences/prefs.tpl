@@ -6,6 +6,7 @@
         </h1>
     </div>
     <form class="form-horizontal" method="post">
+        {include file="security/csrf.tpl"}
         <fieldset>
             <legend>General settings</legend>
             <div class="control-group">
@@ -155,6 +156,7 @@
                     </div>
                 </div>
                 <form method="post" action="{$baseurl}/internal.php/oauth/attach">
+                    {include file="security/csrf.tpl"}
                     <div class="control-group">
                         <div class="controls">
                             <button type="submit" class="btn btn-success">Attach account</button>
@@ -165,6 +167,7 @@
         </fieldset>
     </div>
     <form class="form-horizontal" method="post" action="{$baseurl}/internal.php/preferences/changePassword">
+        {include file="security/csrf.tpl"}
         <fieldset>
             <legend>Change your password</legend>
             <div class="control-group">

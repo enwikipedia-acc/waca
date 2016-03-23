@@ -63,6 +63,7 @@ class PageBan extends InternalPageBase
 
 		// dual mode
 		if (WebRequest::wasPosted()) {
+			$this->validateCSRFToken();
 			$unbanReason = WebRequest::postString('unbanreason');
 			if ($unbanReason === null || trim($unbanReason) === "") {
 				throw new ApplicationLogicException('No unban reason specified');
@@ -84,6 +85,7 @@ class PageBan extends InternalPageBase
 			$this->redirect('bans');
 		}
 		else {
+			$this->assignCSRFToken();
 			$this->assign('ban', $ban);
 			$this->setTemplate('bans/unban.tpl');
 		}
@@ -172,6 +174,7 @@ class PageBan extends InternalPageBase
 	 */
 	private function handlePostMethodForSetBan()
 	{
+		$this->validateCSRFToken();
 		$reason = WebRequest::postString('banreason');
 		$target = WebRequest::postString('target');
 
@@ -223,6 +226,7 @@ class PageBan extends InternalPageBase
 	protected function handleGetMethodForSetBan()
 	{
 		$this->setTemplate('bans/banform.tpl');
+		$this->assignCSRFToken();
 
 		$banType = WebRequest::getString('type');
 		$banTarget = WebRequest::getInt('request');

@@ -12,6 +12,7 @@
         </p>
     </div>
     <form class="form-horizontal" method="post">
+        {include file="security/csrf.tpl"}
         <input type="hidden" name="welcomeenable" value="false"/>
         <input name="template" value="welcome" type="hidden"/>
         <input type="hidden" name="sig" value=""/>

@@ -1,6 +1,7 @@
 {extends file="base.tpl"}
 {block name="content"}
     <form method="post" class="form-horizontal">
+        {include file="security/csrf.tpl"}
         <fieldset>
             <legend>Custom close{if $preloadTitle != ""} - {$preloadTitle|escape}{/if}</legend>
 

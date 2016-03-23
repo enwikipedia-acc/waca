@@ -11,7 +11,7 @@
     <div class="row-fluid">
         <div class="span12">
             <form class="form-horizontal" method="post">
-
+                {include file="security/csrf.tpl"}
                 <div class="control-group">
                     <label class="control-label" for="inputName">Email template name</label>
                     <div class="controls">

@@ -7,6 +7,8 @@
             <p>This request is currently marked as being handled by {$reserveUser|escape}. Do you wish to proceed?</p>
 
             <form method="post">
+                {include file="security/csrf.tpl"}
+
                 <div class="row-fluid" style="margin-top:30px;">
                     <button class="btn btn-success offset3 span3" name="reserveOverride" value="true">Yes</button>
                     <a class="btn btn-danger span3" href="{$baseurl}/internal.php/viewRequest?id={$request}">No</a>
