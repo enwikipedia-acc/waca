@@ -7,7 +7,7 @@ use Waca\Pages\PageBan;
 use Waca\Pages\PageEditComment;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageForgotPassword;
-use Waca\Pages\PageInterfaceManagement;
+use Waca\Pages\PageSiteNotice;
 use Waca\Pages\PageLog;
 use Waca\Pages\PageLogin;
 use Waca\Pages\PageLogout;
@@ -152,7 +152,7 @@ class RequestRouter implements IRequestRouter
 			),
 		'siteNotice'                  =>
 			array(
-				'class'   => PageInterfaceManagement::class,
+				'class'   => PageSiteNotice::class,
 				'actions' => array(),
 			),
 		'emailManagement'             =>

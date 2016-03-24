@@ -2,13 +2,13 @@
 
 namespace Waca\Pages;
 
-use Waca\DataObjects\InterfaceMessage;
+use Waca\DataObjects\SiteNotice;
 use Waca\Helpers\Logger;
 use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageInterfaceManagement extends InternalPageBase
+class PageSiteNotice extends InternalPageBase
 {
 	/**
 	 * Main function for this page, when no specific actions are called.
@@ -20,8 +20,8 @@ class PageInterfaceManagement extends InternalPageBase
 
 		$database = $this->getDatabase();
 
-		/** @var InterfaceMessage $siteNoticeMessage */
-		$siteNoticeMessage = InterfaceMessage::getById(InterfaceMessage::SITENOTICE, $database);
+		/** @var SiteNotice $siteNoticeMessage */
+		$siteNoticeMessage = SiteNotice::getById(1, $database);
 
 		// Dual-mode
 		if (WebRequest::wasPosted()) {
@@ -31,15 +31,15 @@ class PageInterfaceManagement extends InternalPageBase
 			$siteNoticeMessage->setUpdateVersion(WebRequest::postInt('updateversion'));
 			$siteNoticeMessage->save();
 
-			Logger::interfaceMessageEdited($database, $siteNoticeMessage);
-			$this->getNotificationHelper()->interfaceMessageEdited();
+			Logger::siteNoticeEdited($database, $siteNoticeMessage);
+			$this->getNotificationHelper()->siteNoticeEdited();
 
 			$this->redirect();
 		}
 		else {
 			$this->assignCSRFToken();
 
-			$this->setTemplate('interface-management/editform.tpl');
+			$this->setTemplate('site-notice/edit-form.tpl');
 			$this->assign('message', $siteNoticeMessage);
 		}
 	}

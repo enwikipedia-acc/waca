@@ -7,7 +7,7 @@ use Waca\DataObject;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\EmailTemplate;
-use Waca\DataObjects\InterfaceMessage;
+use Waca\DataObjects\SiteNotice;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
@@ -150,10 +150,10 @@ class Logger
 	#endregion
 
 	/**
-	 * @param PdoDatabase      $database
-	 * @param InterfaceMessage $object
+	 * @param PdoDatabase $database
+	 * @param SiteNotice  $object
 	 */
-	public static function interfaceMessageEdited(PdoDatabase $database, InterfaceMessage $object)
+	public static function siteNoticeEdited(PdoDatabase $database, SiteNotice $object)
 	{
 		self::createLogEntry($database, $object, "Edited");
 	}

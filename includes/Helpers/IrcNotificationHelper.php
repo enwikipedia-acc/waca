@@ -180,12 +180,12 @@ class IrcNotificationHelper
 
 	#endregion
 
-	#region Interface Messages
+	#region Site Notice
 
 	/**
-	 * Summary of interfaceMessageEdited
+	 * Summary of siteNoticeEdited
 	 */
-	public function interfaceMessageEdited()
+	public function siteNoticeEdited()
 	{
 		$this->send("Site notice edited by " . $this->currentUser->getUsername());
 	}

@@ -3,8 +3,9 @@
 namespace Waca\Tasks;
 
 use Exception;
-use Waca\DataObjects\InterfaceMessage;
+use Waca\DataObjects\SiteNotice;
 use Waca\DataObjects\User;
+use Waca\Environment;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Fragments\TemplateOutput;
@@ -63,7 +64,8 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 	{
 		$this->setUpSmarty();
 
-		$siteNoticeText = InterfaceMessage::get(InterfaceMessage::SITENOTICE, $this->getDatabase());
+		$siteNoticeText = SiteNotice::get($this->getDatabase());
+
 		$this->assign('siteNoticeText', $siteNoticeText);
 
 		$currentUser = User::getCurrent($this->getDatabase());

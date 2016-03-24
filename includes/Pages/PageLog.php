@@ -5,7 +5,7 @@ namespace Waca\Pages;
 use Exception;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\EmailTemplate;
-use Waca\DataObjects\InterfaceMessage;
+use Waca\DataObjects\SiteNotice;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
@@ -201,12 +201,8 @@ class PageLog extends InternalPageBase
 				return <<<HTML
 <a href="{$baseurl}/internal.php/emailManagement/view?id={$objectId}">Email Template #{$objectId} ({$name})</a>
 HTML;
-			case 'InterfaceMessage':
-				/** @var InterfaceMessage $interfaceMessage */
-				$interfaceMessage = InterfaceMessage::getById($objectId, $database);
-				$description = htmlentities($interfaceMessage->getDescription(), ENT_COMPAT, 'UTF-8');
-
-				return "<a href=\"{$baseurl}/internal.php/siteNotice\">{$description}</a>";
+			case 'SiteNotice':
+				return "<a href=\"{$baseurl}/internal.php/siteNotice\">the site notice</a>";
 			case 'Request':
 				/** @var Request $request */
 				$request = Request::getById($objectId, $database);
