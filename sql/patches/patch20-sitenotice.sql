@@ -90,7 +90,7 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
   -- finally, update the schema version to indicate success
   UPDATE schemaversion
   SET version = patchversion;
-END;
+END;;
 
 DELIMITER ';'
 CALL SCHEMA_UPGRADE_SCRIPT();
