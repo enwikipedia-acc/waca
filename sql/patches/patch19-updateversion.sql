@@ -38,41 +38,44 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
   -- sanity check
   SELECT COUNT(*) INTO messageCount FROM interfacemessage WHERE type = 'Message';
 
-  IF messageCount <> 7 THEN
-    -- this script assumes that the message IDs are the same as they were in production as of 23rd March.
-    -- if this is different, we need to revisit this script.
-    SET @message_text = CONCAT('Message count is wrong, data migration has failed.');
-    ROLLBACK;
-    SIGNAL SQLSTATE '45000' SET message_text = @message_text;
+  IF messageCount <> 0 THEN
+    -- message count should be zero if loaded from schema build script.
+
+    IF messageCount <> 7 THEN
+      -- this script assumes that the message IDs are the same as they were in production as of 23rd March.
+      -- if this is different, we need to revisit this script.
+      SET @message_text = CONCAT('Message count is wrong, data migration has failed.');
+      ROLLBACK;
+      SIGNAL SQLSTATE '45000' SET message_text = @message_text;
+    END IF;
+
+    -- upgrade old log entries to reflect new location of email messages
+    UPDATE log l
+      LEFT JOIN interfacemessage i ON l.objectid = i.id
+      LEFT JOIN emailtemplate e ON e.id = CASE
+                                          WHEN i.id < 6 THEN i.id
+                                          WHEN i.id = 26 THEN 6 -- these mappings are from production. Data import scripts
+                                          WHEN i.id = 30 THEN 7 -- should set these correctly.
+                                          ELSE NULL END
+    SET objectid = e.id, objecttype = 'EmailTemplate', action = 'EditedEmail', comment = NULL
+    WHERE l.objecttype = 'InterfaceMessage'
+          AND l.action = 'Edited'
+          AND i.type = 'Message'
+          AND e.id IS NOT NULL;
+
+    -- drop old interface messages from the table that have been migrated to email templates
+    DELETE FROM interfacemessage WHERE id IN (1, 2, 3, 4, 5, 26, 30) AND type = 'Message';
+
+    SELECT ROW_COUNT() INTO messageCount FROM DUAL;
+
+    IF messageCount <> 7 THEN
+      -- this script assumes that the message IDs are the same as they were in production as of 23rd March.
+      -- if this is different, we need to revisit this script.
+      SET @message_text = CONCAT('Deletion count is wrong, data migration has failed.');
+      ROLLBACK;
+      SIGNAL SQLSTATE '45000' SET message_text = @message_text;
+    END IF;
   END IF;
-
-  -- upgrade old log entries to reflect new location of email messages
-  UPDATE log l
-    LEFT JOIN interfacemessage i ON l.objectid = i.id
-    LEFT JOIN emailtemplate e ON e.id = CASE
-                                        WHEN i.id < 6 THEN i.id
-                                        WHEN i.id = 26 THEN 6 -- these mappings are from production. Data import scripts
-                                        WHEN i.id = 30 THEN 7 -- should set these correctly.
-                                        ELSE NULL END
-  SET objectid = e.id, objecttype = 'EmailTemplate', action = 'EditedEmail', comment = NULL
-  WHERE l.objecttype = 'InterfaceMessage'
-        AND l.action = 'Edited'
-        AND i.type = 'Message'
-        AND e.id IS NOT NULL;
-
-  -- drop old interface messages from the table that have been migrated to email templates
-  DELETE FROM interfacemessage WHERE id IN (1, 2, 3, 4, 5, 26, 30) AND type = 'Message';
-
-  SELECT ROW_COUNT() INTO messageCount FROM DUAL;
-
-  IF messageCount <> 7 THEN
-    -- this script assumes that the message IDs are the same as they were in production as of 23rd March.
-    -- if this is different, we need to revisit this script.
-    SET @message_text = CONCAT('Deletion count is wrong, data migration has failed.');
-    ROLLBACK;
-    SIGNAL SQLSTATE '45000' SET message_text = @message_text;
-  END IF;
-
   COMMIT;
   -- Finished data migration, continue with schema changes
   -- ---------------------------------------
