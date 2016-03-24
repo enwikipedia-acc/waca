@@ -86,6 +86,10 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
 
   ALTER TABLE interfacemessage DROP type, DROP description, RENAME TO sitenotice;
 
+  -- drop some old unused views
+  DROP VIEW IF EXISTS acc_emails;
+  DROP VIEW IF EXISTS acc_trustedips;
+
   -- -------------------------------------------------------------------------
   -- finally, update the schema version to indicate success
   UPDATE schemaversion
