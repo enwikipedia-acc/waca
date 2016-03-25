@@ -22,7 +22,6 @@ class Request extends DataObject
 	private $comment;
 	private $status = "Open";
 	private $date;
-	private $checksum = '0';
 	private $emailsent = 0;
 	private $emailconfirm;
 	private $reserved = 0;
@@ -51,10 +50,10 @@ class Request extends DataObject
 			// insert
 			$statement = $this->dbObject->prepare(<<<SQL
 INSERT INTO `request` (
-	email, ip, name, comment, status, date, checksum, emailsent,
+	email, ip, name, comment, status, date, emailsent,
 	emailconfirm, reserved, useragent, forwardedip
 ) VALUES (
-	:email, :ip, :name, :comment, :status, CURRENT_TIMESTAMP(), :checksum, :emailsent,
+	:email, :ip, :name, :comment, :status, CURRENT_TIMESTAMP(), :emailsent,
 	:emailconfirm, :reserved, :useragent, :forwardedip
 );
 SQL
@@ -64,7 +63,6 @@ SQL
 			$statement->bindValue(":name", $this->name);
 			$statement->bindValue(":comment", $this->comment);
 			$statement->bindValue(":status", $this->status);
-			$statement->bindValue(":checksum", $this->checksum);
 			$statement->bindValue(":emailsent", $this->emailsent);
 			$statement->bindValue(":emailconfirm", $this->emailconfirm);
 			$statement->bindValue(":reserved", $this->reserved);
@@ -83,7 +81,6 @@ SQL
 			$statement = $this->dbObject->prepare(<<<SQL
 UPDATE `request` SET
 	status = :status,
-	checksum = :checksum,
 	emailsent = :emailsent,
 	emailconfirm = :emailconfirm,
 	reserved = :reserved,
@@ -97,7 +94,6 @@ SQL
 			$statement->bindValue(':updateversion', $this->updateversion);
 
 			$statement->bindValue(':status', $this->status);
-			$statement->bindValue(':checksum', $this->checksum);
 			$statement->bindValue(':emailsent', $this->emailsent);
 			$statement->bindValue(':emailconfirm', $this->emailconfirm);
 			$statement->bindValue(':reserved', $this->reserved);
@@ -195,30 +191,6 @@ SQL
 	public function setDate($date)
 	{
 		$this->date = $date;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getChecksum()
-	{
-		return $this->checksum;
-	}
-
-	/**
-	 * @param string $checksum
-	 */
-	public function setChecksum($checksum)
-	{
-		$this->checksum = $checksum;
-	}
-
-	/**
-	 * @deprecated in favour of optimistic locking IDs
-	 */
-	public function updateChecksum()
-	{
-		$this->checksum = md5($this->id . $this->name . $this->email . microtime());
 	}
 
 	/**
