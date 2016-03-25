@@ -281,15 +281,6 @@ SQL
 	}
 
 	/**
-	 * @return Comment[]
-	 * @deprecated This shouldn't be here
-	 */
-	public function getComments()
-	{
-		return Comment::getForRequest($this->id, $this->dbObject);
-	}
-
-	/**
 	 * @return string
 	 */
 	public function getEmailConfirm()
