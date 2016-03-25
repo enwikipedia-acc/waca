@@ -8,11 +8,11 @@ use Waca\Helpers\EmailHelper;
 use Waca\Helpers\HttpHelper;
 use Waca\Helpers\IrcNotificationHelper;
 use Waca\Helpers\OAuthHelper;
-use Waca\Helpers\TypeAheadHelper;
 use Waca\Helpers\WikiTextHelper;
 use Waca\Providers\CachedApiAntispoofProvider;
 use Waca\Providers\CachedRDnsLookupProvider;
 use Waca\Providers\FakeLocationProvider;
+use Waca\Providers\IpLocationProvider;
 use Waca\Providers\XffTrustProvider;
 use Waca\Tasks\ITask;
 
@@ -133,8 +133,14 @@ abstract class ApplicationBase
 		$page->setHttpHelper($httpHelper);
 		$page->setWikiTextHelper(new WikiTextHelper($siteConfiguration, $page->getHttpHelper()));
 
-		// todo: inject from configuration
-		$page->setLocationProvider(new FakeLocationProvider($database, null));
+		if ($siteConfiguration->getLocationProviderApiKey() === null) {
+			$page->setLocationProvider(new FakeLocationProvider());
+		}
+		else {
+			$page->setLocationProvider(new IpLocationProvider($database,
+				$siteConfiguration->getLocationProviderApiKey()));
+		}
+
 		$page->setXffTrustProvider(new XffTrustProvider($siteConfiguration->getSquidList(), $database));
 
 		$page->setRdnsProvider(new CachedRDnsLookupProvider($database));

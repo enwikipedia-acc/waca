@@ -367,7 +367,7 @@ class PageViewRequest extends InternalPageBase
 				$proxyIsInPrivateRange = $this->getXffTrustProvider()->ipInRange(self::$rfc1918ips, $proxyAddress);
 
 				if (!$proxyIsInPrivateRange) {
-					$proxyReverseDns = $this->getRdnsProvider()->getRdns($proxyAddress);
+					$proxyReverseDns = $this->getRdnsProvider()->getReverseDNS($proxyAddress);
 					$proxyLocation = $this->getLocationProvider()->getIpLocation($proxyAddress);
 				}
 				else {

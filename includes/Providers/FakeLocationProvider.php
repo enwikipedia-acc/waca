@@ -2,7 +2,6 @@
 
 namespace Waca\Providers;
 
-use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\ILocationProvider;
 
 /**
@@ -10,11 +9,6 @@ use Waca\Providers\Interfaces\ILocationProvider;
  */
 class FakeLocationProvider implements ILocationProvider
 {
-	public function __construct(PdoDatabase $database, $apikey)
-	{
-		// do nothing.
-	}
-
 	public function getIpLocation($address)
 	{
 		return null;

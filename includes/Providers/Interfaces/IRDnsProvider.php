@@ -14,5 +14,5 @@ interface IRDnsProvider
 	 *
 	 * @return string
 	 */
-	public function getRdns($address);
+	public function getReverseDNS($address);
 }

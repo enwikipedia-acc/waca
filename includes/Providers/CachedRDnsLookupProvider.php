@@ -6,7 +6,7 @@ use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\IRDnsProvider;
 
 /**
- * Cached RDNS Lookup Provider
+ * Cached rDNS Lookup Provider
  *
  * Provides a service to look up the reverse DNS of an IP address, and caches
  * the result in the database.
@@ -20,7 +20,7 @@ class CachedRDnsLookupProvider implements IRDnsProvider
 		$this->database = $database;
 	}
 
-	public function getRdns($address)
+	public function getReverseDNS($address)
 	{
 		$address = trim($address);
 
@@ -34,7 +34,7 @@ class CachedRDnsLookupProvider implements IRDnsProvider
 			return $rDns->getData();
 		}
 
-		// OK, it's not there, let's do an rdns lookup.
+		// OK, it's not there, let's do an rDNS lookup.
 		$result = @ gethostbyaddr($address);
 
 		if ($result !== false) {

@@ -20,9 +20,9 @@ class SiteConfiguration
 	private $dataClearInterval = '15 DAY';
 	private $forceIdentification = true;
 	private $identificationCacheExpiry = '1 DAY';
-	private $mediawikiScriptPath = "https://en.wikipedia.org/w/index.php";
-	private $mediawikiWebServiceEndpoint = "";
-	private $metaWikimediaWebServiceEndpoint = "https://meta.wikimedia.org/w/api.php";
+	private $mediawikiScriptPath = 'https://en.wikipedia.org/w/index.php';
+	private $mediawikiWebServiceEndpoint = 'https://en.wikipedia.org/w/api.php';
+	private $metaWikimediaWebServiceEndpoint = 'https://meta.wikimedia.org/w/api.php';
 	private $enforceOAuth = true;
 	private $emailConfirmationEnabled = true;
 	private $emailConfirmationExpiryDays = 7;
@@ -70,6 +70,8 @@ class SiteConfiguration
 	private $ircNotificationsInstance = 'Development';
 	private $errorLog = 'errorlog';
 	private $titleBlacklistEnabled = false;
+	/** @var null|string $locationProviderApiKey */
+	private $locationProviderApiKey = null;
 
 	/**
 	 * Gets the base URL of the tool
@@ -759,5 +761,25 @@ class SiteConfiguration
 	public function getTitleBlacklistEnabled()
 	{
 		return $this->titleBlacklistEnabled;
+	}
+
+	/**
+	 * @param string|null $locationProviderApiKey
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setLocationProviderApiKey($locationProviderApiKey)
+	{
+		$this->locationProviderApiKey = $locationProviderApiKey;
+
+		return $this;
+	}
+
+	/**
+	 * @return null|string
+	 */
+	public function getLocationProviderApiKey()
+	{
+		return $this->locationProviderApiKey;
 	}
 }
