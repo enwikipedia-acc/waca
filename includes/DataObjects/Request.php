@@ -398,28 +398,6 @@ SQL
 	}
 
 	/**
-	 * @param $si
-	 *
-	 * @deprecated
-	 * @throws Exception
-	 */
-	public function confirmEmail($si)
-	{
-		if ($this->getEmailConfirm() == "Confirmed") {
-			// already confirmed. Act as though we've completed successfully.
-			return;
-		}
-
-		if ($this->getEmailConfirm() == $si) {
-			$this->setEmailConfirm("Confirmed");
-		}
-		else {
-			throw new Exception("Confirmation hash does not match the expected value",
-				"Email confirmation failed");
-		}
-	}
-
-	/**
 	 * @return string
 	 */
 	public function getEmailConfirm()
@@ -438,35 +416,6 @@ SQL
 	public function generateEmailConfirmationHash()
 	{
 		$this->emailconfirm = bin2hex(openssl_random_pseudo_bytes(16));
-	}
-
-	/**
-	 * @deprecated Move to helper!
-	 */
-	public function sendConfirmationEmail()
-	{
-		global $smarty;
-
-		/**
-		 * Note to weary travellers! Don't use this global anywhere else.
-		 * @var IXffTrustProvider $globalXffTrustProvider
-		 */
-		global $globalXffTrustProvider;
-		$trustedIp = $globalXffTrustProvider->getTrustedClientIp($this->ip, $this->forwardedip);
-
-		$smarty->assign("ip", $trustedIp);
-		$smarty->assign("id", $this->getId());
-		$smarty->assign("hash", $this->getEmailConfirm());
-
-		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-
-		// Sends the confirmation email to the user.
-		$mailsuccess = mail($this->getEmail(), "[ACC #{$this->getId()}] English Wikipedia Account Request",
-			$smarty->fetch('request/confirmation-mail.tpl'), $headers);
-
-		if (!$mailsuccess) {
-			throw new Exception("Error sending email.");
-		}
 	}
 
 	/**
