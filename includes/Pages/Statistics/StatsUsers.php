@@ -30,7 +30,7 @@ class StatsUsers extends InternalPageBase
 
 	public function getSecurityConfiguration()
 	{
-		return SecurityConfiguration::publicPage();
+		return $this->getSecurityManager()->configure()->asPublicPage();
 	}
 
 	/**

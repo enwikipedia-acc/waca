@@ -28,9 +28,9 @@ class PageEditComment extends InternalPageBase
 	{
 		switch ($this->getRouteName()) {
 			case 'editOthers':
-				return SecurityConfiguration::adminPage();
+				return $this->getSecurityManager()->configure()->asAdminPage();
 			default:
-				return SecurityConfiguration::internalPage();
+				return $this->getSecurityManager()->configure()->asInternalPage();
 		}
 	}
 

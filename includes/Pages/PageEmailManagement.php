@@ -27,10 +27,10 @@ class PageEmailManagement extends InternalPageBase
 		switch ($this->getRouteName()) {
 			case 'edit':
 			case 'create':
-				return SecurityConfiguration::adminPage();
+				return $this->getSecurityManager()->configure()->asAdminPage();
 			case 'view':
 			case 'main':
-				return SecurityConfiguration::internalPage();
+				return $this->getSecurityManager()->configure()->asInternalPage();
 		}
 
 		// deny all

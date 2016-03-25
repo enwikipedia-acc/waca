@@ -104,7 +104,7 @@ class PageLogin extends InternalPageBase
 	protected function getSecurityConfiguration()
 	{
 		// Login pages, by definition, have to be accessible to the public
-		return SecurityConfiguration::publicPage();
+		return $this->getSecurityManager()->configure()->asPublicPage();
 	}
 
 	/**

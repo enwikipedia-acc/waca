@@ -105,9 +105,9 @@ class PageBan extends InternalPageBase
 		// display of bans is allowed for any user, but setting and removing bans is admin-only.
 		switch ($this->getRouteName()) {
 			case "main":
-				return SecurityConfiguration::internalPage();
+				return $this->getSecurityManager()->configure()->asInternalPage();
 			default:
-				return SecurityConfiguration::adminPage();
+				return $this->getSecurityManager()->configure()->asAdminPage();
 		}
 	}
 

@@ -176,7 +176,7 @@ SQL;
 	 */
 	protected function getSecurityConfiguration()
 	{
-		return SecurityConfiguration::internalPage();
+		return $this->getSecurityManager()->configure()->asInternalPage();
 	}
 
 	/**

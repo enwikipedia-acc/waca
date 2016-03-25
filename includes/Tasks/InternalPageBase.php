@@ -9,6 +9,7 @@ use Waca\Exceptions\NotIdentifiedException;
 use Waca\IdentificationVerifier;
 use Waca\Helpers\Interfaces\ITypeAheadHelper;
 use Waca\Security\SecurityConfiguration;
+use Waca\Security\SecurityManager;
 use Waca\WebRequest;
 
 abstract class InternalPageBase extends PageBase
@@ -17,6 +18,8 @@ abstract class InternalPageBase extends PageBase
 	private $identificationVerifier;
 	/** @var ITypeAheadHelper */
 	private $typeAheadHelper;
+	/** @var SecurityManager */
+	private $securityManager;
 
 	/**
 	 * @return ITypeAheadHelper
@@ -77,7 +80,7 @@ abstract class InternalPageBase extends PageBase
 		// Security barrier.
 		//
 		// This code essentially doesn't care if the user is logged in or not, as the
-		if ($securityConfiguration->allows($currentUser, $this->identificationVerifier)) {
+		if ($this->getSecurityManager()->allows($securityConfiguration, $currentUser)) {
 			// We're allowed to run the page, so let's run it.
 			$this->runPage();
 		}
@@ -167,7 +170,11 @@ abstract class InternalPageBase extends PageBase
 
 		try {
 			$this->setRoute($action);
-			$allowed = $this->getSecurityConfiguration()->allows(User::getCurrent($this->getDatabase()), $this->identificationVerifier);
+
+			$securityConfiguration = $this->getSecurityConfiguration();
+			$currentUser = User::getCurrent($this->getDatabase());
+
+			$allowed = $this->getSecurityManager()->allows($securityConfiguration, $currentUser);
 
 			return $allowed;
 		}
@@ -185,5 +192,21 @@ abstract class InternalPageBase extends PageBase
 			$query = 'UPDATE user SET lastactive = CURRENT_TIMESTAMP() WHERE id = :id;';
 			$this->getDatabase()->prepare($query)->execute(array(":id" => WebRequest::getSessionUserId()));
 		}
+	}
+
+	/**
+	 * @return SecurityManager
+	 */
+	public function getSecurityManager()
+	{
+		return $this->securityManager;
+	}
+
+	/**
+	 * @param SecurityManager $securityManager
+	 */
+	public function setSecurityManager($securityManager)
+	{
+		$this->securityManager = $securityManager;
 	}
 }

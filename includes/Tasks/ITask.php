@@ -5,10 +5,8 @@ namespace Waca\Tasks;
 use Waca\Helpers\HttpHelper;
 use Waca\Helpers\Interfaces\IEmailHelper;
 use Waca\Helpers\Interfaces\IOAuthHelper;
-use Waca\Helpers\Interfaces\ITypeAheadHelper;
 use Waca\Helpers\IrcNotificationHelper;
 use Waca\Helpers\WikiTextHelper;
-use Waca\IdentificationVerifier;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\IAntiSpoofProvider;
 use Waca\Providers\Interfaces\ILocationProvider;
@@ -140,10 +138,4 @@ interface ITask
 	 * @return void
 	 */
 	public function setNotificationHelper($notificationHelper);
-
-	/**
-	 * @param IdentificationVerifier $identificationVerifier
-	 * @return void
-	 */
-	public function setIdentificationVerifier(IdentificationVerifier $identificationVerifier);
 }

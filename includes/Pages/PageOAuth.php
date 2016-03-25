@@ -124,7 +124,7 @@ class PageOAuth extends InternalPageBase
 	protected function getSecurityConfiguration()
 	{
 		if ($this->getRouteName() === 'callback') {
-			return SecurityConfiguration::publicPage();
+			return $this->getSecurityManager()->configure()->asPublicPage();
 		}
 
 		if ($this->getRouteName() === 'detach' && $this->getSiteConfiguration()->getEnforceOAuth()) {
@@ -132,7 +132,7 @@ class PageOAuth extends InternalPageBase
 			return new SecurityConfiguration();
 		}
 
-		return SecurityConfiguration::allLoggedInUsersPage();
+		return $this->getSecurityManager()->configure()->asAllLoggedInUsersPage();
 	}
 
 	/**

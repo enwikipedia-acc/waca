@@ -9,6 +9,7 @@ use Waca\Exceptions\ReadableException;
 use Waca\Helpers\TypeAheadHelper;
 use Waca\Providers\GlobalStateProvider;
 use Waca\Router\IRequestRouter;
+use Waca\Security\SecurityManager;
 use Waca\Security\TokenManager;
 use Waca\Tasks\InternalPageBase;
 use Waca\Tasks\ITask;
@@ -55,17 +56,18 @@ class WebStart extends ApplicationBase
 		PdoDatabase $database,
 		PdoDatabase $notificationsDatabase
 	) {
-
 		parent::setupHelpers($page, $siteConfiguration, $database, $notificationsDatabase);
 
 		if ($page instanceof PageBase) {
-			$identificationVerifier = new IdentificationVerifier($page->getHttpHelper(), $siteConfiguration, $database);
-			$page->setIdentificationVerifier($identificationVerifier);
-
 			$page->setTokenManager(new TokenManager());
 
 			if ($page instanceof InternalPageBase) {
 				$page->setTypeAheadHelper(new TypeAheadHelper());
+
+				$identificationVerifier = new IdentificationVerifier($page->getHttpHelper(), $siteConfiguration, $database);
+				$page->setIdentificationVerifier($identificationVerifier);
+
+				$page->setSecurityManager(new SecurityManager($identificationVerifier));
 			}
 		}
 	}

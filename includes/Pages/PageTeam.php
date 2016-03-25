@@ -46,6 +46,6 @@ class PageTeam extends InternalPageBase
 	 */
 	protected function getSecurityConfiguration()
 	{
-		return SecurityConfiguration::publicPage();
+		return $this->getSecurityManager()->configure()->asPublicPage();
 	}
 }

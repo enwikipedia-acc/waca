@@ -1,5 +1,5 @@
 <?php
-namespace Waca\Tests;
+namespace Waca\Tests\Security;
 
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
@@ -7,18 +7,21 @@ use ReflectionProperty;
 use Waca\DataObjects\User;
 use Waca\IdentificationVerifier;
 use Waca\Security\SecurityConfiguration;
+use Waca\Security\SecurityManager;
 
 /**
  * Class SecurityConfigurationTest
  * @package  Waca\Tests
  * @category Security-Critical
  */
-class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
+class SecurityManagerTest extends PHPUnit_Framework_TestCase
 {
 	/** @var User|PHPUnit_Framework_MockObject_MockObject */
 	private $user;
 	/** @var IdentificationVerifier|PHPUnit_Framework_MockObject_MockObject */
 	private $identificationVerifier;
+	/** @var SecurityManager */
+	private $securityManager;
 
 	public function setUp()
 	{
@@ -35,6 +38,8 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 
 		// @todo write tests involving this!
 		$this->identificationVerifier->method('isUserIdentified')->willReturn(true);
+
+		$this->securityManager = new SecurityManager($this->identificationVerifier, $forceIdentification);
 	}
 
 	public function testAllowsAdmin()
@@ -43,7 +48,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 
 		$config = new SecurityConfiguration();
 		$config->setAdmin(SecurityConfiguration::ALLOW);
-		$this->assertTrue($config->allows($this->user, $this->identificationVerifier));
+		$this->assertTrue($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsUser()
@@ -52,7 +57,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 
 		$config = new SecurityConfiguration();
 		$config->setUser(SecurityConfiguration::ALLOW);
-		$this->assertTrue($config->allows($this->user, $this->identificationVerifier));
+		$this->assertTrue($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsCheckuser()
@@ -66,7 +71,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 		$reflector->setAccessible(true);
 		$reflector->setValue($config, SecurityConfiguration::ALLOW);
 
-		$this->assertTrue($config->allows($this->user, $this->identificationVerifier));
+		$this->assertTrue($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsDeclined()
@@ -75,7 +80,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 
 		$config = new SecurityConfiguration();
 		$config->setDeclined(SecurityConfiguration::ALLOW);
-		$this->assertTrue($config->allows($this->user, $this->identificationVerifier));
+		$this->assertTrue($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsSuspended()
@@ -84,7 +89,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 
 		$config = new SecurityConfiguration();
 		$config->setSuspended(SecurityConfiguration::ALLOW);
-		$this->assertTrue($config->allows($this->user, $this->identificationVerifier));
+		$this->assertTrue($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsNew()
@@ -93,7 +98,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 
 		$config = new SecurityConfiguration();
 		$config->setNew(SecurityConfiguration::ALLOW);
-		$this->assertTrue($config->allows($this->user, $this->identificationVerifier));
+		$this->assertTrue($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsCommunity()
@@ -102,7 +107,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 
 		$config = new SecurityConfiguration();
 		$config->setCommunity(SecurityConfiguration::ALLOW);
-		$this->assertTrue($config->allows($this->user, $this->identificationVerifier));
+		$this->assertTrue($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsAdminWithNonApplicableDeny()
@@ -111,7 +116,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 
 		$config = new SecurityConfiguration();
 		$config->setAdmin(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY);
-		$this->assertTrue($config->allows($this->user, $this->identificationVerifier));
+		$this->assertTrue($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsUserWithNonApplicableDeny()
@@ -119,7 +124,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 		$this->user->method('isUser')->willReturn(true);
 		$config = new SecurityConfiguration();
 		$config->setUser(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY);
-		$this->assertTrue($config->allows($this->user, $this->identificationVerifier));
+		$this->assertTrue($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsCheckuserWithNonApplicableDeny()
@@ -133,7 +138,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 		$reflector->setValue($config, SecurityConfiguration::ALLOW);
 
 		$config->setNew(SecurityConfiguration::DENY);
-		$this->assertTrue($config->allows($this->user, $this->identificationVerifier));
+		$this->assertTrue($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsDeclinedWithNonApplicableDeny()
@@ -141,7 +146,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 		$this->user->method('isDeclined')->willReturn(true);
 		$config = new SecurityConfiguration();
 		$config->setDeclined(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY);
-		$this->assertTrue($config->allows($this->user, $this->identificationVerifier));
+		$this->assertTrue($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsSuspendedWithNonApplicableDeny()
@@ -149,7 +154,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 		$this->user->method('isSuspended')->willReturn(true);
 		$config = new SecurityConfiguration();
 		$config->setSuspended(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY);
-		$this->assertTrue($config->allows($this->user, $this->identificationVerifier));
+		$this->assertTrue($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsNewWithNonApplicableDeny()
@@ -157,7 +162,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 		$this->user->method('isNew')->willReturn(true);
 		$config = new SecurityConfiguration();
 		$config->setNew(SecurityConfiguration::ALLOW)->setAdmin(SecurityConfiguration::DENY);
-		$this->assertTrue($config->allows($this->user, $this->identificationVerifier));
+		$this->assertTrue($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsCommunityWithNonApplicableDeny()
@@ -165,7 +170,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 		$this->user->method('isCommunityUser')->willReturn(true);
 		$config = new SecurityConfiguration();
 		$config->setCommunity(SecurityConfiguration::ALLOW)->setNew(SecurityConfiguration::DENY);
-		$this->assertTrue($config->allows($this->user, $this->identificationVerifier));
+		$this->assertTrue($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsAdminWithApplicableDeny()
@@ -173,7 +178,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 		$this->user->method('isAdmin')->willReturn(true);
 		$config = new SecurityConfiguration();
 		$config->setAdmin(SecurityConfiguration::DENY);
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsUserWithApplicableDeny()
@@ -181,7 +186,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 		$this->user->method('isUser')->willReturn(true);
 		$config = new SecurityConfiguration();
 		$config->setUser(SecurityConfiguration::DENY);
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsCheckuserWithApplicableDeny()
@@ -194,7 +199,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 		$reflector->setAccessible(true);
 		$reflector->setValue($config, SecurityConfiguration::DENY);
 
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsDeclinedWithApplicableDeny()
@@ -202,7 +207,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 		$this->user->method('isDeclined')->willReturn(true);
 		$config = new SecurityConfiguration();
 		$config->setDeclined(SecurityConfiguration::DENY);
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsSuspendedWithApplicableDeny()
@@ -210,7 +215,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 		$this->user->method('isSuspended')->willReturn(true);
 		$config = new SecurityConfiguration();
 		$config->setSuspended(SecurityConfiguration::DENY);
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsNewWithApplicableDeny()
@@ -218,7 +223,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 		$this->user->method('isNew')->willReturn(true);
 		$config = new SecurityConfiguration();
 		$config->setNew(SecurityConfiguration::DENY);
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsCommunityWithApplicableDeny()
@@ -226,56 +231,56 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 		$this->user->method('isCommunityUser')->willReturn(true);
 		$config = new SecurityConfiguration();
 		$config->setCommunity(SecurityConfiguration::DENY);
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsAdminWithDefault()
 	{
 		$this->user->method('isAdmin')->willReturn(true);
 		$config = new SecurityConfiguration();
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsUserWithDefault()
 	{
 		$this->user->method('isUser')->willReturn(true);
 		$config = new SecurityConfiguration();
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsCheckuserWithDefault()
 	{
 		$this->user->method('isCheckuser')->willReturn(true);
 		$config = new SecurityConfiguration();
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsDeclinedWithDefault()
 	{
 		$this->user->method('isDeclined')->willReturn(true);
 		$config = new SecurityConfiguration();
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsSuspendedWithDefault()
 	{
 		$this->user->method('isSuspended')->willReturn(true);
 		$config = new SecurityConfiguration();
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsNewWithDefault()
 	{
 		$this->user->method('isNew')->willReturn(true);
 		$config = new SecurityConfiguration();
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testAllowsCommunityWithDefault()
 	{
 		$this->user->method('isCommunityUser')->willReturn(true);
 		$config = new SecurityConfiguration();
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testCheckuserAnonymousBypass()
@@ -293,7 +298,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 
 		$config->setCommunity(SecurityConfiguration::DENY);
 
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testCheckuserSuspendedBypass()
@@ -310,7 +315,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 
 		$config->setSuspended(SecurityConfiguration::DENY);
 
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testCheckuserDeclinedBypass()
@@ -327,7 +332,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 
 		$config->setDeclined(SecurityConfiguration::DENY);
 
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testCheckuserNewBypass()
@@ -344,7 +349,7 @@ class SecurityConfigurationTest extends PHPUnit_Framework_TestCase
 
 		$config->setNew(SecurityConfiguration::DENY);
 
-		$this->assertFalse($config->allows($this->user, $this->identificationVerifier));
+		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
 
 	public function testIdentification()

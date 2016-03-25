@@ -27,6 +27,6 @@ class StatsInactiveUsers extends InternalPageBase
 
 	public function getSecurityConfiguration()
 	{
-		return SecurityConfiguration::internalPage();
+		return $this->getSecurityManager()->configure()->asInternalPage();
 	}
 }

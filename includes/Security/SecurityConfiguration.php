@@ -2,10 +2,6 @@
 
 namespace Waca\Security;
 
-use Waca\DataObjects\User;
-use Waca\Exceptions\AccessDeniedException;
-use Waca\IdentificationVerifier;
-
 /**
  * Class SecurityConfiguration
  * @package  Waca
@@ -37,6 +33,46 @@ final class SecurityConfiguration
 	}
 
 	/**
+	 * Sets whether a checkuser is able to gain access.
+	 *
+	 * This is private because it's DANGEROUS. Checkusers are not mutually-exclusive with other rights. As such, a
+	 * suspended checkuser who tries to access a page which allows checkusers will be granted access to the page, UNLESS
+	 * that page is also set to DENY (note, not default) New/Declined/Suspended users. I have no problem with this
+	 * method being used, but please ONLY use it in this class in static methods of Security. Nowhere else.
+	 *
+	 * @param string $checkuser
+	 *
+	 * @return SecurityConfiguration
+	 * @category Security-Critical
+	 */
+	public function setCheckuser($checkuser)
+	{
+		$this->checkuser = $checkuser;
+
+		return $this;
+	}
+
+
+
+	/**
+	 * Returns if a user is required to be identified.
+	 *
+	 * @return boolean
+	 */
+	public function requiresIdentifiedUser()
+	{
+		return $this->requireIdentified;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getAdmin()
+	{
+		return $this->admin;
+	}
+
+	/**
 	 * @param string $admin
 	 *
 	 * @return SecurityConfiguration
@@ -47,6 +83,14 @@ final class SecurityConfiguration
 		$this->admin = $admin;
 
 		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getUser()
+	{
+		return $this->user;
 	}
 
 	/**
@@ -63,23 +107,19 @@ final class SecurityConfiguration
 	}
 
 	/**
-	 * Sets whether a checkuser is able to gain access.
-	 *
-	 * This is private because it's DANGEROUS. Checkusers are not mutually-exclusive with other rights. As such, a
-	 * suspended checkuser who tries to access a page which allows checkusers will be granted access to the page, UNLESS
-	 * that page is also set to deny New/Declined/Suspended users. I have no problem with this method being used, but
-	 * please ONLY use it in this class in static methods. DO NOT set it to public.
-	 *
-	 * @param string $checkuser
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
+	 * @return string
 	 */
-	private function setCheckuser($checkuser)
+	public function getCheckuser()
 	{
-		$this->checkuser = $checkuser;
+		return $this->checkuser;
+	}
 
-		return $this;
+	/**
+	 * @return string
+	 */
+	public function getCommunity()
+	{
+		return $this->community;
 	}
 
 	/**
@@ -96,6 +136,14 @@ final class SecurityConfiguration
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getSuspended()
+	{
+		return $this->suspended;
+	}
+
+	/**
 	 * @param string $suspended
 	 *
 	 * @return SecurityConfiguration
@@ -106,6 +154,14 @@ final class SecurityConfiguration
 		$this->suspended = $suspended;
 
 		return $this;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getDeclined()
+	{
+		return $this->declined;
 	}
 
 	/**
@@ -122,6 +178,14 @@ final class SecurityConfiguration
 	}
 
 	/**
+	 * @return string
+	 */
+	public function getNew()
+	{
+		return $this->new;
+	}
+
+	/**
 	 * @param string $new
 	 *
 	 * @return SecurityConfiguration
@@ -135,148 +199,10 @@ final class SecurityConfiguration
 	}
 
 	/**
-	 * Tests if a user is allowed to perform an action.
-	 *
-	 * This method should form a hard, deterministic security barrier, and only return true if it is absolutely sure
-	 * that a user should have access to something.
-	 *
-	 * @param User $user
-	 * @param IdentificationVerifier $iv
-	 *
-	 * @return bool
-	 * @category Security-Critical
+	 * @param boolean $requireIdentified
 	 */
-	public function allows(User $user, IdentificationVerifier $iv)
+	public function setRequireIdentified($requireIdentified)
 	{
-		$allowed = false;
-
-		if ($this->requireIdentified && !$user->isCommunityUser() && !$user->isIdentified($iv)) {
-			return false;
-		}
-
-		try {
-			$allowed = $this->test($this->admin, $user->isAdmin())
-				|| $this->test($this->user, $user->isUser())
-				|| $this->test($this->community, $user->isCommunityUser())
-				|| $this->test($this->suspended, $user->isSuspended())
-				|| $this->test($this->declined, $user->isDeclined())
-				|| $this->test($this->new, $user->isNew())
-				|| $this->test($this->checkuser, $user->isCheckuser());
-
-			return $allowed;
-		}
-		catch (AccessDeniedException $ex) {
-			// something is set to deny.
-			return false;
-		}
-	}
-
-	/**
-	 * Returns a pre-built security configuration for a public page.
-	 *
-	 * @category Security-Critical
-	 * @return SecurityConfiguration
-	 */
-	public static function publicPage()
-	{
-		$config = new SecurityConfiguration();
-		$config->setAdmin(self::ALLOW)
-			->setUser(self::ALLOW)
-			->setCheckuser(self::ALLOW)
-			->setCommunity(self::ALLOW)
-			->setSuspended(self::ALLOW)
-			->setDeclined(self::ALLOW)
-			->setNew(self::ALLOW);
-
-		// Public pages shouldn't be inaccessible to logged-in, unidentified users.
-		// Otherwise, logged in but unidentified users can't even log out.
-		$config->requireIdentified = false;
-
-		return $config;
-	}
-
-	/**
-	 * Returns a pre-built security configuration for an internal page.
-	 *
-	 * @category Security-Critical
-	 * @return SecurityConfiguration
-	 */
-	public static function internalPage()
-	{
-		$config = new SecurityConfiguration();
-		$config->setAdmin(self::ALLOW)->setUser(self::ALLOW);
-
-		return $config;
-	}
-
-	/**
-	 * Returns a pre-built security configuration for a tool admin only page.
-	 *
-	 * @category Security-Critical
-	 * @return SecurityConfiguration
-	 */
-	public static function adminPage()
-	{
-		$config = new SecurityConfiguration();
-		$config->setAdmin(self::ALLOW);
-
-		return $config;
-	}
-
-	/**
-	 * Returns a pre-built security configuration for a page accessible to *ALL* logged in users, including suspended
-	 * and new users. This probably isn't the setting you want.
-	 *
-	 * @category Security-Critical
-	 * @return SecurityConfiguration
-	 */
-	public static function allLoggedInUsersPage()
-	{
-		$config = new SecurityConfiguration();
-		$config->setAdmin(self::ALLOW)
-			->setUser(self::ALLOW)
-			->setDeclined(self::ALLOW)
-			->setNew(self::ALLOW)
-			->setSuspended(self::ALLOW);
-
-		return $config;
-	}
-
-	/**
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	public static function checkUserData()
-	{
-		$config = new SecurityConfiguration();
-		$config->setCheckuser(self::ALLOW)
-			->setCommunity(self::DENY)
-			->setSuspended(self::DENY)
-			->setDeclined(self::DENY)
-			->setNew(self::DENY);
-
-		return $config;
-	}
-
-	/**
-	 * @param $value
-	 * @param $filter
-	 *
-	 * @return bool
-	 * @throws AccessDeniedException
-	 * @category Security-Critical
-	 */
-	private function test($value, $filter)
-	{
-		if (!$filter) {
-			return false;
-		}
-
-		if ($value == self::DENY) {
-			// FILE_NOT_FOUND...?
-			throw new AccessDeniedException();
-		}
-
-		return $value === self::ALLOW;
+		$this->requireIdentified = $requireIdentified;
 	}
 }

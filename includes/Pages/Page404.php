@@ -29,6 +29,6 @@ class Page404 extends InternalPageBase
 	protected function getSecurityConfiguration()
 	{
 		// public because 404s will never contain private data.
-		return SecurityConfiguration::publicPage();
+		return $this->getSecurityManager()->configure()->asPublicPage();
 	}
 }

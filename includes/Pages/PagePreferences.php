@@ -85,7 +85,7 @@ class PagePreferences extends InternalPageBase
 	 */
 	protected function getSecurityConfiguration()
 	{
-		return SecurityConfiguration::allLoggedInUsersPage();
+		return $this->getSecurityManager()->configure()->asAllLoggedInUsersPage();
 	}
 
 	/**

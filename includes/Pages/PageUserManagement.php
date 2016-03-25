@@ -498,7 +498,7 @@ class PageUserManagement extends InternalPageBase
 	 */
 	protected function getSecurityConfiguration()
 	{
-		return SecurityConfiguration::adminPage();
+		return $this->getSecurityManager()->configure()->asAdminPage();
 	}
 
 	/**

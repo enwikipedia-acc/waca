@@ -220,12 +220,12 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 			case 'delete':
 				// WARNING: if you want to unlink edit/add/delete, you'll want to change the barrier tests in the
 				// template
-				return SecurityConfiguration::adminPage();
+				return $this->getSecurityManager()->configure()->asAdminPage();
 			case 'view':
 			case 'select':
-				return SecurityConfiguration::internalPage();
+				return $this->getSecurityManager()->configure()->asInternalPage();
 			default:
-				return SecurityConfiguration::internalPage();
+				return $this->getSecurityManager()->configure()->asInternalPage();
 		}
 	}
 }

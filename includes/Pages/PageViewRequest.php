@@ -417,7 +417,7 @@ class PageViewRequest extends InternalPageBase
 	protected function getSecurityConfiguration()
 	{
 		// @todo review me!
-		return SecurityConfiguration::internalPage();
+		return $this->getSecurityManager()->configure()->asInternalPage();
 	}
 
 	/**

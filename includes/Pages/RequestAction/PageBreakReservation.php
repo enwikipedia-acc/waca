@@ -95,9 +95,9 @@ class PageBreakReservation extends RequestActionBase
 		switch ($this->getRouteName()) {
 			case 'force':
 				// note, this is a virtual route that's only used in barrier tests
-				return SecurityConfiguration::adminPage();
+				return $this->getSecurityManager()->configure()->asAdminPage();
 			default:
-				return SecurityConfiguration::internalPage();
+				return $this->getSecurityManager()->configure()->asInternalPage();
 		}
 	}
 }
