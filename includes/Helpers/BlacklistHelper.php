@@ -47,16 +47,23 @@ class BlacklistHelper implements IBlacklistHelper
 			return $result['line'];
 		}
 
-		$result = $this->performWikiLookup($username);
-
-		if($result['result'] === 'ok')
-		{
-			// not blacklisted
-			$this->cache[$username] = false;
+		try {
+			$result = $this->performWikiLookup($username);
+		}
+		catch (CurlException $ex) {
+			// @todo log this, but fail gracefully.
 			return false;
 		}
-		else{
+
+		if ($result['result'] === 'ok') {
+			// not blacklisted
+			$this->cache[$username] = false;
+
+			return false;
+		}
+		else {
 			$this->cache[$username] = $result;
+
 			return $result['line'];
 		}
 	}
@@ -84,6 +91,7 @@ class BlacklistHelper implements IBlacklistHelper
 		$apiResult = $this->httpHelper->get($endpoint, $parameters);
 
 		$data = unserialize($apiResult);
+
 		return $data['titleblacklist'];
 	}
 }
