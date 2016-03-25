@@ -37,6 +37,9 @@ class PageViewRequest extends InternalPageBase
 	 */
 	protected function main()
 	{
+		// set up csrf protection
+		$this->assignCSRFToken();
+
 		// get some useful objects
 		$request = $this->getRequest();
 		$config = $this->getSiteConfiguration();
