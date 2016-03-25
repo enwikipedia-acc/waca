@@ -62,7 +62,6 @@ SQL;
 		$returnedObjects = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
 		foreach ($returnedObjects as $req) {
 			$req->setDatabase($this->database);
-			$req->isNew = false;
 		}
 
 		return $returnedObjects;

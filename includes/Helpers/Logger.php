@@ -393,7 +393,6 @@ SQL
 
 			/** @var Log $entry */
 			foreach ($data as $entry) {
-				$entry->isNew = false;
 				$entry->setDatabase($db);
 			}
 
@@ -551,7 +550,6 @@ SQL
 			/** @var Log $entry */
 			foreach ($data as $entry) {
 				$entry->setDatabase($database);
-				$entry->isNew = false;
 			}
 
 			$data['count'] = $count;

@@ -51,7 +51,6 @@ SQL
 		$result = array();
 		/** @var Comment $v */
 		foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
-			$v->isNew = false;
 			$v->setDatabase($database);
 			$result[] = $v;
 		}
@@ -64,7 +63,7 @@ SQL
 	 */
 	public function save()
 	{
-		if ($this->isNew) {
+		if ($this->isNew()) {
 			// insert
 			$statement = $this->dbObject->prepare(<<<SQL
 INSERT INTO comment ( time, user, comment, visibility, request )
@@ -77,7 +76,6 @@ SQL
 			$statement->bindValue(":request", $this->request);
 
 			if ($statement->execute()) {
-				$this->isNew = false;
 				$this->id = $this->dbObject->lastInsertId();
 			}
 			else {

@@ -25,14 +25,13 @@ class Notification extends DataObject
 
 	public function save()
 	{
-		if ($this->isNew) {
+		if ($this->isNew()) {
 			// insert
 			$statement = $this->dbObject->prepare("INSERT INTO notification ( type, text ) VALUES ( :type, :text );");
 			$statement->bindValue(":type", $this->type);
 			$statement->bindValue(":text", $this->text);
 
 			if ($statement->execute()) {
-				$this->isNew = false;
 				$this->id = $this->dbObject->lastInsertId();
 			}
 			else {

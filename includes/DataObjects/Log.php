@@ -26,7 +26,7 @@ class Log extends DataObject
 	 */
 	public function save()
 	{
-		if ($this->isNew) {
+		if ($this->isNew()) {
 			$statement = $this->dbObject->prepare(<<<SQL
                 INSERT INTO log (objectid, objecttype, user, action, timestamp, comment) 
                 VALUES (:id, :type, :user, :action, CURRENT_TIMESTAMP(), :comment);
@@ -40,7 +40,6 @@ SQL
 			$statement->bindValue(":comment", $this->comment);
 
 			if ($statement->execute()) {
-				$this->isNew = false;
 				$this->id = $this->dbObject->lastInsertId();
 			}
 			else {

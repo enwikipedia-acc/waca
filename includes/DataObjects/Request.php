@@ -33,7 +33,7 @@ class Request extends DataObject
 	 */
 	public function save()
 	{
-		if ($this->isNew) {
+		if ($this->isNew()) {
 			// insert
 			$statement = $this->dbObject->prepare(<<<SQL
 INSERT INTO `request` (
@@ -55,8 +55,8 @@ SQL
 			$statement->bindValue(":reserved", $this->reserved);
 			$statement->bindValue(":useragent", $this->useragent);
 			$statement->bindValue(":forwardedip", $this->forwardedip);
+
 			if ($statement->execute()) {
-				$this->isNew = false;
 				$this->id = (int)$this->dbObject->lastInsertId();
 			}
 			else {

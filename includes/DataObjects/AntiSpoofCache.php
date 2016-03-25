@@ -86,7 +86,7 @@ SQL
 	 */
 	public function save()
 	{
-		if ($this->isNew) {
+		if ($this->isNew()) {
 			// insert
 			// clear old data first
 			$this->dbObject->exec("DELETE FROM antispoofcache WHERE timestamp < date_sub(now(), INTERVAL 3 HOUR);");
@@ -96,7 +96,6 @@ SQL
 			$statement->bindValue(":data", $this->data);
 
 			if ($statement->execute()) {
-				$this->isNew = false;
 				$this->id = $this->dbObject->lastInsertId();
 			}
 			else {

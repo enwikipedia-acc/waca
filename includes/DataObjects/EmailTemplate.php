@@ -52,7 +52,6 @@ SQL
 		/** @var EmailTemplate $t */
 		foreach ($resultObject as $t) {
 			$t->setDatabase($database);
-			$t->isNew = false;
 		}
 
 		return $resultObject;
@@ -90,7 +89,6 @@ SQL
 		/** @var EmailTemplate $t */
 		foreach ($resultObject as $t) {
 			$t->setDatabase($database);
-			$t->isNew = false;
 		}
 
 		return $resultObject;
@@ -113,7 +111,6 @@ SQL
 		/** @var EmailTemplate $t */
 		foreach ($resultObject as $t) {
 			$t->setDatabase($database);
-			$t->isNew = false;
 		}
 
 		return $resultObject;
@@ -160,7 +157,7 @@ SQL
 	 */
 	public function save()
 	{
-		if ($this->isNew) {
+		if ($this->isNew()) {
 			// insert
 			$statement = $this->dbObject->prepare(<<<SQL
 INSERT INTO `emailtemplate` (name, text, jsquestion, defaultaction, active, preloadonly)
@@ -175,7 +172,6 @@ SQL
 			$statement->bindValue(":preloadonly", $this->preloadonly);
 
 			if ($statement->execute()) {
-				$this->isNew = false;
 				$this->id = $this->dbObject->lastInsertId();
 			}
 			else {

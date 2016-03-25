@@ -48,7 +48,6 @@ SQL;
 
 		/** @var Ban $v */
 		foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
-			$v->isNew = false;
 			$v->setDatabase($database);
 			$result[] = $v;
 		}
@@ -125,7 +124,7 @@ SQL;
 	 */
 	public function save()
 	{
-		if ($this->isNew) {
+		if ($this->isNew()) {
 			// insert
 			$statement = $this->dbObject->prepare(<<<SQL
 INSERT INTO `ban` (type, target, user, reason, date, duration, active)
@@ -138,8 +137,8 @@ SQL
 			$statement->bindValue(":reason", $this->reason);
 			$statement->bindValue(":duration", $this->duration);
 			$statement->bindValue(":active", $this->active);
+
 			if ($statement->execute()) {
-				$this->isNew = false;
 				$this->id = $this->dbObject->lastInsertId();
 			}
 			else {

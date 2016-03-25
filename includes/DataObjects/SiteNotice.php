@@ -37,7 +37,7 @@ class SiteNotice extends DataObject
 	 */
 	public function save()
 	{
-		if ($this->isNew) {
+		if ($this->isNew()) {
 			// insert
 			throw new Exception('Not allowed to create new site notice object');
 		}

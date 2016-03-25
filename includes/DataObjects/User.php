@@ -185,7 +185,6 @@ class User extends DataObject
 		/** @var User $user */
 		foreach ($resultSet as $user) {
 			// We have to set this before doing OAuth queries. :(
-			$user->isNew = false;
 			$user->setDatabase($database);
 
 			// Using cached data here!
@@ -198,7 +197,6 @@ class User extends DataObject
 		// Cached data failed. Let's do it the *REALLY* hard way.
 		foreach ($resultSet as $user) {
 			// We have to set this before doing OAuth queries. :(
-			$user->isNew = false;
 			$user->setDatabase($database);
 
 			// Don't use the cached data, but instead query the API.
@@ -255,7 +253,6 @@ class User extends DataObject
 		/** @var User $u */
 		foreach ($resultObject as $u) {
 			$u->setDatabase($database);
-			$u->isNew = false;
 		}
 
 		return $resultObject;
@@ -280,7 +277,6 @@ class User extends DataObject
 		/** @var User $u */
 		foreach ($resultObject as $u) {
 			$u->setDatabase($database);
-			$u->isNew = false;
 
 			if (!$u->isCheckuser()) {
 				continue;
@@ -321,7 +317,6 @@ SQL
 		/** @var User $u */
 		foreach ($resultObject as $u) {
 			$u->setDatabase($database);
-			$u->isNew = false;
 		}
 
 		return $resultObject;
@@ -409,7 +404,7 @@ SQL
 	 */
 	public function save()
 	{
-		if ($this->isNew) {
+		if ($this->isNew()) {
 			// insert
 			$statement = $this->dbObject->prepare(<<<SQL
 				INSERT INTO `user` ( 
@@ -446,7 +441,6 @@ SQL
 			$statement->bindValue(":oas", $this->oauthaccesssecret);
 
 			if ($statement->execute()) {
-				$this->isNew = false;
 				$this->id = (int)$this->dbObject->lastInsertId();
 			}
 			else {
@@ -552,7 +546,7 @@ SQL
 		$this->username = $username;
 
 		// If this isn't a brand new user, then it's a rename, force the logout
-		if (!$this->isNew) {
+		if (!$this->isNew()) {
 			$this->forcelogout = 1;
 		}
 	}

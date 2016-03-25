@@ -42,7 +42,7 @@ class GeoLocation extends DataObject
 
 	public function save()
 	{
-		if ($this->isNew) {
+		if ($this->isNew()) {
 			// insert
 			$statement = $this->dbObject->prepare(<<<SQL
 INSERT INTO `geolocation` (address, data) VALUES (:address, :data);
@@ -50,8 +50,8 @@ SQL
 			);
 			$statement->bindValue(":address", $this->address);
 			$statement->bindValue(":data", $this->data);
+
 			if ($statement->execute()) {
-				$this->isNew = false;
 				$this->id = $this->dbObject->lastInsertId();
 			}
 			else {

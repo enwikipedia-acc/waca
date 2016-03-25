@@ -17,13 +17,8 @@ use Waca\Exceptions\OptimisticLockFailedException;
  */
 abstract class DataObject
 {
-	/**
-	 * @var bool
-	 * @todo we should probably make this a read-only method rather than public - why should anything external set this? Oh, yeah, factories.
-	 */
-	public $isNew = true;
 	/** @var int ID of the object */
-	protected $id = 0;
+	protected $id = null;
 	/** @var int update version for optimistic locking */
 	protected $updateversion = 0;
 	/**
@@ -52,7 +47,6 @@ abstract class DataObject
 		$resultObject = $statement->fetchObject(get_called_class());
 
 		if ($resultObject != false) {
-			$resultObject->isNew = false;
 			$resultObject->setDatabase($database);
 		}
 
@@ -91,7 +85,7 @@ abstract class DataObject
 	 */
 	public function delete()
 	{
-		if ($this->isNew) {
+		if ($this->id === null) {
 			// wtf?
 			return;
 		}
@@ -110,8 +104,7 @@ abstract class DataObject
 			throw new OptimisticLockFailedException();
 		}
 
-		$this->id = 0;
-		$this->isNew = true;
+		$this->id = null;
 	}
 
 	/**
@@ -133,5 +126,12 @@ abstract class DataObject
 	public function setUpdateVersion($updateVersion)
 	{
 		$this->updateversion = $updateVersion;
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isNew(){
+		return $this->id === null;
 	}
 }

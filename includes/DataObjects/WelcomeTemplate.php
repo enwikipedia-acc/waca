@@ -34,7 +34,6 @@ class WelcomeTemplate extends DataObject
 		$result = array();
 		/** @var WelcomeTemplate $v */
 		foreach ($statement->fetchAll(PDO::FETCH_CLASS, self::class) as $v) {
-			$v->isNew = false;
 			$v->setDatabase($database);
 			$result[] = $v;
 		}
@@ -47,7 +46,7 @@ class WelcomeTemplate extends DataObject
 	 */
 	public function save()
 	{
-		if ($this->isNew) {
+		if ($this->isNew()) {
 			// insert
 			$statement = $this->dbObject->prepare(<<<SQL
 INSERT INTO welcometemplate (usercode, botcode) VALUES (:usercode, :botcode);
@@ -57,7 +56,6 @@ SQL
 			$statement->bindValue(":botcode", $this->botcode);
 
 			if ($statement->execute()) {
-				$this->isNew = false;
 				$this->id = $this->dbObject->lastInsertId();
 			}
 			else {
@@ -137,7 +135,6 @@ SQL
 			$result = array();
 			/** @var WelcomeTemplate $v */
 			foreach ($statement->fetchAll(PDO::FETCH_CLASS, User::class) as $v) {
-				$v->isNew = false;
 				$v->setDatabase($this->dbObject);
 				$result[] = $v;
 			}
