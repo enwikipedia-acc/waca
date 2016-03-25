@@ -18,7 +18,7 @@ abstract class ApiPageBase extends TaskBase implements IRoutedTask, IApiAction
 
 	public function __construct()
 	{
-		$this->document = new DomDocument('1.0');
+		$this->document = new DOMDocument('1.0');
 	}
 
 	final public function execute()

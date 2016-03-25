@@ -5,7 +5,6 @@ namespace Waca\Pages;
 use Exception;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\EmailTemplate;
-use Waca\DataObjects\SiteNotice;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
@@ -54,7 +53,8 @@ class PageLog extends InternalPageBase
 			return;
 		}
 
-		$count = $logs['count'];
+		// @todo this is horrible.
+		$count = (int)$logs['count'];
 		unset($logs['count']);
 
 		$this->setupPageData($page, $limit, $count);
@@ -122,9 +122,9 @@ class PageLog extends InternalPageBase
 	}
 
 	/**
-	 * @param $page
-	 * @param $limit
-	 * @param $count
+	 * @param int $page
+	 * @param int $limit
+	 * @param int $count
 	 */
 	protected function setupPageData($page, $limit, $count)
 	{

@@ -152,7 +152,7 @@ class PageForgotPassword extends InternalPageBase
 	 *
 	 * If this page even supports actions, you will need to check the route
 	 *
-	 * @return \Waca\Security\SecurityConfiguration
+	 * @return SecurityConfiguration
 	 * @category Security-Critical
 	 */
 	protected function getSecurityConfiguration()

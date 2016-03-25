@@ -57,6 +57,9 @@ class PagePreferences extends InternalPageBase
 			$newPasswordConfirmation = WebRequest::postString('newpasswordconfirm');
 
 			$user = User::getCurrent($this->getDatabase());
+			if(!$user instanceof User){
+				throw new ApplicationLogicException('User not found');
+			}
 
 			$this->validateNewPassword($oldPassword, $newPassword, $newPasswordConfirmation, $user);
 
@@ -89,14 +92,14 @@ class PagePreferences extends InternalPageBase
 	}
 
 	/**
-	 * @param $oldPassword
-	 * @param $newPassword
-	 * @param $newPasswordConfirmation
-	 * @param $user
+	 * @param string $oldPassword
+	 * @param string $newPassword
+	 * @param string $newPasswordConfirmation
+	 * @param User $user
 	 *
 	 * @throws ApplicationLogicException
 	 */
-	protected function validateNewPassword($oldPassword, $newPassword, $newPasswordConfirmation, $user)
+	protected function validateNewPassword($oldPassword, $newPassword, $newPasswordConfirmation, User $user)
 	{
 		if ($oldPassword === null || $newPassword === null || $newPasswordConfirmation === null) {
 			throw new ApplicationLogicException('All three fields must be completed to change your password');

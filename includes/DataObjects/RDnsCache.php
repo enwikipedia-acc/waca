@@ -76,7 +76,7 @@ SQL
 				throw new Exception($statement->errorInfo());
 			}
 
-			if($statement->rowCount() !== 1){
+			if ($statement->rowCount() !== 1) {
 				throw new OptimisticLockFailedException();
 			}
 

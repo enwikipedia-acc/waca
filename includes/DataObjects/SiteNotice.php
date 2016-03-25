@@ -27,6 +27,7 @@ class SiteNotice extends DataObject
 	{
 		/** @var SiteNotice $message */
 		$message = self::getById(1, $database);
+
 		return $message->getContent();
 	}
 
@@ -57,7 +58,7 @@ SQL
 				throw new Exception($statement->errorInfo());
 			}
 
-			if($statement->rowCount() !== 1){
+			if ($statement->rowCount() !== 1) {
 				throw new OptimisticLockFailedException();
 			}
 

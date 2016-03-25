@@ -11,8 +11,8 @@ class HttpHelper
 	/**
 	 * HttpHelper constructor.
 	 *
-	 * @param $userAgent
-	 * @param $disableVerifyPeer
+	 * @param string  $userAgent
+	 * @param boolean $disableVerifyPeer
 	 */
 	public function __construct($userAgent, $disableVerifyPeer)
 	{
@@ -68,7 +68,17 @@ class HttpHelper
 		return $result;
 	}
 
-	public function post($url, $parameters = null, $headers = array())
+	/**
+	 * Posts data to a URL
+	 *
+	 * @param string $url        The URL to fetch.
+	 * @param array  $parameters Key/value pair of POST parameters to add to the request.
+	 * @param array  $headers
+	 *
+	 * @return string
+	 * @throws CurlException
+	 */
+	public function post($url, $parameters, $headers = array())
 	{
 		curl_setopt($this->curlHandle, CURLOPT_URL, $url);
 
@@ -88,6 +98,9 @@ class HttpHelper
 		return $result;
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getError()
 	{
 		return curl_error($this->curlHandle);

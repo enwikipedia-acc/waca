@@ -91,7 +91,7 @@ abstract class DataObject
 	 */
 	public function delete()
 	{
-		if($this->isNew) {
+		if ($this->isNew) {
 			// wtf?
 			return;
 		}

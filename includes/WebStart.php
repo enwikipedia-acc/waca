@@ -11,8 +11,8 @@ use Waca\Providers\GlobalStateProvider;
 use Waca\Router\IRequestRouter;
 use Waca\Security\SecurityManager;
 use Waca\Security\TokenManager;
-use Waca\Tasks\InternalPageBase;
 use Waca\Tasks\ITask;
+use Waca\Tasks\InternalPageBase;
 use Waca\Tasks\PageBase;
 
 /**

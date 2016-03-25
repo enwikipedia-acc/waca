@@ -3,7 +3,6 @@ namespace Waca\DataObjects;
 
 use Exception;
 use Waca\DataObject;
-use Waca\RegexConstants;
 
 /**
  * Class representing a log entry

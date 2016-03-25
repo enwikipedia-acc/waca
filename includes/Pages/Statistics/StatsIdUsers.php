@@ -2,7 +2,6 @@
 namespace Waca\Pages\Statistics;
 
 use PDO;
-use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 
 class StatsIdUsers extends InternalPageBase
@@ -11,7 +10,8 @@ class StatsIdUsers extends InternalPageBase
 	{
 		$this->setHtmlTitle('Identified Users :: Statistics');
 
-		$query = "SELECT id, username, status, checkuser FROM user WHERE identified = 1 ORDER BY username;";
+		// @todo fix me
+		$query = "SELECT id, username, status, checkuser FROM user WHERE forceidentified = 1 ORDER BY username;";
 
 		$database = $this->getDatabase();
 		$statement = $database->query($query);

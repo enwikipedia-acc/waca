@@ -10,7 +10,6 @@ use Waca\AuthUtility;
 use Waca\DataObject;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Helpers\Interfaces\IOAuthHelper;
-use Waca\Helpers\Logger;
 use Waca\IdentificationVerifier;
 use Waca\PdoDatabase;
 use Waca\SessionAlert;
@@ -500,7 +499,7 @@ SQL
 				throw new Exception($statement->errorInfo());
 			}
 
-			if($statement->rowCount() !== 1){
+			if ($statement->rowCount() !== 1) {
 				throw new OptimisticLockFailedException();
 			}
 
@@ -903,10 +902,12 @@ SQL
 		if ($this->forceidentified === 0 || $this->forceidentified === "0") {
 			// User forced to unidentified in the database.
 			return false;
-		} elseif ($this->forceidentified === 1 || $this->forceidentified === "1") {
+		}
+		elseif ($this->forceidentified === 1 || $this->forceidentified === "1") {
 			// User forced to identified in the database.
 			return true;
-		} else {
+		}
+		else {
 			// User not forced to any particular identified status; consult IdentificationVerifier
 			return $iv->isUserIdentified($this->getOnWikiName());
 		}

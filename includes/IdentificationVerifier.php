@@ -12,8 +12,8 @@ use Waca\Helpers\HttpHelper;
  * Handles automatically verifying if users are identified with the Wikimedia Foundation or not.  Intended to be used
  * as necessary by the User class when a user's "forceidentified" attribute is NULL.
  *
- * @package Waca
- * @author Andrew "FastLizard4" Adams
+ * @package  Waca
+ * @author   Andrew "FastLizard4" Adams
  * @category Security-Critical
  */
 class IdentificationVerifier
@@ -27,13 +27,13 @@ class IdentificationVerifier
 	 * @category Security-Critical
 	 */
 	private static $apiQueryParameters = array(
-		'action'   => 'query'                                             ,
-		'format'   => 'json'                                              ,
-		'prop'     => 'links'                                             ,
+		'action'   => 'query',
+		'format'   => 'json',
+		'prop'     => 'links',
 		'titles'   => 'Access to nonpublic information policy/Noticeboard',
-		'pltitles' => '' // Username of the user to be checked, with User: prefix, goes here!  Set in isIdentifiedOnWiki()
+		// Username of the user to be checked, with User: prefix, goes here!  Set in isIdentifiedOnWiki()
+		'pltitles' => '',
 	);
-
 	/** @var HttpHelper */
 	private $httpHelper;
 	/** @var SiteConfiguration */
@@ -44,9 +44,9 @@ class IdentificationVerifier
 	/**
 	 * IdentificationVerifier constructor.
 	 *
-	 * @param HttpHelper $httpHelper
+	 * @param HttpHelper        $httpHelper
 	 * @param SiteConfiguration $siteConfiguration
-	 * @param PdoDatabase $dbObject
+	 * @param PdoDatabase       $dbObject
 	 */
 	public function __construct(HttpHelper $httpHelper, SiteConfiguration $siteConfiguration, PdoDatabase $dbObject)
 	{
@@ -58,19 +58,23 @@ class IdentificationVerifier
 	/**
 	 * Checks if the given user is identified to the Wikimedia Foundation.
 	 *
-	 * @param string $onwikiname The Wikipedia username of the user
+	 * @param string $onWikiName The Wikipedia username of the user
+	 *
 	 * @return bool
 	 * @category Security-Critical
 	 */
-	public function isUserIdentified($onwikiname)
+	public function isUserIdentified($onWikiName)
 	{
-		if ($this->checkIdentificationCache($onwikiname)) {
+		if ($this->checkIdentificationCache($onWikiName)) {
 			return true;
-		} else {
-			if ($this->isIdentifiedOnWiki($onwikiname)) {
-				$this->cacheIdentificationStatus($onwikiname);
+		}
+		else {
+			if ($this->isIdentifiedOnWiki($onWikiName)) {
+				$this->cacheIdentificationStatus($onWikiName);
+
 				return true;
-			} else {
+			}
+			else {
 				return false;
 			}
 		}
@@ -79,11 +83,12 @@ class IdentificationVerifier
 	/**
 	 * Checks if the given user has a valid entry in the idcache table.
 	 *
-	 * @param string $onwikiname The Wikipedia username of the user
+	 * @param string $onWikiName The Wikipedia username of the user
+	 *
 	 * @return bool
 	 * @category Security-Critical
 	 */
-	private function checkIdentificationCache($onwikiname)
+	private function checkIdentificationCache($onWikiName)
 	{
 		$interval = $this->siteConfiguration->getIdentificationCacheExpiry();
 
@@ -94,7 +99,7 @@ class IdentificationVerifier
 				AND DATE_ADD(`checktime`, INTERVAL {$interval}) >= NOW();
 SQL;
 		$stmt = $this->dbObject->prepare($query);
-		$stmt->bindValue(':onwikiname', $onwikiname, PDO::PARAM_STR);
+		$stmt->bindValue(':onwikiname', $onWikiName, PDO::PARAM_STR);
 		$stmt->execute();
 
 		// Guaranteed by the query to only return a single row with a single column
@@ -110,7 +115,8 @@ SQL;
 	 * idcache table.  Meant to be called periodically by a maintenance script.
 	 *
 	 * @param SiteConfiguration $siteConfiguration
-	 * @param PdoDatabase $dbObject
+	 * @param PdoDatabase       $dbObject
+	 *
 	 * @return void
 	 */
 	public static function clearExpiredCacheEntries(SiteConfiguration $siteConfiguration, PdoDatabase $dbObject)
@@ -129,11 +135,12 @@ SQL;
 	 * is so we don't have to hit the API every single time we check.  The cache entry is valid for as long as specified
 	 * in the ACC configuration (validity enforced by checkIdentificationCache() and clearExpiredCacheEntries()).
 	 *
-	 * @param string $onwikiname The Wikipedia username of the user
+	 * @param string $onWikiName The Wikipedia username of the user
+	 *
 	 * @return void
 	 * @category Security-Critical
 	 */
-	private function cacheIdentificationStatus($onwikiname)
+	private function cacheIdentificationStatus($onWikiName)
 	{
 		$query = <<<SQL
 			INSERT INTO `idcache`
@@ -145,30 +152,32 @@ SQL;
 				`checktime` = CURRENT_TIMESTAMP;
 SQL;
 		$stmt = $this->dbObject->prepare($query);
-		$stmt->bindValue(':onwikiname', $onwikiname, PDO::PARAM_STR);
+		$stmt->bindValue(':onwikiname', $onWikiName, PDO::PARAM_STR);
 		$stmt->execute();
 	}
 
 	/**
 	 * Queries the Wikimedia API to determine if the specified user is listed on the identification noticeboard.
 	 *
-	 * @param string $onwikiname The Wikipedia username of the user
+	 * @param string $onWikiName The Wikipedia username of the user
+	 *
 	 * @return bool
 	 * @category Security-Critical
 	 */
-	private function isIdentifiedOnWiki($onwikiname)
+	private function isIdentifiedOnWiki($onWikiName)
 	{
 		$strings = new StringFunctions();
 
 		// First character of Wikipedia usernames is always capitalized.
-		$onwikiname = $strings->ucfirst($onwikiname);
+		$onWikiName = $strings->ucfirst($onWikiName);
 
 		$parameters = self::$apiQueryParameters;
-		$parameters['pltitles'] = "User:" . $onwikiname;
+		$parameters['pltitles'] = "User:" . $onWikiName;
 		$response = $this->httpHelper->get($this->siteConfiguration->getMetaWikimediaWebServiceEndpoint(), $parameters);
 		$response = json_decode($response, true);
 
 		$page = @array_pop($response['query']['pages']);
-		return @$page['links'][0]['title'] === "User:" . $onwikiname;
+
+		return @$page['links'][0]['title'] === "User:" . $onWikiName;
 	}
 }

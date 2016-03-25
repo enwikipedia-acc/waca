@@ -4,7 +4,6 @@ namespace Waca\Pages\Statistics;
 use PDO;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
