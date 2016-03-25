@@ -2,10 +2,10 @@
 
 namespace Waca\Pages;
 
-use PDO;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Helpers\RequestSearchHelper;
 use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -76,23 +76,10 @@ class PageSearch extends InternalPageBase
 	{
 		$padded = '%' . $searchTerm . '%';
 
-		$database = $this->getDatabase();
-
-		$query = 'SELECT * FROM request WHERE name LIKE :term AND email <> :clearedEmail AND ip <> :clearedIp';
-		$statement = $database->prepare($query);
-		$statement->bindValue(":term", $padded);
-		$statement->bindValue(":clearedEmail", $this->getSiteConfiguration()->getDataClearEmail());
-		$statement->bindValue(":clearedIp", $this->getSiteConfiguration()->getDataClearIp());
-		$statement->execute();
-
-		/** @var Request $r */
-		$requests = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
-		foreach ($requests as $r) {
-			$r->setDatabase($database);
-			$r->isNew = false;
-		}
-
-		return $requests;
+		return RequestSearchHelper::get($this->getDatabase())
+			->byName($padded)
+			->excludingPurgedData($this->getSiteConfiguration())
+			->fetch();
 	}
 
 	/**
@@ -111,23 +98,10 @@ class PageSearch extends InternalPageBase
 
 		$padded = '%' . $searchTerm . '%';
 
-		$database = $this->getDatabase();
-
-		$query = 'SELECT * FROM request WHERE email LIKE :term AND email <> :clearedEmail AND ip <> :clearedIp';
-		$statement = $database->prepare($query);
-		$statement->bindValue(":term", $padded);
-		$statement->bindValue(":clearedEmail", $this->getSiteConfiguration()->getDataClearEmail());
-		$statement->bindValue(":clearedIp", $this->getSiteConfiguration()->getDataClearIp());
-		$statement->execute();
-
-		/** @var Request $r */
-		$requests = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
-		foreach ($requests as $r) {
-			$r->setDatabase($database);
-			$r->isNew = false;
-		}
-
-		return $requests;
+		return RequestSearchHelper::get($this->getDatabase())
+			->byEmailAddress($padded)
+			->excludingPurgedData($this->getSiteConfiguration())
+			->fetch();
 	}
 
 	/**
@@ -139,30 +113,10 @@ class PageSearch extends InternalPageBase
 	 */
 	private function getIpSearchResults($searchTerm)
 	{
-		$padded = '%' . $searchTerm . '%';
-
-		$database = $this->getDatabase();
-
-		$query = <<<SQL
-SELECT * FROM request
-WHERE ip LIKE :term OR forwardedip LIKE :paddedTerm AND email <> :clearedEmail AND ip <> :clearedIp
-SQL;
-
-		$statement = $database->prepare($query);
-		$statement->bindValue(":term", $searchTerm);
-		$statement->bindValue(":paddedTerm", $padded);
-		$statement->bindValue(":clearedEmail", $this->getSiteConfiguration()->getDataClearEmail());
-		$statement->bindValue(":clearedIp", $this->getSiteConfiguration()->getDataClearIp());
-		$statement->execute();
-
-		/** @var Request $r */
-		$requests = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
-		foreach ($requests as $r) {
-			$r->setDatabase($database);
-			$r->isNew = false;
-		}
-
-		return $requests;
+		return RequestSearchHelper::get($this->getDatabase())
+			->byIp($searchTerm)
+			->excludingPurgedData($this->getSiteConfiguration())
+			->fetch();
 	}
 
 	/**

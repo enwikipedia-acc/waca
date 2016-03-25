@@ -10,8 +10,10 @@ use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\Helpers\RequestSearchHelper;
 use Waca\PdoDatabase;
 use Waca\Security\SecurityConfiguration;
+use Waca\SiteConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
@@ -81,7 +83,7 @@ class PageViewRequest extends InternalPageBase
 		if ($allowedPrivateData) {
 			// todo: logging?
 
-			$this->setupPrivateData($request, $currentUser);
+			$this->setupPrivateData($request, $currentUser, $this->getSiteConfiguration());
 
 			if ($currentUser->isCheckuser()) {
 				$this->setupCheckUserData($request);
@@ -276,15 +278,23 @@ class PageViewRequest extends InternalPageBase
 	}
 
 	/**
-	 * @param Request $request
-	 * @param User    $currentUser
+	 * @param Request           $request
+	 * @param User              $currentUser
+	 * @param SiteConfiguration $configuration
+	 *
+	 * @throws Exception
 	 */
-	protected function setupPrivateData($request, User $currentUser)
+	protected function setupPrivateData($request, User $currentUser, SiteConfiguration $configuration)
 	{
 		$xffProvider = $this->getXffTrustProvider();
 		$this->setTemplate('view-request/main-with-data.tpl');
 
-		$relatedEmailRequests = $request->getRelatedEmailRequests();
+		$relatedEmailRequests = RequestSearchHelper::get($this->getDatabase())
+			->byEmailAddress($request->getEmail())
+			->withConfirmedEmail()
+			->excludingPurgedData($configuration)
+			->excludingRequest($request->getId())
+			->fetch();
 
 		$this->assign('requestEmail', $request->getEmail());
 		$this->assign('requestRelatedEmailRequestsCount', count($relatedEmailRequests));
@@ -300,8 +310,15 @@ class PageViewRequest extends InternalPageBase
 
 		$this->assign('requestHasForwardedIp', $request->getForwardedIp() !== null);
 
-		$this->assign('requestRelatedIpRequestsCount', count($relatedEmailRequests));
-		$this->assign('requestRelatedIpRequests', $relatedEmailRequests);
+		$relatedIpRequests = RequestSearchHelper::get($this->getDatabase())
+			->byIp($trustedIp)
+			->withConfirmedEmail()
+			->excludingPurgedData($configuration)
+			->excludingRequest($request->getId())
+			->fetch();
+
+		$this->assign('requestRelatedIpRequestsCount', count($relatedIpRequests));
+		$this->assign('requestRelatedIpRequests', $relatedIpRequests);
 
 		$this->assign('showRevealLink', false);
 		if ($request->getReserved() === $currentUser->getId() ||

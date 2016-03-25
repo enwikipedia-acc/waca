@@ -3,10 +3,8 @@ namespace Waca\DataObjects;
 
 use DateTime;
 use Exception;
-use PDO;
 use Waca\DataObject;
 use Waca\Exceptions\OptimisticLockFailedException;
-use Waca\Providers\Interfaces\IXffTrustProvider;
 
 /**
  * Request data object
@@ -29,16 +27,6 @@ class Request extends DataObject
 	private $forwardedip;
 	private $hasComments = false;
 	private $hasCommentsResolved = false;
-	/**
-	 * @var Request[]
-	 */
-	private $ipRequests;
-	private $ipRequestsResolved = false;
-	/**
-	 * @var Request[]
-	 */
-	private $emailRequests;
-	private $emailRequestsResolved = false;
 
 	/**
 	 * @throws Exception
@@ -290,79 +278,6 @@ SQL
 		$this->hasCommentsResolved = true;
 
 		return $this->hasComments;
-	}
-
-	/**
-	 * @deprecated this shouldn't be here.
-	 * @return Request[]
-	 */
-	public function getRelatedEmailRequests()
-	{
-		if ($this->emailRequestsResolved == false) {
-			global $cDataClearEmail;
-
-			$query = $this->dbObject->prepare(<<<SQL
-SELECT * FROM request
-WHERE email = :email AND email != :clearedemail AND id != :id AND emailconfirm = 'Confirmed';
-SQL
-			);
-			$query->bindValue(":id", $this->id);
-			$query->bindValue(":email", $this->email);
-			$query->bindValue(":clearedemail", $cDataClearEmail);
-
-			$query->execute();
-
-			$this->emailRequests = $query->fetchAll(PDO::FETCH_CLASS, self::class);
-			$this->emailRequestsResolved = true;
-
-			foreach ($this->emailRequests as $r) {
-				$r->setDatabase($this->dbObject);
-			}
-		}
-
-		return $this->emailRequests;
-	}
-
-	/**
-	 * @deprecated this shouldn't be here.
-	 * @return Request[]
-	 */
-	public function getRelatedIpRequests()
-	{
-		if ($this->ipRequestsResolved == false) {
-			global $cDataClearIp;
-
-			$query = $this->dbObject->prepare(<<<SQL
-SELECT * FROM request
-WHERE (ip = :ip OR forwardedip LIKE :forwarded) AND ip != :clearedip AND id != :id AND emailconfirm = 'Confirmed';
-SQL
-			);
-
-			/**
-			 * Note to weary travellers! Don't use this global anywhere else.
-			 * @var IXffTrustProvider $globalXffTrustProvider
-			 */
-			global $globalXffTrustProvider;
-			$trustedIp = $globalXffTrustProvider->getTrustedClientIp($this->ip, $this->forwardedip);
-
-			$trustedFilter = '%' . $trustedIp . '%';
-
-			$query->bindValue(":id", $this->id);
-			$query->bindValue(":ip", $trustedIp);
-			$query->bindValue(":forwarded", $trustedFilter);
-			$query->bindValue(":clearedip", $cDataClearIp);
-
-			$query->execute();
-
-			$this->ipRequests = $query->fetchAll(PDO::FETCH_CLASS, self::class);
-			$this->ipRequestsResolved = true;
-
-			foreach ($this->ipRequests as $r) {
-				$r->setDatabase($this->dbObject);
-			}
-		}
-
-		return $this->ipRequests;
 	}
 
 	/**

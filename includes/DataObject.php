@@ -19,7 +19,7 @@ abstract class DataObject
 {
 	/**
 	 * @var bool
-	 * @todo we should probably make this a read-only method rather than public - why should anything external set this?
+	 * @todo we should probably make this a read-only method rather than public - why should anything external set this? Oh, yeah, factories.
 	 */
 	public $isNew = true;
 	/** @var int ID of the object */
