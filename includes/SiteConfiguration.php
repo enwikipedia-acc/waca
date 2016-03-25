@@ -69,6 +69,7 @@ class SiteConfiguration
 	private $ircNotificationsEnabled = true;
 	private $ircNotificationsInstance = 'Development';
 	private $errorLog = 'errorlog';
+	private $titleBlacklistEnabled = false;
 
 	/**
 	 * Gets the base URL of the tool
@@ -738,5 +739,25 @@ class SiteConfiguration
 	public function getIrcNotificationsInstance()
 	{
 		return $this->ircNotificationsInstance;
+	}
+
+	/**
+	 * @param boolean $titleBlacklistEnabled
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setTitleBlacklistEnabled($titleBlacklistEnabled)
+	{
+		$this->titleBlacklistEnabled = $titleBlacklistEnabled;
+
+		return $this;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function getTitleBlacklistEnabled()
+	{
+		return $this->titleBlacklistEnabled;
 	}
 }

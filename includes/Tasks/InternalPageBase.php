@@ -6,6 +6,7 @@ use PDO;
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\NotIdentifiedException;
+use Waca\Helpers\Interfaces\IBlacklistHelper;
 use Waca\IdentificationVerifier;
 use Waca\Helpers\Interfaces\ITypeAheadHelper;
 use Waca\Security\SecurityConfiguration;
@@ -20,6 +21,8 @@ abstract class InternalPageBase extends PageBase
 	private $typeAheadHelper;
 	/** @var SecurityManager */
 	private $securityManager;
+	/** @var IBlacklistHelper */
+	private $blacklistHelper;
 
 	/**
 	 * @return ITypeAheadHelper
@@ -205,8 +208,24 @@ abstract class InternalPageBase extends PageBase
 	/**
 	 * @param SecurityManager $securityManager
 	 */
-	public function setSecurityManager($securityManager)
+	public function setSecurityManager(SecurityManager $securityManager)
 	{
 		$this->securityManager = $securityManager;
+	}
+
+	/**
+	 * @return IBlacklistHelper
+	 */
+	public function getBlacklistHelper()
+	{
+		return $this->blacklistHelper;
+	}
+
+	/**
+	 * @param IBlacklistHelper $blacklistHelper
+	 */
+	public function setBlacklistHelper(IBlacklistHelper $blacklistHelper)
+	{
+		$this->blacklistHelper = $blacklistHelper;
 	}
 }

@@ -6,6 +6,8 @@ use Exception;
 use Waca\DataObjects\User;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Exceptions\ReadableException;
+use Waca\Helpers\BlacklistHelper;
+use Waca\Helpers\FakeBlacklistHelper;
 use Waca\Helpers\TypeAheadHelper;
 use Waca\Providers\GlobalStateProvider;
 use Waca\Router\IRequestRouter;
@@ -70,6 +72,14 @@ class WebStart extends ApplicationBase
 
 				$page->setSecurityManager(new SecurityManager($identificationVerifier,
 					$siteConfiguration->getForceIdentification()));
+
+				if ($siteConfiguration->getTitleBlacklistEnabled()) {
+					$page->setBlacklistHelper(new FakeBlacklistHelper());
+				}
+				else {
+					$page->setBlacklistHelper(new BlacklistHelper($page->getHttpHelper(),
+						$siteConfiguration->getMediawikiWebServiceEndpoint()));
+				}
 			}
 		}
 	}

@@ -348,4 +348,5 @@ $siteConfiguration->setBaseUrl($baseurl)
 	->setIrcNotificationsEnabled($ircBotNotificationsEnabled == 1)
 	->setIrcNotificationType($ircBotNotificationType)
 	->setIrcNotificationsInstance($whichami)
+	->setTitleBlacklistEnabled($enableTitleblacklist == 1)
 	;
