@@ -135,7 +135,7 @@ class PageUserManagement extends InternalPageBase
 			throw new ApplicationLogicException('Sorry, the user you are trying to decline could not be found.');
 		}
 
-		if (!$user->isNew()) {
+		if (!$user->isNewUser()) {
 			throw new ApplicationLogicException('Sorry, the user you are trying to decline is not new.');
 		}
 

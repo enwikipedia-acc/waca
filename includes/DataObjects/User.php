@@ -922,7 +922,7 @@ SQL
 	 * @return bool
 	 * @category Security-Critical
 	 */
-	public function isNew()
+	public function isNewUser()
 	{
 		return $this->status == "New";
 	}

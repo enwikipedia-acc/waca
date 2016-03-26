@@ -104,7 +104,7 @@ class PageOAuth extends InternalPageBase
 		//   b) existing user hit the connect button in prefs => redirect to prefs since it's where they were
 		//   c) existing user logging in => redirect to wherever they came from
 		$redirectDestination = WebRequest::clearPostLoginRedirect();
-		if ($redirectDestination !== null && !$user->isNew()) {
+		if ($redirectDestination !== null && !$user->isNewUser()) {
 			$this->redirectUrl($redirectDestination);
 		}
 		else {

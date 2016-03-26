@@ -191,7 +191,7 @@ class CommunityUser extends User
 		return false;
 	}
 
-	public function isNew()
+	public function isNewUser()
 	{
 		return false;
 	}

@@ -120,7 +120,7 @@ class PageLogin extends InternalPageBase
 			$this->redirectUrl($redirectDestination);
 		}
 		else {
-			if ($user->isNew()) {
+			if ($user->isNewUser()) {
 				// home page isn't allowed, go to preferences instead
 				$this->redirect('preferences');
 			}

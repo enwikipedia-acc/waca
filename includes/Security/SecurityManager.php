@@ -77,7 +77,7 @@ final class SecurityManager
 				|| $this->test($config->getCommunity(), $user->isCommunityUser())
 				|| $this->test($config->getSuspended(), $user->isSuspended())
 				|| $this->test($config->getDeclined(), $user->isDeclined())
-				|| $this->test($config->getNew(), $user->isNew())
+				|| $this->test($config->getNew(), $user->isNewUser())
 				|| $this->test($config->getCheckuser(), $user->isCheckuser());
 
 			return $allowed;
