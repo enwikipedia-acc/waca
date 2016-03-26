@@ -132,7 +132,6 @@ SQL
 		$resultObject = $statement->fetchObject(get_called_class());
 
 		if ($resultObject != false) {
-			$resultObject->isNew = false;
 			$resultObject->setDatabase($database);
 		}
 

@@ -1,5 +1,5 @@
 ﻿<div class="btn-group">
-    {if $user->isNew() || $user->isSuspended() || $user->isDeclined()}
+    {if $user->isNewUser() || $user->isSuspended() || $user->isDeclined()}
         <a class="btn" href="{$mediawikiScriptPath}?diff={$user->getConfirmationDiff()|escape:'url'}">
             <i class="icon icon-edit"></i>&nbsp;
             <span class="visible-desktop">Diff</span>
@@ -15,13 +15,13 @@
     {/if}
 </div>
 <div class="btn-group">
-    {if $user->isSuspended() || $user->isNew() || $user->isDeclined()}
+    {if $user->isSuspended() || $user->isNewUser() || $user->isDeclined()}
         <a class="btn btn-success" href="{$baseurl}/internal.php/userManagement/approve?user={$user->getId()}">
             <i class="icon-white icon-ok-sign"></i>&nbsp;
             <span class="visible-desktop">Approve</span>
         </a>
     {/if}
-    {if $user->isNew()}
+    {if $user->isNewUser()}
         <a class="btn btn-danger" href="{$baseurl}/internal.php/userManagement/decline?user={$user->getId()}">
             <i class="icon-white icon-ban-circle"></i>&nbsp;
             <span class="visible-desktop">Decline</span>
