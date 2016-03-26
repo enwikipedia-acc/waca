@@ -3,7 +3,6 @@ namespace Waca\DataObjects;
 
 use Exception;
 use Waca\DataObject;
-use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\PdoDatabase;
 
 /**
@@ -19,10 +18,11 @@ class RDnsCache extends DataObject
 	 * @param string      $address
 	 * @param PdoDatabase $database
 	 *
-	 * @return RDnsCache
+	 * @return RDnsCache|false
 	 */
 	public static function getByAddress($address, PdoDatabase $database)
 	{
+		// @todo add cache invalidation (timestamp?)
 		$statement = $database->prepare("SELECT * FROM rdnscache WHERE address = :id LIMIT 1;");
 		$statement->bindValue(":id", $address);
 
@@ -56,30 +56,8 @@ SQL
 			}
 		}
 		else {
-			// update (@todo is this even used?)
-			$statement = $this->dbObject->prepare(<<<SQL
-UPDATE `rdnscache`
-SET address = :address, data = :data, updateversion = updateversion + 1
-WHERE id = :id AND updateversion = :updateversion
-LIMIT 1;
-SQL
-			);
-
-			$statement->bindValue(':id', $this->id);
-			$statement->bindValue(':updateversion', $this->updateversion);
-
-			$statement->bindValue(':address', $this->address);
-			$statement->bindValue(':data', $this->data);
-
-			if (!$statement->execute()) {
-				throw new Exception($statement->errorInfo());
-			}
-
-			if ($statement->rowCount() !== 1) {
-				throw new OptimisticLockFailedException();
-			}
-
-			$this->updateversion++;
+			// update
+			throw new Exception('Not implemented');
 		}
 	}
 

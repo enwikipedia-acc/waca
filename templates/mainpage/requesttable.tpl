@@ -34,7 +34,7 @@
 
             {* Request Time *}
             <td>
-        <span class="visible-desktop"><a rel="tooltip" href="#rqtime{$r->getId()}" title="{$r->getDate()}"
+        <span class="visible-desktop"><a rel="tooltip" href="#rqtime{$r->getId()}" title="{$r->getDate()|date}"
                                          data-toggle="tooltip" class="plainlinks"
                                          id="#rqtime{$r->getId()}">{$r->getDate()|relativedate}</a></span>
             </td>

@@ -2,6 +2,7 @@
 namespace Waca\DataObjects;
 
 use DateTime;
+use DateTimeImmutable;
 use Exception;
 use Waca\DataObject;
 use Waca\Exceptions\OptimisticLockFailedException;
@@ -162,41 +163,29 @@ SQL
 	}
 
 	/**
-	 * @todo make this support DateTime object
-	 * @return string
+	 * Returns the time the request was first submitted
+	 *
+	 * @return DateTimeImmutable
 	 */
 	public function getDate()
 	{
-		return $this->date;
+		return new DateTimeImmutable($this->date);
 	}
 
 	/**
-	 * @todo make this support DateTime object
-	 *
-	 * @param string $date
-	 */
-	public function setDate($date)
-	{
-		$this->date = $date;
-	}
-
-	/**
-	 * @todo change this to boolean
-	 * @return int
+	 * @return bool
 	 */
 	public function getEmailSent()
 	{
-		return $this->emailsent;
+		return $this->emailsent == "1";
 	}
 
 	/**
-	 * @todo change this to boolean
-	 *
-	 * @param int $emailsent
+	 * @param bool $emailSent
 	 */
-	public function setEmailSent($emailsent)
+	public function setEmailSent($emailSent)
 	{
-		$this->emailsent = $emailsent;
+		$this->emailsent = $emailSent ? 1 : 0;
 	}
 
 	/**

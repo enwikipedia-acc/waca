@@ -8,7 +8,7 @@
         <strong>Date:</strong>
     </div>
     <div class="span8">
-        {$requestDate} <span class="muted">({$requestDate|relativedate})</span>
+        {$requestDate|date} <span class="muted">({$requestDate|relativedate})</span>
     </div>
 </div>
 

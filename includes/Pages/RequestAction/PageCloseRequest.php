@@ -109,7 +109,7 @@ class PageCloseRequest extends RequestActionBase
 	 */
 	protected function checkEmailAlreadySent(Request $request, EmailTemplate $template)
 	{
-		if ($request->getEmailSent() == "1" && !WebRequest::postBoolean('emailSentOverride')) {
+		if ($request->getEmailSent() && !WebRequest::postBoolean('emailSentOverride')) {
 			$this->showConfirmation($request, $template, 'close-confirmations/email-sent.tpl');
 
 			return true;
@@ -204,7 +204,7 @@ class PageCloseRequest extends RequestActionBase
 
 		$helper->sendMail($request->getEmail(), $subject, $content, $headers);
 
-		$request->setEmailSent(1);
+		$request->setEmailSent(true);
 	}
 
 	/**
