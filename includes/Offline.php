@@ -6,7 +6,7 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-amespace Waca;
+namespace Waca;
 
 use Smarty;
 
