@@ -5,7 +5,6 @@ namespace Waca\Tasks;
 use Exception;
 use Waca\DataObjects\SiteNotice;
 use Waca\DataObjects\User;
-use Waca\Environment;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Fragments\TemplateOutput;
@@ -140,9 +139,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 		$this->finalisePage();
 
 		// Send the headers
-		foreach ($this->headerQueue as $item) {
-			header($item);
-		}
+		$this->sendResponseHeaders();
 
 		// Check we have a template to use!
 		if ($this->template !== null) {
@@ -297,6 +294,18 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 	{
 		if (!$this->tokenManager->validateToken(WebRequest::postString('csrfTokenData'))) {
 			throw new ApplicationLogicException('Form token is not valid, please reload and try again');
+		}
+	}
+
+	protected function sendResponseHeaders()
+	{
+		foreach ($this->headerQueue as $item) {
+			if(mb_strpos($item, "\r") !== false || mb_strpos($item, "\n") !== false){
+				// Oops. We're not allowed to do this.
+				throw new Exception('Unable to split header');
+			}
+
+			header($item);
 		}
 	}
 }
