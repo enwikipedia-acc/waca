@@ -32,6 +32,10 @@ class IrcNotificationHelper
 	private $currentUser;
 	/** @var string $instanceName */
 	private $instanceName;
+	/** @var string */
+	private $baseUrl;
+	/** @var array */
+	private $requestStates;
 
 	/**
 	 * IrcNotificationHelper constructor.

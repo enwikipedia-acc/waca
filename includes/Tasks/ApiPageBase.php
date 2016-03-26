@@ -12,7 +12,7 @@ abstract class ApiPageBase extends TaskBase implements IRoutedTask, IApiAction
 {
 	/**
 	 * API result document
-	 * @var DOMElement
+	 * @var DOMDocument
 	 */
 	protected $document;
 

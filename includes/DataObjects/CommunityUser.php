@@ -91,7 +91,7 @@ class CommunityUser extends User
 
 	public function getForceLogout()
 	{
-		return 1;
+		return true;
 	}
 
 	public function setForceLogout($forceLogout)

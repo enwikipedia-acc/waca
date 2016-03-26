@@ -38,8 +38,8 @@ class MonitorAction extends ApiPageBase implements IApiAction
 
 		$monitoringElement = $this->document->createElement("data");
 		$monitoringElement->setAttribute("date", $now->format('c'));
-		$monitoringElement->setAttribute("oldest", $old == null ? null : $oldest->format('c'));
-		$monitoringElement->setAttribute("newest", $new == null ? null : $newest->format('c'));
+		$monitoringElement->setAttribute("oldest", $old === null ? null : $oldest->format('c'));
+		$monitoringElement->setAttribute("newest", $new === null ? null : $newest->format('c'));
 		$apiDocument->appendChild($monitoringElement);
 
 		return $apiDocument;

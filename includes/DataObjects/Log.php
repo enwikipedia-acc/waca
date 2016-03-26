@@ -107,7 +107,7 @@ SQL
 	/**
 	 * Summary of setUser
 	 *
-	 * @param User $user
+	 * @param User|integer $user
 	 */
 	public function setUser($user)
 	{
