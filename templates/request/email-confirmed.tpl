@@ -1,3 +1,5 @@
+{extends file="publicbase.tpl"}
+{block name="content"}
 <div class="row-fluid">
   <div class="span12">
 	  <h2>Request submitted!</h2>
@@ -10,3 +12,4 @@
 	  <p>The Wikipedia Account Creation Team</p>
   </div>
 </div>
+{/block}

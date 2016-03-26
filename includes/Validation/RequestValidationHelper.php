@@ -29,6 +29,8 @@ class RequestValidationHelper
 	private $database;
 	/** @var IAntiSpoofProvider */
 	private $antiSpoofProvider;
+	/** @var IXffTrustProvider */
+	private $xffTrustProvider;
 
 	/**
 	 * Summary of __construct
@@ -38,19 +40,22 @@ class RequestValidationHelper
 	 * @param string             $emailConfirmation
 	 * @param PdoDatabase        $database
 	 * @param IAntiSpoofProvider $antiSpoofProvider
+	 * @param IXffTrustProvider  $xffTrustProvider
 	 */
 	public function __construct(
 		IBanHelper $banHelper,
 		Request $request,
 		$emailConfirmation,
 		PdoDatabase $database,
-		IAntiSpoofProvider $antiSpoofProvider
+		IAntiSpoofProvider $antiSpoofProvider,
+		IXffTrustProvider $xffTrustProvider
 	) {
 		$this->banHelper = $banHelper;
 		$this->request = $request;
 		$this->emailConfirmation = $emailConfirmation;
 		$this->database = $database;
 		$this->antiSpoofProvider = $antiSpoofProvider;
+		$this->xffTrustProvider = $xffTrustProvider;
 	}
 
 	/**
@@ -161,10 +166,6 @@ class RequestValidationHelper
 	 */
 	public function validateOther()
 	{
-		// @todo remove me!
-		/** @var $xffTrustProvider IXffTrustProvider */
-		global $xffTrustProvider;
-
 		$errorList = array();
 
 		// ERRORS
@@ -176,7 +177,7 @@ class RequestValidationHelper
 		}
 
 		// IP banned
-		$trustedIp = $xffTrustProvider->getTrustedClientIp($this->request->getIp(), $this->request->getForwardedIp());
+		$trustedIp = $this->xffTrustProvider->getTrustedClientIp($this->request->getIp(), $this->request->getForwardedIp());
 		$ban = $this->banHelper->ipIsBanned($trustedIp);
 		if ($ban != false) {
 			$errorList[ValidationError::BANNED] = new ValidationError(ValidationError::BANNED);

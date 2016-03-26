@@ -87,7 +87,8 @@ class PageRequestAccount extends PublicInterfacePageBase
 			$request,
 			WebRequest::postEmail('emailconfirm'),
 			$this->getDatabase(),
-			$this->getAntiSpoofProvider());
+			$this->getAntiSpoofProvider(),
+			$this->getXffTrustProvider());
 
 		// These are arrays of ValidationError.
 		$nameValidation = $validationHelper->validateName();
