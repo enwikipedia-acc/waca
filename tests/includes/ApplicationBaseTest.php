@@ -14,7 +14,7 @@ class ApplicationBaseTest extends \PHPUnit_Framework_TestCase
     private $ab;
 
 	public function setUp() {
-		$this->si = new \Waca\siteConfiguration();
+		$this->si = new \Waca\SiteConfiguration();
 
 		$this->ab = $this->getMockForAbstractClass('\Waca\ApplicationBase', [$this->si]);
 	}
