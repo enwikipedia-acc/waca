@@ -120,4 +120,14 @@ final class SecurityConfigurationFactory
 
 		return $config;
 	}
+
+	/**
+	 * @category Security-Critical
+	 * @return SecurityConfiguration
+	 */
+	public function asNone() {
+		$config = new SecurityConfiguration();
+
+		return $config;
+	}
 }

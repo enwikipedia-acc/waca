@@ -135,7 +135,7 @@ class PageOAuth extends InternalPageBase
 
 		if ($this->getRouteName() === 'detach' && $this->getSiteConfiguration()->getEnforceOAuth()) {
 			// Deny detach when this OAuth is enforced.
-			return new SecurityConfiguration();
+			return $this->getSecurityManager()->configure()->asNone();
 		}
 
 		return $this->getSecurityManager()->configure()->asAllLoggedInUsersPage();

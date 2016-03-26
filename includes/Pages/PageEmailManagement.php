@@ -40,7 +40,7 @@ class PageEmailManagement extends InternalPageBase
 		}
 
 		// deny all
-		return new SecurityConfiguration();
+		return $this->getSecurityManager()->configure()->asNone();
 	}
 
 	/**
