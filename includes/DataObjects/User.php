@@ -415,7 +415,7 @@ SQL
 					oauthaccesstoken, oauthaccesssecret
 				) VALUES (
 					:username, :email, :password, :status, :onwikiname, :welcome_sig,
-					:lastactive, :forcelogout, :checkuser, :identified, 
+					:lastactive, :forcelogout, :checkuser, :forceidentified,
 					:welcome_template, :abortpref, :confirmationdiff, :emailsig, 
 					:ort, :ors, :oat, :oas
 				);
