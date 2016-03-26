@@ -46,6 +46,7 @@ class LogSearchHelper extends SearchHelperBase
 	{
 		$targetClass = Log::class;
 
+		/** @var Log[] $returnedObjects */
 		$returnedObjects = $this->fetchObjects($targetClass);
 
 		return $returnedObjects;
@@ -60,7 +61,7 @@ class LogSearchHelper extends SearchHelperBase
 	 */
 	public function byUser($userId)
 	{
-		$this->whereClause .=' AND user = ?';
+		$this->whereClause .= ' AND user = ?';
 		$this->parameterList[] = $userId;
 
 		return $this;
@@ -75,7 +76,7 @@ class LogSearchHelper extends SearchHelperBase
 	 */
 	public function byAction($action)
 	{
-		$this->whereClause .=' AND action = ?';
+		$this->whereClause .= ' AND action = ?';
 		$this->parameterList[] = $action;
 
 		return $this;
@@ -90,7 +91,7 @@ class LogSearchHelper extends SearchHelperBase
 	 */
 	public function byObjectType($objectType)
 	{
-		$this->whereClause .=' AND objecttype = ?';
+		$this->whereClause .= ' AND objecttype = ?';
 		$this->parameterList[] = $objectType;
 
 		return $this;
@@ -105,7 +106,7 @@ class LogSearchHelper extends SearchHelperBase
 	 */
 	public function byObjectId($objectId)
 	{
-		$this->whereClause .=' AND objectid = ?';
+		$this->whereClause .= ' AND objectid = ?';
 		$this->parameterList[] = $objectId;
 
 		return $this;

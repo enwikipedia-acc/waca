@@ -11,7 +11,6 @@ namespace Waca\API\Actions;
 use DOMElement;
 use DateTime;
 use Waca\API\IApiAction;
-use Waca\PdoDatabase;
 use Waca\Tasks\ApiPageBase;
 
 /**
@@ -25,15 +24,12 @@ use Waca\Tasks\ApiPageBase;
 class MonitorAction extends ApiPageBase implements IApiAction
 {
 	/**
-	 * The database
-	 * @var PdoDatabase $database
+	 * @param DOMElement $apiDocument
+	 *
+	 * @return DOMElement
 	 */
-	private $database;
-
 	public function executeApiAction(DOMElement $apiDocument)
 	{
-		$this->database = $this->getDatabase();
-
 		$now = new DateTime();
 
 		$old = $this->getOldest();
@@ -56,7 +52,7 @@ class MonitorAction extends ApiPageBase implements IApiAction
 	 */
 	private function getOldest()
 	{
-		$statement = $this->database->prepare("SELECT min(date) FROM request WHERE email != :email AND ip != :ip;");
+		$statement = $this->getDatabase()->prepare("SELECT min(date) FROM request WHERE email != :email AND ip != :ip;");
 		$successful = $statement->execute(array(
 			':email' => $this->getSiteConfiguration()->getDataClearEmail(),
 			':ip'    => $this->getSiteConfiguration()->getDataClearIp(),
@@ -76,7 +72,7 @@ class MonitorAction extends ApiPageBase implements IApiAction
 	 */
 	private function getNewest()
 	{
-		$statement = $this->database->prepare("SELECT max(date) FROM request WHERE email != :email AND ip != :ip;");
+		$statement = $this->getDatabase()->prepare("SELECT max(date) FROM request WHERE email != :email AND ip != :ip;");
 		$statement->execute(array(
 			':email' => $this->getSiteConfiguration()->getDataClearEmail(),
 			':ip'    => $this->getSiteConfiguration()->getDataClearIp(),

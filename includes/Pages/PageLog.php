@@ -8,6 +8,7 @@
 
 namespace Waca\Pages;
 
+use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
 use Waca\Helpers\LogHelper;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
@@ -46,14 +47,15 @@ class PageLog extends InternalPageBase
 		$offset = ($page - 1) * $limit;
 
 		$logSearch = LogSearchHelper::get($database)->limit($limit, $offset);
-		if($filterUser !== null){
+		if ($filterUser !== null) {
 			$logSearch->byUser(User::getByUsername($filterUser, $database)->getId());
 		}
 
-		if($filterAction !== null){
+		if ($filterAction !== null) {
 			$logSearch->byAction($filterAction);
 		}
 
+		/** @var Log[] $logs */
 		$logs = $logSearch->getRecordCount($count)->fetch();
 
 		if ($count === 0) {
@@ -139,6 +141,4 @@ class PageLog extends InternalPageBase
 		$this->assign("limit", $limit);
 		$this->assign("page", $page);
 	}
-
-
 }

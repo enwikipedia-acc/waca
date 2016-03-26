@@ -76,7 +76,7 @@ class PageSearch extends InternalPageBase
 	 *
 	 * @param string $searchTerm
 	 *
-	 * @returns array<Request>
+	 * @returns Request[]
 	 */
 	private function getNameSearchResults($searchTerm)
 	{

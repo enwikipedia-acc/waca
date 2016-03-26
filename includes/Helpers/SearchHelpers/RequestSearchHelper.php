@@ -46,7 +46,9 @@ class RequestSearchHelper extends SearchHelperBase
 	public function fetch()
 	{
 		$targetClass = Request::class;
+		/** @var Request[] $returnedObjects */
 		$returnedObjects = $this->fetchObjects($targetClass);
+
 		return $returnedObjects;
 	}
 
@@ -59,7 +61,7 @@ class RequestSearchHelper extends SearchHelperBase
 	 */
 	public function byIp($ipAddress)
 	{
-		$this->whereClause .=' AND (ip LIKE ? OR forwardedip LIKE ?)';
+		$this->whereClause .= ' AND (ip LIKE ? OR forwardedip LIKE ?)';
 		$this->parameterList[] = $ipAddress;
 		$this->parameterList[] = '%' . trim($ipAddress, '%') . '%';
 
@@ -75,7 +77,7 @@ class RequestSearchHelper extends SearchHelperBase
 	 */
 	public function byEmailAddress($emailAddress)
 	{
-		$this->whereClause .=' AND email LIKE ?';
+		$this->whereClause .= ' AND email LIKE ?';
 		$this->parameterList[] = $emailAddress;
 
 		return $this;
@@ -90,7 +92,7 @@ class RequestSearchHelper extends SearchHelperBase
 	 */
 	public function byName($name)
 	{
-		$this->whereClause .=' AND name LIKE ?';
+		$this->whereClause .= ' AND name LIKE ?';
 		$this->parameterList[] = $name;
 
 		return $this;
@@ -105,7 +107,7 @@ class RequestSearchHelper extends SearchHelperBase
 	 */
 	public function excludingRequest($requestId)
 	{
-		$this->whereClause .=' AND id <> ?';
+		$this->whereClause .= ' AND id <> ?';
 		$this->parameterList[] = $requestId;
 
 		return $this;
@@ -118,7 +120,7 @@ class RequestSearchHelper extends SearchHelperBase
 	 */
 	public function withConfirmedEmail()
 	{
-		$this->whereClause .=' AND emailconfirm = ?';
+		$this->whereClause .= ' AND emailconfirm = ?';
 		$this->parameterList[] = 'Confirmed';
 
 		return $this;
@@ -133,7 +135,7 @@ class RequestSearchHelper extends SearchHelperBase
 	 */
 	public function excludingPurgedData(SiteConfiguration $configuration)
 	{
-		$this->whereClause .=' AND ip <> ? AND email <> ?';
+		$this->whereClause .= ' AND ip <> ? AND email <> ?';
 		$this->parameterList[] = $configuration->getDataClearIp();
 		$this->parameterList[] = $configuration->getDataClearEmail();
 

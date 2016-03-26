@@ -8,8 +8,6 @@
 
 namespace Waca;
 
-use ErrorException;
-use Exception;
 use Waca\DataObjects\User;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Exceptions\ReadableException;
@@ -117,85 +115,6 @@ class WebStart extends ApplicationBase
 	}
 
 	/**
-	 * Global exception handler
-	 *
-	 * Smarty would be nice to use, but it COULD BE smarty that throws the errors.
-	 * Let's build something ourselves, and hope it works.
-	 *
-	 * @param $exception
-	 *
-	 * @category Security-Critical - has the potential to leak data when exception is thrown.
-	 */
-	public static function exceptionHandler(Exception $exception)
-	{
-		/** @global $siteConfiguration SiteConfiguration */
-		global $siteConfiguration;
-
-		$errorDocument = <<<HTML
-<!DOCTYPE html>
-<html lang="en"><head>
-<meta charset="utf-8">
-<title>Oops! Something went wrong!</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="{$siteConfiguration->getBaseUrl()}/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-<style>
-  body {
-    padding-top: 60px;
-  }
-</style>
-<link href="{$siteConfiguration->getBaseUrl()}/lib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
-</head><body><div class="container">
-<h1>Oops! Something went wrong!</h1>
-<p>We'll work on fixing this for you, so why not come back later?</p>
-<p class="muted">If our trained monkeys ask, tell them this error ID: <code>$1$</code></p>
-$2$
-</div></body></html>
-HTML;
-
-		$errorData = self::getExceptionData($exception);
-		$errorData['server'] = $_SERVER;
-		$errorData['get'] = $_GET;
-		$errorData['post'] = $_POST;
-
-		$state = serialize($errorData);
-		$errorId = sha1($state);
-
-		// Save the error for later analysis
-		file_put_contents($siteConfiguration->getErrorLog() . '/' . $errorId . '.log', $state);
-
-		// clear and discard any content that's been saved to the output buffer
-		if (ob_get_level() > 0) {
-			ob_end_clean();
-		}
-
-		// push error ID into the document.
-		$message = str_replace('$1$', $errorId, $errorDocument);
-
-		if ($siteConfiguration->getDebuggingTraceEnabled()) {
-			ob_start();
-			var_dump($errorData);
-			$textErrorData = ob_get_contents();
-			ob_end_clean();
-
-			$message = str_replace('$2$', $textErrorData, $message);
-		}
-		else {
-			$message = str_replace('$2$', "", $message);
-		}
-
-		header('HTTP/1.1 500 Internal Server Error');
-
-		// output the document
-		print $message;
-	}
-
-	public static function errorHandler($err_severity, $err_msg, $err_file, $err_line)
-	{
-		// call into the main exception handler above
-		throw new ErrorException($err_msg, 0, $err_severity, $err_file, $err_line);
-	}
-
-	/**
 	 * Environment setup
 	 *
 	 * This method initialises the tool environment. If the tool cannot be initialised correctly, it will return false
@@ -207,8 +126,8 @@ HTML;
 	protected function setupEnvironment()
 	{
 		// initialise global exception handler
-		set_exception_handler(array(self::class, 'exceptionHandler'));
-		set_error_handler(array(self::class, 'errorHandler'), E_RECOVERABLE_ERROR);
+		set_exception_handler(array(ExceptionHandler::class, 'exceptionHandler'));
+		set_error_handler(array(ExceptionHandler::class, 'errorHandler'), E_RECOVERABLE_ERROR);
 
 		// start output buffering if necessary
 		if (ob_get_level() === 0) {
@@ -290,25 +209,6 @@ HTML;
 				ob_end_clean();
 			}
 		}
-	}
-
-	/**
-	 * @param Exception $exception
-	 *
-	 * @return null|array
-	 */
-	private static function getExceptionData($exception)
-	{
-		if ($exception == null) {
-			return null;
-		}
-
-		return array(
-			'exception' => get_class($exception),
-			'message'   => $exception->getMessage(),
-			'stack'     => $exception->getTraceAsString(),
-			'previous'  => self::getExceptionData($exception->getPrevious()),
-		);
 	}
 
 	private function checkForceLogout()

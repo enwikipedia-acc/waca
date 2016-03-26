@@ -37,7 +37,7 @@ class LogHelper
 	 * @param int         $requestId
 	 * @param PdoDatabase $db
 	 *
-	 * @return array
+	 * @return DataObject[]
 	 */
 	public static function getRequestLogsWithComments($requestId, PdoDatabase $db)
 	{
@@ -226,8 +226,12 @@ SQL
 	 * @return null|string
 	 * @category Security-Critical
 	 */
-	private static function getObjectDescription($objectId, $objectType, PdoDatabase $database, SiteConfiguration $configuration)
-	{
+	private static function getObjectDescription(
+		$objectId,
+		$objectType,
+		PdoDatabase $database,
+		SiteConfiguration $configuration
+	) {
 		if ($objectType == '') {
 			return null;
 		}
@@ -314,13 +318,13 @@ HTML;
 			$objectDescription = self::getObjectDescription($logEntry->getObjectId(), $logEntry->getObjectType(),
 				$database, $configuration);
 
-			if($logEntry->getAction() === 'Renamed'){
+			if ($logEntry->getAction() === 'Renamed') {
 				$renameData = unserialize($logEntry->getComment());
 				$oldName = htmlentities($renameData['old'], ENT_COMPAT, 'UTF-8');
 				$newName = htmlentities($renameData['new'], ENT_COMPAT, 'UTF-8');
 				$comment = 'Renamed \'' . $oldName . '\' to \'' . $newName . '\'.';
 			}
-			else{
+			else {
 				$comment = $logEntry->getComment();
 			}
 

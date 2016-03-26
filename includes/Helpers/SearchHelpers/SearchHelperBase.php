@@ -39,7 +39,7 @@ abstract class SearchHelperBase
 	 *
 	 * @param PdoDatabase $database
 	 * @param string      $table
-	 * @param null        $order Order by clause, excluding ORDER BY.
+	 * @param null|string $order Order by clause, excluding ORDER BY.
 	 */
 	protected function __construct(PdoDatabase $database, $table, $order = null)
 	{
@@ -91,8 +91,8 @@ abstract class SearchHelperBase
 	/**
 	 * Limits the results
 	 *
-	 * @param int $limit
-	 * @param int $offset
+	 * @param integer      $limit
+	 * @param integer|null $offset
 	 *
 	 * @return $this
 	 *

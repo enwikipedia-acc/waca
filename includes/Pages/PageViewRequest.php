@@ -245,6 +245,11 @@ class PageViewRequest extends InternalPageBase
 
 		/** @var Log|Comment $entry */
 		foreach ($logs as $entry) {
+			if (!($entry instanceof User) && !($entry instanceof Log)) {
+				// Something weird has happened here.
+				continue;
+			}
+
 			// both log and comment have a 'user' field
 			if (!array_key_exists($entry->getUser(), $nameCache)) {
 				$entryUser = User::getById($entry->getUser(), $database);

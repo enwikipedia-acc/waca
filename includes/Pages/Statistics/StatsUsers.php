@@ -9,6 +9,7 @@
 namespace Waca\Pages\Statistics;
 
 use PDO;
+use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\LogHelper;
@@ -110,6 +111,7 @@ SQL
 		$usersNotCreated = $usersNotCreatedQuery->fetchAll(PDO::FETCH_ASSOC);
 		$this->assign("notcreated", $usersNotCreated);
 
+		/** @var Log[] $logs */
 		$logs = LogSearchHelper::get($database)
 			->byObjectType('User')
 			->byObjectId($user->getId())

@@ -10,7 +10,6 @@ namespace Waca\Exceptions;
 
 use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
-use Waca\Helpers\LogHelper;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
 use Waca\PdoDatabase;
 
@@ -58,8 +57,16 @@ class AccessDeniedException extends ReadableException
 		return $this->fetchTemplate("exception/access-denied.tpl");
 	}
 
+	/**
+	 * @param string      $action
+	 * @param User        $user
+	 * @param PdoDatabase $database
+	 *
+	 * @return null|string
+	 */
 	private function getLogEntry($action, User $user, PdoDatabase $database)
 	{
+		/** @var Log[] $logs */
 		$logs = LogSearchHelper::get($database)
 			->byAction($action)
 			->byObjectType('User')
