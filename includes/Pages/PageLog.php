@@ -44,7 +44,7 @@ class PageLog extends InternalPageBase
 
 		$offset = ($page - 1) * $limit;
 
-		list($logs, $count) = Logger::getLogs($database, $filterUser, $filterAction, $limit, $offset);
+		list($logs, $count) = Logger::getLogs($database, $filterUser, $filterAction, null, null, $limit, $offset);
 
 		if ($logs === false) {
 			$this->assign('logs', array());

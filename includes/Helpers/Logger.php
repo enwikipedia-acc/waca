@@ -491,14 +491,21 @@ SQL
 	 * @param PdoDatabase $database
 	 * @param string|null $userFilter
 	 * @param string|null $actionFilter
+	 * @param string|null $objectTypeFilter
+	 * @param integer|null $objectFilter
 	 * @param integer     $limit
 	 * @param integer     $offset
 	 *
 	 * @return array
 	 */
-	public static function getLogs(PdoDatabase $database, $userFilter, $actionFilter, $limit = 100, $offset = 0)
+	public static function getLogs(PdoDatabase $database, $userFilter, $actionFilter, $objectTypeFilter = null, $objectFilter = null, $limit = 100, $offset = 0)
 	{
-		$whereClause = "(:userFilter = 0 OR user = :userid) AND (:actionFilter = 0 OR action = :action)";
+		$whereClause = <<<TXT
+(:userFilter = 0 OR user = :userid)
+AND (:actionFilter = 0 OR action = :action)
+AND (:objectFilter = 0 OR objectid = :object)
+AND (:objectTypeFilter = 0 OR objecttype = :objectType)
+TXT;
 		$searchSqlStatement = "SELECT * FROM log WHERE $whereClause ORDER BY timestamp DESC LIMIT :limit OFFSET :offset;";
 		$countSqlStatement = "SELECT COUNT(1) FROM log WHERE $whereClause;";
 
@@ -533,6 +540,32 @@ SQL
 			$countStatement->bindValue(":actionFilter", 1, PDO::PARAM_INT);
 			$searchStatement->bindValue(":action", $actionFilter, PDO::PARAM_STR);
 			$countStatement->bindValue(":action", $actionFilter, PDO::PARAM_STR);
+		}
+
+		if ($objectTypeFilter === null) {
+			$searchStatement->bindValue(":objectTypeFilter", 0, PDO::PARAM_INT);
+			$countStatement->bindValue(":objectTypeFilter", 0, PDO::PARAM_INT);
+			$searchStatement->bindValue(":objectType", "", PDO::PARAM_STR);
+			$countStatement->bindValue(":objectType", "", PDO::PARAM_STR);
+		}
+		else {
+			$searchStatement->bindValue(":objectTypeFilter", 1, PDO::PARAM_INT);
+			$countStatement->bindValue(":objectTypeFilter", 1, PDO::PARAM_INT);
+			$searchStatement->bindValue(":objectType", $objectTypeFilter, PDO::PARAM_STR);
+			$countStatement->bindValue(":objectType", $objectTypeFilter, PDO::PARAM_STR);
+		}
+
+		if ($objectFilter === null) {
+			$searchStatement->bindValue(":objectFilter", 0, PDO::PARAM_INT);
+			$countStatement->bindValue(":objectFilter", 0, PDO::PARAM_INT);
+			$searchStatement->bindValue(":object", "", PDO::PARAM_STR);
+			$countStatement->bindValue(":object", "", PDO::PARAM_STR);
+		}
+		else {
+			$searchStatement->bindValue(":objectFilter", 1, PDO::PARAM_INT);
+			$countStatement->bindValue(":objectFilter", 1, PDO::PARAM_INT);
+			$searchStatement->bindValue(":object", $objectFilter, PDO::PARAM_INT);
+			$countStatement->bindValue(":object", $objectFilter, PDO::PARAM_INT);
 		}
 
 		if (!$countStatement->execute()) {
