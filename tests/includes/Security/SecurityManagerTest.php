@@ -94,7 +94,7 @@ class SecurityManagerTest extends PHPUnit_Framework_TestCase
 
 	public function testAllowsNew()
 	{
-		$this->user->method('isNew')->willReturn(true);
+		$this->user->method('isNewUser')->willReturn(true);
 
 		$config = new SecurityConfiguration();
 		$config->setNew(SecurityConfiguration::ALLOW);
@@ -159,7 +159,7 @@ class SecurityManagerTest extends PHPUnit_Framework_TestCase
 
 	public function testAllowsNewWithNonApplicableDeny()
 	{
-		$this->user->method('isNew')->willReturn(true);
+		$this->user->method('isNewUser')->willReturn(true);
 		$config = new SecurityConfiguration();
 		$config->setNew(SecurityConfiguration::ALLOW)->setAdmin(SecurityConfiguration::DENY);
 		$this->assertTrue($this->securityManager->allows($config, $this->user));
@@ -220,7 +220,7 @@ class SecurityManagerTest extends PHPUnit_Framework_TestCase
 
 	public function testAllowsNewWithApplicableDeny()
 	{
-		$this->user->method('isNew')->willReturn(true);
+		$this->user->method('isNewUser')->willReturn(true);
 		$config = new SecurityConfiguration();
 		$config->setNew(SecurityConfiguration::DENY);
 		$this->assertFalse($this->securityManager->allows($config, $this->user));
@@ -271,7 +271,7 @@ class SecurityManagerTest extends PHPUnit_Framework_TestCase
 
 	public function testAllowsNewWithDefault()
 	{
-		$this->user->method('isNew')->willReturn(true);
+		$this->user->method('isNewUser')->willReturn(true);
 		$config = new SecurityConfiguration();
 		$this->assertFalse($this->securityManager->allows($config, $this->user));
 	}
@@ -337,7 +337,7 @@ class SecurityManagerTest extends PHPUnit_Framework_TestCase
 
 	public function testCheckuserNewBypass()
 	{
-		$this->user->method('isNew')->willReturn(true);
+		$this->user->method('isNewUser')->willReturn(true);
 		$this->user->method('isCheckuser')->willReturn(true);
 
 		$config = new SecurityConfiguration();
