@@ -39,7 +39,7 @@
                             {/if}
                         </td>
                         <td>
-                            <a rel="tooltip" href="#log{$smarty.foreach.logloop.index}" title="{$zoomrow.time}"
+                            <a rel="tooltip" href="#log{$smarty.foreach.logloop.index}" title="{$zoomrow.time|date}"
                                data-toggle="tooltip" class="plainlinks"
                                id="#log{$smarty.foreach.logloop.index}">{$zoomrow.time|relativedate}</a>
                         </td>

@@ -335,13 +335,17 @@ class Logger
 
 		$items = array_merge($logs, $comments);
 
+		/**
+		 * @param DataObject $item
+		 * @return int
+		 */
 		$sortKey = function(DataObject $item) {
 			if ($item instanceof Log) {
-				return $item->getTimestamp();
+				return $item->getTimestamp()->getTimestamp();
 			}
 
 			if ($item instanceof Comment) {
-				return $item->getTime();
+				return $item->getTime()->getTimestamp();
 			}
 
 			return 0;
@@ -353,7 +357,7 @@ class Logger
 			$loopLimit = (count($items) - 1);
 			for ($i = 0; $i < $loopLimit; $i++) {
 				// are these two items out of order?
-				if (strtotime($sortKey($items[$i])) > strtotime($sortKey($items[$i + 1]))) {
+				if ($sortKey($items[$i]) > $sortKey($items[$i + 1])) {
 					// swap them
 					$swap = $items[$i];
 					$items[$i] = $items[$i + 1];

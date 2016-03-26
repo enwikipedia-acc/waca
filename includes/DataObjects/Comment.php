@@ -1,6 +1,7 @@
 <?php
 namespace Waca\DataObjects;
 
+use DateTimeImmutable;
 use Exception;
 use PDO;
 use Waca\DataObject;
@@ -111,12 +112,11 @@ SQL
 	}
 
 	/**
-	 * @return string
-	 * @todo convert to date
+	 * @return DateTimeImmutable
 	 */
 	public function getTime()
 	{
-		return $this->time;
+		return new DateTimeImmutable($this->time);
 	}
 
 	/**

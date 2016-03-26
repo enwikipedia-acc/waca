@@ -1,6 +1,7 @@
 <?php
 namespace Waca\DataObjects;
 
+use DateTimeImmutable;
 use Exception;
 use Waca\DataObject;
 use Waca\PdoDatabase;
@@ -72,12 +73,11 @@ SQL
 	}
 
 	/**
-	 * @return string
-	 * @todo convert to timestamp?
+	 * @return DateTimeImmutable
 	 */
 	public function getTimestamp()
 	{
-		return $this->timestamp;
+		return new DateTimeImmutable($this->timestamp);
 	}
 
 	/**

@@ -12,7 +12,9 @@ function smarty_modifier_relativedate($input)
 {
 	$now = new DateTime();
 
-	if (gettype($input) === 'object' && get_class($input) === DateTime::class) {
+	if (gettype($input) === 'object'
+		&& (get_class($input) === DateTime::class || get_class($input) === DateTimeImmutable::class)
+	) {
 		$then = $input;
 	}
 	else {

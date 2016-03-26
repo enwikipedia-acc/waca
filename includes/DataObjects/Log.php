@@ -1,6 +1,7 @@
 <?php
 namespace Waca\DataObjects;
 
+use DateTimeImmutable;
 use Exception;
 use Waca\DataObject;
 
@@ -137,11 +138,11 @@ SQL
 	}
 
 	/**
-	 * @return string
+	 * @return DateTimeImmutable
 	 */
 	public function getTimestamp()
 	{
-		return $this->timestamp;
+		return new DateTimeImmutable($this->timestamp);
 	}
 
 	/**

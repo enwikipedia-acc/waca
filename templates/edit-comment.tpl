@@ -29,7 +29,7 @@
             <div class="control-group">
                 <label class="control-label" for="time">Time</label>
                 <div class="controls">
-                    <span class="input-large uneditable-input">{$comment->getTime()}</span>
+                    <span class="input-large uneditable-input">{$comment->getTime()|date}</span>
                 </div>
             </div>
 
