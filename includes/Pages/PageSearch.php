@@ -11,7 +11,7 @@ namespace Waca\Pages;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\Helpers\RequestSearchHelper;
+use Waca\Helpers\SearchHelpers\RequestSearchHelper;
 use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;

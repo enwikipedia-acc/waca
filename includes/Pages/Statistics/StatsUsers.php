@@ -12,6 +12,7 @@ use PDO;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\LogHelper;
+use Waca\Helpers\SearchHelpers\LogSearchHelper;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
@@ -109,8 +110,13 @@ SQL
 		$usersNotCreated = $usersNotCreatedQuery->fetchAll(PDO::FETCH_ASSOC);
 		$this->assign("notcreated", $usersNotCreated);
 
-		list($logs, $logCount) = LogHelper::getLogs($database, null, null, 'User', $user->getId());
-		if ($logs === false) {
+		$logs = LogSearchHelper::get($database)
+			->byObjectType('User')
+			->byObjectId($user->getId())
+			->getRecordCount($logCount)
+			->fetch();
+
+		if ($logCount === 0) {
 			$this->assign('accountlog', array());
 		}
 		else {

@@ -11,6 +11,7 @@ namespace Waca\Exceptions;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
 use Waca\Helpers\LogHelper;
+use Waca\Helpers\SearchHelpers\LogSearchHelper;
 use Waca\PdoDatabase;
 
 /**
@@ -59,12 +60,12 @@ class AccessDeniedException extends ReadableException
 
 	private function getLogEntry($action, User $user, PdoDatabase $database)
 	{
-		/** @var Log[] $logs */
-		list($logs, $count) = LogHelper::getLogs($database, null, $action, 'User', $user->getId(), 1);
-
-		if ($count === false || count($logs) < 1) {
-			return "Unable to retrieve log entry";
-		}
+		$logs = LogSearchHelper::get($database)
+			->byAction($action)
+			->byObjectType('User')
+			->byObjectId($user->getId())
+			->limit(1)
+			->fetch();
 
 		return $logs[0]->getComment();
 	}

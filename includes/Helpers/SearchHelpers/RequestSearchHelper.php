@@ -6,39 +6,22 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-namespace Waca\Helpers;
+namespace Waca\Helpers\SearchHelpers;
 
-use PDO;
 use Waca\DataObjects\Request;
 use Waca\PdoDatabase;
 use Waca\SiteConfiguration;
 
-class RequestSearchHelper
+class RequestSearchHelper extends SearchHelperBase
 {
-	/** @var PdoDatabase */
-	private $database;
-	/** @var string */
-	private $query;
-	/** @var array */
-	private $parameterList = array();
-
 	/**
 	 * RequestSearchHelper constructor.
 	 *
 	 * @param PdoDatabase $database
 	 */
-	private function __construct(PdoDatabase $database)
+	protected function __construct(PdoDatabase $database)
 	{
-		$this->database = $database;
-
-		// initialise query
-		// (the 1=1 condition will be optimised out of the query by the query planner, and simplifies our code here)
-		// Note that we use positional parameters instead of named parameters because we don't know many times different
-		// options will be called (looking at excluding() here, but there's the option for others).
-		$this->query = <<<SQL
-SELECT * /* RequestSearchHelper */
-FROM request WHERE 1 = 1
-SQL;
+		parent::__construct($database, 'request');
 	}
 
 	/**
@@ -62,15 +45,8 @@ SQL;
 	 */
 	public function fetch()
 	{
-		$statement = $this->database->prepare($this->query);
-		$statement->execute($this->parameterList);
-
-		/** @var Request[] $returnedObjects */
-		$returnedObjects = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
-		foreach ($returnedObjects as $req) {
-			$req->setDatabase($this->database);
-		}
-
+		$targetClass = Request::class;
+		$returnedObjects = $this->fetchObjects($targetClass);
 		return $returnedObjects;
 	}
 
@@ -83,7 +59,7 @@ SQL;
 	 */
 	public function byIp($ipAddress)
 	{
-		$this->query .= ' AND (ip LIKE ? OR forwardedip LIKE ?)';
+		$this->whereClause .=' AND (ip LIKE ? OR forwardedip LIKE ?)';
 		$this->parameterList[] = $ipAddress;
 		$this->parameterList[] = '%' . trim($ipAddress, '%') . '%';
 
@@ -99,7 +75,7 @@ SQL;
 	 */
 	public function byEmailAddress($emailAddress)
 	{
-		$this->query .= ' AND email LIKE ?';
+		$this->whereClause .=' AND email LIKE ?';
 		$this->parameterList[] = $emailAddress;
 
 		return $this;
@@ -114,7 +90,7 @@ SQL;
 	 */
 	public function byName($name)
 	{
-		$this->query .= ' AND name LIKE ?';
+		$this->whereClause .=' AND name LIKE ?';
 		$this->parameterList[] = $name;
 
 		return $this;
@@ -129,7 +105,7 @@ SQL;
 	 */
 	public function excludingRequest($requestId)
 	{
-		$this->query .= ' AND id <> ?';
+		$this->whereClause .=' AND id <> ?';
 		$this->parameterList[] = $requestId;
 
 		return $this;
@@ -142,7 +118,7 @@ SQL;
 	 */
 	public function withConfirmedEmail()
 	{
-		$this->query .= ' AND emailconfirm = ?';
+		$this->whereClause .=' AND emailconfirm = ?';
 		$this->parameterList[] = 'Confirmed';
 
 		return $this;
@@ -157,7 +133,7 @@ SQL;
 	 */
 	public function excludingPurgedData(SiteConfiguration $configuration)
 	{
-		$this->query .= ' AND ip <> ? AND email <> ?';
+		$this->whereClause .=' AND ip <> ? AND email <> ?';
 		$this->parameterList[] = $configuration->getDataClearIp();
 		$this->parameterList[] = $configuration->getDataClearEmail();
 

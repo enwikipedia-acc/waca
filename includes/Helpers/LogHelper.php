@@ -25,44 +25,12 @@ use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
+use Waca\Helpers\SearchHelpers\LogSearchHelper;
 use Waca\PdoDatabase;
 use Waca\SiteConfiguration;
 
 class LogHelper
 {
-	/**
-	 * Summary of getRequestLogs
-	 *
-	 * @param int         $requestId ID of the request to get logs for
-	 * @param PdoDatabase $db        Database to use
-	 *
-	 * @return array|bool
-	 */
-	public static function getRequestLogs($requestId, PdoDatabase $db)
-	{
-		$logStatement = $db->prepare(
-			<<<SQL
-SELECT * FROM log
-WHERE objecttype = 'Request' AND objectid = :requestId
-ORDER BY timestamp DESC
-SQL
-		);
-
-		$result = $logStatement->execute(array(":requestId" => $requestId));
-		if ($result) {
-			$data = $logStatement->fetchAll(PDO::FETCH_CLASS, Log::class);
-
-			/** @var Log $entry */
-			foreach ($data as $entry) {
-				$entry->setDatabase($db);
-			}
-
-			return $data;
-		}
-
-		return false;
-	}
-
 	/**
 	 * Summary of getRequestLogsWithComments
 	 *
@@ -73,7 +41,7 @@ SQL
 	 */
 	public static function getRequestLogsWithComments($requestId, PdoDatabase $db)
 	{
-		$logs = self::getRequestLogs($requestId, $db);
+		$logs = LogSearchHelper::get($db)->byObjectType('Request')->byObjectId($requestId)->fetch();
 		$comments = Comment::getForRequest($requestId, $db);
 
 		$items = array_merge($logs, $comments);
@@ -245,117 +213,6 @@ SQL
 		}
 
 		return $lookup;
-	}
-
-	/**
-	 * Summary of getLogs
-	 *
-	 * @param PdoDatabase  $database
-	 * @param string|null  $userFilter
-	 * @param string|null  $actionFilter
-	 * @param string|null  $objectTypeFilter
-	 * @param integer|null $objectFilter
-	 * @param integer      $limit
-	 * @param integer      $offset
-	 *
-	 * @return array
-	 */
-	public static function getLogs(
-		PdoDatabase $database,
-		$userFilter,
-		$actionFilter,
-		$objectTypeFilter = null,
-		$objectFilter = null,
-		$limit = 100,
-		$offset = 0
-	) {
-		$whereClause = <<<TXT
-(:userFilter = 0 OR user = :userid)
-AND (:actionFilter = 0 OR action = :action)
-AND (:objectFilter = 0 OR objectid = :object)
-AND (:objectTypeFilter = 0 OR objecttype = :objectType)
-TXT;
-		$searchSqlStatement = "SELECT * FROM log WHERE $whereClause ORDER BY timestamp DESC LIMIT :limit OFFSET :offset;";
-		$countSqlStatement = "SELECT COUNT(1) FROM log WHERE $whereClause;";
-
-		$searchStatement = $database->prepare($searchSqlStatement);
-		$countStatement = $database->prepare($countSqlStatement);
-
-		$searchStatement->bindValue(":limit", $limit, PDO::PARAM_INT);
-		$searchStatement->bindValue(":offset", $offset, PDO::PARAM_INT);
-
-		if ($userFilter === null) {
-			$searchStatement->bindValue(":userFilter", 0, PDO::PARAM_INT);
-			$countStatement->bindValue(":userFilter", 0, PDO::PARAM_INT);
-			$searchStatement->bindValue(":userid", 0, PDO::PARAM_INT);
-			$countStatement->bindValue(":userid", 0, PDO::PARAM_INT);
-		}
-		else {
-			$searchStatement->bindValue(":userFilter", 1, PDO::PARAM_INT);
-			$countStatement->bindValue(":userFilter", 1, PDO::PARAM_INT);
-			$searchStatement->bindValue(":userid", User::getByUsername($userFilter, $database)->getId(),
-				PDO::PARAM_INT);
-			$countStatement->bindValue(":userid", User::getByUsername($userFilter, $database)->getId(), PDO::PARAM_INT);
-		}
-
-		if ($actionFilter === null) {
-			$searchStatement->bindValue(":actionFilter", 0, PDO::PARAM_INT);
-			$countStatement->bindValue(":actionFilter", 0, PDO::PARAM_INT);
-			$searchStatement->bindValue(":action", "", PDO::PARAM_STR);
-			$countStatement->bindValue(":action", "", PDO::PARAM_STR);
-		}
-		else {
-			$searchStatement->bindValue(":actionFilter", 1, PDO::PARAM_INT);
-			$countStatement->bindValue(":actionFilter", 1, PDO::PARAM_INT);
-			$searchStatement->bindValue(":action", $actionFilter, PDO::PARAM_STR);
-			$countStatement->bindValue(":action", $actionFilter, PDO::PARAM_STR);
-		}
-
-		if ($objectTypeFilter === null) {
-			$searchStatement->bindValue(":objectTypeFilter", 0, PDO::PARAM_INT);
-			$countStatement->bindValue(":objectTypeFilter", 0, PDO::PARAM_INT);
-			$searchStatement->bindValue(":objectType", "", PDO::PARAM_STR);
-			$countStatement->bindValue(":objectType", "", PDO::PARAM_STR);
-		}
-		else {
-			$searchStatement->bindValue(":objectTypeFilter", 1, PDO::PARAM_INT);
-			$countStatement->bindValue(":objectTypeFilter", 1, PDO::PARAM_INT);
-			$searchStatement->bindValue(":objectType", $objectTypeFilter, PDO::PARAM_STR);
-			$countStatement->bindValue(":objectType", $objectTypeFilter, PDO::PARAM_STR);
-		}
-
-		if ($objectFilter === null) {
-			$searchStatement->bindValue(":objectFilter", 0, PDO::PARAM_INT);
-			$countStatement->bindValue(":objectFilter", 0, PDO::PARAM_INT);
-			$searchStatement->bindValue(":object", "", PDO::PARAM_STR);
-			$countStatement->bindValue(":object", "", PDO::PARAM_STR);
-		}
-		else {
-			$searchStatement->bindValue(":objectFilter", 1, PDO::PARAM_INT);
-			$countStatement->bindValue(":objectFilter", 1, PDO::PARAM_INT);
-			$searchStatement->bindValue(":object", $objectFilter, PDO::PARAM_INT);
-			$countStatement->bindValue(":object", $objectFilter, PDO::PARAM_INT);
-		}
-
-		if (!$countStatement->execute()) {
-			return array(false, false);
-		}
-
-		$count = $countStatement->fetchColumn(0);
-		$countStatement->closeCursor();
-
-		if ($searchStatement->execute()) {
-			$data = $searchStatement->fetchAll(PDO::FETCH_CLASS, Log::class);
-
-			/** @var Log $entry */
-			foreach ($data as $entry) {
-				$entry->setDatabase($database);
-			}
-
-			return array($data, $count);
-		}
-
-		return array(false, false);
 	}
 
 	/**

@@ -16,7 +16,7 @@ use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\LogHelper;
-use Waca\Helpers\RequestSearchHelper;
+use Waca\Helpers\SearchHelpers\RequestSearchHelper;
 use Waca\PdoDatabase;
 use Waca\Security\SecurityConfiguration;
 use Waca\SiteConfiguration;
@@ -442,7 +442,6 @@ class PageViewRequest extends InternalPageBase
 	 */
 	protected function getSecurityConfiguration()
 	{
-		// @todo review me!
 		return $this->getSecurityManager()->configure()->asInternalPage();
 	}
 

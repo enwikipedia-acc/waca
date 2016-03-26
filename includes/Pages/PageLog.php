@@ -10,6 +10,7 @@ namespace Waca\Pages;
 
 use Waca\DataObjects\User;
 use Waca\Helpers\LogHelper;
+use Waca\Helpers\SearchHelpers\LogSearchHelper;
 use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -44,9 +45,18 @@ class PageLog extends InternalPageBase
 
 		$offset = ($page - 1) * $limit;
 
-		list($logs, $count) = LogHelper::getLogs($database, $filterUser, $filterAction, null, null, $limit, $offset);
+		$logSearch = LogSearchHelper::get($database)->limit($limit, $offset);
+		if($filterUser !== null){
+			$logSearch->byUser(User::getByUsername($filterUser, $database)->getId());
+		}
 
-		if ($logs === false) {
+		if($filterAction !== null){
+			$logSearch->byAction($filterAction);
+		}
+
+		$logs = $logSearch->getRecordCount($count)->fetch();
+
+		if ($count === 0) {
 			$this->assign('logs', array());
 			$this->setTemplate('logs/main.tpl');
 
