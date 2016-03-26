@@ -8,6 +8,8 @@
 
 namespace Waca\Tests;
 
+use \Waca\ApplicationBase;
+
 class ApplicationBaseTest extends \PHPUnit_Framework_TestCase
 {
 	private $si;
@@ -16,7 +18,7 @@ class ApplicationBaseTest extends \PHPUnit_Framework_TestCase
 	public function setUp() {
 		$this->si = new \Waca\SiteConfiguration();
 
-		$this->ab = $this->getMockForAbstractClass('\Waca\ApplicationBase', [$this->si]);
+		$this->ab = $this->getMockForAbstractClass(ApplicationBase::class, [$this->si]);
 	}
 
 	public function testConstruct() {
