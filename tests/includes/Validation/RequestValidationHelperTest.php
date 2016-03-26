@@ -15,6 +15,7 @@ use Waca\DataObjects\Request;
 use Waca\Helpers\Interfaces\IBanHelper;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\IAntiSpoofProvider;
+use Waca\Providers\Interfaces\IXffTrustProvider;
 use Waca\Validation\RequestValidationHelper;
 
 /**
@@ -52,13 +53,17 @@ class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 		$antispoofMock = $this->getMockBuilder(IAntiSpoofProvider::class)->getMock();
 		$antispoofMock->expects($this->never())->method('getSpoofs')->willReturn(array());
 
+		/** @var IXffTrustProvider|PHPUnit_Framework_MockObject_MockObject $xffTrustMock */
+		$xffTrustMock = $this->getMockBuilder(IXffTrustProvider::class)->getMock();
+
 		// arrange
 		$validationHelper = new RequestValidationHelper(
 			$banHelperMock,
 			$this->request,
 			$this->request->getEmail(),
 			$dbMock,
-			$antispoofMock);
+			$antispoofMock,
+			$xffTrustMock);
 
 		// act
 		$result = $validationHelper->validateName();
