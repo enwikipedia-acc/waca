@@ -137,7 +137,7 @@ SQL
 			$statement->bindValue(":active", $this->active);
 
 			if ($statement->execute()) {
-				$this->id = $this->dbObject->lastInsertId();
+				$this->id = (int)$this->dbObject->lastInsertId();
 			}
 			else {
 				throw new Exception($statement->errorInfo());
@@ -163,7 +163,7 @@ SQL
 				throw new Exception($statement->errorInfo());
 			}
 
-			if($statement->rowCount() !== 1){
+			if ($statement->rowCount() !== 1) {
 				throw new OptimisticLockFailedException();
 			}
 

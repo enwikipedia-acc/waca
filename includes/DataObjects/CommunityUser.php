@@ -28,6 +28,9 @@ class CommunityUser extends User
 
 	#region properties
 
+	/**
+	 * @return string
+	 */
 	public function getUsername()
 	{
 		global $communityUsername;
@@ -39,6 +42,9 @@ class CommunityUser extends User
 	{
 	}
 
+	/**
+	 * @return string
+	 */
 	public function getEmail()
 	{
 		global $cDataClearEmail;
@@ -98,36 +104,10 @@ class CommunityUser extends User
 	{
 	}
 
-	public function getSecure()
-	{
-		return true;
-	}
-
 	/**
 	 * @param string $status
 	 */
 	public function setStatus($status)
-	{
-	}
-
-	/**
-	 * @return int
-	 */
-	public function getCheckuser()
-	{
-		return 0;
-	}
-
-	public function setCheckuser($checkuser)
-	{
-	}
-
-	public function getIdentified()
-	{
-		return false;
-	}
-
-	public function setIdentified($identified)
 	{
 	}
 
@@ -223,10 +203,6 @@ class CommunityUser extends User
 	public function isOAuthLinked()
 	{
 		return false;
-	}
-
-	public function detachAccount()
-	{
 	}
 
 	public function oauthCanUse()

@@ -65,9 +65,11 @@ class User extends DataObject
 	public static function getCurrent(PdoDatabase $database)
 	{
 		if (self::$currentUser === null) {
-			if (isset($_SESSION['userID'])) {
+			$sessionId = WebRequest::getSessionUserId();
+
+			if ($sessionId !== null) {
 				/** @var User $user */
-				$user = self::getById(WebRequest::getSessionUserId(), $database);
+				$user = self::getById($sessionId, $database);
 
 				if ($user === false) {
 					self::$currentUser = new CommunityUser();

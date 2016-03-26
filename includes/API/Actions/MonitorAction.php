@@ -50,9 +50,11 @@ class MonitorAction extends ApiPageBase implements IApiAction
 	 */
 	private function getOldest()
 	{
-		global $cDataClearIp, $cDataClearEmail;
 		$statement = $this->database->prepare("SELECT min(date) FROM request WHERE email != :email AND ip != :ip;");
-		$successful = $statement->execute(array(':email' => $cDataClearEmail, ':ip' => $cDataClearIp));
+		$successful = $statement->execute(array(
+			':email' => $this->getSiteConfiguration()->getDataClearEmail(),
+			':ip'    => $this->getSiteConfiguration()->getDataClearIp(),
+		));
 
 		if (!$successful) {
 			return null;
@@ -68,9 +70,12 @@ class MonitorAction extends ApiPageBase implements IApiAction
 	 */
 	private function getNewest()
 	{
-		global $cDataClearIp, $cDataClearEmail;
 		$statement = $this->database->prepare("SELECT max(date) FROM request WHERE email != :email AND ip != :ip;");
-		$statement->execute(array(':email' => $cDataClearEmail, ':ip' => $cDataClearIp));
+		$statement->execute(array(
+			':email' => $this->getSiteConfiguration()->getDataClearEmail(),
+			':ip'    => $this->getSiteConfiguration()->getDataClearIp(),
+		));
+
 		$result = $statement->fetchColumn(0);
 
 		return $result;

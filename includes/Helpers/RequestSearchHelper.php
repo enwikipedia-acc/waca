@@ -42,7 +42,8 @@ SQL;
 	 *
 	 * @return RequestSearchHelper
 	 */
-	public static function get(PdoDatabase $database){
+	public static function get(PdoDatabase $database)
+	{
 		$helper = new RequestSearchHelper($database);
 
 		return $helper;

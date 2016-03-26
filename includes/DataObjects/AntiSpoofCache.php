@@ -18,6 +18,12 @@ class AntiSpoofCache extends DataObject
 	/** @var string */
 	protected $timestamp;
 
+	/**
+	 * @param   string    $username
+	 * @param PdoDatabase $database
+	 *
+	 * @return AntiSpoofCache|false
+	 */
 	public static function getByUsername($username, PdoDatabase $database)
 	{
 		$statement = $database->prepare(<<<SQL
@@ -95,7 +101,7 @@ SQL
 			$statement->bindValue(":data", $this->data);
 
 			if ($statement->execute()) {
-				$this->id = $this->dbObject->lastInsertId();
+				$this->id = (int)$this->dbObject->lastInsertId();
 			}
 			else {
 				throw new Exception($statement->errorInfo());

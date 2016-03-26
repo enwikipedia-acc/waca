@@ -68,7 +68,7 @@ class PageSearch extends InternalPageBase
 	/**
 	 * Gets search results by name
 	 *
-	 * @param $searchTerm string
+	 * @param string $searchTerm
 	 *
 	 * @returns array<Request>
 	 */
@@ -85,9 +85,9 @@ class PageSearch extends InternalPageBase
 	/**
 	 * Gets search results by email
 	 *
-	 * @param $searchTerm string
+	 * @param string $searchTerm
 	 *
-	 * @return array <Request>
+	 * @return Request[]
 	 * @throws ApplicationLogicException
 	 */
 	private function getEmailSearchResults($searchTerm)
@@ -107,9 +107,9 @@ class PageSearch extends InternalPageBase
 	/**
 	 * Gets search results by IP address or XFF IP address
 	 *
-	 * @param $searchTerm string
+	 * @param string $searchTerm
 	 *
-	 * @returns array<Request>
+	 * @returns Request[]
 	 */
 	private function getIpSearchResults($searchTerm)
 	{
@@ -134,8 +134,8 @@ class PageSearch extends InternalPageBase
 	}
 
 	/**
-	 * @param $searchType
-	 * @param $searchTerm
+	 * @param string $searchType
+	 * @param string $searchTerm
 	 *
 	 * @throws ApplicationLogicException
 	 */

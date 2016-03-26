@@ -6,9 +6,9 @@ use Waca\DataObject;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\EmailTemplate;
-use Waca\DataObjects\SiteNotice;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\SiteNotice;
 use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
 use Waca\PdoDatabase;
@@ -53,8 +53,7 @@ class Logger
 		}
 
 		$objectType = get_class($object);
-		if(strpos($objectType, 'Waca\\DataObjects\\') !== false)
-		{
+		if (strpos($objectType, 'Waca\\DataObjects\\') !== false) {
 			$objectType = str_replace('Waca\\DataObjects\\', '', $objectType);
 		}
 
@@ -318,7 +317,6 @@ class Logger
 	#endregion
 
 	#region Display
-
 
 	#endregion
 }

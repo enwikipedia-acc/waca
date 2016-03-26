@@ -56,7 +56,7 @@ SQL
 			$statement->bindValue(":botcode", $this->botcode);
 
 			if ($statement->execute()) {
-				$this->id = $this->dbObject->lastInsertId();
+				$this->id = (int)$this->dbObject->lastInsertId();
 			}
 			else {
 				throw new Exception($statement->errorInfo());

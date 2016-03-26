@@ -1,6 +1,7 @@
 <?php
 namespace Waca\DataObjects;
 
+use DateTimeImmutable;
 use Exception;
 use Waca\DataObject;
 use Waca\Exceptions\OptimisticLockFailedException;
@@ -51,7 +52,7 @@ SQL
 			$statement->bindValue(":data", $this->data);
 
 			if ($statement->execute()) {
-				$this->id = $this->dbObject->lastInsertId();
+				$this->id = (int)$this->dbObject->lastInsertId();
 			}
 			else {
 				throw new Exception($statement->errorInfo());
@@ -98,18 +99,25 @@ SQL
 		$this->address = $address;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function getData()
 	{
 		return unserialize($this->data);
 	}
 
+	/**
+	 * @param array $data
+	 */
 	public function setData($data)
 	{
 		$this->data = serialize($data);
 	}
 
+	/** @return DateTimeImmutable */
 	public function getCreation()
 	{
-		return $this->creation;
+		return new DateTimeImmutable($this->creation);
 	}
 }

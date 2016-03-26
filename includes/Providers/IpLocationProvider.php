@@ -4,6 +4,7 @@ namespace Waca\Providers;
 use Exception;
 use SimpleXMLElement;
 use Waca\DataObjects\GeoLocation;
+use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\ILocationProvider;
 
@@ -12,15 +13,30 @@ use Waca\Providers\Interfaces\ILocationProvider;
  */
 class IpLocationProvider implements ILocationProvider
 {
-	private $apikey;
+	/** @var string	 */
+	private $apiKey;
+	/** @var PdoDatabase  */
 	private $database;
 
-	public function __construct(PdoDatabase $database, $apikey)
+	/**
+	 * IpLocationProvider constructor.
+	 *
+	 * @param PdoDatabase $database
+	 * @param     string  $apiKey
+	 */
+	public function __construct(PdoDatabase $database, $apiKey)
 	{
 		$this->database = $database;
-		$this->apikey = $apikey;
+		$this->apiKey = $apiKey;
 	}
 
+	/**
+	 * @param string $address
+	 *
+	 * @return array|null
+	 * @throws Exception
+	 * @throws OptimisticLockFailedException
+	 */
 	public function getIpLocation($address)
 	{
 		$address = trim($address);
@@ -62,7 +78,7 @@ class IpLocationProvider implements ILocationProvider
 	{
 		try {
 			if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-				$xml = @file_get_contents($this->getApiBase() . '?key=' . $this->apikey . '&ip=' . $ip . '&format=xml');
+				$xml = @file_get_contents($this->getApiBase() . '?key=' . $this->apiKey . '&ip=' . $ip . '&format=xml');
 
 				$response = @new SimpleXMLElement($xml);
 
@@ -85,6 +101,9 @@ class IpLocationProvider implements ILocationProvider
 		return null;
 	}
 
+	/**
+	 * @return string
+	 */
 	protected function getApiBase()
 	{
 		return "http://api.ipinfodb.com/v3/ip-city/";

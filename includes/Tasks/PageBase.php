@@ -300,7 +300,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 	protected function sendResponseHeaders()
 	{
 		foreach ($this->headerQueue as $item) {
-			if(mb_strpos($item, "\r") !== false || mb_strpos($item, "\n") !== false){
+			if (mb_strpos($item, "\r") !== false || mb_strpos($item, "\n") !== false) {
 				// Oops. We're not allowed to do this.
 				throw new Exception('Unable to split header');
 			}

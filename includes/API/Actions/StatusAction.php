@@ -25,7 +25,8 @@ class StatusAction extends ApiPageBase implements IApiAction
 SQL
 		);
 
-		global $availableRequestStates;
+		$availableRequestStates = $this->getSiteConfiguration()->getRequestStates();
+
 		foreach ($availableRequestStates as $key => $value) {
 			$query->bindValue(":pstatus", $key);
 			$query->execute();

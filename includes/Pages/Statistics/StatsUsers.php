@@ -103,15 +103,15 @@ SQL
 		$this->assign("notcreated", $usersNotCreated);
 
 		list($logs, $logCount) = LogHelper::getLogs($database, null, null, 'User', $user->getId());
-		if($logs === false){
+		if ($logs === false) {
 			$this->assign('accountlog', array());
-		} else{
+		}
+		else {
 			list($users, $logData) = LogHelper::prepareLogsForTemplate($logs, $database, $this->getSiteConfiguration());
 
 			$this->assign("accountlog", $logData);
 			$this->assign("users", $users);
 		}
-
 
 		$this->assign('statsPageTitle', 'Account Creation Tool users');
 		$this->setTemplate("statistics/userdetail.tpl");

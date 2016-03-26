@@ -69,6 +69,8 @@ abstract class DataObject
 
 	/**
 	 * Saves a data object to the database, either updating or inserting a record.
+	 *
+	 * @return void
 	 */
 	abstract public function save();
 
@@ -131,7 +133,8 @@ abstract class DataObject
 	/**
 	 * @return bool
 	 */
-	public function isNew(){
+	public function isNew()
+	{
 		return $this->id === null;
 	}
 }

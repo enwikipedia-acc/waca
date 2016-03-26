@@ -4,9 +4,7 @@ namespace Waca;
 use Exception;
 use PDO;
 use PDOException;
-use PDOStatement;
 use Waca\Exceptions\EnvironmentException;
-use Waca\Helpers\DebugHelper;
 
 class PdoDatabase extends PDO
 {
@@ -18,11 +16,6 @@ class PdoDatabase extends PDO
 	 * @var bool True if a transaction is active
 	 */
 	protected $hasActiveTransaction = false;
-	/**
-	 * Summary of $queryLogStatement
-	 * @var PDOStatement
-	 */
-	private $queryLogStatement;
 
 	/**
 	 * Unless you're doing low-level work, this is not the function you want.
@@ -122,46 +115,5 @@ class PdoDatabase extends PDO
 			parent::rollback();
 			$this->hasActiveTransaction = false;
 		}
-	}
-
-	/**
-	 * Prepares a statement for execution.
-	 *
-	 * @param string $statement
-	 * @param array  $driverOptions
-	 *
-	 * @return PDOStatement
-	 */
-	public function prepare($statement, $driverOptions = array())
-	{
-		global $enableQueryLog;
-		if ($enableQueryLog) {
-			try {
-				if ($this->queryLogStatement === null) {
-					$this->queryLogStatement =
-						parent::prepare(<<<SQL
-							INSERT INTO applicationlog (source, message, stack, request, request_ts) 
-							VALUES (:source, :message, :stack, :request, :rqts);
-SQL
-						);
-				}
-
-				$this->queryLogStatement->execute(
-					array(
-						":source"  => "QueryLog",
-						":message" => $statement,
-						":stack"   => DebugHelper::getBacktrace(),
-						":request" => $_SERVER["REQUEST_URI"],
-						":rqts"    => $_SERVER["REQUEST_TIME_FLOAT"],
-					)
-				);
-			}
-			catch (Exception $ex) {
-				trigger_error("Error logging query. Disabling for this request. " . $ex->getMessage(), E_USER_NOTICE);
-				$enableQueryLog = false;
-			}
-		}
-
-		return parent::prepare($statement, $driverOptions);
 	}
 }

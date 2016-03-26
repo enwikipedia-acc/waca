@@ -57,7 +57,7 @@ class PagePreferences extends InternalPageBase
 			$newPasswordConfirmation = WebRequest::postString('newpasswordconfirm');
 
 			$user = User::getCurrent($this->getDatabase());
-			if(!$user instanceof User){
+			if (!$user instanceof User) {
 				throw new ApplicationLogicException('User not found');
 			}
 
@@ -94,7 +94,7 @@ class PagePreferences extends InternalPageBase
 	 * @param string $oldPassword
 	 * @param string $newPassword
 	 * @param string $newPasswordConfirmation
-	 * @param User $user
+	 * @param User   $user
 	 *
 	 * @throws ApplicationLogicException
 	 */

@@ -41,7 +41,7 @@ SQL
 			$statement->bindValue(":comment", $this->comment);
 
 			if ($statement->execute()) {
-				$this->id = $this->dbObject->lastInsertId();
+				$this->id = (int)$this->dbObject->lastInsertId();
 			}
 			else {
 				throw new Exception($statement->errorInfo());
@@ -107,16 +107,11 @@ SQL
 	/**
 	 * Summary of setUser
 	 *
-	 * @param User|integer $user
+	 * @param User $user
 	 */
-	public function setUser($user)
+	public function setUser(User $user)
 	{
-		if (is_a($user, User::class)) {
-			$this->user = $user->getId();
-		}
-		else {
-			$this->user = $user;
-		}
+		$this->user = $user->getId();
 	}
 
 	/**

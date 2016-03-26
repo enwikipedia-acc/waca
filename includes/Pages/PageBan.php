@@ -74,7 +74,7 @@ class PageBan extends InternalPageBase
 			$ban->setUpdateVersion($updateVersion);
 
 			$database = $this->getDatabase();
-			$ban->setActive(0);
+			$ban->setActive(false);
 			$ban->save();
 
 			Logger::unbanned($database, $ban, $unbanReason);
@@ -203,7 +203,7 @@ class PageBan extends InternalPageBase
 
 		$ban = new Ban();
 		$ban->setDatabase($database);
-		$ban->setActive(1);
+		$ban->setActive(true);
 		$ban->setType($type);
 		$ban->setTarget($target);
 		$ban->setUser(User::getCurrent($database)->getId());

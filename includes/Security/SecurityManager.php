@@ -26,7 +26,8 @@ final class SecurityManager
 		$this->securityConfigurationFactory = new SecurityConfigurationFactory($forceIdentification);
 	}
 
-	public function configure(){
+	public function configure()
+	{
 		return $this->securityConfigurationFactory;
 	}
 

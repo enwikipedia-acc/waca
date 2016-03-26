@@ -1,6 +1,7 @@
 <?php
 namespace Waca\DataObjects;
 
+use DateTimeImmutable;
 use Exception;
 use Waca\DataObject;
 
@@ -32,7 +33,7 @@ class Notification extends DataObject
 			$statement->bindValue(":text", $this->text);
 
 			if ($statement->execute()) {
-				$this->id = $this->dbObject->lastInsertId();
+				$this->id = (int)$this->dbObject->lastInsertId();
 			}
 			else {
 				throw new Exception($statement->errorInfo());
@@ -45,7 +46,7 @@ class Notification extends DataObject
 
 	public function getDate()
 	{
-		return $this->date;
+		return new DateTimeImmutable($this->date);
 	}
 
 	/**

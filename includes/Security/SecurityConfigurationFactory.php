@@ -1,13 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: stwalkerster
- * Date: 24/03/2016
- * Time: 23:52
- */
 
 namespace Waca\Security;
-
 
 final class SecurityConfigurationFactory
 {

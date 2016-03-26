@@ -21,18 +21,6 @@ final class SecurityConfiguration
 	private $requireIdentified;
 
 	/**
-	 * SecurityConfiguration constructor.
-	 */
-	public function __construct()
-	{
-		global $forceIdentification;
-
-		// Initialise require identified to the boolean value of $forceIdentification. Test for truthiness not true
-		// because I think we set this to 1/0 instead of true/false.
-		$this->requireIdentified = ($forceIdentification == 1);
-	}
-
-	/**
 	 * Sets whether a checkuser is able to gain access.
 	 *
 	 * This is private because it's DANGEROUS. Checkusers are not mutually-exclusive with other rights. As such, a

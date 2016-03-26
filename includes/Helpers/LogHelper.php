@@ -408,7 +408,6 @@ HTML;
 				return "<a href=\"{$baseurl}/internal.php/welcomeTemplates/view?id={$objectId}\">{$userCode}</a>";
 			default:
 				return '[' . $objectType . " " . $objectId . ']';
-				break;
 		}
 	}
 

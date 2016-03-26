@@ -171,7 +171,7 @@ SQL
 			$statement->bindValue(":preloadonly", $this->preloadonly);
 
 			if ($statement->execute()) {
-				$this->id = $this->dbObject->lastInsertId();
+				$this->id = (int)$this->dbObject->lastInsertId();
 			}
 			else {
 				throw new Exception($statement->errorInfo());
