@@ -45,3 +45,5 @@
 
     {include file="view-request/antispoof-results.tpl"}
 </div>
+
+<hr/>

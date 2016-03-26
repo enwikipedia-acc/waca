@@ -29,6 +29,8 @@
 
     {include file="view-request/username-section.tpl"}
 
+    {block name="emailSection"}{/block}
+
     {block name="otherRequests"}
         <div class="row-fluid">
             <div class="span6">

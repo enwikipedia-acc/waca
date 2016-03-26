@@ -308,6 +308,8 @@ class PageViewRequest extends InternalPageBase
 			->fetch();
 
 		$this->assign('requestEmail', $request->getEmail());
+		$emailDomain = explode("@", $request->getEmail())[1];
+		$this->assign("emailurl", $emailDomain);
 		$this->assign('requestRelatedEmailRequestsCount', count($relatedEmailRequests));
 		$this->assign('requestRelatedEmailRequests', $relatedEmailRequests);
 
