@@ -133,8 +133,7 @@ abstract class InternalPageBase extends PageBase
 		// Firstly, let's check if we're even logged in.
 		if ($currentUser->isCommunityUser()) {
 			// Not logged in, redirect to login page
-
-			// TODO: return to current page? Possibly as a session var?
+			WebRequest::setPostLoginRedirect();
 			$this->redirect("login");
 
 			return;
