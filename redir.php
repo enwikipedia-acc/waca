@@ -17,7 +17,20 @@ $toolList = array(
 );
 
 if (isset($_GET['round2'])) {
-	echo '<script>window.location.href="' . str_replace("%DATA%", $_GET['data'], $toolList[$_GET['tool']]) . '"</script>';
+	$data = $_GET['data'];
+	$tool = $_GET['tool'];
+
+	if($tool === 'link')
+	{
+		// quick security check - if you want to exploit something, you better be sure your exploit resolves via dns.
+		// this is not intended to catch everything, just as a quick sanity check.
+		if(gethostbyname($data) == $data){
+			echo 'Error resolving hostname, it doesn\'t look like this domain exists.';
+			die();
+		}
+	}
+
+	echo '<script>window.location.href="' . str_replace("%DATA%", $data, $toolList[$tool]) . '"</script>';
 }
 else {
 	header("Location: " . $_SERVER["REQUEST_URI"] . "&round2=true");
