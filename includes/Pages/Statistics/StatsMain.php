@@ -13,7 +13,6 @@ class StatsMain extends InternalPageBase
 
 		$statsPages = array(
 			'fastCloses'       => 'Requests closed less than 30 seconds after reservation in the past 3 months',
-			'idUsers'          => 'All identified users',
 			'inactiveUsers'    => 'Inactive tool users',
 			'monthlyStats'     => 'Monthly Statistics',
 			'reservedRequests' => 'All currently reserved requests',

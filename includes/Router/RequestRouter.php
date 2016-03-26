@@ -29,7 +29,6 @@ use Waca\Pages\RequestAction\PageDropRequest;
 use Waca\Pages\RequestAction\PageReservation;
 use Waca\Pages\RequestAction\PageSendToUser;
 use Waca\Pages\Statistics\StatsFastCloses;
-use Waca\Pages\Statistics\StatsIdUsers;
 use Waca\Pages\Statistics\StatsInactiveUsers;
 use Waca\Pages\Statistics\StatsMain;
 use Waca\Pages\Statistics\StatsMonthlyStats;
@@ -192,11 +191,6 @@ class RequestRouter implements IRequestRouter
 		'statistics/fastCloses'       =>
 			array(
 				'class'   => StatsFastCloses::class,
-				'actions' => array(),
-			),
-		'statistics/idUsers'          =>
-			array(
-				'class'   => StatsIdUsers::class,
 				'actions' => array(),
 			),
 		'statistics/inactiveUsers'    =>

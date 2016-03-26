@@ -494,9 +494,7 @@ SQL
 	 * @param integer     $limit
 	 * @param integer     $offset
 	 *
-	 * @return array|bool
-	 *
-	 * @todo change this to not return a dual-purpose array, but rather to return data we can use through list()
+	 * @return array
 	 */
 	public static function getLogs(PdoDatabase $database, $userFilter, $actionFilter, $limit = 100, $offset = 0)
 	{
@@ -538,7 +536,7 @@ SQL
 		}
 
 		if (!$countStatement->execute()) {
-			return false;
+			return array(false, false);
 		}
 
 		$count = $countStatement->fetchColumn(0);
@@ -552,12 +550,10 @@ SQL
 				$entry->setDatabase($database);
 			}
 
-			$data['count'] = $count;
-
-			return $data;
+			return array($data, $count);
 		}
 
-		return false;
+		return array(false, false);
 	}
 
 	/**

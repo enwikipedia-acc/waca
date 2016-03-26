@@ -84,11 +84,10 @@ class PagePreferences extends InternalPageBase
 	 *
 	 * @return SecurityConfiguration
 	 * @category Security-Critical
-	 * @todo     Verify the security config here - do we want this internal only, or allow all logged in users access?
 	 */
 	protected function getSecurityConfiguration()
 	{
-		return $this->getSecurityManager()->configure()->asAllLoggedInUsersPage();
+		return $this->getSecurityManager()->configure()->asInternalPage();
 	}
 
 	/**
