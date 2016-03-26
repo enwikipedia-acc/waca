@@ -15,9 +15,9 @@
     <a id="UsernameMainspaceSearch" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special%3ASearch&amp;profile=advanced&amp;search={$usernamerawunicode|escape:'url'}&amp;fulltext=Search&amp;ns0=1&amp;redirs=1&amp;profile=advanced" onMouseUp="$('#UsernameMainspaceSearch').addClass('btn-visited');">Wikipedia mainspace search</a>
     <a id="UsernameGoogleSearch" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=google&amp;data={$usernamerawunicode|escape:'url'}" onMouseUp="$('#UsernameGoogleSearch').addClass('btn-visited');">Google search</a>
     {if $showinfo}
-      <a id="EmailVisit" class="btn btn-small" target="_blank" href="http://{$emailurl}" onMouseUp="$('#EmailVisit').addClass('btn-visited');">Visit email domain</a>
-      <a id="EmailGoogle" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=google&amp;data={$request->getEmail()|escape:'url'}" onMouseUp="$('#EmailGoogle').addClass('btn-visited');">Google email</a>
-      <a id="EmailDomainGoogle" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=google&amp;data={$emailurl|escape:'url'}" onMouseUp="$('#EmailDomainGoogle').addClass('btn-visited');">Google email domain</a>
+      <a id="EmailVisit" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=link&amp;data={$emailurl|escape}" onMouseUp="$('#EmailVisit').addClass('btn-visited');">Visit email domain</a>
+      <a id="EmailGoogle" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=google&amp;data={$request->getEmail()|escape}" onMouseUp="$('#EmailGoogle').addClass('btn-visited');">Google email</a>
+      <a id="EmailDomainGoogle" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=google&amp;data={$emailurl|escape}" onMouseUp="$('#EmailDomainGoogle').addClass('btn-visited');">Google email domain</a>
     {/if}
 
   </div>
