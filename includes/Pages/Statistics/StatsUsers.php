@@ -4,6 +4,7 @@ namespace Waca\Pages\Statistics;
 use PDO;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Helpers\LogHelper;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
@@ -101,22 +102,16 @@ SQL
 		$usersNotCreated = $usersNotCreatedQuery->fetchAll(PDO::FETCH_ASSOC);
 		$this->assign("notcreated", $usersNotCreated);
 
-		$accountLogQuery = $database->prepare(<<<SQL
-SELECT
-	user.username AS log_user,
-    log.action AS log_action,
-    log.timestamp AS log_time,
-    log.comment AS log_cmt
-FROM log
-LEFT JOIN user ON user.id = log.user
-WHERE log.objectid = :userid
-AND log.objecttype = 'User'
-AND log.action IN ('Approved','Suspended','Declined','Promoted','Demoted','Renamed','Prefchange','Registered');
-SQL
-		);
-		$accountLogQuery->execute(array(":userid" => $user->getId()));
-		$accountLog = $accountLogQuery->fetchAll(PDO::FETCH_ASSOC);
-		$this->assign("accountlog", $accountLog);
+		list($logs, $logCount) = LogHelper::getLogs($database, null, null, 'User', $user->getId());
+		if($logs === false){
+			$this->assign('accountlog', array());
+		} else{
+			list($users, $logData) = LogHelper::prepareLogsForTemplate($logs, $database, $this->getSiteConfiguration());
+
+			$this->assign("accountlog", $logData);
+			$this->assign("users", $users);
+		}
+
 
 		$this->assign('statsPageTitle', 'Account Creation Tool users');
 		$this->setTemplate("statistics/userdetail.tpl");

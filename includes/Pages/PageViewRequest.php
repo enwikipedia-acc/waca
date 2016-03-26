@@ -9,7 +9,7 @@ use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\Helpers\Logger;
+use Waca\Helpers\LogHelper;
 use Waca\Helpers\RequestSearchHelper;
 use Waca\PdoDatabase;
 use Waca\Security\SecurityConfiguration;
@@ -212,7 +212,7 @@ class PageViewRequest extends InternalPageBase
 	{
 		$currentUser = User::getCurrent($database);
 
-		$logs = Logger::getRequestLogsWithComments($request->getId(), $database);
+		$logs = LogHelper::getRequestLogsWithComments($request->getId(), $database);
 		$requestLogs = array();
 
 		if (trim($request->getComment()) !== "") {
@@ -265,7 +265,7 @@ class PageViewRequest extends InternalPageBase
 					'security' => 'user',
 					'userid'   => $entry->getUser() == -1 ? null : $entry->getUser(),
 					'user'     => $nameCache[$entry->getUser()]->getUsername(),
-					'entry'    => Logger::getLogDescription($entry),
+					'entry'    => LogHelper::getLogDescription($entry),
 					'time'     => $entry->getTimestamp(),
 					'canedit'  => false,
 					'id'       => $entry->getId(),

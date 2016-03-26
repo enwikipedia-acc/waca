@@ -27,7 +27,7 @@ class CachedRDnsLookupProvider implements IRDnsProvider
 		// lets look in our cache database first.
 		$rDns = RDnsCache::getByAddress($address, $this->database);
 
-		if ($rDns instanceof RDnsCache::class) {
+		if ($rDns instanceof RDnsCache) {
 			// touch cache timer
 			$rDns->save();
 

@@ -2,28 +2,41 @@
 {block name="statisticsContent"}
     <div class="row-fluid">
         <div class="span6">
-            <h2>Detail report for user: {$user->getUsername()|escape}</h2>
-            <ul>
-                <li>User ID: {$user->getId()}</li>
-                <li>User Level: {$user->getStatus()}</li>
-                <li>User On-wiki name: {$user->getOnWikiName()|escape}
-                    {if $user->isOAuthLinked()}
-                        <span class="label {if $user->getOnWikiName() == "##OAUTH##"}label-important{else}label-success{/if}">OAuth</span>
-                    {/if}
-                </li>
+            <h3>Detail report for user: {$user->getUsername()|escape}</h3>
+            <div class="container-fluid">
+                <div class="row-fluid">
+                    <div class="span4"><strong>User ID:</strong></div>
+                    <div class="span8">{$user->getId()}</div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span4"><strong>User Level</strong></div>
+                    <div class="span8">{$user->getStatus()}</div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span4"><strong>User on-wiki name:</strong></div>
+                    <div class="span8">{$user->getOnWikiName()|escape}
+                        {if $user->isOAuthLinked()}
+                            <span class="label {if $user->getOnWikiName() == "##OAUTH##"}label-important{else}label-success{/if}">OAuth</span>
+                        {/if}
+                    </div>
+                </div>
                 {if $user->getConfirmationDiff() != 0}
-                    <li>
-                        <a href="{$mediawikiScriptPath}?diff={$user->getConfirmationDiff()|escape}">Confirmation diff</a>
-                    </li>
+                <div class="row-fluid">
+                    <div class="span4"><strong>Confirmation diff:</strong></div>
+                    <div class="span8"><a href="{$mediawikiScriptPath}?diff={$user->getConfirmationDiff()|escape}">{$user->getConfirmationDiff()|escape}</a></div>
+                </div>
                 {/if}
-                <li>
-                    {if $user->getLastActive() == "0000-00-00 00:00:00"}
-                        User has never used the interface
-                    {else}
-                        User last active: {$user->getLastActive()}
-                    {/if}
-                </li>
-            </ul>
+                <div class="row-fluid">
+                    <div class="span4"><strong>User last active:</strong></div>
+                    <div class="span8">
+                        {if $user->getLastActive() == "0000-00-00 00:00:00"}
+                            User has never used the interface
+                        {else}
+                            {$user->getLastActive()} <span class="muted">({$user->getLastActive()|relativedate})</span>
+                        {/if}
+                    </div>
+                </div>
+            </div>
 
             {if $currentUser->isAdmin()}
                 {include file="usermanagement/buttons.tpl"}
@@ -31,7 +44,7 @@
         </div>
 
         <div class="span6">
-            <h2>Summary of user activity:</h2>
+            <h3>Summary of user activity:</h3>
             <table class="table table-striped table-condensed">
                 {foreach from=$activity item="row"}
                     <tr>
@@ -44,7 +57,7 @@
     </div>
     <div class="row-fluid">
         <div class="span6">
-            <h2>Users created</h2>
+            <h3>Users created</h3>
             <ol>
                 {foreach from=$created item="user"}
                     <li>
@@ -61,7 +74,7 @@
         </div>
 
         <div class="span6">
-            <h2>Users not created</h2>
+            <h3>Users not created</h3>
             <ol>
                 {foreach from=$notcreated item="user"}
                     <li>
@@ -79,16 +92,10 @@
         </div>
     </div>
     <div class="row-fluid">
-        <div class="span6">
-            <h2>Account log</h2>
-            <ol>
-                {foreach from=$accountlog item="user"}
-                    <li>
-                        {$user.log_user|escape} <strong>{$user.log_action|escape}</strong>
-                        at {$user.log_time|escape} {if $user.log_cmt == ""}{else}({$user.log_cmt|escape}){/if}
-                    </li>
-                {/foreach}
-            </ol>
+        <div class="span12">
+            <h3>Account log</h3>
+
+            {include file="logs/datatable.tpl" showComments=true logs=$accountlog}
         </div>
     </div>
 {/block}

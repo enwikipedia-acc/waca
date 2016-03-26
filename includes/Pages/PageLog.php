@@ -2,14 +2,8 @@
 
 namespace Waca\Pages;
 
-use Exception;
-use Waca\DataObjects\Ban;
-use Waca\DataObjects\EmailTemplate;
-use Waca\DataObjects\Log;
-use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
-use Waca\DataObjects\WelcomeTemplate;
-use Waca\Helpers\Logger;
+use Waca\Helpers\LogHelper;
 use Waca\Security\SecurityConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -44,7 +38,7 @@ class PageLog extends InternalPageBase
 
 		$offset = ($page - 1) * $limit;
 
-		list($logs, $count) = Logger::getLogs($database, $filterUser, $filterAction, null, null, $limit, $offset);
+		list($logs, $count) = LogHelper::getLogs($database, $filterUser, $filterAction, null, null, $limit, $offset);
 
 		if ($logs === false) {
 			$this->assign('logs', array());
@@ -53,44 +47,9 @@ class PageLog extends InternalPageBase
 			return;
 		}
 
+		list($users, $logData) = LogHelper::prepareLogsForTemplate($logs, $database, $this->getSiteConfiguration());
+
 		$this->setupPageData($page, $limit, $count);
-
-		$userIds = array();
-
-		/** @var Log $logEntry */
-		foreach ($logs as $logEntry) {
-			if (!$logEntry instanceof Log) {
-				// if this happens, we've done something wrong with passing back the log data.
-				throw new Exception('Log entry is not an instance of a Log, this should never happen.');
-			}
-
-			$user = $logEntry->getUser();
-			if ($user === -1) {
-				continue;
-			}
-
-			if (!array_search($user, $userIds)) {
-				$userIds[] = $user;
-			}
-		}
-
-		$users = User::getUsernames($userIds, $database);
-		$users[-1] = User::getCommunity()->getUsername();
-
-		$logData = array();
-
-		/** @var Log $logEntry */
-		foreach ($logs as $logEntry) {
-			$objectDescription = $this->getObjectDescription($logEntry->getObjectId(), $logEntry->getObjectType());
-
-			$logData[] = array(
-				'timestamp'         => $logEntry->getTimestamp(),
-				'userid'            => $logEntry->getUser(),
-				'username'          => $users[$logEntry->getUser()],
-				'description'       => Logger::getLogDescription($logEntry),
-				'objectdescription' => $objectDescription,
-			);
-		}
 
 		$this->assign("logs", $logData);
 		$this->assign("users", $users);
@@ -98,7 +57,7 @@ class PageLog extends InternalPageBase
 		$this->assign("filterUser", $filterUser);
 		$this->assign("filterAction", $filterAction);
 
-		$this->assign('allLogActions', Logger::getLogActions($this->getDatabase()));
+		$this->assign('allLogActions', LogHelper::getLogActions($this->getDatabase()));
 
 		$this->setTemplate("logs/main.tpl");
 	}
@@ -165,63 +124,5 @@ class PageLog extends InternalPageBase
 		$this->assign("page", $page);
 	}
 
-	/**
-	 * This returns a HTML
-	 *
-	 * @param string $objectId
-	 * @param string $objectType
-	 *
-	 * @return string|null
-	 * @category Security-Critical
-	 */
-	private function getObjectDescription($objectId, $objectType)
-	{
-		if ($objectType == '') {
-			return null;
-		}
 
-		$database = $this->getDatabase();
-		$baseurl = $this->getSiteConfiguration()->getBaseUrl();
-
-		switch ($objectType) {
-			case 'Ban':
-				/** @var Ban $ban */
-				$ban = Ban::getById($objectId, $database);
-
-				return 'Ban #' . $objectId . " (" . htmlentities($ban->getTarget()) . ")</a>";
-			case 'EmailTemplate':
-				/** @var EmailTemplate $emailTemplate */
-				$emailTemplate = EmailTemplate::getById($objectId, $database);
-				$name = htmlentities($emailTemplate->getName(), ENT_COMPAT, 'UTF-8');
-
-				return <<<HTML
-<a href="{$baseurl}/internal.php/emailManagement/view?id={$objectId}">Email Template #{$objectId} ({$name})</a>
-HTML;
-			case 'SiteNotice':
-				return "<a href=\"{$baseurl}/internal.php/siteNotice\">the site notice</a>";
-			case 'Request':
-				/** @var Request $request */
-				$request = Request::getById($objectId, $database);
-				$name = htmlentities($request->getName(), ENT_COMPAT, 'UTF-8');
-
-				return <<<HTML
-<a href="{$baseurl}/internal.php/viewRequest?id={$objectId}">Request #{$objectId} ({$name})</a>
-HTML;
-			case 'User':
-				/** @var User $user */
-				$user = User::getById($objectId, $database);
-				$username = htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8');
-
-				return "<a href=\"{$baseurl}/internal.php/statistics/users/detail?user={$objectId}\">{$username}</a>";
-			case 'WelcomeTemplate':
-				/** @var WelcomeTemplate $welcomeTemplate */
-				$welcomeTemplate = WelcomeTemplate::getById($objectId, $database);
-				$userCode = htmlentities($welcomeTemplate->getUserCode(), ENT_COMPAT, 'UTF-8');
-
-				return "<a href=\"{$baseurl}/internal.php/welcomeTemplates/view?id={$objectId}\">{$userCode}</a>";
-			default:
-				return '[' . $objectType . " " . $objectId . ']';
-				break;
-		}
-	}
 }
