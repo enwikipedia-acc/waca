@@ -76,6 +76,10 @@
     {include file="view-request/ip-section.tpl"}
 {/block}
 
+{block name="emailSection"}
+    {include file="view-request/email-section.tpl"}
+{/block}
+
 {block name="otherRequests"}
     <div class="row-fluid">
         <div class="span6">
