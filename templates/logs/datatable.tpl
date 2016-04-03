@@ -16,7 +16,7 @@
             <td>{$entry.timestamp|date} <em class="muted">({$entry.timestamp|relativedate})</em></td>
             <td>
                 {if $entry.userid != -1}
-                    <a href='{$baseurl}/internal.php/statistics/users/detail?user={$entry.username|escape}'>
+                    <a href='{$baseurl}/internal.php/statistics/users/detail?user={$entry.userid|escape}'>
                         {$entry.username|escape}
                     </a>
                 {else}
