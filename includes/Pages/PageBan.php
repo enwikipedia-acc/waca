@@ -26,6 +26,8 @@ class PageBan extends InternalPageBase
 	 */
 	protected function main()
 	{
+		$this->assignCSRFToken();
+
 		$this->setHtmlTitle('Bans');
 
 		$bans = Ban::getActiveBans(null, $this->getDatabase());
