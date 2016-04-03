@@ -435,6 +435,38 @@ class WebRequest
 	}
 
 	/**
+	 * @param string $key
+	 * @return mixed
+	 */
+	public static function getSessionContext($key){
+		$session = &self::$globalStateProvider->getSessionSuperGlobal();
+
+		if(!isset($session['context'])) {
+			$session['context'] = array();
+		}
+
+		if(!isset($session['context'][$key])){
+			return null;
+		}
+
+		return $session['context'][$key];
+	}
+
+	/**
+	 * @param string $key
+	 * @param mixed  $data
+	 */
+	public static function setSessionContext($key, $data){
+		$session = &self::$globalStateProvider->getSessionSuperGlobal();
+
+		if(!isset($session['context'])){
+			$session['context'] = array();
+		}
+
+		$session['context'][$key] = $data;
+	}
+
+	/**
 	 * @return int|null
 	 */
 	public static function getSessionUserId()

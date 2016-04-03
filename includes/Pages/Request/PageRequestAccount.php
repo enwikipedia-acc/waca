@@ -36,6 +36,15 @@ class PageRequestAccount extends PublicInterfacePageBase
 					SessionAlert::error($validationError->getErrorMessage());
 				}
 
+				// Preserve the data after an error
+				WebRequest::setSessionContext('accountReq',
+					array(
+						'username' => WebRequest::postString('name'),
+						'email' => WebRequest::postEmail('email'),
+						'comments' => WebRequest::postString('comments')
+					)
+				);
+
 				// Validation error, bomb out early.
 				$this->redirect();
 
@@ -51,6 +60,18 @@ class PageRequestAccount extends PublicInterfacePageBase
 			}
 		}
 		else {
+			// set the form values from the session context
+			$context = WebRequest::getSessionContext('accountReq');
+			if($context !== null && is_array($context))
+			{
+				$this->assign('username', $context['username']);
+				$this->assign('email', $context['email']);
+				$this->assign('comments', $context['comments']);
+			}
+
+			// Clear it for a refresh
+			WebRequest::setSessionContext('accountReq', null);
+
 			$this->setTemplate('request/request-form.tpl');
 		}
 	}

@@ -34,7 +34,7 @@
                 <div class="control-group">
                     <label class="control-label" for="inputUsername">Username</label>
                     <div class="controls">
-                        <input type="text" id="inputUsername" placeholder="Username" name="name" required="required">
+                        <input type="text" id="inputUsername" placeholder="Username" name="name" required="required" value="{$username|default:''|escape}">
                         <span class="help-block">
                             Case sensitive, first letter is always capitalized, you do not need to use all uppercase.
                             Note that this need not be your real name. Please make sure you don't leave any trailing
@@ -45,7 +45,7 @@
                 <div class="control-group">
                     <label class="control-label" for="inputEmail">Email</label>
                     <div class="controls">
-                        <input type="email" id="inputEmail" placeholder="Email" name="email" required="required">
+                        <input type="email" id="inputEmail" placeholder="Email" name="email" required="required" value="{$email|default:''|escape}">
                     </div>
                 </div>
                 <div class="control-group">
@@ -62,7 +62,7 @@
                 <div class="control-group">
                     <label class="control-label" for="inputComments">Comments</label>
                     <div class="controls">
-                        <textarea id="inputComments" rows="4" name="comments"></textarea>
+                        <textarea id="inputComments" rows="4" name="comments">{$comments|default:''|escape}</textarea>
                         <span class="help-block">
                             Please do NOT ask for a specific password. One will be randomly created for you.
                         </span>

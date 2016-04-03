@@ -39,6 +39,13 @@
 
     <hr>
 
+    {if count($alerts) > 0}
+        {foreach $alerts as $a}
+            {include file="alert.tpl" alertblock=$a->isBlock() alertclosable=$a->isClosable() alerttype=$a->getType()
+            alertheader=$a->getTitle() alertmessage=$a->getMessage() }
+        {/foreach}
+    {/if}
+
     {block name="content"}
         {$defaultContent|default:"This page doesn't do anything. If you see this, and you're not a developer, this is a bug."}
     {/block}
