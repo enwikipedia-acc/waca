@@ -12,6 +12,7 @@ use PDOStatement;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 use Waca\DataObjects\Request;
+use Waca\Helpers\HttpHelper;
 use Waca\Helpers\Interfaces\IBanHelper;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\IAntiSpoofProvider;
@@ -56,6 +57,9 @@ class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 		/** @var IXffTrustProvider|PHPUnit_Framework_MockObject_MockObject $xffTrustMock */
 		$xffTrustMock = $this->getMockBuilder(IXffTrustProvider::class)->getMock();
 
+		/** @var HttpHelper|PHPUnit_Framework_MockObject_MockObject $httpHelperMock */
+		$httpHelperMock = $this->getMockBuilder(HttpHelper::class)->disableOriginalConstructor()->getMock();
+
 		// arrange
 		$validationHelper = new RequestValidationHelper(
 			$banHelperMock,
@@ -63,7 +67,10 @@ class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 			$this->request->getEmail(),
 			$dbMock,
 			$antispoofMock,
-			$xffTrustMock);
+			$xffTrustMock,
+			$httpHelperMock,
+			"mediawikiendpoint",
+			false);
 
 		// act
 		$result = $validationHelper->validateName();
