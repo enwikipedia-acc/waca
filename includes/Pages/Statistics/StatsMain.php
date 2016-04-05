@@ -28,7 +28,7 @@ class StatsMain extends InternalPageBase
 			'users'            => 'Account Creation Tool users',
 		);
 
-		$this->smallStats();
+		$this->generateSmallStatsTable();
 
 		$this->assign('statsPages', $statsPages);
 
@@ -41,34 +41,27 @@ class StatsMain extends InternalPageBase
 	/**
 	 * Gets the relevant statistics from the database for the small statistics table
 	 */
-	private function smallStats()
+	private function generateSmallStatsTable()
 	{
 		$database = $this->getDatabase();
 		$requestsQuery = <<<'SQL'
 SELECT COUNT(*) FROM request WHERE status = :status AND emailconfirm = 'Confirmed';
 SQL;
-
 		$requestsStatement = $database->prepare($requestsQuery);
 
-		// TODO: use the request states thing here.
+		$requestStates = $this->getSiteConfiguration()->getRequestStates();
 
-		// Open Requests
-		$requestsStatement->execute(array(':status' => 'Open'));
-		$open = $requestsStatement->fetchColumn();
-		$requestsStatement->closeCursor();
-		$this->assign('statsOpen', $open);
+		$requestStateData = array();
 
-		// Admin Requests
-		$requestsStatement->execute(array(':status' => 'Flagged users'));
-		$admin = $requestsStatement->fetchColumn();
-		$requestsStatement->closeCursor();
-		$this->assign('statsAdmin', $admin);
+		foreach ($requestStates as $statusName => $data) {
+			$requestsStatement->execute(array(':status' => $statusName));
+			$requestCount = $requestsStatement->fetchColumn();
+			$requestsStatement->closeCursor();
+			$headerText = $data['header'];
+			$requestStateData[$headerText] = $requestCount;
+		}
 
-		// Checkuser Requests
-		$requestsStatement->execute(array(':status' => 'Checkuser'));
-		$checkuser = $requestsStatement->fetchColumn();
-		$requestsStatement->closeCursor();
-		$this->assign('statsCheckuser', $checkuser);
+		$this->assign('requestCountData', $requestStateData);
 
 		// Unconfirmed requests
 		$unconfirmedStatement = $database->query(<<<SQL
