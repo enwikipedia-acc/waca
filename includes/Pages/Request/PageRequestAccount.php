@@ -109,7 +109,10 @@ class PageRequestAccount extends PublicInterfacePageBase
 			WebRequest::postEmail('emailconfirm'),
 			$this->getDatabase(),
 			$this->getAntiSpoofProvider(),
-			$this->getXffTrustProvider());
+			$this->getXffTrustProvider(),
+			$this->getHttpHelper(),
+			$this->getSiteConfiguration()->getMediawikiWebServiceEndpoint(),
+			$this->getSiteConfiguration()->getTitleBlacklistEnabled());
 
 		// These are arrays of ValidationError.
 		$nameValidation = $validationHelper->validateName();

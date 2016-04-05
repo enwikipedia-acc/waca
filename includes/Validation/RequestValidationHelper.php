@@ -10,6 +10,7 @@ namespace Waca\Validation;
 
 use Exception;
 use Waca\DataObjects\Request;
+use Waca\Helpers\HttpHelper;
 use Waca\Helpers\Interfaces\IBanHelper;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\IAntiSpoofProvider;
@@ -31,6 +32,13 @@ class RequestValidationHelper
 	private $antiSpoofProvider;
 	/** @var IXffTrustProvider */
 	private $xffTrustProvider;
+	/** @var HttpHelper */
+	private $httpHelper;
+	/**
+	 * @var string
+	 */
+	private $mediawikiApiEndpoint;
+	private $titleBlacklistEnabled;
 
 	/**
 	 * Summary of __construct
@@ -41,6 +49,9 @@ class RequestValidationHelper
 	 * @param PdoDatabase        $database
 	 * @param IAntiSpoofProvider $antiSpoofProvider
 	 * @param IXffTrustProvider  $xffTrustProvider
+	 * @param HttpHelper         $httpHelper
+	 * @param string             $mediawikiApiEndpoint
+	 * @param boolean            $titleBlacklistEnabled
 	 */
 	public function __construct(
 		IBanHelper $banHelper,
@@ -48,7 +59,10 @@ class RequestValidationHelper
 		$emailConfirmation,
 		PdoDatabase $database,
 		IAntiSpoofProvider $antiSpoofProvider,
-		IXffTrustProvider $xffTrustProvider
+		IXffTrustProvider $xffTrustProvider,
+		HttpHelper $httpHelper,
+		$mediawikiApiEndpoint,
+		$titleBlacklistEnabled
 	) {
 		$this->banHelper = $banHelper;
 		$this->request = $request;
@@ -56,6 +70,9 @@ class RequestValidationHelper
 		$this->database = $database;
 		$this->antiSpoofProvider = $antiSpoofProvider;
 		$this->xffTrustProvider = $xffTrustProvider;
+		$this->httpHelper = $httpHelper;
+		$this->mediawikiApiEndpoint = $mediawikiApiEndpoint;
+		$this->titleBlacklistEnabled = $titleBlacklistEnabled;
 	}
 
 	/**
@@ -177,7 +194,8 @@ class RequestValidationHelper
 		}
 
 		// IP banned
-		$trustedIp = $this->xffTrustProvider->getTrustedClientIp($this->request->getIp(), $this->request->getForwardedIp());
+		$trustedIp = $this->xffTrustProvider->getTrustedClientIp($this->request->getIp(),
+			$this->request->getForwardedIp());
 		$ban = $this->banHelper->ipIsBanned($trustedIp);
 		if ($ban != false) {
 			$errorList[ValidationError::BANNED] = new ValidationError(ValidationError::BANNED);
@@ -210,9 +228,17 @@ class RequestValidationHelper
 
 	private function checkTitleBlacklist()
 	{
-		global $enableTitleblacklist;
-		if ($enableTitleblacklist == 1) {
-			$apiResult = file_get_contents("https://en.wikipedia.org/w/api.php?action=titleblacklist&tbtitle=" . urlencode($this->request->getName()) . "&tbaction=new-account&tbnooverride&format=php");
+		if ($this->titleBlacklistEnabled == 1) {
+			$apiResult = $this->httpHelper->get(
+				$this->mediawikiApiEndpoint,
+				array(
+					'action'       => 'titleblacklist',
+					'tbtitle'      => $this->request->getName(),
+					'tbaction'     => 'new-account',
+					'tbnooverride' => true,
+					'format'       => 'php',
+				)
+			);
 
 			$data = unserialize($apiResult);
 
@@ -226,9 +252,16 @@ class RequestValidationHelper
 
 	private function userExists()
 	{
-		global $mediawikiWebServiceEndpoint;
+		$userexist = $this->httpHelper->get(
+			$this->mediawikiApiEndpoint,
+			array(
+				'action'  => 'query',
+				'list'    => 'users',
+				'ususers' => $this->request->getName(),
+				'format'  => 'php',
+			)
+		);
 
-		$userexist = file_get_contents($mediawikiWebServiceEndpoint . "?action=query&list=users&ususers=" . urlencode($this->request->getName()) . "&format=php");
 		$ue = unserialize($userexist);
 		if (!isset ($ue['query']['users']['0']['missing']) && isset ($ue['query']['users']['0']['userid'])) {
 			return true;
@@ -239,10 +272,20 @@ class RequestValidationHelper
 
 	private function userSulExists()
 	{
-		global $mediawikiWebServiceEndpoint;
+		// @todo is this really necessary?!
+		// $reqname = str_replace("_", " ", $this->request->getName());
+		$reqname = $this->request->getName();
 
-		$reqname = str_replace("_", " ", $this->request->getName());
-		$userexist = file_get_contents($mediawikiWebServiceEndpoint . "?action=query&meta=globaluserinfo&guiuser=" . urlencode($reqname) . "&format=php");
+		$userexist = $this->httpHelper->get(
+			$this->mediawikiApiEndpoint,
+			array(
+				'action'  => 'query',
+				'meta'    => 'globaluserinfo',
+				'guiuser' => $reqname,
+				'format'  => 'php',
+			)
+		);
+
 		$ue = unserialize($userexist);
 		if (isset ($ue['query']['globaluserinfo']['id'])) {
 			return true;

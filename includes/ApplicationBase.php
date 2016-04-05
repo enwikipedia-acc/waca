@@ -143,8 +143,12 @@ abstract class ApplicationBase
 			$page->setLocationProvider(new FakeLocationProvider());
 		}
 		else {
-			$page->setLocationProvider(new IpLocationProvider($database,
-				$siteConfiguration->getLocationProviderApiKey()));
+			$page->setLocationProvider(
+				new IpLocationProvider(
+					$database,
+					$siteConfiguration->getLocationProviderApiKey(),
+					$httpHelper
+				));
 		}
 
 		$page->setXffTrustProvider(new XffTrustProvider($siteConfiguration->getSquidList(), $database));

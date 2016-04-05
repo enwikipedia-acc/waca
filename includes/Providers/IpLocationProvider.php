@@ -12,6 +12,7 @@ use Exception;
 use SimpleXMLElement;
 use Waca\DataObjects\GeoLocation;
 use Waca\Exceptions\OptimisticLockFailedException;
+use Waca\Helpers\HttpHelper;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\ILocationProvider;
 
@@ -20,21 +21,25 @@ use Waca\Providers\Interfaces\ILocationProvider;
  */
 class IpLocationProvider implements ILocationProvider
 {
-	/** @var string	 */
+	/** @var string */
 	private $apiKey;
-	/** @var PdoDatabase  */
+	/** @var PdoDatabase */
 	private $database;
+	/** @var HttpHelper */
+	private $httpHelper;
 
 	/**
 	 * IpLocationProvider constructor.
 	 *
 	 * @param PdoDatabase $database
-	 * @param     string  $apiKey
+	 * @param string      $apiKey
+	 * @param HttpHelper  $httpHelper
 	 */
-	public function __construct(PdoDatabase $database, $apiKey)
+	public function __construct(PdoDatabase $database, $apiKey, HttpHelper $httpHelper)
 	{
 		$this->database = $database;
 		$this->apiKey = $apiKey;
+		$this->httpHelper = $httpHelper;
 	}
 
 	/**
@@ -85,7 +90,11 @@ class IpLocationProvider implements ILocationProvider
 	{
 		try {
 			if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-				$xml = @file_get_contents($this->getApiBase() . '?key=' . $this->apiKey . '&ip=' . $ip . '&format=xml');
+				$xml = $this->httpHelper->get($this->getApiBase(), array(
+					'key' => $this->apiKey,
+					'ip' => $ip,
+					'format' => 'xml'
+				));
 
 				$response = @new SimpleXMLElement($xml);
 
