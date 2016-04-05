@@ -8,8 +8,10 @@
 
 namespace Waca\Pages\Request;
 
+use Exception;
 use Waca\DataObjects\Request;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Helpers\Logger;
 use Waca\Tasks\PublicInterfacePageBase;
 use Waca\WebRequest;
@@ -19,7 +21,7 @@ class PageConfirmEmail extends PublicInterfacePageBase
 	/**
 	 * Main function for this page, when no specific actions are called.
 	 * @throws ApplicationLogicException
-	 * @return void
+	 * @throws Exception
 	 */
 	protected function main()
 	{
@@ -51,7 +53,27 @@ class PageConfirmEmail extends PublicInterfacePageBase
 			throw new ApplicationLogicException('The confirmation value does not appear to match the expected value');
 		}
 
-		$request->save();
+		try {
+			$request->save();
+		}
+		catch(OptimisticLockFailedException $ex){
+			// Okay. Someone's edited this in the time between us loading this page and doing the checks, and us getting
+			// to saving the page. We *do not* want to show an optimistic lock failure, the most likely problem is they
+			// double-loaded this page (see #255). Let's confirm this, and bomb out with a success message if it's the
+			// case.
+
+			$request = Request::getById($id, $this->getDatabase());
+			if($request->getEmailConfirm() === 'Confirmed') {
+				// we've already done the sanity checks above
+
+				$this->redirect('requestSubmitted');
+				// skip the log and notification
+				return;
+			}
+
+			// something really weird happened. Another race condition?
+			throw $ex;
+		}
 
 		Logger::emailConfirmed($this->getDatabase(), $request);
 		$this->getNotificationHelper()->requestReceived($request);
