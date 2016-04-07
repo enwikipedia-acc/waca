@@ -340,4 +340,5 @@ $siteConfiguration->setBaseUrl($baseurl)
 	->setIrcNotificationType($ircBotNotificationType)
 	->setIrcNotificationsInstance($whichami)
 	->setTitleBlacklistEnabled($enableTitleblacklist == 1)
+	->setTorExitPaths(array_merge(gethostbynamel('en.wikipedia.org'), gethostbynamel('accounts.wmflabs.org')))
 	;

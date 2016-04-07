@@ -6,49 +6,31 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-namespace Waca\Providers;
-
-use Waca\Providers\Interfaces\IGlobalStateProvider;
+namespace Waca\Providers\GlobalState;
 
 /**
- * Class GlobalStateProvider
- *
- * DO NOT USE THIS CLASS.
- * (Unless your name is <something>Test or WebRequest).
- *
- * @package Waca\Providers
+ * Interface IGlobalStateProvider
+ * @package Waca\Providers\Interfaces
  */
-class GlobalStateProvider implements IGlobalStateProvider
+interface IGlobalStateProvider
 {
 	/**
 	 * @return array
 	 */
-	public function &getServerSuperGlobal()
-	{
-		return $_SERVER;
-	}
+	public function getServerSuperGlobal();
 
 	/**
 	 * @return array
 	 */
-	public function &getGetSuperGlobal()
-	{
-		return $_GET;
-	}
+	public function getGetSuperGlobal();
 
 	/**
 	 * @return array
 	 */
-	public function &getPostSuperGlobal()
-	{
-		return $_POST;
-	}
+	public function getPostSuperGlobal();
 
 	/**
 	 * @return array
 	 */
-	public function &getSessionSuperGlobal()
-	{
-		return $_SESSION;
-	}
+	public function getSessionSuperGlobal();
 }

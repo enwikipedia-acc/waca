@@ -10,19 +10,19 @@ namespace Waca\Tests\Security;
 
 use PHPUnit_Framework_TestCase;
 use Waca\Security\TokenManager;
-use Waca\Tests\Utility\TestStateProvider;
+use Waca\Providers\GlobalState\FakeGlobalStateProvider;
 use Waca\WebRequest;
 
 class TokenManagerTests extends PHPUnit_Framework_TestCase
 {
 	/** @var TokenManager */
 	private $tokenManager;
-	/** @var TestStateProvider */
+	/** @var \Waca\Providers\GlobalState\FakeGlobalStateProvider */
 	private $stateProvider;
 
 	public function setUp()
 	{
-		$this->stateProvider = new TestStateProvider();
+		$this->stateProvider = new FakeGlobalStateProvider();
 		$this->stateProvider->session = array();
 
 		WebRequest::setGlobalStateProvider($this->stateProvider);

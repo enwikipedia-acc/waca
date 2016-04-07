@@ -19,6 +19,7 @@ use Waca\Providers\CachedApiAntispoofProvider;
 use Waca\Providers\CachedRDnsLookupProvider;
 use Waca\Providers\FakeLocationProvider;
 use Waca\Providers\IpLocationProvider;
+use Waca\Providers\TorExitProvider;
 use Waca\Providers\XffTrustProvider;
 use Waca\Tasks\ITask;
 
@@ -122,7 +123,7 @@ abstract class ApplicationBase
 		ITask $page,
 		SiteConfiguration $siteConfiguration,
 		PdoDatabase $database,
-		PdoDatabase $notificationsDatabase
+		PdoDatabase $notificationsDatabase = null
 	) {
 		$page->setSiteConfiguration($siteConfiguration);
 
@@ -170,7 +171,9 @@ abstract class ApplicationBase
 
 		$page->setNotificationHelper(new IrcNotificationHelper(
 			$siteConfiguration,
-			$notificationsDatabase,
-			$database));
+			$database,
+			$notificationsDatabase));
+
+		$page->setTorExitProvider(new TorExitProvider($database));
 	}
 }

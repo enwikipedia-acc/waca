@@ -14,7 +14,7 @@ use Waca\Exceptions\ReadableException;
 use Waca\Helpers\BlacklistHelper;
 use Waca\Helpers\FakeBlacklistHelper;
 use Waca\Helpers\TypeAheadHelper;
-use Waca\Providers\GlobalStateProvider;
+use Waca\Providers\GlobalState\GlobalStateProvider;
 use Waca\Router\IRequestRouter;
 use Waca\Security\SecurityManager;
 use Waca\Security\TokenManager;

@@ -10,6 +10,7 @@ namespace Waca;
 
 use Exception;
 use Waca\Exceptions\EnvironmentException;
+use Waca\Providers\GlobalState\FakeGlobalStateProvider;
 use Waca\Tasks\ConsoleTaskBase;
 
 class ConsoleStart extends ApplicationBase
@@ -33,6 +34,9 @@ class ConsoleStart extends ApplicationBase
 
 	protected function setupEnvironment()
 	{
+		// initialise super-global providers
+		WebRequest::setGlobalStateProvider(new FakeGlobalStateProvider());
+
 		if (WebRequest::method() !== null) {
 			throw new EnvironmentException('This is a console task, which cannot be executed via the web.');
 		}
@@ -50,7 +54,14 @@ class ConsoleStart extends ApplicationBase
 	protected function main()
 	{
 		$database = PdoDatabase::getDatabaseConnection('acc');
-		$notificationsDatabase = PdoDatabase::getDatabaseConnection('notifications');
+
+		if($this->getConfiguration()->getIrcNotificationsEnabled()) {
+			$notificationsDatabase = PdoDatabase::getDatabaseConnection('notifications');
+		}
+		else{
+			// pass through null
+			$notificationsDatabase = null;
+		}
 
 		$this->setupHelpers($this->consoleTask, $this->getConfiguration(), $database, $notificationsDatabase);
 

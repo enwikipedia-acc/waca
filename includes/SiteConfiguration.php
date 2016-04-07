@@ -19,7 +19,7 @@ class SiteConfiguration
 {
 	private $baseUrl;
 	private $filePath;
-	private $schemaVersion = 20;
+	private $schemaVersion = 21;
 	private $debuggingTraceEnabled;
 	private $dataClearIp = '127.0.0.1';
 	private $dataClearEmail = 'acc@toolserver.org';
@@ -78,6 +78,7 @@ class SiteConfiguration
 	private $titleBlacklistEnabled = false;
 	/** @var null|string $locationProviderApiKey */
 	private $locationProviderApiKey = null;
+	private $torExitPaths = array();
 
 	/**
 	 * Gets the base URL of the tool
@@ -787,5 +788,25 @@ class SiteConfiguration
 	public function getLocationProviderApiKey()
 	{
 		return $this->locationProviderApiKey;
+	}
+
+	/**
+	 * @param array $torExitPaths
+	 *
+	 * @return SiteConfiguration
+	 */
+	public function setTorExitPaths($torExitPaths)
+	{
+		$this->torExitPaths = $torExitPaths;
+
+		return $this;
+	}
+
+	/**
+	 * @return array
+	 */
+	public function getTorExitPaths()
+	{
+		return $this->torExitPaths;
 	}
 }

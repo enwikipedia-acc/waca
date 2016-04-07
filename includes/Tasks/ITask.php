@@ -18,6 +18,7 @@ use Waca\Providers\Interfaces\IAntiSpoofProvider;
 use Waca\Providers\Interfaces\ILocationProvider;
 use Waca\Providers\Interfaces\IRDnsProvider;
 use Waca\Providers\Interfaces\IXffTrustProvider;
+use Waca\Providers\TorExitProvider;
 use Waca\SiteConfiguration;
 
 interface ITask
@@ -144,4 +145,14 @@ interface ITask
 	 * @return void
 	 */
 	public function setNotificationHelper($notificationHelper);
+
+	/**
+	 * @return TorExitProvider
+	 */
+	public function getTorExitProvider();
+
+	/**
+	 * @param TorExitProvider $torExitProvider
+	 */
+	public function setTorExitProvider($torExitProvider);
 }

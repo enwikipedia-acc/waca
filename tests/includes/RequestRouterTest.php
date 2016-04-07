@@ -16,7 +16,7 @@ use Waca\Pages\Page404;
 use Waca\Pages\PageLogout;
 use Waca\Pages\PageMain;
 use Waca\Pages\PageUserManagement;
-use Waca\Providers\GlobalStateProvider;
+use Waca\Providers\GlobalState\GlobalStateProvider;
 use Waca\Router\RequestRouter;
 use Waca\WebRequest;
 

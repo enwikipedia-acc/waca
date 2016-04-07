@@ -18,6 +18,7 @@ use Waca\Providers\Interfaces\IAntiSpoofProvider;
 use Waca\Providers\Interfaces\ILocationProvider;
 use Waca\Providers\Interfaces\IRDnsProvider;
 use Waca\Providers\Interfaces\IXffTrustProvider;
+use Waca\Providers\TorExitProvider;
 use Waca\SiteConfiguration;
 
 abstract class TaskBase implements ITask
@@ -44,6 +45,8 @@ abstract class TaskBase implements ITask
 	private $database;
 	/** @var IrcNotificationHelper */
 	private $notificationHelper;
+	/** @var TorExitProvider */
+	private $torExitProvider;
 
 	/**
 	 * @return IEmailHelper
@@ -208,6 +211,22 @@ abstract class TaskBase implements ITask
 	public function setNotificationHelper($notificationHelper)
 	{
 		$this->notificationHelper = $notificationHelper;
+	}
+
+	/**
+	 * @return TorExitProvider
+	 */
+	public function getTorExitProvider()
+	{
+		return $this->torExitProvider;
+	}
+
+	/**
+	 * @param TorExitProvider $torExitProvider
+	 */
+	public function setTorExitProvider($torExitProvider)
+	{
+		$this->torExitProvider = $torExitProvider;
 	}
 
 	/**

@@ -10,9 +10,9 @@ namespace Waca\Tests;
 
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
-use Waca\Providers\GlobalStateProvider;
+use Waca\Providers\GlobalState\GlobalStateProvider;
 use Waca\SessionAlert;
-use Waca\Tests\Utility\TestStateProvider;
+use Waca\Providers\GlobalState\FakeGlobalStateProvider;
 use Waca\WebRequest;
 
 class SessionAlertTests extends PHPUnit_Framework_TestCase
@@ -41,7 +41,7 @@ class SessionAlertTests extends PHPUnit_Framework_TestCase
 
 	public function testAppend()
 	{
-		$state = new TestStateProvider();
+		$state = new FakeGlobalStateProvider();
 		WebRequest::setGlobalStateProvider($state);
 
 		$data = &$state->getSessionSuperGlobal();
@@ -62,7 +62,7 @@ class SessionAlertTests extends PHPUnit_Framework_TestCase
 
 	public function testClear()
 	{
-		$state = new TestStateProvider();
+		$state = new FakeGlobalStateProvider();
 		WebRequest::setGlobalStateProvider($state);
 
 		$alert = new SessionAlert('foo', 'bar', 'baz', true, false);
@@ -79,7 +79,7 @@ class SessionAlertTests extends PHPUnit_Framework_TestCase
 
 	public function testGetAlerts()
 	{
-		$state = new TestStateProvider();
+		$state = new FakeGlobalStateProvider();
 		WebRequest::setGlobalStateProvider($state);
 
 		$alert = new SessionAlert('foo', 'bar', 'baz', true, false);

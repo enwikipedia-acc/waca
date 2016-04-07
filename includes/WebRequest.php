@@ -9,7 +9,7 @@
 namespace Waca;
 
 use Waca\DataObjects\User;
-use Waca\Providers\Interfaces\IGlobalStateProvider;
+use Waca\Providers\GlobalState\IGlobalStateProvider;
 
 /**
  * Holds helper functions regarding the current request.
@@ -23,7 +23,7 @@ use Waca\Providers\Interfaces\IGlobalStateProvider;
 class WebRequest
 {
 	/**
-	 * @var IGlobalStateProvider Provides access to the global state.
+	 * @var \Waca\Providers\GlobalState\IGlobalStateProvider Provides access to the global state.
 	 */
 	private static $globalStateProvider;
 
@@ -139,7 +139,7 @@ class WebRequest
 	 *
 	 * Almost guaranteed this is not the method you want in production code.
 	 *
-	 * @param IGlobalStateProvider $globalState
+	 * @param \Waca\Providers\GlobalState\IGlobalStateProvider $globalState
 	 */
 	public static function setGlobalStateProvider($globalState)
 	{

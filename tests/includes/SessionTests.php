@@ -10,7 +10,7 @@ namespace Waca\Tests;
 
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
-use Waca\Providers\GlobalStateProvider;
+use Waca\Providers\GlobalState\GlobalStateProvider;
 use Waca\Session;
 use Waca\WebRequest;
 

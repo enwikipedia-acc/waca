@@ -6,31 +6,16 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-namespace Waca\Providers\Interfaces;
+namespace Waca;
 
-/**
- * Interface IGlobalStateProvider
- * @package Waca\Providers\Interfaces
- */
-interface IGlobalStateProvider
-{
-	/**
-	 * @return array
-	 */
-	public function getServerSuperGlobal();
+use Waca\ConsoleTasks\UpdateTorExitTask;
 
-	/**
-	 * @return array
-	 */
-	public function getGetSuperGlobal();
+chdir(__DIR__);
+chdir('..');
 
-	/**
-	 * @return array
-	 */
-	public function getPostSuperGlobal();
+require_once('config.inc.php');
 
-	/**
-	 * @return array
-	 */
-	public function getSessionSuperGlobal();
-}
+global $siteConfiguration;
+$application = new ConsoleStart($siteConfiguration, new UpdateTorExitTask());
+
+$application->run();

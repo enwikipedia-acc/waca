@@ -10,8 +10,8 @@ namespace Waca\Tests;
 
 use PHPUnit_Framework_MockObject_MockObject;
 use Waca\DataObjects\User;
-use Waca\Providers\GlobalStateProvider;
-use Waca\Tests\Utility\TestStateProvider;
+use Waca\Providers\GlobalState\GlobalStateProvider;
+use Waca\Providers\GlobalState\FakeGlobalStateProvider;
 use Waca\WebRequest;
 
 class WebRequestTest extends \PHPUnit_Framework_TestCase
@@ -496,7 +496,7 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 
 	public function testSetLoggedInUser()
 	{
-		$state = new TestStateProvider();
+		$state = new FakeGlobalStateProvider();
 		WebRequest::setGlobalStateProvider($state);
 
 		$data = &$state->getSessionSuperGlobal();
@@ -514,7 +514,7 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 
 	public function testSetPostLoginRedirect()
 	{
-		$state = new TestStateProvider();
+		$state = new FakeGlobalStateProvider();
 		WebRequest::setGlobalStateProvider($state);
 
 		$data = &$state->getSessionSuperGlobal();
@@ -528,7 +528,7 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 
 	public function testSetPostLoginRedirectNoUri()
 	{
-		$state = new TestStateProvider();
+		$state = new FakeGlobalStateProvider();
 		WebRequest::setGlobalStateProvider($state);
 
 		$data = &$state->getSessionSuperGlobal();
@@ -540,7 +540,7 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 
 	public function testClearPostLoginRedirect()
 	{
-		$state = new TestStateProvider();
+		$state = new FakeGlobalStateProvider();
 		WebRequest::setGlobalStateProvider($state);
 
 		$data = &$state->getSessionSuperGlobal();
@@ -553,7 +553,7 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 
 	public function testClearPostLoginRedirectNoUri()
 	{
-		$state = new TestStateProvider();
+		$state = new FakeGlobalStateProvider();
 		WebRequest::setGlobalStateProvider($state);
 
 		$result = WebRequest::clearPostLoginRedirect();

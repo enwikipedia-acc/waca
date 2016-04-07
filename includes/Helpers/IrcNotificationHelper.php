@@ -47,18 +47,24 @@ class IrcNotificationHelper
 	 * IrcNotificationHelper constructor.
 	 *
 	 * @param SiteConfiguration $siteConfiguration
-	 * @param PdoDatabase       $notificationsDatabase
 	 * @param PdoDatabase       $primaryDatabase
+	 * @param PdoDatabase       $notificationsDatabase
 	 */
 	public function __construct(
 		SiteConfiguration $siteConfiguration,
-		PdoDatabase $notificationsDatabase,
-		PdoDatabase $primaryDatabase
+		PdoDatabase $primaryDatabase,
+		PdoDatabase $notificationsDatabase = null
 	) {
-		$this->notificationsDatabase = $notificationsDatabase;
 		$this->primaryDatabase = $primaryDatabase;
 
-		$this->notificationsEnabled = $siteConfiguration->getIrcNotificationsEnabled();
+		if(true){
+			$this->notificationsDatabase = $notificationsDatabase;
+			$this->notificationsEnabled = $siteConfiguration->getIrcNotificationsEnabled();
+		}
+		else{
+			$this->notificationsEnabled = false;
+		}
+
 		$this->notificationType = $siteConfiguration->getIrcNotificationType();
 		$this->instanceName = $siteConfiguration->getIrcNotificationsInstance();
 		$this->baseUrl = $siteConfiguration->getBaseUrl();

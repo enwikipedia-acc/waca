@@ -15,6 +15,7 @@ use Waca\Helpers\Interfaces\IBanHelper;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\IAntiSpoofProvider;
 use Waca\Providers\Interfaces\IXffTrustProvider;
+use Waca\Providers\TorExitProvider;
 
 /**
  * Performs the validation of an incoming request.
@@ -39,6 +40,10 @@ class RequestValidationHelper
 	 */
 	private $mediawikiApiEndpoint;
 	private $titleBlacklistEnabled;
+	/**
+	 * @var TorExitProvider
+	 */
+	private $torExitProvider;
 
 	/**
 	 * Summary of __construct
@@ -52,6 +57,7 @@ class RequestValidationHelper
 	 * @param HttpHelper         $httpHelper
 	 * @param string             $mediawikiApiEndpoint
 	 * @param boolean            $titleBlacklistEnabled
+	 * @param TorExitProvider    $torExitProvider
 	 */
 	public function __construct(
 		IBanHelper $banHelper,
@@ -62,7 +68,8 @@ class RequestValidationHelper
 		IXffTrustProvider $xffTrustProvider,
 		HttpHelper $httpHelper,
 		$mediawikiApiEndpoint,
-		$titleBlacklistEnabled
+		$titleBlacklistEnabled,
+		TorExitProvider $torExitProvider
 	) {
 		$this->banHelper = $banHelper;
 		$this->request = $request;
@@ -73,6 +80,7 @@ class RequestValidationHelper
 		$this->httpHelper = $httpHelper;
 		$this->mediawikiApiEndpoint = $mediawikiApiEndpoint;
 		$this->titleBlacklistEnabled = $titleBlacklistEnabled;
+		$this->torExitProvider = $torExitProvider;
 	}
 
 	/**
@@ -185,17 +193,17 @@ class RequestValidationHelper
 	{
 		$errorList = array();
 
+		$trustedIp = $this->xffTrustProvider->getTrustedClientIp($this->request->getIp(),
+			$this->request->getForwardedIp());
+
 		// ERRORS
 
 		// TOR nodes
-		// TODO: Implement
-		if (false) {
+		if ($this->torExitProvider->isTorExit($trustedIp)) {
 			$errorList[ValidationError::BANNED] = new ValidationError(ValidationError::BANNED_TOR);
 		}
 
 		// IP banned
-		$trustedIp = $this->xffTrustProvider->getTrustedClientIp($this->request->getIp(),
-			$this->request->getForwardedIp());
 		$ban = $this->banHelper->ipIsBanned($trustedIp);
 		if ($ban != false) {
 			$errorList[ValidationError::BANNED] = new ValidationError(ValidationError::BANNED);

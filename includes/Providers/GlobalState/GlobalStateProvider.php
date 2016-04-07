@@ -6,43 +6,47 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-namespace Waca\Tests\Utility;
-
-use Waca\Providers\GlobalStateProvider;
-use Waca\Providers\Interfaces\IGlobalStateProvider;
+namespace Waca\Providers\GlobalState;
 
 /**
- * Class TestStateProvider
+ * Class GlobalStateProvider
  *
- * This class is only to be used for testing sets of the global state variables. For everything else, please use PHPUnit
- * mocks as normal.
+ * DO NOT USE THIS CLASS.
+ * (Unless your name is <something>Test or WebRequest).
  *
- * @package Waca\Tests\Utility
+ * @package Waca\Providers
  */
-class TestStateProvider extends GlobalStateProvider implements IGlobalStateProvider
+class GlobalStateProvider implements IGlobalStateProvider
 {
-	var $server = array();
-	var $get = array();
-	var $post = array();
-	var $session = array();
-
+	/**
+	 * @return array
+	 */
 	public function &getServerSuperGlobal()
 	{
-		return $this->server;
+		return $_SERVER;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function &getGetSuperGlobal()
 	{
-		return $this->get;
+		return $_GET;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function &getPostSuperGlobal()
 	{
-		return $this->post;
+		return $_POST;
 	}
 
+	/**
+	 * @return array
+	 */
 	public function &getSessionSuperGlobal()
 	{
-		return $this->session;
+		return $_SESSION;
 	}
 }

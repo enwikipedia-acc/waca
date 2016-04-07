@@ -112,7 +112,8 @@ class PageRequestAccount extends PublicInterfacePageBase
 			$this->getXffTrustProvider(),
 			$this->getHttpHelper(),
 			$this->getSiteConfiguration()->getMediawikiWebServiceEndpoint(),
-			$this->getSiteConfiguration()->getTitleBlacklistEnabled());
+			$this->getSiteConfiguration()->getTitleBlacklistEnabled(),
+			$this->getTorExitProvider());
 
 		// These are arrays of ValidationError.
 		$nameValidation = $validationHelper->validateName();
