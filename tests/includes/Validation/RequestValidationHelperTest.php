@@ -17,6 +17,7 @@ use Waca\Helpers\Interfaces\IBanHelper;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\IAntiSpoofProvider;
 use Waca\Providers\Interfaces\IXffTrustProvider;
+use Waca\Providers\TorExitProvider;
 use Waca\Validation\RequestValidationHelper;
 
 /**
@@ -60,6 +61,9 @@ class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 		/** @var HttpHelper|PHPUnit_Framework_MockObject_MockObject $httpHelperMock */
 		$httpHelperMock = $this->getMockBuilder(HttpHelper::class)->disableOriginalConstructor()->getMock();
 
+		/** @var TorExitProvider|PHPUnit_Framework_MockObject_MockObject $torProviderMock */
+		$torProviderMock = $this->getMockBuilder(TorExitProvider::class)->disableOriginalConstructor()->getMock();
+
 		// arrange
 		$validationHelper = new RequestValidationHelper(
 			$banHelperMock,
@@ -70,7 +74,8 @@ class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
 			$xffTrustMock,
 			$httpHelperMock,
 			"mediawikiendpoint",
-			false);
+			false,
+			$torProviderMock);
 
 		// act
 		$result = $validationHelper->validateName();

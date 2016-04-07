@@ -28,4 +28,3 @@ require_once __DIR__ . '/../includes/PdoDatabase.php';
 
 require_once __DIR__ . '/utility/MockFunction.php';
 require_once __DIR__ . '/utility/MockStaticMethod.php';
-require_once __DIR__ . '/utility/TestStateProvider.php';
