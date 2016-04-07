@@ -40,8 +40,8 @@ class PageRequestAccount extends PublicInterfacePageBase
 				WebRequest::setSessionContext('accountReq',
 					array(
 						'username' => WebRequest::postString('name'),
-						'email' => WebRequest::postEmail('email'),
-						'comments' => WebRequest::postString('comments')
+						'email'    => WebRequest::postEmail('email'),
+						'comments' => WebRequest::postString('comments'),
 					)
 				);
 
@@ -62,8 +62,7 @@ class PageRequestAccount extends PublicInterfacePageBase
 		else {
 			// set the form values from the session context
 			$context = WebRequest::getSessionContext('accountReq');
-			if($context !== null && is_array($context))
-			{
+			if ($context !== null && is_array($context)) {
 				$this->assign('username', $context['username']);
 				$this->assign('email', $context['email']);
 				$this->assign('comments', $context['comments']);

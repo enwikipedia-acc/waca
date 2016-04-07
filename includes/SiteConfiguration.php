@@ -223,11 +223,13 @@ class SiteConfiguration
 
 	/**
 	 * @param string $identificationCacheExpiry
+	 *
 	 * @return SiteConfiguration
 	 */
 	public function setIdentificationCacheExpiry($identificationCacheExpiry)
 	{
 		$this->identificationCacheExpiry = $identificationCacheExpiry;
+
 		return $this;
 	}
 
@@ -281,6 +283,7 @@ class SiteConfiguration
 
 	/**
 	 * @param string $metaWikimediaWebServiceEndpoint
+	 *
 	 * @return SiteConfiguration
 	 */
 	public function setMetaWikimediaWebServiceEndpoint($metaWikimediaWebServiceEndpoint)

@@ -55,10 +55,10 @@ class ConsoleStart extends ApplicationBase
 	{
 		$database = PdoDatabase::getDatabaseConnection('acc');
 
-		if($this->getConfiguration()->getIrcNotificationsEnabled()) {
+		if ($this->getConfiguration()->getIrcNotificationsEnabled()) {
 			$notificationsDatabase = PdoDatabase::getDatabaseConnection('notifications');
 		}
-		else{
+		else {
 			// pass through null
 			$notificationsDatabase = null;
 		}

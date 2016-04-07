@@ -492,6 +492,7 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->markTestIncomplete("not implemented uet");
 	}
+
 	#endregion
 
 	public function testSetLoggedInUser()

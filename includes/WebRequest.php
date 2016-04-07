@@ -436,16 +436,18 @@ class WebRequest
 
 	/**
 	 * @param string $key
+	 *
 	 * @return mixed
 	 */
-	public static function getSessionContext($key){
+	public static function getSessionContext($key)
+	{
 		$session = &self::$globalStateProvider->getSessionSuperGlobal();
 
-		if(!isset($session['context'])) {
+		if (!isset($session['context'])) {
 			$session['context'] = array();
 		}
 
-		if(!isset($session['context'][$key])){
+		if (!isset($session['context'][$key])) {
 			return null;
 		}
 
@@ -456,10 +458,11 @@ class WebRequest
 	 * @param string $key
 	 * @param mixed  $data
 	 */
-	public static function setSessionContext($key, $data){
+	public static function setSessionContext($key, $data)
+	{
 		$session = &self::$globalStateProvider->getSessionSuperGlobal();
 
-		if(!isset($session['context'])){
+		if (!isset($session['context'])) {
 			$session['context'] = array();
 		}
 

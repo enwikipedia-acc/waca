@@ -25,6 +25,7 @@ class SessionTests extends PHPUnit_Framework_TestCase
 	{
 		if (!extension_loaded('runkit')) {
 			$this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit');
+
 			return;
 		}
 

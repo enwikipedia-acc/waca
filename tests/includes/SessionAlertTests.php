@@ -69,7 +69,7 @@ class SessionAlertTests extends PHPUnit_Framework_TestCase
 
 		$data = &$state->getSessionSuperGlobal();
 		$data['alerts'] = array(
-			serialize($alert)
+			serialize($alert),
 		);
 
 		SessionAlert::clearAlerts();
@@ -87,7 +87,7 @@ class SessionAlertTests extends PHPUnit_Framework_TestCase
 		$data = &$state->getSessionSuperGlobal();
 		$data['alerts'] = array(
 			serialize($alert),
-			serialize($alert)
+			serialize($alert),
 		);
 
 		$alertData = SessionAlert::getAlerts();

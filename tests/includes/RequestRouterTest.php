@@ -232,7 +232,7 @@ class RequestRouterTest extends PHPUnit_Framework_TestCase
 		));
 
 		$routeMap = array(
-			'stats' =>
+			'stats'     =>
 				array(
 					'class'   => PageMain::class,
 					'actions' => array(),
