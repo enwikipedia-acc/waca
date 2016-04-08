@@ -26,6 +26,7 @@ use Waca\WebRequest;
 class PageViewRequest extends InternalPageBase
 {
 	const PRIVATE_DATA_BARRIER = 'privateData';
+	const SET_BAN_BARRIER = 'setBan';
 	const STATUS_SYMBOL_OPEN = '&#x2610';
 	const STATUS_SYMBOL_ACCEPTED = '&#x2611';
 	const STATUS_SYMBOL_REJECTED = '&#x2612';
@@ -476,6 +477,8 @@ class PageViewRequest extends InternalPageBase
 		switch ($this->getRouteName()) {
 			case self::PRIVATE_DATA_BARRIER:
 				return $this->getSecurityManager()->configure()->asGeneralPrivateDataAccess();
+			case self::SET_BAN_BARRIER:
+				return $this->getSecurityManager()->configure()->asAdminPage();
 			default:
 				return $this->getSecurityManager()->configure()->asInternalPage();
 		}

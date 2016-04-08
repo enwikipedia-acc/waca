@@ -55,21 +55,23 @@
 {/block}
 
 {block name="banSection"}
-    <div class="row-fluid">
-        <h5 class="zoom-button-header">Ban</h5>
-    </div>
-    <div class="row-fluid">
-        <a class="btn btn-danger span4" href="{$baseurl}/internal.php/bans/set?type=Name&amp;request={$requestId}">
-            Ban Username
-        </a>
-        <a class="btn btn-danger span4" href="{$baseurl}/internal.php/bans/set?type=EMail&amp;request={$requestId}">
-            Ban Email
-        </a>
-        <a class="btn btn-danger span4" href="{$baseurl}/internal.php/bans/set?type=IP&amp;request{$requestId}">
-            Ban IP
-        </a>
-    </div>
-    <hr class="zoom-button-divider"/>
+    {if $page->barrierTest("setBan")}
+        <div class="row-fluid">
+            <h5 class="zoom-button-header">Ban</h5>
+        </div>
+        <div class="row-fluid">
+            <a class="btn btn-danger span4" href="{$baseurl}/internal.php/bans/set?type=Name&amp;request={$requestId}">
+                Ban Username
+            </a>
+            <a class="btn btn-danger span4" href="{$baseurl}/internal.php/bans/set?type=EMail&amp;request={$requestId}">
+                Ban Email
+            </a>
+            <a class="btn btn-danger span4" href="{$baseurl}/internal.php/bans/set?type=IP&amp;request{$requestId}">
+                Ban IP
+            </a>
+        </div>
+        <hr class="zoom-button-divider"/>
+    {/if}
 {/block}
 
 {block name="ipSection"}
