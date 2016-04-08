@@ -148,11 +148,11 @@ class PageSearch extends InternalPageBase
 	protected function validateSearchParameters($searchType, $searchTerm)
 	{
 		if (!in_array($searchType, array('name', 'email', 'ip'))) {
-			// todo: handle more gracefully.
 			throw new ApplicationLogicException('Unknown search type');
 		}
 
 		if ($searchTerm === '%' || $searchTerm === '') {
+			// todo: handle more gracefully.
 			throw new ApplicationLogicException('No search term specified entered');
 		}
 	}
