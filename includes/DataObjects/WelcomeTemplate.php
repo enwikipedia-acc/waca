@@ -24,6 +24,7 @@ class WelcomeTemplate extends DataObject
 	/** @var string */
 	private $botcode;
 	private $usageCache;
+	private $deleted = 0;
 
 	/**
 	 * Summary of getAll
@@ -34,7 +35,7 @@ class WelcomeTemplate extends DataObject
 	 */
 	public static function getAll(PdoDatabase $database)
 	{
-		$statement = $database->prepare("SELECT * FROM welcometemplate;");
+		$statement = $database->prepare("SELECT * FROM welcometemplate WHERE deleted = 0;");
 
 		$statement->execute();
 
@@ -150,5 +151,35 @@ SQL
 		}
 
 		return $this->usageCache;
+	}
+
+	/**
+	 * Deletes the object from the database
+	 */
+	public function delete()
+	{
+		if ($this->id === null) {
+			// wtf?
+			return;
+		}
+
+		$deleteQuery = "UPDATE welcometemplate SET deleted = 1 WHERE id = :id AND updateversion = :updateversion;";
+		$statement = $this->dbObject->prepare($deleteQuery);
+
+		$statement->bindValue(":id", $this->id);
+		$statement->bindValue(":updateversion", $this->updateversion);
+		$statement->execute();
+
+		if ($statement->rowCount() !== 1) {
+			throw new OptimisticLockFailedException();
+		}
+	}
+
+	/**
+	 * @return bool
+	 */
+	public function isDeleted()
+	{
+		return $this->deleted === 1;
 	}
 }

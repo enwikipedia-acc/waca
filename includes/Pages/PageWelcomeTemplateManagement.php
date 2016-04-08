@@ -63,9 +63,10 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 		$database = $this->getDatabase();
 
 		$templateId = WebRequest::postInt('template');
+		/** @var false|WelcomeTemplate $template */
 		$template = WelcomeTemplate::getById($templateId, $database);
 
-		if ($template === false) {
+		if ($template === false || $template->isDeleted()) {
 			throw new ApplicationLogicException('Unknown template');
 		}
 
@@ -149,6 +150,10 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 			throw new ApplicationLogicException('Cannot find requested template');
 		}
 
+		if ($template) {
+			throw new ApplicationLogicException('The specified template has been deleted');
+		}
+
 		if (WebRequest::wasPosted()) {
 			$this->validateCSRFToken();
 			$template->setUserCode(WebRequest::postString('usercode'));
@@ -189,7 +194,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 		/** @var WelcomeTemplate $template */
 		$template = WelcomeTemplate::getById($templateId, $database);
 
-		if ($template === false) {
+		if ($template === false || $template->isDeleted()) {
 			throw new ApplicationLogicException('Cannot find requested template');
 		}
 

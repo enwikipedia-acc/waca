@@ -291,11 +291,14 @@ class PageViewRequest extends InternalPageBase
 			}
 
 			if ($entry instanceof Log) {
+				$invalidUserId = $entry->getUser() === -1 || $entry->getUser() === 0;
+				$entryUser = $invalidUserId ? User::getCommunity() : $nameCache[$entry->getUser()];
+
 				$requestLogs[] = array(
 					'type'     => 'log',
 					'security' => 'user',
 					'userid'   => $entry->getUser() == -1 ? null : $entry->getUser(),
-					'user'     => $nameCache[$entry->getUser()]->getUsername(),
+					'user'     => $entryUser->getUsername(),
 					'entry'    => LogHelper::getLogDescription($entry),
 					'time'     => $entry->getTimestamp(),
 					'canedit'  => false,

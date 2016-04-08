@@ -61,7 +61,7 @@ class WebStart extends ApplicationBase
 		ITask $page,
 		SiteConfiguration $siteConfiguration,
 		PdoDatabase $database,
-		PdoDatabase $notificationsDatabase
+		PdoDatabase $notificationsDatabase = null
 	) {
 		parent::setupHelpers($page, $siteConfiguration, $database, $notificationsDatabase);
 

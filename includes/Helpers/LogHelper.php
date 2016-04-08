@@ -271,9 +271,14 @@ HTML;
 			case 'WelcomeTemplate':
 				/** @var WelcomeTemplate $welcomeTemplate */
 				$welcomeTemplate = WelcomeTemplate::getById($objectId, $database);
-				$userCode = htmlentities($welcomeTemplate->getUserCode(), ENT_COMPAT, 'UTF-8');
 
-				return "<a href=\"{$baseurl}/internal.php/welcomeTemplates/view?id={$objectId}\">{$userCode}</a>";
+				// some old templates have been completely deleted and lost to the depths of time.
+				if($welcomeTemplate === false){
+					return "Welcome template #{$objectId}";
+				} else {
+					$userCode = htmlentities($welcomeTemplate->getUserCode(), ENT_COMPAT, 'UTF-8');
+					return "<a href=\"{$baseurl}/internal.php/welcomeTemplates/view?template={$objectId}\">{$userCode}</a>";
+				}
 			default:
 				return '[' . $objectType . " " . $objectId . ']';
 		}
