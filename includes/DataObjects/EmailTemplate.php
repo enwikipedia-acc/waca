@@ -21,9 +21,13 @@ use Waca\PdoDatabase;
  */
 class EmailTemplate extends DataObject
 {
+	/** Note, also used in template-table.tpl */
 	const CREATED = "created";
+	/** Note, also used in template-table.tpl */
 	const NOT_CREATED = "not created";
+	/** Note, also used in template-table.tpl */
 	const NONE = null;
+	/** @var string the name of the template */
 	private $name;
 	private $text;
 	/** @var string|null */

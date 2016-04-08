@@ -4,11 +4,11 @@
             <td>{$row@iteration}.</td>
             <th>{$row->getName()|escape}</th>
             <td>
-                {if $row->getDefaultAction() == EmailTemplate::CREATED}
+                {if $row->getDefaultAction() === 'created'}
                     <span class="label label-success">Create</span>
-                {elseif $row->getDefaultAction() == EmailTemplate::NOT_CREATED}
+                {elseif $row->getDefaultAction() === 'not created'}
                     <span class="label label-important">Decline</span>
-                {elseif $row->getDefaultAction() == EmailTemplate::NONE}
+                {elseif $row->getDefaultAction() == null}
                     <span class="label">No default</span>
                 {else}
                     <span class="label label-info">Defer to {$row->getDefaultAction()|escape}</span>
