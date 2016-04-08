@@ -395,4 +395,27 @@ SQL
 
 		return new DateTime($logTime);
 	}
+
+	/**
+	 * Returns a hash based on data within this request which can be generated easily from the data to be used to reveal
+	 * data to unauthorised* users.
+	 *
+	 * *:Not tool admins, check users, or the reserving user.
+	 *
+	 * @return string
+	 *
+	 * @todo future work to make invalidation better. Possibly move to the database and invalidate on relevant events?
+	 *       Maybe depend on the last logged action timestamp?
+	 */
+	public function getRevealHash()
+	{
+		$data = $this->id         // unique per request
+			. '|' . $this->ip           // }
+			. '|' . $this->forwardedip  // } private data not known to those without access
+			. '|' . $this->useragent    // }
+			. '|' . $this->email        // }
+			. '|' . $this->status;      // to rudimentarily invalidate the token on status change
+
+		return hash('sha256', $data);
+	}
 }

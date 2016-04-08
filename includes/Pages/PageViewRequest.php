@@ -25,6 +25,7 @@ use Waca\WebRequest;
 
 class PageViewRequest extends InternalPageBase
 {
+	const PRIVATE_DATA_BARRIER = 'privateData';
 	const STATUS_SYMBOL_OPEN = '&#x2610';
 	const STATUS_SYMBOL_ACCEPTED = '&#x2611';
 	const STATUS_SYMBOL_REJECTED = '&#x2612';
@@ -82,7 +83,7 @@ class PageViewRequest extends InternalPageBase
 			$this->assign('requestDataCleared', true);
 		}
 
-		$allowedPrivateData = true && $this->isAllowedPrivateData();
+		$allowedPrivateData = true && $this->isAllowedPrivateData($request, $currentUser);
 
 		$this->setupLogData($request, $database);
 
@@ -205,13 +206,32 @@ class PageViewRequest extends InternalPageBase
 	/**
 	 * Returns a value stating whether the user is allowed to see private data or not
 	 *
+	 * @param Request $request
+	 * @param User    $currentUser
+	 *
 	 * @return bool
 	 * @category Security-Critical
-	 * @todo     Implement me!
 	 */
-	private function isAllowedPrivateData()
+	private function isAllowedPrivateData(Request $request, User $currentUser)
 	{
-		return true;
+		// Test the main security barrier for private data access using SecurityManager
+		if ($this->barrierTest(self::PRIVATE_DATA_BARRIER)) {
+			// Tool admins/check-users can always see private data
+			return true;
+		}
+
+		// reserving user is allowed to see the data
+		if ($currentUser->getId() === $request->getReserved() && $request->getReserved() !== 0) {
+			return true;
+		}
+
+		// user has the reveal hash
+		if (WebRequest::getString('hash') === $request->getRevealHash()) {
+			return true;
+		}
+
+		// nope. Not allowed.
+		return false;
 	}
 
 	private function setupLogData(Request $request, PdoDatabase $database)
@@ -339,7 +359,8 @@ class PageViewRequest extends InternalPageBase
 			$currentUser->isCheckuser()
 		) {
 			$this->assign('showRevealLink', true);
-			$this->assign('revealHash', false); // @todo
+
+			$this->assign('revealHash', $request->getRevealHash());
 		}
 
 		$this->setupForwardedIpData($request);
@@ -449,7 +470,12 @@ class PageViewRequest extends InternalPageBase
 	 */
 	protected function getSecurityConfiguration()
 	{
-		return $this->getSecurityManager()->configure()->asInternalPage();
+		switch ($this->getRouteName()) {
+			case self::PRIVATE_DATA_BARRIER:
+				return $this->getSecurityManager()->configure()->asGeneralPrivateDataAccess();
+			default:
+				return $this->getSecurityManager()->configure()->asInternalPage();
+		}
 	}
 
 	/**

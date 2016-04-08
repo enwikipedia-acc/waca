@@ -122,6 +122,33 @@ final class SecurityConfigurationFactory
 	}
 
 	/**
+	 * Special case for zoom page private data.
+	 *
+	 * This will only return true if you are either a checkuser or a tool admin, taking special note of disabled
+	 * accounts which happen to be check users
+	 *
+	 * @return SecurityConfiguration
+	 */
+	public function asGeneralPrivateDataAccess()
+	{
+		$config = new SecurityConfiguration();
+		$config
+			// Basic configuration, admins and check users allowed
+			->setAdmin(SecurityConfiguration::ALLOW)
+			->setCheckuser(SecurityConfiguration::ALLOW)
+			// Deny these, even if they were allowed by the above
+			->setCommunity(SecurityConfiguration::DENY)
+			->setSuspended(SecurityConfiguration::DENY)
+			->setDeclined(SecurityConfiguration::DENY)
+			->setNew(SecurityConfiguration::DENY);
+
+		// You must also be identified to access this data
+		$config->setRequireIdentified($this->forceIdentified);
+
+		return $config;
+	}
+
+	/**
 	 * @category Security-Critical
 	 * @return SecurityConfiguration
 	 */

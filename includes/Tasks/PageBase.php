@@ -35,17 +35,18 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 	protected $tokenManager;
 
 	/**
-	 * Sets the route the request will take. Only should be called from the request router.
+	 * Sets the route the request will take. Only should be called from the request router or barrier test.
 	 *
-	 * @param $routeName string
+	 * @param string $routeName        The name of the route
+	 * @param bool   $skipCallableTest Don't use this unless you know what you're doing, and what the implications are.
 	 *
 	 * @throws Exception
 	 * @category Security-Critical
 	 */
-	final public function setRoute($routeName)
+	final public function setRoute($routeName, $skipCallableTest = false)
 	{
 		// Test the new route is callable before adopting it.
-		if (!is_callable(array($this, $routeName))) {
+		if (!$skipCallableTest && !is_callable(array($this, $routeName))) {
 			throw new Exception("Proposed route '$routeName' is not callable.");
 		}
 
