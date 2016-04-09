@@ -74,13 +74,17 @@ class PageCloseRequest extends RequestActionBase
 		$request->setReserved(0);
 
 		Logger::closeRequest($database, $request, $template->getId(), null);
+
+		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
+		$request->save();
+
+		// Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE and
+		// be rolled back.
+
 		$this->getNotificationHelper()->requestClosed($request, $template->getName());
 		SessionAlert::success("Request {$request->getId()} has been closed");
 
 		$this->sendMail($request, $template->getText(), $currentUser, false);
-
-		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
-		$request->save();
 
 		$this->redirect();
 	}

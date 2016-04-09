@@ -13,6 +13,7 @@ use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Helpers\Logger;
 use Waca\PdoDatabase;
 use Waca\SessionAlert;
@@ -126,53 +127,6 @@ class PageCustomClose extends PageCloseRequest
 	}
 
 	/**
-	 * @param string      $action
-	 * @param Request     $request
-	 * @param PdoDatabase $database
-	 * @param string      $messageBody
-	 */
-	protected function closeRequest($action, Request $request, PdoDatabase $database, $messageBody)
-	{
-		$request->setStatus('Closed');
-
-		if ($action == EmailTemplate::CREATED) {
-			$logCloseType = 'custom-y';
-			$notificationCloseType = "Custom, Created";
-		}
-		else {
-			$logCloseType = 'custom-n';
-			$notificationCloseType = "Custom, Not Created";
-		}
-
-		Logger::closeRequest($database, $request, $logCloseType, $messageBody);
-		$this->getNotificationHelper()->requestClosed($request, $notificationCloseType);
-
-		$requestName = htmlentities($request->getName(), ENT_COMPAT, 'UTF-8');
-		SessionAlert::success("Request {$request->getId()} ({$requestName}) marked as 'Done'.");
-	}
-
-	/**
-	 * @param Request     $request
-	 * @param string      $action
-	 * @param array       $availableRequestStates
-	 * @param PdoDatabase $database
-	 * @param string      $messageBody
-	 */
-	protected function deferRequest($request, $action, $availableRequestStates, $database, $messageBody)
-	{
-		$request->setStatus($action);
-
-		$detolog = $availableRequestStates[$action]['defertolog'];
-		Logger::sentMail($database, $request, $messageBody);
-		Logger::deferRequest($database, $request, $detolog);
-
-		$this->getNotificationHelper()->requestDeferredWithMail($request);
-
-		$deto = $availableRequestStates[$action]['deferto'];
-		SessionAlert::success("Request {$request->getId()} deferred to $deto, sending an email.");
-	}
-
-	/**
 	 * @param User        $currentUser
 	 * @param Request     $request
 	 * @param PdoDatabase $database
@@ -198,14 +152,21 @@ class PageCustomClose extends PageCloseRequest
 
 		if ($action === EmailTemplate::CREATED || $action === EmailTemplate::NOT_CREATED) {
 			// Close request
-			$this->closeRequest($action, $request, $database, $messageBody);
+			$this->closeRequest($request, $database, $action, $messageBody);
 		}
 		else {
 			if (array_key_exists($action, $availableRequestStates)) {
 				// Defer to other state
-				$this->deferRequest($request, $action, $availableRequestStates, $database, $messageBody);
+				$this->deferRequest($request, $database, $action, $availableRequestStates, $messageBody);
 			}
 			else {
+				$request->setReserved(0);
+				$request->setUpdateVersion(WebRequest::postInt('updateversion'));
+				$request->save();
+
+				// Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE
+				// and be rolled back.
+
 				// Send mail
 				Logger::sentMail($database, $request, $messageBody);
 				Logger::unreserve($database, $request);
@@ -214,10 +175,75 @@ class PageCustomClose extends PageCloseRequest
 				SessionAlert::success("Sent mail to Request {$request->getId()}");
 			}
 		}
+	}
 
+	/**
+	 * @param Request     $request
+	 * @param PdoDatabase $database
+	 * @param string      $action
+	 * @param string      $messageBody
+	 *
+	 * @throws Exception
+	 * @throws OptimisticLockFailedException
+	 */
+	protected function closeRequest(Request $request, PdoDatabase $database, $action, $messageBody)
+	{
+		$request->setStatus('Closed');
 		$request->setReserved(0);
-		// @todo restructure this... if updateversion fails then the mail has still been sent and alerts triggered. :/
 		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
 		$request->save();
+
+		// Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE and
+		// be rolled back.
+
+		if ($action == EmailTemplate::CREATED) {
+			$logCloseType = 'custom-y';
+			$notificationCloseType = "Custom, Created";
+		}
+		else {
+			$logCloseType = 'custom-n';
+			$notificationCloseType = "Custom, Not Created";
+		}
+
+		Logger::closeRequest($database, $request, $logCloseType, $messageBody);
+		$this->getNotificationHelper()->requestClosed($request, $notificationCloseType);
+
+		$requestName = htmlentities($request->getName(), ENT_COMPAT, 'UTF-8');
+		SessionAlert::success("Request {$request->getId()} ({$requestName}) marked as 'Done'.");
+	}
+
+	/**
+	 * @param Request $request
+	 * @param PdoDatabase $database
+	 * @param string      $action
+	 * @param             $availableRequestStates
+	 * @param string      $messageBody
+	 *
+	 * @throws Exception
+	 * @throws OptimisticLockFailedException
+	 */
+	protected function deferRequest(
+		Request $request,
+		PdoDatabase $database,
+		$action,
+		$availableRequestStates,
+		$messageBody
+	) {
+		$request->setStatus($action);
+		$request->setReserved(0);
+		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
+		$request->save();
+
+		// Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE
+		// and be rolled back.
+
+		$deferToLog = $availableRequestStates[$action]['defertolog'];
+		Logger::sentMail($database, $request, $messageBody);
+		Logger::deferRequest($database, $request, $deferToLog);
+
+		$this->getNotificationHelper()->requestDeferredWithMail($request);
+
+		$deferTo = $availableRequestStates[$action]['deferto'];
+		SessionAlert::success("Request {$request->getId()} deferred to $deferTo, sending an email.");
 	}
 }
