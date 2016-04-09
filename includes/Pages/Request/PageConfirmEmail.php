@@ -56,17 +56,18 @@ class PageConfirmEmail extends PublicInterfacePageBase
 		try {
 			$request->save();
 		}
-		catch(OptimisticLockFailedException $ex){
+		catch (OptimisticLockFailedException $ex) {
 			// Okay. Someone's edited this in the time between us loading this page and doing the checks, and us getting
 			// to saving the page. We *do not* want to show an optimistic lock failure, the most likely problem is they
 			// double-loaded this page (see #255). Let's confirm this, and bomb out with a success message if it's the
 			// case.
 
 			$request = Request::getById($id, $this->getDatabase());
-			if($request->getEmailConfirm() === 'Confirmed') {
+			if ($request->getEmailConfirm() === 'Confirmed') {
 				// we've already done the sanity checks above
 
 				$this->redirect('requestSubmitted');
+
 				// skip the log and notification
 				return;
 			}

@@ -164,6 +164,8 @@ interface ITask
 
 	/**
 	 * @param TorExitProvider $torExitProvider
+	 *
+	 * @return void
 	 */
 	public function setTorExitProvider($torExitProvider);
 }
