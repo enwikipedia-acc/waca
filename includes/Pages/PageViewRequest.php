@@ -150,7 +150,7 @@ class PageViewRequest extends InternalPageBase
 	 */
 	protected function setupReservationDetails($requestReservationId, PdoDatabase $database, User $currentUser)
 	{
-		$requestIsReserved = $requestReservationId != 0;
+		$requestIsReserved = $requestReservationId !== null;
 		$this->assign('requestIsReserved', $requestIsReserved);
 		$this->assign('requestIsReservedByMe', false);
 
@@ -222,7 +222,7 @@ class PageViewRequest extends InternalPageBase
 		}
 
 		// reserving user is allowed to see the data
-		if ($currentUser->getId() === $request->getReserved() && $request->getReserved() !== 0) {
+		if ($currentUser->getId() === $request->getReserved() && $request->getReserved() !== null) {
 			return true;
 		}
 

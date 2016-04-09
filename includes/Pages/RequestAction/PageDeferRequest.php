@@ -67,7 +67,7 @@ class PageDeferRequest extends RequestActionBase
 				"Only administrators and checkusers can reserve a request that has been closed for over a week.");
 		}
 
-		$request->setReserved(0);
+		$request->setReserved(null);
 		$request->setStatus($target);
 		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
 		$request->save();

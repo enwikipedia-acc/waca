@@ -197,8 +197,7 @@ SQL
 	}
 
 	/**
-	 * @todo allow this to return null instead
-	 * @return int
+	 * @return int|null
 	 */
 	public function getReserved()
 	{
@@ -210,11 +209,6 @@ SQL
 	 */
 	public function setReserved($reserved)
 	{
-		if ($reserved === null) {
-			// @todo this shouldn't be needed!
-			$reserved = 0;
-		}
-
 		$this->reserved = $reserved;
 	}
 

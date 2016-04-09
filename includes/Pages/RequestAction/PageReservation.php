@@ -39,11 +39,11 @@ class PageReservation extends RequestActionBase
 				"Only administrators and checkusers can reserve a request that has been closed for over a week.");
 		}
 
-		if ($request->getReserved() != 0 && $request->getReserved() != User::getCurrent($database)->getId()) {
+		if ($request->getReserved() !== null && $request->getReserved() != User::getCurrent($database)->getId()) {
 			throw new ApplicationLogicException("Request is already reserved!");
 		}
 
-		if ($request->getReserved() == 0) {
+		if ($request->getReserved() === null) {
 			// Check the number of requests a user has reserved already
 			$doubleReserveCountQuery = $database->prepare("SELECT COUNT(*) FROM request WHERE reserved = :userid;");
 			$doubleReserveCountQuery->bindValue(":userid", User::getCurrent($database)->getId());

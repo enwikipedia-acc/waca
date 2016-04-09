@@ -26,7 +26,7 @@ class PageBreakReservation extends RequestActionBase
 		$database = $this->getDatabase();
 		$request = $this->getRequest($database);
 
-		if ($request->getReserved() === 0 || $request->getReserved() === null) {
+		if ($request->getReserved() === null) {
 			throw new ApplicationLogicException('Request is not reserved!');
 		}
 
@@ -55,7 +55,7 @@ class PageBreakReservation extends RequestActionBase
 	protected function doUnreserve(Request $request, PdoDatabase $database)
 	{
 		// same user! we allow people to unreserve their own stuff
-		$request->setReserved(0);
+		$request->setReserved(null);
 		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
 		$request->save();
 
@@ -76,7 +76,7 @@ class PageBreakReservation extends RequestActionBase
 	{
 		// @todo add a confirmation here
 
-		$request->setReserved(0);
+		$request->setReserved(null);
 		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
 		$request->save();
 

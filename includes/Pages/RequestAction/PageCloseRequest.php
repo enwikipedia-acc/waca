@@ -71,7 +71,7 @@ class PageCloseRequest extends RequestActionBase
 
 		// I think we're good here...
 		$request->setStatus('Closed');
-		$request->setReserved(0);
+		$request->setReserved(null);
 
 		Logger::closeRequest($database, $request, $template->getId(), null);
 

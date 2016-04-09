@@ -160,7 +160,7 @@ class PageCustomClose extends PageCloseRequest
 				$this->deferRequest($request, $database, $action, $availableRequestStates, $messageBody);
 			}
 			else {
-				$request->setReserved(0);
+				$request->setReserved(null);
 				$request->setUpdateVersion(WebRequest::postInt('updateversion'));
 				$request->save();
 
@@ -189,7 +189,7 @@ class PageCustomClose extends PageCloseRequest
 	protected function closeRequest(Request $request, PdoDatabase $database, $action, $messageBody)
 	{
 		$request->setStatus('Closed');
-		$request->setReserved(0);
+		$request->setReserved(null);
 		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
 		$request->save();
 
@@ -230,7 +230,7 @@ class PageCustomClose extends PageCloseRequest
 		$messageBody
 	) {
 		$request->setStatus($action);
-		$request->setReserved(0);
+		$request->setReserved(null);
 		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
 		$request->save();
 

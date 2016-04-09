@@ -35,6 +35,9 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
     -- -------------------------------------------------------------------------
     
     ALTER TABLE welcometemplate ADD COLUMN deleted INT(11) NOT NULL DEFAULT 0;
+
+    ALTER TABLE request MODIFY reserved INT(11) DEFAULT NULL COMMENT 'User ID of user who has "reserved" this request';
+    UPDATE request SET reserved = null WHERE reserved = 0;
     
     -- -------------------------------------------------------------------------
     -- finally, update the schema version to indicate success

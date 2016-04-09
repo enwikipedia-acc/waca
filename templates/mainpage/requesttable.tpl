@@ -63,14 +63,14 @@
 
             {* Reserve status *}
             <td>
-                {if $r->getReserved() != false && $r->getReserved() != $currentUser->getId()}
+                {if $r->getReserved() !== null && $r->getReserved() != $currentUser->getId()}
                     <span class="visible-desktop">Being handled by {$userlist[$r->getReserved()]|escape}</span>
                 {/if}
             </td>
 
             {* Reserve Button *}
             <td>
-                {if $r->getReserved() == false}
+                {if $r->getReserved() === null}
                     <form action="{$baseurl}/internal.php/viewRequest/reserve" method="post" class="form-compact">
                         {include file="security/csrf.tpl"}
                         <input type="hidden" name="request" value="{$r->getId()}"/>
