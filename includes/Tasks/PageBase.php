@@ -170,14 +170,6 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 			return;
 		}
 
-		// as new users can actually stay logged in
-		if (User::getCurrent($this->getDatabase())->isNew()) {
-			$registeredSuccessfully = new SessionAlert(
-				'Your request will be reviewed soon by a tool administrator, and you\'ll get an email informing you of the decision. You won\'t be able to access most of the tool until then.',
-				'Account Requested!', 'alert-success', false);
-			SessionAlert::append($registeredSuccessfully);
-		}
-
 		// If we're actually displaying content, we want to add the session alerts here!
 		$this->assign('alerts', SessionAlert::getAlerts());
 		SessionAlert::clearAlerts();
