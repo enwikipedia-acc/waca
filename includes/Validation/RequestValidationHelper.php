@@ -104,13 +104,11 @@ class RequestValidationHelper
 		}
 
 		// username already exists
-		// TODO: implement
 		if ($this->userExists()) {
 			$errorList[ValidationError::NAME_EXISTS] = new ValidationError(ValidationError::NAME_EXISTS);
 		}
 
 		// username part of SUL account
-		// TODO: implement
 		if ($this->userSulExists()) {
 			// using same error slot as name exists - it's the same sort of error, and we probably only want to show one.
 			$errorList[ValidationError::NAME_EXISTS] = new ValidationError(ValidationError::NAME_EXISTS_SUL);
@@ -127,16 +125,8 @@ class RequestValidationHelper
 		}
 
 		// existing non-closed request for this name
-		// TODO: implement
 		if ($this->nameRequestExists()) {
 			$errorList[ValidationError::OPEN_REQUEST_NAME] = new ValidationError(ValidationError::OPEN_REQUEST_NAME);
-		}
-
-		// WARNINGS
-		// name has to be sanitised
-		// TODO: implement
-		if (false) {
-			$errorList[ValidationError::NAME_SANITISED] = new ValidationError(ValidationError::NAME_SANITISED, false);
 		}
 
 		return $errorList;
@@ -259,7 +249,7 @@ class RequestValidationHelper
 
 	private function userExists()
 	{
-		$userexist = $this->httpHelper->get(
+		$userExists = $this->httpHelper->get(
 			$this->mediawikiApiEndpoint,
 			array(
 				'action'  => 'query',
@@ -269,7 +259,7 @@ class RequestValidationHelper
 			)
 		);
 
-		$ue = unserialize($userexist);
+		$ue = unserialize($userExists);
 		if (!isset ($ue['query']['users']['0']['missing']) && isset ($ue['query']['users']['0']['userid'])) {
 			return true;
 		}
@@ -280,20 +270,20 @@ class RequestValidationHelper
 	private function userSulExists()
 	{
 		// @todo is this really necessary?!
-		// $reqname = str_replace("_", " ", $this->request->getName());
-		$reqname = $this->request->getName();
+		// $requestName = str_replace("_", " ", $this->request->getName());
+		$requestName = $this->request->getName();
 
-		$userexist = $this->httpHelper->get(
+		$userExists = $this->httpHelper->get(
 			$this->mediawikiApiEndpoint,
 			array(
 				'action'  => 'query',
 				'meta'    => 'globaluserinfo',
-				'guiuser' => $reqname,
+				'guiuser' => $requestName,
 				'format'  => 'php',
 			)
 		);
 
-		$ue = unserialize($userexist);
+		$ue = unserialize($userExists);
 		if (isset ($ue['query']['globaluserinfo']['id'])) {
 			return true;
 		}
@@ -301,6 +291,11 @@ class RequestValidationHelper
 		return false;
 	}
 
+	/**
+	 * Checks if a request with this name is currently open
+	 *
+	 * @return bool
+	 */
 	private function nameRequestExists()
 	{
 		$query = "SELECT COUNT(id) FROM request WHERE status != 'Closed' AND name = :name;";

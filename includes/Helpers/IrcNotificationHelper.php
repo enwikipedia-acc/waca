@@ -57,7 +57,7 @@ class IrcNotificationHelper
 	) {
 		$this->primaryDatabase = $primaryDatabase;
 
-		if (true) {
+		if ($this->notificationsDatabase !== null) {
 			$this->notificationsDatabase = $notificationsDatabase;
 			$this->notificationsEnabled = $siteConfiguration->getIrcNotificationsEnabled();
 		}
