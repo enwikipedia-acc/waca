@@ -38,6 +38,8 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
 
     ALTER TABLE request MODIFY reserved INT(11) DEFAULT NULL COMMENT 'User ID of user who has "reserved" this request';
     UPDATE request SET reserved = null WHERE reserved = 0;
+
+    ALTER TABLE request DROP checksum;
     
     -- -------------------------------------------------------------------------
     -- finally, update the schema version to indicate success

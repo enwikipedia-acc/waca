@@ -43,14 +43,13 @@ class Request extends DataObject
 	{
 		if ($this->isNew()) {
 			// insert
-			// @todo drop the checksum column
 			$statement = $this->dbObject->prepare(<<<SQL
 INSERT INTO `request` (
 	email, ip, name, comment, status, date, emailsent,
-	emailconfirm, reserved, useragent, forwardedip, checksum
+	emailconfirm, reserved, useragent, forwardedip
 ) VALUES (
 	:email, :ip, :name, :comment, :status, CURRENT_TIMESTAMP(), :emailsent,
-	:emailconfirm, :reserved, :useragent, :forwardedip, ''
+	:emailconfirm, :reserved, :useragent, :forwardedip
 );
 SQL
 			);
