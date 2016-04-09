@@ -15,8 +15,6 @@ class AutoLoader
 {
 	public static function load($class)
 	{
-		global $filepath;
-
 		// handle namespaces sensibly
 		if (strpos($class, "Waca") !== false) {
 			// strip off the initial namespace
@@ -27,14 +25,14 @@ class AutoLoader
 		}
 
 		$paths = array(
-			$filepath . 'includes/' . $class . ".php",
-			$filepath . 'includes/DataObjects/' . $class . ".php",
-			$filepath . 'includes/Providers/' . $class . ".php",
-			$filepath . 'includes/Providers/Interfaces/' . $class . ".php",
-			$filepath . 'includes/Validation/' . $class . ".php",
-			$filepath . 'includes/Helpers/' . $class . ".php",
-			$filepath . 'includes/Helpers/Interfaces/' . $class . ".php",
-			$filepath . $class . ".php",
+			__DIR__ . '/' . $class . ".php",
+			__DIR__ . '/DataObjects/' . $class . ".php",
+			__DIR__ . '/Providers/' . $class . ".php",
+			__DIR__ . '/Providers/Interfaces/' . $class . ".php",
+			__DIR__ . '/Validation/' . $class . ".php",
+			__DIR__ . '/Helpers/' . $class . ".php",
+			__DIR__ . '/Helpers/Interfaces/' . $class . ".php",
+			__DIR__ . '/' . $class . ".php",
 		);
 
 		foreach ($paths as $file) {

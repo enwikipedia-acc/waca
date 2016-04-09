@@ -45,9 +45,6 @@ $metaWikimediaWebServiceEndpoint = "https://meta.wikimedia.org/w/api.php";
 // URL of the current copy of the tool.
 $baseurl = "https://accounts.wmflabs.org";
 
-// Root pathname of the local installation of the tool.
-$filepath = "/projects/acc/www/"; 
-
 // Pathname to the local installation of Peachy.
 $peachyPath = ""; 
 
@@ -289,13 +286,13 @@ foreach (array(
 	) as $x) {if (!extension_loaded($x)) {die("extension $x is required."); }}
 
 // Set up the AutoLoader
-require_once($filepath . "includes/AutoLoader.php");
+require_once(__DIR__ . "/includes/AutoLoader.php");
 spl_autoload_register('Waca\\AutoLoader::load');
-require_once($filepath . 'vendor/autoload.php');
+require_once(__DIR__ . '/vendor/autoload.php');
 
 // Extra includes which are just plain awkward wherever they are.
-require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/OAuth.php');
-require_once($filepath . 'lib/mediawiki-extensions-OAuth/lib/JWT.php');
+require_once(__DIR__ . '/lib/mediawiki-extensions-OAuth/lib/OAuth.php');
+require_once(__DIR__ . '/lib/mediawiki-extensions-OAuth/lib/JWT.php');
 
 // Crap that's needed for libraries. >:(
 /**
@@ -312,7 +309,7 @@ function wfDebugLog($section, $message)
 $siteConfiguration = new \Waca\SiteConfiguration();
 
 $siteConfiguration->setBaseUrl($baseurl)
-	->setFilePath($filepath)
+	->setFilePath(__DIR__)
 	->setDebuggingTraceEnabled($enableErrorTrace)
 	->setForceIdentification($forceIdentification)
 	->setIdentificationCacheExpiry($identificationCacheExpiry)

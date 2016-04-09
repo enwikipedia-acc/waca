@@ -92,7 +92,6 @@ $dontUseWikiDb = 1;
 
 // Paths and stuff
 $baseurl = "http://localhost/waca";
-$filepath = "C:/xampp/htdocs/waca/"; 
 $cookiepath = '/waca/';
 
 $whichami = "MyName";

@@ -19,7 +19,7 @@ class PageTeam extends InternalPageBase
 	 */
 	protected function main()
 	{
-		$path = $this->getSiteConfiguration()->getFilePath() . 'team.json';
+		$path = $this->getSiteConfiguration()->getFilePath() . '/team.json';
 		$json = file_get_contents($path);
 
 		$teamData = json_decode($json, true);

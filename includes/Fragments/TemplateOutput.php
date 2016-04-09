@@ -55,7 +55,7 @@ trait TemplateOutput
 	final protected function setUpSmarty()
 	{
 		$this->smarty = new Smarty();
-		$this->smarty->addPluginsDir($this->getSiteConfiguration()->getFilePath() . 'smarty-plugins');
+		$this->smarty->addPluginsDir($this->getSiteConfiguration()->getFilePath() . '/smarty-plugins');
 
 		$this->assign('currentUser', User::getCommunity());
 		$this->assign('loggedIn', false);
