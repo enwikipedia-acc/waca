@@ -110,7 +110,7 @@ class IpLocationProvider implements ILocationProvider
 		catch (Exception $ex) {
 			return null;
 
-			// TODO: do something smart here, or wherever we use this value.
+			// LOGME: do something smart here, or wherever we use this value.
 			// This is just a temp hack to squash errors on the UI for now.
 		}
 

@@ -229,8 +229,7 @@ class RequestValidationHelper
 			}
 		}
 		catch (Exception $ex) {
-			// hrm.
-			// TODO: log this?
+			// logme
 		}
 	}
 

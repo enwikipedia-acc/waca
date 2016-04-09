@@ -57,7 +57,7 @@ class BlacklistHelper implements IBlacklistHelper
 			$result = $this->performWikiLookup($username);
 		}
 		catch (CurlException $ex) {
-			// @todo log this, but fail gracefully.
+			// LOGME log this, but fail gracefully.
 			return false;
 		}
 

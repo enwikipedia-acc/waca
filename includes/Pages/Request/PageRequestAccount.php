@@ -158,7 +158,7 @@ class PageRequestAccount extends PublicInterfacePageBase
 	 */
 	protected function saveWithoutEmailConfirmation(Request $request)
 	{
-		$request->setEmailConfirm(0); // Since it can't be null @todo fixme
+		$request->setEmailConfirm(0); // fixme Since it can't be null
 		$request->save();
 
 		$this->getNotificationHelper()->requestReceived($request);

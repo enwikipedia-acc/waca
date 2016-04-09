@@ -89,7 +89,7 @@ class PageViewRequest extends InternalPageBase
 		$this->setupLogData($request, $database);
 
 		if ($allowedPrivateData) {
-			// todo: logging?
+			// todo: logging on private data access
 
 			$this->setupPrivateData($request, $currentUser, $this->getSiteConfiguration());
 
