@@ -63,8 +63,6 @@ trait TemplateOutput
 		$this->assign('mediawikiScriptPath', $this->getSiteConfiguration()->getMediawikiScriptPath());
 
 		$this->assign('siteNoticeText', '');
-
-		// TODO: this isn't mockable either, and has side effects if you don't have git
 		$this->assign('toolversion', Environment::getToolVersion());
 
 		// default these

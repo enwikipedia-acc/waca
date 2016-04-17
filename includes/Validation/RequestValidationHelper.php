@@ -269,8 +269,6 @@ class RequestValidationHelper
 
 	private function userSulExists()
 	{
-		// @todo is this really necessary?!
-		// $requestName = str_replace("_", " ", $this->request->getName());
 		$requestName = $this->request->getName();
 
 		$userExists = $this->httpHelper->get(
