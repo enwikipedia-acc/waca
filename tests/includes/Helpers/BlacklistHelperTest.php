@@ -18,7 +18,7 @@ class BlacklistHelperTest extends PHPUnit_Framework_TestCase
 	private $httpHelperMock;
 	private $blh;
 
-	public function __construct()
+	public function setUp()
 	{
 		if (!extension_loaded('runkit')) {
 			$this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit');
@@ -33,7 +33,7 @@ class BlacklistHelperTest extends PHPUnit_Framework_TestCase
 		$this->blh = new BlacklistHelper($this->httpHelperMock, "http://127.0.0.1");
 	}
 
-	public function __destruct()
+	public function tearDown()
 	{
 		$this->blh = NULL;
 	}
