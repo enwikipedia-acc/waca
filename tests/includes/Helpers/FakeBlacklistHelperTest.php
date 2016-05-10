@@ -35,12 +35,10 @@ class FakeBlacklistHelperTest extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(false, $this->fblh->isBlacklisted($username));
 		$this->assertNotEquals(true, $this->fblh->isBlacklisted($username));
-		$this->assertNotEquals("", $this->fblh->isBlacklisted($username));
 
 		$username = "poop";
 
 		$this->assertEquals(false, $this->fblh->isBlacklisted($username));
 		$this->assertNotEquals(true, $this->fblh->isBlacklisted($username));
-		$this->assertNotEquals("", $this->fblh->isBlacklisted($username));
 	}
 }
