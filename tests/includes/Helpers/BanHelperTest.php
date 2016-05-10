@@ -26,28 +26,15 @@ class BanHelperTest extends PHPUnit_Framework_TestCase
 			return;
 		}
 
-		/*
-		$this->stmt = $this->getMock('PDOStatement', array ('execute','fetchAll'));
-		$this->stmt->expects($this->any())
-			->method('execute')
-			->will($this->returnValue(true));
-		$this->stmt->expects($this->any())
-			->method('fetchAll')
-			->will($this->returnValue(NULL));
-*/
-		/*$this->db = $this->getMock('PdoDatabase', array('prepare'),
-			/*array('sqlite:dbname=:memory')* / array(),'PdoMock',true);
-		$this->db->expects($this->any())
-			->method('prepare')
-			->will($this->returnValue($this->stmt));*/
-
-		$this->markTestSkipped("Testing");
-
 		$this->dbMock = $this->getMockBuilder(PdoDatabase::class)->disableOriginalConstructor()->getMock();
-		$this->statement = $this->getMockBuilder(PDOStatement::class)->disableOriginalConstructor()->getMock();
-		$this->statement->method('fetchColumn')->willReturn(0);
-		$this->statement->method('bindValue')->with($this->anything())->willReturn(0);
+
+		$this->statement = $this->getMockBuilder(PDOStatement::class)
+			//->disableOriginalConstructor()
+			->setMethods(array("fetchColumn","bindValue","execute","fetchObject"))
+			->getMock();
 		$this->dbMock->method('prepare')->willReturn($this->statement);
+
+		//var_dump(get_class_methods(get_class($this->statement)));
 
 		$this->bh = new BanHelper($this->dbMock);
 	}
@@ -58,6 +45,7 @@ class BanHelperTest extends PHPUnit_Framework_TestCase
 
 	public function testNameIsBanned() {
 		$name = "Testing";
+		$this->statement->method("fetchObject")->willReturn(false);
 		$this->assertEquals($this->bh->nameIsBanned($name), false);
 	}
 }
