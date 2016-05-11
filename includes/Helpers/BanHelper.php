@@ -19,8 +19,7 @@ class BanHelper implements IBanHelper
 	 */
 	private $database;
 
-	public function __construct(PdoDatabase $database)
-	{
+	public function __construct(PdoDatabase $database) {
 		$this->database = $database;
 	}
 
@@ -31,8 +30,7 @@ class BanHelper implements IBanHelper
 	 *
 	 * @return Ban
 	 */
-	public function nameIsBanned($name)
-	{
+	public function nameIsBanned($name) {
 		return Ban::getBanByTarget($name, "Name", $this->database);
 	}
 
@@ -43,8 +41,7 @@ class BanHelper implements IBanHelper
 	 *
 	 * @return Ban
 	 */
-	public function emailIsBanned($email)
-	{
+	public function emailIsBanned($email) {
 		return Ban::getBanByTarget($email, "EMail", $this->database);
 	}
 
@@ -55,8 +52,7 @@ class BanHelper implements IBanHelper
 	 *
 	 * @return Ban
 	 */
-	public function ipIsBanned($ip)
-	{
+	public function ipIsBanned($ip) {
 		return Ban::getBanByTarget($ip, "IP", $this->database);
 	}
 }

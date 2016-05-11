@@ -18,8 +18,7 @@ namespace Waca\Helpers;
  */
 class DebugHelper
 {
-	public static function getBacktrace()
-	{
+	public static function getBacktrace() {
 		$backtrace = debug_backtrace();
 
 		$output = "";

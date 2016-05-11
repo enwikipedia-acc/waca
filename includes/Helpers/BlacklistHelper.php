@@ -29,8 +29,7 @@ class BlacklistHelper implements IBlacklistHelper
 	 * @param HttpHelper $httpHelper
 	 * @param string     $mediawikiWebServiceEndpoint
 	 */
-	public function __construct(HttpHelper $httpHelper, $mediawikiWebServiceEndpoint)
-	{
+	public function __construct(HttpHelper $httpHelper, $mediawikiWebServiceEndpoint) {
 		$this->httpHelper = $httpHelper;
 		$this->mediawikiWebServiceEndpoint = $mediawikiWebServiceEndpoint;
 	}
@@ -42,8 +41,7 @@ class BlacklistHelper implements IBlacklistHelper
 	 *
 	 * @return false|string False if the username is not blacklisted, else the blacklist entry.
 	 */
-	public function isBlacklisted($username)
-	{
+	public function isBlacklisted($username) {
 		if (isset($this->cache[$username])) {
 			$result = $this->cache[$username];
 			if ($result === false) {
@@ -82,8 +80,7 @@ class BlacklistHelper implements IBlacklistHelper
 	 * @return array
 	 * @throws CurlException
 	 */
-	private function performWikiLookup($username)
-	{
+	private function performWikiLookup($username) {
 		$endpoint = $this->mediawikiWebServiceEndpoint;
 
 		$parameters = array(

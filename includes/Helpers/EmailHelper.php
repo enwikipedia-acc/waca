@@ -18,8 +18,7 @@ class EmailHelper implements IEmailHelper
 	 * @param string $content
 	 * @param array  $headers Extra headers to include
 	 */
-	public function sendMail($to, $subject, $content, $headers = array())
-	{
+	public function sendMail($to, $subject, $content, $headers = array()) {
 		$headers['From'] = 'accounts-enwiki-l@lists.wikimedia.org';
 		$headerString = '';
 

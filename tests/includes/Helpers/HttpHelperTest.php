@@ -6,21 +6,16 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-namespace Waca\Helpers;
+namespace Waca\Tests\Helpers;
 
-use Waca\Helpers\Interfaces\IBlacklistHelper;
+use \PHPUnit_Framework_TestCase;
+use \Waca\Helpers\HttpHelper;
 
-class FakeBlacklistHelper implements IBlacklistHelper
+class HttpHelperTest extends PHPUnit_Framework_TestCase
 {
-	/**
-	 * Returns a value indicating whether the provided username is blacklisted by the on-wiki title blacklist
-	 *
-	 * @param string $username
-	 *
-	 * @return bool
-	 */
-	public function isBlacklisted($username) {
-		// Short-circuit
-		return false;
+	private $hh;
+
+	public function setUp() {
+
 	}
 }
