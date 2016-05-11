@@ -18,4 +18,16 @@ class HttpHelperTest extends PHPUnit_Framework_TestCase
 	public function setUp() {
 
 	}
+
+	public function tearDown() {
+		$this->hh = NULL;
+	}
+
+	public function testGet() {
+		$this->markTestIncomplete("Still being built");
+	}
+
+	public function testPost() {
+		$this->markTestIncomplete("Still being built");
+	}
 }
