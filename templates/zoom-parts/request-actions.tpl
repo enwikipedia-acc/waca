@@ -1,7 +1,7 @@
 <!-- tpl:zoom-parts/request-actions.tpl -->
 {if $showinfo == true && $isprotected == false && $request->getReserved() != 0}
 <div class="row-fluid">
-  <a class="btn btn-primary span12" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;wpEmail={$request->getEmail()|escape:'url'}&amp;wpReason=Requested%20account%20at%20%5B%5BWP%3AACC%5D%5D%2C%20request%20%23{$request->getId()}&amp;wpCreateaccountMail=true"{if !$currentUser->getAbortPref() && $createdEmailTemplate->getJsquestion() != ''} onclick="return confirm('{$createdEmailTemplate->getJsquestion()}')"{/if}>Create account</a>
+  <a class="btn btn-primary span12" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:UserLogin/signup&amp;wpName={$usernamerawunicode|escape:'url'}&amp;email={$request->getEmail()|escape:'url'}&amp;reason=Requested%20account%20at%20%5B%5BWP%3AACC%5D%5D%2C%20request%20%23{$request->getId()}&amp;wpCreateaccountMail=true"{if !$currentUser->getAbortPref() && $createdEmailTemplate->getJsquestion() != ''} onclick="return confirm('{$createdEmailTemplate->getJsquestion()}')"{/if}>Create account</a>
 </div>
 <hr />
 {/if}
