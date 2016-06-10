@@ -42,7 +42,7 @@
 {block name="createButton"}
     <div class="row-fluid">
         <a class="btn btn-primary span12" target="_blank"
-           href="{$mediawikiScriptPath}?title=Special:UserLogin/signup&amp;wpName={$requestName|escape:'url'}&amp;wpEmail={$requestEmail|escape:'url'}&amp;wpReason={$createAccountReason|escape:'url'}{$requestId}&amp;wpCreateaccountMail=true"
+           href="{$mediawikiScriptPath}?title=Special:UserLogin/signup&amp;wpName={$requestName|escape:'url'}&amp;email={$requestEmail|escape:'url'}&amp;reason={$createAccountReason|escape:'url'}{$requestId}&amp;wpCreateaccountMail=true"
                 {if !$currentUser->getAbortPref() && $createdHasJsQuestion} onclick="return confirm('{$createdJsQuestion}')"{/if}>
             Create account
         </a>
