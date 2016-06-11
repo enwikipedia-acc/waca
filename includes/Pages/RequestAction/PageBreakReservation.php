@@ -74,17 +74,26 @@ class PageBreakReservation extends RequestActionBase
 	 */
 	protected function doBreakReserve(Request $request, PdoDatabase $database)
 	{
-		// @todo add a confirmation here
+		if (!WebRequest::postBoolean("confirm")) {
+			$this->assignCSRFToken();
 
-		$request->setReserved(null);
-		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
-		$request->save();
+			$this->assign("request", $request->getId());
+			$this->assign("reservedUser", User::getById($request->getReserved(), $database));
+			$this->assign("updateversion", WebRequest::postInt('updateversion'));
 
-		Logger::breakReserve($database, $request);
-		$this->getNotificationHelper()->requestReserveBroken($request);
+			$this->setTemplate("confirmations/breakreserve.tpl");
+		}
+		else {
+			$request->setReserved(null);
+			$request->setUpdateVersion(WebRequest::postInt('updateversion'));
+			$request->save();
 
-		// Redirect home!
-		$this->redirect();
+			Logger::breakReserve($database, $request);
+			$this->getNotificationHelper()->requestReserveBroken($request);
+
+			// Redirect home!
+			$this->redirect();
+		}
 	}
 
 	/**
