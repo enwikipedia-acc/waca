@@ -103,7 +103,7 @@ class WebStart extends ApplicationBase
 		}
 		catch (EnvironmentException $ex) {
 			ob_end_clean();
-			print Offline::getOfflineMessage(false, $ex->getMessage());
+			print Offline::getOfflineMessage($this->isPublic(), $ex->getMessage());
 		}
 		catch (ReadableException $ex) {
 			ob_end_clean();
