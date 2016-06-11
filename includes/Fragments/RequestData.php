@@ -24,6 +24,7 @@ use Waca\WebRequest;
 
 trait RequestData
 {
+	use TemplateOutput;
 	/**
 	 * @var array Array of IP address classed as 'private' by RFC1918.
 	 */
@@ -89,19 +90,40 @@ trait RequestData
 		return false;
 	}
 
+	/**
+	 * Tests the security barrier for a specified action.
+	 *
+	 * Intended to be used from within templates
+	 *
+	 * @param string $action
+	 *
+	 * @return boolean
+	 * @category Security-Critical
+	 */
 	abstract protected function barrierTest($action);
+
+	/**
+	 * Gets the name of the route that has been passed from the request router.
+	 * @return string
+	 */
 	abstract protected function getRouteName();
 
 	/** @return SecurityManager */
 	abstract protected function getSecurityManager();
 
-	abstract protected function assign($name, $value);
+	/**
+	 * Sets the name of the template this page should display.
+	 *
+	 * @param string $name
+	 */
 	abstract protected function setTemplate($name);
 
 	/** @return IXffTrustProvider */
 	abstract protected function getXffTrustProvider();
+
 	/** @return ILocationProvider */
 	abstract protected function getLocationProvider();
+
 	/** @return IRDnsProvider */
 	abstract protected function getRdnsProvider();
 
@@ -135,8 +157,12 @@ trait RequestData
 	 *
 	 * @param PdoDatabase       $database
 	 */
-	protected function setupPrivateData($request, User $currentUser, SiteConfiguration $configuration, PdoDatabase $database)
-	{
+	protected function setupPrivateData(
+		$request,
+		User $currentUser,
+		SiteConfiguration $configuration,
+		PdoDatabase $database
+	) {
 		$xffProvider = $this->getXffTrustProvider();
 
 		$relatedEmailRequests = RequestSearchHelper::get($database)
@@ -196,7 +222,9 @@ trait RequestData
 	}
 
 	/**
-	 * @param Request $request
+	 * Sets up the basic data for this request, and adds it to Smarty
+	 *
+	 * @param Request           $request
 	 * @param SiteConfiguration $config
 	 */
 	protected function setupBasicData(Request $request, SiteConfiguration $config)
@@ -210,6 +238,11 @@ trait RequestData
 		$this->assign('requestIsClosed', !array_key_exists($request->getStatus(), $config->getRequestStates()));
 	}
 
+	/**
+	 * Sets up the forwarded IP data for this request and adds it to Smarty
+	 *
+	 * @param Request $request
+	 */
 	protected function setupForwardedIpData(Request $request)
 	{
 		if ($request->getForwardedIp() !== null) {

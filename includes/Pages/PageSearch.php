@@ -34,9 +34,10 @@ class PageSearch extends InternalPageBase
 			$searchTerm = WebRequest::postString('term');
 
 			$validationError = "";
-			if(!$this->validateSearchParameters($searchType, $searchTerm, $validationError)) {
+			if (!$this->validateSearchParameters($searchType, $searchTerm, $validationError)) {
 				SessionAlert::error($validationError, "Search error");
 				$this->redirect("search");
+
 				return;
 			}
 
@@ -157,15 +158,18 @@ class PageSearch extends InternalPageBase
 	{
 		if (!in_array($searchType, array('name', 'email', 'ip'))) {
 			$errorMessage = 'Unknown search type';
+
 			return false;
 		}
 
 		if ($searchTerm === '%' || $searchTerm === '' || $searchTerm === null) {
 			$errorMessage = 'No search term specified entered';
+
 			return false;
 		}
 
 		$errorMessage = "";
+
 		return true;
 	}
 }

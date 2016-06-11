@@ -48,7 +48,7 @@ class PageLogin extends InternalPageBase
 			try {
 				$user = $this->getAuthenticatingUser();
 			}
-			catch (ApplicationLogicException $ex){
+			catch (ApplicationLogicException $ex) {
 				SessionAlert::error($ex->getMessage());
 				$this->redirect('login');
 
