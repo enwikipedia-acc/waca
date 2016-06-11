@@ -24,7 +24,6 @@ use Waca\WebRequest;
 class PageViewRequest extends InternalPageBase
 {
 	use RequestData;
-
 	const PRIVATE_DATA_BARRIER = 'privateData';
 	const SET_BAN_BARRIER = 'setBan';
 	const STATUS_SYMBOL_OPEN = '&#x2610';
@@ -168,18 +167,10 @@ class PageViewRequest extends InternalPageBase
 		/** @var User[] $nameCache */
 		$nameCache = array();
 
-		$editableComments = false;
-		if ($currentUser->isAdmin() || $currentUser->isCheckuser()) {
-			$editableComments = true;
-		}
+		$editableComments = $this->allowEditingComments($currentUser);
 
 		/** @var Log|Comment $entry */
 		foreach ($logs as $entry) {
-			if (!($entry instanceof User) && !($entry instanceof Log)) {
-				// Something weird has happened here.
-				continue;
-			}
-
 			// both log and comment have a 'user' field
 			if (!array_key_exists($entry->getUser(), $nameCache)) {
 				$entryUser = User::getById($entry->getUser(), $database);
@@ -239,5 +230,22 @@ class PageViewRequest extends InternalPageBase
 		}
 
 		$this->assign("spoofs", $spoofs);
+	}
+
+	/**
+	 * @param User $currentUser
+	 *
+	 * @return bool
+	 */
+	private function allowEditingComments(User $currentUser)
+	{
+		$editableComments = false;
+		if ($currentUser->isAdmin() || $currentUser->isCheckuser()) {
+			$editableComments = true;
+
+			return $editableComments;
+		}
+
+		return $editableComments;
 	}
 }

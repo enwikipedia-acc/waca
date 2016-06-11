@@ -30,7 +30,8 @@ class Request extends DataObject
 	private $date;
 	private $emailsent = 0;
 	private $emailconfirm;
-	private $reserved = 0;
+	/** @var int|null */
+	private $reserved = null;
 	private $useragent;
 	private $forwardedip;
 	private $hasComments = false;
@@ -53,16 +54,16 @@ INSERT INTO `request` (
 );
 SQL
 			);
-			$statement->bindValue(":email", $this->email);
-			$statement->bindValue(":ip", $this->ip);
-			$statement->bindValue(":name", $this->name);
-			$statement->bindValue(":comment", $this->comment);
-			$statement->bindValue(":status", $this->status);
-			$statement->bindValue(":emailsent", $this->emailsent);
-			$statement->bindValue(":emailconfirm", $this->emailconfirm);
-			$statement->bindValue(":reserved", $this->reserved);
-			$statement->bindValue(":useragent", $this->useragent);
-			$statement->bindValue(":forwardedip", $this->forwardedip);
+			$statement->bindValue(':email', $this->email);
+			$statement->bindValue(':ip', $this->ip);
+			$statement->bindValue(':name', $this->name);
+			$statement->bindValue(':comment', $this->comment);
+			$statement->bindValue(':status', $this->status);
+			$statement->bindValue(':emailsent', $this->emailsent);
+			$statement->bindValue(':emailconfirm', $this->emailconfirm);
+			$statement->bindValue(':reserved', $this->reserved);
+			$statement->bindValue(':useragent', $this->useragent);
+			$statement->bindValue(':forwardedip', $this->forwardedip);
 
 			if ($statement->execute()) {
 				$this->id = (int)$this->dbObject->lastInsertId();
