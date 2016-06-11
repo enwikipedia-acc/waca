@@ -134,7 +134,6 @@ class PageCustomClose extends PageCloseRequest
 		$this->setupBasicData($request, $config);
 		$this->setupReservationDetails($request->getReserved(), $database, $currentUser);
 
-		// todo: logging on private data access?
 		$this->setupPrivateData($request, $currentUser, $this->getSiteConfiguration(), $database);
 
 		$this->setTemplate('custom-close.tpl');

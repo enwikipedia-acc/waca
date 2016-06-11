@@ -29,7 +29,6 @@ class PageSearch extends InternalPageBase
 		// Dual-mode page
 		if (WebRequest::wasPosted()) {
 			$this->validateCSRFToken();
-			// TODO: logging on private data access
 
 			$searchType = WebRequest::postString('type');
 			$searchTerm = WebRequest::postString('term');

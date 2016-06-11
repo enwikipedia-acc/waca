@@ -73,8 +73,6 @@ class PageViewRequest extends InternalPageBase
 		$this->setupLogData($request, $database);
 
 		if ($allowedPrivateData) {
-			// todo: logging on private data access
-
 			$this->setTemplate('view-request/main-with-data.tpl');
 			$this->setupPrivateData($request, $currentUser, $this->getSiteConfiguration(), $database);
 
