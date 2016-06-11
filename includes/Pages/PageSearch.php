@@ -13,6 +13,7 @@ use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
 use Waca\Security\SecurityConfiguration;
+use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
@@ -33,7 +34,12 @@ class PageSearch extends InternalPageBase
 			$searchType = WebRequest::postString('type');
 			$searchTerm = WebRequest::postString('term');
 
-			$this->validateSearchParameters($searchType, $searchTerm);
+			$validationError = "";
+			if(!$this->validateSearchParameters($searchType, $searchTerm, $validationError)) {
+				SessionAlert::error($validationError, "Search error");
+				$this->redirect("search");
+				return;
+			}
 
 			$results = array();
 
@@ -143,17 +149,24 @@ class PageSearch extends InternalPageBase
 	 * @param string $searchType
 	 * @param string $searchTerm
 	 *
+	 * @param string $errorMessage
+	 *
+	 * @return bool true if parameters are valid
 	 * @throws ApplicationLogicException
 	 */
-	protected function validateSearchParameters($searchType, $searchTerm)
+	protected function validateSearchParameters($searchType, $searchTerm, &$errorMessage)
 	{
 		if (!in_array($searchType, array('name', 'email', 'ip'))) {
-			throw new ApplicationLogicException('Unknown search type');
+			$errorMessage = 'Unknown search type';
+			return false;
 		}
 
-		if ($searchTerm === '%' || $searchTerm === '') {
-			// todo: handle more gracefully.
-			throw new ApplicationLogicException('No search term specified entered');
+		if ($searchTerm === '%' || $searchTerm === '' || $searchTerm === null) {
+			$errorMessage = 'No search term specified entered';
+			return false;
 		}
+
+		$errorMessage = "";
+		return true;
 	}
 }
