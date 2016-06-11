@@ -98,7 +98,15 @@ class PageForgotPassword extends InternalPageBase
 		// Dual mode
 		if (WebRequest::wasPosted()) {
 			$this->validateCSRFToken();
-			$this->doReset($user);
+			try {
+				$this->doReset($user);
+			}
+			catch (ApplicationLogicException $ex) {
+				SessionAlert::error($ex->getMessage());
+				$this->redirect('forgotPassword', 'reset', array('si' => $si, 'id' => $id));
+
+				return;
+			}
 		}
 		else {
 			$this->assignCSRFToken();
@@ -140,16 +148,15 @@ class PageForgotPassword extends InternalPageBase
 		$pw = WebRequest::postString('pw');
 		$pw2 = WebRequest::postString('pw2');
 
-		if ($pw === $pw2) {
-			$user->setPassword($pw);
-			$user->save();
-
-			SessionAlert::success('You may now log in!');
-			$this->redirect('login');
-		}
-		else {
+		if ($pw !== $pw2) {
 			throw new ApplicationLogicException('Passwords do not match!');
 		}
+
+		$user->setPassword($pw);
+		$user->save();
+
+		SessionAlert::success('You may now log in!');
+		$this->redirect('login');
 	}
 
 	/**

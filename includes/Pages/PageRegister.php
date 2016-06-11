@@ -12,6 +12,7 @@ use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\Security\SecurityConfiguration;
+use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
@@ -27,7 +28,14 @@ class PageRegister extends InternalPageBase
 		// Dual-mode page
 		if (WebRequest::wasPosted()) {
 			$this->validateCSRFToken();
-			$this->handlePost($useOAuthSignup);
+
+			try {
+				$this->handlePost($useOAuthSignup);
+			}
+			catch (ApplicationLogicException $ex) {
+				SessionAlert::error($ex->getMessage());
+				$this->redirect('register');
+			}
 		}
 		else {
 			$this->assignCSRFToken();

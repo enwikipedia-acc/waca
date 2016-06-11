@@ -58,16 +58,24 @@ class PagePreferences extends InternalPageBase
 
 		if (WebRequest::wasPosted()) {
 			$this->validateCSRFToken();
-			$oldPassword = WebRequest::postString('oldpassword');
-			$newPassword = WebRequest::postString('newpassword');
-			$newPasswordConfirmation = WebRequest::postString('newpasswordconfirm');
+			try {
+				$oldPassword = WebRequest::postString('oldpassword');
+				$newPassword = WebRequest::postString('newpassword');
+				$newPasswordConfirmation = WebRequest::postString('newpasswordconfirm');
 
-			$user = User::getCurrent($this->getDatabase());
-			if (!$user instanceof User) {
-				throw new ApplicationLogicException('User not found');
+				$user = User::getCurrent($this->getDatabase());
+				if (!$user instanceof User) {
+					throw new ApplicationLogicException('User not found');
+				}
+
+				$this->validateNewPassword($oldPassword, $newPassword, $newPasswordConfirmation, $user);
 			}
+			catch (ApplicationLogicException $ex) {
+				SessionAlert::error($ex->getMessage());
+				$this->redirect('preferences', 'changePassword');
 
-			$this->validateNewPassword($oldPassword, $newPassword, $newPasswordConfirmation, $user);
+				return;
+			}
 
 			$user->setPassword($newPassword);
 			$user->save();

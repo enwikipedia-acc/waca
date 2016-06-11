@@ -1,4 +1,4 @@
-{extends file="base.tpl"}
+{extends file="pagebase.tpl"}
 {block name="content"}
     <div class="row-fluid">
         <h2>Edit comment #{$comment->getId()}</h2>

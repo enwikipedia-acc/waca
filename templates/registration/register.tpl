@@ -11,6 +11,7 @@
             <a class="btn btn-primary btn-small" href="index.php">click here</a>
         </p>
     </div>
+    {include file="sessionalerts.tpl"}
     <form class="form-horizontal" method="post">
         {include file="security/csrf.tpl"}
         <input type="hidden" name="welcomeenable" value="false"/>

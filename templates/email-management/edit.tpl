@@ -1,4 +1,4 @@
-{extends file="base.tpl"}
+{extends file="pagebase.tpl"}
 {block name="content"}
     <div class="page-header">
         <h1>

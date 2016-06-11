@@ -3,6 +3,7 @@
     <div class="row-fluid">
         <div class="offset4 span4 well">
             <h3 class="text-center">Reset password for {$user->getUsername()|escape} ({$user->getEmail()|escape})</h3>
+            {include file="sessionalerts.tpl"}
             <form class="container-fluid" method="post">
                 {include file="security/csrf.tpl"}
                 <div class="control-group row">

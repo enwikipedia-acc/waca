@@ -1,4 +1,4 @@
-{extends file="base.tpl"}
+{extends file="pagebase.tpl"}
 {block name="content"}
     <form method="post" class="form-horizontal">
         {include file="security/csrf.tpl"}

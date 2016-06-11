@@ -11,6 +11,7 @@ namespace Waca\Pages;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Security\SecurityConfiguration;
+use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
@@ -42,7 +43,17 @@ class PageLogin extends InternalPageBase
 		if (WebRequest::wasPosted()) {
 			// POST. Do some authentication.
 			$this->validateCSRFToken();
-			$user = $this->getAuthenticatingUser();
+
+			$user = null;
+			try {
+				$user = $this->getAuthenticatingUser();
+			}
+			catch (ApplicationLogicException $ex){
+				SessionAlert::error($ex->getMessage());
+				$this->redirect('login');
+
+				return;
+			}
 
 			// Touch force logout
 			$user->setForceLogout(false);

@@ -4,6 +4,7 @@
     <div class="row-fluid">
         <div class="offset4 span4">
             {include file="alert.tpl" alertblock="false" alerttype="alert-info" alertclosable=false alertheader="" alertmessage="<strong>You're not logged in!</strong> Please log in to continue."}
+            {include file="sessionalerts.tpl"}
         </div>
     </div>
     <div class="row-fluid">

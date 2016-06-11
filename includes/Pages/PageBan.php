@@ -53,7 +53,13 @@ class PageBan extends InternalPageBase
 
 		// dual-mode action
 		if (WebRequest::wasPosted()) {
-			$this->handlePostMethodForSetBan();
+			try {
+				$this->handlePostMethodForSetBan();
+			}
+			catch (ApplicationLogicException $ex) {
+				SessionAlert::error($ex->getMessage());
+				$this->redirect("bans", "set");
+			}
 		}
 		else {
 			$this->handleGetMethodForSetBan();
@@ -73,8 +79,10 @@ class PageBan extends InternalPageBase
 		if (WebRequest::wasPosted()) {
 			$this->validateCSRFToken();
 			$unbanReason = WebRequest::postString('unbanreason');
+
 			if ($unbanReason === null || trim($unbanReason) === "") {
-				throw new ApplicationLogicException('No unban reason specified');
+				SessionAlert::error('No unban reason specified');
+				$this->redirect("bans", "remove", array('id' => $ban->getId()));
 			}
 
 			// set optimistic locking from delete form page load
