@@ -36,9 +36,6 @@ class PageCustomClose extends PageCloseRequest
 			throw new ApplicationLogicException('Request is already closed');
 		}
 
-		// @todo: checks for reservation, already created, etc - do this as checkboxes on custom page if detected to avoid
-		//        the user having to click through prompts, unless it's somethig that's happened very recently.
-
 		// Dual-mode page
 		if (WebRequest::wasPosted()) {
 			$this->validateCSRFToken();
@@ -115,6 +112,7 @@ class PageCustomClose extends PageCloseRequest
 
 		$template = $this->getTemplate($database);
 
+		// Preload data
 		$this->assign('defaultAction', '');
 		$this->assign('preloadText', '');
 		$this->assign('preloadTitle', '');
@@ -125,21 +123,26 @@ class PageCustomClose extends PageCloseRequest
 			$this->assign('preloadTitle', $template->getName());
 		}
 
+		// Static data
 		$this->assign('requeststates', $config->getRequestStates());
 
+		// request data
 		$this->assign('requestId', $request->getIp());
 		$this->assign('updateVersion', $request->getUpdateVersion());
-
-
 		$this->setupBasicData($request, $config);
 		$this->setupReservationDetails($request->getReserved(), $database, $currentUser);
-
 		$this->setupPrivateData($request, $currentUser, $this->getSiteConfiguration(), $database);
 
-		$this->setTemplate('custom-close.tpl');
-
+		// IP location
 		$trustedIp = $this->getXffTrustProvider()->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
 		$this->assign('iplocation', $this->getLocationProvider()->getIpLocation($trustedIp));
+
+		// Confirmations
+		$this->assign('confirmEmailAlreadySent', $this->checkEmailAlreadySent($request));
+		$this->assign('confirmReserveOverride', $this->checkReserveOverride($request, $currentUser));
+
+		// template
+		$this->setTemplate('custom-close.tpl');
 	}
 
 	/**
@@ -161,7 +164,14 @@ class PageCustomClose extends PageCloseRequest
 			$ccMailingList = WebRequest::postBoolean('ccMailingList');
 		}
 
-		$this->sendMail($request, $messageBody, $currentUser, $ccMailingList);
+		if ($request->getStatus() === 'Closed') {
+			throw new ApplicationLogicException('Request is already closed');
+		}
+
+		if (!(WebRequest::postBoolean('confirmEmailAlreadySent')
+			&& WebRequest::postBoolean('confirmReserveOverride'))) {
+			throw new ApplicationLogicException('Not all confirmations checked');
+		}
 
 		$action = WebRequest::postString('action');
 		$availableRequestStates = $this->getSiteConfiguration()->getRequestStates();
@@ -169,11 +179,17 @@ class PageCustomClose extends PageCloseRequest
 		if ($action === EmailTemplate::CREATED || $action === EmailTemplate::NOT_CREATED) {
 			// Close request
 			$this->closeRequest($request, $database, $action, $messageBody);
+
+			// Send the mail after the save, since save can be rolled back
+			$this->sendMail($request, $messageBody, $currentUser, $ccMailingList);
 		}
 		else {
 			if (array_key_exists($action, $availableRequestStates)) {
 				// Defer to other state
 				$this->deferRequest($request, $database, $action, $availableRequestStates, $messageBody);
+
+				// Send the mail after the save, since save can be rolled back
+				$this->sendMail($request, $messageBody, $currentUser, $ccMailingList);
 			}
 			else {
 				$request->setReserved(null);
@@ -184,6 +200,8 @@ class PageCustomClose extends PageCloseRequest
 				// and be rolled back.
 
 				// Send mail
+				$this->sendMail($request, $messageBody, $currentUser, $ccMailingList);
+
 				Logger::sentMail($database, $request, $messageBody);
 				Logger::unreserve($database, $request);
 
@@ -229,7 +247,7 @@ class PageCustomClose extends PageCloseRequest
 	}
 
 	/**
-	 * @param Request $request
+	 * @param Request     $request
 	 * @param PdoDatabase $database
 	 * @param string      $action
 	 * @param             $availableRequestStates

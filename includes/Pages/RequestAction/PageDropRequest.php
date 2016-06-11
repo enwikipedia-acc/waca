@@ -20,12 +20,12 @@ class PageDropRequest extends PageCloseRequest
 		return EmailTemplate::getDroppedTemplate();
 	}
 
-	protected function checkEmailAlreadySent(Request $request, EmailTemplate $template)
+	protected function confirmEmailAlreadySent(Request $request, EmailTemplate $template)
 	{
 		return false;
 	}
 
-	protected function checkAccountCreated(Request $request, EmailTemplate $template)
+	protected function confirmAccountCreated(Request $request, EmailTemplate $template)
 	{
 		return false;
 	}

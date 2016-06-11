@@ -57,15 +57,15 @@ class PageCloseRequest extends RequestActionBase
 			throw new ApplicationLogicException('Request is already closed');
 		}
 
-		if ($this->checkEmailAlreadySent($request, $template)) {
+		if ($this->confirmEmailAlreadySent($request, $template)) {
 			return;
 		}
 
-		if ($this->checkReserveOverride($request, $template, $currentUser, $database)) {
+		if ($this->confirmReserveOverride($request, $template, $currentUser, $database)) {
 			return;
 		}
 
-		if ($this->checkAccountCreated($request, $template)) {
+		if ($this->confirmAccountCreated($request, $template)) {
 			return;
 		}
 
@@ -117,10 +117,58 @@ class PageCloseRequest extends RequestActionBase
 	 *
 	 * @return bool
 	 */
-	protected function checkEmailAlreadySent(Request $request, EmailTemplate $template)
+	protected function confirmEmailAlreadySent(Request $request, EmailTemplate $template)
+	{
+		if ($this->checkEmailAlreadySent($request)) {
+			$this->showConfirmation($request, $template, 'close-confirmations/email-sent.tpl');
+
+			return true;
+		}
+
+		return false;
+	}
+
+	protected function checkEmailAlreadySent(Request $request)
 	{
 		if ($request->getEmailSent() && !WebRequest::postBoolean('emailSentOverride')) {
-			$this->showConfirmation($request, $template, 'close-confirmations/email-sent.tpl');
+			return true;
+		}
+
+		return false;
+	}
+
+	protected function checkReserveOverride(Request $request, User $currentUser)
+	{
+		$reservationId = $request->getReserved();
+
+		if ($reservationId !== 0 && $reservationId !== null) {
+			if (!WebRequest::postBoolean('reserveOverride')) {
+				if ($currentUser->getId() !== $reservationId) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param Request       $request
+	 * @param EmailTemplate $template
+	 * @param User          $currentUser
+	 * @param PdoDatabase   $database
+	 *
+	 * @return bool
+	 */
+	protected function confirmReserveOverride(
+		Request $request,
+		EmailTemplate $template,
+		User $currentUser,
+		PdoDatabase $database
+	) {
+		if ($this->checkReserveOverride($request, $currentUser)) {
+			$this->assign('reserveUser', User::getById($request->getReserved(), $database)->getUsername());
+			$this->showConfirmation($request, $template, 'close-confirmations/reserve-override.tpl');
 
 			return true;
 		}
@@ -131,29 +179,16 @@ class PageCloseRequest extends RequestActionBase
 	/**
 	 * @param Request       $request
 	 * @param EmailTemplate $template
-	 * @param User          $currentUser
-	 *
-	 * @param PdoDatabase   $database
 	 *
 	 * @return bool
+	 * @throws \Waca\Exceptions\CurlException
 	 */
-	private function checkReserveOverride(
-		Request $request,
-		EmailTemplate $template,
-		User $currentUser,
-		PdoDatabase $database
-	) {
-		$reservationId = $request->getReserved();
+	protected function confirmAccountCreated(Request $request, EmailTemplate $template)
+	{
+		if ($this->checkAccountCreated($request, $template)) {
+			$this->showConfirmation($request, $template, 'close-confirmations/account-created.tpl');
 
-		if ($reservationId !== 0 && $reservationId !== null) {
-			if (!WebRequest::postBoolean('reserveOverride')) {
-				if ($currentUser->getId() !== $reservationId) {
-					$this->assign('reserveUser', User::getById($reservationId, $database)->getUsername());
-					$this->showConfirmation($request, $template, 'close-confirmations/reserve-override.tpl');
-
-					return true;
-				}
-			}
+			return true;
 		}
 
 		return false;
@@ -176,8 +211,6 @@ class PageCloseRequest extends RequestActionBase
 			$exists = !isset($apiResult['query']['users']['0']['missing']);
 
 			if (!$exists) {
-				$this->showConfirmation($request, $template, 'close-confirmations/account-created.tpl');
-
 				return true;
 			}
 		}

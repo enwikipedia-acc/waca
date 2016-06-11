@@ -63,6 +63,33 @@
                 </div>
             </div>
 
+            {if $confirmEmailAlreadySent}
+                <div class="control-group">
+                    <div class="controls">
+                        <label class="checkbox">
+                            <input type="checkbox" name="confirmEmailAlreadySent" required="required" />
+                            Override email already sent check
+                        </label>
+                    </div>
+                </div>
+            {else}
+                <input type="hidden" name="confirmEmailAlreadySent" value="true" />
+            {/if}
+
+
+            {if $confirmReserveOverride}
+                <div class="control-group">
+                    <div class="controls">
+                        <label class="checkbox">
+                            <input type="checkbox" name="confirmReserveOverride" required="required" />
+                            Override reservation on this request by {$requestReservedByName|escape}?
+                        </label>
+                    </div>
+                </div>
+            {else}
+                <input type="hidden" name="confirmReserveOverride" value="true" />
+            {/if}
+
             <input type="hidden" name="updateversion" value="{$updateVersion}"/>
 
             <div class="form-actions">
