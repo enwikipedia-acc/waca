@@ -243,7 +243,7 @@ trait RequestData
 				$thisProxyIsTrusted = $this->getXffTrustProvider()->isTrusted($proxyAddress);
 
 				$proxyIsInPrivateRange = $this->getXffTrustProvider()
-					->ipInRange(PageViewRequest::$rfc1918ips, $proxyAddress);
+					->ipInRange(self::$rfc1918ips, $proxyAddress);
 
 				if (!$proxyIsInPrivateRange) {
 					$proxyReverseDns = $this->getRdnsProvider()->getReverseDNS($proxyAddress);
