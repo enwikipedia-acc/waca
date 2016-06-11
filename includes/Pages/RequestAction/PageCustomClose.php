@@ -12,8 +12,10 @@ use Exception;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
+use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
+use Waca\Fragments\RequestData;
 use Waca\Helpers\Logger;
 use Waca\PdoDatabase;
 use Waca\SessionAlert;
@@ -21,6 +23,8 @@ use Waca\WebRequest;
 
 class PageCustomClose extends PageCloseRequest
 {
+	use RequestData;
+
 	protected function main()
 	{
 		$database = $this->getDatabase();
@@ -100,6 +104,15 @@ class PageCustomClose extends PageCloseRequest
 	 */
 	protected function showCustomCloseForm(PdoDatabase $database, Request $request)
 	{
+		$currentUser = User::getCurrent($database);
+		$config = $this->getSiteConfiguration();
+
+		$allowedPrivateData = $this->isAllowedPrivateData($request, $currentUser);
+		if (!$allowedPrivateData) {
+			// we probably shouldn't be showing the user this form if they're not allowed to access private data...
+			throw new AccessDeniedException();
+		}
+
 		$template = $this->getTemplate($database);
 
 		$this->assign('defaultAction', '');
@@ -112,18 +125,22 @@ class PageCustomClose extends PageCloseRequest
 			$this->assign('preloadTitle', $template->getName());
 		}
 
-		$this->assign('requeststates', $this->getSiteConfiguration()->getRequestStates());
+		$this->assign('requeststates', $config->getRequestStates());
 
 		$this->assign('requestId', $request->getIp());
 		$this->assign('updateVersion', $request->getUpdateVersion());
 
-		// @todo request info on form - we need to do this slightly better than it was before.
-		// $this->assign("request", $request);
+
+		$this->setupBasicData($request, $config);
+		$this->setupReservationDetails($request->getReserved(), $database, $currentUser);
+
+		// todo: logging on private data access?
+		$this->setupPrivateData($request, $currentUser, $this->getSiteConfiguration(), $database);
+
+		$this->setTemplate('custom-close.tpl');
 
 		$trustedIp = $this->getXffTrustProvider()->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
 		$this->assign('iplocation', $this->getLocationProvider()->getIpLocation($trustedIp));
-
-		$this->setTemplate('custom-close.tpl');
 	}
 
 	/**

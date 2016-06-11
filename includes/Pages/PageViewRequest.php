@@ -15,31 +15,21 @@ use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Fragments\RequestData;
 use Waca\Helpers\LogHelper;
-use Waca\Helpers\SearchHelpers\RequestSearchHelper;
 use Waca\PdoDatabase;
-use Waca\Security\SecurityConfiguration;
-use Waca\SiteConfiguration;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
 class PageViewRequest extends InternalPageBase
 {
+	use RequestData;
+
 	const PRIVATE_DATA_BARRIER = 'privateData';
 	const SET_BAN_BARRIER = 'setBan';
 	const STATUS_SYMBOL_OPEN = '&#x2610';
 	const STATUS_SYMBOL_ACCEPTED = '&#x2611';
 	const STATUS_SYMBOL_REJECTED = '&#x2612';
-	/**
-	 * @var array Array of IP address classed as 'private' by RFC1918.
-	 */
-	private static $rfc1918ips = array(
-		"10.0.0.0"    => "10.255.255.255",
-		"172.16.0.0"  => "172.31.255.255",
-		"192.168.0.0" => "192.168.255.255",
-		"169.254.0.0" => "169.254.255.255",
-		"127.0.0.0"   => "127.255.255.255",
-	);
 
 	/**
 	 * Main function for this page, when no specific actions are called.
@@ -51,9 +41,9 @@ class PageViewRequest extends InternalPageBase
 		$this->assignCSRFToken();
 
 		// get some useful objects
-		$request = $this->getRequest();
-		$config = $this->getSiteConfiguration();
 		$database = $this->getDatabase();
+		$request = $this->getRequest($database, WebRequest::getInt('id'));
+		$config = $this->getSiteConfiguration();
 		$currentUser = User::getCurrent($database);
 
 		// Test we should be able to look at this request
@@ -64,13 +54,7 @@ class PageViewRequest extends InternalPageBase
 			}
 		}
 
-		$this->assign('requestId', $request->getId());
-		$this->assign('updateVersion', $request->getUpdateVersion());
-		$this->assign('requestName', $request->getName());
-		$this->assign('requestDate', $request->getDate());
-		$this->assign('requestStatus', $request->getStatus());
-
-		$this->assign('requestIsClosed', !array_key_exists($request->getStatus(), $config->getRequestStates()));
+		$this->setupBasicData($request, $config);
 
 		$this->setupUsernameData($request);
 
@@ -84,45 +68,24 @@ class PageViewRequest extends InternalPageBase
 			$this->assign('requestDataCleared', true);
 		}
 
-		$allowedPrivateData = true && $this->isAllowedPrivateData($request, $currentUser);
+		$allowedPrivateData = $this->isAllowedPrivateData($request, $currentUser);
 
 		$this->setupLogData($request, $database);
 
 		if ($allowedPrivateData) {
 			// todo: logging on private data access
 
-			$this->setupPrivateData($request, $currentUser, $this->getSiteConfiguration());
+			$this->setTemplate('view-request/main-with-data.tpl');
+			$this->setupPrivateData($request, $currentUser, $this->getSiteConfiguration(), $database);
 
 			if ($currentUser->isCheckuser()) {
+				$this->setTemplate('view-request/main-with-checkuser-data.tpl');
 				$this->setupCheckUserData($request);
 			}
 		}
 		else {
 			$this->setTemplate('view-request/main.tpl');
 		}
-	}
-
-	/**
-	 * Gets a request object
-	 *
-	 * @return Request
-	 * @throws ApplicationLogicException
-	 */
-	private function getRequest()
-	{
-		$requestId = WebRequest::getInt('id');
-		if ($requestId === null) {
-			throw new ApplicationLogicException("No request specified");
-		}
-
-		$database = $this->getDatabase();
-
-		$request = Request::getById($requestId, $database);
-		if ($request === false || !is_a($request, Request::class)) {
-			throw new ApplicationLogicException('Could not load the requested request!');
-		}
-
-		return $request;
 	}
 
 	/**
@@ -141,27 +104,6 @@ class PageViewRequest extends InternalPageBase
 		}
 
 		$this->setHtmlTitle($statusSymbol . ' #' . $request->getId());
-	}
-
-	/**
-	 * @param int         $requestReservationId
-	 * @param PdoDatabase $database
-	 * @param User        $currentUser
-	 */
-	protected function setupReservationDetails($requestReservationId, PdoDatabase $database, User $currentUser)
-	{
-		$requestIsReserved = $requestReservationId !== null;
-		$this->assign('requestIsReserved', $requestIsReserved);
-		$this->assign('requestIsReservedByMe', false);
-
-		if ($requestIsReserved) {
-			$this->assign('requestReservedByName', User::getById($requestReservationId, $database)->getUsername());
-			$this->assign('requestReservedById', $requestReservationId);
-
-			if ($requestReservationId === $currentUser->getId()) {
-				$this->assign('requestIsReservedByMe', true);
-			}
-		}
 	}
 
 	/**
@@ -202,37 +144,6 @@ class PageViewRequest extends InternalPageBase
 		$this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use ($database) {
 			return User::getAllUsernames($database, true);
 		});
-	}
-
-	/**
-	 * Returns a value stating whether the user is allowed to see private data or not
-	 *
-	 * @param Request $request
-	 * @param User    $currentUser
-	 *
-	 * @return bool
-	 * @category Security-Critical
-	 */
-	private function isAllowedPrivateData(Request $request, User $currentUser)
-	{
-		// Test the main security barrier for private data access using SecurityManager
-		if ($this->barrierTest(self::PRIVATE_DATA_BARRIER)) {
-			// Tool admins/check-users can always see private data
-			return true;
-		}
-
-		// reserving user is allowed to see the data
-		if ($currentUser->getId() === $request->getReserved() && $request->getReserved() !== null) {
-			return true;
-		}
-
-		// user has the reveal hash
-		if (WebRequest::getString('hash') === $request->getRevealHash()) {
-			return true;
-		}
-
-		// nope. Not allowed.
-		return false;
 	}
 
 	private function setupLogData(Request $request, PdoDatabase $database)
@@ -310,178 +221,6 @@ class PageViewRequest extends InternalPageBase
 		}
 
 		$this->assign("requestLogs", $requestLogs);
-	}
-
-	/**
-	 * @param Request           $request
-	 * @param User              $currentUser
-	 * @param SiteConfiguration $configuration
-	 *
-	 * @throws Exception
-	 */
-	protected function setupPrivateData($request, User $currentUser, SiteConfiguration $configuration)
-	{
-		$xffProvider = $this->getXffTrustProvider();
-		$this->setTemplate('view-request/main-with-data.tpl');
-
-		$relatedEmailRequests = RequestSearchHelper::get($this->getDatabase())
-			->byEmailAddress($request->getEmail())
-			->withConfirmedEmail()
-			->excludingPurgedData($configuration)
-			->excludingRequest($request->getId())
-			->fetch();
-
-		$this->assign('requestEmail', $request->getEmail());
-		$emailDomain = explode("@", $request->getEmail())[1];
-		$this->assign("emailurl", $emailDomain);
-		$this->assign('requestRelatedEmailRequestsCount', count($relatedEmailRequests));
-		$this->assign('requestRelatedEmailRequests', $relatedEmailRequests);
-
-		$trustedIp = $xffProvider->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
-		$this->assign('requestTrustedIp', $trustedIp);
-		$this->assign('requestRealIp', $request->getIp());
-		$this->assign('requestForwardedIp', $request->getForwardedIp());
-
-		$trustedIpLocation = $this->getLocationProvider()->getIpLocation($trustedIp);
-		$this->assign('requestTrustedIpLocation', $trustedIpLocation);
-
-		$this->assign('requestHasForwardedIp', $request->getForwardedIp() !== null);
-
-		$relatedIpRequests = RequestSearchHelper::get($this->getDatabase())
-			->byIp($trustedIp)
-			->withConfirmedEmail()
-			->excludingPurgedData($configuration)
-			->excludingRequest($request->getId())
-			->fetch();
-
-		$this->assign('requestRelatedIpRequestsCount', count($relatedIpRequests));
-		$this->assign('requestRelatedIpRequests', $relatedIpRequests);
-
-		$this->assign('showRevealLink', false);
-		if ($request->getReserved() === $currentUser->getId() ||
-			$currentUser->isAdmin() ||
-			$currentUser->isCheckuser()
-		) {
-			$this->assign('showRevealLink', true);
-
-			$this->assign('revealHash', $request->getRevealHash());
-		}
-
-		$this->setupForwardedIpData($request);
-	}
-
-	private function setupForwardedIpData(Request $request)
-	{
-		if ($request->getForwardedIp() !== null) {
-			$requestProxyData = array(); // Initialize array to store data to be output in Smarty template.
-			$proxyIndex = 0;
-
-			// Assuming [client] <=> [proxy1] <=> [proxy2] <=> [proxy3] <=> [us], we will see an XFF header of [client],
-			// [proxy1], [proxy2], and our actual IP will be [proxy3]
-			$proxies = explode(",", $request->getForwardedIp());
-			$proxies[] = $request->getIp();
-
-			// Origin is the supposed "client" IP.
-			$origin = $proxies[0];
-			$this->assign("forwardedOrigin", $origin);
-
-			// We step through the servers in reverse order, from closest to furthest
-			$proxies = array_reverse($proxies);
-
-			// By default, we have trust, because the first in the chain is now REMOTE_ADDR, which is hardest to spoof.
-			$trust = true;
-
-			/**
-			 * @var int    $index     The zero-based index of the proxy.
-			 * @var string $proxyData The proxy IP address (although possibly not!)
-			 */
-			foreach ($proxies as $index => $proxyData) {
-				$proxyAddress = trim($proxyData);
-				$requestProxyData[$proxyIndex]['ip'] = $proxyAddress;
-
-				// get data on this IP.
-				$thisProxyIsTrusted = $this->getXffTrustProvider()->isTrusted($proxyAddress);
-
-				$proxyIsInPrivateRange = $this->getXffTrustProvider()->ipInRange(self::$rfc1918ips, $proxyAddress);
-
-				if (!$proxyIsInPrivateRange) {
-					$proxyReverseDns = $this->getRdnsProvider()->getReverseDNS($proxyAddress);
-					$proxyLocation = $this->getLocationProvider()->getIpLocation($proxyAddress);
-				}
-				else {
-					// this is going to fail, so why bother trying?
-					$proxyReverseDns = false;
-					$proxyLocation = false;
-				}
-
-				// current trust chain status BEFORE this link
-				$preLinkTrust = $trust;
-
-				// is *this* link trusted? Note, this will be true even if there is an untrusted link before this!
-				$requestProxyData[$proxyIndex]['trustedlink'] = $thisProxyIsTrusted;
-
-				// set the trust status of the chain to this point
-				$trust = $trust & $thisProxyIsTrusted;
-
-				// If this is the origin address, and the chain was trusted before this point, then we can trust
-				// the origin.
-				if ($preLinkTrust && $proxyAddress == $origin) {
-					// if this is the origin, then we are at the last point in the chain.
-					// @todo: this is probably the cause of some bugs when an IP appears twice - we're missing a check
-					// to see if this is *really* the last in the chain, rather than just the same IP as it.
-					$trust = true;
-				}
-
-				$requestProxyData[$proxyIndex]['trust'] = $trust;
-
-				$requestProxyData[$proxyIndex]['rdnsfailed'] = $proxyReverseDns === false;
-				$requestProxyData[$proxyIndex]['rdns'] = $proxyReverseDns;
-				$requestProxyData[$proxyIndex]['routable'] = !$proxyIsInPrivateRange;
-
-				$requestProxyData[$proxyIndex]['location'] = $proxyLocation;
-
-				if ($proxyReverseDns === $proxyAddress && $proxyIsInPrivateRange === false) {
-					$requestProxyData[$proxyIndex]['rdns'] = null;
-				}
-
-				$showLinks = (!$trust || $proxyAddress == $origin) && !$proxyIsInPrivateRange;
-				$requestProxyData[$proxyIndex]['showlinks'] = $showLinks;
-
-				$proxyIndex++;
-			}
-
-			$this->assign("requestProxyData", $requestProxyData);
-		}
-	}
-
-	/**
-	 * @param Request $request
-	 */
-	protected function setupCheckUserData(Request $request)
-	{
-		$this->setTemplate('view-request/main-with-checkuser-data.tpl');
-		$this->assign('requestUserAgent', $request->getUserAgent());
-	}
-
-	/**
-	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-	 * the return value from this function.
-	 *
-	 * If this page even supports actions, you will need to check the route
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	protected function getSecurityConfiguration()
-	{
-		switch ($this->getRouteName()) {
-			case self::PRIVATE_DATA_BARRIER:
-				return $this->getSecurityManager()->configure()->asGeneralPrivateDataAccess();
-			case self::SET_BAN_BARRIER:
-				return $this->getSecurityManager()->configure()->asAdminPage();
-			default:
-				return $this->getSecurityManager()->configure()->asInternalPage();
-		}
 	}
 
 	/**

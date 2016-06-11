@@ -5,14 +5,18 @@
         <fieldset>
             <legend>Custom close{if $preloadTitle != ""} - {$preloadTitle|escape}{/if}</legend>
 
-            {*
             <div class="control-group">
-              <label for="msgbody" class="control-label">Request information</label>
-              <div class="controls">
-                {include file="zoom-parts/request-info.tpl" hash="x" showinfo=true showLink=false}
-              </div>
+                <label class="control-label">Request details:</label>
+                <div class="controls">
+                    <div class="container-fluid">
+                        <div class="row-fluid">
+                            <div class="span6">
+                                {include file="view-request/request-info.tpl"}
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
-            *}
 
             <div class="control-group">
                 <label for="msgbody" class="control-label">Message to be sent to the user:</label>
@@ -68,3 +72,5 @@
         </fieldset>
     </form>
 {/block}
+
+{include file="view-request/request-private-data.tpl"}
