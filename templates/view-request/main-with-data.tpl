@@ -25,8 +25,9 @@
           {/if}
         </span>
         </div>
-        <div class="span1"><span class="label label-info">XFF</span><span
-                    class="badge{if $requestRelatedIpRequestsCount > 0} badge-important{/if}">{$requestRelatedIpRequestsCount}</span>
+        <div class="span1">
+            <span class="label label-info">XFF</span>
+            <span class="badge{if $requestRelatedIpRequestsCount > 0} badge-important{/if}">{$requestRelatedIpRequestsCount}</span>
         </div>
     </div>
 {/block}
