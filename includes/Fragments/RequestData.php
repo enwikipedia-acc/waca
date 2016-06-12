@@ -24,7 +24,6 @@ use Waca\WebRequest;
 
 trait RequestData
 {
-	use TemplateOutput;
 	/**
 	 * @var array Array of IP address classed as 'private' by RFC1918.
 	 */
@@ -71,7 +70,7 @@ trait RequestData
 	protected function isAllowedPrivateData(Request $request, User $currentUser)
 	{
 		// Test the main security barrier for private data access using SecurityManager
-		if ($this->barrierTest(PageViewRequest::PRIVATE_DATA_BARRIER)) {
+		if ($this->barrierTest('privateData')) {
 			// Tool admins/check-users can always see private data
 			return true;
 		}
@@ -126,6 +125,14 @@ trait RequestData
 
 	/** @return IRDnsProvider */
 	abstract protected function getRdnsProvider();
+
+	/**
+	 * Assigns a Smarty variable
+	 *
+	 * @param  array|string $name    the template variable name(s)
+	 * @param  mixed        $value   the value to assign
+	 */
+	abstract protected function assign($name, $value);
 
 	/**
 	 * @param int         $requestReservationId
