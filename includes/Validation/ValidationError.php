@@ -26,6 +26,33 @@ class ValidationError
 	const BANNED = "banned";
 	const BANNED_TOR = "banned_tor";
 	/**
+	 * @var array Error text for the above
+	 */
+	private static $errorText = array(
+		self::NAME_EMPTY        => 'You\'ve not chosen a username!',
+		self::NAME_EXISTS       => 'I\'m sorry, but the username you selected is already taken. Please try another. '
+			. 'Please note that Wikipedia automatically capitalizes the first letter of any user name, therefore '
+			. '[[User:example]] would become [[User:Example]].',
+		self::NAME_EXISTS_SUL   => 'I\'m sorry, but the username you selected is already taken. Please try another. '
+			. 'Please note that Wikipedia automatically capitalizes the first letter of any user name, therefore '
+			. '[[User:example]] would become [[User:Example]].',
+		self::NAME_NUMONLY      => 'The username you chose is invalid: it consists entirely of numbers. Please retry '
+			. 'with a valid username.',
+		self::NAME_INVALIDCHAR  => 'There appears to be an invalid character in your username. Please note that the '
+			. 'following characters are not allowed: <code># @ / &lt; &gt; [ ] | { }</code>',
+		self::NAME_SANITISED    => 'Your requested username has been automatically adjusted due to technical '
+			. 'restrictions. Underscores have been replaced with spaces, and the first character has been capitalised.',
+		self::EMAIL_EMPTY       => 'You need to supply an email address.',
+		self::EMAIL_WIKIMEDIA   => 'Please provide your email address here.',
+		self::EMAIL_INVALID     => 'Invalid E-mail address supplied. Please check you entered it correctly.',
+		self::EMAIL_MISMATCH    => 'The email addresses you entered do not match. Please try again.',
+		self::OPEN_REQUEST_NAME => 'There is already an open request with this name in this system.',
+		self::BANNED            => 'I\'m sorry, but you are currently banned from requesting accounts using this tool. '
+			. 'However, you can still send an email to accounts-enwiki-l@lists.wikimedia.org to request an account.',
+		self::BANNED_TOR        => 'Tor exit nodes are currently banned from using this tool due to excessive abuse. '
+			. 'Please note that Tor is also currently banned from editing Wikipedia.',
+	);
+	/**
 	 * Summary of $errorCode
 	 * @var string
 	 */
@@ -63,35 +90,13 @@ class ValidationError
 	 */
 	public function getErrorMessage()
 	{
-		switch ($this->errorCode) {
-			case self::NAME_EMPTY:
-				return 'You\'ve not chosen a username!';
-			case self::NAME_EXISTS:
-			case self::NAME_EXISTS_SUL:
-				return 'I\'m sorry, but the username you selected is already taken. Please try another. Please note that Wikipedia automatically capitalizes the first letter of any user name, therefore [[User:example]] would become [[User:Example]].';
-			case self::NAME_NUMONLY:
-				return 'The username you chose is invalid: it consists entirely of numbers. Please retry with a valid username.';
-			case self::NAME_INVALIDCHAR:
-				return 'There appears to be an invalid character in your username. Please note that the following characters are not allowed: <code># @ / &lt; &gt; [ ] | { }</code>';
-			case self::NAME_SANITISED:
-				return 'Your requested username has been automatically adjusted due to technical restrictions. Underscores have been replaced with spaces, and the first character has been capitalised.';
-			case self::EMAIL_EMPTY:
-				return 'You need to supply an email address.';
-			case self::EMAIL_WIKIMEDIA:
-				return 'Please provide your email address here.';
-			case self::EMAIL_INVALID:
-				return 'Invalid E-mail address supplied. Please check you entered it correctly.';
-			case self::EMAIL_MISMATCH:
-				return 'The email addresses you entered do not match. Please try again.';
-			case self::OPEN_REQUEST_NAME:
-				return 'There is already an open request with this name in this system.';
-			case self::BANNED:
-				return 'I\'m sorry, but you are currently banned from requesting accounts using this tool. However, you can still send an email to accounts-enwiki-l@lists.wikimedia.org to request an account.';
-			case self::BANNED_TOR:
-				return 'Tor exit nodes are currently banned from using this tool due to excessive abuse. Please note that Tor is also currently banned from editing Wikipedia.';
+		$text = self::$errorText[$this->errorCode];
+
+		if ($text == null) {
+			throw new Exception('Unknown validation error');
 		}
 
-		throw new Exception('Unknown validation error');
+		return $text;
 	}
 
 	/**
