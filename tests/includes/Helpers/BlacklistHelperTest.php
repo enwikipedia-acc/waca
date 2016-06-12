@@ -8,16 +8,13 @@
 
 namespace Waca\Tests\Helpers;
 
-use \PHPUnit_Framework_TestCase;
-use \PHPUnit_Extensions_MockFunction;
-use \Waca\Helpers\BlacklistHelper;
-use \Waca\Helpers\HttpHelper;
+use PHPUnit_Framework_MockObject_MockObject;
+use PHPUnit_Framework_TestCase;
+use Waca\Helpers\BlacklistHelper;
+use Waca\Helpers\HttpHelper;
 
 class BlacklistHelperTest extends PHPUnit_Framework_TestCase
 {
-	private $httpHelperMock;
-	private $blh;
-
 	public function setUp()
 	{
 		if (!extension_loaded('runkit')) {
@@ -25,39 +22,105 @@ class BlacklistHelperTest extends PHPUnit_Framework_TestCase
 
 			return;
 		}
-		$this->httpHelperMock = $this->getMockBuilder(HttpHelper::class)
-			//->setMethods(array("fetchColumn","bindValue","execute","fetchObject"))
-			->disableOriginalConstructor()
-			->getMock();
-
-		$this->blh = new BlacklistHelper($this->httpHelperMock, "http://127.0.0.1");
-	}
-
-	public function tearDown()
-	{
-		$this->blh = null;
 	}
 
 	public function testIsBlacklisted()
 	{
-		// First a bad entry.
-		// Sorry about the language - MRB
-		$this->httpHelperMock
-			->expects($this->at(1))
-			->method("get")
-			->willReturn("a:1:{s:14:\"titleblacklist\";a:4:{s:6:\"result\";s:11:\"blacklisted\";s:6:\"reason\";s:527:\"<table id=\"mw-protectedpagetext\" class=\"plainlinks fmbox fmbox-warning\" role=\"presentation\"><tr><td class=\"mbox-text\">The user name \"Fuck\" [[Mediawiki talk:Titleblacklist|has been blacklisted]] from creation. Wikipedia [[WP:U|username policy]] does not allow names that are misleading, promotional, offensive or disruptive. Please select another username that complies with [[WP:U|policy]], or if you want to seek approval for a username, you can do so by filing a request at [[Wikipedia:Request an account]].</td></tr></table>\";s:7:\"message\";s:36:\"titleblacklist-forbidden-new-account\";s:4:\"line\";s:72:\".*FU[C(K]+K+                            &lt;newaccountonly|antispoof&gt;\";}}");
+		$apiResult = array(
+			'titleblacklist' =>
+				array(
+					'result'  => 'blacklisted',
+					'reason'  => 'some reason',
+					'message' => 'titleblacklist-forbidden-new-account',
+					'line'    => '.*badname.*            &lt;newaccountonly|antispoof&gt;',
+				),
+		);
 
-		$this->assertNotEquals("ok", $this->blh->isBlacklisted("fuck"));
-		$this->assertEquals(".*FU[C(K]+K+                            &lt;newaccountonly|antispoof&gt;",
-			$this->blh->isBlacklisted("fuck"));
+		/** @var $httpHelperMock PHPUnit_Framework_MockObject_MockObject|HttpHelper */
+		$httpHelperMock = $this->getMockBuilder(HttpHelper::class)
+			->disableOriginalConstructor()
+			->getMock();
 
-		// Next an OK entry.
-		// Sorry again about the language.  But I guess you can't help it when you're testing a title blacklist. - MRB
-		$this->httpHelperMock
-			->expects($this->at(1))
+		$httpHelperMock
+			->expects($this->once())
+			->method('get')
+			->willReturn(serialize($apiResult));
+
+		$blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1");
+
+		// act
+		$result = $blh->isBlacklisted("badname");
+
+		// assert
+		$this->assertNotEquals(false, $result);
+		$this->assertEquals($apiResult['titleblacklist']['line'], $result);
+	}
+
+
+	public function testIsBlacklistedCache()
+	{
+		$apiResult = array(
+			'titleblacklist' =>
+				array(
+					'result'  => 'blacklisted',
+					'reason'  => 'some reason',
+					'message' => 'titleblacklist-forbidden-new-account',
+					'line'    => '.*badname.*            &lt;newaccountonly|antispoof&gt;',
+				),
+		);
+
+		/** @var $httpHelperMock PHPUnit_Framework_MockObject_MockObject|HttpHelper */
+		$httpHelperMock = $this->getMockBuilder(HttpHelper::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$httpHelperMock
+			->expects($this->once())
+			->method('get')
+			->willReturn(serialize($apiResult));
+
+		$blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1");
+
+		// act
+		$blh->isBlacklisted("badname");
+		$blh->isBlacklisted("badname");
+	}
+
+	public function testIsNotBlacklisted()
+	{
+		/** @var $httpHelperMock PHPUnit_Framework_MockObject_MockObject|HttpHelper */
+		$httpHelperMock = $this->getMockBuilder(HttpHelper::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$httpHelperMock
+			->expects($this->once())
 			->method("get")
 			->willReturn("a:1:{s:14:\"titleblacklist\";a:1:{s:6:\"result\";s:2:\"ok\";}}");
-		$this->assertEquals(false, $this->blh->isBlacklisted("poop"));
-		$this->assertNotEquals("ok", $this->blh->isBlacklisted("poop"));
+
+		$blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1");
+
+		$result = $blh->isBlacklisted("poop");
+
+		$this->assertEquals(false, $result);
+	}
+
+	public function testIsNotBlacklistedCache()
+	{
+		/** @var $httpHelperMock PHPUnit_Framework_MockObject_MockObject|HttpHelper */
+		$httpHelperMock = $this->getMockBuilder(HttpHelper::class)
+			->disableOriginalConstructor()
+			->getMock();
+
+		$httpHelperMock
+			->expects($this->once())
+			->method("get")
+			->willReturn("a:1:{s:14:\"titleblacklist\";a:1:{s:6:\"result\";s:2:\"ok\";}}");
+
+		$blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1");
+
+		// act
+		$result = $blh->isBlacklisted("poop");
+		$result = $blh->isBlacklisted("poop");
 	}
 }

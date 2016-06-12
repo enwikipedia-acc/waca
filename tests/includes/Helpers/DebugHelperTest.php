@@ -8,19 +8,22 @@
 
 namespace Waca\Tests\Helpers;
 
-use \Phpunit_Framework_TestCase;
-use \PHPUnit_Extensions_MockFunction;
-use \Waca\Helpers\DebugHelper;
+use PHPUnit_Extensions_MockFunction;
+use PHPUnit_Framework_TestCase;
+use Waca\Helpers\DebugHelper;
 
 class DebugHelperTest extends PHPUnit_Framework_TestCase
 {
+	/** @var PHPUnit_Extensions_MockFunction */
 	private $btMock;
+	/** @var DebugHelper */
 	private $dbh;
 
 	public function setUp()
 	{
 		$this->markTestSkipped("Appears to allocate too much memory, we may have a bug here.  Skipping for now.");
-		$this->dbh = new debugHelper();
+
+		$this->dbh = new DebugHelper();
 
 		$this->btMock = new PHPUnit_Extensions_MockFunction('debug_backtrace', $this->dbh);
 	}

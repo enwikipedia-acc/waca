@@ -8,15 +8,20 @@
 
 namespace Waca\Tests\Helpers;
 
-use PHPUnit_Extensions_MockFunction;
+use PDOStatement;
+use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
+use Waca\DataObjects\Ban;
 use Waca\Helpers\BanHelper;
 use Waca\PdoDatabase;
 
 class BanHelperTest extends PHPUnit_Framework_TestCase
 {
-	private $bh;
+	/** @var BanHelper */
+	private $banHelper;
+	/** @var PHPUnit_Framework_MockObject_MockObject|PdoDatabase */
 	private $dbMock;
+	/** @var PHPUnit_Framework_MockObject_MockObject|PDOStatement */
 	private $statement;
 
 	public function setUp()
@@ -30,25 +35,34 @@ class BanHelperTest extends PHPUnit_Framework_TestCase
 		$this->dbMock = $this->getMockBuilder(PdoDatabase::class)->disableOriginalConstructor()->getMock();
 
 		$this->statement = $this->getMockBuilder(PDOStatement::class)
-			//->disableOriginalConstructor()
 			->setMethods(array("fetchColumn", "bindValue", "execute", "fetchObject"))
 			->getMock();
 		$this->dbMock->method('prepare')->willReturn($this->statement);
 
-		//var_dump(get_class_methods(get_class($this->statement)));
-
-		$this->bh = new BanHelper($this->dbMock);
+		$this->banHelper = new BanHelper($this->dbMock);
 	}
 
 	public function tearDown()
 	{
-		$this->bh = null;
+		$this->banHelper = null;
+	}
+
+	public function testNameIsNotBanned()
+	{
+		$name = "Testing";
+		$this->statement->method("fetchObject")->willReturn(false);
+		$this->assertEquals($this->banHelper->nameIsBanned($name), false);
 	}
 
 	public function testNameIsBanned()
 	{
 		$name = "Testing";
-		$this->statement->method("fetchObject")->willReturn(false);
-		$this->assertEquals($this->bh->nameIsBanned($name), false);
+		$banObj = new Ban();
+		$banObj->setTarget($name);
+		$banObj->setType("Name");
+
+		$this->statement->method("fetchObject")->willReturn($banObj);
+
+		$this->assertEquals($this->banHelper->nameIsBanned($name), $banObj);
 	}
 }

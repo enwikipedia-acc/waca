@@ -6,42 +6,30 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-/**
- * Created by PhpStorm.
- * User: bowkerm
- * Date: 5/10/2016
- * Time: 3:02 PM
- */
-
 namespace Waca\Tests\Helpers;
 
-use \PhpUnit_Framework_TestCase;
-use \Waca\Helpers\FakeBlacklistHelper;
+use PHPUnit_Framework_TestCase;
+use Waca\Helpers\FakeBlacklistHelper;
 
 class FakeBlacklistHelperTest extends PHPUnit_Framework_TestCase
 {
-	private $fblh;
+	/** @var FakeBlacklistHelper */
+	private $blacklistHelper;
 
 	public function setUp()
 	{
-		$this->fblh = new FakeBlacklistHelper();
+		$this->blacklistHelper = new FakeBlacklistHelper();
 	}
 
 	public function tearDown()
 	{
-		$this->fblh = null;
+		$this->blacklistHelper = null;
 	}
 
 	public function testIsBlacklisted()
 	{
-		$username = "fuck";
+		$username = 'badname';
 
-		$this->assertEquals(false, $this->fblh->isBlacklisted($username));
-		$this->assertNotEquals(true, $this->fblh->isBlacklisted($username));
-
-		$username = "poop";
-
-		$this->assertEquals(false, $this->fblh->isBlacklisted($username));
-		$this->assertNotEquals(true, $this->fblh->isBlacklisted($username));
+		$this->assertEquals(false, $this->blacklistHelper->isBlacklisted($username));
 	}
 }
