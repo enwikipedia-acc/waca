@@ -29,7 +29,7 @@ before_script:
 
 script:
   - bash .travis.phplint.sh
-  - phpunit --coverage-clover=coverage.xml
+  - phpunit --verbose --coverage-clover=coverage.xml
   - codecov
 
 after_script:
