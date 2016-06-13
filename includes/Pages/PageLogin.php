@@ -75,6 +75,21 @@ class PageLogin extends InternalPageBase
 				}
 			}
 
+			// User is partially linked to OAuth. This is not allowed. Enforce it for this user.
+			if($user->getOnWikiName() === '##OAUTH##') {
+				$oauthHelper = $this->getOAuthHelper();
+
+				$requestToken = $oauthHelper->getRequestToken();
+				$user->setOAuthRequestToken($requestToken->key);
+				$user->setOAuthRequestSecret($requestToken->secret);
+				$user->save();
+
+				WebRequest::setPartialLogin($user);
+				$this->redirectUrl($oauthHelper->getAuthoriseUrl($requestToken->key));
+
+				return;
+			}
+
 			WebRequest::setLoggedInUser($user);
 
 			$this->goBackWhenceYouCame($user);
