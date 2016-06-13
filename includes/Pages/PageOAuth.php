@@ -114,7 +114,7 @@ class PageOAuth extends InternalPageBase
 			$this->redirectUrl($redirectDestination);
 		}
 		else {
-			$this->redirect('preferences');
+			$this->redirect('preferences', null, null, 'internal.php');
 		}
 	}
 
