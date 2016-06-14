@@ -4,7 +4,7 @@
         <div class="span8 offset2 alert alert-block alert-danger">
             <h4>Account suspended</h4>
             <p>
-                I'm sorry, but your tool account hes been suspended by a tool administrator. The reason given is shown
+                I'm sorry, but your tool account has been suspended by a tool administrator. The reason given is shown
                 below:
             </p>
             <p class="well">{$suspendReason}</p>
