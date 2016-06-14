@@ -51,6 +51,12 @@
             <option name="SMART_TABS" value="true" />
           </indentOptions>
         </codeStyleSettings>
+        <codeStyleSettings language="SQL">
+          <indentOptions>
+            <option name="INDENT_SIZE" value="4" />
+            <option name="TAB_SIZE" value="4" />
+          </indentOptions>
+        </codeStyleSettings>
       </value>
     </option>
     <option name="USE_PER_PROJECT_SETTINGS" value="true" />
