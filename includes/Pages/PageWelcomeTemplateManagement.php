@@ -169,7 +169,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 
 			$template->setUserCode($userCode);
 			$template->setBotCode($botCode);
-			$template->setUpdateVersion(WebRequest::postInt('botcode'));
+			$template->setUpdateVersion(WebRequest::postInt('updateversion'));
 			$template->save();
 
 			Logger::welcomeTemplateEdited($database, $template);
