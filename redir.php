@@ -9,8 +9,17 @@ $toolList = array(
 	'google' => 'https://www.google.com/search?q=%DATA%',
 );
 
+if(!isset($_GET['tool'])
+	|| !isset($toolList[$_GET['tool']])
+	|| !isset($_GET['data'])
+)
+{
+	header("HTTP/1.1 403 Forbidden");
+	return;
+}
+
 if (isset($_GET['round2'])) {
-	echo '<script>window.location.href="' . str_replace("%DATA%", $_GET['data'], $toolList[$_GET['tool']]) . '"</script>';
+	echo '<script>window.location.href="' . str_replace("%DATA%", htmlentities($_GET['data'], ENT_COMPAT, 'UTF-8'), $toolList[$_GET['tool']]) . '"</script>';
 }
 else {
 	header("Location: " . $_SERVER["REQUEST_URI"] . "&round2=true");
