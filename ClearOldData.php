@@ -19,7 +19,21 @@ $db->transactionally(function() use ($db)
 		":ip" => $cDataClearIp,
 		":mail" => $cDataClearEmail
 	));
-	
+
+	if (!$success) {
+		throw new TransactionException("Error in transaction: Could not clear data.");
+	}
+
+	$query = $db->prepare("DELETE FROM audit WHERE `timestamp` < DATE_SUB(curdate(), INTERVAL $dataclear_interval);");
+	$success = $query->execute();
+
+	if (!$success) {
+		throw new TransactionException("Error in transaction: Could not clear data.");
+	}
+
+	$query = $db->prepare("DELETE FROM ratelimit WHERE `timestamp` < DATE_SUB(curdate(), INTERVAL 1 DAY);");
+	$success = $query->execute();
+
 	if (!$success) {
 		throw new TransactionException("Error in transaction: Could not clear data.");
 	}
