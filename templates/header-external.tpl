@@ -37,7 +37,7 @@
 
           <div class="masthead">
               <ul class="nav nav-pills pull-right">
-                  <li class="active"><a href="#">Request</a></li>
+                  <li class="active"><a href="index.php">Request</a></li>
                   <li><a href="//en.wikipedia.org/wiki/Main_Page">Back to Wikipedia</a></li>
               </ul>
               <h3 class="muted">Request an Account</h3>

@@ -3,6 +3,8 @@
 </div>
 {include file="alert.tpl" alertblock=true alerttype="alert-info" alertclosable=false alertheader="Signing up for Wikipedia? You're not in the right place!" alertmessage="This form is for requesting access to this tool's management interface (used by existing Wikipedians to help you get an account). If you want to request an account for Wikipedia, then <a class=\"btn btn-primary btn-small\" href=\"index.php\">click here</a>"}
 
+{include file="privacy/registration-disclaimer.tpl"}
+
 <form class="form-horizontal" action="acc.php?action=sreg" method="post">
   <input type="hidden" name="welcomeenable" value="false" />
   <input name="template" value="welcome" type="hidden" />
@@ -57,13 +59,22 @@
     </div>
   </fieldset>
   {/if}
-  
+
   <div class="control-group">
     <div class="controls">
       <label class="checkbox">
         <input type="checkbox" id="guidelines" name="guidelines"  required="required"/>
         I have read and understand the <a href="http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide">interface guidelines</a>.
-	  </label>
+      </label>
+    </div>
+  </div>
+
+  <div class="control-group">
+    <div class="controls">
+      <label class="checkbox">
+        <input type="checkbox" id="privpol" name="privpol"  required="required"/>
+        I have read and agree to the <a href="privacy.php?internal">privacy policy</a>.
+      </label>
     </div>
   </div>
 
