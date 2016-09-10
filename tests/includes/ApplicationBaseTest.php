@@ -39,10 +39,11 @@ class ApplicationBaseTest extends \PHPUnit_Framework_TestCase
 	}
 
 	function testGetConfiguration() {
-		$this->markTestIncomplete("Not fully implemented yet.");
-		$this->ab->expects($this->any())
-			-> method("getConfiguration")
-			-> will($this->returnValue(NULL));
+		$config = $this->ab->getConfiguration();
+
+		$this->assertInstanceOf('\Waca\SiteConfiguration', $config);
+		// We will actually test this in the SiteConfiguration.php test - for now we can be satisfied that it returns valid.
+		
 	}
 
 }
