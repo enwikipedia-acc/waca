@@ -71,4 +71,29 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setDebuggingTraceEnabled($newValue));
 		$this->assertEquals($this->si->getDebuggingTraceEnabled(), $newValue);
 	}
+
+	function testDataClearIp() {
+		$newValue = "10.0.0.1";
+
+		$this->assertEquals($this->si->getDataClearIp(), "127.0.0.1");
+
+		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setDataClearIp($newValue));
+		$this->assertEquals($this->si->getDataClearIp(), $newValue);
+	}
+
+	function testDataClearEmail() {
+		$newValue = "everything_is_awesome@wikimedia.org";
+
+		$this->assertEquals($this->si->getDataClearEmail(), "acc@toolserver.org");
+
+		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setDataClearEmail($newValue));
+		$this->assertEquals($this->si->getDataClearEmail(), $newValue);
+	}
+
+	function testForceIdentification() {
+		$this->assertTrue($this->si->getForceIdentification());
+
+		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setForceIdentification(false));
+		$this->assertFalse($this->si->getForceIdenfication());
+	}
 }
