@@ -107,7 +107,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	function testMediawikiScriptPath() {
-		$newValue = "'https://de.wikipedia.org/w/index.php";
+		$newValue = "https://de.wikipedia.org/w/index.php";
 
 		$this->assertEquals($this->si->getMediawikiScriptPath(), "https://en.wikipedia.org/w/index.php");
 
@@ -116,12 +116,21 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	function testMediawikiWebServiceEndpoint() {
-		$newValue = "'https://de.wikipedia.org/w/api.php";
+		$newValue = "https://de.wikipedia.org/w/api.php";
 
 		$this->assertEquals($this->si->getMediawikiWebServiceEndpoint(), "https://en.wikipedia.org/w/api.php");
 
 		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setMediawikiWebServiceEndpoint($newValue));
 		$this->assertEquals($this->si->getMediawikiWebServiceEndpoint(), $newValue);
+	}
+
+	function testMetaWikimediaWebServiceEndpoint() {
+		$newValue = "https://meta2.wikimedia.org/w/api.php";
+
+		$this->assertEquals($this->si->getMetaWikimediaWebServiceEndpoint(), "https://meta.wikimedia.org/w/api.php");
+
+		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->testMetaWikimediaWebServiceEndpoint($newValue));
+		$this->assertEquals($this->si->getMetaWikimediaWebServiceEndpoint(), $newValue);
 	}
 
 	function testEnforceOAuth()
@@ -349,7 +358,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->assertEquals($this->si->getIrcNotificationType(), $newValue);
 	}
 
-	function setErrorLog()
+	function testErrorLog()
 	{
 		$newValue = "elephantlog";
 
