@@ -129,7 +129,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getMetaWikimediaWebServiceEndpoint(), "https://meta.wikimedia.org/w/api.php");
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->testMetaWikimediaWebServiceEndpoint($newValue));
+		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setMetaWikimediaWebServiceEndpoint($newValue));
 		$this->assertEquals($this->si->getMetaWikimediaWebServiceEndpoint(), $newValue);
 	}
 
