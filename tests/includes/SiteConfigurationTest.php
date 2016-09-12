@@ -98,10 +98,12 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	function testIdentificationCacheExpiry() {
-		$currentVersion = "1 DAY";   // NOTE: Update when you update the main file... otherwise this test will fail!
+		$newValue = "44 Day";
 
-		$this->assertEquals($this->si->getIdentificationCacheExpiry(), $currentVersion);
-		$this->assertNotEquals($this->si->getIdentificationCacheExpiry(), null);
+		$this->assertEquals($this->si->getIdentificationCacheExpiry(), "1 DAY");
+
+		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setIdentificationCacheExpiry($newValue));
+		$this->assertEquals($this->si->getIdentificationCacheExpiry(), $newValue);
 	}
 
 	function testMediawikiScriptPath() {
