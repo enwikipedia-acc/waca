@@ -37,4 +37,19 @@ class WebStartTest extends \PHPUnit_Framework_TestCase
 	public function testRun() {
 		$this->markTestSkipped("Not implemented yet.");
 	}
+
+	public function testPublic() {
+		$newValue = true;
+
+		$this->assertEquals($this->ws->isPublic(), null);
+
+		$this->ws->setPublic($newValue);
+		$this->assertEquals($this->ws->isPublic(), $newValue);
+
+		$newValue = false;
+
+		$this->ws->setPublic($newValue);
+		$this->assertEquals($this->ws->isPublic(), $newValue);
+
+	}
 }
