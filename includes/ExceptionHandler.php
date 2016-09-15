@@ -80,7 +80,8 @@ HTML;
 			$message = str_replace('$2$', "", $message);
 		}
 
-		header('HTTP/1.1 500 Internal Server Error');
+		// MRB - Workaround for the test - Tests send headers already but main application will not.
+		if (!headers_sent()) {header('HTTP/1.1 500 Internal Server Error');}
 
 		// output the document
 		print $message;
