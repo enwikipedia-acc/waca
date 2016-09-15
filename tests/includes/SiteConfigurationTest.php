@@ -6,13 +6,6 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-/**
- * Created by PhpStorm.
- * User: Matthew
- * Date: 9/10/16
- * Time: 00:29
- */
-
 namespace Waca\Tests;
 
 use Waca\SiteConfiguration;

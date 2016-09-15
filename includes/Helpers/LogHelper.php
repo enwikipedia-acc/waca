@@ -6,12 +6,6 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-/**
- * Created by PhpStorm.
- * User: stwalkerster
- * Date: 26/03/2016
- * Time: 02:55
- */
 
 namespace Waca\Helpers;
 
