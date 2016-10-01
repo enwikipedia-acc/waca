@@ -21,11 +21,11 @@ class DebugHelperTest extends PHPUnit_Framework_TestCase
 
 	public function setUp()
 	{
-		$this->markTestSkipped("Appears to allocate too much memory, we may have a bug here.  Skipping for now.");
+		//$this->markTestSkipped("Appears to allocate too much memory, we may have a bug here.  Skipping for now.");
 
 		$this->dbh = new DebugHelper();
 
-		$this->btMock = new PHPUnit_Extensions_MockFunction('debug_backtrace', $this->dbh);
+		$this->btMock = new PHPUnit_Extensions_MockFunction('get_debug_backtrace', $this->dbh);
 	}
 
 	public function tearDown()

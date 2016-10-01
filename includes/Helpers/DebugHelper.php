@@ -18,9 +18,13 @@ namespace Waca\Helpers;
  */
 class DebugHelper
 {
-	public static function getBacktrace()
+	private function get_debug_backtrace() {
+		return debug_backtrace();
+	}
+
+	public function getBacktrace()
 	{
-		$backtrace = debug_backtrace();
+		$backtrace = $this->get_debug_backtrace();
 
 		$output = "";
 
