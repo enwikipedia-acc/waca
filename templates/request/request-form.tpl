@@ -37,6 +37,16 @@
 				  <textarea id="inputComments" rows="4" name="comments"></textarea><span class="help-block">Please do NOT ask for a specific password. One will be randomly created for you.</span>
 			  </div>
 		  </div>
+
+		  <div class="control-group">
+			  <div class="controls">
+				  <label class="checkbox">
+					  <input type="checkbox" id="privpol" name="privpol"  required="required"/>
+					  I have read and agree to the <a href="privacy.php">privacy policy</a>.
+				  </label>
+			  </div>
+		  </div>
+
 		  <div class="control-group">
 			  <div class="controls">
 				  <button type="submit" class="btn">Send request</button>
