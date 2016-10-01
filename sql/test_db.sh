@@ -71,6 +71,9 @@ for f in `ls patches/patch*.sql`; do
 	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < $f
 done
 
+echo "Adding grants script..."
+mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < grants.sql
+
 if [ $1 -eq 0 ]; then
 	echo "Dumping schema to file..."
 	mysqldump --compact -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME > schema.sql
