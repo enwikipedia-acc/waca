@@ -14,14 +14,12 @@ You must also have a database which you can use with the tool.
 You'll also need some PHP extensions:
 
 * mbstring
-* mysql
 * pdo
 * pdo_mysql
 * session
 * date
 * pcre
 * curl
-* mcrypt
 * openssl
 
 There's nothing special here, these are all standard PHP extensions that are bundled with PHP - you may 
