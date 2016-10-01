@@ -18,7 +18,7 @@ namespace Waca\Helpers;
  */
 class DebugHelper
 {
-	private function get_debug_backtrace() {
+	public function get_debug_backtrace() {
 		return debug_backtrace();
 	}
 
@@ -30,7 +30,7 @@ class DebugHelper
 
 		$count = 0;
 		foreach ($backtrace as $line) {
-			if ($count == 0) {
+			if ($count == 0 || $count == 1) {
 				$count++;
 				continue;
 			}

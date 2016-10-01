@@ -36,6 +36,23 @@ class DebugHelperTest extends PHPUnit_Framework_TestCase
 
 	public function testGetBacktrace()
 	{
+
+		$mock = $this->getMock("debugHelper", array("get_Debug_backtrace"));
+		$mock->expects($this->once())->method("c")->will($this->returnValue(array(
+			array(
+				"file"     => "/tmp/a.php",
+				"line"     => 10,
+				"function" => "a_test",
+				"args"     => array("friend"),
+			),
+			array(
+				"file"     => "/tmp/b.php",
+				"line"     => 2,
+				"function" => "include_once",
+				"args"     => array("/tmp/a.php"),
+			),
+		)));
+		/*
 		$this->btMock->expects($this->any())
 			->will($this->returnValue(
 				array(
@@ -53,10 +70,14 @@ class DebugHelperTest extends PHPUnit_Framework_TestCase
 					),
 				)
 			));
-
-		$this->assertContains("/tmp/a.php", $this->dbh->getBacktrace());
-		$this->assertContains("/tmp/b.php", $this->dbh->getBacktrace());
-		$this->assertContains("a_test", $this->dbh->getBacktrace());
-		$this->assertContains("include_once", $this->dbh->getBacktrace());
+*/
+		$this->assertContains("/tmp/a.php", $mock->getBacktrace());
+		$this->assertContains("/tmp/b.php", $mock->getBacktrace());
+		$this->assertContains("a_test", $mock->getBacktrace());
+		$this->assertContains("include_once", $mock->getBacktrace());
+		//$this->assertContains("/tmp/a.php", $this->dbh->getBacktrace());
+		//$this->assertContains("/tmp/b.php", $this->dbh->getBacktrace());
+		//$this->assertContains("a_test", $this->dbh->getBacktrace());
+		//$this->assertContains("include_once", $this->dbh->getBacktrace());
 	}
 }
