@@ -16,7 +16,7 @@ CREATE PROCEDURE SCHEMA_GRANTS_REFRESH(
     -- against privmode
     -- --------------------------------------------------------------------------------------------------
     DECLARE cur_select CURSOR FOR
-        SELECT 'antispoofcache' AS tbl UNION
+        SELECT 'antispoofcache' UNION
         SELECT 'ban' UNION
         SELECT 'comment' UNION
         SELECT 'emailtemplate' UNION
@@ -31,7 +31,7 @@ CREATE PROCEDURE SCHEMA_GRANTS_REFRESH(
         SELECT 'xfftrustcache';
 
     DECLARE cur_update CURSOR FOR
-        SELECT 'ban' AS tbl UNION
+        SELECT 'ban' UNION
         SELECT 'comment' UNION
         SELECT 'emailtemplate' UNION
         SELECT 'geolocation' UNION
@@ -43,7 +43,7 @@ CREATE PROCEDURE SCHEMA_GRANTS_REFRESH(
         SELECT 'welcometemplate';
 
     DECLARE cur_insert CURSOR FOR
-        SELECT 'antispoofcache' AS tbl UNION
+        SELECT 'antispoofcache' UNION
         SELECT 'applicationlog' UNION
         SELECT 'ban' UNION
         SELECT 'comment' UNION
@@ -66,13 +66,13 @@ CREATE PROCEDURE SCHEMA_GRANTS_REFRESH(
     -- --------------------------------------------------------------------------------------------------
     -- These two cursors find all existing mysql grants on this schema and systematically revoke them.
     DECLARE cur_revschema CURSOR FOR
-        SELECT CONCAT('REVOKE ALL PRIVILEGES ON ', table_schema, '.* FROM ', grantee) vsql
+        SELECT CONCAT('REVOKE ALL PRIVILEGES ON ', table_schema, '.* FROM ', grantee)
         FROM information_schema.schema_privileges
         WHERE grantee = targetuser
         GROUP BY table_schema, grantee;
 
     DECLARE cur_revtable CURSOR FOR
-        SELECT CONCAT('REVOKE ALL PRIVILEGES ON ', table_schema, '.', table_name, ' FROM ', grantee) vsql
+        SELECT CONCAT('REVOKE ALL PRIVILEGES ON ', table_schema, '.', table_name, ' FROM ', grantee)
         FROM information_schema.table_privileges
         WHERE grantee = targetuser AND table_schema = schemaname
         GROUP BY grantee, table_schema, table_name;
