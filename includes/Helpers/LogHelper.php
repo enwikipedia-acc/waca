@@ -6,7 +6,6 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-
 namespace Waca\Helpers;
 
 use Exception;
@@ -178,8 +177,8 @@ class LogHelper
 			'Banned'          => 'banned',
 			'Edited'          => 'edited interface message',
 			'Declined'        => 'declined',
-			'EditComment-c'   => 'edited a comment',
-			'EditComment-r'   => 'edited a comment',
+			'EditComment-c'   => 'edited a comment (by comment ID)',
+			'EditComment-r'   => 'edited a comment (by request)',
 			'Unbanned'        => 'unbanned',
 			'Promoted'        => 'promoted to tool admin',
 			'BreakReserve'    => 'forcibly broke the reservation',
@@ -195,6 +194,7 @@ class LogHelper
 			'CreatedTemplate' => 'created template',
 			'SentMail'        => 'sent an email to the requestor',
 			'Registered'      => 'registered a tool account',
+			'Closed 0'        => 'dropped request',
 		);
 
 		$statement = $database->query(<<<SQL

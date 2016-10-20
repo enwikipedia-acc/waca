@@ -201,10 +201,21 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 	 * @param string      $page   The page to redirect requests to (as used in the UR)
 	 * @param null|string $action The action to use on the page.
 	 * @param null|array  $parameters
+	 * @param null|string $script The script (relative to index.php) to redirect to
 	 */
-	final protected function redirect($page = '', $action = null, $parameters = null)
+	final protected function redirect($page = '', $action = null, $parameters = null, $script = null)
 	{
-		$pathInfo = array(WebRequest::scriptName());
+		$currentScriptName = WebRequest::scriptName();
+
+		// Are we changing script?
+		if ($script === null || substr($currentScriptName, -1 * count($script)) === $script) {
+			$targetScriptName = $currentScriptName;
+		}
+		else {
+			$targetScriptName = $this->getSiteConfiguration()->getBaseUrl() . '/' . $script;
+		}
+
+		$pathInfo = array($targetScriptName);
 
 		$pathInfo[1] = $page;
 

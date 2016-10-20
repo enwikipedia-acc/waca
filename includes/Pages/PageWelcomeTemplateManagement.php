@@ -114,10 +114,15 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 			$this->validateCSRFToken();
 			$database = $this->getDatabase();
 
+			$userCode = WebRequest::postString('usercode');
+			$botCode = WebRequest::postString('botcode');
+
+			$this->validate($userCode, $botCode);
+
 			$template = new WelcomeTemplate();
 			$template->setDatabase($database);
-			$template->setUserCode(WebRequest::postString('usercode'));
-			$template->setBotCode(WebRequest::postString('botcode'));
+			$template->setUserCode($userCode);
+			$template->setBotCode($botCode);
 			$template->save();
 
 			Logger::welcomeTemplateCreated($database, $template);
@@ -150,15 +155,21 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 			throw new ApplicationLogicException('Cannot find requested template');
 		}
 
-		if ($template) {
+		if ($template->isDeleted()) {
 			throw new ApplicationLogicException('The specified template has been deleted');
 		}
 
 		if (WebRequest::wasPosted()) {
 			$this->validateCSRFToken();
-			$template->setUserCode(WebRequest::postString('usercode'));
-			$template->setBotCode(WebRequest::postString('botcode'));
-			$template->setUpdateVersion(WebRequest::postInt('botcode'));
+
+			$userCode = WebRequest::postString('usercode');
+			$botCode = WebRequest::postString('botcode');
+
+			$this->validate($userCode, $botCode);
+
+			$template->setUserCode($userCode);
+			$template->setBotCode($botCode);
+			$template->setUpdateVersion(WebRequest::postInt('updateversion'));
 			$template->save();
 
 			Logger::welcomeTemplateEdited($database, $template);
@@ -237,6 +248,17 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 				return $this->getSecurityManager()->configure()->asInternalPage();
 			default:
 				return $this->getSecurityManager()->configure()->asInternalPage();
+		}
+	}
+
+	private function validate($userCode, $botCode)
+	{
+		if ($userCode === null) {
+			throw new ApplicationLogicException('User code cannot be null');
+		}
+
+		if ($botCode === null) {
+			throw new ApplicationLogicException('Bot code cannot be null');
 		}
 	}
 }

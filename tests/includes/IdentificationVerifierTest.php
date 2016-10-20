@@ -11,6 +11,7 @@ namespace Waca\Tests;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 
+use Waca\Exceptions\CurlException;
 use Waca\Helpers\HttpHelper;
 use Waca\IdentificationVerifier;
 use Waca\PdoDatabase;
@@ -28,17 +29,24 @@ class IdentificationVerifierTest extends PHPUnit_Framework_TestCase
 {
 	/** @var IdentificationVerifier */
 	private $identificationVerifier;
+	/** @var HttpHelper */
+	private $httpHelper;
+	/** @var SiteConfiguration */
+	private $dummyConfiguration;
 
 	public function setUp()
 	{
-		$dummyConfiguration = new SiteConfiguration();
-		$httpHelper = new HttpHelper($dummyConfiguration->getUserAgent(), true);
+		$this->dummyConfiguration = new SiteConfiguration();
+		$this->httpHelper = new HttpHelper($this->dummyConfiguration->getUserAgent(), true);
 		/** @var PdoDatabase|PHPUnit_Framework_MockObject_MockObject $dummyDatabase */
 		$dummyDatabase = $this->getMockBuilder(PdoDatabase::class)
 			->disableOriginalConstructor()
 			->getMock();
 
-		$this->identificationVerifier = new IdentificationVerifier($httpHelper, $dummyConfiguration, $dummyDatabase);
+		$this->identificationVerifier = new IdentificationVerifier(
+			$this->httpHelper,
+			$this->dummyConfiguration,
+			$dummyDatabase);
 	}
 
 	public function tearDown()
@@ -46,10 +54,25 @@ class IdentificationVerifierTest extends PHPUnit_Framework_TestCase
 		$this->identificationVerifier = null;
 	}
 
-	// Since this test actually queries the real Identification Noticeboard, the assertions should be periodically
-	// manually verified by a human.
+	/**
+	 * Test the API still returns the expected results.
+	 *
+	 * Since this test actually queries the real Identification Noticeboard, the assertions should be periodically
+	 * manually verified by a human.
+	 *
+	 * This test also serves to ensure this is still usable as a method of testing identification.
+	 */
 	public function testApiReturnsExpectedResults()
 	{
+		try {
+			// Attempt a get
+			$this->httpHelper->get($this->dummyConfiguration->getMetaWikimediaWebServiceEndpoint());
+		}
+		catch (CurlException $ex) {
+			// We can't load the endpoint, so we can't really do this test.
+			$this->markTestSkipped('Cannot contact Meta endpoint');
+		}
+
 		$reflector = new \ReflectionClass($this->identificationVerifier);
 		$method = $reflector->getMethod('isIdentifiedOnWiki');
 		$method->setAccessible(true);
@@ -57,9 +80,11 @@ class IdentificationVerifierTest extends PHPUnit_Framework_TestCase
 		setlocale(LC_ALL, 'UTF8');
 
 		$this->assertTrue($method->invoke($this->identificationVerifier, "Stwalkerster"));
-		$this->assertTrue($method->invoke($this->identificationVerifier, "stwalkerster"), "First character case insensitivity test failed");
+		$this->assertTrue($method->invoke($this->identificationVerifier, "stwalkerster"),
+			"First character case insensitivity test failed");
 		$this->assertTrue($method->invoke($this->identificationVerifier, "FastLizard4"));
-		$this->assertFalse($method->invoke($this->identificationVerifier, "fastlizard4"), "Username case sensitivity test (for more than first character) failed");
+		$this->assertFalse($method->invoke($this->identificationVerifier, "fastlizard4"),
+			"Username case sensitivity test (for more than first character) failed");
 		$this->assertFalse($method->invoke($this->identificationVerifier, "Grawp"));
 		$this->assertFalse($method->invoke($this->identificationVerifier, "Willie On Wheels"));
 

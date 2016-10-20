@@ -282,7 +282,7 @@ foreach (array(
 	"pdo", "pdo_mysql", // new database module
 	"session", "date", "pcre", // core stuff
 	"curl", // mediawiki api access etc
-	"mcrypt", "openssl", // password encryption etc
+	"openssl", // token generation
 	) as $x) {if (!extension_loaded($x)) {die("extension $x is required."); }}
 
 // Set up the AutoLoader

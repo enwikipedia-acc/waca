@@ -180,6 +180,6 @@ SQL
 	 */
 	public function isDeleted()
 	{
-		return $this->deleted === 1;
+		return ((int)$this->deleted) === 1;
 	}
 }
