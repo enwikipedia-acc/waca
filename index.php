@@ -105,6 +105,7 @@ else {
 
             $smarty->display("request/request-form.tpl");
             BootstrapSkin::displayPublicFooter();
+            die();
         }
 
 		$errorEncountered = false;
