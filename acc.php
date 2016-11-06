@@ -117,11 +117,11 @@ elseif ($action == "sreg") {
 		die();
 	}
 
-    if (!isset($_REQUEST['privpol'])) {
-        $smarty->display("registration/alert-privpol.tpl");
-        BootstrapSkin::displayInternalFooter();
-        die();
-    }
+	if (!isset($_REQUEST['privpol'])) {
+		$smarty->display("registration/alert-privpol.tpl");
+		BootstrapSkin::displayInternalFooter();
+		die();
+	}
 	
 	if (!filter_var($_REQUEST['email'], FILTER_VALIDATE_EMAIL)) {
 		$smarty->display("registration/alert-invalidemail.tpl");
