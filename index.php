@@ -97,6 +97,16 @@ if (isset($_GET['action']) && $_GET['action'] == "confirm") {
 }
 else {
 	if ($_SERVER['REQUEST_METHOD'] == "POST") {
+        // privpol check
+        if (!isset($_POST['privpol'])) {
+            BootstrapSkin::displayAlertBox(
+                $smarty->fetch("validation/privpol.tpl"),
+                "alert-error");
+
+            $smarty->display("request/request-form.tpl");
+            BootstrapSkin::displayPublicFooter();
+        }
+
 		$errorEncountered = false;
         
 		$request = new Request();
