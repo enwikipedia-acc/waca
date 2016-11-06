@@ -17,21 +17,22 @@ require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php';
 
 // eurgh. yes, this is needed. The internal header does a logged-in user check, which is a database call...
+// Also, SmartyInit checks the currently-logged-in user...
 if (Offline::isOffline()) {
-	echo Offline::getOfflineMessage(true);
-	die();
+    echo Offline::getOfflineMessage(true);
+    die();
 }
 
-if(isset($_GET['internal'])){
-	BootstrapSkin::displayInternalHeader();
-	$smarty->assign("mode", "the Wikipedia Account Request Internal System");
-	$smarty->assign("content", "privacy/internal.tpl");
-	$smarty->display("privacy/container.tpl");
-	BootstrapSkin::displayInternalFooter();
+if (isset($_GET['internal'])) {
+    BootstrapSkin::displayInternalHeader();
+    $smarty->assign("mode", "the Wikipedia Account Request Internal System");
+    $smarty->assign("content", "privacy/internal.tpl");
+    $smarty->display("privacy/container.tpl");
+    BootstrapSkin::displayInternalFooter();
 } else {
-	BootstrapSkin::displayPublicHeader();
-	$smarty->assign("mode", "the Wikipedia Account Request System");
-	$smarty->assign("content", "privacy/public.tpl");
-	$smarty->display("privacy/container.tpl");
-	BootstrapSkin::displayPublicFooter();
+    BootstrapSkin::displayPublicHeader();
+    $smarty->assign("mode", "the Wikipedia Account Request System");
+    $smarty->assign("content", "privacy/public.tpl");
+    $smarty->display("privacy/container.tpl");
+    BootstrapSkin::displayPublicFooter();
 }
