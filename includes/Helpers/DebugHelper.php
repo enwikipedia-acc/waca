@@ -18,15 +18,19 @@ namespace Waca\Helpers;
  */
 class DebugHelper
 {
-	public static function getBacktrace()
+	public function get_debug_backtrace() {
+		return debug_backtrace();
+	}
+
+	public function getBacktrace()
 	{
-		$backtrace = debug_backtrace();
+		$backtrace = $this->get_debug_backtrace();
 
 		$output = "";
 
 		$count = 0;
 		foreach ($backtrace as $line) {
-			if ($count == 0) {
+			if ($count == 0 || $count == 1) {
 				$count++;
 				continue;
 			}
