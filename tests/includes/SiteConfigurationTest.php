@@ -45,7 +45,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	function testSchemaVersion() {
-		$currentVersion = 22;   // NOTE: Update when you update the main file... otherwise this test will fail!
+		$currentVersion = 23;   // NOTE: Update when you update the main file... otherwise this test will fail!
 
 		$this->assertEquals($this->si->getSchemaVersion(), $currentVersion);
 		$this->assertNotEquals($this->si->getSchemaVersion(), null);
