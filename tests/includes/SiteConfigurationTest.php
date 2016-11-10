@@ -32,7 +32,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getBaseUrl(), null);
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setBaseUrl($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setBaseUrl($newValue));
 		$this->assertEquals($this->si->getBaseUrl(), $newValue);
 	}
 
@@ -41,7 +41,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getFilePath(), null);
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setFilePath($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setFilePath($newValue));
 		$this->assertEquals($this->si->getFilePath(), $newValue);
 	}
 
@@ -55,12 +55,12 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getDebuggingTraceEnabled(), null);
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setDebuggingTraceEnabled($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setDebuggingTraceEnabled($newValue));
 		$this->assertEquals($this->si->getDebuggingTraceEnabled(), $newValue);
 
 		$newValue = false;
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setDebuggingTraceEnabled($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setDebuggingTraceEnabled($newValue));
 		$this->assertEquals($this->si->getDebuggingTraceEnabled(), $newValue);
 	}
 
@@ -69,7 +69,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getDataClearIp(), "127.0.0.1");
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setDataClearIp($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setDataClearIp($newValue));
 		$this->assertEquals($this->si->getDataClearIp(), $newValue);
 	}
 
@@ -78,14 +78,14 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getDataClearEmail(), "acc@toolserver.org");
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setDataClearEmail($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setDataClearEmail($newValue));
 		$this->assertEquals($this->si->getDataClearEmail(), $newValue);
 	}
 
 	function testForceIdentification() {
 		$this->assertTrue($this->si->getForceIdentification());
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setForceIdentification(false));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setForceIdentification(false));
 		$this->assertFalse($this->si->getForceIdentification());
 	}
 
@@ -94,7 +94,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getIdentificationCacheExpiry(), "1 DAY");
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setIdentificationCacheExpiry($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setIdentificationCacheExpiry($newValue));
 		$this->assertEquals($this->si->getIdentificationCacheExpiry(), $newValue);
 	}
 
@@ -103,7 +103,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getMediawikiScriptPath(), "https://en.wikipedia.org/w/index.php");
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setMediawikiScriptPath($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setMediawikiScriptPath($newValue));
 		$this->assertEquals($this->si->getMediawikiScriptPath(), $newValue);
 	}
 
@@ -112,7 +112,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getMediawikiWebServiceEndpoint(), "https://en.wikipedia.org/w/api.php");
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setMediawikiWebServiceEndpoint($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setMediawikiWebServiceEndpoint($newValue));
 		$this->assertEquals($this->si->getMediawikiWebServiceEndpoint(), $newValue);
 	}
 
@@ -121,7 +121,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getMetaWikimediaWebServiceEndpoint(), "https://meta.wikimedia.org/w/api.php");
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setMetaWikimediaWebServiceEndpoint($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setMetaWikimediaWebServiceEndpoint($newValue));
 		$this->assertEquals($this->si->getMetaWikimediaWebServiceEndpoint(), $newValue);
 	}
 
@@ -129,7 +129,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertTrue($this->si->getEnforceOAuth());
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setEnforceOAuth(false));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setEnforceOAuth(false));
 		$this->assertFalse($this->si->getEnforceOAuth());
 	}
 
@@ -137,7 +137,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertTrue($this->si->getEmailConfirmationEnabled());
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setEmailConfirmationEnabled(false));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setEmailConfirmationEnabled(false));
 		$this->assertFalse($this->si->getEmailConfirmationEnabled());
 	}
 
@@ -146,7 +146,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getMiserModeLimit(), "25");
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setMiserModeLimit($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setMiserModeLimit($newValue));
 		$this->assertEquals($this->si->getMiserModeLimit(), $newValue);
 	}
 
@@ -184,7 +184,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->assertArrayHasKey("Open", $test1);
 		$this->assertArrayNotHasKey("Dummy", $test1);
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setRequestStates($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setRequestStates($newValue));
 
 		$test2 = $this->si->getRequestStates();
 		$this->assertInternalType('array', $test2);
@@ -200,7 +200,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->assertInternalType('array', $test1);
 		$this->assertArrayNotHasKey("this", $test1);
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setSquidList($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setSquidList($newValue));
 
 		$test2 = $this->si->getSquidList();
 		$this->assertInternalType('array', $test2);
@@ -213,7 +213,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getDefaultCreatedTemplateId(), 1);
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setDefaultCreatedTemplateId($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setDefaultCreatedTemplateId($newValue));
 		$this->assertEquals($this->si->getDefaultCreatedTemplateId(), $newValue);
 	}
 
@@ -223,7 +223,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getDefaultRequestStateKey(), "Open");
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setDefaultRequestStateKey($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setDefaultRequestStateKey($newValue));
 		$this->assertEquals($this->si->getDefaultRequestStateKey(), $newValue);
 	}
 
@@ -233,7 +233,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getDefaultRequestDeferredStateKey(), "Flagged users");
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setDefaultRequestDeferredStateKey($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setDefaultRequestDeferredStateKey($newValue));
 		$this->assertEquals($this->si->getDefaultRequestDeferredStateKey(), $newValue);
 	}
 
@@ -241,7 +241,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertFalse($this->si->getUseStrictTransportSecurity());
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setUseStrictTransportSecurity(true));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setUseStrictTransportSecurity(true));
 		$this->assertTrue($this->si->getUseStrictTransportSecurity());
 	}
 
@@ -251,7 +251,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getUserAgent(), "Wikipedia-ACC Tool/0.1 (+https://accounts.wmflabs.org/internal.php/team)");
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setUserAgent($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setUserAgent($newValue));
 		$this->assertEquals($this->si->getUserAgent(), $newValue);
 	}
 
@@ -259,7 +259,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertFalse($this->si->getCurlDisableVerifyPeer());
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setCurlDisableVerifyPeer(true));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setCurlDisableVerifyPeer(true));
 		$this->assertTrue($this->si->getCurlDisableVerifyPeer());
 	}
 
@@ -267,7 +267,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertTrue($this->si->getUseOAuthSignup());
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setUseOAuthSignup(false));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setUseOAuthSignup(false));
 		$this->assertFalse($this->si->getUseOAuthSignup());
 	}
 
@@ -276,7 +276,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getOAuthBaseUrl(), null);
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setOAuthBaseUrl($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setOAuthBaseUrl($newValue));
 		$this->assertEquals($this->si->getOAuthBaseUrl(), $newValue);
 	}
 
@@ -285,7 +285,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getOAuthConsumerToken(), null);
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setOAuthConsumerToken($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setOAuthConsumerToken($newValue));
 		$this->assertEquals($this->si->getOAuthConsumerToken(), $newValue);
 	}
 
@@ -294,7 +294,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getOAuthConsumerSecret(), null);
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setOAuthConsumerSecret($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setOAuthConsumerSecret($newValue));
 		$this->assertEquals($this->si->getOAuthConsumerSecret(), $newValue);
 	}
 
@@ -303,7 +303,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getDataClearInterval(), "15 DAY");
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setDataClearInterval($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setDataClearInterval($newValue));
 		$this->assertEquals($this->si->getDataClearInterval(), $newValue);
 	}
 
@@ -312,7 +312,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getXffTrustedHostsFile(), "../TrustedXFF/trusted-hosts.txt");
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setXffTrustedHostsFile($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setXffTrustedHostsFile($newValue));
 		$this->assertEquals($this->si->getXffTrustedHostsFile(), $newValue);
 	}
 
@@ -328,7 +328,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->assertInternalType("array", $this->si->getCrossOriginResourceSharingHosts());
 		$this->assertNotContains("http://localhost/awesomeHosts", $this->si->getCrossOriginResourceSharingHosts());
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setCrossOriginResourceSharingHosts($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setCrossOriginResourceSharingHosts($newValue));
 		$this->assertContains("http://localhost/awesomeHosts", $this->si->getCrossOriginResourceSharingHosts());
 	}
 
@@ -336,7 +336,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertTrue($this->si->getIrcNotificationsEnabled());
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setIrcNotificationsEnabled(false));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setIrcNotificationsEnabled(false));
 		$this->assertFalse($this->si->getIrcNotificationsEnabled());
 	}
 
@@ -346,7 +346,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getIrcNotificationType(), 1);
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setIrcNotificationType($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setIrcNotificationType($newValue));
 		$this->assertEquals($this->si->getIrcNotificationType(), $newValue);
 	}
 
@@ -356,7 +356,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getErrorLog(), "errorlog");
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setErrorLog($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setErrorLog($newValue));
 		$this->assertEquals($this->si->getErrorLog(), $newValue);
 	}
 
@@ -366,7 +366,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getEmailConfirmationExpiryDays(), 7);
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setEmailConfirmationExpiryDays($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setEmailConfirmationExpiryDays($newValue));
 		$this->assertEquals($this->si->getEmailConfirmationExpiryDays(), $newValue);
 	}
 
@@ -376,7 +376,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getIrcNotificationsInstance(), "Development");
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setIrcNotificationsInstance($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setIrcNotificationsInstance($newValue));
 		$this->assertEquals($this->si->getIrcNotificationsInstance(), $newValue);
 	}
 
@@ -384,7 +384,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 	{
 		$this->assertFalse($this->si->getTitleBlacklistEnabled());
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setTitleBlacklistEnabled(true));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setTitleBlacklistEnabled(true));
 		$this->assertTrue($this->si->getTitleBlacklistEnabled());
 	}
 
@@ -393,7 +393,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertEquals($this->si->getLocationProviderApiKey(), null);
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setLocationProviderApiKey($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setLocationProviderApiKey($newValue));
 		$this->assertEquals($this->si->getLocationProviderApiKey(), $newValue);
 	}
 
@@ -405,7 +405,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 		$this->assertInternalType('array', $test1);
 		$this->assertArrayNotHasKey("one", $test1);
 
-		$this->assertInstanceOf('Waca\SiteConfiguration', $this->si->setTorExitPaths($newValue));
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si->setTorExitPaths($newValue));
 
 		$test2 = $this->si->getTorExitPaths();
 		$this->assertInternalType('array', $test2);
