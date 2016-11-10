@@ -47,6 +47,9 @@ class WebStart extends ApplicationBase
 		parent::__construct($configuration);
 
 		$this->requestRouter = $router;
+
+		// This variable should never be null, setting a default value here.
+		$this->isPublic = false;
 	}
 
 	/**

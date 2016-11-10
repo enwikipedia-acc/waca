@@ -30,7 +30,7 @@ class DebugHelper
 
 		$count = 0;
 		foreach ($backtrace as $line) {
-			if ($count == 0 || $count == 1) {
+			if ($count <= 1) {
 				$count++;
 				continue;
 			}

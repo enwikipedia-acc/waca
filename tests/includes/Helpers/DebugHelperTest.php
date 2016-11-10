@@ -14,18 +14,11 @@ use Waca\Helpers\DebugHelper;
 
 class DebugHelperTest extends PHPUnit_Framework_TestCase
 {
-	/** @var PHPUnit_Extensions_MockFunction */
+	/** @var DebugHelper */
 	private $dbh;
 
 	public function setUp()
 	{
-		//$this->markTestSkipped("Appears to allocate too much memory, we may have a bug here.  Skipping for now.");
-
-		//$this->dbh = new DebugHelper();
-
-		//$this->btMock = new PHPUnit_Extensions_MockFunction('get_debug_backtrace', $this->dbh);
-
-		//$this->dbhMock = $this->getMockBuilder(DebugHelper::class)->getMock();
 		$this->dbh = $this->getMock(DebugHelper::class, array("get_debug_backtrace"));
 		$this->dbh->method('get_debug_backtrace')->willReturn(
 			array(

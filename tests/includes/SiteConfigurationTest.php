@@ -12,6 +12,7 @@ use Waca\SiteConfiguration;
 
 class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 {
+	/** @var SiteConfiguration */
 	private $si;
 
 	function setUp() {
@@ -23,7 +24,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	function testSetUp() {
-		$this->assertInstanceOf('\Waca\SiteConfiguration', $this->si);
+		$this->assertInstanceOf(SiteConfiguration::class, $this->si);
 	}
 
 	function testBaseUrl() {
@@ -45,9 +46,7 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
 	}
 
 	function testSchemaVersion() {
-		$currentVersion = 23;   // NOTE: Update when you update the main file... otherwise this test will fail!
-
-		$this->assertEquals($this->si->getSchemaVersion(), $currentVersion);
+		$this->assertGreaterThan(20, $this->si->getSchemaVersion());
 		$this->assertNotEquals($this->si->getSchemaVersion(), null);
 	}
 

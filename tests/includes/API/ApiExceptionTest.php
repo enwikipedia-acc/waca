@@ -8,17 +8,20 @@
 
 namespace Waca\Tests\Api;
 
-use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
 use \Waca\API\ApiException;
 
-class ApiExceptionTest extends \PHPUnit_Framework_TestCase {
-
-	private $ex;
+class ApiExceptionTest extends \PHPUnit_Framework_TestCase
+{
+	/** @var  string */
 	private $message;
+	
+	/** @var ApiException */
+	private $ex;
 
-	public function setUp() {
+	public function setUp()
+	{
 		$this->message = "This is a test message";
+		
 		try {
 			throw new ApiException($this->message);
 		}

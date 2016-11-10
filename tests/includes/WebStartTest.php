@@ -14,8 +14,13 @@ use Waca\Router\RequestRouter;
 
 class WebStartTest extends \PHPUnit_Framework_TestCase
 {
+	/** @var  SiteConfiguration */
 	private $sc;
+
+	/** @var  RequestRouter */
 	private $ir;
+
+	/** @var  WebStart */
 	private $ws;
 
 	public function setUp() {
@@ -41,7 +46,7 @@ class WebStartTest extends \PHPUnit_Framework_TestCase
 	public function testPublic() {
 		$newValue = true;
 
-		$this->assertEquals($this->ws->isPublic(), null);
+		$this->assertEquals($this->ws->isPublic(), false);
 
 		$this->ws->setPublic($newValue);
 		$this->assertEquals($this->ws->isPublic(), $newValue);
