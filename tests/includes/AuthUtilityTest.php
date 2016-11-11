@@ -33,12 +33,8 @@ class AuthUtilityTest extends \PHPUnit_Framework_TestCase
 		$test_res_2 = ":2:x:$2y$10$2rYhyeRnkMTZWQTBTZwvXu6R4NFAR7dlPmgnluXjapCXOlDN/X6yK";
 		$this->assertFalse($this->au->testCredentials("This string doesn't have a colon in front of it.", "So it should fail"));
 
-		//$this->assertFalse($this->au->testCredentials($test_pw_1));
-		//$this->assertTrue($this->au->testCredentials($test_res_1));
-		//$this->assertFalse($this->au->testCredentials($test_pw_2));
-		//$this->assertTrue($this->au->testCredentials($test_res_2));
-
-		//$this->assert(0, "This is a test");
+		$this->assertFalse($this->au->testCredentials($test_pw_1, $test_res_1));
+		$this->assertTrue($this->au->testCredentials($test_pw_2, $test_res_2));
 
 	}
 
