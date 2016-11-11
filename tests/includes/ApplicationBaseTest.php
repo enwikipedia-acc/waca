@@ -26,16 +26,6 @@ class ApplicationBaseTest extends PHPUnit_Framework_TestCase
 		$this->ab = $this->getMockForAbstractClass(ApplicationBase::class, [$this->si]);
 	}
 
-	public function testConstruct()
-	{
-		// -- stw 2016-09-22
-		$this->markTestIncomplete("Broken, not sure what this should be doing");
-
-		$this->ab->expects($this->any())
-			->method("run")
-			->will($this->returnValue(null));
-	}
-
 	function testRun()
 	{
 		$this->markTestIncomplete("Not fully implemented yet.");
@@ -48,8 +38,9 @@ class ApplicationBaseTest extends PHPUnit_Framework_TestCase
 	function testGetConfiguration() {
 		$config = $this->ab->getConfiguration();
 
-		$this->assertInstanceOf('\Waca\SiteConfiguration', $config);
-		// We will actually test this in the SiteConfiguration.php test - for now we can be satisfied that it returns valid.
+		// We will actually test this in the SiteConfiguration.php test - for now we can be satisfied that it returns
+		// valid.
+		$this->assertInstanceOf(SiteConfiguration::class, $config);
 		
 	}
 }

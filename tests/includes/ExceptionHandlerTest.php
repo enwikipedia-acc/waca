@@ -23,7 +23,8 @@ class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
 	private $eh;
 	private $ob_mock;
 
-	public function setUp() {
+	public function setUp()
+	{
 		if (!extension_loaded('runkit')) {
 			$this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit');
 
@@ -45,32 +46,34 @@ class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
 		}
 
 		$this->eh = new ExceptionHandler();
-
-		$this->ob_mock = new PHPUnit_Extensions_MockFunction('ob_end_clean', $this->eh);
 	}
 
-	public function tearDown() {
+	public function tearDown()
+	{
 		global $siteConfiguration;
 		unset($siteConfiguration);
 		unset($this->eh);
 	}
 
-	public function testExceptionHandler() {
-		$this->markTestSkipped("MRB - Output Buffering is breaking this test.  Need to be fixed.");
-
-		$this->ob_mock->expects($this->any())
-			->with()
-			->will($this->returnValue(true));
-
+	public function testExceptionHandler()
+	{
 		ob_start();
 		$this->eh->exceptionHandler($this->ex);
-		$text = ob_get_contents();
-		ob_end_clean();
+		$text = ob_get_clean();
 
-		$this->assertNotEquals($text, null);
+		// We must restart the output buffering for phpunit
+		ob_start();
+
+		$this->assertNotNull($text);
+
+		$this->assertContains("trained monkeys ask", $text);
+		$this->assertContains("Oops! Something went wrong!", $text);
+		$this->assertNotContains("internal.php", $text);
+		$this->assertNotContains("We need a few bits of information ", $text);
 	}
 
-	public function testErrorHandler() {
+	public function testErrorHandler()
+	{
 		$severity = 3;
 		$code = 0;
 		$message = "This is a test error";

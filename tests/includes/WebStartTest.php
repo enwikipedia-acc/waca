@@ -23,38 +23,50 @@ class WebStartTest extends \PHPUnit_Framework_TestCase
 	/** @var  WebStart */
 	private $ws;
 
-	public function setUp() {
+	public function setUp()
+	{
 		$this->sc = new SiteConfiguration();
 		$this->ir = new RequestRouter();
 		$this->ws = new WebStart($this->sc, $this->ir);
 	}
 
-	public function tearDown() {
+	public function tearDown()
+	{
 		unset($this->ws);
 		unset($this->ir);
 		unset($this->sc);
 	}
 
-	public function testCreatedProperly() {
+	public function testCreatedProperly()
+	{
 		$this->assertInstanceOf('Waca\SiteConfiguration', $this->sc);
 	}
 
-	public function testRun() {
-		$this->markTestSkipped("Not implemented yet.");
+	public function testRun()
+	{
+		// ob_end_clean makes this a risky test.  We have to mock it to prevent closing of the wrong output buffers
+		$wsMock = $this->getMockBuilder(WebStart::class, array("ob_end_clean"))->disableOriginalConstructor()
+			->getMock();
+		$wsMock->method('ob_end_clean')->willReturn(null);
+
+		// Not sure what else we can do here, run() doesn't return anything and there are no accessors to ensure that
+		// the data is set correctly.  So we'll run it and make sure that it doesn't error and that it doesn't return
+		// anything.
+		$this->assertNull($wsMock->run());
 	}
 
-	public function testPublic() {
-		$newValue = true;
+	public function testPublic()
+	{
+		// Test default values first
+		$this->assertFalse($this->ws->isPublic());
+		$this->assertNotNull($this->ws->isPublic());
 
-		$this->assertEquals($this->ws->isPublic(), false);
+		// Setters and getters
+		$this->ws->setPublic(true);
+		$this->assertTrue($this->ws->isPublic());
 
-		$this->ws->setPublic($newValue);
-		$this->assertEquals($this->ws->isPublic(), $newValue);
-
-		$newValue = false;
-
-		$this->ws->setPublic($newValue);
-		$this->assertEquals($this->ws->isPublic(), $newValue);
+		$this->ws->setPublic(false);
+		$this->assertFalse($this->ws->isPublic());
 
 	}
 }
