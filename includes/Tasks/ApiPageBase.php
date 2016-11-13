@@ -50,10 +50,16 @@ abstract class ApiPageBase extends TaskBase implements IRoutedTask, IApiAction
 
 	/**
 	 * Main function for this page, when no specific actions are called.
+	 *
+	 * @throws ApiException
 	 * @return void
 	 */
 	final protected function main()
 	{
+		if (headers_sent()) {
+			throw new ApiException('Headers have already been sent - this indicates a bug in the application!');
+		}
+
 		header("Content-Type: text/xml");
 
 		// javascript access control

@@ -23,18 +23,21 @@ use Waca\Tasks\InternalPageBase;
 use Waca\Tasks\PageBase;
 
 /**
- * Internal application entry point.
+ * Application entry point.
  *
  * @package Waca
  */
 class WebStart extends ApplicationBase
 {
 	/**
-	 * @var IRequestRouter
+	 * @var IRequestRouter $requestRouter The request router to use. Note that different entry points have different
+	 *                                    routers and hence different URL mappings
 	 */
 	private $requestRouter;
-	/** @var bool */
-	private $isPublic;
+	/**
+	 * @var bool $isPublic Determines whether to use public interface objects or internal interface objects
+	 */
+	private $isPublic = false;
 
 	/**
 	 * WebStart constructor.
@@ -47,9 +50,6 @@ class WebStart extends ApplicationBase
 		parent::__construct($configuration);
 
 		$this->requestRouter = $router;
-
-		// This variable should never be null, setting a default value here.
-		$this->isPublic = false;
 	}
 
 	/**

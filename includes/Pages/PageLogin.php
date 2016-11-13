@@ -30,7 +30,9 @@ class PageLogin extends InternalPageBase
 		if ($this->getSiteConfiguration()->getUseStrictTransportSecurity() !== false) {
 			if (WebRequest::isHttps()) {
 				// Client can clearly use HTTPS, so let's enforce it for all connections.
-				header("Strict-Transport-Security: max-age=15768000");
+				if (!headers_sent()) {
+					header("Strict-Transport-Security: max-age=15768000");
+				}
 			}
 			else {
 				// This is the login form, not the request form. We need protection here.
@@ -76,7 +78,7 @@ class PageLogin extends InternalPageBase
 			}
 
 			// User is partially linked to OAuth. This is not allowed. Enforce it for this user.
-			if($user->getOnWikiName() === '##OAUTH##') {
+			if ($user->getOnWikiName() === '##OAUTH##') {
 				$oauthHelper = $this->getOAuthHelper();
 
 				$requestToken = $oauthHelper->getRequestToken();

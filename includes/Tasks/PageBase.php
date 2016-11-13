@@ -309,6 +309,10 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 
 	protected function sendResponseHeaders()
 	{
+		if (headers_sent()) {
+			throw new ApplicationLogicException          ('Headers have already been sent! This is likely a bug in the application.');
+		}
+
 		foreach ($this->headerQueue as $item) {
 			if (mb_strpos($item, "\r") !== false || mb_strpos($item, "\n") !== false) {
 				// Oops. We're not allowed to do this.

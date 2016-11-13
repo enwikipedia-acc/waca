@@ -19,7 +19,9 @@ class NotIdentifiedException extends ReadableException
 	 */
 	public function getReadableError()
 	{
-		header("HTTP/1.1 403 Forbidden");
+		if (!headers_sent()) {
+			header("HTTP/1.1 403 Forbidden");
+		}
 
 		$this->setUpSmarty();
 
@@ -28,7 +30,6 @@ class NotIdentifiedException extends ReadableException
 		$currentUser = User::getCurrent($database);
 		$this->assign('currentUser', $currentUser);
 		$this->assign("loggedIn", (!$currentUser->isCommunityUser()));
-
 
 		return $this->fetchTemplate("exception/not-identified.tpl");
 	}

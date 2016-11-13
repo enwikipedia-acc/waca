@@ -80,8 +80,11 @@ HTML;
 			$message = str_replace('$2$', "", $message);
 		}
 
-		// MRB - Workaround for the test - Tests send headers already but main application will not.
-		if (!headers_sent()) {header('HTTP/1.1 500 Internal Server Error');}
+		// While we *shouldn't* have sent headers by now due to the output buffering, PHPUnit does weird things.
+		// This is "only" needed for the tests, but it's a good idea to wrap this anyway.
+		if (!headers_sent()) {
+			header('HTTP/1.1 500 Internal Server Error');
+		}
 
 		// output the document
 		print $message;

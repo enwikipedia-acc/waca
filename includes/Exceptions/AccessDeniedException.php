@@ -24,7 +24,9 @@ class AccessDeniedException extends ReadableException
 {
 	public function getReadableError()
 	{
-		header("HTTP/1.1 403 Forbidden");
+		if (!headers_sent()) {
+			header("HTTP/1.1 403 Forbidden");
+		}
 
 		$this->setUpSmarty();
 
