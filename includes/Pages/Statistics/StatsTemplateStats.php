@@ -13,11 +13,11 @@ use Waca\Tasks\InternalPageBase;
 
 class StatsTemplateStats extends InternalPageBase
 {
-	public function main()
-	{
-		$this->setHtmlTitle('Template Stats :: Statistics');
+    public function main()
+    {
+        $this->setHtmlTitle('Template Stats :: Statistics');
 
-		$query = <<<SQL
+        $query = <<<SQL
 SELECT
     t.id AS templateid,
     t.usercode AS usercode,
@@ -45,16 +45,16 @@ FROM welcometemplate t
         GROUP BY welcome_template
     ) u2 ON u2.allid = t.id;
 SQL;
-		$database = $this->getDatabase();
-		$statement = $database->query($query);
-		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
-		$this->assign('dataTable', $data);
-		$this->assign('statsPageTitle', 'Template Stats');
-		$this->setTemplate('statistics/welcome-template-usage.tpl');
-	}
+        $database = $this->getDatabase();
+        $statement = $database->query($query);
+        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $this->assign('dataTable', $data);
+        $this->assign('statsPageTitle', 'Template Stats');
+        $this->setTemplate('statistics/welcome-template-usage.tpl');
+    }
 
-	public function getSecurityConfiguration()
-	{
-		return $this->getSecurityManager()->configure()->asInternalPage();
-	}
+    public function getSecurityConfiguration()
+    {
+        return $this->getSecurityManager()->configure()->asInternalPage();
+    }
 }

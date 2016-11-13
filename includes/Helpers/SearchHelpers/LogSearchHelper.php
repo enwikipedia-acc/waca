@@ -13,102 +13,102 @@ use Waca\PdoDatabase;
 
 class LogSearchHelper extends SearchHelperBase
 {
-	/**
-	 * LogSearchHelper constructor.
-	 *
-	 * @param PdoDatabase $database
-	 */
-	protected function __construct(PdoDatabase $database)
-	{
-		parent::__construct($database, 'log', 'timestamp DESC');
-	}
+    /**
+     * LogSearchHelper constructor.
+     *
+     * @param PdoDatabase $database
+     */
+    protected function __construct(PdoDatabase $database)
+    {
+        parent::__construct($database, 'log', 'timestamp DESC');
+    }
 
-	/**
-	 * Initiates a search for requests
-	 *
-	 * @param PdoDatabase $database
-	 *
-	 * @return LogSearchHelper
-	 */
-	public static function get(PdoDatabase $database)
-	{
-		$helper = new LogSearchHelper($database);
+    /**
+     * Initiates a search for requests
+     *
+     * @param PdoDatabase $database
+     *
+     * @return LogSearchHelper
+     */
+    public static function get(PdoDatabase $database)
+    {
+        $helper = new LogSearchHelper($database);
 
-		return $helper;
-	}
+        return $helper;
+    }
 
-	/**
-	 * Returns the requested requests
-	 *
-	 * @return Log[]
-	 */
-	public function fetch()
-	{
-		$targetClass = Log::class;
+    /**
+     * Returns the requested requests
+     *
+     * @return Log[]
+     */
+    public function fetch()
+    {
+        $targetClass = Log::class;
 
-		/** @var Log[] $returnedObjects */
-		$returnedObjects = $this->fetchObjects($targetClass);
+        /** @var Log[] $returnedObjects */
+        $returnedObjects = $this->fetchObjects($targetClass);
 
-		return $returnedObjects;
-	}
+        return $returnedObjects;
+    }
 
-	/**
-	 * Filters the results by user
-	 *
-	 * @param int $userId
-	 *
-	 * @return $this
-	 */
-	public function byUser($userId)
-	{
-		$this->whereClause .= ' AND user = ?';
-		$this->parameterList[] = $userId;
+    /**
+     * Filters the results by user
+     *
+     * @param int $userId
+     *
+     * @return $this
+     */
+    public function byUser($userId)
+    {
+        $this->whereClause .= ' AND user = ?';
+        $this->parameterList[] = $userId;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Filters the results by log action
-	 *
-	 * @param string $action
-	 *
-	 * @return $this
-	 */
-	public function byAction($action)
-	{
-		$this->whereClause .= ' AND action = ?';
-		$this->parameterList[] = $action;
+    /**
+     * Filters the results by log action
+     *
+     * @param string $action
+     *
+     * @return $this
+     */
+    public function byAction($action)
+    {
+        $this->whereClause .= ' AND action = ?';
+        $this->parameterList[] = $action;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Filters the results by object type
-	 *
-	 * @param string $objectType
-	 *
-	 * @return $this
-	 */
-	public function byObjectType($objectType)
-	{
-		$this->whereClause .= ' AND objecttype = ?';
-		$this->parameterList[] = $objectType;
+    /**
+     * Filters the results by object type
+     *
+     * @param string $objectType
+     *
+     * @return $this
+     */
+    public function byObjectType($objectType)
+    {
+        $this->whereClause .= ' AND objecttype = ?';
+        $this->parameterList[] = $objectType;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * Filters the results by object type
-	 *
-	 * @param integer $objectId
-	 *
-	 * @return $this
-	 */
-	public function byObjectId($objectId)
-	{
-		$this->whereClause .= ' AND objectid = ?';
-		$this->parameterList[] = $objectId;
+    /**
+     * Filters the results by object type
+     *
+     * @param integer $objectId
+     *
+     * @return $this
+     */
+    public function byObjectId($objectId)
+    {
+        $this->whereClause .= ' AND objectid = ?';
+        $this->parameterList[] = $objectId;
 
-		return $this;
-	}
+        return $this;
+    }
 }

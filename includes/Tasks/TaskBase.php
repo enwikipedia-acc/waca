@@ -23,229 +23,229 @@ use Waca\SiteConfiguration;
 
 abstract class TaskBase implements ITask
 {
-	/** @var SiteConfiguration */
-	private $siteConfiguration;
-	/** @var IEmailHelper */
-	private $emailHelper;
-	/** @var HttpHelper */
-	private $httpHelper;
-	/** @var WikiTextHelper */
-	private $wikiTextHelper;
-	/** @var ILocationProvider */
-	private $locationProvider;
-	/** @var IXffTrustProvider */
-	private $xffTrustProvider;
-	/** @var IRDnsProvider */
-	private $rdnsProvider;
-	/** @var IAntiSpoofProvider */
-	private $antiSpoofProvider;
-	/** @var IOAuthHelper */
-	private $oauthHelper;
-	/** @var PdoDatabase */
-	private $database;
-	/** @var IrcNotificationHelper */
-	private $notificationHelper;
-	/** @var TorExitProvider */
-	private $torExitProvider;
+    /** @var SiteConfiguration */
+    private $siteConfiguration;
+    /** @var IEmailHelper */
+    private $emailHelper;
+    /** @var HttpHelper */
+    private $httpHelper;
+    /** @var WikiTextHelper */
+    private $wikiTextHelper;
+    /** @var ILocationProvider */
+    private $locationProvider;
+    /** @var IXffTrustProvider */
+    private $xffTrustProvider;
+    /** @var IRDnsProvider */
+    private $rdnsProvider;
+    /** @var IAntiSpoofProvider */
+    private $antiSpoofProvider;
+    /** @var IOAuthHelper */
+    private $oauthHelper;
+    /** @var PdoDatabase */
+    private $database;
+    /** @var IrcNotificationHelper */
+    private $notificationHelper;
+    /** @var TorExitProvider */
+    private $torExitProvider;
 
-	/**
-	 * @return IEmailHelper
-	 */
-	final public function getEmailHelper()
-	{
-		return $this->emailHelper;
-	}
+    /**
+     * @return IEmailHelper
+     */
+    final public function getEmailHelper()
+    {
+        return $this->emailHelper;
+    }
 
-	/**
-	 * @param IEmailHelper $emailHelper
-	 */
-	final public function setEmailHelper($emailHelper)
-	{
-		$this->emailHelper = $emailHelper;
-	}
+    /**
+     * @param IEmailHelper $emailHelper
+     */
+    final public function setEmailHelper($emailHelper)
+    {
+        $this->emailHelper = $emailHelper;
+    }
 
-	/**
-	 * @return HttpHelper
-	 */
-	final public function getHttpHelper()
-	{
-		return $this->httpHelper;
-	}
+    /**
+     * @return HttpHelper
+     */
+    final public function getHttpHelper()
+    {
+        return $this->httpHelper;
+    }
 
-	/**
-	 * @param HttpHelper $httpHelper
-	 */
-	final public function setHttpHelper($httpHelper)
-	{
-		$this->httpHelper = $httpHelper;
-	}
+    /**
+     * @param HttpHelper $httpHelper
+     */
+    final public function setHttpHelper($httpHelper)
+    {
+        $this->httpHelper = $httpHelper;
+    }
 
-	/**
-	 * @return WikiTextHelper
-	 */
-	final public function getWikiTextHelper()
-	{
-		return $this->wikiTextHelper;
-	}
+    /**
+     * @return WikiTextHelper
+     */
+    final public function getWikiTextHelper()
+    {
+        return $this->wikiTextHelper;
+    }
 
-	/**
-	 * @param WikiTextHelper $wikiTextHelper
-	 */
-	final public function setWikiTextHelper($wikiTextHelper)
-	{
-		$this->wikiTextHelper = $wikiTextHelper;
-	}
+    /**
+     * @param WikiTextHelper $wikiTextHelper
+     */
+    final public function setWikiTextHelper($wikiTextHelper)
+    {
+        $this->wikiTextHelper = $wikiTextHelper;
+    }
 
-	/**
-	 * @return ILocationProvider
-	 */
-	final public function getLocationProvider()
-	{
-		return $this->locationProvider;
-	}
+    /**
+     * @return ILocationProvider
+     */
+    final public function getLocationProvider()
+    {
+        return $this->locationProvider;
+    }
 
-	/**
-	 * @param ILocationProvider $locationProvider
-	 */
-	final public function setLocationProvider(ILocationProvider $locationProvider)
-	{
-		$this->locationProvider = $locationProvider;
-	}
+    /**
+     * @param ILocationProvider $locationProvider
+     */
+    final public function setLocationProvider(ILocationProvider $locationProvider)
+    {
+        $this->locationProvider = $locationProvider;
+    }
 
-	/**
-	 * @return IXffTrustProvider
-	 */
-	final public function getXffTrustProvider()
-	{
-		return $this->xffTrustProvider;
-	}
+    /**
+     * @return IXffTrustProvider
+     */
+    final public function getXffTrustProvider()
+    {
+        return $this->xffTrustProvider;
+    }
 
-	/**
-	 * @param IXffTrustProvider $xffTrustProvider
-	 */
-	final public function setXffTrustProvider(IXffTrustProvider $xffTrustProvider)
-	{
-		$this->xffTrustProvider = $xffTrustProvider;
-	}
+    /**
+     * @param IXffTrustProvider $xffTrustProvider
+     */
+    final public function setXffTrustProvider(IXffTrustProvider $xffTrustProvider)
+    {
+        $this->xffTrustProvider = $xffTrustProvider;
+    }
 
-	/**
-	 * @return IRDnsProvider
-	 */
-	final public function getRdnsProvider()
-	{
-		return $this->rdnsProvider;
-	}
+    /**
+     * @return IRDnsProvider
+     */
+    final public function getRdnsProvider()
+    {
+        return $this->rdnsProvider;
+    }
 
-	/**
-	 * @param IRDnsProvider $rdnsProvider
-	 */
-	public function setRdnsProvider($rdnsProvider)
-	{
-		$this->rdnsProvider = $rdnsProvider;
-	}
+    /**
+     * @param IRDnsProvider $rdnsProvider
+     */
+    public function setRdnsProvider($rdnsProvider)
+    {
+        $this->rdnsProvider = $rdnsProvider;
+    }
 
-	/**
-	 * @return IAntiSpoofProvider
-	 */
-	public function getAntiSpoofProvider()
-	{
-		return $this->antiSpoofProvider;
-	}
+    /**
+     * @return IAntiSpoofProvider
+     */
+    public function getAntiSpoofProvider()
+    {
+        return $this->antiSpoofProvider;
+    }
 
-	/**
-	 * @param IAntiSpoofProvider $antiSpoofProvider
-	 */
-	public function setAntiSpoofProvider($antiSpoofProvider)
-	{
-		$this->antiSpoofProvider = $antiSpoofProvider;
-	}
+    /**
+     * @param IAntiSpoofProvider $antiSpoofProvider
+     */
+    public function setAntiSpoofProvider($antiSpoofProvider)
+    {
+        $this->antiSpoofProvider = $antiSpoofProvider;
+    }
 
-	/**
-	 * @return PdoDatabase
-	 */
-	final public function getDatabase()
-	{
-		return $this->database;
-	}
+    /**
+     * @return PdoDatabase
+     */
+    final public function getDatabase()
+    {
+        return $this->database;
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 */
-	final public function setDatabase($database)
-	{
-		$this->database = $database;
-	}
+    /**
+     * @param PdoDatabase $database
+     */
+    final public function setDatabase($database)
+    {
+        $this->database = $database;
+    }
 
-	/**
-	 * @return IOAuthHelper
-	 */
-	public function getOAuthHelper()
-	{
-		return $this->oauthHelper;
-	}
+    /**
+     * @return IOAuthHelper
+     */
+    public function getOAuthHelper()
+    {
+        return $this->oauthHelper;
+    }
 
-	/**
-	 * @param IOAuthHelper $oauthHelper
-	 */
-	public function setOAuthHelper($oauthHelper)
-	{
-		$this->oauthHelper = $oauthHelper;
-	}
+    /**
+     * @param IOAuthHelper $oauthHelper
+     */
+    public function setOAuthHelper($oauthHelper)
+    {
+        $this->oauthHelper = $oauthHelper;
+    }
 
-	/**
-	 * @return void
-	 */
-	abstract public function execute();
+    /**
+     * @return void
+     */
+    abstract public function execute();
 
-	/**
-	 * @return IrcNotificationHelper
-	 */
-	public function getNotificationHelper()
-	{
-		return $this->notificationHelper;
-	}
+    /**
+     * @return IrcNotificationHelper
+     */
+    public function getNotificationHelper()
+    {
+        return $this->notificationHelper;
+    }
 
-	/**
-	 * @param IrcNotificationHelper $notificationHelper
-	 */
-	public function setNotificationHelper($notificationHelper)
-	{
-		$this->notificationHelper = $notificationHelper;
-	}
+    /**
+     * @param IrcNotificationHelper $notificationHelper
+     */
+    public function setNotificationHelper($notificationHelper)
+    {
+        $this->notificationHelper = $notificationHelper;
+    }
 
-	/**
-	 * @return TorExitProvider
-	 */
-	public function getTorExitProvider()
-	{
-		return $this->torExitProvider;
-	}
+    /**
+     * @return TorExitProvider
+     */
+    public function getTorExitProvider()
+    {
+        return $this->torExitProvider;
+    }
 
-	/**
-	 * @param TorExitProvider $torExitProvider
-	 */
-	public function setTorExitProvider($torExitProvider)
-	{
-		$this->torExitProvider = $torExitProvider;
-	}
+    /**
+     * @param TorExitProvider $torExitProvider
+     */
+    public function setTorExitProvider($torExitProvider)
+    {
+        $this->torExitProvider = $torExitProvider;
+    }
 
-	/**
-	 * Gets the site configuration object
-	 *
-	 * @return SiteConfiguration
-	 */
-	final protected function getSiteConfiguration()
-	{
-		return $this->siteConfiguration;
-	}
+    /**
+     * Gets the site configuration object
+     *
+     * @return SiteConfiguration
+     */
+    final protected function getSiteConfiguration()
+    {
+        return $this->siteConfiguration;
+    }
 
-	/**
-	 * Sets the site configuration object for this page
-	 *
-	 * @param SiteConfiguration $configuration
-	 */
-	final public function setSiteConfiguration($configuration)
-	{
-		$this->siteConfiguration = $configuration;
-	}
+    /**
+     * Sets the site configuration object for this page
+     *
+     * @param SiteConfiguration $configuration
+     */
+    final public function setSiteConfiguration($configuration)
+    {
+        $this->siteConfiguration = $configuration;
+    }
 }

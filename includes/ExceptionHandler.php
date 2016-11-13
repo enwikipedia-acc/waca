@@ -13,22 +13,22 @@ use Exception;
 
 class ExceptionHandler
 {
-	/**
-	 * Global exception handler
-	 *
-	 * Smarty would be nice to use, but it COULD BE smarty that throws the errors.
-	 * Let's build something ourselves, and hope it works.
-	 *
-	 * @param $exception
-	 *
-	 * @category Security-Critical - has the potential to leak data when exception is thrown.
-	 */
-	public static function exceptionHandler(Exception $exception)
-	{
-		/** @global $siteConfiguration SiteConfiguration */
-		global $siteConfiguration;
+    /**
+     * Global exception handler
+     *
+     * Smarty would be nice to use, but it COULD BE smarty that throws the errors.
+     * Let's build something ourselves, and hope it works.
+     *
+     * @param $exception
+     *
+     * @category Security-Critical - has the potential to leak data when exception is thrown.
+     */
+    public static function exceptionHandler(Exception $exception)
+    {
+        /** @global $siteConfiguration SiteConfiguration */
+        global $siteConfiguration;
 
-		$errorDocument = <<<HTML
+        $errorDocument = <<<HTML
 <!DOCTYPE html>
 <html lang="en"><head>
 <meta charset="utf-8">
@@ -49,77 +49,77 @@ $2$
 </div></body></html>
 HTML;
 
-		$errorData = self::getExceptionData($exception);
-		$errorData['server'] = $_SERVER;
-		$errorData['get'] = $_GET;
-		$errorData['post'] = $_POST;
+        $errorData = self::getExceptionData($exception);
+        $errorData['server'] = $_SERVER;
+        $errorData['get'] = $_GET;
+        $errorData['post'] = $_POST;
 
-		$state = serialize($errorData);
-		$errorId = sha1($state);
+        $state = serialize($errorData);
+        $errorId = sha1($state);
 
-		// Save the error for later analysis
-		file_put_contents($siteConfiguration->getErrorLog() . '/' . $errorId . '.log', $state);
+        // Save the error for later analysis
+        file_put_contents($siteConfiguration->getErrorLog() . '/' . $errorId . '.log', $state);
 
-		// clear and discard any content that's been saved to the output buffer
-		if (ob_get_level() > 0) {
-			ob_end_clean();
-		}
+        // clear and discard any content that's been saved to the output buffer
+        if (ob_get_level() > 0) {
+            ob_end_clean();
+        }
 
-		// push error ID into the document.
-		$message = str_replace('$1$', $errorId, $errorDocument);
+        // push error ID into the document.
+        $message = str_replace('$1$', $errorId, $errorDocument);
 
-		if ($siteConfiguration->getDebuggingTraceEnabled()) {
-			ob_start();
-			var_dump($errorData);
-			$textErrorData = ob_get_contents();
-			ob_end_clean();
+        if ($siteConfiguration->getDebuggingTraceEnabled()) {
+            ob_start();
+            var_dump($errorData);
+            $textErrorData = ob_get_contents();
+            ob_end_clean();
 
-			$message = str_replace('$2$', $textErrorData, $message);
-		}
-		else {
-			$message = str_replace('$2$', "", $message);
-		}
+            $message = str_replace('$2$', $textErrorData, $message);
+        }
+        else {
+            $message = str_replace('$2$', "", $message);
+        }
 
-		// While we *shouldn't* have sent headers by now due to the output buffering, PHPUnit does weird things.
-		// This is "only" needed for the tests, but it's a good idea to wrap this anyway.
-		if (!headers_sent()) {
-			header('HTTP/1.1 500 Internal Server Error');
-		}
+        // While we *shouldn't* have sent headers by now due to the output buffering, PHPUnit does weird things.
+        // This is "only" needed for the tests, but it's a good idea to wrap this anyway.
+        if (!headers_sent()) {
+            header('HTTP/1.1 500 Internal Server Error');
+        }
 
-		// output the document
-		print $message;
-	}
+        // output the document
+        print $message;
+    }
 
-	/**
-	 * @param int    $errorSeverity The severity level of the exception.
-	 * @param string $errorMessage  The Exception message to throw.
-	 * @param string $errorFile     The filename where the exception is thrown.
-	 * @param int    $errorLine     The line number where the exception is thrown.
-	 *
-	 * @throws ErrorException
-	 */
-	public static function errorHandler($errorSeverity, $errorMessage, $errorFile, $errorLine)
-	{
-		// call into the main exception handler above
-		throw new ErrorException($errorMessage, 0, $errorSeverity, $errorFile, $errorLine);
-	}
+    /**
+     * @param int    $errorSeverity The severity level of the exception.
+     * @param string $errorMessage  The Exception message to throw.
+     * @param string $errorFile     The filename where the exception is thrown.
+     * @param int    $errorLine     The line number where the exception is thrown.
+     *
+     * @throws ErrorException
+     */
+    public static function errorHandler($errorSeverity, $errorMessage, $errorFile, $errorLine)
+    {
+        // call into the main exception handler above
+        throw new ErrorException($errorMessage, 0, $errorSeverity, $errorFile, $errorLine);
+    }
 
-	/**
-	 * @param Exception $exception
-	 *
-	 * @return null|array
-	 */
-	private static function getExceptionData($exception)
-	{
-		if ($exception == null) {
-			return null;
-		}
+    /**
+     * @param Exception $exception
+     *
+     * @return null|array
+     */
+    private static function getExceptionData($exception)
+    {
+        if ($exception == null) {
+            return null;
+        }
 
-		return array(
-			'exception' => get_class($exception),
-			'message'   => $exception->getMessage(),
-			'stack'     => $exception->getTraceAsString(),
-			'previous'  => self::getExceptionData($exception->getPrevious()),
-		);
-	}
+        return array(
+            'exception' => get_class($exception),
+            'message'   => $exception->getMessage(),
+            'stack'     => $exception->getTraceAsString(),
+            'previous'  => self::getExceptionData($exception->getPrevious()),
+        );
+    }
 }

@@ -17,7 +17,7 @@ This is a work-in-progress, so feel free to put ideas forward as to coding style
 
 ### Indentation and Braces
 
-* A single tab per level of indentation please.
+* Four spaces per level of indentation please.
 
 * Opening braces go on the next line for methods and classes, but on the same line for control structures ([PSR-1][1]).
 
@@ -28,21 +28,21 @@ Quick example:
 ```php
 class Foo extends FooBase implements IFoo
 {
-	public function sampleFunction($a, $b = null)
-	{
-		if ($a === $b) {
-			bar();
-		} elseif ($a > $b) {
-			$foo->bar($arg1);
-		} else {
-			BazClass::bar($arg2, $arg3);
-		}
-	}
-
-	final public static function bar()
-	{
-		// method body
-	}
+    public function sampleFunction($a, $b = null)
+    {
+        if ($a === $b) {
+            bar();
+        } elseif ($a > $b) {
+            $foo->bar($arg1);
+        } else {
+            BazClass::bar($arg2, $arg3);
+        }
+    }
+    
+    final public static function bar()
+    {
+        // method body
+    }
 }
 ```
 
@@ -61,17 +61,17 @@ Soft limit of 80 chars, hard limit of 120 please. Lines longer than 130 chars ma
 <?php
 class Foo 
 {
-	private $foo;
-
-	public function getFoo() 
-	{
-		return $this->foo;
-	}
-
-	public function setFoo($foo) 
-	{
-		$this->foo = $foo;
-	}
+    private $foo;
+    
+    public function getFoo() 
+    {
+        return $this->foo;
+    }
+    
+    public function setFoo($foo) 
+    {
+        $this->foo = $foo;
+    }
 }
 ```
 

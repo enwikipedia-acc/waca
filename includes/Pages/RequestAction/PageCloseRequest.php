@@ -21,254 +21,254 @@ use Waca\WebRequest;
 
 class PageCloseRequest extends RequestActionBase
 {
-	/**
-	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-	 * the return value from this function.
-	 *
-	 * If this page even supports actions, you will need to check the route
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	protected function getSecurityConfiguration()
-	{
-		return $this->getSecurityManager()->configure()->asInternalPage();
-	}
+    /**
+     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
+     * the return value from this function.
+     *
+     * If this page even supports actions, you will need to check the route
+     *
+     * @return SecurityConfiguration
+     * @category Security-Critical
+     */
+    protected function getSecurityConfiguration()
+    {
+        return $this->getSecurityManager()->configure()->asInternalPage();
+    }
 
-	protected function main()
-	{
-		$this->processClose();
-	}
+    protected function main()
+    {
+        $this->processClose();
+    }
 
-	/**
-	 * Main function for this page, when no specific actions are called.
-	 * @throws ApplicationLogicException
-	 */
-	final protected function processClose()
-	{
-		$this->checkPosted();
-		$database = $this->getDatabase();
+    /**
+     * Main function for this page, when no specific actions are called.
+     * @throws ApplicationLogicException
+     */
+    final protected function processClose()
+    {
+        $this->checkPosted();
+        $database = $this->getDatabase();
 
-		$currentUser = User::getCurrent($database);
-		$template = $this->getTemplate($database);
-		$request = $this->getRequest($database);
+        $currentUser = User::getCurrent($database);
+        $template = $this->getTemplate($database);
+        $request = $this->getRequest($database);
 
-		if ($request->getStatus() === 'Closed') {
-			throw new ApplicationLogicException('Request is already closed');
-		}
+        if ($request->getStatus() === 'Closed') {
+            throw new ApplicationLogicException('Request is already closed');
+        }
 
-		if ($this->confirmEmailAlreadySent($request, $template)) {
-			return;
-		}
+        if ($this->confirmEmailAlreadySent($request, $template)) {
+            return;
+        }
 
-		if ($this->confirmReserveOverride($request, $template, $currentUser, $database)) {
-			return;
-		}
+        if ($this->confirmReserveOverride($request, $template, $currentUser, $database)) {
+            return;
+        }
 
-		if ($this->confirmAccountCreated($request, $template)) {
-			return;
-		}
+        if ($this->confirmAccountCreated($request, $template)) {
+            return;
+        }
 
-		// I think we're good here...
-		$request->setStatus('Closed');
-		$request->setReserved(null);
+        // I think we're good here...
+        $request->setStatus('Closed');
+        $request->setReserved(null);
 
-		Logger::closeRequest($database, $request, $template->getId(), null);
+        Logger::closeRequest($database, $request, $template->getId(), null);
 
-		$request->setUpdateVersion(WebRequest::postInt('updateversion'));
-		$request->save();
+        $request->setUpdateVersion(WebRequest::postInt('updateversion'));
+        $request->save();
 
-		// Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE and
-		// be rolled back.
+        // Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE and
+        // be rolled back.
 
-		$this->getNotificationHelper()->requestClosed($request, $template->getName());
-		SessionAlert::success("Request {$request->getId()} has been closed");
+        $this->getNotificationHelper()->requestClosed($request, $template->getName());
+        SessionAlert::success("Request {$request->getId()} has been closed");
 
-		$this->sendMail($request, $template->getText(), $currentUser, false);
+        $this->sendMail($request, $template->getText(), $currentUser, false);
 
-		$this->redirect();
-	}
+        $this->redirect();
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 *
-	 * @return EmailTemplate
-	 * @throws ApplicationLogicException
-	 */
-	protected function getTemplate(PdoDatabase $database)
-	{
-		$templateId = WebRequest::postInt('template');
-		if ($templateId === null) {
-			throw new ApplicationLogicException('No template specified');
-		}
+    /**
+     * @param PdoDatabase $database
+     *
+     * @return EmailTemplate
+     * @throws ApplicationLogicException
+     */
+    protected function getTemplate(PdoDatabase $database)
+    {
+        $templateId = WebRequest::postInt('template');
+        if ($templateId === null) {
+            throw new ApplicationLogicException('No template specified');
+        }
 
-		/** @var EmailTemplate $template */
-		$template = EmailTemplate::getById($templateId, $database);
-		if ($template === false || !$template->getActive()) {
-			throw new ApplicationLogicException('Invalid or inactive template specified');
-		}
+        /** @var EmailTemplate $template */
+        $template = EmailTemplate::getById($templateId, $database);
+        if ($template === false || !$template->getActive()) {
+            throw new ApplicationLogicException('Invalid or inactive template specified');
+        }
 
-		return $template;
-	}
+        return $template;
+    }
 
-	/**
-	 * @param Request       $request
-	 * @param EmailTemplate $template
-	 *
-	 * @return bool
-	 */
-	protected function confirmEmailAlreadySent(Request $request, EmailTemplate $template)
-	{
-		if ($this->checkEmailAlreadySent($request)) {
-			$this->showConfirmation($request, $template, 'close-confirmations/email-sent.tpl');
+    /**
+     * @param Request       $request
+     * @param EmailTemplate $template
+     *
+     * @return bool
+     */
+    protected function confirmEmailAlreadySent(Request $request, EmailTemplate $template)
+    {
+        if ($this->checkEmailAlreadySent($request)) {
+            $this->showConfirmation($request, $template, 'close-confirmations/email-sent.tpl');
 
-			return true;
-		}
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	protected function checkEmailAlreadySent(Request $request)
-	{
-		if ($request->getEmailSent() && !WebRequest::postBoolean('emailSentOverride')) {
-			return true;
-		}
+    protected function checkEmailAlreadySent(Request $request)
+    {
+        if ($request->getEmailSent() && !WebRequest::postBoolean('emailSentOverride')) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	protected function checkReserveOverride(Request $request, User $currentUser)
-	{
-		$reservationId = $request->getReserved();
+    protected function checkReserveOverride(Request $request, User $currentUser)
+    {
+        $reservationId = $request->getReserved();
 
-		if ($reservationId !== 0 && $reservationId !== null) {
-			if (!WebRequest::postBoolean('reserveOverride')) {
-				if ($currentUser->getId() !== $reservationId) {
-					return true;
-				}
-			}
-		}
+        if ($reservationId !== 0 && $reservationId !== null) {
+            if (!WebRequest::postBoolean('reserveOverride')) {
+                if ($currentUser->getId() !== $reservationId) {
+                    return true;
+                }
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * @param Request       $request
-	 * @param EmailTemplate $template
-	 * @param User          $currentUser
-	 * @param PdoDatabase   $database
-	 *
-	 * @return bool
-	 */
-	protected function confirmReserveOverride(
-		Request $request,
-		EmailTemplate $template,
-		User $currentUser,
-		PdoDatabase $database
-	) {
-		if ($this->checkReserveOverride($request, $currentUser)) {
-			$this->assign('reserveUser', User::getById($request->getReserved(), $database)->getUsername());
-			$this->showConfirmation($request, $template, 'close-confirmations/reserve-override.tpl');
+    /**
+     * @param Request       $request
+     * @param EmailTemplate $template
+     * @param User          $currentUser
+     * @param PdoDatabase   $database
+     *
+     * @return bool
+     */
+    protected function confirmReserveOverride(
+        Request $request,
+        EmailTemplate $template,
+        User $currentUser,
+        PdoDatabase $database
+    ) {
+        if ($this->checkReserveOverride($request, $currentUser)) {
+            $this->assign('reserveUser', User::getById($request->getReserved(), $database)->getUsername());
+            $this->showConfirmation($request, $template, 'close-confirmations/reserve-override.tpl');
 
-			return true;
-		}
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * @param Request       $request
-	 * @param EmailTemplate $template
-	 *
-	 * @return bool
-	 * @throws \Waca\Exceptions\CurlException
-	 */
-	protected function confirmAccountCreated(Request $request, EmailTemplate $template)
-	{
-		if ($this->checkAccountCreated($request, $template)) {
-			$this->showConfirmation($request, $template, 'close-confirmations/account-created.tpl');
+    /**
+     * @param Request       $request
+     * @param EmailTemplate $template
+     *
+     * @return bool
+     * @throws \Waca\Exceptions\CurlException
+     */
+    protected function confirmAccountCreated(Request $request, EmailTemplate $template)
+    {
+        if ($this->checkAccountCreated($request, $template)) {
+            $this->showConfirmation($request, $template, 'close-confirmations/account-created.tpl');
 
-			return true;
-		}
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	protected function checkAccountCreated(Request $request, EmailTemplate $template)
-	{
-		if ($template->getDefaultAction() === EmailTemplate::CREATED && !WebRequest::postBoolean('createOverride')) {
-			$parameters = array(
-				'action'  => 'query',
-				'list'    => 'users',
-				'format'  => 'php',
-				'ususers' => $request->getName(),
-			);
+    protected function checkAccountCreated(Request $request, EmailTemplate $template)
+    {
+        if ($template->getDefaultAction() === EmailTemplate::CREATED && !WebRequest::postBoolean('createOverride')) {
+            $parameters = array(
+                'action'  => 'query',
+                'list'    => 'users',
+                'format'  => 'php',
+                'ususers' => $request->getName(),
+            );
 
-			$content = $this->getHttpHelper()->get($this->getSiteConfiguration()->getMediawikiWebServiceEndpoint(),
-				$parameters);
+            $content = $this->getHttpHelper()->get($this->getSiteConfiguration()->getMediawikiWebServiceEndpoint(),
+                $parameters);
 
-			$apiResult = unserialize($content);
-			$exists = !isset($apiResult['query']['users']['0']['missing']);
+            $apiResult = unserialize($content);
+            $exists = !isset($apiResult['query']['users']['0']['missing']);
 
-			if (!$exists) {
-				return true;
-			}
-		}
+            if (!$exists) {
+                return true;
+            }
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * @param Request $request
-	 * @param string  $mailText
-	 * @param User    $currentUser
-	 * @param boolean $ccMailingList
-	 */
-	protected function sendMail(Request $request, $mailText, User $currentUser, $ccMailingList)
-	{
-		$headers = array(
-			'X-ACC-Request' => $request->getId(),
-			'X-ACC-UserID'  => $currentUser->getId(),
-		);
+    /**
+     * @param Request $request
+     * @param string  $mailText
+     * @param User    $currentUser
+     * @param boolean $ccMailingList
+     */
+    protected function sendMail(Request $request, $mailText, User $currentUser, $ccMailingList)
+    {
+        $headers = array(
+            'X-ACC-Request' => $request->getId(),
+            'X-ACC-UserID'  => $currentUser->getId(),
+        );
 
-		if ($ccMailingList) {
-			$headers['Cc'] = 'accounts-enwiki-l@lists.wikimedia.org';
-		}
+        if ($ccMailingList) {
+            $headers['Cc'] = 'accounts-enwiki-l@lists.wikimedia.org';
+        }
 
-		$helper = $this->getEmailHelper();
+        $helper = $this->getEmailHelper();
 
-		$emailSig = $currentUser->getEmailSig();
-		if ($emailSig !== '' || $emailSig !== null) {
-			$emailSig = "\n\n" . $emailSig;
-		}
+        $emailSig = $currentUser->getEmailSig();
+        if ($emailSig !== '' || $emailSig !== null) {
+            $emailSig = "\n\n" . $emailSig;
+        }
 
-		$subject = "RE: [ACC #{$request->getId()}] English Wikipedia Account Request";
-		$content = $mailText . $emailSig;
+        $subject = "RE: [ACC #{$request->getId()}] English Wikipedia Account Request";
+        $content = $mailText . $emailSig;
 
-		$helper->sendMail($request->getEmail(), $subject, $content, $headers);
+        $helper->sendMail($request->getEmail(), $subject, $content, $headers);
 
-		$request->setEmailSent(true);
-	}
+        $request->setEmailSent(true);
+    }
 
-	/**
-	 * @param Request       $request
-	 * @param EmailTemplate $template
-	 * @param string        $templateName
-	 *
-	 * @throws Exception
-	 * @return void
-	 */
-	protected function showConfirmation(Request $request, EmailTemplate $template, $templateName)
-	{
-		$this->assignCSRFToken();
+    /**
+     * @param Request       $request
+     * @param EmailTemplate $template
+     * @param string        $templateName
+     *
+     * @throws Exception
+     * @return void
+     */
+    protected function showConfirmation(Request $request, EmailTemplate $template, $templateName)
+    {
+        $this->assignCSRFToken();
 
-		$this->assign('request', $request->getId());
-		$this->assign('template', $template->getId());
+        $this->assign('request', $request->getId());
+        $this->assign('template', $template->getId());
 
-		$this->assign('emailSentOverride', WebRequest::postBoolean('emailSentOverride') ? 'true' : 'false');
-		$this->assign('reserveOverride', WebRequest::postBoolean('reserveOverride') ? 'true' : 'false');
-		$this->assign('createOverride', WebRequest::postBoolean('createOverride') ? 'true' : 'false');
+        $this->assign('emailSentOverride', WebRequest::postBoolean('emailSentOverride') ? 'true' : 'false');
+        $this->assign('reserveOverride', WebRequest::postBoolean('reserveOverride') ? 'true' : 'false');
+        $this->assign('createOverride', WebRequest::postBoolean('createOverride') ? 'true' : 'false');
 
-		$this->setTemplate($templateName);
-	}
+        $this->setTemplate($templateName);
+    }
 }

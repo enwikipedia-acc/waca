@@ -17,25 +17,25 @@ namespace Waca;
  */
 class Session
 {
-	public static function start()
-	{
-		ini_set('session.cookie_httponly', 1);
+    public static function start()
+    {
+        ini_set('session.cookie_httponly', 1);
 
-		if (WebRequest::isHttps()) {
-			ini_set('session.cookie_secure', 1);
-		}
+        if (WebRequest::isHttps()) {
+            ini_set('session.cookie_secure', 1);
+        }
 
-		session_start();
-	}
+        session_start();
+    }
 
-	public static function destroy()
-	{
-		session_destroy();
-	}
+    public static function destroy()
+    {
+        session_destroy();
+    }
 
-	public static function restart()
-	{
-		self::destroy();
-		self::start();
-	}
+    public static function restart()
+    {
+        self::destroy();
+        self::start();
+    }
 }

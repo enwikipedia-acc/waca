@@ -13,11 +13,11 @@ use Waca\Tasks\ConsoleTaskBase;
 
 class ClearExpiredIdentificationData extends ConsoleTaskBase
 {
-	/**
-	 * @return void
-	 */
-	public function execute()
-	{
-		IdentificationVerifier::clearExpiredCacheEntries($this->getSiteConfiguration(), $this->getDatabase());
-	}
+    /**
+     * @return void
+     */
+    public function execute()
+    {
+        IdentificationVerifier::clearExpiredCacheEntries($this->getSiteConfiguration(), $this->getDatabase());
+    }
 }

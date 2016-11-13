@@ -21,12 +21,13 @@ use Exception;
  */
 class EnvironmentException extends Exception
 {
-	/**
-	 * EnvironmentException constructor.
-	 * @param string $friendlyMessage
-	 */
-	public function __construct($friendlyMessage)
-	{
-		parent::__construct($friendlyMessage);
-	}
+    /**
+     * EnvironmentException constructor.
+     *
+     * @param string $friendlyMessage
+     */
+    public function __construct($friendlyMessage)
+    {
+        parent::__construct($friendlyMessage);
+    }
 }

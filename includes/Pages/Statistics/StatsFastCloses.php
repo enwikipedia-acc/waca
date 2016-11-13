@@ -13,11 +13,11 @@ use Waca\Tasks\InternalPageBase;
 
 class StatsFastCloses extends InternalPageBase
 {
-	public function main()
-	{
-		$this->setHtmlTitle('Fast Closes :: Statistics');
+    public function main()
+    {
+        $this->setHtmlTitle('Fast Closes :: Statistics');
 
-		$query = <<<SQL
+        $query = <<<SQL
 SELECT
   log_closed.objectid AS request,
   user.username AS user,
@@ -42,16 +42,16 @@ WHERE log_closed.action LIKE 'Closed%'
 ORDER BY TIMEDIFF(log_closed.timestamp, log_reserved.timestamp) ASC
 ;
 SQL;
-		$database = $this->getDatabase();
-		$statement = $database->query($query);
-		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
-		$this->assign('dataTable', $data);
-		$this->assign('statsPageTitle', 'Requests closed less than 30 seconds after reservation in the past 3 months');
-		$this->setTemplate('statistics/fast-closes.tpl');
-	}
+        $database = $this->getDatabase();
+        $statement = $database->query($query);
+        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $this->assign('dataTable', $data);
+        $this->assign('statsPageTitle', 'Requests closed less than 30 seconds after reservation in the past 3 months');
+        $this->setTemplate('statistics/fast-closes.tpl');
+    }
 
-	public function getSecurityConfiguration()
-	{
-		return $this->getSecurityManager()->configure()->asInternalPage();
-	}
+    public function getSecurityConfiguration()
+    {
+        return $this->getSecurityManager()->configure()->asInternalPage();
+    }
 }

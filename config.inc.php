@@ -7,11 +7,11 @@
  ******************************************************************************/
 
 /**************************************************************************
-**********                   IMPORTANT NOTICE                    **********
-***************************************************************************
-** YOU MUST OVERRIDE THE CONFIGURATION IN THIS FILE WITH A LOCAL COPY!!! **
-** IT IS VERY IMPORTANT THAT THAT FILE IS CALLED config.local.inc.php    **
-***************************************************************************/
+ **********                   IMPORTANT NOTICE                    **********
+ ***************************************************************************
+ ** YOU MUST OVERRIDE THE CONFIGURATION IN THIS FILE WITH A LOCAL COPY!!! **
+ ** IT IS VERY IMPORTANT THAT THAT FILE IS CALLED config.local.inc.php    **
+ ***************************************************************************/
 
 /*********************************
  * Databases and stuff
@@ -46,10 +46,10 @@ $metaWikimediaWebServiceEndpoint = "https://meta.wikimedia.org/w/api.php";
 $baseurl = "https://accounts.wmflabs.org";
 
 // Pathname to the local installation of Peachy.
-$peachyPath = ""; 
+$peachyPath = "";
 
 // Location outside web directory to place temporary files.
-$varfilepath = "/projects/acc/"; 
+$varfilepath = "/projects/acc/";
 
 // Set up cookies and session information.
 $cookiepath = '/acc/';
@@ -64,7 +64,7 @@ $dontUseDb = 0; // Disable the tool completely.
 $dontUseWikiDb = 0; // Disable access to the Wiki database.
 $dontUseDbReason = ""; // Reason for disabling the tool.
 $dontUseDbCulprit = ""; // Your name, or the person who broke the tool.
-	
+
 /**************************************
  * ACCBot IRC bot
  */
@@ -90,7 +90,7 @@ $whichami = 'Live';
  */
 
 // Enable request email confirmation.
-$enableEmailConfirm = 1; 	
+$enableEmailConfirm = 1;
 // Number of days that are given for a requestor to confirm their email address.
 $emailConfirmationExpiryDays = 7;
 
@@ -155,7 +155,7 @@ $enforceOAuth = false;
 
 /************************************
  * Providers Configuration
-*/
+ */
 
 // IP GeoLocation
 // ------------------------
@@ -196,26 +196,26 @@ $apiDeployPassword = "super secret update password";
 
 // request states
 $availableRequestStates = array(
-	'Open' =>array(
-		'defertolog' => 'users', // don't change or you'll break old logs
-		'deferto' => 'users', 
-		'header' => 'Open requests',
-		'api' => "open",
-		),
-	'Flagged users'=>array(
-		'defertolog' => 'flagged users', // don't change or you'll break old logs
-		'deferto' => 'flagged users',
-		'header' => 'Flagged user needed',
-		'api' => "admin",
-		),
-	'Checkuser'=>array(
-		'defertolog' => 'checkusers', // don't change or you'll break old logs
-		'deferto' => 'checkusers', 
-		'header' => 'Checkuser needed',
-		'api' => "checkuser",
-		),
-	);
-	
+    'Open'          => array(
+        'defertolog' => 'users', // don't change or you'll break old logs
+        'deferto'    => 'users',
+        'header'     => 'Open requests',
+        'api'        => "open",
+    ),
+    'Flagged users' => array(
+        'defertolog' => 'flagged users', // don't change or you'll break old logs
+        'deferto'    => 'flagged users',
+        'header'     => 'Flagged user needed',
+        'api'        => "admin",
+    ),
+    'Checkuser'     => array(
+        'defertolog' => 'checkusers', // don't change or you'll break old logs
+        'deferto'    => 'checkusers',
+        'header'     => 'Checkuser needed',
+        'api'        => "checkuser",
+    ),
+);
+
 $defaultRequestStateKey = 'Open';
 
 $providerCacheExpiry = $dataclear_interval;
@@ -242,31 +242,31 @@ $enableErrorTrace = false;
 $curlDisableSSLVerifyPeer = false;
 
 /**************************************************************************
-**********                   IMPORTANT NOTICE                    **********
-***************************************************************************
-**     DON'T ADD ANY NEW CONFIGURATION OPTIONS BELOW THIS LINE!!!        **
-**     THEY WILL NOT BE CHANGABLE BY THE LOCAL CONFIGURATION FILE.       **
-***************************************************************************/
+ **********                   IMPORTANT NOTICE                    **********
+ ***************************************************************************
+ **     DON'T ADD ANY NEW CONFIGURATION OPTIONS BELOW THIS LINE!!!        **
+ **     THEY WILL NOT BE CHANGABLE BY THE LOCAL CONFIGURATION FILE.       **
+ ***************************************************************************/
 
 // Retriving the local configuration file.
 require_once('config.local.inc.php');
 
 $cDatabaseConfig = array(
-	"acc" => array(
-		"dsrcname" => "mysql:host=" . $toolserver_host . ";dbname=" . $toolserver_database,
-		"username" => $toolserver_username,
-		"password" => $toolserver_password
-	),
-	"wikipedia" => array(
-		"dsrcname" => "mysql:host=" . $antispoof_host . ";dbname=" . $antispoof_db,
-		"username" => $toolserver_username,
-		"password" => $toolserver_password
-	),
-	"notifications" => array(
-		"dsrcname" => "mysql:host=" . $toolserver_notification_dbhost . ";dbname=" . $toolserver_notification_database,
-		"username" => $notifications_username,
-		"password" => $notifications_password
-	),
+    "acc"           => array(
+        "dsrcname" => "mysql:host=" . $toolserver_host . ";dbname=" . $toolserver_database,
+        "username" => $toolserver_username,
+        "password" => $toolserver_password,
+    ),
+    "wikipedia"     => array(
+        "dsrcname" => "mysql:host=" . $antispoof_host . ";dbname=" . $antispoof_db,
+        "username" => $toolserver_username,
+        "password" => $toolserver_password,
+    ),
+    "notifications" => array(
+        "dsrcname" => "mysql:host=" . $toolserver_notification_dbhost . ";dbname=" . $toolserver_notification_database,
+        "username" => $notifications_username,
+        "password" => $notifications_password,
+    ),
 );
 
 // //Keep the included files from being executed.
@@ -277,13 +277,20 @@ ini_set('session.cookie_path', $cookiepath);
 ini_set('session.name', $sessionname);
 ini_set('user_agent', $toolUserAgent);
 
-foreach (array( 
-	"mbstring", // unicode and stuff
-	"pdo", "pdo_mysql", // new database module
-	"session", "date", "pcre", // core stuff
-	"curl", // mediawiki api access etc
-	"openssl", // token generation
-	) as $x) {if (!extension_loaded($x)) {die("extension $x is required."); }}
+foreach (array(
+    "mbstring", // unicode and stuff
+    "pdo",
+    "pdo_mysql", // new database module
+    "session",
+    "date",
+    "pcre", // core stuff
+    "curl", // mediawiki api access etc
+    "openssl", // token generation
+) as $x) {
+    if (!extension_loaded($x)) {
+        die("extension $x is required.");
+    }
+}
 
 // Set up the AutoLoader
 require_once(__DIR__ . "/includes/AutoLoader.php");
@@ -309,33 +316,32 @@ function wfDebugLog($section, $message)
 $siteConfiguration = new \Waca\SiteConfiguration();
 
 $siteConfiguration->setBaseUrl($baseurl)
-	->setFilePath(__DIR__)
-	->setDebuggingTraceEnabled($enableErrorTrace)
-	->setForceIdentification($forceIdentification)
-	->setIdentificationCacheExpiry($identificationCacheExpiry)
-	->setMediawikiScriptPath($mediawikiScriptPath)
-	->setMediawikiWebServiceEndpoint($mediawikiWebServiceEndpoint)
-	->setMetaWikimediaWebServiceEndpoint($metaWikimediaWebServiceEndpoint)
-	->setEnforceOAuth($enforceOAuth)
-	->setEmailConfirmationEnabled($enableEmailConfirm == 1)
-	->setEmailConfirmationExpiryDays($emailConfirmationExpiryDays)
-	->setMiserModeLimit($requestLimitShowOnly)
-	->setRequestStates($availableRequestStates)
-	->setSquidList($squidIpList)
-	->setDefaultCreatedTemplateId($createdid)
-	->setDefaultRequestStateKey($defaultRequestStateKey)
-	->setUseStrictTransportSecurity($strictTransportSecurityExpiry)
-	->setUserAgent($toolUserAgent)
-	->setCurlDisableVerifyPeer($curlDisableSSLVerifyPeer)
-	->setUseOAuthSignup($useOauthSignup)
-	->setOAuthBaseUrl($oauthBaseUrl)
-	->setOAuthConsumerToken($oauthConsumerToken)
-	->setOAuthConsumerSecret($oauthSecretToken)
-	->setDataClearInterval($dataclear_interval)
-	->setXffTrustedHostsFile($xff_trusted_hosts_file)
-	->setIrcNotificationsEnabled($ircBotNotificationsEnabled == 1)
-	->setIrcNotificationType($ircBotNotificationType)
-	->setIrcNotificationsInstance($whichami)
-	->setTitleBlacklistEnabled($enableTitleblacklist == 1)
-	->setTorExitPaths(array_merge(gethostbynamel('en.wikipedia.org'), gethostbynamel('accounts.wmflabs.org')))
-	;
+    ->setFilePath(__DIR__)
+    ->setDebuggingTraceEnabled($enableErrorTrace)
+    ->setForceIdentification($forceIdentification)
+    ->setIdentificationCacheExpiry($identificationCacheExpiry)
+    ->setMediawikiScriptPath($mediawikiScriptPath)
+    ->setMediawikiWebServiceEndpoint($mediawikiWebServiceEndpoint)
+    ->setMetaWikimediaWebServiceEndpoint($metaWikimediaWebServiceEndpoint)
+    ->setEnforceOAuth($enforceOAuth)
+    ->setEmailConfirmationEnabled($enableEmailConfirm == 1)
+    ->setEmailConfirmationExpiryDays($emailConfirmationExpiryDays)
+    ->setMiserModeLimit($requestLimitShowOnly)
+    ->setRequestStates($availableRequestStates)
+    ->setSquidList($squidIpList)
+    ->setDefaultCreatedTemplateId($createdid)
+    ->setDefaultRequestStateKey($defaultRequestStateKey)
+    ->setUseStrictTransportSecurity($strictTransportSecurityExpiry)
+    ->setUserAgent($toolUserAgent)
+    ->setCurlDisableVerifyPeer($curlDisableSSLVerifyPeer)
+    ->setUseOAuthSignup($useOauthSignup)
+    ->setOAuthBaseUrl($oauthBaseUrl)
+    ->setOAuthConsumerToken($oauthConsumerToken)
+    ->setOAuthConsumerSecret($oauthSecretToken)
+    ->setDataClearInterval($dataclear_interval)
+    ->setXffTrustedHostsFile($xff_trusted_hosts_file)
+    ->setIrcNotificationsEnabled($ircBotNotificationsEnabled == 1)
+    ->setIrcNotificationType($ircBotNotificationType)
+    ->setIrcNotificationsInstance($whichami)
+    ->setTitleBlacklistEnabled($enableTitleblacklist == 1)
+    ->setTorExitPaths(array_merge(gethostbynamel('en.wikipedia.org'), gethostbynamel('accounts.wmflabs.org')));

@@ -18,9 +18,9 @@ use Waca\Tasks\IRoutedTask;
  */
 interface IRequestRouter
 {
-	/**
-	 * @return IRoutedTask
-	 * @throws Exception
-	 */
-	public function route();
+    /**
+     * @return IRoutedTask
+     * @throws Exception
+     */
+    public function route();
 }

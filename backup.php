@@ -7,7 +7,7 @@
  ******************************************************************************/
 
 if (isset($_SERVER['REQUEST_METHOD'])) {
-	die();
+    die();
 } //Web clients die.
 
 // Get all the classes.
@@ -19,12 +19,12 @@ echo "Initialising backup script\n";
 
 $arg = $argv['1'];
 if ($arg == "--monthly") {
-	echo "running monthly backups.\n";
-	$dateModifier = date("FY");
-	$cmdLine = "$BUtar $BUmonthdir/mBackup-$dateModifier.tar $BUdir/*.sql.gz; rm $BUdir/*.sql.gz";
-	echo "running command $cmdLine\n";
-	shell_exec($cmdLine);
-	die("done.");
+    echo "running monthly backups.\n";
+    $dateModifier = date("FY");
+    $cmdLine = "$BUtar $BUmonthdir/mBackup-$dateModifier.tar $BUdir/*.sql.gz; rm $BUdir/*.sql.gz";
+    echo "running command $cmdLine\n";
+    shell_exec($cmdLine);
+    die("done.");
 }
 
 echo "running nightly backups\n";

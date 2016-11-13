@@ -13,12 +13,12 @@ use Waca\Tasks\InternalPageBase;
 
 class StatsTopCreators extends InternalPageBase
 {
-	public function main()
-	{
-		$this->setHtmlTitle('Top Creators :: Statistics');
+    public function main()
+    {
+        $this->setHtmlTitle('Top Creators :: Statistics');
 
-		// Retrieve all-time stats
-		$queryAllTime = <<<SQL
+        // Retrieve all-time stats
+        $queryAllTime = <<<SQL
 SELECT
 	/* StatsTopCreators::execute()/queryAllTime */
     COUNT(*) count,
@@ -35,8 +35,8 @@ GROUP BY log.user, user.username, user.status
 ORDER BY COUNT(*) DESC;
 SQL;
 
-		// Retrieve all-time stats for active users only
-		$queryAllTimeActive = <<<SQL
+        // Retrieve all-time stats for active users only
+        $queryAllTimeActive = <<<SQL
 SELECT
 	/* StatsTopCreators::execute()/queryAllTimeActive */
     COUNT(*) count,
@@ -53,8 +53,8 @@ GROUP BY user.username, user.id
 ORDER BY COUNT(*) DESC;
 SQL;
 
-		// Retrieve today's stats (so far)
-		$queryToday = <<<SQL
+        // Retrieve today's stats (so far)
+        $queryToday = <<<SQL
 SELECT
 	/* StatsTopCreators::execute()/top5out */
     COUNT(*) count,
@@ -70,8 +70,8 @@ GROUP BY log.user, user.username
 ORDER BY COUNT(*) DESC;
 SQL;
 
-		// Retrieve Yesterday's stats
-		$queryYesterday = <<<SQL
+        // Retrieve Yesterday's stats
+        $queryYesterday = <<<SQL
 SELECT
 	/* StatsTopCreators::execute()/top5yout */
     COUNT(*) count,
@@ -87,8 +87,8 @@ GROUP BY log.user, user.username
 ORDER BY COUNT(*) DESC;
 SQL;
 
-		// Retrieve last 7 days
-		$queryLast7Days = <<<SQL
+        // Retrieve last 7 days
+        $queryLast7Days = <<<SQL
 SELECT
 	/* StatsTopCreators::execute()/top5wout */
     COUNT(*) count,
@@ -104,8 +104,8 @@ GROUP BY log.user, user.username
 ORDER BY COUNT(*) DESC;
 SQL;
 
-		// Retrieve last month's stats
-		$queryLast28Days = <<<SQL
+        // Retrieve last month's stats
+        $queryLast28Days = <<<SQL
 SELECT
 	/* StatsTopCreators::execute()/top5mout */
     COUNT(*) count,
@@ -121,29 +121,29 @@ GROUP BY log.user, user.username
 ORDER BY COUNT(*) DESC;
 SQL;
 
-		// Put it all together
-		$queries = array(
-			'queryAllTime'       => $queryAllTime,
-			'queryAllTimeActive' => $queryAllTimeActive,
-			'queryToday'         => $queryToday,
-			'queryYesterday'     => $queryYesterday,
-			'queryLast7Days'     => $queryLast7Days,
-			'queryLast28Days'    => $queryLast28Days,
-		);
+        // Put it all together
+        $queries = array(
+            'queryAllTime'       => $queryAllTime,
+            'queryAllTimeActive' => $queryAllTimeActive,
+            'queryToday'         => $queryToday,
+            'queryYesterday'     => $queryYesterday,
+            'queryLast7Days'     => $queryLast7Days,
+            'queryLast28Days'    => $queryLast28Days,
+        );
 
-		$database = $this->getDatabase();
-		foreach ($queries as $name => $sql) {
-			$statement = $database->query($sql);
-			$data = $statement->fetchAll(PDO::FETCH_ASSOC);
-			$this->assign($name, $data);
-		}
+        $database = $this->getDatabase();
+        foreach ($queries as $name => $sql) {
+            $statement = $database->query($sql);
+            $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+            $this->assign($name, $data);
+        }
 
-		$this->assign('statsPageTitle', 'Top Account Creators');
-		$this->setTemplate('statistics/top-creators.tpl');
-	}
+        $this->assign('statsPageTitle', 'Top Account Creators');
+        $this->setTemplate('statistics/top-creators.tpl');
+    }
 
-	public function getSecurityConfiguration()
-	{
-		return $this->getSecurityManager()->configure()->asPublicPage();
-	}
+    public function getSecurityConfiguration()
+    {
+        return $this->getSecurityManager()->configure()->asPublicPage();
+    }
 }

@@ -16,227 +16,227 @@ use Waca\IdentificationVerifier;
  */
 class CommunityUser extends User
 {
-	public function getId()
-	{
-		return -1;
-	}
+    public function getId()
+    {
+        return -1;
+    }
 
-	public function save()
-	{
-		// Do nothing
-	}
+    public function save()
+    {
+        // Do nothing
+    }
 
-	public function authenticate($password)
-	{
-		// Impossible to log in as this user
-		return false;
-	}
+    public function authenticate($password)
+    {
+        // Impossible to log in as this user
+        return false;
+    }
 
-	#region properties
+    #region properties
 
-	/**
-	 * @return string
-	 */
-	public function getUsername()
-	{
-		global $communityUsername;
+    /**
+     * @return string
+     */
+    public function getUsername()
+    {
+        global $communityUsername;
 
-		return $communityUsername;
-	}
+        return $communityUsername;
+    }
 
-	public function setUsername($username)
-	{
-	}
+    public function setUsername($username)
+    {
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getEmail()
-	{
-		global $cDataClearEmail;
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        global $cDataClearEmail;
 
-		return $cDataClearEmail;
-	}
+        return $cDataClearEmail;
+    }
 
-	public function setEmail($email)
-	{
-	}
+    public function setEmail($email)
+    {
+    }
 
-	public function setPassword($password)
-	{
-	}
+    public function setPassword($password)
+    {
+    }
 
-	public function getStatus()
-	{
-		return "Community";
-	}
+    public function getStatus()
+    {
+        return "Community";
+    }
 
-	public function getOnWikiName()
-	{
-		return "127.0.0.1";
-	}
+    public function getOnWikiName()
+    {
+        return "127.0.0.1";
+    }
 
-	public function getStoredOnWikiName()
-	{
-		return $this->getOnWikiName();
-	}
+    public function getStoredOnWikiName()
+    {
+        return $this->getOnWikiName();
+    }
 
-	public function setOnWikiName($onWikiName)
-	{
-	}
+    public function setOnWikiName($onWikiName)
+    {
+    }
 
-	public function getWelcomeSig()
-	{
-		return null;
-	}
+    public function getWelcomeSig()
+    {
+        return null;
+    }
 
-	public function setWelcomeSig($welcomeSig)
-	{
-	}
+    public function setWelcomeSig($welcomeSig)
+    {
+    }
 
-	public function getLastActive()
-	{
-		$now = new DateTime();
+    public function getLastActive()
+    {
+        $now = new DateTime();
 
-		return $now->format("Y-m-d H:i:s");
-	}
+        return $now->format("Y-m-d H:i:s");
+    }
 
-	public function getForceLogout()
-	{
-		return true;
-	}
+    public function getForceLogout()
+    {
+        return true;
+    }
 
-	public function setForceLogout($forceLogout)
-	{
-	}
+    public function setForceLogout($forceLogout)
+    {
+    }
 
-	/**
-	 * @param string $status
-	 */
-	public function setStatus($status)
-	{
-	}
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+    }
 
-	public function getWelcomeTemplate()
-	{
-		return 0;
-	}
+    public function getWelcomeTemplate()
+    {
+        return 0;
+    }
 
-	public function setWelcomeTemplate($welcomeTemplate)
-	{
-	}
+    public function setWelcomeTemplate($welcomeTemplate)
+    {
+    }
 
-	public function getAbortPref()
-	{
-		return 0;
-	}
+    public function getAbortPref()
+    {
+        return 0;
+    }
 
-	public function setAbortPref($abortPreference)
-	{
-	}
+    public function setAbortPref($abortPreference)
+    {
+    }
 
-	public function getConfirmationDiff()
-	{
-		return null;
-	}
+    public function getConfirmationDiff()
+    {
+        return null;
+    }
 
-	public function setConfirmationDiff($confirmationDiff)
-	{
-	}
+    public function setConfirmationDiff($confirmationDiff)
+    {
+    }
 
-	public function getEmailSig()
-	{
-		return null;
-	}
+    public function getEmailSig()
+    {
+        return null;
+    }
 
-	public function setEmailSig($emailSignature)
-	{
-	}
+    public function setEmailSig($emailSignature)
+    {
+    }
 
-	#endregion
+    #endregion
 
-	#region user access checks
+    #region user access checks
 
-	public function isAdmin()
-	{
-		return false;
-	}
+    public function isAdmin()
+    {
+        return false;
+    }
 
-	public function isCheckuser()
-	{
-		return false;
-	}
+    public function isCheckuser()
+    {
+        return false;
+    }
 
-	public function isIdentified(IdentificationVerifier $iv)
-	{
-		return false;
-	}
+    public function isIdentified(IdentificationVerifier $iv)
+    {
+        return false;
+    }
 
-	public function isSuspended()
-	{
-		return false;
-	}
+    public function isSuspended()
+    {
+        return false;
+    }
 
-	public function isNewUser()
-	{
-		return false;
-	}
+    public function isNewUser()
+    {
+        return false;
+    }
 
-	public function isUser()
-	{
-		return false;
-	}
+    public function isUser()
+    {
+        return false;
+    }
 
-	public function isDeclined()
-	{
-		return false;
-	}
+    public function isDeclined()
+    {
+        return false;
+    }
 
-	public function isCommunityUser()
-	{
-		return true;
-	}
+    public function isCommunityUser()
+    {
+        return true;
+    }
 
-	#endregion 
+    #endregion 
 
-	#region OAuth
+    #region OAuth
 
-	public function getOAuthIdentity($useCached = false)
-	{
-		return null;
-	}
+    public function getOAuthIdentity($useCached = false)
+    {
+        return null;
+    }
 
-	public function isOAuthLinked()
-	{
-		return false;
-	}
+    public function isOAuthLinked()
+    {
+        return false;
+    }
 
-	public function oauthCanUse()
-	{
-		return false;
-	}
+    public function oauthCanUse()
+    {
+        return false;
+    }
 
-	public function oauthCanEdit()
-	{
-		return false;
-	}
+    public function oauthCanEdit()
+    {
+        return false;
+    }
 
-	public function oauthCanCreateAccount()
-	{
-		return false;
-	}
+    public function oauthCanCreateAccount()
+    {
+        return false;
+    }
 
-	protected function oauthCanCheckUser()
-	{
-		return false;
-	}
+    protected function oauthCanCheckUser()
+    {
+        return false;
+    }
 
-	#endregion
+    #endregion
 
-	public function getApprovalDate()
-	{
-		$data = DateTime::createFromFormat("Y-m-d H:i:s", "1970-01-01 00:00:00");
+    public function getApprovalDate()
+    {
+        $data = DateTime::createFromFormat("Y-m-d H:i:s", "1970-01-01 00:00:00");
 
-		return $data;
-	}
+        return $data;
+    }
 }

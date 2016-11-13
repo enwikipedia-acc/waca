@@ -15,22 +15,22 @@ use Waca\PdoDatabase;
 
 class PageDropRequest extends PageCloseRequest
 {
-	protected function getTemplate(PdoDatabase $database)
-	{
-		return EmailTemplate::getDroppedTemplate();
-	}
+    protected function getTemplate(PdoDatabase $database)
+    {
+        return EmailTemplate::getDroppedTemplate();
+    }
 
-	protected function confirmEmailAlreadySent(Request $request, EmailTemplate $template)
-	{
-		return false;
-	}
+    protected function confirmEmailAlreadySent(Request $request, EmailTemplate $template)
+    {
+        return false;
+    }
 
-	protected function confirmAccountCreated(Request $request, EmailTemplate $template)
-	{
-		return false;
-	}
+    protected function confirmAccountCreated(Request $request, EmailTemplate $template)
+    {
+        return false;
+    }
 
-	protected function sendMail(Request $request, EmailTemplate $template, User $currentUser, $ccMailingList)
-	{
-	}
+    protected function sendMail(Request $request, EmailTemplate $template, User $currentUser, $ccMailingList)
+    {
+    }
 }
