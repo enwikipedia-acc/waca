@@ -2035,6 +2035,43 @@ elseif ($action == "oauthattach") {
 		}
 	});
 }
+elseif ($action == "listall") {
+    global $availableRequestStates, $enableEmailConfirm;
+
+    $database = gGetDb();
+
+    if ($enableEmailConfirm == 1) {
+        $query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
+    }
+    else {
+        $query = "SELECT * FROM request WHERE status = :type;";
+    }
+
+    $statement = $database->prepare($query);
+
+    if (isset($_GET['status']) && isset($availableRequestStates[$_GET['status']])) {
+        $type = $_GET['status']; // safe, we've verified it's sane in the above if statement.
+
+        $statement->bindValue(":type", $type);
+        $statement->execute();
+
+        $requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
+        foreach ($requests as $req) {
+            $req->setDatabase($database);
+        }
+
+        global $smarty;
+        $smarty->assign("requests", $requests);
+        $smarty->assign("showStatus", false);
+        $html = $smarty->fetch("mainpage/requesttable.tpl");
+        echo $html;
+    } else {
+        echo defaultpage();
+    }
+
+    BootstrapSkin::displayInternalFooter();
+    die();
+}
 # If the action specified does not exist, goto the default page.
 else {
 	echo defaultpage();

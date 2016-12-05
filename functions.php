@@ -154,7 +154,8 @@ function defaultpage()
 		$requestSectionData[$v['header']] = array(
 			"requests" => $requests, 
 			"total" => $totalRequests, 
-			"api" => $v['api']);
+			"api" => $v['api'],
+            "type" => $type);
 	}
     
 	global $smarty;

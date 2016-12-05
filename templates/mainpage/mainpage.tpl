@@ -16,7 +16,7 @@
       </div>
       <div id="collapse{$section.api}" class="accordion-body collapse out">
         <div class="accordion-inner">
-          {include file="mainpage/requestlist.tpl" requests=$section showStatus=false}
+          {include file="mainpage/requestlist.tpl" requests=$section showStatus=false type=$section.type}
         </div>
       </div>
     </div>
