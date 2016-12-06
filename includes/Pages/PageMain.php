@@ -73,6 +73,7 @@ class PageMain extends InternalPageBase
                 'requests' => $requests,
                 'total'    => $totalRequests,
                 'api'      => $v['api'],
+                'type'     => $type,
                 'userlist' => $userList,
             );
         }

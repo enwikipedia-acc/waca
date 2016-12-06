@@ -13,6 +13,7 @@ use Waca\Pages\Page404;
 use Waca\Pages\PageBan;
 use Waca\Pages\PageEditComment;
 use Waca\Pages\PageEmailManagement;
+use Waca\Pages\PageExpandedRequestList;
 use Waca\Pages\PageForgotPassword;
 use Waca\Pages\PageLog;
 use Waca\Pages\PageLogin;
@@ -291,7 +292,11 @@ class RequestRouter implements IRequestRouter
                 'class'   => PageTeam::class,
                 'actions' => array(),
             ),
-
+        'requestList'                 =>
+            array(
+                'class'   => PageExpandedRequestList::class,
+                'actions' => array(),
+            ),
     );
 
     /**

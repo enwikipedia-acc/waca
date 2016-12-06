@@ -13,7 +13,7 @@
                     <div class="accordion-heading">
                         <a class="accordion-toggle" data-toggle="collapse" data-parent="#requestListAccordion"
                            href="#collapse{$section.api}">
-                            {$header|escape} <span class="badge badge-info">{if $section.total > 0}{$section.total}{/if}</span>
+                            {$header|escape} <span class="badge {if $section.total > $requestLimitShowOnly}badge-important{else}badge-info{/if}">{if $section.total > 0}{$section.total}{/if}</span>
                         </a>
                     </div>
                     <div id="collapse{$section.api|escape}" class="accordion-body collapse out">
