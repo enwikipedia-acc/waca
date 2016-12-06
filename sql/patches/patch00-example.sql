@@ -25,7 +25,7 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
     DECLARE patchversion INT DEFAULT 0;
     -- -------------------------------------------------------------------------
     -- working variables
-	DECLARE currentschemaversion INT DEFAULT 0;
+    DECLARE currentschemaversion INT DEFAULT 0;
     DECLARE lastversion INT;
 	
     -- check the schema has a version table

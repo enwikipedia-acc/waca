@@ -1,10 +1,12 @@
-﻿<div class="row-fluid">
+﻿{extends file="statistics/base.tpl"}
+{block name="statisticsContent"}
+<div class="row-fluid">
 	<div class="span6">
     <h4>Menu</h4>
     <ul>
-      {foreach from=$statsPages item=page}
+      {foreach from=$statsPages item=page key=title}
         <li>
-          <a href="{$baseurl}/statistics.php/{$page->getPageName()}">{$page->getPageTitle()}</a>
+          <a href="{$baseurl}/internal.php/statistics/{$title}">{$page}</a>
         </li>
       {/foreach}
     </ul>
@@ -23,3 +25,4 @@
     {/foreach}
   </div>
 </div>
+{/block}

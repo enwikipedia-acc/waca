@@ -1,4 +1,18 @@
 <?php
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
+
+namespace Waca\Providers;
+
+use Exception;
+use Waca\DataObjects\AntiSpoofCache;
+use Waca\Helpers\HttpHelper;
+use Waca\PdoDatabase;
+use Waca\Providers\Interfaces\IAntiSpoofProvider;
 
 /**
  * Cached API Antispoof Provider
@@ -8,54 +22,77 @@
  */
 class CachedApiAntispoofProvider implements IAntiSpoofProvider
 {
-	public function getSpoofs($username)
-	{
-		global $mediawikiWebServiceEndpoint;
+    /**
+     * @var PdoDatabase
+     */
+    private $database;
+    /**
+     * @var string
+     */
+    private $mediawikiWebServiceEndpoint;
+    /**
+     * @var HttpHelper
+     */
+    private $httpHelper;
 
-		$cacheResult = AntiSpoofCache::getByUsername($username, gGetDb());
-		if ($cacheResult == false) {
-			// get the data from the API
-			$data = file_get_contents($mediawikiWebServiceEndpoint . "?action=antispoof&format=php&username=" . urlencode($username));
+    public function __construct(PdoDatabase $database, $mediawikiWebServiceEndpoint, HttpHelper $httpHelper)
+    {
+        $this->database = $database;
+        $this->mediawikiWebServiceEndpoint = $mediawikiWebServiceEndpoint;
+        $this->httpHelper = $httpHelper;
+    }
 
-			$cacheEntry = new AntiSpoofCache();
-			$cacheEntry->setDatabase(gGetDb());
-			$cacheEntry->setUsername($username);
-			$cacheEntry->setData($data);
-			$cacheEntry->save();
+    public function getSpoofs($username)
+    {
+        /** @var AntiSpoofCache $cacheResult */
+        $cacheResult = AntiSpoofCache::getByUsername($username, $this->database);
+        if ($cacheResult == false) {
+            // get the data from the API
+            $data = $this->httpHelper->get($this->mediawikiWebServiceEndpoint, array(
+                'action'   => 'antispoof',
+                'format'   => 'php',
+                'username' => $username,
+            ));
 
-			$cacheResult = $cacheEntry;
-		}
-		else {
-			$data = $cacheResult->getData();
-		}
+            $cacheEntry = new AntiSpoofCache();
+            $cacheEntry->setDatabase($this->database);
+            $cacheEntry->setUsername($username);
+            $cacheEntry->setData($data);
+            $cacheEntry->save();
 
-		$result = unserialize($data);
+            $cacheResult = $cacheEntry;
+        }
+        else {
+            $data = $cacheResult->getData();
+        }
 
-		if (!isset($result['antispoof']) || !isset($result['antispoof']['result'])) {
-			$cacheResult->delete();
+        $result = unserialize($data);
 
-			if (isset($result['error']['info'])) {
-				throw new Exception("Unrecognised API response to query: " . $result['error']['info']);
-			}
+        if (!isset($result['antispoof']) || !isset($result['antispoof']['result'])) {
+            $cacheResult->delete();
 
-			throw new Exception("Unrecognised API response to query.");
-		}
+            if (isset($result['error']['info'])) {
+                throw new Exception("Unrecognised API response to query: " . $result['error']['info']);
+            }
 
-		if ($result['antispoof']['result'] == "pass") {
-			// All good here!
-			return array();
-		}
+            throw new Exception("Unrecognised API response to query.");
+        }
 
-		if ($result['antispoof']['result'] == "conflict") {
-			// we've got conflicts, let's do something with them.
-			return $result['antispoof']['users'];
-		}
+        if ($result['antispoof']['result'] == "pass") {
+            // All good here!
+            return array();
+        }
 
-		if ($result['antispoof']['result'] == "error") {
-			// we've got conflicts, let's do something with them.
-			throw new Exception("Encountered error while getting result: " . $result['antispoof']['error']);
-		}
+        if ($result['antispoof']['result'] == "conflict") {
+            // we've got conflicts, let's do something with them.
+            return $result['antispoof']['users'];
+        }
 
-		throw new Exception("Unrecognised API response to query.");
-	}
+        if ($result['antispoof']['result'] == "error") {
+            // we've got conflicts, let's do something with them.
+            throw new Exception("Encountered error while getting result: " . $result['antispoof']['error']);
+        }
+
+        throw new Exception("Unrecognised API response to query.");
+    }
 }

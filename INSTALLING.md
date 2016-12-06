@@ -14,21 +14,22 @@ You must also have a database which you can use with the tool.
 You'll also need some PHP extensions:
 
 * mbstring
-* mysql
 * pdo
 * pdo_mysql
 * session
 * date
 * pcre
 * curl
-* mcrypt
 * openssl
 
 There's nothing special here, these are all standard PHP extensions that are bundled with PHP - you may 
 just need to switch some of them on in the php.ini file.
 
-Useful (but optional) extensions:
+Useful (but optional) extensions - only used for development:
 * xdebug (http://xdebug.org/)
+* runkit (http://pecl.php.net/runkit / https://github.com/zenovich/runkit/)
+
+Note that runkit is a pain[1] to get working on Windows, and is only used by some unit tests.
 
 ## Known good configurations
 
@@ -42,7 +43,7 @@ Useful (but optional) extensions:
 ### stwalkerster's main development environment
 
 * MariaDB 10.0.15
-* PHP 5.6.1 (NTS VC11-x86 build)
+* PHP 5.6.17 (NTS VC11-x86 build)
 * PHP Development server
 * Windows 10
 
@@ -89,7 +90,6 @@ $dontUseWikiDb = 1;
 
 // Paths and stuff
 $baseurl = "http://localhost/waca";
-$filepath = "C:/xampp/htdocs/waca/"; 
 $cookiepath = '/waca/';
 
 $whichami = "MyName";
@@ -134,3 +134,5 @@ $enforceOAuth = true;
 ```
 
 You should now be able to use OAuth!
+
+[1]: https://github.com/zenovich/runkit/issues/22

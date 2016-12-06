@@ -1,275 +1,242 @@
 <?php
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
+
+namespace Waca\DataObjects;
+
+use DateTime;
+use Waca\IdentificationVerifier;
 
 /**
  * User data object
  */
 class CommunityUser extends User
 {
-	public function getId()
-	{
-		return -1;
-	}
-    
-	public function save()
-	{
-		// Do nothing
-	}
+    public function getId()
+    {
+        return -1;
+    }
 
-	public function authenticate($password)
-	{
-		// Impossible to log in as this user
-		return false;
-	}
-    
-	public function touchLastLogin()
-	{
-	}
-    
-	#region properties
-    
-	public function getUsername()
-	{
-		global $communityUsername;
-		return $communityUsername;
-	}
+    public function save()
+    {
+        // Do nothing
+    }
 
-	public function setUsername($username)
-	{
-	}
+    public function authenticate($password)
+    {
+        // Impossible to log in as this user
+        return false;
+    }
 
-	public function getEmail()
-	{
-		global $cDataClearEmail;
-		return $cDataClearEmail;
-	}
+    #region properties
 
-	public function setEmail($email)
-	{
-	}
+    /**
+     * @return string
+     */
+    public function getUsername()
+    {
+        global $communityUsername;
 
-	public function setPassword($password)
-	{
-	}
+        return $communityUsername;
+    }
 
-	public function getStatus()
-	{
-		return "Community";
-	}
+    public function setUsername($username)
+    {
+    }
 
-	public function getOnWikiName()
-	{
-		return "127.0.0.1";
-	}
-    
-	public function getStoredOnWikiName()
-	{
-		return $this->getOnWikiName();
-	}
+    /**
+     * @return string
+     */
+    public function getEmail()
+    {
+        global $cDataClearEmail;
 
-	public function setOnWikiName($onWikiName)
-	{
-	}
+        return $cDataClearEmail;
+    }
 
-	public function getWelcomeSig()
-	{
-		return null;
-	}
+    public function setEmail($email)
+    {
+    }
 
-	public function setWelcomeSig($welcomeSig)
-	{
-	}
+    public function setPassword($password)
+    {
+    }
 
-	public function getLastActive()
-	{
-		$now = new DateTime();
-		return $now->format("Y-m-d H:i:s");
-	}
+    public function getStatus()
+    {
+        return "Community";
+    }
 
-	public function setLastActive($lastActive)
-	{
-	}
+    public function getOnWikiName()
+    {
+        return "127.0.0.1";
+    }
 
-	public function getForcelogout()
-	{
-		return 1;
-	}
+    public function getStoredOnWikiName()
+    {
+        return $this->getOnWikiName();
+    }
 
-	public function setForcelogout($forceLogout)
-	{
-	}
-    
-	public function getSecure()
-	{
-		return true;
-	}
+    public function setOnWikiName($onWikiName)
+    {
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getCheckuser()
-	{
-		return 0;
-	}
+    public function getWelcomeSig()
+    {
+        return null;
+    }
 
-	public function setCheckuser($checkuser)
-	{
-	}
+    public function setWelcomeSig($welcomeSig)
+    {
+    }
 
-	public function getIdentified()
-	{
-		return false;
-	}
+    public function getLastActive()
+    {
+        $now = new DateTime();
 
-	public function setIdentified($identified)
-	{
-	}
+        return $now->format("Y-m-d H:i:s");
+    }
 
-	public function getWelcomeTemplate()
-	{
-		return 0;
-	}
+    public function getForceLogout()
+    {
+        return true;
+    }
 
-	public function setWelcomeTemplate($welcomeTemplate)
-	{
-	}
+    public function setForceLogout($forceLogout)
+    {
+    }
 
-	public function getAbortPref()
-	{
-		return 0;
-	}
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+    }
 
-	public function setAbortPref($abortPreference)
-	{
-	}
+    public function getWelcomeTemplate()
+    {
+        return 0;
+    }
 
-	public function getConfirmationDiff()
-	{
-		return null;
-	}
+    public function setWelcomeTemplate($welcomeTemplate)
+    {
+    }
 
-	public function setConfirmationDiff($confirmationDiff)
-	{
-	}
+    public function getAbortPref()
+    {
+        return 0;
+    }
 
-	public function getEmailSig()
-	{
-		return null;
-	}
+    public function setAbortPref($abortPreference)
+    {
+    }
 
-	public function setEmailSig($emailSignature)
-	{
-	}
-    
-	#endregion
-    
-	#region changing access level
-	public function approve()
-	{
-	}
-    
-	public function suspend($comment)
-	{
-	}
-    
-	public function decline($comment)
-	{
-	}
-    
-	public function promote()
-	{
-	}
-    
-	public function demote($comment)
-	{
-	}
+    public function getConfirmationDiff()
+    {
+        return null;
+    }
 
-	#endregion
-    
-	#region user access checks
-    
-	public function isAdmin()
-	{
-		return false;
-	}
-    
-	public function isCheckuser()
-	{
-		return false;
-	}
-    
-	public function isIdentified()
-	{
-		return false;
-	}
-    
-	public function isSuspended()
-	{
-		return false;
-	}
-    
-	public function isNew()
-	{
-		return false;
-	}
-    
-	public function isUser()
-	{
-		return false;
-	}
-    
-	public function isDeclined()
-	{
-		return false;
-	}
-    
-	public function isCommunityUser()
-	{
-		return true;
-	}
-    
-	#endregion 
+    public function setConfirmationDiff($confirmationDiff)
+    {
+    }
 
-	#region OAuth
-    
-	public function getOAuthIdentity($useCached = false)
-	{
-		return null;
-	}
-    
-	public function isOAuthLinked()
-	{
-		return false;
-	}
-    
-	public function detachAccount()
-	{
-	}
-    
-	public function oauthCanUse()
-	{
-		return false;
-	}
-    
-	public function oauthCanEdit()
-	{
-		return false;
-	}
-    
-	public function oauthCanCreateAccount()
-	{
-		return false;
-	}
+    public function getEmailSig()
+    {
+        return null;
+    }
 
-	protected function oauthCanCheckUser()
-	{
-		return false;
-	}
-    
-	#endregion
+    public function setEmailSig($emailSignature)
+    {
+    }
 
-	public function getApprovalDate()
-	{
-		$data = DateTime::createFromFormat("Y-m-d H:i:s", "1970-01-01 00:00:00");
-		return $data;
-	}
+    #endregion
+
+    #region user access checks
+
+    public function isAdmin()
+    {
+        return false;
+    }
+
+    public function isCheckuser()
+    {
+        return false;
+    }
+
+    public function isIdentified(IdentificationVerifier $iv)
+    {
+        return false;
+    }
+
+    public function isSuspended()
+    {
+        return false;
+    }
+
+    public function isNewUser()
+    {
+        return false;
+    }
+
+    public function isUser()
+    {
+        return false;
+    }
+
+    public function isDeclined()
+    {
+        return false;
+    }
+
+    public function isCommunityUser()
+    {
+        return true;
+    }
+
+    #endregion 
+
+    #region OAuth
+
+    public function getOAuthIdentity($useCached = false)
+    {
+        return null;
+    }
+
+    public function isOAuthLinked()
+    {
+        return false;
+    }
+
+    public function oauthCanUse()
+    {
+        return false;
+    }
+
+    public function oauthCanEdit()
+    {
+        return false;
+    }
+
+    public function oauthCanCreateAccount()
+    {
+        return false;
+    }
+
+    protected function oauthCanCheckUser()
+    {
+        return false;
+    }
+
+    #endregion
+
+    public function getApprovalDate()
+    {
+        $data = DateTime::createFromFormat("Y-m-d H:i:s", "1970-01-01 00:00:00");
+
+        return $data;
+    }
 }

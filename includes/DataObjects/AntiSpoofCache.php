@@ -1,83 +1,118 @@
 <?php
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
+
+namespace Waca\DataObjects;
+
+use DateTimeImmutable;
+use Exception;
+use Waca\DataObject;
+use Waca\PdoDatabase;
 
 /**
  * AntiSpoofCache data object
  */
 class AntiSpoofCache extends DataObject
 {
-	protected $username;
-	protected $data;
-	protected $timestamp;
+    /** @var string */
+    protected $username;
+    /** @var string */
+    protected $data;
+    /** @var string */
+    protected $timestamp;
 
-	public static function getByUsername($username, PdoDatabase $database)
-	{
-		$statement = $database->prepare(<<<SQL
+    /**
+     * @param   string    $username
+     * @param PdoDatabase $database
+     *
+     * @return AntiSpoofCache|false
+     */
+    public static function getByUsername($username, PdoDatabase $database)
+    {
+        $statement = $database->prepare(<<<SQL
 SELECT *
 FROM antispoofcache
-WHERE username = :id AND timestamp > date_sub(now(), interval 3 hour)
+WHERE username = :id AND timestamp > date_sub(now(), INTERVAL 3 HOUR)
 LIMIT 1
 SQL
-		);
-		$statement->bindValue(":id", $username);
+        );
+        $statement->bindValue(":id", $username);
 
-		$statement->execute();
+        $statement->execute();
 
-		$resultObject = $statement->fetchObject(get_called_class());
+        $resultObject = $statement->fetchObject(get_called_class());
 
-		if ($resultObject != false) {
-			$resultObject->isNew = false;
-			$resultObject->setDatabase($database);
-		}
+        if ($resultObject != false) {
+            $resultObject->setDatabase($database);
+        }
 
-		return $resultObject;
-	}
+        return $resultObject;
+    }
 
-	public function getUsername()
-	{
-		return $this->username;
-	}
+    /**
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
 
-	public function setUsername($username)
-	{
-		$this->username = $username;
-	}
+    /**
+     * @param string $username
+     */
+    public function setUsername($username)
+    {
+        $this->username = $username;
+    }
 
-	public function getData()
-	{
-		return $this->data;
-	}
+    /**
+     * @return string
+     */
+    public function getData()
+    {
+        return $this->data;
+    }
 
-	/**
-	 * @param string $data
-	 */
-	public function setData($data)
-	{
-		$this->data = $data;
-	}
+    /**
+     * @param string $data
+     */
+    public function setData($data)
+    {
+        $this->data = $data;
+    }
 
-	public function getTimestamp()
-	{
-		return $this->timestamp;
-	}
+    /**
+     * @return DateTimeImmutable
+     */
+    public function getTimestamp()
+    {
+        return new DateTimeImmutable($this->timestamp);
+    }
 
-	public function save()
-	{
-		if ($this->isNew) {
-			// insert
-			// clear old data first
-			$this->dbObject->exec("delete from antispoofcache where timestamp < date_sub(now(), interval 3 hour);");
+    /**
+     * @throws Exception
+     */
+    public function save()
+    {
+        if ($this->isNew()) {
+            // insert
+            // clear old data first
+            $this->dbObject->exec("DELETE FROM antispoofcache WHERE timestamp < date_sub(now(), INTERVAL 3 HOUR);");
 
-			$statement = $this->dbObject->prepare("INSERT INTO antispoofcache (username, data) VALUES (:username, :data);");
-			$statement->bindValue(":username", $this->username);
-			$statement->bindValue(":data", $this->data);
+            $statement = $this->dbObject->prepare("INSERT INTO antispoofcache (username, data) VALUES (:username, :data);");
+            $statement->bindValue(":username", $this->username);
+            $statement->bindValue(":data", $this->data);
 
-			if ($statement->execute()) {
-				$this->isNew = false;
-				$this->id = $this->dbObject->lastInsertId();
-			}
-			else {
-				throw new Exception($statement->errorInfo());
-			}
-		}
-	}
+            if ($statement->execute()) {
+                $this->id = (int)$this->dbObject->lastInsertId();
+            }
+            else {
+                throw new Exception($statement->errorInfo());
+            }
+        }
+    }
 }

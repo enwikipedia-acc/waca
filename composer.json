@@ -1,0 +1,13 @@
+{
+  "description": "Wikipedia Account Creation Assistance Tool",
+  "minimum-stability": "stable",
+  "require": {
+    "smarty/smarty": "v3.1.29",
+    "components/jquery": "1.9.1"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "~2.7",
+    "phpunit/phpunit": "~5.6.2",
+    "phpmd/phpmd": "~2.4.3"
+  }
+}

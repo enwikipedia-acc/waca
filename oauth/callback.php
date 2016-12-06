@@ -1,55 +1,27 @@
 <?php
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
 
-// OAuth callback script
-// THIS IS AN ENTRY POINT
+namespace Waca;
+
+use Waca\Router\OAuthRequestRouter;
+
+/*
+ * OAuth callback script
+ *
+ * THIS IS AN ENTRY POINT
+ */
+
+// Change directory so we load files from the right place.
 chdir("..");
 
-// stop all output until we want it
-ob_start();
+require_once('config.inc.php');
 
-// load the configuration
-require_once 'config.inc.php';
+global $siteConfiguration;
+$application = new WebStart($siteConfiguration, new OAuthRequestRouter());
 
-// Initialize the session data.
-session_start();
-
-// Get all the classes.
-require_once 'functions.php';
-require_once 'includes/PdoDatabase.php';
-require_once 'includes/SmartyInit.php'; // this needs to be high up, but below config, functions, and database
-
-$user = User::getByRequestToken($_GET['oauth_token'], gGetDb());
-
-if ($user == false) {
-	BootstrapSkin::displayInternalHeader();
-	BootstrapSkin::displayAlertBox("Could not find request token in local store.", "alert-error", "Error", true, false);
-	BootstrapSkin::displayInternalFooter();
-	die();
-}
-
-global $oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal;
-
-$util = new OAuthUtility($oauthConsumerToken, $oauthSecretToken, $oauthBaseUrl, $oauthBaseUrlInternal);
-
-try {
-	$result = $util->callbackCompleted($user->getOAuthRequestToken(), $user->getOAuthRequestSecret(), $_GET['oauth_verifier']);
-}
-catch (Exception $exception) {
-	BootstrapSkin::displayInternalHeader();
-	BootstrapSkin::displayAlertBox("OAuth Error: {$exception->getMessage()}", "alert-error", "OAuth Error", true, false);
-	BootstrapSkin::displayInternalFooter();
-	die();
-}
-
-$user->setOAuthAccessToken($result->key);
-$user->setOAuthAccessSecret($result->secret);
-$user->setOnWikiName("##OAUTH##");
-$user->save();
-
-if ($user->getStatus() == "New") {
-	header("Location: ../acc.php?action=registercomplete");
-	die();
-}
-
-header("Location: ../acc.php?action=prefs");
-die();
+$application->run();

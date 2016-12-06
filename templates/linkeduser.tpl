@@ -1,1 +1,1 @@
-﻿<a href="{$baseurl}/statistics.php?page=Users&amp;user={$user->getId()}">{$user->getUsername()|escape}</a>
+﻿<a href="{$baseurl}/internal.php/statistics/users/detail?user={$user->getId()}">{$user->getUsername()|escape}</a>

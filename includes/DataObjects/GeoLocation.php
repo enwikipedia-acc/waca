@@ -1,4 +1,18 @@
 <?php
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
+
+namespace Waca\DataObjects;
+
+use DateTimeImmutable;
+use Exception;
+use Waca\DataObject;
+use Waca\Exceptions\OptimisticLockFailedException;
+use Waca\PdoDatabase;
 
 /**
  * Geolocation data object
@@ -7,85 +21,110 @@
  */
 class GeoLocation extends DataObject
 {
-	private $address;
-	private $data;
-	private $creation;
+    private $address;
+    private $data;
+    private $creation;
 
-	/**
-	 * @param string $address
-	 * @param PdoDatabase $database
-	 * @return GeoLocation
-	 */
-	public static function getByAddress($address, PdoDatabase $database)
-	{
-		$statement = $database->prepare("SELECT * FROM geolocation WHERE address = :id LIMIT 1;");
-		$statement->bindValue(":id", $address);
+    /**
+     * @param string      $address
+     * @param PdoDatabase $database
+     *
+     * @return GeoLocation
+     */
+    public static function getByAddress($address, PdoDatabase $database)
+    {
+        $statement = $database->prepare("SELECT * FROM geolocation WHERE address = :id LIMIT 1;");
+        $statement->bindValue(":id", $address);
 
-		$statement->execute();
+        $statement->execute();
 
-		$resultObject = $statement->fetchObject(get_called_class());
+        $resultObject = $statement->fetchObject(get_called_class());
 
-		if ($resultObject != false) {
-			$resultObject->isNew = false;
-			$resultObject->setDatabase($database);
-		}
+        if ($resultObject != false) {
+            $resultObject->setDatabase($database);
+        }
 
-		return $resultObject;
-	}
+        return $resultObject;
+    }
 
-	public function save()
-	{
-		if ($this->isNew) {
-// insert
-			$statement = $this->dbObject->prepare("INSERT INTO `geolocation` (address, data) VALUES (:address, :data);");
-			$statement->bindValue(":address", $this->address);
-			$statement->bindValue(":data", $this->data);
-			if ($statement->execute()) {
-				$this->isNew = false;
-				$this->id = $this->dbObject->lastInsertId();
-			}
-			else {
-				throw new Exception($statement->errorInfo());
-			}
-		}
-		else {
-// update
-			$statement = $this->dbObject->prepare("UPDATE `geolocation` SET address = :address, data = :data WHERE id = :id LIMIT 1;");
-			$statement->bindValue(":address", $this->address);
-			$statement->bindValue(":id", $this->id);
-			$statement->bindValue(":data", $this->data);
+    public function save()
+    {
+        if ($this->isNew()) {
+            // insert
+            $statement = $this->dbObject->prepare(<<<SQL
+INSERT INTO `geolocation` (address, data) VALUES (:address, :data);
+SQL
+            );
+            $statement->bindValue(":address", $this->address);
+            $statement->bindValue(":data", $this->data);
 
-			if (!$statement->execute()) {
-				throw new Exception($statement->errorInfo());
-			}
-		}
-	}
+            if ($statement->execute()) {
+                $this->id = (int)$this->dbObject->lastInsertId();
+            }
+            else {
+                throw new Exception($statement->errorInfo());
+            }
+        }
+        else {
+            // update
+            $statement = $this->dbObject->prepare(<<<SQL
+UPDATE `geolocation`
+SET address = :address, data = :data, updateversion = updateversion + 1
+WHERE id = :id AND updateversion = :updateversion
+LIMIT 1;
+SQL
+            );
 
-	public function getAddress()
-	{
-		return $this->address;
-	}
+            $statement->bindValue(":id", $this->id);
+            $statement->bindValue(":updateversion", $this->updateversion);
 
-	/**
-	 * @param string $address
-	 */
-	public function setAddress($address)
-	{
-		$this->address = $address;
-	}
+            $statement->bindValue(":address", $this->address);
+            $statement->bindValue(":data", $this->data);
 
-	public function getData()
-	{
-		return unserialize($this->data);
-	}
+            if (!$statement->execute()) {
+                throw new Exception($statement->errorInfo());
+            }
 
-	public function setData($data)
-	{
-		$this->data = serialize($data);
-	}
+            if ($statement->rowCount() !== 1) {
+                throw new OptimisticLockFailedException();
+            }
 
-	public function getCreation()
-	{
-		return $this->creation;
-	}
+            $this->updateversion++;
+        }
+    }
+
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return unserialize($this->data);
+    }
+
+    /**
+     * @param array $data
+     */
+    public function setData($data)
+    {
+        $this->data = serialize($data);
+    }
+
+    /** @return DateTimeImmutable */
+    public function getCreation()
+    {
+        return new DateTimeImmutable($this->creation);
+    }
 }

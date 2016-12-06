@@ -1,4 +1,14 @@
 <?php
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
+
+namespace Waca;
+
+use Waca\Exceptions\OptimisticLockFailedException;
 
 /**
  * DataObject is the base class for all the database access classes. Each
@@ -13,91 +23,124 @@
  */
 abstract class DataObject
 {
-	/**
-	 * @var int ID of the object
-	 */
-	protected $id = 0;
+    /** @var int ID of the object */
+    protected $id = null;
+    /** @var int update version for optimistic locking */
+    protected $updateversion = 0;
+    /**
+     * @var PdoDatabase
+     */
+    protected $dbObject;
 
-	/**
-	 * @var bool
-	 * TODO: we should probably make this a read-only method rather than public - why should anything external set this?
-	 */
-	public $isNew = true;
+    /**
+     * Retrieves a data object by it's row ID.
+     *
+     * @param int         $id
+     * @param PdoDatabase $database
+     *
+     * @return DataObject|false
+     */
+    public static function getById($id, PdoDatabase $database)
+    {
+        $array = explode('\\', get_called_class());
+        $realClassName = strtolower(end($array));
 
-	/**
-	 * @var PdoDatabase
-	 */
-	protected $dbObject;
+        $statement = $database->prepare("SELECT * FROM {$realClassName} WHERE id = :id LIMIT 1;");
+        $statement->bindValue(":id", $id);
 
-	public function setDatabase(PdoDatabase $db)
-	{
-		$this->dbObject = $db;
-	}
-    
-	/**
-	 * Gets the database associated with this data object.
-	 * @return PdoDatabase
-	 */
-	public function getDatabase()
-	{
-		return $this->dbObject;   
-	}
+        $statement->execute();
 
-	/**
-	 * Retrieves a data object by it's row ID.
-	 * @param int $id
-	 * @param PdoDatabase $database
-	 * @return DataObject|null
-	 */
-	public static function getById($id, PdoDatabase $database)
-	{
-		$statement = $database->prepare("SELECT * FROM `" . strtolower(get_called_class()) . "` WHERE id = :id LIMIT 1;");
-		$statement->bindValue(":id", $id);
+        $resultObject = $statement->fetchObject(get_called_class());
 
-		$statement->execute();
+        if ($resultObject != false) {
+            $resultObject->setDatabase($database);
+        }
 
-		$resultObject = $statement->fetchObject(get_called_class());
+        return $resultObject;
+    }
 
-		if ($resultObject != false) {
-			$resultObject->isNew = false;
-			$resultObject->setDatabase($database);
-		}
+    public function setDatabase(PdoDatabase $db)
+    {
+        $this->dbObject = $db;
+    }
 
-		return $resultObject;
-	}
+    /**
+     * Gets the database associated with this data object.
+     * @return PdoDatabase
+     */
+    public function getDatabase()
+    {
+        return $this->dbObject;
+    }
 
-	/**
-	 * Saves a data object to the database, either updating or inserting a record.
-	 */
-	abstract public function save();
+    /**
+     * Saves a data object to the database, either updating or inserting a record.
+     *
+     * @return void
+     */
+    abstract public function save();
 
-	/**
-	 * Retrieves the ID attribute
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * Retrieves the ID attribute
+     */
+    public function getId()
+    {
+        return (int)$this->id;
+    }
 
-	/**
-	 * Deletes the object from the database
-	 */
-	public function delete()
-	{
-		$statement = $this->dbObject->prepare(
-			"DELETE FROM `"
-			. strtolower(get_called_class())
-			. "` WHERE id = :id LIMIT 1;");
+    /**
+     * Deletes the object from the database
+     */
+    public function delete()
+    {
+        if ($this->id === null) {
+            // wtf?
+            return;
+        }
 
-		$statement->bindValue(":id", $this->id);
-		$statement->execute();
+        $array = explode('\\', get_called_class());
+        $realClassName = strtolower(end($array));
 
-		$this->id = 0;
-		$this->isNew = true;
-	}
-	
-	public function getObjectDescription()
-	{
-		return '[' . get_called_class() . " " . $this->getId() . ']';	
-	}
+        $deleteQuery = "DELETE FROM {$realClassName} WHERE id = :id AND updateversion = :updateversion LIMIT 1;";
+        $statement = $this->dbObject->prepare($deleteQuery);
+
+        $statement->bindValue(":id", $this->id);
+        $statement->bindValue(":updateversion", $this->updateversion);
+        $statement->execute();
+
+        if ($statement->rowCount() !== 1) {
+            throw new OptimisticLockFailedException();
+        }
+
+        $this->id = null;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUpdateVersion()
+    {
+        return $this->updateversion;
+    }
+
+    /**
+     * Sets the update version.
+     *
+     * You should never call this to change the value of the update version. You should only call it when passing user
+     * input through.
+     *
+     * @param int $updateVersion
+     */
+    public function setUpdateVersion($updateVersion)
+    {
+        $this->updateversion = $updateVersion;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isNew()
+    {
+        return $this->id === null;
+    }
 }

@@ -1,263 +1,286 @@
 <?php
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
+
+namespace Waca\DataObjects;
+
+use Exception;
+use PDO;
+use Waca\DataObject;
+use Waca\Exceptions\OptimisticLockFailedException;
+use Waca\PdoDatabase;
 
 /**
  * Ban data object
  */
 class Ban extends DataObject
 {
-	private $type;
-	private $target;
-	private $user;
-	private $reason;
-	private $date;
-	private $duration;
-	private $active;
+    private $type;
+    private $target;
+    private $user;
+    private $reason;
+    private $date;
+    private $duration;
+    private $active;
 
-	/**
-	 * Gets all bans, expired and active filtered by the optional target.
-	 * @param $target string The email, IP, or name of the target of the ban
-	 * @param PdoDatabase $database gGetDb()
-	 * @return Ban[]
-	 */
-	public static function getAllBans($target = null, PdoDatabase $database = null)
-	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
+    /**
+     * Gets all active bans, filtered by the optional target.
+     *
+     * @param string|null $target
+     * @param PdoDatabase $database
+     *
+     * @return Ban[]
+     */
+    public static function getActiveBans($target, PdoDatabase $database)
+    {
+        if ($target !== null) {
+            $query = <<<SQL
+SELECT * FROM ban WHERE target = :target AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;
+SQL;
+            $statement = $database->prepare($query);
+            $statement->bindValue(":target", $target);
+        }
+        else {
+            $query = "SELECT * FROM ban WHERE (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;";
+            $statement = $database->prepare($query);
+        }
 
-		if ($target != null) {
-			$query = "SELECT * FROM ban WHERE target = :target;";
-			$statement = $database->prepare($query);
-			$statement->bindValue(":target", $target);
-		}
-		else {
-			$query = "SELECT * FROM ban;";
-			$statement = $database->prepare($query);
-		}
+        $statement->execute();
 
-		$statement->execute();
+        $result = array();
 
-		$result = array();
-		/** @var Ban $v */
-		foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
-			$v->isNew = false;
-			$v->setDatabase($database);
-			$result[] = $v;
-		}
+        /** @var Ban $v */
+        foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
+            $v->setDatabase($database);
+            $result[] = $v;
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 
-	/**
-	 * Gets all active bans, filtered by the optional target.
-	 * @param $target
-	 * @param PdoDatabase $database
-	 * @return Ban[]
-	 */
-	public static function getActiveBans($target = null, PdoDatabase $database = null)
-	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
-
-		if ($target != null) {
-			$query = "SELECT * FROM ban WHERE target = :target AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;";
-			$statement = $database->prepare($query);
-			$statement->bindValue(":target", $target);
-		}
-		else {
-			$query = "SELECT * FROM ban WHERE (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;";
-			$statement = $database->prepare($query);
-		}
-
-		$statement->execute();
-
-		$result = array();
-
-		/** @var Ban $v */
-		foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
-			$v->isNew = false;
-			$v->setDatabase($database);
-			$result[] = $v;
-		}
-
-		return $result;
-	}
-
-	/**
-	 * Gets a ban by it's ID if it's currently active.
-	 * @param $id
-	 * @param PdoDatabase $database
-	 * @return Ban
-	 */
-	public static function getActiveId($id, PdoDatabase $database = null)
-	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
-
-		$statement = $database->prepare(<<<SQL
+    /**
+     * Gets a ban by it's ID if it's currently active.
+     *
+     * @param     integer $id
+     * @param PdoDatabase $database
+     *
+     * @return Ban
+     */
+    public static function getActiveId($id, PdoDatabase $database)
+    {
+        $statement = $database->prepare(<<<SQL
 SELECT *
 FROM ban
 WHERE id = :id  AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;
 SQL
-		);
-		$statement->bindValue(":id", $id);
+        );
+        $statement->bindValue(":id", $id);
 
-		$statement->execute();
+        $statement->execute();
 
-		$resultObject = $statement->fetchObject(get_called_class());
+        $resultObject = $statement->fetchObject(get_called_class());
 
-		if ($resultObject != false) {
-			$resultObject->isNew = false;
-			$resultObject->setDatabase($database);
-		}
+        if ($resultObject != false) {
+            $resultObject->setDatabase($database);
+        }
 
-		return $resultObject;
-	}
+        return $resultObject;
+    }
 
-	/**
-	 * Get all active bans for a target and type.
-	 * @param string $target
-	 * @param string $type
-	 * @param PdoDatabase $database
-	 * @return Ban
-	 */
-	public static function getBanByTarget($target, $type, PdoDatabase $database = null)
-	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
+    /**
+     * Get all active bans for a target and type.
+     *
+     * @param string      $target
+     * @param string      $type
+     * @param PdoDatabase $database
+     *
+     * @return Ban
+     */
+    public static function getBanByTarget($target, $type, PdoDatabase $database)
+    {
+        $query = <<<SQL
+SELECT * FROM ban
+WHERE type = :type
+	AND target = :target
+	AND (duration > UNIX_TIMESTAMP() OR duration = -1)
+	AND active = 1;
+SQL;
+        $statement = $database->prepare($query);
+        $statement->bindValue(":target", $target);
+        $statement->bindValue(":type", $type);
 
-		$query = "SELECT * FROM ban WHERE type = :type AND target = :target AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;";
-		$statement = $database->prepare($query);
-		$statement->bindValue(":target", $target);
-		$statement->bindValue(":type", $type);
+        $statement->execute();
 
-		$statement->execute();
+        $resultObject = $statement->fetchObject(get_called_class());
 
-		$resultObject = $statement->fetchObject(get_called_class());
+        if ($resultObject != false) {
+            $resultObject->setDatabase($database);
+        }
 
-		if ($resultObject != false) {
-			$resultObject->isNew = false;
-			$resultObject->setDatabase($database);
-		}
+        return $resultObject;
+    }
 
-		return $resultObject;
-	}
+    /**
+     * @throws Exception
+     */
+    public function save()
+    {
+        if ($this->isNew()) {
+            // insert
+            $statement = $this->dbObject->prepare(<<<SQL
+INSERT INTO `ban` (type, target, user, reason, date, duration, active)
+VALUES (:type, :target, :user, :reason, CURRENT_TIMESTAMP(), :duration, :active);
+SQL
+            );
+            $statement->bindValue(":type", $this->type);
+            $statement->bindValue(":target", $this->target);
+            $statement->bindValue(":user", $this->user);
+            $statement->bindValue(":reason", $this->reason);
+            $statement->bindValue(":duration", $this->duration);
+            $statement->bindValue(":active", $this->active);
 
-	public function save()
-	{
-		if ($this->isNew) {
-// insert
-			$statement = $this->dbObject->prepare("INSERT INTO `ban` (type, target, user, reason, date, duration, active) VALUES (:type, :target, :user, :reason, CURRENT_TIMESTAMP(), :duration, :active);");
-			$statement->bindValue(":type", $this->type);
-			$statement->bindValue(":target", $this->target);
-			$statement->bindValue(":user", $this->user);
-			$statement->bindValue(":reason", $this->reason);
-			$statement->bindValue(":duration", $this->duration);
-			$statement->bindValue(":active", $this->active);
-			if ($statement->execute()) {
-				$this->isNew = false;
-				$this->id = $this->dbObject->lastInsertId();
-			}
-			else {
-				throw new Exception($statement->errorInfo());
-			}
-		}
-		else {
-// update
-			$statement = $this->dbObject->prepare("UPDATE `ban` SET duration = :duration, active = :active, user = :user WHERE id = :id LIMIT 1;");
-			$statement->bindValue(":id", $this->id);
-			$statement->bindValue(":duration", $this->duration);
-			$statement->bindValue(":active", $this->active);
-			$statement->bindValue(":user", $this->user);
+            if ($statement->execute()) {
+                $this->id = (int)$this->dbObject->lastInsertId();
+            }
+            else {
+                throw new Exception($statement->errorInfo());
+            }
+        }
+        else {
+            // update
+            $statement = $this->dbObject->prepare(<<<SQL
+UPDATE `ban`
+SET duration = :duration, active = :active, user = :user, updateversion = updateversion + 1
+WHERE id = :id AND updateversion = :updateversion
+LIMIT 1;
+SQL
+            );
+            $statement->bindValue(':id', $this->id);
+            $statement->bindValue(':updateversion', $this->updateversion);
 
-			if (!$statement->execute()) {
-				throw new Exception($statement->errorInfo());
-			}
-		}
-	}
+            $statement->bindValue(':duration', $this->duration);
+            $statement->bindValue(':active', $this->active);
+            $statement->bindValue(':user', $this->user);
 
-	public function getType()
-	{
-		return $this->type;
-	}
+            if (!$statement->execute()) {
+                throw new Exception($statement->errorInfo());
+            }
 
-	public function setType($type)
-	{
-		$this->type = $type;
-	}
+            if ($statement->rowCount() !== 1) {
+                throw new OptimisticLockFailedException();
+            }
 
-	public function getTarget()
-	{
-		return $this->target;
-	}
+            $this->updateversion++;
+        }
+    }
 
-	public function setTarget($target)
-	{
-		$this->target = $target;
-	}
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 
-	public function getUser()
-	{
-		$user = User::getById($this->user, gGetDb());
+    /**
+     * @param string $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
 
-		return $user;
-	}
+    /**
+     * @return string
+     */
+    public function getTarget()
+    {
+        return $this->target;
+    }
 
-	public function setUser($user)
-	{
-		if (User::getById($user, gGetDb()) == false) {
-			$u = User::getByUsername($user, gGetDb());
-			if ($u == false) {
-				throw new Exception("Unknown user trying to create ban!");
-			}
+    /**
+     * @param string $target
+     */
+    public function setTarget($target)
+    {
+        $this->target = $target;
+    }
 
-			$this->user = $u->getId();
-		}
-		else {
-			$this->user = $user;
-		}
-	}
+    /**
+     * @return string
+     */
+    public function getReason()
+    {
+        return $this->reason;
+    }
 
-	public function getReason()
-	{
-		return $this->reason;
-	}
+    /**
+     * @param string $reason
+     */
+    public function setReason($reason)
+    {
+        $this->reason = $reason;
+    }
 
-	public function setReason($reason)
-	{
-		$this->reason = $reason;
-	}
+    /**
+     * @return mixed
+     */
+    public function getDate()
+    {
+        return $this->date;
+    }
 
-	public function getDate()
-	{
-		return $this->date;
-	}
+    /**
+     * @return mixed
+     */
+    public function getDuration()
+    {
+        return $this->duration;
+    }
 
-	public function getDuration()
-	{
-		return $this->duration;
-	}
+    /**
+     * @param mixed $duration
+     */
+    public function setDuration($duration)
+    {
+        $this->duration = $duration;
+    }
 
-	public function setDuration($duration)
-	{
-		$this->duration = $duration;
-	}
+    /**
+     * @return bool
+     */
+    public function isActive()
+    {
+        return $this->active == 1;
+    }
 
-	public function getActive()
-	{
-		return $this->active;
-	}
+    /**
+     * @param bool $active
+     */
+    public function setActive($active)
+    {
+        $this->active = $active ? 1 : 0;
+    }
 
-	public function setActive($active)
-	{
-		$this->active = $active;
-	}
-	
-	public function getObjectDescription()
-	{
-		return 'Ban #' . $this->getId() . " (" . htmlentities($this->target) . ")</a>";
-	}
+    /**
+     * @return int
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param int $user UserID of user who is setting the ban
+     *
+     * @throws Exception
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
 }
