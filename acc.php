@@ -2038,25 +2038,25 @@ elseif ($action == "oauthattach") {
 elseif ($action == "listall") {
     global $availableRequestStates, $enableEmailConfirm;
 
-    $database = gGetDb();
+	if (isset($_GET['status']) && isset($availableRequestStates[$_GET['status']])) {
+		$type = $_GET['status']; // safe, we've verified it's sane in the above if statement.
 
-    if ($enableEmailConfirm == 1) {
-        $query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
-    }
-    else {
-        $query = "SELECT * FROM request WHERE status = :type;";
-    }
+	    $database = gGetDb();
 
-    $statement = $database->prepare($query);
+	    if ($enableEmailConfirm == 1) {
+	        $query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
+	    } else {
+	        $query = "SELECT * FROM request WHERE status = :type;";
+	    }
 
-    if (isset($_GET['status']) && isset($availableRequestStates[$_GET['status']])) {
-        $type = $_GET['status']; // safe, we've verified it's sane in the above if statement.
+	    $statement = $database->prepare($query);
 
         $statement->bindValue(":type", $type);
         $statement->execute();
 
         $requests = $statement->fetchAll(PDO::FETCH_CLASS, "Request");
         foreach ($requests as $req) {
+        	/** @var Request $req */
             $req->setDatabase($database);
         }
 
