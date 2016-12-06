@@ -38,30 +38,32 @@ class PageExpandedRequestList extends InternalPageBase
      */
     protected function main()
     {
-        $this->assignCSRFToken();
-
         $config = $this->getSiteConfiguration();
-
-        $database = $this->getDatabase();
-
-        if ($config->getEmailConfirmationEnabled()) {
-            $query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
-            $totalQuery = "SELECT COUNT(id) FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
-        } else {
-            $query = "SELECT * FROM request WHERE status = :type;";
-            $totalQuery = "SELECT COUNT(id) FROM request WHERE status = :type;";
-        }
-
-        $statement = $database->prepare($query);
-
-        $totalRequestsStatement = $database->prepare($totalQuery);
-
-        $this->assign('defaultRequestState', $config->getDefaultRequestStateKey());
 
         $requestedStatus = WebRequest::getString('status');
         $requestStates = $config->getRequestStates();
 
         if ($requestedStatus !== null && isset($requestStates[$requestedStatus])) {
+
+            $this->assignCSRFToken();
+
+            $database = $this->getDatabase();
+
+            if ($config->getEmailConfirmationEnabled()) {
+                $query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
+                $totalQuery = "SELECT COUNT(id) FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
+            }
+            else {
+                $query = "SELECT * FROM request WHERE status = :type;";
+                $totalQuery = "SELECT COUNT(id) FROM request WHERE status = :type;";
+            }
+
+            $statement = $database->prepare($query);
+
+            $totalRequestsStatement = $database->prepare($totalQuery);
+
+            $this->assign('defaultRequestState', $config->getDefaultRequestStateKey());
+
             $type = $requestedStatus;
 
             $statement->bindValue(":type", $type);
@@ -84,7 +86,7 @@ class PageExpandedRequestList extends InternalPageBase
             $this->assign('totalRequests', $totalRequests);
 
             $userIds = array_map(
-                function (Request $entry) {
+                function(Request $entry) {
                     return $entry->getReserved();
                 },
                 $requests
