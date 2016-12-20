@@ -14,7 +14,7 @@ $db->transactionally(function() use ($db)
 {
 	global $cDataClearIp, $cDataClearEmail, $dataclear_interval;
     
-	$query = $db->prepare("UPDATE request SET ip = :ip, forwardedip = null, email = :mail, useragent = '' WHERE date < DATE_SUB(curdate(), INTERVAL $dataclear_interval);");
+	$query = $db->prepare("UPDATE request SET ip = :ip, forwardedip = null, email = :mail, useragent = '' WHERE date < DATE_SUB(curdate(), INTERVAL $dataclear_interval) AND status = 'Closed';");
 	$success = $query->execute(array( 
 		":ip" => $cDataClearIp,
 		":mail" => $cDataClearEmail
