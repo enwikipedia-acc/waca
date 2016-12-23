@@ -27,14 +27,28 @@ class AuthUtilityTest extends \PHPUnit_Framework_TestCase
 	}
 
 	public function testTestCredentials() {
+		global $minimumPasswordVersion;
 		$test_pw_1 = "Test Password";
 		$test_res_1 = ":2:x:$2y$10$/Ifpg2PmJXwPyD0c.Q.Fr.JLv/4fpNDwQC3j2Rz5lU3yo2DCRdGu";
 		$test_pw_2 = "t3stPassw0rd";
 		$test_res_2 = ":2:x:$2y$10$2rYhyeRnkMTZWQTBTZwvXu6R4NFAR7dlPmgnluXjapCXOlDN/X6yK";
+		$test_pw_3 = "Wow such test password";
+		$test_res_3 = ":1:salty:c6452cbef0082a002eb432aaae732b14";
+		$test_pw_4 = "t3stPassw0rd";
+		$test_res_4 = ":3:x:$2y$10$2rYhyeRnkMTZWQTBTZwvXu6R4NFAR7dlPmgnluXjapCXOlDN/X6yK";
 		$this->assertFalse($this->au->testCredentials("This string doesn't have a colon in front of it.", "So it should fail"));
 
 		$this->assertFalse($this->au->testCredentials($test_pw_1, $test_res_1));
 		$this->assertTrue($this->au->testCredentials($test_pw_2, $test_res_2));
+		$this->assertTrue($this->au->testCredentials($test_pw_3, $test_res_3));
+
+		// Greater than the max version, should fail
+		$this->assertFalse($this->au->testCredentials($test_pw_4, $test_res_4));
+
+		// Enforcing a minimum password version now, we expect this to fail.
+		$minimumPasswordVersion = 2;
+
+		$this->assertFalse($this->au->testCredentials($test_pw_3, $test_res_3));
 
 	}
 
