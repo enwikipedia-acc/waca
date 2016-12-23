@@ -34,9 +34,9 @@ class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
 		// Starting by catching an error
 		global $siteConfiguration;
 
-		$siteConfiguration->setDebuggingTraceEnabled(false);
-
 		$siteConfiguration = new SiteConfiguration();
+
+		$siteConfiguration->setDebuggingTraceEnabled(false);
 
 		try {
 			throw new ApplicationLogicException("Testing");
@@ -57,6 +57,8 @@ class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
 
 	public function testExceptionHandler()
 	{
+		global $siteConfiguration;
+
 		ob_start();
 		$this->eh->exceptionHandler($this->ex);
 		$text = ob_get_clean();
@@ -68,8 +70,28 @@ class ExceptionHandlerTest extends \PHPUnit_Framework_TestCase
 
 		$this->assertContains("trained monkeys ask", $text);
 		$this->assertContains("Oops! Something went wrong!", $text);
+		$this->assertNotContains("Waca\Exceptions", $text);
 		$this->assertNotContains("internal.php", $text);
 		$this->assertNotContains("We need a few bits of information ", $text);
+
+		// Now with the debugging trace
+
+		$siteConfiguration->setDebuggingTraceEnabled(true);
+
+		ob_start();
+		$this->eh->exceptionHandler($this->ex);
+		$text = ob_get_clean();
+
+		// We must restart the output buffering for phpunit
+		ob_start();
+
+		//print $text;
+		$this->assertContains("trained monkeys ask", $text);
+		$this->assertContains("Oops! Something went wrong!", $text);
+		$this->assertContains("Waca\Exceptions", $text);
+		$this->assertNotContains("internal.php", $text);
+		$this->assertNotContains("We need a few bits of information ", $text);
+
 	}
 
 	public function testErrorHandler()
