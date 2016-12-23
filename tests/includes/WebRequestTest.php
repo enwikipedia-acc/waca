@@ -221,6 +221,8 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 
 		$actual = WebRequest::postString('baz');
 		$this->assertNull($actual);
+
+		$this->assertNull(WebRequest::postString("non_existent"));
 	}
 
 	public function testGetString()
@@ -232,6 +234,23 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 
 		$actual = WebRequest::getString('baz');
 		$this->assertNull($actual);
+	}
+
+	#endregion
+
+	#region email
+
+	public function testPostEmail()
+	{
+		$this->globalState->method('getPostSuperGlobal')->willReturn(array('foo' => 'valid.email@accounts.wmflabs.org', 'baz' => 'invalid email at sketchy domain dot com'));
+
+		$actual = WebRequest::postEmail('foo');
+		$this->assertEquals('valid.email@accounts.wmflabs.org', $actual);
+
+		$actual = WebRequest::postEmail('baz');
+		$this->assertNotContains(" ", $actual);
+
+		$this->assertNull(WebRequest::postEmail("non_existent"));
 	}
 
 	#endregion
@@ -480,21 +499,6 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 		$this->assertNull(WebRequest::getInt('pip'));
 	}
 
-	#endregion
-
-	#region email
-	public function testGetEmail()
-	{
-		$this->markTestIncomplete("not implemented yet");
-	}
-
-	public function testPostEmail()
-	{
-		$this->markTestIncomplete("not implemented yet");
-	}
-
-	#endregion
-
 	public function testSetLoggedInUser()
 	{
 		$state = new FakeGlobalStateProvider();
@@ -560,4 +564,212 @@ class WebRequestTest extends \PHPUnit_Framework_TestCase
 		$result = WebRequest::clearPostLoginRedirect();
 		$this->assertNull($result);
 	}
+
+	public function testServerName()
+	{
+		$state = new FakeGlobalStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$server = &$state->getServerSuperGlobal();
+
+		$this->assertNull(WebRequest::serverName());
+
+		$server['SERVER_NAME'] = 'that_one.local';
+
+		$this->assertEquals(WebRequest::serverName(), 'that_one.local');
+	}
+
+	public function testClearSessionAlertData()
+	{
+		$state = new FakeGlobalStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getSessionSuperGlobal();
+		$data['alerts'] = 'Tacos!';
+
+		WebRequest::clearSessionAlertData();
+
+		$this->assertArrayNotHasKey('alerts', $data);
+	}
+
+	public function testGetSessionAlertData()
+	{
+		$state = new FakeGlobalStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getSessionSuperGlobal();
+		$data['alerts'] = 'Tacos!';
+
+		$this->assertEquals(WebRequest::getSessionAlertData(), "Tacos!");
+
+		unset($data["alerts"]);
+
+		$this->assertEmpty(WebRequest::getSessionAlertData());
+	}
+
+	public function testSetSessionAlertData()
+	{
+		$state = new FakeGlobalStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getSessionSuperGlobal();
+
+		WebRequest::setSessionAlertData(["Tacos!"]);
+
+		$this->assertEquals($data["alerts"], ["Tacos!"]);
+	}
+
+	public function testGetSessionTokenData()
+	{
+		$state = new FakeGlobalStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getSessionSuperGlobal();
+		$data['tokens'] = 'Tacos!';
+
+		$this->assertEquals(WebRequest::getSessionTokenData(), "Tacos!");
+
+		unset($data["tokens"]);
+
+		$this->assertEmpty(WebRequest::getSessionTokenData());
+	}
+
+	public function testSetSessionTokenData()
+	{
+		$state = new FakeGlobalStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getSessionSuperGlobal();
+
+		WebRequest::setSessionTokenData(["Tacos!"]);
+
+		$this->assertEquals($data["tokens"], ["Tacos!"]);
+	}
+
+	public function testGetSessionContext()
+	{
+		$state = new FakeGlobalStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getSessionSuperGlobal();
+
+		// First one should set the array
+		WebRequest::getSessionContext("tacos");
+		$this->assertEquals($data["context"], array());
+
+		$this->assertNull(WebRequest::getSessionContext('tacos'));
+
+		$data['context']['tacos'] = 'Tacos!';
+
+		$this->assertEquals(WebRequest::getSessionContext("tacos"), "Tacos!");
+
+		unset($data['context']['tacos']);
+	}
+
+	public function testSetSessionContext()
+	{
+		$state = new FakeGlobalStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getSessionSuperGlobal();
+
+		// First one should set the array
+		WebRequest::setSessionContext("tacos", "Tacos!");
+		$this->assertEquals($data["context"]["tacos"], "Tacos!");
+
+		WebRequest::setSessionContext('tacos2', "Moar tacos!");
+		$this->assertEquals($data["context"]["tacos2"], "Moar tacos!");
+	}
+
+	public function testGetSessionUserID()
+	{
+		$state = new FakeGlobalStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getSessionSuperGlobal();
+
+		$this->assertNull(WebRequest::getSessionUserId());
+
+		$data["userID"] = 1001;
+
+		$this->assertEquals(WebRequest::getSessionUserId(), 1001);
+	}
+
+	public function testSetPartialLogon()
+	{
+		$state = new FakeGlobalStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getSessionSuperGlobal();
+
+		/** @var User|PHPUnit_Framework_MockObject_MockObject $user */
+		$user = $this->getMockBuilder(User::class)->getMock();
+		$user->method('getId')->willReturn(1001);
+
+		$this->assertArrayNotHasKey("partialLogin", $data);
+
+		WebRequest::setPartialLogin($user);
+
+		$this->assertEquals($data["partialLogin"], 1001);
+	}
+
+	public function testGetPartialLogin()
+	{
+		$state = new FakeGlobalStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getSessionSuperGlobal();
+
+		$this->assertNull(WebRequest::getPartialLogin());
+
+		$data["partialLogin"] = 1001;
+
+		$this->assertEquals(WebRequest::getPartialLogin(), 1001);
+	}
+
+	public function testUserAgent()
+	{
+		$state = new FakeGlobalStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getServerSuperGlobal();
+
+		// Not run in a browser, we should start at null here.
+		$this->assertNull(WebRequest::userAgent());
+
+		$data["HTTP_USER_AGENT"] = "Waca has tacos/5.1";
+
+		$this->assertEquals(WebRequest::userAgent(), "Waca has tacos/5.1");
+	}
+
+	public function testScriptName()
+	{
+		$state = new FakeGlobalStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getServerSuperGlobal();
+
+		// Not run in a browser, we should start at null here.
+		$this->assertNull(WebRequest::scriptName());
+
+		$data["SCRIPT_NAME"] = "/path/to/the/mountains.php";
+
+		$this->assertEquals(WebRequest::scriptName(), "/path/to/the/mountains.php");
+	}
+
+	public function testOrigin()
+	{
+		$state = new FakeGlobalStateProvider();
+		WebRequest::setGlobalStateProvider($state);
+
+		$data = &$state->getServerSuperGlobal();
+
+		// Not run in a browser, we should start at null here.
+		$this->assertNull(WebRequest::origin());
+
+		$data["HTTP_ORIGIN"] = "beginningOfTheUniverse!";
+
+		$this->assertEquals(WebRequest::origin(), "beginningOfTheUniverse!");
+	}
+
 }
