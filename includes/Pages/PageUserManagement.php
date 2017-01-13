@@ -37,8 +37,8 @@ class PageUserManagement extends InternalPageBase
         if (WebRequest::getBoolean("showAll")) {
             $this->assign("showAll", true);
 
-            $this->assign("suspendedUsers", User::getAllWithStatus("Suspended", $database));
-            $this->assign("declinedUsers", User::getAllWithStatus("Declined", $database));
+            $this->assign("suspendedUsers", User::getAllWithStatus(User::STATUS_SUSPENDED, $database));
+            $this->assign("declinedUsers", User::getAllWithStatus(User::STATUS_DECLINED, $database));
         }
         else {
             $this->assign("showAll", false);
@@ -46,9 +46,9 @@ class PageUserManagement extends InternalPageBase
             $this->assign("declinedUsers", array());
         }
 
-        $this->assign("newUsers", User::getAllWithStatus("New", $database));
-        $this->assign("normalUsers", User::getAllWithStatus("User", $database));
-        $this->assign("adminUsers", User::getAllWithStatus("Admin", $database));
+        $this->assign("newUsers", User::getAllWithStatus(User::STATUS_NEW, $database));
+        $this->assign("normalUsers", User::getAllWithStatus(User::STATUS_USER, $database));
+        $this->assign("adminUsers", User::getAllWithStatus(User::STATUS_ADMIN, $database));
         $this->assign("checkUsers", User::getAllCheckusers($database));
 
         $this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use ($database) {

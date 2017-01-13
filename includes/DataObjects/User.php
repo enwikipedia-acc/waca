@@ -874,7 +874,7 @@ SQL
      */
     public function isAdmin()
     {
-        return $this->status == "Admin";
+        return $this->status == self::STATUS_ADMIN;
     }
 
     /**
@@ -921,7 +921,7 @@ SQL
      */
     public function isSuspended()
     {
-        return $this->status == "Suspended";
+        return $this->status == self::STATUS_SUSPENDED;
     }
 
     /**
@@ -931,7 +931,7 @@ SQL
      */
     public function isNewUser()
     {
-        return $this->status == "New";
+        return $this->status == self::STATUS_NEW;
     }
 
     /**
@@ -941,7 +941,7 @@ SQL
      */
     public function isUser()
     {
-        return $this->status == "User";
+        return $this->status == self::STATUS_USER;
     }
 
     /**
@@ -951,7 +951,7 @@ SQL
      */
     public function isDeclined()
     {
-        return $this->status == "Declined";
+        return $this->status == self::STATUS_DECLINED;
     }
 
     /**
