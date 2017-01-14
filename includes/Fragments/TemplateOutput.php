@@ -67,6 +67,8 @@ trait TemplateOutput
         // default these
         $this->assign('onlineusers', array());
         $this->assign('typeAheadBlock', '');
+        $this->assign('extraJs', array());
+        $this->assign('extraCss', array());
 
         $this->assign('page', $this);
     }

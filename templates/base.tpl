@@ -12,6 +12,11 @@
     <link href="{$baseurl}/lib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet"/>
     <link href="{$baseurl}/lib/bootstrap-sortable/css/bootstrap-sortable.css" rel="stylesheet"/>
 
+    <!-- Page-specific extra resources -->
+    {foreach from=$extraCss item=css}
+        <link href="{$baseurl}{$css}" rel="stylesheet" />
+    {/foreach}
+
     <!-- Our extra styles -->
     <link href="{$baseurl}/resources/styles.css" rel="stylesheet"/>
 </head>
@@ -78,6 +83,11 @@
 <script src="{$baseurl}/vendor/components/jquery/jquery.min.js" type="text/javascript"></script>
 <script src="{$baseurl}/lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="{$baseurl}/lib/bootstrap-sortable/js/bootstrap-sortable.js" type="text/javascript"></script>
+
+<!-- Page-specific extra resources -->
+{foreach from=$extraJs item=js}
+    <script src="{$baseurl}{$js}" type="text/javascript"></script>
+{/foreach}
 
 {* initialise the tooltips *}
 <script type="text/javascript">

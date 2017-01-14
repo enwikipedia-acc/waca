@@ -33,6 +33,10 @@ abstract class PageBase extends TaskBase implements IRoutedTask
     private $routeName = null;
     /** @var TokenManager */
     protected $tokenManager;
+    /** @var string[] Extra CSS files to include */
+    private $extraCss = array();
+    /** @var string[] Extra JS files to include */
+    private $extraJs = array();
 
     /**
      * Sets the route the request will take. Only should be called from the request router or barrier test.
@@ -170,6 +174,9 @@ abstract class PageBase extends TaskBase implements IRoutedTask
             return;
         }
 
+        $this->assign('extraCss', $this->extraCss);
+        $this->assign('extraJs', $this->extraJs);
+
         // If we're actually displaying content, we want to add the session alerts here!
         $this->assign('alerts', SessionAlert::getAlerts());
         SessionAlert::clearAlerts();
@@ -263,6 +270,34 @@ abstract class PageBase extends TaskBase implements IRoutedTask
         }
 
         $this->template = $name;
+    }
+
+    /**
+     * Adds an extra CSS file to to the page
+     *
+     * @param string $path The path (relative to the application root) of the file
+     */
+    final protected function addCss($path) {
+        if(in_array($path, $this->extraCss)){
+            // nothing to do
+            return;
+        }
+
+        $this->extraCss[] = $path;
+    }
+
+    /**
+     * Adds an extra JS file to to the page
+     *
+     * @param string $path The path (relative to the application root) of the file
+     */
+    final protected function addJs($path){
+        if(in_array($path, $this->extraJs)){
+            // nothing to do
+            return;
+        }
+
+        $this->extraJs[] = $path;
     }
 
     /**
