@@ -4,7 +4,7 @@
         <div class="header">
             <h1>
                 Welcome Templates
-                {if $page->barrierTest('add')}
+                {if $canAdd}
                     <small>
                         <a href="{$baseurl}/internal.php/welcomeTemplates/add" class="btn btn-success"><i
                                     class="icon-white icon-plus"></i>&nbsp;Create new Welcome Template</a>
@@ -28,11 +28,11 @@
                 <thead>
                 <tr>
                     <th>Template User code</th>
-                    {if $page->barrierTest('edit')}
+                    {if $canEdit}
                         <th>Used by:</th>
                     {/if}
                     <td><!-- View --></td>
-                    {if $page->barrierTest('edit')}
+                    {if $canEdit}
                         <td><!-- Edit --></td>
                         <td><!-- Delete --></td>
                     {/if}
@@ -43,11 +43,11 @@
                 {if $currentUser->getWelcomeTemplate() != 0}
                     <tr>
                         <th>Disable automatic welcoming</th>
-                        {if $page->barrierTest('edit')}
+                        {if $canEdit}
                             <td><!-- count --></td>
                         {/if}
                         <td><!-- View --></td>
-                        {if $page->barrierTest('edit')}
+                        {if $canEdit}
                             <td><!-- Edit --></td>
                             <td><!-- Delete --></td>
                         {/if}
@@ -70,7 +70,7 @@
                         <td>
                             {$t->getUserCode()|escape}
                         </td>
-                        {if $page->barrierTest('edit')}
+                        {if $canEdit}
                             <td>
                                 <a class="btn {if count($t->getUsersUsingTemplate()) > 0}btn-warning{else}disabled{/if}"
                                    {if count($t->getUsersUsingTemplate()) > 0}rel="popover"{/if} href="#"
@@ -86,7 +86,7 @@
                                class="btn"><i
                                         class="icon icon-eye-open"></i>&nbsp;View</a>
                         </td>
-                        {if $page->barrierTest('edit')}
+                        {if $canEdit}
                             <td>
                                 <a href="{$baseurl}/internal.php/welcomeTemplates/edit?template={$t->getId()}"
                                    class="btn btn-warning"><i

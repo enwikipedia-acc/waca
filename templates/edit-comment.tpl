@@ -37,8 +37,8 @@
                 <label class="control-label" for="visibility">Security</label>
                 <div class="controls">
                     <select name="visibility">
-                        <option value="user" {if $comment->getVisibility() == "user"}selected{/if}>User</option>
-                        <option value="admin" {if $comment->getVisibility() == "admin"}selected{/if}>Admin</option>
+                        <option value="user" {if $comment->getVisibility() == "user"}selected{/if}>Standard</option>
+                        <option value="admin" {if $comment->getVisibility() == "admin"}selected{/if}>Restricted</option>
                     </select>
                 </div>
             </div>

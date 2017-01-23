@@ -37,7 +37,7 @@ class PageBreakReservation extends RequestActionBase
         }
         else {
             // not the same user!
-            if ($this->barrierTest('force')) {
+            if ($this->barrierTest('force', $currentUser)) {
                 $this->doBreakReserve($request, $database);
             }
             else {

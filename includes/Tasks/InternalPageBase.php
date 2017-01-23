@@ -16,7 +16,6 @@ use Waca\Exceptions\NotIdentifiedException;
 use Waca\Helpers\Interfaces\IBlacklistHelper;
 use Waca\IdentificationVerifier;
 use Waca\Helpers\Interfaces\ITypeAheadHelper;
-use Waca\Security\SecurityConfiguration;
 use Waca\Security\SecurityManager;
 use Waca\WebRequest;
 
@@ -79,24 +78,27 @@ abstract class InternalPageBase extends PageBase
 
         $this->touchUserLastActive();
 
-        // Get the current security configuration
-        $securityConfiguration = $this->getSecurityConfiguration();
-        if ($securityConfiguration === null) {
-            // page hasn't been written properly.
-            throw new AccessDeniedException();
-        }
-
         $currentUser = User::getCurrent($this->getDatabase());
+
+        // Hey, this is also a security barrier, in addition to the below. Separated out for readability.
+        if (!$this->isProtectedPage()) {
+            // This page is /not/ a protected page, as such we can just run it.
+            $this->runPage();
+
+            return;
+        }
 
         // Security barrier.
         //
-        // This code essentially doesn't care if the user is logged in or not, as the
-        if ($this->getSecurityManager()->allows($securityConfiguration, $currentUser)) {
+        // This code essentially doesn't care if the user is logged in or not, as the security manager hides all that
+        // away for us
+        $securityResult = $this->getSecurityManager()->allows(get_called_class(), $this->getRouteName(), $currentUser);
+        if ($securityResult === SecurityManager::ALLOWED) {
             // We're allowed to run the page, so let's run it.
             $this->runPage();
         }
         else {
-            $this->handleAccessDenied();
+            $this->handleAccessDenied($securityResult);
 
             // Send the headers
             $this->sendResponseHeaders();
@@ -123,17 +125,22 @@ abstract class InternalPageBase extends PageBase
     }
 
     /**
-     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-     * the return value from this function.
+     * Configures whether the page respects roles or not. You probably want this to return true.
      *
-     * If this page even supports actions, you will need to check the route
+     * Set to false for public pages. You probably want this to return true.
      *
-     * @return SecurityConfiguration
+     * This defaults to true unless you explicitly set it to false. Setting it to false means anybody can do anything
+     * on this page, so you probably want this to return true.
+     *
+     * @return bool
      * @category Security-Critical
      */
-    abstract protected function getSecurityConfiguration();
+    protected function isProtectedPage()
+    {
+        return true;
+    }
 
-    protected function handleAccessDenied()
+    protected function handleAccessDenied($denyReason)
     {
         $currentUser = User::getCurrent($this->getDatabase());
 
@@ -149,15 +156,16 @@ abstract class InternalPageBase extends PageBase
         else {
             // Decide whether this was a rights failure, or an identification failure.
 
-            if ($this->getSiteConfiguration()->getForceIdentification()
-                && $currentUser->isIdentified($this->identificationVerifier) !== true
-            ) {
+            if ($denyReason === SecurityManager::ERROR_NOT_IDENTIFIED) {
                 // Not identified
                 throw new NotIdentifiedException();
             }
-            else {
+            elseif ($denyReason === SecurityManager::ERROR_DENIED) {
                 // Nope, plain old access denied
                 throw new AccessDeniedException();
+            }
+            else {
+                throw new Exception('Unknown response from security manager.');
             }
         }
     }
@@ -165,30 +173,26 @@ abstract class InternalPageBase extends PageBase
     /**
      * Tests the security barrier for a specified action.
      *
-     * Intended to be used from within templates
+     * Don't use within templates
      *
-     * @param string $action
+     * @param string      $action
      *
-     * @return boolean
+     * @param User        $user
+     * @param null|string $pageName
+     *
+     * @return bool
      * @category Security-Critical
      */
-    final public function barrierTest($action)
+    final public function barrierTest($action, User $user, $pageName = null)
     {
-        $tmpRouteName = $this->getRouteName();
-
-        try {
-            $this->setRoute($action, true);
-
-            $securityConfiguration = $this->getSecurityConfiguration();
-            $currentUser = User::getCurrent($this->getDatabase());
-
-            $allowed = $this->getSecurityManager()->allows($securityConfiguration, $currentUser);
-
-            return $allowed;
+        $page = get_called_class();
+        if ($pageName !== null) {
+            $page = $pageName;
         }
-        finally {
-            $this->setRoute($tmpRouteName);
-        }
+
+        $securityResult = $this->getSecurityManager()->allows($page, $action, $user);
+
+        return $securityResult === SecurityManager::ALLOWED;
     }
 
     /**

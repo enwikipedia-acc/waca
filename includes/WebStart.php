@@ -16,6 +16,7 @@ use Waca\Helpers\FakeBlacklistHelper;
 use Waca\Helpers\TypeAheadHelper;
 use Waca\Providers\GlobalState\GlobalStateProvider;
 use Waca\Router\IRequestRouter;
+use Waca\Security\RoleConfiguration;
 use Waca\Security\SecurityManager;
 use Waca\Security\TokenManager;
 use Waca\Tasks\ITask;
@@ -78,8 +79,7 @@ class WebStart extends ApplicationBase
                     $database);
                 $page->setIdentificationVerifier($identificationVerifier);
 
-                $page->setSecurityManager(new SecurityManager($identificationVerifier,
-                    $siteConfiguration->getForceIdentification()));
+                $page->setSecurityManager(new SecurityManager($identificationVerifier, new RoleConfiguration()));
 
                 if ($siteConfiguration->getTitleBlacklistEnabled()) {
                     $page->setBlacklistHelper(new FakeBlacklistHelper());

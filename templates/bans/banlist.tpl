@@ -3,7 +3,7 @@
     <div class="page-header">
         <h1>Ban Management
             <small>View, ban, and unban requesters
-                {if $page->barrierTest('set')}
+                {if $canSet}
                     <a class="btn btn-primary" href="{$baseurl}/internal.php/bans/set"><i class="icon-white icon-plus"></i>&nbsp;Add new Ban</a>
                 {/if}
             </small>
@@ -19,7 +19,7 @@
         <th>Reason</th>
         <th>Time</th>
         <th>Expiry</th>
-        {if $page->barrierTest('remove')}
+        {if $canRemove}
             <th>Unban</th>
         {/if}
         </thead>
@@ -52,7 +52,7 @@
                 <td>{$ban->getDate()} <span class="muted">({$ban->getDate()|relativedate})</span></td>
                 <td>{if $ban->getDuration() == -1}Indefinite{else}{date("Y-m-d H:i:s", $ban->getDuration())}{/if}</td>
 
-                {if $page->barrierTest('remove')}
+                {if $canRemove}
                     <td>
                         <a class="btn btn-success btn-small"
                            href="{$baseurl}/internal.php/bans/remove?id={$ban->getId()}">

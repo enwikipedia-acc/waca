@@ -152,6 +152,16 @@ class Logger
         self::createLogEntry($database, $object, "Prefchange");
     }
 
+    /**
+     * @param PdoDatabase $database
+     * @param User        $object
+     * @param string      $reason
+     */
+    public static function userRolesEdited(PdoDatabase $database, User $object, $reason)
+    {
+        self::createLogEntry($database, $object, "RoleChange", $reason);
+    }
+
     #endregion
 
     /**

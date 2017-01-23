@@ -70,7 +70,7 @@ trait RequestData
     protected function isAllowedPrivateData(Request $request, User $currentUser)
     {
         // Test the main security barrier for private data access using SecurityManager
-        if ($this->barrierTest('privateData')) {
+        if ($this->barrierTest('privateData', $currentUser, 'RequestData')) {
             // Tool admins/check-users can always see private data
             return true;
         }
@@ -92,14 +92,17 @@ trait RequestData
     /**
      * Tests the security barrier for a specified action.
      *
-     * Intended to be used from within templates
+     * Don't use within templates
      *
-     * @param string $action
+     * @param string      $action
      *
-     * @return boolean
+     * @param User        $user
+     * @param null|string $pageName
+     *
+     * @return bool
      * @category Security-Critical
      */
-    abstract protected function barrierTest($action);
+    abstract protected function barrierTest($action, User $user, $pageName = null);
 
     /**
      * Gets the name of the route that has been passed from the request router.

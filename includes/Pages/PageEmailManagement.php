@@ -9,6 +9,7 @@
 namespace Waca\Pages;
 
 use Waca\DataObjects\EmailTemplate;
+use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\PdoDatabase;
@@ -56,6 +57,10 @@ class PageEmailManagement extends InternalPageBase
 
         $this->assign('activeTemplates', $activeTemplates);
         $this->assign('inactiveTemplates', $inactiveTemplates);
+
+        $user = User::getCurrent($this->getDatabase());
+        $this->assign('canCreate', $this->barrierTest('create', $user));
+        $this->assign('canEdit', $this->barrierTest('edit', $user));
 
         $this->setTemplate('email-management/main.tpl');
     }

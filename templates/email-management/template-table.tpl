@@ -18,7 +18,7 @@
                 {if $row->getPreloadOnly()}<span class="label label-info">Preload only</span>{/if}
             </td>
             <td>
-                {if $page->barrierTest('edit')}
+                {if $canEdit}
                     <a class="btn btn-warning" href="{$baseurl}/internal.php/emailManagement/edit?id={$row->getId()}">
                         <i class="icon-white icon-pencil"></i>&nbsp;Edit Message
                     </a>

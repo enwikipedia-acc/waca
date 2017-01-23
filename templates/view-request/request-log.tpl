@@ -17,7 +17,7 @@
                             {if $zoomrow.security == "admin"}
                                 <br/>
                                 <span class="label label-important">
-									<i class="icon-white icon-lock"></i>&nbsp;Admin only
+									<i class="icon-white icon-lock"></i>&nbsp;Restricted
 								</span>
                             {/if}
                         </td>
@@ -65,7 +65,7 @@
                 </td>
                 <td>
                     <button class="btn btn-primary" type="submit">Save</button>
-                    <label style="display: inline;" title="Make this comment visible only to tool administrators">
+                    <label style="display: inline;" title="Restrict visibility of this comment">
                     <span class="label label-important">
                         <input type="checkbox" name="adminOnly"/>
                         <i class="icon-white icon-lock"></i>

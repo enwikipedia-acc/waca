@@ -19,7 +19,7 @@ class SiteConfiguration
 {
     private $baseUrl;
     private $filePath;
-    private $schemaVersion = 23;
+    private $schemaVersion = 26;
     private $debuggingTraceEnabled;
     private $dataClearIp = '127.0.0.1';
     private $dataClearEmail = 'acc@toolserver.org';
@@ -131,6 +131,18 @@ class SiteConfiguration
     public function getSchemaVersion()
     {
         return $this->schemaVersion;
+    }
+
+    /**
+     * @param int $schemaVersion
+     *
+     * @return SiteConfiguration
+     */
+    public function setSchemaVersion($schemaVersion)
+    {
+        $this->schemaVersion = $schemaVersion;
+
+        return $this;
     }
 
     /**

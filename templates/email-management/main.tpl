@@ -4,7 +4,7 @@
         <h1>Email Management
             <small>
                 Create and edit close reasons
-                {if $page->barrierTest('create')}
+                {if $canCreate}
                     <a class="btn btn-primary" href="{$baseurl}/internal.php/emailManagement/create">
                         <i class="icon-white icon-plus"></i>&nbsp;Create new Message
                     </a>

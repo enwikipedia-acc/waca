@@ -39,6 +39,10 @@ class PageBan extends InternalPageBase
             $bans);
         $userList = User::getUsernames($userIds, $this->getDatabase());
 
+        $user = User::getCurrent($this->getDatabase());
+        $this->assign('canSet', $this->barrierTest('set', $user));
+        $this->assign('canRemove', $this->barrierTest('remove', $user));
+
         $this->assign('usernames', $userList);
         $this->assign('activebans', $bans);
         $this->setTemplate('bans/banlist.tpl');

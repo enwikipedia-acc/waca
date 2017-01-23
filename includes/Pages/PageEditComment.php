@@ -60,7 +60,7 @@ class PageEditComment extends InternalPageBase
         }
 
         $currentUser = User::getCurrent($database);
-        if ($comment->getUser() !== $currentUser->getId() && !$this->barrierTest('editOthers')) {
+        if ($comment->getUser() !== $currentUser->getId() && !$this->barrierTest('editOthers', $currentUser)) {
             throw new AccessDeniedException();
         }
 
