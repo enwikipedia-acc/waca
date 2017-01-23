@@ -27,32 +27,31 @@ class Comment extends DataObject
     private $request;
 
     /**
-     * @param integer     $id
+     * Retrieves all comments for a request, optionally filtered
+     *
+     * @param integer     $id      Request ID to search by
      * @param PdoDatabase $database
+     * @param bool        $showAll True to show all comments, False to show only unprotected comments, and protected
+     *                             comments visible to $userId
+     * @param null|int    $userId  User to filter by
      *
      * @return Comment[]
-     * @throws Exception
      */
-    public static function getForRequest($id, PdoDatabase $database)
+    public static function getForRequest($id, PdoDatabase $database, $showAll = false, $userId = null)
     {
-        $currentUser = User::getCurrent($database);
-
-        if ($currentUser->isAdmin() || $currentUser->isCheckuser()) {
-            // current user is an admin or checkuser, so retrieve everything.
-            $statement = $database->prepare("SELECT * FROM comment WHERE request = :target;");
+        if ($showAll) {
+            $statement = $database->prepare('SELECT * FROM comment WHERE request = :target;');
         }
         else {
-            // current user isn't an admin, so limit to only those which are visible to users, and private comments
-            // the user has posted themselves.
             $statement = $database->prepare(<<<SQL
 SELECT * FROM comment
 WHERE request = :target AND (visibility = 'user' OR user = :userid);
 SQL
             );
-            $statement->bindValue(":userid", $currentUser->getId());
+            $statement->bindValue(':userid', $userId);
         }
 
-        $statement->bindValue(":target", $id);
+        $statement->bindValue(':target', $id);
 
         $statement->execute();
 

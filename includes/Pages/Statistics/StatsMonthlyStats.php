@@ -36,9 +36,4 @@ SQL;
         $this->assign('statsPageTitle', 'Monthly Statistics');
         $this->setTemplate('statistics/monthly-stats.tpl');
     }
-
-    public function getSecurityConfiguration()
-    {
-        return $this->getSecurityManager()->configure()->asInternalPage();
-    }
 }

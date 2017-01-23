@@ -15,7 +15,6 @@ use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\PdoDatabase;
-use Waca\Security\SecurityConfiguration;
 use Waca\WebRequest;
 
 class PageBreakReservation extends RequestActionBase
@@ -93,26 +92,6 @@ class PageBreakReservation extends RequestActionBase
 
             // Redirect home!
             $this->redirect();
-        }
-    }
-
-    /**
-     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-     * the return value from this function.
-     *
-     * If this page even supports actions, you will need to check the route
-     *
-     * @return SecurityConfiguration
-     * @category Security-Critical
-     */
-    protected function getSecurityConfiguration()
-    {
-        switch ($this->getRouteName()) {
-            case 'force':
-                // note, this is a virtual route that's only used in barrier tests
-                return $this->getSecurityManager()->configure()->asAdminPage();
-            default:
-                return $this->getSecurityManager()->configure()->asInternalPage();
         }
     }
 }

@@ -9,8 +9,8 @@
 namespace Waca\Pages;
 
 use Waca\DataObjects\User;
+use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\Security\SecurityConfiguration;
 use Waca\Session;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -49,6 +49,10 @@ class PageOAuth extends InternalPageBase
      */
     protected function detach()
     {
+        if ($this->getSiteConfiguration()->getEnforceOAuth()) {
+            throw new AccessDeniedException();
+        }
+
         $user = User::getCurrent($this->getDatabase());
 
         $user->setOnWikiName($user->getOnWikiName());
@@ -116,29 +120,6 @@ class PageOAuth extends InternalPageBase
         else {
             $this->redirect('preferences', null, null, 'internal.php');
         }
-    }
-
-    /**
-     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-     * the return value from this function.
-     *
-     * If this page even supports actions, you will need to check the route
-     *
-     * @return SecurityConfiguration
-     * @category Security-Critical
-     */
-    protected function getSecurityConfiguration()
-    {
-        if ($this->getRouteName() === 'callback') {
-            return $this->getSecurityManager()->configure()->asPublicPage();
-        }
-
-        if ($this->getRouteName() === 'detach' && $this->getSiteConfiguration()->getEnforceOAuth()) {
-            // Deny detach when this OAuth is enforced.
-            return $this->getSecurityManager()->configure()->asNone();
-        }
-
-        return $this->getSecurityManager()->configure()->asAllLoggedInUsersPage();
     }
 
     /**

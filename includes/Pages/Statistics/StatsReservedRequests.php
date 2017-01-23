@@ -36,9 +36,4 @@ sql;
         $this->assign('statsPageTitle', 'All currently reserved requests');
         $this->setTemplate('statistics/reserved-requests.tpl');
     }
-
-    public function getSecurityConfiguration()
-    {
-        return $this->getSecurityManager()->configure()->asInternalPage();
-    }
 }

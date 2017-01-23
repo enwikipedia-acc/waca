@@ -11,26 +11,12 @@ namespace Waca\Pages;
 use PDO;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
-use Waca\Security\SecurityConfiguration;
+use Waca\Pages\RequestAction\PageBreakReservation;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
 class PageExpandedRequestList extends InternalPageBase
 {
-    /**
-     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-     * the return value from this function.
-     *
-     * If this page even supports actions, you will need to check the route
-     *
-     * @return SecurityConfiguration
-     * @category Security-Critical
-     */
-    protected function getSecurityConfiguration()
-    {
-        return $this->getSecurityManager()->configure()->asInternalPage();
-    }
-
     /**
      * Main function for this page, when no specific actions are called.
      * @return void
@@ -96,6 +82,10 @@ class PageExpandedRequestList extends InternalPageBase
             $this->assign('userlist', $userList);
 
             $this->assign('requestLimitShowOnly', $config->getMiserModeLimit());
+
+            $currentUser = User::getCurrent($database);
+            $this->assign('canBan', $this->barrierTest('set', $currentUser, PageBan::class));
+            $this->assign('canBreakReservation', $this->barrierTest('force', $currentUser, PageBreakReservation::class));
 
             $this->setTemplate('mainpage/expandedrequestlist.tpl');
         }

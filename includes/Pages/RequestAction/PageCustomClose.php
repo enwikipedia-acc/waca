@@ -141,6 +141,8 @@ class PageCustomClose extends PageCloseRequest
         $this->assign('confirmEmailAlreadySent', $this->checkEmailAlreadySent($request));
         $this->assign('confirmReserveOverride', $this->checkReserveOverride($request, $currentUser));
 
+        $this->assign('canSkipCcMailingList', $this->barrierTest('skipCcMailingList', $currentUser));
+
         // template
         $this->setTemplate('custom-close.tpl');
     }
@@ -160,7 +162,7 @@ class PageCustomClose extends PageCloseRequest
         }
 
         $ccMailingList = true;
-        if ($currentUser->isAdmin() || $currentUser->isCheckuser()) {
+        if ($this->barrierTest('skipCcMailingList', $currentUser)) {
             $ccMailingList = WebRequest::postBoolean('ccMailingList');
         }
 

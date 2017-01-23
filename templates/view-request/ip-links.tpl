@@ -54,7 +54,7 @@
        onMouseUp="$('#IPAbuseLog-{$index}').addClass('btn-visited');">
         Abuse Filter Log
     </a>
-    {if $currentUser->isCheckUser() == true}
+    {if $canSeeCheckuserData}
         <a id="IPCU-{$index}" class="btn btn-small" target="_blank"
            href="https://en.wikipedia.org/w/index.php?title=Special:CheckUser&amp;ip={$ipaddress}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$requestId}"
            onMouseUp="$('#IPCU-{$index}').addClass('btn-visited');">

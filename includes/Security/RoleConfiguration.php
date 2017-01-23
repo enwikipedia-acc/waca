@@ -8,6 +8,34 @@
 
 namespace Waca\Security;
 
+use Waca\Pages\PageBan;
+use Waca\Pages\PageEditComment;
+use Waca\Pages\PageEmailManagement;
+use Waca\Pages\PageExpandedRequestList;
+use Waca\Pages\PageLog;
+use Waca\Pages\PageMain;
+use Waca\Pages\PageOAuth;
+use Waca\Pages\PagePreferences;
+use Waca\Pages\PageSearch;
+use Waca\Pages\PageSiteNotice;
+use Waca\Pages\PageTeam;
+use Waca\Pages\PageUserManagement;
+use Waca\Pages\PageViewRequest;
+use Waca\Pages\PageWelcomeTemplateManagement;
+use Waca\Pages\RequestAction\PageBreakReservation;
+use Waca\Pages\RequestAction\PageCloseRequest;
+use Waca\Pages\RequestAction\PageComment;
+use Waca\Pages\RequestAction\PageCustomClose;
+use Waca\Pages\RequestAction\PageDeferRequest;
+use Waca\Pages\RequestAction\PageDropRequest;
+use Waca\Pages\RequestAction\PageReservation;
+use Waca\Pages\RequestAction\PageSendToUser;
+use Waca\Pages\Statistics\StatsFastCloses;
+use Waca\Pages\Statistics\StatsInactiveUsers;
+use Waca\Pages\Statistics\StatsMain;
+use Waca\Pages\Statistics\StatsMonthlyStats;
+use Waca\Pages\Statistics\StatsReservedRequests;
+use Waca\Pages\Statistics\StatsTemplateStats;
 use Waca\Pages\Statistics\StatsTopCreators;
 use Waca\Pages\Statistics\StatsUsers;
 
@@ -47,11 +75,210 @@ class RoleConfiguration
      * @var array
      */
     private $roleConfig = array(
-        'public'    => array(),
-        'loggedIn'  => array(),
-        'user'      => array(),
-        'admin'     => array(),
-        'checkuser' => array(),
+        'public'            => array(
+            /*
+             * THIS ROLE IS GRANTED TO ALL LOGGED *OUT* USERS IMPLICITLY.
+             *
+             * USERS IN THIS ROLE DO NOT HAVE TO BE IDENTIFIED TO GET THE RIGHTS CONFERRED HERE.
+             * DO NOT ADD ANY SECURITY-SENSITIVE RIGHTS HERE.
+             */
+            '_childRoles'    => array(
+                'publicStats',
+            ),
+            PageOAuth::class => array(
+                'callback' => self::ACCESS_ALLOW,
+            ),
+            PageTeam::class  => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+        ),
+        'loggedIn'            => array(
+            /*
+             * THIS ROLE IS GRANTED TO ALL LOGGED IN USERS IMPLICITLY.
+             *
+             * USERS IN THIS ROLE DO NOT HAVE TO BE IDENTIFIED TO GET THE RIGHTS CONFERRED HERE.
+             * DO NOT ADD ANY SECURITY-SENSITIVE RIGHTS HERE.
+             */
+            '_childRoles'    => array(
+                'public',
+            ),
+            PagePreferences::class               => array(
+                self::MAIN       => self::ACCESS_ALLOW,
+                'changePassword' => self::ACCESS_ALLOW,
+            ),
+            PageOAuth::class                     => array(
+                'attach' => self::ACCESS_ALLOW,
+                'detach' => self::ACCESS_ALLOW,
+            ),
+        ),
+        'user'              => array(
+            '_childRoles'                        => array(
+                'internalStats',
+            ),
+            PageMain::class                      => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageBan::class                       => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageEditComment::class               => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageEmailManagement::class           => array(
+                self::MAIN => self::ACCESS_ALLOW,
+                'view'     => self::ACCESS_ALLOW,
+            ),
+            PageExpandedRequestList::class       => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageLog::class                       => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageSearch::class                    => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageWelcomeTemplateManagement::class => array(
+                self::MAIN => self::ACCESS_ALLOW,
+                'select'   => self::ACCESS_ALLOW,
+                'view'     => self::ACCESS_ALLOW,
+            ),
+            PageViewRequest::class               => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            'RequestData'                        => array(
+                'seePrivateDataWhenReserved' => self::ACCESS_ALLOW,
+                'seePrivateDataWithHash'     => self::ACCESS_ALLOW,
+            ),
+            PageCustomClose::class               => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageComment::class                   => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageCloseRequest::class              => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageDeferRequest::class              => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageDropRequest::class               => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageReservation::class               => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageSendToUser::class                => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageBreakReservation::class          => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+
+        ),
+        'admin'             => array(
+            '_childRoles'                        => array(
+                'user',
+                'requestAdminTools',
+            ),
+            PageEmailManagement::class           => array(
+                'edit'   => self::ACCESS_ALLOW,
+                'create' => self::ACCESS_ALLOW,
+            ),
+            PageSiteNotice::class                => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageUserManagement::class            => array(
+                self::MAIN  => self::ACCESS_ALLOW,
+                'approve'   => self::ACCESS_ALLOW,
+                'decline'   => self::ACCESS_ALLOW,
+                'rename'    => self::ACCESS_ALLOW,
+                'editUser'  => self::ACCESS_ALLOW,
+                'suspend'   => self::ACCESS_ALLOW,
+                'editRoles' => self::ACCESS_ALLOW,
+            ),
+            PageWelcomeTemplateManagement::class => array(
+                'edit'   => self::ACCESS_ALLOW,
+                'delete' => self::ACCESS_ALLOW,
+                'add'    => self::ACCESS_ALLOW,
+            ),
+        ),
+        'checkuser'         => array(
+            '_childRoles'             => array(
+                'user',
+                'requestAdminTools',
+            ),
+            PageUserManagement::class => array(
+                self::MAIN  => self::ACCESS_ALLOW,
+                'suspend'   => self::ACCESS_ALLOW,
+                'editRoles' => self::ACCESS_ALLOW,
+            ),
+            'RequestData'             => array(
+                'seeUserAgentData' => self::ACCESS_ALLOW,
+            ),
+        ),
+        'toolRoot'         => array(
+            '_description' => 'A user with shell access to the servers running the tool',
+            '_editableBy' => array('toolRoot'),
+            '_childRoles'             => array(
+                'admin', 'checkuser',
+            ),
+        ),
+
+        // Child roles go below this point
+        'publicStats'       => array(
+            '_hidden'               => true,
+            StatsUsers::class       => array(
+                self::MAIN => self::ACCESS_ALLOW,
+                'detail'   => self::ACCESS_ALLOW,
+            ),
+            StatsTopCreators::class => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+        ),
+        'internalStats'     => array(
+            '_hidden'                    => true,
+            StatsMain::class             => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            StatsFastCloses::class       => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            StatsInactiveUsers::class    => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            StatsMonthlyStats::class     => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            StatsReservedRequests::class => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            StatsTemplateStats::class    => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+        ),
+        'requestAdminTools' => array(
+            '_hidden'                   => true,
+            PageBan::class              => array(
+                self::MAIN => self::ACCESS_ALLOW,
+                'set'      => self::ACCESS_ALLOW,
+                'remove'   => self::ACCESS_ALLOW,
+            ),
+            PageEditComment::class      => array(
+                'editOthers' => self::ACCESS_ALLOW,
+            ),
+            PageBreakReservation::class => array(
+                'force' => self::ACCESS_ALLOW,
+            ),
+            PageCustomClose::class      => array(
+                'skipCcMailingList' => self::ACCESS_ALLOW,
+            ),
+            'RequestData'               => array(
+                'reopenOldRequest'      => self::ACCESS_ALLOW,
+                'alwaysSeePrivateData'  => self::ACCESS_ALLOW,
+                'alwaysSeeHash'         => self::ACCESS_ALLOW,
+                'seeRestrictedComments' => self::ACCESS_ALLOW,
+            ),
+        ),
     );
     /** @var array
      * List of roles which are *exempt* from the identification requirements
@@ -102,7 +329,7 @@ class RoleConfiguration
 
                 unset($available[$role]['_childRoles']);
             }
-            
+
             if (isset($available[$role]['_hidden'])) {
                 unset($available[$role]['_hidden']);
             }
@@ -113,6 +340,7 @@ class RoleConfiguration
 
     public function getAvailableRoles()
     {
+        // TODO: hide roles where    '_hidden' => true,
         return array_diff(array_keys($this->roleConfig), array('public', 'loggedIn'));
     }
 

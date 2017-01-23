@@ -26,7 +26,7 @@
 {/block}
 
 {block name="banSection"}
-    {if $page->barrierTest("setBan")}
+    {if $canSetBan}
         <div class="row-fluid">
             <h5 class="zoom-button-header">Ban</h5>
         </div>

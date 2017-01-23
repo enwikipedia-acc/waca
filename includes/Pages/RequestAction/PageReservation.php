@@ -12,7 +12,6 @@ use DateTime;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
-use Waca\Security\SecurityConfiguration;
 use Waca\SessionAlert;
 use Waca\WebRequest;
 
@@ -34,19 +33,22 @@ class PageReservation extends RequestActionBase
         $date->modify("-7 days");
         $oneweek = $date->format("Y-m-d H:i:s");
 
-        if ($request->getStatus() == "Closed" && $closureDate < $oneweek && !User::getCurrent($database)->isAdmin()) {
-            throw new ApplicationLogicException(
-                "Only administrators and checkusers can reserve a request that has been closed for over a week.");
+        $currentUser = User::getCurrent($database);
+        if ($request->getStatus() == "Closed" && $closureDate < $oneweek) {
+            if (!$this->barrierTest('reopenOldRequest', $currentUser, 'RequestData')) {
+                throw new ApplicationLogicException(
+                    "You are not allowed to reserve a request that has been closed for over a week.");
+            }
         }
 
-        if ($request->getReserved() !== null && $request->getReserved() != User::getCurrent($database)->getId()) {
+        if ($request->getReserved() !== null && $request->getReserved() != $currentUser->getId()) {
             throw new ApplicationLogicException("Request is already reserved!");
         }
 
         if ($request->getReserved() === null) {
             // Check the number of requests a user has reserved already
             $doubleReserveCountQuery = $database->prepare("SELECT COUNT(*) FROM request WHERE reserved = :userid;");
-            $doubleReserveCountQuery->bindValue(":userid", User::getCurrent($database)->getId());
+            $doubleReserveCountQuery->bindValue(":userid", $currentUser->getId());
             $doubleReserveCountQuery->execute();
             $doubleReserveCount = $doubleReserveCountQuery->fetchColumn();
             $doubleReserveCountQuery->closeCursor();
@@ -56,7 +58,7 @@ class PageReservation extends RequestActionBase
                 SessionAlert::warning("You have multiple requests reserved!");
             }
 
-            $request->setReserved(User::getCurrent($database)->getId());
+            $request->setReserved($currentUser->getId());
             $request->setUpdateVersion(WebRequest::postInt('updateversion'));
             $request->save();
 
@@ -68,19 +70,5 @@ class PageReservation extends RequestActionBase
         }
 
         $this->redirect('viewRequest', null, array('id' => $request->getId()));
-    }
-
-    /**
-     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-     * the return value from this function.
-     *
-     * If this page even supports actions, you will need to check the route
-     *
-     * @return SecurityConfiguration
-     * @category Security-Critical
-     */
-    protected function getSecurityConfiguration()
-    {
-        return $this->getSecurityManager()->configure()->asInternalPage();
     }
 }

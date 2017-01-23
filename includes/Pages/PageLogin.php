@@ -10,7 +10,6 @@ namespace Waca\Pages;
 
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
-use Waca\Security\SecurityConfiguration;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -126,19 +125,9 @@ class PageLogin extends InternalPageBase
         return $user;
     }
 
-    /**
-     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-     * the return value from this function.
-     *
-     * If this page even supports actions, you will need to check the route
-     *
-     * @return SecurityConfiguration
-     * @category Security-Critical
-     */
-    protected function getSecurityConfiguration()
+    protected function isProtectedPage()
     {
-        // Login pages, by definition, have to be accessible to the public
-        return $this->getSecurityManager()->configure()->asPublicPage();
+        return false;
     }
 
     /**

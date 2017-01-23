@@ -37,11 +37,6 @@ class StatsUsers extends InternalPageBase
         $this->setTemplate("statistics/users.tpl");
     }
 
-    public function getSecurityConfiguration()
-    {
-        return $this->getSecurityManager()->configure()->asPublicPage();
-    }
-
     /**
      * Entry point for the detail action.
      *

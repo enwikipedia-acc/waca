@@ -141,9 +141,4 @@ SQL;
         $this->assign('statsPageTitle', 'Top Account Creators');
         $this->setTemplate('statistics/top-creators.tpl');
     }
-
-    public function getSecurityConfiguration()
-    {
-        return $this->getSecurityManager()->configure()->asPublicPage();
-    }
 }

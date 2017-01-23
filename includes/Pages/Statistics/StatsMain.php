@@ -107,9 +107,4 @@ SQL
         $mostCommentsStatement->closeCursor();
         $this->assign('mostComments', $mostComments);
     }
-
-    public function getSecurityConfiguration()
-    {
-        return $this->getSecurityManager()->configure()->asInternalPage();
-    }
 }

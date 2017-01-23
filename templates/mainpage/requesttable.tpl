@@ -41,7 +41,7 @@
 
             {* Bans *}
             <td>
-                {if $currentUser->isAdmin() || $currentUser->isCheckuser() }
+                {if $canBan}
                     <div class="btn-group hidden-phone">
                         <a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">
                             <i class="icon-white icon-ban-circle"></i>&nbsp;Ban&nbsp;<span class="caret"></span>
@@ -92,7 +92,7 @@
                             </button>
                         </form>
                     {else}
-                        {if $currentUser->isAdmin() || $currentUser->isCheckUser() }
+                        {if $canBreakReservation }
                             <form action="{$baseurl}/internal.php/viewRequest/breakReserve" method="post"
                                   class="form-compact">
                                 {include file="security/csrf.tpl"}

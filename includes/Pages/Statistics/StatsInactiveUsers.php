@@ -24,9 +24,4 @@ class StatsInactiveUsers extends InternalPageBase
         $this->setTemplate('statistics/inactive-users.tpl');
         $this->assign('statsPageTitle', 'Inactive tool users');
     }
-
-    public function getSecurityConfiguration()
-    {
-        return $this->getSecurityManager()->configure()->asInternalPage();
-    }
 }

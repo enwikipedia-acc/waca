@@ -24,8 +24,6 @@ use Waca\WebRequest;
 class PageViewRequest extends InternalPageBase
 {
     use RequestData;
-    const PRIVATE_DATA_BARRIER = 'privateData';
-    const SET_BAN_BARRIER = 'setBan';
     const STATUS_SYMBOL_OPEN = '&#x2610';
     const STATUS_SYMBOL_ACCEPTED = '&#x2611';
     const STATUS_SYMBOL_REJECTED = '&#x2612';
@@ -75,7 +73,9 @@ class PageViewRequest extends InternalPageBase
             $this->setTemplate('view-request/main-with-data.tpl');
             $this->setupPrivateData($request, $currentUser, $this->getSiteConfiguration(), $database);
 
-            if ($currentUser->isCheckuser()) {
+            $this->assign('canSetBan', $this->barrierTest('set', $currentUser, PageBan::class));
+
+            if ($this->barrierTest('seeUserAgentData', $currentUser, 'RequestData')) {
                 $this->setTemplate('view-request/main-with-checkuser-data.tpl');
                 $this->setupCheckUserData($request);
             }
@@ -147,7 +147,7 @@ class PageViewRequest extends InternalPageBase
     {
         $currentUser = User::getCurrent($database);
 
-        $logs = LogHelper::getRequestLogsWithComments($request->getId(), $database);
+        $logs = LogHelper::getRequestLogsWithComments($request->getId(), $database, $this->getSecurityManager());
         $requestLogs = array();
 
         if (trim($request->getComment()) !== "") {
@@ -167,7 +167,7 @@ class PageViewRequest extends InternalPageBase
         /** @var User[] $nameCache */
         $nameCache = array();
 
-        $editableComments = $this->allowEditingComments($currentUser);
+        $editableComments = $this->barrierTest('editOthers', $currentUser, PageEditComment::class);
 
         /** @var Log|Comment $entry */
         foreach ($logs as $entry) {
@@ -230,22 +230,5 @@ class PageViewRequest extends InternalPageBase
         }
 
         $this->assign("spoofs", $spoofs);
-    }
-
-    /**
-     * @param User $currentUser
-     *
-     * @return bool
-     */
-    private function allowEditingComments(User $currentUser)
-    {
-        $editableComments = false;
-        if ($currentUser->isAdmin() || $currentUser->isCheckuser()) {
-            $editableComments = true;
-
-            return $editableComments;
-        }
-
-        return $editableComments;
     }
 }

@@ -13,7 +13,6 @@ use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
-use Waca\Security\SecurityConfiguration;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -227,32 +226,6 @@ class PageWelcomeTemplateManagement extends InternalPageBase
         SessionAlert::success(
             "Template deleted. Any users who were using this template have had automatic welcoming disabled.");
         $this->getNotificationHelper()->welcomeTemplateDeleted($templateId);
-    }
-
-    /**
-     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-     * the return value from this function.
-     *
-     * If this page even supports actions, you will need to check the route
-     *
-     * @return SecurityConfiguration
-     * @category Security-Critical
-     */
-    protected function getSecurityConfiguration()
-    {
-        switch ($this->getRouteName()) {
-            case 'edit':
-            case 'add':
-            case 'delete':
-                // WARNING: if you want to unlink edit/add/delete, you'll want to change the barrier tests in the
-                // template
-                return $this->getSecurityManager()->configure()->asAdminPage();
-            case 'view':
-            case 'select':
-                return $this->getSecurityManager()->configure()->asInternalPage();
-            default:
-                return $this->getSecurityManager()->configure()->asInternalPage();
-        }
     }
 
     private function validate($userCode, $botCode)

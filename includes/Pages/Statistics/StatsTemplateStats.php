@@ -52,9 +52,4 @@ SQL;
         $this->assign('statsPageTitle', 'Template Stats');
         $this->setTemplate('statistics/welcome-template-usage.tpl');
     }
-
-    public function getSecurityConfiguration()
-    {
-        return $this->getSecurityManager()->configure()->asInternalPage();
-    }
 }

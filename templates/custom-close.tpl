@@ -56,7 +56,7 @@
                 <div class="controls">
                     <label class="checkbox">
                         <input type="checkbox" name="ccMailingList" checked="checked"
-                               {if !$currentUser->isAdmin() && !$currentUser->isCheckuser()}disabled="disabled"{/if}
+                               {if !$canSkipCcMailingList}disabled="disabled"{/if}
                         />
                         CC to mailing list
                     </label>

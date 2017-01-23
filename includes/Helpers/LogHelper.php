@@ -20,6 +20,7 @@ use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
 use Waca\PdoDatabase;
+use Waca\Security\SecurityManager;
 use Waca\SiteConfiguration;
 
 class LogHelper
@@ -27,15 +28,21 @@ class LogHelper
     /**
      * Summary of getRequestLogsWithComments
      *
-     * @param int         $requestId
-     * @param PdoDatabase $db
+     * @param int             $requestId
+     * @param PdoDatabase     $db
+     * @param SecurityManager $securityManager
      *
-     * @return DataObject[]
+     * @return \Waca\DataObject[]
      */
-    public static function getRequestLogsWithComments($requestId, PdoDatabase $db)
+    public static function getRequestLogsWithComments($requestId, PdoDatabase $db, SecurityManager $securityManager)
     {
         $logs = LogSearchHelper::get($db)->byObjectType('Request')->byObjectId($requestId)->fetch();
-        $comments = Comment::getForRequest($requestId, $db);
+
+        $currentUser = User::getCurrent($db);
+        $securityResult = $securityManager->allows('RequestData', 'seeRestrictedComments', $currentUser);
+        $showAllComments = $securityResult === SecurityManager::ALLOWED;
+
+        $comments = Comment::getForRequest($requestId, $db, $showAllComments, $currentUser->getId());
 
         $items = array_merge($logs, $comments);
 

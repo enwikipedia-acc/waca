@@ -49,9 +49,4 @@ SQL;
         $this->assign('statsPageTitle', 'Requests closed less than 30 seconds after reservation in the past 3 months');
         $this->setTemplate('statistics/fast-closes.tpl');
     }
-
-    public function getSecurityConfiguration()
-    {
-        return $this->getSecurityManager()->configure()->asInternalPage();
-    }
 }

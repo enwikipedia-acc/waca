@@ -27,7 +27,7 @@
             <input type="hidden" name="updateversion" value="{$updateVersion}"/>
             <button class="btn span4 btn-inverse" type="submit">Break reservation</button>
         </form>
-    {elseif $currentUser->isAdmin() && $requestIsReserved}
+    {elseif $canBreakReservation && $requestIsReserved}
         <form action="{$baseurl}/internal.php/viewRequest/breakReserve" method="post">
             {include file="security/csrf.tpl"}
             <input type="hidden" name="request" value="{$requestId}"/>
