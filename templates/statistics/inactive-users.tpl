@@ -1,7 +1,6 @@
 ﻿{extends file="statistics/base.tpl"}
 {block name="statisticsContent"}
     <p>This list contains the usernames of all accounts that have not logged in in the past 45 days.</p>
-    {if ! $showImmune}<p>Tool root and checkuser-flagged accounts are hidden from this list.</p>{/if}
     <table class="table table-striped table-hover table-condensed">
         <thead>
         <tr>
@@ -12,24 +11,20 @@
             <th>On-wiki username</th>
             <th>Last activity</th>
             <th>Approval</th>
-            {if $currentUser->isAdmin()}
+            {* if $currentUser->isAdmin()}
                 <th>Suspend</th>
-            {/if}
+            {/if *}
         </tr>
         </thead>
         <tbody>
         {foreach from=$inactiveUsers item="user"}
-            {if $user->isCheckuser() && !$showImmune}
-            {else}
                 <tr>
                     <td>{$user->getId()}</td>
                     <td>{$user->getUsername()|escape}</td>
-                    <td>{$user->getStatus()}</td>
-                    <td>{if $user->isCheckuser()}Yes{else}No{/if}</td>
                     <td>{$user->getOnWikiName()|escape}</td>
                     <td>{$user->getLastActive()} <span class="muted">{$user->getLastActive()|relativedate}</span></td>
                     <td>{if $user->getApprovalDate() != false}{$user->getApprovalDate()->format("Y-m-d H:i:s")} <span class="muted">{$user->getApprovalDate()|relativedate}</span>{/if}</td>
-                    {if $currentUser->isAdmin()}
+                    {* if $currentUser->isAdmin()}
                         <td>
                             {if ! $user->isCheckuser()}
                                 <a class="btn btn-danger btn-small"
@@ -38,9 +33,8 @@
                                 </a>
                             {/if}
                         </td>
-                    {/if}
+                    {/if *}
                 </tr>
-            {/if}
         {/foreach}
         </tbody>
     </table>

@@ -18,12 +18,6 @@ class StatsInactiveUsers extends InternalPageBase
     {
         $this->setHtmlTitle('Inactive Users :: Statistics');
 
-        $showImmune = false;
-        if (WebRequest::getBoolean('showimmune')) {
-            $showImmune = true;
-        }
-
-        $this->assign('showImmune', $showImmune);
         $inactiveUsers = User::getAllInactive($this->getDatabase());
         $this->assign('inactiveUsers', $inactiveUsers);
 
