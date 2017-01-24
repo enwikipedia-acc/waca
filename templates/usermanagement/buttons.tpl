@@ -27,7 +27,7 @@
             <span class="visible-desktop">Decline</span>
         </a>
     {/if}
-    {if $user->isUser() || $user->isAdmin()}
+    {if $user->isActive()}
         <a class="btn btn-danger" href="{$baseurl}/internal.php/userManagement/suspend?user={$user->getId()}">
             <i class="icon-white icon-ban-circle"></i>&nbsp;
             <span class="visible-desktop">Suspend</span>
@@ -41,16 +41,16 @@
         <i class="icon-white icon-pencil"></i>&nbsp;
         <span class="visible-desktop">Edit</span>
     </a>
-    {if $user->isUser()}
+    {* if $user->isUser()}
         <a class="btn btn-info" href="{$baseurl}/internal.php/userManagement/promote?user={$user->getId()}">
             <i class="icon-white icon-arrow-up"></i>&nbsp;
             <span class="visible-desktop">Promote</span>
         </a>
-    {/if}
-    {if $user->isAdmin()}
+    {/if *}
+    {* if $user->isAdmin()}
         <a class="btn btn-inverse" href="{$baseurl}/internal.php/userManagement/demote?user={$user->getId()}">
             <i class="icon-white icon-arrow-down"></i>&nbsp;
             <span class="visible-desktop">Demote</span>
         </a>
-    {/if}
+    {/if *}
 </div>

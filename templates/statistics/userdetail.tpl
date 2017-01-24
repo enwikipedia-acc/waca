@@ -38,9 +38,8 @@
                 </div>
             </div>
 
-            {if $currentUser->isAdmin()}
-                {include file="usermanagement/buttons.tpl"}
-            {/if}
+            {include file="usermanagement/buttons.tpl"}
+
         </div>
 
         <div class="span6">

@@ -264,36 +264,6 @@ class User extends DataObject
     }
 
     /**
-     * Gets all checkusers
-     *
-     * @param PdoDatabase $database
-     *
-     * @return User[]
-     */
-    public static function getAllCheckusers(PdoDatabase $database)
-    {
-        $statement = $database->prepare("SELECT * FROM user WHERE checkuser = 1;");
-        $statement->execute();
-
-        $resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
-
-        $resultsCollection = array();
-
-        /** @var User $u */
-        foreach ($resultObject as $u) {
-            $u->setDatabase($database);
-
-            if (!$u->isCheckuser()) {
-                continue;
-            }
-
-            $resultsCollection[] = $u;
-        }
-
-        return $resultsCollection;
-    }
-
-    /**
      * Gets all inactive users
      *
      * @param PdoDatabase $database
@@ -342,7 +312,7 @@ SQL
             $userListResult = $database->query($userListQuery);
         }
         elseif ($filter === true) {
-            $userListQuery = "SELECT username FROM user WHERE status IN ('User', 'Admin');";
+            $userListQuery = "SELECT username FROM user WHERE status = 'Active';";
             $userListResult = $database->query($userListQuery);
         }
         else {
@@ -867,24 +837,10 @@ SQL
 
     #region user access checks
 
-    /**
-     * Tests if the user is an admin
-     * @return bool
-     * @category Security-Critical
-     */
-    public function isAdmin()
+    public function isActive()
     {
-        return $this->status == self::STATUS_ADMIN;
-    }
-
-    /**
-     * Tests if the user is a checkuser
-     * @return bool
-     * @category Security-Critical
-     */
-    public function isCheckuser()
-    {
-        return $this->checkuser == 1 || $this->oauthCanCheckUser();
+        // TODO: this is temp, will be replaced in later commit.
+        return $this->status == self::STATUS_ADMIN || $this->status == self::STATUS_USER;
     }
 
     /**
@@ -932,16 +888,6 @@ SQL
     public function isNewUser()
     {
         return $this->status == self::STATUS_NEW;
-    }
-
-    /**
-     * Tests if the user is a standard-level user
-     * @return bool
-     * @category Security-Critical
-     */
-    public function isUser()
-    {
-        return $this->status == self::STATUS_USER;
     }
 
     /**

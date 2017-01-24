@@ -49,7 +49,7 @@ class PageUserManagement extends InternalPageBase
         $this->assign("newUsers", User::getAllWithStatus(User::STATUS_NEW, $database));
         $this->assign("normalUsers", User::getAllWithStatus(User::STATUS_USER, $database));
         $this->assign("adminUsers", User::getAllWithStatus(User::STATUS_ADMIN, $database));
-        $this->assign("checkUsers", User::getAllCheckusers($database));
+        $this->assign("checkUsers", array());
 
         $this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use ($database) {
             return User::getAllUsernames($database);
@@ -202,9 +202,9 @@ class PageUserManagement extends InternalPageBase
             throw new ApplicationLogicException('Sorry, the user you are trying to demote could not be found.');
         }
 
-        if (!$user->isAdmin()) {
-            throw new ApplicationLogicException('Sorry, the user you are trying to demote is not an admin.');
-        }
+    //    if (!$user->isAdmin()) {
+    //        throw new ApplicationLogicException('Sorry, the user you are trying to demote is not an admin.');
+    //    }
 
         // Dual-mode action
         if (WebRequest::wasPosted()) {
@@ -263,9 +263,9 @@ class PageUserManagement extends InternalPageBase
             throw new ApplicationLogicException('Sorry, the user you are trying to approve could not be found.');
         }
 
-        if ($user->isUser() || $user->isAdmin()) {
-            throw new ApplicationLogicException('Sorry, the user you are trying to approve is already an active user.');
-        }
+    //    if ($user->isUser() || $user->isAdmin()) {
+    //        throw new ApplicationLogicException('Sorry, the user you are trying to approve is already an active user.');
+    //    }
 
         // Dual-mode action
         if (WebRequest::wasPosted()) {
@@ -318,9 +318,9 @@ class PageUserManagement extends InternalPageBase
             throw new ApplicationLogicException('Sorry, the user you are trying to promote could not be found.');
         }
 
-        if ($user->isAdmin()) {
-            throw new ApplicationLogicException('Sorry, the user you are trying to promote is already an admin.');
-        }
+    //    if ($user->isAdmin()) {
+    //        throw new ApplicationLogicException('Sorry, the user you are trying to promote is already an admin.');
+    //    }
 
         // Dual-mode action
         if (WebRequest::wasPosted()) {

@@ -57,7 +57,7 @@ class PageSendToUser extends RequestActionBase
             throw new ApplicationLogicException('User not found');
         }
 
-        if (!$user->isUser() && !$user->isAdmin()) {
+        if (!$user->isActive()) {
             throw new ApplicationLogicException('User is currently not active on the tool');
         }
 

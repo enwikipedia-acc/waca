@@ -52,9 +52,8 @@ class CountAction extends ApiPageBase implements IApiAction
 
         $userElement->setAttribute("today", $this->getToday());
 
-        if ($this->user->isAdmin()) {
-            $this->fetchAdminData($userElement);
-        }
+        // Let the IRC bot handle the result of this.
+        $this->fetchAdminData($userElement);
 
         return $apiDocument;
     }

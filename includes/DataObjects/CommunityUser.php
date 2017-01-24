@@ -157,16 +157,6 @@ class CommunityUser extends User
 
     #region user access checks
 
-    public function isAdmin()
-    {
-        return false;
-    }
-
-    public function isCheckuser()
-    {
-        return false;
-    }
-
     public function isIdentified(IdentificationVerifier $iv)
     {
         return false;
@@ -178,11 +168,6 @@ class CommunityUser extends User
     }
 
     public function isNewUser()
-    {
-        return false;
-    }
-
-    public function isUser()
     {
         return false;
     }

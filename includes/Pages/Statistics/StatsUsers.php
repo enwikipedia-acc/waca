@@ -28,7 +28,7 @@ class StatsUsers extends InternalPageBase
         $lists = array(
             "Admin"      => User::getAllWithStatus("Admin", $database),
             "User"       => User::getAllWithStatus("User", $database),
-            "CheckUsers" => User::getAllCheckusers($database),
+            "CheckUsers" => array(),
         );
 
         $this->assign("lists", $lists);
