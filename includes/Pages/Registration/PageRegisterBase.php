@@ -6,16 +6,17 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-namespace Waca\Pages;
+namespace Waca\Pages\Registration;
 
 use Waca\DataObjects\User;
+use Waca\DataObjects\UserRole;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PageRegister extends InternalPageBase
+abstract class PageRegisterBase extends InternalPageBase
 {
     /**
      * Main function for this page, when no specific actions are called.
@@ -39,9 +40,11 @@ class PageRegister extends InternalPageBase
         else {
             $this->assignCSRFToken();
             $this->assign("useOAuthSignup", $useOAuthSignup);
-            $this->setTemplate("registration/register.tpl");
+            $this->setTemplate($this->getRegistrationTemplate());
         }
     }
+
+    protected abstract function getRegistrationTemplate();
 
     protected function isProtectedPage()
     {
@@ -49,19 +52,11 @@ class PageRegister extends InternalPageBase
     }
 
     /**
-     * Entry point for registration complete
-     */
-    protected function done()
-    {
-        $this->setTemplate('registration/alert-registrationcomplete.tpl');
-    }
-
-    /**
      * @param string $emailAddress
      *
      * @throws ApplicationLogicException
      */
-    private function validateUniqueEmail($emailAddress)
+    protected function validateUniqueEmail($emailAddress)
     {
         $query = 'SELECT COUNT(id) FROM user WHERE email = :email';
         $statement = $this->getDatabase()->prepare($query);
@@ -84,7 +79,7 @@ class PageRegister extends InternalPageBase
      *
      * @throws ApplicationLogicException
      */
-    private function validateRequest(
+    protected function validateRequest(
         $emailAddress,
         $password,
         $username,
@@ -99,6 +94,48 @@ class PageRegister extends InternalPageBase
         $this->validateGeneralInformation($emailAddress, $password, $username);
         $this->validateUniqueEmail($emailAddress);
         $this->validateNonOAuthFields($useOAuthSignup, $confirmationId, $onwikiUsername);
+    }
+
+    /**
+     * @param $useOAuthSignup
+     * @param $confirmationId
+     * @param $onwikiUsername
+     *
+     * @throws ApplicationLogicException
+     */
+    protected function validateNonOAuthFields($useOAuthSignup, $confirmationId, $onwikiUsername)
+    {
+        if (!$useOAuthSignup) {
+            if ($confirmationId === null || $confirmationId <= 0) {
+                throw new ApplicationLogicException('Please enter the revision id of your confirmation edit.');
+            }
+
+            if ($onwikiUsername === null) {
+                throw new ApplicationLogicException('Please specify your on-wiki username.');
+            }
+        }
+    }
+
+    /**
+     * @param $emailAddress
+     * @param $password
+     * @param $username
+     *
+     * @throws ApplicationLogicException
+     */
+    protected function validateGeneralInformation($emailAddress, $password, $username)
+    {
+        if ($emailAddress === null) {
+            throw new ApplicationLogicException('Your email address appears to be invalid!');
+        }
+
+        if ($password !== WebRequest::postString('pass2')) {
+            throw new ApplicationLogicException('Your passwords did not match, please try again.');
+        }
+
+        if (User::getByUsername($username, $this->getDatabase()) !== false) {
+            throw new ApplicationLogicException('That username is already in use on this system.');
+        }
     }
 
     /**
@@ -122,8 +159,10 @@ class PageRegister extends InternalPageBase
         $this->validateRequest($emailAddress, $password, $username, $useOAuthSignup, $confirmationId,
             $onwikiUsername);
 
+        $database = $this->getDatabase();
+
         $user = new User();
-        $user->setDatabase($this->getDatabase());
+        $user->setDatabase($database);
 
         $user->setUsername($username);
         $user->setPassword($password);
@@ -136,8 +175,17 @@ class PageRegister extends InternalPageBase
 
         $user->save();
 
+        $defaultRole = $this->getDefaultRole();
+
+        $role = new UserRole();
+        $role->setDatabase($database);
+        $role->setUser($user->getId());
+        $role->setRole($defaultRole);
+        $role->save();
+
         // Log now to get the signup date.
-        Logger::newUser($this->getDatabase(), $user);
+        Logger::newUser($database, $user);
+        Logger::userRolesEdited($database, $user, 'Registration', array($defaultRole), array());
 
         if ($useOAuthSignup) {
             $oauthHelper = $this->getOAuthHelper();
@@ -159,45 +207,13 @@ class PageRegister extends InternalPageBase
         }
     }
 
-    /**
-     * @param $useOAuthSignup
-     * @param $confirmationId
-     * @param $onwikiUsername
-     *
-     * @throws ApplicationLogicException
-     */
-    private function validateNonOAuthFields($useOAuthSignup, $confirmationId, $onwikiUsername)
-    {
-        if (!$useOAuthSignup) {
-            if ($confirmationId === null || $confirmationId <= 0) {
-                throw new ApplicationLogicException('Please enter the revision id of your confirmation edit.');
-            }
-
-            if ($onwikiUsername === null) {
-                throw new ApplicationLogicException('Please specify your on-wiki username.');
-            }
-        }
-    }
+    protected abstract function getDefaultRole();
 
     /**
-     * @param $emailAddress
-     * @param $password
-     * @param $username
-     *
-     * @throws ApplicationLogicException
+     * Entry point for registration complete
      */
-    private function validateGeneralInformation($emailAddress, $password, $username)
+    protected function done()
     {
-        if ($emailAddress === null) {
-            throw new ApplicationLogicException('Your email address appears to be invalid!');
-        }
-
-        if ($password !== WebRequest::postString('pass2')) {
-            throw new ApplicationLogicException('Your passwords did not match, please try again.');
-        }
-
-        if (User::getByUsername($username, $this->getDatabase()) !== false) {
-            throw new ApplicationLogicException('That username is already in use on this system.');
-        }
+        $this->setTemplate('registration/alert-registrationcomplete.tpl');
     }
 }

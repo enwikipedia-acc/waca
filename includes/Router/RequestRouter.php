@@ -21,7 +21,8 @@ use Waca\Pages\PageLogout;
 use Waca\Pages\PageMain;
 use Waca\Pages\PageOAuth;
 use Waca\Pages\PagePreferences;
-use Waca\Pages\PageRegister;
+use Waca\Pages\Registration\PageRegisterStandard;
+use Waca\Pages\Registration\PageRegisterOption;
 use Waca\Pages\PageSearch;
 use Waca\Pages\PageSiteNotice;
 use Waca\Pages\PageTeam;
@@ -120,7 +121,12 @@ class RequestRouter implements IRequestRouter
             ),
         'register'                    =>
             array(
-                'class'   => PageRegister::class,
+                'class'   => PageRegisterOption::class,
+                'actions' => array(),
+            ),
+        'register/standard'           =>
+            array(
+                'class'   => PageRegisterStandard::class,
                 'actions' => array('done'),
             ),
 
