@@ -10,6 +10,8 @@ namespace Waca;
 
 use PDO;
 
+use Waca\Exceptions\CurlException;
+use Waca\Exceptions\EnvironmentException;
 use Waca\Helpers\HttpHelper;
 
 /**
@@ -168,6 +170,7 @@ SQL;
      * @param string $onWikiName The Wikipedia username of the user
      *
      * @return bool
+     * @throws EnvironmentException
      * @category Security-Critical
      */
     private function isIdentifiedOnWiki($onWikiName)
@@ -179,8 +182,18 @@ SQL;
 
         $parameters = self::$apiQueryParameters;
         $parameters['pltitles'] = "User:" . $onWikiName;
-        $response = $this->httpHelper->get($this->siteConfiguration->getMetaWikimediaWebServiceEndpoint(), $parameters);
-        $response = json_decode($response, true);
+
+        try {
+            $endpoint = $this->siteConfiguration->getMetaWikimediaWebServiceEndpoint();
+            $response = $this->httpHelper->get($endpoint, $parameters);
+            $response = json_decode($response, true);
+        } catch (CurlException $ex) {
+            // failed getting identification status, so throw a nicer error.
+            $m = 'Could not contact metawiki API to determine user\' identification status. '
+                . 'This is probably a transient error, so please try again.';
+
+            throw new EnvironmentException($m, 0, $ex);
+        }
 
         $page = @array_pop($response['query']['pages']);
 
