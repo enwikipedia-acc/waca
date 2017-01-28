@@ -50,7 +50,7 @@ class PageOAuth extends InternalPageBase
     protected function detach()
     {
         if ($this->getSiteConfiguration()->getEnforceOAuth()) {
-            throw new AccessDeniedException();
+            throw new AccessDeniedException($this->getSecurityManager());
         }
 
         $user = User::getCurrent($this->getDatabase());

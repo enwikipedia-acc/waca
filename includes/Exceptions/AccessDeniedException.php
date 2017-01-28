@@ -10,8 +10,12 @@ namespace Waca\Exceptions;
 
 use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
+use Waca\Fragments\NavigationMenuAccessControl;
+use Waca\Helpers\HttpHelper;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
+use Waca\IdentificationVerifier;
 use Waca\PdoDatabase;
+use Waca\Security\SecurityManager;
 
 /**
  * Class AccessDeniedException
@@ -22,6 +26,23 @@ use Waca\PdoDatabase;
  */
 class AccessDeniedException extends ReadableException
 {
+    use NavigationMenuAccessControl;
+
+    /**
+     * @var SecurityManager
+     */
+    private $securityManager;
+
+    /**
+     * AccessDeniedException constructor.
+     *
+     * @param SecurityManager $securityManager
+     */
+    public function __construct(SecurityManager $securityManager = null)
+    {
+        $this->securityManager = $securityManager;
+    }
+
     public function getReadableError()
     {
         if (!headers_sent()) {
@@ -35,6 +56,10 @@ class AccessDeniedException extends ReadableException
         $currentUser = User::getCurrent($database);
         $this->assign('currentUser', $currentUser);
         $this->assign("loggedIn", (!$currentUser->isCommunityUser()));
+
+        if($this->securityManager !== null) {
+            $this->setupNavMenuAccess($currentUser);
+        }
 
         if ($currentUser->isDeclined()) {
             $this->assign('htmlTitle', 'Account Declined');
@@ -77,5 +102,13 @@ class AccessDeniedException extends ReadableException
             ->fetch();
 
         return $logs[0]->getComment();
+    }
+
+    /**
+     * @return SecurityManager
+     */
+    protected function getSecurityManager()
+    {
+        return $this->securityManager;
     }
 }

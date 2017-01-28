@@ -9,10 +9,28 @@
 namespace Waca\Exceptions;
 
 use Waca\DataObjects\User;
+use Waca\Fragments\NavigationMenuAccessControl;
 use Waca\PdoDatabase;
+use Waca\Security\SecurityManager;
 
 class NotIdentifiedException extends ReadableException
 {
+    use NavigationMenuAccessControl;
+    /**
+     * @var SecurityManager
+     */
+    private $securityManager;
+
+    /**
+     * NotIdentifiedException constructor.
+     *
+     * @param SecurityManager $securityManager
+     */
+    public function __construct(SecurityManager $securityManager = null)
+    {
+        $this->securityManager = $securityManager;
+    }
+
     /**
      * Returns a readable HTML error message that's displayable to the user using templates.
      * @return string
@@ -31,6 +49,18 @@ class NotIdentifiedException extends ReadableException
         $this->assign('currentUser', $currentUser);
         $this->assign("loggedIn", (!$currentUser->isCommunityUser()));
 
+        if($this->securityManager !== null) {
+            $this->setupNavMenuAccess($currentUser);
+        }
+
         return $this->fetchTemplate("exception/not-identified.tpl");
+    }
+
+    /**
+     * @return SecurityManager
+     */
+    protected function getSecurityManager()
+    {
+        return $this->securityManager;
     }
 }

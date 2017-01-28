@@ -107,7 +107,7 @@ class PageCustomClose extends PageCloseRequest
         $allowedPrivateData = $this->isAllowedPrivateData($request, $currentUser);
         if (!$allowedPrivateData) {
             // we probably shouldn't be showing the user this form if they're not allowed to access private data...
-            throw new AccessDeniedException();
+            throw new AccessDeniedException($this->getSecurityManager());
         }
 
         $template = $this->getTemplate($database);

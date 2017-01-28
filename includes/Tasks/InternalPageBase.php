@@ -13,6 +13,7 @@ use PDO;
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\NotIdentifiedException;
+use Waca\Fragments\NavigationMenuAccessControl;
 use Waca\Helpers\Interfaces\IBlacklistHelper;
 use Waca\IdentificationVerifier;
 use Waca\Helpers\Interfaces\ITypeAheadHelper;
@@ -21,6 +22,8 @@ use Waca\WebRequest;
 
 abstract class InternalPageBase extends PageBase
 {
+    use NavigationMenuAccessControl;
+
     /** @var IdentificationVerifier */
     private $identificationVerifier;
     /** @var ITypeAheadHelper */
@@ -116,12 +119,15 @@ abstract class InternalPageBase extends PageBase
 
         $database = $this->getDatabase();
 
-        if (!User::getCurrent($database)->isCommunityUser()) {
+        $currentUser = User::getCurrent($database);
+        if (!$currentUser->isCommunityUser()) {
             $sql = 'SELECT * FROM user WHERE lastactive > DATE_SUB(CURRENT_TIMESTAMP(), INTERVAL 5 MINUTE);';
             $statement = $database->query($sql);
             $activeUsers = $statement->fetchAll(PDO::FETCH_CLASS, User::class);
             $this->assign('onlineusers', $activeUsers);
         }
+
+        $this->setupNavMenuAccess($currentUser);
     }
 
     /**
@@ -158,11 +164,11 @@ abstract class InternalPageBase extends PageBase
 
             if ($denyReason === SecurityManager::ERROR_NOT_IDENTIFIED) {
                 // Not identified
-                throw new NotIdentifiedException();
+                throw new NotIdentifiedException($this->getSecurityManager());
             }
             elseif ($denyReason === SecurityManager::ERROR_DENIED) {
                 // Nope, plain old access denied
-                throw new AccessDeniedException();
+                throw new AccessDeniedException($this->getSecurityManager());
             }
             else {
                 throw new Exception('Unknown response from security manager.');

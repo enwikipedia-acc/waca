@@ -1,31 +1,55 @@
+{* README! Variables introduced here must be configured in TemplateOutput, and probably InternalPageBase too. *}
 <div class="nav-collapse collapse">
     <ul class="nav">
-        {if ! $currentUser->isCommunityUser()}
+        {if $nav__canRequests}
             <li><a href="{$baseurl}/internal.php"><i class="icon-home icon-white"></i>&nbsp;Requests</a></li>
+        {/if}
+        {if $nav__canLogs || $nav__canUsers || $nav__canSearch || $nav__canStats }
             <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
-                            class="icon-tag icon-white"></i>&nbsp;Meta&nbsp;<b class="caret"></b></a>
+                        class="icon-tag icon-white"></i>&nbsp;Meta&nbsp;<b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li><a href="{$baseurl}/internal.php/logs"><i class="icon-list"></i>&nbsp;Logs</a></li>
-                    <li><a href="{$baseurl}/internal.php/statistics/users"><i class="icon-user"></i>&nbsp;Users</a></li>
-                    <li><a href="{$baseurl}/internal.php/search"><i class="icon-search"></i>&nbsp;Search</a></li>
-                    <li><a href="{$baseurl}/internal.php/statistics"><i class="icon-tasks"></i>&nbsp;Statistics</a></li>
+                    {if $nav__canLogs}
+                        <li><a href="{$baseurl}/internal.php/logs"><i class="icon-list"></i>&nbsp;Logs</a></li>
+                    {/if}
+                    {if $nav__canUsers}
+                        <li><a href="{$baseurl}/internal.php/statistics/users"><i class="icon-user"></i>&nbsp;Users</a></li>
+                    {/if}
+                    {if $nav__canSearch}
+                        <li><a href="{$baseurl}/internal.php/search"><i class="icon-search"></i>&nbsp;Search</a></li>
+                    {/if}
+                    {if $nav__canStats}
+                        <li><a href="{$baseurl}/internal.php/statistics"><i class="icon-tasks"></i>&nbsp;Statistics</a></li>
+                    {/if}
                 </ul>
             </li>
+        {/if}
+        {if $nav__canBan || $nav__canEmailMgmt || $nav__canWelcomeMgmt || $nav__canSiteNoticeMgmt || $nav__canUserMgmt}
             <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
                             class="icon-wrench icon-white"></i>&nbsp;Admin&nbsp;<b class="caret"></b></a>
                 <ul class="dropdown-menu">
-                    <li><a href="{$baseurl}/internal.php/bans"><i class="icon-ban-circle"></i>&nbsp;Ban Management</a>
-                    </li>
+                    {if $nav__canBan}
+                        <li><a href="{$baseurl}/internal.php/bans"><i class="icon-ban-circle"></i>&nbsp;Ban Management</a></li>
+                    {/if}
+                    {if $nav__canEmailMgmt}
                     <li><a href="{$baseurl}/internal.php/emailManagement"><i class="icon-envelope"></i>&nbsp;Close Email
                             Management</a></li>
+                    {/if}
+                    {if $nav__canWelcomeMgmt}
                     <li><a href="{$baseurl}/internal.php/welcomeTemplates"><i class="icon-file"></i>&nbsp;Welcome
                             Template Management</a></li>
+                    {/if}
+                    {if $nav__canSiteNoticeMgmt}
                     <li><a href="{$baseurl}/internal.php/siteNotice"><i class="icon-print"></i>&nbsp;Site Notice
                             Management</a></li>
+                    {/if}
+                    {if $nav__canUserMgmt}
                     <li><a href="{$baseurl}/internal.php/userManagement"><i class="icon-user"></i> User
                             Management</a></li>
+                    {/if}
                 </ul>
             </li>
+        {/if}
+        {if $nav__canViewRequest}
             <li>
                 <form class="navbar-form form-search" action="{$baseurl}/internal.php/viewRequest">
                     <input class="span2" type="text" placeholder="Request ID" name="id" class="search-query">

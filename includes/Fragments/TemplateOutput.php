@@ -70,6 +70,19 @@ trait TemplateOutput
         $this->assign('extraJs', array());
         $this->assign('extraCss', array());
 
+        // nav menu access control
+        $this->assign('nav__canRequests', false);
+        $this->assign('nav__canLogs', false);
+        $this->assign('nav__canUsers', false);
+        $this->assign('nav__canSearch', false);
+        $this->assign('nav__canStats', false);
+        $this->assign('nav__canBan', false);
+        $this->assign('nav__canEmailMgmt', false);
+        $this->assign('nav__canWelcomeMgmt', false);
+        $this->assign('nav__canSiteNoticeMgmt', false);
+        $this->assign('nav__canUserMgmt', false);
+        $this->assign('nav__canViewRequest', false);
+
         $this->assign('page', $this);
     }
 
