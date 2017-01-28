@@ -9,7 +9,7 @@
 * `redir.php` - performs redirects. No known security impact. 
 
 ### Deprecated entry points
-* `acc.php`
+* `acc.php` - Deleted
 * `search.php` - Deleted
 * `statistics.php` - Deleted
 * `team.php` - Deleted
@@ -89,16 +89,19 @@ This means hardcoded file paths, web addresses, etc.
 
 ## Security
 
-`PageBase` provides a security barrier. Use it.
+`InternalPageBase` provides a security barrier. You must use this with every page - it's actually enforced by the 
+design of the application.
 
-Override the method `getSecurityConfiguration()`. It returns an object of type `\Waca\Security\SecurityConfiguration`. Inside that
-method you can filter by the route if you want - it's accessible from the class! The overall idea of this is that each
-right is checked in turn (admin, user, checkuser, community, declined, suspended, new) to see if they apply to the user.
-If they do, then that security rule is applied. If it's a DENY rule, then the user is instantly rejected, even if there
-are other ALLOW rules that permit them access. The default setting for all rules is to have no effect on the outcome of
-the security check. If there's no DENY rules hit, and no ALLOW rules hit by the end of the check, then they are by 
-default denied access. 
+Every action that you define in the RequestRouter (including the implicit `main`) creates a permission, which by default
+is not assigned to any role, so you will get 403 errors if you don't grant it to a role. Please think carefully about
+which roles this is granted to, define further permissions which can be tested with `barrierTest` if necessary. If this
+necessary, it probably indicates something not-quite-right with the design of the page - the intended use is to test if
+a user has permissions for a different page or a different action, such that a button can be shown or hidden as 
+appropriate.
 
+You can assign permissions to roles in two ways, either to allow the permission or to deny the permission. Deny takes
+precedence over allow, so if a user is in two roles, one denies and the other allows, the user is denied the permission.
+If there's no explicit allow or deny in any role granted to a user, the default is to deny.
 
 Anything marked `@category Security-Critical` is probably critical to maintaining the security of the tool, so should
 be triple-checked before being modified in any way! Don't forget that this includes the initial deployment!
