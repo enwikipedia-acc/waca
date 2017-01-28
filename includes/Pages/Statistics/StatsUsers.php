@@ -27,13 +27,24 @@ class StatsUsers extends InternalPageBase
 
         $database = $this->getDatabase();
 
-        $lists = array(
-            "Admin"      => UserSearchHelper::get($database)->byRole('admin')->byStatus(User::STATUS_ACTIVE)->fetch(),
-            "User"       => UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->fetch(),
-            "CheckUsers" => UserSearchHelper::get($database)->byRole('checkuser')->byStatus(User::STATUS_ACTIVE)->fetch(),
-        );
+        $query = <<<SQL
+select
+    u.id
+    , u.username
+    , case when ru.role is not null then 'Yes' else 'No' end tooluser
+    , case when ra.role is not null then 'Yes' else 'No' end tooladmin
+    , case when rc.role is not null then 'Yes' else 'No' end checkuser
+    , case when rr.role is not null then 'Yes' else 'No' end toolroot
+from user u
+    left join userrole ru on ru.user = u.id and ru.role = 'user'
+    left join userrole ra on ra.user = u.id and ra.role = 'admin'
+    left join userrole rc on rc.user = u.id and rc.role = 'checkuser'
+    left join userrole rr on rr.user = u.id and rr.role = 'toolRoot'
+where u.status = 'Active'
+SQL;
 
-        $this->assign("lists", $lists);
+        $users = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
+        $this->assign('users', $users);
 
         $this->assign('statsPageTitle', 'Account Creation Tool users');
         $this->setTemplate("statistics/users.tpl");

@@ -101,3 +101,16 @@ h5.zoom-button-header {
     background-repeat: repeat-x;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0);
 }
+
+td.success{
+    background-color: #dff0d8;
+}
+td.error{
+    background-color: #f2dede;
+}
+td.warning{
+    background-color: #fcf8e3;
+}
+td.info{
+    background-color: #d9edf7;
+}
