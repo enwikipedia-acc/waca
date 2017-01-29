@@ -194,6 +194,16 @@ class IrcNotificationHelper
         $this->send($this->currentUser->getUsername() . " renamed $old to {$user->getUsername()}");
     }
 
+    /**
+     * @param User   $user
+     * @param string $reason
+     */
+    public function userRolesEdited(User $user, $reason)
+    {
+        $currentUser = $this->currentUser->getUsername();
+        $this->send("Active roles for {$user->getUsername()} changed by " . $currentUser . " ($reason)");
+    }
+
     #endregion
 
     #region Site Notice

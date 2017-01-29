@@ -164,7 +164,7 @@ final class SecurityManager
      * @param array $activeRoles
      * @param array $inactiveRoles
      */
-    private function getActiveRoles(User $user, &$activeRoles, &$inactiveRoles)
+    public function getActiveRoles(User $user, &$activeRoles, &$inactiveRoles)
     {
         // Default to the community user here, because the main user is logged out
         $identified = false;
@@ -205,5 +205,9 @@ final class SecurityManager
                 $activeRoles[] = $v;
             }
         }
+    }
+
+    public function getRoleConfiguration(){
+        return $this->roleConfiguration;
     }
 }

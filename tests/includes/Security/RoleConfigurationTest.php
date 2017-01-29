@@ -71,4 +71,29 @@ class RoleConfigurationTest extends PHPUnit_Framework_TestCase
         // assert
         $this->assertEquals(array('public', 'user', 'checkuser', 'admin'), array_keys($result));
     }
+
+    public function testAvailableRoles()
+    {
+        $roleConfiguration = new RoleConfiguration(
+            array(
+                'public' => array(),
+                'user'   => array(),
+                'admin'  => array(
+                    '_childRoles' => array('foo'),
+                ),
+                'foo'    => array(
+                    '_hidden' => true,
+                ),
+                'bar'    => array(
+                    '_hidden' => true,
+                ),
+            ),
+            array('public'));
+
+        // act
+        $result = $roleConfiguration->getAvailableRoles();
+
+        // assert
+        $this->assertEquals(array('user', 'admin'), $result);
+    }
 }

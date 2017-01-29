@@ -27,8 +27,7 @@ use Waca\WebRequest;
  */
 class User extends DataObject
 {
-    const STATUS_USER = 'User';
-    const STATUS_ADMIN = 'Admin';
+    const STATUS_ACTIVE = 'Active';
     const STATUS_SUSPENDED = 'Suspended';
     const STATUS_DECLINED = 'Declined';
     const STATUS_NEW = 'New';
@@ -40,7 +39,6 @@ class User extends DataObject
     private $welcome_sig = "";
     private $lastactive = "0000-00-00 00:00:00";
     private $forcelogout = 0;
-    private $checkuser = 0;
     private $forceidentified = null;
     private $welcome_template = 0;
     private $abortpref = 0;
@@ -241,29 +239,6 @@ class User extends DataObject
     }
 
     /**
-     * Gets all users with a supplied status
-     *
-     * @param string      $status
-     * @param PdoDatabase $database
-     *
-     * @return User[]
-     */
-    public static function getAllWithStatus($status, PdoDatabase $database)
-    {
-        $statement = $database->prepare("SELECT * FROM user WHERE status = :status");
-        $statement->execute(array(":status" => $status));
-
-        $resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
-
-        /** @var User $u */
-        foreach ($resultObject as $u) {
-            $u->setDatabase($database);
-        }
-
-        return $resultObject;
-    }
-
-    /**
      * Gets all inactive users
      *
      * @param PdoDatabase $database
@@ -384,13 +359,13 @@ SQL
             $statement = $this->dbObject->prepare(<<<SQL
 				INSERT INTO `user` ( 
 					username, email, password, status, onwikiname, welcome_sig, 
-					lastactive, forcelogout, checkuser, forceidentified,
+					lastactive, forcelogout, forceidentified,
 					welcome_template, abortpref, confirmationdiff, emailsig, 
 					oauthrequesttoken, oauthrequestsecret, 
 					oauthaccesstoken, oauthaccesssecret
 				) VALUES (
 					:username, :email, :password, :status, :onwikiname, :welcome_sig,
-					:lastactive, :forcelogout, :checkuser, :forceidentified,
+					:lastactive, :forcelogout, :forceidentified,
 					:welcome_template, :abortpref, :confirmationdiff, :emailsig, 
 					:ort, :ors, :oat, :oas
 				);
@@ -404,7 +379,6 @@ SQL
             $statement->bindValue(":welcome_sig", $this->welcome_sig);
             $statement->bindValue(":lastactive", $this->lastactive);
             $statement->bindValue(":forcelogout", $this->forcelogout);
-            $statement->bindValue(":checkuser", $this->checkuser);
             $statement->bindValue(":forceidentified", $this->forceidentified);
             $statement->bindValue(":welcome_template", $this->welcome_template);
             $statement->bindValue(":abortpref", $this->abortpref);
@@ -430,7 +404,7 @@ SQL
 					password = :password, status = :status,
 					onwikiname = :onwikiname, welcome_sig = :welcome_sig, 
 					lastactive = :lastactive, forcelogout = :forcelogout, 
-					checkuser = :checkuser, forceidentified = :forceidentified,
+					forceidentified = :forceidentified,
 					welcome_template = :welcome_template, abortpref = :abortpref, 
 					confirmationdiff = :confirmationdiff, emailsig = :emailsig, 
 					oauthrequesttoken = :ort, oauthrequestsecret = :ors, 
@@ -453,7 +427,6 @@ SQL
             $statement->bindValue(':welcome_sig', $this->welcome_sig);
             $statement->bindValue(':lastactive', $this->lastactive);
             $statement->bindValue(':forcelogout', $this->forcelogout);
-            $statement->bindValue(':checkuser', $this->checkuser);
             $statement->bindValue(':forceidentified', $this->forceidentified);
             $statement->bindValue(':welcome_template', $this->welcome_template);
             $statement->bindValue(':abortpref', $this->abortpref);
@@ -839,8 +812,7 @@ SQL
 
     public function isActive()
     {
-        // TODO: this is temp, will be replaced in later commit.
-        return $this->status == self::STATUS_ADMIN || $this->status == self::STATUS_USER;
+        return $this->status == self::STATUS_ACTIVE;
     }
 
     /**

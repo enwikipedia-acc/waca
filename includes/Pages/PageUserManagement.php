@@ -8,9 +8,12 @@
 
 namespace Waca\Pages;
 
+use PDO;
 use Waca\DataObjects\User;
+use Waca\DataObjects\UserRole;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -32,32 +35,154 @@ class PageUserManagement extends InternalPageBase
         $this->setHtmlTitle('User Management');
 
         $database = $this->getDatabase();
+        $currentUser = User::getCurrent($database);
+
+        $roles = "select r.user user, group_concat(r.role separator ', ') roles from user u inner join userrole r on u.id = r.user";
 
         if (WebRequest::getBoolean("showAll")) {
             $this->assign("showAll", true);
 
-            $this->assign("suspendedUsers", User::getAllWithStatus(User::STATUS_SUSPENDED, $database));
-            $this->assign("declinedUsers", User::getAllWithStatus(User::STATUS_DECLINED, $database));
+            $this->assign("suspendedUsers",
+                UserSearchHelper::get($database)->byStatus(User::STATUS_SUSPENDED)->fetch());
+            $this->assign("declinedUsers", UserSearchHelper::get($database)->byStatus(User::STATUS_DECLINED)->fetch());
+            $roles .= " group by r.user";
         }
         else {
             $this->assign("showAll", false);
             $this->assign("suspendedUsers", array());
             $this->assign("declinedUsers", array());
+
+            $roles .= " where u.status in ('Active', 'New') group by r.user";
         }
 
-        $this->assign("newUsers", User::getAllWithStatus(User::STATUS_NEW, $database));
-        $this->assign("normalUsers", User::getAllWithStatus(User::STATUS_USER, $database));
-        $this->assign("adminUsers", User::getAllWithStatus(User::STATUS_ADMIN, $database));
-        $this->assign("checkUsers", array());
+        $roleData = $database->query($roles)->fetchAll(PDO::FETCH_ASSOC);
+
+        $roleMap = array();
+        foreach ($roleData as $row) {
+            $roleMap[$row['user']] = $row['roles'];
+        }
+
+        $this->assign('newUsers', UserSearchHelper::get($database)->byStatus(User::STATUS_NEW)->fetch());
+        $this->assign('normalUsers',
+            UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('user')->fetch());
+        $this->assign('adminUsers',
+            UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('admin')->fetch());
+        $this->assign('checkUsers',
+            UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('checkuser')->fetch());
+        $this->assign('toolRoots',
+            UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('toolRoot')->fetch());
+
+        $this->assign('roles', $roleMap);
 
         $this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use ($database) {
             return User::getAllUsernames($database);
         });
 
+        $this->assign('canApprove', $this->barrierTest('approve', $currentUser));
+        $this->assign('canDecline', $this->barrierTest('decline', $currentUser));
+        $this->assign('canRename', $this->barrierTest('rename', $currentUser));
+        $this->assign('canEditUser', $this->barrierTest('editUser', $currentUser));
+        $this->assign('canSuspend', $this->barrierTest('suspend', $currentUser));
+        $this->assign('canEditRoles', $this->barrierTest('editRoles', $currentUser));
+
         $this->setTemplate("usermanagement/main.tpl");
     }
 
     #region Access control
+
+    /**
+     * Action target for editing the roles assigned to a user
+     */
+    protected function editRoles()
+    {
+        $this->setHtmlTitle('User Management');
+        $database = $this->getDatabase();
+        $userId = WebRequest::getInt('user');
+
+        /** @var User $user */
+        $user = User::getById($userId, $database);
+
+        if ($user === false) {
+            throw new ApplicationLogicException('Sorry, the user you are trying to edit could not be found.');
+        }
+
+        $roleData = $this->getRoleData(UserRole::getForUser($user->getId(), $database));
+
+        // Dual-mode action
+        if (WebRequest::wasPosted()) {
+            $this->validateCSRFToken();
+
+            $reason = WebRequest::postString('reason');
+            if ($reason === false || trim($reason) === '') {
+                throw new ApplicationLogicException('No reason specified for roles change');
+            }
+
+            /** @var UserRole[] $delete */
+            $delete = array();
+            /** @var string[] $delete */
+            $add = array();
+
+            foreach ($roleData as $name => $r) {
+                if ($r['allowEdit'] !== 1) {
+                    // not allowed, to touch this, so ignore it
+                    continue;
+                }
+
+                $newValue = WebRequest::postBoolean('role-' . $name) ? 1 : 0;
+                if ($newValue !== $r['active']) {
+                    if ($newValue === 0) {
+                        $delete[] = $r['object'];
+                    }
+
+                    if ($newValue === 1) {
+                        $add[] = $name;
+                    }
+                }
+            }
+
+            // Check there's something to do
+            if ((count($add) + count($delete)) === 0) {
+                $this->redirect('statistics/users', 'detail', array('user' => $user->getId()));
+                SessionAlert::warning('No changes made to roles.');
+
+                return;
+            }
+
+            $removed = array();
+
+            /** @var UserRole $d */
+            foreach ($delete as $d) {
+                $removed[] = $d->getRole();
+                $d->delete();
+            }
+
+            foreach ($add as $x) {
+                $a = new UserRole();
+                $a->setUser($user->getId());
+                $a->setRole($x);
+                $a->setDatabase($database);
+                $a->save();
+            }
+
+            Logger::userRolesEdited($database, $user, $reason, $add, $removed);
+
+            // dummy save for optimistic locking. If this fails, the entire txn will roll back.
+            $user->setUpdateVersion(WebRequest::postInt('updateversion'));
+            $user->save();
+
+            $this->getNotificationHelper()->userRolesEdited($user, $reason);
+            SessionAlert::quick('Roles changed for user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
+
+            $this->redirect('statistics/users', 'detail', array('user' => $user->getId()));
+            return;
+        }
+        else {
+            $this->assignCSRFToken();
+            $this->setTemplate('usermanagement/roleedit.tpl');
+            $this->assign('user', $user);
+            $this->assign('roleData', $roleData);
+        }
+    }
 
     /**
      * Action target for suspending users
@@ -184,67 +309,6 @@ class PageUserManagement extends InternalPageBase
     }
 
     /**
-     * Entry point for the demote action
-     *
-     * @throws ApplicationLogicException
-     */
-    protected function demote()
-    {
-        $this->setHtmlTitle('User Management');
-
-        $database = $this->getDatabase();
-
-        $userId = WebRequest::getInt('user');
-        $user = User::getById($userId, $database);
-
-        if ($user === false) {
-            throw new ApplicationLogicException('Sorry, the user you are trying to demote could not be found.');
-        }
-
-    //    if (!$user->isAdmin()) {
-    //        throw new ApplicationLogicException('Sorry, the user you are trying to demote is not an admin.');
-    //    }
-
-        // Dual-mode action
-        if (WebRequest::wasPosted()) {
-            $this->validateCSRFToken();
-            $reason = WebRequest::postString('reason');
-
-            if ($reason === null || trim($reason) === "") {
-                throw new ApplicationLogicException('No reason provided');
-            }
-
-            $user->setStatus(User::STATUS_USER);
-            $user->setUpdateVersion(WebRequest::postInt('updateversion'));
-            $user->save();
-            Logger::demotedUser($database, $user, $reason);
-
-            $this->getNotificationHelper()->userDemoted($user, $reason);
-            SessionAlert::quick('Demoted user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
-
-            // send email
-            $this->sendStatusChangeEmail(
-                'Your WP:ACC account has been demoted',
-                'usermanagement/emails/demoted.tpl',
-                $reason,
-                $user,
-                User::getCurrent($database)->getUsername()
-            );
-
-            $this->redirect('userManagement');
-
-            return;
-        }
-        else {
-            $this->assignCSRFToken();
-            $this->setTemplate('usermanagement/changelevel-reason.tpl');
-            $this->assign('user', $user);
-            $this->assign('status', 'User');
-            $this->assign("showReason", true);
-        }
-    }
-
-    /**
      * Entry point for the approve action
      *
      * @throws ApplicationLogicException
@@ -262,14 +326,14 @@ class PageUserManagement extends InternalPageBase
             throw new ApplicationLogicException('Sorry, the user you are trying to approve could not be found.');
         }
 
-    //    if ($user->isUser() || $user->isAdmin()) {
-    //        throw new ApplicationLogicException('Sorry, the user you are trying to approve is already an active user.');
-    //    }
+        if ($user->isActive()) {
+            throw new ApplicationLogicException('Sorry, the user you are trying to approve is already an active user.');
+        }
 
         // Dual-mode action
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
-            $user->setStatus(User::STATUS_USER);
+            $user->setStatus(User::STATUS_ACTIVE);
             $user->setUpdateVersion(WebRequest::postInt('updateversion'));
             $user->save();
             Logger::approvedUser($database, $user);
@@ -295,61 +359,6 @@ class PageUserManagement extends InternalPageBase
             $this->setTemplate("usermanagement/changelevel-reason.tpl");
             $this->assign("user", $user);
             $this->assign("status", "User");
-            $this->assign("showReason", false);
-        }
-    }
-
-    /**
-     * Entry point for the promote action
-     *
-     * @throws ApplicationLogicException
-     */
-    protected function promote()
-    {
-        $this->setHtmlTitle('User Management');
-
-        $database = $this->getDatabase();
-
-        $userId = WebRequest::getInt('user');
-        $user = User::getById($userId, $database);
-
-        if ($user === false) {
-            throw new ApplicationLogicException('Sorry, the user you are trying to promote could not be found.');
-        }
-
-    //    if ($user->isAdmin()) {
-    //        throw new ApplicationLogicException('Sorry, the user you are trying to promote is already an admin.');
-    //    }
-
-        // Dual-mode action
-        if (WebRequest::wasPosted()) {
-            $this->validateCSRFToken();
-            $user->setStatus(User::STATUS_ADMIN);
-            $user->setUpdateVersion(WebRequest::postInt('updateversion'));
-            $user->save();
-            Logger::promotedUser($database, $user);
-
-            $this->getNotificationHelper()->userPromoted($user);
-            SessionAlert::quick('Promoted user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
-
-            // send email
-            $this->sendStatusChangeEmail(
-                'Your WP:ACC account has been promoted',
-                'usermanagement/emails/promoted.tpl',
-                null,
-                $user,
-                User::getCurrent($database)->getUsername()
-            );
-
-            $this->redirect("userManagement");
-
-            return;
-        }
-        else {
-            $this->assignCSRFToken();
-            $this->setTemplate("usermanagement/changelevel-reason.tpl");
-            $this->assign("user", $user);
-            $this->assign("status", "Admin");
             $this->assign("showReason", false);
         }
     }
@@ -514,5 +523,42 @@ class PageUserManagement extends InternalPageBase
             $this->fetchTemplate($template),
             array('Reply-To' => $this->adminMailingList)
         );
+    }
+
+    /**
+     * @param UserRole[] $activeRoles
+     *
+     * @return array
+     */
+    private function getRoleData($activeRoles)
+    {
+        $availableRoles = $this->getSecurityManager()->getRoleConfiguration()->getAvailableRoles();
+
+        $currentUser = User::getCurrent($this->getDatabase());
+        $this->getSecurityManager()->getActiveRoles($currentUser, $userRoles, $inactiveRoles);
+
+        $initialValue = array('active' => 0, 'allowEdit' => 0, 'description' => '???', 'object' => null);
+
+        $roleData = array();
+        foreach ($availableRoles as $role => $data) {
+            $intersection = array_intersect($data['editableBy'], $userRoles);
+
+            $roleData[$role] = $initialValue;
+            $roleData[$role]['allowEdit'] = count($intersection) > 0 ? 1 : 0;
+            $roleData[$role]['description'] = $data['description'];
+        }
+
+        foreach ($activeRoles as $role) {
+            if (!isset($roleData[$role->getRole()])) {
+                // This value is no longer available in the configuration, allow changing (aka removing) it.
+                $roleData[$role->getRole()] = $initialValue;
+                $roleData[$role->getRole()]['allowEdit'] = 1;
+            }
+
+            $roleData[$role->getRole()]['object'] = $role;
+            $roleData[$role->getRole()]['active'] = 1;
+        }
+
+        return $roleData;
     }
 }

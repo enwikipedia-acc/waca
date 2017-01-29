@@ -2,6 +2,7 @@
   <thead>
     <th>Username</th>
     <th>On-wiki name</th>
+    <th>Roles</th>
     <th>Actions</th>
   </thead>
   <tbody>

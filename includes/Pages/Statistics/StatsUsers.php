@@ -14,6 +14,8 @@ use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\LogHelper;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
+use Waca\Helpers\SearchHelpers\UserSearchHelper;
+use Waca\Pages\PageUserManagement;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
@@ -26,9 +28,9 @@ class StatsUsers extends InternalPageBase
         $database = $this->getDatabase();
 
         $lists = array(
-            "Admin"      => User::getAllWithStatus("Admin", $database),
-            "User"       => User::getAllWithStatus("User", $database),
-            "CheckUsers" => array(),
+            "Admin"      => UserSearchHelper::get($database)->byRole('admin')->byStatus(User::STATUS_ACTIVE)->fetch(),
+            "User"       => UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->fetch(),
+            "CheckUsers" => UserSearchHelper::get($database)->byRole('checkuser')->byStatus(User::STATUS_ACTIVE)->fetch(),
         );
 
         $this->assign("lists", $lists);
@@ -122,6 +124,14 @@ SQL
             $this->assign("accountlog", $logData);
             $this->assign("users", $users);
         }
+
+        $currentUser = User::getCurrent($database);
+        $this->assign('canApprove', $this->barrierTest('approve', $currentUser, PageUserManagement::class));
+        $this->assign('canDecline', $this->barrierTest('decline', $currentUser, PageUserManagement::class));
+        $this->assign('canRename', $this->barrierTest('rename', $currentUser, PageUserManagement::class));
+        $this->assign('canEditUser', $this->barrierTest('editUser', $currentUser, PageUserManagement::class));
+        $this->assign('canSuspend', $this->barrierTest('suspend', $currentUser, PageUserManagement::class));
+        $this->assign('canEditRoles', $this->barrierTest('editRoles', $currentUser, PageUserManagement::class));
 
         $this->assign('statsPageTitle', 'Account Creation Tool users');
         $this->setTemplate("statistics/userdetail.tpl");

@@ -153,8 +153,7 @@ class RequestRouter implements IRequestRouter
                     'rename',
                     'editUser',
                     'suspend',
-                    'promote',
-                    'demote',
+                    'editRoles',
                 ),
             ),
         'siteNotice'                  =>

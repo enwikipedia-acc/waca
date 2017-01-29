@@ -9,6 +9,9 @@
     {if $user->isOAuthLinked()}<span class="label {if $user->getOnWikiName() == "##OAUTH##"}label-important{else}label-success{/if}">OAuth</span>{/if}
   </td>
   <td>
+    {$roles[$user->getId()]|escape}
+  </td>
+  <td>
     {include file="usermanagement/buttons.tpl"}
   </td>
 </tr>

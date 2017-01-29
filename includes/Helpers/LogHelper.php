@@ -138,6 +138,7 @@ class LogHelper
             'Unreserved'      => 'unreserved',
             'Approved'        => 'approved',
             'Suspended'       => 'suspended',
+            'RoleChange'      => 'changed roles',
             'Banned'          => 'banned',
             'Edited'          => 'edited interface message',
             'Declined'        => 'declined',
@@ -181,6 +182,7 @@ class LogHelper
             'Unreserved'      => 'unreserved',
             'Approved'        => 'approved',
             'Suspended'       => 'suspended',
+            'RoleChange'      => 'changed roles',
             'Banned'          => 'banned',
             'Edited'          => 'edited interface message',
             'Declined'        => 'declined',
@@ -331,6 +333,24 @@ HTML;
                 $oldName = htmlentities($renameData['old'], ENT_COMPAT, 'UTF-8');
                 $newName = htmlentities($renameData['new'], ENT_COMPAT, 'UTF-8');
                 $comment = 'Renamed \'' . $oldName . '\' to \'' . $newName . '\'.';
+            }
+            else if ($logEntry->getAction() === 'RoleChange') {
+                $roleChangeData = unserialize($logEntry->getComment());
+
+                $removed = array();
+                foreach ($roleChangeData['removed'] as $r) {
+                    $removed[] = htmlentities($r, ENT_COMPAT, 'UTF-8');
+                }
+
+                $added = array();
+                foreach ($roleChangeData['added'] as $r) {
+                    $added[] = htmlentities($r, ENT_COMPAT, 'UTF-8');
+                }
+
+                $reason = htmlentities($roleChangeData['reason'], ENT_COMPAT, 'UTF-8');
+
+                $roleDelta = 'Removed [' . implode(', ', $removed) . '], Added [' . implode(', ', $added) . ']';
+                $comment = $roleDelta . ' with comment: ' . $reason;
             }
             else {
                 $comment = $logEntry->getComment();

@@ -112,6 +112,8 @@ class RoleConfiguration
             ),
         ),
         'user'              => array(
+            '_description' => 'A standard tool user.',
+            '_editableBy' => array('admin', 'toolRoot'),
             '_childRoles'                        => array(
                 'internalStats',
             ),
@@ -176,9 +178,10 @@ class RoleConfiguration
 
         ),
         'admin'             => array(
+            '_description' => 'A tool administrator.',
+            '_editableBy' => array('admin', 'toolRoot'),
             '_childRoles'                        => array(
-                'user',
-                'requestAdminTools',
+                'user', 'requestAdminTools',
             ),
             PageEmailManagement::class           => array(
                 'edit'   => self::ACCESS_ALLOW,
@@ -203,9 +206,10 @@ class RoleConfiguration
             ),
         ),
         'checkuser'         => array(
+            '_description' => 'A user with CheckUser access',
+            '_editableBy' => array('checkuser', 'toolRoot'),
             '_childRoles'             => array(
-                'user',
-                'requestAdminTools',
+                'user', 'requestAdminTools',
             ),
             PageUserManagement::class => array(
                 self::MAIN  => self::ACCESS_ALLOW,
@@ -330,8 +334,10 @@ class RoleConfiguration
                 unset($available[$role]['_childRoles']);
             }
 
-            if (isset($available[$role]['_hidden'])) {
-                unset($available[$role]['_hidden']);
+            foreach (array('_hidden', '_editableBy', '_description') as $item) {
+                if (isset($available[$role][$item])) {
+                    unset($available[$role][$item]);
+                }
             }
         }
 
@@ -340,8 +346,20 @@ class RoleConfiguration
 
     public function getAvailableRoles()
     {
-        // TODO: hide roles where    '_hidden' => true,
-        return array_diff(array_keys($this->roleConfig), array('public', 'loggedIn'));
+        $possible = array_diff(array_keys($this->roleConfig), array('public', 'loggedIn'));
+
+        $actual = array();
+
+        foreach ($possible as $role) {
+            if (!isset($this->roleConfig[$role]['_hidden'])) {
+                $actual[$role] = array(
+                    'description' => $this->roleConfig[$role]['_description'],
+                    'editableBy'  => $this->roleConfig[$role]['_editableBy'],
+                );
+            }
+        }
+
+        return $actual;
     }
 
     /**
