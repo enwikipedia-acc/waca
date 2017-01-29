@@ -19,6 +19,7 @@ use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
+use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\PdoDatabase;
 use Waca\Security\SecurityManager;
 use Waca\SiteConfiguration;
@@ -318,7 +319,7 @@ HTML;
             }
         }
 
-        $users = User::getUsernames($userIds, $database);
+        $users = UserSearchHelper::get($database)->inIds($userIds)->fetchColumn('username');
         $users[-1] = User::getCommunity()->getUsername();
 
         $logData = array();

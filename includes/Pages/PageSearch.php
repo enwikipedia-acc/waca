@@ -12,6 +12,7 @@ use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
+use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -64,7 +65,7 @@ class PageSearch extends InternalPageBase
                     return $entry->getReserved();
                 },
                 $results);
-            $userList = User::getUsernames($userIds, $this->getDatabase());
+            $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchColumn('username');
             $this->assign('userlist', $userList);
 
             $this->assignCSRFToken();

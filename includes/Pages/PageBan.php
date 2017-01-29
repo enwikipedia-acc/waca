@@ -14,6 +14,7 @@ use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -36,7 +37,7 @@ class PageBan extends InternalPageBase
                 return $entry->getUser();
             },
             $bans);
-        $userList = User::getUsernames($userIds, $this->getDatabase());
+        $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchColumn('username');
 
         $user = User::getCurrent($this->getDatabase());
         $this->assign('canSet', $this->barrierTest('set', $user));

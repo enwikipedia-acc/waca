@@ -11,6 +11,7 @@ namespace Waca\Pages;
 use PDO;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
+use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\Pages\RequestAction\PageBreakReservation;
 use Waca\Tasks\InternalPageBase;
 
@@ -66,7 +67,7 @@ class PageMain extends InternalPageBase
                     return $entry->getReserved();
                 },
                 $requests);
-            $userList = User::getUsernames($userIds, $this->getDatabase());
+            $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchColumn('username');
             $this->assign('userlist', $userList);
 
             $requestSectionData[$v['header']] = array(

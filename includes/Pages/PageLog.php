@@ -12,6 +12,7 @@ use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
 use Waca\Helpers\LogHelper;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
+use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
@@ -30,7 +31,7 @@ class PageLog extends InternalPageBase
         $database = $this->getDatabase();
 
         $this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use ($database) {
-            return User::getAllUsernames($database);
+            return UserSearchHelper::get($database)->fetchColumn('username');
         });
 
         $limit = WebRequest::getInt('limit');

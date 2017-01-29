@@ -8,7 +8,6 @@
 
 namespace Waca\Pages;
 
-use PDO;
 use Waca\DataObjects\User;
 use Waca\DataObjects\UserRole;
 use Waca\Exceptions\ApplicationLogicException;
@@ -37,29 +36,21 @@ class PageUserManagement extends InternalPageBase
         $database = $this->getDatabase();
         $currentUser = User::getCurrent($database);
 
-        $roles = "select r.user user, group_concat(r.role separator ', ') roles from user u inner join userrole r on u.id = r.user";
-
         if (WebRequest::getBoolean("showAll")) {
             $this->assign("showAll", true);
 
             $this->assign("suspendedUsers",
                 UserSearchHelper::get($database)->byStatus(User::STATUS_SUSPENDED)->fetch());
             $this->assign("declinedUsers", UserSearchHelper::get($database)->byStatus(User::STATUS_DECLINED)->fetch());
-            $roles .= " group by r.user";
+
+            UserSearchHelper::get($database)->getRoleMap($roleMap);
         }
         else {
             $this->assign("showAll", false);
             $this->assign("suspendedUsers", array());
             $this->assign("declinedUsers", array());
 
-            $roles .= " where u.status in ('Active', 'New') group by r.user";
-        }
-
-        $roleData = $database->query($roles)->fetchAll(PDO::FETCH_ASSOC);
-
-        $roleMap = array();
-        foreach ($roleData as $row) {
-            $roleMap[$row['user']] = $row['roles'];
+            UserSearchHelper::get($database)->statusIn(array('New', 'Active'))->getRoleMap($roleMap);
         }
 
         $this->assign('newUsers', UserSearchHelper::get($database)->byStatus(User::STATUS_NEW)->fetch());
@@ -75,7 +66,7 @@ class PageUserManagement extends InternalPageBase
         $this->assign('roles', $roleMap);
 
         $this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use ($database) {
-            return User::getAllUsernames($database);
+            return UserSearchHelper::get($database)->fetchColumn('username');
         });
 
         $this->assign('canApprove', $this->barrierTest('approve', $currentUser));

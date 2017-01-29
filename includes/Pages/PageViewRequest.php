@@ -17,6 +17,7 @@ use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\RequestData;
 use Waca\Helpers\LogHelper;
+use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\PdoDatabase;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -139,7 +140,7 @@ class PageViewRequest extends InternalPageBase
         $this->assign("allOtherReasons", $allOtherReasons);
 
         $this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use ($database) {
-            return User::getAllUsernames($database, true);
+            return UserSearchHelper::get($database)->byStatus('Active')->fetchColumn('username');
         });
     }
 
