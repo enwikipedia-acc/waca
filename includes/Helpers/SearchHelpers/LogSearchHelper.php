@@ -20,7 +20,7 @@ class LogSearchHelper extends SearchHelperBase
      */
     protected function __construct(PdoDatabase $database)
     {
-        parent::__construct($database, 'log', 'timestamp DESC');
+        parent::__construct($database, 'log', Log::class, 'timestamp DESC');
     }
 
     /**
@@ -35,21 +35,6 @@ class LogSearchHelper extends SearchHelperBase
         $helper = new LogSearchHelper($database);
 
         return $helper;
-    }
-
-    /**
-     * Returns the requested requests
-     *
-     * @return Log[]
-     */
-    public function fetch()
-    {
-        $targetClass = Log::class;
-
-        /** @var Log[] $returnedObjects */
-        $returnedObjects = $this->fetchObjects($targetClass);
-
-        return $returnedObjects;
     }
 
     /**

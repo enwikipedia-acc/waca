@@ -21,7 +21,7 @@ class RequestSearchHelper extends SearchHelperBase
      */
     protected function __construct(PdoDatabase $database)
     {
-        parent::__construct($database, 'request');
+        parent::__construct($database, 'request', Request::class);
     }
 
     /**
@@ -36,20 +36,6 @@ class RequestSearchHelper extends SearchHelperBase
         $helper = new RequestSearchHelper($database);
 
         return $helper;
-    }
-
-    /**
-     * Returns the requested requests
-     *
-     * @return Request[]
-     */
-    public function fetch()
-    {
-        $targetClass = Request::class;
-        /** @var Request[] $returnedObjects */
-        $returnedObjects = $this->fetchObjects($targetClass);
-
-        return $returnedObjects;
     }
 
     /**
