@@ -1816,7 +1816,8 @@ elseif ($action == "sendtouser") {
 	global $baseurl;
     
 	$database = gGetDb();
-    
+
+	/** @var Request $requestObject */
 	$requestObject = Request::getById($_POST['id'], $database);
 	if ($requestObject == false) {
 		BootstrapSkin::displayAlertBox("Request invalid", "alert-error", "Could not find request", true, false);
@@ -1835,19 +1836,19 @@ elseif ($action == "sendtouser") {
 		die();
 	}
     
-	$database->transactionally(function() use ($database, $user, $request, $curuser)
+	$database->transactionally(function() use ($database, $user, $requestObject, $curuser)
 	{
 		$updateStatement = $database->prepare("UPDATE request SET reserved = :userid WHERE id = :request LIMIT 1;");
 		$updateStatement->bindValue(":userid", $user->getId());
-		$updateStatement->bindValue(":request", $request);
+		$updateStatement->bindValue(":request", $requestObject->getId());
 		if (!$updateStatement->execute()) {
 			throw new TransactionException("Error updating reserved status of request.");   
 		}
         
-		Logger::sendReservation($database, Request::getById($request, $database), $user);
+		Logger::sendReservation($database, $requestObject, $user);
 	});
     
-	Notification::requestReservationSent($request, $user);
+	Notification::requestReservationSent($requestObject, $user);
 	SessionAlert::success("Reservation sent successfully");
 	header("Location: $baseurl/acc.php?action=zoom&id=$request");
 }
