@@ -67,7 +67,7 @@ class PageMain extends InternalPageBase
                     return $entry->getReserved();
                 },
                 $requests);
-            $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchColumn('username');
+            $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchMap('username');
             $this->assign('userlist', $userList);
 
             $requestSectionData[$v['header']] = array(

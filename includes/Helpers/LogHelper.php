@@ -319,7 +319,7 @@ HTML;
             }
         }
 
-        $users = UserSearchHelper::get($database)->inIds($userIds)->fetchColumn('username');
+        $users = UserSearchHelper::get($database)->inIds($userIds)->fetchMap('username');
         $users[-1] = User::getCommunity()->getUsername();
 
         $logData = array();

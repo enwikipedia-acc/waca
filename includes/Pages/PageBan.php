@@ -37,7 +37,7 @@ class PageBan extends InternalPageBase
                 return $entry->getUser();
             },
             $bans);
-        $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchColumn('username');
+        $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchMap('username');
 
         $user = User::getCurrent($this->getDatabase());
         $this->assign('canSet', $this->barrierTest('set', $user));

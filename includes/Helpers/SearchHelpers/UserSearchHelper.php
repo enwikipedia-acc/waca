@@ -90,7 +90,7 @@ class UserSearchHelper extends SearchHelperBase
                   r.user user
                 , group_concat(r.role SEPARATOR ', ') roles 
             FROM userrole r 
-            WHERE user IN ({$this->buildQuery('id')})
+            WHERE user IN ({$this->buildQuery(array('id'))})
             GROUP BY r.user
 SQL;
 

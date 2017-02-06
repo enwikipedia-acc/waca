@@ -78,9 +78,22 @@ abstract class SearchHelperBase
      * @return array
      */
     public function fetchColumn($column){
-        $statement = $this->getData($column);
+        $statement = $this->getData(array($column));
 
         return $statement->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    public function fetchMap($column){
+        $statement = $this->getData(array('id', $column));
+
+        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $map = array();
+
+        foreach ($data as $row) {
+            $map[$row['id']] = $row[$column];
+        }
+
+        return $map;
     }
 
     /**
@@ -145,13 +158,13 @@ abstract class SearchHelperBase
     }
 
     /**
-     * @param $column
+     * @param array $columns
      *
      * @return PDOStatement
      */
-    private function getData($column = '*')
+    private function getData($columns = array('*'))
     {
-        $query = $this->buildQuery($column);
+        $query = $this->buildQuery($columns);
         $query .= $this->applyOrder();
         $query .= $this->applyLimit();
 
@@ -162,13 +175,18 @@ abstract class SearchHelperBase
     }
 
     /**
-     * @param $column
+     * @param array $columns
      *
      * @return string
      */
-    protected function buildQuery($column)
+    protected function buildQuery($columns)
     {
-        $query = 'SELECT /* SearchHelper */ origin.' . $column . ' FROM ' . $this->table . ' origin ';
+        $colData = array();
+        foreach ($columns as $c) {
+            $colData[] = 'origin.' . $c;
+        }
+
+        $query = 'SELECT /* SearchHelper */ ' . implode(', ', $colData) . ' FROM ' . $this->table . ' origin ';
         $query .= $this->joinClause . $this->whereClause;
 
         return $query;

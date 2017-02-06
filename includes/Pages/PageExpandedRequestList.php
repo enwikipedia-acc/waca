@@ -79,7 +79,7 @@ class PageExpandedRequestList extends InternalPageBase
                 $requests
             );
 
-            $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchColumn('username');
+            $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchMap('username');
             $this->assign('userlist', $userList);
 
             $this->assign('requestLimitShowOnly', $config->getMiserModeLimit());
