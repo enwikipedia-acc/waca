@@ -17,6 +17,7 @@ class DataObjectTest extends PHPUnit_Framework_TestCase
 
 	public function testID() {
 		$this->assertTrue($this->do->isNew());
+		$this->assertEquals($this->do->getID(), 0);
 	}
 
 	public function testUpdateVersion()
@@ -35,5 +36,9 @@ class DataObjectTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($this->do->setUpdateVersion(42), null);
 
 		$this->assertEquals($this->do->getUpdateVersion(), 42);
+	}
+
+	public function testDatabase() {
+		$this->assertNull($this->do->getDatabase());
 	}
 }
