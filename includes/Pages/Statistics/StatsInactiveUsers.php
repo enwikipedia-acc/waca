@@ -14,25 +14,25 @@ use Waca\WebRequest;
 
 class StatsInactiveUsers extends InternalPageBase
 {
-	public function main()
-	{
-		$this->setHtmlTitle('Inactive Users :: Statistics');
+    public function main()
+    {
+        $this->setHtmlTitle('Inactive Users :: Statistics');
 
-		$showImmune = false;
-		if (WebRequest::getBoolean('showimmune')) {
-			$showImmune = true;
-		}
+        $showImmune = false;
+        if (WebRequest::getBoolean('showimmune')) {
+            $showImmune = true;
+        }
 
-		$this->assign('showImmune', $showImmune);
-		$inactiveUsers = User::getAllInactive($this->getDatabase());
-		$this->assign('inactiveUsers', $inactiveUsers);
+        $this->assign('showImmune', $showImmune);
+        $inactiveUsers = User::getAllInactive($this->getDatabase());
+        $this->assign('inactiveUsers', $inactiveUsers);
 
-		$this->setTemplate('statistics/inactive-users.tpl');
-		$this->assign('statsPageTitle', 'Inactive tool users');
-	}
+        $this->setTemplate('statistics/inactive-users.tpl');
+        $this->assign('statsPageTitle', 'Inactive tool users');
+    }
 
-	public function getSecurityConfiguration()
-	{
-		return $this->getSecurityManager()->configure()->asInternalPage();
-	}
+    public function getSecurityConfiguration()
+    {
+        return $this->getSecurityManager()->configure()->asInternalPage();
+    }
 }

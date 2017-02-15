@@ -21,110 +21,110 @@ use Waca\PdoDatabase;
  */
 class GeoLocation extends DataObject
 {
-	private $address;
-	private $data;
-	private $creation;
+    private $address;
+    private $data;
+    private $creation;
 
-	/**
-	 * @param string      $address
-	 * @param PdoDatabase $database
-	 *
-	 * @return GeoLocation
-	 */
-	public static function getByAddress($address, PdoDatabase $database)
-	{
-		$statement = $database->prepare("SELECT * FROM geolocation WHERE address = :id LIMIT 1;");
-		$statement->bindValue(":id", $address);
+    /**
+     * @param string      $address
+     * @param PdoDatabase $database
+     *
+     * @return GeoLocation
+     */
+    public static function getByAddress($address, PdoDatabase $database)
+    {
+        $statement = $database->prepare("SELECT * FROM geolocation WHERE address = :id LIMIT 1;");
+        $statement->bindValue(":id", $address);
 
-		$statement->execute();
+        $statement->execute();
 
-		$resultObject = $statement->fetchObject(get_called_class());
+        $resultObject = $statement->fetchObject(get_called_class());
 
-		if ($resultObject != false) {
-			$resultObject->setDatabase($database);
-		}
+        if ($resultObject != false) {
+            $resultObject->setDatabase($database);
+        }
 
-		return $resultObject;
-	}
+        return $resultObject;
+    }
 
-	public function save()
-	{
-		if ($this->isNew()) {
-			// insert
-			$statement = $this->dbObject->prepare(<<<SQL
+    public function save()
+    {
+        if ($this->isNew()) {
+            // insert
+            $statement = $this->dbObject->prepare(<<<SQL
 INSERT INTO `geolocation` (address, data) VALUES (:address, :data);
 SQL
-			);
-			$statement->bindValue(":address", $this->address);
-			$statement->bindValue(":data", $this->data);
+            );
+            $statement->bindValue(":address", $this->address);
+            $statement->bindValue(":data", $this->data);
 
-			if ($statement->execute()) {
-				$this->id = (int)$this->dbObject->lastInsertId();
-			}
-			else {
-				throw new Exception($statement->errorInfo());
-			}
-		}
-		else {
-			// update
-			$statement = $this->dbObject->prepare(<<<SQL
+            if ($statement->execute()) {
+                $this->id = (int)$this->dbObject->lastInsertId();
+            }
+            else {
+                throw new Exception($statement->errorInfo());
+            }
+        }
+        else {
+            // update
+            $statement = $this->dbObject->prepare(<<<SQL
 UPDATE `geolocation`
 SET address = :address, data = :data, updateversion = updateversion + 1
 WHERE id = :id AND updateversion = :updateversion
 LIMIT 1;
 SQL
-			);
+            );
 
-			$statement->bindValue(":id", $this->id);
-			$statement->bindValue(":updateversion", $this->updateversion);
+            $statement->bindValue(":id", $this->id);
+            $statement->bindValue(":updateversion", $this->updateversion);
 
-			$statement->bindValue(":address", $this->address);
-			$statement->bindValue(":data", $this->data);
+            $statement->bindValue(":address", $this->address);
+            $statement->bindValue(":data", $this->data);
 
-			if (!$statement->execute()) {
-				throw new Exception($statement->errorInfo());
-			}
+            if (!$statement->execute()) {
+                throw new Exception($statement->errorInfo());
+            }
 
-			if ($statement->rowCount() !== 1) {
-				throw new OptimisticLockFailedException();
-			}
+            if ($statement->rowCount() !== 1) {
+                throw new OptimisticLockFailedException();
+            }
 
-			$this->updateversion++;
-		}
-	}
+            $this->updateversion++;
+        }
+    }
 
-	public function getAddress()
-	{
-		return $this->address;
-	}
+    public function getAddress()
+    {
+        return $this->address;
+    }
 
-	/**
-	 * @param string $address
-	 */
-	public function setAddress($address)
-	{
-		$this->address = $address;
-	}
+    /**
+     * @param string $address
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getData()
-	{
-		return unserialize($this->data);
-	}
+    /**
+     * @return array
+     */
+    public function getData()
+    {
+        return unserialize($this->data);
+    }
 
-	/**
-	 * @param array $data
-	 */
-	public function setData($data)
-	{
-		$this->data = serialize($data);
-	}
+    /**
+     * @param array $data
+     */
+    public function setData($data)
+    {
+        $this->data = serialize($data);
+    }
 
-	/** @return DateTimeImmutable */
-	public function getCreation()
-	{
-		return new DateTimeImmutable($this->creation);
-	}
+    /** @return DateTimeImmutable */
+    public function getCreation()
+    {
+        return new DateTimeImmutable($this->creation);
+    }
 }

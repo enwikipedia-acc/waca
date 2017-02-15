@@ -26,445 +26,445 @@ use Waca\SiteConfiguration;
  */
 class IrcNotificationHelper
 {
-	/** @var PdoDatabase $notificationsDatabase */
-	private $notificationsDatabase;
-	/** @var PdoDatabase $primaryDatabase */
-	private $primaryDatabase;
-	/** @var bool $notificationsEnabled */
-	private $notificationsEnabled;
-	/** @var int $notificationType */
-	private $notificationType;
-	/** @var User $currentUser */
-	private $currentUser;
-	/** @var string $instanceName */
-	private $instanceName;
-	/** @var string */
-	private $baseUrl;
-	/** @var array */
-	private $requestStates;
+    /** @var PdoDatabase $notificationsDatabase */
+    private $notificationsDatabase;
+    /** @var PdoDatabase $primaryDatabase */
+    private $primaryDatabase;
+    /** @var bool $notificationsEnabled */
+    private $notificationsEnabled;
+    /** @var int $notificationType */
+    private $notificationType;
+    /** @var User $currentUser */
+    private $currentUser;
+    /** @var string $instanceName */
+    private $instanceName;
+    /** @var string */
+    private $baseUrl;
+    /** @var array */
+    private $requestStates;
 
-	/**
-	 * IrcNotificationHelper constructor.
-	 *
-	 * @param SiteConfiguration $siteConfiguration
-	 * @param PdoDatabase       $primaryDatabase
-	 * @param PdoDatabase       $notificationsDatabase
-	 */
-	public function __construct(
-		SiteConfiguration $siteConfiguration,
-		PdoDatabase $primaryDatabase,
-		PdoDatabase $notificationsDatabase = null
-	) {
-		$this->primaryDatabase = $primaryDatabase;
+    /**
+     * IrcNotificationHelper constructor.
+     *
+     * @param SiteConfiguration $siteConfiguration
+     * @param PdoDatabase       $primaryDatabase
+     * @param PdoDatabase       $notificationsDatabase
+     */
+    public function __construct(
+        SiteConfiguration $siteConfiguration,
+        PdoDatabase $primaryDatabase,
+        PdoDatabase $notificationsDatabase = null
+    ) {
+        $this->primaryDatabase = $primaryDatabase;
 
-		if ($this->notificationsDatabase !== null) {
-			$this->notificationsDatabase = $notificationsDatabase;
-			$this->notificationsEnabled = $siteConfiguration->getIrcNotificationsEnabled();
-		}
-		else {
-			$this->notificationsEnabled = false;
-		}
+        if ($this->notificationsDatabase !== null) {
+            $this->notificationsDatabase = $notificationsDatabase;
+            $this->notificationsEnabled = $siteConfiguration->getIrcNotificationsEnabled();
+        }
+        else {
+            $this->notificationsEnabled = false;
+        }
 
-		$this->notificationType = $siteConfiguration->getIrcNotificationType();
-		$this->instanceName = $siteConfiguration->getIrcNotificationsInstance();
-		$this->baseUrl = $siteConfiguration->getBaseUrl();
-		$this->requestStates = $siteConfiguration->getRequestStates();
+        $this->notificationType = $siteConfiguration->getIrcNotificationType();
+        $this->instanceName = $siteConfiguration->getIrcNotificationsInstance();
+        $this->baseUrl = $siteConfiguration->getBaseUrl();
+        $this->requestStates = $siteConfiguration->getRequestStates();
 
-		$this->currentUser = User::getCurrent($primaryDatabase);
-	}
+        $this->currentUser = User::getCurrent($primaryDatabase);
+    }
 
-	/**
-	 * Send a notification
-	 *
-	 * @param string $message The text to send
-	 */
-	protected function send($message)
-	{
-		$instanceName = $this->instanceName;
+    /**
+     * Send a notification
+     *
+     * @param string $message The text to send
+     */
+    protected function send($message)
+    {
+        $instanceName = $this->instanceName;
 
-		if (!$this->notificationsEnabled) {
-			return;
-		}
+        if (!$this->notificationsEnabled) {
+            return;
+        }
 
-		$blacklist = array("DCC", "CCTP", "PRIVMSG");
-		$message = str_replace($blacklist, "(IRC Blacklist)", $message); // Lets stop DCC etc
+        $blacklist = array("DCC", "CCTP", "PRIVMSG");
+        $message = str_replace($blacklist, "(IRC Blacklist)", $message); // Lets stop DCC etc
 
-		$msg = IrcColourCode::RESET . IrcColourCode::BOLD . "[$instanceName]" . IrcColourCode::RESET . ": $message";
+        $msg = IrcColourCode::RESET . IrcColourCode::BOLD . "[$instanceName]" . IrcColourCode::RESET . ": $message";
 
-		try {
-			$notification = new Notification();
-			$notification->setDatabase($this->notificationsDatabase);
-			$notification->setType($this->notificationType);
-			$notification->setText($msg);
+        try {
+            $notification = new Notification();
+            $notification->setDatabase($this->notificationsDatabase);
+            $notification->setType($this->notificationType);
+            $notification->setText($msg);
 
-			$notification->save();
-		}
-		catch (Exception $ex) {
-			// OK, so we failed to send the notification - that db might be down?
-			// This is non-critical, so silently fail.
+            $notification->save();
+        }
+        catch (Exception $ex) {
+            // OK, so we failed to send the notification - that db might be down?
+            // This is non-critical, so silently fail.
 
-			// Disable notifications for remainder of request.
-			$this->notificationsEnabled = false;
-		}
-	}
+            // Disable notifications for remainder of request.
+            $this->notificationsEnabled = false;
+        }
+    }
 
-	#region user management
+    #region user management
 
-	/**
-	 * send a new user notification
-	 *
-	 * @param User $user
-	 */
-	public function userNew(User $user)
-	{
-		$this->send("New user: {$user->getUsername()}");
-	}
+    /**
+     * send a new user notification
+     *
+     * @param User $user
+     */
+    public function userNew(User $user)
+    {
+        $this->send("New user: {$user->getUsername()}");
+    }
 
-	/**
-	 * send an approved notification
-	 *
-	 * @param User $user
-	 */
-	public function userApproved(User $user)
-	{
-		$this->send("{$user->getUsername()} approved by " . $this->currentUser->getUsername());
-	}
+    /**
+     * send an approved notification
+     *
+     * @param User $user
+     */
+    public function userApproved(User $user)
+    {
+        $this->send("{$user->getUsername()} approved by " . $this->currentUser->getUsername());
+    }
 
-	/**
-	 * send a promoted notification
-	 *
-	 * @param User $user
-	 */
-	public function userPromoted(User $user)
-	{
-		$this->send("{$user->getUsername()} promoted to tool admin by " . $this->currentUser->getUsername());
-	}
+    /**
+     * send a promoted notification
+     *
+     * @param User $user
+     */
+    public function userPromoted(User $user)
+    {
+        $this->send("{$user->getUsername()} promoted to tool admin by " . $this->currentUser->getUsername());
+    }
 
-	/**
-	 * send a declined notification
-	 *
-	 * @param User   $user
-	 * @param string $reason the reason the user was declined
-	 */
-	public function userDeclined(User $user, $reason)
-	{
-		$this->send("{$user->getUsername()} declined by " . $this->currentUser->getUsername() . " ($reason)");
-	}
+    /**
+     * send a declined notification
+     *
+     * @param User   $user
+     * @param string $reason the reason the user was declined
+     */
+    public function userDeclined(User $user, $reason)
+    {
+        $this->send("{$user->getUsername()} declined by " . $this->currentUser->getUsername() . " ($reason)");
+    }
 
-	/**
-	 * send a demotion notification
-	 *
-	 * @param User   $user
-	 * @param string $reason the reason the user was demoted
-	 */
-	public function userDemoted(User $user, $reason)
-	{
-		$this->send("{$user->getUsername()} demoted by " . $this->currentUser->getUsername() . " ($reason)");
-	}
+    /**
+     * send a demotion notification
+     *
+     * @param User   $user
+     * @param string $reason the reason the user was demoted
+     */
+    public function userDemoted(User $user, $reason)
+    {
+        $this->send("{$user->getUsername()} demoted by " . $this->currentUser->getUsername() . " ($reason)");
+    }
 
-	/**
-	 * send a suspended notification
-	 *
-	 * @param User   $user
-	 * @param string $reason The reason the user has been suspended
-	 */
-	public function userSuspended(User $user, $reason)
-	{
-		$this->send("{$user->getUsername()} suspended by " . $this->currentUser->getUsername() . " ($reason)");
-	}
+    /**
+     * send a suspended notification
+     *
+     * @param User   $user
+     * @param string $reason The reason the user has been suspended
+     */
+    public function userSuspended(User $user, $reason)
+    {
+        $this->send("{$user->getUsername()} suspended by " . $this->currentUser->getUsername() . " ($reason)");
+    }
 
-	/**
-	 * Send a preference change notification
-	 *
-	 * @param User $user
-	 */
-	public function userPrefChange(User $user)
-	{
-		$this->send("{$user->getUsername()}'s preferences were changed by " . $this->currentUser->getUsername());
-	}
+    /**
+     * Send a preference change notification
+     *
+     * @param User $user
+     */
+    public function userPrefChange(User $user)
+    {
+        $this->send("{$user->getUsername()}'s preferences were changed by " . $this->currentUser->getUsername());
+    }
 
-	/**
-	 * Send a user renamed notification
-	 *
-	 * @param User   $user
-	 * @param string $old
-	 */
-	public function userRenamed(User $user, $old)
-	{
-		$this->send($this->currentUser->getUsername() . " renamed $old to {$user->getUsername()}");
-	}
+    /**
+     * Send a user renamed notification
+     *
+     * @param User   $user
+     * @param string $old
+     */
+    public function userRenamed(User $user, $old)
+    {
+        $this->send($this->currentUser->getUsername() . " renamed $old to {$user->getUsername()}");
+    }
 
-	#endregion
+    #endregion
 
-	#region Site Notice
+    #region Site Notice
 
-	/**
-	 * Summary of siteNoticeEdited
-	 */
-	public function siteNoticeEdited()
-	{
-		$this->send("Site notice edited by " . $this->currentUser->getUsername());
-	}
-	#endregion
+    /**
+     * Summary of siteNoticeEdited
+     */
+    public function siteNoticeEdited()
+    {
+        $this->send("Site notice edited by " . $this->currentUser->getUsername());
+    }
+    #endregion
 
-	#region Welcome Templates
-	/**
-	 * Summary of welcomeTemplateCreated
-	 *
-	 * @param WelcomeTemplate $template
-	 */
-	public function welcomeTemplateCreated(WelcomeTemplate $template)
-	{
-		$this->send("Welcome template {$template->getId()} created by " . $this->currentUser->getUsername());
-	}
+    #region Welcome Templates
+    /**
+     * Summary of welcomeTemplateCreated
+     *
+     * @param WelcomeTemplate $template
+     */
+    public function welcomeTemplateCreated(WelcomeTemplate $template)
+    {
+        $this->send("Welcome template {$template->getId()} created by " . $this->currentUser->getUsername());
+    }
 
-	/**
-	 * Summary of welcomeTemplateDeleted
-	 *
-	 * @param int $templateid
-	 */
-	public function welcomeTemplateDeleted($templateid)
-	{
-		$this->send("Welcome template {$templateid} deleted by " . $this->currentUser->getUsername());
-	}
+    /**
+     * Summary of welcomeTemplateDeleted
+     *
+     * @param int $templateid
+     */
+    public function welcomeTemplateDeleted($templateid)
+    {
+        $this->send("Welcome template {$templateid} deleted by " . $this->currentUser->getUsername());
+    }
 
-	/**
-	 * Summary of welcomeTemplateEdited
-	 *
-	 * @param WelcomeTemplate $template
-	 */
-	public function welcomeTemplateEdited(WelcomeTemplate $template)
-	{
-		$this->send("Welcome template {$template->getId()} edited by " . $this->currentUser->getUsername());
-	}
+    /**
+     * Summary of welcomeTemplateEdited
+     *
+     * @param WelcomeTemplate $template
+     */
+    public function welcomeTemplateEdited(WelcomeTemplate $template)
+    {
+        $this->send("Welcome template {$template->getId()} edited by " . $this->currentUser->getUsername());
+    }
 
-	#endregion
+    #endregion
 
-	#region bans
-	/**
-	 * Summary of banned
-	 *
-	 * @param Ban $ban
-	 */
-	public function banned(Ban $ban)
-	{
-		if ($ban->getDuration() == -1) {
-			$duration = "indefinitely";
-		}
-		else {
-			$duration = "until " . date("F j, Y, g:i a", $ban->getDuration());
-		}
+    #region bans
+    /**
+     * Summary of banned
+     *
+     * @param Ban $ban
+     */
+    public function banned(Ban $ban)
+    {
+        if ($ban->getDuration() == -1) {
+            $duration = "indefinitely";
+        }
+        else {
+            $duration = "until " . date("F j, Y, g:i a", $ban->getDuration());
+        }
 
-		$username = $this->currentUser->getUsername();
+        $username = $this->currentUser->getUsername();
 
-		$this->send("{$ban->getTarget()} banned by {$username} for '{$ban->getReason()}' {$duration}");
-	}
+        $this->send("{$ban->getTarget()} banned by {$username} for '{$ban->getReason()}' {$duration}");
+    }
 
-	/**
-	 * Summary of unbanned
-	 *
-	 * @param Ban    $ban
-	 * @param string $unbanreason
-	 */
-	public function unbanned(Ban $ban, $unbanreason)
-	{
-		$this->send($ban->getTarget() . " unbanned by " . $this->currentUser
-				->getUsername() . " (" . $unbanreason . ")");
-	}
+    /**
+     * Summary of unbanned
+     *
+     * @param Ban    $ban
+     * @param string $unbanreason
+     */
+    public function unbanned(Ban $ban, $unbanreason)
+    {
+        $this->send($ban->getTarget() . " unbanned by " . $this->currentUser
+                ->getUsername() . " (" . $unbanreason . ")");
+    }
 
-	#endregion
+    #endregion
 
-	#region request management
+    #region request management
 
-	/**
-	 * Summary of requestReceived
-	 *
-	 * @param Request $request
-	 */
-	public function requestReceived(Request $request)
-	{
-		$this->send(
-			IrcColourCode::DARK_GREY . "[["
-			. IrcColourCode::DARK_GREEN . "acc:"
-			. IrcColourCode::ORANGE . $request->getId()
-			. IrcColourCode::DARK_GREY . "]]"
-			. IrcColourCode::RED . " N "
-			. IrcColourCode::DARK_BLUE . $this->baseUrl . "/internal.php/viewRequest?id={$request->getId()} "
-			. IrcColourCode::DARK_RED . "* "
-			. IrcColourCode::DARK_GREEN . $request->getName()
-			. IrcColourCode::DARK_RED . " * "
-			. IrcColourCode::RESET
-		);
-	}
+    /**
+     * Summary of requestReceived
+     *
+     * @param Request $request
+     */
+    public function requestReceived(Request $request)
+    {
+        $this->send(
+            IrcColourCode::DARK_GREY . "[["
+            . IrcColourCode::DARK_GREEN . "acc:"
+            . IrcColourCode::ORANGE . $request->getId()
+            . IrcColourCode::DARK_GREY . "]]"
+            . IrcColourCode::RED . " N "
+            . IrcColourCode::DARK_BLUE . $this->baseUrl . "/internal.php/viewRequest?id={$request->getId()} "
+            . IrcColourCode::DARK_RED . "* "
+            . IrcColourCode::DARK_GREEN . $request->getName()
+            . IrcColourCode::DARK_RED . " * "
+            . IrcColourCode::RESET
+        );
+    }
 
-	/**
-	 * Summary of requestDeferred
-	 *
-	 * @param Request $request
-	 */
-	public function requestDeferred(Request $request)
-	{
-		$availableRequestStates = $this->requestStates;
+    /**
+     * Summary of requestDeferred
+     *
+     * @param Request $request
+     */
+    public function requestDeferred(Request $request)
+    {
+        $availableRequestStates = $this->requestStates;
 
-		$deferTo = $availableRequestStates[$request->getStatus()]['deferto'];
-		$username = $this->currentUser->getUsername();
+        $deferTo = $availableRequestStates[$request->getStatus()]['deferto'];
+        $username = $this->currentUser->getUsername();
 
-		$this->send("Request {$request->getId()} ({$request->getName()}) deferred to {$deferTo} by {$username}");
-	}
+        $this->send("Request {$request->getId()} ({$request->getName()}) deferred to {$deferTo} by {$username}");
+    }
 
-	/**
-	 *
-	 * Summary of requestDeferredWithMail
-	 *
-	 * @param Request $request
-	 */
-	public function requestDeferredWithMail(Request $request)
-	{
-		$availableRequestStates = $this->requestStates;
+    /**
+     *
+     * Summary of requestDeferredWithMail
+     *
+     * @param Request $request
+     */
+    public function requestDeferredWithMail(Request $request)
+    {
+        $availableRequestStates = $this->requestStates;
 
-		$deferTo = $availableRequestStates[$request->getStatus()]['deferto'];
-		$username = $this->currentUser->getUsername();
-		$id = $request->getId();
-		$name = $request->getName();
+        $deferTo = $availableRequestStates[$request->getStatus()]['deferto'];
+        $username = $this->currentUser->getUsername();
+        $id = $request->getId();
+        $name = $request->getName();
 
-		$this->send("Request {$id} ({$name}) deferred to {$deferTo} with an email by {$username}");
-	}
+        $this->send("Request {$id} ({$name}) deferred to {$deferTo} with an email by {$username}");
+    }
 
-	/**
-	 * Summary of requestClosed
-	 *
-	 * @param Request $request
-	 * @param string  $closetype
-	 */
-	public function requestClosed(Request $request, $closetype)
-	{
-		$username = $this->currentUser->getUsername();
+    /**
+     * Summary of requestClosed
+     *
+     * @param Request $request
+     * @param string  $closetype
+     */
+    public function requestClosed(Request $request, $closetype)
+    {
+        $username = $this->currentUser->getUsername();
 
-		$this->send("Request {$request->getId()} ({$request->getName()}) closed ($closetype) by {$username}");
-	}
+        $this->send("Request {$request->getId()} ({$request->getName()}) closed ($closetype) by {$username}");
+    }
 
-	/**
-	 * Summary of sentMail
-	 *
-	 * @param Request $request
-	 */
-	public function sentMail(Request $request)
-	{
-		$this->send($this->currentUser->getUsername()
-			. " sent an email related to Request {$request->getId()} ({$request->getName()})");
-	}
+    /**
+     * Summary of sentMail
+     *
+     * @param Request $request
+     */
+    public function sentMail(Request $request)
+    {
+        $this->send($this->currentUser->getUsername()
+            . " sent an email related to Request {$request->getId()} ({$request->getName()})");
+    }
 
-	#endregion
+    #endregion
 
-	#region reservations
+    #region reservations
 
-	/**
-	 * Summary of requestReserved
-	 *
-	 * @param Request $request
-	 */
-	public function requestReserved(Request $request)
-	{
-		$username = $this->currentUser->getUsername();
+    /**
+     * Summary of requestReserved
+     *
+     * @param Request $request
+     */
+    public function requestReserved(Request $request)
+    {
+        $username = $this->currentUser->getUsername();
 
-		$this->send("Request {$request->getId()} ({$request->getName()}) reserved by {$username}");
-	}
+        $this->send("Request {$request->getId()} ({$request->getName()}) reserved by {$username}");
+    }
 
-	/**
-	 * Summary of requestReserveBroken
-	 *
-	 * @param Request $request
-	 */
-	public function requestReserveBroken(Request $request)
-	{
-		$username = $this->currentUser->getUsername();
+    /**
+     * Summary of requestReserveBroken
+     *
+     * @param Request $request
+     */
+    public function requestReserveBroken(Request $request)
+    {
+        $username = $this->currentUser->getUsername();
 
-		$this->send("Reservation on request {$request->getId()} ({$request->getName()}) broken by {$username}");
-	}
+        $this->send("Reservation on request {$request->getId()} ({$request->getName()}) broken by {$username}");
+    }
 
-	/**
-	 * Summary of requestUnreserved
-	 *
-	 * @param Request $request
-	 */
-	public function requestUnreserved(Request $request)
-	{
-		$this->send("Request {$request->getId()} ({$request->getName()}) is no longer being handled.");
-	}
+    /**
+     * Summary of requestUnreserved
+     *
+     * @param Request $request
+     */
+    public function requestUnreserved(Request $request)
+    {
+        $this->send("Request {$request->getId()} ({$request->getName()}) is no longer being handled.");
+    }
 
-	/**
-	 * Summary of requestReservationSent
-	 *
-	 * @param Request $request
-	 * @param User    $target
-	 */
-	public function requestReservationSent(Request $request, User $target)
-	{
-		$username = $this->currentUser->getUsername();
+    /**
+     * Summary of requestReservationSent
+     *
+     * @param Request $request
+     * @param User    $target
+     */
+    public function requestReservationSent(Request $request, User $target)
+    {
+        $username = $this->currentUser->getUsername();
 
-		$this->send(
-			"Reservation of request {$request->getId()} ({$request->getName()}) sent to {$target->getUsername()} by "
-			. $username);
-	}
+        $this->send(
+            "Reservation of request {$request->getId()} ({$request->getName()}) sent to {$target->getUsername()} by "
+            . $username);
+    }
 
-	#endregion
+    #endregion
 
-	#region comments
+    #region comments
 
-	/**
-	 * Summary of commentCreated
-	 *
-	 * @param Comment $comment
-	 * @param Request $request
-	 */
-	public function commentCreated(Comment $comment, Request $request)
-	{
-		$username = $this->currentUser->getUsername();
-		$visibility = ($comment->getVisibility() == "admin" ? "private " : "");
+    /**
+     * Summary of commentCreated
+     *
+     * @param Comment $comment
+     * @param Request $request
+     */
+    public function commentCreated(Comment $comment, Request $request)
+    {
+        $username = $this->currentUser->getUsername();
+        $visibility = ($comment->getVisibility() == "admin" ? "private " : "");
 
-		$this->send("{$username} posted a {$visibility}comment on request {$request->getId()} ({$request->getName()})");
-	}
+        $this->send("{$username} posted a {$visibility}comment on request {$request->getId()} ({$request->getName()})");
+    }
 
-	/**
-	 * Summary of commentEdited
-	 *
-	 * @param Comment $comment
-	 * @param Request $request
-	 */
-	public function commentEdited(Comment $comment, Request $request)
-	{
-		$username = $this->currentUser->getUsername();
+    /**
+     * Summary of commentEdited
+     *
+     * @param Comment $comment
+     * @param Request $request
+     */
+    public function commentEdited(Comment $comment, Request $request)
+    {
+        $username = $this->currentUser->getUsername();
 
-		$this->send(<<<TAG
+        $this->send(<<<TAG
 Comment {$comment->getId()} on request {$request->getId()} ({$request->getName()}) edited by {$username}
 TAG
-		);
-	}
+        );
+    }
 
-	#endregion
+    #endregion
 
-	#region email management (close reasons)
+    #region email management (close reasons)
 
-	/**
-	 * Summary of emailCreated
-	 *
-	 * @param EmailTemplate $template
-	 */
-	public function emailCreated(EmailTemplate $template)
-	{
-		$username = $this->currentUser->getUsername();
-		$this->send("Email {$template->getId()} ({$template->getName()}) created by " . $username);
-	}
+    /**
+     * Summary of emailCreated
+     *
+     * @param EmailTemplate $template
+     */
+    public function emailCreated(EmailTemplate $template)
+    {
+        $username = $this->currentUser->getUsername();
+        $this->send("Email {$template->getId()} ({$template->getName()}) created by " . $username);
+    }
 
-	/**
-	 * Summary of emailEdited
-	 *
-	 * @param EmailTemplate $template
-	 */
-	public function emailEdited(EmailTemplate $template)
-	{
-		$username = $this->currentUser->getUsername();
-		$this->send("Email {$template->getId()} ({$template->getName()}) edited by " . $username);
-	}
-	#endregion
+    /**
+     * Summary of emailEdited
+     *
+     * @param EmailTemplate $template
+     */
+    public function emailEdited(EmailTemplate $template)
+    {
+        $username = $this->currentUser->getUsername();
+        $this->send("Email {$template->getId()} ({$template->getName()}) edited by " . $username);
+    }
+    #endregion
 }

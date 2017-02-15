@@ -21,21 +21,22 @@ use Waca\SiteConfiguration;
  */
 abstract class ReadableException extends Exception
 {
-	use TemplateOutput;
+    use TemplateOutput;
 
-	/**
-	 * Returns a readable HTML error message that's displayable to the user using templates.
-	 * @return string
-	 */
-	abstract public function getReadableError();
+    /**
+     * Returns a readable HTML error message that's displayable to the user using templates.
+     * @return string
+     */
+    abstract public function getReadableError();
 
-	/**
-	 * @return SiteConfiguration
-	 */
-	protected function getSiteConfiguration()
-	{
-		// Uck. However, we have encountered an exception.
-		global $siteConfiguration;
-		return $siteConfiguration;
-	}
+    /**
+     * @return SiteConfiguration
+     */
+    protected function getSiteConfiguration()
+    {
+        // Uck. However, we have encountered an exception.
+        global $siteConfiguration;
+
+        return $siteConfiguration;
+    }
 }

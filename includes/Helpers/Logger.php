@@ -30,300 +30,300 @@ use Waca\PdoDatabase;
  */
 class Logger
 {
-	/**
-	 * @param PdoDatabase $database
-	 * @param Request     $object
-	 */
-	public static function emailConfirmed(PdoDatabase $database, Request $object)
-	{
-		self::createLogEntry($database, $object, "Email Confirmed", null, User::getCommunity());
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param Request     $object
+     */
+    public static function emailConfirmed(PdoDatabase $database, Request $object)
+    {
+        self::createLogEntry($database, $object, "Email Confirmed", null, User::getCommunity());
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param DataObject  $object
-	 * @param string      $logAction
-	 * @param null|string $comment
-	 * @param User        $user
-	 *
-	 * @throws Exception
-	 */
-	private static function createLogEntry(
-		PdoDatabase $database,
-		DataObject $object,
-		$logAction,
-		$comment = null,
-		$user = null
-	) {
-		if ($user == null) {
-			$user = User::getCurrent($database);
-		}
+    /**
+     * @param PdoDatabase $database
+     * @param DataObject  $object
+     * @param string      $logAction
+     * @param null|string $comment
+     * @param User        $user
+     *
+     * @throws Exception
+     */
+    private static function createLogEntry(
+        PdoDatabase $database,
+        DataObject $object,
+        $logAction,
+        $comment = null,
+        $user = null
+    ) {
+        if ($user == null) {
+            $user = User::getCurrent($database);
+        }
 
-		$objectType = get_class($object);
-		if (strpos($objectType, 'Waca\\DataObjects\\') !== false) {
-			$objectType = str_replace('Waca\\DataObjects\\', '', $objectType);
-		}
+        $objectType = get_class($object);
+        if (strpos($objectType, 'Waca\\DataObjects\\') !== false) {
+            $objectType = str_replace('Waca\\DataObjects\\', '', $objectType);
+        }
 
-		$log = new Log();
-		$log->setDatabase($database);
-		$log->setAction($logAction);
-		$log->setObjectId($object->getId());
-		$log->setObjectType($objectType);
-		$log->setUser($user);
-		$log->setComment($comment);
-		$log->save();
-	}
+        $log = new Log();
+        $log->setDatabase($database);
+        $log->setAction($logAction);
+        $log->setObjectId($object->getId());
+        $log->setObjectType($objectType);
+        $log->setUser($user);
+        $log->setComment($comment);
+        $log->save();
+    }
 
-	#region Users
+    #region Users
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param User        $user
-	 */
-	public static function newUser(PdoDatabase $database, User $user)
-	{
-		self::createLogEntry($database, $user, 'Registered', null, User::getCommunity());
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param User        $user
+     */
+    public static function newUser(PdoDatabase $database, User $user)
+    {
+        self::createLogEntry($database, $user, 'Registered', null, User::getCommunity());
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param User        $object
-	 */
-	public static function approvedUser(PdoDatabase $database, User $object)
-	{
-		self::createLogEntry($database, $object, "Approved");
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param User        $object
+     */
+    public static function approvedUser(PdoDatabase $database, User $object)
+    {
+        self::createLogEntry($database, $object, "Approved");
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param User        $object
-	 * @param string      $comment
-	 */
-	public static function declinedUser(PdoDatabase $database, User $object, $comment)
-	{
-		self::createLogEntry($database, $object, "Declined", $comment);
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param User        $object
+     * @param string      $comment
+     */
+    public static function declinedUser(PdoDatabase $database, User $object, $comment)
+    {
+        self::createLogEntry($database, $object, "Declined", $comment);
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param User        $object
-	 * @param string      $comment
-	 */
-	public static function suspendedUser(PdoDatabase $database, User $object, $comment)
-	{
-		self::createLogEntry($database, $object, "Suspended", $comment);
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param User        $object
+     * @param string      $comment
+     */
+    public static function suspendedUser(PdoDatabase $database, User $object, $comment)
+    {
+        self::createLogEntry($database, $object, "Suspended", $comment);
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param User        $object
-	 * @param string      $comment
-	 */
-	public static function demotedUser(PdoDatabase $database, User $object, $comment)
-	{
-		self::createLogEntry($database, $object, "Demoted", $comment);
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param User        $object
+     * @param string      $comment
+     */
+    public static function demotedUser(PdoDatabase $database, User $object, $comment)
+    {
+        self::createLogEntry($database, $object, "Demoted", $comment);
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param User        $object
-	 */
-	public static function promotedUser(PdoDatabase $database, User $object)
-	{
-		self::createLogEntry($database, $object, "Promoted");
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param User        $object
+     */
+    public static function promotedUser(PdoDatabase $database, User $object)
+    {
+        self::createLogEntry($database, $object, "Promoted");
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param User        $object
-	 * @param string      $comment
-	 */
-	public static function renamedUser(PdoDatabase $database, User $object, $comment)
-	{
-		self::createLogEntry($database, $object, "Renamed", $comment);
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param User        $object
+     * @param string      $comment
+     */
+    public static function renamedUser(PdoDatabase $database, User $object, $comment)
+    {
+        self::createLogEntry($database, $object, "Renamed", $comment);
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param User        $object
-	 */
-	public static function userPreferencesChange(PdoDatabase $database, User $object)
-	{
-		self::createLogEntry($database, $object, "Prefchange");
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param User        $object
+     */
+    public static function userPreferencesChange(PdoDatabase $database, User $object)
+    {
+        self::createLogEntry($database, $object, "Prefchange");
+    }
 
-	#endregion
+    #endregion
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param SiteNotice  $object
-	 */
-	public static function siteNoticeEdited(PdoDatabase $database, SiteNotice $object)
-	{
-		self::createLogEntry($database, $object, "Edited");
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param SiteNotice  $object
+     */
+    public static function siteNoticeEdited(PdoDatabase $database, SiteNotice $object)
+    {
+        self::createLogEntry($database, $object, "Edited");
+    }
 
-	#region Welcome Templates
+    #region Welcome Templates
 
-	/**
-	 * @param PdoDatabase     $database
-	 * @param WelcomeTemplate $object
-	 */
-	public static function welcomeTemplateCreated(PdoDatabase $database, WelcomeTemplate $object)
-	{
-		self::createLogEntry($database, $object, "CreatedTemplate");
-	}
+    /**
+     * @param PdoDatabase     $database
+     * @param WelcomeTemplate $object
+     */
+    public static function welcomeTemplateCreated(PdoDatabase $database, WelcomeTemplate $object)
+    {
+        self::createLogEntry($database, $object, "CreatedTemplate");
+    }
 
-	/**
-	 * @param PdoDatabase     $database
-	 * @param WelcomeTemplate $object
-	 */
-	public static function welcomeTemplateEdited(PdoDatabase $database, WelcomeTemplate $object)
-	{
-		self::createLogEntry($database, $object, "EditedTemplate");
-	}
+    /**
+     * @param PdoDatabase     $database
+     * @param WelcomeTemplate $object
+     */
+    public static function welcomeTemplateEdited(PdoDatabase $database, WelcomeTemplate $object)
+    {
+        self::createLogEntry($database, $object, "EditedTemplate");
+    }
 
-	/**
-	 * @param PdoDatabase     $database
-	 * @param WelcomeTemplate $object
-	 */
-	public static function welcomeTemplateDeleted(PdoDatabase $database, WelcomeTemplate $object)
-	{
-		self::createLogEntry($database, $object, "DeletedTemplate");
-	}
+    /**
+     * @param PdoDatabase     $database
+     * @param WelcomeTemplate $object
+     */
+    public static function welcomeTemplateDeleted(PdoDatabase $database, WelcomeTemplate $object)
+    {
+        self::createLogEntry($database, $object, "DeletedTemplate");
+    }
 
-	#endregion
+    #endregion
 
-	#region Bans
+    #region Bans
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param Ban         $object
-	 * @param string      $reason
-	 */
-	public static function banned(PdoDatabase $database, Ban $object, $reason)
-	{
-		self::createLogEntry($database, $object, "Banned", $reason);
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param Ban         $object
+     * @param string      $reason
+     */
+    public static function banned(PdoDatabase $database, Ban $object, $reason)
+    {
+        self::createLogEntry($database, $object, "Banned", $reason);
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param Ban         $object
-	 * @param string      $reason
-	 */
-	public static function unbanned(PdoDatabase $database, Ban $object, $reason)
-	{
-		self::createLogEntry($database, $object, "Unbanned", $reason);
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param Ban         $object
+     * @param string      $reason
+     */
+    public static function unbanned(PdoDatabase $database, Ban $object, $reason)
+    {
+        self::createLogEntry($database, $object, "Unbanned", $reason);
+    }
 
-	#endregion
+    #endregion
 
-	#region Requests
+    #region Requests
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param Request     $object
-	 * @param string      $target
-	 */
-	public static function deferRequest(PdoDatabase $database, Request $object, $target)
-	{
-		self::createLogEntry($database, $object, "Deferred to $target");
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param Request     $object
+     * @param string      $target
+     */
+    public static function deferRequest(PdoDatabase $database, Request $object, $target)
+    {
+        self::createLogEntry($database, $object, "Deferred to $target");
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param Request     $object
-	 * @param integer     $target
-	 * @param string      $comment
-	 */
-	public static function closeRequest(PdoDatabase $database, Request $object, $target, $comment)
-	{
-		self::createLogEntry($database, $object, "Closed $target", $comment);
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param Request     $object
+     * @param integer     $target
+     * @param string      $comment
+     */
+    public static function closeRequest(PdoDatabase $database, Request $object, $target, $comment)
+    {
+        self::createLogEntry($database, $object, "Closed $target", $comment);
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param Request     $object
-	 */
-	public static function reserve(PdoDatabase $database, Request $object)
-	{
-		self::createLogEntry($database, $object, "Reserved");
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param Request     $object
+     */
+    public static function reserve(PdoDatabase $database, Request $object)
+    {
+        self::createLogEntry($database, $object, "Reserved");
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param Request     $object
-	 */
-	public static function breakReserve(PdoDatabase $database, Request $object)
-	{
-		self::createLogEntry($database, $object, "BreakReserve");
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param Request     $object
+     */
+    public static function breakReserve(PdoDatabase $database, Request $object)
+    {
+        self::createLogEntry($database, $object, "BreakReserve");
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param Request     $object
-	 */
-	public static function unreserve(PdoDatabase $database, Request $object)
-	{
-		self::createLogEntry($database, $object, "Unreserved");
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param Request     $object
+     */
+    public static function unreserve(PdoDatabase $database, Request $object)
+    {
+        self::createLogEntry($database, $object, "Unreserved");
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param Comment     $object
-	 * @param Request     $request
-	 */
-	public static function editComment(PdoDatabase $database, Comment $object, Request $request)
-	{
-		self::createLogEntry($database, $request, "EditComment-r");
-		self::createLogEntry($database, $object, "EditComment-c");
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param Comment     $object
+     * @param Request     $request
+     */
+    public static function editComment(PdoDatabase $database, Comment $object, Request $request)
+    {
+        self::createLogEntry($database, $request, "EditComment-r");
+        self::createLogEntry($database, $object, "EditComment-c");
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param Request     $object
-	 * @param User        $target
-	 */
-	public static function sendReservation(PdoDatabase $database, Request $object, User $target)
-	{
-		self::createLogEntry($database, $object, "SendReserved");
-		self::createLogEntry($database, $object, "ReceiveReserved", null, $target);
-	}
+    /**
+     * @param PdoDatabase $database
+     * @param Request     $object
+     * @param User        $target
+     */
+    public static function sendReservation(PdoDatabase $database, Request $object, User $target)
+    {
+        self::createLogEntry($database, $object, "SendReserved");
+        self::createLogEntry($database, $object, "ReceiveReserved", null, $target);
+    }
 
-	/**
-	 * @param PdoDatabase $database
-	 * @param Request     $object
-	 * @param string      $comment
-	 */
-	public static function sentMail(PdoDatabase $database, Request $object, $comment)
-	{
-		self::createLogEntry($database, $object, "SentMail", $comment);
-	}
-	#endregion
+    /**
+     * @param PdoDatabase $database
+     * @param Request     $object
+     * @param string      $comment
+     */
+    public static function sentMail(PdoDatabase $database, Request $object, $comment)
+    {
+        self::createLogEntry($database, $object, "SentMail", $comment);
+    }
+    #endregion
 
-	#region Email templates
+    #region Email templates
 
-	/**
-	 * @param PdoDatabase   $database
-	 * @param EmailTemplate $object
-	 */
-	public static function createEmail(PdoDatabase $database, EmailTemplate $object)
-	{
-		self::createLogEntry($database, $object, "CreatedEmail");
-	}
+    /**
+     * @param PdoDatabase   $database
+     * @param EmailTemplate $object
+     */
+    public static function createEmail(PdoDatabase $database, EmailTemplate $object)
+    {
+        self::createLogEntry($database, $object, "CreatedEmail");
+    }
 
-	/**
-	 * @param PdoDatabase   $database
-	 * @param EmailTemplate $object
-	 */
-	public static function editedEmail(PdoDatabase $database, EmailTemplate $object)
-	{
-		self::createLogEntry($database, $object, "EditedEmail");
-	}
+    /**
+     * @param PdoDatabase   $database
+     * @param EmailTemplate $object
+     */
+    public static function editedEmail(PdoDatabase $database, EmailTemplate $object)
+    {
+        self::createLogEntry($database, $object, "EditedEmail");
+    }
 
-	#endregion
+    #endregion
 
-	#region Display
+    #region Display
 
-	#endregion
+    #endregion
 }

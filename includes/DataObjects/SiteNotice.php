@@ -20,75 +20,75 @@ use Waca\PdoDatabase;
  */
 class SiteNotice extends DataObject
 {
-	/** @var string */
-	private $content;
+    /** @var string */
+    private $content;
 
-	/**
-	 * Get a message.
-	 *
-	 * @param PdoDatabase $database
-	 *
-	 * @return string The content for display
-	 */
-	public static function get(PdoDatabase $database)
-	{
-		/** @var SiteNotice $message */
-		$message = self::getById(1, $database);
+    /**
+     * Get a message.
+     *
+     * @param PdoDatabase $database
+     *
+     * @return string The content for display
+     */
+    public static function get(PdoDatabase $database)
+    {
+        /** @var SiteNotice $message */
+        $message = self::getById(1, $database);
 
-		return $message->getContent();
-	}
+        return $message->getContent();
+    }
 
-	/**
-	 * Saves the object
-	 * @throws Exception
-	 */
-	public function save()
-	{
-		if ($this->isNew()) {
-			// insert
-			throw new Exception('Not allowed to create new site notice object');
-		}
-		else {
-			// update
-			$statement = $this->dbObject->prepare(<<<SQL
+    /**
+     * Saves the object
+     * @throws Exception
+     */
+    public function save()
+    {
+        if ($this->isNew()) {
+            // insert
+            throw new Exception('Not allowed to create new site notice object');
+        }
+        else {
+            // update
+            $statement = $this->dbObject->prepare(<<<SQL
 UPDATE sitenotice
 SET content = :content, updateversion = updateversion + 1
 WHERE updateversion = :updateversion
 LIMIT 1;
 SQL
-			);
-			$statement->bindValue(':updateversion', $this->updateversion);
+            );
+            $statement->bindValue(':updateversion', $this->updateversion);
 
-			$statement->bindValue(':content', $this->content);
+            $statement->bindValue(':content', $this->content);
 
-			if (!$statement->execute()) {
-				throw new Exception($statement->errorInfo());
-			}
+            if (!$statement->execute()) {
+                throw new Exception($statement->errorInfo());
+            }
 
-			if ($statement->rowCount() !== 1) {
-				throw new OptimisticLockFailedException();
-			}
+            if ($statement->rowCount() !== 1) {
+                throw new OptimisticLockFailedException();
+            }
 
-			$this->updateversion++;
-		}
-	}
+            $this->updateversion++;
+        }
+    }
 
-	/**
-	 * Gets the content of the message
-	 * @return string
-	 */
-	public function getContent()
-	{
-		return $this->content;
-	}
+    /**
+     * Gets the content of the message
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
 
-	/**
-	 * Sets the content of the message
-	 *
-	 * @param string $content
-	 */
-	public function setContent($content)
-	{
-		$this->content = $content;
-	}
+    /**
+     * Sets the content of the message
+     *
+     * @param string $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
 }

@@ -15,188 +15,186 @@ namespace Waca\Security;
  */
 final class SecurityConfiguration
 {
-	const ALLOW = "allow";
-	const DENY = "deny";
-	private $admin = "default";
-	private $user = "default";
-	private $checkuser = "default";
-	private $community = "default";
-	private $suspended = "default";
-	private $declined = "default";
-	private $new = "default";
-	private $requireIdentified;
+    const ALLOW = "allow";
+    const DENY = "deny";
+    private $admin = "default";
+    private $user = "default";
+    private $checkuser = "default";
+    private $community = "default";
+    private $suspended = "default";
+    private $declined = "default";
+    private $new = "default";
+    private $requireIdentified;
 
-	/**
-	 * Sets whether a checkuser is able to gain access.
-	 *
-	 * This is private because it's DANGEROUS. Checkusers are not mutually-exclusive with other rights. As such, a
-	 * suspended checkuser who tries to access a page which allows checkusers will be granted access to the page, UNLESS
-	 * that page is also set to DENY (note, not default) New/Declined/Suspended users. I have no problem with this
-	 * method being used, but please ONLY use it in this class in static methods of Security. Nowhere else.
-	 *
-	 * @param string $checkuser
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	public function setCheckuser($checkuser)
-	{
-		$this->checkuser = $checkuser;
+    /**
+     * Sets whether a checkuser is able to gain access.
+     *
+     * This is private because it's DANGEROUS. Checkusers are not mutually-exclusive with other rights. As such, a
+     * suspended checkuser who tries to access a page which allows checkusers will be granted access to the page, UNLESS
+     * that page is also set to DENY (note, not default) New/Declined/Suspended users. I have no problem with this
+     * method being used, but please ONLY use it in this class in static methods of Security. Nowhere else.
+     *
+     * @param string $checkuser
+     *
+     * @return SecurityConfiguration
+     * @category Security-Critical
+     */
+    public function setCheckuser($checkuser)
+    {
+        $this->checkuser = $checkuser;
 
-		return $this;
-	}
+        return $this;
+    }
 
+    /**
+     * Returns if a user is required to be identified.
+     *
+     * @return boolean
+     */
+    public function requiresIdentifiedUser()
+    {
+        return $this->requireIdentified;
+    }
 
+    /**
+     * @return string
+     */
+    public function getAdmin()
+    {
+        return $this->admin;
+    }
 
-	/**
-	 * Returns if a user is required to be identified.
-	 *
-	 * @return boolean
-	 */
-	public function requiresIdentifiedUser()
-	{
-		return $this->requireIdentified;
-	}
+    /**
+     * @param string $admin
+     *
+     * @return SecurityConfiguration
+     * @category Security-Critical
+     */
+    public function setAdmin($admin)
+    {
+        $this->admin = $admin;
 
-	/**
-	 * @return string
-	 */
-	public function getAdmin()
-	{
-		return $this->admin;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param string $admin
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	public function setAdmin($admin)
-	{
-		$this->admin = $admin;
+    /**
+     * @return string
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
 
-		return $this;
-	}
+    /**
+     * @param string $user
+     *
+     * @return SecurityConfiguration
+     * @category Security-Critical
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
 
-	/**
-	 * @return string
-	 */
-	public function getUser()
-	{
-		return $this->user;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param string $user
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	public function setUser($user)
-	{
-		$this->user = $user;
+    /**
+     * @return string
+     */
+    public function getCheckuser()
+    {
+        return $this->checkuser;
+    }
 
-		return $this;
-	}
+    /**
+     * @return string
+     */
+    public function getCommunity()
+    {
+        return $this->community;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getCheckuser()
-	{
-		return $this->checkuser;
-	}
+    /**
+     * @param string $community
+     *
+     * @return SecurityConfiguration
+     * @category Security-Critical
+     */
+    public function setCommunity($community)
+    {
+        $this->community = $community;
 
-	/**
-	 * @return string
-	 */
-	public function getCommunity()
-	{
-		return $this->community;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param string $community
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	public function setCommunity($community)
-	{
-		$this->community = $community;
+    /**
+     * @return string
+     */
+    public function getSuspended()
+    {
+        return $this->suspended;
+    }
 
-		return $this;
-	}
+    /**
+     * @param string $suspended
+     *
+     * @return SecurityConfiguration
+     * @category Security-Critical
+     */
+    public function setSuspended($suspended)
+    {
+        $this->suspended = $suspended;
 
-	/**
-	 * @return string
-	 */
-	public function getSuspended()
-	{
-		return $this->suspended;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param string $suspended
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	public function setSuspended($suspended)
-	{
-		$this->suspended = $suspended;
+    /**
+     * @return string
+     */
+    public function getDeclined()
+    {
+        return $this->declined;
+    }
 
-		return $this;
-	}
+    /**
+     * @param string $declined
+     *
+     * @return SecurityConfiguration
+     * @category Security-Critical
+     */
+    public function setDeclined($declined)
+    {
+        $this->declined = $declined;
 
-	/**
-	 * @return string
-	 */
-	public function getDeclined()
-	{
-		return $this->declined;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param string $declined
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	public function setDeclined($declined)
-	{
-		$this->declined = $declined;
+    /**
+     * @return string
+     */
+    public function getNew()
+    {
+        return $this->new;
+    }
 
-		return $this;
-	}
+    /**
+     * @param string $new
+     *
+     * @return SecurityConfiguration
+     * @category Security-Critical
+     */
+    public function setNew($new)
+    {
+        $this->new = $new;
 
-	/**
-	 * @return string
-	 */
-	public function getNew()
-	{
-		return $this->new;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param string $new
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	public function setNew($new)
-	{
-		$this->new = $new;
-
-		return $this;
-	}
-
-	/**
-	 * @param boolean $requireIdentified
-	 */
-	public function setRequireIdentified($requireIdentified)
-	{
-		$this->requireIdentified = $requireIdentified;
-	}
+    /**
+     * @param boolean $requireIdentified
+     */
+    public function setRequireIdentified($requireIdentified)
+    {
+        $this->requireIdentified = $requireIdentified;
+    }
 }

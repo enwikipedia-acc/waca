@@ -16,70 +16,71 @@ use Waca\Tasks\InternalPageBase;
 
 class PageMain extends InternalPageBase
 {
-	/**
-	 * Main function for this page, when no actions are called.
-	 */
-	protected function main()
-	{
-		$this->assignCSRFToken();
+    /**
+     * Main function for this page, when no actions are called.
+     */
+    protected function main()
+    {
+        $this->assignCSRFToken();
 
-		$config = $this->getSiteConfiguration();
+        $config = $this->getSiteConfiguration();
 
-		$database = $this->getDatabase();
+        $database = $this->getDatabase();
 
-		$requestSectionData = array();
+        $requestSectionData = array();
 
-		if ($config->getEmailConfirmationEnabled()) {
-			$query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed' LIMIT :lim;";
-			$totalQuery = "SELECT COUNT(id) FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
-		}
-		else {
-			$query = "SELECT * FROM request WHERE status = :type LIMIT :lim;";
-			$totalQuery = "SELECT COUNT(id) FROM request WHERE status = :type;";
-		}
+        if ($config->getEmailConfirmationEnabled()) {
+            $query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed' LIMIT :lim;";
+            $totalQuery = "SELECT COUNT(id) FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
+        }
+        else {
+            $query = "SELECT * FROM request WHERE status = :type LIMIT :lim;";
+            $totalQuery = "SELECT COUNT(id) FROM request WHERE status = :type;";
+        }
 
-		$statement = $database->prepare($query);
-		$statement->bindValue(':lim', $config->getMiserModeLimit(), PDO::PARAM_INT);
+        $statement = $database->prepare($query);
+        $statement->bindValue(':lim', $config->getMiserModeLimit(), PDO::PARAM_INT);
 
-		$totalRequestsStatement = $database->prepare($totalQuery);
+        $totalRequestsStatement = $database->prepare($totalQuery);
 
-		$this->assign('defaultRequestState', $config->getDefaultRequestStateKey());
+        $this->assign('defaultRequestState', $config->getDefaultRequestStateKey());
 
-		foreach ($config->getRequestStates() as $type => $v) {
-			$statement->bindValue(":type", $type);
-			$statement->execute();
+        foreach ($config->getRequestStates() as $type => $v) {
+            $statement->bindValue(":type", $type);
+            $statement->execute();
 
-			$requests = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
+            $requests = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
 
-			/** @var Request $req */
-			foreach ($requests as $req) {
-				$req->setDatabase($database);
-			}
+            /** @var Request $req */
+            foreach ($requests as $req) {
+                $req->setDatabase($database);
+            }
 
-			$totalRequestsStatement->bindValue(':type', $type);
-			$totalRequestsStatement->execute();
-			$totalRequests = $totalRequestsStatement->fetchColumn();
-			$totalRequestsStatement->closeCursor();
+            $totalRequestsStatement->bindValue(':type', $type);
+            $totalRequestsStatement->execute();
+            $totalRequests = $totalRequestsStatement->fetchColumn();
+            $totalRequestsStatement->closeCursor();
 
-			$userIds = array_map(
-				function(Request $entry) {
-					return $entry->getReserved();
-				},
-				$requests);
-			$userList = User::getUsernames($userIds, $this->getDatabase());
-			$this->assign('userlist', $userList);
+            $userIds = array_map(
+                function(Request $entry) {
+                    return $entry->getReserved();
+                },
+                $requests);
+            $userList = User::getUsernames($userIds, $this->getDatabase());
+            $this->assign('userlist', $userList);
 
-			$requestSectionData[$v['header']] = array(
-				'requests' => $requests,
-				'total'    => $totalRequests,
-				'api'      => $v['api'],
-				'userlist' => $userList,
-			);
-		}
+            $requestSectionData[$v['header']] = array(
+                'requests' => $requests,
+                'total'    => $totalRequests,
+                'api'      => $v['api'],
+                'type'     => $type,
+                'userlist' => $userList,
+            );
+        }
 
-		$this->assign('requestLimitShowOnly', $config->getMiserModeLimit());
+        $this->assign('requestLimitShowOnly', $config->getMiserModeLimit());
 
-		$query = <<<SQL
+        $query = <<<SQL
 		SELECT request.id, request.name, request.updateversion
 		FROM request /* PageMain::main() */
 		JOIN log ON log.objectid = request.id AND log.objecttype = 'Request'
@@ -88,28 +89,28 @@ class PageMain extends InternalPageBase
 		LIMIT 5;
 SQL;
 
-		$statement = $database->prepare($query);
-		$statement->execute();
+        $statement = $database->prepare($query);
+        $statement->execute();
 
-		$last5result = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $last5result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-		$this->assign('lastFive', $last5result);
-		$this->assign('requestSectionData', $requestSectionData);
+        $this->assign('lastFive', $last5result);
+        $this->assign('requestSectionData', $requestSectionData);
 
-		$this->setTemplate('mainpage/mainpage.tpl');
-	}
+        $this->setTemplate('mainpage/mainpage.tpl');
+    }
 
-	/**
-	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-	 * the return value from this function.
-	 *
-	 * If this page even supports actions, you will need to check the route
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	protected function getSecurityConfiguration()
-	{
-		return $this->getSecurityManager()->configure()->asInternalPage();
-	}
+    /**
+     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
+     * the return value from this function.
+     *
+     * If this page even supports actions, you will need to check the route
+     *
+     * @return SecurityConfiguration
+     * @category Security-Critical
+     */
+    protected function getSecurityConfiguration()
+    {
+        return $this->getSecurityManager()->configure()->asInternalPage();
+    }
 }

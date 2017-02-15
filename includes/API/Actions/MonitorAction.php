@@ -23,63 +23,65 @@ use Waca\Tasks\ApiPageBase;
  */
 class MonitorAction extends ApiPageBase implements IApiAction
 {
-	/**
-	 * @param DOMElement $apiDocument
-	 *
-	 * @return DOMElement
-	 */
-	public function executeApiAction(DOMElement $apiDocument)
-	{
-		$now = new DateTime();
+    /**
+     * @param DOMElement $apiDocument
+     *
+     * @return DOMElement
+     */
+    public function executeApiAction(DOMElement $apiDocument)
+    {
+        $now = new DateTime();
 
-		$old = $this->getOldest();
-		$oldest = new DateTime($old);
+        $old = $this->getOldest();
+        $oldest = new DateTime($old);
 
-		$new = $this->getNewest();
-		$newest = new DateTime($new);
+        $new = $this->getNewest();
+        $newest = new DateTime($new);
 
-		$monitoringElement = $this->document->createElement("data");
-		$monitoringElement->setAttribute("date", $now->format('c'));
-		$monitoringElement->setAttribute("oldest", $old === null ? null : $oldest->format('c'));
-		$monitoringElement->setAttribute("newest", $new === null ? null : $newest->format('c'));
-		$apiDocument->appendChild($monitoringElement);
+        $monitoringElement = $this->document->createElement("data");
+        $monitoringElement->setAttribute("date", $now->format('c'));
+        $monitoringElement->setAttribute("oldest", $old === null ? null : $oldest->format('c'));
+        $monitoringElement->setAttribute("newest", $new === null ? null : $newest->format('c'));
+        $apiDocument->appendChild($monitoringElement);
 
-		return $apiDocument;
-	}
+        return $apiDocument;
+    }
 
-	/**
-	 * @return string|null
-	 */
-	private function getOldest()
-	{
-		$statement = $this->getDatabase()->prepare("SELECT min(date) FROM request WHERE email != :email AND ip != :ip;");
-		$successful = $statement->execute(array(
-			':email' => $this->getSiteConfiguration()->getDataClearEmail(),
-			':ip'    => $this->getSiteConfiguration()->getDataClearIp(),
-		));
+    /**
+     * @return string|null
+     */
+    private function getOldest()
+    {
+        $statement = $this->getDatabase()
+            ->prepare("SELECT min(date) FROM request WHERE email != :email AND ip != :ip;");
+        $successful = $statement->execute(array(
+            ':email' => $this->getSiteConfiguration()->getDataClearEmail(),
+            ':ip'    => $this->getSiteConfiguration()->getDataClearIp(),
+        ));
 
-		if (!$successful) {
-			return null;
-		}
+        if (!$successful) {
+            return null;
+        }
 
-		$result = $statement->fetchColumn();
+        $result = $statement->fetchColumn();
 
-		return $result;
-	}
+        return $result;
+    }
 
-	/**
-	 * @return string
-	 */
-	private function getNewest()
-	{
-		$statement = $this->getDatabase()->prepare("SELECT max(date) FROM request WHERE email != :email AND ip != :ip;");
-		$statement->execute(array(
-			':email' => $this->getSiteConfiguration()->getDataClearEmail(),
-			':ip'    => $this->getSiteConfiguration()->getDataClearIp(),
-		));
+    /**
+     * @return string
+     */
+    private function getNewest()
+    {
+        $statement = $this->getDatabase()
+            ->prepare("SELECT max(date) FROM request WHERE email != :email AND ip != :ip;");
+        $statement->execute(array(
+            ':email' => $this->getSiteConfiguration()->getDataClearEmail(),
+            ':ip'    => $this->getSiteConfiguration()->getDataClearIp(),
+        ));
 
-		$result = $statement->fetchColumn(0);
+        $result = $statement->fetchColumn(0);
 
-		return $result;
-	}
+        return $result;
+    }
 }

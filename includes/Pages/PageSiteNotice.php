@@ -16,51 +16,51 @@ use Waca\WebRequest;
 
 class PageSiteNotice extends InternalPageBase
 {
-	/**
-	 * Main function for this page, when no specific actions are called.
-	 * @return void
-	 */
-	protected function main()
-	{
-		$this->setHtmlTitle('Site Notice');
+    /**
+     * Main function for this page, when no specific actions are called.
+     * @return void
+     */
+    protected function main()
+    {
+        $this->setHtmlTitle('Site Notice');
 
-		$database = $this->getDatabase();
+        $database = $this->getDatabase();
 
-		/** @var SiteNotice $siteNoticeMessage */
-		$siteNoticeMessage = SiteNotice::getById(1, $database);
+        /** @var SiteNotice $siteNoticeMessage */
+        $siteNoticeMessage = SiteNotice::getById(1, $database);
 
-		// Dual-mode
-		if (WebRequest::wasPosted()) {
-			$this->validateCSRFToken();
+        // Dual-mode
+        if (WebRequest::wasPosted()) {
+            $this->validateCSRFToken();
 
-			$siteNoticeMessage->setContent(WebRequest::postString('mailtext'));
-			$siteNoticeMessage->setUpdateVersion(WebRequest::postInt('updateversion'));
-			$siteNoticeMessage->save();
+            $siteNoticeMessage->setContent(WebRequest::postString('mailtext'));
+            $siteNoticeMessage->setUpdateVersion(WebRequest::postInt('updateversion'));
+            $siteNoticeMessage->save();
 
-			Logger::siteNoticeEdited($database, $siteNoticeMessage);
-			$this->getNotificationHelper()->siteNoticeEdited();
+            Logger::siteNoticeEdited($database, $siteNoticeMessage);
+            $this->getNotificationHelper()->siteNoticeEdited();
 
-			$this->redirect();
-		}
-		else {
-			$this->assignCSRFToken();
+            $this->redirect();
+        }
+        else {
+            $this->assignCSRFToken();
 
-			$this->setTemplate('site-notice/edit-form.tpl');
-			$this->assign('message', $siteNoticeMessage);
-		}
-	}
+            $this->setTemplate('site-notice/edit-form.tpl');
+            $this->assign('message', $siteNoticeMessage);
+        }
+    }
 
-	/**
-	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-	 * the return value from this function.
-	 *
-	 * If this page even supports actions, you will need to check the route
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	protected function getSecurityConfiguration()
-	{
-		return $this->getSecurityManager()->configure()->asAdminPage();
-	}
+    /**
+     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
+     * the return value from this function.
+     *
+     * If this page even supports actions, you will need to check the route
+     *
+     * @return SecurityConfiguration
+     * @category Security-Critical
+     */
+    protected function getSecurityConfiguration()
+    {
+        return $this->getSecurityManager()->configure()->asAdminPage();
+    }
 }

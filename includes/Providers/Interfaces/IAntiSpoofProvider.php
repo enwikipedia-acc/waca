@@ -13,10 +13,10 @@ namespace Waca\Providers\Interfaces;
  */
 interface IAntiSpoofProvider
 {
-	/**
-	 * @param string $username
-	 *
-	 * @return array
-	 */
-	public function getSpoofs($username);
+    /**
+     * @param string $username
+     *
+     * @return array
+     */
+    public function getSpoofs($username);
 }

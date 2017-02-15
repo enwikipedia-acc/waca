@@ -24,335 +24,335 @@ use Waca\WebRequest;
 
 trait RequestData
 {
-	/**
-	 * @var array Array of IP address classed as 'private' by RFC1918.
-	 */
-	protected static $rfc1918ips = array(
-		"10.0.0.0"    => "10.255.255.255",
-		"172.16.0.0"  => "172.31.255.255",
-		"192.168.0.0" => "192.168.255.255",
-		"169.254.0.0" => "169.254.255.255",
-		"127.0.0.0"   => "127.255.255.255",
-	);
+    /**
+     * @var array Array of IP address classed as 'private' by RFC1918.
+     */
+    protected static $rfc1918ips = array(
+        "10.0.0.0"    => "10.255.255.255",
+        "172.16.0.0"  => "172.31.255.255",
+        "192.168.0.0" => "192.168.255.255",
+        "169.254.0.0" => "169.254.255.255",
+        "127.0.0.0"   => "127.255.255.255",
+    );
 
-	/**
-	 * Gets a request object
-	 *
-	 * @param PdoDatabase $database  The database connection
-	 * @param int         $requestId The ID of the request to retrieve
-	 *
-	 * @return Request
-	 * @throws ApplicationLogicException
-	 */
-	protected function getRequest(PdoDatabase $database, $requestId)
-	{
-		if ($requestId === null) {
-			throw new ApplicationLogicException("No request specified");
-		}
+    /**
+     * Gets a request object
+     *
+     * @param PdoDatabase $database  The database connection
+     * @param int         $requestId The ID of the request to retrieve
+     *
+     * @return Request
+     * @throws ApplicationLogicException
+     */
+    protected function getRequest(PdoDatabase $database, $requestId)
+    {
+        if ($requestId === null) {
+            throw new ApplicationLogicException("No request specified");
+        }
 
-		$request = Request::getById($requestId, $database);
-		if ($request === false || !is_a($request, Request::class)) {
-			throw new ApplicationLogicException('Could not load the requested request!');
-		}
+        $request = Request::getById($requestId, $database);
+        if ($request === false || !is_a($request, Request::class)) {
+            throw new ApplicationLogicException('Could not load the requested request!');
+        }
 
-		return $request;
-	}
+        return $request;
+    }
 
-	/**
-	 * Returns a value stating whether the user is allowed to see private data or not
-	 *
-	 * @param Request $request
-	 * @param User    $currentUser
-	 *
-	 * @return bool
-	 * @category Security-Critical
-	 */
-	protected function isAllowedPrivateData(Request $request, User $currentUser)
-	{
-		// Test the main security barrier for private data access using SecurityManager
-		if ($this->barrierTest('privateData')) {
-			// Tool admins/check-users can always see private data
-			return true;
-		}
+    /**
+     * Returns a value stating whether the user is allowed to see private data or not
+     *
+     * @param Request $request
+     * @param User    $currentUser
+     *
+     * @return bool
+     * @category Security-Critical
+     */
+    protected function isAllowedPrivateData(Request $request, User $currentUser)
+    {
+        // Test the main security barrier for private data access using SecurityManager
+        if ($this->barrierTest('privateData')) {
+            // Tool admins/check-users can always see private data
+            return true;
+        }
 
-		// reserving user is allowed to see the data
-		if ($currentUser->getId() === $request->getReserved() && $request->getReserved() !== null) {
-			return true;
-		}
+        // reserving user is allowed to see the data
+        if ($currentUser->getId() === $request->getReserved() && $request->getReserved() !== null) {
+            return true;
+        }
 
-		// user has the reveal hash
-		if (WebRequest::getString('hash') === $request->getRevealHash()) {
-			return true;
-		}
+        // user has the reveal hash
+        if (WebRequest::getString('hash') === $request->getRevealHash()) {
+            return true;
+        }
 
-		// nope. Not allowed.
-		return false;
-	}
+        // nope. Not allowed.
+        return false;
+    }
 
-	/**
-	 * Tests the security barrier for a specified action.
-	 *
-	 * Intended to be used from within templates
-	 *
-	 * @param string $action
-	 *
-	 * @return boolean
-	 * @category Security-Critical
-	 */
-	abstract protected function barrierTest($action);
+    /**
+     * Tests the security barrier for a specified action.
+     *
+     * Intended to be used from within templates
+     *
+     * @param string $action
+     *
+     * @return boolean
+     * @category Security-Critical
+     */
+    abstract protected function barrierTest($action);
 
-	/**
-	 * Gets the name of the route that has been passed from the request router.
-	 * @return string
-	 */
-	abstract protected function getRouteName();
+    /**
+     * Gets the name of the route that has been passed from the request router.
+     * @return string
+     */
+    abstract protected function getRouteName();
 
-	/** @return SecurityManager */
-	abstract protected function getSecurityManager();
+    /** @return SecurityManager */
+    abstract protected function getSecurityManager();
 
-	/**
-	 * Sets the name of the template this page should display.
-	 *
-	 * @param string $name
-	 */
-	abstract protected function setTemplate($name);
+    /**
+     * Sets the name of the template this page should display.
+     *
+     * @param string $name
+     */
+    abstract protected function setTemplate($name);
 
-	/** @return IXffTrustProvider */
-	abstract protected function getXffTrustProvider();
+    /** @return IXffTrustProvider */
+    abstract protected function getXffTrustProvider();
 
-	/** @return ILocationProvider */
-	abstract protected function getLocationProvider();
+    /** @return ILocationProvider */
+    abstract protected function getLocationProvider();
 
-	/** @return IRDnsProvider */
-	abstract protected function getRdnsProvider();
+    /** @return IRDnsProvider */
+    abstract protected function getRdnsProvider();
 
-	/**
-	 * Assigns a Smarty variable
-	 *
-	 * @param  array|string $name    the template variable name(s)
-	 * @param  mixed        $value   the value to assign
-	 */
-	abstract protected function assign($name, $value);
+    /**
+     * Assigns a Smarty variable
+     *
+     * @param  array|string $name  the template variable name(s)
+     * @param  mixed        $value the value to assign
+     */
+    abstract protected function assign($name, $value);
 
-	/**
-	 * @param int         $requestReservationId
-	 * @param PdoDatabase $database
-	 * @param User        $currentUser
-	 */
-	protected function setupReservationDetails($requestReservationId, PdoDatabase $database, User $currentUser)
-	{
-		$requestIsReserved = $requestReservationId !== null;
-		$this->assign('requestIsReserved', $requestIsReserved);
-		$this->assign('requestIsReservedByMe', false);
+    /**
+     * @param int         $requestReservationId
+     * @param PdoDatabase $database
+     * @param User        $currentUser
+     */
+    protected function setupReservationDetails($requestReservationId, PdoDatabase $database, User $currentUser)
+    {
+        $requestIsReserved = $requestReservationId !== null;
+        $this->assign('requestIsReserved', $requestIsReserved);
+        $this->assign('requestIsReservedByMe', false);
 
-		if ($requestIsReserved) {
-			$this->assign('requestReservedByName', User::getById($requestReservationId, $database)->getUsername());
-			$this->assign('requestReservedById', $requestReservationId);
+        if ($requestIsReserved) {
+            $this->assign('requestReservedByName', User::getById($requestReservationId, $database)->getUsername());
+            $this->assign('requestReservedById', $requestReservationId);
 
-			if ($requestReservationId === $currentUser->getId()) {
-				$this->assign('requestIsReservedByMe', true);
-			}
-		}
-	}
+            if ($requestReservationId === $currentUser->getId()) {
+                $this->assign('requestIsReservedByMe', true);
+            }
+        }
+    }
 
-	/**
-	 * Adds private request data to Smarty. DO NOT USE WITHOUT FIRST CHECKING THAT THE USER IS AUTHORISED!
-	 *
-	 * @param Request           $request
-	 * @param User              $currentUser
-	 * @param SiteConfiguration $configuration
-	 *
-	 * @param PdoDatabase       $database
-	 */
-	protected function setupPrivateData(
-		$request,
-		User $currentUser,
-		SiteConfiguration $configuration,
-		PdoDatabase $database
-	) {
-		$xffProvider = $this->getXffTrustProvider();
+    /**
+     * Adds private request data to Smarty. DO NOT USE WITHOUT FIRST CHECKING THAT THE USER IS AUTHORISED!
+     *
+     * @param Request           $request
+     * @param User              $currentUser
+     * @param SiteConfiguration $configuration
+     *
+     * @param PdoDatabase       $database
+     */
+    protected function setupPrivateData(
+        $request,
+        User $currentUser,
+        SiteConfiguration $configuration,
+        PdoDatabase $database
+    ) {
+        $xffProvider = $this->getXffTrustProvider();
 
-		$relatedEmailRequests = RequestSearchHelper::get($database)
-			->byEmailAddress($request->getEmail())
-			->withConfirmedEmail()
-			->excludingPurgedData($configuration)
-			->excludingRequest($request->getId())
-			->fetch();
+        $relatedEmailRequests = RequestSearchHelper::get($database)
+            ->byEmailAddress($request->getEmail())
+            ->withConfirmedEmail()
+            ->excludingPurgedData($configuration)
+            ->excludingRequest($request->getId())
+            ->fetch();
 
-		$this->assign('requestEmail', $request->getEmail());
-		$emailDomain = explode("@", $request->getEmail())[1];
-		$this->assign("emailurl", $emailDomain);
-		$this->assign('requestRelatedEmailRequestsCount', count($relatedEmailRequests));
-		$this->assign('requestRelatedEmailRequests', $relatedEmailRequests);
+        $this->assign('requestEmail', $request->getEmail());
+        $emailDomain = explode("@", $request->getEmail())[1];
+        $this->assign("emailurl", $emailDomain);
+        $this->assign('requestRelatedEmailRequestsCount', count($relatedEmailRequests));
+        $this->assign('requestRelatedEmailRequests', $relatedEmailRequests);
 
-		$trustedIp = $xffProvider->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
-		$this->assign('requestTrustedIp', $trustedIp);
-		$this->assign('requestRealIp', $request->getIp());
-		$this->assign('requestForwardedIp', $request->getForwardedIp());
+        $trustedIp = $xffProvider->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
+        $this->assign('requestTrustedIp', $trustedIp);
+        $this->assign('requestRealIp', $request->getIp());
+        $this->assign('requestForwardedIp', $request->getForwardedIp());
 
-		$trustedIpLocation = $this->getLocationProvider()->getIpLocation($trustedIp);
-		$this->assign('requestTrustedIpLocation', $trustedIpLocation);
+        $trustedIpLocation = $this->getLocationProvider()->getIpLocation($trustedIp);
+        $this->assign('requestTrustedIpLocation', $trustedIpLocation);
 
-		$this->assign('requestHasForwardedIp', $request->getForwardedIp() !== null);
+        $this->assign('requestHasForwardedIp', $request->getForwardedIp() !== null);
 
-		$relatedIpRequests = RequestSearchHelper::get($database)
-			->byIp($trustedIp)
-			->withConfirmedEmail()
-			->excludingPurgedData($configuration)
-			->excludingRequest($request->getId())
-			->fetch();
+        $relatedIpRequests = RequestSearchHelper::get($database)
+            ->byIp($trustedIp)
+            ->withConfirmedEmail()
+            ->excludingPurgedData($configuration)
+            ->excludingRequest($request->getId())
+            ->fetch();
 
-		$this->assign('requestRelatedIpRequestsCount', count($relatedIpRequests));
-		$this->assign('requestRelatedIpRequests', $relatedIpRequests);
+        $this->assign('requestRelatedIpRequestsCount', count($relatedIpRequests));
+        $this->assign('requestRelatedIpRequests', $relatedIpRequests);
 
-		$this->assign('showRevealLink', false);
-		if ($request->getReserved() === $currentUser->getId() ||
-			$currentUser->isAdmin() ||
-			$currentUser->isCheckuser()
-		) {
-			$this->assign('showRevealLink', true);
+        $this->assign('showRevealLink', false);
+        if ($request->getReserved() === $currentUser->getId() ||
+            $currentUser->isAdmin() ||
+            $currentUser->isCheckuser()
+        ) {
+            $this->assign('showRevealLink', true);
 
-			$this->assign('revealHash', $request->getRevealHash());
-		}
+            $this->assign('revealHash', $request->getRevealHash());
+        }
 
-		$this->setupForwardedIpData($request);
-	}
+        $this->setupForwardedIpData($request);
+    }
 
-	/**
-	 * Adds checkuser request data to Smarty. DO NOT USE WITHOUT FIRST CHECKING THAT THE USER IS AUTHORISED!
-	 *
-	 * @param Request $request
-	 */
-	protected function setupCheckUserData(Request $request)
-	{
-		$this->assign('requestUserAgent', $request->getUserAgent());
-	}
+    /**
+     * Adds checkuser request data to Smarty. DO NOT USE WITHOUT FIRST CHECKING THAT THE USER IS AUTHORISED!
+     *
+     * @param Request $request
+     */
+    protected function setupCheckUserData(Request $request)
+    {
+        $this->assign('requestUserAgent', $request->getUserAgent());
+    }
 
-	/**
-	 * Sets up the basic data for this request, and adds it to Smarty
-	 *
-	 * @param Request           $request
-	 * @param SiteConfiguration $config
-	 */
-	protected function setupBasicData(Request $request, SiteConfiguration $config)
-	{
-		$this->assign('requestId', $request->getId());
-		$this->assign('updateVersion', $request->getUpdateVersion());
-		$this->assign('requestName', $request->getName());
-		$this->assign('requestDate', $request->getDate());
-		$this->assign('requestStatus', $request->getStatus());
+    /**
+     * Sets up the basic data for this request, and adds it to Smarty
+     *
+     * @param Request           $request
+     * @param SiteConfiguration $config
+     */
+    protected function setupBasicData(Request $request, SiteConfiguration $config)
+    {
+        $this->assign('requestId', $request->getId());
+        $this->assign('updateVersion', $request->getUpdateVersion());
+        $this->assign('requestName', $request->getName());
+        $this->assign('requestDate', $request->getDate());
+        $this->assign('requestStatus', $request->getStatus());
 
-		$this->assign('requestIsClosed', !array_key_exists($request->getStatus(), $config->getRequestStates()));
-	}
+        $this->assign('requestIsClosed', !array_key_exists($request->getStatus(), $config->getRequestStates()));
+    }
 
-	/**
-	 * Sets up the forwarded IP data for this request and adds it to Smarty
-	 *
-	 * @param Request $request
-	 */
-	protected function setupForwardedIpData(Request $request)
-	{
-		if ($request->getForwardedIp() !== null) {
-			$requestProxyData = array(); // Initialize array to store data to be output in Smarty template.
-			$proxyIndex = 0;
+    /**
+     * Sets up the forwarded IP data for this request and adds it to Smarty
+     *
+     * @param Request $request
+     */
+    protected function setupForwardedIpData(Request $request)
+    {
+        if ($request->getForwardedIp() !== null) {
+            $requestProxyData = array(); // Initialize array to store data to be output in Smarty template.
+            $proxyIndex = 0;
 
-			// Assuming [client] <=> [proxy1] <=> [proxy2] <=> [proxy3] <=> [us], we will see an XFF header of [client],
-			// [proxy1], [proxy2], and our actual IP will be [proxy3]
-			$proxies = explode(",", $request->getForwardedIp());
-			$proxies[] = $request->getIp();
+            // Assuming [client] <=> [proxy1] <=> [proxy2] <=> [proxy3] <=> [us], we will see an XFF header of [client],
+            // [proxy1], [proxy2], and our actual IP will be [proxy3]
+            $proxies = explode(",", $request->getForwardedIp());
+            $proxies[] = $request->getIp();
 
-			// Origin is the supposed "client" IP.
-			$origin = $proxies[0];
-			$this->assign("forwardedOrigin", $origin);
+            // Origin is the supposed "client" IP.
+            $origin = $proxies[0];
+            $this->assign("forwardedOrigin", $origin);
 
-			// We step through the servers in reverse order, from closest to furthest
-			$proxies = array_reverse($proxies);
+            // We step through the servers in reverse order, from closest to furthest
+            $proxies = array_reverse($proxies);
 
-			// By default, we have trust, because the first in the chain is now REMOTE_ADDR, which is hardest to spoof.
-			$trust = true;
+            // By default, we have trust, because the first in the chain is now REMOTE_ADDR, which is hardest to spoof.
+            $trust = true;
 
-			/**
-			 * @var int    $index     The zero-based index of the proxy.
-			 * @var string $proxyData The proxy IP address (although possibly not!)
-			 */
-			foreach ($proxies as $index => $proxyData) {
-				$proxyAddress = trim($proxyData);
-				$requestProxyData[$proxyIndex]['ip'] = $proxyAddress;
+            /**
+             * @var int    $index     The zero-based index of the proxy.
+             * @var string $proxyData The proxy IP address (although possibly not!)
+             */
+            foreach ($proxies as $index => $proxyData) {
+                $proxyAddress = trim($proxyData);
+                $requestProxyData[$proxyIndex]['ip'] = $proxyAddress;
 
-				// get data on this IP.
-				$thisProxyIsTrusted = $this->getXffTrustProvider()->isTrusted($proxyAddress);
+                // get data on this IP.
+                $thisProxyIsTrusted = $this->getXffTrustProvider()->isTrusted($proxyAddress);
 
-				$proxyIsInPrivateRange = $this->getXffTrustProvider()
-					->ipInRange(self::$rfc1918ips, $proxyAddress);
+                $proxyIsInPrivateRange = $this->getXffTrustProvider()
+                    ->ipInRange(self::$rfc1918ips, $proxyAddress);
 
-				if (!$proxyIsInPrivateRange) {
-					$proxyReverseDns = $this->getRdnsProvider()->getReverseDNS($proxyAddress);
-					$proxyLocation = $this->getLocationProvider()->getIpLocation($proxyAddress);
-				}
-				else {
-					// this is going to fail, so why bother trying?
-					$proxyReverseDns = false;
-					$proxyLocation = false;
-				}
+                if (!$proxyIsInPrivateRange) {
+                    $proxyReverseDns = $this->getRdnsProvider()->getReverseDNS($proxyAddress);
+                    $proxyLocation = $this->getLocationProvider()->getIpLocation($proxyAddress);
+                }
+                else {
+                    // this is going to fail, so why bother trying?
+                    $proxyReverseDns = false;
+                    $proxyLocation = false;
+                }
 
-				// current trust chain status BEFORE this link
-				$preLinkTrust = $trust;
+                // current trust chain status BEFORE this link
+                $preLinkTrust = $trust;
 
-				// is *this* link trusted? Note, this will be true even if there is an untrusted link before this!
-				$requestProxyData[$proxyIndex]['trustedlink'] = $thisProxyIsTrusted;
+                // is *this* link trusted? Note, this will be true even if there is an untrusted link before this!
+                $requestProxyData[$proxyIndex]['trustedlink'] = $thisProxyIsTrusted;
 
-				// set the trust status of the chain to this point
-				$trust = $trust & $thisProxyIsTrusted;
+                // set the trust status of the chain to this point
+                $trust = $trust & $thisProxyIsTrusted;
 
-				// If this is the origin address, and the chain was trusted before this point, then we can trust
-				// the origin.
-				if ($preLinkTrust && $proxyAddress == $origin) {
-					// if this is the origin, then we are at the last point in the chain.
-					// @todo: this is probably the cause of some bugs when an IP appears twice - we're missing a check
-					// to see if this is *really* the last in the chain, rather than just the same IP as it.
-					$trust = true;
-				}
+                // If this is the origin address, and the chain was trusted before this point, then we can trust
+                // the origin.
+                if ($preLinkTrust && $proxyAddress == $origin) {
+                    // if this is the origin, then we are at the last point in the chain.
+                    // @todo: this is probably the cause of some bugs when an IP appears twice - we're missing a check
+                    // to see if this is *really* the last in the chain, rather than just the same IP as it.
+                    $trust = true;
+                }
 
-				$requestProxyData[$proxyIndex]['trust'] = $trust;
+                $requestProxyData[$proxyIndex]['trust'] = $trust;
 
-				$requestProxyData[$proxyIndex]['rdnsfailed'] = $proxyReverseDns === false;
-				$requestProxyData[$proxyIndex]['rdns'] = $proxyReverseDns;
-				$requestProxyData[$proxyIndex]['routable'] = !$proxyIsInPrivateRange;
+                $requestProxyData[$proxyIndex]['rdnsfailed'] = $proxyReverseDns === false;
+                $requestProxyData[$proxyIndex]['rdns'] = $proxyReverseDns;
+                $requestProxyData[$proxyIndex]['routable'] = !$proxyIsInPrivateRange;
 
-				$requestProxyData[$proxyIndex]['location'] = $proxyLocation;
+                $requestProxyData[$proxyIndex]['location'] = $proxyLocation;
 
-				if ($proxyReverseDns === $proxyAddress && $proxyIsInPrivateRange === false) {
-					$requestProxyData[$proxyIndex]['rdns'] = null;
-				}
+                if ($proxyReverseDns === $proxyAddress && $proxyIsInPrivateRange === false) {
+                    $requestProxyData[$proxyIndex]['rdns'] = null;
+                }
 
-				$showLinks = (!$trust || $proxyAddress == $origin) && !$proxyIsInPrivateRange;
-				$requestProxyData[$proxyIndex]['showlinks'] = $showLinks;
+                $showLinks = (!$trust || $proxyAddress == $origin) && !$proxyIsInPrivateRange;
+                $requestProxyData[$proxyIndex]['showlinks'] = $showLinks;
 
-				$proxyIndex++;
-			}
+                $proxyIndex++;
+            }
 
-			$this->assign("requestProxyData", $requestProxyData);
-		}
-	}
+            $this->assign("requestProxyData", $requestProxyData);
+        }
+    }
 
-	/**
-	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-	 * the return value from this function.
-	 *
-	 * If this page even supports actions, you will need to check the route
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	protected function getSecurityConfiguration()
-	{
-		switch ($this->getRouteName()) {
-			case PageViewRequest::PRIVATE_DATA_BARRIER:
-				return $this->getSecurityManager()->configure()->asGeneralPrivateDataAccess();
-			case PageViewRequest::SET_BAN_BARRIER:
-				return $this->getSecurityManager()->configure()->asAdminPage();
-			default:
-				return $this->getSecurityManager()->configure()->asInternalPage();
-		}
-	}
+    /**
+     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
+     * the return value from this function.
+     *
+     * If this page even supports actions, you will need to check the route
+     *
+     * @return SecurityConfiguration
+     * @category Security-Critical
+     */
+    protected function getSecurityConfiguration()
+    {
+        switch ($this->getRouteName()) {
+            case PageViewRequest::PRIVATE_DATA_BARRIER:
+                return $this->getSecurityManager()->configure()->asGeneralPrivateDataAccess();
+            case PageViewRequest::SET_BAN_BARRIER:
+                return $this->getSecurityManager()->configure()->asAdminPage();
+            default:
+                return $this->getSecurityManager()->configure()->asInternalPage();
+        }
+    }
 }

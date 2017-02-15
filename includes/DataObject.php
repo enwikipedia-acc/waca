@@ -23,124 +23,124 @@ use Waca\Exceptions\OptimisticLockFailedException;
  */
 abstract class DataObject
 {
-	/** @var int ID of the object */
-	protected $id = null;
-	/** @var int update version for optimistic locking */
-	protected $updateversion = 0;
-	/**
-	 * @var PdoDatabase
-	 */
-	protected $dbObject;
+    /** @var int ID of the object */
+    protected $id = null;
+    /** @var int update version for optimistic locking */
+    protected $updateversion = 0;
+    /**
+     * @var PdoDatabase
+     */
+    protected $dbObject;
 
-	/**
-	 * Retrieves a data object by it's row ID.
-	 *
-	 * @param int         $id
-	 * @param PdoDatabase $database
-	 *
-	 * @return DataObject|false
-	 */
-	public static function getById($id, PdoDatabase $database)
-	{
-		$array = explode('\\', get_called_class());
-		$realClassName = strtolower(end($array));
+    /**
+     * Retrieves a data object by it's row ID.
+     *
+     * @param int         $id
+     * @param PdoDatabase $database
+     *
+     * @return DataObject|false
+     */
+    public static function getById($id, PdoDatabase $database)
+    {
+        $array = explode('\\', get_called_class());
+        $realClassName = strtolower(end($array));
 
-		$statement = $database->prepare("SELECT * FROM {$realClassName} WHERE id = :id LIMIT 1;");
-		$statement->bindValue(":id", $id);
+        $statement = $database->prepare("SELECT * FROM {$realClassName} WHERE id = :id LIMIT 1;");
+        $statement->bindValue(":id", $id);
 
-		$statement->execute();
+        $statement->execute();
 
-		$resultObject = $statement->fetchObject(get_called_class());
+        $resultObject = $statement->fetchObject(get_called_class());
 
-		if ($resultObject != false) {
-			$resultObject->setDatabase($database);
-		}
+        if ($resultObject != false) {
+            $resultObject->setDatabase($database);
+        }
 
-		return $resultObject;
-	}
+        return $resultObject;
+    }
 
-	public function setDatabase(PdoDatabase $db)
-	{
-		$this->dbObject = $db;
-	}
+    public function setDatabase(PdoDatabase $db)
+    {
+        $this->dbObject = $db;
+    }
 
-	/**
-	 * Gets the database associated with this data object.
-	 * @return PdoDatabase
-	 */
-	public function getDatabase()
-	{
-		return $this->dbObject;
-	}
+    /**
+     * Gets the database associated with this data object.
+     * @return PdoDatabase
+     */
+    public function getDatabase()
+    {
+        return $this->dbObject;
+    }
 
-	/**
-	 * Saves a data object to the database, either updating or inserting a record.
-	 *
-	 * @return void
-	 */
-	abstract public function save();
+    /**
+     * Saves a data object to the database, either updating or inserting a record.
+     *
+     * @return void
+     */
+    abstract public function save();
 
-	/**
-	 * Retrieves the ID attribute
-	 */
-	public function getId()
-	{
-		return (int)$this->id;
-	}
+    /**
+     * Retrieves the ID attribute
+     */
+    public function getId()
+    {
+        return (int)$this->id;
+    }
 
-	/**
-	 * Deletes the object from the database
-	 */
-	public function delete()
-	{
-		if ($this->id === null) {
-			// wtf?
-			return;
-		}
+    /**
+     * Deletes the object from the database
+     */
+    public function delete()
+    {
+        if ($this->id === null) {
+            // wtf?
+            return;
+        }
 
-		$array = explode('\\', get_called_class());
-		$realClassName = strtolower(end($array));
+        $array = explode('\\', get_called_class());
+        $realClassName = strtolower(end($array));
 
-		$deleteQuery = "DELETE FROM {$realClassName} WHERE id = :id AND updateversion = :updateversion LIMIT 1;";
-		$statement = $this->dbObject->prepare($deleteQuery);
+        $deleteQuery = "DELETE FROM {$realClassName} WHERE id = :id AND updateversion = :updateversion LIMIT 1;";
+        $statement = $this->dbObject->prepare($deleteQuery);
 
-		$statement->bindValue(":id", $this->id);
-		$statement->bindValue(":updateversion", $this->updateversion);
-		$statement->execute();
+        $statement->bindValue(":id", $this->id);
+        $statement->bindValue(":updateversion", $this->updateversion);
+        $statement->execute();
 
-		if ($statement->rowCount() !== 1) {
-			throw new OptimisticLockFailedException();
-		}
+        if ($statement->rowCount() !== 1) {
+            throw new OptimisticLockFailedException();
+        }
 
-		$this->id = null;
-	}
+        $this->id = null;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getUpdateVersion()
-	{
-		return $this->updateversion;
-	}
+    /**
+     * @return int
+     */
+    public function getUpdateVersion()
+    {
+        return $this->updateversion;
+    }
 
-	/**
-	 * Sets the update version.
-	 *
-	 * You should never call this to change the value of the update version. You should only call it when passing user
-	 * input through.
-	 *
-	 * @param int $updateVersion
-	 */
-	public function setUpdateVersion($updateVersion)
-	{
-		$this->updateversion = $updateVersion;
-	}
+    /**
+     * Sets the update version.
+     *
+     * You should never call this to change the value of the update version. You should only call it when passing user
+     * input through.
+     *
+     * @param int $updateVersion
+     */
+    public function setUpdateVersion($updateVersion)
+    {
+        $this->updateversion = $updateVersion;
+    }
 
-	/**
-	 * @return bool
-	 */
-	public function isNew()
-	{
-		return $this->id === null;
-	}
+    /**
+     * @return bool
+     */
+    public function isNew()
+    {
+        return $this->id === null;
+    }
 }

@@ -17,151 +17,151 @@ use Waca\DataObject;
  */
 class Log extends DataObject
 {
-	/** @var int */
-	private $objectid;
-	/** @var string */
-	private $objecttype;
-	/** @var int */
-	private $user;
-	/** @var string */
-	private $action;
-	private $timestamp;
-	/** @var string|null */
-	private $comment;
+    /** @var int */
+    private $objectid;
+    /** @var string */
+    private $objecttype;
+    /** @var int */
+    private $user;
+    /** @var string */
+    private $action;
+    private $timestamp;
+    /** @var string|null */
+    private $comment;
 
-	/**
-	 * @throws Exception
-	 */
-	public function save()
-	{
-		if ($this->isNew()) {
-			$statement = $this->dbObject->prepare(<<<SQL
+    /**
+     * @throws Exception
+     */
+    public function save()
+    {
+        if ($this->isNew()) {
+            $statement = $this->dbObject->prepare(<<<SQL
                 INSERT INTO log (objectid, objecttype, user, action, timestamp, comment) 
                 VALUES (:id, :type, :user, :action, CURRENT_TIMESTAMP(), :comment);
 SQL
-			);
+            );
 
-			$statement->bindValue(":id", $this->objectid);
-			$statement->bindValue(":type", $this->objecttype);
-			$statement->bindValue(":user", $this->user);
-			$statement->bindValue(":action", $this->action);
-			$statement->bindValue(":comment", $this->comment);
+            $statement->bindValue(":id", $this->objectid);
+            $statement->bindValue(":type", $this->objecttype);
+            $statement->bindValue(":user", $this->user);
+            $statement->bindValue(":action", $this->action);
+            $statement->bindValue(":comment", $this->comment);
 
-			if ($statement->execute()) {
-				$this->id = (int)$this->dbObject->lastInsertId();
-			}
-			else {
-				throw new Exception($statement->errorInfo());
-			}
-		}
-		else {
-			throw new Exception("Updating logs is not available");
-		}
-	}
+            if ($statement->execute()) {
+                $this->id = (int)$this->dbObject->lastInsertId();
+            }
+            else {
+                throw new Exception($statement->errorInfo());
+            }
+        }
+        else {
+            throw new Exception("Updating logs is not available");
+        }
+    }
 
-	/**
-	 * @throws Exception
-	 */
-	public function delete()
-	{
-		throw new Exception("Deleting logs is not available.");
-	}
+    /**
+     * @throws Exception
+     */
+    public function delete()
+    {
+        throw new Exception("Deleting logs is not available.");
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getObjectId()
-	{
-		return $this->objectid;
-	}
+    /**
+     * @return int
+     */
+    public function getObjectId()
+    {
+        return $this->objectid;
+    }
 
-	/**
-	 * Summary of setObjectId
-	 *
-	 * @param int $objectId
-	 */
-	public function setObjectId($objectId)
-	{
-		$this->objectid = $objectId;
-	}
+    /**
+     * Summary of setObjectId
+     *
+     * @param int $objectId
+     */
+    public function setObjectId($objectId)
+    {
+        $this->objectid = $objectId;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getObjectType()
-	{
-		return $this->objecttype;
-	}
+    /**
+     * @return string
+     */
+    public function getObjectType()
+    {
+        return $this->objecttype;
+    }
 
-	/**
-	 * Summary of setObjectType
-	 *
-	 * @param string $objectType
-	 */
-	public function setObjectType($objectType)
-	{
-		$this->objecttype = $objectType;
-	}
+    /**
+     * Summary of setObjectType
+     *
+     * @param string $objectType
+     */
+    public function setObjectType($objectType)
+    {
+        $this->objecttype = $objectType;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getUser()
-	{
-		return $this->user;
-	}
+    /**
+     * @return int
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
 
-	/**
-	 * Summary of setUser
-	 *
-	 * @param User $user
-	 */
-	public function setUser(User $user)
-	{
-		$this->user = $user->getId();
-	}
+    /**
+     * Summary of setUser
+     *
+     * @param User $user
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user->getId();
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getAction()
-	{
-		return $this->action;
-	}
+    /**
+     * @return string
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
 
-	/**
-	 * Summary of setAction
-	 *
-	 * @param string $action
-	 */
-	public function setAction($action)
-	{
-		$this->action = $action;
-	}
+    /**
+     * Summary of setAction
+     *
+     * @param string $action
+     */
+    public function setAction($action)
+    {
+        $this->action = $action;
+    }
 
-	/**
-	 * @return DateTimeImmutable
-	 */
-	public function getTimestamp()
-	{
-		return new DateTimeImmutable($this->timestamp);
-	}
+    /**
+     * @return DateTimeImmutable
+     */
+    public function getTimestamp()
+    {
+        return new DateTimeImmutable($this->timestamp);
+    }
 
-	/**
-	 * @return string|null
-	 */
-	public function getComment()
-	{
-		return $this->comment;
-	}
+    /**
+     * @return string|null
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
 
-	/**
-	 * Summary of setComment
-	 *
-	 * @param string $comment
-	 */
-	public function setComment($comment)
-	{
-		$this->comment = $comment;
-	}
+    /**
+     * Summary of setComment
+     *
+     * @param string $comment
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+    }
 }

@@ -13,10 +13,10 @@ namespace Waca\Providers\Interfaces;
  */
 interface ILocationProvider
 {
-	/**
-	 * @param string $address IP address
-	 *
-	 * @return array
-	 */
-	public function getIpLocation($address);
+    /**
+     * @param string $address IP address
+     *
+     * @return array
+     */
+    public function getIpLocation($address);
 }

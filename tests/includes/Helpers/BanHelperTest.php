@@ -17,52 +17,52 @@ use Waca\PdoDatabase;
 
 class BanHelperTest extends PHPUnit_Framework_TestCase
 {
-	/** @var BanHelper */
-	private $banHelper;
-	/** @var PHPUnit_Framework_MockObject_MockObject|PdoDatabase */
-	private $dbMock;
-	/** @var PHPUnit_Framework_MockObject_MockObject|PDOStatement */
-	private $statement;
+    /** @var BanHelper */
+    private $banHelper;
+    /** @var PHPUnit_Framework_MockObject_MockObject|PdoDatabase */
+    private $dbMock;
+    /** @var PHPUnit_Framework_MockObject_MockObject|PDOStatement */
+    private $statement;
 
-	public function setUp()
-	{
-		if (!extension_loaded('runkit')) {
-			$this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit');
+    public function setUp()
+    {
+        if (!extension_loaded('runkit')) {
+            $this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit');
 
-			return;
-		}
+            return;
+        }
 
-		$this->dbMock = $this->getMockBuilder(PdoDatabase::class)->disableOriginalConstructor()->getMock();
+        $this->dbMock = $this->getMockBuilder(PdoDatabase::class)->disableOriginalConstructor()->getMock();
 
-		$this->statement = $this->getMockBuilder(PDOStatement::class)
-			->setMethods(array("fetchColumn", "bindValue", "execute", "fetchObject"))
-			->getMock();
-		$this->dbMock->method('prepare')->willReturn($this->statement);
+        $this->statement = $this->getMockBuilder(PDOStatement::class)
+            ->setMethods(array("fetchColumn", "bindValue", "execute", "fetchObject"))
+            ->getMock();
+        $this->dbMock->method('prepare')->willReturn($this->statement);
 
-		$this->banHelper = new BanHelper($this->dbMock);
-	}
+        $this->banHelper = new BanHelper($this->dbMock);
+    }
 
-	public function tearDown()
-	{
-		$this->banHelper = null;
-	}
+    public function tearDown()
+    {
+        $this->banHelper = null;
+    }
 
-	public function testNameIsNotBanned()
-	{
-		$name = "Testing";
-		$this->statement->method("fetchObject")->willReturn(false);
-		$this->assertEquals($this->banHelper->nameIsBanned($name), false);
-	}
+    public function testNameIsNotBanned()
+    {
+        $name = "Testing";
+        $this->statement->method("fetchObject")->willReturn(false);
+        $this->assertEquals($this->banHelper->nameIsBanned($name), false);
+    }
 
-	public function testNameIsBanned()
-	{
-		$name = "Testing";
-		$banObj = new Ban();
-		$banObj->setTarget($name);
-		$banObj->setType("Name");
+    public function testNameIsBanned()
+    {
+        $name = "Testing";
+        $banObj = new Ban();
+        $banObj->setTarget($name);
+        $banObj->setType("Name");
 
-		$this->statement->method("fetchObject")->willReturn($banObj);
+        $this->statement->method("fetchObject")->willReturn($banObj);
 
-		$this->assertEquals($this->banHelper->nameIsBanned($name), $banObj);
-	}
+        $this->assertEquals($this->banHelper->nameIsBanned($name), $banObj);
+    }
 }

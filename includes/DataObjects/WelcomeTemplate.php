@@ -19,167 +19,167 @@ use Waca\PdoDatabase;
  */
 class WelcomeTemplate extends DataObject
 {
-	/** @var string */
-	private $usercode;
-	/** @var string */
-	private $botcode;
-	private $usageCache;
-	private $deleted = 0;
+    /** @var string */
+    private $usercode;
+    /** @var string */
+    private $botcode;
+    private $usageCache;
+    private $deleted = 0;
 
-	/**
-	 * Summary of getAll
-	 *
-	 * @param PdoDatabase $database
-	 *
-	 * @return WelcomeTemplate[]
-	 */
-	public static function getAll(PdoDatabase $database)
-	{
-		$statement = $database->prepare("SELECT * FROM welcometemplate WHERE deleted = 0;");
+    /**
+     * Summary of getAll
+     *
+     * @param PdoDatabase $database
+     *
+     * @return WelcomeTemplate[]
+     */
+    public static function getAll(PdoDatabase $database)
+    {
+        $statement = $database->prepare("SELECT * FROM welcometemplate WHERE deleted = 0;");
 
-		$statement->execute();
+        $statement->execute();
 
-		$result = array();
-		/** @var WelcomeTemplate $v */
-		foreach ($statement->fetchAll(PDO::FETCH_CLASS, self::class) as $v) {
-			$v->setDatabase($database);
-			$result[] = $v;
-		}
+        $result = array();
+        /** @var WelcomeTemplate $v */
+        foreach ($statement->fetchAll(PDO::FETCH_CLASS, self::class) as $v) {
+            $v->setDatabase($database);
+            $result[] = $v;
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 
-	/**
-	 * @throws Exception
-	 */
-	public function save()
-	{
-		if ($this->isNew()) {
-			// insert
-			$statement = $this->dbObject->prepare(<<<SQL
+    /**
+     * @throws Exception
+     */
+    public function save()
+    {
+        if ($this->isNew()) {
+            // insert
+            $statement = $this->dbObject->prepare(<<<SQL
 INSERT INTO welcometemplate (usercode, botcode) VALUES (:usercode, :botcode);
 SQL
-			);
-			$statement->bindValue(":usercode", $this->usercode);
-			$statement->bindValue(":botcode", $this->botcode);
+            );
+            $statement->bindValue(":usercode", $this->usercode);
+            $statement->bindValue(":botcode", $this->botcode);
 
-			if ($statement->execute()) {
-				$this->id = (int)$this->dbObject->lastInsertId();
-			}
-			else {
-				throw new Exception($statement->errorInfo());
-			}
-		}
-		else {
-			// update
-			$statement = $this->dbObject->prepare(<<<SQL
+            if ($statement->execute()) {
+                $this->id = (int)$this->dbObject->lastInsertId();
+            }
+            else {
+                throw new Exception($statement->errorInfo());
+            }
+        }
+        else {
+            // update
+            $statement = $this->dbObject->prepare(<<<SQL
 UPDATE `welcometemplate`
 SET usercode = :usercode, botcode = :botcode, updateversion = updateversion + 1
 WHERE id = :id AND updateversion = :updateversion
 LIMIT 1;
 SQL
-			);
+            );
 
-			$statement->bindValue(':id', $this->id);
-			$statement->bindValue(':updateversion', $this->updateversion);
+            $statement->bindValue(':id', $this->id);
+            $statement->bindValue(':updateversion', $this->updateversion);
 
-			$statement->bindValue(':usercode', $this->usercode);
-			$statement->bindValue(':botcode', $this->botcode);
+            $statement->bindValue(':usercode', $this->usercode);
+            $statement->bindValue(':botcode', $this->botcode);
 
-			if (!$statement->execute()) {
-				throw new Exception($statement->errorInfo());
-			}
+            if (!$statement->execute()) {
+                throw new Exception($statement->errorInfo());
+            }
 
-			if ($statement->rowCount() !== 1) {
-				throw new OptimisticLockFailedException();
-			}
+            if ($statement->rowCount() !== 1) {
+                throw new OptimisticLockFailedException();
+            }
 
-			$this->updateversion++;
-		}
-	}
+            $this->updateversion++;
+        }
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getUserCode()
-	{
-		return $this->usercode;
-	}
+    /**
+     * @return string
+     */
+    public function getUserCode()
+    {
+        return $this->usercode;
+    }
 
-	/**
-	 * @param string $usercode
-	 */
-	public function setUserCode($usercode)
-	{
-		$this->usercode = $usercode;
-	}
+    /**
+     * @param string $usercode
+     */
+    public function setUserCode($usercode)
+    {
+        $this->usercode = $usercode;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getBotCode()
-	{
-		return $this->botcode;
-	}
+    /**
+     * @return string
+     */
+    public function getBotCode()
+    {
+        return $this->botcode;
+    }
 
-	/**
-	 * @param string $botcode
-	 */
-	public function setBotCode($botcode)
-	{
-		$this->botcode = $botcode;
-	}
+    /**
+     * @param string $botcode
+     */
+    public function setBotCode($botcode)
+    {
+        $this->botcode = $botcode;
+    }
 
-	/**
-	 * @return User[]
-	 */
-	public function getUsersUsingTemplate()
-	{
-		if ($this->usageCache === null) {
-			$statement = $this->dbObject->prepare("SELECT * FROM user WHERE welcome_template = :id;");
+    /**
+     * @return User[]
+     */
+    public function getUsersUsingTemplate()
+    {
+        if ($this->usageCache === null) {
+            $statement = $this->dbObject->prepare("SELECT * FROM user WHERE welcome_template = :id;");
 
-			$statement->execute(array(":id" => $this->id));
+            $statement->execute(array(":id" => $this->id));
 
-			$result = array();
-			/** @var WelcomeTemplate $v */
-			foreach ($statement->fetchAll(PDO::FETCH_CLASS, User::class) as $v) {
-				$v->setDatabase($this->dbObject);
-				$result[] = $v;
-			}
+            $result = array();
+            /** @var WelcomeTemplate $v */
+            foreach ($statement->fetchAll(PDO::FETCH_CLASS, User::class) as $v) {
+                $v->setDatabase($this->dbObject);
+                $result[] = $v;
+            }
 
-			$this->usageCache = $result;
-		}
+            $this->usageCache = $result;
+        }
 
-		return $this->usageCache;
-	}
+        return $this->usageCache;
+    }
 
-	/**
-	 * Deletes the object from the database
-	 */
-	public function delete()
-	{
-		if ($this->id === null) {
-			// wtf?
-			return;
-		}
+    /**
+     * Deletes the object from the database
+     */
+    public function delete()
+    {
+        if ($this->id === null) {
+            // wtf?
+            return;
+        }
 
-		$deleteQuery = "UPDATE welcometemplate SET deleted = 1 WHERE id = :id AND updateversion = :updateversion;";
-		$statement = $this->dbObject->prepare($deleteQuery);
+        $deleteQuery = "UPDATE welcometemplate SET deleted = 1 WHERE id = :id AND updateversion = :updateversion;";
+        $statement = $this->dbObject->prepare($deleteQuery);
 
-		$statement->bindValue(":id", $this->id);
-		$statement->bindValue(":updateversion", $this->updateversion);
-		$statement->execute();
+        $statement->bindValue(":id", $this->id);
+        $statement->bindValue(":updateversion", $this->updateversion);
+        $statement->execute();
 
-		if ($statement->rowCount() !== 1) {
-			throw new OptimisticLockFailedException();
-		}
-	}
+        if ($statement->rowCount() !== 1) {
+            throw new OptimisticLockFailedException();
+        }
+    }
 
-	/**
-	 * @return bool
-	 */
-	public function isDeleted()
-	{
-		return ((int)$this->deleted) === 1;
-	}
+    /**
+     * @return bool
+     */
+    public function isDeleted()
+    {
+        return ((int)$this->deleted) === 1;
+    }
 }

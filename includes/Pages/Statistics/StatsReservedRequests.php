@@ -13,11 +13,11 @@ use Waca\Tasks\InternalPageBase;
 
 class StatsReservedRequests extends InternalPageBase
 {
-	public function main()
-	{
-		$this->setHtmlTitle('Reserved Requests :: Statistics');
+    public function main()
+    {
+        $this->setHtmlTitle('Reserved Requests :: Statistics');
 
-		$query = <<<sql
+        $query = <<<sql
 SELECT
     p.id AS requestid,
     p.name AS name,
@@ -29,16 +29,16 @@ FROM request p
 WHERE reserved != 0;
 sql;
 
-		$database = $this->getDatabase();
-		$statement = $database->query($query);
-		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
-		$this->assign('dataTable', $data);
-		$this->assign('statsPageTitle', 'All currently reserved requests');
-		$this->setTemplate('statistics/reserved-requests.tpl');
-	}
+        $database = $this->getDatabase();
+        $statement = $database->query($query);
+        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $this->assign('dataTable', $data);
+        $this->assign('statsPageTitle', 'All currently reserved requests');
+        $this->setTemplate('statistics/reserved-requests.tpl');
+    }
 
-	public function getSecurityConfiguration()
-	{
-		return $this->getSecurityManager()->configure()->asInternalPage();
-	}
+    public function getSecurityConfiguration()
+    {
+        return $this->getSecurityManager()->configure()->asInternalPage();
+    }
 }

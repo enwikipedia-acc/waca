@@ -18,34 +18,34 @@ use Waca\Tasks\ApiPageBase;
  */
 class HelpAction extends ApiPageBase implements IApiAction
 {
-	public function executeApiAction(DOMElement $apiDocument)
-	{
-		$helpElement = $this->getHelpElement();
-		$apiDocument->appendChild($helpElement);
+    public function executeApiAction(DOMElement $apiDocument)
+    {
+        $helpElement = $this->getHelpElement();
+        $apiDocument->appendChild($helpElement);
 
-		return $apiDocument;
-	}
+        return $apiDocument;
+    }
 
-	/**
-	 * Gets the help information
-	 * @return DOMElement
-	 */
-	protected function getHelpElement()
-	{
-		$helpInfo = "Help info goes here!";
+    /**
+     * Gets the help information
+     * @return DOMElement
+     */
+    protected function getHelpElement()
+    {
+        $helpInfo = "Help info goes here!";
 
-		$help = $this->document->createElement("help");
-		$helptext = $this->document->createElement("info", $helpInfo);
-		$helpactions = $this->document->createElement("actions");
+        $help = $this->document->createElement("help");
+        $helptext = $this->document->createElement("info", $helpInfo);
+        $helpactions = $this->document->createElement("actions");
 
-		foreach (ApiRequestRouter::getActionList() as $action) {
-			$actionElement = $this->document->createElement("action", $action);
-			$helpactions->appendChild($actionElement);
-		}
+        foreach (ApiRequestRouter::getActionList() as $action) {
+            $actionElement = $this->document->createElement("action", $action);
+            $helpactions->appendChild($actionElement);
+        }
 
-		$help->appendChild($helptext);
-		$help->appendChild($helpactions);
+        $help->appendChild($helptext);
+        $help->appendChild($helpactions);
 
-		return $help;
-	}
+        return $help;
+    }
 }

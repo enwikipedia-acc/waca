@@ -15,53 +15,55 @@ use Smarty;
  */
 class Offline
 {
-	/**
-	 * Determines if the tool is offline
-	 * @return bool
-	 */
-	public static function isOffline()
-	{
-		global $dontUseDb;
+    /**
+     * Determines if the tool is offline
+     * @return bool
+     */
+    public static function isOffline()
+    {
+        global $dontUseDb;
 
-		return (bool)$dontUseDb;
-	}
+        return (bool)$dontUseDb;
+    }
 
-	/**
-	 * Gets the offline message
-	 *
-	 * @param bool $external
-	 * @param null $message
-	 *
-	 * @return string
-	 */
-	public static function getOfflineMessage($external, $message = null)
-	{
-		global $dontUseDbCulprit, $dontUseDbReason, $baseurl;
+    /**
+     * Gets the offline message
+     *
+     * @param bool $external
+     * @param null $message
+     *
+     * @return string
+     */
+    public static function getOfflineMessage($external, $message = null)
+    {
+        global $dontUseDbCulprit, $dontUseDbReason, $baseurl;
 
-		$smarty = new Smarty();
-		$smarty->assign("baseurl", $baseurl);
-		$smarty->assign("toolversion", Environment::getToolVersion());
+        $smarty = new Smarty();
+        $smarty->assign("baseurl", $baseurl);
+        $smarty->assign("toolversion", Environment::getToolVersion());
 
-		header("HTTP/1.1 503 Service Unavailable");
+        if (!headers_sent()) {
+            header("HTTP/1.1 503 Service Unavailable");
+        }
 
-		if ($external) {
-			return $smarty->fetch("offline/external.tpl");
-		}
-		else {
-			$hideCulprit = true;
+        if ($external) {
+            return $smarty->fetch("offline/external.tpl");
+        }
+        else {
+            $hideCulprit = true;
 
-			// Use the provided message if possible
-			if ($message === null) {
-				$hideCulprit = false;
-				$message = $dontUseDbReason;
-			}
+            // Use the provided message if possible
+            if ($message === null) {
+                $hideCulprit = false;
+                $message = $dontUseDbReason;
+            }
 
-			$smarty->assign("hideCulprit", $hideCulprit);
-			$smarty->assign("dontUseDbCulprit", $dontUseDbCulprit);
-			$smarty->assign("dontUseDbReason", $message);
-			$smarty->assign("alerts", array());
+            $smarty->assign("hideCulprit", $hideCulprit);
+            $smarty->assign("dontUseDbCulprit", $dontUseDbCulprit);
+            $smarty->assign("dontUseDbReason", $message);
+            $smarty->assign("alerts", array());
 
-			return $smarty->fetch("offline/internal.tpl");
-		}
-	}
+            return $smarty->fetch("offline/internal.tpl");
+        }
+    }
 }

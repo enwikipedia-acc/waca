@@ -15,8 +15,8 @@ use Waca\Providers\Interfaces\ILocationProvider;
  */
 class FakeLocationProvider implements ILocationProvider
 {
-	public function getIpLocation($address)
-	{
-		return null;
-	}
+    public function getIpLocation($address)
+    {
+        return null;
+    }
 }

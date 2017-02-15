@@ -9,44 +9,57 @@
 namespace Waca\Helpers;
 
 /**
- * DebugHelper short summary.
- *
- * DebugHelper description.
- *
- * @version 1.0
- * @author  stwalkerster
+ * DebugHelper provides backtrace utilities for debugging and error logging
  */
 class DebugHelper
 {
-	public function get_debug_backtrace() {
-		return debug_backtrace();
-	}
+    /**
+     * Internal mockable method wrapper for debug_backtrace.
+     *
+     * As mocking out debug_backtrace uses debug_backtrace internally, we need this in order to not cause a recursive
+     * cascade until the runtime explodes.
+     *
+     * Instead, we mock this method, which allows debug_backtrace to still be called correctly.
+     *
+     * @return array
+     */
+    public function get_debug_backtrace()
+    {
+        return debug_backtrace();
+    }
 
-	public function getBacktrace()
-	{
-		$backtrace = $this->get_debug_backtrace();
+    /**
+     * Returns a string representation of the current backtrace for display.
+     *
+     * Note that this explicitly excludes the top two frames, which will be methods from this class.
+     *
+     * @return string
+     */
+    public function getBacktrace()
+    {
+        $backtrace = $this->get_debug_backtrace();
 
-		$output = "";
+        $output = "";
 
-		$count = 0;
-		foreach ($backtrace as $line) {
-			if ($count <= 1) {
-				$count++;
-				continue;
-			}
+        $count = 0;
+        foreach ($backtrace as $line) {
+            if ($count <= 1) {
+                $count++;
+                continue;
+            }
 
-			$output .= "#{$count}: ";
+            $output .= "#{$count}: ";
 
-			if (isset($line['type']) && $line['type'] != "") {
-				$output .= $line['class'] . $line['type'];
-			}
+            if (isset($line['type']) && $line['type'] != "") {
+                $output .= $line['class'] . $line['type'];
+            }
 
-			$output .= $line['function'] . "(...)";
-			$output .= " [{$line['file']}#{$line['line']}\r\n";
+            $output .= $line['function'] . "(...)";
+            $output .= " [{$line['file']}#{$line['line']}\r\n";
 
-			$count++;
-		}
+            $count++;
+        }
 
-		return $output;
-	}
+        return $output;
+    }
 }

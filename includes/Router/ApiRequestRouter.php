@@ -20,43 +20,43 @@ use Waca\WebRequest;
 
 class ApiRequestRouter implements IRequestRouter
 {
-	/**
-	 * @return string[]
-	 */
-	public static function getActionList()
-	{
-		return array("count", "status", "stats", "help", "monitor");
-	}
+    /**
+     * @return string[]
+     */
+    public static function getActionList()
+    {
+        return array("count", "status", "stats", "help", "monitor");
+    }
 
-	/**
-	 * @return IRoutedTask
-	 * @throws Exception
-	 */
-	public function route()
-	{
-		$requestAction = WebRequest::getString('action');
+    /**
+     * @return IRoutedTask
+     * @throws Exception
+     */
+    public function route()
+    {
+        $requestAction = WebRequest::getString('action');
 
-		switch ($requestAction) {
-			case "count":
-				$result = new CountAction();
-				break;
-			case "status":
-				$result = new StatusAction();
-				break;
-			case "stats":
-				$result = new StatsAction();
-				break;
-			case "help":
-				$result = new HelpAction();
-				break;
-			case "monitor":
-				$result = new MonitorAction();
-				break;
-			default:
-				$result = new UnknownAction();
-				break;
-		}
+        switch ($requestAction) {
+            case "count":
+                $result = new CountAction();
+                break;
+            case "status":
+                $result = new StatusAction();
+                break;
+            case "stats":
+                $result = new StatsAction();
+                break;
+            case "help":
+                $result = new HelpAction();
+                break;
+            case "monitor":
+                $result = new MonitorAction();
+                break;
+            default:
+                $result = new UnknownAction();
+                break;
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 }

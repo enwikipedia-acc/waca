@@ -13,24 +13,24 @@ use \Waca\Helpers\HttpHelper;
 
 class HttpHelperTest extends PHPUnit_Framework_TestCase
 {
-	private $hh;
+    private $hh;
 
-	public function setUp()
-	{
-	}
+    public function setUp()
+    {
+    }
 
-	public function tearDown()
-	{
-		$this->hh = null;
-	}
+    public function tearDown()
+    {
+        $this->hh = null;
+    }
 
-	public function testGet()
-	{
-		$this->markTestIncomplete("Still being built");
-	}
+    public function testGet()
+    {
+        $this->markTestIncomplete("Still being built");
+    }
 
-	public function testPost()
-	{
-		$this->markTestIncomplete("Still being built");
-	}
+    public function testPost()
+    {
+        $this->markTestIncomplete("Still being built");
+    }
 }

@@ -22,73 +22,73 @@ use Waca\DataObject;
  */
 class Notification extends DataObject
 {
-	private $date;
-	private $type;
-	private $text;
+    private $date;
+    private $type;
+    private $text;
 
-	public function delete()
-	{
-		throw new Exception("You shouldn't be doing this...");
-	}
+    public function delete()
+    {
+        throw new Exception("You shouldn't be doing this...");
+    }
 
-	public function save()
-	{
-		if ($this->isNew()) {
-			// insert
-			$statement = $this->dbObject->prepare("INSERT INTO notification ( type, text ) VALUES ( :type, :text );");
-			$statement->bindValue(":type", $this->type);
-			$statement->bindValue(":text", $this->text);
+    public function save()
+    {
+        if ($this->isNew()) {
+            // insert
+            $statement = $this->dbObject->prepare("INSERT INTO notification ( type, text ) VALUES ( :type, :text );");
+            $statement->bindValue(":type", $this->type);
+            $statement->bindValue(":text", $this->text);
 
-			if ($statement->execute()) {
-				$this->id = (int)$this->dbObject->lastInsertId();
-			}
-			else {
-				throw new Exception($statement->errorInfo());
-			}
-		}
-		else {
-			throw new Exception("You shouldn't be doing this...");
-		}
-	}
+            if ($statement->execute()) {
+                $this->id = (int)$this->dbObject->lastInsertId();
+            }
+            else {
+                throw new Exception($statement->errorInfo());
+            }
+        }
+        else {
+            throw new Exception("You shouldn't be doing this...");
+        }
+    }
 
-	public function getDate()
-	{
-		return new DateTimeImmutable($this->date);
-	}
+    public function getDate()
+    {
+        return new DateTimeImmutable($this->date);
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getType()
-	{
-		return $this->type;
-	}
+    /**
+     * @return int
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getText()
-	{
-		return $this->text;
-	}
+    /**
+     * @return string
+     */
+    public function getText()
+    {
+        return $this->text;
+    }
 
-	/**
-	 * Summary of setType
-	 *
-	 * @param int $type
-	 */
-	public function setType($type)
-	{
-		$this->type = $type;
-	}
+    /**
+     * Summary of setType
+     *
+     * @param int $type
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+    }
 
-	/**
-	 * Summary of setText
-	 *
-	 * @param string $text
-	 */
-	public function setText($text)
-	{
-		$this->text = $text;
-	}
+    /**
+     * Summary of setText
+     *
+     * @param string $text
+     */
+    public function setText($text)
+    {
+        $this->text = $text;
+    }
 }

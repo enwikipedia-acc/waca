@@ -13,11 +13,11 @@ use Waca\Tasks\InternalPageBase;
 
 class StatsMonthlyStats extends InternalPageBase
 {
-	public function main()
-	{
-		$this->setHtmlTitle('Monthly Stats :: Statistics');
+    public function main()
+    {
+        $this->setHtmlTitle('Monthly Stats :: Statistics');
 
-		$query = <<<SQL
+        $query = <<<SQL
 SELECT
     COUNT(DISTINCT id) AS closed,
     YEAR(timestamp) AS year,
@@ -28,17 +28,17 @@ GROUP BY EXTRACT(YEAR_MONTH FROM timestamp)
 ORDER BY YEAR(timestamp) , MONTH(timestamp) ASC;
 SQL;
 
-		$database = $this->getDatabase();
-		$statement = $database->query($query);
-		$data = $statement->fetchAll(PDO::FETCH_ASSOC);
+        $database = $this->getDatabase();
+        $statement = $database->query($query);
+        $data = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-		$this->assign('dataTable', $data);
-		$this->assign('statsPageTitle', 'Monthly Statistics');
-		$this->setTemplate('statistics/monthly-stats.tpl');
-	}
+        $this->assign('dataTable', $data);
+        $this->assign('statsPageTitle', 'Monthly Statistics');
+        $this->setTemplate('statistics/monthly-stats.tpl');
+    }
 
-	public function getSecurityConfiguration()
-	{
-		return $this->getSecurityManager()->configure()->asInternalPage();
-	}
+    public function getSecurityConfiguration()
+    {
+        return $this->getSecurityManager()->configure()->asInternalPage();
+    }
 }

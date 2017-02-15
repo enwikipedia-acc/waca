@@ -13,23 +13,23 @@ use Waca\Helpers\FakeBlacklistHelper;
 
 class FakeBlacklistHelperTest extends PHPUnit_Framework_TestCase
 {
-	/** @var FakeBlacklistHelper */
-	private $blacklistHelper;
+    /** @var FakeBlacklistHelper */
+    private $blacklistHelper;
 
-	public function setUp()
-	{
-		$this->blacklistHelper = new FakeBlacklistHelper();
-	}
+    public function setUp()
+    {
+        $this->blacklistHelper = new FakeBlacklistHelper();
+    }
 
-	public function tearDown()
-	{
-		$this->blacklistHelper = null;
-	}
+    public function tearDown()
+    {
+        $this->blacklistHelper = null;
+    }
 
-	public function testIsBlacklisted()
-	{
-		$username = 'badname';
+    public function testIsBlacklisted()
+    {
+        $username = 'badname';
 
-		$this->assertEquals(false, $this->blacklistHelper->isBlacklisted($username));
-	}
+        $this->assertEquals(false, $this->blacklistHelper->isBlacklisted($username));
+    }
 }

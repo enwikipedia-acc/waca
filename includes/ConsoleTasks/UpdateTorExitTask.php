@@ -13,14 +13,14 @@ use Waca\Tasks\ConsoleTaskBase;
 
 class UpdateTorExitTask extends ConsoleTaskBase
 {
-	/**
-	 * @return void
-	 */
-	public function execute()
-	{
-		TorExitProvider::regenerate(
-			$this->getDatabase(),
-			$this->getHttpHelper(),
-			$this->getSiteConfiguration()->getTorExitPaths());
-	}
+    /**
+     * @return void
+     */
+    public function execute()
+    {
+        TorExitProvider::regenerate(
+            $this->getDatabase(),
+            $this->getHttpHelper(),
+            $this->getSiteConfiguration()->getTorExitPaths());
+    }
 }

@@ -15,32 +15,32 @@ use Waca\SiteConfiguration;
 
 class ApplicationBaseTest extends PHPUnit_Framework_TestCase
 {
-	private $si;
-	/** @var PHPUnit_Framework_MockObject_MockObject */
-	private $ab;
+    private $si;
+    /** @var PHPUnit_Framework_MockObject_MockObject */
+    private $ab;
 
-	public function setUp()
-	{
-		$this->si = new SiteConfiguration();
+    public function setUp()
+    {
+        $this->si = new SiteConfiguration();
 
-		$this->ab = $this->getMockForAbstractClass(ApplicationBase::class, [$this->si]);
-	}
+        $this->ab = $this->getMockForAbstractClass(ApplicationBase::class, [$this->si]);
+    }
 
-	function testRun()
-	{
-		$this->markTestIncomplete("Not fully implemented yet.");
+    function testRun()
+    {
+        $this->markTestIncomplete("Not fully implemented yet.");
 
-		$this->ab->expects($this->any())
-			->method("run")
-			->will($this->returnValue(null));
-	}
-	
-	function testGetConfiguration() {
-		$config = $this->ab->getConfiguration();
+        $this->ab->expects($this->any())
+            ->method("run")
+            ->will($this->returnValue(null));
+    }
 
-		// We will actually test this in the SiteConfiguration.php test - for now we can be satisfied that it returns
-		// valid.
-		$this->assertInstanceOf(SiteConfiguration::class, $config);
-		
-	}
+    function testGetConfiguration()
+    {
+        $config = $this->ab->getConfiguration();
+
+        // We will actually test this in the SiteConfiguration.php test - for now we can be satisfied that it returns
+        // valid.
+        $this->assertInstanceOf(SiteConfiguration::class, $config);
+    }
 }

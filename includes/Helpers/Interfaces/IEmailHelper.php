@@ -17,13 +17,15 @@ namespace Waca\Helpers\Interfaces;
  */
 interface IEmailHelper
 {
-	/**
-	 * Sends an email to the specified email address.
-	 * @param string $to
-	 * @param string $subject
-	 * @param string $content
-	 * @param array  $headers Extra headers to include
-	 * @return void
-	 */
-	public function sendMail($to, $subject, $content, $headers = array());
+    /**
+     * Sends an email to the specified email address.
+     *
+     * @param string $to
+     * @param string $subject
+     * @param string $content
+     * @param array  $headers Extra headers to include
+     *
+     * @return void
+     */
+    public function sendMail($to, $subject, $content, $headers = array());
 }

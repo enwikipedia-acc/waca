@@ -15,112 +15,111 @@ use Waca\Helpers\HttpHelper;
 
 class BlacklistHelperTest extends PHPUnit_Framework_TestCase
 {
-	public function setUp()
-	{
-		if (!extension_loaded('runkit')) {
-			$this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit');
+    public function setUp()
+    {
+        if (!extension_loaded('runkit')) {
+            $this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit');
 
-			return;
-		}
-	}
+            return;
+        }
+    }
 
-	public function testIsBlacklisted()
-	{
-		$apiResult = array(
-			'titleblacklist' =>
-				array(
-					'result'  => 'blacklisted',
-					'reason'  => 'some reason',
-					'message' => 'titleblacklist-forbidden-new-account',
-					'line'    => '.*badname.*            &lt;newaccountonly|antispoof&gt;',
-				),
-		);
+    public function testIsBlacklisted()
+    {
+        $apiResult = array(
+            'titleblacklist' =>
+                array(
+                    'result'  => 'blacklisted',
+                    'reason'  => 'some reason',
+                    'message' => 'titleblacklist-forbidden-new-account',
+                    'line'    => '.*badname.*            &lt;newaccountonly|antispoof&gt;',
+                ),
+        );
 
-		/** @var $httpHelperMock PHPUnit_Framework_MockObject_MockObject|HttpHelper */
-		$httpHelperMock = $this->getMockBuilder(HttpHelper::class)
-			->disableOriginalConstructor()
-			->getMock();
+        /** @var $httpHelperMock PHPUnit_Framework_MockObject_MockObject|HttpHelper */
+        $httpHelperMock = $this->getMockBuilder(HttpHelper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-		$httpHelperMock
-			->expects($this->once())
-			->method('get')
-			->willReturn(serialize($apiResult));
+        $httpHelperMock
+            ->expects($this->once())
+            ->method('get')
+            ->willReturn(serialize($apiResult));
 
-		$blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1");
+        $blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1");
 
-		// act
-		$result = $blh->isBlacklisted("badname");
+        // act
+        $result = $blh->isBlacklisted("badname");
 
-		// assert
-		$this->assertNotEquals(false, $result);
-		$this->assertEquals($apiResult['titleblacklist']['line'], $result);
-	}
+        // assert
+        $this->assertNotEquals(false, $result);
+        $this->assertEquals($apiResult['titleblacklist']['line'], $result);
+    }
 
+    public function testIsBlacklistedCache()
+    {
+        $apiResult = array(
+            'titleblacklist' =>
+                array(
+                    'result'  => 'blacklisted',
+                    'reason'  => 'some reason',
+                    'message' => 'titleblacklist-forbidden-new-account',
+                    'line'    => '.*badname.*            &lt;newaccountonly|antispoof&gt;',
+                ),
+        );
 
-	public function testIsBlacklistedCache()
-	{
-		$apiResult = array(
-			'titleblacklist' =>
-				array(
-					'result'  => 'blacklisted',
-					'reason'  => 'some reason',
-					'message' => 'titleblacklist-forbidden-new-account',
-					'line'    => '.*badname.*            &lt;newaccountonly|antispoof&gt;',
-				),
-		);
+        /** @var $httpHelperMock PHPUnit_Framework_MockObject_MockObject|HttpHelper */
+        $httpHelperMock = $this->getMockBuilder(HttpHelper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-		/** @var $httpHelperMock PHPUnit_Framework_MockObject_MockObject|HttpHelper */
-		$httpHelperMock = $this->getMockBuilder(HttpHelper::class)
-			->disableOriginalConstructor()
-			->getMock();
+        $httpHelperMock
+            ->expects($this->once())
+            ->method('get')
+            ->willReturn(serialize($apiResult));
 
-		$httpHelperMock
-			->expects($this->once())
-			->method('get')
-			->willReturn(serialize($apiResult));
+        $blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1");
 
-		$blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1");
+        // act
+        $blh->isBlacklisted("badname");
+        $blh->isBlacklisted("badname");
+    }
 
-		// act
-		$blh->isBlacklisted("badname");
-		$blh->isBlacklisted("badname");
-	}
+    public function testIsNotBlacklisted()
+    {
+        /** @var $httpHelperMock PHPUnit_Framework_MockObject_MockObject|HttpHelper */
+        $httpHelperMock = $this->getMockBuilder(HttpHelper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-	public function testIsNotBlacklisted()
-	{
-		/** @var $httpHelperMock PHPUnit_Framework_MockObject_MockObject|HttpHelper */
-		$httpHelperMock = $this->getMockBuilder(HttpHelper::class)
-			->disableOriginalConstructor()
-			->getMock();
+        $httpHelperMock
+            ->expects($this->once())
+            ->method("get")
+            ->willReturn("a:1:{s:14:\"titleblacklist\";a:1:{s:6:\"result\";s:2:\"ok\";}}");
 
-		$httpHelperMock
-			->expects($this->once())
-			->method("get")
-			->willReturn("a:1:{s:14:\"titleblacklist\";a:1:{s:6:\"result\";s:2:\"ok\";}}");
+        $blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1");
 
-		$blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1");
+        $result = $blh->isBlacklisted("poop");
 
-		$result = $blh->isBlacklisted("poop");
+        $this->assertEquals(false, $result);
+    }
 
-		$this->assertEquals(false, $result);
-	}
+    public function testIsNotBlacklistedCache()
+    {
+        /** @var $httpHelperMock PHPUnit_Framework_MockObject_MockObject|HttpHelper */
+        $httpHelperMock = $this->getMockBuilder(HttpHelper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
-	public function testIsNotBlacklistedCache()
-	{
-		/** @var $httpHelperMock PHPUnit_Framework_MockObject_MockObject|HttpHelper */
-		$httpHelperMock = $this->getMockBuilder(HttpHelper::class)
-			->disableOriginalConstructor()
-			->getMock();
+        $httpHelperMock
+            ->expects($this->once())
+            ->method("get")
+            ->willReturn("a:1:{s:14:\"titleblacklist\";a:1:{s:6:\"result\";s:2:\"ok\";}}");
 
-		$httpHelperMock
-			->expects($this->once())
-			->method("get")
-			->willReturn("a:1:{s:14:\"titleblacklist\";a:1:{s:6:\"result\";s:2:\"ok\";}}");
+        $blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1");
 
-		$blh = new BlacklistHelper($httpHelperMock, "http://127.0.0.1");
-
-		// act
-		$result = $blh->isBlacklisted("poop");
-		$result = $blh->isBlacklisted("poop");
-	}
+        // act
+        $result = $blh->isBlacklisted("poop");
+        $result = $blh->isBlacklisted("poop");
+    }
 }

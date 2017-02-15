@@ -21,145 +21,147 @@ use Waca\WebRequest;
  */
 class PageLogin extends InternalPageBase
 {
-	/**
-	 * Main function for this page, when no specific actions are called.
-	 */
-	protected function main()
-	{
-		// Start by enforcing HTTPS
-		if ($this->getSiteConfiguration()->getUseStrictTransportSecurity() !== false) {
-			if (WebRequest::isHttps()) {
-				// Client can clearly use HTTPS, so let's enforce it for all connections.
-				header("Strict-Transport-Security: max-age=15768000");
-			}
-			else {
-				// This is the login form, not the request form. We need protection here.
-				$this->redirectUrl('https://' . WebRequest::serverName() . WebRequest::requestUri());
+    /**
+     * Main function for this page, when no specific actions are called.
+     */
+    protected function main()
+    {
+        // Start by enforcing HTTPS
+        if ($this->getSiteConfiguration()->getUseStrictTransportSecurity() !== false) {
+            if (WebRequest::isHttps()) {
+                // Client can clearly use HTTPS, so let's enforce it for all connections.
+                if (!headers_sent()) {
+                    header("Strict-Transport-Security: max-age=15768000");
+                }
+            }
+            else {
+                // This is the login form, not the request form. We need protection here.
+                $this->redirectUrl('https://' . WebRequest::serverName() . WebRequest::requestUri());
 
-				return;
-			}
-		}
+                return;
+            }
+        }
 
-		if (WebRequest::wasPosted()) {
-			// POST. Do some authentication.
-			$this->validateCSRFToken();
+        if (WebRequest::wasPosted()) {
+            // POST. Do some authentication.
+            $this->validateCSRFToken();
 
-			$user = null;
-			try {
-				$user = $this->getAuthenticatingUser();
-			}
-			catch (ApplicationLogicException $ex) {
-				SessionAlert::error($ex->getMessage());
-				$this->redirect('login');
+            $user = null;
+            try {
+                $user = $this->getAuthenticatingUser();
+            }
+            catch (ApplicationLogicException $ex) {
+                SessionAlert::error($ex->getMessage());
+                $this->redirect('login');
 
-				return;
-			}
+                return;
+            }
 
-			// Touch force logout
-			$user->setForceLogout(false);
-			$user->save();
+            // Touch force logout
+            $user->setForceLogout(false);
+            $user->save();
 
-			if ($this->getSiteConfiguration()->getEnforceOAuth()) {
-				if (!$user->isOAuthLinked()) {
-					$oauthHelper = $this->getOAuthHelper();
+            if ($this->getSiteConfiguration()->getEnforceOAuth()) {
+                if (!$user->isOAuthLinked()) {
+                    $oauthHelper = $this->getOAuthHelper();
 
-					$requestToken = $oauthHelper->getRequestToken();
-					$user->setOAuthRequestToken($requestToken->key);
-					$user->setOAuthRequestSecret($requestToken->secret);
-					$user->save();
+                    $requestToken = $oauthHelper->getRequestToken();
+                    $user->setOAuthRequestToken($requestToken->key);
+                    $user->setOAuthRequestSecret($requestToken->secret);
+                    $user->save();
 
-					WebRequest::setPartialLogin($user);
-					$this->redirectUrl($oauthHelper->getAuthoriseUrl($requestToken->key));
+                    WebRequest::setPartialLogin($user);
+                    $this->redirectUrl($oauthHelper->getAuthoriseUrl($requestToken->key));
 
-					return;
-				}
-			}
+                    return;
+                }
+            }
 
-			// User is partially linked to OAuth. This is not allowed. Enforce it for this user.
-			if($user->getOnWikiName() === '##OAUTH##') {
-				$oauthHelper = $this->getOAuthHelper();
+            // User is partially linked to OAuth. This is not allowed. Enforce it for this user.
+            if ($user->getOnWikiName() === '##OAUTH##') {
+                $oauthHelper = $this->getOAuthHelper();
 
-				$requestToken = $oauthHelper->getRequestToken();
-				$user->setOAuthRequestToken($requestToken->key);
-				$user->setOAuthRequestSecret($requestToken->secret);
-				$user->save();
+                $requestToken = $oauthHelper->getRequestToken();
+                $user->setOAuthRequestToken($requestToken->key);
+                $user->setOAuthRequestSecret($requestToken->secret);
+                $user->save();
 
-				WebRequest::setPartialLogin($user);
-				$this->redirectUrl($oauthHelper->getAuthoriseUrl($requestToken->key));
+                WebRequest::setPartialLogin($user);
+                $this->redirectUrl($oauthHelper->getAuthoriseUrl($requestToken->key));
 
-				return;
-			}
+                return;
+            }
 
-			WebRequest::setLoggedInUser($user);
+            WebRequest::setLoggedInUser($user);
 
-			$this->goBackWhenceYouCame($user);
-		}
-		else {
-			// GET. Show the form
-			$this->assignCSRFToken();
-			$this->setTemplate("login.tpl");
-		}
-	}
+            $this->goBackWhenceYouCame($user);
+        }
+        else {
+            // GET. Show the form
+            $this->assignCSRFToken();
+            $this->setTemplate("login.tpl");
+        }
+    }
 
-	/**
-	 * @return User
-	 * @throws ApplicationLogicException
-	 */
-	private function getAuthenticatingUser()
-	{
-		$username = WebRequest::postString("username");
-		$password = WebRequest::postString("password");
+    /**
+     * @return User
+     * @throws ApplicationLogicException
+     */
+    private function getAuthenticatingUser()
+    {
+        $username = WebRequest::postString("username");
+        $password = WebRequest::postString("password");
 
-		if ($username === null || $password === null || $username === "" || $password === "") {
-			throw new ApplicationLogicException("No username/password specified");
-		}
+        if ($username === null || $password === null || $username === "" || $password === "") {
+            throw new ApplicationLogicException("No username/password specified");
+        }
 
-		/** @var User $user */
-		$user = User::getByUsername($username, $this->getDatabase());
+        /** @var User $user */
+        $user = User::getByUsername($username, $this->getDatabase());
 
-		if ($user == false || !$user->authenticate($password)) {
-			throw new ApplicationLogicException("Authentication failed");
-		}
+        if ($user == false || !$user->authenticate($password)) {
+            throw new ApplicationLogicException("Authentication failed");
+        }
 
-		return $user;
-	}
+        return $user;
+    }
 
-	/**
-	 * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
-	 * the return value from this function.
-	 *
-	 * If this page even supports actions, you will need to check the route
-	 *
-	 * @return SecurityConfiguration
-	 * @category Security-Critical
-	 */
-	protected function getSecurityConfiguration()
-	{
-		// Login pages, by definition, have to be accessible to the public
-		return $this->getSecurityManager()->configure()->asPublicPage();
-	}
+    /**
+     * Sets up the security for this page. If certain actions have different permissions, this should be reflected in
+     * the return value from this function.
+     *
+     * If this page even supports actions, you will need to check the route
+     *
+     * @return SecurityConfiguration
+     * @category Security-Critical
+     */
+    protected function getSecurityConfiguration()
+    {
+        // Login pages, by definition, have to be accessible to the public
+        return $this->getSecurityManager()->configure()->asPublicPage();
+    }
 
-	/**
-	 * Redirect the user back to wherever they came from after a successful login
-	 *
-	 * @param User $user
-	 */
-	private function goBackWhenceYouCame(User $user)
-	{
-		// Redirect to wherever the user came from
-		$redirectDestination = WebRequest::clearPostLoginRedirect();
-		if ($redirectDestination !== null) {
-			$this->redirectUrl($redirectDestination);
-		}
-		else {
-			if ($user->isNewUser()) {
-				// home page isn't allowed, go to preferences instead
-				$this->redirect('preferences');
-			}
-			else {
-				// go to the home page
-				$this->redirect('');
-			}
-		}
-	}
+    /**
+     * Redirect the user back to wherever they came from after a successful login
+     *
+     * @param User $user
+     */
+    private function goBackWhenceYouCame(User $user)
+    {
+        // Redirect to wherever the user came from
+        $redirectDestination = WebRequest::clearPostLoginRedirect();
+        if ($redirectDestination !== null) {
+            $this->redirectUrl($redirectDestination);
+        }
+        else {
+            if ($user->isNewUser()) {
+                // home page isn't allowed, go to preferences instead
+                $this->redirect('preferences');
+            }
+            else {
+                // go to the home page
+                $this->redirect('');
+            }
+        }
+    }
 }

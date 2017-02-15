@@ -16,37 +16,37 @@ use Waca\WebRequest;
 
 abstract class RequestActionBase extends InternalPageBase
 {
-	/**
-	 * @param PdoDatabase $database
-	 *
-	 * @return Request
-	 * @throws ApplicationLogicException
-	 */
-	protected function getRequest(PdoDatabase $database)
-	{
-		$requestId = WebRequest::postInt('request');
-		if ($requestId === null) {
-			throw new ApplicationLogicException('Request ID not found');
-		}
+    /**
+     * @param PdoDatabase $database
+     *
+     * @return Request
+     * @throws ApplicationLogicException
+     */
+    protected function getRequest(PdoDatabase $database)
+    {
+        $requestId = WebRequest::postInt('request');
+        if ($requestId === null) {
+            throw new ApplicationLogicException('Request ID not found');
+        }
 
-		/** @var Request $request */
-		$request = Request::getById($requestId, $database);
+        /** @var Request $request */
+        $request = Request::getById($requestId, $database);
 
-		if ($request === false) {
-			throw new ApplicationLogicException('Request not found');
-		}
+        if ($request === false) {
+            throw new ApplicationLogicException('Request not found');
+        }
 
-		return $request;
-	}
+        return $request;
+    }
 
-	final protected function checkPosted()
-	{
-		// if the request was not posted, send the user away.
-		if (!WebRequest::wasPosted()) {
-			throw new ApplicationLogicException('This page does not support GET methods.');
-		}
+    final protected function checkPosted()
+    {
+        // if the request was not posted, send the user away.
+        if (!WebRequest::wasPosted()) {
+            throw new ApplicationLogicException('This page does not support GET methods.');
+        }
 
-		// validate the CSRF token
-		$this->validateCSRFToken();
-	}
+        // validate the CSRF token
+        $this->validateCSRFToken();
+    }
 }

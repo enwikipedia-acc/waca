@@ -15,85 +15,89 @@ use \Waca\Offline;
 
 class OfflineTest extends PHPUnit_Framework_TestCase
 {
-	private $offline;
-	private $offMock;
+    private $offline;
+    private $offMock;
 
-	public function setUp() {
-		if (!extension_loaded('runkit')) {
-			$this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit');
+    public function setUp()
+    {
+        if (!extension_loaded('runkit')) {
+            $this->markTestSkipped('Dependencies for test are not available. Please install zenovich/runkit');
 
-			return;
-		}
+            return;
+        }
 
-		global $dontUseDb;
+        global $dontUseDb;
 
-		$dontUseDb = true;
+        $dontUseDb = true;
 
-		$this->offline = new Offline();
+        $this->offline = new Offline();
 
-		$this->offMock = new PHPUnit_Extensions_MockFunction('header', $this);
-	}
+        $this->offMock = new PHPUnit_Extensions_MockFunction('header', $this);
+    }
 
-	public function testIsOffline() {
-		global $dontUseDb;
+    public function testIsOffline()
+    {
+        global $dontUseDb;
 
-		$dontUseDb = true;
+        $dontUseDb = true;
 
-		$this->assertEquals($this->offline->isOffline(), $dontUseDb);
-		$this->assertNotEquals($this->offline->isOffline(), !$dontUseDb);
+        $this->assertEquals($this->offline->isOffline(), $dontUseDb);
+        $this->assertNotEquals($this->offline->isOffline(), !$dontUseDb);
 
-		$dontUseDb = false;
+        $dontUseDb = false;
 
-		$this->assertEquals($this->offline->isOffline(), $dontUseDb);
-		$this->assertNotEquals($this->offline->isOffline(), !$dontUseDb);
+        $this->assertEquals($this->offline->isOffline(), $dontUseDb);
+        $this->assertNotEquals($this->offline->isOffline(), !$dontUseDb);
 
-		$dontUseDb = true;
+        $dontUseDb = true;
 
-		$this->assertEquals($this->offline->isOffline(), $dontUseDb);
-		$this->assertNotEquals($this->offline->isOffline(), !$dontUseDb);
+        $this->assertEquals($this->offline->isOffline(), $dontUseDb);
+        $this->assertNotEquals($this->offline->isOffline(), !$dontUseDb);
 
-		$dontUseDb = false;
+        $dontUseDb = false;
 
-		$this->assertEquals($this->offline->isOffline(), $dontUseDb);
-		$this->assertNotEquals($this->offline->isOffline(), !$dontUseDb);
-	}
+        $this->assertEquals($this->offline->isOffline(), $dontUseDb);
+        $this->assertNotEquals($this->offline->isOffline(), !$dontUseDb);
+    }
 
-	public function testGetOfflineMessage() {
+    public function testGetOfflineMessage()
+    {
 
-		$external = false;
-		$message = "This is a test message.";
+        $external = false;
+        $message = "This is a test message.";
 
-		$this->offMock->expects($this->any())
-			->with("HTTP/1.1 503 Service Unavailable")
-			->will($this->returnValue(true));
+        $this->offMock->expects($this->any())
+            ->with("HTTP/1.1 503 Service Unavailable")
+            ->will($this->returnValue(true));
 
-		ob_start();
+        ob_start();
 
-		print $this->offline->getOfflineMessage($external, $message);
+        print $this->offline->getOfflineMessage($external, $message);
 
-		$text1 = ob_get_contents();
+        $text1 = ob_get_contents();
 
-		ob_end_clean();
+        ob_end_clean();
 
-		$this->assertNotContains("We’re very sorry, but the account creation request tool is currently offline while critical maintenance is performed.", $text1);
-		$this->assertContains($message, $text1);
+        $this->assertNotContains("We’re very sorry, but the account creation request tool is currently offline while critical maintenance is performed.",
+            $text1);
+        $this->assertContains($message, $text1);
 
-		$this->assertContains("After much experimentation, someone finally managed to kill ACC.", $text1);
+        $this->assertContains("After much experimentation, someone finally managed to kill ACC.", $text1);
 
-		$external = true;
+        $external = true;
 
-		ob_start();
+        ob_start();
 
-		print $this->offline->getOfflineMessage($external, $message);
+        print $this->offline->getOfflineMessage($external, $message);
 
-		$text2 = ob_get_contents();
+        $text2 = ob_get_contents();
 
-		ob_end_clean();
+        ob_end_clean();
 
-		$this->assertContains("We’re very sorry, but the account creation request tool is currently offline while critical maintenance is performed.", $text2);
-		$this->assertNotContains($message, $text2);
+        $this->assertContains("We’re very sorry, but the account creation request tool is currently offline while critical maintenance is performed.",
+            $text2);
+        $this->assertNotContains($message, $text2);
 
-		$this->assertNotContains("After much experimentation, someone finally managed to kill ACC.", $text2);
-	}
-
+        $this->assertNotContains("After much experimentation, someone finally managed to kill ACC.", $text2);
+    }
 }

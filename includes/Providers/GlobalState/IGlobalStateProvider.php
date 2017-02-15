@@ -14,23 +14,23 @@ namespace Waca\Providers\GlobalState;
  */
 interface IGlobalStateProvider
 {
-	/**
-	 * @return array
-	 */
-	public function getServerSuperGlobal();
+    /**
+     * @return array
+     */
+    public function getServerSuperGlobal();
 
-	/**
-	 * @return array
-	 */
-	public function getGetSuperGlobal();
+    /**
+     * @return array
+     */
+    public function getGetSuperGlobal();
 
-	/**
-	 * @return array
-	 */
-	public function getPostSuperGlobal();
+    /**
+     * @return array
+     */
+    public function getPostSuperGlobal();
 
-	/**
-	 * @return array
-	 */
-	public function getSessionSuperGlobal();
+    /**
+     * @return array
+     */
+    public function getSessionSuperGlobal();
 }
