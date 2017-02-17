@@ -9,10 +9,17 @@
 
 class DataObjectTest extends PHPUnit_Framework_TestCase
 {
-	public $do;
+	private $do;
+	private $dbh;
 
 	public function setUp() {
 		$this->do = $this->getMockForAbstractClass("\Waca\DataObject");
+
+		$this->dbh = $this->getMockBuilder('\Waca\PdoDatabase')
+			->setMockClassName('PdoDatabase')
+			->disableOriginalConstructor()
+			->getMock();
+
 	}
 
 	public function testID() {
@@ -22,15 +29,6 @@ class DataObjectTest extends PHPUnit_Framework_TestCase
 
 	public function testUpdateVersion()
 	{
-		/*
-		$stub = $this->getMockForAbstractClass('AbstractClass');
-		$stub->expects($this->any())
-			->method('abstractMethod')
-			->will($this->returnValue(TRUE));
-
-		$this->assertTrue($stub->concreteMethod());
-		*/
-
 		$this->assertEquals($this->do->getUpdateVersion(), 0);
 
 		$this->assertEquals($this->do->setUpdateVersion(42), null);
@@ -40,5 +38,9 @@ class DataObjectTest extends PHPUnit_Framework_TestCase
 
 	public function testDatabase() {
 		$this->assertNull($this->do->getDatabase());
+
+		$this->assertNull($this->do->setDatabase($this->dbh));
+
+		$this->assertEquals($this->do->getDatabase(), $this->dbh);
 	}
 }
