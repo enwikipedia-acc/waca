@@ -25,7 +25,7 @@ class PdoDatabaseTest extends \PHPUnit_Framework_TestCase
 
 	public function setUp()
 	{
-        $this->markTestSkipped("Mocking issues.");
+        $this->markTestIncomplete("Mocking issues.");
 		$this->pdb = $this->getMock("PdoDatabase", array('get_database', 'getDatabaseConnection','get_arguments'));
 	}
 
