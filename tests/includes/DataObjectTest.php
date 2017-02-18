@@ -6,6 +6,9 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
+namespace Waca\Tests;
+
+use \PHPUnit_Framework_TestCase;
 
 class DataObjectTest extends PHPUnit_Framework_TestCase
 {
