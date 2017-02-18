@@ -19,7 +19,7 @@ class DebugHelperTest extends PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->dbh = $this->getMock(DebugHelper::class, array("get_debug_backtrace"));
+        $this->dbh = $this->getMockBuilder(DebugHelper::class)->setMethods(["get_debug_backtrace"])->getMock();
         $this->dbh->method('get_debug_backtrace')->willReturn(
             array(
                 array(
