@@ -14,16 +14,18 @@
        onMouseUp="$('#IPDelEdits-{$index}').addClass('btn-visited');">
         Deleted Edits
     </a>
-    <a id="IPGlobalContribs-{$index}" class="btn btn-small" target="_blank"
-       href="{$baseurl}/redir.php?tool=luxo-contributions&amp;data={$ipaddress}"
-       onMouseUp="$('#IPGlobalContribs-{$index}').addClass('btn-visited');">
-        Global Contribs (GCW)
-    </a>
-    <a id="IPGUC-{$index}" class="btn btn-small" target="_blank"
-       href="{$baseurl}/redir.php?tool=guc&amp;data={$ipaddress}"
-       onMouseUp="$('#IPGUC-{$index}').addClass('btn-visited');">
-        Global Contribs (GUC)
-    </a>
+    <div class="btn-group">
+        <a id="IPGlobalContribs-{$index}" class="btn btn-small" target="_blank"
+           href="{$baseurl}/redir.php?tool=luxo-contributions&amp;data={$ipaddress}"
+           onMouseUp="$('#IPGlobalContribs-{$index}').addClass('btn-visited');">
+            Global Contribs (GCW)
+        </a>
+        <a id="IPGUC-{$index}" class="btn btn-small" target="_blank"
+           href="{$baseurl}/redir.php?tool=guc&amp;data={$ipaddress}"
+           onMouseUp="$('#IPGUC-{$index}').addClass('btn-visited');">
+            (GUC)
+        </a>
+    </div>
     <a id="IPLocalBlockLog-{$index}" class="btn btn-small" target="_blank"
        href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=block&amp;page={$ipaddress}"
        onMouseUp="$('#IPLocalBlockLog-{$index}').addClass('btn-visited');">
@@ -44,11 +46,18 @@
        onMouseUp="$('#IPActiveGlobalBlock-{$index}').addClass('btn-visited');">
         Active Global Blocks
     </a>
-    <a id="IPWhois-{$index}" class="btn btn-small" target="_blank"
-       href="{$baseurl}/redir.php?tool=oq-whois&amp;data={$ipaddress}"
-       onMouseUp="$('#IPWhois-{$index}').addClass('btn-visited');">
-        Whois
-    </a>
+    <div class="btn-group">
+        <a id="IPWhois-{$index}" class="btn btn-small" target="_blank"
+           href="{$baseurl}/redir.php?tool=oq-whois&amp;data={$ipaddress}"
+           onMouseUp="$('#IPWhois-{$index}').addClass('btn-visited');">
+            Whois
+        </a>
+        <a id="IPWhois2-{$index}" class="btn btn-small" target="_blank"
+           href="{$baseurl}/redir.php?tool=tl-whois&amp;data={$ipaddress}"
+           onMouseUp="$('#IPWhois2-{$index}').addClass('btn-visited');">
+            (alt)
+        </a>
+    </div>
     <a id="IPAbuseLog-{$index}" class="btn btn-small" target="_blank"
        href="https://en.wikipedia.org/w/index.php?title=Special:AbuseLog&amp;wpSearchUser={$ipaddress}"
        onMouseUp="$('#IPAbuseLog-{$index}').addClass('btn-visited');">
