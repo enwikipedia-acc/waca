@@ -79,7 +79,12 @@
                     </li>
                     <li>
                         <a href="{$baseurl}/internal.php/changePassword">
-                            <i class="icon-user"></i> Change password
+                            <i class="icon-lock"></i> Change password
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{$baseurl}/internal.php/multiFactor">
+                            <i class="icon-qrcode"></i> Configure multi-factor credentials
                         </a>
                     </li>
                     <li class="divider"></li>
@@ -110,7 +115,7 @@
                         </a>
                     </li>
                     <li class="divider"></li>
-                    <li><a href="{$baseurl}/internal.php/logout"><i class="icon-lock"></i> Logout</a></li>
+                    <li><a href="{$baseurl}/internal.php/logout"><i class="icon-off"></i> Logout</a></li>
 
                 </ul>
             </li>

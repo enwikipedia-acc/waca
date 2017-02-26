@@ -41,16 +41,27 @@ abstract class CredentialProviderBase implements ICredentialProvider
     }
 
     /**
-     * @param int $userId
+     * @param int  $userId
+     *
+     * @param bool $disabled
      *
      * @return Credential
      */
-    protected function getCredentialData($userId)
+    protected function getCredentialData($userId, $disabled = false)
     {
-        $sql = 'SELECT * FROM credential WHERE type = :t AND user = :u AND disabled = 0';
+        $sql = 'SELECT * FROM credential WHERE type = :t AND user = :u';
+        $parameters = array(
+            ':u' => $userId,
+            ':t' => $this->type
+        );
+
+        if($disabled !== null) {
+            $sql .= ' AND disabled = :d';
+            $parameters[':d'] = $disabled ? 1 : 0;
+        }
 
         $statement = $this->database->prepare($sql);
-        $statement->execute(array(':u' => $userId, ':t' => $this->type));
+        $statement->execute($parameters);
 
         /** @var Credential $obj */
         $obj = $statement->fetchObject(Credential::class);
@@ -82,6 +93,36 @@ abstract class CredentialProviderBase implements ICredentialProvider
         return $this->configuration;
     }
 
+    public function deleteCredential(User $user) {
+        // get this factor
+        $statement = $this->database->prepare('SELECT * FROM credential WHERE user = :user AND type = :type');
+        $statement->execute(array(':user' => $user->getId(), ':type' => $this->type));
+        /** @var Credential $credential */
+        $credential = $statement->fetchObject(Credential::class);
+        $credential->setDatabase($this->database);
+        $statement->closeCursor();
+
+        $stage = $credential->getFactor();
+
+        $statement = $this->database->prepare('SELECT COUNT(*) FROM credential WHERE user = :user AND factor = :factor');
+        $statement->execute(array(':user' => $user->getId(), ':factor' => $stage));
+        $alternates = $statement->fetchColumn();
+        $statement->closeCursor();
+
+        if($alternates <= 1) {
+            // decrement the factor for every stage above this
+            $sql = 'UPDATE credential SET factor = factor - 1 WHERE user = :user AND factor > :factor';
+            $statement = $this->database->prepare($sql);
+            $statement->execute(array(':user' => $user->getId(), ':factor' => $stage));
+        }
+        else {
+            // There are other auth factors at this point. Don't renumber the factors just yet.
+        }
+
+        // delete this credential.
+        $credential->delete();
+    }
+
     /**
      * @param User $user
      *
@@ -95,5 +136,16 @@ abstract class CredentialProviderBase implements ICredentialProvider
         $credential->setType($this->type);
 
         return $credential;
+    }
+
+    /**
+     * @param int $userId
+     *
+     * @return bool
+     */
+    public function userIsEnrolled($userId) {
+        $cred = $this->getCredentialData($userId);
+
+        return $cred !== null;
     }
 }

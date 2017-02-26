@@ -9,6 +9,7 @@
 namespace Waca\Security\CredentialProviders;
 
 use Waca\DataObjects\User;
+use Waca\Exceptions\ApplicationLogicException;
 use Waca\PdoDatabase;
 use Waca\SiteConfiguration;
 
@@ -59,5 +60,10 @@ class PasswordCredentialProvider extends CredentialProviderBase
         $storedData->setVersion(2);
 
         $storedData->save();
+    }
+
+    public function deleteCredential(User $user)
+    {
+        throw new ApplicationLogicException('Deletion of password credential is not allowed.');
     }
 }

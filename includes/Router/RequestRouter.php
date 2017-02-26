@@ -16,12 +16,15 @@ use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageExpandedRequestList;
 use Waca\Pages\PageJobQueue;
 use Waca\Pages\RequestAction\PageCreateRequest;
+use Waca\Pages\UserAuth\Login\PageOtpLogin;
+use Waca\Pages\UserAuth\Login\PagePasswordLogin;
+use Waca\Pages\UserAuth\Login\PageU2FLogin;
 use Waca\Pages\UserAuth\PageChangePassword;
 use Waca\Pages\UserAuth\PageForgotPassword;
 use Waca\Pages\PageLog;
-use Waca\Pages\UserAuth\PageLogin;
 use Waca\Pages\UserAuth\PageLogout;
 use Waca\Pages\PageMain;
+use Waca\Pages\UserAuth\MultiFactor\PageMultiFactor;
 use Waca\Pages\UserAuth\PageOAuth;
 use Waca\Pages\UserAuth\PageOAuthCallback;
 use Waca\Pages\UserAuth\PagePreferences;
@@ -115,7 +118,17 @@ class RequestRouter implements IRequestRouter
             ),
         'login'                       =>
             array(
-                'class'   => PageLogin::class,
+                'class'   => PagePasswordLogin::class,
+                'actions' => array(),
+            ),
+        'login/otp'                   =>
+            array(
+                'class'   => PageOtpLogin::class,
+                'actions' => array(),
+            ),
+        'login/u2f'                   =>
+            array(
+                'class'   => PageU2FLogin::class,
                 'actions' => array(),
             ),
         'forgotPassword'              =>
@@ -194,6 +207,19 @@ class RequestRouter implements IRequestRouter
                 'class'   => PageChangePassword::class,
                 'actions' => array(),
             ),
+        'multiFactor'                 =>
+            array(
+                'class'   => PageMultiFactor::class,
+                'actions' => array(
+                    'scratch',
+                    'enableYubikeyOtp',
+                    'disableYubikeyOtp',
+                    'enableTotp',
+                    'disableTotp',
+                    'enableU2F',
+                    'disableU2F',
+                ),
+            ),
         'oauth'                       =>
             array(
                 'class'   => PageOAuth::class,
@@ -201,7 +227,7 @@ class RequestRouter implements IRequestRouter
             ),
         'oauth/callback'              =>
             array(
-                'class' => PageOAuthCallback::class,
+                'class'   => PageOAuthCallback::class,
                 'actions' => array('authorise', 'create'),
             ),
 
@@ -293,7 +319,7 @@ class RequestRouter implements IRequestRouter
                 'class'   => PageCloseRequest::class,
                 'actions' => array(),
             ),
-        'viewRequest/create'           =>
+        'viewRequest/create'          =>
             array(
                 'class'   => PageCreateRequest::class,
                 'actions' => array(),

@@ -8,6 +8,7 @@
 
 namespace Waca\DataObjects;
 
+use DateTimeImmutable;
 use Exception;
 use Waca\DataObject;
 use Waca\Exceptions\OptimisticLockFailedException;
@@ -24,6 +25,11 @@ class Credential extends DataObject
     private $data;
     /** @var int */
     private $version;
+    private $timeout;
+    /** @var int */
+    private $disabled = 0;
+    /** @var int */
+    private $priority;
 
     /**
      * @return int
@@ -105,13 +111,70 @@ class Credential extends DataObject
         $this->version = $version;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getTimeout()
+    {
+        if ($this->timeout === null) {
+            return null;
+        }
+
+        return new DateTimeImmutable($this->timeout);
+    }
+
+    /**
+     * @param mixed $timeout
+     */
+    public function setTimeout(DateTimeImmutable $timeout = null)
+    {
+        if ($timeout === null) {
+            $this->timeout = null;
+        }
+        else {
+            $this->timeout = $timeout->format('Y-m-d H:i:s');
+        }
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisabled()
+    {
+        return $this->disabled;
+    }
+
+    /**
+     * @param int $disabled
+     */
+    public function setDisabled($disabled)
+    {
+        $this->disabled = $disabled;
+    }
+
+    /**
+     * @return int
+     */
+    public function getPriority()
+    {
+        return $this->priority;
+    }
+
+    /**
+     * @param int $priority
+     */
+    public function setPriority($priority)
+    {
+        $this->priority = $priority;
+    }
+
     public function save()
     {
         if ($this->isNew()) {
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
-INSERT INTO credential ( updateversion, user, factor, type, data, version )
-VALUES ( 0, :user, :factor, :type, :data, :version );
+INSERT INTO credential ( updateversion, user, factor, type, data, version, timeout, disabled, priority )
+VALUES ( 0, :user, :factor, :type, :data, :version, :timeout, :disabled, :priority );
 SQL
             );
             $statement->bindValue(":user", $this->user);
@@ -119,6 +182,9 @@ SQL
             $statement->bindValue(":type", $this->type);
             $statement->bindValue(":data", $this->data);
             $statement->bindValue(":version", $this->version);
+            $statement->bindValue(":timeout", $this->timeout);
+            $statement->bindValue(":disabled", $this->disabled);
+            $statement->bindValue(":priority", $this->priority);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -133,7 +199,10 @@ SQL
                 UPDATE credential
                 SET   factor = :factor
                     , data = :data
-                    , version = :version                 
+                    , version = :version
+                    , timeout = :timeout
+                    , disabled = :disabled
+                    , priority = :priority
                     , updateversion = updateversion + 1
                 WHERE id = :id AND updateversion = :updateversion;
 SQL
@@ -145,6 +214,9 @@ SQL
             $statement->bindValue(":factor", $this->factor);
             $statement->bindValue(":data", $this->data);
             $statement->bindValue(":version", $this->version);
+            $statement->bindValue(":timeout", $this->timeout);
+            $statement->bindValue(":disabled", $this->disabled);
+            $statement->bindValue(":priority", $this->priority);
 
             if (!$statement->execute()) {
                 throw new Exception($statement->errorInfo());

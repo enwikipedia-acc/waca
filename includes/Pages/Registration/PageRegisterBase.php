@@ -196,7 +196,7 @@ abstract class PageRegisterBase extends InternalPageBase
             $oauth = new OAuthUserHelper($user, $database, $oauthProtocolHelper, $this->getSiteConfiguration());
 
             $authoriseUrl = $oauth->getRequestToken();
-            WebRequest::setPartialLogin($user);
+            WebRequest::setOAuthPartialLogin($user);
             $this->redirectUrl($authoriseUrl);
         }
         else {

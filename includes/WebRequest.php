@@ -120,6 +120,21 @@ class WebRequest
     }
 
     /**
+     * Gets the remote address of the web request
+     * @return null|string
+     */
+    public static function httpHost()
+    {
+        $server = &self::$globalStateProvider->getServerSuperGlobal();
+
+        if (isset($server['HTTP_HOST'])) {
+            return $server['HTTP_HOST'];
+        }
+
+        return null;
+    }
+
+    /**
      * Gets the XFF header contents for the web request
      * @return null|string
      */
@@ -482,20 +497,44 @@ class WebRequest
     /**
      * @param User $user
      */
-    public static function setPartialLogin(User $user)
+    public static function setOAuthPartialLogin(User $user)
     {
         $session = &self::$globalStateProvider->getSessionSuperGlobal();
-        $session['partialLogin'] = $user->getId();
+        $session['oauthPartialLogin'] = $user->getId();
     }
 
     /**
      * @return int|null
      */
-    public static function getPartialLogin()
+    public static function getOAuthPartialLogin()
     {
         $session = &self::$globalStateProvider->getSessionSuperGlobal();
 
-        return isset($session['partialLogin']) ? (int)$session['partialLogin'] : null;
+        return isset($session['oauthPartialLogin']) ? (int)$session['oauthPartialLogin'] : null;
+    }
+
+    public static function setAuthPartialLogin($userId, $stage)
+    {
+        $session = &self::$globalStateProvider->getSessionSuperGlobal();
+        $session['authPartialLoginId'] = $userId;
+        $session['authPartialLoginStage'] = $stage;
+    }
+
+    public static function getAuthPartialLogin()
+    {
+        $session = &self::$globalStateProvider->getSessionSuperGlobal();
+
+        $userId = isset($session['authPartialLoginId']) ? (int)$session['authPartialLoginId'] : null;
+        $stage = isset($session['authPartialLoginStage']) ? (int)$session['authPartialLoginStage'] : null;
+
+        return array($userId, $stage);
+    }
+
+    public static function clearAuthPartialLogin()
+    {
+        $session = &self::$globalStateProvider->getSessionSuperGlobal();
+        unset($session['authPartialLoginId']);
+        unset($session['authPartialLoginStage']);
     }
 
     /**

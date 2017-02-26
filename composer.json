@@ -3,7 +3,10 @@
   "minimum-stability": "stable",
   "require": {
     "smarty/smarty": "v3.1.29",
-    "components/jquery": "1.9.1"
+    "components/jquery": "1.9.1",
+    "spomky-labs/otphp": "v8.3.0",
+    "bacon/bacon-qr-code": "1.0.1",
+    "yubico/u2flib-server": "1.0.1"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "~2.7",

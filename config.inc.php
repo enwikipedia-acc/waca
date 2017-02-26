@@ -248,6 +248,9 @@ $curlDisableSSLVerifyPeer = false;
 // Change this to be outside the web directory.
 $curlCookieJar = __DIR__ . '/../cookies.txt';
 
+$yubicoApiId = 0;
+$yubicoApiKey = "";
+
 /**************************************************************************
  **********                   IMPORTANT NOTICE                    **********
  ***************************************************************************
@@ -355,4 +358,6 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setTorExitPaths(array_merge(gethostbynamel('en.wikipedia.org'), gethostbynamel('accounts.wmflabs.org')))
     ->setCreationBotUsername($creationBotUsername)
     ->setCreationBotPassword($creationBotPassword)
-    ->setCurlCookieJar($curlCookieJar);
+    ->setCurlCookieJar($curlCookieJar)
+    ->setYubicoApiId($yubicoApiId)
+    ->setYubicoApiKey($yubicoApiKey);

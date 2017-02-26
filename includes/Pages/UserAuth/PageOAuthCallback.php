@@ -70,7 +70,7 @@ class PageOAuthCallback extends InternalPageBase
 
         // OK, we're the same session that just did a partial login that was redirected to OAuth. Let's upgrade the
         // login to a full login
-        if (WebRequest::getPartialLogin() === $user->getId()) {
+        if (WebRequest::getOAuthPartialLogin() === $user->getId()) {
             WebRequest::setLoggedInUser($user);
         }
 

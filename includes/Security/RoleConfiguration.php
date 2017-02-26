@@ -18,6 +18,7 @@ use Waca\Pages\PageLog;
 use Waca\Pages\PageMain;
 use Waca\Pages\RequestAction\PageCreateRequest;
 use Waca\Pages\UserAuth\PageChangePassword;
+use Waca\Pages\UserAuth\MultiFactor\PageMultiFactor;
 use Waca\Pages\UserAuth\PageOAuth;
 use Waca\Pages\UserAuth\PagePreferences;
 use Waca\Pages\PageSearch;
@@ -108,6 +109,16 @@ class RoleConfiguration
             ),
             PageChangePassword::class => array(
                 self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageMultiFactor::class    => array(
+                self::MAIN          => self::ACCESS_ALLOW,
+                'scratch'           => self::ACCESS_ALLOW,
+                'enableYubikeyOtp'  => self::ACCESS_ALLOW,
+                'disableYubikeyOtp' => self::ACCESS_ALLOW,
+                'enableTotp'        => self::ACCESS_ALLOW,
+                'disableTotp'       => self::ACCESS_ALLOW,
+                'enableU2F'       => self::ACCESS_ALLOW,
+                'disableU2F'       => self::ACCESS_ALLOW,
             ),
             PageOAuth::class          => array(
                 'attach' => self::ACCESS_ALLOW,

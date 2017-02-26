@@ -19,7 +19,7 @@ class SiteConfiguration
 {
     private $baseUrl;
     private $filePath;
-    private $schemaVersion = 28;
+    private $schemaVersion = 29;
     private $debuggingTraceEnabled;
     private $dataClearIp = '127.0.0.1';
     private $dataClearEmail = 'acc@toolserver.org';
@@ -84,6 +84,9 @@ class SiteConfiguration
     private $creationBotUsername = '';
     private $creationBotPassword = '';
     private $curlCookieJar = null;
+    private $yubicoApiId = 0;
+    private $yubicoApiKey = "";
+    private $totpEncryptionKey = "1234";
 
     /**
      * Gets the base URL of the tool
@@ -929,4 +932,48 @@ class SiteConfiguration
     {
         return $this->curlCookieJar;
     }
+
+    public function getYubicoApiId()
+    {
+        return $this->yubicoApiId;
+    }
+
+    public function setYubicoApiId($id)
+    {
+        $this->yubicoApiId = $id;
+
+        return $this;
+    }
+
+    public function getYubicoApiKey()
+    {
+        return $this->yubicoApiKey;
+    }
+
+    public function setYubicoApiKey($key)
+    {
+        $this->yubicoApiKey = $key;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTotpEncryptionKey()
+    {
+        return $this->totpEncryptionKey;
+    }
+
+    /**
+     * @param string $totpEncryptionKey
+     *
+     * @return SiteConfiguration
+     */
+    public function setTotpEncryptionKey($totpEncryptionKey)
+    {
+        $this->totpEncryptionKey = $totpEncryptionKey;
+
+        return $this;
+}
 }

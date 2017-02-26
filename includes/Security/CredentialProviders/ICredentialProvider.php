@@ -28,4 +28,16 @@ interface ICredentialProvider
      * @param string $data
      */
     public function setCredential(User $user, $factor, $data);
+
+    /**
+     * @param User $user
+     */
+    public function deleteCredential(User $user);
+
+    /**
+     * @param int $userId
+     *
+     * @return bool
+     */
+    public function userIsEnrolled($userId);
 }
