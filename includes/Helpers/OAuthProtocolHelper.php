@@ -17,9 +17,10 @@ use OAuthToken;
 use stdClass;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\CurlException;
-use Waca\Helpers\Interfaces\IOAuthHelper;
+use Waca\Exceptions\OAuthException;
+use Waca\Helpers\Interfaces\IOAuthProtocolHelper;
 
-class OAuthHelper implements IOAuthHelper
+class OAuthProtocolHelper implements IOAuthProtocolHelper
 {
     private $oauthConsumer;
     /**
@@ -91,17 +92,17 @@ class OAuthHelper implements IOAuthHelper
         $data = $this->httpHelper->get($targetUrl, null);
 
         if ($data === false) {
-            throw new Exception('Curl error: ' . $this->httpHelper->getError());
+            throw new CurlException('Curl error: ' . $this->httpHelper->getError());
         }
 
         $token = json_decode($data);
 
         if (!isset($token)) {
-            throw new Exception('Unknown error encountered getting request token while decoding json data.');
+            throw new OAuthException('Unknown error encountered getting request token while decoding json data.');
         }
 
         if (isset($token->error)) {
-            throw new Exception('Error encountered while getting request token: ' . $token->error);
+            throw new OAuthException('Error encountered while getting request token: ' . $token->error);
         }
 
         return $token;
@@ -146,17 +147,17 @@ class OAuthHelper implements IOAuthHelper
         $data = $this->httpHelper->get($targetUrl, null);
 
         if ($data === false) {
-            throw new Exception('Curl error: ' . $this->httpHelper->getError());
+            throw new CurlException('Curl error: ' . $this->httpHelper->getError());
         }
 
         $token = json_decode($data);
 
         if (!isset($token)) {
-            throw new Exception('Unknown error encountered getting access token while decoding json data.');
+            throw new OAuthException('Unknown error encountered getting access token while decoding json data.');
         }
 
         if (isset($token->error)) {
-            throw new Exception('Error encountered while getting access token: ' . $token->error);
+            throw new OAuthException('Error encountered while getting access token: ' . $token->error);
         }
 
         return $token;
@@ -166,7 +167,7 @@ class OAuthHelper implements IOAuthHelper
      * @param string $oauthAccessToken
      * @param string $oauthAccessSecret
      *
-     * @return JWT
+     * @return stdClass
      * @throws CurlException
      * @throws Exception
      */
@@ -189,13 +190,13 @@ class OAuthHelper implements IOAuthHelper
         $data = $this->httpHelper->get($targetUrl, null);
 
         if ($data === false) {
-            throw new Exception('Curl error: ' . $this->httpHelper->getError());
+            throw new CurlException('Curl error: ' . $this->httpHelper->getError());
         }
 
         $decodedData = json_decode($data);
 
         if (isset($decodedData->error)) {
-            throw new Exception($decodedData->error);
+            throw new OAuthException($decodedData->error);
         }
 
         $identity = JWT::decode($data, $this->consumerSecret);
@@ -232,18 +233,20 @@ class OAuthHelper implements IOAuthHelper
 
         $api_req->sign_request($hmac_method, $this->oauthConsumer, $userToken);
 
+        $headers = array($api_req->to_header());
+
         if ($method == 'GET') {
-            $data = $this->httpHelper->get($this->mediawikiWebServiceEndpoint, $apiParams);
+            $data = $this->httpHelper->get($this->mediawikiWebServiceEndpoint, $apiParams, $headers);
         }
         elseif ($method == 'POST') {
-            $data = $this->httpHelper->post($this->mediawikiWebServiceEndpoint, $apiParams);
+            $data = $this->httpHelper->post($this->mediawikiWebServiceEndpoint, $apiParams, $headers);
         }
         else {
             throw new ApplicationLogicException('Unsupported HTTP Method');
         }
 
         if ($data === false) {
-            throw new Exception('Curl error: ' . $this->httpHelper->getError());
+            throw new CurlException('Curl error: ' . $this->httpHelper->getError());
         }
 
         return json_decode($data);

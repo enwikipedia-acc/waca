@@ -27,13 +27,13 @@
             </div>
         </div>
 
-        {if $user->isOAuthLinked()}
+        {if $oauth->isFullyLinked() || $oauth->isPartiallyLinked()}
             <div class="control-group">
                 <label class="control-label" for="user_onwikiname">On-wiki Username:</label>
                 <div class="controls">
                     <span class="input-xlarge uneditable-input"
-                          id="user_onwikiname">{if $user->getOnWikiName() != "##OAUTH##"}{$user->getOnWikiName()|escape}{/if}</span>
-                    <span class="label {if $user->getOnWikiName() == "##OAUTH##"}label-important{else}label-success{/if}">OAuth</span>
+                          id="user_onwikiname">{$user->getOnWikiName()|escape}</span>
+                    <span class="label {if $oauth->isPartiallyLinked()}label-important{else}label-success{/if}">OAuth</span>
                 </div>
             </div>
         {else}

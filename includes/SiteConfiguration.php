@@ -19,7 +19,7 @@ class SiteConfiguration
 {
     private $baseUrl;
     private $filePath;
-    private $schemaVersion = 26;
+    private $schemaVersion = 27;
     private $debuggingTraceEnabled;
     private $dataClearIp = '127.0.0.1';
     private $dataClearEmail = 'acc@toolserver.org';
@@ -64,6 +64,8 @@ class SiteConfiguration
     private $oauthBaseUrl;
     private $oauthConsumerToken;
     private $oauthConsumerSecret;
+    private $oauthIdentityGraceTime = '24 hours';
+    private $oauthMediaWikiCanonicalServer = 'http://en.wikipedia.org';
     private $xffTrustedHostsFile = '../TrustedXFF/trusted-hosts.txt';
     private $crossOriginResourceSharingHosts = array(
         "http://en.wikipedia.org",
@@ -823,5 +825,45 @@ class SiteConfiguration
     public function getTorExitPaths()
     {
         return $this->torExitPaths;
+    }
+
+    /**
+     * @param string $oauthIdentityGraceTime
+     *
+     * @return SiteConfiguration
+     */
+    public function setOauthIdentityGraceTime($oauthIdentityGraceTime)
+    {
+        $this->oauthIdentityGraceTime = $oauthIdentityGraceTime;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOauthIdentityGraceTime()
+    {
+        return $this->oauthIdentityGraceTime;
+    }
+
+    /**
+     * @param string $oauthMediaWikiCanonicalServer
+     *
+     * @return SiteConfiguration
+     */
+    public function setOauthMediaWikiCanonicalServer($oauthMediaWikiCanonicalServer)
+    {
+        $this->oauthMediaWikiCanonicalServer = $oauthMediaWikiCanonicalServer;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOauthMediaWikiCanonicalServer()
+    {
+        return $this->oauthMediaWikiCanonicalServer;
     }
 }

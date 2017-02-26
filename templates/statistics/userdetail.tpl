@@ -15,11 +15,19 @@
                 <div class="row-fluid">
                     <div class="span4"><strong>User on-wiki name:</strong></div>
                     <div class="span8">{$user->getOnWikiName()|escape}
-                        {if $user->isOAuthLinked()}
-                            <span class="label {if $user->getOnWikiName() == "##OAUTH##"}label-important{else}label-success{/if}">OAuth</span>
+                        {if $oauth->isFullyLinked() || $oauth->isPartiallyLinked()}
+                            <span class="label {if $oauth->isPartiallyLinked()}label-important{else}label-success{/if}">OAuth</span>
                         {/if}
                     </div>
                 </div>
+                {if $oauth->isFullyLinked() && ($canApprove || $canDecline || $canSuspend || $canEditRoles || $canRename)}
+                    <div class="row-fluid">
+                        <div class="span4"><strong>Identity:</strong></div>
+                        <div class="span8">
+                            {include file="usermanagement/oauthFlags.tpl"}
+                        </div>
+                    </div>
+                {/if}
                 {if $user->getConfirmationDiff() != 0}
                 <div class="row-fluid">
                     <div class="span4"><strong>Confirmation diff:</strong></div>

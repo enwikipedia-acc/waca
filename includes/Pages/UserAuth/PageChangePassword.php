@@ -6,52 +6,22 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-namespace Waca\Pages;
+namespace Waca\Pages\UserAuth;
 
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Security\CredentialProviders\PasswordCredentialProvider;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
-class PagePreferences extends InternalPageBase
+class PageChangePassword extends InternalPageBase
 {
     /**
      * Main function for this page, when no specific actions are called.
      * @return void
      */
     protected function main()
-    {
-        $this->setHtmlTitle('Preferences');
-
-        $enforceOAuth = $this->getSiteConfiguration()->getEnforceOAuth();
-
-        // Dual mode
-        if (WebRequest::wasPosted()) {
-            $this->validateCSRFToken();
-            $user = User::getCurrent($this->getDatabase());
-            $user->setWelcomeSig(WebRequest::postString('sig'));
-            $user->setEmailSig(WebRequest::postString('emailsig'));
-            $user->setAbortPref(WebRequest::getBoolean('sig') ? 1 : 0);
-
-            $email = WebRequest::postEmail('email');
-            if ($email !== null) {
-                $user->setEmail($email);
-            }
-
-            $user->save();
-            SessionAlert::success("Preferences updated!");
-
-            $this->redirect('');
-        }
-        else {
-            $this->assignCSRFToken();
-            $this->setTemplate('preferences/prefs.tpl');
-            $this->assign("enforceOAuth", $enforceOAuth);
-        }
-    }
-
-    protected function changePassword()
     {
         $this->setHtmlTitle('Change Password');
 
@@ -71,21 +41,21 @@ class PagePreferences extends InternalPageBase
             }
             catch (ApplicationLogicException $ex) {
                 SessionAlert::error($ex->getMessage());
-                $this->redirect('preferences', 'changePassword');
+                $this->redirect('changePassword');
 
                 return;
             }
 
-            $user->setPassword($newPassword);
-            $user->save();
+            $passwordProvider = new PasswordCredentialProvider($this->getDatabase(), $this->getSiteConfiguration());
+            $passwordProvider->setCredential($user, 1, $newPassword);
 
             SessionAlert::success('Password changed successfully!');
 
             $this->redirect('preferences');
         }
         else {
-            // not allowed to GET this.
-            $this->redirect('preferences');
+            $this->assignCSRFToken();
+            $this->setTemplate('preferences/changePassword.tpl');
         }
     }
 
@@ -107,7 +77,9 @@ class PagePreferences extends InternalPageBase
             throw new ApplicationLogicException('Your new passwords did not match!');
         }
 
-        if (!$user->authenticate($oldPassword)) {
+        // TODO: adapt for MFA support
+        $passwordProvider = new PasswordCredentialProvider($this->getDatabase(), $this->getSiteConfiguration());
+        if (!$passwordProvider->authenticate($user, $oldPassword)) {
             throw new ApplicationLogicException('The password you entered was incorrect.');
         }
     }

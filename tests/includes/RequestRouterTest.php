@@ -13,7 +13,7 @@ use PHPUnit_Framework_TestCase;
 use ReflectionClass;
 use ReflectionProperty;
 use Waca\Pages\Page404;
-use Waca\Pages\PageLogout;
+use Waca\Pages\UserAuth\PageLogout;
 use Waca\Pages\PageMain;
 use Waca\Pages\PageUserManagement;
 use Waca\Providers\GlobalState\GlobalStateProvider;

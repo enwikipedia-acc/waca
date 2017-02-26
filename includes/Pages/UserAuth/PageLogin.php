@@ -6,10 +6,13 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-namespace Waca\Pages;
+namespace Waca\Pages\UserAuth;
 
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Exceptions\OAuthException;
+use Waca\Helpers\OAuthUserHelper;
+use Waca\Security\AuthenticationManager;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -60,33 +63,39 @@ class PageLogin extends InternalPageBase
             $user->setForceLogout(false);
             $user->save();
 
-            if ($this->getSiteConfiguration()->getEnforceOAuth()) {
-                if (!$user->isOAuthLinked()) {
-                    $oauthHelper = $this->getOAuthHelper();
+            $oauth = new OAuthUserHelper($user, $this->getDatabase(), $this->getOAuthProtocolHelper(),
+                $this->getSiteConfiguration());
 
-                    $requestToken = $oauthHelper->getRequestToken();
-                    $user->setOAuthRequestToken($requestToken->key);
-                    $user->setOAuthRequestSecret($requestToken->secret);
-                    $user->save();
+            if ($oauth->isFullyLinked()) {
+                try{
+                    // Reload the user's identity ticket.
+                    $oauth->refreshIdentity();
 
+                    // Check for blocks
+                    if($oauth->getIdentity()->getBlocked()) {
+                        // blocked!
+                        SessionAlert::error("You are currently blocked on-wiki. You will not be able to log in until you are unblocked.");
+                        $this->redirect('login');
+
+                        return;
+                    }
+                }
+                catch(OAuthException $ex) {
+                    // Oops. Refreshing ticket failed. Force a re-auth.
+                    $authoriseUrl = $oauth->getRequestToken();
                     WebRequest::setPartialLogin($user);
-                    $this->redirectUrl($oauthHelper->getAuthoriseUrl($requestToken->key));
+                    $this->redirectUrl($authoriseUrl);
 
                     return;
                 }
             }
 
-            // User is partially linked to OAuth. This is not allowed. Enforce it for this user.
-            if ($user->getOnWikiName() === '##OAUTH##') {
-                $oauthHelper = $this->getOAuthHelper();
-
-                $requestToken = $oauthHelper->getRequestToken();
-                $user->setOAuthRequestToken($requestToken->key);
-                $user->setOAuthRequestSecret($requestToken->secret);
-                $user->save();
-
+            if (($this->getSiteConfiguration()->getEnforceOAuth() && !$oauth->isFullyLinked())
+                || $oauth->isPartiallyLinked()
+            ) {
+                $authoriseUrl = $oauth->getRequestToken();
                 WebRequest::setPartialLogin($user);
-                $this->redirectUrl($oauthHelper->getAuthoriseUrl($requestToken->key));
+                $this->redirectUrl($authoriseUrl);
 
                 return;
             }
@@ -118,8 +127,20 @@ class PageLogin extends InternalPageBase
         /** @var User $user */
         $user = User::getByUsername($username, $this->getDatabase());
 
-        if ($user == false || !$user->authenticate($password)) {
+        if ($user == false) {
             throw new ApplicationLogicException("Authentication failed");
+        }
+
+        $authMan = new AuthenticationManager($this->getDatabase(), $this->getSiteConfiguration(),
+            $this->getHttpHelper());
+        $authResult = $authMan->authenticate($user, $password, 1);
+
+        if ($authResult === AuthenticationManager::AUTH_FAIL) {
+            throw new ApplicationLogicException("Authentication failed");
+        }
+
+        if ($authResult === AuthenticationManager::AUTH_REQUIRE_NEXT_STAGE) {
+            throw new ApplicationLogicException("Next stage of authentication required. This is not currently supported.");
         }
 
         return $user;

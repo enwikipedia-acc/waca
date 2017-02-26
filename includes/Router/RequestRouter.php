@@ -14,13 +14,15 @@ use Waca\Pages\PageBan;
 use Waca\Pages\PageEditComment;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageExpandedRequestList;
-use Waca\Pages\PageForgotPassword;
+use Waca\Pages\UserAuth\PageChangePassword;
+use Waca\Pages\UserAuth\PageForgotPassword;
 use Waca\Pages\PageLog;
-use Waca\Pages\PageLogin;
-use Waca\Pages\PageLogout;
+use Waca\Pages\UserAuth\PageLogin;
+use Waca\Pages\UserAuth\PageLogout;
 use Waca\Pages\PageMain;
-use Waca\Pages\PageOAuth;
-use Waca\Pages\PagePreferences;
+use Waca\Pages\UserAuth\PageOAuth;
+use Waca\Pages\UserAuth\PageOAuthCallback;
+use Waca\Pages\UserAuth\PagePreferences;
 use Waca\Pages\Registration\PageRegisterStandard;
 use Waca\Pages\Registration\PageRegisterOption;
 use Waca\Pages\PageSearch;
@@ -178,12 +180,22 @@ class RequestRouter implements IRequestRouter
         'preferences'                 =>
             array(
                 'class'   => PagePreferences::class,
-                'actions' => array('changePassword'),
+                'actions' => array(),
+            ),
+        'changePassword'              =>
+            array(
+                'class'   => PageChangePassword::class,
+                'actions' => array(),
             ),
         'oauth'                       =>
             array(
                 'class'   => PageOAuth::class,
                 'actions' => array('detach', 'attach'),
+            ),
+        'oauth/callback'              =>
+            array(
+                'class' => PageOAuthCallback::class,
+                'actions' => array('authorise', 'create'),
             ),
 
         //////////////////////////////////////////////////////////////////////////////////////////////////

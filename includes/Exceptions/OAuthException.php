@@ -6,20 +6,8 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-namespace Waca\Router;
+namespace Waca\Exceptions;
 
-use Waca\Pages\UserAuth\PageOAuthCallback;
-
-/**
- * Class OAuthRequestRouter
- *
- * @package Waca\Router
- */
-class OAuthRequestRouter extends RequestRouter
+class OAuthException extends ApplicationLogicException
 {
-    protected function getRouteFromPath($pathInfo)
-    {
-        // Hardcode the route for this entry point
-        return array(PageOAuthCallback::class, 'authorise');
-    }
 }

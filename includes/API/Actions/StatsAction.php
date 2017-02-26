@@ -11,6 +11,7 @@ namespace Waca\API\Actions;
 use Waca\API\ApiException;
 use Waca\API\IApiAction;
 use Waca\DataObjects\User;
+use Waca\Helpers\OAuthUserHelper;
 use Waca\Tasks\ApiPageBase;
 use Waca\WebRequest;
 
@@ -61,12 +62,15 @@ class StatsAction extends ApiPageBase implements IApiAction
 
         $this->user = $user;
 
+        $oauth = new OAuthUserHelper($user, $this->getDatabase(), $this->getOAuthProtocolHelper(),
+            $this->getSiteConfiguration());
+
         $userElement->setAttribute("username", $this->user->getUsername());
         $userElement->setAttribute("status", $this->user->getStatus());
         $userElement->setAttribute("lastactive", $this->user->getLastActive());
         $userElement->setAttribute("welcome_template", $this->user->getWelcomeTemplate());
         $userElement->setAttribute("onwikiname", $this->user->getOnWikiName());
-        $userElement->setAttribute("oauth", $this->user->isOAuthLinked() ? "true" : "false");
+        $userElement->setAttribute("oauth", $oauth->isFullyLinked() ? "true" : "false");
 
         return $apiDocument;
     }

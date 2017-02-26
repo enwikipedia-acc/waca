@@ -10,10 +10,14 @@ namespace Waca\Helpers\Interfaces;
 
 use Exception;
 use JWT;
+use OAuthRequest;
+use OAuthSignatureMethod_HMAC_SHA1;
+use OAuthToken;
 use stdClass;
+use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\CurlException;
 
-interface IOAuthHelper
+interface IOAuthProtocolHelper
 {
     /**
      * @return stdClass
@@ -45,9 +49,22 @@ interface IOAuthHelper
      * @param string $oauthAccessToken
      * @param string $oauthAccessSecret
      *
-     * @return JWT
+     * @return stdClass
      * @throws CurlException
      * @throws Exception
      */
     public function getIdentityTicket($oauthAccessToken, $oauthAccessSecret);
+
+    /**
+     * @param array  $apiParams    array of parameters to send to the API
+     * @param string $accessToken  user's access token
+     * @param string $accessSecret user's secret
+     * @param string $method       HTTP method
+     *
+     * @return stdClass
+     * @throws ApplicationLogicException
+     * @throws CurlException
+     * @throws Exception
+     */
+    public function apiCall($apiParams, $accessToken, $accessSecret, $method = 'GET');
 }

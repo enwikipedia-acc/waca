@@ -10,7 +10,7 @@ namespace Waca\Tasks;
 
 use Waca\Helpers\HttpHelper;
 use Waca\Helpers\Interfaces\IEmailHelper;
-use Waca\Helpers\Interfaces\IOAuthHelper;
+use Waca\Helpers\Interfaces\IOAuthProtocolHelper;
 use Waca\Helpers\IrcNotificationHelper;
 use Waca\Helpers\WikiTextHelper;
 use Waca\PdoDatabase;
@@ -120,16 +120,16 @@ interface ITask
     public function setDatabase($database);
 
     /**
-     * @return IOAuthHelper
+     * @return IOAuthProtocolHelper
      */
-    public function getOAuthHelper();
+    public function getOAuthProtocolHelper();
 
     /**
-     * @param IOAuthHelper $oauthHelper
+     * @param IOAuthProtocolHelper $oauthProtocolHelper
      *
      * @return void
      */
-    public function setOAuthHelper($oauthHelper);
+    public function setOAuthProtocolHelper($oauthProtocolHelper);
 
     /**
      * @return void

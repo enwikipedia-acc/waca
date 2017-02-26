@@ -6,24 +6,16 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-namespace Waca\Pages;
+namespace Waca;
 
-use Waca\Session;
-use Waca\Tasks\InternalPageBase;
+use Waca\ConsoleTasks\RefreshOAuthDataTask;
 
-class PageLogout extends InternalPageBase
-{
-    /**
-     * Main function for this page, when no specific actions are called.
-     */
-    protected function main()
-    {
-        Session::destroy();
-        $this->redirect("login");
-    }
+chdir(__DIR__);
+chdir('..');
 
-    protected function isProtectedPage()
-    {
-        return false;
-    }
-}
+require_once('config.inc.php');
+
+global $siteConfiguration;
+$application = new ConsoleStart($siteConfiguration, new RefreshOAuthDataTask());
+
+$application->run();

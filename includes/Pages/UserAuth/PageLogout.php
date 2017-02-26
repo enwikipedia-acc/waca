@@ -6,20 +6,24 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-namespace Waca\Router;
+namespace Waca\Pages\UserAuth;
 
-use Waca\Pages\UserAuth\PageOAuthCallback;
+use Waca\Session;
+use Waca\Tasks\InternalPageBase;
 
-/**
- * Class OAuthRequestRouter
- *
- * @package Waca\Router
- */
-class OAuthRequestRouter extends RequestRouter
+class PageLogout extends InternalPageBase
 {
-    protected function getRouteFromPath($pathInfo)
+    /**
+     * Main function for this page, when no specific actions are called.
+     */
+    protected function main()
     {
-        // Hardcode the route for this entry point
-        return array(PageOAuthCallback::class, 'authorise');
+        Session::destroy();
+        $this->redirect("login");
+    }
+
+    protected function isProtectedPage()
+    {
+        return false;
     }
 }

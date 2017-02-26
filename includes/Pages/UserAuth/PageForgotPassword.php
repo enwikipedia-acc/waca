@@ -6,11 +6,12 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-namespace Waca\Pages;
+namespace Waca\Pages\UserAuth;
 
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\PdoDatabase;
+use Waca\Security\CredentialProviders\PasswordCredentialProvider;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -151,8 +152,8 @@ class PageForgotPassword extends InternalPageBase
             throw new ApplicationLogicException('Passwords do not match!');
         }
 
-        $user->setPassword($pw);
-        $user->save();
+        $passwordCredentialProvider = new PasswordCredentialProvider($user->getDatabase(), $this->getSiteConfiguration());
+        $passwordCredentialProvider->setCredential($user, 1, $pw);
 
         SessionAlert::success('You may now log in!');
         $this->redirect('login');

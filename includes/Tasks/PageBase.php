@@ -11,6 +11,7 @@ namespace Waca\Tasks;
 use Exception;
 use Waca\DataObjects\SiteNotice;
 use Waca\DataObjects\User;
+use Waca\ExceptionHandler;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Fragments\TemplateOutput;
@@ -134,6 +135,18 @@ abstract class PageBase extends TaskBase implements IRoutedTask
             // Set the template
             $this->setTemplate('exception/optimistic-lock-failure.tpl');
             $this->assign('message', $ex->getMessage());
+
+            $this->assign('debugTrace', false);
+
+            if ($this->getSiteConfiguration()->getDebuggingTraceEnabled()) {
+                ob_start();
+                var_dump(ExceptionHandler::getExceptionData($ex));
+                $textErrorData = ob_get_contents();
+                ob_end_clean();
+
+                $this->assign('exceptionData', $textErrorData);
+                $this->assign('debugTrace', true);
+            }
 
             // Force this back to false
             $this->isRedirecting = false;

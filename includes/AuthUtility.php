@@ -17,6 +17,7 @@ class AuthUtility
      * @param string $credentials
      *
      * @return bool
+     * @deprecated
      */
     public static function testCredentials($password, $credentials)
     {
@@ -53,6 +54,7 @@ class AuthUtility
      * @param string $credentials
      *
      * @return bool
+     * @deprecated
      */
     public static function isCredentialVersionLatest($credentials)
     {
@@ -65,6 +67,7 @@ class AuthUtility
      * @param string $password
      *
      * @return string
+     * @deprecated
      */
     public static function encryptPassword($password)
     {

@@ -14,8 +14,9 @@ use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageExpandedRequestList;
 use Waca\Pages\PageLog;
 use Waca\Pages\PageMain;
-use Waca\Pages\PageOAuth;
-use Waca\Pages\PagePreferences;
+use Waca\Pages\UserAuth\PageChangePassword;
+use Waca\Pages\UserAuth\PageOAuth;
+use Waca\Pages\UserAuth\PagePreferences;
 use Waca\Pages\PageSearch;
 use Waca\Pages\PageSiteNotice;
 use Waca\Pages\PageTeam;
@@ -85,9 +86,6 @@ class RoleConfiguration
             '_childRoles'    => array(
                 'publicStats',
             ),
-            PageOAuth::class => array(
-                'callback' => self::ACCESS_ALLOW,
-            ),
             PageTeam::class  => array(
                 self::MAIN => self::ACCESS_ALLOW,
             ),
@@ -104,7 +102,9 @@ class RoleConfiguration
             ),
             PagePreferences::class               => array(
                 self::MAIN       => self::ACCESS_ALLOW,
-                'changePassword' => self::ACCESS_ALLOW,
+            ),
+            PageChangePassword::class            => array(
+                self::MAIN       => self::ACCESS_ALLOW,
             ),
             PageOAuth::class                     => array(
                 'attach' => self::ACCESS_ALLOW,

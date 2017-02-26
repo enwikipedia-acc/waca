@@ -8,26 +8,25 @@
 
 namespace Waca\ConsoleTasks;
 
+use Waca\Helpers\OAuthUserHelper;
+use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\Tasks\ConsoleTaskBase;
 
 class ClearOAuthDataTask extends ConsoleTaskBase
 {
     public function execute()
     {
-        // @fixme this is unsafe.
-        // What we should be doing is iterating over all OAuth users, fetching their username, and updating the onwiki
-        // name for the user at the same time as blatting out the OAuth credentials, otherwise we risk losing all links
-        // to the user's onwiki account.
+        $database = $this->getDatabase();
 
-        $this->getDatabase()->exec(<<<SQL
-        UPDATE user
-        SET
-            oauthrequesttoken = NULL,
-            oauthrequestsecret = NULL,
-            oauthaccesstoken = NULL,
-            oauthaccesssecret = NULL,
-            oauthidentitycache = NULL;
-SQL
-        );
+        $users = UserSearchHelper::get($database)->inIds(
+            $database->query('SELECT user FROM oauthtoken WHERE type = \'access\'')->fetchColumn());
+
+        foreach ($users as $u){
+            $oauth = new OAuthUserHelper($u, $database, $this->getOAuthProtocolHelper(), $this->getSiteConfiguration());
+            $oauth->detach();
+        }
+
+        $database->exec('DELETE FROM oauthtoken');
+        $database->exec('DELETE FROM oauthidentity');
     }
 }

@@ -74,6 +74,11 @@
                             <i class="icon-edit"></i> Edit preferences
                         </a>
                     </li>
+                    <li>
+                        <a href="{$baseurl}/internal.php/changePassword">
+                            <i class="icon-user"></i> Change password
+                        </a>
+                    </li>
                     <li class="divider"></li>
                     <li class="nav-header">Help</li>
                     <li>

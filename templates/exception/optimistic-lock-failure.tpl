@@ -16,5 +16,12 @@
                 </p>
             </div>
         </div>
+        {if $debugTrace}
+            <div class="row-fluid">
+                <div class="span12">
+                    {$exceptionData}
+                </div>
+            </div>
+        {/if}
     </div>
 {/block}

@@ -13,6 +13,7 @@ use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\LogHelper;
+use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
 use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\Pages\PageUserManagement;
@@ -28,19 +29,19 @@ class StatsUsers extends InternalPageBase
         $database = $this->getDatabase();
 
         $query = <<<SQL
-select
+SELECT
     u.id
     , u.username
-    , case when ru.role is not null then 'Yes' else 'No' end tooluser
-    , case when ra.role is not null then 'Yes' else 'No' end tooladmin
-    , case when rc.role is not null then 'Yes' else 'No' end checkuser
-    , case when rr.role is not null then 'Yes' else 'No' end toolroot
-from user u
-    left join userrole ru on ru.user = u.id and ru.role = 'user'
-    left join userrole ra on ra.user = u.id and ra.role = 'admin'
-    left join userrole rc on rc.user = u.id and rc.role = 'checkuser'
-    left join userrole rr on rr.user = u.id and rr.role = 'toolRoot'
-where u.status = 'Active'
+    , CASE WHEN ru.role IS NOT NULL THEN 'Yes' ELSE 'No' END tooluser
+    , CASE WHEN ra.role IS NOT NULL THEN 'Yes' ELSE 'No' END tooladmin
+    , CASE WHEN rc.role IS NOT NULL THEN 'Yes' ELSE 'No' END checkuser
+    , CASE WHEN rr.role IS NOT NULL THEN 'Yes' ELSE 'No' END toolroot
+FROM user u
+    LEFT JOIN userrole ru ON ru.user = u.id AND ru.role = 'user'
+    LEFT JOIN userrole ra ON ra.user = u.id AND ra.role = 'admin'
+    LEFT JOIN userrole rc ON rc.user = u.id AND rc.role = 'checkuser'
+    LEFT JOIN userrole rr ON rr.user = u.id AND rr.role = 'toolRoot'
+WHERE u.status = 'Active'
 SQL;
 
         $users = $database->query($query)->fetchAll(PDO::FETCH_ASSOC);
@@ -143,6 +144,14 @@ SQL
         $this->assign('canEditUser', $this->barrierTest('editUser', $currentUser, PageUserManagement::class));
         $this->assign('canSuspend', $this->barrierTest('suspend', $currentUser, PageUserManagement::class));
         $this->assign('canEditRoles', $this->barrierTest('editRoles', $currentUser, PageUserManagement::class));
+
+        $oauth = new OAuthUserHelper($user, $database, $this->getOAuthProtocolHelper(), $this->getSiteConfiguration());
+        $this->assign('oauth', $oauth);
+
+        if ($oauth->isFullyLinked()) {
+            $this->assign('identity', $oauth->getIdentity(true));
+            $this->assign('identityExpired', $oauth->identityExpired());
+        }
 
         $this->assign('statsPageTitle', 'Account Creation Tool users');
         $this->setTemplate("statistics/userdetail.tpl");
