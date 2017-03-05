@@ -8,12 +8,15 @@
 
 namespace Waca\Security;
 
+use Waca\DataObjects\User;
 use Waca\Pages\PageBan;
 use Waca\Pages\PageEditComment;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageExpandedRequestList;
+use Waca\Pages\PageJobQueue;
 use Waca\Pages\PageLog;
 use Waca\Pages\PageMain;
+use Waca\Pages\RequestAction\PageCreateRequest;
 use Waca\Pages\UserAuth\PageChangePassword;
 use Waca\Pages\UserAuth\PageOAuth;
 use Waca\Pages\UserAuth\PagePreferences;
@@ -83,37 +86,37 @@ class RoleConfiguration
              * USERS IN THIS ROLE DO NOT HAVE TO BE IDENTIFIED TO GET THE RIGHTS CONFERRED HERE.
              * DO NOT ADD ANY SECURITY-SENSITIVE RIGHTS HERE.
              */
-            '_childRoles'    => array(
+            '_childRoles'   => array(
                 'publicStats',
             ),
-            PageTeam::class  => array(
+            PageTeam::class => array(
                 self::MAIN => self::ACCESS_ALLOW,
             ),
         ),
-        'loggedIn'            => array(
+        'loggedIn'          => array(
             /*
              * THIS ROLE IS GRANTED TO ALL LOGGED IN USERS IMPLICITLY.
              *
              * USERS IN THIS ROLE DO NOT HAVE TO BE IDENTIFIED TO GET THE RIGHTS CONFERRED HERE.
              * DO NOT ADD ANY SECURITY-SENSITIVE RIGHTS HERE.
              */
-            '_childRoles'    => array(
+            '_childRoles'             => array(
                 'public',
             ),
-            PagePreferences::class               => array(
-                self::MAIN       => self::ACCESS_ALLOW,
+            PagePreferences::class    => array(
+                self::MAIN => self::ACCESS_ALLOW,
             ),
-            PageChangePassword::class            => array(
-                self::MAIN       => self::ACCESS_ALLOW,
+            PageChangePassword::class => array(
+                self::MAIN => self::ACCESS_ALLOW,
             ),
-            PageOAuth::class                     => array(
+            PageOAuth::class          => array(
                 'attach' => self::ACCESS_ALLOW,
                 'detach' => self::ACCESS_ALLOW,
             ),
         ),
         'user'              => array(
-            '_description' => 'A standard tool user.',
-            '_editableBy' => array('admin', 'toolRoot'),
+            '_description'                       => 'A standard tool user.',
+            '_editableBy'                        => array('admin', 'toolRoot'),
             '_childRoles'                        => array(
                 'internalStats',
             ),
@@ -145,7 +148,8 @@ class RoleConfiguration
                 'view'     => self::ACCESS_ALLOW,
             ),
             PageViewRequest::class               => array(
-                self::MAIN => self::ACCESS_ALLOW,
+                self::MAIN       => self::ACCESS_ALLOW,
+                'seeAllRequests' => self::ACCESS_ALLOW,
             ),
             'RequestData'                        => array(
                 'seePrivateDataWhenReserved' => self::ACCESS_ALLOW,
@@ -158,6 +162,9 @@ class RoleConfiguration
                 self::MAIN => self::ACCESS_ALLOW,
             ),
             PageCloseRequest::class              => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
+            PageCreateRequest::class             => array(
                 self::MAIN => self::ACCESS_ALLOW,
             ),
             PageDeferRequest::class              => array(
@@ -175,13 +182,22 @@ class RoleConfiguration
             PageBreakReservation::class          => array(
                 self::MAIN => self::ACCESS_ALLOW,
             ),
-
+            PageJobQueue::class                  => array(
+                self::MAIN => self::ACCESS_ALLOW,
+                'view'     => self::ACCESS_ALLOW,
+                'all'      => self::ACCESS_ALLOW,
+            ),
+            'RequestCreation'                    => array(
+                User::CREATION_MANUAL => self::ACCESS_ALLOW,
+                User::CREATION_OAUTH  => self::ACCESS_ALLOW,
+            ),
         ),
         'admin'             => array(
-            '_description' => 'A tool administrator.',
-            '_editableBy' => array('admin', 'toolRoot'),
+            '_description'                       => 'A tool administrator.',
+            '_editableBy'                        => array('admin', 'toolRoot'),
             '_childRoles'                        => array(
-                'user', 'requestAdminTools',
+                'user',
+                'requestAdminTools',
             ),
             PageEmailManagement::class           => array(
                 'edit'   => self::ACCESS_ALLOW,
@@ -204,12 +220,17 @@ class RoleConfiguration
                 'delete' => self::ACCESS_ALLOW,
                 'add'    => self::ACCESS_ALLOW,
             ),
+            PageJobQueue::class                  => array(
+                'acknowledge' => self::ACCESS_ALLOW,
+                'requeue'     => self::ACCESS_ALLOW,
+            ),
         ),
         'checkuser'         => array(
-            '_description' => 'A user with CheckUser access',
-            '_editableBy' => array('checkuser', 'toolRoot'),
+            '_description'            => 'A user with CheckUser access',
+            '_editableBy'             => array('checkuser', 'toolRoot'),
             '_childRoles'             => array(
-                'user', 'requestAdminTools',
+                'user',
+                'requestAdminTools',
             ),
             PageUserManagement::class => array(
                 self::MAIN  => self::ACCESS_ALLOW,
@@ -220,11 +241,20 @@ class RoleConfiguration
                 'seeUserAgentData' => self::ACCESS_ALLOW,
             ),
         ),
-        'toolRoot'         => array(
+        'toolRoot'          => array(
             '_description' => 'A user with shell access to the servers running the tool',
-            '_editableBy' => array('toolRoot'),
-            '_childRoles'             => array(
-                'admin', 'checkuser',
+            '_editableBy'  => array('toolRoot'),
+            '_childRoles'  => array(
+                'admin',
+                'checkuser',
+            ),
+        ),
+        'botCreation'       => array(
+            '_description'    => 'A user allowed to use the bot to perform account creations',
+            '_editableBy'     => array('admin', 'toolRoot'),
+            '_childRoles'     => array(),
+            'RequestCreation' => array(
+                User::CREATION_BOT => self::ACCESS_ALLOW,
             ),
         ),
 

@@ -9,10 +9,13 @@
 namespace Waca\Pages;
 
 use PDO;
-use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
+use Waca\Helpers\SearchHelpers\RequestSearchHelper;
 use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\Pages\RequestAction\PageBreakReservation;
+use Waca\PdoDatabase;
+use Waca\RequestStatus;
+use Waca\SiteConfiguration;
 use Waca\Tasks\InternalPageBase;
 
 class PageMain extends InternalPageBase
@@ -25,61 +28,50 @@ class PageMain extends InternalPageBase
         $this->assignCSRFToken();
 
         $config = $this->getSiteConfiguration();
-
         $database = $this->getDatabase();
+        $currentUser = User::getCurrent($database);
 
-        $requestSectionData = array();
-
-        if ($config->getEmailConfirmationEnabled()) {
-            $query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed' LIMIT :lim;";
-            $totalQuery = "SELECT COUNT(id) FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
-        }
-        else {
-            $query = "SELECT * FROM request WHERE status = :type LIMIT :lim;";
-            $totalQuery = "SELECT COUNT(id) FROM request WHERE status = :type;";
-        }
-
-        $statement = $database->prepare($query);
-        $statement->bindValue(':lim', $config->getMiserModeLimit(), PDO::PARAM_INT);
-
-        $totalRequestsStatement = $database->prepare($totalQuery);
-
+        // general template configuration
         $this->assign('defaultRequestState', $config->getDefaultRequestStateKey());
-
-        foreach ($config->getRequestStates() as $type => $v) {
-            $statement->bindValue(":type", $type);
-            $statement->execute();
-
-            $requests = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
-
-            /** @var Request $req */
-            foreach ($requests as $req) {
-                $req->setDatabase($database);
-            }
-
-            $totalRequestsStatement->bindValue(':type', $type);
-            $totalRequestsStatement->execute();
-            $totalRequests = $totalRequestsStatement->fetchColumn();
-            $totalRequestsStatement->closeCursor();
-
-            $userIds = array_map(
-                function(Request $entry) {
-                    return $entry->getReserved();
-                },
-                $requests);
-            $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchMap('username');
-            $this->assign('userlist', $userList);
-
-            $requestSectionData[$v['header']] = array(
-                'requests' => $requests,
-                'total'    => $totalRequests,
-                'api'      => $v['api'],
-                'type'     => $type,
-                'userlist' => $userList,
-            );
-        }
-
         $this->assign('requestLimitShowOnly', $config->getMiserModeLimit());
+
+        // Get map of possible usernames
+        $userList = UserSearchHelper::get($database)->withReservedRequest();
+        $this->assign('userList', $userList);
+
+        $seeAllRequests = $this->barrierTest('seeAllRequests', $currentUser, PageViewRequest::class);
+
+        // Fetch request data
+        $requestSectionData = array();
+        if ($seeAllRequests) {
+            $this->setupStatusSections($database, $config, $requestSectionData);
+            $this->setupHospitalQueue($database, $config, $requestSectionData);
+            $this->setupJobQueue($database, $config, $requestSectionData);
+        }
+        $this->setupLastFiveClosedData($database, $seeAllRequests);
+
+        // Assign data to template
+        $this->assign('requestSectionData', $requestSectionData);
+
+        // Extra rights
+        $this->assign('canBan', $this->barrierTest('set', $currentUser, PageBan::class));
+        $this->assign('canBreakReservation', $this->barrierTest('force', $currentUser, PageBreakReservation::class));
+
+        $this->setTemplate('mainpage/mainpage.tpl');
+    }
+
+    /**
+     * @param PdoDatabase $database
+     * @param bool        $seeAllRequests
+     *
+     * @internal param User $currentUser
+     */
+    private function setupLastFiveClosedData(PdoDatabase $database, $seeAllRequests)
+    {
+        $this->assign('showLastFive', $seeAllRequests);
+        if (!$seeAllRequests) {
+            return;
+        }
 
         $query = <<<SQL
 		SELECT request.id, request.name, request.updateversion
@@ -96,12 +88,101 @@ SQL;
         $last5result = $statement->fetchAll(PDO::FETCH_ASSOC);
 
         $this->assign('lastFive', $last5result);
-        $this->assign('requestSectionData', $requestSectionData);
+    }
 
-        $currentUser = User::getCurrent($database);
-        $this->assign('canBan', $this->barrierTest('set', $currentUser, PageBan::class));
-        $this->assign('canBreakReservation', $this->barrierTest('force', $currentUser, PageBreakReservation::class));
+    /**
+     * @param PdoDatabase       $database
+     * @param SiteConfiguration $config
+     * @param                   $requestSectionData
+     */
+    private function setupHospitalQueue(
+        PdoDatabase $database,
+        SiteConfiguration $config,
+        &$requestSectionData
+    ) {
+        $search = RequestSearchHelper::get($database)
+            ->limit($config->getMiserModeLimit())
+            ->excludingStatus('Closed')
+            ->isHospitalised();
 
-        $this->setTemplate('mainpage/mainpage.tpl');
+        if ($config->getEmailConfirmationEnabled()) {
+            $search->withConfirmedEmail();
+        }
+
+        $results = $search->getRecordCount($requestCount)->fetch();
+
+        if($requestCount > 0) {
+            $requestSectionData['Hospital - Requests failed auto-creation'] = array(
+                'requests' => $results,
+                'total'    => $requestCount,
+                'api'      => 'hospital',
+                'type'     => 'hospital',
+                'special'  => 'Job Queue',
+                'help'     => 'This queue lists all the requests which have been attempted to be created in the background, but for which this has failed for one reason or another. Check the job queue to find the error. Requests here may need to be created manually, or it may be possible to re-queue the request for auto-creation by the tool, or it may have been created already. Use your own technical discretion here.'
+            );
+        }
+    }
+
+    /**
+     * @param PdoDatabase       $database
+     * @param SiteConfiguration $config
+     * @param                   $requestSectionData
+     */
+    private function setupJobQueue(
+        PdoDatabase $database,
+        SiteConfiguration $config,
+        &$requestSectionData
+    ) {
+        $search = RequestSearchHelper::get($database)
+            ->limit($config->getMiserModeLimit())
+            ->byStatus(RequestStatus::JOBQUEUE);
+
+        if ($config->getEmailConfirmationEnabled()) {
+            $search->withConfirmedEmail();
+        }
+
+        $results = $search->getRecordCount($requestCount)->fetch();
+
+        if($requestCount > 0) {
+            $requestSectionData['Requests queued in the Job Queue'] = array(
+                'requests' => $results,
+                'total'    => $requestCount,
+                'api'      => 'JobQueue',
+                'type'     => 'JobQueue',
+                'special'  => 'Job Queue',
+                'help'     => 'This section lists all the requests which are currently waiting to be created by the tool. Requests should automatically disappear from here within a few minutes.'
+            );
+        }
+    }
+
+    /**
+     * @param PdoDatabase       $database
+     * @param SiteConfiguration $config
+     * @param                   $requestSectionData
+     */
+    private function setupStatusSections(
+        PdoDatabase $database,
+        SiteConfiguration $config,
+        &$requestSectionData
+    ) {
+        $search = RequestSearchHelper::get($database)->limit($config->getMiserModeLimit())->notHospitalised();
+
+        if ($config->getEmailConfirmationEnabled()) {
+            $search->withConfirmedEmail();
+        }
+
+        $requestStates = $config->getRequestStates();
+        $requestsByStatus = $search->fetchByStatus(array_keys($requestStates));
+
+        foreach ($requestStates as $type => $v) {
+            $requestSectionData[$v['header']] = array(
+                'requests' => $requestsByStatus[$type]['data'],
+                'total'    => $requestsByStatus[$type]['count'],
+                'api'      => $v['api'],
+                'type'     => $type,
+                'special'  => null,
+                'help'     => null,
+            );
+        }
     }
 }

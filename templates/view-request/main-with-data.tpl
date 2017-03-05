@@ -10,19 +10,10 @@
     {/if}
 {/block}
 
-{block name="createButton"}
-    <div class="row-fluid">
-        <a class="btn btn-primary span12" target="_blank"
-           href="{$mediawikiScriptPath}?title=Special:UserLogin/signup&amp;wpName={$requestName|escape:'url'}&amp;email={$requestEmail|escape:'url'}&amp;reason={$createAccountReason|escape:'url'}{$requestId}&amp;wpCreateaccountMail=true"
-                {if !$currentUser->getAbortPref() && $createdHasJsQuestion} onclick="return confirm('{$createdJsQuestion}')"{/if}>
-            Create account
-        </a>
+{block name="declinedeferbuttons"}
+    <div class="span6">
+        {include file="view-request/decline-button.tpl"}{include file="view-request/custom-button.tpl"}
     </div>
-    <hr class="zoom-button-divider"/>
-{/block}
-
-{block name="requestStatusButtons"}
-    {include file="view-request/request-status-buttons.tpl"}
 {/block}
 
 {block name="banSection"}
@@ -76,4 +67,8 @@
             {/if}
         </div>
     </div>
+{/block}
+
+{block name="manualcreationbutton"}
+    {include file="view-request/createbuttons/manual.tpl"}
 {/block}

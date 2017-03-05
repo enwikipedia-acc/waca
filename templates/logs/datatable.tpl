@@ -2,9 +2,13 @@
     <thead>
     <tr>
         <th>Timestamp</th>
-        <th>User</th>
+        {if $showUser}
+            <th>User</th>
+        {/if}
         <th>Action</th>
-        <th>Object</th>
+        {if $showObject}
+            <th>Object</th>
+        {/if}
         {if $showComments}
             <th>Comment</th>
         {/if}
@@ -14,17 +18,21 @@
     {foreach from=$logs item=entry name=logloop}
         <tr>
             <td>{$entry.timestamp|date} <em class="muted">({$entry.timestamp|relativedate})</em></td>
-            <td>
-                {if $entry.userid != -1}
-                    <a href='{$baseurl}/internal.php/statistics/users/detail?user={$entry.userid|escape}'>
+            {if $showUser}
+                <td>
+                    {if $entry.userid != -1}
+                        <a href='{$baseurl}/internal.php/statistics/users/detail?user={$entry.userid|escape}'>
+                            {$entry.username|escape}
+                        </a>
+                    {else}
                         {$entry.username|escape}
-                    </a>
-                {else}
-                    {$entry.username|escape}
-                {/if}
-            </td>
+                    {/if}
+                </td>
+            {/if}
             <td>{$entry.description|escape}</td>
-            <td>{$entry.objectdescription}</td>
+            {if $showObject}
+                <td>{$entry.objectdescription}</td>
+            {/if}
             {if $showComments}
                 <td>{$entry.comment}</td>
             {/if}

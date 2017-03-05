@@ -153,6 +153,10 @@ $oauthMediaWikiCanonicalServer = "http://en.wikipedia.org";
 $useOauthSignup = true;
 $enforceOAuth = false;
 
+// Password for the creation bot when this is used in place of OAuth
+$creationBotUsername = '';
+$creationBotPassword = '';
+
 /************************************
  * Providers Configuration
  */
@@ -240,6 +244,9 @@ $enableErrorTrace = false;
 // Don't set this.
 // Definitely don't set this if there's sensitive data stored here you care about such as OAuth credentials.
 $curlDisableSSLVerifyPeer = false;
+
+// Change this to be outside the web directory.
+$curlCookieJar = __DIR__ . '/../cookies.txt';
 
 /**************************************************************************
  **********                   IMPORTANT NOTICE                    **********
@@ -345,4 +352,7 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setIrcNotificationType($ircBotNotificationType)
     ->setIrcNotificationsInstance($whichami)
     ->setTitleBlacklistEnabled($enableTitleblacklist == 1)
-    ->setTorExitPaths(array_merge(gethostbynamel('en.wikipedia.org'), gethostbynamel('accounts.wmflabs.org')));
+    ->setTorExitPaths(array_merge(gethostbynamel('en.wikipedia.org'), gethostbynamel('accounts.wmflabs.org')))
+    ->setCreationBotUsername($creationBotUsername)
+    ->setCreationBotPassword($creationBotPassword)
+    ->setCurlCookieJar($curlCookieJar);

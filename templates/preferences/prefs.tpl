@@ -46,6 +46,30 @@
                 </div>
             </div>
             <div class="control-group">
+                <label class="control-label">Account Creation Mode</label>
+                <div class="controls">
+                    <label class="radio">
+                        <input type="radio" name="creationmode" value="0"
+                                {if $currentUser->getCreationMode() == 0}checked="checked"{/if}
+                                {if !$canManualCreate}disabled="disabled"{/if}/>
+                        Create accounts manually using Special:CreateAccount
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="creationmode" value="1"
+                                {if $currentUser->getCreationMode() == 1}checked="checked"{/if}
+                                {if !$canOauthCreate}disabled="disabled"{/if}/>
+                        Use my Wikimedia account to create the accounts on my behalf where possible
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="creationmode" value="2"
+                                {if $currentUser->getCreationMode() == 2}checked="checked"{/if}
+                                {if !$canBotCreate}disabled="disabled"{/if}/>
+                        Use a bot to create the accounts on my behalf where possible
+                    </label>
+                    <span class="help-block">Please refer to the Guide for a full explanation of these options.</span>
+                </div>
+            </div>
+            <div class="control-group">
                 <div class="controls">
                     <button type="submit" class="btn btn-primary">Save preferences</button>
                 </div>

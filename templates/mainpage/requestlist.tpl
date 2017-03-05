@@ -10,8 +10,8 @@
         </p>
     </div>
 {/if}
-{if count($requests.requests) > 0}
-    {include file="mainpage/requesttable.tpl" requests=$requests.requests userlist=$requests.userlist}
+{if $requests.total > 0}
+    {include file="mainpage/requesttable.tpl" requests=$requests.requests}
 {else}
     <em>No requests at this time</em>
 {/if}

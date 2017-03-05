@@ -15,11 +15,12 @@ use Waca\DataObjects\OAuthToken;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OAuthException;
+use Waca\Helpers\Interfaces\IMediaWikiClient;
 use Waca\Helpers\Interfaces\IOAuthProtocolHelper;
 use Waca\PdoDatabase;
 use Waca\SiteConfiguration;
 
-class OAuthUserHelper
+class OAuthUserHelper implements IMediaWikiClient
 {
     const TOKEN_REQUEST = 'request';
     const TOKEN_ACCESS = 'access';

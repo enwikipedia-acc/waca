@@ -12,6 +12,15 @@
     </div>
 </div>
 
+<div class="row-fluid">
+    <div class="span4">
+        <strong>Status:</strong>
+    </div>
+    <div class="span8">
+        {$requestStatus|escape}
+    </div>
+</div>
+
 {block name="requestDataPrimary"}<!-- Request data not available in this template -->{/block}
 
 {block name="requestDataPrimaryCheckUser"}<!-- Request data not available in this template -->{/block}

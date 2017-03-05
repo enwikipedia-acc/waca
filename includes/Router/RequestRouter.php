@@ -14,6 +14,8 @@ use Waca\Pages\PageBan;
 use Waca\Pages\PageEditComment;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageExpandedRequestList;
+use Waca\Pages\PageJobQueue;
+use Waca\Pages\RequestAction\PageCreateRequest;
 use Waca\Pages\UserAuth\PageChangePassword;
 use Waca\Pages\UserAuth\PageForgotPassword;
 use Waca\Pages\PageLog;
@@ -174,6 +176,11 @@ class RequestRouter implements IRequestRouter
                 'class'   => PageEmailManagement::class,
                 'actions' => array('create', 'edit', 'view'),
             ),
+        'jobQueue'                    =>
+            array(
+                'class'   => PageJobQueue::class,
+                'actions' => array('acknowledge', 'requeue', 'view', 'all'),
+            ),
 
         //////////////////////////////////////////////////////////////////////////////////////////////////
         // Personal preferences
@@ -284,6 +291,11 @@ class RequestRouter implements IRequestRouter
         'viewRequest/close'           =>
             array(
                 'class'   => PageCloseRequest::class,
+                'actions' => array(),
+            ),
+        'viewRequest/create'           =>
+            array(
+                'class'   => PageCreateRequest::class,
                 'actions' => array(),
             ),
         'viewRequest/drop'            =>

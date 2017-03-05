@@ -23,7 +23,7 @@
                 </ul>
             </li>
         {/if}
-        {if $nav__canBan || $nav__canEmailMgmt || $nav__canWelcomeMgmt || $nav__canSiteNoticeMgmt || $nav__canUserMgmt}
+        {if $nav__canBan || $nav__canEmailMgmt || $nav__canWelcomeMgmt || $nav__canSiteNoticeMgmt || $nav__canUserMgmt || $nav__canJobQueue}
             <li class="dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
                             class="icon-wrench icon-white"></i>&nbsp;Admin&nbsp;<b class="caret"></b></a>
                 <ul class="dropdown-menu">
@@ -45,6 +45,9 @@
                     {if $nav__canUserMgmt}
                     <li><a href="{$baseurl}/internal.php/userManagement"><i class="icon-user"></i> User
                             Management</a></li>
+                    {/if}
+                    {if $nav__canJobQueue}
+                    <li><a href="{$baseurl}/internal.php/jobQueue"><i class="icon-wrench"></i> Job Queue</a></li>
                     {/if}
                 </ul>
             </li>

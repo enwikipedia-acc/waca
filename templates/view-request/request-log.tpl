@@ -1,5 +1,10 @@
+<div style="float:right" class="">
+    <a href="{$baseurl}/internal.php/jobQueue/all?filterRequest={$requestId|escape}" class="btn" style="margin: 15px 0;">
+        <i class="icon-wrench"></i>&nbsp;View job list
+    </a>
+</div>
 <h3>Log:</h3>
-<div style="overflow-x: hidden; overflow-y: scroll; max-height: 450px;">
+<div style="overflow-x: hidden; overflow-y: scroll; max-height: 450px;" id="requestLog">
     <form action="{$baseurl}/internal.php/viewRequest/comment" method="post">
         {include file="security/csrf.tpl"}
         <table class="table table-condensed table-striped table-bordered table-hover">
@@ -28,6 +33,10 @@
                                     <br/>
                                     {$zoomrow.comment|escape}
                                 {/if}
+                            {elseif $zoomrow.type == "joblog"}
+                                <em class="muted">{$zoomrow.entry|escape}</em>
+                                <br />
+                                <a href="{$baseurl}/internal.php/jobQueue/view?id={$zoomrow.jobId|escape}">Job #{$zoomrow.jobId|escape} ({$zoomrow.jobDesc|escape})</a>
                             {else}
                                 {if $zoomrow.canedit == true}
                                     <a class="btn btn-mini" href="{$baseurl}/internal.php/editComment?id={$zoomrow.id}">

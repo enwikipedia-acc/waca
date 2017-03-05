@@ -7,8 +7,8 @@
         </h1>
     </div>
     {include file="logs/form.tpl"}
-    {include file="logs/pager.tpl"}
-    {include file="logs/datatable.tpl" showComments=false}
-    {include file="logs/pager.tpl"}
+    {include file="pager.tpl"}
+    {include file="logs/datatable.tpl" showComments=false showUser=true showObject=true}
+    {include file="pager.tpl"}
     <!-- /tpl:logs/main.tpl -->
 {/block}

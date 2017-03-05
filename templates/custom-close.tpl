@@ -35,9 +35,12 @@
                         <option value="" {if $defaultAction == ""}selected="selected"{/if}>(please select)</option>
                         <option value="mail">Only send the email</option>
                         <optgroup label="Send email and close request...">
-                            <option value="created" {if $defaultAction == "created"}selected="selected"{/if}>Close
-                                request as created
-                            </option>
+                            <optgroup label="as created...">
+
+                                <option value="created" {if $defaultAction == "created"}selected="selected"{/if}>Close
+                                    request as created
+                                </option>
+                            </optgroup>
                             <option value="not created" {if $defaultAction == "not created"}selected="selected"{/if}>
                                 Close request as NOT created
                             </option>

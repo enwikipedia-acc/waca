@@ -35,3 +35,4 @@ vendor/*
 /sql/schema.sql
 components/*
 errorlog/*.log
+cookies.txt

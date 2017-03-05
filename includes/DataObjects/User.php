@@ -25,6 +25,9 @@ class User extends DataObject
     const STATUS_SUSPENDED = 'Suspended';
     const STATUS_DECLINED = 'Declined';
     const STATUS_NEW = 'New';
+    const CREATION_MANUAL = 0;
+    const CREATION_OAUTH = 1;
+    const CREATION_BOT = 2;
     private $username;
     private $email;
     private $status = self::STATUS_NEW;
@@ -37,6 +40,7 @@ class User extends DataObject
     private $abortpref = 0;
     private $confirmationdiff = 0;
     private $emailsig = "";
+    private $creationmode = 0;
     /** @var User Cache variable of the current user - it's never going to change in the middle of a request. */
     private static $currentUser;
     #region Object load methods
@@ -173,11 +177,11 @@ class User extends DataObject
 				INSERT INTO `user` ( 
 					username, email, status, onwikiname, welcome_sig, 
 					lastactive, forcelogout, forceidentified,
-					welcome_template, abortpref, confirmationdiff, emailsig
+					welcome_template, abortpref, confirmationdiff, emailsig, creationmode
 				) VALUES (
 					:username, :email, :status, :onwikiname, :welcome_sig,
 					:lastactive, :forcelogout, :forceidentified,
-					:welcome_template, :abortpref, :confirmationdiff, :emailsig
+					:welcome_template, :abortpref, :confirmationdiff, :emailsig, :creationmode
 				);
 SQL
             );
@@ -193,6 +197,7 @@ SQL
             $statement->bindValue(":abortpref", $this->abortpref);
             $statement->bindValue(":confirmationdiff", $this->confirmationdiff);
             $statement->bindValue(":emailsig", $this->emailsig);
+            $statement->bindValue(":creationmode", $this->creationmode);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -212,7 +217,7 @@ SQL
 					forceidentified = :forceidentified,
 					welcome_template = :welcome_template, abortpref = :abortpref, 
 					confirmationdiff = :confirmationdiff, emailsig = :emailsig, 
-					updateversion = updateversion + 1
+					creationmode = :creationmode, updateversion = updateversion + 1
 				WHERE id = :id AND updateversion = :updateversion
 				LIMIT 1;
 SQL
@@ -234,6 +239,7 @@ SQL
             $statement->bindValue(':abortpref', $this->abortpref);
             $statement->bindValue(':confirmationdiff', $this->confirmationdiff);
             $statement->bindValue(':emailsig', $this->emailsig);
+            $statement->bindValue(':creationmode', $this->creationmode);
 
             if (!$statement->execute()) {
                 throw new Exception($statement->errorInfo());
@@ -457,6 +463,22 @@ SQL
     public function setEmailSig($emailSignature)
     {
         $this->emailsig = $emailSignature;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCreationMode()
+    {
+        return $this->creationmode;
+    }
+
+    /**
+     * @param $creationMode int
+     */
+    public function setCreationMode($creationMode)
+    {
+        $this->creationmode = $creationMode;
     }
 
     #endregion

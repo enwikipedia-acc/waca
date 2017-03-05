@@ -14,6 +14,7 @@ use Waca\DataObject;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\EmailTemplate;
+use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
@@ -134,32 +135,38 @@ class LogHelper
 
         // Fall back to the basic stuff
         $lookup = array(
-            'Reserved'        => 'reserved',
-            'Email Confirmed' => 'email-confirmed',
-            'Unreserved'      => 'unreserved',
-            'Approved'        => 'approved',
-            'Suspended'       => 'suspended',
-            'RoleChange'      => 'changed roles',
-            'Banned'          => 'banned',
-            'Edited'          => 'edited interface message',
-            'Declined'        => 'declined',
-            'EditComment-c'   => 'edited a comment',
-            'EditComment-r'   => 'edited a comment',
-            'Unbanned'        => 'unbanned',
-            'Promoted'        => 'promoted to tool admin',
-            'BreakReserve'    => 'forcibly broke the reservation',
-            'Prefchange'      => 'changed user preferences',
-            'Renamed'         => 'renamed',
-            'Demoted'         => 'demoted from tool admin',
-            'ReceiveReserved' => 'received the reservation',
-            'SendReserved'    => 'sent the reservation',
-            'EditedEmail'     => 'edited email',
-            'DeletedTemplate' => 'deleted template',
-            'EditedTemplate'  => 'edited template',
-            'CreatedEmail'    => 'created email',
-            'CreatedTemplate' => 'created template',
-            'SentMail'        => 'sent an email to the requestor',
-            'Registered'      => 'registered a tool account',
+            'Reserved'            => 'reserved',
+            'Email Confirmed'     => 'email-confirmed',
+            'Unreserved'          => 'unreserved',
+            'Approved'            => 'approved',
+            'Suspended'           => 'suspended',
+            'RoleChange'          => 'changed roles',
+            'Banned'              => 'banned',
+            'Edited'              => 'edited interface message',
+            'Declined'            => 'declined',
+            'EditComment-c'       => 'edited a comment',
+            'EditComment-r'       => 'edited a comment',
+            'Unbanned'            => 'unbanned',
+            'Promoted'            => 'promoted to tool admin',
+            'BreakReserve'        => 'forcibly broke the reservation',
+            'Prefchange'          => 'changed user preferences',
+            'Renamed'             => 'renamed',
+            'Demoted'             => 'demoted from tool admin',
+            'ReceiveReserved'     => 'received the reservation',
+            'SendReserved'        => 'sent the reservation',
+            'EditedEmail'         => 'edited email',
+            'DeletedTemplate'     => 'deleted template',
+            'EditedTemplate'      => 'edited template',
+            'CreatedEmail'        => 'created email',
+            'CreatedTemplate'     => 'created template',
+            'SentMail'            => 'sent an email to the requestor',
+            'Registered'          => 'registered a tool account',
+            'JobIssue'            => 'ran a background job unsuccessfully',
+            'JobCompleted'        => 'completed a background job',
+            'JobAcknowledged'     => 'acknowledged a job failure',
+            'JobRequeued'         => 'requeued a job for re-execution',
+            'EnqueuedJobQueue'    => 'scheduled for creation',
+            'Hospitalised'        => 'sent to the hospital',
         );
 
         if (array_key_exists($entry->getAction(), $lookup)) {
@@ -178,33 +185,39 @@ class LogHelper
     public static function getLogActions(PdoDatabase $database)
     {
         $lookup = array(
-            'Reserved'        => 'reserved',
-            'Email Confirmed' => 'email-confirmed',
-            'Unreserved'      => 'unreserved',
-            'Approved'        => 'approved',
-            'Suspended'       => 'suspended',
-            'RoleChange'      => 'changed roles',
-            'Banned'          => 'banned',
-            'Edited'          => 'edited interface message',
-            'Declined'        => 'declined',
-            'EditComment-c'   => 'edited a comment (by comment ID)',
-            'EditComment-r'   => 'edited a comment (by request)',
-            'Unbanned'        => 'unbanned',
-            'Promoted'        => 'promoted to tool admin',
-            'BreakReserve'    => 'forcibly broke the reservation',
-            'Prefchange'      => 'changed user preferences',
-            'Renamed'         => 'renamed',
-            'Demoted'         => 'demoted from tool admin',
-            'ReceiveReserved' => 'received the reservation',
-            'SendReserved'    => 'sent the reservation',
-            'EditedEmail'     => 'edited email',
-            'DeletedTemplate' => 'deleted template',
-            'EditedTemplate'  => 'edited template',
-            'CreatedEmail'    => 'created email',
-            'CreatedTemplate' => 'created template',
-            'SentMail'        => 'sent an email to the requestor',
-            'Registered'      => 'registered a tool account',
-            'Closed 0'        => 'dropped request',
+            'Reserved'            => 'reserved',
+            'Email Confirmed'     => 'email-confirmed',
+            'Unreserved'          => 'unreserved',
+            'Approved'            => 'approved',
+            'Suspended'           => 'suspended',
+            'RoleChange'          => 'changed roles',
+            'Banned'              => 'banned',
+            'Edited'              => 'edited interface message',
+            'Declined'            => 'declined',
+            'EditComment-c'       => 'edited a comment (by comment ID)',
+            'EditComment-r'       => 'edited a comment (by request)',
+            'Unbanned'            => 'unbanned',
+            'Promoted'            => 'promoted to tool admin',
+            'BreakReserve'        => 'forcibly broke the reservation',
+            'Prefchange'          => 'changed user preferences',
+            'Renamed'             => 'renamed',
+            'Demoted'             => 'demoted from tool admin',
+            'ReceiveReserved'     => 'received the reservation',
+            'SendReserved'        => 'sent the reservation',
+            'EditedEmail'         => 'edited email',
+            'DeletedTemplate'     => 'deleted template',
+            'EditedTemplate'      => 'edited template',
+            'CreatedEmail'        => 'created email',
+            'CreatedTemplate'     => 'created template',
+            'SentMail'            => 'sent an email to the requestor',
+            'Registered'          => 'registered a tool account',
+            'Closed 0'            => 'dropped request',
+            'JobIssue'            => 'ran a background job unsuccessfully',
+            'JobCompleted'        => 'completed a background job',
+            'JobAcknowledged'     => 'acknowledged a job failure',
+            'JobRequeued'         => 'requeued a job for re-execution',
+            'EnqueuedJobQueue'    => 'scheduled for creation',
+            'Hospitalised'        => 'sent to the hospital',
         );
 
         $statement = $database->query(<<<SQL
@@ -225,6 +238,7 @@ SQL
             'Ban'             => 'Ban',
             'Comment'         => 'Comment',
             'EmailTemplate'   => 'Email template',
+            'JobQueue'        => 'Job queue item',
             'Request'         => 'Request',
             'SiteNotice'      => 'Site notice',
             'User'            => 'User',
@@ -302,14 +316,28 @@ HTML;
 
                     return "<a href=\"{$baseurl}/internal.php/welcomeTemplates/view?template={$objectId}\">{$userCode}</a>";
                 }
+            case 'JobQueue':
+                /** @var JobQueue $job */
+                $job = JobQueue::getById($objectId, $database);
+
+                $taskDescriptions = JobQueue::getTaskDescriptions();
+
+                $task = $job->getTask();
+                if(isset($taskDescriptions[$task])){
+                    $description = $taskDescriptions[$task];
+                } else {
+                    $description = 'Unknown task';
+                }
+
+                return "<a href=\"{$baseurl}/internal.php/jobQueue/view?id={$objectId}\">Job #{$job->getId()} ({$description})</a>";
             default:
                 return '[' . $objectType . " " . $objectId . ']';
         }
     }
 
     /**
-     * @param    Log[]          $logs
-     * @param     PdoDatabase   $database
+     * @param Log[]             $logs
+     * @param PdoDatabase       $database
      * @param SiteConfiguration $configuration
      *
      * @return array
@@ -370,6 +398,26 @@ HTML;
 
                     $roleDelta = 'Removed [' . implode(', ', $removed) . '], Added [' . implode(', ', $added) . ']';
                     $comment = $roleDelta . ' with comment: ' . $reason;
+                    break;
+                case 'JobIssue':
+                    $jobIssueData = unserialize($logEntry->getComment());
+                    $errorMessage = $jobIssueData['error'];
+                    $status = $jobIssueData['status'];
+
+                    $comment = 'Job ' . htmlentities($status, ENT_COMPAT, 'UTF-8') . ': ';
+                    $comment .= htmlentities($errorMessage, ENT_COMPAT, 'UTF-8');
+                    break;
+                case 'JobIssueRequest':
+                case 'JobCompletedRequest':
+                    $jobData = unserialize($logEntry->getComment());
+
+                    /** @var JobQueue $job */
+                    $job = JobQueue::getById($jobData['job'], $database);
+                    $descs = JobQueue::getTaskDescriptions();
+                    $comment = htmlentities($descs[$job->getTask()], ENT_COMPAT, 'UTF-8');
+                    break;
+
+                case 'JobCompleted':
                     break;
                 default:
                     $comment = $logEntry->getComment();

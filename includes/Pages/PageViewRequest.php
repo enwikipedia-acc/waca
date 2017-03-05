@@ -11,6 +11,7 @@ namespace Waca\Pages;
 use Exception;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\EmailTemplate;
+use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
@@ -68,6 +69,8 @@ class PageViewRequest extends InternalPageBase
 
         $allowedPrivateData = $this->isAllowedPrivateData($request, $currentUser);
 
+        $this->setupCreationTypes($currentUser);
+
         $this->setupLogData($request, $database);
 
         if ($allowedPrivateData) {
@@ -85,6 +88,31 @@ class PageViewRequest extends InternalPageBase
         else {
             $this->setTemplate('view-request/main.tpl');
         }
+
+        /** @noinspection JSUnusedGlobalSymbols */
+        $this->setTailScript(<<<'JS'
+    var $requestLogs = $('#requestLog');
+    $requestLogs.scrollTop($requestLogs[0].scrollHeight);
+    
+    function changeCreateMode(selectedButton) {
+        if(selectedButton.value === "manual") {
+            $("#createManual").show();
+            $("#createOauth").hide();
+            $("#createBot").hide();
+        }
+        if(selectedButton.value === "oauth") {
+            $("#createManual").hide();
+            $("#createOauth").show();
+            $("#createBot").hide();
+        }
+        if(selectedButton.value === "bot") {
+            $("#createManual").hide();
+            $("#createOauth").hide();
+            $("#createBot").show();
+        }
+    }
+JS
+        );
     }
 
     /**
@@ -197,17 +225,37 @@ class PageViewRequest extends InternalPageBase
                 $invalidUserId = $entry->getUser() === -1 || $entry->getUser() === 0;
                 $entryUser = $invalidUserId ? User::getCommunity() : $nameCache[$entry->getUser()];
 
-                $requestLogs[] = array(
-                    'type'     => 'log',
-                    'security' => 'user',
-                    'userid'   => $entry->getUser() == -1 ? null : $entry->getUser(),
-                    'user'     => $entryUser->getUsername(),
-                    'entry'    => LogHelper::getLogDescription($entry),
-                    'time'     => $entry->getTimestamp(),
-                    'canedit'  => false,
-                    'id'       => $entry->getId(),
-                    'comment'  => $entry->getComment(),
-                );
+                $entryComment = $entry->getComment();
+
+                if($entry->getAction() === 'JobIssueRequest' || $entry->getAction() === 'JobCompletedRequest'){
+                    $data = unserialize($entry->getComment());
+                    /** @var JobQueue $job */
+                    $job = JobQueue::getById($data['job'], $database);
+                    $requestLogs[] = array(
+                        'type'     => 'joblog',
+                        'security' => 'user',
+                        'userid'   => $entry->getUser() == -1 ? null : $entry->getUser(),
+                        'user'     => $entryUser->getUsername(),
+                        'entry'    => LogHelper::getLogDescription($entry),
+                        'time'     => $entry->getTimestamp(),
+                        'canedit'  => false,
+                        'id'       => $entry->getId(),
+                        'jobId'    => $job->getId(),
+                        'jobDesc'  => JobQueue::getTaskDescriptions()[$job->getTask()],
+                    );
+                } else {
+                    $requestLogs[] = array(
+                        'type'     => 'log',
+                        'security' => 'user',
+                        'userid'   => $entry->getUser() == -1 ? null : $entry->getUser(),
+                        'user'     => $entryUser->getUsername(),
+                        'entry'    => LogHelper::getLogDescription($entry),
+                        'time'     => $entry->getTimestamp(),
+                        'canedit'  => false,
+                        'id'       => $entry->getId(),
+                        'comment'  => $entryComment,
+                    );
+                }
             }
         }
 
@@ -232,5 +280,15 @@ class PageViewRequest extends InternalPageBase
         }
 
         $this->assign("spoofs", $spoofs);
+    }
+
+    private function setupCreationTypes(User $user)
+    {
+        $this->assign('canManualCreate',
+            $this->barrierTest(User::CREATION_MANUAL, $user, 'RequestCreation'));
+        $this->assign('canOauthCreate',
+            $this->barrierTest(User::CREATION_OAUTH, $user, 'RequestCreation'));
+        $this->assign('canBotCreate',
+            $this->barrierTest(User::CREATION_BOT, $user, 'RequestCreation'));
     }
 }

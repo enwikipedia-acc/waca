@@ -34,6 +34,7 @@ class PagePreferences extends InternalPageBase
             $user->setWelcomeSig(WebRequest::postString('sig'));
             $user->setEmailSig(WebRequest::postString('emailsig'));
             $user->setAbortPref(WebRequest::getBoolean('sig') ? 1 : 0);
+            $this->setCreationMode($user);
 
             $email = WebRequest::postEmail('email');
             if ($email !== null) {
@@ -50,6 +51,13 @@ class PagePreferences extends InternalPageBase
             $this->setTemplate('preferences/prefs.tpl');
             $this->assign("enforceOAuth", $enforceOAuth);
 
+            $this->assign('canManualCreate',
+                $this->barrierTest(User::CREATION_MANUAL, $user, 'RequestCreation'));
+            $this->assign('canOauthCreate',
+                $this->barrierTest(User::CREATION_OAUTH, $user, 'RequestCreation'));
+            $this->assign('canBotCreate',
+                $this->barrierTest(User::CREATION_BOT, $user, 'RequestCreation'));
+
             $oauth = new OAuthUserHelper($user, $database, $this->getOAuthProtocolHelper(),
                 $this->getSiteConfiguration());
             $this->assign('oauth', $oauth);
@@ -61,6 +69,20 @@ class PagePreferences extends InternalPageBase
 
             $this->assign('identity', $identity);
             $this->assign('graceTime', $this->getSiteConfiguration()->getOauthIdentityGraceTime());
+        }
+    }
+
+    /**
+     * @param User $user
+     */
+    protected function setCreationMode(User $user)
+    {
+        // if the user is selecting a creation mode that they are not allowed, do nothing.
+        // this has the side effect of allowing them to keep a selected mode that either has been changed for them,
+        // or that they have kept from when they previously had certain access.
+        $creationMode = WebRequest::postInt('creationmode');
+        if($this->barrierTest($creationMode, $user, 'RequestCreation')){
+            $user->setCreationMode($creationMode);
         }
     }
 }

@@ -74,7 +74,9 @@ class ConsoleStart extends ApplicationBase
             // run the task
             $this->consoleTask->execute();
 
-            $database->commit();
+            if ($database->hasActiveTransaction()) {
+                $database->commit();
+            }
         }
         finally {
             // Catch any hanging on transactions

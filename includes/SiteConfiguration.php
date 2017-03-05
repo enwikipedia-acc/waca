@@ -19,7 +19,7 @@ class SiteConfiguration
 {
     private $baseUrl;
     private $filePath;
-    private $schemaVersion = 27;
+    private $schemaVersion = 28;
     private $debuggingTraceEnabled;
     private $dataClearIp = '127.0.0.1';
     private $dataClearEmail = 'acc@toolserver.org';
@@ -81,6 +81,9 @@ class SiteConfiguration
     /** @var null|string $locationProviderApiKey */
     private $locationProviderApiKey = null;
     private $torExitPaths = array();
+    private $creationBotUsername = '';
+    private $creationBotPassword = '';
+    private $curlCookieJar = null;
 
     /**
      * Gets the base URL of the tool
@@ -865,5 +868,65 @@ class SiteConfiguration
     public function getOauthMediaWikiCanonicalServer()
     {
         return $this->oauthMediaWikiCanonicalServer;
+    }
+
+    /**
+     * @param string $creationBotUsername
+     *
+     * @return SiteConfiguration
+     */
+    public function setCreationBotUsername($creationBotUsername)
+    {
+        $this->creationBotUsername = $creationBotUsername;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreationBotUsername()
+    {
+        return $this->creationBotUsername;
+    }
+
+    /**
+     * @param string $creationBotPassword
+     *
+     * @return SiteConfiguration
+     */
+    public function setCreationBotPassword($creationBotPassword)
+    {
+        $this->creationBotPassword = $creationBotPassword;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreationBotPassword()
+    {
+        return $this->creationBotPassword;
+    }
+
+    /**
+     * @param null $curlCookieJar
+     *
+     * @return SiteConfiguration
+     */
+    public function setCurlCookieJar($curlCookieJar)
+    {
+        $this->curlCookieJar = $curlCookieJar;
+
+        return $this;
+    }
+
+    /**
+     * @return null
+     */
+    public function getCurlCookieJar()
+    {
+        return $this->curlCookieJar;
     }
 }

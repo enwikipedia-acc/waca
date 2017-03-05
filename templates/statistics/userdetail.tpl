@@ -102,7 +102,7 @@
         <div class="span12">
             <h3>Account log</h3>
 
-            {include file="logs/datatable.tpl" showComments=true logs=$accountlog}
+            {include file="logs/datatable.tpl" showComments=true logs=$accountlog showUser=true showObject=false}
         </div>
     </div>
 {/block}

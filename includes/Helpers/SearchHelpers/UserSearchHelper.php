@@ -52,7 +52,8 @@ class UserSearchHelper extends SearchHelperBase
         return $this;
     }
 
-    public function statusIn($statuses) {
+    public function statusIn($statuses)
+    {
         $this->inClause('status', $statuses);
 
         return $this;
@@ -77,14 +78,16 @@ class UserSearchHelper extends SearchHelperBase
      *
      * @return $this
      */
-    public function lastActiveBefore(DateTime $instant){
+    public function lastActiveBefore(DateTime $instant)
+    {
         $this->whereClause .= ' AND origin.lastactive < ?';
         $this->parameterList[] = $instant->format("Y-m-d H:i:s");
 
         return $this;
     }
 
-    public function getRoleMap(&$roleMap){
+    public function getRoleMap(&$roleMap)
+    {
         $query = <<<SQL
             SELECT /* UserSearchHelper/roleMap */ 
                   r.user user
@@ -103,5 +106,13 @@ SQL;
         }
 
         return $this;
+    }
+
+    public function withReservedRequest()
+    {
+        $this->joinClause = ' INNER JOIN request req ON req.reserved = origin.id';
+        $this->groupByClause = ' GROUP BY origin.id, origin.username';
+
+        return $this->fetchMap('username');
     }
 }

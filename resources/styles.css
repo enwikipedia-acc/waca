@@ -68,12 +68,25 @@ hr.zoom-button-divider {
     margin-top: 10px;
 }
 
-h5.zoom-button-header {
+.zoom-button-header {
     color: #999;
     margin-top: -15px;
     margin-bottom: 5px;
     font-weight: normal;
     font-style: italic;
+}
+
+form.zoom-button-header {
+    float: right;
+    margin: -27px 0px 5px 0px;
+}
+
+.create-button-row {
+    display: none;
+}
+
+form.zoom-button-header label.radio {
+    margin-left: 10px;
 }
 
 /* Dropdown of buttons */

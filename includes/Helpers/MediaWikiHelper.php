@@ -10,14 +10,15 @@ namespace Waca\Helpers;
 
 use Exception;
 use Waca\Exceptions\MediaWikiApiException;
+use Waca\Helpers\Interfaces\IMediaWikiClient;
 use Waca\SiteConfiguration;
 
 class MediaWikiHelper
 {
     /**
-     * @var OAuthUserHelper
+     * @var IMediaWikiClient
      */
-    private $userHelper;
+    private $mediaWikiClient;
     /**
      * @var SiteConfiguration
      */
@@ -26,12 +27,12 @@ class MediaWikiHelper
     /**
      * MediaWikiHelper constructor.
      *
-     * @param OAuthUserHelper   $userHelper
+     * @param IMediaWikiClient  $mediaWikiClient
      * @param SiteConfiguration $siteConfiguration
      */
-    public function __construct(OAuthUserHelper $userHelper, SiteConfiguration $siteConfiguration)
+    public function __construct(IMediaWikiClient $mediaWikiClient, SiteConfiguration $siteConfiguration)
     {
-        $this->userHelper = $userHelper;
+        $this->mediaWikiClient = $mediaWikiClient;
         $this->siteConfiguration = $siteConfiguration;
     }
 
@@ -54,7 +55,12 @@ class MediaWikiHelper
             'type'   => 'createaccount',
         );
 
-        $response = $this->userHelper->doApiCall($tokenParams, 'POST');
+        $response = $this->mediaWikiClient->doApiCall($tokenParams, 'POST');
+
+        if (isset($response->error)) {
+            throw new MediaWikiApiException($response->error->code . ': ' . $response->error->info);
+        }
+
         $token = $response->query->tokens->createaccounttoken;
 
         $callback = $this->siteConfiguration->getBaseUrl() . '/internal.php/oauth/createCallback';
@@ -77,7 +83,7 @@ class MediaWikiHelper
         $createParams['email'] = $emailAddress;
         $createParams['reason'] = $reason;
 
-        $createResponse = $this->userHelper->doApiCall($createParams, 'POST');
+        $createResponse = $this->mediaWikiClient->doApiCall($createParams, 'POST');
 
         if (isset($createResponse->error)) {
             throw new MediaWikiApiException($response->error->code . ': ' . $response->error->info);
@@ -91,17 +97,18 @@ class MediaWikiHelper
             throw new MediaWikiApiException($createResponse->createaccount->message);
         }
 
-        if ($createResponse->createaccout->status === 'PASS') {
+        if ($createResponse->createaccount->status === 'PASS') {
             // success!
             return;
         }
 
-        throw new Exception('Something happened. Don\'t know what.');
+        throw new Exception('API result reported status of ' . $createResponse->createaccount->status);
     }
 
     /**
      * @param string $username
      * @param string $title
+     * @param        $summary
      * @param string $message
      * @param bool   $createOnly
      *
@@ -116,7 +123,7 @@ class MediaWikiHelper
             'type'   => 'csrf',
         );
 
-        $response = $this->userHelper->doApiCall($tokenParams, 'POST');
+        $response = $this->mediaWikiClient->doApiCall($tokenParams, 'POST');
 
         if (isset($response->error)) {
             throw new MediaWikiApiException($response->error->code . ': ' . $response->error->info);
@@ -142,7 +149,7 @@ class MediaWikiHelper
             $editParameters['createonly'] = true;
         }
 
-        $response = $this->userHelper->doApiCall($editParameters, 'POST');
+        $response = $this->mediaWikiClient->doApiCall($editParameters, 'POST');
 
         if (!isset($response->edit)) {
             if (isset($response->error)) {
@@ -169,7 +176,7 @@ class MediaWikiHelper
             'amirequestsfor' => 'create',
         );
 
-        $response = $this->userHelper->doApiCall($params, 'GET');
+        $response = $this->mediaWikiClient->doApiCall($params, 'GET');
 
         if (isset($response->error)) {
             throw new MediaWikiApiException($response->error->code . ': ' . $response->error->info);
@@ -228,5 +235,25 @@ class MediaWikiHelper
                 }
             }
         }
+    }
+
+    /**
+     * @param string $username
+     * @return bool
+     */
+    public function checkAccountExists($username) {
+        $parameters = array(
+            'action'  => 'query',
+            'list'    => 'users',
+            'format'  => 'php',
+            'ususers' => $username,
+        );
+
+        $apiResult = $this->mediaWikiClient->doApiCall($parameters, 'GET');
+
+        $entry = $apiResult->query->users[0];
+        $exists = !isset($entry->missing);
+
+        return $exists;
     }
 }

@@ -30,7 +30,7 @@ class PageDropRequest extends PageCloseRequest
         return false;
     }
 
-    protected function sendMail(Request $request, EmailTemplate $template, User $currentUser, $ccMailingList)
+    protected function sendMail(Request $request, $mailText, User $currentUser, $ccMailingList)
     {
     }
 }
