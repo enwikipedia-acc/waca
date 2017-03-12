@@ -34,7 +34,7 @@
     <!--[if lt IE 9]>
       <script src="{$baseurl}/lib/bootstrap/js/html5shiv.js"></script>
     <![endif]-->
-    
+
     <!--  Temporary fix to deal with https://github.com/twbs/bootstrap/issues/7968
 	until a newer Bootstrap version with this fixed is released and we upgrade to it -->
 	<style>
@@ -102,9 +102,9 @@
 						<li><a href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide"><i class="icon-question-sign"></i>&nbsp;Guide</a></li>
 						<li><a href="//en.wikipedia.org/wiki/Wikipedia:Username_policy"><i class="icon-warning-sign"></i>&nbsp;Username policy</a></li>
 						<li><a href="#modalFlowchart" role="button" data-toggle="modal"><i class="icon-check"></i>&nbsp;Similar account flowchart</a></li>
-						<li><a href="http://webchat.freenode.net/?channels=wikipedia-en-accounts"><i class="icon-comment"></i>&nbsp;Chat</a></li>
+						<li><a href="https://webchat.freenode.net/?channels=wikipedia-en-accounts"><i class="icon-comment"></i>&nbsp;Chat</a></li>
 						<li><a href="https://lists.wikimedia.org/mailman/listinfo/accounts-enwiki-l"><i class="icon-envelope"></i>&nbsp;Mailing list</a></li>
-						<li class="divider"></li>						
+						<li class="divider"></li>
 						<li><a href="{$baseurl}/acc.php?action=logout"><i class="icon-lock"></i> Logout</a></li>
 					</ul>
 				</li>
@@ -122,7 +122,7 @@
     </div>
 
 	{block name="modals"}{include file="modal-flowchart.tpl"}{/block}
-	
+
 
     <div class="container-fluid">
 	{block name="sitenotice"}
