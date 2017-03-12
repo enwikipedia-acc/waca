@@ -30,6 +30,8 @@ class User extends DataObject
 
 	private $identityCache = null;
 
+	private $isCheckuserCache = null;
+
 	/**
 	 * Summary of getCurrent
 	 * @param PdoDatabase $database
@@ -652,7 +654,11 @@ SQL
     
 	public function isCheckuser()
 	{
-		return $this->checkuser == 1 || $this->oauthCanCheckUser();
+	    if($this->isCheckuserCache === null) {
+	        $this->isCheckuserCache = $this->checkuser == 1 || $this->oauthCanCheckUser();
+        }
+
+		return $this->isCheckuserCache;
 	}
     
 	public function isIdentified()
