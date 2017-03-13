@@ -70,7 +70,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="http://webchat.freenode.net/?channels=wikipedia-en-accounts">
+                        <a href="https://webchat.freenode.net/?channels=wikipedia-en-accounts">
                             <i class="icon-comment"></i>&nbsp;Chat
                         </a>
                     </li>

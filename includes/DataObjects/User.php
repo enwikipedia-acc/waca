@@ -59,6 +59,8 @@ class User extends DataObject
     private static $currentUser;
     /** @var null|JWT The identity cache */
     private $identityCache = null;
+    /** @var bool */
+    private $isCheckuserCache = null;
     #region Object load methods
 
     /**
@@ -884,7 +886,11 @@ SQL
      */
     public function isCheckuser()
     {
-        return $this->checkuser == 1 || $this->oauthCanCheckUser();
+        if($this->isCheckuserCache === null) {
+            $this->isCheckuserCache = $this->checkuser == 1 || $this->oauthCanCheckUser();
+        }
+
+        return $this->isCheckuserCache;
     }
 
     /**
