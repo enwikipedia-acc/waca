@@ -28,6 +28,10 @@ abstract class DataObject
 	 * @var PdoDatabase
 	 */
 	protected $dbObject;
+    
+	protected static $getByIdStatement = array();
+    
+	protected static $getByIdResults = array();
 
 	public function setDatabase(PdoDatabase $db)
 	{
@@ -51,16 +55,18 @@ abstract class DataObject
 	 */
 	public static function getById($id, PdoDatabase $database)
 	{
-		$statement = $database->prepare("SELECT * FROM `" . strtolower(get_called_class()) . "` WHERE id = :id LIMIT 1;");
-		$statement->bindValue(":id", $id);
+		if( isset( self::$getByIdResults[strtolower(get_called_class())][$id] ) ) return self::$getByIdResults[strtolower(get_called_class())][$id];
+		if( !isset( self::$getByIdStatement[strtolower(get_called_class())] ) ) self::$getByIdStatement[strtolower(get_called_class())] = $database->prepare("SELECT * FROM `" . strtolower(get_called_class()) . "` WHERE id = :id LIMIT 1;");
+		self::$getByIdStatement[strtolower(get_called_class())]->bindValue(":id", $id);
 
-		$statement->execute();
+		self::$getByIdStatement[strtolower(get_called_class())]->execute();
 
-		$resultObject = $statement->fetchObject(get_called_class());
+		$resultObject = self::$getByIdStatement[strtolower(get_called_class())]->fetchObject(get_called_class());
 
 		if ($resultObject != false) {
 			$resultObject->isNew = false;
 			$resultObject->setDatabase($database);
+			self::$getByIdResults[strtolower(get_called_class())][$id] = $resultObject;
 		}
 
 		return $resultObject;
