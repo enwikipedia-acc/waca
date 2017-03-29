@@ -8,6 +8,7 @@ $toolList = array(
 	'tl-whois' => 'https://tools.wmflabs.org/whois/gateway.py?lookup=true&ip=%DATA%',
 	'sulutil' => '//tools.wmflabs.org/quentinv57-tools/tools/sulinfo.php?showinactivity=1&showblocks=1&username=%DATA%',
 	'google' => 'https://www.google.com/search?q=%DATA%',
+	'link' => 'http://%DATA%/',
 );
 
 if(!isset($_GET['tool'])

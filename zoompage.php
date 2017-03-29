@@ -96,6 +96,9 @@ SQL
 	if ($hideinfo == false || $correcthash == true || User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
 		$smarty->assign("showinfo", true);
 	}
+
+	$emailDomain = explode("@", $request->getEmail())[1];
+	$smarty->assign("emailurl", $emailDomain);
     
 	// force to not show, overriden later
 	$smarty->assign("proxyip", "");
