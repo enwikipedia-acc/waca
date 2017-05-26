@@ -11,7 +11,7 @@
       <select name="type">
         <option value="Request">... requested username</option>
         <option value="email">... email address</option>
-	<option value="IP">... IP address</option>
+        <option value="IP">... IP address</option>
       </select>
     </div>
   </div>
