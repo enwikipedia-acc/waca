@@ -100,14 +100,6 @@ if (isset($_GET['term']) && isset($_GET['type'])) {
 		$smarty->display("search/searchresult.tpl");
 	}
 	elseif ($_GET['type'] == 'IP') {
-		// move this to here, so non-admins can perform searches, but not on IP addresses or emails
-		if (!User::getCurrent()->isAdmin() && !User::getCurrent()->isCheckuser()) {
-			// Displays both the error message and the footer of the interface.
-			BootstrapSkin::displayAlertBox("IP address search is only available to tool admins and checkusers.", "alert-error", "Access Denied");
-			$smarty->display("search/searchform.tpl");
-			BootstrapSkin::displayInternalFooter();
-			die();
-		}
         
 		$qterm = '%' . $term . '%';
         
