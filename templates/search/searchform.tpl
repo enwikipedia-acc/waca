@@ -12,9 +12,6 @@
         <option value="Request">... requested username</option>
         <option value="email">... email address</option>
 	<option value="IP">... IP address</option>
-        {if $currentUser->isAdmin() || $currentUser->isCheckuser()}
-        <option value="IP">... IP address</option>
-        {/if}
       </select>
     </div>
   </div>
