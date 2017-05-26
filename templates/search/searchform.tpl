@@ -11,13 +11,7 @@
       <select name="type">
         <option value="Request">... requested username</option>
         <option value="email">... email address</option>
-        {if $currentUser->isAdmin() || $currentUser->isCheckuser()}
         <option value="IP">... IP address</option>
-        <option value="CIDR" disabled="disabled">... CIDR Range</option>{* not implemented yet! *}
-        {else}
-        <option value="IP" disabled="disabled">... IP address</option>
-        <option value="CIDR" disabled="disabled">... CIDR Range</option>
-        {/if}
       </select>
     </div>
   </div>
