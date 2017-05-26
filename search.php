@@ -100,7 +100,6 @@ if (isset($_GET['term']) && isset($_GET['type'])) {
 		$smarty->display("search/searchresult.tpl");
 	}
 	elseif ($_GET['type'] == 'IP') {
-        
 		$qterm = '%' . $term . '%';
         
 		$statement = gGetDb()->prepare("SELECT * FROM request WHERE email <> 'acc@toolserver.org' and ip <> '127.0.0.1' and ip LIKE :term or forwardedip LIKE :term2;");
