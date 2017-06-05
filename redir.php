@@ -7,7 +7,7 @@ $toolList = array(
 	'oq-whois' => 'https://whois.domaintools.com/%DATA%',
 	'tl-whois' => 'https://tools.wmflabs.org/whois/gateway.py?lookup=true&ip=%DATA%',
 	'sulutil' => '//tools.wmflabs.org/quentinv57-tools/tools/sulinfo.php?showinactivity=1&showblocks=1&username=%DATA%',
-	'google' => 'https://www.google.com/search?q=%DATA%',
+	'google' => 'https://www.google.com/search?q="%DATA%"',
 );
 
 if(!isset($_GET['tool'])
@@ -20,7 +20,7 @@ if(!isset($_GET['tool'])
 }
 
 if (isset($_GET['round2'])) {
-	echo '<script>window.location.href="' . str_replace("%DATA%", htmlentities($_GET['data'], ENT_COMPAT, 'UTF-8'), $toolList[$_GET['tool']]) . '"</script>';
+	echo '<script>window.location.href=' . json_encode(str_replace("%DATA%", urlencode($_GET['data']), $toolList[$_GET['tool']])) . '</script>';
 }
 else {
 	header("Location: " . $_SERVER["REQUEST_URI"] . "&round2=true");
