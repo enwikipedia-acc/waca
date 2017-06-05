@@ -16,25 +16,31 @@ $database = gGetDb();
 
 $locationProvider = new IpLocationProvider($database, $locationProviderApiKey);
 
-$done = false;
-while (!$done) {
+while (true) {
     echo "Beginning txn\n";
     $database->beginTransaction();
 
     try {
+        // fetch a bunch of un-geolocated IPs from the database.
+        // note we have to parse the forwardedip field in the database so we can test against the geolocation table.
+        // This guarantees we get ten unlocated IPs back, unless there actually aren't 10 available.
+        // Alternatives include downloading a small set of forwarded IPs, splitting it in PHP, constructing an IN()
+        // clause dynamically, sending that back to the database to check if there are geolocation entries, then repeating
+        // until we have 10 to process - and the fact that we'd have to potentially retrieve all IPs from the database
+        // before we find any at all. This way keeps all of that legwork in the database, at the cost of a more complex
+        // query.
         $statement = $database->query(<<<SQL
             SELECT p.prox
             FROM (
               SELECT trim(substring_index(substring_index(r.forwardedip, ',', n.n), ',', -1)) prox
               FROM request r
-                INNER JOIN (SELECT 1 n
-                            UNION ALL
-                            SELECT 2
-                            UNION ALL SELECT 3
-                            UNION ALL
-                            SELECT 4
-                            UNION ALL SELECT 5) n
-                  ON char_length(r.forwardedip) - char_length(replace(r.forwardedip, ',', '')) >= n.n - 1
+                INNER JOIN (
+                  SELECT 1 n
+                  UNION ALL SELECT 2
+                  UNION ALL SELECT 3
+                  UNION ALL SELECT 4
+                  UNION ALL SELECT 5) n
+                ON char_length(r.forwardedip) - char_length(replace(r.forwardedip, ',', '')) >= n.n - 1
               WHERE ip <> '127.0.0.1'
             ) p
             WHERE NOT EXISTS (SELECT 1 FROM geolocation g WHERE g.address = p.prox)
@@ -46,7 +52,6 @@ SQL
 
         $count = count($missingIps);
         if ($count === 0) {
-            $done = true;
             echo ". Found nothing to do.\n";
             break;
         }
