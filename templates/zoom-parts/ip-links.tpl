@@ -14,6 +14,7 @@
   <div class="btn-group">
     <a id="IPWhois-{$index}" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=oq-whois&amp;data={$ipaddress}" onMouseUp="$('#IPWhois-{$index}').addClass('btn-visited');">Whois</a>
     <a id="IPWhois2-{$index}" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=tl-whois&amp;data={$ipaddress}" onMouseUp="$('#IPWhois2-{$index}').addClass('btn-visited');">(alt)</a>
+    <a id="IPWhois3-{$index}" class="btn btn-small" target="_blank" href="https://www.projecthoneypot.org/ip_{$ipaddress}" onMouseUp="$('#IPWhois3-{$index}').addClass('btn-visited');">IP-Project Honeypot</a>
   </div>
   <a id="IPAbuseLog-{$index}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:AbuseLog&amp;wpSearchUser={$ipaddress}" onMouseUp="$('#IPAbuseLog-{$index}').addClass('btn-visited');">Abuse Filter Log</a>
   {if $currentUser->isCheckUser() == true}
