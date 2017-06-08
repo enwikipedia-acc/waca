@@ -287,6 +287,9 @@ elseif ($action == "forgotpw") {
 		$user = User::getByUsername($_POST['username'], gGetDb());
 
 		if ($user == false) {
+
+			auditForgottenPassword($_POST['username'], $_POST['email'], false);
+
 			BootstrapSkin::displayAlertBox(
 				"Could not find user with that username and email address!", 
 				"alert-error", 
@@ -298,16 +301,22 @@ elseif ($action == "forgotpw") {
 			die();
 		}
 		elseif (strtolower($_POST['email']) != strtolower($user->getEmail())) {
-			BootstrapSkin::displayAlertBox("Could not find user with that username and email address!", 
-				"alert-error", 
-				"Error", 
-				true, 
+			// Fake it.
+			auditForgottenPassword($_POST['username'], $_POST['email'], false);
+
+			BootstrapSkin::displayAlertBox(
+				"<strong>Your password reset request has been completed.</strong> Please check your e-mail.",
+				"alert-success",
+				"",
+				false,
 				false);
             
 			BootstrapSkin::displayInternalFooter();
 			die();
 		}
 		else {
+			auditForgottenPassword($_POST['username'], $_POST['email'], true);
+
 			$hash = $user->getForgottenPasswordHash();
                        
 			$smarty->assign("user", $user);
@@ -351,6 +360,7 @@ elseif ($action == "login") {
 	$user = User::getByUsername($_POST['username'], gGetDb());
     
 	if ($user == false || !$user->authenticate($_POST['password'])) {
+		auditLoginFailure($_POST['username']);
 		header("Location: $baseurl/acc.php?error=authfail&tplUsername=" . urlencode($_POST['username']));
 		die();
 	}

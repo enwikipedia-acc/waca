@@ -415,3 +415,29 @@ $('.username-typeahead').typeahead({
 JS;
 	return $tailscript;
 }
+
+function auditLoginFailure($username) {
+    $database = gGetDb();
+    $s = $database->prepare('INSERT INTO audit (type, email, username, ip, xff) VALUES (:type, :email, :username, :ip, :xff);');
+    $s->execute(array(
+        ':type' => 'loginfailure',
+        ':email' => null,
+        ':username' => $username,
+        ':ip' => $_SERVER['REMOTE_ADDR'],
+        ':xff' => isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : null
+    ));
+}
+
+function auditForgottenPassword($username, $email, $successful) {
+	$database = gGetDb();
+	$type = $successful ? "forgotpwrequest" : "forgotpwrequest-failure";
+
+	$s = $database->prepare('INSERT INTO audit (type, email, username, ip, xff) VALUES (:type, :email, :username, :ip, :xff);');
+    $s->execute(array(
+        ':type' => $type,
+        ':email' => $email,
+        ':username' => $username,
+        ':ip' => $_SERVER['REMOTE_ADDR'],
+        ':xff' => isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : null
+    ));
+}
