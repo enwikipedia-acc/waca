@@ -29,5 +29,7 @@ web.*.config
 waca.sln.DotSettings.user
 .vs/*
 .arc*
+/sql/schema2.sql
+/sql/schema.sql
 vendor/*
 components/*
