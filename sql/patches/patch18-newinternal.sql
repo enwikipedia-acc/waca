@@ -1,28 +1,10 @@
--- -----------------------------------------------------------------------------
--- Hey!
--- 
--- This is a new patch-creation script which SHOULD stop double-patching and
--- running patches out-of-order.
---
--- If you're running patches, please close this file, and run this from the 
--- command line:
---   $ mysql -u USERNAME -p SCHEMA < patchXX-this-file.sql
--- where:
---      USERNAME = a user with CREATE/ALTER access to the schema
---      SCHEMA = the schema to run the changes against
---      patch-XX-this-file.sql = this file
---
--- If you are writing patches, you need to copy this template to a numbered 
--- patch file, update the patchversion variable, and add the SQL code to upgrade
--- the database where indicated below.
-
 DROP PROCEDURE IF EXISTS SCHEMA_UPGRADE_SCRIPT;
 DELIMITER ';;'
 CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
     -- -------------------------------------------------------------------------
     -- Developers - set the number of the schema patch here!
     -- -------------------------------------------------------------------------
-    DECLARE patchversion INT DEFAULT 17;
+    DECLARE patchversion INT DEFAULT 18;
     -- -------------------------------------------------------------------------
     -- working variables
     DECLARE currentschemaversion INT DEFAULT 0;
@@ -53,12 +35,22 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
     -- -------------------------------------------------------------------------
 
     ALTER TABLE user
-    CHANGE COLUMN `welcome_sig` `welcome_sig` VARCHAR(4096) NULL DEFAULT NULL ,
-    CHANGE COLUMN `emailsig` `emailsig` BLOB NULL DEFAULT NULL;
+        CHANGE COLUMN `welcome_sig` `welcome_sig` VARCHAR(4096) NULL DEFAULT NULL ,
+        CHANGE COLUMN `emailsig` `emailsig` BLOB NULL DEFAULT NULL,
+        CHANGE COLUMN `identified` `forceidentified` INT(1) UNSIGNED NULL DEFAULT NULL;
 
     UPDATE user SET welcome_sig = null WHERE welcome_sig = '';
     UPDATE user SET emailsig = null WHERE emailsig = '';
+    UPDATE user SET forceidentified = NULL WHERE forceidentified = 0;
 
+    CREATE TABLE `idcache` (
+        `id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+        `onwikiusername` VARCHAR(255) NOT NULL,
+        `checktime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`),
+        UNIQUE KEY (`onwikiusername`)
+    ) ENGINE=InnoDB DEFAULT COLLATE=utf8_bin;
+    
     -- -------------------------------------------------------------------------
     -- finally, update the schema version to indicate success
     UPDATE schemaversion SET version = patchversion;

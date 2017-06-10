@@ -20,7 +20,8 @@ class ClearOldDataTask extends ConsoleTaskBase
         $query = $this->getDatabase()->prepare(<<<SQL
 UPDATE request
 SET ip = :ip, forwardedip = null, email = :mail, useragent = ''
-WHERE date < DATE_SUB(curdate(), INTERVAL {$dataClearInterval});
+WHERE date < DATE_SUB(curdate(), INTERVAL {$dataClearInterval})
+AND status = 'Closed';
 SQL
         );
 

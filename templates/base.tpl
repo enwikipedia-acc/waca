@@ -102,7 +102,7 @@
 {$typeAheadBlock}
 {if $tailScript}
     <script type="text/javascript">
-        {$tailscript}
+        {$tailScript}
     </script>
 {/if}
 </body>

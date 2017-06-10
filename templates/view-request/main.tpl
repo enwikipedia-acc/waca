@@ -25,9 +25,9 @@
         </div>
     </div><!--/row-->
 
-    {block name="ipSection"}{/block}
-
     {include file="view-request/username-section.tpl"}
+    
+    {block name="ipSection"}{/block}
 
     {block name="emailSection"}{/block}
 
