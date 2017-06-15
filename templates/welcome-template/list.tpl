@@ -40,29 +40,27 @@
                 </tr>
                 </thead>
                 <tfoot>
-                {if $currentUser->getWelcomeTemplate() != 0}
-                    <tr>
-                        <th>Disable automatic welcoming</th>
-                        {if $canEdit}
-                            <td><!-- count --></td>
-                        {/if}
-                        <td><!-- View --></td>
-                        {if $canEdit}
-                            <td><!-- Edit --></td>
-                            <td><!-- Delete --></td>
-                        {/if}
-                        <td>
-                            <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select"
-                                  class="form-compact">
-                                {include file="security/csrf.tpl"}
-                                <input type="hidden" name="disable" value="true"/>
-                                <button type="submit" class="btn btn-primary"><i
-                                            class="icon-white icon-ok"></i>&nbsp;Select
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                {/if}
+                <tr>
+                    <th>Disable automatic welcoming</th>
+                    {if $canEdit}
+                        <td><!-- count --></td>
+                    {/if}
+                    <td><!-- View --></td>
+                    {if $canEdit}
+                        <td><!-- Edit --></td>
+                        <td><!-- Delete --></td>
+                    {/if}
+                    <td>
+                        <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select"
+                              class="form-compact">
+                            {include file="security/csrf.tpl"}
+                            <input type="hidden" name="disable" value="true"/>
+                            <button type="submit" class="btn btn-primary"><i
+                                        class="icon-white icon-ok"></i>&nbsp;Select
+                            </button>
+                        </form>
+                    </td>
+                </tr>
                 </tfoot>
                 <tbody>
                 {foreach from=$templateList item="t" name="templateloop"}
