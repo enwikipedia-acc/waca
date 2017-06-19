@@ -77,9 +77,14 @@ class RoleConfigurationTest extends PHPUnit_Framework_TestCase
         $roleConfiguration = new RoleConfiguration(
             array(
                 'public' => array(),
-                'user'   => array(),
+                'loggedIn' => array(),
+                'user'   => array(
+                    '_description' => 'users',
+                    '_editableBy' => array(),),
                 'admin'  => array(
                     '_childRoles' => array('foo'),
+                    '_description' => 'admins',
+                    '_editableBy' => array(),
                 ),
                 'foo'    => array(
                     '_hidden' => true,
@@ -94,6 +99,6 @@ class RoleConfigurationTest extends PHPUnit_Framework_TestCase
         $result = $roleConfiguration->getAvailableRoles();
 
         // assert
-        $this->assertEquals(array('user', 'admin'), $result);
+        $this->assertEquals(array('user', 'admin'), array_keys($result));
     }
 }
