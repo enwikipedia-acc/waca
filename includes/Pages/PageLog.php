@@ -27,8 +27,14 @@ class PageLog extends InternalPageBase
 
         $filterUser = WebRequest::getString('filterUser');
         $filterAction = WebRequest::getString('filterAction');
+        $filterObjectType = WebRequest::getString('filterObjectType');
+        $filterObjectId = WebRequest::getInt('filterObjectId');
 
         $database = $this->getDatabase();
+
+        if(!array_key_exists($filterObjectType, LogHelper::getObjectTypes())) {
+            $filterObjectType = null;
+        }
 
         $this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use ($database) {
             return UserSearchHelper::get($database)->fetchColumn('username');
@@ -55,6 +61,14 @@ class PageLog extends InternalPageBase
             $logSearch->byAction($filterAction);
         }
 
+        if($filterObjectType !== null) {
+            $logSearch->byObjectType($filterObjectType);
+        }
+
+        if($filterObjectId !== null) {
+            $logSearch->byObjectId($filterObjectId);
+        }
+
         /** @var Log[] $logs */
         $logs = $logSearch->getRecordCount($count)->fetch();
 
@@ -74,8 +88,11 @@ class PageLog extends InternalPageBase
 
         $this->assign("filterUser", $filterUser);
         $this->assign("filterAction", $filterAction);
+        $this->assign("filterObjectType", $filterObjectType);
+        $this->assign("filterObjectId", $filterObjectId);
 
         $this->assign('allLogActions', LogHelper::getLogActions($this->getDatabase()));
+        $this->assign('allObjectTypes', LogHelper::getObjectTypes());
 
         $this->setTemplate("logs/main.tpl");
     }

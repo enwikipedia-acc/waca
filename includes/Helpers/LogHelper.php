@@ -219,6 +219,18 @@ SQL
         return $lookup;
     }
 
+    public static function getObjectTypes() {
+        return array(
+            'Ban'             => 'Ban',
+            'Comment'         => 'Comment',
+            'EmailTemplate'   => 'Email template',
+            'Request'         => 'Request',
+            'SiteNotice'      => 'Site notice',
+            'User'            => 'User',
+            'WelcomeTemplate' => 'Welcome template',
+        );
+    }
+
     /**
      * This returns a HTML
      *
@@ -246,6 +258,10 @@ SQL
             case 'Ban':
                 /** @var Ban $ban */
                 $ban = Ban::getById($objectId, $database);
+
+                if($ban === false) {
+                    return 'Ban #' . $objectId . "</a>";
+                }
 
                 return 'Ban #' . $objectId . " (" . htmlentities($ban->getTarget()) . ")</a>";
             case 'EmailTemplate':

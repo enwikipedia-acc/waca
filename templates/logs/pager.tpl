@@ -1,7 +1,7 @@
 ﻿<!-- tpl:logs/pager.tpl -->
 <div class="pagination">
   <ul>
-		{assign searchParamsUrl "limit={$limit|escape}&amp;filterUser={$filterUser|escape}&amp;filterAction={$filterAction|escape}"}
+		{assign searchParamsUrl "limit={$limit|escape}&amp;filterUser={$filterUser|escape}&amp;filterAction={$filterAction|escape}&amp;filterObjectType={$filterObjectType|escape}&amp;filterObjectId={$filterObjectId|escape}"}
 		
     <li {if $pagedata.canprev}{else}class="disabled"{/if}>
 			<a href="{if $pagedata.canprev}?page=1&amp;{$searchParamsUrl}{else}javascript: void(0){/if}">&laquo; First</a>
