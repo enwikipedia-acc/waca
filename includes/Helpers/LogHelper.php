@@ -219,7 +219,8 @@ SQL
         return $lookup;
     }
 
-    public static function getObjectTypes() {
+    public static function getObjectTypes()
+    {
         return array(
             'Ban'             => 'Ban',
             'Comment'         => 'Comment',
@@ -259,7 +260,7 @@ SQL
                 /** @var Ban $ban */
                 $ban = Ban::getById($objectId, $database);
 
-                if($ban === false) {
+                if ($ban === false) {
                     return 'Ban #' . $objectId . "</a>";
                 }
 
@@ -345,32 +346,34 @@ HTML;
             $objectDescription = self::getObjectDescription($logEntry->getObjectId(), $logEntry->getObjectType(),
                 $database, $configuration);
 
-            if ($logEntry->getAction() === 'Renamed') {
-                $renameData = unserialize($logEntry->getComment());
-                $oldName = htmlentities($renameData['old'], ENT_COMPAT, 'UTF-8');
-                $newName = htmlentities($renameData['new'], ENT_COMPAT, 'UTF-8');
-                $comment = 'Renamed \'' . $oldName . '\' to \'' . $newName . '\'.';
-            }
-            else if ($logEntry->getAction() === 'RoleChange') {
-                $roleChangeData = unserialize($logEntry->getComment());
+            switch ($logEntry->getAction()) {
+                case 'Renamed':
+                    $renameData = unserialize($logEntry->getComment());
+                    $oldName = htmlentities($renameData['old'], ENT_COMPAT, 'UTF-8');
+                    $newName = htmlentities($renameData['new'], ENT_COMPAT, 'UTF-8');
+                    $comment = 'Renamed \'' . $oldName . '\' to \'' . $newName . '\'.';
+                    break;
+                case 'RoleChange':
+                    $roleChangeData = unserialize($logEntry->getComment());
 
-                $removed = array();
-                foreach ($roleChangeData['removed'] as $r) {
-                    $removed[] = htmlentities($r, ENT_COMPAT, 'UTF-8');
-                }
+                    $removed = array();
+                    foreach ($roleChangeData['removed'] as $r) {
+                        $removed[] = htmlentities($r, ENT_COMPAT, 'UTF-8');
+                    }
 
-                $added = array();
-                foreach ($roleChangeData['added'] as $r) {
-                    $added[] = htmlentities($r, ENT_COMPAT, 'UTF-8');
-                }
+                    $added = array();
+                    foreach ($roleChangeData['added'] as $r) {
+                        $added[] = htmlentities($r, ENT_COMPAT, 'UTF-8');
+                    }
 
-                $reason = htmlentities($roleChangeData['reason'], ENT_COMPAT, 'UTF-8');
+                    $reason = htmlentities($roleChangeData['reason'], ENT_COMPAT, 'UTF-8');
 
-                $roleDelta = 'Removed [' . implode(', ', $removed) . '], Added [' . implode(', ', $added) . ']';
-                $comment = $roleDelta . ' with comment: ' . $reason;
-            }
-            else {
-                $comment = $logEntry->getComment();
+                    $roleDelta = 'Removed [' . implode(', ', $removed) . '], Added [' . implode(', ', $added) . ']';
+                    $comment = $roleDelta . ' with comment: ' . $reason;
+                    break;
+                default:
+                    $comment = $logEntry->getComment();
+                    break;
             }
 
             $logData[] = array(

@@ -32,7 +32,7 @@ class PageLog extends InternalPageBase
 
         $database = $this->getDatabase();
 
-        if(!array_key_exists($filterObjectType, LogHelper::getObjectTypes())) {
+        if (!array_key_exists($filterObjectType, LogHelper::getObjectTypes())) {
             $filterObjectType = null;
         }
 
@@ -53,21 +53,7 @@ class PageLog extends InternalPageBase
         $offset = ($page - 1) * $limit;
 
         $logSearch = LogSearchHelper::get($database)->limit($limit, $offset);
-        if ($filterUser !== null) {
-            $logSearch->byUser(User::getByUsername($filterUser, $database)->getId());
-        }
-
-        if ($filterAction !== null) {
-            $logSearch->byAction($filterAction);
-        }
-
-        if($filterObjectType !== null) {
-            $logSearch->byObjectType($filterObjectType);
-        }
-
-        if($filterObjectId !== null) {
-            $logSearch->byObjectId($filterObjectId);
-        }
+        $this->setupSearchHelper($logSearch, $database, $filterUser, $filterAction, $filterObjectType, $filterObjectId);
 
         /** @var Log[] $logs */
         $logs = $logSearch->getRecordCount($count)->fetch();
@@ -143,5 +129,38 @@ class PageLog extends InternalPageBase
 
         $this->assign("limit", $limit);
         $this->assign("page", $page);
+    }
+
+    /**
+     * @param $logSearch
+     * @param $database
+     * @param $filterUser
+     * @param $filterAction
+     * @param $filterObjectType
+     * @param $filterObjectId
+     */
+    private function setupSearchHelper(
+        $logSearch,
+        $database,
+        $filterUser,
+        $filterAction,
+        $filterObjectType,
+        $filterObjectId
+    ) {
+        if ($filterUser !== null) {
+            $logSearch->byUser(User::getByUsername($filterUser, $database)->getId());
+        }
+
+        if ($filterAction !== null) {
+            $logSearch->byAction($filterAction);
+        }
+
+        if ($filterObjectType !== null) {
+            $logSearch->byObjectType($filterObjectType);
+        }
+
+        if ($filterObjectId !== null) {
+            $logSearch->byObjectId($filterObjectId);
+        }
     }
 }
