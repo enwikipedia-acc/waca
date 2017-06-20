@@ -26,6 +26,11 @@ require_once 'includes/session.php';
 // Initialize the class objects.
 $session = new session();
 
+/** Initialises the PHP Session */
+function initialiseSession() {
+    session_start();
+}
+
 /**
  * Send a "close pend ticket" email to the end user. (created, taken, etc...)
  */

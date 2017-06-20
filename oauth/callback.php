@@ -10,11 +10,9 @@ ob_start();
 // load the configuration
 require_once 'config.inc.php';
 
-// Initialize the session data.
-session_start();
-
 // Get all the classes.
 require_once 'functions.php';
+initialiseSession();
 require_once 'includes/PdoDatabase.php';
 require_once 'includes/SmartyInit.php'; // this needs to be high up, but below config, functions, and database
 
