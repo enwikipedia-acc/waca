@@ -17,6 +17,8 @@
                 <input type="hidden" name="request" value="{$request}" />
                 <input type="hidden" name="template" value="{$template}" />
 
+                <input type="hidden" name="updateversion" value="{$updateversion}" />
+
                 <input type="hidden" name="emailSentOverride" value="{$emailSentOverride}" />
                 <input type="hidden" name="reserveOverride" value="{$reserveOverride}" />
             </form>
