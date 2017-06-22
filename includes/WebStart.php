@@ -229,6 +229,8 @@ class WebStart extends ApplicationBase
         if ($currentUser === false) {
             // Umm... this user has a session cookie with a userId set, but no user exists...
             Session::restart();
+
+            $currentUser = User::getCurrent($database);
         }
 
         if ($currentUser->getForceLogout()) {
