@@ -18,7 +18,7 @@
     </h4>
     {foreach from=$graphList item="graph"}
     <p>
-      <img src="http://accounts-dev.wmflabs.org/graph/{$graph}/acc.svg" alt="graph"/>
+      <img src="https://accounts-dev.wmflabs.org/graph/{$graph}/acc.svg" alt="graph"/>
     </p>
     {/foreach}
   </div>
