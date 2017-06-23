@@ -278,17 +278,20 @@ $cDatabaseConfig = array(
 	"acc" => array(
 		"dsrcname" => "mysql:host=" . $toolserver_host . ";dbname=" . $toolserver_database,
 		"username" => $toolserver_username,
-		"password" => $toolserver_password
+		"password" => $toolserver_password,
+		"options"  => array(),
 	),
 	"wikipedia" => array(
 		"dsrcname" => "mysql:host=" . $antispoof_host . ";dbname=" . $antispoof_db,
 		"username" => $toolserver_username,
-		"password" => $toolserver_password
+		"password" => $toolserver_password,
+		"options"  => array(),
 	),
 	"notifications" => array(
 		"dsrcname" => "mysql:host=" . $toolserver_notification_dbhost . ";dbname=" . $toolserver_notification_database,
 		"username" => $notifications_username,
-		"password" => $notifications_password
+		"password" => $notifications_password,
+		"options"  => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4'),
 	),
 );
 
