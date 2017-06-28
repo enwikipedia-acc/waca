@@ -20,6 +20,10 @@ $db->transactionally(function() use ($db)
 		":mail" => $cDataClearEmail
 	));
 	
+	if ($enableEmailConfirm == 1) {
+		Request::cleanExpiredUnconfirmedRequests();
+	}
+	
 	if (!$success) {
 		throw new TransactionException("Error in transaction: Could not clear data.");
 	}
