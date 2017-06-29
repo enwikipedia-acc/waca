@@ -26,11 +26,6 @@ if (Offline::isOffline()) {
 	die();
 }
 
-// TODO: move me to a maintenance job
-if ($enableEmailConfirm == 1) {
-	Request::cleanExpiredUnconfirmedRequests();
-}
-
 $antispoofProvider = new $antispoofProviderClass();
 $xffTrustProvider  = new $xffTrustProviderClass($squidIpList);
 $database          = gGetDb();
