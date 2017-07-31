@@ -7,4 +7,4 @@ Display code:  {$template->getUserCode()}
 Bot code:  {$template->getBotCode()}
 <br />
 {displayPreview($template->getBotCode())}
-<br /><a href='$baseurl/acc.php?action=templatemgmt'>Back</a>
+<br /><a href='acc.php?action=templatemgmt'>Back</a>
