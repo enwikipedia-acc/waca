@@ -40,7 +40,7 @@
                 </tr>
                 </thead>
                 <tfoot>
-                <tr>
+                <tr {if $currentUser->getWelcomeTemplate() == null}class="success"{/if}>
                     <th>Disable automatic welcoming</th>
                     {if $canEdit}
                         <td><!-- count --></td>
@@ -51,14 +51,18 @@
                         <td><!-- Delete --></td>
                     {/if}
                     <td>
-                        <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select"
-                              class="form-compact">
-                            {include file="security/csrf.tpl"}
-                            <input type="hidden" name="disable" value="true"/>
-                            <button type="submit" class="btn btn-primary"><i
-                                        class="icon-white icon-ok"></i>&nbsp;Select
-                            </button>
-                        </form>
+                        {if $currentUser->getWelcomeTemplate() !== null}
+                            <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select"
+                                  class="form-compact">
+                                {include file="security/csrf.tpl"}
+                                <input type="hidden" name="disable" value="true"/>
+                                <button type="submit" class="btn btn-primary"><i
+                                            class="icon-white icon-ok"></i>&nbsp;Select
+                                </button>
+                            </form>
+                        {else}
+                            <a href="" class="btn btn-primary disabled">Selected</a>
+                        {/if}
                     </td>
                 </tr>
                 </tfoot>
