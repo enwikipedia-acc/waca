@@ -223,7 +223,7 @@ class User extends DataObject
 	public static function getAllInactive(PdoDatabase $database)
 	{
 		$date = new DateTime();
-		$date->modify("-45 days");
+		$date->modify("-90 days");
 
 		$statement = $database->prepare(<<<SQL
 			SELECT * 

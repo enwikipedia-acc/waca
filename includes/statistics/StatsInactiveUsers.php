@@ -18,6 +18,19 @@ class StatsInactiveUsers extends StatisticsPage
 	{
 		global $smarty;
 
+		// this is horrible.
+		// yes, there is business logic in the templates
+		// yes, there was some there before
+		// yes, I have just added to it.
+		//
+		// I'm sorry.
+		//
+		// newinternal will fix this.
+		$date = new DateTime();
+		$date->modify("-90 days");
+
+		$smarty->assign('datelimit', $date);
+
 		$showImmune = false;
 		if (isset($_GET['showimmune'])) {
 			$showImmune = true;
