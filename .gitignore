@@ -36,3 +36,4 @@ vendor/*
 components/*
 errorlog/*.log
 cookies.txt
+robots.txt

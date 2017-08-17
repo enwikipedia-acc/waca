@@ -80,8 +80,18 @@ class UserSearchHelper extends SearchHelperBase
      */
     public function lastActiveBefore(DateTime $instant)
     {
-        $this->whereClause .= ' AND origin.lastactive < ?';
-        $this->parameterList[] = $instant->format("Y-m-d H:i:s");
+        $this->whereClause .= ' AND origin.lastactive < ? AND approvaldate.timestamp < ?';
+        $this->joinClause .= <<<'SQLFRAG'
+ LEFT JOIN (
+    SELECT objectid, MAX(timestamp) timestamp 
+    FROM log
+    WHERE objecttype = 'User' AND action = 'Approved' 
+    GROUP BY objectid
+    ) approvaldate ON approvaldate.objectid = origin.id
+SQLFRAG;
+        $formattedDate = $instant->format("Y-m-d H:i:s");
+        $this->parameterList[] = $formattedDate;
+        $this->parameterList[] = $formattedDate;
 
         return $this;
     }

@@ -45,7 +45,8 @@ class PdoDatabase extends PDO
                 $databaseObject = new PdoDatabase(
                     $cDatabaseConfig[$connectionName]["dsrcname"],
                     $cDatabaseConfig[$connectionName]["username"],
-                    $cDatabaseConfig[$connectionName]["password"]
+                    $cDatabaseConfig[$connectionName]["password"],
+                    $cDatabaseConfig[$connectionName]["options"]
                 );
             }
             catch (PDOException $ex) {

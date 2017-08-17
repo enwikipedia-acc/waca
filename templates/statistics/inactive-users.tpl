@@ -1,6 +1,6 @@
 ﻿{extends file="statistics/base.tpl"}
 {block name="statisticsContent"}
-    <p>This list contains the usernames of all accounts that have not logged in in the past 45 days.</p>
+    <p>This list contains the usernames of all accounts that have not logged in in the past 90 days.</p>
     <table class="table table-striped table-hover table-condensed">
         <thead>
         <tr>
@@ -8,8 +8,8 @@
             <th>Tool Username</th>
             <th>Roles</th>
             <th>On-wiki username</th>
-            <th>Last activity</th>
-            <th>Approval</th>
+            <th><abbr title="Last login or logged-in page load">Last seen</abbr></th>
+            <th><abbr title="Date user was approved for tool access">Approval</abbr></th>
             {if $canSuspend}
                 <th>Suspend</th>
             {/if}
@@ -28,7 +28,7 @@
                         <td>
                             {if ! isset($immune[$user->getId()])}
                                 <a class="btn btn-danger btn-small"
-                                   href="{$baseurl}/internal.php/userManagement/suspend?user={$user->getId()}&amp;preload=Inactive%20for%2045%20or%20more%20days.%20Please%20contact%20a%20tool%20admin%20if%20you%20wish%20to%20come%20back.">
+                                   href="{$baseurl}/internal.php/userManagement/suspend?user={$user->getId()}&amp;preload=Inactive%20for%2090%20or%20more%20days.%20Please%20contact%20a%20tool%20admin%20if%20you%20wish%20to%20come%20back.">
                                     <i class="icon-ban-circle icon-white"></i> Suspend!
                                 </a>
                             {/if}

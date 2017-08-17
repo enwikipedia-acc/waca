@@ -27,7 +27,7 @@
             Special:CentralAuth
         </a>
         <a id="UsernameUsernameList" class="btn btn-small" target="_blank"
-           href="https://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username={$requestName|escape:'url'}&amp;group=&amp;limit=1"
+           href="https://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username={$requestName|escape:'url'}&amp;group=&amp;limit=25"
            onMouseUp="$('#UsernameUsernameList').addClass('btn-visited');">
             Username list
         </a>
