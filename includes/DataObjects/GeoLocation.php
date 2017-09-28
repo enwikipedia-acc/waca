@@ -41,7 +41,7 @@ class GeoLocation extends DataObject
 	{
 		if ($this->isNew) {
 // insert
-			$statement = $this->dbObject->prepare("INSERT INTO `geolocation` (address, data) VALUES (:address, :data);");
+			$statement = $this->dbObject->prepare("INSERT INTO `geolocation` (address, data) VALUES (:address, :data) ON DUPLICATE KEY UPDATE address = address;");
 			$statement->bindValue(":address", $this->address);
 			$statement->bindValue(":data", $this->data);
 			if ($statement->execute()) {
