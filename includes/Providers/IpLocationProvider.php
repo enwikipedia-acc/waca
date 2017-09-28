@@ -19,7 +19,7 @@ class IpLocationProvider implements ILocationProvider
 		$address = trim($address);
 
 		// lets look in our database first.
-		$location = GeoLocation::getByAddress($address, $this->database);
+		$location = GeoLocation::getByAddress($address, $this->database, true);
 
 		if ($location != null) {
 			// touch cache timer

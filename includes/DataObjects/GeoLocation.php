@@ -14,11 +14,15 @@ class GeoLocation extends DataObject
 	/**
 	 * @param string $address
 	 * @param PdoDatabase $database
+	 * @param bool $forUpdate
 	 * @return GeoLocation
 	 */
-	public static function getByAddress($address, PdoDatabase $database)
+	public static function getByAddress($address, PdoDatabase $database, $forUpdate = false)
 	{
-		$statement = $database->prepare("SELECT * FROM geolocation WHERE address = :id LIMIT 1;");
+		$lockMode = $forUpdate ? ' FOR UPDATE' : '';
+		$sql = "SELECT * FROM geolocation WHERE address = :id LIMIT 1" . $lockMode;
+
+		$statement = $database->prepare($sql);
 		$statement->bindValue(":id", $address);
 
 		$statement->execute();
