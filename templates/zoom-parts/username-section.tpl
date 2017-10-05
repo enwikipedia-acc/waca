@@ -9,6 +9,7 @@
   <div class="linkWrapSection">
     <a id="UsernameUserPage" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/User:{$usernamerawunicode|escape:'url'}" onMouseUp="$('#UsernameUserPage').addClass('btn-visited');">User page</a>
     <a id="UsernameCreationLog" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page={$usernamerawunicode|escape:'url'}" onMouseUp="$('#UsernameCreationLog').addClass('btn-visited');">Creation log</a>
+    <a id="UsernameGlobalRenameLog" class="btn btn-small" target="_blank" href="https://meta.wikimedia.org/w/index.php?title=Special%3ALog&type=gblrename&oldname={$usernamerawunicode|escape:'url'}" onMouseUp="$('#UsernameGlobalRenameLog').addClass('btn-visited');">Global Rename log</a>
     <a id="UsernameSUL" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=sulutil&amp;data={$usernamerawunicode|escape:'url'}" onMouseUp="$('#UsernameSUL').addClass('btn-visited');">SUL</a>
     <a id="UsernameCentralAuth" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:CentralAuth/{$usernamerawunicode|escape:'url'}" onMouseUp="$('#UsernameCentralAuth').addClass('btn-visited');">Special:CentralAuth</a>
     <a id="UsernameUsernameList" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username={$usernamerawunicode|escape:'url'}&amp;group=&amp;limit=25" onMouseUp="$('#UsernameUsernameList').addClass('btn-visited');">Username list</a>
