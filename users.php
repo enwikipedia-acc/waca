@@ -115,7 +115,7 @@ if (isset ($_GET['approve'])) {
 
 	$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
 	// TODO: move to template?
-	mail($user->getEmail(), "ACC Account Approved", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been approved by " . User::getCurrent()->getUsername() . ". To login please go to $baseurl/acc.php.\n- The English Wikipedia Account Creation Team", $headers);
+	mail($user->getEmail(), "ACC Account Approved", "Dear " . $user->getOnWikiName() . ",\nYour account " . $user->getUsername() . " has been approved by " . User::getCurrent()->getUsername() . ". To login please go to $baseurl/acc.php.\nPlease note that if you cannot login immediately, we may be updating your identification information in the system.  Please let us know if you continue to have issues if you cannot login after 12 hours pass from the time you receive this approval.\n- The English Wikipedia Account Creation Team", $headers);
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
