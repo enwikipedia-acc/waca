@@ -411,7 +411,7 @@ if (isset ($_GET['rename'])) {
 
 #region edit user
 
-if (isset ($_GET['edituser']) && $enableRenames == 1) {
+if (isset ($_GET['edituser'])) {
 	$user = User::getById($_GET['edituser'], gGetDb());
 
 	if ($user == false) {
