@@ -308,7 +308,7 @@ foreach (array(
 	"pdo", "pdo_mysql", // new database module
 	"session", "date", "pcre", // core stuff
 	"curl", // mediawiki api access etc
-	"mcrypt", "openssl", // password encryption etc
+	"openssl", // email confirmation hash gen, oauth stuff
 	) as $x) {if (!extension_loaded($x)) {die("extension $x is required."); }}
 
 require_once($filepath . "includes/AutoLoader.php");
