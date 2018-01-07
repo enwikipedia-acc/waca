@@ -1246,9 +1246,17 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		}
 
 		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
-		if (!User::getCurrent()->isAdmin() || isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on") {
-			$headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
-		}
+
+		// CC mailing list option
+        if (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
+            // these people get the choice
+            if (isset($_POST['ccmailist']) && $_POST['ccmailist'] == "on") {
+                $headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
+            }
+        } else {
+            // these people do not.
+            $headers .= 'Cc: accounts-enwiki-l@lists.wikimedia.org' . "\r\n";
+        }
 
 		$headers .= 'X-ACC-Request: ' . $request->getId() . "\r\n";
 		$headers .= 'X-ACC-UserID: ' . User::getCurrent()->getId() . "\r\n";
