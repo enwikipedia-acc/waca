@@ -25,7 +25,6 @@ class HelpAction extends ApiActionBase implements IApiAction
 	 */
 	protected function getHelpElement()
 	{
-		$helpInfo = "Help info goes here!";
 
 		$help = $this->document->createElement("help");
 		$helptext = $this->document->createElement("info", $helpInfo);
