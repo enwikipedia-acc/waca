@@ -4,7 +4,7 @@ This is a brief installation guide for developers/testers etc to get this system
 
 * Web server
 * MySQL 5.5+ (or equivalent)
-* PHP 5.5+
+* PHP 5.5+ (Also works with PHP 7.2)
 
 The webserver must be configured to pre-process *.php files through the PHP engine before sending them to a client.
 
@@ -22,7 +22,7 @@ You'll also need some PHP extensions:
 * curl
 * openssl
 
-There's nothing special here, these are all standard PHP extensions that are bundled with PHP - you may 
+There's nothing special here, these are all standard PHP extensions that are bundled with PHP - you may
 just need to switch some of them on in the php.ini file.
 
 Useful (but optional) extensions - only used for development:
@@ -59,19 +59,20 @@ This was written using Windows 10.
 
 1. Install Git (or Git Extensions! It's awesome. https://code.google.com/p/gitextensions/ )
 2. Install XAMPP (https://www.apachefriends.org/index.html)
-  3. This was tested using XAMPP 5.6.3
-  4. You don't need to install anything other than Apache, PHP, MySQL, and PHPMyAdmin (technically, PHPMyAdmin is optional)
-  5. This also assumes you're installing it under C:\xampp\.
-5. Start Apache and MySQL from the XAMPP control panel
-6. Clone the ACC repo to C:\xampp\htdocs\waca\
-6. Browse to http://localhost/phpmyadmin/ and create a new database called "waca".
-7. EITHER: 
-  8. Import the following files into your new database in this order:
-    8. C:\xampp\htdocs\waca\sql\db-structure.sql
-    9. Anything in the C:\xampp\htdocs\waca\sql\seed\ directory
-    10. Anything in the C:\xampp\htdocs\waca\sql\patches\ directory in numerical order.
-  9. OR: Grab schema.sql from https://jenkins.stwalkerster.co.uk/job/waca-database-build/ IF THE BUILD IS SUCCESSFUL AND CURRENT and run that into the database.
-10. Create the configuration file (see below).
+  * This was tested using XAMPP 5.6.3
+  * You don't need to install anything other than Apache, PHP, MySQL, and PHPMyAdmin (technically, PHPMyAdmin is optional)
+  * This also assumes you're installing it under C:\xampp\.
+3. Start Apache and MySQL from the XAMPP control panel
+4. Clone the ACC repo to C:\xampp\htdocs\waca\
+5. Browse to http://localhost/phpmyadmin/ and create a new database called "waca".
+6. Run `composer install` (https://getcomposer.org)
+7. Update the dependent git repos
+  * `git submodule init`
+  * `git submodule update`
+8. run the database setup scripts:
+  * `./test_db.sh 1 localhost <dbname> <user> <password>`
+  * `mysql <dbname> -e "update user set status = 'Active' ;"`
+9. Create the configuration file (see below).
 
 # Configuration File
 Create a new PHP file called config.local.inc.php, and fill it with the following:
@@ -112,7 +113,7 @@ Most settings are flags to turn on and off features for development systems whic
 
 # First Login!
 
-Browse to http://localhost/waca/acc.php, and log in! There's a user created by default called "Admin", with the password "Admin".
+Browse to http://localhost/waca/internal.php, and log in! There's a user created by default called "Admin", with the password "Admin".
 
 # OAuth setup
 

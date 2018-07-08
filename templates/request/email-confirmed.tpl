@@ -1,7 +1,7 @@
 {extends file="publicbase.tpl"}
 {block name="content"}
 <div class="row">
-  <div class="col-xs-12">
+  <div class="col-md-12">
 	  <h2>Request submitted!</h2>
 	  <p>Many thanks for your interest in joining Wikipedia. </p>
 	  <p>Your request for an account has been received, and will be considered by a team of volunteers, usually within 24 hours.</p>
