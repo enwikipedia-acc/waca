@@ -13,7 +13,6 @@
             padding-bottom: 40px;
         }
     </style>
-    <link href="{$baseurl}/lib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
     <link href="{$baseurl}/lib/bootstrap-sortable/css/bootstrap-sortable.css" rel="stylesheet"/>
 
     <!-- Our extra styles -->
@@ -30,11 +29,11 @@
 <div class="container">
 
     <div class="masthead">
-        <ul class="nav nav-pills pull-right">
-            <li class="active"><a href="#">Request</a></li>
-            <li><a href="//en.wikipedia.org/wiki/Main_Page">Back to Wikipedia</a></li>
+        <ul class="nav nav-pills float-right">
+            <li class="nav-item"><a class="nav-link active" href="#">Request</a></li>
+            <li class="nav-item"><a class="nav-link" href="//en.wikipedia.org/wiki/Main_Page">Back to Wikipedia</a></li>
         </ul>
-        <h3 class="muted">Request an Account</h3>
+        <h4 class="text-muted">Request an Account</h4>
     </div>
 
     <hr>
@@ -52,8 +51,8 @@
 
     <hr/>
 
-    <footer class="row-fluid">
-        <p class="span12">
+    <footer class="row">
+        <p class="col-md-12">
             <small>
                 Account Creation Assistance Manager
                 (<a href="https://github.com/enwikipedia-acc/waca/tree/{$toolversion}">version {$toolversion}</a>)

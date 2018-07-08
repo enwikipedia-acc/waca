@@ -1,7 +1,7 @@
 {extends file="publicbase.tpl"}
 {block name="content"}
-<div class="row-fluid">
-  <div class="span12">
+<div class="row">
+  <div class="col-xs-12">
 	  <h2>E-Mail Confirmation required</h2>
 	  <p>
 		  Many thanks for your interest in joining Wikipedia.
