@@ -14,3 +14,11 @@ body {
         padding-right: 5px;
     }
 }
+
+/* Fix nav links */
+.nav-link, .dropdown-toggle{
+  color: white;
+}
+.dropdown-item i, .dropdown-item a{
+  color: black;
+}

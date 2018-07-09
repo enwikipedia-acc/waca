@@ -9,9 +9,10 @@
     <!-- bootstrap styles -->
     <link href="{$baseurl}/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="{$baseurl}/resources/baseStyles.css" rel="stylesheet"/>
-    <link href="{$baseurl}/lib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet"/>
     <link href="{$baseurl}/lib/bootstrap-sortable/css/bootstrap-sortable.css" rel="stylesheet"/>
 
+    <!-- fontawesome -->
+    <link href="{$baseurl}/lib/fontawesome/all.css" rel="stylesheet"/>
     <!-- Page-specific extra resources -->
     {foreach from=$extraCss item=css}
         <link href="{$baseurl}{$css}" rel="stylesheet" />
@@ -23,27 +24,21 @@
 
 <body>
 
-<div class="navbar navbar-inverse navbar-fixed-top">
-    <div class="navbar-inner">
-        <div class="container-fluid">
-            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="brand" href="{$baseurl}/internal.php">Account Creation Interface</a>
-            {block name="navmenu"}
-                {include file="navigation-menu.tpl"}
-            {/block}
-        </div>
-    </div>
-</div>
+<nav class="navbar navbar-dark bg-dark fixed-top navbar-expand-sm">
+    <a class="navbar-brand" href="{$baseurl}/internal.php">Account Creation Interface</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls=".navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    {block name="navmenu"}
+        {include file="navigation-menu.tpl"}
+    {/block}
+</nav>
 
 {block name="modals"}
     {include file="modal-flowchart.tpl"}
 {/block}
 
-<div class="container-fluid">
+<div class="container">
     {block name="sitenotice"}{/block}
 
     {block name="content"}
@@ -52,8 +47,8 @@
 
     <hr/>
 
-    <footer class="row-fluid">
-        <p class="span6">
+    <footer class="row">
+        <p class="col-md-6">
             <small>
                 Account Creation Assistance Manager
                 (<a href="https://github.com/enwikipedia-acc/waca/tree/{$toolversion}">version {$toolversion}</a>)
@@ -61,7 +56,7 @@
                 (<a href="https://github.com/enwikipedia-acc/waca/issues">Bug reports</a>)
             </small>
         </p>
-        <p class="span6 text-right">
+        <p class="col-md-6 float-right">
             <small>
                 {if count($onlineusers) > 0}
                     {count($onlineusers)} Account Creator{if count($onlineusers) !== 1}s{/if} currently online (past 5 minutes):
@@ -83,6 +78,7 @@
 <script src="{$baseurl}/vendor/components/jquery/jquery.min.js" type="text/javascript"></script>
 <script src="{$baseurl}/lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="{$baseurl}/lib/bootstrap-sortable/js/bootstrap-sortable.js" type="text/javascript"></script>
+<script src="{$baseurl}/lib/fontawesome/all.js" type="text/javascript"></script>
 
 <!-- Page-specific extra resources -->
 {foreach from=$extraJs item=js}
@@ -107,4 +103,3 @@
 {/if}
 </body>
 </html>
-

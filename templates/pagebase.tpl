@@ -1,10 +1,10 @@
 {extends file="base.tpl"}
 {block name="sitenotice"}
     {if ! $currentUser->isCommunityUser()}
-        <div class="row-fluid">
+        <div class="row">
             <!-- site notice -->
-            <div class="span12">
-                <div class="alert alert-block">
+            <div class="col-md-12">
+                <div class="alert alert-warning">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                     {$siteNoticeText}
                 </div>
