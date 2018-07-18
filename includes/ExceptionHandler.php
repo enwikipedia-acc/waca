@@ -41,7 +41,7 @@ class ExceptionHandler
   }
 </style>
 <link href="{$siteConfiguration->getBaseUrl()}/lib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
-</head><body><div class="container">
+</head><body><div class="container-fluid">
 <h1>Oops! Something went wrong!</h1>
 <p>We'll work on fixing this for you, so why not come back later?</p>
 <p class="muted">If our trained monkeys ask, tell them this error ID: <code>$1$</code></p>

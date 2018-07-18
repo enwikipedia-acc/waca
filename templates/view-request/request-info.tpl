@@ -1,14 +1,14 @@
-<div class="row-fluid">
-    <div class="span4"><strong>Requested name:</strong></div>
-    <div class="span8">{$requestName|escape}</div>
+<div class="row">
+    <div class="col-md-4"><strong>Requested name:</strong></div>
+    <div class="col-md-8">{$requestName|escape}</div>
 </div>
 
-<div class="row-fluid">
-    <div class="span4">
+<div class="row">
+    <div class="col-md-4">
         <strong>Date:</strong>
     </div>
-    <div class="span8">
-        {$requestDate|date} <span class="muted">({$requestDate|relativedate})</span>
+    <div class="col-md-8">
+        {$requestDate|date} <span class="text-muted">({$requestDate|relativedate})</span>
     </div>
 </div>
 
@@ -16,11 +16,11 @@
 
 {block name="requestDataPrimaryCheckUser"}<!-- Request data not available in this template -->{/block}
 
-<div class="row-fluid">
-    <div class="span4">
+<div class="row">
+    <div class="col-md-4">
         <strong>Reserved by:</strong>
     </div>
-    <div class="span8">
+    <div class="col-md-8">
         {if $requestIsReserved}
             {$requestReservedByName|escape}
             {block name="requestDataRevealLink"}{/block}

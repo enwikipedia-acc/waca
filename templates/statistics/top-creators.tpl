@@ -1,11 +1,11 @@
 ﻿{extends file="statistics/base.tpl"}
 {block name="statisticsContent"}
-    <div class="row-fluid">
-        <div class="span6">
+    <div class="row">
+        <div class="col-md-6">
             <h3>All-time top creators</h3>
             {include file="statistics/top-creators-table.tpl" dataTable=$queryAllTime}
         </div>
-        <div class="span6">
+        <div class="col-md-6">
             <h3>Contents</h3>
             <ul>
                 <li><a href="#alltimeactive">All-time active top creators</a></li>
@@ -17,7 +17,7 @@
 
             <ul class="unstyled">
                 <li><a href="#">Username</a> means an active account.</li>
-                <li><a class="muted" href="#">Username</a> means a suspended account.</li>
+                <li><a class="text-muted" href="#">Username</a> means a suspended account.</li>
                 <li><a class="text-success" href="#">Username</a> means a tool admin account.</li>
             </ul>
 

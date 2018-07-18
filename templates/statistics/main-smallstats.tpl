@@ -1,4 +1,4 @@
-﻿<div class="span6">
+﻿<div class="col-md-6">
     <h4>Statistics</h4>
     <table class="table table-striped table-condensed">
 

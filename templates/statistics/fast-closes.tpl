@@ -17,7 +17,7 @@
                 <td><a href="{$baseurl}/internal.php/statistics/users/detail?user={$row.userid}">{$row.user|escape}</a></td>
                 <td>{$row.timetaken|escape}</td>
                 <td>{$row.closetype|escape}</td>
-                <td>{$row.date|escape} <span class="muted">({$row.date|relativedate})</span></td>
+                <td>{$row.date|escape} <span class="text-muted">({$row.date|relativedate})</span></td>
             </tr>
         {/foreach}
         </tbody>

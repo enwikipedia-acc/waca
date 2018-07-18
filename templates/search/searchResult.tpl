@@ -1,9 +1,8 @@
 {extends file="pagebase.tpl"}
 {block name="content"}
-    <div class="page-header">
-        <h1>Search
-            <small> for a request</small>
-        </h1>
+    <div class="jumbotron">
+        <h1>Search</h1>
+        <p> for a request</p>
     </div>
 
     <h4>Searching for "{$term|escape}" as {$target}...</h4>

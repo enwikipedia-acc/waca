@@ -26,7 +26,7 @@
 
 <body>
 
-<div class="container">
+<div class="container-fluid">
 
     <div class="masthead">
         <ul class="nav nav-pills float-right">

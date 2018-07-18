@@ -1,8 +1,8 @@
 {extends file="base.tpl"}
 {block name="content"}
     <div class="container-fluid">
-        <div class="row-fluid">
-            <div class="span12">
+        <div class="row">
+            <div class="col=md-12">
                 <div class="page-header"><h1>Whoa, dude, hold up a sec...</h1></div>
                 <p>
                     It looks like we can't detect whether or not you've submitted identification to the Wikimedia

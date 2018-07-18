@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 {block name="content"}
-    <div class="page-header">
+    <div class="jumbotron">
         <h1>Register for Tool Access</h1>
     </div>
     <div class="alert alert-block alert-info">

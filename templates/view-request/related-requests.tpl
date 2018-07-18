@@ -3,7 +3,7 @@
         <tr>
             <td><a target="_blank" href="{$baseurl}/internal.php/viewRequest?id={$others->getId()}">#{$others->getId()}</a></td>
             <td>
-                {$others->getDate()|date}<span class="muted">
+                {$others->getDate()|date}<span class="text-muted">
                 <em>({$others->getDate()|relativedate})</em>
               </span>
             </td>

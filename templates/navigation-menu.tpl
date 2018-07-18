@@ -1,13 +1,13 @@
 {* README! Variables introduced here must be configured in TemplateOutput, and probably InternalPageBase too. *}
-<div class="navbar-collapse collapse">
-    <ul class="nav float-left mr-auto mt-2 mt-lg-0">
+<div class="collapse navbar-collapse">
+    <ul class="navbar-nav">
         {if $nav__canRequests}
             <li><a class="nav-link" href="{$baseurl}/internal.php"><i class="fas fa-home "></i>&nbsp;Requests</a></li>
         {/if}
         {if $nav__canLogs || $nav__canUsers || $nav__canSearch || $nav__canStats }
             <li class="nav-link dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
                         class="fas fa-tag"></i>&nbsp;Meta&nbsp;</a>&nbsp;
-                <ul class="dropdown-menu bg-light">
+                <ul class="dropdown-menu bg-dark text-white">
                     {if $nav__canLogs}
                         <li class="dropdown-item"><a href="{$baseurl}/internal.php/logs"><i class="fas fa-list"></i>&nbsp;Logs</a></li>
                     {/if}
@@ -24,9 +24,8 @@
             </li>
         {/if}
         {if $nav__canBan || $nav__canEmailMgmt || $nav__canWelcomeMgmt || $nav__canSiteNoticeMgmt || $nav__canUserMgmt}
-            <li class="nav-link dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
-                            class="fas fa-wrench "></i>&nbsp;Admin&nbsp;</a>
-                <ul class="dropdown-menu">
+            <li class="nav-link dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fas fa-wrench"></i>&nbsp;Admin&nbsp;</a>
+                <ul class="dropdown-menu bg-dark">
                     {if $nav__canBan}
                         <li class="dropdown-item"><a href="{$baseurl}/internal.php/bans"><i class="fas fa-ban"></i>&nbsp;Ban Management</a></li>
                     {/if}
@@ -57,12 +56,12 @@
             </li>
         {/if}
     </ul>
-    <ul class="nav float-right">
+    <ul class="navbar-nav ml-auto">
         {if ! $currentUser->isCommunityUser()}
-            <li class="dropdown">
+            <li class="nav-link dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fas fa-user "></i>
                     <strong>{$currentUser->getUsername()}</strong> <b class="caret"></b></a>
-                <ul class="dropdown-menu dropdown-menu-right">
+                <ul class="dropdown-menu dropdown-menu-right bg-dark">
                     <li class="dropdown-header">Account</li>
                     <li class="dropdown-item">
                         <a href="{$baseurl}/internal.php/statistics/users/detail?user={$currentUser->getId()}">
@@ -78,12 +77,12 @@
                     <li class="dropdown-header">Help</li>
                     <li class="dropdown-item">
                         <a href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide">
-                            <i class="fas fa-question-sign"></i>&nbsp;Guide
+                            <i class="fas fa-question-circle"></i>&nbsp;Guide
                         </a>
                     </li>
                     <li class="dropdown-item">
                         <a href="//en.wikipedia.org/wiki/Wikipedia:Username_policy">
-                            <i class="fas fa-warning-sign"></i>&nbsp;Username policy
+                            <i class="fas fa-exclamation-triangle"></i>&nbsp;Username policy
                         </a>
                     </li>
                     <li class="dropdown-item">
@@ -102,7 +101,7 @@
                         </a>
                     </li>
                     <li class="dropdown-divider"></li>
-                    <li><a href="{$baseurl}/internal.php/logout"><i class="fas fa-lock"></i> Logout</a></li>
+                    <li class="dropdown-item"><a href="{$baseurl}/internal.php/logout"><i class="fas fa-lock"></i> Logout</a></li>
 
                 </ul>
             </li>

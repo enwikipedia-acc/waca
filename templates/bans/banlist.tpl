@@ -1,13 +1,12 @@
 ﻿{extends file="pagebase.tpl"}
 {block name="content"}
-    <div class="page-header">
-        <h1>Ban Management
-            <small>View, ban, and unban requesters
-                {if $canSet}
-                    <a class="btn btn-primary" href="{$baseurl}/internal.php/bans/set"><i class="icon-white icon-plus"></i>&nbsp;Add new Ban</a>
-                {/if}
-            </small>
-        </h1>
+    <div class="jumbotron">
+        <h1>Ban Management</h1>
+        <p>View, ban, and unban requesters</p>
+        {if $canSet}
+            <a class="btn btn-primary" href="{$baseurl}/internal.php/bans/set"><i class="fas fa-plus"></i>&nbsp;Add new Ban</a>
+        {/if}
+
     </div>
     <h3>Active Ban List</h3>
     <table class="table table-striped">
@@ -41,22 +40,22 @@
                             <input type="hidden" name="type" value="email" />
                         {/if}
 
-                        <button type="submit" class="btn btn-small btn-info">
-                            <i class="icon-white icon-search"></i>
-                            <span class="visible-desktop">&nbsp;Search</span>
+                        <button type="submit" class="btn btn-sm btn-info">
+                            <i class="fas fa-search"></i>
+                            <span class="d-none d-lg-block">&nbsp;Search</span>
                         </button>
                     </form>
                 </td>
                 <td>{$usernames[$ban->getUser()]|escape}</td>
                 <td>{$ban->getReason()|escape}</td>
-                <td>{$ban->getDate()} <span class="muted">({$ban->getDate()|relativedate})</span></td>
+                <td>{$ban->getDate()} <span class="text-muted">({$ban->getDate()|relativedate})</span></td>
                 <td>{if $ban->getDuration() == -1}Indefinite{else}{date("Y-m-d H:i:s", $ban->getDuration())}{/if}</td>
 
                 {if $canRemove}
                     <td>
-                        <a class="btn btn-success btn-small"
+                        <a class="btn btn-success btn-sm"
                            href="{$baseurl}/internal.php/bans/remove?id={$ban->getId()}">
-                            <i class="icon-white icon-ok"></i><span class="visible-desktop">&nbsp;Unban</span>
+                            <i class="fas fa-check-circle"></i><span class="d-none d-lg-block">&nbsp;Unban</span>
                         </a>
                     </td>
                 {/if}

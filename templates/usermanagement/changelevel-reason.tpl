@@ -5,47 +5,34 @@
         {include file="alert.tpl" alertblock=false alerttype="alert-info" alertclosable=false alertheader=""
         alertmessage="The user will be shown the reason you enter here. Please keep this in mind."}
     {/if}
-    <form class="form-horizontal" method="post">
+    <form method="post">
         {include file="security/csrf.tpl"}
-        <div class="control-group">
-            <label class="control-label" for="username">Username:</label>
-            <div class="controls">
-                <input class="input-xlarge" type="text" id="username" value="{$user->getUsername()|escape}"
-                       required="required" readonly="readonly"/>
-            </div>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input class="form-control" type="text" id="username" value="{$user->getUsername()|escape}" required="required" readonly="readonly"/>
         </div>
 
-        <div class="control-group">
-            <label class="control-label" for="status">Old access level:</label>
-            <div class="controls">
-                <input class="input-large" type="text" id="status" value="{$user->getStatus()|escape}"
-                       required="required" readonly="readonly"/>
-            </div>
+        <div class="form-group">
+            <label for="status">Old access level:</label>
+            <input class="form-control" type="text" id="status" value="{$user->getStatus()|escape}" required="required" readonly="readonly"/>
         </div>
 
-        <div class="control-group">
-            <label class="control-label" for="status">New access level:</label>
-            <div class="controls">
-                <input class="input-large" type="text" id="status" value="{$status}" required="required"
-                       readonly="readonly"/>
-            </div>
+        <div class="form-group">
+            <label for="status">New access level:</label>
+            <input class="form-control" type="text" id="status" value="{$status}" required="required" readonly="readonly"/>
         </div>
 
         {if $showReason}
-            <div class="control-group">
-                <label class="control-label" for="reason">Reason:</label>
-                <div class="controls">
-                    <textarea id="reason" name="reason" required="required" class="input-xxlarge" rows="5"></textarea>
-                </div>
+            <div class="form-group">
+                <label for="reason">Reason:</label>
+                <textarea id="reason" name="reason" required="required" class="form-control" rows="5"></textarea>
             </div>
         {/if}
 
         <input type="hidden" name="updateversion" value="{$user->getUpdateVersion()}"/>
 
-        <div class="control-group">
-            <div class="controls">
-                <button type="submit" class="btn btn-primary">Change access level</button>
-            </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-primary">Change access level</button>
         </div>
     </form>
 {/block}

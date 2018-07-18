@@ -11,13 +11,11 @@
 {/block}
 
 {block name="createButton"}
-    <div class="row-fluid">
-        <a class="btn btn-primary span12" target="_blank"
-           href="{$mediawikiScriptPath}?title=Special:UserLogin/signup&amp;wpName={$requestName|escape:'url'}&amp;email={$requestEmail|escape:'url'}&amp;reason={$createAccountReason|escape:'url'}{$requestId}&amp;wpCreateaccountMail=true"
-                {if !$currentUser->getAbortPref() && $createdHasJsQuestion} onclick="return confirm('{$createdJsQuestion}')"{/if}>
-            Create account
-        </a>
-    </div>
+      <a class="btn btn-primary btn-block" target="_blank"
+         href="{$mediawikiScriptPath}?title=Special:UserLogin/signup&amp;wpName={$requestName|escape:'url'}&amp;email={$requestEmail|escape:'url'}&amp;reason={$createAccountReason|escape:'url'}{$requestId}&amp;wpCreateaccountMail=true"
+              {if !$currentUser->getAbortPref() && $createdHasJsQuestion} onclick="return confirm('{$createdJsQuestion}')"{/if}>
+          Create account
+      </a>
     <hr class="zoom-button-divider"/>
 {/block}
 
@@ -27,17 +25,15 @@
 
 {block name="banSection"}
     {if $canSetBan}
-        <div class="row-fluid">
-            <h5 class="zoom-button-header">Ban</h5>
-        </div>
-        <div class="row-fluid">
-            <a class="btn btn-danger span4" href="{$baseurl}/internal.php/bans/set?type=Name&amp;request={$requestId}">
+        <h5 class="zoom-button-header">Ban</h5>
+        <div class="row">
+            <a class="btn btn-danger col-sm-3" href="{$baseurl}/internal.php/bans/set?type=Name&amp;request={$requestId}">
                 Ban Username
             </a>
-            <a class="btn btn-danger span4" href="{$baseurl}/internal.php/bans/set?type=EMail&amp;request={$requestId}">
+            <a class="btn btn-danger col-sm-3 offset-sm-1" href="{$baseurl}/internal.php/bans/set?type=EMail&amp;request={$requestId}">
                 Ban Email
             </a>
-            <a class="btn btn-danger span4" href="{$baseurl}/internal.php/bans/set?type=IP&amp;request{$requestId}">
+            <a class="btn btn-danger col-sm-3 offset-sm-1" href="{$baseurl}/internal.php/bans/set?type=IP&amp;request{$requestId}">
                 Ban IP
             </a>
         </div>
@@ -54,23 +50,23 @@
 {/block}
 
 {block name="otherRequests"}
-    <div class="row-fluid">
-        <div class="span6">
+    <div class="row">
+        <div class="col-md-6">
             <h3>Other requests from this email address</h3>
             {if $requestDataCleared}
-                <p class="muted">Email information cleared</p>
+                <p class="text-muted">Email information cleared</p>
             {elseif $requestRelatedEmailRequestsCount == 0}
-                <p class="muted">None detected</p>
+                <p class="text-muted">None detected</p>
             {else}
                 {include file="view-request/related-requests.tpl" requests=$requestRelatedEmailRequests}
             {/if}
         </div>
-        <div class="span6">
+        <div class="col-md-6">
             <h3>Other requests from this IP address</h3>
             {if $requestDataCleared}
-                <p class="muted">IP information cleared</p>
+                <p class="text-muted">IP information cleared</p>
             {elseif $requestRelatedIpRequestsCount == 0}
-                <p class="muted">None detected</p>
+                <p class="text-muted">None detected</p>
             {else}
                 {include file="view-request/related-requests.tpl" requests=$requestRelatedIpRequests}
             {/if}

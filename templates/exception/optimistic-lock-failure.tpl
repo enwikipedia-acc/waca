@@ -1,8 +1,8 @@
 {extends file="base.tpl"}
 {block name="content"}
     <div class="container-fluid">
-        <div class="row-fluid">
-            <div class="span12">
+        <div class="row">
+            <div class="col-md-12">
                 <div class="page-header"><h1>Edit Conflict!</h1></div>
                 <p>
                     It looks like someone else has modified the same object since you've been looking at it!

@@ -24,7 +24,7 @@
 
 <body>
 
-<nav class="navbar navbar-dark bg-dark fixed-top navbar-expand-sm">
+<nav class="navbar navbar-dark bg-dark fixed-top navbar-expand-lg">
     <a class="navbar-brand" href="{$baseurl}/internal.php">Account Creation Interface</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls=".navbar-collapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -38,7 +38,7 @@
     {include file="modal-flowchart.tpl"}
 {/block}
 
-<div class="container">
+<div class="container-fluid">
     {block name="sitenotice"}{/block}
 
     {block name="content"}
@@ -76,9 +76,10 @@
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="{$baseurl}/vendor/components/jquery/jquery.min.js" type="text/javascript"></script>
+<script src="{$baseurl}/lib/fontawesome/all.js" type="text/javascript"></script>
+<script src="{$baseurl}/lib/popper.min.js" type="text/javascript"></script>
 <script src="{$baseurl}/lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="{$baseurl}/lib/bootstrap-sortable/js/bootstrap-sortable.js" type="text/javascript"></script>
-<script src="{$baseurl}/lib/fontawesome/all.js" type="text/javascript"></script>
 
 <!-- Page-specific extra resources -->
 {foreach from=$extraJs item=js}

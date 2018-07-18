@@ -1,29 +1,29 @@
 ﻿{extends file="pagebase.tpl"}
 {block name="content"}
-    <div class="row-fluid">
-        <div class="header">
+    <div class="row">
+        <div class="header col-md-12">
             <h1>
                 Welcome Templates
                 {if $canAdd}
                     <small>
                         <a href="{$baseurl}/internal.php/welcomeTemplates/add" class="btn btn-success"><i
-                                    class="icon-white icon-plus"></i>&nbsp;Create new Welcome Template</a>
+                                    class="fas fa-plus"></i>&nbsp;Create new Welcome Template</a>
                     </small>
                 {/if}
             </h1>
         </div>
     </div>
-    <div class="row-fluid">
-        <div class="span12">
-            <p class="muted">
+    <div class="row">
+        <div class="col-md-12">
+            <p class="text-muted">
                 This page allows you to choose a template to use to automatically welcome the users you create. Use the
                 Select button to choose the template you wish to use. If the template you want to use is not on the
                 list, please ask an admin to add it for you.
             </p>
         </div>
     </div>
-    <div class="row-fluid">
-        <div class="span12">
+    <div class="row">
+        <div class="col-md-12">
             <table class="table table-striped table-hover table-nonfluid">
                 <thead>
                 <tr>
@@ -57,7 +57,7 @@
                                 {include file="security/csrf.tpl"}
                                 <input type="hidden" name="disable" value="true"/>
                                 <button type="submit" class="btn btn-primary"><i
-                                            class="icon-white icon-ok"></i>&nbsp;Select
+                                            class="fas fa-check"></i>&nbsp;Select
                                 </button>
                             </form>
                         </td>
@@ -84,13 +84,13 @@
                         <td>
                             <a href="{$baseurl}/internal.php/welcomeTemplates/view?template={$t->getId()}"
                                class="btn"><i
-                                        class="icon icon-eye-open"></i>&nbsp;View</a>
+                                        class="fas fa-eye"></i>&nbsp;View</a>
                         </td>
                         {if $canEdit}
                             <td>
                                 <a href="{$baseurl}/internal.php/welcomeTemplates/edit?template={$t->getId()}"
                                    class="btn btn-warning"><i
-                                            class="icon-white icon-pencil"></i>&nbsp;Edit</a>
+                                            class="fas fa-edit"></i>&nbsp;Edit</a>
                             </td>
                             <td>
                                 <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/delete"
@@ -98,8 +98,7 @@
                                     {include file="security/csrf.tpl"}
                                     <input type="hidden" name="template" value="{$t->getId()}"/>
                                     <input type="hidden" name="updateversion" value="{$t->getUpdateVersion()}"/>
-                                    <button type="submit" class="btn btn-danger"><i
-                                                class="icon-white icon-remove"></i>&nbsp;Delete
+                                    <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i>&nbsp;Delete
                                     </button>
                                 </form>
                             </td>
@@ -111,7 +110,7 @@
                                     {include file="security/csrf.tpl"}
                                     <input type="hidden" name="template" value="{$t->getId()}"/>
                                     <button type="submit" class="btn btn-primary"><i
-                                                class="icon-white icon-ok"></i>&nbsp;Select
+                                                class="fas fa-check"></i>&nbsp;Select
                                     </button>
                                 </form>
                             {else}

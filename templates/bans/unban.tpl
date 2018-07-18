@@ -1,6 +1,6 @@
 ﻿{extends file="pagebase.tpl"}
 {block name="content"}
-    <form class="form-horizontal" method="post">
+    <form method="post">
         {include file="security/csrf.tpl"}
         <fieldset>
             <legend>Unbanning {$ban->getTarget()|escape}</legend>
@@ -10,11 +10,9 @@
                 with the following reason?</p>
             <pre>{$ban->getReason()|escape}</pre>
 
-            <div class="control-group">
-                <label class="control-label" for="unbanreason">Reason for unbanning {$ban->getTarget()|escape}</label>
-                <div class="controls">
-                    <input type="text" class="input-xxlarge" id="unbanreason" name="unbanreason" required="required"/>
-                </div>
+            <div class="form-group">
+                <label for="unbanreason">Reason for unbanning {$ban->getTarget()|escape}</label>
+                <input class="form-control" type="text" id="unbanreason" name="unbanreason" required="required"/>
             </div>
         </fieldset>
 
@@ -22,7 +20,7 @@
 
         <div class="form-actions">
             <a class="btn" href="{$baseurl}/internal.php/bans">Cancel</a>
-            <button type="submit" class="btn btn-success"><i class="icon-white icon-ok"></i>&nbsp;Unban</button>
+            <button type="submit" class="btn btn-success"><i class="fas fa-check-circle"></i>&nbsp;Unban</button>
         </div>
     </form>
 {/block}

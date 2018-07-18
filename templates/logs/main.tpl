@@ -1,10 +1,9 @@
 ﻿{extends file="pagebase.tpl"}
 {block name="content"}
     <!-- tpl:logs/main.tpl -->
-    <div class="page-header">
-        <h1>Log Viewer&nbsp;
-            <small>See all the logs</small>
-        </h1>
+    <div class="jumbotron">
+      <h1>Log Viewer&nbsp;</h1>
+      <p>See all the logs</p>
     </div>
     {include file="logs/form.tpl"}
     {include file="logs/pager.tpl"}

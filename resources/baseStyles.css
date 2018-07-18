@@ -20,5 +20,19 @@ body {
   color: white;
 }
 .dropdown-item i, .dropdown-item a{
-  color: black;
+  color: white;
+}
+.dropdown-item:hover, .dropdown-item:hover a{
+  background-color: black;
+  color: white;
+}
+/* legacy bootstrap stuff */
+.icon-white i{
+  color: white
+}
+.icon-black i{
+  color: black
+}
+.navbar-dark a:hover {
+    color: lightgrey;
 }

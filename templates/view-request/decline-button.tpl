@@ -1,13 +1,13 @@
-<form class="form-compact" action="{$baseurl}/internal.php/viewRequest/close" method="post">
-    <div class="btn-group span6">
-        <button type="button" class="btn btn-warning dropdown-toggle span12" data-toggle="dropdown">
+<form class="col-md-6" action="{$baseurl}/internal.php/viewRequest/close" method="post">
+    <div class="btn-group">
+        <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
             Decline&nbsp;<span class="caret"></span>
         </button>
 
         <ul class="dropdown-menu">
             {foreach $declineReasons as $reason}
                 <li>
-                    <button class="btn-link" name="template" value="{$reason->getId()}" type="submit"
+                    <button class="btn-link dropdown-item" name="template" value="{$reason->getId()}" type="submit"
                             {if !$currentUser->getAbortPref() && $reason->getJsquestion() != ''}
                         onclick="return confirm('{$reason->getJsquestion()|escape}')"
                             {/if}>

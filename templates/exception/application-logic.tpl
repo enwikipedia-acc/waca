@@ -1,8 +1,8 @@
 {extends file="base.tpl"}
 {block name="content"}
     <div class="container-fluid">
-        <div class="row-fluid">
-            <div class="span12">
+        <div class="row">
+            <div class="col-md-12">
                 <div class="page-header"><h1>Oops...</h1></div>
                 <p>Something went wrong with your last action.</p>
                 {include file="alert.tpl" alertblock=true alertclosable=false alerttype="alert-error"

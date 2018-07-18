@@ -1,4 +1,4 @@
-<table class="table table-striped table-hover table-condensed table-nonfluid">
+<table class="table table-striped table-hover table-condensed">
     <thead>
     <tr>
         <th>Timestamp</th>
@@ -13,7 +13,7 @@
     <tbody>
     {foreach from=$logs item=entry name=logloop}
         <tr>
-            <td>{$entry.timestamp|date} <em class="muted">({$entry.timestamp|relativedate})</em></td>
+            <td>{$entry.timestamp|date} <em class="text-muted">({$entry.timestamp|relativedate})</em></td>
             <td>
                 {if $entry.userid != -1}
                     <a href='{$baseurl}/internal.php/statistics/users/detail?user={$entry.userid|escape}'>

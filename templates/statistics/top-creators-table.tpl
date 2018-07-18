@@ -13,7 +13,7 @@
             <td>{$row.count}</td>
             <td>
                 <a href="#"
-                   {if $row.status == 'Suspended'}class="muted"
+                   {if $row.status == 'Suspended'}class="text-muted"
                    {elseif $row.status == 'Admin'}class="text-success"{/if}>
                     {$row.username|escape}
                 </a>

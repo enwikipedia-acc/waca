@@ -1,6 +1,6 @@
 ﻿{extends file="base.tpl"}
 {block name="content"}
-    <div class="page-header">
+    <div class="jumbotron">
         <h1>Register for Tool Access</h1>
     </div>
     <div class="alert alert-block alert-info">
@@ -8,7 +8,7 @@
         <p>
             This form is for requesting access to this tool's management interface (used by existing Wikipedians to help
             you get an account). If you want to request an account for Wikipedia, then
-            <a class="btn btn-primary btn-small" href="index.php">click here</a>
+            <a class="btn btn-primary btn-sm" href="index.php">click here</a>
         </p>
     </div>
     {include file="sessionalerts.tpl"}
