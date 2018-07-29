@@ -5,7 +5,7 @@
         <form action="{$baseurl}/internal.php/viewRequest/comment" method="post" class="form-horizontal span8">
             {include file="security/csrf.tpl"}
 
-            {include file="alert.tpl" alertblock=false alertclosable=false alerttype="alert-error" alertheader=""
+            {include file="alert.tpl" alertblock=false alertclosable=false alerttype="alert-danger" alertheader=""
             alertmessage="<strong>Please read this information carefully.</strong>"}
 
             <p>

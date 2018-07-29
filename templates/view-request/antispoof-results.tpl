@@ -2,7 +2,7 @@
 {if !$spoofs}
     <p class="text-muted">None detected</p>
 {elseif !is_array($spoofs)}
-    <div class="alert alert-error">
+    <div class="alert alert-danger">
         {$spoofs|escape}
     </div>
 {else}

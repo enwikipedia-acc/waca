@@ -2,7 +2,7 @@
 <div class="collapse navbar-collapse">
     <ul class="navbar-nav">
         {if $nav__canRequests}
-            <li><a class="nav-link" href="{$baseurl}/internal.php"><i class="fas fa-home "></i>&nbsp;Requests</a></li>
+            <li><a class="nav-link" href="{$baseurl}/internal.php"><i class="fas fa-home"></i>&nbsp;Requests</a></li>
         {/if}
         {if $nav__canLogs || $nav__canUsers || $nav__canSearch || $nav__canStats }
             <li class="nav-link dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown"><i
@@ -107,9 +107,9 @@
             </li>
         {else}
             <li>
-                <p class="navbar-text pull-right">
+                <span class="navbar-text text-muted pull-right">
                     <strong>Not logged in</strong>
-                </p>
+                </span>
             </li>
         {/if}
     </ul>

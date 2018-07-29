@@ -3,7 +3,9 @@
   "minimum-stability": "stable",
   "require": {
     "smarty/smarty": "v3.1.29",
-    "components/jquery": "3.3.1"
+    "components/jquery": "3.3.1",
+    "twbs/bootstrap": "^4.1",
+    "twitter/typeahead.js": "^0.11.1"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "~2.7",

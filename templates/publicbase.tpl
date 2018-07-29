@@ -6,14 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Le styles -->
-    <link href="{$baseurl}/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{$baseurl}/vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <style type="text/css">
         body {
             padding-top: 20px;
             padding-bottom: 40px;
         }
     </style>
-    <link href="{$baseurl}/lib/bootstrap-sortable/css/bootstrap-sortable.css" rel="stylesheet"/>
 
     <!-- Our extra styles -->
     <link href="{$baseurl}/resources/styles.css" rel="stylesheet"/>
@@ -26,7 +25,7 @@
 
 <body>
 
-<div class="container-fluid">
+<div class="container">
 
     <div class="masthead">
         <ul class="nav nav-pills float-right">
@@ -68,8 +67,7 @@
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="{$baseurl}/vendor/components/jquery/jquery.min.js" type="text/javascript"></script>
-<script src="{$baseurl}/lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="{$baseurl}/lib/bootstrap-sortable/js/bootstrap-sortable.js" type="text/javascript"></script>
+<script src="{$baseurl}/vendor/twbs/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
 
 {if $tailScript}
     <script type="text/javascript">

@@ -114,3 +114,19 @@ td.warning{
 td.info{
     background-color: #d9edf7;
 }
+.jumbotron {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: white;
+}
+.jumbotron h1 {
+    border-bottom: 1px solid lightgrey;
+}
+
+.card-header {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+.btn-wide {
+  width: 100%;
+}

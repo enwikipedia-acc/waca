@@ -1,4 +1,4 @@
-<form class="col-md-6" action="{$baseurl}/internal.php/viewRequest/close" method="post">
+<form class="col-md-4" action="{$baseurl}/internal.php/viewRequest/close" method="post">
     <div class="btn-group">
         <button type="button" class="btn btn-warning dropdown-toggle" data-toggle="dropdown">
             Decline&nbsp;<span class="caret"></span>

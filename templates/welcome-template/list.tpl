@@ -72,7 +72,7 @@
                         </td>
                         {if $canEdit}
                             <td>
-                                <a class="btn {if count($t->getUsersUsingTemplate()) > 0}btn-warning{else}disabled{/if}"
+                                <a class="btn {if count($t->getUsersUsingTemplate()) > 0}btn-warning{else}btn-primary disabled{/if}"
                                    {if count($t->getUsersUsingTemplate()) > 0}rel="popover"{/if} href="#"
                                    title="Users using this template" id="#tpl{$t->getId()}"
                                    data-content="{{include file="linkeduserlist.tpl" users=$t->getUsersUsingTemplate()}|escape}"
@@ -83,7 +83,7 @@
                         {/if}
                         <td>
                             <a href="{$baseurl}/internal.php/welcomeTemplates/view?template={$t->getId()}"
-                               class="btn"><i
+                               class="btn btn-primary"><i
                                         class="fas fa-eye"></i>&nbsp;View</a>
                         </td>
                         {if $canEdit}

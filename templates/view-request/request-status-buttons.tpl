@@ -3,13 +3,16 @@
 <div class="row">
     {if $requestIsReserved}
         {include file="view-request/created-button.tpl"}
-        <div class="col-md-4">
-            {include file="view-request/decline-button.tpl"}{include file="view-request/custom-button.tpl"}
+        <div class="col-md-5">
+            <div class="row">
+                {include file="view-request/decline-button.tpl"}{include file="view-request/custom-button.tpl"}
+            </div>
         </div>
     {/if}
 
     <div class="col-md-4{if ! $requestIsReserved} offset-md-8{/if}">
-        {if $requestIsClosed}
+        <div class="row">
+            {if $requestIsClosed}
             <div class="col-md-12">
                 <form action="{$baseurl}/internal.php/viewRequest/defer" method="post" class="form-compact">
                     {include file="security/csrf.tpl"}
@@ -31,6 +34,7 @@
                 </form>
             </div>
         {/if}
+        </div>
     </div>
 
 </div>

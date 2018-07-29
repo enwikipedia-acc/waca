@@ -1,6 +1,6 @@
 <!-- requestlist.tpl -->
 {if $requests.total > $requestLimitShowOnly}
-    <div class="alert alert-error">
+    <div class="alert alert-danger">
         <h4>Miser mode:</h4>
         <p>
             Not all requests are shown for speed. Only {$requestLimitShowOnly} of {$requests.total} are shown here.

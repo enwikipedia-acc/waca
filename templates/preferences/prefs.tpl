@@ -57,7 +57,7 @@
                                 confirmed
                             {/if}
                         </div>
-                        <div class="col-md-4 alert-block alert{if $currentUser->getOAuthIdentity()->blocked} alert-error{else} alert-success{/if}">
+                        <div class="col-md-4 alert-block alert{if $currentUser->getOAuthIdentity()->blocked} alert-danger{else} alert-success{/if}">
                             {if $currentUser->getOAuthIdentity()->blocked}
                                 <i class="fas fa-times"></i>
                                 &nbsp;
@@ -93,16 +93,16 @@
                 <div class="form-group">
                 <label for="grants-card">Grants:</label>
                     <div class="row-fluid" id="grants-card">
-                        <div class="alert{if $currentUser->oauthCanUse()} alert-success{else} alert-error{/if} col-md-4 alert-block">
+                        <div class="alert{if $currentUser->oauthCanUse()} alert-success{else} alert-danger{/if} col-md-4 alert-block">
                             <i class="fas fa-{if $currentUser->oauthCanUse()}check{else}times{/if}"></i>&nbsp;Basic
                             rights
                         </div>
                         {*
-                          <div class="alert{if $currentUser->oauthCanEdit()} alert-success{else} alert-error{/if} col-md-4 alert-block">
+                          <div class="alert{if $currentUser->oauthCanEdit()} alert-success{else} alert-danger{/if} col-md-4 alert-block">
                             <i class="fas fa-{if $currentUser->oauthCanEdit()}check{else}times{/if}"></i>&nbsp;Create, edit, and move pages
                           </div>
 
-                          <div class="alert{if $currentUser->oauthCanCreateAccount()} alert-success{else} alert-error{/if} col-md-4 alert-block">
+                          <div class="alert{if $currentUser->oauthCanCreateAccount()} alert-success{else} alert-danger{/if} col-md-4 alert-block">
                             <i class="fas fa-{if $currentUser->oauthCanCreateAccount()}check{else}times{/if}"></i>&nbsp;Create accounts
                           </div>
                         *}

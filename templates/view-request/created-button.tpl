@@ -1,6 +1,6 @@
 {* If custom create reasons are active, then make the Created button a split button dropdown. *}
 <form method="post" action="{$baseurl}/internal.php/viewRequest/close">
-    <div class="btn-group col-md-4">
+    <div class="btn-group col-md-3">
         {if !empty($createReasons)}
             <button class="btn btn-success" type="submit" name="template" value="{$createdId}">
                 {$createdName|escape}

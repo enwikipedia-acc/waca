@@ -93,7 +93,7 @@ class SessionAlert
      */
     public static function error($message, $title = "Error!")
     {
-        self::append(new SessionAlert($message, $title, "alert-error", true, true));
+        self::append(new SessionAlert($message, $title, "alert-danger", true, true));
     }
 
     /**

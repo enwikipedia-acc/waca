@@ -7,9 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- bootstrap styles -->
-    <link href="{$baseurl}/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="{$baseurl}/vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="{$baseurl}/resources/baseStyles.css" rel="stylesheet"/>
-    <link href="{$baseurl}/lib/bootstrap-sortable/css/bootstrap-sortable.css" rel="stylesheet"/>
 
     <!-- fontawesome -->
     <link href="{$baseurl}/lib/fontawesome/all.css" rel="stylesheet"/>
@@ -78,8 +77,8 @@
 <script src="{$baseurl}/vendor/components/jquery/jquery.min.js" type="text/javascript"></script>
 <script src="{$baseurl}/lib/fontawesome/all.js" type="text/javascript"></script>
 <script src="{$baseurl}/lib/popper.min.js" type="text/javascript"></script>
-<script src="{$baseurl}/lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="{$baseurl}/lib/bootstrap-sortable/js/bootstrap-sortable.js" type="text/javascript"></script>
+<script src="{$baseurl}/vendor/twbs/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+<script src="{$baseurl}/vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js"
 
 <!-- Page-specific extra resources -->
 {foreach from=$extraJs item=js}
