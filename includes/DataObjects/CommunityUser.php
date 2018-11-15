@@ -197,11 +197,6 @@ class CommunityUser extends User
 		return false;
 	}
     
-	public function isIdentified()
-	{
-		return false;
-	}
-    
 	public function isSuspended()
 	{
 		return false;
