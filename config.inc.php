@@ -115,7 +115,10 @@ $onRegistrationNewbieCheckEditCount = 20; // Minimum amount of edits on Wikipedi
 $onRegistrationNewbieCheckAge = 5184000; // Account age on Wikipedia in seconds.
 
 // Force identification to the foundation
-$forceIdentification = true;
+// false to disable
+// number for the minimum version of the policy to allow.
+$forceIdentification = false;
+$currentIdentificationVersion = false;
 
 // minimum password version
 //   0 = hashed

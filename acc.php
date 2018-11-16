@@ -438,7 +438,7 @@ SQL;
 		die();
 	}
     
-	if (!$user->isIdentified() && $forceIdentification == 1) {
+	if ($user->getIdentified() < $forceIdentification && $forceIdentification !== false) {
 		header("Location: $baseurl/acc.php?error=noid");
 		die();
 	}

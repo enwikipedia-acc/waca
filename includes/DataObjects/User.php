@@ -661,11 +661,6 @@ SQL
 		return $this->isCheckuserCache;
 	}
     
-	public function isIdentified()
-	{
-		return $this->identified == 1;
-	}
-    
 	public function isSuspended()
 	{
 		return $this->status == "Suspended";

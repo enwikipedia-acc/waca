@@ -95,7 +95,7 @@ function showlogin()
 			$errorbartext = BootstrapSkin::displayAlertBox("Username and/or password incorrect. Please try again.", "alert-error", "Auth failure", true, false, true);
 		}
 		elseif ($_GET['error'] == 'noid') {
-			$errorbartext = BootstrapSkin::displayAlertBox("User account is not identified. Please email accounts-enwiki-l@lists.wikimedia.org if you believe this is in error.", "alert-error", "Auth failure", true, false, true);
+			$errorbartext = BootstrapSkin::displayAlertBox("It doesn't look like you've signed the most recent version of the <a href=\"https://meta.wikimedia.org/wiki/Access_to_nonpublic_personal_data_policy\">access to nonpublic personal data policy</a>.</p><p>Please email accounts-enwiki-l@lists.wikimedia.org if you believe this is in error.", "alert-error", "Auth failure", true, false, true);
 		}
 		elseif ($_GET['error'] == 'newacct') {
 			$errorbartext = BootstrapSkin::displayAlertBox("I'm sorry, but, your account has not been approved by a site administrator yet. Please stand by.", "alert-info", "Account pending", true, false, true);
