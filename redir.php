@@ -10,6 +10,7 @@ $toolList = array(
 	'stopforumspam' => 'https://www.stopforumspam.com/ipcheck/%DATA%',
 	'sulutil' => '//tools.wmflabs.org/quentinv57-tools/tools/sulinfo.php?showinactivity=1&showblocks=1&username=%DATA%',
 	'google' => 'https://www.google.com/search?q=%DATA%',
+    'rangefinder' => 'https://tools.wmflabs.org/rangeblockfinder/?ip=%DATA%'
 );
 
 if(!isset($_GET['tool'])

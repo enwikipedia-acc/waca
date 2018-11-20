@@ -11,6 +11,7 @@
   <a id="IPActiveLocalBlock-{$index}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:BlockList/{$ipaddress}" onMouseUp="$('#IPActiveLocalBlock-{$index}').addClass('btn-visited');">Active Local Blocks</a>
   <a id="IPGlobalBlockLog-{$index}" class="btn btn-small" target="_blank" href="https://meta.wikimedia.org/w/index.php?title=Special:Log&amp;type=gblblock&amp;page={$ipaddress}" onMouseUp="$('#IPGlobalBlockLog-{$index}').addClass('btn-visited');">Global Block Log</a>
   <a id="IPActiveGlobalBlock-{$index}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:GlobalBlockList/{$ipaddress}" onMouseUp="$('#IPActiveGlobalBlock-{$index}').addClass('btn-visited');">Active Global Blocks</a>
+  <a id="IPRangeFinder-{$index}" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=rangefinder&amp;data={$ipaddress}" onMouseUp="$('#IPRangeFinder-{$index}').addClass('btn-visited');">Rangeblock finder</a>
   <div class="btn-group">
     <a id="IPWhois-{$index}" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=tl-whois&amp;data={$ipaddress}" onMouseUp="$('#IPWhois-{$index}').addClass('btn-visited');">Whois</a>
     <a id="IPWhois2-{$index}" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=oq-whois&amp;data={$ipaddress}" onMouseUp="$('#IPWhois2-{$index}').addClass('btn-visited');">(alt)</a>
