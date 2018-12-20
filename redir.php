@@ -2,13 +2,11 @@
 
 $toolList = array(
 	'tparis-pcount' => '//tools.wmflabs.org/supercount/index.php?user=%DATA%&project=en.wikipedia',
-	'luxo-contributions' => '//tools.wmflabs.org/quentinv57-tools/tools/globalcontribs.php?username=%DATA%',
-	'guc' => '//tools.wmflabs.org/guc/?user=%DATA%',
+	'guc' => '//tools.wmflabs.org/guc/?by=date&user=%DATA%',
 	'oq-whois' => 'https://whois.domaintools.com/%DATA%',
 	'tl-whois' => 'https://tools.wmflabs.org/whois/gateway.py?lookup=true&ip=%DATA%',
 	'honeypot' => 'https://www.projecthoneypot.org/ip_%DATA%',
 	'stopforumspam' => 'https://www.stopforumspam.com/ipcheck/%DATA%',
-	'sulutil' => '//tools.wmflabs.org/quentinv57-tools/tools/sulinfo.php?showinactivity=1&showblocks=1&username=%DATA%',
 	'google' => 'https://www.google.com/search?q=%DATA%',
     'rangefinder' => 'https://tools.wmflabs.org/rangeblockfinder/?ip=%DATA%'
 );
