@@ -16,7 +16,7 @@
 
 <tr>
   
-	<td>
+  <td>
     <a class="btn btn-small{if $r->hasComments() == true} btn-info{/if}" href="{$baseurl}/acc.php?action=zoom&amp;id={$r->getId()}"><i class="{if $r->hasComments() == true}icon-white{else}icon-black{/if} icon-search"></i><span class="visible-desktop">&nbsp;{$r->getId()}</span></a>
   </td>
   
@@ -40,14 +40,14 @@
   </td>
 
   {* IP Address *}
-  <td>
+  <td {if $currentUser->isAdmin() || $currentUser->isCheckUser()}data-value="{ip2long($r->getTrustedIp())}"{/if}>
     {if $currentUser->isAdmin() || $currentUser->isCheckUser()}
       <span class="visible-desktop">
         {ipDisplay}
       </span>
     {/if}
   </td>
-	
+
   {* Username *}
   <td>
     <span class="hidden-phone">
@@ -56,14 +56,14 @@
   </td>
   
   {* Request Time *}
-	<td>
+  <td data-value="{strtotime($r->getDate())}">
     <span class="visible-desktop">
       {timeDisplay}
     </span>
   </td>
   
   {* Bans *}
-	<td>
+  <td>
     {if $currentUser->isAdmin() || $currentUser->isCheckuser() }
       <div class="btn-group hidden-phone">
         <a class="btn dropdown-toggle btn-small btn-danger" data-toggle="dropdown" href="#">
@@ -77,7 +77,7 @@
       </div>
     {/if}
   </td>
-	
+
   {* Reserve status *}
   <td>
     {if $r->getReserved() != false && $r->getReserved() != $currentUser->getId()}
