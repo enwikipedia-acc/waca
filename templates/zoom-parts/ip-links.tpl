@@ -16,6 +16,7 @@
   <a id="IPHoneypot-{$index}" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=honeypot&amp;data={$ipaddress}" onMouseUp="$('#IPHoneypot-{$index}').addClass('btn-visited');">Project Honeypot</a>
   <a id="IPStopForumSpam-{$index}" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=stopforumspam&amp;data={$ipaddress}" onMouseUp="$('#IPStopForumSpam-{$index}').addClass('btn-visited');">StopForumSpam</a>
   <a id="IPAbuseLog-{$index}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:AbuseLog&amp;wpSearchUser={$ipaddress}" onMouseUp="$('#IPAbuseLog-{$index}').addClass('btn-visited');">Abuse Filter Log</a>
+  <a id="IPCheck-{$index}" class="btn btn-small" target="_blank" href="{$baseurl}/redir.php?tool=ipcheck&amp;data={$ipaddress}" onMouseUp="$('#IPCheck-{$index}').addClass('btn-visited');">IP Check</a>
   {if $currentUser->isCheckUser() == true}
     <a id="IPCU-{$index}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/w/index.php?title=Special:CheckUser&amp;ip={$ipaddress}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$request->getId()}" onMouseUp="$('#IPCU-{$index}').addClass('btn-visited');">CheckUser</a>
     <a id="IPCULog-{$index}" class="btn btn-small" target="_blank" href="https://en.wikipedia.org/wiki/Special:CheckUserLog?cuSearchType=target&cuSearch={$ipaddress}" onMouseUp="$('#IPCULog-{$index}').addClass('btn-visited');">CU Log</a>
