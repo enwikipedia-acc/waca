@@ -1289,7 +1289,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 			
 			Notification::requestClosed($request, $crea);
 			BootstrapSkin::displayAlertBox(
-				"Request " . $request->getId() . " (" . htmlentities($request->getName(), ENT_COMPAT, 'UTF-8') . ") marked as '" . $crea . "'.", 
+				"Request " . $request->getId() . " (" . htmlentities($request->getName(), ENT_COMPAT, 'UTF-8') . ") marked as '" . htmlentities($crea, ENT_COMPAT, 'UTF-8') . "'.", 
 				"alert-success");
 		}
 		else if ($_POST['action'] == "mail") {
@@ -1355,7 +1355,7 @@ elseif ($action == "done" && $_GET['id'] != "") {
 		}
 
 		Notification::requestClosed($request, $crea);
-		BootstrapSkin::displayAlertBox("Request " . $request->getId() . " (" . htmlentities($request->getName(), ENT_COMPAT, 'UTF-8') . ") marked as '" . $crea . "'.", "alert-success");
+		BootstrapSkin::displayAlertBox("Request " . $request->getId() . " (" . htmlentities($request->getName(), ENT_COMPAT, 'UTF-8') . ") marked as '" . htmlentities($crea, ENT_COMPAT, 'UTF-8') . "'.", "alert-success");
 		
 		$towhom = $request->getEmail();
 		if ($gem != "0") {
