@@ -1844,7 +1844,7 @@ elseif ($action == "sendtouser") {
     
 	$database->transactionally(function() use ($database, $user, $requestObject, $curuser)
 	{
-		$updateStatement = $database->prepare("UPDATE request SET reserved = :userid WHERE id = :request LIMIT 1;");
+		$updateStatement = $database->prepare("UPDATE request SET reserved = :userid WHERE id = :request;");
 		$updateStatement->bindValue(":userid", $user->getId());
 		$updateStatement->bindValue(":request", $requestObject->getId());
 		if (!$updateStatement->execute()) {

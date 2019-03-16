@@ -80,7 +80,7 @@ SQL
 			$statement = $this->dbObject->prepare(<<<SQL
 UPDATE comment
 SET comment = :comment, visibility = :visibility
-WHERE id = :id LIMIT 1;
+WHERE id = :id;
 SQL
 			);
 			$statement->bindValue(":id", $this->id);

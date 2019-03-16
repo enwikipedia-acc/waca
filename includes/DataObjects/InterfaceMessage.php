@@ -55,7 +55,7 @@ class InterfaceMessage extends DataObject
 		}
 		else {
 // update
-			$statement = $this->dbObject->prepare("UPDATE interfacemessage SET type = :type, description = :desc, content = :content, updatecounter = updatecounter + 1 WHERE id = :id LIMIT 1;");
+			$statement = $this->dbObject->prepare("UPDATE interfacemessage SET type = :type, description = :desc, content = :content, updatecounter = updatecounter + 1 WHERE id = :id;");
 			$statement->bindValue(":id", $this->id);
 			$statement->bindValue(":type", $this->type);
 			$statement->bindValue(":desc", $this->description);

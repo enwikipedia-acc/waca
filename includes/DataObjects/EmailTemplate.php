@@ -138,7 +138,7 @@ SET name = :name,
 	defaultaction = :defaultaction,
 	active = :active,
 	preloadonly = :preloadonly
-WHERE id = :id LIMIT 1;
+WHERE id = :id;
 SQL
 			);
 			$statement->bindValue(":id", $this->id);
