@@ -54,7 +54,7 @@ class GeoLocation extends DataObject
 		}
 		else {
 // update
-			$statement = $this->dbObject->prepare("UPDATE `geolocation` SET address = :address, data = :data WHERE id = :id LIMIT 1;");
+			$statement = $this->dbObject->prepare("UPDATE `geolocation` SET address = :address, data = :data WHERE id = :id;");
 			$statement->bindValue(":address", $this->address);
 			$statement->bindValue(":id", $this->id);
 			$statement->bindValue(":data", $this->data);

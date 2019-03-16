@@ -87,7 +87,7 @@ abstract class DataObject
 		$statement = $this->dbObject->prepare(
 			"DELETE FROM `"
 			. strtolower(get_called_class())
-			. "` WHERE id = :id LIMIT 1;");
+			. "` WHERE id = :id;");
 
 		$statement->bindValue(":id", $this->id);
 		$statement->execute();

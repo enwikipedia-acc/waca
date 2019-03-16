@@ -167,7 +167,7 @@ SQL
 		}
 		else {
 // update
-			$statement = $this->dbObject->prepare("UPDATE `ban` SET duration = :duration, active = :active, user = :user WHERE id = :id LIMIT 1;");
+			$statement = $this->dbObject->prepare("UPDATE `ban` SET duration = :duration, active = :active, user = :user WHERE id = :id;");
 			$statement->bindValue(":id", $this->id);
 			$statement->bindValue(":duration", $this->duration);
 			$statement->bindValue(":active", $this->active);

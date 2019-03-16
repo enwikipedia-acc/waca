@@ -93,7 +93,7 @@ SQL
 			$statement = $this->dbObject->prepare("UPDATE `request` SET " .
 				"status = :status, checksum = :checksum, emailsent = :emailsent, emailconfirm = :emailconfirm, " .
 				"reserved = :reserved " .
-				"WHERE id = :id LIMIT 1;");
+				"WHERE id = :id;");
 			$statement->bindValue(":id", $this->id);
 			$statement->bindValue(":status", $this->status);
 			$statement->bindValue(":checksum", $this->checksum);

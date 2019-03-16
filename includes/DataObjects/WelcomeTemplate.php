@@ -54,7 +54,7 @@ class WelcomeTemplate extends DataObject
 		}
 		else {
 // update
-			$statement = $this->dbObject->prepare("UPDATE `welcometemplate` SET usercode = :usercode, botcode = :botcode WHERE id = :id LIMIT 1;");
+			$statement = $this->dbObject->prepare("UPDATE `welcometemplate` SET usercode = :usercode, botcode = :botcode WHERE id = :id;");
 			$statement->bindValue(":id", $this->id);
 			$statement->bindValue(":usercode", $this->usercode);
 			$statement->bindValue(":botcode", $this->botcode);

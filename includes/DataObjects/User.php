@@ -332,8 +332,7 @@ SQL
 					confirmationdiff = :confirmationdiff, emailsig = :emailsig, 
 					oauthrequesttoken = :ort, oauthrequestsecret = :ors, 
 					oauthaccesstoken = :oat, oauthaccesssecret = :oas 
-				WHERE id = :id 
-				LIMIT 1;
+				WHERE id = :id;
 SQL
 			);
 			$statement->bindValue(":id", $this->id);
