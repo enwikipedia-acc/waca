@@ -246,7 +246,7 @@ class PageCustomClose extends PageCloseRequest
         $this->getNotificationHelper()->requestClosed($request, $notificationCloseType);
 
         $requestName = htmlentities($request->getName(), ENT_COMPAT, 'UTF-8');
-        SessionAlert::success("Request {$request->getId()} ({$requestName}) marked as 'Done'.");
+        SessionAlert::success("Request {$request->getId()} ({$requestName}) closed as {$notificationCloseType}.");
     }
 
     /**

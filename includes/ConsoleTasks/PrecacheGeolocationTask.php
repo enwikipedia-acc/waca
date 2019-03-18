@@ -24,6 +24,8 @@ class PrecacheGeolocationTask extends ConsoleTaskBase
             $database->beginTransaction();
 
             try {
+                echo ". Fetching data...\n";
+
                 // fetch a bunch of un-geolocated IPs from the database.
                 // Note we have to parse the forwardedip field in the database so we can test against the geolocation
                 // table.
@@ -49,7 +51,7 @@ class PrecacheGeolocationTask extends ConsoleTaskBase
                         ON char_length(r.forwardedip) - char_length(replace(r.forwardedip, ',', '')) >= n.n - 1
                       WHERE ip <> '127.0.0.1'
                     ) p
-                    WHERE NOT EXISTS (SELECT 1 FROM geolocation g WHERE g.address = p.prox)
+                    WHERE NOT EXISTS (SELECT 1 FROM geolocation g WHERE g.address = p.prox FOR UPDATE)
                     LIMIT 10;
 SQL
                 );

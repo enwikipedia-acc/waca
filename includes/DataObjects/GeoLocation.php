@@ -28,12 +28,15 @@ class GeoLocation extends DataObject
     /**
      * @param string      $address
      * @param PdoDatabase $database
-     *
+     * @param bool        $forUpdate
      * @return GeoLocation
      */
-    public static function getByAddress($address, PdoDatabase $database)
+    public static function getByAddress($address, PdoDatabase $database, $forUpdate = false)
     {
-        $statement = $database->prepare("SELECT * FROM geolocation WHERE address = :id LIMIT 1;");
+        $lockMode = $forUpdate ? ' FOR UPDATE' : '';
+        $sql = "SELECT * FROM geolocation WHERE address = :id LIMIT 1" . $lockMode;
+
+        $statement = $database->prepare($sql);
         $statement->bindValue(":id", $address);
 
         $statement->execute();
@@ -51,10 +54,8 @@ class GeoLocation extends DataObject
     {
         if ($this->isNew()) {
             // insert
-            $statement = $this->dbObject->prepare(<<<SQL
-INSERT INTO `geolocation` (address, data) VALUES (:address, :data);
-SQL
-            );
+            $statement = $this->dbObject->prepare("INSERT INTO `geolocation` (address, data) VALUES (:address, :data) ON DUPLICATE KEY UPDATE address = address;");
+
             $statement->bindValue(":address", $this->address);
             $statement->bindValue(":data", $this->data);
 
@@ -70,8 +71,7 @@ SQL
             $statement = $this->dbObject->prepare(<<<SQL
 UPDATE `geolocation`
 SET address = :address, data = :data, updateversion = updateversion + 1
-WHERE id = :id AND updateversion = :updateversion
-LIMIT 1;
+WHERE id = :id AND updateversion = :updateversion;
 SQL
             );
 

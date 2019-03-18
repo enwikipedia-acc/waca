@@ -14,18 +14,11 @@
        onMouseUp="$('#IPDelEdits-{$index}').addClass('btn-visited');">
         Deleted Edits
     </a>
-    <div class="btn-group">
-        <a id="IPGlobalContribs-{$index}" class="btn btn-small" target="_blank"
-           href="{$baseurl}/redir.php?tool=luxo-contributions&amp;data={$ipaddress}"
-           onMouseUp="$('#IPGlobalContribs-{$index}').addClass('btn-visited');">
-            Global Contribs (GCW)
-        </a>
-        <a id="IPGUC-{$index}" class="btn btn-small" target="_blank"
-           href="{$baseurl}/redir.php?tool=guc&amp;data={$ipaddress}"
-           onMouseUp="$('#IPGUC-{$index}').addClass('btn-visited');">
-            (GUC)
-        </a>
-    </div>
+    <a id="IPGUC-{$index}" class="btn btn-small" target="_blank"
+       href="{$baseurl}/redir.php?tool=guc&amp;data={$ipaddress}"
+       onMouseUp="$('#IPGUC-{$index}').addClass('btn-visited');">
+        (GUC)
+    </a>
     <a id="IPLocalBlockLog-{$index}" class="btn btn-small" target="_blank"
        href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=block&amp;page={$ipaddress}"
        onMouseUp="$('#IPLocalBlockLog-{$index}').addClass('btn-visited');">
@@ -45,6 +38,11 @@
        href="https://en.wikipedia.org/wiki/Special:GlobalBlockList/{$ipaddress}"
        onMouseUp="$('#IPActiveGlobalBlock-{$index}').addClass('btn-visited');">
         Active Global Blocks
+    </a>
+    <a id="IPRangeFinder-{$index}" class="btn btn-small" target="_blank"
+       href="{$baseurl}/redir.php?tool=rangefinder&amp;data={$ipaddress}"
+       onMouseUp="$('#IPRangeFinder-{$index}').addClass('btn-visited');">
+        Rangeblock finder
     </a>
     <div class="btn-group">
         <a id="IPWhois-{$index}" class="btn btn-small" target="_blank"
@@ -72,6 +70,11 @@
        href="https://en.wikipedia.org/w/index.php?title=Special:AbuseLog&amp;wpSearchUser={$ipaddress}"
        onMouseUp="$('#IPAbuseLog-{$index}').addClass('btn-visited');">
         Abuse Filter Log
+    </a>
+    <a id="IPCheck-{$index}" class="btn btn-small" target="_blank"
+       href="{$baseurl}/redir.php?tool=ipcheck&amp;data={$ipaddress}"
+       onMouseUp="$('#IPCheck-{$index}').addClass('btn-visited');">
+        IP Check
     </a>
     {if $canSeeCheckuserData}
         <a id="IPCU-{$index}" class="btn btn-small" target="_blank"

@@ -72,7 +72,8 @@ class PageCloseRequest extends RequestActionBase
         // be rolled back.
 
         $this->getNotificationHelper()->requestClosed($request, $template->getName());
-        SessionAlert::success("Request {$request->getId()} has been closed");
+        $sanitisedTemplateName = htmlentities($template->getName(), ENT_COMPAT, 'UTF-8');
+        SessionAlert::success("Request {$request->getId()} has been closed as {$sanitisedTemplateName}");
 
         $this->sendMail($request, $template->getText(), $currentUser, false);
 

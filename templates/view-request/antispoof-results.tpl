@@ -37,11 +37,6 @@
                            onMouseUp="$('#SpoofLogs-{$spoof@iteration}').addClass('btn-visited');">
                             Logs
                         </a>
-                        <a id="SpoofSUL-{$spoof@iteration}" class="btn btn-small" target="_blank"
-                           href="{$baseurl}/redir.php?tool=sulutil&amp;data={$spoof|escape:'url'}"
-                           onMouseUp="$('#SpoofSUL-{$spoof@iteration}').addClass('btn-visited');">
-                            SUL
-                        </a>
                         <a id="SpoofCentralAuth-{$spoof@iteration}" class="btn btn-small" target="_blank"
                            href="https://en.wikipedia.org/wiki/Special:CentralAuth/{$spoof|escape:'url'}"
                            onMouseUp="$('#SpoofCentralAuth-{$spoof@iteration}').addClass('btn-visited');">

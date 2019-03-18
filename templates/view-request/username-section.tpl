@@ -16,10 +16,10 @@
            onMouseUp="$('#UsernameCreationLog').addClass('btn-visited');">
             Creation log
         </a>
-        <a id="UsernameSUL" class="btn btn-small" target="_blank"
-           href="{$baseurl}/redir.php?tool=sulutil&amp;data={$requestName|escape:'url'}"
-           onMouseUp="$('#UsernameSUL').addClass('btn-visited');">
-            SUL
+        <a id="UsernameGlobalRenameLog" class="btn btn-small" target="_blank"
+           href="https://meta.wikimedia.org/w/index.php?title=Special%3ALog&amp;type=gblrename&amp;oldname={$requestName|escape:'url'}"
+           onMouseUp="$('#UsernameGlobalRenameLog').addClass('btn-visited');">
+            Global Rename log
         </a>
         <a id="UsernameCentralAuth" class="btn btn-small" target="_blank"
            href="https://en.wikipedia.org/wiki/Special:CentralAuth/{$requestName|escape:'url'}"

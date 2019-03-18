@@ -218,8 +218,7 @@ SQL
 					welcome_template = :welcome_template, abortpref = :abortpref, 
 					confirmationdiff = :confirmationdiff, emailsig = :emailsig, 
 					creationmode = :creationmode, updateversion = updateversion + 1
-				WHERE id = :id AND updateversion = :updateversion
-				LIMIT 1;
+				WHERE id = :id AND updateversion = :updateversion;
 SQL
             );
             $statement->bindValue(":forceidentified", $this->forceidentified);

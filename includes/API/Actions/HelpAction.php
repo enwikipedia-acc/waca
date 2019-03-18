@@ -32,7 +32,7 @@ class HelpAction extends ApiPageBase implements IApiAction
      */
     protected function getHelpElement()
     {
-        $helpInfo = "Help info goes here!";
+		$helpInfo = "API help can be found at https://github.com/enwikipedia-acc/waca/wiki/API";
 
         $help = $this->document->createElement("help");
         $helptext = $this->document->createElement("info", $helpInfo);

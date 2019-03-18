@@ -69,8 +69,7 @@ SQL
             $statement = $this->dbObject->prepare(<<<SQL
 UPDATE `rdnscache`
 SET address = :address, data = :data, updateversion = updateversion + 1
-WHERE id = :id AND updateversion = :updateversion
-LIMIT 1;
+WHERE id = :id AND updateversion = :updateversion;
 SQL
             );
 

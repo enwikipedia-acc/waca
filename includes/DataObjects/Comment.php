@@ -94,8 +94,7 @@ SQL
             $statement = $this->dbObject->prepare(<<<SQL
 UPDATE comment
 SET comment = :comment, visibility = :visibility, updateversion = updateversion + 1
-WHERE id = :id AND updateversion = :updateversion
-LIMIT 1;
+WHERE id = :id AND updateversion = :updateversion;
 SQL
             );
 

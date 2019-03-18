@@ -19,7 +19,7 @@ class SiteConfiguration
 {
     private $baseUrl;
     private $filePath;
-    private $schemaVersion = 29;
+    private $schemaVersion = 30;
     private $debuggingTraceEnabled;
     private $dataClearIp = '127.0.0.1';
     private $dataClearEmail = 'acc@toolserver.org';
@@ -87,6 +87,7 @@ class SiteConfiguration
     private $yubicoApiId = 0;
     private $yubicoApiKey = "";
     private $totpEncryptionKey = "1234";
+    private $identificationNoticeboardPage = 'Access to nonpublic personal data policy/Noticeboard';
 
     /**
      * Gets the base URL of the tool
@@ -976,4 +977,24 @@ class SiteConfiguration
 
         return $this;
 }
+
+    /**
+     * @return string
+     */
+    public function getIdentificationNoticeboardPage()
+    {
+        return $this->identificationNoticeboardPage;
+    }
+
+    /**
+     * @param string $identificationNoticeboardPage
+     *
+     * @return SiteConfiguration
+     */
+    public function setIdentificationNoticeboardPage($identificationNoticeboardPage)
+    {
+        $this->identificationNoticeboardPage = $identificationNoticeboardPage;
+
+        return $this;
+    }
 }

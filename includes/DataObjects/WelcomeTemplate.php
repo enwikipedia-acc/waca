@@ -75,8 +75,7 @@ SQL
             $statement = $this->dbObject->prepare(<<<SQL
 UPDATE `welcometemplate`
 SET usercode = :usercode, botcode = :botcode, updateversion = updateversion + 1
-WHERE id = :id AND updateversion = :updateversion
-LIMIT 1;
+WHERE id = :id AND updateversion = :updateversion;
 SQL
             );
 

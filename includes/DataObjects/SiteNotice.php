@@ -53,8 +53,7 @@ class SiteNotice extends DataObject
             $statement = $this->dbObject->prepare(<<<SQL
 UPDATE sitenotice
 SET content = :content, updateversion = updateversion + 1
-WHERE updateversion = :updateversion
-LIMIT 1;
+WHERE updateversion = :updateversion;
 SQL
             );
             $statement->bindValue(':updateversion', $this->updateversion);
