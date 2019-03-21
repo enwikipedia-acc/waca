@@ -16,7 +16,7 @@
 		  <div class="control-group">
 			  <label class="control-label" for="inputUsername">Username</label>
 			  <div class="controls">
-				  <input type="text" id="inputUsername" placeholder="Username" name="name"><span class="help-block">Case sensitive, first letter is always capitalized, you do not need to use all uppercase. Note that this need not be your real name. Please make sure you don't leave any trailing spaces or underscores on your requested username.</span>
+				  <input type="text" id="inputUsername" placeholder="Username" name="name"><span class="help-block">Case sensitive, first letter is always capitalized, you do not need to use all uppercase. Note that this need not be your real name. Please make sure you don't leave any trailing spaces or underscores on your requested username. Usernames may not consist entirely of numbers, contain the following characters: <code># / | [ ] { } &lt; &gt; @ % :</code> or exceed 85 characters in length.</span>
 			  </div>
 		  </div>
 		  <div class="control-group">
@@ -28,13 +28,13 @@
 		  <div class="control-group">
 			  <label class="control-label" for="inputEmailConfirm">Confirm Email</label>
 			  <div class="controls">
-				  <input type="email" id="inputEmailConfirm" placeholder="Confirm Email" name="emailconfirm"><span class="help-block">We need this to send you your password. Without it, you will not receive your password, and will be unable to log in to your account.</span>
+				  <input type="email" id="inputEmailConfirm" placeholder="Confirm Email" name="emailconfirm"><span class="help-block">We need a valid email in order to send you your password and confirm your account request. Without it, you will not receive your password, and will be unable to log in to your account.</span>
 			  </div>
 		  </div>
 		  <div class="control-group">
 			  <label class="control-label" for="inputComments">Comments</label>
 			  <div class="controls">
-				  <textarea id="inputComments" rows="4" name="comments"></textarea><span class="help-block">Please do NOT ask for a specific password. One will be randomly created for you.</span>
+				  <textarea id="inputComments" rows="4" name="comments"></textarea><span class="help-block">Any additional details you feel are relevant may be placed here. <strong>Please do NOT ask for a specific password.</strong> One will be randomly created for you.</span>
 			  </div>
 		  </div>
 		  <div class="control-group">
