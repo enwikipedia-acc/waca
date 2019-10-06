@@ -76,7 +76,7 @@ $developer = array(
 				"IRC" => "DeltaQuad",
 				"ToolID" => "662",
 				"wiki" => "DeltaQuad",
-				"WWW" => "http://enwp.org/DeltaQuad",
+				"WWW" => "http://enwp.org/User:DeltaQuad",
 				"Name" => "DeltaQuad",
 				"Role" => "",
 				"Retired" => "Liaison to WMF, Developer, Project Lead",
@@ -131,10 +131,10 @@ $inactiveDeveloper = array(
 
 		"SQL" =>
 				array(                                    //Set any of these to null to keep them from being displayed.
-				"IRC" => "SQLDb, SXT40", //IRC Name.
+				"IRC" => "SQL, SQLDb", //IRC Name.
 				"ToolID" => "1", //Tool user ID for linking to page in users.php. 
 				"wiki" => "SQL", //Enwiki Username.
-				"WWW" => "http://toolserver.org/~sql", //Your website.
+				"WWW" => "http://en.wikipedia.org/wiki/User:SQL", //Your website.
 				"Name" => null, //Real name.
 				"Role" => null, //Project Role(s).
 				"Retired" => "Project Lead", // Retired Project Role(s)
