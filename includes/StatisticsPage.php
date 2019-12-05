@@ -33,7 +33,7 @@ abstract class StatisticsPage
 		}
 		else {
 			// class def doesn't exist: error
-			die("Unknown statistics page: " . $statsPage);
+			die("Unknown statistics page");
 		}
 
 		// ok, so the file where the class def should be exists, but we need to check the class
