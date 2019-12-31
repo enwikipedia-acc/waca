@@ -3,7 +3,7 @@ This is a brief installation guide for developers/testers etc to get this system
 # Prerequisites
 
 * Web server
-* MySQL 5.5+ (or equivalent)
+* MariaDB 10.1+ (or equivalent)
 * PHP 5.5+
 
 The webserver must be configured to pre-process *.php files through the PHP engine before sending them to a client.
