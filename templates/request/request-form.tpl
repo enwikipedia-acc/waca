@@ -5,7 +5,7 @@
 
 	  <div class="alert alert-block">
 		  <h4>Please note!</h4>
-		  We do not have access to existing account data. If you have lost your password, please reset it using <a href="http://en.wikipedia.org/wiki/Special:UserLogin">this form</a> at wikipedia.org. If you are trying to 'take over' an account that already exists, please use <a href="http://en.wikipedia.org/wiki/WP:CHU/U">"Changing usernames/Usurpation"</a> at wikipedia.org. We cannot do either of these things for you. If you have not yet done so, please review the <a href="https://en.wikipedia.org/wiki/Wikipedia:Username_policy">Username Policy</a> before submitting a request.
+		  We do not have access to existing account data. If you have lost your password, please reset it using <a href="http://en.wikipedia.org/wiki/Special:PasswordReset">this form</a> at wikipedia.org. If you are trying to 'take over' an account that already exists, please use <a href="http://en.wikipedia.org/wiki/WP:CHU/U">"Changing usernames/Usurpation"</a> at wikipedia.org. We cannot do either of these things for you. If you have not yet done so, please review the <a href="https://en.wikipedia.org/wiki/Wikipedia:Username_policy">Username Policy</a> before submitting a request.
 	  </div>
   </div>
 </div>
