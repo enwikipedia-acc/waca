@@ -10,7 +10,7 @@ $toolList = array(
 	'google' => 'https://www.google.com/search?q=%DATA%',
 	'rangefinder' => 'https://tools.wmflabs.org/rangeblockfinder/?ip=%DATA%',
 	'ipcheck' => 'https://tools.wmflabs.org/ipcheck/index.php?ip=%DATA%',
-	'bgpview' => 'https://bgpview.io/ip/%DATA%',
+	'bgpview' => 'https://bgpview.io/ip/%DATA%'
 );
 
 if(!isset($_GET['tool'])
