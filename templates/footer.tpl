@@ -12,7 +12,7 @@
     <!-- Placed at the end of the document so the pages load faster -->
 	<script src="{$baseurl}/lib/jquery-1.9.1.min.js" type="text/javascript"></script>
 	<script src="{$baseurl}/lib/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
-	<script src="{$baseurl}/lib/bootstrap-sortable/js/bootstrap-sortable.js" type="text/javascript"></script>
+	<script src="{$baseurl}/lib/bootstrap-sortable/Scripts/bootstrap-sortable.js" type="text/javascript"></script>
 
   {* initialise the tooltips *}
   <script type="text/javascript">
