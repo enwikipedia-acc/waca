@@ -1,10 +1,12 @@
 <?php
 
-class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class RequestValidationHelperTest extends TestCase
 {
 	private $request;
 
-	public function setUp()
+	public function setUp(): void
 	{
 		$this->request = new Request();
 		$this->request->setName("TestName");

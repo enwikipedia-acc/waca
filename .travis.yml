@@ -2,21 +2,21 @@ language: php
 
 php:
   - 7.3
-  
-matrix:
-  allow_failures:
-    - php: 7.3
+
+services:
+  - mysql
+
+os: linux
+dist: xenial
 
 before_install:
   - pip install --user codecov
 
-after_success:
-  - codecov
-
-sudo: false
-
 git:
   submodules: true
+
+env:
+  - MYSQL_HOST=127.0.0.1 MYSQL_USER=root MYSQL_SCHEMA=testdb
 
 before_script:
   - cd sql
@@ -27,6 +27,10 @@ script:
   - bash .travis.phplint.sh
   - phpunit --coverage-clover=coverage.xml
   - codecov
+
+after_script:
+  - wget https://scrutinizer-ci.com/ocular.phar
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.xml
 
 notifications:
   irc:
