@@ -50,7 +50,7 @@ echo "Dropping old database..."
 mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "DROP DATABASE IF EXISTS $SQL_DBNAME;"
 
 echo "Creating database..."
-mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "CREATE DATABASE $SQL_DBNAME;"
+mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "CREATE DATABASE $SQL_DBNAME CHARACTER SET utf8mb4;"
 
 echo "Loading initial schema..."
 mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < db-structure.sql
@@ -79,7 +79,7 @@ if [ $1 -eq 0 ]; then
 	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "DROP DATABASE IF EXISTS $SQL_DBNAME;"
 
 	echo "Creating database..."
-	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "CREATE DATABASE $SQL_DBNAME;"
+	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "CREATE DATABASE $SQL_DBNAME CHARACTER SET utf8mb4;"
 
 	echo "Reloading database from file..."
 	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < schema.sql

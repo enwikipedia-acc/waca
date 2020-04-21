@@ -44,6 +44,13 @@ $user->setOAuthAccessSecret($result->secret);
 $user->setOnWikiName("##OAUTH##");
 $user->save();
 
+if ($user->isNew() && $user->getOAuthAccessToken() === null) {
+    $user->delete();
+    BootstrapSkin::displayInternalHeader();
+	BootstrapSkin::displayAlertBox("OAuth Error: Account not created", "alert-error", "Error - Account not created", true, false);
+	BootstrapSkin::displayInternalFooter();
+}
+
 if ($user->getStatus() == "New") {
 	header("Location: ../acc.php?action=registercomplete");
 	die();
@@ -51,3 +58,4 @@ if ($user->getStatus() == "New") {
 
 header("Location: ../acc.php?action=prefs");
 die();
+

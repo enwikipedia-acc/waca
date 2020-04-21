@@ -189,6 +189,7 @@ elseif ($action == "sreg") {
 				header("Location: {$redirectUrl}");
 			}
 			catch (Exception $ex) {
+				$newUser->delete();
 				throw new TransactionException(
 					$ex->getMessage(), 
 					"Connection to Wikipedia failed.", 
