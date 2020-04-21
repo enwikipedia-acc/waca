@@ -1,6 +1,8 @@
 <?php
 
-class TransactionExceptionTest extends PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class TransactionExceptionTest extends TestCase
 {
 
 	public function testDefaultConstruction()
