@@ -1,6 +1,6 @@
 [submodule "lib/bootstrap-sortable"]
 	path = lib/bootstrap-sortable
-	url = https://github.com/enwikipedia-acc/bootstrap-sortable.git
+	url = https://github.com/drvic10k/bootstrap-sortable.git
 [submodule "lib/mediawiki-extensions-OAuth"]
 	path = lib/mediawiki-extensions-OAuth
 	url = https://github.com/wikimedia/mediawiki-extensions-OAuth.git
