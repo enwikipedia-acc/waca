@@ -3,11 +3,11 @@ language: php
 php:
   - 7.3
 
-services:
-  - mysql
+addons:
+  mariadb: '10.1'
 
 os: linux
-dist: xenial
+dist: bionic
 
 before_install:
   - pip install --user codecov
