@@ -46,6 +46,17 @@ else
 	SQL_PASSWORD=
 fi
 
+echo "Check a few configuration flags"
+mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "SELECT @@sql_mode;"
+mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "SELECT @@version;"
+
+if [[ $SQL_USERNAME == "root" ]]; then
+	echo "Forcing SQL mode"
+	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "SET GLOBAL sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION,STRICT_ALL_TABLES,ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISION_BY_ZERO';"
+
+	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "SELECT @@sql_mode;"
+fi
+
 echo "Dropping old database..."
 mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "DROP DATABASE IF EXISTS $SQL_DBNAME;"
 
