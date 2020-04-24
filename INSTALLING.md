@@ -3,8 +3,8 @@ This is a brief installation guide for developers/testers etc to get this system
 # Prerequisites
 
 * Web server
-* MySQL 5.5+ (or equivalent)
-* PHP 5.5+
+* MariaDB 10.1+ (or equivalent)
+* PHP 7.3+
 
 The webserver must be configured to pre-process *.php files through the PHP engine before sending them to a client.
 
@@ -35,17 +35,10 @@ Note that runkit is a pain[1] to get working on Windows, and is only used by som
 
 ### Production
 
-* MySQL 5.5.46-0ubuntu0.12.04.2
-* PHP 5.6.9-0+deb8u1
-* Apache 2.4.10 (Debian)
-* Debian Jessie (Wikimedia Labs)
-
-### stwalkerster's main development environment
-
-* MariaDB 10.0.15
-* PHP 5.6.17 (NTS VC11-x86 build)
-* PHP Development server
-* Windows 10
+* MariaDB 10.1.37
+* PHP 7.3.14
+* Apache 2.4.38 (Debian)
+* Debian Buster (Wikimedia Labs)
 
 # Basic information
 

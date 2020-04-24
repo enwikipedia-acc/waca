@@ -4,16 +4,16 @@
         <div class="span12">
             <h2>Request an account!</h2>
             <p>
-                We need a few bits of information to create your account. However, you do not need an account to read
-                the encyclopedia or look up information - that can be done by anyone with or without an account. The
-                first is a username, and secondly, a
+                We will need a few bits of information in order to create your account. However, please keep in mind
+                that you do not need an account to read the encyclopedia or look up information - that can be done by
+                anyone with or without an account. The first thing we need is a username, and secondly, a
                 <strong>valid email address that we can send your password to</strong>
                 (please don't use temporary inboxes, or email aliasing, as this may cause your request to be rejected).
-                If you want to leave any comments, feel free to do so. Note that if you use this form, your IP address
-                will be recorded, and displayed to
+                If you want to leave any comments, feel free to do so in the comments field below. Note that if you use
+                this form, your IP address will be recorded, and displayed to
                 <a href="{$baseurl}/internal.php/statistics/users">those who review account requests</a>.
-                When you are done, click the "Submit" button. If you have difficulty using this tool, send an email
-                containing your account request (but not password) to
+                When you are done, click the "Submit" button. If you have difficulty using this tool, you can send an
+                email containing your account request (but not password) to
                 <a href="mailto:accounts-enwiki-l@lists.wikimedia.org">accounts-enwiki-l@lists.wikimedia.org</a>,
                 and we will try to deal with your requests that way.
             </p>
@@ -26,6 +26,10 @@
                 <a href="http://en.wikipedia.org/wiki/WP:CHU/U">"Changing usernames/Usurpation"</a> at wikipedia.org. We
                 cannot do either of these things for you.
             </div>
+            <p>
+                If you have not yet done so, please review the <a href="https://en.wikipedia.org/wiki/Wikipedia:Username_policy">Username Policy</a>
+                before submitting a request.
+            </p>
         </div>
     </div>
     <div class="row-fluid">
@@ -38,7 +42,9 @@
                         <span class="help-block">
                             Case sensitive, first letter is always capitalized, you do not need to use all uppercase.
                             Note that this need not be your real name. Please make sure you don't leave any trailing
-                            spaces or underscores on your requested username.
+                            spaces or underscores on your requested username. Usernames may not consist entirely of
+                            numbers, contain the following characters: <code># / | [ ] { } &lt; &gt; @ % :</code> or
+                            exceed 85 characters in length.
                         </span>
                     </div>
                 </div>
@@ -54,8 +60,8 @@
                         <input type="email" id="inputEmailConfirm" placeholder="Confirm Email" name="emailconfirm"
                                required="required">
                         <span class="help-block">
-                            We need this to send you your password. Without it, you will not receive your password, and
-                            will be unable to log in to your account.
+                            We need a valid email in order to send you your password and confirm your account request.
+                            Without it, you will not receive your password, and will be unable to log in to your account.
                         </span>
                     </div>
                 </div>
@@ -64,7 +70,8 @@
                     <div class="controls">
                         <textarea id="inputComments" rows="4" name="comments">{$comments|default:''|escape}</textarea>
                         <span class="help-block">
-                            Please do NOT ask for a specific password. One will be randomly created for you.
+                            Any additional details you feel are relevant may be placed here. <strong>Please do NOT ask
+                                for a specific password. One will be randomly created for you.</strong>
                         </span>
                     </div>
                 </div>

@@ -58,7 +58,7 @@
     "IRC": "DeltaQuad",
     "ToolID": "662",
     "wiki": "DeltaQuad",
-    "WWW": "http://enwp.org/DeltaQuad",
+    "WWW": "http://enwp.org/User:DeltaQuad",
     "Name": "DeltaQuad",
     "Role": [
       "Liaison to WMF",
@@ -120,10 +120,10 @@
     "Other": null
   },
   "SQL": {
-    "IRC": "SQLDb, SXT40",
+    "IRC": "SQL, SQLDb",
     "ToolID": "1",
     "wiki": "SQL",
-    "WWW": "http://toolserver.org/~sql",
+    "WWW": "https://en.wikipedia.org/wiki/User:SQL",
     "Name": null,
     "Role": [],
     "Retired": [

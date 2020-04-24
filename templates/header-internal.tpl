@@ -28,7 +28,7 @@
       }
     </style>
     <link href="{$baseurl}/lib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
-    <link href="{$baseurl}/lib/bootstrap-sortable/css/bootstrap-sortable.css" rel="stylesheet">
+    <link href="{$baseurl}/lib/bootstrap-sortable/Contents/bootstrap-sortable.css" rel="stylesheet">
 
     <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]>

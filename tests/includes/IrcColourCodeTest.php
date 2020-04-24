@@ -8,19 +8,19 @@
 
 namespace Waca\Tests;
 
-use PHPUnit_Framework_TestCase;
 use Waca\IrcColourCode;
+use PHPUnit\Framework\TestCase;
 
-class IrcColourCodeTest extends PHPUnit_Framework_TestCase
+class IrcColourCodeTest extends TestCase
 {
     private $irc;
 
-    public function setUp()
+	public function setUp(): void
     {
         $this->irc = new IrcColourCode();
     }
 
-    public function tearDown()
+	public function tearDown(): void
     {
         $this->irc = null;
     }

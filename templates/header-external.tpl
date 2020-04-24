@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Request an Account</title>
+    <title>Wikipedia - Request an Account</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
@@ -40,7 +40,7 @@
                   <li class="active"><a href="#">Request</a></li>
                   <li><a href="//en.wikipedia.org/wiki/Main_Page">Back to Wikipedia</a></li>
               </ul>
-              <h3 class="muted">Request an Account</h3>
+              <h3 class="muted">Wikipedia - Request an Account</h3>
           </div>
 
           <hr>
