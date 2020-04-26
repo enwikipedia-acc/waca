@@ -6,7 +6,7 @@
     <select id="inputAction" name="filterAction" title="Log Action">
         <option value="">All log actions</option>
         {foreach $allLogActions as $action => $description}
-            <option value="{$action}" {if $action == $filterAction}selected="selected"{/if}>{$description}</option>
+            <option value="{$action|escape}" {if $action == $filterAction}selected="selected"{/if}>{$description|escape}</option>
         {/foreach}
     </select>
     <select id="inputObjectType" name="filterObjectType" title="Object type">
