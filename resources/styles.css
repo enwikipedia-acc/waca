@@ -102,15 +102,16 @@ h5.zoom-button-header {
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0);
 }
 
-td.success{
+
+td.success, th.success, .table tfoot tr.success > td, .table tfoot tr.success > th {
     background-color: #dff0d8;
 }
-td.error{
+td.error, th.error, .table tfoot tr.error > td, .table tfoot tr.error > th {
     background-color: #f2dede;
 }
-td.warning{
+td.warning, th.warning, .table tfoot tr.warning > td, .table tfoot tr.warning > th {
     background-color: #fcf8e3;
 }
-td.info{
+td.info, th.info, .table tfoot tr.info > td, .table tfoot tr.info > th {
     background-color: #d9edf7;
 }
