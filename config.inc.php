@@ -109,6 +109,8 @@ $emailConfirmationExpiryDays = 7;
  * Interface registration, interface users, etc.
  */
 
+$allowRegistration = true;
+
 // Parameters for performing a newbie check on tool registration.
 $onRegistrationNewbieCheck = true; // Enable the newbie checking.
 $onRegistrationNewbieCheckEditCount = 20; // Minimum amount of edits on Wikipedia.

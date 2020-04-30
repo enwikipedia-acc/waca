@@ -103,7 +103,13 @@ if ($action == '') {
 	die();
 }
 elseif ($action == "sreg") {
-	global $useOauthSignup, $smarty;
+	global $useOauthSignup, $smarty, $allowRegistration;
+
+	if(!$allowRegistration) {
+		$smarty->display("registration/registerdisabled.tpl");
+		BootstrapSkin::displayInternalFooter();
+		die();
+	}
         
 	// TODO: check blocked
 	// TODO: check age.
@@ -207,9 +213,13 @@ elseif ($action == "sreg") {
 	die();
 }
 elseif ($action == "register") {
-	global $useOauthSignup, $smarty;
-	$smarty->assign("useOauthSignup", $useOauthSignup);
-	$smarty->display("registration/register.tpl");
+	global $useOauthSignup, $smarty, $allowRegistration;
+	if($allowRegistration) {
+		$smarty->assign("useOauthSignup", $useOauthSignup);
+		$smarty->display("registration/register.tpl");
+	} else {
+		$smarty->display("registration/registerdisabled.tpl");
+	}
 	BootstrapSkin::displayInternalFooter();
 	die();
 }
