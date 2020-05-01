@@ -251,6 +251,8 @@ $curlCookieJar = __DIR__ . '/../cookies.txt';
 $yubicoApiId = 0;
 $yubicoApiKey = "";
 
+$totpEncryptionKey = "1234";
+
 /**************************************************************************
  **********                   IMPORTANT NOTICE                    **********
  ***************************************************************************
@@ -360,4 +362,5 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setCreationBotPassword($creationBotPassword)
     ->setCurlCookieJar($curlCookieJar)
     ->setYubicoApiId($yubicoApiId)
-    ->setYubicoApiKey($yubicoApiKey);
+    ->setYubicoApiKey($yubicoApiKey)
+    ->setTotpEncryptionKey($totpEncryptionKey);
