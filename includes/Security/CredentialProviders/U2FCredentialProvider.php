@@ -13,6 +13,7 @@ use u2flib_server\Error;
 use u2flib_server\U2F;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\PdoDatabase;
 use Waca\SiteConfiguration;
 use Waca\WebRequest;
@@ -43,6 +44,7 @@ class U2FCredentialProvider extends CredentialProviderBase
      * @param string $data The raw credential data to be validated
      *
      * @return bool
+     * @throws OptimisticLockFailedException
      */
     public function authenticate(User $user, $data)
     {
@@ -60,13 +62,13 @@ class U2FCredentialProvider extends CredentialProviderBase
         $registrations = json_decode($storedData->getData());
 
         try {
-            $this->u2f->doAuthenticate($request, array($registrations), $authenticate);
+            $updatedRegistration = $this->u2f->doAuthenticate($request, array($registrations), $authenticate);
+            $storedData->setData(json_encode($updatedRegistration));
+            $storedData->save();
         }
         catch (Error $ex) {
             return false;
         }
-
-        // TODO: counter?
 
         return true;
     }
