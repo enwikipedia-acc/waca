@@ -11,6 +11,7 @@ namespace Waca\Security\CredentialProviders;
 use Base32\Base32;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\PdoDatabase;
 use Waca\Security\EncryptionHelper;
 use Waca\SiteConfiguration;
@@ -19,6 +20,8 @@ class ScratchTokenCredentialProvider extends CredentialProviderBase
 {
     /** @var EncryptionHelper */
     private $encryptionHelper;
+    /** @var array the tokens generated in the last generation round. */
+    private $generatedTokens;
 
     /**
      * ScratchTokenCredentialProvider constructor.
@@ -39,7 +42,7 @@ class ScratchTokenCredentialProvider extends CredentialProviderBase
      * @param string $data The raw credential data to be validated
      *
      * @return bool
-     * @throws ApplicationLogicException
+     * @throws ApplicationLogicException|OptimisticLockFailedException
      */
     public function authenticate(User $user, $data)
     {
@@ -55,13 +58,19 @@ class ScratchTokenCredentialProvider extends CredentialProviderBase
 
         $scratchTokens = unserialize($this->encryptionHelper->decryptData($storedData->getData()));
 
-        $i = array_search($data, $scratchTokens);
+        $usedToken = null;
+        foreach ($scratchTokens as $scratchToken) {
+            if (password_verify($data, $scratchToken)){
+                $usedToken = $scratchToken;
+                break;
+            }
+        }
 
-        if($i === false) {
+        if($usedToken === null) {
             return false;
         }
 
-        unset($scratchTokens[$i]);
+        $scratchTokens = array_diff($scratchTokens, [$usedToken]);
 
         $storedData->setData($this->encryptionHelper->encryptData(serialize($scratchTokens)));
         $storedData->save();
@@ -73,12 +82,22 @@ class ScratchTokenCredentialProvider extends CredentialProviderBase
      * @param User   $user   The user the credential belongs to
      * @param int    $factor The factor this credential provides
      * @param string $data   Unused.
+     *
+     * @throws OptimisticLockFailedException
      */
     public function setCredential(User $user, $factor, $data)
     {
-        $scratch = array();
+        $plaintextScratch = array();
+        $storedScratch = array();
         for ($i = 0; $i < 5; $i++) {
-            $scratch[] = Base32::encode(openssl_random_pseudo_bytes(10));
+            $token = Base32::encode(openssl_random_pseudo_bytes(10));
+            $plaintextScratch[] = $token;
+
+            $storedScratch[] = password_hash(
+                $token,
+                PasswordCredentialProvider::PASSWORD_ALGO,
+                array('cost' => PasswordCredentialProvider::PASSWORD_COST)
+            );
         }
 
         $storedData = $this->getCredentialData($user->getId(), null);
@@ -89,19 +108,21 @@ class ScratchTokenCredentialProvider extends CredentialProviderBase
 
         $storedData = $this->createNewCredential($user);
 
-        $storedData->setData($this->encryptionHelper->encryptData(serialize($scratch)));
+        $storedData->setData($this->encryptionHelper->encryptData(serialize($storedScratch)));
         $storedData->setFactor($factor);
         $storedData->setVersion(1);
         $storedData->setPriority(9);
 
         $storedData->save();
+        $this->generatedTokens = $plaintextScratch;
     }
 
     /**
+     * Gets the count of remaining valid tokens
+     *
      * @param int $userId
      *
      * @return int
-     * @throws ApplicationLogicException
      */
     public function getRemaining($userId)
     {
@@ -117,21 +138,14 @@ class ScratchTokenCredentialProvider extends CredentialProviderBase
     }
 
     /**
-     * @param int $userId
-     *
-     * @return int
-     * @throws ApplicationLogicException
+     * @return array
      */
-    public function getTokens($userId)
+    public function getTokens()
     {
-        $storedData = $this->getCredentialData($userId);
-
-        if ($storedData === null) {
-            return 0;
+        if ($this->generatedTokens != null) {
+            return $this->generatedTokens;
         }
 
-        $scratchTokens = unserialize($this->encryptionHelper->decryptData($storedData->getData()));
-
-        return $scratchTokens;
+        return array();
     }
 }
