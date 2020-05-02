@@ -289,9 +289,6 @@ abstract class LoginCredentialPageBase extends InternalPageBase
         $statement->execute(array(':user' => $user->getId(), ':stage' => $partialStage));
         $alternates = $statement->fetchAll(PDO::FETCH_COLUMN);
 
-        $input = array('a', 'b', 'c'); $output = array();
-        array_walk($input, function($v) use ($output) { $output[] = $v; });
-
         $types = array();
         foreach ($alternates as $item) {
             $type = $this->nextPageMap[$item];

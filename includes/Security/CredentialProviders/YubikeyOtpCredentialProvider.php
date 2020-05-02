@@ -78,9 +78,15 @@ class YubikeyOtpCredentialProvider extends CredentialProviderBase
      *
      * This looks like it's just dumping the "password" that's stored in the database, but it's actually fine.
      *
-     * We only store the serial number of the Yubikey - if we get a validated (by webservice) token prefixed with the
+     * We only store the "serial number" of the Yubikey - if we get a validated (by webservice) token prefixed with the
      * serial number, that's a successful OTP authentication. Thus, retrieving the stored data is just retrieving the
      * yubikey's serial number (in modhex format), since the actual security credentials are stored on the device.
+     *
+     * Note that the serial number is actually the credential serial number - it's possible to regenerate the keys on
+     * the device, and that will change the serial number too.
+     *
+     * More information about the structure of OTPs can be found here:
+     * https://developers.yubico.com/OTP/OTPs_Explained.html
      *
      * @param int $userId
      *

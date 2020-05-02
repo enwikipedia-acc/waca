@@ -40,18 +40,18 @@
                 </tr>
                 </thead>
                 <tfoot>
-                {if $currentUser->getWelcomeTemplate() != 0}
-                    <tr>
-                        <th>Disable automatic welcoming</th>
-                        {if $canEdit}
-                            <td><!-- count --></td>
-                        {/if}
-                        <td><!-- View --></td>
-                        {if $canEdit}
-                            <td><!-- Edit --></td>
-                            <td><!-- Delete --></td>
-                        {/if}
-                        <td>
+                <tr {if $currentUser->getWelcomeTemplate() == null}class="success"{/if}>
+                    <th>Disable automatic welcoming</th>
+                    {if $canEdit}
+                        <td><!-- count --></td>
+                    {/if}
+                    <td><!-- View --></td>
+                    {if $canEdit}
+                        <td><!-- Edit --></td>
+                        <td><!-- Delete --></td>
+                    {/if}
+                    <td>
+                        {if $currentUser->getWelcomeTemplate() !== null}
                             <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select"
                                   class="form-compact">
                                 {include file="security/csrf.tpl"}
@@ -60,9 +60,11 @@
                                             class="icon-white icon-ok"></i>&nbsp;Select
                                 </button>
                             </form>
-                        </td>
-                    </tr>
-                {/if}
+                        {else}
+                            <a href="" class="btn btn-primary disabled">Selected</a>
+                        {/if}
+                    </td>
+                </tr>
                 </tfoot>
                 <tbody>
                 {foreach from=$templateList item="t" name="templateloop"}

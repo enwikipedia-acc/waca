@@ -80,7 +80,7 @@ class PageMultiFactor extends InternalPageBase
                     $scratchProvider = new ScratchTokenCredentialProvider($database, $this->getSiteConfiguration());
                     if($scratchProvider->getRemaining($currentUser->getId()) < 3) {
                         $scratchProvider->setCredential($currentUser, 2, null);
-                        $tokens = $scratchProvider->getTokens($currentUser->getId());
+                        $tokens = $scratchProvider->getTokens();
                         $this->assign('tokens', $tokens);
                         $this->setTemplate('mfa/regenScratchTokens.tpl');
                         return;
@@ -180,7 +180,7 @@ class PageMultiFactor extends InternalPageBase
                         $scratchProvider = new ScratchTokenCredentialProvider($database, $this->getSiteConfiguration());
                         if($scratchProvider->getRemaining($currentUser->getId()) < 3) {
                             $scratchProvider->setCredential($currentUser, 2, null);
-                            $tokens = $scratchProvider->getTokens($currentUser->getId());
+                            $tokens = $scratchProvider->getTokens();
                             $this->assign('tokens', $tokens);
                             $this->setTemplate('mfa/regenScratchTokens.tpl');
                             return;
@@ -305,7 +305,7 @@ JS
                     $scratchProvider = new ScratchTokenCredentialProvider($database, $this->getSiteConfiguration());
                     if($scratchProvider->getRemaining($currentUser->getId()) < 3) {
                         $scratchProvider->setCredential($currentUser, 2, null);
-                        $tokens = $scratchProvider->getTokens($currentUser->getId());
+                        $tokens = $scratchProvider->getTokens();
                         $this->assign('tokens', $tokens);
                         $this->setTemplate('mfa/regenScratchTokens.tpl');
                         return;
@@ -367,7 +367,7 @@ JS
 
             if ($result) {
                 $otpCredentialProvider->setCredential($currentUser, 2, null);
-                $tokens = $otpCredentialProvider->getTokens($currentUser->getId());
+                $tokens = $otpCredentialProvider->getTokens();
                 $this->assign('tokens', $tokens);
                 $this->setTemplate('mfa/regenScratchTokens.tpl');
             }

@@ -167,7 +167,7 @@ class MediaWikiHelper
         throw new MediaWikiApiException('Edit status unsuccessful: ' . $editResponse->result);
     }
 
-    public function getCreationFieldData(&$requiredFields, &$czechboxFields)
+    public function getCreationFieldData(&$requiredFields, &$checkboxFields)
     {
         // get token
         $params = array(
@@ -200,7 +200,7 @@ class MediaWikiHelper
 
         $requiredFields = array();
         // Keep checkbox fields separate, since "required" actually means optional as absent == false.
-        $czechboxFields = array();
+        $checkboxFields = array();
 
         foreach ($requests as $req) {
             // Immediately discard anything that is on the discard list.
@@ -227,7 +227,7 @@ class MediaWikiHelper
             if ($required) {
                 foreach ($req->fields as $name => $data) {
                     if ($data->type === 'checkbox') {
-                        $czechboxFields[] = $name;
+                        $checkboxFields[] = $name;
                     }
                     else {
                         $requiredFields[] = $name;

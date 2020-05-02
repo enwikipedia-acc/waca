@@ -16,6 +16,7 @@ use Waca\SiteConfiguration;
 class PasswordCredentialProvider extends CredentialProviderBase
 {
     const PASSWORD_COST = 10;
+    const PASSWORD_ALGO = PASSWORD_BCRYPT;
 
     public function __construct(PdoDatabase $database, SiteConfiguration $configuration)
     {
@@ -37,7 +38,7 @@ class PasswordCredentialProvider extends CredentialProviderBase
         }
 
         if(password_verify($data, $storedData->getData())) {
-            if(password_needs_rehash($storedData->getData(), PASSWORD_BCRYPT, array('cost' => self::PASSWORD_COST))){
+            if(password_needs_rehash($storedData->getData(), self::PASSWORD_ALGO, array('cost' => self::PASSWORD_COST))){
                 $this->setCredential($user, $storedData->getFactor(), $data);
             }
 
@@ -55,7 +56,7 @@ class PasswordCredentialProvider extends CredentialProviderBase
             $storedData = $this->createNewCredential($user);
         }
 
-        $storedData->setData(password_hash($password, PASSWORD_BCRYPT, array('cost' => self::PASSWORD_COST)));
+        $storedData->setData(password_hash($password, self::PASSWORD_ALGO, array('cost' => self::PASSWORD_COST)));
         $storedData->setFactor($factor);
         $storedData->setVersion(2);
 
