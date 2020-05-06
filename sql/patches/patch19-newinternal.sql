@@ -5,6 +5,8 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
     -- Developers - set the number of the schema patch here!
     -- -------------------------------------------------------------------------
     DECLARE patchversion INT DEFAULT 19;
+
+    DECLARE messageCount INT;
     -- -------------------------------------------------------------------------
     -- working variables
     DECLARE currentschemaversion INT DEFAULT 0;

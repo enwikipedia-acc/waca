@@ -22,7 +22,7 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
     -- -------------------------------------------------------------------------
     -- Developers - set the number of the schema patch here!
     -- -------------------------------------------------------------------------
-    DECLARE patchversion INT DEFAULT 0;
+    DECLARE patchversion INT DEFAULT 30;
     -- -------------------------------------------------------------------------
     -- working variables
     DECLARE currentschemaversion INT DEFAULT 0;
