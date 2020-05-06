@@ -98,6 +98,8 @@ $emailConfirmationExpiryDays = 7;
  * Interface registration, interface users, etc.
  */
 
+$allowRegistration = true;
+
 // Parameters for performing a newbie check on tool registration.
 $onRegistrationNewbieCheck = true; // Enable the newbie checking.
 $onRegistrationNewbieCheckEditCount = 20; // Minimum amount of edits on Wikipedia.
@@ -366,4 +368,5 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setCurlCookieJar($curlCookieJar)
     ->setYubicoApiId($yubicoApiId)
     ->setYubicoApiKey($yubicoApiKey)
-    ->setTotpEncryptionKey($totpEncryptionKey);
+    ->setTotpEncryptionKey($totpEncryptionKey)
+    ->setRegistrationAllowed($allowRegistration);

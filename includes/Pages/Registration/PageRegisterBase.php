@@ -10,6 +10,7 @@ namespace Waca\Pages\Registration;
 
 use Waca\DataObjects\User;
 use Waca\DataObjects\UserRole;
+use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\Helpers\OAuthUserHelper;
@@ -22,10 +23,14 @@ abstract class PageRegisterBase extends InternalPageBase
 {
     /**
      * Main function for this page, when no specific actions are called.
+     * @throws AccessDeniedException
      */
     protected function main()
     {
         $useOAuthSignup = $this->getSiteConfiguration()->getUseOAuthSignup();
+        if (! $this->getSiteConfiguration()->isRegistrationAllowed()) {
+           throw new AccessDeniedException();
+        }
 
         // Dual-mode page
         if (WebRequest::wasPosted()) {

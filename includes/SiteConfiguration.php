@@ -88,6 +88,7 @@ class SiteConfiguration
     private $yubicoApiKey = "";
     private $totpEncryptionKey = "1234";
     private $identificationNoticeboardPage = 'Access to nonpublic personal data policy/Noticeboard';
+    private $registrationAllowed = true;
 
     /**
      * Gets the base URL of the tool
@@ -995,6 +996,17 @@ class SiteConfiguration
     {
         $this->identificationNoticeboardPage = $identificationNoticeboardPage;
 
+        return $this;
+    }
+
+    public function isRegistrationAllowed() : bool
+    {
+        return $this->registrationAllowed;
+    }
+
+    public function setRegistrationAllowed(bool $registrationAllowed) : SiteConfiguration
+    {
+        $this->registrationAllowed = $registrationAllowed;
         return $this;
     }
 }

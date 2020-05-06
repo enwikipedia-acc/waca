@@ -17,6 +17,10 @@
             Wikipedia, along with making your identity known to the Wikimedia Foundation. Please make sure you refer to
             the Guide to understand the full requirements.
         </p>
-        <p><a class="btn btn-large btn-success" href="{$baseurl}/internal.php/register/standard">Register for tool access</a></p>
+        {if $allowRegistration}
+            <p><a class="btn btn-large btn-success" href="{$baseurl}/internal.php/register/standard">Register for tool access</a></p>
+        {else}
+            <p>Registration for this tool is currently disabled. Please check back later.</p>
+        {/if}
     </div>
 {/block}

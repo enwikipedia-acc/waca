@@ -18,6 +18,7 @@ class PageRegisterOption extends InternalPageBase
      */
     protected function main()
     {
+        $this->assign('allowRegistration', $this->getSiteConfiguration()->isRegistrationAllowed());
         $this->setTemplate('registration/option.tpl');
     }
 

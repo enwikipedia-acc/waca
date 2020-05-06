@@ -16,11 +16,6 @@
       }
     </style>
     <link href="{$baseurl}/lib/bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-      <script src="{$baseurl}/lib/bootstrap/js/html5shiv.js"></script>
-    <![endif]-->
     
 	<!--  Temporary fix to deal with https://github.com/twbs/bootstrap/issues/7968
 	until a newer Bootstrap version with this fixed is released and we upgrade to it -->
