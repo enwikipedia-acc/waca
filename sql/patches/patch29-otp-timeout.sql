@@ -56,7 +56,6 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
         ADD timeout TIMESTAMP DEFAULT NULL NULL,
         CHANGE data data TEXT,
         ADD priority INT(1) DEFAULT 5;
-    ;
     
     -- -------------------------------------------------------------------------
     -- finally, update the schema version to indicate success
