@@ -9,7 +9,7 @@
 namespace Waca;
 
 use ErrorException;
-use Exception;
+use Throwable;
 
 class ExceptionHandler
 {
@@ -23,7 +23,7 @@ class ExceptionHandler
      *
      * @category Security-Critical - has the potential to leak data when exception is thrown.
      */
-    public static function exceptionHandler(Exception $exception)
+    public static function exceptionHandler(Throwable $exception)
     {
         /** @global $siteConfiguration SiteConfiguration */
         global $siteConfiguration;
@@ -34,13 +34,12 @@ class ExceptionHandler
 <meta charset="utf-8">
 <title>Oops! Something went wrong!</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="{$siteConfiguration->getBaseUrl()}/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+<link href="{$siteConfiguration->getBaseUrl()}/vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
   body {
     padding-top: 60px;
   }
 </style>
-<link href="{$siteConfiguration->getBaseUrl()}/lib/bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet">
 </head><body><div class="container-fluid">
 <h1>Oops! Something went wrong!</h1>
 <p>We'll work on fixing this for you, so why not come back later?</p>
@@ -105,7 +104,7 @@ HTML;
     }
 
     /**
-     * @param Exception $exception
+     * @param Throwable $exception
      *
      * @return null|array
      */
@@ -115,11 +114,14 @@ HTML;
             return null;
         }
 
-        return array(
+        $array = array(
             'exception' => get_class($exception),
             'message'   => $exception->getMessage(),
             'stack'     => $exception->getTraceAsString(),
-            'previous'  => self::getExceptionData($exception->getPrevious()),
         );
+
+        $array['previous'] = self::getExceptionData($exception->getPrevious());
+
+        return $array;
     }
 }
