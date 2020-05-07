@@ -33,9 +33,13 @@
     {/block}
 </nav>
 
+
 {block name="modals"}
-    {include file="modal-flowchart.tpl"}
+    {if ! $currentUser->isCommunityUser()}
+        {include file="modal-flowchart.tpl"}
+    {/if}
 {/block}
+
 
 <div class="container-fluid">
     {block name="sitenotice"}{/block}
@@ -55,22 +59,23 @@
                 (<a href="https://github.com/enwikipedia-acc/waca/issues">Bug reports</a>)
             </small>
         </p>
-        <p class="col-md-6 float-right">
-            <small>
-                {if count($onlineusers) > 0}
-                    {count($onlineusers)} Account Creator{if count($onlineusers) !== 1}s{/if} currently online (past 5 minutes):
-                    {foreach from=$onlineusers item=userObject name=onlineUserLoop}
-                    <a href="{$baseurl}/internal.php/statistics/users/detail?user={$userObject->getId()}">
-                        {$userObject->getUsername()|escape}</a>{if !$smarty.foreach.onlineUserLoop.last}, {/if}
-                    {/foreach}
-                {/if}
-
-            </small>
-        </p>
+        {if ! $currentUser->isCommunityUser()}
+            <p class="col-md-6 text-right">
+                <small>
+                    {if count($onlineusers) > 0}
+                        {count($onlineusers)} Account Creator{if count($onlineusers) !== 1}s{/if} currently online (past 5 minutes):
+                        {foreach from=$onlineusers item=userObject name=onlineUserLoop}
+                        <a href="{$baseurl}/internal.php/statistics/users/detail?user={$userObject->getId()}">
+                            {$userObject->getUsername()|escape}</a>{if !$smarty.foreach.onlineUserLoop.last}, {/if}
+                        {/foreach}
+                    {/if}
+                </small>
+            </p>
+        {/if}
     </footer>
-
 </div><!--/.fluid-container-->
 
+{block name="footerjs"}
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
@@ -101,5 +106,6 @@
         {$tailScript}
     </script>
 {/if}
+{/block}
 </body>
 </html>

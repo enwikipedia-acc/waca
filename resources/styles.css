@@ -1,13 +1,17 @@
-/* Temporary fix to deal with https://github.com/twbs/bootstrap/issues/7968
-until a newer Bootstrap version with this fixed is released and we upgrade to it */
-.dropdown-backdrop {
-    position: static;
-}
-
 /* Non-fluid tables - don't take up the entire width of the page! */
 .table-nonfluid
 {
     width: auto;
+}
+
+/* Site notice (BS4) */
+.sitenotice-container {
+    margin-top: -0.5rem;
+}
+
+.sitenotice-container .sitenotice {
+    border-radius: 0;
+    font-size: inherit;
 }
 
 /* Visited buttons */
@@ -76,32 +80,6 @@ h5.zoom-button-header {
     font-style: italic;
 }
 
-/* Dropdown of buttons */
-.dropdown-menu li button {
-    display: block;
-    padding: 3px 20px;
-    clear: both;
-    font-weight: normal;
-    line-height: 20px;
-    color: #333;
-    white-space: nowrap;
-    border: 0;
-    width:100%;
-    text-align: left;
-}
-.dropdown-menu li button:hover {
-    color: #fff;
-    text-decoration: none;
-    background-color: #0081c2;
-    background-image: -moz-linear-gradient(top, #08c, #0077b3);
-    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#08c), to(#0077b3));
-    background-image: -webkit-linear-gradient(top, #08c, #0077b3);
-    background-image: -o-linear-gradient(top, #08c, #0077b3);
-    background-image: linear-gradient(to bottom, #08c, #0077b3);
-    background-repeat: repeat-x;
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff0088cc', endColorstr='#ff0077b3', GradientType=0);
-}
-
 td.success{
     background-color: #dff0d8;
 }
@@ -114,6 +92,7 @@ td.warning{
 td.info{
     background-color: #d9edf7;
 }
+
 .jumbotron {
   padding-top: 10px;
   padding-bottom: 10px;

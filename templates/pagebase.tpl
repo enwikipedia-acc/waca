@@ -3,8 +3,8 @@
     {if ! $currentUser->isCommunityUser()}
         <div class="row">
             <!-- site notice -->
-            <div class="col-md-12">
-                <div class="alert alert-warning">
+            <div class="col-md-12 sitenotice-container p-0">
+                <div class="alert alert-warning sitenotice">
                     <button type="button" class="close" data-dismiss="alert">&times;</button>
                     {$siteNoticeText}
                 </div>

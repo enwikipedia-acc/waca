@@ -2,9 +2,9 @@
   "description": "Wikipedia Account Creation Assistance Tool",
   "minimum-stability": "stable",
   "require": {
-    "smarty/smarty": "v3.1.29",
-    "components/jquery": "3.3.1",
-    "twbs/bootstrap": "^4.1",
+    "smarty/smarty": "^v3.1.29",
+    "components/jquery": "^3.5.0",
+    "twbs/bootstrap": "^4.4",
     "twitter/typeahead.js": "^0.11.1"
   },
   "require-dev": {

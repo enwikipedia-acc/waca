@@ -1,9 +1,5 @@
 body {
-    padding-top: 60px;
-    padding-bottom: 40px;
-}
-.sidebar-nav {
-    padding: 9px 0;
+    padding-top: 4rem;
 }
 
 @media (max-width: 980px) {
@@ -15,32 +11,12 @@ body {
     }
 }
 
-/* Fix nav links */
-.dropdown-toggle, .navbar-dark .navbar-nav .nav-link {
-  color: white;
-}
-.dropdown-item i, .dropdown-item a{
-  color: white;
-}
-.dropdown-item:hover, .dropdown-item:hover a{
-  background-color: black;
-  color: white;
-}
-/* legacy bootstrap stuff */
-.icon-white i{
-  color: white
-}
-.icon-black i{
-  color: black
-}
-.navbar-dark a:hover {
-    color: lightgrey;
-}
+
 span.twitter-typeahead .tt-menu {
   cursor: pointer;
 }
 
-.dropdown-menu, span.twitter-typeahead .tt-menu {
+span.twitter-typeahead .tt-menu {
   position: absolute;
   top: 100%;
   left: 0;

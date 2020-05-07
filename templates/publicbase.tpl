@@ -7,20 +7,8 @@
 
     <!-- Le styles -->
     <link href="{$baseurl}/vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style type="text/css">
-        body {
-            padding-top: 20px;
-            padding-bottom: 40px;
-        }
-    </style>
+    <link href="{$baseurl}/resources/public.css" rel="stylesheet"/>
 
-    <!-- Our extra styles -->
-    <link href="{$baseurl}/resources/styles.css" rel="stylesheet"/>
-
-    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
-    <!--[if lt IE 9]>
-    <script src="{$baseurl}/lib/bootstrap/js/html5shiv.js"></script>
-    <![endif]-->
 </head>
 
 <body>
@@ -29,10 +17,9 @@
 
     <div class="masthead">
         <ul class="nav nav-pills float-right">
-            <li class="nav-item"><a class="nav-link active" href="#">Request</a></li>
             <li class="nav-item"><a class="nav-link" href="//en.wikipedia.org/wiki/Main_Page">Back to Wikipedia</a></li>
         </ul>
-        <h4 class="text-muted">Request an Account</h4>
+        <h4 class="text-muted">Wikipedia - Request an Account</h4>
     </div>
 
     <hr>
@@ -62,7 +49,7 @@
     </footer>
 
 </div><!--/container-->
-
+{block name="footerjs"}
 <!-- Le javascript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
@@ -74,5 +61,6 @@
         {$tailscript}
     </script>
 {/if}
+{/block}
 </body>
 </html>

@@ -9,6 +9,7 @@
 namespace Waca;
 
 use Smarty;
+use Waca\DataObjects\User;
 
 /**
  * Handles the tool offline messages
@@ -40,6 +41,7 @@ class Offline
 
         $smarty = new Smarty();
         $smarty->assign("baseurl", $baseurl);
+        $smarty->assign("alerts", []);
         $smarty->assign("toolversion", Environment::getToolVersion());
 
         if (!headers_sent()) {
@@ -62,6 +64,7 @@ class Offline
             $smarty->assign("dontUseDbCulprit", $dontUseDbCulprit);
             $smarty->assign("dontUseDbReason", $message);
             $smarty->assign("alerts", array());
+            $smarty->assign('currentUser', User::getCommunity());
 
             return $smarty->fetch("offline/internal.tpl");
         }
