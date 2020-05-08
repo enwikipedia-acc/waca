@@ -1,6 +1,6 @@
 {extends file="statistics/base.tpl"}
 {block name="statisticsContent"}
-    <table class="table table-striped table-hover table-condensed table-nonfluid">
+    <table class="table table-striped table-hover table-sm table-nonfluid">
         <thead>
         <tr>
             <th>Year</th>

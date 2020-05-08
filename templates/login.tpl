@@ -1,8 +1,7 @@
 {extends file="base.tpl"}
 {block name="content"}
-    <br />
-    <h3 class="text-center">Account Creation Interface</h3>
-    <div class="row">
+    <h3 class="text-center mt-5 mb-4">Account Creation Interface</h3>
+    <div class="row mb-3">
         <div class="col-md-4 offset-md-4">
             {include file="alert.tpl" alertblock="false" alerttype="alert-info" alertclosable=false alertheader="" alertmessage="<strong>You're not logged in!</strong> Please log in to continue."}
             {include file="sessionalerts.tpl"}
@@ -32,10 +31,10 @@
                     </div>
                     <div class="form-group row">
                         <div class="offset-lg-1 col-lg-5 col-xs-12">
-                            <a class="btn btn-secondary btn-block" href="{$baseurl}/internal.php/forgotPassword" >Forgot password?</a>
+                            <a class="btn btn-outline-secondary btn-block" href="{$baseurl}/internal.php/forgotPassword" >Forgot password?</a>
                         </div>
                         <div class="col-lg-5 col-xs-12 float-md-right">
-                            <a class="btn btn-secondary btn-block" href="{$baseurl}/internal.php/register">Register</a>
+                            <a class="btn btn-outline-secondary btn-block" href="{$baseurl}/internal.php/register">Register</a>
                         </div>
                     </div>
                 </form>

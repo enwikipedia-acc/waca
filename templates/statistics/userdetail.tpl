@@ -44,7 +44,7 @@
 
         <div class="col-md-6">
             <h3>Summary of user activity:</h3>
-            <table class="table table-striped table-condensed">
+            <table class="table table-striped table-sm">
                 {foreach from=$activity item="row"}
                     <tr>
                         <td>{$row.action|escape}</td>

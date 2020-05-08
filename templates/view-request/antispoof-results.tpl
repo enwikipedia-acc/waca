@@ -6,7 +6,7 @@
         {$spoofs|escape}
     </div>
 {else}
-    <table class="table table-condensed table-striped">
+    <table class="table table-sm table-striped">
         {foreach $spoofs as $spoof}
             {if $spoof == $requestName}
                 <tr>

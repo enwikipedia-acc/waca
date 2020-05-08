@@ -1,6 +1,6 @@
 ﻿<div class="col-md-6">
     <h4>Statistics</h4>
-    <table class="table table-striped table-condensed">
+    <table class="table table-striped table-sm">
 
         {foreach from=$requestCountData key=header item=count}
             <tr>

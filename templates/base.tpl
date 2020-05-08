@@ -36,7 +36,7 @@
 
 {block name="modals"}
     {if ! $currentUser->isCommunityUser()}
-        {include file="modal-flowchart.tpl"}
+        {include file="modals/similar-flowchart.tpl"}
     {/if}
 {/block}
 

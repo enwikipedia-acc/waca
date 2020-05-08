@@ -1,6 +1,6 @@
 ﻿{extends file="statistics/base.tpl"}
 {block name="statisticsContent"}
-    <table class="table table-bordered table-nonfluid sortable">
+    <table class="table table-bordered table-nonfluid table-sm sortable">
         <thead>
             <tr>
                 <th>Username</th>

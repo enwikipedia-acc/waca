@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col-md-12">
             <h3>Last 5 Closed requests</h3>
-            <table class="table table-condensed table-striped table-nonfluid table-sm">
+            <table class="table table-sm table-striped table-nonfluid table-sm">
                 <thead>
                     <th>ID</th>
                     <th>Name</th>

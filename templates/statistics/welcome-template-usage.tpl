@@ -1,6 +1,6 @@
 {extends file="statistics/base.tpl"}
 {block name="statisticsContent"}
-    <table class="table table-striped table-hover table-condensed">
+    <table class="table table-striped table-hover table-sm">
         <thead>
         <tr>
             <th>Template</th>

@@ -8,7 +8,7 @@
         <a href="https://accounts-dev.wmflabs.org/other/xff.html">XFF demo</a> for more details.
     </p>
     <h4>Forwarded IP addresses:</h4>
-    <table class="table table-condensed table-striped">
+    <table class="table table-sm table-striped">
         {foreach $requestProxyData as $proxy}
             <tr>
                 <td>

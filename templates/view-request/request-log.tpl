@@ -2,7 +2,7 @@
 <div style="overflow-x: hidden; overflow-y: scroll; max-height: 450px;">
     <form action="{$baseurl}/internal.php/viewRequest/comment" method="post">
         {include file="security/csrf.tpl"}
-        <table class="table table-condensed table-striped table-bordered table-hover">
+        <table class="table table-sm table-striped table-bordered table-hover">
             <tbody>
             {if $requestLogs}
                 {foreach from=$requestLogs item=zoomrow name=logloop}

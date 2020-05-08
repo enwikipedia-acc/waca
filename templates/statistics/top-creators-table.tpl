@@ -1,4 +1,4 @@
-<table class="table table-hover table-condensed table-striped">
+<table class="table table-hover table-sm table-striped">
     <thead>
     <tr>
         <th>Position #</th>
