@@ -83,7 +83,7 @@
 <script src="{$baseurl}/lib/fontawesome/all.js" type="text/javascript"></script>
 <script src="{$baseurl}/lib/popper.min.js" type="text/javascript"></script>
 <script src="{$baseurl}/vendor/twbs/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="{$baseurl}/vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js"
+<script src="{$baseurl}/vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js"></script>
 
 <!-- Page-specific extra resources -->
 {foreach from=$extraJs item=js}
