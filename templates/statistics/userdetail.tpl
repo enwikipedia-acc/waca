@@ -1,48 +1,50 @@
 ﻿{extends file="statistics/base.tpl"}
 {block name="statisticsContent"}
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-lg-6">
             <h3>Detail report for user: {$user->getUsername()|escape}</h3>
-            <div class="container-fluid">
-                <div class="row">
-                    <div class="col-md-4"><strong>User ID:</strong></div>
-                    <div class="col-md-8">{$user->getId()}</div>
+            <div class="row">
+                <div class="col-md-4"><strong>User ID:</strong></div>
+                <div class="col-md-8">{$user->getId()}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4"><strong>User Level</strong></div>
+                <div class="col-md-8">{$user->getStatus()}</div>
+            </div>
+            <div class="row">
+                <div class="col-md-4"><strong>User on-wiki name:</strong></div>
+                <div class="col-md-8">{$user->getOnWikiName()|escape}
+                    {if $user->isOAuthLinked()}
+                        <span class="badge {if $user->getOnWikiName() == "##OAUTH##"}badge-danger{else}badge-success{/if}">OAuth</span>
+                    {/if}
                 </div>
-                <div class="row">
-                    <div class="col-md-4"><strong>User Level</strong></div>
-                    <div class="col-md-8">{$user->getStatus()}</div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4"><strong>User on-wiki name:</strong></div>
-                    <div class="col-md-8">{$user->getOnWikiName()|escape}
-                        {if $user->isOAuthLinked()}
-                            <span class="label {if $user->getOnWikiName() == "##OAUTH##"}label-important{else}label-success{/if}">OAuth</span>
-                        {/if}
-                    </div>
-                </div>
-                {if $user->getConfirmationDiff() != 0}
-                <div class="row">
-                    <div class="col-md-4"><strong>Confirmation diff:</strong></div>
-                    <div class="col-md-8"><a href="{$mediawikiScriptPath}?diff={$user->getConfirmationDiff()|escape}">{$user->getConfirmationDiff()|escape}</a></div>
-                </div>
-                {/if}
-                <div class="row">
-                    <div class="col-md-4"><strong>User last active:</strong></div>
-                    <div class="col-md-8">
-                        {if $user->getLastActive() == "0000-00-00 00:00:00"}
-                            User has never used the interface
-                        {else}
-                            {$user->getLastActive()} <span class="text-muted">({$user->getLastActive()|relativedate})</span>
-                        {/if}
-                    </div>
+            </div>
+            {if $user->getConfirmationDiff() != 0}
+            <div class="row">
+                <div class="col-md-4"><strong>Confirmation diff:</strong></div>
+                <div class="col-md-8"><a href="{$mediawikiScriptPath}?diff={$user->getConfirmationDiff()|escape}">{$user->getConfirmationDiff()|escape}</a></div>
+            </div>
+            {/if}
+            <div class="row">
+                <div class="col-md-4"><strong>User last active:</strong></div>
+                <div class="col-md-8">
+                    {if $user->getLastActive() == "0000-00-00 00:00:00"}
+                        User has never used the interface
+                    {else}
+                        {$user->getLastActive()} <span class="text-muted">({$user->getLastActive()|relativedate})</span>
+                    {/if}
                 </div>
             </div>
 
-            {include file="usermanagement/buttons.tpl"}
+            <div class="row">
+                <div class="col-md-12">
+                    {include file="usermanagement/buttons.tpl"}
+                </div>
+            </div>
 
         </div>
 
-        <div class="col-md-6">
+        <div class="col-lg-6">
             <h3>Summary of user activity:</h3>
             <table class="table table-striped table-sm">
                 {foreach from=$activity item="row"}

@@ -1,16 +1,15 @@
 ﻿{extends file="pagebase.tpl"}
 {block name="content"}
     <div class="row">
-        <div class="header col-md-12">
-            <h1>
-                Welcome Templates
+        <div class="col-md-12" >
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Welcome templates</h1>
                 {if $canAdd}
-                    <small>
-                        <a href="{$baseurl}/internal.php/welcomeTemplates/add" class="btn btn-success"><i
-                                    class="fas fa-plus"></i>&nbsp;Create new Welcome Template</a>
-                    </small>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <a class="btn btn-sm btn-outline-success" href="{$baseurl}/internal.php/welcomeTemplates/add"><i class="fas fa-plus"></i>&nbsp;Add new Welcome Template</a>
+                </div>
                 {/if}
-            </h1>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -22,6 +21,7 @@
             </p>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-12">
             <table class="table table-striped table-hover table-nonfluid">
@@ -29,14 +29,9 @@
                 <tr>
                     <th>Template User code</th>
                     {if $canEdit}
-                        <th>Used by:</th>
+                        <th class="d-none d-lg-block">Used by:</th>
                     {/if}
-                    <td><!-- View --></td>
-                    {if $canEdit}
-                        <td><!-- Edit --></td>
-                        <td><!-- Delete --></td>
-                    {/if}
-                    <td><!-- Select --></td>
+                    <th><!-- Buttons --></th>
                 </tr>
                 </thead>
                 <tfoot>
@@ -44,20 +39,14 @@
                     <tr>
                         <th>Disable automatic welcoming</th>
                         {if $canEdit}
-                            <td><!-- count --></td>
+                            <th class="d-none d-lg-block"><!-- count --></th>
                         {/if}
-                        <td><!-- View --></td>
-                        {if $canEdit}
-                            <td><!-- Edit --></td>
-                            <td><!-- Delete --></td>
-                        {/if}
-                        <td>
-                            <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select"
-                                  class="form-compact">
+                        <td class="table-button-cell">
+                            <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select">
                                 {include file="security/csrf.tpl"}
                                 <input type="hidden" name="disable" value="true"/>
-                                <button type="submit" class="btn btn-primary"><i
-                                            class="fas fa-check"></i>&nbsp;Select
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    <i class="fas fa-check"></i>&nbsp;Select
                                 </button>
                             </form>
                         </td>
@@ -71,8 +60,8 @@
                             {$t->getUserCode()|escape}
                         </td>
                         {if $canEdit}
-                            <td>
-                                <a class="btn {if count($t->getUsersUsingTemplate()) > 0}btn-warning{else}btn-primary disabled{/if}"
+                            <td class="table-button-cell d-none d-lg-block">
+                                <a class="btn {if count($t->getUsersUsingTemplate()) > 0}btn-warning{else}btn-primary disabled{/if} btn-sm"
                                    {if count($t->getUsersUsingTemplate()) > 0}rel="popover"{/if} href="#"
                                    title="Users using this template" id="#tpl{$t->getId()}"
                                    data-content="{{include file="linkeduserlist.tpl" users=$t->getUsersUsingTemplate()}|escape}"
@@ -81,40 +70,34 @@
                                 </a>
                             </td>
                         {/if}
-                        <td>
-                            <a href="{$baseurl}/internal.php/welcomeTemplates/view?template={$t->getId()}"
-                               class="btn btn-primary"><i
-                                        class="fas fa-eye"></i>&nbsp;View</a>
-                        </td>
-                        {if $canEdit}
-                            <td>
-                                <a href="{$baseurl}/internal.php/welcomeTemplates/edit?template={$t->getId()}"
-                                   class="btn btn-warning"><i
-                                            class="fas fa-edit"></i>&nbsp;Edit</a>
-                            </td>
-                            <td>
-                                <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/delete"
-                                      class="form-compact">
+                        <td class="table-button-cell">
+                            <a href="{$baseurl}/internal.php/welcomeTemplates/view?template={$t->getId()}" class="btn btn-outline-primary btn-sm {if $canEdit}d-none d-md-inline-block{/if}">
+                                <i class="fas fa-eye"></i><span class="d-none d-md-inline">&nbsp;View</span>
+                            </a>
+                            {if $canEdit}
+                                <a href="{$baseurl}/internal.php/welcomeTemplates/edit?template={$t->getId()}" class="btn btn-warning btn-sm">
+                                    <i class="fas fa-edit"></i><span class="d-none d-md-inline">&nbsp;Edit</span>
+                                </a>
+
+                                <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/delete" class=" d-inline">
                                     {include file="security/csrf.tpl"}
                                     <input type="hidden" name="template" value="{$t->getId()}"/>
                                     <input type="hidden" name="updateversion" value="{$t->getUpdateVersion()}"/>
-                                    <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i>&nbsp;Delete
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i><span class="d-none d-md-inline">&nbsp;Delete</span>
                                     </button>
                                 </form>
-                            </td>
-                        {/if}
-                        <td>
+                            {/if}
                             {if $currentUser->getWelcomeTemplate() != $t->getId()}
-                                <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select"
-                                      class="form-compact">
+                                <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select" class="form-compact d-inline-block">
                                     {include file="security/csrf.tpl"}
                                     <input type="hidden" name="template" value="{$t->getId()}"/>
-                                    <button type="submit" class="btn btn-primary"><i
-                                                class="fas fa-check"></i>&nbsp;Select
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-check"></i><span class="{if $canEdit}d-none d-sm-inline{/if}">&nbsp;Select</span>
                                     </button>
                                 </form>
                             {else}
-                                <a href="" class="btn btn-primary disabled">Selected</a>
+                                <a href="" class="btn btn-primary btn-sm disabled">Selected</a>
                             {/if}
                         </td>
                     </tr>

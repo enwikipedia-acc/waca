@@ -186,8 +186,12 @@ class PageEmailManagement extends InternalPageBase
         }
         else {
             $this->assignCSRFToken();
+            $this->assign('id', -1);
+            $this->assign('emailTemplate', new EmailTemplate());
+            $this->assign('createdid', -2);
+
             $this->assign('requeststates', $requestStates);
-            $this->setTemplate('email-management/create.tpl');
+            $this->setTemplate('email-management/edit.tpl');
         }
     }
 }

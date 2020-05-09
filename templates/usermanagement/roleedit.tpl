@@ -7,8 +7,8 @@
 
         {foreach from=$roleData key='role' item='data'}
             <div class="form-check">
-                <input class="form-check-input" type="checkbox" name="role-{$role|escape}" {if $data['allowEdit'] === 0}disabled="disabled"{/if} {if $data['active'] === 1}checked="checked"{/if} />
-                <label class="form-check-label">
+                <input class="form-check-input" type="checkbox" name="role-{$role|escape}" id="role-{$role|escape}" {if $data['allowEdit'] === 0}disabled="disabled"{/if} {if $data['active'] === 1}checked="checked"{/if} />
+                <label class="form-check-label" for="role-{$role|escape}">
                     <code>{$role|escape}</code> {$data['description']|escape}
                 </label>
             </div>

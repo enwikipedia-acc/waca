@@ -11,7 +11,7 @@
         <div class="col-md-12 accordion" id="requestListAccordion">
             {foreach from=$requestSectionData key="header" item="section"}
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header position-relative">
                         <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#requestListAccordion"
                         data-target="#collapse{$section.api|escape}">
                             {$header|escape} <span class="badge {if $section.total > $requestLimitShowOnly}badge-important{else}badge-info{/if} badge-pill">{if $section.total > 0}{$section.total}{/if}</span>

@@ -18,8 +18,8 @@
         </div>
 
         <div class="form-group">
-            <label for="status">New access level:</label>
-            <input class="form-control" type="text" id="status" value="{$status}" required="required" readonly="readonly"/>
+            <label for="newstatus">New access level:</label>
+            <input class="form-control" type="text" id="newstatus" value="{$status}" required="required" readonly="readonly"/>
         </div>
 
         {if $showReason}

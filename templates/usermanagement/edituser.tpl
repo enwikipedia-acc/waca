@@ -24,7 +24,7 @@
                 <label for="user_onwikiname">On-wiki Username:</label>
                 <span class="form-control uneditable-input"
                       id="user_onwikiname">{if $user->getOnWikiName() != "##OAUTH##"}{$user->getOnWikiName()|escape}{/if}</span>
-                <span class="label {if $user->getOnWikiName() == "##OAUTH##"}label-important{else}label-success{/if}">OAuth</span>
+                <span class="badge {if $user->getOnWikiName() == "##OAUTH##"}badge-danger{else}badge-success{/if}">OAuth</span>
             </div>
         {else}
             <div class="form-group">

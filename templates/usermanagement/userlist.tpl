@@ -3,7 +3,7 @@
     <th>Username</th>
     <th>On-wiki name</th>
     <th>Roles</th>
-    <th>Actions</th>
+    <th><span class="d-none d-sm-inline">Actions</span></th>
   </thead>
   <tbody>
     {foreach $userlist as $userentry}
