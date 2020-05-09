@@ -1,8 +1,10 @@
 {extends file="pagebase.tpl"}
 {block name="content"}
     <div class="row">
-        <div class="col-md-12">
-            <h1>Create an account!</h1>
+        <div class="col-md-12" >
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Create an account! <small class="text-muted">All request queues</small></h1>
+            </div>
         </div>
     </div>
     <div class="row">
@@ -27,12 +29,13 @@
     <hr/>
     <div class="row">
         <div class="col-md-12">
-            <h3>Last 5 Closed requests</h3>
+            <h4>Last 5 Closed requests</h4>
             <table class="table table-sm table-striped table-nonfluid table-sm">
                 <thead>
                     <th>ID</th>
                     <th>Name</th>
                     <th>{* zoom *}</th>
+                    <th>{* reset *}</th>
                 </thead>
                 {foreach from=$lastFive item="req"}
                     <tr>

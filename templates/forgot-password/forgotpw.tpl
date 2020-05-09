@@ -2,12 +2,12 @@
 {block name="content"}
     <h3 class="text-center mt-5 mb-4">Forgot password?</h3>
     <div class="row mb-3">
-        <div class="col-md-4 offset-md-4">
+        <div class="col-xl-4 offset-xl-4 col-lg-6 offset-lg-3 col-md-8 offset-md-2">
             {include file="sessionalerts.tpl"}
         </div>
     </div>
     <div class="row">
-        <div class="col-md-4 offset-md-4">
+        <div class="col-xl-4 offset-xl-4 col-lg-6 offset-lg-3 col-md-8 offset-md-2">
             <div class="card card-body">
                 <form method="post">
                     {include file="security/csrf.tpl"}

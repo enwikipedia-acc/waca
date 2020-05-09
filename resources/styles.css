@@ -1,18 +1,4 @@
-/* Non-fluid tables - don't take up the entire width of the page! */
-.table-nonfluid
-{
-    width: auto;
-}
 
-/* Site notice (BS4) */
-.sitenotice-container {
-    margin-top: -0.5rem;
-}
-
-.sitenotice-container .sitenotice {
-    border-radius: 0;
-    font-size: inherit;
-}
 
 /* Visited buttons */
 
