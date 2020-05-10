@@ -1,4 +1,4 @@
-<form method="post" action="{$baseurl}/internal.php/viewRequest/defer" class="form-compact col-md-6">
+<form method="post" action="{$baseurl}/internal.php/viewRequest/defer" class="col-md-6">
         <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown">
             Defer&nbsp;<span class="caret"></span>
         </button>

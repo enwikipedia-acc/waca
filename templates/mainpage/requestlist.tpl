@@ -1,13 +1,11 @@
 <!-- requestlist.tpl -->
 {if $requests.total > $requestLimitShowOnly}
-    <div class="alert alert-danger">
-        <h4>Miser mode:</h4>
-        <p>
-            Not all requests are shown for speed. Only {$requestLimitShowOnly} of {$requests.total} are shown here.
-            <a class="btn btn-sm" href="{$baseurl}/internal.php/requestList?status={$requests.type|escape:'url'}">
-                Show all {$requests.total} requests
-            </a>
-        </p>
+    <div class="alert alert-warning alert-accordion">
+        <strong>Miser mode:</strong>
+        Not all requests are shown for speed. Only {$requestLimitShowOnly} of {$requests.total} are shown here.
+        <a class="btn btn-sm btn-outline-secondary" href="{$baseurl}/internal.php/requestList?status={$requests.type|escape:'url'}">
+            Show all {$requests.total} requests
+        </a>
     </div>
 {/if}
 {if count($requests.requests) > 0}

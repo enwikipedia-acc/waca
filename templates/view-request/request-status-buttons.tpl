@@ -14,7 +14,7 @@
         <div class="row">
             {if $requestIsClosed}
             <div class="col-md-12">
-                <form action="{$baseurl}/internal.php/viewRequest/defer" method="post" class="form-compact">
+                <form action="{$baseurl}/internal.php/viewRequest/defer" method="post">
                     {include file="security/csrf.tpl"}
                     <input type="hidden" name="request" value="{$requestId}"/>
                     <input type="hidden" name="updateversion" value="{$updateVersion}"/>

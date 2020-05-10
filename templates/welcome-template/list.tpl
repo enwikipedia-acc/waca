@@ -89,7 +89,7 @@
                                 </form>
                             {/if}
                             {if $currentUser->getWelcomeTemplate() != $t->getId()}
-                                <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select" class="form-compact d-inline-block">
+                                <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select" class="d-inline-block">
                                     {include file="security/csrf.tpl"}
                                     <input type="hidden" name="template" value="{$t->getId()}"/>
                                     <button type="submit" class="btn btn-primary btn-sm">

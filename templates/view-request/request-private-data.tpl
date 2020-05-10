@@ -7,7 +7,7 @@
             <a href="mailto:{$requestEmail|escape:'url'}">{$requestEmail|escape}</a>
         </div>
         <div class="col-md-1">
-            <span class="badge{if $requestRelatedEmailRequestsCount > 0} badge-important{else} badge-secondary{/if}">{$requestRelatedEmailRequestsCount}</span>
+            <span class="badge{if $requestRelatedEmailRequestsCount > 0} badge-danger{else} badge-secondary{/if}">{$requestRelatedEmailRequestsCount}</span>
         </div>
     </div>
     <div class="row d-none-xs">
@@ -25,7 +25,7 @@
         </div>
         <div class="col-md-1">
             <span class="label label-info">XFF</span>
-            <span class="badge{if $requestRelatedIpRequestsCount > 0} badge-important{else} badge-secondary{/if}">{$requestRelatedIpRequestsCount}</span>
+            <span class="badge{if $requestRelatedIpRequestsCount > 0} badge-danger{else} badge-secondary{/if}">{$requestRelatedIpRequestsCount}</span>
         </div>
     </div>
 {/block}

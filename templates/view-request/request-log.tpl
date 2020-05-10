@@ -61,7 +61,7 @@
                 <td>
                     <input type="hidden" name="request" value="{$requestId}"/>
                     <input type="hidden" name="visibility" value="user"/>
-                    <input class="col-md-12 input-compact" type="text" placeholder="Quick comment" name="comment"/>
+                    <input class="col-md-12" type="text" placeholder="Quick comment" name="comment"/>
                 </td>
                 <td>
                     <button class="btn btn-primary" type="submit">Save</button>

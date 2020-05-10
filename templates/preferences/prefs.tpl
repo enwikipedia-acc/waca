@@ -124,7 +124,7 @@
                 <div class="offset-md-2 offset-lg-3 col-md-10 col-lg-9">
                     <div class="accordion" id="identityTicketContainer">
                         <div class="card">
-                            <div class="card-header position-relative">
+                            <div class="card-header position-relative py-0">
                                 <a class="accordion-toggle stretched-link" data-toggle="collapse"
                                    data-parent="#identityTicketContainer" href="#identityTicketCollapseOne">
                                     Show identity ticket

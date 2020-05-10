@@ -37,7 +37,7 @@
             {include file="security/csrf.tpl"}
             <input type="hidden" name="request" value="{$requestId}"/>
             <input type="hidden" name="updateversion" value="{$updateVersion}"/>
-            <button class="btn btn-warning btn-wide" type="submit">Force break</button>
+            <button class="btn btn-warning btn-block" type="submit">Force break</button>
         </form>
     </div>
     {/if}
@@ -48,7 +48,7 @@
             {include file="security/csrf.tpl"}
             <input type="hidden" name="request" value="{$requestId}" />
             <input type="hidden" name="updateversion" value="{$updateVersion}"/>
-            <button class="btn btn-success btn-wide" type="submit">Reserve</button>
+            <button class="btn btn-success btn-block" type="submit">Reserve</button>
         </form>
     </div>
     {/if}

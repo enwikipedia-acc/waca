@@ -1,4 +1,4 @@
-<table class="table table-striped table-sm sortable">
+<table class="table table-striped table-sm sortable mb-0">
     <thead>
     <tr>
         <th data-defaultsort="asc"><span class="d-none-xs">#</span></th>
@@ -16,8 +16,8 @@
     {foreach from=$requests item="r"}
         <tr>
             <td>
-                <a class="btn btn-sm{if $r->hasComments() == true} btn-info{else} btn-light{/if}"
-                href="{$baseurl}/internal.php/viewRequest?id={$r->getId()}"><i class="fas fa-search"></i><span class="d-none d-md-block">&nbsp;{$r->getId()}</span></a>
+                <a class="btn btn-sm{if $r->hasComments() == true} btn-info{else} btn-secondary{/if}"
+                href="{$baseurl}/internal.php/viewRequest?id={$r->getId()}"><i class="fas fa-search"></i><span class="d-none d-md-inline">&nbsp;{$r->getId()}</span></a>
             </td>
 
             {if $showStatus}
@@ -32,28 +32,22 @@
 
             {* Request Time *}
             <td>
-        <span class="d-none d-md-block"><a rel="tooltip" href="#rqtime{$r->getId()}" title="{$r->getDate()|date}" data-toggle="tooltip" class="plainlinks" id="#rqtime{$r->getId()}">{$r->getDate()|relativedate}</a></span>
+                <span class="d-none d-md-block"><a rel="tooltip" href="#rqtime{$r->getId()}" title="{$r->getDate()|date}" data-toggle="tooltip" class="plainlinks" id="#rqtime{$r->getId()}">{$r->getDate()|relativedate}</a></span>
             </td>
 
             {* Bans *}
             <td>
                 {if $canBan}
-                <div class="btn-group d-none-xs">
-                    <a class="btn dropdown-toggle btn-sm btn-danger" data-toggle="dropdown" href="#">
-                        <i class="fas fa-ban"></i>&nbsp;Ban&nbsp;<span class="caret"></span>
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="{$baseurl}/internal.php/bans/set?type=IP&amp;request={$r->getId()}">IP</a>
-                        </li>
-                        <li>
-                            <a href="{$baseurl}/internal.php/bans/set?type=EMail&amp;request={$r->getId()}">Email</a>
-                        </li>
-                        <li>
-                            <a href="{$baseurl}/internal.php/bans/set?type=Name&amp;request={$r->getId()}">Name</a>
-                        </li>
-                    </ul>
-                </div>
+                    <div class="dropdown">
+                        <button class="btn btn-danger btn-sm dropdown-toggle" type="button" id="banDropdown{$r->getId()}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ban"></i>&nbsp;Ban&nbsp;<span class="caret"></span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{$baseurl}/internal.php/bans/set?type=IP&amp;request={$r->getId()}">IP</a>
+                            <a class="dropdown-item" href="{$baseurl}/internal.php/bans/set?type=EMail&amp;request={$r->getId()}">Email</a>
+                            <a class="dropdown-item" href="{$baseurl}/internal.php/bans/set?type=Name&amp;request={$r->getId()}">Name</a>
+                        </div>
+                    </div>
                 {/if}
             </td>
 
@@ -83,7 +77,7 @@
                             {include file="security/csrf.tpl"}
                             <input class="form-control" type="hidden" name="request" value="{$r->getId()}"/>
                             <input class="form-control" type="hidden" name="updateversion" value="{$r->getUpdateVersion()}"/>
-                            <button class="btn btn-sm btn-inverse" type="submit">
+                            <button class="btn btn-sm btn-dark" type="submit">
                                 <i class="fas fa-star"></i>&nbsp;Unreserve
                             </button>
                         </form>
@@ -95,7 +89,7 @@
                                 <input class="form-control" type="hidden" name="request" value="{$r->getId()}"/>
                                 <input class="form-control" type="hidden" name="updateversion" value="{$r->getUpdateVersion()}"/>
                                 <button class="btn btn-sm btn-warning" type="submit">
-                                    <i class="fas fa-trash"></i>&nbsp;Force break
+                                    <i class="fas fa-hand-paper"></i>&nbsp;Force break
                                 </button>
                             </form>
                         {/if}

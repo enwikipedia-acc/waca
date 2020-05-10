@@ -10,11 +10,11 @@
     <div class="row">
         <div class="col-md-12 accordion" id="requestListAccordion">
             {foreach from=$requestSectionData key="header" item="section"}
-                <div class="card">
-                    <div class="card-header position-relative">
+                <div class="card overflow-visible">
+                    <div class="card-header position-relative py-0">
                         <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#requestListAccordion"
                         data-target="#collapse{$section.api|escape}">
-                            {$header|escape} <span class="badge {if $section.total > $requestLimitShowOnly}badge-important{else}badge-info{/if} badge-pill">{if $section.total > 0}{$section.total}{/if}</span>
+                            {$header|escape} <span class="badge {if $section.total > $requestLimitShowOnly}badge-danger{else}badge-info{/if} badge-pill">{if $section.total > 0}{$section.total}{/if}</span>
                         </button>
                     </div>
                     <div id="collapse{$section.api|escape}" class="collapse out">

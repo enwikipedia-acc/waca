@@ -29,7 +29,7 @@
         <div class="col-md-12">
             <div class="accordion" id="userListAccordion">
                 <div class="card">
-                    <div class="card-header position-relative">
+                    <div class="card-header position-relative py-0">
                         <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#userListAccordion" data-target="#collapseNew">
                             Open requests
                             {if count($newUsers) > 0 }<span class="badge badge-warning badge-pill">{count($newUsers)}</span>{/if}
@@ -43,7 +43,7 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-header position-relative">
+                    <div class="card-header position-relative py-0">
                         <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#userListAccordion" data-target="#collapseUsers">
                             Users
                         </button>
@@ -56,7 +56,7 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-header position-relative">
+                    <div class="card-header position-relative py-0">
                         <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#userListAccordion" data-target="#collapseAdmins">
                             Tool admins
                         </button>
@@ -69,7 +69,7 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-header position-relative">
+                    <div class="card-header position-relative py-0">
                         <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#userListAccordion" data-target="#collapseRoots">
                             Tool roots
                         </button>
@@ -82,7 +82,7 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-header position-relative">
+                    <div class="card-header position-relative py-0">
                         <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#userListAccordion" data-target="#collapseCheckusers">
                             Checkusers
                         </button>
@@ -96,7 +96,7 @@
 
                 {if $showAll == true}
                     <div class="card">
-                        <div class="card-header position-relative">
+                        <div class="card-header position-relative py-0">
                             <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#userListAccordion" data-target="#collapseSuspended">
                                 Suspended accounts
                             </button>
@@ -108,7 +108,7 @@
                         </div>
                     </div>
                     <div class="card">
-                        <div class="card-header position-relative">
+                        <div class="card-header position-relative py-0">
                             <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#userListAccordion" data-target="#collapseDeclined">
                                 Declined accounts
                             </button>

@@ -21,12 +21,33 @@ td.table-button-cell {
 
 .sitenotice-container .sitenotice {
     border-radius: 0;
-    font-size: inherit;
+    font-size: 0.9rem;
+}
+
+.sitenotice-container .sitenotice ul {
+    margin-bottom: 0;
+}
+
+.alert-accordion {
+    margin-top: -1.18rem;
+    margin-left: -1.25rem;
+    margin-right: -1.25rem;
+    border-radius: 0;
+    border-top: none;
+    border-left: none;
+    border-right: none;
 }
 
 /* used for display of email messages to wrap text in a pre */
 .prewrap {
     white-space: pre-wrap;
+}
+
+.overflow-visible {
+    overflow: visible;
+}
+.accordion>.overflow-visible {
+    overflow: visible;
 }
 
 /* min width of fontawesome icons */
