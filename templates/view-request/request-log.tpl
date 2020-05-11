@@ -6,7 +6,7 @@
             <tbody>
             {if $requestLogs}
                 {foreach from=$requestLogs item=zoomrow name=logloop}
-                    <tr {if $zoomrow.security == "admin"}class="bg-warning"{/if}>
+                    <tr {if $zoomrow.security == "admin"}class="bg-danger-light"{/if}>
                         <td>
                             {if $zoomrow.userid != null}
                                 <a href='{$baseurl}/internal.php/statistics/users/detail?user={$zoomrow.userid}'>{$zoomrow.user|escape}</a>

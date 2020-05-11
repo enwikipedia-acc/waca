@@ -1,6 +1,6 @@
 ﻿{extends file="statistics/base.tpl"}
 {block name="statisticsContent"}
-    <table class="table table-bordered table-nonfluid table-sm sortable">
+    <table class="table table-bordered table-nonfluid table-hover table-sm sortable">
         <thead>
             <tr>
                 <th>Username</th>
@@ -16,10 +16,10 @@
                     <td>
                         <a href="{$baseurl}/internal.php/statistics/users/detail?user={$user.id}">{$user.username|escape}</a>
                     </td>
-                    <td {if $user.tooluser === 'Yes'}class="success"{else}class="error"{/if}>{$user.tooluser}</td>
-                    <td {if $user.tooladmin === 'Yes'}class="success"{else}class="error"{/if}>{$user.tooladmin}</td>
-                    <td {if $user.checkuser === 'Yes'}class="success"{else}class="error"{/if}>{$user.checkuser}</td>
-                    <td {if $user.toolroot === 'Yes'}class="success"{else}class="error"{/if}>{$user.toolroot}</td>
+                    <td {if $user.tooluser === 'Yes'}class="bg-success-light"{else}class="bg-danger-light"{/if}>{$user.tooluser}</td>
+                    <td {if $user.tooladmin === 'Yes'}class="bg-success-light"{else}class="bg-danger-light"{/if}>{$user.tooladmin}</td>
+                    <td {if $user.checkuser === 'Yes'}class="bg-success-light"{else}class="bg-danger-light"{/if}>{$user.checkuser}</td>
+                    <td {if $user.toolroot === 'Yes'}class="bg-success-light"{else}class="bg-danger-light"{/if}>{$user.toolroot}</td>
                 </tr>
             {/foreach}
         </tbody>

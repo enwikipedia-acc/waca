@@ -45,8 +45,7 @@ button.dropdown-toggle-split {
 }
 
 
-/*  unknown  */
-
+/*  hiding links on log tooltips  */
 .plainlinks {
     color: #333333;
     text-decoration: none;
@@ -57,16 +56,16 @@ button.dropdown-toggle-split {
     text-decoration: none;
 }
 
+.bg-success-light {
+    background-color: #28a74560;
+}
+.table-hover tbody tr.bg-success-light:hover {
+    background-color: #28a74580;
+}
 
-td.success{
-    background-color: #dff0d8;
+.bg-danger-light {
+    background-color: #dc354540;
 }
-td.error{
-    background-color: #f2dede;
-}
-td.warning{
-    background-color: #fcf8e3;
-}
-td.info{
-    background-color: #d9edf7;
+.table-hover tbody tr.bg-danger-light:hover {
+    background-color: #dc354580;
 }
