@@ -10,9 +10,9 @@
             <td>{$others->getName()|escape}</td>
             <td>
                 {if $others->getStatus() == 'Closed'}
-                    <span class="label label-important">{$others->getStatus()|escape} - {$others->getClosureReason()|escape}</span>
+                    <span class="badge badge-danger">{$others->getStatus()|escape} - {$others->getClosureReason()|escape}</span>
                 {else}
-                    <span class="label label-success">{$others->getStatus()|escape}</span>
+                    <span class="badge badge-success">{$others->getStatus()|escape}</span>
                 {/if}
             </td>
         </tr>

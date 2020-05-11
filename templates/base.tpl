@@ -93,8 +93,9 @@
 {* initialise the tooltips *}
 <script type="text/javascript">
     $(function () {
-        $("[rel='tooltip']").tooltip();
-    });
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+
     $(function () {
         $("[rel='popover']").popover();
     });

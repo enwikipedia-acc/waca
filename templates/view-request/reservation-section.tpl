@@ -8,15 +8,15 @@
                     <input type="hidden" name="request" value="{$requestId}"/>
                     <input type="hidden" name="updateversion" value="{$updateVersion}"/>
                     <div class="form-row">
-                        <div class="col-sm-7 form-group">
+                        <div class="col-sm-7">
                             <input type="form-control text" required="true"
                                    placeholder="Send reservation to another user..." name="user"
                                    data-provide="typeahead" data-items="10"
                                    class="typeahead form-control username-typeahead"
                                    {if ! $requestIsReservedByMe}disabled="disabled"{/if} />
                         </div>
-                        <div class="col-sm-5 form-group">
-                            <input class="btn btn-secondary form-control " type="submit" value="Send Reservation"/>
+                        <div class="col-sm-5">
+                            <input class="btn btn-outline-secondary btn-block" type="submit" value="Send Reservation"/>
                         </div>
                     </div>
             </form>
@@ -28,7 +28,7 @@
             {include file="security/csrf.tpl"}
             <input type="hidden" name="request" value="{$requestId}"/>
             <input type="hidden" name="updateversion" value="{$updateVersion}"/>
-            <button class="btn btn-inverse" type="submit">Break reservation</button>
+            <button class="btn btn-outline-dark btn-block" type="submit">Break reservation</button>
         </form>
     </div>
     {elseif $canBreakReservation && $requestIsReserved}

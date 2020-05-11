@@ -27,15 +27,21 @@
     {if $canSetBan}
         <h5 class="zoom-button-header">Ban</h5>
         <div class="row">
-            <a class="btn btn-danger col-sm-3" href="{$baseurl}/internal.php/bans/set?type=Name&amp;request={$requestId}">
-                Ban Username
-            </a>
-            <a class="btn btn-danger col-sm-3 offset-sm-1" href="{$baseurl}/internal.php/bans/set?type=EMail&amp;request={$requestId}">
-                Ban Email
-            </a>
-            <a class="btn btn-danger col-sm-3 offset-sm-1" href="{$baseurl}/internal.php/bans/set?type=IP&amp;request{$requestId}">
-                Ban IP
-            </a>
+            <div class="col-md-4">
+                <a class="btn btn-danger btn-block" href="{$baseurl}/internal.php/bans/set?type=Name&amp;request={$requestId}">
+                    Ban Username
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a class="btn btn-danger btn-block" href="{$baseurl}/internal.php/bans/set?type=EMail&amp;request={$requestId}">
+                    Ban Email
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a class="btn btn-danger btn-block" href="{$baseurl}/internal.php/bans/set?type=IP&amp;request{$requestId}">
+                    Ban IP
+                </a>
+            </div>
         </div>
         <hr class="zoom-button-divider"/>
     {/if}

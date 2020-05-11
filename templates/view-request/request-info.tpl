@@ -1,9 +1,9 @@
-<div class="row">
+<div class="row row-request-data-section">
     <div class="col-md-4"><strong>Requested name:</strong></div>
     <div class="col-md-8">{$requestName|escape}</div>
 </div>
 
-<div class="row">
+<div class="row row-request-data-section">
     <div class="col-md-4">
         <strong>Date:</strong>
     </div>
@@ -16,7 +16,7 @@
 
 {block name="requestDataPrimaryCheckUser"}<!-- Request data not available in this template -->{/block}
 
-<div class="row">
+<div class="row row-request-data-section">
     <div class="col-md-4">
         <strong>Reserved by:</strong>
     </div>

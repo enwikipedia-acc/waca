@@ -1,15 +1,16 @@
 {extends file="pagebase.tpl"}
 {block name="content"}
     <div class="row">
-        <!-- page header -->
-        <div class="col-md-12">
-            <h2>Details for Request #{$requestId}:</h2>
+        <div class="col-md-12" >
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">View request details <small class="text-muted">for request #{$requestId}</small></h1>
+            </div>
         </div>
     </div>
 
     <div class="row">
         <!-- request details -->
-        <div class="col-md-6">
+        <div class="col-lg-6">
             {include file="view-request/request-info.tpl"}
             <hr class="zoom-button-divider" />
             {block name="createButton"}{/block}
@@ -20,7 +21,7 @@
 
             {block name="banSection"}{/block}
         </div>
-        <div class="col-md-6">
+        <div class="col-lg-6">
             {include file="view-request/request-log.tpl"}
         </div>
     </div><!--/row-->

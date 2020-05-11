@@ -7,25 +7,25 @@
         the first untrusted address are not trusted to be correct. Please see the
         <a href="https://accounts-dev.wmflabs.org/other/xff.html">XFF demo</a> for more details.
     </p>
-    <h4>Forwarded IP addresses:</h4>
+    <h5>Forwarded IP addresses:</h5>
     <table class="table table-sm table-striped">
         {foreach $requestProxyData as $proxy}
             <tr>
                 <td>
                     {if ! $proxy.trust}
-                        <span class="label label-important">untrusted</span>
+                        <span class="badge badge-danger">untrusted</span>
                     {/if}
 
                     {if $forwardedOrigin == $proxy.ip}
-                        <span class="label label-inverse">origin</span>
+                        <span class="badge badge-dark">origin</span>
                     {else}
                         {if $proxy.trust}
-                            <span class="label">trusted</span>
+                            <span class="badge badge-secondary">trusted</span>
                         {/if}
                     {/if}
 
                     {if $proxy.trustedlink & ! $proxy.trust}
-                        <span class="label label-warning">trusted link</span>
+                        <span class="badge badge-warning">trusted link</span>
                     {/if}
                 </td>
                 <td>

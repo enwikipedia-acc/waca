@@ -1,13 +1,13 @@
 {* If custom create reasons are active, then make the Created button a split button dropdown. *}
-<form method="post" action="{$baseurl}/internal.php/viewRequest/close">
-    <div class="btn-group col-md-3">
+<form method="post" action="{$baseurl}/internal.php/viewRequest/close" class="col-md-4">
+    <div class="dropright btn-group btn-block">
         {if !empty($createReasons)}
-            <button class="btn btn-success" type="submit" name="template" value="{$createdId}">
+            <button class="btn btn-success col" type="submit" name="template" value="{$createdId}">
                 {$createdName|escape}
             </button>
 
             <button type="button"
-                    class="btn btn-success dropdown-toggle dropdown-toggle-split"
+                    class="btn btn-success dropdown-toggle dropdown-toggle-split col-xs-auto"
                     data-toggle="dropdown">&nbsp;<span class="caret"></span></button>
 
             <ul class="dropdown-menu" role="menu">
@@ -23,7 +23,7 @@
                 {/foreach}
             </ul>
         {else}
-            <button class="btn btn-success col-md-12" type="submit" name="template" value="{$createdId}">
+            <button class="btn btn-success" type="submit" name="template" value="{$createdId}">
                 {$createdName|escape}
             </button>
         {/if}
@@ -31,3 +31,6 @@
     <input type="hidden" name="request" value="{$requestId}"/>
     {include file="security/csrf.tpl"}
 </form>
+{*<div class="col-md-4">*}
+{*    <button class="btn btn-outline-success btn-block">Do something</button>*}
+{*</div>*}

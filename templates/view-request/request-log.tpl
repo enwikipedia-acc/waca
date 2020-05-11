@@ -6,7 +6,7 @@
             <tbody>
             {if $requestLogs}
                 {foreach from=$requestLogs item=zoomrow name=logloop}
-                    <tr {if $zoomrow.security == "admin"}class="error"{/if}>
+                    <tr {if $zoomrow.security == "admin"}class="bg-warning"{/if}>
                         <td>
                             {if $zoomrow.userid != null}
                                 <a href='{$baseurl}/internal.php/statistics/users/detail?user={$zoomrow.userid}'>{$zoomrow.user|escape}</a>
@@ -16,7 +16,7 @@
 
                             {if $zoomrow.security == "admin"}
                                 <br/>
-                                <span class="label label-important">
+                                <span class="badge badge-danger">
 									<i class="fas fa-lock"></i>&nbsp;Restricted
 								</span>
                             {/if}
@@ -30,7 +30,7 @@
                                 {/if}
                             {else}
                                 {if $zoomrow.canedit == true}
-                                    <a class="btn btn-sm" href="{$baseurl}/internal.php/editComment?id={$zoomrow.id}">
+                                    <a class="btn btn-outline-secondary btn-sm" href="{$baseurl}/internal.php/editComment?id={$zoomrow.id}">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     &nbsp;
@@ -61,13 +61,13 @@
                 <td>
                     <input type="hidden" name="request" value="{$requestId}"/>
                     <input type="hidden" name="visibility" value="user"/>
-                    <input class="col-md-12" type="text" placeholder="Quick comment" name="comment"/>
+                    <input class="form-control" type="text" placeholder="Quick comment" name="comment"/>
                 </td>
                 <td>
                     <button class="btn btn-primary" type="submit">Save</button>
-                    <label for= title="Restrict visibility of this comment">
-                    <span class="label label-important">
-                        <input type="checkbox" name="adminOnly"/>
+                    <label for="adminOnly" class="sr-only">Restrict visibility of this comment</label>
+                    <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Restrict visibility of this comment">
+                        <input type="checkbox" name="adminOnly" id="adminOnly" />
                         <i class="fas fa-lock"></i>
                     </span>
                     </label>
