@@ -11,7 +11,8 @@
     <link href="{$baseurl}/resources/baseStyles.css" rel="stylesheet"/>
 
     <!-- fontawesome -->
-    <link href="{$baseurl}/lib/fontawesome/all.css" rel="stylesheet"/>
+    <link href="{$baseurl}/vendor/fortawesome/font-awesome/css/all.min.css" rel="stylesheet"/>
+
     <!-- Page-specific extra resources -->
     {foreach from=$extraCss item=css}
         <link href="{$baseurl}{$css}" rel="stylesheet" />
@@ -77,7 +78,7 @@
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
 <script src="{$baseurl}/vendor/components/jquery/jquery.min.js" type="text/javascript"></script>
-<script src="{$baseurl}/lib/fontawesome/all.js" type="text/javascript"></script>
+<script src="{$baseurl}/vendor/fortawesome/font-awesome/js/all.min.js" type="text/javascript"></script>
 <script src="{$baseurl}/lib/popper.min.js" type="text/javascript"></script>
 <script src="{$baseurl}/vendor/twbs/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
 <script src="{$baseurl}/vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js"></script>
