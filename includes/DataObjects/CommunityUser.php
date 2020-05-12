@@ -138,6 +138,10 @@ class CommunityUser extends User
     {
     }
 
+    public function setUseAlternateSkin($useAlternate)
+    {
+    }
+
     #endregion
 
     #region user access checks
