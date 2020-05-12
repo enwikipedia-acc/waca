@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- bootstrap styles -->
-    <link href="{$baseurl}/vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="{$baseurl}/resources/generated/bootstrap-main.css" rel="stylesheet"/>
     <link href="{$baseurl}/resources/baseStyles.css" rel="stylesheet"/>
 
     <!-- fontawesome -->
@@ -16,9 +16,6 @@
     {foreach from=$extraCss item=css}
         <link href="{$baseurl}{$css}" rel="stylesheet" />
     {/foreach}
-
-    <!-- Our extra styles -->
-    <link href="{$baseurl}/resources/styles.css" rel="stylesheet"/>
 </head>
 
 <body>

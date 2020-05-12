@@ -55,7 +55,7 @@
                 </tfoot>
                 <tbody>
                 {foreach from=$templateList item="t" name="templateloop"}
-                    <tr {if $currentUser->getWelcomeTemplate() == $t->getId()}class="bg-success-light"{/if}>
+                    <tr {if $currentUser->getWelcomeTemplate() == $t->getId()}class="table-success"{/if}>
                         <td>
                             {$t->getUserCode()|escape}
                         </td>

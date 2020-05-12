@@ -16,10 +16,10 @@
                     <td>
                         <a href="{$baseurl}/internal.php/statistics/users/detail?user={$user.id}">{$user.username|escape}</a>
                     </td>
-                    <td {if $user.tooluser === 'Yes'}class="bg-success-light"{else}class="bg-danger-light"{/if}>{$user.tooluser}</td>
-                    <td {if $user.tooladmin === 'Yes'}class="bg-success-light"{else}class="bg-danger-light"{/if}>{$user.tooladmin}</td>
-                    <td {if $user.checkuser === 'Yes'}class="bg-success-light"{else}class="bg-danger-light"{/if}>{$user.checkuser}</td>
-                    <td {if $user.toolroot === 'Yes'}class="bg-success-light"{else}class="bg-danger-light"{/if}>{$user.toolroot}</td>
+                    <td {if $user.tooluser === 'Yes'}class="table-success"{else}class="table-danger"{/if}>{$user.tooluser}</td>
+                    <td {if $user.tooladmin === 'Yes'}class="table-success"{else}class="table-danger"{/if}>{$user.tooladmin}</td>
+                    <td {if $user.checkuser === 'Yes'}class="table-success"{else}class="table-danger"{/if}>{$user.checkuser}</td>
+                    <td {if $user.toolroot === 'Yes'}class="table-success"{else}class="table-danger"{/if}>{$user.toolroot}</td>
                 </tr>
             {/foreach}
         </tbody>

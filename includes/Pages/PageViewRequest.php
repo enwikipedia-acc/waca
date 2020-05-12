@@ -85,6 +85,8 @@ class PageViewRequest extends InternalPageBase
         else {
             $this->setTemplate('view-request/main.tpl');
         }
+
+        $this->addCss('/resources/viewrequest.css');
     }
 
     /**

@@ -7,7 +7,7 @@
             {if $requestLogs}
                 {foreach from=$requestLogs item=zoomrow name=logloop}
                     <tr {if $zoomrow.security == "admin"}class="bg-danger-light"{/if}>
-                        <td>
+                        <td class="text-nowrap">
                             {if $zoomrow.userid != null}
                                 <a href='{$baseurl}/internal.php/statistics/users/detail?user={$zoomrow.userid}'>{$zoomrow.user|escape}</a>
                             {else}
@@ -30,18 +30,17 @@
                                 {/if}
                             {else}
                                 {if $zoomrow.canedit == true}
-                                    <a class="btn btn-outline-secondary btn-sm" href="{$baseurl}/internal.php/editComment?id={$zoomrow.id}">
+                                    <a class="btn btn-outline-secondary btn-sm float-right p-0" href="{$baseurl}/internal.php/editComment?id={$zoomrow.id}" title="Edit comment" data-toggle="tooltip" data-placement="top" >
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    &nbsp;
                                 {/if}
                                 {$zoomrow.comment|escape}
                             {/if}
                         </td>
-                        <td>
-                            <a rel="tooltip" href="#log{$smarty.foreach.logloop.index}" title="{$zoomrow.time|date}"
-                               data-toggle="tooltip" class="plainlinks"
-                               id="#log{$smarty.foreach.logloop.index}">{$zoomrow.time|relativedate}</a>
+                        <td class="text-nowrap">
+                            <span href="#log{$smarty.foreach.logloop.index}" title="{$zoomrow.time|date}"
+                               data-toggle="tooltip" data-placement="top"
+                               id="#log{$smarty.foreach.logloop.index}">{$zoomrow.time|relativedate}</span>
                         </td>
                     </tr>
                 {/foreach}
@@ -55,7 +54,7 @@
                 </tr>
             {/if}
             <tr>
-                <td>
+                <td class="text-nowrap">
                     <a href="{$baseurl}/internal.php/statistics/users/detail?user={$currentUser->getId()}">{$currentUser->getUsername()|escape}</a>
                 </td>
                 <td>
@@ -63,7 +62,7 @@
                     <input type="hidden" name="visibility" value="user"/>
                     <input class="form-control" type="text" placeholder="Quick comment" name="comment"/>
                 </td>
-                <td>
+                <td class="text-nowrap">
                     <button class="btn btn-primary" type="submit">Save</button>
                     <label for="adminOnly" class="sr-only">Restrict visibility of this comment</label>
                     <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Restrict visibility of this comment">

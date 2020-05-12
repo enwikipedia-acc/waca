@@ -32,7 +32,7 @@
 
             {* Request Time *}
             <td>
-                <span class="d-none d-md-block"><a rel="tooltip" href="#rqtime{$r->getId()}" title="{$r->getDate()|date}" data-toggle="tooltip" class="plainlinks" id="#rqtime{$r->getId()}">{$r->getDate()|relativedate}</a></span>
+                <span class="d-none d-md-block"><span title="{$r->getDate()|date}" data-toggle="tooltip" data-placement="top" id="#rqtime{$r->getId()}">{$r->getDate()|relativedate}</span></span>
             </td>
 
             {* Bans *}

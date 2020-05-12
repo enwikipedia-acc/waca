@@ -101,6 +101,7 @@ SQL;
         $currentUser = User::getCurrent($database);
         $this->assign('canBan', $this->barrierTest('set', $currentUser, PageBan::class));
         $this->assign('canBreakReservation', $this->barrierTest('force', $currentUser, PageBreakReservation::class));
+        $this->addCss('/resources/mainpage.css');
 
         $this->setTemplate('mainpage/mainpage.tpl');
     }
