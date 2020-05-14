@@ -1,5 +1,5 @@
 <h3>Log:</h3>
-<div style="overflow-x: hidden; overflow-y: scroll; max-height: 450px;">
+<div class="overflow-auto height-30">
     <form action="{$baseurl}/internal.php/viewRequest/comment" method="post">
         {include file="security/csrf.tpl"}
         <table class="table table-sm table-striped table-bordered table-hover">

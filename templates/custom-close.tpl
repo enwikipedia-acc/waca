@@ -56,20 +56,20 @@
         </div>
 
         <div class="form-group row">
-            <div class="offset-lg-3 offset-xl-2">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="ccMailingList" name="ccMailingList" checked="checked" {if !$canSkipCcMailingList}disabled="disabled"{/if}/>
-                    <label class="form-check-label" for="ccMailingList">CC to mailing list</label>
+            <div class="offset-lg-3 offset-xl-2 col">
+                <div class="custom-control custom-checkbox">
+                    <input class="custom-control-input" type="checkbox" id="ccMailingList" name="ccMailingList" checked="checked" {if !$canSkipCcMailingList}disabled="disabled"{/if}/>
+                    <label class="custom-control-label" for="ccMailingList">CC to mailing list</label>
                 </div>
             </div>
         </div>
 
         {if $confirmEmailAlreadySent}
         <div class="form-group row">
-            <div class="offset-lg-3 offset-xl-2">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="confirmEmailAlreadySent" name="confirmEmailAlreadySent" required="required"/>
-                    <label class="form-check-label" for="confirmEmailAlreadySent">Override email already sent check</label>
+            <div class="offset-lg-3 offset-xl-2 col">
+                <div class="custom-control custom-checkbox">
+                    <input class="custom-control-input" type="checkbox" id="confirmEmailAlreadySent" name="confirmEmailAlreadySent" required="required"/>
+                    <label class="custom-control-label" for="confirmEmailAlreadySent">Override email already sent check</label>
                 </div>
             </div>
         </div>
@@ -79,10 +79,10 @@
 
         {if $confirmReserveOverride}
         <div class="form-group row">
-            <div class="offset-lg-3 offset-xl-2">
-                <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="confirmReserveOverride" name="confirmReserveOverride" required="required"/>
-                    <label class="form-check-label" for="confirmReserveOverride">Override reservation on this request by {$requestReservedByName|escape}?</label>
+            <div class="offset-lg-3 offset-xl-2 col">
+                <div class="custom-control custom-checkbox">
+                    <input class="custom-control-input" type="checkbox" id="confirmReserveOverride" name="confirmReserveOverride" required="required"/>
+                    <label class="custom-control-label" for="confirmReserveOverride">Override reservation on this request by {$requestReservedByName|escape}?</label>
                 </div>
             </div>
         </div>

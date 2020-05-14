@@ -50,17 +50,9 @@
 
 </div><!--/container-->
 {block name="footerjs"}
-<!-- Le javascript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="{$baseurl}/vendor/components/jquery/jquery.min.js" type="text/javascript"></script>
-<script src="{$baseurl}/vendor/twbs/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
-
-{if $tailScript}
-    <script type="text/javascript">
-        {$tailscript}
-    </script>
-{/if}
+    {* JS: Placed at the end of the document so the pages load faster *}
+    <script src="{$baseurl}/vendor/components/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="{$baseurl}/vendor/twbs/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
 {/block}
 </body>
 </html>

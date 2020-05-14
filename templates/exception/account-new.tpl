@@ -1,7 +1,7 @@
 {extends file="base.tpl"}
 {block name="content"}
     <div class="row">
-        <div class="col-md-8 offset-md-2 alert alert-block alert-success">
+        <div class="col-md-8 offset-md-2 alert alert-block alert-info">
             <h4>Account pending</h4>
             <p>
                 You've requested an account for this tool successfully, but your account has not been approved by a tool

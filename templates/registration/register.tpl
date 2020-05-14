@@ -65,6 +65,7 @@
                     </div>
                     <div class="col-sm-8 col-md-5 col-xl-4">
                         <input class="form-control" id="email" type="text" name="email" required="required"/>
+                        <small class="form-text text-muted">This is used to send you automatic notifications about events involving your account in the tool, including sending password reset emails.</small>
                     </div>
                 </div>
 
@@ -104,17 +105,19 @@
                     <div class="offset-md-2 offset-xl-3 col-sm-4 col-md-3 col-xl-2">
                     </div>
                     <div class="col-sm-8 col-md-5 col-xl-4">
-                        <input class="form-check-input" id="guidelines" type="checkbox" name="guidelines" required="required"/>
-                        <label class="form-check-label" for="guidelines">
-                            I have read and understand the
-                            <a href="http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide">interface guidelines</a>.
-                        </label>
+                        <div class="custom-control custom-checkbox">
+                            <input class="custom-control-input" id="guidelines" type="checkbox" name="guidelines" required="required"/>
+                            <label class="custom-control-label" for="guidelines">
+                                I have read and understand the
+                                <a href="http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide">interface guidelines</a>.
+                            </label>
+                        </div>
                     </div>
                 </div>
 
                 {if $useOAuthSignup}
-                    <div class="control-group">
-                        <div class="controls">
+                    <div class="row">
+                        <div class="offset-sm-4 offset-md-5 col-sm-8 col-md-5 col-xl-4">
                             <div class="alert alert-info">
                                 <strong>Heads up!</strong>
                                 After you click the Signup button, you will be redirected to Wikipedia, and be prompted to allow

@@ -31,17 +31,17 @@
 
     <div class="form-row">
         <div class="col-md-12 my-3">
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" id="inlineCheckbox1" name="limit" value="50" {if $limit == 50}checked{/if} />
-                <label class="form-check-label" for="inlineCheckbox1">50 results</label>
+            <div class="custom-control custom-radio custom-control-inline">
+                <input class="custom-control-input" type="radio" id="inlineCheckbox1" name="limit" value="50" {if $limit == 50}checked{/if} />
+                <label class="custom-control-label" for="inlineCheckbox1">50 results</label>
             </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" id="inlineCheckbox2" name="limit" value="100" {if $limit == 100}checked{/if} />
-                <label class="form-check-label" for="inlineCheckbox2">100 results</label>
+            <div class="custom-control custom-radio custom-control-inline">
+                <input class="custom-control-input" type="radio" id="inlineCheckbox2" name="limit" value="100" {if $limit == 100}checked{/if} />
+                <label class="custom-control-label" for="inlineCheckbox2">100 results</label>
             </div>
-            <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" id="inlineCheckbox3" name="limit" value="500" {if $limit == 500}checked{/if} />
-                <label class="form-check-label" for="inlineCheckbox3">500 results</label>
+            <div class="custom-control custom-radio custom-control-inline">
+                <input class="custom-control-input" type="radio" id="inlineCheckbox3" name="limit" value="500" {if $limit == 500}checked{/if} />
+                <label class="custom-control-label" for="inlineCheckbox3">500 results</label>
             </div>
         </div>
     </div>

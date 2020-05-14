@@ -76,10 +76,11 @@
     </div>
 
     <div class="form-group row">
-        <div class="col-lg-6 offset-lg-3">
-            <div class="form-check">
-                <input class="form-check-input" type="checkbox" id="privpol-check-override" name="privpol-check-override" required="required"/>
-                <label class="form-check-label" for="privpol-check-override">
+        <div class="col-lg-6 offset-lg-3 col">
+            <div class="card card-body card-danger">
+            <div class="custom-control custom-checkbox">
+                <input class="custom-control-input" type="checkbox" id="privpol-check-override" name="privpol-check-override" required="required"/>
+                <label class="custom-control-label" for="privpol-check-override">
                     <p>
                         By checking this box, I confirm that I understand that personally identifying information,
                         such as IP addresses of requesters, is not to be posted to the comments section of an ACC
@@ -95,6 +96,7 @@
                             Policy.</strong>
                     </p>
                 </label>
+            </div>
             </div>
         </div>
     </div>

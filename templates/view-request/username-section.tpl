@@ -5,39 +5,32 @@
 {/if}
 
 <div class="linkWrapSection my-4">
-    <a id="UsernameUserPage" class="btn btn-sm btn-outline-secondary" target="_blank"
-       href="https://en.wikipedia.org/wiki/User:{$requestName|escape:'url'}"
-       onMouseUp="$('#UsernameUserPage').addClass('btn-outline-visited');">
+    <a id="UsernameUserPage" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+       href="https://en.wikipedia.org/wiki/User:{$requestName|escape:'url'}">
         User page
     </a>
-    <a id="UsernameCreationLog" class="btn btn-sm btn-outline-secondary" target="_blank"
-       href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page={$requestName|escape:'url'}"
-       onMouseUp="$('#UsernameCreationLog').addClass('btn-outline-visited');">
+    <a id="UsernameCreationLog" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+       href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page={$requestName|escape:'url'}">
         Creation log
     </a>
-    <a id="UsernameSUL" class="btn btn-sm btn-outline-secondary" target="_blank"
-       href="{$baseurl}/redir.php?tool=sulutil&amp;data={$requestName|escape:'url'}"
-       onMouseUp="$('#UsernameSUL').addClass('btn-outline-visited');">
+    <a id="UsernameSUL" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+       href="{$baseurl}/redir.php?tool=sulutil&amp;data={$requestName|escape:'url'}">
         SUL
     </a>
-    <a id="UsernameCentralAuth" class="btn btn-sm btn-outline-secondary" target="_blank"
-       href="https://en.wikipedia.org/wiki/Special:CentralAuth/{$requestName|escape:'url'}"
-       onMouseUp="$('#UsernameCentralAuth').addClass('btn-outline-visited');">
+    <a id="UsernameCentralAuth" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+       href="https://en.wikipedia.org/wiki/Special:CentralAuth/{$requestName|escape:'url'}">
         Special:CentralAuth
     </a>
-    <a id="UsernameUsernameList" class="btn btn-sm btn-outline-secondary" target="_blank"
-       href="https://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username={$requestName|escape:'url'}&amp;group=&amp;limit=1"
-       onMouseUp="$('#UsernameUsernameList').addClass('btn-outline-visited');">
+    <a id="UsernameUsernameList" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+       href="https://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username={$requestName|escape:'url'}&amp;group=&amp;limit=1">
         Username list
     </a>
-    <a id="UsernameMainspaceSearch" class="btn btn-sm btn-outline-secondary" target="_blank"
-       href="https://en.wikipedia.org/w/index.php?title=Special%3ASearch&amp;profile=advanced&amp;search={$requestName|escape:'url'}&amp;fulltext=Search&amp;ns0=1&amp;redirs=1&amp;profile=advanced"
-       onMouseUp="$('#UsernameMainspaceSearch').addClass('btn-outline-visited');">
+    <a id="UsernameMainspaceSearch" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+       href="https://en.wikipedia.org/w/index.php?title=Special%3ASearch&amp;profile=advanced&amp;search={$requestName|escape:'url'}&amp;fulltext=Search&amp;ns0=1&amp;redirs=1&amp;profile=advanced">
         Wikipedia mainspace search
     </a>
-    <a id="UsernameGoogleSearch" class="btn btn-sm btn-outline-secondary" target="_blank"
-       href="{$baseurl}/redir.php?tool=google&amp;data={$requestName|escape:'url'}"
-       onMouseUp="$('#UsernameGoogleSearch').addClass('btn-outline-visited');">
+    <a id="UsernameGoogleSearch" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+       href="{$baseurl}/redir.php?tool=google&amp;data={$requestName|escape:'url'}">
         Google search
     </a>
 </div>

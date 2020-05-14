@@ -12,6 +12,7 @@
 
     <!-- fontawesome -->
     <link href="{$baseurl}/vendor/fortawesome/font-awesome/css/all.min.css" rel="stylesheet"/>
+    <link href="{$baseurl}/vendor/fortawesome/font-awesome/css/svg-with-js.css" rel="stylesheet" />
 
     <!-- Page-specific extra resources -->
     {foreach from=$extraCss item=css}
@@ -74,37 +75,21 @@
 </div><!--/.fluid-container-->
 
 {block name="footerjs"}
-<!-- Le javascript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="{$baseurl}/vendor/components/jquery/jquery.min.js" type="text/javascript"></script>
-<script src="{$baseurl}/vendor/fortawesome/font-awesome/js/all.min.js" type="text/javascript"></script>
-<script src="{$baseurl}/lib/popper.min.js" type="text/javascript"></script>
-<script src="{$baseurl}/vendor/twbs/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
-<script src="{$baseurl}/vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js"></script>
+    {* JS: Placed at the end of the document so the pages load faster *}
+    <script src="{$baseurl}/vendor/components/jquery/jquery.min.js" type="text/javascript"></script>
+    <script src="{$baseurl}/vendor/fortawesome/font-awesome/js/all.min.js" data-auto-add-css="false" type="text/javascript"></script>
+    <script src="{$baseurl}/lib/popper.min.js" type="text/javascript"></script>
+    <script src="{$baseurl}/vendor/twbs/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="{$baseurl}/vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js"></script>
+    <script src="{$baseurl}/resources/global.js"></script>
 
-<!-- Page-specific extra resources -->
-{foreach from=$extraJs item=js}
-    <script src="{$baseurl}{$js}" type="text/javascript"></script>
-{/foreach}
+    <!-- Page-specific extra resources -->
+    {foreach from=$extraJs item=js}
+        <script src="{$baseurl}{$js}" type="text/javascript"></script>
+    {/foreach}
 
-{* initialise the tooltips *}
-<script type="text/javascript">
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-    })
-
-    $(function () {
-        $("[rel='popover']").popover();
-    });
-</script>
-{* Initialise the type-ahead boxes *}
-{$typeAheadBlock}
-{if $tailScript}
-    <script type="text/javascript">
-        {$tailScript}
-    </script>
-{/if}
+    {* Initialise the type-ahead boxes *}
+    {$typeAheadBlock}
 {/block}
 </body>
 </html>

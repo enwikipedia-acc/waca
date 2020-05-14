@@ -5,32 +5,15 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-.linkWrapSection .btn {
-    margin-bottom: 5px;
-}
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip();
+});
 
-.height-30 {
-    max-height: 30rem;
-}
+$(function () {
+    $("[rel='popover']").popover();
+});
 
-hr.zoom-button-divider {
-    border-top-color: #ddd;
-    margin-top: 10px;
-}
+$(".visit-tracking").mouseup(function() {
+    $(this).addClass('btn-outline-visited');
+})
 
-h5.zoom-button-header {
-    color: #999;
-    margin-top: -15px;
-    margin-bottom: 5px;
-    font-weight: normal;
-    font-style: italic;
-    font-size: 1rem;
-}
-
-.row.row-request-data-section {
-    margin-bottom: 0.4rem;
-}
-
-button.dropdown-toggle-split {
-    border-left: 1px solid #0000002e;
-}

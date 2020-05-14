@@ -34,6 +34,7 @@
                         </div>
                         <div class="col-md-10 col-lg-8 col-xl-6">
                             <input class="form-control" type="email" id="inputEmail" name="email" required="required" value="{$currentUser->getEmail()|escape}"/>
+                            <small class="form-text text-muted">This is used to send you automatic notifications about events involving your account in the tool, including sending password reset emails.</small>
                         </div>
                     </div>
 
@@ -49,9 +50,9 @@
 
                     <div class="form-group row">
                         <div class="offset-md-2 offset-lg-3 col-md-10 col-lg-8 col-xl-6">
-                            <div class="form-check">
-                                <input class="form-check-input" type="checkbox" id="inputAbortpref" name="abortpref"{if $currentUser->getAbortPref()} checked{/if}>
-                                <label class="form-check-label" for="inputAbortpref">Don't ask to double check before closing requests (requires Javascript)</label>
+                            <div class="custom-control custom-switch">
+                                <input class="custom-control-input" type="checkbox" id="inputAbortpref" name="abortpref"{if $currentUser->getAbortPref()} checked{/if}>
+                                <label class="custom-control-label" for="inputAbortpref">Skip double-check prompt before closing requests</label>
                             </div>
                         </div>
                     </div>

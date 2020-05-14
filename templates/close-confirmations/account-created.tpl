@@ -10,9 +10,13 @@
             <form method="post">
                 {include file="security/csrf.tpl"}
 
-                <div class="row" style="margin-top:30px;">
-                    <button class="btn btn-success offset-md-3 col-md-3" name="createOverride" value="true">Yes</button>
-                    <a class="btn btn-danger col-md-3" href="{$baseurl}/internal.php/viewRequest?id={$request}">No</a>
+                <div class="row mt-5">
+                    <div class="offset-md-3 col-md-3">
+                        <button class="btn btn-success" name="createOverride" value="true">Yes</button>
+                    </div>
+                    <div class="col-md-3">
+                        <a class="btn btn-danger" href="{$baseurl}/internal.php/viewRequest?id={$request}">No</a>
+                    </div>
                 </div>
                 <input type="hidden" name="request" value="{$request}" />
                 <input type="hidden" name="template" value="{$template}" />

@@ -82,18 +82,18 @@
 
                 <div class="form-group row">
                     <div class="offset-md-3 offset-xl-2 col-md-9">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="inputActive" name="active" {if $id == $createdid} disabled{/if}{if {$emailTemplate->getActive()}} checked{/if}/>
-                            <label class="form-check-label" for="inputActive">Enabled</label>
+                        <div class="custom-control custom-switch">
+                            <input class="custom-control-input" type="checkbox" id="inputActive" name="active" {if $id == $createdid} disabled{/if}{if {$emailTemplate->getActive()}} checked{/if}/>
+                            <label class="custom-control-label" for="inputActive">Enabled</label>
                         </div>
                     </div>
                 </div>
 
                 <div class="form-group row">
                     <div class="offset-md-3 offset-xl-2 col-md-9">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="inputPreloadonly" name="preloadonly"{if $id == $createdid} disabled{/if}{if {$emailTemplate->getPreloadOnly()}} checked{/if} />
-                            <label class="form-check-label" for="inputPreloadonly">Available for preload only</label>
+                        <div class="custom-control custom-switch">
+                            <input class="custom-control-input" type="checkbox" id="inputPreloadonly" name="preloadonly"{if $id == $createdid} disabled{/if}{if {$emailTemplate->getPreloadOnly()}} checked{/if} />
+                            <label class="custom-control-label" for="inputPreloadonly">Available for preload only</label>
                         </div>
                     </div>
                 </div>

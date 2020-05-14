@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 {block name="content"}
-    <div class="row-fluid">
+    <div class="row">
         <div class="alert alert-block alert-info col-md-8 offset-md-2">
             <h4>Warning!</h4>
 
@@ -9,10 +9,15 @@
             <form method="post">
                 {include file="security/csrf.tpl"}
 
-                <div class="row-fluid" style="margin-top:30px;">
-                    <button class="btn btn-success col-md-3 offset-md-3" name="reserveOverride" value="true">Yes</button>
-                    <a class="btn btn-danger col-md-3" href="{$baseurl}/internal.php/viewRequest?id={$request}">No</a>
+                <div class="row mt-5">
+                    <div class="offset-md-3 col-md-3">
+                        <button class="btn btn-success" name="reserveOverride" value="true">Yes</button>
+                    </div>
+                    <div class="col-md-3">
+                        <a class="btn btn-danger" href="{$baseurl}/internal.php/viewRequest?id={$request}">No</a>
+                    </div>
                 </div>
+
                 <input type="hidden" name="request" value="{$request}" />
                 <input type="hidden" name="template" value="{$template}" />
 

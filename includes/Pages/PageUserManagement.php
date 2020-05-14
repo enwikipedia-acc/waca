@@ -349,7 +349,7 @@ class PageUserManagement extends InternalPageBase
             $this->assignCSRFToken();
             $this->setTemplate("usermanagement/changelevel-reason.tpl");
             $this->assign("user", $user);
-            $this->assign("status", "User");
+            $this->assign("status", "Active");
             $this->assign("showReason", false);
         }
     }
