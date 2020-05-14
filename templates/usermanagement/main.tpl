@@ -35,7 +35,7 @@
                             {if count($newUsers) > 0 }<span class="badge badge-warning badge-pill">{count($newUsers)}</span>{/if}
                         </button>
                     </div>
-                    <div id="collapseNew" class="collapse show ">
+                    <div id="collapseNew" class="collapse show" data-parent="#userListAccordion">
                         <div class="card-body">
                             {include file='usermanagement/userlist.tpl' userlist=$newUsers}
                         </div>
@@ -48,7 +48,7 @@
                             Users
                         </button>
                     </div>
-                    <div id="collapseUsers" class="collapse">
+                    <div id="collapseUsers" class="collapse" data-parent="#userListAccordion">
                         <div class="card-body">
                             {include file='usermanagement/userlist.tpl' userlist=$normalUsers}
                         </div>
@@ -61,7 +61,7 @@
                             Tool admins
                         </button>
                     </div>
-                    <div id="collapseAdmins" class="collapse">
+                    <div id="collapseAdmins" class="collapse" data-parent="#userListAccordion">
                         <div class="card-body">
                             {include file='usermanagement/userlist.tpl' userlist=$adminUsers}
                         </div>
@@ -74,7 +74,7 @@
                             Tool roots
                         </button>
                     </div>
-                    <div id="collapseRoots" class="collapse">
+                    <div id="collapseRoots" class="collapse" data-parent="#userListAccordion">
                         <div class="card-body">
                             {include file='usermanagement/userlist.tpl' userlist=$toolRoots}
                         </div>
@@ -87,7 +87,7 @@
                             Checkusers
                         </button>
                     </div>
-                    <div id="collapseCheckusers" class="collapse">
+                    <div id="collapseCheckusers" class="collapse" data-parent="#userListAccordion">
                         <div class="card-body">
                             {include file='usermanagement/userlist.tpl' userlist=$checkUsers}
                         </div>
@@ -101,7 +101,7 @@
                                 Suspended accounts
                             </button>
                         </div>
-                        <div id="collapseSuspended" class="collapse">
+                        <div id="collapseSuspended" class="collapse" data-parent="#userListAccordion">
                             <div class="card-body">
                                 {include file='usermanagement/userlist.tpl' userlist=$suspendedUsers}
                             </div>
@@ -113,7 +113,7 @@
                                 Declined accounts
                             </button>
                         </div>
-                        <div id="collapseDeclined" class="collapse">
+                        <div id="collapseDeclined" class="collapse" data-parent="#userListAccordion">
                             <div class="card-body">
                                 {include file='usermanagement/userlist.tpl' userlist=$declinedUsers}
                             </div>

@@ -26,7 +26,7 @@
                                 <em class="text-muted">{$zoomrow.entry|escape}</em>
                                 {if $zoomrow.comment != null}
                                     <br/>
-                                    {$zoomrow.comment|escape}
+                                    <div class="prewrap">{$zoomrow.comment|escape}</div>
                                 {/if}
                             {else}
                                 {if $zoomrow.canedit == true}
@@ -34,7 +34,7 @@
                                         <i class="fas fa-edit"></i>
                                     </a>
                                 {/if}
-                                {$zoomrow.comment|escape}
+                                <div class="prewrap">{$zoomrow.comment|escape}</div>
                             {/if}
                         </td>
                         <td class="text-nowrap">

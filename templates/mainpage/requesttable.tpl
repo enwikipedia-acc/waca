@@ -7,9 +7,9 @@
         {/if}
         <th>Username</th>
         <th><span class="d-none d-md-block">Request time</span></th>
-        <td><!-- ban --></td>
-        <td><!-- reserve status --></td>
-        <td><!--reserve button--></td>
+        <th><!-- ban --></th>
+        <th><!-- reserve status --></th>
+        <th><!--reserve button--></th>
     </tr>
     </thead>
     <tbody>

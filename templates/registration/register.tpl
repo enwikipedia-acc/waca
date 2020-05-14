@@ -22,7 +22,7 @@
 
     <div class="row">
         <div class="col-md-12">
-            <form class="form-horizontal" method="post">
+            <form method="post">
                 {include file="security/csrf.tpl"}
 
                 <input type="hidden" name="welcomeenable" value="false"/>

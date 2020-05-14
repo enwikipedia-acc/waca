@@ -27,11 +27,13 @@ td.table-button-cell {
     margin-bottom: 0;
 }
 
-
 /* used for display of email messages to wrap text in a pre */
 .prewrap {
     white-space: pre-wrap;
+    height: inherit;
 }
+
+
 
 /* min width of fontawesome icons */
 .svg-inline--fa {
