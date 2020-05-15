@@ -67,8 +67,9 @@ This was written using Windows 10.
 5. Browse to http://localhost/phpmyadmin/ and create a new database called "waca".
 6. Run `composer install` (https://getcomposer.org)
 7. Update the dependent git repos
-  * `git submodule init`
-  * `git submodule update`
+  * `git submodule update --init --recursive`
+8. Generate the stylesheets:
+  * `cd maintenance/; php RegenerateStylesheets.php`
 8. run the database setup scripts:
   * `./test_db.sh 1 localhost <dbname> <user> <password>`
   * `mysql <dbname> -e "update user set status = 'Active' ;"`
