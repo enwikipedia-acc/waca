@@ -65,9 +65,7 @@ class PageUserManagement extends InternalPageBase
 
         $this->assign('roles', $roleMap);
 
-        $this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use ($database) {
-            return UserSearchHelper::get($database)->fetchColumn('username');
-        });
+        $this->addJs("/api.php?action=users&targetVariable=typeaheaddata");
 
         $this->assign('canApprove', $this->barrierTest('approve', $currentUser));
         $this->assign('canDecline', $this->barrierTest('decline', $currentUser));

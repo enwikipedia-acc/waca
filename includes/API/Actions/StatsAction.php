@@ -9,15 +9,15 @@
 namespace Waca\API\Actions;
 
 use Waca\API\ApiException;
-use Waca\API\IApiAction;
+use Waca\API\IXmlApiAction;
 use Waca\DataObjects\User;
-use Waca\Tasks\ApiPageBase;
+use Waca\Tasks\XmlApiPageBase;
 use Waca\WebRequest;
 
 /**
  * API Count action
  */
-class StatsAction extends ApiPageBase implements IApiAction
+class StatsAction extends XmlApiPageBase implements IXmlApiAction
 {
     /**
      * The target user

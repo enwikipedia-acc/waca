@@ -10,15 +10,15 @@ namespace Waca\API\Actions;
 
 use DOMElement;
 use Waca\API\ApiException as ApiException;
-use Waca\API\IApiAction as IApiAction;
+use Waca\API\IXmlApiAction as IApiAction;
 use Waca\DataObjects\User;
-use Waca\Tasks\ApiPageBase;
+use Waca\Tasks\XmlApiPageBase;
 use Waca\WebRequest;
 
 /**
  * API Count action
  */
-class CountAction extends ApiPageBase implements IApiAction
+class CountAction extends XmlApiPageBase implements IXmlApiAction
 {
     /**
      * The target user

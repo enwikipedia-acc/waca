@@ -6,30 +6,19 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
-namespace Waca\Tasks;
+namespace Waca\API;
 
-use Waca\API\IApiAction;
+use Waca\Tasks\IRoutedTask;
 
-abstract class ApiPageBase extends TaskBase implements IRoutedTask, IApiAction
+/**
+ * API Action interface
+ */
+interface IJsonApiAction extends IRoutedTask, IApiAction
 {
-    final public function execute()
-    {
-        $this->main();
-    }
-
     /**
-     * @param string $routeName
+     * Method that runs API action
+     *
+     * @return object|array The modified API document
      */
-    public function setRoute($routeName)
-    {
-        // no-op
-    }
-
-    /**
-     * @return string
-     */
-    public function getRouteName()
-    {
-        return 'main';
-    }
+    public function executeApiAction();
 }

@@ -13,16 +13,16 @@
         </div>
     </div>
 
-    <div class="row">
-        <form method="get" class="col-md-8">
-            <div class="form-row">
-                <input type="text" class="form-control col-md-9" placeholder="Jump to user"
-                       data-provide="typeahead" data-items="10" name="usersearch">
-                <button type="submit" class="btn col-md-3">Search</button>
+    <form>
+        <div class="row">
+            <div class="col-sm-8 col-md-6 col-lg-4 col-xl-3">
+                <input type="text" class="form-control username-typeahead" placeholder="Jump to user" name="usersearch" id="usersearch">
             </div>
-        </form>
-    </div>
-
+            <div class="col-sm-4 col-md-3">
+                <button type="submit" class="btn btn-secondary"><i class="fas fa-search"></i>Search</button>
+            </div>
+        </div>
+    </form>
 
     <hr />
     <div class="row">

@@ -141,10 +141,6 @@ class PageViewRequest extends InternalPageBase
         $this->assign("allDeclineReasons", $allDeclineReasons);
         $allOtherReasons = EmailTemplate::getAllActiveTemplates(false, $database);
         $this->assign("allOtherReasons", $allOtherReasons);
-
-        $this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use ($database) {
-            return UserSearchHelper::get($database)->byStatus('Active')->fetchColumn('username');
-        });
     }
 
     private function setupLogData(Request $request, PdoDatabase $database)
@@ -212,6 +208,8 @@ class PageViewRequest extends InternalPageBase
                 );
             }
         }
+
+        $this->addJs("/api.php?action=users&targetVariable=typeaheaddata");
 
         $this->assign("requestLogs", $requestLogs);
     }

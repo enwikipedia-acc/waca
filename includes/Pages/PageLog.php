@@ -36,9 +36,7 @@ class PageLog extends InternalPageBase
             $filterObjectType = null;
         }
 
-        $this->getTypeAheadHelper()->defineTypeAheadSource('username-typeahead', function() use ($database) {
-            return UserSearchHelper::get($database)->fetchColumn('username');
-        });
+        $this->addJs("/api.php?action=users&targetVariable=typeaheaddata");
 
         $limit = WebRequest::getInt('limit');
         if ($limit === null) {

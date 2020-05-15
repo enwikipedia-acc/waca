@@ -9,14 +9,14 @@
 namespace Waca\API\Actions;
 
 use DOMElement;
-use Waca\API\IApiAction;
+use Waca\API\IXmlApiAction;
 use Waca\Router\ApiRequestRouter;
-use Waca\Tasks\ApiPageBase;
+use Waca\Tasks\XmlApiPageBase;
 
 /**
  * API Help action
  */
-class HelpAction extends ApiPageBase implements IApiAction
+class HelpAction extends XmlApiPageBase implements IXmlApiAction
 {
     public function executeApiAction(DOMElement $apiDocument)
     {

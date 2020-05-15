@@ -7,14 +7,27 @@
  ******************************************************************************/
 
 // this matches $indigo, but due to ordering constraints we have to redefine it here.
-$visitedColour:  #6610f2 !default;
+$visitedColour:  #6610f2;
 
 // add "visited" as a colour type to all bootstrap elements
 $theme-colors: (
     "visited":    $visitedColour,
-) !default;
+);
 
 // bump font size down to roughly bootstrap 2.3.2 levels:
-$font-size-base: 0.9rem !default;
+$font-size-base: 0.9rem;
+
+$overflows: auto, hidden, visible;
 
 @import "../../vendor/twbs/bootstrap/scss/bootstrap";
+
+span.twitter-typeahead {
+    display: block !important;
+    .tt-menu { @extend .dropdown-menu; }
+    .tt-suggestion { @extend .dropdown-item; }
+    .tt-suggestion.tt-cursor { @extend .dropdown-item, .active; }
+}
+
+.accordion>.overflow-visible {
+    @extend .overflow-visible;
+}

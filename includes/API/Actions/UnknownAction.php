@@ -9,12 +9,12 @@
 namespace Waca\API\Actions;
 
 use DOMElement;
-use Waca\API\IApiAction;
+use Waca\API\IXmlApiAction;
 
 /**
  * API Help action
  */
-class UnknownAction extends HelpAction implements IApiAction
+class UnknownAction extends HelpAction implements IXmlApiAction
 {
     public function executeApiAction(DOMElement $apiDocument)
     {

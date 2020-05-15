@@ -3,7 +3,7 @@
     <div class="form-row">
         <div class="col-lg-3 col-xl-2">
             <label class="sr-only" for="inputUsername">Username</label>
-            <input type="text" id="inputUsername" class="form-control" placeholder="All users" data-provide="typeahead" data-items="10" name="filterUser" value="{$filterUser|escape}"/>
+            <input type="text" id="inputUsername" class="form-control username-typeahead" placeholder="All users" name="filterUser" value="{$filterUser|escape}"/>
         </div>
         <div class="col-lg-3 col-xl-2">
             <label class="sr-only" for="inputAction">Log action</label>

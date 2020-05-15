@@ -6,7 +6,10 @@
     "components/jquery": "^3.5.0",
     "twbs/bootstrap": "^4.4",
     "twitter/typeahead.js": "^0.11.1",
-    "fortawesome/font-awesome": "~5.13.0"
+    "fortawesome/font-awesome": "~5.13.0",
+    "ext-dom": "*",
+    "ext-pdo": "*",
+    "ext-json": "*"
   },
   "require-dev": {
     "squizlabs/php_codesniffer": "~2.7",

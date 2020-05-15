@@ -10,8 +10,8 @@ namespace Waca\API\Actions;
 
 use DOMElement;
 use DateTime;
-use Waca\API\IApiAction;
-use Waca\Tasks\ApiPageBase;
+use Waca\API\IXmlApiAction;
+use Waca\Tasks\XmlApiPageBase;
 
 /**
  * MonitorAction short summary.
@@ -21,7 +21,7 @@ use Waca\Tasks\ApiPageBase;
  * @version 1.0
  * @author  stwalkerster
  */
-class MonitorAction extends ApiPageBase implements IApiAction
+class MonitorAction extends XmlApiPageBase implements IXmlApiAction
 {
     /**
      * @param DOMElement $apiDocument

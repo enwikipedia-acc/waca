@@ -15,5 +15,41 @@ $(function () {
 
 $(".visit-tracking").mouseup(function() {
     $(this).addClass('btn-outline-visited');
-})
+});
 
+
+var typeaheaddata = [];
+
+var substringMatcher = function () {
+    return function findMatches(query, syncResults) {
+        var matches, substrRegex;
+
+        // an array that will be populated with substring matches
+        matches = [];
+
+        // regex used to determine if a string contains the substring `query`
+        substrRegex = new RegExp(query, 'i');
+
+        // iterate through the pool of strings and for any string that
+        // contains the substring `query`, add it to the `matches` array
+        $.each(typeaheaddata, function (i, str) {
+            if (substrRegex.test(str)) {
+                matches.push(str);
+            }
+        });
+
+        syncResults(matches);
+    };
+};
+
+$('.username-typeahead').typeahead(
+    {
+        hint: true,
+        highlight: true,
+        minLength: 1
+    },
+    {
+        name: "username",
+        source: substringMatcher()
+    }
+);

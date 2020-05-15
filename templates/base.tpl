@@ -87,9 +87,6 @@
     {foreach from=$extraJs item=js}
         <script src="{$baseurl}{$js}" type="text/javascript"></script>
     {/foreach}
-
-    {* Initialise the type-ahead boxes *}
-    {$typeAheadBlock}
 {/block}
 </body>
 </html>

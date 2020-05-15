@@ -6,12 +6,6 @@
  ******************************************************************************/
 
 /* fixes for dropdowns in accordions */
-.overflow-visible {
-    overflow: visible;
-}
-.accordion>.overflow-visible {
-    overflow: visible;
-}
 
 .alert-accordion {
     margin-top: -1.2rem;

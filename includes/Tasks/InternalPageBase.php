@@ -115,8 +115,6 @@ abstract class InternalPageBase extends PageBase
     {
         parent::finalisePage();
 
-        $this->assign('typeAheadBlock', $this->getTypeAheadHelper()->getTypeAheadScriptBlock());
-
         $database = $this->getDatabase();
 
         $currentUser = User::getCurrent($database);

@@ -9,13 +9,13 @@
 namespace Waca\API\Actions;
 
 use DOMElement;
-use Waca\API\IApiAction;
-use Waca\Tasks\ApiPageBase;
+use Waca\API\IXmlApiAction;
+use Waca\Tasks\XmlApiPageBase;
 
 /**
  * API Count action
  */
-class StatusAction extends ApiPageBase implements IApiAction
+class StatusAction extends XmlApiPageBase implements IXmlApiAction
 {
     public function executeApiAction(DOMElement $apiDocument)
     {

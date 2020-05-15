@@ -11,6 +11,7 @@ namespace Waca\Router;
 use Exception;
 use Waca\API\Actions\CountAction;
 use Waca\API\Actions\HelpAction;
+use Waca\API\Actions\JsUsersAction;
 use Waca\API\Actions\MonitorAction;
 use Waca\API\Actions\StatsAction;
 use Waca\API\Actions\StatusAction;
@@ -51,6 +52,9 @@ class ApiRequestRouter implements IRequestRouter
                 break;
             case "monitor":
                 $result = new MonitorAction();
+                break;
+            case "users":
+                $result = new JsUsersAction();
                 break;
             default:
                 $result = new UnknownAction();
