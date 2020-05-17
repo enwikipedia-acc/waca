@@ -87,6 +87,12 @@
     {foreach from=$extraJs item=js}
         <script src="{$baseurl}{$js}" type="text/javascript"></script>
     {/foreach}
+
+    {if $tailScript}
+        <script type="text/javascript">
+            {$tailScript}
+        </script>
+    {/if}
 {/block}
 </body>
 </html>

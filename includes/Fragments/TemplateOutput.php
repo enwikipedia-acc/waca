@@ -26,6 +26,16 @@ trait TemplateOutput
     protected abstract function getSiteConfiguration();
 
     /**
+     * Include extra JavaScript at the end of the page's execution
+     *
+     * @param $script string JavaScript to include at the end of the page
+     */
+    final protected function setTailScript($script)
+    {
+        $this->tailScript = $script;
+    }
+
+    /**
      * Assigns a Smarty variable
      *
      * @param  array|string $name  the template variable name(s)
@@ -86,6 +96,8 @@ trait TemplateOutput
      */
     final protected function fetchTemplate($template)
     {
+        $this->assign('tailScript', $this->tailScript);
+
         return $this->smarty->fetch($template);
     }
 }
