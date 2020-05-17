@@ -11,6 +11,7 @@ namespace Waca\ConsoleTasks;
 use Exception;
 use ScssPhp\ScssPhp\Compiler;
 use Waca\Tasks\ConsoleTaskBase;
+use Waca\WebRequest;
 
 class RegenerateStylesheetsTask extends ConsoleTaskBase
 {
@@ -20,8 +21,11 @@ class RegenerateStylesheetsTask extends ConsoleTaskBase
     {
         $scss = new Compiler();
         $scss->setImportPaths('resources/scss');
-        $scss->setFormatter('ScssPhp\\ScssPhp\\Formatter\\Compressed');
-        $scss->setSourceMap(Compiler::SOURCE_MAP_INLINE);
+
+        if (!$this->getSiteConfiguration()->getDebuggingTraceEnabled()) {
+            $scss->setFormatter('ScssPhp\\ScssPhp\\Formatter\\Compressed');
+            $scss->setSourceMap(Compiler::SOURCE_MAP_INLINE);
+        }
 
         if (!is_dir(self::RESOURCES_GENERATED)) {
             mkdir(self::RESOURCES_GENERATED);
