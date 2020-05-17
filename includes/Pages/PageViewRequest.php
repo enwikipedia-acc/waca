@@ -257,11 +257,21 @@ class PageViewRequest extends InternalPageBase
 
     private function setupCreationTypes(User $user)
     {
-        $this->assign('canManualCreate',
-            $this->barrierTest(User::CREATION_MANUAL, $user, 'RequestCreation'));
-        $this->assign('canOauthCreate',
-            $this->barrierTest(User::CREATION_OAUTH, $user, 'RequestCreation'));
-        $this->assign('canBotCreate',
-            $this->barrierTest(User::CREATION_BOT, $user, 'RequestCreation'));
+        $canManualCreate = $this->barrierTest(User::CREATION_MANUAL, $user, 'RequestCreation');
+        $canOauthCreate = $this->barrierTest(User::CREATION_OAUTH, $user, 'RequestCreation');
+        $canBotCreate = $this->barrierTest(User::CREATION_BOT, $user, 'RequestCreation');
+
+        $this->assign('canManualCreate', $canManualCreate);
+        $this->assign('canOauthCreate', $canOauthCreate);
+        $this->assign('canBotCreate', $canBotCreate);
+
+        $creationHasChoice = count(array_filter([$canManualCreate, $canOauthCreate, $canBotCreate])) > 1;
+
+        if (!$this->barrierTest($user->getCreationMode(), $user, 'RequestCreation')) {
+            // user is not allowed to use their default. Force a choice.
+            $creationHasChoice = true;
+        }
+
+        $this->assign('creationHasChoice', $creationHasChoice);
     }
 }

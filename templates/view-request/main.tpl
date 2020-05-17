@@ -20,7 +20,7 @@
 
                     {block name="createButton"}
 
-                        {if $requestIsReservedByMe && !$requestIsClosed}
+                        {if $requestIsReservedByMe && !$requestIsClosed && $creationHasChoice}
                             <div class="creationTypeOptions">
                                 {if $canManualCreate}
                                     <div class="custom-control-inline custom-radio">
