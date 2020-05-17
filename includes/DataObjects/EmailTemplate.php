@@ -199,8 +199,7 @@ SET name = :name,
 	active = :active,
 	preloadonly = :preloadonly,
 	updateversion = updateversion + 1
-WHERE id = :id AND updateversion = :updateversion
-LIMIT 1;
+WHERE id = :id AND updateversion = :updateversion;
 SQL
             );
             $statement->bindValue(':id', $this->id);

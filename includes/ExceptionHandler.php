@@ -109,7 +109,7 @@ HTML;
      *
      * @return null|array
      */
-    private static function getExceptionData($exception)
+    public static function getExceptionData($exception)
     {
         if ($exception == null) {
             return null;

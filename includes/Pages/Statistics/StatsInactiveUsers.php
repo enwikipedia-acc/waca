@@ -22,7 +22,7 @@ class StatsInactiveUsers extends InternalPageBase
         $this->setHtmlTitle('Inactive Users :: Statistics');
 
         $date = new DateTime();
-        $date->modify("-45 days");
+        $date->modify("-90 days");
 
         $inactiveUsers = UserSearchHelper::get($this->getDatabase())
             ->byStatus('Active')

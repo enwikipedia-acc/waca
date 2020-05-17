@@ -1,4 +1,4 @@
-<form class="col-md-6" action="{$baseurl}/internal.php/viewRequest/close" method="post">
+<form class="col-md-3" action="{$baseurl}/internal.php/viewRequest/close" method="post">
     <div class="dropright">
         <button type="button" class="btn btn-warning btn-block dropdown-toggle" data-toggle="dropdown">
             Decline&nbsp;<span class="caret"></span>
@@ -16,5 +16,6 @@
         </div>
     </div>
     <input type="hidden" name="request" value="{$requestId}"/>
+    <input type="hidden" name="updateversion" value="{$updateVersion}"/>
     {include file="security/csrf.tpl"}
 </form>

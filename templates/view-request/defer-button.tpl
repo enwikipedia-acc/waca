@@ -15,5 +15,6 @@
             {/foreach}
         </div>
     </div>
+    <input type="hidden" name="updateversion" value="{$updateVersion}"/>
     {include file="security/csrf.tpl"}
 </form>

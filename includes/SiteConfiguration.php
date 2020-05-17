@@ -19,7 +19,7 @@ class SiteConfiguration
 {
     private $baseUrl;
     private $filePath;
-    private $schemaVersion = 26;
+    private $schemaVersion = 30;
     private $debuggingTraceEnabled;
     private $dataClearIp = '127.0.0.1';
     private $dataClearEmail = 'acc@toolserver.org';
@@ -64,6 +64,8 @@ class SiteConfiguration
     private $oauthBaseUrl;
     private $oauthConsumerToken;
     private $oauthConsumerSecret;
+    private $oauthIdentityGraceTime = '24 hours';
+    private $oauthMediaWikiCanonicalServer = 'http://en.wikipedia.org';
     private $xffTrustedHostsFile = '../TrustedXFF/trusted-hosts.txt';
     private $crossOriginResourceSharingHosts = array(
         "http://en.wikipedia.org",
@@ -79,6 +81,14 @@ class SiteConfiguration
     /** @var null|string $locationProviderApiKey */
     private $locationProviderApiKey = null;
     private $torExitPaths = array();
+    private $creationBotUsername = '';
+    private $creationBotPassword = '';
+    private $curlCookieJar = null;
+    private $yubicoApiId = 0;
+    private $yubicoApiKey = "";
+    private $totpEncryptionKey = "1234";
+    private $identificationNoticeboardPage = 'Access to nonpublic personal data policy/Noticeboard';
+    private $registrationAllowed = true;
 
     /**
      * Gets the base URL of the tool
@@ -823,5 +833,180 @@ class SiteConfiguration
     public function getTorExitPaths()
     {
         return $this->torExitPaths;
+    }
+
+    /**
+     * @param string $oauthIdentityGraceTime
+     *
+     * @return SiteConfiguration
+     */
+    public function setOauthIdentityGraceTime($oauthIdentityGraceTime)
+    {
+        $this->oauthIdentityGraceTime = $oauthIdentityGraceTime;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOauthIdentityGraceTime()
+    {
+        return $this->oauthIdentityGraceTime;
+    }
+
+    /**
+     * @param string $oauthMediaWikiCanonicalServer
+     *
+     * @return SiteConfiguration
+     */
+    public function setOauthMediaWikiCanonicalServer($oauthMediaWikiCanonicalServer)
+    {
+        $this->oauthMediaWikiCanonicalServer = $oauthMediaWikiCanonicalServer;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOauthMediaWikiCanonicalServer()
+    {
+        return $this->oauthMediaWikiCanonicalServer;
+    }
+
+    /**
+     * @param string $creationBotUsername
+     *
+     * @return SiteConfiguration
+     */
+    public function setCreationBotUsername($creationBotUsername)
+    {
+        $this->creationBotUsername = $creationBotUsername;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreationBotUsername()
+    {
+        return $this->creationBotUsername;
+    }
+
+    /**
+     * @param string $creationBotPassword
+     *
+     * @return SiteConfiguration
+     */
+    public function setCreationBotPassword($creationBotPassword)
+    {
+        $this->creationBotPassword = $creationBotPassword;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCreationBotPassword()
+    {
+        return $this->creationBotPassword;
+    }
+
+    /**
+     * @param null $curlCookieJar
+     *
+     * @return SiteConfiguration
+     */
+    public function setCurlCookieJar($curlCookieJar)
+    {
+        $this->curlCookieJar = $curlCookieJar;
+
+        return $this;
+    }
+
+    /**
+     * @return null
+     */
+    public function getCurlCookieJar()
+    {
+        return $this->curlCookieJar;
+    }
+
+    public function getYubicoApiId()
+    {
+        return $this->yubicoApiId;
+    }
+
+    public function setYubicoApiId($id)
+    {
+        $this->yubicoApiId = $id;
+
+        return $this;
+    }
+
+    public function getYubicoApiKey()
+    {
+        return $this->yubicoApiKey;
+    }
+
+    public function setYubicoApiKey($key)
+    {
+        $this->yubicoApiKey = $key;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTotpEncryptionKey()
+    {
+        return $this->totpEncryptionKey;
+    }
+
+    /**
+     * @param string $totpEncryptionKey
+     *
+     * @return SiteConfiguration
+     */
+    public function setTotpEncryptionKey($totpEncryptionKey)
+    {
+        $this->totpEncryptionKey = $totpEncryptionKey;
+
+        return $this;
+}
+
+    /**
+     * @return string
+     */
+    public function getIdentificationNoticeboardPage()
+    {
+        return $this->identificationNoticeboardPage;
+    }
+
+    /**
+     * @param string $identificationNoticeboardPage
+     *
+     * @return SiteConfiguration
+     */
+    public function setIdentificationNoticeboardPage($identificationNoticeboardPage)
+    {
+        $this->identificationNoticeboardPage = $identificationNoticeboardPage;
+
+        return $this;
+    }
+
+    public function isRegistrationAllowed() : bool
+    {
+        return $this->registrationAllowed;
+    }
+
+    public function setRegistrationAllowed(bool $registrationAllowed) : SiteConfiguration
+    {
+        $this->registrationAllowed = $registrationAllowed;
+        return $this;
     }
 }

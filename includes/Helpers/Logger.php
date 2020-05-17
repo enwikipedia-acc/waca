@@ -13,6 +13,7 @@ use Waca\DataObject;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\EmailTemplate;
+use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\SiteNotice;
@@ -253,10 +254,11 @@ class Logger
      * @param Request     $object
      * @param integer     $target
      * @param string      $comment
+     * @param User|null   $logUser
      */
-    public static function closeRequest(PdoDatabase $database, Request $object, $target, $comment)
+    public static function closeRequest(PdoDatabase $database, Request $object, $target, $comment, User $logUser = null)
     {
-        self::createLogEntry($database, $object, "Closed $target", $comment);
+        self::createLogEntry($database, $object, "Closed $target", $comment, $logUser);
     }
 
     /**
@@ -317,6 +319,20 @@ class Logger
     {
         self::createLogEntry($database, $object, "SentMail", $comment);
     }
+
+    /**
+     * @param PdoDatabase $database
+     * @param Request     $object
+     */
+    public static function enqueuedJobQueue(PdoDatabase $database, Request $object)
+    {
+        self::createLogEntry($database, $object, 'EnqueuedJobQueue');
+    }
+
+    public static function hospitalised(PdoDatabase $database, Request $object)
+    {
+        self::createLogEntry($database, $object, 'Hospitalised');
+    }
     #endregion
 
     #region Email templates
@@ -343,5 +359,29 @@ class Logger
 
     #region Display
 
+    #endregion
+
+    #region Automation
+
+    public static function backgroundJobComplete(PdoDatabase $database, JobQueue $job)
+    {
+        self::createLogEntry($database, $job, 'JobCompleted', null, User::getCommunity());
+    }
+
+    public static function backgroundJobIssue(PdoDatabase $database, JobQueue $job)
+    {
+        $data = array('status' => $job->getStatus(), 'error' => $job->getError());
+        self::createLogEntry($database, $job, 'JobIssue', serialize($data), User::getCommunity());
+    }
+
+    public static function backgroundJobRequeued(PdoDatabase $database, JobQueue $job)
+    {
+        self::createLogEntry($database, $job, 'JobRequeued');
+    }
+
+    public static function backgroundJobAcknowledged(PdoDatabase $database, JobQueue $job)
+    {
+        self::createLogEntry($database, $job, 'JobAcknowledged');
+    }
     #endregion
 }

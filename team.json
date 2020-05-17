@@ -125,10 +125,9 @@
         "Other": null
     },
     "SQL": {
-        "IRC": "SQLDb, SXT40",
+    "IRC": "SQL, SQLDb",
         "ToolID": "1",
         "wiki": "SQL",
-        "WWW": "http://toolserver.org/~sql",
         "Name": null,
         "Role": [],
         "Retired": [

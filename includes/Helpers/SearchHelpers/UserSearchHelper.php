@@ -52,7 +52,8 @@ class UserSearchHelper extends SearchHelperBase
         return $this;
     }
 
-    public function statusIn($statuses) {
+    public function statusIn($statuses)
+    {
         $this->inClause('status', $statuses);
 
         return $this;
@@ -77,14 +78,26 @@ class UserSearchHelper extends SearchHelperBase
      *
      * @return $this
      */
-    public function lastActiveBefore(DateTime $instant){
-        $this->whereClause .= ' AND origin.lastactive < ?';
-        $this->parameterList[] = $instant->format("Y-m-d H:i:s");
+    public function lastActiveBefore(DateTime $instant)
+    {
+        $this->whereClause .= ' AND origin.lastactive < ? AND approvaldate.timestamp < ?';
+        $this->joinClause .= <<<'SQLFRAG'
+ LEFT JOIN (
+    SELECT objectid, MAX(timestamp) timestamp 
+    FROM log
+    WHERE objecttype = 'User' AND action = 'Approved' 
+    GROUP BY objectid
+    ) approvaldate ON approvaldate.objectid = origin.id
+SQLFRAG;
+        $formattedDate = $instant->format("Y-m-d H:i:s");
+        $this->parameterList[] = $formattedDate;
+        $this->parameterList[] = $formattedDate;
 
         return $this;
     }
 
-    public function getRoleMap(&$roleMap){
+    public function getRoleMap(&$roleMap)
+    {
         $query = <<<SQL
             SELECT /* UserSearchHelper/roleMap */ 
                   r.user user
@@ -103,5 +116,13 @@ SQL;
         }
 
         return $this;
+    }
+
+    public function withReservedRequest()
+    {
+        $this->joinClause = ' INNER JOIN request req ON req.reserved = origin.id';
+        $this->groupByClause = ' GROUP BY origin.id, origin.username';
+
+        return $this->fetchMap('username');
     }
 }

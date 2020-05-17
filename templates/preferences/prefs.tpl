@@ -14,7 +14,7 @@
                 {include file="security/csrf.tpl"}
                 <fieldset>
                     <legend>General settings</legend>
-                    {if !$currentUser->isOAuthLinked() }
+                    {if !$oauth->isFullyLinked() }
                     <div class="form-group row">
                         <div class="col-md-2 col-lg-3">
                             <label for="inputSig" class="col-form-label">Your signature (wikicode)</label>
@@ -58,6 +58,37 @@
                     </div>
 
                     <div class="form-group row">
+                        <div class="col-md-2 col-lg-3">
+                            <label class="col-form-label">Account Creation Mode</label>
+                        </div>
+                        <div class="col-md-10 col-lg-8 col-xl-6">
+
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="creationmode" value="0" class="custom-control-input" id="autocreateNone"
+                                       {if $currentUser->getCreationMode() == 0}checked="checked"{/if}
+                                       {if !$canManualCreate}disabled="disabled"{/if}/>
+                                <label class="custom-control-label" for="autocreateNone">Create accounts manually using Special:CreateAccount</label>
+                            </div>
+
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="creationmode" value="1" class="custom-control-input" id="autocreateOauth"
+                                       {if $currentUser->getCreationMode() == 1}checked="checked"{/if}
+                                       {if !$canOauthCreate}disabled="disabled"{/if}/>
+                                <label class="custom-control-label" for="autocreateOauth">Use my Wikimedia account to create the accounts on my behalf where possible</label>
+                            </div>
+
+                            <div class="custom-control custom-radio">
+                                <input type="radio" name="creationmode" value="2" class="custom-control-input" id="autocreateBot"
+                                       {if $currentUser->getCreationMode() == 2}checked="checked"{/if}
+                                       {if !$canBotCreate}disabled="disabled"{/if}/>
+                                <label class="custom-control-label" for="autocreateBot">Use a bot to create the accounts on my behalf where possible</label>
+                            </div>
+
+                            <small class="form-text text-muted">Please refer to the Guide for a full explanation of these options.</small>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
                         <div class="offset-md-2 offset-lg-3 col-md-4 col-lg-3">
                             <button type="submit" class="btn btn-primary btn-block">Save preferences</button>
                         </div>
@@ -72,13 +103,13 @@
     <fieldset>
         <legend>Wikipedia Account</legend>
 
-        {if $currentUser->isOAuthLinked() && $currentUser->getOnWikiName() != "##OAUTH##" }
+        {if $oauth->isFullyLinked() }
             <div class="form-group row">
                 <div class="col-md-2 col-lg-3">
                     <label for="get-oauth" class="col-form-label">Attached Wikipedia account:</label>
                 </div>
                 <div class="col-md-6 col-lg-5 col-xl-4">
-                    <a class="form-control" id="get-oauth" href="{$mediawikiScriptPath}?title=User:{$currentUser->getOAuthIdentity()->username|escape:'url'}">{$currentUser->getOAuthIdentity()->username|escape}</a>
+                    <a href="{$mediawikiScriptPath}?title=User:{$currentUser->getOnWikiName()|escape:'url'}">{$currentUser->getOnWikiName()|escape}</a>
                 </div>
             </div>
 
@@ -89,8 +120,8 @@
                 <div class="col-md-10 col-lg-9">
                     <div class="row row-cols-1 row-cols-xl-3 row-cols-lg-2" id="oauth-identity">
                         <div class="col">
-                            <div class="alert-block alert{if $currentUser->getOAuthIdentity()->confirmed_email} alert-success{/if}">
-                                {if $currentUser->getOAuthIdentity()->confirmed_email}
+                            <div class="alert-block alert{if $identity->getConfirmedEmail()} alert-success{/if}">
+                                {if $identity->getConfirmedEmail()}
                                     <i class="fas fa-check"></i>
                                     &nbsp;Email address confirmed
                                 {else}
@@ -102,8 +133,8 @@
                             </div>
                         </div>
                         <div class="col">
-                            <div class="alert-block alert{if $currentUser->getOAuthIdentity()->blocked} alert-danger{else} alert-success{/if}">
-                                {if $currentUser->getOAuthIdentity()->blocked}
+                            <div class="alert-block alert{if $identity->getBlocked()} alert-danger{else} alert-success{/if}">
+                                {if $identity->getBlocked()}
                                     <i class="fas fa-times"></i>
                                     &nbsp;
                                     <strong>Blocked on Wikipedia!</strong>
@@ -115,26 +146,26 @@
                         </div>
                         <div class="col">
                             <div class="alert-block alert alert-success">
-                                <i class="fas fa-check"></i>&nbsp;Account verified by {$currentUser->getOAuthIdentity()->iss}
+                                <i class="fas fa-check"></i>&nbsp;Account verified by {$identity->getIssuer()|escape}
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="offset-md-2 offset-lg-3 col-md-10 col-lg-9">
-                    <div class="accordion" id="identityTicketContainer">
-                        <div class="card">
-                            <div class="card-header position-relative py-0">
-                                <a class="accordion-toggle stretched-link" data-toggle="collapse"
-                                   data-parent="#identityTicketContainer" href="#identityTicketCollapseOne">
-                                    Show identity ticket
-                                </a>
+                        <div class="col">
+                            <div class="alert-block alert alert-{if $identity->getEditCount() > 1500}success{else}danger{/if}">
+                                <i class="fas fa-{if $identity->getEditCount() > 1500}check{else}times{/if}"></i>&nbsp;Edit count: {$identity->getEditCount()|escape}
                             </div>
-                            <div id="identityTicketCollapseOne" class="collapse out">
-                                <div class="card-body">
-                                    <pre>{json_encode($currentUser->getOAuthIdentity(), 128)}</pre>
-                                </div>
+                        </div>
+                        <div class="col">
+                            <div class="alert-block alert alert-{if $identity->getAccountAge() < 180}success{else}danger{/if}">
+                                <i class="fas fa-{if $identity->getEditCount() > 1500}check{else}times{/if}"></i>&nbsp;Registration date: {$identity->getRegistrationDate()|escape}
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="alert-block alert {if !$identity->getCheckuser()} alert-info{else} alert-success{/if}">
+                                {if !$identity->getCheckuser()}
+                                    <i class="fas fa-times"></i>&nbsp;Not a checkuser
+                                {else}
+                                    <i class="fas fa-check"></i>&nbsp;Checkuser
+                                {/if}
                             </div>
                         </div>
                     </div>
@@ -147,23 +178,42 @@
                 <div class="col-md-10 col-lg-9">
                     <div class="row row-cols-1 row-cols-xl-3 row-cols-lg-2" id="grants-card">
                         <div class="col">
-                            <div class="alert{if $currentUser->oauthCanUse()} alert-success{else} alert-danger{/if} alert-block">
-                                <i class="fas fa-{if $currentUser->oauthCanUse()}check{else}times{/if}"></i>&nbsp;Basic
-                                rights
+                            <div class="alert{if $identity->getGrantBasic()} alert-success{else} alert-danger{/if} alert-block">
+                                <i class="fas fa-{if $identity->getGrantBasic()}check{else}times{/if}"></i>&nbsp;Basic rights
+                                <small class="form-text text-muted">
+                                    This is used to verify your account, and grants no privileges. It is not possible to
+                                    revoke this right and continue using this tool.
+                                </small>
                             </div>
                         </div>
-                        {*
-                          <div class="col">
-                              <div class="alert{if $currentUser->oauthCanEdit()} alert-success{else} alert-danger{/if} alert-block">
-                                <i class="fas fa-{if $currentUser->oauthCanEdit()}check{else}times{/if}"></i>&nbsp;Create, edit, and move pages
-                              </div>
-                          </div>
-                          <div class="col">
-                              <div class="alert{if $currentUser->oauthCanCreateAccount()} alert-success{else} alert-danger{/if} alert-block">
-                                <i class="fas fa-{if $currentUser->oauthCanCreateAccount()}check{else}times{/if}"></i>&nbsp;Create accounts
-                              </div>
-                          </div>
-                        *}
+                        <div class="col">
+                            <div class="alert{if $identity->getGrantCreateEditMovePage()} alert-success{else} alert-danger{/if} alert-block">
+                                <i class="fas fa-{if $identity->getGrantCreateEditMovePage()}check{else}times{/if}"></i>&nbsp;Create, edit, and move pages
+                                <small class="form-text text-muted">
+                                    This is required to create talk pages for automatic welcoming. If you want to use
+                                    automatic welcoming of accounts you create, this grant is required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="alert{if $identity->getGrantCreateAccount()} alert-success{else} alert-danger{/if} alert-block">
+                                <i class="fas fa-{if $identity->getGrantCreateAccount()}check{else}times{/if}"></i>&nbsp;Create accounts
+                                <small class="form-text text-muted">
+                                    This is required to create accounts through the tool. If you prefer manual creation,
+                                    this grant is not required.
+                                </small>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="alert{if $identity->getGrantHighVolume()} alert-success{else} alert-danger{/if} alert-block">
+                                <i class="fas fa-{if $identity->getGrantHighVolume()}check{else}times{/if}"></i>&nbsp;High-volume editing
+                                <small class="form-text text-muted">
+                                    This grant is required to bypass the 6 account creations per day limit. It is
+                                    required if you want to create more than 6 accounts through the tool per 24-hour
+                                    period.
+                                </small>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -173,8 +223,10 @@
                 </div>
                 <div class="col-md-10 col-lg-9">
                     Identity ticket retrieved
-                    at {DateTime::createFromFormat("U", $currentUser->getOAuthIdentity()->iat)->format("r")}, will
-                    expire at {DateTime::createFromFormat("U", $currentUser->getOAuthIdentity()->exp)->format("r")}
+                        at {DateTime::createFromFormat("U", $identity->getIssuedAtTime())->format("r")}, will
+                        expire at {DateTime::createFromFormat("U", $identity->getExpirationTime())->format("r")}.
+                        The grace time on this token is an additional {$graceTime} beyond the expiry time. If you wish
+                        to refresh the information shown here, simply log out and log in again.
                 </div>
             </div>
 
@@ -206,43 +258,5 @@
 
         {/if}
     </fieldset>
-
-    <form method="post" action="{$baseurl}/internal.php/preferences/changePassword">
-        {include file="security/csrf.tpl"}
-        <fieldset>
-            <legend>Change your password</legend>
-
-            <div class="form-group row">
-                <div class="col-md-2 col-lg-3">
-                    <label for="inputOldpassword" class="col-form-label">Your old password</label>
-                </div>
-                <div class="col-md-6 col-lg-5 col-xl-4">
-                    <input class="form-control" type="password" id="inputOldpassword" name="oldpassword" required="required"/>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-md-2 col-lg-3">
-                    <label for="inputNewpassword" class="col-form-label">Your new password</label>
-                </div>
-                <div class="col-md-6 col-lg-5 col-xl-4">
-                    <input class="form-control" type="password" id="inputNewpassword" name="newpassword" required="required"/>
-                </div>
-            </div>
-            <div class="form-group row">
-                <div class="col-md-2 col-lg-3">
-                    <label for="inputNewpasswordconfirm" class="col-form-label">Confirm new password</label>
-                </div>
-                <div class="col-md-6 col-lg-5 col-xl-4">
-                    <input class="form-control" type="password" id="inputNewpasswordconfirm" name="newpasswordconfirm" required="required"/>
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <div class="offset-md-2 offset-lg-3 col-md-4 col-lg-3">
-                    <button type="submit" class="btn btn-primary btn-block">Update password</button>
-                </div>
-            </div>
-
-        </fieldset>
-    </form>
+    </div>
 {/block}

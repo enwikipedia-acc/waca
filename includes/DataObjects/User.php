@@ -10,16 +10,10 @@ namespace Waca\DataObjects;
 
 use DateTime;
 use Exception;
-use JWT;
-use PDO;
-use UnexpectedValueException;
-use Waca\AuthUtility;
 use Waca\DataObject;
 use Waca\Exceptions\OptimisticLockFailedException;
-use Waca\Helpers\Interfaces\IOAuthHelper;
 use Waca\IdentificationVerifier;
 use Waca\PdoDatabase;
-use Waca\SessionAlert;
 use Waca\WebRequest;
 
 /**
@@ -31,11 +25,13 @@ class User extends DataObject
     const STATUS_SUSPENDED = 'Suspended';
     const STATUS_DECLINED = 'Declined';
     const STATUS_NEW = 'New';
+    const CREATION_MANUAL = 0;
+    const CREATION_OAUTH = 1;
+    const CREATION_BOT = 2;
     private $username;
     private $email;
-    private $password;
     private $status = self::STATUS_NEW;
-    private $onwikiname = "##OAUTH##";
+    private $onwikiname;
     private $welcome_sig = "";
     private $lastactive = "0000-00-00 00:00:00";
     private $forcelogout = 0;
@@ -44,19 +40,9 @@ class User extends DataObject
     private $abortpref = 0;
     private $confirmationdiff = 0;
     private $emailsig = "";
-    /** @var null|string */
-    private $oauthrequesttoken = null;
-    /** @var null|string */
-    private $oauthrequestsecret = null;
-    /** @var null|string */
-    private $oauthaccesstoken = null;
-    /** @var null|string */
-    private $oauthaccesssecret = null;
-    private $oauthidentitycache = null;
+    private $creationmode = 0;
     /** @var User Cache variable of the current user - it's never going to change in the middle of a request. */
     private static $currentUser;
-    /** @var null|JWT The identity cache */
-    private $identityCache = null;
     #region Object load methods
 
     /**
@@ -154,12 +140,6 @@ class User extends DataObject
     /**
      * Gets a user by their on-wiki username.
      *
-     * Don't use without asking me first. It's really inefficient in it's current implementation.
-     * We need to restructure the user table again to make this more efficient.
-     * We don't actually store the on-wiki name in the table any more, instead we
-     * are storing JSON in a column (!!). Yep, my fault. Code review is an awesome thing.
-     *            -- stw 2015-10-20
-     *
      * @param string      $username
      * @param PdoDatabase $database
      *
@@ -167,7 +147,6 @@ class User extends DataObject
      */
     public static function getByOnWikiUsername($username, PdoDatabase $database)
     {
-        // Firstly, try to search by the efficient database lookup.
         $statement = $database->prepare("SELECT * FROM user WHERE onwikiname = :id LIMIT 1;");
         $statement->bindValue(":id", $username);
         $statement->execute();
@@ -180,62 +159,7 @@ class User extends DataObject
             return $resultObject;
         }
 
-        // For active users, the above has failed. Let's do it the hard way.
-        $sqlStatement = "SELECT * FROM user WHERE onwikiname = '##OAUTH##' AND oauthaccesstoken IS NOT NULL;";
-        $statement = $database->prepare($sqlStatement);
-        $statement->execute();
-        $resultSet = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
-
-        /** @var User $user */
-        foreach ($resultSet as $user) {
-            // We have to set this before doing OAuth queries. :(
-            $user->setDatabase($database);
-
-            // Using cached data here!
-            if ($user->getOAuthOnWikiName(true) == $username) {
-                // Success.
-                return $user;
-            }
-        }
-
-        // Cached data failed. Let's do it the *REALLY* hard way.
-        foreach ($resultSet as $user) {
-            // We have to set this before doing OAuth queries. :(
-            $user->setDatabase($database);
-
-            // Don't use the cached data, but instead query the API.
-            if ($user->getOAuthOnWikiName(false) == $username) {
-                // Success.
-                return $user;
-            }
-        }
-
-        // Nope. Sorry.
         return false;
-    }
-
-    /**
-     * Gets a user by their OAuth request token
-     *
-     * @param string      $requestToken
-     * @param PdoDatabase $database
-     *
-     * @return User|false
-     */
-    public static function getByRequestToken($requestToken, PdoDatabase $database)
-    {
-        $statement = $database->prepare("SELECT * FROM user WHERE oauthrequesttoken = :id LIMIT 1;");
-        $statement->bindValue(":id", $requestToken);
-
-        $statement->execute();
-
-        $resultObject = $statement->fetchObject(get_called_class());
-
-        if ($resultObject != false) {
-            $resultObject->setDatabase($database);
-        }
-
-        return $resultObject;
     }
 
     #endregion
@@ -251,22 +175,18 @@ class User extends DataObject
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
 				INSERT INTO `user` ( 
-					username, email, password, status, onwikiname, welcome_sig, 
+					username, email, status, onwikiname, welcome_sig, 
 					lastactive, forcelogout, forceidentified,
-					welcome_template, abortpref, confirmationdiff, emailsig, 
-					oauthrequesttoken, oauthrequestsecret, 
-					oauthaccesstoken, oauthaccesssecret
+					welcome_template, abortpref, confirmationdiff, emailsig, creationmode
 				) VALUES (
-					:username, :email, :password, :status, :onwikiname, :welcome_sig,
+					:username, :email, :status, :onwikiname, :welcome_sig,
 					:lastactive, :forcelogout, :forceidentified,
-					:welcome_template, :abortpref, :confirmationdiff, :emailsig, 
-					:ort, :ors, :oat, :oas
+					:welcome_template, :abortpref, :confirmationdiff, :emailsig, :creationmode
 				);
 SQL
             );
             $statement->bindValue(":username", $this->username);
             $statement->bindValue(":email", $this->email);
-            $statement->bindValue(":password", $this->password);
             $statement->bindValue(":status", $this->status);
             $statement->bindValue(":onwikiname", $this->onwikiname);
             $statement->bindValue(":welcome_sig", $this->welcome_sig);
@@ -277,10 +197,7 @@ SQL
             $statement->bindValue(":abortpref", $this->abortpref);
             $statement->bindValue(":confirmationdiff", $this->confirmationdiff);
             $statement->bindValue(":emailsig", $this->emailsig);
-            $statement->bindValue(":ort", $this->oauthrequesttoken);
-            $statement->bindValue(":ors", $this->oauthrequestsecret);
-            $statement->bindValue(":oat", $this->oauthaccesstoken);
-            $statement->bindValue(":oas", $this->oauthaccesssecret);
+            $statement->bindValue(":creationmode", $this->creationmode);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -294,17 +211,14 @@ SQL
             $statement = $this->dbObject->prepare(<<<SQL
 				UPDATE `user` SET 
 					username = :username, email = :email, 
-					password = :password, status = :status,
+					status = :status,
 					onwikiname = :onwikiname, welcome_sig = :welcome_sig, 
 					lastactive = :lastactive, forcelogout = :forcelogout, 
 					forceidentified = :forceidentified,
 					welcome_template = :welcome_template, abortpref = :abortpref, 
 					confirmationdiff = :confirmationdiff, emailsig = :emailsig, 
-					oauthrequesttoken = :ort, oauthrequestsecret = :ors, 
-					oauthaccesstoken = :oat, oauthaccesssecret = :oas,
-					updateversion = updateversion + 1
-				WHERE id = :id AND updateversion = :updateversion
-				LIMIT 1;
+					creationmode = :creationmode, updateversion = updateversion + 1
+				WHERE id = :id AND updateversion = :updateversion;
 SQL
             );
             $statement->bindValue(":forceidentified", $this->forceidentified);
@@ -314,7 +228,6 @@ SQL
 
             $statement->bindValue(':username', $this->username);
             $statement->bindValue(':email', $this->email);
-            $statement->bindValue(':password', $this->password);
             $statement->bindValue(':status', $this->status);
             $statement->bindValue(':onwikiname', $this->onwikiname);
             $statement->bindValue(':welcome_sig', $this->welcome_sig);
@@ -325,10 +238,7 @@ SQL
             $statement->bindValue(':abortpref', $this->abortpref);
             $statement->bindValue(':confirmationdiff', $this->confirmationdiff);
             $statement->bindValue(':emailsig', $this->emailsig);
-            $statement->bindValue(':ort', $this->oauthrequesttoken);
-            $statement->bindValue(':ors', $this->oauthrequestsecret);
-            $statement->bindValue(':oat', $this->oauthaccesstoken);
-            $statement->bindValue(':oas', $this->oauthaccesssecret);
+            $statement->bindValue(':creationmode', $this->creationmode);
 
             if (!$statement->execute()) {
                 throw new Exception($statement->errorInfo());
@@ -340,30 +250,6 @@ SQL
 
             $this->updateversion++;
         }
-    }
-
-    /**
-     * Authenticates the user with the supplied password
-     *
-     * @param string $password
-     *
-     * @return bool
-     * @throws Exception
-     * @category Security-Critical
-     */
-    public function authenticate($password)
-    {
-        $result = AuthUtility::testCredentials($password, $this->password);
-
-        if ($result === true) {
-            // password version is out of date, update it.
-            if (!AuthUtility::isCredentialVersionLatest($this->password)) {
-                $this->password = AuthUtility::encryptPassword($password);
-                $this->save();
-            }
-        }
-
-        return $result;
     }
 
     #region properties
@@ -412,18 +298,6 @@ SQL
     }
 
     /**
-     * Sets the user's password
-     *
-     * @param string $password the plaintext password
-     *
-     * @category Security-Critical
-     */
-    public function setPassword($password)
-    {
-        $this->password = AuthUtility::encryptPassword($password);
-    }
-
-    /**
      * Gets the status (User, Admin, Suspended, etc - excludes checkuser) of the user.
      * @return string
      */
@@ -445,27 +319,6 @@ SQL
      * @return string
      */
     public function getOnWikiName()
-    {
-        if ($this->oauthaccesstoken !== null) {
-            try {
-                return $this->getOAuthOnWikiName();
-            }
-            catch (Exception $ex) {
-                // urm.. log this?
-                return $this->onwikiname;
-            }
-        }
-
-        return $this->onwikiname;
-    }
-
-    /**
-     * This is probably NOT the function you want!
-     *
-     * Take a look at getOnWikiName() instead.
-     * @return string
-     */
-    public function getStoredOnWikiName()
     {
         return $this->onwikiname;
     }
@@ -612,91 +465,19 @@ SQL
     }
 
     /**
-     * Gets the user's OAuth request token.
-     *
-     * @todo move me to a collaborator.
-     * @return null|string
+     * @return int
      */
-    public function getOAuthRequestToken()
+    public function getCreationMode()
     {
-        return $this->oauthrequesttoken;
+        return $this->creationmode;
     }
 
     /**
-     * Sets the user's OAuth request token
-     * @todo move me to a collaborator
-     *
-     * @param string $oAuthRequestToken
+     * @param $creationMode int
      */
-    public function setOAuthRequestToken($oAuthRequestToken)
+    public function setCreationMode($creationMode)
     {
-        $this->oauthrequesttoken = $oAuthRequestToken;
-    }
-
-    /**
-     * Gets the users OAuth request secret
-     * @category Security-Critical
-     * @todo     move me to a collaborator
-     * @return null|string
-     */
-    public function getOAuthRequestSecret()
-    {
-        return $this->oauthrequestsecret;
-    }
-
-    /**
-     * Sets the user's OAuth request secret
-     * @todo move me to a collaborator
-     *
-     * @param string $oAuthRequestSecret
-     */
-    public function setOAuthRequestSecret($oAuthRequestSecret)
-    {
-        $this->oauthrequestsecret = $oAuthRequestSecret;
-    }
-
-    /**
-     * Gets the user's access token
-     * @category Security-Critical
-     * @todo     move me to a collaborator
-     * @return null|string
-     */
-    public function getOAuthAccessToken()
-    {
-        return $this->oauthaccesstoken;
-    }
-
-    /**
-     * Sets the user's access token
-     * @todo move me to a collaborator
-     *
-     * @param string $oAuthAccessToken
-     */
-    public function setOAuthAccessToken($oAuthAccessToken)
-    {
-        $this->oauthaccesstoken = $oAuthAccessToken;
-    }
-
-    /**
-     * Gets the user's OAuth access secret
-     * @category Security-Critical
-     * @todo     move me to a collaborator
-     * @return null|string
-     */
-    public function getOAuthAccessSecret()
-    {
-        return $this->oauthaccesssecret;
-    }
-
-    /**
-     * Sets the user's OAuth access secret
-     * @todo move me to a collaborator
-     *
-     * @param string $oAuthAccessSecret
-     */
-    public function setOAuthAccessSecret($oAuthAccessSecret)
-    {
-        $this->oauthaccesssecret = $oAuthAccessSecret;
+        $this->creationmode = $creationMode;
     }
 
     #endregion
@@ -779,205 +560,6 @@ SQL
 
     #endregion 
 
-    #region OAuth
-
-    /**
-     * @todo     move me to a collaborator
-     *
-     * @param bool $useCached
-     *
-     * @return mixed|null
-     * @category Security-Critical
-     */
-    public function getOAuthIdentity($useCached = false)
-    {
-        if ($this->oauthaccesstoken === null) {
-            $this->clearOAuthData();
-        }
-
-        global $oauthConsumerToken, $oauthMediaWikiCanonicalServer;
-
-        if ($this->oauthidentitycache == null) {
-            $this->identityCache = null;
-        }
-        else {
-            $this->identityCache = unserialize($this->oauthidentitycache);
-        }
-
-        // check the cache
-        if (
-            $this->identityCache != null &&
-            $this->identityCache->aud == $oauthConsumerToken &&
-            $this->identityCache->iss == $oauthMediaWikiCanonicalServer
-        ) {
-            if (
-                $useCached || (
-                    DateTime::createFromFormat("U", $this->identityCache->iat) < new DateTime() &&
-                    DateTime::createFromFormat("U", $this->identityCache->exp) > new DateTime()
-                )
-            ) {
-                // Use cached value - it's either valid or we don't care.
-                return $this->identityCache;
-            }
-            else {
-                // Cache expired and not forcing use of cached value
-                $this->getIdentityCache();
-
-                return $this->identityCache;
-            }
-        }
-        else {
-            // Cache isn't ours or doesn't exist
-            $this->getIdentityCache();
-
-            return $this->identityCache;
-        }
-    }
-
-    /**
-     * @todo     move me to a collaborator
-     *
-     * @param mixed $useCached Set to false for everything where up-to-date data is important.
-     *
-     * @return mixed
-     * @category Security-Critical
-     */
-    private function getOAuthOnWikiName($useCached = false)
-    {
-        $identity = $this->getOAuthIdentity($useCached);
-        if ($identity !== null) {
-            return $identity->username;
-        }
-
-        return false;
-    }
-
-    /**
-     * @return bool
-     * @todo move me to a collaborator
-     */
-    public function isOAuthLinked()
-    {
-        if ($this->onwikiname === "##OAUTH##") {
-            return true; // special value. If an account must be oauth linked, this is true.
-        }
-
-        return $this->oauthaccesstoken !== null;
-    }
-
-    /**
-     * @return null
-     * @todo move me to a collaborator
-     */
-    public function clearOAuthData()
-    {
-        $this->identityCache = null;
-        $this->oauthidentitycache = null;
-        $clearCacheQuery = "UPDATE user SET oauthidentitycache = NULL WHERE id = :id;";
-        $this->dbObject->prepare($clearCacheQuery)->execute(array(":id" => $this->id));
-
-        return null;
-    }
-
-    /**
-     * @throws Exception
-     * @todo     move me to a collaborator
-     * @category Security-Critical
-     */
-    private function getIdentityCache()
-    {
-        /** @var IOAuthHelper $oauthHelper */
-        global $oauthHelper;
-
-        try {
-            $this->identityCache = $oauthHelper->getIdentityTicket($this->oauthaccesstoken, $this->oauthaccesssecret);
-
-            $this->oauthidentitycache = serialize($this->identityCache);
-            $this->dbObject->prepare("UPDATE user SET oauthidentitycache = :identity WHERE id = :id;")
-                ->execute(array(":id" => $this->id, ":identity" => $this->oauthidentitycache));
-        }
-        catch (UnexpectedValueException $ex) {
-            $this->identityCache = null;
-            $this->oauthidentitycache = null;
-            $this->dbObject->prepare("UPDATE user SET oauthidentitycache = NULL WHERE id = :id;")
-                ->execute(array(":id" => $this->id));
-
-            SessionAlert::warning("OAuth error getting identity from MediaWiki: " . $ex->getMessage());
-        }
-    }
-
-    /**
-     * @return bool
-     * @todo move me to a collaborator
-     */
-    public function oauthCanUse()
-    {
-        try {
-            return in_array('useoauth', $this->getOAuthIdentity()->grants);
-        }
-        catch (Exception $ex) {
-            return false;
-        }
-    }
-
-    /**
-     * @return bool
-     * @todo move me to a collaborator
-     */
-    public function oauthCanEdit()
-    {
-        try {
-            return in_array('useoauth', $this->getOAuthIdentity()->grants)
-            && in_array('createeditmovepage', $this->getOAuthIdentity()->grants)
-            && in_array('createtalk', $this->getOAuthIdentity()->rights)
-            && in_array('edit', $this->getOAuthIdentity()->rights)
-            && in_array('writeapi', $this->getOAuthIdentity()->rights);
-        }
-        catch (Exception $ex) {
-            return false;
-        }
-    }
-
-    /**
-     * @return bool
-     * @todo move me to a collaborator
-     */
-    public function oauthCanCreateAccount()
-    {
-        try {
-            return in_array('useoauth', $this->getOAuthIdentity()->grants)
-            && in_array('createaccount', $this->getOAuthIdentity()->grants)
-            && in_array('createaccount', $this->getOAuthIdentity()->rights)
-            && in_array('writeapi', $this->getOAuthIdentity()->rights);
-        }
-        catch (Exception $ex) {
-            return false;
-        }
-    }
-
-    /**
-     * @return bool
-     * @todo     move me to a collaborator
-     * @category Security-Critical
-     */
-    protected function oauthCanCheckUser()
-    {
-        if (!$this->isOAuthLinked()) {
-            return false;
-        }
-
-        try {
-            $identity = $this->getOAuthIdentity();
-
-            return in_array('checkuser', $identity->rights);
-        }
-        catch (Exception $ex) {
-            return false;
-        }
-    }
-
-    #endregion
-
     /**
      * Gets a hash of data for the user to reset their password with.
      * @category Security-Critical
@@ -985,7 +567,8 @@ SQL
      */
     public function getForgottenPasswordHash()
     {
-        return md5($this->username . $this->email . $this->welcome_template . $this->id . $this->password);
+        // FIXME
+        return md5($this->username . $this->email . $this->welcome_template . $this->id);
     }
 
     /**

@@ -14,6 +14,7 @@ use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\Helpers\RequestEmailHelper;
 use Waca\PdoDatabase;
 use Waca\SessionAlert;
 use Waca\WebRequest;
@@ -63,11 +64,16 @@ class PageCloseRequest extends RequestActionBase
 
         $request->save();
 
+        if ($currentUser->getWelcomeTemplate() !== null) {
+            $this->enqueueWelcomeTask($request, null, $currentUser, $database);
+        }
+
         // Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE and
         // be rolled back.
 
         $this->getNotificationHelper()->requestClosed($request, $template->getName());
-        SessionAlert::success("Request {$request->getId()} has been closed");
+        $sanitisedTemplateName = htmlentities($template->getName(), ENT_COMPAT, 'UTF-8');
+        SessionAlert::success("Request {$request->getId()} has been closed as {$sanitisedTemplateName}");
 
         $this->sendMail($request, $template->getText(), $currentUser, false);
 
@@ -211,28 +217,8 @@ class PageCloseRequest extends RequestActionBase
      */
     protected function sendMail(Request $request, $mailText, User $currentUser, $ccMailingList)
     {
-        $headers = array(
-            'X-ACC-Request' => $request->getId(),
-            'X-ACC-UserID'  => $currentUser->getId(),
-        );
-
-        if ($ccMailingList) {
-            $headers['Cc'] = 'accounts-enwiki-l@lists.wikimedia.org';
-        }
-
-        $helper = $this->getEmailHelper();
-
-        $emailSig = $currentUser->getEmailSig();
-        if ($emailSig !== '' || $emailSig !== null) {
-            $emailSig = "\n\n" . $emailSig;
-        }
-
-        $subject = "RE: [ACC #{$request->getId()}] English Wikipedia Account Request";
-        $content = $mailText . $emailSig;
-
-        $helper->sendMail($request->getEmail(), $subject, $content, $headers);
-
-        $request->setEmailSent(true);
+        $requestEmailHelper = new RequestEmailHelper($this->getEmailHelper());
+        $requestEmailHelper->sendMail($request, $mailText, $currentUser, $ccMailingList);
     }
 
     /**

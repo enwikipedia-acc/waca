@@ -17,6 +17,8 @@ trait TemplateOutput
 {
     /** @var Smarty */
     private $smarty;
+    /** @var string Extra JavaScript to include at the end of the page's execution */
+    private $tailScript;
 
     /**
      * @return SiteConfiguration
@@ -70,6 +72,7 @@ trait TemplateOutput
         $this->assign('nav__canSiteNoticeMgmt', false);
         $this->assign('nav__canUserMgmt', false);
         $this->assign('nav__canViewRequest', false);
+        $this->assign('nav__canJobQueue', false);
 
         $this->assign('page', $this);
     }

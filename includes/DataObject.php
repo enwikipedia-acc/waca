@@ -101,7 +101,7 @@ abstract class DataObject
         $array = explode('\\', get_called_class());
         $realClassName = strtolower(end($array));
 
-        $deleteQuery = "DELETE FROM {$realClassName} WHERE id = :id AND updateversion = :updateversion LIMIT 1;";
+        $deleteQuery = "DELETE FROM {$realClassName} WHERE id = :id AND updateversion = :updateversion;";
         $statement = $this->dbObject->prepare($deleteQuery);
 
         $statement->bindValue(":id", $this->id);

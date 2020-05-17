@@ -13,16 +13,16 @@
        href="https://en.wikipedia.org/w/index.php?title=Special:Log&amp;type=newusers&amp;user=&amp;page={$requestName|escape:'url'}">
         Creation log
     </a>
-    <a id="UsernameSUL" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-       href="{$baseurl}/redir.php?tool=sulutil&amp;data={$requestName|escape:'url'}">
-        SUL
+    <a id="UsernameGlobalRenameLog" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+       href="https://meta.wikimedia.org/w/index.php?title=Special%3ALog&amp;type=gblrename&amp;oldname={$requestName|escape:'url'}">
+        Global Rename log
     </a>
     <a id="UsernameCentralAuth" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
        href="https://en.wikipedia.org/wiki/Special:CentralAuth/{$requestName|escape:'url'}">
         Special:CentralAuth
     </a>
     <a id="UsernameUsernameList" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-       href="https://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username={$requestName|escape:'url'}&amp;group=&amp;limit=1">
+       href="https://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username={$requestName|escape:'url'}&amp;group=&amp;limit=25">
         Username list
     </a>
     <a id="UsernameMainspaceSearch" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"

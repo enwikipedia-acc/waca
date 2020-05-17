@@ -36,6 +36,9 @@ class PageExpandedRequestList extends InternalPageBase
 
             $database = $this->getDatabase();
 
+            $help = $requestStates[$requestedStatus]['queuehelp'];
+            $this->assign('queuehelp', $help);
+
             if ($config->getEmailConfirmationEnabled()) {
                 $query = "SELECT * FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
                 $totalQuery = "SELECT COUNT(id) FROM request WHERE status = :type AND emailconfirm = 'Confirmed';";
@@ -71,6 +74,9 @@ class PageExpandedRequestList extends InternalPageBase
             $totalRequests = $totalRequestsStatement->fetchColumn();
             $totalRequestsStatement->closeCursor();
             $this->assign('totalRequests', $totalRequests);
+
+
+            $this->setHtmlTitle('{$header|escape}{if $totalRequests > 0} [{$totalRequests|escape}]{/if}');
 
             $userIds = array_map(
                 function(Request $entry) {

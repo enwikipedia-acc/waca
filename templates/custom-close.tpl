@@ -11,7 +11,7 @@
             <div class="d-none d-lg-block col-lg-3 col-xl-2">
                 <label class="col-form-label">Request details:</label>
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-6 padded-data">
                 {include file="view-request/request-info.tpl"}
             </div>
         </div>

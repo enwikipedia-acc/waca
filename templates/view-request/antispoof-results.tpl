@@ -30,10 +30,6 @@
                            href="https://en.wikipedia.org/w/index.php?title=Special%3ALog&amp;type=&amp;user=&amp;page=User%3A{$spoof|escape:'url'}&amp;year=&amp;month=-1&amp;tagfilter=&amp;hide_patrol_log=1&amp;hide_review_log=1&amp;hide_thanks_log=1">
                             Logs
                         </a>
-                        <a id="SpoofSUL-{$spoof@iteration}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-                           href="{$baseurl}/redir.php?tool=sulutil&amp;data={$spoof|escape:'url'}">
-                            SUL
-                        </a>
                         <a id="SpoofCentralAuth-{$spoof@iteration}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
                            href="https://en.wikipedia.org/wiki/Special:CentralAuth/{$spoof|escape:'url'}">
                             Special:CentralAuth

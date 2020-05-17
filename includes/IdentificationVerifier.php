@@ -38,7 +38,8 @@ class IdentificationVerifier
         'action'   => 'query',
         'format'   => 'json',
         'prop'     => 'links',
-        'titles'   => 'Access to nonpublic information policy/Noticeboard',
+        // Populated from SiteConfiguration->getIdentificationNoticeboardPage
+        'titles'   => '',
         // Username of the user to be checked, with User: prefix, goes here!  Set in isIdentifiedOnWiki()
         'pltitles' => '',
     );
@@ -70,6 +71,7 @@ class IdentificationVerifier
      *
      * @return bool
      * @category Security-Critical
+     * @throws EnvironmentException
      */
     public function isUserIdentified($onWikiName)
     {
@@ -182,6 +184,7 @@ SQL;
 
         $parameters = self::$apiQueryParameters;
         $parameters['pltitles'] = "User:" . $onWikiName;
+        $parameters['titles'] = $this->siteConfiguration->getIdentificationNoticeboardPage();
 
         try {
             $endpoint = $this->siteConfiguration->getMetaWikimediaWebServiceEndpoint();

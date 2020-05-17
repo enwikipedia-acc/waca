@@ -1,5 +1,16 @@
 <component name="CopyrightManager">
   <settings default="PD">
+    <LanguageOptions name="SCSS">
+      <option name="fileTypeOverride" value="3" />
+      <option name="block" value="false" />
+      <option name="separateBefore" value="true" />
+      <option name="separateAfter" value="true" />
+      <option name="box" value="true" />
+      <option name="filler" value="*" />
+    </LanguageOptions>
+    <LanguageOptions name="Sass">
+      <option name="block" value="false" />
+    </LanguageOptions>
     <LanguageOptions name="__TEMPLATE__">
       <option name="separateBefore" value="true" />
       <option name="separateAfter" value="true" />

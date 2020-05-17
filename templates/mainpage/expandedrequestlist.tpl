@@ -11,7 +11,11 @@
 
     <div class="row">
         <div class="col-12">
-            <p>There are {$totalRequests} requests open in this queue.{if $totalRequests > $requestLimitShowOnly} Not all of these requests will show on the main page, as the main page is limited to showing {$requestLimitShowOnly} requests.{/if}</p>
+            {if $queuehelp}
+                <p>{$queuehelp}</p>
+            {/if}
+            <p>There {if $totalRequests !== 1}are {$totalRequests} requests{else}is 1 request{/if} open in this queue.</p>
+            {if $totalRequests > $requestLimitShowOnly}<p>Not all of these requests will show on the main page, as the main page is limited to showing {$requestLimitShowOnly} requests.</p>{/if}
         </div>
     </div>
 

@@ -19,12 +19,12 @@
                    value="{$user->getEmail()|escape}" required="required"/>
         </div>
 
-        {if $user->isOAuthLinked()}
+        {if $oauth->isFullyLinked() || $oauth->isPartiallyLinked()}
             <div class="form-group">
                 <label for="user_onwikiname">On-wiki Username:</label>
                 <span class="form-control uneditable-input"
-                      id="user_onwikiname">{if $user->getOnWikiName() != "##OAUTH##"}{$user->getOnWikiName()|escape}{/if}</span>
-                <span class="badge {if $user->getOnWikiName() == "##OAUTH##"}badge-danger{else}badge-success{/if}">OAuth</span>
+                      id="user_onwikiname">{$user->getOnWikiName()|escape}</span>
+                <span class="badge {if $oauth->isPartiallyLinked()}badge-danger{else}badge-success{/if}">OAuth</span>
             </div>
         {else}
             <div class="form-group">

@@ -12,6 +12,7 @@ use Waca\DataObjects\User;
 use Waca\DataObjects\UserRole;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
@@ -36,12 +37,18 @@ class PageUserManagement extends InternalPageBase
         $database = $this->getDatabase();
         $currentUser = User::getCurrent($database);
 
+        // A bit hacky, but it's better than my last solution of creating an object for each user and passing that to
+        // the template. I still don't have a particularly good way of handling this.
+        OAuthUserHelper::prepareTokenCountStatement($database);
+
         if (WebRequest::getBoolean("showAll")) {
             $this->assign("showAll", true);
 
-            $this->assign("suspendedUsers",
-                UserSearchHelper::get($database)->byStatus(User::STATUS_SUSPENDED)->fetch());
-            $this->assign("declinedUsers", UserSearchHelper::get($database)->byStatus(User::STATUS_DECLINED)->fetch());
+            $suspendedUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_SUSPENDED)->fetch();
+            $this->assign("suspendedUsers", $suspendedUsers);
+
+            $declinedUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_DECLINED)->fetch();
+            $this->assign("declinedUsers", $declinedUsers);
 
             UserSearchHelper::get($database)->getRoleMap($roleMap);
         }
@@ -53,15 +60,16 @@ class PageUserManagement extends InternalPageBase
             UserSearchHelper::get($database)->statusIn(array('New', 'Active'))->getRoleMap($roleMap);
         }
 
-        $this->assign('newUsers', UserSearchHelper::get($database)->byStatus(User::STATUS_NEW)->fetch());
-        $this->assign('normalUsers',
-            UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('user')->fetch());
-        $this->assign('adminUsers',
-            UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('admin')->fetch());
-        $this->assign('checkUsers',
-            UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('checkuser')->fetch());
-        $this->assign('toolRoots',
-            UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('toolRoot')->fetch());
+        $newUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_NEW)->fetch();
+        $normalUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('user')->fetch();
+        $adminUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('admin')->fetch();
+        $checkUsers = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('checkuser')->fetch();
+        $toolRoots = UserSearchHelper::get($database)->byStatus(User::STATUS_ACTIVE)->byRole('toolRoot')->fetch();
+        $this->assign('newUsers', $newUsers);
+        $this->assign('normalUsers', $normalUsers);
+        $this->assign('adminUsers', $adminUsers);
+        $this->assign('checkUsers', $checkUsers);
+        $this->assign('toolRoots', $toolRoots);
 
         $this->assign('roles', $roleMap);
 
@@ -163,6 +171,7 @@ class PageUserManagement extends InternalPageBase
             SessionAlert::quick('Roles changed for user ' . htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8'));
 
             $this->redirect('statistics/users', 'detail', array('user' => $user->getId()));
+
             return;
         }
         else {
@@ -444,6 +453,7 @@ class PageUserManagement extends InternalPageBase
 
         $userId = WebRequest::getInt('user');
         $user = User::getById($userId, $database);
+        $oauth = new OAuthUserHelper($user, $database, $this->getOAuthProtocolHelper(), $this->getSiteConfiguration());
 
         if ($user === false) {
             throw new ApplicationLogicException('Sorry, the user you are trying to edit could not be found.');
@@ -459,7 +469,7 @@ class PageUserManagement extends InternalPageBase
                 throw new ApplicationLogicException('Invalid email address');
             }
 
-            if (!$user->isOAuthLinked()) {
+            if (!$oauth->isFullyLinked()) {
                 if (trim($newOnWikiName) == "") {
                     throw new ApplicationLogicException('New on-wiki username cannot be blank');
                 }
@@ -483,8 +493,11 @@ class PageUserManagement extends InternalPageBase
         }
         else {
             $this->assignCSRFToken();
+            $oauth = new OAuthUserHelper($user, $database, $this->getOAuthProtocolHelper(),
+                $this->getSiteConfiguration());
             $this->setTemplate('usermanagement/edituser.tpl');
             $this->assign('user', $user);
+            $this->assign('oauth', $oauth);
         }
     }
 

@@ -1,4 +1,4 @@
-<h5 class="zoom-button-header">Reservation</h5>
+<h5>Reservation</h5>
 
 <div class="row">
     <div class="col-md-8">
@@ -52,4 +52,4 @@
     </div>
     {/if}
 </div> <!-- /row-fluid -->
-<hr class="zoom-button-divider" />
+<hr />

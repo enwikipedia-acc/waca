@@ -1,0 +1,60 @@
+//******************************************************************************
+// Wikipedia Account Creation Assistance tool                                  *
+//                                                                             *
+// All code in this file is released into the public domain by the ACC         *
+// Development Team. Please see team.json for a list of contributors.          *
+//******************************************************************************
+$zoom-section-spacer: 1.45rem;
+
+#pageRequestLog {
+    .zoom-buttons {
+        h5 {
+            @extend .text-muted;
+
+            margin-top: (0.1 * $zoom-section-spacer) - 1;
+            margin-bottom: 0.5 * $zoom-section-spacer;
+
+            font-style: italic;
+            font-size: $zoom-section-spacer * 0.6;
+            font-weight: $font-weight-normal;
+        }
+
+        .row {
+            min-height: 2.2rem;
+        }
+
+        hr {
+            border-top-color: $gray-400;
+        }
+    }
+
+    .creationTypeOptions {
+        float: right;
+        margin-top: (0.1 * $zoom-section-spacer) - 1;
+
+        .custom-control-inline {
+            @extend .text-muted;
+            font-style: italic;
+
+            &:last-of-type {
+                margin-right: 0;
+            }
+        }
+    }
+
+    .request-data-section {
+        @extend .padded-data
+    }
+
+    #requestLog {
+        max-height: 34.4rem;
+    }
+
+    .linkWrapSection .btn {
+        margin-bottom: 5px;
+    }
+
+    button.dropdown-toggle-split {
+        border-left: 1px solid rgba($black, .2);
+    }
+}

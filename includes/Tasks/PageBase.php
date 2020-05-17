@@ -9,8 +9,10 @@
 namespace Waca\Tasks;
 
 use Exception;
+use SmartyException;
 use Waca\DataObjects\SiteNotice;
 use Waca\DataObjects\User;
+use Waca\ExceptionHandler;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Fragments\TemplateOutput;
@@ -134,6 +136,18 @@ abstract class PageBase extends TaskBase implements IRoutedTask
             // Set the template
             $this->setTemplate('exception/optimistic-lock-failure.tpl');
             $this->assign('message', $ex->getMessage());
+
+            $this->assign('debugTrace', false);
+
+            if ($this->getSiteConfiguration()->getDebuggingTraceEnabled()) {
+                ob_start();
+                var_dump(ExceptionHandler::getExceptionData($ex));
+                $textErrorData = ob_get_contents();
+                ob_end_clean();
+
+                $this->assign('exceptionData', $textErrorData);
+                $this->assign('debugTrace', true);
+            }
 
             // Force this back to false
             $this->isRedirecting = false;
@@ -307,11 +321,15 @@ abstract class PageBase extends TaskBase implements IRoutedTask
     abstract protected function main();
 
     /**
+     * Takes a smarty template string and sets the HTML title to that value
+     *
      * @param string $title
+     *
+     * @throws SmartyException
      */
     final protected function setHtmlTitle($title)
     {
-        $this->htmlTitle = $title;
+        $this->htmlTitle = $this->smarty->fetch('string:' . $title);
     }
 
     public function execute()

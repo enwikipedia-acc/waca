@@ -98,6 +98,8 @@ $emailConfirmationExpiryDays = 7;
  * Interface registration, interface users, etc.
  */
 
+$allowRegistration = true;
+
 // Parameters for performing a newbie check on tool registration.
 $onRegistrationNewbieCheck = true; // Enable the newbie checking.
 $onRegistrationNewbieCheckEditCount = 20; // Minimum amount of edits on Wikipedia.
@@ -153,6 +155,10 @@ $oauthMediaWikiCanonicalServer = "http://en.wikipedia.org";
 $useOauthSignup = true;
 $enforceOAuth = false;
 
+// Password for the creation bot when this is used in place of OAuth
+$creationBotUsername = '';
+$creationBotPassword = '';
+
 /************************************
  * Providers Configuration
  */
@@ -201,18 +207,21 @@ $availableRequestStates = array(
         'deferto'    => 'users',
         'header'     => 'Open requests',
         'api'        => "open",
+        'queuehelp'  => null
     ),
     'Flagged users' => array(
         'defertolog' => 'flagged users', // don't change or you'll break old logs
         'deferto'    => 'flagged users',
         'header'     => 'Flagged user needed',
         'api'        => "admin",
+        'queuehelp'  => 'This queue lists the requests which require a user with the <code>accountcreator</code> flag to create.<br />If creation is determined to be the correct course of action, requests here will require the overriding the AntiSpoof checks or the title blacklist in order to create. It is recommended to try to create the account <em>without</em> checking the flags to validate the results of the AntiSpoof and/or title blacklist hits.'
     ),
     'Checkuser'     => array(
         'defertolog' => 'checkusers', // don't change or you'll break old logs
         'deferto'    => 'checkusers',
         'header'     => 'Checkuser needed',
         'api'        => "checkuser",
+        'queuehelp'  => null
     ),
 );
 
@@ -241,6 +250,14 @@ $enableErrorTrace = false;
 // Definitely don't set this if there's sensitive data stored here you care about such as OAuth credentials.
 $curlDisableSSLVerifyPeer = false;
 
+// Change this to be outside the web directory.
+$curlCookieJar = __DIR__ . '/../cookies.txt';
+
+$yubicoApiId = 0;
+$yubicoApiKey = "";
+
+$totpEncryptionKey = "1234";
+
 /**************************************************************************
  **********                   IMPORTANT NOTICE                    **********
  ***************************************************************************
@@ -256,16 +273,19 @@ $cDatabaseConfig = array(
         "dsrcname" => "mysql:host=" . $toolserver_host . ";dbname=" . $toolserver_database,
         "username" => $toolserver_username,
         "password" => $toolserver_password,
+		"options"  => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4'),
     ),
     "wikipedia"     => array(
         "dsrcname" => "mysql:host=" . $antispoof_host . ";dbname=" . $antispoof_db,
         "username" => $toolserver_username,
         "password" => $toolserver_password,
+        "options"  => array(),
     ),
     "notifications" => array(
         "dsrcname" => "mysql:host=" . $toolserver_notification_dbhost . ";dbname=" . $toolserver_notification_database,
         "username" => $notifications_username,
         "password" => $notifications_password,
+        "options"  => array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8mb4'),
     ),
 );
 
@@ -338,10 +358,18 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setOAuthBaseUrl($oauthBaseUrl)
     ->setOAuthConsumerToken($oauthConsumerToken)
     ->setOAuthConsumerSecret($oauthSecretToken)
+    ->setOauthMediaWikiCanonicalServer($oauthMediaWikiCanonicalServer)
     ->setDataClearInterval($dataclear_interval)
     ->setXffTrustedHostsFile($xff_trusted_hosts_file)
     ->setIrcNotificationsEnabled($ircBotNotificationsEnabled == 1)
     ->setIrcNotificationType($ircBotNotificationType)
     ->setIrcNotificationsInstance($whichami)
     ->setTitleBlacklistEnabled($enableTitleblacklist == 1)
-    ->setTorExitPaths(array_merge(gethostbynamel('en.wikipedia.org'), gethostbynamel('accounts.wmflabs.org')));
+    ->setTorExitPaths(array_merge(gethostbynamel('en.wikipedia.org'), gethostbynamel('accounts.wmflabs.org')))
+    ->setCreationBotUsername($creationBotUsername)
+    ->setCreationBotPassword($creationBotPassword)
+    ->setCurlCookieJar($curlCookieJar)
+    ->setYubicoApiId($yubicoApiId)
+    ->setYubicoApiKey($yubicoApiKey)
+    ->setTotpEncryptionKey($totpEncryptionKey)
+    ->setRegistrationAllowed($allowRegistration);

@@ -1,5 +1,5 @@
 {block name="requestDataPrimary"}
-    <div class="row row-request-data-section">
+    <div class="row">
         <div class="col-md-4">
             <strong>Email address:</strong>
         </div>
@@ -10,7 +10,7 @@
             <span class="badge{if $requestRelatedEmailRequestsCount > 0} badge-danger{else} badge-secondary{/if}">{$requestRelatedEmailRequestsCount}</span>
         </div>
     </div>
-    <div class="row row-request-data-section">
+    <div class="row">
         <div class="col-md-4"><strong>IP address:</strong></div>
         <div class="col-md-7">
             {$requestTrustedIp|escape}

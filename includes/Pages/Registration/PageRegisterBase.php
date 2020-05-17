@@ -10,8 +10,11 @@ namespace Waca\Pages\Registration;
 
 use Waca\DataObjects\User;
 use Waca\DataObjects\UserRole;
+use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\Helpers\OAuthUserHelper;
+use Waca\Security\CredentialProviders\PasswordCredentialProvider;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -20,10 +23,14 @@ abstract class PageRegisterBase extends InternalPageBase
 {
     /**
      * Main function for this page, when no specific actions are called.
+     * @throws AccessDeniedException
      */
     protected function main()
     {
         $useOAuthSignup = $this->getSiteConfiguration()->getUseOAuthSignup();
+        if (! $this->getSiteConfiguration()->isRegistrationAllowed()) {
+           throw new AccessDeniedException();
+        }
 
         // Dual-mode page
         if (WebRequest::wasPosted()) {
@@ -165,7 +172,6 @@ abstract class PageRegisterBase extends InternalPageBase
         $user->setDatabase($database);
 
         $user->setUsername($username);
-        $user->setPassword($password);
         $user->setEmail($emailAddress);
 
         if (!$useOAuthSignup) {
@@ -174,6 +180,9 @@ abstract class PageRegisterBase extends InternalPageBase
         }
 
         $user->save();
+
+        $passwordCredentialProvider = new PasswordCredentialProvider($database, $this->getSiteConfiguration());
+        $passwordCredentialProvider->setCredential($user, 1, $password);
 
         $defaultRole = $this->getDefaultRole();
 
@@ -188,16 +197,12 @@ abstract class PageRegisterBase extends InternalPageBase
         Logger::userRolesEdited($database, $user, 'Registration', array($defaultRole), array());
 
         if ($useOAuthSignup) {
-            $oauthHelper = $this->getOAuthHelper();
+            $oauthProtocolHelper = $this->getOAuthProtocolHelper();
+            $oauth = new OAuthUserHelper($user, $database, $oauthProtocolHelper, $this->getSiteConfiguration());
 
-            $requestToken = $oauthHelper->getRequestToken();
-            $user->setOAuthRequestToken($requestToken->key);
-            $user->setOAuthRequestSecret($requestToken->secret);
-            $user->save();
-
-            WebRequest::setPartialLogin($user);
-
-            $this->redirectUrl($oauthHelper->getAuthoriseUrl($requestToken->key));
+            $authoriseUrl = $oauth->getRequestToken();
+            WebRequest::setOAuthPartialLogin($user);
+            $this->redirectUrl($authoriseUrl);
         }
         else {
             // only notify if we're not using the oauth signup.

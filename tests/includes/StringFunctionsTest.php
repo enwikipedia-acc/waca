@@ -8,22 +8,22 @@
 
 namespace Waca\Tests;
 
-use PHPUnit_Framework_TestCase;
 use Waca\StringFunctions;
+use PHPUnit\Framework\TestCase;
 
-class StringFunctionsTest extends PHPUnit_Framework_TestCase
+class StringFunctionsTest extends TestCase
 {
     /**
      * @var StringFunctions
      */
     private $e;
 
-    public function setUp()
+	public function setUp(): void
     {
         $this->e = new StringFunctions();
     }
 
-    public function tearDown()
+	public function tearDown(): void
     {
         $this->e = null;
     }

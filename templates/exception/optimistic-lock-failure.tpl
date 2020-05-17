@@ -15,4 +15,12 @@
             </p>
         </div>
     </div>
+
+    {if $debugTrace}
+        <div class="row">
+            <div class="col-12">
+                {$exceptionData}
+            </div>
+        </div>
+    {/if}
 {/block}

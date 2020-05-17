@@ -18,7 +18,11 @@ $font-size-base: 0.9rem;
 
 $overflows: auto, hidden, visible;
 
+$sizes: (fit-content: fit-content);
+
 @import "../../vendor/twbs/bootstrap/scss/bootstrap";
+@import "_viewRequest.scss";
+@import "_login.scss";
 
 span.twitter-typeahead {
     display: block !important;
@@ -29,4 +33,14 @@ span.twitter-typeahead {
 
 .accordion>.overflow-visible {
     @extend .overflow-visible;
+}
+
+.custom-control-inline {
+    padding-left: $spacer * 1.5;
+}
+
+.padded-data {
+    .row {
+        margin-bottom: 0.4rem;
+    }
 }

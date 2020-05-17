@@ -10,6 +10,7 @@ namespace Waca\Helpers\SearchHelpers;
 
 use Waca\DataObjects\Request;
 use Waca\PdoDatabase;
+use Waca\RequestStatus;
 use Waca\SiteConfiguration;
 
 class RequestSearchHelper extends SearchHelperBase
@@ -85,6 +86,21 @@ class RequestSearchHelper extends SearchHelperBase
     }
 
     /**
+     * Filters the requests to those with a defined status
+     *
+     * @param $status
+     *
+     * @return $this
+     */
+    public function byStatus($status)
+    {
+        $this->whereClause .= ' AND status = ?';
+        $this->parameterList[] = $status;
+
+        return $this;
+    }
+
+    /**
      * Excludes a request from the results
      *
      * @param int $requestId
@@ -126,5 +142,51 @@ class RequestSearchHelper extends SearchHelperBase
         $this->parameterList[] = $configuration->getDataClearEmail();
 
         return $this;
+    }
+
+    /**
+     * Filters the requests to those without a defined status
+     *
+     * @param $status
+     *
+     * @return $this
+     */
+    public function excludingStatus($status)
+    {
+        $this->whereClause .= ' AND status <> ?';
+        $this->parameterList[] = $status;
+
+        return $this;
+    }
+
+    /**
+     * Filters the requests to those which have failed an auto-creation
+     *
+     * @return $this
+     */
+    public function isHospitalised()
+    {
+        $this->whereClause .= ' AND status = ?';
+        $this->parameterList[] =  RequestStatus::HOSPITAL;
+
+        return $this;
+    }
+
+    /**
+     * Filters the requests to those which have not failed an auto-creation
+     *
+     * @return $this
+     */
+    public function notHospitalised()
+    {
+        $this->whereClause .= ' AND status <> ?';
+        $this->parameterList[] =  RequestStatus::HOSPITAL;
+
+        return $this;
+    }
+
+    public function fetchByStatus($statuses)
+    {
+        return $this->fetchByParameter(' AND status = ?', $statuses);
     }
 }

@@ -1,4 +1,4 @@
-<div class="col-md-6">
+<div class="col-md-3">
     <div class="dropright btn-group btn-block">
         <a class="btn btn-info col"
            href="{$baseurl}/internal.php/viewRequest/custom?request={$requestId}">

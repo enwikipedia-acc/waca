@@ -23,7 +23,7 @@
                 </div>
             </li>
         {/if}
-        {if $nav__canBan || $nav__canEmailMgmt || $nav__canWelcomeMgmt || $nav__canSiteNoticeMgmt || $nav__canUserMgmt}
+        {if $nav__canBan || $nav__canEmailMgmt || $nav__canWelcomeMgmt || $nav__canSiteNoticeMgmt || $nav__canUserMgmt || $nav__canJobQueue}
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown"><i class="fas fa-wrench"></i>&nbsp;Admin</a>
                 <div class="dropdown-menu">
@@ -41,6 +41,9 @@
                     {/if}
                     {if $nav__canUserMgmt}
                         <a class="dropdown-item" href="{$baseurl}/internal.php/userManagement"><i class="fas fa-user"></i> User Management</a>
+                    {/if}
+                    {if $nav__canJobQueue}
+                        <a class="dropdown-item" href="{$baseurl}/internal.php/jobQueue"><i class="fas fa-tools"></i> Job Queue</a>
                     {/if}
                 </div>
             </li>
@@ -68,6 +71,12 @@
                     <a class="dropdown-item" href="{$baseurl}/internal.php/preferences">
                         <i class="fas fa-edit"></i> Edit preferences
                     </a>
+                    <a class="dropdown-item" href="{$baseurl}/internal.php/changePassword">
+                        <i class="fas fa-key"></i> Change password
+                    </a>
+                    <a class="dropdown-item" href="{$baseurl}/internal.php/multiFactor">
+                        <i class="fas fa-qrcode"></i> Configure multi-factor credentials
+                    </a>
                     <div class="dropdown-divider"></div>
 
                     <h6 class="dropdown-header">Help</h6>
@@ -89,7 +98,7 @@
                     <div class="dropdown-divider"></div>
 
                     <a class="dropdown-item" href="{$baseurl}/internal.php/logout">
-                        <i class="fas fa-lock"></i>&nbsp;Logout
+                        <i class="fas fa-power-off"></i>&nbsp;Logout
                     </a>
                 </div>
             </li>

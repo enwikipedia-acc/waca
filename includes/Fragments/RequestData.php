@@ -17,6 +17,7 @@ use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\ILocationProvider;
 use Waca\Providers\Interfaces\IRDnsProvider;
 use Waca\Providers\Interfaces\IXffTrustProvider;
+use Waca\RequestStatus;
 use Waca\Security\SecurityManager;
 use Waca\SiteConfiguration;
 use Waca\WebRequest;
@@ -249,7 +250,9 @@ trait RequestData
         $this->assign('requestDate', $request->getDate());
         $this->assign('requestStatus', $request->getStatus());
 
-        $this->assign('requestIsClosed', !array_key_exists($request->getStatus(), $config->getRequestStates()));
+        $isClosed = !array_key_exists($request->getStatus(), $config->getRequestStates())
+            && $request->getStatus() !== RequestStatus::HOSPITAL;
+        $this->assign('requestIsClosed', $isClosed);
     }
 
     /**

@@ -13,7 +13,7 @@ use Waca\Exceptions\EnvironmentException;
 use Waca\Helpers\EmailHelper;
 use Waca\Helpers\HttpHelper;
 use Waca\Helpers\IrcNotificationHelper;
-use Waca\Helpers\OAuthHelper;
+use Waca\Helpers\OAuthProtocolHelper;
 use Waca\Helpers\WikiTextHelper;
 use Waca\Providers\CachedApiAntispoofProvider;
 use Waca\Providers\CachedRDnsLookupProvider;
@@ -161,7 +161,7 @@ abstract class ApplicationBase
             $this->getConfiguration()->getMediawikiWebServiceEndpoint(),
             $httpHelper));
 
-        $page->setOAuthHelper(new OAuthHelper(
+        $page->setOAuthProtocolHelper(new OAuthProtocolHelper(
             $siteConfiguration->getOAuthBaseUrl(),
             $siteConfiguration->getOAuthConsumerToken(),
             $siteConfiguration->getOAuthConsumerSecret(),

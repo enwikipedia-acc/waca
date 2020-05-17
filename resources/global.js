@@ -17,9 +17,10 @@ $(".visit-tracking").mouseup(function() {
     $(this).addClass('btn-outline-visited');
 });
 
+var requestLogs = $('.scroll-bottom');
+requestLogs.scrollTop(requestLogs[0].scrollHeight);
 
 var typeaheaddata = [];
-
 var substringMatcher = function () {
     return function findMatches(query, syncResults) {
         var matches, substrRegex;
@@ -53,3 +54,21 @@ $('.username-typeahead').typeahead(
         source: substringMatcher()
     }
 );
+
+$(".creationTypeOptions input").change(function() {
+    if($(this).val() === "manual") {
+        $("#createManual").removeClass("d-none");
+        $("#createOauth").addClass("d-none");
+        $("#createBot").addClass("d-none");
+    }
+    if($(this).val() === "oauth") {
+        $("#createManual").addClass("d-none");
+        $("#createOauth").removeClass("d-none");
+        $("#createBot").addClass("d-none");
+    }
+    if($(this).val() === "bot") {
+        $("#createManual").addClass("d-none");
+        $("#createOauth").addClass("d-none");
+        $("#createBot").removeClass("d-none");
+    }
+});

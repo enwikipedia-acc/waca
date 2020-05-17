@@ -8,7 +8,10 @@
 
 namespace Waca\Pages\RequestAction;
 
+use Waca\Background\Task\WelcomeUserTask;
+use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\PdoDatabase;
 use Waca\Tasks\InternalPageBase;
@@ -48,5 +51,22 @@ abstract class RequestActionBase extends InternalPageBase
 
         // validate the CSRF token
         $this->validateCSRFToken();
+    }
+
+    /**
+     * @param Request     $request
+     * @param             $parentTaskId
+     * @param User        $user
+     * @param PdoDatabase $database
+     */
+    protected function enqueueWelcomeTask(Request $request, $parentTaskId, User $user, PdoDatabase $database)
+    {
+        $welcomeTask = new JobQueue();
+        $welcomeTask->setTask(WelcomeUserTask::class);
+        $welcomeTask->setRequest($request->getId());
+        $welcomeTask->setParent($parentTaskId);
+        $welcomeTask->setTriggerUserId($user->getId());
+        $welcomeTask->setDatabase($database);
+        $welcomeTask->save();
     }
 }

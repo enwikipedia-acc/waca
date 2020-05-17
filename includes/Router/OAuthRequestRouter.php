@@ -8,7 +8,7 @@
 
 namespace Waca\Router;
 
-use Waca\Pages\PageOAuth;
+use Waca\Pages\UserAuth\PageOAuthCallback;
 
 /**
  * Class OAuthRequestRouter
@@ -20,6 +20,6 @@ class OAuthRequestRouter extends RequestRouter
     protected function getRouteFromPath($pathInfo)
     {
         // Hardcode the route for this entry point
-        return array(PageOAuth::class, 'callback');
+        return array(PageOAuthCallback::class, 'authorise');
     }
 }

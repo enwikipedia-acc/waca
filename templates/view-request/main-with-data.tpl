@@ -10,22 +10,15 @@
     {/if}
 {/block}
 
-{block name="createButton"}
-      <a class="btn btn-primary btn-block" target="_blank"
-         href="{$mediawikiScriptPath}?title=Special:UserLogin/signup&amp;wpName={$requestName|escape:'url'}&amp;email={$requestEmail|escape:'url'}&amp;reason={$createAccountReason|escape:'url'}{$requestId}&amp;wpCreateaccountMail=true"
-              {if !$currentUser->getAbortPref() && $createdHasJsQuestion} onclick="return confirm('{$createdJsQuestion}')"{/if}>
-          Create account
-      </a>
-    <hr class="zoom-button-divider"/>
-{/block}
-
-{block name="requestStatusButtons"}
-    {include file="view-request/request-status-buttons.tpl"}
+{block name="declinedeferbuttons"}
+{*    <div class="col-md-6">*}
+        {include file="view-request/decline-button.tpl"}{include file="view-request/custom-button.tpl"}
+{*    </div>*}
 {/block}
 
 {block name="banSection"}
     {if $canSetBan}
-        <h5 class="zoom-button-header">Ban</h5>
+        <h5>Ban</h5>
         <div class="row">
             <div class="col-md-4">
                 <a class="btn btn-danger btn-block" href="{$baseurl}/internal.php/bans/set?type=Name&amp;request={$requestId}">
@@ -43,7 +36,7 @@
                 </a>
             </div>
         </div>
-        <hr class="zoom-button-divider"/>
+        <hr/>
     {/if}
 {/block}
 
@@ -78,4 +71,8 @@
             {/if}
         </div>
     </div>
+{/block}
+
+{block name="manualcreationbutton"}
+    {include file="view-request/createbuttons/manual.tpl"}
 {/block}

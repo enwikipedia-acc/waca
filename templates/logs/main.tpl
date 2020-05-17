@@ -16,17 +16,17 @@
     </div>
     <div class="row">
         <div class="col-md-12">
-            {include file="logs/pager.tpl"}
+            {include file="pager.tpl"}
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            {include file="logs/datatable.tpl" showComments=false}
+            {include file="logs/datatable.tpl" showComments=false  showUser=true showObject=true}
         </div>
     </div>
     <div class="row">
         <div class="col-md-12">
-            {include file="logs/pager.tpl"}
+            {include file="pager.tpl"}
         </div>
     </div>
     <!-- /tpl:logs/main.tpl -->

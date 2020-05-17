@@ -26,12 +26,6 @@ class CommunityUser extends User
         // Do nothing
     }
 
-    public function authenticate($password)
-    {
-        // Impossible to log in as this user
-        return false;
-    }
-
     #region properties
 
     /**
@@ -62,10 +56,6 @@ class CommunityUser extends User
     {
     }
 
-    public function setPassword($password)
-    {
-    }
-
     public function getStatus()
     {
         return "Community";
@@ -74,11 +64,6 @@ class CommunityUser extends User
     public function getOnWikiName()
     {
         return "127.0.0.1";
-    }
-
-    public function getStoredOnWikiName()
-    {
-        return $this->getOnWikiName();
     }
 
     public function setOnWikiName($onWikiName)
@@ -180,40 +165,6 @@ class CommunityUser extends User
     public function isCommunityUser()
     {
         return true;
-    }
-
-    #endregion 
-
-    #region OAuth
-
-    public function getOAuthIdentity($useCached = false)
-    {
-        return null;
-    }
-
-    public function isOAuthLinked()
-    {
-        return false;
-    }
-
-    public function oauthCanUse()
-    {
-        return false;
-    }
-
-    public function oauthCanEdit()
-    {
-        return false;
-    }
-
-    public function oauthCanCreateAccount()
-    {
-        return false;
-    }
-
-    protected function oauthCanCheckUser()
-    {
-        return false;
     }
 
     #endregion

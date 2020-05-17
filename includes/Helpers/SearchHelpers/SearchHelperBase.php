@@ -11,6 +11,7 @@ namespace Waca\Helpers\SearchHelpers;
 use PDO;
 use PDOStatement;
 use Waca\DataObject;
+use Waca\Exceptions\ApplicationLogicException;
 use Waca\PdoDatabase;
 
 abstract class SearchHelperBase
@@ -35,6 +36,8 @@ abstract class SearchHelperBase
     /** @var string */
     protected $table;
     protected $joinClause = '';
+    protected $groupByClause = '';
+    protected $modifiersClause = '';
     private $targetClass;
 
     /**
@@ -72,18 +75,87 @@ abstract class SearchHelperBase
     }
 
     /**
+     * @param string $whereClauseSection
+     * @param array  $values
+     *
+     * @return array
+     */
+    protected function fetchByParameter($whereClauseSection, $values)
+    {
+        $this->whereClause .= $whereClauseSection;
+
+        $countQuery = 'SELECT /* SearchHelper */ COUNT(*) FROM ' . $this->table . ' origin ';
+        $countQuery .= $this->joinClause . $this->whereClause;
+
+        $query = $this->buildQuery(array('*'));
+        $query .= $this->applyOrder();
+
+        // shuffle around hackily TODO: fix this abomination - T593
+        $localParameterList = $this->parameterList;
+        $this->parameterList = array();
+
+        $query .= $this->applyLimit();
+
+        $limitParameters = $this->parameterList;
+
+        $statement = $this->database->prepare($query);
+        $countStatement = $this->database->prepare($countQuery);
+
+        $result = array();
+        foreach ($values as $v) {
+            // reset parameter list
+            $params = $localParameterList;
+            $params[] = $v;
+
+            $countStatement->execute($params);
+
+            // reapply the limit parameters
+            $params = array_merge($params, $limitParameters);
+
+            $statement->execute($params);
+
+            /** @var DataObject[] $returnedObjects */
+            $returnedObjects = $statement->fetchAll(PDO::FETCH_CLASS, $this->targetClass);
+            foreach ($returnedObjects as $req) {
+                $req->setDatabase($this->database);
+            }
+
+            $result[$v] = array(
+                'count' => $countStatement->fetchColumn(0),
+                'data'  => $returnedObjects,
+            );
+        }
+
+        return $result;
+    }
+
+    /**
      * Finalises the database query, and executes it, returning only the requested column.
      *
      * @param string $column The required column
+     *
+     * @param bool   $distinct
+     *
      * @return array
+     * @throws ApplicationLogicException
      */
-    public function fetchColumn($column){
+    public function fetchColumn($column, $distinct = false)
+    {
+        if ($distinct) {
+            if ($this->groupByClause !== '') {
+                throw new ApplicationLogicException('Cannot apply distinct to column fetch already using group by');
+            }
+
+            $this->groupByClause = ' GROUP BY origin.' . $column;
+        }
+
         $statement = $this->getData(array($column));
 
         return $statement->fetchAll(PDO::FETCH_COLUMN);
     }
 
-    public function fetchMap($column){
+    public function fetchMap($column)
+    {
         $statement = $this->getData(array('id', $column));
 
         $data = $statement->fetchAll(PDO::FETCH_ASSOC);
@@ -186,18 +258,21 @@ abstract class SearchHelperBase
             $colData[] = 'origin.' . $c;
         }
 
-        $query = 'SELECT /* SearchHelper */ ' . implode(', ', $colData) . ' FROM ' . $this->table . ' origin ';
-        $query .= $this->joinClause . $this->whereClause;
+        $query = "SELECT {$this->modifiersClause} /* SearchHelper */ " . implode(', ', $colData) . ' FROM ' . $this->table . ' origin ';
+        $query .= $this->joinClause . $this->whereClause . $this->groupByClause;
 
         return $query;
     }
 
-    public function inIds($idList) {
+    public function inIds($idList)
+    {
         $this->inClause('id', $idList);
+
         return $this;
     }
 
-    protected function inClause($column, $values) {
+    protected function inClause($column, $values)
+    {
         if (count($values) === 0) {
             return;
         }

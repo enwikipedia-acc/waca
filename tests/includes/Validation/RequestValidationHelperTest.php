@@ -10,7 +10,7 @@ namespace Waca\Tests\Validation;
 
 use PDOStatement;
 use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Waca\DataObjects\Request;
 use Waca\Helpers\HttpHelper;
 use Waca\Helpers\Interfaces\IBanHelper;
@@ -24,12 +24,12 @@ use Waca\Validation\RequestValidationHelper;
  * @backupGlobals          disabled
  * @backupStaticAttributes disabled
  */
-class RequestValidationHelperTest extends PHPUnit_Framework_TestCase
+class RequestValidationHelperTest extends TestCase
 {
     /** @var Request */
     private $request;
 
-    public function setUp()
+	public function setUp(): void
     {
         $this->request = new Request();
         $this->request->setName("TestName");

@@ -26,32 +26,34 @@
         <div class="col-md-12">
             <table class="table table-striped table-hover table-nonfluid">
                 <thead>
-                <tr>
-                    <th>Template User code</th>
-                    {if $canEdit}
-                        <th class="d-none d-lg-block">Used by:</th>
-                    {/if}
-                    <th><!-- Buttons --></th>
-                </tr>
+                    <tr>
+                        <th>Template User code</th>
+                        {if $canEdit}
+                            <th class="d-none d-lg-block">Used by:</th>
+                        {/if}
+                        <th><!-- Buttons --></th>
+                    </tr>
                 </thead>
                 <tfoot>
-                {if $currentUser->getWelcomeTemplate() != 0}
-                    <tr>
+                    <tr {if $currentUser->getWelcomeTemplate() == null}class="table-success"{/if}>
                         <th>Disable automatic welcoming</th>
                         {if $canEdit}
                             <th class="d-none d-lg-block"><!-- count --></th>
                         {/if}
                         <td class="table-button-cell">
-                            <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select">
-                                {include file="security/csrf.tpl"}
-                                <input type="hidden" name="disable" value="true"/>
-                                <button type="submit" class="btn btn-primary btn-sm">
-                                    <i class="fas fa-check"></i>&nbsp;Select
-                                </button>
-                            </form>
+                            {if $currentUser->getWelcomeTemplate() !== null}
+                                <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select">
+                                    {include file="security/csrf.tpl"}
+                                    <input type="hidden" name="disable" value="true"/>
+                                    <button type="submit" class="btn btn-primary btn-sm float-right">
+                                        <i class="fas fa-check"></i>&nbsp;Select
+                                    </button>
+                                </form>
+                            {else}
+                                <a href="" class="btn btn-primary btn-sm disabled float-right">Selected</a>
+                            {/if}
                         </td>
                     </tr>
-                {/if}
                 </tfoot>
                 <tbody>
                 {foreach from=$templateList item="t" name="templateloop"}

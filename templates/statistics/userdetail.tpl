@@ -14,11 +14,19 @@
             <div class="row">
                 <div class="col-md-4"><strong>User on-wiki name:</strong></div>
                 <div class="col-md-8">{$user->getOnWikiName()|escape}
-                    {if $user->isOAuthLinked()}
-                        <span class="badge {if $user->getOnWikiName() == "##OAUTH##"}badge-danger{else}badge-success{/if}">OAuth</span>
+                    {if $oauth->isFullyLinked() || $oauth->isPartiallyLinked()}
+                        <span class="badge {if $oauth->isPartiallyLinked()}badge-danger{else}badge-success{/if}">OAuth</span>
                     {/if}
                 </div>
             </div>
+            {if $oauth->isFullyLinked() && ($canApprove || $canDecline || $canSuspend || $canEditRoles || $canRename)}
+                <div class="row">
+                    <div class="col-md-4"><strong>Identity:</strong></div>
+                    <div class="col-md-8">
+                        {include file="usermanagement/oauthFlags.tpl"}
+                    </div>
+                </div>
+            {/if}
             {if $user->getConfirmationDiff() != 0}
             <div class="row">
                 <div class="col-md-4"><strong>Confirmation diff:</strong></div>
@@ -96,7 +104,7 @@
         <div class="col-md-12">
             <h3>Account log</h3>
 
-            {include file="logs/datatable.tpl" showComments=true logs=$accountlog}
+            {include file="logs/datatable.tpl" showComments=true logs=$accountlog showUser=true showObject=false}
         </div>
     </div>
 {/block}

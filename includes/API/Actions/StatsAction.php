@@ -8,9 +8,12 @@
 
 namespace Waca\API\Actions;
 
+use DOMElement;
+use Exception;
 use Waca\API\ApiException;
 use Waca\API\IXmlApiAction;
 use Waca\DataObjects\User;
+use Waca\Helpers\OAuthUserHelper;
 use Waca\Tasks\XmlApiPageBase;
 use Waca\WebRequest;
 
@@ -28,13 +31,13 @@ class StatsAction extends XmlApiPageBase implements IXmlApiAction
     /**
      * Summary of execute
      *
-     * @param \DOMElement $apiDocument
+     * @param DOMElement $apiDocument
      *
-     * @return \DOMElement
+     * @return DOMElement
      * @throws ApiException
-     * @throws \Exception
+     * @throws Exception
      */
-    public function executeApiAction(\DOMElement $apiDocument)
+    public function executeApiAction(DOMElement $apiDocument)
     {
         $username = WebRequest::getString('user');
         $wikiusername = WebRequest::getString('wikiuser');
@@ -61,12 +64,15 @@ class StatsAction extends XmlApiPageBase implements IXmlApiAction
 
         $this->user = $user;
 
+        $oauth = new OAuthUserHelper($user, $this->getDatabase(), $this->getOAuthProtocolHelper(),
+            $this->getSiteConfiguration());
+
         $userElement->setAttribute("username", $this->user->getUsername());
         $userElement->setAttribute("status", $this->user->getStatus());
         $userElement->setAttribute("lastactive", $this->user->getLastActive());
         $userElement->setAttribute("welcome_template", $this->user->getWelcomeTemplate());
         $userElement->setAttribute("onwikiname", $this->user->getOnWikiName());
-        $userElement->setAttribute("oauth", $this->user->isOAuthLinked() ? "true" : "false");
+        $userElement->setAttribute("oauth", $oauth->isFullyLinked() ? "true" : "false");
 
         return $apiDocument;
     }

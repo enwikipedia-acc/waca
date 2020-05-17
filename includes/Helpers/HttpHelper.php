@@ -19,8 +19,9 @@ class HttpHelper
      *
      * @param string  $userAgent
      * @param boolean $disableVerifyPeer
+     * @param string  $cookieJar
      */
-    public function __construct($userAgent, $disableVerifyPeer)
+    public function __construct($userAgent, $disableVerifyPeer, $cookieJar = null)
     {
         $this->curlHandle = curl_init();
 
@@ -30,6 +31,11 @@ class HttpHelper
 
         if ($disableVerifyPeer) {
             curl_setopt($this->curlHandle, CURLOPT_SSL_VERIFYPEER, false);
+        }
+
+        if($cookieJar !== null) {
+            curl_setopt($this->curlHandle, CURLOPT_COOKIEFILE, $cookieJar);
+            curl_setopt($this->curlHandle, CURLOPT_COOKIEJAR, $cookieJar);
         }
     }
 

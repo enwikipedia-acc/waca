@@ -155,8 +155,7 @@ SQL
             $statement = $this->dbObject->prepare(<<<SQL
 UPDATE `ban`
 SET duration = :duration, active = :active, user = :user, updateversion = updateversion + 1
-WHERE id = :id AND updateversion = :updateversion
-LIMIT 1;
+WHERE id = :id AND updateversion = :updateversion;
 SQL
             );
             $statement->bindValue(':id', $this->id);
