@@ -38,7 +38,7 @@ abstract class PagedInternalPageBase extends InternalPageBase
             // Can the user go to the next page?
             'cannext'   => ($page * $limit) < $count,
             // Maximum page number
-            'maxpage'   => ceil($count / $limit),
+            'maxpage'   => max(1, ceil($count / $limit)),
             // Limit to the number of pages to display
             'pagelimit' => $pageLimit,
         );
