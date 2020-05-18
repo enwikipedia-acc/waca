@@ -31,7 +31,7 @@
                 </a>
             </div>
             <div class="col-md-4">
-                <a class="btn btn-danger btn-block" href="{$baseurl}/internal.php/bans/set?type=IP&amp;request{$requestId}">
+                <a class="btn btn-danger btn-block" href="{$baseurl}/internal.php/bans/set?type=IP&amp;request={$requestId}">
                     Ban IP
                 </a>
             </div>
