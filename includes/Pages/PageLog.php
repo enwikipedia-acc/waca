@@ -36,7 +36,7 @@ class PageLog extends PagedInternalPageBase
             $filterObjectType = null;
         }
 
-        $this->addJs("/api.php?action=users&targetVariable=typeaheaddata");
+        $this->addJs("/api.php?action=users&all=true&targetVariable=typeaheaddata");
 
         $logSearch = LogSearchHelper::get($database);
 

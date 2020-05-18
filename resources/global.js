@@ -18,7 +18,9 @@ $(".visit-tracking").mouseup(function() {
 });
 
 var requestLogs = $('.scroll-bottom');
-requestLogs.scrollTop(requestLogs[0].scrollHeight);
+if(requestLogs.length) {
+    requestLogs.scrollTop(requestLogs[0].scrollHeight);
+}
 
 var typeaheaddata = [];
 var substringMatcher = function () {

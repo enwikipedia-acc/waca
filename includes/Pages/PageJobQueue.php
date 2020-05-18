@@ -125,6 +125,8 @@ class PageJobQueue extends PagedInternalPageBase
 
         $this->assign('joblist', $jobList);
 
+        $this->addJs("/api.php?action=users&all=true&targetVariable=typeaheaddata");
+
         $this->setTemplate('jobqueue/all.tpl');
     }
 

@@ -73,7 +73,7 @@ class PageUserManagement extends InternalPageBase
 
         $this->assign('roles', $roleMap);
 
-        $this->addJs("/api.php?action=users&targetVariable=typeaheaddata");
+        $this->addJs("/api.php?action=users&all=true&targetVariable=typeaheaddata");
 
         $this->assign('canApprove', $this->barrierTest('approve', $currentUser));
         $this->assign('canDecline', $this->barrierTest('decline', $currentUser));
