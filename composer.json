@@ -14,7 +14,8 @@
         "ext-openssl": "*",
         "ext-dom": "*",
         "ext-pdo": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-curl": "*"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "~2.7",
