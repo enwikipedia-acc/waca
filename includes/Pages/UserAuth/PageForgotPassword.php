@@ -73,7 +73,7 @@ class PageForgotPassword extends InternalPageBase
 
             $emailContent = $this->fetchTemplate('forgot-password/reset-mail.tpl');
 
-            $this->getEmailHelper()->sendMail($user->getEmail(), "", $emailContent);
+            $this->getEmailHelper()->sendMail($user->getEmail(), "WP:ACC password reset", $emailContent);
         }
     }
 
