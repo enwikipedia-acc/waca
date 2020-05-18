@@ -40,19 +40,29 @@ class PageLog extends PagedInternalPageBase
 
         $logSearch = LogSearchHelper::get($database);
 
+        if ($filterUser !== null) {
+            $userObj = User::getByUsername($filterUser, $database);
+            if ($userObj !== false) {
+                $logSearch->byUser($userObj->getId());
+            } else {
+                $logSearch->byUser(-1);
+            }
+        }
+        if ($filterAction !== null) {
+            $logSearch->byAction($filterAction);
+        }
+        if ($filterObjectType !== null) {
+            $logSearch->byObjectType($filterObjectType);
+        }
+        if ($filterObjectId !== null) {
+            $logSearch->byObjectId($filterObjectId);
+        }
+
         $this->setSearchHelper($logSearch);
         $this->setupLimits();
 
-
         /** @var Log[] $logs */
         $logs = $logSearch->getRecordCount($count)->fetch();
-
-        if ($count === 0) {
-            $this->assign('logs', array());
-            $this->setTemplate('logs/main.tpl');
-
-            return;
-        }
 
         list($users, $logData) = LogHelper::prepareLogsForTemplate($logs, $database, $this->getSiteConfiguration());
 
