@@ -26,8 +26,6 @@ abstract class JsonApiPageBase extends ApiPageBase implements IJsonApiAction
             throw new ApiException('Headers have already been sent - this indicates a bug in the application!');
         }
 
-        header("Content-Type: application/json");
-
         // javascript access control
         $httpOrigin = WebRequest::origin();
 
@@ -73,6 +71,9 @@ abstract class JsonApiPageBase extends ApiPageBase implements IJsonApiAction
         $targetVar = WebRequest::getString('targetVariable');
         if ($targetVar !== null && preg_match('/^[a-z]+$/', $targetVar)) {
             $data = $targetVar . ' = ' . $data . ';';
+            header("Content-Type: text/javascript");
+        } else {
+            header("Content-Type: application/json");
         }
 
         return $data;
