@@ -37,6 +37,15 @@ class PageUserManagement extends InternalPageBase
         $database = $this->getDatabase();
         $currentUser = User::getCurrent($database);
 
+        $userSearchRequest = WebRequest::getString('usersearch');
+        if ($userSearchRequest !== null) {
+            $searchedUser = User::getByUsername($userSearchRequest, $database);
+            if($searchedUser !== false) {
+                $this->redirect('statistics/users', 'detail', ['user' => $searchedUser->getId()]);
+                return;
+            }
+        }
+
         // A bit hacky, but it's better than my last solution of creating an object for each user and passing that to
         // the template. I still don't have a particularly good way of handling this.
         OAuthUserHelper::prepareTokenCountStatement($database);
