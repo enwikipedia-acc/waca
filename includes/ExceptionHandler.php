@@ -34,13 +34,13 @@ class ExceptionHandler
 <meta charset="utf-8">
 <title>Oops! Something went wrong!</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="{$siteConfiguration->getBaseUrl()}/vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="{$siteConfiguration->getBaseUrl()}/resources/generated/bootstrap-main.css" rel="stylesheet">
 <style>
   body {
     padding-top: 60px;
   }
 </style>
-</head><body><div class="container-fluid">
+</head><body><div class="container">
 <h1>Oops! Something went wrong!</h1>
 <p>We'll work on fixing this for you, so why not come back later?</p>
 <p class="muted">If our trained monkeys ask, tell them this error ID: <code>$1$</code></p>
