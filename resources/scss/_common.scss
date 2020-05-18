@@ -44,3 +44,12 @@ span.twitter-typeahead {
         margin-bottom: 0.4rem;
     }
 }
+
+input[type=number] {
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        display: none;
+    }
+}

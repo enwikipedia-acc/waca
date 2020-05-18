@@ -51,7 +51,7 @@
         {if $nav__canViewRequest}
             <li class="nav-item">
                 <form class="navbar-form form-search" action="{$baseurl}/internal.php/viewRequest">
-                    <input class="form-control text-white bg-dark border-0" type="text" placeholder="Jump to request ID" name="id" class="search-query">
+                    <input class="form-control text-white bg-dark border-0" type="number" placeholder="Jump to request ID" name="id" class="search-query">
                 </form>
             </li>
         {/if}
