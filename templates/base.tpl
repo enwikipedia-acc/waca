@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- bootstrap styles -->
-    <link href="{$baseurl}/resources/generated/bootstrap-main.css" rel="stylesheet"/>
+    <link href="{$baseurl}/resources/generated/bootstrap-{$currentUser->getSkin()|default:'main'}.css" rel="stylesheet"/>
     <link href="{$baseurl}/resources/baseStyles.css" rel="stylesheet"/>
 
     <!-- fontawesome -->

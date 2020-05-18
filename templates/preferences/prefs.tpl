@@ -89,6 +89,19 @@
                     </div>
 
                     <div class="form-group row">
+                        <div class="col-md-2 col-lg-3">
+                            <label class="col-form-label">Experimental:</label>
+                        </div>
+                        <div class="col-md-10 col-lg-8 col-xl-6">
+                            <div class="custom-control custom-switch">
+                                <input class="custom-control-input" type="checkbox" id="inputSkinType" name="skintype"{if $currentUser->getUseAlternateSkin()} checked{/if}>
+                                <label class="custom-control-label" for="inputSkinType">Use experimental alternate skin</label>
+                                <small class="form-text text-muted">This option is experimental only, and is not currently supported.</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
                         <div class="offset-md-2 offset-lg-3 col-md-4 col-lg-3">
                             <button type="submit" class="btn btn-primary btn-block">Save preferences</button>
                         </div>

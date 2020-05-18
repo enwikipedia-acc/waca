@@ -41,6 +41,7 @@ class User extends DataObject
     private $confirmationdiff = 0;
     private $emailsig = "";
     private $creationmode = 0;
+    private $skin = "main";
     /** @var User Cache variable of the current user - it's never going to change in the middle of a request. */
     private static $currentUser;
     #region Object load methods
@@ -177,11 +178,11 @@ class User extends DataObject
 				INSERT INTO `user` ( 
 					username, email, status, onwikiname, welcome_sig, 
 					lastactive, forcelogout, forceidentified,
-					welcome_template, abortpref, confirmationdiff, emailsig, creationmode
+					welcome_template, abortpref, confirmationdiff, emailsig, creationmode, skin
 				) VALUES (
 					:username, :email, :status, :onwikiname, :welcome_sig,
 					:lastactive, :forcelogout, :forceidentified,
-					:welcome_template, :abortpref, :confirmationdiff, :emailsig, :creationmode
+					:welcome_template, :abortpref, :confirmationdiff, :emailsig, :creationmode, :skin
 				);
 SQL
             );
@@ -198,6 +199,7 @@ SQL
             $statement->bindValue(":confirmationdiff", $this->confirmationdiff);
             $statement->bindValue(":emailsig", $this->emailsig);
             $statement->bindValue(":creationmode", $this->creationmode);
+            $statement->bindValue(":skin", $this->skin);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -217,7 +219,8 @@ SQL
 					forceidentified = :forceidentified,
 					welcome_template = :welcome_template, abortpref = :abortpref, 
 					confirmationdiff = :confirmationdiff, emailsig = :emailsig, 
-					creationmode = :creationmode, updateversion = updateversion + 1
+					creationmode = :creationmode, skin = :skin,
+                    updateversion = updateversion + 1
 				WHERE id = :id AND updateversion = :updateversion;
 SQL
             );
@@ -239,6 +242,7 @@ SQL
             $statement->bindValue(':confirmationdiff', $this->confirmationdiff);
             $statement->bindValue(':emailsig', $this->emailsig);
             $statement->bindValue(':creationmode', $this->creationmode);
+            $statement->bindValue(':skin', $this->skin);
 
             if (!$statement->execute()) {
                 throw new Exception($statement->errorInfo());
@@ -478,6 +482,30 @@ SQL
     public function setCreationMode($creationMode)
     {
         $this->creationmode = $creationMode;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getUseAlternateSkin()
+    {
+        return $this->skin === 'alt';
+    }
+
+    /**
+     * @return string
+     */
+    public function getSkin()
+    {
+        return $this->skin;
+    }
+
+    /**
+     * @param $skin string
+     */
+    public function setSkin($skin)
+    {
+        $this->skin = $skin;
     }
 
     #endregion
