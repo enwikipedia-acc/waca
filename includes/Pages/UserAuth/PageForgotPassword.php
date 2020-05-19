@@ -8,10 +8,14 @@
 
 namespace Waca\Pages\UserAuth;
 
+use Base32\Base32;
+use DateTimeImmutable;
+use Waca\DataObjects\Credential;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\PdoDatabase;
 use Waca\Security\CredentialProviders\PasswordCredentialProvider;
+use Waca\Security\EncryptionHelper;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -67,8 +71,26 @@ class PageForgotPassword extends InternalPageBase
             $clientIp = $this->getXffTrustProvider()
                 ->getTrustedClientIp(WebRequest::remoteAddress(), WebRequest::forwardedAddress());
 
+            $this->cleanExistingTokens($user);
+
+            $hash = Base32::encode(openssl_random_pseudo_bytes(30));
+
+            $encryptionHelper = new EncryptionHelper($this->getSiteConfiguration());
+
+            $cred = new Credential();
+            $cred->setDatabase($this->getDatabase());
+            $cred->setFactor(-1);
+            $cred->setUserId($user->getId());
+            $cred->setType('reset');
+            $cred->setData($encryptionHelper->encryptData($hash));
+            $cred->setVersion(0);
+            $cred->setDisabled(0);
+            $cred->setTimeout(new DateTimeImmutable('+ 1 hour'));
+            $cred->setPriority(9);
+            $cred->save();
+
             $this->assign("user", $user);
-            $this->assign("hash", $user->getForgottenPasswordHash());
+            $this->assign("hash", $hash);
             $this->assign("remoteAddress", $clientIp);
 
             $emailContent = $this->fetchTemplate('forgot-password/reset-mail.tpl');
@@ -100,6 +122,7 @@ class PageForgotPassword extends InternalPageBase
             $this->validateCSRFToken();
             try {
                 $this->doReset($user);
+                $this->cleanExistingTokens($user);
             }
             catch (ApplicationLogicException $ex) {
                 SessionAlert::error($ex->getMessage());
@@ -129,8 +152,32 @@ class PageForgotPassword extends InternalPageBase
     {
         $user = User::getById($id, $database);
 
-        if ($user === false || $user->getForgottenPasswordHash() !== $si || $user->isCommunityUser()) {
-            throw new ApplicationLogicException("User not found");
+        if ($user === false ||  $user->isCommunityUser()) {
+            throw new ApplicationLogicException("Password reset failed. Please try again.");
+        }
+
+        $statement = $database->prepare("SELECT * FROM credential WHERE type = 'reset' AND user = :user;");
+        $statement->execute([':user' => $user->getId()]);
+
+        /** @var Credential $credential */
+        $credential = $statement->fetchObject(Credential::class);
+
+        $statement->closeCursor();
+
+        if ($credential === false) {
+            throw new ApplicationLogicException("Password reset failed. Please try again.");
+        }
+
+        $credential->setDatabase($database);
+
+        $encryptionHelper = new EncryptionHelper($this->getSiteConfiguration());
+        if ($encryptionHelper->decryptData($credential->getData()) != $si) {
+            throw new ApplicationLogicException("Password reset failed. Please try again.");
+        }
+
+        if ($credential->getTimeout() < new DateTimeImmutable()) {
+            $credential->delete();
+            throw new ApplicationLogicException("Password reset token expired. Please try again.");
         }
 
         return $user;
@@ -162,5 +209,21 @@ class PageForgotPassword extends InternalPageBase
     protected function isProtectedPage()
     {
         return false;
+    }
+
+    /**
+     * @param $user
+     */
+    private function cleanExistingTokens($user): void
+    {
+        // clean out existing reset tokens
+        $statement = $this->getDatabase()->prepare("SELECT * FROM credential WHERE type = 'reset' AND user = :user;");
+        $statement->execute([':user' => $user->getId()]);
+        $existing = $statement->fetchAll(PdoDatabase::FETCH_CLASS, Credential::class);
+
+        foreach ($existing as $c) {
+            $c->setDatabase($this->getDatabase());
+            $c->delete();
+        }
     }
 }

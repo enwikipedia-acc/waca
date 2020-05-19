@@ -589,17 +589,6 @@ SQL
     #endregion 
 
     /**
-     * Gets a hash of data for the user to reset their password with.
-     * @category Security-Critical
-     * @return string
-     */
-    public function getForgottenPasswordHash()
-    {
-        // FIXME
-        return md5($this->username . $this->email . $this->welcome_template . $this->id);
-    }
-
-    /**
      * Gets the approval date of the user
      * @return DateTime|false
      */
