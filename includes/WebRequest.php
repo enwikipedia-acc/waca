@@ -333,11 +333,18 @@ class WebRequest
 
     /**
      * Sets the post-login redirect
+     *
+     * @param string|null $uri The URI to redirect to
      */
-    public static function setPostLoginRedirect()
+    public static function setPostLoginRedirect($uri = null)
     {
         $session = &self::$globalStateProvider->getSessionSuperGlobal();
-        $session['returnTo'] = self::requestUri();
+
+        if ($uri === null) {
+            $uri = self::requestUri();
+        }
+
+        $session['returnTo'] = $uri;
     }
 
     /**

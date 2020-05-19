@@ -14,7 +14,9 @@ use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\PdoDatabase;
 use Waca\Security\EncryptionHelper;
+use Waca\SessionAlert;
 use Waca\SiteConfiguration;
+use Waca\WebRequest;
 
 class ScratchTokenCredentialProvider extends CredentialProviderBase
 {
@@ -62,6 +64,8 @@ class ScratchTokenCredentialProvider extends CredentialProviderBase
         foreach ($scratchTokens as $scratchToken) {
             if (password_verify($data, $scratchToken)){
                 $usedToken = $scratchToken;
+                SessionAlert::quick("Hey, it looks like you used a scratch token to log in. Would you like to change your multi-factor authentication configuration?", 'alert-warning');
+                WebRequest::setPostLoginRedirect($this->getConfiguration()->getBaseUrl() . "/internal.php/multiFactor");
                 break;
             }
         }
