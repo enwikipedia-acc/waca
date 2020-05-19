@@ -78,7 +78,7 @@
         </div>
         <div class="btn-group">
             <a id="IPLWCU-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-               href="https://login.wikimedia.org/w/index.php?title=Special:CheckUser&amp;ip={$ipaddress}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$requestId}">
+               href="https://login.wikimedia.org/w/index.php?title=Special:CheckUser&amp;ip={$ipaddress}&amp;reason=%5B%5B:en:WP:ACC%5D%5D%20request%20%23{$requestId}">
                 LW CU
             </a>
             <a id="IPLWCULog-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
