@@ -89,7 +89,7 @@
     {/foreach}
 
     {if $tailScript}
-        <script type="text/javascript">
+        <script type="text/javascript" nonce="{$tailScriptNonce}">
             {$tailScript}
         </script>
     {/if}

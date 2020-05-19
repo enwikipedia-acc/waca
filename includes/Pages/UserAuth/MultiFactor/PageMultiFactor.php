@@ -10,7 +10,6 @@ namespace Waca\Pages\UserAuth\MultiFactor;
 
 use BaconQrCode\Renderer\Image\Svg;
 use BaconQrCode\Writer;
-use u2flib_server\U2F;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\PdoDatabase;
@@ -262,7 +261,7 @@ class PageMultiFactor extends InternalPageBase
                     $u2fSigns = json_encode($reqs);
 
                     $this->addJs('/vendor/yubico/u2flib-server/examples/assets/u2f-api.js');
-                    $this->setTailScript(<<<JS
+                    $this->setTailScript($this->getCspManager()->getNonce(), <<<JS
 var request = ${u2fRequest};
 var signs = ${u2fSigns};
 
@@ -271,7 +270,7 @@ u2f.register([request], signs, function(data) {
 	var reg = document.getElementById('u2fData');
 	var req = document.getElementById('u2fRequest');
 
-	if(data.errorCode && data.errorCode != 0) {
+	if(data.errorCode && data.errorCode !== 0) {
 		alert("registration failed with errror: " + data.errorCode);
 		return;
 	}
@@ -304,7 +303,7 @@ JS
 
                     $otpCredentialProvider->enable($currentUser, $request, $u2fData);
 
-                    SessionAlert::success('Enabled TOTP.');
+                    SessionAlert::success('Enabled U2F.');
 
                     $scratchProvider = new ScratchTokenCredentialProvider($database, $this->getSiteConfiguration());
                     if($scratchProvider->getRemaining($currentUser->getId()) < 3) {

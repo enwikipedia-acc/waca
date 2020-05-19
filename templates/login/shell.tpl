@@ -7,7 +7,7 @@
             <div class="card mb-5" id="loginCredentialForm">
                 <div class="card-body p-4">
                     {include file="sessionalerts.tpl"}
-                    <form method="post">
+                    <form method="post" id="loginForm">
                         {include file="security/csrf.tpl"}
 
                         {if $partialStage !== 1}

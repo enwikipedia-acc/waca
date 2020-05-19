@@ -27,22 +27,13 @@ class PageU2FLogin extends LoginCredentialPageBase
         $authData = json_encode($u2f->getAuthenticationData($this->partialUser));
 
         $this->addJs('/vendor/yubico/u2flib-server/examples/assets/u2f-api.js');
-        $this->setTailScript(<<<JS
-var request = ${authData};
-console.log("starting sign");
+        $this->setTailScript($this->getCspManager()->getNonce(), <<<JS
+var request = {$authData};
 u2f.sign(request, function(data) {
-                var form = document.getElementById('loginCredentialForm');
-                var reg = document.getElementById('authenticate');
-                var req = document.getElementById('request');
-                
-                reg.value=JSON.stringify(data);
-                req.value=JSON.stringify(request);
-                console.log("signed, submitting");
-                console.log(data);
-                
-                console.log(form);
-                form.submit();
-            });
+    document.getElementById('authenticate').value=JSON.stringify(data);
+    document.getElementById('request').value=JSON.stringify(request);
+    document.getElementById('loginForm').submit();
+});
 JS
         );
 

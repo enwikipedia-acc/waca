@@ -11,8 +11,6 @@
         </div>
     </div>
 
-    <form id="u2fForm" method="post">
-        <input type="hidden" name="authenticate" id="authenticate" />
-        <input type="hidden" name="request" id="request" />
-    </form>
+    <input type="hidden" name="authenticate" id="authenticate" />
+    <input type="hidden" name="request" id="request" />
 {/block}

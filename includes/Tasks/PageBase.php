@@ -16,6 +16,7 @@ use Waca\ExceptionHandler;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Fragments\TemplateOutput;
+use Waca\Security\ContentSecurityPolicyManager;
 use Waca\Security\TokenManager;
 use Waca\SessionAlert;
 use Waca\WebRequest;
@@ -35,6 +36,8 @@ abstract class PageBase extends TaskBase implements IRoutedTask
     private $routeName = null;
     /** @var TokenManager */
     protected $tokenManager;
+    /** @var ContentSecurityPolicyManager */
+    private $cspManager;
     /** @var string[] Extra CSS files to include */
     private $extraCss = array();
     /** @var string[] Extra JS files to include */
@@ -215,6 +218,22 @@ abstract class PageBase extends TaskBase implements IRoutedTask
     }
 
     /**
+     * @return ContentSecurityPolicyManager
+     */
+    public function getCspManager(): ContentSecurityPolicyManager
+    {
+        return $this->cspManager;
+    }
+
+    /**
+     * @param ContentSecurityPolicyManager $cspManager
+     */
+    public function setCspManager(ContentSecurityPolicyManager $cspManager): void
+    {
+        $this->cspManager = $cspManager;
+    }
+
+    /**
      * Sends the redirect headers to perform a GET at the destination page.
      *
      * Also nullifies the set template so Smarty does not render it.
@@ -363,8 +382,11 @@ abstract class PageBase extends TaskBase implements IRoutedTask
     protected function sendResponseHeaders()
     {
         if (headers_sent()) {
-            throw new ApplicationLogicException          ('Headers have already been sent! This is likely a bug in the application.');
+            throw new ApplicationLogicException('Headers have already been sent! This is likely a bug in the application.');
         }
+
+        // send the CSP headers now
+        header($this->getCspManager()->getHeader());
 
         foreach ($this->headerQueue as $item) {
             if (mb_strpos($item, "\r") !== false || mb_strpos($item, "\n") !== false) {

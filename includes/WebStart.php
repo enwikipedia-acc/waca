@@ -16,9 +16,11 @@ use Waca\Helpers\FakeBlacklistHelper;
 use Waca\Helpers\TypeAheadHelper;
 use Waca\Providers\GlobalState\GlobalStateProvider;
 use Waca\Router\IRequestRouter;
+use Waca\Security\ContentSecurityPolicyManager;
 use Waca\Security\RoleConfiguration;
 use Waca\Security\SecurityManager;
 use Waca\Security\TokenManager;
+use Waca\Tasks\IRoutedTask;
 use Waca\Tasks\ITask;
 use Waca\Tasks\InternalPageBase;
 use Waca\Tasks\PageBase;
@@ -71,6 +73,7 @@ class WebStart extends ApplicationBase
 
         if ($page instanceof PageBase) {
             $page->setTokenManager(new TokenManager());
+            $page->setCspManager(new ContentSecurityPolicyManager());
 
             if ($page instanceof InternalPageBase) {
                 $page->setTypeAheadHelper(new TypeAheadHelper());
