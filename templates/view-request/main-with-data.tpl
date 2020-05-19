@@ -42,6 +42,8 @@
 
 {block name="ipSection"}
     {include file="view-request/ip-section.tpl"}
+
+    <hr/>
 {/block}
 
 {block name="emailSection"}

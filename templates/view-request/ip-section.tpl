@@ -5,7 +5,7 @@
         X-Forwarded-For HTTP header. The IP address which Wikipedia will see is the first "untrusted" IP address in
         the list below. Links are shown for all addresses starting from where the chain becomes untrusted. IPs past
         the first untrusted address are not trusted to be correct. Please see the
-        <a href="https://accounts-dev.wmflabs.org/other/xff.html">XFF demo</a> for more details.
+        <a href="{$baseurl}/internal.php/xffdemo">XFF demo</a> for more details.
     </p>
     <h5>Forwarded IP addresses:</h5>
     <table class="table table-sm table-striped">
@@ -65,4 +65,3 @@
     <h3>IP Address links:</h3>
     {include file="view-request/ip-links.tpl" ipaddress="{$requestTrustedIp}" index="0"}
 {/if}
-<hr/>

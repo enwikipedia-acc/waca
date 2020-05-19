@@ -16,6 +16,7 @@ use Waca\Pages\PageExpandedRequestList;
 use Waca\Pages\PageJobQueue;
 use Waca\Pages\PageLog;
 use Waca\Pages\PageMain;
+use Waca\Pages\PageXffDemo;
 use Waca\Pages\RequestAction\PageCreateRequest;
 use Waca\Pages\UserAuth\PageChangePassword;
 use Waca\Pages\UserAuth\MultiFactor\PageMultiFactor;
@@ -93,6 +94,9 @@ class RoleConfiguration
             PageTeam::class => array(
                 self::MAIN => self::ACCESS_ALLOW,
             ),
+            PageXffDemo::class        => array(
+                self::MAIN  => self::ACCESS_ALLOW,
+            )
         ),
         'loggedIn'          => array(
             /*

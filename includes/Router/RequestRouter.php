@@ -15,6 +15,7 @@ use Waca\Pages\PageEditComment;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageExpandedRequestList;
 use Waca\Pages\PageJobQueue;
+use Waca\Pages\PageXffDemo;
 use Waca\Pages\RequestAction\PageCreateRequest;
 use Waca\Pages\UserAuth\Login\PageOtpLogin;
 use Waca\Pages\UserAuth\Login\PagePasswordLogin;
@@ -350,6 +351,11 @@ class RequestRouter implements IRequestRouter
         'requestList'                 =>
             array(
                 'class'   => PageExpandedRequestList::class,
+                'actions' => array(),
+            ),
+        'xffdemo'                     =>
+            array(
+                'class'   => PageXffDemo::class,
                 'actions' => array(),
             ),
     );
