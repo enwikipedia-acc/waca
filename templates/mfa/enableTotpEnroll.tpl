@@ -20,9 +20,10 @@
                             <h4 class="card-title">Set up your app</h4>
                             <p class="card-text">Scan the image below with the two-factor authentication app on your phone.</p>
 
-                            <div style="float:none; margin-right: auto; margin-left:auto; width: 256px;">
+                            <div class="d-block mx-auto w-fit-content py-5">
                                 {$svg}
                             </div>
+
                             <p class="card-text text-muted">If you can’t use a barcode, enter this text code instead: <code>{$secret|escape}</code></p>
 
                             <h4>Enter the six-digit code from the application</h4>

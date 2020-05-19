@@ -19,7 +19,7 @@
                         <p class="card-text text-center">If your U2F device doesn't have a button, please remove and insert it</p>
 
                         <div class="d-block mx-auto w-fit-content py-5">
-                            {include file="icons/yubikey.tpl"}
+                            <img src="{$baseurl}/resources/yubikey.svg" alt="" />
                         </div>
 
                         <input type="hidden" name="u2fData" id="u2fData" />

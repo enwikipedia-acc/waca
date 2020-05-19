@@ -37,8 +37,8 @@
                             <div class="row-fluid">
                                 <hr />
                                 {foreach from=$alternatives key="path" item="authmethods"}
-                                    <p style="margin-bottom: 0px;font-size: small;text-align: center;">
-                                        <a href="{$baseurl}/internal.php/login/{$path}" class="muted">Use {$authmethods|nlimplode} instead?</a>
+                                    <p class="text-center mb-0">
+                                        <small><a href="{$baseurl}/internal.php/login/{$path}" class="muted">Use {$authmethods|nlimplode} instead?</a></small>
                                     </p>
                                 {/foreach}
                             </div>
