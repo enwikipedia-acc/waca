@@ -25,7 +25,7 @@
         {if $showReason}
             <div class="form-group">
                 <label for="reason">Reason:</label>
-                <textarea id="reason" name="reason" required="required" class="form-control" rows="5"></textarea>
+                <textarea id="reason" name="reason" required="required" class="form-control" rows="5">{$preload|escape|default:""}</textarea>
             </div>
         {/if}
 

@@ -251,6 +251,10 @@ class PageUserManagement extends InternalPageBase
             $this->assign('user', $user);
             $this->assign('status', 'Suspended');
             $this->assign("showReason", true);
+
+            if (WebRequest::getString('preload')) {
+                $this->assign('preload', WebRequest::getString('preload'));
+            }
         }
     }
 
