@@ -62,7 +62,7 @@
                             {$t->getUserCode()|escape}
                         </td>
                         {if $canEdit}
-                            <td class="table-button-cell d-none d-lg-block">
+                            <td class="table-button-cell d-none d-lg-table-cell">
                                 <a class="btn {if count($t->getUsersUsingTemplate()) > 0}btn-warning{else}btn-primary disabled{/if} btn-sm"
                                    {if count($t->getUsersUsingTemplate()) > 0}rel="popover"{/if} href="#"
                                    title="Users using this template" id="#tpl{$t->getId()}"
