@@ -545,6 +545,15 @@ SQL
     }
 
     /**
+     * DO NOT USE FOR TESTING IDENTIFICATION STATUS.
+     *
+     * @return bool|null
+     */
+    public function getForceIdentified() {
+        return $this->forceidentified;
+    }
+
+    /**
      * Tests if the user is suspended
      * @return bool
      * @category Security-Critical

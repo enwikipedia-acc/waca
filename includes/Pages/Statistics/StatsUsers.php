@@ -16,6 +16,7 @@ use Waca\Helpers\LogHelper;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
 use Waca\Helpers\SearchHelpers\UserSearchHelper;
+use Waca\IdentificationVerifier;
 use Waca\Pages\PageUserManagement;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -145,6 +146,13 @@ SQL
 
         $oauth = new OAuthUserHelper($user, $database, $this->getOAuthProtocolHelper(), $this->getSiteConfiguration());
         $this->assign('oauth', $oauth);
+
+        if($user->getForceIdentified() === null) {
+            $idVerifier = new IdentificationVerifier($this->getHttpHelper(), $this->getSiteConfiguration(), $this->getDatabase());
+            $this->assign('identificationStatus', $idVerifier->isUserIdentified($user->getOnWikiName()) ? 'detected' : 'missing');
+        } else {
+            $this->assign('identificationStatus', $user->getForceIdentified() == 1 ? 'forced-on' : 'forced-off');
+        }
 
         if ($oauth->isFullyLinked()) {
             $this->assign('identity', $oauth->getIdentity(true));

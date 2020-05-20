@@ -1,3 +1,13 @@
+{if $identificationStatus == 'forced-off'}
+    <span class="badge badge-danger">Identification forced off</span>
+{elseif $identificationStatus == 'forced-on'}
+    <span class="badge badge-info">Identification forced on</span>
+{elseif $identificationStatus == 'detected'}
+    <span class="badge badge-success">Identified</span>
+{else}
+    <span class="badge badge-warning">Not identified</span>
+{/if}
+
 {if $oauth->isFullyLinked()}
     {if $identityExpired}
         <span class="badge badge-danger">CACHE EXPIRED</span>
@@ -25,9 +35,9 @@
         <span class="badge badge-secondary">Not a Checkuser</span>
     {/if}
 
-    <span class="badge badge-{if $identity->getGrantCreateEditMovePage()}success{else}danger{/if}">Grant: edit pages</span>
-    <span class="badge badge-{if $identity->getGrantCreateAccount()}success{else}danger{/if}">Grant: create accounts</span>
-    <span class="badge badge-{if $identity->getGrantHighVolume()}success{else}danger{/if}">Grant: high volume</span>
+    <span class="badge badge-{if $identity->getGrantCreateEditMovePage()}success{else}secondary{/if}">Grant: edit pages</span>
+    <span class="badge badge-{if $identity->getGrantCreateAccount()}success{else}secondary{/if}">Grant: create accounts</span>
+    <span class="badge badge-{if $identity->getGrantHighVolume()}success{else}secondary{/if}">Grant: high volume</span>
 
     <br />
     Cache expires: {DateTime::createFromFormat("U", $identity->getExpirationTime())->format("r")}

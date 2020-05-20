@@ -19,7 +19,7 @@
                     {/if}
                 </div>
             </div>
-            {if $oauth->isFullyLinked() && ($canApprove || $canDecline || $canSuspend || $canEditRoles || $canRename)}
+            {if ($canApprove || $canDecline || $canSuspend || $canEditRoles || $canRename)}
                 <div class="row">
                     <div class="col-md-4"><strong>Identity:</strong></div>
                     <div class="col-md-8">
