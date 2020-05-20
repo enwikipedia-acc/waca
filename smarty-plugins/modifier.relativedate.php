@@ -24,7 +24,12 @@ function smarty_modifier_relativedate($input)
         $then = $input;
     }
     else {
-        $then = new DateTime($input);
+        try {
+            $then = new DateTime($input);
+        }
+        catch(Exception $ex) {
+            return $input;
+        }
     }
 
     $secs = $now->getTimestamp() - $then->getTimestamp();
