@@ -21,28 +21,30 @@
                     {block name="createButton"}
 
                         {if $requestIsReservedByMe && !$requestIsClosed && $creationHasChoice}
-                            <div class="creationTypeOptions">
-                                {if $canManualCreate}
-                                    <div class="custom-control-inline custom-radio">
-                                        <input type="radio" name="createMode" id="createModeManual" value="manual" class="custom-control-input"
-                                               {if $currentUser->getCreationMode() == 0}checked="checked"{/if} />
-                                        <label for="createModeManual" class="custom-control-label">Manual</label>
-                                    </div>
-                                {/if}
-                                {if $canOauthCreate}
-                                    <div class="custom-control-inline custom-radio">
-                                        <input type="radio" name="createMode" id="createModeOauth" value="oauth" class="custom-control-input"
-                                               {if $currentUser->getCreationMode() == 1}checked="checked"{/if}>
-                                        <label for="createModeOauth" class="custom-control-label">Use my Wikimedia account</label>
-                                    </div>
-                                {/if}
-                                {if $canBotCreate}
-                                    <div class="custom-control-inline custom-radio">
-                                        <input type="radio" name="createMode" id="createModeBot" value="bot" class="custom-control-input"
-                                               {if $currentUser->getCreationMode() == 2}checked="checked"{/if}>
-                                        <label for="createModeBot" class="custom-control-label">Use the bot</label>
-                                    </div>
-                                {/if}
+                            <div class="creationOptions">
+                                <div class="creationTypeOptions">
+                                    {if $canManualCreate}
+                                        <div class="custom-control-inline custom-radio">
+                                            <input type="radio" name="createMode" id="createModeManual" value="manual" class="custom-control-input"
+                                                   {if $currentUser->getCreationMode() == 0}checked="checked"{/if} />
+                                            <label for="createModeManual" class="custom-control-label">Manual</label>
+                                        </div>
+                                    {/if}
+                                    {if $canOauthCreate}
+                                        <div class="custom-control-inline custom-radio">
+                                            <input type="radio" name="createMode" id="createModeOauth" value="oauth" class="custom-control-input"
+                                                   {if $currentUser->getCreationMode() == 1}checked="checked"{/if}>
+                                            <label for="createModeOauth" class="custom-control-label">Use my Wikimedia account</label>
+                                        </div>
+                                    {/if}
+                                    {if $canBotCreate}
+                                        <div class="custom-control-inline custom-radio">
+                                            <input type="radio" name="createMode" id="createModeBot" value="bot" class="custom-control-input"
+                                                   {if $currentUser->getCreationMode() == 2}checked="checked"{/if}>
+                                            <label for="createModeBot" class="custom-control-label">Use the bot</label>
+                                        </div>
+                                    {/if}
+                                </div>
                             </div>
                         {/if}
                         <h5>Create account</h5>

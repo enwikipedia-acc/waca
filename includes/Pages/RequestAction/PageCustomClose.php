@@ -17,6 +17,7 @@ use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Fragments\RequestData;
 use Waca\Helpers\Logger;
+use Waca\Helpers\OAuthUserHelper;
 use Waca\PdoDatabase;
 use Waca\SessionAlert;
 use Waca\WebRequest;
@@ -143,6 +144,20 @@ class PageCustomClose extends PageCloseRequest
 
         $this->assign('canSkipCcMailingList', $this->barrierTest('skipCcMailingList', $currentUser));
 
+        $this->assign('allowWelcomeSkip', false);
+        $this->assign('forceWelcomeSkip', false);
+
+        $oauth = new OAuthUserHelper($currentUser, $this->getDatabase(), $this->getOAuthProtocolHelper(), $config);
+
+        if ($currentUser->getWelcomeTemplate() != 0) {
+            $this->assign('allowWelcomeSkip', true);
+
+            if (!$oauth->canWelcome()) {
+                $this->assign('forceWelcomeSkip', true);
+            }
+        }
+
+
         // template
         $this->setTemplate('custom-close.tpl');
     }
@@ -182,6 +197,8 @@ class PageCustomClose extends PageCloseRequest
         if ($action === EmailTemplate::CREATED || $action === EmailTemplate::NOT_CREATED) {
             // Close request
             $this->closeRequest($request, $database, $action, $messageBody);
+
+            $this->processWelcome($action);
 
             // Send the mail after the save, since save can be rolled back
             $this->sendMail($request, $messageBody, $currentUser, $ccMailingList);

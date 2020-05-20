@@ -64,9 +64,7 @@ class PageCloseRequest extends RequestActionBase
 
         $request->save();
 
-        if ($currentUser->getWelcomeTemplate() !== null) {
-            $this->enqueueWelcomeTask($request, null, $currentUser, $database);
-        }
+        $this->processWelcome($template->getDefaultAction());
 
         // Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE and
         // be rolled back.
@@ -243,5 +241,30 @@ class PageCloseRequest extends RequestActionBase
         $this->assign('createOverride', WebRequest::postBoolean('createOverride') ? 'true' : 'false');
 
         $this->setTemplate($templateName);
+    }
+
+    /**
+     * @param string $action
+     *
+     * @throws ApplicationLogicException
+     */
+    final protected function processWelcome(string $action): void
+    {
+        $database = $this->getDatabase();
+        $currentUser = User::getCurrent($database);
+
+        if ($action !== EmailTemplate::CREATED) {
+            return;
+        }
+
+        if ($currentUser->getWelcomeTemplate() === null) {
+            return;
+        }
+
+        if (WebRequest::postBoolean('skipAutoWelcome')) {
+            return;
+        }
+
+        $this->enqueueWelcomeTask($this->getRequest($database), null, $currentUser, $database);
     }
 }

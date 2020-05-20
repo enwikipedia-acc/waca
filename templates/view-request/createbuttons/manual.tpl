@@ -36,6 +36,8 @@
                 {$createdName|escape}
             </button>
         {/if}
+
+        {include file="view-request/skipautowelcome.tpl" creationMode="manual"}
     </div>
     <input type="hidden" name="request" value="{$requestId}"/>
     <input type="hidden" name="updateversion" value="{$updateVersion}"/>

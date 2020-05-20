@@ -28,9 +28,17 @@ $zoom-section-spacer: 1.45rem;
         }
     }
 
-    .creationTypeOptions {
+    .creationOptions {
         float: right;
-        margin-top: (0.1 * $zoom-section-spacer) - 1;
+
+        .creationTypeOptions {
+            margin-top: (0.1 * $zoom-section-spacer) - 1;
+        }
+
+        .creationOtherOptions {
+            margin-bottom: (0.1 * $zoom-section-spacer) - 1;
+            margin-top: 0.5 * $zoom-section-spacer;
+        }
 
         .custom-control-inline {
             @extend .text-muted;

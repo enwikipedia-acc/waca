@@ -90,6 +90,20 @@
             <input type="hidden" name="confirmReserveOverride" value="true" />
         {/if}
 
+        {if $allowWelcomeSkip}
+            <div class="form-group row">
+                <div class="offset-lg-3 offset-xl-2 col">
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" name="skipAutoWelcome" id="skipAutoWelcome" class="custom-control-input" {if $forceWelcomeSkip}disabled="disabled" checked="checked"{/if} />
+                        <label for="skipAutoWelcome" class="custom-control-label">Skip automatic welcome on account creation</label>
+                        {if $forceWelcomeSkip}
+                            <input type="hidden" name="skipAutoWelcome" value="true" />
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        {/if}
+
         <input type="hidden" name="updateversion" value="{$updateVersion}"/>
 
         <div class="form-group row">

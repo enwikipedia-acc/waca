@@ -19,7 +19,6 @@ use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\RequestData;
 use Waca\Helpers\LogHelper;
 use Waca\Helpers\OAuthUserHelper;
-use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\PdoDatabase;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -258,32 +257,47 @@ class PageViewRequest extends InternalPageBase
 
     private function setupCreationTypes(User $user)
     {
+        $this->assign('allowWelcomeSkip', false);
+        $this->assign('forceWelcomeSkip', false);
+
+        $oauth = new OAuthUserHelper($user, $this->getDatabase(), $this->getOAuthProtocolHelper(), $this->getSiteConfiguration());
+
+        if ($user->getWelcomeTemplate() != 0) {
+            $this->assign('allowWelcomeSkip', true);
+
+            if (!$oauth->canWelcome()) {
+                $this->assign('forceWelcomeSkip', true);
+            }
+        }
+
+        // test credentials
         $canManualCreate = $this->barrierTest(User::CREATION_MANUAL, $user, 'RequestCreation');
         $canOauthCreate = $this->barrierTest(User::CREATION_OAUTH, $user, 'RequestCreation');
         $canBotCreate = $this->barrierTest(User::CREATION_BOT, $user, 'RequestCreation');
 
-        $this->assign('oauthProblem', false);
-        $this->assign('botProblem', false);
+        $this->assign('canManualCreate', $canManualCreate);
+        $this->assign('canOauthCreate', $canOauthCreate);
+        $this->assign('canBotCreate', $canBotCreate);
 
+        // show/hide the type radio buttons
         $creationHasChoice = count(array_filter([$canManualCreate, $canOauthCreate, $canBotCreate])) > 1;
+
         if (!$this->barrierTest($user->getCreationMode(), $user, 'RequestCreation')) {
             // user is not allowed to use their default. Force a choice.
             $creationHasChoice = true;
         }
+
         $this->assign('creationHasChoice', $creationHasChoice);
 
+        // determine problems in creation types
+        $this->assign('botProblem', false);
         if ($canBotCreate && $this->getSiteConfiguration()->getCreationBotPassword() === null) {
             $this->assign('botProblem', true);
         }
 
-        $oauth = new OAuthUserHelper($user, $this->getDatabase(), $this->getOAuthProtocolHelper(),
-            $this->getSiteConfiguration());
+        $this->assign('oauthProblem', false);
         if ($canOauthCreate && !$oauth->canCreateAccount()) {
             $this->assign('oauthProblem', true);
         }
-
-        $this->assign('canManualCreate', $canManualCreate);
-        $this->assign('canOauthCreate', $canOauthCreate);
-        $this->assign('canBotCreate', $canBotCreate);
     }
 }

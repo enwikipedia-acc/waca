@@ -31,5 +31,6 @@
     <input type="hidden" name="request" value="{$requestId}"/>
     <input type="hidden" name="mode" value="{$creationMode}"/>
     <input type="hidden" name="updateversion" value="{$updateVersion}"/>
+    {include file="view-request/skipautowelcome.tpl"}
     {include file="security/csrf.tpl"}
 </form>

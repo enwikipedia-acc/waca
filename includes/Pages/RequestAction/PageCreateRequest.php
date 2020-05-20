@@ -10,7 +10,6 @@ namespace Waca\Pages\RequestAction;
 
 use Waca\Background\Task\BotCreationTask;
 use Waca\Background\Task\UserCreationTask;
-use Waca\Background\Task\WelcomeUserTask;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Request;
@@ -75,7 +74,7 @@ class PageCreateRequest extends RequestActionBase
 
         $creationTaskId = $this->enqueueCreationTask($creationMode, $request, $template, $user, $database);
 
-        if ($user->getWelcomeTemplate() !== null) {
+        if ($user->getWelcomeTemplate() !== null && !WebRequest::postBoolean('skipAutoWelcome')) {
             $this->enqueueWelcomeTask($request, $creationTaskId, $user, $database);
         }
 
