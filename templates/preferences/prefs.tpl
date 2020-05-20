@@ -75,6 +75,9 @@
                                        {if $currentUser->getCreationMode() == 1}checked="checked"{/if}
                                        {if !$canOauthCreate}disabled="disabled"{/if}/>
                                 <label class="custom-control-label" for="autocreateOauth">Use my Wikimedia account to create the accounts on my behalf where possible</label>
+                                {if $canOauthCreate && !$oauth->canCreateAccount()}
+                                    <span class="form-text text-danger mt-0 ml-4">You do not have the necessary grants enabled to use this option. Please check the grants you have allowed this tool from your preferences on-wiki.</span>
+                                {/if}
                             </div>
 
                             <div class="custom-control custom-radio">
@@ -223,7 +226,8 @@
                                 <small class="form-text text-muted">
                                     This grant is required to bypass the 6 account creations per day limit. It is
                                     required if you want to create more than 6 accounts through the tool per 24-hour
-                                    period.
+                                    period. To avoid unnecessary failures due to missing rights, this grant is required
+                                    for automatic account creations.
                                 </small>
                             </div>
                         </div>

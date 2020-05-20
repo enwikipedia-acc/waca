@@ -54,14 +54,26 @@
                                     </div>
                                 {/if}
                                 {if $canOauthCreate}
-                                    <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
-                                        {include file="view-request/createbuttons/auto.tpl" creationMode="oauth" }
-                                    </div>
+                                    {if $oauthProblem}
+                                        <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            <div class="alert alert-warning mb-0">There's an issue with your account setup. Please check your OAuth configuration and ensure you've allowed the necessary grants.</div>
+                                        </div>
+                                    {else}
+                                        <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            {include file="view-request/createbuttons/auto.tpl" creationMode="oauth" }
+                                        </div>
+                                    {/if}
                                 {/if}
                                 {if $canBotCreate}
-                                    <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createBot">
-                                        {include file="view-request/createbuttons/auto.tpl" creationMode="bot"}
-                                    </div>
+                                    {if $botProblem}
+                                        <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createOauth">
+                                            <div class="alert alert-warning mb-0">There's an issue with the tool configuration. Please choose a different creation type above.</div>
+                                        </div>
+                                    {else}
+                                        <div class="col-md-12 create-button-row {if $currentUser->getCreationMode() !== 1}d-none{/if}" id="createBot">
+                                            {include file="view-request/createbuttons/auto.tpl" creationMode="bot"}
+                                        </div>
+                                    {/if}
                                 {/if}
                             {/if}
                         </div>
@@ -69,7 +81,9 @@
                     {/block}
 
                     {block name="requestStatusButtons"}
-                        {include file="view-request/request-status-buttons.tpl"}
+                        {if ($canManualCreate || $canOauthCreate || $canBotCreate)}
+                            {include file="view-request/request-status-buttons.tpl"}
+                        {/if}
                     {/block}
 
                     {block name="banSection"}{/block}

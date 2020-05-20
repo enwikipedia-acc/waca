@@ -193,6 +193,20 @@ SQL
         return $this->partiallyLinked;
     }
 
+    public function canCreateAccount() {
+        return $this->isFullyLinked()
+            && $this->getIdentity(true)->getGrantBasic()
+            && $this->getIdentity(true)->getGrantHighVolume()
+            && $this->getIdentity(true)->getGrantCreateAccount();
+    }
+
+    public function canWelcome() {
+        return $this->isFullyLinked()
+            && $this->getIdentity(true)->getGrantBasic()
+            && $this->getIdentity(true)->getGrantHighVolume()
+            && $this->getIdentity(true)->getGrantCreateEditMovePage();
+    }
+
     /**
      * @throws OAuthException
      */

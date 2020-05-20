@@ -18,6 +18,7 @@ use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\RequestData;
 use Waca\Helpers\LogHelper;
+use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\PdoDatabase;
 use Waca\Tasks\InternalPageBase;
@@ -261,17 +262,28 @@ class PageViewRequest extends InternalPageBase
         $canOauthCreate = $this->barrierTest(User::CREATION_OAUTH, $user, 'RequestCreation');
         $canBotCreate = $this->barrierTest(User::CREATION_BOT, $user, 'RequestCreation');
 
-        $this->assign('canManualCreate', $canManualCreate);
-        $this->assign('canOauthCreate', $canOauthCreate);
-        $this->assign('canBotCreate', $canBotCreate);
+        $this->assign('oauthProblem', false);
+        $this->assign('botProblem', false);
 
         $creationHasChoice = count(array_filter([$canManualCreate, $canOauthCreate, $canBotCreate])) > 1;
-
         if (!$this->barrierTest($user->getCreationMode(), $user, 'RequestCreation')) {
             // user is not allowed to use their default. Force a choice.
             $creationHasChoice = true;
         }
-
         $this->assign('creationHasChoice', $creationHasChoice);
+
+        if ($canBotCreate && $this->getSiteConfiguration()->getCreationBotPassword() === null) {
+            $this->assign('botProblem', true);
+        }
+
+        $oauth = new OAuthUserHelper($user, $this->getDatabase(), $this->getOAuthProtocolHelper(),
+            $this->getSiteConfiguration());
+        if ($canOauthCreate && !$oauth->canCreateAccount()) {
+            $this->assign('oauthProblem', true);
+        }
+
+        $this->assign('canManualCreate', $canManualCreate);
+        $this->assign('canOauthCreate', $canOauthCreate);
+        $this->assign('canBotCreate', $canBotCreate);
     }
 }
