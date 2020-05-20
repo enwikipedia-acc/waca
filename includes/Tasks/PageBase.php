@@ -38,8 +38,6 @@ abstract class PageBase extends TaskBase implements IRoutedTask
     protected $tokenManager;
     /** @var ContentSecurityPolicyManager */
     private $cspManager;
-    /** @var string[] Extra CSS files to include */
-    private $extraCss = array();
     /** @var string[] Extra JS files to include */
     private $extraJs = array();
 
@@ -191,7 +189,6 @@ abstract class PageBase extends TaskBase implements IRoutedTask
             return;
         }
 
-        $this->assign('extraCss', $this->extraCss);
         $this->assign('extraJs', $this->extraJs);
 
         // If we're actually displaying content, we want to add the session alerts here!
@@ -303,20 +300,6 @@ abstract class PageBase extends TaskBase implements IRoutedTask
         }
 
         $this->template = $name;
-    }
-
-    /**
-     * Adds an extra CSS file to to the page
-     *
-     * @param string $path The path (relative to the application root) of the file
-     */
-    final protected function addCss($path) {
-        if(in_array($path, $this->extraCss)){
-            // nothing to do
-            return;
-        }
-
-        $this->extraCss[] = $path;
     }
 
     /**

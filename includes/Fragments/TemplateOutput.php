@@ -72,7 +72,6 @@ trait TemplateOutput
         $this->assign('onlineusers', array());
         $this->assign('typeAheadBlock', '');
         $this->assign('extraJs', array());
-        $this->assign('extraCss', array());
 
         // nav menu access control
         $this->assign('nav__canRequests', false);

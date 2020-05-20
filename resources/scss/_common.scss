@@ -18,11 +18,10 @@ $font-size-base: 0.9rem;
 
 $overflows: auto, hidden, visible;
 
-$sizes: (fit-content: fit-content);
-
 @import "../../vendor/twbs/bootstrap/scss/bootstrap";
 @import "_viewRequest.scss";
 @import "_login.scss";
+@import "_mainPage.scss";
 
 span.twitter-typeahead {
     display: block !important;
@@ -43,6 +42,11 @@ span.twitter-typeahead {
     .row {
         margin-bottom: 0.4rem;
     }
+}
+
+.w-fit-content {
+    width: -moz-fit-content !important;
+    width: fit-content !important;
 }
 
 input[type=number] {

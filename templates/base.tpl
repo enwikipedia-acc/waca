@@ -13,11 +13,6 @@
     <!-- fontawesome -->
     <link href="{$baseurl}/vendor/fortawesome/font-awesome/css/all.min.css" rel="stylesheet"/>
     <link href="{$baseurl}/vendor/fortawesome/font-awesome/css/svg-with-js.css" rel="stylesheet" />
-
-    <!-- Page-specific extra resources -->
-    {foreach from=$extraCss item=css}
-        <link href="{$baseurl}{$css}" rel="stylesheet" />
-    {/foreach}
 </head>
 
 <body>
