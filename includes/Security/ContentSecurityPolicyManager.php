@@ -8,6 +8,8 @@
 
 namespace Waca\Security;
 
+use Waca\SiteConfiguration;
+
 class ContentSecurityPolicyManager
 {
     private $policy = [
@@ -19,13 +21,27 @@ class ContentSecurityPolicyManager
         'style-src'       => ['self'],
         'style-src-elem'  => ['self'],
         'style-src-attr'  => [],
-        'img-src'         => ['self', 'data:', 'https://upload.wikimedia.org'],
+        'img-src'         => ['self', 'data:', 'https://upload.wikimedia.org', 'https://accounts-dev.wmflabs.org/'],
         'font-src'        => ['self'],
-        'form-action'     => ['self'],
+        'form-action'     => ['self', 'oauth'],
         'frame-ancestors' => [],
     ];
     private $nonce = null;
     private $reportOnly = false;
+    /**
+     * @var SiteConfiguration
+     */
+    private $configuration;
+
+    /**
+     * ContentSecurityPolicyManager constructor.
+     *
+     * @param SiteConfiguration $configuration
+     */
+    public function __construct(SiteConfiguration $configuration)
+    {
+        $this->configuration = $configuration;
+    }
 
     public function getNonce()
     {
@@ -61,6 +77,9 @@ class ContentSecurityPolicyManager
                                 $constructedPolicy .= "'nonce-{$this->nonce}' ";
                             }
                             break;
+                        case 'oauth':
+                            $constructedPolicy .= "{$this->configuration->getOauthMediaWikiCanonicalServer()} ";
+                            break;
                         default:
                             $constructedPolicy .= $value . ' ';
                             break;
@@ -72,6 +91,10 @@ class ContentSecurityPolicyManager
             }
 
             $constructedPolicy .= '; ';
+        }
+
+        if ($this->configuration->getCspReportUri() !== null) {
+            $constructedPolicy .= 'report-uri ' . $this->configuration->getCspReportUri();
         }
 
         return $constructedPolicy;

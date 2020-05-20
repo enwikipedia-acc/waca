@@ -73,7 +73,7 @@ class WebStart extends ApplicationBase
 
         if ($page instanceof PageBase) {
             $page->setTokenManager(new TokenManager());
-            $page->setCspManager(new ContentSecurityPolicyManager());
+            $page->setCspManager(new ContentSecurityPolicyManager($siteConfiguration));
 
             if ($page instanceof InternalPageBase) {
                 $page->setTypeAheadHelper(new TypeAheadHelper());

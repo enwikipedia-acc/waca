@@ -242,6 +242,9 @@ $createdid = 1;
 // HSTS expiry - use false to disable header.
 $strictTransportSecurityExpiry = false;
 
+// CSP violation report URI
+$cspReportUri = null;
+
 // Must be disabled in production.
 $enableErrorTrace = false;
 
@@ -372,4 +375,5 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setYubicoApiId($yubicoApiId)
     ->setYubicoApiKey($yubicoApiKey)
     ->setTotpEncryptionKey($totpEncryptionKey)
-    ->setRegistrationAllowed($allowRegistration);
+    ->setRegistrationAllowed($allowRegistration)
+    ->setCspReportUri($cspReportUri);

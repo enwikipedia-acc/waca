@@ -89,6 +89,7 @@ class SiteConfiguration
     private $totpEncryptionKey = "1234";
     private $identificationNoticeboardPage = 'Access to nonpublic personal data policy/Noticeboard';
     private $registrationAllowed = true;
+    private $cspReportUri = null;
 
     /**
      * Gets the base URL of the tool
@@ -1009,4 +1010,24 @@ class SiteConfiguration
         $this->registrationAllowed = $registrationAllowed;
         return $this;
     }
+
+    /**
+     * @return null
+     */
+    public function getCspReportUri()
+    {
+        return $this->cspReportUri;
+    }
+
+    /**
+     * @param null $cspReportUri
+     *
+     * @return SiteConfiguration
+     */
+    public function setCspReportUri($cspReportUri)
+    {
+        $this->cspReportUri = $cspReportUri;
+
+        return $this;
+}
 }
