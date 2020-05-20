@@ -97,9 +97,11 @@
                     </a>
                     <div class="dropdown-divider"></div>
 
-                    <a class="dropdown-item" href="{$baseurl}/internal.php/logout">
-                        <i class="fas fa-power-off"></i>&nbsp;Logout
-                    </a>
+                    <form action="{$baseurl}/internal.php/logout" method="post">
+                        <button class="dropdown-item" type="submit">
+                            <i class="fas fa-power-off"></i>&nbsp;Logout
+                        </button>
+                    </form>
                 </div>
             </li>
         {else}

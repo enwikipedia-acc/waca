@@ -10,6 +10,7 @@ namespace Waca\Pages\UserAuth;
 
 use Waca\Session;
 use Waca\Tasks\InternalPageBase;
+use Waca\WebRequest;
 
 class PageLogout extends InternalPageBase
 {
@@ -18,8 +19,13 @@ class PageLogout extends InternalPageBase
      */
     protected function main()
     {
-        Session::destroy();
-        $this->redirect("login");
+        if(WebRequest::wasPosted()) {
+            Session::destroy();
+            $this->redirect("login");
+            return;
+        }
+
+        $this->redirect();
     }
 
     protected function isProtectedPage()
