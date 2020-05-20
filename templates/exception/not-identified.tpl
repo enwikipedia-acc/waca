@@ -1,8 +1,8 @@
 {extends file="base.tpl"}
 {block name="content"}
     <div class="row">
-        <div class="col-12">
-            <h1>Whoa, dude, hold up a sec...</h1>
+        <div class="col-md-8 offset-md-2 alert alert-block alert-warning">
+            <h4>Whoa, dude, hold up a sec...</h4>
             <p>
                 It looks like we can't detect whether or not you've submitted identification to the Wikimedia
                 Foundation.
