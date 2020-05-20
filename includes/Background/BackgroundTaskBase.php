@@ -185,10 +185,12 @@ abstract class BackgroundTaskBase
             }
         }
 
-        $this->parameters = json_decode($this->job->getParameters());
+        if($this->job->getParameters() !== null) {
+            $this->parameters = json_decode($this->job->getParameters());
 
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new ApplicationLogicException('JSON decode: ' . json_last_error_msg());
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new ApplicationLogicException('JSON decode: ' . json_last_error_msg());
+            }
         }
 
         // Should we wait for a parent job?

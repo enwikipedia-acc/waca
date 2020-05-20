@@ -60,6 +60,11 @@ class RunJobQueueTask extends ConsoleTaskBase
         foreach ($queuedJobs as $job) {
             try {
                 $database->beginTransaction();
+                $job->setStatus(JobQueue::STATUS_RUNNING);
+                $job->save();
+                $database->commit();
+
+                $database->beginTransaction();
 
                 // re-lock the job
                 $job->setStatus(JobQueue::STATUS_RUNNING);
