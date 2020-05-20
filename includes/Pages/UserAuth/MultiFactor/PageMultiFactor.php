@@ -49,6 +49,10 @@ class PageMultiFactor extends InternalPageBase
         $this->assign('scratchEnrolled', $scratchCredentialProvider->userIsEnrolled($currentUser->getId()));
         $this->assign('scratchRemaining', $scratchCredentialProvider->getRemaining($currentUser->getId()));
 
+        $this->assign('allowedTotp', $this->barrierTest('enableTotp', $currentUser));
+        $this->assign('allowedYubikey', $this->barrierTest('enableYubikeyOtp', $currentUser));
+        $this->assign('allowedU2f', $this->barrierTest('enableU2F', $currentUser));
+
         $this->setTemplate('mfa/mfa.tpl');
     }
 

@@ -38,9 +38,11 @@
                             <i class="icon-white icon-remove"></i>&nbsp;Disable
                         </a>
                     {else}
-                        <a class="btn btn-block btn-secondary" href="{$baseurl}/internal.php/multiFactor/enableTotp">
-                            <i class="icon-white icon-ok"></i>&nbsp;Enable
-                        </a>
+                        {if $allowedTotp}
+                            <a class="btn btn-block btn-secondary" href="{$baseurl}/internal.php/multiFactor/enableTotp">
+                                <i class="icon-white icon-ok"></i>&nbsp;Enable
+                            </a>
+                        {/if}
                     {/if}
                 </div>
             </div>
@@ -72,9 +74,11 @@
                             <i class="icon-white icon-remove"></i>&nbsp;Disable
                         </a>
                     {else}
-                        <a class="btn btn-block btn-secondary" href="{$baseurl}/internal.php/multiFactor/enableYubikeyOtp">
-                            <i class="icon-white icon-ok"></i>&nbsp;Enable
-                        </a>
+                        {if $allowedYubikey}
+                            <a class="btn btn-block btn-secondary" href="{$baseurl}/internal.php/multiFactor/enableYubikeyOtp">
+                                <i class="icon-white icon-ok"></i>&nbsp;Enable
+                            </a>
+                        {/if}
                     {/if}
                 </div>
             </div>
@@ -103,9 +107,11 @@
                             <i class="icon-white icon-remove"></i>&nbsp;Disable
                         </a>
                     {else}
-                        <a class="btn btn-block btn-secondary" href="{$baseurl}/internal.php/multiFactor/enableU2F">
-                            <i class="icon-white icon-ok"></i>&nbsp;Enable
-                        </a>
+                        {if $allowedU2f}
+                            <a class="btn btn-block btn-secondary" href="{$baseurl}/internal.php/multiFactor/enableU2F">
+                                <i class="icon-white icon-ok"></i>&nbsp;Enable
+                            </a>
+                        {/if}
                     {/if}
                 </div>
             </div>

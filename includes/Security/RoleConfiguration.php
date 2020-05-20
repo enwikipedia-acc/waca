@@ -121,8 +121,6 @@ class RoleConfiguration
                 'disableYubikeyOtp' => self::ACCESS_ALLOW,
                 'enableTotp'        => self::ACCESS_ALLOW,
                 'disableTotp'       => self::ACCESS_ALLOW,
-                'enableU2F'       => self::ACCESS_ALLOW,
-                'disableU2F'       => self::ACCESS_ALLOW,
             ),
             PageOAuth::class          => array(
                 'attach' => self::ACCESS_ALLOW,
@@ -204,7 +202,6 @@ class RoleConfiguration
             ),
             'RequestCreation'                    => array(
                 User::CREATION_MANUAL => self::ACCESS_ALLOW,
-                User::CREATION_OAUTH  => self::ACCESS_ALLOW,
             ),
         ),
         'admin'             => array(
@@ -261,8 +258,11 @@ class RoleConfiguration
             '_editableBy'  => array('toolRoot'),
             '_childRoles'  => array(
                 'admin',
-                'checkuser',
             ),
+            PageMultiFactor::class => array(
+                'enableU2F'         => self::ACCESS_ALLOW,
+                'disableU2F'        => self::ACCESS_ALLOW,
+            )
         ),
         'botCreation'       => array(
             '_description'    => 'A user allowed to use the bot to perform account creations',
@@ -272,6 +272,15 @@ class RoleConfiguration
                 User::CREATION_BOT => self::ACCESS_ALLOW,
             ),
         ),
+        'oauthCreation'       => array(
+            '_description'    => 'A user allowed to use the OAuth to perform account creations',
+            '_editableBy'     => array('admin', 'toolRoot'),
+            '_childRoles'     => array(),
+            'RequestCreation'                    => array(
+                User::CREATION_OAUTH  => self::ACCESS_ALLOW,
+            ),
+        ),
+
 
         // Child roles go below this point
         'publicStats'       => array(
