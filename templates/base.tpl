@@ -53,19 +53,17 @@
                 (<a href="https://github.com/enwikipedia-acc/waca/issues">Bug reports</a>)
             </small>
         </p>
-        {if ! $currentUser->isCommunityUser()}
-            <p class="col-md-6 text-right">
-                <small>
-                    {if count($onlineusers) > 0}
-                        {count($onlineusers)} Account Creator{if count($onlineusers) !== 1}s{/if} currently online (past 5 minutes):
-                        {foreach from=$onlineusers item=userObject name=onlineUserLoop}
-                        <a href="{$baseurl}/internal.php/statistics/users/detail?user={$userObject->getId()}">
-                            {$userObject->getUsername()|escape}</a>{if !$smarty.foreach.onlineUserLoop.last}, {/if}
-                        {/foreach}
-                    {/if}
-                </small>
-            </p>
-        {/if}
+        <p class="col-md-6 text-right">
+            <small>
+                {if count($onlineusers) > 0}
+                    {count($onlineusers)} Account Creator{if count($onlineusers) !== 1}s{/if} currently online (past 5 minutes):
+                    {foreach from=$onlineusers item=userObject name=onlineUserLoop}
+                    <a href="{$baseurl}/internal.php/statistics/users/detail?user={$userObject->getId()}">
+                        {$userObject->getUsername()|escape}</a>{if !$smarty.foreach.onlineUserLoop.last}, {/if}
+                    {/foreach}
+                {/if}
+            </small>
+        </p>
     </footer>
 </div><!--/.fluid-container-->
 

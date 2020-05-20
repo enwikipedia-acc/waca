@@ -10,6 +10,7 @@ namespace Waca\Tasks;
 
 use Exception;
 use PDO;
+use Waca\DataObjects\SiteNotice;
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\NotIdentifiedException;
@@ -116,9 +117,14 @@ abstract class InternalPageBase extends PageBase
         parent::finalisePage();
 
         $database = $this->getDatabase();
-
         $currentUser = User::getCurrent($database);
-        if (!$currentUser->isCommunityUser()) {
+
+        if ($this->barrierTest('viewSiteNotice', User::getCurrent($database), 'GlobalInfo')) {
+            $siteNoticeText = SiteNotice::get($this->getDatabase());
+            $this->assign('siteNoticeText', $siteNoticeText);
+        }
+
+        if ($this->barrierTest('viewOnlineUsers', User::getCurrent($database), 'GlobalInfo')) {
             $sql = 'SELECT * FROM user WHERE lastactive > DATE_SUB(CURRENT_TIMESTAMP(), INTERVAL 5 MINUTE);';
             $statement = $database->query($sql);
             $activeUsers = $statement->fetchAll(PDO::FETCH_CLASS, User::class);

@@ -1,6 +1,6 @@
 {extends file="base.tpl"}
 {block name="sitenotice"}
-    {if ! $currentUser->isCommunityUser()}
+    {if $siteNoticeText !== ''}
         <div class="row">
             <!-- site notice -->
             <div class="col-md-12 sitenotice-container p-0">

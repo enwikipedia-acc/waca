@@ -203,6 +203,10 @@ class RoleConfiguration
             'RequestCreation'                    => array(
                 User::CREATION_MANUAL => self::ACCESS_ALLOW,
             ),
+            'GlobalInfo'                         => array(
+                'viewSiteNotice' => self::ACCESS_ALLOW,
+                'viewOnlineUsers' => self::ACCESS_ALLOW,
+            ),
         ),
         'admin'             => array(
             '_description'                       => 'A tool administrator.',

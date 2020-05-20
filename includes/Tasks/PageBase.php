@@ -77,10 +77,6 @@ abstract class PageBase extends TaskBase implements IRoutedTask
     {
         $this->setUpSmarty();
 
-        $siteNoticeText = SiteNotice::get($this->getDatabase());
-
-        $this->assign('siteNoticeText', $siteNoticeText);
-
         $currentUser = User::getCurrent($this->getDatabase());
         $this->assign('currentUser', $currentUser);
         $this->assign('loggedIn', (!$currentUser->isCommunityUser()));
@@ -114,7 +110,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
             $database->rollBack();
 
             // Reset smarty
-            $this->setUpSmarty();
+            $this->setupPage();
 
             // Set the template
             $this->setTemplate('exception/application-logic.tpl');
@@ -132,7 +128,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
             $database->rollBack();
 
             // Reset smarty
-            $this->setUpSmarty();
+            $this->setupPage();
 
             // Set the template
             $this->setTemplate('exception/optimistic-lock-failure.tpl');
