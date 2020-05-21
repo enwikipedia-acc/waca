@@ -33,7 +33,7 @@ class PagePreferences extends InternalPageBase
             $this->validateCSRFToken();
             $user->setWelcomeSig(WebRequest::postString('sig'));
             $user->setEmailSig(WebRequest::postString('emailsig'));
-            $user->setAbortPref(WebRequest::getBoolean('sig') ? 1 : 0);
+            $user->setAbortPref(WebRequest::postBoolean('abortpref') ? 1 : 0);
             $this->setCreationMode($user);
             $user->setSkin(WebRequest::postBoolean('skintype') ? 'alt' : 'main');
 
