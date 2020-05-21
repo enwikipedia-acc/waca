@@ -110,6 +110,7 @@ class RoleConfiguration
             ),
             PagePreferences::class    => array(
                 self::MAIN => self::ACCESS_ALLOW,
+                'refreshOAuth' => self::ACCESS_ALLOW,
             ),
             PageChangePassword::class => array(
                 self::MAIN => self::ACCESS_ALLOW,

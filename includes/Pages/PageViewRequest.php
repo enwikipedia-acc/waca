@@ -73,6 +73,8 @@ class PageViewRequest extends InternalPageBase
 
         $this->setupLogData($request, $database);
 
+        $this->addJs("/api.php?action=templates&targetVariable=templateconfirms");
+
         if ($allowedPrivateData) {
             $this->setTemplate('view-request/main-with-data.tpl');
             $this->setupPrivateData($request, $currentUser, $this->getSiteConfiguration(), $database);

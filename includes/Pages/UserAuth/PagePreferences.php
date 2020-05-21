@@ -73,6 +73,26 @@ class PagePreferences extends InternalPageBase
         }
     }
 
+    protected function refreshOAuth()
+    {
+        if (!WebRequest::wasPosted()) {
+            $this->redirect('preferences');
+
+            return;
+        }
+
+        $database = $this->getDatabase();
+        $oauth = new OAuthUserHelper(User::getCurrent($database), $database, $this->getOAuthProtocolHelper(),
+            $this->getSiteConfiguration());
+        if ($oauth->isFullyLinked()) {
+            $oauth->refreshIdentity();
+        }
+
+        $this->redirect('preferences');
+
+        return;
+    }
+
     /**
      * @param User $user
      */
@@ -82,7 +102,7 @@ class PagePreferences extends InternalPageBase
         // this has the side effect of allowing them to keep a selected mode that either has been changed for them,
         // or that they have kept from when they previously had certain access.
         $creationMode = WebRequest::postInt('creationmode');
-        if($this->barrierTest($creationMode, $user, 'RequestCreation')){
+        if ($this->barrierTest($creationMode, $user, 'RequestCreation')) {
             $user->setCreationMode($creationMode);
         }
     }

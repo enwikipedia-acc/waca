@@ -239,11 +239,17 @@
                     <label class="control-label">Cache:</label>
                 </div>
                 <div class="col-md-10 col-lg-9">
+                    <form method="post" action="{$baseurl}/internal.php/preferences/refreshOAuth">
+                        <p>
                     Identity ticket retrieved
                         at {DateTime::createFromFormat("U", $identity->getIssuedAtTime())->format("r")}, will
                         expire at {DateTime::createFromFormat("U", $identity->getExpirationTime())->format("r")}.
-                        The grace time on this token is an additional {$graceTime} beyond the expiry time. If you wish
-                        to refresh the information shown here, simply log out and log in again.
+                        The grace time on this token is an additional {$graceTime} beyond the expiry time.
+                        </p>
+                        <p>
+                            <button type="submit" class="btn btn-outline-secondary btn-sm">Refresh OAuth identity</button>
+                        </p>
+                    </form>
                 </div>
             </div>
 

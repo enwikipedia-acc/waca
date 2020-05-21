@@ -201,7 +201,9 @@ class RequestRouter implements IRequestRouter
         'preferences'                 =>
             array(
                 'class'   => PagePreferences::class,
-                'actions' => array(),
+                'actions' => array(
+                    'refreshOAuth'
+                ),
             ),
         'changePassword'              =>
             array(
