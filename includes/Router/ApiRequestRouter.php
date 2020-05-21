@@ -11,6 +11,7 @@ namespace Waca\Router;
 use Exception;
 use Waca\API\Actions\CountAction;
 use Waca\API\Actions\HelpAction;
+use Waca\API\Actions\JsTemplateConfirmsAction;
 use Waca\API\Actions\JsUsersAction;
 use Waca\API\Actions\MonitorAction;
 use Waca\API\Actions\StatsAction;
@@ -55,6 +56,9 @@ class ApiRequestRouter implements IRequestRouter
                 break;
             case "users":
                 $result = new JsUsersAction();
+                break;
+            case "templates":
+                $result = new JsTemplateConfirmsAction();
                 break;
             default:
                 $result = new UnknownAction();

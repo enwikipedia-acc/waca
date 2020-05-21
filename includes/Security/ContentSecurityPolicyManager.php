@@ -63,6 +63,7 @@ class ContentSecurityPolicyManager
 
         foreach ($this->policy as $item => $values) {
             $constructedPolicy .= $item . ' ';
+            $policyIsSet = false;
 
             if (count($values) > 0) {
                 foreach ($values as $value) {
@@ -70,20 +71,28 @@ class ContentSecurityPolicyManager
                         case 'none':
                         case 'self':
                         case 'strict-dynamic':
+                            $policyIsSet = true;
                             $constructedPolicy .= "'{$value}' ";
                             break;
                         case 'nonce':
                             if ($this->nonce !== null) {
+                                $policyIsSet = true;
                                 $constructedPolicy .= "'nonce-{$this->nonce}' ";
                             }
                             break;
                         case 'oauth':
+                            $policyIsSet = true;
                             $constructedPolicy .= "{$this->configuration->getOauthMediaWikiCanonicalServer()} ";
                             break;
                         default:
+                            $policyIsSet = true;
                             $constructedPolicy .= $value . ' ';
                             break;
                     }
+                }
+
+                if (!$policyIsSet) {
+                    $constructedPolicy .= "'none' ";
                 }
             }
             else {

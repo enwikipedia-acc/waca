@@ -74,3 +74,13 @@ $(".creationTypeOptions input").change(function() {
         $("#createBot").removeClass("d-none");
     }
 });
+
+var templateconfirms = {};
+$(".jsconfirm").click(function() {
+    var template = $(this).data('template');
+    if(template !== undefined && template in templateconfirms) {
+        return confirm(templateconfirms[template]);
+    } else {
+        return true;
+    }
+});

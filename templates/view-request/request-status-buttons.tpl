@@ -23,7 +23,7 @@
                     <div class="col-md-6">
                         <form method="post" action="{$baseurl}/internal.php/viewRequest/drop">
                             {include file="security/csrf.tpl"}
-                            <button class="btn btn-dark btn-block" type="submit" name="template" value="0">
+                            <button class="btn btn-dark btn-block jsconfirm" type="submit" name="template" value="0">
                                 Drop
                             </button>
                             <input type="hidden" name="updateversion" value="{$updateVersion}"/>

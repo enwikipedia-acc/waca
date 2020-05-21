@@ -6,9 +6,9 @@
 
         <div class="dropdown-menu">
             {foreach $declineReasons as $reason}
-                <button class="btn-link dropdown-item" name="template" value="{$reason->getId()}" type="submit"
+                <button class="btn-link dropdown-item jsconfirm" name="template" value="{$reason->getId()}" type="submit"
                         {if !$currentUser->getAbortPref() && $reason->getJsquestion() != ''}
-                    onclick="return confirm('{$reason->getJsquestion()|escape}')"
+                            data-template="{$reason->getId()}"
                         {/if}>
                     {$reason->getName()|escape}
                 </button>
