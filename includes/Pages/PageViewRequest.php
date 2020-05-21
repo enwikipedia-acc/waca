@@ -129,7 +129,6 @@ class PageViewRequest extends InternalPageBase
         $createdTemplate = EmailTemplate::getById($config->getDefaultCreatedTemplateId(), $database);
 
         $this->assign('createdHasJsQuestion', $createdTemplate->getJsquestion() != '');
-        $this->assign('createdJsQuestion', $createdTemplate->getJsquestion());
         $this->assign('createdId', $createdTemplate->getId());
         $this->assign('createdName', $createdTemplate->getName());
 

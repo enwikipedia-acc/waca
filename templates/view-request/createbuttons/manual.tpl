@@ -1,9 +1,11 @@
 {* If custom create reasons are active, then make the Created button a split button dropdown. *}
 <form method="post" action="{$baseurl}/internal.php/viewRequest/close" class="row">
     <div class="col-md-6">
-        <a class="btn btn-primary btn-block" target="_blank"
+        <a class="btn btn-primary btn-block jsconfirm" target="_blank"
            href="{$mediawikiScriptPath}?title=Special:UserLogin/signup&amp;wpName={$requestName|escape:'url'}&amp;email={$requestEmail|escape:'url'}&amp;reason={$createAccountReason|escape:'url'}{$requestId}&amp;wpCreateaccountMail=true"
-                {if !$currentUser->getAbortPref() && $createdHasJsQuestion} onclick="return confirm('{$createdJsQuestion}')"{/if}>
+                {if !$currentUser->getAbortPref() && $createdHasJsQuestion}
+                    data-template="{$createdId}"
+                {/if}>
             Create account
         </a>
     </div>
