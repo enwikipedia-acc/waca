@@ -43,7 +43,7 @@ class PageForgotPassword extends InternalPageBase
             $user = User::getByUsername($username, $database);
             $this->sendResetMail($user, $email);
 
-            SessionAlert::success('<strong>Your password reset request has been completed.</strong> Please check your e-mail.');
+            SessionAlert::success('<strong>Your password reset request has been completed.</strong> If the details you have provided match our records, you should receive an email shortly.');
 
             $this->redirect('login');
         }
