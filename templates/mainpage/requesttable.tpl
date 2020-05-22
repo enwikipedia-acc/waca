@@ -31,7 +31,7 @@
             </td>
 
             {* Request Time *}
-            <td data-value="{strtotime($r->getDate())}">
+            <td data-value="{$r->getDate()|date}" data-dateformat="YYYY-MM-DD hh:mm:ss">
                 <span class="d-none d-md-block"><span title="{$r->getDate()|date}" data-toggle="tooltip" data-placement="top" id="#rqtime{$r->getId()}">{$r->getDate()|relativedate}</span></span>
             </td>
 
