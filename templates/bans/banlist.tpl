@@ -17,17 +17,17 @@
     <div class="row">
         <div class="col-md-12">
             <h3>Active Ban List</h3>
-            <table class="table table-striped">
+            <table class="table table-striped sortable">
                 <thead>
                 <th>Type</th>
                 <th>Target</th>
-                <th>{* search! *}</th>
+                <th data-defaultsort="disabled">{* search! *}</th>
                 <th>Banned by</th>
                 <th>Reason</th>
                 <th>Time</th>
                 <th>Expiry</th>
                 {if $canRemove}
-                    <th>Unban</th>
+                    <th data-defaultsort="disabled">Unban</th>
                 {/if}
                 </thead>
                 <tbody>

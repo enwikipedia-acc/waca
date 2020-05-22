@@ -7,15 +7,15 @@
         {/if}
         <th>Username</th>
         <th><span class="d-none d-md-block">Request time</span></th>
-        <th><!-- ban --></th>
-        <th><!-- reserve status --></th>
-        <th><!--reserve button--></th>
+        <th data-defaultsort="disabled"><!-- ban --></th>
+        <th data-defaultsort="disabled"><!-- reserve status --></th>
+        <th data-defaultsort="disabled"><!--reserve button--></th>
     </tr>
     </thead>
     <tbody>
     {foreach from=$requests item="r"}
         <tr>
-            <td>
+            <td data-value="{$r->getId()}">
                 <a class="btn btn-sm{if $r->hasComments() == true} btn-info{else} btn-secondary{/if}"
                 href="{$baseurl}/internal.php/viewRequest?id={$r->getId()}"><i class="fas fa-search"></i><span class="d-none d-md-inline">&nbsp;{$r->getId()}</span></a>
             </td>
@@ -25,13 +25,13 @@
             {/if}
 
             {* Username *}
-            <td>
+            <td data-value="{$r->getName()|escape}">
                 <a href="https://en.wikipedia.org/wiki/User:{$r->getName()|escape:'url'}"
                    target="_blank">{$r->getName()|escape}</a>
             </td>
 
             {* Request Time *}
-            <td>
+            <td data-value="{strtotime($r->getDate())}">
                 <span class="d-none d-md-block"><span title="{$r->getDate()|date}" data-toggle="tooltip" data-placement="top" id="#rqtime{$r->getId()}">{$r->getDate()|relativedate}</span></span>
             </td>
 

@@ -1,9 +1,9 @@
-<table class="table table-striped table-hover table-sm">
+<table class="table table-striped table-hover table-sm sortable">
   <thead>
-    <th>Username</th>
+    <th data-defaultsort="asc">Username</th>
     <th>On-wiki name</th>
     <th>Roles</th>
-    <th><span class="d-none d-sm-inline">Actions</span></th>
+    <th data-defaultsort="disabled"><span class="d-none d-sm-inline">Actions</span></th>
   </thead>
   <tbody>
     {foreach $userlist as $userentry}

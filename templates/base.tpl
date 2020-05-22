@@ -13,6 +13,9 @@
     <!-- fontawesome -->
     <link href="{$baseurl}/vendor/fortawesome/font-awesome/css/all.min.css" rel="stylesheet"/>
     <link href="{$baseurl}/vendor/fortawesome/font-awesome/css/svg-with-js.css" rel="stylesheet" />
+
+    <!-- sortable tables -->
+    <link href="{$baseurl}/vendor/drvic10k/bootstrap-sortable/Contents/bootstrap-sortable.css" rel="stylesheet" />
 </head>
 
 <body>
@@ -74,6 +77,8 @@
     <script src="{$baseurl}/lib/popper.min.js" type="text/javascript"></script>
     <script src="{$baseurl}/vendor/twbs/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="{$baseurl}/vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js"></script>
+    <script src="{$baseurl}/vendor/drvic10k/bootstrap-sortable/Scripts/bootstrap-sortable.js"></script>
+    <script src="{$baseurl}/vendor/drvic10k/bootstrap-sortable/Scripts/moment.min.js"></script>
     <script src="{$baseurl}/resources/global.js"></script>
 
     <!-- Page-specific extra resources -->
