@@ -11,15 +11,29 @@
         "spomky-labs/otphp": "^v8.3.0",
         "bacon/bacon-qr-code": "^1.0.1",
         "yubico/u2flib-server": "^1.0.1",
+        "drvic10k/bootstrap-sortable": "^2.1",
         "ext-openssl": "*",
         "ext-dom": "*",
         "ext-pdo": "*",
         "ext-json": "*",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "moment/moment": "^2.25"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "~2.7",
         "phpunit/phpunit": "~5.6.2",
         "phpmd/phpmd": "~2.4.3"
+    },
+    "repositories": [{
+        "type": "package",
+        "package": {
+            "name": "drvic10k/bootstrap-sortable",
+            "version": "2.1.0",
+            "dist": {
+                "url": "https://github.com/drvic10k/bootstrap-sortable/archive/2.1.0.zip",
+                "type": "zip"
+            }
+        }
     }
+    ]
 }
