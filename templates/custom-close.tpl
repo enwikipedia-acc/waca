@@ -67,27 +67,15 @@
         {if $confirmEmailAlreadySent}
         <div class="form-group row">
             <div class="offset-lg-3 offset-xl-2 col">
+                <p>This request has already had an email sent. Please acknowledge that your message is context-aware of the earlier message.</p>
                 <div class="custom-control custom-checkbox">
                     <input class="custom-control-input" type="checkbox" id="confirmEmailAlreadySent" name="confirmEmailAlreadySent" required="required"/>
-                    <label class="custom-control-label" for="confirmEmailAlreadySent">Override email already sent check</label>
+                    <label class="custom-control-label" for="confirmEmailAlreadySent">Yes, this is an appropriate follow-up email</label>
                 </div>
             </div>
         </div>
         {else}
             <input type="hidden" name="confirmEmailAlreadySent" value="true" />
-        {/if}
-
-        {if $confirmReserveOverride}
-        <div class="form-group row">
-            <div class="offset-lg-3 offset-xl-2 col">
-                <div class="custom-control custom-checkbox">
-                    <input class="custom-control-input" type="checkbox" id="confirmReserveOverride" name="confirmReserveOverride" required="required"/>
-                    <label class="custom-control-label" for="confirmReserveOverride">Override reservation on this request by {$requestReservedByName|escape}?</label>
-                </div>
-            </div>
-        </div>
-        {else}
-            <input type="hidden" name="confirmReserveOverride" value="true" />
         {/if}
 
         {if $allowWelcomeSkip}

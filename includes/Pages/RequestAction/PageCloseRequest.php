@@ -48,7 +48,7 @@ class PageCloseRequest extends RequestActionBase
             return;
         }
 
-        if ($this->confirmReserveOverride($request, $template, $currentUser, $database)) {
+        if ($this->checkReserveProtect($request, $currentUser)) {
             return;
         }
 
@@ -126,40 +126,16 @@ class PageCloseRequest extends RequestActionBase
         return false;
     }
 
-    protected function checkReserveOverride(Request $request, User $currentUser)
+    protected function checkReserveProtect(Request $request, User $currentUser)
     {
         $reservationId = $request->getReserved();
 
         if ($reservationId !== 0 && $reservationId !== null) {
-            if (!WebRequest::postBoolean('reserveOverride')) {
-                if ($currentUser->getId() !== $reservationId) {
-                    return true;
-                }
+            if ($currentUser->getId() !== $reservationId) {
+                SessionAlert::error("Request is reserved by someone else.");
+                $this->redirect('/viewRequest', null, ['id' => $request->getId()] );
+                return true;
             }
-        }
-
-        return false;
-    }
-
-    /**
-     * @param Request       $request
-     * @param EmailTemplate $template
-     * @param User          $currentUser
-     * @param PdoDatabase   $database
-     *
-     * @return bool
-     */
-    protected function confirmReserveOverride(
-        Request $request,
-        EmailTemplate $template,
-        User $currentUser,
-        PdoDatabase $database
-    ) {
-        if ($this->checkReserveOverride($request, $currentUser)) {
-            $this->assign('reserveUser', User::getById($request->getReserved(), $database)->getUsername());
-            $this->showConfirmation($request, $template, 'close-confirmations/reserve-override.tpl');
-
-            return true;
         }
 
         return false;
@@ -217,6 +193,9 @@ class PageCloseRequest extends RequestActionBase
     {
         $requestEmailHelper = new RequestEmailHelper($this->getEmailHelper());
         $requestEmailHelper->sendMail($request, $mailText, $currentUser, $ccMailingList);
+
+        $request->setEmailSent(true);
+        $request->save();
     }
 
     /**

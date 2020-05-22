@@ -140,7 +140,6 @@ class PageCustomClose extends PageCloseRequest
 
         // Confirmations
         $this->assign('confirmEmailAlreadySent', $this->checkEmailAlreadySent($request));
-        $this->assign('confirmReserveOverride', $this->checkReserveOverride($request, $currentUser));
 
         $this->assign('canSkipCcMailingList', $this->barrierTest('skipCcMailingList', $currentUser));
 
@@ -185,8 +184,7 @@ class PageCustomClose extends PageCloseRequest
             throw new ApplicationLogicException('Request is already closed');
         }
 
-        if (!(WebRequest::postBoolean('confirmEmailAlreadySent')
-            && WebRequest::postBoolean('confirmReserveOverride'))
+        if (!(WebRequest::postBoolean('confirmEmailAlreadySent'))
         ) {
             throw new ApplicationLogicException('Not all confirmations checked');
         }
