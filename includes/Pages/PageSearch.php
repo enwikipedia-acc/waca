@@ -96,7 +96,6 @@ class PageSearch extends InternalPageBase
         /** @var Request[] $requests */
         $requests = RequestSearchHelper::get($this->getDatabase())
             ->byName($padded)
-            ->excludingPurgedData($this->getSiteConfiguration())
             ->fetch();
 
         return $requests;
