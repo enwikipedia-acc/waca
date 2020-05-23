@@ -92,7 +92,8 @@ class TotpCredentialProvider extends CredentialProviderBase
     public function setCredential(User $user, $factor, $data)
     {
         $issuer = 'ACC - ' . $this->getConfiguration()->getIrcNotificationsInstance();
-        $totp = new TOTP($user->getUsername());
+        $totp = TOTP::create();
+        $totp->setLabel($user->getUsername());
         $totp->setIssuer($issuer);
 
         $storedData = $this->getCredentialData($user->getId(), null);

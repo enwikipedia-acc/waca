@@ -8,7 +8,7 @@
 
 namespace Waca\Security\CredentialProviders;
 
-use Base32\Base32;
+use ParagonIE\ConstantTime\Base32;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
@@ -94,7 +94,7 @@ class ScratchTokenCredentialProvider extends CredentialProviderBase
         $plaintextScratch = array();
         $storedScratch = array();
         for ($i = 0; $i < 5; $i++) {
-            $token = Base32::encode(openssl_random_pseudo_bytes(10));
+            $token = Base32::encodeUpper(openssl_random_pseudo_bytes(10));
             $plaintextScratch[] = $token;
 
             $storedScratch[] = password_hash(

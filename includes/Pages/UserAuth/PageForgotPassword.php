@@ -8,7 +8,7 @@
 
 namespace Waca\Pages\UserAuth;
 
-use Base32\Base32;
+use ParagonIE\ConstantTime\Base32;
 use DateTimeImmutable;
 use Waca\DataObjects\Credential;
 use Waca\DataObjects\User;
@@ -73,7 +73,7 @@ class PageForgotPassword extends InternalPageBase
 
             $this->cleanExistingTokens($user);
 
-            $hash = Base32::encode(openssl_random_pseudo_bytes(30));
+            $hash = Base32::encodeUpper(openssl_random_pseudo_bytes(30));
 
             $encryptionHelper = new EncryptionHelper($this->getSiteConfiguration());
 
