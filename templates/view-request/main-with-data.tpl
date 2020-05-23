@@ -2,14 +2,6 @@
 
 {include file="view-request/request-private-data.tpl"}
 
-{block name="requestDataRevealLink"}
-    {if $showRevealLink}
-        (
-        <a href="{$baseurl}/internal.php/viewRequest?id={$requestId}&amp;hash={$revealHash}">reveal to others</a>
-        )
-    {/if}
-{/block}
-
 {block name="declinedeferbuttons"}
 {*    <div class="col-md-6">*}
         {include file="view-request/decline-button.tpl"}{include file="view-request/custom-button.tpl"}

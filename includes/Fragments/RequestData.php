@@ -215,14 +215,6 @@ trait RequestData
         $this->assign('requestRelatedIpRequestsCount', count($relatedIpRequests));
         $this->assign('requestRelatedIpRequests', $relatedIpRequests);
 
-        $this->assign('showRevealLink', false);
-        if ($request->getReserved() === $currentUser->getId() ||
-            $this->barrierTest('alwaysSeeHash', $currentUser, 'RequestData')
-        ) {
-            $this->assign('showRevealLink', true);
-            $this->assign('revealHash', $request->getRevealHash());
-        }
-
         $this->setupForwardedIpData($request);
     }
 

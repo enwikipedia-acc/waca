@@ -33,7 +33,11 @@
         <div class="col-md-8">
             {if $requestIsReserved}
                 {$requestReservedByName|escape}
-                {block name="requestDataRevealLink"}{/block}
+                {if $showRevealLink}
+                    (
+                    <a href="{$baseurl}/internal.php/viewRequest?id={$requestId}&amp;hash={$revealHash}">reveal to others</a>
+                    )
+                {/if}
             {else}
                 None
             {/if}

@@ -75,6 +75,14 @@ class PageViewRequest extends InternalPageBase
 
         $this->addJs("/api.php?action=templates&targetVariable=templateconfirms");
 
+        $this->assign('showRevealLink', false);
+        if ($request->getReserved() === $currentUser->getId() ||
+            $this->barrierTest('alwaysSeeHash', $currentUser, 'RequestData')
+        ) {
+            $this->assign('showRevealLink', true);
+            $this->assign('revealHash', $request->getRevealHash());
+        }
+
         if ($allowedPrivateData) {
             $this->setTemplate('view-request/main-with-data.tpl');
             $this->setupPrivateData($request, $currentUser, $this->getSiteConfiguration(), $database);
