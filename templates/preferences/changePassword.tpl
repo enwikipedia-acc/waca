@@ -8,7 +8,7 @@
         </div>
     </div>
 
-    <form method="post">
+    <form method="post" class="password-form">
         {include file="security/csrf.tpl"}
 
         <div class="form-group row">
@@ -24,7 +24,11 @@
                 <label class="col-form-label" for="inputNewpassword">Your new password</label>
             </div>
             <div class="col-md-6 col-lg-4 col-xl-3">
-                <input class="form-control" type="password" id="inputNewpassword" name="newpassword" required="required"/>
+                <input class="form-control password-strength" type="password" id="inputNewpassword" name="newpassword" required="required"/>
+                <div class="progress password-strength-progress">
+                    <div class="progress-bar" id="password-strength-bar"></div>
+                </div>
+                <span class="form-text text-danger" id="password-strength-warning"></span>
             </div>
         </div>
         <div class="form-group row">

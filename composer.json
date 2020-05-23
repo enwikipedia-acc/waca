@@ -13,6 +13,9 @@
         "paragonie/constant_time_encoding": "^2.0",
         "yubico/u2flib-server": "^1.0.1",
         "drvic10k/bootstrap-sortable": "^2.1",
+        "wikimedia/password-blacklist": "^0.1.4",
+        "dropbox/zxcvbn": "^4.4",
+        "bjeavons/zxcvbn-php": "^1.1",
         "ext-openssl": "*",
         "ext-dom": "*",
         "ext-pdo": "*",
@@ -24,16 +27,28 @@
         "phpunit/phpunit": "~5.6.2",
         "phpmd/phpmd": "~2.4.3"
     },
-    "repositories": [{
-        "type": "package",
-        "package": {
-            "name": "drvic10k/bootstrap-sortable",
-            "version": "2.1.0",
-            "dist": {
-                "url": "https://github.com/drvic10k/bootstrap-sortable/archive/2.1.0.zip",
-                "type": "zip"
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "drvic10k/bootstrap-sortable",
+                "version": "2.1.0",
+                "dist": {
+                    "url": "https://github.com/drvic10k/bootstrap-sortable/archive/2.1.0.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "dropbox/zxcvbn",
+                "version": "4.4.2",
+                "dist": {
+                    "url": "https://github.com/dropbox/zxcvbn/archive/v4.4.2.zip",
+                    "type": "zip"
+                }
             }
         }
-    }
     ]
 }

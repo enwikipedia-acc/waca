@@ -84,3 +84,34 @@ $(".jsconfirm").click(function() {
         return true;
     }
 });
+
+$(".password-strength").keyup(function () {
+    var strength = zxcvbn($(this).val());
+    var score = strength.score;
+
+    if (strength.password.length < 10) {
+        if(strength.feedback.warning === "") {
+            strength.feedback.warning = "Password is too short";
+        }
+
+        if(score > 2) {
+            score--;
+        }
+    }
+
+    var bg = "bg-danger";
+    if (score > 2) {
+        bg = "bg-warning";
+    }
+    if (score > 3) {
+        bg = "bg-success";
+    }
+
+    $("#password-strength-bar")
+        .removeClass()
+        .addClass("progress-bar")
+        .addClass("w-" + (Math.max(score, 0) * 25))
+        .addClass(bg);
+
+    $('#password-strength-warning').text(strength.feedback.warning);
+});

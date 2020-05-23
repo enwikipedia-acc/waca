@@ -12,7 +12,7 @@
                 <h3>Signing up for Wikipedia?</h3>
                 <p class="lead">You're not in the right place! Sorry about that.</p>
                 <p>Click the button directly below to go to the right place.</p>
-                <p><a class="btn btn-primary btn-large" href="index.php">Register for Wikipedia</a></p>
+                <p><a class="btn btn-primary btn-large" href="{$baseurl}/index.php">Register for Wikipedia</a></p>
             </div>
 
             <div class="alert alert-block alert-success">

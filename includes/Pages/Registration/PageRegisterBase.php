@@ -8,6 +8,7 @@
 
 namespace Waca\Pages\Registration;
 
+use Exception;
 use Waca\DataObjects\User;
 use Waca\DataObjects\UserRole;
 use Waca\Exceptions\AccessDeniedException;
@@ -24,6 +25,8 @@ abstract class PageRegisterBase extends InternalPageBase
     /**
      * Main function for this page, when no specific actions are called.
      * @throws AccessDeniedException
+     * @throws ApplicationLogicException
+     * @throws Exception
      */
     protected function main()
     {
@@ -41,13 +44,21 @@ abstract class PageRegisterBase extends InternalPageBase
             }
             catch (ApplicationLogicException $ex) {
                 SessionAlert::error($ex->getMessage());
-                $this->redirect('register');
+
+                $this->getDatabase()->rollBack();
+
+                $this->assignCSRFToken();
+                $this->assign("useOAuthSignup", $useOAuthSignup);
+                $this->applyErrorValues();
+                $this->setTemplate($this->getRegistrationTemplate());
+                $this->addJs("/vendor/dropbox/zxcvbn/dist/zxcvbn.js");
             }
         }
         else {
             $this->assignCSRFToken();
             $this->assign("useOAuthSignup", $useOAuthSignup);
             $this->setTemplate($this->getRegistrationTemplate());
+            $this->addJs("/vendor/dropbox/zxcvbn/dist/zxcvbn.js");
         }
     }
 
@@ -149,7 +160,7 @@ abstract class PageRegisterBase extends InternalPageBase
      * @param $useOAuthSignup
      *
      * @throws ApplicationLogicException
-     * @throws \Exception
+     * @throws Exception
      */
     protected function handlePost($useOAuthSignup)
     {
@@ -216,9 +227,17 @@ abstract class PageRegisterBase extends InternalPageBase
 
     /**
      * Entry point for registration complete
+     * @throws Exception
      */
     protected function done()
     {
         $this->setTemplate('registration/alert-registrationcomplete.tpl');
     }
-}
+
+    protected function applyErrorValues()
+    {
+        $this->assign('tplUsername', WebRequest::postString('name'));
+        $this->assign('tplEmail', WebRequest::postString('email'));
+        $this->assign('tplWikipediaUsername', WebRequest::postString('wname'));
+        $this->assign('tplConfRevId', WebRequest::postInt('conf_revid'));
+    }}

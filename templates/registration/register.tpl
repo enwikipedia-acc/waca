@@ -34,7 +34,7 @@
                         <label for="name" class="col-form-label">Desired username:</label>
                     </div>
                     <div class="col-sm-8 col-md-5 col-xl-4">
-                        <input class="form-control" id="name" type="text" name="name" required="required"/>
+                        <input class="form-control" id="name" type="text" name="name" required="required" value="{$tplUsername|default:""|escape}"/>
                     </div>
                 </div>
 
@@ -43,7 +43,11 @@
                         <label for="pass" class="col-form-label">Choose a password:</label>
                     </div>
                     <div class="col-sm-8 col-md-5 col-xl-4">
-                        <input class="form-control" id="pass" type="password" name="pass" required="required" aria-describedby="passHelp"/>
+                        <input class="form-control password-strength" id="pass" type="password" name="pass" required="required" aria-describedby="passHelp"/>
+                        <div class="progress password-strength-progress">
+                            <div class="progress-bar" id="password-strength-bar"></div>
+                        </div>
+                        <span class="form-text text-danger" id="password-strength-warning"></span>
                         <small id="passHelp" class="form-text text-muted">
                             Please do not use the same password you use on Wikipedia!
                         </small>
@@ -64,7 +68,7 @@
                         <label for="email" class="col-form-label">E-mail Address:</label>
                     </div>
                     <div class="col-sm-8 col-md-5 col-xl-4">
-                        <input class="form-control" id="email" type="text" name="email" required="required"/>
+                        <input class="form-control" id="email" type="text" name="email" required="required" value="{$tplEmail|default:""|escape}"/>
                         <small class="form-text text-muted">This is used to send you automatic notifications about events involving your account in the tool, including sending password reset emails.</small>
                     </div>
                 </div>
@@ -79,7 +83,7 @@
                                 <label for="wname" class="col-form-label">Wikipedia username:</label>
                             </div>
                             <div class="col-sm-8 col-md-5 col-xl-4">
-                                <input class="form-control" id="wname" type="text" name="wname" required="required"/>
+                                <input class="form-control" id="wname" type="text" name="wname" required="required" value="{$tplWikipediaUsername|default:""|escape}"/>
                             </div>
                         </div>
 
@@ -88,7 +92,7 @@
                                 <label for="conf_revid" class="col-form-label">Confirmation revision ID:</label>
                             </div>
                             <div class="col-sm-6 col-md-3 col-xl-3">
-                                <input class="form-control" id="conf_revid" type="text" name="conf_revid" required="required" aria-describedby="confRevHelp"/>
+                                <input class="form-control" id="conf_revid" type="text" name="conf_revid" required="required" aria-describedby="confRevHelp"  value="{$tplConfRevId|default:""|escape}"/>
                                 <small id="confRevHelp" class="form-text text-muted">
                                     This is just to confirm it is you requesting this account. We will check that the account you've
                                     specified above is the one you've used here.

@@ -135,6 +135,7 @@ class PageForgotPassword extends InternalPageBase
             $this->assignCSRFToken();
             $this->assign('user', $user);
             $this->setTemplate('forgot-password/forgotpwreset.tpl');
+            $this->addJs("/vendor/dropbox/zxcvbn/dist/zxcvbn.js");
         }
     }
 

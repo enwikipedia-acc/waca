@@ -38,6 +38,9 @@ class PageChangePassword extends InternalPageBase
                 }
 
                 $this->validateNewPassword($oldPassword, $newPassword, $newPasswordConfirmation, $user);
+
+                $passwordProvider = new PasswordCredentialProvider($this->getDatabase(), $this->getSiteConfiguration());
+                $passwordProvider->setCredential($user, 1, $newPassword);
             }
             catch (ApplicationLogicException $ex) {
                 SessionAlert::error($ex->getMessage());
@@ -46,9 +49,6 @@ class PageChangePassword extends InternalPageBase
                 return;
             }
 
-            $passwordProvider = new PasswordCredentialProvider($this->getDatabase(), $this->getSiteConfiguration());
-            $passwordProvider->setCredential($user, 1, $newPassword);
-
             SessionAlert::success('Password changed successfully!');
 
             $this->redirect('preferences');
@@ -56,6 +56,7 @@ class PageChangePassword extends InternalPageBase
         else {
             $this->assignCSRFToken();
             $this->setTemplate('preferences/changePassword.tpl');
+            $this->addJs("/vendor/dropbox/zxcvbn/dist/zxcvbn.js");
         }
     }
 

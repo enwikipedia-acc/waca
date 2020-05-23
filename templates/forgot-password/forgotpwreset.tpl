@@ -15,7 +15,11 @@
                     <div class="form-group row">
                         <div class="col-md-10 offset-md-1">
                             <label for="password" class="sr-only">New password</label>
-                            <input type="password" id="password" name="pw" placeholder="Password" class="form-control" required="required"/>
+                            <input type="password" id="password" name="pw" placeholder="Password" class="form-control password-strength" required="required"/>
+                            <div class="progress password-strength-progress">
+                                <div class="progress-bar" id="password-strength-bar"></div>
+                            </div>
+                            <span class="form-text text-danger" id="password-strength-warning"></span>
                         </div>
                     </div>
                     <div class="form-group row">

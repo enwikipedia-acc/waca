@@ -10,8 +10,12 @@ namespace Waca\Security\CredentialProviders;
 
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\PdoDatabase;
+use Waca\SessionAlert;
 use Waca\SiteConfiguration;
+use Wikimedia\PasswordBlacklist\PasswordBlacklist;
+use ZxcvbnPhp\Zxcvbn;
 
 class PasswordCredentialProvider extends CredentialProviderBase
 {
@@ -37,22 +41,50 @@ class PasswordCredentialProvider extends CredentialProviderBase
             return false;
         }
 
-        if(password_verify($data, $storedData->getData())) {
-            if(password_needs_rehash($storedData->getData(), self::PASSWORD_ALGO, array('cost' => self::PASSWORD_COST))){
-                $this->setCredential($user, $storedData->getFactor(), $data);
-            }
-
-            return true;
+        if (!password_verify($data, $storedData->getData())) {
+            return false;
         }
 
-        return false;
+        if (password_needs_rehash($storedData->getData(), self::PASSWORD_ALGO,
+            array('cost' => self::PASSWORD_COST))) {
+            try {
+                $this->reallySetCredential($user, $storedData->getFactor(), $data);
+            }
+            catch (OptimisticLockFailedException $e) {
+                // optimistic lock failed, but no biggie. We'll catch it on the next login.
+            }
+        }
+
+        $strengthTester = new Zxcvbn();
+        $strength = $strengthTester->passwordStrength($data, [$user->getUsername(), $user->getOnWikiName(), $user->getEmail()]);
+
+        /*  0 means the password is extremely guessable (within 10^3 guesses), dictionary words like 'password' or 'mother' score a 0
+            1 is still very guessable (guesses < 10^6), an extra character on a dictionary word can score a 1
+            2 is somewhat guessable (guesses < 10^8), provides some protection from unthrottled online attacks
+            3 is safely unguessable (guesses < 10^10), offers moderate protection from offline slow-hash scenario
+            4 is very unguessable (guesses >= 10^10) and provides strong protection from offline slow-hash scenario         */
+
+        if ($strength['score'] <= 1 || PasswordBlacklist::isBlacklisted($data)) {
+            // prevent login for extremely weak passwords
+            // at this point the user has authenticated via password, so they *know* it's weak.
+            SessionAlert::error('Your password is too weak to permit login. Please choose the "forgotten your password" option below and set a new one.', null);
+            return false;
+        }
+
+        return true;
     }
 
-    public function setCredential(User $user, $factor, $password)
-    {
+    /**
+     * @param User   $user
+     * @param int    $factor
+     * @param string $password
+     *
+     * @throws OptimisticLockFailedException
+     */
+    private function reallySetCredential(User $user, int $factor, string $password) : void {
         $storedData = $this->getCredentialData($user->getId());
 
-        if($storedData === null){
+        if ($storedData === null) {
             $storedData = $this->createNewCredential($user);
         }
 
@@ -63,6 +95,45 @@ class PasswordCredentialProvider extends CredentialProviderBase
         $storedData->save();
     }
 
+    /**
+     * @param User   $user
+     * @param int    $factor
+     * @param string $password
+     *
+     * @throws ApplicationLogicException
+     * @throws OptimisticLockFailedException
+     */
+    public function setCredential(User $user, $factor, $password)
+    {
+        if (PasswordBlacklist::isBlacklisted($password)) {
+            throw new ApplicationLogicException("Your new password is listed in the top 100,000 passwords. Please choose a stronger one.", null);
+        }
+
+        $strengthTester = new Zxcvbn();
+        $strength = $strengthTester->passwordStrength($password, [$user->getUsername(), $user->getOnWikiName(), $user->getEmail()]);
+
+        /*  0 means the password is extremely guessable (within 10^3 guesses), dictionary words like 'password' or 'mother' score a 0
+            1 is still very guessable (guesses < 10^6), an extra character on a dictionary word can score a 1
+            2 is somewhat guessable (guesses < 10^8), provides some protection from unthrottled online attacks
+            3 is safely unguessable (guesses < 10^10), offers moderate protection from offline slow-hash scenario
+            4 is very unguessable (guesses >= 10^10) and provides strong protection from offline slow-hash scenario         */
+
+        if ($strength['score'] <= 2 || mb_strlen($password) < 10) {
+            throw new ApplicationLogicException("Your new password is too weak. Please choose a stronger one.", null);
+        }
+
+        if ($strength['score'] <= 3) {
+            SessionAlert::warning("Your new password is not as strong as it could be. Consider replacing it with a stronger password.", null);
+        }
+
+        $this->reallySetCredential($user, $factor, $password);
+    }
+
+    /**
+     * @param User $user
+     *
+     * @throws ApplicationLogicException
+     */
     public function deleteCredential(User $user)
     {
         throw new ApplicationLogicException('Deletion of password credential is not allowed.');
