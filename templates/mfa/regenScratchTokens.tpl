@@ -14,7 +14,7 @@
                 <div class="card-body p-4">
                     <h4 class="card-title">Your new emergency scratch tokens</h4>
                     <p class="card-text">Below is your new set of scratch tokens. Please destroy any remaining scratch tokens you had from the last set - these are no longer valid.</p>
-                    <p class="card-text">Please keep these in a safe place - they're the only way you can get back into your account if you lose your code generating device. These codes will never be shown to you again, so please take a copy of them now!</p>
+                    <p class="card-text">Please keep these in a safe place - they're the only way you can get back into your account if you lose your code generating device. <strong>These codes will never be shown to you again, so please take a copy of them now!</strong></p>
                     <p class="card-text">Remember that each one can only be used once, so come back and generate some new emergency scratch tokens when you get low.</p>
                     <ul>
                         {foreach from=$tokens item="t"}
