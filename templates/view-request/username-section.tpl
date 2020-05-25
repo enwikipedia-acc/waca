@@ -36,5 +36,3 @@
 </div>
 
 {include file="view-request/antispoof-results.tpl"}
-
-<hr/>

@@ -32,10 +32,17 @@
     {/if}
 {/block}
 
-{block name="ipSection"}
-    {include file="view-request/ip-section.tpl"}
+{block name="usernameSection"}
+    {include file="view-request/username-section.tpl"}
+    <hr />
+{/block}
 
-    <hr/>
+{block name="ipSection"}
+    {if !$requestDataCleared}
+        {include file="view-request/ip-section.tpl"}
+
+        <hr/>
+    {/if}
 {/block}
 
 {block name="emailSection"}
