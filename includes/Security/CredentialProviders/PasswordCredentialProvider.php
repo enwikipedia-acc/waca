@@ -64,7 +64,7 @@ class PasswordCredentialProvider extends CredentialProviderBase
             3 is safely unguessable (guesses < 10^10), offers moderate protection from offline slow-hash scenario
             4 is very unguessable (guesses >= 10^10) and provides strong protection from offline slow-hash scenario         */
 
-        if ($strength['score'] <= 1 || PasswordBlacklist::isBlacklisted($data)) {
+        if ($strength['score'] <= 1 || PasswordBlacklist::isBlacklisted($data) || mb_strlen($data) < 8) {
             // prevent login for extremely weak passwords
             // at this point the user has authenticated via password, so they *know* it's weak.
             SessionAlert::error('Your password is too weak to permit login. Please choose the "forgotten your password" option below and set a new one.', null);
@@ -118,7 +118,7 @@ class PasswordCredentialProvider extends CredentialProviderBase
             3 is safely unguessable (guesses < 10^10), offers moderate protection from offline slow-hash scenario
             4 is very unguessable (guesses >= 10^10) and provides strong protection from offline slow-hash scenario         */
 
-        if ($strength['score'] <= 2 || mb_strlen($password) < 10) {
+        if ($strength['score'] <= 2 || mb_strlen($password) < 8) {
             throw new ApplicationLogicException("Your new password is too weak. Please choose a stronger one.", null);
         }
 

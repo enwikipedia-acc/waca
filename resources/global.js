@@ -89,7 +89,7 @@ $(".password-strength").keyup(function () {
     var strength = zxcvbn($(this).val());
     var score = strength.score;
 
-    if (strength.password.length < 10) {
+    if (strength.password.length < 8) {
         if(strength.feedback.warning === "") {
             strength.feedback.warning = "Password is too short";
         }
