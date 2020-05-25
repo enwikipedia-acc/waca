@@ -10,15 +10,14 @@ namespace Waca\Pages;
 
 use PDO;
 use Waca\DataObjects\Request;
-use Waca\DataObjects\User;
-use Waca\Helpers\SearchHelpers\RequestSearchHelper;
-use Waca\Helpers\SearchHelpers\UserSearchHelper;
-use Waca\Pages\RequestAction\PageBreakReservation;
+use Waca\Fragments\RequestListData;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
 class PageExpandedRequestList extends InternalPageBase
 {
+    use RequestListData;
+
     /**
      * Main function for this page, when no specific actions are called.
      * @return void
@@ -50,14 +49,9 @@ class PageExpandedRequestList extends InternalPageBase
             }
 
             $statement = $database->prepare($query);
-
             $totalRequestsStatement = $database->prepare($totalQuery);
 
-            $this->assign('defaultRequestState', $config->getDefaultRequestStateKey());
-
-            $type = $requestedStatus;
-
-            $statement->bindValue(":type", $type);
+            $statement->bindValue(":type", $requestedStatus);
             $statement->execute();
 
             $requests = $statement->fetchAll(PDO::FETCH_CLASS, Request::class);
@@ -67,10 +61,12 @@ class PageExpandedRequestList extends InternalPageBase
                 $req->setDatabase($database);
             }
 
-            $this->assign('requests', $requests);
-            $this->assign('header', $type);
+            $this->assign('requests', $this->prepareRequestData($requests));
+            $this->assign('header', $requestedStatus);
+            $this->assign('requestLimitShowOnly', $config->getMiserModeLimit());
+            $this->assign('defaultRequestState', $config->getDefaultRequestStateKey());
 
-            $totalRequestsStatement->bindValue(':type', $type);
+            $totalRequestsStatement->bindValue(':type', $requestedStatus);
             $totalRequestsStatement->execute();
             $totalRequests = $totalRequestsStatement->fetchColumn();
             $totalRequestsStatement->closeCursor();
@@ -78,60 +74,6 @@ class PageExpandedRequestList extends InternalPageBase
 
 
             $this->setHtmlTitle('{$header|escape}{if $totalRequests > 0} [{$totalRequests|escape}]{/if}');
-
-            $userIds = array_map(
-                function(Request $entry) {
-                    return $entry->getReserved();
-                },
-                $requests
-            );
-
-            $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchMap('username');
-            $this->assign('userList', $userList);
-
-            $requestTrustedIp = [];
-            $relatedEmailRequests = [];
-            $relatedIpRequests = [];
-            foreach ($requests as $request) {
-                $trustedIp = $this->getXffTrustProvider()->getTrustedClientIp(
-                    $request->getIp(),
-                    $request->getForwardedIp()
-                );
-
-                RequestSearchHelper::get($database)
-                    ->byIp($trustedIp)
-                    ->withConfirmedEmail()
-                    ->excludingPurgedData($this->getSiteConfiguration())
-                    ->excludingRequest($request->getId())
-                    ->getRecordCount($ipCount);
-
-                RequestSearchHelper::get($database)
-                    ->byEmailAddress($request->getEmail())
-                    ->withConfirmedEmail()
-                    ->excludingPurgedData($this->getSiteConfiguration())
-                    ->excludingRequest($request->getId())
-                    ->getRecordCount($emailCount);
-
-                $requestTrustedIp[$request->getId()] = $trustedIp;
-                $relatedEmailRequests[$request->getId()] = $emailCount;
-                $relatedIpRequests[$request->getId()] = $ipCount;
-            }
-            $this->assign('requestTrustedIp', $requestTrustedIp);
-            $this->assign('relatedEmailRequests', $relatedEmailRequests);
-            $this->assign('relatedIpRequests', $relatedIpRequests);
-
-            $this->assign('requestLimitShowOnly', $config->getMiserModeLimit());
-
-            $currentUser = User::getCurrent($database);
-            $this->assign('canBan', $this->barrierTest('set', $currentUser, PageBan::class));
-            $this->assign('canBreakReservation', $this->barrierTest('force', $currentUser, PageBreakReservation::class));
-
-            $this->assign('showPrivateData', $this->barrierTest('alwaysSeePrivateData', $currentUser, 'RequestData'));
-            $this->assign('xff', $this->getXffTrustProvider());
-
-            $this->assign('dataClearEmail', $this->getSiteConfiguration()->getDataClearEmail());
-            $this->assign('dataClearIp', $this->getSiteConfiguration()->getDataClearIp());
-
             $this->setTemplate('mainpage/expandedrequestlist.tpl');
         }
     }

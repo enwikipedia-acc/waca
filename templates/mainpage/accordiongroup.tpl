@@ -14,14 +14,14 @@
             {/if}
         </div>
     </div>
-    <div id="collapse{$section.api|escape}" class="collapse show" data-parent="#requestListAccordion">
+    <div id="collapse{$section.api|escape}" class="collapse" data-parent="#requestListAccordion">
         <div class="card-body">
             {if $section.help !== null}
                 <div class="alert alert-info alert-accordion">
                     {$section.help}{* this data is either hard-coded, or set to a html string in config. No user data here. *}
                 </div>
             {/if}
-            {include file="mainpage/requestlist.tpl" requests=$section showStatus={$section.special !== null}}
+            {include file="mainpage/requestlist.tpl" showStatus={$section.special !== null}}
         </div>
     </div>
 </div>

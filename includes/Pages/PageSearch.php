@@ -9,17 +9,17 @@
 namespace Waca\Pages;
 
 use Waca\DataObjects\Request;
-use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Fragments\RequestListData;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
-use Waca\Helpers\SearchHelpers\UserSearchHelper;
-use Waca\Pages\RequestAction\PageBreakReservation;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
 class PageSearch extends InternalPageBase
 {
+    use RequestListData;
+
     /**
      * Main function for this page, when no specific actions are called.
      */
@@ -55,58 +55,10 @@ class PageSearch extends InternalPageBase
             }
 
             // deal with results
-            $this->assign('requests', $results);
+            $this->assign('requests', $this->prepareRequestData($results));
+            $this->assign('resultCount', count($results));
             $this->assign('term', $searchTerm);
             $this->assign('target', $searchType);
-
-            $userIds = array_map(
-                function(Request $entry) {
-                    return $entry->getReserved();
-                },
-                $results);
-            $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchMap('username');
-            $this->assign('userList', $userList);
-
-            $requestTrustedIp = [];
-            $relatedEmailRequests = [];
-            $relatedIpRequests = [];
-            foreach ($results as $request) {
-                $trustedIp = $this->getXffTrustProvider()->getTrustedClientIp(
-                    $request->getIp(),
-                    $request->getForwardedIp()
-                );
-
-                RequestSearchHelper::get($this->getDatabase())
-                    ->byIp($trustedIp)
-                    ->withConfirmedEmail()
-                    ->excludingPurgedData($this->getSiteConfiguration())
-                    ->excludingRequest($request->getId())
-                    ->getRecordCount($ipCount);
-
-                RequestSearchHelper::get($this->getDatabase())
-                    ->byEmailAddress($request->getEmail())
-                    ->withConfirmedEmail()
-                    ->excludingPurgedData($this->getSiteConfiguration())
-                    ->excludingRequest($request->getId())
-                    ->getRecordCount($emailCount);
-
-                $requestTrustedIp[$request->getId()] = $trustedIp;
-                $relatedEmailRequests[$request->getId()] = $emailCount;
-                $relatedIpRequests[$request->getId()] = $ipCount;
-            }
-            $this->assign('requestTrustedIp', $requestTrustedIp);
-            $this->assign('relatedEmailRequests', $relatedEmailRequests);
-            $this->assign('relatedIpRequests', $relatedIpRequests);
-
-            $currentUser = User::getCurrent($this->getDatabase());
-            $this->assign('canBan', $this->barrierTest('set', $currentUser, PageBan::class));
-            $this->assign('canBreakReservation', $this->barrierTest('force', $currentUser, PageBreakReservation::class));
-
-            $this->assign('showPrivateData', $this->barrierTest('alwaysSeePrivateData', $currentUser, 'RequestData'));
-            $this->assign('xff', $this->getXffTrustProvider());
-
-            $this->assign('dataClearEmail', $this->getSiteConfiguration()->getDataClearEmail());
-            $this->assign('dataClearIp', $this->getSiteConfiguration()->getDataClearIp());
 
             $this->assignCSRFToken();
             $this->setTemplate('search/searchResult.tpl');

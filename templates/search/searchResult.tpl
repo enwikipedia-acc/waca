@@ -11,10 +11,10 @@
     <div class="row">
         <div class="col-md-12">
             <p class="lead">Searching for "{$term|escape}" as {$target}...</p>
-            {if count($requests) == 0}
+            {if $resultCount == 0}
                 {include file="alert.tpl" alertblock=false alerttype="alert-info" alertclosable=false alertheader='' alertmessage='No requests found!'}
             {else}
-                {include file="mainpage/requesttable.tpl" showStatus=true userlist=$userlist}
+                {include file="mainpage/requesttable.tpl" showStatus=true list=$requests}
             {/if}
         </div>
     </div>

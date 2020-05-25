@@ -5,7 +5,7 @@
         {if $showStatus}
             <th>Request state</th>
         {/if}
-        {if $showPrivateData}
+        {if $list->showPrivateData}
             <th>Email address</th>
             <th>IP address</th>
         {/if}
@@ -17,7 +17,7 @@
     </tr>
     </thead>
     <tbody>
-    {foreach from=$requests item="r"}
+    {foreach from=$list->requests item="r"}
         <tr>
             <td data-value="{$r->getId()}">
                 <a class="btn btn-sm{if $r->hasComments() == true} btn-info{else} btn-secondary{/if}"
@@ -28,30 +28,30 @@
                 <td>{$r->getStatus()}</td>
             {/if}
 
-            {if $showPrivateData}
+            {if $list->showPrivateData}
                 <td>
-                    {if $r->getEmail() === $dataClearEmail}
+                    {if $r->getEmail() === $list->dataClearEmail}
                         <span class="text-muted font-italic">Email address purged</span>
                     {else}
                         {$r->getEmail()|escape}
-                        <span class="badge badge-pill {if $relatedEmailRequests[$r->getId()] > 0}badge-danger{else}badge-secondary{/if}"
-                            data-toggle="tooltip" data-original-title="{$relatedEmailRequests[$r->getId()]} other request(s) from this email address"
+                        <span class="badge badge-pill {if $list->relatedEmailRequests[$r->getId()] > 0}badge-danger{else}badge-secondary{/if}"
+                            data-toggle="tooltip" data-original-title="{$list->relatedEmailRequests[$r->getId()]} other request(s) from this email address"
                         >
-                            {$relatedEmailRequests[$r->getId()]}
+                            {$list->relatedEmailRequests[$r->getId()]}
                         </span>
                     {/if}
                 </td>
 
 
-                <td data-value="{$requestTrustedIp[$r->getId()]|escape|iphex}">
-                    {if $requestTrustedIp[$r->getId()] === $dataClearIp}
+                <td data-value="{$list->requestTrustedIp[$r->getId()]|escape|iphex}">
+                    {if $list->requestTrustedIp[$r->getId()] === $list->dataClearIp}
                         <span class="text-muted font-italic">IP address purged</span>
                     {else}
-                        <a href="https://en.wikipedia.org/wiki/User_talk:{$requestTrustedIp[$r->getId()]|escape}" target="_blank">{$requestTrustedIp[$r->getId()]|escape}</a>
-                        <span class="badge badge-pill {if $relatedIpRequests[$r->getId()] > 0}badge-danger{else}badge-secondary{/if}"
-                              data-toggle="tooltip" data-original-title="{$relatedIpRequests[$r->getId()]} other request(s) from this IP address"
+                        <a href="https://en.wikipedia.org/wiki/User_talk:{$list->requestTrustedIp[$r->getId()]|escape}" target="_blank">{$list->requestTrustedIp[$r->getId()]|escape}</a>
+                        <span class="badge badge-pill {if $list->relatedIpRequests[$r->getId()] > 0}badge-danger{else}badge-secondary{/if}"
+                              data-toggle="tooltip" data-original-title="{$list->relatedIpRequests[$r->getId()]} other request(s) from this IP address"
                         >
-                            {$relatedIpRequests[$r->getId()]}
+                            {$list->relatedIpRequests[$r->getId()]}
                         </span>
                     {/if}
                 </td>
@@ -70,7 +70,7 @@
 
             {* Bans *}
             <td>
-                {if $canBan}
+                {if $list->canBan}
                     <div class="dropdown">
                         <button class="btn btn-danger btn-sm dropdown-toggle" type="button" id="banDropdown{$r->getId()}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <i class="fas fa-ban"></i>&nbsp;Ban&nbsp;<span class="caret"></span>
@@ -87,7 +87,7 @@
             {* Reserve status *}
             <td>
                 {if $r->getReserved() !== null && $r->getReserved() != $currentUser->getId()}
-                    <span class="d-none d-md-block">Being handled by {$userList[$r->getReserved()]|escape}</span>
+                    <span class="d-none d-md-block">Being handled by {$list->userList[$r->getReserved()]|escape}</span>
                 {/if}
             </td>
 
@@ -115,7 +115,7 @@
                             </button>
                         </form>
                     {else}
-                        {if $canBreakReservation }
+                        {if $list->canBreakReservation}
                             <form action="{$baseurl}/internal.php/viewRequest/breakReserve" method="post"
                                   class="form-row">
                                 {include file="security/csrf.tpl"}

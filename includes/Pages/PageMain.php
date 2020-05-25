@@ -10,9 +10,8 @@ namespace Waca\Pages;
 
 use PDO;
 use Waca\DataObjects\User;
+use Waca\Fragments\RequestListData;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
-use Waca\Helpers\SearchHelpers\UserSearchHelper;
-use Waca\Pages\RequestAction\PageBreakReservation;
 use Waca\PdoDatabase;
 use Waca\RequestStatus;
 use Waca\SiteConfiguration;
@@ -20,6 +19,8 @@ use Waca\Tasks\InternalPageBase;
 
 class PageMain extends InternalPageBase
 {
+    use RequestListData;
+
     /**
      * Main function for this page, when no actions are called.
      */
@@ -35,16 +36,7 @@ class PageMain extends InternalPageBase
         $this->assign('defaultRequestState', $config->getDefaultRequestStateKey());
         $this->assign('requestLimitShowOnly', $config->getMiserModeLimit());
 
-        // Get map of possible usernames
-        $userList = UserSearchHelper::get($database)->withReservedRequest();
-        $this->assign('userList', $userList);
-
         $seeAllRequests = $this->barrierTest('seeAllRequests', $currentUser, PageViewRequest::class);
-        $this->assign('showPrivateData', $this->barrierTest('alwaysSeePrivateData', $currentUser, 'RequestData'));
-        $this->assign('xff', $this->getXffTrustProvider());
-
-        $this->assign('dataClearEmail', $config->getDataClearEmail());
-        $this->assign('dataClearIp', $config->getDataClearIp());
 
         // Fetch request data
         $requestSectionData = array();
@@ -57,10 +49,6 @@ class PageMain extends InternalPageBase
 
         // Assign data to template
         $this->assign('requestSectionData', $requestSectionData);
-
-        // Extra rights
-        $this->assign('canBan', $this->barrierTest('set', $currentUser, PageBan::class));
-        $this->assign('canBreakReservation', $this->barrierTest('force', $currentUser, PageBreakReservation::class));
 
         $this->setTemplate('mainpage/mainpage.tpl');
     }
@@ -118,7 +106,7 @@ SQL;
 
         if($requestCount > 0) {
             $requestSectionData['Hospital - Requests failed auto-creation'] = array(
-                'requests' => $results,
+                'requests' => $this->prepareRequestData($results),
                 'total'    => $requestCount,
                 'api'      => 'hospital',
                 'type'     => 'hospital',
@@ -150,7 +138,7 @@ SQL;
 
         if($requestCount > 0) {
             $requestSectionData['Requests queued in the Job Queue'] = array(
-                'requests' => $results,
+                'requests' => $this->prepareRequestData($results),
                 'total'    => $requestCount,
                 'api'      => 'JobQueue',
                 'type'     => 'JobQueue',
@@ -181,45 +169,13 @@ SQL;
 
         foreach ($allRequestStates as $requestState => $requestStateConfig) {
 
-            $requestTrustedIp = [];
-            $relatedEmailRequests = [];
-            $relatedIpRequests = [];
-            foreach ($requestsByStatus[$requestState]['data'] as $request) {
-                $trustedIp = $this->getXffTrustProvider()->getTrustedClientIp(
-                    $request->getIp(),
-                    $request->getForwardedIp()
-                );
-
-                RequestSearchHelper::get($database)
-                    ->byIp($trustedIp)
-                    ->withConfirmedEmail()
-                    ->excludingPurgedData($config)
-                    ->excludingRequest($request->getId())
-                    ->getRecordCount($ipCount);
-
-                RequestSearchHelper::get($database)
-                    ->byEmailAddress($request->getEmail())
-                    ->withConfirmedEmail()
-                    ->excludingPurgedData($config)
-                    ->excludingRequest($request->getId())
-                    ->getRecordCount($emailCount);
-
-                $requestTrustedIp[$request->getId()] = $trustedIp;
-                $relatedEmailRequests[$request->getId()] = $emailCount;
-                $relatedIpRequests[$request->getId()] = $ipCount;
-            }
-
-
             $requestSectionData[$requestStateConfig['header']] = array(
-                'requests' => $requestsByStatus[$requestState]['data'],
+                'requests' => $this->prepareRequestData($requestsByStatus[$requestState]['data']),
                 'total'    => $requestsByStatus[$requestState]['count'],
                 'api'      => $requestStateConfig['api'],
                 'type'     => $requestState,
                 'special'  => null,
                 'help'     => $requestStateConfig['queuehelp'],
-                'requestTrustedIp' => $requestTrustedIp,
-                'relatedEmailRequests' => $relatedEmailRequests,
-                'relatedIpRequests' => $relatedIpRequests
             );
         }
     }
