@@ -69,7 +69,7 @@ class JobQueueSearchHelper extends SearchHelperBase
         return $this;
     }
 
-    public function byRequest($request)
+    public function byRequest(int $request) : JobQueueSearchHelper
     {
         $this->whereClause .= ' AND request = ?';
         $this->parameterList[] = $request;

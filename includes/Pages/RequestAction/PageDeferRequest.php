@@ -9,9 +9,12 @@
 namespace Waca\Pages\RequestAction;
 
 use DateTime;
+use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\Helpers\SearchHelpers\JobQueueSearchHelper;
+use Waca\RequestStatus;
 use Waca\SessionAlert;
 use Waca\WebRequest;
 
@@ -52,6 +55,20 @@ class PageDeferRequest extends RequestActionBase
             if (!$this->barrierTest('reopenOldRequest', $currentUser, 'RequestData')) {
                 throw new ApplicationLogicException(
                     "You are not allowed to re-open a request that has been closed for over a week.");
+            }
+        }
+
+        if ($request->getStatus() === RequestStatus::JOBQUEUE) {
+            /** @var JobQueue[] $pendingJobs */
+            $pendingJobs = JobQueueSearchHelper::get($database)->byRequest($request->getId())->statusIn([
+                JobQueue::STATUS_READY,
+                JobQueue::STATUS_WAITING,
+            ])->fetch();
+
+            foreach ($pendingJobs as $job) {
+                $job->setStatus(JobQueue::STATUS_CANCELLED);
+                $job->setError('Cancelled by request deferral');
+                $job->save();
             }
         }
 

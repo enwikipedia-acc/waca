@@ -59,6 +59,14 @@ class RunJobQueueTask extends ConsoleTaskBase
 
         foreach ($queuedJobs as $job) {
             try {
+                // refresh from the database
+                /** @var JobQueue $job */
+                $job = JobQueue::getById($job->getId(), $database);
+
+                if ($job->getStatus() !== JobQueue::STATUS_WAITING) {
+                    continue;
+                }
+
                 $database->beginTransaction();
                 $job->setStatus(JobQueue::STATUS_RUNNING);
                 $job->save();
