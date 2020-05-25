@@ -11,5 +11,5 @@
 {if $requests.total > 0}
     {include file="mainpage/requesttable.tpl" requests=$requests.requests relatedIpRequests=$requests.relatedIpRequests relatedEmailRequests=$requests.relatedEmailRequests requestTrustedIp=$requests.requestTrustedIp}
 {else}
-    <em>No requests at this time</em>
+    <span class="font-italic text-muted">No requests at this time</span>
 {/if}
