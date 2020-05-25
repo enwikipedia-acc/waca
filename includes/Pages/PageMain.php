@@ -111,7 +111,8 @@ SQL;
                 'api'      => 'hospital',
                 'type'     => 'hospital',
                 'special'  => 'Job Queue',
-                'help'     => 'This queue lists all the requests which have been attempted to be created in the background, but for which this has failed for one reason or another. Check the job queue to find the error. Requests here may need to be created manually, or it may be possible to re-queue the request for auto-creation by the tool, or it may have been created already. Use your own technical discretion here.'
+                'help'     => 'This queue lists all the requests which have been attempted to be created in the background, but for which this has failed for one reason or another. Check the job queue to find the error. Requests here may need to be created manually, or it may be possible to re-queue the request for auto-creation by the tool, or it may have been created already. Use your own technical discretion here.',
+                'showAll'  => false
             );
         }
     }
@@ -143,7 +144,8 @@ SQL;
                 'api'      => 'JobQueue',
                 'type'     => 'JobQueue',
                 'special'  => 'Job Queue',
-                'help'     => 'This section lists all the requests which are currently waiting to be created by the tool. Requests should automatically disappear from here within a few minutes.'
+                'help'     => 'This section lists all the requests which are currently waiting to be created by the tool. Requests should automatically disappear from here within a few minutes.',
+                'showAll'  => false
             );
         }
     }
@@ -176,6 +178,7 @@ SQL;
                 'type'     => $requestState,
                 'special'  => null,
                 'help'     => $requestStateConfig['queuehelp'],
+                'showAll'  => true
             );
         }
     }

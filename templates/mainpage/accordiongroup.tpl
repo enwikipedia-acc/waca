@@ -7,7 +7,7 @@
                     {$header|escape} <span class="badge {if $section.total > $requestLimitShowOnly}badge-danger{else}badge-info{/if} badge-pill">{if $section.total > 0}{$section.total}{/if}</span>
                 </button>
             </div>
-            {if $section.total > 0}
+            {if $section.total > 0 && $section.showAll}
                 <div class="col-auto">
                     <a href="{$baseurl}/internal.php/requestList?status={$section.type|escape:'url'}" class="btn text-muted">Show all</a>
                 </div>
