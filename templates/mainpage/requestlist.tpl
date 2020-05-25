@@ -9,7 +9,7 @@
     </div>
 {/if}
 {if $requests.total > 0}
-    {include file="mainpage/requesttable.tpl" requests=$requests.requests}
+    {include file="mainpage/requesttable.tpl" requests=$requests.requests relatedIpRequests=$requests.relatedIpRequests relatedEmailRequests=$requests.relatedEmailRequests requestTrustedIp=$requests.requestTrustedIp}
 {else}
     <em>No requests at this time</em>
 {/if}

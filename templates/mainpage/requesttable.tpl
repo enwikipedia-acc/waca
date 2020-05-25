@@ -5,6 +5,10 @@
         {if $showStatus}
             <th>Request state</th>
         {/if}
+        {if $showPrivateData}
+            <th>Email address</th>
+            <th>IP address</th>
+        {/if}
         <th>Username</th>
         <th><span class="d-none d-md-block">Request time</span></th>
         <th data-defaultsort="disabled"><!-- ban --></th>
@@ -22,6 +26,35 @@
 
             {if $showStatus}
                 <td>{$r->getStatus()}</td>
+            {/if}
+
+            {if $showPrivateData}
+                <td>
+                    {if $r->getEmail() === $dataClearEmail}
+                        <span class="text-muted font-italic">Email address purged</span>
+                    {else}
+                        {$r->getEmail()|escape}
+                        <span class="badge badge-pill {if $relatedEmailRequests[$r->getId()] > 0}badge-danger{else}badge-secondary{/if}"
+                            data-toggle="tooltip" data-original-title="{$relatedEmailRequests[$r->getId()]} other request(s) from this email address"
+                        >
+                            {$relatedEmailRequests[$r->getId()]}
+                        </span>
+                    {/if}
+                </td>
+
+
+                <td data-value="{$requestTrustedIp[$r->getId()]|escape|iphex}">
+                    {if $requestTrustedIp[$r->getId()] === $dataClearIp}
+                        <span class="text-muted font-italic">IP address purged</span>
+                    {else}
+                        <a href="https://en.wikipedia.org/wiki/User_talk:{$requestTrustedIp[$r->getId()]|escape}" target="_blank">{$requestTrustedIp[$r->getId()]|escape}</a>
+                        <span class="badge badge-pill {if $relatedIpRequests[$r->getId()] > 0}badge-danger{else}badge-secondary{/if}"
+                              data-toggle="tooltip" data-original-title="{$relatedIpRequests[$r->getId()]} other request(s) from this IP address"
+                        >
+                            {$relatedIpRequests[$r->getId()]}
+                        </span>
+                    {/if}
+                </td>
             {/if}
 
             {* Username *}

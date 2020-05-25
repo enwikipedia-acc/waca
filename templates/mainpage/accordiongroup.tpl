@@ -5,7 +5,7 @@
             {$header|escape} <span class="badge {if $section.total > $requestLimitShowOnly}badge-danger{else}badge-info{/if} badge-pill">{if $section.total > 0}{$section.total}{/if}</span>
         </button>
     </div>
-    <div id="collapse{$section.api|escape}" class="collapse out" data-parent="#requestListAccordion">
+    <div id="collapse{$section.api|escape}" class="collapse show" data-parent="#requestListAccordion">
         <div class="card-body">
             {if $section.help !== null}
                 <div class="alert alert-info alert-accordion">

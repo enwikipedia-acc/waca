@@ -29,8 +29,6 @@ class PageSearch extends InternalPageBase
 
         // Dual-mode page
         if (WebRequest::wasPosted()) {
-            $this->validateCSRFToken();
-
             $searchType = WebRequest::postString('type');
             $searchTerm = WebRequest::postString('term');
 
@@ -67,11 +65,48 @@ class PageSearch extends InternalPageBase
                 },
                 $results);
             $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchMap('username');
-            $this->assign('userlist', $userList);
+            $this->assign('userList', $userList);
+
+            $requestTrustedIp = [];
+            $relatedEmailRequests = [];
+            $relatedIpRequests = [];
+            foreach ($results as $request) {
+                $trustedIp = $this->getXffTrustProvider()->getTrustedClientIp(
+                    $request->getIp(),
+                    $request->getForwardedIp()
+                );
+
+                RequestSearchHelper::get($this->getDatabase())
+                    ->byIp($trustedIp)
+                    ->withConfirmedEmail()
+                    ->excludingPurgedData($this->getSiteConfiguration())
+                    ->excludingRequest($request->getId())
+                    ->getRecordCount($ipCount);
+
+                RequestSearchHelper::get($this->getDatabase())
+                    ->byEmailAddress($request->getEmail())
+                    ->withConfirmedEmail()
+                    ->excludingPurgedData($this->getSiteConfiguration())
+                    ->excludingRequest($request->getId())
+                    ->getRecordCount($emailCount);
+
+                $requestTrustedIp[$request->getId()] = $trustedIp;
+                $relatedEmailRequests[$request->getId()] = $emailCount;
+                $relatedIpRequests[$request->getId()] = $ipCount;
+            }
+            $this->assign('requestTrustedIp', $requestTrustedIp);
+            $this->assign('relatedEmailRequests', $relatedEmailRequests);
+            $this->assign('relatedIpRequests', $relatedIpRequests);
 
             $currentUser = User::getCurrent($this->getDatabase());
             $this->assign('canBan', $this->barrierTest('set', $currentUser, PageBan::class));
             $this->assign('canBreakReservation', $this->barrierTest('force', $currentUser, PageBreakReservation::class));
+
+            $this->assign('showPrivateData', $this->barrierTest('alwaysSeePrivateData', $currentUser, 'RequestData'));
+            $this->assign('xff', $this->getXffTrustProvider());
+
+            $this->assign('dataClearEmail', $this->getSiteConfiguration()->getDataClearEmail());
+            $this->assign('dataClearIp', $this->getSiteConfiguration()->getDataClearIp());
 
             $this->assignCSRFToken();
             $this->setTemplate('search/searchResult.tpl');

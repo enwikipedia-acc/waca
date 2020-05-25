@@ -40,6 +40,11 @@ class PageMain extends InternalPageBase
         $this->assign('userList', $userList);
 
         $seeAllRequests = $this->barrierTest('seeAllRequests', $currentUser, PageViewRequest::class);
+        $this->assign('showPrivateData', $this->barrierTest('alwaysSeePrivateData', $currentUser, 'RequestData'));
+        $this->assign('xff', $this->getXffTrustProvider());
+
+        $this->assign('dataClearEmail', $config->getDataClearEmail());
+        $this->assign('dataClearIp', $config->getDataClearIp());
 
         // Fetch request data
         $requestSectionData = array();
@@ -171,17 +176,50 @@ SQL;
             $search->withConfirmedEmail();
         }
 
-        $requestStates = $config->getRequestStates();
-        $requestsByStatus = $search->fetchByStatus(array_keys($requestStates));
+        $allRequestStates = $config->getRequestStates();
+        $requestsByStatus = $search->fetchByStatus(array_keys($allRequestStates));
 
-        foreach ($requestStates as $type => $v) {
-            $requestSectionData[$v['header']] = array(
-                'requests' => $requestsByStatus[$type]['data'],
-                'total'    => $requestsByStatus[$type]['count'],
-                'api'      => $v['api'],
-                'type'     => $type,
+        foreach ($allRequestStates as $requestState => $requestStateConfig) {
+
+            $requestTrustedIp = [];
+            $relatedEmailRequests = [];
+            $relatedIpRequests = [];
+            foreach ($requestsByStatus[$requestState]['data'] as $request) {
+                $trustedIp = $this->getXffTrustProvider()->getTrustedClientIp(
+                    $request->getIp(),
+                    $request->getForwardedIp()
+                );
+
+                RequestSearchHelper::get($database)
+                    ->byIp($trustedIp)
+                    ->withConfirmedEmail()
+                    ->excludingPurgedData($config)
+                    ->excludingRequest($request->getId())
+                    ->getRecordCount($ipCount);
+
+                RequestSearchHelper::get($database)
+                    ->byEmailAddress($request->getEmail())
+                    ->withConfirmedEmail()
+                    ->excludingPurgedData($config)
+                    ->excludingRequest($request->getId())
+                    ->getRecordCount($emailCount);
+
+                $requestTrustedIp[$request->getId()] = $trustedIp;
+                $relatedEmailRequests[$request->getId()] = $emailCount;
+                $relatedIpRequests[$request->getId()] = $ipCount;
+            }
+
+
+            $requestSectionData[$requestStateConfig['header']] = array(
+                'requests' => $requestsByStatus[$requestState]['data'],
+                'total'    => $requestsByStatus[$requestState]['count'],
+                'api'      => $requestStateConfig['api'],
+                'type'     => $requestState,
                 'special'  => null,
-                'help'     => $v['queuehelp'],
+                'help'     => $requestStateConfig['queuehelp'],
+                'requestTrustedIp' => $requestTrustedIp,
+                'relatedEmailRequests' => $relatedEmailRequests,
+                'relatedIpRequests' => $relatedIpRequests
             );
         }
     }
