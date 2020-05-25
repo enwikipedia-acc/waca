@@ -13,6 +13,13 @@
                     {include file="security/csrf.tpl"}
                     <div class="form-group row">
                         <div class="col-md-10 offset-md-1">
+                            <p>
+                                Please enter both your username and the email address with which you registered your tool account.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-10 offset-md-1">
                             <input class="form-control" type="text" id="username" name="username" placeholder="Username" class="form-control" required="required"/>
                         </div>
                     </div>
