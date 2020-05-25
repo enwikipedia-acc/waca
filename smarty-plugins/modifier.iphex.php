@@ -10,10 +10,10 @@ function smarty_modifier_iphex($input)
 {
     $output = $input;
 
-    if(filter_var($input, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false){
+    if (filter_var($input, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false) {
         $octets = explode('.', $input);
         $output = '';
-        foreach ($octets as $octet){
+        foreach ($octets as $octet) {
             $output .= str_pad(dechex($octet), 2, '0', STR_PAD_LEFT);
         }
 
