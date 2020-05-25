@@ -57,7 +57,7 @@ class IrcNotificationHelper
     ) {
         $this->primaryDatabase = $primaryDatabase;
 
-        if ($this->notificationsDatabase !== null) {
+        if ($notificationsDatabase !== null) {
             $this->notificationsDatabase = $notificationsDatabase;
             $this->notificationsEnabled = $siteConfiguration->getIrcNotificationsEnabled();
         }
@@ -131,16 +131,6 @@ class IrcNotificationHelper
     }
 
     /**
-     * send a promoted notification
-     *
-     * @param User $user
-     */
-    public function userPromoted(User $user)
-    {
-        $this->send("{$user->getUsername()} promoted to tool admin by " . $this->currentUser->getUsername());
-    }
-
-    /**
      * send a declined notification
      *
      * @param User   $user
@@ -149,17 +139,6 @@ class IrcNotificationHelper
     public function userDeclined(User $user, $reason)
     {
         $this->send("{$user->getUsername()} declined by " . $this->currentUser->getUsername() . " ($reason)");
-    }
-
-    /**
-     * send a demotion notification
-     *
-     * @param User   $user
-     * @param string $reason the reason the user was demoted
-     */
-    public function userDemoted(User $user, $reason)
-    {
-        $this->send("{$user->getUsername()} demoted by " . $this->currentUser->getUsername() . " ($reason)");
     }
 
     /**
