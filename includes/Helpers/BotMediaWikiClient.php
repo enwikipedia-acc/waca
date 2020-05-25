@@ -48,7 +48,7 @@ class BotMediaWikiClient implements IMediaWikiClient
         );
     }
 
-    function doApiCall($apiParams, $method = 'GET')
+    public function doApiCall($apiParams, $method = 'GET')
     {
         $this->ensureLoggedIn();
         $apiParams['assert'] = 'user';

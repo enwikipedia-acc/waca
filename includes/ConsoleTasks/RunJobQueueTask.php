@@ -15,7 +15,6 @@ use Waca\Background\Task\BotCreationTask;
 use Waca\Background\Task\UserCreationTask;
 use Waca\Background\Task\WelcomeUserTask;
 use Waca\DataObjects\JobQueue;
-use Waca\DataObjects\Request;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
 use Waca\Tasks\ConsoleTaskBase;
@@ -107,12 +106,6 @@ class RunJobQueueTask extends ConsoleTaskBase
                 $job->setError($ex->getMessage());
                 $job->setAcknowledged(0);
                 $job->save();
-
-                /** @var Request $request */
-                $request = Request::getById($job->getRequest(), $database);
-                if ($request === false) {
-                    $request = null;
-                }
 
                 Logger::backgroundJobIssue($this->getDatabase(), $job);
 

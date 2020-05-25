@@ -387,7 +387,7 @@ class RoleConfiguration
             $available[$role] = $this->roleConfig[$role];
 
             if (isset($available[$role]['_childRoles'])) {
-                $childRoles = self::getApplicableRoles($available[$role]['_childRoles']);
+                $childRoles = $this->getApplicableRoles($available[$role]['_childRoles']);
                 $available = array_merge($available, $childRoles);
 
                 unset($available[$role]['_childRoles']);

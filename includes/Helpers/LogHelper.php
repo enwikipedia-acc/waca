@@ -34,7 +34,7 @@ class LogHelper
      * @param PdoDatabase     $db
      * @param SecurityManager $securityManager
      *
-     * @return \Waca\DataObject[]
+     * @return DataObject[]
      */
     public static function getRequestLogsWithComments($requestId, PdoDatabase $db, SecurityManager $securityManager)
     {
@@ -347,8 +347,7 @@ HTML;
     {
         $userIds = array();
 
-        /** @var Log $logEntry */
-        foreach ($logs as $logEntry) {
+	    foreach ($logs as $logEntry) {
             if (!$logEntry instanceof Log) {
                 // if this happens, we've done something wrong with passing back the log data.
                 throw new Exception('Log entry is not an instance of a Log, this should never happen.');
@@ -369,10 +368,12 @@ HTML;
 
         $logData = array();
 
-        /** @var Log $logEntry */
-        foreach ($logs as $logEntry) {
+	    foreach ($logs as $logEntry) {
             $objectDescription = self::getObjectDescription($logEntry->getObjectId(), $logEntry->getObjectType(),
                 $database, $configuration);
+
+            // initialise to sane default
+            $comment = null;
 
             switch ($logEntry->getAction()) {
                 case 'Renamed':

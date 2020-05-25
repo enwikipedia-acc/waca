@@ -240,6 +240,7 @@ abstract class SearchHelperBase
         $query .= $this->applyOrder();
         $query .= $this->applyLimit();
 
+        /** @var PDOStatement $statement */
         $statement = $this->database->prepare($query);
         $statement->execute($this->parameterList);
 
