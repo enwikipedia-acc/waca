@@ -9,7 +9,7 @@
 ** See CREDITS for the list of developers.                               **
 ***************************************************************************/
 // Redirect user away from the current directory.
-require_once('../config.inc.php');
+require_once('../../config.inc.php');
 global $baseurl;
 header("Location: $baseurl/");
 die();

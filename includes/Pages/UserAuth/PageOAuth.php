@@ -14,6 +14,7 @@ use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\CurlException;
 use Waca\Exceptions\OAuthException;
+use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\Session;
 use Waca\Tasks\InternalPageBase;
@@ -72,6 +73,9 @@ class PageOAuth extends InternalPageBase
             // do nothing. The user's already revoked this access anyway.
         }
         catch (OAuthException $ex) {
+            // do nothing. The user's already revoked this access anyway.
+        }
+        catch (OptimisticLockFailedException $e) {
             // do nothing. The user's already revoked this access anyway.
         }
 

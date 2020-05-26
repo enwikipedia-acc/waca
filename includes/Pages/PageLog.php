@@ -12,7 +12,6 @@ use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
 use Waca\Helpers\LogHelper;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
-use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\Tasks\PagedInternalPageBase;
 use Waca\WebRequest;
 

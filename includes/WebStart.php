@@ -20,7 +20,6 @@ use Waca\Security\ContentSecurityPolicyManager;
 use Waca\Security\RoleConfiguration;
 use Waca\Security\SecurityManager;
 use Waca\Security\TokenManager;
-use Waca\Tasks\IRoutedTask;
 use Waca\Tasks\ITask;
 use Waca\Tasks\InternalPageBase;
 use Waca\Tasks\PageBase;
@@ -80,8 +79,6 @@ class WebStart extends ApplicationBase
 
                 $identificationVerifier = new IdentificationVerifier($page->getHttpHelper(), $siteConfiguration,
                     $database);
-                $page->setIdentificationVerifier($identificationVerifier);
-
                 $page->setSecurityManager(new SecurityManager($identificationVerifier, new RoleConfiguration()));
 
                 if ($siteConfiguration->getTitleBlacklistEnabled()) {

@@ -23,7 +23,7 @@ class StringFunctions
         $uname = mb_ereg_replace("^[ \t]+|[ \t]+$", "", $username);
 
         // convert first char to uppercase
-        $uname = $this->ucfirst($uname);
+        $uname = $this->upperCaseFirst($uname);
 
         // replace spaces with underscores
         $uname = mb_ereg_replace("[ ]+", "_", $uname);
@@ -74,7 +74,7 @@ class StringFunctions
      *
      * @return string
      */
-    public function ucfirst($string)
+    public function upperCaseFirst($string)
     {
         if (ord($string) < 128) {
             return ucfirst($string);

@@ -23,12 +23,6 @@ use Waca\WebRequest;
 class StatsAction extends XmlApiPageBase implements IXmlApiAction
 {
     /**
-     * The target user
-     * @var User $user
-     */
-    private $user;
-
-    /**
      * Summary of execute
      *
      * @param DOMElement $apiDocument
@@ -62,16 +56,14 @@ class StatsAction extends XmlApiPageBase implements IXmlApiAction
             return $apiDocument;
         }
 
-        $this->user = $user;
-
         $oauth = new OAuthUserHelper($user, $this->getDatabase(), $this->getOAuthProtocolHelper(),
             $this->getSiteConfiguration());
 
-        $userElement->setAttribute("username", $this->user->getUsername());
-        $userElement->setAttribute("status", $this->user->getStatus());
-        $userElement->setAttribute("lastactive", $this->user->getLastActive());
-        $userElement->setAttribute("welcome_template", $this->user->getWelcomeTemplate());
-        $userElement->setAttribute("onwikiname", $this->user->getOnWikiName());
+        $userElement->setAttribute("username", $user->getUsername());
+        $userElement->setAttribute("status", $user->getStatus());
+        $userElement->setAttribute("lastactive", $user->getLastActive());
+        $userElement->setAttribute("welcome_template", $user->getWelcomeTemplate());
+        $userElement->setAttribute("onwikiname", $user->getOnWikiName());
         $userElement->setAttribute("oauth", $oauth->isFullyLinked() ? "true" : "false");
 
         return $apiDocument;

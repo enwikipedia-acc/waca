@@ -10,7 +10,7 @@ namespace Waca\API\Actions;
 
 use DOMElement;
 use Waca\API\ApiException as ApiException;
-use Waca\API\IXmlApiAction as IApiAction;
+use Waca\API\IXmlApiAction;
 use Waca\DataObjects\User;
 use Waca\Tasks\XmlApiPageBase;
 use Waca\WebRequest;
