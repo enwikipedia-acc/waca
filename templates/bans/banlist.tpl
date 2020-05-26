@@ -54,7 +54,7 @@
                         <td>{$usernames[$ban->getUser()]|escape}</td>
                         <td>{$ban->getReason()|escape}</td>
                         <td class="text-nowrap">{$ban->getDate()} <span class="text-muted">({$ban->getDate()|relativedate})</span></td>
-                        <td class="text-nowrap">{if $ban->getDuration() == -1}Indefinite{else}{date("Y-m-d H:i:s", $ban->getDuration())}{/if}</td>
+                        <td class="text-nowrap">{if $ban->getDuration() === null}Indefinite{else}{date("Y-m-d H:i:s", $ban->getDuration())}{/if}</td>
 
                         {if $canRemove}
                             <td class="table-button-cell">

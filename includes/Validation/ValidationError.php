@@ -47,8 +47,7 @@ class ValidationError
         self::EMAIL_INVALID     => 'Invalid E-mail address supplied. Please check you entered it correctly.',
         self::EMAIL_MISMATCH    => 'The email addresses you entered do not match. Please try again.',
         self::OPEN_REQUEST_NAME => 'There is already an open request with this name in this system.',
-        self::BANNED            => 'I\'m sorry, but you are currently banned from requesting accounts using this tool. '
-            . 'However, you can still send an email to accounts-enwiki-l@lists.wikimedia.org to request an account.',
+        self::BANNED            => 'Sorry, you are currently banned from requesting accounts using this tool.',
         self::BANNED_TOR        => 'Tor exit nodes are currently banned from using this tool due to excessive abuse. '
             . 'Please note that Tor is also currently banned from editing Wikipedia.',
     );

@@ -39,13 +39,20 @@ class Ban extends DataObject
     {
         if ($target !== null) {
             $query = <<<SQL
-SELECT * FROM ban WHERE target = :target AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;
+SELECT * FROM ban 
+WHERE target = :target 
+  AND (duration > UNIX_TIMESTAMP() OR duration is null) 
+  AND active = 1;
 SQL;
             $statement = $database->prepare($query);
             $statement->bindValue(":target", $target);
         }
         else {
-            $query = "SELECT * FROM ban WHERE (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;";
+            $query = <<<SQL
+SELECT * FROM ban 
+WHERE (duration > UNIX_TIMESTAMP() OR duration is null) 
+  AND active = 1;
+SQL;
             $statement = $database->prepare($query);
         }
 
@@ -75,7 +82,7 @@ SQL;
         $statement = $database->prepare(<<<SQL
 SELECT *
 FROM ban
-WHERE id = :id  AND (duration > UNIX_TIMESTAMP() OR duration = -1) AND active = 1;
+WHERE id = :id  AND (duration > UNIX_TIMESTAMP() OR duration is null) AND active = 1;
 SQL
         );
         $statement->bindValue(":id", $id);
@@ -106,7 +113,7 @@ SQL
 SELECT * FROM ban
 WHERE type = :type
 	AND target = :target
-	AND (duration > UNIX_TIMESTAMP() OR duration = -1)
+	AND (duration > UNIX_TIMESTAMP() OR duration is null)
 	AND active = 1;
 SQL;
         $statement = $database->prepare($query);
