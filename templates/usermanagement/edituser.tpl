@@ -1,43 +1,122 @@
 {extends file="pagebase.tpl"}
 {block name="content"}
-    <h3>User Settings for {$user->getUsername()|escape}</h3>
+    <div class="row">
+        <div class="col-md-12" >
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">User Management <small class="text-muted">Approve, suspend, promote, demote, etc.</small></h1>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12"><h3>User Settings for {$user->getUsername()|escape}</h3></div>
+    </div>
+
     <form method="post">
         {include file="security/csrf.tpl"}
-        <div class="form-group">
-            <label for="user_name">Username:</label>
-            <input class="form-control" type="text" id="user_name" value="{$user->getUsername()|escape}" required="required" readonly="readonly"/>
+        <div class="form-group row">
+            <div class="offset-lg-2 col-md-3 col-lg-2">
+                <label for="user_name" class="col-form-label">Username:</label>
+            </div>
+            <div class="col-md-8 col-lg-6 col-xl-4">
+                <input class="form-control" type="text" id="user_name" value="{$user->getUsername()|escape}"
+                       required="required" readonly="readonly"/>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="user_status">User status:</label>
-            <input class="form-control" type="text" id="user_status" value="{$user->getStatus()|escape}" required="required" readonly="readonly"/>
+        <div class="form-group row">
+            <div class="offset-lg-2 col-md-3 col-lg-2"><label for="user_status" class="col-form-label">User status:</label></div>
+            <div class="col-md-4 col-lg-3 col-xl-2">
+                <input class="form-control" type="text" id="user_status" value="{$user->getStatus()|escape}" required="required" readonly="readonly"/>
+            </div>
         </div>
 
-        <div class="form-group">
-            <label for="user_email">Email Address:</label>
-            <input class="form-control" type="email" id="user_email" name="user_email"
-                   value="{$user->getEmail()|escape}" required="required"/>
+        <div class="form-group row">
+            <div class="offset-lg-2 col-md-3 col-lg-2"><label for="user_email" class="col-form-label">Email Address:</label></div>
+            <div class="col-md-8 col-lg-6 col-xl-4">
+                <input class="form-control" type="email" id="user_email" name="user_email"
+                    value="{$user->getEmail()|escape}" required="required"/>
+            </div>
         </div>
 
         {if $oauth->isFullyLinked() || $oauth->isPartiallyLinked()}
-            <div class="form-group">
-                <label for="user_onwikiname">On-wiki Username:</label>
-                <span class="form-control uneditable-input"
-                      id="user_onwikiname">{$user->getOnWikiName()|escape}</span>
-                <span class="badge {if $oauth->isPartiallyLinked()}badge-danger{else}badge-success{/if}">OAuth</span>
+            <div class="form-group row">
+                <div class="offset-lg-2 col-md-3 col-lg-2"><label for="user_onwikiname" class="col-form-label">On-wiki Username:</label></div>
+                <div class="col-md-8 col-lg-6 col-xl-4">
+                    <span class="form-control uneditable-input"
+                          id="user_onwikiname">{$user->getOnWikiName()|escape}</span>
+                    <span class="badge {if $oauth->isPartiallyLinked()}badge-danger{else}badge-success{/if}">OAuth</span>
+                </div>
             </div>
         {else}
-            <div class="form-group">
-                <label for="user_onwikiname">On-wiki Username:</label>
-                <input class="form-control" type="text" id="user_onwikiname" name="user_onwikiname"
-                       value="{$user->getOnWikiName()|escape}" required="required"/>
+            <div class="form-group row">
+                <div class="offset-lg-2 col-md-3 col-lg-2"><label for="user_onwikiname" class="col-form-label">On-wiki Username:</label></div>
+                <div class="col-md-8 col-lg-6 col-xl-4">
+                    <input class="form-control" type="text" id="user_onwikiname" name="user_onwikiname"
+                           value="{$user->getOnWikiName()|escape}" required="required"/>
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <div class="offset-lg-2 col-md-3 col-lg-2">
+                    <label for="inputSig" class="col-form-label">Signature (wikicode)</label>
+                </div>
+                <div class="col-md-8 col-lg-6 col-xl-4">
+                    <input class="form-control" type="text" id="inputSig" name="sig" value="{$currentUser->getWelcomeSig()|escape}"/>
+                </div>
             </div>
         {/if}
 
+        <div class="form-group row">
+            <div class="offset-lg-2 col-md-3 col-lg-2">
+                <label for="inputEmailsig" class="col-form-label">Email signature</label>
+            </div>
+            <div class="col-md-9 col-lg-7 col-xl-6">
+                <div class="form-control prewrap minh-5">{$user->getEmailSig()|escape}</div>
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <div class="offset-lg-2 col-md-3 col-lg-2">
+                <label class="col-form-label">Account Creation Mode</label>
+            </div>
+            <div class="col-md-9 col-lg-7 col-xl-6">
+                <div class="alert alert-info alert-block">
+                    Beware of setting this value to one the user can't use. It won't break things, but it will make things inconvenient.
+                </div>
+                <div class="custom-control custom-radio">
+                    <input type="radio" name="creationmode" value="0" class="custom-control-input" id="autocreateNone"
+                           {if $user->getCreationMode() == 0}checked="checked"{/if} />
+                    <label class="custom-control-label" for="autocreateNone">
+                        {if !$canManualCreate}<span class="badge badge-danger">Not authorised</span>{/if}
+                        Create accounts manually using Special:CreateAccount
+                    </label>
+                </div>
+
+                <div class="custom-control custom-radio">
+                    <input type="radio" name="creationmode" value="1" class="custom-control-input" id="autocreateOauth"
+                           {if $user->getCreationMode() == 1}checked="checked"{/if} />
+                    <label class="custom-control-label" for="autocreateOauth">
+                        {if !$canOauthCreate}<span class="badge badge-danger">Not authorised</span>{/if}
+                        Use my Wikimedia account to create the accounts on my behalf where possible
+                    </label>
+                </div>
+
+                <div class="custom-control custom-radio">
+                    <input type="radio" name="creationmode" value="2" class="custom-control-input" id="autocreateBot"
+                           {if $user->getCreationMode() == 2}checked="checked"{/if} />
+                    <label class="custom-control-label" for="autocreateBot">
+                        {if !$canBotCreate}<span class="badge badge-danger">Not authorised</span>{/if}
+                        Use a bot to create the accounts on my behalf where possible
+                    </label>
+                </div>
+            </div>
+        </div>
+
+
         <input type="hidden" name="updateversion" value="{$user->getUpdateVersion()}"/>
 
-        <div class="form-group">
-            <button type="submit" class="btn btn-primary">Save preferences</button>
+        <div class="form-group row">
+            <div class="offset-md-3 offset-lg-4 col-md-3"><button type="submit" class="btn btn-primary btn-block">Save preferences</button></div>
         </div>
     </form>
 {/block}

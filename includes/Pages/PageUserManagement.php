@@ -482,15 +482,17 @@ class PageUserManagement extends InternalPageBase
                 throw new ApplicationLogicException('Invalid email address');
             }
 
-            if (!$oauth->isFullyLinked()) {
+            if (!($oauth->isFullyLinked() || $oauth->isPartiallyLinked())) {
                 if (trim($newOnWikiName) == "") {
                     throw new ApplicationLogicException('New on-wiki username cannot be blank');
                 }
 
                 $user->setOnWikiName($newOnWikiName);
+                $user->setWelcomeSig(WebRequest::postString('sig'));
             }
 
             $user->setEmail($newEmail);
+            $user->setCreationMode(WebRequest::postInt('creationmode'));
 
             $user->setUpdateVersion(WebRequest::postInt('updateversion'));
 
@@ -511,6 +513,13 @@ class PageUserManagement extends InternalPageBase
             $this->setTemplate('usermanagement/edituser.tpl');
             $this->assign('user', $user);
             $this->assign('oauth', $oauth);
+
+            $this->assign('canManualCreate',
+                $this->barrierTest(User::CREATION_MANUAL, $user, 'RequestCreation'));
+            $this->assign('canOauthCreate',
+                $this->barrierTest(User::CREATION_OAUTH, $user, 'RequestCreation'));
+            $this->assign('canBotCreate',
+                $this->barrierTest(User::CREATION_BOT, $user, 'RequestCreation'));
         }
     }
 
