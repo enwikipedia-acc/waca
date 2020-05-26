@@ -15,7 +15,6 @@ use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\LogHelper;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
-use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\IdentificationVerifier;
 use Waca\Pages\PageUserManagement;
 use Waca\Tasks\InternalPageBase;

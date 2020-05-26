@@ -10,10 +10,7 @@ namespace Waca\API\Actions;
 
 use Waca\API\IJsonApiAction;
 use Waca\DataObjects\EmailTemplate;
-use Waca\DataObjects\User;
-use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\Tasks\JsonApiPageBase;
-use Waca\WebRequest;
 
 class JsTemplateConfirmsAction extends JsonApiPageBase implements IJsonApiAction
 {

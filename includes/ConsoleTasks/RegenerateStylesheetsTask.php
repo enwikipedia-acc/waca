@@ -8,10 +8,8 @@
 
 namespace Waca\ConsoleTasks;
 
-use Exception;
 use ScssPhp\ScssPhp\Compiler;
 use Waca\Tasks\ConsoleTaskBase;
-use Waca\WebRequest;
 
 class RegenerateStylesheetsTask extends ConsoleTaskBase
 {

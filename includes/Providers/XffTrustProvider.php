@@ -26,7 +26,7 @@ class XffTrustProvider implements IXffTrustProvider
      * Array of IP addresses which are TRUSTED proxies
      * @var string[]
      */
-    private $trustedCache = array();
+    private $trustedCache;
     /**
      * Array of IP addresses which are UNTRUSTED proxies
      * @var string[]

@@ -9,10 +9,6 @@
 namespace Waca\Helpers\Interfaces;
 
 use Exception;
-use JWT;
-use OAuthRequest;
-use OAuthSignatureMethod_HMAC_SHA1;
-use OAuthToken;
 use stdClass;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\CurlException;
