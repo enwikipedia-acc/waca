@@ -51,7 +51,9 @@
         {if $nav__canViewRequest}
             <li class="nav-item">
                 <form class="navbar-form form-search" action="{$baseurl}/internal.php/viewRequest">
-                    <input class="form-control text-white bg-dark border-0" type="number" placeholder="Jump to request ID" name="id" class="search-query">
+                    <label class="sr-only" for="jumpToReq">Enter request ID to jump to request</label>
+                    <input class="form-control text-white bg-dark border-0" type="number" data-toggle="tooltip" id="jumpToReq"
+                           data-title="Enter request ID to jump to request" placeholder="Jump to request ID" name="id">
                 </form>
             </li>
         {/if}
@@ -59,7 +61,7 @@
     <ul class="navbar-nav ml-auto">
         {if ! $currentUser->isCommunityUser()}
             <li class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" ria-haspopup="true" aria-expanded="false" data-toggle="dropdown"><i class="fas fa-user"></i>
+                <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown"><i class="fas fa-user"></i>
                     {$currentUser->getUsername()}
                 </a>
                 <div class="dropdown-menu dropdown-menu-right">
@@ -86,6 +88,7 @@
                     <a class="dropdown-item" href="//en.wikipedia.org/wiki/Wikipedia:Username_policy">
                         <i class="fas fa-exclamation-triangle"></i>&nbsp;Username policy
                     </a>
+                    <!--suppress HtmlUnknownAnchorTarget -->
                     <a class="dropdown-item" href="#modalFlowchart" role="button" data-toggle="modal">
                         <i class="fas fa-check"></i>&nbsp;Similar account flowchart
                     </a>
@@ -107,7 +110,7 @@
         {else}
             <li>
                 <span class="navbar-text text-muted pull-right">
-                    <strong>Not logged in</strong>
+                    <a class="text-muted" href="{$baseurl}/internal.php/login"><strong>Not logged in</strong></a>
                 </span>
             </li>
         {/if}

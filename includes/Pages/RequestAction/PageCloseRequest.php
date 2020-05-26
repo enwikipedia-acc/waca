@@ -219,6 +219,8 @@ class PageCloseRequest extends RequestActionBase
         $this->assign('reserveOverride', WebRequest::postBoolean('reserveOverride') ? 'true' : 'false');
         $this->assign('createOverride', WebRequest::postBoolean('createOverride') ? 'true' : 'false');
 
+        $this->skipAlerts();
+
         $this->setTemplate($templateName);
     }
 

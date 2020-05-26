@@ -11,9 +11,7 @@ namespace Waca\Exceptions;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
 use Waca\Fragments\NavigationMenuAccessControl;
-use Waca\Helpers\HttpHelper;
 use Waca\Helpers\SearchHelpers\LogSearchHelper;
-use Waca\IdentificationVerifier;
 use Waca\PdoDatabase;
 use Waca\Security\SecurityManager;
 
@@ -55,7 +53,6 @@ class AccessDeniedException extends ReadableException
         $database = PdoDatabase::getDatabaseConnection('acc');
         $currentUser = User::getCurrent($database);
         $this->assign('currentUser', $currentUser);
-        $this->assign("loggedIn", (!$currentUser->isCommunityUser()));
 
         if($this->securityManager !== null) {
             $this->setupNavMenuAccess($currentUser);

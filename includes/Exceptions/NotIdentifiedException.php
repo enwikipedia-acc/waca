@@ -47,7 +47,6 @@ class NotIdentifiedException extends ReadableException
         $database = PdoDatabase::getDatabaseConnection('acc');
         $currentUser = User::getCurrent($database);
         $this->assign('currentUser', $currentUser);
-        $this->assign("loggedIn", (!$currentUser->isCommunityUser()));
 
         if($this->securityManager !== null) {
             $this->setupNavMenuAccess($currentUser);

@@ -21,6 +21,7 @@ class Page404 extends InternalPageBase
             header("HTTP/1.1 404 Not Found");
         }
 
+        $this->skipAlerts();
         $this->setTemplate("404.tpl");
     }
 

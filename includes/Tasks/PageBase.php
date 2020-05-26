@@ -10,7 +10,6 @@ namespace Waca\Tasks;
 
 use Exception;
 use SmartyException;
-use Waca\DataObjects\SiteNotice;
 use Waca\DataObjects\User;
 use Waca\ExceptionHandler;
 use Waca\Exceptions\ApplicationLogicException;
@@ -40,6 +39,8 @@ abstract class PageBase extends TaskBase implements IRoutedTask
     private $cspManager;
     /** @var string[] Extra JS files to include */
     private $extraJs = array();
+    /** @var bool Don't show (and hence clear) session alerts when this page is displayed  */
+    private $hideAlerts = false;
 
     /**
      * Sets the route the request will take. Only should be called from the request router or barrier test.
@@ -102,6 +103,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 
             $database->commit();
         }
+        /** @noinspection PhpRedundantCatchClauseInspection */
         catch (ApplicationLogicException $ex) {
             // it's an application logic exception, so nothing went seriously wrong with the site. We can use the
             // standard templating system for this.
@@ -112,6 +114,8 @@ abstract class PageBase extends TaskBase implements IRoutedTask
             // Reset smarty
             $this->setupPage();
 
+            $this->skipAlerts();
+
             // Set the template
             $this->setTemplate('exception/application-logic.tpl');
             $this->assign('message', $ex->getMessage());
@@ -120,6 +124,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
             $this->isRedirecting = false;
             $this->headerQueue = array();
         }
+        /** @noinspection PhpRedundantCatchClauseInspection */
         catch (OptimisticLockFailedException $ex) {
             // it's an optimistic lock failure exception, so nothing went seriously wrong with the site. We can use the
             // standard templating system for this.
@@ -131,6 +136,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
             $this->setupPage();
 
             // Set the template
+            $this->skipAlerts();
             $this->setTemplate('exception/optimistic-lock-failure.tpl');
             $this->assign('message', $ex->getMessage());
 
@@ -187,9 +193,11 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 
         $this->assign('extraJs', $this->extraJs);
 
-        // If we're actually displaying content, we want to add the session alerts here!
-        $this->assign('alerts', SessionAlert::getAlerts());
-        SessionAlert::clearAlerts();
+        if (!$this->hideAlerts) {
+            // If we're actually displaying content, we want to add the session alerts here!
+            $this->assign('alerts', SessionAlert::getAlerts());
+            SessionAlert::clearAlerts();
+        }
 
         $this->assign('htmlTitle', $this->htmlTitle);
     }
@@ -224,6 +232,14 @@ abstract class PageBase extends TaskBase implements IRoutedTask
     public function setCspManager(ContentSecurityPolicyManager $cspManager): void
     {
         $this->cspManager = $cspManager;
+    }
+
+    /**
+     * Skip the display of session alerts in this page
+     */
+    public function skipAlerts(): void
+    {
+        $this->hideAlerts = true;
     }
 
     /**

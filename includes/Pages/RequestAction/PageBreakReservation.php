@@ -80,6 +80,8 @@ class PageBreakReservation extends RequestActionBase
             $this->assign("reservedUser", User::getById($request->getReserved(), $database));
             $this->assign("updateversion", WebRequest::postInt('updateversion'));
 
+            $this->skipAlerts();
+
             $this->setTemplate("confirmations/breakreserve.tpl");
         }
         else {

@@ -42,6 +42,7 @@ class PageComment extends RequestActionBase
             $this->assignCSRFToken();
             $this->assign("request", $request);
             $this->assign("comment", $commentText);
+            $this->skipAlerts();
             $this->setTemplate("privpol-warning.tpl");
 
             return;

@@ -1,4 +1,4 @@
-﻿{extends file="base.tpl"}
+﻿{extends file="pagebase.tpl"}
 {block name="content"}
 <div class="row">
     <div class="col-md-12" >
@@ -13,7 +13,7 @@
         <div class="accordion" id="teamAccordion">
             <div class="card">
                 <div class="card-header position-relative py-0" id="accordionHeader1">
-                    <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#teamAccordion" href="#collapseOne" aria-controls="collapseOne">Active Developers</button>
+                    <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#teamAccordion" aria-controls="collapseOne">Active Developers</button>
                 </div>
                 <div id="collapseOne" class="collapse show" aria-labelledby="accordionHeader1" data-parent="#teamAccordion">
                     <div class="card-body">
@@ -28,7 +28,7 @@
 
             <div class="card">
                 <div class="card-header position-relative py-0" id="accordionHeader2">
-                    <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#teamAccordion" href="#collapseTwo" aria-controls="collapseTwo">Inactive Developers</button>
+                    <button class="btn btn-link stretched-link" data-toggle="collapse" data-parent="#teamAccordion" aria-controls="collapseTwo">Inactive Developers</button>
                 </div>
                 <div id="collapseTwo" class="collapse" aria-labelledby="accordionHeader2" data-parent="#teamAccordion">
                     <div class="card-body">
