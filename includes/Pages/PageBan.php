@@ -130,9 +130,7 @@ class PageBan extends InternalPageBase
             return $duration;
         }
         elseif ($duration === "-1") {
-            $duration = -1;
-
-            return $duration;
+            return null;
         }
         else {
             $duration = WebRequest::postInt('duration') + time();
