@@ -88,6 +88,8 @@ trait TemplateOutput
         $this->assign('nav__canJobQueue', false);
 
         $this->assign('page', $this);
+
+        $this->assign('displayBreakpointDebug', true);
     }
 
     /**
