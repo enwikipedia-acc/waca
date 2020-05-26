@@ -74,7 +74,7 @@ class PageSearch extends InternalPageBase
      *
      * @param string $searchTerm
      *
-     * @returns Request[]
+     * @return Request[]
      */
     private function getNameSearchResults($searchTerm)
     {
@@ -118,7 +118,7 @@ class PageSearch extends InternalPageBase
      *
      * @param string $searchTerm
      *
-     * @returns Request[]
+     * @return Request[]
      */
     private function getIpSearchResults($searchTerm)
     {
@@ -138,7 +138,6 @@ class PageSearch extends InternalPageBase
      * @param string $errorMessage
      *
      * @return bool true if parameters are valid
-     * @throws ApplicationLogicException
      */
     protected function validateSearchParameters($searchType, $searchTerm, &$errorMessage)
     {

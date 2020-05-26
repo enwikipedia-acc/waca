@@ -78,7 +78,6 @@ abstract class ApplicationBase
         // check the schema version
         $database = PdoDatabase::getDatabaseConnection('acc');
 
-        /** @var int $actualVersion */
         $actualVersion = (int)$database->query('SELECT version FROM schemaversion')->fetchColumn();
         if ($actualVersion !== $this->getConfiguration()->getSchemaVersion()) {
             throw new EnvironmentException('Database schema is wrong version! Please either update configuration or database.');

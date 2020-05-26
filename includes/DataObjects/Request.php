@@ -39,6 +39,7 @@ class Request extends DataObject
 
     /**
      * @throws Exception
+     * @throws OptimisticLockFailedException
      */
     public function save()
     {

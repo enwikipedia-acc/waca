@@ -11,6 +11,7 @@ namespace Waca\Pages\UserAuth;
 use Exception;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\CurlException;
+use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -48,6 +49,8 @@ class PageOAuthCallback extends InternalPageBase
 
     /**
      * Callback entry point
+     * @throws ApplicationLogicException
+     * @throws OptimisticLockFailedException
      */
     protected function authorise()
     {

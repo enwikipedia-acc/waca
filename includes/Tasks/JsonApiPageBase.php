@@ -56,10 +56,10 @@ abstract class JsonApiPageBase extends ApiPageBase implements IJsonApiAction
      */
     final public function runApiPage()
     {
-
         try {
             $apiDocument = $this->executeApiAction();
         }
+            /** @noinspection PhpRedundantCatchClauseInspection */
         catch (ApiException $ex) {
             $apiDocument = [
                 'error' => $ex->getMessage(),

@@ -79,6 +79,7 @@ abstract class XmlApiPageBase extends ApiPageBase implements IXmlApiAction
         try {
             $apiDocument = $this->executeApiAction($apiDocument);
         }
+            /** @noinspection PhpRedundantCatchClauseInspection */
         catch (ApiException $ex) {
             $exception = $this->document->createElement("error");
             $exception->setAttribute("message", $ex->getMessage());

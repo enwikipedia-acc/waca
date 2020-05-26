@@ -14,7 +14,9 @@ use Waca\DataObjects\OAuthIdentity;
 use Waca\DataObjects\OAuthToken;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Exceptions\CurlException;
 use Waca\Exceptions\OAuthException;
+use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Helpers\Interfaces\IMediaWikiClient;
 use Waca\Helpers\Interfaces\IOAuthProtocolHelper;
 use Waca\PdoDatabase;
@@ -209,6 +211,8 @@ SQL
 
     /**
      * @throws OAuthException
+     * @throws CurlException
+     * @throws OptimisticLockFailedException
      */
     public function refreshIdentity()
     {
@@ -236,6 +240,10 @@ SQL
         $this->user->save();
     }
 
+    /**
+     * @return string
+     * @throws CurlException
+     */
     public function getRequestToken()
     {
         $token = $this->oauthProtocolHelper->getRequestToken();
@@ -259,6 +267,14 @@ SQL
         return $this->oauthProtocolHelper->getAuthoriseUrl($token->key);
     }
 
+    /**
+     * @param $verificationToken
+     *
+     * @throws ApplicationLogicException
+     * @throws CurlException
+     * @throws OAuthException
+     * @throws OptimisticLockFailedException
+     */
     public function completeHandshake($verificationToken)
     {
         $this->getTokenStatement->execute(array(':user' => $this->user->getId(), ':type' => self::TOKEN_REQUEST));

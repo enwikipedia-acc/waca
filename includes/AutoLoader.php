@@ -37,6 +37,7 @@ class AutoLoader
 
         foreach ($paths as $file) {
             if (file_exists($file)) {
+                /** @noinspection PhpIncludeInspection */
                 require_once($file);
             }
 

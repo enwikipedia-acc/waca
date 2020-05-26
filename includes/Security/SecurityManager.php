@@ -191,7 +191,6 @@ final class SecurityManager
         $activeRoles = array();
         $inactiveRoles = array();
 
-        /** @var string $v */
         foreach ($userRoles as $v) {
             if ($this->roleConfiguration->roleNeedsIdentification($v)) {
                 if ($identified) {

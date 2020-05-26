@@ -111,6 +111,7 @@ class WebStart extends ApplicationBase
             ob_end_clean();
             print Offline::getOfflineMessage($this->isPublic(), $ex->getMessage());
         }
+            /** @noinspection PhpRedundantCatchClauseInspection */
         catch (ReadableException $ex) {
             ob_end_clean();
             print $ex->getReadableError();

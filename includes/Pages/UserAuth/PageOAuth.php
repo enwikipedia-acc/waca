@@ -53,6 +53,7 @@ class PageOAuth extends InternalPageBase
 
     /**
      * Detach account entry point
+     * @throws Exception
      */
     protected function detach()
     {

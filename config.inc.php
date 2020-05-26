@@ -336,6 +336,7 @@ function wfDebugLog($section, $message)
 }
 
 // Initialise the site configuration object
+/** @noinspection PhpFullyQualifiedNameUsageInspection */
 $siteConfiguration = new \Waca\SiteConfiguration();
 
 $siteConfiguration->setBaseUrl($baseurl)

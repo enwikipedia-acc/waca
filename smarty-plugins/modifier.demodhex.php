@@ -6,6 +6,11 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
+/**
+ * @param string $input
+ *
+ * @return int
+ */
 function smarty_modifier_demodhex($input)
 {
     $hex = preg_replace(

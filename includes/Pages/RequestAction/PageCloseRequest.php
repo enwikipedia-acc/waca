@@ -146,7 +146,7 @@ class PageCloseRequest extends RequestActionBase
      * @param EmailTemplate $template
      *
      * @return bool
-     * @throws \Waca\Exceptions\CurlException
+     * @throws Exception
      */
     protected function confirmAccountCreated(Request $request, EmailTemplate $template)
     {

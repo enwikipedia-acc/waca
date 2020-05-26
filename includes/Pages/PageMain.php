@@ -9,6 +9,7 @@
 namespace Waca\Pages;
 
 use PDO;
+use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Fragments\RequestListData;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
@@ -102,6 +103,7 @@ SQL;
             $search->withConfirmedEmail();
         }
 
+        /** @var Request[] $results */
         $results = $search->getRecordCount($requestCount)->fetch();
 
         if($requestCount > 0) {
@@ -135,6 +137,7 @@ SQL;
             $search->withConfirmedEmail();
         }
 
+        /** @var Request[] $results */
         $results = $search->getRecordCount($requestCount)->fetch();
 
         if($requestCount > 0) {

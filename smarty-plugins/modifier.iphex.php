@@ -6,6 +6,11 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
+/**
+ * @param string $input IP address
+ *
+ * @return string Hex representation of IP.
+ */
 function smarty_modifier_iphex($input)
 {
     $output = $input;

@@ -6,6 +6,8 @@
  * Development Team. Please see team.json for a list of contributors.         *
  ******************************************************************************/
 
+/** @noinspection PhpPassByRefInspection - disable seemingly broken check in PhpStorm */
+
 namespace Waca;
 
 use Waca\DataObjects\User;
@@ -23,7 +25,7 @@ use Waca\Providers\GlobalState\IGlobalStateProvider;
 class WebRequest
 {
     /**
-     * @var \Waca\Providers\GlobalState\IGlobalStateProvider Provides access to the global state.
+     * @var IGlobalStateProvider Provides access to the global state.
      */
     private static $globalStateProvider;
 
@@ -154,7 +156,7 @@ class WebRequest
      *
      * Almost guaranteed this is not the method you want in production code.
      *
-     * @param \Waca\Providers\GlobalState\IGlobalStateProvider $globalState
+     * @param IGlobalStateProvider $globalState
      */
     public static function setGlobalStateProvider($globalState)
     {
