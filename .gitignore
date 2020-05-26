@@ -38,3 +38,5 @@ errorlog/*.log
 /resources/generated/
 cookies.txt
 robots.txt
+/.scannerwork/*
+sonar-project.properties

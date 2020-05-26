@@ -37,7 +37,8 @@ class IdentificationVerifierTest extends PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->dummyConfiguration = new SiteConfiguration();
-        $this->httpHelper = new HttpHelper($this->dummyConfiguration->getUserAgent(), true);
+        $this->dummyConfiguration->setCurlDisableVerifyPeer(true);
+        $this->httpHelper = new HttpHelper($this->dummyConfiguration);
         /** @var PdoDatabase|PHPUnit_Framework_MockObject_MockObject $dummyDatabase */
         $dummyDatabase = $this->getMockBuilder(PdoDatabase::class)
             ->disableOriginalConstructor()
