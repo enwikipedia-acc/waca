@@ -127,17 +127,6 @@ $communityUsername = "[Community]";
 $defaultReserver = 0;
 
 /************************************
- * Backup Configuration
- */
-
-$BUbasefile = "backup"; // The basefile's name.
-$BUdir = "/home/project/a/c/c/acc/backups"; // The directory where backups should be stored.
-$BUmonthdir = $BUdir . "/monthly"; // The directory where monthly backups should be stored.
-$BUdumper = "/opt/ts/mysql/5.1/bin/mysqldump --defaults-file=~/.my.cnf p_acc_live"; // Add parameters here if they are needed.
-$BUgzip = "/usr/bin/gzip"; // Add the gzip parameters here if needed.
-$BUtar = "/bin/tar -cvf"; // Add the tar parameters here if needed.
-
-/************************************
  * OAuth Configuration
  */
 
@@ -197,8 +186,6 @@ $toolUserAgent = "Wikipedia-ACC Tool/0.1 (+https://accounts.wmflabs.org/internal
 
 // list of squid proxies requests go through.
 $squidIpList = array();
-
-$apiDeployPassword = "super secret update password";
 
 // request states
 $availableRequestStates = array(
