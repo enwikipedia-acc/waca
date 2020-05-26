@@ -89,11 +89,11 @@ class StringFunctionsTest extends TestCase
 
     public function testUcFirst()
     {
-        $this->assertEquals('Abc', $this->e->ucfirst('abc'));
-        $this->assertEquals('ABC', $this->e->ucfirst('ABC'));
-        $this->assertEquals('123', $this->e->ucfirst('123'));
+        $this->assertEquals('Abc', $this->e->upperCaseFirst('abc'));
+        $this->assertEquals('ABC', $this->e->upperCaseFirst('ABC'));
+        $this->assertEquals('123', $this->e->upperCaseFirst('123'));
 
-        $this->assertEquals('Trần Nguyễn Minh Huy', $this->e->ucfirst('Trần Nguyễn Minh Huy'));
-        $this->assertEquals('和平奮鬥救地球', $this->e->ucfirst('和平奮鬥救地球'));
+        $this->assertEquals('Trần Nguyễn Minh Huy', $this->e->upperCaseFirst('Trần Nguyễn Minh Huy'));
+        $this->assertEquals('和平奮鬥救地球', $this->e->upperCaseFirst('和平奮鬥救地球'));
     }
 }

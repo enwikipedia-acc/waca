@@ -180,7 +180,7 @@ SQL;
         $strings = new StringFunctions();
 
         // First character of Wikipedia usernames is always capitalized.
-        $onWikiName = $strings->ucfirst($onWikiName);
+        $onWikiName = $strings->upperCaseFirst($onWikiName);
 
         $parameters = self::$apiQueryParameters;
         $parameters['pltitles'] = "User:" . $onWikiName;
@@ -192,10 +192,10 @@ SQL;
             $response = json_decode($response, true);
         } catch (CurlException $ex) {
             // failed getting identification status, so throw a nicer error.
-            $m = 'Could not contact metawiki API to determine user\' identification status. '
+            $message = 'Could not contact metawiki API to determine user\' identification status. '
                 . 'This is probably a transient error, so please try again.';
 
-            throw new EnvironmentException($m, 0, $ex);
+            throw new EnvironmentException($message);
         }
 
         $page = @array_pop($response['query']['pages']);

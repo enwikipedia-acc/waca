@@ -20,7 +20,9 @@
         "ext-dom": "*",
         "ext-pdo": "*",
         "ext-json": "*",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "ext-mbstring": "*",
+        "ext-simplexml": "*"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "~2.7",

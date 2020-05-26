@@ -14,7 +14,7 @@ class ValidationError
 {
     const NAME_EMPTY = "name_empty";
     const NAME_EXISTS = "name_exists";
-    const NAME_EXISTS_SUL = "name_exists";
+    const NAME_EXISTS_SUL = "name_exists_sul";
     const NAME_NUMONLY = "name_numonly";
     const NAME_INVALIDCHAR = "name_invalidchar";
     const NAME_SANITISED = "name_sanitised";

@@ -16,7 +16,6 @@ use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\NotIdentifiedException;
 use Waca\Fragments\NavigationMenuAccessControl;
 use Waca\Helpers\Interfaces\IBlacklistHelper;
-use Waca\IdentificationVerifier;
 use Waca\Helpers\Interfaces\ITypeAheadHelper;
 use Waca\Security\SecurityManager;
 use Waca\WebRequest;
@@ -25,8 +24,6 @@ abstract class InternalPageBase extends PageBase
 {
     use NavigationMenuAccessControl;
 
-    /** @var IdentificationVerifier */
-    private $identificationVerifier;
     /** @var ITypeAheadHelper */
     private $typeAheadHelper;
     /** @var SecurityManager */
@@ -40,18 +37,6 @@ abstract class InternalPageBase extends PageBase
     public function getTypeAheadHelper()
     {
         return $this->typeAheadHelper;
-    }
-
-    /**
-     * Sets up the internal IdentificationVerifier instance.  Intended to be called from WebStart::setupHelpers().
-     *
-     * @param IdentificationVerifier $identificationVerifier
-     *
-     * @return void
-     */
-    public function setIdentificationVerifier(IdentificationVerifier $identificationVerifier)
-    {
-        $this->identificationVerifier = $identificationVerifier;
     }
 
     /**
