@@ -23,7 +23,7 @@ class JsTemplateConfirmsAction extends JsonApiPageBase implements IJsonApiAction
 
         $dataset = [];
         foreach ($templates as $tpl) {
-            if($tpl->getJsquestion() != "") {
+            if ($tpl->getJsquestion() != "") {
                 $dataset[$tpl->getId()] = $tpl->getJsquestion();
             }
         }

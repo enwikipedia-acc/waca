@@ -32,7 +32,7 @@ class HelpAction extends XmlApiPageBase implements IXmlApiAction
      */
     protected function getHelpElement()
     {
-		$helpInfo = "API help can be found at https://github.com/enwikipedia-acc/waca/wiki/API";
+        $helpInfo = "API help can be found at https://github.com/enwikipedia-acc/waca/wiki/API";
 
         $help = $this->document->createElement("help");
         $helptext = $this->document->createElement("info", $helpInfo);
