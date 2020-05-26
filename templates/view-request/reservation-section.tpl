@@ -9,9 +9,10 @@
                     <input type="hidden" name="updateversion" value="{$updateVersion}"/>
                     <div class="form-row">
                         <div class="col-sm-7">
-                            <input type="text" required="true"
+                            <label class="sr-only" for="sendReservationBox">Send request reservation to another user</label>
+                            <input type="text" required="required"
                                    placeholder="Send reservation to another user..." name="user"
-                                   class="typeahead form-control username-typeahead"
+                                   class="typeahead form-control username-typeahead" id="sendReservationBox"
                                    {if ! $requestIsReservedByMe}disabled="disabled"{/if} />
                         </div>
                         <div class="col-sm-5">

@@ -1,12 +1,15 @@
 {extends file="pagebase.tpl"}
 {block name="content"}
-    <form method="post">
-        {include file="security/csrf.tpl"}
-        <div class="row">
-            <div class="col-12">
-                <legend>Custom close{if $preloadTitle != ""} - {$preloadTitle|escape}{/if}</legend>
+    <div class="row">
+        <div class="col-md-12" >
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Custom close #{$requestId}{if $preloadTitle != ""}<small class="text-muted"> {$preloadTitle|escape}</small>{/if}</h1>
             </div>
         </div>
+    </div>
+
+    <form method="post">
+        {include file="security/csrf.tpl"}
         <div class="form-group row">
             <div class="d-none d-lg-block col-lg-3 col-xl-2">
                 <label class="col-form-label">Request details:</label>

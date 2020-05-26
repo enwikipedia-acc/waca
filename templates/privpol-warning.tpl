@@ -22,9 +22,9 @@
                 implementing automatic scrubbing for comments is both infeasible and undesirable.
             </p>
             <p>
-                These restrictions are the same reason why you must now be
-                <a href="https://meta.wikimedia.org/wiki/Identification_noticeboard">"Identified"</a> to the Wikimedia
-                Foundation to be able to access ACC.
+                These restrictions are the same reason why you must now sign the Wikimedia Foundation's
+                <a href="http://meta.wikimedia.org/wiki/Access_to_nonpublic_personal_data_policy">Access to nonpublic personal data policy</a>
+                to be able to access ACC.
             </p>
             <p>
                 The software has detected what appears to be an IP address in text of the comment you have just
@@ -77,26 +77,29 @@
 
     <div class="form-group row">
         <div class="col-lg-6 offset-lg-3 col">
-            <div class="card card-body card-danger">
-            <div class="custom-control custom-checkbox">
-                <input class="custom-control-input" type="checkbox" id="privpol-check-override" name="privpol-check-override" required="required"/>
-                <label class="custom-control-label" for="privpol-check-override">
-                    <p>
-                        By checking this box, I confirm that I understand that personally identifying information,
-                        such as IP addresses of requesters, is not to be posted to the comments section of an ACC
-                        request, and I assert that the IP address (or IP address-like text) in my comment is not
-                        considered personally identifying information.
-                    </p>
-                    <p class="text-danger">
-                        <strong>I furthermore understand that posting personally identifying information to the
-                            comments of an ACC request may result in my permanent suspension from the ACC project
-                            at the discretion of the ACC administrators, and that Wikimedia Foundation Legal will be
-                            advised of all Privacy Policy violations, which may lead to the loss of my Identified
-                            status with the Foundation should I be found to have violated the Privacy
-                            Policy.</strong>
-                    </p>
-                </label>
-            </div>
+            <div class="card card-body border-danger">
+                <p>
+                    By checking the box below, I confirm that I understand that personally identifying information,
+                    such as IP addresses of requesters, is not to be posted to the comments section of an ACC
+                    request, and I assert that the IP address (or IP address-like text) in my comment is not
+                    considered personally identifying information.
+                </p>
+                <p class="text-danger">
+                    <strong>I furthermore understand that posting personally identifying information to the
+                        comments of an ACC request may result in my permanent suspension from the ACC project
+                        at the discretion of the ACC administrators, and that Wikimedia Foundation Legal will be
+                        advised of all Privacy Policy violations, which may lead to the loss of my Identified
+                        status with the Foundation should I be found to have violated the Privacy
+                        Policy.</strong>
+                </p>
+
+                <div class="custom-control custom-checkbox">
+                    <input class="custom-control-input" type="checkbox" id="privpol-check-override" name="privpol-check-override" required="required"/>
+                    <label class="custom-control-label" for="privpol-check-override">
+                        I understand the above, and I assert that there is no personally-identifying information in my
+                        comment.
+                    </label>
+                </div>
             </div>
         </div>
     </div>

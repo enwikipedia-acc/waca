@@ -99,6 +99,7 @@
                                 </small>
                             </div>
                             <div class="col-sm-2 col-xl-1">
+                                <!--suppress HtmlUnknownAnchorTarget -->
                                 <a href="#modalDiffHelp" role="button" class="btn btn-block btn-outline-info" data-toggle="modal">Help!</a>
                             </div>
                         </div>

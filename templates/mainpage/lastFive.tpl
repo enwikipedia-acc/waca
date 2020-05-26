@@ -3,10 +3,12 @@
         <h4>Last 5 Closed requests</h4>
         <table class="table table-sm table-striped table-nonfluid table-sm">
             <thead>
-            <th>ID</th>
-            <th>Name</th>
-            <th>{* zoom *}</th>
-            <th>{* reset *}</th>
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>{* zoom *}</th>
+                    <th>{* reset *}</th>
+                </tr>
             </thead>
             {foreach from=$lastFive item="req"}
                 <tr>

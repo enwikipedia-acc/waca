@@ -14,34 +14,34 @@
                 <label class="col-form-label" for="request">Request</label>
             </div>
             <div class="col-md-8 col-lg-4">
-                <a class="form-control" href="{$baseurl}/internal.php/viewRequest?id={$comment->getRequest()}">{$request->getName()|escape}</a>
+                <a class="form-control" id="request" href="{$baseurl}/internal.php/viewRequest?id={$comment->getRequest()}">{$request->getName()|escape}</a>
             </div>
         </div>
 
         <div class="form-group row">
             <div class="col-md-4 col-lg-2">
-                <label class="col-form-label" for="request">Commenting user</label>
+                <label class="col-form-label" for="user">Commenting user</label>
             </div>
             <div class="col-md-8 col-lg-4">
-                <a class="form-control" href="{$baseurl}/internal.php/statistics/users/detail?user={$comment->getUser()}">{$user->getUsername()|escape}</a>
+                <a class="form-control" id="user" href="{$baseurl}/internal.php/statistics/users/detail?user={$comment->getUser()}">{$user->getUsername()|escape}</a>
             </div>
         </div>
 
         <div class="form-group row">
             <div class="col-md-4 col-lg-2">
-                <label class="col-form-label" for="request">Timestamp</label>
+                <label class="col-form-label" for="timestamp">Timestamp</label>
             </div>
             <div class="col-md-8 col-lg-4">
-                <div class="form-control">{$comment->getTime()|date}</div>
+                <div class="form-control" id="timestamp">{$comment->getTime()|date}</div>
             </div>
         </div>
 
         <div class="form-group row">
             <div class="col-md-4 col-lg-2">
-                <label class="col-form-label" for="request">Security</label>
+                <label class="col-form-label" for="visibility">Security</label>
             </div>
             <div class="col-md-8 col-lg-4">
-                <select name="visibility" class="form-control">
+                <select name="visibility" class="form-control" id="visibility">
                     <option value="user" {if $comment->getVisibility() == "user"}selected{/if}>Standard</option>
                     <option value="admin" {if $comment->getVisibility() == "admin"}selected{/if}>Restricted</option>
                 </select>
@@ -50,16 +50,16 @@
 
         <div class="form-group row">
             <div class="col-md-4 col-lg-2">
-                <label class="col-form-label" for="request">Old text</label>
+                <label class="col-form-label" for="oldtext">Old text</label>
             </div>
             <div class="col-md-8 col-lg-10">
-                <pre class="form-control prewrap">{$comment->getComment()|escape}</pre>
+                <pre class="form-control prewrap" id="oldtext">{$comment->getComment()|escape}</pre>
             </div>
         </div>
 
         <div class="form-group row">
             <div class="col-md-4 col-lg-2">
-                <label class="col-form-label" for="request">New text</label>
+                <label class="col-form-label" for="newcomment">New text</label>
             </div>
             <div class="col-md-8 col-lg-10">
                 <textarea class="form-control" rows="4" name="newcomment" id="newcomment">{$comment->getComment()|escape}</textarea>

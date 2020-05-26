@@ -1,9 +1,11 @@
 <table class="table table-striped table-hover table-sm sortable">
   <thead>
-    <th data-defaultsort="asc">Username</th>
-    <th>On-wiki name</th>
-    <th>Roles</th>
-    <th data-defaultsort="disabled"><span class="d-none d-sm-inline">Actions</span></th>
+    <tr>
+      <th data-defaultsort="asc">Username</th>
+      <th>On-wiki name</th>
+      <th>Roles</th>
+      <th data-defaultsort="disabled"><span class="d-none d-sm-inline">Actions</span></th>
+    </tr>
   </thead>
   <tbody>
     {foreach $userlist as $userentry}

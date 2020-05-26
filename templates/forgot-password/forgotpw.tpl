@@ -20,12 +20,14 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-md-10 offset-md-1">
-                            <input class="form-control" type="text" id="username" name="username" placeholder="Username" class="form-control" required="required"/>
+                            <label class="sr-only" for="username">Username</label>
+                            <input class="form-control" type="text" id="username" name="username" placeholder="Username" required="required"/>
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-md-10 offset-md-1">
-                            <input class="form-control" type="text" id="email" name="email" placeholder="Email" class="form-control" required="required"/>
+                            <label class="sr-only" for="email">Email address</label>
+                            <input class="form-control" type="text" id="email" name="email" placeholder="Email" required="required"/>
                         </div>
                     </div>
                     <div class="form-group row">

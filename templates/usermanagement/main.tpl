@@ -16,6 +16,7 @@
     <form>
         <div class="row">
             <div class="col-sm-8 col-md-6 col-lg-4 col-xl-3">
+                <label class="sr-only" for="usersearch">Jump to user</label>
                 <input type="text" class="form-control username-typeahead" placeholder="Jump to user" name="usersearch" id="usersearch">
             </div>
             <div class="col-sm-4 col-md-3">

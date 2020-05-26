@@ -21,23 +21,23 @@
                 <li><a class="text-success" href="#">Username</a> means a tool admin account.</li>
             </ul>
 
-            <a name="alltimeactive"></a>
+            <a id="alltimeactive"></a>
             <h3>All-time active top creators</h3>
             {include file="statistics/top-creators-table.tpl" dataTable=$queryAllTimeActive}
 
-            <a name="today"></a>
+            <a id="today"></a>
             <h3>Today's creators</h3>
             {include file="statistics/top-creators-table.tpl" dataTable=$queryToday}
 
-            <a name="yesterday"></a>
+            <a id="yesterday"></a>
             <h3>Yesterday's creators</h3>
             {include file="statistics/top-creators-table.tpl" dataTable=$queryYesterday}
 
-            <a name="lastweek"></a>
+            <a id="lastweek"></a>
             <h3>Last 7 days</h3>
             {include file="statistics/top-creators-table.tpl" dataTable=$queryLast7Days}
 
-            <a name="lastmonth"></a>
+            <a id="lastmonth"></a>
             <h3>Last 28 days</h3>
             {include file="statistics/top-creators-table.tpl" dataTable=$queryLast28Days}
 

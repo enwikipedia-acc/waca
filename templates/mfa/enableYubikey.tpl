@@ -17,6 +17,7 @@
                         {include file="alert.tpl" alertblock="true" alerttype="alert-info" alertclosable=false alertheader="Provide credentials" alertmessage="To enable your YubiKey OTP multi-factor credentials, please prove you are who you say you are by providing the information below."}
                         <div class="form-group row">
                             <div class="col">
+                                <label class="sr-only" for="password">Password</label>
                                 <input type="password" id="password" name="password" placeholder="Password" class="form-control"
                                        required tabindex="2">
                             </div>
@@ -29,6 +30,7 @@
 
                         <div class="form-group row">
                             <div class="col">
+                                <label class="sr-only" for="otp">YubiKey OTP</label>
                                 <input type="password" id="otp" name="otp" placeholder="YubiKey OTP" class="form-control"
                                        required tabindex="2">
                             </div>

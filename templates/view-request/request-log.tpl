@@ -47,8 +47,7 @@
                             {/if}
                         </td>
                         <td class="text-nowrap">
-                            <span href="#log{$smarty.foreach.logloop.index}" title="{$zoomrow.time|date}"
-                               data-toggle="tooltip" data-placement="top"
+                            <span title="{$zoomrow.time|date}" data-toggle="tooltip" data-placement="top"
                                id="#log{$smarty.foreach.logloop.index}">{$zoomrow.time|relativedate}</span>
                         </td>
                     </tr>
@@ -69,7 +68,8 @@
                 <td>
                     <input type="hidden" name="request" value="{$requestId}"/>
                     <input type="hidden" name="visibility" value="user"/>
-                    <input class="form-control" type="text" placeholder="Quick comment" name="comment"/>
+                    <label class="sr-only" for="quickCommentBox">Comment on request</label>
+                    <input class="form-control" type="text" placeholder="Quick comment" name="comment" id="quickCommentBox"/>
                 </td>
                 <td class="text-nowrap">
                     <button class="btn btn-primary" type="submit">Save</button>
@@ -78,7 +78,6 @@
                         <input type="checkbox" name="adminOnly" id="adminOnly" />
                         <i class="fas fa-lock"></i>
                     </span>
-                    </label>
                 </td>
             </tr>
             </tbody>

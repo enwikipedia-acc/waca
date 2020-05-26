@@ -281,5 +281,4 @@
 
         {/if}
     </fieldset>
-    </div>
 {/block}
