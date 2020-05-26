@@ -143,7 +143,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
     }
 
     /**
-     * Hander for editing templates
+     * Handler for editing templates
      */
     protected function edit()
     {

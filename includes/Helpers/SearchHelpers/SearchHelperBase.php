@@ -90,12 +90,13 @@ abstract class SearchHelperBase
         $query = $this->buildQuery(array('*'));
         $query .= $this->applyOrder();
 
-        // shuffle around hackily TODO: fix this abomination - T593
+        // shuffle around parameters
+        // applyLimit() appends parameters to the parameter list, which is useless when we want to run
+        // many queries with different parameters. As such, we back up the parameter list, wipe it, apply the limit
+        // parameters, and hold them separately, merging again prior to running the actual query.
         $localParameterList = $this->parameterList;
         $this->parameterList = array();
-
         $query .= $this->applyLimit();
-
         $limitParameters = $this->parameterList;
 
         $statement = $this->database->prepare($query);
@@ -278,10 +279,9 @@ abstract class SearchHelperBase
             return;
         }
 
-        // Urgh. OK. You can't use IN() with parameters directly, so let's munge something together.
+        // You can't use IN() with parameters directly, so let's munge something together.
+        // Let's create a string of question marks, which will do as positional parameters.
         $valueCount = count($values);
-
-        // Firstly, let's create a string of question marks, which will do as positional parameters.
         $inSection = str_repeat('?,', $valueCount - 1) . '?';
 
         $this->whereClause .= " AND {$column} IN ({$inSection})";

@@ -46,7 +46,7 @@
                 </p>
                 <h3>97% of requests: Wikimedia proxy only</h3>
                 <p>
-                    When there is only the WMCS proxy in place, this is what you are likely to see something more like this:
+                    When there is only the <abbr title="Wikimedia Cloud Services">WMCS</abbr> proxy in place, this is what you are likely to see something more like this:
                 </p>
             </div>
         </div>

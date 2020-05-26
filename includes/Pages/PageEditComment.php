@@ -60,7 +60,7 @@ class PageEditComment extends InternalPageBase
                 throw new ApplicationLogicException('Comment visibility is not valid');
             }
 
-            // optimisticly lock from the load of the edit comment form
+            // optimistically lock from the load of the edit comment form
             $updateVersion = WebRequest::postInt('updateversion');
             $comment->setUpdateVersion($updateVersion);
 
