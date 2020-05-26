@@ -9,6 +9,7 @@
 namespace Waca\Helpers;
 
 use Waca\Exceptions\CurlException;
+use Waca\SiteConfiguration;
 
 class HttpHelper
 {
@@ -17,19 +18,18 @@ class HttpHelper
     /**
      * HttpHelper constructor.
      *
-     * @param string  $userAgent
-     * @param boolean $disableVerifyPeer
-     * @param string  $cookieJar
+     * @param SiteConfiguration $siteConfiguration
+     * @param string            $cookieJar
      */
-    public function __construct($userAgent, $disableVerifyPeer, $cookieJar = null)
+    public function __construct($siteConfiguration, $cookieJar = null)
     {
         $this->curlHandle = curl_init();
 
         curl_setopt($this->curlHandle, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($this->curlHandle, CURLOPT_USERAGENT, $userAgent);
+        curl_setopt($this->curlHandle, CURLOPT_USERAGENT, $siteConfiguration->getUserAgent());
         curl_setopt($this->curlHandle, CURLOPT_FAILONERROR, true);
 
-        if ($disableVerifyPeer) {
+        if ($siteConfiguration->getCurlDisableVerifyPeer()) {
             curl_setopt($this->curlHandle, CURLOPT_SSL_VERIFYPEER, false);
         }
 

@@ -130,10 +130,7 @@ abstract class ApplicationBase
         $page->setDatabase($database);
 
         // set up helpers and inject them into the page.
-        $httpHelper = new HttpHelper(
-            $siteConfiguration->getUserAgent(),
-            $siteConfiguration->getCurlDisableVerifyPeer()
-        );
+        $httpHelper = new HttpHelper($siteConfiguration);
 
         $page->setEmailHelper(new EmailHelper());
         $page->setHttpHelper($httpHelper);

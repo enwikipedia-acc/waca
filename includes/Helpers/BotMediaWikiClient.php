@@ -42,8 +42,7 @@ class BotMediaWikiClient implements IMediaWikiClient
         $this->creationBotPassword = $siteConfiguration->getCreationBotPassword();
 
         $this->httpHelper = new HttpHelper(
-            $siteConfiguration->getUserAgent(),
-            $siteConfiguration->getCurlDisableVerifyPeer(),
+            $siteConfiguration,
             $siteConfiguration->getCurlCookieJar()
         );
     }
