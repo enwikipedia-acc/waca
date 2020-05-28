@@ -187,14 +187,6 @@ class WebStart extends ApplicationBase
 
         $this->setupHelpers($page, $siteConfiguration, $database, $notificationsDatabase);
 
-        /* @todo Remove this global statement! It's here for User.php, which does far more than it should. */
-        global $oauthProtocolHelper;
-        $oauthProtocolHelper = $page->getOAuthProtocolHelper();
-
-        /* @todo Remove this global statement! It's here for Request.php, which does far more than it should. */
-        global $globalXffTrustProvider;
-        $globalXffTrustProvider = $page->getXffTrustProvider();
-
         // run the route code for the request.
         $page->execute();
     }
