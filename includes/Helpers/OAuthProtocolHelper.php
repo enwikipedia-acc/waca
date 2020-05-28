@@ -8,41 +8,19 @@
 
 namespace Waca\Helpers;
 
-use Exception;
-use JWT;
-use OAuthConsumer;
-use OAuthRequest;
-use OAuthSignatureMethod_HMAC_SHA1;
-use OAuthToken;
-use stdClass;
-use Waca\Exceptions\ApplicationLogicException;
+use MediaWiki\OAuthClient\Client;
+use MediaWiki\OAuthClient\ClientConfig;
+use MediaWiki\OAuthClient\Consumer;
+use MediaWiki\OAuthClient\Token;
 use Waca\Exceptions\CurlException;
-use Waca\Exceptions\OAuthException;
-use Waca\Helpers\Interfaces\IOAuthProtocolHelper;
 
-class OAuthProtocolHelper implements IOAuthProtocolHelper
+class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
 {
-    private $oauthConsumer;
-    /**
-     * @var string
-     */
-    private $oauthEndpoint;
-    /**
-     * @var string
-     */
-    private $consumerToken;
-    /**
-     * @var string
-     */
-    private $consumerSecret;
-    /**
-     * @var HttpHelper
-     */
-    private $httpHelper;
-    /**
-     * @var string
-     */
+    private $oauthClient;
+
     private $mediawikiWebServiceEndpoint;
+
+    private $authUrl;
 
     /**
      * OAuthHelper constructor.
@@ -50,204 +28,82 @@ class OAuthProtocolHelper implements IOAuthProtocolHelper
      * @param string     $oauthEndpoint
      * @param string     $consumerKey
      * @param string     $consumerSecret
-     * @param HttpHelper $httpHelper
      * @param string     $mediawikiWebServiceEndpoint
      */
     public function __construct(
         $oauthEndpoint,
         $consumerKey,
         $consumerSecret,
-        HttpHelper $httpHelper,
         $mediawikiWebServiceEndpoint
     ) {
-        $this->oauthEndpoint = $oauthEndpoint;
-        $this->consumerToken = $consumerKey;
-        $this->consumerSecret = $consumerSecret;
-        $this->httpHelper = $httpHelper;
-
-        $this->oauthConsumer = new OAuthConsumer($this->consumerToken, $this->consumerSecret);
         $this->mediawikiWebServiceEndpoint = $mediawikiWebServiceEndpoint;
+
+        $oauthClientConfig = new ClientConfig($oauthEndpoint);
+        $oauthClientConfig->setConsumer(new Consumer($consumerKey, $consumerSecret));
+
+        $this->oauthClient = new Client($oauthClientConfig);
     }
 
     /**
-     * @return stdClass
-     *
-     * @throws Exception
-     * @throws CurlException
+     * @inheritDoc
      */
     public function getRequestToken()
     {
-        $endpoint = $this->oauthEndpoint . '/initiate&format=json&oauth_callback=oob';
-
-        $parsedUrl = parse_url($endpoint);
-        $urlParameters = array();
-        parse_str($parsedUrl['query'], $urlParameters);
-
-        $req_req = OAuthRequest::from_consumer_and_token($this->oauthConsumer, null, 'GET', $endpoint, $urlParameters);
-        $hmac_method = new OAuthSignatureMethod_HMAC_SHA1();
-        $req_req->sign_request($hmac_method, $this->oauthConsumer, null);
-
-        $targetUrl = (string)$req_req;
-
-        $data = $this->httpHelper->get($targetUrl, null);
-
-        if ($data === false) {
-            throw new CurlException('Curl error: ' . $this->httpHelper->getError());
-        }
-
-        $token = json_decode($data);
-
-        if (!isset($token)) {
-            throw new OAuthException('Unknown error encountered getting request token while decoding json data.');
-        }
-
-        if (isset($token->error)) {
-            throw new OAuthException('Error encountered while getting request token: ' . $token->error);
-        }
-
-        return $token;
+        /** @var Token $requestToken */
+        list($authUrl, $requestToken) = $this->oauthClient->initiate();
+        $this->authUrl = $authUrl;
+        return $requestToken;
     }
 
     /**
-     * @param string $requestToken
-     *
-     * @return string
+     * @inheritDoc
      */
     public function getAuthoriseUrl($requestToken)
     {
-        return "{$this->oauthEndpoint}/authorize&oauth_token={$requestToken}&oauth_consumer_key={$this->consumerToken}";
+        return $this->authUrl;
     }
 
     /**
-     * @param string $oauthRequestToken
-     * @param string $oauthRequestSecret
-     * @param string $oauthVerifier
-     *
-     * @return stdClass
-     * @throws CurlException
-     * @throws Exception
+     * @inheritDoc
      */
     public function callbackCompleted($oauthRequestToken, $oauthRequestSecret, $oauthVerifier)
     {
-        $endpoint = $this->oauthEndpoint . '/token&format=json';
+        $requestToken = new Token($oauthRequestToken, $oauthRequestSecret);
 
-        $requestConsumer = new OAuthConsumer($oauthRequestToken, $oauthRequestSecret);
-
-        $parsedUrl = parse_url($endpoint);
-        parse_str($parsedUrl['query'], $urlParameters);
-        $urlParameters['oauth_verifier'] = trim($oauthVerifier);
-
-        $acc_req = OAuthRequest::from_consumer_and_token($this->oauthConsumer, $requestConsumer, 'GET', $endpoint,
-            $urlParameters);
-        $hmac_method = new OAuthSignatureMethod_HMAC_SHA1();
-        $acc_req->sign_request($hmac_method, $this->oauthConsumer, $requestConsumer);
-
-        $targetUrl = (string)$acc_req;
-
-        $data = $this->httpHelper->get($targetUrl, null);
-
-        if ($data === false) {
-            throw new CurlException('Curl error: ' . $this->httpHelper->getError());
-        }
-
-        $token = json_decode($data);
-
-        if (!isset($token)) {
-            throw new OAuthException('Unknown error encountered getting access token while decoding json data.');
-        }
-
-        if (isset($token->error)) {
-            throw new OAuthException('Error encountered while getting access token: ' . $token->error);
-        }
-
-        return $token;
+        return $this->oauthClient->complete($requestToken, $oauthVerifier);
     }
 
     /**
-     * @param string $oauthAccessToken
-     * @param string $oauthAccessSecret
-     *
-     * @return stdClass
-     * @throws CurlException
-     * @throws Exception
+     * @inheritDoc
      */
     public function getIdentityTicket($oauthAccessToken, $oauthAccessSecret)
     {
-        $endpoint = $this->oauthEndpoint . '/identify&format=json';
-
-        $oauthToken = new OAuthToken($oauthAccessToken, $oauthAccessSecret);
-
-        $parsedUrl = parse_url($endpoint);
-        parse_str($parsedUrl['query'], $urlParameters);
-
-        $acc_req = OAuthRequest::from_consumer_and_token($this->oauthConsumer, $oauthToken, 'GET', $endpoint,
-            $urlParameters);
-        $hmac_method = new OAuthSignatureMethod_HMAC_SHA1();
-        $acc_req->sign_request($hmac_method, $this->oauthConsumer, $oauthToken);
-
-        $targetUrl = (string)$acc_req;
-
-        $data = $this->httpHelper->get($targetUrl, null);
-
-        if ($data === false) {
-            throw new CurlException('Curl error: ' . $this->httpHelper->getError());
-        }
-
-        $decodedData = json_decode($data);
-
-        if (isset($decodedData->error)) {
-            throw new OAuthException($decodedData->error);
-        }
-
-        $identity = JWT::decode($data, $this->consumerSecret);
-
-        return $identity;
+        return $this->oauthClient->identify(new Token($oauthAccessToken, $oauthAccessSecret));
     }
 
     /**
-     * @param array  $apiParams    array of parameters to send to the API
-     * @param string $accessToken  user's access token
-     * @param string $accessSecret user's secret
-     * @param string $method       HTTP method
-     *
-     * @return stdClass
-     * @throws ApplicationLogicException
-     * @throws CurlException
-     * @throws Exception
+     * @inheritDoc
      */
     public function apiCall($apiParams, $accessToken, $accessSecret, $method = 'GET')
     {
-        $userToken = new OAuthToken($accessToken, $accessSecret);
+        $userToken = new Token($accessToken, $accessSecret);
 
         $apiParams['format'] = 'json';
 
-        $api_req = OAuthRequest::from_consumer_and_token(
-            $this->oauthConsumer, // Consumer
-            $userToken, // User Access Token
-            $method, // HTTP Method
-            $this->mediawikiWebServiceEndpoint, // Endpoint url
-            $apiParams    // Extra signed parameters
-        );
-
-        $hmac_method = new OAuthSignatureMethod_HMAC_SHA1();
-
-        $api_req->sign_request($hmac_method, $this->oauthConsumer, $userToken);
-
-        $headers = array($api_req->to_header());
-
-        if ($method == 'GET') {
-            $data = $this->httpHelper->get($this->mediawikiWebServiceEndpoint, $apiParams, $headers);
-        }
-        elseif ($method == 'POST') {
-            $data = $this->httpHelper->post($this->mediawikiWebServiceEndpoint, $apiParams, $headers);
-        }
-        else {
-            throw new ApplicationLogicException('Unsupported HTTP Method');
+        if ($apiParams === null || ! is_array($apiParams)) {
+            throw new CurlException("Invalid API call");
         }
 
-        if ($data === false) {
-            throw new CurlException('Curl error: ' . $this->httpHelper->getError());
+        $url = $this->mediawikiWebServiceEndpoint;
+        $isPost = ($method === 'POST');
+
+        if ($method === 'GET') {
+            $query = http_build_query($apiParams);
+            $url .= '?' . $query;
+            $apiParams = null;
         }
+
+        $data = $this->oauthClient->makeOAuthCall($userToken, $url, $isPost, $apiParams);
 
         return json_decode($data);
     }

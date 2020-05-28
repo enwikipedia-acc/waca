@@ -307,10 +307,6 @@ require_once(__DIR__ . "/includes/AutoLoader.php");
 spl_autoload_register('Waca\\AutoLoader::load');
 require_once(__DIR__ . '/vendor/autoload.php');
 
-// Extra includes which are just plain awkward wherever they are.
-require_once(__DIR__ . '/lib/mediawiki-extensions-OAuth/lib/OAuth.php');
-require_once(__DIR__ . '/lib/mediawiki-extensions-OAuth/lib/JWT.php');
-
 // Crap that's needed for libraries. >:(
 /**
  * Don't use me. I'm only here because the MediaWiki OAuth library we're using requires it.
