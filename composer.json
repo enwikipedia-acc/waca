@@ -22,7 +22,8 @@
         "ext-json": "*",
         "ext-curl": "*",
         "ext-mbstring": "*",
-        "ext-simplexml": "*"
+        "ext-simplexml": "*",
+        "mediawiki/oauthclient": "^1.1"
     },
     "require-dev": {
         "squizlabs/php_codesniffer": "~2.7",

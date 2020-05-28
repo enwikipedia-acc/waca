@@ -1,3 +1,0 @@
-[submodule "lib/mediawiki-extensions-OAuth"]
-	path = lib/mediawiki-extensions-OAuth
-	url = https://github.com/wikimedia/mediawiki-extensions-OAuth.git

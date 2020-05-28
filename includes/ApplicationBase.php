@@ -161,7 +161,6 @@ abstract class ApplicationBase
             $siteConfiguration->getOAuthBaseUrl(),
             $siteConfiguration->getOAuthConsumerToken(),
             $siteConfiguration->getOAuthConsumerSecret(),
-            $httpHelper,
             $siteConfiguration->getMediawikiWebServiceEndpoint()
         ));
 
