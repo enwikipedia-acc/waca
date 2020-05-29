@@ -237,7 +237,7 @@ class IrcNotificationHelper
      */
     public function banned(Ban $ban)
     {
-        if ($ban->getDuration() == -1) {
+        if ($ban->getDuration() === null) {
             $duration = "indefinitely";
         }
         else {
