@@ -49,4 +49,12 @@ class GlobalStateProvider implements IGlobalStateProvider
     {
         return $_SESSION;
     }
+
+    /**
+     * @return array
+     */
+    public function &getCookieSuperGlobal()
+    {
+        return $_COOKIE;
+    }
 }

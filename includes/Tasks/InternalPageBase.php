@@ -105,8 +105,18 @@ abstract class InternalPageBase extends PageBase
         $currentUser = User::getCurrent($database);
 
         if ($this->barrierTest('viewSiteNotice', User::getCurrent($database), 'GlobalInfo')) {
-            $siteNoticeText = SiteNotice::get($this->getDatabase());
-            $this->assign('siteNoticeText', $siteNoticeText);
+            $siteNotice = SiteNotice::get($this->getDatabase());
+            $siteNoticeHash = sha1($siteNotice);
+
+            if (WebRequest::testSiteNoticeCookieValue($siteNoticeHash)) {
+                $this->assign('siteNoticeState', 'd-none');
+            }
+            else {
+                $this->assign('siteNoticeState', 'd-block');
+            }
+
+            $this->assign('siteNoticeText', $siteNotice);
+            $this->assign('siteNoticeVersion', $siteNoticeHash);
         }
 
         if ($this->barrierTest('viewOnlineUsers', User::getCurrent($database), 'GlobalInfo')) {

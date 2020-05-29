@@ -587,4 +587,15 @@ class WebRequest
 
         return null;
     }
+
+    public static function testSiteNoticeCookieValue($expectedHash)
+    {
+        $cookie = &self::$globalStateProvider->getCookieSuperGlobal();
+
+        if(isset($cookie['sitenotice'])) {
+            return $cookie['sitenotice'] === $expectedHash;
+        }
+
+        return false;
+    }
 }

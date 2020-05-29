@@ -22,6 +22,7 @@ class FakeGlobalStateProvider extends GlobalStateProvider implements IGlobalStat
     var $get = array();
     var $post = array();
     var $session = array();
+    var $cookie = array();
 
     public function &getServerSuperGlobal()
     {
@@ -41,5 +42,10 @@ class FakeGlobalStateProvider extends GlobalStateProvider implements IGlobalStat
     public function &getSessionSuperGlobal()
     {
         return $this->session;
+    }
+
+    public function &getCookieSuperGlobal()
+    {
+        return $this->cookie;
     }
 }
