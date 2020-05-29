@@ -110,6 +110,8 @@ abstract class CreationTaskBase extends BackgroundTaskBase
         $this->request->setStatus(RequestStatus::HOSPITAL);
         $this->request->save();
 
+        $this->getNotificationHelper()->requestCreationFailed($this->request);
+
         Logger::hospitalised($this->getDatabase(), $this->request);
 
         parent::markFailed($reason);

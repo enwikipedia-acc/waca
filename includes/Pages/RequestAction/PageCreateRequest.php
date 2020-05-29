@@ -78,6 +78,8 @@ class PageCreateRequest extends RequestActionBase
             $this->enqueueWelcomeTask($request, $creationTaskId, $user, $database);
         }
 
+        $this->getNotificationHelper()->requestCloseQueued($request, $template->getName());
+
         SessionAlert::success("Request {$request->getId()} has been queued for autocreation");
 
         $this->redirect();
