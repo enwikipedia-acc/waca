@@ -16,7 +16,7 @@
                 {include file="security/csrf.tpl"}
 
                 <p>Are you sure you wish to unban <code>{$ban->getTarget()|escape}</code>, which
-                    is {if $ban->getDuration() == "-1"} not set to expire {else} set to expire {date("Y-m-d H:i:s", $ban->getDuration())}{/if}
+                    is {if $ban->getDuration() === null} not set to expire {else} set to expire {date("Y-m-d H:i:s", $ban->getDuration())}{/if}
                     with the following reason?</p>
 
                 <div class="card card-body my-3">
