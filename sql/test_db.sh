@@ -23,25 +23,25 @@ fi
 if [ $# -ge 2 ]; then
 	SQL_SERVER=$2
 else
-	SQL_SERVER=$sudo mysql_HOST
+	SQL_SERVER=$MYSQL_HOST
 fi
 
 if [ $# -ge 3 ]; then
 	SQL_DBNAME=$3
 else
-	SQL_DBNAME=$sudo mysql_SCHEMA
+	SQL_DBNAME=$MYSQL_SCHEMA
 fi
 
 if [ $# -ge 4 ]; then
 	SQL_USERNAME=$4
 else
-	SQL_USERNAME=$sudo mysql_USER
+	SQL_USERNAME=$MYSQL_USER
 fi
 
 if [ $# -ge 5 ]; then
 	SQL_PASSWORD=-p$5
-elif [ -n "$sudo mysql_PASSWORD" ]; then
-	SQL_PASSWORD=-p$sudo mysql_PASSWORD
+elif [ -n "$MYSQL_PASSWORD" ]; then
+	SQL_PASSWORD=-p$MYSQL_PASSWORD
 else
 	SQL_PASSWORD=
 fi
