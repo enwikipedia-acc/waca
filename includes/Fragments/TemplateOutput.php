@@ -64,6 +64,7 @@ trait TemplateOutput
         $this->assign('loggedIn', false);
         $this->assign('baseurl', $this->getSiteConfiguration()->getBaseUrl());
         $this->assign('mediawikiScriptPath', $this->getSiteConfiguration()->getMediawikiScriptPath());
+        $this->assign('resourceCacheEpoch', $this->getSiteConfiguration()->getResourceCacheEpoch());
 
         $this->assign('siteNoticeText', '');
         $this->assign('siteNoticeVersion', 0);

@@ -248,6 +248,9 @@ $yubicoApiKey = "";
 
 $totpEncryptionKey = "1234";
 
+// external resource cache epoch value. Bump me to force clients to reload assets
+$resourceCacheEpoch = 1;
+
 /**************************************************************************
  **********                   IMPORTANT NOTICE                    **********
  ***************************************************************************
@@ -360,4 +363,5 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setYubicoApiKey($yubicoApiKey)
     ->setTotpEncryptionKey($totpEncryptionKey)
     ->setRegistrationAllowed($allowRegistration)
-    ->setCspReportUri($cspReportUri);
+    ->setCspReportUri($cspReportUri)
+    ->setResourceCacheEpoch($resourceCacheEpoch);

@@ -90,6 +90,7 @@ class SiteConfiguration
     private $identificationNoticeboardPage = 'Access to nonpublic personal data policy/Noticeboard';
     private $registrationAllowed = true;
     private $cspReportUri = null;
+    private $resourceCacheEpoch = 1;
 
     /**
      * Gets the base URL of the tool
@@ -1027,6 +1028,26 @@ class SiteConfiguration
     public function setCspReportUri($cspReportUri)
     {
         $this->cspReportUri = $cspReportUri;
+
+        return $this;
+}
+
+    /**
+     * @return int
+     */
+    public function getResourceCacheEpoch(): int
+    {
+        return $this->resourceCacheEpoch;
+    }
+
+    /**
+     * @param int $resourceCacheEpoch
+     *
+     * @return SiteConfiguration
+     */
+    public function setResourceCacheEpoch(int $resourceCacheEpoch): SiteConfiguration
+    {
+        $this->resourceCacheEpoch = $resourceCacheEpoch;
 
         return $this;
 }
