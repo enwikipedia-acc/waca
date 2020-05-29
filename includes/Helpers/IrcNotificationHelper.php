@@ -333,6 +333,29 @@ class IrcNotificationHelper
     }
 
     /**
+     * Summary of requestClosed
+     *
+     * @param Request $request
+     * @param string  $closetype
+     */
+    public function requestCloseQueued(Request $request, $closetype)
+    {
+        $username = $this->currentUser->getUsername();
+
+        $this->send("Request {$request->getId()} ({$request->getName()}) queued for creation ($closetype) by {$username}");
+    }
+
+    /**
+     * Summary of requestClosed
+     *
+     * @param Request $request
+     */
+    public function requestCreationFailed(Request $request)
+    {
+        $this->send("Request {$request->getId()} ({$request->getName()}) failed auto-creation, and was sent to the hospital queue.");
+    }
+
+    /**
      * Summary of sentMail
      *
      * @param Request $request
