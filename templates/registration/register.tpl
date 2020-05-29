@@ -49,7 +49,7 @@
                         </div>
                         <span class="form-text text-danger" id="password-strength-warning"></span>
                         <small id="passHelp" class="form-text text-muted">
-                            Please do not use the same password you use on Wikipedia!
+                            Please <strong>do not</strong> use the same password you use on Wikipedia!
                         </small>
                     </div>
                 </div>
@@ -114,7 +114,7 @@
                             <input class="custom-control-input" id="guidelines" type="checkbox" name="guidelines" required="required"/>
                             <label class="custom-control-label" for="guidelines">
                                 I have read and understand the
-                                <a href="http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide">interface guidelines</a>.
+                                <a href="http://en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide">interface guide</a>.
                             </label>
                         </div>
                     </div>
@@ -125,8 +125,14 @@
                         <div class="offset-sm-4 offset-md-5 col-sm-8 col-md-5 col-xl-4">
                             <div class="alert alert-info">
                                 <strong>Heads up!</strong>
-                                After you click the Signup button, you will be redirected to Wikipedia, and be prompted to allow
-                                this tool access to your Wikipedia account. Please see the guide for more information.
+                                <p>
+                                    After you click the Signup button, you will be redirected to Wikipedia, and be
+                                    prompted to allow this tool access to your Wikipedia account.
+                                </p>
+                                <p class="mb-0">
+                                    Please see the guide for more information including information on the specific
+                                    grants we are requesting.
+                                </p>
                             </div>
                         </div>
                     </div>
