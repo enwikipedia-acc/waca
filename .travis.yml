@@ -4,7 +4,7 @@ php:
   - 7.3
 
 addons:
-  mariadb: '10.1'
+  mariadb: '10.5'
 
 os: linux
 dist: bionic
