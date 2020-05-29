@@ -22,7 +22,7 @@ env:
 before_script:
   - pecl install runkit7-3.0.0
   - phpenv config-add .travis.php.ini
-  - msyql -u root -e "ALTER USER root@localhost IDENTIFIED VIA mysql_native_password USING PASSWORD("password")"
+  - mysql -u root -e "ALTER USER root@localhost IDENTIFIED VIA mysql_native_password USING PASSWORD("password")"
   - cd sql
   - bash test_db.sh 1
   - cd ..
