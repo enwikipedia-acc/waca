@@ -66,6 +66,8 @@ trait TemplateOutput
         $this->assign('mediawikiScriptPath', $this->getSiteConfiguration()->getMediawikiScriptPath());
 
         $this->assign('siteNoticeText', '');
+        $this->assign('siteNoticeVersion', 0);
+        $this->assign('siteNoticeState', 'd-none');
         $this->assign('toolversion', Environment::getToolVersion());
 
         // default these

@@ -33,4 +33,9 @@ interface IGlobalStateProvider
      * @return array
      */
     public function getSessionSuperGlobal();
+
+    /**
+     * @return array
+     */
+    public function getCookieSuperGlobal();
 }

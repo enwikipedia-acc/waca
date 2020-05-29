@@ -115,3 +115,14 @@ $(".password-strength").keyup(function () {
 
     $('#password-strength-warning').text(strength.feedback.warning);
 });
+
+$(".sitenotice-dismiss").click(function() {
+    let siteNoticeContainer = $(".sitenotice-container");
+    siteNoticeContainer.removeClass('d-block');
+    siteNoticeContainer.addClass('d-none');
+
+    var date = new Date();
+    date.setTime(date.getTime() + 14 * 24 * 60 * 60 * 1000);
+
+    document.cookie = 'sitenotice=' + siteNoticeContainer.data('sitenotice') + ";expires=" + date.toUTCString() + ";path=/";
+})
