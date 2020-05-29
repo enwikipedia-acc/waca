@@ -43,6 +43,7 @@ class Offline
 
         $smarty = new Smarty();
         $smarty->assign("baseurl", $baseurl);
+        $smarty->assign("resourceCacheEpoch", 0);
         $smarty->assign("alerts", []);
         $smarty->assign("toolversion", Environment::getToolVersion());
 

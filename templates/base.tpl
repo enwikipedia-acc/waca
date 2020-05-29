@@ -7,8 +7,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- bootstrap styles -->
-    <link href="{$baseurl}/resources/generated/bootstrap-{$currentUser->getSkin()|default:'main'}.css" rel="stylesheet"/>
-    <link href="{$baseurl}/resources/baseStyles.css" rel="stylesheet"/>
+    <link href="{$baseurl}/resources/generated/bootstrap-{$currentUser->getSkin()|default:'main'}.css?{$resourceCacheEpoch}" rel="stylesheet"/>
+    <link href="{$baseurl}/resources/baseStyles.css?{$resourceCacheEpoch}" rel="stylesheet"/>
 
     <!-- fontawesome -->
     <link href="{$baseurl}/vendor/fortawesome/font-awesome/css/all.min.css" rel="stylesheet"/>
@@ -79,7 +79,7 @@
     <script src="{$baseurl}/vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js"></script>
     <script src="{$baseurl}/vendor/drvic10k/bootstrap-sortable/Scripts/bootstrap-sortable.js"></script>
     <script src="{$baseurl}/vendor/drvic10k/bootstrap-sortable/Scripts/moment.min.js"></script>
-    <script src="{$baseurl}/resources/global.js"></script>
+    <script src="{$baseurl}/resources/global.js?{$resourceCacheEpoch}"></script>
 
     <!-- Page-specific extra resources -->
     {foreach from=$extraJs item=js}
