@@ -4,7 +4,7 @@ php:
   - 7.3
 
 addons:
-  mariadb: '10.1'
+  mariadb: '10.2'
 
 os: linux
 dist: bionic
@@ -20,7 +20,7 @@ env:
   - MYSQL_HOST=127.0.0.1 MYSQL_USER=root MYSQL_SCHEMA=testdb
 
 before_script:
-  - pecl install runkit
+  - pecl install runkit7-3.0.0
   - phpenv config-add .travis.php.ini
   - cd sql
   - bash test_db.sh 1
@@ -38,7 +38,7 @@ after_script:
 notifications:
   irc:
     channels:
-      - "chat.freenode.net#wikipedia-en-accounts-devs"
+      #- "chat.freenode.net#wikipedia-en-accounts-devs"
     on_success: change
     on_failure: always
     template:
