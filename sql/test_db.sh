@@ -47,29 +47,29 @@ else
 fi
 
 echo "Check a few configuration flags"
-sudo mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "SELECT @@sql_mode;"
-sudo mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "SELECT @@version;"
+mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "SELECT @@sql_mode;"
+mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "SELECT @@version;"
 
 if [[ $SQL_USERNAME == "root" ]]; then
 	echo "Forcing SQL mode"
-	sudo mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "SET GLOBAL sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION,STRICT_ALL_TABLES,ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISION_BY_ZERO';"
+	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "SET GLOBAL sql_mode = 'NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION,STRICT_ALL_TABLES,ONLY_FULL_GROUP_BY,ERROR_FOR_DIVISION_BY_ZERO';"
 
-	sudo mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "SELECT @@sql_mode;"
+	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "SELECT @@sql_mode;"
 fi
 
 echo "Dropping old database..."
-sudo mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "DROP DATABASE IF EXISTS $SQL_DBNAME;"
+mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "DROP DATABASE IF EXISTS $SQL_DBNAME;"
 
 echo "Creating database..."
-sudo mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "CREATE DATABASE $SQL_DBNAME;"
+mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "CREATE DATABASE $SQL_DBNAME;"
 
 echo "Loading initial schema..."
-sudo mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < db-structure.sql
+mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < db-structure.sql
 
 echo "Loading initial seed data..."
 for f in `ls seed/*_data.sql`; do
 	echo "  * $f"
-	sudo mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < $f
+	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < $f
 done
 
 echo "Applying patches..."
@@ -79,24 +79,24 @@ for f in `ls patches/patch*.sql`; do
 	fi
 
 	echo "  * $f"
-	sudo mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < $f
+	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < $f
 done
 
 if [ $1 -eq 0 ]; then
 	echo "Dumping schema to file..."
-	sudo mysqldump --compact -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME > schema.sql
+	mysqldump --compact -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME > schema.sql
 
 	echo "Dropping database from server..."
-	sudo mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "DROP DATABASE IF EXISTS $SQL_DBNAME;"
+	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "DROP DATABASE IF EXISTS $SQL_DBNAME;"
 
 	echo "Creating database..."
-	sudo mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "CREATE DATABASE $SQL_DBNAME;"
+	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD -e "CREATE DATABASE $SQL_DBNAME;"
 
 	echo "Reloading database from file..."
-	sudo mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < schema.sql
+	mysql -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME < schema.sql
 
 	echo "Dumping schema to file..."
-	sudo mysqldump --compact -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME > schema2.sql
+	mysqldump --compact -h $SQL_SERVER -u $SQL_USERNAME $SQL_PASSWORD $SQL_DBNAME > schema2.sql
 
 	echo "Comparing dumps..."
 	diff -q schema.sql schema2.sql
