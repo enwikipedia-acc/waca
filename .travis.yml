@@ -28,6 +28,7 @@ before_script:
 
 script:
   - bash .travis.phplint.sh
+  - bash .travis.scss.sh
   - phpunit --verbose --coverage-clover=coverage.xml
   - codecov
 
@@ -38,7 +39,7 @@ after_script:
 notifications:
   irc:
     channels:
-      #- "chat.freenode.net#wikipedia-en-accounts-devs"
+      - "chat.freenode.net#wikipedia-en-accounts-devs"
     on_success: change
     on_failure: always
     template:
