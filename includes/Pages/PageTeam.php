@@ -35,8 +35,21 @@ class PageTeam extends InternalPageBase
             }
         }
 
-        $this->assign('developer', $active);
-        $this->assign('inactiveDeveloper', $inactive);
+        $this->assign('developer', $this->assocArrayShuffle($active));
+        $this->assign('inactiveDeveloper', $this->assocArrayShuffle($inactive));
         $this->setTemplate('team/team.tpl');
+    }
+
+    private function assocArrayShuffle($array)
+    {
+        $arrayKeys = array_keys($array);
+        shuffle($arrayKeys);
+
+        $sorted = [];
+        foreach ($arrayKeys as $k) {
+            $sorted[$k] = $array[$k];
+        }
+
+        return $sorted;
     }
 }

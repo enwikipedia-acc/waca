@@ -91,33 +91,16 @@
         "Cloak": "*!*@wikipedia/Manishearth",
         "Other": null
     },
-    "Cyberpower678": {
-        "IRC": "Cyberpower678",
-        "ToolID": "850",
-        "wiki": "Cyberpower678",
-        "WWW": null,
-        "Name": null,
-        "Role": [
-        ],
-        "Retired": [
-            "Mailing list moderator"
-        ],
-        "Access": [
-            "GitHub"
-        ],
-        "Cloak": "*!*@wikipedia/Cyberpower678",
-        "Other": null
-    },
     "Matthewrbowker": {
         "IRC": "Matthew_",
         "ToolID": "788",
         "wiki": "Matthewrbowker",
         "WWW": null,
         "Name": "Matthew Bowker",
-        "Role": [],
-        "Retired": [
+        "Role": [
             "Developer"
         ],
+        "Retired": [],
         "Access": [
             "GitHub"
         ],
@@ -125,7 +108,7 @@
         "Other": null
     },
     "SQL": {
-    "IRC": "SQL, SQLDb",
+        "IRC": "SQL, SQLDb",
         "ToolID": "1",
         "wiki": "SQL",
         "Name": null,
@@ -399,5 +382,40 @@
         "Access": [
             "GitHub"
         ]
+    },
+    "Addshore": {
+        "ToolID": "718",
+        "wiki": "Addshore",
+        "Role": [],
+        "Retired": ["Developer"],
+        "Access": []
+    },
+    "mattw": {
+        "Role": [],
+        "Retired": ["Developer"],
+        "Access": []
+    },
+    "There'sNoTime": {
+        "ToolID": "1061",
+        "wiki": "There'sNoTime",
+        "Role": [],
+        "Retired": ["Developer"],
+        "Access": []
+    },
+    "Riley": {
+        "ToolID": "865",
+        "wiki": "~riley",
+        "Role": [],
+        "Retired": ["Developer"],
+        "Access": []
+    },
+    "mdaniels5757": {
+        "IRC": "mdaniels5757",
+        "Cloak": "*!*@wikipedia/mdaniels5757",
+        "ToolID": "2059",
+        "wiki": "Mdaniels5757",
+        "Role": ["Developer"],
+        "Retired": [],
+        "Access": []
     }
 }
