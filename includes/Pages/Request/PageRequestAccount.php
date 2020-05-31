@@ -9,7 +9,9 @@
 namespace Waca\Pages\Request;
 
 use Exception;
+use Waca\DataObjects\Comment;
 use Waca\DataObjects\Request;
+use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\Helpers\BanHelper;
 use Waca\SessionAlert;
 use Waca\Tasks\PublicInterfacePageBase;
@@ -22,12 +24,15 @@ class PageRequestAccount extends PublicInterfacePageBase
     /**
      * Main function for this page, when no specific actions are called.
      * @return void
+     * @throws OptimisticLockFailedException
+     * @throws Exception
      */
     protected function main()
     {
         // dual mode page
         if (WebRequest::wasPosted()) {
             $request = $this->createNewRequest();
+            $comment = $this->createComment();
 
             $validationErrors = $this->validateRequest($request);
 
@@ -53,10 +58,10 @@ class PageRequestAccount extends PublicInterfacePageBase
 
             // actually save the request to the database
             if ($this->getSiteConfiguration()->getEmailConfirmationEnabled()) {
-                $this->saveAsEmailConfirmation($request);
+                $this->saveAsEmailConfirmation($request, $comment);
             }
             else {
-                $this->saveWithoutEmailConfirmation($request);
+                $this->saveWithoutEmailConfirmation($request, $comment);
             }
         }
         else {
@@ -85,7 +90,6 @@ class PageRequestAccount extends PublicInterfacePageBase
 
         $request->setName(WebRequest::postString('name'));
         $request->setEmail(WebRequest::postEmail('email'));
-        $request->setComment(WebRequest::postString('comments'));
 
         $request->setIp(WebRequest::remoteAddress());
         $request->setForwardedIp(WebRequest::forwardedAddress());
@@ -93,6 +97,26 @@ class PageRequestAccount extends PublicInterfacePageBase
         $request->setUserAgent(WebRequest::userAgent());
 
         return $request;
+    }
+
+    /**
+     * @return Comment|null
+     */
+    private function createComment()
+    {
+        $commentText = WebRequest::postString('comments');
+        if ($commentText === null || trim($commentText) === '') {
+            return null;
+        }
+
+        $comment = new Comment();
+        $comment->setDatabase($this->getDatabase());
+
+        $comment->setVisibility('requester');
+        $comment->setUser(null);
+        $comment->setComment($commentText);
+
+        return $comment;
     }
 
     /**
@@ -125,14 +149,22 @@ class PageRequestAccount extends PublicInterfacePageBase
     }
 
     /**
-     * @param Request $request
+     * @param Request      $request
      *
+     * @param Comment|null $comment
+     *
+     * @throws OptimisticLockFailedException
      * @throws Exception
      */
-    protected function saveAsEmailConfirmation(Request $request)
+    protected function saveAsEmailConfirmation(Request $request, $comment)
     {
         $request->generateEmailConfirmationHash();
         $request->save();
+
+        if ($comment !== null) {
+            $comment->setRequest($request->getId());
+            $comment->save();
+        }
 
         $trustedIp = $this->getXffTrustProvider()->getTrustedClientIp(
             $request->getIp(),
@@ -152,14 +184,22 @@ class PageRequestAccount extends PublicInterfacePageBase
     }
 
     /**
-     * @param Request $request
+     * @param Request      $request
      *
+     * @param Comment|null $comment
+     *
+     * @throws OptimisticLockFailedException
      * @throws Exception
      */
-    protected function saveWithoutEmailConfirmation(Request $request)
+    protected function saveWithoutEmailConfirmation(Request $request, $comment)
     {
         $request->setEmailConfirm(0); // fixme Since it can't be null
         $request->save();
+
+        if ($comment !== null) {
+            $comment->setRequest($request->getId());
+            $comment->save();
+        }
 
         $this->getNotificationHelper()->requestReceived($request);
 

@@ -23,7 +23,15 @@
                 <label class="col-form-label" for="user">Commenting user</label>
             </div>
             <div class="col-md-8 col-lg-4">
-                <a class="form-control" id="user" href="{$baseurl}/internal.php/statistics/users/detail?user={$comment->getUser()}">{$user->getUsername()|escape}</a>
+                {if $comment->getUser() == null}
+                    <div class="form-control">
+                        <span class="badge badge-info">
+                            <i class="fas fa-user"></i>&nbsp;Requester
+                        </span>
+                    </div>
+                {else}
+                    <a class="form-control" id="user" href="{$baseurl}/internal.php/statistics/users/detail?user={$comment->getUser()}">{$user->getUsername()|escape}</a>
+                {/if}
             </div>
         </div>
 
@@ -31,29 +39,32 @@
             <div class="col-md-4 col-lg-2">
                 <label class="col-form-label" for="timestamp">Timestamp</label>
             </div>
-            <div class="col-md-8 col-lg-4">
-                <div class="form-control" id="timestamp">{$comment->getTime()|date}</div>
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="form-control" id="timestamp">{$comment->getTime()|date} <span class="text-muted">({$comment->getTime()|relativedate})</span></div>
             </div>
         </div>
 
-        <div class="form-group row">
-            <div class="col-md-4 col-lg-2">
-                <label class="col-form-label" for="visibility">Security</label>
+        {if $comment->getVisibility() == "requester"}
+        {else}
+            <div class="form-group row">
+                <div class="col-md-4 col-lg-2">
+                    <label class="col-form-label" for="visibility">Security</label>
+                </div>
+                <div class="col-md-8 col-lg-4">
+                    <select name="visibility" class="form-control" id="visibility">
+                        <option value="user" {if $comment->getVisibility() == "user"}selected{/if}>Standard</option>
+                        <option value="admin" {if $comment->getVisibility() == "admin"}selected{/if}>Restricted</option>
+                    </select>
+                </div>
             </div>
-            <div class="col-md-8 col-lg-4">
-                <select name="visibility" class="form-control" id="visibility">
-                    <option value="user" {if $comment->getVisibility() == "user"}selected{/if}>Standard</option>
-                    <option value="admin" {if $comment->getVisibility() == "admin"}selected{/if}>Restricted</option>
-                </select>
-            </div>
-        </div>
+        {/if}
 
         <div class="form-group row">
             <div class="col-md-4 col-lg-2">
                 <label class="col-form-label" for="oldtext">Old text</label>
             </div>
             <div class="col-md-8 col-lg-10">
-                <pre class="form-control prewrap" id="oldtext">{$comment->getComment()|escape}</pre>
+                <div class="form-control prewrap" id="oldtext">{$comment->getComment()|escape}</div>
             </div>
         </div>
 
