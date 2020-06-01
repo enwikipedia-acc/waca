@@ -49,7 +49,6 @@
                     {/if}
                 </td>
 
-
                 <td data-value="{$list->requestTrustedIp[$r->getId()]|escape|iphex}">
                     {if $list->requestTrustedIp[$r->getId()] === $list->dataClearIp}
                         <span class="text-muted font-italic">IP address purged</span>
@@ -136,9 +135,11 @@
                                 <input class="form-control" type="hidden" name="request" value="{$r->getId()}"/>
                                 <input class="form-control" type="hidden" name="updateversion" value="{$r->getUpdateVersion()}"/>
                                 <button class="btn btn-sm btn-warning" type="submit">
-                                    <i class="fas fa-hand-paper"></i>&nbsp;Force break
+                                    <i class="fas fa-hand-paper"></i> <span class="d-none d-lg-inline">Force break</span><span class="d-inline d-lg-none">{$list->userList[$r->getReserved()]|escape}</span>
                                 </button>
                             </form>
+                        {else}
+                            <span class="d-inline d-lg-none">{$list->userList[$r->getReserved()]|escape}</span>
                         {/if}
                     {/if}
                 {/if}

@@ -28,9 +28,9 @@ class PageSearch extends InternalPageBase
         $this->setHtmlTitle('Search');
 
         // Dual-mode page
-        if (WebRequest::wasPosted()) {
-            $searchType = WebRequest::postString('type');
-            $searchTerm = WebRequest::postString('term');
+        if (WebRequest::getString('type') !== null) {
+            $searchType = WebRequest::getString('type');
+            $searchTerm = WebRequest::getString('term');
 
             $validationError = "";
             if (!$this->validateSearchParameters($searchType, $searchTerm, $validationError)) {
@@ -59,17 +59,18 @@ class PageSearch extends InternalPageBase
             $this->assign('resultCount', count($results));
             $this->assign('term', $searchTerm);
             $this->assign('target', $searchType);
+            $this->assign('hasResultset', true);
 
             list($defaultSort, $defaultSortDirection) = WebRequest::requestListDefaultSort();
             $this->assign('defaultSort', $defaultSort);
             $this->assign('defaultSortDirection', $defaultSortDirection);
 
-            $this->assignCSRFToken();
-            $this->setTemplate('search/searchResult.tpl');
+            $this->setTemplate('search/main.tpl');
         }
         else {
-            $this->assignCSRFToken();
-            $this->setTemplate('search/searchForm.tpl');
+            $this->assign('target', 'name');
+            $this->assign('hasResultset', false);
+            $this->setTemplate('search/main.tpl');
         }
     }
 
