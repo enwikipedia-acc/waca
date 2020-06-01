@@ -21,6 +21,7 @@
                     <option value="name" {if $target == 'name'}selected{/if}>... by requested username</option>
                     <option value="email" {if $target == 'email'}selected{/if}>... by email address</option>
                     <option value="ip" {if $target == 'ip'}selected{/if}>... by IP address</option>
+                    <option value="comment" {if $target == 'comment'}selected{/if}>... by comment on request</option>
                 </select>
             </div>
 
