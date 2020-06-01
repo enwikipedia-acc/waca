@@ -9,9 +9,11 @@
 namespace Waca\Pages;
 
 use Waca\DataObjects\Request;
+use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\RequestListData;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
+use Waca\Security\SecurityManager;
 use Waca\SessionAlert;
 use Waca\Tasks\PagedInternalPageBase;
 use Waca\WebRequest;
@@ -57,6 +59,9 @@ class PageSearch extends PagedInternalPageBase
                 case 'ip':
                     $this->getIpSearchResults($requestSearch, $searchTerm);
                     break;
+                case 'comment':
+                    $this->getCommentSearchResults($requestSearch, $searchTerm);
+                    break;
             }
 
             /** @var Request[] $results */
@@ -92,6 +97,26 @@ class PageSearch extends PagedInternalPageBase
     {
         $padded = '%' . $searchTerm . '%';
         $searchHelper->byName($padded);
+    }
+
+    /**
+     * Gets search results by comment
+     *
+     * @param RequestSearchHelper $searchHelper
+     * @param string              $searchTerm
+     */
+    private function getCommentSearchResults(RequestSearchHelper $searchHelper, $searchTerm)
+    {
+        $padded = '%' . $searchTerm . '%';
+        $searchHelper->byComment($padded);
+
+        $securityManager = $this->getSecurityManager();
+        $currentUser = User::getCurrent($this->getDatabase());
+        $securityResult = $securityManager->allows('RequestData', 'seeRestrictedComments', $currentUser);
+
+        if ($securityResult !== SecurityManager::ALLOWED) {
+            $searchHelper->byCommentSecurity(['requester', 'user']);
+        }
     }
 
     /**
@@ -136,7 +161,7 @@ class PageSearch extends PagedInternalPageBase
      */
     protected function validateSearchParameters($searchType, $searchTerm, &$errorMessage)
     {
-        if (!in_array($searchType, array('name', 'email', 'ip'))) {
+        if (!in_array($searchType, array('name', 'email', 'ip', 'comment'))) {
             $errorMessage = 'Unknown search type';
 
             return false;
