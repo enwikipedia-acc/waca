@@ -17,6 +17,7 @@ $theme-colors: (
 $font-size-base: 0.9rem;
 
 $overflows: auto, hidden, visible;
+$displays: none, inline, inline-block, block, table, table-row, table-cell, flex, inline-flex, list-item;
 
 @import "../../vendor/twbs/bootstrap/scss/bootstrap";
 
