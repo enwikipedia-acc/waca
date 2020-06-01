@@ -33,13 +33,15 @@ class PageSearch extends PagedInternalPageBase
         if (WebRequest::getString('type') !== null) {
             $searchType = WebRequest::getString('type');
             $searchTerm = WebRequest::getString('term');
-            $this->assign('term', $searchTerm);
-            $this->assign('target', $searchType);
+            $excludeNonConfirmed = WebRequest::getBoolean('excludeNonConfirmed');
 
             $validationError = "";
             if (!$this->validateSearchParameters($searchType, $searchTerm, $validationError)) {
                 SessionAlert::error($validationError, "Search error");
 
+                $this->assign('term', $searchTerm);
+                $this->assign('target', $searchType);
+                $this->assign('excludeNonConfirmed', $excludeNonConfirmed);
                 $this->assign('hasResultset', false);
                 return;
             }
@@ -48,6 +50,10 @@ class PageSearch extends PagedInternalPageBase
 
             $this->setSearchHelper($requestSearch);
             $this->setupLimits();
+
+            if ($excludeNonConfirmed) {
+                $requestSearch->withConfirmedEmail();
+            }
 
             switch ($searchType) {
                 case 'name':
@@ -67,7 +73,11 @@ class PageSearch extends PagedInternalPageBase
             /** @var Request[] $results */
             $results = $requestSearch->getRecordCount($count)->fetch();
 
-            $this->setupPageData($count, array('term' => $searchTerm, 'type' => $searchType));
+            $this->setupPageData($count, [
+                'term'                => $searchTerm,
+                'type'                => $searchType,
+                'excludeNonConfirmed' => $excludeNonConfirmed,
+            ]);
 
             // deal with results
             $this->assign('requests', $this->prepareRequestData($results));
@@ -83,6 +93,8 @@ class PageSearch extends PagedInternalPageBase
         else {
             $this->assign('target', 'name');
             $this->assign('hasResultset', false);
+            $this->assign('limit', 50);
+            $this->assign('excludeNonConfirmed', true);
             $this->setTemplate('search/main.tpl');
         }
     }

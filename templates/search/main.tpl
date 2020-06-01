@@ -33,7 +33,17 @@
         </div>
 
         <div class="form-row">
+            <div class="col-md-12">
+                <div class="custom-control custom-switch">
+                    <input class="custom-control-input" type="checkbox" id="excludeNonConfirmed" name="excludeNonConfirmed" {if $excludeNonConfirmed}checked{/if} />
+                    <label class="custom-control-label" for="excludeNonConfirmed">Exclude requests lacking email confirmation</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row">
             <div class="col-md-12 my-3">
+
                 <div class="custom-control custom-radio custom-control-inline">
                     <input class="custom-control-input" type="radio" id="inlineCheckbox1" name="limit" value="50" {if $limit == 50}checked{/if} />
                     <label class="custom-control-label" for="inlineCheckbox1">50 results</label>
