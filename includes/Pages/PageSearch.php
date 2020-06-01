@@ -13,10 +13,10 @@ use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\RequestListData;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
 use Waca\SessionAlert;
-use Waca\Tasks\InternalPageBase;
+use Waca\Tasks\PagedInternalPageBase;
 use Waca\WebRequest;
 
-class PageSearch extends InternalPageBase
+class PageSearch extends PagedInternalPageBase
 {
     use RequestListData;
 
@@ -31,34 +31,42 @@ class PageSearch extends InternalPageBase
         if (WebRequest::getString('type') !== null) {
             $searchType = WebRequest::getString('type');
             $searchTerm = WebRequest::getString('term');
+            $this->assign('term', $searchTerm);
+            $this->assign('target', $searchType);
 
             $validationError = "";
             if (!$this->validateSearchParameters($searchType, $searchTerm, $validationError)) {
                 SessionAlert::error($validationError, "Search error");
-                $this->redirect("search");
 
+                $this->assign('hasResultset', false);
                 return;
             }
 
-            $results = array();
+            $requestSearch = RequestSearchHelper::get($this->getDatabase());
+
+            $this->setSearchHelper($requestSearch);
+            $this->setupLimits();
 
             switch ($searchType) {
                 case 'name':
-                    $results = $this->getNameSearchResults($searchTerm);
+                    $this->getNameSearchResults($requestSearch, $searchTerm);
                     break;
                 case 'email':
-                    $results = $this->getEmailSearchResults($searchTerm);
+                    $this->getEmailSearchResults($requestSearch, $searchTerm);
                     break;
                 case 'ip':
-                    $results = $this->getIpSearchResults($searchTerm);
+                    $this->getIpSearchResults($requestSearch, $searchTerm);
                     break;
             }
+
+            /** @var Request[] $results */
+            $results = $requestSearch->getRecordCount($count)->fetch();
+
+            $this->setupPageData($count, array('term' => $searchTerm, 'type' => $searchType));
 
             // deal with results
             $this->assign('requests', $this->prepareRequestData($results));
             $this->assign('resultCount', count($results));
-            $this->assign('term', $searchTerm);
-            $this->assign('target', $searchType);
             $this->assign('hasResultset', true);
 
             $this->setTemplate('search/main.tpl');
@@ -73,31 +81,24 @@ class PageSearch extends InternalPageBase
     /**
      * Gets search results by name
      *
-     * @param string $searchTerm
-     *
-     * @return Request[]
+     * @param RequestSearchHelper $searchHelper
+     * @param string              $searchTerm
      */
-    private function getNameSearchResults($searchTerm)
+    private function getNameSearchResults(RequestSearchHelper $searchHelper, $searchTerm)
     {
         $padded = '%' . $searchTerm . '%';
-
-        /** @var Request[] $requests */
-        $requests = RequestSearchHelper::get($this->getDatabase())
-            ->byName($padded)
-            ->fetch();
-
-        return $requests;
+        $searchHelper->byName($padded);
     }
 
     /**
      * Gets search results by email
      *
+     * @param        $searchHelper
      * @param string $searchTerm
      *
-     * @return Request[]
      * @throws ApplicationLogicException
      */
-    private function getEmailSearchResults($searchTerm)
+    private function getEmailSearchResults(RequestSearchHelper $searchHelper, $searchTerm)
     {
         if ($searchTerm === "@") {
             throw new ApplicationLogicException('The search term "@" is not valid for email address searches!');
@@ -105,31 +106,20 @@ class PageSearch extends InternalPageBase
 
         $padded = '%' . $searchTerm . '%';
 
-        /** @var Request[] $requests */
-        $requests = RequestSearchHelper::get($this->getDatabase())
-            ->byEmailAddress($padded)
-            ->excludingPurgedData($this->getSiteConfiguration())
-            ->fetch();
-
-        return $requests;
+        $searchHelper->byEmailAddress($padded)->excludingPurgedData($this->getSiteConfiguration());
     }
 
     /**
      * Gets search results by IP address or XFF IP address
      *
-     * @param string $searchTerm
-     *
-     * @return Request[]
+     * @param RequestSearchHelper $searchHelper
+     * @param string              $searchTerm
      */
-    private function getIpSearchResults($searchTerm)
+    private function getIpSearchResults(RequestSearchHelper $searchHelper, $searchTerm)
     {
-        /** @var Request[] $requests */
-        $requests = RequestSearchHelper::get($this->getDatabase())
+        $searchHelper
             ->byIp($searchTerm)
-            ->excludingPurgedData($this->getSiteConfiguration())
-            ->fetch();
-
-        return $requests;
+            ->excludingPurgedData($this->getSiteConfiguration());
     }
 
     /**
