@@ -18,7 +18,7 @@
     </thead>
     <tbody>
     {foreach from=$list->requests item="r"}
-        <tr>
+        <tr {if $r->getEmailConfirm() !== 'Confirmed'}class="table-warning"{/if}>
             <td data-value="{$r->getId()}">
                 <a class="btn btn-sm{if $r->hasComments() == true} btn-info{else} btn-secondary{/if}"
                    {if $r->hasComments() == true}data-title="This request has comments" data-toggle="tooltip"{/if}
@@ -26,7 +26,7 @@
             </td>
 
             {if $showStatus}
-                <td>{$r->getStatus()}</td>
+                <td>{$r->getStatus()}{if $r->getEmailConfirm() !== 'Confirmed'} <br class="d-lg-none"><span class="badge badge-warning">Not email-confirmed</span>{/if}</td>
             {/if}
 
             {if $list->showPrivateData}
