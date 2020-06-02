@@ -85,6 +85,81 @@
         </div>
 
         <div class="col">
+            <div class="card mb-4 {if $webAuthnEnrolled}border-success{/if}">
+                <div class="card-body">
+                    <h4 class="card-title">WebAuthn</h4>
+                    <p class="card-text lead">
+                        Use your computer or a USB hardware token to authenticate.
+                    </p>
+                    <p>
+                        Use a USB hardware token such FIDO2 U2F token or your computer's underlying authentication system, including options such as:
+                    </p>
+                    <ul>
+                        <li>YubiKeys or other U2F tokens</li>
+                        <li>Windows Hello</li>
+                        <li>Android lockscreen</li>
+                        <li>TouchID or FaceID</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <p>
+                        <strong>WebAuthn status:</strong>
+                        {if $webAuthnEnrolled}
+                            <span class="badge badge-success">ENABLED</span>
+                        {else}
+                            <span class="badge badge-danger">DISABLED</span>
+                        {/if}
+                    </p>
+
+                    {if $webAuthnEnrolled}
+                    <hr />
+
+                    <strong>Enrolled tokens:</strong>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr><th>Token</th><th>Last Used</th><td></td></tr>
+                        </thead>
+                        <tbody>
+                        {foreach from=$webAuthnTokens item=token}
+                            <tr>
+                                <th>{$token.tokenName|escape}</th>
+                                <td>
+                                    {if $token.lastUsed === null}
+                                        <span class="text-muted">never used</span>
+                                    {else}
+                                        <span data-toggle="tooltip" data-placement="top" title="{$token.lastUsed|unixtime|date}">{$token.lastUsed|unixtime|relativedate}</span>
+                                    {/if}
+                                </td>
+                                <td class="table-button-cell">
+                                    <form action="{$baseurl}/internal.php/multiFactor/disableWebAuthn" method="post">
+                                        <input type="hidden" name="publicKeyId" value="{$token.publicKeyId|escape}" />
+                                        <button class="btn btn-sm btn-outline-danger">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                    {/if}
+
+                    {if $webAuthnEnrolled}
+                        <a class="btn btn-block btn-outline-secondary"
+                           href="{$baseurl}/internal.php/multiFactor/enableWebAuthn">
+                            <i class="icon-white icon-ok"></i>&nbsp;Enroll another authenticator
+                        </a>
+                    {else}
+                        {if $allowedWebAuthn}
+                            <a class="btn btn-block btn-secondary"
+                               href="{$baseurl}/internal.php/multiFactor/enableWebAuthn">
+                                <i class="icon-white icon-ok"></i>&nbsp;Enable
+                            </a>
+                        {/if}
+                    {/if}
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
             <div class="card mb-4">
                 <div class="card-body">
                     <h4 class="card-title">Scratch tokens</h4>

@@ -32,18 +32,29 @@
                                 </div>
                             </div>
                         {/if}
+                    </form>
 
-                        {if count($alternatives) > 0 }
-                            <div class="row-fluid">
-                                <hr />
-                                {foreach from=$alternatives key="path" item="authmethods"}
+                    {if count($alternatives) > 0 || $partialStage !== 1 }
+                        <hr />
+                        <div class="row cols split-cols">
+                            {foreach from=$alternatives key="path" item="authmethods"}
+                                <div class="col">
                                     <p class="text-center mb-0">
                                         <small><a href="{$baseurl}/internal.php/login/{$path}" class="muted">Use {$authmethods|nlimplode} instead?</a></small>
                                     </p>
-                                {/foreach}
-                            </div>
-                        {/if}
-                    </form>
+                                </div>
+                            {/foreach}
+                            {if $partialStage !== 1}
+                                <div class="col">
+                                    <form method="post" action="{$baseurl}/internal.php/logout">
+                                        <p class="text-center mb-0">
+                                            <button type="submit" class="btn btn-link p-0"><small>Cancel login</small></button>
+                                        </p>
+                                    </form>
+                                </div>
+                            {/if}
+                        </div>
+                    {/if}
                 </div>
             </div>
         </div>

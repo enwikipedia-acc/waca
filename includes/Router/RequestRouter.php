@@ -27,6 +27,7 @@ use Waca\Pages\RequestAction\PageCreateRequest;
 use Waca\Pages\RequestAction\PageManuallyConfirm;
 use Waca\Pages\UserAuth\Login\PageOtpLogin;
 use Waca\Pages\UserAuth\Login\PagePasswordLogin;
+use Waca\Pages\UserAuth\Login\PageWebAuthnLogin;
 use Waca\Pages\UserAuth\PageChangePassword;
 use Waca\Pages\UserAuth\PageForgotPassword;
 use Waca\Pages\PageLog;
@@ -133,6 +134,11 @@ class RequestRouter implements IRequestRouter
             array(
                 'class'   => PageOtpLogin::class,
                 'actions' => array(),
+            ),
+        'login/webauthn'                   =>
+            array(
+                'class'   => PageWebAuthnLogin::class,
+                'actions' => array('action', 'options'),
             ),
         'forgotPassword'              =>
             array(
@@ -246,6 +252,8 @@ class RequestRouter implements IRequestRouter
                     'disableYubikeyOtp',
                     'enableTotp',
                     'disableTotp',
+                    'enableWebAuthn',
+                    'disableWebAuthn',
                 ),
             ),
         'oauth'                       =>
