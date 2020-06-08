@@ -1,4 +1,12 @@
 <?php
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
+
+namespace Waca;
 
 /**
  * Session Alerts
@@ -13,81 +21,141 @@
  */
 class SessionAlert
 {
-	private $message;
-	private $title;
-	private $type;
-	private $closable;
-	private $block;
+    private $message;
+    private $title;
+    private $type;
+    private $closable;
+    private $block;
 
-	/**
-	 * @param string $message
-	 * @param string $title
-	 * @param string $type
-	 * @param bool $closable
-	 * @param bool $block
-	 */
-	public function __construct($message, $title, $type = "alert-info", $closable = true, $block = true)
-	{
-		$this->message = $message;
-		$this->title = $title;
-		$this->type = $type;
-		$this->closable = $closable;
-		$this->block = $block;
-	}
+    /**
+     * @param string $message
+     * @param string $title
+     * @param string $type
+     * @param bool   $closable
+     * @param bool   $block
+     */
+    public function __construct($message, $title, $type = "alert-info", $closable = true, $block = true)
+    {
+        $this->message = $message;
+        $this->title = $title;
+        $this->type = $type;
+        $this->closable = $closable;
+        $this->block = $block;
+    }
 
-	public function getAlertBox()
-	{
-		return BootstrapSkin::displayAlertBox($this->message, $this->type, $this->title, $this->block, $this->closable, true);
-	}
+    /**
+     * Shows a quick one-liner message
+     *
+     * @param string $message
+     * @param string $type
+     */
+    public static function quick($message, $type = "alert-info")
+    {
+        self::append(new SessionAlert($message, "", $type, true, false));
+    }
 
-	/**
-	 * Shows a quick one-liner message
-	 * @param string $message
-	 * @param string $type
-	 */
-	public static function quick($message, $type = "alert-info")
-	{
-		self::append(new SessionAlert($message, "", $type, true, false));
-	}
+    /**
+     * @param SessionAlert $alert
+     */
+    public static function append(SessionAlert $alert)
+    {
+        $data = WebRequest::getSessionAlertData();
+        $data[] = serialize($alert);
+        WebRequest::setSessionAlertData($data);
+    }
 
-	public static function success($message)
-	{
-		self::append(new SessionAlert($message, "", "alert-success", true, true));
-	}
+    /**
+     * Shows a quick one-liner success message
+     *
+     * @param string $message
+     */
+    public static function success($message)
+    {
+        self::append(new SessionAlert($message, "", "alert-success", true, true));
+    }
 
-	public static function warning($message, $title = "Warning!")
-	{
-		self::append(new SessionAlert($message, $title, "alert-warning", true, true));
-	}
+    /**
+     * Shows a quick one-liner warning message
+     *
+     * @param string $message
+     * @param string $title
+     */
+    public static function warning($message, $title = "Warning!")
+    {
+        self::append(new SessionAlert($message, $title, "alert-warning", true, true));
+    }
 
-	public static function error($message, $title = "Error!")
-	{
-		self::append(new SessionAlert($message, $title, "alert-error", true, true));
-	}
+    /**
+     * Shows a quick one-liner error message
+     *
+     * @param string $message
+     * @param string $title
+     */
+    public static function error($message, $title = "Error!")
+    {
+        self::append(new SessionAlert($message, $title, "alert-danger", true, true));
+    }
 
-	public static function append(SessionAlert $alert)
-	{
-		$data = array();
-		if (isset($_SESSION['alerts'])) {
-			$data = $_SESSION['alerts'];
-		}
+    /**
+     * Retrieves the alerts which have been saved to the session
+     * @return array
+     */
+    public static function getAlerts()
+    {
+        $alertData = array();
 
-		$data[] = serialize($alert);
+        foreach (WebRequest::getSessionAlertData() as $a) {
+            $alertData[] = unserialize($a);
+        }
 
-		$_SESSION['alerts'] = $data;
-	}
+        return $alertData;
+    }
 
-	public static function retrieve()
-	{
-		$block = array();
-		if (isset($_SESSION['alerts'])) {
-			foreach ($_SESSION['alerts'] as $a) {
-				$block[] = unserialize($a);
-			}
-		}
+    /**
+     * Clears the alerts from the session
+     */
+    public static function clearAlerts()
+    {
+        WebRequest::clearSessionAlertData();
+    }
 
-		$_SESSION['alerts'] = array();
+    /**
+     * @return boolean
+     */
+    public function isBlock()
+    {
+        return $this->block;
+    }
 
-		return $block;
-	}
+    /**
+     * @return boolean
+     */
+    public function isClosable()
+    {
+        return $this->closable;
+    }
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
 }

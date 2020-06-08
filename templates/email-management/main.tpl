@@ -1,72 +1,27 @@
-<div class="page-header">
-  <h1>Email Management<small>
-    Create and edit close reasons{if $currentUser->isAdmin() == true} &nbsp;<a class="btn btn-primary" href="{$baseurl}/acc.php?action=emailmgmt&amp;create=1">
-      <i class="icon-white icon-plus"></i>&nbsp;Create new Message
-    </a>{/if}
-  </small></h1>
-</div>
+{extends file="pagebase.tpl"}
+{block name="content"}
+    <div class="row">
+        <div class="col-md-12" >
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Email Management <small class="text-muted">Create and edit close reasons</small></h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    {if $canCreate}
+                        <a class="btn btn-sm btn-outline-success" href="{$baseurl}/internal.php/emailManagement/create"><i class="fas fa-plus"></i>&nbsp;Create new Message</a>
+                    {/if}
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="row-fluid">
-  <div class="span6">
-    <h3>Active Emails</h3>
-    <table class="table table-striped table-nonfluid">
-      {foreach $activeemails as $row}
-      <tr>
-        <td>{$row@iteration}.</td>
-        <th>{$row->getName()|escape}</th>
-        <td>
-          {if $row->getDefaultAction() == EmailTemplate::CREATED}
-            <span class="label label-success">Create</span>
-          {elseif $row->getDefaultAction() == EmailTemplate::NOT_CREATED}
-            <span class="label label-important">Decline</span>
-          {elseif $row->getDefaultAction() == EmailTemplate::NONE}
-            <span class="label">No default</span>
-          {else}
-            <span class="label label-info">Other</span>
-          {/if}
-        </td>
-        <td>
-          {if $row->getPreloadOnly()}<span class="label label-info">Preload only</span>{/if}
-        </td>
-        <td>
-          <a class="btn {if $currentUser->isAdmin()}btn-warning{/if}" href="{$baseurl}/acc.php?action=emailmgmt&amp;edit={$row->getId()}">
-            {if $currentUser->isAdmin()}<i class="icon-white icon-pencil"></i>&nbsp;Edit Message{else}<i class="icon-black icon-eye-open"></i>&nbsp;View Message{/if}
-          </a>
-        </td>
-      </tr>
-      {/foreach}
-    </table>
-  </div>
-  {if $displayinactive == true}
-  <div class="span6">
-    <h3>Inactive Emails</h3>
-    <table class="table table-striped table-nonfluid">
-      {foreach $inactiveemails as $row}
-      <tr>
-        <td>{$row@iteration}.</td>
-        <th>{$row->getName()|escape}</th>
-        <td>
-          {if $row->getDefaultAction() == EmailTemplate::CREATED}
-            <span class="label label-success">Create</span>
-          {elseif $row->getDefaultAction() == EmailTemplate::NOT_CREATED}
-            <span class="label label-important">Decline</span>
-          {elseif $row->getDefaultAction() == EmailTemplate::NONE}
-            <span class="label">No default</span>
-          {else}
-            <span class="label label-info">Other</span>
-          {/if}
-        </td>
-        <td>
-          {if $row->getPreloadOnly()}<span class="label label-info">Preload only</span>{/if}
-        </td>
-        <td>
-          <a class="btn {if $currentUser->isAdmin()}btn-warning{/if}" href="{$baseurl}/acc.php?action=emailmgmt&amp;edit={$row->getId()}">
-            {if $currentUser->isAdmin()}<i class="icon-white icon-pencil"></i>&nbsp;Edit Message{else}<i class="icon-black icon-eye-open"></i>&nbsp;View Message{/if}
-          </a>
-        </td>
-      </tr>
-      {/foreach}
-    </table>
-  </div>
-  {/if}
-</div>
+    <div class="row">
+        <div class="col-xl-6">
+            <h3>Active Emails</h3>
+            {include file="email-management/template-table.tpl" templates=$activeTemplates}
+        </div>
+
+        <div class="col-xl-6">
+            <h3>Inactive Emails</h3>
+            {include file="email-management/template-table.tpl" templates=$inactiveTemplates}
+        </div>
+    </div>
+{/block}

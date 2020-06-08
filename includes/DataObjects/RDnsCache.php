@@ -1,89 +1,127 @@
 <?php
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
+
+namespace Waca\DataObjects;
+
+use DateTimeImmutable;
+use Exception;
+use Waca\DataObject;
+use Waca\Exceptions\OptimisticLockFailedException;
+use Waca\PdoDatabase;
 
 /**
  * rDNS Cache data object
  */
 class RDnsCache extends DataObject
 {
-	private $address;
-	private $data;
-	private $creation;
+    private $address;
+    private $data;
+    private $creation;
 
-	/**
-	 * @param string $address
-	 * @param PdoDatabase $database
-	 * @return RDnsCache
-	 */
-	public static function getByAddress($address, PdoDatabase $database)
-	{
-		$statement = $database->prepare("SELECT * FROM rdnscache WHERE address = :id LIMIT 1;");
-		$statement->bindValue(":id", $address);
+    /**
+     * @param string      $address
+     * @param PdoDatabase $database
+     *
+     * @return RDnsCache|false
+     */
+    public static function getByAddress($address, PdoDatabase $database)
+    {
+        // @todo add cache invalidation (timestamp?)
+        $statement = $database->prepare("SELECT * FROM rdnscache WHERE address = :id LIMIT 1;");
+        $statement->bindValue(":id", $address);
 
-		$statement->execute();
+        $statement->execute();
 
-		$resultObject = $statement->fetchObject(get_called_class());
+        $resultObject = $statement->fetchObject(get_called_class());
 
-		if ($resultObject != false) {
-			$resultObject->isNew = false;
-			$resultObject->setDatabase($database);
-		}
+        if ($resultObject != false) {
+            $resultObject->setDatabase($database);
+        }
 
-		return $resultObject;
-	}
+        return $resultObject;
+    }
 
-	public function save()
-	{
-		if ($this->isNew) {
-// insert
-			$statement = $this->dbObject->prepare("INSERT INTO `rdnscache` (address, data) VALUES (:address, :data);");
-			$statement->bindValue(":address", $this->address);
-			$statement->bindValue(":data", $this->data);
-			if ($statement->execute()) {
-				$this->isNew = false;
-				$this->id = $this->dbObject->lastInsertId();
-			}
-			else {
-				throw new Exception($statement->errorInfo());
-			}
-		}
-		else {
-// update
-			$statement = $this->dbObject->prepare("UPDATE `rdnscache` SET address = :address, data = :data WHERE id = :id;");
-			$statement->bindValue(":address", $this->address);
-			$statement->bindValue(":id", $this->id);
-			$statement->bindValue(":data", $this->data);
+    public function save()
+    {
+        if ($this->isNew()) {
+            // insert
+            $statement = $this->dbObject->prepare(<<<SQL
+INSERT INTO `rdnscache` (address, data) VALUES (:address, :data);
+SQL
+            );
+            $statement->bindValue(":address", $this->address);
+            $statement->bindValue(":data", $this->data);
 
-			if (!$statement->execute()) {
-				throw new Exception($statement->errorInfo());
-			}
-		}
-	}
+            if ($statement->execute()) {
+                $this->id = (int)$this->dbObject->lastInsertId();
+            }
+            else {
+                throw new Exception($statement->errorInfo());
+            }
+        }
+        else {
+            // update
+            $statement = $this->dbObject->prepare(<<<SQL
+UPDATE `rdnscache`
+SET address = :address, data = :data, updateversion = updateversion + 1
+WHERE id = :id AND updateversion = :updateversion;
+SQL
+            );
 
-	public function getAddress()
-	{
-		return $this->address;
-	}
+            $statement->bindValue(':id', $this->id);
+            $statement->bindValue(':updateversion', $this->updateversion);
 
-	/**
-	 * @param string $address
-	 */
-	public function setAddress($address)
-	{
-		$this->address = $address;
-	}
+            $statement->bindValue(':address', $this->address);
+            $statement->bindValue(':data', $this->data);
 
-	public function getData()
-	{
-		return unserialize($this->data);
-	}
+            if (!$statement->execute()) {
+                throw new Exception($statement->errorInfo());
+            }
 
-	public function setData($data)
-	{
-		$this->data = serialize($data);
-	}
+            if ($statement->rowCount() !== 1) {
+                throw new OptimisticLockFailedException();
+            }
 
-	public function getCreation()
-	{
-		return $this->creation;
-	}
+            $this->updateversion++;
+        }
+    }
+
+    public function getAddress()
+    {
+        return $this->address;
+    }
+
+    /**
+     * @param string $address
+     */
+    public function setAddress($address)
+    {
+        $this->address = $address;
+    }
+
+    /**
+     * @return string
+     */
+    public function getData()
+    {
+        return unserialize($this->data);
+    }
+
+    public function setData($data)
+    {
+        $this->data = serialize($data);
+    }
+
+    /**
+     * @return DateTimeImmutable
+     */
+    public function getCreation()
+    {
+        return new DateTimeImmutable($this->creation);
+    }
 }

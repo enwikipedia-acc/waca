@@ -1,12 +1,15 @@
 <!-- requestlist.tpl -->
-{if $requests.total > $requestLimitShowOnly}
-	<div class="alert alert-error">
-		<h4>Miser mode:</h4>
-		Not all requests are shown for speed. Only {$requestLimitShowOnly} of {$requests.total} are shown here. <a class="btn btn-small" href="{$baseurl}/acc.php?action=listall&amp;status={$type|escape:'url'}">Show all {$requests.total} requests</a>
-	</div>
+{if $section.total > $requestLimitShowOnly}
+    <div class="alert alert-warning alert-accordion">
+        <strong>Miser mode:</strong>
+        Not all requests are shown for speed. Only {$requestLimitShowOnly} of {$section.total} are shown here.
+        <a class="btn btn-sm btn-outline-secondary" href="{$baseurl}/internal.php/requestList?status={$section.type|escape:'url'}">
+            Show all {$section.total} requests
+        </a>
+    </div>
 {/if}
-{if count($requests.requests) > 0}
-	{include file="mainpage/requesttable.tpl" requests=$requests.requests}
+{if $section.total > 0}
+    {include file="mainpage/requesttable.tpl" list=$section.requests}
 {else}
-	<em>No requests at this time</em>
+    <span class="font-italic text-muted">No requests at this time</span>
 {/if}

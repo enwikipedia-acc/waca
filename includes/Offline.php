@@ -1,74 +1,75 @@
 <?php
-/**************************************************************************
-**********      English Wikipedia Account Request Interface      **********
-***************************************************************************
-** Wikipedia Account Request Graphic Design by Charles Melbye,           **
-** which is licensed under a Creative Commons                            **
-** Attribution-Noncommercial-Share Alike 3.0 United States License.      **
-**                                                                       **
-** All other code are released under the Public Domain                   **
-** by the ACC Development Team.                                          **
-**                                                                       **
-** See CREDITS for the list of developers.                               **
-***************************************************************************/
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
+
+namespace Waca;
+
+use Smarty;
+use SmartyException;
+use Waca\DataObjects\User;
 
 /**
  * Handles the tool offline messages
  */
 class Offline
 {
-	/**
-	 * Summary of check
-	 * @param bool $external External interface
-	 * @deprecated Do checking within the entry point.
-	 */
-	public static function check($external)
-	{
-		global $smarty, $dontUseDb, $dontUseDbCulprit, $dontUseDbReason;
+    /**
+     * Determines if the tool is offline
+     * @return bool
+     */
+    public static function isOffline()
+    {
+        global $dontUseDb;
 
-		if ($dontUseDb) {
-			if ($external) {
-				$smarty->display("offline/external.tpl");
-			}
-			else {
-				$smarty->assign("dontUseDbCulprit", $dontUseDbCulprit);
-				$smarty->assign("dontUseDbReason", $dontUseDbReason);
-				$smarty->assign("alerts", array());
-				$smarty->display("offline/internal.tpl");
-			}
-
-			die();
-		}
-	}
-
-	/**
-	 * Determines if the tool is offline
-	 * @return bool
-	 */
-	public static function isOffline()
-	{
-		global $dontUseDb;
-
-		return (bool)$dontUseDb;
-	}
+        return (bool)$dontUseDb;
+    }
 
 	/**
 	 * Gets the offline message
-	 * @param bool $external
+	 *
+	 * @param bool        $external
+	 * @param null|string $message
+	 *
 	 * @return string
+	 * @throws SmartyException
 	 */
-	public static function getOfflineMessage($external)
-	{
-		global $smarty, $dontUseDbCulprit, $dontUseDbReason;
+    public static function getOfflineMessage($external, $message = null)
+    {
+        global $dontUseDbCulprit, $dontUseDbReason, $baseurl;
 
-		if ($external) {
-			return $smarty->fetch("offline/external.tpl");
-		}
-		else {
-			$smarty->assign("dontUseDbCulprit", $dontUseDbCulprit);
-			$smarty->assign("dontUseDbReason", $dontUseDbReason);
-			$smarty->assign("alerts", array());
-			return $smarty->fetch("offline/internal.tpl");
-		}
-	}
+        $smarty = new Smarty();
+        $smarty->assign("baseurl", $baseurl);
+        $smarty->assign("resourceCacheEpoch", 0);
+        $smarty->assign("alerts", []);
+        $smarty->assign("toolversion", Environment::getToolVersion());
+
+        if (!headers_sent()) {
+            header("HTTP/1.1 503 Service Unavailable");
+        }
+
+        if ($external) {
+            return $smarty->fetch("offline/external.tpl");
+        }
+        else {
+            $hideCulprit = true;
+
+            // Use the provided message if possible
+            if ($message === null) {
+                $hideCulprit = false;
+                $message = $dontUseDbReason;
+            }
+
+            $smarty->assign("hideCulprit", $hideCulprit);
+            $smarty->assign("dontUseDbCulprit", $dontUseDbCulprit);
+            $smarty->assign("dontUseDbReason", $message);
+            $smarty->assign("alerts", array());
+            $smarty->assign('currentUser', User::getCommunity());
+
+            return $smarty->fetch("offline/internal.tpl");
+        }
+    }
 }

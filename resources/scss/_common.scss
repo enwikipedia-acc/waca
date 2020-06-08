@@ -1,0 +1,61 @@
+//******************************************************************************
+// Wikipedia Account Creation Assistance tool                                  *
+//                                                                             *
+// All code in this file is released into the public domain by the ACC         *
+// Development Team. Please see team.json for a list of contributors.          *
+//******************************************************************************
+
+// this matches $indigo, but due to ordering constraints we have to redefine it here.
+$visitedColour:  #6610f2;
+
+// add "visited" as a colour type to all bootstrap elements
+$theme-colors: (
+    "visited":    $visitedColour,
+);
+
+// bump font size down to roughly bootstrap 2.3.2 levels:
+$font-size-base: 0.9rem;
+
+$overflows: auto, hidden, visible;
+
+@import "../../vendor/twbs/bootstrap/scss/bootstrap";
+@import "_viewRequest.scss";
+@import "_login.scss";
+@import "_mainPage.scss";
+@import "_password.scss";
+@import "_spacing.scss";
+
+span.twitter-typeahead {
+    display: block !important;
+    .tt-menu { @extend .dropdown-menu; }
+    .tt-suggestion { @extend .dropdown-item; }
+    .tt-suggestion.tt-cursor { @extend .dropdown-item, .active; }
+}
+
+.accordion>.overflow-visible {
+    @extend .overflow-visible;
+}
+
+.custom-control-inline {
+    padding-left: $spacer * 1.5;
+}
+
+.padded-data {
+    .row {
+        margin-bottom: 0.4rem;
+    }
+}
+
+.w-fit-content {
+    width: -moz-fit-content !important;
+    width: fit-content !important;
+}
+
+input[type=number] {
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+        display: none;
+    }
+}

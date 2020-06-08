@@ -16,7 +16,8 @@ deploy/
 .settings/
 .buildpath
 .project
-.idea/
+.idea/*
+!.idea/codeStyleSettings.xml
 templates_c/*
 *.phpproj.user
 temp/*
@@ -30,5 +31,12 @@ waca.sln.DotSettings.user
 .vs/*
 .arc*
 vendor/*
+/sql/schema2.sql
+/sql/schema.sql
 components/*
+errorlog/*.log
+/resources/generated/
+cookies.txt
 robots.txt
+/.scannerwork/*
+sonar-project.properties

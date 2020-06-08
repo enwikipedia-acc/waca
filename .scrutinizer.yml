@@ -22,3 +22,8 @@ filter:
     excluded_paths:
         - lib/*
         - tests/*
+        - includes/SiteConfiguration.php
+
+build_failure_conditions:
+    - 'elements.rating(<= F).new.exists'
+    - 'issues.severity(>= MAJOR).new.exists'

@@ -1,71 +1,71 @@
 <?php
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
 
 namespace Waca\API\Actions;
 
-use Waca\API\ApiActionBase as ApiActionBase;
-use Waca\API\ApiException as ApiException;
-use Waca\API\IApiAction as IApiAction;
-
-use \PdoDatabase as PdoDatabase;
-use \User as User;
+use DOMElement;
+use Exception;
+use Waca\API\ApiException;
+use Waca\API\IXmlApiAction;
+use Waca\DataObjects\User;
+use Waca\Helpers\OAuthUserHelper;
+use Waca\Tasks\XmlApiPageBase;
+use Waca\WebRequest;
 
 /**
  * API Count action
  */
-class StatsAction extends ApiActionBase implements IApiAction
+class StatsAction extends XmlApiPageBase implements IXmlApiAction
 {
-	/**
-	 * The target user
-	 * @var \User $user
-	 */
-	private $user;
+    /**
+     * Summary of execute
+     *
+     * @param DOMElement $apiDocument
+     *
+     * @return DOMElement
+     * @throws ApiException
+     * @throws Exception
+     */
+    public function executeApiAction(DOMElement $apiDocument)
+    {
+        $username = WebRequest::getString('user');
+        $wikiusername = WebRequest::getString('wikiuser');
 
-	/**
-	 * The database
-	 * @var \PdoDatabase $database
-	 */
-	private $database;
+        if ($username === null && $wikiusername === null) {
+            throw new ApiException("Please specify a username using either user or wikiuser parameters.");
+        }
 
-	/**
-	 * Summary of execute
-	 * @param \DOMElement $apiDocument
-	 * @return \DOMElement
-	 * @throws ApiException
-	 * @throws \Exception
-	 */
-	public function execute(\DOMElement $apiDocument)
-	{
-		$username = isset($_GET['user']) ? trim($_GET['user']) : '';
-		$wikiusername = isset($_GET['wikiuser']) ? trim($_GET['wikiuser']) : '';
+        $userElement = $this->document->createElement("user");
+        $apiDocument->appendChild($userElement);
 
-		if ($username === '' && $wikiusername === '') {
-			throw new ApiException("Please specify a username using either user or wikiuser parameters.");
-		}
+        if ($username !== null) {
+            $user = User::getByUsername($username, $this->getDatabase());
+        }
+        else {
+            $user = User::getByOnWikiUsername($wikiusername, $this->getDatabase());
+        }
 
-		$userElement = $this->document->createElement("user");
-		$apiDocument->appendChild($userElement);
+        if ($user === false) {
+            $userElement->setAttribute("missing", "true");
 
-		$this->database = gGetDb();
+            return $apiDocument;
+        }
 
-		if ($username !== '') {
-			$this->user = \User::getByUsername($username, $this->database);
-		}
-		else {
-			$this->user = \User::getByOnWikiUsername($wikiusername, $this->database);
-		}
+        $oauth = new OAuthUserHelper($user, $this->getDatabase(), $this->getOAuthProtocolHelper(),
+            $this->getSiteConfiguration());
 
-		if ($this->user === false) {
-			$userElement->setAttribute("missing", "true");
-			return $apiDocument;
-		}
+        $userElement->setAttribute("username", $user->getUsername());
+        $userElement->setAttribute("status", $user->getStatus());
+        $userElement->setAttribute("lastactive", $user->getLastActive());
+        $userElement->setAttribute("welcome_template", $user->getWelcomeTemplate());
+        $userElement->setAttribute("onwikiname", $user->getOnWikiName());
+        $userElement->setAttribute("oauth", $oauth->isFullyLinked() ? "true" : "false");
 
-		$userElement->setAttribute("username", $this->user->getUsername());
-		$userElement->setAttribute("status", $this->user->getStatus());
-		$userElement->setAttribute("lastactive", $this->user->getLastActive());
-		$userElement->setAttribute("welcome_template", $this->user->getWelcomeTemplate());
-		$userElement->setAttribute("onwikiname", $this->user->getOnWikiName());
-		$userElement->setAttribute("oauth", $this->user->isOAuthLinked() ? "true" : "false");
-
-		return $apiDocument;
-	}
+        return $apiDocument;
+    }
 }

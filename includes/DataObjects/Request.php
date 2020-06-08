@@ -1,4 +1,18 @@
 <?php
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
+
+namespace Waca\DataObjects;
+
+use DateTime;
+use DateTimeImmutable;
+use Exception;
+use Waca\DataObject;
+use Waca\Exceptions\OptimisticLockFailedException;
 
 /**
  * Request data object
@@ -7,253 +21,226 @@
  */
 class Request extends DataObject
 {
-	private $email;
-	private $ip;
-	private $name;
-	private $comment;
-	private $status = "Open";
-	private $date;
-	private $checksum = 0;
-	private $emailsent = 0;
-	private $emailconfirm;
-	private $reserved = 0;
-	private $useragent;
-	private $forwardedip;
+    private $email;
+    private $ip;
+    private $name;
+    /** @var string|null */
+    private $comment;
+    private $status = "Open";
+    private $date;
+    private $emailsent = 0;
+    private $emailconfirm;
+    /** @var int|null */
+    private $reserved = null;
+    private $useragent;
+    private $forwardedip;
+    private $hasComments = false;
+    private $hasCommentsResolved = false;
 
-	private $hasComments = false;
-	private $hasCommentsResolved = false;
-
-	/**
-	 * @var Request[]
-	 */
-	private $ipRequests;
-	private $ipRequestsResolved = false;
-
-	/**
-	 * @var Request[]
-	 */
-	private $emailRequests;
-	private $emailRequestsResolved = false;
-
-	private $blacklistCache = null;
-
-	/**
-	 * This function removes all old requests which are not yet email-confirmed
-	 * from the database.
-	 */
-	public static function cleanExpiredUnconfirmedRequests()
-	{
-		global $emailConfirmationExpiryDays;
-
-		$database = gGetDb();
-		$statement = $database->prepare(<<<SQL
-            DELETE FROM request
-            WHERE
-                date < DATE_SUB(CURRENT_TIMESTAMP(), INTERVAL $emailConfirmationExpiryDays DAY)
-                AND emailconfirm != 'Confirmed'
-                AND emailconfirm != '';
+    /**
+     * @throws Exception
+     * @throws OptimisticLockFailedException
+     */
+    public function save()
+    {
+        if ($this->isNew()) {
+            // insert
+            $statement = $this->dbObject->prepare(<<<SQL
+INSERT INTO `request` (
+	email, ip, name, comment, status, date, emailsent,
+	emailconfirm, reserved, useragent, forwardedip
+) VALUES (
+	:email, :ip, :name, :comment, :status, CURRENT_TIMESTAMP(), :emailsent,
+	:emailconfirm, :reserved, :useragent, :forwardedip
+);
 SQL
-		);
+            );
+            $statement->bindValue(':email', $this->email);
+            $statement->bindValue(':ip', $this->ip);
+            $statement->bindValue(':name', $this->name);
+            $statement->bindValue(':comment', $this->comment);
+            $statement->bindValue(':status', $this->status);
+            $statement->bindValue(':emailsent', $this->emailsent);
+            $statement->bindValue(':emailconfirm', $this->emailconfirm);
+            $statement->bindValue(':reserved', $this->reserved);
+            $statement->bindValue(':useragent', $this->useragent);
+            $statement->bindValue(':forwardedip', $this->forwardedip);
 
-		$statement->execute();
-	}
+            if ($statement->execute()) {
+                $this->id = (int)$this->dbObject->lastInsertId();
+            }
+            else {
+                throw new Exception($statement->errorInfo());
+            }
+        }
+        else {
+            // update
+            $statement = $this->dbObject->prepare(<<<SQL
+UPDATE `request` SET
+	status = :status,
+	emailsent = :emailsent,
+	emailconfirm = :emailconfirm,
+	reserved = :reserved,
+	updateversion = updateversion + 1
+WHERE id = :id AND updateversion = :updateversion;
+SQL
+            );
 
-	public function save()
-	{
-		if ($this->isNew) {
-// insert
-			$statement = $this->dbObject->prepare(
-				"INSERT INTO `request` (" .
-				"email, ip, name, comment, status, date, checksum, emailsent, emailconfirm, reserved, useragent, forwardedip" .
-				") VALUES (" .
-				":email, :ip, :name, :comment, :status, CURRENT_TIMESTAMP(), :checksum, :emailsent," .
-				":emailconfirm, :reserved, :useragent, :forwardedip" .
-				");");
-			$statement->bindValue(":email", $this->email);
-			$statement->bindValue(":ip", $this->ip);
-			$statement->bindValue(":name", $this->name);
-			$statement->bindValue(":comment", $this->comment);
-			$statement->bindValue(":status", $this->status);
-			$statement->bindValue(":checksum", $this->checksum);
-			$statement->bindValue(":emailsent", $this->emailsent);
-			$statement->bindValue(":emailconfirm", $this->emailconfirm);
-			$statement->bindValue(":reserved", $this->reserved);
-			$statement->bindValue(":useragent", $this->useragent);
-			$statement->bindValue(":forwardedip", $this->forwardedip);
-			if ($statement->execute()) {
-				$this->isNew = false;
-				$this->id = (int)$this->dbObject->lastInsertId();
-			}
-			else {
-				throw new Exception($statement->errorInfo());
-			}
-		}
-		else {
-// update
-			$statement = $this->dbObject->prepare("UPDATE `request` SET " .
-				"status = :status, checksum = :checksum, emailsent = :emailsent, emailconfirm = :emailconfirm, " .
-				"reserved = :reserved " .
-				"WHERE id = :id;");
-			$statement->bindValue(":id", $this->id);
-			$statement->bindValue(":status", $this->status);
-			$statement->bindValue(":checksum", $this->checksum);
-			$statement->bindValue(":emailsent", $this->emailsent);
-			$statement->bindValue(":emailconfirm", $this->emailconfirm);
-			$statement->bindValue(":reserved", $this->reserved);
-			if (!$statement->execute()) {
-				throw new Exception($statement->errorInfo());
-			}
-		}
+            $statement->bindValue(':id', $this->id);
+            $statement->bindValue(':updateversion', $this->updateversion);
 
-	}
+            $statement->bindValue(':status', $this->status);
+            $statement->bindValue(':emailsent', $this->emailsent);
+            $statement->bindValue(':emailconfirm', $this->emailconfirm);
+            $statement->bindValue(':reserved', $this->reserved);
 
-	public function getEmail()
-	{
-		return $this->email;
-	}
+            if (!$statement->execute()) {
+                throw new Exception($statement->errorInfo());
+            }
 
-	/**
-	 * @param string $email
-	 */
-	public function setEmail($email)
-	{
-		$this->email = $email;
-	}
+            if ($statement->rowCount() !== 1) {
+                throw new OptimisticLockFailedException();
+            }
 
-	public function getIp()
-	{
-		return $this->ip;
-	}
+            $this->updateversion++;
+        }
+    }
 
-	public function getTrustedIp()
-	{
-		return trim(getTrustedClientIP($this->ip, $this->forwardedip));
-	}
+    /**
+     * @return string
+     */
+    public function getIp()
+    {
+        return $this->ip;
+    }
 
-	/**
-	 * @param string $ip
-	 */
-	public function setIp($ip)
-	{
-		$this->ip = $ip;
-	}
+    /**
+     * @param string $ip
+     */
+    public function setIp($ip)
+    {
+        $this->ip = $ip;
+    }
 
-	public function getName()
-	{
-		return $this->name;
-	}
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	/**
-	 * @param string $name
-	 */
-	public function setName($name)
-	{
-		$this->name = $name;
-	}
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
 
-	public function getComment()
-	{
-		return $this->comment;
-	}
+    /**
+     * @return string|null
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
 
-	public function setComment($comment)
-	{
-		$this->comment = $comment;
-	}
+    /**
+     * @param string $comment
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+    }
 
-	public function getStatus()
-	{
-		return $this->status;
-	}
+    /**
+     * @return string
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
 
-	/**
-	 * @param string $status
-	 */
-	public function setStatus($status)
-	{
-		$this->status = $status;
-	}
+    /**
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
 
-	public function getDate()
-	{
-		return $this->date;
-	}
+    /**
+     * Returns the time the request was first submitted
+     *
+     * @return DateTimeImmutable
+     */
+    public function getDate()
+    {
+        return new DateTimeImmutable($this->date);
+    }
 
-	public function setDate($date)
-	{
-		$this->date = $date;
-	}
+    /**
+     * @return bool
+     */
+    public function getEmailSent()
+    {
+        return $this->emailsent == "1";
+    }
 
-	public function getChecksum()
-	{
-		return $this->checksum;
-	}
+    /**
+     * @param bool $emailSent
+     */
+    public function setEmailSent($emailSent)
+    {
+        $this->emailsent = $emailSent ? 1 : 0;
+    }
 
-	public function setChecksum($checksum)
-	{
-		$this->checksum = $checksum;
-	}
+    /**
+     * @return int|null
+     */
+    public function getReserved()
+    {
+        return $this->reserved;
+    }
 
-	public function updateChecksum()
-	{
-		$this->checksum = md5($this->id . $this->name . $this->email . microtime());
-	}
+    /**
+     * @param int|null $reserved
+     */
+    public function setReserved($reserved)
+    {
+        $this->reserved = $reserved;
+    }
 
-	public function getEmailSent()
-	{
-		return $this->emailsent;
-	}
+    /**
+     * @return string
+     */
+    public function getUserAgent()
+    {
+        return $this->useragent;
+    }
 
-	public function setEmailSent($emailsent)
-	{
-		$this->emailsent = $emailsent;
-	}
+    /**
+     * @param string $useragent
+     */
+    public function setUserAgent($useragent)
+    {
+        $this->useragent = $useragent;
+    }
 
-	public function getEmailConfirm()
-	{
-		return $this->emailconfirm;
-	}
+    /**
+     * @return string|null
+     */
+    public function getForwardedIp()
+    {
+        return $this->forwardedip;
+    }
 
-	/**
-	 * @param string $emailconfirm
-	 */
-	public function setEmailConfirm($emailconfirm)
-	{
-		$this->emailconfirm = $emailconfirm;
-	}
-
-	public function getReserved()
-	{
-		return $this->reserved;
-	}
-
-	public function getReservedObject()
-	{
-		return User::getById($this->reserved, $this->dbObject);
-	}
-
-	public function setReserved($reserved)
-	{
-		$this->reserved = $reserved;
-	}
-
-	public function getUserAgent()
-	{
-		return $this->useragent;
-	}
-
-	public function setUserAgent($useragent)
-	{
-		$this->useragent = $useragent;
-	}
-
-	public function getForwardedIp()
-	{
-		return $this->forwardedip;
-	}
-
-	public function setForwardedIp($forwardedip)
-	{
+    /**
+     * @param string|null $forwardedip
+     */
+    public function setForwardedIp($forwardedip)
+    {
 		// Verify that the XFF chain only contains valid IP addresses, and silently discard anything that isn't.
 
 		$xff = explode(',', $forwardedip);
@@ -267,172 +254,83 @@ SQL
 		}
 
 		$this->forwardedip = implode(", ", $valid);
-	}
+    }
 
-	public function hasComments()
-	{
-		if ($this->hasCommentsResolved) {
-			return $this->hasComments;
-		}
+    /**
+     * @return bool
+     */
+    public function hasComments()
+    {
+        if ($this->hasCommentsResolved) {
+            return $this->hasComments;
+        }
 
-		if ($this->comment != "") {
-			$this->hasComments = true;
-			$this->hasCommentsResolved = true;
-			return true;
-		}
+        if ($this->comment != "") {
+            $this->hasComments = true;
+            $this->hasCommentsResolved = true;
 
-		$commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) as num FROM comment where request = :id;");
-		$commentsQuery->bindValue(":id", $this->id);
+            return true;
+        }
 
-		$commentsQuery->execute();
+        $commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) AS num FROM comment WHERE request = :id;");
+        $commentsQuery->bindValue(":id", $this->id);
 
-		$this->hasComments = ($commentsQuery->fetchColumn() != 0);
-		$this->hasCommentsResolved = true;
+        $commentsQuery->execute();
 
-		return $this->hasComments;
-	}
+        $this->hasComments = ($commentsQuery->fetchColumn() != 0);
+        $this->hasCommentsResolved = true;
 
-	public function getRelatedEmailRequests()
-	{
-		if ($this->emailRequestsResolved == false) {
-			global $cDataClearEmail;
+        return $this->hasComments;
+    }
 
-			$query = $this->dbObject->prepare("SELECT * FROM request WHERE email = :email AND email != :clearedemail AND id != :id AND emailconfirm = 'Confirmed';");
-			$query->bindValue(":id", $this->id);
-			$query->bindValue(":email", $this->email);
-			$query->bindValue(":clearedemail", $cDataClearEmail);
+    /**
+     * @return string
+     */
+    public function getEmailConfirm()
+    {
+        return $this->emailconfirm;
+    }
 
-			$query->execute();
+    /**
+     * @param string $emailconfirm
+     */
+    public function setEmailConfirm($emailconfirm)
+    {
+        $this->emailconfirm = $emailconfirm;
+    }
 
-			$this->emailRequests = $query->fetchAll(PDO::FETCH_CLASS, "Request");
-			$this->emailRequestsResolved = true;
+    public function generateEmailConfirmationHash()
+    {
+        $this->emailconfirm = bin2hex(openssl_random_pseudo_bytes(16));
+    }
 
-			foreach ($this->emailRequests as $r) {
-				$r->setDatabase($this->dbObject);
-			}
-		}
+    /**
+     * @return string|null
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
 
-		return $this->emailRequests;
-	}
+    /**
+     * @param string|null $email
+     */
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
 
-	public function getRelatedIpRequests()
-	{
-		if ($this->ipRequestsResolved == false) {
-			global $cDataClearIp;
+    /**
+     * @return string
+     * @throws Exception
+     */
+    public function getClosureReason()
+    {
+        if ($this->status != 'Closed') {
+            throw new Exception("Can't get closure reason for open request.");
+        }
 
-			$query = $this->dbObject->prepare("SELECT * FROM request WHERE (ip = :ip OR forwardedip LIKE :forwarded) AND ip != :clearedip AND id != :id AND emailconfirm = 'Confirmed';");
-
-			$trustedIp = $this->getTrustedIp();
-			$trustedFilter = '%' . $trustedIp . '%';
-
-			$query->bindValue(":id", $this->id);
-			$query->bindValue(":ip", $trustedIp);
-			$query->bindValue(":forwarded", $trustedFilter);
-			$query->bindValue(":clearedip", $cDataClearIp);
-
-			$query->execute();
-
-			$this->ipRequests = $query->fetchAll(PDO::FETCH_CLASS, "Request");
-			$this->ipRequestsResolved = true;
-
-			foreach ($this->ipRequests as $r) {
-				$r->setDatabase($this->dbObject);
-			}
-		}
-
-		return $this->ipRequests;
-	}
-
-	public function isBlacklisted()
-	{
-		global $enableTitleBlacklist;
-
-		if (!$enableTitleBlacklist || $this->blacklistCache === false) {
-			return false;
-		}
-
-		$apiResult = file_get_contents("https://en.wikipedia.org/w/api.php?action=titleblacklist&tbtitle=" . urlencode($this->name) . "&tbaction=new-account&tbnooverride&format=php");
-
-		$data = unserialize($apiResult);
-
-		$result = $data['titleblacklist']['result'] == "ok";
-
-		$this->blacklistCache = $result ? false : $data['titleblacklist']['line'];
-
-		return $this->blacklistCache;
-	}
-
-	public function getComments()
-	{
-		return Comment::getForRequest($this->id, $this->dbObject);
-	}
-
-	public function isProtected()
-	{
-		if ($this->reserved != 0) {
-			if ($this->reserved == User::getCurrent()->getId()) {
-				return false;
-			}
-			else {
-				return true;
-			}
-		}
-		else {
-			return false;
-		}
-
-	}
-
-	public function confirmEmail($si)
-	{
-		if ($this->getEmailConfirm() == "Confirmed") {
-			// already confirmed. Act as though we've completed successfully.
-			return;
-		}
-
-		if ($this->getEmailConfirm() == $si) {
-			$this->setEmailConfirm("Confirmed");
-		}
-		else {
-			throw new TransactionException("Confirmation hash does not match the expected value", "Email confirmation failed");
-		}
-	}
-
-	public function generateEmailConfirmationHash()
-	{
-		$this->emailconfirm = bin2hex(openssl_random_pseudo_bytes(16));
-	}
-
-	public function sendConfirmationEmail()
-	{
-		global $smarty;
-
-		$smarty->assign("ip", $this->getTrustedIp());
-		$smarty->assign("id", $this->getId());
-		$smarty->assign("hash", $this->getEmailConfirm());
-
-		$headers = 'From: accounts-enwiki-l@lists.wikimedia.org';
-
-		// Sends the confirmation email to the user.
-		$mailsuccess = mail($this->getEmail(), "[ACC #{$this->getId()}] English Wikipedia Account Request", $smarty->fetch('request/confirmation-mail.tpl'), $headers);
-
-		if (!$mailsuccess) {
-			throw new Exception("Error sending email.");
-		}
-	}
-	
-	public function getObjectDescription()
-	{
-		return '<a href="acc.php?action=zoom&amp;id=' . $this->getId() . '">Request #' . $this->getId() . " (" . htmlentities($this->name) . ")</a>";
-	}
-
-	public function getClosureReason()
-	{
-		if ($this->status != 'Closed') {
-			throw new Exception("Can't get closure reason for open request.");
-		}
-
-		$statement = $this->dbObject->prepare(<<<SQL
+        $statement = $this->dbObject->prepare(<<<SQL
 SELECT closes.mail_desc
 FROM log
 INNER JOIN closes ON log.action = closes.closes
@@ -442,12 +340,88 @@ AND log.action LIKE 'Closed%'
 ORDER BY log.timestamp DESC
 LIMIT 1;
 SQL
-		);
+        );
 
-		$statement->bindValue(":requestId", $this->id);
-		$statement->execute();
-		$reason = $statement->fetchColumn();
+        $statement->bindValue(":requestId", $this->id);
+        $statement->execute();
+        $reason = $statement->fetchColumn();
 
-		return $reason;
-	}
+        return $reason;
+    }
+
+    /**
+     * Gets a value indicating whether the request was closed as created or not.
+     */
+    public function getWasCreated()
+    {
+        if ($this->status != 'Closed') {
+            throw new Exception("Can't get closure reason for open request.");
+        }
+
+        $statement = $this->dbObject->prepare(<<<SQL
+SELECT emailtemplate.oncreated, log.action
+FROM log
+LEFT JOIN emailtemplate ON CONCAT('Closed ', emailtemplate.id) = log.action
+WHERE log.objecttype = 'Request'
+AND log.objectid = :requestId
+AND log.action LIKE 'Closed%'
+ORDER BY log.timestamp DESC
+LIMIT 1;
+SQL
+        );
+
+        $statement->bindValue(":requestId", $this->id);
+        $statement->execute();
+        $onCreated = $statement->fetchColumn(0);
+        $logAction = $statement->fetchColumn(1);
+        $statement->closeCursor();
+
+        if ($onCreated === null) {
+            return $logAction === "Closed custom-y";
+        }
+
+        return (bool)$onCreated;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getClosureDate()
+    {
+        $logQuery = $this->dbObject->prepare(<<<SQL
+SELECT timestamp FROM log
+WHERE objectid = :request AND objecttype = 'Request' AND action LIKE 'Closed%'
+ORDER BY timestamp DESC LIMIT 1;
+SQL
+        );
+        $logQuery->bindValue(":request", $this->getId());
+        $logQuery->execute();
+        $logTime = $logQuery->fetchColumn();
+        $logQuery->closeCursor();
+
+        return new DateTime($logTime);
+    }
+
+    /**
+     * Returns a hash based on data within this request which can be generated easily from the data to be used to reveal
+     * data to unauthorised* users.
+     *
+     * *:Not tool admins, check users, or the reserving user.
+     *
+     * @return string
+     *
+     * @todo future work to make invalidation better. Possibly move to the database and invalidate on relevant events?
+     *       Maybe depend on the last logged action timestamp?
+     */
+    public function getRevealHash()
+    {
+        $data = $this->id         // unique per request
+            . '|' . $this->ip           // }
+            . '|' . $this->forwardedip  // } private data not known to those without access
+            . '|' . $this->useragent    // }
+            . '|' . $this->email        // }
+            . '|' . $this->status;      // to rudimentarily invalidate the token on status change
+
+        return hash('sha256', $data);
+    }
 }

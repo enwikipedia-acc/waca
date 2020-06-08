@@ -1,52 +1,40 @@
 <?php
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
 
+namespace Waca\Tests;
+
+use Waca\StringFunctions;
 use PHPUnit\Framework\TestCase;
 
 class StringFunctionsTest extends TestCase
 {
-	/**
-	 * @var StringFunctions
-	 */
-	private $e;
+    /**
+     * @var StringFunctions
+     */
+    private $e;
 
 	public function setUp(): void
-	{
-		$this->e = new StringFunctions();
-	}
+    {
+        $this->e = new StringFunctions();
+    }
 
 	public function tearDown(): void
-	{
-		$this->e = null;
-	}
+    {
+        $this->e = null;
+    }
 
-	public function testFormatAsUsername()	{
-		// Happy path
-		$this->assertEquals($this->e->formatAsUsername("this"), "This");
-		$this->assertEquals($this->e->formatAsUsername("1this"), "1this");
-		$this->assertEquals($this->e->formatAsUsername("This"), "This");
-		$this->assertEquals($this->e->formatAsUsername("This "), "This");
-		$this->assertEquals($this->e->formatAsUsername("This_"), "This");
+    public function testUcFirst()
+    {
+        $this->assertEquals('Abc', $this->e->upperCaseFirst('abc'));
+        $this->assertEquals('ABC', $this->e->upperCaseFirst('ABC'));
+        $this->assertEquals('123', $this->e->upperCaseFirst('123'));
 
-		// Sad Path
-		$this->assertNotEquals($this->e->formatAsUsername("This "), "This ");
-		$this->assertNotEquals($this->e->formatAsUsername("This_"), "This_");
-		$this->assertNotEquals($this->e->formatAsUsername("this"), "this");
-		$this->assertNotEquals($this->e->formatAsUsername("1this"), "1This");
-	}
-
-	public function testFormatAsEmail()
-	{
-		$this->assertEquals($this->e->formatAsEmail("this@example.com"), "this@example.com");
-		$this->assertEquals($this->e->formatAsEmail("1this12345@example.com"), "1this12345@example.com");
-		$this->assertEquals($this->e->formatAsEmail(" 1this12345@example.com"), "1this12345@example.com");
-		$this->assertEquals($this->e->formatAsEmail("1this12345@example.com "), "1this12345@example.com");
-		$this->assertEquals($this->e->formatAsEmail("1this12345 @example.com"), "1this12345@example.com");
-		$this->assertEquals($this->e->formatAsEmail("1this12345@ example.com"), "1this12345@example.com");
-
-		// Sad Path
-		$this->assertNotEquals($this->e->formatAsEmail(" 1this12345@example.com"), " 1this12345@example.com");
-		$this->assertNotEquals($this->e->formatAsEmail("1this12345@example.com "), "1this12345@example.com ");
-		$this->assertNotEquals($this->e->formatAsEmail("1this12345 @example.com"), "1this12345 @example.com");
-		$this->assertNotEquals($this->e->formatAsEmail("1this12345@ example.com"), "1this12345@ example.com");
-	}
+        $this->assertEquals('Trần Nguyễn Minh Huy', $this->e->upperCaseFirst('Trần Nguyễn Minh Huy'));
+        $this->assertEquals('和平奮鬥救地球', $this->e->upperCaseFirst('和平奮鬥救地球'));
+    }
 }

@@ -1,11 +1,17 @@
 <?php
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
 
 namespace Waca\API\Actions;
 
-use Waca\API\ApiActionBase as ApiActionBase;
-use Waca\API\IApiAction as IApiAction;
-
-use \PdoDatabase as PdoDatabase;
+use DOMElement;
+use DateTime;
+use Waca\API\IXmlApiAction;
+use Waca\Tasks\XmlApiPageBase;
 
 /**
  * MonitorAction short summary.
@@ -13,63 +19,69 @@ use \PdoDatabase as PdoDatabase;
  * MonitorAction description.
  *
  * @version 1.0
- * @author stwalkerster
+ * @author  stwalkerster
  */
-class MonitorAction extends ApiActionBase implements IApiAction
+class MonitorAction extends XmlApiPageBase implements IXmlApiAction
 {
-	/**
-	 * The database
-	 * @var PdoDatabase $database
-	 */
-	private $database;
+    /**
+     * @param DOMElement $apiDocument
+     *
+     * @return DOMElement
+     */
+    public function executeApiAction(DOMElement $apiDocument)
+    {
+        $now = new DateTime();
 
-	public function execute(\DOMElement $apiDocument)
-	{
-		$this->database = gGetDb();
+        $old = $this->getOldest();
+        $oldest = new DateTime($old);
 
-		$now = new \DateTime();
+        $new = $this->getNewest();
+        $newest = new DateTime($new);
 
-		$old = $this->getOldest();
-		$oldest = new \DateTime($old);
+        $monitoringElement = $this->document->createElement("data");
+        $monitoringElement->setAttribute("date", $now->format('c'));
+        $monitoringElement->setAttribute("oldest", $old === null ? null : $oldest->format('c'));
+        $monitoringElement->setAttribute("newest", $new === null ? null : $newest->format('c'));
+        $apiDocument->appendChild($monitoringElement);
 
-		$new = $this->getNewest();
-		$newest = new \DateTime($new);
+        return $apiDocument;
+    }
 
-		$monitoringElement = $this->document->createElement("data");
-		$monitoringElement->setAttribute("date", $now->format('c'));
-		$monitoringElement->setAttribute("oldest", $old == null ? null : $oldest->format('c'));
-		$monitoringElement->setAttribute("newest", $new == null ? null : $newest->format('c'));
-		$apiDocument->appendChild($monitoringElement);
+    /**
+     * @return string|null
+     */
+    private function getOldest()
+    {
+        $statement = $this->getDatabase()
+            ->prepare("SELECT min(date) FROM request WHERE email != :email AND ip != :ip;");
+        $successful = $statement->execute(array(
+            ':email' => $this->getSiteConfiguration()->getDataClearEmail(),
+            ':ip'    => $this->getSiteConfiguration()->getDataClearIp(),
+        ));
 
-		return $apiDocument;
-	}
+        if (!$successful) {
+            return null;
+        }
 
-	/**
-	 * @return string|null
-	 */
-	private function getOldest()
-	{
-		global $cDataClearIp, $cDataClearEmail;
-		$statement = $this->database->prepare("select min(date) from request where email != :email and ip != :ip;");
-		$successful = $statement->execute(array(':email' => $cDataClearEmail, ':ip' => $cDataClearIp));
+        $result = $statement->fetchColumn();
 
-		if (!$successful) {
-			return null;
-		}
+        return $result;
+    }
 
-		$result = $statement->fetchColumn();
-		return $result;
-	}
+    /**
+     * @return string
+     */
+    private function getNewest()
+    {
+        $statement = $this->getDatabase()
+            ->prepare("SELECT max(date) FROM request WHERE email != :email AND ip != :ip;");
+        $statement->execute(array(
+            ':email' => $this->getSiteConfiguration()->getDataClearEmail(),
+            ':ip'    => $this->getSiteConfiguration()->getDataClearIp(),
+        ));
 
-	/**
-	 * @return string
-	 */
-	private function getNewest()
-	{
-		global $cDataClearIp, $cDataClearEmail;
-		$statement = $this->database->prepare("select max(date) from request where email != :email and ip != :ip;");
-		$statement->execute(array(':email' => $cDataClearEmail, ':ip' => $cDataClearIp));
-		$result = $statement->fetchColumn(0);
-		return $result;
-	}
+        $result = $statement->fetchColumn(0);
+
+        return $result;
+    }
 }

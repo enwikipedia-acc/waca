@@ -1,0 +1,39 @@
+body {
+    padding-top: 4rem;
+}
+
+/* Non-fluid tables - don't take up the entire width of the page! (BS4) */
+.table-nonfluid
+{
+    width: auto;
+}
+
+td.table-button-cell {
+    width: 1%;
+    white-space: nowrap;
+    padding: 7px;
+}
+
+/* Site notice (BS4) */
+.sitenotice-container {
+    margin-top: -0.6rem;
+}
+
+.sitenotice-container .sitenotice {
+    border-radius: 0;
+}
+
+.sitenotice-container .sitenotice ul {
+    margin-bottom: 0;
+}
+
+/* used for display of email messages to wrap text in a pre */
+.prewrap {
+    white-space: pre-wrap;
+    height: inherit;
+}
+
+/* min width of fontawesome icons */
+.svg-inline--fa {
+    min-width: 20px;
+}

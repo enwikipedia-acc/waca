@@ -1,158 +1,190 @@
 <?php
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
+
+namespace Waca\DataObjects;
+
+use DateTimeImmutable;
+use Exception;
+use PDO;
+use Waca\DataObject;
+use Waca\Exceptions\OptimisticLockFailedException;
+use Waca\PdoDatabase;
 
 /**
  * Comment data object
  */
 class Comment extends DataObject
 {
-	private $time;
-	private $user;
-	private $comment;
-	private $visibility = "user";
-	private $request;
+    private $time;
+    private $user;
+    private $comment;
+    private $visibility = "user";
+    private $request;
 
-	/**
-	 * @param integer $id
-	 * @param null|PdoDatabase $database
-	 * @return Comment[]
-	 * @throws Exception
-	 */
-	public static function getForRequest($id, PdoDatabase $database = null)
-	{
-		if ($database == null) {
-			$database = gGetDb();
-		}
-
-		if (User::getCurrent()->isAdmin() || User::getCurrent()->isCheckuser()) {
-			// current user is an admin or checkuser, so retrieve everything.
-			$statement = $database->prepare("SELECT * FROM comment WHERE request = :target;");
-		}
-		else {
-			// current user isn't an admin, so limit to only those which are visible to users, and private comments
-			// the user has posted themselves.
-			$statement = $database->prepare(<<<SQL
+    /**
+     * Retrieves all comments for a request, optionally filtered
+     *
+     * @param integer     $id      Request ID to search by
+     * @param PdoDatabase $database
+     * @param bool        $showAll True to show all comments, False to show only unprotected comments, and protected
+     *                             comments visible to $userId
+     * @param null|int    $userId  User to filter by
+     *
+     * @return Comment[]
+     */
+    public static function getForRequest($id, PdoDatabase $database, $showAll = false, $userId = null)
+    {
+        if ($showAll) {
+            $statement = $database->prepare('SELECT * FROM comment WHERE request = :target;');
+        }
+        else {
+            $statement = $database->prepare(<<<SQL
 SELECT * FROM comment
 WHERE request = :target AND (visibility = 'user' OR user = :userid);
 SQL
-);
-			$statement->bindValue(":userid", User::getCurrent()->getId());
-		}
+            );
+            $statement->bindValue(':userid', $userId);
+        }
 
-		$statement->bindValue(":target", $id);
+        $statement->bindValue(':target', $id);
 
-		$statement->execute();
+        $statement->execute();
 
-		$result = array();
-		/** @var Comment $v */
-		foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
-			$v->isNew = false;
-			$v->setDatabase($database);
-			$result[] = $v;
-		}
+        $result = array();
+        /** @var Comment $v */
+        foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
+            $v->setDatabase($database);
+            $result[] = $v;
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 
-	public function save()
-	{
-		if ($this->isNew) {
-			// insert
-			$statement = $this->dbObject->prepare(<<<SQL
+    /**
+     * @throws Exception
+     */
+    public function save()
+    {
+        if ($this->isNew()) {
+            // insert
+            $statement = $this->dbObject->prepare(<<<SQL
 INSERT INTO comment ( time, user, comment, visibility, request )
 VALUES ( CURRENT_TIMESTAMP(), :user, :comment, :visibility, :request );
 SQL
-			);
-			$statement->bindValue(":user", $this->user);
-			$statement->bindValue(":comment", $this->comment);
-			$statement->bindValue(":visibility", $this->visibility);
-			$statement->bindValue(":request", $this->request);
+            );
+            $statement->bindValue(":user", $this->user);
+            $statement->bindValue(":comment", $this->comment);
+            $statement->bindValue(":visibility", $this->visibility);
+            $statement->bindValue(":request", $this->request);
 
-			if ($statement->execute()) {
-				$this->isNew = false;
-				$this->id = $this->dbObject->lastInsertId();
-			}
-			else {
-				throw new Exception($statement->errorInfo());
-			}
-		}
-		else {
-			// update
-			$statement = $this->dbObject->prepare(<<<SQL
+            if ($statement->execute()) {
+                $this->id = (int)$this->dbObject->lastInsertId();
+            }
+            else {
+                throw new Exception($statement->errorInfo());
+            }
+        }
+        else {
+            // update
+            $statement = $this->dbObject->prepare(<<<SQL
 UPDATE comment
-SET comment = :comment, visibility = :visibility
-WHERE id = :id;
+SET comment = :comment, visibility = :visibility, updateversion = updateversion + 1
+WHERE id = :id AND updateversion = :updateversion;
 SQL
-			);
-			$statement->bindValue(":id", $this->id);
-			$statement->bindValue(":comment", $this->comment);
-			$statement->bindValue(":visibility", $this->visibility);
+            );
 
-			if (!$statement->execute()) {
-				throw new Exception($statement->errorInfo());
-			}
-		}
-	}
+            $statement->bindValue(':id', $this->id);
+            $statement->bindValue(':updateversion', $this->updateversion);
 
-	public function getTime()
-	{
-		return $this->time;
-	}
+            $statement->bindValue(':comment', $this->comment);
+            $statement->bindValue(':visibility', $this->visibility);
 
-	public function getUser()
-	{
-		return $this->user;
-	}
+            if (!$statement->execute()) {
+                throw new Exception($statement->errorInfo());
+            }
 
-	/**
-	 * Summary of getUserObject
-	 * @return User|null
-	 */
-	public function getUserObject()
-	{
-		return User::getById($this->user, $this->dbObject);
-	}
+            if ($statement->rowCount() !== 1) {
+                throw new OptimisticLockFailedException();
+            }
 
-	public function setUser($user)
-	{
-		$this->user = $user;
-	}
+            $this->updateversion++;
+        }
+    }
 
-	public function getComment()
-	{
-		return $this->comment;
-	}
+    /**
+     * @return DateTimeImmutable
+     */
+    public function getTime()
+    {
+        return new DateTimeImmutable($this->time);
+    }
 
-	public function setComment($comment)
-	{
-		$this->comment = $comment;
-	}
+    /**
+     * @return int
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
 
-	public function getVisibility()
-	{
-		return $this->visibility;
-	}
+    /**
+     * @param int $user
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
 
-	public function setVisibility($visibility)
-	{
-		$this->visibility = $visibility;
-	}
+    /**
+     * @return string
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
 
-	public function getRequest()
-	{
-		return $this->request;
-	}
+    /**
+     * @param string $comment
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+    }
 
-	/**
-	 * Summary of getRequestObject
-	 * @return Request|null
-	 */
-	public function getRequestObject()
-	{
-		return Request::getById($this->request, $this->dbObject);
-	}
+    /**
+     * @return string
+     */
+    public function getVisibility()
+    {
+        return $this->visibility;
+    }
 
-	public function setRequest($request)
-	{
-		$this->request = $request;
-	}
+    /**
+     * @param string $visibility
+     */
+    public function setVisibility($visibility)
+    {
+        $this->visibility = $visibility;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+
+    /**
+     * @param int $request
+     */
+    public function setRequest($request)
+    {
+        $this->request = $request;
+    }
 }

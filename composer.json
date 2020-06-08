@@ -1,0 +1,57 @@
+{
+    "description": "Wikipedia Account Creation Assistance Tool",
+    "minimum-stability": "stable",
+    "require": {
+        "smarty/smarty": "^v3.1.29",
+        "components/jquery": "^3.5.0",
+        "twbs/bootstrap": "^4.4",
+        "twitter/typeahead.js": "^0.11.1",
+        "fortawesome/font-awesome": "~5.13.0",
+        "scssphp/scssphp": "^1.1",
+        "spomky-labs/otphp": "^9.1",
+        "bacon/bacon-qr-code": "^1.0.1",
+        "paragonie/constant_time_encoding": "^2.0",
+        "yubico/u2flib-server": "^1.0.1",
+        "drvic10k/bootstrap-sortable": "^2.1",
+        "wikimedia/password-blacklist": "^0.1.4",
+        "dropbox/zxcvbn": "^4.4",
+        "bjeavons/zxcvbn-php": "^1.1",
+        "ext-openssl": "*",
+        "ext-dom": "*",
+        "ext-pdo": "*",
+        "ext-json": "*",
+        "ext-curl": "*",
+        "ext-mbstring": "*",
+        "ext-simplexml": "*",
+        "mediawiki/oauthclient": "^1.1"
+    },
+    "require-dev": {
+        "squizlabs/php_codesniffer": "~2.7",
+        "phpunit/phpunit": "~5.6.2",
+        "phpmd/phpmd": "~2.4.3"
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "drvic10k/bootstrap-sortable",
+                "version": "2.1.0",
+                "dist": {
+                    "url": "https://github.com/drvic10k/bootstrap-sortable/archive/2.1.0.zip",
+                    "type": "zip"
+                }
+            }
+        },
+        {
+            "type": "package",
+            "package": {
+                "name": "dropbox/zxcvbn",
+                "version": "4.4.2",
+                "dist": {
+                    "url": "https://github.com/dropbox/zxcvbn/archive/v4.4.2.zip",
+                    "type": "zip"
+                }
+            }
+        }
+    ]
+}

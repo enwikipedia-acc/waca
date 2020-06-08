@@ -1,18 +1,20 @@
-﻿<div class="row-fluid">
-	<div class="span6">
+﻿{extends file="statistics/base.tpl"}
+{block name="statisticsContent"}
+<div class="row">
+	<div class="col-md-6">
     <h4>Menu</h4>
     <ul>
-      {foreach from=$statsPages item=page}
+      {foreach from=$statsPages item=page key=title}
         <li>
-          <a href="{$baseurl}/statistics.php/{$page->getPageName()}">{$page->getPageTitle()}</a>
+          <a href="{$baseurl}/internal.php/statistics/{$title}">{$page}</a>
         </li>
       {/foreach}
     </ul>
 	</div>
   {include file="statistics/main-smallstats.tpl"}
 </div>
-<div class="row-fluid">
-  <div class="span12">
+<div class="row">
+  <div class="col-md-12">
     <h4>
       Graphs (<a href="http://accounts-dev.wmflabs.org/graph/">see more!</a>)
     </h4>
@@ -23,3 +25,4 @@
     {/foreach}
   </div>
 </div>
+{/block}

@@ -1,84 +1,114 @@
-<div class="page-header">
-	<h1>
-		Email Management
-		<small>
-			{$emailmgmtpage} Email template
-		</small>
-	</h1>
-</div>
+{extends file="pagebase.tpl"}
+{block name="content"}
+    <div class="row">
+        <div class="col-md-12" >
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Email Management <small class="text-muted">Create and edit close reasons</small></h1>
+            </div>
+        </div>
+    </div>
 
-<div class="row-fluid">
-	<div class="span12">
-		<form class="form-horizontal" method="post">
+    <div class="row">
+        <div class="col-md-12">
+            <form method="post">
+                {include file="security/csrf.tpl"}
 
-			<div class="control-group">
-				<label class="control-label" for="inputName">Email template name</label>
-				<div class="controls">
-					<input type="text" id="inputName" name="name" value="{$emailTemplate->getName()|escape}"{if !$currentUser->isAdmin()} disabled{/if} />
-					<span class="help-block">The name of the Email template. Note that this will be used to label the relevant close button on the request zoom pages.</span>
-				</div>
-			</div>
+                <div class="form-group row">
+                    <div class="col-sm-3 col-xl-2">
+                        <label for="inputName" class="col-form-label">Email template name</label>
+                    </div>
+                    <div class="col-sm-9 col-md-5 col-lg-5">
+                        <input class="form-control" type="text" id="inputName" name="name" required="required"
+                               value="{$emailTemplate->getName()|escape}" aria-describedby="templateNameHelp" />
+                        <small class="form-text text-muted" id="templateNameHelp">The name of the Email template. Note that this will be used to label the relevant close button on the request zoom pages.</small>
+                    </div>
+                </div>
 
-			<div class="control-group">
-				<label class="control-label" for="inputText">Email text</label>
-				<div class="controls">
-					<textarea class="input-xxlarge" id="inputText" rows="20" name="text"{if !$currentUser->isAdmin()} disabled{/if}>{$emailTemplate->getText()|escape}</textarea>
-					<span class="help-block">The text of the Email which will be sent to the requesting user.</span>
-				</div>
-			</div>
+                <div class="form-group row">
+                    <div class="col-md-3 col-xl-2">
+                        <label for="inputText" class="col-form-label">Email text</label>
+                    </div>
+                    <div class="col-md-9 col-xl-10">
+                        <textarea class="form-control" id="inputText" rows="20" required="required" name="text" aria-describedby="templateTextHelp">{$emailTemplate->getText()|escape}</textarea>
+                        <small class="form-text text-muted" id="templateTextHelp">The text of the Email which will be sent to the requesting user.</small>
+                    </div>
+                </div>
 
-			<div class="control-group">
-				<label class="control-label" for="inputQuestion">JavaScript question</label>
-				<div class="controls">
-					<input type="text" class="input-xxlarge" id="inputQuestion" name="jsquestion" size="75" value="{$emailTemplate->getJsquestion()|escape}" {if !$currentUser->isAdmin()} disabled{/if} />
-					<span class="help-block">Text to appear in a JavaScript popup (if enabled by the user) when they attempt to use this Email template.</span>
-				</div>
-			</div>
+                <div class="form-group row">
+                    <div class="col-md-3 col-xl-2">
+                        <label for="inputQuestion" class="col-form-label">JavaScript question</label>
+                    </div>
+                    <div class="col-md-9 col-xl-10">
+                        <input type="text" class="form-control" id="inputQuestion" name="jsquestion" value="{$emailTemplate->getJsquestion()|escape}" aria-describedby="templateJsQuestion"/>
+                        <small class="form-text text-muted" id="templateJsQuestion">Text to appear in a JavaScript popup (if enabled by the user) when they attempt to use this Email template.</small>
+                    </div>
+                </div>
 
-			<div class="control-group">
-				<label class="control-label" for="inputDefaultAction">Default action</label>
-				<div class="controls">
-					<select class="input-large" id="inputDefaultAction" name="defaultaction" {if !$currentUser->isAdmin() || $id == $createdid} disabled{/if}>
-						<option value="" {if $emailTemplate->getDefaultAction() == ""}selected="selected"{/if}>No default</option>
-						<optgroup label="Close request...">
-							<option value="created" {if $emailTemplate->getDefaultAction() == "created"}selected="selected"{/if}>Close request as created</option>
-							<option value="not created" {if $emailTemplate->getDefaultAction() == "not created"}selected="selected"{/if}>Close request as NOT created</option>
-						</optgroup>
-						<optgroup label="Defer to...">
-							{foreach $requeststates as $state}
-							<option value="{$state@key}" {if $emailTemplate->getDefaultAction() == $state@key}selected="selected"{/if}>Defer to {$state.deferto|capitalize}</option>
-							{/foreach}
-						</optgroup>
-					</select>
-					<span class="help-block">The default action to take on custom close. This is also used for populating decline and created dropdowns</span>
-				</div>
-			</div>
+                <div class="form-group row">
+                    <div class="col-sm-3 col-xl-2">
+                        <label class="col-form-label" for="inputDefaultAction">Default action</label>
+                    </div>
+                    <div class="col-sm-9 col-lg-5 col-xl-4">
+                        {if $id == $createdid}
+                            {include file="alert.tpl" alertblock=false alerttype="alert-info" alertclosable=false alertheader="" alertmessage="This is the default close template, and cannot be disabled or unmarked as a close template."}
+                        {/if}
 
-			<div class="control-group">
-				<div class="controls">
-					<label class="checkbox">
-						<input type="checkbox" id="inputActive" name="active"{if !$currentUser->isAdmin() || $id == $createdid} disabled{/if}{if {$emailTemplate->getActive()}} checked{/if} />
-						Enabled
-					</label>
-				</div>
-			</div>
+                        <select class="form-control" id="inputDefaultAction" aria-describedby="templateDefaultActionHelp"
+                                name="defaultaction" {if $id == $createdid} disabled{/if}>
+                            <option value="" {if $emailTemplate->getDefaultAction() == ""}selected="selected"{/if}>No
+                                default
+                            </option>
+                            <optgroup label="Close request...">
+                                <option value="created"
+                                        {if $emailTemplate->getDefaultAction() == "created"}selected="selected"{/if}>
+                                    Close request as created
+                                </option>
+                                <option value="not created"
+                                        {if $emailTemplate->getDefaultAction() == "not created"}selected="selected"{/if}>
+                                    Close request as NOT created
+                                </option>
+                            </optgroup>
+                            <optgroup label="Defer to...">
+                                {foreach $requeststates as $state}
+                                    <option value="{$state@key}"
+                                            {if $emailTemplate->getDefaultAction() == $state@key}selected="selected"{/if}>
+                                        Defer to {$state.deferto|capitalize}</option>
+                                {/foreach}
+                            </optgroup>
+                        </select>
+                        <small class="form-text text-muted" id="templateDefaultActionHelp">The default action to take on custom close. This is also used for populating decline and created dropdowns</small>
+                    </div>
+                </div>
 
-			<div class="control-group">
-				<div class="controls">
-					<label class="checkbox">
-						<input type="checkbox" id="inputPreloadonly" name="preloadonly"{if !$currentUser->isAdmin() || $id == $createdid} disabled{/if}{if {$emailTemplate->getPreloadOnly()}} checked{/if} />
-						Available for preload only
-					</label>
-				</div>
-			</div>
+                <div class="form-group row">
+                    <div class="offset-md-3 offset-xl-2 col-md-9">
+                        <div class="custom-control custom-switch">
+                            <input class="custom-control-input" type="checkbox" id="inputActive" name="active" {if $id == $createdid} disabled{/if}{if {$emailTemplate->getActive()}} checked{/if}/>
+                            <label class="custom-control-label" for="inputActive">Enabled</label>
+                        </div>
+                    </div>
+                </div>
 
-			<div class="form-actions">
-				<a class="btn" href="{$baseurl}/acc.php?action=emailmgmt">Cancel</a>
-				<button type="submit" class="btn btn-primary" name="submit"{if !$currentUser->isAdmin()} disabled{/if}>
-					<i class="icon-white icon-ok"></i>&nbsp;Save
-				</button>
-			</div>
+                <div class="form-group row">
+                    <div class="offset-md-3 offset-xl-2 col-md-9">
+                        <div class="custom-control custom-switch">
+                            <input class="custom-control-input" type="checkbox" id="inputPreloadonly" name="preloadonly"{if $id == $createdid} disabled{/if}{if {$emailTemplate->getPreloadOnly()}} checked{/if} />
+                            <label class="custom-control-label" for="inputPreloadonly">Available for preload only</label>
+                        </div>
+                    </div>
+                </div>
 
-		</form>
-	</div>
-</div>
+                <input type="hidden" name="updateversion" value="{$emailTemplate->getUpdateVersion()}" />
+
+                <div class="form-group row">
+                    <div class="offset-md-3 offset-xl-2 col-md-9 col-lg-5 col-xl-4">
+                        <button type="submit" class="btn btn-primary btn-block" name="submit">
+                            <i class="fas fa-check-circle"></i>&nbsp;Save
+                        </button>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+{/block}

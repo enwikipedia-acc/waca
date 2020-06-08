@@ -1,0 +1,259 @@
+<?php
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
+
+namespace Waca\Tests;
+
+use PHPUnit_Framework_MockObject_MockObject;
+use PHPUnit_Framework_TestCase;
+use ReflectionClass;
+use ReflectionProperty;
+use Waca\Pages\Page404;
+use Waca\Pages\UserAuth\PageLogout;
+use Waca\Pages\PageMain;
+use Waca\Pages\PageUserManagement;
+use Waca\Providers\GlobalState\GlobalStateProvider;
+use Waca\Router\RequestRouter;
+use Waca\WebRequest;
+
+class RequestRouterTest extends PHPUnit_Framework_TestCase
+{
+    /**
+     * @var GlobalStateProvider|PHPUnit_Framework_MockObject_MockObject
+     */
+    private $globalState;
+
+    public function setUp()
+    {
+        $this->globalState = $this->getMockBuilder(GlobalStateProvider::class)->getMock();
+        WebRequest::setGlobalStateProvider($this->globalState);
+    }
+
+    public function testEmptyPathInfo()
+    {
+        $router = new RequestRouter();
+
+        $reflector = new ReflectionClass($router);
+        $method = $reflector->getMethod('getRouteFromPath');
+        $method->setAccessible(true);
+
+        list($pageClass, $action) = $method->invoke($router, array());
+
+        $this->assertEquals(PageMain::class, $pageClass);
+        $this->assertEquals('main', $action);
+    }
+
+    public function testSingleItemPathInfo()
+    {
+        $router = new RequestRouter();
+
+        $reflector = new ReflectionClass($router);
+        $method = $reflector->getMethod('getRouteFromPath');
+        $method->setAccessible(true);
+
+        list($pageClass, $action) = $method->invoke($router, array('logout'));
+
+        $this->assertEquals(PageLogout::class, $pageClass);
+        $this->assertEquals('main', $action);
+    }
+
+    public function testSingleItemPathInfoNotFound()
+    {
+        $router = new RequestRouter();
+
+        $reflector = new ReflectionClass($router);
+        $method = $reflector->getMethod('getRouteFromPath');
+        $method->setAccessible(true);
+
+        list($pageClass, $action) = $method->invoke($router, array('pleaseDontExist'));
+
+        $this->assertEquals(Page404::class, $pageClass);
+        $this->assertEquals('main', $action);
+    }
+
+    public function testDualItem()
+    {
+        $router = new RequestRouter();
+
+        $reflector = new ReflectionClass($router);
+        $method = $reflector->getMethod('getRouteFromPath');
+        $method->setAccessible(true);
+
+        list($pageClass, $action) = $method->invoke($router, array('userManagement', 'approve'));
+
+        $this->assertEquals(PageUserManagement::class, $pageClass);
+        $this->assertEquals('approve', $action);
+    }
+
+    public function testDualItemInvalidAction()
+    {
+        $router = new RequestRouter();
+
+        $reflector = new ReflectionClass($router);
+        $method = $reflector->getMethod('getRouteFromPath');
+        $method->setAccessible(true);
+
+        list($pageClass, $action) = $method->invoke($router, array('userManagement', 'dontExist'));
+
+        $this->assertEquals(Page404::class, $pageClass);
+        $this->assertEquals('main', $action);
+    }
+
+    public function testDualItemInvalidPage()
+    {
+        $router = new RequestRouter();
+
+        $reflector = new ReflectionClass($router);
+        $method = $reflector->getMethod('getRouteFromPath');
+        $method->setAccessible(true);
+
+        list($pageClass, $action) = $method->invoke($router, array('dontExist', 'approve'));
+
+        $this->assertEquals(Page404::class, $pageClass);
+        $this->assertEquals('main', $action);
+    }
+
+    public function testDualItemInvalidBoth()
+    {
+        $router = new RequestRouter();
+
+        $reflector = new ReflectionClass($router);
+        $method = $reflector->getMethod('getRouteFromPath');
+        $method->setAccessible(true);
+
+        list($pageClass, $action) = $method->invoke($router, array('dontExist', 'definitelyDontExist'));
+
+        $this->assertEquals(Page404::class, $pageClass);
+        $this->assertEquals('main', $action);
+    }
+
+    public function testCreatesRoutedPage()
+    {
+        $this->globalState->method('getServerSuperGlobal')->willReturn(array(
+            'PATH_INFO' => '/userManagement/approve',
+        ));
+
+        $router = new RequestRouter();
+        $page = $router->route();
+
+        $this->assertEquals(PageUserManagement::class, get_class($page));
+        $this->assertEquals('approve', $page->getRouteName());
+    }
+
+    public function testSubPagePathRouting()
+    {
+        $this->globalState->method('getServerSuperGlobal')->willReturn(array(
+            'PATH_INFO' => '/foo/bar',
+        ));
+
+        $routeMap = array(
+            'foo/bar' =>
+                array(
+                    'class'   => PageUserManagement::class,
+                    'actions' => array('approve'),
+                ),
+        );
+
+        $router = new RequestRouter();
+
+        // set request route using reflection
+        $reflector = new ReflectionProperty(RequestRouter::class, 'routeMap');
+        $reflector->setAccessible(true);
+        $reflector->setValue($router, $routeMap);
+
+        $page = $router->route();
+
+        $this->assertEquals(PageUserManagement::class, get_class($page));
+        $this->assertEquals('main', $page->getRouteName());
+    }
+
+    public function testSubPagePathRoutingWithAction()
+    {
+        $this->globalState->method('getServerSuperGlobal')->willReturn(array(
+            'PATH_INFO' => '/foo/bar/approve',
+        ));
+
+        $routeMap = array(
+            'foo/bar' =>
+                array(
+                    'class'   => PageUserManagement::class,
+                    'actions' => array('approve'),
+                ),
+        );
+
+        $router = new RequestRouter();
+
+        // set request route using reflection
+        $reflector = new ReflectionProperty(RequestRouter::class, 'routeMap');
+        $reflector->setAccessible(true);
+        $reflector->setValue($router, $routeMap);
+
+        $page = $router->route();
+
+        $this->assertEquals(PageUserManagement::class, get_class($page));
+        $this->assertEquals('approve', $page->getRouteName());
+    }
+
+    public function testSubPagePathRoutingStress()
+    {
+        $this->globalState->method('getServerSuperGlobal')->willReturn(array(
+            'PATH_INFO' => '/a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u/v/w/x/y/z/approve',
+        ));
+
+        $routeMap = array(
+            'a/b/c/d/e/f/g/h/i/j/k/l/m/n/o/p/q/r/s/t/u/v/w/x/y/z' =>
+                array(
+                    'class'   => PageUserManagement::class,
+                    'actions' => array('approve'),
+                ),
+        );
+
+        $router = new RequestRouter();
+
+        // set request route using reflection
+        $reflector = new ReflectionProperty(RequestRouter::class, 'routeMap');
+        $reflector->setAccessible(true);
+        $reflector->setValue($router, $routeMap);
+
+        $page = $router->route();
+
+        $this->assertEquals(PageUserManagement::class, get_class($page));
+        $this->assertEquals('approve', $page->getRouteName());
+    }
+
+    public function testSubPagePathRoutingWithPartialMatch()
+    {
+        $this->globalState->method('getServerSuperGlobal')->willReturn(array(
+            'PATH_INFO' => 'stats/foo',
+        ));
+
+        $routeMap = array(
+            'stats'     =>
+                array(
+                    'class'   => PageMain::class,
+                    'actions' => array(),
+                ),
+            'stats/foo' =>
+                array(
+                    'class'   => PageUserManagement::class,
+                    'actions' => array(),
+                ),
+        );
+
+        $router = new RequestRouter();
+
+        // set request route using reflection
+        $reflector = new ReflectionProperty(RequestRouter::class, 'routeMap');
+        $reflector->setAccessible(true);
+        $reflector->setValue($router, $routeMap);
+
+        $page = $router->route();
+
+        $this->assertEquals(PageUserManagement::class, get_class($page));
+        $this->assertEquals('main', $page->getRouteName());
+    }
+}

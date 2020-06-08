@@ -1,34 +1,135 @@
-<table class="table table-striped sortable">
-	<thead>
-		<tr>
-			<th data-defaultsort="asc"><span class="hidden-phone">#</span></th>
-      {if $showStatus}
-			  <th>Request state</th>
-      {/if}
-			<th>
-        {if $currentUser->isAdmin() || $currentUser->isCheckUser()}
-          <span class="visible-desktop">Email address</span>
-          <span class="visible-tablet">Email and IP</span>
-          <span class="visible-phone">Request details</span>
-        {else}
-          <span class="visible-phone">Username</span>
+<table class="table table-striped table-sm sortable mb-0">
+    <thead>
+    <tr>
+        <th data-defaultsort="asc"><span class="d-none-xs">#</span></th>
+        {if $showStatus}
+            <th>Request state</th>
         {/if}
-      </th>
-			<th>
-        {if $currentUser->isAdmin() || $currentUser->isCheckUser()}
-          <span class="visible-desktop">IP address</span>
+        {if $list->showPrivateData}
+            <th>Email address</th>
+            <th>IP address</th>
         {/if}
-      </th>
-			<th><span class="hidden-phone">Username</span></th>
-			<th><span class="visible-desktop">Request time</span></th>
-			<td><!-- ban --></td>
-			<td><!-- reserve status --></td>
-			<td><!--reserve button--></td>
-		</tr>
-	</thead>
-	<tbody>
-		{foreach from=$requests item="r"}
-			{include file="request-entry.tpl" request=$r}
-		{/foreach}
-	</tbody>
+        <th>Username</th>
+        <th><span class="d-none d-md-block">Request time</span></th>
+        <th data-defaultsort="disabled"><!-- ban --></th>
+        <th data-defaultsort="disabled"><!-- reserve status --></th>
+        <th data-defaultsort="disabled"><!--reserve button--></th>
+    </tr>
+    </thead>
+    <tbody>
+    {foreach from=$list->requests item="r"}
+        <tr>
+            <td data-value="{$r->getId()}">
+                <a class="btn btn-sm{if $r->hasComments() == true} btn-info{else} btn-secondary{/if}"
+                href="{$baseurl}/internal.php/viewRequest?id={$r->getId()}"><i class="fas fa-search"></i><span class="d-none d-md-inline">&nbsp;{$r->getId()}</span></a>
+            </td>
+
+            {if $showStatus}
+                <td>{$r->getStatus()}</td>
+            {/if}
+
+            {if $list->showPrivateData}
+                <td>
+                    {if $r->getEmail() === $list->dataClearEmail}
+                        <span class="text-muted font-italic">Email address purged</span>
+                    {else}
+                        {$r->getEmail()|escape}
+                        <span class="badge badge-pill {if $list->relatedEmailRequests[$r->getId()] > 0}badge-danger{else}badge-secondary{/if}"
+                            data-toggle="tooltip" data-original-title="{$list->relatedEmailRequests[$r->getId()]} other request(s) from this email address"
+                        >
+                            {$list->relatedEmailRequests[$r->getId()]}
+                        </span>
+                    {/if}
+                </td>
+
+
+                <td data-value="{$list->requestTrustedIp[$r->getId()]|escape|iphex}">
+                    {if $list->requestTrustedIp[$r->getId()] === $list->dataClearIp}
+                        <span class="text-muted font-italic">IP address purged</span>
+                    {else}
+                        <a href="https://en.wikipedia.org/wiki/User_talk:{$list->requestTrustedIp[$r->getId()]|escape}" target="_blank">{$list->requestTrustedIp[$r->getId()]|escape}</a>
+                        <span class="badge badge-pill {if $list->relatedIpRequests[$r->getId()] > 0}badge-danger{else}badge-secondary{/if}"
+                              data-toggle="tooltip" data-original-title="{$list->relatedIpRequests[$r->getId()]} other request(s) from this IP address"
+                        >
+                            {$list->relatedIpRequests[$r->getId()]}
+                        </span>
+                    {/if}
+                </td>
+            {/if}
+
+            {* Username *}
+            <td data-value="{$r->getName()|escape}">
+                <a href="https://en.wikipedia.org/wiki/User:{$r->getName()|escape:'url'}"
+                   target="_blank">{$r->getName()|escape}</a>
+            </td>
+
+            {* Request Time *}
+            <td data-value="{$r->getDate()|date}" data-dateformat="YYYY-MM-DD hh:mm:ss">
+                <span class="d-none d-md-block"><span title="{$r->getDate()|date}" data-toggle="tooltip" data-placement="top" id="#rqtime{$r->getId()}">{$r->getDate()|relativedate}</span></span>
+            </td>
+
+            {* Bans *}
+            <td>
+                {if $list->canBan}
+                    <div class="dropdown">
+                        <button class="btn btn-danger btn-sm dropdown-toggle" type="button" id="banDropdown{$r->getId()}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="fas fa-ban"></i>&nbsp;Ban&nbsp;<span class="caret"></span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{$baseurl}/internal.php/bans/set?type=IP&amp;request={$r->getId()}">IP</a>
+                            <a class="dropdown-item" href="{$baseurl}/internal.php/bans/set?type=EMail&amp;request={$r->getId()}">Email</a>
+                            <a class="dropdown-item" href="{$baseurl}/internal.php/bans/set?type=Name&amp;request={$r->getId()}">Name</a>
+                        </div>
+                    </div>
+                {/if}
+            </td>
+
+            {* Reserve status *}
+            <td>
+                {if $r->getReserved() !== null && $r->getReserved() != $currentUser->getId()}
+                    <span class="d-none d-md-block">Being handled by {$list->userList[$r->getReserved()]|escape}</span>
+                {/if}
+            </td>
+
+            {* Reserve Button *}
+            <td>
+                {if $r->getReserved() === null}
+                    <form action="{$baseurl}/internal.php/viewRequest/reserve" method="post" class="form-row">
+                        {include file="security/csrf.tpl"}
+                        <input class="form-control" type="hidden" name="request" value="{$r->getId()}"/>
+                        <input class="form-control" type="hidden" name="updateversion" value="{$r->getUpdateVersion()}"/>
+                        <button class="btn btn-sm btn-success" type="submit">
+                            <i class="fas fa-star"></i>&nbsp;Reserve
+                        </button>
+                    </form>
+                {else}
+
+                    {if $r->getReserved() == $currentUser->getId()}
+                        <form action="{$baseurl}/internal.php/viewRequest/breakReserve" method="post"
+                              class="form-row">
+                            {include file="security/csrf.tpl"}
+                            <input class="form-control" type="hidden" name="request" value="{$r->getId()}"/>
+                            <input class="form-control" type="hidden" name="updateversion" value="{$r->getUpdateVersion()}"/>
+                            <button class="btn btn-sm btn-dark" type="submit">
+                                <i class="fas fa-star"></i>&nbsp;Unreserve
+                            </button>
+                        </form>
+                    {else}
+                        {if $list->canBreakReservation}
+                            <form action="{$baseurl}/internal.php/viewRequest/breakReserve" method="post"
+                                  class="form-row">
+                                {include file="security/csrf.tpl"}
+                                <input class="form-control" type="hidden" name="request" value="{$r->getId()}"/>
+                                <input class="form-control" type="hidden" name="updateversion" value="{$r->getUpdateVersion()}"/>
+                                <button class="btn btn-sm btn-warning" type="submit">
+                                    <i class="fas fa-hand-paper"></i>&nbsp;Force break
+                                </button>
+                            </form>
+                        {/if}
+                    {/if}
+                {/if}
+            </td>
+        </tr>
+    {/foreach}
+    </tbody>
 </table>

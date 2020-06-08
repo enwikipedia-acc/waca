@@ -1,163 +1,167 @@
 <?php
+/******************************************************************************
+ * Wikipedia Account Creation Assistance tool                                 *
+ *                                                                            *
+ * All code in this file is released into the public domain by the ACC        *
+ * Development Team. Please see team.json for a list of contributors.         *
+ ******************************************************************************/
+
+namespace Waca\DataObjects;
+
+use DateTimeImmutable;
+use Exception;
+use Waca\DataObject;
 
 /**
- * Log short summary.
- *
- * Log description.
- *
- * @version 1.0
- * @author stwalkerster
+ * Class representing a log entry
  */
 class Log extends DataObject
 {
-	private $objectid;
-	private $objecttype;
-	private $user;
-	private $action;
-	private $timestamp;
-	private $comment;
+    /** @var int */
+    private $objectid;
+    /** @var string */
+    private $objecttype;
+    /** @var int */
+    private $user;
+    /** @var string */
+    private $action;
+    private $timestamp;
+    /** @var string|null */
+    private $comment;
 
-	public function save()
-	{
-		if ($this->isNew) {
-			$statement = $this->dbObject->prepare(<<<SQL
+    /**
+     * @throws Exception
+     */
+    public function save()
+    {
+        if ($this->isNew()) {
+            $statement = $this->dbObject->prepare(<<<SQL
                 INSERT INTO log (objectid, objecttype, user, action, timestamp, comment) 
                 VALUES (:id, :type, :user, :action, CURRENT_TIMESTAMP(), :comment);
 SQL
-			);
+            );
 
-			$statement->bindValue(":id", $this->objectid);
-			$statement->bindValue(":type", $this->objecttype);
-			$statement->bindValue(":user", $this->user);
-			$statement->bindValue(":action", $this->action);
-			$statement->bindValue(":comment", $this->comment);
+            $statement->bindValue(":id", $this->objectid);
+            $statement->bindValue(":type", $this->objecttype);
+            $statement->bindValue(":user", $this->user);
+            $statement->bindValue(":action", $this->action);
+            $statement->bindValue(":comment", $this->comment);
 
-			if ($statement->execute()) {
-				$this->isNew = false;
-				$this->id = $this->dbObject->lastInsertId();
-			}
-			else {
-				throw new Exception($statement->errorInfo());
-			}
-		}
-		else {
-			throw new Exception("Updating logs is not available");
-		}
-	}
+            if ($statement->execute()) {
+                $this->id = (int)$this->dbObject->lastInsertId();
+            }
+            else {
+                throw new Exception($statement->errorInfo());
+            }
+        }
+        else {
+            throw new Exception("Updating logs is not available");
+        }
+    }
 
-	public function delete()
-	{
-		throw new Exception("Deleting logs is not available.");
-	}
+    /**
+     * @throws Exception
+     */
+    public function delete()
+    {
+        throw new Exception("Deleting logs is not available.");
+    }
 
-	public function getObjectId()
-	{
-		return $this->objectid;
-	}
+    /**
+     * @return int
+     */
+    public function getObjectId()
+    {
+        return $this->objectid;
+    }
 
-	/**
-	 * Summary of setObjectId
-	 * @param int $objectId
-	 */
-	public function setObjectId($objectId)
-	{
-		$this->objectid = $objectId;
-	}
+    /**
+     * Summary of setObjectId
+     *
+     * @param int $objectId
+     */
+    public function setObjectId($objectId)
+    {
+        $this->objectid = $objectId;
+    }
 
-	public function getObjectType()
-	{
-		return $this->objecttype;
-	}
+    /**
+     * @return string
+     */
+    public function getObjectType()
+    {
+        return $this->objecttype;
+    }
 
-	/**
-	 * Summary of setObjectType
-	 * @param string $objectType
-	 */
-	public function setObjectType($objectType)
-	{
-		$this->objecttype = $objectType;
-	}
+    /**
+     * Summary of setObjectType
+     *
+     * @param string $objectType
+     */
+    public function setObjectType($objectType)
+    {
+        $this->objecttype = $objectType;
+    }
 
-	public function getUser()
-	{
-		return $this->user;
-	}
-	
-	/**
-	 * Summary of getUserObject
-	 * @return User|null
-	 */
-	public function getUserObject()
-	{
-		return User::getById($this->user, $this->dbObject);
-	}
+    /**
+     * @return int
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
 
-	/**
-	 * Summary of setUser
-	 * @param User $user
-	 */
-	public function setUser($user)
-	{
-		if (is_a($user, "User")) {
-			$this->user = $user->getId();   
-		}
-		else {
-			$this->user = $user;   
-		}
-	}
+    /**
+     * Summary of setUser
+     *
+     * @param User $user
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user->getId();
+    }
 
-	public function getAction()
-	{
-		return $this->action;
-	}
+    /**
+     * @return string
+     */
+    public function getAction()
+    {
+        return $this->action;
+    }
 
-	/**
-	 * Summary of setAction
-	 * @param string $action 
-	 */
-	public function setAction($action)
-	{
-		$this->action = $action;
-	}
+    /**
+     * Summary of setAction
+     *
+     * @param string $action
+     */
+    public function setAction($action)
+    {
+        $this->action = $action;
+    }
 
-	public function getTimestamp()
-	{
-		return $this->timestamp;
-	}
+    /**
+     * @return DateTimeImmutable
+     */
+    public function getTimestamp()
+    {
+        return new DateTimeImmutable($this->timestamp);
+    }
 
-	public function getComment()
-	{
-		return $this->comment;
-	}
+    /**
+     * @return string|null
+     */
+    public function getComment()
+    {
+        return $this->comment;
+    }
 
-	/**
-	 * Summary of setComment
-	 * @param string $comment 
-	 */
-	public function setComment($comment)
-	{
-		$this->comment = $comment;
-	}
-	
-	/**
-	 * Let's be really sneaky here, and fake this to the object description of the logged object.
-	 * @return string
-	 */
-	public function getObjectDescription()
-	{
-		$type = $this->objecttype;
-		
-		if ($type == "") {
-			return "";
-		}
-
-		/** @var DataObject $object */
-		$object = $type::getById($this->objectid, $this->dbObject);
-
-		if ($object === false) {
-			return '[' . $this->objecttype . " " . $this->objectid . ']';
-		}
-		
-		return $object->getObjectDescription();
-	}
+    /**
+     * Summary of setComment
+     *
+     * @param string $comment
+     */
+    public function setComment($comment)
+    {
+        $this->comment = $comment;
+    }
 }
