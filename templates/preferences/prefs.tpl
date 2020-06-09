@@ -171,8 +171,8 @@
                             </div>
                         </div>
                         <div class="col">
-                            <div class="alert-block alert alert-{if $identity->getAccountAge() < 180}success{else}danger{/if}">
-                                <i class="fas fa-{if $identity->getEditCount() > 1500}check{else}times{/if}"></i>&nbsp;Registration date: {$identity->getRegistrationDate()|escape}
+                            <div class="alert-block alert alert-{if $identity->getAccountAge() > 180}success{else}danger{/if}">
+                                <i class="fas fa-{if $identity->getAccountAge() > 180}check{else}times{/if}"></i>&nbsp;Registration date: {$identity->getRegistrationDate()|escape}
                             </div>
                         </div>
                         <div class="col">
