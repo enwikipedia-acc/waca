@@ -232,7 +232,7 @@ SQL
             $rawTicket = $this->oauthProtocolHelper->getIdentityTicket($token->getToken(), $token->getSecret());
         }
         catch (Exception $ex) {
-            if(strpos($ex->getMessage(), "mwoauthdatastore-access-token-not-found") !== false) {
+            if (strpos($ex->getMessage(), "mwoauthdatastore-access-token-not-found") !== false) {
                 throw new OAuthException('No approved grants for this access token.', -1, $ex);
             }
 
