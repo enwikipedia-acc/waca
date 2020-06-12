@@ -9,6 +9,7 @@
 namespace Waca\Helpers;
 
 use DateTimeImmutable;
+use MediaWiki\OAuthClient\Exception;
 use PDOStatement;
 use Waca\DataObjects\OAuthIdentity;
 use Waca\DataObjects\OAuthToken;
@@ -213,6 +214,7 @@ SQL
      * @throws OAuthException
      * @throws CurlException
      * @throws OptimisticLockFailedException
+     * @throws Exception
      */
     public function refreshIdentity()
     {
@@ -226,7 +228,16 @@ SQL
 
         $token = $this->loadAccessToken();
 
-        $rawTicket = $this->oauthProtocolHelper->getIdentityTicket($token->getToken(), $token->getSecret());
+        try {
+            $rawTicket = $this->oauthProtocolHelper->getIdentityTicket($token->getToken(), $token->getSecret());
+        }
+        catch (Exception $ex) {
+            if (strpos($ex->getMessage(), "mwoauthdatastore-access-token-not-found") !== false) {
+                throw new OAuthException('No approved grants for this access token.', -1, $ex);
+            }
+
+            throw $ex;
+        }
 
         $this->identity->populate($rawTicket);
 

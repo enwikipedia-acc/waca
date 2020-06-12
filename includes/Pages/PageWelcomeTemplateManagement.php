@@ -32,6 +32,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
         $user = User::getCurrent($this->getDatabase());
         $this->assign('canEdit', $this->barrierTest('edit', $user));
         $this->assign('canAdd', $this->barrierTest('add', $user));
+        $this->assign('canSelect', $this->barrierTest('select', $user));
 
         $this->assign('templateList', $templateList);
         $this->setTemplate('welcome-template/list.tpl');
