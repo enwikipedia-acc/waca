@@ -39,7 +39,7 @@ trait RequestData
      * Gets a request object
      *
      * @param PdoDatabase $database  The database connection
-     * @param int         $requestId The ID of the request to retrieve
+     * @param int|null    $requestId The ID of the request to retrieve
      *
      * @return Request
      * @throws ApplicationLogicException
@@ -143,7 +143,7 @@ trait RequestData
     abstract protected function assign($name, $value);
 
     /**
-     * @param int         $requestReservationId
+     * @param int|null    $requestReservationId
      * @param PdoDatabase $database
      * @param User        $currentUser
      */
@@ -202,8 +202,8 @@ trait RequestData
     protected function setupRelatedRequests(
         Request $request,
         SiteConfiguration $configuration,
-        PdoDatabase $database) {
-
+        PdoDatabase $database)
+    {
         $this->assign('canSeeRelatedRequests', true);
 
         $relatedEmailRequests = RequestSearchHelper::get($database)

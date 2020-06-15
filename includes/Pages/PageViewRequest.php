@@ -182,7 +182,7 @@ class PageViewRequest extends InternalPageBase
                 $requestLogs[] = array(
                     'type'     => 'comment',
                     'security' => $entry->getVisibility(),
-                    'user'     => $entry->getVisibility() == 'requester' ? $request->getName() :$nameCache[$entry->getUser()]->getUsername(),
+                    'user'     => $entry->getVisibility() == 'requester' ? $request->getName() : $nameCache[$entry->getUser()]->getUsername(),
                     'userid'   => $entry->getUser() == -1 ? null : $entry->getUser(),
                     'entry'    => null,
                     'time'     => $entry->getTime(),
@@ -198,7 +198,7 @@ class PageViewRequest extends InternalPageBase
 
                 $entryComment = $entry->getComment();
 
-                if($entry->getAction() === 'JobIssueRequest' || $entry->getAction() === 'JobCompletedRequest'){
+                if ($entry->getAction() === 'JobIssueRequest' || $entry->getAction() === 'JobCompletedRequest') {
                     $data = unserialize($entry->getComment());
                     /** @var JobQueue $job */
                     $job = JobQueue::getById($data['job'], $database);
