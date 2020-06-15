@@ -16,7 +16,7 @@
                             <div class="form-group row">
                                 <div class="col">
                                     <label for="username" class="sr-only">Username</label>
-                                    <input type="text" id="username" name="username" placeholder="Username"
+                                    <input type="text" id="username" name="username" placeholder="Username" autocomplete="username"
                                            value="{$username|escape}" class="form-control" required tabindex="1">
                                     <span class="form-text text-muted float-right">No tool account? <a class="" href="{$baseurl}/internal.php/register" tabindex="4">Register!</a></span>
                                 </div>
