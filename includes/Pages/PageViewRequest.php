@@ -83,9 +83,14 @@ class PageViewRequest extends InternalPageBase
             $this->assign('revealHash', $request->getRevealHash());
         }
 
+        $this->assign('canSeeRelatedRequests', false);
+        if ($allowedPrivateData || $this->barrierTest('seeRelatedRequests', $currentUser, 'RequestData')) {
+            $this->setupRelatedRequests($request, $config, $database);
+        }
+
         if ($allowedPrivateData) {
             $this->setTemplate('view-request/main-with-data.tpl');
-            $this->setupPrivateData($request, $currentUser, $this->getSiteConfiguration(), $database);
+            $this->setupPrivateData($request);
 
             $this->assign('canSetBan', $this->barrierTest('set', $currentUser, PageBan::class));
             $this->assign('canSeeCheckuserData', $this->barrierTest('seeUserAgentData', $currentUser, 'RequestData'));

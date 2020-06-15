@@ -104,6 +104,31 @@
 
         {block name="emailSection"}{/block}
 
-        {block name="otherRequests"}{/block}
+        {block name="otherRequests"}
+            {if $canSeeRelatedRequests === true}
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3>Other requests from this email address</h3>
+                        {if $requestDataCleared}
+                            <p class="text-muted">Email information cleared</p>
+                        {elseif $requestRelatedEmailRequestsCount == 0}
+                            <p class="text-muted">None detected</p>
+                        {else}
+                            {include file="view-request/related-requests.tpl" requests=$requestRelatedEmailRequests}
+                        {/if}
+                    </div>
+                    <div class="col-md-6">
+                        <h3>Other requests from this IP address</h3>
+                        {if $requestDataCleared}
+                            <p class="text-muted">IP information cleared</p>
+                        {elseif $requestRelatedIpRequestsCount == 0}
+                            <p class="text-muted">None detected</p>
+                        {else}
+                            {include file="view-request/related-requests.tpl" requests=$requestRelatedIpRequests}
+                        {/if}
+                    </div>
+                </div>
+            {/if}
+        {/block}
     </div>
 {/block}
