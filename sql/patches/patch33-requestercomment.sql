@@ -52,6 +52,10 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
     -- Developers - put your upgrade statements here!
     -- -------------------------------------------------------------------------
 
+    -- OAuth registered date fix - not all users have a registration date!
+    alter table oauthidentity modify registered varchar(14) null comment 'Registration date, note early users don\'t have one!';
+
+    -- requester comment migration
     delete c from comment c where not exists (select 1 from request r where r.id = c.request);
 
     alter table comment
