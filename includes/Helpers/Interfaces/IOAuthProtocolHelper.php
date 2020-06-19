@@ -48,6 +48,7 @@ interface IOAuthProtocolHelper
      * @return stdClass
      * @throws CurlException
      * @throws Exception
+     * @throws \MediaWiki\OAuthClient\Exception
      */
     public function getIdentityTicket($oauthAccessToken, $oauthAccessSecret);
 
