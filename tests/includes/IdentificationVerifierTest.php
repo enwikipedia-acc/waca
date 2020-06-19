@@ -91,16 +91,12 @@ class IdentificationVerifierTest extends PHPUnit_Framework_TestCase
 
         // Some non-standard or non-Latin names to try out
         $this->assertTrue($method->invoke($this->identificationVerifier, "-revi"));
-        $this->assertTrue($method->invoke($this->identificationVerifier, "555"));
-        $this->assertTrue($method->invoke($this->identificationVerifier, "Trần Nguyễn Minh Huy"));
-        $this->assertTrue($method->invoke($this->identificationVerifier, "محمد شعیب"));
-        $this->assertTrue($method->invoke($this->identificationVerifier, "יונה בנדלאק"));
-        $this->assertTrue($method->invoke($this->identificationVerifier, "和平奮鬥救地球"));
+        $this->assertTrue($method->invoke($this->identificationVerifier, "Стефанко1982"));
+        $this->assertTrue($method->invoke($this->identificationVerifier, "ظهیری"));
+        $this->assertTrue($method->invoke($this->identificationVerifier, "이강철"));
         $this->assertFalse($method->invoke($this->identificationVerifier, "-rei"));
-        $this->assertFalse($method->invoke($this->identificationVerifier, "55"));
-        $this->assertFalse($method->invoke($this->identificationVerifier, "TrầnNguyễnMinhHuy"));
-        $this->assertFalse($method->invoke($this->identificationVerifier, "محمدشعیب"));
-        $this->assertFalse($method->invoke($this->identificationVerifier, "יונהבנדלאק"));
-        $this->assertFalse($method->invoke($this->identificationVerifier, "和平奮救地球"));
+        $this->assertFalse($method->invoke($this->identificationVerifier, "Стефанко198"));
+        $this->assertFalse($method->invoke($this->identificationVerifier, "ظهیی"));
+        $this->assertFalse($method->invoke($this->identificationVerifier, "이강"));
     }
 }
