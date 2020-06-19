@@ -29,7 +29,7 @@ before_script:
 script:
   - bash .travis.phplint.sh
   - bash .travis.scss.sh
-  - phpunit --verbose --coverage-clover=coverage.xml
+  - php vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
   - codecov
 
 after_script:
