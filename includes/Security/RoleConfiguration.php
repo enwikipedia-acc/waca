@@ -139,6 +139,7 @@ class RoleConfiguration
             ),
             PageBan::class                       => array(
                 self::MAIN => self::ACCESS_ALLOW,
+                'show'     => self::ACCESS_ALLOW,
             ),
             'BanType'                   => array(
                 'ip' => self::ACCESS_ALLOW,

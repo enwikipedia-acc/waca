@@ -275,10 +275,12 @@ SQL
                 $ban = Ban::getById($objectId, $database);
 
                 if ($ban === false) {
-                    return 'Ban #' . $objectId . "</a>";
+                    return 'Ban #' . $objectId;
                 }
 
-                return 'Ban #' . $objectId . '</a>';
+                return <<<HTML
+<a href="{$baseurl}/internal.php/bans/show?id={$objectId}">Ban #{$objectId}</a>
+HTML;
             case 'EmailTemplate':
                 /** @var EmailTemplate $emailTemplate */
                 $emailTemplate = EmailTemplate::getById($objectId, $database);

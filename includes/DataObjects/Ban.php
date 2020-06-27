@@ -99,6 +99,32 @@ SQL
         return $resultObject;
     }
 
+    public static function getByIdList($values, PdoDatabase $database)
+    {
+        if (count($values) === 0) {
+            return [];
+        }
+
+        // use the provided array to produce a list of question marks of the same length as the array.
+        $valueCount = count($values);
+        $inSection = str_repeat('?,', $valueCount - 1) . '?';
+
+        // this is still parameterised! It's using positional parameters instead of named ones.
+        $query = 'SELECT * FROM ban WHERE id IN (' . $inSection . ')';
+        $statement = $database->prepare($query);
+
+        // execute the statement with the provided parameter list.
+        $statement->execute($values);
+
+        $result = [];
+        foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
+            $v->setDatabase($database);
+            $result[] = $v;
+        }
+
+        return $result;
+    }
+
     /**
      * @throws Exception
      */

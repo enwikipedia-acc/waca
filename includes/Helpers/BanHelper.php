@@ -103,9 +103,26 @@ SQL;
         return $result;
     }
 
+    public function isActive(Ban $ban): bool
+    {
+        if (!$ban->isActive()) {
+            return false;
+        }
+
+        if ($ban->getDuration() !== null && $ban->getDuration() < time()) {
+            return false;
+        }
+
+        return true;
+    }
+
     public function canUnban(Ban $ban): bool
     {
         if ($this->securityManager === null) {
+            return false;
+        }
+
+        if (!$this->isActive($ban)) {
             return false;
         }
 

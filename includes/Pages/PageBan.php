@@ -30,31 +30,32 @@ class PageBan extends InternalPageBase
     protected function main()
     {
         $this->assignCSRFToken();
-
         $this->setHtmlTitle('Bans');
 
         $bans = Ban::getActiveBans($this->getDatabase());
 
-        $userIds = array_map(
-            function(Ban $entry) {
-                return $entry->getUser();
-            },
-            $bans);
-        $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchMap('username');
+        $this->setupBanList($bans);
+        $this->setTemplate('bans/main.tpl');
+    }
 
-        $user = User::getCurrent($this->getDatabase());
-        $this->assign('canSet', $this->barrierTest('set', $user));
-        $this->assign('canRemove', $this->barrierTest('remove', $user));
+    protected function show()
+    {
+        $this->assignCSRFToken();
+        $this->setHtmlTitle('Bans');
 
-        $this->setupSecurity($user);
+        $rawIdList = WebRequest::getString('id');
+        if ($rawIdList === null) {
+            $this->redirect('bans');
 
-        $this->assign('usernames', $userList);
-        $this->assign('activebans', $bans);
+            return;
+        }
 
-        $banHelper = new BanHelper($this->getDatabase(), $this->getXffTrustProvider(), $this->getSecurityManager());
-        $this->assign('banHelper', $banHelper);
+        $idList = explode(',',$rawIdList);
 
-        $this->setTemplate('bans/banlist.tpl');
+        $bans = Ban::getByIdList($idList, $this->getDatabase());
+
+        $this->setupBanList($bans);
+        $this->setTemplate('bans/showbans.tpl');
     }
 
     /**
@@ -364,5 +365,30 @@ class PageBan extends InternalPageBase
         if (in_array($targetIp, $squidIpList)) {
             throw new ApplicationLogicException("This IP address is on the protected list of proxies, and cannot be banned.");
         }
+    }
+
+    /**
+     * @param array $bans
+     */
+    protected function setupBanList(array $bans): void
+    {
+        $userIds = array_map(
+            function(Ban $entry) {
+                return $entry->getUser();
+            },
+            $bans);
+        $userList = UserSearchHelper::get($this->getDatabase())->inIds($userIds)->fetchMap('username');
+
+        $user = User::getCurrent($this->getDatabase());
+        $this->assign('canSet', $this->barrierTest('set', $user));
+        $this->assign('canRemove', $this->barrierTest('remove', $user));
+
+        $this->setupSecurity($user);
+
+        $this->assign('usernames', $userList);
+        $this->assign('activebans', $bans);
+
+        $banHelper = new BanHelper($this->getDatabase(), $this->getXffTrustProvider(), $this->getSecurityManager());
+        $this->assign('banHelper', $banHelper);
     }
 }
