@@ -97,12 +97,6 @@ class RequestValidationHelper
             $errorList[ValidationError::NAME_EMPTY] = new ValidationError(ValidationError::NAME_EMPTY);
         }
 
-        // name is banned
-        $ban = $this->banHelper->nameIsBanned($this->request->getName());
-        if ($ban != false) {
-            $errorList[ValidationError::BANNED] = new ValidationError(ValidationError::BANNED);
-        }
-
         // username already exists
         if ($this->userExists()) {
             $errorList[ValidationError::NAME_EXISTS] = new ValidationError(ValidationError::NAME_EXISTS);
@@ -141,12 +135,6 @@ class RequestValidationHelper
         $errorList = array();
 
         // ERRORS
-
-        // Email is banned
-        $ban = $this->banHelper->emailIsBanned($this->request->getEmail());
-        if ($ban != false) {
-            $errorList[ValidationError::BANNED] = new ValidationError(ValidationError::BANNED);
-        }
 
         // email addresses must match
         if ($this->request->getEmail() != $this->emailConfirmation) {
@@ -193,9 +181,8 @@ class RequestValidationHelper
             $errorList[ValidationError::BANNED] = new ValidationError(ValidationError::BANNED_TOR);
         }
 
-        // IP banned
-        $ban = $this->banHelper->ipIsBanned($trustedIp);
-        if ($ban != false) {
+        // Bans
+        if ($this->banHelper->isBanned($this->request)) {
             $errorList[ValidationError::BANNED] = new ValidationError(ValidationError::BANNED);
         }
 

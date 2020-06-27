@@ -3,7 +3,7 @@ This is a brief installation guide for developers/testers etc to get this system
 # Prerequisites
 
 * Web server
-* MariaDB 10.1+ (or equivalent)
+* MariaDB 10.2.1+ (or equivalent)
 * PHP 7.3+
 
 The webserver must be configured to pre-process *.php files through the PHP engine before sending them to a client.

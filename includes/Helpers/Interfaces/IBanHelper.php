@@ -9,33 +9,21 @@
 namespace Waca\Helpers\Interfaces;
 
 use Waca\DataObjects\Ban;
+use Waca\DataObjects\Request;
 
 interface IBanHelper
 {
     /**
-     * Summary of nameIsBanned
+     * @param Request $request
      *
-     * @param string $name The name to test if is banned.
-     *
-     * @return Ban
+     * @return bool
      */
-    public function nameIsBanned($name);
+    public function isBanned(Request $request): bool;
 
     /**
-     * Summary of emailIsBanned
+     * @param Request $request
      *
-     * @param string $email
-     *
-     * @return Ban
+     * @return Ban[]
      */
-    public function emailIsBanned($email);
-
-    /**
-     * Summary of ipIsBanned
-     *
-     * @param string $ip
-     *
-     * @return Ban
-     */
-    public function ipIsBanned($ip);
+    public function getBans(Request $request): array;
 }

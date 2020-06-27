@@ -126,8 +126,9 @@ class PageRequestAccount extends PublicInterfacePageBase
      */
     protected function validateRequest($request)
     {
+        $banHelper = new BanHelper($this->getDatabase(), $this->getXffTrustProvider());
         $validationHelper = new RequestValidationHelper(
-            new BanHelper($this->getDatabase()),
+            $banHelper,
             $request,
             WebRequest::postEmail('emailconfirm'),
             $this->getDatabase(),

@@ -13,6 +13,7 @@ use Waca\DataObjects\Ban;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
+use Waca\Helpers\BanHelper;
 use Waca\Helpers\Logger;
 use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\SessionAlert;
@@ -30,7 +31,7 @@ class PageBan extends InternalPageBase
 
         $this->setHtmlTitle('Bans');
 
-        $bans = Ban::getActiveBans(null, $this->getDatabase());
+        $bans = Ban::getActiveBans($this->getDatabase());
 
         $userIds = array_map(
             function(Ban $entry) {
@@ -195,15 +196,49 @@ class PageBan extends InternalPageBase
 
         $database = $this->getDatabase();
 
-        if (count(Ban::getActiveBans($target, $database)) > 0) {
+
+        // retrofit pending UI upgrade - FIXME
+        $targetName = $targetEmail = $targetIp  = $targetMask = null;
+        switch ($type) {
+            case 'Name':
+                $targetName = $target;
+                break;
+            case 'EMail':
+                $targetEmail = $target;
+                break;
+            case 'IP':
+                $targetMask = filter_var($target, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? 128 : 32;
+                $targetIp = $target;
+                break;
+        }
+
+        $banHelper = new BanHelper($this->getDatabase(), $this->getXffTrustProvider());
+        if (count($banHelper->getBansByTarget($targetName, $targetEmail, $targetIp, $targetMask, null)) > 0) {
             throw new ApplicationLogicException('This target is already banned!');
         }
 
         $ban = new Ban();
         $ban->setDatabase($database);
         $ban->setActive(true);
-        $ban->setType($type);
-        $ban->setTarget($target);
+
+        switch ($type) {
+            case 'Name':
+                $ban->setName($target);
+                break;
+            case 'EMail':
+                $ban->setEmail($target);
+                break;
+            case 'IP':
+                $mask = 32;
+
+                if (filter_var($target, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                    $mask = 128;
+                }
+
+                $ban->setIP($target, $mask);
+                break;
+        }
+
         $ban->setUser(User::getCurrent($database)->getId());
         $ban->setReason($reason);
         $ban->setDuration($duration);

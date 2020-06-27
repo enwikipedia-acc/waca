@@ -24,7 +24,7 @@
                 <th data-defaultsort="disabled">{* search! *}</th>
                 <th>Banned by</th>
                 <th>Reason</th>
-                <th>Time</th>
+                <th data-defaultsort="desc">Time</th>
                 <th>Expiry</th>
                 {if $canRemove}
                     <th data-defaultsort="disabled">Unban</th>
