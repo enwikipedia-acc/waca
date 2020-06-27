@@ -141,6 +141,9 @@ class RoleConfiguration
                 self::MAIN => self::ACCESS_ALLOW,
                 'show'     => self::ACCESS_ALLOW,
             ),
+            'BanVisibility'             => array(
+                'user' => self::ACCESS_ALLOW,
+            ),
             'BanType'                   => array(
                 'ip' => self::ACCESS_ALLOW,
                 'name' => self::ACCESS_ALLOW,
@@ -267,6 +270,9 @@ class RoleConfiguration
             'BanType'                   => array(
                 'useragent' => self::ACCESS_ALLOW,
             ),
+            'BanVisibility'             => array(
+                'checkuser' => self::ACCESS_ALLOW,
+            ),
         ),
         'toolRoot'          => array(
             '_description' => 'A user with shell access to the servers running the tool',
@@ -340,6 +346,10 @@ class RoleConfiguration
                 'ip' => self::ACCESS_ALLOW,
                 'email' => self::ACCESS_ALLOW,
                 'name' => self::ACCESS_ALLOW,
+            ),
+            'BanVisibility'             => array(
+                'user' => self::ACCESS_ALLOW,
+                'admin' => self::ACCESS_ALLOW,
             ),
             PageEditComment::class      => array(
                 'editOthers' => self::ACCESS_ALLOW,

@@ -23,7 +23,7 @@
                 {if $ban->getAction() == $ban::ACTION_DEFER}<abbr title="Defers the request into the specified queue">Defer to {$ban->getActionTarget()|escape}</abbr>{/if}
                 {if $ban->getAction() == $ban::ACTION_NONE}<abbr title="Does nothing but flag the request.">Report only</abbr>{/if}
             </td>
-            <td>{$ban->getReason()|escape}</td>
+            <td>{include file="bans/banreason.tpl"}</td>
             <td class="text-nowrap">{$ban->getDate()} <span class="text-muted">({$ban->getDate()|relativedate})</span></td>
             <td class="text-nowrap">
                 {if $ban->getDuration() === null}Indefinite{else}{date("Y-m-d H:i:s", $ban->getDuration())}{/if}

@@ -137,6 +137,25 @@
                                     </select>
                                 </div>
                             </div>
+
+                            <div class="form-group row">
+                                <div class="col-sm-4 col-md-3 col-lg-4 col-xl-3">
+                                    <label for="banVisibility" class="col-form-label">Restrict reason visibility:</label>
+                                </div>
+                                <div class="col-sm-8 col-md-5 col-lg-8 col-xl-6">
+                                    <select class="form-control" name="banVisibility" required="required" id="banVisibility">
+                                        {if $canSeeUserVisibility}
+                                            <option value="user" selected>All users</option>
+                                        {/if}
+                                        {if $canSeeAdminVisibility}
+                                            <option value="admin">Tool admins and CheckUsers</option>
+                                        {/if}
+                                        {if $canSeeCheckuserVisibility}
+                                            <option value="checkuser">CheckUsers</option>
+                                        {/if}
+                                    </select>
+                                </div>
+                            </div>
                         </fieldset>
                     </div>
                 </div>

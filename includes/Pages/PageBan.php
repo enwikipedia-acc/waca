@@ -206,6 +206,11 @@ class PageBan extends InternalPageBase
             throw new ApplicationLogicException('You must specify a target to be banned');
         }
 
+        $visibility = WebRequest::postString('banVisibility');
+        if ($visibility !== 'user' && $visibility !== 'admin' && $visibility !== 'checkuser') {
+            throw new ApplicationLogicException('Invalid ban visibility');
+        }
+
         // Validate ban duration
         $duration = $this->getBanDuration();
 
@@ -239,6 +244,7 @@ class PageBan extends InternalPageBase
         $ban->setUser($user->getId());
         $ban->setReason($reason);
         $ban->setDuration($duration);
+        $ban->setVisibility($visibility);
 
         $ban->setAction(WebRequest::postString('banAction'));
         if ($ban->getAction() === Ban::ACTION_DEFER) {
@@ -344,6 +350,10 @@ class PageBan extends InternalPageBase
         $this->assign('canSeeNameBan', $this->barrierTest('name', $user, 'BanType'));
         $this->assign('canSeeEmailBan', $this->barrierTest('email', $user, 'BanType'));
         $this->assign('canSeeUseragentBan', $this->barrierTest('useragent', $user, 'BanType'));
+
+        $this->assign('canSeeUserVisibility', $this->barrierTest('user', $user, 'BanVisibility'));
+        $this->assign('canSeeAdminVisibility', $this->barrierTest('admin', $user, 'BanVisibility'));
+        $this->assign('canSeeCheckuserVisibility', $this->barrierTest('checkuser', $user, 'BanVisibility'));
     }
 
     /**
