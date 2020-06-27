@@ -2,6 +2,7 @@
     <thead>
     <th>Target</th>
     <th>Banned by</th>
+    <th>Action</th>
     <th>Reason</th>
     <th data-defaultsort="desc">Time</th>
     <th>Expiry</th>
@@ -16,6 +17,12 @@
                 {include file="bans/bantarget.tpl"}
             </td>
             <td class="text-nowrap">{$usernames[$ban->getUser()]|escape}</td>
+            <td>
+                {if $ban->getAction() == $ban::ACTION_BLOCK}<abbr title="Blocks the user from submitting the request">Block</abbr>{/if}
+                {if $ban->getAction() == $ban::ACTION_DROP}<abbr title="Accepts the request for processing, but immediately drops it.">Drop</abbr>{/if}
+                {if $ban->getAction() == $ban::ACTION_DEFER}<abbr title="Defers the request into the specified queue">Defer to {$ban->getActionTarget()|escape}</abbr>{/if}
+                {if $ban->getAction() == $ban::ACTION_NONE}<abbr title="Does nothing but flag the request.">Report only</abbr>{/if}
+            </td>
             <td>{$ban->getReason()|escape}</td>
             <td class="text-nowrap">{$ban->getDate()} <span class="text-muted">({$ban->getDate()|relativedate})</span></td>
             <td class="text-nowrap">

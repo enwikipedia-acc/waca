@@ -240,6 +240,11 @@ class PageBan extends InternalPageBase
         $ban->setReason($reason);
         $ban->setDuration($duration);
 
+        $ban->setAction(WebRequest::postString('banAction'));
+        if ($ban->getAction() === Ban::ACTION_DEFER) {
+            $ban->setActionTarget(WebRequest::postString('banActionTarget'));
+        }
+
         $ban->save();
 
         Logger::banned($database, $ban, $reason);
@@ -263,6 +268,8 @@ class PageBan extends InternalPageBase
 
         $user = User::getCurrent($database);
         $this->setupSecurity($user);
+
+        $this->assign('requestStates', $this->getSiteConfiguration()->getRequestStates());
 
         $banType = WebRequest::getString('type');
         $banRequest = WebRequest::getInt('request');

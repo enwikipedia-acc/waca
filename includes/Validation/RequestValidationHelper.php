@@ -9,13 +9,18 @@
 namespace Waca\Validation;
 
 use Exception;
+use Waca\DataObjects\Ban;
+use Waca\DataObjects\Comment;
 use Waca\DataObjects\Request;
 use Waca\Helpers\HttpHelper;
 use Waca\Helpers\Interfaces\IBanHelper;
+use Waca\Helpers\Logger;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\IAntiSpoofProvider;
 use Waca\Providers\Interfaces\IXffTrustProvider;
 use Waca\Providers\TorExitProvider;
+use Waca\RequestStatus;
+use Waca\SiteConfiguration;
 
 /**
  * Performs the validation of an incoming request.
@@ -24,9 +29,6 @@ class RequestValidationHelper
 {
     /** @var IBanHelper */
     private $banHelper;
-    /** @var Request */
-    private $request;
-    private $emailConfirmation;
     /** @var PdoDatabase */
     private $database;
     /** @var IAntiSpoofProvider */
@@ -44,82 +46,82 @@ class RequestValidationHelper
      * @var TorExitProvider
      */
     private $torExitProvider;
+    /**
+     * @var SiteConfiguration
+     */
+    private $siteConfiguration;
 
     /**
      * Summary of __construct
      *
      * @param IBanHelper         $banHelper
-     * @param Request            $request
-     * @param string             $emailConfirmation
      * @param PdoDatabase        $database
      * @param IAntiSpoofProvider $antiSpoofProvider
      * @param IXffTrustProvider  $xffTrustProvider
      * @param HttpHelper         $httpHelper
-     * @param string             $mediawikiApiEndpoint
-     * @param boolean            $titleBlacklistEnabled
      * @param TorExitProvider    $torExitProvider
+     * @param SiteConfiguration  $siteConfiguration
      */
     public function __construct(
         IBanHelper $banHelper,
-        Request $request,
-        $emailConfirmation,
         PdoDatabase $database,
         IAntiSpoofProvider $antiSpoofProvider,
         IXffTrustProvider $xffTrustProvider,
         HttpHelper $httpHelper,
-        $mediawikiApiEndpoint,
-        $titleBlacklistEnabled,
-        TorExitProvider $torExitProvider
+        TorExitProvider $torExitProvider,
+        SiteConfiguration $siteConfiguration
     ) {
         $this->banHelper = $banHelper;
-        $this->request = $request;
-        $this->emailConfirmation = $emailConfirmation;
         $this->database = $database;
         $this->antiSpoofProvider = $antiSpoofProvider;
         $this->xffTrustProvider = $xffTrustProvider;
         $this->httpHelper = $httpHelper;
-        $this->mediawikiApiEndpoint = $mediawikiApiEndpoint;
-        $this->titleBlacklistEnabled = $titleBlacklistEnabled;
+        $this->mediawikiApiEndpoint = $siteConfiguration->getMediawikiWebServiceEndpoint();
+        $this->titleBlacklistEnabled = $siteConfiguration->getTitleBlacklistEnabled();
         $this->torExitProvider = $torExitProvider;
+        $this->siteConfiguration = $siteConfiguration;
     }
 
     /**
      * Summary of validateName
+     *
+     * @param Request $request
+     *
      * @return ValidationError[]
      */
-    public function validateName()
+    public function validateName(Request $request)
     {
         $errorList = array();
 
         // ERRORS
         // name is empty
-        if (trim($this->request->getName()) == "") {
+        if (trim($request->getName()) == "") {
             $errorList[ValidationError::NAME_EMPTY] = new ValidationError(ValidationError::NAME_EMPTY);
         }
 
         // username already exists
-        if ($this->userExists()) {
+        if ($this->userExists($request)) {
             $errorList[ValidationError::NAME_EXISTS] = new ValidationError(ValidationError::NAME_EXISTS);
         }
 
         // username part of SUL account
-        if ($this->userSulExists()) {
+        if ($this->userSulExists($request)) {
             // using same error slot as name exists - it's the same sort of error, and we probably only want to show one.
             $errorList[ValidationError::NAME_EXISTS] = new ValidationError(ValidationError::NAME_EXISTS_SUL);
         }
 
         // username is numbers
-        if (preg_match("/^[0-9]+$/", $this->request->getName()) === 1) {
+        if (preg_match("/^[0-9]+$/", $request->getName()) === 1) {
             $errorList[ValidationError::NAME_NUMONLY] = new ValidationError(ValidationError::NAME_NUMONLY);
         }
 
         // username can't contain #@/<>[]|{}
-        if (preg_match("/[" . preg_quote("#@/<>[]|{}", "/") . "]/", $this->request->getName()) === 1) {
+        if (preg_match("/[" . preg_quote("#@/<>[]|{}", "/") . "]/", $request->getName()) === 1) {
             $errorList[ValidationError::NAME_INVALIDCHAR] = new ValidationError(ValidationError::NAME_INVALIDCHAR);
         }
 
         // existing non-closed request for this name
-        if ($this->nameRequestExists()) {
+        if ($this->nameRequestExists($request)) {
             $errorList[ValidationError::OPEN_REQUEST_NAME] = new ValidationError(ValidationError::OPEN_REQUEST_NAME);
         }
 
@@ -128,51 +130,56 @@ class RequestValidationHelper
 
     /**
      * Summary of validateEmail
+     *
+     * @param Request $request
+     * @param string  $emailConfirmation
+     *
      * @return ValidationError[]
      */
-    public function validateEmail()
+    public function validateEmail(Request $request, $emailConfirmation)
     {
         $errorList = array();
 
         // ERRORS
 
         // email addresses must match
-        if ($this->request->getEmail() != $this->emailConfirmation) {
+        if ($request->getEmail() != $emailConfirmation) {
             $errorList[ValidationError::EMAIL_MISMATCH] = new ValidationError(ValidationError::EMAIL_MISMATCH);
         }
 
         // email address must be validly formed
-        if (trim($this->request->getEmail()) == "") {
+        if (trim($request->getEmail()) == "") {
             $errorList[ValidationError::EMAIL_EMPTY] = new ValidationError(ValidationError::EMAIL_EMPTY);
         }
 
         // email address must be validly formed
-        if (!filter_var($this->request->getEmail(), FILTER_VALIDATE_EMAIL)) {
-            if (trim($this->request->getEmail()) != "") {
+        if (!filter_var($request->getEmail(), FILTER_VALIDATE_EMAIL)) {
+            if (trim($request->getEmail()) != "") {
                 $errorList[ValidationError::EMAIL_INVALID] = new ValidationError(ValidationError::EMAIL_INVALID);
             }
         }
 
         // email address can't be wikimedia/wikipedia .com/org
-        if (preg_match('/.*@.*wiki(m.dia|p.dia)\.(org|com)/i', $this->request->getEmail()) === 1) {
+        if (preg_match('/.*@.*wiki(m.dia|p.dia)\.(org|com)/i', $request->getEmail()) === 1) {
             $errorList[ValidationError::EMAIL_WIKIMEDIA] = new ValidationError(ValidationError::EMAIL_WIKIMEDIA);
         }
-
-        // WARNINGS
 
         return $errorList;
     }
 
     /**
      * Summary of validateOther
+     *
+     * @param Request $request
+     *
      * @return ValidationError[]
      */
-    public function validateOther()
+    public function validateOther(Request $request)
     {
         $errorList = array();
 
-        $trustedIp = $this->xffTrustProvider->getTrustedClientIp($this->request->getIp(),
-            $this->request->getForwardedIp());
+        $trustedIp = $this->xffTrustProvider->getTrustedClientIp($request->getIp(),
+            $request->getForwardedIp());
 
         // ERRORS
 
@@ -182,27 +189,53 @@ class RequestValidationHelper
         }
 
         // Bans
-        if ($this->banHelper->isBanned($this->request)) {
+        if ($this->banHelper->isBlockBanned($request)) {
             $errorList[ValidationError::BANNED] = new ValidationError(ValidationError::BANNED);
         }
-
-        // WARNINGS
-
-        // Antispoof check
-        $this->checkAntiSpoof();
-
-        // Blacklist check
-        $this->checkTitleBlacklist();
 
         return $errorList;
     }
 
-    private function checkAntiSpoof()
+    public function postSaveValidations(Request $request)
+    {
+        // Antispoof check
+        $this->checkAntiSpoof($request);
+
+        // Blacklist check
+        $this->checkTitleBlacklist($request);
+
+        $bans = $this->banHelper->getBans($request);
+
+        foreach ($bans as $ban) {
+            if ($ban->getAction() == Ban::ACTION_DROP) {
+                $request->setStatus(RequestStatus::CLOSED);
+                $request->save();
+
+                Logger::closeRequest($request->getDatabase(), $request, 0, null);
+
+                $comment = new Comment();
+                $comment->setDatabase($this->database);
+                $comment->setRequest($request->getId());
+                $comment->setVisibility('user');
+                $comment->setUser(null);
+
+                $comment->setComment('Request dropped automatically due to matching ban.');
+                $comment->save();
+            }
+
+            if ($ban->getAction() == Ban::ACTION_DEFER) {
+                $this->deferRequest($request, $ban->getActionTarget(), 'Request deferred automatically due to matching ban.');
+            }
+        }
+    }
+
+    private function checkAntiSpoof(Request $request)
     {
         try {
-            if (count($this->antiSpoofProvider->getSpoofs($this->request->getName())) > 0) {
+            if (count($this->antiSpoofProvider->getSpoofs($request->getName())) > 0) {
                 // If there were spoofs an Admin should handle the request.
-                $this->request->setStatus("Flagged users");
+                $this->deferRequest($request, 'Flagged users',
+                    'Request automatically deferred to flagged users due to AntiSpoof hit');
             }
         }
         catch (Exception $ex) {
@@ -210,14 +243,14 @@ class RequestValidationHelper
         }
     }
 
-    private function checkTitleBlacklist()
+    private function checkTitleBlacklist(Request $request)
     {
         if ($this->titleBlacklistEnabled == 1) {
             $apiResult = $this->httpHelper->get(
                 $this->mediawikiApiEndpoint,
                 array(
                     'action'       => 'titleblacklist',
-                    'tbtitle'      => $this->request->getName(),
+                    'tbtitle'      => $request->getName(),
                     'tbaction'     => 'new-account',
                     'tbnooverride' => true,
                     'format'       => 'php',
@@ -229,19 +262,20 @@ class RequestValidationHelper
             $requestIsOk = $data['titleblacklist']['result'] == "ok";
 
             if (!$requestIsOk) {
-                $this->request->setStatus("Flagged users");
+                $this->deferRequest($request, 'Flagged users',
+                    'Request automatically deferred to flagged users due to title blacklist hit');
             }
         }
     }
 
-    private function userExists()
+    private function userExists(Request $request)
     {
         $userExists = $this->httpHelper->get(
             $this->mediawikiApiEndpoint,
             array(
                 'action'  => 'query',
                 'list'    => 'users',
-                'ususers' => $this->request->getName(),
+                'ususers' => $request->getName(),
                 'format'  => 'php',
             )
         );
@@ -254,9 +288,9 @@ class RequestValidationHelper
         return false;
     }
 
-    private function userSulExists()
+    private function userSulExists(Request $request)
     {
-        $requestName = $this->request->getName();
+        $requestName = $request->getName();
 
         $userExists = $this->httpHelper->get(
             $this->mediawikiApiEndpoint,
@@ -279,18 +313,39 @@ class RequestValidationHelper
     /**
      * Checks if a request with this name is currently open
      *
+     * @param Request $request
+     *
      * @return bool
      */
-    private function nameRequestExists()
+    private function nameRequestExists(Request $request)
     {
         $query = "SELECT COUNT(id) FROM request WHERE status != 'Closed' AND name = :name;";
         $statement = $this->database->prepare($query);
-        $statement->execute(array(':name' => $this->request->getName()));
+        $statement->execute(array(':name' => $request->getName()));
 
         if (!$statement) {
             return false;
         }
 
         return $statement->fetchColumn() > 0;
+    }
+
+    private function deferRequest(Request $request, $targetQueue, $deferComment): void
+    {
+        $request->setStatus($targetQueue);
+        $request->save();
+
+        $logTarget = $this->siteConfiguration->getRequestStates()[$targetQueue]['defertolog'];
+
+        Logger::deferRequest($this->database, $request, $logTarget);
+
+        $comment = new Comment();
+        $comment->setDatabase($this->database);
+        $comment->setRequest($request->getId());
+        $comment->setVisibility('user');
+        $comment->setUser(null);
+
+        $comment->setComment($deferComment);
+        $comment->save();
     }
 }

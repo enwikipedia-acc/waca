@@ -110,6 +110,33 @@
                                     <input class="form-control" type="text" id="otherDuration" name="otherduration"/>
                                 </div>
                             </div>
+
+                            <div class="form-group row">
+                                <div class="col-sm-4 col-md-3 col-lg-4 col-xl-3">
+                                    <label for="banAction" class="col-form-label">Action:</label>
+                                </div>
+                                <div class="col-sm-8 col-md-5 col-lg-8 col-xl-6">
+                                    <select class="form-control" name="banAction" required="required" id="banAction">
+                                        <option value="{Waca\DataObjects\Ban::ACTION_BLOCK}">Block submission of the request</option>
+                                        <option value="{Waca\DataObjects\Ban::ACTION_DROP}">Drop the request silently</option>
+                                        <option value="{Waca\DataObjects\Ban::ACTION_DEFER}">Defer the request to the specified queue</option>
+                                        <option value="{Waca\DataObjects\Ban::ACTION_NONE}">Do nothing - report only</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-group row d-none" id="banDeferTargetSelection">
+                                <div class="col-sm-4 col-md-3 col-lg-4 col-xl-3">
+                                    <label for="banActionTarget" class="col-form-label">Defer to:</label>
+                                </div>
+                                <div class="col-sm-8 col-md-5 col-lg-8 col-xl-6">
+                                    <select class="form-control" name="banActionTarget" required="required" id="banActionTarget">
+                                        {foreach $requestStates as $key => $state}
+                                            <option value="{$key}">{$state.deferto|capitalize}</option>
+                                        {/foreach}
+                                    </select>
+                                </div>
+                            </div>
                         </fieldset>
                     </div>
                 </div>
