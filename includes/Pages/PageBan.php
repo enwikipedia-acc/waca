@@ -9,9 +9,11 @@
 namespace Waca\Pages;
 
 use Exception;
+use SmartyException;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
+use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\BanHelper;
 use Waca\Helpers\Logger;
@@ -44,13 +46,21 @@ class PageBan extends InternalPageBase
         $this->assign('canSet', $this->barrierTest('set', $user));
         $this->assign('canRemove', $this->barrierTest('remove', $user));
 
+        $this->setupSecurity($user);
+
         $this->assign('usernames', $userList);
         $this->assign('activebans', $bans);
+
+        $banHelper = new BanHelper($this->getDatabase(), $this->getXffTrustProvider(), $this->getSecurityManager());
+        $this->assign('banHelper', $banHelper);
+
         $this->setTemplate('bans/banlist.tpl');
     }
 
     /**
      * Entry point for the ban set action
+     * @throws SmartyException
+     * @throws Exception
      */
     protected function set()
     {
@@ -73,12 +83,23 @@ class PageBan extends InternalPageBase
 
     /**
      * Entry point for the ban remove action
+     *
+     * @throws AccessDeniedException
+     * @throws ApplicationLogicException
+     * @throws SmartyException
      */
     protected function remove()
     {
         $this->setHtmlTitle('Bans');
 
         $ban = $this->getBanForUnban();
+
+        $banHelper = new BanHelper($this->getDatabase(), $this->getXffTrustProvider(), $this->getSecurityManager());
+        if (!$banHelper->canUnban($ban)) {
+            // triggered when a user tries to unban a ban they can't see the entirety of.
+            // there's no UI way to get to this, so a raw exception is fine.
+            throw new AccessDeniedException($this->getSecurityManager());
+        }
 
         // dual mode
         if (WebRequest::wasPosted()) {
@@ -141,31 +162,6 @@ class PageBan extends InternalPageBase
     }
 
     /**
-     * @param string $type
-     * @param string $target
-     *
-     * @throws ApplicationLogicException
-     */
-    private function validateBanType($type, $target)
-    {
-        switch ($type) {
-            case 'IP':
-                $this->validateIpBan($target);
-
-                return;
-            case 'Name':
-                // No validation needed here.
-                return;
-            case 'EMail':
-                $this->validateEmailBanTarget($target);
-
-                return;
-            default:
-                throw new ApplicationLogicException("Unknown ban type");
-        }
-    }
-
-    /**
      * Handles the POST method on the set action
      *
      * @throws ApplicationLogicException
@@ -174,46 +170,59 @@ class PageBan extends InternalPageBase
     private function handlePostMethodForSetBan()
     {
         $this->validateCSRFToken();
-        $reason = WebRequest::postString('banreason');
-        $target = WebRequest::postString('target');
+        $database = $this->getDatabase();
+        $user = User::getCurrent($database);
 
         // Checks whether there is a reason entered for ban.
+        $reason = WebRequest::postString('banreason');
         if ($reason === null || trim($reason) === "") {
             throw new ApplicationLogicException('You must specify a ban reason');
         }
 
+        // ban targets
+        $targetName = WebRequest::postString('banName');
+        $targetIp = WebRequest::postString('banIP');
+        $targetEmail = WebRequest::postString('banEmail');
+        $targetUseragent = WebRequest::postString('banUseragent');
+        $targetMask = null;
+
+        // check the user is allowed to use provided targets
+        if(!$this->barrierTest('name', $user, 'BanType')) {
+            $targetName = null;
+        }
+        if(!$this->barrierTest('ip', $user, 'BanType')) {
+            $targetIp = null;
+        }
+        if(!$this->barrierTest('email', $user, 'BanType')) {
+            $targetEmail = null;
+        }
+        if(!$this->barrierTest('useragent', $user, 'BanType')) {
+            $targetUseragent = null;
+        }
+
         // Checks whether there is a target entered to ban.
-        if ($target === null || trim($target) === "") {
+        if ($targetName === null && $targetIp === null && $targetEmail === null && $targetUseragent === null) {
             throw new ApplicationLogicException('You must specify a target to be banned');
         }
 
         // Validate ban duration
         $duration = $this->getBanDuration();
 
-        // Validate ban type & target for that type
-        $type = WebRequest::postString('type');
-        $this->validateBanType($type, $target);
+        // handle CIDR ranges
+        if ($targetIp !== null) {
+            if (strpos($targetIp, '/') !== false) {
+                $ipParts = explode('/', $targetIp, 2);
+                $targetIp = $ipParts[0];
+                $targetMask = $ipParts[1];
+            } else {
+                $targetMask = filter_var($targetIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? 128 : 32;
+            }
 
-        $database = $this->getDatabase();
-
-
-        // retrofit pending UI upgrade - FIXME
-        $targetName = $targetEmail = $targetIp  = $targetMask = null;
-        switch ($type) {
-            case 'Name':
-                $targetName = $target;
-                break;
-            case 'EMail':
-                $targetEmail = $target;
-                break;
-            case 'IP':
-                $targetMask = filter_var($target, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? 128 : 32;
-                $targetIp = $target;
-                break;
+            $this->validateIpBan($targetIp, $targetMask);
         }
 
-        $banHelper = new BanHelper($this->getDatabase(), $this->getXffTrustProvider());
-        if (count($banHelper->getBansByTarget($targetName, $targetEmail, $targetIp, $targetMask, null)) > 0) {
+        $banHelper = new BanHelper($this->getDatabase(), $this->getXffTrustProvider(), $this->getSecurityManager());
+        if (count($banHelper->getBansByTarget($targetName, $targetEmail, $targetIp, $targetMask, $targetUseragent)) > 0) {
             throw new ApplicationLogicException('This target is already banned!');
         }
 
@@ -221,25 +230,12 @@ class PageBan extends InternalPageBase
         $ban->setDatabase($database);
         $ban->setActive(true);
 
-        switch ($type) {
-            case 'Name':
-                $ban->setName($target);
-                break;
-            case 'EMail':
-                $ban->setEmail($target);
-                break;
-            case 'IP':
-                $mask = 32;
+        $ban->setName($targetName);
+        $ban->setIp($targetIp, $targetMask);
+        $ban->setEmail($targetEmail);
+        $ban->setUseragent($targetUseragent);
 
-                if (filter_var($target, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-                    $mask = 128;
-                }
-
-                $ban->setIP($target, $mask);
-                break;
-        }
-
-        $ban->setUser(User::getCurrent($database)->getId());
+        $ban->setUser($user->getId());
         $ban->setReason($reason);
         $ban->setDuration($duration);
 
@@ -255,89 +251,57 @@ class PageBan extends InternalPageBase
 
     /**
      * Handles the GET method on the set action
+     * @throws Exception
      */
     protected function handleGetMethodForSetBan()
     {
         $this->setTemplate('bans/banform.tpl');
         $this->assignCSRFToken();
 
-        $banType = WebRequest::getString('type');
-        $banTarget = WebRequest::getInt('request');
-
         $database = $this->getDatabase();
 
-        // if the parameters are null, skip loading a request.
-        if ($banType === null
-            || !in_array($banType, array('IP', 'Name', 'EMail'))
-            || $banTarget === null
-            || $banTarget === 0
-        ) {
-            $this->assign('bantarget', '');
-            $this->assign('bantype', '');
+        $user = User::getCurrent($database);
+        $this->setupSecurity($user);
 
+        $banType = WebRequest::getString('type');
+        $banRequest = WebRequest::getInt('request');
+
+        // if the parameters are null, skip loading a request.
+        if ($banType === null || $banRequest === null || $banRequest === 0) {
             return;
         }
 
-        // Set the ban type, which the user has indicated.
-        $this->assign('bantype', $banType);
-
         // Attempt to resolve the correct target
         /** @var Request $request */
-        $request = Request::getById($banTarget, $database);
+        $request = Request::getById($banRequest, $database);
         if ($request === false) {
             $this->assign('bantarget', '');
 
             return;
         }
 
-        $realTarget = '';
         switch ($banType) {
             case 'EMail':
-                $realTarget = $request->getEmail();
+                if ($this->barrierTest('email', $user, 'BanType')) {
+                    $this->assign('banEmail', $request->getEmail());
+                }
                 break;
             case 'IP':
-                $xffProvider = $this->getXffTrustProvider();
-                $realTarget = $xffProvider->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
+                if ($this->barrierTest('ip', $user, 'BanType')) {
+                    $this->assign('banIP', $this->getXffTrustProvider()
+                        ->getTrustedClientIp($request->getIp(), $request->getForwardedIp()));
+                }
                 break;
             case 'Name':
-                $realTarget = $request->getName();
+                if ($this->barrierTest('username', $user, 'BanType')) {
+                    $this->assign('banName', $request->getEmail());
+                }
                 break;
-        }
-
-        $this->assign('bantarget', $realTarget);
-    }
-
-    /**
-     * Validates an IP ban target
-     *
-     * @param string $target
-     *
-     * @throws ApplicationLogicException
-     */
-    private function validateIpBan($target)
-    {
-        $squidIpList = $this->getSiteConfiguration()->getSquidList();
-
-        if (filter_var($target, FILTER_VALIDATE_IP) === false) {
-            throw new ApplicationLogicException('Invalid target - IP address expected.');
-        }
-
-        if (in_array($target, $squidIpList)) {
-            throw new ApplicationLogicException("This IP address is on the protected list of proxies, and cannot be banned.");
-        }
-    }
-
-    /**
-     * Validates an email address as a ban target
-     *
-     * @param string $target
-     *
-     * @throws ApplicationLogicException
-     */
-    private function validateEmailBanTarget($target)
-    {
-        if (filter_var($target, FILTER_VALIDATE_EMAIL) !== $target) {
-            throw new ApplicationLogicException('Invalid target - email address expected.');
+            case 'UA':
+                if ($this->barrierTest('useragent', $user, 'BanType')) {
+                    $this->assign('banUseragent', $request->getEmail());
+                }
+                break;
         }
     }
 
@@ -352,12 +316,53 @@ class PageBan extends InternalPageBase
             throw new ApplicationLogicException("The ban ID appears to be missing. This is probably a bug.");
         }
 
-        $ban = Ban::getActiveId($banId, $this->getDatabase());
+        $database = $this->getDatabase();
+        $this->setupSecurity(User::getCurrent($database));
+        $ban = Ban::getActiveId($banId, $database);
 
         if ($ban === false) {
             throw new ApplicationLogicException("The specified ban is not currently active, or doesn't exist.");
         }
 
         return $ban;
+    }
+
+    /**
+     * @param $user
+     */
+    protected function setupSecurity($user): void
+    {
+        $this->assign('canSeeIpBan', $this->barrierTest('ip', $user, 'BanType'));
+        $this->assign('canSeeNameBan', $this->barrierTest('name', $user, 'BanType'));
+        $this->assign('canSeeEmailBan', $this->barrierTest('email', $user, 'BanType'));
+        $this->assign('canSeeUseragentBan', $this->barrierTest('useragent', $user, 'BanType'));
+    }
+
+    /**
+     * @param string $targetIp
+     * @param        $targetMask
+     *
+     * @throws ApplicationLogicException
+     */
+    private function validateIpBan(string $targetIp, $targetMask): void
+    {
+        // validate this is an IP
+        if (!filter_var($targetIp, FILTER_VALIDATE_IP)) {
+            throw new ApplicationLogicException("Not a valid IP address");
+        }
+
+        // validate CIDR ranges
+        if (filter_var($targetIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) && ($targetMask < 0 || $targetMask > 128)) {
+            throw new ApplicationLogicException("CIDR mask out of range for IPv6");
+        }
+
+        if (filter_var($targetIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) && ($targetMask < 0 || $targetMask > 32)) {
+            throw new ApplicationLogicException("CIDR mask out of range for IPv4");
+        }
+
+        $squidIpList = $this->getSiteConfiguration()->getSquidList();
+        if (in_array($targetIp, $squidIpList)) {
+            throw new ApplicationLogicException("This IP address is on the protected list of proxies, and cannot be banned.");
+        }
     }
 }

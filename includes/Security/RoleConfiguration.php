@@ -140,6 +140,10 @@ class RoleConfiguration
             PageBan::class                       => array(
                 self::MAIN => self::ACCESS_ALLOW,
             ),
+            'BanType'                   => array(
+                'ip' => self::ACCESS_ALLOW,
+                'name' => self::ACCESS_ALLOW,
+            ),
             PageEditComment::class               => array(
                 self::MAIN => self::ACCESS_ALLOW,
             ),
@@ -256,7 +260,10 @@ class RoleConfiguration
                 'editRoles' => self::ACCESS_ALLOW,
             ),
             'RequestData'             => array(
-                'seeUserAgentData' => self::ACCESS_ALLOW,
+                'seeUserAgentData'      => self::ACCESS_ALLOW,
+            ),
+            'BanType'                   => array(
+                'useragent' => self::ACCESS_ALLOW,
             ),
         ),
         'toolRoot'          => array(
@@ -326,6 +333,11 @@ class RoleConfiguration
                 self::MAIN => self::ACCESS_ALLOW,
                 'set'      => self::ACCESS_ALLOW,
                 'remove'   => self::ACCESS_ALLOW,
+            ),
+            'BanType'                   => array(
+                'ip' => self::ACCESS_ALLOW,
+                'email' => self::ACCESS_ALLOW,
+                'name' => self::ACCESS_ALLOW,
             ),
             PageEditComment::class      => array(
                 'editOthers' => self::ACCESS_ALLOW,

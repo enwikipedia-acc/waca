@@ -166,34 +166,6 @@ SQL
 
     /**
      * @return string
-     * @deprecated
-     */
-    public function getType()
-    {
-        // fudge this for now
-        if($this->name !== null && $this->email === null && $this->ip === null) {
-            return 'Name';
-        } elseif ($this->email !== null && $this->name === null && $this->ip === null) {
-            return 'EMail';
-        } elseif ($this->ip !== null && $this->email === null && $this->name === null) {
-            return 'IP';
-        }
-
-        // modern ban.
-        return null;
-    }
-
-    /**
-     * @return string
-     * @deprecated
-     */
-    public function getTarget()
-    {
-        return $this->name ?? $this->email ?? (inet_ntop($this->ip) . ' /' . $this->ipmask);
-    }
-
-    /**
-     * @return string
      */
     public function getReason()
     {
@@ -329,11 +301,23 @@ SQL
     }
 
     /**
-     * @return array
+     * @return string|null
      */
     public function getIp(): ?string
     {
-        return [inet_ntop($this->ip), $this->ipmask];
+        if ($this->ip === null) {
+            return null;
+        }
+
+        return inet_ntop($this->ip);
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getIpMask(): ?int
+    {
+        return $this->ipmask;
     }
 
     /**
@@ -342,7 +326,12 @@ SQL
      */
     public function setIp(?string $ip, ?int $mask): void
     {
-        $this->ip = inet_pton($ip);
+        if($ip === null) {
+            $this->ip = null;
+        } else {
+            $this->ip = inet_pton($ip);
+        }
+
         $this->ipmask = $mask;
     }
 

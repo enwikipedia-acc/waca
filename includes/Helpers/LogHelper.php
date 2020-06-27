@@ -278,7 +278,7 @@ SQL
                     return 'Ban #' . $objectId . "</a>";
                 }
 
-                return 'Ban #' . $objectId . " (" . htmlentities($ban->getTarget()) . ")</a>";
+                return 'Ban #' . $objectId . '</a>';
             case 'EmailTemplate':
                 /** @var EmailTemplate $emailTemplate */
                 $emailTemplate = EmailTemplate::getById($objectId, $database);

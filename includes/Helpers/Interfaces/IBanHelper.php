@@ -10,6 +10,9 @@ namespace Waca\Helpers\Interfaces;
 
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\User;
+use Waca\Helpers\BanHelper;
+use Waca\Security\SecurityManager;
 
 interface IBanHelper
 {
@@ -26,4 +29,6 @@ interface IBanHelper
      * @return Ban[]
      */
     public function getBans(Request $request): array;
+
+    public function canUnban(Ban $ban): bool;
 }

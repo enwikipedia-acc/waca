@@ -11,9 +11,11 @@ namespace Waca\Helpers;
 use PDO;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\User;
 use Waca\Helpers\Interfaces\IBanHelper;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\IXffTrustProvider;
+use Waca\Security\SecurityManager;
 
 class BanHelper implements IBanHelper
 {
@@ -21,16 +23,21 @@ class BanHelper implements IBanHelper
     private $database;
     /** @var IXffTrustProvider */
     private $xffTrustProvider;
-
     /** @var Ban[][] */
     private $banCache = [];
+    /**
+     * @var null|SecurityManager
+     */
+    private $securityManager;
 
     public function __construct(
         PdoDatabase $database,
-        IXffTrustProvider $xffTrustProvider
+        IXffTrustProvider $xffTrustProvider,
+        ?SecurityManager $securityManager
     ) {
         $this->database = $database;
         $this->xffTrustProvider = $xffTrustProvider;
+        $this->securityManager = $securityManager;
     }
 
     public function isBanned(Request $request): bool
@@ -56,29 +63,33 @@ class BanHelper implements IBanHelper
         return $this->banCache[$request->getId()];
     }
 
-    public function getBansByTarget(?string $name, ?string $email, ?string $ip, ?int $mask, ?string $useragent) {
+    public function getBansByTarget(?string $name, ?string $email, ?string $ip, ?int $mask, ?string $useragent)
+    {
         /** @noinspection SqlConstantCondition */
         $query = <<<SQL
 SELECT * FROM ban 
 WHERE 1 = 1
-  AND (
-      1 = 2
-      OR name = :name
-      OR email = :email
-      OR (ip = inet6_aton(:ip) AND ipmask = :mask)
-      OR useragent = :useragent
-  )
+  AND ((name is null and :nname is null) OR name = :name)
+  AND ((email is null and :nemail is null) OR email = :email)
+  AND ((useragent is null and :nuseragent is null) OR useragent = :useragent)
+  AND ((ip is null and :nip is null) OR ip = inet6_aton(:ip))
+  AND ((ipmask is null and :nipmask is null) OR ipmask = :ipmask)
   AND (duration > UNIX_TIMESTAMP() OR duration is null) 
   AND active = 1;
 SQL;
 
         $statement = $this->database->prepare($query);
         $statement->execute([
-            ':name' => $name,
-            ':email' => $email,
-            ':ip' => $ip,
-            ':mask' => $mask,
-            ':useragent' => $useragent,
+            ':name'       => $name,
+            ':nname'      => $name,
+            ':email'      => $email,
+            ':nemail'     => $email,
+            ':ip'         => $ip,
+            ':nip'        => $ip,
+            ':ipmask'     => $mask,
+            ':nipmask'    => $mask,
+            ':useragent'  => $useragent,
+            ':nuseragent' => $useragent,
         ]);
 
         $result = array();
@@ -92,6 +103,26 @@ SQL;
         return $result;
     }
 
+    public function canUnban(Ban $ban): bool
+    {
+        if ($this->securityManager === null) {
+            return false;
+        }
+
+        $user = User::getCurrent($this->database);
+
+        $allowed = true;
+        $allowed &= ($ban->getName() === null || $this->securityManager->allows('BanType', 'name',
+                $user) === SecurityManager::ALLOWED);
+        $allowed &= ($ban->getEmail() === null || $this->securityManager->allows('BanType', 'email',
+                $user) === SecurityManager::ALLOWED);
+        $allowed &= ($ban->getIp() === null || $this->securityManager->allows('BanType', 'ip',
+                $user) === SecurityManager::ALLOWED);
+        $allowed &= ($ban->getUseragent() === null || $this->securityManager->allows('BanType', 'useragent',
+                $user) === SecurityManager::ALLOWED);
+
+        return $allowed;
+    }
 
     /**
      * @param Request $request
@@ -109,13 +140,14 @@ left join netmask n on 1 = 1
 where 1 = 1
     and coalesce(:name rlike name, true)
     and coalesce(:email rlike email, true)
-    and case length(b.ip)
-        when 4 then
+    and coalesce(:useragent rlike useragent, true)
+    and case
+        when length(b.ip) = 4 then
           (conv(hex(b.ip), 16, 10) & n.maskl) = (conv(hex(inet6_aton(:ip4)), 16, 10) & n.maskl)
-        when 16 then
+        when length(b.ip) = 16 then
             (conv(left(hex(b.ip), 16), 16, 10) & n.maskh) = (conv(left(hex(inet6_aton(:ip6h)), 16), 16, 10) & n.maskh)
             and (conv(right(hex(b.ip), 16), 16, 10) & n.maskl) = (conv(right(hex(inet6_aton(:ip6l)), 16), 16, 10) & n.maskl)
-        when null then true
+        when length(b.ip) is null then true
     end
     and active = 1
     and (duration > UNIX_TIMESTAMP() or duration is null)
@@ -125,11 +157,12 @@ SQL;
         $trustedIp = $this->xffTrustProvider->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
 
         $statement->execute([
-            ':name'  => $request->getName(),
-            ':email' => $request->getEmail(),
-            ':ip4'    => $trustedIp,
-            ':ip6h'    => $trustedIp,
-            ':ip6l'    => $trustedIp,
+            ':name'      => $request->getName(),
+            ':email'     => $request->getEmail(),
+            ':useragent' => $request->getUserAgent(),
+            ':ip4'       => $trustedIp,
+            ':ip6h'      => $trustedIp,
+            ':ip6l'      => $trustedIp,
         ]);
 
         /** @var Ban[] $result */
