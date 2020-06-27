@@ -11,7 +11,7 @@
             <tbody>
             {if $requestLogs}
                 {foreach from=$requestLogs item=zoomrow name=logloop}
-                    <tr class="{if $zoomrow.security == "admin"}table-danger{/if}">
+                    <tr class="{if $zoomrow.security == "admin"}table-danger{elseif $zoomrow.security == "checkuser"}table-visited{/if}">
                         <td class="text-nowrap">
                             {if $zoomrow.userid != null}
                                 <a href='{$baseurl}/internal.php/statistics/users/detail?user={$zoomrow.userid}'>{$zoomrow.user|escape}</a>
@@ -29,6 +29,11 @@
                                 {if $zoomrow.security === "requester"}
                                 <span class="badge badge-info">
 									<i class="fas fa-user"></i>&nbsp;Requester
+								</span>
+                                {/if}
+                                {if $zoomrow.security === "checkuser"}
+                                <span class="badge badge-visited">
+									<i class="fas fa-lock"></i>&nbsp;CheckUser only
 								</span>
                                 {/if}
                             {/if}
@@ -79,12 +84,28 @@
                     <input class="form-control" type="text" placeholder="Quick comment" name="comment" id="quickCommentBox"/>
                 </td>
                 <td class="text-nowrap">
-                    <button class="btn btn-primary" type="submit">Save</button>
-                    <label for="adminOnly" class="sr-only">Restrict visibility of this comment</label>
-                    <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Restrict visibility of this comment">
-                        <input type="checkbox" name="adminOnly" id="adminOnly" />
-                        <i class="fas fa-lock"></i>
-                    </span>
+                    <div class="btn-group btn-block">
+                        <button class="btn btn-primary col" type="submit">Save</button>
+
+                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split col-xs-auto" data-toggle="dropdown">
+                            &nbsp;<span class="caret"></span>
+                        </button>
+
+                        <ul class="dropdown-menu" role="menu">
+                            <li class="dropdown-header">Save with restricted visibility</li>
+                            <li>
+                                <button class="dropdown-item" type="submit" name="visibility" value="admin">
+                                    Tool admins and Checkusers
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item" type="submit" name="visibility" value="checkuser">
+                                    Checkusers only
+                                </button>
+                            </li>
+                        </ul>
+
+                    </div>
                 </td>
             </tr>
             </tbody>

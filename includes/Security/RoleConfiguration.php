@@ -262,6 +262,7 @@ class RoleConfiguration
             ),
             'RequestData'             => array(
                 'seeUserAgentData'      => self::ACCESS_ALLOW,
+                'seeCheckuserComments'  => self::ACCESS_ALLOW,
             ),
             'BanType'                   => array(
                 'useragent' => self::ACCESS_ALLOW,

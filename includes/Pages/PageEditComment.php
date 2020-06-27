@@ -42,8 +42,23 @@ class PageEditComment extends InternalPageBase
         }
 
         $currentUser = User::getCurrent($database);
-        if ($comment->getUser() !== $currentUser->getId() && !$this->barrierTest('editOthers', $currentUser)) {
-            throw new AccessDeniedException($this->getSecurityManager());
+
+        if ($comment->getUser() !== $currentUser->getId()) {
+            if(!$this->barrierTest('editOthers', $currentUser)) {
+                throw new AccessDeniedException($this->getSecurityManager());
+            }
+
+            if($comment->getVisibility() === 'checkuser'
+                && !$this->barrierTest('seeCheckuserComments', $currentUser, 'RequestData')) {
+
+                throw new AccessDeniedException($this->getSecurityManager());
+            }
+
+            if($comment->getVisibility() === 'admin'
+                && !$this->barrierTest('seeRestrictedComments', $currentUser, 'RequestData')) {
+
+                throw new AccessDeniedException($this->getSecurityManager());
+            }
         }
 
         /** @var Request|false $request */
@@ -60,7 +75,7 @@ class PageEditComment extends InternalPageBase
             if ($comment->getVisibility() !== 'requester') {
                 $visibility = WebRequest::postString('visibility');
 
-                if ($visibility !== 'user' && $visibility !== 'admin') {
+                if ($visibility !== 'user' && $visibility !== 'admin' && $visibility !== 'checkuser') {
                     throw new ApplicationLogicException('Comment visibility is not valid');
                 }
 

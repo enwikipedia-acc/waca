@@ -24,13 +24,21 @@
             </div>
             <div class="col-md-8 col-lg-4">
                 {if $comment->getUser() == null}
+                    {if $comment->getVisibility() == 'requester'}
                     <div class="form-control">
                         <span class="badge badge-info">
                             <i class="fas fa-user"></i>&nbsp;Requester
                         </span>
                     </div>
+                    {else}
+                        <span class="form-control" id="user">
+                            {$user->getUsername()|escape}
+                        </span>
+                    {/if}
                 {else}
-                    <a class="form-control" id="user" href="{$baseurl}/internal.php/statistics/users/detail?user={$comment->getUser()}">{$user->getUsername()|escape}</a>
+                    <a class="form-control" id="user" href="{$baseurl}/internal.php/statistics/users/detail?user={$comment->getUser()}">
+                        {$user->getUsername()|escape}
+                    </a>
                 {/if}
             </div>
         </div>
@@ -54,6 +62,7 @@
                     <select name="visibility" class="form-control" id="visibility">
                         <option value="user" {if $comment->getVisibility() == "user"}selected{/if}>Standard</option>
                         <option value="admin" {if $comment->getVisibility() == "admin"}selected{/if}>Restricted</option>
+                        <option value="checkuser" {if $comment->getVisibility() == "checkuser"}selected{/if}>CheckUser</option>
                     </select>
                 </div>
             </div>
