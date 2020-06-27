@@ -126,3 +126,13 @@ $(".sitenotice-dismiss").click(function() {
 
     document.cookie = 'sitenotice=' + siteNoticeContainer.data('sitenotice') + ";expires=" + date.toUTCString() + ";path=/";
 })
+
+$("#banAction").change(function() {
+    var selectedOption = $(this).children("option:selected").val();
+
+    if(selectedOption === 'defer') {
+        $("#banDeferTargetSelection").removeClass('d-none');
+    } else {
+        $("#banDeferTargetSelection").addClass('d-none');
+    }
+})

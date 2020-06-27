@@ -22,6 +22,7 @@ class Ban extends DataObject
     const ACTION_BLOCK = 'block';
     const ACTION_DROP = 'drop';
     const ACTION_DEFER = 'defer';
+    const ACTION_NONE = 'none';
 
     /** @var string|null */
     private $name;

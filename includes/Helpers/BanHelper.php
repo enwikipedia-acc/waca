@@ -40,13 +40,19 @@ class BanHelper implements IBanHelper
         $this->securityManager = $securityManager;
     }
 
-    public function isBanned(Request $request): bool
+    public function isBlockBanned(Request $request): bool
     {
         if (!isset($this->banCache[$request->getId()])) {
             $this->banCache[$request->getId()] = $this->getBansForRequestFromDatabase($request);
         }
 
-        return count($this->banCache[$request->getId()]) >= 1;
+        foreach($this->banCache[$request->getId()] as $ban) {
+            if($ban->getAction() === Ban::ACTION_BLOCK) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

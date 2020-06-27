@@ -18,7 +18,7 @@ interface IBanHelper
      *
      * @return bool
      */
-    public function isBanned(Request $request): bool;
+    public function isBlockBanned(Request $request): bool;
 
     /**
      * @param Request $request
