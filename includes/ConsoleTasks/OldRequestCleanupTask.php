@@ -12,28 +12,20 @@ use Waca\Tasks\ConsoleTaskBase;
 
 class OldRequestCleanupTask extends ConsoleTaskBase
 {
-    private $expiryTime;
-
-    /**
-     * OldRequestCleanupTask constructor.
-     */
-    public function __construct()
-    {
-        $this->expiryTime = $this->getSiteConfiguration()->getEmailConfirmationExpiryDays();
-    }
-
     public function execute()
     {
         $statement = $this->getDatabase()->prepare(<<<SQL
             DELETE FROM request
             WHERE
-                date < DATE_SUB(CURRENT_TIMESTAMP(), INTERVAL :expiry DAY)
-                AND emailconfirm != 'Confirmed'
-                AND emailconfirm != '';
+                request.date < DATE_SUB(CURRENT_TIMESTAMP(), INTERVAL :expiry DAY)
+                AND request.emailconfirm != 'Confirmed'
+                AND request.emailconfirm != ''
+                AND NOT exists (SELECT 1 FROM comment c WHERE c.request = request.id)
 SQL
         );
 
-        $statement->bindValue(':expiry', $this->expiryTime);
+        $expiryTime = $this->getSiteConfiguration()->getEmailConfirmationExpiryDays();
+        $statement->bindValue(':expiry', $expiryTime);
         $statement->execute();
     }
 }
