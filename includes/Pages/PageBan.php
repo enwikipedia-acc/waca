@@ -50,7 +50,7 @@ class PageBan extends InternalPageBase
             return;
         }
 
-        $idList = explode(',',$rawIdList);
+        $idList = explode(',', $rawIdList);
 
         $bans = Ban::getByIdList($idList, $this->getDatabase());
 
@@ -188,16 +188,16 @@ class PageBan extends InternalPageBase
         $targetMask = null;
 
         // check the user is allowed to use provided targets
-        if(!$this->barrierTest('name', $user, 'BanType')) {
+        if (!$this->barrierTest('name', $user, 'BanType')) {
             $targetName = null;
         }
-        if(!$this->barrierTest('ip', $user, 'BanType')) {
+        if (!$this->barrierTest('ip', $user, 'BanType')) {
             $targetIp = null;
         }
-        if(!$this->barrierTest('email', $user, 'BanType')) {
+        if (!$this->barrierTest('email', $user, 'BanType')) {
             $targetEmail = null;
         }
-        if(!$this->barrierTest('useragent', $user, 'BanType')) {
+        if (!$this->barrierTest('useragent', $user, 'BanType')) {
             $targetUseragent = null;
         }
 
@@ -220,7 +220,8 @@ class PageBan extends InternalPageBase
                 $ipParts = explode('/', $targetIp, 2);
                 $targetIp = $ipParts[0];
                 $targetMask = (int)$ipParts[1];
-            } else {
+            }
+            else {
                 $targetMask = filter_var($targetIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? 128 : 32;
             }
 

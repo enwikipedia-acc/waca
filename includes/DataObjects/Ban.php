@@ -353,9 +353,10 @@ SQL
      */
     public function setIp(?string $ip, ?int $mask): void
     {
-        if($ip === null) {
+        if ($ip === null) {
             $this->ip = null;
-        } else {
+        }
+        else {
             $this->ip = inet_pton($ip);
         }
 

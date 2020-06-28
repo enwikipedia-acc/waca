@@ -208,7 +208,7 @@ class PageRequestAccount extends PublicInterfacePageBase
     {
         $banHelper = new BanHelper($this->getDatabase(), $this->getXffTrustProvider(), null);
 
-        if($this->validationHelper === null) {
+        if ($this->validationHelper === null) {
             $this->validationHelper = new RequestValidationHelper(
                 $banHelper,
                 $this->getDatabase(),

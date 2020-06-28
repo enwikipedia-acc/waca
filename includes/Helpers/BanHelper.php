@@ -46,8 +46,8 @@ class BanHelper implements IBanHelper
             $this->banCache[$request->getId()] = $this->getBansForRequestFromDatabase($request);
         }
 
-        foreach($this->banCache[$request->getId()] as $ban) {
-            if($ban->getAction() === Ban::ACTION_BLOCK) {
+        foreach ($this->banCache[$request->getId()] as $ban) {
+            if ($ban->getAction() === Ban::ACTION_BLOCK) {
                 return true;
             }
         }
