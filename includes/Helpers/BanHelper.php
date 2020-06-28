@@ -135,12 +135,12 @@ SQL;
         $user = User::getCurrent($this->database);
 
         $allowed = true;
-        $allowed &= ($ban->getName() === null || $this->securityManager->allows('BanType', 'name', $user) === SecurityManager::ALLOWED);
-        $allowed &= ($ban->getEmail() === null || $this->securityManager->allows('BanType', 'email', $user) === SecurityManager::ALLOWED);
-        $allowed &= ($ban->getIp() === null || $this->securityManager->allows('BanType', 'ip', $user) === SecurityManager::ALLOWED);
-        $allowed &= ($ban->getUseragent() === null || $this->securityManager->allows('BanType', 'useragent', $user) === SecurityManager::ALLOWED);
+        $allowed = $allowed && ($ban->getName() === null || $this->securityManager->allows('BanType', 'name', $user) === SecurityManager::ALLOWED);
+        $allowed = $allowed && ($ban->getEmail() === null || $this->securityManager->allows('BanType', 'email', $user) === SecurityManager::ALLOWED);
+        $allowed = $allowed && ($ban->getIp() === null || $this->securityManager->allows('BanType', 'ip', $user) === SecurityManager::ALLOWED);
+        $allowed = $allowed && ($ban->getUseragent() === null || $this->securityManager->allows('BanType', 'useragent', $user) === SecurityManager::ALLOWED);
 
-        $allowed &= $this->securityManager->allows('BanVisibility', $ban->getVisibility(), $user) === SecurityManager::ALLOWED;
+        $allowed = $allowed && $this->securityManager->allows('BanVisibility', $ban->getVisibility(), $user) === SecurityManager::ALLOWED;
 
         return $allowed;
     }
