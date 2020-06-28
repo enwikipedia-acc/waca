@@ -181,50 +181,17 @@ class PageBan extends InternalPageBase
         }
 
         // ban targets
-        $targetName = WebRequest::postString('banName');
-        $targetIp = WebRequest::postString('banIP');
-        $targetEmail = WebRequest::postString('banEmail');
-        $targetUseragent = WebRequest::postString('banUseragent');
-        $targetMask = null;
+        list($targetName, $targetIp, $targetEmail, $targetUseragent) = $this->getRawBanTargets($user);
 
-        // check the user is allowed to use provided targets
-        if (!$this->barrierTest('name', $user, 'BanType')) {
-            $targetName = null;
-        }
-        if (!$this->barrierTest('ip', $user, 'BanType')) {
-            $targetIp = null;
-        }
-        if (!$this->barrierTest('email', $user, 'BanType')) {
-            $targetEmail = null;
-        }
-        if (!$this->barrierTest('useragent', $user, 'BanType')) {
-            $targetUseragent = null;
-        }
-
-        // Checks whether there is a target entered to ban.
-        if ($targetName === null && $targetIp === null && $targetEmail === null && $targetUseragent === null) {
-            throw new ApplicationLogicException('You must specify a target to be banned');
-        }
-
-        $visibility = WebRequest::postString('banVisibility');
-        if ($visibility !== 'user' && $visibility !== 'admin' && $visibility !== 'checkuser') {
-            throw new ApplicationLogicException('Invalid ban visibility');
-        }
+        $visibility = $this->getBanVisibility();
 
         // Validate ban duration
         $duration = $this->getBanDuration();
 
         // handle CIDR ranges
+        $targetMask = null;
         if ($targetIp !== null) {
-            if (strpos($targetIp, '/') !== false) {
-                $ipParts = explode('/', $targetIp, 2);
-                $targetIp = $ipParts[0];
-                $targetMask = (int)$ipParts[1];
-            }
-            else {
-                $targetMask = filter_var($targetIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? 128 : 32;
-            }
-
+            list($targetIp, $targetMask) = $this->splitCidrRange($targetIp);
             $this->validateIpBan($targetIp, $targetMask);
         }
 
@@ -287,7 +254,7 @@ class PageBan extends InternalPageBase
         }
 
         // Attempt to resolve the correct target
-        /** @var Request $request */
+        /** @var Request|false $request */
         $request = Request::getById($banRequest, $database);
         if ($request === false) {
             $this->assign('bantarget', '');
@@ -409,4 +376,72 @@ class PageBan extends InternalPageBase
         $banHelper = new BanHelper($this->getDatabase(), $this->getXffTrustProvider(), $this->getSecurityManager());
         $this->assign('banHelper', $banHelper);
     }
+
+    /**
+     * @param string $targetIp
+     *
+     * @return array
+     */
+    private function splitCidrRange(string $targetIp): array
+    {
+        if (strpos($targetIp, '/') !== false) {
+            $ipParts = explode('/', $targetIp, 2);
+            $targetIp = $ipParts[0];
+            $targetMask = (int)$ipParts[1];
+        }
+        else {
+            $targetMask = filter_var($targetIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? 128 : 32;
+        }
+
+        return array($targetIp, $targetMask);
+}
+
+    /**
+     * @return string|null
+     * @throws ApplicationLogicException
+     */
+    private function getBanVisibility()
+    {
+        $visibility = WebRequest::postString('banVisibility');
+        if ($visibility !== 'user' && $visibility !== 'admin' && $visibility !== 'checkuser') {
+            throw new ApplicationLogicException('Invalid ban visibility');
+        }
+
+        return $visibility;
+    }
+
+    /**
+     * @param $user
+     *
+     * @return array
+     * @throws ApplicationLogicException
+     */
+    private function getRawBanTargets($user): array
+    {
+        $targetName = WebRequest::postString('banName');
+        $targetIp = WebRequest::postString('banIP');
+        $targetEmail = WebRequest::postString('banEmail');
+        $targetUseragent = WebRequest::postString('banUseragent');
+
+        // check the user is allowed to use provided targets
+        if (!$this->barrierTest('name', $user, 'BanType')) {
+            $targetName = null;
+        }
+        if (!$this->barrierTest('ip', $user, 'BanType')) {
+            $targetIp = null;
+        }
+        if (!$this->barrierTest('email', $user, 'BanType')) {
+            $targetEmail = null;
+        }
+        if (!$this->barrierTest('useragent', $user, 'BanType')) {
+            $targetUseragent = null;
+        }
+
+        // Checks whether there is a target entered to ban.
+        if ($targetName === null && $targetIp === null && $targetEmail === null && $targetUseragent === null) {
+            throw new ApplicationLogicException('You must specify a target to be banned');
+        }
+
+        return array($targetName, $targetIp, $targetEmail, $targetUseragent);
+}
 }

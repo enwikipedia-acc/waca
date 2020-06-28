@@ -77,7 +77,7 @@ SQL;
      * @param     integer $id
      * @param PdoDatabase $database
      *
-     * @return Ban
+     * @return Ban|false
      */
     public static function getActiveId($id, PdoDatabase $database)
     {
@@ -93,7 +93,7 @@ SQL
 
         $resultObject = $statement->fetchObject(get_called_class());
 
-        if ($resultObject != false) {
+        if ($resultObject !== false) {
             $resultObject->setDatabase($database);
         }
 
