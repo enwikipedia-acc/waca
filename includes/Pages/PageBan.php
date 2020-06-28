@@ -219,7 +219,7 @@ class PageBan extends InternalPageBase
             if (strpos($targetIp, '/') !== false) {
                 $ipParts = explode('/', $targetIp, 2);
                 $targetIp = $ipParts[0];
-                $targetMask = $ipParts[1];
+                $targetMask = (int)$ipParts[1];
             } else {
                 $targetMask = filter_var($targetIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) ? 128 : 32;
             }
@@ -246,7 +246,7 @@ class PageBan extends InternalPageBase
         $ban->setDuration($duration);
         $ban->setVisibility($visibility);
 
-        $ban->setAction(WebRequest::postString('banAction'));
+        $ban->setAction(WebRequest::postString('banAction') ?? Ban::ACTION_NONE);
         if ($ban->getAction() === Ban::ACTION_DEFER) {
             $ban->setActionTarget(WebRequest::postString('banActionTarget'));
         }
