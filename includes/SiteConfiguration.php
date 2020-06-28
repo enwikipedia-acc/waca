@@ -918,7 +918,7 @@ class SiteConfiguration
     }
 
     /**
-     * @param null $curlCookieJar
+     * @param string|null $curlCookieJar
      *
      * @return SiteConfiguration
      */
@@ -930,7 +930,7 @@ class SiteConfiguration
     }
 
     /**
-     * @return null
+     * @return string|null
      */
     public function getCurlCookieJar()
     {
@@ -1013,7 +1013,7 @@ class SiteConfiguration
     }
 
     /**
-     * @return null
+     * @return string|null
      */
     public function getCspReportUri()
     {
@@ -1021,7 +1021,7 @@ class SiteConfiguration
     }
 
     /**
-     * @param null $cspReportUri
+     * @param string|null $cspReportUri
      *
      * @return SiteConfiguration
      */
