@@ -29,7 +29,7 @@ class RegenerateStylesheetsTask extends ConsoleTaskBase
             mkdir(self::RESOURCES_GENERATED);
         }
 
-        foreach (['bootstrap-main', 'bootstrap-alt'] as $file) {
+        foreach (['bootstrap-main', 'bootstrap-alt', 'bootstrap-auto'] as $file) {
             file_put_contents(
                 self::RESOURCES_GENERATED . '/' . $file . '.css',
                 $scss->compile('/*! Do not edit this auto-generated file! */ @import "' . $file . '";'));

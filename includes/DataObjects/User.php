@@ -41,7 +41,7 @@ class User extends DataObject
     private $confirmationdiff = 0;
     private $emailsig = "";
     private $creationmode = 0;
-    private $skin = "main";
+    private $skin = "auto";
     /** @var User Cache variable of the current user - it's never going to change in the middle of a request. */
     private static $currentUser;
     #region Object load methods
@@ -482,14 +482,6 @@ SQL
     public function setCreationMode($creationMode)
     {
         $this->creationmode = $creationMode;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function getUseAlternateSkin()
-    {
-        return $this->skin === 'alt';
     }
 
     /**
