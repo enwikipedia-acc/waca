@@ -9,18 +9,62 @@
  * Styles based on Bootstrap
  */
 
-$white: rgb(0, 0, 0);
-$black: rgb(255, 255, 255);
-$gray-100: lighten($white, 10);
-$gray-200: lighten($white, 20);
-$gray-300: lighten($white, 30);
-$gray-400: lighten($white, 40);
-$gray-500: lighten($white, 50);
-$gray-600: lighten($white, 60);
-$gray-700: lighten($white, 70);
-$gray-800: lighten($white, 80);
-$gray-900: lighten($white, 90);
-$alert-bg-level: -6;
-$alert-border-level: -1;
+$white:    #fff !default;
+$gray-100: #f8f9fa !default;
+$gray-200: #e9ecef !default;
+$gray-300: #dee2e6 !default;
+$gray-400: #ced4da !default;
+$gray-500: #adb5bd !default;
+$gray-600: #6c757d !default;
+$gray-700: #495057 !default;
+$gray-800: #343a40 !default;
+$gray-900: #212529 !default;
+$black:    #000 !default;
+$blue: #007bff;
+
+$body-bg: $gray-900;
+$body-color: $gray-400;
+$border-color: $gray-700;
+
+$secondary: $gray-500;
+
+$link-color: lighten($blue, 20%);
+$link-hover-color: lighten($link-color, 15%);
+
+$table-bg-level: 7;
+$table-border-level: 1;
+
+$input-color: $gray-300;
+$input-bg: $gray-800;
+$input-disabled-bg: $gray-900;
+$input-border-color: $gray-700;
+$input-group-addon-bg: $gray-700;
+$custom-control-label-disabled-color: $gray-700;
+$nav-tabs-link-active-color: $gray-400;
+
+$dropdown-bg: $gray-800;
+$dropdown-color: $gray-400;
+$dropdown-link-color: $dropdown-color;
+$dropdown-divider-bg: $gray-700;
+$dropdown-link-hover-bg: $gray-400;
+
+$pagination-bg: $gray-900;
+$pagination-border-color: $gray-700;
+$pagination-hover-bg: $gray-700;
+$pagination-hover-border-color: $gray-700;
+$pagination-disabled-color: $gray-600;
+$pagination-disabled-bg: $gray-800;
+$pagination-disabled-border-color: $pagination-border-color;
+
+$card-cap-bg: rgba($white, 0.1);
+$card-bg: lighten($gray-900, 3%);
+
+$popover-bg: $gray-800;
+
+$alert-bg-level: 6;
+$alert-border-level: 2;
+$alert-color-level: -10;
+
+$progress-bg: $gray-800;
 
 @import "common";
