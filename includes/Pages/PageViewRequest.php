@@ -83,9 +83,14 @@ class PageViewRequest extends InternalPageBase
             $this->assign('revealHash', $request->getRevealHash());
         }
 
+        $this->assign('canSeeRelatedRequests', false);
+        if ($allowedPrivateData || $this->barrierTest('seeRelatedRequests', $currentUser, 'RequestData')) {
+            $this->setupRelatedRequests($request, $config, $database);
+        }
+
         if ($allowedPrivateData) {
             $this->setTemplate('view-request/main-with-data.tpl');
-            $this->setupPrivateData($request, $currentUser, $this->getSiteConfiguration(), $database);
+            $this->setupPrivateData($request);
 
             $this->assign('canSetBan', $this->barrierTest('set', $currentUser, PageBan::class));
             $this->assign('canSeeCheckuserData', $this->barrierTest('seeUserAgentData', $currentUser, 'RequestData'));
@@ -160,20 +165,6 @@ class PageViewRequest extends InternalPageBase
         $logs = LogHelper::getRequestLogsWithComments($request->getId(), $database, $this->getSecurityManager());
         $requestLogs = array();
 
-        if (trim($request->getComment()) !== "") {
-            $requestLogs[] = array(
-                'type'     => 'comment',
-                'security' => 'user',
-                'userid'   => null,
-                'user'     => $request->getName(),
-                'entry'    => null,
-                'time'     => $request->getDate(),
-                'canedit'  => false,
-                'id'       => $request->getId(),
-                'comment'  => $request->getComment(),
-            );
-        }
-
         /** @var User[] $nameCache */
         $nameCache = array();
 
@@ -191,7 +182,7 @@ class PageViewRequest extends InternalPageBase
                 $requestLogs[] = array(
                     'type'     => 'comment',
                     'security' => $entry->getVisibility(),
-                    'user'     => $nameCache[$entry->getUser()]->getUsername(),
+                    'user'     => $entry->getVisibility() == 'requester' ? $request->getName() : $nameCache[$entry->getUser()]->getUsername(),
                     'userid'   => $entry->getUser() == -1 ? null : $entry->getUser(),
                     'entry'    => null,
                     'time'     => $entry->getTime(),
@@ -207,7 +198,7 @@ class PageViewRequest extends InternalPageBase
 
                 $entryComment = $entry->getComment();
 
-                if($entry->getAction() === 'JobIssueRequest' || $entry->getAction() === 'JobCompletedRequest'){
+                if ($entry->getAction() === 'JobIssueRequest' || $entry->getAction() === 'JobCompletedRequest') {
                     $data = unserialize($entry->getComment());
                     /** @var JobQueue $job */
                     $job = JobQueue::getById($data['job'], $database);

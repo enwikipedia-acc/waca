@@ -52,7 +52,7 @@ class RefreshOAuthDataTask extends ConsoleTaskBase
                 catch (Exception $ex) {
                     $database->rollBack();
 
-                    printf("Failed updating OAuth data for %s\n", $u->getUsername());
+                    printf("\n\nFailed updating OAuth data for %s\n", $u->getUsername());
                     printf($ex->getMessage());
                 }
                 finally {

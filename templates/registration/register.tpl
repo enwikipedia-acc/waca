@@ -34,7 +34,7 @@
                         <label for="name" class="col-form-label">Desired username:</label>
                     </div>
                     <div class="col-sm-8 col-md-5 col-xl-4">
-                        <input class="form-control" id="name" type="text" name="name" required="required" value="{$tplUsername|default:""|escape}"/>
+                        <input class="form-control" id="name" type="text" name="name" required="required" value="{$tplUsername|default:""|escape}"  autocomplete="username"/>
                     </div>
                 </div>
 
@@ -43,7 +43,7 @@
                         <label for="pass" class="col-form-label">Choose a password:</label>
                     </div>
                     <div class="col-sm-8 col-md-5 col-xl-4">
-                        <input class="form-control password-strength" id="pass" type="password" name="pass" required="required" aria-describedby="passHelp"/>
+                        <input class="form-control password-strength" id="pass" type="password" name="pass" required="required" aria-describedby="passHelp" autocomplete="new-password"/>
                         <div class="progress password-strength-progress">
                             <div class="progress-bar" id="password-strength-bar"></div>
                         </div>
@@ -59,7 +59,7 @@
                         <label for="pass2" class="col-form-label">Confirm password:</label>
                     </div>
                     <div class="col-sm-8 col-md-5 col-xl-4">
-                        <input class="form-control" id="pass2" type="password" name="pass2" required="required"/>
+                        <input class="form-control" id="pass2" type="password" name="pass2" required="required" autocomplete="new-password"/>
                     </div>
                 </div>
 
@@ -68,7 +68,7 @@
                         <label for="email" class="col-form-label">E-mail Address:</label>
                     </div>
                     <div class="col-sm-8 col-md-5 col-xl-4">
-                        <input class="form-control" id="email" type="text" name="email" required="required" value="{$tplEmail|default:""|escape}"/>
+                        <input class="form-control" id="email" type="text" name="email" required="required" value="{$tplEmail|default:""|escape}" autocomplete="email"/>
                         <small class="form-text text-muted">This is used to send you automatic notifications about events involving your account in the tool, including sending password reset emails.</small>
                     </div>
                 </div>

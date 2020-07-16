@@ -39,7 +39,7 @@ trait RequestData
      * Gets a request object
      *
      * @param PdoDatabase $database  The database connection
-     * @param int         $requestId The ID of the request to retrieve
+     * @param int|null    $requestId The ID of the request to retrieve
      *
      * @return Request
      * @throws ApplicationLogicException
@@ -143,7 +143,7 @@ trait RequestData
     abstract protected function assign($name, $value);
 
     /**
-     * @param int         $requestReservationId
+     * @param int|null    $requestReservationId
      * @param PdoDatabase $database
      * @param User        $currentUser
      */
@@ -169,31 +169,15 @@ trait RequestData
      * Adds private request data to Smarty. DO NOT USE WITHOUT FIRST CHECKING THAT THE USER IS AUTHORISED!
      *
      * @param Request           $request
-     * @param User              $currentUser
-     * @param SiteConfiguration $configuration
-     *
-     * @param PdoDatabase       $database
      */
     protected function setupPrivateData(
-        $request,
-        User $currentUser,
-        SiteConfiguration $configuration,
-        PdoDatabase $database
+        $request
     ) {
         $xffProvider = $this->getXffTrustProvider();
-
-        $relatedEmailRequests = RequestSearchHelper::get($database)
-            ->byEmailAddress($request->getEmail())
-            ->withConfirmedEmail()
-            ->excludingPurgedData($configuration)
-            ->excludingRequest($request->getId())
-            ->fetch();
 
         $this->assign('requestEmail', $request->getEmail());
         $emailDomain = explode("@", $request->getEmail())[1];
         $this->assign("emailurl", $emailDomain);
-        $this->assign('requestRelatedEmailRequestsCount', count($relatedEmailRequests));
-        $this->assign('requestRelatedEmailRequests', $relatedEmailRequests);
 
         $trustedIp = $xffProvider->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
         $this->assign('requestTrustedIp', $trustedIp);
@@ -205,6 +189,34 @@ trait RequestData
 
         $this->assign('requestHasForwardedIp', $request->getForwardedIp() !== null);
 
+        $this->setupForwardedIpData($request);
+    }
+
+    /**
+     * Adds related request data to Smarty. DO NOT USE WITHOUT FIRST CHECKING THAT THE USER IS AUTHORISED!
+     *
+     * @param Request           $request
+     * @param SiteConfiguration $configuration
+     * @param PdoDatabase       $database
+     */
+    protected function setupRelatedRequests(
+        Request $request,
+        SiteConfiguration $configuration,
+        PdoDatabase $database)
+    {
+        $this->assign('canSeeRelatedRequests', true);
+
+        $relatedEmailRequests = RequestSearchHelper::get($database)
+            ->byEmailAddress($request->getEmail())
+            ->withConfirmedEmail()
+            ->excludingPurgedData($configuration)
+            ->excludingRequest($request->getId())
+            ->fetch();
+
+        $this->assign('requestRelatedEmailRequestsCount', count($relatedEmailRequests));
+        $this->assign('requestRelatedEmailRequests', $relatedEmailRequests);
+
+        $trustedIp = $this->getXffTrustProvider()->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
         $relatedIpRequests = RequestSearchHelper::get($database)
             ->byIp($trustedIp)
             ->withConfirmedEmail()
@@ -214,8 +226,6 @@ trait RequestData
 
         $this->assign('requestRelatedIpRequestsCount', count($relatedIpRequests));
         $this->assign('requestRelatedIpRequests', $relatedIpRequests);
-
-        $this->setupForwardedIpData($request);
     }
 
     /**

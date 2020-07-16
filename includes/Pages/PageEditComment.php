@@ -8,6 +8,7 @@
 
 namespace Waca\Pages;
 
+use Exception;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
@@ -23,6 +24,7 @@ class PageEditComment extends InternalPageBase
     /**
      * Main function for this page, when no specific actions are called.
      * @throws ApplicationLogicException
+     * @throws Exception
      */
     protected function main()
     {
@@ -33,7 +35,7 @@ class PageEditComment extends InternalPageBase
 
         $database = $this->getDatabase();
 
-        /** @var Comment $comment */
+        /** @var Comment|false $comment */
         $comment = Comment::getById($commentId, $database);
         if ($comment === false) {
             throw new ApplicationLogicException('Comment not found');
@@ -44,7 +46,7 @@ class PageEditComment extends InternalPageBase
             throw new AccessDeniedException($this->getSecurityManager());
         }
 
-        /** @var Request $request */
+        /** @var Request|false $request */
         $request = Request::getById($comment->getRequest(), $database);
 
         if ($request === false) {
@@ -54,10 +56,15 @@ class PageEditComment extends InternalPageBase
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
             $newComment = WebRequest::postString('newcomment');
-            $visibility = WebRequest::postString('visibility');
 
-            if ($visibility !== 'user' && $visibility !== 'admin') {
-                throw new ApplicationLogicException('Comment visibility is not valid');
+            if ($comment->getVisibility() !== 'requester') {
+                $visibility = WebRequest::postString('visibility');
+
+                if ($visibility !== 'user' && $visibility !== 'admin') {
+                    throw new ApplicationLogicException('Comment visibility is not valid');
+                }
+
+                $comment->setVisibility($visibility);
             }
 
             // optimistically lock from the load of the edit comment form
@@ -65,7 +72,6 @@ class PageEditComment extends InternalPageBase
             $comment->setUpdateVersion($updateVersion);
 
             $comment->setComment($newComment);
-            $comment->setVisibility($visibility);
 
             $comment->save();
 

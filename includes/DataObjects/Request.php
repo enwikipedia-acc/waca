@@ -25,7 +25,6 @@ class Request extends DataObject
     private $ip;
     private $name;
     /** @var string|null */
-    private $comment;
     private $status = "Open";
     private $date;
     private $emailsent = 0;
@@ -47,10 +46,10 @@ class Request extends DataObject
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
 INSERT INTO `request` (
-	email, ip, name, comment, status, date, emailsent,
+	email, ip, name, status, date, emailsent,
 	emailconfirm, reserved, useragent, forwardedip
 ) VALUES (
-	:email, :ip, :name, :comment, :status, CURRENT_TIMESTAMP(), :emailsent,
+	:email, :ip, :name, :status, CURRENT_TIMESTAMP(), :emailsent,
 	:emailconfirm, :reserved, :useragent, :forwardedip
 );
 SQL
@@ -58,7 +57,6 @@ SQL
             $statement->bindValue(':email', $this->email);
             $statement->bindValue(':ip', $this->ip);
             $statement->bindValue(':name', $this->name);
-            $statement->bindValue(':comment', $this->comment);
             $statement->bindValue(':status', $this->status);
             $statement->bindValue(':emailsent', $this->emailsent);
             $statement->bindValue(':emailconfirm', $this->emailconfirm);
@@ -136,22 +134,6 @@ SQL
     public function setName($name)
     {
         $this->name = $name;
-    }
-
-    /**
-     * @return string|null
-     */
-    public function getComment()
-    {
-        return $this->comment;
-    }
-
-    /**
-     * @param string $comment
-     */
-    public function setComment($comment)
-    {
-        $this->comment = $comment;
     }
 
     /**
@@ -263,13 +245,6 @@ SQL
     {
         if ($this->hasCommentsResolved) {
             return $this->hasComments;
-        }
-
-        if ($this->comment != "") {
-            $this->hasComments = true;
-            $this->hasCommentsResolved = true;
-
-            return true;
         }
 
         $commentsQuery = $this->dbObject->prepare("SELECT COUNT(*) AS num FROM comment WHERE request = :id;");

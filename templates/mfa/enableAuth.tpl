@@ -18,7 +18,7 @@
                             <div class="col">
                                 <label class="sr-only" for="password">Password</label>
                                 <input type="password" id="password" name="password" placeholder="Password" class="form-control"
-                                       required tabindex="2">
+                                       required tabindex="2" autocomplete="password">
                             </div>
                             <input type="hidden" name="stage" value="auth">
                         </div>

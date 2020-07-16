@@ -21,6 +21,7 @@
         <tr>
             <td data-value="{$r->getId()}">
                 <a class="btn btn-sm{if $r->hasComments() == true} btn-info{else} btn-secondary{/if}"
+                   {if $r->hasComments() == true}data-title="This request has comments" data-toggle="tooltip"{/if}
                 href="{$baseurl}/internal.php/viewRequest?id={$r->getId()}"><i class="fas fa-search"></i><span class="d-none d-md-inline">&nbsp;{$r->getId()}</span></a>
             </td>
 

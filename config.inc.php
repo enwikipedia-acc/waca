@@ -364,4 +364,5 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setTotpEncryptionKey($totpEncryptionKey)
     ->setRegistrationAllowed($allowRegistration)
     ->setCspReportUri($cspReportUri)
-    ->setResourceCacheEpoch($resourceCacheEpoch);
+    ->setResourceCacheEpoch($resourceCacheEpoch)
+    ->setLocationProviderApiKey($locationProviderApiKey);

@@ -45,7 +45,7 @@ class Comment extends DataObject
         else {
             $statement = $database->prepare(<<<SQL
 SELECT * FROM comment
-WHERE request = :target AND (visibility = 'user' OR user = :userid);
+WHERE request = :target AND (visibility = 'user' OR visibility = 'requester' OR user = :userid);
 SQL
             );
             $statement->bindValue(':userid', $userId);
