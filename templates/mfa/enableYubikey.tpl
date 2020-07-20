@@ -31,7 +31,7 @@
                         <div class="form-group row">
                             <div class="col">
                                 <label class="sr-only" for="otp">YubiKey OTP</label>
-                                <input type="password" id="otp" name="otp" placeholder="YubiKey OTP" class="form-control"
+                                <input type="text" id="otp" name="otp" placeholder="YubiKey OTP" class="form-control"
                                        required tabindex="2" autocomplete="one-time-code">
                             </div>
                             <input type="hidden" name="stage" value="auth">
