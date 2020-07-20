@@ -35,7 +35,11 @@ class PagePreferences extends InternalPageBase
             $user->setEmailSig(WebRequest::postString('emailsig'));
             $user->setAbortPref(WebRequest::postBoolean('abortpref') ? 1 : 0);
             $this->setCreationMode($user);
-            $user->setSkin(WebRequest::postString('skintype'));
+
+            $newSkin = WebRequest::postString('skintype');
+            if ($newSkin === 'main' || $newSkin === 'alt' || $newSkin === 'auto') {
+                $user->setSkin($newSkin);
+            }
 
             $email = WebRequest::postEmail('email');
             if ($email !== null) {
