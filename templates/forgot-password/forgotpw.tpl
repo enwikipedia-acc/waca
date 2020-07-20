@@ -21,13 +21,13 @@
                     <div class="form-group row">
                         <div class="col-md-10 offset-md-1">
                             <label class="sr-only" for="username">Username</label>
-                            <input class="form-control" type="text" id="username" name="username" placeholder="Username" required="required"/>
+                            <input class="form-control" type="text" id="username" name="username" placeholder="Username" required="required" autocomplete="username"/>
                         </div>
                     </div>
                     <div class="form-group row">
                         <div class="col-md-10 offset-md-1">
                             <label class="sr-only" for="email">Email address</label>
-                            <input class="form-control" type="text" id="email" name="email" placeholder="Email" required="required"/>
+                            <input class="form-control" type="text" id="email" name="email" placeholder="Email" required="required" autocomplete="email"/>
                         </div>
                     </div>
                     <div class="form-group row">

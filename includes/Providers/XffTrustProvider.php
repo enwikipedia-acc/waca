@@ -120,7 +120,7 @@ class XffTrustProvider implements IXffTrustProvider
             }
         }
 
-        return $clientIpAddress;
+        return trim($clientIpAddress);
     }
 
     /**

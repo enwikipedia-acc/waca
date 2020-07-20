@@ -16,7 +16,7 @@
                 <label class="col-form-label" for="inputOldpassword">Your old password</label>
             </div>
             <div class="col-md-6 col-lg-4 col-xl-3">
-                <input class="form-control" type="password" id="inputOldpassword" name="oldpassword" required="required"/>
+                <input class="form-control" type="password" id="inputOldpassword" name="oldpassword" required="required" autocomplete="password"/>
             </div>
         </div>
         <div class="form-group row">
@@ -24,7 +24,7 @@
                 <label class="col-form-label" for="inputNewpassword">Your new password</label>
             </div>
             <div class="col-md-6 col-lg-4 col-xl-3">
-                <input class="form-control password-strength" type="password" id="inputNewpassword" name="newpassword" required="required"/>
+                <input class="form-control password-strength" type="password" id="inputNewpassword" name="newpassword" required="required" autocomplete="new-password"/>
                 <div class="progress password-strength-progress">
                     <div class="progress-bar" id="password-strength-bar"></div>
                 </div>
@@ -36,7 +36,7 @@
                 <label class="col-form-label" for="inputNewpasswordconfirm">Confirm new password</label>
             </div>
             <div class="col-md-6 col-lg-4 col-xl-3">
-                <input class="form-control" type="password" id="inputNewpasswordconfirm" name="newpasswordconfirm" required="required"/>
+                <input class="form-control" type="password" id="inputNewpasswordconfirm" name="newpasswordconfirm" required="required" autocomplete="new-password"/>
             </div>
         </div>
         <div class="form-group row">

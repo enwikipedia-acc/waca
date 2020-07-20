@@ -17,7 +17,7 @@
                         <div class="form-group row">
                             <div class="col">
                                 <label class="sr-only" for="password">Password</label>
-                                <input type="password" id="password" name="password" placeholder="Password" class="form-control" required tabindex="2" />
+                                <input type="password" id="password" name="password" placeholder="Password" class="form-control" required tabindex="2" autocomplete="password"/>
                             </div>
                         </div>
 

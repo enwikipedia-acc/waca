@@ -34,27 +34,29 @@
                         <th><!-- Buttons --></th>
                     </tr>
                 </thead>
-                <tfoot>
-                    <tr {if $currentUser->getWelcomeTemplate() == null}class="table-success"{/if}>
-                        <th>Disable automatic welcoming</th>
-                        {if $canEdit}
-                            <th class="d-none d-lg-block"><!-- count --></th>
-                        {/if}
-                        <td class="table-button-cell">
-                            {if $currentUser->getWelcomeTemplate() !== null}
-                                <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select">
-                                    {include file="security/csrf.tpl"}
-                                    <input type="hidden" name="disable" value="true"/>
-                                    <button type="submit" class="btn btn-primary btn-sm float-right">
-                                        <i class="fas fa-check"></i>&nbsp;Select
-                                    </button>
-                                </form>
-                            {else}
-                                <a href="" class="btn btn-primary btn-sm disabled float-right">Selected</a>
+                {if $canSelect}
+                    <tfoot>
+                        <tr {if $currentUser->getWelcomeTemplate() == null}class="table-success"{/if}>
+                            <th>Disable automatic welcoming</th>
+                            {if $canEdit}
+                                <th class="d-none d-lg-block"><!-- count --></th>
                             {/if}
-                        </td>
-                    </tr>
-                </tfoot>
+                            <td class="table-button-cell">
+                                {if $currentUser->getWelcomeTemplate() !== null}
+                                    <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select">
+                                        {include file="security/csrf.tpl"}
+                                        <input type="hidden" name="disable" value="true"/>
+                                        <button type="submit" class="btn btn-primary btn-sm float-right">
+                                            <i class="fas fa-check"></i>&nbsp;Select
+                                        </button>
+                                    </form>
+                                {else}
+                                    <a href="" class="btn btn-primary btn-sm disabled float-right">Selected</a>
+                                {/if}
+                            </td>
+                        </tr>
+                    </tfoot>
+                {/if}
                 <tbody>
                 {foreach from=$templateList item="t" name="templateloop"}
                     <tr {if $currentUser->getWelcomeTemplate() == $t->getId()}class="table-success"{/if}>
@@ -91,13 +93,15 @@
                                 </form>
                             {/if}
                             {if $currentUser->getWelcomeTemplate() != $t->getId()}
-                                <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select" class="d-inline-block">
-                                    {include file="security/csrf.tpl"}
-                                    <input type="hidden" name="template" value="{$t->getId()}"/>
-                                    <button type="submit" class="btn btn-primary btn-sm">
-                                        <i class="fas fa-check"></i><span class="{if $canEdit}d-none d-sm-inline{/if}">&nbsp;Select</span>
-                                    </button>
-                                </form>
+                                {if $canSelect}
+                                    <form method="post" action="{$baseurl}/internal.php/welcomeTemplates/select" class="d-inline-block">
+                                        {include file="security/csrf.tpl"}
+                                        <input type="hidden" name="template" value="{$t->getId()}"/>
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            <i class="fas fa-check"></i><span class="{if $canEdit}d-none d-sm-inline{/if}">&nbsp;Select</span>
+                                        </button>
+                                    </form>
+                                {/if}
                             {else}
                                 <a href="" class="btn btn-primary btn-sm disabled">Selected</a>
                             {/if}

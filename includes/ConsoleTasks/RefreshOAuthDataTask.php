@@ -8,6 +8,7 @@
 
 namespace Waca\ConsoleTasks;
 
+use Exception;
 use PDO;
 use Waca\DataObjects\User;
 use Waca\Exceptions\OAuthException;
@@ -33,19 +34,37 @@ class RefreshOAuthDataTask extends ConsoleTaskBase
                 ->prepare('UPDATE oauthtoken SET expiry = CURRENT_TIMESTAMP() WHERE user = :u AND type = \'access\'');
 
             foreach ($users as $u) {
-                $oauth = new OAuthUserHelper($u, $database, $this->getOAuthProtocolHelper(),
-                    $this->getSiteConfiguration());
-
                 try {
-                    $oauth->refreshIdentity();
+                    $database->beginTransaction();
+
+                    $oauth = new OAuthUserHelper($u, $database, $this->getOAuthProtocolHelper(),
+                        $this->getSiteConfiguration());
+
+                    try {
+                        $oauth->refreshIdentity();
+                    }
+                    catch (OAuthException $ex) {
+                        $expiredStatement->execute(array(':u' => $u->getId()));
+                    }
+
+                    $database->commit();
                 }
-                catch (OAuthException $ex) {
-                    $expiredStatement->execute(array(':u' => $u->getId()));
+                catch (Exception $ex) {
+                    $database->rollBack();
+
+                    printf("\n\nFailed updating OAuth data for %s\n", $u->getUsername());
+                    printf($ex->getMessage());
+                }
+                finally {
+                    if ($database->hasActiveTransaction()) {
+                        $database->rollBack();
+                    }
                 }
             }
         }
 
-        $this->getDatabase()
-            ->exec('DELETE FROM oauthtoken WHERE expiry IS NOT NULL AND expiry < NOW() AND type = \'request\'');
+        $database->beginTransaction();
+        $database->exec('DELETE FROM oauthtoken WHERE expiry IS NOT NULL AND expiry < NOW() AND type = \'request\'');
+        $database->commit();
     }
 }

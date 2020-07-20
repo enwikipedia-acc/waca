@@ -93,14 +93,21 @@
 
                     <div class="form-group row">
                         <div class="col-md-2 col-lg-3">
-                            <label class="col-form-label">Experimental:</label>
+                            <label class="col-form-label" for="inputSkinType">Skin:</label>
                         </div>
-                        <div class="col-md-10 col-lg-8 col-xl-6">
-                            <div class="custom-control custom-switch">
-                                <input class="custom-control-input" type="checkbox" id="inputSkinType" name="skintype"{if $currentUser->getUseAlternateSkin()} checked{/if}>
-                                <label class="custom-control-label" for="inputSkinType">Use experimental alternate skin</label>
-                                <small class="form-text text-muted">This option is experimental only, and is not currently supported.</small>
-                            </div>
+                        <div class="col-md-6 col-lg-5 col-xl-4">
+                            <select class="form-control" id="inputSkinType" name="skintype">
+                                <option value="auto" {if $currentUser->getSkin() === 'auto'}selected="selected"{/if}>
+                                    Use browser default
+                                </option>
+                                <option value="main" {if $currentUser->getSkin() === 'main'}selected="selected"{/if}>
+                                    Light
+                                </option>
+                                <option value="alt" {if $currentUser->getSkin() === 'alt'}selected="selected"{/if}>
+                                    Dark
+                                </option>
+                            </select>
+                            <small class="form-text text-muted">This option is experimental only, and is not currently supported.</small>
                         </div>
                     </div>
 
@@ -171,8 +178,8 @@
                             </div>
                         </div>
                         <div class="col">
-                            <div class="alert-block alert alert-{if $identity->getAccountAge() < 180}success{else}danger{/if}">
-                                <i class="fas fa-{if $identity->getEditCount() > 1500}check{else}times{/if}"></i>&nbsp;Registration date: {$identity->getRegistrationDate()|escape}
+                            <div class="alert-block alert alert-{if $identity->getAccountAge() > 180}success{else}danger{/if}">
+                                <i class="fas fa-{if $identity->getAccountAge() > 180}check{else}times{/if}"></i>&nbsp;Registration date: {$identity->getRegistrationDate()|escape}
                             </div>
                         </div>
                         <div class="col">

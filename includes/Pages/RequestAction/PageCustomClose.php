@@ -132,7 +132,8 @@ class PageCustomClose extends PageCloseRequest
         $this->assign('updateVersion', $request->getUpdateVersion());
         $this->setupBasicData($request, $config);
         $this->setupReservationDetails($request->getReserved(), $database, $currentUser);
-        $this->setupPrivateData($request, $currentUser, $this->getSiteConfiguration(), $database);
+        $this->setupPrivateData($request);
+        $this->setupRelatedRequests($request, $config, $database);
 
         // IP location
         $trustedIp = $this->getXffTrustProvider()->getTrustedClientIp($request->getIp(), $request->getForwardedIp());

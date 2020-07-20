@@ -36,7 +36,7 @@
                         <div class="col">
                             <label for="otp" class="sr-only">TOTP code</label>
                             <input type="number" id="otp" name="otp" placeholder="One-time token" class="form-control"
-                                                            required tabindex="2">
+                                                            required tabindex="2" autocomplete="one-time-code">
                             <input type="hidden" name="stage" value="enroll">
                         </div>
                     </div>

@@ -35,7 +35,7 @@ class PageEditComment extends InternalPageBase
 
         $database = $this->getDatabase();
 
-        /** @var Comment $comment */
+        /** @var Comment|false $comment */
         $comment = Comment::getById($commentId, $database);
         if ($comment === false) {
             throw new ApplicationLogicException('Comment not found');
@@ -46,7 +46,7 @@ class PageEditComment extends InternalPageBase
             throw new AccessDeniedException($this->getSecurityManager());
         }
 
-        /** @var Request $request */
+        /** @var Request|false $request */
         $request = Request::getById($comment->getRequest(), $database);
 
         if ($request === false) {
@@ -57,7 +57,7 @@ class PageEditComment extends InternalPageBase
             $this->validateCSRFToken();
             $newComment = WebRequest::postString('newcomment');
 
-            if($comment ->getVisibility() !== 'requester') {
+            if ($comment->getVisibility() !== 'requester') {
                 $visibility = WebRequest::postString('visibility');
 
                 if ($visibility !== 'user' && $visibility !== 'admin') {

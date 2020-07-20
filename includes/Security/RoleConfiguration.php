@@ -168,6 +168,7 @@ class RoleConfiguration
             'RequestData'                        => array(
                 'seePrivateDataWhenReserved' => self::ACCESS_ALLOW,
                 'seePrivateDataWithHash'     => self::ACCESS_ALLOW,
+                'seeRelatedRequests'         => self::ACCESS_ALLOW,
             ),
             PageCustomClose::class               => array(
                 self::MAIN => self::ACCESS_ALLOW,

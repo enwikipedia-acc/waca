@@ -19,7 +19,7 @@
                             <div class="col">
                                 <label class="sr-only" for="password">Password</label>
                                 <input type="password" id="password" name="password" placeholder="Password" class="form-control"
-                                       required tabindex="2">
+                                       required tabindex="2" autocomplete="password">
                             </div>
                             <input type="hidden" name="stage" value="auth">
                         </div>
@@ -31,8 +31,8 @@
                         <div class="form-group row">
                             <div class="col">
                                 <label class="sr-only" for="otp">YubiKey OTP</label>
-                                <input type="password" id="otp" name="otp" placeholder="YubiKey OTP" class="form-control"
-                                       required tabindex="2">
+                                <input type="text" id="otp" name="otp" placeholder="YubiKey OTP" class="form-control"
+                                       required tabindex="2" autocomplete="one-time-code">
                             </div>
                             <input type="hidden" name="stage" value="auth">
                         </div>
