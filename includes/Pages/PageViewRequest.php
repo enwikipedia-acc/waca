@@ -26,7 +26,7 @@ use Waca\WebRequest;
 class PageViewRequest extends InternalPageBase
 {
     use RequestData;
-    const STATUS_SYMBOL_OPEN = '&#x2610';
+    const STATUS_SYMBOL_OPEN = '&#927';
     const STATUS_SYMBOL_ACCEPTED = '&#x2611';
     const STATUS_SYMBOL_REJECTED = '&#x2612';
 
