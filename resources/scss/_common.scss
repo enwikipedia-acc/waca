@@ -24,6 +24,8 @@ $overflows: auto, hidden, visible;
 @import "_mainPage.scss";
 @import "_password.scss";
 @import "_spacing.scss";
+@import "_sitenotice.scss";
+
 
 span.twitter-typeahead {
     display: block !important;
@@ -59,3 +61,27 @@ input[type=number] {
         display: none;
     }
 }
+
+/* Non-fluid tables - don't take up the entire width of the page! */
+.table-nonfluid
+{
+    width: auto;
+}
+
+td.table-button-cell {
+    width: 1%;
+    white-space: nowrap;
+    padding: 7px;
+}
+
+/* used for display of email messages to wrap text in a pre */
+.prewrap {
+    white-space: pre-wrap;
+    height: inherit;
+}
+
+/* min width of fontawesome icons */
+.svg-inline--fa {
+    min-width: 20px;
+}
+

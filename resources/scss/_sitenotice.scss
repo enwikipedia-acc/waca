@@ -5,12 +5,14 @@
 // Development Team. Please see team.json for a list of contributors.          *
 //******************************************************************************
 
-body {
-  padding-top: 4rem;
+.sitenotice-container {
+  margin-top: -0.6rem;
 }
 
-@each $prop, $abbrev in (min-width: minw, min-height: minh) {
-  @each $size, $length in $spacers {
-    .#{$abbrev}-#{$size} { #{$prop}: $length !important; }
-  }
+.sitenotice-container .sitenotice {
+  border-radius: 0;
+}
+
+.sitenotice-container .sitenotice ul {
+  margin-bottom: 0;
 }

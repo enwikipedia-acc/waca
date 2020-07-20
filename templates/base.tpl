@@ -8,7 +8,6 @@
 
     <!-- bootstrap styles -->
     <link href="{$baseurl}/resources/generated/bootstrap-{$currentUser->getSkin()|escape|default:'main'}.css?{$resourceCacheEpoch}" rel="stylesheet"/>
-    <link href="{$baseurl}/resources/baseStyles.css?{$resourceCacheEpoch}" rel="stylesheet"/>
 
     <!-- fontawesome -->
     <link href="{$baseurl}/vendor/fortawesome/font-awesome/css/all.min.css" rel="stylesheet"/>
