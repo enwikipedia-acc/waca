@@ -93,7 +93,7 @@
 
                     <div class="form-group row">
                         <div class="col-md-2 col-lg-3">
-                            <label class="col-form-label" for="inputSkinType">Skin:</label>
+                            <label class="col-form-label" for="inputSkinType">Tool theme:</label>
                         </div>
                         <div class="col-md-6 col-lg-5 col-xl-4">
                             <select class="form-control" id="inputSkinType" name="skintype">
@@ -101,13 +101,12 @@
                                     Use browser default
                                 </option>
                                 <option value="main" {if $currentUser->getSkin() === 'main'}selected="selected"{/if}>
-                                    Light
+                                    Light theme
                                 </option>
                                 <option value="alt" {if $currentUser->getSkin() === 'alt'}selected="selected"{/if}>
-                                    Dark
+                                    Dark theme
                                 </option>
                             </select>
-                            <small class="form-text text-muted">This option is experimental only, and is not currently supported.</small>
                         </div>
                     </div>
 
