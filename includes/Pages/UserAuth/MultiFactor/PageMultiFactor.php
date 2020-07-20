@@ -8,7 +8,9 @@
 
 namespace Waca\Pages\UserAuth\MultiFactor;
 
-use BaconQrCode\Renderer\Image\Svg;
+use BaconQrCode\Renderer\Image\SvgImageBackEnd;
+use BaconQrCode\Renderer\ImageRenderer;
+use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
@@ -149,9 +151,11 @@ class PageMultiFactor extends InternalPageBase
 
                     $provisioningUrl = $otpCredentialProvider->getProvisioningUrl($currentUser);
 
-                    $renderer = new Svg();
-                    $renderer->setHeight(256);
-                    $renderer->setWidth(256);
+                    $renderer = new ImageRenderer(
+                        new RendererStyle(256),
+                        new SvgImageBackEnd()
+                    );
+
                     $writer = new Writer($renderer);
                     $svg = $writer->writeString($provisioningUrl);
 

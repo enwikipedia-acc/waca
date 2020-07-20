@@ -82,20 +82,20 @@
                     <div class="dropdown-divider"></div>
 
                     <h6 class="dropdown-header">Help</h6>
-                    <a class="dropdown-item" href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide">
+                    <a class="dropdown-item" href="//en.wikipedia.org/wiki/Wikipedia:Request_an_account/Guide" target="_blank">
                         <i class="fas fa-question-circle"></i>&nbsp;Guide
                     </a>
-                    <a class="dropdown-item" href="//en.wikipedia.org/wiki/Wikipedia:Username_policy">
+                    <a class="dropdown-item" href="//en.wikipedia.org/wiki/Wikipedia:Username_policy" target="_blank">
                         <i class="fas fa-exclamation-triangle"></i>&nbsp;Username policy
                     </a>
                     <!--suppress HtmlUnknownAnchorTarget -->
                     <a class="dropdown-item" href="#modalFlowchart" role="button" data-toggle="modal">
                         <i class="fas fa-check"></i>&nbsp;Similar account flowchart
                     </a>
-                    <a class="dropdown-item" href="https://webchat.freenode.net/?channels=wikipedia-en-accounts">
+                    <a class="dropdown-item" href="https://webchat.freenode.net/?channels=wikipedia-en-accounts" target="_blank">
                         <i class="fas fa-comment"></i>&nbsp;Chat
                     </a>
-                    <a class="dropdown-item" href="https://lists.wikimedia.org/mailman/listinfo/accounts-enwiki-l">
+                    <a class="dropdown-item" href="https://lists.wikimedia.org/mailman/listinfo/accounts-enwiki-l" target="_blank">
                         <i class="fas fa-envelope"></i>&nbsp;Mailing list
                     </a>
                     <div class="dropdown-divider"></div>
