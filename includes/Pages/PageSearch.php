@@ -10,6 +10,7 @@ namespace Waca\Pages;
 
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
+use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\RequestListData;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
@@ -29,11 +30,26 @@ class PageSearch extends PagedInternalPageBase
     {
         $this->setHtmlTitle('Search');
 
+        $database = $this->getDatabase();
+        $currentUser = User::getCurrent($database);
+
+        $this->assign('canSearchByComment', $this->barrierTest('byComment', $currentUser));
+        $this->assign('canSearchByEmail', $this->barrierTest('byEmail', $currentUser));
+        $this->assign('canSearchByIp', $this->barrierTest('byIp', $currentUser));
+        $this->assign('canSearchByName', $this->barrierTest('byName', $currentUser));
+        $this->assign('canSeeNonConfirmed', $this->barrierTest('allowNonConfirmed', $currentUser));
+
+        $this->setTemplate('search/main.tpl');
+
         // Dual-mode page
         if (WebRequest::getString('type') !== null) {
             $searchType = WebRequest::getString('type');
             $searchTerm = WebRequest::getString('term');
-            $excludeNonConfirmed = WebRequest::getBoolean('excludeNonConfirmed');
+
+            $excludeNonConfirmed = true;
+            if($this->barrierTest('allowNonConfirmed', $currentUser)) {
+                $excludeNonConfirmed = WebRequest::getBoolean('excludeNonConfirmed');
+            }
 
             $validationError = "";
             if (!$this->validateSearchParameters($searchType, $searchTerm, $validationError)) {
@@ -46,7 +62,13 @@ class PageSearch extends PagedInternalPageBase
                 return;
             }
 
-            $requestSearch = RequestSearchHelper::get($this->getDatabase());
+            // searchType known to be sane from the validate step above
+            if (!$this->barrierTest('by' . ucfirst($searchType), User::getCurrent($this->getDatabase()))) {
+                // only accessible by url munging, don't care about the UX
+                throw new AccessDeniedException($this->getSecurityManager());
+            }
+
+            $requestSearch = RequestSearchHelper::get($database);
 
             $this->setSearchHelper($requestSearch);
             $this->setupLimits();
@@ -83,15 +105,12 @@ class PageSearch extends PagedInternalPageBase
             $this->assign('requests', $this->prepareRequestData($results));
             $this->assign('resultCount', count($results));
             $this->assign('hasResultset', true);
-
-            $this->setTemplate('search/main.tpl');
         }
         else {
             $this->assign('target', 'name');
             $this->assign('hasResultset', false);
             $this->assign('limit', 50);
             $this->assign('excludeNonConfirmed', true);
-            $this->setTemplate('search/main.tpl');
         }
     }
 

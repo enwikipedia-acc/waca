@@ -18,10 +18,18 @@
             <div class="col-md-auto">
                 <label class="sr-only" for="type">Search type</label>
                 <select class="form-control" name="type" id="type">
-                    <option value="name" {if $target == 'name'}selected{/if}>... by requested username</option>
-                    <option value="email" {if $target == 'email'}selected{/if}>... by email address</option>
-                    <option value="ip" {if $target == 'ip'}selected{/if}>... by IP address</option>
-                    <option value="comment" {if $target == 'comment'}selected{/if}>... by comment on request</option>
+                    {if $canSearchByName}
+                        <option value="name" {if $type == 'name'}selected{/if}>... by requested username</option>
+                    {/if}
+                    {if $canSearchByEmail}
+                        <option value="email" {if $type == 'email'}selected{/if}>... by email address</option>
+                    {/if}
+                    {if $canSearchByIp}
+                        <option value="ip" {if $type == 'ip'}selected{/if}>... by IP address</option>
+                    {/if}
+                    {if $canSearchByComment}
+                        <option value="comment" {if $type == 'comment'}selected{/if}>... by comment on request</option>
+                    {/if}
                 </select>
             </div>
 
@@ -32,14 +40,16 @@
             </div>
         </div>
 
-        <div class="form-row">
-            <div class="col-md-12">
-                <div class="custom-control custom-switch">
-                    <input class="custom-control-input" type="checkbox" id="excludeNonConfirmed" name="excludeNonConfirmed" {if $excludeNonConfirmed}checked{/if} />
-                    <label class="custom-control-label" for="excludeNonConfirmed">Exclude requests lacking email confirmation</label>
+        {if $canSeeNonConfirmed}
+            <div class="form-row">
+                <div class="col-md-12">
+                    <div class="custom-control custom-switch">
+                        <input class="custom-control-input" type="checkbox" id="excludeNonConfirmed" name="excludeNonConfirmed" {if $excludeNonConfirmed}checked{/if} />
+                        <label class="custom-control-label" for="excludeNonConfirmed">Exclude requests lacking email confirmation</label>
+                    </div>
                 </div>
             </div>
-        </div>
+        {/if}
 
         <div class="form-row">
             <div class="col-md-12 my-3">

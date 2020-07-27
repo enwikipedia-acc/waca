@@ -155,6 +155,10 @@ class RoleConfiguration
             ),
             PageSearch::class                    => array(
                 self::MAIN => self::ACCESS_ALLOW,
+                'byName'   => self::ACCESS_ALLOW,
+                'byEmail'  => self::ACCESS_ALLOW,
+                'byIp'     => self::ACCESS_ALLOW,
+                'allowNonConfirmed' => self::ACCESS_ALLOW,
             ),
             PageWelcomeTemplateManagement::class => array(
                 self::MAIN => self::ACCESS_ALLOW,
@@ -232,6 +236,9 @@ class RoleConfiguration
                 'editUser'  => self::ACCESS_ALLOW,
                 'suspend'   => self::ACCESS_ALLOW,
                 'editRoles' => self::ACCESS_ALLOW,
+            ),
+            PageSearch::class                    => array(
+                'byComment' => self::ACCESS_ALLOW,
             ),
             PageWelcomeTemplateManagement::class => array(
                 'edit'   => self::ACCESS_ALLOW,
