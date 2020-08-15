@@ -19,7 +19,7 @@ class SiteConfiguration
 {
     private $baseUrl;
     private $filePath;
-    private $schemaVersion = 35;
+    private $schemaVersion = 37;
     private $debuggingTraceEnabled;
     private $dataClearIp = '127.0.0.1';
     private $dataClearEmail = 'acc@toolserver.org';
@@ -379,6 +379,7 @@ class SiteConfiguration
 
     /**
      * @return array
+     * @deprecated
      */
     public function getRequestStates()
     {
