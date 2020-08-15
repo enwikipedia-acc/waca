@@ -57,27 +57,30 @@ class PageEditComment extends InternalPageBase
             $this->validateCSRFToken();
             $newComment = WebRequest::postString('newcomment');
 
-            if ($comment->getVisibility() !== 'requester') {
-                $visibility = WebRequest::postString('visibility');
+            if ($newComment !== $comment->getComment()) {
+                // Only save and log if the comment changed
+                if ($comment->getVisibility() !== 'requester') {
+                    $visibility = WebRequest::postString('visibility');
 
-                if ($visibility !== 'user' && $visibility !== 'admin') {
-                    throw new ApplicationLogicException('Comment visibility is not valid');
+                    if ($visibility !== 'user' && $visibility !== 'admin') {
+                        throw new ApplicationLogicException('Comment visibility is not valid');
+                    }
+
+                    $comment->setVisibility($visibility);
                 }
 
-                $comment->setVisibility($visibility);
+                // optimistically lock from the load of the edit comment form
+                $updateVersion = WebRequest::postInt('updateversion');
+                $comment->setUpdateVersion($updateVersion);
+
+                $comment->setComment($newComment);
+
+                $comment->save();
+
+                Logger::editComment($database, $comment, $request);
+                $this->getNotificationHelper()->commentEdited($comment, $request);
+                SessionAlert::success("Comment has been saved successfully");
             }
-
-            // optimistically lock from the load of the edit comment form
-            $updateVersion = WebRequest::postInt('updateversion');
-            $comment->setUpdateVersion($updateVersion);
-
-            $comment->setComment($newComment);
-
-            $comment->save();
-
-            Logger::editComment($database, $comment, $request);
-            $this->getNotificationHelper()->commentEdited($comment, $request);
-            SessionAlert::success("Comment has been saved successfully");
 
             $this->redirect('viewRequest', null, array('id' => $comment->getRequest()));
         }
