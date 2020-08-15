@@ -42,23 +42,8 @@ class PageEditComment extends InternalPageBase
         }
 
         $currentUser = User::getCurrent($database);
-
-        if ($comment->getUser() !== $currentUser->getId()) {
-            if (!$this->barrierTest('editOthers', $currentUser)) {
-                throw new AccessDeniedException($this->getSecurityManager());
-            }
-
-            if ($comment->getVisibility() === 'checkuser'
-                && !$this->barrierTest('seeCheckuserComments', $currentUser, 'RequestData')) {
-
-                throw new AccessDeniedException($this->getSecurityManager());
-            }
-
-            if ($comment->getVisibility() === 'admin'
-                && !$this->barrierTest('seeRestrictedComments', $currentUser, 'RequestData')) {
-
-                throw new AccessDeniedException($this->getSecurityManager());
-            }
+        if ($comment->getUser() !== $currentUser->getId() && !$this->barrierTest('editOthers', $currentUser)) {
+            throw new AccessDeniedException($this->getSecurityManager());
         }
 
         /** @var Request|false $request */
@@ -71,6 +56,11 @@ class PageEditComment extends InternalPageBase
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
             $newComment = WebRequest::postString('newcomment');
+
+            if ($newComment !== $comment->getComment()) {
+                // Only save and log if the comment changed
+                $this->redirect('viewRequest', null, array('id' => $comment->getRequest()));
+            }
 
             if ($comment->getVisibility() !== 'requester') {
                 $visibility = WebRequest::postString('visibility');
