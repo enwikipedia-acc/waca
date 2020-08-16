@@ -28,7 +28,7 @@
         Global Block Log
     </a>
     <a id="IPActiveGlobalBlock-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
-       href="https://en.wikipedia.org/wiki/Special:GlobalBlockList/{$ipaddress}">
+       href="https://meta.wikimedia.org/wiki/Special:GlobalBlockList/{$ipaddress}">
         Active Global Blocks
     </a>
     <a id="IPRangeFinder-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
