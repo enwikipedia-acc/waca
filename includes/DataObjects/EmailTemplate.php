@@ -41,20 +41,20 @@ class EmailTemplate extends DataObject
      *
      * @param string      $defaultAction Default action to take (EmailTemplate::ACTION_CREATED or EmailTemplate::ACTION_NOT_CREATED)
      * @param PdoDatabase $database
+     * @param int|null    $filter Template IDs to filter out
      *
      * @return array|false
      */
-    public static function getActiveTemplates($defaultAction, PdoDatabase $database)
+    public static function getActiveNonpreloadTemplates($defaultAction, PdoDatabase $database, ?int $filter = null)
     {
-        global $createdid;
-
         $statement = $database->prepare(<<<SQL
 SELECT * FROM `emailtemplate`
-WHERE defaultaction = :forcreated AND active = 1 AND preloadonly = 0 AND id != :createdid;
+WHERE defaultaction = :forcreated AND active = 1 AND preloadonly = 0 AND (:skipFilter = 1 OR id <> :filter);
 SQL
         );
-        $statement->bindValue(":createdid", $createdid);
         $statement->bindValue(":forcreated", $defaultAction);
+        $statement->bindValue(":filter", $filter);
+        $statement->bindValue(":skipFilter", $filter === null ? 1 : 0);
 
         $statement->execute();
 

@@ -162,9 +162,9 @@ class PageViewRequest extends InternalPageBase
         $this->assign('createdId', $createdTemplate->getId());
         $this->assign('createdName', $createdTemplate->getName());
 
-        $createReasons = EmailTemplate::getActiveTemplates(EmailTemplate::ACTION_CREATED, $database);
+        $createReasons = EmailTemplate::getActiveNonpreloadTemplates(EmailTemplate::ACTION_CREATED, $database, $domain->getDefaultClose());
         $this->assign("createReasons", $createReasons);
-        $declineReasons = EmailTemplate::getActiveTemplates(EmailTemplate::ACTION_NOT_CREATED, $database);
+        $declineReasons = EmailTemplate::getActiveNonpreloadTemplates(EmailTemplate::ACTION_NOT_CREATED, $database);
         $this->assign("declineReasons", $declineReasons);
 
         $allCreateReasons = EmailTemplate::getAllActiveTemplates(EmailTemplate::ACTION_CREATED, $database);

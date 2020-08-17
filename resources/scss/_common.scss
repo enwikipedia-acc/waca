@@ -91,6 +91,10 @@ td.table-button-cell {
     min-width: 20px;
 }
 
+$borderwidth: 1, 2, 3;
+@each $size in $borderwidth {
+    .border-w#{$size} { border-width: #{$size}px !important; }
+}
 .badge-pill svg.svg-inline--fa.fa-w-16 {
     min-width: 1.2em;
 }

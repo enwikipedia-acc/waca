@@ -9,8 +9,10 @@
 namespace Waca\DataObjects;
 
 use Exception;
+use PDO;
 use Waca\DataObject;
 use Waca\Exceptions\OptimisticLockFailedException;
+use Waca\PdoDatabase;
 
 class Domain extends DataObject
 {
@@ -32,6 +34,48 @@ class Domain extends DataObject
     private $emailsender;
     /** @var string|null */
     private $notificationtarget;
+
+    /** @var Domain Cache variable of the current domain */
+    private static $currentDomain;
+
+    public static function getCurrent(PdoDatabase $database)
+    {
+        if (self::$currentDomain === null) {
+            $sessionDomain = 1; // FIXME: #592 WebRequest::getSessionDomain();
+
+            if ($sessionDomain !== null) {
+                /** @var Domain $domain */
+                $domain = self::getById($sessionDomain, $database);
+
+                if ($domain === false) {
+                    self::$currentDomain = 1; // FIXME: #592 User::getCurrent($database)->getDefaultDomain();
+                }
+                else {
+                    self::$currentDomain = $domain;
+                }
+            }
+            else {
+                self::$currentDomain = 1; // FIXME: #592 User::getCurrent($database)->getDefaultDomain();
+            }
+        }
+
+        return self::$currentDomain;
+    }
+
+
+    public static function getAll(PdoDatabase $database) {
+        $statement = $database->prepare("SELECT * FROM domain;");
+        $statement->execute();
+
+        $resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
+
+        /** @var Domain $t */
+        foreach ($resultObject as $t) {
+            $t->setDatabase($database);
+        }
+
+        return $resultObject;
+    }
 
     public function save()
     {
