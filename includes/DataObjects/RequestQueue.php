@@ -9,8 +9,10 @@
 namespace Waca\DataObjects;
 
 use Exception;
+use PDO;
 use Waca\DataObject;
 use Waca\Exceptions\OptimisticLockFailedException;
+use Waca\PdoDatabase;
 
 class RequestQueue extends DataObject
 {
@@ -43,9 +45,127 @@ class RequestQueue extends DataObject
      */
     private $legacystatus;
 
+    /**
+     * @param PdoDatabase $database
+     *
+     * @return RequestQueue[]
+     */
+    public static function getAllQueues(PdoDatabase $database)
+    {
+        $statement = $database->prepare(<<<SQL
+            SELECT * FROM requestqueue;
+SQL
+        );
+        $statement->execute();
+
+        $resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
+
+        /** @var RequestQueue $t */
+        foreach ($resultObject as $t) {
+            $t->setDatabase($database);
+        }
+
+        return $resultObject;
+    }
+
+    /**
+     * @param PdoDatabase $database
+     * @param string      $apiName
+     * @param int         $domain
+     *
+     * @return false|RequestQueue
+     */
+    public static function getByApiName(PdoDatabase $database, string $apiName, int $domain)
+    {
+        $statement = $database->prepare(<<<SQL
+            SELECT * FROM requestqueue WHERE apiname = :apiName AND domain = :domain;
+SQL
+        );
+
+        $statement->execute([
+            ':apiName' => $apiName,
+            ':domain'  => $domain,
+        ]);
+
+        /** @var RequestQueue|false $result */
+        $result = $statement->fetchObject(get_called_class());
+
+        if ($result !== false) {
+            $result->setDatabase($database);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param PdoDatabase $database
+     * @param string      $displayName
+     * @param int         $domain
+     *
+     * @return false|RequestQueue
+     */
+    public static function getByDisplayName(PdoDatabase $database, string $displayName, int $domain)
+    {
+        $statement = $database->prepare(<<<SQL
+            SELECT * FROM requestqueue WHERE displayname = :displayName AND domain = :domain;
+SQL
+        );
+
+        $statement->execute([
+            ':displayName' => $displayName,
+            ':domain'      => $domain,
+        ]);
+
+        /** @var RequestQueue|false $result */
+        $result = $statement->fetchObject(get_called_class());
+
+        if ($result !== false) {
+            $result->setDatabase($database);
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param PdoDatabase $database
+     * @param string      $header
+     * @param int         $domain
+     *
+     * @return false|RequestQueue
+     */
+    public static function getByHeader(PdoDatabase $database, string $header, int $domain)
+    {
+        $statement = $database->prepare(<<<SQL
+            SELECT * FROM requestqueue WHERE header = :header AND domain = :domain;
+SQL
+        );
+
+        $statement->execute([
+            ':header' => $header,
+            ':domain' => $domain,
+        ]);
+
+        /** @var RequestQueue|false $result */
+        $result = $statement->fetchObject(get_called_class());
+
+        if ($result !== false) {
+            $result->setDatabase($database);
+        }
+
+        return $result;
+    }
 
     public function save()
     {
+        // find and squish existing defaults
+        if ($this->isDefault()) {
+            $squishStatement = $this->dbObject->prepare(<<<'SQL'
+                UPDATE requestqueue SET isdefault = 0 WHERE isdefault = 1 AND domain = :domain;
+SQL
+            );
+            $squishStatement->execute([':domain' => $this->domain]);
+        }
+
         if ($this->isNew()) {
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
