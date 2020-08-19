@@ -10,6 +10,7 @@ namespace Waca\Tasks;
 
 use Exception;
 use SmartyException;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\ExceptionHandler;
 use Waca\Exceptions\ApplicationLogicException;
@@ -80,6 +81,7 @@ abstract class PageBase extends TaskBase implements IRoutedTask
 
         $currentUser = User::getCurrent($this->getDatabase());
         $this->assign('currentUser', $currentUser);
+        $this->assign('currentDomain', Domain::getCurrent($this->getDatabase()));
         $this->assign('loggedIn', (!$currentUser->isCommunityUser()));
     }
 

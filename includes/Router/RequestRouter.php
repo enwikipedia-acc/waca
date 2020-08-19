@@ -12,6 +12,7 @@ use Exception;
 use Waca\Pages\Page404;
 use Waca\Pages\PageBan;
 use Waca\Pages\PageDomainManagement;
+use Waca\Pages\PageDomainSwitch;
 use Waca\Pages\PageEditComment;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageErrorLogViewer;
@@ -151,6 +152,11 @@ class RequestRouter implements IRequestRouter
             array(
                 'class'   => PageRegisterStandard::class,
                 'actions' => array('done'),
+            ),
+        'domainSwitch'                =>
+            array(
+                'class'   => PageDomainSwitch::class,
+                'actions' => array(),
             ),
 
         //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -423,7 +429,7 @@ class RequestRouter implements IRequestRouter
      *
      * @return array
      */
-    protected function getRouteFromPath($pathInfo)
+    public function getRouteFromPath($pathInfo)
     {
         if (count($pathInfo) === 0) {
             // No pathInfo, so no page to load. Load the main page.

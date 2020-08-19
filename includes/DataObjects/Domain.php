@@ -13,6 +13,7 @@ use PDO;
 use Waca\DataObject;
 use Waca\Exceptions\OptimisticLockFailedException;
 use Waca\PdoDatabase;
+use Waca\WebRequest;
 
 class Domain extends DataObject
 {
@@ -41,21 +42,21 @@ class Domain extends DataObject
     public static function getCurrent(PdoDatabase $database)
     {
         if (self::$currentDomain === null) {
-            $sessionDomain = 1; // FIXME: #592 WebRequest::getSessionDomain();
+            $sessionDomain = WebRequest::getSessionDomain();
 
             if ($sessionDomain !== null) {
                 /** @var Domain $domain */
                 $domain = self::getById($sessionDomain, $database);
 
                 if ($domain === false) {
-                    self::$currentDomain = 1; // FIXME: #592 User::getCurrent($database)->getDefaultDomain();
+                    self::$currentDomain = self::getById(1, $database); // FIXME: #594 User::getCurrent($database)->getDefaultDomain();
                 }
                 else {
                     self::$currentDomain = $domain;
                 }
             }
             else {
-                self::$currentDomain = 1; // FIXME: #592 User::getCurrent($database)->getDefaultDomain();
+                self::$currentDomain = self::getById(1, $database); // FIXME: #594 User::getCurrent($database)->getDefaultDomain();
             }
         }
 
@@ -66,6 +67,32 @@ class Domain extends DataObject
     public static function getAll(PdoDatabase $database) {
         $statement = $database->prepare("SELECT * FROM domain;");
         $statement->execute();
+
+        $resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
+
+        /** @var Domain $t */
+        foreach ($resultObject as $t) {
+            $t->setDatabase($database);
+        }
+
+        return $resultObject;
+    }
+
+    public static function getDomainByUser(PdoDatabase $database, User $user, ?bool $enabled = null)
+    {
+        $statement = $database->prepare(<<<'SQL'
+            SELECT d.* 
+            FROM domain d
+            INNER JOIN userdomain ud on d.id = ud.domain
+            WHERE ud.user = :user
+            AND (:filterEnabled = 0 OR d.enabled = :enabled)
+SQL
+);
+        $statement->execute([
+            ':user' => $user->getId(),
+            ':filterEnabled' => ($enabled === null) ? 0 : 1,
+            ':enabled' => ($enabled) ? 1 : 0
+        ]);
 
         $resultObject = $statement->fetchAll(PDO::FETCH_CLASS, get_called_class());
 

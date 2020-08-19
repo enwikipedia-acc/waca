@@ -8,6 +8,7 @@
 
 namespace Waca;
 
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\Exceptions\EnvironmentException;
 use Waca\Exceptions\ReadableException;
@@ -17,6 +18,7 @@ use Waca\Helpers\TypeAheadHelper;
 use Waca\Providers\GlobalState\GlobalStateProvider;
 use Waca\Router\IRequestRouter;
 use Waca\Security\ContentSecurityPolicyManager;
+use Waca\Security\DomainAccessManager;
 use Waca\Security\RoleConfiguration;
 use Waca\Security\SecurityManager;
 use Waca\Security\TokenManager;
@@ -84,6 +86,8 @@ class WebStart extends ApplicationBase
                 else {
                     $page->setBlacklistHelper(new BlacklistHelper($page->getHttpHelper(), $database));
                 }
+
+                $page->setDomainAccessManager(new DomainAccessManager());
             }
         }
     }

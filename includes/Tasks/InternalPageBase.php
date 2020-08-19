@@ -17,6 +17,7 @@ use Waca\Exceptions\NotIdentifiedException;
 use Waca\Fragments\NavigationMenuAccessControl;
 use Waca\Helpers\Interfaces\IBlacklistHelper;
 use Waca\Helpers\Interfaces\ITypeAheadHelper;
+use Waca\Security\DomainAccessManager;
 use Waca\Security\SecurityManager;
 use Waca\WebRequest;
 
@@ -30,6 +31,8 @@ abstract class InternalPageBase extends PageBase
     private $securityManager;
     /** @var IBlacklistHelper */
     private $blacklistHelper;
+    /** @var DomainAccessManager */
+    private $domainAccessManager;
 
     /**
      * @return ITypeAheadHelper
@@ -241,5 +244,21 @@ abstract class InternalPageBase extends PageBase
     public function setBlacklistHelper(IBlacklistHelper $blacklistHelper)
     {
         $this->blacklistHelper = $blacklistHelper;
+    }
+
+    /**
+     * @return DomainAccessManager
+     */
+    public function getDomainAccessManager(): DomainAccessManager
+    {
+        return $this->domainAccessManager;
+    }
+
+    /**
+     * @param DomainAccessManager $domainAccessManager
+     */
+    public function setDomainAccessManager(DomainAccessManager $domainAccessManager): void
+    {
+        $this->domainAccessManager = $domainAccessManager;
     }
 }
