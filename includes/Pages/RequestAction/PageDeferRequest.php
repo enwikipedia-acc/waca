@@ -48,10 +48,8 @@ class PageDeferRequest extends RequestActionBase
         $closureDate = $request->getClosureDate();
         $date = new DateTime();
         $date->modify("-7 days");
-        $oneweek = $date->format("Y-m-d H:i:s");
 
-
-        if ($request->getStatus() == "Closed" && $closureDate < $oneweek) {
+        if ($request->getStatus() == "Closed" && $closureDate < $date) {
             if (!$this->barrierTest('reopenOldRequest', $currentUser, 'RequestData')) {
                 throw new ApplicationLogicException(
                     "You are not allowed to re-open a request that has been closed for over a week.");
