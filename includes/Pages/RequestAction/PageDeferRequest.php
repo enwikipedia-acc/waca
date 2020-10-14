@@ -56,6 +56,13 @@ class PageDeferRequest extends RequestActionBase
             }
         }
 
+        if ($request->getEmail() === $this->getSiteConfiguration()->getDataClearEmail()) {
+            if (!$this->barrierTest('reopenClearedRequest', $currentUser, 'RequestData')) {
+                throw new ApplicationLogicException(
+                    "You are not allowed to re-open a request for which the private data has been purged.");
+            }
+        }
+
         if ($request->getStatus() === RequestStatus::JOBQUEUE) {
             /** @var JobQueue[] $pendingJobs */
             $pendingJobs = JobQueueSearchHelper::get($database)->byRequest($request->getId())->statusIn([
