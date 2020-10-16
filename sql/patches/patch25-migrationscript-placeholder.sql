@@ -45,6 +45,8 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
         INSERT INTO userrole (user, role, updateversion)
         VALUES (1, 'admin', 0), (1, 'toolRoot', 0);
 
+        UPDATE user SET status = 'Active' WHERE id = 1;
+
         UPDATE schemaversion SET version = patchversion;
     ELSE
         IF NOT EXISTS (SELECT * FROM user WHERE status = 'Active') THEN

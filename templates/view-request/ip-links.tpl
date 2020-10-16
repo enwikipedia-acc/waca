@@ -75,6 +75,10 @@
                href="https://en.wikipedia.org/wiki/Special:CheckUserLog?cuSearchType=target&cuSearch={$ipaddress}">
                 Log
             </a>
+            <a id="IPCUI-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+               href="https://en.wikipedia.org/w/index.php?title=Special:Investigate&amp;targets={$ipaddress}&amp;reason=%5B%5BWP:ACC%5D%5D%20request%20%23{$requestId}">
+                Investigate
+            </a>
         </div>
         <div class="btn-group">
             <a id="IPLWCU-{$index}" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
