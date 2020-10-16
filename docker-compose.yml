@@ -1,0 +1,28 @@
+version: "3.0"
+services:
+  application:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/var/www/html/
+    ports:
+      - 8080:80
+    depends_on:
+      - database
+  database:
+    image: mariadb:10.3
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: waca
+      MYSQL_DATABASE: waca
+      MYSQL_USER: waca
+      MYSQL_PASSWORD: waca
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./docker/database.sh:/docker-entrypoint-initdb.d/init.sh
+      - ./sql:/wacadb
+volumes:
+  mysql-data:
+
