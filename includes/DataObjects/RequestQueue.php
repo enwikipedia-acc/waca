@@ -19,6 +19,10 @@ class RequestQueue extends DataObject
     /** @var int */
     private $isdefault = 0;
     /** @var int */
+    private $defaultantispoof = 0;
+    /** @var int */
+    private $defaulttitleblacklist = 0;
+    /** @var int */
     private $domain;
     /** @var string */
     private $apiname;
@@ -46,15 +50,17 @@ class RequestQueue extends DataObject
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
                 INSERT INTO requestqueue (
-                    enabled, isdefault, domain, apiname, displayname, header, help, logname, legacystatus
+                    enabled, isdefault, defaultantispoof, defaulttitleblacklist, domain, apiname, displayname, header, help, logname, legacystatus
                 ) VALUES (
-                    :enabled, :isdefault, :domain, :apiname, :displayname, :header, :help, :logname, :legacystatus
+                    :enabled, :isdefault, :defaultantispoof, :defaulttitleblacklist, :domain, :apiname, :displayname, :header, :help, :logname, :legacystatus
                 );
 SQL
             );
 
             $statement->bindValue(":enabled", $this->enabled);
             $statement->bindValue(":isdefault", $this->isdefault);
+            $statement->bindValue(":defaultantispoof", $this->defaultantispoof);
+            $statement->bindValue(":defaulttitleblacklist", $this->defaulttitleblacklist);
             $statement->bindValue(":domain", $this->domain);
             $statement->bindValue(":apiname", $this->apiname);
             $statement->bindValue(":displayname", $this->displayname);
@@ -75,6 +81,8 @@ SQL
                 UPDATE requestqueue SET
                     enabled = :enabled,
                     isdefault = :isdefault,
+                    defaultantispoof = :defaultantispoof,
+                    defaulttitleblacklist = :defaulttitleblacklist,
                     domain = :domain,
                     apiname = :apiname,
                     displayname = :displayname,
@@ -90,6 +98,8 @@ SQL
 
             $statement->bindValue(":enabled", $this->enabled);
             $statement->bindValue(":isdefault", $this->isdefault);
+            $statement->bindValue(":defaultantispoof", $this->defaultantispoof);
+            $statement->bindValue(":defaulttitleblacklist", $this->defaulttitleblacklist);
             $statement->bindValue(":domain", $this->domain);
             $statement->bindValue(":apiname", $this->apiname);
             $statement->bindValue(":displayname", $this->displayname);
@@ -143,6 +153,38 @@ SQL
     public function setDefault(bool $isDefault): void
     {
         $this->isdefault = $isDefault ? 1 : 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDefaultAntispoof(): bool
+    {
+        return $this->defaultantispoof == 1;
+    }
+
+    /**
+     * @param bool $isDefault
+     */
+    public function setDefaultAntispoof(bool $isDefault): void
+    {
+        $this->defaultantispoof = $isDefault ? 1 : 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDefaultTitleBlacklist(): bool
+    {
+        return $this->defaulttitleblacklist == 1;
+    }
+
+    /**
+     * @param bool $isDefault
+     */
+    public function setDefaultTitleBlacklist(bool $isDefault): void
+    {
+        $this->defaulttitleblacklist = $isDefault ? 1 : 0;
     }
 
     /**

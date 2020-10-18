@@ -337,6 +337,8 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
         updateversion int unsigned default 0 not null,
         enabled tinyint unsigned default 0 not null,
         isdefault tinyint unsigned default 0 not null comment 'whether this is the default queue for the domain. only one set per domain',
+        defaultantispoof tinyint unsigned default 0 not null comment 'whether this is the default queue for antispoof requests. only one set per domain',
+        defaulttitleblacklist tinyint unsigned default 0 not null comment 'whether this is the default queue for titleblacklist requests. only one set per domain',
         domain int unsigned not null,
         apiname varchar(20) not null comment 'the name used in the api and for JS calls',
         displayname varchar(100) not null comment 'the display name in the GUI',
@@ -349,8 +351,15 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
         constraint requestqueue_displayname_uniq unique (domain, displayname),
         constraint requestqueue_domain_id_fk foreign key (domain) references domain (id),
         constraint requestqueue_isdefault check (isdefault in (0,1)),
+        constraint requestqueue_defaultantispoof check (defaultantispoof in (0,1)),
+        constraint requestqueue_defaulttitleblacklist check (defaulttitleblacklist in (0,1)),
         constraint requestqueue_enabled check (enabled in (0,1)),
-        constraint requestqueue_defaultisenabled check (case when isdefault = 1 and enabled = 0 then false else true end)
+        constraint requestqueue_defaultisenabled check (case
+            when isdefault = 1 and enabled = 0 then false
+            when defaulttitleblacklist = 1 and enabled = 0 then false
+            when defaultantispoof = 1 and enabled = 0 then false
+            else true
+            end)
     ) engine=InnoDB;
 
     create table requestform

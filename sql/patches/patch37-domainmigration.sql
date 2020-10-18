@@ -64,8 +64,8 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
         INSERT INTO requestqueue (enabled, isdefault, domain, apiname, displayname, header, help, logname, legacystatus)
         VALUES (1, 1, 1, 'open', 'users', 'Open requests', null, 'users', 'Open');
 
-        INSERT INTO requestqueue (enabled, isdefault, domain, apiname, displayname, header, help, logname, legacystatus)
-        VALUES (1, 0, 1, 'admin', 'flagged users', 'Flagged user needed', 'This queue lists the requests which require a user with the accountcreator flag to create.\n\nIf creation is determined to be the correct course of action, requests here will require the overriding the AntiSpoof checks or the title blacklist in order to create. It is recommended to try to create the account *without* checking the flags to validate the results of the AntiSpoof and/or title blacklist hits.', 'flagged users', 'Flagged users');
+        INSERT INTO requestqueue (enabled, isdefault, defaultantispoof, defaulttitleblacklist, domain, apiname, displayname, header, help, logname, legacystatus)
+        VALUES (1, 0, 1, 1, 1, 'admin', 'flagged users', 'Flagged user needed', 'This queue lists the requests which require a user with the accountcreator flag to create.\n\nIf creation is determined to be the correct course of action, requests here will require the overriding the AntiSpoof checks or the title blacklist in order to create. It is recommended to try to create the account *without* checking the flags to validate the results of the AntiSpoof and/or title blacklist hits.', 'flagged users', 'Flagged users');
 
         INSERT INTO requestqueue (enabled, isdefault, domain, apiname, displayname, header, help, logname, legacystatus)
         VALUES (1, 0, 1, 'checkuser', 'checkusers', 'Checkuser needed', null, 'checkusers', 'Checkuser');

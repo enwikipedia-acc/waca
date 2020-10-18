@@ -38,6 +38,8 @@ class MigrateToDomains extends ConsoleTaskBase
         foreach ($requestStates as $key => $data) {
             $state = new RequestQueue();
             $state->setDefault($first);
+            $state->setDefaultAntispoof($first);
+            $state->setDefaultTitleBlacklist($first);
             $state->setDomain($domain->getId());
             $state->setApiName($data['api']);
             $state->setDisplayName($data['deferto']);
