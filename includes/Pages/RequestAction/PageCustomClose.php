@@ -213,9 +213,9 @@ class PageCustomClose extends PageCloseRequest
         $action = WebRequest::postString('action');
         $availableRequestStates = $this->getSiteConfiguration()->getRequestStates();
 
-        if ($action === EmailTemplate::CREATED || $action === EmailTemplate::NOT_CREATED) {
+        if ($action === EmailTemplate::ACTION_CREATED || $action === EmailTemplate::ACTION_NOT_CREATED) {
 
-            if ($action === EmailTemplate::CREATED) {
+            if ($action === EmailTemplate::ACTION_CREATED) {
                 if ($this->checkAccountCreated($request)) {
                     $this->assignCSRFToken();
                     $this->showCustomCloseForm($database, $request);
@@ -297,7 +297,7 @@ class PageCustomClose extends PageCloseRequest
         // Perform the notifications and stuff *after* we've successfully saved, since the save can throw an OLE and
         // be rolled back.
 
-        if ($action == EmailTemplate::CREATED) {
+        if ($action == EmailTemplate::ACTION_CREATED) {
             $logCloseType = 'custom-y';
             $notificationCloseType = "Custom, Created";
         }
@@ -415,6 +415,6 @@ class PageCustomClose extends PageCloseRequest
         SessionAlert::success("Request {$request->getId()} has been queued for autocreation");
 
         // forge this since it is actually a creation.
-        $this->processWelcome(EmailTemplate::CREATED, $creationTaskId);
+        $this->processWelcome(EmailTemplate::ACTION_CREATED, $creationTaskId);
     }
 }

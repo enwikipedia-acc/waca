@@ -21,12 +21,9 @@ use Waca\PdoDatabase;
  */
 class EmailTemplate extends DataObject
 {
-    /** Note, also used in template-table.tpl */
-    const CREATED = "created";
-    /** Note, also used in template-table.tpl */
-    const NOT_CREATED = "not created";
-    /** Note, also used in template-table.tpl */
     const NONE = null;
+    const ACTION_CREATED = 'created';
+    const ACTION_NOT_CREATED = 'not created';
     /** @var string the name of the template */
     private $name;
     private $text;
@@ -34,7 +31,7 @@ class EmailTemplate extends DataObject
     private $jsquestion;
     private $active = 1;
     private $preloadonly = 0;
-    private $defaultaction = self::NOT_CREATED;
+    private $defaultaction = self::ACTION_NOT_CREATED;
 
     /**
      * Gets active non-preload templates

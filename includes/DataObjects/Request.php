@@ -354,7 +354,7 @@ SQL
             return $logAction === "Closed custom-y";
         }
 
-        return $defaultAction === EmailTemplate::CREATED;
+        return $defaultAction === EmailTemplate::ACTION_CREATED;
     }
 
     /**

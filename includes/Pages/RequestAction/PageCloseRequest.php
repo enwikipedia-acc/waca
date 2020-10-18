@@ -193,12 +193,12 @@ class PageCloseRequest extends RequestActionBase
     protected function sendMail(Request $request, $mailText, User $currentUser, $ccMailingList)
     {
         if (
-        ($request->getEmail() != $this->getSiteConfiguration()->getDataClearEmail()) && 
+        ($request->getEmail() != $this->getSiteConfiguration()->getDataClearEmail()) &&
         ($request->getIp() != $this->getSiteConfiguration()->getDataClearIp())
         ) {
             $requestEmailHelper = new RequestEmailHelper($this->getEmailHelper());
             $requestEmailHelper->sendMail($request, $mailText, $currentUser, $ccMailingList);
-            
+
             $request->setEmailSent(true);
             $request->save();
         }
@@ -241,7 +241,7 @@ class PageCloseRequest extends RequestActionBase
         $database = $this->getDatabase();
         $currentUser = User::getCurrent($database);
 
-        if ($action !== EmailTemplate::CREATED) {
+        if ($action !== EmailTemplate::ACTION_CREATED) {
             return;
         }
 

@@ -48,9 +48,9 @@
                 <div class="col-sm-9 col-lg-5 col-xl-4 lead">
                     {if $emailTemplate->getDefaultAction() == ""}
                         <span class="badge badge-secondary">No default action</span>
-                    {elseif $emailTemplate->getDefaultAction() == "created"}
+                    {elseif $emailTemplate->getDefaultAction() == Waca\DataObjects\EmailTemplate::ACTION_CREATED}
                         <span class="badge badge-success">Close request as created</span>
-                    {elseif $emailTemplate->getDefaultAction() == "not created"}
+                    {elseif $emailTemplate->getDefaultAction() == Waca\DataObjects\EmailTemplate::ACTION_NOT_CREATED}
                         <span class="badge badge-danger">Close request as NOT created</span>
                     {else}
                         <span class="badge badge-info">Defer to {$requeststates[$emailTemplate->getDefaultAction()].deferto|capitalize}</span>

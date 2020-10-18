@@ -59,10 +59,12 @@
                                 No default
                             </option>
                             <optgroup label="Close request...">
-                                <option value="created" {if $emailTemplate->getDefaultAction() == "created"}selected="selected"{/if}>
+                                <option value="{Waca\DataObjects\EmailTemplate::ACTION_CREATED}"
+                                        {if $emailTemplate->getDefaultAction() == Waca\DataObjects\EmailTemplate::ACTION_CREATED}selected="selected"{/if}>
                                     Close request as created (with autocreate if allowed)
                                 </option>
-                                <option value="not created" {if $emailTemplate->getDefaultAction() == "not created"}selected="selected"{/if}>
+                                <option value="{Waca\DataObjects\EmailTemplate::ACTION_NOT_CREATED}"
+                                        {if $emailTemplate->getDefaultAction() == Waca\DataObjects\EmailTemplate::ACTION_NOT_CREATED}selected="selected"{/if}>
                                     Close request as NOT created
                                 </option>
                             </optgroup>

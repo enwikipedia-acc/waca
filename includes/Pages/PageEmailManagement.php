@@ -100,7 +100,7 @@ class PageEmailManagement extends InternalPageBase
             }
 
             if ($template->getId() === $createdId) {
-                $template->setDefaultAction(EmailTemplate::CREATED);
+                $template->setDefaultAction(EmailTemplate::ACTION_CREATED);
                 $template->setActive(true);
                 $template->setPreloadOnly(false);
             }
