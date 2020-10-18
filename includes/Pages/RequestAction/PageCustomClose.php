@@ -40,7 +40,7 @@ class PageCustomClose extends PageCloseRequest
         $request = $this->getRequest($database);
         $currentUser = User::getCurrent($this->getDatabase());
 
-        if ($request->getStatus() === 'Closed') {
+        if ($request->getStatus() === RequestStatus::CLOSED) {
             throw new ApplicationLogicException('Request is already closed');
         }
 
@@ -201,7 +201,7 @@ class PageCustomClose extends PageCloseRequest
             $ccMailingList = WebRequest::postBoolean('ccMailingList');
         }
 
-        if ($request->getStatus() === 'Closed') {
+        if ($request->getStatus() === RequestStatus::CLOSED) {
             throw new ApplicationLogicException('Request is already closed');
         }
 
@@ -289,7 +289,7 @@ class PageCustomClose extends PageCloseRequest
      */
     protected function closeRequest(Request $request, PdoDatabase $database, $action, $messageBody)
     {
-        $request->setStatus('Closed');
+        $request->setStatus(RequestStatus::CLOSED);
         $request->setReserved(null);
         $request->setUpdateVersion(WebRequest::postInt('updateversion'));
         $request->save();

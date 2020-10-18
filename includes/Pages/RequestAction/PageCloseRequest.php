@@ -17,6 +17,7 @@ use Waca\Helpers\Logger;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\RequestEmailHelper;
 use Waca\PdoDatabase;
+use Waca\RequestStatus;
 use Waca\SessionAlert;
 use Waca\WebRequest;
 
@@ -41,7 +42,7 @@ class PageCloseRequest extends RequestActionBase
         $request = $this->getRequest($database);
         $request->setUpdateVersion(WebRequest::postInt('updateversion'));
 
-        if ($request->getStatus() === 'Closed') {
+        if ($request->getStatus() === RequestStatus::CLOSED) {
             throw new ApplicationLogicException('Request is already closed');
         }
 
@@ -58,7 +59,7 @@ class PageCloseRequest extends RequestActionBase
         }
 
         // I think we're good here...
-        $request->setStatus('Closed');
+        $request->setStatus(RequestStatus::CLOSED);
         $request->setReserved(null);
 
         Logger::closeRequest($database, $request, $template->getId(), null);

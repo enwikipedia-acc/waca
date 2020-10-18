@@ -21,6 +21,7 @@ use Waca\Fragments\RequestData;
 use Waca\Helpers\LogHelper;
 use Waca\Helpers\OAuthUserHelper;
 use Waca\PdoDatabase;
+use Waca\RequestStatus;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
 
@@ -124,7 +125,7 @@ class PageViewRequest extends InternalPageBase
     protected function setupTitle(Request $request)
     {
         $statusSymbol = self::STATUS_SYMBOL_OPEN;
-        if ($request->getStatus() === 'Closed') {
+        if ($request->getStatus() === RequestStatus::CLOSED) {
             if ($request->getWasCreated()) {
                 $statusSymbol = self::STATUS_SYMBOL_ACCEPTED;
             }
