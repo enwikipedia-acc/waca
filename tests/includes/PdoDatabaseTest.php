@@ -8,11 +8,11 @@
 
 namespace Waca\Tests;
 
+use PHPUnit\Framework\TestCase;
 use Waca\Exceptions\EnvironmentException;
 use Waca\PdoDatabase;
-use PHPUnit_Framework_TestCase;
 
-class PdoDatabaseTest extends PHPUnit_Framework_TestCase
+class PdoDatabaseTest extends TestCase
 {
     /** @var PdoDatabase */
     private $pdb;

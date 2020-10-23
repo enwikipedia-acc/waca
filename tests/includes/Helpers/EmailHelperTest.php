@@ -9,13 +9,13 @@
 namespace Waca\Tests\Helpers;
 
 use PHPUnit_Extensions_MockFunction;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Waca\Helpers\EmailHelper;
 
 /**
  * @requires extension runkit
  */
-class EmailHelperTest extends PHPUnit_Framework_TestCase
+class EmailHelperTest extends TestCase
 {
     /** @var PHPUnit_Extensions_MockFunction */
     private $mailMock;

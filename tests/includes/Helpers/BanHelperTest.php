@@ -10,14 +10,12 @@ namespace Waca\Tests\Helpers;
 
 use PDOStatement;
 use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
-use Waca\DataObjects\Ban;
+use PHPUnit\Framework\TestCase;
 use Waca\Helpers\BanHelper;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\IXffTrustProvider;
-use Waca\Providers\XffTrustProvider;
 
-class BanHelperTest extends PHPUnit_Framework_TestCase
+class BanHelperTest extends TestCase
 {
     /** @var BanHelper */
     private $banHelper;

@@ -9,10 +9,10 @@
 namespace Waca\Tests\Helpers;
 
 use PHPUnit_Extensions_MockFunction;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use Waca\Helpers\DebugHelper;
 
-class DebugHelperTest extends PHPUnit_Framework_TestCase
+class DebugHelperTest extends TestCase
 {
     /** @var DebugHelper */
     private $dbh;

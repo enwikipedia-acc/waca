@@ -8,9 +8,9 @@
 
 namespace Waca\Tests;
 
-use \PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
-class DataObjectTest extends PHPUnit_Framework_TestCase
+class DataObjectTest extends TestCase
 {
 	private $do;
 	private $dbh;

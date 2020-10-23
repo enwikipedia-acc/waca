@@ -9,7 +9,7 @@
 namespace Waca\Tests\Fragments;
 
 use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 use ReflectionMethod;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
@@ -22,7 +22,7 @@ use Waca\WebRequest;
  *
  * @package Waca\Tests\Fragments
  */
-class RequestDataPrivateDataTest extends PHPUnit_Framework_TestCase
+class RequestDataPrivateDataTest extends TestCase
 {
     /** @var PHPUnit_Framework_MockObject_MockObject|RequestData */
     private $requestDataMock;

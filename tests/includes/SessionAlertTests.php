@@ -8,14 +8,14 @@
 
 namespace Waca\Tests;
 
+use PHPUnit\Framework\TestCase;
 use PHPUnit_Framework_MockObject_MockObject;
-use PHPUnit_Framework_TestCase;
 use Waca\Providers\GlobalState\GlobalStateProvider;
 use Waca\SessionAlert;
 use Waca\Providers\GlobalState\FakeGlobalStateProvider;
 use Waca\WebRequest;
 
-class SessionAlertTests extends PHPUnit_Framework_TestCase
+class SessionAlertTests extends TestCase
 {
     /**
      * @var GlobalStateProvider|PHPUnit_Framework_MockObject_MockObject
