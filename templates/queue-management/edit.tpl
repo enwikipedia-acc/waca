@@ -55,10 +55,12 @@
                             <div class="form-group row">
                                 <div class="offset-sm-4 offset-md-3 offset-lg-4 offset-xl-3 col-md-9">
                                     <div class="custom-control custom-switch">
-                                        <input class="custom-control-input" type="checkbox" id="enabled" name="enabled" {if $enabled}checked{/if} {if $default}disabled{/if} />
+                                        <input class="custom-control-input" type="checkbox" id="enabled" name="enabled" {if $enabled}checked{/if} {if $default || $antispoof || $titleblacklist}disabled{/if} />
                                         <label class="custom-control-label" for="enabled">Enabled</label>
                                         <small class="form-text text-muted" id="defaultHelp">Allow new requests to enter this queue. Disabled queues still show in the interface if they contain requests.</small>
                                         {if $default}<small class="form-text text-danger">To unset this, please first mark another queue as the default queue.</small>{/if}
+                                        {if $antispoof}<small class="form-text text-danger">To unset this, please first mark another queue as the default AntiSpoof queue.</small>{/if}
+                                        {if $titleblacklist}<small class="form-text text-danger">To unset this, please first mark another queue as the default TitleBlacklist queue.</small>{/if}
                                     </div>
                                 </div>
                             </div>
@@ -70,6 +72,28 @@
                                         <label class="custom-control-label" for="default">Default queue</label>
                                         <small class="form-text text-muted" id="defaultHelp">Mark this queue as the default queue for all requests to arrive into.</small>
                                         {if $default}<small class="form-text text-danger">To unset this, please mark another queue as the default queue.</small>{/if}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="offset-sm-4 offset-md-3 offset-lg-4 offset-xl-3 col-md-9">
+                                    <div class="custom-control custom-switch">
+                                        <input class="custom-control-input" type="checkbox" id="antispoof" name="antispoof" {if $antispoof}checked disabled{/if} />
+                                        <label class="custom-control-label" for="antispoof">Default AntiSpoof queue</label>
+                                        <small class="form-text text-muted" id="antispoofHelp">Mark this queue as the default queue for requests with an AntiSpoof hit.</small>
+                                        {if $antispoof}<small class="form-text text-danger">To unset this, please mark another queue as the default AntiSpoof queue.</small>{/if}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group row">
+                                <div class="offset-sm-4 offset-md-3 offset-lg-4 offset-xl-3 col-md-9">
+                                    <div class="custom-control custom-switch">
+                                        <input class="custom-control-input" type="checkbox" id="titleblacklist" name="titleblacklist" {if $titleblacklist}checked disabled{/if} />
+                                        <label class="custom-control-label" for="titleblacklist">Default Title Blacklist queue</label>
+                                        <small class="form-text text-muted" id="titleblacklistHelp">Mark this queue as the default queue for requests with a Title Blacklist hit.</small>
+                                        {if $titleblacklist}<small class="form-text text-danger">To unset this, please mark another queue as the default Title Blacklist queue.</small>{/if}
                                     </div>
                                 </div>
                             </div>

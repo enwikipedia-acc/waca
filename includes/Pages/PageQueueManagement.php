@@ -10,6 +10,7 @@ namespace Waca\Pages;
 
 use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
+use Waca\Helpers\RequestQueueHelper;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -48,6 +49,8 @@ class PageQueueManagement extends InternalPageBase
             $queue->setApiName(WebRequest::postString('apiName'));
             $queue->setEnabled(WebRequest::postBoolean('enabled'));
             $queue->setDefault(WebRequest::postBoolean('default') && WebRequest::postBoolean('enabled'));
+            $queue->setDefaultAntispoof(WebRequest::postBoolean('antispoof') && WebRequest::postBoolean('enabled'));
+            $queue->setDefaultTitleBlacklist(WebRequest::postBoolean('titleblacklist') && WebRequest::postBoolean('enabled'));
             $queue->setHelp(WebRequest::postString('help'));
             $queue->setLogName(WebRequest::postString('logName'));
             $queue->setLegacyStatus(WebRequest::postString('legacyStatus'));
@@ -88,6 +91,8 @@ class PageQueueManagement extends InternalPageBase
             $this->assign('displayName', null);
             $this->assign('apiName', null);
             $this->assign('enabled', false);
+            $this->assign('antispoof', false);
+            $this->assign('titleblacklist', false);
             $this->assign('default', false);
             $this->assign('help', null);
             $this->assign('logName', null);
@@ -109,14 +114,17 @@ class PageQueueManagement extends InternalPageBase
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
 
+            $helper = new RequestQueueHelper();
+
+            $helper->configureDefaults(
+                $queue,
+                WebRequest::postBoolean('enabled'),
+                WebRequest::postBoolean('default'),
+                WebRequest::postBoolean('antispoof'),
+                WebRequest::postBoolean('titleblacklist'));
+
             $queue->setHeader(WebRequest::postString('header'));
             $queue->setDisplayName(WebRequest::postString('displayName'));
-
-            if (!$queue->isDefault()) {
-                $queue->setEnabled(WebRequest::postBoolean('enabled'));
-                $queue->setDefault(WebRequest::postBoolean('default') && WebRequest::postBoolean('enabled'));
-            }
-
             $queue->setHelp(WebRequest::postString('help'));
 
             $proceed = true;
@@ -166,6 +174,8 @@ class PageQueueManagement extends InternalPageBase
         $this->assign('apiName', $queue->getApiName());
         $this->assign('enabled', $queue->isEnabled());
         $this->assign('default', $queue->isDefault());
+        $this->assign('antispoof', $queue->isDefaultAntispoof());
+        $this->assign('titleblacklist', $queue->isDefaultTitleBlacklist());
         $this->assign('help', $queue->getHelp());
         $this->assign('logName', $queue->getLogName());
         $this->assign('legacyStatus', $queue->getLegacyStatus());

@@ -43,6 +43,12 @@
                                 {if $queue->isDefault()}
                                     <span class="badge badge-primary">Default queue</span>
                                 {/if}
+                                {if $queue->isDefaultAntispoof()}
+                                    <span class="badge badge-info">AntiSpoof</span>
+                                {/if}
+                                {if $queue->isDefaultTitleBlacklist()}
+                                    <span class="badge badge-info">Title Blacklist</span>
+                                {/if}
                             </td>
                             <td class="text-nowrap">
                                 {$queue->getDisplayName()|escape}

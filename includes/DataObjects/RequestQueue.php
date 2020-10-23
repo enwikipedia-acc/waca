@@ -159,10 +159,17 @@ SQL
     {
         // find and squish existing defaults
         if ($this->isDefault()) {
-            $squishStatement = $this->dbObject->prepare(<<<'SQL'
-                UPDATE requestqueue SET isdefault = 0 WHERE isdefault = 1 AND domain = :domain;
-SQL
-            );
+            $squishStatement = $this->dbObject->prepare('UPDATE requestqueue SET isdefault = 0 WHERE isdefault = 1 AND domain = :domain;');
+            $squishStatement->execute([':domain' => $this->domain]);
+        }
+
+        if ($this->isDefaultAntispoof()) {
+            $squishStatement = $this->dbObject->prepare('UPDATE requestqueue SET defaultantispoof = 0 WHERE defaultantispoof = 1 AND domain = :domain;');
+            $squishStatement->execute([':domain' => $this->domain]);
+        }
+
+        if ($this->isDefaultTitleBlacklist()) {
+            $squishStatement = $this->dbObject->prepare('UPDATE requestqueue SET defaulttitleblacklist = 0 WHERE defaulttitleblacklist = 1 AND domain = :domain;');
             $squishStatement->execute([':domain' => $this->domain]);
         }
 
@@ -424,4 +431,7 @@ SQL
     {
         $this->legacystatus = $legacyStatus;
     }
+
+
+
 }
