@@ -88,7 +88,7 @@ class PageRequestAccount extends PublicInterfacePageBase
         $request = new Request();
         $request->setDatabase($this->getDatabase());
 
-        $request->setName(WebRequest::postString('name'));
+        $request->setName(trim(WebRequest::postString('name')));
         $request->setEmail(WebRequest::postEmail('email'));
 
         $request->setIp(WebRequest::remoteAddress());
