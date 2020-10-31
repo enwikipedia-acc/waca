@@ -38,7 +38,7 @@
             </div>
             <div class="col-md-8 col-lg-6">
                 <select class="form-control" id="inputAction" name="action" required="required">
-                    <option value="" {if $defaultAction == ""}selected="selected"{/if}>(please select)</option>
+                    <option value="" {if $defaultAction == Waca\DataObjects\EmailTemplate::ACTION_NONE}selected="selected"{/if}>(please select)</option>
                     <option value="mail" {if $preloadAction == "mail"}selected="selected"{/if}>Only send the email</option>
                     <optgroup label="Send email and close request...">
                         <option value="created" {if $preloadAction == Waca\DataObjects\EmailTemplate::ACTION_CREATED || ($preloadAction === null && $defaultAction == Waca\DataObjects\EmailTemplate::ACTION_CREATED && $currentUser->getCreationMode() == 0)}selected="selected"{/if}>
@@ -59,9 +59,12 @@
                         </option>
                     </optgroup>
                     <optgroup label="Send email and defer to...">
-                        {foreach $requeststates as $state}
-                            <option value="{$state@key}" {if $preloadAction == $state@key || ($preloadAction === null && $defaultAction == $state@key )}selected="selected"{/if}>
-                                Defer to {$state.deferto|capitalize}</option>
+                        {foreach $requestQueues as $queue}
+                            {assign "queueSelected" "{$defaultAction == Waca\DataObjects\EmailTemplate::ACTION_DEFER && $defaultQueue == $queue->getId()}" }
+                            {if $queue->getApiName() !== $requestQueueApiName || {$queueSelected} }
+                                <option value="{$queue->getApiName()|escape}" {if $queueSelected}selected="selected"{/if}>
+                                    Defer to {$queue->getDisplayName()|escape}</option>
+                            {/if}
                         {/foreach}
                     </optgroup>
                 </select>

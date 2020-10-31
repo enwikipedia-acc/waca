@@ -12,7 +12,7 @@
                 {if $others->getStatus() == Waca\RequestStatus::CLOSED}
                     <span class="badge badge-danger">{$others->getStatus()|escape} - {$others->getClosureReason()|escape}</span>
                 {else}
-                    <span class="badge badge-success">{$others->getStatus()|escape}</span>
+                    <span class="badge badge-success">{$others->getQueueObject()->getHeader()|escape}</span>
                 {/if}
             </td>
         </tr>

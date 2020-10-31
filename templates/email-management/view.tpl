@@ -46,14 +46,14 @@
                     <label class="col-form-label" for="inputDefaultAction">Default action</label>
                 </div>
                 <div class="col-sm-9 col-lg-5 col-xl-4 lead">
-                    {if $emailTemplate->getDefaultAction() == ""}
+                    {if $emailTemplate->getDefaultAction() == Waca\DataObjects\EmailTemplate::ACTION_NONE}
                         <span class="badge badge-secondary">No default action</span>
                     {elseif $emailTemplate->getDefaultAction() == Waca\DataObjects\EmailTemplate::ACTION_CREATED}
                         <span class="badge badge-success">Close request as created</span>
                     {elseif $emailTemplate->getDefaultAction() == Waca\DataObjects\EmailTemplate::ACTION_NOT_CREATED}
                         <span class="badge badge-danger">Close request as NOT created</span>
-                    {else}
-                        <span class="badge badge-info">Defer to {$requeststates[$emailTemplate->getDefaultAction()].deferto|capitalize}</span>
+                    {elseif $emailTemplate->getDefaultAction() == Waca\DataObjects\EmailTemplate::ACTION_DEFER}
+                        <span class="badge badge-info">Defer to {$emailTemplate->getQueueObject()->getDisplayName()|escape}</span>
                     {/if}
                 </div>
             </div>

@@ -11,10 +11,12 @@ namespace Waca\Pages;
 use Exception;
 use DateTime;
 use Waca\DataObjects\Comment;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\RequestData;
@@ -144,16 +146,16 @@ class PageViewRequest extends InternalPageBase
      */
     protected function setupGeneralData(PdoDatabase $database)
     {
-        $config = $this->getSiteConfiguration();
-
         $this->assign('createAccountReason', 'Requested account at [[WP:ACC]], request #');
 
-        $this->assign('defaultRequestState', $config->getDefaultRequestStateKey());
-
-        $this->assign('requestStates', $config->getRequestStates());
+        // FIXME: domains
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $database);
+        $this->assign('defaultRequestState', RequestQueue::getDefaultQueue($database, 1)->getApiName());
+        $this->assign('activeRequestQueues', RequestQueue::getEnabledQueues($database));
 
         /** @var EmailTemplate $createdTemplate */
-        $createdTemplate = EmailTemplate::getById($config->getDefaultCreatedTemplateId(), $database);
+        $createdTemplate = EmailTemplate::getById($domain->getDefaultClose(), $database);
 
         $this->assign('createdHasJsQuestion', $createdTemplate->getJsquestion() != '');
         $this->assign('createdId', $createdTemplate->getId());

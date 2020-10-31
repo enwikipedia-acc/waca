@@ -47,20 +47,21 @@
                                     <label for="apiName" class="col-form-label">API name:</label>
                                 </div>
                                 <div class="col-sm-5 col-md-4 col-lg-5 col-xl-4">
-                                    <input type="text" class="form-control" id="apiName" name="apiName" maxlength="20" required="required" placeholder="checkuser" value="{$apiName|escape}" {if !$createMode}disabled{/if}/>
-                                    <small class="form-text text-muted" id="apiNameHelp">The key to use for this queue in the API. Cannot be changed after creation.</small>
+                                    <input type="text" class="form-control" id="apiName" name="apiName" maxlength="20" required="required" placeholder="checkuser" pattern="^[A-Za-z][a-zA-Z0-9_-]*$" value="{$apiName|escape}" {if !$createMode}disabled{/if}/>
+                                    <small class="form-text text-muted" id="apiNameHelp">The key to use for this queue in the API. Cannot be changed after creation. Must start with a letter, and only contain letters, numbers, hyphens and underscores.</small>
                                 </div>
                             </div>
 
                             <div class="form-group row">
                                 <div class="offset-sm-4 offset-md-3 offset-lg-4 offset-xl-3 col-md-9">
                                     <div class="custom-control custom-switch">
-                                        <input class="custom-control-input" type="checkbox" id="enabled" name="enabled" {if $enabled}checked{/if} {if $default || $antispoof || $titleblacklist}disabled{/if} />
+                                        <input class="custom-control-input" type="checkbox" id="enabled" name="enabled" {if $enabled}checked{/if} {if $default || $antispoof || $titleblacklist || $isTarget}disabled{/if} />
                                         <label class="custom-control-label" for="enabled">Enabled</label>
                                         <small class="form-text text-muted" id="defaultHelp">Allow new requests to enter this queue. Disabled queues still show in the interface if they contain requests.</small>
                                         {if $default}<small class="form-text text-danger">To unset this, please first mark another queue as the default queue.</small>{/if}
                                         {if $antispoof}<small class="form-text text-danger">To unset this, please first mark another queue as the default AntiSpoof queue.</small>{/if}
                                         {if $titleblacklist}<small class="form-text text-danger">To unset this, please first mark another queue as the default TitleBlacklist queue.</small>{/if}
+                                        {if $isTarget}<small class="form-text text-danger">To unset this, please first remove this queue as the target of an active email template. This can be done by deactivating the email template or by moving the email template to a new queue.</small>{/if}
                                     </div>
                                 </div>
                             </div>
@@ -109,7 +110,7 @@
                                 </div>
                                 <div class="col-sm-8 col-md-9 col-lg-8 col-xl-9">
                                     <textarea class="form-control" id="help" rows="5" name="help">{$help|escape}</textarea>
-                                    <small class="form-text text-muted" id="helpHelp">Help text for this queue.</small>
+                                    <small class="form-text text-muted" id="helpHelp">Help text for this queue. While multiple lines are supported, please keep it short!</small>
                                 </div>
                             </div>
                         </fieldset>
@@ -121,14 +122,7 @@
                                 </div>
                                 <div class="col-sm-5 col-md-4 col-lg-5 col-xl-4">
                                     <input type="text" class="form-control" id="logName" name="logName" maxlength="50" required="required" placeholder="checkuser" value="{$logName|escape}" {if !$createMode}disabled{/if}/>
-                                </div>
-                            </div>
-                            <div class="form-group row">
-                                <div class="col-sm-4 col-md-3 col-lg-4 col-xl-3">
-                                    <label for="legacyStatus" class="col-form-label">Legacy status:</label>
-                                </div>
-                                <div class="col-sm-5 col-md-4 col-lg-5 col-xl-4">
-                                    <input type="text" class="form-control" id="legacyStatus" name="legacyStatus" maxlength="40" required="required" placeholder="Checkuser" value="{$legacyStatus|escape}" {if !$createMode}disabled{/if}/>
+                                    <small class="form-text text-muted" id="helpHelp">Database key for log messages. Should be lowercase, preferably a single word</small>
                                 </div>
                             </div>
                         </fieldset>

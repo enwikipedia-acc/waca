@@ -23,7 +23,6 @@
                         <th>Target display name</th>
                         <th>API name</th>
                         <th>Help text</th>
-                        <th class="text-muted">Legacy status</th>
                         <th class="text-muted">Legacy log name</th>
                         {if $canEdit}
                             <th></th>
@@ -59,9 +58,6 @@
                                 {$queue->getApiName()|escape}
                             </td>
                             <td class="prewrap">{$queue->getHelp()|escape}</td>
-                            <td class="text-nowrap text-muted">
-                                {$queue->getLegacyStatus()|escape}
-                            </td>
                             <td class="text-nowrap text-muted">
                                 {$queue->getLogName()|escape}
                             </td>

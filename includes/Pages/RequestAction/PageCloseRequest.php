@@ -60,6 +60,7 @@ class PageCloseRequest extends RequestActionBase
 
         // I think we're good here...
         $request->setStatus(RequestStatus::CLOSED);
+        $request->setQueue(null);
         $request->setReserved(null);
 
         Logger::closeRequest($database, $request, $template->getId(), null);
@@ -152,7 +153,7 @@ class PageCloseRequest extends RequestActionBase
      */
     protected function confirmAccountCreated(Request $request, EmailTemplate $template)
     {
-        if ($template->getDefaultAction() === EmailTemplate::CREATED && $this->checkAccountCreated($request)) {
+        if ($template->getDefaultAction() === EmailTemplate::ACTION_CREATED && $this->checkAccountCreated($request)) {
             $this->showConfirmation($request, $template, 'close-confirmations/account-created.tpl');
 
             return true;

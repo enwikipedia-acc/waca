@@ -22,6 +22,17 @@
         </div>
     </div>
 
+    {if $requestQueue !== null}
+    <div class="row">
+        <div class="col-md-4">
+            <strong>Queue:</strong>
+        </div>
+        <div class="col-md-8">
+            {$requestQueue|escape}
+        </div>
+    </div>
+    {/if}
+
     {block name="requestDataPrimary"}<!-- Request data not available in this template -->{/block}
 
     {block name="requestDataPrimaryCheckUser"}<!-- Request data not available in this template -->{/block}

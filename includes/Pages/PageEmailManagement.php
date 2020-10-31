@@ -8,7 +8,9 @@
 
 namespace Waca\Pages;
 
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\EmailTemplate;
+use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
@@ -48,13 +50,13 @@ class PageEmailManagement extends InternalPageBase
         $database = $this->getDatabase();
         $template = $this->getTemplate($database);
 
-        $createdId = $this->getSiteConfiguration()->getDefaultCreatedTemplateId();
-        $requestStates = $this->getSiteConfiguration()->getRequestStates();
+        // FIXME: domains!
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $database);
 
         $this->assign('id', $template->getId());
         $this->assign('emailTemplate', $template);
-        $this->assign('createdid', $createdId);
-        $this->assign('requeststates', $requestStates);
+        $this->assign('createdid', $domain->getDefaultClose());
 
         $this->setTemplate('email-management/view.tpl');
     }
@@ -86,8 +88,13 @@ class PageEmailManagement extends InternalPageBase
         $database = $this->getDatabase();
         $template = $this->getTemplate($database);
 
-        $createdId = $this->getSiteConfiguration()->getDefaultCreatedTemplateId();
-        $requestStates = $this->getSiteConfiguration()->getRequestStates();
+        // FIXME: domains!
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $database);
+
+        $createdId = $domain->getDefaultClose();
+
+        $requestQueues = RequestQueue::getEnabledQueues($database);
 
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
@@ -121,7 +128,7 @@ class PageEmailManagement extends InternalPageBase
             $this->assign('id', $template->getId());
             $this->assign('emailTemplate', $template);
             $this->assign('createdid', $createdId);
-            $this->assign('requeststates', $requestStates);
+            $this->assign('requestQueues', $requestQueues);
 
             $this->setTemplate('email-management/edit.tpl');
         }
@@ -154,7 +161,20 @@ class PageEmailManagement extends InternalPageBase
         }
         $template->setJsquestion($jsquestion);
 
-        $template->setDefaultAction(WebRequest::postString('defaultaction'));
+        switch (WebRequest::postString('defaultaction')) {
+            case EmailTemplate::ACTION_NONE:
+            case EmailTemplate::ACTION_CREATED:
+            case EmailTemplate::ACTION_NOT_CREATED:
+                $template->setDefaultAction(WebRequest::postString('defaultaction'));
+                $template->setQueue(null);
+                break;
+            default:
+                $template->setDefaultAction(EmailTemplate::ACTION_DEFER);
+                // FIXME: domains!
+                $template->setQueue(RequestQueue::getByApiName($this->getDatabase(), WebRequest::postString('defaultaction'), 1)->getId());
+                break;
+        }
+
         $template->setActive(WebRequest::postBoolean('active'));
         $template->setPreloadOnly(WebRequest::postBoolean('preloadonly'));
     }
@@ -165,7 +185,7 @@ class PageEmailManagement extends InternalPageBase
 
         $database = $this->getDatabase();
 
-        $requestStates = $this->getSiteConfiguration()->getRequestStates();
+        $requestQueues = RequestQueue::getEnabledQueues($database);
 
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
@@ -194,7 +214,7 @@ class PageEmailManagement extends InternalPageBase
             $this->assign('emailTemplate', new EmailTemplate());
             $this->assign('createdid', -2);
 
-            $this->assign('requeststates', $requestStates);
+            $this->assign('requestQueues', $requestQueues);
             $this->setTemplate('email-management/edit.tpl');
         }
     }

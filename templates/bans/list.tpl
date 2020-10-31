@@ -20,7 +20,7 @@
             <td>
                 {if $ban->getAction() == $ban::ACTION_BLOCK}<abbr title="Blocks the user from submitting the request" data-toggle="tooltip">Block</abbr>{/if}
                 {if $ban->getAction() == $ban::ACTION_DROP}<abbr title="Accepts the request for processing, but immediately drops it." data-toggle="tooltip">Drop</abbr>{/if}
-                {if $ban->getAction() == $ban::ACTION_DEFER}<abbr title="Defers the request into the specified queue" data-toggle="tooltip">Defer to {$ban->getActionTarget()|escape}</abbr>{/if}
+                {if $ban->getAction() == $ban::ACTION_DEFER}<abbr title="Defers the request into the specified queue" data-toggle="tooltip">Defer</abbr> to {$ban->getTargetQueueObject()->getDisplayName()|escape}{/if}
                 {if $ban->getAction() == $ban::ACTION_NONE}<abbr title="Does nothing but flag the request." data-toggle="tooltip">Report only</abbr>{/if}
             </td>
             <td>{include file="bans/banreason.tpl"}</td>

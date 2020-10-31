@@ -14,6 +14,7 @@ use Waca\DataObjects\Comment;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\Notification;
 use Waca\DataObjects\Request;
+use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
 use Waca\ExceptionHandler;
@@ -41,8 +42,6 @@ class IrcNotificationHelper
     private $instanceName;
     /** @var string */
     private $baseUrl;
-    /** @var array */
-    private $requestStates;
     /** @var SiteConfiguration */
     private $siteConfiguration;
 
@@ -72,7 +71,6 @@ class IrcNotificationHelper
         $this->notificationType = $siteConfiguration->getIrcNotificationType();
         $this->instanceName = $siteConfiguration->getIrcNotificationsInstance();
         $this->baseUrl = $siteConfiguration->getBaseUrl();
-        $this->requestStates = $siteConfiguration->getRequestStates();
 
         $this->currentUser = User::getCurrent($primaryDatabase);
     }
@@ -303,9 +301,10 @@ class IrcNotificationHelper
      */
     public function requestDeferred(Request $request)
     {
-        $availableRequestStates = $this->requestStates;
+        /** @var RequestQueue $queue */
+        $queue = RequestQueue::getById($request->getQueue(), $request->getDatabase());
 
-        $deferTo = $availableRequestStates[$request->getStatus()]['deferto'];
+        $deferTo = $queue->getDisplayName();
         $username = $this->currentUser->getUsername();
 
         $this->send("Request {$request->getId()} ({$request->getName()}) deferred to {$deferTo} by {$username}");
@@ -319,9 +318,10 @@ class IrcNotificationHelper
      */
     public function requestDeferredWithMail(Request $request)
     {
-        $availableRequestStates = $this->requestStates;
+        /** @var RequestQueue $queue */
+        $queue = RequestQueue::getById($request->getQueue(), $request->getDatabase());
 
-        $deferTo = $availableRequestStates[$request->getStatus()]['deferto'];
+        $deferTo = $queue->getDisplayName();
         $username = $this->currentUser->getUsername();
         $id = $request->getId();
         $name = $request->getName();

@@ -55,7 +55,7 @@
 
                         <select class="form-control" id="inputDefaultAction" aria-describedby="templateDefaultActionHelp"
                                 name="defaultaction" {if $id == $createdid} disabled{/if}>
-                            <option value="" {if $emailTemplate->getDefaultAction() == ""}selected="selected"{/if}>
+                            <option value="{Waca\DataObjects\EmailTemplate::ACTION_NONE}" {if $emailTemplate->getDefaultAction() == Waca\DataObjects\EmailTemplate::ACTION_NONE}selected="selected"{/if}>
                                 No default
                             </option>
                             <optgroup label="Close request...">
@@ -69,10 +69,9 @@
                                 </option>
                             </optgroup>
                             <optgroup label="Defer to...">
-                                {foreach $requeststates as $state}
-                                    <option value="{$state@key}" {if $emailTemplate->getDefaultAction() == $state@key}selected="selected"{/if}>
-                                        Defer to {$state.deferto|capitalize}
-                                    </option>
+                                {foreach $requestQueues as $queue}
+                                    <option value="{$queue->getApiName()|escape}" {if $emailTemplate->getQueue() == $queue->getId() && $emailTemplate->getDefaultAction() == 'defer'}selected="selected"{/if}>
+                                        Defer to {$queue->getDisplayName()|escape}</option>
                                 {/foreach}
                             </optgroup>
                         </select>

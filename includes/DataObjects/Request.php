@@ -13,6 +13,7 @@ use DateTimeImmutable;
 use Exception;
 use Waca\DataObject;
 use Waca\Exceptions\OptimisticLockFailedException;
+use Waca\RequestStatus;
 
 /**
  * Request data object
@@ -25,7 +26,8 @@ class Request extends DataObject
     private $ip;
     private $name;
     /** @var string|null */
-    private $status = "Open";
+    private $status = RequestStatus::OPEN;
+    private $queue;
     private $date;
     private $emailsent = 0;
     private $emailconfirm;
@@ -47,10 +49,12 @@ class Request extends DataObject
             $statement = $this->dbObject->prepare(<<<SQL
 INSERT INTO `request` (
 	email, ip, name, status, date, emailsent,
-	emailconfirm, reserved, useragent, forwardedip
+	emailconfirm, reserved, useragent, forwardedip,
+    queue
 ) VALUES (
 	:email, :ip, :name, :status, CURRENT_TIMESTAMP(), :emailsent,
-	:emailconfirm, :reserved, :useragent, :forwardedip
+	:emailconfirm, :reserved, :useragent, :forwardedip,
+    :queue
 );
 SQL
             );
@@ -63,6 +67,7 @@ SQL
             $statement->bindValue(':reserved', $this->reserved);
             $statement->bindValue(':useragent', $this->useragent);
             $statement->bindValue(':forwardedip', $this->forwardedip);
+            $statement->bindValue(':queue', $this->queue);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -79,6 +84,7 @@ UPDATE `request` SET
 	emailsent = :emailsent,
 	emailconfirm = :emailconfirm,
 	reserved = :reserved,
+    queue = :queue,
 	updateversion = updateversion + 1
 WHERE id = :id AND updateversion = :updateversion;
 SQL
@@ -91,6 +97,7 @@ SQL
             $statement->bindValue(':emailsent', $this->emailsent);
             $statement->bindValue(':emailconfirm', $this->emailconfirm);
             $statement->bindValue(':reserved', $this->reserved);
+            $statement->bindValue(':queue', $this->queue);
 
             if (!$statement->execute()) {
                 throw new Exception($statement->errorInfo());
@@ -397,5 +404,32 @@ SQL
             . '|' . $this->status; // to rudimentarily invalidate the token on status change
 
         return hash('sha256', $data);
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getQueue() : ?int
+    {
+        return $this->queue;
+    }
+
+    /**
+     * @return RequestQueue|null
+     */
+    public function getQueueObject(): ?RequestQueue
+    {
+        /** @var RequestQueue $queue */
+        $queue = RequestQueue::getById($this->queue, $this->getDatabase());
+
+        return $queue === false ? null : $queue;
+    }
+
+    /**
+     * @param int|null $queue
+     */
+    public function setQueue(?int $queue): void
+    {
+        $this->queue = $queue;
     }
 }
