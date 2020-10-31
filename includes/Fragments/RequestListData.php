@@ -73,6 +73,9 @@ trait RequestListData
             $requestList->requestTrustedIp[$request->getId()] = $trustedIp;
             $requestList->relatedEmailRequests[$request->getId()] = $emailCount;
             $requestList->relatedIpRequests[$request->getId()] = $ipCount;
+
+            $emailDomain = explode("@", $request->getEmail())[1];
+            $requestList->commonEmail[$request->getId()] = in_array($emailDomain, $this->getSiteConfiguration()->getCommonEmailDomains());
         }
 
         $currentUser = User::getCurrent($this->getDatabase());

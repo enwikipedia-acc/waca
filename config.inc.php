@@ -251,6 +251,8 @@ $totpEncryptionKey = "1234";
 // external resource cache epoch value. Bump me to force clients to reload assets
 $resourceCacheEpoch = 1;
 
+$commonEmailDomains = ['gmail.com', 'hotmail.com', 'outlook.com'];
+
 /**************************************************************************
  **********                   IMPORTANT NOTICE                    **********
  ***************************************************************************
@@ -365,4 +367,5 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setRegistrationAllowed($allowRegistration)
     ->setCspReportUri($cspReportUri)
     ->setResourceCacheEpoch($resourceCacheEpoch)
-    ->setLocationProviderApiKey($locationProviderApiKey);
+    ->setLocationProviderApiKey($locationProviderApiKey)
+    ->setCommonEmailDomains($commonEmailDomains);

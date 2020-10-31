@@ -91,6 +91,7 @@ class SiteConfiguration
     private $registrationAllowed = true;
     private $cspReportUri = null;
     private $resourceCacheEpoch = 1;
+    private $commonEmailDomains = [];
 
     /**
      * Gets the base URL of the tool
@@ -1048,6 +1049,26 @@ class SiteConfiguration
     public function setResourceCacheEpoch(int $resourceCacheEpoch): SiteConfiguration
     {
         $this->resourceCacheEpoch = $resourceCacheEpoch;
+
+        return $this;
+}
+
+    /**
+     * @return array
+     */
+    public function getCommonEmailDomains(): array
+    {
+        return $this->commonEmailDomains;
+    }
+
+    /**
+     * @param array $commonEmailDomains
+     *
+     * @return SiteConfiguration
+     */
+    public function setCommonEmailDomains(array $commonEmailDomains): SiteConfiguration
+    {
+        $this->commonEmailDomains = $commonEmailDomains;
 
         return $this;
 }

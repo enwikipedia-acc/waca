@@ -40,6 +40,7 @@
                         >
                             {$list->relatedEmailRequests[$r->getId()]}
                         </span>
+                        {if !$list->commonEmail[$r->getId()]}<span class="badge badge-warning badge-pill" data-toggle="tooltip" title="Uncommon email domain"><i class="fas fa-gem"></i></span>{/if}
                     {/if}
                 </td>
 
