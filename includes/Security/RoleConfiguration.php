@@ -12,6 +12,7 @@ use Waca\DataObjects\User;
 use Waca\Pages\PageBan;
 use Waca\Pages\PageEditComment;
 use Waca\Pages\PageEmailManagement;
+use Waca\Pages\PageErrorLogViewer;
 use Waca\Pages\PageExpandedRequestList;
 use Waca\Pages\PageJobQueue;
 use Waca\Pages\PageLog;
@@ -271,7 +272,12 @@ class RoleConfiguration
             PageMultiFactor::class => array(
                 'enableU2F'         => self::ACCESS_ALLOW,
                 'disableU2F'        => self::ACCESS_ALLOW,
-            )
+            ),
+            PageErrorLogViewer::class => array(
+                self::MAIN      => self::ACCESS_ALLOW,
+                'view'          => self::ACCESS_ALLOW,
+                'remove'        => self::ACCESS_ALLOW,
+            ),
         ),
         'botCreation'       => array(
             '_description'    => 'A user allowed to use the bot to perform account creations',

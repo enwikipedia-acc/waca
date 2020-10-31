@@ -89,6 +89,7 @@ trait TemplateOutput
         $this->assign('nav__canUserMgmt', false);
         $this->assign('nav__canViewRequest', false);
         $this->assign('nav__canJobQueue', false);
+        $this->assign('nav__canViewRequest', false);
 
         $this->assign('page', $this);
     }

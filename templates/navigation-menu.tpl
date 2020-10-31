@@ -45,6 +45,10 @@
                     {if $nav__canJobQueue}
                         <a class="dropdown-item" href="{$baseurl}/internal.php/jobQueue"><i class="fas fa-tools"></i> Job Queue</a>
                     {/if}
+
+                    {if $nav__canErrorLog}
+                        <a class="dropdown-item" href="{$baseurl}/internal.php/errorLog"><i class="fas fa-bug"></i> Exception Log</a>
+                    {/if}
                 </div>
             </li>
         {/if}
