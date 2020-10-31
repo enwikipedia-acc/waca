@@ -165,48 +165,6 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($this->si->getMiserModeLimit(), $newValue);
     }
 
-    function testRequestStates()
-    {
-        $newValue = array(
-            'Open'          => array(
-                'defertolog' => 'users', // don't change or you'll break old logs
-                'deferto'    => 'users',
-                'header'     => 'Open requests',
-                'api'        => "open",
-            ),
-            'Flagged users' => array(
-                'defertolog' => 'flagged users', // don't change or you'll break old logs
-                'deferto'    => 'flagged users',
-                'header'     => 'Flagged user needed',
-                'api'        => "admin",
-            ),
-            'Checkuser'     => array(
-                'defertolog' => 'checkusers', // don't change or you'll break old logs
-                'deferto'    => 'checkusers',
-                'header'     => 'Checkuser needed',
-                'api'        => "checkuser",
-            ),
-            'Dummy'         => array(
-                'defertolog' => 'dummy', // don't change or you'll break old logs
-                'deferto'    => 'dummy',
-                'header'     => 'Dummy needed',
-                'api'        => "dummy",
-            ),
-        );
-
-        $test1 = $this->si->getRequestStates();
-        $this->assertInternalType('array', $test1);
-        $this->assertArrayHasKey("Open", $test1);
-        $this->assertArrayNotHasKey("Dummy", $test1);
-
-        $this->assertInstanceOf(SiteConfiguration::class, $this->si->setRequestStates($newValue));
-
-        $test2 = $this->si->getRequestStates();
-        $this->assertInternalType('array', $test2);
-        $this->assertArrayHasKey("Open", $test2);
-        $this->assertArrayHasKey("Dummy", $test2);
-    }
-
     function testSquidList()
     {
         $newValue = array("this" => "that");
@@ -220,36 +178,6 @@ class SiteConfigurationTest extends \PHPUnit_Framework_TestCase
         $test2 = $this->si->getSquidList();
         $this->assertInternalType('array', $test2);
         $this->assertArrayHasKey("this", $test2);
-    }
-
-    function testDefaultCreatedTemplateId()
-    {
-        $newValue = 5;
-
-        $this->assertEquals($this->si->getDefaultCreatedTemplateId(), 1);
-
-        $this->assertInstanceOf(SiteConfiguration::class, $this->si->setDefaultCreatedTemplateId($newValue));
-        $this->assertEquals($this->si->getDefaultCreatedTemplateId(), $newValue);
-    }
-
-    function testDefaultRequestStateKey()
-    {
-        $newValue = "Romeo";
-
-        $this->assertEquals($this->si->getDefaultRequestStateKey(), "Open");
-
-        $this->assertInstanceOf(SiteConfiguration::class, $this->si->setDefaultRequestStateKey($newValue));
-        $this->assertEquals($this->si->getDefaultRequestStateKey(), $newValue);
-    }
-
-    function testDefaultRequestDeferredStateKey()
-    {
-        $newValue = "Juliet";
-
-        $this->assertEquals($this->si->getDefaultRequestDeferredStateKey(), "Flagged users");
-
-        $this->assertInstanceOf(SiteConfiguration::class, $this->si->setDefaultRequestDeferredStateKey($newValue));
-        $this->assertEquals($this->si->getDefaultRequestDeferredStateKey(), $newValue);
     }
 
     function testUseStrictTransportSecurity()

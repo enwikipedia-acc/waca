@@ -16,35 +16,49 @@ class MigrateToDomains extends ConsoleTaskBase
 {
     public function execute()
     {
-        $requestStates = $this->getSiteConfiguration()->getRequestStates();
+        $siteConfiguration = $this->getSiteConfiguration();
+
+        /** @noinspection PhpDeprecationInspection */
+        $requestStates = $siteConfiguration->getRequestStates();
         $database = $this->getDatabase();
 
         $domain = new Domain();
         $domain->setEnabled(true);
         $domain->setShortName('enwiki');
         $domain->setLongName('English Wikipedia');
-        $domain->setWikiArticlePath($this->getSiteConfiguration()->getMediawikiScriptPath());
-        $domain->setWikiApiPath($this->getSiteConfiguration()->getMediawikiWebServiceEndpoint());
+        $domain->setWikiArticlePath($siteConfiguration->getMediawikiScriptPath());
+        $domain->setWikiApiPath($siteConfiguration->getMediawikiWebServiceEndpoint());
         $domain->setEnabled(true);
-        $domain->setDefaultClose($this->getSiteConfiguration()->getDefaultCreatedTemplateId());
+        /** @noinspection PhpDeprecationInspection */
+        $domain->setDefaultClose($siteConfiguration->getDefaultCreatedTemplateId());
         $domain->setDefaultLanguage('en');
         $domain->setEmailSender('accounts-enwiki-l@lists.wikimedia.org');
-        $domain->setNotificationTarget($this->getSiteConfiguration()->getIrcNotificationType());
+        $domain->setNotificationTarget($siteConfiguration->getIrcNotificationType());
 
         $domain->setDatabase($database);
         $domain->save();
 
-        $first = true;
         foreach ($requestStates as $key => $data) {
             $state = new RequestQueue();
-            $state->setDefault($first);
-            $state->setDefaultAntispoof($first);
-            $state->setDefaultTitleBlacklist($first);
+
+            /** @noinspection PhpDeprecationInspection */
+            if ($siteConfiguration->getDefaultRequestStateKey() === $key) {
+                $state->setDefault(true);
+            }
+
+            /** @noinspection PhpDeprecationInspection */
+            if ($siteConfiguration->getDefaultRequestDeferredStateKey() === $key) {
+                $state->setDefaultAntispoof(true);
+                $state->setDefaultTitleBlacklist(true);
+            }
+
             $state->setDomain($domain->getId());
             $state->setApiName($data['api']);
             $state->setDisplayName($data['deferto']);
             $state->setHeader($data['header']);
+            /** @noinspection PhpDeprecationInspection */
             $state->setLogName($data['defertolog']);
+            /** @noinspection PhpDeprecationInspection */
             $state->setLegacyStatus($key);
             $state->setEnabled(true);
 
@@ -54,8 +68,6 @@ class MigrateToDomains extends ConsoleTaskBase
 
             $state->setDatabase($database);
             $state->save();
-
-            $first = false;
         }
 
         /** @noinspection SqlWithoutWhere */
