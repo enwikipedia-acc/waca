@@ -19,6 +19,8 @@ class PageErrorLogViewer extends InternalPageBase
      */
     protected function main()
     {
+        $this->setHtmlTitle('Exception viewer');
+
         $user = User::getCurrent($this->getDatabase());
         $this->assign('canView', $this->barrierTest('view', $user));
         $this->assign('canRemove', $this->barrierTest('remove', $user));
@@ -49,6 +51,8 @@ class PageErrorLogViewer extends InternalPageBase
 
     protected function view()
     {
+        $this->setHtmlTitle('Exception viewer');
+
         $requestedErrorId = WebRequest::getString('id');
         $safeFilename = $this->safetyCheck($requestedErrorId);
 
