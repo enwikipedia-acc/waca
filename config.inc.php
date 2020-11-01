@@ -23,12 +23,6 @@ $toolserver_password = "";
 $toolserver_host = "";
 $toolserver_database = "";
 
-// The antispoof configuration.
-$antispoof_equivset = "equivset.php";
-$antispoof_host = "sql-s1";
-$antispoof_db = "enwiki_p";
-$antispoof_table = "spoofuser";
-
 /**********************************
  * File paths etc
  */
@@ -40,12 +34,6 @@ $metaWikimediaWebServiceEndpoint = "https://meta.wikimedia.org/w/api.php";
 // URL of the current copy of the tool.
 $baseurl = "https://accounts.wmflabs.org";
 
-// Pathname to the local installation of Peachy.
-$peachyPath = "";
-
-// Location outside web directory to place temporary files.
-$varfilepath = "/projects/acc/";
-
 // Set up cookies and session information.
 $cookiepath = '/acc/';
 $sessionname = 'ACC';
@@ -56,23 +44,12 @@ $xff_trusted_hosts_file = '../TrustedXFF/trusted-hosts.txt';
  */
 
 $dontUseDb = 0; // Disable the tool completely.
-$dontUseWikiDb = 0; // Disable access to the Wiki database.
 $dontUseDbReason = ""; // Reason for disabling the tool.
 $dontUseDbCulprit = ""; // Your name, or the person who broke the tool.
 
 /**************************************
  * ACCBot IRC bot
  */
-
-$ircBotDaemonise = true; // Run the IRC bot as a daemon, detached from the terminal.
-
-$ircBotNickServPassword = ""; // Password for ACCBot's Nickserv account.
-$ircBotCommunicationKey = ""; // Key used to communicate with the ACCBot.
-$ircBotNetworkHost = "chat.freenode.net"; // The host to use for connecting.
-$ircBotNetworkPort = 6667; // The port on the particular host.
-$ircBotChannel = "#wikipedia-en-accounts"; // The channel in which the discussions are.
-$ircBotNickname = "ACCBot"; // The nickname of the ACCBot.
-$ircBotCommandTrigger = '!'; // The ACCBot's command trigger.
 
 $ircBotNotificationRoutingKey = 1; // Helpmebot's notification type ID.
 $ircBotNotificationsEnabled = 1; // Enable Helpmebot's notifications.
@@ -98,31 +75,13 @@ $emailConfirmationExpiryDays = 7;
 
 $allowRegistration = true;
 
-// Parameters for performing a newbie check on tool registration.
-$onRegistrationNewbieCheck = true; // Enable the newbie checking.
-$onRegistrationNewbieCheckEditCount = 20; // Minimum amount of edits on Wikipedia.
-$onRegistrationNewbieCheckAge = 5184000; // Account age on Wikipedia in seconds.
-
 // Force identification to the foundation
 $forceIdentification = true;
 
 // Time to cache positive automatic identification results, as a MySQL time interval
 $identificationCacheExpiry = "1 DAY";
 
-// minimum password version
-//   0 = hashed
-//   1 = hashed, salted
-$minimumPasswordVersion = 0;
-
 $communityUsername = "[Community]";
-
-/***********************************
- * Reservations
- */
-
-// Reserve requests to a specific user by default.
-// Adapted from livehack by st - use the userid, zero for unreserved.
-$defaultReserver = 0;
 
 /************************************
  * OAuth Configuration
@@ -137,8 +96,6 @@ $oauthLegacyTokens = [];
 // path to Special:OAuth on target wiki.
 // don't use pretty urls, see [[bugzilla:57500]]
 $oauthBaseUrl = "https://en.wikipedia.org/w/index.php?title=Special:OAuth";
-// use this for requests from the server, if some special url is needed.
-$oauthBaseUrlInternal = "https://en.wikipedia.org/w/index.php?title=Special:OAuth";
 
 $oauthMediaWikiCanonicalServer = "http://en.wikipedia.org";
 
@@ -157,14 +114,7 @@ $creationBotPassword = '';
 // ------------------------
 // To set this up, change the class to "IpLocationProvider", and put *your* ipinfodb API key in.
 // You'll need to sign up at IpInfoDb.com to get an API key - it's free.
-$locationProviderClass = "FakeLocationProvider";
-$locationProviderApiKey = "super secret"; // ipinfodb api key
-
-// RDNS Provider ( RDnsLookupProvider / CachedRDnsLookupProvider / FakeRDnsLookupProvider)
-$rdnsProviderClass = "CachedRDnsLookupProvider";
-
-$antispoofProviderClass = "FakeAntiSpoofProvider";
-$xffTrustProviderClass = "XffTrustProvider";
+$locationProviderApiKey = null; // ipinfodb api key
 
 /***********************************
  * Data clear script
@@ -176,11 +126,7 @@ $dataclear_interval = '15 DAY';
  * Other stuff that doesn't fit in.
  */
 
-$enableSQLError = 0; // Enable the display of SQL errors.
 $enableTitleblacklist = 0; // Enable Title Blacklist checks.
-
-// Enable the use of PATH_INFO for request parameters to prettify URLs.
-$usePathInfo = true;
 
 // user agent of the tool.
 $toolUserAgent = "Wikipedia-ACC Tool/0.1 (+https://accounts.wmflabs.org/internal.php/team)";
@@ -188,44 +134,8 @@ $toolUserAgent = "Wikipedia-ACC Tool/0.1 (+https://accounts.wmflabs.org/internal
 // list of squid proxies requests go through.
 $squidIpList = array();
 
-// request states
-$availableRequestStates = array(
-    'Open'          => array(
-        'defertolog' => 'users', // don't change or you'll break old logs
-        'deferto'    => 'users',
-        'header'     => 'Open requests',
-        'api'        => "open",
-        'queuehelp'  => null
-    ),
-    'Flagged users' => array(
-        'defertolog' => 'flagged users', // don't change or you'll break old logs
-        'deferto'    => 'flagged users',
-        'header'     => 'Flagged user needed',
-        'api'        => "admin",
-        'queuehelp'  => 'This queue lists the requests which require a user with the <code>accountcreator</code> flag to create.<br />If creation is determined to be the correct course of action, requests here will require the overriding the AntiSpoof checks or the title blacklist in order to create. It is recommended to try to create the account <em>without</em> checking the flags to validate the results of the AntiSpoof and/or title blacklist hits.'
-    ),
-    'Checkuser'     => array(
-        'defertolog' => 'checkusers', // don't change or you'll break old logs
-        'deferto'    => 'checkusers',
-        'header'     => 'Checkuser needed',
-        'api'        => "checkuser",
-        'queuehelp'  => null
-    ),
-);
-
-$defaultRequestStateKey = 'Open';
-
-$providerCacheExpiry = $dataclear_interval;
-
 // miser mode
 $requestLimitShowOnly = 25;
-
-// Enables the Smarty debugging console. This should only be used for development and even then
-// be left false when you don't need it, since this will open a popup window on every page load.
-$smartydebug = false;
-
-// ID of the Email template used for the main "Created!" close reason.
-$createdid = 1;
 
 // HSTS expiry - use false to disable header.
 $strictTransportSecurityExpiry = false;
