@@ -11,8 +11,8 @@
         <p>Apparently, this is supposed to fix it.</p>
         <p>Once the nature of the problem is known, we will insert it here: <b>{$dontUseDbReason}</b></p>
         {if !$hideCulprit}<p>Once the identity of the culprit(s) is known, trout should be applied here: <b>{$dontUseDbCulprit}</b></p>{/if}
-        <p>Although the tool is dead and the Bot is sleeping, email still works fine. So, we expect a swarm of irate potential editors to bury us in requests shortly. Please keep an eye on the mailing list. Remember to 'cc' or 'bcc' accounts-enwiki-l@lists.wikimedia.org when you reply to let others know you have replied.</p>
-        <p>For more information, <a href="irc://irc.freenode.net/#wikipedia-en-accounts">join IRC</a>, check the mailing list (<a href="https://lists.wikimedia.org/mailman/listinfo/accounts-enwiki-l">sign up if you need to</a>) or just light candles – they may help too.</p>
+        <p>Although the tool is dead and the Bot is sleeping, email still works fine. So, we expect a swarm of irate potential editors to bury us in requests shortly. Please keep an eye on the mailing list. Remember to 'cc' or 'bcc' the mailing list address when you reply to let others know you have replied.</p>
+        <p>For more information, join IRC, check the mailing list or just light candles – they may help too.</p>
     </div>
 </div>
 {/block}

@@ -39,20 +39,20 @@ class EmailHelperTest extends TestCase
     {
         $this->mailMock->expects($this->once())
             ->with('noreply@stwalkerster.co.uk', 'test mail subject', 'test mail content',
-                "From: accounts-enwiki-l@lists.wikimedia.org\r\n")
+                "From: sender@example.com\r\n")
             ->will($this->returnValue(true));
 
-        $this->emailHelper->sendMail('noreply@stwalkerster.co.uk', 'test mail subject', 'test mail content');
+        $this->emailHelper->sendMail('sender@example.com', 'noreply@stwalkerster.co.uk', 'test mail subject', 'test mail content');
     }
 
     public function testSendMailWithHeader()
     {
         $this->mailMock->expects($this->once())
             ->with('noreply@stwalkerster.co.uk', 'test mail subject', 'test mail content',
-                "X-ACC-Test: foobar\r\nFrom: accounts-enwiki-l@lists.wikimedia.org\r\n")
+                "X-ACC-Test: foobar\r\nFrom: sender@example.com\r\n")
             ->will($this->returnValue(true));
 
-        $this->emailHelper->sendMail('noreply@stwalkerster.co.uk', 'test mail subject', 'test mail content',
+        $this->emailHelper->sendMail('sender@example.com', 'noreply@stwalkerster.co.uk', 'test mail subject', 'test mail content',
             array('X-ACC-Test' => 'foobar'));
     }
 
