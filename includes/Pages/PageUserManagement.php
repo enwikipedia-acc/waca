@@ -8,6 +8,7 @@
 
 namespace Waca\Pages;
 
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\DataObjects\UserRole;
 use Waca\Exceptions\ApplicationLogicException;
@@ -435,7 +436,11 @@ class PageUserManagement extends InternalPageBase
             $this->assign('oldUsername', $oldUsername);
             $this->assign('mailingList', $this->adminMailingList);
 
+            // FIXME: domains!
+            /** @var Domain $domain */
+            $domain = Domain::getById(1, $database);
             $this->getEmailHelper()->sendMail(
+                $domain->getEmailSender(),
                 $user->getEmail(),
                 'Your username on WP:ACC has been changed',
                 $this->fetchTemplate('usermanagement/emails/renamed.tpl'),
@@ -555,7 +560,11 @@ class PageUserManagement extends InternalPageBase
         $this->assign('actionReason', $reason);
         $this->assign('mailingList', $this->adminMailingList);
 
+        // FIXME: domains!
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $this->getDatabase());
         $this->getEmailHelper()->sendMail(
+            $domain->getEmailSender(),
             $user->getEmail(),
             $subject,
             $this->fetchTemplate($template),

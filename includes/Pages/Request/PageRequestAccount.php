@@ -10,6 +10,7 @@ namespace Waca\Pages\Request;
 
 use Exception;
 use Waca\DataObjects\Comment;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\RequestQueue;
 use Waca\Exceptions\OptimisticLockFailedException;
@@ -175,7 +176,11 @@ class PageRequestAccount extends PublicInterfacePageBase
         $this->assign("hash", $request->getEmailConfirm());
 
         // Sends the confirmation email to the user.
+        // FIXME: domains
+        /** @var Domain $domain */
+        $domain = Domain::getById(1, $this->getDatabase());
         $this->getEmailHelper()->sendMail(
+            $domain->getEmailSender(),
             $request->getEmail(),
             "[ACC #{$request->getId()}] English Wikipedia Account Request",
             $this->fetchTemplate('request/confirmation-mail.tpl'));

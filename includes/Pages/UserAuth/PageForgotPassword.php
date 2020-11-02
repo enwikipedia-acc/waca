@@ -11,6 +11,7 @@ namespace Waca\Pages\UserAuth;
 use ParagonIE\ConstantTime\Base32;
 use DateTimeImmutable;
 use Waca\DataObjects\Credential;
+use Waca\DataObjects\Domain;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\PdoDatabase;
@@ -95,7 +96,11 @@ class PageForgotPassword extends InternalPageBase
 
             $emailContent = $this->fetchTemplate('forgot-password/reset-mail.tpl');
 
-            $this->getEmailHelper()->sendMail($user->getEmail(), "WP:ACC password reset", $emailContent);
+            // FIXME: domains!
+            /** @var Domain $domain */
+            $domain = Domain::getById(1, $this->getDatabase());
+            $this->getEmailHelper()->sendMail(
+                $domain->getEmailSender(), $user->getEmail(), "WP:ACC password reset", $emailContent);
         }
     }
 

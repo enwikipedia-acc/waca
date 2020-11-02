@@ -12,10 +12,7 @@
                 If you want to leave any comments, feel free to do so in the comments field below. Note that if you use
                 this form, your IP address will be recorded, and displayed to
                 <a href="{$baseurl}/internal.php/statistics/users">those who review account requests</a>.
-                When you are done, click the "Submit" button. If you have difficulty using this tool, you can send an
-                email containing your account request (but not password) to
-                <a href="mailto:accounts-enwiki-l@lists.wikimedia.org">accounts-enwiki-l@lists.wikimedia.org</a>,
-                and we will try to deal with your requests that way.
+                When you are done, click the "Submit" button.
             </p>
 
             <div class="alert alert-warning">
