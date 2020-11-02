@@ -12,6 +12,7 @@ use Waca\DataObjects\Domain;
 use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\User;
 use Waca\Exceptions\AccessDeniedException;
+use Waca\Helpers\Logger;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -79,6 +80,7 @@ class PageDomainManagement extends InternalPageBase
 
             $domain->save();
 
+            Logger::domainCreated($database, $domain);
             $this->redirect('domainManagement');
         }
         else {
@@ -138,6 +140,7 @@ class PageDomainManagement extends InternalPageBase
 
             $domain->save();
 
+            Logger::domainEdited($database, $domain);
             $this->redirect('domainManagement');
         }
         else {
