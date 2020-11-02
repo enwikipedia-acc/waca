@@ -10,6 +10,7 @@ namespace Waca\Pages;
 
 use Waca\DataObjects\RequestQueue;
 use Waca\DataObjects\User;
+use Waca\Helpers\Logger;
 use Waca\Helpers\RequestQueueHelper;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
@@ -77,6 +78,7 @@ class PageQueueManagement extends InternalPageBase
 
             if ($proceed) {
                 $queue->save();
+                Logger::requestQueueCreated($database, $queue);
                 $this->redirect('queueManagement');
             }
             else {
@@ -144,6 +146,7 @@ class PageQueueManagement extends InternalPageBase
             }
 
             if ($proceed) {
+                Logger::requestQueueEdited($database, $queue);
                 $queue->save();
                 $this->redirect('queueManagement');
             }
