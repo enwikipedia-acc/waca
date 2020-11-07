@@ -102,6 +102,8 @@ class PageCustomClose extends PageCloseRequest
      */
     protected function showCustomCloseForm(PdoDatabase $database, Request $request)
     {
+        $this->setHtmlTitle("Custom close");
+
         $currentUser = User::getCurrent($database);
         $config = $this->getSiteConfiguration();
 
