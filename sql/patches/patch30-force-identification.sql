@@ -54,6 +54,10 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
 
     -- Force all users to be checked again
     UPDATE user SET forceidentified = null WHERE 1=1;
+
+    -- Force identified status for the default admin user for non-production installations
+    -- This has no effect on production, since user 1 doesn't have a username of 'Admin'.
+    UPDATE user SET forceidentified = 1 WHERE id = 1 AND username = 'Admin';
     
     -- -------------------------------------------------------------------------
     -- finally, update the schema version to indicate success

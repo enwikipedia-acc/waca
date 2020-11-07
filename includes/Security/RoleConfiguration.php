@@ -250,6 +250,9 @@ class RoleConfiguration
                 'acknowledge' => self::ACCESS_ALLOW,
                 'requeue'     => self::ACCESS_ALLOW,
             ),
+            'RequestData'               => array(
+                'reopenClearedRequest'  => self::ACCESS_ALLOW,
+            ),
         ),
         'checkuser'         => array(
             '_description'            => 'A user with CheckUser access',
