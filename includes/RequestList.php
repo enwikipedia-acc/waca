@@ -26,4 +26,5 @@ class RequestList
     public $canBan;
     public $canBreakReservation;
     public $userList;
+    public $commonEmail;
 }
