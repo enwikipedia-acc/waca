@@ -63,6 +63,8 @@ class SiteConfiguration
     private $useOAuthSignup = true;
     private $oauthBaseUrl;
     private $oauthConsumerToken;
+    /** @var array */
+    private $oauthLegacyConsumerTokens;
     private $oauthConsumerSecret;
     private $oauthIdentityGraceTime = '24 hours';
     private $oauthMediaWikiCanonicalServer = 'http://en.wikipedia.org';
@@ -1072,4 +1074,24 @@ class SiteConfiguration
 
         return $this;
 }
+
+    /**
+     * @param array $oauthLegacyConsumerTokens
+     *
+     * @return SiteConfiguration
+     */
+    public function setOauthLegacyConsumerTokens(array $oauthLegacyConsumerTokens): SiteConfiguration
+    {
+        $this->oauthLegacyConsumerTokens = $oauthLegacyConsumerTokens;
+
+        return $this;
+}
+
+    /**
+     * @return array
+     */
+    public function getOauthLegacyConsumerTokens(): array
+    {
+        return $this->oauthLegacyConsumerTokens;
+    }
 }
