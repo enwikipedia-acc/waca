@@ -56,15 +56,15 @@ class PageEditComment extends InternalPageBase
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
             $newComment = WebRequest::postString('newcomment');
+            $visibility = WebRequest::postString('visibility');
 
-            if ($newComment !== $comment->getComment()) {
+            if ($newComment === $comment->getComment() && ($comment->getVisibility() === 'requester' || $comment->getVisibility() === $visibility)) {
                 // Only save and log if the comment changed
                 $this->redirect('viewRequest', null, array('id' => $comment->getRequest()));
+                return;
             }
 
             if ($comment->getVisibility() !== 'requester') {
-                $visibility = WebRequest::postString('visibility');
-
                 if ($visibility !== 'user' && $visibility !== 'admin' && $visibility !== 'checkuser') {
                     throw new ApplicationLogicException('Comment visibility is not valid');
                 }
