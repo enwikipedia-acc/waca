@@ -1,1 +1,0 @@
-﻿Banned set for {$ban->getReason()|escape}

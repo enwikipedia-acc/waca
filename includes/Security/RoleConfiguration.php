@@ -283,6 +283,9 @@ class RoleConfiguration
             '_childRoles'  => array(
                 'admin',
             ),
+            'BanType'                   => array(
+                'ip-largerange' => self::ACCESS_ALLOW,
+            ),
             PageMultiFactor::class => array(
                 'enableU2F'         => self::ACCESS_ALLOW,
                 'disableU2F'        => self::ACCESS_ALLOW,

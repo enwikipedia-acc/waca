@@ -45,6 +45,7 @@
                                     <div class="col-sm-8 col-md-5 col-lg-8 col-xl-6">
                                         <input type="text" class="form-control" id="banIP" name="banIP" {if $banIP != ""}value="{$banIP|escape}"{/if} />
                                         <small class="text-muted">The IP address or CIDR range to ban</small>
+                                        <small class="text-muted d-block">The maximum range allowed when using a block or drop action is a /{$maxIpBlockRange[4]} for IPv4, and a /{$maxIpBlockRange[6]} for IPv6. The maximum range allowed generally is a /{$maxIpRange[4]} for IPv4, and a /{$maxIpRange[6]} for IPv6.</small>
                                     </div>
                                 </div>
                             {/if}
