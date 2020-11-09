@@ -37,7 +37,7 @@
 </div>
 
 {include file="view-request/antispoof-results.tpl"}
-{if $requestIsReservedByMe && !$requestIsClosed}
+{if $requestIsReservedByMe && !$requestIsClosed && $canCreateLocalAccount}
 <h5>CentralAuth</h5>
 <a id="UsernameCreateLocal" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
    href="{$mediawikiScriptPath}?title=Special:CreateLocalAccount&amp;target={$requestName|escape:'url'}&amp;wpreason={$createAccountReason|escape:'url'}{$requestId}">

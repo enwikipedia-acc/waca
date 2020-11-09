@@ -259,7 +259,8 @@ class RoleConfiguration
                 'editRoles' => self::ACCESS_ALLOW,
             ),
             'RequestData'             => array(
-                'seeUserAgentData' => self::ACCESS_ALLOW,
+                'seeUserAgentData'   => self::ACCESS_ALLOW,
+                'createLocalAccount' => self::ACCESS_ALLOW,
             ),
         ),
         'toolRoot'          => array(
