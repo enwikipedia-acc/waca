@@ -12,6 +12,7 @@ use Waca\Pages\PageBan;
 use Waca\Pages\PageEmailManagement;
 use Waca\Pages\PageErrorLogViewer;
 use Waca\Pages\PageJobQueue;
+use Waca\Pages\PageListFlaggedComments;
 use Waca\Pages\PageLog;
 use Waca\Pages\PageMain;
 use Waca\Pages\PageQueueManagement;
@@ -66,6 +67,9 @@ trait NavigationMenuAccessControl
                     $currentUser) === SecurityManager::ALLOWED);
         $this->assign('nav__canJobQueue', $this->getSecurityManager()
                 ->allows(PageJobQueue::class, RoleConfiguration::MAIN,
+                    $currentUser) === SecurityManager::ALLOWED);
+        $this->assign('nav__canFlaggedComments', $this->getSecurityManager()
+                ->allows(PageListFlaggedComments::class, RoleConfiguration::MAIN,
                     $currentUser) === SecurityManager::ALLOWED);
         $this->assign('nav__canQueueMgmt', $this->getSecurityManager()
                 ->allows(PageQueueManagement::class, RoleConfiguration::MAIN,

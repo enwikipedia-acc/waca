@@ -52,6 +52,15 @@
             </div>
         </div>
 
+        <div class="form-group row">
+            <div class="col-md-4 col-lg-2">
+                <label class="col-form-label" for="lastedit">Last edited</label>
+            </div>
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="form-control" id="lastedit">{$comment->getEdited()|date} <span class="text-muted">({$comment->getEdited()|relativedate})</span></div>
+            </div>
+        </div>
+
         {if $comment->getVisibility() == "requester"}
         {else}
             <div class="form-group row">
@@ -85,6 +94,17 @@
                 <textarea required="required" class="form-control" rows="4" name="newcomment" id="newcomment">{$comment->getComment()|escape}</textarea>
             </div>
         </div>
+
+        {if $comment->getFlagged() && $canUnflag}
+            <div class="form-group row">
+                <div class="offset-md-4 offset-lg-2 col-md-8 col-lg-10">
+                    <div class="custom-control custom-switch">
+                        <input class="custom-control-input" type="checkbox" id="unflag" name="unflag" />
+                        <label class="custom-control-label" for="unflag">Un-flag comment</label>
+                    </div>
+                </div>
+            </div>
+        {/if}
 
         <input type="hidden" name="updateversion" value="{$comment->getUpdateVersion()}"/>
 

@@ -23,7 +23,7 @@
                 </div>
             </li>
         {/if}
-        {if $nav__canBan || $nav__canEmailMgmt || $nav__canWelcomeMgmt || $nav__canSiteNoticeMgmt || $nav__canUserMgmt || $nav__canJobQueue || $nav__canQueueMgmt || $nav__canErrorLog}
+        {if $nav__canBan || $nav__canEmailMgmt || $nav__canWelcomeMgmt || $nav__canSiteNoticeMgmt || $nav__canUserMgmt || $nav__canJobQueue || $nav__canFlaggedComments || $nav__canQueueMgmt || $nav__canErrorLog}
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" aria-haspopup="true" aria-expanded="false" data-toggle="dropdown"><i class="fas fa-wrench"></i>&nbsp;Admin</a>
                 <div class="dropdown-menu">
@@ -44,6 +44,9 @@
                     {/if}
                     {if $nav__canJobQueue}
                         <a class="dropdown-item" href="{$baseurl}/internal.php/jobQueue"><i class="fas fa-tools"></i> Job Queue</a>
+                    {/if}
+                    {if $nav__canFlaggedComments}
+                        <a class="dropdown-item" href="{$baseurl}/internal.php/flaggedComments"><i class="fas fa-flag"></i> Flagged Comments</a>
                     {/if}
                     {if $nav__canQueueMgmt}
                         <a class="dropdown-item" href="{$baseurl}/internal.php/queueManagement"><i class="fas fa-list-ol"></i> Request Queue Management</a>
