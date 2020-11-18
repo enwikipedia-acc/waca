@@ -180,7 +180,7 @@ trait RequestData
         $this->assign('requestEmail', $request->getEmail());
         $emailDomain = explode("@", $request->getEmail())[1];
         $this->assign("emailurl", $emailDomain);
-        $this->assign('commonEmailDomain', in_array($emailDomain, $configuration->getCommonEmailDomains()));
+        $this->assign('commonEmailDomain', in_array(strtolower($emailDomain), $configuration->getCommonEmailDomains()));
 
         $trustedIp = $xffProvider->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
         $this->assign('requestTrustedIp', $trustedIp);
