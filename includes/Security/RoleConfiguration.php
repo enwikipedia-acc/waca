@@ -250,6 +250,9 @@ class RoleConfiguration
                 'acknowledge' => self::ACCESS_ALLOW,
                 'requeue'     => self::ACCESS_ALLOW,
             ),
+            'RequestData'               => array(
+                'reopenClearedRequest'  => self::ACCESS_ALLOW,
+            ),
         ),
         'checkuser'         => array(
             '_description'            => 'A user with CheckUser access',
@@ -279,6 +282,9 @@ class RoleConfiguration
             '_editableBy'  => array('toolRoot'),
             '_childRoles'  => array(
                 'admin',
+            ),
+            'BanType'                   => array(
+                'ip-largerange' => self::ACCESS_ALLOW,
             ),
             PageMultiFactor::class => array(
                 'enableU2F'         => self::ACCESS_ALLOW,

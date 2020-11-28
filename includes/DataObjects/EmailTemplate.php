@@ -106,7 +106,7 @@ SQL
     }
 
     /**
-     * Gets all the unactive templates
+     * Gets all the inactive templates
      *
      * @param PdoDatabase $database
      *

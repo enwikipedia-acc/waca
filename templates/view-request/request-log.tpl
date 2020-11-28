@@ -79,33 +79,40 @@
                 </td>
                 <td>
                     <input type="hidden" name="request" value="{$requestId}"/>
-                    <input type="hidden" name="visibility" value="user"/>
                     <label class="sr-only" for="quickCommentBox">Comment on request</label>
                     <input class="form-control" type="text" placeholder="Quick comment" name="comment" id="quickCommentBox"/>
                 </td>
                 <td class="text-nowrap">
-                    <div class="btn-group btn-block">
-                        <button class="btn btn-primary col" type="submit">Save</button>
-
-                        <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split col-xs-auto" data-toggle="dropdown">
-                            &nbsp;<span class="caret"></span>
+                    <div class="btn-group col" role="group">
+                        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown"title="Restrict comment visibility" id="commentVisibilityButton">
+                            <i id="commentVisibilityIcon" class="fas fa-lock-open"></i>
                         </button>
-
-                        <ul class="dropdown-menu" role="menu">
-                            <li class="dropdown-header">Save with restricted visibility</li>
-                            <li>
-                                <button class="dropdown-item" type="submit" name="visibility" value="admin">
-                                    Tool admins and Checkusers
-                                </button>
+                        <ul class="dropdown-menu" id="commentVisibilityDropdown">
+                            <h6 class="dropdown-header">Restrict comment visibility</h6>
+                            <li class="dropdown-item">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="visibilityUser" name="visibility" class="custom-control-input" checked="checked" value="user">
+                                    <label class="custom-control-label" for="visibilityUser">All tool users</label>
+                                </div>
                             </li>
-                            <li>
-                                <button class="dropdown-item" type="submit" name="visibility" value="checkuser">
-                                    Checkusers only
-                                </button>
+                            <li class="dropdown-item">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="visibilityAdmin" name="visibility" class="custom-control-input" value="admin">
+                                    <label class="custom-control-label" for="visibilityAdmin">Tool admins and Checkusers</label>
+                                </div>
+                            </li>
+                            <li class="dropdown-item">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="visibilityCU" name="visibility" class="custom-control-input" value="checkuser">
+                                    <label class="custom-control-label" for="visibilityCU">Checkusers only</label>
+                                </div>
                             </li>
                         </ul>
 
+                        <button class="btn btn-primary col" type="submit" id="commentSaveButton">Save</button>
                     </div>
+
+
                 </td>
             </tr>
             </tbody>

@@ -136,3 +136,21 @@ $("#banAction").change(function() {
         $("#banDeferTargetSelection").addClass('d-none');
     }
 })
+
+$("#commentVisibilityDropdown").on("change", "input[type='radio']", function() {
+    if($(this).val() == 'user') {
+        $("#commentVisibilityButton").addClass('btn-outline-secondary').removeClass('btn-danger').removeClass('btn-visited');
+        $("#commentVisibilityIcon").removeClass('fa-lock').addClass('fa-lock-open');
+    }
+    if($(this).val() == 'admin') {
+        $("#commentVisibilityButton").removeClass('btn-outline-secondary').addClass('btn-danger').removeClass('btn-visited');
+        $("#commentVisibilityIcon").removeClass('fa-lock-open').addClass('fa-lock');
+    }
+    if($(this).val() == 'checkuser') {
+        $("#commentVisibilityButton").removeClass('btn-outline-secondary').removeClass('btn-danger').addClass('btn-visited');
+        $("#commentVisibilityIcon").removeClass('fa-lock-open').addClass('fa-lock');
+    }
+});
+$(document).on('click', '.allow-focus', function (e) {
+    e.stopPropagation();
+});

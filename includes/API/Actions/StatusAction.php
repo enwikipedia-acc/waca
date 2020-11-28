@@ -45,7 +45,7 @@ SQL
             SELECT /* Api/StatusAction */ COUNT(*) AS count
             FROM ban
             WHERE
-                (duration > UNIX_TIMESTAMP() OR duration = -1)
+                (duration > UNIX_TIMESTAMP() OR duration is null)
                 AND active = 1;
 SQL
         );
@@ -60,22 +60,30 @@ SELECT /* Api/StatusAction */ COUNT(*) AS count
 FROM user WHERE status = :ulevel;
 SQL
         );
-        $query->bindValue(":ulevel", "Admin");
-        $query->execute();
-        $sus = $query->fetchColumn();
-        $statusElement->setAttribute("useradmin", $sus);
-        $query->closeCursor();
-
-        $query->bindValue(":ulevel", "User");
-        $query->execute();
-        $sus = $query->fetchColumn();
-        $statusElement->setAttribute("user", $sus);
-        $query->closeCursor();
 
         $query->bindValue(":ulevel", "New");
         $query->execute();
         $sus = $query->fetchColumn();
         $statusElement->setAttribute("usernew", $sus);
+        $query->closeCursor();
+
+        $query = $this->getDatabase()->prepare(<<<SQL
+select /* Api/StatusAction */ COUNT(*) from user u
+inner join userrole ur on u.id = ur.user
+where u.status = 'Active' and ur.role = :ulevel
+SQL
+        );
+
+        $query->bindValue(":ulevel", "admin");
+        $query->execute();
+        $sus = $query->fetchColumn();
+        $statusElement->setAttribute("useradmin", $sus);
+        $query->closeCursor();
+
+        $query->bindValue(":ulevel", "user");
+        $query->execute();
+        $sus = $query->fetchColumn();
+        $statusElement->setAttribute("user", $sus);
         $query->closeCursor();
 
         return $apiDocument;

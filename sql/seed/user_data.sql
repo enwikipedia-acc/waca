@@ -19,7 +19,7 @@
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` VALUES (1,'Admin','admin@localhost',':1:salt:c72deb17cc624f7bbe4ad632887b0202','Admin','MediaWiki User', '','0000-00-00 00:00:00',0,0,1,0,0,0,'Admin',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `user` VALUES (1,'Admin','admin@localhost',':2:x:$2y$10$nDVrjPbb10hDOQrB9WZ/vOragq4sAtm3IsorML5ooESdNA55FfHYO','Admin','MediaWiki User', '','0000-00-00 00:00:00',0,0,1,0,0,0,'Admin',NULL,NULL,NULL,NULL,NULL);
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
