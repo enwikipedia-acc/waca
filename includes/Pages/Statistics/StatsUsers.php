@@ -9,6 +9,7 @@
 namespace Waca\Pages\Statistics;
 
 use PDO;
+use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\Log;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
@@ -94,11 +95,11 @@ INNER JOIN user ON log.user = user.id
 LEFT JOIN emailtemplate ON concat('Closed ', emailtemplate.id) = log.action
 WHERE user.username = :username
     AND log.action LIKE 'Closed %'
-    AND (emailtemplate.oncreated = '1' OR log.action = 'Closed custom-y')
+    AND (emailtemplate.defaultaction = :created OR log.action = 'Closed custom-y')
 ORDER BY log.timestamp;
 SQL
         );
-        $usersCreatedQuery->execute(array(":username" => $user->getUsername()));
+        $usersCreatedQuery->execute(array(":username" => $user->getUsername(), ':created' => EmailTemplate::CREATED));
         $usersCreated = $usersCreatedQuery->fetchAll(PDO::FETCH_ASSOC);
         $this->assign("created", $usersCreated);
 
@@ -110,11 +111,11 @@ JOIN user ON log.user = user.id
 LEFT JOIN emailtemplate ON concat('Closed ', emailtemplate.id) = log.action
 WHERE user.username = :username
     AND log.action LIKE 'Closed %'
-    AND (emailtemplate.oncreated = '0' OR log.action = 'Closed custom-n' OR log.action = 'Closed 0')
+    AND (emailtemplate.defaultaction = :created OR log.action = 'Closed custom-n' OR log.action = 'Closed 0')
 ORDER BY log.timestamp;
 SQL
         );
-        $usersNotCreatedQuery->execute(array(":username" => $user->getUsername()));
+        $usersNotCreatedQuery->execute(array(":username" => $user->getUsername(), ':created' => EmailTemplate::CREATED));
         $usersNotCreated = $usersNotCreatedQuery->fetchAll(PDO::FETCH_ASSOC);
         $this->assign("notcreated", $usersNotCreated);
 
