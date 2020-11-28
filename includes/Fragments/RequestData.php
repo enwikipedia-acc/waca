@@ -169,15 +169,18 @@ trait RequestData
      * Adds private request data to Smarty. DO NOT USE WITHOUT FIRST CHECKING THAT THE USER IS AUTHORISED!
      *
      * @param Request           $request
+     * @param SiteConfiguration $configuration
      */
     protected function setupPrivateData(
-        $request
+        $request,
+        SiteConfiguration $configuration
     ) {
         $xffProvider = $this->getXffTrustProvider();
 
         $this->assign('requestEmail', $request->getEmail());
         $emailDomain = explode("@", $request->getEmail())[1];
         $this->assign("emailurl", $emailDomain);
+        $this->assign('commonEmailDomain', in_array(strtolower($emailDomain), $configuration->getCommonEmailDomains()));
 
         $trustedIp = $xffProvider->getTrustedClientIp($request->getIp(), $request->getForwardedIp());
         $this->assign('requestTrustedIp', $trustedIp);

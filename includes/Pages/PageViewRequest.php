@@ -90,7 +90,7 @@ class PageViewRequest extends InternalPageBase
 
         if ($allowedPrivateData) {
             $this->setTemplate('view-request/main-with-data.tpl');
-            $this->setupPrivateData($request);
+            $this->setupPrivateData($request, $config);
 
             $this->assign('canSetBan', $this->barrierTest('set', $currentUser, PageBan::class));
             $this->assign('canSeeCheckuserData', $this->barrierTest('seeUserAgentData', $currentUser, 'RequestData'));

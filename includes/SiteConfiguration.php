@@ -91,6 +91,9 @@ class SiteConfiguration
     private $registrationAllowed = true;
     private $cspReportUri = null;
     private $resourceCacheEpoch = 1;
+    private $commonEmailDomains = [];
+    private $banMaxIpBlockRange = [4 => 20, 6 => 48];
+    private $banMaxIpRange = [4 => 16, 6 => 32];
 
     /**
      * Gets the base URL of the tool
@@ -1051,4 +1054,64 @@ class SiteConfiguration
 
         return $this;
 }
+
+    /**
+     * @return array
+     */
+    public function getCommonEmailDomains(): array
+    {
+        return $this->commonEmailDomains;
+    }
+
+    /**
+     * @param array $commonEmailDomains
+     *
+     * @return SiteConfiguration
+     */
+    public function setCommonEmailDomains(array $commonEmailDomains): SiteConfiguration
+    {
+        $this->commonEmailDomains = $commonEmailDomains;
+
+        return $this;
+    }
+
+    /**
+     * @param int[] $banMaxIpBlockRange
+     *
+     * @return SiteConfiguration
+     */
+    public function setBanMaxIpBlockRange(array $banMaxIpBlockRange): SiteConfiguration
+    {
+        $this->banMaxIpBlockRange = $banMaxIpBlockRange;
+
+        return $this;
+    }
+
+    /**
+     * @return int[]
+     */
+    public function getBanMaxIpBlockRange(): array
+    {
+        return $this->banMaxIpBlockRange;
+    }
+
+    /**
+     * @param int[] $banMaxIpRange
+     *
+     * @return SiteConfiguration
+     */
+    public function setBanMaxIpRange(array $banMaxIpRange): SiteConfiguration
+    {
+        $this->banMaxIpRange = $banMaxIpRange;
+
+        return $this;
+}
+
+    /**
+     * @return int[]
+     */
+    public function getBanMaxIpRange(): array
+    {
+        return $this->banMaxIpRange;
+    }
 }

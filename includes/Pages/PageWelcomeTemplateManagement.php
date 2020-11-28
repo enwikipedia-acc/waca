@@ -93,7 +93,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 
         $templateId = WebRequest::getInt('template');
 
-        /** @var WelcomeTemplate $template */
+        /** @var false|WelcomeTemplate $template */
         $template = WelcomeTemplate::getById($templateId, $database);
 
         if ($template === false) {
@@ -152,7 +152,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 
         $templateId = WebRequest::getInt('template');
 
-        /** @var WelcomeTemplate $template */
+        /** @var false|WelcomeTemplate $template */
         $template = WelcomeTemplate::getById($templateId, $database);
 
         if ($template === false) {
@@ -206,7 +206,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
         $templateId = WebRequest::postInt('template');
         $updateVersion = WebRequest::postInt('updateversion');
 
-        /** @var WelcomeTemplate $template */
+        /** @var false|WelcomeTemplate $template */
         $template = WelcomeTemplate::getById($templateId, $database);
 
         if ($template === false || $template->isDeleted()) {
