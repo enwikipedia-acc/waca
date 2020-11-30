@@ -46,6 +46,18 @@ class PageEditComment extends InternalPageBase
             throw new AccessDeniedException($this->getSecurityManager());
         }
 
+        if ($comment->getVisibility() === 'admin'
+            && !$this->barrierTest('seeRestrictedComments', $currentUser, 'RequestData')
+            && $comment->getUser() !== $currentUser->getId()) {
+            throw new AccessDeniedException($this->getSecurityManager());
+        }
+
+        if ($comment->getVisibility() === 'checkuser'
+            && !$this->barrierTest('seeCheckuserComments', $currentUser, 'RequestData')
+            && $comment->getUser() !== $currentUser->getId()) {
+            throw new AccessDeniedException($this->getSecurityManager());
+        }
+
         /** @var Request|false $request */
         $request = Request::getById($comment->getRequest(), $database);
 
@@ -56,31 +68,33 @@ class PageEditComment extends InternalPageBase
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
             $newComment = WebRequest::postString('newcomment');
+            $visibility = WebRequest::postString('visibility');
 
-            if ($newComment !== $comment->getComment()) {
+            if ($newComment === $comment->getComment() && ($comment->getVisibility() === 'requester' || $comment->getVisibility() === $visibility)) {
                 // Only save and log if the comment changed
-                if ($comment->getVisibility() !== 'requester') {
-                    $visibility = WebRequest::postString('visibility');
+                $this->redirect('viewRequest', null, array('id' => $comment->getRequest()));
+                return;
+            }
 
-                    if ($visibility !== 'user' && $visibility !== 'admin') {
-                        throw new ApplicationLogicException('Comment visibility is not valid');
-                    }
-
-                    $comment->setVisibility($visibility);
+            if ($comment->getVisibility() !== 'requester') {
+                if ($visibility !== 'user' && $visibility !== 'admin' && $visibility !== 'checkuser') {
+                    throw new ApplicationLogicException('Comment visibility is not valid');
                 }
 
-                // optimistically lock from the load of the edit comment form
-                $updateVersion = WebRequest::postInt('updateversion');
-                $comment->setUpdateVersion($updateVersion);
-
-                $comment->setComment($newComment);
-
-                $comment->save();
-
-                Logger::editComment($database, $comment, $request);
-                $this->getNotificationHelper()->commentEdited($comment, $request);
-                SessionAlert::success("Comment has been saved successfully");
+                $comment->setVisibility($visibility);
             }
+
+            // optimistically lock from the load of the edit comment form
+            $updateVersion = WebRequest::postInt('updateversion');
+            $comment->setUpdateVersion($updateVersion);
+
+            $comment->setComment($newComment);
+
+            $comment->save();
+
+            Logger::editComment($database, $comment, $request);
+            $this->getNotificationHelper()->commentEdited($comment, $request);
+            SessionAlert::success("Comment has been saved successfully");
 
             $this->redirect('viewRequest', null, array('id' => $comment->getRequest()));
         }

@@ -19,45 +19,47 @@ use Waca\PdoDatabase;
  */
 class Ban extends DataObject
 {
-    private $type;
-    private $target;
+    const ACTION_BLOCK = 'block';
+    const ACTION_DROP = 'drop';
+    const ACTION_DEFER = 'defer';
+    const ACTION_NONE = 'none';
+
+    /** @var string|null */
+    private $name;
+    /** @var string|null */
+    private $ip;
+    /** @var int|null */
+    private $ipmask;
+    /** @var string|null */
+    private $email;
+    /** @var string|null */
+    private $useragent;
+
     private $user;
     private $reason;
     private $date;
     private $duration;
     private $active;
+    private $action = self::ACTION_BLOCK;
+    private $actiontarget;
+    private $visibility = 'user';
 
     /**
      * Gets all active bans, filtered by the optional target.
      *
-     * @param string|null $target
      * @param PdoDatabase $database
      *
      * @return Ban[]
      */
-    public static function getActiveBans($target, PdoDatabase $database)
+    public static function getActiveBans(PdoDatabase $database)
     {
-        if ($target !== null) {
-            $query = <<<SQL
-SELECT * FROM ban 
-WHERE target = :target 
-  AND (duration > UNIX_TIMESTAMP() OR duration is null) 
-  AND active = 1;
-SQL;
-            $statement = $database->prepare($query);
-            $statement->bindValue(":target", $target);
-        }
-        else {
-            $query = <<<SQL
+        $query = <<<SQL
 SELECT * FROM ban 
 WHERE (duration > UNIX_TIMESTAMP() OR duration is null) 
   AND active = 1;
 SQL;
-            $statement = $database->prepare($query);
-        }
-
+        $statement = $database->prepare($query);
         $statement->execute();
-
         $result = array();
 
         /** @var Ban $v */
@@ -75,7 +77,7 @@ SQL;
      * @param     integer $id
      * @param PdoDatabase $database
      *
-     * @return Ban
+     * @return Ban|false
      */
     public static function getActiveId($id, PdoDatabase $database)
     {
@@ -91,44 +93,37 @@ SQL
 
         $resultObject = $statement->fetchObject(get_called_class());
 
-        if ($resultObject != false) {
+        if ($resultObject !== false) {
             $resultObject->setDatabase($database);
         }
 
         return $resultObject;
     }
 
-    /**
-     * Get all active bans for a target and type.
-     *
-     * @param string      $target
-     * @param string      $type
-     * @param PdoDatabase $database
-     *
-     * @return Ban
-     */
-    public static function getBanByTarget($target, $type, PdoDatabase $database)
+    public static function getByIdList($values, PdoDatabase $database)
     {
-        $query = <<<SQL
-SELECT * FROM ban
-WHERE type = :type
-	AND target = :target
-	AND (duration > UNIX_TIMESTAMP() OR duration is null)
-	AND active = 1;
-SQL;
-        $statement = $database->prepare($query);
-        $statement->bindValue(":target", $target);
-        $statement->bindValue(":type", $type);
-
-        $statement->execute();
-
-        $resultObject = $statement->fetchObject(get_called_class());
-
-        if ($resultObject != false) {
-            $resultObject->setDatabase($database);
+        if (count($values) === 0) {
+            return [];
         }
 
-        return $resultObject;
+        // use the provided array to produce a list of question marks of the same length as the array.
+        $valueCount = count($values);
+        $inSection = str_repeat('?,', $valueCount - 1) . '?';
+
+        // this is still parameterised! It's using positional parameters instead of named ones.
+        $query = 'SELECT * FROM ban WHERE id IN (' . $inSection . ')';
+        $statement = $database->prepare($query);
+
+        // execute the statement with the provided parameter list.
+        $statement->execute($values);
+
+        $result = [];
+        foreach ($statement->fetchAll(PDO::FETCH_CLASS, get_called_class()) as $v) {
+            $v->setDatabase($database);
+            $result[] = $v;
+        }
+
+        return $result;
     }
 
     /**
@@ -139,16 +134,24 @@ SQL;
         if ($this->isNew()) {
             // insert
             $statement = $this->dbObject->prepare(<<<SQL
-INSERT INTO `ban` (type, target, user, reason, date, duration, active)
-VALUES (:type, :target, :user, :reason, CURRENT_TIMESTAMP(), :duration, :active);
+INSERT INTO `ban` (name, email, ip, ipmask, useragent, user, reason, date, duration, active, action, actiontarget, visibility)
+VALUES (:name, :email, :ip, :ipmask, :useragent, :user, :reason, CURRENT_TIMESTAMP(), :duration, :active, :action, :actionTarget, :visibility);
 SQL
             );
-            $statement->bindValue(":type", $this->type);
-            $statement->bindValue(":target", $this->target);
+
+            $statement->bindValue(":name", $this->name);
+            $statement->bindValue(":email", $this->email);
+            $statement->bindValue(":ip", $this->ip);
+            $statement->bindValue(":ipmask", $this->ipmask);
+            $statement->bindValue(":useragent", $this->useragent);
+
             $statement->bindValue(":user", $this->user);
             $statement->bindValue(":reason", $this->reason);
             $statement->bindValue(":duration", $this->duration);
             $statement->bindValue(":active", $this->active);
+            $statement->bindValue(":action", $this->action);
+            $statement->bindValue(":actionTarget", $this->actiontarget);
+            $statement->bindValue(":visibility", $this->visibility);
 
             if ($statement->execute()) {
                 $this->id = (int)$this->dbObject->lastInsertId();
@@ -161,7 +164,8 @@ SQL
             // update
             $statement = $this->dbObject->prepare(<<<SQL
 UPDATE `ban`
-SET duration = :duration, active = :active, user = :user, updateversion = updateversion + 1
+SET duration = :duration, active = :active, user = :user, action = :action, actiontarget = :actionTarget, 
+    visibility = :visibility, updateversion = updateversion + 1
 WHERE id = :id AND updateversion = :updateversion;
 SQL
             );
@@ -171,6 +175,9 @@ SQL
             $statement->bindValue(':duration', $this->duration);
             $statement->bindValue(':active', $this->active);
             $statement->bindValue(':user', $this->user);
+            $statement->bindValue(":action", $this->action);
+            $statement->bindValue(":actionTarget", $this->actiontarget);
+            $statement->bindValue(":visibility", $this->visibility);
 
             if (!$statement->execute()) {
                 throw new Exception($statement->errorInfo());
@@ -182,38 +189,6 @@ SQL
 
             $this->updateversion++;
         }
-    }
-
-    /**
-     * @return string
-     */
-    public function getType()
-    {
-        return $this->type;
-    }
-
-    /**
-     * @param string $type
-     */
-    public function setType($type)
-    {
-        $this->type = $type;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTarget()
-    {
-        return $this->target;
-    }
-
-    /**
-     * @param string $target
-     */
-    public function setTarget($target)
-    {
-        $this->target = $target;
     }
 
     /**
@@ -282,11 +257,141 @@ SQL
 
     /**
      * @param int $user UserID of user who is setting the ban
-     *
-     * @throws Exception
      */
     public function setUser($user)
     {
         $this->user = $user;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAction(): string
+    {
+        return $this->action;
+    }
+
+    /**
+     * @param string $action
+     */
+    public function setAction(string $action): void
+    {
+        $this->action = $action;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getActionTarget()
+    {
+        return $this->actiontarget;
+    }
+
+    /**
+     * @param string|null $actionTarget
+     */
+    public function setActionTarget($actionTarget): void
+    {
+        $this->actiontarget = $actionTarget;
+    }
+
+    /**
+     * @return string
+     */
+    public function getVisibility() : string
+    {
+        return $this->visibility;
+    }
+
+    /**
+     * @param string $visibility
+     */
+    public function setVisibility(string $visibility): void
+    {
+        $this->visibility = $visibility;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getName(): ?string
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string|null $name
+     */
+    public function setName(?string $name): void
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getIp(): ?string
+    {
+        if ($this->ip === null) {
+            return null;
+        }
+
+        return inet_ntop($this->ip);
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getIpMask(): ?int
+    {
+        return $this->ipmask;
+    }
+
+    /**
+     * @param string|null $ip
+     * @param int|null    $mask
+     */
+    public function setIp(?string $ip, ?int $mask): void
+    {
+        if ($ip === null) {
+            $this->ip = null;
+        }
+        else {
+            $this->ip = inet_pton($ip);
+        }
+
+        $this->ipmask = $mask;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    /**
+     * @param string|null $email
+     */
+    public function setEmail(?string $email): void
+    {
+        $this->email = $email;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUseragent(): ?string
+    {
+        return $this->useragent;
+    }
+
+    /**
+     * @param string|null $useragent
+     */
+    public function setUseragent(?string $useragent): void
+    {
+        $this->useragent = $useragent;
     }
 }

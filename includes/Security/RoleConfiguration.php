@@ -139,6 +139,14 @@ class RoleConfiguration
             ),
             PageBan::class                       => array(
                 self::MAIN => self::ACCESS_ALLOW,
+                'show'     => self::ACCESS_ALLOW,
+            ),
+            'BanVisibility'             => array(
+                'user' => self::ACCESS_ALLOW,
+            ),
+            'BanType'                   => array(
+                'ip' => self::ACCESS_ALLOW,
+                'name' => self::ACCESS_ALLOW,
             ),
             PageEditComment::class               => array(
                 self::MAIN => self::ACCESS_ALLOW,
@@ -259,8 +267,15 @@ class RoleConfiguration
                 'editRoles' => self::ACCESS_ALLOW,
             ),
             'RequestData'             => array(
-                'seeUserAgentData'   => self::ACCESS_ALLOW,
-                'createLocalAccount' => self::ACCESS_ALLOW,
+                'seeUserAgentData'      => self::ACCESS_ALLOW,
+                'seeCheckuserComments'  => self::ACCESS_ALLOW,
+                'createLocalAccount'    => self::ACCESS_ALLOW,
+            ),
+            'BanType'                   => array(
+                'useragent' => self::ACCESS_ALLOW,
+            ),
+            'BanVisibility'             => array(
+                'checkuser' => self::ACCESS_ALLOW,
             ),
         ),
         'toolRoot'          => array(
@@ -268,6 +283,9 @@ class RoleConfiguration
             '_editableBy'  => array('toolRoot'),
             '_childRoles'  => array(
                 'admin',
+            ),
+            'BanType'                   => array(
+                'ip-largerange' => self::ACCESS_ALLOW,
             ),
             PageMultiFactor::class => array(
                 'enableU2F'         => self::ACCESS_ALLOW,
@@ -330,6 +348,15 @@ class RoleConfiguration
                 self::MAIN => self::ACCESS_ALLOW,
                 'set'      => self::ACCESS_ALLOW,
                 'remove'   => self::ACCESS_ALLOW,
+            ),
+            'BanType'                   => array(
+                'ip' => self::ACCESS_ALLOW,
+                'email' => self::ACCESS_ALLOW,
+                'name' => self::ACCESS_ALLOW,
+            ),
+            'BanVisibility'             => array(
+                'user' => self::ACCESS_ALLOW,
+                'admin' => self::ACCESS_ALLOW,
             ),
             PageEditComment::class      => array(
                 'editOthers' => self::ACCESS_ALLOW,

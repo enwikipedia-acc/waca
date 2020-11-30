@@ -251,6 +251,13 @@ $totpEncryptionKey = "1234";
 // external resource cache epoch value. Bump me to force clients to reload assets
 $resourceCacheEpoch = 1;
 
+$commonEmailDomains = ['gmail.com', 'hotmail.com', 'outlook.com'];
+
+// limit for block/drop ban actions
+$banMaxIpBlockRange = [4 => 20, 6 => 48];
+// limit for *all* ban actions, including block/drop.
+$banMaxIpRange = [4 => 16, 6 => 32];
+
 /**************************************************************************
  **********                   IMPORTANT NOTICE                    **********
  ***************************************************************************
@@ -345,7 +352,7 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setUserAgent($toolUserAgent)
     ->setCurlDisableVerifyPeer($curlDisableSSLVerifyPeer)
     ->setUseOAuthSignup($useOauthSignup)
-    ->setOAuthBaseUrl($oauthBaseUrl)
+    ->setOAuthBaseUrl($oauthBaseUrl)//
     ->setOAuthConsumerToken($oauthConsumerToken)
     ->setOAuthConsumerSecret($oauthSecretToken)
     ->setOauthMediaWikiCanonicalServer($oauthMediaWikiCanonicalServer)
@@ -365,4 +372,7 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setRegistrationAllowed($allowRegistration)
     ->setCspReportUri($cspReportUri)
     ->setResourceCacheEpoch($resourceCacheEpoch)
-    ->setLocationProviderApiKey($locationProviderApiKey);
+    ->setLocationProviderApiKey($locationProviderApiKey)
+    ->setCommonEmailDomains($commonEmailDomains)
+    ->setBanMaxIpRange($banMaxIpRange)
+    ->setBanMaxIpBlockRange($banMaxIpBlockRange);
