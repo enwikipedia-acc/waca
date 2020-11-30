@@ -246,19 +246,19 @@ class IrcNotificationHelper
 
         $username = $this->currentUser->getUsername();
 
-        $this->send("{$ban->getTarget()} banned by {$username} for '{$ban->getReason()}' {$duration}");
+        $this->send("Ban {$ban->getId()} set by {$username} for '{$ban->getReason()}' {$duration}");
     }
 
     /**
      * Summary of unbanned
      *
      * @param Ban    $ban
-     * @param string $unbanreason
+     * @param string $unbanReason
      */
-    public function unbanned(Ban $ban, $unbanreason)
+    public function unbanned(Ban $ban, $unbanReason)
     {
-        $this->send($ban->getTarget() . " unbanned by " . $this->currentUser
-                ->getUsername() . " (" . $unbanreason . ")");
+        $this->send("Ban {$ban->getId()} unbanned by " . $this->currentUser
+                ->getUsername() . " (" . $unbanReason . ")");
     }
 
     #endregion

@@ -1,28 +1,10 @@
--- -----------------------------------------------------------------------------
--- Hey!
--- 
--- This is a new patch-creation script which SHOULD stop double-patching and
--- running patches out-of-order.
---
--- If you're running patches, please close this file, and run this from the 
--- command line:
---   $ mysql -u USERNAME -p SCHEMA < patchXX-this-file.sql
--- where:
---      USERNAME = a user with CREATE/ALTER access to the schema
---      SCHEMA = the schema to run the changes against
---      patch-XX-this-file.sql = this file
---
--- If you are writing patches, you need to copy this template to a numbered 
--- patch file, update the patchversion variable, and add the SQL code to upgrade
--- the database where indicated below.
-
 DROP PROCEDURE IF EXISTS SCHEMA_UPGRADE_SCRIPT;
 DELIMITER ';;'
 CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
     -- -------------------------------------------------------------------------
     -- Developers - set the number of the schema patch here!
     -- -------------------------------------------------------------------------
-    DECLARE patchversion INT DEFAULT 0;
+    DECLARE patchversion INT DEFAULT 35;
     -- -------------------------------------------------------------------------
     -- working variables
     DECLARE currentschemaversion INT DEFAULT 0;
@@ -51,9 +33,14 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
     -- -------------------------------------------------------------------------
     -- Developers - put your upgrade statements here!
     -- -------------------------------------------------------------------------
-    
-    -- ALTER TABLE foo DROP COLUMN bar;
-    
+
+    -- oops. a bug in \Waca\DataObjects\User defaults this column to 0 instead of null.
+    update user set welcome_template = null, updateversion = updateversion + 1 where welcome_template = 0;
+
+    alter table user
+        add constraint user_welcometemplate_id_fk foreign key (welcome_template) references welcometemplate (id)
+    ;
+
     -- -------------------------------------------------------------------------
     -- finally, update the schema version to indicate success
     # noinspection SqlWithoutWhere

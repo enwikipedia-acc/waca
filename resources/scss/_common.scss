@@ -18,6 +18,9 @@ $font-size-base: 0.9rem;
 
 $overflows: auto, hidden, visible;
 
+$sortabletable-marker: #ccc !default;
+$sortabletable-hover: #efefef !default;
+
 @import "../../vendor/twbs/bootstrap/scss/bootstrap";
 @import "_viewRequest.scss";
 @import "_login.scss";
@@ -25,6 +28,7 @@ $overflows: auto, hidden, visible;
 @import "_password.scss";
 @import "_spacing.scss";
 @import "_sitenotice.scss";
+@import "_sortableTables.scss";
 
 
 span.twitter-typeahead {
@@ -85,3 +89,6 @@ td.table-button-cell {
     min-width: 20px;
 }
 
+.badge-pill svg.svg-inline--fa.fa-w-16 {
+    min-width: 1.2em;
+}

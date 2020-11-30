@@ -11,7 +11,7 @@
             <tbody>
             {if $requestLogs}
                 {foreach from=$requestLogs item=zoomrow name=logloop}
-                    <tr class="{if $zoomrow.security == "admin"}table-danger{/if}">
+                    <tr class="{if $zoomrow.security == "admin"}table-danger{elseif $zoomrow.security == "checkuser"}table-visited{/if}">
                         <td class="text-nowrap">
                             {if $zoomrow.userid != null}
                                 <a href='{$baseurl}/internal.php/statistics/users/detail?user={$zoomrow.userid}'>{$zoomrow.user|escape}</a>
@@ -29,6 +29,11 @@
                                 {if $zoomrow.security === "requester"}
                                 <span class="badge badge-info">
 									<i class="fas fa-user"></i>&nbsp;Requester
+								</span>
+                                {/if}
+                                {if $zoomrow.security === "checkuser"}
+                                <span class="badge badge-visited">
+									<i class="fas fa-lock"></i>&nbsp;CheckUser only
 								</span>
                                 {/if}
                             {/if}
@@ -74,17 +79,40 @@
                 </td>
                 <td>
                     <input type="hidden" name="request" value="{$requestId}"/>
-                    <input type="hidden" name="visibility" value="user"/>
                     <label class="sr-only" for="quickCommentBox">Comment on request</label>
                     <input class="form-control" type="text" placeholder="Quick comment" name="comment" id="quickCommentBox"/>
                 </td>
                 <td class="text-nowrap">
-                    <button class="btn btn-primary" type="submit">Save</button>
-                    <label for="adminOnly" class="sr-only">Restrict visibility of this comment</label>
-                    <span class="badge badge-danger" data-toggle="tooltip" data-placement="top" title="Restrict visibility of this comment">
-                        <input type="checkbox" name="adminOnly" id="adminOnly" />
-                        <i class="fas fa-lock"></i>
-                    </span>
+                    <div class="btn-group col" role="group">
+                        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown"title="Restrict comment visibility" id="commentVisibilityButton">
+                            <i id="commentVisibilityIcon" class="fas fa-lock-open"></i>
+                        </button>
+                        <ul class="dropdown-menu" id="commentVisibilityDropdown">
+                            <h6 class="dropdown-header">Restrict comment visibility</h6>
+                            <li class="dropdown-item">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="visibilityUser" name="visibility" class="custom-control-input" checked="checked" value="user">
+                                    <label class="custom-control-label" for="visibilityUser">All tool users</label>
+                                </div>
+                            </li>
+                            <li class="dropdown-item">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="visibilityAdmin" name="visibility" class="custom-control-input" value="admin">
+                                    <label class="custom-control-label" for="visibilityAdmin">Tool admins and Checkusers</label>
+                                </div>
+                            </li>
+                            <li class="dropdown-item">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="visibilityCU" name="visibility" class="custom-control-input" value="checkuser">
+                                    <label class="custom-control-label" for="visibilityCU">Checkusers only</label>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <button class="btn btn-primary col" type="submit" id="commentSaveButton">Save</button>
+                    </div>
+
+
                 </td>
             </tr>
             </tbody>
