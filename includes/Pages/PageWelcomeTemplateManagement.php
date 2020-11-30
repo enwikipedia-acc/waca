@@ -101,6 +101,13 @@ class PageWelcomeTemplateManagement extends InternalPageBase
         }
 
         $templateHtml = $this->getWikiTextHelper()->getHtmlForWikiText($template->getBotCode());
+        
+        // Add site to relevant links, since the MediaWiki parser returns, eg, `/wiki/Help:Introduction`
+        // and we want to link to <https://en.wikipedia.org/wiki/Help:Introduction> rather than
+        // <https://accounts.wmflabs.org/wiki/Help:Introduction>
+        // The code currently assumes that the template was parsed for enwiki, and will need to be
+        // updated once other wikis are supported.
+        $templateHtml = preg_replace( '/(<a href=")(\/wiki\/)/', '$1//en.wikipedia.org$2', $templateHtml );
 
         $this->assign('templateHtml', $templateHtml);
         $this->assign('template', $template);
