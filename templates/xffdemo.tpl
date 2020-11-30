@@ -31,7 +31,7 @@
 
         <div class="row">
             <div class="col-12 px-3 mb-3">
-                <div class="bg-light border border-dark rounded p-3">
+                <div class="card card-body border border-dark rounded p-3">
                     {include file="view-request/ip-section.tpl" requestHasForwardedIp=false requestTrustedIp="1.2.3.4"}
                 </div>
             </div>
@@ -53,7 +53,7 @@
 
         <div class="row">
             <div class="col-12 px-3 mb-3">
-                <div class="bg-light border border-dark rounded p-3">
+                <div class="card card-body border border-dark rounded p-3">
                     {include file="view-request/ip-section.tpl" requestHasForwardedIp=true requestForwardedIp="192.0.2.1" requestRealIp="172.16.0.164" forwardedOrigin="192.0.2.1" requestProxyData=$demo1}
                 </div>
             </div>
@@ -90,7 +90,7 @@
 
         <div class="row">
             <div class="col-12 px-3 mb-3">
-                <div class="bg-light border border-dark rounded p-3">
+                <div class="card card-body border border-dark rounded p-3">
                     {include file="view-request/ip-section.tpl" requestHasForwardedIp=true requestForwardedIp="192.0.2.1, 198.51.100.123" requestRealIp="172.16.0.164" forwardedOrigin="192.0.2.1" requestProxyData=$demo2}
                 </div>
             </div>
@@ -115,7 +115,7 @@
 
         <div class="row">
             <div class="col-12 px-3 mb-3">
-                <div class="bg-light border border-dark rounded p-3">
+                <div class="card card-body border border-dark rounded p-3">
                     {include file="view-request/ip-section.tpl" requestHasForwardedIp=true requestForwardedIp="192.0.2.1, 198.51.100.234" requestRealIp="172.16.0.164" forwardedOrigin="192.0.2.1" requestProxyData=$demo3}
                 </div>
             </div>
@@ -145,7 +145,7 @@
 
         <div class="row">
             <div class="col-12 px-3 mb-3">
-                <div class="bg-light border border-dark rounded p-3">
+                <div class="card card-body border border-dark rounded p-3">
                     {include file="view-request/ip-section.tpl" requestHasForwardedIp=true requestForwardedIp="192.0.2.1, 198.51.100.234" requestRealIp="172.16.0.164" forwardedOrigin="192.0.2.1" requestProxyData=$demo4}
                 </div>
             </div>

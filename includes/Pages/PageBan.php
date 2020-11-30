@@ -35,6 +35,8 @@ class PageBan extends InternalPageBase
         $bans = Ban::getActiveBans($this->getDatabase());
 
         $this->setupBanList($bans);
+
+        $this->assign('isFiltered', false);
         $this->setTemplate('bans/main.tpl');
     }
 
@@ -55,7 +57,8 @@ class PageBan extends InternalPageBase
         $bans = Ban::getByIdList($idList, $this->getDatabase());
 
         $this->setupBanList($bans);
-        $this->setTemplate('bans/showbans.tpl');
+        $this->assign('isFiltered', true);
+        $this->setTemplate('bans/main.tpl');
     }
 
     /**
@@ -188,11 +191,13 @@ class PageBan extends InternalPageBase
         // Validate ban duration
         $duration = $this->getBanDuration();
 
+        $action = WebRequest::postString('banAction') ?? Ban::ACTION_NONE;
+
         // handle CIDR ranges
         $targetMask = null;
         if ($targetIp !== null) {
             list($targetIp, $targetMask) = $this->splitCidrRange($targetIp);
-            $this->validateIpBan($targetIp, $targetMask);
+            $this->validateIpBan($targetIp, $targetMask, $user, $action);
         }
 
         $banHelper = new BanHelper($this->getDatabase(), $this->getXffTrustProvider(), $this->getSecurityManager());
@@ -214,7 +219,7 @@ class PageBan extends InternalPageBase
         $ban->setDuration($duration);
         $ban->setVisibility($visibility);
 
-        $ban->setAction(WebRequest::postString('banAction') ?? Ban::ACTION_NONE);
+        $ban->setAction($action);
         if ($ban->getAction() === Ban::ACTION_DEFER) {
             $ban->setActionTarget(WebRequest::postString('banActionTarget'));
         }
@@ -237,6 +242,9 @@ class PageBan extends InternalPageBase
     {
         $this->setTemplate('bans/banform.tpl');
         $this->assignCSRFToken();
+
+        $this->assign('maxIpRange', $this->getSiteConfiguration()->getBanMaxIpRange());
+        $this->assign('maxIpBlockRange', $this->getSiteConfiguration()->getBanMaxIpBlockRange());
 
         $database = $this->getDatabase();
 
@@ -275,8 +283,8 @@ class PageBan extends InternalPageBase
                 }
                 break;
             case 'Name':
-                if ($this->barrierTest('username', $user, 'BanType')) {
-                    $this->assign('banName', $request->getEmail());
+                if ($this->barrierTest('name', $user, 'BanType')) {
+                    $this->assign('banName', $request->getName());
                 }
                 break;
             case 'UA':
@@ -327,23 +335,53 @@ class PageBan extends InternalPageBase
     /**
      * @param string $targetIp
      * @param        $targetMask
+     * @param User   $user
+     * @param        $action
      *
      * @throws ApplicationLogicException
      */
-    private function validateIpBan(string $targetIp, $targetMask): void
+    private function validateIpBan(string $targetIp, $targetMask, User $user, $action): void
     {
         // validate this is an IP
         if (!filter_var($targetIp, FILTER_VALIDATE_IP)) {
             throw new ApplicationLogicException("Not a valid IP address");
         }
 
+        $canLargeIpBan = $this->barrierTest('ip-largerange', $user, 'BanType');
+        $maxIpBlockRange = $this->getSiteConfiguration()->getBanMaxIpBlockRange();
+        $maxIpRange = $this->getSiteConfiguration()->getBanMaxIpRange();
+
         // validate CIDR ranges
-        if (filter_var($targetIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) && ($targetMask < 0 || $targetMask > 128)) {
-            throw new ApplicationLogicException("CIDR mask out of range for IPv6");
+        if (filter_var($targetIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            if ($targetMask < 0 || $targetMask > 128) {
+                throw new ApplicationLogicException("CIDR mask out of range for IPv6");
+            }
+
+            // prevent setting the ban if:
+            //  * the user isn't allowed to set large bans, AND
+            //  * the ban is a drop or a block (preventing human review of the request), AND
+            //  * the mask is too wide-reaching
+            if (!$canLargeIpBan && ($action == Ban::ACTION_BLOCK || $action == Ban::ACTION_DROP) && $targetMask < $maxIpBlockRange[6]) {
+                throw new ApplicationLogicException("The requested IP range for this ban is too wide for the block/drop action.");
+            }
+
+            if (!$canLargeIpBan && $targetMask < $maxIpRange[6]) {
+                throw new ApplicationLogicException("The requested IP range for this ban is too wide.");
+            }
         }
 
-        if (filter_var($targetIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) && ($targetMask < 0 || $targetMask > 32)) {
-            throw new ApplicationLogicException("CIDR mask out of range for IPv4");
+        if (filter_var($targetIp, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            if ($targetMask < 0 || $targetMask > 32) {
+                throw new ApplicationLogicException("CIDR mask out of range for IPv4");
+            }
+
+            if (!$canLargeIpBan && ($action == Ban::ACTION_BLOCK || $action == Ban::ACTION_DROP) && $targetMask < $maxIpBlockRange[4]) {
+                throw new ApplicationLogicException("The IP range for this ban is too wide for the block/drop action.");
+            }
+
+            if (!$canLargeIpBan && $targetMask < $maxIpRange[4]) {
+                throw new ApplicationLogicException("The requested IP range for this ban is too wide.");
+            }
         }
 
         $squidIpList = $this->getSiteConfiguration()->getSquidList();

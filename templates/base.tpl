@@ -12,9 +12,6 @@
     <!-- fontawesome -->
     <link href="{$baseurl}/vendor/fortawesome/font-awesome/css/all.min.css" rel="stylesheet"/>
     <link href="{$baseurl}/vendor/fortawesome/font-awesome/css/svg-with-js.css" rel="stylesheet" />
-
-    <!-- sortable tables -->
-    <link href="{$baseurl}/vendor/drvic10k/bootstrap-sortable/Contents/bootstrap-sortable.css" rel="stylesheet" />
 </head>
 
 <body>
