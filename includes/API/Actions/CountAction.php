@@ -111,53 +111,29 @@ QUERY;
 
         $statement = $this->getDatabase()->prepare($query);
         $statement->bindValue(":userid", $this->user->getId());
-        $statement->bindValue(":action", "Suspended");
-        $statement->execute();
-        $sus = $statement->fetchColumn();
-        $userElement->setAttribute("suspended", $sus);
-        $statement->closeCursor();
-
-        $statement->bindValue(":action", "Promoted");
-        $statement->execute();
-        $pro = $statement->fetchColumn();
-        $userElement->setAttribute("promoted", $pro);
-        $statement->closeCursor();
-
-        $statement->bindValue(":action", "Approved");
-        $statement->execute();
-        $app = $statement->fetchColumn();
-        $userElement->setAttribute("approved", $app);
-        $statement->closeCursor();
-
-        $statement->bindValue(":action", "Demoted");
-        $statement->execute();
-        $dem = $statement->fetchColumn();
-        $userElement->setAttribute("demoted", $dem);
-        $statement->closeCursor();
-
-        $statement->bindValue(":action", "Declined");
-        $statement->execute();
-        $dec = $statement->fetchColumn();
-        $userElement->setAttribute("declined", $dec);
-        $statement->closeCursor();
-
-        $statement->bindValue(":action", "Renamed");
-        $statement->execute();
-        $rnc = $statement->fetchColumn();
-        $userElement->setAttribute("renamed", $rnc);
-        $statement->closeCursor();
-
-        $statement->bindValue(":action", "Edited");
-        $statement->execute();
-        $mec = $statement->fetchColumn();
-        $userElement->setAttribute("edited", $mec);
-        $statement->closeCursor();
-
-        $statement->bindValue(":action", "Prefchange");
-        $statement->execute();
-        $pcc = $statement->fetchColumn();
-        $userElement->setAttribute("prefchange", $pcc);
-        $statement->closeCursor();
+        
+        // Each entry is in the form [ database string, attribute name ]
+        // and it happens to be that the attribute is just the lower case form of the database value
+        $actions = [
+            [ 'Suspended', 'suspended' ],
+            [ 'Promoted', 'promoted' ],
+            [ 'Approved', 'approved' ],
+            [ 'Demoted', 'demoted' ],
+            [ 'Declined', 'declined' ],
+            [ 'Renamed', 'renamed' ],
+            [ 'Edited', 'edited' ],
+            [ 'Prefchange', 'prefchange' ],
+        ];
+        foreach ($actions as $action) {
+            $dbValue = $action[0];
+            $attributeName = $action[1];
+            
+            $statement->bindValue(":action", $dbValue);
+            $statement->execute();
+            $attributeValue = $statement->fetchColumn();
+            $userElement->setAttribute($attributeName, $attributeValue);
+            $statement->closeCursor();
+        }
 
         // Combine all three actions affecting Welcome templates into one count.
         $combinedquery = $this->getDatabase()->prepare(<<<SQL
