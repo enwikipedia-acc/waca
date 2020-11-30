@@ -10,12 +10,18 @@
 
     <div class="row">
         <div class="col-md-12">
-            <h3>Unbanning <code>{$ban->getTarget()|escape}</code></h3>
+            <h3>Unbanning ban #{$ban->getId()|escape}</h3>
+
+            <div class="card my-3">
+                <div class="card-body ">
+                    {include file="bans/bantarget.tpl"}
+                </div>
+            </div>
 
             <form method="post">
                 {include file="security/csrf.tpl"}
 
-                <p>Are you sure you wish to unban <code>{$ban->getTarget()|escape}</code>, which
+                <p>Are you sure you wish to unban this ban, which
                     is {if $ban->getDuration() === null} not set to expire {else} set to expire {date("Y-m-d H:i:s", $ban->getDuration())}{/if}
                     with the following reason?</p>
 

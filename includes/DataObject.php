@@ -23,7 +23,7 @@ use Waca\Exceptions\OptimisticLockFailedException;
  */
 abstract class DataObject
 {
-    /** @var int ID of the object */
+    /** @var int|null ID of the object */
     protected $id = null;
     /** @var int update version for optimistic locking */
     protected $updateversion = 0;

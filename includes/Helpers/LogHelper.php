@@ -41,10 +41,10 @@ class LogHelper
         $logs = LogSearchHelper::get($db)->byObjectType('Request')->byObjectId($requestId)->fetch();
 
         $currentUser = User::getCurrent($db);
-        $securityResult = $securityManager->allows('RequestData', 'seeRestrictedComments', $currentUser);
-        $showAllComments = $securityResult === SecurityManager::ALLOWED;
+        $showRestrictedComments = $securityManager->allows('RequestData', 'seeRestrictedComments', $currentUser) === SecurityManager::ALLOWED;
+        $showCheckuserComments = $securityManager->allows('RequestData', 'seeCheckuserComments', $currentUser) === SecurityManager::ALLOWED;
 
-        $comments = Comment::getForRequest($requestId, $db, $showAllComments, $currentUser->getId());
+        $comments = Comment::getForRequest($requestId, $db, $showRestrictedComments, $showCheckuserComments, $currentUser->getId());
 
         $items = array_merge($logs, $comments);
 
@@ -275,10 +275,12 @@ SQL
                 $ban = Ban::getById($objectId, $database);
 
                 if ($ban === false) {
-                    return 'Ban #' . $objectId . "</a>";
+                    return 'Ban #' . $objectId;
                 }
 
-                return 'Ban #' . $objectId . " (" . htmlentities($ban->getTarget()) . ")</a>";
+                return <<<HTML
+<a href="{$baseurl}/internal.php/bans/show?id={$objectId}">Ban #{$objectId}</a>
+HTML;
             case 'EmailTemplate':
                 /** @var EmailTemplate $emailTemplate */
                 $emailTemplate = EmailTemplate::getById($objectId, $database);

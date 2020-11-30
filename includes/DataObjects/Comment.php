@@ -29,31 +29,37 @@ class Comment extends DataObject
     /**
      * Retrieves all comments for a request, optionally filtered
      *
-     * @param integer     $id      Request ID to search by
+     * @param integer     $id             Request ID to search by
      * @param PdoDatabase $database
-     * @param bool        $showAll True to show all comments, False to show only unprotected comments, and protected
-     *                             comments visible to $userId
-     * @param null|int    $userId  User to filter by
+     * @param bool        $showRestricted True to show all comments, False to show only unprotected comments, and protected
+     *                                    comments visible to $userId
+     * @param bool        $showCheckuser
+     * @param null|int    $userId         User to filter by
      *
      * @return Comment[]
      */
-    public static function getForRequest($id, PdoDatabase $database, $showAll = false, $userId = null)
+    public static function getForRequest($id, PdoDatabase $database, $showRestricted = false, $showCheckuser = false, $userId = null)
     {
-        if ($showAll) {
-            $statement = $database->prepare('SELECT * FROM comment WHERE request = :target;');
+        $parameters = ['requester', 'user'];
+        if ($showCheckuser) {
+            $parameters[] = 'checkuser';
         }
-        else {
-            $statement = $database->prepare(<<<SQL
+        if ($showRestricted) {
+            $parameters[] = 'admin';
+        }
+
+        $visibilityPlaceholders = str_repeat('?,', count($parameters) - 1) . '?';
+
+        $statement = $database->prepare(<<<SQL
 SELECT * FROM comment
-WHERE request = :target AND (visibility = 'user' OR visibility = 'requester' OR user = :userid);
+WHERE (visibility in (${visibilityPlaceholders}) OR user = ?) AND request = ?;
 SQL
-            );
-            $statement->bindValue(':userid', $userId);
-        }
+        );
 
-        $statement->bindValue(':target', $id);
+        $parameters[] = $userId;
+        $parameters[] = $id;
 
-        $statement->execute();
+        $statement->execute($parameters);
 
         $result = array();
         /** @var Comment $v */

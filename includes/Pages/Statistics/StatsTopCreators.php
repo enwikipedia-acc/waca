@@ -9,6 +9,7 @@
 namespace Waca\Pages\Statistics;
 
 use PDO;
+use Waca\DataObjects\EmailTemplate;
 use Waca\Tasks\InternalPageBase;
 
 class StatsTopCreators extends InternalPageBase
@@ -28,7 +29,7 @@ SELECT
 FROM log
 LEFT JOIN emailtemplate ON concat('Closed ', emailtemplate.id) = log.action
 INNER JOIN user ON user.id = log.user
-WHERE emailtemplate.oncreated = '1'
+WHERE emailtemplate.defaultaction = :created
    OR log.action = 'Closed custom-y'
 
 GROUP BY log.user, user.username, user.status
@@ -47,7 +48,7 @@ FROM log
 LEFT JOIN emailtemplate ON concat('Closed ', emailtemplate.id) = log.action
 INNER JOIN user ON user.id = log.user
 WHERE
-	(emailtemplate.oncreated = 1 OR log.action = 'Closed custom-y')
+	(emailtemplate.defaultaction = :created OR log.action = 'Closed custom-y')
     AND user.status != 'Suspended'
 GROUP BY user.username, user.id
 ORDER BY COUNT(*) DESC;
@@ -64,7 +65,7 @@ SELECT
 FROM log
 INNER JOIN user ON user.id = log.user
 LEFT JOIN emailtemplate ON CONCAT('Closed ', emailtemplate.id) = log.action
-WHERE (emailtemplate.oncreated = '1' OR log.action = 'Closed custom-y')
+WHERE (emailtemplate.defaultaction = :created OR log.action = 'Closed custom-y')
   AND log.timestamp BETWEEN CURRENT_DATE() AND NOW()
 GROUP BY log.user, user.username
 ORDER BY COUNT(*) DESC;
@@ -81,7 +82,7 @@ SELECT
 FROM log
 INNER JOIN user ON user.id = log.user
 LEFT JOIN emailtemplate ON CONCAT('Closed ', emailtemplate.id) = log.action
-WHERE (emailtemplate.oncreated = '1' OR log.action = 'Closed custom-y')
+WHERE (emailtemplate.defaultaction = :created OR log.action = 'Closed custom-y')
   AND log.timestamp BETWEEN DATE_SUB(CURRENT_DATE(), INTERVAL 1 DAY) AND CURRENT_DATE()
 GROUP BY log.user, user.username
 ORDER BY COUNT(*) DESC;
@@ -98,7 +99,7 @@ SELECT
 FROM log
 INNER JOIN user ON user.id = log.user
 LEFT JOIN emailtemplate ON CONCAT('Closed ', emailtemplate.id) = log.action
-WHERE (emailtemplate.oncreated = '1' OR log.action = 'Closed custom-y')
+WHERE (emailtemplate.defaultaction = :created OR log.action = 'Closed custom-y')
   AND log.timestamp BETWEEN DATE_SUB(NOW(), INTERVAL 7 DAY) AND NOW()
 GROUP BY log.user, user.username
 ORDER BY COUNT(*) DESC;
@@ -115,7 +116,7 @@ SELECT
 FROM log
 INNER JOIN user ON user.id = log.user
 LEFT JOIN emailtemplate ON CONCAT('Closed ', emailtemplate.id) = log.action
-WHERE (emailtemplate.oncreated = '1' OR log.action = 'Closed custom-y')
+WHERE (emailtemplate.defaultaction = :created OR log.action = 'Closed custom-y')
   AND log.timestamp BETWEEN DATE_SUB(NOW(), INTERVAL 28 DAY) AND NOW()
 GROUP BY log.user, user.username
 ORDER BY COUNT(*) DESC;
@@ -133,7 +134,8 @@ SQL;
 
         $database = $this->getDatabase();
         foreach ($queries as $name => $sql) {
-            $statement = $database->query($sql);
+            $statement = $database->prepare($sql);
+            $statement->execute([":created" => EmailTemplate::CREATED]);
             $data = $statement->fetchAll(PDO::FETCH_ASSOC);
             $this->assign($name, $data);
         }
