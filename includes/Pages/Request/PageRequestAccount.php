@@ -21,6 +21,9 @@ use Waca\WebRequest;
 
 class PageRequestAccount extends PublicInterfacePageBase
 {
+    /** @var RequestValidationHelper do not use directly. */
+    private $validationHelper;
+
     /**
      * Main function for this page, when no specific actions are called.
      * @return void
@@ -63,6 +66,8 @@ class PageRequestAccount extends PublicInterfacePageBase
             else {
                 $this->saveWithoutEmailConfirmation($request, $comment);
             }
+
+            $this->getRequestValidationHelper()->postSaveValidations($request);
         }
         else {
             // set the form values from the session context
@@ -126,22 +131,12 @@ class PageRequestAccount extends PublicInterfacePageBase
      */
     protected function validateRequest($request)
     {
-        $validationHelper = new RequestValidationHelper(
-            new BanHelper($this->getDatabase()),
-            $request,
-            WebRequest::postEmail('emailconfirm'),
-            $this->getDatabase(),
-            $this->getAntiSpoofProvider(),
-            $this->getXffTrustProvider(),
-            $this->getHttpHelper(),
-            $this->getSiteConfiguration()->getMediawikiWebServiceEndpoint(),
-            $this->getSiteConfiguration()->getTitleBlacklistEnabled(),
-            $this->getTorExitProvider());
+        $validationHelper = $this->getRequestValidationHelper();
 
         // These are arrays of ValidationError.
-        $nameValidation = $validationHelper->validateName();
-        $emailValidation = $validationHelper->validateEmail();
-        $otherValidation = $validationHelper->validateOther();
+        $nameValidation = $validationHelper->validateName($request);
+        $emailValidation = $validationHelper->validateEmail($request, WebRequest::postEmail('emailconfirm'));
+        $otherValidation = $validationHelper->validateOther($request);
 
         $validationErrors = array_merge($nameValidation, $emailValidation, $otherValidation);
 
@@ -205,4 +200,25 @@ class PageRequestAccount extends PublicInterfacePageBase
 
         $this->redirect('requestSubmitted');
     }
+
+    /**
+     * @return RequestValidationHelper
+     */
+    protected function getRequestValidationHelper(): RequestValidationHelper
+    {
+        $banHelper = new BanHelper($this->getDatabase(), $this->getXffTrustProvider(), null);
+
+        if ($this->validationHelper === null) {
+            $this->validationHelper = new RequestValidationHelper(
+                $banHelper,
+                $this->getDatabase(),
+                $this->getAntiSpoofProvider(),
+                $this->getXffTrustProvider(),
+                $this->getHttpHelper(),
+                $this->getTorExitProvider(),
+                $this->getSiteConfiguration());
+        }
+
+        return $this->validationHelper;
+}
 }

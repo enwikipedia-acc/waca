@@ -11,6 +11,7 @@ namespace Waca\API\Actions;
 use DOMElement;
 use Waca\API\ApiException as ApiException;
 use Waca\API\IXmlApiAction;
+use Waca\DataObjects\EmailTemplate;
 use Waca\DataObjects\User;
 use Waca\Tasks\XmlApiPageBase;
 use Waca\WebRequest;
@@ -66,13 +67,13 @@ class CountAction extends XmlApiPageBase implements IXmlApiAction
             LEFT JOIN emailtemplate ON concat('Closed ', emailtemplate.id) = log.action
             INNER JOIN user ON log.user = user.id
         WHERE
-            (oncreated = '1' OR log.action = 'Closed custom-y')
+            (defaultaction = :created OR log.action = 'Closed custom-y')
             AND log.objecttype = 'Request'
             AND user.username = :username;
 QUERY;
 
         $statement = $this->getDatabase()->prepare($query);
-        $statement->execute(array(":username" => $this->user->getUsername()));
+        $statement->execute(array(":username" => $this->user->getUsername(), ":created" => EmailTemplate::CREATED));
         $result = $statement->fetchColumn();
         $statement->closeCursor();
 
@@ -89,13 +90,14 @@ QUERY;
             INNER JOIN user ON log.user = user.id
         WHERE
             log.timestamp LIKE :date
-            AND (oncreated = '1' OR log.action = 'Closed custom-y')
+            AND (defaultaction = :created OR log.action = 'Closed custom-y')
             AND user.username = :username;
 QUERY;
 
         $statement = $this->getDatabase()->prepare($query);
         $statement->bindValue(":username", $this->user->getUsername());
         $statement->bindValue(":date", date('Y-m-d') . "%");
+        $statement->bindValue(":created", EmailTemplate::CREATED);
         $statement->execute();
         $today = $statement->fetchColumn();
         $statement->closeCursor();

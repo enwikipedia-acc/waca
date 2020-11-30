@@ -67,18 +67,15 @@ class RequestValidationHelperTest extends TestCase
         // arrange
         $validationHelper = new RequestValidationHelper(
             $banHelperMock,
-            $this->request,
-            $this->request->getEmail(),
             $dbMock,
             $antispoofMock,
             $xffTrustMock,
             $httpHelperMock,
-            "mediawikiendpoint",
-            false,
-            $torProviderMock);
+            $torProviderMock,
+            null);
 
         // act
-        $result = $validationHelper->validateName();
+        $result = $validationHelper->validateName($this->request);
 
         // assert
         $this->assertEmpty($result);

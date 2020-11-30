@@ -36,7 +36,7 @@ class User extends DataObject
     private $lastactive = "0000-00-00 00:00:00";
     private $forcelogout = 0;
     private $forceidentified = null;
-    private $welcome_template = 0;
+    private $welcome_template = null;
     private $abortpref = 0;
     private $confirmationdiff = 0;
     private $emailsig = "";
