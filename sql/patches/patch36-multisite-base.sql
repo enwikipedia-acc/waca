@@ -96,7 +96,6 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
         modify id int(11) unsigned auto_increment,
         modify updateversion int(11) unsigned default 0 not null,
         modify user int(11) unsigned not null,
-        modify factor int(11) unsigned default 1 not null,
         modify version int(11) unsigned default 1 not null comment 'Version of the credential, used to determine if the storage method needs to be updated',
         modify disabled tinyint(1) unsigned default 0 not null comment 'Flag determining whether this credential is in use. Used during 2FA setup, operationally useful for disabling 2FA for a user.',
         modify priority int(1) unsigned default 5 null comment 'the order in which these credentials should be tested'
