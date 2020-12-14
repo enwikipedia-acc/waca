@@ -256,4 +256,28 @@ class MediaWikiHelper
 
         return $exists;
     }
+
+    /**
+     * Gets the HTML for the provided wiki-markup
+     *
+     * @param string $wikiText
+     *
+     * @return string
+     */
+    public function getHtmlForWikiText($wikiText)
+    {
+        $parameters = array(
+            'action'             => 'parse',
+            'pst'                => true,
+            'contentmodel'       => 'wikitext',
+            'disablelimitreport' => true,
+            'disabletoc'         => true,
+            'disableeditsection' => true,
+            'text'               => $wikiText,
+        );
+
+        $apiResult = $this->mediaWikiClient->doApiCall($parameters, 'GET');
+
+        return $apiResult->parse->text->{'*'};
+    }
 }
