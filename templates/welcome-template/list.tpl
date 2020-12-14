@@ -17,27 +17,28 @@
             <p class="text-muted">
                 This page allows you to choose a template to use to automatically welcome the users you create. Use the
                 Select button to choose the template you wish to use. If the template you want to use is not on the
-                list, please ask an admin to add it for you.
+                list, please ask a tool admin to add it for you.
             </p>
         </div>
     </div>
 
     <div class="row">
         <div class="col-md-12">
-            <table class="table table-striped table-hover table-nonfluid">
+            <table class="table table-striped table-hover table-nonfluid sortable">
                 <thead>
                     <tr>
-                        <th>Template User code</th>
+                        <th>Template</th>
+                        <th><span class="d-none d-xl-inline">Code</span></th>
                         {if $canEdit}
-                            <th class="d-none d-lg-block">Used by:</th>
+                            <th class="d-none d-lg-block text-nowrap">Used by:</th>
                         {/if}
-                        <th><!-- Buttons --></th>
+                        <th data-defaultsort="disabled"><!-- Buttons --></th>
                     </tr>
                 </thead>
                 {if $canSelect}
                     <tfoot>
                         <tr {if $currentUser->getWelcomeTemplate() == null}class="table-success"{/if}>
-                            <th>Disable automatic welcoming</th>
+                            <th colspan="2">Disable automatic welcoming</th>
                             {if $canEdit}
                                 <th class="d-none d-lg-block"><!-- count --></th>
                             {/if}
@@ -63,8 +64,11 @@
                         <td>
                             {$t->getUserCode()|escape}
                         </td>
+                        <td>
+                            <code class="d-none d-xl-inline">{$t->getBotCode()|escape}</code>
+                        </td>
                         {if $canEdit}
-                            <td class="table-button-cell d-none d-lg-table-cell">
+                            <td class="table-button-cell d-none d-lg-table-cell" data-value="{count($t->getUsersUsingTemplate())}">
                                 <a class="btn {if count($t->getUsersUsingTemplate()) > 0}btn-warning{else}btn-primary disabled{/if} btn-sm"
                                    {if count($t->getUsersUsingTemplate()) > 0}rel="popover"{/if} href="#"
                                    title="Users using this template" id="#tpl{$t->getId()}"

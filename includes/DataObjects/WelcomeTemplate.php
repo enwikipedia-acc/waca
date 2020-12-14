@@ -181,4 +181,24 @@ SQL
     {
         return ((int)$this->deleted) === 1;
     }
+
+    public function getSectionHeader() {
+        // Hard-coded for future update ability to change this per-template. This has beem moved from being hard-coded
+        // directly in the welcome task, and safely permits us to show the header in the welcome template preview
+        return "Welcome!";
+    }
+
+    public function getBotCodeForWikiSave(string $request, $creator) {
+        $templateText = $this->getBotCode();
+
+        $templateText = str_replace('$request', $request, $templateText);
+        $templateText = str_replace('$creator', $creator, $templateText);
+
+        // legacy; these have been removed in Prod for now, but I'm keeping them in case someone follows the
+        // instructions in prod prior to deployment.
+        $templateText = str_replace('$signature', '~~~~', $templateText);
+        $templateText = str_replace('$username', $creator, $templateText);
+
+        return $templateText;
+    }
 }
