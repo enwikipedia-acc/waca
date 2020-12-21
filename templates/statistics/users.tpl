@@ -6,7 +6,7 @@
                 <th>Username</th>
                 <th>Tool user</th>
                 <th><abbr title="Handles day-to-day tool administration, user access, etc.">Tool admin</abbr></th>
-                <th><abbr title="Has checkuser access to data, only given to on-wiki checkusers">Checkuser</abbr></th>
+                <th><abbr title="Has checkuser access to data, only given to on-wiki checkusers and stewards">Checkuser</abbr></th>
                 <th><abbr title="Has shell access to the servers which run the tool">Root</abbr></th>
             </tr>
         </thead>
