@@ -67,7 +67,7 @@ class WelcomeUserTask extends BackgroundTaskBase
             return;
         }
 
-        $this->performWelcome($template, $request, $mediaWikiHelper);
+        $this->performWelcome($template, $request, $user, $mediaWikiHelper);
         $this->markComplete();
     }
 
@@ -76,17 +76,17 @@ class WelcomeUserTask extends BackgroundTaskBase
      *
      * @param WelcomeTemplate $template
      * @param Request         $request
+     * @param User            $user             The user who triggered the job
      * @param MediaWikiHelper $mediaWikiHelper
      */
     private function performWelcome(
         WelcomeTemplate $template,
         Request $request,
+        User $user,
         MediaWikiHelper $mediaWikiHelper
     ) {
-        $templateText = $template->getBotCode();
-        $templateText = str_replace('$signature', '~~~~', $templateText);
-        $templateText = str_replace('$username', $request->getName(), $templateText);
+        $templateText = $template->getBotCodeForWikiSave($request->getName(), $user->getOnWikiName());
 
-        $mediaWikiHelper->addTalkPageMessage($request->getName(), 'Welcome!', 'Welcoming user created through [[WP:ACC]]', $templateText);
+        $mediaWikiHelper->addTalkPageMessage($request->getName(), $template->getSectionHeader(), 'Welcoming user created through [[WP:ACC]]', $templateText);
     }
 }

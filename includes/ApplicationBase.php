@@ -14,7 +14,6 @@ use Waca\Helpers\EmailHelper;
 use Waca\Helpers\HttpHelper;
 use Waca\Helpers\IrcNotificationHelper;
 use Waca\Helpers\OAuthProtocolHelper;
-use Waca\Helpers\WikiTextHelper;
 use Waca\Providers\CachedApiAntispoofProvider;
 use Waca\Providers\CachedRDnsLookupProvider;
 use Waca\Providers\FakeLocationProvider;
@@ -134,7 +133,6 @@ abstract class ApplicationBase
 
         $page->setEmailHelper(new EmailHelper());
         $page->setHttpHelper($httpHelper);
-        $page->setWikiTextHelper(new WikiTextHelper($siteConfiguration, $page->getHttpHelper()));
 
         if ($siteConfiguration->getLocationProviderApiKey() === null) {
             $page->setLocationProvider(new FakeLocationProvider());
