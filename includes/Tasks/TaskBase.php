@@ -12,7 +12,6 @@ use Waca\Helpers\HttpHelper;
 use Waca\Helpers\Interfaces\IEmailHelper;
 use Waca\Helpers\Interfaces\IOAuthProtocolHelper;
 use Waca\Helpers\IrcNotificationHelper;
-use Waca\Helpers\WikiTextHelper;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\IAntiSpoofProvider;
 use Waca\Providers\Interfaces\ILocationProvider;
@@ -29,8 +28,6 @@ abstract class TaskBase implements ITask
     private $emailHelper;
     /** @var HttpHelper */
     private $httpHelper;
-    /** @var WikiTextHelper */
-    private $wikiTextHelper;
     /** @var ILocationProvider */
     private $locationProvider;
     /** @var IXffTrustProvider */
@@ -78,22 +75,6 @@ abstract class TaskBase implements ITask
     final public function setHttpHelper($httpHelper)
     {
         $this->httpHelper = $httpHelper;
-    }
-
-    /**
-     * @return WikiTextHelper
-     */
-    final public function getWikiTextHelper()
-    {
-        return $this->wikiTextHelper;
-    }
-
-    /**
-     * @param WikiTextHelper $wikiTextHelper
-     */
-    final public function setWikiTextHelper($wikiTextHelper)
-    {
-        $this->wikiTextHelper = $wikiTextHelper;
     }
 
     /**
