@@ -6,7 +6,7 @@ COPY docker/msmtprc /etc/msmtprc
 
 # VOLUME /var/www/html
 RUN apt-get update \
-    && apt-get install git unzip msmtp msmtp-mta -q -y --no-install-recommends \
+    && apt-get install git unzip msmtp msmtp-mta npm -q -y --no-install-recommends \
     && apt-get clean
 
 ADD https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions /usr/local/bin/

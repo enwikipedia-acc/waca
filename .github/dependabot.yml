@@ -8,4 +8,15 @@ updates:
     schedule:
       interval: "weekly"
     reviewers:
-      - "stwalkerster"
+      - "@enwikipedia-acc/dependency-reviewers"
+    assignees:
+      - "@enwikipedia-acc/dependency-reviewers"
+
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    reviewers:
+      - "@enwikipedia-acc/dependency-reviewers"
+    assignees:
+      - "@enwikipedia-acc/dependency-reviewers"

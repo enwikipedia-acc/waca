@@ -64,6 +64,7 @@ This was written using Windows 10.
 4. Clone the ACC repo to C:\xampp\htdocs\waca\
 5. Browse to http://localhost/phpmyadmin/ and create a new database called "waca".
 6. Run `composer install` (https://getcomposer.org)
+7. Run `npm install`
 8. Generate the stylesheets:
   * `cd maintenance/; php RegenerateStylesheets.php`
 8. run the database setup scripts:
