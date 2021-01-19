@@ -8,7 +8,7 @@
         </div>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
         <div class="col">
             <div class="card mb-4 {if $totpEnrolled}border-success{/if}">
                 <div class="card-body">
@@ -84,38 +84,6 @@
             </div>
         </div>
 
-        <div class="col">
-            <div class="card mb-4 {if $u2fEnrolled}border-success{/if}">
-                <div class="card-body">
-                    <h4 class="card-title">Universal Second Factor (U2F)</h4>
-                    <p class="card-text lead">
-                        Use a <a href="https://fidoalliance.org/about/what-is-fido/" target="_blank">FIDO U2F</a> device.
-                    </p>
-                </div>
-                <div class="card-footer">
-                    <p>
-                        <strong>U2F status:</strong>
-                        {if $u2fEnrolled}
-                            <span class="badge badge-success">ENABLED</span>
-                        {else}
-                            <span class="badge badge-danger">DISABLED</span>
-                        {/if}
-                    </p>
-
-                    {if $u2fEnrolled}
-                        <a class="btn btn-block btn-outline-danger" href="{$baseurl}/internal.php/multiFactor/disableU2F">
-                            <i class="icon-white icon-remove"></i>&nbsp;Disable
-                        </a>
-                    {else}
-                        {if $allowedU2f}
-                            <a class="btn btn-block btn-secondary" href="{$baseurl}/internal.php/multiFactor/enableU2F">
-                                <i class="icon-white icon-ok"></i>&nbsp;Enable
-                            </a>
-                        {/if}
-                    {/if}
-                </div>
-            </div>
-        </div>
         <div class="col">
             <div class="card mb-4">
                 <div class="card-body">

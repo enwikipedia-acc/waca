@@ -127,8 +127,9 @@ class RoleConfiguration
                 self::MAIN          => self::ACCESS_ALLOW,
                 'scratch'           => self::ACCESS_ALLOW,
                 'enableYubikeyOtp'  => self::ACCESS_ALLOW,
-                'disableYubikeyOtp' => self::ACCESS_ALLOW,
                 'enableTotp'        => self::ACCESS_ALLOW,
+                // allow a user to disable this even when they're not allowed to enable it
+                'disableYubikeyOtp' => self::ACCESS_ALLOW,
                 'disableTotp'       => self::ACCESS_ALLOW,
             ),
             PageOAuth::class          => array(
@@ -334,10 +335,6 @@ class RoleConfiguration
             ),
             'BanType'                   => array(
                 'ip-largerange' => self::ACCESS_ALLOW,
-            ),
-            PageMultiFactor::class => array(
-                'enableU2F'         => self::ACCESS_ALLOW,
-                'disableU2F'        => self::ACCESS_ALLOW,
             ),
             PageDomainManagement::class => array(
                 self::MAIN => self::ACCESS_ALLOW,
