@@ -16,7 +16,6 @@ use Waca\Security\CredentialProviders\ICredentialProvider;
 use Waca\Security\CredentialProviders\PasswordCredentialProvider;
 use Waca\Security\CredentialProviders\ScratchTokenCredentialProvider;
 use Waca\Security\CredentialProviders\TotpCredentialProvider;
-use Waca\Security\CredentialProviders\U2FCredentialProvider;
 use Waca\Security\CredentialProviders\YubikeyOtpCredentialProvider;
 use Waca\SiteConfiguration;
 
@@ -46,7 +45,6 @@ class AuthenticationManager
         $this->typeMap['yubikeyotp'] = new YubikeyOtpCredentialProvider($database, $siteConfiguration, $httpHelper);
         $this->typeMap['totp'] = new TotpCredentialProvider($database, $siteConfiguration);
         $this->typeMap['scratch'] = new ScratchTokenCredentialProvider($database, $siteConfiguration);
-        $this->typeMap['u2f'] = new U2FCredentialProvider($database, $siteConfiguration);
         $this->database = $database;
     }
 
