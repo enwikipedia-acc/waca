@@ -19,7 +19,6 @@ use Waca\Security\CredentialProviders\ICredentialProvider;
 use Waca\Security\CredentialProviders\PasswordCredentialProvider;
 use Waca\Security\CredentialProviders\ScratchTokenCredentialProvider;
 use Waca\Security\CredentialProviders\TotpCredentialProvider;
-use Waca\Security\CredentialProviders\U2FCredentialProvider;
 use Waca\Security\CredentialProviders\YubikeyOtpCredentialProvider;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
@@ -44,16 +43,12 @@ class PageMultiFactor extends InternalPageBase
         $totpCredentialProvider = new TotpCredentialProvider($database, $this->getSiteConfiguration());
         $this->assign('totpEnrolled', $totpCredentialProvider->userIsEnrolled($currentUser->getId()));
 
-        $u2fCredentialProvider = new U2FCredentialProvider($database, $this->getSiteConfiguration());
-        $this->assign('u2fEnrolled', $u2fCredentialProvider->userIsEnrolled($currentUser->getId()));
-
         $scratchCredentialProvider = new ScratchTokenCredentialProvider($database, $this->getSiteConfiguration());
         $this->assign('scratchEnrolled', $scratchCredentialProvider->userIsEnrolled($currentUser->getId()));
         $this->assign('scratchRemaining', $scratchCredentialProvider->getRemaining($currentUser->getId()));
 
         $this->assign('allowedTotp', $this->barrierTest('enableTotp', $currentUser));
         $this->assign('allowedYubikey', $this->barrierTest('enableYubikeyOtp', $currentUser));
-        $this->assign('allowedU2f', $this->barrierTest('enableU2F', $currentUser));
 
         $this->setTemplate('mfa/mfa.tpl');
     }
@@ -236,130 +231,6 @@ class PageMultiFactor extends InternalPageBase
         $otpCredentialProvider = new TotpCredentialProvider($database, $this->getSiteConfiguration());
 
         $factorType = 'TOTP';
-
-        $this->deleteCredential($database, $currentUser, $otpCredentialProvider, $factorType);
-    }
-
-    protected function enableU2F()
-    {
-        $database = $this->getDatabase();
-        $currentUser = User::getCurrent($database);
-
-        $otpCredentialProvider = new U2FCredentialProvider($database, $this->getSiteConfiguration());
-
-        if (WebRequest::wasPosted()) {
-            $this->validateCSRFToken();
-
-            // used for routing only, not security
-            $stage = WebRequest::postString('stage');
-
-            if ($stage === "auth") {
-                $password = WebRequest::postString('password');
-
-                $passwordCredentialProvider = new PasswordCredentialProvider($database,
-                    $this->getSiteConfiguration());
-                $result = $passwordCredentialProvider->authenticate($currentUser, $password);
-
-                if ($result) {
-                    $otpCredentialProvider->setCredential($currentUser, 2, null);
-                    $this->assignCSRFToken();
-
-                    list($data, $reqs) = $otpCredentialProvider->getRegistrationData();
-
-                    $u2fRequest = json_encode($data);
-                    $u2fSigns = json_encode($reqs);
-
-                    $this->addJs('/vendor/yubico/u2flib-server/examples/assets/u2f-api.js');
-                    $this->setTailScript($this->getCspManager()->getNonce(), <<<JS
-var request = ${u2fRequest};
-var signs = ${u2fSigns};
-
-u2f.register([request], signs, function(data) {
-	var form = document.getElementById('u2fEnroll');
-	var reg = document.getElementById('u2fData');
-	var req = document.getElementById('u2fRequest');
-
-	if(data.errorCode && data.errorCode !== 0) {
-		alert("registration failed with errror: " + data.errorCode);
-		return;
-	}
-
-	reg.value=JSON.stringify(data);
-	req.value=JSON.stringify(request);
-	form.submit();
-});
-JS
-                    );
-
-                    $this->setTemplate('mfa/enableU2FEnroll.tpl');
-
-                    return;
-                }
-                else {
-                    SessionAlert::error('Error enabling TOTP - invalid credentials.');
-                    $this->redirect('multiFactor');
-
-                    return;
-                }
-            }
-
-            if ($stage === "enroll") {
-                // we *must* have a defined credential already here,
-                if ($otpCredentialProvider->isPartiallyEnrolled($currentUser)) {
-
-                    $request = json_decode(WebRequest::postString('u2fRequest'));
-                    $u2fData = json_decode(WebRequest::postString('u2fData'));
-
-                    $otpCredentialProvider->enable($currentUser, $request, $u2fData);
-
-                    SessionAlert::success('Enabled U2F.');
-
-                    $scratchProvider = new ScratchTokenCredentialProvider($database, $this->getSiteConfiguration());
-                    if ($scratchProvider->getRemaining($currentUser->getId()) < 3) {
-                        $scratchProvider->setCredential($currentUser, 2, null);
-                        $tokens = $scratchProvider->getTokens();
-                        $this->assign('tokens', $tokens);
-                        $this->setTemplate('mfa/regenScratchTokens.tpl');
-                        return;
-                    }
-
-                    $this->redirect('multiFactor');
-                    return;
-                }
-                else {
-                    SessionAlert::error('Error enabling TOTP - no enrollment found or enrollment expired.');
-                    $this->redirect('multiFactor');
-
-                    return;
-                }
-            }
-
-            // urgh, dunno what happened, but it's not something expected.
-            throw new ApplicationLogicException();
-        }
-        else {
-            if ($otpCredentialProvider->userIsEnrolled($currentUser->getId())) {
-                // user is not enrolled, we shouldn't have got here.
-                throw new ApplicationLogicException('User is already enrolled in the selected MFA mechanism');
-            }
-
-            $this->assignCSRFToken();
-
-            $this->assign('alertmessage', 'To enable your multi-factor credentials, please prove you are who you say you are by providing the information below.');
-            $this->assign('alertheader', 'Provide credentials');
-            $this->assign('continueText', 'Verify password');
-            $this->setTemplate('mfa/enableAuth.tpl');
-        }
-    }
-
-    protected function disableU2F()
-    {
-        $database = $this->getDatabase();
-        $currentUser = User::getCurrent($database);
-
-        $otpCredentialProvider = new U2FCredentialProvider($database, $this->getSiteConfiguration());
-
-        $factorType = 'U2F';
 
         $this->deleteCredential($database, $currentUser, $otpCredentialProvider, $factorType);
     }
