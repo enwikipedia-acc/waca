@@ -17,12 +17,16 @@ You'll also need some PHP extensions:
 
 * curl
 * date
+* dom
+* gmp
+* json
 * mbstring
 * openssl
 * pcre
 * pdo
 * pdo_mysql
 * session
+* simplexml
 
 There's nothing special here, these are all standard PHP extensions that are bundled with PHP - you may
 just need to switch some of them on in the php.ini file.

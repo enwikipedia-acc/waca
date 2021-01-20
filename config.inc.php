@@ -298,14 +298,18 @@ ini_set('session.name', $sessionname);
 ini_set('user_agent', $toolUserAgent);
 
 foreach (array(
+    "curl", // mediawiki api access etc
+    "date",
+    "dom",
+    "gmp",
+    "json",
     "mbstring", // unicode and stuff
+    "openssl", // token generation
+    "pcre", // core stuff
     "pdo",
     "pdo_mysql", // new database module
     "session",
-    "date",
-    "pcre", // core stuff
-    "curl", // mediawiki api access etc
-    "openssl", // token generation
+    "simplexml",
 ) as $x) {
     if (!extension_loaded($x)) {
         die("extension $x is required.");

@@ -12,6 +12,7 @@ namespace Waca;
 
 use Waca\DataObjects\User;
 use Waca\Providers\GlobalState\IGlobalStateProvider;
+use Webauthn\PublicKeyCredentialCreationOptions;
 
 /**
  * Holds helper functions regarding the current request.
@@ -529,14 +530,21 @@ class WebRequest
         $session['authPartialLoginStage'] = $stage;
     }
 
+    public static function setAuthPartialLoginToken($token)
+    {
+        $session = &self::$globalStateProvider->getSessionSuperGlobal();
+        $session['authPartialLoginToken'] = $token;
+    }
+
     public static function getAuthPartialLogin()
     {
         $session = &self::$globalStateProvider->getSessionSuperGlobal();
 
         $userId = isset($session['authPartialLoginId']) ? (int)$session['authPartialLoginId'] : null;
         $stage = isset($session['authPartialLoginStage']) ? (int)$session['authPartialLoginStage'] : null;
+        $token = isset($session['authPartialLoginToken']) ? $session['authPartialLoginToken'] : null;
 
-        return array($userId, $stage);
+        return array($userId, $stage, $token);
     }
 
     public static function clearAuthPartialLogin()
@@ -544,6 +552,19 @@ class WebRequest
         $session = &self::$globalStateProvider->getSessionSuperGlobal();
         unset($session['authPartialLoginId']);
         unset($session['authPartialLoginStage']);
+        unset($session['authPartialLoginToken']);
+    }
+
+    public static function setWebAuthnOptions($options) {
+        $session = &self::$globalStateProvider->getSessionSuperGlobal();
+        $session['webAuthnPubkeyOptions'] = serialize($options);
+    }
+
+    public static function getWebAuthnOptions() {
+        $session = &self::$globalStateProvider->getSessionSuperGlobal();
+        $decodedObject = unserialize($session['webAuthnPubkeyOptions']);
+
+        return $decodedObject;
     }
 
     /**

@@ -70,7 +70,7 @@
     {* JS: Placed at the end of the document so the pages load faster *}
     <script src="{$baseurl}/vendor/components/jquery/jquery.min.js" type="text/javascript"></script>
     <script src="{$baseurl}/vendor/fortawesome/font-awesome/js/all.min.js" data-auto-add-css="false" type="text/javascript"></script>
-    <script src="{$baseurl}/lib/popperjs/1.16.0/popper.min.js" type="text/javascript"></script>
+    <script src="{$baseurl}/node_modules/popper.js/dist/umd/popper.min.js" type="text/javascript"></script>
     <script src="{$baseurl}/vendor/twbs/bootstrap/dist/js/bootstrap.min.js" type="text/javascript"></script>
     <script src="{$baseurl}/vendor/twitter/typeahead.js/dist/typeahead.bundle.min.js"></script>
     <script src="{$baseurl}/vendor/drvic10k/bootstrap-sortable/Scripts/bootstrap-sortable.js"></script>
@@ -79,14 +79,8 @@
 
     <!-- Page-specific extra resources -->
     {foreach from=$extraJs item=js}
-        <script src="{$baseurl}{$js}" type="text/javascript"></script>
+        <script src="{$baseurl}{$js.path|escape}" type="{$js.type|escape}" integrity="sha256-{$js.integrity}"></script>
     {/foreach}
-
-    {if $tailScript}
-        <script type="text/javascript" nonce="{$tailScriptNonce}">
-            {$tailScript}
-        </script>
-    {/if}
 {/block}
 </body>
 </html>

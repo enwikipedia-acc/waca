@@ -15,7 +15,7 @@ class PagePasswordLogin extends LoginCredentialPageBase
 {
     protected function providerSpecificSetup()
     {
-        list($partialId, $partialStage) = WebRequest::getAuthPartialLogin();
+        list($partialId, $partialStage, $partialToken) = WebRequest::getAuthPartialLogin();
 
         if($partialId !== null && $partialStage > 1) {
             $sql = 'SELECT type FROM credential WHERE user = :user AND factor = :stage AND disabled = 0 ORDER BY priority';

@@ -14,4 +14,8 @@
     .form-group:last-of-type {
         margin-bottom: 0;
     }
+
+    .row.cols.split-cols .col:not(:first-child) {
+        @extend .border-left;
+    }
 }

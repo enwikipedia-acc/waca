@@ -21,6 +21,8 @@
                             </div>
                         </div>
 
+                        <input type="hidden" name="identifier" value="{$identifier|escape|default:''}" />
+
                         <div class="form-group row">
                             <div class="col">
                                 <button type="submit" class="btn btn-primary btn-block" tabindex="3">Disable {$otpType|escape}</button>

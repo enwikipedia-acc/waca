@@ -8,7 +8,7 @@
         </div>
     </div>
 
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3">
         <div class="col">
             <div class="card mb-4 {if $totpEnrolled}border-success{/if}">
                 <div class="card-body">
@@ -85,30 +85,72 @@
         </div>
 
         <div class="col">
-            <div class="card mb-4 {if $u2fEnrolled}border-success{/if}">
+            <div class="card mb-4 {if $webAuthnEnrolled}border-success{/if}">
                 <div class="card-body">
-                    <h4 class="card-title">Universal Second Factor (U2F)</h4>
+                    <h4 class="card-title">WebAuthn</h4>
                     <p class="card-text lead">
-                        Use a <a href="https://fidoalliance.org/about/what-is-fido/" target="_blank">FIDO U2F</a> device.
+                        Use your computer or a USB hardware token to authenticate.
                     </p>
+                    <p>
+                        Use a USB hardware token such FIDO2 U2F token or your computer's underlying authentication system, including options such as:
+                    </p>
+                    <ul>
+                        <li>YubiKeys or other U2F tokens</li>
+                        <li>Windows Hello</li>
+                        <li>Android lockscreen</li>
+                        <li>TouchID or FaceID</li>
+                    </ul>
                 </div>
                 <div class="card-footer">
                     <p>
-                        <strong>U2F status:</strong>
-                        {if $u2fEnrolled}
+                        <strong>WebAuthn status:</strong>
+                        {if $webAuthnEnrolled}
                             <span class="badge badge-success">ENABLED</span>
                         {else}
                             <span class="badge badge-danger">DISABLED</span>
                         {/if}
                     </p>
 
-                    {if $u2fEnrolled}
-                        <a class="btn btn-block btn-outline-danger" href="{$baseurl}/internal.php/multiFactor/disableU2F">
-                            <i class="icon-white icon-remove"></i>&nbsp;Disable
+                    {if $webAuthnEnrolled}
+                    <hr />
+
+                    <strong>Enrolled tokens:</strong>
+                    <table class="table table-striped">
+                        <thead>
+                        <tr><th>Token</th><th>Last Used</th><td></td></tr>
+                        </thead>
+                        <tbody>
+                        {foreach from=$webAuthnTokens item=token}
+                            <tr>
+                                <th>{$token.tokenName|escape}</th>
+                                <td>
+                                    {if $token.lastUsed === null}
+                                        <span class="text-muted">never used</span>
+                                    {else}
+                                        <span data-toggle="tooltip" data-placement="top" title="{$token.lastUsed|unixtime|date}">{$token.lastUsed|unixtime|relativedate}</span>
+                                    {/if}
+                                </td>
+                                <td class="table-button-cell">
+                                    <form action="{$baseurl}/internal.php/multiFactor/disableWebAuthn" method="post">
+                                        <input type="hidden" name="publicKeyId" value="{$token.publicKeyId|escape}" />
+                                        <button class="btn btn-sm btn-outline-danger">Remove</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {/foreach}
+                        </tbody>
+                    </table>
+                    {/if}
+
+                    {if $webAuthnEnrolled}
+                        <a class="btn btn-block btn-outline-secondary"
+                           href="{$baseurl}/internal.php/multiFactor/enableWebAuthn">
+                            <i class="icon-white icon-ok"></i>&nbsp;Enroll another authenticator
                         </a>
                     {else}
-                        {if $allowedU2f}
-                            <a class="btn btn-block btn-secondary" href="{$baseurl}/internal.php/multiFactor/enableU2F">
+                        {if $allowedWebAuthn}
+                            <a class="btn btn-block btn-secondary"
+                               href="{$baseurl}/internal.php/multiFactor/enableWebAuthn">
                                 <i class="icon-white icon-ok"></i>&nbsp;Enable
                             </a>
                         {/if}
@@ -116,6 +158,7 @@
                 </div>
             </div>
         </div>
+
         <div class="col">
             <div class="card mb-4">
                 <div class="card-body">

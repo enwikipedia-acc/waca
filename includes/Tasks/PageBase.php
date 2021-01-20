@@ -318,14 +318,21 @@ abstract class PageBase extends TaskBase implements IRoutedTask
      * Adds an extra JS file to to the page
      *
      * @param string $path The path (relative to the application root) of the file
+     * @param string $type
      */
-    final protected function addJs($path){
-        if(in_array($path, $this->extraJs)){
+    final protected function addJs($path, $type = "text/javascript")
+    {
+        $filename = dirname(dirname(__DIR__)) . $path;
+        $sri = base64_encode(hash('sha256', file_get_contents($filename), true));
+
+        $entry = ["type" => $type, "path" => $path, "integrity" => $sri];
+
+        if (in_array($entry, $this->extraJs)) {
             // nothing to do
             return;
         }
 
-        $this->extraJs[] = $path;
+        $this->extraJs[] = $entry;
     }
 
     /**
