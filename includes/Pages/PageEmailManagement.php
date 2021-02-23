@@ -148,7 +148,11 @@ class PageEmailManagement extends InternalPageBase
 
         $template->setText($text);
 
-        $template->setJsquestion(WebRequest::postString('jsquestion'));
+        $jsquestion = WebRequest::postString('jsquestion');
+        if ($jsquestion === null || $jsquestion === '') {
+            throw new ApplicationLogicException('JS question not specified');
+        }
+        $template->setJsquestion($jsquestion);
 
         $template->setDefaultAction(WebRequest::postString('defaultaction'));
         $template->setActive(WebRequest::postBoolean('active'));
