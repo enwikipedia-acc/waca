@@ -8,6 +8,7 @@
 
 namespace Waca\Security\CredentialProviders;
 
+use Waca\DataObjects\Credential;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Exceptions\OptimisticLockFailedException;
@@ -70,6 +71,8 @@ class PasswordCredentialProvider extends CredentialProviderBase
             SessionAlert::error('Your password is too weak to permit login. Please choose the "forgotten your password" option below and set a new one.', null);
             return false;
         }
+
+        $this->revokePasswordResetTokens($user->getId());
 
         return true;
     }
@@ -137,5 +140,17 @@ class PasswordCredentialProvider extends CredentialProviderBase
     public function deleteCredential(User $user)
     {
         throw new ApplicationLogicException('Deletion of password credential is not allowed.');
+    }
+
+    private function revokePasswordResetTokens(int $userId)
+    {
+        $statement = $this->getDatabase()->prepare("SELECT * FROM credential WHERE type = 'reset' AND user = :user;");
+        $statement->execute([':user' => $userId]);
+        $existing = $statement->fetchAll(PdoDatabase::FETCH_CLASS, Credential::class);
+
+        foreach ($existing as $c) {
+            $c->setDatabase($this->getDatabase());
+            $c->delete();
+        }
     }
 }
