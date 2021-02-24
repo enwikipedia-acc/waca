@@ -63,6 +63,8 @@ class SiteConfiguration
     private $useOAuthSignup = true;
     private $oauthBaseUrl;
     private $oauthConsumerToken;
+    /** @var array */
+    private $oauthLegacyConsumerTokens;
     private $oauthConsumerSecret;
     private $oauthIdentityGraceTime = '24 hours';
     private $oauthMediaWikiCanonicalServer = 'http://en.wikipedia.org';
@@ -982,7 +984,7 @@ class SiteConfiguration
         $this->totpEncryptionKey = $totpEncryptionKey;
 
         return $this;
-}
+    }
 
     /**
      * @return string
@@ -1004,14 +1006,15 @@ class SiteConfiguration
         return $this;
     }
 
-    public function isRegistrationAllowed() : bool
+    public function isRegistrationAllowed(): bool
     {
         return $this->registrationAllowed;
     }
 
-    public function setRegistrationAllowed(bool $registrationAllowed) : SiteConfiguration
+    public function setRegistrationAllowed(bool $registrationAllowed): SiteConfiguration
     {
         $this->registrationAllowed = $registrationAllowed;
+
         return $this;
     }
 
@@ -1033,7 +1036,7 @@ class SiteConfiguration
         $this->cspReportUri = $cspReportUri;
 
         return $this;
-}
+    }
 
     /**
      * @return int
@@ -1053,7 +1056,7 @@ class SiteConfiguration
         $this->resourceCacheEpoch = $resourceCacheEpoch;
 
         return $this;
-}
+    }
 
     /**
      * @return array
@@ -1105,7 +1108,7 @@ class SiteConfiguration
         $this->banMaxIpRange = $banMaxIpRange;
 
         return $this;
-}
+    }
 
     /**
      * @return int[]
@@ -1113,5 +1116,25 @@ class SiteConfiguration
     public function getBanMaxIpRange(): array
     {
         return $this->banMaxIpRange;
+    }
+
+    /**
+     * @param array $oauthLegacyConsumerTokens
+     *
+     * @return SiteConfiguration
+     */
+    public function setOauthLegacyConsumerTokens(array $oauthLegacyConsumerTokens): SiteConfiguration
+    {
+        $this->oauthLegacyConsumerTokens = $oauthLegacyConsumerTokens;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOauthLegacyConsumerTokens(): array
+    {
+        return $this->oauthLegacyConsumerTokens;
     }
 }

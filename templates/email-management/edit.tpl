@@ -39,7 +39,7 @@
                         <label for="inputQuestion" class="col-form-label">JavaScript question</label>
                     </div>
                     <div class="col-md-9 col-xl-10">
-                        <input type="text" class="form-control" id="inputQuestion" name="jsquestion" value="{$emailTemplate->getJsquestion()|escape}" aria-describedby="templateJsQuestion"/>
+                        <input type="text" class="form-control" id="inputQuestion" name="jsquestion" required="required" value="{$emailTemplate->getJsquestion()|escape}" aria-describedby="templateJsQuestion"/>
                         <small class="form-text text-muted" id="templateJsQuestion">Text to appear in a JavaScript popup (if enabled by the user) when they attempt to use this Email template.</small>
                     </div>
                 </div>

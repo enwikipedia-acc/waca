@@ -320,6 +320,9 @@ class RoleConfiguration
             StatsTopCreators::class => array(
                 self::MAIN => self::ACCESS_ALLOW,
             ),
+            StatsMonthlyStats::class     => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
         ),
         'internalStats'     => array(
             '_hidden'                    => true,
@@ -330,9 +333,6 @@ class RoleConfiguration
                 self::MAIN => self::ACCESS_ALLOW,
             ),
             StatsInactiveUsers::class    => array(
-                self::MAIN => self::ACCESS_ALLOW,
-            ),
-            StatsMonthlyStats::class     => array(
                 self::MAIN => self::ACCESS_ALLOW,
             ),
             StatsReservedRequests::class => array(
