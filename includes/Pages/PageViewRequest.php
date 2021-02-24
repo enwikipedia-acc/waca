@@ -88,6 +88,9 @@ class PageViewRequest extends InternalPageBase
             $this->setupRelatedRequests($request, $config, $database);
         }
 
+        $this->assign('canCreateLocalAccount',
+            $this->barrierTest('createLocalAccount', $currentUser, 'RequestData'));
+
         if ($allowedPrivateData) {
             $this->setTemplate('view-request/main-with-data.tpl');
             $this->setupPrivateData($request, $config);

@@ -121,10 +121,27 @@ $(".sitenotice-dismiss").click(function() {
     siteNoticeContainer.removeClass('d-block');
     siteNoticeContainer.addClass('d-none');
 
+    let siteNoticeUnhide = $(".sitenotice-show");
+    siteNoticeUnhide.removeClass('d-none');
+
     var date = new Date();
     date.setTime(date.getTime() + 14 * 24 * 60 * 60 * 1000);
 
     document.cookie = 'sitenotice=' + siteNoticeContainer.data('sitenotice') + ";expires=" + date.toUTCString() + ";path=/";
+})
+
+$(".sitenotice-show").click(function() {
+    let siteNoticeContainer = $(".sitenotice-container");
+    siteNoticeContainer.removeClass('d-none');
+    siteNoticeContainer.addClass('d-block');
+
+    let siteNoticeUnhide = $(".sitenotice-show");
+    siteNoticeUnhide.addClass('d-none');
+
+    var date = new Date();
+    date.setTime(date.getTime() - 1);
+
+    document.cookie = 'sitenotice=invalid;expires=' + date.toUTCString() + ";path=/";
 })
 
 $("#banAction").change(function() {

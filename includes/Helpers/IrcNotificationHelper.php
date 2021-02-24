@@ -246,7 +246,12 @@ class IrcNotificationHelper
 
         $username = $this->currentUser->getUsername();
 
-        $this->send("Ban {$ban->getId()} set by {$username} for '{$ban->getReason()}' {$duration}");
+        if ($ban->getVisibility() == 'user') {
+            $this->send("Ban {$ban->getId()} set by {$username} for '{$ban->getReason()}' {$duration}");
+        }
+        else {
+            $this->send("Ban {$ban->getId()} set by {$username} {$duration}");
+        }
     }
 
     /**

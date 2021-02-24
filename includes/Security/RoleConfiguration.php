@@ -270,6 +270,7 @@ class RoleConfiguration
             'RequestData'             => array(
                 'seeUserAgentData'      => self::ACCESS_ALLOW,
                 'seeCheckuserComments'  => self::ACCESS_ALLOW,
+                'createLocalAccount'    => self::ACCESS_ALLOW,
             ),
             'BanType'                   => array(
                 'useragent' => self::ACCESS_ALLOW,
@@ -325,6 +326,9 @@ class RoleConfiguration
             StatsTopCreators::class => array(
                 self::MAIN => self::ACCESS_ALLOW,
             ),
+            StatsMonthlyStats::class     => array(
+                self::MAIN => self::ACCESS_ALLOW,
+            ),
         ),
         'internalStats'     => array(
             '_hidden'                    => true,
@@ -335,9 +339,6 @@ class RoleConfiguration
                 self::MAIN => self::ACCESS_ALLOW,
             ),
             StatsInactiveUsers::class    => array(
-                self::MAIN => self::ACCESS_ALLOW,
-            ),
-            StatsMonthlyStats::class     => array(
                 self::MAIN => self::ACCESS_ALLOW,
             ),
             StatsReservedRequests::class => array(

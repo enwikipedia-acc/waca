@@ -83,6 +83,9 @@
                     <a class="dropdown-item" href="{$baseurl}/internal.php/multiFactor">
                         <i class="fas fa-qrcode"></i> Configure multi-factor credentials
                     </a>
+                    <a class="dropdown-item {if $siteNoticeState !== 'd-none'}d-none{/if} sitenotice-show" href="">
+                        <i class="far fa-eye-slash"></i> Un-hide site notice
+                    </a>
                     <div class="dropdown-divider"></div>
 
                     <h6 class="dropdown-header">Help</h6>

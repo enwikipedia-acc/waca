@@ -11,7 +11,6 @@ dist: bionic
 
 before_install:
   - composer install
-  - pip install --user codecov
 
 git:
   submodules: true
@@ -30,7 +29,6 @@ script:
   - bash .travis.phplint.sh
   - bash .travis.scss.sh
   - php vendor/bin/phpunit --verbose --coverage-clover=coverage.xml
-  - codecov
 
 after_script:
   - wget https://scrutinizer-ci.com/ocular.phar

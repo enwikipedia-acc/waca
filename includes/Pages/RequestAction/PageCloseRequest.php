@@ -14,6 +14,7 @@ use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\RequestEmailHelper;
 use Waca\PdoDatabase;
 use Waca\SessionAlert;
@@ -239,6 +240,11 @@ class PageCloseRequest extends RequestActionBase
         }
 
         if ($currentUser->getWelcomeTemplate() === null) {
+            return;
+        }
+
+        $oauth = new OAuthUserHelper($currentUser, $database, $this->getOAuthProtocolHelper(), $this->getSiteConfiguration());
+        if (!$oauth->canWelcome()) {
             return;
         }
 

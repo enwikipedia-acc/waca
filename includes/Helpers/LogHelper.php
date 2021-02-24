@@ -185,39 +185,55 @@ class LogHelper
     public static function getLogActions(PdoDatabase $database)
     {
         $lookup = array(
-            'Reserved'            => 'reserved',
-            'Email Confirmed'     => 'email-confirmed',
-            'Unreserved'          => 'unreserved',
-            'Approved'            => 'approved',
-            'Suspended'           => 'suspended',
-            'RoleChange'          => 'changed roles',
-            'Banned'              => 'banned',
-            'Edited'              => 'edited interface message',
-            'Declined'            => 'declined',
-            'EditComment-c'       => 'edited a comment (by comment ID)',
-            'EditComment-r'       => 'edited a comment (by request)',
-            'Unbanned'            => 'unbanned',
-            'Promoted'            => 'promoted to tool admin',
-            'BreakReserve'        => 'forcibly broke the reservation',
-            'Prefchange'          => 'changed user preferences',
-            'Renamed'             => 'renamed',
-            'Demoted'             => 'demoted from tool admin',
-            'ReceiveReserved'     => 'received the reservation',
-            'SendReserved'        => 'sent the reservation',
-            'EditedEmail'         => 'edited email',
-            'DeletedTemplate'     => 'deleted template',
-            'EditedTemplate'      => 'edited template',
-            'CreatedEmail'        => 'created email',
-            'CreatedTemplate'     => 'created template',
-            'SentMail'            => 'sent an email to the requester',
-            'Registered'          => 'registered a tool account',
-            'Closed 0'            => 'dropped request',
-            'JobIssue'            => 'ran a background job unsuccessfully',
-            'JobCompleted'        => 'completed a background job',
-            'JobAcknowledged'     => 'acknowledged a job failure',
-            'JobRequeued'         => 'requeued a job for re-execution',
-            'EnqueuedJobQueue'    => 'scheduled for creation',
-            'Hospitalised'        => 'sent to the hospital',
+            "Requests" => [
+                'Reserved'            => 'reserved',
+                'Email Confirmed'     => 'email-confirmed',
+                'Unreserved'          => 'unreserved',
+                'EditComment-c'       => 'edited a comment (by comment ID)',
+                'EditComment-r'       => 'edited a comment (by request)',
+                'BreakReserve'        => 'forcibly broke the reservation',
+                'ReceiveReserved'     => 'received the reservation',
+                'SendReserved'        => 'sent the reservation',
+                'SentMail'            => 'sent an email to the requester',
+                'Closed 0'            => 'dropped request',
+                'Closed custom-y'     => 'closed (custom reason - account created)',
+                'Closed custom-n'     => 'closed (custom reason - account not created)',
+            ],
+            'Users' => [
+                'Approved'            => 'approved',
+                'Suspended'           => 'suspended',
+                'RoleChange'          => 'changed roles',
+                'Declined'            => 'declined',
+                'Prefchange'          => 'changed user preferences',
+                'Renamed'             => 'renamed',
+                'Promoted'            => 'promoted to tool admin',
+                'Demoted'             => 'demoted from tool admin',
+                'Registered'          => 'registered a tool account',
+            ],
+            "Bans" => [
+                'Banned'              => 'banned',
+                'Unbanned'            => 'unbanned',
+            ],
+            "Site notice" => [
+                'Edited'              => 'edited interface message',
+            ],
+            "Email close templates" => [
+                'EditedEmail'         => 'edited email',
+                'CreatedEmail'        => 'created email',
+            ],
+            "Welcome templates" => [
+                'DeletedTemplate'     => 'deleted template',
+                'EditedTemplate'      => 'edited template',
+                'CreatedTemplate'     => 'created template',
+            ],
+            "Job queue" => [
+                'JobIssue'            => 'ran a background job unsuccessfully',
+                'JobCompleted'        => 'completed a background job',
+                'JobAcknowledged'     => 'acknowledged a job failure',
+                'JobRequeued'         => 'requeued a job for re-execution',
+                'EnqueuedJobQueue'    => 'scheduled for creation',
+                'Hospitalised'        => 'sent to the hospital',
+            ],
         );
 
         $statement = $database->query(<<<SQL
@@ -226,7 +242,7 @@ FROM emailtemplate;
 SQL
         );
         foreach ($statement->fetchAll(PDO::FETCH_ASSOC) as $row) {
-            $lookup[$row['k']] = $row['v'];
+            $lookup["Requests"][$row['k']] = $row['v'];
         }
 
         return $lookup;
@@ -284,6 +300,11 @@ HTML;
             case 'EmailTemplate':
                 /** @var EmailTemplate $emailTemplate */
                 $emailTemplate = EmailTemplate::getById($objectId, $database);
+
+                if ($emailTemplate === false) {
+                    return 'Email Template #' . $objectId;
+                }
+
                 $name = htmlentities($emailTemplate->getName(), ENT_COMPAT, 'UTF-8');
 
                 return <<<HTML
@@ -294,6 +315,11 @@ HTML;
             case 'Request':
                 /** @var Request $request */
                 $request = Request::getById($objectId, $database);
+
+                if ($request === false) {
+                    return 'Request #' . $objectId;
+                }
+
                 $name = htmlentities($request->getName(), ENT_COMPAT, 'UTF-8');
 
                 return <<<HTML
@@ -302,6 +328,12 @@ HTML;
             case 'User':
                 /** @var User $user */
                 $user = User::getById($objectId, $database);
+
+                // Some users were merged out of existence
+                if ($user === false) {
+                    return 'User #' . $objectId;
+                }
+
                 $username = htmlentities($user->getUsername(), ENT_COMPAT, 'UTF-8');
 
                 return "<a href=\"{$baseurl}/internal.php/statistics/users/detail?user={$objectId}\">{$username}</a>";
@@ -323,6 +355,10 @@ HTML;
                 $job = JobQueue::getById($objectId, $database);
 
                 $taskDescriptions = JobQueue::getTaskDescriptions();
+
+                if ($job === false) {
+                    return 'Job Queue Task #' . $objectId;
+                }
 
                 $task = $job->getTask();
                 if(isset($taskDescriptions[$task])){
