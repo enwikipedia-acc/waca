@@ -33,6 +33,14 @@
        href="{$baseurl}/redir.php?tool=google&amp;data={$requestName|escape:'url'}">
         Google search
     </a>
+
 </div>
 
 {include file="view-request/antispoof-results.tpl"}
+{if $requestIsReservedByMe && !$requestIsClosed && $canCreateLocalAccount}
+<h5>CentralAuth</h5>
+<a id="UsernameCreateLocal" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+   href="{$mediawikiScriptPath}?title=Special:CreateLocalAccount&amp;target={$requestName|escape:'url'}&amp;wpreason={$createAccountReason|escape:'url'}{$requestId}">
+    Force-create local account
+</a>
+{/if}
