@@ -9,8 +9,12 @@
             <label class="sr-only" for="inputAction">Log action</label>
             <select class="form-control" id="inputAction" name="filterAction" title="Log Action">
                 <option value="">All log actions</option>
-                {foreach $allLogActions as $action => $description}
-                    <option value="{$action|escape}" {if $action == $filterAction}selected="selected"{/if}>{$description|escape}</option>
+                {foreach $allLogActions as $section => $sectionActions}
+                    <optgroup label="{$section}">
+                        {foreach $sectionActions as $action => $description}
+                            <option value="{$action|escape}" {if $action == $filterAction}selected="selected"{/if}>{$description|escape}</option>
+                        {/foreach}
+                    </optgroup>
                 {/foreach}
             </select>
         </div>
