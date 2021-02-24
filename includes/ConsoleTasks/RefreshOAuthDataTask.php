@@ -40,6 +40,13 @@ class RefreshOAuthDataTask extends ConsoleTaskBase
                     $oauth = new OAuthUserHelper($u, $database, $this->getOAuthProtocolHelper(),
                         $this->getSiteConfiguration());
 
+                    if ($oauth->getIdentity(true)->getAudience() !== $this->getSiteConfiguration()
+                            ->getOAuthConsumerToken()) {
+                        // not the current consumer token. Approval from the user is *required* for this.
+                        printf("\n\nBoldly refusing to update OAuth data for user with legacy consumer: %s\n", $u->getUsername());
+                        continue;
+                    }
+
                     try {
                         $oauth->refreshIdentity();
                     }
