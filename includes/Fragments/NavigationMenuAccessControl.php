@@ -10,6 +10,7 @@ namespace Waca\Fragments;
 
 use Waca\Pages\PageBan;
 use Waca\Pages\PageEmailManagement;
+use Waca\Pages\PageErrorLogViewer;
 use Waca\Pages\PageJobQueue;
 use Waca\Pages\PageLog;
 use Waca\Pages\PageMain;
@@ -65,6 +66,8 @@ trait NavigationMenuAccessControl
         $this->assign('nav__canJobQueue', $this->getSecurityManager()
                 ->allows(PageJobQueue::class, RoleConfiguration::MAIN,
                     $currentUser) === SecurityManager::ALLOWED);
+        $this->assign('nav__canErrorLog', $this->getSecurityManager()
+                ->allows(PageErrorLogViewer::class, RoleConfiguration::MAIN, $currentUser) === SecurityManager::ALLOWED);
 
         $this->assign('nav__canViewRequest', $this->getSecurityManager()
                 ->allows(PageViewRequest::class, RoleConfiguration::MAIN, $currentUser) === SecurityManager::ALLOWED);
