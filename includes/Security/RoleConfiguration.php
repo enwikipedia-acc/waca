@@ -313,6 +313,9 @@ class RoleConfiguration
             'RequestCreation'                    => array(
                 User::CREATION_OAUTH  => self::ACCESS_ALLOW,
             ),
+            PageJobQueue::class                  => array(
+                'acknowledge' => self::ACCESS_ALLOW,
+            ),
         ),
 
 
