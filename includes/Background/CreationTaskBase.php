@@ -65,8 +65,6 @@ abstract class CreationTaskBase extends BackgroundTaskBase
             $requestEmailHelper = new RequestEmailHelper($this->getEmailHelper());
             $requestEmailHelper->sendMail($this->request, $this->getEmailTemplate()->getText(), $this->getTriggerUser(),
                 false);
-
-            $this->getNotificationHelper()->requestClosed($this->request, $this->getEmailTemplate()->getName());
         }
         catch (Exception $ex) {
             $this->markFailed($ex->getMessage());
@@ -110,7 +108,7 @@ abstract class CreationTaskBase extends BackgroundTaskBase
         $this->request->setStatus(RequestStatus::HOSPITAL);
         $this->request->save();
 
-        $this->getNotificationHelper()->requestCreationFailed($this->request);
+        $this->getNotificationHelper()->requestCreationFailed($this->request, $this->getTriggerUser());
 
         Logger::hospitalised($this->getDatabase(), $this->request);
 

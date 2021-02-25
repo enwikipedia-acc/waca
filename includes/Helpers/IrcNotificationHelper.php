@@ -12,6 +12,7 @@ use Exception;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\EmailTemplate;
+use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Notification;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
@@ -354,10 +355,11 @@ class IrcNotificationHelper
      * Summary of requestClosed
      *
      * @param Request $request
+     * @param User    $triggerUser
      */
-    public function requestCreationFailed(Request $request)
+    public function requestCreationFailed(Request $request, User $triggerUser)
     {
-        $this->send("Request {$request->getId()} ({$request->getName()}) failed auto-creation, and was sent to the hospital queue.");
+        $this->send("Request {$request->getId()} ({$request->getName()}) failed auto-creation for {$triggerUser->getUsername()}, and was sent to the hospital queue.");
     }
 
     /**
