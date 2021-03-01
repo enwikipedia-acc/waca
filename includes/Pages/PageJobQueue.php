@@ -79,6 +79,7 @@ class PageJobQueue extends PagedInternalPageBase
         $filterTask = WebRequest::getString('filterTask');
         $filterStatus = WebRequest::getString('filterStatus');
         $filterRequest = WebRequest::getString('filterRequest');
+        $filterOrder = WebRequest::getString('order');
 
         if ($filterUser !== null) {
             $searchHelper->byUser(User::getByUsername($filterUser, $database)->getId());
@@ -95,6 +96,10 @@ class PageJobQueue extends PagedInternalPageBase
         if ($filterRequest !== null) {
             $searchHelper->byRequest($filterRequest);
         }
+        
+        if ($filterOrder == null) {
+            $searchHelper->newestFirst();
+        }
 
         /** @var JobQueue[] $jobList */
         $jobList = $searchHelper->getRecordCount($count)->fetch();
@@ -104,6 +109,7 @@ class PageJobQueue extends PagedInternalPageBase
             'filterTask' => $filterTask,
             'filterStatus' => $filterStatus,
             'filterRequest' => $filterRequest,
+            'filterOrder' => $filterOrder,
         ));
 
         $userIds = array();

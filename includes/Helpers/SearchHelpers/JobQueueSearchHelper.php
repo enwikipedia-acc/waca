@@ -76,4 +76,11 @@ class JobQueueSearchHelper extends SearchHelperBase
 
         return $this;
     }
+    
+    public function newestFirst() 
+    {
+        $this->orderBy = 'id DESC';
+        
+        return $this;
+    }     
 }
