@@ -195,13 +195,14 @@ class PageCloseRequest extends RequestActionBase
         if (
         ($request->getEmail() != $this->getSiteConfiguration()->getDataClearEmail()) && 
         ($request->getIp() != $this->getSiteConfiguration()->getDataClearIp())
+        )
         {
             $requestEmailHelper = new RequestEmailHelper($this->getEmailHelper());
             $requestEmailHelper->sendMail($request, $mailText, $currentUser, $ccMailingList);
             
             $request->setEmailSent(true);
             $request->save();
-            }
+        }
     }
 
     /**
