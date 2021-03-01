@@ -15,6 +15,7 @@ use Waca\Helpers\SearchHelpers\UserSearchHelper;
 use Waca\Pages\PageBan;
 use Waca\Pages\RequestAction\PageBreakReservation;
 use Waca\RequestList;
+use Waca\SiteConfiguration;
 
 trait RequestListData
 {
@@ -23,6 +24,7 @@ trait RequestListData
 
     protected abstract function getXffTrustProvider();
 
+    /** @return SiteConfiguration */
     protected abstract function getSiteConfiguration();
 
     protected abstract function barrierTest($action, User $user, $pageName = null);
@@ -73,6 +75,10 @@ trait RequestListData
             $requestList->requestTrustedIp[$request->getId()] = $trustedIp;
             $requestList->relatedEmailRequests[$request->getId()] = $emailCount;
             $requestList->relatedIpRequests[$request->getId()] = $ipCount;
+
+            $emailDomain = explode("@", $request->getEmail())[1];
+            $requestList->commonEmail[$request->getId()] = in_array(strtolower($emailDomain), $this->getSiteConfiguration()->getCommonEmailDomains())
+               || $request->getEmail() === $this->getSiteConfiguration()->getDataClearEmail();
         }
 
         $currentUser = User::getCurrent($this->getDatabase());

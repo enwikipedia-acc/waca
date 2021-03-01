@@ -13,6 +13,8 @@ use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\Helpers\MediaWikiHelper;
+use Waca\Helpers\OAuthUserHelper;
 use Waca\SessionAlert;
 use Waca\Tasks\InternalPageBase;
 use Waca\WebRequest;
@@ -26,6 +28,8 @@ class PageWelcomeTemplateManagement extends InternalPageBase
     protected function main()
     {
         $templateList = WelcomeTemplate::getAll($this->getDatabase());
+
+        $this->setHtmlTitle('Welcome Templates');
 
         $this->assignCSRFToken();
 
@@ -89,18 +93,36 @@ class PageWelcomeTemplateManagement extends InternalPageBase
      */
     protected function view()
     {
+        $this->setHtmlTitle('View Welcome Template');
+
         $database = $this->getDatabase();
 
         $templateId = WebRequest::getInt('template');
 
-        /** @var WelcomeTemplate $template */
+        /** @var false|WelcomeTemplate $template */
         $template = WelcomeTemplate::getById($templateId, $database);
 
         if ($template === false) {
             throw new ApplicationLogicException('Cannot find requested template');
         }
 
-        $templateHtml = $this->getWikiTextHelper()->getHtmlForWikiText($template->getBotCode());
+        $currentUser = User::getCurrent($database);
+
+        // This includes a section header, because we use the "new section" API call.
+        $wikiText = "== " . $template->getSectionHeader() . "==\n" . $template->getBotCodeForWikiSave('Example User', $currentUser->getOnWikiName());
+
+        $oauth = new OAuthUserHelper($currentUser, $database, $this->getOauthProtocolHelper(),
+            $this->getSiteConfiguration());
+        $mediaWikiHelper = new MediaWikiHelper($oauth, $this->getSiteConfiguration());
+
+        $templateHtml = $mediaWikiHelper->getHtmlForWikiText($wikiText);
+        
+        // Add site to relevant links, since the MediaWiki parser returns, eg, `/wiki/Help:Introduction`
+        // and we want to link to <https://en.wikipedia.org/wiki/Help:Introduction> rather than
+        // <https://accounts.wmflabs.org/wiki/Help:Introduction>
+        // The code currently assumes that the template was parsed for enwiki, and will need to be
+        // updated once other wikis are supported.
+        $templateHtml = preg_replace( '/(<a href=")(\/wiki\/)/', '$1//en.wikipedia.org$2', $templateHtml );
 
         $this->assign('templateHtml', $templateHtml);
         $this->assign('template', $template);
@@ -114,6 +136,8 @@ class PageWelcomeTemplateManagement extends InternalPageBase
      */
     protected function add()
     {
+        $this->assign('createmode', true);
+
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
             $database = $this->getDatabase();
@@ -139,7 +163,8 @@ class PageWelcomeTemplateManagement extends InternalPageBase
         }
         else {
             $this->assignCSRFToken();
-            $this->setTemplate("welcome-template/add.tpl");
+            $this->assign('template', new WelcomeTemplate());
+            $this->setTemplate("welcome-template/edit.tpl");
         }
     }
 
@@ -152,7 +177,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
 
         $templateId = WebRequest::getInt('template');
 
-        /** @var WelcomeTemplate $template */
+        /** @var false|WelcomeTemplate $template */
         $template = WelcomeTemplate::getById($templateId, $database);
 
         if ($template === false) {
@@ -162,6 +187,8 @@ class PageWelcomeTemplateManagement extends InternalPageBase
         if ($template->isDeleted()) {
             throw new ApplicationLogicException('The specified template has been deleted');
         }
+
+        $this->assign('createmode', false);
 
         if (WebRequest::wasPosted()) {
             $this->validateCSRFToken();
@@ -206,7 +233,7 @@ class PageWelcomeTemplateManagement extends InternalPageBase
         $templateId = WebRequest::postInt('template');
         $updateVersion = WebRequest::postInt('updateversion');
 
-        /** @var WelcomeTemplate $template */
+        /** @var false|WelcomeTemplate $template */
         $template = WelcomeTemplate::getById($templateId, $database);
 
         if ($template === false || $template->isDeleted()) {

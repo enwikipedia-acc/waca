@@ -334,7 +334,7 @@ SQL
         }
 
         $statement = $this->dbObject->prepare(<<<SQL
-SELECT emailtemplate.oncreated, log.action
+SELECT emailtemplate.defaultaction, log.action
 FROM log
 LEFT JOIN emailtemplate ON CONCAT('Closed ', emailtemplate.id) = log.action
 WHERE log.objecttype = 'Request'
@@ -347,15 +347,15 @@ SQL
 
         $statement->bindValue(":requestId", $this->id);
         $statement->execute();
-        $onCreated = $statement->fetchColumn(0);
+        $defaultAction = $statement->fetchColumn(0);
         $logAction = $statement->fetchColumn(1);
         $statement->closeCursor();
 
-        if ($onCreated === null) {
+        if ($defaultAction === null) {
             return $logAction === "Closed custom-y";
         }
 
-        return (bool)$onCreated;
+        return $defaultAction === EmailTemplate::CREATED;
     }
 
     /**

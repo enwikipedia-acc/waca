@@ -12,6 +12,7 @@ use Exception;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\EmailTemplate;
+use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Notification;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
@@ -246,19 +247,24 @@ class IrcNotificationHelper
 
         $username = $this->currentUser->getUsername();
 
-        $this->send("{$ban->getTarget()} banned by {$username} for '{$ban->getReason()}' {$duration}");
+        if ($ban->getVisibility() == 'user') {
+            $this->send("Ban {$ban->getId()} set by {$username} for '{$ban->getReason()}' {$duration}");
+        }
+        else {
+            $this->send("Ban {$ban->getId()} set by {$username} {$duration}");
+        }
     }
 
     /**
      * Summary of unbanned
      *
      * @param Ban    $ban
-     * @param string $unbanreason
+     * @param string $unbanReason
      */
-    public function unbanned(Ban $ban, $unbanreason)
+    public function unbanned(Ban $ban, $unbanReason)
     {
-        $this->send($ban->getTarget() . " unbanned by " . $this->currentUser
-                ->getUsername() . " (" . $unbanreason . ")");
+        $this->send("Ban {$ban->getId()} unbanned by " . $this->currentUser
+                ->getUsername() . " (" . $unbanReason . ")");
     }
 
     #endregion
@@ -349,10 +355,11 @@ class IrcNotificationHelper
      * Summary of requestClosed
      *
      * @param Request $request
+     * @param User    $triggerUser
      */
-    public function requestCreationFailed(Request $request)
+    public function requestCreationFailed(Request $request, User $triggerUser)
     {
-        $this->send("Request {$request->getId()} ({$request->getName()}) failed auto-creation, and was sent to the hospital queue.");
+        $this->send("Request {$request->getId()} ({$request->getName()}) failed auto-creation for {$triggerUser->getUsername()}, and was sent to the hospital queue.");
     }
 
     /**

@@ -3,24 +3,26 @@ This is a brief installation guide for developers/testers etc to get this system
 # Prerequisites
 
 * Web server
-* MariaDB 10.1+ (or equivalent)
+* MariaDB 10.3.22+ (or equivalent)
 * PHP 7.3+
 
 The webserver must be configured to pre-process *.php files through the PHP engine before sending them to a client.
 
 You must also have a database which you can use with the tool.
 
+Note: MariaDB 10.2.1 is likely sufficient, but compatibility cannot be guaranteed as Production runs on 10.3.22.
+
 ## PHP configuration
 You'll also need some PHP extensions:
 
+* curl
+* date
 * mbstring
+* openssl
+* pcre
 * pdo
 * pdo_mysql
 * session
-* date
-* pcre
-* curl
-* openssl
 
 There's nothing special here, these are all standard PHP extensions that are bundled with PHP - you may
 just need to switch some of them on in the php.ini file.
@@ -59,14 +61,21 @@ This was written using Windows 10.
 4. Clone the ACC repo to C:\xampp\htdocs\waca\
 5. Browse to http://localhost/phpmyadmin/ and create a new database called "waca".
 6. Run `composer install` (https://getcomposer.org)
-7. Update the dependent git repos
-  * `git submodule update --init --recursive`
 8. Generate the stylesheets:
   * `cd maintenance/; php RegenerateStylesheets.php`
 8. run the database setup scripts:
   * `./test_db.sh 1 localhost <dbname> <user> <password>`
-  * `mysql <dbname> -e "update user set status = 'Active' ;"`
 9. Create the configuration file (see below).
+
+# Docker
+There is **experimental** support for Docker. Knowledge of Docker is assumed here if you want to use it - this is not
+a configuration which the team will spend much time to support.
+
+You will still need to create the configuration file as below, but you should be able to just run `docker-compose up -d`
+in this folder, and two containers should start - one for the database listening on port 3306, and one for the web
+application listening on port 8080. The configuration should use "waca" as the username, password, and database name,
+and "database" for the hostname. The `$baseurl` setting should also be set to `http://127.0.0.1:8080`. All other 
+installation steps including dependencies and loading the initial database schema are handled automatically by Docker.
 
 # Configuration File
 Create a new PHP file called config.local.inc.php, and fill it with the following:
@@ -91,7 +100,6 @@ $whichami = "MyName";
 
 // these turn off features which you probably want off for ease of development.
 $enableEmailConfirm = 0;
-$forceIdentification = false;
 $locationProviderClass = "FakeLocationProvider";
 $antispoofProviderClass = "FakeAntiSpoofProvider";
 $rdnsProviderClass = "FakeRDnsLookupProvider";
@@ -107,7 +115,9 @@ Most settings are flags to turn on and off features for development systems whic
 
 # First Login!
 
-Browse to http://localhost/waca/internal.php, and log in! There's a user created by default called "Admin", with the password "Admin".
+Browse to http://localhost/waca/internal.php, and log in! There's a user created by default called "Admin", with the password "enwpaccAdmin1!".
+
+Note that this user account is configured to skip the standard checks that the user has identified to the Wikimedia Foundation. By default, all additional users created will require an "on-wiki" username to match a username on the identification noticeboard, or will require the `forceidentified` flag to be set to `1` in the `user` table in the database. There is no user interface for doing this by design. 
 
 # OAuth setup
 

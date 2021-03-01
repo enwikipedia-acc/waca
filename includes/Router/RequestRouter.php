@@ -13,6 +13,7 @@ use Waca\Pages\Page404;
 use Waca\Pages\PageBan;
 use Waca\Pages\PageEditComment;
 use Waca\Pages\PageEmailManagement;
+use Waca\Pages\PageErrorLogViewer;
 use Waca\Pages\PageExpandedRequestList;
 use Waca\Pages\PageJobQueue;
 use Waca\Pages\PageXffDemo;
@@ -166,7 +167,7 @@ class RequestRouter implements IRequestRouter
         'bans'                        =>
             array(
                 'class'   => PageBan::class,
-                'actions' => array('set', 'remove'),
+                'actions' => array('set', 'remove', 'show'),
             ),
         'userManagement'              =>
             array(
@@ -359,6 +360,11 @@ class RequestRouter implements IRequestRouter
             array(
                 'class'   => PageXffDemo::class,
                 'actions' => array(),
+            ),
+        'errorLog'                    =>
+            array(
+                'class'   => PageErrorLogViewer::class,
+                'actions' => array('remove', 'view'),
             ),
     );
 

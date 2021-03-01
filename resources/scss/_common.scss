@@ -19,6 +19,9 @@ $font-size-base: 0.9rem;
 $overflows: auto, hidden, visible;
 $displays: none, inline, inline-block, block, table, table-row, table-cell, flex, inline-flex, list-item;
 
+$sortabletable-marker: #ccc !default;
+$sortabletable-hover: #efefef !default;
+
 @import "../../vendor/twbs/bootstrap/scss/bootstrap";
 @import "_viewRequest.scss";
 @import "_login.scss";
@@ -26,6 +29,8 @@ $displays: none, inline, inline-block, block, table, table-row, table-cell, flex
 @import "_password.scss";
 @import "_spacing.scss";
 @import "_sitenotice.scss";
+@import "_sortableTables.scss";
+@import "_stats.scss";
 
 
 span.twitter-typeahead {
@@ -86,3 +91,6 @@ td.table-button-cell {
     min-width: 20px;
 }
 
+.badge-pill svg.svg-inline--fa.fa-w-16 {
+    min-width: 1.2em;
+}

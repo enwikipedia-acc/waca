@@ -14,6 +14,7 @@ use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Helpers\Logger;
+use Waca\Helpers\OAuthUserHelper;
 use Waca\Helpers\RequestEmailHelper;
 use Waca\PdoDatabase;
 use Waca\SessionAlert;
@@ -191,11 +192,17 @@ class PageCloseRequest extends RequestActionBase
      */
     protected function sendMail(Request $request, $mailText, User $currentUser, $ccMailingList)
     {
-        $requestEmailHelper = new RequestEmailHelper($this->getEmailHelper());
-        $requestEmailHelper->sendMail($request, $mailText, $currentUser, $ccMailingList);
-
-        $request->setEmailSent(true);
-        $request->save();
+        if (
+        ($request->getEmail() != $this->getSiteConfiguration()->getDataClearEmail()) && 
+        ($request->getIp() != $this->getSiteConfiguration()->getDataClearIp())
+        )
+        {
+            $requestEmailHelper = new RequestEmailHelper($this->getEmailHelper());
+            $requestEmailHelper->sendMail($request, $mailText, $currentUser, $ccMailingList);
+            
+            $request->setEmailSent(true);
+            $request->save();
+        }
     }
 
     /**
@@ -239,6 +246,11 @@ class PageCloseRequest extends RequestActionBase
         }
 
         if ($currentUser->getWelcomeTemplate() === null) {
+            return;
+        }
+
+        $oauth = new OAuthUserHelper($currentUser, $database, $this->getOAuthProtocolHelper(), $this->getSiteConfiguration());
+        if (!$oauth->canWelcome()) {
             return;
         }
 

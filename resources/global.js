@@ -121,8 +121,53 @@ $(".sitenotice-dismiss").click(function() {
     siteNoticeContainer.removeClass('d-block');
     siteNoticeContainer.addClass('d-none');
 
+    let siteNoticeUnhide = $(".sitenotice-show");
+    siteNoticeUnhide.removeClass('d-none');
+
     var date = new Date();
     date.setTime(date.getTime() + 14 * 24 * 60 * 60 * 1000);
 
     document.cookie = 'sitenotice=' + siteNoticeContainer.data('sitenotice') + ";expires=" + date.toUTCString() + ";path=/";
 })
+
+$(".sitenotice-show").click(function() {
+    let siteNoticeContainer = $(".sitenotice-container");
+    siteNoticeContainer.removeClass('d-none');
+    siteNoticeContainer.addClass('d-block');
+
+    let siteNoticeUnhide = $(".sitenotice-show");
+    siteNoticeUnhide.addClass('d-none');
+
+    var date = new Date();
+    date.setTime(date.getTime() - 1);
+
+    document.cookie = 'sitenotice=invalid;expires=' + date.toUTCString() + ";path=/";
+})
+
+$("#banAction").change(function() {
+    var selectedOption = $(this).children("option:selected").val();
+
+    if(selectedOption === 'defer') {
+        $("#banDeferTargetSelection").removeClass('d-none');
+    } else {
+        $("#banDeferTargetSelection").addClass('d-none');
+    }
+})
+
+$("#commentVisibilityDropdown").on("change", "input[type='radio']", function() {
+    if($(this).val() == 'user') {
+        $("#commentVisibilityButton").addClass('btn-outline-secondary').removeClass('btn-danger').removeClass('btn-visited');
+        $("#commentVisibilityIcon").removeClass('fa-lock').addClass('fa-lock-open');
+    }
+    if($(this).val() == 'admin') {
+        $("#commentVisibilityButton").removeClass('btn-outline-secondary').addClass('btn-danger').removeClass('btn-visited');
+        $("#commentVisibilityIcon").removeClass('fa-lock-open').addClass('fa-lock');
+    }
+    if($(this).val() == 'checkuser') {
+        $("#commentVisibilityButton").removeClass('btn-outline-secondary').removeClass('btn-danger').addClass('btn-visited');
+        $("#commentVisibilityIcon").removeClass('fa-lock-open').addClass('fa-lock');
+    }
+});
+$(document).on('click', '.allow-focus', function (e) {
+    e.stopPropagation();
+});

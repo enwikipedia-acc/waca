@@ -2,9 +2,12 @@
     <span class="text-muted font-italic">Email address purged</span>
 {else}
     {$r->getEmail()|escape}
-    <span class="badge badge-pill {if $list->relatedEmailRequests[$r->getId()] > 0}badge-danger{else}badge-secondary{/if}"
-          data-toggle="tooltip" data-original-title="{$list->relatedEmailRequests[$r->getId()]} other request(s) from this email address"
-    >
-                            {$list->relatedEmailRequests[$r->getId()]}
-                        </span>
+    {if $list->relatedEmailRequests[$r->getId()] > 0}
+        <span class="badge badge-pill badge-danger"
+            data-toggle="tooltip" data-original-title="{$list->relatedEmailRequests[$r->getId()]} other request(s) from this email address"
+        >
+            <i class="fas fa-clone"></i>&nbsp;{$list->relatedEmailRequests[$r->getId()]}
+        </span>
+    {/if}
+    {if !$list->commonEmail[$r->getId()]}<span class="badge badge-warning badge-pill" data-toggle="tooltip" title="Uncommon email domain"><i class="fas fa-gem"></i></span>{/if}
 {/if}

@@ -12,7 +12,6 @@ use Waca\Helpers\HttpHelper;
 use Waca\Helpers\Interfaces\IEmailHelper;
 use Waca\Helpers\Interfaces\IOAuthProtocolHelper;
 use Waca\Helpers\IrcNotificationHelper;
-use Waca\Helpers\WikiTextHelper;
 use Waca\PdoDatabase;
 use Waca\Providers\Interfaces\IAntiSpoofProvider;
 use Waca\Providers\Interfaces\ILocationProvider;
@@ -46,18 +45,6 @@ interface ITask
      * @return void
      */
     public function setHttpHelper($httpHelper);
-
-    /**
-     * @return WikiTextHelper
-     */
-    public function getWikiTextHelper();
-
-    /**
-     * @param WikiTextHelper $wikiTextHelper
-     *
-     * @return void
-     */
-    public function setWikiTextHelper($wikiTextHelper);
 
     /**
      * @return ILocationProvider

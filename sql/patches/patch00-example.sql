@@ -56,6 +56,7 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
     
     -- -------------------------------------------------------------------------
     -- finally, update the schema version to indicate success
+    # noinspection SqlWithoutWhere
     UPDATE schemaversion SET version = patchversion;
 END;;
 DELIMITER ';'

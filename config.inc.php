@@ -133,6 +133,9 @@ $defaultReserver = 0;
 $oauthConsumerToken = "";
 $oauthSecretToken = "";
 
+// Formerly-used OAuth tokens to permit reading identities from
+$oauthLegacyTokens = [];
+
 // path to Special:OAuth on target wiki.
 // don't use pretty urls, see [[bugzilla:57500]]
 $oauthBaseUrl = "https://en.wikipedia.org/w/index.php?title=Special:OAuth";
@@ -251,6 +254,13 @@ $totpEncryptionKey = "1234";
 // external resource cache epoch value. Bump me to force clients to reload assets
 $resourceCacheEpoch = 1;
 
+$commonEmailDomains = ['gmail.com', 'hotmail.com', 'outlook.com'];
+
+// limit for block/drop ban actions
+$banMaxIpBlockRange = [4 => 20, 6 => 48];
+// limit for *all* ban actions, including block/drop.
+$banMaxIpRange = [4 => 16, 6 => 32];
+
 /**************************************************************************
  **********                   IMPORTANT NOTICE                    **********
  ***************************************************************************
@@ -345,8 +355,9 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setUserAgent($toolUserAgent)
     ->setCurlDisableVerifyPeer($curlDisableSSLVerifyPeer)
     ->setUseOAuthSignup($useOauthSignup)
-    ->setOAuthBaseUrl($oauthBaseUrl)
+    ->setOAuthBaseUrl($oauthBaseUrl)//
     ->setOAuthConsumerToken($oauthConsumerToken)
+    ->setOAuthLegacyConsumerTokens($oauthLegacyTokens)
     ->setOAuthConsumerSecret($oauthSecretToken)
     ->setOauthMediaWikiCanonicalServer($oauthMediaWikiCanonicalServer)
     ->setDataClearInterval($dataclear_interval)
@@ -365,4 +376,7 @@ $siteConfiguration->setBaseUrl($baseurl)
     ->setRegistrationAllowed($allowRegistration)
     ->setCspReportUri($cspReportUri)
     ->setResourceCacheEpoch($resourceCacheEpoch)
-    ->setLocationProviderApiKey($locationProviderApiKey);
+    ->setLocationProviderApiKey($locationProviderApiKey)
+    ->setCommonEmailDomains($commonEmailDomains)
+    ->setBanMaxIpRange($banMaxIpRange)
+    ->setBanMaxIpBlockRange($banMaxIpBlockRange);

@@ -10,6 +10,7 @@ namespace Waca\Pages\RequestAction;
 
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\User;
+use Waca\Exceptions\ApplicationLogicException;
 use Waca\RegexConstants;
 use Waca\WebRequest;
 
@@ -48,7 +49,10 @@ class PageComment extends RequestActionBase
             return;
         }
 
-        $visibility = WebRequest::postBoolean('adminOnly') ? 'admin' : 'user';
+        $visibility = WebRequest::postString('visibility') ?? 'user';
+        if ($visibility !== 'user' && $visibility !== 'admin' && $visibility !== 'checkuser') {
+            throw new ApplicationLogicException('Invalid comment visibility');
+        }
 
         $comment = new Comment();
         $comment->setDatabase($database);

@@ -36,6 +36,10 @@ CREATE PROCEDURE SCHEMA_UPGRADE_SCRIPT() BEGIN
     
     ALTER TABLE user ADD COLUMN skin VARCHAR(10) DEFAULT 'main' NOT NULL;
 
+    -- Use the new default for the default admin user for non-production installations
+    -- This has no effect on production, since user 1 doesn't have a username of 'Admin'.
+    UPDATE user SET skin = 'auto' WHERE id = 1 AND username = 'Admin';
+
     -- -------------------------------------------------------------------------
     -- finally, update the schema version to indicate success
     UPDATE schemaversion SET version = patchversion;
