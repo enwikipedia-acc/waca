@@ -119,11 +119,11 @@ class RequestValidationHelper
         if (preg_match("/[" . preg_quote("#@/<>[]|{}", "/") . "]/", $request->getName()) === 1) {
             $errorList[ValidationError::NAME_INVALIDCHAR] = new ValidationError(ValidationError::NAME_INVALIDCHAR);
         }
-		
-		// username is an IP
-		if (filter_var($request->getName(), FILTER_VALIDATE_IP)) {
-			$errorList[ValidationError::NAME_IP] = new ValidationError(ValidationError::NAME_IP);
-		}
+        
+        // username is an IP
+        if (filter_var($request->getName(), FILTER_VALIDATE_IP)) {
+            $errorList[ValidationError::NAME_IP] = new ValidationError(ValidationError::NAME_IP);
+        }
 
         // existing non-closed request for this name
         if ($this->nameRequestExists($request)) {

@@ -25,10 +25,10 @@
        href="https://en.wikipedia.org/w/index.php?title=Special%3AListUsers&amp;username={$requestName|escape:'url'}&amp;group=&amp;limit=25">
         Local Username list
     </a>
-	<a id="UsernameGlobalUsernameList" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
+    <a id="UsernameGlobalUsernameList" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
        href="https://en.wikipedia.org/w/index.php?title=Special%3AGlobalUsers&amp;username={$requestName|escape:'url'}&amp;group=&amp;limit=25">
         Global username list
-	</a>
+    </a>
     <a id="UsernameMainspaceSearch" class="btn btn-sm btn-outline-secondary visit-tracking" target="_blank"
        href="https://en.wikipedia.org/w/index.php?title=Special%3ASearch&amp;profile=advanced&amp;search={$requestName|escape:'url'}&amp;fulltext=Search&amp;ns0=1&amp;redirs=1&amp;profile=advanced">
         Wikipedia mainspace search
