@@ -109,7 +109,7 @@ class PageJobQueue extends PagedInternalPageBase
             'filterTask' => $filterTask,
             'filterStatus' => $filterStatus,
             'filterRequest' => $filterRequest,
-            'filterOrder' => $filterOrder,
+            'order' => $filterOrder,
         ));
 
         $userIds = array();
