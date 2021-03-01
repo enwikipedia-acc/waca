@@ -18,6 +18,7 @@ class ValidationError
     const NAME_NUMONLY = "name_numonly";
     const NAME_INVALIDCHAR = "name_invalidchar";
     const NAME_SANITISED = "name_sanitised";
+    const NAME_IP = "name_ip";
     const EMAIL_EMPTY = "email_empty";
     const EMAIL_WIKIMEDIA = "email_wikimedia";
     const EMAIL_INVALID = "email_invalid";
@@ -42,6 +43,7 @@ class ValidationError
             . 'following characters are not allowed: <code># @ / &lt; &gt; [ ] | { }</code>',
         self::NAME_SANITISED    => 'Your requested username has been automatically adjusted due to technical '
             . 'restrictions. Underscores have been replaced with spaces, and the first character has been capitalised.',
+        self::NAME_IP           => 'The username you chose is invalid: it cannot be an IP address',
         self::EMAIL_EMPTY       => 'You need to supply an email address.',
         self::EMAIL_WIKIMEDIA   => 'Please provide your email address here.',
         self::EMAIL_INVALID     => 'Invalid E-mail address supplied. Please check you entered it correctly.',
