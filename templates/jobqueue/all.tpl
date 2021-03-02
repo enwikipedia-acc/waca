@@ -53,6 +53,15 @@
                 {/foreach}
             </div>
         </div>
+        
+        <div class="form-row">
+            <div class="col-md-6 py-2">
+                    <div class="custom-control-inline custom-checkbox">
+                        <input class="custom-control-input" type="checkbox" id="order" name="order" value="old" {if $order == 'old'}checked{/if} />
+                        <label class="custom-control-label" for="order">Oldest First</label>
+                    </div>
+            </div>
+        </div>
 
         <div class="form-row">
             <div class="col-md-6 col-lg-3">
