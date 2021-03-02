@@ -144,11 +144,18 @@ class PageSearch extends PagedInternalPageBase
 
         $securityManager = $this->getSecurityManager();
         $currentUser = User::getCurrent($this->getDatabase());
-        $securityResult = $securityManager->allows('RequestData', 'seeRestrictedComments', $currentUser);
 
-        if ($securityResult !== SecurityManager::ALLOWED) {
-            $searchHelper->byCommentSecurity(['requester', 'user']);
+        $commentSecurity = ['requester', 'user'];
+
+        if($securityManager->allows('RequestData', 'seeRestrictedComments', $currentUser) == SecurityManager::ALLOWED) {
+            $commentSecurity[] = 'admin';
         }
+
+        if($securityManager->allows('RequestData', 'seeCheckuserComments', $currentUser) == SecurityManager::ALLOWED) {
+            $commentSecurity[] = 'checkuser';
+        }
+
+        $searchHelper->byCommentSecurity($commentSecurity);
     }
 
     /**
