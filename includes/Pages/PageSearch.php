@@ -95,11 +95,16 @@ class PageSearch extends PagedInternalPageBase
             /** @var Request[] $results */
             $results = $requestSearch->getRecordCount($count)->fetch();
 
-            $this->setupPageData($count, [
+            $formParameters = [
                 'term'                => $searchTerm,
                 'type'                => $searchType,
-                'excludeNonConfirmed' => $excludeNonConfirmed,
-            ]);
+            ];
+
+            if ($excludeNonConfirmed) {
+                $formParameters['excludeNonConfirmed'] = true;
+            }
+
+            $this->setupPageData($count, $formParameters);
 
             // deal with results
             $this->assign('requests', $this->prepareRequestData($results));
