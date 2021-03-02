@@ -381,6 +381,7 @@ class RoleConfiguration
                 'alwaysSeePrivateData'  => self::ACCESS_ALLOW,
                 'alwaysSeeHash'         => self::ACCESS_ALLOW,
                 'seeRestrictedComments' => self::ACCESS_ALLOW,
+                'resetPurgedRequest'    => self::ACCESS_ALLOW,
             ),
         ),
     );
