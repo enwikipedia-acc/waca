@@ -80,8 +80,8 @@
                                     {/if}
                                 {/if}
                             </div>
+                            <hr />
                         {/if}
-                        <hr />
                     {/block}
 
                     {block name="requestStatusButtons"}
