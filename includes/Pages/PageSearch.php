@@ -14,7 +14,6 @@ use Waca\Exceptions\AccessDeniedException;
 use Waca\Exceptions\ApplicationLogicException;
 use Waca\Fragments\RequestListData;
 use Waca\Helpers\SearchHelpers\RequestSearchHelper;
-use Waca\Security\SecurityManager;
 use Waca\SessionAlert;
 use Waca\Tasks\PagedInternalPageBase;
 use Waca\WebRequest;
@@ -47,7 +46,7 @@ class PageSearch extends PagedInternalPageBase
             $searchTerm = WebRequest::getString('term');
 
             $excludeNonConfirmed = true;
-            if($this->barrierTest('allowNonConfirmed', $currentUser)) {
+            if ($this->barrierTest('allowNonConfirmed', $currentUser)) {
                 $excludeNonConfirmed = WebRequest::getBoolean('excludeNonConfirmed');
             }
 
@@ -59,6 +58,7 @@ class PageSearch extends PagedInternalPageBase
                 $this->assign('target', $searchType);
                 $this->assign('excludeNonConfirmed', $excludeNonConfirmed);
                 $this->assign('hasResultset', false);
+
                 return;
             }
 
@@ -96,8 +96,8 @@ class PageSearch extends PagedInternalPageBase
             $results = $requestSearch->getRecordCount($count)->fetch();
 
             $formParameters = [
-                'term'                => $searchTerm,
-                'type'                => $searchType,
+                'term' => $searchTerm,
+                'type' => $searchType,
             ];
 
             if ($excludeNonConfirmed) {
@@ -129,7 +129,7 @@ class PageSearch extends PagedInternalPageBase
      * @param RequestSearchHelper $searchHelper
      * @param string              $searchTerm
      */
-    private function getNameSearchResults(RequestSearchHelper $searchHelper, $searchTerm)
+    private function getNameSearchResults(RequestSearchHelper $searchHelper, string $searchTerm)
     {
         $padded = '%' . $searchTerm . '%';
         $searchHelper->byName($padded);
@@ -141,21 +141,19 @@ class PageSearch extends PagedInternalPageBase
      * @param RequestSearchHelper $searchHelper
      * @param string              $searchTerm
      */
-    private function getCommentSearchResults(RequestSearchHelper $searchHelper, $searchTerm)
+    private function getCommentSearchResults(RequestSearchHelper $searchHelper, string $searchTerm)
     {
         $padded = '%' . $searchTerm . '%';
         $searchHelper->byComment($padded);
 
-        $securityManager = $this->getSecurityManager();
         $currentUser = User::getCurrent($this->getDatabase());
-
         $commentSecurity = ['requester', 'user'];
 
-        if($securityManager->allows('RequestData', 'seeRestrictedComments', $currentUser) == SecurityManager::ALLOWED) {
+        if ($this->barrierTest('seeRestrictedComments', $currentUser, 'RequestData')) {
             $commentSecurity[] = 'admin';
         }
 
-        if($securityManager->allows('RequestData', 'seeCheckuserComments', $currentUser) == SecurityManager::ALLOWED) {
+        if ($this->barrierTest('seeCheckuserComments', $currentUser, 'RequestData')) {
             $commentSecurity[] = 'checkuser';
         }
 
@@ -165,12 +163,12 @@ class PageSearch extends PagedInternalPageBase
     /**
      * Gets search results by email
      *
-     * @param        $searchHelper
-     * @param string $searchTerm
+     * @param RequestSearchHelper $searchHelper
+     * @param string              $searchTerm
      *
      * @throws ApplicationLogicException
      */
-    private function getEmailSearchResults(RequestSearchHelper $searchHelper, $searchTerm)
+    private function getEmailSearchResults(RequestSearchHelper $searchHelper, string $searchTerm)
     {
         if ($searchTerm === "@") {
             throw new ApplicationLogicException('The search term "@" is not valid for email address searches!');
@@ -187,7 +185,7 @@ class PageSearch extends PagedInternalPageBase
      * @param RequestSearchHelper $searchHelper
      * @param string              $searchTerm
      */
-    private function getIpSearchResults(RequestSearchHelper $searchHelper, $searchTerm)
+    private function getIpSearchResults(RequestSearchHelper $searchHelper, string $searchTerm)
     {
         $searchHelper
             ->byIp($searchTerm)
