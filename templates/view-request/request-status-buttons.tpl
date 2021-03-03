@@ -10,8 +10,8 @@
             {if $requestIsClosed}
                 {if $requestDataCleared && !$canResetPurgedRequest}
                     <div class="col-md-12">
-                        <button class="btn btn-outline-dark btn-block">
-                            Unable To Reset Request - Data Purged
+                        <button class="btn btn-outline-danger btn-block disabled" data-toggle="tooltip" data-placement="top" title="Unable to reset request - data is purged">
+                            Reset request
                         </button>
                     </div>
                 {else}
