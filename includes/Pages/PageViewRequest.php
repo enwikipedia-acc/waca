@@ -98,12 +98,12 @@ class PageViewRequest extends InternalPageBase
                 $this->assign('isOldRequest', true);
         }
         $this->assign('canResetOldRequest', $this->barrierTest('reopenOldRequest', $currentUser, 'RequestData'));
+        $this->assign('canResetPurgedRequest', $this->barrierTest('reopenClearedRequest', $currentUser, 'RequestData'));
             
         if ($allowedPrivateData) {
             $this->setTemplate('view-request/main-with-data.tpl');
             $this->setupPrivateData($request, $config);
             $this->assign('canSetBan', $this->barrierTest('set', $currentUser, PageBan::class));
-            $this->assign('canResetPurgedRequest', $this->barrierTest('reopenClearedRequest', $currentUser, 'RequestData'));
             $this->assign('canSeeCheckuserData', $this->barrierTest('seeUserAgentData', $currentUser, 'RequestData'));
 
             if ($this->barrierTest('seeUserAgentData', $currentUser, 'RequestData')) {
