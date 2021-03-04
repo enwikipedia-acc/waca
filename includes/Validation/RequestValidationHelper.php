@@ -12,6 +12,7 @@ use Exception;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\Request;
+use Waca\ExceptionHandler;
 use Waca\Exceptions\CurlException;
 use Waca\Helpers\HttpHelper;
 use Waca\Helpers\Interfaces\IBanHelper;
@@ -247,7 +248,7 @@ class RequestValidationHelper
             }
         }
         catch (Exception $ex) {
-            // FIXME: log
+            ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
         }
     }
 
@@ -273,7 +274,7 @@ class RequestValidationHelper
                 $requestIsOk = $data['titleblacklist']['result'] == "ok";
             }
             catch (CurlException $ex) {
-                // FIXME: log this
+                ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
 
                 // Don't kill the request, just assume it's fine. Humans can deal with it later.
                 return;
@@ -307,7 +308,7 @@ class RequestValidationHelper
             }
         }
         catch (CurlException $ex) {
-            // FIXME: log this
+            ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
 
             // Don't kill the request, just assume it's fine. Humans can deal with it later.
             return false;
@@ -339,7 +340,7 @@ class RequestValidationHelper
             }
         }
         catch (CurlException $ex) {
-            // FIXME: log this
+            ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
 
             // Don't kill the request, just assume it's fine. Humans can deal with it later.
             return false;

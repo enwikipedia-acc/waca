@@ -10,7 +10,7 @@
 
     <div class="row">
     <div class="col-md-12">
-    <p>This table lists a summary of all the logged unhandled exceptions. Every single one of these is a bug which should be caught in the application logic. A full stack trace is available on in the details.</p>
+    <p>This table lists a summary of all the logged exceptions. Every single one of the ones marked as unhandled is a bug which should be caught in the application logic. A full stack trace is available on in the details.</p>
     </div>
     </div>
 
@@ -20,6 +20,7 @@
                 <thead>
                     <th>ID</th>
                     <th data-defaultsort="desc">Date</th>
+                    <th>Unhandled?</th>
                     <th>Exception</th>
                     <th data-defaultsort="disabled">Message</th>
                     {if $canRemove || $canView}
@@ -31,6 +32,11 @@
                     <tr>
                         <td class="text-nowrap"><code>{$exception.id}</code></td>
                         <td class="text-nowrap">{$exception.date}</td>
+                        {if $exception.data.globalHandler}
+                            <td class="text-nowrap bg-danger text-light">Yes</td>
+                        {else}
+                            <td class="text-nowrap">No</td>
+                        {/if}
                         <td class="text-nowrap">{$exception.data.exception}</td>
                         <td>{$exception.data.message}</td>
 
