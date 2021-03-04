@@ -96,6 +96,11 @@ class PageViewRequest extends InternalPageBase
             $this->setupPrivateData($request, $config);
 
             $this->assign('canSetBan', $this->barrierTest('set', $currentUser, PageBan::class));
+            $closureDate = $request->getClosureDate();
+            $date = new DateTime();
+            $date->modify("-7 days");
+            $this->assign('isOldRequest', ($request->getStatus() == "Closed" && $closureDate < $date));
+            $this->assign('canResetOldRequest', $this->barrierTest('reopenOldRequest', $currentUser, 'RequestData'));
             $this->assign('canResetPurgedRequest', $this->barrierTest('reopenClearedRequest', $currentUser, 'RequestData'));
             $this->assign('canSeeCheckuserData', $this->barrierTest('seeUserAgentData', $currentUser, 'RequestData'));
 

@@ -10,7 +10,13 @@
             {if $requestIsClosed}
                 {if $requestDataCleared && !$canResetPurgedRequest}
                     <div class="col-md-12">
-                        <button class="btn btn-outline-danger btn-block disabled" data-toggle="tooltip" data-placement="top" title="Unable to reset request - data is purged">
+                        <button class="btn btn-outline-danger btn-block disabled" data-toggle="tooltip" data-placement="top" title="You are not allowed to re-open a request for which the private data has been purged">
+                            Reset request
+                        </button>
+                    </div>
+                {elseif $isOldRequest && !$canResetOldRequest}
+                    <div class="col-md-12">
+                        <button class="btn btn-outline-danger btn-block disabled" data-toggle="tooltip" data-placement="top" title="You are not allowed to re-open a request that has been closed for over a week">
                             Reset request
                         </button>
                     </div>
