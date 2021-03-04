@@ -82,7 +82,7 @@
                 <label class="col-form-label" for="newcomment">New text</label>
             </div>
             <div class="col-md-8 col-lg-10">
-                <textarea class="form-control" rows="4" name="newcomment" id="newcomment">{$comment->getComment()|escape}</textarea>
+                <textarea required="required" class="form-control" rows="4" name="newcomment" id="newcomment">{$comment->getComment()|escape}</textarea>
             </div>
         </div>
 
