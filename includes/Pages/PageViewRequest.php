@@ -99,7 +99,9 @@ class PageViewRequest extends InternalPageBase
             $closureDate = $request->getClosureDate();
             $date = new DateTime();
             $date->modify("-7 days");
-            $this->assign('isOldRequest', ($request->getStatus() == "Closed" && $closureDate < $date));
+            if ($request->getStatus() == "Closed" && $closureDate < $date) {
+                $this->assign('isOldRequest', true);
+            }
             $this->assign('canResetOldRequest', $this->barrierTest('reopenOldRequest', $currentUser, 'RequestData'));
             $this->assign('canResetPurgedRequest', $this->barrierTest('reopenClearedRequest', $currentUser, 'RequestData'));
             $this->assign('canSeeCheckuserData', $this->barrierTest('seeUserAgentData', $currentUser, 'RequestData'));
