@@ -12,11 +12,11 @@ use Exception;
 use Waca\DataObjects\Ban;
 use Waca\DataObjects\Comment;
 use Waca\DataObjects\EmailTemplate;
-use Waca\DataObjects\JobQueue;
 use Waca\DataObjects\Notification;
 use Waca\DataObjects\Request;
 use Waca\DataObjects\User;
 use Waca\DataObjects\WelcomeTemplate;
+use Waca\ExceptionHandler;
 use Waca\IrcColourCode;
 use Waca\PdoDatabase;
 use Waca\SiteConfiguration;
@@ -43,20 +43,23 @@ class IrcNotificationHelper
     private $baseUrl;
     /** @var array */
     private $requestStates;
+    /** @var SiteConfiguration */
+    private $siteConfiguration;
 
     /**
      * IrcNotificationHelper constructor.
      *
      * @param SiteConfiguration $siteConfiguration
      * @param PdoDatabase       $primaryDatabase
-     * @param PdoDatabase       $notificationsDatabase
+     * @param PdoDatabase|null  $notificationsDatabase
      */
     public function __construct(
         SiteConfiguration $siteConfiguration,
         PdoDatabase $primaryDatabase,
-        PdoDatabase $notificationsDatabase = null
+        ?PdoDatabase $notificationsDatabase = null
     ) {
         $this->primaryDatabase = $primaryDatabase;
+        $this->siteConfiguration = $siteConfiguration;
 
         if ($notificationsDatabase !== null) {
             $this->notificationsDatabase = $notificationsDatabase;
@@ -103,6 +106,7 @@ class IrcNotificationHelper
         catch (Exception $ex) {
             // OK, so we failed to send the notification - that db might be down?
             // This is non-critical, so silently fail.
+            ExceptionHandler::logExceptionToDisk($ex, $this->siteConfiguration);
 
             // Disable notifications for remainder of request.
             $this->notificationsEnabled = false;
