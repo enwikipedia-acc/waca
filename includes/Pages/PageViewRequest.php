@@ -89,21 +89,20 @@ class PageViewRequest extends InternalPageBase
             $this->setupRelatedRequests($request, $config, $database);
         }
 
-        $this->assign('canCreateLocalAccount',
-            $this->barrierTest('createLocalAccount', $currentUser, 'RequestData'));
-
+        $this->assign('canCreateLocalAccount', $this->barrierTest('createLocalAccount', $currentUser, 'RequestData'));
+            
+        $closureDate = $request->getClosureDate();
+        $date = new DateTime();
+        $date->modify("-7 days");
+        if ($request->getStatus() == "Closed" && $closureDate < $date) {
+                $this->assign('isOldRequest', true);
+        }
+        $this->assign('canResetOldRequest', $this->barrierTest('reopenOldRequest', $currentUser, 'RequestData'));
+            
         if ($allowedPrivateData) {
             $this->setTemplate('view-request/main-with-data.tpl');
             $this->setupPrivateData($request, $config);
-
             $this->assign('canSetBan', $this->barrierTest('set', $currentUser, PageBan::class));
-            $closureDate = $request->getClosureDate();
-            $date = new DateTime();
-            $date->modify("-7 days");
-            if ($request->getStatus() == "Closed" && $closureDate < $date) {
-                $this->assign('isOldRequest', true);
-            }
-            $this->assign('canResetOldRequest', $this->barrierTest('reopenOldRequest', $currentUser, 'RequestData'));
             $this->assign('canResetPurgedRequest', $this->barrierTest('reopenClearedRequest', $currentUser, 'RequestData'));
             $this->assign('canSeeCheckuserData', $this->barrierTest('seeUserAgentData', $currentUser, 'RequestData'));
 
