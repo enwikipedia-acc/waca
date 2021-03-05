@@ -182,13 +182,15 @@ SQL
         return ((int)$this->deleted) === 1;
     }
 
-    public function getSectionHeader() {
+    public function getSectionHeader()
+    {
         // Hard-coded for future update ability to change this per-template. This has beem moved from being hard-coded
         // directly in the welcome task, and safely permits us to show the header in the welcome template preview
         return "Welcome!";
     }
 
-    public function getBotCodeForWikiSave(string $request, $creator) {
+    public function getBotCodeForWikiSave(string $request, $creator)
+    {
         $templateText = $this->getBotCode();
 
         $templateText = str_replace('$request', $request, $templateText);

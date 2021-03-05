@@ -31,8 +31,8 @@ abstract class PageRegisterBase extends InternalPageBase
     protected function main()
     {
         $useOAuthSignup = $this->getSiteConfiguration()->getUseOAuthSignup();
-        if (! $this->getSiteConfiguration()->isRegistrationAllowed()) {
-           throw new AccessDeniedException();
+        if (!$this->getSiteConfiguration()->isRegistrationAllowed()) {
+            throw new AccessDeniedException();
         }
 
         // Dual-mode page

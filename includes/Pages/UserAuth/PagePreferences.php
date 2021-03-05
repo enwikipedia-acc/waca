@@ -90,7 +90,7 @@ class PagePreferences extends InternalPageBase
             $this->getSiteConfiguration());
 
         // token is for old consumer, run through the approval workflow again
-        if($oauth->getIdentity(true)->getAudience() !== $this->getSiteConfiguration()->getOAuthConsumerToken()) {
+        if ($oauth->getIdentity(true)->getAudience() !== $this->getSiteConfiguration()->getOAuthConsumerToken()) {
             $authoriseUrl = $oauth->getRequestToken();
             $this->redirectUrl($authoriseUrl);
 

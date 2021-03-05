@@ -31,13 +31,12 @@ class PasswordCredentialProvider extends CredentialProviderBase
     public function authenticate(User $user, $data)
     {
         $storedData = $this->getCredentialData($user->getId());
-        if($storedData === null)
-        {
+        if ($storedData === null) {
             // No available credential matching these parameters
             return false;
         }
 
-        if($storedData->getVersion() !== 2) {
+        if ($storedData->getVersion() !== 2) {
             // Non-2 versions are not supported.
             return false;
         }

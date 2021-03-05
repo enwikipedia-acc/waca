@@ -23,7 +23,7 @@ class JobQueueSearchHelper extends SearchHelperBase
      *
      * @return JobQueueSearchHelper
      */
-    public static function get(PdoDatabase $database) 
+    public static function get(PdoDatabase $database)
     {
         $helper = new JobQueueSearchHelper($database);
         return $helper;
@@ -34,7 +34,7 @@ class JobQueueSearchHelper extends SearchHelperBase
      *
      * @return $this
      */
-    public function statusIn($statuses) 
+    public function statusIn($statuses)
     {
         $this->inClause('status', $statuses);
 
@@ -44,14 +44,14 @@ class JobQueueSearchHelper extends SearchHelperBase
     /**
      * @return $this
      */
-    public function notAcknowledged() 
+    public function notAcknowledged()
     {
         $this->whereClause .= ' AND (acknowledged IS NULL OR acknowledged = 0)';
 
         return $this;
     }
 
-    public function byTask($task) 
+    public function byTask($task)
     {
         $this->whereClause .= ' AND task = ?';
         $this->parameterList[] = $task;
@@ -59,7 +59,7 @@ class JobQueueSearchHelper extends SearchHelperBase
         return $this;
     }
 
-    public function byUser($userId) 
+    public function byUser($userId)
     {
         $this->whereClause .= ' AND user = ?';
         $this->parameterList[] = $userId;
@@ -67,7 +67,7 @@ class JobQueueSearchHelper extends SearchHelperBase
         return $this;
     }
 
-    public function byStatus($status) 
+    public function byStatus($status)
     {
         $this->whereClause .= ' AND status = ?';
         $this->parameterList[] = $status;
@@ -83,7 +83,7 @@ class JobQueueSearchHelper extends SearchHelperBase
         return $this;
     }
     
-    public function newestFirst() 
+    public function newestFirst()
     {
         $this->orderBy = 'id DESC';
         

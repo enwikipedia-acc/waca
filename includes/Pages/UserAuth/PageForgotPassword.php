@@ -153,7 +153,7 @@ class PageForgotPassword extends InternalPageBase
     {
         $user = User::getById($id, $database);
 
-        if ($user === false ||  $user->isCommunityUser()) {
+        if ($user === false || $user->isCommunityUser()) {
             throw new ApplicationLogicException("Password reset failed. Please try again.");
         }
 
