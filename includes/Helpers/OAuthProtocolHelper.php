@@ -90,7 +90,7 @@ class OAuthProtocolHelper implements Interfaces\IOAuthProtocolHelper
 
         $apiParams['format'] = 'json';
 
-        if ($apiParams === null || ! is_array($apiParams)) {
+        if ($apiParams === null || !is_array($apiParams)) {
             throw new CurlException("Invalid API call");
         }
 

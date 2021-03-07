@@ -62,7 +62,7 @@ class ScratchTokenCredentialProvider extends CredentialProviderBase
 
         $usedToken = null;
         foreach ($scratchTokens as $scratchToken) {
-            if (password_verify($data, $scratchToken)){
+            if (password_verify($data, $scratchToken)) {
                 $usedToken = $scratchToken;
                 SessionAlert::quick("Hey, it looks like you used a scratch token to log in. Would you like to change your multi-factor authentication configuration?", 'alert-warning');
                 WebRequest::setPostLoginRedirect($this->getConfiguration()->getBaseUrl() . "/internal.php/multiFactor");
@@ -70,7 +70,7 @@ class ScratchTokenCredentialProvider extends CredentialProviderBase
             }
         }
 
-        if($usedToken === null) {
+        if ($usedToken === null) {
             return false;
         }
 

@@ -19,7 +19,7 @@ class PageLogout extends InternalPageBase
      */
     protected function main()
     {
-        if(WebRequest::wasPosted()) {
+        if (WebRequest::wasPosted()) {
             Session::destroy();
             $this->redirect("login");
             return;

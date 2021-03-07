@@ -361,9 +361,10 @@ HTML;
                 }
 
                 $task = $job->getTask();
-                if(isset($taskDescriptions[$task])){
+                if (isset($taskDescriptions[$task])){
                     $description = $taskDescriptions[$task];
-                } else {
+                } 
+                else {
                     $description = 'Unknown task';
                 }
 
@@ -385,7 +386,7 @@ HTML;
     {
         $userIds = array();
 
-	    foreach ($logs as $logEntry) {
+        foreach ($logs as $logEntry) {
             if (!$logEntry instanceof Log) {
                 // if this happens, we've done something wrong with passing back the log data.
                 throw new Exception('Log entry is not an instance of a Log, this should never happen.');
@@ -406,7 +407,7 @@ HTML;
 
         $logData = array();
 
-	    foreach ($logs as $logEntry) {
+        foreach ($logs as $logEntry) {
             $objectDescription = self::getObjectDescription($logEntry->getObjectId(), $logEntry->getObjectType(),
                 $database, $configuration);
 
