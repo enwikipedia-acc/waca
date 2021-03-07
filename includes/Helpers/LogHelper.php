@@ -361,9 +361,9 @@ HTML;
                 }
 
                 $task = $job->getTask();
-                if (isset($taskDescriptions[$task])){
+                if (isset($taskDescriptions[$task])) {
                     $description = $taskDescriptions[$task];
-                } 
+                }
                 else {
                     $description = 'Unknown task';
                 }

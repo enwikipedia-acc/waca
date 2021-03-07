@@ -150,7 +150,7 @@ SQL
         if ($user->getForceIdentified() === null) {
             $idVerifier = new IdentificationVerifier($this->getHttpHelper(), $this->getSiteConfiguration(), $this->getDatabase());
             $this->assign('identificationStatus', $idVerifier->isUserIdentified($user->getOnWikiName()) ? 'detected' : 'missing');
-        } 
+        }
         else {
             $this->assign('identificationStatus', $user->getForceIdentified() == 1 ? 'forced-on' : 'forced-off');
         }
