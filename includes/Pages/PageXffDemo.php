@@ -36,13 +36,13 @@ class PageXffDemo extends InternalPageBase
                 'ip' => '172.16.0.164',
                 'routable' => false,
 
-            ],[
+            ], [
                 'trust' => true,
                 'ip' => '198.51.100.123',
                 'routable' => true,
                 'rdns' => 'trustedproxy.example.com',
 
-            ],[
+            ], [
                 'trust' => true,
                 'ip' => '192.0.2.1',
                 'routable' => true,
@@ -63,14 +63,14 @@ class PageXffDemo extends InternalPageBase
                 'ip' => '172.16.0.164',
                 'routable' => false,
 
-            ],[
+            ], [
                 'trust' => false,
                 'ip' => '198.51.100.234',
                 'routable' => true,
                 'rdns' => 'sketchyproxy.example.com',
                 'showlinks' => true
 
-            ],[
+            ], [
                 'trust' => false,
                 'ip' => '192.0.2.1',
                 'routable' => true,
@@ -91,12 +91,12 @@ class PageXffDemo extends InternalPageBase
                 'ip' => '172.16.0.164',
                 'routable' => false,
 
-            ],[
+            ], [
                 'trust' => true,
                 'ip' => '198.51.100.123',
                 'routable' => true,
                 'rdns' => 'trustedproxy.example.com',
-            ],[
+            ], [
                 'trust' => false,
                 'ip' => '198.51.100.234',
                 'routable' => true,
@@ -109,7 +109,7 @@ class PageXffDemo extends InternalPageBase
                 'routable' => true,
                 'rdns' => 'trustedproxy2.example.com',
                 'showlinks' => true
-            ],[
+            ], [
                 'trust' => false,
                 'ip' => '192.0.2.1',
                 'routable' => true,

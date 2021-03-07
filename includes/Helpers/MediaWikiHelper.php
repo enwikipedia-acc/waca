@@ -241,7 +241,8 @@ class MediaWikiHelper
      * @param string $username
      * @return bool
      */
-    public function checkAccountExists($username) {
+    public function checkAccountExists($username)
+    {
         $parameters = array(
             'action'  => 'query',
             'list'    => 'users',

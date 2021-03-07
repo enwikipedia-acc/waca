@@ -45,7 +45,7 @@ JS
         $request = WebRequest::postString("request");
 
         if ($authenticate === null || $authenticate === "" || $request === null || $request === "") {
-              throw new ApplicationLogicException("No authentication specified");
+            throw new ApplicationLogicException("No authentication specified");
         }
 
         return array(json_decode($authenticate), json_decode($request), 'u2f');

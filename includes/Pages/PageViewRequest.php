@@ -225,7 +225,8 @@ class PageViewRequest extends InternalPageBase
                         'jobId'    => $job->getId(),
                         'jobDesc'  => JobQueue::getTaskDescriptions()[$job->getTask()],
                     );
-                } else {
+                } 
+                else {
                     $requestLogs[] = array(
                         'type'     => 'log',
                         'security' => 'user',

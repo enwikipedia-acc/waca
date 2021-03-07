@@ -48,7 +48,7 @@ class NotIdentifiedException extends ReadableException
         $currentUser = User::getCurrent($database);
         $this->assign('currentUser', $currentUser);
 
-        if($this->securityManager !== null) {
+        if ($this->securityManager !== null) {
             $this->setupNavMenuAccess($currentUser);
         }
 

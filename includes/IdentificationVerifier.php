@@ -190,7 +190,8 @@ SQL;
             $endpoint = $this->siteConfiguration->getMetaWikimediaWebServiceEndpoint();
             $response = $this->httpHelper->get($endpoint, $parameters);
             $response = json_decode($response, true);
-        } catch (CurlException $ex) {
+        } 
+        catch (CurlException $ex) {
             // failed getting identification status, so throw a nicer error.
             $message = 'Could not contact metawiki API to determine user\' identification status. '
                 . 'This is probably a transient error, so please try again.';

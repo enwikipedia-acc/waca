@@ -134,7 +134,7 @@ class PageCloseRequest extends RequestActionBase
         if ($reservationId !== 0 && $reservationId !== null) {
             if ($currentUser->getId() !== $reservationId) {
                 SessionAlert::error("Request is reserved by someone else.");
-                $this->redirect('/viewRequest', null, ['id' => $request->getId()] );
+                $this->redirect('/viewRequest', null, ['id' => $request->getId()]);
                 return true;
             }
         }

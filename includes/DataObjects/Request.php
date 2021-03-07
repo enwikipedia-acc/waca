@@ -223,17 +223,17 @@ SQL
      */
     public function setForwardedIp($forwardedip)
     {
-		// Verify that the XFF chain only contains valid IP addresses, and silently discard anything that isn't.
-
-		$xff = explode(',', $forwardedip);
-		$valid = array();
-
-		foreach ($xff as $ip) {
-			$ip = trim($ip);
-			if (filter_var($ip, FILTER_VALIDATE_IP)) {
-				$valid[] = $ip;
-			}
-		}
+        // Verify that the XFF chain only contains valid IP addresses, and silently discard anything that isn't.
+        
+        $xff = explode(',', $forwardedip);
+        $valid = array();
+        
+        foreach ($xff as $ip) {
+            $ip = trim($ip);
+            if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                $valid[] = $ip;
+            }
+        }
 
 		$this->forwardedip = implode(", ", $valid);
     }

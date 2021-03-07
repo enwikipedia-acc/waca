@@ -85,7 +85,7 @@ class RunJobQueueTask extends ConsoleTaskBase
                 // Create a task.
                 $taskName = $job->getTask();
 
-                if(!class_exists($taskName)) {
+                if (!class_exists($taskName)) {
                     throw new ApplicationLogicException('Job task does not exist');
                 }
 
@@ -132,7 +132,8 @@ class RunJobQueueTask extends ConsoleTaskBase
         $task->setNotificationHelper($this->getNotificationHelper());
     }
 
-    public static function errorHandler($errno, $errstr, $errfile, $errline) {
+    public static function errorHandler($errno, $errstr, $errfile, $errline)
+    {
         throw new Exception($errfile . "@" . $errline . ": " . $errstr);
     }
 }

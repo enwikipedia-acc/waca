@@ -106,7 +106,7 @@ SQL;
         /** @var Request[] $results */
         $results = $search->getRecordCount($requestCount)->fetch();
 
-        if($requestCount > 0) {
+        if ($requestCount > 0) {
             $requestSectionData['Hospital - Requests failed auto-creation'] = array(
                 'requests' => $this->prepareRequestData($results),
                 'total'    => $requestCount,
@@ -140,7 +140,7 @@ SQL;
         /** @var Request[] $results */
         $results = $search->getRecordCount($requestCount)->fetch();
 
-        if($requestCount > 0) {
+        if ($requestCount > 0) {
             $requestSectionData['Requests queued in the Job Queue'] = array(
                 'requests' => $this->prepareRequestData($results),
                 'total'    => $requestCount,
