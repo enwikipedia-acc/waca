@@ -177,7 +177,7 @@ abstract class BackgroundTaskBase
             throw new ApplicationLogicException('Cannot locate request');
         }
 
-        if($this->job->getEmailTemplate() !== null){
+        if ($this->job->getEmailTemplate() !== null) {
             $this->emailTemplate = EmailTemplate::getById($this->job->getEmailTemplate(), $this->getDatabase());
 
             if ($this->emailTemplate === false) {
@@ -185,7 +185,7 @@ abstract class BackgroundTaskBase
             }
         }
 
-        if($this->job->getParameters() !== null) {
+        if ($this->job->getParameters() !== null) {
             $this->parameters = json_decode($this->job->getParameters());
 
             if (json_last_error() !== JSON_ERROR_NONE) {
@@ -194,11 +194,11 @@ abstract class BackgroundTaskBase
         }
 
         // Should we wait for a parent job?
-        if($this->job->getParent() !== null) {
+        if ($this->job->getParent() !== null) {
             /** @var JobQueue $parentJob */
             $parentJob = JobQueue::getById($this->job->getParent(), $this->getDatabase());
 
-            if($parentJob === false) {
+            if ($parentJob === false) {
                 $this->markFailed("Parent job could not be found");
                 return;
             }

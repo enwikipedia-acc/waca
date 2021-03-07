@@ -33,7 +33,7 @@ class HttpHelper
             curl_setopt($this->curlHandle, CURLOPT_SSL_VERIFYPEER, false);
         }
 
-        if($cookieJar !== null) {
+        if ($cookieJar !== null) {
             curl_setopt($this->curlHandle, CURLOPT_COOKIEFILE, $cookieJar);
             curl_setopt($this->curlHandle, CURLOPT_COOKIEJAR, $cookieJar);
         }

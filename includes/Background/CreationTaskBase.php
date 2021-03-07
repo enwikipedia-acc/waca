@@ -80,8 +80,9 @@ abstract class CreationTaskBase extends BackgroundTaskBase
      */
     protected abstract function getMediaWikiClient();
 
-    protected function getMediaWikiHelper(){
-        if($this->mwHelper === null) {
+    protected function getMediaWikiHelper()
+    {
+        if ($this->mwHelper === null) {
             $this->mwHelper = new MediaWikiHelper($this->getMediaWikiClient(), $this->getSiteConfiguration());
         }
 

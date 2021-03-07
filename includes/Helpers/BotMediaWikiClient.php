@@ -141,7 +141,7 @@ class BotMediaWikiClient implements IMediaWikiClient
 
         $loginResponse = $this->callApi($params, 'POST');
 
-        if($loginResponse->login->result == 'Success'){
+        if ($loginResponse->login->result == 'Success') {
             return;
         }
 

@@ -206,7 +206,8 @@ final class SecurityManager
         }
     }
 
-    public function getRoleConfiguration(){
+    public function getRoleConfiguration()
+    {
         return $this->roleConfiguration;
     }
 }

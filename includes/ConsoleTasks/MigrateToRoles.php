@@ -29,11 +29,11 @@ class MigrateToRoles extends ConsoleTaskBase
         foreach ($users as $user) {
             $toAdd = array('user');
 
-            if($user['status'] === 'Admin'){
+            if ($user['status'] === 'Admin') {
                 $toAdd[] = 'admin';
             }
 
-            if($user['checkuser'] == 1){
+            if ($user['checkuser'] == 1) {
                 $toAdd[] = 'checkuser';
             }
 
@@ -60,7 +60,7 @@ class MigrateToRoles extends ConsoleTaskBase
             $log->setComment($logData);
             $log->save();
 
-            if($user['status'] === 'Admin' || $user['status'] === 'User'){
+            if ($user['status'] === 'Admin' || $user['status'] === 'User') {
                 $update->execute(array('id' => $user['id']));
             }
         }
