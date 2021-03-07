@@ -83,7 +83,7 @@ class PageMultiFactor extends InternalPageBase
                     SessionAlert::success('Enabled YubiKey OTP.');
 
                     $scratchProvider = new ScratchTokenCredentialProvider($database, $this->getSiteConfiguration());
-                    if($scratchProvider->getRemaining($currentUser->getId()) < 3) {
+                    if ($scratchProvider->getRemaining($currentUser->getId()) < 3) {
                         $scratchProvider->setCredential($currentUser, 2, null);
                         $tokens = $scratchProvider->getTokens();
                         $this->assign('tokens', $tokens);
@@ -185,7 +185,7 @@ class PageMultiFactor extends InternalPageBase
                         SessionAlert::success('Enabled TOTP.');
 
                         $scratchProvider = new ScratchTokenCredentialProvider($database, $this->getSiteConfiguration());
-                        if($scratchProvider->getRemaining($currentUser->getId()) < 3) {
+                        if ($scratchProvider->getRemaining($currentUser->getId()) < 3) {
                             $scratchProvider->setCredential($currentUser, 2, null);
                             $tokens = $scratchProvider->getTokens();
                             $this->assign('tokens', $tokens);
@@ -240,7 +240,8 @@ class PageMultiFactor extends InternalPageBase
         $this->deleteCredential($database, $currentUser, $otpCredentialProvider, $factorType);
     }
 
-    protected function enableU2F() {
+    protected function enableU2F()
+    {
         $database = $this->getDatabase();
         $currentUser = User::getCurrent($database);
 
@@ -265,7 +266,7 @@ class PageMultiFactor extends InternalPageBase
 
                     list($data, $reqs) = $otpCredentialProvider->getRegistrationData();
 
-                    $u2fRequest =json_encode($data);
+                    $u2fRequest = json_encode($data);
                     $u2fSigns = json_encode($reqs);
 
                     $this->addJs('/vendor/yubico/u2flib-server/examples/assets/u2f-api.js');
@@ -314,7 +315,7 @@ JS
                     SessionAlert::success('Enabled U2F.');
 
                     $scratchProvider = new ScratchTokenCredentialProvider($database, $this->getSiteConfiguration());
-                    if($scratchProvider->getRemaining($currentUser->getId()) < 3) {
+                    if ($scratchProvider->getRemaining($currentUser->getId()) < 3) {
                         $scratchProvider->setCredential($currentUser, 2, null);
                         $tokens = $scratchProvider->getTokens();
                         $this->assign('tokens', $tokens);
@@ -351,7 +352,8 @@ JS
         }
     }
 
-    protected function disableU2F() {
+    protected function disableU2F()
+    {
         $database = $this->getDatabase();
         $currentUser = User::getCurrent($database);
 

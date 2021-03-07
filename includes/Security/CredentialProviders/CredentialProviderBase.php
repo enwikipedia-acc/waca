@@ -55,7 +55,7 @@ abstract class CredentialProviderBase implements ICredentialProvider
             ':t' => $this->type
         );
 
-        if($disabled !== null) {
+        if ($disabled !== null) {
             $sql .= ' AND disabled = :d';
             $parameters[':d'] = $disabled ? 1 : 0;
         }
@@ -93,7 +93,8 @@ abstract class CredentialProviderBase implements ICredentialProvider
         return $this->configuration;
     }
 
-    public function deleteCredential(User $user) {
+    public function deleteCredential(User $user)
+    {
         // get this factor
         $statement = $this->database->prepare('SELECT * FROM credential WHERE user = :user AND type = :type');
         $statement->execute(array(':user' => $user->getId(), ':type' => $this->type));
@@ -109,7 +110,7 @@ abstract class CredentialProviderBase implements ICredentialProvider
         $alternates = $statement->fetchColumn();
         $statement->closeCursor();
 
-        if($alternates <= 1) {
+        if ($alternates <= 1) {
             // decrement the factor for every stage above this
             $sql = 'UPDATE credential SET factor = factor - 1 WHERE user = :user AND factor > :factor';
             $statement = $this->database->prepare($sql);
@@ -143,7 +144,8 @@ abstract class CredentialProviderBase implements ICredentialProvider
      *
      * @return bool
      */
-    public function userIsEnrolled($userId) {
+    public function userIsEnrolled($userId)
+    {
         $cred = $this->getCredentialData($userId);
 
         return $cred !== null;

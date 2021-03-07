@@ -16,8 +16,8 @@ $toolList = array(
     'google'             => 'https://www.google.com/search?q=%DATA%',
     'domain'             => 'http://%DATA%/',
     'rangefinder'        => 'https://tools.wmflabs.org/rangeblockfinder/?ip=%DATA%',
-	'ipcheck'            => 'https://ipcheck.toolforge.org/index.php?ip=%DATA%',
-	'bgpview'            => 'https://bgpview.io/ip/%DATA%'
+    'ipcheck'            => 'https://ipcheck.toolforge.org/index.php?ip=%DATA%',
+    'bgpview'            => 'https://bgpview.io/ip/%DATA%'
 );
 
 if (!isset($_GET['tool'])

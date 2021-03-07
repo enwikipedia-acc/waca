@@ -58,7 +58,8 @@ class JobQueue extends DataObject
     /**
      * This feels like the least bad place to put this method.
      */
-    public static function getTaskDescriptions() {
+    public static function getTaskDescriptions()
+    {
         return array(
             BotCreationTask::class  => 'Create account (via bot)',
             UserCreationTask::class => 'Create account (via OAuth)',

@@ -27,7 +27,7 @@ function smarty_modifier_relativedate($input)
         try {
             $then = new DateTime($input);
         }
-        catch(Exception $ex) {
+        catch (Exception $ex) {
             return $input;
         }
     }

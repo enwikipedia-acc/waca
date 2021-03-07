@@ -61,7 +61,7 @@ class WelcomeUserTask extends BackgroundTaskBase
             return;
         }
 
-        if (!$mediaWikiHelper->checkAccountExists($request->getName())){
+        if (!$mediaWikiHelper->checkAccountExists($request->getName())) {
             $this->markFailed('Account does not exist!');
 
             return;

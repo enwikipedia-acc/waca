@@ -167,7 +167,7 @@ class RequestSearchHelper extends SearchHelperBase
     public function isHospitalised()
     {
         $this->whereClause .= ' AND status = ?';
-        $this->parameterList[] =  RequestStatus::HOSPITAL;
+        $this->parameterList[] = RequestStatus::HOSPITAL;
 
         return $this;
     }
@@ -180,7 +180,7 @@ class RequestSearchHelper extends SearchHelperBase
     public function notHospitalised()
     {
         $this->whereClause .= ' AND status <> ?';
-        $this->parameterList[] =  RequestStatus::HOSPITAL;
+        $this->parameterList[] = RequestStatus::HOSPITAL;
 
         return $this;
     }

@@ -592,7 +592,7 @@ class WebRequest
     {
         $cookie = &self::$globalStateProvider->getCookieSuperGlobal();
 
-        if(isset($cookie['sitenotice'])) {
+        if (isset($cookie['sitenotice'])) {
             return $cookie['sitenotice'] === $expectedHash;
         }
 

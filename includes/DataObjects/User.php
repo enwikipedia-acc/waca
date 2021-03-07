@@ -541,7 +541,8 @@ SQL
      *
      * @return bool|null
      */
-    public function getForceIdentified() {
+    public function getForceIdentified()
+    {
         return $this->forceidentified;
     }
 

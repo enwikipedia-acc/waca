@@ -99,7 +99,7 @@ class PageJobQueue extends PagedInternalPageBase
             $searchHelper->byRequest($filterRequest);
         }
         
-        if ($order == null) {
+        if ($order === null) {
             $searchHelper->newestFirst();
         }
 

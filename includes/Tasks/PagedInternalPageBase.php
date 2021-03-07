@@ -102,7 +102,7 @@ abstract class PagedInternalPageBase extends InternalPageBase
         $formParameters['limit'] = $this->limit;
         $this->assign('searchParamsUrl', http_build_query($formParameters, '', '&amp;'));
 
-        foreach ($formParameters as $key => $value)  {
+        foreach ($formParameters as $key => $value) {
             $this->assign($key, $value);
         }
     }
