@@ -40,7 +40,7 @@ class PageUserManagement extends InternalPageBase
         $userSearchRequest = WebRequest::getString('usersearch');
         if ($userSearchRequest !== null) {
             $searchedUser = User::getByUsername($userSearchRequest, $database);
-            if($searchedUser !== false) {
+            if ($searchedUser !== false) {
                 $this->redirect('statistics/users', 'detail', ['user' => $searchedUser->getId()]);
                 return;
             }

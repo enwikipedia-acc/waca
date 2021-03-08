@@ -234,8 +234,7 @@ SQL
                 $valid[] = $ip;
             }
         }
-
-		$this->forwardedip = implode(", ", $valid);
+        $this->forwardedip = implode(", ", $valid);
     }
 
     /**
@@ -395,7 +394,7 @@ SQL
             . '|' . $this->forwardedip  // } private data not known to those without access
             . '|' . $this->useragent    // }
             . '|' . $this->email        // }
-            . '|' . $this->status;      // to rudimentarily invalidate the token on status change
+            . '|' . $this->status; // to rudimentarily invalidate the token on status change
 
         return hash('sha256', $data);
     }

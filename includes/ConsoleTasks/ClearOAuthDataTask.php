@@ -19,9 +19,10 @@ class ClearOAuthDataTask extends ConsoleTaskBase
         $database = $this->getDatabase();
 
         $users = UserSearchHelper::get($database)->inIds(
-            $database->query('SELECT user FROM oauthtoken WHERE type = \'access\'')->fetchColumn());
+            $database->query('SELECT user FROM oauthtoken WHERE type = \'access\'')->fetchColumn()
+        );
 
-        foreach ($users as $u){
+        foreach ($users as $u) {
             $oauth = new OAuthUserHelper($u, $database, $this->getOAuthProtocolHelper(), $this->getSiteConfiguration());
             $oauth->detach();
         }
